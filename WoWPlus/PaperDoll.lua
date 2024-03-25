@@ -619,6 +619,24 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function Init_Title()--头衔数量
     local btn= PaperDollFrame.TitleManagerPane.tipsButton
     if not PAPERDOLL_SIDEBARS[2].IsActive() or Save.hide then
@@ -735,6 +753,12 @@ local function Init_Title()--头衔数量
     end
     btn.titleNumeri:SetText(#GetKnownTitles()-1)
 end
+
+
+
+
+
+
 
 
 
@@ -1188,6 +1212,9 @@ end
 
 
 
+
+
+
 --装备管理, 总开关
 function Init_TrackButton_ShowHide_Button()
     if Save.hide then
@@ -1197,8 +1224,8 @@ function Init_TrackButton_ShowHide_Button()
     end
     if not panel.equipmentButton then
         panel.equipmentButton = e.Cbtn(PaperDollItemsFrame, {size={18,18}, atlas= Save.equipment and 'auctionhouse-icon-favorite' or e.Icon.disabled})--显示/隐藏装备管理框选项
-        panel.equipmentButton:SetPoint('TOPRIGHT',-2,-40)
-        panel.equipmentButton:SetAlpha(0.5)
+        panel.equipmentButton:SetPoint('TOPRIGHT',-2,-25)
+        panel.equipmentButton:SetAlpha(0.3)
         panel.equipmentButton:SetScript("OnClick", function(self2, d)
             if d=='LeftButton' and not IsModifierKeyDown() then
                 Save.equipment= not Save.equipment and true or nil
@@ -1233,7 +1260,7 @@ function Init_TrackButton_ShowHide_Button()
             if self2.btn then
                 self2.btn:SetButtonState("NORMAL")
             end
-            self2:SetAlpha(0.5)
+            self2:SetAlpha(0.3)
         end)
     end
     panel.equipmentButton:SetShown(true)
@@ -1621,7 +1648,7 @@ end
 
 --################
 --时空漫游战役, 提示
---################
+--[[################
 local function Init_ChromieTime()--时空漫游战役, 提示
     local canEnter = C_PlayerInfo.CanPlayerEnterChromieTime()
     if canEnter and not Save.hide and not panel.ChromieTime then
@@ -1664,7 +1691,7 @@ local function Init_ChromieTime()--时空漫游战役, 提示
     if panel.ChromieTime then
         panel.ChromieTime:SetShown(canEnter and not Save.hide)
     end
-end
+end]]
 
 
 
@@ -1922,16 +1949,14 @@ local function Init_Show_Hide_Button(frame)
 
         GetDurationTotale()--装备,总耐久度
         Init_Server_equipmentButton_Lable()--显示服务器名称
-        
+
         Init_Title()--头衔数量
         LvTo()--总装等
         set_PaperDollSidebarTab3_Text()--标签, 内容,提示
-        Init_ChromieTime()--时空漫游战役, 提示
+        --Init_ChromieTime()--时空漫游战役, 提示
 
         Init_TrackButton_ShowHide_Button()--装备管理, 总开关
         Init_TrackButton()--添加装备管理框
-        
-        
 
         e.call('PaperDollFrame_SetLevel')
         e.call('PaperDollFrame_UpdateStats')
@@ -1981,9 +2006,11 @@ local function Init_Show_Hide_Button(frame)
     btn:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.GetShowHide(not Save.hide), e.Icon.left)
-        e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddLine(' ')
+
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.GetShowHide(not Save.hide), e.Icon.left)
         e.tips:Show()
         self:SetAlpha(1)
     end)
@@ -2016,9 +2043,9 @@ local function Init()
     GetDurationTotale()--装备,总耐久度
 
     Init_Server_equipmentButton_Lable()--显示服务器名称，装备管理框
-   
 
-    Init_ChromieTime()--时空漫游战役, 提示
+
+    --Init_ChromieTime()--时空漫游战役, 提示
 
     hooksecurefunc('PaperDollFrame_UpdateSidebarTabs', function()--头衔数量
         Init_Title()--总装等
@@ -2139,7 +2166,7 @@ local function Init()
     --更改,等级文本
     --############
     hooksecurefunc('PaperDollFrame_SetLevel', function()--PaperDollFrame.lua
-        Init_ChromieTime()--时空漫游战役, 提示
+        --Init_ChromieTime()--时空漫游战役, 提示
         if Save.hide then
             return
         end
@@ -2156,7 +2183,6 @@ local function Init()
         CharacterLevelText:SetText('  '..faction..(race and '|A:'..race..':26:26|a' or '')..(class and '|A:'..class..':26:26|a  ' or '')..level)
         if not CharacterLevelText.set then
             e.Set_Label_Texture_Color(CharacterLevelText, {type='FontString'})
-            --CharacterLevelText:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
             CharacterLevelText:SetJustifyH('LEFT')
             CharacterLevelText:EnableMouse(true)
             CharacterLevelText:HookScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
@@ -2175,6 +2201,27 @@ local function Init()
                 e.tips:AddLine('displayID |cnGREEN_FONT_COLOR:'..C_PlayerInfo.GetDisplayID())
                 e.tips:AddDoubleLine((info.createScreenIconAtlas and '|A:'..info.createScreenIconAtlas..':0:0|a' or '')..'createScreenIconAtlas', info.createScreenIconAtlas)
                 e.tips:AddDoubleLine('GUID', UnitGUID('player'))
+                e.tips:AddLine(' ')
+
+                local expansionID = UnitChromieTimeID('player')--时空漫游战役 PartyUtil.lua
+                local option = C_ChromieTime.GetChromieTimeExpansionOption(expansionID)
+                local expansion = option and e.cn(option.name) or (e.onlyChinese and '无' or NONE)
+                if option and option.previewAtlas then
+                    expansion= '|A:'..option.previewAtlas..':0:0|a'..expansion
+                end
+                local text= format(e.onlyChinese and '你目前处于|cffffffff时空漫游战役：%s|r' or PARTY_PLAYER_CHROMIE_TIME_SELF_LOCATION, expansion)
+                e.tips:AddDoubleLine((e.onlyChinese and '选择时空漫游战役' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHROMIE_TIME_SELECT_EXAPANSION_BUTTON, CHROMIE_TIME_PREVIEW_CARD_DEFAULT_TITLE))..': '..e.GetEnabeleDisable(C_PlayerInfo.CanPlayerEnterChromieTime()),
+                                        text
+                                    )
+                e.tips:AddLine(' ')
+                for _, info in pairs(C_ChromieTime.GetChromieTimeExpansionOptions() or {}) do
+                    local col= info.alreadyOn and '|cffff00ff' or ''-- option and option.id==info.id
+                    e.tips:AddDoubleLine((info.alreadyOn and e.Icon.toRight2 or '')..col..(info.previewAtlas and '|A:'..info.previewAtlas..':0:0|a' or '')..info.name..(info.alreadyOn and e.Icon.toLeft2 or '')..col..' ID '.. info.id, col..(e.onlyChinese and '完成' or COMPLETE)..': '..e.GetYesNo(info.completed))
+                    --e.tips:AddDoubleLine(' ', col..(info.mapAtlas and '|A:'..info.mapAtlas..':0:0|a'.. info.mapAtlas))
+                    --e.tips:AddDoubleLine(' ', col..(info.previewAtlas and '|A:'..info.previewAtlas..':0:0|a'.. info.previewAtlas))
+                    --e.tips:AddDoubleLine(' ', col..(e.onlyChinese and '完成' or COMPLETE)..': '..e.GetYesNo(info.completed))
+                end
+                
                 e.tips:Show()
                 self2:SetAlpha(0.3)
             end)
