@@ -2094,8 +2094,8 @@ local function Init_Status_Menu()
             local tabs= self:find_stat(stat, index, false)
             if tabs then
                 info={
-                    text=format('%s %s', e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE), tabs.hideAt==0 and '|A:Ping_Map_Whole_OnMyWay:0:0|a' or tabs.hideAt or ''),
-                    checked=tabs.hideAt,
+                    text=format('%s 0', e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE)),
+                    checked=tabs.hideAt==0,
                     arg1=stat,
                     arg2=index,
                     func= function(_, arg1, arg2)
@@ -2114,6 +2114,31 @@ local function Init_Status_Menu()
                     end
                 }
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+                info={
+                    text=format('%s -1', e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE)),
+                    checked=tabs.hideAt==-1,
+                    arg1=stat,
+                    arg2=index,
+                    func= function(_, arg1, arg2)
+                        if PAPERDOLL_STATCATEGORIES[arg2] and PAPERDOLL_STATCATEGORIES[arg2].stats then
+                            for i, tab in pairs(PAPERDOLL_STATCATEGORIES[arg2].stats) do
+                                if tab.stat== arg1 then
+                                    PAPERDOLL_STATCATEGORIES[arg2].stats[i].hideAt= not PAPERDOLL_STATCATEGORIES[arg2].stats[i].hideAt and -1 or nil
+                                    
+        e.call('PaperDollFrame_UpdateStats')
+                                    Save.PAPERDOLL_STATCATEGORIES= PAPERDOLL_STATCATEGORIES
+                                    return
+                                end
+                            end
+                        end
+                        print(id, e.cn(addName), format('|cnRED_FONT_COLOR:%s|r %s', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE, arg1))
+                    end
+                }
+                e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+
+
                 local tank, dps, n
                 for _, num in pairs(tabs.roles or {}) do
                     if num== Enum.LFGRole.Healer then
@@ -2272,7 +2297,7 @@ local function Init_Status_Menu()
                             role= role..e.Icon.DAMAGER
                         end
                     end
-                    autoHide= format('%s', findTab.hideAt==0 and '|A:Ping_Map_Whole_OnMyWay:0:0|a' or (findTab.hideAt and '|cnGREEN_FONT_COLOR:'..findTab.hideAt..'|r') or '')
+                    autoHide= format('|cnGREEN_FONT_COLOR:%s|r', findTab.hideAt or '')
                 end
                 info={
                     text=name..autoHide..role,
