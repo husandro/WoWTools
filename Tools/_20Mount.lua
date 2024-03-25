@@ -321,8 +321,9 @@ local mapIDs={
 ]]
 
 local function setClickAtt()--设置 Click属性
-    local inCombat=UnitAffectingCombat('player')
-    if inCombat or UnitIsDeadOrGhost('player') or not button:CanChangeAttribute() then
+    --local inCombat=UnitAffectingCombat('player')
+    --if inCombat or UnitIsDeadOrGhost('player') or not button:CanChangeAttribute() then
+    if not button:CanChangeAttribute() then
         button.Combat=true
         return
     end

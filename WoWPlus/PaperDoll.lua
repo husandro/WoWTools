@@ -1351,7 +1351,7 @@ end
 --#########
 local function Init_Target_InspectUI()
     local self= InspectPaperDollFrame
-    panel.Init_Show_Hide_Button(InspectFrame)
+    Init_Show_Hide_Button(InspectFrame)
 
     if not self.initButton and not Save.hide then
         if self.ViewButton then
@@ -1586,7 +1586,7 @@ end
 --################
 --时空漫游战役, 提示
 --################
-local function set_ChromieTime()--时空漫游战役, 提示
+local function Init_ChromieTime()--时空漫游战役, 提示
     local canEnter = C_PlayerInfo.CanPlayerEnterChromieTime()
     if canEnter and not Save.hide and not panel.ChromieTime then
         panel.ChromieTime= e.Cbtn(PaperDollItemsFrame, {size={18,18}, atlas='ChromieTime-32x32'})
@@ -1662,7 +1662,7 @@ local function status_set_rating(frame, rating)
         elseif extraChance<0 then
             extra= format('|cnRED_FONT_COLOR:%.2f%%|r', extraChance)
         end
-        frame.numLabel:SetFormattedText('%d%s', BreakUpLargeNumbers(num), extra)
+        frame.numLabel:SetFormattedText('%s%s', BreakUpLargeNumbers(num), extra)
     end
 end
 local function create_status_label(frame, rating)
@@ -1778,18 +1778,18 @@ local function Init_Status_Label()
     hooksecurefunc('PaperDollFrame_SetVersatility', function(frame)--全能
         if create_status_label(frame) then
             local versatility = GetCombatRating(CR_VERSATILITY_DAMAGE_DONE)
-            local versatilityDamageBonus = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_DONE)
+            --local versatilityDamageBonus = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_DONE)
             local versatilityDamageTakenReduction = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_TAKEN) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_TAKEN)
-            frame.numLabel:SetFormattedText('%s |cffff00ff%.2f%%|r/|cffc69b6d%.2f%%|r', BreakUpLargeNumbers(versatility), versatilityDamageBonus, versatilityDamageTakenReduction)
+            frame.numLabel:SetFormattedText('%s/|cffc69b6d%.2f%%|r', BreakUpLargeNumbers(versatility),  versatilityDamageTakenReduction)
         end
-      
+
     end)
 
     hooksecurefunc('PaperDollFrame_SetLifesteal', function(frame)--吸
         create_status_label(frame, CR_LIFESTEAL)
     end)
     hooksecurefunc('PaperDollFrame_SetSpeed', function(frame)--速度
-        create_status_label(frame, CR_SPEED)        
+        create_status_label(frame, CR_SPEED)
     end)
 
     hooksecurefunc('PaperDollFrame_SetArmor', function(frame, unit)--护甲
@@ -1834,12 +1834,15 @@ local function Init_Status_Label()
     hooksecurefunc('PaperDollFrame_SetResilience', function(frame)--韧性
         create_status_label(frame, COMBAT_RATING_RESILIENCE_PLAYER_DAMAGE_TAKEN)
     end)
-   
+
     hooksecurefunc('PaperDollFrame_SetLabelAndText', function(statFrame, _, text, isPercentage, numericValue)
         if (isPercentage or (type(text)=='string' and text:find('%%'))) and not Save.hide and Save.itemLevelBit>0 and select(2, math.modf(numericValue))>0 then
             statFrame.Value:SetFormattedText('%.0'..Save.itemLevelBit..'f%%', numericValue)
         end
     end)
+
+    table.insert(PAPERDOLL_STATCATEGORIES[2].stats , { stat = "SPEED", hideAt = 0})
+    PaperDollFrame_UpdateStats()
 end
 
 
@@ -1866,19 +1869,15 @@ end
 --###############
 --显示，隐藏，按钮
 --###############
-panel.Init_Show_Hide_Button= function(self)
-    if not self or self.ShowHideButton then
+local function Init_Show_Hide_Button(frame)
+    if not frame or frame.ShowHideButton then
         return
     end
 
-    local title= self==PaperDollItemsFrame and CharacterFrame.TitleContainer or self.TitleContainer
+    local title= frame==PaperDollItemsFrame and CharacterFrame.TitleContainer or frame.TitleContainer
 
-    local btn= e.Cbtn(self, {size={20,20}, atlas= not Save.hide and e.Icon.icon or e.Icon.disabled})
-    if frame then
-        btn:SetPoint('RIGHT', frame, 'LEFT')
-    else
-        btn:SetPoint('LEFT', title)
-    end
+    local btn= e.Cbtn(frame, {size={20,20}, atlas= not Save.hide and e.Icon.icon or e.Icon.disabled})
+    btn:SetPoint('LEFT', title)
     btn:SetFrameLevel(title:GetFrameLevel()+1)
 
     btn:SetAlpha(0.5)
@@ -1890,10 +1889,36 @@ panel.Init_Show_Hide_Button= function(self)
         Init_Title()--头衔数量
         LvTo()--总装等
         set_PaperDollSidebarTab3_Text()--标签, 内容,提示
-        set_ChromieTime()--时空漫游战役, 提示
+        Init_ChromieTime()--时空漫游战役, 提示
         Init_TrackButton()--添加装备管理框
         e.call('PaperDollFrame_SetLevel')
         e.call('PaperDollFrame_UpdateStats')
+
+        local Slot = {
+            [1]	 = "CharacterHeadSlot",
+            [2]	 = "CharacterNeckSlot",
+            [3]	 = "CharacterShoulderSlot",
+            [4]	 = "CharacterShirtSlot",
+            [5]	 = "CharacterChestSlot",
+            [6]	 = "CharacterWaistSlot",
+            [7]	 = "CharacterLegsSlot",
+            [8]	 = "CharacterFeetSlot",
+            [9]	 = "CharacterWristSlot",
+            [10] = "CharacterHandsSlot",
+            [11] = "CharacterFinger0Slot",
+            [12] = "CharacterFinger0Slot",
+            [13] = "CharacterTrinket0Slot",
+            [14] = "CharacterTrinket1Slot",
+            [15] = "CharacterBackSlot",
+            [16] = "CharacterMainHandSlot",
+            [17] = "CharacterSecondaryHandSlot",
+        }
+        for _, slot in pairs(Slot) do
+            local btn= _G[slot]
+            if btn then
+                e.call('PaperDollItemSlotButton_Update', btn)
+            end
+        end
 
         if InspectFrame then
             if InspectFrame:IsShown() then
@@ -1908,18 +1933,19 @@ panel.Init_Show_Hide_Button= function(self)
                 InspectFrame.ShowHideButton:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
             end
         end
-        PaperDollItemsFrame.ShowHideButton:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)    end)
-    btn:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(0.5) end)
-    btn:SetScript('OnEnter', function(self2)
-        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+        PaperDollItemsFrame.ShowHideButton:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
+    end)
+    btn:SetScript('OnLeave', function(self) GameTooltip_Hide() self:SetAlpha(0.5) end)
+    btn:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(not e.onlyChinese and SHOW..'/'..HIDE or '显示/隐藏', e.GetShowHide(not Save.hide))
+        e.tips:AddDoubleLine(e.GetShowHide(not Save.hide), e.Icon.left)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
-        self2:SetAlpha(1)
+        self:SetAlpha(1)
     end)
-    self.ShowHideButton= btn
+    frame.ShowHideButton= btn
 end
 
 
@@ -1943,10 +1969,11 @@ end
 --初始化
 --#####
 local function Init()
-    panel.Init_Show_Hide_Button(PaperDollItemsFrame)--初始，显示/隐藏，按钮
+    Init_Show_Hide_Button(PaperDollItemsFrame)--初始，显示/隐藏，按钮
+
     GetDurationTotale()--装备,总耐久度
     Init_Server_equipmentButton_Lable()--显示服务器名称，装备管理框
-    set_ChromieTime()--时空漫游战役, 提示
+    Init_ChromieTime()--时空漫游战役, 提示
 
     hooksecurefunc('PaperDollFrame_UpdateSidebarTabs', function()--头衔数量
         Init_Title()--总装等
@@ -2067,7 +2094,7 @@ local function Init()
     --更改,等级文本
     --############
     hooksecurefunc('PaperDollFrame_SetLevel', function()--PaperDollFrame.lua
-        set_ChromieTime()--时空漫游战役, 提示
+        Init_ChromieTime()--时空漫游战役, 提示
         if Save.hide then
             return
         end

@@ -68,7 +68,8 @@ local function getToy()--生成, 有效表格
 end
 
 local function setAtt()--设置属性
-    if UnitAffectingCombat('player') then
+    --if UnitAffectingCombat('player') then
+    if not button:CanChangeAttribute()  then
         panel:RegisterEvent('PLAYER_REGEN_ENABLED')
         return
     end

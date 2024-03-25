@@ -2280,6 +2280,8 @@ end)]]
             local size= Save.size['CharacterFrameCollapse']
             if size then
                 CharacterFrame:SetSize(size[1], size[2])
+            else
+                CharacterFrame:SetSize(PANEL_DEFAULT_WIDTH, 424)
             end
             CharacterFrame.ResizeButton.minWidth= 270
             CharacterFrame.ResizeButton.minHeight= 115
@@ -2297,6 +2299,7 @@ end)]]
         end)
         set_Move_Frame(ReputationFrame, {frame=CharacterFrame})
         set_Move_Frame(TokenFrame, {frame=CharacterFrame})
+        
     end, sizeUpdateFunc=function()
         if PaperDollFrame.EquipmentManagerPane:IsVisible() then
             e.call('PaperDollEquipmentManagerPane_Update')

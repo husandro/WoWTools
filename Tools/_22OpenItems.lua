@@ -168,7 +168,8 @@ end
 
 
 local function setAtt(bag, slot, icon, itemID, spellID)--设置属性
-    if UnitAffectingCombat('player') or not UnitIsConnected('player') or UnitInVehicle('player') then
+    --if UnitAffectingCombat('player') or not UnitIsConnected('player') or UnitInVehicle('player') then
+    if not button:CanChangeAttribute()  then
         Combat= true
         return
     end
