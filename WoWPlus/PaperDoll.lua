@@ -1217,19 +1217,21 @@ end
 
 --装备管理, 总开关
 function Init_TrackButton_ShowHide_Button()
-    if Save.hide then
+    if Save.hide or not PAPERDOLL_SIDEBARS[3].IsActive() then
         if panel.equipmentButton then
             panel.equipmentButton:SetShown(false)
         end
     end
     if not panel.equipmentButton then
-        panel.equipmentButton = e.Cbtn(PaperDollItemsFrame, {size={18,18}, atlas= Save.equipment and 'auctionhouse-icon-favorite' or e.Icon.disabled})--显示/隐藏装备管理框选项
-        panel.equipmentButton:SetPoint('TOPRIGHT',-2,-25)
+        panel.equipmentButton = e.Cbtn(PaperDollItemsFrame, {size={20,20}, atlas= Save.equipment and 'auctionhouse-icon-favorite' or e.Icon.disabled})--显示/隐藏装备管理框选项
+        panel.equipmentButton:SetPoint('RIGHT', CharacterFrameCloseButton, 'LEFT')
+        panel.equipmentButton:SetFrameStrata(CharacterFrameCloseButton:GetFrameStrata())
+        panel.equipmentButton:SetFrameLevel(CharacterFrameCloseButton:GetFrameLevel()+1)
         panel.equipmentButton:SetAlpha(0.3)
-        panel.equipmentButton:SetScript("OnClick", function(self2, d)
+        panel.equipmentButton:SetScript("OnClick", function(self, d)
             if d=='LeftButton' and not IsModifierKeyDown() then
                 Save.equipment= not Save.equipment and true or nil
-                self2:SetNormalAtlas(Save.equipment and 'auctionhouse-icon-favorite' or e.Icon.disabled)
+                self:SetNormalAtlas(Save.equipment and 'auctionhouse-icon-favorite' or e.Icon.disabled)
                 Init_TrackButton()--添加装备管理框
                 print(id, e.cn(addName), e.GetShowHide(Save.equipment))
             elseif d=='RightButton' and IsControlKeyDown() then
@@ -1241,26 +1243,26 @@ function Init_TrackButton_ShowHide_Button()
                 print(id, e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
             end
         end)
-        panel.equipmentButton:SetScript("OnEnter", function (self2)
-            e.tips:SetOwner(self2, "ANCHOR_TOPLEFT")
+        panel.equipmentButton:SetScript("OnEnter", function (self)
+            e.tips:SetOwner(self, "ANCHOR_TOPLEFT")
             e.tips:ClearLines()
             e.tips:AddDoubleLine(e.onlyChinese and '装备管理' or EQUIPMENT_MANAGER, e.Icon.left..e.GetShowHide(Save.equipment))
-            local col= not (self2.btn and Save.Equipment) and '|cff606060' or ''
+            local col= not (self.btn and Save.Equipment) and '|cff606060' or ''
             e.tips:AddDoubleLine(col..(e.onlyChinese and '重置位置' or RESET_POSITION), col..'Ctrl+'..e.Icon.right)
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(id, e.cn(addName))
             e.tips:Show()
-            self2:SetAlpha(1)
-            if self2.btn and self2.btn:IsShown() then
-                self2.btn:SetButtonState('PUSHED')
+            self:SetAlpha(1)
+            if TrackButton then
+                TrackButton:SetButtonState('PUSHED')
             end
         end)
-        panel.equipmentButton:SetScript("OnLeave",function(self2)
-            e.tips:Hide()
-            if self2.btn then
-                self2.btn:SetButtonState("NORMAL")
+        panel.equipmentButton:SetScript("OnLeave",function(self)
+            GameTooltip_Hide()
+            if TrackButton then
+                TrackButton:SetButtonState("NORMAL")
             end
-            self2:SetAlpha(0.3)
+            self:SetAlpha(0.3)
         end)
     end
     panel.equipmentButton:SetShown(true)

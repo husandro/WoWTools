@@ -123,7 +123,7 @@ e.Icon={
     map2='|A:poi-islands-table:0:0|a',
     wow=136235,
     wow2= '|T136235:0|t',--'|A:Icon-WoW:0:0|a',--136235  BNet_GetClientEmbeddedTexture(-2, 32, 32)
-    net2= '|A:gmchat-icon-blizz:0:0|a',-- BNet_GetClientEmbeddedTexture(-2, 32, 32),
+    net2= '|A:questlog-questtypeicon-account:0:0|a',-- '|A:gmchat-icon-blizz:0:0|a',-- BNet_GetClientEmbeddedTexture(-2, 32, 32), questlog-questtypeicon-account
     horde= 'charcreatetest-logo-horde',
     alliance='charcreatetest-logo-alliance',
     horde2='|A:charcreatetest-logo-horde:0:0|a',
@@ -182,7 +182,6 @@ C_Texture.GetTitleIconTexture('BSAp', Enum.TitleIconVersion.Small, function(succ
         e.Icon.net2= '|T'..texture..':0|t'
     end
 end)
-
 function e.LoadDate(tab)--e.LoadDate({id=, type=''})--加载 item quest spell, uiMapID
     if not tab.id then
         return
