@@ -2053,7 +2053,6 @@ local function Init_Status_Menu()
                 showFunc= tab.showFunc,
             })
         end
-        e.call('PaperDollFrame_UpdateStats')
     end
 
     function StatusPlusButton.Menu:remove_stat(tab)--移除        
@@ -2065,7 +2064,6 @@ local function Init_Status_Menu()
                 if info.stat==stat then
                     table.remove(PAPERDOLL_STATCATEGORIES[index].stats, i)
                     print(id, addName, format('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '移除' or REMOVE), stat, name)
-                    e.call('PaperDollFrame_UpdateStats')
                     return
                 end
             end
@@ -2105,12 +2103,14 @@ local function Init_Status_Menu()
                             for i, tab in pairs(PAPERDOLL_STATCATEGORIES[arg2].stats) do
                                 if tab.stat== arg1 then
                                     PAPERDOLL_STATCATEGORIES[arg2].stats[i].hideAt= not PAPERDOLL_STATCATEGORIES[arg2].stats[i].hideAt and 0 or nil
+                                    
+        e.call('PaperDollFrame_UpdateStats')
                                     Save.PAPERDOLL_STATCATEGORIES= PAPERDOLL_STATCATEGORIES
                                     return
                                 end
                             end
                         end
-                            print(id, e.cn(addName), format('|cnRED_FONT_COLOR:%s|r %s', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE, arg1))
+                        print(id, e.cn(addName), format('|cnRED_FONT_COLOR:%s|r %s', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE, arg1))
                     end
                 }
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -2129,7 +2129,23 @@ local function Init_Status_Menu()
                     checked= tank,
                     arg1=stat,
                     arg2=index,
-                    func= function()
+                    func= function(_, arg1, arg2)
+                        if PAPERDOLL_STATCATEGORIES[arg2] and PAPERDOLL_STATCATEGORIES[arg2].stats then
+                            for i, tab in pairs(PAPERDOLL_STATCATEGORIES[arg2].stats) do
+                                if tab.stat== arg1 then
+                                    if PAPERDOLL_STATCATEGORIES[arg2].stats[i].roles then
+                                        PAPERDOLL_STATCATEGORIES[arg2].stats[i].roles=nil
+                                    else
+                                        PAPERDOLL_STATCATEGORIES[arg2].stats[i].roles={Enum.LFGRole.Tank}
+                                    end
+                                    
+        e.call('PaperDollFrame_UpdateStats')
+                                    Save.PAPERDOLL_STATCATEGORIES= PAPERDOLL_STATCATEGORIES
+                                    return
+                                end
+                            end
+                        end
+                        print(id, e.cn(addName), format('|cnRED_FONT_COLOR:%s|r %s', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE, arg1))
                     end
                 }
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -2138,7 +2154,22 @@ local function Init_Status_Menu()
                     checked= n,
                     arg1=stat,
                     arg2=index,
-                    func= function()
+                    func= function(_, arg1, arg2)
+                        if PAPERDOLL_STATCATEGORIES[arg2] and PAPERDOLL_STATCATEGORIES[arg2].stats then
+                            for i, tab in pairs(PAPERDOLL_STATCATEGORIES[arg2].stats) do
+                                if tab.stat== arg1 then
+                                    if PAPERDOLL_STATCATEGORIES[arg2].stats[i].roles then
+                                        PAPERDOLL_STATCATEGORIES[arg2].stats[i].roles=nil
+                                    else
+                                        PAPERDOLL_STATCATEGORIES[arg2].stats[i].roles={Enum.LFGRole.Healer}
+                                    end
+                                    
+        e.call('PaperDollFrame_UpdateStats')
+                                    Save.PAPERDOLL_STATCATEGORIES= PAPERDOLL_STATCATEGORIES
+                                    return
+                                end
+                            end
+                        end
                     end
                 }
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -2147,7 +2178,22 @@ local function Init_Status_Menu()
                     checked= dps,
                     arg1=stat,
                     arg2=index,
-                    func= function()
+                    func= function(_, arg1, arg2)
+                        if PAPERDOLL_STATCATEGORIES[arg2] and PAPERDOLL_STATCATEGORIES[arg2].stats then
+                            for i, tab in pairs(PAPERDOLL_STATCATEGORIES[arg2].stats) do
+                                if tab.stat== arg1 then
+                                    if PAPERDOLL_STATCATEGORIES[arg2].stats[i].roles then
+                                        PAPERDOLL_STATCATEGORIES[arg2].stats[i].roles=nil
+                                    else
+                                        PAPERDOLL_STATCATEGORIES[arg2].stats[i].roles={Enum.LFGRole.Damage}
+                                    end
+                                    
+        e.call('PaperDollFrame_UpdateStats')
+                                    Save.PAPERDOLL_STATCATEGORIES= PAPERDOLL_STATCATEGORIES
+                                    return
+                                end
+                            end
+                        end
                     end
                 }
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -2242,8 +2288,9 @@ local function Init_Status_Menu()
                             self:add_stat(arg1)
                         else
                             self:remove_stat(arg1)
-
                         end
+                        e.call('PaperDollFrame_UpdateStats')
+                        e.LibDD:CloseDropDownMenus(2)
                         Save.PAPERDOLL_STATCATEGORIES= PAPERDOLL_STATCATEGORIES
                     end
                 }
@@ -2267,6 +2314,7 @@ local function Init_Status_Menu()
                         }
                     }
                 }
+                e.LibDD:CloseDropDownMenus(1)
                 e.call('PaperDollFrame_UpdateStats')
                 Save.PAPERDOLL_STATCATEGORIES= PAPERDOLL_STATCATEGORIES
                 print(id, addName, format('|cnGREEN_FONT_COLOR:%s|r', e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT), e.onlyChinese and '完成' or DONE)
