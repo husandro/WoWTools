@@ -2103,7 +2103,7 @@ local function Init_Status_Menu()
                             for i, tab in pairs(PAPERDOLL_STATCATEGORIES[arg2].stats) do
                                 if tab.stat== arg1 then
                                     PAPERDOLL_STATCATEGORIES[arg2].stats[i].hideAt= not PAPERDOLL_STATCATEGORIES[arg2].stats[i].hideAt and 0 or nil
-                                    
+
         e.call('PaperDollFrame_UpdateStats')
                                     Save.PAPERDOLL_STATCATEGORIES= PAPERDOLL_STATCATEGORIES
                                     return
@@ -2125,7 +2125,7 @@ local function Init_Status_Menu()
                             for i, tab in pairs(PAPERDOLL_STATCATEGORIES[arg2].stats) do
                                 if tab.stat== arg1 then
                                     PAPERDOLL_STATCATEGORIES[arg2].stats[i].hideAt= not PAPERDOLL_STATCATEGORIES[arg2].stats[i].hideAt and -1 or nil
-                                    
+
         e.call('PaperDollFrame_UpdateStats')
                                     Save.PAPERDOLL_STATCATEGORIES= PAPERDOLL_STATCATEGORIES
                                     return
@@ -2163,7 +2163,7 @@ local function Init_Status_Menu()
                                     else
                                         PAPERDOLL_STATCATEGORIES[arg2].stats[i].roles={Enum.LFGRole.Tank}
                                     end
-                                    
+
         e.call('PaperDollFrame_UpdateStats')
                                     Save.PAPERDOLL_STATCATEGORIES= PAPERDOLL_STATCATEGORIES
                                     return
@@ -2188,7 +2188,7 @@ local function Init_Status_Menu()
                                     else
                                         PAPERDOLL_STATCATEGORIES[arg2].stats[i].roles={Enum.LFGRole.Healer}
                                     end
-                                    
+
         e.call('PaperDollFrame_UpdateStats')
                                     Save.PAPERDOLL_STATCATEGORIES= PAPERDOLL_STATCATEGORIES
                                     return
@@ -2212,7 +2212,7 @@ local function Init_Status_Menu()
                                     else
                                         PAPERDOLL_STATCATEGORIES[arg2].stats[i].roles={Enum.LFGRole.Damage}
                                     end
-                                    
+
         e.call('PaperDollFrame_UpdateStats')
                                     Save.PAPERDOLL_STATCATEGORIES= PAPERDOLL_STATCATEGORIES
                                     return
