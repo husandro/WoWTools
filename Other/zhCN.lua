@@ -17246,7 +17246,7 @@ local function Init()
     ["STAT_ATTACK_POWER"] = "攻击强度",
     ["STAT_ATTACK_SPEED"] = "攻击速度",
     ["STAT_ATTACK_SPEED_BASE_TOOLTIP"] = "攻击速度+%s%%",
-    ["STAT_AVERAGE_ITEM_LEVEL"] = "物品等级",
+    ["STAT_AVERAGE_ITEM_LEVEL"] = "物品等级物品等级",
     ["STAT_AVERAGE_ITEM_LEVEL_EQUIPPED"] = "（已装备%d）",
     ["STAT_AVERAGE_ITEM_LEVEL_TOOLTIP"] = "你的装备的平均物品等级。",
     ["STAT_AVERAGE_PVP_ITEM_LEVEL"] = "PvP物品等级：%d",
