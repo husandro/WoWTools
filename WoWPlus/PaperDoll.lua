@@ -880,6 +880,16 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
 --#######
 --装备管理
 --#######
@@ -891,7 +901,6 @@ local function Init_TrackButton()--添加装备管理框
         end
         return
     end
-
 
     TrackButton=e.Cbtn(UIParent, {icon='hide'})--添加移动按钮
     TrackButton.buttons={}--添加装备管理按钮
@@ -1176,6 +1185,72 @@ local function Init_TrackButton()--添加装备管理框
         end
     end)
 end
+
+
+
+--装备管理, 总开关
+function Init_TrackButton_ShowHide_Button()
+    if Save.hide then
+        if panel.equipmentButton then
+            panel.equipmentButton:SetShown(false)
+        end
+    end
+    if not panel.equipmentButton then
+        panel.equipmentButton = e.Cbtn(PaperDollItemsFrame, {size={18,18}, atlas= Save.equipment and 'auctionhouse-icon-favorite' or e.Icon.disabled})--显示/隐藏装备管理框选项
+        panel.equipmentButton:SetPoint('TOPRIGHT',-2,-40)
+        panel.equipmentButton:SetAlpha(0.5)
+        panel.equipmentButton:SetScript("OnClick", function(self2, d)
+            if d=='LeftButton' and not IsModifierKeyDown() then
+                Save.equipment= not Save.equipment and true or nil
+                self2:SetNormalAtlas(Save.equipment and 'auctionhouse-icon-favorite' or e.Icon.disabled)
+                Init_TrackButton()--添加装备管理框
+                print(id, e.cn(addName), e.GetShowHide(Save.equipment))
+            elseif d=='RightButton' and IsControlKeyDown() then
+                Save.Equipment=nil
+                if TrackButton then
+                    TrackButton:ClearAllPoints()
+                    TrackButton:set_point()
+                end
+                print(id, e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
+            end
+        end)
+        panel.equipmentButton:SetScript("OnEnter", function (self2)
+            e.tips:SetOwner(self2, "ANCHOR_TOPLEFT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine(e.onlyChinese and '装备管理' or EQUIPMENT_MANAGER, e.Icon.left..e.GetShowHide(Save.equipment))
+            local col= not (self2.btn and Save.Equipment) and '|cff606060' or ''
+            e.tips:AddDoubleLine(col..(e.onlyChinese and '重置位置' or RESET_POSITION), col..'Ctrl+'..e.Icon.right)
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(id, e.cn(addName))
+            e.tips:Show()
+            self2:SetAlpha(1)
+            if self2.btn and self2.btn:IsShown() then
+                self2.btn:SetButtonState('PUSHED')
+            end
+        end)
+        panel.equipmentButton:SetScript("OnLeave",function(self2)
+            e.tips:Hide()
+            if self2.btn then
+                self2.btn:SetButtonState("NORMAL")
+            end
+            self2:SetAlpha(0.5)
+        end)
+    end
+    panel.equipmentButton:SetShown(true)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1465,16 +1540,20 @@ end
 
 
 
---########################
---显示服务器名称，装备管理框
---########################
+
+
+
+
+
+
+
+--#############
+--显示服务器名称
+--#############
 local function Init_Server_equipmentButton_Lable()
     if Save.hide then
         if  panel.serverText then
             panel.serverText:SetText('')
-        end
-        if panel.equipmentButton then
-            panel.equipmentButton:SetShown(false)
         end
         return
     end
@@ -1522,49 +1601,6 @@ local function Init_Server_equipmentButton_Lable()
     local server= e.Get_Region(e.Player.realm, nil, nil)
     local text= (#ser>1 and '|cnGREEN_FONT_COLOR:'..#ser..' ' or '')..e.Player.col..e.Player.realm..'|r'..(server and ' '..server.col or '')
     panel.serverText:SetText(text or '')
-
-    if not panel.equipmentButton then
-        panel.equipmentButton = e.Cbtn(PaperDollItemsFrame, {size={18,18}, atlas= Save.equipment and 'auctionhouse-icon-favorite' or e.Icon.disabled})--显示/隐藏装备管理框选项
-        panel.equipmentButton:SetPoint('TOPRIGHT',-2,-40)
-        panel.equipmentButton:SetAlpha(0.5)
-        panel.equipmentButton:SetScript("OnClick", function(self2, d)
-            if d=='LeftButton' and not IsModifierKeyDown() then
-                Save.equipment= not Save.equipment and true or nil
-                self2:SetNormalAtlas(Save.equipment and 'auctionhouse-icon-favorite' or e.Icon.disabled)
-                Init_TrackButton()--添加装备管理框
-                print(id, e.cn(addName), e.GetShowHide(Save.equipment))
-            elseif d=='RightButton' and IsControlKeyDown() then
-                Save.Equipment=nil
-                if TrackButton then
-                    TrackButton:ClearAllPoints()
-                    TrackButton:set_point()
-                end
-                print(id, e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
-            end
-        end)
-        panel.equipmentButton:SetScript("OnEnter", function (self2)
-            e.tips:SetOwner(self2, "ANCHOR_TOPLEFT")
-            e.tips:ClearLines()
-            e.tips:AddDoubleLine(e.onlyChinese and '装备管理' or EQUIPMENT_MANAGER, e.Icon.left..e.GetShowHide(Save.equipment))
-            local col= not (self2.btn and Save.Equipment) and '|cff606060' or ''
-            e.tips:AddDoubleLine(col..(e.onlyChinese and '重置位置' or RESET_POSITION), col..'Ctrl+'..e.Icon.right)
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(id, e.cn(addName))
-            e.tips:Show()
-            self2:SetAlpha(1)
-            if self2.btn and self2.btn:IsShown() then
-                self2.btn:SetButtonState('PUSHED')
-            end
-        end)
-        panel.equipmentButton:SetScript("OnLeave",function(self2)
-            e.tips:Hide()
-            if self2.btn then
-                self2.btn:SetButtonState("NORMAL")
-            end
-            self2:SetAlpha(0.5)
-        end)
-    end
-    panel.equipmentButton:SetShown(true)
 end
 
 
@@ -1885,12 +1921,18 @@ local function Init_Show_Hide_Button(frame)
         Save.hide= not Save.hide and true or nil
 
         GetDurationTotale()--装备,总耐久度
-        Init_Server_equipmentButton_Lable()--显示服务器名称，装备管理框
+        Init_Server_equipmentButton_Lable()--显示服务器名称
+        
         Init_Title()--头衔数量
         LvTo()--总装等
         set_PaperDollSidebarTab3_Text()--标签, 内容,提示
         Init_ChromieTime()--时空漫游战役, 提示
+
+        Init_TrackButton_ShowHide_Button()--装备管理, 总开关
         Init_TrackButton()--添加装备管理框
+        
+        
+
         e.call('PaperDollFrame_SetLevel')
         e.call('PaperDollFrame_UpdateStats')
 
@@ -1972,7 +2014,10 @@ local function Init()
     Init_Show_Hide_Button(PaperDollItemsFrame)--初始，显示/隐藏，按钮
 
     GetDurationTotale()--装备,总耐久度
+
     Init_Server_equipmentButton_Lable()--显示服务器名称，装备管理框
+   
+
     Init_ChromieTime()--时空漫游战役, 提示
 
     hooksecurefunc('PaperDollFrame_UpdateSidebarTabs', function()--头衔数量
@@ -2202,8 +2247,9 @@ local function Init()
 
 
     Init_Status_Label()--属性，增强
-    C_Timer.After(2, Init_TrackButton)--装备管理框
-    --set_HideShowEquipmentFrame_Texture()--设置，总开关，装备管理框
+
+    Init_TrackButton_ShowHide_Button()--装备管理, 总开关
+    C_Timer.After(2, Init_TrackButton)--装备管理框    
 end
 
 
