@@ -7,10 +7,11 @@ local Save={
     equipmentFrameScale=1.1,--装备管理, 缩放
     --hide=true,--隐藏CreateTexture
 
-    --notStatusPlus=true,--禁用，属性PLUS
+    --notStatusPlus=true,--禁用，属性 PLUS
     StatusPlus_OnEnter_show_menu=true,--移过图标时，显示菜单
 
-    itemLevelBit= 3,--物品等级，位数
+    --notStatusPlusFunc=true, --属性 PLUS Func
+    itemLevelBit= 1,--物品等级，位数
 
 }
 
@@ -1710,12 +1711,12 @@ end]]
 
 
 
-
-
+--属性 PLUS Func
 local function Init_Status_Func()
-    function PaperDollFrame_SetAttackSpeed(statFrame, unit)--原生，替换，出错
-        local meleeHaste = GetMeleeHaste();
-        local speed, offhandSpeed = UnitAttackSpeed(unit);
+    --功击速度，放在前前，原生出错
+    function PaperDollFrame_SetAttackSpeed(statFrame, unit)
+        local meleeHaste = GetMeleeHaste()
+        local speed, offhandSpeed = UnitAttackSpeed(unit)
         local displaySpeed
         speed= speed or 0
         if offhandSpeed  then
@@ -1726,95 +1727,18 @@ local function Init_Status_Func()
         PaperDollFrame_SetLabelAndText(statFrame, e.onlyChinese and '攻击速度' or WEAPON_SPEED, displaySpeed, false, speed)
         statFrame.tooltip = HIGHLIGHT_FONT_COLOR_CODE..format(PAPERDOLLFRAME_TOOLTIP_FORMAT, e.onlyChinese and '攻击速度' or ATTACK_SPEED).." "..displaySpeed..FONT_COLOR_CODE_CLOSE
         statFrame.tooltip2 = format(e.onlyChinese and '攻击速度+%s%%' or STAT_ATTACK_SPEED_BASE_TOOLTIP, BreakUpLargeNumbers(meleeHaste))
-        statFrame:Show();
+        statFrame:Show()
+        if statFrame.numLabel then
+            statFrame.numLabel:SetText('')
+        end
     end
 
-
-    function MovementSpeed_OnUpdate(statFrame)--原生，替换，增强
-        local unit = statFrame.unit;
-        local _, runSpeed, flightSpeed, swimSpeed = GetUnitSpeed(unit);
-        local isGliding, _, forwardSpeed = C_PlayerInfo.GetGlidingInfo()
-        if isGliding and forwardSpeed then
-            flightSpeed= forwardSpeed/BASE_MOVEMENT_SPEED*100
-        else
-            flightSpeed = flightSpeed/BASE_MOVEMENT_SPEED*100
-        end
-        runSpeed = runSpeed/BASE_MOVEMENT_SPEED*100
-        swimSpeed = swimSpeed/BASE_MOVEMENT_SPEED*100
-        if (unit == "pet") then
-            swimSpeed = runSpeed
-        end
-        local speed = runSpeed;
-        local swimming = IsSwimming(unit);
-        if (swimming) then
-            speed = swimSpeed;
-        elseif (IsFlying(unit)) then
-            speed = flightSpeed;
-        end
-        if (IsFalling(unit)) then
-            if (statFrame.wasSwimming) then
-                speed = swimSpeed;
-            end
-        else
-            statFrame.wasSwimming = swimming;
-        end
-        local valueText = format("%d%%", speed+0.5);
-        PaperDollFrame_SetLabelAndText(statFrame, e.onlyChinese and '移动' or (NPE_MOVE), valueText, false, speed);
-        statFrame.speed = speed;
-        statFrame.runSpeed = runSpeed;
-        statFrame.flightSpeed = flightSpeed;
-        statFrame.swimSpeed = swimSpeed;
-    end
-    function MovementSpeed_OnEnter(statFrame)
-        GameTooltip:SetOwner(statFrame, "ANCHOR_RIGHT");
-        GameTooltip:SetText(HIGHLIGHT_FONT_COLOR_CODE..format(PAPERDOLLFRAME_TOOLTIP_FORMAT, e.onlyChinese and '移动速度' or STAT_MOVEMENT_SPEED).." "..format("%d%%", statFrame.speed+0.5)..FONT_COLOR_CODE_CLOSE);
-        GameTooltip:AddLine(" ");
-        GameTooltip:AddLine(format(e.onlyChinese and '奔跑速度：%d%%' or STAT_MOVEMENT_GROUND_TOOLTIP, statFrame.runSpeed+0.5));
-        GameTooltip:AddLine(format(e.onlyChinese and '游泳速度：%d%%' or STAT_MOVEMENT_SWIM_TOOLTIP, statFrame.swimSpeed+0.5));
-        if (statFrame.unit ~= "pet") then
-            GameTooltip:AddLine(format(e.onlyChinese and '飞行速度：%d%%' or STAT_MOVEMENT_FLIGHT_TOOLTIP, statFrame.flightSpeed+0.5));
-            GameTooltip:AddLine(format('%s: %i%%', e.onlyChinese and '驭龙术' or LANDING_DRAGONRIDING_PANEL_TITLE, 100*100/BASE_MOVEMENT_SPEED))
-        end
-        GameTooltip:AddLine(" ");
-        GameTooltip:AddLine(format(e.onlyChinese and '提升移动速度。|n|n速度：%s [+%.2f%%]' or CR_SPEED_TOOLTIP, BreakUpLargeNumbers(GetCombatRating(CR_SPEED)), GetCombatRatingBonus(CR_SPEED)));
-        GameTooltip:Show();
-        statFrame.UpdateTooltip = MovementSpeed_OnEnter;
+    if Save.notStatusPlusFunc then
+        return
     end
 
 
 
-
-
-    --自定，数据
-    function StatusPlusButton:status_set_rating(frame, rating)
-        local num= GetCombatRating(rating)
-        if num == 0 then
-            frame.numLabel:SetText('')
-        else
-            local extraChance = GetCombatRatingBonus(rating) or 0
-            local extra=''
-            if extraChance>0 then
-                extra= format('|cnGREEN_FONT_COLOR:+%.2f%%|r', extraChance)
-            elseif extraChance<0 then
-                extra= format('|cnRED_FONT_COLOR:%.2f%%|r', extraChance)
-            end
-            frame.numLabel:SetFormattedText('%s%s', BreakUpLargeNumbers(num), extra)
-        end
-    end
-    function StatusPlusButton:create_status_label(frame, rating)
-        if not Save.hide and Save.itemLevelBit>0 and frame:IsShown() then
-            if not frame.numLabel then
-                frame.numLabel=e.Cstr(frame, {color={r=1,g=1,b=1}})
-                frame.numLabel:SetPoint('BOTTOMLEFT', frame.Label, 'BOTTOMRIGHT', 4, 0)
-            end
-            if rating then
-                self:status_set_rating(frame, rating)
-            end
-            return true
-        elseif frame.numLabel then
-            frame.numLabel:SetText("")
-        end
-    end
 
     hooksecurefunc('PaperDollFrame_SetItemLevel', function(statFrame)--物品等级，小数点
         if statFrame:IsShown() and not Save.hide and Save.itemLevelBit>0 then
@@ -1838,6 +1762,7 @@ local function Init_Status_Func()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddLine(format('%s Plus', e.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES))
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine((e.onlyChinese and '小数点 ' or 'bit ')..(Save.itemLevelBit==0 and '|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE)..'|r' or ('|cnGREEN_FONT_COLOR:'..Save.itemLevelBit)), '-1'..e.Icon.left)
         e.tips:AddDoubleLine('0 '..(e.onlyChinese and '禁用' or DISABLE), '+1'..e.Icon.right)
@@ -1866,6 +1791,117 @@ local function Init_Status_Func()
         self:SetAlpha(0.3)
     end)
 
+
+
+
+
+
+
+
+
+
+
+
+    --自定，数据
+    function StatusPlusButton:status_set_rating(frame, rating)
+        local num= GetCombatRating(rating)
+        if num == 0 then
+            frame.numLabel:SetText('')
+        else
+            local extraChance = GetCombatRatingBonus(rating) or 0
+            local extra=''
+            if extraChance>0 then
+                extra= format('|cnGREEN_FONT_COLOR:+%i%%|r', extraChance)
+            elseif extraChance<0 then
+                extra= format('|cnRED_FONT_COLOR:%i%%|r', extraChance)
+            end
+            frame.numLabel:SetFormattedText('%s%s', BreakUpLargeNumbers(num), extra)
+        end
+    end
+    function StatusPlusButton:create_status_label(frame, rating)
+        if not Save.hide and Save.itemLevelBit>0 and frame:IsShown() then
+            if not frame.numLabel then
+                frame.numLabel=e.Cstr(frame, {color={r=1,g=1,b=1}})
+                frame.numLabel:SetPoint('LEFT', frame.Label, 'RIGHT')
+            end
+            if rating then
+                self:status_set_rating(frame, rating)
+            end
+            return true
+        elseif frame.numLabel then
+            frame.numLabel:SetText("")
+        end
+    end
+
+-- General
+    hooksecurefunc('PaperDollFrame_SetHealth', function(frame)--生命
+        if frame.numLabel then
+            frame.numLabel:SetText('')
+        end
+    end)
+    hooksecurefunc('PaperDollFrame_SetPower', function(frame)
+        if frame.numLabel then
+            frame.numLabel:SetText('')
+        end
+    end)
+    hooksecurefunc('PaperDollFrame_SetAlternateMana', function(frame)
+        if frame.numLabel then
+            frame.numLabel:SetText('')
+        end
+    end)
+    function MovementSpeed_OnUpdate(statFrame)--原生，替换，增强 PaperDollFrame_SetMovementSpeed
+        local unit = statFrame.unit
+        local _, runSpeed, flightSpeed, swimSpeed = GetUnitSpeed(unit)
+        local isGliding, _, forwardSpeed = C_PlayerInfo.GetGlidingInfo()
+        if isGliding and forwardSpeed then
+            flightSpeed= forwardSpeed/BASE_MOVEMENT_SPEED*100
+        else
+            flightSpeed = flightSpeed/BASE_MOVEMENT_SPEED*100
+        end
+        runSpeed = runSpeed/BASE_MOVEMENT_SPEED*100
+        swimSpeed = swimSpeed/BASE_MOVEMENT_SPEED*100
+        if (unit == "pet") then
+            swimSpeed = runSpeed
+        end
+        local speed = runSpeed
+        local swimming = IsSwimming(unit)
+        if (swimming) then
+            speed = swimSpeed
+        elseif (IsFlying(unit)) then
+            speed = flightSpeed
+        end
+        if (IsFalling(unit)) then
+            if (statFrame.wasSwimming) then
+                speed = swimSpeed
+            end
+        else
+            statFrame.wasSwimming = swimming
+        end
+        local valueText = format("%i%%", speed)
+        PaperDollFrame_SetLabelAndText(statFrame, e.onlyChinese and '移动' or (NPE_MOVE), valueText, false, speed)
+        statFrame.speed = speed
+        statFrame.runSpeed = runSpeed
+        statFrame.flightSpeed = flightSpeed
+        statFrame.swimSpeed = swimSpeed
+        StatusPlusButton:create_status_label(statFrame, CR_SPEED)
+    end
+    function MovementSpeed_OnEnter(statFrame)
+        GameTooltip:SetOwner(statFrame, "ANCHOR_RIGHT")
+        GameTooltip:SetText(HIGHLIGHT_FONT_COLOR_CODE..format(PAPERDOLLFRAME_TOOLTIP_FORMAT, e.onlyChinese and '移动速度' or STAT_MOVEMENT_SPEED).." "..format("%d%%", statFrame.speed+0.5)..FONT_COLOR_CODE_CLOSE)
+        GameTooltip:AddLine(" ")
+        GameTooltip:AddLine(format(e.onlyChinese and '奔跑速度：%d%%' or STAT_MOVEMENT_GROUND_TOOLTIP, statFrame.runSpeed+0.5))
+        GameTooltip:AddLine(format(e.onlyChinese and '游泳速度：%d%%' or STAT_MOVEMENT_SWIM_TOOLTIP, statFrame.swimSpeed+0.5))
+        if (statFrame.unit ~= "pet") then
+            GameTooltip:AddLine(format(e.onlyChinese and '飞行速度：%d%%' or STAT_MOVEMENT_FLIGHT_TOOLTIP, statFrame.flightSpeed+0.5))
+            GameTooltip:AddLine(format('%s: %i%%', e.onlyChinese and '驭龙术' or LANDING_DRAGONRIDING_PANEL_TITLE, 100*100/BASE_MOVEMENT_SPEED))
+        end
+        GameTooltip:AddLine(" ")
+        GameTooltip:AddLine(format(e.onlyChinese and '提升移动速度。|n|n速度：%s [+%.2f%%]' or CR_SPEED_TOOLTIP, BreakUpLargeNumbers(GetCombatRating(CR_SPEED)), GetCombatRatingBonus(CR_SPEED)))
+        GameTooltip:Show()
+        statFrame.UpdateTooltip = MovementSpeed_OnEnter
+    end
+
+-- Base stats
     hooksecurefunc('PaperDollFrame_SetStat', function(frame, unit, statIndex)--主属性
         if StatusPlusButton:create_status_label(frame) then
             local tooltipText
@@ -1882,6 +1918,7 @@ local function Init_Status_Func()
         end
     end)
 
+--Enhancements
     hooksecurefunc('PaperDollFrame_SetCritChance', function(frame)--爆击
         if StatusPlusButton:create_status_label(frame) then
             local rating, spellCrit, rangedCrit, meleeCrit
@@ -1912,38 +1949,83 @@ local function Init_Status_Func()
     end)
     hooksecurefunc('PaperDollFrame_SetVersatility', function(frame)--全能
         if StatusPlusButton:create_status_label(frame) then
-            local versatility = GetCombatRating(CR_VERSATILITY_DAMAGE_DONE)
-            --local versatilityDamageBonus = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_DONE)
-            local versatilityDamageTakenReduction = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_TAKEN) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_TAKEN)
-            frame.numLabel:SetFormattedText('%s/|cffc69b6d%.2f%%|r', BreakUpLargeNumbers(versatility),  versatilityDamageTakenReduction)
-        end
-
-    end)
-
-    hooksecurefunc('PaperDollFrame_SetLifesteal', function(frame)--吸
-        StatusPlusButton:create_status_label(frame, CR_LIFESTEAL)
-    end)
-    hooksecurefunc('PaperDollFrame_SetSpeed', function(frame)--速度
-        StatusPlusButton:create_status_label(frame, CR_SPEED)
-    end)
-
-    hooksecurefunc('PaperDollFrame_SetArmor', function(frame, unit)--护甲
-        if StatusPlusButton:create_status_label(frame) then
-            local effectiveArmor = select(2, UnitArmor(unit))
             local text
-            local armorReduction = PaperDollFrame_GetArmorReduction(effectiveArmor, UnitEffectiveLevel(unit)) or 0
-            if armorReduction>0 then
-                text = format('%0.2f%%', armorReduction)
-                local armorReductionAgainstTarget = PaperDollFrame_GetArmorReductionAgainstTarget(effectiveArmor);
-                if armorReductionAgainstTarget and armorReduction~=armorReductionAgainstTarget then
-                    text = format('%s/%0.2f%%', text, armorReductionAgainstTarget)
+            local versatility = GetCombatRating(CR_VERSATILITY_DAMAGE_DONE) or 0
+            if versatility>1 then
+                text= BreakUpLargeNumbers(versatility)
+                local versatilityDamageTakenReduction= GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_TAKEN) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_TAKEN)
+                if versatilityDamageTakenReduction>1 then
+                    text= format('%s/|cffc69b6d%i%%|r', text, versatilityDamageTakenReduction)
                 end
             end
             frame.numLabel:SetText(text or '')
         end
     end)
+    hooksecurefunc('PaperDollFrame_SetLifesteal', function(frame)--吸
+        StatusPlusButton:create_status_label(frame, CR_LIFESTEAL)
+    end)
     hooksecurefunc('PaperDollFrame_SetAvoidance', function(frame)--闪避
         StatusPlusButton:create_status_label(frame, CR_AVOIDANCE)
+    end)
+    hooksecurefunc('PaperDollFrame_SetSpeed', function(frame)--速度
+        StatusPlusButton:create_status_label(frame, CR_SPEED)
+    end)
+
+-- Attack
+    hooksecurefunc('PaperDollFrame_SetDamage', function(frame)--伤害
+        if StatusPlusButton:create_status_label(frame) then
+            frame.numLabel:SetText(frame.damage and frame.damage:match('(|c.-|r)') or '')
+        end
+    end)
+    hooksecurefunc('PaperDollFrame_SetAttackPower', function(frame)--功击强度
+        if frame.numLabel then
+            frame.numLabel:SetText('')
+        end
+    end)
+
+    hooksecurefunc('PaperDollFrame_SetEnergyRegen', function(frame)
+        if frame.numLabel then
+            frame.numLabel:SetText('')
+        end
+    end)
+    hooksecurefunc('PaperDollFrame_SetRuneRegen', function(frame)
+        if frame.numLabel then
+            frame.numLabel:SetText('')
+        end
+    end)
+    hooksecurefunc('PaperDollFrame_SetFocusRegen', function(frame)
+        if frame.numLabel then
+            frame.numLabel:SetText('')
+        end
+    end)
+
+-- Spell
+    hooksecurefunc('PaperDollFrame_SetSpellPower', function(frame)
+        if frame.numLabel then
+            frame.numLabel:SetText('')
+        end
+    end)
+    hooksecurefunc('PaperDollFrame_SetManaRegen', function(frame)
+        if frame.numLabel then
+            frame.numLabel:SetText('')
+        end
+    end)
+
+-- Defense
+    hooksecurefunc('PaperDollFrame_SetArmor', function(frame, unit)--护甲
+        if StatusPlusButton:create_status_label(frame) then
+            local effectiveArmor = select(2, UnitArmor(unit))
+            local text
+            local armorReduction = PaperDollFrame_GetArmorReduction(effectiveArmor, UnitEffectiveLevel(unit)) or 0
+            if armorReduction>1 then
+                text = format('%i%%', armorReduction)
+                local armorReductionAgainstTarget = PaperDollFrame_GetArmorReductionAgainstTarget(effectiveArmor)
+                if armorReductionAgainstTarget and armorReduction~=armorReductionAgainstTarget and armorReductionAgainstTarget>1 then
+                    text = format('%s/%i%%', text, armorReductionAgainstTarget)
+                end
+            end
+            frame.numLabel:SetText(text or '')
+        end
     end)
     hooksecurefunc('PaperDollFrame_SetDodge', function(frame)--躲闪
         StatusPlusButton:create_status_label(frame, CR_DODGE)
@@ -1953,14 +2035,14 @@ local function Init_Status_Func()
     end)
     hooksecurefunc('PaperDollFrame_SetBlock', function(frame, unit)--格挡
         if StatusPlusButton:create_status_label(frame) then--, CR_BLOCK)
-            local shieldBlockArmor = GetShieldBlock();
-            local blockArmorReduction = PaperDollFrame_GetArmorReduction(shieldBlockArmor, UnitEffectiveLevel(unit));
-            local blockArmorReductionAgainstTarget = PaperDollFrame_GetArmorReductionAgainstTarget(shieldBlockArmor);
             local text
-            if blockArmorReduction>0 then
-                text= format('%0.2f%%', blockArmorReduction);
-                if blockArmorReductionAgainstTarget and blockArmorReduction~= blockArmorReductionAgainstTarget then
-                    text=format('%s/%0.2f%%', text, blockArmorReductionAgainstTarget);
+            local shieldBlockArmor = GetShieldBlock()
+            local blockArmorReduction = PaperDollFrame_GetArmorReduction(shieldBlockArmor, UnitEffectiveLevel(unit)) or 0
+            if blockArmorReduction>1 then
+                local blockArmorReductionAgainstTarget = PaperDollFrame_GetArmorReductionAgainstTarget(shieldBlockArmor)
+                text= format('%i%%', blockArmorReduction)
+                if blockArmorReductionAgainstTarget and blockArmorReduction~= blockArmorReductionAgainstTarget and blockArmorReductionAgainstTarget>1 then
+                    text=format('%s/%i%%', text, blockArmorReductionAgainstTarget)
                 end
             end
             frame.numLabel:SetText(text or '')
@@ -1976,7 +2058,6 @@ local function Init_Status_Func()
         end
     end)
 end
-
 
 
 
@@ -2099,16 +2180,29 @@ local function Init_Status_Menu()
         if primary then
             if primary==LE_UNIT_STAT_STRENGTH then
                 return format('|cffc69b6d%s|r', e.onlyChinese and '力量' or SPEC_FRAME_PRIMARY_STAT_STRENGTH)
-            elseif primary==LE_UNIT_STAT_AGILITY then            
+            elseif primary==LE_UNIT_STAT_AGILITY then
                 return format('|cff16c663%s|r', e.onlyChinese and '敏捷' or SPEC_FRAME_PRIMARY_STAT_AGILITY)
-            elseif primary==LE_UNIT_STAT_INTELLECT then            
+            elseif primary==LE_UNIT_STAT_INTELLECT then
                 return format('|cff00ccff%s|r', e.onlyChinese and '智力' or SPEC_FRAME_PRIMARY_STAT_INTELLECT)
             end
         end
     end
     e.LibDD:UIDropDownMenu_Initialize(StatusPlusButton.Menu, function(self, level, menuList)
         local info
-        if menuList=='ENABLE_DISABLE' then
+        if menuList=='STATUS_Func_itemLevelBit' then
+            for i=0, 4 do
+                info={
+                    text= format('%s %d', e.onlyChinese and '小数点' or 'bit', i),
+                    checked= Save.itemLevelBit==i,
+                    arg1=i,
+                    func= function(_, arg1)
+                        Save.itemLevelBit= arg1
+                        e.call('PaperDollFrame_UpdateStats')
+                    end
+                }
+                e.LibDD:UIDropDownMenu_AddButton(info, level)
+            end
+        elseif menuList=='ENABLE_DISABLE' then
             info= {
                 text=e.onlyChinese and '全部清除' or CLEAR_ALL,
                 notCheckable=true,
@@ -2148,6 +2242,20 @@ local function Init_Status_Menu()
                 end
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
+            info={
+                text= format('%s Plus|A:communities-icon-addchannelplus:0:0|a', e.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES),
+                checked= not Save.notStatusPlusFunc,
+                keepShownOnClick=true,
+                tooltipOnButton=true,
+                menuList='STATUS_Func_itemLevelBit',
+                hasArrow=true,
+                func= function()
+                    Save.notStatusPlusFunc= not Save.notStatusPlusFunc and true or nil
+                    print(id, e.cn(addName), e.GetEnabeleDisable(not Save.notStatusPlusFunc), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                end
+            }
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
+
 
         elseif menuList then
             local stat, index, name= menuList:match('(.+)(%d)(.+)')
@@ -2192,7 +2300,7 @@ local function Init_Status_Menu()
                     info={
                         text= i== Enum.LFGRole.Tank and format('%s%s', e.Icon.TANK, e.onlyChinese and '坦克' or TANK)
                             or i==Enum.LFGRole.Healer and format('%s%s', e.Icon.HEALER, e.onlyChinese and '治疗' or HEALER)
-                            or i==Enum.LFGRole.Damage and format('%s%s', e.Icon.TANK, e.onlyChinese and '伤害' or DAMAGER),
+                            or i==Enum.LFGRole.Damage and format('%s%s', e.Icon.DAMAGER, e.onlyChinese and '伤害' or DAMAGER),
                         keepShownOnClick=true,
                         arg1={stat=stat, index=index, value=i},
                         func= function(_, arg1)
@@ -2254,7 +2362,7 @@ local function Init_Status_Menu()
                                         tab.primary=nil
                                     end
                                     self:save()
-                                    print(id, addName, format('|cnGREEN_FONT_COLOR:%s|r', stats.stat) , format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, self:get_primary_text(tab.primary) or format('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '无' or NONE)))
+                                    print(id, e.cn(addName), format('|cnGREEN_FONT_COLOR:%s|r', stats.stat) , format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, self:get_primary_text(tab.primary) or format('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '无' or NONE)))
                                     return
                                 end
                             end
@@ -2265,6 +2373,13 @@ local function Init_Status_Menu()
                 end
 
                 e.LibDD:UIDropDownMenu_AddSeparator(level)
+                if stats.showFunc then
+                    e.LibDD:UIDropDownMenu_AddButton({
+                        text='|cnGREEN_FONT_COLOR:showFunc|r',
+                        checked=true,
+                        isTitle=true,
+                    }, level)
+                end
                 info={
                     text=name..' '..stat..' '..index,
                     notCheckable=true,
@@ -2273,7 +2388,7 @@ local function Init_Status_Menu()
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
             else
                 info={
-                    text=format('|cnRED_FONT_COLOR:%s|r %s|n%s', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE, stat), name,
+                    text=format('|cnRED_FONT_COLOR:%s|r %s %s %s', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE, name, stat, index),
                     notCheckable=true,
                     isTitle=true,
                 }
@@ -2291,6 +2406,7 @@ local function Init_Status_Menu()
             {stat='STRENGTH', index=1, name=e.onlyChinese and '力量' or SPEC_FRAME_PRIMARY_STAT_STRENGTH, primary=LE_UNIT_STAT_STRENGTH},--AttributesCategory
             {stat='AGILITY', index=1, name=e.onlyChinese and '敏捷' or SPEC_FRAME_PRIMARY_STAT_AGILITY, rimary=LE_UNIT_STAT_AGILITY},
             {stat='INTELLECT', index=1, name=e.onlyChinese and '智力' or SPEC_FRAME_PRIMARY_STAT_INTELLECT, primary=LE_UNIT_STAT_INTELLECT},
+            {stat='-'},
             {stat='STAMINA', index=1, name= e.onlyChinese and '耐力' or STA_LCD},
             {stat='ARMOR', index=1},
             {stat='STAGGER', index=1},
@@ -2334,7 +2450,7 @@ local function Init_Status_Menu()
                 local name= tab.name or e.cn(_G[stat] or _G['STAT_'..stat]) or stat
                 tab.name= tab.name or name
                 local stats= self:find_stats(stat, index, false)
-                local role, autoHide ='', ''                
+                local role, autoHide ='', ''
                 if stats then
                     local tank, n, dps= self:find_roles(stats.roles)--职责
                     role= format('%s%s%s', tank and e.Icon.TANK or '', n and e.Icon.HEALER or '', dps and e.Icon.DAMAGER or '')
@@ -2344,7 +2460,7 @@ local function Init_Status_Menu()
                 info={
                     text=name..autoHide..role..primary,
                     tooltipOnButton=true,
-                    tooltipTitle=tab.stat,
+                    tooltipTitle=format('%s |cnGREEN_FONT_COLOR:%s|r', tab.stat, index),
                     keepShownOnClick=true,
                     checked= stats and true or false,
                     menuList=stat..index..name,
@@ -2369,7 +2485,7 @@ local function Init_Status_Menu()
         e.LibDD:UIDropDownMenu_AddSeparator(level)
 
         info= {
-            text=e.GetEnabeleDisable(true),
+            text=e.GetEnabeleDisable(true)..(Save.notStatusPlusFunc and '' or '|A:communities-icon-addchannelplus:0:0|a'),
             checked= not Save.notStatusPlus,
             hasArrow=true,
             menuList='ENABLE_DISABLE',
@@ -2422,7 +2538,7 @@ local function Init_Status_Plus()
     function StatusPlusButton:set_enabel_disable()
         Save.notStatusPlus= not Save.notStatusPlus and true or nil
         self:set_texture()
-        print(e.cn(addName), e.GetEnabeleDisable(not Save.notStatusPlus), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(id, e.cn(addName), e.GetEnabeleDisable(not Save.notStatusPlus), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end
     function StatusPlusButton:show_menu()
         e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 60, 0)--主菜单
@@ -2523,6 +2639,8 @@ local function Init_Show_Hide_Button(frame)
 
         Init_TrackButton_ShowHide_Button()--装备管理, 总开关
         Init_TrackButton()--添加装备管理框
+
+        Init_Status_Plus()
 
         e.call('PaperDollFrame_SetLevel')
         e.call('PaperDollFrame_UpdateStats')
@@ -2941,7 +3059,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1 == id then
             Save= WoWToolsSave[addName] or Save
-            Save.itemLevelBit= Save.itemLevelBit or 3
+            Save.itemLevelBit= Save.itemLevelBit or 1
 
             --添加控制面板
             e.AddPanel_Header(nil, 'WoW')
@@ -2951,7 +3069,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 value= not Save.disabled,
                 func= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end,
             })
 
