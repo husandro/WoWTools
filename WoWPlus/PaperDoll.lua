@@ -1762,7 +1762,7 @@ local function Init_Status_Func()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, e.cn(addName))
-        e.tips:AddLine(format('%s Plus', e.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES))
+        e.tips:AddLine(format('|A:communities-icon-addchannelplus:0:0|a%s Plus', e.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES))
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine((e.onlyChinese and '小数点 ' or 'bit ')..(Save.itemLevelBit==0 and '|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE)..'|r' or ('|cnGREEN_FONT_COLOR:'..Save.itemLevelBit)), '-1'..e.Icon.left)
         e.tips:AddDoubleLine('0 '..(e.onlyChinese and '禁用' or DISABLE), '+1'..e.Icon.right)
@@ -2485,7 +2485,7 @@ local function Init_Status_Menu()
         e.LibDD:UIDropDownMenu_AddSeparator(level)
 
         info= {
-            text=e.GetEnabeleDisable(true)..(Save.notStatusPlusFunc and '' or '|A:communities-icon-addchannelplus:0:0|a'),
+            text=e.GetEnabeleDisable(true)..(Save.StatusPlus_OnEnter_show_menu and '|A:newplayertutorial-drag-cursor:0:0|a' or '')..(Save.notStatusPlusFunc and '' or '|A:communities-icon-addchannelplus:0:0|a'),
             checked= not Save.notStatusPlus,
             hasArrow=true,
             menuList='ENABLE_DISABLE',
