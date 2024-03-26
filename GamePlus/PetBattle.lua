@@ -732,7 +732,7 @@ local function Init_TrackButton()
         end
         self:set_tooltips()
     end)
-   
+
     function TrackButton:set_scale()
         self.setFrame:SetScale(Save.setFrameScale or 1)
     end
@@ -752,8 +752,9 @@ local function Init_TrackButton()
     TrackButton:SetScript('OnLeave', GameTooltip_Hide)
     function TrackButton:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()        
-        e.tips:AddDoubleLine(id, e.cn(addName))        
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, e.Icon.left)
         if not PetJournal or not PetJournal:IsVisible() then
             e.tips:AddDoubleLine(e.onlyChinese and '宠物手册' or PET_JOURNAL, e.Icon.right)
@@ -763,8 +764,8 @@ local function Init_TrackButton()
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.setFrameScale or 1), e.Icon.mid)
         if not C_AddOns.IsAddOnLoaded('Rematch') then
             e.tips:AddDoubleLine(e.Icon.left..(e.onlyChinese and '图标' or EMBLEM_SYMBOL), e.onlyChinese and '过滤器: 宠物类型' or FILTER..": "..PET_FAMILIES)
-        end        
-        e.tips:Show()  
+        end
+        e.tips:Show()
     end
     TrackButton:SetScript('OnEnter', TrackButton.set_tooltips)
 
@@ -823,7 +824,7 @@ local function Init_TrackButton()
     TrackButton.setFrame.Buttons={}
     for i=1, C_PetJournal.GetNumPetTypes() do
         local btn= e.Cbtn(TrackButton.setFrame, {size={32,32}, texture='Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[i], pushe=true})
-        
+
         btn:SetPoint('LEFT', i==1 and TrackButton.setFrame or TrackButton.setFrame.Buttons[i-1], 'RIGHT')
         btn.abilityID= PetTypeAbility[i]
         btn.typeID=i
