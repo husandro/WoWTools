@@ -2095,14 +2095,14 @@ local function Init_Status_Menu()
         print(id, addName, foramt('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE), stat, name)
     end
 
-    function StatusPlusButton.Menu:get_primary_text(primary)--主属性
+    function StatusPlusButton.Menu:get_primary_text(primary)--主属性, 文本
         if primary then
             if primary==LE_UNIT_STAT_STRENGTH then
-                return e.onlyChinese and '力量' or SPEC_FRAME_PRIMARY_STAT_STRENGTH
+                return format('|cffc69b6d%s|r', e.onlyChinese and '力量' or SPEC_FRAME_PRIMARY_STAT_STRENGTH)
             elseif primary==LE_UNIT_STAT_AGILITY then            
-                return e.onlyChinese and '敏捷' or SPEC_FRAME_PRIMARY_STAT_AGILITY
+                return format('|cff16c663%s|r', e.onlyChinese and '敏捷' or SPEC_FRAME_PRIMARY_STAT_AGILITY)
             elseif primary==LE_UNIT_STAT_INTELLECT then            
-                return e.onlyChinese and '智力' or SPEC_FRAME_PRIMARY_STAT_INTELLECT
+                return format('|cff00ccff%s|r', e.onlyChinese and '智力' or SPEC_FRAME_PRIMARY_STAT_INTELLECT)
             end
         end
     end
@@ -2191,9 +2191,9 @@ local function Init_Status_Menu()
                 local tank, n, dps= self:find_roles(stats.roles)
                 for i= Enum.LFGRole.Tank, Enum.LFGRole.Damage, 1 do
                     info={
-                        text= i== Enum.LFGRole.Tank and e.Icon.TANK
-                            or i==Enum.LFGRole.Healer and e.Icon.HEALER
-                            or i==Enum.LFGRole.Damage and e.Icon.DAMAGER,
+                        text= i== Enum.LFGRole.Tank and format('%s%s', e.Icon.TANK, e.onlyChinese and '坦克' or TANK)
+                            or i==Enum.LFGRole.Healer and format('%s%s', e.Icon.HEALER, e.onlyChinese and '治疗' or HEALER)
+                            or i==Enum.LFGRole.Damage and format('%s%s', e.Icon.TANK, e.onlyChinese and '伤害' or DAMAGER),
                         tooltipOnButton=true,
                         tooltipTitle=stat,
                         keepShownOnClick=true,
@@ -2245,7 +2245,7 @@ local function Init_Status_Menu()
                 for _, primary in pairs({LE_UNIT_STAT_STRENGTH, LE_UNIT_STAT_STRENGTH, LE_UNIT_STAT_INTELLECT}) do
                     info={
                         text= format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, self:get_primary_text(primary)),
-                        checked= stat.primary==primary,
+                        checked= stats.primary==primary,
                         arg1={stat=stat, index=index, value=primary},
                         func= function(_, arg1)
                             for _, tab in pairs (PAPERDOLL_STATCATEGORIES[arg1.index] and PAPERDOLL_STATCATEGORIES[arg1.index].stats or {}) do
@@ -2256,7 +2256,7 @@ local function Init_Status_Menu()
                                         tab.primary=nil
                                     end
                                     self:save()
-                                    print(id, addName, format('|cnGREEN_FONT_COLOR:%s|r', stats.stat) , findTank and e.Icon.TANK or '', findN and e.Icon.HEALER or '', findDps and e.Icon.DAMAGER or '')
+                                    print(id, addName, format('|cnGREEN_FONT_COLOR:%s|r', stats.stat) , format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, self:get_primary_text(tab.primary) or format('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '无' or NONE)))
                                     return
                                 end
                             end
