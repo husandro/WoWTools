@@ -1822,7 +1822,7 @@ local function Init_Status_Func()
         if not Save.hide and Save.itemLevelBit>0 and frame:IsShown() then
             if not frame.numLabel then
                 frame.numLabel=e.Cstr(frame, {color={r=1,g=1,b=1}})
-                frame.numLabel:SetPoint('LEFT', frame.Label, 'RIGHT')
+                frame.numLabel:SetPoint('LEFT', frame.Label, 'RIGHT',2,0)
             end
             if rating then
                 self:status_set_rating(frame, rating)
