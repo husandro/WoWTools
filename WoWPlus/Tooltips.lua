@@ -452,6 +452,10 @@ function func.Set_Pet(self, speciesID, setSearchText)--宠物
     end
 
     func.Set_Web_Link({frame=self, type='npc', id=companionID, name=speciesName, col= nil, isPetUI=false})--取得网页，数据链接
+    local btn= _G['WoWTools_PetBattle_Type_TrackButton']--PetBattle.lua 联动
+    if btn then
+        btn:set_type_tips(petType)
+    end
 end
 
 function func.GetItemInfoFromHyperlink(link)--LinkUtil.lua  GetItemInfoFromHyperlink()不能正解，读取 |Hkeystone:
@@ -1671,7 +1675,7 @@ local function Init()
     hooksecurefunc('SharedPetBattleAbilityTooltip_SetAbility', function(self, abilityInfo, additionalText)
         local abilityID = abilityInfo:GetAbilityID()
         if abilityID then
-            local _, name, icon, _, unparsedDescription = C_PetBattles.GetAbilityInfoByID(abilityID)
+            local _, name, icon, _, unparsedDescription, _, petType = C_PetBattles.GetAbilityInfoByID(abilityID)
             local description = SharedPetAbilityTooltip_ParseText(abilityInfo, unparsedDescription)
             self.Description:SetText(description
                                     ..'|n|n|cffffffff'..(e.onlyChinese and '技能' or ABILITIES)
@@ -1680,6 +1684,10 @@ local function Init()
                                     ..(Save.ctrl and not UnitAffectingCombat('player') and '|nWoWHead Ctrl+Shift' or '')
                                 )
             func.Set_Web_Link({frame=self, type='pet-ability', id=abilityID, name=name, col=nil, isPetUI=false})--取得网页，数据链接 npc item spell currency
+            local btn= _G['WoWTools_PetBattle_Type_TrackButton']--PetBattle.lua 联动
+            if btn then
+                btn:set_type_tips(petType)
+            end
         end
     end)
 

@@ -544,8 +544,9 @@ local function show_FloatingPetBattleAbilityTooltip(frame)
             FloatingPetBattleAbility_Show(self.abilityID)
         end
     end)
-    frame:SetScript('OnLeave', function()
+    frame:SetScript('OnLeave', function(self)
         FloatingPetBattleAbilityTooltip:Hide()
+        self:UnlockHighlight()
     end)
 end
 
@@ -693,7 +694,8 @@ end
 --初始
 --####
 local function Init_TrackButton()
-    TrackButton= e.Cbtn(nil, {icon=true, size={20,20}, pushe=true})
+    --提示,类型, Tooltips.lua 联动 WoWTools_PetBattle_Type_TrackButton
+    TrackButton= e.Cbtn(nil, {name='WoWTools_PetBattle_Type_TrackButton',icon='hide', size={20,20}, pushe=true})
     TrackButton.setFrame= CreateFrame("Frame", nil, TrackButton)
     TrackButton.setFrame:SetSize(1,1)
     TrackButton.setFrame:SetPoint('RIGHT')
@@ -713,54 +715,58 @@ local function Init_TrackButton()
         Save.point[2]=nil
     end)
     TrackButton:SetScript("OnMouseUp", ResetCursor)
-    TrackButton:SetScript("OnMouseDown", function(_, d)
+    TrackButton:SetScript("OnMouseDown", function(self, d)
         if d=='RightButton' then
-            SetCursor('UI_MOVE_CURSOR')
-        end
-    end)
-    TrackButton:SetScript("OnClick", function(self, d)
-        if d=='LeftButton' then--显示，隐藏
+            if IsAltKeyDown() then
+                SetCursor('UI_MOVE_CURSOR')
+            elseif not IsModifierKeyDown() then--打开，宠物手册
+                if not PetJournal or not PetJournal:IsVisible() then
+                    CollectionsJournal_LoadUI()
+                    ToggleCollectionsJournal(2)
+                end
+            end
+        elseif d=='LeftButton' then--显示，隐藏
             Save.setFrameHide= not Save.setFrameHide and true or nil
             self:set_texture()
             self:set_shown()
         end
+        self:set_tooltips()
     end)
+   
+    function TrackButton:set_scale()
+        self.setFrame:SetScale(Save.setFrameScale or 1)
+    end
 
-    TrackButton:SetScript('OnMouseWheel',function(_, d)--打开，宠物手册
-        if d==1 then
-            if not PetJournal or not PetJournal:IsVisible() then
-                ToggleCollectionsJournal(2)
-            end
-        elseif d==-1 then
-            if PetJournal and PetJournal:IsVisible() then
-                ToggleCollectionsJournal(2)
-            end
-        end
+    TrackButton:SetScript('OnMouseWheel',function(self, d)--打开，宠物手册
+        local n= Save.setFrameScale or 1
+        n= d==1 and n-0.1 or n
+        n= d==-1 and n+0.1 or n
+        n= n>4 and 4 or n
+        n= n<0.4 and 0.4 or n
+        Save.setFrameScale=n
+        self:set_scale()
+        self:set_tooltips()
         --SetCollectionsJournalShown(true, 2)--UIParent.lua
     end)
 
-    TrackButton:SetScript('OnLeave', function(self)
-        GameTooltip_Hide()
-        if self.btn then
-            self.btn:SetButtonState('NORMAL')
-        end
-    end)
-    TrackButton:SetScript('OnEnter', function(self)
+    TrackButton:SetScript('OnLeave', GameTooltip_Hide)
+    function TrackButton:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
+        e.tips:ClearLines()        
+        e.tips:AddDoubleLine(id, e.cn(addName))        
         e.tips:AddDoubleLine(e.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, e.Icon.left)
-        e.tips:AddDoubleLine(e.onlyChinese and '宠物手册' or PET_JOURNAL, e.Icon.mid)
-        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
-        if not C_AddOns.IsAddOnLoaded('Rematch') then
-            e.tips:AddDoubleLine(e.Icon.left..(e.onlyChinese and '图标' or EMBLEM_SYMBOL), e.onlyChinese and '过滤器: 宠物类型' or FILTER..": "..PET_FAMILIES)
+        if not PetJournal or not PetJournal:IsVisible() then
+            e.tips:AddDoubleLine(e.onlyChinese and '宠物手册' or PET_JOURNAL, e.Icon.right)
         end
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, e.cn(addName))
-        e.tips:Show()
-        if self.btn then
-            self.btn:SetButtonState('PUSHED')
-        end
-    end)
+        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.setFrameScale or 1), e.Icon.mid)
+        if not C_AddOns.IsAddOnLoaded('Rematch') then
+            e.tips:AddDoubleLine(e.Icon.left..(e.onlyChinese and '图标' or EMBLEM_SYMBOL), e.onlyChinese and '过滤器: 宠物类型' or FILTER..": "..PET_FAMILIES)
+        end        
+        e.tips:Show()  
+    end
+    TrackButton:SetScript('OnEnter', TrackButton.set_tooltips)
 
     function TrackButton:set_shown()
         local show= PetJournal and PetJournal:IsVisible() or C_PetBattles.IsInBattle()
@@ -794,17 +800,6 @@ local function Init_TrackButton()
         end
     end)
 
-    TrackButton:SetScript("OnShow", function(self)
-        if self.btn then
-            self.btn:set_texture()--宠物手册，增加按钮
-        end
-    end)
-    TrackButton:SetScript("OnHide", function(self)
-        if self.btn then
-            self.btn:set_texture()--宠物手册，增加按钮
-        end
-    end)
-
     function TrackButton:set_texture()
         self:SetNormalAtlas(Save.setFrameHide and 'talents-button-reset' or e.Icon.icon)
     end
@@ -816,9 +811,6 @@ local function Init_TrackButton()
         end
     end
 
-    function TrackButton:set_scale()
-        self.setFrame:SetScale(Save.setFrameScale or 1)
-    end
 
     TrackButton:set_scale()
     TrackButton:set_point()
@@ -826,50 +818,67 @@ local function Init_TrackButton()
     TrackButton:set_shown()
 
 
-    local last=TrackButton.setFrame--提示,类型,
+
+    --提示,类型, Tooltips.lua 联动
+    TrackButton.setFrame.Buttons={}
     for i=1, C_PetJournal.GetNumPetTypes() do
-        local texture= e.Cbtn(TrackButton.setFrame, {icon='hide',size={25,25}, pushe=true})
-        texture:SetSize(25, 25)
-        texture:SetPoint('LEFT', last, 'RIGHT')
-        texture:SetNormalTexture('Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[i])
-        texture.abilityID= PetTypeAbility[i]
-        texture.typeID=i
-        texture:EnableMouse(true)
-        show_FloatingPetBattleAbilityTooltip(texture)
+        local btn= e.Cbtn(TrackButton.setFrame, {size={32,32}, texture='Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[i], pushe=true})
+        
+        btn:SetPoint('LEFT', i==1 and TrackButton.setFrame or TrackButton.setFrame.Buttons[i-1], 'RIGHT')
+        btn.abilityID= PetTypeAbility[i]
+        btn.typeID=i
+        btn:EnableMouse(true)
+        show_FloatingPetBattleAbilityTooltip(btn)
+
 
         local strong, index=get_Strong_WeakHints(i, true)--强
         if strong then
-            texture.indicatoUp=TrackButton.setFrame:CreateTexture()
-            texture.indicatoUp:SetAtlas('bags-greenarrow')
-            texture.indicatoUp:SetSize(10,10)
-            texture.indicatoUp:SetPoint('BOTTOM', texture,'TOP')
+            btn.indicatoUp=TrackButton.setFrame:CreateTexture()
+            btn.indicatoUp:SetAtlas('bags-greenarrow')
+            btn.indicatoUp:SetSize(10,10)
+            btn.indicatoUp:SetPoint('BOTTOM', btn,'TOP')
 
-            texture.strong= e.Cbtn(TrackButton.setFrame, {icon='hide',size={25,25}, pushe=true})
-            texture.strong:SetPoint('BOTTOM', texture.indicatoUp, 'TOP')
-            texture.strong:SetNormalTexture(strong)
-            texture.strong.abilityID= PetTypeAbility[index]
-            texture.strong.typeID=index
-            texture.strong:EnableMouse(true)
-            show_FloatingPetBattleAbilityTooltip(texture.strong)
+            btn.strong= e.Cbtn(TrackButton.setFrame, {texture=strong,size={25,25}, pushe=true})
+            btn.strong:SetPoint('BOTTOM', btn.indicatoUp, 'TOP')
+            btn.strong.abilityID= PetTypeAbility[index]
+            btn.strong.typeID=index
+            btn.strong:EnableMouse(true)
+            show_FloatingPetBattleAbilityTooltip(btn.strong)
         end
         local weakHints, index2=get_Strong_WeakHints(i)--弱
         if weakHints then
-            texture.indicatoDown=TrackButton.setFrame:CreateTexture()
-            texture.indicatoDown:SetAtlas('UI-HUD-MicroMenu-StreamDLRed-Up')
-            texture.indicatoDown:SetSize(10,10)
-            texture.indicatoDown:SetPoint('TOP', texture,'BOTTOM')
+            btn.indicatoDown=TrackButton.setFrame:CreateTexture()
+            btn.indicatoDown:SetAtlas('UI-HUD-MicroMenu-StreamDLRed-Up')
+            btn.indicatoDown:SetSize(10,10)
+            btn.indicatoDown:SetPoint('TOP', btn,'BOTTOM')
 
-            texture.weakHints= e.Cbtn(TrackButton.setFrame, {icon='hide', size={25,25}, pushe=true})
-            texture.weakHints:SetPoint('TOP', texture.indicatoDown, 'BOTTOM')
-            texture.weakHints:SetNormalTexture(weakHints)
-            texture.weakHints.abilityID= PetTypeAbility[index2]
-            texture.weakHints.typeID=index2
-            texture.weakHints:EnableMouse(true)
-            show_FloatingPetBattleAbilityTooltip(texture.weakHints)
+            btn.weakHints= e.Cbtn(TrackButton.setFrame, {texture=weakHints, size={25,25}, pushe=true})
+            btn.weakHints:SetPoint('TOP', btn.indicatoDown, 'BOTTOM')
+            btn.weakHints.abilityID= PetTypeAbility[index2]
+            btn.weakHints.typeID=index2
+            btn.weakHints:EnableMouse(true)
+            show_FloatingPetBattleAbilityTooltip(btn.weakHints)
         end
-
-        last=texture
+        TrackButton.setFrame.Buttons[i]=btn
     end
+
+    --Tooltips.lua 联动
+    function TrackButton:set_type_tips(petType)
+        if self.setFrame:IsShown() then
+            for _, btn in pairs(TrackButton.setFrame.Buttons) do
+                if btn.typeID==petType then
+                    btn:LockHighlight()
+                else
+                    btn:UnlockHighlight()
+                end
+            end
+        end
+    end
+    TrackButton:SetScript('OnHide', function()
+        for _, btn in pairs(TrackButton.setFrame.Buttons) do
+           btn:UnlockHighlight()
+        end
+    end)
 end
 
 
