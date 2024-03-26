@@ -2053,7 +2053,7 @@ local function Init_Status_Func()
     end)
 
     hooksecurefunc('PaperDollFrame_SetLabelAndText', function(statFrame, _, text, isPercentage, numericValue)
-        if (isPercentage or (type(text)=='string' and text:find('%%'))) and not Save.hide and Save.itemLevelBit>0 and select(2, math.modf(numericValue))>0 then
+        if not Save.hide and Save.itemLevelBit>0 and (isPercentage or (type(text)=='string' and text:find('%%'))) then--and select(2, math.modf(numericValue))>0 then
             statFrame.Value:SetFormattedText('%.0'..Save.itemLevelBit..'f%%', numericValue)
         end
     end)
