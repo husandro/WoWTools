@@ -8,7 +8,10 @@ local Save={
     --hide=true,--隐藏CreateTexture
 
     --notStatusPlus=true,--禁用，属性PLUS
+    StatusPlus_OnEnter_show_menu=true,--移过图标时，显示菜单
+
     itemLevelBit= 3,--物品等级，位数
+
 }
 
 
@@ -1998,7 +2001,13 @@ end
 
 local P_PAPERDOLL_STATCATEGORIES= PAPERDOLL_STATCATEGORIES
 local function Init_Status_Menu()
-    function StatusPlusButton.Menu:find_stat(stat, index, P)--查找
+
+    function StatusPlusButton.Menu:save()
+        e.call('PaperDollFrame_UpdateStats')
+        Save.PAPERDOLL_STATCATEGORIES= PAPERDOLL_STATCATEGORIES
+    end
+
+    function StatusPlusButton.Menu:find_stats(stat, index, P)--查找
         local tabs
         if P then
             tabs=P_PAPERDOLL_STATCATEGORIES[index]
@@ -2013,6 +2022,20 @@ local function Init_Status_Menu()
             end
         end
         return false
+    end
+
+    function StatusPlusButton.Menu:find_roles(roles)
+        local tank, n, dps= false, false, false
+        for _, num in pairs(roles or {}) do
+            if num== Enum.LFGRole.Tank then--0
+                tank=true
+            elseif num== Enum.LFGRole.Healer then--1
+                n=true
+            elseif num== Enum.LFGRole.Damage then--2
+                dps=true
+            end
+        end
+        return tank, n, dps
     end
 
     function StatusPlusButton.Menu:add_stat(tab)--添加
@@ -2038,7 +2061,7 @@ local function Init_Status_Menu()
                 CharacterStatsPane[categoryFrame]= frame
             end
         end
-        local P_tab=self:find_stat(stat, index, true)--查找
+        local P_tab=self:find_stats(stat, index, true)--查找
         if not PAPERDOLL_STATCATEGORIES[index] then
             PAPERDOLL_STATCATEGORIES[index]= {categoryFrame= index}
         end
@@ -2047,12 +2070,13 @@ local function Init_Status_Menu()
         else
             table.insert(PAPERDOLL_STATCATEGORIES[index].stats, {
                 stat=stat,
-                hideAt=tab.hideAt,
-                roles= tab.roles,
-                primary= tab.primary,
-                showFunc= tab.showFunc,
+                hideAt=-1,
+                --roles= tab.roles,
+                --primary= tab.primary,
+                --showFunc= tab.showFunc,
             })
         end
+        print(id, e.cn(addName), format('|cnGREEN_FONT_COLOR:%s|r', stat), e.onlyChinese and '添加' or ADD)
     end
 
     function StatusPlusButton.Menu:remove_stat(tab)--移除        
@@ -2071,19 +2095,56 @@ local function Init_Status_Menu()
         print(id, addName, foramt('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE), stat, name)
     end
 
+    function StatusPlusButton.Menu:get_primary_text(primary)--主属性
+        if primary then
+            if primary==LE_UNIT_STAT_STRENGTH then
+                return e.onlyChinese and '力量' or SPEC_FRAME_PRIMARY_STAT_STRENGTH
+            elseif primary==LE_UNIT_STAT_AGILITY then            
+                return e.onlyChinese and '敏捷' or SPEC_FRAME_PRIMARY_STAT_AGILITY
+            elseif primary==LE_UNIT_STAT_INTELLECT then            
+                return e.onlyChinese and '智力' or SPEC_FRAME_PRIMARY_STAT_INTELLECT
+            end
+        end
+    end
     e.LibDD:UIDropDownMenu_Initialize(StatusPlusButton.Menu, function(self, level, menuList)
         local info
         if menuList=='ENABLE_DISABLE' then
             info= {
+                text=e.onlyChinese and '全部清除' or CLEAR_ALL,
+                notCheckable=true,
+                icon='bags-button-autosort-up',
+                func= function()
+                    PAPERDOLL_STATCATEGORIES= {}
+                    e.LibDD:CloseDropDownMenus(1)
+                    self:save()
+                    print(id, addName, format('|cnGREEN_FONT_COLOR:%s|r', e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT), e.onlyChinese and '完成' or DONE)
+                end
+            }
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
+            info= {
                 text=e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT,
                 notCheckable=true,
+                icon='uitools-icon-refresh',
                 colorCode= Save.PAPERDOLL_STATCATEGORIES and '' or '|cff606060',
                 func= function()
                     PAPERDOLL_STATCATEGORIES= P_PAPERDOLL_STATCATEGORIES
                     Save.PAPERDOLL_STATCATEGORIES=nil
                     e.call('PaperDollFrame_UpdateStats')
-                    print(id, addName, format('|cnGREEN_FONT_COLOR:%s|r', e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT), e.onlyChinese and '完成' or DONE)
                     e.LibDD:CloseDropDownMenus(1)
+                end
+            }
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+            e.LibDD:UIDropDownMenu_AddSeparator(level)
+            info={
+                text=e.onlyChinese and '显示菜单' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, HUD_EDIT_MODE_MICRO_MENU_LABEL),
+                checked= Save.StatusPlus_OnEnter_show_menu,
+                icon= 'newplayertutorial-drag-cursor',
+                keepShownOnClick=true,
+                tooltipOnButton=true,
+                tooltipTitle= e.onlyChinese and '移过图标时，显示菜单' or 'Show menu when moving over icon',
+                func= function()
+                    Save.StatusPlus_OnEnter_show_menu= not Save.StatusPlus_OnEnter_show_menu and true or nil
                 end
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -2091,137 +2152,119 @@ local function Init_Status_Menu()
         elseif menuList then
             local stat, index= menuList:match('(.+)(%d)')
             index= tonumber(index)
-            local tabs= self:find_stat(stat, index, false)
-            if tabs then
-                info={
-                    text=format('%s 0', e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE)),
-                    checked=tabs.hideAt==0,
-                    arg1=stat,
-                    arg2=index,
-                    func= function(_, arg1, arg2)
-                        if PAPERDOLL_STATCATEGORIES[arg2] and PAPERDOLL_STATCATEGORIES[arg2].stats then
-                            for i, tab in pairs(PAPERDOLL_STATCATEGORIES[arg2].stats) do
-                                if tab.stat== arg1 then
-                                    PAPERDOLL_STATCATEGORIES[arg2].stats[i].hideAt= not PAPERDOLL_STATCATEGORIES[arg2].stats[i].hideAt and 0 or nil
-
-        e.call('PaperDollFrame_UpdateStats')
-                                    Save.PAPERDOLL_STATCATEGORIES= PAPERDOLL_STATCATEGORIES
+            local stats= self:find_stats(stat, index, false)
+            if stats then
+                --自动隐藏 -1 0
+                for i=-1, 0, 1 do
+                    info={
+                        text=format('%s |cnGREEN_FONT_COLOR:'..i..'|r', e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE)),
+                        keepShownOnClick=true,
+                        checked=stats.hideAt==i,
+                        arg1={stat=stat, index=index, value=i},
+                        tooltipOnButton=true,
+                        tooltipTitle=i==-1 and format('%s', e.onlyChinese and '总是显示' or BATTLEFIELD_MINIMAP_SHOW_ALWAYS) or format('<=0 %s', e.onlyChinese and '隐藏' or HIDE),
+                        tooltipText=stat,
+                        func= function(_, arg1)
+                            for i, tab in pairs(PAPERDOLL_STATCATEGORIES[arg1.index] and PAPERDOLL_STATCATEGORIES[arg1.index].stats or {}) do
+                                if tab.stat== arg1.stat then
+                                    local value
+                                    value= PAPERDOLL_STATCATEGORIES[arg1.index].stats[i].hideAt
+                                    if not value or value~=arg1.value then
+                                        value=arg1.value
+                                    else
+                                        value=nil
+                                    end
+                                    PAPERDOLL_STATCATEGORIES[arg1.index].stats[i].hideAt= value
+                                    self:save()
+                                    print(id, e.cn(addName), format('|cnGREEN_FONT_COLOR:%s|r', arg1.stat), value)
                                     return
                                 end
                             end
+                            print(id, e.cn(addName), format('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE), arg1.stat)
                         end
-                        print(id, e.cn(addName), format('|cnRED_FONT_COLOR:%s|r %s', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE, arg1))
-                    end
-                }
-                e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-                info={
-                    text=format('%s -1', e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE)),
-                    checked=tabs.hideAt==-1,
-                    arg1=stat,
-                    arg2=index,
-                    func= function(_, arg1, arg2)
-                        if PAPERDOLL_STATCATEGORIES[arg2] and PAPERDOLL_STATCATEGORIES[arg2].stats then
-                            for i, tab in pairs(PAPERDOLL_STATCATEGORIES[arg2].stats) do
-                                if tab.stat== arg1 then
-                                    PAPERDOLL_STATCATEGORIES[arg2].stats[i].hideAt= not PAPERDOLL_STATCATEGORIES[arg2].stats[i].hideAt and -1 or nil
-
-        e.call('PaperDollFrame_UpdateStats')
-                                    Save.PAPERDOLL_STATCATEGORIES= PAPERDOLL_STATCATEGORIES
-                                    return
-                                end
-                            end
-                        end
-                        print(id, e.cn(addName), format('|cnRED_FONT_COLOR:%s|r %s', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE, arg1))
-                    end
-                }
-                e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-
-
-                local tank, dps, n
-                for _, num in pairs(tabs.roles or {}) do
-                    if num== Enum.LFGRole.Healer then
-                        n=true
-                    elseif num== Enum.LFGRole.Tank then
-                        tank=true
-                    elseif num== Enum.LFGRole.Damage then
-                        dps=true
-                    end
+                    }
+                    e.LibDD:UIDropDownMenu_AddButton(info, level)
                 end
-                info={
-                    text= format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, e.Icon.TANK),
-                    checked= tank,
-                    arg1=stat,
-                    arg2=index,
-                    func= function(_, arg1, arg2)
-                        if PAPERDOLL_STATCATEGORIES[arg2] and PAPERDOLL_STATCATEGORIES[arg2].stats then
-                            for i, tab in pairs(PAPERDOLL_STATCATEGORIES[arg2].stats) do
-                                if tab.stat== arg1 then
-                                    if PAPERDOLL_STATCATEGORIES[arg2].stats[i].roles then
-                                        PAPERDOLL_STATCATEGORIES[arg2].stats[i].roles=nil
-                                    else
-                                        PAPERDOLL_STATCATEGORIES[arg2].stats[i].roles={Enum.LFGRole.Tank}
-                                    end
 
-        e.call('PaperDollFrame_UpdateStats')
-                                    Save.PAPERDOLL_STATCATEGORIES= PAPERDOLL_STATCATEGORIES
+                --职责，设置
+                e.LibDD:UIDropDownMenu_AddSeparator(level)
+                local tank, n, dps= self:find_roles(stats.roles)
+                for i= Enum.LFGRole.Tank, Enum.LFGRole.Damage, 1 do
+                    info={
+                        text= i== Enum.LFGRole.Tank and e.Icon.TANK
+                            or i==Enum.LFGRole.Healer and e.Icon.HEALER
+                            or i==Enum.LFGRole.Damage and e.Icon.DAMAGER,
+                        tooltipOnButton=true,
+                        tooltipTitle=stat,
+                        keepShownOnClick=true,
+                        arg1={stat=stat, index=index, value=i},
+                        func= function(_, arg1)
+                            for _, tab in pairs (PAPERDOLL_STATCATEGORIES[arg1.index] and PAPERDOLL_STATCATEGORIES[arg1.index].stats or {}) do
+                                if tab.stat==arg1.stat then
+                                    if not tab.roles then
+                                        tab.roles={arg1.value}
+                                    else
+                                        local findTank, findN, findDps=  self:find_roles(stats.roles)--职责，设置                                    
+                                        if arg1.value==Enum.LFGRole.Tank then
+                                            findTank = not findTank and true or false
+                                        elseif arg1.value==Enum.LFGRole.Healer then
+                                            findN = not findN and true or false
+                                        elseif arg1.value==Enum.LFGRole.Damage then
+                                            findDps = not findDps and true or false
+                                        end
+                                        if findTank or findN or findDps then
+                                            local roles={}
+                                            if findTank then table.insert(roles, Enum.LFGRole.Tank) end
+                                            if findN then table.insert(roles, Enum.LFGRole.Healer) end
+                                            if findDps then table.insert(roles, Enum.LFGRole.Damage) end
+                                            tab.roles= roles
+                                        else
+                                            tab.roles=nil
+                                        end
+                                    end
+                                    self:save()
+                                    print(id, addName, format('|cnGREEN_FONT_COLOR:%s|r', stats.stat) , findTank and e.Icon.TANK or '', findN and e.Icon.HEALER or '', findDps and e.Icon.DAMAGER or '')
                                     return
                                 end
                             end
+                            print(id, e.cn(addName), format('|cnRED_FONT_COLOR:%s|r %s', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE, arg1.stat))
                         end
-                        print(id, e.cn(addName), format('|cnRED_FONT_COLOR:%s|r %s', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE, arg1))
+                    }
+                    if i==Enum.LFGRole.Tank then
+                        info.checked= tank
+                    elseif i==Enum.LFGRole.Healer then
+                        info.checked= n
+                    elseif i== Enum.LFGRole.Damage then
+                        info.checked= dps
                     end
-                }
-                e.LibDD:UIDropDownMenu_AddButton(info, level)
-                info={
-                    text= format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, e.Icon.HEALER),
-                    checked= n,
-                    arg1=stat,
-                    arg2=index,
-                    func= function(_, arg1, arg2)
-                        if PAPERDOLL_STATCATEGORIES[arg2] and PAPERDOLL_STATCATEGORIES[arg2].stats then
-                            for i, tab in pairs(PAPERDOLL_STATCATEGORIES[arg2].stats) do
-                                if tab.stat== arg1 then
-                                    if PAPERDOLL_STATCATEGORIES[arg2].stats[i].roles then
-                                        PAPERDOLL_STATCATEGORIES[arg2].stats[i].roles=nil
-                                    else
-                                        PAPERDOLL_STATCATEGORIES[arg2].stats[i].roles={Enum.LFGRole.Healer}
-                                    end
+                    e.LibDD:UIDropDownMenu_AddButton(info, level)
+                end
 
-        e.call('PaperDollFrame_UpdateStats')
-                                    Save.PAPERDOLL_STATCATEGORIES= PAPERDOLL_STATCATEGORIES
+                --主属性，条件
+                e.LibDD:UIDropDownMenu_AddSeparator(level)
+                for _, primary in pairs({LE_UNIT_STAT_STRENGTH, LE_UNIT_STAT_STRENGTH, LE_UNIT_STAT_INTELLECT}) do
+                    info={
+                        text= format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, self:get_primary_text(primary)),
+                        checked= stat.primary==primary,
+                        arg1={stat=stat, index=index, value=primary},
+                        func= function(_, arg1)
+                            for _, tab in pairs (PAPERDOLL_STATCATEGORIES[arg1.index] and PAPERDOLL_STATCATEGORIES[arg1.index].stats or {}) do
+                                if tab.stat==arg1.stat then
+                                    if not tab.primary or tab.primary~=arg1.value then
+                                        tab.primary=arg1.value
+                                    else
+                                        tab.primary=nil
+                                    end
+                                    self:save()
+                                    print(id, addName, format('|cnGREEN_FONT_COLOR:%s|r', stats.stat) , findTank and e.Icon.TANK or '', findN and e.Icon.HEALER or '', findDps and e.Icon.DAMAGER or '')
                                     return
                                 end
                             end
+                            print(id, e.cn(addName), format('|cnRED_FONT_COLOR:%s|r %s', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE, arg1.stat))
                         end
-                    end
-                }
-                e.LibDD:UIDropDownMenu_AddButton(info, level)
-                info={
-                    text= format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, e.Icon.DAMAGER),
-                    checked= dps,
-                    arg1=stat,
-                    arg2=index,
-                    func= function(_, arg1, arg2)
-                        if PAPERDOLL_STATCATEGORIES[arg2] and PAPERDOLL_STATCATEGORIES[arg2].stats then
-                            for i, tab in pairs(PAPERDOLL_STATCATEGORIES[arg2].stats) do
-                                if tab.stat== arg1 then
-                                    if PAPERDOLL_STATCATEGORIES[arg2].stats[i].roles then
-                                        PAPERDOLL_STATCATEGORIES[arg2].stats[i].roles=nil
-                                    else
-                                        PAPERDOLL_STATCATEGORIES[arg2].stats[i].roles={Enum.LFGRole.Damage}
-                                    end
-
-        e.call('PaperDollFrame_UpdateStats')
-                                    Save.PAPERDOLL_STATCATEGORIES= PAPERDOLL_STATCATEGORIES
-                                    return
-                                end
-                            end
-                        end
-                    end
-                }
-                e.LibDD:UIDropDownMenu_AddButton(info, level)
+                    }
+                    e.LibDD:UIDropDownMenu_AddButton(info, level)
+                end
 
             else
                 info={
@@ -2240,9 +2283,9 @@ local function Init_Status_Menu()
 
 
         local AttributesCategory={
-            --{stat='STRENGTH', index=1, name=e.onlyChinese and '力量' or SPEC_FRAME_PRIMARY_STAT_STRENGTH, primary=LE_UNIT_STAT_STRENGTH},--AttributesCategory
-            --{stat='AGILITY', index=1, name=e.onlyChinese and '敏捷' or SPEC_FRAME_PRIMARY_STAT_AGILITY, rimary=LE_UNIT_STAT_AGILITY},
-            --{stat='INTELLECT', index=1, name=e.onlyChinese and '智力' or SPEC_FRAME_PRIMARY_STAT_INTELLECT, primary=LE_UNIT_STAT_INTELLECT},
+            {stat='STRENGTH', index=1, name=e.onlyChinese and '力量' or SPEC_FRAME_PRIMARY_STAT_STRENGTH, primary=LE_UNIT_STAT_STRENGTH},--AttributesCategory
+            {stat='AGILITY', index=1, name=e.onlyChinese and '敏捷' or SPEC_FRAME_PRIMARY_STAT_AGILITY, rimary=LE_UNIT_STAT_AGILITY},
+            {stat='INTELLECT', index=1, name=e.onlyChinese and '智力' or SPEC_FRAME_PRIMARY_STAT_INTELLECT, primary=LE_UNIT_STAT_INTELLECT},
             {stat='STAMINA', index=1, name= e.onlyChinese and '耐力' or STA_LCD},
             {stat='ARMOR', index=1},
             {stat='STAGGER', index=1},
@@ -2250,7 +2293,7 @@ local function Init_Status_Menu()
             {stat='SPELLPOWER', index=1, name=e.onlyChinese and '法术强度' or STAT_SPELLPOWER},
 
             {stat='HEALTH', index=1},
-            {stat='POWER', index=1, hideAt=-1, name=e.onlyChinese and '能量' or POWER_TYPE_POWER},
+            {stat='POWER', index=1, name=e.onlyChinese and '能量' or POWER_TYPE_POWER},
             {stat='ALTERNATEMANA', index=1, name=e.onlyChinese and '法力值' or  MANA},
 
             {stat='-'},
@@ -2271,7 +2314,7 @@ local function Init_Status_Menu()
             {stat='RUNE_REGEN', index=2},
             {stat='FOCUS_REGEN', index=2},
 
-            {stat='MOVESPEED', index=2, name=e.onlyChinese and '移动速度' or STAT_MOVEMENT_SPEED},
+            {stat='MOVESPEED', index=2, name=e.onlyChinese and '移动' or NPE_MOVE},
             {stat='ATTACK_DAMAGE', index=2, name=e.onlyChinese and '伤害' or DAMAGE, },
             {stat='ATTACK_AP', index=2,  name=e.onlyChinese and '攻击强度' or STAT_ATTACK_POWER, },
             {stat='ATTACK_ATTACKSPEED', index=2, name=e.onlyChinese and '攻击速度' or ATTACK_SPEED},
@@ -2285,38 +2328,33 @@ local function Init_Status_Menu()
                 local stat= tab.stat
                 local name= tab.name or e.cn(_G[stat] or _G['STAT_'..stat]) or stat
                 tab.name= tab.name or name
-                local findTab= self:find_stat(stat, index, false)
-                local role, autoHide='', ''
-                if findTab then
-                    for _, num in pairs(findTab.roles or {}) do
-                        if num== Enum.LFGRole.Healer then
-                            role= role..e.Icon.HEALER
-                        elseif num== Enum.LFGRole.Tank then
-                            role= role..e.Icon.TANK
-                        elseif num== Enum.LFGRole.Damage then
-                            role= role..e.Icon.DAMAGER
-                        end
-                    end
-                    autoHide= format('|cnGREEN_FONT_COLOR:%s|r', findTab.hideAt or '')
+                local stats= self:find_stats(stat, index, false)
+                local role, autoHide ='', ''                
+                if stats then
+                    local tank, n, dps= self:find_roles(stats.roles)--职责
+                    role= format('%s%s%s', tank and e.Icon.TANK or '', n and e.Icon.HEALER or '', dps and e.Icon.DAMAGER or '')
+                    autoHide= format('|cnGREEN_FONT_COLOR:%s|r', stats.hideAt or '')--隐藏 0， -1
                 end
+                local primary=  self:get_primary_text(stats and stats.primary) or ''--主属性
                 info={
-                    text=name..autoHide..role,
+                    text=name..autoHide..role..primary,
+                    tooltipOnButton=true,
+                    tooltipTitle=tab.stat,
                     keepShownOnClick=true,
-                    checked= findTab and true or false,
-                    menuList=findTab and stat..index or nil,
-                    hasArrow=findTab and true or false,
+                    checked= stats and true or false,
+                    menuList=stat..index,
+                    hasArrow=true,
                     arg1=tab,
                     arg2=index,
                     func= function(_, arg1)
-                        local find= self:find_stat(arg1.stat, arg1.index)
+                        local find= self:find_stats(arg1.stat, arg1.index)
                         if not find then
                             self:add_stat(arg1)
                         else
                             self:remove_stat(arg1)
                         end
-                        e.call('PaperDollFrame_UpdateStats')
+                        self:save()
                         e.LibDD:CloseDropDownMenus(2)
-                        Save.PAPERDOLL_STATCATEGORIES= PAPERDOLL_STATCATEGORIES
                     end
                 }
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -2324,28 +2362,7 @@ local function Init_Status_Menu()
         end
 
         e.LibDD:UIDropDownMenu_AddSeparator(level)
-        info= {
-            text=e.onlyChinese and '全部清除' or CLEAR_ALL,
-            notCheckable=true,
-            icon='bags-button-autosort-up',
-            func= function()
-                PAPERDOLL_STATCATEGORIES= {
-                    [1] = {
-                        categoryFrame = "AttributesCategory",
-                        stats = {
-                            [1] = { stat = "STRENGTH", primary = LE_UNIT_STAT_STRENGTH },
-                            [2] = { stat = "AGILITY", primary = LE_UNIT_STAT_AGILITY },
-                            [3] = { stat = "INTELLECT", primary = LE_UNIT_STAT_INTELLECT },
-                        }
-                    }
-                }
-                e.LibDD:CloseDropDownMenus(1)
-                e.call('PaperDollFrame_UpdateStats')
-                Save.PAPERDOLL_STATCATEGORIES= PAPERDOLL_STATCATEGORIES
-                print(id, addName, format('|cnGREEN_FONT_COLOR:%s|r', e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT), e.onlyChinese and '完成' or DONE)
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
+
         info= {
             text=e.GetEnabeleDisable(true),
             checked= not Save.notStatusPlus,
@@ -2380,7 +2397,6 @@ end
 
 
 --属性，增强 PaperDollFrame.lua
-
 local function Init_Status_Plus()
     if StatusPlusButton or Save.hide then
         if StatusPlusButton then
@@ -2403,6 +2419,9 @@ local function Init_Status_Plus()
         self:set_texture()
         print(e.cn(addName), e.GetEnabeleDisable(not Save.notStatusPlus), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end
+    function StatusPlusButton:show_menu()
+        e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 60, 0)--主菜单
+    end
     function StatusPlusButton:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_TOPLEFT")
         e.tips:ClearLines()
@@ -2421,9 +2440,7 @@ local function Init_Status_Plus()
     StatusPlusButton.Menu= CreateFrame("Frame", nil, frame, "UIDropDownMenuTemplate")
 
 
-    StatusPlusButton:SetScript("OnClick", function(frame, d)
-        e.LibDD:ToggleDropDownMenu(1, nil, frame.Menu, frame, 15,0)--主菜单
-    end)
+    StatusPlusButton:SetScript("OnClick", StatusPlusButton.show_menu)
 
     StatusPlusButton:set_texture()
     StatusPlusButton:set_alpha(true)
@@ -2444,6 +2461,15 @@ local function Init_Status_Plus()
     if Save.PAPERDOLL_STATCATEGORIES then--加载，数据
         PAPERDOLL_STATCATEGORIES= Save.PAPERDOLL_STATCATEGORIES
     end
+
+    StatusPlusButton:SetScript('OnEnter', function(self)--重新,设置
+        self:set_tooltips()
+        if Save.StatusPlus_OnEnter_show_menu then--移过图标时，显示菜单
+            e.LibDD:CloseDropDownMenus(1)
+            self:show_menu()
+        end
+    end)
+
     Init_Status_Menu()
     Init_Status_Func()
 end
