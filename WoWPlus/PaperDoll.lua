@@ -2150,7 +2150,7 @@ local function Init_Status_Menu()
             e.LibDD:UIDropDownMenu_AddButton(info, level)
 
         elseif menuList then
-            local stat, index= menuList:match('(.+)(%d)')
+            local stat, index, name= menuList:match('(.+)(%d)(.+)')
             index= tonumber(index)
             local stats= self:find_stats(stat, index, false)
             if stats then
@@ -2162,8 +2162,7 @@ local function Init_Status_Menu()
                         checked=stats.hideAt==i,
                         arg1={stat=stat, index=index, value=i},
                         tooltipOnButton=true,
-                        tooltipTitle=i==-1 and format('%s', e.onlyChinese and '总是显示' or BATTLEFIELD_MINIMAP_SHOW_ALWAYS) or format('<=0 %s', e.onlyChinese and '隐藏' or HIDE),
-                        tooltipText=stat,
+                        tooltipTitle=format('<='..i..' %s', e.onlyChinese and '隐藏' or HIDE),
                         func= function(_, arg1)
                             for i, tab in pairs(PAPERDOLL_STATCATEGORIES[arg1.index] and PAPERDOLL_STATCATEGORIES[arg1.index].stats or {}) do
                                 if tab.stat== arg1.stat then
@@ -2194,8 +2193,6 @@ local function Init_Status_Menu()
                         text= i== Enum.LFGRole.Tank and format('%s%s', e.Icon.TANK, e.onlyChinese and '坦克' or TANK)
                             or i==Enum.LFGRole.Healer and format('%s%s', e.Icon.HEALER, e.onlyChinese and '治疗' or HEALER)
                             or i==Enum.LFGRole.Damage and format('%s%s', e.Icon.TANK, e.onlyChinese and '伤害' or DAMAGER),
-                        tooltipOnButton=true,
-                        tooltipTitle=stat,
                         keepShownOnClick=true,
                         arg1={stat=stat, index=index, value=i},
                         func= function(_, arg1)
@@ -2242,9 +2239,10 @@ local function Init_Status_Menu()
 
                 --主属性，条件
                 e.LibDD:UIDropDownMenu_AddSeparator(level)
-                for _, primary in pairs({LE_UNIT_STAT_STRENGTH, LE_UNIT_STAT_STRENGTH, LE_UNIT_STAT_INTELLECT}) do
+                for _, primary in pairs({LE_UNIT_STAT_STRENGTH, LE_UNIT_STAT_AGILITY , LE_UNIT_STAT_INTELLECT}) do
                     info={
                         text= format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, self:get_primary_text(primary)),
+                        keepShownOnClick=true,
                         checked= stats.primary==primary,
                         arg1={stat=stat, index=index, value=primary},
                         func= function(_, arg1)
@@ -2266,9 +2264,16 @@ local function Init_Status_Menu()
                     e.LibDD:UIDropDownMenu_AddButton(info, level)
                 end
 
+                e.LibDD:UIDropDownMenu_AddSeparator(level)
+                info={
+                    text=name..' '..stat..' '..index,
+                    notCheckable=true,
+                    isTitle=true,
+                }
+                e.LibDD:UIDropDownMenu_AddButton(info, level)
             else
                 info={
-                    text=format('|cnRED_FONT_COLOR:%s|r %s', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE, stat),
+                    text=format('|cnRED_FONT_COLOR:%s|r %s|n%s', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE, stat), name,
                     notCheckable=true,
                     isTitle=true,
                 }
@@ -2342,7 +2347,7 @@ local function Init_Status_Menu()
                     tooltipTitle=tab.stat,
                     keepShownOnClick=true,
                     checked= stats and true or false,
-                    menuList=stat..index,
+                    menuList=stat..index..name,
                     hasArrow=true,
                     arg1=tab,
                     arg2=index,
