@@ -161,7 +161,8 @@ local function Init_Gossip_Text(show)
 end
 
 --自定义，对话，文本
-local function Set_Gossip_Text(self, gossipOptionID)
+local function Set_Gossip_Text(self, info)
+    local gossipOptionID= info and info.gossipOptionID
     if not Save.gossip or Save.not_Gossip_Text_Icon or not gossipOptionID then
         return
     end
@@ -185,7 +186,10 @@ local function Set_Gossip_Text(self, gossipOptionID)
     if zoneInfo.col then
         name= '|c'..zoneInfo.col..name..'|r'
     end
-    self:SetText(name)
+    if not info.name:find(name) then
+        info.name= name
+    end
+    --self:SetText(name)
 end
 
 
@@ -1564,7 +1568,7 @@ local function Init_Gossip()
 
     --自定义闲话选项, 按钮 GossipFrameShared.lua https://wago.io/MK7OiGqCu https://wago.io/hR_KBVGdK
     hooksecurefunc(GossipOptionButtonMixin, 'Setup', function(self, info)--GossipFrameShared.lua
-        Set_Gossip_Text(self, info.gossipOptionID)--自定义，对话，文本
+        Set_Gossip_Text(self, info)--自定义，对话，文本
 
         if not info or not info.gossipOptionID then
             return
@@ -1718,7 +1722,7 @@ local function Init_Gossip()
 
     --自动接取任务,多个任务GossipFrameShared.lua questInfo.questID, questInfo.title, questInfo.isIgnored, questInfo.isTrivial
     hooksecurefunc(GossipSharedAvailableQuestButtonMixin, 'Setup', function(self, info)
-        Set_Gossip_Text(self, info.gossipOptionID)--自定义，对话，文本
+        Set_Gossip_Text(self, info)--自定义，对话，文本
 
         local questID=info and info.questID or self:GetID()
         if not questID then
@@ -1792,7 +1796,7 @@ local function Init_Gossip()
 
     --完成已激活任务,多个任务GossipFrameShared.lua
     hooksecurefunc(GossipSharedActiveQuestButtonMixin, 'Setup', function(self, info)
-        Set_Gossip_Text(self, info.gossipOptionID)--自定义，对话，文本
+        Set_Gossip_Text(self, info)--自定义，对话，文本
 
         local npc=e.GetNpcID('npc')
 
