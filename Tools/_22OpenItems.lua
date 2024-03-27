@@ -126,7 +126,7 @@ local Save={
 
 local button
 local Bag= {}
-local isInRun, Combat
+local Combat
 
 
 
@@ -186,7 +186,6 @@ local function setAtt(bag, slot, icon, itemID, spellID)--设置属性
         num = C_Item.GetItemCount(itemID)
         num= num~=1 and num or ''
         button:SetShown(true)
-        --button:SetAttribute("type", "macro")
     else
         button:SetAttribute("macrotext", '')
         button:SetShown(not Save.noItemHide)
@@ -195,7 +194,6 @@ local function setAtt(bag, slot, icon, itemID, spellID)--设置属性
     button.count:SetText(num or '')
     button.texture:SetShown(bag and slot)
     Combat=nil
-    isInRun=nil
 end
 
 
@@ -210,22 +208,19 @@ end
 
 local equipItem--是装备时, 打开角色界面
 local function get_Items()--取得背包物品信息
-    if isInRun then
-        return
-    elseif UnitAffectingCombat('player') or not UnitIsConnected('player') then
+    --if UnitAffectingCombat('player') or not UnitIsConnected('player') then
+    if not button:CanChangeAttribute() then
         Combat=true
         return
     end
 
     equipItem=nil
-    isInRun=true
     Bag={}
-    local bagMax= not Save.disabledCheckReagentBag and NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES or NUM_BAG_FRAMES
+    local itemMinLevel, itemEquipLoc, classID, subclassID, _, info
+    local bagMax= Save.disabledCheckReagentBag and NUM_BAG_FRAMES or (NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES )
     for bag= Enum.BagIndex.Backpack, bagMax do--Constants.InventoryConstants.NumBagSlots
         for slot=1, C_Container.GetContainerNumSlots(bag) do
-            local info = C_Container.GetContainerItemInfo(bag, slot)
-
-            local itemMinLevel, itemEquipLoc, classID, subclassID, _
+            info = C_Container.GetContainerItemInfo(bag, slot)
             local duration, enable
             if info and info.itemID then
                 itemMinLevel, _, _, _, itemEquipLoc, _, _, classID, subclassID= select(5, GetItemInfo(info.itemID))
@@ -252,31 +247,9 @@ local function get_Items()--取得背包物品信息
 
                 else
                     local dateInfo= e.GetTooltipData({hyperLink=info.hyperlink, red=true, onlyRed=true, text={LOCKED}})
+                    if not dateInfo.red then--不出售, 可以使用                        
 
-                    if not dateInfo.red then--不出售, 可以使用
-                        if itemEquipLoc and _G[itemEquipLoc] then--幻化
-
-                            if Save.mago and info.quality then
-                                local  isCollected, isSelf= select(2, e.GetItemCollected(info.hyperlink, nil, nil, true))
-                                if not isCollected and isSelf then
-                                    setAtt(bag, slot, info.iconFileID, info.itemID)
-                                    equipItem=true
-                                    return
-                                end
-                            end
-
-                        elseif info.hyperlink:find('Hbattlepet:(%d+)') or (classID==15 and subclassID==2) then--宠物, 收集数量
-                            if Save.pet then
-                                local speciesID = info.hyperlink:match('Hbattlepet:(%d+)') or select(13, C_PetJournal.GetPetInfoByItemID(info.itemID))--宠物物品                        
-                                if speciesID then
-                                    local numCollected, limit= C_PetJournal.GetNumCollectedInfo(speciesID)
-                                    if numCollected and limit and numCollected <  limit then
-                                        setAtt(bag, slot, info.iconFileID, info.itemID)
-                                        return
-                                    end
-                                end
-                            end
-                        elseif info.hasLoot then--可打开
+                        if info.hasLoot then--可打开
                             if Save.open then
                                 if dateInfo.text[LOCKED] and e.Player.class=='ROGUE' then--DZ
                                     setAtt(bag, slot, info.iconFileID, info.itemID, 1804)--开锁 Pick Lock
@@ -316,6 +289,27 @@ local function get_Items()--取得背包物品信息
                                 return
                             end
 
+                        elseif info.hyperlink:find('Hbattlepet:(%d+)') or (classID==15 and subclassID==2) then--宠物, 收集数量
+                            if Save.pet then
+                                local speciesID = info.hyperlink:match('Hbattlepet:(%d+)') or select(13, C_PetJournal.GetPetInfoByItemID(info.itemID))--宠物物品                        
+                                if speciesID then
+                                    local numCollected, limit= C_PetJournal.GetNumCollectedInfo(speciesID)
+                                    if numCollected and limit and numCollected <  limit then
+                                        setAtt(bag, slot, info.iconFileID, info.itemID)
+                                        return
+                                    end
+                                end
+                            end
+
+                        elseif itemEquipLoc and _G[itemEquipLoc] then--幻化
+                            if Save.mago then --and info.quality then
+                                local  isCollected, isSelf= select(2, e.GetItemCollected(info.hyperlink, nil, nil, true))
+                                if not isCollected and isSelf then
+                                    setAtt(bag, slot, info.iconFileID, info.itemID)
+                                    equipItem=true
+                                    return
+                                end
+                            end
                         elseif Save.alt and classID~=12 and (classID~=0 or classID==0 and subclassID==8)  then-- 8 使用: 在龙鳞探险队中的声望提高1000点
                             local spell= select(2, C_Item.GetItemSpell(info.hyperlink))
                             if spell and IsUsableSpell(spell) and not C_Item.IsAnimaItemByID(info.hyperlink) and IsUsableItem(info.hyperlink) then
@@ -670,7 +664,7 @@ local function Init()
 
     get_Items()--设置属性
 
-    function button:set_tooltips()        
+    function button:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         if Bag.bag and Bag.slot then
@@ -711,7 +705,7 @@ local function Init()
                     if itemID~=select(2, e.tips:GetItem()) then
                         self:set_tooltips()
                     end
-                end                
+                end
             end
         end)
     end)
