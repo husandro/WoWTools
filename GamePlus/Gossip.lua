@@ -838,7 +838,13 @@ end
 function Init_Gossip_Text_Icon_Options_Button()
     local btn= e.Cbtn(GossipFrame, {size={20,20}, atlas='SpecDial_LastPip_BorderGlow'})
     btn:SetPoint('TOP', GossipFrameCloseButton, 'BOTTOM', -2, -4)
-    btn:SetScript('OnClick', Init_Gossip_Text_Icon_Options)
+    btn:SetScript('OnClick', function()
+        Init_Gossip_Text_Icon_Options()
+        if Gossip_Text_Icon_Options and Gossip_Text_Icon_Options:IsShown() then
+            Gossip_Text_Icon_Options:ClearAllPoints()
+            Gossip_Text_Icon_Options:SetPoint('TOPLEFT', GossipFrame, 'TOPRIGHT',0,-60)
+        end
+    end)
     btn:SetAlpha(0.3)
 
     btn:SetScript('OnLeave', function(self) self:SetAlpha(0.3) GameTooltip_Hide() end)
