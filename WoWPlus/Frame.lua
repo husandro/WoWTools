@@ -2590,33 +2590,30 @@ end)]]
 
     if UIWidgetPowerBarContainerFrame then--移动, 能量条
         created_Move_Button(UIWidgetPowerBarContainerFrame)
-        --[[function UIWidgetPowerBarContainerFrame:Get_WidgetIsShown()
-            for _, frame in pairs(self.widgetFrames or {}) do
-                if frame then
-                    return true
-                end
+        hooksecurefunc(UIWidgetPowerBarContainerFrame, 'CreateWidget', function(self)
+            if self.moveButton then
+                self.moveButton:SetShown(true)
             end
-            return false
-        end]]
-        if UIWidgetPowerBarContainerFrame.moveButton then
-            UIWidgetPowerBarContainerFrame.moveButton:SetShown(function()
-                for _, frame in pairs(self.widgetFrames or {}) do
-                    if frame then
-                        return true
-                    end
-                end
-                return false
-            end)
-            hooksecurefunc(UIWidgetPowerBarContainerFrame, 'CreateWidget', function(self)
-                self.moveButton:SetShown(self and true or false)
-            end)
-            hooksecurefunc(UIWidgetPowerBarContainerFrame, 'RemoveWidget', function(self)
+            if self.ResizeButton then
+                self.ResizeButton:SetShown(true)
+            end
+        end)
+        hooksecurefunc(UIWidgetPowerBarContainerFrame, 'RemoveWidget', function(self)
+            if self.moveButton then
                 self.moveButton:SetShown(false)
-            end)
-            hooksecurefunc(UIWidgetPowerBarContainerFrame, 'RemoveAllWidgets', function(self)
-               self.moveButton:SetShown(false)
-            end)
-        end
+            end
+            if self.ResizeButton then
+                self.ResizeButton:SetShown(false)
+            end
+        end)
+        hooksecurefunc(UIWidgetPowerBarContainerFrame, 'RemoveAllWidgets', function(self)
+            if self.moveButton then
+                self.moveButton:SetShown(false)
+            end
+            if self.ResizeButton then
+                self.ResizeButton:SetShown(false)
+            end
+        end)
     end
 
 
