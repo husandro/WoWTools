@@ -337,14 +337,14 @@ local function Init_Gossip_Text_Icon_Options()
 
 
     Gossip_Text_Icon_Options= CreateFrame('Frame', 'WoWTools_Gossip_Text_Icon_Option', UIParent)--, 'DialogBorderTemplate')--'ButtonFrameTemplate')
-    Gossip_Text_Icon_Options:SetSize(320, 260)
+    Gossip_Text_Icon_Options:SetSize(310, 260)
     Gossip_Text_Icon_Options:SetFrameStrata('HIGH')
 
     Gossip_Text_Icon_Options:SetPoint('CENTER')
     local border= CreateFrame('Frame', nil, Gossip_Text_Icon_Options,'DialogBorderTemplate')
     e.Set_Alpha_Frame_Texture(border, {alpha=0.5})
     Gossip_Text_Icon_Options.Header= CreateFrame('Frame', nil, Gossip_Text_Icon_Options, 'DialogHeaderTemplate')--DialogHeaderMixin
-    Gossip_Text_Icon_Options.Header:Setup(e.onlyChinese and '对话替换' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DIALOG_VOLUME, REPLACE))
+    Gossip_Text_Icon_Options.Header:Setup('|A:SpecDial_LastPip_BorderGlow:0:0|a'..(e.onlyChinese and '对话替换' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DIALOG_VOLUME, REPLACE)))
     Gossip_Text_Icon_Options.CloseButton=CreateFrame('Button', nil, Gossip_Text_Icon_Options, 'UIPanelCloseButton')
     Gossip_Text_Icon_Options.CloseButton:SetPoint('TOPRIGHT')
 
@@ -494,12 +494,14 @@ local function Init_Gossip_Text_Icon_Options()
     menu.FindIcon:SetPoint('LEFT', menu.Icon, 'RIGHT', 2,0)
     menu.FindIcon:SetScript('OnLeave', GameTooltip_Hide)
     menu.FindIcon:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, self.addName)        
+        e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:AddLine(e.onlyChinese and '点击在列表中浏览' or ICON_SELECTION_CLICK)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine('|cnRED_FONT_COLOR:Texture Atlas Viewer', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE)
+        if not _G['TAV_CoreFrame'] then
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine('|cnRED_FONT_COLOR:Texture Atlas Viewer', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE)
+        end
         e.tips:Show()
     end)
     menu.FindIcon:SetScript('OnClick', function(f)
@@ -568,7 +570,7 @@ local function Init_Gossip_Text_Icon_Options()
         menu.tav:SetScript('OnClick', function() _G['TAV_CoreFrame']:SetShown(not _G['TAV_CoreFrame']:IsShown()) end)
         menu.tav:SetScript('OnLeave', GameTooltip_Hide)
         menu.tav:SetScript('OnEnter', function(self)
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:SetOwner(self, "ANCHOR_RIGHT")
             e.tips:ClearLines()
             e.tips:AddDoubleLine(id, self.addName)
             e.tips:AddLine(' ')
@@ -663,6 +665,15 @@ local function Init_Gossip_Text_Icon_Options()
     menu.Delete= e.Cbtn(menu, {size={20,20}, atlas='common-icon-redx'})
     menu.Delete:SetPoint('LEFT', menu.Button, 'RIGHT', 2,0)
     menu.Delete:Hide()
+    menu.Delete:SetScript('OnLeave', GameTooltip_Hide)
+    menu.Delete:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_RIGHT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, self.addName)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.onlyChinese and '删除' or DELETE, self:GetParent().gossipID)
+        e.tips:Show()
+    end)
     menu.Delete:SetScript('OnClick', function(self)
         local f= self:GetParent()
         if f.gossipID and Save.Gossip_Text_Icon_Player[f.gossipID] then
@@ -773,7 +784,7 @@ local function Init_Gossip_Text_Icon_Options()
                 f.Texture:SetTexture(3847780)
             end
     end})
-    menu.Size:SetPoint('TOP', menu.Icon, 'BOTTOM', 0, -24)
+    menu.Size:SetPoint('TOP', menu.Icon, 'BOTTOM', 0, -36)
 
     menu.chat= e.Cbtn(menu, {size={20, 20}, atlas='transmog-icon-chat'})
     menu.chat:SetPoint('LEFT', menu.Name, 'RIGHT', 2, 0)
@@ -2979,7 +2990,9 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 Init_Gossip_Other_Auto_Select()
 
                 Init_Gossip_Text_Icon_Options()--自定义，对话，文本，选项
-                Init_Gossip_Text_Icon_Options_Button()--打开，自定义，对话，文本，按钮
+                if e.Player.husandro then
+                    Init_Gossip_Text_Icon_Options_Button()--打开，自定义，对话，文本，按钮
+                end
             else
                 panel:UnregisterAllEvents()
             end
