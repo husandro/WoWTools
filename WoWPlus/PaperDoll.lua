@@ -1232,7 +1232,7 @@ function Init_TrackButton_ShowHide_Button()
         panel.equipmentButton:SetShown(true)
         return
     end
-    panel.equipmentButton = e.Cbtn(PaperDollItemsFrame, {size={20,20}, atlas= Save.equipment and 'auctionhouse-icon-favorite' or e.Icon.disabled})--显示/隐藏装备管理框选项
+    panel.equipmentButton = e.Cbtn(PaperDollFrame.EquipmentManagerPane, {size={20,20}, atlas= Save.equipment and 'auctionhouse-icon-favorite' or e.Icon.disabled})--显示/隐藏装备管理框选项
     panel.equipmentButton:SetPoint('RIGHT', CharacterFrameCloseButton, 'LEFT')
     panel.equipmentButton:SetFrameStrata(CharacterFrameCloseButton:GetFrameStrata())
     panel.equipmentButton:SetFrameLevel(CharacterFrameCloseButton:GetFrameLevel()+1)
@@ -2526,7 +2526,7 @@ local function Init_Status_Plus()
         return
     end
     StatusPlusButton= e.Cbtn(CharacterStatsPane, {size={20,20}, icon='hide'})--显示/隐藏装备管理框选项
-    StatusPlusButton:SetPoint('RIGHT', CharacterFrameCloseButton, 'LEFT', -20, 0)
+    StatusPlusButton:SetPoint('RIGHT', CharacterFrameCloseButton, 'LEFT')
     StatusPlusButton:SetFrameStrata(CharacterFrameCloseButton:GetFrameStrata())
     StatusPlusButton:SetFrameLevel(CharacterFrameCloseButton:GetFrameLevel()+1)
     function StatusPlusButton:set_alpha(min)
@@ -2541,7 +2541,7 @@ local function Init_Status_Plus()
         print(id, e.cn(addName), e.GetEnabeleDisable(not Save.notStatusPlus), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end
     function StatusPlusButton:show_menu()
-        e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 60, 0)--主菜单
+        e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 40, 0)--主菜单
     end
     function StatusPlusButton:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_TOPLEFT")
@@ -2559,7 +2559,6 @@ local function Init_Status_Plus()
     StatusPlusButton:SetScript('OnEnter', StatusPlusButton.set_tooltips)
 
     StatusPlusButton.Menu= CreateFrame("Frame", nil, frame, "UIDropDownMenuTemplate")
-
 
     StatusPlusButton:SetScript("OnClick", StatusPlusButton.show_menu)
 
