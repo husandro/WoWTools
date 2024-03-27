@@ -84,7 +84,7 @@ local function hide_Frame_Texture(frame, tab)
 end
 
 --透明度, 颜色, frame, 子材质
-local function set_Alpha_Frame_Texture(frame, tab)
+function e.Set_Alpha_Frame_Texture(frame, tab)
     if not frame or not frame.GetRegions then
         return
     end
@@ -241,14 +241,14 @@ local function set_Menu(self, tab)
         return
     end
     tab = tab or {}
-    set_Alpha_Frame_Texture(self, {notAlpha=true})
+    e.Set_Alpha_Frame_Texture(self, {notAlpha=true})
     local btn= self.Button or tab.button
     if btn then
         e.Set_Label_Texture_Color(btn:GetNormalTexture(), {type='Texture', alpha=min05 or Save.alpha})
     end
-    --set_Alpha_Frame_Texture(self.Button, {notAlpha=true})
-    set_Alpha_Frame_Texture(self.DecrementButton, {notAlpha=true})
-    set_Alpha_Frame_Texture(self.IncrementButton, {notAlpha=true})
+    --e.Set_Alpha_Frame_Texture(self.Button, {notAlpha=true})
+    e.Set_Alpha_Frame_Texture(self.DecrementButton, {notAlpha=true})
+    e.Set_Alpha_Frame_Texture(self.IncrementButton, {notAlpha=true})
     e.Set_Label_Texture_Color(self.Text, {type='FontString'})
 end
 
@@ -337,7 +337,7 @@ local function Init_All_Frame()
     hide_Texture(GameMenuFrame.Header.LeftBG)
     GameMenuFrame.Header.Text:ClearAllPoints()
     GameMenuFrame.Header.Text:SetPoint('TOP', 0 ,-24)
-    set_Alpha_Frame_Texture(GameMenuFrame.Border, {alpha= min05})
+    e.Set_Alpha_Frame_Texture(GameMenuFrame.Border, {alpha= min05})
 
     for i=1, MAX_BOSS_FRAMES do
         local frame= _G['Boss'..i..'TargetFrame']
@@ -523,9 +523,9 @@ local function Init_All_Frame()
          end
      end
 
-     set_Alpha_Frame_Texture(SpellBookFrameTabButton1, {alpha=min05})
-     set_Alpha_Frame_Texture(SpellBookFrameTabButton2, {alpha=min05})
-     set_Alpha_Frame_Texture(SpellBookFrameTabButton3, {alpha=min05})
+     e.Set_Alpha_Frame_Texture(SpellBookFrameTabButton1, {alpha=min05})
+     e.Set_Alpha_Frame_Texture(SpellBookFrameTabButton2, {alpha=min05})
+     e.Set_Alpha_Frame_Texture(SpellBookFrameTabButton3, {alpha=min05})
 
 
      --世界地图
@@ -566,10 +566,10 @@ local function Init_All_Frame()
      set_ScrollBar(LFGListFrame.SearchPanel)
      --set_Alpha_Color(LFGListFrame.CategorySelection.Inset.CustomBG)
      --hide_Texture(LFGListFrame.CategorySelection.Inset.Bg)
-     set_Alpha_Frame_Texture(LFGListFrame.CategorySelection.Inset, {alpha= min05})
-     set_Alpha_Frame_Texture(LFGDungeonReadyDialog.Border, {alpha= min05})
-     set_Alpha_Frame_Texture(LFDRoleCheckPopup.Border, {alpha= min05})
-     set_Alpha_Frame_Texture(LFGDungeonReadyStatus.Border, {alpha= min05})
+     e.Set_Alpha_Frame_Texture(LFGListFrame.CategorySelection.Inset, {alpha= min05})
+     e.Set_Alpha_Frame_Texture(LFGDungeonReadyDialog.Border, {alpha= min05})
+     e.Set_Alpha_Frame_Texture(LFDRoleCheckPopup.Border, {alpha= min05})
+     e.Set_Alpha_Frame_Texture(LFGDungeonReadyStatus.Border, {alpha= min05})
 
 
 
@@ -636,9 +636,9 @@ local function Init_All_Frame()
      hide_Texture(GossipFrameInset.Bg)
      set_ScrollBar(GossipFrame.GreetingPanel)
 
-     set_Alpha_Frame_Texture(PVEFrameTab1, {alpha=min05})
-     set_Alpha_Frame_Texture(PVEFrameTab2, {alpha=min05})
-     set_Alpha_Frame_Texture(PVEFrameTab3, {alpha=min05})
+     e.Set_Alpha_Frame_Texture(PVEFrameTab1, {alpha=min05})
+     e.Set_Alpha_Frame_Texture(PVEFrameTab2, {alpha=min05})
+     e.Set_Alpha_Frame_Texture(PVEFrameTab3, {alpha=min05})
 
      if e.Player.class=='HUNTER' and PetStableFrame then--猎人，宠物
         set_NineSlice(PetStableFrame, true)
@@ -693,8 +693,8 @@ local function Init_All_Frame()
              end
          end
      end)
-     set_Alpha_Frame_Texture(BankFrameTab1, {alpha=min05})
-     set_Alpha_Frame_Texture(BankFrameTab2, {alpha=min05})
+     e.Set_Alpha_Frame_Texture(BankFrameTab1, {alpha=min05})
+     e.Set_Alpha_Frame_Texture(BankFrameTab2, {alpha=min05})
 
      --背包
      if ContainerFrameCombinedBags and ContainerFrameCombinedBags.NineSlice then
@@ -771,9 +771,9 @@ local function Init_All_Frame()
      hide_Frame_Texture(CharacterMainHandSlot)--16
      hide_Frame_Texture(CharacterSecondaryHandSlot)--17
 
-     set_Alpha_Frame_Texture(CharacterFrameTab1, {alpha=min05})
-     set_Alpha_Frame_Texture(CharacterFrameTab2, {alpha=min05})
-     set_Alpha_Frame_Texture(CharacterFrameTab3, {alpha=min05})
+     e.Set_Alpha_Frame_Texture(CharacterFrameTab1, {alpha=min05})
+     e.Set_Alpha_Frame_Texture(CharacterFrameTab2, {alpha=min05})
+     e.Set_Alpha_Frame_Texture(CharacterFrameTab3, {alpha=min05})
 
      --好友列表
      set_NineSlice(FriendsFrame, true)
@@ -783,7 +783,7 @@ local function Init_All_Frame()
      set_ScrollBar(FriendsListFrame)
      set_ScrollBar(IgnoreListFrame)
      set_Menu(FriendsFrameStatusDropDown)
-     set_Alpha_Frame_Texture(FriendsFrameBattlenetFrame.BroadcastButton, {notAlpha=true})
+     e.Set_Alpha_Frame_Texture(FriendsFrameBattlenetFrame.BroadcastButton, {notAlpha=true})
 
      --好友列表，召募
      if RecruitAFriendFrame and RecruitAFriendFrame.RecruitList then
@@ -823,9 +823,9 @@ local function Init_All_Frame()
      set_ScrollBar(QuickJoinFrame)
 
      for i=1, 4 do
-        set_Alpha_Frame_Texture(_G['FriendsFrameTab'..i], {alpha=min05})
-        set_Alpha_Frame_Texture(_G['FriendsTabHeaderTab'..i], {alpha=min05})
-        set_Alpha_Frame_Texture(_G['WhoFrameColumnHeader'..i], {alpha=min05})
+        e.Set_Alpha_Frame_Texture(_G['FriendsFrameTab'..i], {alpha=min05})
+        e.Set_Alpha_Frame_Texture(_G['FriendsTabHeaderTab'..i], {alpha=min05})
+        e.Set_Alpha_Frame_Texture(_G['WhoFrameColumnHeader'..i], {alpha=min05})
      end
 
 
@@ -859,7 +859,7 @@ local function Init_All_Frame()
      set_ScrollBar(QuestLogPopupDetailFrameScrollFrame)
      set_NineSlice(QuestLogPopupDetailFrameInset, nil, true)
 
-     set_Alpha_Frame_Texture(QuestModelScene)
+     e.Set_Alpha_Frame_Texture(QuestModelScene)
      set_Alpha_Color(QuestNPCModelTextFrameBg, nil, nil, min05)
      set_ScrollBar(QuestNPCModelTextScrollChildFrame)
      --[[set_NineSlice(QuestLogPopupDetailFrame, true)
@@ -882,8 +882,8 @@ local function Init_All_Frame()
      set_Alpha_Color(OpenMailFrameBg)
      set_Alpha_Color(OpenMailFrameInset.Bg)
 
-     set_Alpha_Frame_Texture(MailFrameTab1, {alpha=min05})
-     set_Alpha_Frame_Texture(MailFrameTab2, {alpha=min05})
+     e.Set_Alpha_Frame_Texture(MailFrameTab1, {alpha=min05})
+     e.Set_Alpha_Frame_Texture(MailFrameTab2, {alpha=min05})
 
      SendMailBodyEditBox:HookScript('OnEditFocusLost', function()
          set_Alpha_Color(SendStationeryBackgroundLeft)
@@ -917,7 +917,7 @@ local function Init_All_Frame()
      set_Alpha_Color(GroupLootHistoryFrameLeft)
      set_Alpha_Color(GroupLootHistoryFrameRight)
      set_Menu(GroupLootHistoryFrame.EncounterDropDown)
-     set_Alpha_Frame_Texture(GroupLootHistoryFrame.ResizeButton, {alpha=min05})
+     e.Set_Alpha_Frame_Texture(GroupLootHistoryFrame.ResizeButton, {alpha=min05})
 
 
 
@@ -939,7 +939,7 @@ local function Init_All_Frame()
 
 
      for i= 1, 5 do
-        set_Alpha_Frame_Texture(_G['CombatConfigTab'..i], {alpha=min05})
+        e.Set_Alpha_Frame_Texture(_G['CombatConfigTab'..i], {alpha=min05})
      end
 
      hooksecurefunc('ChatConfig_CreateCheckboxes', function(frame)--ChatConfigFrame.lua
@@ -1000,7 +1000,7 @@ local function Init_All_Frame()
 
      --场景 Blizzard_ScenarioObjectiveTracker.lua
      hooksecurefunc('Scenario_ChallengeMode_ShowBlock', function()--Blizzard_ScenarioObjectiveTracker.lua
-        set_Alpha_Frame_Texture(ScenarioChallengeModeBlock, {alpha=min05})
+        e.Set_Alpha_Frame_Texture(ScenarioChallengeModeBlock, {alpha=min05})
      end)
      set_Alpha_Color(ScenarioStageBlock.NormalBG, nil, nil, min05)
      --[[if ObjectiveTrackerBlocksFrame then
@@ -1036,16 +1036,16 @@ local function Init_All_Frame()
 
      --小地图
      set_Alpha_Color(MinimapCompassTexture)     
-     set_Alpha_Frame_Texture(GameTimeFrame)
+     e.Set_Alpha_Frame_Texture(GameTimeFrame)
      if MinimapCluster and MinimapCluster.TrackingFrame then
         --set_Button(MinimapCluster.TrackingFrame.Button)
         --hide_Texture(MinimapCluster.TrackingFrame.Button)
         set_Button(MinimapCluster.TrackingFrame.Button, {alpha= min03, all=false})
-        set_Alpha_Frame_Texture(MinimapCluster.BorderTop)
+        e.Set_Alpha_Frame_Texture(MinimapCluster.BorderTop)
      end
 
      --小队，背景
-    set_Alpha_Frame_Texture(PartyFrame.Background, {alpha= min03})
+    e.Set_Alpha_Frame_Texture(PartyFrame.Background, {alpha= min03})
 
      --任务，追踪柆
      hooksecurefunc('ObjectiveTracker_Initialize', function(self)
@@ -1058,9 +1058,9 @@ local function Init_All_Frame()
 
      set_Alpha_Color(QuickJoinToastButton.FriendsButton, nil, nil, min03)
      --set_Alpha_Color(QuickJoinToastButton.QueueButton, nil, nil, min03)
-     set_Alpha_Frame_Texture(ChatFrameChannelButton, {alpha= min03})
-     set_Alpha_Frame_Texture(ChatFrameMenuButton, {alpha= min03})
-     set_Alpha_Frame_Texture(TextToSpeechButton, {alpha=min03})
+     e.Set_Alpha_Frame_Texture(ChatFrameChannelButton, {alpha= min03})
+     e.Set_Alpha_Frame_Texture(ChatFrameMenuButton, {alpha= min03})
+     e.Set_Alpha_Frame_Texture(TextToSpeechButton, {alpha=min03})
 
      --[[hooksecurefunc('ObjectiveTracker_UpdateOpacity', function()
          --for _, module in ipairs(ObjectiveTrackerBlocksFrame.MODULES) do
@@ -1076,7 +1076,7 @@ local function Init_All_Frame()
             set_Alpha_Color(_G['ChatFrame'..i..'EditBoxLeft'], nil, nil, min03)
             set_Alpha_Color(_G['ChatFrame'..i..'EditBoxRight'], nil, nil, min03)
             set_ScrollBar(frame)
-            set_Alpha_Frame_Texture(frame.ScrollToBottomButton, {notAlpha=true})
+            e.Set_Alpha_Frame_Texture(frame.ScrollToBottomButton, {notAlpha=true})
         end
      end
 
@@ -1087,8 +1087,8 @@ local function Init_All_Frame()
      set_Alpha_Color(MerchantFrameLootFilterMiddle)
      set_Alpha_Color(MerchantFrameLootFilterLeft)
      set_Alpha_Color(MerchantFrameLootFilterRight)
-     set_Alpha_Frame_Texture(MerchantFrameTab1, {alpha=min05})
-     set_Alpha_Frame_Texture(MerchantFrameTab2, {alpha=min05})
+     e.Set_Alpha_Frame_Texture(MerchantFrameTab1, {alpha=min05})
+     e.Set_Alpha_Frame_Texture(MerchantFrameTab2, {alpha=min05})
      set_ScrollBar(MerchantFrame)
      set_Alpha_Color(MerchantFrameBg)
      set_NineSlice(MerchantFrameInset, true)
@@ -1115,7 +1115,7 @@ local function Init_All_Frame()
                  local name=C_AddOns.GetAddOnInfo(i)
                  name= name:match('(.-)%-') or name
                  if name then
-                     set_Alpha_Frame_Texture(_G['LibDBIcon10_'..name], {index=2})
+                     e.Set_Alpha_Frame_Texture(_G['LibDBIcon10_'..name], {index=2})
                  end
              end
          end
@@ -1163,27 +1163,27 @@ local function Init_All_Frame()
 
 
     --颜色
-    set_Alpha_Frame_Texture(ColorPickerFrame.Header, {alpha= min05})
-    set_Alpha_Frame_Texture(ColorPickerFrame.Border, {alpha= min05})
+    e.Set_Alpha_Frame_Texture(ColorPickerFrame.Header, {alpha= min05})
+    e.Set_Alpha_Frame_Texture(ColorPickerFrame.Border, {alpha= min05})
 
     --编辑模式
     set_Menu(EditModeManagerFrame.LayoutDropdown.DropDownMenu)
     set_ScrollBar(EditModeManagerFrame.AccountSettings.SettingsContainer)
-    set_Alpha_Frame_Texture(EditModeManagerFrame.Border, {alpha=min05})
-    set_Alpha_Frame_Texture(EditModeManagerFrame.AccountSettings.SettingsContainer.BorderArt, {alpha=min05})
+    e.Set_Alpha_Frame_Texture(EditModeManagerFrame.Border, {alpha=min05})
+    e.Set_Alpha_Frame_Texture(EditModeManagerFrame.AccountSettings.SettingsContainer.BorderArt, {alpha=min05})
     set_Slider(EditModeManagerFrame.GridSpacingSlider)
 
-    set_Alpha_Frame_Texture(BNToastFrame, {alpha=min05})
+    e.Set_Alpha_Frame_Texture(BNToastFrame, {alpha=min05})
 
 
     --[[hooksecurefunc(SettingsCategoryListButtonMixin, 'Init', function(self, initializer)--列表 Blizzard_CategoryList.lua
-        set_Alpha_Frame_Texture(self.Button, {notAlpha=true})
+        e.Set_Alpha_Frame_Texture(self.Button, {notAlpha=true})
     end)
     hooksecurefunc(SettingsCategoryListHeaderMixin, 'Init', function(self, initializer)
         set_Alpha_Color(self.Background, nil, nil, min05)
     end)
     hooksecurefunc(SettingsCheckBoxControlMixin, 'Init', function(self, initializer)
-        set_Alpha_Frame_Texture(self.CheckBox, {notAlpha=true})
+        e.Set_Alpha_Frame_Texture(self.CheckBox, {notAlpha=true})
     end)
 
     hooksecurefunc(SettingsSliderControlMixin, 'Init', function(self, initializer)
@@ -1193,42 +1193,42 @@ local function Init_All_Frame()
         set_Menu(self.DropDown)
     end)
     hooksecurefunc(SettingsCheckBoxWithButtonControlMixin, 'Init', function(self, initializer)
-        set_Alpha_Frame_Texture(self.CheckBox, {notAlpha=true})
-        --set_Alpha_Frame_Texture(self.Button, {notAlpha=true})
+        e.Set_Alpha_Frame_Texture(self.CheckBox, {notAlpha=true})
+        --e.Set_Alpha_Frame_Texture(self.Button, {notAlpha=true})
     end)
     hooksecurefunc(SettingsCheckBoxSliderControlMixin, 'Init', function(self, initializer)--Blizzard_SettingControls.lua
-        set_Alpha_Frame_Texture(self.CheckBox, {notAlpha=true})
+        e.Set_Alpha_Frame_Texture(self.CheckBox, {notAlpha=true})
         set_Slider(self.SliderWithSteppers)
     end)
     hooksecurefunc(SettingsCheckBoxDropDownControlMixin, 'Init', function(self, initializer)--Blizzard_SettingControls.lua
-        set_Alpha_Frame_Texture(self.CheckBox, {notAlpha=true})
+        e.Set_Alpha_Frame_Texture(self.CheckBox, {notAlpha=true})
         set_Menu(self.DropDown)
     end)
     hooksecurefunc(KeyBindingFrameBindingTemplateMixin, 'Init', function(self, initializer)
-        set_Alpha_Frame_Texture(self.Button1, {notAlpha=true})
-        set_Alpha_Frame_Texture(self.Button2, {notAlpha=true})
+        e.Set_Alpha_Frame_Texture(self.Button1, {notAlpha=true})
+        e.Set_Alpha_Frame_Texture(self.Button2, {notAlpha=true})
     end)]]
 
     --ReportFrame
-    set_Alpha_Frame_Texture(ReportFrame)
-    set_Alpha_Frame_Texture(ReportFrame.Border)
+    e.Set_Alpha_Frame_Texture(ReportFrame)
+    e.Set_Alpha_Frame_Texture(ReportFrame.Border)
     hide_Texture(ReportFrame.BottomInset)
     hide_Texture(ReportFrame.TopInset)
-    set_Alpha_Frame_Texture(ReportFrame.CloseButton, {notAlpha=true})
+    e.Set_Alpha_Frame_Texture(ReportFrame.CloseButton, {notAlpha=true})
     set_Menu(ReportFrame.ReportingMajorCategoryDropdown)
     set_ScrollBar(ReportFrame.Comment)
 
-    set_Alpha_Frame_Texture(BattleTagInviteFrame.Border, {notAlpha=true})
+    e.Set_Alpha_Frame_Texture(BattleTagInviteFrame.Border, {notAlpha=true})
 
     --就绪
     set_NineSlice(ReadyCheckListenerFrame, true)
     set_Alpha_Color(ReadyCheckListenerFrame.Bg, true)
 
     --团队 RolePoll.lua
-    set_Alpha_Frame_Texture(RolePollPopup.Border, {notAlpha=true})
+    e.Set_Alpha_Frame_Texture(RolePollPopup.Border, {notAlpha=true})
 
     --对话框
-    set_Alpha_Frame_Texture(StaticPopup1.Border, {notAlpha=true})
+    e.Set_Alpha_Frame_Texture(StaticPopup1.Border, {notAlpha=true})
     set_Alpha_Color(StaticPopup1.Border.Bg, true)
 
     --ItemTextFrame
@@ -1246,9 +1246,9 @@ local function Init_All_Frame()
     set_NineSlice(DressUpFrame, true)
     set_Alpha_Color(DressUpFrameBg)
     hide_Texture(DressUpFrameInset.Bg)
-    set_Alpha_Frame_Texture(DressUpFrameInset)
+    e.Set_Alpha_Frame_Texture(DressUpFrameInset)
     set_Alpha_Color(DressUpFrame.ModelBackground, nil, nil, min05)
-    set_Alpha_Frame_Texture(DressUpFrame.OutfitDetailsPanel, {alpha=min03})
+    e.Set_Alpha_Frame_Texture(DressUpFrame.OutfitDetailsPanel, {alpha=min03})
     hide_Texture(DressUpFrame.OutfitDetailsPanel.BlackBackground)
     set_Menu(DressUpFrameOutfitDropDown)
 
@@ -1309,7 +1309,7 @@ end
 --#########
 local function Init_Event(arg1)
     if arg1=='Blizzard_TrainerUI' then--专业训练师
-        set_Alpha_Frame_Texture(ClassTrainerFrame, {alpha=min05})
+        e.Set_Alpha_Frame_Texture(ClassTrainerFrame, {alpha=min05})
         set_ScrollBar(ClassTrainerFrame)
         set_NineSlice(ClassTrainerFrame, true)
 
@@ -1376,7 +1376,7 @@ local function Init_Event(arg1)
         --TabSystemOwner.lua
         for _, tabID in pairs(ClassTalentFrame:GetTabSet() or {}) do
             local btn= ClassTalentFrame:GetTabButton(tabID)
-            set_Alpha_Frame_Texture(btn, {alpha=min05})
+            e.Set_Alpha_Frame_Texture(btn, {alpha=min05})
         end
 
 
@@ -1393,9 +1393,9 @@ local function Init_Event(arg1)
         set_ScrollBar(AchievementFrameStats)
         set_SearchBox(AchievementFrame.SearchBox)
         set_Alpha_Color(AchievementFrameStatsBG, nil, nil, min05)
-        set_Alpha_Frame_Texture(AchievementFrameTab1, {alpha=min05})
-        set_Alpha_Frame_Texture(AchievementFrameTab2, {alpha=min05})
-        set_Alpha_Frame_Texture(AchievementFrameTab3, {alpha=min05})
+        e.Set_Alpha_Frame_Texture(AchievementFrameTab1, {alpha=min05})
+        e.Set_Alpha_Frame_Texture(AchievementFrameTab2, {alpha=min05})
+        e.Set_Alpha_Frame_Texture(AchievementFrameTab3, {alpha=min05})
         hide_Texture(AchievementFrameSummaryCategoriesStatusBarFillBar)
 
         set_Alpha_Color(AchievementFrameSummaryCategoriesStatusBarFillRight)
@@ -1451,25 +1451,25 @@ local function Init_Event(arg1)
         hide_Frame_Texture(CommunitiesFrame.GuildBenefitsTab, {index=1})
         hide_Frame_Texture(CommunitiesFrame.GuildInfoTab, {index=1})
         --set_Menu(CommunitiesFrame.StreamDropDownMenu)
-        set_Alpha_Frame_Texture(CommunitiesFrame.AddToChatButton, {notAlpha=true})
+        e.Set_Alpha_Frame_Texture(CommunitiesFrame.AddToChatButton, {notAlpha=true})
 
         hide_Frame_Texture(ClubFinderCommunityAndGuildFinderFrame.ClubFinderSearchTab, {index=1})
         hide_Frame_Texture(ClubFinderCommunityAndGuildFinderFrame.ClubFinderPendingTab, {index=1})
 
         set_Alpha_Color(ClubFinderGuildFinderFrame.InsetFrame.Bg)
 
-        set_Alpha_Frame_Texture(CommunitiesFrame.NotificationSettingsDialog.Selector)
+        e.Set_Alpha_Frame_Texture(CommunitiesFrame.NotificationSettingsDialog.Selector)
         set_ScrollBar(CommunitiesFrame.NotificationSettingsDialog.ScrollFrame)
         set_Alpha_Color(CommunitiesFrame.NotificationSettingsDialog.BG, {notAlpha=true})
         --set_Menu(CommunitiesFrame.NotificationSettingsDialog.CommunitiesListDropDownMenu)
 
-        set_Alpha_Frame_Texture(GuildControlUI)
-        set_Alpha_Frame_Texture(GuildControlUIHbar)
+        e.Set_Alpha_Frame_Texture(GuildControlUI)
+        e.Set_Alpha_Frame_Texture(GuildControlUIHbar)
         --set_Menu(GuildControlUINavigationDropDown)
 
         --set_Menu(CommunitiesFrame.GuildMemberListDropDownMenu)
 
-        set_Alpha_Frame_Texture(CommunitiesGuildLogFrame)
+        e.Set_Alpha_Frame_Texture(CommunitiesGuildLogFrame)
         set_NineSlice(CommunitiesGuildLogFrame.Container, true)
         set_ScrollBar(CommunitiesGuildLogFrame.Container.ScrollFrame)
         --set_Menu(CommunitiesFrame.CommunitiesListDropDownMenu)
@@ -1545,11 +1545,11 @@ local function Init_Event(arg1)
 
         end)
 
-        set_Alpha_Frame_Texture(EncounterJournalSuggestTab, {alpha=min05})
-        set_Alpha_Frame_Texture(EncounterJournalMonthlyActivitiesTab, {alpha=min05})
-        set_Alpha_Frame_Texture(EncounterJournalDungeonTab, {alpha=min05})
-        set_Alpha_Frame_Texture(EncounterJournalRaidTab, {alpha=min05})
-        set_Alpha_Frame_Texture(EncounterJournalLootJournalTab, {alpha=min05})
+        e.Set_Alpha_Frame_Texture(EncounterJournalSuggestTab, {alpha=min05})
+        e.Set_Alpha_Frame_Texture(EncounterJournalMonthlyActivitiesTab, {alpha=min05})
+        e.Set_Alpha_Frame_Texture(EncounterJournalDungeonTab, {alpha=min05})
+        e.Set_Alpha_Frame_Texture(EncounterJournalRaidTab, {alpha=min05})
+        e.Set_Alpha_Frame_Texture(EncounterJournalLootJournalTab, {alpha=min05})
         --set_Menu(EncounterJournalLootJournalViewDropDown)
 
 
@@ -1578,7 +1578,7 @@ local function Init_Event(arg1)
             if frame then
                 hide_Texture(frame.Background)
             end
-            set_Alpha_Frame_Texture(_G['GuildBankFrameTab'..i], {alpha=min05})
+            e.Set_Alpha_Frame_Texture(_G['GuildBankFrameTab'..i], {alpha=min05})
         end
 
         local MAX_GUILDBANK_SLOTS_PER_TAB = 98;
@@ -1611,10 +1611,10 @@ local function Init_Event(arg1)
         set_Alpha_Color(AuctionHouseFrameLeft, nil, nil, min03)
         set_Alpha_Color(AuctionHouseFrameRight, nil, nil, min03)
 
-        set_Alpha_Frame_Texture(AuctionHouseFrameBuyTab, {alpha= min05})
-        set_Alpha_Frame_Texture(AuctionHouseFrameSellTab, {alpha= min05})
-        set_Alpha_Frame_Texture(AuctionHouseFrameAuctionsTab, {alpha= min05})
-        set_Alpha_Frame_Texture(AuctionHouseFrame.SearchBar.FilterButton, {alpha= min05})
+        e.Set_Alpha_Frame_Texture(AuctionHouseFrameBuyTab, {alpha= min05})
+        e.Set_Alpha_Frame_Texture(AuctionHouseFrameSellTab, {alpha= min05})
+        e.Set_Alpha_Frame_Texture(AuctionHouseFrameAuctionsTab, {alpha= min05})
+        e.Set_Alpha_Frame_Texture(AuctionHouseFrame.SearchBar.FilterButton, {alpha= min05})
 
         set_NineSlice(AuctionHouseFrame.CategoriesList, nil, true)
         set_ScrollBar(AuctionHouseFrame.CategoriesList)
@@ -1641,7 +1641,7 @@ local function Init_Event(arg1)
         set_NineSlice(AuctionHouseFrame.CommoditiesSellList, nil, true)
         set_ScrollBar(AuctionHouseFrame.CommoditiesSellList)
         set_NineSlice(AuctionHouseFrame.CommoditiesSellFrame, nil, true)
-        set_Alpha_Frame_Texture(AuctionHouseFrame.CommoditiesSellFrame.ItemDisplay, {alpha=0})
+        e.Set_Alpha_Frame_Texture(AuctionHouseFrame.CommoditiesSellFrame.ItemDisplay, {alpha=0})
         set_SearchBox(AuctionHouseFrame.CommoditiesSellFrame.QuantityInput.InputBox)
         set_SearchBox(AuctionHouseFrame.CommoditiesSellFrame.PriceInput.MoneyInputFrame.GoldBox)
         set_SearchBox(AuctionHouseFrame.CommoditiesSellFrame.PriceInput.MoneyInputFrame.SilverBox)
@@ -1653,7 +1653,7 @@ local function Init_Event(arg1)
         set_NineSlice(AuctionHouseFrame.ItemSellList, nil, true)
         set_ScrollBar(AuctionHouseFrame.ItemSellList)
         set_NineSlice(AuctionHouseFrame.ItemSellFrame, nil, true)
-        set_Alpha_Frame_Texture(AuctionHouseFrame.ItemSellFrame.ItemDisplay, {alpha=0})
+        e.Set_Alpha_Frame_Texture(AuctionHouseFrame.ItemSellFrame.ItemDisplay, {alpha=0})
         set_SearchBox(AuctionHouseFrame.ItemSellFrame.QuantityInput.InputBox)
         set_SearchBox(AuctionHouseFrame.ItemSellFrame.PriceInput.MoneyInputFrame.GoldBox)
         set_SearchBox(AuctionHouseFrame.ItemSellFrame.PriceInput.MoneyInputFrame.SilverBox)
@@ -1665,8 +1665,8 @@ local function Init_Event(arg1)
         --拍卖，所在物品，页面
         set_SearchBox(AuctionHouseFrameAuctionsFrameBidsTab)
         set_SearchBox(AuctionHouseFrameAuctionsFrameAuctionsTab)
-        set_Alpha_Frame_Texture(AuctionHouseFrameAuctionsFrameGold, {alpha=min05})
-        set_Alpha_Frame_Texture(AuctionHouseFrameAuctionsFrameSilver, {alpha=min05})
+        e.Set_Alpha_Frame_Texture(AuctionHouseFrameAuctionsFrameGold, {alpha=min05})
+        e.Set_Alpha_Frame_Texture(AuctionHouseFrameAuctionsFrameSilver, {alpha=min05})
         set_NineSlice(AuctionHouseFrameAuctionsFrame.ItemDisplay, nil, true)
         set_NineSlice(AuctionHouseFrameAuctionsFrame.CommoditiesList, nil, true)
 
@@ -1700,8 +1700,8 @@ local function Init_Event(arg1)
         set_NineSlice(ProfessionsCustomerOrdersFrame.BrowseOrders.RecipeList, nil, true)
         set_ScrollBar(ProfessionsCustomerOrdersFrame.BrowseOrders.CategoryList)
         set_ScrollBar(ProfessionsCustomerOrdersFrame.BrowseOrders.RecipeList)
-        set_Alpha_Frame_Texture(ProfessionsCustomerOrdersFrameBrowseTab, {alpha=min05})
-        set_Alpha_Frame_Texture(ProfessionsCustomerOrdersFrameOrdersTab, {alpha=min05})
+        e.Set_Alpha_Frame_Texture(ProfessionsCustomerOrdersFrameBrowseTab, {alpha=min05})
+        e.Set_Alpha_Frame_Texture(ProfessionsCustomerOrdersFrameOrdersTab, {alpha=min05})
 
         set_NineSlice(ProfessionsCustomerOrdersFrame.MyOrdersPage.OrderList, nil, true)
         set_ScrollBar(ProfessionsCustomerOrdersFrame.MyOrdersPage.OrderList)
@@ -1725,7 +1725,7 @@ local function Init_Event(arg1)
         set_NineSlice(CollectionsJournal, true)
         set_Alpha_Color(CollectionsJournalBg)
 
-        set_Alpha_Frame_Texture(MountJournal.MountCount, {alpha=min03})
+        e.Set_Alpha_Frame_Texture(MountJournal.MountCount, {alpha=min03})
         hide_Texture(MountJournal.LeftInset.Bg)
         set_Alpha_Color(MountJournal.MountDisplay.YesMountsTex)
         hide_Texture(MountJournal.RightInset.Bg)
@@ -1736,7 +1736,7 @@ local function Init_Event(arg1)
         set_NineSlice(MountJournal.BottomLeftInset, nil, true)
         set_NineSlice(MountJournal.RightInset, nil, true)
         set_NineSlice(MountJournal.LeftInset, nil, true)
-        set_Alpha_Frame_Texture(MountJournalFilterButton, {alpha=min03})
+        e.Set_Alpha_Frame_Texture(MountJournalFilterButton, {alpha=min03})
         C_Timer.After(0.5, function() set_Menu(MountJournalFilterButtonWoWTools) end)
 
         set_Alpha_Color(PetJournalPetCardBG, nil, nil, min03)
@@ -1763,7 +1763,7 @@ local function Init_Event(arg1)
         set_Alpha_Color(PetJournal.PetCount.BorderTopRight, nil, nil, min03)
         set_Alpha_Color(PetJournal.PetCount.BorderLeftMiddle, nil, nil, min03)
         set_Alpha_Color(PetJournal.PetCount.BorderRightMiddle, nil, nil, min03)
-        set_Alpha_Frame_Texture(PetJournalFilterButton, {alpha=min03})
+        e.Set_Alpha_Frame_Texture(PetJournalFilterButton, {alpha=min03})
         set_NineSlice(PetJournalLeftInset, nil, true)
         set_NineSlice(PetJournalPetCardInset, nil, true)
         set_NineSlice(PetJournalRightInset, nil, true)
@@ -1782,7 +1782,7 @@ local function Init_Event(arg1)
         hide_Texture(ToyBox.iconsFrame.Bg)
         set_SearchBox(ToyBox.searchBo)
         set_SearchBox(ToyBox.searchBox)
-        set_Alpha_Frame_Texture(ToyBoxFilterButton, {alpha=min03})
+        e.Set_Alpha_Frame_Texture(ToyBoxFilterButton, {alpha=min03})
         hide_Texture(ToyBox.iconsFrame.ShadowLineTop)
         hide_Texture(ToyBox.iconsFrame.ShadowLineBottom)
 
@@ -1809,7 +1809,7 @@ local function Init_Event(arg1)
         hide_Texture(HeirloomsJournal.iconsFrame.ShadowLineTop)
         set_NineSlice(HeirloomsJournal.iconsFrame, nil, true)
         HeirloomsJournal.progressBar:DisableDrawLayer('BACKGROUND')
-        set_Alpha_Frame_Texture(HeirloomsJournal.FilterButton, {alpha=min03})
+        e.Set_Alpha_Frame_Texture(HeirloomsJournal.FilterButton, {alpha=min03})
 
         hide_Texture(WardrobeCollectionFrame.ItemsCollectionFrame.ShadowLineBottom)
         hide_Texture(WardrobeCollectionFrame.ItemsCollectionFrame.ShadowLineTop)
@@ -1842,8 +1842,8 @@ local function Init_Event(arg1)
         set_Alpha_Color(WardrobeCollectionFrameTopLeft)
                  --WardrobeCollectionFrameBottomRight
 
-        set_Alpha_Frame_Texture(WardrobeCollectionFrame.FilterButton, {alpha=min03})
-        set_Alpha_Frame_Texture(WardrobeSetsCollectionVariantSetsButton, {alpha=min03})
+        e.Set_Alpha_Frame_Texture(WardrobeCollectionFrame.FilterButton, {alpha=min03})
+        e.Set_Alpha_Frame_Texture(WardrobeSetsCollectionVariantSetsButton, {alpha=min03})
 
 
         --[[set_Alpha_Color(WardrobeSetsCollectionVariantSetsButtonMiddleMiddle, nil, nil, min03)
@@ -1857,8 +1857,8 @@ local function Init_Event(arg1)
         set_Alpha_Color(WardrobeSetsCollectionVariantSetsButtonBottomRight)]]
         hide_Texture(WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.ModelFadeTexture)
 
-        set_Alpha_Frame_Texture(WardrobeCollectionFrameTab1, {alpha=min05})
-        set_Alpha_Frame_Texture(WardrobeCollectionFrameTab2, {alpha=min05})
+        e.Set_Alpha_Frame_Texture(WardrobeCollectionFrameTab1, {alpha=min05})
+        e.Set_Alpha_Frame_Texture(WardrobeCollectionFrameTab2, {alpha=min05})
         --[[hooksecurefunc(WardrobeSetsScrollFrameButtonMixin, 'Init', function(button, displayData)--外观列表
             set_Alpha_Color(button.Background)
         end)]]
@@ -1900,7 +1900,7 @@ local function Init_Event(arg1)
         --set_Menu(WardrobeCollectionFrameWeaponDropDown)
 
         for i=1, 7 do
-            set_Alpha_Frame_Texture(_G['CollectionsJournalTab'..i], {alpha=min05})
+            e.Set_Alpha_Frame_Texture(_G['CollectionsJournalTab'..i], {alpha=min05})
         end
 
         if _G['RematchJournal'] then
@@ -1938,7 +1938,7 @@ local function Init_Event(arg1)
             end
         end]]
         set_Alpha_Color(CalendarCreateEventFrame.Border.Bg)
-        set_Alpha_Frame_Texture(CalendarCreateEventFrame.Border, {notAlpha=true})
+        e.Set_Alpha_Frame_Texture(CalendarCreateEventFrame.Border, {notAlpha=true})
         set_SearchBox(CalendarCreateEventTitleEdit)
         set_NineSlice(CalendarCreateEventDescriptionContainer, nil, nil, true)
         set_NineSlice(CalendarCreateEventInviteList, nil, nil, true)
@@ -1946,10 +1946,10 @@ local function Init_Event(arg1)
         set_SearchBox(CalendarCreateEventInviteEdit)
         set_Alpha_Color(CalendarCreateEventFrameButtonBackground, true)
         set_Alpha_Color(CalendarCreateEventCreateButtonBorder, true)
-        set_Alpha_Frame_Texture(CalendarCreateEventFrame.Header, {notAlpha=true})
+        e.Set_Alpha_Frame_Texture(CalendarCreateEventFrame.Header, {notAlpha=true})
 
-        set_Alpha_Frame_Texture(CalendarViewHolidayFrame.Header, {notAlpha=true})
-        set_Alpha_Frame_Texture(CalendarViewHolidayFrame.Border, {notAlpha=true})
+        e.Set_Alpha_Frame_Texture(CalendarViewHolidayFrame.Header, {notAlpha=true})
+        e.Set_Alpha_Frame_Texture(CalendarViewHolidayFrame.Border, {notAlpha=true})
         set_Menu(CalendarFilterFrame, {button=CalendarFilterButton})
         set_Alpha_Color(CalendarMonthBackground)
         set_Alpha_Color(CalendarYearBackground)
@@ -1994,7 +1994,7 @@ local function Init_Event(arg1)
         set_Alpha_Color(ChallengesFrameInset.Bg)
 
         hooksecurefunc(ChallengesKeystoneFrame, 'Reset', function(self2)--钥匙插入， 界面
-            set_Alpha_Frame_Texture(self2, {index=1})
+            e.Set_Alpha_Frame_Texture(self2, {index=1})
             hide_Texture(self2.InstructionBackground)
         end)
 
@@ -2027,9 +2027,9 @@ local function Init_Event(arg1)
         hide_Texture(InspectFrameInset.Bg)
         hide_Texture(InspectPVPFrame.BG)
         hide_Texture(InspectGuildFrameBG)
-        set_Alpha_Frame_Texture(InspectFrameTab1, {alpha=min05})
-        set_Alpha_Frame_Texture(InspectFrameTab2, {alpha=min05})
-        set_Alpha_Frame_Texture(InspectFrameTab3, {alpha=min05})
+        e.Set_Alpha_Frame_Texture(InspectFrameTab1, {alpha=min05})
+        e.Set_Alpha_Frame_Texture(InspectFrameTab2, {alpha=min05})
+        e.Set_Alpha_Frame_Texture(InspectFrameTab3, {alpha=min05})
         set_NineSlice(InspectFrame, true)
         set_NineSlice(InspectFrameInset, nil, true)
 
@@ -2047,7 +2047,7 @@ local function Init_Event(arg1)
         set_Alpha_Color(ItemUpgradeFrameLeft)
 
     elseif arg1=='Blizzard_MacroUI' then--宏
-        set_Alpha_Frame_Texture(MacroFrame, {notAlpha=true})
+        e.Set_Alpha_Frame_Texture(MacroFrame, {notAlpha=true})
         set_NineSlice(MacroFrameInset, true)
         set_NineSlice(MacroFrame, true)
         hide_Texture(MacroFrameBg)
@@ -2105,14 +2105,14 @@ local function Init_Event(arg1)
         set_Alpha_Color(InspectRecipeFrame.SchematicForm.MinimalBackground)
         for _, tabID in pairs(ProfessionsFrame:GetTabSet() or {}) do
             local btn= ProfessionsFrame:GetTabButton(tabID)
-            set_Alpha_Frame_Texture(btn, {alpha=min05})
+            e.Set_Alpha_Frame_Texture(btn, {alpha=min05})
         end
 
         if ProfessionsFrame.SpecPage then
             hooksecurefunc(ProfessionsFrame.SpecPage, 'UpdateTabs', function(self)
                 for tab, bool in self.tabsPool:EnumerateActive() do
                     if bool then
-                        set_Alpha_Frame_Texture(tab, {alpha=min05})
+                        e.Set_Alpha_Frame_Texture(tab, {alpha=min05})
                     end
                 end
             end)
@@ -2489,8 +2489,8 @@ local function Init_Main_Button()
         end
     end
 
-    set_Alpha_Frame_Texture(MainMenuBar.ActionBarPageNumber.UpButton, {alpha=min05})
-    set_Alpha_Frame_Texture(MainMenuBar.ActionBarPageNumber.DownButton, {alpha=min05})
+    e.Set_Alpha_Frame_Texture(MainMenuBar.ActionBarPageNumber.UpButton, {alpha=min05})
+    e.Set_Alpha_Frame_Texture(MainMenuBar.ActionBarPageNumber.DownButton, {alpha=min05})
     set_Label(MainMenuBar.ActionBarPageNumber.Text, 1)
 
     if MainMenuBar.EndCaps then
@@ -2872,7 +2872,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
         elseif arg1=='Blizzard_Settings' then
             Init_Options()
 
-            set_Alpha_Frame_Texture(SettingsPanel.NineSlice, {alpha=min05})
+            e.Set_Alpha_Frame_Texture(SettingsPanel.NineSlice, {alpha=min05})
             set_Alpha_Color(SettingsPanel.Bg, nil, nil, min05)
             set_ScrollBar(SettingsPanel.Container.SettingsList)
             set_ScrollBar(SettingsPanel.CategoryList)
@@ -2880,10 +2880,10 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             set_NineSlice(PingSystemTutorial, true)
             set_NineSlice(PingSystemTutorialInset, nil, true)
             hide_Texture(PingSystemTutorialBg)
-            set_Alpha_Frame_Texture(SettingsPanel.GameTab, {notAlpha=true})
-            set_Alpha_Frame_Texture(SettingsPanel.AddOnsTab, {notAlpha=true})
+            e.Set_Alpha_Frame_Texture(SettingsPanel.GameTab, {notAlpha=true})
+            e.Set_Alpha_Frame_Texture(SettingsPanel.AddOnsTab, {notAlpha=true})
             set_SearchBox(SettingsPanel.SearchBox)
-            set_Alpha_Frame_Texture(SettingsPanel, {index=1})
+            e.Set_Alpha_Frame_Texture(SettingsPanel, {index=1})
         else
             if eventTab then
                 table.insert(eventTab, arg1)

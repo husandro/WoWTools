@@ -3782,7 +3782,7 @@ local function Init()
     end)
 
 
-    --GossipFrameShared.lua
+    --[[GossipFrameShared.lua
     hooksecurefunc(GossipOptionButtonMixin, 'Setup', function(self, optionInfo)
         if optionInfo then
             local name= e.strText[optionInfo.name]
@@ -3812,7 +3812,7 @@ local function Init()
     end)
     hooksecurefunc(GossipSharedActiveQuestButtonMixin, 'Setup', function(self, questInfo)
         UpdateTitleForQuest(self, questInfo)
-    end)
+    end)]]
 
     --试衣间
     set(DressUpFrameTitleText, '试衣间')

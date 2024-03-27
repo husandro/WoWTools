@@ -511,7 +511,7 @@ end
 --####
 --移动
 --####
-local function set_Move_Frame(self, tab)
+function e.Set_Move_Frame(self, tab)
     tab= tab or {}
 
     local frame= tab.frame
@@ -528,7 +528,7 @@ local function set_Move_Frame(self, tab)
 
     set_Scale_Size(self, tab)
 
-    if Save.disabledMove or tab.notMove or self.setMoveFrame then
+    if (Save.disabledMove and not tab.setMove) or tab.notMove or self.setMoveFrame then
         return
     end
 
@@ -762,7 +762,7 @@ local function created_Move_Button(frame, tab)--created_Move_Button(frame, {fram
             e.tips:Show()
         end)
         tab.frame=frame
-        set_Move_Frame(frame.moveButton, tab)
+        e.Set_Move_Frame(frame.moveButton, tab)
         frame.moveButton:SetScript("OnLeave", function(self)
             ResetCursor()
             e.tips:Hide()
@@ -825,7 +825,7 @@ end
 
 local function setAddLoad(arg1)
     if arg1=='Blizzard_TrainerUI' then--专业训练师
-        set_Move_Frame(ClassTrainerFrame, {minW=328, minH=197, setSize=true, initFunc=function(btn)
+        e.Set_Move_Frame(ClassTrainerFrame, {minW=328, minH=197, setSize=true, initFunc=function(btn)
             ClassTrainerFrameSkillStepButton:SetPoint('RIGHT', -12, 0)
             ClassTrainerFrameBottomInset:SetPoint('BOTTOMRIGHT', -4, 28)
             hooksecurefunc('ClassTrainerFrame_Update', function()--Blizzard_TrainerUI.lua
@@ -843,7 +843,7 @@ local function setAddLoad(arg1)
     elseif arg1=='Blizzard_Communities' then--公会和社区
         --communitiesFrame:SetSize(814, 426)
         --communitiesFrame:SetSize(322, 406)
-        set_Move_Frame(CommunitiesFrame, {setSize=true, initFunc=function()
+        e.Set_Move_Frame(CommunitiesFrame, {setSize=true, initFunc=function()
             local function set_size(frame)
                 local self= frame:GetParent()
                 local size, scale
@@ -949,16 +949,16 @@ local function setAddLoad(arg1)
             return '|cff606060'
         end,
         })
-        set_Move_Frame(CommunitiesFrame.RecruitmentDialog)
-        set_Move_Frame(CommunitiesFrame.NotificationSettingsDialog)
-        set_Move_Frame(CommunitiesFrame.NotificationSettingsDialog.Selector, {frame=CommunitiesFrame.NotificationSettingsDialog})
-        set_Move_Frame(CommunitiesFrame.NotificationSettingsDialog.ScrollFrame, {frame=CommunitiesFrame.NotificationSettingsDialog})
+        e.Set_Move_Frame(CommunitiesFrame.RecruitmentDialog)
+        e.Set_Move_Frame(CommunitiesFrame.NotificationSettingsDialog)
+        e.Set_Move_Frame(CommunitiesFrame.NotificationSettingsDialog.Selector, {frame=CommunitiesFrame.NotificationSettingsDialog})
+        e.Set_Move_Frame(CommunitiesFrame.NotificationSettingsDialog.ScrollFrame, {frame=CommunitiesFrame.NotificationSettingsDialog})
 
     elseif arg1=='Blizzard_TimeManager' then--小时图，时间
-        set_Move_Frame(TimeManagerFrame, {save=true})
+        e.Set_Move_Frame(TimeManagerFrame, {save=true})
 
     elseif arg1=='Blizzard_AchievementUI' then--成就
-        set_Move_Frame(AchievementFrame, {minW=768, maxW=768, minH=500, setSize=true, initFunc=function()
+        e.Set_Move_Frame(AchievementFrame, {minW=768, maxW=768, minH=500, setSize=true, initFunc=function()
             AchievementFrameCategories:ClearAllPoints()
             AchievementFrameCategories:SetPoint('TOPLEFT', 21, -19)
             AchievementFrameCategories:SetPoint('BOTTOMLEFT', 175, 19)
@@ -966,12 +966,12 @@ local function setAddLoad(arg1)
         end, sizeRestFunc=function(self)
             self.target:SetSize(768, 500)
         end})
-        set_Move_Frame(AchievementFrameComparisonHeader, {frame=AchievementFrame})
-        set_Move_Frame(AchievementFrame.Header, {frame=AchievementFrame})
+        e.Set_Move_Frame(AchievementFrameComparisonHeader, {frame=AchievementFrame})
+        e.Set_Move_Frame(AchievementFrame.Header, {frame=AchievementFrame})
 
 
     elseif arg1=='Blizzard_EncounterJournal' then--冒险指南
-        set_Move_Frame(EncounterJournal, {minW=800, minH=496, maxW=800, setSize=true, initFunc=function()
+        e.Set_Move_Frame(EncounterJournal, {minW=800, minH=496, maxW=800, setSize=true, initFunc=function()
             EncounterJournalMonthlyActivitiesFrame.FilterList:SetPoint('BOTTOMLEFT', 225, 5)-- Blizzard_MonthlyActivities.xml
             EncounterJournalMonthlyActivitiesFrame.ScrollBox:SetPoint('BOTTOMLEFT', EncounterJournalMonthlyActivitiesFrame.FilterList, 'BOTTOMRIGHT')
             EncounterJournalInstanceSelectBG:SetPoint('BOTTOMRIGHT', 0,2)
@@ -1009,9 +1009,9 @@ local function setAddLoad(arg1)
     elseif arg1=='Blizzard_ClassTalentUI' then--天赋
         local frame=ClassTalentFrame
         if frame then
-            set_Move_Frame(frame, {save=true})
+            e.Set_Move_Frame(frame, {save=true})
             if frame.TalentsTab and frame.TalentsTab.ButtonsParent then
-                set_Move_Frame(frame.TalentsTab.ButtonsParent, {save=true, frame=frame})--里面, 背景
+                e.Set_Move_Frame(frame.TalentsTab.ButtonsParent, {save=true, frame=frame})--里面, 背景
             end
             if frame.ResizeButton then
                 --设置,大小
@@ -1031,7 +1031,7 @@ local function setAddLoad(arg1)
             --Blizzard_ClassTalentSpecTab.lua
             if frame.SpecTab and frame.SpecTab.SpecContentFramePool then
                 for specContentFrame in frame.SpecTab.SpecContentFramePool:EnumerateActive() do
-                    set_Move_Frame(specContentFrame, {frame= frame, save=true})
+                    e.Set_Move_Frame(specContentFrame, {frame= frame, save=true})
                 end
             end
             hooksecurefunc(frame.SpecTab, 'UpdateSpecContents', function()--Blizzard_ClassTalentSpecTab.lua
@@ -1045,7 +1045,7 @@ local function setAddLoad(arg1)
         end
 
     elseif arg1=='Blizzard_AuctionHouseUI' then--拍卖行
-        set_Move_Frame(AuctionHouseFrame, {setSize=true, initFunc=function()
+        e.Set_Move_Frame(AuctionHouseFrame, {setSize=true, initFunc=function()
             AuctionHouseFrame.CategoriesList:SetPoint('BOTTOM', AuctionHouseFrame.MoneyFrameBorder.MoneyFrame, 'TOP',0,2)
             AuctionHouseFrame.BrowseResultsFrame.ItemList.Background:SetPoint('BOTTOMRIGHT')
             AuctionHouseFrameAuctionsFrame.SummaryList.Background:SetPoint('BOTTOM')
@@ -1084,19 +1084,19 @@ local function setAddLoad(arg1)
             btn.target:SetSize(800, 538)
         end})
 
-        set_Move_Frame(AuctionHouseFrame.ItemSellFrame, {frame=AuctionHouseFrame})
-        set_Move_Frame(AuctionHouseFrame.ItemSellFrame.Overlay, {frame=AuctionHouseFrame})
-        set_Move_Frame(AuctionHouseFrame.ItemSellFrame.ItemDisplay, {frame=AuctionHouseFrame})
+        e.Set_Move_Frame(AuctionHouseFrame.ItemSellFrame, {frame=AuctionHouseFrame})
+        e.Set_Move_Frame(AuctionHouseFrame.ItemSellFrame.Overlay, {frame=AuctionHouseFrame})
+        e.Set_Move_Frame(AuctionHouseFrame.ItemSellFrame.ItemDisplay, {frame=AuctionHouseFrame})
 
-        set_Move_Frame(AuctionHouseFrame.CommoditiesSellFrame, {frame=AuctionHouseFrame})
-        set_Move_Frame(AuctionHouseFrame.CommoditiesSellFrame.Overlay, {frame=AuctionHouseFrame})
-        set_Move_Frame(AuctionHouseFrame.CommoditiesSellFrame.ItemDisplay, {frame=AuctionHouseFrame})
+        e.Set_Move_Frame(AuctionHouseFrame.CommoditiesSellFrame, {frame=AuctionHouseFrame})
+        e.Set_Move_Frame(AuctionHouseFrame.CommoditiesSellFrame.Overlay, {frame=AuctionHouseFrame})
+        e.Set_Move_Frame(AuctionHouseFrame.CommoditiesSellFrame.ItemDisplay, {frame=AuctionHouseFrame})
 
-        set_Move_Frame(AuctionHouseFrame.ItemBuyFrame.ItemDisplay, {frame=AuctionHouseFrame, save=true})
-        set_Move_Frame(AuctionHouseFrameAuctionsFrame.ItemDisplay, {frame=AuctionHouseFrame, save=true})
+        e.Set_Move_Frame(AuctionHouseFrame.ItemBuyFrame.ItemDisplay, {frame=AuctionHouseFrame, save=true})
+        e.Set_Move_Frame(AuctionHouseFrameAuctionsFrame.ItemDisplay, {frame=AuctionHouseFrame, save=true})
 
     elseif arg1=='Blizzard_BlackMarketUI' then--黑市
-        set_Move_Frame(BlackMarketFrame)
+        e.Set_Move_Frame(BlackMarketFrame)
 
 
 
@@ -1257,7 +1257,7 @@ local function setAddLoad(arg1)
         end
 
 
-        set_Move_Frame(CollectionsJournal, {setSize=true, minW=703, minH=606, initFunc=function(btn)
+        e.Set_Move_Frame(CollectionsJournal, {setSize=true, minW=703, minH=606, initFunc=function(btn)
             MountJournal.RightInset:ClearAllPoints()
             MountJournal.RightInset:SetWidth(400)
             MountJournal.RightInset:SetPoint('TOPRIGHT', -6, -60)
@@ -1329,13 +1329,13 @@ local function setAddLoad(arg1)
                 end
                 _G['RematchFrame']:HookScript('OnShow', rematch)
                 hooksecurefunc(_G['RematchFrame'].PanelTabs, 'TabOnClick', rematch)
-                set_Move_Frame(_G['RematchFrame'].TeamsPanel.List.ScrollBox, {frame=CollectionsJournal})
-                set_Move_Frame(_G['RematchFrame'].QueuePanel.List.ScrollBox, {frame=CollectionsJournal})
+                e.Set_Move_Frame(_G['RematchFrame'].TeamsPanel.List.ScrollBox, {frame=CollectionsJournal})
+                e.Set_Move_Frame(_G['RematchFrame'].QueuePanel.List.ScrollBox, {frame=CollectionsJournal})
             end
             C_Timer.After(2, function()
                 local frame= _G['ManuscriptsJournal']
                 if frame then
-                    set_Move_Frame(frame, {frame=CollectionsJournal})
+                    e.Set_Move_Frame(frame, {frame=CollectionsJournal})
                 end
             end)
         end, sizeUpdateFunc=function(btn)
@@ -1354,7 +1354,7 @@ local function setAddLoad(arg1)
         end})--藏品
 
 
-        set_Move_Frame(WardrobeFrame, {setSize=true, minW=965, minH=606, initFunc=function(btn)
+        e.Set_Move_Frame(WardrobeFrame, {setSize=true, minW=965, minH=606, initFunc=function(btn)
             WardrobeTransmogFrame:ClearAllPoints()
             WardrobeTransmogFrame:SetPoint('LEFT', 2, -28)
             WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox:ClearAllPoints()--两侧肩膀使用不同的幻化外观
@@ -1418,50 +1418,50 @@ local function setAddLoad(arg1)
 
 
     elseif arg1=='Blizzard_Calendar' then--日历
-        set_Move_Frame(CalendarFrame)
-        set_Move_Frame(CalendarEventPickerFrame, {frame=CalendarFrame})
-        set_Move_Frame(CalendarTexturePickerFrame, {frame=CalendarFrame})
-        set_Move_Frame(CalendarMassInviteFrame, {frame=CalendarFrame})
-        set_Move_Frame(CalendarCreateEventFrame, {frame=CalendarFrame})
-        set_Move_Frame(CalendarViewEventFrame, {frame=CalendarFrame})
-        set_Move_Frame(CalendarViewHolidayFrame, {frame=CalendarFrame})
-        set_Move_Frame(CalendarViewRaidFrame, {frame=CalendarFrame})
+        e.Set_Move_Frame(CalendarFrame)
+        e.Set_Move_Frame(CalendarEventPickerFrame, {frame=CalendarFrame})
+        e.Set_Move_Frame(CalendarTexturePickerFrame, {frame=CalendarFrame})
+        e.Set_Move_Frame(CalendarMassInviteFrame, {frame=CalendarFrame})
+        e.Set_Move_Frame(CalendarCreateEventFrame, {frame=CalendarFrame})
+        e.Set_Move_Frame(CalendarViewEventFrame, {frame=CalendarFrame})
+        e.Set_Move_Frame(CalendarViewHolidayFrame, {frame=CalendarFrame})
+        e.Set_Move_Frame(CalendarViewRaidFrame, {frame=CalendarFrame})
 
     elseif arg1=='Blizzard_GarrisonUI' then--要塞
-        set_Move_Frame(GarrisonShipyardFrame)--海军行动
-        set_Move_Frame(GarrisonMissionFrame)--要塞任务
-        set_Move_Frame(GarrisonCapacitiveDisplayFrame)--要塞订单
-        set_Move_Frame(GarrisonLandingPage)--要塞报告
-        set_Move_Frame(OrderHallMissionFrame)
+        e.Set_Move_Frame(GarrisonShipyardFrame)--海军行动
+        e.Set_Move_Frame(GarrisonMissionFrame)--要塞任务
+        e.Set_Move_Frame(GarrisonCapacitiveDisplayFrame)--要塞订单
+        e.Set_Move_Frame(GarrisonLandingPage)--要塞报告
+        e.Set_Move_Frame(OrderHallMissionFrame)
 
     elseif arg1=='Blizzard_PlayerChoice' then
-        set_Move_Frame(PlayerChoiceFrame)--任务选择
+        e.Set_Move_Frame(PlayerChoiceFrame)--任务选择
 
     elseif arg1=="Blizzard_GuildBankUI" then--公会银行
-        set_Move_Frame(GuildBankFrame)
+        e.Set_Move_Frame(GuildBankFrame)
 
     elseif arg1=='Blizzard_FlightMap' then--飞行地图
-        set_Move_Frame(FlightMapFrame)
+        e.Set_Move_Frame(FlightMapFrame)
 
     elseif arg1=='Blizzard_OrderHallUI' then
-        set_Move_Frame(OrderHallTalentFrame)
+        e.Set_Move_Frame(OrderHallTalentFrame)
 
     elseif arg1=='Blizzard_GenericTraitUI' then--欲龙术
-        set_Move_Frame(GenericTraitFrame)
-        set_Move_Frame(GenericTraitFrame.ButtonsParent, {frame=GenericTraitFrame})
+        e.Set_Move_Frame(GenericTraitFrame)
+        e.Set_Move_Frame(GenericTraitFrame.ButtonsParent, {frame=GenericTraitFrame})
 
     elseif arg1=='Blizzard_WeeklyRewards' then--'Blizzard_EventTrace' then--周奖励面板
-        set_Move_Frame(WeeklyRewardsFrame)
-        set_Move_Frame(WeeklyRewardsFrame.Blackout, {frame=WeeklyRewardsFrame})
+        e.Set_Move_Frame(WeeklyRewardsFrame)
+        e.Set_Move_Frame(WeeklyRewardsFrame.Blackout, {frame=WeeklyRewardsFrame})
 
     elseif arg1=='Blizzard_ItemSocketingUI' then--镶嵌宝石，界面
-        set_Move_Frame(ItemSocketingFrame)
+        e.Set_Move_Frame(ItemSocketingFrame)
     elseif arg1=='Blizzard_ItemUpgradeUI' then--装备升级,界面
-        set_Move_Frame(ItemUpgradeFrame)
+        e.Set_Move_Frame(ItemUpgradeFrame)
 
     elseif arg1=='Blizzard_InspectUI' then--玩家, 观察角色, 界面
         if InspectFrame then
-            set_Move_Frame(InspectFrame)
+            e.Set_Move_Frame(InspectFrame)
         end
 
     elseif arg1=='Blizzard_PVPUI' then--地下城和团队副本, PVP
@@ -1489,7 +1489,7 @@ local function setAddLoad(arg1)
         end
 
     elseif arg1=='Blizzard_ChallengesUI' then--挑战, 钥匙插件, 界面
-        set_Move_Frame(ChallengesKeystoneFrame)
+        e.Set_Move_Frame(ChallengesKeystoneFrame)
 
         if not Save.disabledZoom then
             ChallengesFrame.WeeklyInfo:SetPoint('BOTTOMRIGHT')
@@ -1516,7 +1516,7 @@ local function setAddLoad(arg1)
         end
 
     elseif arg1=='Blizzard_ItemInteractionUI' then--套装, 转换
-        set_Move_Frame(ItemInteractionFrame)
+        e.Set_Move_Frame(ItemInteractionFrame)
 
     elseif arg1=='Blizzard_Professions' then--专业, 10.1.5
         --[[InspectRecipeFrame:HookScript('OnShow', function(self2)
@@ -1525,11 +1525,11 @@ local function setAddLoad(arg1)
                 self2:SetScale(Save.scale[name])
             end
         end)]]
-        --set_Move_Frame(InspectRecipeFrame)
+        --e.Set_Move_Frame(InspectRecipeFrame)
             --ProfessionsFrame.CraftingPage        
             --ProfessionsFrame.SpecPage
             --ProfessionsFrame.OrdersPage
-        set_Move_Frame(ProfessionsFrame, {setSize=true, initFunc=function()--ProfessionsUtil.SetCraftingMinimized(false)
+        e.Set_Move_Frame(ProfessionsFrame, {setSize=true, initFunc=function()--ProfessionsUtil.SetCraftingMinimized(false)
             ProfessionsFrame.CraftingPage.P_GetDesiredPageWidth= ProfessionsFrame.CraftingPage.GetDesiredPageWidth
             function ProfessionsFrame.CraftingPage:GetDesiredPageWidth()--Blizzard_ProfessionsCrafting.lua
                 local size, scale
@@ -1756,7 +1756,7 @@ local function setAddLoad(arg1)
         end})
 
     elseif arg1=='Blizzard_ProfessionsCustomerOrders' then--专业定制
-        set_Move_Frame(ProfessionsCustomerOrdersFrame, {setSize=true, minW=825, minH=200, onShowFunc=true, initFunc=function()
+        e.Set_Move_Frame(ProfessionsCustomerOrdersFrame, {setSize=true, minW=825, minH=200, onShowFunc=true, initFunc=function()
             ProfessionsCustomerOrdersFrame.BrowseOrders:ClearAllPoints()
             ProfessionsCustomerOrdersFrame.BrowseOrders:SetPoint('TOPLEFT')
             ProfessionsCustomerOrdersFrame.BrowseOrders:SetPoint('BOTTOMRIGHT')
@@ -1827,26 +1827,26 @@ local function setAddLoad(arg1)
         end, sizeRestFunc=function(btn)
             btn.target:SetSize(825, 568)
         end})
-        set_Move_Frame(ProfessionsCustomerOrdersFrame.Form, {frame=ProfessionsCustomerOrdersFrame})
+        e.Set_Move_Frame(ProfessionsCustomerOrdersFrame.Form, {frame=ProfessionsCustomerOrdersFrame})
 
     elseif arg1=='Blizzard_VoidStorageUI' then--虚空，仓库
-         set_Move_Frame(VoidStorageFrame)
+         e.Set_Move_Frame(VoidStorageFrame)
 
     elseif arg1=='Blizzard_ChromieTimeUI' then--时光漫游
-        set_Move_Frame(ChromieTimeFrame)
+        e.Set_Move_Frame(ChromieTimeFrame)
 
 
     elseif arg1=='Blizzard_BFAMissionUI' then--侦查地图
-        set_Move_Frame(BFAMissionFrame)
+        e.Set_Move_Frame(BFAMissionFrame)
 
     elseif arg1=='Blizzard_MacroUI' then--宏
-        set_Move_Frame(MacroFrame)
+        e.Set_Move_Frame(MacroFrame)
 
     elseif arg1=='Blizzard_MajorFactions' then--派系声望
-        set_Move_Frame(MajorFactionRenownFrame)
+        e.Set_Move_Frame(MajorFactionRenownFrame)
 
     elseif arg1=='Blizzard_DebugTools' then--FSTACK
-        set_Move_Frame(TableAttributeDisplay, {minW=476, minH=150, setSize=true, initFunc=function()
+        e.Set_Move_Frame(TableAttributeDisplay, {minW=476, minH=150, setSize=true, initFunc=function()
             TableAttributeDisplay.LinesScrollFrame:ClearAllPoints()
             TableAttributeDisplay.LinesScrollFrame:SetPoint('TOPLEFT', 6, -62)
             TableAttributeDisplay.LinesScrollFrame:SetPoint('BOTTOMRIGHT', -36, 22)
@@ -1883,20 +1883,20 @@ local function setAddLoad(arg1)
         EventTrace.Log.Bar.SearchBox:SetScript('OnEditFocusGained', function(self)
             self:HighlightText()
         end)
-        set_Move_Frame(EventTrace)
+        e.Set_Move_Frame(EventTrace)
 
     elseif arg1=='Blizzard_DeathRecap' then--死亡
-        set_Move_Frame(DeathRecapFrame, {save=true})
+        e.Set_Move_Frame(DeathRecapFrame, {save=true})
 
     elseif arg1=='Blizzard_ClickBindingUI' then--点击，施法
-        set_Move_Frame(ClickBindingFrame)
-        set_Move_Frame(ClickBindingFrame.ScrollBox, {frame=ClickBindingFrame})
+        e.Set_Move_Frame(ClickBindingFrame)
+        e.Set_Move_Frame(ClickBindingFrame.ScrollBox, {frame=ClickBindingFrame})
 
     elseif arg1=='Blizzard_ArchaeologyUI' then
-        set_Move_Frame(ArchaeologyFrame)
+        e.Set_Move_Frame(ArchaeologyFrame)
 
     elseif arg1=='Blizzard_CovenantRenown' then
-        set_Move_Frame(CovenantRenownFrame)
+        e.Set_Move_Frame(CovenantRenownFrame)
     end
 end
 
@@ -1954,7 +1954,7 @@ local function Init_Class()--职业，能量条
             hooksecurefunc(TotemFrame, 'Update', function(self)
                 for btn, _ in pairs(self.totemPool.activeObjects) do
                     if not btn.setMoveFrame then
-                        set_Move_Frame(btn, {frame=self, save=true, zeroAlpha=true})
+                        e.Set_Move_Frame(btn, {frame=self, save=true, zeroAlpha=true})
                         btn:HookScript('OnLeave', function() if TotemFrame.ResizeButton then TotemFrame.ResizeButton:SetAlpha(0) end end)
                         btn:HookScript('OnEnter', function() if TotemFrame.ResizeButton then TotemFrame.ResizeButton:SetAlpha(1) end end)
                     end
@@ -1969,7 +1969,7 @@ local function Init_Class()--职业，能量条
         return
     end
     do
-        set_Move_Frame(frame, {notFuori=true, save=true, hideButton=true,  notMoveAlpha=true, restPointFunc=function(btn)
+        e.Set_Move_Frame(frame, {notFuori=true, save=true, hideButton=true,  notMoveAlpha=true, restPointFunc=function(btn)
             Save.scale[btn.name]=nil
             if not UnitAffectingCombat('player') then
                 btn.target:SetScale(1)
@@ -2067,7 +2067,7 @@ local function Init_Move()
             QUEST_TEMPLATE_MAP_REWARDS.contentWidth= w-41]]
         end
     end
-    set_Move_Frame(WorldMapFrame, {minW=(WorldMapFrame.questLogWidth or 290)*2+37, minH=WorldMapFrame.questLogWidth, setSize=true, onShowFunc=true, notMoveAlpha=true, initFunc=function()
+    e.Set_Move_Frame(WorldMapFrame, {minW=(WorldMapFrame.questLogWidth or 290)*2+37, minH=WorldMapFrame.questLogWidth, setSize=true, onShowFunc=true, notMoveAlpha=true, initFunc=function()
         --[[WorldMapFrame:HookScript('OnShow', function(self)
             local scale= Save.scale[self:GetName()]
             if scale then
@@ -2101,11 +2101,11 @@ local function Init_Move()
         QuestMapFrame.DetailsFrame:SetPoint('BOTTOMRIGHT')
         QuestMapFrame.DetailsFrame.Bg:SetPoint('BOTTOMRIGHT')
         QuestMapFrame.DetailsFrame.SealMaterialBG:SetPoint('BOTTOMRIGHT', QuestMapFrame.DetailsFrame.RewardsFrame, 'TOPRIGHT', 0, -6)
-        set_Move_Frame(MapQuestInfoRewardsFrame, {frame= WorldMapFrame})
-        set_Move_Frame(QuestMapFrame, {frame= WorldMapFrame})
-        set_Move_Frame(QuestMapFrame.DetailsFrame, {frame= WorldMapFrame})
-        set_Move_Frame(QuestMapFrame.DetailsFrame.RewardsFrame, {frame= WorldMapFrame})
-        set_Move_Frame(QuestMapDetailsScrollFrame, {frame= WorldMapFrame})
+        e.Set_Move_Frame(MapQuestInfoRewardsFrame, {frame= WorldMapFrame})
+        e.Set_Move_Frame(QuestMapFrame, {frame= WorldMapFrame})
+        e.Set_Move_Frame(QuestMapFrame.DetailsFrame, {frame= WorldMapFrame})
+        e.Set_Move_Frame(QuestMapFrame.DetailsFrame.RewardsFrame, {frame= WorldMapFrame})
+        e.Set_Move_Frame(QuestMapDetailsScrollFrame, {frame= WorldMapFrame})
     end, sizeUpdateFunc= function(btn)--WorldMapMixin:UpdateMaximizedSize()
         set_min_max_value({btn.target:GetSize()})
     end, sizeRestFunc= function(self)
@@ -2192,7 +2192,7 @@ end)]]
 
 
     --插件
-    set_Move_Frame(AddonList, {minW=430, minH=120, setSize=true, initFunc=function()
+    e.Set_Move_Frame(AddonList, {minW=430, minH=120, setSize=true, initFunc=function()
         AddonList.ScrollBox:ClearAllPoints()
         AddonList.ScrollBox:SetPoint('TOPLEFT', 7, -64)
         AddonList.ScrollBox:SetPoint('BOTTOMRIGHT', -22,32)
@@ -2206,7 +2206,7 @@ end)]]
 
 
 
-    --[[set_Move_Frame(EditModeManagerFrame, {setSize=true, initFunc=function()
+    --[[e.Set_Move_Frame(EditModeManagerFrame, {setSize=true, initFunc=function()
         EditModeManagerFrame.AccountSettings.SettingsContainer:SetPoint('TOPLEFT')
         EditModeManagerFrame.AccountSettings.SettingsContainer:SetPoint('BOTTOMRIGHT')
     end})]]
@@ -2229,7 +2229,7 @@ end)]]
 
 
     --角色
-    set_Move_Frame(CharacterFrame, {minW=338, minH=424, setSize=true, initFunc=function()
+    e.Set_Move_Frame(CharacterFrame, {minW=338, minH=424, setSize=true, initFunc=function()
         PaperDollFrame.TitleManagerPane:ClearAllPoints()
         PaperDollFrame.TitleManagerPane:SetPoint('TOPLEFT', CharacterFrameInsetRight, 4, -4)
         PaperDollFrame.TitleManagerPane:SetPoint('BOTTOMRIGHT', CharacterFrameInsetRight, -4, 4)
@@ -2299,8 +2299,8 @@ end)]]
             CharacterFrame.ResizeButton.minWidth= CHARACTERFRAME_EXPANDED_WIDTH
             CharacterFrame.ResizeButton.minHeight= 424
         end)
-        set_Move_Frame(ReputationFrame, {frame=CharacterFrame})
-        set_Move_Frame(TokenFrame, {frame=CharacterFrame})
+        e.Set_Move_Frame(ReputationFrame, {frame=CharacterFrame})
+        e.Set_Move_Frame(TokenFrame, {frame=CharacterFrame})
 
     end, sizeUpdateFunc=function()
         if PaperDollFrame.EquipmentManagerPane:IsVisible() then
@@ -2330,7 +2330,7 @@ end)]]
     end})
 
     --好友列表
-    set_Move_Frame(FriendsFrame, {notInCombat=true, setSize=true, minW=338, minH=424, initFunc=function(btn)
+    e.Set_Move_Frame(FriendsFrame, {notInCombat=true, setSize=true, minW=338, minH=424, initFunc=function(btn)
             FriendsListFrame.ScrollBox:SetPoint('BOTTOMRIGHT', -24, 30)
             WhoFrameColumnHeader1:SetWidth(200)
             hooksecurefunc(WhoFrame.ScrollBox, 'Update', function(self)
@@ -2389,7 +2389,7 @@ end)]]
             end
         end
     })
-    set_Move_Frame(RaidInfoFrame, {setSize=true, minW=345, minH=128, notMoveAlpha=true, initFunc=function(btn)
+    e.Set_Move_Frame(RaidInfoFrame, {setSize=true, minW=345, minH=128, notMoveAlpha=true, initFunc=function(btn)
             btn.target.ScrollBox:SetPoint('BOTTOMRIGHT',-35, 38)
             RaidInfoDetailFooter:SetPoint('RIGHT', -12, 0)
             RaidInfoInstanceLabel:SetWidth(200)
@@ -2417,7 +2417,7 @@ end)]]
     })
 
     --对话
-    set_Move_Frame(GossipFrame, {minW=220, minH=220, setSize=true, initFunc=function(self)
+    e.Set_Move_Frame(GossipFrame, {minW=220, minH=220, setSize=true, initFunc=function(self)
         self.target.GreetingPanel:SetPoint('BOTTOMRIGHT')
         self.target.GreetingPanel.ScrollBox:SetPoint('BOTTOMRIGHT', -28,28)
         self.target.Background:SetPoint('BOTTOMRIGHT', -28,28)
@@ -2431,7 +2431,7 @@ end)]]
     end})
 
     --任务
-    set_Move_Frame(QuestFrame, {minW=164, minH=128, setSize=true, initFunc=function()
+    e.Set_Move_Frame(QuestFrame, {minW=164, minH=128, setSize=true, initFunc=function()
         local tab={
             'Detail',
             'Greeting',
@@ -2459,14 +2459,14 @@ end)]]
     end})
 
     --聊天设置
-    set_Move_Frame(ChannelFrame, {minW=402, minH=200, maxW=402, setSize=true,  sizeRestFunc=function(self)
+    e.Set_Move_Frame(ChannelFrame, {minW=402, minH=200, maxW=402, setSize=true,  sizeRestFunc=function(self)
         self.target:SetSize(402, 423)
     end})
 
 
 
 
-    set_Move_Frame(SettingsPanel, {notSave=true, setSize=true, minW=800, minH=200, initFunc=function(btn)
+    e.Set_Move_Frame(SettingsPanel, {notSave=true, setSize=true, minW=800, minH=200, initFunc=function(btn)
         for _, region in pairs({btn.target:GetRegions()}) do
             if region:GetObjectType()=='Texture' then
                 region:SetPoint('BOTTOMRIGHT', -12, 38)
@@ -2477,7 +2477,7 @@ end)]]
     end})
 
     --邮箱，信件
-    set_Move_Frame(MailFrame)--[[, {setSize=true, initFunc=function()
+    e.Set_Move_Frame(MailFrame)--[[, {setSize=true, initFunc=function()
         InboxFrame:SetPoint('BOTTOMRIGHT')
         InboxPrevPageButton:ClearAllPoints()
         InboxPrevPageButton:SetPoint('BOTTOMLEFT', 4, 4)
@@ -2486,13 +2486,13 @@ end)]]
         InboxNextPageButton:ClearAllPoints()
         InboxNextPageButton:SetPoint('BOTTOMRIGHT', -4, 4)
     end})]]
-    set_Move_Frame(SendMailFrame, {frame=MailFrame})
+    e.Set_Move_Frame(SendMailFrame, {frame=MailFrame})
 
 
 
 
     --地下城和团队副本
-    set_Move_Frame(PVEFrame, {setSize=true, minW=563, minH=428, initFunc=function()
+    e.Set_Move_Frame(PVEFrame, {setSize=true, minW=563, minH=428, initFunc=function()
         --btn.PVE_FRAME_BASE_WIDTH= PVE_FRAME_BASE_WIDTH
         LFGListPVEStub:SetPoint('BOTTOMRIGHT')
         LFGListFrame.CategorySelection.Inset.CustomBG:SetPoint('BOTTOMRIGHT')
@@ -2568,9 +2568,9 @@ end)]]
         local frame= _G['ContainerFrame'..i]
         if frame then
             if i==1 then
-                set_Move_Frame(frame, {save=true})
+                e.Set_Move_Frame(frame, {save=true})
             else
-                set_Move_Frame(frame)
+                e.Set_Move_Frame(frame)
             end
         end
     end
@@ -2620,14 +2620,14 @@ end)]]
 
 
 
-    set_Move_Frame(LootFrame, {save=false})--物品拾取
+    e.Set_Move_Frame(LootFrame, {save=false})--物品拾取
 
     --################################
     --场景 self==ObjectiveTrackerFrame
     --Blizzard_ObjectiveTracker.lua ObjectiveTracker_GetVisibleHeaders()
     hooksecurefunc('ObjectiveTracker_Initialize', function(self)
         for _, module in ipairs(self.MODULES) do
-            set_Move_Frame(module.Header, {frame=self, notZoom=true})
+            e.Set_Move_Frame(module.Header, {frame=self, notZoom=true})
         end
         self:SetClampedToScreen(false)
     end)
@@ -2644,7 +2644,7 @@ end)]]
     if ExpansionLandingPageMinimapButton then
         ExpansionLandingPageMinimapButton:SetFrameStrata('TOOLTIP')
         C_Timer.After(2, function()
-            set_Move_Frame(ExpansionLandingPageMinimapButton, {hideButton=true, click='RightButton', setResizeButtonPoint={
+            e.Set_Move_Frame(ExpansionLandingPageMinimapButton, {hideButton=true, click='RightButton', setResizeButtonPoint={
                 nil, nil, nil, -2, 2
             }})
             C_Timer.After(8, function()--盟约图标停止闪烁
@@ -2665,23 +2665,23 @@ end)]]
 
     Init_Class()--职业，能量条
 
-    set_Move_Frame(GameMenuFrame, {notSave=true})--菜单
-    set_Move_Frame(ExtraActionButton1, {click='RightButton', notSave=true, notMoveAlpha=true, notFuori=true})--额外技能
-    set_Move_Frame(ContainerFrameCombinedBags)
-    set_Move_Frame(MirrorTimer1, {notSave=true})
-    set_Move_Frame(ColorPickerFrame, {click='RightButton'})--颜色选择器
-    set_Move_Frame(PartyFrame.Background, {frame=PartyFrame, notZoom=true, notSave=true})
-    set_Move_Frame(OpacityFrame)
-    set_Move_Frame(ArcheologyDigsiteProgressBar, {notZoom=true})
-    set_Move_Frame(VehicleSeatIndicator, {notZoom=true, notSave=true})
-    set_Move_Frame(ExpansionLandingPage)
-    set_Move_Frame(PlayerPowerBarAlt)
-    set_Move_Frame(CreateChannelPopup)
-    set_Move_Frame(BattleTagInviteFrame)
+    e.Set_Move_Frame(GameMenuFrame, {notSave=true})--菜单
+    e.Set_Move_Frame(ExtraActionButton1, {click='RightButton', notSave=true, notMoveAlpha=true, notFuori=true})--额外技能
+    e.Set_Move_Frame(ContainerFrameCombinedBags)
+    e.Set_Move_Frame(MirrorTimer1, {notSave=true})
+    e.Set_Move_Frame(ColorPickerFrame, {click='RightButton'})--颜色选择器
+    e.Set_Move_Frame(PartyFrame.Background, {frame=PartyFrame, notZoom=true, notSave=true})
+    e.Set_Move_Frame(OpacityFrame)
+    e.Set_Move_Frame(ArcheologyDigsiteProgressBar, {notZoom=true})
+    e.Set_Move_Frame(VehicleSeatIndicator, {notZoom=true, notSave=true})
+    e.Set_Move_Frame(ExpansionLandingPage)
+    e.Set_Move_Frame(PlayerPowerBarAlt)
+    e.Set_Move_Frame(CreateChannelPopup)
+    e.Set_Move_Frame(BattleTagInviteFrame)
     for text, _ in pairs(UIPanelWindows) do
         local frame=_G[text]
         if frame and (not frame.ResizeButton and not frame.targetMoveFrame) then
-            set_Move_Frame(_G[text])
+            e.Set_Move_Frame(_G[text])
         end
     end
 end
