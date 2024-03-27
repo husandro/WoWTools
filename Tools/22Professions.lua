@@ -484,7 +484,7 @@ local function Init_ProfessionsFrame()
         local num
         if itemIDOrLink and not Save.disabled then
             num= C_Item.GetItemCount(itemIDOrLink, true, false, true)
-            local itemID= GetItemInfoInstant(itemIDOrLink)
+            local itemID= C_Item.GetItemInfoInstant(itemIDOrLink)
             if itemID then
                 local all= 0--帐号数据
                 for guid, info in pairs(e.WoWDate or {}) do

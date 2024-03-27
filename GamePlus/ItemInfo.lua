@@ -95,7 +95,7 @@ local function Set_Item_Info(self, tab)
 
 
     if itemLink then
-        itemID= itemID or GetItemInfoInstant(itemLink)
+        itemID= itemID or C_Item.GetItemInfoInstant(itemLink)
         if not itemID then
             itemID= itemLink:match('|H.-:(%d+):')
             itemID= itemID and tonumber(itemID)
@@ -109,7 +109,7 @@ local function Set_Item_Info(self, tab)
         setIDItem= setID and true or nil--套装
 
         --[[if itemQuality then
-            r,g,b = GetItemQualityColor(itemQuality)
+            r,g,b = C_Item.GetItemQualityColor(itemQuality)
         end]]
 
         local sellItem

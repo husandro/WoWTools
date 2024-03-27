@@ -601,7 +601,7 @@ function e.SetItemSpellCool(tab)--{frame=, item=, spell=, type=, isUnit=true} ty
     end
 end
 
-function e.GetSpellItemCooldown(spellID, itemID)--法术冷却
+function e.GetSpellItemCooldown(spellID, itemID)--法术,物品,冷却
     local startTime, duration, enable
     if spellID then
         startTime, duration, enable = GetSpellCooldown(spellID)
@@ -1423,7 +1423,7 @@ function e.Set_Item_Stats(self, link, setting) --setting= setting or {}
             local quality = C_Item.GetItemQualityByID(link)--颜色
             if quality==7 then
                 local itemLevelStr=ITEM_LEVEL:gsub('%%d', '%(%%d%+%)')--"物品等级：%d"
-                local dataInfo= e.GetTooltipData({hyperLink=link, itemID= itemID or GetItemInfoInstant(link), text={itemLevelStr}, onlyText=true})--物品提示，信息
+                local dataInfo= e.GetTooltipData({hyperLink=link, itemID= itemID or C_Item.GetItemInfoInstant(link), text={itemLevelStr}, onlyText=true})--物品提示，信息
                 itemLevel= tonumber(dataInfo.text[itemLevelStr])
             end
             itemLevel= itemLevel or GetDetailedItemLevelInfo(link)
@@ -2488,7 +2488,7 @@ function e.GetPetCollectedNum(speciesID, itemID, onlyNum)--总收集数量， 25
                         local petID, speciesID2, _, _, level = C_PetJournal.GetPetInfoByIndex(index)
                         if speciesID2==speciesID and petID and level then
                             local rarity = select(5, C_PetJournal.GetPetStats(petID))
-                            local col= rarity and select(4, GetItemQualityColor(rarity-1))
+                            local col= rarity and select(4, C_Item.GetItemQualityColor(rarity-1))
                             if col then
                                 text2= text2 and text2..' ' or ''
                                 text2= text2..'|c'..col..level..'|r'

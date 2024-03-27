@@ -830,7 +830,7 @@ local function InitMenu(_, level, type)--主菜单
             local col= '|cffff8200'
             local itemQuality= select(3, GetItemInfo(itemID))
             if itemQuality then
-                local hex = select(4,GetItemQualityColor(itemQuality))
+                local hex = select(4,C_Item.GetItemQualityColor(itemQuality))
                 col= hex and '|c'..hex
             end
             text= col.. text..'|r'

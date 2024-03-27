@@ -1813,7 +1813,7 @@ local function Roll_Plus()
             end
         end
 
-        local itemID, _, _, itemEquipLoc, _, classID, subclassID = GetItemInfoInstant(link)
+        local itemID, _, _, itemEquipLoc, _, classID, subclassID = C_Item.GetItemInfoInstant(link)
         local slot=itemEquipLoc and e.itemSlotTable[itemEquipLoc]--比较装等
         if slot then
             local slotLink=GetInventoryItemLink('player', slot)
@@ -2021,7 +2021,7 @@ local function Loot_Plus()
             btn.itemSubTypeLabel:SetPoint('BOTTOMLEFT', btn.Item.IconBorder, 'BOTTOMRIGHT',4,-8)
         end
         if btn.dropInfo.itemHyperlink and notGreed then
-            local _, _, itemSubType2, itemEquipLoc, _, _, subclassID = GetItemInfoInstant(btn.dropInfo.itemHyperlink)--提示,装备,子类型
+            local _, _, itemSubType2, itemEquipLoc, _, _, subclassID = C_Item.GetItemInfoInstant(btn.dropInfo.itemHyperlink)--提示,装备,子类型
             local collected, _, isSelfCollected= e.GetItemCollected(btn.dropInfo.itemHyperlink, nil, false)--物品是否收集
             text= subclassID==0 and itemEquipLoc and e.cn(_G[itemEquipLoc]) or e.cn(itemSubType2)
             if isSelfCollected and collected then

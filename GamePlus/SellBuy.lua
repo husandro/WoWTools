@@ -89,7 +89,7 @@ function e.CheckItemSell(itemID, itemLink, quality)
             if Save.sellJunkMago then
                 return e.onlyChinese and '垃圾' or BAG_FILTER_JUNK
             else
-                local classID, subclassID = select(6, GetItemInfoInstant(itemID))
+                local classID, subclassID = select(6, C_Item.GetItemInfoInstant(itemID))
                 if (classID==2 or classID==4) and subclassID~=0 then
                     local isCollected = select(2, e.GetItemCollected(itemID, nil, nil))--物品是否收集
                     if isCollected==false then
@@ -174,7 +174,7 @@ local function Set_Merchant_Info()--设置, 提示, 信息
                 end)
             end
             --物品，属性
-            local classID= itemLink and select(6, GetItemInfoInstant(itemLink))
+            local classID= itemLink and select(6, C_Item.GetItemInfoInstant(itemLink))
             if classID==2 or classID==4 then--装备
                 local stat= e.Get_Item_Stats(itemLink)--物品，属性，表
                 table.sort(stat, function(a,b) return a.value>b.value and a.index== b.index end)

@@ -826,7 +826,7 @@ local function check_Enabled_Item(classID, subClassID, findString, bag, slot)
         and not info.isLocked
         and not info.isBound
     then
-        local class, sub = select(6, GetItemInfoInstant(info.hyperlink))
+        local class, sub = select(6, C_Item.GetItemInfoInstant(info.hyperlink))
         if (findString and info.hyperlink:find(findString))
             or (
                 class==classID
@@ -935,7 +935,7 @@ local function Init_Fast_Menu(_, level, menuList)
                 and not info2.isLocked
                 and not info2.isBound
             then
-                local class, sub = select(6, GetItemInfoInstant(info2.hyperlink))
+                local class, sub = select(6, C_Item.GetItemInfoInstant(info2.hyperlink))
                 if class and sub then
                     local find=true
                     if class==2 or class==4 then--幻化
@@ -2160,7 +2160,7 @@ end
             if itemLink:find('Hbattlepet') then
                 findString= 'Hbattlepet'
             end
-            local classID, subClassID= select(6,  GetItemInfoInstant(itemLink))
+            local classID, subClassID= select(6,  C_Item.GetItemInfoInstant(itemLink))
             if classID==2 or classID==4 then
                 subClassID=nil
             end

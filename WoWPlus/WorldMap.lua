@@ -111,10 +111,10 @@ local function set_WorldQuestPinMixin_RefreshVisuals(self)--WorldQuestDataProvid
             text= itemLevel
         end
 
-        local itemEquipLoc, _, classID = select(4, GetItemInfoInstant(itemID))
+        local itemEquipLoc, _, classID = select(4, C_Item.GetItemInfoInstant(itemID))
         if classID==2 or classID==4 then
             if quality and text then--物品，颜色
-                text='|c'..select(4, GetItemQualityColor(quality))..itemLevel..'|r'
+                text='|c'..select(4, C_Item.GetItemQualityColor(quality))..itemLevel..'|r'
             end
 
             local setLevelUp

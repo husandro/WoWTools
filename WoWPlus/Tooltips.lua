@@ -494,16 +494,16 @@ function func.Set_Item(self, itemLink, itemID)
     end
 
     local itemName, _, itemQuality, itemLevel, _, itemType, itemSubType, _, itemEquipLoc, itemTexture, _, classID, subclassID, bindType, expacID = GetItemInfo(itemLink or itemID)
-    itemID= itemID or GetItemInfoInstant(itemLink or itemID) or func.GetItemInfoFromHyperlink(itemLink)
+    itemID= itemID or C_Item.GetItemInfoInstant(itemLink or itemID) or func.GetItemInfoFromHyperlink(itemLink)
     --local itemName, _, itemQuality, itemLevel, _, _, _, _, _, _, _, _, _, bindType, expacID, setID = GetItemInfo(itemLink)
-    --local itemID, itemType, itemSubType, itemEquipLoc, itemTexture2, classID, subclassID = GetItemInfoInstant(itemLink)
+    --local itemID, itemType, itemSubType, itemEquipLoc, itemTexture2, classID, subclassID = C_Item.GetItemInfoInstant(itemLink)
     if not itemID then
         return
     end
 
     local r, g, b, col= 1,1,1,e.Player.col
     if itemQuality then
-        r, g, b, col= GetItemQualityColor(itemQuality)
+        r, g, b, col= C_Item.GetItemQualityColor(itemQuality)
         col=col and '|c'..col
     end
     self:AddLine(' ')

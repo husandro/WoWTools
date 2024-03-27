@@ -1144,7 +1144,7 @@ local function Init_BrowseResultsFrame()
                 --[[if not text then
                     --local itmeLink= Get_ItemLink_For_rowData(btn.rowData)
                     local itemLink= Get_ItemLink_For_rowData(btn.rowData)
-                    local classID= select(6, GetItemInfoInstant(itemKeyInfo.itemID))
+                    local classID= select(6, C_Item.GetItemInfoInstant(itemKeyInfo.itemID))
                     
                     if classID==9 then--配方
                         local dataTooltipsInfo = C_TooltipInfo.GetItemKey(btn.rowData.itemKey.itemID, btn.rowData.itemKey.itemLevel, btn.rowData.itemKey.itemSuffix, btn.rowData.itemKey.itemLevel)

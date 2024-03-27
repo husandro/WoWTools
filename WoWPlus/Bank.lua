@@ -553,7 +553,7 @@ local function Init_Save_BankItem()
     function AllPlayerBankItem:get_item_text(itemID, quality)
         e.LoadDate({id=itemID, type='item'})
         local name= GetItemInfo(itemID) or itemID
-        local hex= select(4, GetItemQualityColor(quality or 1))
+        local hex= select(4, C_Item.GetItemQualityColor(quality or 1))
         local icon= C_Item.GetItemIconByID(itemID)
         return (icon and '|T'..icon..':0|t' or '')..(hex and '|c'..hex or '')..name
     end

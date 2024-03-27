@@ -122,7 +122,7 @@ end
 local function Item(link)--物品超链接    
     local itemID= link:match('Hitem:(%d+)')
     local t=link
-    local icon, classID, subclassID= select(5, GetItemInfoInstant(itemID))
+    local icon, classID, subclassID= select(5, C_Item.GetItemInfoInstant(itemID))
     t= icon and '|T'..icon..':0|t'..t or t--加图标
     if classID==2 or classID==4 then
         local lv=GetDetailedItemLevelInfo(link)--装等

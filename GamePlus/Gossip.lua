@@ -424,7 +424,7 @@ local function Init_Menu_Gossip(_, level, type)
             local icon= GetSpellTexture(spellID)
             local name= GetSpellLink(spellID) or ('spellID '..spellID)
             rarity= rarity+1
-            local hex= select(4, GetItemQualityColor(rarity))
+            local hex= select(4, C_Item.GetItemQualityColor(rarity))
             local quality=(hex and '|c'..hex or '')..(e.cn(_G['ITEM_QUALITY'..rarity..'_DESC']) or rarity)
             info={
                 text=(icon and '|T'..icon..':0|t' or '')..name..' '.. quality,

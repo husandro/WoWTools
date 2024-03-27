@@ -1252,7 +1252,7 @@ local function Init_Select_Macro_Button()
                     end
 
                 elseif item then
-                    local icon= C_Item.GetItemIconByID(item) or select(5, GetItemInfoInstant(item))
+                    local icon= C_Item.GetItemIconByID(item) or select(5, C_Item.GetItemInfoInstant(item))
                     if icon then
                         allTab[icon]=item
                     end

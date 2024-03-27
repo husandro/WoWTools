@@ -2064,9 +2064,10 @@ local function Init()
 	set(ReadyCheckFrameNoButton, '未就绪')--:SetText(GetText("NOT_READY", UnitSex("player")))
     hooksecurefunc('ShowReadyCheck', function(initiator)
         if ReadyCheckListenerFrame:IsShown() then
-            local _, _, difficultyID = GetInstanceInfo()
+            local _, difficultyID
+            difficultyID = select(3, GetInstanceInfo())
             if ( not difficultyID or difficultyID == 0 ) then
-                if (UnitInRaid("player")) then-- not in an instance, go by current difficulty setting
+                if UnitInRaid("player") then-- not in an instance, go by current difficulty setting
                     difficultyID = GetRaidDifficultyID()
                 else
                     difficultyID = GetDungeonDifficultyID()

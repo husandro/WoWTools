@@ -898,7 +898,7 @@ local function Init_EncounterJournal()--冒险指南界面
                         ..(not isSelf and ' |cffffffff'..(e.onlyChinese and '其他职业' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, OTHER, CLASS))..'|r' or '')
                 end
             else
-                local itemID= btn.itemID or GetItemInfoInstant(btn.link)
+                local itemID= btn.itemID or C_Item.GetItemInfoInstant(btn.link)
                 if itemID then
                     itemText= e.GetMountCollected(nil, itemID)--坐骑物品
                     itemText= itemText or select(3, e.GetPetCollectedNum(nil, itemID, true))--宠物物品

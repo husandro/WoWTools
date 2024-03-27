@@ -91,7 +91,7 @@ local function Get_Item(itemID)
 	if icon and num>0 then
 
 		itemQuality = C_Item.GetItemQualityByID(itemID)
-		local hex = itemQuality and select(4, GetItemQualityColor(itemQuality))
+		local hex = itemQuality and select(4, C_Item.GetItemQualityColor(itemQuality))
 		hex= hex and '|c'..hex
 
 		local numText
@@ -1022,7 +1022,7 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 		end
 	end
 	if frame.Name then
-		local r, g, b= GetItemQualityColor(info and info.quality or 1)
+		local r, g, b= C_Item.GetItemQualityColor(info and info.quality or 1)
 		frame.Name:SetTextColor(r or 1, g or 1, b or 1)
 		local name= e.strText[frame.Name:GetText()]--汉化
 		if name then

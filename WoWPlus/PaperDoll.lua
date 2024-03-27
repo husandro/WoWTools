@@ -190,7 +190,7 @@ local function get_no_Enchant_Bag(slot)--取得，物品，bag, slot
         for slotIndex=1, C_Container.GetContainerNumSlots(bagIndex) do
             local info = C_Container.GetContainerItemInfo(bagIndex, slotIndex)
             if info and info.itemID then
-                local classID, subClassID= select(6, GetItemInfoInstant(info.itemID))
+                local classID, subClassID= select(6, C_Item.GetItemInfoInstant(info.itemID))
                 if classID==8 and (slot==16 and subClassID==12 or subClassID==subClassToSlot[slot]) then
                     return {bag= bagIndex, slot= slotIndex}
                 end
@@ -430,7 +430,7 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
         end
         self.upgradeItemText.tips= upgradeItem
         local quality = GetInventoryItemQuality(unit, slot)--颜色
-        local hex = quality and select(4, GetItemQualityColor(quality))
+        local hex = quality and select(4, C_Item.GetItemQualityColor(quality))
         if hex then
             upgradeItemText= '|c'..hex..upgradeItemText..'|r'
         end
@@ -472,7 +472,7 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
     if not Save.hide then--宝石
         local x= isLeftSlot and 8 or -8--左边插曹
         for n=1, MAX_NUM_SOCKETS do
-            local gemLink= link and select(2, GetItemGem(link, n))
+            local gemLink= link and select(2, C_Item.GetItemGem(link, n))
             if gemLink then
                 e.LoadDate({id=gemLink, type='item'})
                 if not self['gem'..n] then
@@ -1356,7 +1356,7 @@ local function setFlyout(button, itemLink, slot)
             button.level= e.Cstr(button)
             button.level:SetPoint('BOTTOM')
         end
-        dateInfo= e.GetTooltipData({hyperLink=itemLink, itemID=itemLink and GetItemInfoInstant(itemLink) , text={upgradeStr, pvpItemStr, itemLevelStr}, onlyText=true})--物品提示，信息
+        dateInfo= e.GetTooltipData({hyperLink=itemLink, itemID=itemLink and C_Item.GetItemInfoInstant(itemLink) , text={upgradeStr, pvpItemStr, itemLevelStr}, onlyText=true})--物品提示，信息
 
         if dateInfo and dateInfo.text[itemLevelStr] then
             level= tonumber(dateInfo.text[itemLevelStr])
@@ -1366,7 +1366,7 @@ local function setFlyout(button, itemLink, slot)
         if text then
             local itemQuality = C_Item.GetItemQualityByID(itemLink)
             if itemQuality then
-                local hex = select(4, GetItemQualityColor(itemQuality))
+                local hex = select(4, C_Item.GetItemQualityColor(itemQuality))
                 if hex then
                     text= '|c'..hex..text..'|r'
                 end
@@ -1391,7 +1391,7 @@ local function setFlyout(button, itemLink, slot)
         end
         if level then
             if not slot or slot==0 then
-                local itemEquipLoc= itemLink and select(4, GetItemInfoInstant(itemLink))
+                local itemEquipLoc= itemLink and select(4, C_Item.GetItemInfoInstant(itemLink))
                 slot= itemEquipLoc and e.itemSlotTable[itemEquipLoc]
             end
             if slot then

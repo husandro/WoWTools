@@ -218,7 +218,7 @@ ItemSocketingFrame.setTipsFrame:SetFrameStrata('HIGH')
 
 local x,y,n= 54,-22,0
 for i=204000, 204030 do
-    local classID= select(6, GetItemInfoInstant(i))
+    local classID= select(6, C_Item.GetItemInfoInstant(i))
     if classID==3 then
         e.LoadDate({id=i, type='item'})
         local icon= C_Item.GetItemIconByID(i)

@@ -695,7 +695,7 @@ local function Init()
         local name ,icon
         if C_Item.GetItemCount(itemID)>0 then
             name = C_Item.GetItemNameByID(itemID)
-            local itemEquipLoc, icon2 = select(4, GetItemInfoInstant(itemID))
+            local itemEquipLoc, icon2 = select(4, C_Item.GetItemInfoInstant(itemID))
             icon =icon2 or C_Item.GetItemIconByID(itemID)
             local slot=itemEquipLoc and e.itemSlotTable[itemEquipLoc]
 
@@ -750,7 +750,7 @@ local function Init()
     button:SetScript('OnMouseDown',function(self, d)--添加, 移除
         local infoType, itemID, itemLink ,spellID= GetCursorInfo()
         if infoType == "item" and itemID and itemLink then
-            local itemEquipLoc= select(4, GetItemInfoInstant(itemLink))
+            local itemEquipLoc= select(4, C_Item.GetItemInfoInstant(itemLink))
             local slot=itemEquipLoc and e.itemSlotTable[itemEquipLoc]
             local type = slot and 'equip' or 'item'
             local text = slot and (e.onlyChinese and '装备' or EQUIPSET_EQUIP) or (e.onlyChinese and '物品' or ITEMS)
