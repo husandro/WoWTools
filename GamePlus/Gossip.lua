@@ -61,7 +61,7 @@ local QuestButton
 local GossipTextIcon={}--默认，自定义，对话，文本
 local function Init_Gossip_Text(show)
     GossipTextIcon={}
-    local find--工程
+    --[[local find--工程
     if show then
         find=true
     else
@@ -69,19 +69,18 @@ local function Init_Gossip_Text(show)
             return
         end
 
-        for index, type in pairs({GetProfessions()}) do
-            if index>2 or find then
+        for _, type in pairs({GetProfessions()}) do
+     
+            local spelloffset = select(6, GetProfessionInfo(type))
+            local spellID= select(7, GetSpellInfo(spelloffset+ 1, 'spell'))
+            if spellID==158739 then
+                find=true
                 break
-            else
-                local spelloffset = select(6, GetProfessionInfo(type))
-                local spellID= select(7, GetSpellInfo(spelloffset+ 1, 'spell'))
-                if spellID==158739 then
-                    find=true
-                end
             end
+            
         end
     end
-    if find then
+    if find then]]
         local tabs = {--https://wago.io/hR_KBVGdK
             [38054] = {icon=236722, cn='北风苔原', en='Borean Tundra', tw='北風凍原', de='Boreanische Tundra', es='Tundra Boreal', fr='Toundra Boréenne', it='Tundra Boreale', pt='Tundra Boreana', ru='Борейская тундра', ko='북풍의 땅'},--npc 35646
             [38055] = {icon=236781, cn='嚎风峡湾', en='Howling Fjord', tw='凜風峽灣', de='Der Heulende Fjord', es='Fiordo Aquilonal', fr='Fjord Hurlant', it='Fiordo Echeggiante', pt='Fiorde Uivante', ru='Ревущий фьорд', ko='울부짖는 협만'},
@@ -154,7 +153,7 @@ local function Init_Gossip_Text(show)
             end
         end
         tabs=nil
-    end
+    --end
 end
 
 --自定义，对话，文本

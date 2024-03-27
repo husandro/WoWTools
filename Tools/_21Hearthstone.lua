@@ -300,8 +300,8 @@ local function setBagHearthstone()
     for type, itemID in pairs(ModifiedTab) do
         local find
         if PlayerHasToy(itemID) or C_Item.GetItemCount(itemID)>=0 then
-            local _, duration, enable = GetItemCooldown(itemID)
-            find= duration<2 and enable==1
+            local _, duration, enable = C_Container.GetItemCooldown(itemID)
+            find= (duration and duration<2 or enable)
         end
         if find then
             if not button['texture'..type] then
@@ -381,15 +381,8 @@ local function Init()
                     local name = C_Item.GetItemNameByID(itemID..'') or ('itemID: '..itemID)
                     local icon = C_Item.GetItemIconByID(itemID..'')
                     name= (icon and '|T'..icon..':0|t' or '')..name
-                    local startTime, duration, enable = GetItemCooldown(itemID)
-                    if duration>4 then
-                        local t=GetTime()
-                        if startTime>t then t=t+86400 end
-                        t=t-startTime
-                        t=duration-t
-                        name= name..'|cnRED_FONT_COLOR: '..SecondsToTime(t)..'|r'
-                    end
-                    e.tips:AddDoubleLine(name, type..'+'..e.Icon.left)
+                    local cd= e.GetSpellItemCooldown(nil, itemID)--冷却
+                    e.tips:AddDoubleLine(name..(cd or ''), type..'+'..e.Icon.left)
                 end
             end
             e.tips:AddLine(' ')
@@ -414,7 +407,7 @@ local function Init()
             self.elapsed = (self.elapsed or 0.3) + elapsed
             if self.elapsed > 0.3 and self.itemID then
                 self.elapsed = 0
-                if GameTooltip:IsOwned(self) and select(2, e.tips:GetItem())~=self.itemID then
+                if GameTooltip:IsOwned(self) and select(3, GameTooltip:GetItem())~=self.itemID then
                     self:set_tooltips()
                 end
             end

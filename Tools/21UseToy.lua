@@ -95,8 +95,8 @@ local function setAtt()--设置属性
     local tab={}
 
     for _, itemID in pairs(ItemsTab) do
-        local duration, enable = select(2 ,GetItemCooldown(itemID))
-        if duration<2 and enable==1 and C_ToyBox.IsToyUsable(itemID) then
+        local duration, enable = select(2 ,C_Container.GetItemCooldown(itemID))
+        if (duration and duration<2 or enable) and C_ToyBox.IsToyUsable(itemID) then
             table.insert(tab, itemID)
         end
     end
@@ -165,7 +165,7 @@ function Init_SetButtonOption()
         if btn.toy then
             btn.toy:set_alpha()
             return
-        end    
+        end
         btn.toy= e.Cbtn(btn,{size={16,16}, texture=133567})
         btn.toy:SetPoint('TOPLEFT',btn.name,'BOTTOMLEFT', 16,0)
         function btn.toy:get_itemID()
@@ -199,14 +199,14 @@ function Init_SetButtonOption()
                 getToy()--生成, 有效表格
                 setAtt()--设置属性
                 self:set_tooltips()
-                self:set_alpha()                
+                self:set_alpha()
             else
                 e.LibDD:ToggleDropDownMenu(1, nil, button.Menu, self, 15, 0)
             end
         end)
         btn.toy:SetScript('OnLeave', function(self) e.tips:Hide() self:set_alpha() end)
         btn.toy:SetScript('OnEnter', btn.toy.set_tooltips)
-        
+
     end)
 end
 
@@ -346,6 +346,20 @@ local function InitMenu(_, level, menuList)--主菜单
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
         end
+
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
+        info={--清除
+            text='|cnRED_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..(e.onlyChinese and '玩具' or TOY)..'|r '..#ItemsTab..'/'..getAllSaveNum(),
+            icon= 'bags-button-autosort-up',
+            keepShownOnClick=true,
+            notCheckable=true,
+            tooltipOnButton=true,
+            tooltipTitle= e.onlyChinese and '清除全部' or CLEAR_ALL,
+            func=function ()
+                StaticPopup_Show(id..addName..'RESETALL')
+            end,
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
         return
 
     elseif menuList=='notTOY' then
@@ -457,19 +471,6 @@ local function InitMenu(_, level, menuList)--主菜单
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-        e.LibDD:UIDropDownMenu_AddSeparator(level)
-        info={--清除
-            text='|cnRED_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..(e.onlyChinese and '玩具' or TOY)..'|r '..#ItemsTab..'/'..getAllSaveNum(),
-            icon= 'bags-button-autosort-up',
-            keepShownOnClick=true,
-            notCheckable=true,
-            tooltipOnButton=true,
-            tooltipTitle= e.onlyChinese and '清除全部' or CLEAR_ALL,
-            func=function ()
-                StaticPopup_Show(id..addName..'RESETALL')
-            end,
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
 
         info={--重置所有
             text= e.onlyChinese and '重置' or RESET,
@@ -614,17 +615,17 @@ local function Init()
                     local name = C_Item.GetItemNameByID(itemID..'') or ('itemID: '..itemID)
                     local icon = C_Item.GetItemIconByID(itemID..'')
                     name= (icon and '|T'..icon..':0|t' or '')..name
-                    local cd
-                    local startTime, duration, enable = GetItemCooldown(itemID)
-                    if duration>0 and enable==1 then
+                    local cd= e.GetSpellItemCooldown(nil, itemID)--冷却
+                    local startTime, duration, enable = C_Container.GetItemCooldown(itemID)
+                    if duration and duration>0 or not enable then
                         local t=GetTime()
                         if startTime>t then t=t+86400 end
                         t=t-startTime
                         t=duration-t
                         cd= '|cnRED_FONT_COLOR:'..SecondsToTime(t)..'|r'
-                    elseif enable==0 then
+                    elseif enable then
                         cd= '|cnRED_FONT_COLOR:'..SPELL_RECAST_TIME_INSTANT..'|r'
-                    end    
+                    end
                     e.tips:AddDoubleLine(name..(cd or ''), type..'+'..e.Icon.left)
                 end
             end
@@ -635,7 +636,7 @@ local function Init()
             e.tips:Hide()
         end
     end
-    
+
     button:SetScript("OnLeave", function(self)
         GameTooltip_Hide()
         self:SetScript('OnUpdate',nil)
@@ -647,13 +648,13 @@ local function Init()
             self.elapsed = (self.elapsed or 0.3) + elapsed
             if self.elapsed > 0.3 and self.itemID then
                 self.elapsed = 0
-                if GameTooltip:IsOwned(self) and select(2, e.tips:GetItem())~=self.itemID then
+                if GameTooltip:IsOwned(self) and select(3, GameTooltip:GetItem())~=self.itemID then
                     self:set_tooltips()
                 end
             end
         end)
     end)
-    
+
     button:SetScript("OnMouseDown", function(self,d)
         if d=='RightButton' and not IsModifierKeyDown() then
             e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
@@ -705,6 +706,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
             Save= WoWToolsSave[addName..'Tools'] or Save
+
             if not e.toolsFrame.disabled then
                 button= e.Cbtn2({
                     name=id..'RandomToyButton',
@@ -759,7 +761,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
         setCooldown()--主图标冷却
 
     elseif event=='SPELL_UPDATE_USABLE' or event=='UNIT_SPELLCAST_SUCCEEDED' then
-    
+
         setAtt()--设置属性
 
     elseif event=='PLAYER_REGEN_ENABLED' then

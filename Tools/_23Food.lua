@@ -23,9 +23,9 @@ end
 
 local function set_Item_Cooldown_Count(self)--图标冷却
     if self.itemID then
-        local start, duration, enable = GetItemCooldown(self.itemID)
+        local start, duration, enable = C_Container.GetItemCooldown(self.itemID)
         local num= C_Item.GetItemCount(self.itemID, false, true, true)
-        local notFind= (enable==0 or num==0) and true or false
+        local notFind= (not enable or num==0) and true or false
         if not notFind then
             e.Ccool(self, start, duration, nil, true, nil, true)--冷却条
         end

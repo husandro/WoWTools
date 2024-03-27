@@ -1617,7 +1617,7 @@ local function Init_ToyBox()
             return
         end
         local isUas=C_ToyBox.IsToyUsable(self.itemID)
-        local _, duration, enable = GetItemCooldown(self.itemID)
+        local _, duration, enable = C_Container.GetItemCooldown(self.itemID)
         if not isUas then
             self:SetAlpha(0.5)
         elseif enable==1 and duration>0 then

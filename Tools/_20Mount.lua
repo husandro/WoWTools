@@ -1531,7 +1531,7 @@ local function Init()
             if self.elapsed > 0.3 and self.typeID then
                 self.elapsed = 0
                 if GameTooltip:IsOwned(self) then
-                    local typeID= self.typeSpell and select(2, e.tips:GetSpell()) or select(2, e.tips:GetItem())
+                    local typeID= self.typeSpell and select(2, GameTooltip:GetSpell()) or select(3, GameTooltip:GetItem())
                     if typeID and typeID~=self.typeID then
                         self:set_tooltips()
                     end

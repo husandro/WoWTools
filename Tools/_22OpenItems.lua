@@ -149,8 +149,8 @@ local function setCooldown()--冷却条
         if Bag.bag and Bag.slot then
             local itemID = C_Container.GetContainerItemID(Bag.bag, Bag.slot)
             if itemID then
-                start, duration, enable = GetItemCooldown(itemID)
-                button.texture:SetDesaturated(enable==1 and duration and duration>2)
+                start, duration, enable = C_Container.GetItemCooldown(itemID)
+                button.texture:SetDesaturated(duration and duration>2 or not enable)
             end
         end
         e.Ccool(button, start, duration, nil, true,nil, true)
@@ -319,6 +319,7 @@ local function get_Items()--取得背包物品信息
                             if Save.mago then --and info.quality then
                                 local  isCollected, isSelf= select(2, e.GetItemCollected(info.hyperlink, nil, nil, true))
                                 if not isCollected and isSelf then
+                                    print(info.hyperlink)
                                     setAtt(bag, slot, info.iconFileID, info.itemID)
                                     equipItem=true
                                     return
@@ -703,7 +704,7 @@ local function Init()
                 self.elapsed = 0
                 if Bag.bag and Bag.slot and GameTooltip:IsOwned(self) then
                     local itemID= C_Container.GetContainerItemID(Bag.bag, Bag.slot)
-                    if itemID~=select(2, e.tips:GetItem()) then
+                    if itemID~=select(3, GameTooltip:GetItem()) then
                         self:set_tooltips()
                     end
                 end

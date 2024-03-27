@@ -755,8 +755,10 @@ local function created_Move_Button(frame, tab)--created_Move_Button(frame, {fram
             self:SetAlpha(1)
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, tab.click=='RightButton' and e.Icon.right or e.Icon.left)
             e.tips:AddDoubleLine(id, e.cn(addName))
+            e.tips:AddLine(format('|cffff00ff%s|r', self:GetParent():GetName() or ''))
+            e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, tab.click=='RightButton' and e.Icon.right or e.Icon.left)
+
             e.tips:Show()
         end)
         tab.frame=frame
@@ -1892,7 +1894,7 @@ local function setAddLoad(arg1)
 
     elseif arg1=='Blizzard_ArchaeologyUI' then
         set_Move_Frame(ArchaeologyFrame)
-        
+
     elseif arg1=='Blizzard_CovenantRenown' then
         set_Move_Frame(CovenantRenownFrame)
     end
@@ -2299,7 +2301,7 @@ end)]]
         end)
         set_Move_Frame(ReputationFrame, {frame=CharacterFrame})
         set_Move_Frame(TokenFrame, {frame=CharacterFrame})
-        
+
     end, sizeUpdateFunc=function()
         if PaperDollFrame.EquipmentManagerPane:IsVisible() then
             e.call('PaperDollEquipmentManagerPane_Update')

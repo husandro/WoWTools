@@ -162,13 +162,18 @@ e.Icon={
     star2='|A:auctionhouse-icon-favorite:0:0|a',--星星
 }
 function e.IsAtlas(texture)
-    texture= texture and texture:gsub(' ', '')
-    if texture and texture~='' then
-        local atlasInfo= C_Texture.GetAtlasInfo(texture)
-        local isAtlas = atlasInfo and true or false
-        return isAtlas, texture
+    local t= type(texture)
+    if t=='number' then
+        return false, texture
+    elseif t=='string' then
+        texture= texture:gsub(' ', '')
+        if texture and texture~='' then
+            local atlasInfo= C_Texture.GetAtlasInfo(texture)
+            local isAtlas = atlasInfo and true or false
+            return isAtlas, texture
+        end
     end
-    return nil
+    return nil, nil
 end
 
 C_Texture.GetTitleIconTexture(BNET_CLIENT_WOW, Enum.TitleIconVersion.Medium, function(success, texture)--FriendsFrame.lua BnetShared.lua    
@@ -586,7 +591,7 @@ function e.SetItemSpellCool(tab)--{frame=, item=, spell=, type=, isUnit=true} ty
         end
 
     elseif item then
-        local startTime, duration = GetItemCooldown(item)
+        local startTime, duration = C_Container.GetItemCooldown(item)
         e.Ccool(frame, startTime, duration, nil, true, nil, not type)
     elseif spell then
         local start, duration, _, modRate = GetSpellCooldown(spell)
@@ -600,18 +605,28 @@ function e.GetSpellItemCooldown(spellID, itemID)--法术冷却
     local startTime, duration, enable
     if spellID then
         startTime, duration, enable = GetSpellCooldown(spellID)
+        if enable==0 then
+            return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '即时冷却' or SPELL_RECAST_TIME_INSTANT)..'|r'
+        elseif startTime and duration and startTime>0 and duration>0 then
+            local t=GetTime()
+            if startTime>t then t=t+86400 end
+            t=t-startTime
+            t=duration-t
+            return '|cnRED_FONT_COLOR:'..SecondsToTime(t)..'|r'
+        end
     elseif itemID then
-        startTime, duration, enable = GetItemCooldown(itemID)
+        startTime, duration, enable = C_Container.GetItemCooldown(itemID)
+        if duration and duration>0 or not enable then
+            local t=GetTime()
+            if startTime>t then t=t+86400 end
+            t=t-startTime
+            t=duration-t
+            return '|cnRED_FONT_COLOR:'..SecondsToTime(t)..'|r'
+        elseif enable then
+            return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '即时冷却' or SPELL_RECAST_TIME_INSTANT)..'|r'
+        end
     end
-    if duration and duration>0 and enable==1 then
-        local t=GetTime()
-        if startTime>t then t=t+86400 end
-        t=t-startTime
-        t=duration-t
-        return '|cnRED_FONT_COLOR:'..SecondsToTime(t)..'|r'
-    elseif enable==0 then
-        return '|cnRED_FONT_COLOR:'..SPELL_RECAST_TIME_INSTANT..'|r'
-    end
+    
 end
 --[[
 e.WA_GetUnitAura = function(unit, spell, filter)--AuraEnvironment.lua
