@@ -363,6 +363,7 @@ local function Init_Gossip_Text_Icon_Options()
     )]]
 
     local menu = CreateFrame("FRAME", nil, border, "UIDropDownMenuTemplate")--下拉，菜单
+    border.menu=menu
     menu:SetPoint("TOPLEFT", 4, -60)
     e.LibDD:UIDropDownMenu_SetWidth(menu, 240)
 
@@ -491,14 +492,76 @@ local function Init_Gossip_Text_Icon_Options()
 
     menu.FindIcon= e.Cbtn(menu, {size={20,20}, atlas='mechagon-projects'})
     menu.FindIcon:SetPoint('LEFT', menu.Icon, 'RIGHT', 2,0)
-    --[[<Frame name="GearManagerPopupFrame" mixin="GearManagerPopupFrameMixin" inherits="IconSelectorPopupFrameTemplate" parent="PaperDollFrame" enableMouse="true" hidden="true" frameLevel="50">
-		<Anchors>
-			<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="0" y="5"/>
-		</Anchors>
-		<KeyValues>
-			<KeyValue key="editBoxHeaderText" value="GEARSETS_POPUP_TEXT" type="global"/>
-		</KeyValues>
-	</Frame>]]
+    menu.FindIcon:SetScript('OnLeave', GameTooltip_Hide)
+    menu.FindIcon:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, self.addName)        
+        e.tips:AddLine(e.onlyChinese and '点击在列表中浏览' or ICON_SELECTION_CLICK)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine('|cnRED_FONT_COLOR:Texture Atlas Viewer', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE)
+        e.tips:Show()
+    end)
+    menu.FindIcon:SetScript('OnClick', function(f)
+        if not f.frame then
+            f.frame= CreateFrame('Frame', nil, f:GetParent():GetParent(), 'IconSelectorPopupFrameTemplate')
+            f.frame:Hide()
+            f.frame.BorderBox.SelectedIconArea.SelectedIconText.SelectedIconDescription:SetText(e.onlyChinese and '点击在列表中浏览' or ICON_SELECTION_CLICK);
+            f.frame:SetScript('OnShow', function(self)
+                IconSelectorPopupFrameTemplateMixin.OnShow(self);
+                if self.iconDataProvider==nil then
+                    self.iconDataProvider= CreateAndInitFromMixin(IconDataProviderMixin, IconDataProviderExtraType.None)
+                end
+                self.BorderBox.IconTypeDropDown:SetSelectedValue(self.BorderBox.IconTypeDropDown:GetSelectedValue() or IconSelectorPopupFrameIconFilterTypes.All);
+                self:Update()
+                self.BorderBox.IconSelectorEditBox:OnTextChanged()
+                local function OnIconSelected(_, icon)
+                    self.BorderBox.SelectedIconArea.SelectedIconButton:SetIconTexture(icon);
+                    self.BorderBox.IconSelectorEditBox:SetText(icon)
+                end
+               self.IconSelector:SetSelectedCallback(OnIconSelected);
+            end)
+
+            f.frame:SetScript('OnHide', function(self)
+                IconSelectorPopupFrameTemplateMixin.OnHide(self);
+                self.iconDataProvider:Release();
+                self.iconDataProvider = nil;
+            end)
+            function f.frame:Update()
+                local texture
+                texture= self:GetParent().menu:get_icon()
+                if texture then
+                    texture=tonumber(texture)
+                end
+                if not texture then
+                    self.origName = "";
+                    self.BorderBox.IconSelectorEditBox:SetText("");
+                    local initialIndex = 1;
+                    self.IconSelector:SetSelectedIndex(initialIndex);
+                    self.BorderBox.SelectedIconArea.SelectedIconButton:SetIconTexture(self:GetIconByIndex(initialIndex));
+                else
+                    self.BorderBox.IconSelectorEditBox:SetText(texture);
+                    self.BorderBox.IconSelectorEditBox:HighlightText();
+                    self.IconSelector:SetSelectedIndex(self:GetIndexOfIcon(texture));
+                    self.BorderBox.SelectedIconArea.SelectedIconButton:SetIconTexture(texture);
+                end
+                local getSelection = GenerateClosure(self.GetIconByIndex, self);
+                local getNumSelections = GenerateClosure(self.GetNumIcons, self);
+                self.IconSelector:SetSelectionsDataProvider(getSelection, getNumSelections);
+                self.IconSelector:ScrollToSelectedIndex();
+                self:SetSelectedIconText();
+            end
+            function f.frame:OkayButton_OnClick()
+                IconSelectorPopupFrameTemplateMixin.OkayButton_OnClick(self);
+                local iconTexture = self.BorderBox.SelectedIconArea.SelectedIconButton:GetIconTexture();
+                self:GetParent().menu.Icon:SetText(iconTexture or '')
+            end
+        end
+        if f.frame:IsShown() then
+            f.frame:Hide()
+        end
+        f.frame:SetShown(true)
+    end)
     if _G['TAV_CoreFrame'] then
         menu.tav= e.Cbtn(menu, {size={20,20}, atlas='communities-icon-searchmagnifyingglass'})
         menu.tav:SetPoint('TOP', menu.FindIcon, 'BOTTOM', 0, -2)
@@ -766,7 +829,7 @@ function Init_Gossip_Text_Icon_Options_Button()
     btn:SetPoint('TOP', GossipFrameCloseButton, 'BOTTOM', -2, -4)
     btn:SetScript('OnClick', Init_Gossip_Text_Icon_Options)
     btn:SetAlpha(0.3)
-    
+
     btn:SetScript('OnLeave', function(self) self:SetAlpha(0.3) GameTooltip_Hide() end)
     btn:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
