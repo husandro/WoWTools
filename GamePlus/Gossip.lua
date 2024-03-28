@@ -355,482 +355,6 @@ end
 
 
 
---###########
---对话，主菜单
---###########
-local function Init_Menu_Gossip(_, level, type)
-    local info
-    if type=='OPTIONS' then
-        info={
-            text= e.onlyChinese and '重置位置' or RESET_POSITION,
-            notCheckable=true,
-            colorCode=not Save.point and '|cff606060',
-            keepShownOnClick=true,
-            func= function()
-                Save.point=nil
-                GossipButton:ClearAllPoints()
-                GossipButton:set_Point()
-                print(id, e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-        info={
-            text= e.onlyChinese and '恢复默认设置' or RESET_TO_DEFAULT,
-            notCheckable=true,
-            keepShownOnClick=true,
-            func= function()
-                StaticPopupDialogs[id..addName..'RESET_TO_DEFAULT']={
-                    text=id..' '..e.cn(addName)..'|n|n|cnRED_FONT_COLOR:'..(e.onlyChinese and '恢复默认设置' or RESET_TO_DEFAULT)..'|r|n|n|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重新加载UI' or RELOADUI),
-                    whileDead=true, hideOnEscape=true, exclusive=true,
-                    button1= e.onlyChinese and '重置' or RESET,
-                    button2= e.onlyChinese and '取消' or CANCEL,
-                    OnAccept = function()
-                        Save=nil
-                        e.Reload()
-                    end,
-                }
-                StaticPopup_Show(id..addName..'RESET_TO_DEFAULT')
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-
-    elseif type=='CUSTOM' then
-        for gossipOptionID, text in pairs(Save.gossipOption) do
-            info={
-                text= text,
-                notCheckable=true,
-                tooltipOnButton=true,
-                tooltipTitle='gossipOptionID '..gossipOptionID,
-                tooltipText='|n'..e.Icon.left..(e.onlyChinese and '移除' or REMOVE),
-                arg1= gossipOptionID,
-                func=function(_, arg1)
-                    Save.gossipOption[arg1]=nil
-                    print(id, e.onlyChinese and '对话' or ENABLE_DIALOG, e.onlyChinese and '移除' or REMOVE, text, 'gossipOptionID:', arg1)
-                end
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
-        end
-
-        e.LibDD:UIDropDownMenu_AddSeparator(level)
-        info={
-            text= e.onlyChinese and '清除全部' or CLEAR_ALL,
-            tooltipOnButton= true,
-            tooltipTitle= 'Shift+'..e.Icon.left,
-            notCheckable=true,
-            func= function()
-                if IsShiftKeyDown() then
-                    Save.gossipOption={}
-                    print(id, e.cn(addName), e.onlyChinese and '自定义' or CUSTOM, e.onlyChinese and '清除全部' or CLEAR_ALL)
-                end
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    elseif type=='DISABLE' then--禁用NPC, 闲话,任务, 选项
-        for npcID, name in pairs(Save.NPC) do
-            info={
-                text=name,
-                tooltipOnButton=true,
-                tooltipTitle= 'NPC '..npcID,
-                tooltipText= e.Icon.left.. (e.onlyChinese and '移除' or REMOVE),
-                notCheckable= true,
-                arg1= npcID,
-                func= function(_, arg1)
-                    Save.NPC[arg1]=nil
-                    print(id, e.cn(addName), e.onlyChinese and '移除' or REMOVE, 'NPC', arg1)
-                end
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
-        end
-        e.LibDD:UIDropDownMenu_AddSeparator(level)
-        info={
-            text=e.onlyChinese and '清除全部' or CLEAR_ALL,
-            notCheckable=true,
-            tooltipOnButton=true,
-            tooltipTitle= 'Shift+'..e.Icon.left,
-            func= function()
-                if IsShiftKeyDown() then
-                    Save.NPC={}
-                    print(id, e.cn(addName), e.onlyChinese and '自定义' or CUSTOM, e.onlyChinese and '清除全部' or CLEAR_ALL)
-                end
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-
-    elseif type=='PlayerChoiceFrame' then
-        for spellID, rarity in pairs(Save.choice) do
-            e.LoadDate({id=spellID, type='spell'})
-            local icon= GetSpellTexture(spellID)
-            local name= GetSpellLink(spellID) or ('spellID '..spellID)
-            rarity= rarity+1
-            local hex= select(4, C_Item.GetItemQualityColor(rarity))
-            local quality=(hex and '|c'..hex or '')..(e.cn(_G['ITEM_QUALITY'..rarity..'_DESC']) or rarity)
-            info={
-                text=(icon and '|T'..icon..':0|t' or '')..name..' '.. quality,
-                tooltipOnButton=true,
-                tooltipTitle= e.Icon.left.. (e.onlyChinese and '移除' or REMOVE),
-                tooltipText= 'spellID '..spellID,
-                notCheckable= true,
-
-                arg1=spellID,
-                func= function(_, arg1)
-                    Save.choice[arg1]=nil
-                    print(id, e.cn(addName), e.onlyChinese and '选择' or CHOOSE, e.onlyChinese and '移除' or REMOVE, GetSpellLink(arg1) or ('spellID '..arg1))
-                end
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
-        end
-        e.LibDD:UIDropDownMenu_AddSeparator(level)
-        info={
-            text=e.onlyChinese and '清除全部' or CLEAR_ALL,
-            notCheckable=true,
-            tooltipOnButton=true,
-            tooltipTitle='Shift+'..e.Icon.left,
-            func= function()
-                if IsShiftKeyDown() then
-                    Save.choice={}
-                    print(id, e.cn(addName), e.onlyChinese and '选择' or CHOOSE, e.onlyChinese and '清除全部' or CLEAR_ALL)
-                end
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    elseif type=='WoWMovie' then
-        local MovieList= MOVIE_LIST or {--cinematicsframe.lua
-            { expansion=LE_EXPANSION_CLASSIC,
-              movieIDs = { 1, 2 },
-              upAtlas="StreamCinematic-Classic-Up",
-              text= e.onlyChinese and '经典旧世' or nil,
-            },
-            { expansion=LE_EXPANSION_BURNING_CRUSADE,
-              movieIDs = { 27 },
-              upAtlas="StreamCinematic-BC-Up",
-              text= e.onlyChinese and '燃烧的远征' or nil,
-            },
-            { expansion=LE_EXPANSION_WRATH_OF_THE_LICH_KING,
-              movieIDs = { 18 },
-              upAtlas="StreamCinematic-LK-Up",
-              text= e.onlyChinese and '巫妖王之怒' or nil,
-            },
-            { expansion=LE_EXPANSION_CATACLYSM,
-              movieIDs = { 23 },
-              upAtlas="StreamCinematic-CC-Up",
-              text= e.onlyChinese and '大地的裂变' or nil,
-            },
-            { expansion=LE_EXPANSION_MISTS_OF_PANDARIA,
-              movieIDs = { 115 },
-              upAtlas="StreamCinematic-MOP-Up",
-              text= e.onlyChinese and '熊猫人之谜' or nil,
-            },
-            { expansion=LE_EXPANSION_WARLORDS_OF_DRAENOR,
-              movieIDs = { 195 },
-              upAtlas="StreamCinematic-WOD-Up",
-              text= e.onlyChinese and '德拉诺之王' or nil,
-            },
-            { expansion=LE_EXPANSION_LEGION,
-              movieIDs = { 470 },
-              upAtlas="StreamCinematic-Legion-Up",
-              text= e.onlyChinese and '军团再临' or nil,
-            },
-            { expansion=LE_EXPANSION_BATTLE_FOR_AZEROTH,
-              movieIDs = { 852 },
-              upAtlas="StreamCinematic-BFA-Up",
-              text= e.onlyChinese and '争霸艾泽拉斯' or nil,
-            },
-            { expansion=LE_EXPANSION_SHADOWLANDS,
-              movieIDs = { 936 },
-              upAtlas="StreamCinematic-Shadowlands-Up",
-              text= e.onlyChinese and '暗影国度' or nil,
-            },
-            { expansion=LE_EXPANSION_DRAGONFLIGHT,
-              movieIDs = { 960 },
-              upAtlas="StreamCinematic-Dragonflight-Up",
-              text= e.onlyChinese and '巨龙时代' or nil,
-            },
-            { expansion=LE_EXPANSION_DRAGONFLIGHT,
-              movieIDs = { 973 },
-              upAtlas="StreamCinematic-Dragonflight2-Up",
-              title=DRAGONFLIGHT_TOTHESKIES,
-              disableAutoPlay=true,
-              text= e.onlyChinese and '巨龙时代' or nil,
-            },
-        }
-
-        for _, movieEntry in pairs(MovieList) do
-            for _, movieID in pairs(movieEntry.movieIDs) do
-                local isDownload= IsMovieLocal(movieID)-- IsMoviePlayable(movieID)
-                local inProgress, downloaded, total = GetMovieDownloadProgress(movieID)
-                info={
-                    text= (movieEntry.title or movieEntry.text or _G["EXPANSION_NAME"..movieEntry.expansion])..' '..movieID,
-                    tooltipOnButton=true,
-                    tooltipTitle= e.Icon.left..(e.onlyChinese and '播放' or EVENTTRACE_BUTTON_PLAY),
-                    tooltipText=(isDownload and '|cff606060' or '')
-                                ..'Ctrl+'..e.Icon.left..(e.onlyChinese and '下载' or 'Download')
-                                ..(inProgress and downloaded and total and format('|n%i%%', downloaded/total*100) or ''),
-                    notCheckable=true,
-                    disabled= UnitAffectingCombat('player'),
-                    colorCode= not isDownload and '|cff606060' or nil,
-                    icon= movieEntry.upAtlas,
-                    arg1= movieID,
-                    func= function(_, arg1)
-                        if IsControlKeyDown() then
-                            if IsMovieLocal(arg1) then
-                                print(id, e.cn(addName), arg1, e.onlyChinese and '存在' or 'Exist')
-                            else
-                                PreloadMovie(arg1)
-                                local inProgress2, downloaded2, total2 = GetMovieDownloadProgress(arg1)
-                                print(id, e.cn(addName), inProgress2 and downloaded2 and total2 and format('%i%%', downloaded/total*100) or total2)
-                            end
-                        elseif not IsModifierKeyDown() then
-                            e.LibDD:CloseDropDownMenus()
-                            MovieFrame_PlayMovie(MovieFrame, arg1)
-                        end
-                    end
-                }
-                e.LibDD:UIDropDownMenu_AddButton(info, level)
-            end
-        end
-
-    elseif type=='Movie' then
-        for movieID, dateTime in pairs(Save.movie) do
-            local isDownload= IsMovieLocal(movieID)-- IsMoviePlayable(movieID)
-            local inProgress, downloaded, total = GetMovieDownloadProgress(movieID)
-            info={
-                text= movieID,
-                tooltipOnButton=true,
-                tooltipTitle= dateTime,
-                tooltipText= '|n'
-                            ..e.Icon.left..(e.onlyChinese and '播放' or EVENTTRACE_BUTTON_PLAY)
-                            ..'|nShift+'..e.Icon.left..(e.onlyChinese and '移除' or REMOVE)
-                            ..(isDownload and '|cff606060' or '')
-                            ..'|nCtrl+'..e.Icon.left..(e.onlyChinese and '下载' or 'Download')
-                            ..(inProgress and downloaded and total and format('|n%i%%', downloaded/total*100) or ''),
-                notCheckable=true,
-                disabled= UnitAffectingCombat('player'),
-                colorCode= not isDownload and '|cff606060' or nil,
-                arg1= movieID,
-                func= function(_, arg1)
-                    if not IsModifierKeyDown() then
-                        e.LibDD:CloseDropDownMenus()
-                        MovieFrame_PlayMovie(MovieFrame, arg1)
-                    elseif IsControlKeyDown() then
-                        if IsMovieLocal(movieID) then
-                            print(id, e.cn(addName), arg1, e.onlyChinese and '存在' or 'Exist')
-                        else
-                            PreloadMovie(arg1)
-                            local inProgress2, downloaded2, total2 = GetMovieDownloadProgress(arg1)
-                            print(id, e.cn(addName), inProgress2 and downloaded2 and total2 and format('%i%%', downloaded/total*100) or total2)
-                        end
-                    elseif IsShiftKeyDown() then
-                        Save.movie[arg1]=nil
-                        print(id, e.cn(addName), e.onlyChinese and '移除' or REMOVE, 'movieID', arg1)
-                    end
-                end
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
-        end
-
-        info={
-            text=e.onlyChinese and '清除全部' or CLEAR_ALL,
-            tooltipOnButton=true,
-            tooltipTitle='Shift+'..e.Icon.left,
-            notCheckable=true,
-            func= function()
-                if IsShiftKeyDown() then
-                    Save.movie={}
-                    print(id, e.cn(addName), e.onlyChinese and '清除全部' or CLEAR_ALL)
-                end
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-        e.LibDD:UIDropDownMenu_AddSeparator(level)
-        info={
-            text= e.onlyChinese and '跳过' or RENOWN_LEVEL_UP_SKIP_BUTTON,
-            checked= Save.stopMovie,
-            tooltipOnButton=true,
-            tooltipTitle=e.onlyChinese and '已经播放' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ANIMA_DIVERSION_NODE_SELECTED, EVENTTRACE_BUTTON_PLAY),
-            keepShownOnClick=true,
-            func= function ()
-                Save.stopMovie= not Save.stopMovie and true or nil
-                print(id, e.cn(addName), e.GetEnabeleDisable(Save.stopMovie))
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-        info={
-            text= e.onlyChinese and '动画字幕' or CINEMATIC_SUBTITLES,
-            tooltipOnButton=true,
-            tooltipTitle='CVar movieSubtitle',
-            checked= C_CVar.GetCVarBool("movieSubtitle"),
-            disabled= UnitAffectingCombat('player'),
-            keepShownOnClick=true,
-            func= function()
-                C_CVar.SetCVar('movieSubtitle', C_CVar.GetCVarBool("movieSubtitle") and '0' or '1')
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-        info={
-            text='WoW',
-            notCheckable=true,
-            hasArrow=true,
-            menuList='WoWMovie',
-            keepShownOnClick=true,
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    elseif type=='Gossip_Text_Icon_Options_SYSTEMP' then--自带，自定义，对话，文本， 3级菜单
-        for gossipID, tab in pairs(GossipTextIcon) do
-            info={
-                text=gossipID..' '..(tab.name or ''),
-                icon= tab.icon,
-                notCheckable=true,
-                keepShownOnClick=true,
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
-        end
-
-    elseif type=='Gossip_Text_Icon_Options' then--自定义，对话，文本，2级菜单
-        local num=0
-        for _ in pairs(Save.Gossip_Text_Icon_Player) do
-            num= num+1
-        end
-        info={
-            text=(e.onlyChinese and '自定义' or CUSTOM)..(num>0 and '|cnGREEN_FONT_COLOR:' or '|cffff0000')..num..'|r',
-            notCheckable=true,
-            keepShownOnClick=true,
-            tooltipOnButton=true,
-            tooltipTitle=(e.onlyChinese and '添加/移除' or (ADD..'/'..REMOVE))..e.Icon.left,
-            func= Init_Gossip_Text_Icon_Options,
-                --e.OpenPanelOpting('|A:SpecDial_LastPip_BorderGlow:0:0|a'..(e.onlyChinese and '对话和任务' or addName))
-            --end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-        e.LibDD:UIDropDownMenu_AddSeparator(level)
-        num=0
-        for _ in pairs(GossipTextIcon) do
-            num= num+1
-        end
-        info={
-            text=(e.onlyChinese and '默认' or DEFAULT)..(num>0 and '|cnGREEN_FONT_COLOR:' or '')..' #'..num,
-            colorCode= num==0 and '|cff606060' or nil,
-            notCheckable=true,
-            hasArrow= num>0,
-            menuList= 'Gossip_Text_Icon_Options_SYSTEMP',
-            keepShownOnClick=true,
-            func= function()
-                e.OpenPanelOpting()
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-    end
-
-    if type then
-        return
-    end
-
-    info={
-        text=e.onlyChinese and '启用' or ENABLE,
-        checked= Save.gossip,
-        keepShownOnClick=true,
-        func= function ()
-            Save.gossip= not Save.gossip and true or nil
-            GossipButton:set_Texture()--设置，图片
-            GossipButton:tooltip_Show()
-        end,
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-    e.LibDD:UIDropDownMenu_AddSeparator(level)
-
-    info={--唯一
-        text= e.onlyChinese and '唯一对话' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEM_UNIQUE, ENABLE_DIALOG),
-        checked= Save.unique,
-        keepShownOnClick=true,
-        func= function()
-            Save.unique= not Save.unique and true or nil
-        end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    info={
-        text=e.onlyChinese and '对话替换' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DIALOG_VOLUME, REPLACE),
-        tooltipOnButton=true,
-        tooltipTitle=e.onlyChinese and '文本' or LOCALE_TEXT_LABEL,
-        checked= not Save.not_Gossip_Text_Icon,
-        keepShownOnClick=true,
-        hasArrow=true,
-        menuList='Gossip_Text_Icon_Options',
-        func= function()
-           Save.not_Gossip_Text_Icon= not Save.not_Gossip_Text_Icon and true or nil
-           Init_Gossip_Text()
-           if GossipFrame:IsShown() then
-                GossipFrame:Update()
-           end
-        end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    e.LibDD:UIDropDownMenu_AddSeparator(level)
-    info={--自定义,闲话,选项
-        text= e.onlyChinese and '自定义对话' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CUSTOM, ENABLE_DIALOG),
-        menuList='CUSTOM',
-        notCheckable=true,
-        hasArrow=true,
-        keepShownOnClick=true,
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    info={--禁用NPC, 闲话,任务, 选项
-        text= (e.onlyChinese and '禁用' or DISABLE)..' NPC',
-        menuList='DISABLE',
-        tooltipOnButton=true,
-        tooltipTitle= e.onlyChinese and '对话' or ENABLE_DIALOG,
-        tooltipText= e.onlyChinese and '任务' or QUESTS_LABEL,
-        notCheckable=true,
-        hasArrow=true,
-        keepShownOnClick=true,
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    info={--PlayerChoiceFrame
-        text= e.onlyChinese and '选择' or CHOOSE,
-        menuList='PlayerChoiceFrame',
-        tooltipOnButton=true,
-        tooltipTitle='PlayerChoiceFrame',
-        tooltipText= 'Blizzard_PlayerChoice',
-        notCheckable=true,
-        hasArrow=true,
-        keepShownOnClick=true,
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    info={
-        text= e.onlyChinese and '电影' or 'Movie',
-        menuList='Movie',
-        tooltipOnButton=true,
-        notCheckable=true,
-        hasArrow=true,
-        keepShownOnClick=true,
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    e.LibDD:UIDropDownMenu_AddSeparator(level)
-    info={
-        text= e.onlyChinese and '打开选项' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, OPTIONS),
-        notCheckable=true,
-        keepShownOnClick=true,
-        hasArrow=true,
-        menuList='OPTIONS',
-        func= function()
-            e.OpenPanelOpting('|A:SpecDial_LastPip_BorderGlow:0:0|a'..(e.onlyChinese and '对话和任务' or addName))
-        end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-end
 
 
 
@@ -854,10 +378,7 @@ end
 
 
 
-
-
-
---自定义，对话，文本
+--自定义，对话，文本，放在主菜单，前
 local Gossip_Text_Icon_Frame
 local function Init_Gossip_Text_Icon_Options()
     if Gossip_Text_Icon_Frame then
@@ -1374,7 +895,502 @@ end
 
 
 
---打开，自定义，对话，文本，按钮
+
+
+
+
+
+
+
+
+
+--###########
+--对话，主菜单
+--###########
+local function Init_Menu_Gossip(_, level, type)
+    local info
+    if type=='OPTIONS' then
+        info={
+            text= e.onlyChinese and '重置位置' or RESET_POSITION,
+            notCheckable=true,
+            colorCode=not Save.point and '|cff606060',
+            keepShownOnClick=true,
+            func= function()
+                Save.point=nil
+                GossipButton:ClearAllPoints()
+                GossipButton:set_Point()
+                print(id, e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+        info={
+            text= e.onlyChinese and '恢复默认设置' or RESET_TO_DEFAULT,
+            notCheckable=true,
+            keepShownOnClick=true,
+            func= function()
+                StaticPopupDialogs[id..addName..'RESET_TO_DEFAULT']={
+                    text=id..' '..e.cn(addName)..'|n|n|cnRED_FONT_COLOR:'..(e.onlyChinese and '恢复默认设置' or RESET_TO_DEFAULT)..'|r|n|n|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重新加载UI' or RELOADUI),
+                    whileDead=true, hideOnEscape=true, exclusive=true,
+                    button1= e.onlyChinese and '重置' or RESET,
+                    button2= e.onlyChinese and '取消' or CANCEL,
+                    OnAccept = function()
+                        Save=nil
+                        e.Reload()
+                    end,
+                }
+                StaticPopup_Show(id..addName..'RESET_TO_DEFAULT')
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+
+    elseif type=='CUSTOM' then
+        for gossipOptionID, text in pairs(Save.gossipOption) do
+            info={
+                text= text,
+                notCheckable=true,
+                tooltipOnButton=true,
+                tooltipTitle='gossipOptionID '..gossipOptionID,
+                tooltipText='|n'..e.Icon.left..(e.onlyChinese and '移除' or REMOVE),
+                arg1= gossipOptionID,
+                func=function(_, arg1)
+                    Save.gossipOption[arg1]=nil
+                    print(id, e.onlyChinese and '对话' or ENABLE_DIALOG, e.onlyChinese and '移除' or REMOVE, text, 'gossipOptionID:', arg1)
+                end
+            }
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
+        end
+
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
+        info={
+            text= e.onlyChinese and '清除全部' or CLEAR_ALL,
+            tooltipOnButton= true,
+            tooltipTitle= 'Shift+'..e.Icon.left,
+            notCheckable=true,
+            func= function()
+                if IsShiftKeyDown() then
+                    Save.gossipOption={}
+                    print(id, e.cn(addName), e.onlyChinese and '自定义' or CUSTOM, e.onlyChinese and '清除全部' or CLEAR_ALL)
+                end
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    elseif type=='DISABLE' then--禁用NPC, 闲话,任务, 选项
+        for npcID, name in pairs(Save.NPC) do
+            info={
+                text=name,
+                tooltipOnButton=true,
+                tooltipTitle= 'NPC '..npcID,
+                tooltipText= e.Icon.left.. (e.onlyChinese and '移除' or REMOVE),
+                notCheckable= true,
+                arg1= npcID,
+                func= function(_, arg1)
+                    Save.NPC[arg1]=nil
+                    print(id, e.cn(addName), e.onlyChinese and '移除' or REMOVE, 'NPC', arg1)
+                end
+            }
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
+        end
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
+        info={
+            text=e.onlyChinese and '清除全部' or CLEAR_ALL,
+            notCheckable=true,
+            tooltipOnButton=true,
+            tooltipTitle= 'Shift+'..e.Icon.left,
+            func= function()
+                if IsShiftKeyDown() then
+                    Save.NPC={}
+                    print(id, e.cn(addName), e.onlyChinese and '自定义' or CUSTOM, e.onlyChinese and '清除全部' or CLEAR_ALL)
+                end
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+
+    elseif type=='PlayerChoiceFrame' then
+        for spellID, rarity in pairs(Save.choice) do
+            e.LoadDate({id=spellID, type='spell'})
+            local icon= GetSpellTexture(spellID)
+            local name= GetSpellLink(spellID) or ('spellID '..spellID)
+            rarity= rarity+1
+            local hex= select(4, C_Item.GetItemQualityColor(rarity))
+            local quality=(hex and '|c'..hex or '')..(e.cn(_G['ITEM_QUALITY'..rarity..'_DESC']) or rarity)
+            info={
+                text=(icon and '|T'..icon..':0|t' or '')..name..' '.. quality,
+                tooltipOnButton=true,
+                tooltipTitle= e.Icon.left.. (e.onlyChinese and '移除' or REMOVE),
+                tooltipText= 'spellID '..spellID,
+                notCheckable= true,
+
+                arg1=spellID,
+                func= function(_, arg1)
+                    Save.choice[arg1]=nil
+                    print(id, e.cn(addName), e.onlyChinese and '选择' or CHOOSE, e.onlyChinese and '移除' or REMOVE, GetSpellLink(arg1) or ('spellID '..arg1))
+                end
+            }
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
+        end
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
+        info={
+            text=e.onlyChinese and '清除全部' or CLEAR_ALL,
+            notCheckable=true,
+            tooltipOnButton=true,
+            tooltipTitle='Shift+'..e.Icon.left,
+            func= function()
+                if IsShiftKeyDown() then
+                    Save.choice={}
+                    print(id, e.cn(addName), e.onlyChinese and '选择' or CHOOSE, e.onlyChinese and '清除全部' or CLEAR_ALL)
+                end
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    elseif type=='WoWMovie' then
+        local MovieList= MOVIE_LIST or {--cinematicsframe.lua
+            { expansion=LE_EXPANSION_CLASSIC,
+              movieIDs = { 1, 2 },
+              upAtlas="StreamCinematic-Classic-Up",
+              text= e.onlyChinese and '经典旧世' or nil,
+            },
+            { expansion=LE_EXPANSION_BURNING_CRUSADE,
+              movieIDs = { 27 },
+              upAtlas="StreamCinematic-BC-Up",
+              text= e.onlyChinese and '燃烧的远征' or nil,
+            },
+            { expansion=LE_EXPANSION_WRATH_OF_THE_LICH_KING,
+              movieIDs = { 18 },
+              upAtlas="StreamCinematic-LK-Up",
+              text= e.onlyChinese and '巫妖王之怒' or nil,
+            },
+            { expansion=LE_EXPANSION_CATACLYSM,
+              movieIDs = { 23 },
+              upAtlas="StreamCinematic-CC-Up",
+              text= e.onlyChinese and '大地的裂变' or nil,
+            },
+            { expansion=LE_EXPANSION_MISTS_OF_PANDARIA,
+              movieIDs = { 115 },
+              upAtlas="StreamCinematic-MOP-Up",
+              text= e.onlyChinese and '熊猫人之谜' or nil,
+            },
+            { expansion=LE_EXPANSION_WARLORDS_OF_DRAENOR,
+              movieIDs = { 195 },
+              upAtlas="StreamCinematic-WOD-Up",
+              text= e.onlyChinese and '德拉诺之王' or nil,
+            },
+            { expansion=LE_EXPANSION_LEGION,
+              movieIDs = { 470 },
+              upAtlas="StreamCinematic-Legion-Up",
+              text= e.onlyChinese and '军团再临' or nil,
+            },
+            { expansion=LE_EXPANSION_BATTLE_FOR_AZEROTH,
+              movieIDs = { 852 },
+              upAtlas="StreamCinematic-BFA-Up",
+              text= e.onlyChinese and '争霸艾泽拉斯' or nil,
+            },
+            { expansion=LE_EXPANSION_SHADOWLANDS,
+              movieIDs = { 936 },
+              upAtlas="StreamCinematic-Shadowlands-Up",
+              text= e.onlyChinese and '暗影国度' or nil,
+            },
+            { expansion=LE_EXPANSION_DRAGONFLIGHT,
+              movieIDs = { 960 },
+              upAtlas="StreamCinematic-Dragonflight-Up",
+              text= e.onlyChinese and '巨龙时代' or nil,
+            },
+            { expansion=LE_EXPANSION_DRAGONFLIGHT,
+              movieIDs = { 973 },
+              upAtlas="StreamCinematic-Dragonflight2-Up",
+              title=DRAGONFLIGHT_TOTHESKIES,
+              disableAutoPlay=true,
+              text= e.onlyChinese and '巨龙时代' or nil,
+            },
+        }
+
+        for _, movieEntry in pairs(MovieList) do
+            for _, movieID in pairs(movieEntry.movieIDs) do
+                local isDownload= IsMovieLocal(movieID)-- IsMoviePlayable(movieID)
+                local inProgress, downloaded, total = GetMovieDownloadProgress(movieID)
+                info={
+                    text= (movieEntry.title or movieEntry.text or _G["EXPANSION_NAME"..movieEntry.expansion])..' '..movieID,
+                    tooltipOnButton=true,
+                    tooltipTitle= e.Icon.left..(e.onlyChinese and '播放' or EVENTTRACE_BUTTON_PLAY),
+                    tooltipText=(isDownload and '|cff606060' or '')
+                                ..'Ctrl+'..e.Icon.left..(e.onlyChinese and '下载' or 'Download')
+                                ..(inProgress and downloaded and total and format('|n%i%%', downloaded/total*100) or ''),
+                    notCheckable=true,
+                    disabled= UnitAffectingCombat('player'),
+                    colorCode= not isDownload and '|cff606060' or nil,
+                    icon= movieEntry.upAtlas,
+                    arg1= movieID,
+                    func= function(_, arg1)
+                        if IsControlKeyDown() then
+                            if IsMovieLocal(arg1) then
+                                print(id, e.cn(addName), arg1, e.onlyChinese and '存在' or 'Exist')
+                            else
+                                PreloadMovie(arg1)
+                                local inProgress2, downloaded2, total2 = GetMovieDownloadProgress(arg1)
+                                print(id, e.cn(addName), inProgress2 and downloaded2 and total2 and format('%i%%', downloaded/total*100) or total2)
+                            end
+                        elseif not IsModifierKeyDown() then
+                            e.LibDD:CloseDropDownMenus()
+                            MovieFrame_PlayMovie(MovieFrame, arg1)
+                        end
+                    end
+                }
+                e.LibDD:UIDropDownMenu_AddButton(info, level)
+            end
+        end
+
+    elseif type=='Movie' then
+        for movieID, dateTime in pairs(Save.movie) do
+            local isDownload= IsMovieLocal(movieID)-- IsMoviePlayable(movieID)
+            local inProgress, downloaded, total = GetMovieDownloadProgress(movieID)
+            info={
+                text= movieID,
+                tooltipOnButton=true,
+                tooltipTitle= dateTime,
+                tooltipText= '|n'
+                            ..e.Icon.left..(e.onlyChinese and '播放' or EVENTTRACE_BUTTON_PLAY)
+                            ..'|nShift+'..e.Icon.left..(e.onlyChinese and '移除' or REMOVE)
+                            ..(isDownload and '|cff606060' or '')
+                            ..'|nCtrl+'..e.Icon.left..(e.onlyChinese and '下载' or 'Download')
+                            ..(inProgress and downloaded and total and format('|n%i%%', downloaded/total*100) or ''),
+                notCheckable=true,
+                disabled= UnitAffectingCombat('player'),
+                colorCode= not isDownload and '|cff606060' or nil,
+                arg1= movieID,
+                func= function(_, arg1)
+                    if not IsModifierKeyDown() then
+                        e.LibDD:CloseDropDownMenus()
+                        MovieFrame_PlayMovie(MovieFrame, arg1)
+                    elseif IsControlKeyDown() then
+                        if IsMovieLocal(movieID) then
+                            print(id, e.cn(addName), arg1, e.onlyChinese and '存在' or 'Exist')
+                        else
+                            PreloadMovie(arg1)
+                            local inProgress2, downloaded2, total2 = GetMovieDownloadProgress(arg1)
+                            print(id, e.cn(addName), inProgress2 and downloaded2 and total2 and format('%i%%', downloaded/total*100) or total2)
+                        end
+                    elseif IsShiftKeyDown() then
+                        Save.movie[arg1]=nil
+                        print(id, e.cn(addName), e.onlyChinese and '移除' or REMOVE, 'movieID', arg1)
+                    end
+                end
+            }
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
+        end
+
+        info={
+            text=e.onlyChinese and '清除全部' or CLEAR_ALL,
+            tooltipOnButton=true,
+            tooltipTitle='Shift+'..e.Icon.left,
+            notCheckable=true,
+            func= function()
+                if IsShiftKeyDown() then
+                    Save.movie={}
+                    print(id, e.cn(addName), e.onlyChinese and '清除全部' or CLEAR_ALL)
+                end
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
+        info={
+            text= e.onlyChinese and '跳过' or RENOWN_LEVEL_UP_SKIP_BUTTON,
+            checked= Save.stopMovie,
+            tooltipOnButton=true,
+            tooltipTitle=e.onlyChinese and '已经播放' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ANIMA_DIVERSION_NODE_SELECTED, EVENTTRACE_BUTTON_PLAY),
+            keepShownOnClick=true,
+            func= function ()
+                Save.stopMovie= not Save.stopMovie and true or nil
+                print(id, e.cn(addName), e.GetEnabeleDisable(Save.stopMovie))
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+        info={
+            text= e.onlyChinese and '动画字幕' or CINEMATIC_SUBTITLES,
+            tooltipOnButton=true,
+            tooltipTitle='CVar movieSubtitle',
+            checked= C_CVar.GetCVarBool("movieSubtitle"),
+            disabled= UnitAffectingCombat('player'),
+            keepShownOnClick=true,
+            func= function()
+                C_CVar.SetCVar('movieSubtitle', C_CVar.GetCVarBool("movieSubtitle") and '0' or '1')
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+        info={
+            text='WoW',
+            notCheckable=true,
+            hasArrow=true,
+            menuList='WoWMovie',
+            keepShownOnClick=true,
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    elseif type=='Gossip_Text_Icon_Options_SYSTEMP' then--自带，自定义，对话，文本， 3级菜单
+        for gossipID, tab in pairs(GossipTextIcon) do
+            info={
+                text=gossipID..' '..(tab.name or ''),
+                icon= tab.icon,
+                notCheckable=true,
+                keepShownOnClick=true,
+            }
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
+        end
+
+    elseif type=='Gossip_Text_Icon_Options' then--自定义，对话，文本，2级菜单
+        local num=0
+        for _ in pairs(Save.Gossip_Text_Icon_Player) do
+            num= num+1
+        end
+        info={
+            text=(e.onlyChinese and '自定义' or CUSTOM)..(num>0 and '|cnGREEN_FONT_COLOR:' or '|cffff0000')..num..'|r',
+            notCheckable=true,
+            keepShownOnClick=true,
+            tooltipOnButton=true,
+            tooltipTitle=(e.onlyChinese and '添加/移除' or (ADD..'/'..REMOVE))..e.Icon.left,
+            func= function()
+                Init_Gossip_Text_Icon_Options()
+            end,
+                --e.OpenPanelOpting('|A:SpecDial_LastPip_BorderGlow:0:0|a'..(e.onlyChinese and '对话和任务' or addName))
+            --end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
+        num=0
+        for _ in pairs(GossipTextIcon) do
+            num= num+1
+        end
+        info={
+            text=(e.onlyChinese and '默认' or DEFAULT)..(num>0 and '|cnGREEN_FONT_COLOR:' or '')..' #'..num,
+            colorCode= num==0 and '|cff606060' or nil,
+            notCheckable=true,
+            hasArrow= num>0,
+            menuList= 'Gossip_Text_Icon_Options_SYSTEMP',
+            keepShownOnClick=true,
+            func= function()
+                e.OpenPanelOpting()
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+    end
+
+    if type then
+        return
+    end
+
+    info={
+        text=e.onlyChinese and '启用' or ENABLE,
+        checked= Save.gossip,
+        keepShownOnClick=true,
+        func= function ()
+            Save.gossip= not Save.gossip and true or nil
+            GossipButton:set_Texture()--设置，图片
+            GossipButton:tooltip_Show()
+        end,
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
+
+    info={--唯一
+        text= e.onlyChinese and '唯一对话' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEM_UNIQUE, ENABLE_DIALOG),
+        checked= Save.unique,
+        keepShownOnClick=true,
+        func= function()
+            Save.unique= not Save.unique and true or nil
+        end
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    info={
+        text=e.onlyChinese and '对话替换' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DIALOG_VOLUME, REPLACE),
+        tooltipOnButton=true,
+        tooltipTitle=e.onlyChinese and '文本' or LOCALE_TEXT_LABEL,
+        checked= not Save.not_Gossip_Text_Icon,
+        keepShownOnClick=true,
+        hasArrow=true,
+        menuList='Gossip_Text_Icon_Options',
+        func= function()
+           Save.not_Gossip_Text_Icon= not Save.not_Gossip_Text_Icon and true or nil
+           Init_Gossip_Text()
+           if GossipFrame:IsShown() then
+                GossipFrame:Update()
+           end
+        end
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
+    info={--自定义,闲话,选项
+        text= e.onlyChinese and '自定义对话' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CUSTOM, ENABLE_DIALOG),
+        menuList='CUSTOM',
+        notCheckable=true,
+        hasArrow=true,
+        keepShownOnClick=true,
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    info={--禁用NPC, 闲话,任务, 选项
+        text= (e.onlyChinese and '禁用' or DISABLE)..' NPC',
+        menuList='DISABLE',
+        tooltipOnButton=true,
+        tooltipTitle= e.onlyChinese and '对话' or ENABLE_DIALOG,
+        tooltipText= e.onlyChinese and '任务' or QUESTS_LABEL,
+        notCheckable=true,
+        hasArrow=true,
+        keepShownOnClick=true,
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    info={--PlayerChoiceFrame
+        text= e.onlyChinese and '选择' or CHOOSE,
+        menuList='PlayerChoiceFrame',
+        tooltipOnButton=true,
+        tooltipTitle='PlayerChoiceFrame',
+        tooltipText= 'Blizzard_PlayerChoice',
+        notCheckable=true,
+        hasArrow=true,
+        keepShownOnClick=true,
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    info={
+        text= e.onlyChinese and '电影' or 'Movie',
+        menuList='Movie',
+        tooltipOnButton=true,
+        notCheckable=true,
+        hasArrow=true,
+        keepShownOnClick=true,
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
+    info={
+        text= e.onlyChinese and '打开选项' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, OPTIONS),
+        notCheckable=true,
+        keepShownOnClick=true,
+        hasArrow=true,
+        menuList='OPTIONS',
+        func= function()
+            e.OpenPanelOpting('|A:SpecDial_LastPip_BorderGlow:0:0|a'..(e.onlyChinese and '对话和任务' or addName))
+        end
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+end
+
+
+
+
+
+
+
+
+--打开，自定义，对话，文本，按钮，放在主菜单，后
 function Init_Gossip_Text_Icon_Options_Button()
     local btn= e.Cbtn(GossipFrame, {size={20,20}, atlas='SpecDial_LastPip_BorderGlow'})
     btn:SetPoint('TOP', GossipFrameCloseButton, 'BOTTOM', -2, -4)
