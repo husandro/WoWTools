@@ -391,10 +391,14 @@ local function Init_Gossip_Text_Icon_Options()
     Gossip_Text_Icon_Frame= CreateFrame('Frame', 'Gossip_Text_Icon_Frame', UIParent)--, 'DialogBorderTemplate')--'ButtonFrameTemplate')
     Gossip_Text_Icon_Frame:SetSize(310, 260)
     Gossip_Text_Icon_Frame:SetFrameStrata('HIGH')
-
     Gossip_Text_Icon_Frame:SetPoint('CENTER')
-    local border= CreateFrame('Frame', nil, Gossip_Text_Icon_Frame,'DialogBorderTemplate')
+    Gossip_Text_Icon_Frame:SetScript('OnHide', function()
+        if GossipFrame:IsShown() then
+            GossipFrame:Update()
+        end
+    end)
 
+    local border= CreateFrame('Frame', nil, Gossip_Text_Icon_Frame,'DialogBorderTemplate')
     Gossip_Text_Icon_Frame.Header= CreateFrame('Frame', nil, Gossip_Text_Icon_Frame, 'DialogHeaderTemplate')--DialogHeaderMixin
     Gossip_Text_Icon_Frame.Header:Setup('|A:SpecDial_LastPip_BorderGlow:0:0|a'..(e.onlyChinese and '对话替换' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DIALOG_VOLUME, REPLACE)))
     Gossip_Text_Icon_Frame.CloseButton=CreateFrame('Button', nil, Gossip_Text_Icon_Frame, 'UIPanelCloseButton')
@@ -472,7 +476,7 @@ local function Init_Gossip_Text_Icon_Options()
         self.Delete:SetShown(gossipID and true or false)--显示/隐藏，删除按钮
         self.Add:SetShown(num>0 and (name or icon))--显示/隐藏，添加按钮
 
-        
+
     end
 
     function menu:set_color(r, g, b, hex)--设置，颜色，颜色按钮，
@@ -572,7 +576,7 @@ local function Init_Gossip_Text_Icon_Options()
         f:set_numlabel_text()
     end
 
-   
+
     menu.ID= CreateFrame("EditBox", 'WoWTools_Gossip_Text_Icon_Option_ID_EDITBOX', menu, 'SearchBoxTemplate')
     menu.ID:SetNumeric(true)
     menu.ID:SetPoint('TOPLEFT', menu, 'BOTTOMLEFT', 20,0)
@@ -656,8 +660,8 @@ local function Init_Gossip_Text_Icon_Options()
             e.Set_Move_Frame(f.frame, {notMove=true, setSize=true, minW=524, minH=276, maxW=524, sizeRestFunc=function(btn)
                 btn.target:SetSize(524, 495)
             end})
-            
-            
+
+
             f.frame:Hide()
             f.frame.BorderBox.SelectedIconArea.SelectedIconText.SelectedIconDescription:SetText(e.onlyChinese and '点击在列表中浏览' or ICON_SELECTION_CLICK)
             f.frame.BorderBox.IconSelectorEditBox:SetAutoFocus(false)
@@ -1508,7 +1512,7 @@ local function Create_CheckButton(self, info)
             sel= CreateFrame("CheckButton", nil, self, 'InterfaceOptionsCheckButtonTemplate')--ChatConfigCheckButtonTemplate
             sel.Text:ClearAllPoints()
             sel.Text:SetPoint('RIGHT', sel, 'LEFT')
-            sel.Text:SetTextColor(0,1,0)
+            sel.Text:SetTextColor(0,0,0)
             sel.Text:SetShadowOffset(1, -1)
             sel:SetPoint("RIGHT", -2, 0)
             sel:SetSize(18, 18)
@@ -1524,18 +1528,16 @@ local function Create_CheckButton(self, info)
                     e.tips:SetSpellByID(frame.spellID)
                     e.tips:AddLine(' ')
                 end
-                                
                 if frame.text then
                     e.tips:AddDoubleLine((frame.icon and '|T'..frame.icon..':0|t' or '')..frame.text, 'gossipOption: |cnGREEN_FONT_COLOR:'..frame.id..'|r')
                 else
                     e.tips:AddDoubleLine(e.onlyChinese and '无' or NONE, 'gossipOptionID',1,0,0)
                 end
-                
                 if f then
                    f.menu:set_date(frame.id)--设置，数据
                 end
                 e.tips:AddDoubleLine(' ')
-                e.tips:AddDoubleLine(id, e.onlyChinese and '自动对话' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, ENABLE_DIALOG))                
+                e.tips:AddDoubleLine(id, e.onlyChinese and '自动对话' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, ENABLE_DIALOG))
                 e.tips:Show()
             end)
 
