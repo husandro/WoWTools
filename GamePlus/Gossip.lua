@@ -191,8 +191,8 @@ local function Set_Gossip_Text(info)
             end
         end
         name= zoneInfo.name
-        if zoneInfo.col and name then
-            name= '|c'..zoneInfo.col..name..'|r'
+        if zoneInfo.hex then
+            name= '|c'..zoneInfo.hex..(name or info.name)..'|r'
         end
         if icon or name then
             info.name= format('%s%s', icon or '', name or '')
@@ -397,6 +397,11 @@ local function Init_Gossip_Text_Icon_Options()
             GossipFrame:Update()
         end
     end)
+    Gossip_Text_Icon_Frame:SetScript('OnShow', function()
+        if GossipFrame:IsShown() then
+            GossipFrame:Update()
+        end
+    end)
 
     local border= CreateFrame('Frame', nil, Gossip_Text_Icon_Frame,'DialogBorderTemplate')
     Gossip_Text_Icon_Frame.Header= CreateFrame('Frame', nil, Gossip_Text_Icon_Frame, 'DialogHeaderTemplate')--DialogHeaderMixin
@@ -503,7 +508,6 @@ local function Init_Gossip_Text_Icon_Options()
         for _, info in pairs(C_GossipInfo.GetOptions() or {}) do
             if info.gossipOptionID==gossipID then
                 name2= info.name
-                icon= info.icon
                 break
             end
         end
@@ -558,7 +562,7 @@ local function Init_Gossip_Text_Icon_Options()
                 icon= '|T'..texture..':0|t'
             end
         end
-        print(id, addName, num, icon or '', '|c'..(hex or 'ffffffff'), name)
+        print(id, addName, '|cnGREEN_FONT_COLOR:'..num..'|r', icon or '', '|c'..(hex or 'ffffffff'), name)
     end
 
     function menu:delete_gossip()
@@ -571,9 +575,9 @@ local function Init_Gossip_Text_Icon_Options()
                 GossipFrame:Update()
             end
         end
-        e.LibDD:UIDropDownMenu_SetText(f, '')
-        f:set_all()
-        f:set_numlabel_text()
+        e.LibDD:UIDropDownMenu_SetText(self, '')
+        self:set_all()
+        self:set_numlabel_text()
     end
 
 
@@ -805,7 +809,7 @@ local function Init_Gossip_Text_Icon_Options()
         e.tips:AddDoubleLine(e.onlyChinese and '删除' or DELETE, Gossip_Text_Icon_Frame.menu.gossipID)
         e.tips:Show()
     end)
-    menu.Delete:SetScript('OnClick', function()
+    menu.Delete:SetScript('OnClick', function(self)
         self:GetParent():delete_gossip()
     end)
 
@@ -887,7 +891,7 @@ local function Init_Gossip_Text_Icon_Options()
                 local f= Gossip_Text_Icon_Frame.menu
                 for _, info in pairs(tab) do
                     if info.gossipOptionID then
-                        local set= Gossip_Text_Icon_Frame.menu:get_saved_all_date(nfo.gossipOptionID) or {}
+                        local set= Gossip_Text_Icon_Frame.menu:get_saved_all_date(info.gossipOptionID) or {}
                         local name= set.name or info.name or ''
                         local icon= set.icon or info.icon
                         local hex= set.hex
@@ -946,6 +950,18 @@ local function Init_Gossip_Text_Icon_Options()
     end)
     menu.Text:SetTextColor(1,1,1,1)
 end
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1447,6 +1463,8 @@ end
 
 
 
+
+
 --打开，自定义，对话，文本，按钮，放在主菜单，后
 function Init_Gossip_Text_Icon_Options_Button()
     local btn= e.Cbtn(GossipFrame, {size={20,20}, atlas='SpecDial_LastPip_BorderGlow'})
@@ -1527,14 +1545,17 @@ local function Create_CheckButton(self, info)
                 if frame.spellID then
                     e.tips:SetSpellByID(frame.spellID)
                     e.tips:AddLine(' ')
-                end
-                if frame.text then
-                    e.tips:AddDoubleLine((frame.icon and '|T'..frame.icon..':0|t' or '')..frame.text, 'gossipOption: |cnGREEN_FONT_COLOR:'..frame.id..'|r')
-                else
-                    e.tips:AddDoubleLine(e.onlyChinese and '无' or NONE, 'gossipOptionID',1,0,0)
-                end
-                if f then
+                end                
+                e.tips:AddDoubleLine('|T'..(frame.icon or 0)..':0|t'..(frame.name or ''), 'gossipOption: |cnGREEN_FONT_COLOR:'..frame.id..'|r')
+                if f and not ColorPickerFrame:IsShown() then
                    f.menu:set_date(frame.id)--设置，数据
+                elseif not Save.not_Gossip_Text_Icon and (Save.Gossip_Text_Icon_Player[frame.id] or GossipTextIcon[frame.id]) then
+                    for _, info in pairs( C_GossipInfo.GetOptions() or {}) do
+                        if info.gossipOptionID==frame.id and info.name then
+                            e.tips:AddLine('|cnGREEN_FONT_COLOR:'..info.name)
+                            break
+                        end
+                    end
                 end
                 e.tips:AddDoubleLine(' ')
                 e.tips:AddDoubleLine(id, e.onlyChinese and '自动对话' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, ENABLE_DIALOG))
@@ -1542,17 +1563,14 @@ local function Create_CheckButton(self, info)
             end)
 
             sel:SetScript("OnMouseDown", function (frame)
-                if frame.id and frame.text then
-                    Save.gossipOption[frame.id]= not Save.gossipOption[frame.id] and frame.text or nil
-                else
-                    print(id, e.cn(addName), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE)..'|r', e.onlyChinese and '对话' or ENABLE_DIALOG,'ID')
-                end
+                Save.gossipOption[frame.id]= not Save.gossipOption[frame.id] and (frame.name or '') or nil
             end)
             self.gossipCheckButton= sel
         end
         sel.id= gossipOptionID
-        sel.text= info.name
+        sel.name= info.name
         sel.spellID= info.spellID
+        
         sel.icon= info.overrideIconID or info.icon
         sel:SetChecked(Save.gossipOption[gossipOptionID] and true or false)
         sel.Text:SetText(GossipButton:isShow_Gossip_Text_Icon_Frame() and gossipOptionID or '')
