@@ -389,7 +389,7 @@ local function Init_Gossip_Text_Icon_Options()
 
 
     Gossip_Text_Icon_Frame= CreateFrame('Frame', 'Gossip_Text_Icon_Frame', UIParent)--, 'DialogBorderTemplate')--'ButtonFrameTemplate')
-    Gossip_Text_Icon_Frame:SetSize(580, 580)
+    Gossip_Text_Icon_Frame:SetSize(580, 370)
     Gossip_Text_Icon_Frame:SetFrameStrata('HIGH')
     Gossip_Text_Icon_Frame:SetPoint('CENTER')
     Gossip_Text_Icon_Frame:SetScript('OnHide', function()
@@ -412,7 +412,7 @@ local function Init_Gossip_Text_Icon_Options()
     e.Set_Alpha_Frame_Texture(border, {alpha=0.5})
     e.Set_Alpha_Frame_Texture(Header, {alpha=0.7})
     e.Set_Move_Frame(Gossip_Text_Icon_Frame, {setMove=true, minW=400, minH=200, notFuori=true, setSize=true, sizeRestFunc=function(btn)
-        btn.target:SetSize(580, 580)
+        btn.target:SetSize(580, 370)
     end})
 
 
@@ -670,7 +670,7 @@ local function Init_Gossip_Text_Icon_Options()
 
     --自定义，对话，文本，数量
     menu.NumLabel= e.Cstr(Gossip_Text_Icon_Frame, {justifyH='RIGHT'})
-    menu.NumLabel:SetPoint('RIGHT', menu, 'LEFT', 16, 0)
+    menu.NumLabel:SetPoint('BOTTOM', menu, 'TOP', 0, 6)
     menu:set_numlabel_text()
 
     --图标
