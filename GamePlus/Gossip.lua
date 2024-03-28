@@ -537,12 +537,15 @@ local function Init_Gossip_Text_Icon_Options()
         local hex = self.Color.hex or 'ffffffff'
         if info then
             if info.icon==icon and info.name==name and (info.hex==hex or (not info.hex and hex=='ffffffff')) then--一样，数据
-                self.Add:SetNormalAtlas(e.Icon.select)
+                self.Add:SetNormalAtlas('VignetteEvent')
+                self.Add.tooltip=e.onlyChinese and '已存在' or 'Existed'
             else--需要，更新，数据
-                self.Add:SetNormalAtlas('bags-greenarrow')
+                self.Add:SetNormalAtlas(e.Icon.select)
+                self.Add.tooltip=e.onlyChinese and '需要更新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, UPDATE)
             end
         else
             self.Add:SetNormalAtlas('bags-icon-addslots')
+            self.Add.tooltip=e.onlyChinese and '添加' or ADD
         end
         self.Delete:SetShown(self.gossipID and true or false)--显示/隐藏，删除按钮
         self.Add:SetShown(num>0 and (name or icon))--显示/隐藏，添加按钮
@@ -861,7 +864,7 @@ local function Init_Gossip_Text_Icon_Options()
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id , e.cn(addName))
         e.tips:AddLine(' ')
-        e.tips:AddLine(Save.Gossip_Text_Icon_Player[num] and '|cffff00ff'..(e.onlyChinese and '修改' or EQUIPMENT_SET_EDIT)..'|r' or ('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD))..'|r')
+        e.tips:AddLine(self.tooltip)
         e.tips:Show()
     end)
     menu.Add:SetScript('OnClick', function(self)
