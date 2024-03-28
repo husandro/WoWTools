@@ -670,7 +670,7 @@ local function Init_Gossip_Text_Icon_Options()
 
     --自定义，对话，文本，数量
     menu.NumLabel= e.Cstr(Gossip_Text_Icon_Frame, {justifyH='RIGHT'})
-    menu.NumLabel:SetPoint('BOTTOM', menu, 'TOP', 0, 6)
+    menu.NumLabel:SetPoint('BOTTOM', menu, 'TOP', 0, 4)
     menu:set_numlabel_text()
 
     --图标
