@@ -411,7 +411,7 @@ local function Init_Gossip_Text_Icon_Options()
 
     e.Set_Alpha_Frame_Texture(border, {alpha=0.5})
     e.Set_Alpha_Frame_Texture(Gossip_Text_Icon_Frame.Header, {alpha=0.7})
-    e.Set_Move_Frame(Gossip_Text_Icon_Frame, {setMove=true, notFuori=true})
+    e.Set_Move_Frame(Gossip_Text_Icon_Frame, {setMove=true, notFuori=true})--, setSize=true})
 
     local menu = CreateFrame("FRAME", nil, border, "UIDropDownMenuTemplate")--下拉，菜单
     Gossip_Text_Icon_Frame.menu= menu
