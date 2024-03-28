@@ -427,7 +427,7 @@ local function Init_Gossip_Text_Icon_Options()
     menu.ScrollView = CreateScrollBoxListLinearView()
     ScrollUtil.InitScrollBoxListWithScrollBar(menu, menu.ScrollBar, menu.ScrollView)
 
-    local function Initializer(btn, info)
+    menu.ScrollView:SetElementInitializer("UIPanelButtonTemplate", function(btn, info)
         btn.gossipID= info.gossipID
         --btn.icon= info.icon
         --btn.name= info.name
@@ -441,8 +441,7 @@ local function Init_Gossip_Text_Icon_Options()
             icon= isAtlas and ('|A:'..texture..':0:0|a') or ('|T'..texture..':0|t')
         end
         btn:SetFormattedText('%s|c%s%s|r', icon or '', info.hex or 'ffffffff', info.name or '')
-    end
-    menu.ScrollView:SetElementInitializer("UIPanelButtonTemplate", Initializer)
+    end)
 
     function menu:set_list()
         self.dataProvider = CreateDataProvider()
