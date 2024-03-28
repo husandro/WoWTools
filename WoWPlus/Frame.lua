@@ -114,6 +114,7 @@ local function set_Scale_Size(frame, tab)
     btn.disabledSize= disabledSize--禁用，大小功能
     btn.setSize= setSize and not disabledSize--是否有，设置大小，功能    
     btn.notInCombat= tab.notInCombat--战斗中，禁止操作
+    btn.notUpdatePositon= tab.notUpdatePositon
 
     local onShowFunc= tab.onShowFunc-- true, function
     btn.notMoveAlpha= tab.notMoveAlpha--是否设置，移动时，设置透明度
@@ -325,7 +326,7 @@ local function set_Scale_Size(frame, tab)
                     Save.point[self.name]=nil
                     if self.restPointFunc then
                         self.restPointFunc(self)
-                    else
+                    elseif not self.notUpdatePositon then
                         e.call('UpdateUIPanelPositions', self.target)
                     end
                 end
@@ -344,7 +345,9 @@ local function set_Scale_Size(frame, tab)
                 if self.scaleRestFunc then
                     self.scaleRestFunc(self)
                 end
-                e.call('UpdateUIPanelPositions', self.target)
+                if not self.notUpdatePositon then
+                    e.call('UpdateUIPanelPositions', self.target)
+                end
 
             elseif not IsModifierKeyDown() then--开始，设置，缩放
                 self.isActive= true
@@ -388,7 +391,9 @@ local function set_Scale_Size(frame, tab)
                 if self.sizeRestFunc then--还原
                     self.sizeRestFunc(self)
                 end
-                e.call('UpdateUIPanelPositions', self.target)
+                if not self.notUpdatePositon then
+                    e.call('UpdateUIPanelPositions', self.target)
+                end
 
             elseif not IsModifierKeyDown() then--开始，设置，大小
                 self.isActive = true
