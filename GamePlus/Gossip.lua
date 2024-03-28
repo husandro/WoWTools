@@ -426,7 +426,7 @@ local function Init_Gossip_Text_Icon_Options()
     
     menu.ScrollView = CreateScrollBoxListLinearView()
     ScrollUtil.InitScrollBoxListWithScrollBar(menu, menu.ScrollBar, menu.ScrollView)
-
+-- ChannelRosterButtonTemplate LFGListApplicantMemberTemplate
     menu.ScrollView:SetElementInitializer("UIPanelButtonTemplate", function(btn, info)
         btn.gossipID= info.gossipID
         --btn.icon= info.icon
@@ -3284,10 +3284,10 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 Init_Gossip()--对话，初始化
                 Init_Quest()--任务，初始化
                 Init_Gossip_Other_Auto_Select()
-
-                Init_Gossip_Text_Icon_Options()--自定义，对话，文本，选项
+                Init_Gossip_Text_Icon_Options_Button()--打开，自定义，对话，文本，按钮
+               
                 if e.Player.husandro then
-                    Init_Gossip_Text_Icon_Options_Button()--打开，自定义，对话，文本，按钮
+                  -- Init_Gossip_Text_Icon_Options()--自定义，对话，文本，选项
                 end
             else
                 panel:UnregisterAllEvents()
