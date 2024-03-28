@@ -395,12 +395,18 @@ local function Init_Gossip_Text_Icon_Options()
         if GossipFrame:IsShown() then
             GossipFrame:Update()
         end
+        for _, b in pairs(GossipFrame.GreetingPanel.ScrollBox:GetFrames() or {}) do
+            b:UnlockHighlight()
+        end
     end)
     Gossip_Text_Icon_Frame:SetScript('OnShow', function()
         if GossipFrame:IsShown() then
             GossipFrame:Update()
         end
     end)
+    if GossipFrame:IsShown() then
+        GossipFrame:Update()
+    end
 
     local border= CreateFrame('Frame', nil, Gossip_Text_Icon_Frame,'DialogBorderTemplate')
     local Header= CreateFrame('Frame', nil, Gossip_Text_Icon_Frame, 'DialogHeaderTemplate')--DialogHeaderMixin
@@ -426,12 +432,8 @@ local function Init_Gossip_Text_Icon_Options()
     
     menu.ScrollView = CreateScrollBoxListLinearView()
     ScrollUtil.InitScrollBoxListWithScrollBar(menu, menu.ScrollBar, menu.ScrollView)
--- ChannelRosterButtonTemplate LFGListApplicantMemberTemplate
     menu.ScrollView:SetElementInitializer("UIPanelButtonTemplate", function(btn, info)
         btn.gossipID= info.gossipID
-        --btn.icon= info.icon
-        --btn.name= info.name
-        --btn.hex= info.hex
         btn:SetScript("OnClick", function(self)
             Gossip_Text_Icon_Frame.menu:set_date(self.gossipID)
         end)
@@ -443,6 +445,12 @@ local function Init_Gossip_Text_Icon_Options()
         btn:SetFormattedText('%s|c%s%s|r', icon or '', info.hex or 'ffffffff', info.name or '')
     end)
 
+
+  --[[
+        	if self.dragonridingHelpTipMountIndex then
+		MountJournal.ScrollBox:ScrollToElementDataIndex(self.dragonridingHelpTipMountIndex);
+	end
+    ]]
     function menu:set_list()
         self.dataProvider = CreateDataProvider()
         for gossipID, data in pairs(Save.Gossip_Text_Icon_Player) do
@@ -452,6 +460,28 @@ local function Init_Gossip_Text_Icon_Options()
     end
     menu:set_list()
     
+    function menu:update_list()
+        for _, btn in pairs(self:GetFrames() or {}) do
+            if btn.gossipID==self.gossipID then
+                btn:LockHighlight()
+                --self:ScrollToElementDataIndex(self.gossipID)
+            else
+                btn:UnlockHighlight()
+            end
+        end
+        local tab={}
+        for _, data in pairs(C_GossipInfo.GetOptions() or {}) do
+            tab[data.orderIndex]= data.gossipOptionID
+        end
+        for _, b in pairs(GossipFrame.GreetingPanel.ScrollBox:GetFrames() or {}) do
+            if tab[b:GetID()]==self.gossipID then
+                b:LockHighlight()
+            else
+                b:UnlockHighlight()
+            end
+        end
+    end
+
 
     function menu:get_gossipID()--取得gossipID
         return self.ID:GetNumber() or 0
@@ -626,7 +656,11 @@ local function Init_Gossip_Text_Icon_Options()
     menu.ID:SetAutoFocus(false)
     menu.ID.Instructions:SetText('gossipOptionID '..(e.onlyChinese and '数字' or 'Numeri'))
     menu.ID.searchIcon:SetAtlas('auctionhouse-icon-favorite')
-    menu.ID:HookScript("OnTextChanged", function(self) self:GetParent().menu:set_all() end)
+    menu.ID:HookScript("OnTextChanged", function(self) 
+        f= self:GetParent().menu
+        f:set_all()
+        f:update_list()
+    end)
 
     menu.Name= CreateFrame("EditBox", nil, Gossip_Text_Icon_Frame, 'SearchBoxTemplate')
     menu.Name:SetPoint('TOPLEFT', menu.ID, 'BOTTOMLEFT')
@@ -3287,7 +3321,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 Init_Gossip_Text_Icon_Options_Button()--打开，自定义，对话，文本，按钮
                
                 if e.Player.husandro then
-                  -- Init_Gossip_Text_Icon_Options()--自定义，对话，文本，选项
+                   Init_Gossip_Text_Icon_Options()--自定义，对话，文本，选项
                 end
             else
                 panel:UnregisterAllEvents()
