@@ -180,14 +180,10 @@ local function Set_Gossip_Text(self, info)
             info.name=text
         end
     else
-        --local name= zoneInfo.name or zoneInfo.name=='') and self:GetText() or zoneInfo.name or ''
         local icon
         local name
         if zoneInfo.icon then
             local isAtlas, texture= e.IsAtlas(zoneInfo.icon)
-            if info.name:find(texture) then
-                return
-            end
             if isAtlas then
                 icon= format('|A:%s:%d:%d|a', texture, Save.Gossip_Text_Icon_Size, Save.Gossip_Text_Icon_Size)
             else
