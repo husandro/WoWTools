@@ -3360,7 +3360,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 Init_Gossip_Text_Icon_Options_Button()--打开，自定义，对话，文本，按钮
                
               
-                   Init_Gossip_Text_Icon_Options()--自定义，对话，文本，选项
+                   --Init_Gossip_Text_Icon_Options()--自定义，对话，文本，选项
         
             else
                 panel:UnregisterAllEvents()
