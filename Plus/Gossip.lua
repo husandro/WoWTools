@@ -29,7 +29,7 @@ local Save={
         },
         Gossip_Text_Icon_Size=22,
 
-        --Gossip_Text_Icon_cnFont=true,--仅限，外文
+        Gossip_Text_Icon_cnFont=true,--仅限，外文, 修该字体
 }
 
 
@@ -148,9 +148,12 @@ end
 
 
 --自定义，对话，文本
-local function Set_Gossip_Text(_, info)
+local function Set_Gossip_Text(self, info)
     local gossipOptionID= info and info.gossipOptionID
     if not Save.gossip or Save.not_Gossip_Text_Icon or not gossipOptionID or not info.name then
+        if Save.Gossip_Text_Icon_cnFont then
+            self:GetFontString():SetFontObject('QuestFont')
+        end
         return
     end
     local text
@@ -177,12 +180,12 @@ local function Set_Gossip_Text(_, info)
         end
     end
     if text then
-        --if Save.Gossip_Text_Icon_cnFont then
-         --   self.GreetingText:SetFont('Fonts\\ARHei.ttf', 12)
-       -- end
+        if Save.Gossip_Text_Icon_cnFont then
+           self:GetFontString():SetFont('Fonts\\ARHei.ttf', 14)
+        end
         info.name= text
-    --elseif Save.Gossip_Text_Icon_cnFont then
-       -- self.GreetingText:SetFontObject('QuestFont')
+    elseif Save.Gossip_Text_Icon_cnFont then
+        self:GetFontString():SetFontObject('QuestFont')
     end
 end
 
@@ -364,7 +367,6 @@ end
 
 
 
-
 --自定义，对话，文本，放在主菜单，前
 local function Init_Gossip_Text_Icon_Options()
     if Gossip_Text_Icon_Frame then
@@ -412,6 +414,7 @@ local function Init_Gossip_Text_Icon_Options()
 
     menu.ScrollView:SetElementInitializer("GossipTitleButtonTemplate", function(btn, info)-- UIPanelButtonTemplate GossipTitleButtonTemplate
         btn.gossipID= info.gossipID
+        btn.spellID= info.spellID
         if not btn.delete then
             btn:SetScript("OnClick", function(self)
                 Gossip_Text_Icon_Frame.menu:set_date(self.gossipID)
@@ -427,6 +430,7 @@ local function Init_Gossip_Text_Icon_Options()
                 Gossip_Text_Icon_Frame.menu:delete_gossip(self:GetParent().gossipID)
             end)
             btn.delete:SetAlpha(0)
+            btn:GetFontString():SetPoint('RIGHT')
         end
 
         local isAtlas, texture= e.IsAtlas(info.icon)
@@ -434,6 +438,9 @@ local function Init_Gossip_Text_Icon_Options()
             btn.Icon:SetAtlas(texture)
         else
             btn.Icon:SetTexture(texture or 0)
+        end
+        if Save.Gossip_Text_Icon_cnFont then
+            btn:GetFontString():SetFont('Fonts\\ARHei.ttf', 14)
         end
         btn:SetText((info.hex and '|c'..info.hex or '')..(info.name or ''))
         btn:Resize()
@@ -456,7 +463,7 @@ local function Init_Gossip_Text_Icon_Options()
                 end
                 table.sort(tabs, function(a, b) return a.orderIndex< b.orderIndex end)
                 for _, data in pairs(tabs) do
-                    self.dataProvider:Insert({gossipID=data.gossipOptionID, icon=data.icon, name=data.name, hex=data.hex})
+                    self.dataProvider:Insert({gossipID=data.gossipOptionID, icon=data.icon, name=data.name, hex=data.hex, spellID=data.spellID})
                 end
                 self.NumGossipLabel:SetFormattedText('%d /', gossipNum)--GossipFrame 有多少已设置
             else
@@ -466,7 +473,7 @@ local function Init_Gossip_Text_Icon_Options()
                 self.NumGossipLabel:SetText('')
             end
 
-            menu.ScrollView:SetDataProvider(self.dataProvider,  ScrollBoxConstants.RetainScrollPosition)
+            self.ScrollView:SetDataProvider(self.dataProvider,  ScrollBoxConstants.RetainScrollPosition)
         else
             self.dataProvider= nil
         end
@@ -901,7 +908,7 @@ local function Init_Gossip_Text_Icon_Options()
         e.tips:Show()
     end)
     menu.Delete:SetScript('OnClick', function(self)
-        self:GetParent().menu:delete_gossip(self.gossipID)
+        Gossip_Text_Icon_Frame.menu:delete_gossip(Gossip_Text_Icon_Frame.menu.gossipID)
     end)
 
     --删除，玩家数据
@@ -957,24 +964,48 @@ local function Init_Gossip_Text_Icon_Options()
 
 
 
-    --[[修改，为中文，字体
-    if e.onlyChinese and not LOCALE_zhCN and not LOCALE_zhTW then
+    --修改，为中文，字体
+    if LOCALE_zhCN or LOCALE_zhTW then
+        Save.Gossip_Text_Icon_cnFont=nil
+    elseif  e.onlyChinese then
         menu.font= CreateFrame("CheckButton", nil, Gossip_Text_Icon_Frame, 'InterfaceOptionsCheckButtonTemplate')--ChatConfigCheckButtonTemplate
         menu.font:SetPoint('TOPLEFT', menu.Size, 'BOTTOMLEFT', 0, -12)
         menu.font:SetChecked(Save.Gossip_Text_Icon_cnFont)
         menu.font.Text:SetText('修改字体')
         menu.font.Text:SetFont('Fonts\\ARHei.ttf', 12)
+        menu.font:SetScript('OnLeave', GameTooltip_Hide)
+        menu.font:SetScript('OnEnter', function(self)
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine(id , e.cn(addName))
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine('ARHei.ttf', '黑体字')
+            e.tips:Show()
+        end)
         menu.font:SetScript('OnMouseDown', function()
             Save.Gossip_Text_Icon_cnFont= not Save.Gossip_Text_Icon_cnFont and true or nil
             if GossipFrame:IsShown() then
                 GossipFrame:Update()
             end
+            Gossip_Text_Icon_Frame.menu:set_list()
+            if not Save.Gossip_Text_Icon_cnFont then
+                print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:', e.onlyChinese and '需要重新加载UI' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, RELOADUI))
+            end
         end)
-    end]]
+    end
 
     --已打开，对话，列表
     menu.chat= e.Cbtn(Gossip_Text_Icon_Frame, {size={22, 22}, atlas='transmog-icon-chat'})
     menu.chat:SetPoint('LEFT', menu.Name, 'RIGHT', 2, 0)
+    menu.chat:SetScript('OnLeave', GameTooltip_Hide)
+    menu.chat:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_RIGHT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id , e.cn(addName))
+        e.tips:AddLine(' ')
+        e.tips:AddLine(e.onlyChinese and '当前对话', format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, ENABLE_DIALOG))
+        e.tips:Show()
+    end)
     menu.chat:SetScript('OnClick', function(self)
         if not self.Menu then
             self.Menu= CreateFrame("Frame", nil, Gossip_Text_Icon_Frame.menu, "UIDropDownMenuTemplate")
@@ -1722,6 +1753,8 @@ local function Create_CheckButton(self, info)
                 end
             end)
             self.gossipCheckButton= sel
+
+            self:GetFontString():SetPoint('RIGHT')
         end
         sel.id= gossipOptionID
         sel.name= info.name
@@ -1982,7 +2015,6 @@ local function Init_Gossip()
         self.WoWToolsSelectNPC.name=UnitName("npc")
         self.WoWToolsSelectNPC:SetChecked(Save.NPC[npc])
     end)
-
 
 
 
