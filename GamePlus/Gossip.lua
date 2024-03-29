@@ -28,7 +28,7 @@ local Save={
                 hex='ffff00ff'}
         },
         Gossip_Text_Icon_Size=22,
-
+        --Gossip_Text_Icon_cnFont=true,--仅限，外文
 }
 
 
@@ -167,17 +167,15 @@ end
 
 
 --自定义，对话，文本
-local function Set_Gossip_Text(info)
+local function Set_Gossip_Text(self, info)
     local gossipOptionID= info and info.gossipOptionID
     if not Save.gossip or Save.not_Gossip_Text_Icon or not gossipOptionID or not info.name then
         return
     end
+    local text
     local zoneInfo= Save.Gossip_Text_Icon_Player[gossipOptionID] or GossipTextIcon[gossipOptionID]
     if not zoneInfo then
-        local text= e.strText[info.name]
-        if text then
-            info.name=text
-        end
+        text= e.strText[info.name]
     else
         local icon
         local name
@@ -194,8 +192,16 @@ local function Set_Gossip_Text(info)
             name= '|c'..zoneInfo.hex..(name or info.name)..'|r'
         end
         if icon or name then
-            info.name= format('%s%s', icon or '', name or '')
+            text= format('%s%s', icon or '', name or '')
         end
+    end
+    if text then
+        if Save.Gossip_Text_Icon_cnFont then
+         --   self.GreetingText:SetFont('Fonts\\ARHei.ttf', 12)
+        end
+        info.name= text
+    elseif Save.Gossip_Text_Icon_cnFont then
+       -- self.GreetingText:SetFontObject('QuestFont')
     end
 end
 
@@ -426,29 +432,42 @@ local function Init_Gossip_Text_Icon_Options()
     menu:SetPoint("BOTTOMRIGHT", -310,12)
     Gossip_Text_Icon_Frame.menu= menu
 
+    
+    menu.bg= menu:CreateTexture(nil, 'BACKGROUND')
+    menu.bg:SetPoint('TOPLEFT', -35, 80)
+    menu.bg:SetPoint('BOTTOMRIGHT',35, -72)
+    menu.bg:SetAtlas('QuestBG-Trading-Post')
+    
     menu.ScrollBar  = CreateFrame("EventFrame", nil, Gossip_Text_Icon_Frame, "MinimalScrollBar")
-    menu.ScrollBar:SetPoint("TOPLEFT", menu, "TOPRIGHT", 2,0)
-    menu.ScrollBar:SetPoint("BOTTOMLEFT", menu, "BOTTOMRIGHT",2,0)
+    menu.ScrollBar:SetPoint("TOPLEFT", menu, "TOPRIGHT", 8,0)
+    menu.ScrollBar:SetPoint("BOTTOMLEFT", menu, "BOTTOMRIGHT",8,0)
     
     menu.ScrollView = CreateScrollBoxListLinearView()
     ScrollUtil.InitScrollBoxListWithScrollBar(menu, menu.ScrollBar, menu.ScrollView)
-    menu.ScrollView:SetElementInitializer("UIPanelButtonTemplate", function(btn, info)
+
+    menu.ScrollView:SetElementInitializer("GossipTitleButtonTemplate", function(btn, info)-- UIPanelButtonTemplate GossipTitleButtonTemplate
         btn.gossipID= info.gossipID
         btn:SetScript("OnClick", function(self)
             Gossip_Text_Icon_Frame.menu:set_date(self.gossipID)
         end)
-        local icon
+       -- btn:SetFontObject('QuestFont')
+       
         local isAtlas, texture= e.IsAtlas(info.icon)
-        if texture then
-            icon= isAtlas and ('|A:'..texture..':0:0|a') or ('|T'..texture..':0|t')
+        if isAtlas then
+            --btn:SetNormalAtlas(texture)
+            btn.Icon:SetAtlas(texture)
+        else
+            --btn:SetNormalTexture(texture or 0)
+            btn.Icon:SetTexture(texture or 0)
+            --icon= isAtlas and ('|A:'..texture..':0:0|a') or ('|T'..texture..':0|t')
         end
-        btn:SetFormattedText('%s|c%s%s|r', icon or '', info.hex or 'ffffffff', info.name or '')
+        btn:SetText((info.hex and '|c'..info.hex or '')..(info.name or ''))
     end)
 
 
   --[[
         	if self.dragonridingHelpTipMountIndex then
-		MountJournal.ScrollBox:ScrollToElementDataIndex(self.dragonridingHelpTipMountIndex);
+		MountJournal.ScrollBox:ScrollToElementDataIndex(self.dragonridiningHelpTipMountIndex);
 	end
     ]]
     function menu:set_list()
@@ -694,14 +713,14 @@ local function Init_Gossip_Text_Icon_Options()
 
     --设置，TAB键
     menu.tabGroup= CreateTabGroup(menu.ID, menu.Name, menu.Icon)
-    menu.ID:SetScript('OnTabPressed', function(self) self:GetParent().tabGroup:OnTabPressed() end)
-    menu.Icon:SetScript('OnTabPressed', function(self) self:GetParent().tabGroup:OnTabPressed() end)
-    menu.Name:SetScript('OnTabPressed', function(self) self:GetParent().tabGroup:OnTabPressed() end)
+    menu.ID:SetScript('OnTabPressed', function(self) self:GetParent().menu.tabGroup:OnTabPressed() end)
+    menu.Icon:SetScript('OnTabPressed', function(self) self:GetParent().menu.tabGroup:OnTabPressed() end)
+    menu.Name:SetScript('OnTabPressed', function(self) self:GetParent().menu.tabGroup:OnTabPressed() end)
 
     --设置，Enter键
-    menu.ID:SetScript('OnEnterPressed', function(self)  self:GetParent():add_gossip() end)
-    menu.Icon:SetScript('OnEnterPressed', function(self) self:GetParent():add_gossip() end)
-    menu.Name:SetScript('OnEnterPressed', function(self) self:GetParent():add_gossip() end)
+    menu.ID:SetScript('OnEnterPressed', function(self)  self:GetParent().menu:add_gossip() end)
+    menu.Icon:SetScript('OnEnterPressed', function(self) self:GetParent().menu:add_gossip() end)
+    menu.Name:SetScript('OnEnterPressed', function(self) self:GetParent().menu:add_gossip() end)
 
     --自定义，对话，文本，数量
     menu.NumLabel= e.Cstr(Gossip_Text_Icon_Frame, {justifyH='RIGHT'})
@@ -911,10 +930,27 @@ local function Init_Gossip_Text_Icon_Options()
     end})
     menu.Size:SetPoint('TOP', menu.Icon, 'BOTTOM', 0, -36)
 
+
+
+    --修改，为中文，字体
+    if e.onlyChinese and not LOCALE_zhCN and not LOCALE_zhTW then
+        menu.font= CreateFrame("CheckButton", nil, Gossip_Text_Icon_Frame, 'InterfaceOptionsCheckButtonTemplate')--ChatConfigCheckButtonTemplate
+        menu.font:SetPoint('TOPLEFT', menu.Size, 'BOTTOMLEFT', 0, -12)
+        menu.font:SetChecked(Save.Gossip_Text_Icon_cnFont)
+        menu.font.Text:SetText('修改字体')
+        menu.font.Text:SetFont('Fonts\\ARHei.ttf', 12)
+        menu.font:SetScript('OnMouseDown', function()
+            Save.Gossip_Text_Icon_cnFont= not Save.Gossip_Text_Icon_cnFont and true or nil
+            if GossipFrame:IsShown() then
+                GossipFrame:Update()
+            end
+        end)
+    end
+
     --已打开，对话，列表
     menu.chat= e.Cbtn(Gossip_Text_Icon_Frame, {size={22, 22}, atlas='transmog-icon-chat'})
     menu.chat:SetPoint('LEFT', menu.Name, 'RIGHT', 2, 0)
-    menu.chat:SetScript('OnClick', function(self)
+    menu.chat:SetScript('OnClick', function(self) 
         if not self.Menu then
             self.Menu= CreateFrame("Frame", nil, Gossip_Text_Icon_Frame.menu, "UIDropDownMenuTemplate")
             e.LibDD:UIDropDownMenu_Initialize(self.Menu, function(_, level)
@@ -1911,7 +1947,7 @@ local function Init_Gossip()
     --自定义闲话选项, 按钮 GossipFrameShared.lua https://wago.io/MK7OiGqCu https://wago.io/hR_KBVGdK
     hooksecurefunc(GossipOptionButtonMixin, 'Setup', function(self, info)--GossipFrameShared.lua
         Create_CheckButton(self, info)--建立，自动选取，选项
-        Set_Gossip_Text(info)--自定义，对话，文本
+        Set_Gossip_Text(self, info)--自定义，对话，文本
 
         if not info or not info.gossipOptionID then
             return
@@ -2098,7 +2134,7 @@ local function Init_Gossip()
     --完成已激活任务,多个任务GossipFrameShared.lua
     hooksecurefunc(GossipSharedActiveQuestButtonMixin, 'Setup', function(self, info)
         Create_CheckButton(self, info)--建立，自动选取，选项
-        Set_Gossip_Text(info)--自定义，对话，文本
+        Set_Gossip_Text(self, info)--自定义，对话，文本
 
         local npc=e.GetNpcID('npc')
 
@@ -3324,7 +3360,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 Init_Gossip_Text_Icon_Options_Button()--打开，自定义，对话，文本，按钮
                
               
-                   --Init_Gossip_Text_Icon_Options()--自定义，对话，文本，选项
+                   Init_Gossip_Text_Icon_Options()--自定义，对话，文本，选项
         
             else
                 panel:UnregisterAllEvents()
