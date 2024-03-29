@@ -1026,19 +1026,6 @@ local function set_All_Text()--所有记录
         ChallengesFrame.weekLootItemLevelLable= e.Cstr(TipsFrame, {mouse=true})--最右边, 数据
         ChallengesFrame.weekLootItemLevelLable:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0,-12)
         --https://www.wowhead.com/cn/guide/mythic-plus-dungeons/dragonflight-season-3
-
---[[
-Keystone Level	End of Dungeon	Initial Upgrade Level	Great Vault	Initial Upgrade Level
-2	496	Champion 2/8	509	Hero 2/6
-3	499	Champion 3/8	509	Hero 2/6
-4	499	Champion 3/8	512	Hero 3/6
-5	502	Champion 4/8	512	Hero 3/6
-6	502	Champion 4/8	515	Hero 4/6
-7	506	Hero 1/6	515	Hero 4/6
-8	506	Hero 1/6	519	Myth 1/4
-9	509	Hero 2/6	519	Myth 1/4
-10	509	Hero 2/6	522	Myth 2/4
-]]
         function ChallengesFrame.weekLootItemLevelLable:get_item_label(level, isLoot)
             if C_MythicPlus.GetCurrentSeason()==12 then
                 if isLoot then--掉落
