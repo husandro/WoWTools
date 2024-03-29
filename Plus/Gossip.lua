@@ -904,8 +904,36 @@ local function Init_Gossip_Text_Icon_Options()
         self:GetParent().menu:delete_gossip(self.gossipID)
     end)
 
-    menu.DeleteAllPlayerDate=e.Cbtn(Gossip_Text_Icon_Frame, {size={22,22}, atlas='bags-button-autosort-up'})
-    menu.DeleteAllPlayerDate:SetScript('OnL')
+    --删除，玩家数据
+    menu.DeleteAllPlayerData=e.Cbtn(Gossip_Text_Icon_Frame, {size={22,22}, atlas='bags-button-autosort-up'})
+    menu.DeleteAllPlayerData:SetPoint('BOTTOMLEFT', menu, 'TOPLEFT', -3, 2)
+    menu.DeleteAllPlayerData:SetScript('OnLeave', GameTooltip_Hide)
+    menu.DeleteAllPlayerData:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, self.addName)
+        e.tips:AddLine(' ')
+        e.tips:AddLine(e.onlyChinese and '全部清除' or CLEAR_ALL)
+        e.tips:Show()
+    end)
+
+    menu.DeleteAllPlayerData:SetScript('OnClick', function()
+        if not StaticPopupDialogs[id..addName..'Delete_All_Player_Data'] then
+            StaticPopupDialogs[id..addName..'Delete_All_Player_Data']={
+                text=id..' '..e.cn(addName)..'|n|n|cnRED_FONT_COLOR:'..(e.onlyChinese and '全部清除' or CLEAR_ALL),
+                whileDead=true, hideOnEscape=true, exclusive=true,
+                button1= e.onlyChinese and '全部清除' or CLEAR_ALL,
+                button2= e.onlyChinese and '取消' or CANCEL,
+                OnAccept = function()
+                    Save.Gossip_Text_Icon_Player={}
+                    print(id, e.cn(addName), e.onlyChinese and '全部清除' or CLEAR_ALL, format('|cnGREEN_FONT_COLOR:%s|r', e.onlyChinese and '完成' or DONE))
+                    Gossip_Text_Icon_Frame.menu:set_list()
+                end,
+            }
+        end
+        StaticPopup_Show(id..addName..'Delete_All_Player_Data')
+    end)
+
     --图标大小, 设置
     menu.Size= e.CSlider(Gossip_Text_Icon_Frame, {min=8, max=72, value=Save.Gossip_Text_Icon_Size, setp=1, color=false, w=255,
         text= e.onlyChinese and '图标大小' or HUD_EDIT_MODE_SETTING_ACTION_BAR_ICON_SIZE,
@@ -1685,8 +1713,13 @@ local function Create_CheckButton(self, info)
                 e.tips:Show()
             end)
 
-            sel:SetScript("OnMouseDown", function (frame)
+            sel:SetScript("OnMouseDown", function(frame)
                 Save.gossipOption[frame.id]= not Save.gossipOption[frame.id] and (frame.name or '') or nil
+                if Save.gossipOption[frame.id] and not IsModifierKeyDown() and Save.gossip then
+                    print(id, e.onlyChinese and '自动对话' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, ENABLE_DIALOG),
+                    format('|cnGREEN_FONT_COLOR:%s|r %d', frame.name or '', frame.id))
+                    C_GossipInfo.SelectOption(frame.id)
+                end
             end)
             self.gossipCheckButton= sel
         end
