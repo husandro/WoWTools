@@ -1026,25 +1026,60 @@ local function set_All_Text()--所有记录
         ChallengesFrame.weekLootItemLevelLable= e.Cstr(TipsFrame, {mouse=true})--最右边, 数据
         ChallengesFrame.weekLootItemLevelLable:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0,-12)
         --https://www.wowhead.com/cn/guide/mythic-plus-dungeons/dragonflight-season-3
+
+--[[
+Keystone Level	End of Dungeon	Initial Upgrade Level	Great Vault	Initial Upgrade Level
+2	496	Champion 2/8	509	Hero 2/6
+3	499	Champion 3/8	509	Hero 2/6
+4	499	Champion 3/8	512	Hero 3/6
+5	502	Champion 4/8	512	Hero 3/6
+6	502	Champion 4/8	515	Hero 4/6
+7	506	Hero 1/6	515	Hero 4/6
+8	506	Hero 1/6	519	Myth 1/4
+9	509	Hero 2/6	519	Myth 1/4
+10	509	Hero 2/6	522	Myth 2/4
+]]
         function ChallengesFrame.weekLootItemLevelLable:get_item_label(level, isLoot)
-            if isLoot then
-                if level<=8 then
-                    return '(|cff00ff00'..(e.onlyChinese and '老兵' or 'Veteran')..'|r)'
-                elseif level<=16 then
-                    return '(|cff2aa2ff'..(e.onlyChinese and '勇士' or FOLLOWERLIST_LABEL_CHAMPIONS)..'|r)'
-                else
-                    return '(|cffff00ff'..(e.onlyChinese and '英雄' or ITEM_HEROIC)..'|r)'
+            if C_MythicPlus.GetCurrentSeason()==12 then
+                if isLoot then--掉落
+                    if level<=1 then
+                        return '(|cff00ff00'..(e.onlyChinese and '老兵' or 'Veteran')..'|r)'
+                    elseif level<=6 then
+                        return '(|cff2aa2ff'..(e.onlyChinese and '勇士' or FOLLOWERLIST_LABEL_CHAMPIONS)..'|r)'
+                    else
+                        return '(|cffff00ff'..(e.onlyChinese and '英雄' or ITEM_HEROIC)..'|r)'
+                    end
+                else--周长
+                    if level<=1 then
+                        return '(|cff2aa2ff'..(e.onlyChinese and '勇士' or FOLLOWERLIST_LABEL_CHAMPIONS)..'|r)'
+                    elseif level<=7 then
+                        return '(|cffff00ff'..(e.onlyChinese and '英雄' or ITEM_HEROIC)..'|r)'
+                    else
+                        return '(|cffb78f6a'..(e.onlyChinese and '史诗' or ITEM_QUALITY4_DESC)..'|r)'
+                    end
                 end
-            else--掉落
-                if level<=7 then
-                    return '(|cff2aa2ff'..(e.onlyChinese and '勇士' or FOLLOWERLIST_LABEL_CHAMPIONS)..'|r)'
-                elseif level<=17 then
-                    return '(|cffff00ff'..(e.onlyChinese and '英雄' or ITEM_HEROIC)..'|r)'
+            else
+                if isLoot then--掉落
+                    if level<=8 then
+                        return '(|cff00ff00'..(e.onlyChinese and '老兵' or 'Veteran')..'|r)'
+                    elseif level<=16 then
+                        return '(|cff2aa2ff'..(e.onlyChinese and '勇士' or FOLLOWERLIST_LABEL_CHAMPIONS)..'|r)'
+                    else
+                        return '(|cffff00ff'..(e.onlyChinese and '英雄' or ITEM_HEROIC)..'|r)'
+                    end
                 else
-                    return '(|cffb78f6a'..(e.onlyChinese and '史诗' or ITEM_QUALITY4_DESC)..'|r)'
+                    if level<=7 then
+                        return '(|cff2aa2ff'..(e.onlyChinese and '勇士' or FOLLOWERLIST_LABEL_CHAMPIONS)..'|r)'
+                    elseif level<=17 then
+                        return '(|cffff00ff'..(e.onlyChinese and '英雄' or ITEM_HEROIC)..'|r)'
+                    else
+                        return '(|cffb78f6a'..(e.onlyChinese and '史诗' or ITEM_QUALITY4_DESC)..'|r)'
+                    end
                 end
             end
+            return ''
         end
+
         function ChallengesFrame.weekLootItemLevelLable:get_Loot_itemLevel(level)
             local col= self.curLevel==level and '|cff00ff00' or select(2, math.modf(level/2))==0 and '|cffff8200' or '|cffffffff'
             local weeklyRewardLevel2, endOfRunRewardLevel2 = C_MythicPlus.GetRewardLevelForDifficultyLevel(level)
