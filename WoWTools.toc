@@ -43,72 +43,77 @@ WoWDate.lua
 WoWPanel.lua
 
 
+
+##WoWPlus
 ##移动框架, 缩放--放在第一个，有些，需要放置点，到移动按钮上
-WoWPlus\Frame.lua
+Plus\Frame.lua
 ##隐藏材质，透明度
-WoWPlus\Texture.lua
+Plus\Texture.lua
 ##角色面板
-WoWPlus\PaperDoll.lua
+Plus\PaperDoll.lua
 ##角色，属性
-WoWPlus\Attributes.lua
+Plus\Attributes.lua
 ##声望面板
-WoWPlus\Reputation.lua
+Plus\Reputation.lua
 ##货币面板
-WoWPlus\Tokens.lua
+Plus\Tokens.lua
 
 ##任务框，增强
-WoWPlus\ObjectiveTracker.lua
+Plus\ObjectiveTracker.lua
 ##藏品
-WoWPlus\Collections.lua
+Plus\Collections.lua
 ##地图，增强
-WoWPlus\WorldMap.lua
+Plus\WorldMap.lua
 ##鼠标，提示
-WoWPlus\Tooltips.lua
+Plus\Tooltips.lua
 ##单位框，没完成
-WoWPlus\UnitFrame.lua
+Plus\UnitFrame.lua
 ##好友，面板
-WoWPlus\FriendsList.lua
+Plus\FriendsList.lua
 ##小地图，增强缩放
-WowPlus\Minimap.lua
+Plus\Minimap.lua
 ##冒险指南, 增强
-WoWPlus\EncounterJournal.lua
+Plus\EncounterJournal.lua
 ##史诗钥石地下城, 挑战增强
-WoWPlus\Challenges.lua
+Plus\Challenges.lua
 ##邮件，增加
-WoWPlus\mail.lua
+Plus\mail.lua
 ##银行
-WoWPlus\Bank.lua
+Plus\Bank.lua
 
+
+
+##GamePlus
 ##自动对话，任务
-GamePlus\Gossip.lua
+Plus\Gossip.lua
 ##卖买
-GamePlus\SellBuy.lua
+Plus\SellBuy.lua
 ##拍卖行
-GamePlus\AuctionHouse.lua
+Plus\AuctionHouse.lua
 ##宠物对战
-GamePlus\PetBattle.lua
+Plus\PetBattle.lua
 ##物品信息，显示包里，和商人，物品信息，现仅支持系统
-GamePlus\ItemInfo.lua
+Plus\ItemInfo.lua
 ##插件，方案
-GamePlus\AddOns.lua
+Plus\AddOns.lua
 ##自动隐藏，弹出NPC说话，
-##GamePlus\Talking.lua
+##Plus\Talking.lua
 ##断， 驱，散
-GamePlus\InterruptStolenDispel.lua
+Plus\InterruptStolenDispel.lua
 ##日历, 显示
-GamePlus\Holiday.lua
+Plus\Holiday.lua
 ##镶嵌宝石
-GamePlus\Gem.lua
+Plus\Gem.lua
 ##目标指示
-GamePlus\Target.lua
+Plus\Target.lua
 ##颜色选择器，增强
-GamePlus\Color.lua
+Plus\Color.lua
 ##主菜单，增强
-GamePlus\MainMenu.lua
+Plus\MainMenu.lua
 ##鼠标 Mouse https://wago.io/CVmKEpl6E
-GamePlus\Cursor.lua
+Plus\Cursor.lua
 ##宏增强
-GamePlus\Macro.lua
+Plus\Macro.lua
 
 
 ##坐骑， Tools 主要的，
