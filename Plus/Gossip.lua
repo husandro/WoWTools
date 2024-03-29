@@ -904,8 +904,8 @@ local function Init_Gossip_Text_Icon_Options()
         self:GetParent().menu:delete_gossip(self.gossipID)
     end)
 
-
-
+    menu.DeleteAllPlayerDate=e.Cbtn(Gossip_Text_Icon_Frame, {size={22,22}, atlas='bags-button-autosort-up'})
+    menu.DeleteAllPlayerDate:SetScript('OnL')
     --图标大小, 设置
     menu.Size= e.CSlider(Gossip_Text_Icon_Frame, {min=8, max=72, value=Save.Gossip_Text_Icon_Size, setp=1, color=false, w=255,
         text= e.onlyChinese and '图标大小' or HUD_EDIT_MODE_SETTING_ACTION_BAR_ICON_SIZE,
