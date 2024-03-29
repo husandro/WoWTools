@@ -64,7 +64,7 @@ local Gossip_Text_Icon_Frame--自定义，对话
 local GossipTextIcon={}--默认，自定义，对话，文本
 local function Init_Gossip_Text()
     GossipTextIcon={}
-    if Save.not_Gossip_Text_Icon or Save.gossip then
+    if Save.not_Gossip_Text_Icon or not Save.gossip then
         return
     end
     local tabs = {--https://wago.io/hR_KBVGdK
