@@ -196,11 +196,11 @@ local function Set_Gossip_Text(self, info)
         end
     end
     if text then
-        if Save.Gossip_Text_Icon_cnFont then
+        --if Save.Gossip_Text_Icon_cnFont then
          --   self.GreetingText:SetFont('Fonts\\ARHei.ttf', 12)
-        end
+       -- end
         info.name= text
-    elseif Save.Gossip_Text_Icon_cnFont then
+    --elseif Save.Gossip_Text_Icon_cnFont then
        -- self.GreetingText:SetFontObject('QuestFont')
     end
 end
@@ -932,7 +932,7 @@ local function Init_Gossip_Text_Icon_Options()
 
 
 
-    --修改，为中文，字体
+    --[[修改，为中文，字体
     if e.onlyChinese and not LOCALE_zhCN and not LOCALE_zhTW then
         menu.font= CreateFrame("CheckButton", nil, Gossip_Text_Icon_Frame, 'InterfaceOptionsCheckButtonTemplate')--ChatConfigCheckButtonTemplate
         menu.font:SetPoint('TOPLEFT', menu.Size, 'BOTTOMLEFT', 0, -12)
@@ -945,7 +945,7 @@ local function Init_Gossip_Text_Icon_Options()
                 GossipFrame:Update()
             end
         end)
-    end
+    end]]
 
     --已打开，对话，列表
     menu.chat= e.Cbtn(Gossip_Text_Icon_Frame, {size={22, 22}, atlas='transmog-icon-chat'})
