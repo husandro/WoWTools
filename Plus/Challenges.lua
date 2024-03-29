@@ -57,12 +57,26 @@ local SpellTabs={
     [199]= {spell=424153, ins=740, name='黑鸦堡垒'},--黑鸦堡垒 Black Rook Hold (Legion)
     [168]= {spell=159901, ins=556, name='永茂林地'},--永茂林地 The Everbloom (Warlords of Draenor)
     [456]= {spell=424142, ins=65, name='潮汐王座'},--潮汐王座 Throne of the Tides (Cataclysm)
+
+
 }
 for _, tab in pairs(SpellTabs) do
     e.LoadDate({id=tab.spell, type='spell'})
 end
 
 --[[
+    []= {spell=393279, ins=, name='魔馆'},--传送至碧蓝魔馆的入口。 奥秘之路
+    [406]={spell=393283, ins=1204, name='大厅'},----传送到注能大厅的入口 泰坦水库之路
+    [404]={spell=393276, ins=1199, name='奈萨鲁斯'},--传送到奈萨鲁斯的入口。 黑曜宝藏之路
+    []= {spell=393273, ins=, name='学院'},--传送到艾杰斯亚学院的入口。 巨龙学位之路
+
+    [403]= {spell=393222, ins=1197, name='提尔遗产'},--传送到奥达曼：提尔的遗产的入口 看护者遗产之路
+    405]={spell=393267, ins=1196, name='山谷'},--传送到蕨皮山谷的入口。 腐木之路
+    []= {spell=393256 ins=, name='红玉'},--传送到红玉新生法池的入口。 利爪防御者之路
+    []= {spell=393262, ins=, name='诺库德'},--传送至诺库德阻击战的入口。 啸风平原之路
+    
+    
+
     [403]={spell=393222, ins=1197, name='奥达曼'},--奥达曼：提尔的遗产
     [405]={spell=393267, ins=1196, name='蕨皮山谷'},--蕨皮山谷
     [406]={spell=393283, ins=1204, name='注能大厅'},--注能大厅
