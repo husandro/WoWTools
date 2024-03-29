@@ -741,7 +741,7 @@ local function Init_Gossip_Text_Icon_Options()
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, e.cn(addName))
-        e.tips:AddLine(e.onlyChinese and '点击在列表中浏览' or ICON_SELECTION_CLICK)
+        e.tips:AddLine(e.onlyChinese and '选择图标' or COMMUNITIES_CREATE_DIALOG_AVATAR_PICKER_INSTRUCTIONS)
         if not _G['TAV_CoreFrame'] then
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine('|cnRED_FONT_COLOR:Texture Atlas Viewer', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE)
