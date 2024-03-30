@@ -1,5 +1,5 @@
 local id, e = ...
-if e.Player.region~=3 and LOCALE_zhCN then
+if e.Player.region~=3 and (LOCALE_zhCN or LOCALE_zhTW) then
     return
 end
 
