@@ -446,7 +446,6 @@ local function Init_Gossip_Text_Icon_Options()
         end
         btn:SetText((info.hex and '|c'..info.hex or '')..(info.name or ''))
         btn:Resize()
-        btn:Show()
     end)
 
     function menu:SortOrder(leftInfo, rightInfo)
@@ -485,8 +484,8 @@ local function Init_Gossip_Text_Icon_Options()
                 self.chat.Text:SetText('')
             end
             self.view:SetDataProvider(self.dataProvider,  ScrollBoxConstants.RetainScrollPosition)
-
-            self:FullUpdate()--FullUpdateInternal()
+ 
+            self:FullUpdate()--FullUpdateInternal() FullUpdate()
             -- self:Update()
         else
             self.dataProvider= nil
