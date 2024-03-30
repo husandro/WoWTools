@@ -447,9 +447,17 @@ local function Init_Gossip_Text_Icon_Options()
         btn:Resize()
     end)
 
+    function menu:SortOrder(leftInfo, rightInfo)
+        if GossipFrame:IsShown() then
+            return leftInfo.orderIndex < rightInfo.orderIndex;
+        else
+            return leftInfo.gossipID < rightInfo.gossipID;
+        end
+    end
+
     function menu:set_list()
         if self:IsShown() then
-            local gossipNum=0
+            local gossipNum=0--GossipFrame 有多少对话
             self.dataProvider = CreateDataProvider()
             if GossipFrame:IsShown() then
                 local tabs={}
@@ -466,15 +474,16 @@ local function Init_Gossip_Text_Icon_Options()
                 for _, data in pairs(tabs) do
                     self.dataProvider:Insert({gossipID=data.gossipOptionID, icon=data.icon, name=data.name, hex=data.hex, spellID=data.spellID})
                 end
-                self.NumGossipLabel:SetFormattedText('%d /', gossipNum)--GossipFrame 有多少已设置
+                self.chat.Text:SetFormattedText('%d', gossipNum)--GossipFrame 有多少已设置
             else
                 for gossipID, data in pairs(Save.Gossip_Text_Icon_Player) do
                     self.dataProvider:Insert({gossipID=gossipID, icon=data.icon, name=data.name, hex=data.hex})
                 end
-                self.NumGossipLabel:SetText('')
+                self.chat.Text:SetText('')
             end
 
             self.ScrollView:SetDataProvider(self.dataProvider,  ScrollBoxConstants.RetainScrollPosition)
+            self:Update()
         else
             self.dataProvider= nil
         end
@@ -721,11 +730,6 @@ local function Init_Gossip_Text_Icon_Options()
     menu.NumLabel= e.Cstr(Gossip_Text_Icon_Frame, {justifyH='RIGHT'})
     menu.NumLabel:SetPoint('BOTTOM', menu, 'TOP', 0, 4)
     menu:set_numlabel_text()
-
-    --GossipFrame 有多少已设置
-    menu.NumGossipLabel= e.Cstr(Gossip_Text_Icon_Frame, {justifyH='RIGHT',color={r=0,g=1,b=0}})
-    menu.NumGossipLabel:SetPoint('RIGHT', menu.NumLabel, 'LEFT')
-
 
     --图标
     menu.Texture= Gossip_Text_Icon_Frame:CreateTexture()
@@ -1055,7 +1059,9 @@ local function Init_Gossip_Text_Icon_Options()
         end
         e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
     end)
-
+    --GossipFrame 有多少对话
+    menu.chat.Text= e.Cstr(menu.chat, {justifyH='CENTER'})
+    menu.chat.Text:SetPoint('CENTER', 1, 4.5)
 
     --默认，自定义，列表
     menu.System= e.Cbtn(Gossip_Text_Icon_Frame, {size={22, 22}, icon='hide'})
