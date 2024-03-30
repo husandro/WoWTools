@@ -149,34 +149,33 @@ end
 
 --自定义，对话，文本
 local function Set_Gossip_Text(self, info)
-    local gossipOptionID= info and info.gossipOptionID
-    if not Save.gossip or Save.not_Gossip_Text_Icon or not gossipOptionID or not info.name then
-        if Save.Gossip_Text_Icon_cnFont then
-            self:GetFontString():SetFontObject('QuestFont')
-        end
+    if not Save.gossip then
         return
     end
     local text
-    local zoneInfo= Save.Gossip_Text_Icon_Player[gossipOptionID] or GossipTextIcon[gossipOptionID]
-    if not zoneInfo then
-        text= e.strText[info.name]
-    else
-        local icon
-        local name
-        if zoneInfo.icon then
-            local isAtlas, texture= e.IsAtlas(zoneInfo.icon)
-            if isAtlas then
-                icon= format('|A:%s:%d:%d|a', texture, Save.Gossip_Text_Icon_Size, Save.Gossip_Text_Icon_Size)
-            else
-                icon= format('|T%s:%d|t', texture, Save.Gossip_Text_Icon_Size)
+    local gossipOptionID= info and info.gossipOptionID
+    if not Save.not_Gossip_Text_Icon and gossipOptionID and info.name then 
+        local zoneInfo= Save.Gossip_Text_Icon_Player[gossipOptionID] or GossipTextIcon[gossipOptionID]
+        if not zoneInfo then
+            text= e.strText[info.name]
+        else
+            local icon
+            local name
+            if zoneInfo.icon then
+                local isAtlas, texture= e.IsAtlas(zoneInfo.icon)
+                if isAtlas then
+                    icon= format('|A:%s:%d:%d|a', texture, Save.Gossip_Text_Icon_Size, Save.Gossip_Text_Icon_Size)
+                else
+                    icon= format('|T%s:%d|t', texture, Save.Gossip_Text_Icon_Size)
+                end
             end
-        end
-        name= zoneInfo.name
-        if zoneInfo.hex then
-            name= '|c'..zoneInfo.hex..(name or info.name)..'|r'
-        end
-        if icon or name then
-            text= format('%s%s', icon or '', name or '')
+            name= zoneInfo.name
+            if zoneInfo.hex then
+                name= '|c'..zoneInfo.hex..(name or info.name)..'|r'
+            end
+            if icon or name then
+                text= format('%s%s', icon or '', name or '')
+            end
         end
     end
     if text then
@@ -185,7 +184,7 @@ local function Set_Gossip_Text(self, info)
         end
         info.name= text
     elseif Save.Gossip_Text_Icon_cnFont then
-        self:GetFontString():SetFontObject('QuestFont')
+        self:GetFontString():SetFontObject('QuestFontLeft')
     end
 end
 
@@ -441,6 +440,8 @@ local function Init_Gossip_Text_Icon_Options()
         end
         if Save.Gossip_Text_Icon_cnFont then
             btn:GetFontString():SetFont('Fonts\\ARHei.ttf', 14)
+        else
+            btn:SetFontObject('QuestFontLeft')
         end
         btn:SetText((info.hex and '|c'..info.hex or '')..(info.name or ''))
         btn:Resize()
@@ -634,9 +635,7 @@ local function Init_Gossip_Text_Icon_Options()
                 hex= hex,
             }
             self.gossipID= num
-            if GossipFrame:IsShown() then
-                GossipFrame:Update()
-            end
+            GossipButton:update_gossip_frame()
             self:set_list()
         end
 
@@ -660,9 +659,7 @@ local function Init_Gossip_Text_Icon_Options()
             Save.Gossip_Text_Icon_Player[gossipID]=nil
             print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '删除' or DELETE)..'|r|n', gossipID, info.icon, info.hex, info.name)
             self:set_list()
-            if GossipFrame:IsShown() then
-                GossipFrame:Update()
-            end
+            GossipButton:update_gossip_frame()
         end
         self:set_all()
         self:set_numlabel_text()
@@ -956,9 +953,7 @@ local function Init_Gossip_Text_Icon_Options()
             if not icon or icon==0 then
                 f.Texture:SetTexture(3847780)
             end
-            if GossipFrame:IsShown() then
-                GossipFrame:Update()
-            end
+            GossipButton:update_gossip_frame()
     end})
     menu.Size:SetPoint('TOP', menu.Icon, 'BOTTOM', 0, -36)
 
@@ -984,9 +979,7 @@ local function Init_Gossip_Text_Icon_Options()
         end)
         menu.font:SetScript('OnMouseDown', function()
             Save.Gossip_Text_Icon_cnFont= not Save.Gossip_Text_Icon_cnFont and true or nil
-            if GossipFrame:IsShown() then
-                GossipFrame:Update()
-            end
+            GossipButton:update_gossip_frame()
             Gossip_Text_Icon_Frame.menu:set_list()
             if not Save.Gossip_Text_Icon_cnFont then
                 print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:', e.onlyChinese and '需要重新加载UI' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, RELOADUI))
@@ -1138,23 +1131,17 @@ local function Init_Gossip_Text_Icon_Options()
     end)
 
     Gossip_Text_Icon_Frame:SetScript('OnHide', function(self)
-        if GossipFrame:IsShown() then
-            GossipFrame:Update()
-        end
+        GossipButton:update_gossip_frame()
         self.menu:set_list()
         for _, b in pairs(GossipFrame.GreetingPanel.ScrollBox:GetFrames() or {}) do
             b:UnlockHighlight()
         end
     end)
     Gossip_Text_Icon_Frame:SetScript('OnShow', function(self)
-        if GossipFrame:IsShown() then
-            GossipFrame:Update()
-        end
+        GossipButton:update_gossip_frame()
         self.menu:set_list()
     end)
-    if GossipFrame:IsShown() then
-        GossipFrame:Update()
-    end
+    GossipButton:update_gossip_frame()
 end
 
 
@@ -1195,6 +1182,7 @@ local function Init_Menu_Gossip(_, level, type)
                 Save.gossip= true
                 GossipButton:set_Texture()--设置，图片
                 GossipButton:tooltip_Show()
+                GossipButton:update_gossip_frame()
             end
         }, level)
         return
@@ -1712,10 +1700,12 @@ local function Create_CheckButton(self, info)
             sel= CreateFrame("CheckButton", nil, self, 'InterfaceOptionsCheckButtonTemplate')--ChatConfigCheckButtonTemplate
             sel.Text:ClearAllPoints()
             sel.Text:SetPoint('RIGHT', sel, 'LEFT')
-            sel.Text:SetTextColor(0,0,0)
-            sel.Text:SetShadowOffset(1, -1)
-            sel:SetPoint("RIGHT", -2, 0)
-            sel:SetSize(18, 18)
+            --sel.Text:SetTextColor(0,0,0)
+            sel.Text:SetFontObject('QuestFontLeft')
+            --sel.Text:SetShadowOffset(1, -1)
+            sel:SetPoint("RIGHT")
+            sel:SetSize(24, 24)
+            sel:SetScript('OnLeave', GameTooltip_Hide)
             sel:SetScript("OnEnter", function(frame)
                 local f= GossipButton:isShow_Gossip_Text_Icon_Frame()
                 if f then
@@ -1754,7 +1744,8 @@ local function Create_CheckButton(self, info)
             end)
             self.gossipCheckButton= sel
 
-            self:GetFontString():SetPoint('RIGHT')
+            --调整，宽度
+            self:GetFontString():SetPoint('RIGHT', sel.Text, 'LEFT',-2, 0)
         end
         sel.id= gossipOptionID
         sel.name= info.name
@@ -1805,7 +1796,7 @@ local function Init_Gossip()
             Init_Gossip_Text_Icon_Options()
             if Gossip_Text_Icon_Frame and Gossip_Text_Icon_Frame:IsShown() then
                 Gossip_Text_Icon_Frame:ClearAllPoints()
-                Gossip_Text_Icon_Frame:SetPoint('TOPLEFT', GossipFrame, 'TOPRIGHT',0,-60)
+                Gossip_Text_Icon_Frame:SetPoint('TOPLEFT', GossipFrame, 'TOPRIGHT')
             end
         else
             e.LibDD:ToggleDropDownMenu(1, nil, GossipButton.Menu, self, 15, 0)
@@ -1826,6 +1817,12 @@ local function Init_Gossip()
 
     function GossipButton:isShow_Gossip_Text_Icon_Frame()
         return Gossip_Text_Icon_Frame and Gossip_Text_Icon_Frame:IsShown() and Gossip_Text_Icon_Frame or false
+    end
+    
+    function GossipButton:update_gossip_frame()
+        if GossipFrame:IsShown() then
+            GossipFrame:Update()
+        end
     end
 
     function GossipButton:set_Point()--设置位置
