@@ -388,7 +388,7 @@ local function Init_Gossip_Text_Icon_Options()
 
     e.Set_Alpha_Frame_Texture(border, {alpha=0.5})
     e.Set_Alpha_Frame_Texture(Header, {alpha=0.7})
-    e.Set_Move_Frame(Gossip_Text_Icon_Frame, {setMove=true, minW=400, minH=200, notFuori=true, setSize=true, sizeRestFunc=function(btn)
+    e.Set_Move_Frame(Gossip_Text_Icon_Frame, {setMove=true, minW=370, minH=240, notFuori=true, setSize=true, sizeRestFunc=function(btn)
         btn.target:SetSize(580, 370)
     end})
 
@@ -408,10 +408,10 @@ local function Init_Gossip_Text_Icon_Options()
     menu.ScrollBar:SetPoint("TOPLEFT", menu, "TOPRIGHT", 8,0)
     menu.ScrollBar:SetPoint("BOTTOMLEFT", menu, "BOTTOMRIGHT",8,0)
 
-    menu.ScrollView = CreateScrollBoxListLinearView()
-    ScrollUtil.InitScrollBoxListWithScrollBar(menu, menu.ScrollBar, menu.ScrollView)
+    menu.view = CreateScrollBoxListLinearView()
+    ScrollUtil.InitScrollBoxListWithScrollBar(menu, menu.ScrollBar, menu.view)
 
-    menu.ScrollView:SetElementInitializer("GossipTitleButtonTemplate", function(btn, info)-- UIPanelButtonTemplate GossipTitleButtonTemplate
+    menu.view:SetElementInitializer("GossipTitleButtonTemplate", function(btn, info)-- UIPanelButtonTemplate GossipTitleButtonTemplate
         btn.gossipID= info.gossipID
         btn.spellID= info.spellID
         if not btn.delete then
@@ -430,6 +430,7 @@ local function Init_Gossip_Text_Icon_Options()
             end)
             btn.delete:SetAlpha(0)
             btn:GetFontString():SetPoint('RIGHT')
+
         end
 
         local isAtlas, texture= e.IsAtlas(info.icon)
@@ -445,6 +446,7 @@ local function Init_Gossip_Text_Icon_Options()
         end
         btn:SetText((info.hex and '|c'..info.hex or '')..(info.name or ''))
         btn:Resize()
+        btn:Show()
     end)
 
     function menu:SortOrder(leftInfo, rightInfo)
@@ -467,6 +469,7 @@ local function Init_Gossip_Text_Icon_Options()
                         data.gossipOptionID= info.gossipOptionID
                         data.orderIndex= info.orderIndex
                         table.insert(tabs, data)
+                    else
                         gossipNum= gossipNum +1
                     end
                 end
@@ -474,16 +477,17 @@ local function Init_Gossip_Text_Icon_Options()
                 for _, data in pairs(tabs) do
                     self.dataProvider:Insert({gossipID=data.gossipOptionID, icon=data.icon, name=data.name, hex=data.hex, spellID=data.spellID})
                 end
-                self.chat.Text:SetFormattedText('%d', gossipNum)--GossipFrame 有多少已设置
+                self.chat.Text:SetFormattedText('%s%d', gossipNum>0 and '|cnGREEN_FONT_COLOR:' or '|cff606060', gossipNum)--GossipFrame 有多少已设置
             else
                 for gossipID, data in pairs(Save.Gossip_Text_Icon_Player) do
                     self.dataProvider:Insert({gossipID=gossipID, icon=data.icon, name=data.name, hex=data.hex})
                 end
                 self.chat.Text:SetText('')
             end
-
-            self.ScrollView:SetDataProvider(self.dataProvider,  ScrollBoxConstants.RetainScrollPosition)
-            self:Update()
+            self.view:SetDataProvider(self.dataProvider,  ScrollBoxConstants.RetainScrollPosition)
+           
+            self:FullUpdate()--FullUpdateInternal()
+            -- self:Update()
         else
             self.dataProvider= nil
         end
@@ -1000,7 +1004,7 @@ local function Init_Gossip_Text_Icon_Options()
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id , e.cn(addName))
         e.tips:AddLine(' ')
-        e.tips:AddLine(e.onlyChinese and '当前对话', format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, ENABLE_DIALOG))
+        e.tips:AddDoubleLine(e.onlyChinese and '当前对话' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, ENABLE_DIALOG), e.onlyChinese and '添加' or ADD)
         e.tips:Show()
     end)
     menu.chat:SetScript('OnClick', function(self)
@@ -1022,8 +1026,10 @@ local function Init_Gossip_Text_Icon_Options()
                             checked= info.gossipOptionID== Gossip_Text_Icon_Frame.menu:get_gossipID(),
                             colorCode= hex and '|c'..hex or (GossipTextIcon[info.gossipOptionID] and '|cnGREEN_FONT_COLOR:') or (Save.Gossip_Text_Icon_Player[info.gossipOptionID] and '|cffff00ff') or nil,
                             icon= icon,
+                            
                             tooltipOnButton=true,
                             tooltipTitle=info.gossipOptionID,
+                            tooltipText= e.onlyChinese and '选择' or LFG_LIST_SELECT,
                             arg1=info.gossipOptionID,
                             func= function(_, arg1)
                                 f:set_date(arg1)
@@ -1035,7 +1041,7 @@ local function Init_Gossip_Text_Icon_Options()
                     end
                 end
                 local num=#find
-                if num>1 then
+                if num>0 then
                     e.LibDD:UIDropDownMenu_AddSeparator(level)
                     e.LibDD:UIDropDownMenu_AddButton({
                         text=format('%s |cnGREEN_FONT_COLOR:#%d', e.onlyChinese and '全部添加' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, ADD), num),
@@ -1061,7 +1067,7 @@ local function Init_Gossip_Text_Icon_Options()
     end)
     --GossipFrame 有多少对话
     menu.chat.Text= e.Cstr(menu.chat, {justifyH='CENTER'})
-    menu.chat.Text:SetPoint('CENTER', 1, 4.5)
+    menu.chat.Text:SetPoint('CENTER', 1, 4.2)
 
     --默认，自定义，列表
     menu.System= e.Cbtn(Gossip_Text_Icon_Frame, {size={22, 22}, icon='hide'})
