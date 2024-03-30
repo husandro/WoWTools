@@ -876,8 +876,7 @@ local function Init_Gossip_Text_Icon_Options()
                 Gossip_Text_Icon_Frame.menu:set_color(R,G,B)
             end)
         else
-            self.r, self.g, self.b=1,1,1
-            Gossip_Text_Icon_Frame.menu:set_all()
+            Gossip_Text_Icon_Frame.menu:set_color(1,1,1)
         end
     end)
 
