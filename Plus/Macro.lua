@@ -1095,7 +1095,7 @@ local function Init_List_Button()
                         end,
                     }, level)
                 end
-                
+
             end
         end, 'MENU')
         e.LibDD:ToggleDropDownMenu(1, nil, MacroFrame.Menu, self, 15,0)--主菜单
@@ -1473,7 +1473,30 @@ local function Init_Macro_List()
 
         --备注
         if not MacroFrame.NoteEditBox and Save.toRightLeft and MacroFrame.macroBase==0 then
-            MacroFrame.NoteEditBox= e.Cedit({frame=MacroFrame, size={310, 135}})
+            --MacroFrame.NoteEditBox= e.Cedit(MacroFrame, {size={310, 135}})
+
+            local x, y= 310, 135
+            local level= MacroFrame:GetFrameLevel()
+
+            local scroll= CreateFrame('ScrollFrame', nil, MacroFrame, 'UIPanelScrollFrameTemplate')
+            scroll:SetSize(x, y)
+            scroll:SetFrameLevel(level+ 1)
+
+            scroll.edit= CreateFrame('EditBox', nil, scroll)
+            scroll.edit:SetSize(x, y)
+            scroll.edit:SetPoint('RIGHT', scroll, 'LEFT')
+            scroll.edit:SetAutoFocus(false)
+            scroll.edit:SetMultiLine(true)
+            scroll.edit:SetFontObject("ChatFontNormal")
+
+            scroll.background= CreateFrame('Frame', nil, scroll, 'TooltipBackdropTemplate')
+            scroll.background:SetSize(x+10, y+10)
+            scroll.background:SetPoint('CENTER')
+            scroll.background:SetFrameLevel(level)
+
+            scroll:SetScrollChild(scroll.edit)
+
+MacroFrame.NoteEditBox=scroll
             MacroFrame.NoteEditBox:SetPoint('TOPRIGHT', -26, -72)
             MacroFrame.NoteEditBox.edit:SetText(Save.noteText or (e.onlyChinese and '备注' or LABEL_NOTE))
             MacroFrame.NoteEditBox.background:SetAlpha(0.8)

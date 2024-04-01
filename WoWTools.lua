@@ -507,27 +507,24 @@ end
 
 
 
-function e.Cedit(tab)--frame, name, size={}
-    local x, y= tab.size[1], tab.size[2]--310, 135
-    local level= tab.frame:GetFrameLevel()
+function e.Cedit(self, tab)--frame, name, size={} SecureScrollTemplates.xml
+   
+    local scroll= CreateFrame('ScrollFrame', nil, self, 'UIPanelScrollFrameTemplate')
 
-    local scroll= CreateFrame('ScrollFrame', tab.name, tab.frame, 'MacroFrameScrollFrameTemplate')
-    scroll:SetSize(tab.size[1], tab.size[2])
-    scroll:SetFrameLevel(level+ 1)
+    scroll.bg= CreateFrame('Frame', nil, scroll, 'TooltipBackdropTemplate')
+    scroll.bg:SetAllPoints(scroll)
 
-    scroll.edit= CreateFrame('EditBox', nil, scroll)
-    scroll.edit:SetSize(x, y)
-    scroll.edit:SetPoint('RIGHT', scroll, 'LEFT')
+    scroll.edit= CreateFrame('EditBox', nil, scroll.bg)
+    scroll.edit:SetAllPoints(scroll.bg)
     scroll.edit:SetAutoFocus(false)
     scroll.edit:SetMultiLine(true)
     scroll.edit:SetFontObject("ChatFontNormal")
 
-    scroll.background= CreateFrame('Frame', nil, scroll, 'TooltipBackdropTemplate')
-    scroll.background:SetSize(x+10, y+10)
-    scroll.background:SetPoint('CENTER')
-    scroll.background:SetFrameLevel(level)
-
     scroll:SetScrollChild(scroll.edit)
+    
+    function scroll:SetText(...)
+        self.edit:SetText(...)
+    end
     return scroll
 end
 

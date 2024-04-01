@@ -484,7 +484,7 @@ local function Init_Gossip_Text_Icon_Options()
                 self.chat.Text:SetText('')
             end
             self.view:SetDataProvider(self.dataProvider,  ScrollBoxConstants.RetainScrollPosition)
- 
+
             self:FullUpdate()--FullUpdateInternal() FullUpdate()
             -- self:Update()
         else
@@ -729,10 +729,7 @@ local function Init_Gossip_Text_Icon_Options()
     menu.Icon:SetScript('OnEnterPressed', function(self) self:GetParent().menu:add_gossip() end)
     menu.Name:SetScript('OnEnterPressed', function(self) self:GetParent().menu:add_gossip() end)
 
-    --自定义，对话，文本，数量
-    menu.NumLabel= e.Cstr(Gossip_Text_Icon_Frame, {justifyH='RIGHT'})
-    menu.NumLabel:SetPoint('BOTTOM', menu, 'TOP', 0, 4)
-    menu:set_numlabel_text()
+
 
     --图标
     menu.Texture= Gossip_Text_Icon_Frame:CreateTexture()
@@ -926,7 +923,6 @@ local function Init_Gossip_Text_Icon_Options()
         e.tips:AddLine(e.onlyChinese and '全部清除' or CLEAR_ALL)
         e.tips:Show()
     end)
-
     menu.DeleteAllPlayerData:SetScript('OnClick', function()
         if not StaticPopupDialogs[id..addName..'Delete_All_Player_Data'] then
             StaticPopupDialogs[id..addName..'Delete_All_Player_Data']={
@@ -943,6 +939,13 @@ local function Init_Gossip_Text_Icon_Options()
         end
         StaticPopup_Show(id..addName..'Delete_All_Player_Data')
     end)
+
+    --自定义，对话，文本，数量
+    menu.NumLabel= e.Cstr(Gossip_Text_Icon_Frame)
+    menu.NumLabel:SetPoint('LEFT', menu.DeleteAllPlayerData, 'RIGHT')
+
+
+    
 
     --图标大小, 设置
     menu.Size= e.CSlider(Gossip_Text_Icon_Frame, {min=8, max=72, value=Save.Gossip_Text_Icon_Size, setp=1, color=false, w=255,
@@ -1127,8 +1130,69 @@ local function Init_Gossip_Text_Icon_Options()
 
 
 
+
+
+
+    --menu.DataEdit= CreateFrame("EditBox", nil, Gossip_Text_Icon_Frame, 'SearchBoxTemplate')
+    menu.DataEdit= e.Cedit(Gossip_Text_Icon_Frame)
+    menu.DataEdit:SetPoint('TOPLEFT', Gossip_Text_Icon_Frame, 'TOPRIGHT', 0, -6)
+    menu.DataEdit:SetPoint('BOTTOMRIGHT', 310, 8)
+    menu.DataEdit:SetText([[
+Gui.func3frame.input = CreateFrame("EditBox", "same", Gui.func3frame, 'InputBoxTemplate')
+Gui.func3frame.input:SetSize(200,22)
+Gui.func3frame.input:SetAutoFocus(false)
+Gui.func3frame.input:SetMaxLetters(30)
+Gui.func3frame.input:SetPoint("CENTER", -65, 30)
+Gui.func3frame.input:SetScript('OnEnterPressed', function(arg3)
+    local arg3 = self:GetText()
+end)
+--
+Gui.func3frame.add = CreateFrame("Button", "same", Gui.func3frame, "UIPanelButtonTemplate")
+Gui.func3frame.add:SetSize(50,22)
+Gui.func3frame.add:SetPoint("CENTER", 70, 30)
+Gui.func3frame.add:SetText("Add")
+Gui.func3frame.add:SetScript("OnClick", function(arg3)
+    print("added: " ..arg3)
+end)
+    ]])
+
+    menu.DataUscita= e.Cbtn(Gossip_Text_Icon_Frame, {size={22, 22}, atlas='bags-greenarrow'})
+    menu.DataUscita:SetPoint('LEFT', menu.DeleteAllPlayerData, 'RIGHT', 22, 0)
+    menu.DataUscita:SetScript('OnLeave', GameTooltip_Hide)
+    menu.DataUscita:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, self.addName)
+        e.tips:AddLine(' ')
+        e.tips:AddLine(e.onlyChinese and '分享' or HUD_EDIT_MODE_IMPORT_LAYOUTHUD_EDIT_MODE_SHARE_LAYOUT)
+        e.tips:Show()
+    end)
+    menu.DataUscita:SetScript('OnClick', function(self)
+        
+    end)
+
+    menu.DataEnter= e.Cbtn(Gossip_Text_Icon_Frame, {size={22, 22}, atlas='Professions_Specialization_arrowhead'})
+    menu.DataEnter:SetPoint('LEFT', menu.DataUscita, 'RIGHT')
+    menu.DataEnter:SetScript('OnLeave', GameTooltip_Hide)
+    menu.DataEnter:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, self.addName)
+        e.tips:AddLine(' ')
+        e.tips:AddLine(e.onlyChinese and '导入' or HUD_CLASS_TALENTS_IMPORT_LOADOUT_ACCEPT_BUTTON)
+        e.tips:Show()
+    end)
+    menu.DataEnter:SetScript('OnClick', function(self)
+
+    end)
+
+
     menu.chat:SetShown(GossipFrame:IsShown())
     menu:set_list()
+    menu:set_numlabel_text()
+
+
+
     GossipFrame:HookScript('OnShow', function()--已打开，对话，列表
         local frame= Gossip_Text_Icon_Frame.menu
         frame.chat:SetShown(true)
