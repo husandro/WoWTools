@@ -1116,7 +1116,7 @@ local function Init_TrackButton()--添加装备管理框
                 e.tips:AddDoubleLine(id, e.cn(addName))
                 e.tips:Show()
                 --local name, iconFileID, _, isEquipped2, numItems, numEquipped, numInInventory, numLost, numIgnored = C_EquipmentSet.GetEquipmentSetInfo(self.setID)
-                if panel.equipmentButton:IsVisible() then
+                if panel.equipmentButton and panel.equipmentButton:IsVisible() then
                     panel.equipmentButton:SetButtonState('PUSHED')
                     panel.equipmentButton:SetAlpha(1)
                 end
