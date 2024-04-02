@@ -1151,7 +1151,7 @@ local function Init_Gossip_Text_Icon_Options()
 
 
     --导入数据
-    menu.DataFrame= e.Cedit(Gossip_Text_Icon_Frame, {w=310})
+    menu.DataFrame= e.Cedit(Gossip_Text_Icon_Frame)
     menu.DataFrame:Hide()
     menu.DataFrame:SetPoint('TOPLEFT', Gossip_Text_Icon_Frame, 'TOPRIGHT', 0, -6)
     menu.DataFrame:SetPoint('BOTTOMRIGHT', 310, 8)

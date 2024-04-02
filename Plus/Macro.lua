@@ -1465,24 +1465,20 @@ local function Init_Macro_List()
                 self.MacroSelector:SetPoint('TOPLEFT', self, 'TOPRIGHT',0,-12)
                 self.MacroSelector:SetPoint('BOTTOMRIGHT', 319, 0)
             end
+            self.MacroSelector:SetCustomStride(6);
         else
             self.MacroSelector:SetPoint('TOPLEFT', 12,-66)
-            self.MacroSelector:SetPoint('RIGHT')
-            self.MacroSelector:SetHeight(146)
+            self.MacroSelector:SetPoint('BOTTOMRIGHT', MacroFrame, 'RIGHT', -6, 0)
+            self.MacroSelector:SetCustomStride(8);
+           -- self.MacroSelector:SetHeight(146)
         end
 
         --备注
         if not MacroFrame.NoteEditBox and Save.toRightLeft and MacroFrame.macroBase==0 then
-            MacroFrame.NoteEditBox= e.Cedit(MacroFrame, {w=310, font='GameFontHighlightSmall'})
-            MacroFrame.NoteEditBox:SetHeight(135)
-            MacroFrame.NoteEditBox:SetPoint('TOPLEFT', 8, -64)
-            MacroFrame.NoteEditBox:SetPoint('RIGHT', -26, 0)
-            
-            --MacroFrame.NoteEditBox:SetPoint('TOPRIGHT', -26, -72)
---            MacroFrame.NoteEditBox:SetSize(310, 135)
-            --MacroFrame.NoteEditBox:SetPoint('BOTTOMLEFT')
+            MacroFrame.NoteEditBox= e.Cedit(MacroFrame, {font='GameFontHighlightSmall'})
+            MacroFrame.NoteEditBox:SetPoint('TOPLEFT', 8, -65)
+            MacroFrame.NoteEditBox:SetPoint('BOTTOMRIGHT', MacroFrame, 'RIGHT', -6, 0)
             MacroFrame.NoteEditBox.edit:SetText(Save.noteText or (e.onlyChinese and '备注' or LABEL_NOTE))
-            --MacroFrame.NoteEditBox.background:SetAlpha(0.8)
             function MacroFrame.NoteEditBox:set_save_text()--保存备注
                 local text= self.edit:GetText()
                 if text and text~= (e.onlyChinese and '备注' or LABEL_NOTE) and text:gsub(' ','')~='' then
@@ -1521,20 +1517,35 @@ end
 --初始
 --####
 local function Init()
-    MacroFrame.Menu= CreateFrame("Frame", nil, MacroFrame, "UIDropDownMenuTemplate")
+    MacroFrameTextBackground:ClearAllPoints()
+    MacroFrameTextBackground:SetPoint('TOPLEFT', MacroFrame, 'LEFT', 8, -78)
     MacroFrameTextBackground:SetPoint('BOTTOMRIGHT', -8, 42)
-    MacroFrameScrollFrame:SetPoint('BOTTOMRIGHT', -32, 44)
-    MacroFrameText:SetPoint('BOTTOMRIGHT')
+    MacroFrameScrollFrame:HookScript('OnSizeChanged', function(f)
+        MacroFrameText:SetWidth(f:GetWidth())
+    end)
+    MacroFrameScrollFrame:ClearAllPoints()
+    MacroFrameScrollFrame:SetPoint('TOPLEFT', MacroFrame, 'LEFT', 12, -83)
+    MacroFrameScrollFrame:SetPoint('BOTTOMRIGHT', -32, 45)
+
     local regions= {MacroFrame:GetRegions()}
     if regions[5] and regions[5]:GetObjectType()=='Texture' then
-        regions[5]:SetPoint('RIGHT', -80,0)
+        regions[5]:Hide()
+        regions[5]:SetTexture(0)
+        MacroHorizontalBarLeft:Hide()
+        MacroHorizontalBarLeft:SetTexture(0)
     end
     
     e.Set_Move_Frame(MacroFrame, {neeSize=true, setSize=true, minW=338, minH=424, initFunc=function() end, sizeRestFunc=function(btn)
         btn.target:SetSize(338, 424)
     end})
 
-
+    --选定宏
+    local region= MacroFrameSelectedMacroButton:GetRegions()--外框
+    if region and region:GetObjectType()=='Texture' then
+        region:Hide()
+    end
+    MacroFrameSelectedMacroBackground:ClearAllPoints()
+    MacroFrameSelectedMacroBackground:SetPoint('BOTTOMLEFT', MacroFrameTextBackground, 'TOPLEFT', 0, 8)
 
     MacroEditButton:ClearAllPoints()
     MacroEditButton:SetPoint('TOPLEFT', MacroFrameSelectedMacroButton, 'TOPRIGHT',2,2)
@@ -1546,10 +1557,7 @@ local function Init()
     MacroFrameSelectedMacroName:SetPoint('BOTTOMLEFT', MacroFrameSelectedMacroButton, 'TOPLEFT')
     MacroFrameSelectedMacroName:SetFontObject('GameFontNormal')
 
-    --选定宏，外框
-    local region= MacroFrameSelectedMacroButton:GetRegions()
-    region:Hide()
-
+   
 
     --输入宏命令
     MacroFrameEnterMacroText:SetText('')
@@ -1643,7 +1651,7 @@ local function Init()
 
 
 
-
+    MacroFrame.Menu= CreateFrame("Frame", nil, MacroFrame, "UIDropDownMenuTemplate")
     Init_Macro_List()--宏列表，位置
     Init_Select_Macro_Button()--选定宏，点击，弹出菜单，自定图标
     Init_List_Button()--命令，按钮，列表
