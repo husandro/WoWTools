@@ -565,9 +565,9 @@ local function Init_Gossip_Text_Icon_Options()
         self:SetText(text)]]
         --e.LibDD:UIDropDownMenu_SetText(self, text)--设置，菜单，文本
 
-        local hex = self.Color.hex or 'ffffffff'
+        local hex = self.Color.hex or 'ff000000'
         if info then
-            if info.icon==icon and info.name==name and (info.hex==hex or (not info.hex and hex=='ffffffff')) then--一样，数据
+            if info.icon==icon and info.name==name and (info.hex==hex or (not info.hex and hex=='ff000000')) then--一样，数据
                 self.Add:SetNormalAtlas('VignetteEvent')
                 self.Add.tooltip=e.onlyChinese and '已存在' or 'Existed'
             else--需要，更新，数据
@@ -579,7 +579,7 @@ local function Init_Gossip_Text_Icon_Options()
             self.Add.tooltip=e.onlyChinese and '添加' or ADD
         end
         self.Delete:SetShown(self.gossipID and true or false)--显示/隐藏，删除按钮
-        self.Add:SetShown(num>0 and (name or icon or hex~='ffffffff'))--显示/隐藏，添加按钮
+        self.Add:SetShown(num>0 and (name or icon or hex~='ff000000'))--显示/隐藏，添加按钮
     end
 
     function menu:set_color(r, g, b, hex)--设置，颜色，颜色按钮，
@@ -588,10 +588,11 @@ local function Init_Gossip_Text_Icon_Options()
         elseif r and g and b then
             hex= e.RGB_to_HEX(r,g,b)
         else
-            r,g,b,hex= 1,1,1, 'ffffffff'
+            r,g,b,hex= 0,0,0, 'ff000000'
         end
         self.Color.r, self.Color.g, self.Color.b, self.Color.hex= r, g, b, hex
         self.Color.Color:SetVertexColor(r,g,b,1)
+        self.Name:SetTextColor(r,g,b)
         self:set_all()
     end
 
@@ -637,7 +638,7 @@ local function Init_Gossip_Text_Icon_Options()
         if not hex and r~=1 and g~=1 and r~=1 then
             hex= e.RGB_to_HEX(r, g, b, 1)
         end
-        if hex=='ffffffff' then
+        if hex=='ff000000' then
             hex=nil
         end
         if num and (name or texture or hex) then
@@ -661,7 +662,7 @@ local function Init_Gossip_Text_Icon_Options()
                 icon= '|T'..texture..':0|t'
             end
         end
-        print(id, addName, '|cnGREEN_FONT_COLOR:'..num..'|r', icon or '', '|c'..(hex or 'ffffffff'), name)
+        print(id, addName, '|cnGREEN_FONT_COLOR:'..num..'|r', icon or '', '|c'..(hex or 'ff000000'), name)
     end
 
     function menu:delete_gossip(gossipID)
@@ -697,6 +698,15 @@ local function Init_Gossip_Text_Icon_Options()
     menu.Name.Instructions:SetText(e.onlyChinese and '替换文本', format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REPLACE, LOCALE_TEXT_LABEL))
     menu.Name.searchIcon:SetAtlas('NPE_ArrowRight')
     menu.Name:HookScript("OnTextChanged", function(self) self:GetParent().menu:set_all() end)
+    
+    menu.Name:SetFontObject('QuestFontLeft')
+    menu.Name.r, menu.Name.g, menu.Name.b= menu.Name:GetTextColor()
+    menu.Name.texture=menu.Name:CreateTexture(nil, 'BORDER')
+    menu.Name.texture:SetAtlas('QuestBG-Parchment')
+    menu.Name.texture:SetPoint('TOPLEFT', 8,-4)
+    menu.Name.texture:SetPoint('BOTTOMRIGHT', -18, 3)    
+    menu.Name.texture:SetTexCoord(0.23243, 0.24698, 0.13550, 0.12206)
+    --menu.Name.Middle:SetAtlas('QuestBG-Parchment')
 
     menu.Icon= CreateFrame("EditBox", nil, Gossip_Text_Icon_Frame, 'SearchBoxTemplate')
     menu.Icon:SetPoint('TOPLEFT', menu.Name, 'BOTTOMLEFT')
@@ -823,6 +833,7 @@ local function Init_Gossip_Text_Icon_Options()
                 m.ID:SetFocus()
             else
                 m.Name:SetFocus()
+                Gossip_Text_Icon_Frame.menu:add_gossip()
             end
         end
         f.frame= frame
@@ -853,12 +864,12 @@ local function Init_Gossip_Text_Icon_Options()
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id , e.cn(addName))
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '设置颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, COLOR), e.Icon.left)
-        local col= (not self.hex or self.hex=='ffffffff') and '|cff606060' or ''
-        e.tips:AddDoubleLine(foramt('%s%s', col, e.onlyChinese and '默认' or DEFAULT), e.Icon.right)
+        e.tips:AddDoubleLine((self.hex and format('|c%s|r', self.hex) or '')..(e.onlyChinese and '设置颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, COLOR)), e.Icon.left)
+        local col= (not self.hex or self.hex=='ff000000') and '|cff606060' or ''
+        e.tips:AddDoubleLine(format('%s%s', col, e.onlyChinese and '默认' or DEFAULT), e.Icon.right)
         e.tips:Show()
     end
-    menu.Color:SetScript('OnEnter', enu.Color.set_tooltips)
+    menu.Color:SetScript('OnEnter', menu.Color.set_tooltips)
     menu.Color:SetScript('OnClick', function(self, d)
         if d=='LeftButton' then
             local R=self.r or 1
@@ -867,11 +878,14 @@ local function Init_Gossip_Text_Icon_Options()
             e.ShowColorPicker(R, G, B, nil, function()--swatchFunc
                 local r,g,b = e.Get_ColorFrame_RGBA()
                 Gossip_Text_Icon_Frame.menu:set_color(r,g,b)
+                Gossip_Text_Icon_Frame.menu:add_gossip()
             end, function()--cancelFunc
                 Gossip_Text_Icon_Frame.menu:set_color(R,G,B)
+                Gossip_Text_Icon_Frame.menu:add_gossip()
             end)
         else
-            Gossip_Text_Icon_Frame.menu:set_color(1,1,1)
+            Gossip_Text_Icon_Frame.menu:set_color(0,0,0)
+            Gossip_Text_Icon_Frame.menu:add_gossip()
         end
         self:set_tooltips()
     end)
@@ -978,7 +992,7 @@ local function Init_Gossip_Text_Icon_Options()
     --修改，为中文，字体
     if LOCALE_zhCN or LOCALE_zhTW then
         Save.Gossip_Text_Icon_cnFont=nil
-    elseif  e.onlyChinese then
+    elseif e.onlyChinese then
         menu.font= CreateFrame("CheckButton", nil, Gossip_Text_Icon_Frame, 'InterfaceOptionsCheckButtonTemplate')--ChatConfigCheckButtonTemplate
         menu.font:SetPoint('TOPLEFT', menu.Size, 'BOTTOMLEFT', 0, -12)
         menu.font:SetChecked(Save.Gossip_Text_Icon_cnFont)
@@ -1267,6 +1281,7 @@ local function Init_Gossip_Text_Icon_Options()
 
     menu.chat:SetShown(GossipFrame:IsShown())
     menu:set_list()
+    menu:set_color()
 
 
 
