@@ -27,7 +27,7 @@ local Save={
                 name=(e.Player.husandro and '打开邮件' or OPENMAIL),
                 hex='ffff00ff'}
         },
-        Gossip_Text_Icon_Size=22,
+        Gossip_Text_Icon_Size=18,
 
         Gossip_Text_Icon_cnFont=true,--仅限，外文, 修该字体
 }
@@ -1157,7 +1157,7 @@ local function Init_Gossip_Text_Icon_Options()
     menu.DataFrame:SetPoint('BOTTOMRIGHT', 310, 8)
 
     menu.DataFrame.CloseButton=CreateFrame('Button', nil, menu.DataFrame, 'UIPanelCloseButton')
-    menu.DataFrame.CloseButton:SetPoint('TOPRIGHT',15, 15)
+    menu.DataFrame.CloseButton:SetPoint('TOPRIGHT',0, 13)
     menu.DataFrame.CloseButton:SetScript('OnClick', function(self)
         local frame=self:GetParent()
         frame:Hide()
@@ -3621,7 +3621,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save.movie= Save.movie or {}
 
             Save.Gossip_Text_Icon_Player= Save.Gossip_Text_Icon_Player or {}
-            Save.Gossip_Text_Icon_Size= Save.Gossip_Text_Icon_Size or 22
+            Save.Gossip_Text_Icon_Size= Save.Gossip_Text_Icon_Size or 18
 
              --添加控制面板
              e.AddPanel_Header(nil, 'Plus')
