@@ -458,6 +458,7 @@ local function Init_Gossip_Text_Icon_Options()
 
     function menu:set_list()
         if self:IsShown() then
+            local n=0
             local gossipNum=0--GossipFrame 有多少对话
             self.dataProvider = CreateDataProvider()
             if GossipFrame:IsShown() then
@@ -467,6 +468,7 @@ local function Init_Gossip_Text_Icon_Options()
                     if data then
                         data.gossipOptionID= info.gossipOptionID
                         data.orderIndex= info.orderIndex
+                        data.name= data.name or info.name or info.gossipOptionID
                         table.insert(tabs, data)
                     else
                         gossipNum= gossipNum +1
@@ -477,16 +479,20 @@ local function Init_Gossip_Text_Icon_Options()
                     self.dataProvider:Insert({gossipID=data.gossipOptionID, icon=data.icon, name=data.name, hex=data.hex, spellID=data.spellID})
                 end
                 self.chat.Text:SetFormattedText('%s%d', gossipNum>0 and '|cnGREEN_FONT_COLOR:' or '|cff606060', gossipNum)--GossipFrame 有多少已设置
+                for _ in pairs(Save.Gossip_Text_Icon_Player) do
+                    n=n+1
+                end
             else
                 for gossipID, data in pairs(Save.Gossip_Text_Icon_Player) do
-                    self.dataProvider:Insert({gossipID=gossipID, icon=data.icon, name=data.name, hex=data.hex})
+                    self.dataProvider:Insert({gossipID=gossipID, icon=data.icon, name=data.name or gossipID, hex=data.hex})
+                    n=n+1
                 end
                 self.chat.Text:SetText('')
             end
             self.view:SetDataProvider(self.dataProvider,  ScrollBoxConstants.RetainScrollPosition)
 
             self:FullUpdate()--FullUpdateInternal() FullUpdate()
-            -- self:Update()
+            self.NumLabel:SetText(n)
         else
             self.dataProvider= nil
         end
@@ -533,13 +539,6 @@ local function Init_Gossip_Text_Icon_Options()
     function menu:set_texture_size()--图片，大小
         self.Texture:SetSize(Save.Gossip_Text_Icon_Size, Save.Gossip_Text_Icon_Size)
     end
-    function menu:set_numlabel_text()--自定义，数量
-        local n= 0
-        for _ in pairs(Save.Gossip_Text_Icon_Player) do
-            n=n+1
-        end
-        self.NumLabel:SetText(n)
-    end
 
     function menu:set_all()
         local num= self:get_gossipID()
@@ -580,9 +579,7 @@ local function Init_Gossip_Text_Icon_Options()
             self.Add.tooltip=e.onlyChinese and '添加' or ADD
         end
         self.Delete:SetShown(self.gossipID and true or false)--显示/隐藏，删除按钮
-        self.Add:SetShown(num>0 and (name or icon))--显示/隐藏，添加按钮
-
-
+        self.Add:SetShown(num>0 and (name or icon or hex~='ffffffff'))--显示/隐藏，添加按钮
     end
 
     function menu:set_color(r, g, b, hex)--设置，颜色，颜色按钮，
@@ -636,11 +633,14 @@ local function Init_Gossip_Text_Icon_Options()
         local r= self.Color.r or 1
         local g= self.Color.g or 1
         local b= self.Color.b or 1
-        local hex
-        if r~=1 and g~=1 or b~=1 then
+        local hex= self.Color.hex
+        if not hex and r~=1 and g~=1 and r~=1 then
             hex= e.RGB_to_HEX(r, g, b, 1)
         end
-        if num and (name or texture) then
+        if hex=='ffffffff' then
+            hex=nil
+        end
+        if num and (name or texture or hex) then
             Save.Gossip_Text_Icon_Player[num]= {
                 name= name,
                 icon= texture,
@@ -652,7 +652,6 @@ local function Init_Gossip_Text_Icon_Options()
         end
 
         self:set_all()
-        self:set_numlabel_text()
         local icon
         local isAtlas, texture= e.IsAtlas(texture)
         if texture then
@@ -674,7 +673,6 @@ local function Init_Gossip_Text_Icon_Options()
             GossipButton:update_gossip_frame()
         end
         self:set_all()
-        self:set_numlabel_text()
     end
 
 
@@ -838,7 +836,7 @@ local function Init_Gossip_Text_Icon_Options()
         menu.tav:SetScript('OnEnter', function(self)
             e.tips:SetOwner(self, "ANCHOR_RIGHT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(id, self.addName)
+            e.tips:AddDoubleLine(id, e.cn(addName))
             e.tips:AddLine(' ')
             e.tips:AddLine('|cffff00ffTexture Atlas Viewer|r')
             e.tips:Show()
@@ -850,31 +848,32 @@ local function Init_Gossip_Text_Icon_Options()
     menu.Color:SetPoint('LEFT', menu.ID, 'RIGHT', 2,0)
     menu.Color:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
     menu.Color:SetScript('OnLeave', GameTooltip_Hide)
-    menu.Color:SetScript('OnEnter', function(self)
+    function menu.Color:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id , e.cn(addName))
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '设置颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, COLOR), e.Icon.left)
-        e.tips:AddDoubleLine(e.onlyChinese and '默认' or DEFAULT, e.Icon.right)
+        local col= (not self.hex or self.hex=='ffffffff') and '|cff606060' or ''
+        e.tips:AddDoubleLine(foramt('%s%s', col, e.onlyChinese and '默认' or DEFAULT), e.Icon.right)
         e.tips:Show()
-    end)
+    end
+    menu.Color:SetScript('OnEnter', enu.Color.set_tooltips)
     menu.Color:SetScript('OnClick', function(self, d)
         if d=='LeftButton' then
             local R=self.r or 1
             local G=self.g or 1
             local B=self.b or 1
-            e.ShowColorPicker(R, G, B, nil,
-            function()--swatchFunc
+            e.ShowColorPicker(R, G, B, nil, function()--swatchFunc
                 local r,g,b = e.Get_ColorFrame_RGBA()
                 Gossip_Text_Icon_Frame.menu:set_color(r,g,b)
-            end,
-            function()--cancelFunc
+            end, function()--cancelFunc
                 Gossip_Text_Icon_Frame.menu:set_color(R,G,B)
             end)
         else
             Gossip_Text_Icon_Frame.menu:set_color(1,1,1)
         end
+        self:set_tooltips()
     end)
 
     --添加
@@ -882,12 +881,20 @@ local function Init_Gossip_Text_Icon_Options()
     menu.Add:SetPoint('LEFT', menu.Color, 'RIGHT', 2, 0)
     menu.Add:SetScript('OnLeave', GameTooltip_Hide)
     menu.Add:SetScript('OnEnter', function(self)
-        local num= Gossip_Text_Icon_Frame.menu:get_gossipID()
+        local frame=Gossip_Text_Icon_Frame.menu
+        local num= frame:get_gossipID()
+        local texture = frame:get_icon()
+        local name= frame:get_name()
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id , e.cn(addName))
         e.tips:AddLine(' ')
         e.tips:AddLine(self.tooltip)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine('gossipOptionID', num)
+        e.tips:AddDoubleLine('name', name)
+        e.tips:AddDoubleLine('icon', texture)
+        e.tips:AddDoubleLine('hex', frame.Color.hex)
         e.tips:Show()
     end)
     menu.Add:SetScript('OnClick', function(self)
@@ -902,12 +909,12 @@ local function Init_Gossip_Text_Icon_Options()
     menu.Delete:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, self.addName)
+        e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '删除' or DELETE, Gossip_Text_Icon_Frame.menu.gossipID)
         e.tips:Show()
     end)
-    menu.Delete:SetScript('OnClick', function(self)
+    menu.Delete:SetScript('OnClick', function()
         Gossip_Text_Icon_Frame.menu:delete_gossip(Gossip_Text_Icon_Frame.menu.gossipID)
     end)
 
@@ -918,7 +925,7 @@ local function Init_Gossip_Text_Icon_Options()
     menu.DeleteAllPlayerData:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, self.addName)
+        e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:AddLine(' ')
         e.tips:AddLine(e.onlyChinese and '全部清除' or CLEAR_ALL)
         e.tips:Show()
@@ -945,7 +952,7 @@ local function Init_Gossip_Text_Icon_Options()
     menu.NumLabel:SetPoint('LEFT', menu.DeleteAllPlayerData, 'RIGHT')
 
 
-    
+
 
     --图标大小, 设置
     menu.Size= e.CSlider(Gossip_Text_Icon_Frame, {min=8, max=72, value=Save.Gossip_Text_Icon_Size, setp=1, color=false, w=255,
@@ -1056,7 +1063,6 @@ local function Init_Gossip_Text_Icon_Options()
                                 end
                             end
                             Gossip_Text_Icon_Frame.menu:set_list()
-                            Gossip_Text_Icon_Frame.menu:set_numlabel_text()
                         end
                     }, level)
                 elseif #tab==0 then
@@ -1130,31 +1136,83 @@ local function Init_Gossip_Text_Icon_Options()
 
 
 
+    --导入数据
+    menu.DataFrame= e.Cedit(Gossip_Text_Icon_Frame, {w=310})
+    menu.DataFrame:Hide()
+    menu.DataFrame:SetPoint('TOPLEFT', Gossip_Text_Icon_Frame, 'TOPRIGHT', 0, -6)
+    menu.DataFrame:SetPoint('BOTTOMRIGHT', 310, 8)
 
+    menu.DataFrame.CloseButton=CreateFrame('Button', nil, menu.DataFrame, 'UIPanelCloseButton')
+    menu.DataFrame.CloseButton:SetPoint('TOPRIGHT',5, 5)
+    menu.DataFrame.CloseButton:SetScript('OnClick', function(self)
+        local frame=self:GetParent()
+        frame:Hide()
+        frame:SetText("")
+    end)
 
+    menu.DataFrame.enter= e.Cbtn(menu.DataFrame, {size={100, 23}, type=false})
+    menu.DataFrame.enter:SetPoint('BOTTOM', menu.DataFrame, 'TOP', 0, 5)
+    menu.DataFrame.enter:SetFormattedText('|A:Professions_Specialization_arrowhead:0:0|a%s', e.onlyChinese and '导入' or HUD_CLASS_TALENTS_IMPORT_LOADOUT_ACCEPT_BUTTON)
+    menu.DataFrame.enter:Hide()
+    function menu.DataFrame.enter:set_date(tooltips)--导入数据，和提示
+        local frame= self:GetParent()
+        local add, del, exist= {}, 0, 0
+        local text= string.gsub(frame:GetText() or '', '(%[%d+]={.-})', function(t)
+            local num, icon, name, hex= t:match('(%d+).-icon=(.-), name=(.-), hex=(.-)}')
+            local gossipID= num and tonumber(num)
+            if gossipID then
+                icon= icon and icon:gsub(' ', '') or nil
+                if icon=='' then icon=nil end
+                if name=='' then name=nil end
+                hex= hex and hex:gsub(' ', '') or nil
+                if hex=='' then hex=nil end
+                if not Save.Gossip_Text_Icon_Player[gossipID] then
+                    if icon or name or hex then
+                        table.insert(add, {gossipID=gossipID, tab={icon=icon, name=name, hex=hex}})
+                        return ''
+                    else
+                        del= del+1
+                    end
+                else
+                    exist= exist+1
+                end
+            end
+        end)
 
-    --menu.DataEdit= CreateFrame("EditBox", nil, Gossip_Text_Icon_Frame, 'SearchBoxTemplate')
-    menu.DataEdit= e.Cedit(Gossip_Text_Icon_Frame)
-    menu.DataEdit:SetPoint('TOPLEFT', Gossip_Text_Icon_Frame, 'TOPRIGHT', 0, -6)
-    menu.DataEdit:SetPoint('BOTTOMRIGHT', 310, 8)
-    menu.DataEdit:SetText([[
-Gui.func3frame.input = CreateFrame("EditBox", "same", Gui.func3frame, 'InputBoxTemplate')
-Gui.func3frame.input:SetSize(200,22)
-Gui.func3frame.input:SetAutoFocus(false)
-Gui.func3frame.input:SetMaxLetters(30)
-Gui.func3frame.input:SetPoint("CENTER", -65, 30)
-Gui.func3frame.input:SetScript('OnEnterPressed', function(arg3)
-    local arg3 = self:GetText()
-end)
---
-Gui.func3frame.add = CreateFrame("Button", "same", Gui.func3frame, "UIPanelButtonTemplate")
-Gui.func3frame.add:SetSize(50,22)
-Gui.func3frame.add:SetPoint("CENTER", 70, 30)
-Gui.func3frame.add:SetText("Add")
-Gui.func3frame.add:SetScript("OnClick", function(arg3)
-    print("added: " ..arg3)
-end)
-    ]])
+        local addText= format('|cnGREEN_FONT_COLOR:%s %d|r', e.onlyChinese and '添加' or ADD, #add)
+        local delText= format('|cff606060%s %d|r', e.onlyChinese and '无效的组合' or SPELL_FAILED_CUSTOM_ERROR_455, del)
+        local existText= format('|cnRED_FONT_COLOR:%s %d|r', e.onlyChinese and '已存在' or 'Existed', exist)
+        if not tooltips then
+            for _, info in pairs(add) do
+                Save.Gossip_Text_Icon_Player[info.gossipID]= info.tab
+                local texture, icon= select(2, e.IsAtlas(info.tab.icon))
+                print(format('|cnGREEN_FONT_COLOR:%s|r|n', e.onlyChinese and '添加', ADD),
+                    info.gossipID, texture and format('%s%s', icon, texture) or '',
+                    info.tab.name,
+                    info.tab.hex and format('|c%s%s', info.tab.hex, info.tab.hex) or '')
+            end
+            Gossip_Text_Icon_Frame.menu:set_list()
+            print(id, addName, '|n', format('%s|n%s|n%s', addText, delText, existText))
+            frame:SetText(text)
+        else
+            e.tips:AddLine(addText)
+            e.tips:AddLine(delText)
+            e.tips:AddLine(existText)
+        end
+    end
+    menu.DataFrame.enter:SetScript('OnLeave', GameTooltip_Hide)
+    menu.DataFrame.enter:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddDoubleLine(e.onlyChinese and '格式' or FORMATTING, '|cffff00ff[gossipOptionID]={icon=, name=, hex=}')
+        e.tips:AddLine(' ')
+        self:set_date(true)
+        e.tips:Show()
+    end)
+    menu.DataFrame.enter:SetScript('OnClick', function(self)--导入
+       self:set_date()
+    end)
 
     menu.DataUscita= e.Cbtn(Gossip_Text_Icon_Frame, {size={22, 22}, atlas='bags-greenarrow'})
     menu.DataUscita:SetPoint('LEFT', menu.DeleteAllPlayerData, 'RIGHT', 22, 0)
@@ -1162,13 +1220,28 @@ end)
     menu.DataUscita:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, self.addName)
+        e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:AddLine(' ')
-        e.tips:AddLine(e.onlyChinese and '分享' or HUD_EDIT_MODE_IMPORT_LAYOUTHUD_EDIT_MODE_SHARE_LAYOUT)
+        e.tips:AddLine(e.onlyChinese and '导出' or HUD_EDIT_MODE_IMPORT_LAYOUTHUD_EDIT_MODE_SHARE_LAYOUT)
         e.tips:Show()
     end)
     menu.DataUscita:SetScript('OnClick', function(self)
-        
+        local frame= self:GetParent().menu.DataFrame
+        frame:SetShown(true)
+        frame.enter:SetShown(false)
+        local text=''
+        for gossipID, info in pairs(Save.Gossip_Text_Icon_Player) do
+           --[[local text= (info.icon and format('icon=%s, ') or '')
+                        ..(info.name and format('name=%s, ') or '')
+                        ..(info.hex and format('hex=%s, ') or '')]]
+            text=text..format('[%d]={icon=%s, name=%s, hex=%s}|n',
+                            gossipID,
+                            info.icon or '',
+                            info.name or '',
+                            info.hex or ''
+                        )
+        end
+        frame:SetText(text)
     end)
 
     menu.DataEnter= e.Cbtn(Gossip_Text_Icon_Frame, {size={22, 22}, atlas='Professions_Specialization_arrowhead'})
@@ -1177,19 +1250,24 @@ end)
     menu.DataEnter:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, self.addName)
+        e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:AddLine(' ')
         e.tips:AddLine(e.onlyChinese and '导入' or HUD_CLASS_TALENTS_IMPORT_LOADOUT_ACCEPT_BUTTON)
         e.tips:Show()
     end)
     menu.DataEnter:SetScript('OnClick', function(self)
-
+        local frame= self:GetParent().menu.DataFrame
+        frame:SetShown(true)
+        frame.enter:SetShown(true)
+        frame:SetText('')
     end)
+
+
 
 
     menu.chat:SetShown(GossipFrame:IsShown())
     menu:set_list()
-    menu:set_numlabel_text()
+
 
 
 
@@ -3554,6 +3632,10 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 Init_Gossip()--对话，初始化
                 Init_Quest()--任务，初始化
                 Init_Gossip_Other_Auto_Select()
+
+                if e.Player.husandro then
+                    Init_Gossip_Text_Icon_Options()
+                end
             end
             panel:UnregisterEvent('ADDON_LOADED')
         end

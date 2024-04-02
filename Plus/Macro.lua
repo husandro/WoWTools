@@ -1478,7 +1478,7 @@ local function Init_Macro_List()
             local x, y= 310, 135
             local level= MacroFrame:GetFrameLevel()
 
-            local scroll= CreateFrame('ScrollFrame', nil, MacroFrame, 'UIPanelScrollFrameTemplate')
+            local scroll= CreateFrame('ScrollFrame', nil, MacroFrame, 'MacroFrameScrollFrameTemplate')
             scroll:SetSize(x, y)
             scroll:SetFrameLevel(level+ 1)
 
@@ -1488,6 +1488,7 @@ local function Init_Macro_List()
             scroll.edit:SetAutoFocus(false)
             scroll.edit:SetMultiLine(true)
             scroll.edit:SetFontObject("ChatFontNormal")
+            scroll.edit:SetScript('OnEscapePressed', EditBox_ClearFocus)
 
             scroll.background= CreateFrame('Frame', nil, scroll, 'TooltipBackdropTemplate')
             scroll.background:SetSize(x+10, y+10)

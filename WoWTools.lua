@@ -162,18 +162,24 @@ e.Icon={
     star2='|A:auctionhouse-icon-favorite:0:0|a',--星星
 }
 function e.IsAtlas(texture)
-    local t= type(texture)
-    if t=='number' then
-        return false, texture
-    elseif t=='string' then
-        texture= texture:gsub(' ', '')
-        if texture and texture~='' then
-            local atlasInfo= C_Texture.GetAtlasInfo(texture)
-            local isAtlas = atlasInfo and true or false
-            return isAtlas, texture
+    local isAtlas, textureID, icon
+    if texture then
+        local t= type(texture)
+        if t=='number' then
+            if t>0 then
+                isAtlas, textureID, icon= false, texture, format('|T%d:0|t', texture)
+            end
+        elseif t=='string' then
+            texture= texture:gsub(' ', '')
+            if texture~='' then
+                local atlasInfo= C_Texture.GetAtlasInfo(texture)
+                isAtlas= atlasInfo and true or false
+                textureID= texture
+                icon= isAtlas and format('|A:%s:0:0|a', texture) or format('|T%s:0|t', texture)
+            end
         end
     end
-    return nil, nil
+    return isAtlas, textureID, icon
 end
 
 C_Texture.GetTitleIconTexture(BNET_CLIENT_WOW, Enum.TitleIconVersion.Medium, function(success, texture)--FriendsFrame.lua BnetShared.lua    
@@ -475,7 +481,11 @@ function e.Cbtn(self, tab)--type, icon(atlas, texture), name, size, pushe, butto
         btn:EnableMouseWheel(true)
     end
     if tab.size then--大小
-        btn:SetSize(tab.size[1], tab.size[2])
+        if type(tab.size)=='number' then
+            btn:SetSize(tab.size, tab.size)
+        else
+            btn:SetSize(tab.size[1], tab.size[2])
+        end
     elseif tab.button=='ItemButton' then
         btn:SetSize(34, 34)
     end
@@ -508,24 +518,46 @@ end
 
 
 function e.Cedit(self, tab)--frame, name, size={} SecureScrollTemplates.xml
-   
-    local scroll= CreateFrame('ScrollFrame', nil, self, 'UIPanelScrollFrameTemplate')
+    local w= (tab.w or 310)-5
+    local frame= CreateFrame('ScrollFrame', nil, self, 'ScrollFrameTemplate')
+    local level= frame:GetFrameLevel()
 
-    scroll.bg= CreateFrame('Frame', nil, scroll, 'TooltipBackdropTemplate')
-    scroll.bg:SetAllPoints(scroll)
+    frame.bg= CreateFrame('Frame', nil, frame, 'TooltipBackdropTemplate')
+    frame.bg:SetPoint('TOPLEFT', -5, 5)
+    frame.bg:SetPoint('BOTTOMRIGHT', frame, 0, -5)
+    frame.bg:SetFrameLevel(level+1)
 
-    scroll.edit= CreateFrame('EditBox', nil, scroll.bg)
-    scroll.edit:SetAllPoints(scroll.bg)
-    scroll.edit:SetAutoFocus(false)
-    scroll.edit:SetMultiLine(true)
-    scroll.edit:SetFontObject("ChatFontNormal")
+    frame.edit= CreateFrame('EditBox', nil, frame)
 
-    scroll:SetScrollChild(scroll.edit)
-    
-    function scroll:SetText(...)
+    frame.edit:SetAutoFocus(false)
+    frame.edit:SetMultiLine(true)
+    frame.edit:SetSize(w, w)
+    frame.edit:SetPoint('TOPLEFT')
+    frame.edit:SetPoint('BOTTOMRIGHT')
+    frame.edit:SetFrameLevel(level+2)
+    frame.edit:SetFontObject("ChatFontNormal")
+    frame.edit:SetScript('OnEscapePressed', EditBox_ClearFocus)
+    frame.edit:SetScript('OnCursorChanged', ScrollingEdit_OnCursorChanged)
+    frame.edit:SetScript('OnUpdate', function(s, elapsed)
+	    ScrollingEdit_OnUpdate(s, elapsed, s:GetParent())
+    end)
+    frame.bg:SetScript('OnMouseDown', function(self, d)
+        if d=='LeftButton' then
+            local edit= self:GetParent().edit
+            if not edit:HasFocus() then
+                edit:SetFocus()
+            end
+        end
+    end)
+    frame:SetScrollChild(frame.edit)
+
+    function frame:SetText(...)
         self.edit:SetText(...)
     end
-    return scroll
+    function frame:GetText()
+        return self.edit:GetText()
+    end
+    return frame
 end
 
 function e.Ccool(self, start, duration, modRate, HideCountdownNumbers, Reverse, SwipeTexture, hideDrawBling)--冷却条
@@ -623,7 +655,7 @@ function e.GetSpellItemCooldown(spellID, itemID)--法术,物品,冷却
             return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '即时冷却' or SPELL_RECAST_TIME_INSTANT)..'|r'
         end
     end
-    
+
 end
 --[[
 e.WA_GetUnitAura = function(unit, spell, filter)--AuraEnvironment.lua
