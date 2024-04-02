@@ -1690,10 +1690,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
             })
 
-            if e.Player.husandro then
+            --[[if e.Player.husandro then
                 C_Timer.After(2, ShowMacroFrame)
                 
-            end
+            end]]
 
             if Save.disabled  then
                 self:UnregisterEvent('ADDON_LOADED')
