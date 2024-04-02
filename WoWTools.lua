@@ -517,23 +517,21 @@ end
 
 
 
-function e.Cedit(self, tab)--frame, name, size={} SecureScrollTemplates.xml
+function e.Cedit(self)--frame, name, size={} SecureScrollTemplates.xml
     local frame= CreateFrame('ScrollFrame', nil, self, 'ScrollFrameTemplate')
     local level= frame:GetFrameLevel()
     frame.ScrollBar:ClearAllPoints()
     frame.ScrollBar:SetPoint('TOPRIGHT', -10, -10)
     frame.ScrollBar:SetPoint('BOTTOMRIGHT', -10, 10)
-
+    e.Set_ScrollBar_Color_Alpha(frame)
     frame.bg= CreateFrame('Frame', nil, frame, 'TooltipBackdropTemplate')
     frame.bg:SetPoint('TOPLEFT', -5, 5)
     frame.bg:SetPoint('BOTTOMRIGHT', 0, -5)
     frame.bg:SetFrameLevel(level+1)
-
+    e.Set_NineSlice_Color_Alpha(frame.bg, true)
     frame.edit= CreateFrame('EditBox', nil, frame)
-
     frame.edit:SetAutoFocus(false)
     frame.edit:SetMultiLine(true)
-
     frame.edit:SetFrameLevel(level+2)
     frame.edit:SetFontObject('GameFontHighlightSmall')-- or "ChatFontNormal")
     frame.edit:SetScript('OnEscapePressed', EditBox_ClearFocus)

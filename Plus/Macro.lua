@@ -1402,8 +1402,6 @@ end
 --宏列表，位置
 --###########
 local function Init_Macro_List()
-   
-
     local toRightButton= e.Cbtn(MacroFrame.TitleContainer, {size={20,20}, icon='hide'})
     toRightButton:SetAlpha(0.5)
     if _G['MoveZoomInButtonPerMacroFrame'] then
@@ -1425,28 +1423,34 @@ local function Init_Macro_List()
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:AddLine(' ')
-        e.tips:AddLine((e.onlyChinese and '图标' or EMBLEM_SYMBOL)..':')
+        e.tips:AddLine((e.onlyChinese and '图标' or EMBLEM_SYMBOL)..':', e.Icon.left)
         local text= e.onlyChinese and '备注' or LABEL_NOTE
         text= (Save.toRightLeft and MacroFrame.macroBase==0) and '|cnGREEN_FONT_COLOR:'..text..'|r'
             or ('|cff606060'..text..'|r')
         e.tips:AddDoubleLine(e.Icon.toLeft2..(e.onlyChinese and '左' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT), (Save.toRightLeft==1 and e.Icon.select2 or '')..text)
         e.tips:AddDoubleLine(e.Icon.toRight2..(e.onlyChinese and '右' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT), (Save.toRightLeft==2 and e.Icon.select2 or '')..text)
         e.tips:AddDoubleLine('|A:'..e.Icon.icon..':0:0|a'..(e.onlyChinese and '默认' or DEFAULT), not Save.toRightLeft and e.Icon.select2)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.onlyChinese and '选项' or OPTIONS, e.Icon.right)
         e.tips:Show()
         self:SetAlpha(1)
     end
-    toRightButton:SetScript('OnClick', function(self)
-        if not Save.toRightLeft then
-            Save.toRightLeft=1--左边
-        elseif Save.toRightLeft==1 then
-            Save.toRightLeft=2--右边
-        elseif Save.toRightLeft==2 then
-            Save.toRightLeft=nil--默认
+    toRightButton:SetScript('OnClick', function(self, d)
+        if d=='LeftButton' then
+            if not Save.toRightLeft then
+                Save.toRightLeft=1--左边
+            elseif Save.toRightLeft==1 then
+                Save.toRightLeft=2--右边
+            elseif Save.toRightLeft==2 then
+                Save.toRightLeft=nil--默认
+            end
+            Save.toRight= not Save.toRight and true or nil
+            MacroFrame:ChangeTab(1)
+            self:set_texture()
+            self:set_tooltips()
+        else
+            e.OpenPanelOpting('|TInterface\\MacroFrame\\MacroFrame-Icon:0|t'..(e.onlyChinese and '宏' or addName))
         end
-        Save.toRight= not Save.toRight and true or nil
-        MacroFrame:ChangeTab(1)
-        self:set_texture()
-        self:set_tooltips()
     end)
     toRightButton:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.5) end)
     toRightButton:SetScript('OnEnter', toRightButton.set_tooltips)

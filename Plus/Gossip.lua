@@ -2950,7 +2950,7 @@ local function Init_Quest()
         end
     end)
     QuestButton:SetScript('OnMouseWheel', function()
-        e.OpenPanelOpting(addName)
+        e.OpenPanelOpting('|A:SpecDial_LastPip_BorderGlow:0:0|a'..(e.onlyChinese and '对话和任务' or addName))
     end)
 
     QuestButton:SetScript('OnLeave', function(self) e.tips:Hide() self:set_Alpha() end)
