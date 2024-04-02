@@ -3648,9 +3648,9 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 Init_Quest()--任务，初始化
                 Init_Gossip_Other_Auto_Select()
 
-                if e.Player.husandro then
+                --[[if e.Player.husandro then
                     Init_Gossip_Text_Icon_Options()
-                end
+                end]]
             end
             panel:UnregisterEvent('ADDON_LOADED')
         end

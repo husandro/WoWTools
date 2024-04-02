@@ -1845,7 +1845,9 @@ local function setAddLoad(arg1)
         e.Set_Move_Frame(BFAMissionFrame)
 
     elseif arg1=='Blizzard_MacroUI' then--宏
-        e.Set_Move_Frame(MacroFrame)
+        C_Timer.After(2, function()--给 Macro.lua 用
+            e.Set_Move_Frame(MacroFrame)
+        end)
 
     elseif arg1=='Blizzard_MajorFactions' then--派系声望
         e.Set_Move_Frame(MajorFactionRenownFrame)

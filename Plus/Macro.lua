@@ -1402,6 +1402,7 @@ end
 --宏列表，位置
 --###########
 local function Init_Macro_List()
+   
 
     local toRightButton= e.Cbtn(MacroFrame.TitleContainer, {size={20,20}, icon='hide'})
     toRightButton:SetAlpha(0.5)
@@ -1456,51 +1457,32 @@ local function Init_Macro_List()
     --设置，宏，图标，位置，长度
     hooksecurefunc(MacroFrame, 'ChangeTab', function(self, tabID)
         self.MacroSelector:ClearAllPoints()
-        if tabID==1 then
-            self.MacroSelector:SetHeight(590)--(319,588)
+        if tabID==1 and (Save.toRightLeft==1 or Save.toRightLeft==2) then
             if Save.toRightLeft==1 then--左边
                 self.MacroSelector:SetPoint('TOPRIGHT', self, 'TOPLEFT',10,-12)
-            elseif Save.toRightLeft==2 then--右边
+                self.MacroSelector:SetPoint('BOTTOMLEFT', -319, 0)
+            else--右边
                 self.MacroSelector:SetPoint('TOPLEFT', self, 'TOPRIGHT',0,-12)
-            else--默认
-                self.MacroSelector:SetHeight(146)--,146)--<Size x="319" y="146"/>
-                self.MacroSelector:SetPoint('TOPLEFT', 12,-66)
+                self.MacroSelector:SetPoint('BOTTOMRIGHT', 319, 0)
             end
         else
-            self.MacroSelector:SetHeight(146)--<Size x="319" y="146"/>
             self.MacroSelector:SetPoint('TOPLEFT', 12,-66)
+            self.MacroSelector:SetPoint('RIGHT')
+            self.MacroSelector:SetHeight(146)
         end
 
         --备注
         if not MacroFrame.NoteEditBox and Save.toRightLeft and MacroFrame.macroBase==0 then
-            --MacroFrame.NoteEditBox= e.Cedit(MacroFrame, {size={310, 135}})
-
-            local x, y= 310, 135
-            local level= MacroFrame:GetFrameLevel()
-
-            local scroll= CreateFrame('ScrollFrame', nil, MacroFrame, 'MacroFrameScrollFrameTemplate')
-            scroll:SetSize(x, y)
-            scroll:SetFrameLevel(level+ 1)
-
-            scroll.edit= CreateFrame('EditBox', nil, scroll)
-            scroll.edit:SetSize(x, y)
-            scroll.edit:SetPoint('RIGHT', scroll, 'LEFT')
-            scroll.edit:SetAutoFocus(false)
-            scroll.edit:SetMultiLine(true)
-            scroll.edit:SetFontObject("ChatFontNormal")
-            scroll.edit:SetScript('OnEscapePressed', EditBox_ClearFocus)
-
-            scroll.background= CreateFrame('Frame', nil, scroll, 'TooltipBackdropTemplate')
-            scroll.background:SetSize(x+10, y+10)
-            scroll.background:SetPoint('CENTER')
-            scroll.background:SetFrameLevel(level)
-
-            scroll:SetScrollChild(scroll.edit)
-
-MacroFrame.NoteEditBox=scroll
-            MacroFrame.NoteEditBox:SetPoint('TOPRIGHT', -26, -72)
+            MacroFrame.NoteEditBox= e.Cedit(MacroFrame, {w=310, font='GameFontHighlightSmall'})
+            MacroFrame.NoteEditBox:SetHeight(135)
+            MacroFrame.NoteEditBox:SetPoint('TOPLEFT', 8, -64)
+            MacroFrame.NoteEditBox:SetPoint('RIGHT', -26, 0)
+            
+            --MacroFrame.NoteEditBox:SetPoint('TOPRIGHT', -26, -72)
+--            MacroFrame.NoteEditBox:SetSize(310, 135)
+            --MacroFrame.NoteEditBox:SetPoint('BOTTOMLEFT')
             MacroFrame.NoteEditBox.edit:SetText(Save.noteText or (e.onlyChinese and '备注' or LABEL_NOTE))
-            MacroFrame.NoteEditBox.background:SetAlpha(0.8)
+            --MacroFrame.NoteEditBox.background:SetAlpha(0.8)
             function MacroFrame.NoteEditBox:set_save_text()--保存备注
                 local text= self.edit:GetText()
                 if text and text~= (e.onlyChinese and '备注' or LABEL_NOTE) and text:gsub(' ','')~='' then
@@ -1539,19 +1521,25 @@ end
 --初始
 --####
 local function Init()
-    local w, h= 350, 600--672, 672
     MacroFrame.Menu= CreateFrame("Frame", nil, MacroFrame, "UIDropDownMenuTemplate")
+    MacroFrameTextBackground:SetPoint('BOTTOMRIGHT', -8, 42)
+    MacroFrameScrollFrame:SetPoint('BOTTOMRIGHT', -32, 44)
+    MacroFrameText:SetPoint('BOTTOMRIGHT')
+    local regions= {MacroFrame:GetRegions()}
+    if regions[5] and regions[5]:GetObjectType()=='Texture' then
+        regions[5]:SetPoint('RIGHT', -80,0)
+    end
+    
+    e.Set_Move_Frame(MacroFrame, {neeSize=true, setSize=true, minW=338, minH=424, initFunc=function() end, sizeRestFunc=function(btn)
+        btn.target:SetSize(338, 424)
+    end})
 
-    MacroFrame:SetSize(w, h)--<Size x="338" y="424"/>
-    MacroFrameScrollFrame:SetSize(w-43, h/2-45)
-    MacroFrameText:SetSize(w-43, h/2-45)
-    MacroFrameTextBackground:SetSize(w-30, h/2-30)
-    MacroHorizontalBarLeft:SetWidth(w-85)
+
 
     MacroEditButton:ClearAllPoints()
     MacroEditButton:SetPoint('TOPLEFT', MacroFrameSelectedMacroButton, 'TOPRIGHT',2,2)
     MacroEditButton:SetSize(60,22)--170 22
-    MacroEditButton:SetText(e.onlyChinese and '名称' or NAME)
+    MacroEditButton:SetText(e.onlyChinese and '修改' or SLASH_CHAT_MODERATE2:gsub('/' , ''))
 
     --选定宏，名称
     MacroFrameSelectedMacroName:ClearAllPoints()
@@ -1702,6 +1690,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
             })
 
+            if e.Player.husandro then
+                C_Timer.After(2, ShowMacroFrame)
+                
+            end
+
             if Save.disabled  then
                 self:UnregisterEvent('ADDON_LOADED')
 
@@ -1710,9 +1703,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     e.GetEnabeleDisable(false), 'MacroToolkit',
                     e.onlyChinese and '插件' or ADDONS
                 )
+               
             end
 
+
         elseif arg1=='Blizzard_MacroUI' then
+            
+
             Init()
         end
 
