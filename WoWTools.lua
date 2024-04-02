@@ -523,7 +523,8 @@ function e.Cedit(self, tab)--frame, name, size={} SecureScrollTemplates.xml
     frame.ScrollBar:ClearAllPoints()
     frame.ScrollBar:SetPoint('TOPRIGHT', -10, -10)
     frame.ScrollBar:SetPoint('BOTTOMRIGHT', -10, 10)
-    frame.bg= CreateFrame('Frame', nil, frame, 'TooltipBorderBackdropTemplate')
+
+    frame.bg= CreateFrame('Frame', nil, frame, 'TooltipBackdropTemplate')
     frame.bg:SetPoint('TOPLEFT', -5, 5)
     frame.bg:SetPoint('BOTTOMRIGHT', 0, -5)
     frame.bg:SetFrameLevel(level+1)

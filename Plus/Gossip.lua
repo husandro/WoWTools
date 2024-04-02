@@ -1153,11 +1153,11 @@ local function Init_Gossip_Text_Icon_Options()
     --导入数据
     menu.DataFrame= e.Cedit(Gossip_Text_Icon_Frame)
     menu.DataFrame:Hide()
-    menu.DataFrame:SetPoint('TOPLEFT', Gossip_Text_Icon_Frame, 'TOPRIGHT', 0, -6)
+    menu.DataFrame:SetPoint('TOPLEFT', Gossip_Text_Icon_Frame, 'TOPRIGHT', 0, -10)
     menu.DataFrame:SetPoint('BOTTOMRIGHT', 310, 8)
 
     menu.DataFrame.CloseButton=CreateFrame('Button', nil, menu.DataFrame, 'UIPanelCloseButton')
-    menu.DataFrame.CloseButton:SetPoint('TOPRIGHT',5, 5)
+    menu.DataFrame.CloseButton:SetPoint('TOPRIGHT',15, 15)
     menu.DataFrame.CloseButton:SetScript('OnClick', function(self)
         local frame=self:GetParent()
         frame:Hide()
@@ -1194,7 +1194,7 @@ local function Init_Gossip_Text_Icon_Options()
         end)
 
         local addText= format('|cnGREEN_FONT_COLOR:%s %d|r', e.onlyChinese and '添加' or ADD, #add)
-        local delText= format('|cff606060%s %d|r', e.onlyChinese and '无效的组合' or SPELL_FAILED_CUSTOM_ERROR_455, del)
+        local delText= format('|cffffffff%s %d|r', e.onlyChinese and '无效的组合' or SPELL_FAILED_CUSTOM_ERROR_455, del)
         local existText= format('|cnRED_FONT_COLOR:%s %d|r', e.onlyChinese and '已存在' or 'Existed', exist)
         if not tooltips then
             for _, info in pairs(add) do

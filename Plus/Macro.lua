@@ -1465,14 +1465,14 @@ local function Init_Macro_List()
                 self.MacroSelector:SetPoint('TOPLEFT', self, 'TOPRIGHT',0,-12)
                 self.MacroSelector:SetPoint('BOTTOMRIGHT', 319, 0)
             end
-            self.MacroSelector:SetCustomStride(6);
+           -- self.MacroSelector:SetCustomStride(6);
         else
+            --self.MacroSelector:SetCustomStride(12);
+            
             self.MacroSelector:SetPoint('TOPLEFT', 12,-66)
             self.MacroSelector:SetPoint('BOTTOMRIGHT', MacroFrame, 'RIGHT', -6, 0)
-            self.MacroSelector:SetCustomStride(8);
-           -- self.MacroSelector:SetHeight(146)
         end
-
+        --self:Update()
         --备注
         if not MacroFrame.NoteEditBox and Save.toRightLeft and MacroFrame.macroBase==0 then
             MacroFrame.NoteEditBox= e.Cedit(MacroFrame, {font='GameFontHighlightSmall'})
@@ -1517,6 +1517,20 @@ end
 --初始
 --####
 local function Init()
+    local regions= {MacroFrame:GetRegions()}
+    for index, region in pairs(regions) do
+        if region==MacroHorizontalBarLeft then
+            region:Hide()
+            local f= regions[index+1]
+            if f and f:GetObjectType()=='Texture' then
+                f:Hide()
+            end
+            break
+        end
+    end
+
+    
+
     MacroFrameTextBackground:ClearAllPoints()
     MacroFrameTextBackground:SetPoint('TOPLEFT', MacroFrame, 'LEFT', 8, -78)
     MacroFrameTextBackground:SetPoint('BOTTOMRIGHT', -8, 42)
@@ -1527,14 +1541,6 @@ local function Init()
     MacroFrameScrollFrame:SetPoint('TOPLEFT', MacroFrame, 'LEFT', 12, -83)
     MacroFrameScrollFrame:SetPoint('BOTTOMRIGHT', -32, 45)
 
-    local regions= {MacroFrame:GetRegions()}
-    if regions[5] and regions[5]:GetObjectType()=='Texture' then
-        regions[5]:Hide()
-        regions[5]:SetTexture(0)
-        MacroHorizontalBarLeft:Hide()
-        MacroHorizontalBarLeft:SetTexture(0)
-    end
-    
     e.Set_Move_Frame(MacroFrame, {neeSize=true, setSize=true, minW=338, minH=424, initFunc=function() end, sizeRestFunc=function(btn)
         btn.target:SetSize(338, 424)
     end})
