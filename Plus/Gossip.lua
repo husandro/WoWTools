@@ -1244,12 +1244,16 @@ local function Init_Gossip_Text_Icon_Options()
         frame:SetShown(true)
         frame.enter:SetShown(false)
         local text=''
-        for gossipID, info in pairs(Save.Gossip_Text_Icon_Player) do
-           --[[local text= (info.icon and format('icon=%s, ') or '')
-                        ..(info.name and format('name=%s, ') or '')
-                        ..(info.hex and format('hex=%s, ') or '')]]
+        local tabs= {}
+        local old= Save.Gossip_Text_Icon_Player
+        for gossipID, info in pairs(old) do
+            info.gossipID= gossipID
+            table.insert(tabs, info)
+        end
+        table.sort(tabs, function(a, b) return a.gossipID<b.gossipID end)
+        for _, info in pairs(tabs) do
             text=text..format('[%d]={icon=%s, name=%s, hex=%s}|n',
-                            gossipID,
+                            info.gossipID,
                             info.icon or '',
                             info.name or '',
                             info.hex or ''

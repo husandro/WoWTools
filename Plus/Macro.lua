@@ -1472,7 +1472,7 @@ local function Init_Macro_List()
            -- self.MacroSelector:SetCustomStride(6);
         else
             --self.MacroSelector:SetCustomStride(12);
-            
+
             self.MacroSelector:SetPoint('TOPLEFT', 12,-66)
             self.MacroSelector:SetPoint('BOTTOMRIGHT', MacroFrame, 'RIGHT', -6, 0)
         end
@@ -1533,7 +1533,7 @@ local function Init()
         end
     end
 
-    
+
 
     MacroFrameTextBackground:ClearAllPoints()
     MacroFrameTextBackground:SetPoint('TOPLEFT', MacroFrame, 'LEFT', 8, -78)
@@ -1567,7 +1567,7 @@ local function Init()
     MacroFrameSelectedMacroName:SetPoint('BOTTOMLEFT', MacroFrameSelectedMacroButton, 'TOPLEFT')
     MacroFrameSelectedMacroName:SetFontObject('GameFontNormal')
 
-   
+
 
     --输入宏命令
     MacroFrameEnterMacroText:SetText('')
@@ -1708,10 +1708,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
             })
 
-            if e.Player.husandro then
-                C_Timer.After(2, ShowMacroFrame)
-                
-            end
+            --if e.Player.husandro then
+                --C_Timer.After(2, ShowMacroFrame)
+           -- end
 
             if Save.disabled  then
                 self:UnregisterEvent('ADDON_LOADED')
@@ -1721,13 +1720,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     e.GetEnabeleDisable(false), 'MacroToolkit',
                     e.onlyChinese and '插件' or ADDONS
                 )
-               
             end
-
-
         elseif arg1=='Blizzard_MacroUI' then
-            
-
             Init()
         end
 
