@@ -2449,7 +2449,7 @@ local function Init_Menu(_, level, menuList)
             local tabs= C_CovenantSanctumUI.GetRenownLevels(covenantID) or {}
             e.LibDD:UIDropDownMenu_AddSeparator(level)
             info={
-                text= format('|A:SanctumUpgrades-%s-32x32:0:0|a%s %d/%d', data.textureKit, e.cn(data.name), C_CovenantSanctumUI.GetRenownLevel() or 1, #tabs),
+                text= format('|A:SanctumUpgrades-%s-32x32:0:0|a%s %d/%d', data.textureKit or '', e.cn(data.name) or '', C_CovenantSanctumUI.GetRenownLevel() or 1, #tabs),
                 checked= CovenantRenownFrame and CovenantRenownFrame:IsShown(),
                 keepShownOnClick=true,
                 func= function()

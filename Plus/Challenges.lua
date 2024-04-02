@@ -58,7 +58,6 @@ local SpellTabs={
     [168]= {spell=159901, ins=556, name='永茂林地'},--永茂林地 The Everbloom (Warlords of Draenor)
     [456]= {spell=424142, ins=65, name='潮汐王座'},--潮汐王座 Throne of the Tides (Cataclysm)
 
-
 }
 for _, tab in pairs(SpellTabs) do
     e.LoadDate({id=tab.spell, type='spell'})
