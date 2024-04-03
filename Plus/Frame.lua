@@ -2600,7 +2600,23 @@ end)]]
 
     if UIWidgetPowerBarContainerFrame then--移动, 能量条
         created_Move_Button(UIWidgetPowerBarContainerFrame)
-        print(UIWidgetPowerBarContainerFrame:IsVisible())
+        if UIWidgetPowerBarContainerFrame.moveButton or UIWidgetPowerBarContainerFrame.ResizeButton then
+            local find=false
+            for _, frame in pairs(UIWidgetPowerBarContainerFrame.widgetFrames or {}) do
+                if frame then
+                    find=true
+                    break
+                end
+            end
+            if not find then
+                if UIWidgetPowerBarContainerFrame.moveButton then
+                    UIWidgetPowerBarContainerFrame.moveButton:Hide()
+                end
+                if UIWidgetPowerBarContainerFrame.ResizeButton then
+                    UIWidgetPowerBarContainerFrame.ResizeButton:Hide()
+                end
+            end
+        end
         hooksecurefunc(UIWidgetPowerBarContainerFrame, 'CreateWidget', function(self)
             if self.moveButton then
                 self.moveButton:SetShown(true)

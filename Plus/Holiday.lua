@@ -1013,7 +1013,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             if  Save.disabled then
                 panel:UnregisterAllEvents()
             else
-                C_Timer.After(2, Calendar_LoadUI)
+                Calendar_LoadUI()
             end
             panel:RegisterEvent("PLAYER_LOGOUT")
 

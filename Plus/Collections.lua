@@ -1908,7 +1908,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 --[[if not C_AddOns.IsAddOnLoaded("Blizzard_Collections") then
                     C_AddOns.LoadAddOn('Blizzard_Collections')
                 end]]
-                C_Timer.After(2, CollectionsJournal_LoadUI)
+                CollectionsJournal_LoadUI()
                 Init()--试衣间, 外观列表
             end
 
