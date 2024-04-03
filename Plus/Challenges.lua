@@ -48,29 +48,36 @@ local affixSchedule = {--C_MythicPlus.GetCurrentSeason() C_MythicPlus.GetCurrent
 }
 
 
-local SpellTabs={
-    [463]= {spell=424197, ins=1209, name='陨落', insName='永恒黎明'},--永恒黎明：迦拉克隆的陨落 Dawn of the Infinite: Galakrond's Fall
-    [464]= {spell=424197, ins=1209, name='崛起' },--永恒黎明：姆诺兹多的崛起 Dawn of the Infinite: Murozond's Rise
-    [248]= {spell=424167, ins=1021, name='庄园'},--维克雷斯庄园 Waycrest Manor (Battle for Azeroth)
-    [244]= {spell=424187, ins=1176, name='阿塔达萨'},--阿塔达萨 Atal'Dazar (Battle for Azeroth)
+local SpellTabs={--C_MythicPlus.GetCurrentSeason()
+    --12
+    [399]= {spell=393256, ins=1202, name='红玉'},--传送到红玉新生法池的入口。 利爪防御者之路
+    [400]= {spell=393262, ins=1198, name='诺库德'},--传送至诺库德阻击战的入口。 啸风平原之路
+    [401]= {spell=393279, ins=1203, name='魔馆'},--传送至碧蓝魔馆的入口。 奥秘之路
+    [402]= {spell=393273, ins=1201, name='学院'},--传送到艾杰斯亚学院的入口。 巨龙学位之路
+    [403]= {spell=393222, ins=1197, name='提尔遗产'},--传送到奥达曼：提尔的遗产的入口 看护者遗产之路
+    [404]= {spell=393276, ins=1199, name='奈萨鲁斯'},--传送到奈萨鲁斯的入口。 黑曜宝藏之路
+    [405]= {spell=393267, ins=1196, name='山谷'},--传送到蕨皮山谷的入口。 腐木之路
+    [406]= {spell=393283, ins=1204, name='大厅'},----传送到注能大厅的入口 泰坦水库之路
+
+    --11
     [198]= {spell=424163, ins=762, name='黑心林地'},--黑心林地 Darkheart Thicket (Legion)
     [199]= {spell=424153, ins=740, name='黑鸦堡垒'},--黑鸦堡垒 Black Rook Hold (Legion)
-    [168]= {spell=159901, ins=556, name='永茂林地'},--永茂林地 The Everbloom (Warlords of Draenor)
+    [168]= {spell=159901, ins=556, name='永茂林地'},--永茂林地 The Everbloom (Warlords of Draenor)    
+    [248]= {spell=424167, ins=1021, name='庄园'},--维克雷斯庄园 Waycrest Manor (Battle for Azeroth)
+    [244]= {spell=424187, ins=1176, name='阿塔达萨'},--阿塔达萨 Atal'Dazar (Battle for Azeroth)
+    [463]= {spell=424197, ins=1209, name='陨落', insName='永恒黎明'},--永恒黎明：迦拉克隆的陨落 Dawn of the Infinite: Galakrond's Fall
+    [464]= {spell=424197, ins=1209, name='崛起' },--永恒黎明：姆诺兹多的崛起 Dawn of the Infinite: Murozond's Rise    
     [456]= {spell=424142, ins=65, name='潮汐王座'},--潮汐王座 Throne of the Tides (Cataclysm)
-
+    --10 
+    --[403]={spell=393222, ins=1197, name='奥达曼'},--奥达曼：提尔的遗产
+    --[404]={spell=393276, ins=1199, name='奈萨鲁斯'},--奈萨鲁斯
+    --[405]={spell=393267, ins=1196, name='蕨皮山谷'},--蕨皮山谷
+    --[406]={spell=393283, ins=1204, name='注能大厅'},--注能大厅    
+    [206]={spell=410078, ins=767, name='巢穴'},--奈萨里奥的巢穴
+    [245]={spell=410071, ins=1001, name='自由镇'},--自由镇
+    [251]={spell=410074, ins=1022, name='地渊孢林'},--地渊孢林
+    [438]={spell=410080, ins=68, name='旋云之巅'},--旋云之巅
 }
-if C_MythicPlus.GetCurrentSeason()==12 then
-    SpellTabs={
-        [401]= {spell=393279, ins=1203, name='魔馆'},--传送至碧蓝魔馆的入口。 奥秘之路
-        [406]= {spell=393283, ins=1204, name='大厅'},----传送到注能大厅的入口 泰坦水库之路
-        [404]= {spell=393276, ins=1199, name='奈萨鲁斯'},--传送到奈萨鲁斯的入口。 黑曜宝藏之路
-        [402]= {spell=393273, ins=1201, name='学院'},--传送到艾杰斯亚学院的入口。 巨龙学位之路
-        [403]= {spell=393222, ins=1197, name='提尔遗产'},--传送到奥达曼：提尔的遗产的入口 看护者遗产之路
-        [405]= l{spell=393267, ins=1196, name='山谷'},--传送到蕨皮山谷的入口。 腐木之路
-        [399]= {spell=393256, ins=1202, name='红玉'},--传送到红玉新生法池的入口。 利爪防御者之路
-        [400]= {spell=393262, ins=1198, name='诺库德'},--传送至诺库德阻击战的入口。 啸风平原之路
-    }
-end
 
 for _, tab in pairs(SpellTabs) do
     e.LoadDate({id=tab.spell, type='spell'})
@@ -80,14 +87,7 @@ end
 
     
 
-    [403]={spell=393222, ins=1197, name='奥达曼'},--奥达曼：提尔的遗产
-    [405]={spell=393267, ins=1196, name='蕨皮山谷'},--蕨皮山谷
-    [406]={spell=393283, ins=1204, name='注能大厅'},--注能大厅
-    [404]={spell=393276, ins=1199, name='奈萨鲁斯'},--奈萨鲁斯
-    [245]={spell=410071, ins=1001, name='自由镇'},--自由镇
-    [206]={spell=410078, ins=767, name='巢穴'},--奈萨里奥的巢穴
-    [251]={spell=410074, ins=1022, name='地渊孢林'},--地渊孢林
-    [438]={spell=410080, ins=68, name='旋云之巅'},--旋云之巅
+    
 
 
 {spell=393222, ins=1197, map=403},--奥达曼：提尔的遗产
