@@ -141,21 +141,24 @@ local setNineSliceTabs={
     'TopLeftCorner',
     'TopRightCorner',
     'BottomRightCorner',
-    'BottomLeftCorner',
-   -- 'Center',
-   -- 'Background',
-   -- 'Bg',
+    'BottomLeftCorner',--8
+    'Center',
+    'Background',
+    'Bg',
 }
-function e.Set_NineSlice_Color_Alpha(frame, min, hide, notAlpha)
+function e.Set_NineSlice_Color_Alpha(frame, min, hide, notAlpha, notBg)
     if not frame or not frame.NineSlice then
         return
     end
     local alpha= min and min03 or nil
-    for _, text in pairs(setNineSliceTabs) do
+    for index, text in pairs(setNineSliceTabs) do
         if not hide then
             set_Alpha_Color(frame.NineSlice[text], notAlpha, nil, alpha)
         else
             hide_Texture(frame.NineSlice[text])
+        end
+        if notBg and index==8 then
+            break
         end
     end
 end
@@ -2051,7 +2054,7 @@ local function Init_Event(arg1)
         e.Set_Alpha_Frame_Texture(MacroFrame, {notAlpha=true})
         e.Set_NineSlice_Color_Alpha(MacroFrameInset, true)
         e.Set_NineSlice_Color_Alpha(MacroFrame, true)
-        e.Set_NineSlice_Color_Alpha(MacroFrameTextBackground, true)
+        e.Set_NineSlice_Color_Alpha(MacroFrameTextBackground, true, nil, nil, true)
         hide_Texture(MacroFrameBg)
         set_Alpha_Color(MacroFrameInset.Bg)
         set_Alpha_Color(MacroHorizontalBarLeft, true)

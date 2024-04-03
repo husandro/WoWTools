@@ -528,7 +528,7 @@ function e.Cedit(self)--frame, name, size={} SecureScrollTemplates.xml
     frame.bg:SetPoint('TOPLEFT', -5, 5)
     frame.bg:SetPoint('BOTTOMRIGHT', 0, -5)
     frame.bg:SetFrameLevel(level+1)
-    e.Set_NineSlice_Color_Alpha(frame.bg, true)
+    e.Set_NineSlice_Color_Alpha(frame.bg, true, nil, nil, true)
     frame.edit= CreateFrame('EditBox', nil, frame)
     frame.edit:SetAutoFocus(false)
     frame.edit:SetMultiLine(true)
