@@ -1263,7 +1263,7 @@ local function setAddLoad(arg1)
         end
 
 
-        e.Set_Move_Frame(CollectionsJournal, {setSize=true, minW=703, minH=606, initFunc=function(btn)
+        e.Set_Move_Frame(CollectionsJournal, {setSize=true, minW=703, minH=606, notInCombat=true, initFunc=function(btn)
             MountJournal.RightInset:ClearAllPoints()
             MountJournal.RightInset:SetWidth(400)
             MountJournal.RightInset:SetPoint('TOPRIGHT', -6, -60)
@@ -2600,6 +2600,7 @@ end)]]
 
     if UIWidgetPowerBarContainerFrame then--移动, 能量条
         created_Move_Button(UIWidgetPowerBarContainerFrame)
+        print(UIWidgetPowerBarContainerFrame:IsVisible())
         hooksecurefunc(UIWidgetPowerBarContainerFrame, 'CreateWidget', function(self)
             if self.moveButton then
                 self.moveButton:SetShown(true)

@@ -1611,7 +1611,8 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2)
                 --[[if not C_AddOns.IsAddOnLoaded("Blizzard_Collections") then
                     C_AddOns.LoadAddOn('Blizzard_Collections')
                 end]]
-                CollectionsJournal_LoadUI()
+                C_Timer.After(2, CollectionsJournal_LoadUI)
+                
 
                 button= e.Cbtn2({
                     name= 'WoWToolsMountButton',
