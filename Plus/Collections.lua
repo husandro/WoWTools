@@ -1314,7 +1314,7 @@ local function Init_Heirloom()
             return
         end
         local _, _, isPvP, _, upgradeLevel = C_Heirloom.GetHeirloomInfo(button.itemID)
-
+        --local _, _, isPvP, _, upgradeLevel, _, _, _, _, maxLevel = C_Heirloom.GetHeirloomInfo(button.itemID)
         local maxUp=C_Heirloom.GetHeirloomMaxUpgradeLevel(button.itemID) or 0
         local level= maxUp-(upgradeLevel or 0)
         local has = C_Heirloom.PlayerHasHeirloom(button.itemID)

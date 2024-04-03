@@ -18,7 +18,7 @@ local size= 10--字体大小
 
 
 local ClassNameIconTab={}--职业图标 ClassNameIconTab['法师']=图标
-local heirloomWeapontemEquipLocTab={--传家宝，武器，itemEquipLoc
+local heirloomWeapontemEquipLocTab={--传家宝 ，武器，itemEquipLoc
         ['INVTYPE_WEAPON']= true,
         ['INVTYPE_2HWEAPON']= true,
         ['INVTYPE_RANGED']= true,
