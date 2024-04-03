@@ -1002,7 +1002,7 @@ local function Init_TrackButton()--添加装备管理框
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, e.onlyChinese and '装备管理'or EQUIPMENT_MANAGER)
         e.tips:Show()
-        if panel.equipmentButton:IsVisible() then
+        if panel.equipmentButton and panel.equipmentButton:IsVisible() then
             panel.equipmentButton:SetButtonState('PUSHED')
             panel.equipmentButton:SetAlpha(1)
         end
@@ -1010,8 +1010,10 @@ local function Init_TrackButton()--添加装备管理框
     TrackButton:SetScript("OnLeave", function()
         ResetCursor()
         e.tips:Hide()
-        panel.equipmentButton:SetButtonState('NORMAL')
-        panel.equipmentButton:SetAlpha(0.5)
+        if panel.equipmentButton then
+            panel.equipmentButton:SetButtonState('NORMAL')
+            panel.equipmentButton:SetAlpha(0.5)
+        end
     end)
 
 
