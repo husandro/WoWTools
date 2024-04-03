@@ -625,7 +625,7 @@ subframes.readyCheck = _G["RaidGroupButton"..i.."ReadyCheck"];
 button.subframes = subframes;
 ]]
 --local setRaidGroupFrameLabel
-local function set_RaidGroupFrame_Update()--团队, 模块
+local function Init_RaidGroupFrame_Update()--团队, 模块
     if not IsInRaid() then
         if RaidFrame.groupInfoLable then
             RaidFrame.groupInfoLable:SetText('')
@@ -955,7 +955,18 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             panel:RegisterEvent("PLAYER_LOGOUT")
 
         elseif arg1=='Blizzard_RaidUI' then
-            hooksecurefunc('RaidGroupFrame_Update', set_RaidGroupFrame_Update)--团队, 模块
+            hooksecurefunc('RaidGroupFrame_Update', Init_RaidGroupFrame_Update)--团队, 模块
+            RaidFrame:HookScript('OnUpdate', function(frame, elapsed)
+                frame.elapsed= (frame.elapsed or 1) + elapsed
+                if frame.elapsed>1 then
+                    frame.elapsed=0
+                    if not UnitAffectingCombat('player') then
+                        e.call('RaidGroupFrame_Update')
+                        print(RaidFrame)
+                    end
+                end
+                
+            end)
         end
 
     elseif event == "PLAYER_LOGOUT" then

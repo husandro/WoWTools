@@ -95,8 +95,8 @@ local function setAtt()--设置属性
     local tab={}
 
     for _, itemID in pairs(ItemsTab) do
-        local duration, enable = select(2 ,C_Container.GetItemCooldown(itemID))
-        if (duration and duration<2 or enable) and C_ToyBox.IsToyUsable(itemID) then
+        local duration = select(2 ,C_Container.GetItemCooldown(itemID))
+        if (duration and duration<2) and C_ToyBox.IsToyUsable(itemID) then
             table.insert(tab, itemID)
         end
     end
@@ -616,16 +616,6 @@ local function Init()
                     local icon = C_Item.GetItemIconByID(itemID..'')
                     name= (icon and '|T'..icon..':0|t' or '')..name
                     local cd= e.GetSpellItemCooldown(nil, itemID)--冷却
-                    local startTime, duration, enable = C_Container.GetItemCooldown(itemID)
-                    if duration and duration>0 or not enable then
-                        local t=GetTime()
-                        if startTime>t then t=t+86400 end
-                        t=t-startTime
-                        t=duration-t
-                        cd= '|cnRED_FONT_COLOR:'..SecondsToTime(t)..'|r'
-                    elseif enable then
-                        cd= '|cnRED_FONT_COLOR:'..SPELL_RECAST_TIME_INSTANT..'|r'
-                    end
                     e.tips:AddDoubleLine(name..(cd or ''), type..'+'..e.Icon.left)
                 end
             end

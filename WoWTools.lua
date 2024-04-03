@@ -645,17 +645,16 @@ function e.GetSpellItemCooldown(spellID, itemID)--法术,物品,冷却
         end
     elseif itemID then
         startTime, duration, enable = C_Container.GetItemCooldown(itemID)
-        if duration and duration>0 or not enable then
+        if enable==0 then
+            return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '即时冷却' or SPELL_RECAST_TIME_INSTANT)..'|r'
+        elseif duration and duration>0 then
             local t=GetTime()
             if startTime>t then t=t+86400 end
             t=t-startTime
             t=duration-t
             return '|cnRED_FONT_COLOR:'..SecondsToTime(t)..'|r'
-        elseif enable then
-            return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '即时冷却' or SPELL_RECAST_TIME_INSTANT)..'|r'
         end
     end
-
 end
 --[[
 e.WA_GetUnitAura = function(unit, spell, filter)--AuraEnvironment.lua
