@@ -24,6 +24,7 @@ local Save={
 
 
 local min03, min05
+min03, min05= 0.3, 0.5
 local function GetMinValueAlpha()--min03，透明度，最小值
     min03= Save.alpha<0.3 and 0.3 or nil
     min05= Save.alpha<0.5 and 0.5 or nil
@@ -141,11 +142,11 @@ local setNineSliceTabs={
     'TopRightCorner',
     'BottomRightCorner',
     'BottomLeftCorner',
-    'Center',
-    'Background',
-    'Bg',
+   -- 'Center',
+   -- 'Background',
+   -- 'Bg',
 }
-local function set_NineSlice(frame, min, hide, notAlpha)
+function e.Set_NineSlice_Color_Alpha(frame, min, hide, notAlpha)
     if not frame or not frame.NineSlice then
         return
     end
@@ -160,7 +161,7 @@ local function set_NineSlice(frame, min, hide, notAlpha)
 end
 
 --设置，滚动条，颜色
-local function set_ScrollBar(frame)
+function e.Set_ScrollBar_Color_Alpha(frame)
     local bar= frame and frame.ScrollBar or frame
     if bar then
         if bar.Track then
@@ -444,9 +445,9 @@ local function Init_All_Frame()
      set_Alpha_Color(PlayerCastingBarFrame.Shine)
 
      --角色，界面
-     set_NineSlice(CharacterFrameInset, true)
-     set_NineSlice(CharacterFrame, true)
-     set_NineSlice(CharacterFrameInsetRight, true)
+     e.Set_NineSlice_Color_Alpha(CharacterFrameInset, true)
+     e.Set_NineSlice_Color_Alpha(CharacterFrame, true)
+     e.Set_NineSlice_Color_Alpha(CharacterFrameInsetRight, true)
 
      set_Alpha_Color(CharacterFrameBg)
      hide_Texture(CharacterFrameInset.Bg)
@@ -465,8 +466,8 @@ local function Init_All_Frame()
      hide_Texture(PaperDollInnerBorderBottom2)
      hide_Texture(CharacterFrameInsetRight.Bg)
 
-     set_ScrollBar(ReputationFrame)
-     set_ScrollBar(TokenFrame)
+     e.Set_ScrollBar_Color_Alpha(ReputationFrame)
+     e.Set_ScrollBar_Color_Alpha(TokenFrame)
 
      set_Alpha_Color(CharacterStatsPane.ClassBackground, nil, nil, min03)
      set_Alpha_Color(CharacterStatsPane.EnhancementsCategory.Background)
@@ -477,15 +478,15 @@ local function Init_All_Frame()
              hide_Texture(button.BgMiddle)
          end
      end)
-     set_ScrollBar(PaperDollFrame.TitleManagerPane)
+     e.Set_ScrollBar_Color_Alpha(PaperDollFrame.TitleManagerPane)
      hooksecurefunc('PaperDollEquipmentManagerPane_Update', function()--PaperDollFrame.lua
         for _, button in pairs(PaperDollFrame.EquipmentManagerPane.ScrollBox:GetFrames()) do
              hide_Texture(button.BgMiddle)
          end
      end)
-     set_ScrollBar(PaperDollFrame.EquipmentManagerPane)
-     set_ScrollBar(ReputationFrame)
-     set_ScrollBar(TokenFrame)
+     e.Set_ScrollBar_Color_Alpha(PaperDollFrame.EquipmentManagerPane)
+     e.Set_ScrollBar_Color_Alpha(ReputationFrame)
+     e.Set_ScrollBar_Color_Alpha(TokenFrame)
 
      hide_Texture(CharacterModelFrameBackgroundTopLeft)--角色3D背景
      hide_Texture(CharacterModelFrameBackgroundTopRight)
@@ -495,13 +496,13 @@ local function Init_All_Frame()
 
      hide_Frame_Texture(GearManagerPopupFrame.BorderBox)
      set_Alpha_Color(GearManagerPopupFrame.BG, nil, nil, min03)
-     set_ScrollBar(GearManagerPopupFrame.IconSelector)
+     e.Set_ScrollBar_Color_Alpha(GearManagerPopupFrame.IconSelector)
      set_SearchBox(GearManagerPopupFrame.BorderBox.IconSelectorEditBox)
      set_Menu(GearManagerPopupFrame.BorderBox.IconTypeDropDown.DropDownMenu)
 
      --法术书
-     set_NineSlice(SpellBookFrame, true)
-     set_NineSlice(SpellBookFrameInset)
+     e.Set_NineSlice_Color_Alpha(SpellBookFrame, true)
+     e.Set_NineSlice_Color_Alpha(SpellBookFrameInset)
      if SpellBookPageText then
          SpellBookPageText:SetTextColor(1, 0.82, 0)
      end
@@ -529,7 +530,7 @@ local function Init_All_Frame()
 
 
      --世界地图
-     set_NineSlice(WorldMapFrame.BorderFrame, true)
+     e.Set_NineSlice_Color_Alpha(WorldMapFrame.BorderFrame, true)
      set_Alpha_Color(WorldMapFrameBg)
      set_Alpha_Color(QuestMapFrame.Background)
      hide_Texture(WorldMapFrame.NavBar.overlay)
@@ -540,7 +541,7 @@ local function Init_All_Frame()
      hide_Texture(WorldMapFrame.NavBar.InsetBorderBottomLeft)
      hide_Texture(WorldMapFrame.BorderFrame.InsetBorderTop)
      WorldMapFrame.NavBar:DisableDrawLayer('BACKGROUND')
-     set_ScrollBar(QuestMapDetailsScrollFrame)
+     e.Set_ScrollBar_Color_Alpha(QuestMapDetailsScrollFrame)
     hooksecurefunc(WorldMapFrame, 'SynchronizeDisplayState', function(self)--最大化时，隐藏背景
         if self:IsMaximized() then
             self.BlackoutFrame:Hide()
@@ -553,17 +554,17 @@ local function Init_All_Frame()
      set_Alpha_Color(QuestScrollFrame.Edge)
      set_Alpha_Color(QuestScrollFrame.DetailFrame.TopDetail)
      set_Alpha_Color(QuestScrollFrame.Contents.Separator.Divider, nil, nil, min03)
-     set_ScrollBar(QuestScrollFrame)
-     set_ScrollBar(QuestMapFrame.DetailsFrame.RewardsFrame.RewardsScrollFrame)
+     e.Set_ScrollBar_Color_Alpha(QuestScrollFrame)
+     e.Set_ScrollBar_Color_Alpha(QuestMapFrame.DetailsFrame.RewardsFrame.RewardsScrollFrame)
 
 
 
      --地下城和团队副本
      hide_Texture(PVEFrame.TopTileStreaks)--最上面
 
-     set_NineSlice(PVEFrame, true)
+     e.Set_NineSlice_Color_Alpha(PVEFrame, true)
      set_SearchBox(LFGListFrame.SearchPanel.SearchBox)
-     set_ScrollBar(LFGListFrame.SearchPanel)
+     e.Set_ScrollBar_Color_Alpha(LFGListFrame.SearchPanel)
      --set_Alpha_Color(LFGListFrame.CategorySelection.Inset.CustomBG)
      --hide_Texture(LFGListFrame.CategorySelection.Inset.Bg)
      e.Set_Alpha_Frame_Texture(LFGListFrame.CategorySelection.Inset, {alpha= min05})
@@ -573,8 +574,8 @@ local function Init_All_Frame()
 
 
 
-     set_NineSlice(LFGListFrame.CategorySelection.Inset, nil, true)
-     set_NineSlice(LFGListFrame.EntryCreation.Inset, nil, true)
+     e.Set_NineSlice_Color_Alpha(LFGListFrame.CategorySelection.Inset, nil, true)
+     e.Set_NineSlice_Color_Alpha(LFGListFrame.EntryCreation.Inset, nil, true)
      hide_Texture(LFGListFrame.EntryCreation.Inset.CustomBG)
      hide_Texture(LFGListFrame.EntryCreation.Inset.Bg)
 
@@ -588,8 +589,8 @@ local function Init_All_Frame()
      set_Alpha_Color(LFGListFrameTopRight)
      set_Alpha_Color(LFGListFrameBottomRight)
 
-     set_ScrollBar(LFGListFrame.ApplicationViewer)
-     set_NineSlice(LFGListFrame.ApplicationViewer.Inset)
+     e.Set_ScrollBar_Color_Alpha(LFGListFrame.ApplicationViewer)
+     e.Set_NineSlice_Color_Alpha(LFGListFrame.ApplicationViewer.Inset)
     
      set_Alpha_Color(RaidFinderQueueFrameBackground)
      set_Menu(RaidFinderQueueFrameSelectionDropDown)
@@ -612,40 +613,40 @@ local function Init_All_Frame()
 
      hide_Texture(PVEFrameBlueBg)
      hide_Texture(PVEFrameLeftInset.Bg)
-     set_NineSlice(PVEFrameLeftInset, nil, true)
+     e.Set_NineSlice_Color_Alpha(PVEFrameLeftInset, nil, true)
      hide_Frame_Texture(PVEFrame.shadows)
 
      set_Alpha_Color(LFDQueueFrameBackground)
      set_Menu(LFDQueueFrameTypeDropDown)
 
-     set_NineSlice(LFDParentFrameInset, nil, true)
+     e.Set_NineSlice_Color_Alpha(LFDParentFrameInset, nil, true)
      set_Alpha_Color(LFDParentFrameInset.Bg)
-     set_NineSlice(RaidFinderFrameBottomInset, nil, true)
+     e.Set_NineSlice_Color_Alpha(RaidFinderFrameBottomInset, nil, true)
      set_Alpha_Color(RaidFinderFrameBottomInset.Bg)
 
      set_Alpha_Color(LFDParentFrameRoleBackground)
 
     hide_Texture(LFDParentFrameRoleBackground)
-    set_NineSlice(RaidFinderFrameRoleInset, nil, true)
+    e.Set_NineSlice_Color_Alpha(RaidFinderFrameRoleInset, nil, true)
     hide_Texture(RaidFinderFrameRoleInset.Bg)
 
 
     --GossipFrame
-    set_NineSlice(GossipFrame, true)
+    e.Set_NineSlice_Color_Alpha(GossipFrame, true)
      set_Alpha_Color(GossipFrameBg)
      hide_Texture(GossipFrameInset.Bg)
-     set_ScrollBar(GossipFrame.GreetingPanel)
+     e.Set_ScrollBar_Color_Alpha(GossipFrame.GreetingPanel)
 
      e.Set_Alpha_Frame_Texture(PVEFrameTab1, {alpha=min05})
      e.Set_Alpha_Frame_Texture(PVEFrameTab2, {alpha=min05})
      e.Set_Alpha_Frame_Texture(PVEFrameTab3, {alpha=min05})
 
      if e.Player.class=='HUNTER' and PetStableFrame then--猎人，宠物
-        set_NineSlice(PetStableFrame, true)
-        set_NineSlice(PetStableLeftInset, nil, true)
+        e.Set_NineSlice_Color_Alpha(PetStableFrame, true)
+        e.Set_NineSlice_Color_Alpha(PetStableLeftInset, nil, true)
         set_Alpha_Color(PetStableActiveBg, nil, nil, min03)
         set_Alpha_Color(PetStableFrameBg)
-        set_NineSlice(PetStableFrameInset, nil, true)
+        e.Set_NineSlice_Color_Alpha(PetStableFrameInset, nil, true)
         hide_Texture(PetStableFrameInset.Bg)
         set_Alpha_Color(PetStableFrameModelBg, nil, nil, min05)
 
@@ -665,7 +666,7 @@ local function Init_All_Frame()
 
 
      --银行
-     set_NineSlice(BankFrame,true)
+     e.Set_NineSlice_Color_Alpha(BankFrame,true)
 
      hide_Texture(BankFrameMoneyFrameInset.Bg)
      hide_Texture(BankFrameMoneyFrameBorderMiddle)
@@ -698,7 +699,7 @@ local function Init_All_Frame()
 
      --背包
      if ContainerFrameCombinedBags and ContainerFrameCombinedBags.NineSlice then
-        set_NineSlice(ContainerFrameCombinedBags, true)
+        e.Set_NineSlice_Color_Alpha(ContainerFrameCombinedBags, true)
 
          set_Alpha_Color(ContainerFrameCombinedBags.MoneyFrame.Border.Middle)
          set_Alpha_Color(ContainerFrameCombinedBags.MoneyFrame.Border.Right)
@@ -716,7 +717,7 @@ local function Init_All_Frame()
          local frame= _G['ContainerFrame'..i]
          if frame and frame.NineSlice then
              set_Alpha_Color(frame.Bg.TopSection, true)
-             set_NineSlice(frame, true)
+             e.Set_NineSlice_Color_Alpha(frame, true)
          end
      end
      for i=1,  NUM_TOTAL_EQUIPPED_BAG_SLOTS+ NUM_REAGENTBAG_FRAMES do--10.25 出现错误
@@ -776,21 +777,21 @@ local function Init_All_Frame()
      e.Set_Alpha_Frame_Texture(CharacterFrameTab3, {alpha=min05})
 
      --好友列表
-     set_NineSlice(FriendsFrame, true)
+     e.Set_NineSlice_Color_Alpha(FriendsFrame, true)
      set_Alpha_Color(FriendsFrameBg)
-     set_NineSlice(FriendsFrameInset, true)
+     e.Set_NineSlice_Color_Alpha(FriendsFrameInset, true)
      set_Alpha_Color(FriendsFrameInset.Bg, nil, nil, min05)
-     set_ScrollBar(FriendsListFrame)
-     set_ScrollBar(IgnoreListFrame)
+     e.Set_ScrollBar_Color_Alpha(FriendsListFrame)
+     e.Set_ScrollBar_Color_Alpha(IgnoreListFrame)
      set_Menu(FriendsFrameStatusDropDown)
      e.Set_Alpha_Frame_Texture(FriendsFrameBattlenetFrame.BroadcastButton, {notAlpha=true})
 
      --好友列表，召募
      if RecruitAFriendFrame and RecruitAFriendFrame.RecruitList then
-        set_ScrollBar(RecruitAFriendFrame.RecruitList)
+        e.Set_ScrollBar_Color_Alpha(RecruitAFriendFrame.RecruitList)
         set_Alpha_Color(RecruitAFriendFrame.RecruitList.ScrollFrameInset.Bg)
-        set_NineSlice(RecruitAFriendFrame.RewardClaiming.Inset)
-        set_NineSlice(RecruitAFriendFrame.RecruitList.ScrollFrameInset)
+        e.Set_NineSlice_Color_Alpha(RecruitAFriendFrame.RewardClaiming.Inset)
+        e.Set_NineSlice_Color_Alpha(RecruitAFriendFrame.RecruitList.ScrollFrameInset)
         hide_Texture(RecruitAFriendFrame.RecruitList.Header.Background)
         set_Alpha_Color(RecruitAFriendFrame.RewardClaiming.Inset.Bg)
         
@@ -809,18 +810,18 @@ local function Init_All_Frame()
         set_Alpha_Color(RaidInfoFrame.Border.BottomLeftCorner, nil, nil, min03)
         set_Alpha_Color(RaidInfoFrame.Border.BottomRightCorner, nil, nil, min03)
         set_Alpha_Color(RaidInfoFrame.Border.TopRightCorner, nil, nil, min03)
-        set_ScrollBar(RaidInfoFrame)
+        e.Set_ScrollBar_Color_Alpha(RaidInfoFrame)
         set_Alpha_Color(RaidInfoFrame.Border.Bg, nil, nil, min05)
      end
 
-     set_NineSlice(WhoFrameListInset, true)
-     set_NineSlice(WhoFrameEditBoxInset, true)
+     e.Set_NineSlice_Color_Alpha(WhoFrameListInset, true)
+     e.Set_NineSlice_Color_Alpha(WhoFrameEditBoxInset, true)
      hide_Texture(WhoFrameListInset.Bg)
-     set_ScrollBar(WhoFrame)
+     e.Set_ScrollBar_Color_Alpha(WhoFrame)
      set_Menu(WhoFrameDropDown)
 
      hide_Texture(WhoFrameEditBoxInset.Bg)
-     set_ScrollBar(QuickJoinFrame)
+     e.Set_ScrollBar_Color_Alpha(QuickJoinFrame)
 
      for i=1, 4 do
         e.Set_Alpha_Frame_Texture(_G['FriendsFrameTab'..i], {alpha=min05})
@@ -836,37 +837,37 @@ local function Init_All_Frame()
      hide_Texture(ChannelFrame.RightInset.Bg)
      hide_Texture(ChannelFrame.LeftInset.Bg)
      
-     set_ScrollBar(ChannelFrame.ChannelRoster)
-     set_ScrollBar(ChannelFrame.ChannelList)
+     e.Set_ScrollBar_Color_Alpha(ChannelFrame.ChannelRoster)
+     e.Set_ScrollBar_Color_Alpha(ChannelFrame.ChannelList)
 
-     set_NineSlice(ChannelFrame)
-     set_NineSlice(ChannelFrameInset)
-     set_NineSlice(ChannelFrame.RightInset)
-     set_NineSlice(ChannelFrame.LeftInset)
+     e.Set_NineSlice_Color_Alpha(ChannelFrame)
+     e.Set_NineSlice_Color_Alpha(ChannelFrameInset)
+     e.Set_NineSlice_Color_Alpha(ChannelFrame.RightInset)
+     e.Set_NineSlice_Color_Alpha(ChannelFrame.LeftInset)
 
 
      --任务
-     set_NineSlice(QuestFrame, true)
+     e.Set_NineSlice_Color_Alpha(QuestFrame, true)
      set_Alpha_Color(QuestFrameBg)
      hide_Texture(QuestFrameInset.Bg)
-     set_ScrollBar(QuestFrame)
-     set_ScrollBar(QuestProgressScrollFrame)
-     set_ScrollBar(QuestDetailScrollFrame)
+     e.Set_ScrollBar_Color_Alpha(QuestFrame)
+     e.Set_ScrollBar_Color_Alpha(QuestProgressScrollFrame)
+     e.Set_ScrollBar_Color_Alpha(QuestDetailScrollFrame)
 
-     set_NineSlice(QuestLogPopupDetailFrame, true)
+     e.Set_NineSlice_Color_Alpha(QuestLogPopupDetailFrame, true)
      set_Alpha_Color(QuestLogPopupDetailFrameBg)
      hide_Frame_Texture(QuestLogPopupDetailFrameInset)
-     set_ScrollBar(QuestLogPopupDetailFrameScrollFrame)
-     set_NineSlice(QuestLogPopupDetailFrameInset, nil, true)
+     e.Set_ScrollBar_Color_Alpha(QuestLogPopupDetailFrameScrollFrame)
+     e.Set_NineSlice_Color_Alpha(QuestLogPopupDetailFrameInset, nil, true)
 
      e.Set_Alpha_Frame_Texture(QuestModelScene)
      set_Alpha_Color(QuestNPCModelTextFrameBg, nil, nil, min05)
-     set_ScrollBar(QuestNPCModelTextScrollChildFrame)
-     --[[set_NineSlice(QuestLogPopupDetailFrame, true)
+     e.Set_ScrollBar_Color_Alpha(QuestNPCModelTextScrollChildFrame)
+     --[[e.Set_NineSlice_Color_Alpha(QuestLogPopupDetailFrame, true)
      set_Alpha_Color(QuestLogPopupDetailFrameBg)
      hide_Frame_Texture(QuestLogPopupDetailFrameInset)
-     set_ScrollBar(QuestLogPopupDetailFrameScrollFrame)
-     set_NineSlice(QuestLogPopupDetailFrameInset, nil, true)
+     e.Set_ScrollBar_Color_Alpha(QuestLogPopupDetailFrameScrollFrame)
+     e.Set_NineSlice_Color_Alpha(QuestLogPopupDetailFrameInset, nil, true)
 
      set_Alpha_Color(QuestNPCModelTopBg)
      hide_Texture(QuestNPCModelBg)
@@ -874,11 +875,11 @@ local function Init_All_Frame()
      set_Alpha_Color(QuestNPCModelTopBg)]]
 
      --信箱
-          set_NineSlice(MailFrame, true)
+          e.Set_NineSlice_Color_Alpha(MailFrame, true)
      set_Alpha_Color(MailFrameBg)
      hide_Texture(InboxFrameBg)
      hide_Texture(MailFrameInset.Bg)
-     set_NineSlice(OpenMailFrame, true)
+     e.Set_NineSlice_Color_Alpha(OpenMailFrame, true)
      set_Alpha_Color(OpenMailFrameBg)
      set_Alpha_Color(OpenMailFrameInset.Bg)
 
@@ -904,15 +905,15 @@ local function Init_All_Frame()
      --set_Alpha_Color(SendMailMoneyBgRight)
      --set_Alpha_Color(SendMailMoneyBgLeft)
      hide_Texture(SendMailMoneyInset.Bg)
-     set_NineSlice(MailFrameInset, true)
-     set_ScrollBar(SendMailScrollFrame)
+     e.Set_NineSlice_Color_Alpha(MailFrameInset, true)
+     e.Set_ScrollBar_Color_Alpha(SendMailScrollFrame)
 
-     set_ScrollBar(OpenMailScrollFrame)
+     e.Set_ScrollBar_Color_Alpha(OpenMailScrollFrame)
 
      --拾取, 历史
-     set_NineSlice(GroupLootHistoryFrame, true)
+     e.Set_NineSlice_Color_Alpha(GroupLootHistoryFrame, true)
      set_Alpha_Color(GroupLootHistoryFrameBg)
-     set_ScrollBar(GroupLootHistoryFrame)
+     e.Set_ScrollBar_Color_Alpha(GroupLootHistoryFrame)
      set_Alpha_Color(GroupLootHistoryFrameMiddle)
      set_Alpha_Color(GroupLootHistoryFrameLeft)
      set_Alpha_Color(GroupLootHistoryFrameRight)
@@ -923,14 +924,14 @@ local function Init_All_Frame()
 
 
      --频道, 设置
-     set_NineSlice(ChatConfigCategoryFrame,true)
-     set_NineSlice(ChatConfigBackgroundFrame,true)
-     set_NineSlice(ChatConfigChatSettingsLeft, true)
+     e.Set_NineSlice_Color_Alpha(ChatConfigCategoryFrame,true)
+     e.Set_NineSlice_Color_Alpha(ChatConfigBackgroundFrame,true)
+     e.Set_NineSlice_Color_Alpha(ChatConfigChatSettingsLeft, true)
      hide_Texture(ChatConfigBackgroundFrame.NineSlice.Center)
      hide_Texture(ChatConfigCategoryFrame.NineSlice.Center)
      hide_Texture(ChatConfigChatSettingsLeft.NineSlice.Center)
 
-     set_ScrollBar(ChatConfigCombatSettingsFilters)
+     e.Set_ScrollBar_Color_Alpha(ChatConfigCombatSettingsFilters)
 
      set_Alpha_Color(ChatConfigFrame.Border, nil, nil, min03)
      set_Alpha_Color(ChatConfigFrame.Header.RightBG, true)
@@ -992,8 +993,8 @@ local function Init_All_Frame()
     set_SearchBox(ChatFrame1EditBox)
 
      --插件，管理
-     set_NineSlice(AddonList,true)
-     set_ScrollBar(AddonList)
+     e.Set_NineSlice_Color_Alpha(AddonList,true)
+     e.Set_ScrollBar_Color_Alpha(AddonList)
      set_Alpha_Color(AddonListBg)
      set_Alpha_Color(AddonListInset.Bg, nil, nil, min03)
      set_Menu(AddonCharacterDropDown)
@@ -1075,7 +1076,7 @@ local function Init_All_Frame()
             set_Alpha_Color(_G['ChatFrame'..i..'EditBoxMid'], nil, nil, min03)
             set_Alpha_Color(_G['ChatFrame'..i..'EditBoxLeft'], nil, nil, min03)
             set_Alpha_Color(_G['ChatFrame'..i..'EditBoxRight'], nil, nil, min03)
-            set_ScrollBar(frame)
+            e.Set_ScrollBar_Color_Alpha(frame)
             e.Set_Alpha_Frame_Texture(frame.ScrollToBottomButton, {notAlpha=true})
         end
      end
@@ -1089,10 +1090,10 @@ local function Init_All_Frame()
      set_Alpha_Color(MerchantFrameLootFilterRight)
      e.Set_Alpha_Frame_Texture(MerchantFrameTab1, {alpha=min05})
      e.Set_Alpha_Frame_Texture(MerchantFrameTab2, {alpha=min05})
-     set_ScrollBar(MerchantFrame)
+     e.Set_ScrollBar_Color_Alpha(MerchantFrame)
      set_Alpha_Color(MerchantFrameBg)
-     set_NineSlice(MerchantFrameInset, true)
-     set_NineSlice(MerchantFrame, true)
+     e.Set_NineSlice_Color_Alpha(MerchantFrameInset, true)
+     e.Set_NineSlice_Color_Alpha(MerchantFrame, true)
      hide_Texture(MerchantFrameInset.Bg)
      set_Alpha_Color(MerchantMoneyInset.Bg)
      hide_Texture(MerchantMoneyBgMiddle)
@@ -1168,7 +1169,7 @@ local function Init_All_Frame()
 
     --编辑模式
     set_Menu(EditModeManagerFrame.LayoutDropdown.DropDownMenu)
-    set_ScrollBar(EditModeManagerFrame.AccountSettings.SettingsContainer)
+    e.Set_ScrollBar_Color_Alpha(EditModeManagerFrame.AccountSettings.SettingsContainer)
     e.Set_Alpha_Frame_Texture(EditModeManagerFrame.Border, {alpha=min05})
     e.Set_Alpha_Frame_Texture(EditModeManagerFrame.AccountSettings.SettingsContainer.BorderArt, {alpha=min05})
     set_Slider(EditModeManagerFrame.GridSpacingSlider)
@@ -1216,12 +1217,12 @@ local function Init_All_Frame()
     hide_Texture(ReportFrame.TopInset)
     e.Set_Alpha_Frame_Texture(ReportFrame.CloseButton, {notAlpha=true})
     set_Menu(ReportFrame.ReportingMajorCategoryDropdown)
-    set_ScrollBar(ReportFrame.Comment)
+    e.Set_ScrollBar_Color_Alpha(ReportFrame.Comment)
 
     e.Set_Alpha_Frame_Texture(BattleTagInviteFrame.Border, {notAlpha=true})
 
     --就绪
-    set_NineSlice(ReadyCheckListenerFrame, true)
+    e.Set_NineSlice_Color_Alpha(ReadyCheckListenerFrame, true)
     set_Alpha_Color(ReadyCheckListenerFrame.Bg, true)
 
     --团队 RolePoll.lua
@@ -1232,18 +1233,18 @@ local function Init_All_Frame()
     set_Alpha_Color(StaticPopup1.Border.Bg, true)
 
     --ItemTextFrame
-    set_NineSlice(ItemTextFrame, true)
+    e.Set_NineSlice_Color_Alpha(ItemTextFrame, true)
     hide_Texture(ItemTextFrameBg)
     hide_Frame_Texture(ItemTextFrameInset)
     set_Alpha_Color(ItemTextMaterialTopLeft, nil, nil, min05)
     set_Alpha_Color(ItemTextMaterialTopRight, nil, nil, min05)
     set_Alpha_Color(ItemTextMaterialBotLeft, nil, nil, min05)
     set_Alpha_Color(ItemTextMaterialBotRight, nil, nil, min05)
-    set_ScrollBar(ItemTextScrollFrame)
-    set_NineSlice(ItemTextFrameInset, true)
+    e.Set_ScrollBar_Color_Alpha(ItemTextScrollFrame)
+    e.Set_NineSlice_Color_Alpha(ItemTextFrameInset, true)
 
     --试衣间
-    set_NineSlice(DressUpFrame, true)
+    e.Set_NineSlice_Color_Alpha(DressUpFrame, true)
     set_Alpha_Color(DressUpFrameBg)
     hide_Texture(DressUpFrameInset.Bg)
     e.Set_Alpha_Frame_Texture(DressUpFrameInset)
@@ -1310,17 +1311,17 @@ end
 local function Init_Event(arg1)
     if arg1=='Blizzard_TrainerUI' then--专业训练师
         e.Set_Alpha_Frame_Texture(ClassTrainerFrame, {alpha=min05})
-        set_ScrollBar(ClassTrainerFrame)
-        set_NineSlice(ClassTrainerFrame, true)
+        e.Set_ScrollBar_Color_Alpha(ClassTrainerFrame)
+        e.Set_NineSlice_Color_Alpha(ClassTrainerFrame, true)
 
         hide_Texture(ClassTrainerFrameInset.Bg)
-        set_NineSlice(ClassTrainerFrameInset, true)
+        e.Set_NineSlice_Color_Alpha(ClassTrainerFrameInset, true)
 
         hide_Texture(ClassTrainerFrameBottomInset.Bg)
-        set_NineSlice(ClassTrainerFrameBottomInset, true)
+        e.Set_NineSlice_Color_Alpha(ClassTrainerFrameBottomInset, true)
 
     elseif arg1=='Blizzard_TimeManager' then--小时图，时间
-        set_NineSlice(TimeManagerFrame, true)
+        e.Set_NineSlice_Color_Alpha(TimeManagerFrame, true)
         set_Alpha_Color(TimeManagerFrameBg)
         hide_Texture(TimeManagerFrameInset.Bg)
         set_SearchBox(TimeManagerAlarmMessageEditBox)
@@ -1341,7 +1342,7 @@ local function Init_Event(arg1)
 
     elseif arg1=='Blizzard_ClassTalentUI' then--天赋
         set_Alpha_Color(ClassTalentFrame.TalentsTab.BottomBar)--下面
-        set_NineSlice(ClassTalentFrame, true)
+        e.Set_NineSlice_Color_Alpha(ClassTalentFrame, true)
         set_Alpha_Color(ClassTalentFrameBg)--里面
         hide_Texture(ClassTalentFrame.TalentsTab.BlackBG)
         hooksecurefunc(ClassTalentFrame.TalentsTab, 'UpdateSpecBackground', function(self2)--Blizzard_ClassTalentTalentsTab.lua
@@ -1384,13 +1385,13 @@ local function Init_Event(arg1)
         hide_Frame_Texture(AchievementFrame)
         hide_Frame_Texture(AchievementFrame.Header)
         hide_Frame_Texture(AchievementFrameSummary)
-        set_NineSlice(AchievementFrameCategories, true)
-        set_ScrollBar(AchievementFrameCategories)
+        e.Set_NineSlice_Color_Alpha(AchievementFrameCategories, true)
+        e.Set_ScrollBar_Color_Alpha(AchievementFrameCategories)
 
-        set_ScrollBar(AchievementFrameAchievements)
+        e.Set_ScrollBar_Color_Alpha(AchievementFrameAchievements)
         hide_Frame_Texture(AchievementFrameAchievements)
 
-        set_ScrollBar(AchievementFrameStats)
+        e.Set_ScrollBar_Color_Alpha(AchievementFrameStats)
         set_SearchBox(AchievementFrame.SearchBox)
         set_Alpha_Color(AchievementFrameStatsBG, nil, nil, min05)
         e.Set_Alpha_Frame_Texture(AchievementFrameTab1, {alpha=min05})
@@ -1410,30 +1411,30 @@ local function Init_Event(arg1)
         end
 
     elseif arg1=='Blizzard_Communities' then--公会和社区
-        set_NineSlice(CommunitiesFrame, true)
-        set_ScrollBar(CommunitiesFrameCommunitiesList)
-        set_ScrollBar(CommunitiesFrame.Chat)
-        set_ScrollBar(CommunitiesFrame.MemberList)
-        set_ScrollBar(CommunitiesFrame.GuildBenefitsFrame.Rewards)
-        set_ScrollBar(CommunitiesFrameGuildDetailsFrameNews)
-        set_ScrollBar(ClubFinderCommunityAndGuildFinderFrame.CommunityCards)
+        e.Set_NineSlice_Color_Alpha(CommunitiesFrame, true)
+        e.Set_ScrollBar_Color_Alpha(CommunitiesFrameCommunitiesList)
+        e.Set_ScrollBar_Color_Alpha(CommunitiesFrame.Chat)
+        e.Set_ScrollBar_Color_Alpha(CommunitiesFrame.MemberList)
+        e.Set_ScrollBar_Color_Alpha(CommunitiesFrame.GuildBenefitsFrame.Rewards)
+        e.Set_ScrollBar_Color_Alpha(CommunitiesFrameGuildDetailsFrameNews)
+        e.Set_ScrollBar_Color_Alpha(ClubFinderCommunityAndGuildFinderFrame.CommunityCards)
 
         set_Alpha_Color(CommunitiesFrameBg)
         set_Alpha_Color(CommunitiesFrame.MemberList.ColumnDisplay.Background)
         set_Alpha_Color(CommunitiesFrameCommunitiesList.Bg)
         set_Alpha_Color(CommunitiesFrameInset.Bg, nil, nil, min03)
-        set_NineSlice(CommunitiesFrameInset, nil, true)
-        set_NineSlice(CommunitiesFrameCommunitiesList.InsetFrame, true)
+        e.Set_NineSlice_Color_Alpha(CommunitiesFrameInset, nil, true)
+        e.Set_NineSlice_Color_Alpha(CommunitiesFrameCommunitiesList.InsetFrame, true)
         CommunitiesFrame.GuildBenefitsFrame.Perks:DisableDrawLayer('BACKGROUND')
         CommunitiesFrameGuildDetailsFrameInfo:DisableDrawLayer('BACKGROUND')
         CommunitiesFrameGuildDetailsFrameNews:DisableDrawLayer('BACKGROUND')
 
         set_SearchBox(CommunitiesFrame.ChatEditBox)
-        set_NineSlice(CommunitiesFrame.Chat.InsetFrame, true)
-        set_NineSlice(CommunitiesFrame.MemberList.InsetFrame, true)
+        e.Set_NineSlice_Color_Alpha(CommunitiesFrame.Chat.InsetFrame, true)
+        e.Set_NineSlice_Color_Alpha(CommunitiesFrame.MemberList.InsetFrame, true)
         set_Alpha_Color(CommunitiesFrameMiddle)
 
-        set_NineSlice(ClubFinderCommunityAndGuildFinderFrame.InsetFrame, nil, true)
+        e.Set_NineSlice_Color_Alpha(ClubFinderCommunityAndGuildFinderFrame.InsetFrame, nil, true)
         hide_Texture(CommunitiesFrame.GuildBenefitsFrame.Rewards.Bg)
 
         hooksecurefunc(CommunitiesFrameCommunitiesList,'UpdateCommunitiesList',function(self)
@@ -1459,7 +1460,7 @@ local function Init_Event(arg1)
         set_Alpha_Color(ClubFinderGuildFinderFrame.InsetFrame.Bg)
 
         e.Set_Alpha_Frame_Texture(CommunitiesFrame.NotificationSettingsDialog.Selector)
-        set_ScrollBar(CommunitiesFrame.NotificationSettingsDialog.ScrollFrame)
+        e.Set_ScrollBar_Color_Alpha(CommunitiesFrame.NotificationSettingsDialog.ScrollFrame)
         set_Alpha_Color(CommunitiesFrame.NotificationSettingsDialog.BG, {notAlpha=true})
         --set_Menu(CommunitiesFrame.NotificationSettingsDialog.CommunitiesListDropDownMenu)
 
@@ -1470,8 +1471,8 @@ local function Init_Event(arg1)
         --set_Menu(CommunitiesFrame.GuildMemberListDropDownMenu)
 
         e.Set_Alpha_Frame_Texture(CommunitiesGuildLogFrame)
-        set_NineSlice(CommunitiesGuildLogFrame.Container, true)
-        set_ScrollBar(CommunitiesGuildLogFrame.Container.ScrollFrame)
+        e.Set_NineSlice_Color_Alpha(CommunitiesGuildLogFrame.Container, true)
+        e.Set_ScrollBar_Color_Alpha(CommunitiesGuildLogFrame.Container.ScrollFrame)
         --set_Menu(CommunitiesFrame.CommunitiesListDropDownMenu)
 
         --set_Menu(ClubFinderFilterDropdown)
@@ -1484,13 +1485,13 @@ local function Init_Event(arg1)
         hide_Texture(HonorFrame.Inset.Bg)
         hide_Texture(HonorFrame.BonusFrame.ShadowOverlay)
         hide_Texture(HonorFrame.BonusFrame.WorldBattlesTexture)
-        set_NineSlice(HonorFrame.Inset, nil, true)
+        e.Set_NineSlice_Color_Alpha(HonorFrame.Inset, nil, true)
         set_Alpha_Color(HonorFrame.BonusFrame.WorldBattlesTexture)
         hide_Texture(HonorFrame.ConquestBar.Background)
 
-        set_NineSlice(PVPQueueFrame.HonorInset, nil, true)--最右边
+        e.Set_NineSlice_Color_Alpha(PVPQueueFrame.HonorInset, nil, true)--最右边
 
-        set_NineSlice(ConquestFrame.Inset, nil, true)--中间
+        e.Set_NineSlice_Color_Alpha(ConquestFrame.Inset, nil, true)--中间
         hide_Texture(ConquestFrame.Inset.Bg)
         hide_Texture(ConquestFrameLeft)
         hide_Texture(ConquestFrameRight)
@@ -1506,20 +1507,20 @@ local function Init_Event(arg1)
         set_Alpha_Color(PVPQueueFrame.HonorInset.CasualPanel.HonorLevelDisplay.Background)
         --set_Menu(HonorFrameTypeDropDown)
         hide_Texture(ConquestFrame.RatedBGTexture)
-        set_ScrollBar(LFDQueueFrameSpecific)
+        e.Set_ScrollBar_Color_Alpha(LFDQueueFrameSpecific)
 
 
     elseif arg1=='Blizzard_EncounterJournal' then--冒险指南
-        set_NineSlice(EncounterJournal, true)
+        e.Set_NineSlice_Color_Alpha(EncounterJournal, true)
 
         hide_Texture(EncounterJournalBg)
         set_Alpha_Color(EncounterJournalInset.Bg, nil, nil, min03)
-        set_NineSlice(EncounterJournalInset, nil, true)
-        set_ScrollBar(EncounterJournalInstanceSelect)
+        e.Set_NineSlice_Color_Alpha(EncounterJournalInset, nil, true)
+        e.Set_ScrollBar_Color_Alpha(EncounterJournalInstanceSelect)
         set_SearchBox(EncounterJournalSearchBox)
-        set_ScrollBar(EncounterJournal.LootJournalItems.ItemSetsFrame)
-        set_ScrollBar(EncounterJournalEncounterFrameInfo.LootContainer)
-        set_ScrollBar(EncounterJournalEncounterFrameInfoDetailsScrollFrame)
+        e.Set_ScrollBar_Color_Alpha(EncounterJournal.LootJournalItems.ItemSetsFrame)
+        e.Set_ScrollBar_Color_Alpha(EncounterJournalEncounterFrameInfo.LootContainer)
+        e.Set_ScrollBar_Color_Alpha(EncounterJournalEncounterFrameInfoDetailsScrollFrame)
         hide_Texture(EncounterJournalNavBar.overlay)
         hide_Texture(EncounterJournalNavBarInsetBottomBorder)
         hide_Texture(EncounterJournalNavBarInsetRightBorder)
@@ -1532,14 +1533,14 @@ local function Init_Event(arg1)
         EncounterJournalNavBar:DisableDrawLayer('BACKGROUND')
 
         --set_Menu(EncounterJournalInstanceSelectTierDropDown)
-        set_ScrollBar(EncounterJournalEncounterFrameInfoOverviewScrollFrame)
+        e.Set_ScrollBar_Color_Alpha(EncounterJournalEncounterFrameInfoOverviewScrollFrame)
 
 
         C_Timer.After(0.3, function()
             if EncounterJournalMonthlyActivitiesFrame then
                 hide_Texture(EncounterJournalMonthlyActivitiesFrame.Bg)
                 hide_Texture(EncounterJournalMonthlyActivitiesFrame.ShadowRight)
-                set_ScrollBar(EncounterJournalMonthlyActivitiesFrame)
+                e.Set_ScrollBar_Color_Alpha(EncounterJournalMonthlyActivitiesFrame)
             end
 
 
@@ -1553,9 +1554,9 @@ local function Init_Event(arg1)
         --set_Menu(EncounterJournalLootJournalViewDropDown)
 
 
-        set_ScrollBar(EncounterJournalEncounterFrameInfo.BossesScrollBar)
-        set_ScrollBar(EncounterJournalEncounterFrameInstanceFrame.LoreScrollBar)
-        set_ScrollBar(EncounterJournal.LootJournal)
+        e.Set_ScrollBar_Color_Alpha(EncounterJournalEncounterFrameInfo.BossesScrollBar)
+        e.Set_ScrollBar_Color_Alpha(EncounterJournalEncounterFrameInstanceFrame.LoreScrollBar)
+        e.Set_ScrollBar_Color_Alpha(EncounterJournal.LootJournal)
 
 
     elseif arg1=="Blizzard_GuildBankUI" then--公会银行
@@ -1601,12 +1602,12 @@ local function Init_Event(arg1)
             end
         end)
 
-        set_ScrollBar(GuildBankFrame.Log)
-        set_ScrollBar(GuildBankInfoScrollFrame)
+        e.Set_ScrollBar_Color_Alpha(GuildBankFrame.Log)
+        e.Set_ScrollBar_Color_Alpha(GuildBankInfoScrollFrame)
 
     elseif arg1=='Blizzard_AuctionHouseUI' then--拍卖行
         set_Alpha_Color(AuctionHouseFrameBg)
-        set_NineSlice(AuctionHouseFrame, true)
+        e.Set_NineSlice_Color_Alpha(AuctionHouseFrame, true)
         set_Alpha_Color(AuctionHouseFrameMiddle, nil, nil, min03)
         set_Alpha_Color(AuctionHouseFrameLeft, nil, nil, min03)
         set_Alpha_Color(AuctionHouseFrameRight, nil, nil, min03)
@@ -1616,31 +1617,31 @@ local function Init_Event(arg1)
         e.Set_Alpha_Frame_Texture(AuctionHouseFrameAuctionsTab, {alpha= min05})
         e.Set_Alpha_Frame_Texture(AuctionHouseFrame.SearchBar.FilterButton, {alpha= min05})
 
-        set_NineSlice(AuctionHouseFrame.CategoriesList, nil, true)
-        set_ScrollBar(AuctionHouseFrame.CategoriesList)
+        e.Set_NineSlice_Color_Alpha(AuctionHouseFrame.CategoriesList, nil, true)
+        e.Set_ScrollBar_Color_Alpha(AuctionHouseFrame.CategoriesList)
         hide_Texture(AuctionHouseFrame.CategoriesList.Background)
 
-        set_ScrollBar(AuctionHouseFrameAuctionsFrame.BidsList)
-        set_NineSlice(AuctionHouseFrameAuctionsFrame.BidsList, nil, true)
-        set_NineSlice(AuctionHouseFrameAuctionsFrame.AllAuctionsList, nil, true)
-        set_ScrollBar(AuctionHouseFrameAuctionsFrame.AllAuctionsList)
-        set_ScrollBar(AuctionHouseFrameAuctionsFrame.SummaryList)
-        set_NineSlice(AuctionHouseFrameAuctionsFrame.SummaryList, nil, true)
+        e.Set_ScrollBar_Color_Alpha(AuctionHouseFrameAuctionsFrame.BidsList)
+        e.Set_NineSlice_Color_Alpha(AuctionHouseFrameAuctionsFrame.BidsList, nil, true)
+        e.Set_NineSlice_Color_Alpha(AuctionHouseFrameAuctionsFrame.AllAuctionsList, nil, true)
+        e.Set_ScrollBar_Color_Alpha(AuctionHouseFrameAuctionsFrame.AllAuctionsList)
+        e.Set_ScrollBar_Color_Alpha(AuctionHouseFrameAuctionsFrame.SummaryList)
+        e.Set_NineSlice_Color_Alpha(AuctionHouseFrameAuctionsFrame.SummaryList, nil, true)
 
 
-        set_NineSlice(AuctionHouseFrame.BrowseResultsFrame.ItemList, nil, true)
-        set_ScrollBar(AuctionHouseFrame.BrowseResultsFrame.ItemList)
+        e.Set_NineSlice_Color_Alpha(AuctionHouseFrame.BrowseResultsFrame.ItemList, nil, true)
+        e.Set_ScrollBar_Color_Alpha(AuctionHouseFrame.BrowseResultsFrame.ItemList)
 
-        set_NineSlice(AuctionHouseFrame.MoneyFrameInset, nil, true)
+        e.Set_NineSlice_Color_Alpha(AuctionHouseFrame.MoneyFrameInset, nil, true)
         hide_Texture(AuctionHouseFrame.MoneyFrameInset.Bg)
         hide_Frame_Texture(AuctionHouseFrame.MoneyFrameBorder)
 
         set_SearchBox(AuctionHouseFrame.SearchBar.SearchBox)
 
 
-        set_NineSlice(AuctionHouseFrame.CommoditiesSellList, nil, true)
-        set_ScrollBar(AuctionHouseFrame.CommoditiesSellList)
-        set_NineSlice(AuctionHouseFrame.CommoditiesSellFrame, nil, true)
+        e.Set_NineSlice_Color_Alpha(AuctionHouseFrame.CommoditiesSellList, nil, true)
+        e.Set_ScrollBar_Color_Alpha(AuctionHouseFrame.CommoditiesSellList)
+        e.Set_NineSlice_Color_Alpha(AuctionHouseFrame.CommoditiesSellFrame, nil, true)
         e.Set_Alpha_Frame_Texture(AuctionHouseFrame.CommoditiesSellFrame.ItemDisplay, {alpha=0})
         set_SearchBox(AuctionHouseFrame.CommoditiesSellFrame.QuantityInput.InputBox)
         set_SearchBox(AuctionHouseFrame.CommoditiesSellFrame.PriceInput.MoneyInputFrame.GoldBox)
@@ -1650,9 +1651,9 @@ local function Init_Event(arg1)
         set_Alpha_Color(AuctionHouseFrame.CommoditiesSellFrame.CreateAuctionTabLeft, nil, nil, min05)
         set_Alpha_Color(AuctionHouseFrame.CommoditiesSellFrame.CreateAuctionTabRight, nil, nil, min05)
 
-        set_NineSlice(AuctionHouseFrame.ItemSellList, nil, true)
-        set_ScrollBar(AuctionHouseFrame.ItemSellList)
-        set_NineSlice(AuctionHouseFrame.ItemSellFrame, nil, true)
+        e.Set_NineSlice_Color_Alpha(AuctionHouseFrame.ItemSellList, nil, true)
+        e.Set_ScrollBar_Color_Alpha(AuctionHouseFrame.ItemSellList)
+        e.Set_NineSlice_Color_Alpha(AuctionHouseFrame.ItemSellFrame, nil, true)
         e.Set_Alpha_Frame_Texture(AuctionHouseFrame.ItemSellFrame.ItemDisplay, {alpha=0})
         set_SearchBox(AuctionHouseFrame.ItemSellFrame.QuantityInput.InputBox)
         set_SearchBox(AuctionHouseFrame.ItemSellFrame.PriceInput.MoneyInputFrame.GoldBox)
@@ -1667,19 +1668,19 @@ local function Init_Event(arg1)
         set_SearchBox(AuctionHouseFrameAuctionsFrameAuctionsTab)
         e.Set_Alpha_Frame_Texture(AuctionHouseFrameAuctionsFrameGold, {alpha=min05})
         e.Set_Alpha_Frame_Texture(AuctionHouseFrameAuctionsFrameSilver, {alpha=min05})
-        set_NineSlice(AuctionHouseFrameAuctionsFrame.ItemDisplay, nil, true)
-        set_NineSlice(AuctionHouseFrameAuctionsFrame.CommoditiesList, nil, true)
+        e.Set_NineSlice_Color_Alpha(AuctionHouseFrameAuctionsFrame.ItemDisplay, nil, true)
+        e.Set_NineSlice_Color_Alpha(AuctionHouseFrameAuctionsFrame.CommoditiesList, nil, true)
 
         --时光
-        set_ScrollBar(AuctionHouseFrame.WoWTokenResults.DummyScrollBar)
-        set_NineSlice(AuctionHouseFrame.WoWTokenResults, nil, true)
+        e.Set_ScrollBar_Color_Alpha(AuctionHouseFrame.WoWTokenResults.DummyScrollBar)
+        e.Set_NineSlice_Color_Alpha(AuctionHouseFrame.WoWTokenResults, nil, true)
         --购买
-        set_NineSlice(AuctionHouseFrame.ItemBuyFrame.ItemDisplay, nil, true)
-        set_ScrollBar(AuctionHouseFrame.ItemBuyFrame.ItemList)
-        set_NineSlice(AuctionHouseFrame.ItemBuyFrame.ItemList, nil, true)
+        e.Set_NineSlice_Color_Alpha(AuctionHouseFrame.ItemBuyFrame.ItemDisplay, nil, true)
+        e.Set_ScrollBar_Color_Alpha(AuctionHouseFrame.ItemBuyFrame.ItemList)
+        e.Set_NineSlice_Color_Alpha(AuctionHouseFrame.ItemBuyFrame.ItemList, nil, true)
 
     elseif arg1=='Blizzard_ProfessionsCustomerOrders' then--专业定制
-        set_NineSlice(ProfessionsCustomerOrdersFrame, true)
+        e.Set_NineSlice_Color_Alpha(ProfessionsCustomerOrdersFrame, true)
 
         set_SearchBox(ProfessionsCustomerOrdersFrame.BrowseOrders.SearchBar.SearchBox)
 
@@ -1696,22 +1697,22 @@ local function Init_Event(arg1)
         set_Alpha_Color(ProfessionsCustomerOrdersFrameMiddle)
         set_Alpha_Color(ProfessionsCustomerOrdersFrameRight)
 
-        set_NineSlice(ProfessionsCustomerOrdersFrame.BrowseOrders.CategoryList, nil, true)
-        set_NineSlice(ProfessionsCustomerOrdersFrame.BrowseOrders.RecipeList, nil, true)
-        set_ScrollBar(ProfessionsCustomerOrdersFrame.BrowseOrders.CategoryList)
-        set_ScrollBar(ProfessionsCustomerOrdersFrame.BrowseOrders.RecipeList)
+        e.Set_NineSlice_Color_Alpha(ProfessionsCustomerOrdersFrame.BrowseOrders.CategoryList, nil, true)
+        e.Set_NineSlice_Color_Alpha(ProfessionsCustomerOrdersFrame.BrowseOrders.RecipeList, nil, true)
+        e.Set_ScrollBar_Color_Alpha(ProfessionsCustomerOrdersFrame.BrowseOrders.CategoryList)
+        e.Set_ScrollBar_Color_Alpha(ProfessionsCustomerOrdersFrame.BrowseOrders.RecipeList)
         e.Set_Alpha_Frame_Texture(ProfessionsCustomerOrdersFrameBrowseTab, {alpha=min05})
         e.Set_Alpha_Frame_Texture(ProfessionsCustomerOrdersFrameOrdersTab, {alpha=min05})
 
-        set_NineSlice(ProfessionsCustomerOrdersFrame.MyOrdersPage.OrderList, nil, true)
-        set_ScrollBar(ProfessionsCustomerOrdersFrame.MyOrdersPage.OrderList)
+        e.Set_NineSlice_Color_Alpha(ProfessionsCustomerOrdersFrame.MyOrdersPage.OrderList, nil, true)
+        e.Set_ScrollBar_Color_Alpha(ProfessionsCustomerOrdersFrame.MyOrdersPage.OrderList)
 
-        set_NineSlice(ProfessionsCustomerOrdersFrame.Form.CurrentListings, true)
-        set_ScrollBar(ProfessionsCustomerOrdersFrame.Form.CurrentListings.OrderList)
+        e.Set_NineSlice_Color_Alpha(ProfessionsCustomerOrdersFrame.Form.CurrentListings, true)
+        e.Set_ScrollBar_Color_Alpha(ProfessionsCustomerOrdersFrame.Form.CurrentListings.OrderList)
         hide_Texture(ProfessionsCustomerOrdersFrameBg)
 
-        set_NineSlice(ProfessionsCustomerOrdersFrame.Form.LeftPanelBackground, true)
-        set_NineSlice(ProfessionsCustomerOrdersFrame.Form.RightPanelBackground, true)
+        e.Set_NineSlice_Color_Alpha(ProfessionsCustomerOrdersFrame.Form.LeftPanelBackground, true)
+        e.Set_NineSlice_Color_Alpha(ProfessionsCustomerOrdersFrame.Form.RightPanelBackground, true)
 
     elseif arg1=='Blizzard_BlackMarketUI' then--黑市
         set_Alpha_Color(BlackMarketFrameTitleBg)
@@ -1719,10 +1720,10 @@ local function Init_Event(arg1)
         set_Alpha_Color(BlackMarketFrame.LeftBorder)
         set_Alpha_Color(BlackMarketFrame.RightBorder)
         set_Alpha_Color(BlackMarketFrame.BottomBorder)
-        set_ScrollBar(BlackMarketFrame)
+        e.Set_ScrollBar_Color_Alpha(BlackMarketFrame)
 
     elseif arg1=='Blizzard_Collections' then--收藏
-        set_NineSlice(CollectionsJournal, true)
+        e.Set_NineSlice_Color_Alpha(CollectionsJournal, true)
         set_Alpha_Color(CollectionsJournalBg)
 
         e.Set_Alpha_Frame_Texture(MountJournal.MountCount, {alpha=min03})
@@ -1731,11 +1732,11 @@ local function Init_Event(arg1)
         hide_Texture(MountJournal.RightInset.Bg)
         set_Alpha_Color(MountJournal.BottomLeftInset.Background)
         hide_Texture(MountJournal.BottomLeftInset.Bg)
-        set_ScrollBar(MountJournal)
+        e.Set_ScrollBar_Color_Alpha(MountJournal)
         set_SearchBox(MountJournalSearchBox)
-        set_NineSlice(MountJournal.BottomLeftInset, nil, true)
-        set_NineSlice(MountJournal.RightInset, nil, true)
-        set_NineSlice(MountJournal.LeftInset, nil, true)
+        e.Set_NineSlice_Color_Alpha(MountJournal.BottomLeftInset, nil, true)
+        e.Set_NineSlice_Color_Alpha(MountJournal.RightInset, nil, true)
+        e.Set_NineSlice_Color_Alpha(MountJournal.LeftInset, nil, true)
         e.Set_Alpha_Frame_Texture(MountJournalFilterButton, {alpha=min03})
         C_Timer.After(0.5, function() set_Menu(MountJournalFilterButtonWoWTools) end)
 
@@ -1749,7 +1750,7 @@ local function Init_Event(arg1)
         hide_Texture(PetJournalLeftInset.Bg)
         hide_Texture(PetJournalLoadoutBorder)
 
-        set_ScrollBar(PetJournal)
+        e.Set_ScrollBar_Color_Alpha(PetJournal)
         set_SearchBox(PetJournalSearchBox)
 
         set_Alpha_Color(PetJournal.PetCount.BorderTopMiddle, nil, nil, min03)
@@ -1764,9 +1765,9 @@ local function Init_Event(arg1)
         set_Alpha_Color(PetJournal.PetCount.BorderLeftMiddle, nil, nil, min03)
         set_Alpha_Color(PetJournal.PetCount.BorderRightMiddle, nil, nil, min03)
         e.Set_Alpha_Frame_Texture(PetJournalFilterButton, {alpha=min03})
-        set_NineSlice(PetJournalLeftInset, nil, true)
-        set_NineSlice(PetJournalPetCardInset, nil, true)
-        set_NineSlice(PetJournalRightInset, nil, true)
+        e.Set_NineSlice_Color_Alpha(PetJournalLeftInset, nil, true)
+        e.Set_NineSlice_Color_Alpha(PetJournalPetCardInset, nil, true)
+        e.Set_NineSlice_Color_Alpha(PetJournalRightInset, nil, true)
         local frame=_G['RematchFrame']
         if frame then
             hide_Texture(frame.Bg)
@@ -1786,7 +1787,7 @@ local function Init_Event(arg1)
         hide_Texture(ToyBox.iconsFrame.ShadowLineTop)
         hide_Texture(ToyBox.iconsFrame.ShadowLineBottom)
 
-        set_NineSlice(ToyBox.iconsFrame, nil, true)
+        e.Set_NineSlice_Color_Alpha(ToyBox.iconsFrame, nil, true)
         ToyBox.progressBar:DisableDrawLayer('BACKGROUND')
 
         --frame= _G['ManuscriptsJournal']
@@ -1807,13 +1808,13 @@ local function Init_Event(arg1)
         set_Alpha_Color(HeirloomsJournalTopRight)
         hide_Texture(HeirloomsJournal.iconsFrame.ShadowLineBottom)
         hide_Texture(HeirloomsJournal.iconsFrame.ShadowLineTop)
-        set_NineSlice(HeirloomsJournal.iconsFrame, nil, true)
+        e.Set_NineSlice_Color_Alpha(HeirloomsJournal.iconsFrame, nil, true)
         HeirloomsJournal.progressBar:DisableDrawLayer('BACKGROUND')
         e.Set_Alpha_Frame_Texture(HeirloomsJournal.FilterButton, {alpha=min03})
 
         hide_Texture(WardrobeCollectionFrame.ItemsCollectionFrame.ShadowLineBottom)
         hide_Texture(WardrobeCollectionFrame.ItemsCollectionFrame.ShadowLineTop)
-        set_NineSlice(WardrobeCollectionFrame.ItemsCollectionFrame, nil, true)
+        e.Set_NineSlice_Color_Alpha(WardrobeCollectionFrame.ItemsCollectionFrame, nil, true)
         hide_Texture(WardrobeCollectionFrame.ItemsCollectionFrame.BackgroundTile)
         hide_Texture(WardrobeCollectionFrame.ItemsCollectionFrame.Bg)
         hide_Texture(WardrobeCollectionFrame.ItemsCollectionFrame.ShadowLineTop)
@@ -1821,13 +1822,13 @@ local function Init_Event(arg1)
         hide_Texture(WardrobeCollectionFrame.SetsCollectionFrame.RightInset.BackgroundTile)
         hide_Texture(WardrobeCollectionFrame.SetsCollectionFrame.RightInset.Bg)
         hide_Texture(WardrobeCollectionFrame.SetsCollectionFrame.LeftInset.Bg)
-        set_ScrollBar(WardrobeCollectionFrame.SetsCollectionFrame.ListContainer)
+        e.Set_ScrollBar_Color_Alpha(WardrobeCollectionFrame.SetsCollectionFrame.ListContainer)
         hide_Texture(WardrobeCollectionFrame.SetsCollectionFrame.RightInset.ShadowLineTop)
         hide_Texture(WardrobeCollectionFrame.SetsCollectionFrame.RightInset.BGCornerBottomRight)
         hide_Texture(WardrobeCollectionFrame.SetsCollectionFrame.RightInset.BGCornerBottomLeft)
-        set_NineSlice(WardrobeCollectionFrame.SetsCollectionFrame.RightInset, nil, true)
+        e.Set_NineSlice_Color_Alpha(WardrobeCollectionFrame.SetsCollectionFrame.RightInset, nil, true)
         hide_Texture(WardrobeCollectionFrame.SetsCollectionFrame.RightInset.ShadowLineBottom)
-        set_NineSlice(WardrobeCollectionFrame.SetsCollectionFrame.LeftInset, nil, true)
+        e.Set_NineSlice_Color_Alpha(WardrobeCollectionFrame.SetsCollectionFrame.LeftInset, nil, true)
 
         set_SearchBox(WardrobeCollectionFrameSearchBox)
         set_Alpha_Color(WardrobeCollectionFrameMiddleMiddle)
@@ -1864,12 +1865,12 @@ local function Init_Event(arg1)
         end)]]
 
         --试衣间
-        set_NineSlice(WardrobeFrame, true)
+        e.Set_NineSlice_Color_Alpha(WardrobeFrame, true)
         hide_Texture(WardrobeFrameBg)
         hide_Texture(WardrobeTransmogFrame.Inset.Bg)
         set_Alpha_Color(WardrobeTransmogFrame.Inset.BG)
         hide_Texture(WardrobeCollectionFrame.SetsTransmogFrame.BackgroundTile)
-        set_NineSlice(WardrobeCollectionFrame.SetsTransmogFrame, nil, true)
+        e.Set_NineSlice_Color_Alpha(WardrobeCollectionFrame.SetsTransmogFrame, nil, true)
         set_Alpha_Color(WardrobeCollectionFrame.SetsTransmogFrame.Bg)
         --set_Menu(WardrobeOutfitDropDown)
 
@@ -1904,7 +1905,7 @@ local function Init_Event(arg1)
         end
 
         if _G['RematchJournal'] then
-            set_NineSlice(_G['RematchJournal'], true)
+            e.Set_NineSlice_Color_Alpha(_G['RematchJournal'], true)
             set_Alpha_Color(_G['RematchJournalBg'])
             set_Alpha_Color(RematchLoadoutPanel.Target.InsetBack)
             hide_Texture(RematchPetPanel.Top.InsetBack)
@@ -1940,8 +1941,8 @@ local function Init_Event(arg1)
         set_Alpha_Color(CalendarCreateEventFrame.Border.Bg)
         e.Set_Alpha_Frame_Texture(CalendarCreateEventFrame.Border, {notAlpha=true})
         set_SearchBox(CalendarCreateEventTitleEdit)
-        set_NineSlice(CalendarCreateEventDescriptionContainer, nil, nil, true)
-        set_NineSlice(CalendarCreateEventInviteList, nil, nil, true)
+        e.Set_NineSlice_Color_Alpha(CalendarCreateEventDescriptionContainer, nil, nil, true)
+        e.Set_NineSlice_Color_Alpha(CalendarCreateEventInviteList, nil, nil, true)
         set_Alpha_Color(CalendarCreateEventDivider, true)
         set_SearchBox(CalendarCreateEventInviteEdit)
         set_Alpha_Color(CalendarCreateEventFrameButtonBackground, true)
@@ -1955,13 +1956,13 @@ local function Init_Event(arg1)
         set_Alpha_Color(CalendarYearBackground)
 
     elseif arg1=='Blizzard_FlightMap' then--飞行地图
-        set_NineSlice(FlightMapFrame.BorderFrame, true)
+        e.Set_NineSlice_Color_Alpha(FlightMapFrame.BorderFrame, true)
         hide_Texture(FlightMapFrame.ScrollContainer.Child.TiledBackground)
         hide_Texture(FlightMapFrameBg)
 
     elseif arg1=='Blizzard_ItemSocketingUI' then--镶嵌宝石，界面
-        set_NineSlice(ItemSocketingFrame, true)
-        set_NineSlice(ItemSocketingFrameInset, nil, true)
+        e.Set_NineSlice_Color_Alpha(ItemSocketingFrame, true)
+        e.Set_NineSlice_Color_Alpha(ItemSocketingFrameInset, nil, true)
         set_Alpha_Color(ItemSocketingFrameBg)
         hide_Texture(ItemSocketingFrameInset.Bg)
         hide_Texture(ItemSocketingFrame['SocketFrame-Right'])
@@ -1981,7 +1982,7 @@ local function Init_Event(arg1)
         set_Alpha_Color(_G['ItemSocketingScrollFrameMiddle'])
         set_Alpha_Color(_G['ItemSocketingScrollFrameTop'])
         set_Alpha_Color(_G['ItemSocketingScrollFrameBottom'])
-        set_ScrollBar(ItemSocketingScrollFrame)
+        e.Set_ScrollBar_Color_Alpha(ItemSocketingScrollFrame)
 
         hide_Texture(ItemSocketingFrame.TopLeftNub)
         hide_Texture(ItemSocketingFrame.TopRightNub)
@@ -2011,7 +2012,7 @@ local function Init_Event(arg1)
         end)
 
     elseif arg1=='Blizzard_ItemInteractionUI' then--套装, 转换
-        set_NineSlice(ItemInteractionFrame, true)
+        e.Set_NineSlice_Color_Alpha(ItemInteractionFrame, true)
         set_Alpha_Color(ItemInteractionFrameBg)
         set_Alpha_Color(ItemInteractionFrame.Inset.Bg)
         set_Alpha_Color(ItemInteractionFrameMiddle)
@@ -2022,7 +2023,7 @@ local function Init_Event(arg1)
         hide_Texture(ItemInteractionFrame.ButtonFrame.BlackBorder)
 
     elseif arg1=='Blizzard_InspectUI' then--玩家, 观察角色, 界面
-        set_NineSlice(InspectFrame, true)
+        e.Set_NineSlice_Color_Alpha(InspectFrame, true)
         set_Alpha_Color(InspectFrameBg)
         hide_Texture(InspectFrameInset.Bg)
         hide_Texture(InspectPVPFrame.BG)
@@ -2030,11 +2031,11 @@ local function Init_Event(arg1)
         e.Set_Alpha_Frame_Texture(InspectFrameTab1, {alpha=min05})
         e.Set_Alpha_Frame_Texture(InspectFrameTab2, {alpha=min05})
         e.Set_Alpha_Frame_Texture(InspectFrameTab3, {alpha=min05})
-        set_NineSlice(InspectFrame, true)
-        set_NineSlice(InspectFrameInset, nil, true)
+        e.Set_NineSlice_Color_Alpha(InspectFrame, true)
+        e.Set_NineSlice_Color_Alpha(InspectFrameInset, nil, true)
 
     elseif arg1=='Blizzard_ItemUpgradeUI' then--装备升级,界面 
-        set_NineSlice(ItemUpgradeFrame, true)
+        e.Set_NineSlice_Color_Alpha(ItemUpgradeFrame, true)
         set_Alpha_Color(ItemUpgradeFrameBg)
         hide_Texture(ItemUpgradeFrame.TopBG)
         hide_Texture(ItemUpgradeFrame.BottomBG)
@@ -2048,19 +2049,19 @@ local function Init_Event(arg1)
 
     elseif arg1=='Blizzard_MacroUI' then--宏
         e.Set_Alpha_Frame_Texture(MacroFrame, {notAlpha=true})
-        set_NineSlice(MacroFrameInset, true)
-        set_NineSlice(MacroFrame, true)
+        e.Set_NineSlice_Color_Alpha(MacroFrameInset, true)
+        e.Set_NineSlice_Color_Alpha(MacroFrame, true)
+        e.Set_NineSlice_Color_Alpha(MacroFrameTextBackground, true)
         hide_Texture(MacroFrameBg)
         set_Alpha_Color(MacroFrameInset.Bg)
         set_Alpha_Color(MacroHorizontalBarLeft, true)
-        set_Alpha_Color(MacroHorizontalBarRight, true)
         hide_Texture(MacroFrameSelectedMacroBackground)
-        set_ScrollBar(MacroFrame.MacroSelector)
-        set_ScrollBar(MacroFrame.NoteEditBox)
-        set_ScrollBar(MacroFrameScrollFrame)
+        e.Set_ScrollBar_Color_Alpha(MacroFrame.MacroSelector)
+        e.Set_ScrollBar_Color_Alpha(MacroFrame.NoteEditBox)
+        e.Set_ScrollBar_Color_Alpha(MacroFrameScrollFrame)
 
     elseif arg1=='Blizzard_GarrisonUI' then--要塞
-        set_NineSlice(GarrisonCapacitiveDisplayFrame, true)
+        e.Set_NineSlice_Color_Alpha(GarrisonCapacitiveDisplayFrame, true)
         if GarrisonCapacitiveDisplayFrame then--要塞订单
             set_Alpha_Color(GarrisonCapacitiveDisplayFrameBg)
             hide_Texture(GarrisonCapacitiveDisplayFrame.TopTileStreaks)
@@ -2069,7 +2070,7 @@ local function Init_Event(arg1)
 
     elseif arg1=='Blizzard_GenericTraitUI' then--欲龙术
         set_Alpha_Color(GenericTraitFrame.Background)
-        set_NineSlice(GenericTraitFrame, true)
+        e.Set_NineSlice_Color_Alpha(GenericTraitFrame, true)
 
     elseif arg1=='Blizzard_PlayerChoice' then----任务选择
         hooksecurefunc(PlayerChoiceFrame, 'SetupFrame', function(self)
@@ -2078,7 +2079,7 @@ local function Init_Event(arg1)
                 set_Alpha_Color(self.Background, nil, nil, 0)
             end
 
-            set_NineSlice(self)
+            e.Set_NineSlice_Color_Alpha(self)
             set_Alpha_Color(self.Header)
             set_SearchBox(self.Title)
         end)
@@ -2087,7 +2088,7 @@ local function Init_Event(arg1)
 
 
     elseif arg1=='Blizzard_Professions' then--专业, 初始化, 透明
-        set_NineSlice(ProfessionsFrame, true)
+        e.Set_NineSlice_Color_Alpha(ProfessionsFrame, true)
         set_Alpha_Color(ProfessionsFrameBg)
         set_Alpha_Color(ProfessionsFrame.CraftingPage.SchematicForm.Background, nil, nil, min05)
         set_Alpha_Color(ProfessionsFrame.CraftingPage.RankBar.Background, nil, nil, min05)
@@ -2124,8 +2125,8 @@ local function Init_Event(arg1)
 
         set_Alpha_Color(ProfessionsFrame.OrdersPage.OrderView.OrderInfo.Background, nil, nil, min05)
         set_Alpha_Color(ProfessionsFrame.OrdersPage.OrderView.OrderDetails.Background, nil, nil, min05)
-        set_NineSlice(ProfessionsFrame.OrdersPage.OrderView.OrderInfo.NineSlice, true)
-        set_NineSlice(ProfessionsFrame.OrdersPage.OrderView.OrderDetails.NineSlice, true)
+        e.Set_NineSlice_Color_Alpha(ProfessionsFrame.OrdersPage.OrderView.OrderInfo.NineSlice, true)
+        e.Set_NineSlice_Color_Alpha(ProfessionsFrame.OrdersPage.OrderView.OrderDetails.NineSlice, true)
 
         set_Alpha_Color(ProfessionsFrame.OrdersPage.BrowseFrame.PublicOrdersButton.Middle, nil, nil, min05)
         set_Alpha_Color(ProfessionsFrame.OrdersPage.BrowseFrame.PublicOrdersButton.Right, nil, nil, min05)
@@ -2134,28 +2135,28 @@ local function Init_Event(arg1)
         set_Alpha_Color(ProfessionsFrame.OrdersPage.BrowseFrame.PersonalOrdersButton.Right, nil, nil, min05)
         set_Alpha_Color(ProfessionsFrame.OrdersPage.BrowseFrame.PersonalOrdersButton.Left, nil, nil, min05)
 
-        set_NineSlice(ProfessionsFrame.CraftingPage.CraftingOutputLog, true)
-        set_ScrollBar(ProfessionsFrame.CraftingPage.CraftingOutputLog)
-        set_ScrollBar(ProfessionsFrame.CraftingPage.RecipeList)
+        e.Set_NineSlice_Color_Alpha(ProfessionsFrame.CraftingPage.CraftingOutputLog, true)
+        e.Set_ScrollBar_Color_Alpha(ProfessionsFrame.CraftingPage.CraftingOutputLog)
+        e.Set_ScrollBar_Color_Alpha(ProfessionsFrame.CraftingPage.RecipeList)
 
-        set_NineSlice(ProfessionsFrame.CraftingPage.SchematicForm, true)
+        e.Set_NineSlice_Color_Alpha(ProfessionsFrame.CraftingPage.SchematicForm, true)
         set_Alpha_Color(ProfessionsFrame.CraftingPage.SchematicForm.MinimalBackground, nil, nil, 0)
 
-        set_ScrollBar(ProfessionsFrame.OrdersPage.BrowseFrame.RecipeList)
-        set_ScrollBar(ProfessionsFrame.OrdersPage.BrowseFrame.OrderList)
+        e.Set_ScrollBar_Color_Alpha(ProfessionsFrame.OrdersPage.BrowseFrame.RecipeList)
+        e.Set_ScrollBar_Color_Alpha(ProfessionsFrame.OrdersPage.BrowseFrame.OrderList)
 
     elseif arg1=='Blizzard_ClickBindingUI' then--点击，施法
-        set_NineSlice(ClickBindingFrame, true)
-        set_ScrollBar(ClickBindingFrame)
+        e.Set_NineSlice_Color_Alpha(ClickBindingFrame, true)
+        e.Set_ScrollBar_Color_Alpha(ClickBindingFrame)
         set_Alpha_Color(ClickBindingFrameBg)
         ClickBindingFrame.ScrollBoxBackground:Hide()
-        --set_NineSlice(ClickBindingFrame.ScrollBoxBackground, nil, true)
+        --e.Set_NineSlice_Color_Alpha(ClickBindingFrame.ScrollBoxBackground, nil, true)
 
-        set_NineSlice(ClickBindingFrame.TutorialFrame, true)
+        e.Set_NineSlice_Color_Alpha(ClickBindingFrame.TutorialFrame, true)
 
     elseif arg1=='Blizzard_ArchaeologyUI' then
-        set_NineSlice(ArchaeologyFrame, true)
-        set_NineSlice(ArchaeologyFrameInset, nil, true)
+        e.Set_NineSlice_Color_Alpha(ArchaeologyFrame, true)
+        e.Set_NineSlice_Color_Alpha(ArchaeologyFrameInset, nil, true)
         hide_Texture(ArchaeologyFrameBg)
         hide_Texture(ArchaeologyFrameInset.Bg)
         hide_Texture(ArchaeologyFrameRankBarBackground)
@@ -2874,11 +2875,11 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 
             e.Set_Alpha_Frame_Texture(SettingsPanel.NineSlice, {alpha=min05})
             set_Alpha_Color(SettingsPanel.Bg, nil, nil, min05)
-            set_ScrollBar(SettingsPanel.Container.SettingsList)
-            set_ScrollBar(SettingsPanel.CategoryList)
+            e.Set_ScrollBar_Color_Alpha(SettingsPanel.Container.SettingsList)
+            e.Set_ScrollBar_Color_Alpha(SettingsPanel.CategoryList)
 
-            set_NineSlice(PingSystemTutorial, true)
-            set_NineSlice(PingSystemTutorialInset, nil, true)
+            e.Set_NineSlice_Color_Alpha(PingSystemTutorial, true)
+            e.Set_NineSlice_Color_Alpha(PingSystemTutorialInset, nil, true)
             hide_Texture(PingSystemTutorialBg)
             e.Set_Alpha_Frame_Texture(SettingsPanel.GameTab, {notAlpha=true})
             e.Set_Alpha_Frame_Texture(SettingsPanel.AddOnsTab, {notAlpha=true})

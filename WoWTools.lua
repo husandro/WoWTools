@@ -517,30 +517,23 @@ end
 
 
 
-function e.Cedit(self, tab)--frame, name, size={} SecureScrollTemplates.xml
-    --local w= (tab.w or 310)-5
-    local template= tab.template
-    local font= tab.font
-
-    local frame= CreateFrame('ScrollFrame', nil, self, template or 'ScrollFrameTemplate')
+function e.Cedit(self)--frame, name, size={} SecureScrollTemplates.xml
+    local frame= CreateFrame('ScrollFrame', nil, self, 'ScrollFrameTemplate')
     local level= frame:GetFrameLevel()
-
+    frame.ScrollBar:ClearAllPoints()
+    frame.ScrollBar:SetPoint('TOPRIGHT', -10, -10)
+    frame.ScrollBar:SetPoint('BOTTOMRIGHT', -10, 10)
+    e.Set_ScrollBar_Color_Alpha(frame)
     frame.bg= CreateFrame('Frame', nil, frame, 'TooltipBackdropTemplate')
-    frame.bg:SetAllPoints(frame)
     frame.bg:SetPoint('TOPLEFT', -5, 5)
-    frame.bg:SetPoint('BOTTOMRIGHT', 5, -5)
+    frame.bg:SetPoint('BOTTOMRIGHT', 0, -5)
     frame.bg:SetFrameLevel(level+1)
-
+    e.Set_NineSlice_Color_Alpha(frame.bg, true)
     frame.edit= CreateFrame('EditBox', nil, frame)
-
     frame.edit:SetAutoFocus(false)
     frame.edit:SetMultiLine(true)
-    
-    frame.edit:SetPoint('TOPLEFT', 10, -5)
-    --frame.edit:SetPoint('BOTTOMRIGHT')
-
     frame.edit:SetFrameLevel(level+2)
-    frame.edit:SetFontObject(font or "ChatFontNormal")
+    frame.edit:SetFontObject('GameFontHighlightSmall')-- or "ChatFontNormal")
     frame.edit:SetScript('OnEscapePressed', EditBox_ClearFocus)
     frame.edit:SetScript('OnCursorChanged', ScrollingEdit_OnCursorChanged)
     frame.edit:SetScript('OnUpdate', function(s, elapsed)
@@ -556,7 +549,7 @@ function e.Cedit(self, tab)--frame, name, size={} SecureScrollTemplates.xml
     end)
     frame:SetScrollChild(frame.edit)
     frame:HookScript('OnSizeChanged', function(f)
-        f.edit:SetSize(f:GetSize())
+       f.edit:SetWidth(f:GetWidth()-25)
     end)
     function frame:SetText(...)
         self.edit:SetText(...)

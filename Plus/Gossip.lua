@@ -27,7 +27,7 @@ local Save={
                 name=(e.Player.husandro and '打开邮件' or OPENMAIL),
                 hex='ffff00ff'}
         },
-        Gossip_Text_Icon_Size=22,
+        Gossip_Text_Icon_Size=18,
 
         Gossip_Text_Icon_cnFont=true,--仅限，外文, 修该字体
 }
@@ -1151,13 +1151,13 @@ local function Init_Gossip_Text_Icon_Options()
 
 
     --导入数据
-    menu.DataFrame= e.Cedit(Gossip_Text_Icon_Frame, {w=310})
+    menu.DataFrame= e.Cedit(Gossip_Text_Icon_Frame)
     menu.DataFrame:Hide()
-    menu.DataFrame:SetPoint('TOPLEFT', Gossip_Text_Icon_Frame, 'TOPRIGHT', 0, -6)
+    menu.DataFrame:SetPoint('TOPLEFT', Gossip_Text_Icon_Frame, 'TOPRIGHT', 0, -10)
     menu.DataFrame:SetPoint('BOTTOMRIGHT', 310, 8)
 
     menu.DataFrame.CloseButton=CreateFrame('Button', nil, menu.DataFrame, 'UIPanelCloseButton')
-    menu.DataFrame.CloseButton:SetPoint('TOPRIGHT',5, 5)
+    menu.DataFrame.CloseButton:SetPoint('TOPRIGHT',0, 13)
     menu.DataFrame.CloseButton:SetScript('OnClick', function(self)
         local frame=self:GetParent()
         frame:Hide()
@@ -1194,7 +1194,7 @@ local function Init_Gossip_Text_Icon_Options()
         end)
 
         local addText= format('|cnGREEN_FONT_COLOR:%s %d|r', e.onlyChinese and '添加' or ADD, #add)
-        local delText= format('|cff606060%s %d|r', e.onlyChinese and '无效的组合' or SPELL_FAILED_CUSTOM_ERROR_455, del)
+        local delText= format('|cffffffff%s %d|r', e.onlyChinese and '无效的组合' or SPELL_FAILED_CUSTOM_ERROR_455, del)
         local existText= format('|cnRED_FONT_COLOR:%s %d|r', e.onlyChinese and '已存在' or 'Existed', exist)
         if not tooltips then
             for _, info in pairs(add) do
@@ -1236,7 +1236,7 @@ local function Init_Gossip_Text_Icon_Options()
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:AddLine(' ')
-        e.tips:AddLine(e.onlyChinese and '导出' or HUD_EDIT_MODE_IMPORT_LAYOUTHUD_EDIT_MODE_SHARE_LAYOUT)
+        e.tips:AddLine(e.onlyChinese and '导出' or SOCIAL_SHARE_TEXT or  HUD_EDIT_MODE_SHARE_LAYOUT)
         e.tips:Show()
     end)
     menu.DataUscita:SetScript('OnClick', function(self)
@@ -1244,12 +1244,16 @@ local function Init_Gossip_Text_Icon_Options()
         frame:SetShown(true)
         frame.enter:SetShown(false)
         local text=''
-        for gossipID, info in pairs(Save.Gossip_Text_Icon_Player) do
-           --[[local text= (info.icon and format('icon=%s, ') or '')
-                        ..(info.name and format('name=%s, ') or '')
-                        ..(info.hex and format('hex=%s, ') or '')]]
+        local tabs= {}
+        local old= Save.Gossip_Text_Icon_Player
+        for gossipID, info in pairs(old) do
+            info.gossipID= gossipID
+            table.insert(tabs, info)
+        end
+        table.sort(tabs, function(a, b) return a.gossipID<b.gossipID end)
+        for _, info in pairs(tabs) do
             text=text..format('[%d]={icon=%s, name=%s, hex=%s}|n',
-                            gossipID,
+                            info.gossipID,
                             info.icon or '',
                             info.name or '',
                             info.hex or ''
@@ -2950,7 +2954,7 @@ local function Init_Quest()
         end
     end)
     QuestButton:SetScript('OnMouseWheel', function()
-        e.OpenPanelOpting(addName)
+        e.OpenPanelOpting('|A:SpecDial_LastPip_BorderGlow:0:0|a'..(e.onlyChinese and '对话和任务' or addName))
     end)
 
     QuestButton:SetScript('OnLeave', function(self) e.tips:Hide() self:set_Alpha() end)
@@ -3617,7 +3621,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save.movie= Save.movie or {}
 
             Save.Gossip_Text_Icon_Player= Save.Gossip_Text_Icon_Player or {}
-            Save.Gossip_Text_Icon_Size= Save.Gossip_Text_Icon_Size or 22
+            Save.Gossip_Text_Icon_Size= Save.Gossip_Text_Icon_Size or 18
 
              --添加控制面板
              e.AddPanel_Header(nil, 'Plus')
