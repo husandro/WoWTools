@@ -424,13 +424,15 @@ local function Init_Menu(_, level, menuList)
         e.LibDD:UIDropDownMenu_AddSeparator(level)
     end
     for _, tab in pairs(clubs) do
-        info={
-            text= (tab.avatarId and '|T'..tab.avatarId..':0|t' or '')..(tab.shortName or tab.name),
-            hasArrow= true,
-            notCheckable=true,
-            menuList= tab.clubId,
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
+        if tab.clubType ~= Enum.ClubType.Guild then
+            info={
+                text= (tab.avatarId and '|T'..tab.avatarId..':0|t' or '')..(tab.shortName or tab.name),
+                hasArrow= true,
+                notCheckable=true,
+                menuList= tab.clubId,
+            }
+            e.LibDD:UIDropDownMenu_AddButton(info, level)
+        end
     end
 
     --[[e.LibDD:UIDropDownMenu_AddSeparator(level)

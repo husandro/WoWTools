@@ -51,7 +51,7 @@ local heirloomWeapontemEquipLocTab={--传家宝，武器，itemEquipLoc
 
 
 local function Set_Item_Info(self, tab)
-    if not self or not self:IsVisible() then
+    if not self or not self:IsShown() then
         return
     end
     local itemLevel, itemQuality, battlePetSpeciesID
@@ -226,7 +226,7 @@ local function Set_Item_Info(self, tab)
                 if dateInfo.text[equipStr] then--套装名称，                
                     local text= dateInfo.text[equipStr]:match('(.+),') or dateInfo.text[equipStr]:match('(.+)，') or dateInfo.text[equipStr]
                     bottomLeftText= '|cff00ccff'..(e.WA_Utf8Sub(text,3,4, true) or '')..'|r'
-                    
+
                 elseif dateInfo.wow then--战网
                     bottomLeftText= e.Icon.wow2
                     if subclassID==0 then
@@ -345,7 +345,7 @@ local function Set_Item_Info(self, tab)
                 end]]
             end
 
-            
+
             local collectedIcon, isCollected= e.GetItemCollected(itemLink, nil, true)--幻化
             bottomRightText= not isCollected and collectedIcon or bottomRightText
             --[[if containerInfo and not containerInfo.isBound or not containerInfo) or (isWoWItem and subclassID~=0)) and topRightText then
@@ -373,7 +373,7 @@ local function Set_Item_Info(self, tab)
             elseif containerInfo and itemQuality==0 then
                 topRightText= '|A:Coin-Silver:0:0|a'
             end
-            
+
             --topRightText= topRightText or  e.WA_Utf8Sub(itemSubType, 2, 3, true)
 
         elseif battlePetSpeciesID or classID==17 or (classID==15 and subclassID==2) or itemLink:find('Hbattlepet:(%d+)') then--宠物
@@ -396,14 +396,21 @@ local function Set_Item_Info(self, tab)
         elseif classID==12 and itemQuality and itemQuality>0 then--任务
             topRightText= e.onlyChinese and '任务' or e.WA_Utf8Sub(itemSubType, 2,3, true)
 
+        elseif itemID and C_ToyBox.GetToyInfo(itemID) then--玩具            
+            if PlayerHasToy(itemID) then
+                bottomRightText= format('|cnRED_FONT_COLOR:%s|r',  e.onlyChinese and '已收集' or e.WA_Utf8Sub(COLLECTED, 3, 5, true))
+            else
+                bottomRightText= format('|cnGREEN_FONT_COLOR:%s|r',  e.onlyChinese and '未收集' or e.WA_Utf8Sub(NOT_COLLECTED, 3, 5, true))
+            end
         elseif itemQuality==7 or itemQuality==8 then--7传家宝，8 WoWToken
-
             topRightText=e.Icon.wow2
+            
             if classID==0 and subclassID==8 and C_Item.GetItemSpell(itemLink) then--传家宝，升级，物品
                 local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={useStr}, wow=true, red=true})--物品提示，信息
                 if dateInfo.text[useStr] and dateInfo.text[useStr]:find(UPGRADE) then--UPGRADE = "升级";
-                    local weapon= dateInfo.text[useStr]:find(WEAPON)--WEAPON = "武器";
-                    local shield= dateInfo.text[useStr]:find(SHIELDSLOT)--SHIELDSLOT = "盾牌";
+                    local tipText= string.lower(dateInfo.text[useStr])
+                    local weapon= tipText:find(string.lower(WEAPON))--WEAPON = "武器";
+                    local shield= tipText:find(string.lower(SHIELDSLOT))--SHIELDSLOT = "盾牌";
                     local num
                     num= dateInfo.text[useStr]:match('%d+')
                     num= num and tonumber(num)
@@ -423,9 +430,6 @@ local function Set_Item_Info(self, tab)
                     end
                 end
             end
-
-        elseif itemID and C_ToyBox.GetToyInfo(itemID) then--玩具
-            bottomRightText= PlayerHasToy(itemID) and e.Icon.select2 or e.Icon.star2
 
         elseif itemStackCount==1 then
             local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={chargesStr}, wow=true, red=true})--物品提示，信息
@@ -589,24 +593,6 @@ end
 
 
 
-
-
-local function setMerchantInfo()--商人设置
-    if not MerchantFrame:IsShown() then
-        return
-    end
-    local selectedTab= MerchantFrame.selectedTab
-    local page= selectedTab == 1 and MERCHANT_ITEMS_PER_PAGE or BUYBACK_ITEMS_PER_PAGE
-    for i=1, page do
-        local slot = selectedTab==1 and (((MerchantFrame.page - 1) * MERCHANT_ITEMS_PER_PAGE) + i) or i
-        local itemButton= _G["MerchantItem"..i..'ItemButton']
-        if itemButton then
-            Set_Item_Info(itemButton, {merchant={slot=slot, buyBack= selectedTab==2}})
-        end
-    end
-	Set_Item_Info(MerchantBuyBackItemItemButton, {merchant={slot=GetNumBuybackItems(), buyBack=true}})
-
-end
 
 
 
@@ -836,7 +822,7 @@ local function Init_Bag()
     end)
     btn:SetScript('OnEnter', function(self2) self2:SetAlpha(1) end)
     btn:SetScript('OnLeave', function(self2) self2:SetAlpha(0.5) end)
-    
+
 end
 
 
@@ -956,17 +942,28 @@ local function Init()
     end
 
 
- 
 
 
 
 
-   
 
 
 
-    --商人
-    --####
+
+
+    --商人 
+    local function setMerchantInfo()--商人设置
+        local isBuy= MerchantFrame.selectedTab==1
+        local page= isBuy and MERCHANT_ITEMS_PER_PAGE or BUYBACK_ITEMS_PER_PAGE
+        for i=1, page do
+            local slot = isBuy and (((MerchantFrame.page - 1) * MERCHANT_ITEMS_PER_PAGE) + i) or i
+            local itemButton= _G["MerchantItem"..i..'ItemButton']
+            if itemButton then
+                Set_Item_Info(itemButton, {merchant={slot=slot, buyBack= not isBuy}})
+            end
+        end
+        Set_Item_Info(MerchantBuyBackItemItemButton, {merchant={slot=GetNumBuybackItems(), buyBack=true}})
+    end
     hooksecurefunc('MerchantFrame_UpdateMerchantInfo', setMerchantInfo)--MerchantFrame.lua
     hooksecurefunc('MerchantFrame_UpdateBuybackInfo', setMerchantInfo)
 
@@ -1035,6 +1032,9 @@ local function Init()
             end
         end
     end)
+
+
+
 
     --拾取
     hooksecurefunc(LootFrame, 'Open', function(self)--LootFrame.lua
