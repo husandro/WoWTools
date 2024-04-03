@@ -1394,6 +1394,7 @@ local function Init_Heirloom()
         if level==0 then
             button.level:SetText('')
         end
+        button.levelBackground:SetShown(level~=0)
 
         e.Set_Item_Stats(button, C_Heirloom.GetHeirloomLink(button.itemID), {point=button.iconTexture, itemID=button.itemID, hideSet=true, hideLevel=not has, hideStats=not has})--设置，物品，4个次属性，套装，装等，
     end)
