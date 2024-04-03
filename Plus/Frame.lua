@@ -1010,6 +1010,7 @@ local function setAddLoad(arg1)
         end, sizeRestFunc=function(self)
             self.target:SetSize(800, 496)
         end})
+       --e.Set_Move_Frame(EncounterJournal.NineSlice, {frame=EncounterJournal})
 
     elseif arg1=='Blizzard_ClassTalentUI' then--天赋
         local frame=ClassTalentFrame
