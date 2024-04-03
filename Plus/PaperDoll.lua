@@ -1459,6 +1459,115 @@ end
 
 
 
+
+
+
+
+--###############
+--显示，隐藏，按钮
+--###############
+local function Init_Show_Hide_Button(frame)
+    if not frame or frame.ShowHideButton then
+        return
+    end
+
+    local title= frame==PaperDollItemsFrame and CharacterFrame.TitleContainer or frame.TitleContainer
+
+    local btn= e.Cbtn(frame, {size={20,20}, atlas= not Save.hide and e.Icon.icon or e.Icon.disabled})
+    btn:SetPoint('LEFT', title)
+    btn:SetFrameLevel(title:GetFrameLevel()+1)
+
+    btn:SetAlpha(0.5)
+    btn:SetScript('OnClick', function()
+        Save.hide= not Save.hide and true or nil
+
+        GetDurationTotale()--装备,总耐久度
+        Init_Server_equipmentButton_Lable()--显示服务器名称
+
+        Init_Title()--头衔数量
+        LvTo()--总装等
+        set_PaperDollSidebarTab3_Text()--标签, 内容,提示
+        --Init_ChromieTime()--时空漫游战役, 提示
+
+        Init_TrackButton_ShowHide_Button()--装备管理, 总开关
+        Init_TrackButton()--添加装备管理框
+
+        Init_Status_Plus()
+
+        e.call('PaperDollFrame_SetLevel')
+        e.call('PaperDollFrame_UpdateStats')
+
+        local Slot = {
+            [1]	 = "CharacterHeadSlot",
+            [2]	 = "CharacterNeckSlot",
+            [3]	 = "CharacterShoulderSlot",
+            [4]	 = "CharacterShirtSlot",
+            [5]	 = "CharacterChestSlot",
+            [6]	 = "CharacterWaistSlot",
+            [7]	 = "CharacterLegsSlot",
+            [8]	 = "CharacterFeetSlot",
+            [9]	 = "CharacterWristSlot",
+            [10] = "CharacterHandsSlot",
+            [11] = "CharacterFinger0Slot",
+            [12] = "CharacterFinger0Slot",
+            [13] = "CharacterTrinket0Slot",
+            [14] = "CharacterTrinket1Slot",
+            [15] = "CharacterBackSlot",
+            [16] = "CharacterMainHandSlot",
+            [17] = "CharacterSecondaryHandSlot",
+        }
+        for _, slot in pairs(Slot) do
+            local btn= _G[slot]
+            if btn then
+                e.call('PaperDollItemSlotButton_Update', btn)
+            end
+        end
+
+        if InspectFrame then
+            if InspectFrame:IsShown() then
+                e.call('InspectPaperDollFrame_UpdateButtons')--InspectPaperDollFrame.lua
+                e.call('InspectPaperDollFrame_SetLevel')--目标,天赋 装等
+                Init_Target_InspectUI()
+            end
+            if InspectLevelText then
+                e.Cstr(nil, {changeFont= InspectLevelText, size= not Save.hide and 20 or 12})
+            end
+            if InspectFrame.ShowHideButton then
+                InspectFrame.ShowHideButton:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
+            end
+        end
+        PaperDollItemsFrame.ShowHideButton:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
+    end)
+    btn:SetScript('OnLeave', function(self) GameTooltip_Hide() self:SetAlpha(0.5) end)
+    btn:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddLine(' ')
+
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.GetShowHide(not Save.hide), e.Icon.left)
+        e.tips:Show()
+        self:SetAlpha(1)
+    end)
+    frame.ShowHideButton= btn
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --#########
 --目标, 装备
 --#########
@@ -2610,97 +2719,6 @@ end
 
 
 
-
-
---###############
---显示，隐藏，按钮
---###############
-local function Init_Show_Hide_Button(frame)
-    if not frame or frame.ShowHideButton then
-        return
-    end
-
-    local title= frame==PaperDollItemsFrame and CharacterFrame.TitleContainer or frame.TitleContainer
-
-    local btn= e.Cbtn(frame, {size={20,20}, atlas= not Save.hide and e.Icon.icon or e.Icon.disabled})
-    btn:SetPoint('LEFT', title)
-    btn:SetFrameLevel(title:GetFrameLevel()+1)
-
-    btn:SetAlpha(0.5)
-    btn:SetScript('OnClick', function()
-        Save.hide= not Save.hide and true or nil
-
-        GetDurationTotale()--装备,总耐久度
-        Init_Server_equipmentButton_Lable()--显示服务器名称
-
-        Init_Title()--头衔数量
-        LvTo()--总装等
-        set_PaperDollSidebarTab3_Text()--标签, 内容,提示
-        --Init_ChromieTime()--时空漫游战役, 提示
-
-        Init_TrackButton_ShowHide_Button()--装备管理, 总开关
-        Init_TrackButton()--添加装备管理框
-
-        Init_Status_Plus()
-
-        e.call('PaperDollFrame_SetLevel')
-        e.call('PaperDollFrame_UpdateStats')
-
-        local Slot = {
-            [1]	 = "CharacterHeadSlot",
-            [2]	 = "CharacterNeckSlot",
-            [3]	 = "CharacterShoulderSlot",
-            [4]	 = "CharacterShirtSlot",
-            [5]	 = "CharacterChestSlot",
-            [6]	 = "CharacterWaistSlot",
-            [7]	 = "CharacterLegsSlot",
-            [8]	 = "CharacterFeetSlot",
-            [9]	 = "CharacterWristSlot",
-            [10] = "CharacterHandsSlot",
-            [11] = "CharacterFinger0Slot",
-            [12] = "CharacterFinger0Slot",
-            [13] = "CharacterTrinket0Slot",
-            [14] = "CharacterTrinket1Slot",
-            [15] = "CharacterBackSlot",
-            [16] = "CharacterMainHandSlot",
-            [17] = "CharacterSecondaryHandSlot",
-        }
-        for _, slot in pairs(Slot) do
-            local btn= _G[slot]
-            if btn then
-                e.call('PaperDollItemSlotButton_Update', btn)
-            end
-        end
-
-        if InspectFrame then
-            if InspectFrame:IsShown() then
-                e.call('InspectPaperDollFrame_UpdateButtons')--InspectPaperDollFrame.lua
-                e.call('InspectPaperDollFrame_SetLevel')--目标,天赋 装等
-                Init_Target_InspectUI()
-            end
-            if InspectLevelText then
-                e.Cstr(nil, {changeFont= InspectLevelText, size= not Save.hide and 20 or 12})
-            end
-            if InspectFrame.ShowHideButton then
-                InspectFrame.ShowHideButton:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
-            end
-        end
-        PaperDollItemsFrame.ShowHideButton:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
-    end)
-    btn:SetScript('OnLeave', function(self) GameTooltip_Hide() self:SetAlpha(0.5) end)
-    btn:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, e.cn(addName))
-        e.tips:AddLine(' ')
-
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.GetShowHide(not Save.hide), e.Icon.left)
-        e.tips:Show()
-        self:SetAlpha(1)
-    end)
-    frame.ShowHideButton= btn
-end
 
 
 
