@@ -1149,7 +1149,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
         elseif arg1=='Blizzard_PerksProgram' then
             --##########################
             --商站
-            --Blizzard_PerksProgram.lua          
+            --Blizzard_PerksProgram.lua
             local function set_FrozenButton_Tips()
                 if PerksProgramFrame.GetFrozenItemFrame then
                     local frame= PerksProgramFrame:GetFrozenItemFrame()

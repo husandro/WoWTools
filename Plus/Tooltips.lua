@@ -1624,14 +1624,14 @@ end
 --初始
 --####
 local function Init()
-    func.Set_Init_Item(ItemRefTooltip)
+    --[[func.Set_Init_Item(ItemRefTooltip)
     func.Set_Init_Item(e.tips)
-    func.Set_Init_Item(EmbeddedItemTooltip)
+    func.Set_Init_Item(EmbeddedItemTooltip)]]
 
     Init_Web_Link()--取得网页，数据链接
     Int_Health_Bar_Unit()--生命条提示
 
-    e.tips:HookScript("OnHide", function(self)--隐藏
+    --[[e.tips:HookScript("OnHide", function(self)--隐藏
         func.Set_Init_Item(self, true)
     end)
     ItemRefTooltip:HookScript("OnHide", function (self)--隐藏
@@ -1643,7 +1643,7 @@ local function Init()
     end)
     EmbeddedItemTooltip:HookScript('OnHide', function(self)
         func.Set_Init_Item(self, true)
-    end)
+    end)]]
 
     --Blizzard_UIWidgetTemplateBase.lua
     hooksecurefunc(EmbeddedItemTooltip, 'SetSpellByID', function(self, spellID)--法术 Blizzard_UIWidgetTemplateBase.lua
@@ -1692,10 +1692,21 @@ local function Init()
     end)
 
 
-    TooltipDataProcessor.AddTooltipPostCall(TooltipDataProcessor.AllTypes,  function(tooltip, data)--TooltipUtil.lua 
-        if tooltip~=GameTooltip and tooltip~=ItemRefTooltip then
-            return
+    TooltipDataProcessor.AddTooltipPostCall(TooltipDataProcessor.AllTypes,  function(tooltip, data)--TooltipUtil.lua
+        if e.Player.husandro then
+            print(tooltip:GetName())
         end
+        if not tooltip.textLeft then
+            func.Set_Init_Item(tooltip)
+            tooltip:HookScript("OnHide", function(frame)--隐藏
+                func.Set_Init_Item(frame, true)
+                if frame.wowhead then
+                    frame.wowhead.web=nil--取得网页，数据链接
+                    frame.wowhead:SetShown(false)
+                end
+            end)
+        end
+        
 
         --25宏, 11动作条, 4可交互物品, 14装备管理, 0物品 19玩具, 9宠物
         if data.type==2 then--单位
@@ -2661,7 +2672,10 @@ end
 
 
 local function Init_Event(arg1)
-    if arg1=='Blizzard_AchievementUI' then--成就ID
+    if arg1=='Blizzard_PerksProgram' then--Blizzard_PerksProgramProducts.lua
+--PerksProgramFrame.PerksProgramTooltip
+
+    elseif arg1=='Blizzard_AchievementUI' then--成就ID
         hooksecurefunc(AchievementTemplateMixin, 'Init', function(frame)
             if frame.Shield and frame.id then
                 if not frame.AchievementIDLabel  then

@@ -531,7 +531,9 @@ local PetTypeAbility={
 local function show_FloatingPetBattleAbilityTooltip(frame)
     frame:SetScript('OnMouseDown', function(self)
         if self.typeID then
-            SetCollectionsJournalShown(true, 2)
+            if CollectionsJournal and not CollectionsJournal:IsShown() and not UnitAffectingCombat('player') then
+                SetCollectionsJournalShown(true, 2)
+            end
             for index=1,C_PetJournal.GetNumPetTypes() do
                 C_PetJournal.SetPetTypeFilter(index, index==self.typeID)
             end
