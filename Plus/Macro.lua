@@ -262,7 +262,7 @@ end
 --高亮，动作条
 --ActionButton.lua
 local function Set_Action_Focus(spellID)
-    if not e.Player.husandro then--出错，尝试调用保护功能 
+    if not e.Player.husandro or UnitAffectingCombat('player') then--出错，尝试调用保护功能 
         return
     end
     if spellID then
@@ -1402,8 +1402,6 @@ end
 --宏列表，位置
 --###########
 local function Init_Macro_List()
-   
-
     local toRightButton= e.Cbtn(MacroFrame.TitleContainer, {size={20,20}, icon='hide'})
     toRightButton:SetAlpha(0.5)
     if _G['MoveZoomInButtonPerMacroFrame'] then
@@ -1425,28 +1423,34 @@ local function Init_Macro_List()
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:AddLine(' ')
-        e.tips:AddLine((e.onlyChinese and '图标' or EMBLEM_SYMBOL)..':')
+        e.tips:AddLine((e.onlyChinese and '图标' or EMBLEM_SYMBOL)..':', e.Icon.left)
         local text= e.onlyChinese and '备注' or LABEL_NOTE
         text= (Save.toRightLeft and MacroFrame.macroBase==0) and '|cnGREEN_FONT_COLOR:'..text..'|r'
             or ('|cff606060'..text..'|r')
         e.tips:AddDoubleLine(e.Icon.toLeft2..(e.onlyChinese and '左' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT), (Save.toRightLeft==1 and e.Icon.select2 or '')..text)
         e.tips:AddDoubleLine(e.Icon.toRight2..(e.onlyChinese and '右' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT), (Save.toRightLeft==2 and e.Icon.select2 or '')..text)
         e.tips:AddDoubleLine('|A:'..e.Icon.icon..':0:0|a'..(e.onlyChinese and '默认' or DEFAULT), not Save.toRightLeft and e.Icon.select2)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.onlyChinese and '选项' or OPTIONS, e.Icon.right)
         e.tips:Show()
         self:SetAlpha(1)
     end
-    toRightButton:SetScript('OnClick', function(self)
-        if not Save.toRightLeft then
-            Save.toRightLeft=1--左边
-        elseif Save.toRightLeft==1 then
-            Save.toRightLeft=2--右边
-        elseif Save.toRightLeft==2 then
-            Save.toRightLeft=nil--默认
+    toRightButton:SetScript('OnClick', function(self, d)
+        if d=='LeftButton' then
+            if not Save.toRightLeft then
+                Save.toRightLeft=1--左边
+            elseif Save.toRightLeft==1 then
+                Save.toRightLeft=2--右边
+            elseif Save.toRightLeft==2 then
+                Save.toRightLeft=nil--默认
+            end
+            Save.toRight= not Save.toRight and true or nil
+            MacroFrame:ChangeTab(1)
+            self:set_texture()
+            self:set_tooltips()
+        else
+            e.OpenPanelOpting('|TInterface\\MacroFrame\\MacroFrame-Icon:0|t'..(e.onlyChinese and '宏' or addName))
         end
-        Save.toRight= not Save.toRight and true or nil
-        MacroFrame:ChangeTab(1)
-        self:set_texture()
-        self:set_tooltips()
     end)
     toRightButton:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.5) end)
     toRightButton:SetScript('OnEnter', toRightButton.set_tooltips)
@@ -1465,24 +1469,20 @@ local function Init_Macro_List()
                 self.MacroSelector:SetPoint('TOPLEFT', self, 'TOPRIGHT',0,-12)
                 self.MacroSelector:SetPoint('BOTTOMRIGHT', 319, 0)
             end
+           -- self.MacroSelector:SetCustomStride(6);
         else
-            self.MacroSelector:SetPoint('TOPLEFT', 12,-66)
-            self.MacroSelector:SetPoint('RIGHT')
-            self.MacroSelector:SetHeight(146)
-        end
+            --self.MacroSelector:SetCustomStride(12);
 
+            self.MacroSelector:SetPoint('TOPLEFT', 12,-66)
+            self.MacroSelector:SetPoint('BOTTOMRIGHT', MacroFrame, 'RIGHT', -6, 0)
+        end
+        --self:Update()
         --备注
         if not MacroFrame.NoteEditBox and Save.toRightLeft and MacroFrame.macroBase==0 then
-            MacroFrame.NoteEditBox= e.Cedit(MacroFrame, {w=310, font='GameFontHighlightSmall'})
-            MacroFrame.NoteEditBox:SetHeight(135)
-            MacroFrame.NoteEditBox:SetPoint('TOPLEFT', 8, -64)
-            MacroFrame.NoteEditBox:SetPoint('RIGHT', -26, 0)
-            
-            --MacroFrame.NoteEditBox:SetPoint('TOPRIGHT', -26, -72)
---            MacroFrame.NoteEditBox:SetSize(310, 135)
-            --MacroFrame.NoteEditBox:SetPoint('BOTTOMLEFT')
+            MacroFrame.NoteEditBox= e.Cedit(MacroFrame, {font='GameFontHighlightSmall'})
+            MacroFrame.NoteEditBox:SetPoint('TOPLEFT', 8, -65)
+            MacroFrame.NoteEditBox:SetPoint('BOTTOMRIGHT', MacroFrame, 'RIGHT', -6, 0)
             MacroFrame.NoteEditBox.edit:SetText(Save.noteText or (e.onlyChinese and '备注' or LABEL_NOTE))
-            --MacroFrame.NoteEditBox.background:SetAlpha(0.8)
             function MacroFrame.NoteEditBox:set_save_text()--保存备注
                 local text= self.edit:GetText()
                 if text and text~= (e.onlyChinese and '备注' or LABEL_NOTE) and text:gsub(' ','')~='' then
@@ -1521,20 +1521,41 @@ end
 --初始
 --####
 local function Init()
-    MacroFrame.Menu= CreateFrame("Frame", nil, MacroFrame, "UIDropDownMenuTemplate")
-    MacroFrameTextBackground:SetPoint('BOTTOMRIGHT', -8, 42)
-    MacroFrameScrollFrame:SetPoint('BOTTOMRIGHT', -32, 44)
-    MacroFrameText:SetPoint('BOTTOMRIGHT')
     local regions= {MacroFrame:GetRegions()}
-    if regions[5] and regions[5]:GetObjectType()=='Texture' then
-        regions[5]:SetPoint('RIGHT', -80,0)
+    for index, region in pairs(regions) do
+        if region==MacroHorizontalBarLeft then
+            region:Hide()
+            local f= regions[index+1]
+            if f and f:GetObjectType()=='Texture' then
+                f:Hide()
+            end
+            break
+        end
     end
-    
+
+
+
+    MacroFrameTextBackground:ClearAllPoints()
+    MacroFrameTextBackground:SetPoint('TOPLEFT', MacroFrame, 'LEFT', 8, -78)
+    MacroFrameTextBackground:SetPoint('BOTTOMRIGHT', -8, 42)
+    MacroFrameScrollFrame:HookScript('OnSizeChanged', function(f)
+        MacroFrameText:SetWidth(f:GetWidth())
+    end)
+    MacroFrameScrollFrame:ClearAllPoints()
+    MacroFrameScrollFrame:SetPoint('TOPLEFT', MacroFrame, 'LEFT', 12, -83)
+    MacroFrameScrollFrame:SetPoint('BOTTOMRIGHT', -32, 45)
+
     e.Set_Move_Frame(MacroFrame, {neeSize=true, setSize=true, minW=338, minH=424, initFunc=function() end, sizeRestFunc=function(btn)
         btn.target:SetSize(338, 424)
     end})
 
-
+    --选定宏
+    local region= MacroFrameSelectedMacroButton:GetRegions()--外框
+    if region and region:GetObjectType()=='Texture' then
+        region:Hide()
+    end
+    MacroFrameSelectedMacroBackground:ClearAllPoints()
+    MacroFrameSelectedMacroBackground:SetPoint('BOTTOMLEFT', MacroFrameTextBackground, 'TOPLEFT', 0, 8)
 
     MacroEditButton:ClearAllPoints()
     MacroEditButton:SetPoint('TOPLEFT', MacroFrameSelectedMacroButton, 'TOPRIGHT',2,2)
@@ -1546,9 +1567,6 @@ local function Init()
     MacroFrameSelectedMacroName:SetPoint('BOTTOMLEFT', MacroFrameSelectedMacroButton, 'TOPLEFT')
     MacroFrameSelectedMacroName:SetFontObject('GameFontNormal')
 
-    --选定宏，外框
-    local region= MacroFrameSelectedMacroButton:GetRegions()
-    region:Hide()
 
 
     --输入宏命令
@@ -1643,7 +1661,7 @@ local function Init()
 
 
 
-
+    MacroFrame.Menu= CreateFrame("Frame", nil, MacroFrame, "UIDropDownMenuTemplate")
     Init_Macro_List()--宏列表，位置
     Init_Select_Macro_Button()--选定宏，点击，弹出菜单，自定图标
     Init_List_Button()--命令，按钮，列表
@@ -1690,10 +1708,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
             })
 
-            --[[if e.Player.husandro then
-                C_Timer.After(2, ShowMacroFrame)
-                
-            end]]
+            --if e.Player.husandro then
+                --C_Timer.After(2, ShowMacroFrame)
+           -- end
 
             if Save.disabled  then
                 self:UnregisterEvent('ADDON_LOADED')
@@ -1703,13 +1720,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     e.GetEnabeleDisable(false), 'MacroToolkit',
                     e.onlyChinese and '插件' or ADDONS
                 )
-               
             end
-
-
         elseif arg1=='Blizzard_MacroUI' then
-            
-
             Init()
         end
 
