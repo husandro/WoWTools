@@ -28,6 +28,7 @@ local Save={
             [186257]=true,
             [6544]=true,
             [358267]= true,--悬空
+            [212653]= true,
         },
         [FLOOR]={},--{[spellID]=uiMapID}
         [MOUNT_JOURNAL_FILTER_GROUND]={
