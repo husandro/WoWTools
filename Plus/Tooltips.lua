@@ -920,7 +920,7 @@ function func.set_Buff(type, self, ...)
                     or source=='pet' and (e.onlyChinese and '宠物' or PET)
                     or UnitIsPlayer(source) and e.GetPlayerInfo({unit=source, reName=true})
                     or UnitName(source) or _G[source] or source
-            self:AddDoubleLine((col or '|cffffffff') ..format(e.onlyChinese and '来源：%s' or RUNEFORGE_LEGENDARY_POWER_SOURCE_FORMAT, text)..'|r')
+            self:AddLine((col or '|cffffffff') ..format(e.onlyChinese and '来源：%s' or RUNEFORGE_LEGENDARY_POWER_SOURCE_FORMAT, text)..'|r')
             self:Show()
         end
     end
@@ -1645,7 +1645,7 @@ local function Init()
         func.Set_Init_Item(self, true)
     end)]]
 
-    --Blizzard_UIWidgetTemplateBase.lua
+    --[[Blizzard_UIWidgetTemplateBase.lua
     hooksecurefunc(EmbeddedItemTooltip, 'SetSpellByID', function(self, spellID)--法术 Blizzard_UIWidgetTemplateBase.lua
         if spellID and spellID>0 then
             local _, _, icon, _, _, _, _, originalIcon= GetSpellInfo(spellID)
@@ -1666,7 +1666,7 @@ local function Init()
                 self.tooltipColor or HIGHLIGHT_FONT_COLOR, true
             )
         end
-    end)
+    end)]]
 
 
     hooksecurefunc('GameTooltip_AddQuestRewardsToTooltip', func.Set_Quest)--世界任务ID GameTooltip_AddQuest
@@ -1693,9 +1693,6 @@ local function Init()
 
 
     TooltipDataProcessor.AddTooltipPostCall(TooltipDataProcessor.AllTypes,  function(tooltip, data)--TooltipUtil.lua
-        if e.Player.husandro then
-            print(tooltip:GetName())
-        end
         if not tooltip.textLeft then
             func.Set_Init_Item(tooltip)
             tooltip:HookScript("OnHide", function(frame)--隐藏
@@ -2672,10 +2669,10 @@ end
 
 
 local function Init_Event(arg1)
-    if arg1=='Blizzard_PerksProgram' then--Blizzard_PerksProgramProducts.lua
+    --if arg1=='Blizzard_PerksProgram' then--Blizzard_PerksProgramProducts.lua
 --PerksProgramFrame.PerksProgramTooltip
 
-    elseif arg1=='Blizzard_AchievementUI' then--成就ID
+    if arg1=='Blizzard_AchievementUI' then--成就ID
         hooksecurefunc(AchievementTemplateMixin, 'Init', function(frame)
             if frame.Shield and frame.id then
                 if not frame.AchievementIDLabel  then
