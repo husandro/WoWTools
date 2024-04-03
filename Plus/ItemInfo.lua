@@ -415,7 +415,15 @@ local function Set_Item_Info(self, tab)
                     num= dateInfo.text[useStr]:match('%d+')
                     num= num and tonumber(num)
                     if num and (weapon or shield) then
-                        rightText= '|cnGREEN_FONT_COLOR:'..num..'|r'--设置, 最高,等级
+                        local tab={
+                                [35]=29,
+                                [40]=34,
+                                [45]=39,
+                                [50]=44,
+                                [60]=49,
+                                [70]=59,
+                        }
+                        rightText= format('%s%d|r',  tab[num] and '|cnGREEN_FONT_COLOR:' or '|cffff00ff', tab[num] or num)--设置, 最高,等级
                         local heirloomNum=0
                         for _, heirloomID in pairs(C_Heirloom.GetHeirloomItemIDs() or {}) do
                             if heirloomID and C_Heirloom.PlayerHasHeirloom(heirloomID) then
@@ -427,6 +435,7 @@ local function Set_Item_Info(self, tab)
                             end
                         end
                         topLeftText= heirloomNum==0 and '|cnRED_FONT_COLOR:'..heirloomNum..'|r' or heirloomNum
+                        bottomRightText= format('|A:%s:18:18|a', shield and 'Warfronts-BaseMapIcons-Horde-Heroes-Minimap' or 'Warfronts-BaseMapIcons-Horde-Barracks-Minimap')
                     end
                 end
             end
