@@ -1477,7 +1477,7 @@ local function setAddLoad(arg1)
             LFGListFrame.ApplicationViewer.InfoBackground:SetPoint('RIGHT', -2,0)
             hooksecurefunc('PVPQueueFrame_ShowFrame', function()
                 local btn= PVEFrame.ResizeButton
-                if btn.disabledSize then
+                if btn.disabledSize or UnitAffectingCombat('player') then
                     return
                 end
                 if PVPQueueFrame.selection==LFGListPVPStub then
@@ -1508,7 +1508,7 @@ local function setAddLoad(arg1)
             end
             ChallengesFrame:HookScript('OnShow', function()
                 local self= PVEFrame
-                if self.ResizeButton.disabledSize then
+                if self.ResizeButton.disabledSize or UnitAffectingCombat('player') then
                     return
                 end
                 local size= Save.size['PVEFrame_KEY']
@@ -2500,7 +2500,7 @@ end)]]
 
 
     --地下城和团队副本
-    e.Set_Move_Frame(PVEFrame, {setSize=true, minW=563, minH=428, initFunc=function()
+    e.Set_Move_Frame(PVEFrame, {setSize=true, notInCombat=true, minW=563, minH=428, initFunc=function()
         --btn.PVE_FRAME_BASE_WIDTH= PVE_FRAME_BASE_WIDTH
         LFGListPVEStub:SetPoint('BOTTOMRIGHT')
         LFGListFrame.CategorySelection.Inset.CustomBG:SetPoint('BOTTOMRIGHT')

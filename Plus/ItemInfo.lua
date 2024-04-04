@@ -14,6 +14,9 @@ local itemLevelStr= ITEM_LEVEL:gsub('%%d', '%(%%d%+%)')--"物品等级：%d"
 local FMTab={}--附魔
 local useStr=ITEM_SPELL_TRIGGER_ONUSE..'(.+)'--使用：
 --local andStr = COVENANT_RENOWN_TOAST_REWARD_COMBINER:format('(.-)','(.+)')--"%s 和 %s";
+local BOSS_BANNER_LOOT_SET= e.Magic(BOSS_BANNER_LOOT_SET)--套装：%s
+local ITEM_SPELL_KNOWN= ITEM_SPELL_KNOWN
+
 local size= 10--字体大小
 
 
@@ -99,7 +102,6 @@ local function Set_Item_Info(self, tab)
         battlePetSpeciesID= tab.itemKey.battlePetSpeciesID
     end
 
-
     if itemLink then
         itemID= itemID or C_Item.GetItemInfoInstant(itemLink)
         if not itemID then
@@ -107,7 +109,7 @@ local function Set_Item_Info(self, tab)
             itemID= itemID and tonumber(itemID)
         end
 
-        local _, _, itemQuality2, itemLevel2, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, _, _, classID, subclassID, _, expacID, setID, isCraftingReagent = GetItemInfo(itemLink)
+        local _, _, itemQuality2, itemLevel2, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, _, _, classID, subclassID, _, expacID, setID, isCraftingReagent = C_Item.GetItemInfo(itemLink)
 
         itemLevel= itemLevel or GetDetailedItemLevelInfo(itemLink) or itemLevel2
         itemQuality= itemQuality or itemQuality2

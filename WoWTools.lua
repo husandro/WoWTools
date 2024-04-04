@@ -1441,8 +1441,9 @@ function e.Set_Item_Stats(self, link, setting) --setting= setting or {}
             setID= select(16 , GetItemInfo(link))--套装
             if setID and not self.itemSet then
                 self.itemSet= self:CreateTexture()
-                self.itemSet:SetAtlas('UI-HUD-MicroMenu-Highlightalert')--services-icon-goldborder
-                self.itemSet:SetVertexColor(0, 1, 0, 0.8)
+                self.itemSet:SetAtlas('UI-HUD-MicroMenu-Highlightalert')--'UI-HUD-MicroMenu-Highlightalert')--services-icon-goldborder
+                --self.itemSet:SetVertexColor(0, 1, 0, 0.8)
+                --print(C_Item.GetItemSetInfo(setID))
                 self.itemSet:SetAllPoints(point or self)
             end
         end
