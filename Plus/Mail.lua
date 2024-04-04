@@ -2223,7 +2223,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     Save.fast={
                         [e.onlyChinese and '布甲' or GetItemSubClassInfo(4, 1)]= 'Maggoo-Nemesis',--布甲
                         [e.onlyChinese and '皮甲' or GetItemSubClassInfo(4, 2)]= 'Xiaod-Nemesis',--皮甲
-                        [e.onlyChinese and '锁甲' or GetItemSubClassInfo(4, 3)]= 'Fuocco-Nemesis',--锁甲
+                        [e.onlyChinese and '锁甲' or GetItemSubClassInfo(4, 3)]= 'Ms-Nemesis',--锁甲
                         [e.onlyChinese and '板甲' or GetItemSubClassInfo(4, 4)]= 'Zans-Nemesis',--板甲
                         [e.onlyChinese and '盾牌' or GetItemSubClassInfo(4, 6)]= 'Zans-Nemesis',--盾牌
                         [e.onlyChinese and '武器' or GetItemClassInfo(2)]= 'Zans-Nemesis',--武器
