@@ -1864,8 +1864,7 @@ end
 
 --建立，自动选取，选项
 local function Create_CheckButton(frame, info)
-    local gossipOptionID= info and info.gossipOptionID
-for k, v in pairs(info) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
+    local gossipOptionID= info and info.gossipOptionID 
     local check= frame.gossipCheckButton
     if gossipOptionID then
         if not check then
