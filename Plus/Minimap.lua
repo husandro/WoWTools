@@ -2453,7 +2453,7 @@ local function Init_Menu(_, level, menuList)
         end
         local covenantID= C_Covenants.GetActiveCovenantID() or 0
         local data = C_Covenants.GetCovenantData(covenantID) or {}
-        if data and C_CovenantSanctumUI.HasMaximumRenown(covenantID) then
+        if data then--and C_CovenantSanctumUI.HasMaximumRenown(covenantID) then
             local tabs= C_CovenantSanctumUI.GetRenownLevels(covenantID) or {}
             e.LibDD:UIDropDownMenu_AddSeparator(level)
             info={
