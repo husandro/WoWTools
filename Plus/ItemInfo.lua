@@ -220,13 +220,25 @@ local function Set_Item_Info(self, tab)
                 topRightText='|A:worldquest-icon-fishing:0:0|a'
 
         elseif classID==2 or classID==4 then--装备
-            if C_Item.IsCosmeticItem(itemLink) or subclassID==0 then--装饰品
-                local text= get_has_text(select(2, e.GetItemCollected(itemLink, nil, nil, true)))--可幻化，物品
-                if text then
-                    bottomLeftText= get_has_text(select(2, e.GetItemCollected(itemLink, nil, nil, true)))
-                else
-                    local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, itemID=itemID, wow=true, red=true})--物品提示，信息
-                    if dateInfo.wow then--战网
+            if C_Item.IsCosmeticItem(itemLink) then--装饰品
+                bottomLeftText= get_has_text(select(2, e.GetItemCollected(itemLink, nil, nil, true)))
+
+            else
+                local isRedItem
+                if itemQuality and itemQuality>1 then
+                    local upItemLevel= 0
+                    local dateInfo= e.GetTooltipData({
+                        bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, itemID=itemID,
+                        text={equipStr, pvpItemStr, upgradeStr, classStr, itemLevelStr, 'Set di equipaggiamenti(.-)'}, wow=true, red=true})--物品提示，信息
+                    isRedItem= dateInfo.red
+                    if dateInfo.text[itemLevelStr] then--物品等级：%d
+                        itemLevel= tonumber(dateInfo.text[itemLevelStr]) or itemLevel
+                    end
+                    if dateInfo.text[equipStr] then--套装名称，                
+                        local text= dateInfo.text[equipStr]:match('(.+),') or dateInfo.text[equipStr]:match('(.+)，') or dateInfo.text[equipStr]
+                        bottomLeftText= '|cff00ccff'..(e.WA_Utf8Sub(text,3,4, true) or '')..'|r'
+
+                    elseif dateInfo.wow then--战网
                         bottomLeftText= e.Icon.wow2
                         if subclassID==0 then
                             if itemLevel and itemLevel>1 then
@@ -271,23 +283,6 @@ local function Set_Item_Info(self, tab)
                             end
                             topRightText= topRightText or e.WA_Utf8Sub(itemSubType, 2, 3, true)
                         end
-                    end
-                end
-
-            else
-                local isRedItem
-                if itemQuality and itemQuality>1 then
-                    local upItemLevel= 0
-                    local dateInfo= e.GetTooltipData({
-                        bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, itemID=itemID,
-                        text={equipStr, pvpItemStr, upgradeStr, classStr, itemLevelStr, 'Set di equipaggiamenti(.-)'}, wow=true, red=true})--物品提示，信息
-                    isRedItem= dateInfo.red
-                    if dateInfo.text[itemLevelStr] then--物品等级：%d
-                        itemLevel= tonumber(dateInfo.text[itemLevelStr]) or itemLevel
-                    end
-                    if dateInfo.text[equipStr] then--套装名称，                
-                        local text= dateInfo.text[equipStr]:match('(.+),') or dateInfo.text[equipStr]:match('(.+)，') or dateInfo.text[equipStr]
-                        bottomLeftText= '|cff00ccff'..(e.WA_Utf8Sub(text,3,4, true) or '')..'|r'
                     end
 
                     if itemMinLevel>e.Player.level then--低装等
