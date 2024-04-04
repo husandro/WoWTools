@@ -384,7 +384,7 @@ local function Create_Spell_Menu(spellID, icon, name, texture)--创建，法术�
     end
 
 
-    icon= icon and '|T'..icon..':0|t' or ''
+    --icon= icon and '|T'..icon..':0|t' or ''
     local  macroText= Get_Spell_Macro(name, spellID)
     macroText= macroText and '|cnGREEN_FONT_COLOR:'..macroText..'|n |r' or nil
 
@@ -408,14 +408,14 @@ local function Create_Spell_Menu(spellID, icon, name, texture)--创建，法术�
             ..(e.onlyChinese and '设置图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, EMBLEM_SYMBOL))
             ..'|r|n|cff606060Ctrl '..(e.onlyChinese and '查询' or WHO)..' (BUG)|r'
             ..'|nShift '..(e.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT)
-
     e.LibDD:UIDropDownMenu_AddButton({
-        text=icon..name..(macroText and '|cnGREEN_FONT_COLOR:*|r' or ''),
+        text=format('|A:%s:0:0|a', texture or '')..name..(macroText and '|cnGREEN_FONT_COLOR:*|r' or ''),
         tooltipOnButton=true,
         tooltipTitle=headText,
         tooltipText=tipText,
         colorCode=color,
-        icon=texture,
+        icon=icon,
+        
         arg1={spellName=name, spellID=spellID, icon=spellIcon},
 
         notCheckable=true,
