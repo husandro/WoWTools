@@ -348,6 +348,7 @@ local function setClickAtt()--设置 Click属性
         if name and icon then
             button:SetAttribute("type1", "spell")
             button:SetAttribute("spell1", name)
+            button:SetAttribute('target', 'mouseover')
             button.typeSpell=true--提示用
             button.typeID=spellID
         end

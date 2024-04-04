@@ -2129,7 +2129,7 @@ local function Get_Garrison_List_Num(followerType)
         all = all + 1
     end
     if all==0 then
-        text= format('|cff606060%d/%d|r', num, all)
+        text= ''--format('|cff606060%d/%d|r', num, all)
     elseif num==0 then
         text= format('|cff606060%d|r/%d', num, all)
     elseif all==num then
@@ -2143,16 +2143,6 @@ end
 --要塞报告 GarrisonBaseUtils.lua
 local function Init_Garrison_Menu(level)
     local GarrisonList={
-        --[[{name=  e.onlyChinese and '巨龙群岛概要' or DRAGONFLIGHT_LANDING_PAGE_TITLE,
-        garrisonType= Enum.GarrisonType.Type_9_0_Garrison,
-        garrFollowerTypeID= Enum.GarrisonFollowerType.FollowerType_9_0_GarrisonFollower,
-        disabled=not C_PlayerInfo.IsExpansionLandingPageUnlockedForPlayer(LE_EXPANSION_DRAGONFLIGHT),
-        atlas= 'dragonflight-landingbutton-up',
-        tooltip= e.onlyChinese and '点击显示巨龙群岛概要' or DRAGONFLIGHT_LANDING_PAGE_TOOLTIP,
-        func= function()
-            ToggleExpansionLandingPage()
-        end,
-        },]]
 
         {name=  e.onlyChinese and '盟约圣所' or GARRISON_TYPE_9_0_LANDING_PAGE_TITLE,
         garrisonType= Enum.GarrisonType.Type_9_0_Garrison,
@@ -2188,6 +2178,18 @@ local function Init_Garrison_Menu(level)
         atlas2= format('Islands-%sBoat', e.Player.faction),
         tooltip= e.onlyChinese and '点击显示要塞报告' or MINIMAP_GARRISON_LANDING_PAGE_TOOLTIP,
         },
+
+        {name=  e.onlyChinese and '巨龙群岛概要' or DRAGONFLIGHT_LANDING_PAGE_TITLE,
+        garrisonType= Enum.GarrisonType.Type_9_0_Garrison,
+        garrFollowerTypeID= Enum.GarrisonFollowerType.FollowerType_9_0_GarrisonFollower,
+        disabled=not C_PlayerInfo.IsExpansionLandingPageUnlockedForPlayer(LE_EXPANSION_DRAGONFLIGHT),
+        atlas= 'dragonflight-landingbutton-up',
+        tooltip= e.onlyChinese and '点击显示巨龙群岛概要' or DRAGONFLIGHT_LANDING_PAGE_TOOLTIP,
+        func= function()
+            ToggleExpansionLandingPage()
+        end,
+        },
+
     }
 
 
