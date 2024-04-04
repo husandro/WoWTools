@@ -13,7 +13,7 @@
 
 ## X-Website https://www.curseforge.com/wow/addons/wowtools
 
-## OptionalDeps: LibStub-1.0, CallbackHandler-1.0, LibDataBroker-1.1, LibDBIcon-1.0, !LibUIDropDownMenu, LibRangeCheck-2.0
+## OptionalDeps: LibStub-1.0, CallbackHandler-1.0, LibDataBroker-1.1, LibDBIcon-1.0, !LibUIDropDownMenu, LibRangeCheck-3.0
 ## AddonCompartmentFunc: WowTools_OnAddonCompartmentClick
 ## AddonCompartmentFuncOnEnter: WowTools_OnAddonCompartmentFuncOnEnter
 
@@ -24,7 +24,7 @@ Libs\CallbackHandler-1.0.lua
 Libs\LibDataBroker-1.1.lua
 
 Libs\LibDBIcon-1.0.lua
-Libs\LibRangeCheck-2.0.lua
+Libs\LibRangeCheck-3.0.lua
 Libs\LibUIDropDownMenu.lua
 
 
