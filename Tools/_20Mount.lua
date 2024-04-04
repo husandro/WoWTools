@@ -1665,6 +1665,7 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2)
                 panel:RegisterEvent('SPELL_UPDATE_USABLE')
                 panel:RegisterEvent('PET_BATTLE_CLOSE')
                 panel:RegisterUnitEvent('UNIT_EXITED_VEHICLE', "player")
+                panel:RegisterEvent('PLAYER_STOPPED_MOVING')
 
                 panel:RegisterEvent('PLAYER_STARTED_MOVING')--设置, TOOLS 框架,隐藏
 
@@ -1726,7 +1727,12 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2)
         if not XD then
             checkMount()--检测坐骑
         end
-    elseif event=='MOUNT_JOURNAL_USABILITY_CHANGED' or event=='PLAYER_MOUNT_DISPLAY_CHANGED' or event=='PET_BATTLE_CLOSE' or event=='UNIT_EXITED_VEHICLE' then-- or event=='AREA_POIS_UPDATED' then
+    elseif event=='MOUNT_JOURNAL_USABILITY_CHANGED'
+        or event=='PLAYER_MOUNT_DISPLAY_CHANGED'
+        or event=='PET_BATTLE_CLOSE'
+        or event=='UNIT_EXITED_VEHICLE'
+        or event=='PLAYER_STOPPED_MOVING'
+    then-- or event=='AREA_POIS_UPDATED' then
         setClickAtt()--设置属性
 
     elseif event=='MODIFIER_STATE_CHANGED' then

@@ -220,7 +220,7 @@ local function Set_Item_Info(self, tab)
                 topRightText='|A:worldquest-icon-fishing:0:0|a'
 
         elseif classID==2 or classID==4 then--装备
-            if C_Item.IsCosmeticItem(itemLink) or subclassID==0 then--装饰品
+            if C_Item.IsCosmeticItem(itemLink) then--装饰品
                 bottomLeftText= get_has_text(select(2, e.GetItemCollected(itemLink, nil, nil, true)))
 
             else
