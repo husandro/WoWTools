@@ -338,7 +338,10 @@ local function setClickAtt()--设置 Click属性
                     or button.spellID
                     --or IsUsableSpell(368896) and C_MountJournal.GetMountUsabilityByID(1589, true) and getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING)
 
-
+    if not spellID then
+        button.Combat=true
+        return
+    end
     local name, _, icon
     if spellID then
         name, _, icon=GetSpellInfo(spellID)
