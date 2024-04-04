@@ -2179,6 +2179,8 @@ local function Init_Garrison_Menu(level)
         tooltip= e.onlyChinese and '点击显示要塞报告' or MINIMAP_GARRISON_LANDING_PAGE_TOOLTIP,
         },
 
+        {name='-'},
+
         {name=  e.onlyChinese and '巨龙群岛概要' or DRAGONFLIGHT_LANDING_PAGE_TITLE,
         garrisonType= Enum.GarrisonType.Type_9_0_Garrison,
         garrFollowerTypeID= Enum.GarrisonFollowerType.FollowerType_9_0_GarrisonFollower,
@@ -2189,44 +2191,48 @@ local function Init_Garrison_Menu(level)
             ToggleExpansionLandingPage()
         end,
         },
-
     }
 
 
     local bat= UnitAffectingCombat('player')
     for _, info in pairs(GarrisonList) do
-        local has= C_Garrison.HasGarrison(info.garrisonType)
-        local num, num2= '', ''
-        if has then
-            num= ' '..Get_Garrison_List_Num(info.garrFollowerTypeID)
-            if info.garrFollowerTypeID2 then
-                num2= format(' |A:%s:0:0|a%s', info.atlas2 or '',  Get_Garrison_List_Num(info.garrFollowerTypeID2))
-            end
-        end
-        local atlas= type(info.atlas)=='function' and info.atlas() or info.atlas
-        local disabled
-        if info.disabled then
-            disabled= info.disabled
+        if info.name=='-' then
+            e.LibDD:UIDropDownMenu_AddSeparator(level)
+
         else
-            disabled= not has
-        end
-        disabled= disabled or bat
-        e.LibDD:UIDropDownMenu_AddButton({
-            text= format('|A:%s:0:0|a%s%s%s', atlas, info.name, num, num2),
-            checked= GarrisonLandingPage and GarrisonLandingPage:IsShown() and GarrisonLandingPage.garrTypeID==info.garrisonType,
-            disabled= disabled,
-            keepShownOnClick=true,
-            tooltipOnButton=true,
-            tooltipTitle= info.tooltip,
-            arg1= info.garrisonType,
-            func= info.func or function(_, garrisonType)
-                if GarrisonLandingPage and GarrisonLandingPage:IsShown() and GarrisonLandingPage.garrTypeID==garrisonType then
-                    GarrisonLandingPage:Hide()
-                else
-                    ShowGarrisonLandingPage(garrisonType)
+            local has= C_Garrison.HasGarrison(info.garrisonType)
+            local num, num2= '', ''
+            if has then
+                num= ' '..Get_Garrison_List_Num(info.garrFollowerTypeID)
+                if info.garrFollowerTypeID2 then
+                    num2= format(' |A:%s:0:0|a%s', info.atlas2 or '',  Get_Garrison_List_Num(info.garrFollowerTypeID2))
                 end
             end
-        }, level)
+            local atlas= type(info.atlas)=='function' and info.atlas() or info.atlas
+            local disabled
+            if info.disabled then
+                disabled= info.disabled
+            else
+                disabled= not has
+            end
+            disabled= disabled or bat
+            e.LibDD:UIDropDownMenu_AddButton({
+                text= format('|A:%s:0:0|a%s%s%s', atlas, info.name, num, num2),
+                checked= GarrisonLandingPage and GarrisonLandingPage:IsShown() and GarrisonLandingPage.garrTypeID==info.garrisonType,
+                disabled= disabled,
+                keepShownOnClick=true,
+                tooltipOnButton=true,
+                tooltipTitle= info.tooltip,
+                arg1= info.garrisonType,
+                func= info.func or function(_, garrisonType)
+                    if GarrisonLandingPage and GarrisonLandingPage:IsShown() and GarrisonLandingPage.garrTypeID==garrisonType then
+                        GarrisonLandingPage:Hide()
+                    else
+                        ShowGarrisonLandingPage(garrisonType)
+                    end
+                end
+            }, level)
+        end
     end
 end
 
