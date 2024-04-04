@@ -2453,13 +2453,14 @@ local function Init_Menu(_, level, menuList)
         end
         local covenantID= C_Covenants.GetActiveCovenantID() or 0
         local data = C_Covenants.GetCovenantData(covenantID) or {}
-        if data and not C_CovenantSanctumUI.HasMaximumRenown(covenantID) then
+        if data and C_CovenantSanctumUI.HasMaximumRenown(covenantID) then
             local tabs= C_CovenantSanctumUI.GetRenownLevels(covenantID) or {}
             e.LibDD:UIDropDownMenu_AddSeparator(level)
             info={
-                text= format('|A:SanctumUpgrades-%s-32x32:0:0|a%s %d/%d', data.textureKit or '', e.cn(data.name) or '', C_CovenantSanctumUI.GetRenownLevel() or 1, #tabs),
+                text= format('|A:SanctumUpgrades-%s-32x32:0:0|a%s %d/%d', data.textureKit or '', e.cn(data.name) or (e.onlyChinese and '盟约圣所' or GARRISON_TYPE_9_0_LANDING_PAGE_TITLE), C_CovenantSanctumUI.GetRenownLevel() or 1, #tabs),
                 checked= CovenantRenownFrame and CovenantRenownFrame:IsShown(),
                 keepShownOnClick=true,
+                disabled= covenantID==0,
                 func= function()
                     ToggleCovenantRenown()
                 end
@@ -2480,7 +2481,7 @@ local function Init_Menu(_, level, menuList)
     for _, factionID in pairs(major) do
         info= Set_Faction_Menu(factionID)
         if info then
-            e.LibDD:UIDropDownMenu_AddSeparator(level)
+            --e.LibDD:UIDropDownMenu_AddSeparator(level)
             if #major>1 then
                 info.hasArrow= true
             end
