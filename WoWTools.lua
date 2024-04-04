@@ -2482,6 +2482,7 @@ function e.GetItemCollected(itemIDOrLink, sourceID, icon, onlyBool)--物品是�
                         text= '|A:transmog-icon-hidden:0:0|a'
                     end
                 else
+                    
                     text= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
                 end
             end

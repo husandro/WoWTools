@@ -36,8 +36,14 @@ local heirloomWeapontemEquipLocTab={--传家宝 ，武器，itemEquipLoc
 
 
 
-
-
+--已收集, 未收集
+local function get_has_text(has)
+    if has then
+        return format('|cnRED_FONT_COLOR:%s|r',  e.onlyChinese and '已收集' or e.WA_Utf8Sub(COLLECTED, 3, 5, true))
+    elseif has~=nil then
+        return format('|cnGREEN_FONT_COLOR:%s|r',  e.onlyChinese and '未收集' or e.WA_Utf8Sub(NOT_COLLECTED, 3, 5, true))
+    end
+end
 
 
 
@@ -212,169 +218,155 @@ local function Set_Item_Info(self, tab)
                 topRightText='|A:worldquest-icon-fishing:0:0|a'
 
         elseif classID==2 or classID==4 then--装备
-            local isRedItem
-            if itemQuality and itemQuality>1 then
-                local upItemLevel= 0
-                local dateInfo= e.GetTooltipData({
-                    bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, itemID=itemID,
-                    text={equipStr, pvpItemStr, upgradeStr, classStr, itemLevelStr, 'Set di equipaggiamenti(.-)'}, wow=true, red=true})--物品提示，信息
-                --isWoWItem= dateInfo.wow
-                isRedItem= dateInfo.red
-                if dateInfo.text[itemLevelStr] then--物品等级：%d
-                    itemLevel= tonumber(dateInfo.text[itemLevelStr]) or itemLevel
-                end
-                if dateInfo.text[equipStr] then--套装名称，                
-                    local text= dateInfo.text[equipStr]:match('(.+),') or dateInfo.text[equipStr]:match('(.+)，') or dateInfo.text[equipStr]
-                    bottomLeftText= '|cff00ccff'..(e.WA_Utf8Sub(text,3,4, true) or '')..'|r'
+            if C_Item.IsCosmeticItem(itemLink) or subclassID==0 then--装饰品
+                bottomLeftText= get_has_text(select(2, e.GetItemCollected(itemLink, nil, nil, true)))
 
-                elseif dateInfo.wow then--战网
-                    bottomLeftText= e.Icon.wow2
-                    if subclassID==0 then
-                        if itemLevel and itemLevel>1 then
-                            bottomLeftText= bottomLeftText.. itemLevel
-                            local level= GetAverageItemLevel()
-                            if not dateInfo.red then
-                                bottomLeftText= bottomLeftText.. (level<itemLevel and e.Icon.up2 or e.Icon.select2)
-                            else
-                                bottomLeftText= bottomLeftText..e.Icon.O2
-                            end
-                        end
-                        if dateInfo.text[classStr] then
-                            local text=''
-                            local n=1
-                            local findText=dateInfo.text[classStr]
-                            if findText:find(',') then
-                                findText= ' '..findText..','
-                                findText:gsub(' (.-),', function(t)
-                                    if ClassNameIconTab[t] then
-                                        text= select(2, math.modf(n/4))==0 and text..'|n' or text
-                                        text=text..ClassNameIconTab[t]
-                                        n= n+1
-                                    end
-                                end)
-                            else
-                                for className, icon in pairs (ClassNameIconTab) do
-                                    if dateInfo.text[classStr]:find(className) then
-                                        text= select(2, math.modf(n/4))==0 and text..'|n' or text
-                                        text=text..icon
-                                        n= n+1
-                                    end
-                                end
-                            end
-                            --rightText= dateInfo.red and e.Icon.X2 or e.Icon.select2
-                            topLeftText= text
-                        end
-                    else
-                        if dateInfo.red then
-                            if dateInfo.red~= USED then
-                                local redText= dateInfo.red:match('%d+') or dateInfo.red
-                                topRightText= '|cnRED_FONT_COLOR:'..strlower(e.WA_Utf8Sub(redText, 2,3, true)) ..'|r'
-                            end
-                        end
-                        topRightText= topRightText or e.WA_Utf8Sub(itemSubType, 2, 3, true)
+            else
+                local isRedItem
+                if itemQuality and itemQuality>1 then
+                    local upItemLevel= 0
+                    local dateInfo= e.GetTooltipData({
+                        bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, itemID=itemID,
+                        text={equipStr, pvpItemStr, upgradeStr, classStr, itemLevelStr, 'Set di equipaggiamenti(.-)'}, wow=true, red=true})--物品提示，信息
+                    isRedItem= dateInfo.red
+                    if dateInfo.text[itemLevelStr] then--物品等级：%d
+                        itemLevel= tonumber(dateInfo.text[itemLevelStr]) or itemLevel
                     end
-                end
+                    if dateInfo.text[equipStr] then--套装名称，                
+                        local text= dateInfo.text[equipStr]:match('(.+),') or dateInfo.text[equipStr]:match('(.+)，') or dateInfo.text[equipStr]
+                        bottomLeftText= '|cff00ccff'..(e.WA_Utf8Sub(text,3,4, true) or '')..'|r'
 
-                if itemMinLevel>e.Player.level then--低装等
-                    bottomLeftText= '|cnRED_FONT_COLOR:'..(bottomLeftText or itemMinLevel)..'|r'
-                end
-                if dateInfo.text[pvpItemStr] then--PvP装备
-                    rightText= '|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'
-                end
-                if dateInfo.text[upgradeStr] then--"升级：%s/%s"
-                    local min, max= dateInfo.text[upgradeStr]:match('(%d+)/(%d+)')
-                    local upText= dateInfo.text[upgradeStr]:match('(.-)%d+/%d+')
-
-                    upText= upText and strlower(e.WA_Utf8Sub(upText, 1,3, true)) or ''
-                    if min and max then
-                        if min==max then
-                            leftText= "|A:VignetteKill:0:0|a"..upText
-                        else
-                            min, max= tonumber(min) or 0, tonumber(max) or 0
-                            upItemLevel= max-min
-                            leftText= '|cnGREEN_FONT_COLOR:'..max-min..'|r'..upText
-                        end
-                    end
-                end
-
-                local invSlot = e.itemSlotTable[itemEquipLoc]
-                if invSlot and itemLevel and itemLevel>1 and itemLevel>29 then
-                    if not dateInfo.red then--装等，提示
-                        local upLevel, downLevel
-                        local itemLinkPlayer =  GetInventoryItemLink('player', invSlot)
-                        if itemLinkPlayer then
-                            local equipedLevel= GetDetailedItemLevelInfo(itemLinkPlayer)
-                            if equipedLevel then
-                                local equipedInfo= e.GetTooltipData({hyperLink=itemLinkPlayer, text={upgradeStr}, onlyText=true})--物品提示，信息
-                                if equipedInfo.text[upgradeStr] then--"升级：%s/%s"
-                                    local min, max= equipedInfo.text[upgradeStr]:match('(%d+)/(%d+)')
-                                    if min and max and min<max then
-                                        min, max= tonumber(min) or 0, tonumber(max) or 0
-                                        equipedLevel=equipedLevel+ (max-min)*5--已装备，物品，总装等
+                    elseif dateInfo.wow then--战网
+                        bottomLeftText= e.Icon.wow2
+                        if subclassID==0 then
+                            if itemLevel and itemLevel>1 then
+                                bottomLeftText= bottomLeftText.. itemLevel
+                                local level= GetAverageItemLevel()
+                                if not dateInfo.red then
+                                    bottomLeftText= bottomLeftText.. (level<itemLevel and e.Icon.up2 or e.Icon.select2)
+                                else
+                                    bottomLeftText= bottomLeftText..e.Icon.O2
+                                end
+                            end
+                            if dateInfo.text[classStr] then
+                                local text=''
+                                local n=1
+                                local findText=dateInfo.text[classStr]
+                                if findText:find(',') then
+                                    findText= ' '..findText..','
+                                    findText:gsub(' (.-),', function(t)
+                                        if ClassNameIconTab[t] then
+                                            text= select(2, math.modf(n/4))==0 and text..'|n' or text
+                                            text=text..ClassNameIconTab[t]
+                                            n= n+1
+                                        end
+                                    end)
+                                else
+                                    for className, icon in pairs (ClassNameIconTab) do
+                                        if dateInfo.text[classStr]:find(className) then
+                                            text= select(2, math.modf(n/4))==0 and text..'|n' or text
+                                            text=text..icon
+                                            n= n+1
+                                        end
                                     end
                                 end
-
-                                local level= (itemLevel + upItemLevel*5) - equipedLevel
-                                if level> 5 then
-                                    upLevel=true
-                                elseif level< -5 then
-                                    downLevel=true
-                                end
+                                topLeftText= text
                             end
                         else
-                            upLevel=true
+                            if dateInfo.red then
+                                if dateInfo.red~= USED then
+                                    local redText= dateInfo.red:match('%d+') or dateInfo.red
+                                    topRightText= '|cnRED_FONT_COLOR:'..strlower(e.WA_Utf8Sub(redText, 2,3, true)) ..'|r'
+                                end
+                            end
+                            topRightText= topRightText or e.WA_Utf8Sub(itemSubType, 2, 3, true)
                         end
-                        --[[if upLevel and (itemMinLevel and itemMinLevel<=e.Player.level or not itemMinLevel) then
-                            topLeftText=e.Icon.up2
-                        elseif downLevel then
-                            topLeftText= e.Icon.down2
-                        end]]
-                        if itemQuality>2 or (not e.Player.levelMax and itemQuality==2) or upLevel then
-                            topLeftText=(upLevel and '|cnGREEN_FONT_COLOR:'  or (downLevel and '|cnRED_FONT_COLOR:') or  '|cffffffff')
-                                        ..itemLevel
-                                        ..'|r' ..(topLeftText or '')
-                            --topLeftText= itemLevel ..(topLeftText or '')
+                    end
+
+                    if itemMinLevel>e.Player.level then--低装等
+                        bottomLeftText= '|cnRED_FONT_COLOR:'..(bottomLeftText or itemMinLevel)..'|r'
+                    end
+                    if dateInfo.text[pvpItemStr] then--PvP装备
+                        rightText= '|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'
+                    end
+                    if dateInfo.text[upgradeStr] then--"升级：%s/%s"
+                        local min, max= dateInfo.text[upgradeStr]:match('(%d+)/(%d+)')
+                        local upText= dateInfo.text[upgradeStr]:match('(.-)%d+/%d+')
+
+                        upText= upText and strlower(e.WA_Utf8Sub(upText, 1,3, true)) or ''
+                        if min and max then
+                            if min==max then
+                                leftText= "|A:VignetteKill:0:0|a"..upText
+                            else
+                                min, max= tonumber(min) or 0, tonumber(max) or 0
+                                upItemLevel= max-min
+                                leftText= '|cnGREEN_FONT_COLOR:'..max-min..'|r'..upText
+                            end
                         end
-                    elseif itemMinLevel and itemMinLevel<=e.Player.level and itemQuality~=7 then--不可使用
-                        topLeftText=e.Icon.O2
-                        isRedItem=true
+                    end
+
+                    local invSlot = e.itemSlotTable[itemEquipLoc]
+                    if invSlot and itemLevel and itemLevel>1 and itemLevel>29 then
+                        if not dateInfo.red then--装等，提示
+                            local upLevel, downLevel
+                            local itemLinkPlayer =  GetInventoryItemLink('player', invSlot)
+                            if itemLinkPlayer then
+                                local equipedLevel= GetDetailedItemLevelInfo(itemLinkPlayer)
+                                if equipedLevel then
+                                    local equipedInfo= e.GetTooltipData({hyperLink=itemLinkPlayer, text={upgradeStr}, onlyText=true})--物品提示，信息
+                                    if equipedInfo.text[upgradeStr] then--"升级：%s/%s"
+                                        local min, max= equipedInfo.text[upgradeStr]:match('(%d+)/(%d+)')
+                                        if min and max and min<max then
+                                            min, max= tonumber(min) or 0, tonumber(max) or 0
+                                            equipedLevel=equipedLevel+ (max-min)*5--已装备，物品，总装等
+                                        end
+                                    end
+
+                                    local level= (itemLevel + upItemLevel*5) - equipedLevel
+                                    if level> 5 then
+                                        upLevel=true
+                                    elseif level< -5 then
+                                        downLevel=true
+                                    end
+                                end
+                            else
+                                upLevel=true
+                            end
+                            if itemQuality>2 or (not e.Player.levelMax and itemQuality==2) or upLevel then
+                                topLeftText=(upLevel and '|cnGREEN_FONT_COLOR:'  or (downLevel and '|cnRED_FONT_COLOR:') or  '|cffffffff')
+                                            ..itemLevel
+                                            ..'|r' ..(topLeftText or '')
+                            end
+                        elseif itemMinLevel and itemMinLevel<=e.Player.level and itemQuality~=7 then--不可使用
+                            topLeftText=e.Icon.O2
+                            isRedItem=true
+                        end
                     end
                 end
-                --[[if (containerInfo and not containerInfo.isBound) or tab.guidBank then--没有锁定
-                    topRightText=itemSubType and e.WA_Utf8Sub(itemSubType,2,3, true) or '|A:'..e.Icon.unlocked..':0:0|a'
-                end]]
-            end
 
 
-            local collectedIcon, isCollected= e.GetItemCollected(itemLink, nil, true)--幻化
-            bottomRightText= not isCollected and collectedIcon or bottomRightText
-            --[[if containerInfo and not containerInfo.isBound or not containerInfo) or (isWoWItem and subclassID~=0)) and topRightText then
-                if itemQuality==0 and isCollected then
+                local collectedIcon, isCollected= e.GetItemCollected(itemLink, nil, true)--幻化
+                bottomRightText= not isCollected and collectedIcon or bottomRightText
+                if isCollected==false then
+                    topRightText= topRightText or e.WA_Utf8Sub(itemSubType, 2, 3, true)
+                    if itemQuality and itemQuality<=1 then
+                        if itemMinLevel and itemMinLevel<=e.Player.level then
+                            isRedItem=true
+                        else
+                            local dateInfo= e.GetTooltipData({
+                                bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, itemID=itemID,
+                                onlyRed=true, red=true})--物品提示，信息
+                            isRedItem= dateInfo.red
+                        end
+                    end
+                    if topRightText and isRedItem then
+                        topRightText= '|cnRED_FONT_COLOR:'..topRightText..'|r'
+                    end
+                elseif containerInfo and itemQuality==0 then
                     topRightText= '|A:Coin-Silver:0:0|a'
-                elseif not isCollected and itemSubType then
-                    topRightText= e.WA_Utf8Sub(itemSubType, 2, 3, true)
                 end
-            end]]
-            if isCollected==false then
-                topRightText= topRightText or e.WA_Utf8Sub(itemSubType, 2, 3, true)
-                if itemQuality and itemQuality<=1 then
-                    if itemMinLevel and itemMinLevel<=e.Player.level then
-                        isRedItem=true
-                    else
-                        local dateInfo= e.GetTooltipData({
-                            bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, itemID=itemID,
-                            onlyRed=true, red=true})--物品提示，信息
-                        isRedItem= dateInfo.red
-                    end
-                end
-                if topRightText and isRedItem then
-                    topRightText= '|cnRED_FONT_COLOR:'..topRightText..'|r'
-                end
-            elseif containerInfo and itemQuality==0 then
-                topRightText= '|A:Coin-Silver:0:0|a'
             end
 
-            --topRightText= topRightText or  e.WA_Utf8Sub(itemSubType, 2, 3, true)
 
         elseif battlePetSpeciesID or classID==17 or (classID==15 and subclassID==2) or itemLink:find('Hbattlepet:(%d+)') then--宠物
             local speciesID = battlePetSpeciesID or itemLink:match('Hbattlepet:(%d+)') or select(13, C_PetJournal.GetPetInfoByItemID(itemID))--宠物
@@ -389,22 +381,19 @@ local function Set_Item_Info(self, tab)
         elseif classID==15 and subclassID==5 then--坐骑
             local mountID = C_MountJournal.GetMountFromItem(itemID)
             if mountID then
-                bottomRightText= select(11, C_MountJournal.GetMountInfoByID(mountID)) and e.Icon.select2 or e.Icon.star2
+                bottomRightText= get_has_text(select(11, C_MountJournal.GetMountInfoByID(mountID)))
             end
 
 
         elseif classID==12 and itemQuality and itemQuality>0 then--任务
             topRightText= e.onlyChinese and '任务' or e.WA_Utf8Sub(itemSubType, 2,3, true)
 
-        elseif itemID and C_ToyBox.GetToyInfo(itemID) then--玩具            
-            if PlayerHasToy(itemID) then
-                bottomRightText= format('|cnRED_FONT_COLOR:%s|r',  e.onlyChinese and '已收集' or e.WA_Utf8Sub(COLLECTED, 3, 5, true))
-            else
-                bottomRightText= format('|cnGREEN_FONT_COLOR:%s|r',  e.onlyChinese and '未收集' or e.WA_Utf8Sub(NOT_COLLECTED, 3, 5, true))
-            end
+        elseif itemID and C_ToyBox.GetToyInfo(itemID) then--玩具
+            bottomRightText= get_has_text(PlayerHasToy(itemID))--已收集, 未收集
+
         elseif itemQuality==7 or itemQuality==8 then--7传家宝，8 WoWToken
             topRightText=e.Icon.wow2
-            
+
             if classID==0 and subclassID==8 and C_Item.GetItemSpell(itemLink) then--传家宝，升级，物品
                 local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={useStr}, wow=true, red=true})--物品提示，信息
                 if dateInfo.text[useStr] and dateInfo.text[useStr]:find(UPGRADE) then--UPGRADE = "升级";
