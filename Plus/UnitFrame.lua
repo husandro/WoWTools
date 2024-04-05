@@ -804,7 +804,7 @@ local function set_memberFrame(memberFrame)
             'UNIT_SPELLCAST_DELAYED',
             'UNIT_SPELLCAST_FAILED',
             'UNIT_SPELLCAST_FAILED_QUIET',
-            'UNIT_SPELLCAST_INTERRUPTED',
+            'UNIT_SPELLCAST_INTERRUPTED', 
             'UNIT_SPELLCAST_SUCCEEDED',
             'UNIT_SPELLCAST_STOP',
             'UNIT_SPELLCAST_RETICLE_TARGET',

@@ -134,7 +134,7 @@ local function Set_Item_Info(self, tab)
             end
 
         elseif itemID==6948 then--炉石
-            bottomLeftText=e.WA_Utf8Sub(GetBindLocation(), 3, 6, true)
+            bottomLeftText=e.WA_Utf8Sub(e.cn(GetBindLocation()), 3, 6, true)
 
         elseif containerInfo and containerInfo.hasLoot then--宝箱
             local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, red=true, onlyRed=true})--物品提示，信息
@@ -370,8 +370,12 @@ local function Set_Item_Info(self, tab)
             end
 
 
-        elseif battlePetSpeciesID or classID==17 or (classID==15 and subclassID==2) or itemLink:find('Hbattlepet:(%d+)') then--宠物
+        elseif battlePetSpeciesID or itemID==82800 or classID==17 or (classID==15 and subclassID==2) or itemLink:find('Hbattlepet:(%d+)') then--宠物
             local speciesID = battlePetSpeciesID or itemLink:match('Hbattlepet:(%d+)') or select(13, C_PetJournal.GetPetInfoByItemID(itemID))--宠物
+            if not speciesID and itemID==82800 and tab.guidBank then
+                local data= C_TooltipInfo.GetGuildBankItem(tab.guidBank.tab, tab.guidBank.slot) or {}
+                speciesID= data.battlePetSpeciesID
+            end
             if speciesID then
                 topLeftText= select(3, e.GetPetCollectedNum(speciesID)) or topLeftText--宠物, 收集数量
                 local petType= select(3, C_PetJournal.GetPetInfoBySpeciesID(speciesID))

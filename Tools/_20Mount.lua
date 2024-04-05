@@ -328,12 +328,13 @@ local function setClickAtt()--设置 Click属性
         button.Combat=true
         return
     end
-    local spellID= IsIndoors() and button.spellID--进入战斗, 室内
+    local isFlyableArea= IsFlyableArea()
+    local spellID= (IsIndoors() or IsPlayerMoving()) and button.spellID--进入战斗, 室内
                     or getRandomRoll(FLOOR)--区域
-                    or (IsAdvancedFlyableArea() and getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING))
+                    or ((IsAdvancedFlyableArea() and isFlyableArea)and getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING))
                     or ((XD and IsUsableSpell(783)) and 783)
                     or (IsSubmerged() and getRandomRoll(MOUNT_JOURNAL_FILTER_AQUATIC))--水平中
-                    or (IsFlyableArea() and getRandomRoll(MOUNT_JOURNAL_FILTER_FLYING))--飞行区域
+                    or (isFlyableArea and getRandomRoll(MOUNT_JOURNAL_FILTER_FLYING))--飞行区域
                     or (IsOutdoors() and getRandomRoll(MOUNT_JOURNAL_FILTER_GROUND))--室外
                     or button.spellID
                     --or IsUsableSpell(368896) and C_MountJournal.GetMountUsabilityByID(1589, true) and getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING)
@@ -1666,8 +1667,8 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2)
                 panel:RegisterEvent('SPELL_UPDATE_USABLE')
                 panel:RegisterEvent('PET_BATTLE_CLOSE')
                 panel:RegisterUnitEvent('UNIT_EXITED_VEHICLE', "player")
-                panel:RegisterEvent('PLAYER_STOPPED_MOVING')
 
+                panel:RegisterEvent('PLAYER_STOPPED_MOVING')
                 panel:RegisterEvent('PLAYER_STARTED_MOVING')--设置, TOOLS 框架,隐藏
 
                 panel:RegisterEvent('NEUTRAL_FACTION_SELECT_RESULT')--ShiJI
@@ -1760,10 +1761,11 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2)
         end
 
     elseif event=='PLAYER_STARTED_MOVING' then
+        setClickAtt()--设置属性
         if not UnitAffectingCombat('player') and e.toolsFrame:IsShown() then
             e.toolsFrame:SetShown(false)--设置, TOOLS 框架,隐藏
         end
-
+        
     elseif event=='NEUTRAL_FACTION_SELECT_RESULT' then
         ShiJI= Faction==0 and 179244 or Faction==1 and 179245
         checkMount()--检测坐骑

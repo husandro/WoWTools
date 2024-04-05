@@ -166,7 +166,7 @@ function e.IsAtlas(texture)
     if texture then
         local t= type(texture)
         if t=='number' then
-            if t>0 then
+            if texture>0 then
                 isAtlas, textureID, icon= false, texture, format('|T%d:0|t', texture)
             end
         elseif t=='string' then

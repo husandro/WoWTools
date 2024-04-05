@@ -40,6 +40,21 @@ local function set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
     end
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --#############
 --欢迎加入, 信息
 --#############
@@ -49,6 +64,19 @@ local function setMsg_CHAT_MSG_SYSTEM(text)
         panel:UnregisterEvent('CHAT_MSG_SYSTEM')
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 --###############
@@ -128,6 +156,22 @@ local function set_check(search)
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --#####
 --主菜单
 --#####
@@ -177,7 +221,37 @@ local function InitMenu(_, level)--主菜单
         end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    if CanReplaceGuildMaster() then--弹劾
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
+        e.LibDD:UIDropDownMenu_AddButton({
+            text=e.onlyChinese and '弹劾' or GUILD_IMPEACH_POPUP_CONFIRM,
+            isTitle=true,
+            notCheckable=true,
+            tooltipOnButton=true,
+            tooltipTitle= e.onlyChinese and '你所在公会的领袖已被标记为非活动状态。你现在可以争取公会领导权。是否要移除公会领袖？' or GUILD_IMPEACH_POPUP_TEXT,
+        }, level)
+    end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --####
 --初始
@@ -217,28 +291,11 @@ local function Init()
     if CanReplaceGuildMaster() then--弹劾
         local label= e.Cstr(button, {size=10, color=true, justifyH='CENTER'})
         label:SetPoint('TOP')
-        label:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '弹劾' or GUILD_IMPEACH_POPUP_CONFIRM)..'|r')
+        label:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '弹劾' or  e.WA_Utf8Sub(GUILD_IMPEACH_POPUP_CONFIRM, 2, 5,true))..'|r')
     end
 
 
     C_Timer.After(2, set_CHAT_MSG_SYSTEM)--事件, 公会新成员, 队伍新成员
-
-
-    --[[button.Emblem= button:CreateTexture(nil, 'ARTWORK', nil, 2)
-    button.Emblem:SetAllPoints(button)
-    button.Emblem:SetTexture('Interface\\GuildFrame\\GuildEmblems_01')
-    hooksecurefunc(GuildMicroButton, 'UpdateTabard', function(self)
-        local emblemFilename = select(10, GetGuildLogoInfo());
-        local tabardInfo = C_GuildInfo.GetGuildTabardInfo("player");
-        local show= emblemFilename and tabardInfo
-        if show then
-            --LoadMicroButtonTextures(button, "GuildCommunities-GuildColor", tabardInfo.backgroundColor);
-            SetSmallGuildTabardTextures("player", button.Emblem)
-        else
-            LoadMicroButtonTextures(button, "GuildCommunities")
-        end
-        button.Emblem:SetShown(show)
-    end)]]
 end
 
 
@@ -247,8 +304,6 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-
-
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
@@ -267,6 +322,25 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             hooksecurefunc(ClubFinderGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_RequestToJoinFrame)
             hooksecurefunc(ClubFinderCommunityAndGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_RequestToJoinFrame)
+
+            --[[hooksecurefunc(CommunitiesFrame.MemberList.ScrollBox, 'Update', function(self)                
+                for _, btn in pairs(self:GetFrames()) do
+                    local info= btn.memberInfo or {}
+                    if info.guid then
+                        local name= e.GetPlayerInfo({guid=info.guid, reName=true, reRealm=true}):gsub('|A:UI-HUD-MicroMenu-GuildCommunities-Mouseover:0:0|a', '')
+                        if name~='' then
+                           -- btn.NameFrame.Name:SetText(name)
+                        end
+                    end
+                end
+            end)
+            hooksecurefunc(CommunitiesMemberListEntryMixin, 'UpdatePresence', function(frame)
+                frame:HookScript('OnClick', function(f)
+                    if f.memberInfo and f.memberInfo.guid and IsAltKeyDown() then
+                        --C_GuildInfo.RemoveFromGuild(f.memberInfo.guid)
+                    end
+                end)
+            end)]]
         end
 
     elseif event == "PLAYER_LOGOUT" then

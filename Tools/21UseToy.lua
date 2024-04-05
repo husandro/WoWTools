@@ -86,8 +86,8 @@ local function getToy()--生成, 有效表格
     end
 end
 
-local function setAtt()--设置属性
-    if UnitAffectingCombat('player') or not button:IsVisible() then
+local function setAtt(set)--设置属性
+    if not button:IsVisible() or UnitAffectingCombat('player') or (GameTooltip:IsOwned(button) and not set) then
         return
     end
 
@@ -402,7 +402,6 @@ local function InitMenu(_, level, menuList)--主菜单
             text= '|cnRED_FONT_COLOR:#'..num..' '..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..' ('..(e.onlyChinese and '未收集' or NOT_COLLECTED)..')',
             icon= 'bags-button-autosort-up',
             notCheckable=true,
-            keepShownOnClick=true,
             func= function()
                 local num2=0
                 for itemID, _ in pairs(Save.items) do
@@ -545,12 +544,12 @@ end
 local function set_Button_Event(isShown)
     if isShown then
         panel:RegisterUnitEvent('UNIT_SPELLCAST_SUCCEEDED', 'player')
-        panel:RegisterEvent('SPELL_UPDATE_COOLDOWN')
-        panel:RegisterEvent('SPELL_UPDATE_USABLE')
+        --panel:RegisterEvent('SPELL_UPDATE_COOLDOWN')
+        --panel:RegisterEvent('SPELL_UPDATE_USABLE')
     else
         panel:UnregisterEvent('UNIT_SPELLCAST_SUCCEEDED')
-        panel:UnregisterEvent('SPELL_UPDATE_COOLDOWN')
-        panel:UnregisterEvent('SPELL_UPDATE_USABLE')
+--        panel:UnregisterEvent('SPELL_UPDATE_COOLDOWN')
+        --panel:UnregisterEvent('SPELL_UPDATE_USABLE')
     end
 end
 
@@ -648,14 +647,20 @@ local function Init()
     button:SetScript("OnMouseDown", function(self,d)
         if d=='RightButton' and not IsModifierKeyDown() then
             e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
+        else
+            setAtt(true)
         end
     end)
 
-    button:SetScript('OnMouseWheel', setAtt)--设置属性
+    button:SetScript('OnMouseWheel', function()
+        setAtt(true)
+    end)
+
+    --button:SetScript('OnMouseWheel', setAtt)--设置属性
 
     button:SetScript("OnShow", function()
         set_Button_Event(true)
-        setAtt()--设置属性
+        setAtt(true)--设置属性
         setCooldown()--主图标冷却
     end)
     button:SetScript("OnHide", function()
@@ -751,7 +756,6 @@ panel:SetScript("OnEvent", function(_, event, arg1)
         setCooldown()--主图标冷却
 
     elseif event=='SPELL_UPDATE_USABLE' or event=='UNIT_SPELLCAST_SUCCEEDED' then
-
         setAtt()--设置属性
 
     elseif event=='PLAYER_REGEN_ENABLED' then

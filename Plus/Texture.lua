@@ -1022,16 +1022,8 @@ local function Init_All_Frame()
      end
 
      --插件，菜单
-     hide_Frame_Texture(AddonCompartmentFrame, {alpha= min03})
-     set_Alpha_Color(AddonCompartmentFrame.Text, nil, nil, min03)
-     C_Timer.After(2, function()
-         AddonCompartmentFrame:HookScript('OnEnter', function(self)
-             self.Text:SetAlpha(1)
-         end)
-         AddonCompartmentFrame:HookScript('OnLeave', function(self)
-             set_Alpha_Color(self.Text, nil, nil, min03)
-         end)
-     end)
+     hide_Frame_Texture(AddonCompartmentFrame, {alpha= 0.3})
+     set_Alpha_Color(AddonCompartmentFrame.Text, nil, nil, min05)
 
 
      hide_Texture(PlayerFrameAlternateManaBarBorder)
@@ -1039,8 +1031,8 @@ local function Init_All_Frame()
      hide_Texture(PlayerFrameAlternateManaBarRightBorder)
 
      --小地图
-     set_Alpha_Color(MinimapCompassTexture)     
-     e.Set_Alpha_Frame_Texture(GameTimeFrame)
+     set_Alpha_Color(MinimapCompassTexture)
+     set_Button(GameTimeFrame)
      if MinimapCluster and MinimapCluster.TrackingFrame then
         --set_Button(MinimapCluster.TrackingFrame.Button)
         --hide_Texture(MinimapCluster.TrackingFrame.Button)

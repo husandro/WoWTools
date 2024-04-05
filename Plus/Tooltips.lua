@@ -2341,7 +2341,7 @@ local function Init()
         end)
     end
 
-
+    --添加 WidgetSetID
     hooksecurefunc('GameTooltip_AddWidgetSet', function(self, uiWidgetSetID)
         if uiWidgetSetID then
             self:AddLine(format('WidgetSetID %d', uiWidgetSetID))
@@ -2957,6 +2957,18 @@ local function Init_Event(arg1)
                 GameTooltip:SetSpellByID(self.optionInfo.spellID)
                 GameTooltip:Show()
             end
+        end)
+
+    elseif arg1=='Blizzard_GenericTraitUI' then
+        hooksecurefunc(GenericTraitFrame.Currency, 'Setup', function(self, currencyInfo)
+            print(id,addName)
+            if not self.Currency then
+                return
+            end
+            if (currencyInfo and currencyInfo.traitCurrencyID) then 
+                print(currencyInfo.traitCurrencyID)
+            end
+
         end)
     end
 
