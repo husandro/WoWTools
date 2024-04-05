@@ -1453,18 +1453,20 @@ local function Init()
 
         elseif d=='LeftButton' then
             if IsMounted() then
-                C_MountJournal.Dismiss()
-            elseif IsSpellKnown(111400) and not UnitAffectingCombat('player') then--SS爆燃冲刺
+               C_MountJournal.Dismiss()
+            end
+            --[[if IsSpellKnown(111400) and not UnitAffectingCombat('player') then--SS爆燃冲刺
                 for i = 1, 40 do
                     local spell = select(10, UnitBuff('player', i, 'PLAYER'))
                     if not spell then
                         break
                     elseif spell == 111400 then
+                        print(id,addName)
                         CancelUnitBuff('player', i, 'HELPFUL')
                         break
                     end
                 end
-            end
+            end]]
         end
         self.border:SetAtlas('bag-border')
     end)
