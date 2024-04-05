@@ -53,35 +53,35 @@ local function Init()
         end
     end
     hooksecurefunc('SpellFlyoutButton_UpdateGlyphState', function(self)
-            if self.spellID then
-                local text
-                text= select(2, GetCallPetSpellInfo(self.spellID))
-                text= text~='' and text or nil
-                text= text or GetSpellInfo(self.spellID)
-                text= e.cn(text)
-                if text then
-                    if not self.Text then
-                        self.Text=e.Cstr(self);
-                    else
-                        self.Text:ClearAllPoints();
-                    end
-                    text=text:match('%-(.+)') or text
-                    text=text:match('：(.+)') or text
-                    text=text:match(':(.+)') or text
-                    text=text:gsub(' %d','')
-                    text=text:gsub(SUMMONS,'');
-                    local p=self:GetPoint(1);
-                    if p=='TOP' or p=='BOTTOM' then
-                        self.Text:SetPoint('RIGHT', self, 'LEFT', -2, 0);
-                    else
-                        self.Text:SetPoint('BOTTOM', self, 'TOP', 0, 4);
-                        text=Vstr(text);
-                    end
-                    self.Text:SetText(text);
-                    return
+        if self.spellID and not IsPassiveSpell(self.spellID) then
+            local text
+            text= select(2, GetCallPetSpellInfo(self.spellID))
+            text= text~='' and text or nil
+            text= text or GetSpellInfo(self.spellID)
+            text= e.cn(text)
+            if text then
+                if not self.Text then
+                    self.Text=e.Cstr(self);
+                else
+                    self.Text:ClearAllPoints();
                 end
+                text=text:match('%-(.+)') or text
+                text=text:match('：(.+)') or text
+                text=text:match(':(.+)') or text
+                text=text:gsub(' %d','')
+                text=text:gsub(SUMMONS,'');
+                local p=self:GetPoint(1);
+                if p=='TOP' or p=='BOTTOM' then
+                    self.Text:SetPoint('RIGHT', self, 'LEFT', -2, 0);
+                else
+                    self.Text:SetPoint('BOTTOM', self, 'TOP', 0, 4);
+                    text=Vstr(text);
+                end
+                self.Text:SetText(text);
+                return
             end
-            if self.Text then self.TextSetText('') end
+        end
+        if self.Text then self.TextSetText('') end
     end)
 
     --#############

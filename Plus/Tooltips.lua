@@ -1381,7 +1381,6 @@ end
 
 
 
-
 --########
 --设置Cvar
 --########
@@ -1584,6 +1583,26 @@ function func.set_Azerite(self, powerID)--艾泽拉斯之心
         end
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2321,7 +2340,36 @@ local function Init()
             end
         end)
     end
+
+
+    hooksecurefunc('GameTooltip_AddWidgetSet', function(self, uiWidgetSetID)
+        if uiWidgetSetID then
+            self:AddLine(format('WidgetSetID %d', uiWidgetSetID))
+            self:Show()
+        end
+    end)
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
