@@ -88,7 +88,7 @@ local Save={
 local panel= CreateFrame("Frame")
 local button
 local Faction =  e.Player.faction=='Horde' and 0 or e.Player.faction=='Alliance' and 1
-local ShiJI= e.Player.faction==0 and 179244 or e.Player.faction=='Alliance' and 179245
+local ShiJI= e.Player.faction==0 and 179244 or (e.Player.faction=='Alliance' and 179245) or nil
 local OkMount--是否已学, 骑术
 local XD
 
@@ -329,20 +329,34 @@ local function setClickAtt()--设置 Click属性
         return
     end
     local isFlyableArea= IsFlyableArea()
-    local spellID= (IsIndoors() or IsPlayerMoving()) and button.spellID--进入战斗, 室内
-                    or getRandomRoll(FLOOR)--区域
-                    or ((IsAdvancedFlyableArea() and isFlyableArea)and getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING))
-                    or ((XD and IsUsableSpell(783)) and 783)
-                    or (IsSubmerged() and getRandomRoll(MOUNT_JOURNAL_FILTER_AQUATIC))--水平中
-                    or (isFlyableArea and getRandomRoll(MOUNT_JOURNAL_FILTER_FLYING))--飞行区域
-                    or (IsOutdoors() and getRandomRoll(MOUNT_JOURNAL_FILTER_GROUND))--室外
-                    or button.spellID
-                    --or IsUsableSpell(368896) and C_MountJournal.GetMountUsabilityByID(1589, true) and getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING)
+    local isMoving= IsPlayerMoving()
+    local isBat= UnitAffectingCombat('player')
+    local spellID
 
-    if not spellID then
-        button.Combat=true
+    if XD then
+        if IsSubmerged() then
+            spellID= 783
+        elseif isMoving or isBat then
+            spellID= IsIndoors() and 768 or 783
+        elseif IsAdvancedFlyableArea() and isFlyableArea then
+            spellID= getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING)
+        end
+        spellID= spellID or (IsIndoors() and 768 or 783)
+    else
+        spellID= (IsIndoors() or isMoving or isBat) and button.spellID--进入战斗, 室内
+            or getRandomRoll(FLOOR)--区域
+            or ((IsAdvancedFlyableArea() and isFlyableArea)and getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING))            
+            or (IsSubmerged() and getRandomRoll(MOUNT_JOURNAL_FILTER_AQUATIC))--水平中
+            or (isFlyableArea and getRandomRoll(MOUNT_JOURNAL_FILTER_FLYING))--飞行区域
+            or (IsOutdoors() and getRandomRoll(MOUNT_JOURNAL_FILTER_GROUND))--室内
+            or button.spellID
+    end
+    spellID= spellID or ShiJI
+
+    if spellID== button.typeID then
         return
     end
+
     local name, _, icon
     if spellID then
         name, _, icon=GetSpellInfo(spellID)
@@ -352,6 +366,9 @@ local function setClickAtt()--设置 Click属性
             button:SetAttribute('target1', 'mouseover')
             button.typeSpell=true--提示用
             button.typeID=spellID
+        else
+            e.LoadDate({id=spellID, type='spell'})
+            button.Combat=true
         end
     elseif button.itemID then
         button:SetAttribute("type1", "item")
@@ -1112,7 +1129,7 @@ local function Init_Menu_Set_UI(self, level)--坐骑界面, 菜单
     if not mountID then
         return
     end
-    local name, _, icon, _, _, _, _, isFactionSpecific, faction, shouldHideOnChar, isCollected, _, isForDragonriding = C_MountJournal.GetMountInfoByID(mountID)    
+    local name, _, icon, _, _, _, _, isFactionSpecific, faction, shouldHideOnChar, isCollected, _, isForDragonriding = C_MountJournal.GetMountInfoByID(mountID)
     for _, type in pairs(MountType) do
         if type=='Shift' or type==FLOOR then
             e.LibDD:UIDropDownMenu_AddSeparator(level)
@@ -1526,7 +1543,7 @@ local function Init()
         self:SetScript('OnUpdate',nil)
         self.elapsed=nil
     end)
-    
+
     button:SetScript('OnEnter', function(self)
         if not UnitAffectingCombat('player') then
             e.toolsFrame:SetShown(true)--设置, TOOLS 框架, 显示
@@ -1618,7 +1635,7 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2)
                     C_AddOns.LoadAddOn('Blizzard_Collections')
                 end]]
                 CollectionsJournal_LoadUI()
-                
+
 
                 button= e.Cbtn2({
                     name= 'WoWToolsMountButton',
@@ -1765,7 +1782,7 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2)
         if not UnitAffectingCombat('player') and e.toolsFrame:IsShown() then
             e.toolsFrame:SetShown(false)--设置, TOOLS 框架,隐藏
         end
-        
+
     elseif event=='NEUTRAL_FACTION_SELECT_RESULT' then
         ShiJI= Faction==0 and 179244 or Faction==1 and 179245
         checkMount()--检测坐骑

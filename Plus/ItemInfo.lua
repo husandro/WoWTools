@@ -395,7 +395,6 @@ local function Set_Item_Info(self, tab)
             topRightText= e.onlyChinese and '任务' or e.WA_Utf8Sub(itemSubType, 2,3, true)
 
         elseif itemID and C_ToyBox.GetToyInfo(itemID) then--玩具
-            print(itemLink)
             bottomRightText= get_has_text(PlayerHasToy(itemID))--已收集, 未收集
 
         elseif itemQuality==7 or itemQuality==8 then--7传家宝，8 WoWToken
