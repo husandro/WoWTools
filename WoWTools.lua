@@ -900,6 +900,8 @@ function e.Magic(text)
     return text
 end
 
+
+--距离
 local LibRangeCheck = LibStub("LibRangeCheck-3.0", true)
 function e.GetRange(unit, checkVisible)--WA Prototypes.lua
     return LibRangeCheck:GetRange(unit, checkVisible)
