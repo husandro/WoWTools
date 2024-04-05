@@ -64,6 +64,7 @@ local function setSummonedPetGUID()--召唤信息
         and not C_PvP.IsArena()
         and not UnitCastingInfo('player')
         and not UnitChannelInfo('paleyr')
+        and not UnitAffectingCombat('player')
         then
         C_PetJournal.SummonPetByGUID(petGUID)
     end
