@@ -88,9 +88,11 @@ local Save={
 local panel= CreateFrame("Frame")
 local button
 local Faction =  e.Player.faction=='Horde' and 0 or e.Player.faction=='Alliance' and 1
-local ShiJI= e.Player.faction==0 and 179244 or (e.Player.faction=='Alliance' and 179245) or nil
+local ShiJI
 local OkMount--是否已学, 骑术
 local XD
+
+
 
 e.LoadDate({id=179244, type= 'spell'})
 e.LoadDate({id=179245, type= 'spell'})
@@ -114,9 +116,9 @@ local MountType={
 
 
 
-
-
-
+local function set_ShiJI()
+    ShiJI= e.Player.faction==0 and 179244 or (e.Player.faction=='Alliance' and 179245) or nil
+end
 
 
 
@@ -901,6 +903,21 @@ local function InitMenu(_, level, type)--主菜单
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level);
         end
+
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
+        info={
+            text=e.onlyChinese and '全部清除' or CLEAR_ALL,
+            notCheckable=true,
+            tooltipOnButton=true,
+            tooltipTitle='|cnGREEN_FONT_COLOR:Ctrl+'..e.Icon.left,
+            func= function()
+                if IsControlKeyDown() then
+                    Save.Mounts[SPELLS]={}
+                    print(id, addName, e.onlyChinese and '全部清除' or CLEAR_ALL, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '完成' or DONE)
+                end
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
         return
 
     elseif type=='Shift' or type=='Alt' or type=='Ctrl' then--二级菜单
@@ -1384,6 +1401,7 @@ local function Init()
     e.LibDD:UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
 
     Init_Dialogs()--初始化，对话框
+    set_ShiJI()
 
     OkMount= IsSpellKnownOrOverridesKnown(90265)--是否已学, 骑术
                 or IsSpellKnownOrOverridesKnown(33391)
@@ -1786,7 +1804,7 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2)
         end
 
     elseif event=='NEUTRAL_FACTION_SELECT_RESULT' then
-        ShiJI= Faction==0 and 179244 or Faction==1 and 179245
+        set_ShiJI()
         checkMount()--检测坐骑
         setClickAtt()--设置属性
 
