@@ -1,25 +1,54 @@
 local id, e = ...
 local addName='DaisyTools'
 local Save={
-
+    speciesID=2280
 }
 
 
 local button
+local Pets={}
 
-local petName, petGUID
-local speciesID=2780
+local Tabs={
+    [2780]= {cn='黛西', emote='BECKON', auraID=311796},
+ }
+ for _, info in pairs(Tabs) do
+    if info.auraID then
+        e.LoadDate({id=info.auraID, type='spell'})
+    end
+ end
 
-local Pets={
-    [2780] = {name='黛西', emote='BECKON'},
-}
+
+local function set_pets_data()
+    Pets={}
+    for speciesID, tab in pairs(Tabs) do
+        local speciesName, speciesIcon= C_PetJournal.GetPetInfoBySpeciesID(speciesID)
+        Pets[speciesID]= {
+            name= speciesName,
+            cn= tab.cn,
+            guid=select(2, C_PetJournal.FindPetIDByName(speciesName)),
+            icon= speciesIcon,
+            emote=tab.emote,
+            auraID= tab.auraID,
+            auraName= tab.auraID and GetSpellInfo(tab.auraID) or nil,
+        }
+        if Save.speciesID== speciesID then
+            button.texture:SetTexture(speciesIcon)
+        end
+    end
+end
+
+local function get_speciesID_data()
+    return Pets[Save.speciesID] or {}
+end
+
 
 local function setTargetChaged()
-    if Save.notGuLai then
+    local info= get_speciesID_data()
+    if Save.notGuLai or not info.emote then
         return
     end
-    if UnitIsBattlePetCompanion('target') and C_PetJournal.GetSummonedPetGUID()==petGUID then
-        DoEmote('BECKON')--beckon
+    if UnitIsBattlePetCompanion('target') and C_PetJournal.GetSummonedPetGUID()==info.guid then
+        DoEmote(info.emote)--beckon
     end
 end
 
@@ -35,27 +64,24 @@ local function setAutoSummonTips()--设置, 自动召唤
     end
 end
 
-local function getSummoned()--是否已召唤, 或有BUFF(在背上)
-    local summonedPetGUID = C_PetJournal.GetSummonedPetGUID()
-    local find= summonedPetGUID==petGUID
-    local summoned= summonedPetGUID and true or false
-    if not find then
-        if e.WA_GetUnitBuff('player', 311796, 'PLAYER') then
-            find = true
-        end
-    end
-    return find, summoned
-end
 
 local function setSummonedPetGUID()--召唤信息
-    local find, summoned = getSummoned()
-    if find then--显示名字,提示是否召唤
-        if not button.text then
-            button.text=e.Cstr(button, {size=10, color=true})-- size,nil,nil, true)
-            button.text:SetPoint('CENTER',0 , -5)
-        end
-    elseif not summoned
-        and Save.autoSummon
+    local info= get_speciesID_data()
+    local guid= info.guid
+    if not guid then
+        set_pets_data()
+        return
+    end
+
+    local summonedPetGUID = C_PetJournal.GetSummonedPetGUID()
+    local find= (info.guid and summonedPetGUID==guid) and true or false
+    if not find and info.auraName and AuraUtil.FindAuraByName(info.auraName, 'player', 'HELPFUL') then
+        find=true
+        --if not summonedPetGUID then
+          --  C_PetJournal.SummonRandomPet(true)
+        --end
+    end
+    if not find and Save.autoSummon
         and not IsStealthed()
         and not IsMounted()
         and not UnitIsDeadOrGhost('player')
@@ -65,12 +91,15 @@ local function setSummonedPetGUID()--召唤信息
         and not UnitCastingInfo('player')
         and not UnitChannelInfo('paleyr')
         and not UnitAffectingCombat('player')
-        then
-        C_PetJournal.SummonPetByGUID(petGUID)
+        and not UnitInVehicle('player')
+    then
+        C_PetJournal.SummonPetByGUID(guid)
     end
-    if button.text then--显示名字
-        button.text:SetText(find and petName or '')
+    local name
+    if find then
+        name= e.onlyChinese and info.cn or e.WA_Utf8Sub(info.name, 2, 5)
     end
+    button.Text:SetText(name or '')
 end
 
 
@@ -90,28 +119,19 @@ end
 --初始
 --####
 local function Init()
-    local speciesName, speciesIcon= C_PetJournal.GetPetInfoBySpeciesID(speciesID)
-    if speciesName and speciesIcon then
-        local speciesId2, petGUID2 = C_PetJournal.FindPetIDByName(speciesName)
-        if speciesId2==speciesID and petGUID2 then
-            petGUID=petGUID2
-            petName=speciesName
-            button.texture:SetTexture(speciesIcon)
-        end
-    end
-
-    --[[if not petGUID then--没找到时, 退出
-        print(id, e.cn(addName), e.onlyChinese and '没发现宠物, 黛西' or TAXI_PATH_UNREACHABLE)
-        panel:UnregisterAllEvents()
-        return
-    end]]
+    set_pets_data()
+    button.Text=e.Cstr(button, {size=10, color=true})-- size,nil,nil, true)
+    button.Text:SetPoint('CENTER',0 , -5)
 
     e.ToolsSetButtonPoint(button)--设置位置
 
     button:SetScript('OnClick', function(_, d)
         local key=IsModifierKeyDown()
         if d=='LeftButton' and not key then
-            C_PetJournal.SummonPetByGUID(petGUID)
+            local guid= get_speciesID_data().guid
+            if guid then
+                C_PetJournal.SummonPetByGUID(guid)
+            end
 
         elseif not key then
             C_PetJournal.SummonRandomPet(true)
@@ -137,7 +157,7 @@ local function Init()
                     end,
                 }
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
-            
+
                 info={--自动召唤
                     text= e.onlyChinese and '自动召唤' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SUMMONS),
                     checked=Save.autoSummon,
@@ -155,25 +175,29 @@ local function Init()
    end)
 
    button:SetScript('OnEnter', function(self)
+        local info= get_speciesID_data()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:SetCompanionPet(petGUID)
+        if info.guid then
+            e.tips:SetCompanionPet(info.guid)
+        end
         e.tips:AddLine(' ')
-        local name=C_PetJournal.GetPetInfoBySpeciesID(speciesID)
-        e.tips:AddDoubleLine(name and name..e.Icon.left, (e.onlyChinese and '随机偏好宠物' or SLASH_RANDOMFAVORITEPET1)..e.Icon.right, 0,1,0, 0,1,0)
-        e.tips:AddLine((e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU).. e.Icon.mid, 0,1,0)
+        local name =info.name or info.cn
+        if name then
+            e.tips:AddDoubleLine(name, e.Icon.left)
+        end
+        e.tips:AddDoubleLine(e.onlyChinese and '随机偏好宠物' or SLASH_RANDOMFAVORITEPET1:gsub('/', ''), e.Icon.right)
+        e.tips:AddDoubleLine((e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU), e.Icon.mid)
         e.tips:Show()
     end)
     button:SetScript('OnLeave', GameTooltip_Hide)
 
+
+
     setGuLaiTip()--设置 是否使用 /招手
     setSummonedPetGUID()--召唤信息,自动召唤
-    if Save.autoSummon then
-        setAutoSummonTips()--设置, 自动召唤
-    end
+    setAutoSummonTips()--设置, 自动召唤
 end
-
-
 
 
 
@@ -198,6 +222,8 @@ panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
             Save= WoWToolsSave[addName..'Tools'] or Save
+            Save.speciesID= Save.speciesID or 2780
+
             if not e.toolsFrame.disabled then
                 button= e.Cbtn2({
                     name=nil,
@@ -218,18 +244,12 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 panel:RegisterEvent('PLAYER_REGEN_DISABLED')
                 panel:RegisterEvent('COMPANION_UPDATE')
 
-                C_Timer.After(2.4, function()
-                    local num = C_PetJournal.GetNumCollectedInfo(speciesID)--没宠物,不加载
-                    if not num or num==0 then
-                        panel:UnregisterAllEvents()
-                        return
-                    end
-                    if UnitAffectingCombat('player')  then
-                        button.combat= true
-                    else
-                        Init()--初始
-                    end
-                end)
+                if UnitAffectingCombat('player')  then
+                    button.combat= true
+                else
+                    Init()--初始
+                end
+
             end
             panel:UnregisterEvent('ADDON_LOADED')
         end
