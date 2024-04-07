@@ -7,7 +7,7 @@ local Save={
 
 
 local button
-local Pets={
+local PetsList={
     [2780]= {
         cn='黛西',
         auraID=311796,
@@ -25,9 +25,53 @@ local Pets={
     emteText=
 }
 ]]
-for _, info in pairs(Pets) do
+for _, info in pairs(PetsList) do
     e.LoadDate({id=info.auraID, type='spell'})
 end
+
+
+
+
+
+
+
+--Blizzard_Collections
+local function Init_PetJournal_InitPetButton(frame, elementData)
+	local index = elementData.index;
+	local petID, speciesID, isOwned, customName, level, favorite, isRevoked, name, icon, petType, _, _, _, _, canBattle = C_PetJournal.GetPetInfoByIndex(index)
+	local needsFanfare = petID and C_PetJournal.PetNeedsFanfare(petID);
+    local show= isOwned and speciesID and not PetsList[speciesID]
+    if show then
+        if not frame.sumButton then
+            frame.sumButton=  CreateFrame("CheckButton", nil, frame, "ChatConfigCheckButtonTemplate")--e.Cbtn(frame, {size={20,20}, icon=true})
+            frame.sumButton:SetPoint('RIGHT')
+            frame.sumButton:SetScript('OnLeave', GameTooltip_Hide)
+            frame.sumButton:SetScript('OnEnter', function(self)
+                e.tips:SetOwner(self, "ANCHOR_RIGHT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine(id, 'Tools '..e.cn(addName))
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine(self.speciesID, self.name)
+                e.tips:AddDoubleLine(e.onlyChinese and '添加' or ADD, e.Icon.left)
+                e.tips:Show()
+            end)
+            frame.sumButton:SetScript('OnClick', function(self)
+                Save.Pets[self.speciesID]= not Save.Pets[self.speciesID] and {} or nil
+                Save.speciesID=self.speciesID
+                button:init_pets_data()
+                e.call('PetJournal_UpdatePetList')
+                
+            end)
+        end
+        frame.sumButton.speciesID= speciesID
+        frame.sumButton.name= name
+        frame.sumButton:SetChecked(Save.Pets[speciesID] and true or false)
+    end
+    if frame.sumButton then
+        frame.sumButton:SetShown(show)
+    end
+end
+
 
 
 
@@ -46,40 +90,35 @@ end
 --初始
 --####
 local function Init()
-    e.ToolsSetButtonPoint(button)--设置位置
-
-    function button:set_pets_date(speciesID, tab)
-        tab= tab or {}
-        local num = C_PetJournal.GetNumCollectedInfo(speciesID)
-        if num>0 then
-            local speciesName, speciesIcon= C_PetJournal.GetPetInfoBySpeciesID(speciesID)
-            self.Pets[speciesID]= {
-                name= speciesName,
-                cn= tab.cn,
-                guid= select(2, C_PetJournal.FindPetIDByName(speciesName)),
-                icon= speciesIcon,
-                emote= tab.emote,
-                emoteText= tab.emoteText,
-                auraID= tab.auraID,
-                auraName= tab.auraID and GetSpellInfo(tab.auraID) or nil,
-            }
-            if Save.speciesID== speciesID then
-                self.texture:SetTexture(speciesIcon)
+    function button:set_pets_date(tabs)
+        for speciesID, tab in pairs(tabs or {}) do
+            local num = C_PetJournal.GetNumCollectedInfo(speciesID)
+            if num>0 then
+                local speciesName, speciesIcon= C_PetJournal.GetPetInfoBySpeciesID(speciesID)
+                self.Pets[speciesID]= {
+                    name= speciesName,
+                    cn= tab.cn,
+                    guid= select(2, C_PetJournal.FindPetIDByName(speciesName)),
+                    icon= speciesIcon,
+                    emote= tab.emote,
+                    emoteText= tab.emoteText,
+                    auraID= tab.auraID,
+                    auraName= tab.auraID and GetSpellInfo(tab.auraID) or nil,
+                }
+                if Save.speciesID== speciesID then
+                    self.texture:SetTexture(speciesIcon)
+                end
+                self.NumPet= self.NumPet+1
             end
-            self.NumPet= self.NumPet+1
         end
     end
 
     function button:init_pets_data()
         self.Pets={}
         self.NumPet=0
-        for speciesID, tab in pairs(Pets) do
-            self:set_pets_date(speciesID, tab)
-        end
-        for speciesID, tab in pairs(Save.Pets) do
-            self:set_pets_date(speciesID, tab)
-        end
-        button:set_event()
+        self:set_pets_date(PetsList)
+        self:set_pets_date(Save.Pets)
+        self:summoned_pet()
     end
 
     function button:get_speciesID_data()
@@ -98,7 +137,6 @@ local function Init()
         local info= self:get_speciesID_data()
         local guid= info.guid
         if not guid then
-            self:init_pets_data()
             return
         end
 
@@ -132,7 +170,6 @@ local function Init()
     end
 
     function button:set_event()
-
         self:UnregisterAllEvents()
         self:RegisterEvent('NEW_PET_ADDED')
         if self.NumPet>0 and Save.autoSummon and not UnitAffectingCombat('player') then
@@ -176,7 +213,7 @@ local function Init()
             self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
             e.LibDD:UIDropDownMenu_Initialize(self.Menu, function(_, level)--主菜单
 
-                for speciesID, tab in pairs(self.Pets) do
+                for speciesID, tab in pairs(Save.Pets) do
                     local speciesName, speciesIcon= C_PetJournal.GetPetInfoBySpeciesID(speciesID)
                     e.LibDD:UIDropDownMenu_AddButton({
                         text= format('%s %s', e.onlyChinese and tab.cn or speciesName, e.GetPetCollectedNum(speciesID, nil, true) or ''),
@@ -192,6 +229,23 @@ local function Init()
                 end
 
                 e.LibDD:UIDropDownMenu_AddSeparator(level)
+                for speciesID, tab in pairs(PetsList) do
+                    local speciesName, speciesIcon= C_PetJournal.GetPetInfoBySpeciesID(speciesID)
+                    e.LibDD:UIDropDownMenu_AddButton({
+                        text= format('%s %s', e.onlyChinese and tab.cn or speciesName, e.GetPetCollectedNum(speciesID, nil, true) or ''),
+                        icon= speciesIcon,
+                        disabled= C_PetJournal.GetNumCollectedInfo(speciesID)==0,
+                        checked= Save.speciesID==speciesID,
+                        arg1= speciesID,
+                        func= function(_, arg1)
+                            Save.speciesID= arg1
+                            self:summoned_pet()
+                        end
+                    }, level)
+                end
+
+                
+                
                 e.LibDD:UIDropDownMenu_AddButton({--自动召唤
                 text= e.onlyChinese and '自动召唤' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SUMMONS),
                 checked=Save.autoSummon,
@@ -285,28 +339,31 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     notSecureActionButton=true,
                     notTexture=nil,
                     showTexture=true,
-                    sizi=nil,
+                    size=nil,
                 })
-
-                CollectionsJournal_LoadUI()
 
                 for _, info in pairs(Save.Pets) do
                     e.LoadDate({id=info.auraID, type='spell'})
                 end
+
+                Init()
+
                 C_Timer.After(2.4, function()
                     if UnitAffectingCombat('player')  then
                         self:RegisterEvent("PLAYER_REGEN_ENABLED")
                     else
-                        Init()--初始
+                        e.ToolsSetButtonPoint(button)--设置位置--初始
                     end
                 end)
+
+                CollectionsJournal_LoadUI()
             else
                 self:UnregisterAllEvents()
             end
             self:RegisterEvent('PLAYER_LOGOUT')
 
         elseif arg1=='Blizzard_Collections' then
-
+            hooksecurefunc('PetJournal_InitPetButton', Init_PetJournal_InitPetButton)
         end
 
     elseif event == "PLAYER_LOGOUT" then
@@ -315,7 +372,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif event=='PLAYER_REGEN_ENABLED' then
-        Init()
+        e.ToolsSetButtonPoint(button)--设置位置
         self:UnregisterEvent('PLAYER_REGEN_ENABLED')
     end
 end)
