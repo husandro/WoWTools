@@ -160,7 +160,7 @@ local function Init()
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '展开选项 |A:editmode-down-arrow:16:11:0:-7|a/收起选项 |A:editmode-up-arrow:16:11:0:3|a' or (HUD_EDIT_MODE_EXPAND_OPTIONS..'/'..HUD_EDIT_MODE_COLLAPSE_OPTIONS), e.Icon.mid)
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..': |cnGREEN_FONT_COLOR:'..(Save.scale or 1), 'Alt+ '..e.Icon.mid)
-        e.tips:AddDoubleLine((e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE))..': '..e.GetEnabeleDisable(Save.autoHide), 'Alt+ '..e.Icon.right)
+        e.tips:AddDoubleLine('|A:mechagon-projects:0:0|a'..(e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE))..': '..e.GetEnabeleDisable(Save.autoHide), 'Alt+ '..e.Icon.right)
         e.tips:Show()
     end
     ObjectiveTrackerFrame.HeaderMenu.MinimizeButton:HookScript("OnLeave", GameTooltip_Hide)

@@ -1933,6 +1933,46 @@ end
 --###########
 --职业，能量条
 --###########
+local function Set_Class_Frame(frame)
+    if not frame then
+        return
+    end
+    do
+        e.Set_Move_Frame(frame, {notFuori=true, save=true, hideButton=true,  notMoveAlpha=true, restPointFunc=function(btn)
+            Save.scale[btn.name]=nil
+            if not UnitAffectingCombat('player') then
+                btn.target:SetScale(1)
+                e.call(PlayerFrame_UpdateArt, PlayerFrame)
+            end
+        end})
+    end
+    if frame.setMoveFrame then
+        if Save.point[frame:GetName()] then
+            frame:SetParent(UIParent)
+        end
+        hooksecurefunc('PlayerFrame_ToPlayerArt', function()
+            C_Timer.After(0.8, function() set_Frame_Point(frame) end)
+        end)
+        if frame.Setup then
+            hooksecurefunc(frame, 'Setup', function(self)
+                if self:IsShown() then
+                    set_Frame_Point(self)
+                end
+            end)
+        end
+
+        local f= CreateFrame('Frame')
+        f:RegisterEvent('PLAYER_SPECIALIZATION_CHANGED')
+        f:RegisterUnitEvent('UNIT_DISPLAYPOWER', "player")
+        f.frame= frame
+        f:SetScript('OnEvent', function(self)
+            if self.frame:IsShown() then
+                set_Frame_Point(self.frame)
+            end
+        end)
+    end
+end
+
 local function Init_Class()--职业，能量条
     local frame--PlayerFrame.classPowerBar
     if e.Player.class=='MAGE' then--法师
@@ -1956,57 +1996,21 @@ local function Init_Class()--职业，能量条
     elseif e.Player.class=='ROGUE' then--DZ
         frame= RogueComboPointBarFrame
 
-    elseif e.Player.class=='SHAMAN' then--SM
-        frame= TotemFrame
-        if not Save.disabledMove then
-            hooksecurefunc(TotemFrame, 'Update', function(self)
-                for btn, _ in pairs(self.totemPool.activeObjects) do
-                    if not btn.setMoveFrame then
-                        e.Set_Move_Frame(btn, {frame=self, save=true, zeroAlpha=true})
-                        btn:HookScript('OnLeave', function() if TotemFrame.ResizeButton then TotemFrame.ResizeButton:SetAlpha(0) end end)
-                        btn:HookScript('OnEnter', function() if TotemFrame.ResizeButton then TotemFrame.ResizeButton:SetAlpha(1) end end)
-                    end
-                end
-            end)
-        end
-
     elseif  e.Player.class=='WARLOCK' then--SS
         frame= WarlockPowerFrame
     end
-    if not frame then
-        return
-    end
-    do
-        e.Set_Move_Frame(frame, {notFuori=true, save=true, hideButton=true,  notMoveAlpha=true, restPointFunc=function(btn)
-            Save.scale[btn.name]=nil
-            if not UnitAffectingCombat('player') then
-                btn.target:SetScale(1)
-                e.call(PlayerFrame_UpdateArt, PlayerFrame)
-            end
-        end})
-    end
-    if frame.setMoveFrame then
-        if Save.point[frame:GetName()] then
-            frame:SetParent(UIParent)
-        end
-        hooksecurefunc('PlayerFrame_ToPlayerArt', function()
-            C_Timer.After(0.5, function() set_Frame_Point(frame) end)
-        end)
-        if frame.Setup then
-            hooksecurefunc(frame, 'Setup', function(self)
-                if self:IsShown() then
-                    set_Frame_Point(self)
-                end
-            end)
-        end
+    Set_Class_Frame(frame)
 
-        local f= CreateFrame('Frame')
-        f:RegisterEvent('PLAYER_SPECIALIZATION_CHANGED')
-        f:RegisterUnitEvent('UNIT_DISPLAYPOWER', "player")
-        f.frame= frame
-        f:SetScript('OnEvent', function(self)
-            if self.frame:IsShown() then
-                set_Frame_Point(self.frame)
+    frame= TotemFrame--elseif e.Player.class=='SHAMAN' then--SM
+    if TotemFrame and not Save.disabledMove then
+        Set_Class_Frame(TotemFrame)
+        hooksecurefunc(TotemFrame, 'Update', function(self)
+            for btn, _ in pairs(self.totemPool.activeObjects) do
+                if not btn.setMoveFrame then
+                    e.Set_Move_Frame(btn, {frame=self, save=true, zeroAlpha=true})
+                    btn:HookScript('OnLeave', function() if TotemFrame.ResizeButton then TotemFrame.ResizeButton:SetAlpha(0) end end)
+                    btn:HookScript('OnEnter', function() if TotemFrame.ResizeButton then TotemFrame.ResizeButton:SetAlpha(1) end end)
+                end
             end
         end)
     end
