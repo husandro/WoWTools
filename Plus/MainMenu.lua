@@ -1267,8 +1267,11 @@ panel:SetScript("OnEvent", function(_, event, arg1)
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
             WoWToolsSave[SYSTEM_MESSAGES]= nil--清除，旧版本数据
-            Init_Plus()
-            Init_Framerate_Plus()--系统，fts
+
+            if Save.plus then
+                Init_Plus()
+                Init_Framerate_Plus()--系统，fts
+            end
         elseif arg1=='Blizzard_Settings' then
             Init_Options()--初始, 选项
         end
