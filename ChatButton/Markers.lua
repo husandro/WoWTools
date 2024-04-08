@@ -61,9 +61,6 @@ local function in_Raid_Leader()--是不有权限
     return (raid and Is_Leader()) or not raid
 end
 
-local function Is_In_PvP_Area()
-    return C_PvP.IsArena() or C_PvP.IsBattleground()
-end
 
 local function set_Taget(unit, index)--设置,目标,标记
     if CanBeRaidTarget(unit) and GetRaidTargetIndex(unit)~=index then
@@ -119,7 +116,7 @@ local function Init_set_Tank_Healer()
 
 
     function SetTankHealerFrame:check_Enable(set)
-        return (Save.autoSet or set) and in_Raid_Leader() and IsInGroup() and not Is_In_PvP_Area()
+        return (Save.autoSet or set) and in_Raid_Leader() and IsInGroup() and not e.Is_In_PvP_Area()
     end
 
     function SetTankHealerFrame:set_TankHealer(set)--设置队伍标记
@@ -488,7 +485,7 @@ local function Init_Markers_Frame()--设置标记, 框架
             local isRaid= (raid and isLeader) or not raid
             local isInGroup= IsInGroup()
 
-            local enabled= not Is_In_PvP_Area()
+            local enabled= not e.Is_In_PvP_Area()
                         and Save.markersFrame
                         --and not InCinematic()
                         --and not IsInCinematicScene()
@@ -1351,7 +1348,7 @@ local function InitMenu(_, level, type)--主菜单
         menuList= 'MakerFrameResetPost',
         hasArrow=true,
         keepShownOnClick= true,
-        disabled= Is_In_PvP_Area() or UnitAffectingCombat('player'),--是不有权限
+        disabled= e.Is_In_PvP_Area() or UnitAffectingCombat('player'),--是不有权限
         func=function()
             Save.markersFrame= not Save.markersFrame and true or nil
             Init_Markers_Frame()--设置标记, 框架
@@ -1427,7 +1424,7 @@ local function Init()
 
     function button:set_Desaturated_Textrue()--主图标,是否有权限
         local raid= IsInRaid()
-        local enabled= not Is_In_PvP_Area()
+        local enabled= not e.Is_In_PvP_Area()
                 and (
                         (raid and Is_Leader())
                     or (GetNumGroupMembers()>1 and not raid)

@@ -60,6 +60,11 @@ function e.cn(text)
     end
 end
 
+
+function e.Is_In_PvP_Area()--是否在，PVP区域中
+    return C_PvP.IsArena() or C_PvP.IsBattleground()
+end
+
 --关闭，当前菜单
 e.LibDD=LibStub:GetLibrary("LibUIDropDownMenu-4.0", true)
 --[[function e.HideMenu(index)
@@ -402,11 +407,12 @@ end
 function e.Cstr(self, tab)
     tab= tab or {}
     self= self or UIParent
+    local name= tab.name
     local alpha= tab.alpha
     local font= tab.changeFont
-    local layer= tab.layer or 'OVERLAY'
-    local fontName= tab.fontName or 'GameFontNormal'
-    local level= table.level or self:GetFrameLevel()+1
+    local layer= tab.layer or 'OVERLAY'--BACKGROUND BORDER ARTWORK OVERLAY HIGHLIGHT
+    local fontName= tab.fontName --or 'GameFontNormal'
+    --local level= tab.level or self:GetFrameLevel()+1
     local copyFont= tab.copyFont
     local size= tab.size or 12
     local justifyH= tab.justifyH
@@ -415,7 +421,8 @@ function e.Cstr(self, tab)
     local color= tab.color
     local mouse= tab.mouse
     local wheel= tab.wheel
-    font = font or self:CreateFontString(nil, layer, fontName, level)
+
+    font = font or self:CreateFontString(name, layer, fontName)
     if copyFont then
         local fontName2, size2, fontFlag2 = copyFont:GetFont()
         font:SetFont(fontName2, size or size2, fontFlag2)

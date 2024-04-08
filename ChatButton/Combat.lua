@@ -473,7 +473,7 @@ local function Init()
     end
 
     function button:Is_In_Arena()--是否在战场
-        self.isInPvPInstance= C_PvP.IsBattleground() or C_PvP.IsArena()
+        self.isInPvPInstance= e.Is_In_PvP_Area()--是否在，PVP区域中
     end
 
     function button:set_Sacle_InCombat(bat)--提示，战斗中

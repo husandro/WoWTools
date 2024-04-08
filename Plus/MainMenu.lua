@@ -42,7 +42,7 @@ local function Init_Character()
             text=math.modf(cu)
             if to-cu>10 then
                 text='|cnRED_FONT_COLOR:'..text..'|r'
-                if IsInsane() and not C_PvP.IsArena() and not C_PvP.IsBattleground() then
+                if IsInsane() and not e.Is_In_PvP_Area() then
                     e.Set_HelpTips({frame=self, topoint=self.Text, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, show=true})--设置，提示
                 end
             end

@@ -1236,16 +1236,16 @@ end
 
 --初始，坐骑界面
 local function Init_MountJournal()
-    hooksecurefunc('MountJournal_InitMountButton',function(self)--Blizzard_MountCollection.lua
-        if not self or not self.spellID then
-            if self and self.btn then
-                self.btn:SetShown(false)
+    hooksecurefunc('MountJournal_InitMountButton',function(frame)--Blizzard_MountCollection.lua
+        if not frame or not frame.spellID then
+            if frame and frame.btn then
+                frame.btn:SetShown(false)
             end
             return
         end
         local text
         for _, type in pairs(MountType) do
-            local ID=Save.Mounts[type][self.spellID]
+            local ID=Save.Mounts[type][frame.spellID]
             if ID then
                 text= text and text..'|n' or ''
                 if type==FLOOR then
@@ -1258,47 +1258,44 @@ local function Init_MountJournal()
                 text= text..e.cn(type)
             end
         end
-        if text and not self.text then--提示， 文本
-            self.text=e.Cstr(self, {justifyH='RIGHT'})--nil, self.name, nil,nil,nil,'RIGHT')
-            self.text:SetPoint('RIGHT')
-            self.text:SetFontObject('GameFontNormal')
-            self.text:SetAlpha(0.3)
-        end
-        if self.text then
-            self.text:SetText(text or '')
-        end
-        if not self.btn then--建立，图标，菜单
-            self.btn=e.Cbtn(self, {icon=true, size={18,18}})
-            self.btn:SetPoint('BOTTOMRIGHT')
-            self.btn:SetAlpha(0.3)
-            self.btn:SetScript('OnEnter', function(self2)
-                self2:SetAlpha(1)
+         if not frame.WoWToolsButton then--建立，图标，菜单
+            frame.WoWToolsButton=e.Cbtn(frame, {icon=true, size={22,22}})
+            frame.WoWToolsButton:SetPoint('BOTTOMRIGHT')
+            frame.WoWToolsButton:SetAlpha(0)
+            frame.WoWToolsButton:SetScript('OnEnter', function(self)
+                self:SetAlpha(1)
             end)
-            self.btn:SetScript('OnLeave', function(self2) self2:SetAlpha(0.3) end)
-            self.btn:SetScript('OnMouseDown', function(self2)
-                if not self2.Menu then
-                    self2.Menu=CreateFrame("Frame", nil, self2, "UIDropDownMenuTemplate")
-                    e.LibDD:UIDropDownMenu_Initialize(self2.Menu, Init_Menu_Set_UI, 'MENU')
+            frame.WoWToolsButton:SetScript('OnLeave', function(self) self:SetAlpha(0) end)
+            frame.WoWToolsButton:SetScript('OnClick', function(self)
+                if not self.Menu then
+                    self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
+                    e.LibDD:UIDropDownMenu_Initialize(self.Menu, Init_Menu_Set_UI, 'MENU')
                 end
-                e.LibDD:ToggleDropDownMenu(1, nil, self2.Menu, self2, 10, 0)
+                e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 10, 0)
             end)
+            frame:HookScript('OnLeave', function(self) self.WoWToolsButton:SetAlpha(0) end)
+            frame:HookScript('OnEnter', function(self) self.WoWToolsButton:SetAlpha(1) end)
+            frame.WoWToolsText=e.Cstr(frame, {justifyH='RIGHT'})--nil, frame.name, nil,nil,nil,'RIGHT')
+            frame.WoWToolsText:SetPoint('TOPRIGHT',0,-2)
+            frame.WoWToolsText:SetFontObject('GameFontNormal')
+            frame.WoWToolsText:SetAlpha(0.5)
         end
-        self.btn.mountID= self.mountID
-        self.btn.spellID= self.spellID
-        self.btn:SetShown(true)
-
-        if not MountJournal.MountDisplay.tipsMenu then
-            MountJournal.MountDisplay.tipsMenu= e.Cbtn(MountJournal.MountDisplay, {icon=true, size={22,22}})
-            MountJournal.MountDisplay.tipsMenu:SetPoint('LEFT')
-            MountJournal.MountDisplay.tipsMenu:SetAlpha(0.3)
-            MountJournal.MountDisplay.tipsMenu:SetScript('OnEnter', function(self2)
-                e.LibDD:ToggleDropDownMenu(1, nil, button.Menu, self2, 15, 0)
-                self2:SetAlpha(1)
-            end)
-            MountJournal.MountDisplay.tipsMenu:SetScript('OnLeave', function(self2) self2:SetAlpha(0.3) end)
-        end
+        frame.WoWToolsButton.mountID= frame.mountID
+        frame.WoWToolsButton.spellID= frame.spellID
+        frame.WoWToolsButton:SetShown(true)
+        frame.WoWToolsText:SetText(text or '')--提示， 文本
     end)
 
+    if not MountJournal.MountDisplay.tipsMenu then
+        MountJournal.MountDisplay.tipsMenu= e.Cbtn(MountJournal.MountDisplay, {icon=true, size={22,22}})
+        MountJournal.MountDisplay.tipsMenu:SetPoint('LEFT')
+        MountJournal.MountDisplay.tipsMenu:SetAlpha(0.3)
+        MountJournal.MountDisplay.tipsMenu:SetScript('OnEnter', function(self)
+            e.LibDD:ToggleDropDownMenu(1, nil, button.Menu, self, 15, 0)
+            self:SetAlpha(1)
+        end)
+        MountJournal.MountDisplay.tipsMenu:SetScript('OnLeave', function(self) self:SetAlpha(0.3) end)
+    end
 
     local btn= CreateFrame('DropDownToggleButton', 'MountJournalFilterButtonWoWTools', MountJournal, 'UIResettableDropdownButtonTemplate')--SharedUIPanelTemplates.lua
     btn:SetPoint('BOTTOM', MountJournalFilterButton, 'TOP')
@@ -1397,6 +1394,34 @@ end
 --初始化
 --######
 local function Init()
+    button= e.Cbtn2({
+        name= 'WoWToolsMountButton',
+        parent=nil,
+        click=true,-- right left
+        notSecureActionButton=nil,
+        notTexture=nil,
+        showTexture=true,
+        sizi=nil,
+    })
+    button:SetAttribute("type1", "spell")
+    button:SetAttribute("target-spell", "cursor")
+    button:SetAttribute("alt-type1", "spell")
+    button:SetAttribute("shift-type1", "spell")
+    button:SetAttribute("ctrl-type1", "spell")
+
+    button.textureModifier=button:CreateTexture(nil,'OVERLAY')--提示 Shift, Ctrl, Alt
+    button.textureModifier:SetAllPoints(button.texture)
+    button.textureModifier:AddMaskTexture(button.mask)
+
+    button.textureModifier:SetShown(false)
+
+    e.toolsFrame:SetParent(button)--设置, TOOLS 位置
+    e.toolsFrame:SetPoint('BOTTOMRIGHT', button, 'TOPRIGHT',-1,0)
+    button.Up=button:CreateTexture(nil,'OVERLAY')
+    button.Up:SetPoint('TOP',-1, 9)
+    button.Up:SetAtlas('NPE_ArrowUp')
+    button.Up:SetSize(20,20)
+
     button.Menu= CreateFrame("Frame", nil, button, "UIDropDownMenuTemplate")
     e.LibDD:UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
 
@@ -1422,6 +1447,7 @@ local function Init()
     checkMount()--检测坐骑
     setClickAtt()--设置
     setShiftCtrlAltAtt()--设置Shift Ctrl Alt 属性
+
     e.SetItemSpellCool({frame=button, item=button.itemID, spell=button.spellAtt})--设置冷却
 
     if Save.KEY then
@@ -1645,45 +1671,13 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2)
             })
 
             if not Save.disabled then
+                CollectionsJournal_LoadUI()
+
                 for spellID, tab in pairs(Save.Mounts[FLOOR]) do
                     if type(tab)~='table' then
                         Save.Mounts[FLOOR][spellID]=nil
                     end
                 end
-
-                --[[if not C_AddOns.IsAddOnLoaded("Blizzard_Collections") then
-                    C_AddOns.LoadAddOn('Blizzard_Collections')
-                end]]
-                CollectionsJournal_LoadUI()
-
-
-                button= e.Cbtn2({
-                    name= 'WoWToolsMountButton',
-                    parent=nil,
-                    click=true,-- right left
-                    notSecureActionButton=nil,
-                    notTexture=nil,
-                    showTexture=true,
-                    sizi=nil,
-                })
-                button:SetAttribute("type1", "spell")
-                button:SetAttribute("target-spell", "cursor")
-                button:SetAttribute("alt-type1", "spell")
-                button:SetAttribute("shift-type1", "spell")
-                button:SetAttribute("ctrl-type1", "spell")
-
-                button.textureModifier=button:CreateTexture(nil,'OVERLAY')--提示 Shift, Ctrl, Alt
-                button.textureModifier:SetAllPoints(button.texture)
-                button.textureModifier:AddMaskTexture(button.mask)
-
-                button.textureModifier:SetShown(false)
-
-                e.toolsFrame:SetParent(button)--设置, TOOLS 位置
-                e.toolsFrame:SetPoint('BOTTOMRIGHT', button, 'TOPRIGHT',-1,0)
-                button.Up=button:CreateTexture(nil,'OVERLAY')
-                button.Up:SetPoint('TOP',-1, 9)
-                button.Up:SetAtlas('NPE_ArrowUp')
-                button.Up:SetSize(20,20)
 
                 Init()--初始
 
@@ -1694,7 +1688,6 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2)
                 panel:RegisterEvent('BAG_UPDATE_DELAYED')
                 panel:RegisterEvent('MOUNT_JOURNAL_USABILITY_CHANGED')
                 panel:RegisterEvent('PLAYER_MOUNT_DISPLAY_CHANGED')
-                --panel:RegisterEvent('AREA_POIS_UPDATED')
                 panel:RegisterEvent('NEW_MOUNT_ADDED')
                 panel:RegisterEvent('MODIFIER_STATE_CHANGED')
                 panel:RegisterEvent('ZONE_CHANGED')

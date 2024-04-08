@@ -2763,7 +2763,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
         --set_ROLL_Check(nil, arg1)
 
     elseif event=='CORPSE_IN_RANGE' or event=='PLAYER_DEAD' or event=='AREA_SPIRIT_HEALER_IN_RANGE' then--仅限战场，释放, 复活
-        if Save.ReMe and (C_PvP.IsBattleground() or C_PvP.IsArena()) then
+        if Save.ReMe and e.Is_In_PvP_Area() then
             if event=='PLAYER_DEAD' then
                 print(id, e.cn(addName),'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '释放, 复活' or (BATTLE_PET_RELEASE..', '..RESURRECT)))
             end

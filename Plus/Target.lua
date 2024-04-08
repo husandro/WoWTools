@@ -434,7 +434,7 @@ local function Init_Num()
             end
         end
         function NumFrame:set_pvp()
-            self.isPvPArena= C_PvP.IsBattleground() or C_PvP.IsArena()
+            self.isPvPArena= e.Is_In_PvP_Area()--是否在，PVP区域中
         end
         function NumFrame:set_text()--local distanceSquared, checkedDistance = UnitDistanceSquared(u) inRange = CheckInteractDistance(unit, distIndex)
             local k,T,F=0,0,0
@@ -616,7 +616,7 @@ local function Init_Quest()
             self:UnregisterAllEvents()
             self:RegisterEvent('PLAYER_ENTERING_WORLD')
 
-            local isPvPArena= C_PvP.IsBattleground() or C_PvP.IsArena()--在PVP副中
+            local isPvPArena= e.Is_In_PvP_Area()--是否在，PVP区域中
             local isIns= isPvPArena
                     or (not Save.questShowInstance and IsInInstance()
                         and (GetNumGroupMembers()>3 or C_ChallengeMode.IsChallengeModeActive())
