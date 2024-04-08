@@ -1,4 +1,4 @@
-local id, e= ...
+local e = select(2, ...)
 
 --[[
 e.cn(text) 取得中文
