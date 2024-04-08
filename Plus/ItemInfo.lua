@@ -758,11 +758,43 @@ local function Init_Bag()
         btn:SetPoint('LEFT')
     end
     btn:SetAlpha(0.5)
-    btn:SetScript('OnMouseDown', function(self, d)
+    btn:SetScript('OnMouseDown', function(self)
         if not self.Menu then
             self.Menu= CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")--菜单列表
-            e.LibDD:UIDropDownMenu_Initialize(self.Menu, function(self2, level, type)
-                local info={
+            e.LibDD:UIDropDownMenu_Initialize(self.Menu, function(_, level, menuList)
+                local info
+               --[[ if menuList and menuList:find('WOWDATA') then
+                    if menuList=='WOWDATA' then
+                        for guid, tab in pairs(e.WoWDate) do
+                            e.LibDD:UIDropDownMenu_AddButton({
+                                text= e.GetPlayerInfo({guid=guid, reName=true, reRealm=true}),
+                                notCheckable=true,
+                                keepShownOnClick=true,
+                                hasArrow=true,
+                                menuList='WOWDATA'..guid
+                            }, level)
+                        end
+                    else
+                        print()
+                    end
+                end
+
+    e.WoWDate[e.Player.guid].Keystone={
+        score= score,
+        all= all,
+        week= e.Player.week,
+        weekNum= weekNum,
+        weekLevel= weekLevel,
+        weekPvE= e.Get_Week_Rewards_Text(3),--Raid
+        weekMythicPlus= e.Get_Week_Rewards_Text(1),--MythicPlus
+        weekPvP= e.Get_Week_Rewards_Text(2),--RankedPvP
+        link= e.WoWDate[e.Player.guid].Keystone.link,
+    }
+
+                if menuList then
+                    return
+                end]]
+                info={
                     text= e.onlyChinese and '反向整理背包' or REVERSE_CLEAN_UP_BAGS_TEXT,
                     checked= C_Container.GetSortBagsRightToLeft(),
                     tooltipOnButton=true,
@@ -819,6 +851,15 @@ local function Init_Bag()
                     notCheckable=true,
                 }
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+                --[[e.LibDD:UIDropDownMenu_AddSeparator(level)
+                info={
+                    text= e.onlyChinese and 'WoW 数据' or 'WoW data',
+                    notCheckable=true,
+                    hasArrow=true,
+                    menuList='WOWDATA',
+                }
+                e.LibDD:UIDropDownMenu_AddButton(info, level)]]
 
             end, "MENU")
         end
