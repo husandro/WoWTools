@@ -272,7 +272,7 @@ local function set_PetBattleFrame_UpdateAllActionButtons(self)--Blizzard_PetBatt
             self2:StopMovingOrSizing();
             Save.EnemyFramePoint={self2:GetPoint(1)}
             Save.EnemyFramePoint[2]=nil
-            print(id, e.cn(addName),'Alt+' ..e.Icon.right,TRANSMOGRIFY_TOOLTIP_REVERT)
+            print(id, e.cn(addName),'Alt+' ..e.Icon.right,e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)
         end)
         EnemyFrame:SetScript('OnMouseDown', function(self2, d)
             if d=='RightButton' and IsAltKeyDown() then

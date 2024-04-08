@@ -67,7 +67,7 @@ local BuybackButton--回购物品
 --####################
 --检测是否是出售物品
 --为 ItemInfo.lua, 用
-function e.CheckItemSell(itemID, itemLink, quality)
+function e.CheckItemSell(itemID, itemLink, quality, isBound)
     if not itemID or Save.noSell[itemID] then
         return
     end
@@ -86,7 +86,7 @@ function e.CheckItemSell(itemID, itemLink, quality)
             return e.onlyChinese and '宠物' or PET
 
         elseif not Save.notSellJunk then--垃圾
-            if Save.sellJunkMago then
+            if Save.sellJunkMago or isBound==true then
                 return e.onlyChinese and '垃圾' or BAG_FILTER_JUNK
             else
                 local classID, subclassID = select(6, C_Item.GetItemInfoInstant(itemID))
@@ -598,8 +598,6 @@ local function Init_Plus()
         MerchantExtraCurrencyBg:SetShown(false)
         MerchantMoneyInset:SetShown(false)
     end)
-
-
 end
 
 
@@ -862,7 +860,7 @@ local function Init_Auto_Sell_Junk()
                     and info.quality
                     and (info.quality<5 or Save.Sell[info.itemID]and not Save.notSellCustom)
                 then
-                    local checkText= e.CheckItemSell(info.itemID, info.hyperlink, info.quality)--检察 ,boss掉落, 指定 或 出售灰色,宠物
+                    local checkText= e.CheckItemSell(info.itemID, info.hyperlink, info.quality, info.isBound)--检察 ,boss掉落, 指定 或 出售灰色,宠物
                     if not info.isLocked and checkText then
                         C_Container.UseContainerItem(bag, slot)--买出
 

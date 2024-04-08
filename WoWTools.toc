@@ -138,7 +138,7 @@ Tools\22Professions.lua
 ##各种专送门,物品，玩具
 Tools\23UsaItems.lua
 ##自动召唤，宠物
-Tools\24Pet.lua
+Tools\24AutoSummonPet.lua
 ##诺格弗格药剂 Noggenfogger Elixir
 Tools\25NoggenfoggerElixir.lua
 ##法师传送门

@@ -110,10 +110,6 @@ local function Init()
     button.Text=e.Cstr(button, {size=10, color=true})-- size,nil,nil, true)
     button.Text:SetPoint('BOTTOM',0 , -2)
 
-    function button:set_texture(texture)
-        self.texture:SetTexture(texture or 0)
-    end
-
     function button:set_pets_date(tabs)
         for speciesID, info in pairs(tabs or {}) do
             local num = C_PetJournal.GetNumCollectedInfo(speciesID) or 0
@@ -131,7 +127,7 @@ local function Init()
                         auraName= info.auraID and GetSpellInfo(info.auraID) or nil,
                     }
                     if Save.speciesID== speciesID then
-                        self:set_texture(speciesIcon)
+                        self.texture:SetTexture(speciesIcon or 0)
                     end
                     self.NumPet= self.NumPet+1
                 end
@@ -167,15 +163,17 @@ local function Init()
     end
 
     function button:can_summon()
-        return not IsStealthed()
-            and not IsMounted()
-            and not UnitIsDeadOrGhost('player')
-            and not UnitIsBattlePet('player')
-            and not e.Is_In_PvP_Area()--是否在，PVP区域中                
-            and not UnitCastingInfo('player')
-            and not UnitChannelInfo('player')
-            and not UnitAffectingCombat('player')
-            and not UnitInVehicle('player')
+        return not (
+                IsStealthed()
+                or IsMounted()
+                or UnitIsDeadOrGhost('player')
+                or UnitIsBattlePet('player')
+                or e.Is_In_PvP_Area()--是否在，PVP区域中                
+                or UnitCastingInfo('player')
+                or UnitChannelInfo('player')
+                or UnitAffectingCombat('player')
+                or UnitInVehicle('player')
+    )
     end
 
     function button:summoned_pet()--召唤信息
@@ -341,8 +339,10 @@ local function Init()
 
     button.NumPet=0
     button.Pets={}
-    button:init_pets_data()
-    button:set_auto_summon_tips()
+    C_Timer.After(2, function()
+        button:init_pets_data()
+        button:set_auto_summon_tips()
+    end)
 end
 
 

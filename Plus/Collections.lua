@@ -1877,10 +1877,10 @@ end
 
 local panel=CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
+
 panel:RegisterEvent('TRANSMOGRIFY_ITEM_UPDATE')
 panel:RegisterEvent('TRANSMOG_SETS_UPDATE_FAVORITE')
-panel:SetScript("OnEvent", function(_, event, arg1)
+panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
@@ -1904,7 +1904,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             end)
 
             if Save.disabled then
-                panel:ADDON_LOADED()
+                self:UnregisterAllEvents()
             else
                 --[[if not C_AddOns.IsAddOnLoaded("Blizzard_Collections") then
                     C_AddOns.LoadAddOn('Blizzard_Collections')
@@ -1912,6 +1912,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 CollectionsJournal_LoadUI()
                 Init()--试衣间, 外观列表
             end
+            self:RegisterEvent("PLAYER_LOGOUT")
 
         elseif arg1=='Blizzard_Collections' then
             Init_SetsDataProvider()

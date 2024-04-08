@@ -64,7 +64,7 @@ local function Set_Item_Info(self, tab)
         return
     end
     local itemLevel, itemQuality, battlePetSpeciesID
-    local itemLink, containerInfo, itemID
+    local itemLink, containerInfo, itemID, isBound
     local topLeftText, bottomRightText, leftText, rightText, bottomLeftText, topRightText, setIDItem--, isWoWItem--setIDItem套装
     local currencyID
 
@@ -80,6 +80,7 @@ local function Set_Item_Info(self, tab)
         if containerInfo then
             itemLink= containerInfo.hyperlink
             itemID= containerInfo.itemID
+            isBound= containerInfo.isBound
         end
     elseif tab.merchant then
         if tab.merchant.buyBack then
@@ -122,7 +123,7 @@ local function Set_Item_Info(self, tab)
 
         local sellItem
         if tab.bag and containerInfo and not containerInfo.isLocked and e.CheckItemSell then
-            sellItem= e.CheckItemSell(itemID, itemLink, itemQuality)--检测是否是出售物品
+            sellItem= e.CheckItemSell(itemID, itemLink, itemQuality, isBound)--检测是否是出售物品
         end
 
         if sellItem then--检测是否是出售物品
