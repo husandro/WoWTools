@@ -42,8 +42,8 @@ WoWTools.lua
 API_Create.lua
 API_Func.lua
 API_Realm.lua
+API_Panel.lua
 WoWDate.lua
-WoWPanel.lua
 LoadData.lua
 
 
@@ -60,6 +60,7 @@ Plus\Attributes.lua
 Plus\Reputation.lua
 ##货币面板
 Plus\Tokens.lua
+
 
 ##任务框，增强
 Plus\ObjectiveTracker.lua
