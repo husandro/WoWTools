@@ -20,7 +20,7 @@ function e.Cstr(self, tab)
     local alpha= tab.alpha
     local font= tab.changeFont
     local layer= tab.layer or 'OVERLAY'--BACKGROUND BORDER ARTWORK OVERLAY HIGHLIGHT
-    local fontName= tab.fontName --or 'GameFontNormal'
+    local fontName= tab.fontName or 'GameFontNormal'
     --local level= tab.level or self:GetFrameLevel()+1
     local copyFont= tab.copyFont
     local size= tab.size or 12

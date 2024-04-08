@@ -115,7 +115,7 @@ local function Init()
             local num = C_PetJournal.GetNumCollectedInfo(speciesID) or 0
             if num>0 then
                 local speciesName, speciesIcon= C_PetJournal.GetPetInfoBySpeciesID(speciesID)
-                if speciesName then
+                if type(speciesName)=='string' then
                     self.Pets[speciesID]= {
                         name= speciesName,
                         cn= info.cn,
@@ -126,7 +126,7 @@ local function Init()
                         auraID= info.auraID,
                         auraName= info.auraID and GetSpellInfo(info.auraID) or nil,
                     }
-                    if Save.speciesID== speciesID then
+                    if Save.speciesID== speciesID then                       
                         self.texture:SetTexture(speciesIcon or 0)
                     end
                     self.NumPet= self.NumPet+1
@@ -248,11 +248,10 @@ local function Init()
     function  button:set_menu(speciesID, tab, level)
         tab = tab or {}
         local speciesName, speciesIcon= C_PetJournal.GetPetInfoBySpeciesID(speciesID)
-
-        if speciesName then
+        if type(speciesName)=='string' then
             local num= select(3, e.GetPetCollectedNum(speciesID, nil, true))
             e.LibDD:UIDropDownMenu_AddButton({
-                text= format('%s %s', e.onlyChinese and tab.cn or speciesName, num or ''),
+                text= format('%s %s', e.onlyChinese and tab.cn or speciesName, (num or '')..''),
                 icon= speciesIcon,
                 disabled= C_PetJournal.GetNumCollectedInfo(speciesID)==0,
                 checked= Save.speciesID==speciesID,

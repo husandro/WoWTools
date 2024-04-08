@@ -835,7 +835,7 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(_, event, arg1)
     if event=='ADDON_LOADED' then
         if arg1==id then
-            --WoWToolsSave= WoWToolsSave or {}
+            WoWToolsSave= WoWToolsSave or {}
             --e.WoWDate= e.WoWDate or e.WoWDate or {}
 
             Save= WoWToolsSave[addName] or Save
