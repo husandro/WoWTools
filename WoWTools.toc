@@ -38,6 +38,9 @@ Libs\LibUIDropDownMenu.lua
 
 
 ##主要function，不能删除
+API_Create.lua
+API_Func.lua
+API_Realm.lua
 WoWTools.lua
 WoWDate.lua
 WoWPanel.lua
