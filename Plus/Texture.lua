@@ -1058,7 +1058,7 @@ local function Init_All_Frame()
      e.Set_Alpha_Frame_Texture(ChatFrameMenuButton, {alpha= min03})
      e.Set_Alpha_Frame_Texture(TextToSpeechButton, {alpha=min03})
 
-     --[[hooksecurefunc('ObjectiveTracker_UpdateOpacity', function()
+     --[[hooksecurefunc('ObjectiveTracker_UpdateOpacity', function()--如果有法术按钮时，会出错
          --for _, module in ipairs(ObjectiveTrackerBlocksFrame.MODULES) do
            --  set_Alpha_Color(module.Header.Background)
          --end

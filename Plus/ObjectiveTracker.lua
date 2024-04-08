@@ -89,7 +89,7 @@ local function hide_Trecker()--挑战,进入FB时, 隐藏Blizzard_ObjectiveTrack
                 if not self.collapsed  then
                     --local module = self.Header.MinimizeButton:GetParent().module;
                     self:SetCollapsed(true);
-                    e.call('ObjectiveTracker_Update', 0, nil, self)
+                    --e.call('ObjectiveTracker_Update', 0, nil, self)--如果有法术按钮时，会出错
                     self.Header.MinimizeButton:SetCollapsed(true);
                     self.setColla=true;
                 end
@@ -102,7 +102,7 @@ local function hide_Trecker()--挑战,进入FB时, 隐藏Blizzard_ObjectiveTrack
                 if self.setColla then
                     if self.collapsed  then
                         self:SetCollapsed(false);
-                        e.call('ObjectiveTracker_Update', 0, nil, self)
+                       -- e.call('ObjectiveTracker_Update', 0, nil, self)--如果有法术按钮时，会出错
                         self.Header.MinimizeButton:SetCollapsed(false);
                     end
                     self.setColla=nil;
@@ -136,7 +136,6 @@ end
 --初始
 --####
 local function Init()
-
     function ObjectiveTrackerFrame.HeaderMenu.MinimizeButton:set_scale()
         ObjectiveTrackerFrame:SetScale(Save.scale or 1)
     end
@@ -147,7 +146,7 @@ local function Init()
                 if frame.collapsed ~=type and frame.Header.added and frame.Header:IsVisible() then
                     local module = frame.Header.MinimizeButton:GetParent().module
                     module:SetCollapsed(type)
-                    e.call('ObjectiveTracker_Update', 0, nil, module)
+                    --e.call('ObjectiveTracker_Update', 0, nil, module)--如果有法术按钮时，会出错
                     frame.Header.MinimizeButton:SetCollapsed(type)
                 end
             end
