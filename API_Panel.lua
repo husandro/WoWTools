@@ -855,6 +855,15 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             end
 
             Init()
+
+            if not StaticPopupDialogs['GAME_SETTINGS_APPLY_DEFAULTS'].OnShow then
+                StaticPopupDialogs['GAME_SETTINGS_APPLY_DEFAULTS'].OnShow= function(frame)
+                    frame.button1:SetEnabled(false)
+                    C_Timer.After(3, function()
+                        frame.button1:SetEnabled(true)
+                    end)
+                end
+            end
             panel:UnregisterEvent('ADDON_LOADED')
         end
 

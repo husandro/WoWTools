@@ -622,13 +622,13 @@ local function Init_Dialogs()
             self2.editBox:SetText("")
             e.call('ChatEdit_FocusActiveWindow')
         end,
-        OnAlt = function(self4, data)
+        OnAlt = function(_, data)
             Save.Mounts[FLOOR][data.spellID]=nil
             checkMount()--检测坐骑
             setClickAtt()--设置 Click属性
             if MountJournal_UpdateMountList then e.call('MountJournal_UpdateMountList') end
         end,
-        EditBoxOnTextChanged=function(self4, data)
+        EditBoxOnTextChanged=function(self4)
             local _, text= get_UIMapIDs(self4:GetText())
             local btn=self4:GetParent().button1
             btn:SetEnabled(text and true or false)
