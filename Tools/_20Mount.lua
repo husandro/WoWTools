@@ -94,12 +94,7 @@ local XD
 
 
 
-e.LoadDate({id=179244, type= 'spell'})
-e.LoadDate({id=179245, type= 'spell'})
-e.LoadDate({id=90265, type= 'spell'})
-e.LoadDate({id=33391, type= 'spell'})
-e.LoadDate({id=34090, type= 'spell'})
-e.LoadDate({id=34090, type= 'spell'})
+
 
 
 local MountType={

@@ -1,6 +1,48 @@
 local id, e = ...
 local panel=CreateFrame("Frame")
---local addName= 'e.WoWDate'
+
+
+
+--[[
+e.GetItemWoWNum(itemID)--取得WOW物品数量  return all, numPlayer
+
+e.WoWGUID={}--e.WoWGUID[名称-服务器]=guid
+
+e.WoWDate[e.Player.guid].Keystone={
+    score= score,
+    all= all,
+    week= e.Player.week,
+    weekNum= weekNum,
+    weekLevel= weekLevel,
+    weekPvE= e.Get_Week_Rewards_Text(3),--Raid
+    weekMythicPlus= e.Get_Week_Rewards_Text(1),--MythicPlus
+    weekPvP= e.Get_Week_Rewards_Text(2),--RankedPvP
+    link= e.WoWDate[e.Player.guid].Keystone.link,
+}
+e.WoWDate[e.Player.guid].Item[itemID]={
+    bag=bag,
+    bank=C_Item.GetItemCount(itemID, true, false, true)-bag,
+}
+e.WoWDate[e.Player.guid].Money= GetMoney() or 0
+
+e.UnitItemLevel=[guid] = {--玩家装等
+        itemLevel= C_PaperDollInfo.GetInspectItemLevel(unit) or (e.UnitItemLevel[guid] and e.UnitItemLevel[guid].itemLevel),
+        specID= GetInspectSpecialization(unit),
+        faction= UnitFactionGroup(unit),
+        col= hex,
+        r=r,
+        g=g,
+        b=b,
+    }
+e.GetNotifyInspect(tab, unit)--取得装等
+e.GroupGuid[GetUnitName(unit, true) or guid]={--队伍数据
+            unit= unit,
+            combatRole= UnitGroupRolesAssigned(unit),
+            guid=guid,
+            faction= UnitFactionGroup(unit),
+        }
+e.GetGroupGuidDate()--队伍数据收集
+]]
 
 
 
@@ -11,7 +53,33 @@ local panel=CreateFrame("Frame")
 
 
 
+local itemLoadTab={--加载法术,或物品数据
+        134020,--玩具,大厨的帽子
+        6948,--炉石
+        140192,--达拉然炉石
+        110560,--要塞炉石
+        5512,--治疗石
+        8529,--诺格弗格药剂
+        38682,--附魔纸
+    }
+local spellLoadTab={
+    818,--火    
+    179244,--[召唤司机]
+    179245,--[召唤司机]
+    33388,--初级骑术
+    33391,--中级骑术
+    34090,--高级骑术
+    34091,--专家级骑术
+    90265,--大师级骑术
+    783,--旅行形态
+}
 
+for _, itemID in pairs(itemLoadTab) do
+    e.LoadDate({id=itemID, type='item'})
+end
+for _, spellID in pairs(spellLoadTab) do
+    e.LoadDate({id=spellID, type='spell'})
+end
 
 
 
@@ -168,20 +236,21 @@ function e.GetGroupGuidDate()--队伍数据收集
             end
         end
     elseif IsInGroup() then
-        local tab
         for index= 1, 4 do
             local unit= 'party'..index
             local guid= UnitExists(unit) and UnitGUID(unit)
             if guid then
-                tab={
+                e.GroupGuid[guid]= {
+                    unit= unit,
+                    combatRole= UnitGroupRolesAssigned(unit),
+                    faction= UnitFactionGroup(unit),
+                }
+                e.GroupGuid[GetUnitName(unit, true)]= {
                     unit= unit,
                     combatRole= UnitGroupRolesAssigned(unit),
                     guid=guid,
                     faction= UnitFactionGroup(unit),
                 }
-                e.GroupGuid[guid]= tab
-                tab.guid= guid
-                e.GroupGuid[GetUnitName(unit, true)]= tab
                 if not e.UnitItemLevel[guid] or not e.UnitItemLevel[guid].itemLevel then
                     table.insert(UnitTab, unit)
                 end

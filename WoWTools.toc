@@ -43,8 +43,7 @@ API_Create.lua
 API_Func.lua
 API_Realm.lua
 API_Panel.lua
-WoWDate.lua
-LoadData.lua
+API_WoWDate.lua
 
 
 ##WoWPlus

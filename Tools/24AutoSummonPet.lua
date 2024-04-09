@@ -126,7 +126,7 @@ local function Init()
                         auraID= info.auraID,
                         auraName= info.auraID and GetSpellInfo(info.auraID) or nil,
                     }
-                    if Save.speciesID== speciesID then                       
+                    if Save.speciesID== speciesID then
                         self.texture:SetTexture(speciesIcon or 0)
                     end
                     self.NumPet= self.NumPet+1
