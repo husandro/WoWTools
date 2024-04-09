@@ -121,6 +121,7 @@ Plus\Macro.lua
 
 ##坐骑， Tools 主要的，
 ##如果要使用Tools中的一个模块，必须开启坐骑模块
+Tools\_0_Init_Frame.lua
 Tools\_20Mount.lua
 ##随机炉石
 Tools\_21Hearthstone.lua

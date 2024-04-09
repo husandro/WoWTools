@@ -25,10 +25,11 @@ local Save={
             [2983]=true,
             [190784]=true,
             [48265]=true,
-            [186257]=true,
-            [6544]=true,
+            [186257]=true,--猎豹守护
+            [6544]=true,--英勇飞跃
             [358267]= true,--悬空
-            [212653]= true,
+            --[212653]= true,--闪光术
+            [1953]=true,--闪现术
         },
         [FLOOR]={},--{[spellID]=uiMapID}
         [MOUNT_JOURNAL_FILTER_GROUND]={
@@ -342,7 +343,7 @@ local function setClickAtt()--设置 Click属性
     else
         spellID= (IsIndoors() or isMoving or isBat) and button.spellID--进入战斗, 室内
             or getRandomRoll(FLOOR)--区域
-            or ((IsAdvancedFlyableArea() and isFlyableArea)and getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING))            
+            or ((IsAdvancedFlyableArea() and isFlyableArea)and getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING))
             or (IsSubmerged() and getRandomRoll(MOUNT_JOURNAL_FILTER_AQUATIC))--水平中
             or (isFlyableArea and getRandomRoll(MOUNT_JOURNAL_FILTER_FLYING))--飞行区域
             or (IsOutdoors() and getRandomRoll(MOUNT_JOURNAL_FILTER_GROUND))--室内
@@ -515,25 +516,14 @@ local function Init_Dialogs()
         whileDead=true, hideOnEscape=true, exclusive=true,
         button1= e.onlyChinese and '添加' or ADD,
         button2= e.onlyChinese and '取消' or CANCEL,
-        button3= e.onlyChinese and '移除' or REMOVE,
         OnShow = function(self, data)
             self.button3:SetEnabled(Save.Mounts[SPELLS][data.spellID] and true or false)
             self.button1:SetEnabled(not Save.Mounts[SPELLS][data.spellID] and true or false)
         end,
-        OnAccept = function(self, data)
+        OnAccept = function(_, data)
             Save.Mounts[SPELLS][data.spellID]=true
             checkItem()--检测物品
             setClickAtt()--设置 Click属性
-        end,
-        OnAlt = function(self, data)
-            Save.Mounts[SPELLS][data.spellID]=nil
-            checkSpell()--检测法术
-            setClickAtt()--设置 Click属性
-        end,
-        EditBoxOnEscapePressed = function(s)
-            s:SetAutoFocus(false)
-            s:ClearFocus()
-            s:GetParent():Hide()
         end,
     }
 
