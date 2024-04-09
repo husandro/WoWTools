@@ -1635,27 +1635,9 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2)
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
 
-            --添加控制面板
-            e.AddPanel_Header(nil, 'Tools')
-            e.AddPanel_Check_Button({
-                checkName= '|A:bag-border-empty:0:0|aTools',
-                checkValue= not Save.disabled,
-                checkFunc= function()
-                    Save.disabled= not Save.disabled and true or nil
-                    print(id, 'Tools', e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                end,
-                buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
-                buttonFunc= function()
-                    Save.Point=nil
-                    set_Button_Postion()--设置按钮位置
-                    print(id, e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
-                end,
-                tooltip= e.cn(addName),
-                layout= nil,
-                category= nil,
-            })
+          
 
-            if not Save.disabled then
+            if not e.toolsFrame.disabled then
                 CollectionsJournal_LoadUI()
 
                 for spellID, tab in pairs(Save.Mounts[FLOOR]) do

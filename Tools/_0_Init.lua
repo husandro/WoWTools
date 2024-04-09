@@ -1,4 +1,9 @@
 local e = select(2, ...)
+local addName= 'Tools'
+local panel= CreateFrame("Frame")
+local Save={
+
+}
 
 e.toolsFrame=CreateFrame('Frame')--TOOLS 框架
 e.toolsFrame:SetSize(1,1)
@@ -21,3 +26,23 @@ function e.ToolsSetButtonPoint(self, line, unoLine)--设置位置
     e.toolsFrame.last=self
     e.toolsFrame.index=e.toolsFrame.index+1
 end
+
+panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" then
+        if arg1== id then
+            Save= WoWToolsSave[id..'_Tools'] or Save
+
+            --添加控制面板
+            e.AddPanel_Sub_Category({name='|A:bag-border-empty:0:0|aTools', frame=panel})
+            
+            self:UnregisterEvent('ADDON_LOADED')
+        end
+
+    elseif event == "PLAYER_LOGOUT" then
+        if not e.ClearAllSave then
+            WoWToolsSave[id..'_Tools']=Save
+        end
+    end
+end)
