@@ -138,7 +138,7 @@ local function Init_Tools_Button()
             end
 
             if index==5 then--烹饪用火
-                local name2=IsSpellKnown(818) and GetSpellInfo(818)
+                local name2=IsSpellKnownOrOverridesKnown(818) and GetSpellInfo(818)
                 if name2 then
                     local text=''
                     if PlayerHasToy(134020) then--玩具,大厨的帽子

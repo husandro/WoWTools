@@ -65,7 +65,7 @@ end
 
 local function get_Find(ID, spell)
     if spell then
-        if IsSpellKnown(ID) then
+        if IsSpellKnownOrOverridesKnown(ID) then
             return true
         end
     else
@@ -140,7 +140,7 @@ local function Init_Menu(_, level, type)--主菜单
                 keepShownOnClick=true,
             }
 
-            if (type=='spell' and not IsSpellKnown(ID)) or ((type=='item' or type=='equip') and C_Item.GetItemCount(ID)==0 and not PlayerHasToy(ID)) then
+            if (type=='spell' and not IsSpellKnownOrOverridesKnown(ID)) or ((type=='item' or type=='equip') and C_Item.GetItemCount(ID)==0 and not PlayerHasToy(ID)) then
                 info.text= e.Icon.O2..info.text
                 info.colorCode='|cff606060'
             end
@@ -722,7 +722,7 @@ local function Init()
     end
 
     for _, spellID in pairs(Save.spell) do
-        if IsSpellKnown(spellID) then
+        if IsSpellKnownOrOverridesKnown(spellID) then
             local name, _, icon = GetSpellInfo(spellID)
             if name and icon then
                 if name and icon then

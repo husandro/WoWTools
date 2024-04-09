@@ -1544,7 +1544,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                                 e.tips:SetOwner(parent, "ANCHOR_RIGHT")
                                 e.tips:ClearLines()
                                 e.tips:SetSpellByID(parent.spellID)
-                                if not IsSpellKnown(parent.spellID) then--没学会
+                                if not IsSpellKnownOrOverridesKnown(parent.spellID) then--没学会
                                     e.tips:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '法术尚未学会' or SPELL_FAILED_NOT_KNOWN))
                                 end
                                 e.tips:Show()
@@ -1554,7 +1554,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                         frame.spellPort:SetScript("OnLeave",function(self2)
                             e.tips:Hide()
                             local spellID=self2:GetParent().spellID
-                            self2:SetAlpha(spellID and IsSpellKnown(spellID) and 1 or 0.3)
+                            self2:SetAlpha(spellID and IsSpellKnownOrOverridesKnown(spellID) and 1 or 0.3)
                         end)
                         frame.spellPort:SetScript('OnHide', function(self2)
                             self2:UnregisterEvent('SPELL_UPDATE_COOLDOWN')
@@ -1571,7 +1571,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                 end
             end
             if frame.spellPort and not isInBat then
-                if frame.spellID and IsSpellKnown(frame.spellID) then
+                if frame.spellID and IsSpellKnownOrOverridesKnown(frame.spellID) then
                     local name= GetSpellInfo(frame.spellID)
                     frame.spellPort:SetAttribute("type", "spell")
                     frame.spellPort:SetAttribute("spell", name or frame.spellID)
@@ -1939,7 +1939,7 @@ local function Init()
             local icon= GetSpellTexture(tab.spell)
             e.tips:AddDoubleLine((icon and '|T'..icon..':0|t' or '')..spellLink,
                                 'spellID '..tab.spell..' '..
-                                (IsSpellKnown(tab.spell) and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已获得' or ACHIEVEMENTFRAME_FILTER_COMPLETED)
+                                (IsSpellKnownOrOverridesKnown(tab.spell) and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已获得' or ACHIEVEMENTFRAME_FILTER_COMPLETED)
                                                         or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '未获得' or FOLLOWERLIST_LABEL_UNCOLLECTED))
                                 )
                             )

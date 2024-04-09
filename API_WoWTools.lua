@@ -1,4 +1,19 @@
 local e = select(2, ...)
+--[[
+e.WoWDate={}
+e.strText={}
+e.tips=GameTooltip
+e.call=securecall
+e.LeftButtonDown
+e.RightButtonDown
+e.onlyChinese
+e.itemSlotTable
+e.ExpansionLevel
+e.Player={}
+e.Icon={}
+]]
+
+
 --Blizzard_Deprecated/Deprecated_10_2_0.lua
 e.WoWDate={}
 e.strText={}

@@ -61,82 +61,97 @@ end
 local function Init()
     local find
     for _, tab in pairs(Tab) do
-        if IsSpellKnown(tab.spell) then
-            local btn=e.Cbtn2({
-                name= id..e.cn(addName),
-                parent= e.toolsFrame,
-                click=true,-- right left
-                notSecureActionButton=nil,
-                notTexture=nil,
-                showTexture=true,
-                sizi=nil,
-            })
+        local btn=e.Cbtn2({
+            name= id..e.cn(addName),
+            parent= e.toolsFrame,
+            click=true,-- right left
+            notSecureActionButton=nil,
+            notTexture=nil,
+            showTexture=true,
+            sizi=nil,
+        })
 
-            e.ToolsSetButtonPoint(btn, not find, true)--设置位置
-            find=true
+        e.ToolsSetButtonPoint(btn, not find, true)--设置位置
+        find=true
 
-            btn.spell= tab.spell
-            btn.spell2= tab.spell2
-            local name, _, icon = GetSpellInfo(tab.spell)
+        btn.spell= tab.spell
+        btn.spell2= tab.spell2
+        local name, _, icon = GetSpellInfo(tab.spell)
 
-            btn:SetAttribute('type', 'spell')--设置属性
-            btn:SetAttribute('spell', name or tab.spell)
-            btn.texture:SetTexture(icon)
+        btn:SetAttribute('type', 'spell')--设置属性
+        btn:SetAttribute('spell', name or tab.spell)
+        btn.texture:SetTexture(icon)
 
-            btn.text=e.Cstr(btn, {color= not tab.luce})
-            btn.text:SetPoint('RIGHT', btn, 'LEFT')
-            if e.onlyChinese then
-                btn.text:SetText(tab.name)
-            else
-                local text=name:gsub('(.+):','')
-                text=text:gsub('(.+)：','');
-                text=text:gsub('(.+)-','');
-                btn.text:SetText(text)
-            end
+        btn.text=e.Cstr(btn, {color= not tab.luce})
+        btn.text:SetPoint('RIGHT', btn, 'LEFT')
 
-            if tab.luce then
-                btn.border:SetAtlas('bag-border')--设置高亮
-            end
+        if e.onlyChinese then
+            btn.text:SetText(tab.name)
+        else
+            local text=name:gsub('(.+):','')
+            text=text:gsub('(.+)：','');
+            text=text:gsub('(.+)-','');
+            btn.text:SetText(text)
+        end
 
-            if tab.spell2 and IsSpellKnown(tab.spell2) then--右击
-                name,_,icon = GetSpellInfo(tab.spell2)
-                btn:SetAttribute('type2', 'spell')
-                btn:SetAttribute('spell2', name or tab.spell2)
+        if tab.luce then
+            btn.border:SetAtlas('bag-border')--设置高亮
+        end
 
-                btn.texture2= btn:CreateTexture(nil,'OVERLAY')
-                btn.texture2:SetPoint('TOPRIGHT',-6,-6)
-                btn.texture2:SetSize(10, 10)
-                btn.texture2:SetTexture(icon)
-                btn.texture2:AddMaskTexture(btn.mask)
-                btn:SetScript('OnShow', function(self2)
-                    self2:RegisterEvent('SPELL_UPDATE_COOLDOWN')
-                    e.SetItemSpellCool({frame=btn, spell=self2.spell2})--设置冷却
-                end)
-                btn:SetScript('OnHide', function(self2)
-                    self2:UnregisterEvent('SPELL_UPDATE_COOLDOWN')
-                end)
-                btn:SetScript("OnEvent", function(self, event)
-                    if event=='SPELL_UPDATE_COOLDOWN' then
-                        e.SetItemSpellCool({frame=self, spell=self.spell2})--设置冷却
-                    end
-                end)
-            end
+        if tab.spell2 then--and IsSpellKnownOrOverridesKnown(tab.spell2) then--右击
+            name,_,icon = GetSpellInfo(tab.spell2)
+            btn:SetAttribute('type2', 'spell')
+            btn:SetAttribute('spell2', name or tab.spell2)
 
-            btn:SetScript('OnLeave', GameTooltip_Hide)
-            btn:SetScript('OnEnter', function(self)
-                e.tips:SetOwner(self, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:SetSpellByID(self.spell)
-                if self.spell2 then
-                    e.tips:AddLine(' ')
-                    local link= icon and '|T'..icon..':0|t' or ''
-                    link= link.. (GetSpellLink(self.spell2) or GetSpellInfo(self.spell2) or ('spellID'..self.spell2))
-                    link= link .. (e.GetSpellItemCooldown(self.spell2, nil) or '')
-                    e.tips:AddDoubleLine(link, e.Icon.right)
+            btn.texture2= btn:CreateTexture(nil,'OVERLAY')
+            btn.texture2:SetPoint('TOPRIGHT',-6,-6)
+            btn.texture2:SetSize(10, 10)
+            btn.texture2:SetTexture(icon)
+            btn.texture2:AddMaskTexture(btn.mask)
+            btn:SetScript('OnShow', function(self2)
+                self2:RegisterEvent('SPELL_UPDATE_COOLDOWN')
+                e.SetItemSpellCool({frame=btn, spell=self2.spell2})--设置冷却
+            end)
+            btn:SetScript('OnHide', function(self2)
+                self2:UnregisterEvent('SPELL_UPDATE_COOLDOWN')
+            end)
+            btn:SetScript("OnEvent", function(self, event)
+                if event=='SPELL_UPDATE_COOLDOWN' then
+                    e.SetItemSpellCool({frame=self, spell=self.spell2})--设置冷却
                 end
-                e.tips:Show()
             end)
         end
+
+        function btn:set_sepll_known()
+            self:SetAlpha((GameTooltip:IsOwned(self) or IsSpellKnownOrOverridesKnown(self.spell)) and 1 or 0.1)
+        end
+        btn:SetScript('OnLeave', function(self)
+            GameTooltip_Hide()
+            self:set_sepll_known()
+        end)
+        btn:SetScript('OnEnter', function(self)
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:SetSpellByID(self.spell)
+            if not IsSpellKnownOrOverridesKnown(self.spell) then
+                e.tips:AddLine(format('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '未学习' or TRADE_SKILLS_UNLEARNED_TAB))
+            end
+            if self.spell2 then
+                e.tips:AddLine(' ')
+                local link= icon and '|T'..icon..':0|t' or ''
+                link= link.. (GetSpellLink(self.spell2) or GetSpellInfo(self.spell2) or ('spellID'..self.spell2))
+                link= link .. (e.GetSpellItemCooldown(self.spell2, nil) or '')
+                e.tips:AddDoubleLine(link,
+                    format('%s%s',
+                        IsSpellKnownOrOverridesKnown(self.spell2) and '' or format('|cnRED_FONT_COLOR:%s|r',e.onlyChinese and '未学习' or TRADE_SKILLS_UNLEARNED_TAB),
+                        e.Icon.right)
+                    )
+            end
+            e.tips:Show()
+            self:set_sepll_known()
+        end)
+
+        btn:set_sepll_known()
     end
 
     Tab=nil

@@ -173,8 +173,8 @@ end
 local function XDInt()--德鲁伊设置
     XD=nil
     if Save.XD and e.Player.class=='DRUID' then
-        local ground=IsSpellKnown(768) and 768
-        local flying=IsSpellKnown(783) and 783
+        local ground=IsSpellKnownOrOverridesKnown(768) and 768
+        local flying=IsSpellKnownOrOverridesKnown(783) and 783
         if ground then
             XD={
                 [MOUNT_JOURNAL_FILTER_GROUND]= ground,
@@ -204,7 +204,7 @@ local function checkSpell()--检测法术
         button.spellID=XD[MOUNT_JOURNAL_FILTER_GROUND]
     else
         for spellID, _ in pairs(Save.Mounts[SPELLS]) do
-            if IsSpellKnown(spellID) then
+            if IsSpellKnownOrOverridesKnown(spellID) then
                 button.spellID=spellID
                 break
             end
@@ -877,23 +877,23 @@ local function InitMenu(_, level, type)--主菜单
         for spellID, _ in pairs(Save.Mounts[SPELLS]) do
             local name, _, icon = GetSpellInfo(spellID)
             local text= (icon and '|T'..icon..':0|t' or '').. (e.cn(name) or ('spellID: '..spellID))
-            local known= spellID and IsSpellKnown(spellID)
+            local known= spellID and IsSpellKnownOrOverridesKnown(spellID)
             text= text..(known and e.Icon.select2 or e.Icon.O2)
             info={
                 text= text,
                 tooltipOnButton=true,
-                tooltipTitle= (e.onlyChinese and '修改' or HUD_EDIT_MODE_RENAME_LAYOUT)..e.Icon.left,
+                tooltipTitle= format('%sCtrl+%s', e.onlyChinese and '移除' or REMOVE, e.Icon.left),
                 colorCode= not known and '|cff606060',
-                notCheckable=true,
+                checked= button.spellID==spellID,
                 keepShownOnClick=true,
                 arg1= spellID,
-                arg2= text,
-                func=function(_, arg1, arg2)
-                    StaticPopup_Show(id..addName..'SPELLS',
-                            arg2,
-                            Save.Mounts[SPELLS][arg1] and (e.onlyChinese and '法术已存在' or ERR_ZONE_EXPLORED:format(PROFESSIONS_CURRENT_LISTINGS)) or (e.onlyChinese and '新建' or NEW),
-                            {spellID=arg1}
-                    )
+                func=function(_, arg1)
+                    if IsControlKeyDown() then
+                        if Save.Mounts[SPELLS][arg1] then
+                            print(id, addName, e.onlyChinese and '移除' or REMOVE, GetSpellLink(arg1) or arg1)
+                        end
+                        Save.Mounts[SPELLS][arg1]=nil
+                    end
                 end,
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level);
@@ -1494,7 +1494,7 @@ local function Init()
             if IsMounted() then
                C_MountJournal.Dismiss()
             end
-            --[[if IsSpellKnown(111400) and not UnitAffectingCombat('player') then--SS爆燃冲刺
+            --[[if IsSpellKnownOrOverridesKnown(111400) and not UnitAffectingCombat('player') then--SS爆燃冲刺
                 for i = 1, 40 do
                     local spell = select(10, UnitBuff('player', i, 'PLAYER'))
                     if not spell then
