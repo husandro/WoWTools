@@ -1636,8 +1636,6 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2)
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
 
-          
-
             if not e.toolsFrame.disabled then
                 CollectionsJournal_LoadUI()
 
@@ -1693,9 +1691,6 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2)
 
     elseif event=='PLAYER_REGEN_DISABLED' then
             setClickAtt()--设置属性
-            if e.toolsFrame:IsShown() then
-                e.toolsFrame:SetShown(false)--设置, TOOLS 框架,隐藏
-            end
 
     elseif event=='PLAYER_REGEN_ENABLED' then
         if button.Combat then
@@ -1760,9 +1755,7 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2)
 
     elseif event=='PLAYER_STARTED_MOVING' then
         setClickAtt()--设置属性
-        if not UnitAffectingCombat('player') and e.toolsFrame:IsShown() then
-            e.toolsFrame:SetShown(false)--设置, TOOLS 框架,隐藏
-        end
+       
 
     elseif event=='NEUTRAL_FACTION_SELECT_RESULT' then
         set_ShiJI()
