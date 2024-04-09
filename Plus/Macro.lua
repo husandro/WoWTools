@@ -261,7 +261,9 @@ end
 
 --高亮，动作条
 --ActionButton.lua
+--[[Bug
 local function Set_Action_Focus(spellID)
+    
     if not e.Player.husandro or UnitAffectingCombat('player') then--出错，尝试调用保护功能 
         return
     end
@@ -272,7 +274,7 @@ local function Set_Action_Focus(spellID)
     end
     e.call('ActionBarController_UpdateAllSpellHighlights')
 end
-
+]]
 
 
 --创建，宏
@@ -482,7 +484,7 @@ local function set_btn_tooltips(self, index)
                 if spellName and spellIcon then
                     e.tips:AddDoubleLine('|T'..spellIcon..':0|t'..spellName, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '法术' or SPELLS, spellID))
                 end
-                Set_Action_Focus(spellID)
+                --Set_Action_Focus(spellID)
             end
             e.tips:Show()
             return icon
@@ -1224,7 +1226,10 @@ local function Init_Select_Macro_Button()
         )
         e.tips:Show()
     end)
-    MacroFrameSelectedMacroButton:HookScript('OnLeave', function() e.tips:Hide() Set_Action_Focus() end)
+    MacroFrameSelectedMacroButton:HookScript('OnLeave', function()
+        e.tips:Hide()
+        --Set_Action_Focus()
+    end)
 
     --选定宏，点击，弹出菜单，自定图标
     MacroFrameSelectedMacroButton:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
@@ -1588,7 +1593,10 @@ local function Init()
     --宏，提示
     hooksecurefunc(MacroButtonMixin, 'OnLoad', function(btn)
         btn:HookScript('OnEnter', set_btn_tooltips)--设置，宏，提示
-        btn:HookScript('OnLeave', function() e.tips:Hide() Set_Action_Focus() end)
+        btn:HookScript('OnLeave', function()
+            e.tips:Hide()
+            --Set_Action_Focus()
+        end)
         local texture2= btn:GetRegions()
         texture2:SetAlpha(0.3)--按钮，背景
         btn.Name:SetWidth(48)--名称，长度
