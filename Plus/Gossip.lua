@@ -157,7 +157,9 @@ local function Set_Gossip_Text(self, info)
     if not Save.not_Gossip_Text_Icon and gossipOptionID and info.name then
         local zoneInfo= Save.Gossip_Text_Icon_Player[gossipOptionID] or GossipTextIcon[gossipOptionID]
         if not zoneInfo then
-            text= e.strText[info.name]
+            if not IsInInstance() then
+                text= e.strText[info.name]
+            end
         else
             local icon
             local name
