@@ -30,6 +30,7 @@ local Save={
             [358267]= true,--悬空
             --[212653]= true,--闪光术
             [1953]=true,--闪现术
+            [115008]=true,--真气突
         },
         [FLOOR]={},--{[spellID]=uiMapID}
         [MOUNT_JOURNAL_FILTER_GROUND]={

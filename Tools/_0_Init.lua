@@ -1,8 +1,11 @@
-local e = select(2, ...)
+local id, e = ...
 local addName= 'Tools'
 local panel= CreateFrame("Frame")
 local Save={
+    --disabled=true,
+    disabledTab={
 
+    }
 }
 
 e.toolsFrame=CreateFrame('Frame')--TOOLS 框架
@@ -27,17 +30,60 @@ function e.ToolsSetButtonPoint(self, line, unoLine)--设置位置
     e.toolsFrame.index=e.toolsFrame.index+1
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Init_Options()
+    local Category, Layout= e.AddPanel_Sub_Category({name='|A:bag-border-empty:0:0|aTools'})
+    e.AddPanel_Check({
+        name= e.onlyChinese and '启用' or ENABLE,
+        tooltip= e.cn(addName),
+        value= not Save.disabled,
+        category= Category,
+        func= function()
+            Save.disabled= not Save.disabled and true or nil
+            print(e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            Init_Options()--初始, 选项
+        end
+    })
+
+end
+
+
+
+
+
+
+
+
+
+
+
+
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
-panel:SetScript("OnEvent", function(self, event, arg1)
+panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
             Save= WoWToolsSave[id..'_Tools'] or Save
+            e.toolsFrame.disabled= Save.disabled
 
-            --添加控制面板
-            e.AddPanel_Sub_Category({name='|A:bag-border-empty:0:0|aTools', frame=panel})
-            
-            self:UnregisterEvent('ADDON_LOADED')
+            if Save.disabled then
+                panel:UnregisterEvent('ADDON_LOADED')
+            end
+
+        elseif arg1=='Blizzard_Settings' then
+            Init_Options()--初始, 选项           
         end
 
     elseif event == "PLAYER_LOGOUT" then
