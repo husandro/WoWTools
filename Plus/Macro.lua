@@ -417,7 +417,8 @@ local function Create_Spell_Menu(spellID, icon, name, texture)--创建，法术�
         tooltipText=tipText,
         colorCode=color,
         icon=icon,
-        
+        tSizeX=32,
+        tSizeY=32,
         arg1={spellName=name, spellID=spellID, icon=spellIcon},
 
         notCheckable=true,
@@ -455,6 +456,7 @@ local function Create_Spell_Menu(spellID, icon, name, texture)--创建，法术�
             end
         end
     }, 1)
+    print(name)
 end
 
 
@@ -1427,6 +1429,7 @@ local function Init_Macro_List()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '请不要在战斗中使用' or 'Please do not use in combat'))
         e.tips:AddLine(' ')
         e.tips:AddLine((e.onlyChinese and '图标' or EMBLEM_SYMBOL)..':', e.Icon.left)
         local text= e.onlyChinese and '备注' or LABEL_NOTE

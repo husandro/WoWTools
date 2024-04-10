@@ -268,7 +268,7 @@ local function getRandomRoll(type)--随机坐骑
     end
 end
 local function setShiftCtrlAltAtt()--设置Shift Ctrl Alt 属性
-    if UnitAffectingCombat('player') then
+    if not button:CanChangeAttribute() then
         button.Combat=true
         return
     end
@@ -337,14 +337,14 @@ local function setClickAtt()--设置 Click属性
             spellID= 783
         elseif isMoving or isBat then
             spellID= IsIndoors() and 768 or 783
-        elseif IsAdvancedFlyableArea() and isFlyableArea then
+        elseif IsAdvancedFlyableArea() then
             spellID= getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING)
         end
         spellID= spellID or (IsIndoors() and 768 or 783)
     else
         spellID= (IsIndoors() or isMoving or isBat) and button.spellID--进入战斗, 室内
             or getRandomRoll(FLOOR)--区域
-            or ((IsAdvancedFlyableArea() and isFlyableArea)and getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING))
+            or (IsAdvancedFlyableArea() and getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING))
             or (IsSubmerged() and getRandomRoll(MOUNT_JOURNAL_FILTER_AQUATIC))--水平中
             or (isFlyableArea and getRandomRoll(MOUNT_JOURNAL_FILTER_FLYING))--飞行区域
             or (IsOutdoors() and getRandomRoll(MOUNT_JOURNAL_FILTER_GROUND))--室内
