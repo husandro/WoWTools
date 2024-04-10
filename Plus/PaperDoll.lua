@@ -1509,7 +1509,7 @@ local function Init_Show_Hide_Button(frame)
             [9]	 = "CharacterWristSlot",
             [10] = "CharacterHandsSlot",
             [11] = "CharacterFinger0Slot",
-            [12] = "CharacterFinger0Slot",
+            [12] = "CharacterFinger1Slot",
             [13] = "CharacterTrinket0Slot",
             [14] = "CharacterTrinket1Slot",
             [15] = "CharacterBackSlot",
@@ -2996,7 +2996,7 @@ local function Init()
 
 
 
-    Init_Status_Plus()--属性，增强
+    panel:Init_Status_Plus()--属性，增强
 
     Init_TrackButton_ShowHide_Button()--装备管理, 总开关
     C_Timer.After(2, Init_TrackButton)--装备管理框
