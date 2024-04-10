@@ -765,10 +765,10 @@ local function Init_Add_Reload_Button()
         frame.reload:SetScript('OnClick', e.Reload)
     end
 
-    GameMenuFrame.reload:SetPoint('TOP', GameMenuButtonContinue, 'BOTTOM')
+    GameMenuFrame.reload:SetPoint('TOP', GameMenuButtonContinue, 'BOTTOM', 0, -20)
     hooksecurefunc('GameMenuFrame_UpdateVisibleButtons', function(self)
         if not Save.not_Add_Reload_Button then
-            self:SetHeight(self:GetHeight()+20)
+            self:SetHeight(self:GetHeight()+ 40)
         end
     end)
 

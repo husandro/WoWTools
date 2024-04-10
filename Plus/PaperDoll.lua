@@ -1482,7 +1482,7 @@ local function Init_Show_Hide_Button(frame)
         Save.hide= not Save.hide and true or nil
 
         GetDurationTotale()--装备,总耐久度
-        Init_Server_equipmentButton_Lable()--显示服务器名称
+        panel:Init_Server_equipmentButton_Lable()--显示服务器名称
 
         Init_Title()--头衔数量
         LvTo()--总装等
@@ -1492,7 +1492,7 @@ local function Init_Show_Hide_Button(frame)
         Init_TrackButton_ShowHide_Button()--装备管理, 总开关
         Init_TrackButton()--添加装备管理框
 
-        Init_Status_Plus()
+        panel:Init_Status_Plus()
 
         e.call('PaperDollFrame_SetLevel')
         e.call('PaperDollFrame_UpdateStats')
@@ -1697,7 +1697,7 @@ end
 --#############
 --显示服务器名称
 --#############
-local function Init_Server_equipmentButton_Lable()
+function panel:Init_Server_equipmentButton_Lable()
     if Save.hide then
         if  panel.serverText then
             panel.serverText:SetText('')
@@ -2629,7 +2629,7 @@ end
 
 
 --属性，增强 PaperDollFrame.lua
-local function Init_Status_Plus()
+function panel:Init_Status_Plus()
     if StatusPlusButton or Save.hide then
         if StatusPlusButton then
             StatusPlusButton:SetShown(not Save.hide)
@@ -2745,7 +2745,7 @@ local function Init()
 
     GetDurationTotale()--装备,总耐久度
 
-    Init_Server_equipmentButton_Lable()--显示服务器名称，装备管理框
+    panel:Init_Server_equipmentButton_Lable()--显示服务器名称，装备管理框
 
 
     --Init_ChromieTime()--时空漫游战役, 提示
