@@ -37,7 +37,7 @@ local function Get_ItemLink_For_rowData(rowData)
         itemLink= priceInfo.itemLink or priceInfo.battlePetLink
     end
     if not itemLink and itemID then
-        itemLink= select(2, GetItemInfo(itemID))
+        itemLink= select(2, C_Item.GetItemInfo(itemID))
     end
     isPet= rowData and rowData.itemKey and rowData.itemKey.battlePetSpeciesID and rowData.itemKey.battlePetSpeciesID>0
     return itemLink, itemID, isPet
@@ -644,7 +644,7 @@ local function Init_Sell()
                 price= 99999900--0.9万
 
             elseif LinkUtil.IsLinkType(itemLink, "item") then
-                local vendorPrice = select(11, GetItemInfo(itemLink));
+                local vendorPrice = select(11, C_Item.GetItemInfo(itemLink));
                 if vendorPrice then
 
                     local defaultPrice = vendorPrice * 500--倍数，原1.5倍
@@ -704,7 +704,7 @@ local function Init_Sell()
         local text2=''
         if itemLocation and itemLocation:IsValid() then
             local itemLink = C_Item.GetItemLink(itemLocation);
-            local vendorPrice =itemLink and select(11, GetItemInfo(itemLink)) or 10000;
+            local vendorPrice =itemLink and select(11, C_Item.GetItemInfo(itemLink)) or 10000;
             local unitPrice= frame.GetUnitPrice and frame:GetUnitPrice() or frame.PriceInput:GetAmount();-- frame:GetUnitPrice()
             unitPrice= (unitPrice==0 or not unitPrice) and 1 or unitPrice
             local col=''
@@ -894,7 +894,7 @@ local function Init_Sell()
             if not btn.setOnDoubleClick then
                 btn:SetScript('OnDoubleClick', function()
                     local itemLink= AuctionHouseFrame.CommoditiesSellFrame.ItemDisplay:GetItemLink()
-                    local itemName= itemLink and GetItemInfo(itemLink)
+                    local itemName= itemLink and C_Item.GetItemInfo(itemLink)
                     if itemName then
                         AuctionHouseFrame:SetDisplayMode(AuctionHouseFrameDisplayMode.Buy)
                         AuctionHouseFrame.SearchBar.SearchBox:SetText(itemName)
@@ -913,7 +913,7 @@ local function Init_Sell()
             if not btn.setOnDoubleClick then
                 btn:SetScript('OnDoubleClick', function()
                     local itemLink= AuctionHouseFrame.ItemSellFrame.ItemDisplay:GetItemLink()
-                    local itemName= itemLink and GetItemInfo(itemLink)
+                    local itemName= itemLink and C_Item.GetItemInfo(itemLink)
                     if itemName then
                         AuctionHouseFrame:SetDisplayMode(AuctionHouseFrameDisplayMode.Buy)
                         AuctionHouseFrame.SearchBar.SearchBox:SetText(itemName)

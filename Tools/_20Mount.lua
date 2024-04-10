@@ -839,7 +839,7 @@ local function InitMenu(_, level, type)--主菜单
             local num=C_Item.GetItemCount(itemID , false, true, true)
             text= text..(num==0 and ' #|cnRED_FONT_COLOR:' or  ' #|cnGREEN_FONT_COLOR:')..num..'|r'
             local col= '|cffff8200'
-            local itemQuality= select(3, GetItemInfo(itemID))
+            local itemQuality= select(3, C_Item.GetItemInfo(itemID))
             if itemQuality then
                 local hex = select(4,C_Item.GetItemQualityColor(itemQuality))
                 col= hex and '|c'..hex

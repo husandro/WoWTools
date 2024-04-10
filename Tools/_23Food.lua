@@ -79,7 +79,7 @@ local function set_Button_Init(self)
         self:SetScript('OnMouseDown',function(self2, d)
             if d=='RightButton' and IsShiftKeyDown() then
                 Save.noUseItems[self2.itemID]=true
-                local link= select(2, GetItemInfo(self2.itemID))
+                local link= select(2, C_Item.GetItemInfo(self2.itemID))
                 print(id, e.cn(addName), e.onlyChinese and '禁用' or DISABLE, link or self2.itemID, '|cnRED_FONT_COLOR:', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
         end)
@@ -93,7 +93,7 @@ local function find_Item_Type(class, subclass)
         for slot=1, C_Container.GetContainerNumSlots(bag) do
             local info = C_Container.GetContainerItemInfo(bag, slot)
             if info and info.hyperlink and info.itemID and C_Item.GetItemSpell(info.itemID) then
-                local classID, subClassID, _, expacID = select(12, GetItemInfo(info.hyperlink))
+                local classID, subClassID, _, expacID = select(12, C_Item.GetItemInfo(info.hyperlink))
                 if classID==class and subClassID==subclass and (Save.onlyMaxExpansion and (info.itemID==113509 or e.ExpansionLevel==expacID) or not Save.onlyMaxExpansion) then
                     e.LoadDate({id=info.itemID, type='item'})
                     table.insert(tab, info.itemID)
@@ -245,7 +245,7 @@ local function InitMenu(self, level, type)--主菜单
     local info
     if type=='DISABLE' then
         for itemID, _ in pairs(Save.noUseItems) do
-            local itemLink, _, _, _, _, _,_, _, itemTexture = select(2, GetItemInfo(itemID))
+            local itemLink, _, _, _, _, _,_, _, itemTexture = select(2, C_Item.GetItemInfo(itemID))
             info={
                 text= itemLink or ('itemID '..itemID),
                 notCheckable=true,

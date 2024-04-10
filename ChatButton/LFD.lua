@@ -1814,7 +1814,7 @@ local function Roll_Plus()
         end
 
         local itemID, _, _, itemEquipLoc, _, classID, subclassID = C_Item.GetItemInfoInstant(link)
-        local slot=itemEquipLoc and e.itemSlotTable[itemEquipLoc]--比较装等
+        local slot=e.GetItemSlotID(itemEquipLoc)--比较装等
         if slot then
             local slotLink=GetInventoryItemLink('player', slot)
             if slotLink then

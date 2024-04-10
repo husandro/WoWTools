@@ -493,10 +493,9 @@ function func.Set_Item(self, itemLink, itemID)
         return
     end
 
-    local itemName, _, itemQuality, itemLevel, _, itemType, itemSubType, _, itemEquipLoc, itemTexture, _, classID, subclassID, bindType, expacID = GetItemInfo(itemLink or itemID)
+    local itemName, _, itemQuality, itemLevel, _, itemType, itemSubType, _, itemEquipLoc, itemTexture, _, classID, subclassID, bindType, expacID, setID =  C_Item.GetItemInfo(itemLink or itemID)
     itemID= itemID or C_Item.GetItemInfoInstant(itemLink or itemID) or func.GetItemInfoFromHyperlink(itemLink)
-    --local itemName, _, itemQuality, itemLevel, _, _, _, _, _, _, _, _, _, bindType, expacID, setID = GetItemInfo(itemLink)
-    --local itemID, itemType, itemSubType, itemEquipLoc, itemTexture2, classID, subclassID = C_Item.GetItemInfoInstant(itemLink)
+    --itemName, itemLink, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, sellPrice, classID, subclassID, bindType, expansionID, setID, isCraftingReagent
     if not itemID then
         return
     end
@@ -512,7 +511,8 @@ function func.Set_Item(self, itemLink, itemID)
     end
 
     itemTexture= itemTexture or C_Item.GetItemIconByID(itemID or itemLink)
-    self:AddDoubleLine(itemID and (e.onlyChinese and '物品' or ITEMS)..' '.. itemID or ' ' , itemTexture and '|T'..itemTexture..':0|t'..itemTexture, 1,1,1, 1,1,1)--ID, texture
+    self:AddDoubleLine(format('%s%d %s', e.onlyChinese and '物品' or ITEMS, itemID , setID and (e.onlyChinese and '套装' or WARDROBE_SETS)..setID or ''),
+                    itemTexture and '|T'..itemTexture..':0|t'..itemTexture, 1,1,1, 1,1,1)--ID, texture
     if classID and subclassID then
         self:AddDoubleLine((itemType and (e.strText[itemType] or itemType)..' classID'  or 'classID') ..' '..classID, (itemSubType and (e.strText[itemSubType] or itemSubType)..' subID' or 'subclassID')..' '..subclassID)
     end
@@ -520,9 +520,14 @@ function func.Set_Item(self, itemLink, itemID)
     if classID==2 or classID==4 then
         itemLevel= itemLink and GetDetailedItemLevelInfo(itemLink) or itemLevel--装等
         if itemLevel and itemLevel>1 then
-            local slot=itemEquipLoc and e.itemSlotTable[itemEquipLoc]--比较装等
+            local slot= e.GetItemSlotID(itemEquipLoc)--比较装等
             if slot then
-                self:AddDoubleLine((e.strText[_G[itemEquipLoc]] or _G[itemEquipLoc] or '')..' '..itemEquipLoc, (e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS)..' '..slot, 1,1,1, 1,1,1)--栏位
+                local slotTexture= select(2, e.GetItemSlotIcon(slot))
+                if slotTexture then
+                    self.Portrait:SetTexture(slotTexture)
+                    self.Portrait:SetShown(true)
+                end
+                self:AddDoubleLine(format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, (e.strText[_G[itemEquipLoc]] or _G[itemEquipLoc] or ''), itemEquipLoc), format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS, slot), 1,1,1, 1,1,1)--栏位
                 local slotLink=GetInventoryItemLink('player', slot)
                 local text
                 if slotLink then
@@ -574,11 +579,6 @@ function func.Set_Item(self, itemLink, itemID)
             self:AddDoubleLine(specA, ' ')
         end
 
-    --[[elseif setID then--套装
-        local collectedNum= select(4, e.GetSetsCollectedNum(setID))
-        if collectedNum then
-            self.text2Left:SetText(collectedNum)
-        end]]
     elseif C_ToyBox.GetToyInfo(itemID) then--玩具
         self.text2Left:SetText(PlayerHasToy(itemID) and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r')
 
@@ -1678,7 +1678,7 @@ local function Init()
     end)
     hooksecurefunc(EmbeddedItemTooltip, 'SetItemByID', function(self, itemID)--物品 Blizzard_UIWidgetTemplateBase.lua
         if itemID and itemID>0 then
-            local texture= C_Item.GetItemNameByID(itemID) or select(10, GetItemInfo(itemID))
+            local texture= C_Item.GetItemNameByID(itemID) or select(10, C_Item.GetItemInfo(itemID))
             GameTooltip_AddColoredLine(
                 EmbeddedItemTooltip,
                 (e.onlyChinese and '物品' or ITEMS)..' '..itemID..(texture and '  |T'..texture..':0|t'..texture or ''),

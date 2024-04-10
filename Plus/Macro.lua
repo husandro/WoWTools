@@ -62,7 +62,7 @@ local function Get_Spell_Macro(name, spellID)
         local alt= GetSpellInfo(6201)--[制造治疗石] ss
         local ctrl= GetSpellInfo(698)--[召唤仪式]ss
         local shift= GetSpellInfo(20707)--[灵魂石]ss
-        local itemName= GetItemInfo(5512)--[治疗石]ss
+        local itemName= C_Item.GetItemInfo(5512)--[治疗石]ss
         if itemName and alt and ctrl and right and shift then
             return '/stopcasting'
                 ..'\n/cast [mod:alt]'..alt
@@ -456,7 +456,6 @@ local function Create_Spell_Menu(spellID, icon, name, texture)--创建，法术�
             end
         end
     }, 1)
-    print(name)
 end
 
 

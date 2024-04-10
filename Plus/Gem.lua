@@ -27,7 +27,7 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
                 )
             then
                 local level= GetDetailedItemLevelInfo(info.hyperlink) or 0
-                local classID, _, _, expacID= select(12, GetItemInfo(info.hyperlink))
+                local classID, _, _, expacID= select(12, C_Item.GetItemInfo(info.hyperlink))
 
                 if classID==3
                     and (e.Player.levelMax and e.ExpansionLevel== expacID or not e.Player.levelMax)--最高等级

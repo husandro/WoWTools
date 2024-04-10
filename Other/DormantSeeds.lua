@@ -36,7 +36,7 @@ local function Init()
         e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:AddLine(' ')
         for _, itemID in pairs(ItemTab) do
-            local link= select(2, GetItemInfo(itemID)) or itemID
+            local link= select(2, C_Item.GetItemInfo(itemID)) or itemID
             local icon
             icon= C_Item.GetItemIconByID(itemID)
             icon= icon and '|T'..icon..':0|t' or ''
@@ -210,7 +210,7 @@ local function Init()
                 end
                 if btn.itemID~= itemID then
                     btn.itemID= itemID
-                    local name=C_Item.GetItemNameByID(itemID) or GetItemInfo(itemID) or itemID
+                    local name=C_Item.GetItemNameByID(itemID) or C_Item.GetItemInfo(itemID) or itemID
                     btn:SetAttribute('item*', name)
                     btn:SetItem(itemID)
                 end

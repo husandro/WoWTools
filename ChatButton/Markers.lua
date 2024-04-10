@@ -406,6 +406,32 @@ local function Init_Ready_Tips_Button()
     ReadyTipsButton:set_Scale()
     ReadyTipsButton:set_Event()
     ReadyTipsButton:set_Shown()
+
+    
+    hooksecurefunc('ShowReadyCheck', function(initiator)--ReadyCheckListenerFrame
+        if not initiator then
+            return
+        end
+        local _, difficultyID
+        difficultyID = select(3, GetInstanceInfo())
+        if ( not difficultyID or difficultyID == 0 ) then
+            if UnitInRaid("player") then-- not in an instance, go by current difficulty setting
+                difficultyID = GetRaidDifficultyID()
+            else
+                difficultyID = GetDungeonDifficultyID()
+            end
+        end
+        local difficultyName, _, _, _, _, _, toggleDifficultyID = GetDifficultyInfo(difficultyID)
+        local name= e.GetPlayerInfo({name= initiator, reName=true})
+        name= name~='' and name or initiator
+        if ( toggleDifficultyID and toggleDifficultyID > 0 ) then
+            -- the current difficulty might change while inside an instance so show the difficulty on the ready check
+            difficultyName=  e.GetDifficultyColor(nil, difficultyID) or difficultyName
+            ReadyCheckFrameText:SetFormattedText("%s正在进行就位确认。\n团队副本难度: |cnGREEN_FONT_COLOR:"..difficultyName..'|r', name)
+        else
+            ReadyCheckFrameText:SetFormattedText('%s正在进行就位确认。', name)
+        end
+    end)
 end
 
 
@@ -1502,7 +1528,6 @@ local function Init()
     end
 
 
-   
 end
 
 

@@ -98,7 +98,7 @@ local function Set_Item_Info(self, tab)
         local itemKeyInfo = C_AuctionHouse.GetItemKeyInfo(tab.itemKey) or {}
         itemID= tab.itemKey.itemID or itemKeyInfo.itemID
         itemLevel= tab.itemKey.itemLevel
-        itemLink= itemKeyInfo.battlePetLink or (itemID and select(2, GetItemInfo(itemID)))
+        itemLink= itemKeyInfo.battlePetLink or (itemID and select(2, C_Item.GetItemInfo(itemID)))
         itemQuality= itemKeyInfo.quality
         battlePetSpeciesID= tab.itemKey.battlePetSpeciesID
     end
@@ -308,7 +308,7 @@ local function Set_Item_Info(self, tab)
                         end
                     end
 
-                    local invSlot = e.itemSlotTable[itemEquipLoc]
+                    local invSlot =e.GetItemSlotID(itemEquipLoc)
                     if invSlot and itemLevel and itemLevel>1 and itemLevel>29 then
                         if not dateInfo.red then--装等，提示
                             local upLevel, downLevel
@@ -903,7 +903,9 @@ end
 local function Init()
     --boss掉落，物品, 可能，会留下 StaticPopup1 框架
     hooksecurefunc('BossBanner_ConfigureLootFrame', function(lootFrame, data)--LevelUpDisplay.lua
-        --local itemName, itemLink, itemRarity, _, _, _, _, _, _, itemTexture, _, _, _, _, _, setID = GetItemInfo(data.itemLink)
+        --local itemName, itemLink, itemRarity, _, _, _, _, _, _, itemTexture, _, _, _, _, _, setID = C_Item.GetItemInfo(data.itemLink)
+        --local itemLink= data.itemLink
+        --if not CanUsa
         e.Set_Item_Stats(lootFrame, data.itemLink, {point=lootFrame.Icon})
     end)
 
@@ -1200,7 +1202,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 if PerksProgramFrame.GetFrozenItemFrame then
                     local frame= PerksProgramFrame:GetFrozenItemFrame()
                     if frame then
-                        local itemLink= frame.FrozenButton.itemID and select(2, GetItemInfo(frame.FrozenButton.itemID))
+                        local itemLink= frame.FrozenButton.itemID and select(2, C_Item.GetItemInfo(frame.FrozenButton.itemID))
                         Set_Item_Info(frame.FrozenButton, {itemLink=itemLink, size=12})
                     end
                 end
@@ -1208,12 +1210,12 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             hooksecurefunc(PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer.ScrollBox, 'SetScrollTargetOffset', function(self2)
                 for _, btn in pairs(self2:GetFrames()) do
                     if btn.itemID then
-                        local itemLink= btn.itemID and select(2, GetItemInfo(btn.itemID))
+                        local itemLink= btn.itemID and select(2, C_Item.GetItemInfo(btn.itemID))
                         Set_Item_Info(btn.ContentsContainer, {itemLink=itemLink, point=btn.ContentsContainer.Icon, size=12})
                     elseif btn.GetItemInfo then--10.2
                         local itemInfo=btn:GetItemInfo()
                         if itemInfo then
-                            local itemLink= itemInfo.itemID and select(2, GetItemInfo(itemInfo.itemID))
+                            local itemLink= itemInfo.itemID and select(2, C_Item.GetItemInfo(itemInfo.itemID))
                             Set_Item_Info(btn.ContentsContainer, {itemLink=itemLink, point=btn.ContentsContainer.Icon, size=12})
                         end
                     end

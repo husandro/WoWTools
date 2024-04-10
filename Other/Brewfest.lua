@@ -42,7 +42,7 @@ function Init()
     button:SetScript('OnHide', function(self)
         local num= C_Item.GetItemCount(37829, true, false, true)
         if self.item and self.item<num then
-            print(id, e.cn(addName), select(2, GetItemInfo(37829)) or '|T133784:0|t', self.item)
+            print(id, e.cn(addName), select(2, C_Item.GetItemInfo(37829)) or '|T133784:0|t', self.item)
         end
         self.item=nil
     end)

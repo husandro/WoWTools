@@ -500,7 +500,7 @@ local function MenuList_Item(level)
 	local info
 	for itemID, _ in pairs(Save.item) do
 		info={
-			text= select(2, GetItemInfo(itemID)) or ('itemID '..itemID),
+			text= select(2, C_Item.GetItemInfo(itemID)) or ('itemID '..itemID),
 			icon= C_Item.GetItemIconByID(itemID),
 			notCheckable=true,
 			tooltipOnButton=true,
@@ -509,7 +509,7 @@ local function MenuList_Item(level)
 			func= function(_, arg1)
 				Save.item[arg1]= nil
 				Set_TrackButton_Text()
-				print(id, e.cn(addName), e.onlyChinese and '移除' or REMOVE, select(2, GetItemInfo(itemID)) or ('itemID '..itemID))
+				print(id, e.cn(addName), e.onlyChinese and '移除' or REMOVE, select(2, C_Item.GetItemInfo(itemID)) or ('itemID '..itemID))
 			end
 		}
 		e.LibDD:UIDropDownMenu_AddButton(info, level)

@@ -78,7 +78,7 @@ function panel:get_Use_Toy()
                             end
                         end)
                     end
-                    local itemName, _, _, _, _, _, _, _, _, itemTexture= GetItemInfo(itemID)
+                    local itemName, _, _, _, _, _, _, _, _, itemTexture= C_Item.GetItemInfo(itemID)
                     itemName=itemName or  C_Item.GetItemNameByID(itemID) or itemID
                     itemTexture= itemTexture or C_Item.GetItemIconByID(itemID) or 0
                     button:SetAttribute("item*", itemName)

@@ -50,6 +50,8 @@ e.QuestLogQuests_GetBestTagID(questID, info, tagInfo, isComplete)--任务图标�
 e.GetQuestAllTooltip()--所有，任务，提示
 e.GetDifficultyColor(string, difficultyID)--副本，难道，颜色 return string, color, name
 
+e.GetItemSlotIcon(slotID) 取得装备 return icon, texture
+e.GetItemSlotID(itemEquipLoc) 取得装备SlotID
 e.GetDurabiliy_OnEnter()--耐久度, 提示
 e.GetDurabiliy(reTexture)--耐久度
 
@@ -1048,7 +1050,7 @@ function e.Set_Item_Stats(self, link, setting) --设置，物品，次属性，�
 
     if link then
         if not hideSet then
-            setID= select(16 , GetItemInfo(link))--套装
+            setID= select(16 , C_Item.GetItemInfo(link))--套装
             if setID and not self.itemSet then
                 self.itemSet= self:CreateTexture()
                 self.itemSet:SetAtlas('UI-HUD-MicroMenu-Highlightalert')--'UI-HUD-MicroMenu-Highlightalert')--services-icon-goldborder
@@ -1749,10 +1751,64 @@ end
 
 
 
+local itemSlotName={--InventorySlotId
+    [1]= 'HEADSLOT',
+    [2]= 'NECKSLOT',
+    [3]= 'SHOULDERSLOT',
+    [4]= 'SHIRTSLOT',
+    [5]= 'CHESTSLOT',
+    [6]= 'WAISTSLOT',
+    [7]= 'LEGSSLOT',
+    [8]= 'FEETSLOT',
+    [9]= 'WRISTSLOT',
+    [10]= 'HANDSSLOT',
+    [11]= 'FINGER0SLOT',
+    [12]= 'FINGER1SLOT',
+    [13]= 'TRINKET0SLOT',
+    [14]= 'TRINKET1SLOT',
+    [15]= 'BACKSLOT',
+    [16]= 'MAINHANDSLOT',
+    [17]= 'SECONDARYHANDSLOT',
+    [19]= 'TABARDSLOT',
+}
+local itemSlotTable={
+    ['INVTYPE_HEAD']=1,
+    ['INVTYPE_NECK']=2,
+    ['INVTYPE_SHOULDER']=3,
+    ['INVTYPE_BODY']=4,
+    ['INVTYPE_ROBE']=5,
+    ['INVTYPE_CHEST']=5,
+    ['INVTYPE_WAIST']=6,
+    ['INVTYPE_LEGS']=7,
+    ['INVTYPE_FEET']=8,
+    ['INVTYPE_WRIST']=9,
+    ['INVTYPE_HAND']=10,
+    ['INVTYPE_FINGER']=11,
+    ['INVTYPE_TRINKET']=13,
+    ['INVTYPE_CLOAK']=15,
+    ['INVTYPE_SHIELD']=17,
+    ['INVTYPE_RANGED']=16,
+    ['INVTYPE_2HWEAPON']=16,
+    ['INVTYPE_RANGEDRIGHT']=16,
+    ['INVTYPE_WEAPON']=16,
+    ['INVTYPE_WEAPONMAINHAND']=16,
+    ['INVTYPE_WEAPONOFFHAND']=16,
+    ['INVTYPE_THROWN']=16,
+    ['INVTYPE_HOLDABLE']=17,
+    ['INVTYPE_TABARD']=19,
+}
 
+function e.GetItemSlotIcon(slotID)
+    local invSlotName= itemSlotName[slotID]
+    local texture= invSlotName and select(2, GetInventorySlotInfo(invSlotName))
+    if texture then
+        return format('|T%s:0:0|t', texture), texture
+    end
+end
 
-
-
+function e.GetItemSlotID(itemEquipLoc)
+    return itemSlotTable[itemEquipLoc]
+end
 
 
 
@@ -1796,26 +1852,7 @@ function e.GetDurabiliy_OnEnter()--耐久度, 提示
         {9, 14},
         {16, 17},
     }
-    local slotName={--InventorySlotId
-        [1]= 'HEADSLOT',
-        [2]= 'NECKSLOT',
-        [3]= 'SHOULDERSLOT',
-        [4]= 'SHIRTSLOT',
-        [5]= 'CHESTSLOT',
-        [6]= 'WAISTSLOT',
-        [7]= 'LEGSSLOT',
-        [8]= 'FEETSLOT',
-        [9]= 'WRISTSLOT',
-        [10]= 'HANDSSLOT',
-        [11]= 'FINGER0SLOT',
-        [12]= 'FINGER1SLOT',
-        [13]= 'TRINKET0SLOT',
-        [14]= 'TRINKET1SLOT',
-        [15]= 'BACKSLOT',
-        [16]= 'MAINHANDSLOT',
-        [17]= 'SECONDARYHANDSLOT',
-        [19]= 'TABARDSLOT',
-    }
+
     local num, cur2, max2= 0, 0, 0
     local isRepair, cur, max, text, _, icon
 
@@ -1827,7 +1864,7 @@ function e.GetDurabiliy_OnEnter()--耐久度, 提示
         b = b and '|T'..b..':0|t'
 
         if not a or tab[1]==4 or tab[1]==19 then
-            a= '|T'..select(2, GetInventorySlotInfo(slotName[tab[1]]))..':0|t'
+            a=  e.GetItemSlotIcon(tab[1])
         elseif a then
             cur, max = GetInventoryItemDurability(tab[1])
             if cur and max and max>0 then
@@ -1856,7 +1893,7 @@ function e.GetDurabiliy_OnEnter()--耐久度, 提示
                 max2= max2+max
             end
         end
-        b= b or ('|T'..select(2, GetInventorySlotInfo(slotName[tab[2]]))..':0|t')
+        b= b or  e.GetItemSlotIcon(tab[2])
         local s= index==9 and '    ' or ''
         e.tips:AddDoubleLine(s..(a or ' '), b..s)
     end

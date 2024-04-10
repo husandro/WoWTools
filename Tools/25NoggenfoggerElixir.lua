@@ -164,7 +164,7 @@ local function Init()
     e.ToolsSetButtonPoint(button)--设置位置
     
     button:SetAttribute('type','item')
-    button:SetAttribute('item',GetItemInfo(button.itemID) or button.itemID)
+    button:SetAttribute('item', C_Item.GetItemInfo(button.itemID) or button.itemID)
     button.texture:SetTexture(C_Item.GetItemIconByID(button.itemID..''))
 
     setCount()--设置数量

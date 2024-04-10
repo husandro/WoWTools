@@ -23,32 +23,6 @@ e.call=securecall
 e.LeftButtonDown = C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'LeftButtonDown' or 'LeftButtonUp'
 e.RightButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'RightButtonDown' or 'RightButtonUp'
 e.onlyChinese= LOCALE_zhCN and true or false
-e.itemSlotTable={
-    ['INVTYPE_HEAD']=1,
-    ['INVTYPE_NECK']=2,
-    ['INVTYPE_SHOULDER']=3,
-    ['INVTYPE_BODY']=4,
-    ['INVTYPE_CHEST']=5,
-    ['INVTYPE_WAIST']=6,
-    ['INVTYPE_LEGS']=7,
-    ['INVTYPE_FEET']=8,
-    ['INVTYPE_WRIST']=9,
-    ['INVTYPE_HAND']=10,
-    ['INVTYPE_FINGER']=11,
-    ['INVTYPE_TRINKET']=13,
-    ['INVTYPE_WEAPON']=16,
-    ['INVTYPE_SHIELD']=17,
-    ['INVTYPE_RANGED']=16,
-    ['INVTYPE_CLOAK']=15,
-    ['INVTYPE_2HWEAPON']=16,
-    ['INVTYPE_TABARD']=19,
-    ['INVTYPE_ROBE']=5,
-    ['INVTYPE_WEAPONMAINHAND']=16,
-    ['INVTYPE_WEAPONOFFHAND']=16,
-    ['INVTYPE_HOLDABLE']=17,
-    ['INVTYPE_THROWN']=16,
-    ['INVTYPE_RANGEDRIGHT']=16,
-}
 e.ExpansionLevel= GetExpansionLevel()--版本数据
 
 local function GetWeek()--周数

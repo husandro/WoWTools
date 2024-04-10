@@ -118,7 +118,7 @@ local function set_WorldQuestPinMixin_RefreshVisuals(self)--WorldQuestDataProvid
             end
 
             local setLevelUp
-            local invSlot = itemEquipLoc and e.itemSlotTable[itemEquipLoc]
+            local invSlot = e.GetItemSlotID(itemEquipLoc)
             if invSlot and itemName and itemLevel and itemLevel>1 then--装等
                 local itemLinkPlayer =  GetInventoryItemLink('player', invSlot)
                 if itemLinkPlayer then

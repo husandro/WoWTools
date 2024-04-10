@@ -274,7 +274,7 @@ local function set_Equip_Slot(self)--装备
     end
     local slotItemID=GetInventoryItemID('player', self.slot)
     local slotItemLink=GetInventoryItemLink('player', self.slot)
-    local name= slotItemLink and GetItemInfo(slotItemLink) or slotItemID and C_Item.GetItemNameByID(slotItemID)
+    local name= slotItemLink and C_Item.GetItemInfo(slotItemLink) or slotItemID and C_Item.GetItemNameByID(slotItemID)
     if name and slotItemID~=self.itemID and self:GetAttribute('item2')~=name then
         self:SetAttribute('item2', name)
         self.slotEquipName=name
@@ -697,7 +697,7 @@ local function Init()
             name = C_Item.GetItemNameByID(itemID)
             local itemEquipLoc, icon2 = select(4, C_Item.GetItemInfoInstant(itemID))
             icon =icon2 or C_Item.GetItemIconByID(itemID)
-            local slot=itemEquipLoc and e.itemSlotTable[itemEquipLoc]
+            local slot= e.GetItemSlotID(itemEquipLoc)
 
             if name and icon and slot then
                 local btn= e.Cbtn2({
@@ -751,7 +751,7 @@ local function Init()
         local infoType, itemID, itemLink ,spellID= GetCursorInfo()
         if infoType == "item" and itemID and itemLink then
             local itemEquipLoc= select(4, C_Item.GetItemInfoInstant(itemLink))
-            local slot=itemEquipLoc and e.itemSlotTable[itemEquipLoc]
+            local slot= e.GetItemSlotID(itemEquipLoc)
             local type = slot and 'equip' or 'item'
             local text = slot and (e.onlyChinese and '装备' or EQUIPSET_EQUIP) or (e.onlyChinese and '物品' or ITEMS)
             local icon = C_Item.GetItemIconByID(itemLink)

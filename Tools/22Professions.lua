@@ -66,7 +66,7 @@ local function Init_Tools_Button()
                     if link and texture then
                         local text= '|T'..texture..':0|t'.. link
                         if PlayerHasToy(134020) then--玩具,大厨的帽子
-                            local link2,_,_,_,_,_,_,_, texture2 = select(2, GetItemInfo(134020))
+                            local link2,_,_,_,_,_,_,_, texture2 = select(2, C_Item.GetItemInfo(134020))
                             if link2 and texture2 then
                                 text=text..'|T'..texture2..':0|t'..link2
                             end

@@ -76,7 +76,7 @@ function e.CheckItemSell(itemID, itemLink, quality, isBound)
     end
     local level= bossSave[itemID]
     if level and not Save.notSellBoss and itemLink  then
-        local itemLevel= GetDetailedItemLevelInfo(itemLink) or select(4, GetItemInfo(itemLink))
+        local itemLevel= GetDetailedItemLevelInfo(itemLink) or select(4, C_Item.GetItemInfo(itemLink))
         if level== itemLevel  then
             return e.onlyChinese and '首领' or BOSS
         end
@@ -866,7 +866,7 @@ local function Init_Auto_Sell_Junk()
 
                         local prece =0
                         if not info.hasNoValue then--卖出钱
-                            prece = (select(11, GetItemInfo(info.hyperlink)) or 0) * (C_Container.stackCount or 1)--价格
+                            prece = (select(11, C_Item.GetItemInfo(info.hyperlink)) or 0) * (C_Container.stackCount or 1)--价格
                             preceTotale = preceTotale + prece
                         end
                         gruop= gruop+ 1
@@ -1035,7 +1035,7 @@ local function Init_Menu(_, level, type)
         for itemID, _ in pairs(Save.Sell) do
             if itemID  then
                 e.LoadDate({id=itemID, type='item'})
-                local itemLink= select(2, GetItemInfo(itemID))
+                local itemLink= select(2, C_Item.GetItemInfo(itemID))
                 itemLink= itemLink or C_Item.GetItemNameByID(itemID) or ('itemID: ' .. itemID)
                 info= {
                     text= itemLink,
@@ -1068,7 +1068,7 @@ local function Init_Menu(_, level, type)
     elseif type=='BOSS' then--二级菜单, BOSS
         for itemID, itemLevel in pairs(bossSave) do
             e.LoadDate({itemID=itemID, type='item'})
-            local itemLink= select(2, GetItemInfo(itemID)) or itemID
+            local itemLink= select(2, C_Item.GetItemInfo(itemID)) or itemID
             info= {
                 text= itemLink..'('..itemLevel..')',
                 notCheckable=true,
@@ -1112,7 +1112,7 @@ local function Init_Menu(_, level, type)
                 e.LoadDate({id=itemID, type='item'})
                 local bag=C_Item.GetItemCount(itemID)
                 local bank=C_Item.GetItemCount(itemID, true, false, true)-bag
-                local itemLink= select(2, GetItemInfo(itemID))
+                local itemLink= select(2, C_Item.GetItemInfo(itemID))
                 itemLink= itemLink or C_Item.GetItemNameByID(itemID) or ('itemID: ' .. itemID)
                 info= {
                     text='|cnGREEN_FONT_COLOR:'..num..'|r '..itemLink..' '..'|cnYELLOW_FONT_COLOR:'..bag..e.Icon.bag2..bank..e.Icon.bank2..'|r',
@@ -1151,7 +1151,7 @@ local function Init_Menu(_, level, type)
                 e.LoadDate({id=itemID, type='item'})
                 local bag=C_Item.GetItemCount(itemID)
                 local bank=C_Item.GetItemCount(itemID, true, false, true)-bag
-                local itemLink= select(2, GetItemInfo(itemID))
+                local itemLink= select(2, C_Item.GetItemInfo(itemID))
                 itemLink= itemLink or C_Item.GetItemNameByID(itemID) or ('itemID: ' .. itemID)
                 info= {
                     text=itemLink..' '..'|cnYELLOW_FONT_COLOR:'..bag..e.Icon.bag2..bank..e.Icon.bank2..'|r',
@@ -1915,7 +1915,7 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2, arg3, _, arg5)
         if IsInInstance() and arg5 and arg5:find(e.Player.name) then
             local itemID, itemLink= arg2, arg3
             local avgItemLevel= GetAverageItemLevel() or 30
-            local _, _, itemQuality, itemLevel, _, _, _, _, itemEquipLoc, _, _, classID, subclassID, bindType = GetItemInfo(itemLink)
+            local _, _, itemQuality, itemLevel, _, _, _, _, itemEquipLoc, _, _, classID, subclassID, bindType = C_Item.GetItemInfo(itemLink)
             itemLevel= GetDetailedItemLevelInfo(itemLink) or itemLevel
             local other= classID==15 and subclassID==0
             if itemEquipLoc--绑定

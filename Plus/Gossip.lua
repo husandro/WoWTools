@@ -277,9 +277,9 @@ local function select_Reward(questID)--自动:选择奖励
             e.LoadDate({id=itemLink, type='item'})
             if itemLink then
                 local amount = select(3, GetQuestItemInfo('choice', i))--钱
-                local _, _, itemQuality, itemLevel, _, _,_,_, itemEquipLoc, _, sellPrice,classID, subclassID = GetItemInfo(itemLink)
+                local _, _, itemQuality, itemLevel, _, _,_,_, itemEquipLoc, _, sellPrice,classID, subclassID = C_Item.GetItemInfo(itemLink)
                 if Save.autoSelectReward and not(classID==19 or (classID==4 and subclassID==5) or itemLevel==1) and itemQuality and itemQuality<4 and IsEquippableItem(itemLink) then--最高 稀有的 3                                
-                    local invSlot = itemEquipLoc and  e.itemSlotTable[itemEquipLoc]
+                    local invSlot = e.GetItemSlotID(itemEquipLoc)
                     if invSlot and itemLevel and itemLevel>1 then--装等
                         local itemLinkPlayer = GetInventoryItemLink('player', invSlot)
                         if itemLinkPlayer then

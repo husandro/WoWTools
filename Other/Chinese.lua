@@ -2062,30 +2062,7 @@ local function Init()
     set(ReadyCheckListenerFrame.TitleContainer.TitleText, '就位确认')
     set(ReadyCheckFrameYesButton, '就绪')--:SetText(GetText("READY", UnitSex("player")))
 	set(ReadyCheckFrameNoButton, '未就绪')--:SetText(GetText("NOT_READY", UnitSex("player")))
-    hooksecurefunc('ShowReadyCheck', function(initiator)
-        if ReadyCheckListenerFrame:IsShown() then
-            local _, difficultyID
-            difficultyID = select(3, GetInstanceInfo())
-            if ( not difficultyID or difficultyID == 0 ) then
-                if UnitInRaid("player") then-- not in an instance, go by current difficulty setting
-                    difficultyID = GetRaidDifficultyID()
-                else
-                    difficultyID = GetDungeonDifficultyID()
-                end
-            end
-            local difficultyName, _, _, _, _, _, toggleDifficultyID = GetDifficultyInfo(difficultyID)
-            local name= e.GetPlayerInfo({name= initiator, reName=true})
-            name= name~='' and name or initiator
-            if ( toggleDifficultyID and toggleDifficultyID > 0 ) then
-                -- the current difficulty might change while inside an instance so show the difficulty on the ready check
-                difficultyName=  e.GetDifficultyColor(nil, difficultyID) or difficultyName
-                ReadyCheckFrameText:SetFormattedText("%s正在进行就位确认。\n团队副本难度: |cnGREEN_FONT_COLOR:"..difficultyName..'|r', name)
-            else
-                ReadyCheckFrameText:SetFormattedText('%s正在进行就位确认。', name)
-            end
-           -- ReadyCheckListenerFrame:Show()
-        end
-    end)
+    
 
     --插件
     set(AddonListTitleText, '插件列表')
@@ -7229,7 +7206,7 @@ local function Init_Loaded(arg1)
 
             local runeName
             if RaceitemID and RaceitemID > 0 then
-                runeName = GetItemInfo(RaceitemID)
+                runeName = C_Item.GetItemInfo(RaceitemID)
             end
             if runeName then
                 for i=1, ARCHAEOLOGY_MAX_STONES do

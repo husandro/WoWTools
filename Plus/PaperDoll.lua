@@ -160,7 +160,7 @@ local function set_Engineering(self, slot, link, use, isPaperDollItemSlot)--增�
         self.engineering:SetScript("OnMouseUp", function()
             local n=C_Item.GetItemCount(90146, true)
                 if n==0 then
-                    print(select(2, GetItemInfo(90146)) or (e.onlyChinese and '附加材料' or OPTIONAL_REAGENT_TUTORIAL_TOOLTIP_TITLE), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE))
+                    print(select(2, C_Item.GetItemInfo(90146)) or (e.onlyChinese and '附加材料' or OPTIONAL_REAGENT_TUTORIAL_TOOLTIP_TITLE), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE))
                 end
         end)
         self.engineering:SetScript('OnLeave',GameTooltip_Hide)
@@ -602,7 +602,7 @@ end
 local function set_item_Set(self, link)--套装
     local set
     if link and not Save.hide then
-        set=select(16 , GetItemInfo(link))
+        set=select(16 , C_Item.GetItemInfo(link))
         if set then
             if set and not self.set then
                 self.set=self:CreateTexture()
@@ -1394,7 +1394,7 @@ local function setFlyout(button, itemLink, slot)
         if level then
             if not slot or slot==0 then
                 local itemEquipLoc= itemLink and select(4, C_Item.GetItemInfoInstant(itemLink))
-                slot= itemEquipLoc and e.itemSlotTable[itemEquipLoc]
+                slot= e.GetItemSlotID(itemEquipLoc)
             end
             if slot then
                 local itemLink2 = GetInventoryItemLink('player', slot)

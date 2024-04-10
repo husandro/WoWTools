@@ -223,7 +223,7 @@ local function get_Items()--取得背包物品信息
             info = C_Container.GetContainerItemInfo(bag, slot)
             local duration, enable
             if info and info.itemID then
-                itemMinLevel, _, _, _, itemEquipLoc, _, _, classID, subclassID= select(5, GetItemInfo(info.itemID))
+                itemMinLevel, _, _, _, itemEquipLoc, _, _, classID, subclassID= select(5, C_Item.GetItemInfo(info.itemID))
                 duration, enable = select(2, C_Container.GetContainerItemCooldown(bag, slot))
             end
 
@@ -386,7 +386,7 @@ local function setMenuList(_, level, menuList)--主菜单
         for itemID, num in pairs(Save.use) do--二级, 使用
             e.LoadDate({id=itemID, type='item'})
             info={
-                text= (select(2, GetItemInfo(itemID)) or  ('itemID: '..itemID)).. (num>1 and ' |cnGREEN_FONT_COLOR:x'..num..'|r' or ''),
+                text= (select(2, C_Item.GetItemInfo(itemID)) or  ('itemID: '..itemID)).. (num>1 and ' |cnGREEN_FONT_COLOR:x'..num..'|r' or ''),
                 icon= C_Item.GetItemIconByID(itemID),
                 checked=true,
                 keepShownOnClick=true,
@@ -428,7 +428,7 @@ local function setMenuList(_, level, menuList)--主菜单
         for itemID, _ in pairs(Save.no) do
             e.LoadDate({id=itemID, type='item'})
             info={
-                text=select(2, GetItemInfo(itemID)) or  ('itemID: '..itemID),
+                text=select(2, C_Item.GetItemInfo(itemID)) or  ('itemID: '..itemID),
                 icon=C_Item.GetItemIconByID(itemID),
                 checked=true,
                 keepShownOnClick=true,
