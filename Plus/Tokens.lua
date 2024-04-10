@@ -151,7 +151,7 @@ local function Get_Currency(currencyID, index)--货币
 		return
     end
 
-	local col= (ITEM_QUALITY_COLORS[info.quality] or {}).hex	
+	local col= (ITEM_QUALITY_COLORS[info.quality] or {}).hex
     local name=  Save.nameShow and e.cn(info.name) or nil
 	name = name and col..name..'|r' or name
 	local num= e.MK(info.quantity, 3)
@@ -686,7 +686,7 @@ local function Init_TrackButton()
 			SetCursor('UI_MOVE_CURSOR')
 			return
 		end
-	
+
 		local infoType, itemID, itemLink = GetCursorInfo()
         if infoType == "item" and itemID then
 			Save.item[itemID]= not Save.item[itemID] and true or nil
@@ -989,7 +989,6 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 		end)
 		frame.check:SetScript('OnLeave', GameTooltip_Hide)
 		frame.check:SetSize(15,15)
-		
 	end
 
 	if frame.check then
@@ -1002,20 +1001,17 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 	end
 
 	if info and frame.Count then--最大数
-		local isMax= (info.canEarnPerWeek--本周
-					and info.maxWeeklyQuantity
-					and info.maxWeeklyQuantity>0
-					and info.maxWeeklyQuantity==info.quantityEarnedThisWeek)
-				or (info.useTotalEarnedForMaxQty--赛季
-					and info.totalEarned
-					and info.totalEarned>0
-					and info.totalEarned==info.maxQuantity)
-				or (info.quantity==info.maxQuantity and info.maxQuantity>0)--最大数
+		local canWeek= info.canEarnPerWeek and info.maxWeeklyQuantity and info.maxWeeklyQuantity>0--本周
+		local canEarned= info.useTotalEarnedForMaxQty and info.totalEarned and info.totalEarned>0--赛季
+		local canQuantity= info.maxQuantity and info.maxQuantity>0--最大数
+		local isMax= (canWeek and info.maxWeeklyQuantity==info.quantityEarnedThisWeek)
+				or (canEarned and info.totalEarned==info.maxQuantity)
+				or (canQuantity and info.quantity==info.maxQuantity)
+
 		if isMax then
 			frame.Count:SetTextColor(1,0,0)
-		elseif info.useTotalEarnedForMaxQty or info.canEarnPerWeek then
-			frame.Count:SetTextColor(1,0,1)
-		elseif info.maxQuantity and info.maxQuantity>0 then
+
+		elseif canWeek or canEarned or canQuantity then
 			frame.Count:SetTextColor(0,1,0)
 		else
 			frame.Count:SetTextColor(1,1,1)
@@ -1060,7 +1056,7 @@ end
 --主菜单
 --#####
 local function InitMenu(_, level, menuList)--主菜单
-	
+
 	local info
 	if menuList=='ITEMS' then
 		MenuList_Item(level)

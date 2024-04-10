@@ -752,8 +752,8 @@ local function Init_Add_Reload_Button()
     end
     for _, frame in pairs({GameMenuFrame, SettingsPanel.AddOnsTab}) do
         frame.reload= CreateFrame('Button', nil, frame, 'GameMenuButtonTemplate')
-        frame.reload:SetFormattedText('|TInterface\\Vehicles\\UI-Vehicles-Button-Exit-Up:0|t%s',e.onlyChinese and '重新加载UI' or RELOADUI)
-
+        frame.reload:SetFormattedText('%s|A:characterundelete-RestoreButton:0:0|a',e.onlyChinese and '重新加载UI' or RELOADUI)
+--|TInterface\\Vehicles\\UI-Vehicles-Button-Exit-Up:0|t
         frame.reload:SetScript('OnLeave', GameTooltip_Hide)
         frame.reload:SetScript('OnEnter', function(self)
             e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -765,15 +765,15 @@ local function Init_Add_Reload_Button()
         frame.reload:SetScript('OnClick', e.Reload)
     end
 
-    GameMenuFrame.reload:SetPoint('TOP', GameMenuButtonQuit, 'BOTTOM', 0, -0)
-    
+    GameMenuFrame.reload:SetPoint('TOP', GameMenuButtonQuit, 'BOTTOM', 0, -2)
+
     --GameMenuFrame.reload:SetPoint('TOP', GameMenuButtonContinue, 'BOTTOM', 0, -20)
 
     hooksecurefunc('GameMenuFrame_UpdateVisibleButtons', function(self)
         if not Save.not_Add_Reload_Button then
             GameMenuButtonContinue:ClearAllPoints()
-            GameMenuButtonContinue:SetPoint('TOP', GameMenuFrame.reload, 'BOTTOM', 0, -20)
-            self:SetHeight(self:GetHeight()+ 20)
+            GameMenuButtonContinue:SetPoint('TOP', GameMenuFrame.reload, 'BOTTOM', 0, -16)
+            self:SetHeight(self:GetHeight()+ 16)
         end
     end)
 
