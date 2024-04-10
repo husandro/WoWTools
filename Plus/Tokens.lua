@@ -1000,10 +1000,10 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 		frame.check:SetAlpha(Save.tokens[currencyID] and 1 or 0.5)
 	end
 
-	if info and frame.Count then--最大数
-		local canWeek= info.canEarnPerWeek and info.maxWeeklyQuantity and info.maxWeeklyQuantity>0--本周
-		local canEarned= info.useTotalEarnedForMaxQty and info.totalEarned and info.totalEarned>0--赛季
-		local canQuantity= info.maxQuantity and info.maxQuantity>0--最大数
+	if info and frame.Count then--设置，数量，颜色		
+		local canQuantity= info.maxQuantity and info.maxQuantity>0--最大数 quantity maxQuantity
+		local canWeek= info.canEarnPerWeek and info.maxWeeklyQuantity and info.maxWeeklyQuantity>0--本周 quantityEarnedThisWeek maxWeeklyQuantity
+		local canEarned= info.useTotalEarnedForMaxQty and canQuantity--赛季 totalEarned已获取 maxQuantity
 		local isMax= (canWeek and info.maxWeeklyQuantity==info.quantityEarnedThisWeek)
 				or (canEarned and info.totalEarned==info.maxQuantity)
 				or (canQuantity and info.quantity==info.maxQuantity)
@@ -1016,7 +1016,30 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 		else
 			frame.Count:SetTextColor(1,1,1)
 		end
+
+		local percent
+		if not isMax then
+			local num, to
+			if canWeek then
+				num, to= info.quantityEarnedThisWeek, info.maxWeeklyQuantity
+			elseif canEarned then
+				num, to= info.totalEarned, info.maxQuantity
+			elseif canQuantity then
+				num, to=  info.quantity, info.maxQuantity
+			end
+			if num and to and num<to then
+				percent=  format('(%d%%) ', math.modf(num/to*100))
+			end
+		end
+		if percent and not frame.percentText then
+			frame.percentText= e.Cstr(frame, {color={r=0,g=1,b=0}})
+			frame.percentText:SetPoint('RIGHT', frame.Count, 'LEFT')
+		end
+		if frame.percentText then
+			frame.percentText:SetText(percent or '')
+		end
 	end
+
 	if frame.Name then
 		local r, g, b= C_Item.GetItemQualityColor(info and info.quality or 1)
 		frame.Name:SetTextColor(r or 1, g or 1, b or 1)
