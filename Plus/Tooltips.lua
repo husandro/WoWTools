@@ -164,12 +164,12 @@ local raiderioText
 local RegionName
 local function Init_Web_Link()
     StaticPopupDialogs["WowheadQuickLinkUrl"] = {
-        text= id..' '..e.cn(addName)..'|n|cffff00ff%s|r |cnGREEN_FONT_COLOR:Ctrl+C |r'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK),
+        text= id..' '..Category:GetName()..'|n|cffff00ff%s|r |cnGREEN_FONT_COLOR:Ctrl+C |r'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK),
         button1 = e.onlyChinese and '关闭' or CLOSE,
         OnShow = function(self, web)
             self.editBox:SetScript("OnKeyUp", function(s, key)
                 if IsControlKeyDown() and key == "C" then
-                    print(id,e.cn(addName),
+                    print(id, Category:GetName(),
                             '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r',
                             s:GetText()
                         )
@@ -368,7 +368,7 @@ function func.Set_Mount(self, mountID, type)--坐骑
     local can= isCollected and isUsable and not isActive and not UnitCastingInfo('player')
     if can and IsAltKeyDown() then
         C_MountJournal.SummonByID(mountID)
-        print(id, addName, spellID and GetSpellLink(spellID), '|cnGREEN_FONT_COLOR:Alt+'..(e.onlyChinese and '召唤坐骑' or MOUNT))
+        print(id, Category:GetName(), spellID and GetSpellLink(spellID), '|cnGREEN_FONT_COLOR:Alt+'..(e.onlyChinese and '召唤坐骑' or MOUNT))
     end
     local col= can and '|cnGREEN_FONT_COLOR:' or '|cff606060'
     e.tips:AddDoubleLine(col..(e.onlyChinese and '召唤坐骑' or MOUNT), col..'Alt+')
@@ -1445,7 +1445,7 @@ local function set_CVar(reset, tips, notPrint)
                 if defaultValue~=value then
                     C_CVar.SetCVar(info.name, defaultValue)
                     if not notPrint then
-                        print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '恢复默认设置' or RESET_TO_DEFAULT)..'|r', info.name, defaultValue, info.msg)
+                        print(id, Category:GetName(), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '恢复默认设置' or RESET_TO_DEFAULT)..'|r', info.name, defaultValue, info.msg)
                     end
                 end
             else
@@ -1453,7 +1453,7 @@ local function set_CVar(reset, tips, notPrint)
                 if value~=info.value then
                     C_CVar.SetCVar(info.name, info.value)
                     if not notPrint then
-                        print(id,e.cn(addName), info.name, info.value..'('..value..')', info.msg)
+                        print(id,Category:GetName(), info.name, info.value..'('..value..')', info.msg)
                     end
                 end
             end
@@ -1492,7 +1492,7 @@ function func.Set_Flyout(self, flyoutID)--法术, 弹出框
     end
     self:AddLine(' ')
     self:AddDoubleLine((not isKnown and '|cnRED_FONT_COLOR:' or '')..'flyoutID|r '..flyoutID, numSlots..' '..(e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL))
-    self:AddDoubleLine(id, e.cn(addName))
+    self:AddDoubleLine(id, Category:GetName())
 end
 
 
@@ -1634,7 +1634,7 @@ local function Init_StableFrame_Plus()
         function StableFrame.WoWToolsButton:set_tooltips()
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(id, e.cn(addName))
+            e.tips:AddDoubleLine(id, Category:GetName())
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(e.GetEnabeleDisable(not Save.disabled_Hunter_Plus), e.Icon.left)
             e.tips:AddDoubleLine(e.onlyChinese and '选项' or OPTIONS, e.Icon.right)
@@ -1645,7 +1645,7 @@ local function Init_StableFrame_Plus()
         StableFrame.WoWToolsButton:SetScript('OnClick', function(self, d)
             if d=='LeftButton' then
                 Save.disabled_Hunter_Plus= not Save.disabled_Hunter_Plus and true or nil
-                print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled_Hunter_Plus), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                print(id, Category:GetName(), e.GetEnabeleDisable(not Save.disabled_Hunter_Plus), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 self:SetNormalAtlas(Save.disabled_Hunter_Plus and e.Icon.disabled or e.Icon.icon)
                 self:set_tooltips()
             else
@@ -1673,7 +1673,7 @@ local function Init_StableFrame_Plus()
         end
         e.tips:SetOwner(frame, "ANCHOR_LEFT", y or 0, 0)
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddDoubleLine(id, Category:GetName())
         e.tips:AddLine(' ')
         local i=1
         for indexType, name in pairs(pet) do
@@ -2288,7 +2288,7 @@ local function Init()
             e.tips:ClearLines()
             GameTooltip_AddQuest(block.TrackedQuest or block, block.id)
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(id, e.cn(addName))
+            e.tips:AddDoubleLine(id, Category:GetName())
             e.tips:Show()
         end
     end)
@@ -2365,7 +2365,7 @@ local function Init()
                 if isSecure then
                     GameTooltip_AddNormalLine(SettingsTooltip, '|cnRED_FONT_COLOR:isSecure: true|r', true)
                 end
-                GameTooltip_AddNormalLine(SettingsTooltip, id.. ' '..addName)
+                GameTooltip_AddNormalLine(SettingsTooltip, id..Category:GetName())
             end
         end
         local function CreateOptionsInitTooltip(setting, name, tooltip, options, variable)--Blizzard_SettingControls.lua
@@ -2516,7 +2516,7 @@ local function Init()
                 if category then
                     GameTooltip_AddNormalLine(SettingsTooltip, category, true)
                 end
-                GameTooltip_AddNormalLine(SettingsTooltip, id..' '..e.cn(addName), true)
+                GameTooltip_AddNormalLine(SettingsTooltip, id..' '..Category:GetName(), true)
             end
 
             for index, button in ipairs(self.Buttons) do
@@ -2592,7 +2592,7 @@ local function Init_Panel()
 
     local initializer2= e.AddPanel_Check({
         name= e.onlyChinese and '跟随鼠标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, FOLLOW, MOUSE_LABEL),
-        tooltip= e.cn(addName),
+        tooltip= Category:GetName(),
         value= Save.setDefaultAnchor,
         category= Category,
         func= function()
@@ -2610,7 +2610,7 @@ local function Init_Panel()
             minValue= -240,
             maxValue= 240,
             setp= 1,
-            tooltip= e.cn(addName),
+            tooltip= Category:GetName(),
             category= Category,
             func= function(_, _, value2)
                 local value3= e.GetFormatter1to10(value2, -200, 200)
@@ -2626,7 +2626,7 @@ local function Init_Panel()
             minValue= -240,
             maxValue= 240,
             setp= 1,
-            tooltip= e.cn(addName),
+            tooltip= Category:GetName(),
             category= Category,
             func= function(_, _, value2)
                 local value3= e.GetFormatter1to10(value2, -200, 200)
@@ -2638,7 +2638,7 @@ local function Init_Panel()
 
         initializer= e.AddPanel_Check({
             name= e.onlyChinese and '右边' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT,
-            tooltip= e.cn(addName),
+            tooltip= Category:GetName(),
             value= Save.cursorRight,
             category= Category,
             func= function()
@@ -2650,7 +2650,7 @@ local function Init_Panel()
 
         initializer= e.AddPanel_Check({
             name= e.onlyChinese and '战斗中：默认' or (HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..': '..DEFAULT),
-            tooltip= e.cn(addName),
+            tooltip= Category:GetName(),
             value= Save.inCombatDefaultAnchor,
             category= Category,
             func= function()
@@ -2665,7 +2665,7 @@ local function Init_Panel()
 
     initializer2= e.AddPanel_Check({
         name= e.onlyChinese and '模型' or MODEL,
-        tooltip= e.cn(addName),
+        tooltip= Category:GetName(),
         value= not Save.hideModel,
         category= Category,
         func= function()
@@ -2676,7 +2676,7 @@ local function Init_Panel()
 
     initializer= e.AddPanel_Check({
         name= e.onlyChinese and '左' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT,
-        tooltip= e.cn(addName),
+        tooltip= Category:GetName(),
         value= Save.modelLeft,
         category= Category,
         func= function()
@@ -2688,7 +2688,7 @@ local function Init_Panel()
 
     initializer= e.AddPanel_Check({
         name= (e.onlyChinese and '模型' or MODEL)..' ID',
-        tooltip= e.cn(addName),
+        tooltip= Category:GetName(),
         value= Save.showModelFileID,
         category= Category,
         func= function()
@@ -2704,7 +2704,7 @@ local function Init_Panel()
         minValue= 40,
         maxValue= 300,
         setp= 1,
-        tooltip= e.cn(addName),
+        tooltip= Category:GetName(),
         category= Category,
         func= function(_, _, value2)
             local value3= e.GetFormatter1to10(value2, 40, 300)
@@ -2720,7 +2720,7 @@ local function Init_Panel()
         minValue= -240,
         maxValue= 240,
         setp= 1,
-        tooltip= e.cn(addName),
+        tooltip= Category:GetName(),
         category= Category,
         func= function(_, _, value2)
             local value3= e.GetFormatter1to10(value2, -200, 200)
@@ -2736,7 +2736,7 @@ local function Init_Panel()
         minValue= -240,
         maxValue= 240,
         setp= 1,
-        tooltip= e.cn(addName),
+        tooltip= Category:GetName(),
         category= Category,
         func= function(_, _, value2)
             local value3= e.GetFormatter1to10(value2, -200, 200)
@@ -2752,7 +2752,7 @@ local function Init_Panel()
         minValue= -1,
         maxValue= 1,
         setp= 0.1,
-        tooltip= e.cn(addName),
+        tooltip= Category:GetName(),
         category= Category,
         func= function(_, _, value2)
             local value3= e.GetFormatter1to10(value2, -1, 1)
@@ -2765,12 +2765,12 @@ local function Init_Panel()
 
     e.AddPanel_Check({
         name= e.onlyChinese and '生命值 ' or HEALTH,
-        tooltip= e.cn(addName),
+        tooltip= Category:GetName(),
         value= not Save.hideHealth,
         category= Category,
         func= function()
             Save.hideHealth= not Save.hideHealth and true or nil
-            print(id, e.cn(addName),  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(id, Category:GetName(),  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     })
     e.AddPanel_Check({
@@ -2848,7 +2848,7 @@ local function Init_Panel()
         category= Category,
         func= function()
             Save.ShowOptionsCVarTips= not Save.ShowOptionsCVarTips and true or nil
-            print(id, e.cn(addName), e.GetEnabeleDisable(not Save.ShowOptionsCVarTips), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(id, Category:GetName(), e.GetEnabeleDisable(not Save.ShowOptionsCVarTips), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     })
 end
@@ -2880,7 +2880,7 @@ end
             Save.WidgetSetID= num
             self2:ClearFocus()
             set_Cursor_Tips(self2)
-            print(id, e.cn(addName), 'PlayerFrame WidgetSetID',
+            print(id, Category:GetName(), 'PlayerFrame WidgetSetID',
                 num==0 and e.GetEnabeleDisable(false) or num,
                 '|n|cnRED_FONT_COLOR:',
                 e.onlyChinese and '备注：如果出现错误，请关闭此功能（0）' or 'note: If you get error, please disable this (0)'
@@ -2917,7 +2917,7 @@ local function Init_Event(arg1)
                             e.tips:SetAchievementByID(achievementID)
                             e.tips:AddLine(' ')
                             e.tips:AddDoubleLine('|A:communities-icon-chat:0:0|a'..(e.onlyChinese and '说' or SAY), e.Icon.left)
-                            e.tips:AddDoubleLine(id, e.cn(addName))
+                            e.tips:AddDoubleLine(id, Category:GetName())
                             e.tips:Show()
                         end
                         self:SetAlpha(0.5)
@@ -3106,7 +3106,7 @@ local function Init_Event(arg1)
                     frame.specIDLabel:SetScript('OnEnter', function(s)
                         e.tips:SetOwner(s, "ANCHOR_LEFT")
                         e.tips:ClearLines()
-                        e.tips:AddDoubleLine(id, e.cn(addName))
+                        e.tips:AddDoubleLine(id, Category:GetName())
                         local specIndex= s:GetParent().specIndex
                         if specIndex then
                             local specID, name, _, icon= GetSpecializationInfo(specIndex)
@@ -3142,9 +3142,8 @@ local function Init_Event(arg1)
             end
         end)
 
-    elseif arg1=='Blizzard_GenericTraitUI' then
+    --[[elseif arg1=='Blizzard_GenericTraitUI' then
         hooksecurefunc(GenericTraitFrame.Currency, 'Setup', function(self, currencyInfo)
-            print(id,addName)
             if not self.Currency then
                 return
             end
@@ -3152,7 +3151,7 @@ local function Init_Event(arg1)
                 print(currencyInfo.traitCurrencyID)
             end
 
-        end)
+        end)]]
     end
 
 
@@ -3187,12 +3186,12 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             --Save.WidgetSetID = Save.WidgetSetID or 0
             e.AddPanel_Check({
                 name= e.onlyChinese and '启用' or ENABLE,
-                tooltip= e.cn(addName),
+                tooltip= Category:GetName(),
                 value= not Save.disabled,
                 category= Category,
                 func= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(id, Category:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 
