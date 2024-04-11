@@ -1808,7 +1808,7 @@ local function Init_StableFrame_Plus()
     StableFrame.StableTogglePetButton:SetPoint('BOTTOMRIGHT', StableFrame.ActivePetList.BeastMasterSecondaryPetButton, 'TOPRIGHT', 0, 60)
 
     StableFrame.PetModelScene.AbilitiesList:ClearAllPoints()
-    StableFrame.PetModelScene.AbilitiesList:SetPoint('LEFT', 15, 0)
+    StableFrame.PetModelScene.AbilitiesList:SetPoint('LEFT', 15, -30)
 
     StableFrame.PetModelScene.PetInfo.Specialization:ClearAllPoints()
     StableFrame.PetModelScene.PetInfo.Specialization:SetPoint('TOPRIGHT', StableFrame.PetModelScene.PetInfo.Type, 'BOTTOMRIGHT', 0, -12)
@@ -1825,6 +1825,8 @@ local function Init_StableFrame_Plus()
     StableFrame.PetModelScene.PetShadow:ClearAllPoints()
     StableFrame.PetModelScene.PetShadow:SetPoint('BOTTOMLEFT')
     StableFrame.PetModelScene.PetShadow:SetPoint('BOTTOMRIGHT')
+
+    --StableFrame.ActivePetList.BeastMasterSecondaryPetButton:ClearAllPoints()
 end
 
 
