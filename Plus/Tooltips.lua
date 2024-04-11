@@ -1711,54 +1711,74 @@ local function Init_StableFrame_Plus()
             btn.Portrait2= btn:CreateTexture(nil, 'OVERLAY')--宠物，类型，图标
             btn.Portrait2:SetSize(20, 20)
             btn.Portrait2:SetPoint('RIGHT', btn.Portrait,'LEFT')
+            btn.Portrait2:SetAlpha(0.5)
             btn.abilitiesText= e.Cstr(btn)--宠物，技能，提示
             btn.abilitiesText:SetPoint('BOTTOMRIGHT', btn.Background, -9, 8)
+            btn.indexText= e.Cstr(btn)--, {color={r=1,g=0,b=1}})--SlotID
+            btn.indexText:SetPoint('TOPRIGHT', -9,-6)
+            btn.indexText:SetAlpha(0.5)
             function btn:set_settings()
                 self.abilitiesText:SetText(StableFrame.WoWToolsButton:get_abilities_icons(self.petData))--宠物，技能，提示
                 local data= self.petData or {}--宠物，类型，图标
                 self.Portrait2:SetTexture(data.icon or 0)
+                self.indexText:SetText(data.slotID or '')
             end
         end
         btn:set_settings()
     end)
+    hooksecurefunc(StableStabledPetButtonTemplateMixin, 'OnPetSelected', function(self)--选中时，不显示，技能
+        if self.abilitiesText then
+            self.abilitiesText:SetShown(not self.isSelected)
+        end
+    end)
 
     --已激，宠物栏，提示
-    local CALL_PET_SPELL_IDS = {0883, 83242, 83243, 83244, 83245, }
+    StableFrame.WoWToolsButton.CALL_PET_SPELL_IDS = {0883, 83242, 83243, 83244, 83245, }
     for i, btn in ipairs(StableFrame.ActivePetList.PetButtons) do
-        if CALL_PET_SPELL_IDS[i] then
-            btn.callSpellButton= e.Cbtn(btn, {size={20,20},icon='hide'})--texture=132161
-            btn.callSpellButton.Texture=btn.callSpellButton:CreateTexture(nil, 'OVERLAY')
-            btn.callSpellButton.Texture:SetAllPoints(btn.callSpellButton)
-            SetPortraitToTexture(btn.callSpellButton.Texture, 132161)
-            btn.callSpellButton:SetPoint('BOTTOMRIGHT', 10, -10)
-            btn.callSpellButton.spellID=CALL_PET_SPELL_IDS[i]
-            btn.callSpellButton:SetScript('OnLeave', function(self) self:SetAlpha(0.3) GameTooltip_Hide() end)
-            btn.callSpellButton:SetScript('OnEnter', function(self)
-                GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-                GameTooltip:ClearLines()
-                GameTooltip:SetSpellByID(self.spellID, true, true);
-                GameTooltip:Show();
-                self:SetAlpha(1)
-            end)
-            btn.callSpellButton:SetAlpha(0.3)
-        end
         btn.index=i
-        btn:HookScript('OnEnter', function(self)
-            local pet
-            for _, tab in pairs(self:GetParent().pets or {}) do
-                if tab.slotID== self.index then
-                    pet= tab
-                    break
-                end
-            end
-            if not pet then
-                return
-            end
-            StableFrame.WoWToolsButton:set_pet_tooltips(self, pet, 0)
+        btn.callSpellButton= e.Cbtn(btn, {size={18,18},icon='hide'})--召唤，法术，提示
+        btn.callSpellButton.Texture=btn.callSpellButton:CreateTexture(nil, 'OVERLAY')
+        btn.callSpellButton.Texture:SetAllPoints(btn.callSpellButton)
+        SetPortraitToTexture(btn.callSpellButton.Texture, 132161)
+        btn.callSpellButton:SetPoint('BOTTOMLEFT', 0, -16)
+        btn.callSpellButton.spellID=StableFrame.WoWToolsButton.CALL_PET_SPELL_IDS[btn.petData and btn.petData.slotID or btn.index]
+        btn.callSpellButton:SetScript('OnLeave', function(self) self:SetAlpha(0.3) GameTooltip_Hide() end)
+        btn.callSpellButton:SetScript('OnEnter', function(self)
+            GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+            GameTooltip:ClearLines()
+            GameTooltip:SetSpellByID(self.spellID, true, true);
+            GameTooltip:Show();
+            self:SetAlpha(1)
+        end)
+        btn.callSpellButton:SetAlpha(0.5)
+
+        btn:HookScript('OnEnter', function(self)--信息，提示
+            StableFrame.WoWToolsButton:set_pet_tooltips(self, self.petData, -10)
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(e.onlyChinese and '移除' or REMOVE, e.Icon.right)
             e.tips:Show()
         end)
+        btn.Portrait2= btn.callSpellButton:CreateTexture(nil, 'OVERLAY')--宠物，类型，图标
+        btn.Portrait2:SetSize(18, 18)
+        btn.Portrait2:SetPoint('LEFT', btn.callSpellButton, 'RIGHT')
+        btn.abilitiesText= e.Cstr(btn, {SetJustifyH='RIGHT'})--宠物，技能，提示
+        btn.abilitiesText:SetPoint('BOTTOMRIGHT', btn.callSpellButton, 'BOTTOMLEFT')
+        btn.indexText=e.Cstr(btn.callSpellButton)--索引
+        btn.indexText:SetPoint('LEFT', btn.Portrait2, 'RIGHT', 4,0)
+        btn.indexText:SetText(i)
+        function btn:set_settings()
+            local icon= StableFrame.WoWToolsButton:get_abilities_icons(self.petData)
+            icon= icon:gsub('|T.-|t', function(a) return a..'|n' end)
+            self.abilitiesText:SetText(icon)--宠物，技能，提示
+            local data= self.petData or {}--宠物，类型，图标
+            self.Portrait2:SetTexture(data.icon or 0)
+        end
+        hooksecurefunc(btn, 'SetPet', function(frame)--StableActivePetButtonTemplateMixin
+            if frame.set_settings then
+                frame:set_settings()
+            end
+        end)
+        --hooksecurefunc(btn,'OnPetSelected', function(self)--选中时，不显示，技能
     end
 
     --第二个，宠物，提示
@@ -1781,6 +1801,18 @@ local function Init_StableFrame_Plus()
     StableFrame.ReleasePetButton:SetAlpha(0.5)
     StableFrame.ReleasePetButton:HookScript('OnLeave', function(self) self:SetAlpha(0.5) end)
     StableFrame.ReleasePetButton:HookScript('OnEnter', function(self) self:SetAlpha(1) end)
+
+    StableFrame.StableTogglePetButton:ClearAllPoints()
+    StableFrame.StableTogglePetButton:SetPoint('BOTTOMRIGHT', StableFrame.ActivePetList.BeastMasterSecondaryPetButton, 'TOPRIGHT', 0, 60)
+
+    StableFrame.PetModelScene.AbilitiesList:ClearAllPoints()
+    StableFrame.PetModelScene.AbilitiesList:SetPoint('LEFT', 15, 0)
+
+    StableFrame.PetModelScene.PetInfo.Specialization:ClearAllPoints()
+    StableFrame.PetModelScene.PetInfo.Specialization:SetPoint('TOPRIGHT', StableFrame.PetModelScene.PetInfo.Type, 'BOTTOMRIGHT', 0, -12)
+
+    StableFrame.PetModelScene.PetInfo.Exotic:ClearAllPoints()
+    StableFrame.PetModelScene.PetInfo.Exotic:SetPoint('TOPRIGHT', StableFrame.PetModelScene.PetInfo.Specialization, 'BOTTOMRIGHT', 0, -12)
 end
 
 
