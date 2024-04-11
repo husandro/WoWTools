@@ -2683,14 +2683,7 @@ end)]]
     end
 
 
-    C_Timer.After(2, function()
-        created_Move_Button(QueueStatusButton, {save=true, notZoom=true, show=true})--小眼睛, 
-        --编辑模式
-        hooksecurefunc(EditModeManagerFrame, 'ExitEditMode', function()
-            --set_classPowerBar()--职业，能量条
-            created_Move_Button(QueueStatusButton, {save=true, notZoom=true, show=true})--小眼睛, 
-       end)
-    end)
+   
 
     Init_Class()--职业，能量条
 
@@ -2713,6 +2706,21 @@ end)]]
             e.Set_Move_Frame(_G[text])
         end
     end
+
+
+     C_Timer.After(2, function()
+        created_Move_Button(QueueStatusButton, {save=true, notZoom=true, show=true})--小眼睛, 
+        --编辑模式
+        hooksecurefunc(EditModeManagerFrame, 'ExitEditMode', function()
+            --set_classPowerBar()--职业，能量条
+            created_Move_Button(QueueStatusButton, {save=true, notZoom=true, show=true})--小眼睛, 
+       end)
+
+       
+       
+    end)
+    e.Set_Move_Frame(PetStableFrame, {setSize=true, initFunc=function()
+    end})
 end
 
 

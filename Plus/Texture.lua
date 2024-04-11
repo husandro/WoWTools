@@ -643,24 +643,29 @@ local function Init_All_Frame()
      e.Set_Alpha_Frame_Texture(PVEFrameTab1, {alpha=min05})
      e.Set_Alpha_Frame_Texture(PVEFrameTab2, {alpha=min05})
      e.Set_Alpha_Frame_Texture(PVEFrameTab3, {alpha=min05})
-
+     print(PetStableFrame, NUM_PET_STABLE_PAGES)
      if e.Player.class=='HUNTER' and PetStableFrame then--猎人，宠物
-        e.Set_NineSlice_Color_Alpha(PetStableFrame, true)
-        e.Set_NineSlice_Color_Alpha(PetStableLeftInset, nil, true)
-        set_Alpha_Color(PetStableActiveBg, nil, nil, min03)
-        set_Alpha_Color(PetStableFrameBg)
-        e.Set_NineSlice_Color_Alpha(PetStableFrameInset, nil, true)
-        hide_Texture(PetStableFrameInset.Bg)
-        set_Alpha_Color(PetStableFrameModelBg, nil, nil, min05)
+        print(NUM_PET_STABLE_PAGES)
+        if not NUM_PET_STABLE_PAGES then--10.2.7
+            e.Set_NineSlice_Color_Alpha(StableFrame.NineSlice, true)
+        else
+            e.Set_NineSlice_Color_Alpha(PetStableFrame, true)
+            e.Set_NineSlice_Color_Alpha(PetStableLeftInset, nil, true)
+            set_Alpha_Color(PetStableActiveBg, nil, nil, min03)
+            set_Alpha_Color(PetStableFrameBg)
+            e.Set_NineSlice_Color_Alpha(PetStableFrameInset, nil, true)
+            hide_Texture(PetStableFrameInset.Bg)
+            set_Alpha_Color(PetStableFrameModelBg, nil, nil, min05)
 
-        set_Alpha_Color(PetStableFrameStableBg, nil, nil, min05)
+            set_Alpha_Color(PetStableFrameStableBg, nil, nil, min05)
 
-        for i=1, NUM_PET_STABLE_SLOTS do--NUM_PET_STABLE_PAGES * NUM_PET_STABLE_SLOTS do
-            if i<=5 then
-                hide_Texture(_G['PetStableActivePet'..i..'Background'])
-                set_Alpha_Color(_G['PetStableActivePet'..i..'Border'], nil, nil, min05)
+            for i=1, NUM_PET_STABLE_SLOTS do--NUM_PET_STABLE_PAGES * NUM_PET_STABLE_SLOTS do
+                if i<=5 then
+                    hide_Texture(_G['PetStableActivePet'..i..'Background'])
+                    set_Alpha_Color(_G['PetStableActivePet'..i..'Border'], nil, nil, min05)
+                end
+                set_Alpha_Color(_G['PetStableStabledPet'..i..'Background'])
             end
-            set_Alpha_Color(_G['PetStableStabledPet'..i..'Background'])
         end
      end
 

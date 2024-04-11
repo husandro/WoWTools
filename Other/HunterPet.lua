@@ -1,5 +1,5 @@
 local id, e= ...
-if e.Player.class~='HUNTER' then --or C_AddOns.IsAddOnLoaded("ImprovedStableFrame") then
+if e.Player.class~='HUNTER' or not NUM_PET_STABLE_PAGES then --or C_AddOns.IsAddOnLoaded("ImprovedStableFrame") then
     return
 end
 
