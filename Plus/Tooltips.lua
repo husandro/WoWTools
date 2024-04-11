@@ -2349,7 +2349,7 @@ local function Init()
         end
     end)
 
-    if StableFrame then--10.2.7
+    if e.Player.class=='HUNTER' and StableFrame then--10.2.7
         hooksecurefunc(StableStabledPetButtonTemplateMixin, 'SetPet', function(btn)--, pet)
             if btn.set_settings then
                 btn:set_settings()

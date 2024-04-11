@@ -4152,6 +4152,11 @@ local function Init()
         end
     end
 
+
+    if e.Player.class=='HUNTER' and StableFrame then--10.2.7
+        StableFrame.StableTogglePetButton.disabledTooltip=
+        StableFrame.StableTogglePetButton:SetText()
+    end
 end
 
 
