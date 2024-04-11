@@ -2719,8 +2719,8 @@ end)]]
        
        
     end)
-    e.Set_Move_Frame(PetStableFrame, {setSize=true, initFunc=function()
-    end})
+    --e.Set_Move_Frame(PetStableFrame, {setSize=true, initFunc=function()
+    --end})
 end
 
 

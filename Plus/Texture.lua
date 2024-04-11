@@ -643,9 +643,9 @@ local function Init_All_Frame()
      e.Set_Alpha_Frame_Texture(PVEFrameTab1, {alpha=min05})
      e.Set_Alpha_Frame_Texture(PVEFrameTab2, {alpha=min05})
      e.Set_Alpha_Frame_Texture(PVEFrameTab3, {alpha=min05})
-     print(PetStableFrame, NUM_PET_STABLE_PAGES)
+     --print(PetStableFrame, NUM_PET_STABLE_PAGES)
      if e.Player.class=='HUNTER' and PetStableFrame then--猎人，宠物
-        print(NUM_PET_STABLE_PAGES)
+        --print(NUM_PET_STABLE_PAGES)
         if not NUM_PET_STABLE_PAGES then--10.2.7
             e.Set_NineSlice_Color_Alpha(StableFrame.NineSlice, true)
         else
