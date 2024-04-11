@@ -1796,6 +1796,8 @@ local function Init_StableFrame_Plus()
         e.tips:Show()
     end)
 
+    StableFrame.PetModelScene.Inset:ClearAllPoints()
+
     StableFrame.ReleasePetButton:ClearAllPoints()
     StableFrame.ReleasePetButton:SetPoint('BOTTOMRIGHT', StableFrame.PetModelScene.Inset, 'TOPRIGHT')
     StableFrame.ReleasePetButton:SetAlpha(0.5)
@@ -1813,6 +1815,16 @@ local function Init_StableFrame_Plus()
 
     StableFrame.PetModelScene.PetInfo.Exotic:ClearAllPoints()
     StableFrame.PetModelScene.PetInfo.Exotic:SetPoint('TOPRIGHT', StableFrame.PetModelScene.PetInfo.Specialization, 'BOTTOMRIGHT', 0, -12)
+
+    StableFrame.ActivePetList.ActivePetListBG:ClearAllPoints()
+    StableFrame.ActivePetList.ActivePetListBG:SetPoint('TOPLEFT', StableFrame.PetModelScene, 'BOTTOMLEFT', 0, -2)
+    StableFrame.ActivePetList.ActivePetListBG:SetPoint('BOTTOMRIGHT')
+    StableFrame.PetModelScene.ControlFrame:ClearAllPoints()
+    StableFrame.PetModelScene.ControlFrame:SetPoint('TOP')
+
+    StableFrame.PetModelScene.PetShadow:ClearAllPoints()
+    StableFrame.PetModelScene.PetShadow:SetPoint('BOTTOMLEFT')
+    StableFrame.PetModelScene.PetShadow:SetPoint('BOTTOMRIGHT')
 end
 
 
