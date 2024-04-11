@@ -1717,18 +1717,23 @@ local function Init_StableFrame_Plus()
             btn.indexText= e.Cstr(btn)--, {color={r=1,g=0,b=1}})--SlotID
             btn.indexText:SetPoint('TOPRIGHT', -9,-6)
             btn.indexText:SetAlpha(0.5)
+            function btn:set_shown()
+                self.abilitiesText:SetShown(not self.isSelected)
+                self.Portrait2:SetShown(not self.isSelected)
+            end
             function btn:set_settings()
                 self.abilitiesText:SetText(StableFrame.WoWToolsButton:get_abilities_icons(self.petData))--宠物，技能，提示
                 local data= self.petData or {}--宠物，类型，图标
                 self.Portrait2:SetTexture(data.icon or 0)
                 self.indexText:SetText(data.slotID or '')
+                self:set_shown()
             end
         end
         btn:set_settings()
     end)
     hooksecurefunc(StableStabledPetButtonTemplateMixin, 'OnPetSelected', function(self)--选中时，不显示，技能
-        if self.abilitiesText then
-            self.abilitiesText:SetShown(not self.isSelected)
+        if self.set_shown then
+            self:set_shown()
         end
     end)
 
@@ -1766,6 +1771,7 @@ local function Init_StableFrame_Plus()
         btn.indexText=e.Cstr(btn.callSpellButton)--索引
         btn.indexText:SetPoint('LEFT', btn.Portrait2, 'RIGHT', 4,0)
         btn.indexText:SetText(i)
+        
         function btn:set_settings()
             local icon= StableFrame.WoWToolsButton:get_abilities_icons(self.petData)
             icon= icon:gsub('|T.-|t', function(a) return a..'|n' end)
@@ -1805,7 +1811,7 @@ local function Init_StableFrame_Plus()
     StableFrame.ReleasePetButton:HookScript('OnEnter', function(self) self:SetAlpha(1) end)
 
     StableFrame.StableTogglePetButton:ClearAllPoints()
-    StableFrame.StableTogglePetButton:SetPoint('BOTTOMRIGHT', StableFrame.ActivePetList.BeastMasterSecondaryPetButton, 'TOPRIGHT', 0, 60)
+    StableFrame.StableTogglePetButton:SetPoint('BOTTOMRIGHT', StableFrame.ActivePetList.BeastMasterSecondaryPetButton, 'TOPRIGHT', 0, 16)
 
     StableFrame.PetModelScene.AbilitiesList:ClearAllPoints()
     StableFrame.PetModelScene.AbilitiesList:SetPoint('LEFT', 15, -30)
