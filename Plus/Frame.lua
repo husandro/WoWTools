@@ -2685,18 +2685,7 @@ end)]]
         end)
     end
 
-    --猎人，宠物栏
-    e.Set_Move_Frame(StableFrame, {setSize=true, minW=960, minH=490, initFunc=function()
-            StableFrame.PetModelScene:ClearAllPoints()
-            StableFrame.PetModelScene:SetPoint('TOPLEFT', StableFrame.Topper, 'BOTTOMLEFT', 330, 0)
-            StableFrame.PetModelScene:SetPoint('BOTTOMRIGHT', -2, 92)
-            StableFrame.ActivePetList:ClearAllPoints()
-            StableFrame.ActivePetList:SetPoint('TOPLEFT', StableFrame.PetModelScene, 'BOTTOMLEFT', 0, -45)
-            StableFrame.ActivePetList:SetPoint('TOPRIGHT', StableFrame.PetModelScene, 'BOTTOMRIGHT', 0, -45)
 
-        end, sizeRestFunc=function(btn)
-            btn.target:SetSize(1040, 638)
-    end})
    
 
     Init_Class()--职业，能量条
@@ -2714,12 +2703,7 @@ end)]]
     e.Set_Move_Frame(PlayerPowerBarAlt)
     e.Set_Move_Frame(CreateChannelPopup)
     e.Set_Move_Frame(BattleTagInviteFrame)
-    for text, _ in pairs(UIPanelWindows) do
-        local frame=_G[text]
-        if frame and (not frame.ResizeButton and not frame.targetMoveFrame) then
-            e.Set_Move_Frame(_G[text])
-        end
-    end
+    
 
 
      C_Timer.After(2, function()
@@ -2729,8 +2713,14 @@ end)]]
             --set_classPowerBar()--职业，能量条
             created_Move_Button(QueueStatusButton, {save=true, notZoom=true, show=true})--小眼睛, 
        end)
+
+       for text, _ in pairs(UIPanelWindows) do
+            local frame=_G[text]
+            if frame and (not frame.ResizeButton and not frame.targetMoveFrame) then
+                e.Set_Move_Frame(_G[text])
+            end
+        end
     end)
-    
 end
 
 
