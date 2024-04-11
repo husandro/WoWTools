@@ -1627,6 +1627,7 @@ local function Init_StableFrame_Plus()
     if e.Player.class~='HUNTER' or not StableFrame then--10.2.7
         return
     else
+        --开关
         StableFrame.WoWToolsButton= e.Cbtn(StableFrame.TitleContainer, {size={20,20}, icon= not Save.disabled_Hunter_Plus})
         StableFrame.WoWToolsButton:SetPoint('RIGHT', StableFrameCloseButton, 'LEFT', -2, 0)
         StableFrame.WoWToolsButton:SetAlpha(0.3)
@@ -1657,7 +1658,7 @@ local function Init_StableFrame_Plus()
         end
     end
 
-
+    --取得，宠物，技能，图标
     function StableFrame.WoWToolsButton:get_abilities_icons(pet)
         local icon=''
         for _, spellID in pairs(pet and pet.abilities or {}) do
@@ -1667,6 +1668,7 @@ local function Init_StableFrame_Plus()
         return icon
     end
 
+    --宠物，信息，提示
     function StableFrame.WoWToolsButton:set_pet_tooltips(frame, pet, y)
         if not pet or not frame then
             return
@@ -1699,40 +1701,29 @@ local function Init_StableFrame_Plus()
     end
 
 
-
+    --宠物，列表，提示
     hooksecurefunc(StableStabledPetButtonTemplateMixin, 'SetPet', function(btn)
-        if btn.set_settings then
-            btn:set_settings()
-            return
-        end
-        btn:HookScript('OnEnter', function(self)--信息，提示
-            StableFrame.WoWToolsButton:set_pet_tooltips(self, self.petData, -10)
-            e.tips:Show()
-        end)
-
-        btn.Portrait2= btn:CreateTexture(nil, 'OVERLAY')--宠物，类型，图标
-        btn.Portrait2:SetSize(20, 20)
-        btn.Portrait2:SetPoint('RIGHT', btn.Portrait,'LEFT')
-
-        btn.abilitiesText= e.Cstr(btn)--宠物，技能，提示
-        btn.abilitiesText:SetPoint('BOTTOMRIGHT', btn.Background, -9, 8)
-
-        function btn:set_settings()
-            self.abilitiesText:SetText(StableFrame.WoWToolsButton:get_abilities_icons(self.petData))--宠物，技能，提示
-
-            local data= self.petData or {}--宠物，类型，图标
-            self.Portrait2:SetTexture(data.icon or 0)
+        if not btn.set_settings then
+            btn:HookScript('OnEnter', function(self)--信息，提示
+                StableFrame.WoWToolsButton:set_pet_tooltips(self, self.petData, -10)
+                e.tips:Show()
+            end)
+            btn.Portrait2= btn:CreateTexture(nil, 'OVERLAY')--宠物，类型，图标
+            btn.Portrait2:SetSize(20, 20)
+            btn.Portrait2:SetPoint('RIGHT', btn.Portrait,'LEFT')
+            btn.abilitiesText= e.Cstr(btn)--宠物，技能，提示
+            btn.abilitiesText:SetPoint('BOTTOMRIGHT', btn.Background, -9, 8)
+            function btn:set_settings()
+                self.abilitiesText:SetText(StableFrame.WoWToolsButton:get_abilities_icons(self.petData))--宠物，技能，提示
+                local data= self.petData or {}--宠物，类型，图标
+                self.Portrait2:SetTexture(data.icon or 0)
+            end
         end
         btn:set_settings()
     end)
 
-    local CALL_PET_SPELL_IDS = { -- Each "active" pet slot corresponds to a "call pet" spell (with the exception of the secondary pet)
-        0883,
-        83242,
-        83243,
-        83244,
-        83245,
-    };
+    --已激，宠物栏，提示
+    local CALL_PET_SPELL_IDS = {0883, 83242, 83243, 83244, 83245, }
     for i, btn in ipairs(StableFrame.ActivePetList.PetButtons) do
         if CALL_PET_SPELL_IDS[i] then
             btn.callSpellButton= e.Cbtn(btn, {size={20,20},icon='hide'})--texture=132161
@@ -1751,8 +1742,6 @@ local function Init_StableFrame_Plus()
             end)
             btn.callSpellButton:SetAlpha(0.3)
         end
-
-        --btn:HookScript('OnLeave', GameTooltip_Hide)
         btn.index=i
         btn:HookScript('OnEnter', function(self)
             local pet
@@ -1772,6 +1761,7 @@ local function Init_StableFrame_Plus()
         end)
     end
 
+    --第二个，宠物，提示
     StableFrame.ActivePetList.BeastMasterSecondaryPetButton:HookScript('OnEnter', function(self)
         if not self.petData or not self:IsEnabled() then
             return
@@ -1788,6 +1778,9 @@ local function Init_StableFrame_Plus()
 
     StableFrame.ReleasePetButton:ClearAllPoints()
     StableFrame.ReleasePetButton:SetPoint('BOTTOMRIGHT', StableFrame.PetModelScene.Inset, 'TOPRIGHT')
+    StableFrame.ReleasePetButton:SetAlpha(0.5)
+    StableFrame.ReleasePetButton:HookScript('OnLeave', function(self) self:SetAlpha(0.5) end)
+    StableFrame.ReleasePetButton:HookScript('OnEnter', function(self) self:SetAlpha(1) end)
 end
 
 
