@@ -2348,6 +2348,39 @@ local function Init()
             self:Show()
         end
     end)
+
+    if StableFrame then
+        hooksecurefunc(StableStabledPetButtonTemplateMixin, 'SetPet', function(btn)--, pet)
+            if btn.set_script then
+                return
+            end
+            btn.set_script=true
+            btn:HookScript('OnLeave', GameTooltip_Hide)
+            btn:HookScript('OnEnter', function(self)
+                e.tips:SetOwner(self, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine(id, e.cn(addName))
+                e.tips:AddLine(' ')
+                for indexType, name in pairs(self.petData or {}) do
+                    if type(name)=='table' then
+                        if indexType=='abilities' then
+                            local icon=''
+                            for _, spellID in pairs(name) do
+                                print(_,spellID)
+                                e.LoadDate({id=spellID, type='spell'})
+                                icon= icon..format('|T%d:0|t', GetSpellTexture(spellID) or 0)
+                            end
+                            e.tips:AddDoubleLine(indexType, icon)
+                        end
+                    else
+                        name= name==false and 'false' or (name==true and 'true') or (name==nil and '') or name
+                        e.tips:AddDoubleLine(indexType, name)
+                    end
+                end
+                e.tips:Show()
+            end)
+        end)
+    end
 end
 
 

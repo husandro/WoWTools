@@ -1905,6 +1905,9 @@ local function setAddLoad(arg1)
 
     elseif arg1=='Blizzard_CovenantRenown' then
         e.Set_Move_Frame(CovenantRenownFrame)
+
+    --elseif arg1=='Blizzard_StableUI' then
+     
     end
 end
 
@@ -2682,7 +2685,12 @@ end)]]
         end)
     end
 
-
+    --猎人，宠物栏
+    e.Set_Move_Frame(StableFrame, {setSize=true, minW=960, minH=490, initFunc=function()
+            StableFrame.PetModelScene:SetPoint('TOPLEFT', StableFrame.Topper, 'BOTTOMLEFT', 330, 0)
+        end, sizeRestFunc=function(btn)
+            btn.target:SetSize(1040, 638)
+    end})
    
 
     Init_Class()--职业，能量条
@@ -2715,12 +2723,8 @@ end)]]
             --set_classPowerBar()--职业，能量条
             created_Move_Button(QueueStatusButton, {save=true, notZoom=true, show=true})--小眼睛, 
        end)
-
-       
-       
     end)
-    --e.Set_Move_Frame(PetStableFrame, {setSize=true, initFunc=function()
-    --end})
+    
 end
 
 

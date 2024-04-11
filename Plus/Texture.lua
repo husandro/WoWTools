@@ -644,11 +644,23 @@ local function Init_All_Frame()
      e.Set_Alpha_Frame_Texture(PVEFrameTab2, {alpha=min05})
      e.Set_Alpha_Frame_Texture(PVEFrameTab3, {alpha=min05})
      --print(PetStableFrame, NUM_PET_STABLE_PAGES)
-     if e.Player.class=='HUNTER' and PetStableFrame then--猎人，宠物
-        --print(NUM_PET_STABLE_PAGES)
-        if not NUM_PET_STABLE_PAGES then--10.2.7
-            e.Set_NineSlice_Color_Alpha(StableFrame.NineSlice, true)
-        else
+     if e.Player.class=='HUNTER' then--猎人，宠物
+        if StableFrame then--10.2.7
+            hide_Texture(StableFrame.Topper)
+            hide_Texture(StableFrame.StabledPetList.Backgroud)
+            hide_Texture(StableFrame.StabledPetList.Inset.Bg)
+            set_Alpha_Color(StableFrameBg, nil, nil, min05)
+            hide_Texture(StableFrame.PetModelScene.Background)
+            hide_Texture(StableFrame.PetModelScene.Inset.Bg)
+            
+            set_SearchBox(StableFrame.StabledPetList.FilterBar.SearchBox)
+            set_Menu(StableFrame.StabledPetList.FilterBar.FilterButton)
+            e.Set_NineSlice_Color_Alpha(StableFrame, true)
+            e.Set_ScrollBar_Color_Alpha(StableFrame.StabledPetList)
+            e.Set_NineSlice_Color_Alpha(StableFrame.StabledPetList.Inset, true)
+            e.Set_NineSlice_Color_Alpha(StableFrame.PetModelScene.Inset, true)
+
+        elseif PetStableFrame then
             e.Set_NineSlice_Color_Alpha(PetStableFrame, true)
             e.Set_NineSlice_Color_Alpha(PetStableLeftInset, nil, true)
             set_Alpha_Color(PetStableActiveBg, nil, nil, min03)
