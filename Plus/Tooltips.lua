@@ -1722,7 +1722,7 @@ local function Init()
                 end
             end)
         end
-        
+
 
         --25宏, 11动作条, 4可交互物品, 14装备管理, 0物品 19玩具, 9宠物
         if data.type==2 then--单位
@@ -2349,14 +2349,22 @@ local function Init()
         end
     end)
 
-    if StableFrame then
+    if StableFrame then--10.2.7
         hooksecurefunc(StableStabledPetButtonTemplateMixin, 'SetPet', function(btn)--, pet)
-            if btn.set_script then
+            if btn.set_settings then
+                btn:set_settings()
                 return
             end
-            btn.set_script=true
+            function btn:get_abilities_icons()
+                local icon=''
+                for _, spellID in pairs(self.petData and self.petData.abilities or {}) do
+                    e.LoadDate({id=spellID, type='spell'})
+                    icon= icon..format('|T%d:18|t', GetSpellTexture(spellID) or 0)
+                end
+                return icon
+            end
             btn:HookScript('OnLeave', GameTooltip_Hide)
-            btn:HookScript('OnEnter', function(self)
+            btn:HookScript('OnEnter', function(self)--信息，提示
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine(id, e.cn(addName))
@@ -2364,21 +2372,34 @@ local function Init()
                 for indexType, name in pairs(self.petData or {}) do
                     if type(name)=='table' then
                         if indexType=='abilities' then
-                            local icon=''
-                            for _, spellID in pairs(name) do
-                                print(_,spellID)
-                                e.LoadDate({id=spellID, type='spell'})
-                                icon= icon..format('|T%d:0|t', GetSpellTexture(spellID) or 0)
-                            end
-                            e.tips:AddDoubleLine(indexType, icon)
+                            e.tips:AddDoubleLine(indexType, self:get_abilities_icons())
                         end
                     else
-                        name= name==false and 'false' or (name==true and 'true') or (name==nil and '') or name
+                        name= indexType=='icon' and format('|T%d:18|t%d', name, name)
+                            or (name==false and 'false')
+                            or (name==true and 'true')
+                            or (name==nil and '')
+                            or name
                         e.tips:AddDoubleLine(indexType, name)
                     end
                 end
                 e.tips:Show()
             end)
+
+            btn.Portrait2= btn:CreateTexture(nil, 'OVERLAY')--宠物，类型，图标
+            btn.Portrait2:SetSize(20, 20)
+            btn.Portrait2:SetPoint('RIGHT', btn.Portrait,'LEFT')
+
+            btn.abilitiesText= e.Cstr(btn)--宠物，技能，提示
+            btn.abilitiesText:SetPoint('BOTTOMRIGHT', btn.Background, -9, 8)
+
+            function btn:set_settings()
+                self.abilitiesText:SetText(self:get_abilities_icons())--宠物，技能，提示
+
+                local data= self.petData or {}--宠物，类型，图标
+                self.Portrait2:SetTexture(data.icon or 0)
+            end
+            btn:set_settings()
         end)
     end
 end
@@ -2998,7 +3019,7 @@ local function Init_Event(arg1)
             if not self.Currency then
                 return
             end
-            if (currencyInfo and currencyInfo.traitCurrencyID) then 
+            if (currencyInfo and currencyInfo.traitCurrencyID) then
                 print(currencyInfo.traitCurrencyID)
             end
 
