@@ -650,7 +650,7 @@ local function Init_All_Frame()
             hide_Texture(StableFrame.StabledPetList.Backgroud)
             hide_Texture(StableFrame.StabledPetList.Inset.Bg)
             set_Alpha_Color(StableFrameBg, nil, nil, min05)
-            hide_Texture(StableFrame.PetModelScene.Background)
+            --hide_Texture(StableFrame.PetModelScene.Background)
             hide_Texture(StableFrame.PetModelScene.Inset.Bg)
             
             set_SearchBox(StableFrame.StabledPetList.FilterBar.SearchBox)
