@@ -22,6 +22,7 @@ local Save={
     --hideHealth=true,----生命条提示
 }
 local panel=CreateFrame("Frame")
+local Category, Layout= e.AddPanel_Sub_Category({name=e.Icon.mid..addName})
 
 local func={
     --func.Set_PlayerModel(self)
@@ -1621,6 +1622,188 @@ end
 
 
 
+--猎人，兽栏 Plus 10.2.7 Blizzard_StableUI.lua
+local function Init_StableFrame_Plus()
+    if e.Player.class~='HUNTER' or not StableFrame then--10.2.7
+        return
+    else
+        StableFrame.WoWToolsButton= e.Cbtn(StableFrame.TitleContainer, {size={20,20}, icon= not Save.disabled_Hunter_Plus})
+        StableFrame.WoWToolsButton:SetPoint('RIGHT', StableFrameCloseButton, 'LEFT', -2, 0)
+        StableFrame.WoWToolsButton:SetAlpha(0.3)
+        StableFrame.WoWToolsButton:SetScript('OnLeave', function(self) self:SetAlpha(0.3) GameTooltip_Hide() end)
+        function StableFrame.WoWToolsButton:set_tooltips()
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine(id, e.cn(addName))
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(e.GetEnabeleDisable(not Save.disabled_Hunter_Plus), e.Icon.left)
+            e.tips:AddDoubleLine(e.onlyChinese and '选项' or OPTIONS, e.Icon.right)
+            e.tips:Show()
+            self:SetAlpha(1)
+        end
+        StableFrame.WoWToolsButton:SetScript('OnEnter', StableFrame.WoWToolsButton.set_tooltips)
+        StableFrame.WoWToolsButton:SetScript('OnClick', function(self, d)
+            if d=='LeftButton' then
+                Save.disabled_Hunter_Plus= not Save.disabled_Hunter_Plus and true or nil
+                print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled_Hunter_Plus), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                self:SetNormalAtlas(Save.disabled_Hunter_Plus and e.Icon.disabled or e.Icon.icon)
+                self:set_tooltips()
+            else
+                e.OpenPanelOpting(nil, Category)
+            end
+        end)
+        if Save.disabled_Hunter_Plus then
+            return
+        end
+    end
+
+
+    function StableFrame.WoWToolsButton:get_abilities_icons(pet)
+        local icon=''
+        for _, spellID in pairs(pet and pet.abilities or {}) do
+            e.LoadDate({id=spellID, type='spell'})
+            icon= icon..format('|T%d:14|t', GetSpellTexture(spellID) or 0)
+        end
+        return icon
+    end
+
+    function StableFrame.WoWToolsButton:set_pet_tooltips(frame, pet, y)
+        if not pet or not frame then
+            return
+        end
+        e.tips:SetOwner(frame, "ANCHOR_LEFT", y or 0, 0)
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddLine(' ')
+        local i=1
+        for indexType, name in pairs(pet) do
+            local col= indexType=='slotID' and '|cffff00ff'
+                    or (indexType=='name' and '|cnGREEN_FONT_COLOR:')
+                    or (select(2, math.modf(i/2))==0 and '|cffffffff')
+                    or '|cff00ccff'
+            if type(name)=='table' then
+                if indexType=='abilities' then
+                    e.tips:AddDoubleLine(col..indexType, StableFrame.WoWToolsButton:get_abilities_icons(pet))
+                end
+            else
+                name= indexType=='icon' and format('|T%d:14|t%d', name, name)
+                    or (name==false and 'false')
+                    or (name==true and 'true')
+                    or (name==nil and '')
+                    or name
+                e.tips:AddDoubleLine(col..indexType, col..name)
+            end
+            i=i+1
+        end
+
+    end
+
+
+
+    hooksecurefunc(StableStabledPetButtonTemplateMixin, 'SetPet', function(btn)
+        if btn.set_settings then
+            btn:set_settings()
+            return
+        end
+        btn:HookScript('OnEnter', function(self)--信息，提示
+            StableFrame.WoWToolsButton:set_pet_tooltips(self, self.petData, -10)
+            e.tips:Show()
+        end)
+
+        btn.Portrait2= btn:CreateTexture(nil, 'OVERLAY')--宠物，类型，图标
+        btn.Portrait2:SetSize(20, 20)
+        btn.Portrait2:SetPoint('RIGHT', btn.Portrait,'LEFT')
+
+        btn.abilitiesText= e.Cstr(btn)--宠物，技能，提示
+        btn.abilitiesText:SetPoint('BOTTOMRIGHT', btn.Background, -9, 8)
+
+        function btn:set_settings()
+            self.abilitiesText:SetText(StableFrame.WoWToolsButton:get_abilities_icons(self.petData))--宠物，技能，提示
+
+            local data= self.petData or {}--宠物，类型，图标
+            self.Portrait2:SetTexture(data.icon or 0)
+        end
+        btn:set_settings()
+    end)
+
+    local CALL_PET_SPELL_IDS = { -- Each "active" pet slot corresponds to a "call pet" spell (with the exception of the secondary pet)
+        0883,
+        83242,
+        83243,
+        83244,
+        83245,
+    };
+    for i, btn in ipairs(StableFrame.ActivePetList.PetButtons) do
+        if CALL_PET_SPELL_IDS[i] then
+            btn.callSpellButton= e.Cbtn(btn, {size={20,20},icon='hide'})--texture=132161
+            btn.callSpellButton.Texture=btn.callSpellButton:CreateTexture(nil, 'OVERLAY')
+            btn.callSpellButton.Texture:SetAllPoints(btn.callSpellButton)
+            SetPortraitToTexture(btn.callSpellButton.Texture, 132161)
+            btn.callSpellButton:SetPoint('BOTTOMRIGHT', 10, -10)
+            btn.callSpellButton.spellID=CALL_PET_SPELL_IDS[i]
+            btn.callSpellButton:SetScript('OnLeave', function(self) self:SetAlpha(0.3) GameTooltip_Hide() end)
+            btn.callSpellButton:SetScript('OnEnter', function(self)
+                GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+                GameTooltip:ClearLines()
+                GameTooltip:SetSpellByID(self.spellID, true, true);
+                GameTooltip:Show();
+                self:SetAlpha(1)
+            end)
+            btn.callSpellButton:SetAlpha(0.3)
+        end
+
+        --btn:HookScript('OnLeave', GameTooltip_Hide)
+        btn.index=i
+        btn:HookScript('OnEnter', function(self)
+            local pet
+            for _, tab in pairs(self:GetParent().pets or {}) do
+                if tab.slotID== self.index then
+                    pet= tab
+                    break
+                end
+            end
+            if not pet then
+                return
+            end
+            StableFrame.WoWToolsButton:set_pet_tooltips(self, pet, 0)
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(e.onlyChinese and '移除' or REMOVE, e.Icon.right)
+            e.tips:Show()
+        end)
+    end
+
+    StableFrame.ActivePetList.BeastMasterSecondaryPetButton:HookScript('OnEnter', function(self)
+        if not self.petData or not self:IsEnabled() then
+            return
+        end
+        StableFrame.WoWToolsButton:set_pet_tooltips(self, self.petData, 0)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(
+            format('|A:UI-HUD-MicroMenu-SpecTalents-Mouseover:0:0|a|cffaad372%s|r', e.onlyChinese and '天赋' or TALENT),
+            format('|T461112:0|t|cffaad372%s|r', e.onlyChinese and '动物伙伴' or GetSpellLink(267116) or GetSpellInfo(267116) or 'Animal Companion')
+        )
+        e.tips:AddDoubleLine(e.onlyChinese and '移除' or REMOVE, e.Icon.right)
+        e.tips:Show()
+    end)
+
+    StableFrame.ReleasePetButton:ClearAllPoints()
+    StableFrame.ReleasePetButton:SetPoint('BOTTOMRIGHT', StableFrame.PetModelScene.Inset, 'TOPRIGHT')
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1649,6 +1832,7 @@ local function Init()
 
     Init_Web_Link()--取得网页，数据链接
     Int_Health_Bar_Unit()--生命条提示
+    Init_StableFrame_Plus()--猎人，兽栏 Plus 10.2.7
 
     --[[e.tips:HookScript("OnHide", function(self)--隐藏
         func.Set_Init_Item(self, true)
@@ -2348,60 +2532,6 @@ local function Init()
             self:Show()
         end
     end)
-
-    if e.Player.class=='HUNTER' and StableFrame then--10.2.7
-        hooksecurefunc(StableStabledPetButtonTemplateMixin, 'SetPet', function(btn)--, pet)
-            if btn.set_settings then
-                btn:set_settings()
-                return
-            end
-            function btn:get_abilities_icons()
-                local icon=''
-                for _, spellID in pairs(self.petData and self.petData.abilities or {}) do
-                    e.LoadDate({id=spellID, type='spell'})
-                    icon= icon..format('|T%d:18|t', GetSpellTexture(spellID) or 0)
-                end
-                return icon
-            end
-            btn:HookScript('OnLeave', GameTooltip_Hide)
-            btn:HookScript('OnEnter', function(self)--信息，提示
-                e.tips:SetOwner(self, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:AddDoubleLine(id, e.cn(addName))
-                e.tips:AddLine(' ')
-                for indexType, name in pairs(self.petData or {}) do
-                    if type(name)=='table' then
-                        if indexType=='abilities' then
-                            e.tips:AddDoubleLine(indexType, self:get_abilities_icons())
-                        end
-                    else
-                        name= indexType=='icon' and format('|T%d:18|t%d', name, name)
-                            or (name==false and 'false')
-                            or (name==true and 'true')
-                            or (name==nil and '')
-                            or name
-                        e.tips:AddDoubleLine(indexType, name)
-                    end
-                end
-                e.tips:Show()
-            end)
-
-            btn.Portrait2= btn:CreateTexture(nil, 'OVERLAY')--宠物，类型，图标
-            btn.Portrait2:SetSize(20, 20)
-            btn.Portrait2:SetPoint('RIGHT', btn.Portrait,'LEFT')
-
-            btn.abilitiesText= e.Cstr(btn)--宠物，技能，提示
-            btn.abilitiesText:SetPoint('BOTTOMRIGHT', btn.Background, -9, 8)
-
-            function btn:set_settings()
-                self.abilitiesText:SetText(self:get_abilities_icons())--宠物，技能，提示
-
-                local data= self.petData or {}--宠物，类型，图标
-                self.Portrait2:SetTexture(data.icon or 0)
-            end
-            btn:set_settings()
-        end)
-    end
 end
 
 
@@ -2446,7 +2576,6 @@ end
 --##############
  --添加新控制面板
 --##############
-local Category, Layout= e.AddPanel_Sub_Category({name=e.Icon.mid..addName})
 local function set_Cursor_Tips(self)
     func.Set_Init_Item(e.tips, true)
     func.Set_Init_Item(ItemRefTooltip, true)

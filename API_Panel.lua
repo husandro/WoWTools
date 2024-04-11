@@ -231,8 +231,10 @@ Settings.SetKeybindingsCategory(Category)
 
 --打开，选项
 function e.OpenPanelOpting(name, category)
-    category= category or Category
-    Settings.OpenToCategory(category:GetID(), name)
+    Settings.OpenToCategory(Category:GetID(), name)
+    if category then
+        Settings.OpenToCategory(category:GetID(), category:GetName())
+    end
 end
     --[[
     if subCategoryName and Category:HasSubcategories() then
