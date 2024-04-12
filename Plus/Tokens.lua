@@ -156,7 +156,7 @@ local function Get_Currency(currencyID, index)--货币
 
 	num= e.MK(num, 3)
 	
-	
+	local max
 	if isMax then
 		max= '|A:QuestDaily-MainMap:0:0|a'--e.Icon.select2
 		num= '|cnRED_FONT_COLOR:'..num..'|r'
