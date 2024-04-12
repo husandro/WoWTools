@@ -151,6 +151,12 @@ local function Get_Currency(currencyID, index)--货币
 		name = name format('%s%s|r', col, name)
 	end
 
+	
+	local need
+	if total and num then
+		need= format('(%s)', e.MK(total-num))
+	end
+
 	num= e.MK(num, 3)
 
 	local max
@@ -160,10 +166,9 @@ local function Get_Currency(currencyID, index)--货币
 	elseif canWeek or canEarned or canQuantity then
 		num= '|cnGREEN_FONT_COLOR:'..num..'|r'
 	end
-local need
-if total and num then
-	need= format('(%s)', e.MK(total-num))
-end
+
+
+
 	if Save.toRightTrackText then
 		text=(name and name..' ' or '')
 			..(name and '|cffff7d00' or '')
