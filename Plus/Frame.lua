@@ -403,8 +403,8 @@ local function set_Scale_Size(frame, tab)
                     continueResizeStart = target.onResizeStartCallback(self)
                 end
                 if continueResizeStart then
-                    local alwaysStartFromMouse = true
-                    self.target:StartSizing("BOTTOMRIGHT", alwaysStartFromMouse)
+                    self.target:SetResizable(true)
+                    self.target:StartSizing("BOTTOMRIGHT", true)
                 end
                 self:SetScript('OnUpdate', function(frame)
                     frame:set_tooltip()

@@ -650,6 +650,34 @@ local function set_pet_tooltips(frame, pet, y)
     end
 end
 
+
+local function set_model(self)--StableActivePetButtonTemplateMixin
+    local data= self.petData or {}--宠物，类型，图标
+    if data.displayID and data.displayID>0 then
+        if data.displayID~=self.displayID then
+            self.model:SetDisplayInfo(data.displayID)
+        end
+    else
+        self.model:ClearModel()
+    end
+    self.displayID= data.displayID--提示用，
+end
+
+
+--已激活宠物，Model 提示
+local function created_model(btn)
+    local w= btn:GetWidth()+40
+    btn.model= CreateFrame("PlayerModel", nil, btn)
+    btn.model:SetSize(w, w)
+    btn.model:SetFacing(0.3)
+    --[[
+    local bg=btn.model:CreateTexture('BACKGROUND')
+    bg:SetAllPoints(btn.model)
+    bg:SetAtlas('ShipMission_RewardsBG-Desaturate')
+    e.Set_Label_Texture_Color(bg, {type='Texture', alpha=0.3})
+    ]]
+end
+
 --召唤，法术，提示
 local CALL_PET_SPELL_IDS = {0883, 83242, 83243, 83244, 83245, }
 
@@ -711,25 +739,16 @@ local function Init_StableFrame_Plus()
             btn.indexText= e.Cstr(btn)--, {color={r=1,g=0,b=1}})--SlotID
             btn.indexText:SetPoint('TOPRIGHT', -9,-6)
             btn.indexText:SetAlpha(0.5)
-            --[[function btn:set_shown()
-                self.abilitiesText:SetShown(not self.isSelected)
-                self.Portrait2:SetShown(not self.isSelected)
-            end]]
             function btn:set_settings()
                 self.abilitiesText:SetText(get_abilities_icons(self.petData))--宠物，技能，提示
                 local data= self.petData or {}--宠物，类型，图标
                 self.Portrait2:SetTexture(data.icon or 0)
                 self.indexText:SetText(data.slotID or '')
-                --self:set_shown()
+
             end
         end
         btn:set_settings()
     end)
-    --[[hooksecurefunc(StableStabledPetButtonTemplateMixin, 'OnPetSelected', function(self)--选中时，不显示，技能
-        if self.set_shown then
-            self:set_shown()
-        end
-    end)]]
 
 
 
@@ -745,16 +764,17 @@ local function Init_StableFrame_Plus()
 
     --已激，宠物栏，提示
     for i, btn in ipairs(StableFrame.ActivePetList.PetButtons) do
-        btn.index=i
+        btn.index=btn:GetID()
 
         btn.callSpellButton= e.Cbtn(btn, {size={18,18},icon='hide'})--召唤，法术，提示
         btn.callSpellButton.Texture=btn.callSpellButton:CreateTexture(nil, 'OVERLAY')
         btn.callSpellButton.Texture:SetAllPoints(btn.callSpellButton)
         SetPortraitToTexture(btn.callSpellButton.Texture, 132161)
         btn.callSpellButton:SetPoint('BOTTOMLEFT', -8, -16)
-        btn.callSpellButton.spellID=CALL_PET_SPELL_IDS[i]
+        btn.callSpellButton.spellID=CALL_PET_SPELL_IDS[btn.index]
         btn.callSpellButton:SetScript('OnLeave', function(self) self:SetAlpha(0.3) GameTooltip_Hide() end)
         btn.callSpellButton:SetScript('OnEnter', function(self)
+            if not self.spellID then return end
             GameTooltip:SetOwner(self, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
             GameTooltip:SetSpellByID(self.spellID, true, true);
@@ -765,6 +785,7 @@ local function Init_StableFrame_Plus()
 
         btn:HookScript('OnEnter', function(self)--信息，提示
             set_pet_tooltips(self, self.petData, -10)
+            if not self.petData then return end
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(e.onlyChinese and '移除' or REMOVE, e.Icon.right)
             e.tips:Show()
@@ -782,18 +803,10 @@ local function Init_StableFrame_Plus()
         btn.indexText:SetText(i)
 
 
-        
-        local w= btn:GetWidth()+40--已激活宠物，提示
-        btn.model= CreateFrame("PlayerModel", nil, btn)
-        btn.model:SetSize(w, w)
-        btn.model:SetFacing(0.3)
+        created_model(btn)--已激活宠物，Model 提示
         btn.model:SetPoint('TOP', btn, 'BOTTOM', 0, -14)
-        local bg=btn.model:CreateTexture('BACKGROUND')
-        bg:SetAllPoints(btn.model)
-        bg:SetAtlas('ShipMission_RewardsBG-Desaturate')
-        e.Set_Label_Texture_Color(bg, {type='Texture', alpha=0.3})
 
-        function btn:set_settings()
+        hooksecurefunc(btn, 'SetPet', function(self)--StableActivePetButtonTemplateMixin
             local icon= get_abilities_icons(self.petData)
             icon= icon:gsub('|T.-|t', function(a) return a..'|n' end)
 
@@ -802,19 +815,7 @@ local function Init_StableFrame_Plus()
             local data= self.petData or {}--宠物，类型，图标
             self.Portrait2:SetTexture(data.icon or 0)
 
-            if data.displayID and data.displayID>0 then
-                if data.displayID~=btn.displayID then
-                    btn.model:SetDisplayInfo(data.displayID)
-                end
-            else
-                btn.model:ClearModel()
-            end
-            btn.displayID= data.displayID--提示用，
-        end
-        hooksecurefunc(btn, 'SetPet', function(frame)--StableActivePetButtonTemplateMixin
-            if frame.set_settings then
-                frame:set_settings()
-            end
+            set_model(self)
         end)
     end
 
@@ -822,26 +823,12 @@ local function Init_StableFrame_Plus()
 
 
     local btn= StableFrame.ActivePetList.BeastMasterSecondaryPetButton
-    local w= btn:GetWidth()+40--已激活宠物，提示
-    btn.model= CreateFrame("PlayerModel", nil, btn)
-    btn.model:SetSize(w, w)
+    created_model(btn)--已激活宠物，Model 提示
+    hooksecurefunc(btn, 'SetPet', set_model)
     btn.model:SetFacing(-0.3)
-    btn.model:SetPoint('LEFT', btn, 'RIGHT', 18, 0)
-    local bg=btn.model:CreateTexture('BACKGROUND')
-    bg:SetAllPoints(btn.model)
-    bg:SetAtlas('ShipMission_RewardsBG-Desaturate')
-    e.Set_Label_Texture_Color(bg, {type='Texture', alpha=0.3})
-    hooksecurefunc(btn, 'SetPet', function(self)--StableActivePetButtonTemplateMixin
-        local data= self.petData or {}--宠物，类型，图标
-        if data.displayID and data.displayID>0 then
-            if data.displayID~=btn.displayID then
-                btn.model:SetDisplayInfo(data.displayID)
-            end
-        else
-            btn.model:ClearModel()
-        end
-        btn.displayID= data.displayID--提示用，
-    end)
+    btn.model:SetPoint('RIGHT', btn, 'LEFT')
+
+
 
     --第二个，宠物，提示
     btn:HookScript('OnEnter', function(self)
@@ -891,12 +878,13 @@ local function Init_StableFrame_Plus()
             StableFrame.ActivePetList:ClearAllPoints()
             StableFrame.ActivePetList:SetPoint('TOPLEFT', StableFrame.PetModelScene, 'BOTTOMLEFT', 0, -45)
             StableFrame.ActivePetList:SetPoint('TOPRIGHT', StableFrame.PetModelScene, 'BOTTOMRIGHT', 0, -45)
+            e.Set_Move_Frame(StableFrame.StabledPetList.ScrollBox, {frame=StableFrame})
         end, sizeRestFunc=function(btn)
             btn.target:SetSize(1040, 638)
     end})
 
     StableFrame.ReleasePetButton:ClearAllPoints()
-    StableFrame.ReleasePetButton:SetPoint('BOTTOMRIGHT', StableFrame.PetModelScene, 'TOPRIGHT', 0,20)
+    StableFrame.ReleasePetButton:SetPoint('BOTTOMLEFT', StableFrame.PetModelScene, 'TOPLEFT', 0,20)
     StableFrame.ReleasePetButton:SetAlpha(0.5)
     StableFrame.ReleasePetButton:HookScript('OnLeave', function(self) self:SetAlpha(0.5) end)
     StableFrame.ReleasePetButton:HookScript('OnEnter', function(self) self:SetAlpha(1) end)
@@ -946,7 +934,8 @@ local function Init_StableFrame_Plus()
     StableFrame.ActivePetList.PetButton5:SetPoint('LEFT', StableFrame.ActivePetList.PetButton4, 'RIGHT', x, 0)
 
     StableFrame.ActivePetList.ListName:ClearAllPoints()
-    StableFrame.ActivePetList.ListName:SetPoint('BOTTOMLEFT', StableFrame.ActivePetList.ActivePetListBG, 'TOPLEFT')
+    StableFrame.ActivePetList.ListName:SetPoint('BOTTOMLEFT', StableFrame.ActivePetList.ActivePetListBG, 'TOPLEFT',0,-6)
+
 end
 
 
@@ -954,7 +943,22 @@ end
 
 
 
-
+function Init_StableFrame_List()
+    local frame= CreateFrame('Frame', nil, StableFrame)
+    frame:SetPoint('TOPLEFT', StableFrame, 'TOPRIGHT')
+    frame.Buttons={}
+    local last
+    for i=Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX+ 1, Constants.PetConsts.NUM_PET_SLOTS do
+        local btn= CreateFrame('Button', nil, frame, 'StableActivePetButtonTemplate', i)
+        btn:SetSize(30,30)
+        if not last then
+            btn:SetPoint('TOPLEFT')
+        else
+            btn:SetPoint('TOP', last, 'BOTTOM')
+        end
+        last= btn
+    end
+end
 
 
 
@@ -1008,6 +1012,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
                 if StableFrame then--10.2.7
                     Init_StableFrame_Plus()
+                    Init_StableFrame_List()
                 else
                     panel:RegisterEvent('PET_STABLE_SHOW')
                     if C_AddOns.IsAddOnLoaded("ImprovedStableFrame") then

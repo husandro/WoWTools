@@ -660,6 +660,7 @@ local function Init_All_Frame()
             e.Set_NineSlice_Color_Alpha(StableFrame.StabledPetList.Inset, true)
             e.Set_NineSlice_Color_Alpha(StableFrame.PetModelScene.Inset, true)
 
+            e.Set_Alpha_Frame_Texture(StableFrame.StabledPetList.ListCounter, {alpha=min05})
         elseif PetStableFrame then
             e.Set_NineSlice_Color_Alpha(PetStableFrame, true)
             e.Set_NineSlice_Color_Alpha(PetStableLeftInset, nil, true)
