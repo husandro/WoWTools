@@ -106,6 +106,7 @@ local function Set_Item_Info(self, tab)
 
 
     if itemLink then
+        
         itemID= itemID or C_Item.GetItemInfoInstant(itemLink)
         if not itemID then
             itemID= itemLink:match('|H.-:(%d+):')
@@ -116,7 +117,8 @@ local function Set_Item_Info(self, tab)
 
         itemLevel= itemLevel or GetDetailedItemLevelInfo(itemLink) or itemLevel2
         itemQuality= itemQuality or itemQuality2
-
+        expacID= expacID or 0
+        local lowerVer= expacID< e.ExpansionLevel and itemID~='5512' and itemID~='113509' and e.Player.level==MAX_PLAYER_LEVEL--低版本，5512糖 食物,113509[魔法汉堡]
         setIDItem= setID and true or nil--套装
 
         --[[if itemQuality then
@@ -183,7 +185,7 @@ local function Set_Item_Info(self, tab)
             rightText= itemLevel
 
             topRightText= e.WA_Utf8Sub(subclassID==9 and itemType or itemSubType, 2,3)
-            if expacID and expacID< e.ExpansionLevel then
+            if lowerVer then--低版本
                 topRightText= '|cff606060'..topRightText..'|r'
             end
 
@@ -195,7 +197,7 @@ local function Set_Item_Info(self, tab)
                 else
                     topRightText= e.WA_Utf8Sub(itemSubType==OTHER and itemType or itemSubType, 2,3, true)
                 end
-                if expacID and expacID< e.ExpansionLevel and itemID~='5512' and itemID~='113509' and  e.Player.level==MAX_PLAYER_LEVEL then--低版本，5512糖 食物,113509[魔法汉堡]
+                if lowerVer then--低版本
                     topRightText= '|cff606060'..topRightText..'|r'
                 end
             end
