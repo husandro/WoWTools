@@ -118,9 +118,9 @@ local function Set_Item_Info(self, tab)
         itemLevel= itemLevel or GetDetailedItemLevelInfo(itemLink) or itemLevel2
         itemQuality= itemQuality or itemQuality2
         expacID= expacID or 0
-        local lowerVer= expacID< e.ExpansionLevel and itemID~='5512' and itemID~='113509' and e.Player.level==MAX_PLAYER_LEVEL--低版本，5512糖 食物,113509[魔法汉堡]
+       
         setIDItem= setID and true or nil--套装
-
+        local lowerVer= expacID< e.ExpansionLevel and itemID~='5512' and itemID~='113509' and e.Player.level==MAX_PLAYER_LEVEL--低版本，5512糖 食物,113509[魔法汉堡]
         --[[if itemQuality then
             r,g,b = C_Item.GetItemQualityColor(itemQuality)
         end]]
