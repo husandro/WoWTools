@@ -164,7 +164,9 @@ local function Get_Currency(currencyID, index)--货币
 		num= '|cnGREEN_FONT_COLOR:'..num..'|r'
 	end
 
-
+if percent then
+	percent= percent..'%'
+end
 	if Save.toRightTrackText then
 		text=(name and name..' ' or '')
 			..(name and '|cffff7d00' or '')
