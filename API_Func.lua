@@ -811,9 +811,9 @@ end
 
 --info, num, total, percent, isMax, canWeek, canEarned, canQuantity= e.GetCurrencyMaxInfo(currencyID, index)
 function e.GetCurrencyMaxInfo(currencyID, index)
-    local info
+    local info, link
     if not currencyID and index then
-        local link= C_CurrencyInfo.GetCurrencyListLink(index)
+        link= C_CurrencyInfo.GetCurrencyListLink(index)
 		if link then
 			currencyID= C_CurrencyInfo.GetCurrencyIDFromLink(link)
 		end
@@ -825,6 +825,9 @@ function e.GetCurrencyMaxInfo(currencyID, index)
     if not info or not info.quantity or not info.discovered then
         return
     end
+
+    link= link or C_CurrencyInfo.GetCurrencyLink(currencyID)
+
     local canQuantity= info.maxQuantity and info.maxQuantity>0--最大数 quantity maxQuantity
     local canWeek= info.canEarnPerWeek and info.quantityEarnedThisWeek and info.maxWeeklyQuantity and info.maxWeeklyQuantity>0--本周 quantityEarnedThisWeek maxWeeklyQuantity
     local canEarned= info.useTotalEarnedForMaxQty and canQuantity--赛季 totalEarned已获取 maxQuantity
@@ -845,6 +848,8 @@ function e.GetCurrencyMaxInfo(currencyID, index)
         end
     end
 
+    info.link= link or C_CurrencyInfo.GetCurrencyLink(currencyID)
+    info.currencyID= currencyID
     return info, num, totale, percent, isMax, canWeek, canEarned, canQuantity
 end
 
