@@ -248,8 +248,8 @@ function IsWrath()
     return WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC
 end
 
-panel:SetButtonState('PUSHED')
-panel:SetButtonState('NORMAL')
+self:SetButtonState('PUSHED')
+self:SetButtonState('NORMAL')
 
 背包
 PaperDoll_IsEquippedSlot
