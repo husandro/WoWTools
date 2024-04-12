@@ -19,8 +19,6 @@ local ITEM_SPELL_KNOWN= ITEM_SPELL_KNOWN
 
 local size= 10--字体大小
 
-
-local ClassNameIconTab={}--职业图标 ClassNameIconTab['法师']=图标
 local heirloomWeapontemEquipLocTab={--传家宝 ，武器，itemEquipLoc
         ['INVTYPE_WEAPON']= true,
         ['INVTYPE_2HWEAPON']= true,
@@ -29,6 +27,25 @@ local heirloomWeapontemEquipLocTab={--传家宝 ，武器，itemEquipLoc
     }
 
 --Set_Item_Info(itemButton, {bag={bag=bagID, slot=slotID}, merchant={slot=slot, buyBack= selectedTab==2}, guidBank={tab=tab, slot=i}, itemLink=nil, point=nil})
+
+
+
+
+
+
+
+local ClassNameIconTab={}--职业图标 ClassNameIconTab['法师']=图标
+local function Get_Class_Icon_da_Text(text)
+    local t
+    if text then
+        for name, icon in pairs(ClassNameIconTab) do
+            if text:find(name) then
+                t= (t or '')..icon
+            end
+        end
+    end
+    return t
+end
 
 
 
@@ -47,6 +64,7 @@ local function get_has_text(has)
         return format('|cnGREEN_FONT_COLOR:%s|r',  e.onlyChinese and '未收集' or e.WA_Utf8Sub(NOT_COLLECTED, 3, 5, true))
     end
 end
+
 
 
 
@@ -113,7 +131,7 @@ local function Set_Item_Info(self, tab)
             itemID= itemID and tonumber(itemID)
         end
 
-        local _, _, itemQuality2, itemLevel2, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, _, _, classID, subclassID, _, expacID, setID, isCraftingReagent = C_Item.GetItemInfo(itemLink)
+        local itemName, _, itemQuality2, itemLevel2, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, _, _, classID, subclassID, _, expacID, setID, isCraftingReagent = C_Item.GetItemInfo(itemLink)
 
         itemLevel= itemLevel or GetDetailedItemLevelInfo(itemLink) or itemLevel2
         itemQuality= itemQuality or itemQuality2
@@ -442,6 +460,20 @@ local function Set_Item_Info(self, tab)
                 end
             end
 
+
+        elseif classID==0 and subclassID==8 and itemName:find(WARDROBE_SETS) then--套装
+            local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={ITEM_SPELL_KNOWN, '外观仅供(.-)使用'}, wow=true, red=true})--物品提示，信息 ITEM_SPELL_KNOWN = "已经学会";
+            local text= dateInfo.text['外观仅供(.-)使用']
+            if dateInfo.text[ITEM_SPELL_KNOWN] then
+                bottomLeftText= get_has_text(true)
+            elseif text then
+                bottomLeftText= Get_Class_Icon_da_Text(text)
+            elseif dateInfo.wow then
+                topRightText= e.Icon.wow2
+            elseif dateInfo.red then
+                topRightText= e.Icon.O2
+            end
+            
         elseif itemStackCount==1 then
             local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={chargesStr}, wow=true, red=true})--物品提示，信息
             bottomLeftText=dateInfo.text[chargesStr]
@@ -987,20 +1019,13 @@ local function Init()
 --[[
     LootWonAlertFrame_SetUp
 ]]
-    --职业图标 ClassNameIconTab['法师']=图标
-    for classID= 1, GetNumClasses() do
-        local classInfo = C_CreatureInfo.GetClassInfo(classID)
-        if classInfo and classInfo.className and classInfo.classFile then
-            ClassNameIconTab[classInfo.className]= e.Class(nil, classInfo.classFile, false)--职业图标
-        end
+--职业图标 ClassNameIconTab['法师']=图标
+for classID= 1, GetNumClasses() do
+    local classInfo = C_CreatureInfo.GetClassInfo(classID)
+    if classInfo and classInfo.className and classInfo.classFile then
+        ClassNameIconTab[classInfo.className]= e.Class(nil, classInfo.classFile, false)--职业图标
     end
-
-
-
-
-
-
-
+end
 
 
 
