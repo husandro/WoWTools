@@ -943,21 +943,73 @@ end
 
 
 
+
+
+
+
+
+
+
+
 function Init_StableFrame_List()
     local frame= CreateFrame('Frame', nil, StableFrame)
-    frame:SetPoint('TOPLEFT', StableFrame, 'TOPRIGHT')
+    StableFrame.AllListFrame=frame
+    frame:SetPoint('TOPLEFT', StableFrame, 'TOPRIGHT',12,0)
+    frame:SetSize(1,1)
+
     frame.Buttons={}
-    local last
+
+    frame.s= 28
     for i=Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX+ 1, Constants.PetConsts.NUM_PET_SLOTS do
         local btn= CreateFrame('Button', nil, frame, 'StableActivePetButtonTemplate', i)
-        btn:SetSize(30,30)
-        if not last then
-            btn:SetPoint('TOPLEFT')
-        else
-            btn:SetPoint('TOP', last, 'BOTTOM')
-        end
-        last= btn
+        --btn:SetScript('OnLeave', GameTooltip_Hide)
+        btn:HookScript('OnEnter', function(self)
+            if not self.petData then return end
+            set_pet_tooltips(self, self.petData, 0)
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(e.onlyChinese and '激活' or SPEC_ACTIVE, e.Icon.right)
+            e.tips:Show()
+        end)
+        btn:SetSize(frame.s, frame.s)
+        btn.Icon:SetSize(frame.s, frame.s)
+        btn.BackgroundMask:SetSize(frame.s-20, frame.s-20)
+        btn.Highlight:SetSize(frame.s+10, frame.s+16)
+        btn.Border:SetTexture(nil)
+        btn.Border:ClearAllPoints()
+        btn.Border:Hide()
+        frame.Buttons[i]= btn
     end
+
+    function frame:set_point()
+        local x, y= 0, 0
+        local s= StableFrame:GetHeight()
+        for _, btn in pairs(self.Buttons) do
+            btn:ClearAllPoints()
+            btn:SetPoint('TOPLEFT', x, y)
+            y= y-self.s
+            if -y> s then
+                y=0
+                x=x+ self.s
+            end
+        end
+    end
+
+    function frame:Refresh()
+        if not self:IsShown() then return end
+        local pets={}
+        for _, pet in pairs(C_StableInfo.GetStabledPetList() or {}) do
+            pets[pet.slotID]= pet
+        end
+        for index, btn in pairs(frame.Buttons) do
+            btn:SetPet(pets[index])
+        end
+    end
+
+    hooksecurefunc(StableFrame, 'Refresh', function(self) self.AllListFrame:Refresh() end)
+    frame:SetScript('OnShow', frame.Refresh)
+    
+    StableFrame:HookScript('OnSizeChanged', function(self) self.AllListFrame:set_point() end)
+    frame:set_point()
 end
 
 
