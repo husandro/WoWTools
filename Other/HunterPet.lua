@@ -16,6 +16,8 @@ local Save={
 
     --10.2.7
     --show_All_List=true,显示，所有宠物，图标列表
+    --sortDown= true,--排序, 降序
+    --all_List_Size==28--图标表表，图标大小
 }
 
 
@@ -684,6 +686,19 @@ local function created_model(btn)
     ]]
 end
 
+
+local function set_button_size(btn)
+    local n= Save.all_List_Size or 28
+    StableFrame.AllListFrame.s= n
+    btn:SetSize(n, n)
+    btn.Icon:SetSize(n, n)
+    local s= n*0.5
+    btn.BackgroundMask:SetSize(s, s)
+    local w= n+ ((85-66)/66)*n--0.287
+    local h= n+ ((100-66)/66)*n--0.515
+    btn.Highlight:SetSize(w, h)
+end
+
 --召唤，法术，提示
 local CALL_PET_SPELL_IDS = {0883, 83242, 83243, 83244, 83245, }
 
@@ -790,7 +805,7 @@ local function Init_StableFrame_Plus()
     hooksecurefunc(btn, 'SetPet', set_model)
     btn.model:SetFacing(-0.3)
     btn.model:SetPoint('RIGHT', btn, 'LEFT')
-    
+
     btn:HookScript('OnEnter', function(self)
         if not self.petData or not self:IsEnabled() then
             return
@@ -920,7 +935,9 @@ function Set_StableFrame_List()
 
     frame.Buttons={}
 
-    frame.s= 28
+    frame.s= Save.all_List_Size or 28
+  
+
     for i=Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX+ 1, Constants.PetConsts.NUM_PET_SLOTS do
         local btn= CreateFrame('Button', nil, frame, 'StableActivePetButtonTemplate', i)
         --btn:SetScript('OnLeave', GameTooltip_Hide)
@@ -931,10 +948,7 @@ function Set_StableFrame_List()
             e.tips:AddDoubleLine(e.onlyChinese and '激活' or SPEC_ACTIVE, e.Icon.right)
             e.tips:Show()
         end)
-        btn:SetSize(frame.s, frame.s)
-        btn.Icon:SetSize(frame.s, frame.s)
-        btn.BackgroundMask:SetSize(frame.s-20, frame.s-20)
-        btn.Highlight:SetSize(frame.s+10, frame.s+16)
+        set_button_size(btn)
         btn.Border:SetTexture(nil)
         btn.Border:ClearAllPoints()
         btn.Border:Hide()
@@ -995,10 +1009,105 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function get_text_byte(text)
+    local num=0
+    if type(text)=='number' then
+        num= text
+    elseif type(text)=='string' then
+         for i=1, #text do
+            num= num+ (string.byte(text, i) or 0)
+         end
+    end
+    return num
+end
+
+
+
+local Is_In_Search
+local function sort_pets_list(type, d)
+    if Is_In_Search then
+        return
+    end
+    Is_In_Search= true
+    do
+        local tab= {}
+        for _, btn in pairs(StableFrame.AllListFrame.Buttons) do
+            if btn.petData and btn.petData.slotID then
+                local info = C_StableInfo.GetStablePetInfo(btn.petData.slotID)
+                    table.insert(tab, {
+                        slotID= get_text_byte(info.slotID),
+                        petNumber= get_text_byte(info.petNumber),
+                        type= get_text_byte(info.type),
+                        creatureID= get_text_byte(info.CreatureID),
+                        uiModelSceneID= get_text_byte(info.uiModelSceneID),
+                        displayID= get_text_byte(displayID),
+                        name= get_text_byte(info.name),
+                        specialization= get_text_byte(info.specialization),
+                        icon= get_text_byte(info.icon),
+                        familyName= get_text_byte(info.familyName)
+                    })
+            end
+        end
+        table.sort(tab, function(a, b)
+            return a[type] < b[type]
+        end)
+
+        if not Save.sortDown then--点击，从前，向后
+            for i, newTab in pairs(tab) do
+                do
+                    local index= i+  Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX+ 1
+                    C_StableInfo.SetPetSlot(newTab.slotID, index)
+                end
+            end
+        else
+            local all= #StableFrame.AllListFrame.Buttons
+            for i, newTab in pairs(tab) do
+                do
+                    local newIndex= all-i+1
+                    C_StableInfo.SetPetSlot(newTab.slotID, newIndex)
+                end
+            end
+        end
+    end
+    Is_In_Search=nil
+end
+
+
+
+
+
+
+
+
+
+
+
+
 --宠物列表
 function Init_StableFrame_List()
     local btn= e.Cbtn(StableFrame, {size={20,20}, atlas='dressingroom-button-appearancelist-up'})
-    --btn:SetPoint('TOPRIGHT', -4, -26)
     btn:SetPoint('RIGHT', StableFrameCloseButton, 'LEFT', -2, 0)
     btn:SetFrameLevel(StableFrameCloseButton:GetFrameLevel()+1)
     function btn:set_show_tips()
@@ -1015,7 +1124,8 @@ function Init_StableFrame_List()
         e.tips:AddDoubleLine(id, '|A:groupfinder-icon-class-hunter:0:0|a'..(e.onlyChinese and '猎人兽栏' or addName))
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(format('%s %s', e.onlyChinese and '所有宠物' or BATTLE_PETS_TOTAL_PETS, e.GetEnabeleDisable(Save.show_All_List)), e.Icon.left)
-        e.tips:AddDoubleLine(e.onlyChinese and '选项' or OPTIONS, e.Icon.right)
+        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
+        e.tips:AddDoubleLine(format('%s |cnGREEN_FONT_COLOR:%d|r', e.onlyChinese and '图标尺寸' or HUD_EDIT_MODE_SETTING_ACTION_BAR_ICON_SIZE, Save.all_List_Size or 28), e.Icon.mid)
         e.tips:Show()
         self:SetAlpha(1)
     end
@@ -1025,10 +1135,102 @@ function Init_StableFrame_List()
             Set_StableFrame_List()--初始，宠物列表
             self:set_tooltips()
         else
-            e.OpenPanelOpting('|A:groupfinder-icon-class-hunter:0:0|a'..(e.onlyChinese and '猎人兽栏' or addName))
+
+            if not self.menu then
+                self.menu= CreateFrame('Frame', nil, btn , "UIDropDownMenuTemplate")
+                e.LibDD:UIDropDownMenu_Initialize(self.menu, function(_, level, menuList)
+                    if menuList=='SortType' then
+                        e.LibDD:UIDropDownMenu_AddButton({
+                            text= e.onlyChinese and '升序' or PERKS_PROGRAM_ASCENDING,
+                            checked= not Save.sortDown,
+                            func= function()
+                                Save.sortDown= not Save.sortDown and true or nil
+                            end
+                        }, level)
+                        return
+                    end
+                    e.LibDD:UIDropDownMenu_AddButton({
+                        text= e.onlyChinese and '排序' or CLUB_FINDER_SORT_BY,
+                        colorCode='|cffff7f00',
+                        notCheckable=true,
+                        keepShownOnClick=true,
+                        hasArrow=true,
+                        menuList='SortType',
+                    }, level)
+
+                    local tab={
+                        ['petNumber']=  'petNumber',
+                        [e.onlyChinese and '类型' or TYPE]= 'type',
+                        ['creatureID']= 'creatureID',
+                        ['uiModelSceneID']= 'uiModelSceneID',
+                        ['displayID']= 'displayID',
+                        [e.onlyChinese and '名称' or NAME]= 'name',
+                        [e.onlyChinese and '天赋' or TALENT]= 'specialization',
+                        [e.onlyChinese and '图标' or EMBLEM_SYMBOL]='icon',
+                        ['familyName']= 'familyName',
+                    }
+                   for text, name in pairs(tab) do
+                        local info={
+                            text=text,
+                            notCheckable=true,
+                            arg1=name,
+                            keepShownOnClick=true,
+                            disabled= not StableFrame.AllListFrame or not StableFrame.AllListFrame:IsShown(),
+                            func=function(_, arg1)
+                                sort_pets_list(arg1)
+                            end
+                        }
+                        e.LibDD:UIDropDownMenu_AddButton(info, level)
+                    end
+
+                    e.LibDD:UIDropDownMenu_AddSeparator(level)
+
+                    e.LibDD:UIDropDownMenu_AddButton({
+                        text= e.onlyChinese and '所有宠物' or BATTLE_PETS_TOTAL_PETS,
+                        checked= Save.show_All_List,
+                        icon= 'dressingroom-button-appearancelist-up',
+                        func= function()
+                            Save.show_All_List= not Save.show_All_List and true or nil
+                            Set_StableFrame_List()--初始，宠物列表
+                        end
+                    }, level)
+                    e.LibDD:UIDropDownMenu_AddButton({
+                        text= e.onlyChinese and '选项' or OPTIONS,
+                        notCheckable=true,
+                        icon='mechagon-projects',
+                        func= function()
+                            e.OpenPanelOpting('|A:groupfinder-icon-class-hunter:0:0|a'..(e.onlyChinese and '猎人兽栏' or addName))
+                        end
+                    }, level)
+                end, "MENU")
+            end
+            e.LibDD:ToggleDropDownMenu(1, nil, self.menu, self, -100, 0)
+
         end
     end)
-   
+
+
+    btn:SetScript('OnMouseWheel', function(self, d)
+        local n= Save.all_List_Size or 28
+        n= d==1 and n-2 or n
+        n= d==-1 and n+2 or n
+        n= n>66 and 66 or n
+        n= n<8 and 8 or n
+        Save.all_List_Size= n
+        local frame= StableFrame.AllListFrame
+        if frame then
+            frame.s=n
+            for _, btn in pairs(StableFrame.AllListFrame.Buttons) do
+                set_button_size(btn)
+            end
+            if frame:IsShown() then
+                frame:set_point()
+            end
+        end
+        self:set_tooltips()
+    end)
+
+    
     btn:SetScript('OnLeave', function(self)
         self:set_show_tips()
         e.tips:Hide()
