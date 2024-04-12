@@ -103,6 +103,8 @@ local function Set_Item_Info(self, tab)
         battlePetSpeciesID= tab.itemKey.battlePetSpeciesID
     end
 
+
+
     if itemLink then
         itemID= itemID or C_Item.GetItemInfoInstant(itemLink)
         if not itemID then

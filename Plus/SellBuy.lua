@@ -307,7 +307,7 @@ local function Init_WidthX2()
         print(id, e.cn(addName), format(e.onlyChinese and "|cffff0000与%s发生冲突！|r" or ALREADY_BOUND, 'CompactVendor'), e.onlyChinese and '插件' or ADDONS)
     end
 
-    MERCHANT_ITEMS_PER_PAGE= MerchantFrame.ResizeButton and Save.MERCHANT_ITEMS_PER_PAGE or 24
+    MERCHANT_ITEMS_PER_PAGE= Save.MERCHANT_ITEMS_PER_PAGE or MERCHANT_ITEMS_PER_PAGE or 24
     Create_ItemButton()
 
     --回购，数量，提示
@@ -414,7 +414,7 @@ local function Init_WidthX2()
     MerchantFrameBottomLeftBorder:ClearAllPoints()--外框
     MerchantFrameBottomLeftBorder:SetPoint('BOTTOMRIGHT', 0, 26)
 
-    e.Set_Move_Frame(MerchantFrame, {setSize=true, needSize=true, needMove=true, minw=329, mimH=402, sizeUpdateFunc= function()
+    e.Set_Move_Frame(MerchantFrame, {setSize=true, needSize=true, needMove=true, minW=329, minH=402, sizeUpdateFunc= function()
             local w, h= MerchantFrame:GetSize()
             Save.numLine= max(5, math.floor((h-144)/52))
             MERCHANT_ITEMS_PER_PAGE= max(10, max(2, math.floor(((w-8)/161)))* Save.numLine)
@@ -444,6 +444,20 @@ local function Init_WidthX2()
                 btn:ClearAllPoints()
                 btn:SetPoint('TOPLEFT', _G['MerchantItem'..(i-line)], 'TOPRIGHT', 8, 0)
             end
+
+            local numMerchantItems = GetMerchantNumItems()
+            MerchantPageText:SetFormattedText(e.onlyChinese and '页数 %s/%s' or MERCHANT_PAGE_NUMBER, MerchantFrame.page, math.ceil(numMerchantItems / MERCHANT_ITEMS_PER_PAGE))
+            -- Handle paging buttons
+            if ( numMerchantItems > MERCHANT_ITEMS_PER_PAGE ) then
+                MerchantPageText:SetShown(true)
+                MerchantPrevPageButton:SetShown(true)
+                MerchantNextPageButton:SetShown(true)
+            else
+                MerchantPageText:SetShown(false)
+                MerchantPrevPageButton:SetShown(false)
+                MerchantNextPageButton:SetShown(false)
+            end
+
         end, sizeRestFunc= function()
             MERCHANT_ITEMS_PER_PAGE= 10
             Save.numLine= 5
@@ -703,7 +717,7 @@ local function Init_Auto_Repair()
     MerchantGuildBankRepairButton.Text= e.Cstr(MerchantGuildBankRepairButton, {justifyH='RIGHT'})
     MerchantGuildBankRepairButton.Text:SetPoint('TOPLEFT', 1, -1)
     hooksecurefunc('MerchantFrame_UpdateGuildBankRepair', function()
-        local repairAllCost = GetRepairAllCost();
+        local repairAllCost = GetRepairAllCost()
         if not CanGuildBankRepair() then
             MerchantGuildBankRepairButton.Text:SetText(e.Icon.O2)
         else
@@ -757,12 +771,12 @@ local function Init_Auto_Repair()
     end)
 
     MerchantRepairAllButton:SetScript('OnEnter', function(self)--替换，源FUNC
-        GameTooltip:SetOwner(self, "ANCHOR_BOTTOM");
-        local repairAllCost, canRepair = GetRepairAllCost();
+        GameTooltip:SetOwner(self, "ANCHOR_BOTTOM")
+        local repairAllCost, canRepair = GetRepairAllCost()
         if ( canRepair and (repairAllCost > 0) ) then
             GameTooltip:SetText(e.onlyChinese and '修理所有物品' or REPAIR_ALL_ITEMS)
-            SetTooltipMoney(GameTooltip, repairAllCost);
-            local personalMoney = GetMoney();
+            SetTooltipMoney(GameTooltip, repairAllCost)
+            local personalMoney = GetMoney()
             if(repairAllCost > personalMoney) then
                 GameTooltip:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '没有足够的资金来修理所有物品' or GUILDBANK_REPAIR_INSUFFICIENT_FUNDS))
             end
