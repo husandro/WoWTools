@@ -468,7 +468,7 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
 
 
 
-
+if not self.SocketDisplay then
     if not Save.hide then--宝石
         local x= isLeftSlot and 8 or -8--左边插曹
         for n=1, MAX_NUM_SOCKETS do
@@ -513,7 +513,7 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
             end
         end
     end
-
+end
     local du, min, max
     if link then
         min, max=GetInventoryItemDurability(slot)
