@@ -138,8 +138,6 @@ local function Get_Currency(currencyID, index)--货币
 	local text
     if not info
 		or info.isHeader
-
-		--or not currencyID
 		or not info.iconFileID
 		--or not info.quantity or info.quantity<0
 		or (info.quantity==0 and not (canWeek or canEarned or canQuantity))
@@ -147,15 +145,14 @@ local function Get_Currency(currencyID, index)--货币
 		return
     end
 
-	
     local name=  Save.nameShow and e.cn(info.name) or nil
 	if name then
 		local col= (ITEM_QUALITY_COLORS[info.quality] or {}).hex
-		name = name and col..name..'|r' or name
+		name = name format('%s%s|r', col, name)
 	end
 
 	num= e.MK(num, 3)
-	
+
 	local max
 	if isMax then
 		max= '|A:QuestDaily-MainMap:0:0|a'--e.Icon.select2
@@ -163,19 +160,19 @@ local function Get_Currency(currencyID, index)--货币
 	elseif canWeek or canEarned or canQuantity then
 		num= '|cnGREEN_FONT_COLOR:'..num..'|r'
 	end
-
-if percent then
-	percent= percent..'%'
+local need
+if total and num then
+	need= format('(%s)', e.MK(total-num))
 end
 	if Save.toRightTrackText then
 		text=(name and name..' ' or '')
 			..(name and '|cffff7d00' or '')
 			..num
-			..(percent and ' '..percent or '')
+			..(need and ' '..need or '')
 			..(max or '')
 	else
 		text=(max or '')
-		 	..(percent and percent..' ' or '')
+		 	..(need and need..' ' or '')
 			..(name and '|cffff7d00' or '')
 			..num
 			..(name and '|r '..name or '')
@@ -298,7 +295,7 @@ local function Set_TrackButton_Text()
 				--btn.border:SetPoint('CENTER',-0.5,0.5)
 			end
 
-			btn.text= e.Cstr(btn, {color=true})
+			btn.text= e.Cstr(btn, {color={r=1,g=1,b=1}})
 
 
 			if Save.toTopTrack then
