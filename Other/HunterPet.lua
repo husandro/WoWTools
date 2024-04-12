@@ -627,6 +627,8 @@ local function get_abilities_icons(pet)
     return icon
 end
 
+
+
 --宠物，信息，提示
 local function set_pet_tooltips(frame, pet, y)
     if not pet or not frame then
@@ -677,7 +679,7 @@ local function created_model(btn)
     local w= btn:GetWidth()+40
     btn.model= CreateFrame("PlayerModel", nil, btn)
     btn.model:SetSize(w, w)
-    btn.model:SetFacing(0.3)
+    btn.model:SetFacing(0.5)
     --[[
     local bg=btn.model:CreateTexture('BACKGROUND')
     bg:SetAllPoints(btn.model)
@@ -803,7 +805,7 @@ local function Init_StableFrame_Plus()
     local btn= StableFrame.ActivePetList.BeastMasterSecondaryPetButton--第二个，宠物，提示
     created_model(btn)--已激活宠物，Model 提示
     hooksecurefunc(btn, 'SetPet', set_model)
-    btn.model:SetFacing(-0.3)
+    btn.model:SetFacing(-0.5)
     btn.model:SetPoint('RIGHT', btn, 'LEFT')
 
     btn:HookScript('OnEnter', function(self)
@@ -870,6 +872,7 @@ function Init_UI()
 
     StableFrame.PetModelScene.PetInfo.Exotic:ClearAllPoints()
     StableFrame.PetModelScene.PetInfo.Exotic:SetPoint('TOPRIGHT', StableFrame.PetModelScene.PetInfo.Specialization, 'BOTTOMRIGHT', 0, -2)
+    StableFrame.PetModelScene.PetInfo.Exotic:SetTextColor(0,1,0)
 
     StableFrame.ActivePetList.ActivePetListBG:ClearAllPoints()
     StableFrame.ActivePetList.ActivePetListBG:SetPoint('TOPLEFT', StableFrame.PetModelScene, 'BOTTOMLEFT', 0, -2)
@@ -882,7 +885,7 @@ function Init_UI()
     StableFrame.PetModelScene.PetShadow:SetPoint('BOTTOMRIGHT')
 
     StableFrame.ActivePetList.BeastMasterSecondaryPetButton:ClearAllPoints()
-    StableFrame.ActivePetList.BeastMasterSecondaryPetButton:SetPoint('RIGHT',  StableFrame.PetModelScene, -16 ,0)
+    StableFrame.ActivePetList.BeastMasterSecondaryPetButton:SetPoint('BOTTOMRIGHT',  StableFrame.PetModelScene, -20 , 80)
     StableFrame.ActivePetList.Divider:ClearAllPoints()
     StableFrame.ActivePetList.Divider:Hide()
 
