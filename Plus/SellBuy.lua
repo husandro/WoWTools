@@ -463,7 +463,7 @@ local function Init_WidthX2()
             Save.numLine= 5
             Create_ItemButton()
             e.call('MerchantFrame_UpdateMerchantInfo')
-        end, sizeStoppedFunc= function()
+        end, sizeStopFunc= function()
             Save.MERCHANT_ITEMS_PER_PAGE= MERCHANT_ITEMS_PER_PAGE
             e.call('MerchantFrame_UpdateMerchantInfo')
         end

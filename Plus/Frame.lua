@@ -133,7 +133,7 @@ local function set_Scale_Size(frame, tab)
         btn.sizeRestFunc= tab.sizeRestFunc--清除，数据
         btn.sizeUpdateFunc= tab.sizeUpdateFunc--setSize时, OnUpdate
         btn.sizeRestTooltipColorFunc= tab.sizeRestTooltipColorFunc--重置，提示SIZE，颜色
-        btn.sizeStoppedFunc= tab.sizeStoppedFunc--保存，大小，内容
+        btn.sizeStopFunc= tab.sizeStopFunc--保存，大小，内容
 
 
 
@@ -305,8 +305,8 @@ local function set_Scale_Size(frame, tab)
             if continueResizeStop then
                 target:StopMovingOrSizing()
             end
-            if self.sizeStoppedFunc ~= nil then
-                self.sizeStoppedFunc(self)
+            if self.sizeStopFunc ~= nil then
+                self.sizeStopFunc(self)
             else
                 Save.size[self.name]= {self.target:GetSize()}
             end
@@ -924,7 +924,7 @@ local function setAddLoad(arg1)
             else
                 Save.scale['CommunitiesFrameNormal']= nil
             end
-        end, sizeStoppedFunc=function(btn)
+        end, sizeStopFunc=function(btn)
             local self= btn.target
             local displayMode = self:GetDisplayMode()
             if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
@@ -1346,7 +1346,7 @@ local function setAddLoad(arg1)
             end)
         end, sizeUpdateFunc=function(btn)
             init_items_colllection(btn, true)
-        end, sizeStoppedFunc=function(btn)
+        end, sizeStopFunc=function(btn)
             Save.size[btn.name]= {btn.target:GetSize()}
             update_frame()
         end, sizeRestFunc=function(btn)
@@ -1370,7 +1370,7 @@ local function setAddLoad(arg1)
         end, sizeUpdateFunc=function(btn)
             init_items_colllection(btn, true)
 
-        end, sizeStoppedFunc=function(btn)
+        end, sizeStopFunc=function(btn)
             Save.size[btn.name]= {btn.target:GetSize()}
             update_frame()
         end, sizeRestFunc=function(btn)
@@ -1727,7 +1727,7 @@ local function setAddLoad(arg1)
             else
                 return Save.size[name..'Normal'] and '' or '|cff606060'
             end
-        end, sizeStoppedFunc=function(btn)
+        end, sizeStopFunc=function(btn)
             local self= btn.target
             local name= btn.name
             local size= {self:GetSize()}
@@ -1907,7 +1907,7 @@ local function setAddLoad(arg1)
         e.Set_Move_Frame(CovenantRenownFrame)
 
     --elseif arg1=='Blizzard_StableUI' then
-     
+
     end
 end
 
@@ -2324,7 +2324,7 @@ end)]]
         if PaperDollFrame.TitleManagerPane:IsVisible() then
             e.call('PaperDollTitlesPane_Update')
         end
-    end, sizeStoppedFunc=function(btn)
+    end, sizeStopFunc=function(btn)
         local self= btn.target
         if CharacterFrame.Expanded then
             Save.size['CharacterFrameExpanded']={self:GetSize()}
@@ -2535,7 +2535,7 @@ end)]]
         if PVEFrame.activeTabIndex==3 then
             e.call(ChallengesFrame.Update, ChallengesFrame)
         end
-    end, sizeStoppedFunc=function(btn)
+    end, sizeStopFunc=function(btn)
         if PVEFrame.activeTabIndex==1 then
             Save.size['PVEFrame_PVE']= {btn.target:GetSize()}
         elseif PVEFrame.activeTabIndex==2 then
@@ -2686,7 +2686,7 @@ end)]]
     end
 
 
-   
+
 
     Init_Class()--职业，能量条
 
@@ -2703,7 +2703,7 @@ end)]]
     e.Set_Move_Frame(PlayerPowerBarAlt)
     e.Set_Move_Frame(CreateChannelPopup)
     e.Set_Move_Frame(BattleTagInviteFrame)
-    
+
 
 
      C_Timer.After(2, function()
@@ -2713,8 +2713,11 @@ end)]]
             --set_classPowerBar()--职业，能量条
             created_Move_Button(QueueStatusButton, {save=true, notZoom=true, show=true})--小眼睛, 
        end)
+    end)
 
-       for text, _ in pairs(UIPanelWindows) do
+
+    C_Timer.After(4, function()
+        for text, _ in pairs(UIPanelWindows) do
             local frame=_G[text]
             if frame and (not frame.ResizeButton and not frame.targetMoveFrame) then
                 e.Set_Move_Frame(_G[text])
