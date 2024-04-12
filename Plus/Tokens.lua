@@ -151,10 +151,10 @@ local function Get_Currency(currencyID, index)--货币
 		name = name format('%s%s|r', col, name)
 	end
 
-	
+
 	local need
 	if percent then
-		need= format('|cnGREEN_FONT_COLOR:%d%%|r', percent)
+		need= format('%d%%', percent)
 	end
 
 	num= e.MK(num, 3)
