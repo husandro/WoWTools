@@ -2480,6 +2480,19 @@ local function Init_Menu(_, level, menuList)
     Init_Garrison_Menu(level)--要塞报告
 
 
+    e.LibDD:UIDropDownMenu_AddButton({--Blizzard_DragonflightLandingPage.lua
+        text= format('|A:dragonriding-barbershop-icon-protodrake:0:0|a%s', e.onlyChinese and '驭龙术' or GENERIC_TRAIT_FRAME_DRAGONRIDING_TITLE),
+        checked= GenericTraitFrame and GenericTraitFrame:IsShown(),
+        keepShownOnClick=true,
+        colorCode= (select(4, GetAchievementInfo(68798)) or select(4, GetAchievementInfo(15794))) and '' or '|cff606060',
+        func= function()
+            GenericTraitUI_LoadUI();
+            local DRAGONRIDING_TRAIT_SYSTEM_ID = 1;
+            GenericTraitFrame:SetSystemID(DRAGONRIDING_TRAIT_SYSTEM_ID);
+            ToggleFrame(GenericTraitFrame);
+        end
+    }, level)
+
     --派系声望
     local major= Get_Major_Faction_List()
     for _, factionID in pairs(major) do

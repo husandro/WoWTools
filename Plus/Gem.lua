@@ -6,6 +6,18 @@ local addName= SOCKET_GEMS
 local Buttons={}
 local Frame
 
+
+local SpellsTab={
+    433397,--/取出宝石
+}
+
+for _, spellID in pairs(SpellsTab) do
+    e.LoadDate({id=spellID, type='spell'})
+end
+
+
+
+
 local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
     if not ItemSocketingFrame or not ItemSocketingFrame:IsVisible() then
         return
@@ -42,7 +54,7 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
             end
         end
     end
-    
+
 
     table.sort(items, function(a, b)
         if a.info.quality== b.info.quality then
@@ -86,7 +98,7 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
 
             btn.level=e.Cstr(btn)
             btn.level:SetPoint('TOPRIGHT')
-        
+
             table.insert(Buttons, btn)
         end
 
@@ -121,6 +133,96 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--433397/取出宝石
+local function Init_Spell_Button()
+    if UnitAffectingCombat('player') then
+        return
+    end
+
+    local spellID
+    for _, spell in pairs(SpellsTab) do
+        if IsSpellKnownOrOverridesKnown(spell) then
+            spellID=spell
+            break
+        end
+    end
+
+    local btn = ItemSocketingFrame.SpellButton
+    if not btn and spellID then
+        btn= e.Cbtn(ItemSocketingFrame, {size={32,32}, icon='hide', type=true})
+        btn:SetAttribute("type1", "spell")
+        btn:Hide()
+        btn:SetPoint('BOTTOMLEFT', ItemSocketingFrame, 'BOTTOMRIGHT', 2, 35)
+        btn.texture= btn:CreateTexture(nil, 'OVERLAY')
+        btn.texture:SetAllPoints(btn)
+        btn.count=e.Cstr(btn, {color={r=1,g=1,b=1}})--nil,nil,nil,true)
+        btn.count:SetPoint('BOTTOMRIGHT',-2, 9)
+
+        function btn:set_count()
+            local num, max= GetSpellCharges(self.spellID)
+            self.count:SetText((max and max>1) and num or '')
+            self.texture:SetDesaturated(num and num>0)
+        end
+        btn:SetScript('OnEnter', function(self)
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:SetSpellByID(self.spellID)
+            e.tips:Show()
+        end)
+        btn:SetScript('OnLeave', GameTooltip_Hide)
+        btn:SetScript("OnEvent", function(self, event)
+            if event=='SPELL_UPDATE_USABLE' then
+                self:set_count()
+            elseif event=='SPELL_UPDATE_COOLDOWN' then
+                e.SetItemSpellCool({frame=self, spell=self.spellID})
+            end
+        end)
+
+        btn:SetScript('OnShow', function(self)
+            self:RegisterEvent('SPELL_UPDATE_USABLE')
+            self:RegisterEvent('SPELL_UPDATE_COOLDOWN')
+            e.SetItemSpellCool({frame=self, spell=self.spellID})
+            self:set_count()
+        end)
+        btn:SetScript('OnHide', btn.UnregisterAllEvents)
+
+        function btn:set()
+           local show = self.spellID and IsSpellKnownOrOverridesKnown(self.spellID) and self:CanChangeAttribute()
+           if show then
+                local name, _, icon = GetSpellInfo(self.spellID)
+                self:SetAttribute("spell1", name or spellID)
+                self.texture:SetTexture(icon or nil)
+            end
+            if not UnitAffectingCombat('player') then
+                self:SetShown(show)
+            end
+        end
+    end
+    if btn then
+        btn.spellID= spellID
+        btn:set()
+    end
+end
+
+
+
 local function Init()
     Frame= CreateFrame("Frame")
     ItemSocketingFrame:HookScript('OnShow', function()
@@ -141,6 +243,9 @@ local function Init()
         end
     end)
     Frame:SetScript('OnEvent', set_Gem)
+
+    Init_Spell_Button()
+    ItemSocketingFrame:HookScript('OnShow', Init_Spell_Button)
 end
 
 
