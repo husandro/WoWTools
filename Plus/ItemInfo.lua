@@ -120,7 +120,9 @@ local function Set_Item_Info(self, tab)
         expacID= expacID or 0
        
         setIDItem= setID and true or nil--套装
-        local lowerVer= expacID< e.ExpansionLevel and itemID~='5512' and itemID~='113509' and e.Player.level==MAX_PLAYER_LEVEL--低版本，5512糖 食物,113509[魔法汉堡]
+
+        local isMaxLevel= e.Player.level==MAX_PLAYER_LEVEL
+        local lowerVer= expacID< e.ExpansionLevel and itemID~='5512' and itemID~='113509' and isMaxLevel--低版本，5512糖 食物,113509[魔法汉堡]
         --[[if itemQuality then
             r,g,b = C_Item.GetItemQualityColor(itemQuality)
         end]]
@@ -230,7 +232,7 @@ local function Set_Item_Info(self, tab)
 
             else
                 local isRedItem
-                if itemQuality and itemQuality>1 then
+                if itemQuality and (itemQuality>1 or (not isMaxLevel and itemQuality>0)) then
                     local upItemLevel= 0
                     local dateInfo= e.GetTooltipData({
                         bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, itemID=itemID,
@@ -313,7 +315,7 @@ local function Set_Item_Info(self, tab)
                     end
 
                     local invSlot =e.GetItemSlotID(itemEquipLoc)
-                    if invSlot and itemLevel and itemLevel>1 and itemLevel>29 then
+                    if invSlot and itemLevel and itemLevel>1 and (itemLevel>29 or not isMaxLevel) then
                         if not dateInfo.red then--装等，提示
                             local upLevel, downLevel
                             local itemLinkPlayer =  GetInventoryItemLink('player', invSlot)
