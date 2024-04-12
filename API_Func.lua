@@ -843,8 +843,10 @@ function e.GetCurrencyMaxInfo(currencyID, index)
     if not isMax then
         if canWeek then
             percent= math.modf(info.quantityEarnedThisWeek/info.maxWeeklyQuantity*100)
-        elseif canEarned or canQuantity then
-            percent= math.modf(info.totalEarned/info.maxQuantity*100)
+        elseif canEarned then
+            percent= math.modf(info.totalEarned/info.maxQuantity*100) 
+        elseif canQuantity then
+            percent= math.modf(info.quantity/info.maxQuantity*100)
         end
     end
 
@@ -1832,9 +1834,18 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
 --耐久度
 local function get_durabiliy_color(cur, max)
-    if not cur or not max or max<=0 then
+    if not cur or not max or max<=0 or cur>max then
         return '', 100, ''
     end
     local value= cur/max*100
@@ -1858,6 +1869,28 @@ local function get_durabiliy_color(cur, max)
     end
     return text, value, icon
 end
+
+
+
+
+function e.GetDurabiliy(reTexture)--耐久度
+    local cur, max= 0, 0
+    for i= 1, 18 do
+        local cur2, max2 = GetInventoryItemDurability(i)
+        if cur2 and max2 and max2>0 then
+            cur= cur +cur2
+            max= max +max2
+        end
+    end
+    local text, value, icon= get_durabiliy_color(cur, max)
+    if reTexture then
+        text= icon..text
+    end
+    return text, value
+end
+
+
+
 
 function e.GetDurabiliy_OnEnter()--耐久度, 提示
     local tabSlot={
@@ -1932,7 +1965,7 @@ function e.GetDurabiliy_OnEnter()--耐久度, 提示
         coText= ' |cnRED_FONT_COLOR:'..GetMoneyString(co)..'|r'
     end
     e.tips:AddDoubleLine(
-        (e.onlyChinese and '耐久度' or DURABILITY)..' ('..math.modf(cur2/max2*100)..'%)'..coText,
+        (e.onlyChinese and '耐久度' or DURABILITY)..' ('..(max2>0 and math.modf(cur2/max2*100) or 100)..'%)'..coText,
          '('..(num>0 and '|cnRED_FONT_COLOR:' or '|cff606060')..num..'|r) '..(e.onlyChinese and '修理物品' or REPAIR_ITEMS)..euip
     )
 
@@ -1946,25 +1979,6 @@ function e.GetDurabiliy_OnEnter()--耐久度, 提示
         ..(cur==item and format(' |cnGREEN_FONT_COLOR:%.2f|r', cur) or format(' |cnRED_FONT_COLOR:%.2f|r/%.2f', cur, item)),
         format('%.02f', pvp)..' PvP|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a')
 end
-
-function e.GetDurabiliy(reTexture)--耐久度
-    local cur, max= 0, 0
-    for i= 1, 18 do
-        local cur2, max2 = GetInventoryItemDurability(i)
-        if cur2 and max2 and max2>0 then
-            cur= cur +cur2
-            max= max +max2
-        end
-    end
-    local text, value, icon= get_durabiliy_color(cur, max)
-    if reTexture then
-        text= icon..text
-    end
-    return text, value
-end
-
-
-
 
 
 

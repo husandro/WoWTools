@@ -153,8 +153,8 @@ local function Get_Currency(currencyID, index)--货币
 
 	
 	local need
-	if total and num then
-		need= format('(%s)', e.MK(total-num))
+	if percent then
+		need= format('|cnGREEN_FONT_COLOR:%d%%|r', percent)
 	end
 
 	num= e.MK(num, 3)
