@@ -809,8 +809,19 @@ function e.Get_Weekly_Rewards_Activities(settings)--周奖励，提示
     return last
 end
 
-function e.GetCurrencyMaxInfo(currencyID)
-    local info= currencyID and C_CurrencyInfo.GetCurrencyInfo(currencyID)
+--info, num, total, percent, isMax, canWeek, canEarned, canQuantity= e.GetCurrencyMaxInfo(currencyID, index)
+function e.GetCurrencyMaxInfo(currencyID, index)
+    local info
+    if not currencyID and index then
+        local link= C_CurrencyInfo.GetCurrencyListLink(index)
+		if link then
+			currencyID= C_CurrencyInfo.GetCurrencyIDFromLink(link)
+		end
+    end
+    if currencyID then
+        info=C_CurrencyInfo.GetCurrencyInfo(currencyID)
+    end
+
     if not info or not info.quantity or not info.discovered then
         return
     end
@@ -835,7 +846,6 @@ function e.GetCurrencyMaxInfo(currencyID)
     end
 
     return info, num, totale, percent, isMax, canWeek, canEarned, canQuantity
-    --info, num, to, percent, isMax, canWeek, canEarned, canQuantity= e.GetCurrencyMaxInfo(currencyID)
 end
 
 

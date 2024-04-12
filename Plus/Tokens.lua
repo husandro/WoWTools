@@ -133,69 +133,35 @@ end
 
 
 local function Get_Currency(currencyID, index)--货币
-    local info= Get_For_index_To_currencyID(currencyID, index)--从currencyID, index中取得 info, currencyID
+	local info, num, total, percent, isMax, canWeek, canEarned, canQuantity= e.GetCurrencyMaxInfo(currencyID, index)
+    --local info= Get_For_index_To_currencyID(currencyID, index)--从currencyID, index中取得 info, currencyID
 	local text
     if not info
 		or info.isHeader
+
 		--or not currencyID
 		or not info.iconFileID
-		or not info.quantity or info.quantity<0
-		or (
-			info.quantity==0 and not (
-				(info.canEarnPerWeek and info.maxWeeklyQuantity>0)
-				or (info.useTotalEarnedForMaxQty and info.maxQuantity>0)
-				or (not info.canEarnPerWeek and not info.useTotalEarnedForMaxQty and info.maxQuantity and info.maxQuantity>0)
-			)
-		)
+		--or not info.quantity or info.quantity<0
+		or (info.quantity==0 and not (canWeek or canEarned or canQuantity))
 	then
 		return
     end
 
-	local col= (ITEM_QUALITY_COLORS[info.quality] or {}).hex
+	
     local name=  Save.nameShow and e.cn(info.name) or nil
-	name = name and col..name..'|r' or name
-	local num= e.MK(info.quantity, 3)
-
-	local weekMax= info.canEarnPerWeek--本周
-			and info.maxWeeklyQuantity
-			and info.maxWeeklyQuantity>0
-			and info.maxWeeklyQuantity==info.quantityEarnedThisWeek
-	local earnedMax= info.useTotalEarnedForMaxQty--赛季
-			and info.totalEarned
-			and info.totalEarned>0
-			and info.totalEarned==info.maxQuantity
-    local max
-
-	if (info.quantity==info.maxQuantity and info.maxQuantity and info.maxQuantity>0)--最大数
-		or weekMax
-		or earnedMax
-	then
-		max= '|A:QuestDaily-MainMap:0:0|a'--e.Icon.select2
-		num= '|cnRED_FONT_COLOR:'..num..'|r'
-	else
-		num= name and '|cffff7d00'..num..'|r' or (col and col..num..'|r') or num
+	if name then
+		local col= (ITEM_QUALITY_COLORS[info.quality] or {}).hex
+		name = name and col..name..'|r' or name
 	end
 
-
-
-	local need
-	if not weekMax and not earnedMax then
-		if info.canEarnPerWeek--本周,收入
-			and info.quantityEarnedThisWeek and info.maxWeeklyQuantity and info.maxWeeklyQuantity>0
-			and info.quantityEarnedThisWeek<info.maxWeeklyQuantity
-		then
-			need= '|cnGREEN_FONT_COLOR:('..e.MK(info.maxWeeklyQuantity- info.quantityEarnedThisWeek, 0)..')|r'
-
-		elseif --赛季,收入
-			info.useTotalEarnedForMaxQty
-			and info.totalEarned and info.maxQuantity and info.maxQuantity>0
-			and info.totalEarned< info.maxQuantity
-		then
-			need= '|cnGREEN_FONT_COLOR:('..e.MK(info.maxQuantity- info.totalEarned, 0)..')|r'
-
-		elseif info.maxQuantity and info.maxQuantity>0 and info.quantity< info.maxQuantity then
-			need= '|cnGREEN_FONT_COLOR:('..e.MK(info.maxQuantity- info.quantity, 0)..')|r'
-		end
+	num= e.MK(num, 3)
+	
+	
+	if isMax then
+		max= '|A:QuestDaily-MainMap:0:0|a'--e.Icon.select2
+		num= '|cnRED_FONT_COLOR:'..num..'|r'
+	elseif canWeek or canEarned or canQuantity then
+		num= '|cnGREEN_FONT_COLOR:'..num..'|r'
 	end
 
 
@@ -203,11 +169,11 @@ local function Get_Currency(currencyID, index)--货币
 		text=(name and name..' ' or '')
 			..(name and '|cffff7d00' or '')
 			..num
-			..(need and ' '..need or '')
+			..(percent and ' '..percent or '')
 			..(max or '')
 	else
 		text=(max or '')
-		 	..(need and need..' ' or '')
+		 	..(percent and percent..' ' or '')
 			..(name and '|cffff7d00' or '')
 			..num
 			..(name and '|r '..name or '')
