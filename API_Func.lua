@@ -870,12 +870,12 @@ function e.ItemCurrencyLabel(settings)--物品升级界面，挑战界面，物�
             local info, num, totale, percent, isMax, canWeek, canEarned, canQuantity= e.GetCurrencyMaxInfo(tab.id)
             if info and num and num>0 and (showAll or tab.show) then
                 if isMax then
-                    text= text..format('|cnRED_FONT_COLOR:%s|r', e.Mk(num,3))
+                    text= text..format('|cnRED_FONT_COLOR:%s|r', e.MK(num,3))
 
                 elseif percent then
                     text=text..format('|cnGREEN_FONT_COLOR:%s (%d%%)|r', e.MK(num, 3), percent)
                 else
-                    text= text..format('|cnRED_FONT_COLOR:%s|r', e.Mk(num,3))
+                    text= text..format('|cnRED_FONT_COLOR:%s|r', e.MK(num,3))
                 end
                 text= format('|T%d:0|t%s%s', info.iconFileID or 0, showName and info.name or '', text)
             end
