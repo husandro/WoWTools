@@ -2150,7 +2150,11 @@ local function Init_Garrison_Menu(level)
         disabled= C_Covenants.GetActiveCovenantID()==0,
         atlas= function()
             local info= C_Covenants.GetCovenantData(C_Covenants.GetActiveCovenantID() or 0) or {}
-            return info.textureKit or ''
+            local icon=''
+            if info.textureKit then
+                icon= format('CovenantChoice-Celebration-%sSigil', info.textureKit or '')
+            end
+            return icon
         end,
         tooltip= e.onlyChinese and '点击显示圣所报告' or GARRISON_TYPE_9_0_LANDING_PAGE_TOOLTIP,
         },
