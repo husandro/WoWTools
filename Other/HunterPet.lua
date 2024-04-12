@@ -354,7 +354,7 @@ local function Init()
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine((e.onlyChinese and '天赋' or TALENT)..': '..e.GetShowHide(not Save.hideTalent),  e.Icon.left)
         e.tips:AddDoubleLine((e.onlyChinese and '索引' or 'Index')..': '..e.GetShowHide(not Save.hideIndex),  e.Icon.right)
-        e.tips:AddDoubleLine((e.onlyChinese and '模型缩放' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, MODEL, UI_SCALE))..' |cnGREEN_FONT_COLOR:'..Save.modelScale, e.Icon.mid)
+        e.tips:AddDoubleLine((e.onlyChinese and '模型缩放' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, MODEL, UI_SCALE))..' |cnGREEN_FONT_COLOR:'..(Save.modelScale or 1), e.Icon.mid)
         e.tips:Show()
     end
     function PetStableModelScene.zoomModelButton:set_Scale()
