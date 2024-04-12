@@ -297,6 +297,11 @@ local function Create_ItemButton()
         index= index+1
     end
 end
+
+
+
+
+
 local function Init_WidthX2()
     if C_AddOns.IsAddOnLoaded("CompactVendor") then
         print(id, e.cn(addName), format(e.onlyChinese and "|cffff0000与%s发生冲突！|r" or ALREADY_BOUND, 'CompactVendor'), e.onlyChinese and '插件' or ADDONS)
@@ -409,13 +414,7 @@ local function Init_WidthX2()
     MerchantFrameBottomLeftBorder:ClearAllPoints()--外框
     MerchantFrameBottomLeftBorder:SetPoint('BOTTOMRIGHT', 0, 26)
 
-    local btn= MerchantFrame.ResizeButton--设置，数量
-    if btn then
-        btn.setSize=true
-        MerchantFrame:SetResizable(true)
-        btn:Init(MerchantFrame, 329, 402, nil, nil, nil)
-        btn.target= MerchantFrame
-        btn.sizeUpdateFunc= function()
+    e.Set_Move_Frame(MerchantFrame, {setSize=true, needSize=true, needMove=true, minw=329, mimH=402, sizeUpdateFunc= function()
             local w, h= MerchantFrame:GetSize()
             Save.numLine= max(5, math.floor((h-144)/52))
             MERCHANT_ITEMS_PER_PAGE= max(10, max(2, math.floor(((w-8)/161)))* Save.numLine)
@@ -445,22 +444,16 @@ local function Init_WidthX2()
                 btn:ClearAllPoints()
                 btn:SetPoint('TOPLEFT', _G['MerchantItem'..(i-line)], 'TOPRIGHT', 8, 0)
             end
-
-        end
-        btn.sizeRestFunc= function()
+        end, sizeRestFunc= function()
             MERCHANT_ITEMS_PER_PAGE= 10
             Save.numLine= 5
             Create_ItemButton()
             e.call('MerchantFrame_UpdateMerchantInfo')
-        end
-        btn:HookScript('OnMouseUp', function(self, d)
-            if d~='RightButton' or not self.setSize then
-                return
-            end
+        end, sizeStoppedFunc= function()
             Save.MERCHANT_ITEMS_PER_PAGE= MERCHANT_ITEMS_PER_PAGE
             e.call('MerchantFrame_UpdateMerchantInfo')
-        end)
-    end
+        end
+    })
 end
 
 
