@@ -390,7 +390,7 @@ local function Init_Gossip_Text_Icon_Options()
 
     e.Set_Alpha_Frame_Texture(border, {alpha=0.5})
     e.Set_Alpha_Frame_Texture(Header, {alpha=0.7})
-    e.Set_Move_Frame(Gossip_Text_Icon_Frame, {setMove=true, minW=370, minH=240, notFuori=true, setSize=true, sizeRestFunc=function(btn)
+    e.Set_Move_Frame(Gossip_Text_Icon_Frame, {needMove=true, minW=370, minH=240, notFuori=true, setSize=true, sizeRestFunc=function(btn)
         btn.target:SetSize(580, 370)
     end})
 

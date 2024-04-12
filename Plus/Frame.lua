@@ -91,7 +91,7 @@ end
 
 local function set_Scale_Size(frame, tab)
     local name= tab.name or frame:GetName()
-    if not name or Save.disabledZoom or tab.notZoom or frame.ResizeButton or tab.frame then
+    if not name or (Save.disabledZoom and not tab.needSize) or tab.notZoom or frame.ResizeButton or tab.frame then
         return
     end
     local btn= CreateFrame('Button', _G['WoWToolsResizeButton'..name], frame, 'PanelResizeButtonTemplate')--SharedUIPanelTemplates.lua
@@ -533,7 +533,7 @@ function e.Set_Move_Frame(self, tab)
 
     set_Scale_Size(self, tab)
 
-    if (Save.disabledMove and not tab.setMove) or tab.notMove or self.setMoveFrame then
+    if (Save.disabledMove and not tab.needMove) or tab.notMove or self.setMoveFrame then
         return
     end
 

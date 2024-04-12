@@ -423,7 +423,7 @@ local function Init()
                 button:UnregisterEvent("BAG_UPDATE")
             end)
             ItemNum(button)
-            button.setMove=true
+            button.needMove=true
         end
 
         button:ClearAllPoints()

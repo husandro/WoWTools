@@ -1552,7 +1552,8 @@ local function Init()
     MacroFrameScrollFrame:SetPoint('TOPLEFT', MacroFrame, 'LEFT', 12, -83)
     MacroFrameScrollFrame:SetPoint('BOTTOMRIGHT', -32, 45)
 
-    e.Set_Move_Frame(MacroFrame, {neeSize=true, setSize=true, minW=338, minH=424, initFunc=function() end, sizeRestFunc=function(btn)
+
+    e.Set_Move_Frame(MacroFrame, {needSize=true, setSize=true, minW=338, minH=424, initFunc=function() end, sizeRestFunc=function(btn)
         btn.target:SetSize(338, 424)
     end})
 
