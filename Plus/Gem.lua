@@ -15,6 +15,26 @@ for _, spellID in pairs(SpellsTab) do
     e.LoadDate({id=spellID, type='spell'})
 end
 
+--[[local GEM_TYPE_INFO =	{
+    Yellow = EMPTY_SOCKET_YELLOW,--黄色插槽
+    Red = EMPTY_SOCKET_RED,--红色插槽
+    Blue = EMPTY_SOCKET_BLUE,--蓝色插槽
+    Hydraulic = EMPTY_SOCKET_HYDRAULIC,--染煞
+    Cogwheel = EMPTY_SOCKET_COGWHEEL,--齿轮插槽
+    Meta = EMPTY_SOCKET_META,--多彩插槽
+    Prismatic =EMPTY_SOCKET_PRISMATIC,--棱彩插槽
+    PunchcardRed = EMPTY_SOCKET_PUNCHCARDRED,--红色打孔卡插槽
+    PunchcardYellow = EMPTY_SOCKET_PUNCHCARDYELLOW,--黄色打孔卡插槽
+    PunchcardBlue = EMPTY_SOCKET_PUNCHCARDBLUE,--蓝色打孔卡插槽
+    Domination = EMPTY_SOCKET_DOMINATION,--统御插槽
+    Cypher = EMPTY_SOCKET_CYPHER,--晶态插槽
+    Tinker = EMPTY_SOCKET_TINKER,--匠械插槽
+    Primordial = EMPTY_SOCKET_PRIMORDIAL,--始源镶孔
+}]]
+--EMPTY_SOCKET_NO_COLOR,--棱彩插槽
+
+
+
 
 
 
@@ -26,7 +46,19 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
     local items={}
     local gem1007= select(2, GetSocketItemInfo())== 4638590 --204000, 204030
 
-      for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES do-- + NUM_REAGENTBAG_FRAMES do
+    --[[local findGem
+    local gemType={}
+    for i= 1, GetNumSockets() or 0 do
+        local type= GetSocketTypes(i)
+        if type then
+            local name= GEM_TYPE_INFO[type]
+            if name then
+                gemType[name]=true
+            end
+        end
+    end]]
+
+    for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES do-- + NUM_REAGENTBAG_FRAMES do
         for slot=1, C_Container.GetContainerNumSlots(bag) do
             local info = C_Container.GetContainerItemInfo(bag, slot)
             if info
@@ -44,11 +76,16 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
                 if classID==3
                     and (e.Player.levelMax and e.ExpansionLevel== expacID or not e.Player.levelMax)--最高等级
                 then
+                    --[[local date= e.GetTooltipData({hyperLink=info.hyperlink, index=2})
+                    local type= date.indexText and date.indexText:match('|c........(.-)|r') or date.indexText
+                    local find= false]]
+                  
                     table.insert(items, {
                         info= info,
                         bag= bag,
                         slot=slot,
                         level= level,
+                        --find=find
                     })
                 end
             end
@@ -63,6 +100,9 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
            return a.info.quality>b.info.quality
         end
     end)
+
+
+
     local x, y= 10, -4
     for index=1, #items do
         local btn=Buttons[index]
@@ -92,7 +132,7 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
                     e.tips:AddLine(' ')
                     e.tips:AddDoubleLine(id, e.cn(addName))
                     e.tips:Show()
-                    e.FindBagItem(true, {bag=self.bag, slot=self.slot})
+                    e.FindBagItem(true, {bag={bag=self.bag, slot=self.slot}})
                 end
             end)
             btn:SetScript('OnLeave', function()

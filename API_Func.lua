@@ -65,7 +65,7 @@ e.GetPet9Item(itemID, find)--宠物兑换, wow9.0
 e.GetMountCollected(mountID, itemID)--坐骑, 收集数量
 e.GetToyCollected(itemID)--玩具,是否收集
 
-e.GetTooltipData(tab)--物品提示，信息 {bag={bag=nil, slot=nil}, guidBank={tab=nil, slot=nil}, merchant={slot, buyBack=true}, inventory=nil, hyperLink=nil, itemID=nil, text={}, onlyText=nil, wow=nil, onlyWoW=nil, red=nil, onlyRed=nil}
+e.GetTooltipData(tab)--物品提示，信息 {bag={bag=nil, slot=nil}, guidBank={tab=nil, slot=nil}, merchant={slot, buyBack=true}, inventory=nil, hyperLink=nil, itemID=nil, text={}, onlyText=nil, wow=nil, onlyWoW=nil, red=nil, onlyRed=nil, index=2}
 
 e.RGB_to_HEX(setR, setG, setB, setA, self)--RGB转HEX
 e.HEX_to_RGB(hexColor, self)--HEX转RGB
