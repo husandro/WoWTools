@@ -469,7 +469,7 @@ local function Set_Item_Info(self, tab)
             end
 
 
-        elseif classID==0 and subclassID==8 and itemName:find(WARDROBE_SETS) then--套装
+        elseif classID==0 and subclassID==8 and itemName:find(WARDROBE_SETS) then--套装：炎阳珠衣装
             local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={ITEM_SPELL_KNOWN, '外观仅供(.-)使用'}, wow=true, red=true})--物品提示，信息 ITEM_SPELL_KNOWN = "已经学会";
             local text= dateInfo.text['外观仅供(.-)使用']
             if dateInfo.text[ITEM_SPELL_KNOWN] then
