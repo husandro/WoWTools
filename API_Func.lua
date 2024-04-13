@@ -6,7 +6,6 @@ e.GetExpansionText(expacID, questID)--版本数据
 e.Is_In_PvP_Area()--是否在，PVP区域中
 e.IsAtlas(texture)--Atlas or Texture
 e.LoadDate(tab)--e.LoadDate({id=, type=''})--加载 item quest spell, uiMapID
-e.FindBagItem(find, tab)--查询，背包里物品
 e.FindBagItem(find, tab)--查询，背包里物品，itemName，itemLink，itemID，itemLocation，merchantIndex，BuybackIndex，itemKey，bag，guidBank，lootIndex
 e.MK(number, bit)
 e.GetShowHide(sh, all) 显示/隐藏

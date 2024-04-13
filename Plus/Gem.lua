@@ -75,7 +75,7 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
         if not btn then
             btn= e.Cbtn(ItemSocketingFrame, {button='ItemButton', icon='hide'})
             btn:SetPoint('TOPRIGHT', ItemSocketingFrame, 'BOTTOMRIGHT', x, y)
-            btn:SetScript('OnMouseDown', function(self, d)
+            btn:SetScript('OnClick', function(self, d)
                 if self.bag and self.slot then
                     if d=='LeftButton' then
                         C_Container.PickupContainerItem(self.bag, self.slot)
@@ -92,9 +92,13 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
                     e.tips:AddLine(' ')
                     e.tips:AddDoubleLine(id, e.cn(addName))
                     e.tips:Show()
+                    e.FindBagItem(true, {bag=self.bag, slot=self.slot})
                 end
             end)
-            btn:SetScript('OnLeave', GameTooltip_Hide)
+            btn:SetScript('OnLeave', function()
+                GameTooltip_Hide()
+                e.FindBagItem()
+            end)
 
             btn.level=e.Cstr(btn)
             btn.level:SetPoint('TOPRIGHT')
