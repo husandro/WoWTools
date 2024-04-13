@@ -35,6 +35,14 @@ local heirloomWeapontemEquipLocTab={--传家宝 ，武器，itemEquipLoc
 
 
 local ClassNameIconTab={}--职业图标 ClassNameIconTab['法师']=图标
+for classID= 1, GetNumClasses() do
+    local classInfo = C_CreatureInfo.GetClassInfo(classID)
+    if classInfo and classInfo.className and classInfo.classFile then
+        ClassNameIconTab[classInfo.className]= e.Class(nil, classInfo.classFile, false)--职业图标
+    end
+end
+
+
 local function Get_Class_Icon_da_Text(text)
     local t
     if text then
@@ -1019,14 +1027,6 @@ local function Init()
 --[[
     LootWonAlertFrame_SetUp
 ]]
---职业图标 ClassNameIconTab['法师']=图标
-for classID= 1, GetNumClasses() do
-    local classInfo = C_CreatureInfo.GetClassInfo(classID)
-    if classInfo and classInfo.className and classInfo.classFile then
-        ClassNameIconTab[classInfo.className]= e.Class(nil, classInfo.classFile, false)--职业图标
-    end
-end
-
 
 
 
