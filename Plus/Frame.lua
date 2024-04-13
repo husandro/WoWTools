@@ -1906,6 +1906,9 @@ local function setAddLoad(arg1)
     elseif arg1=='Blizzard_CovenantRenown' then
         e.Set_Move_Frame(CovenantRenownFrame)
 
+    elseif arg1=='Blizzard_ScrappingMachineUI' then
+        e.Set_Move_Frame(ScrappingMachineFrame)
+
     --elseif arg1=='Blizzard_StableUI' then
 
     end
