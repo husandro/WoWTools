@@ -2,6 +2,7 @@ local id, e = ...
 local addName= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, INFO)
 local Save={}
 local panel= CreateFrame("Frame")
+local Initializer
 
 local chargesStr= ITEM_SPELL_CHARGES:gsub('%%d', '%(%%d%+%)')--(%d+)次
 local keyStr= format(CHALLENGE_MODE_KEYSTONE_NAME,'(.+) ')--钥石
@@ -96,11 +97,13 @@ local function Set_Item_Info(self, tab)
 
     if tab.itemLink then
         itemLink= tab.itemLink
+
     elseif tab.lootIndex then
         currencyID= select(4, GetLootSlotInfo(tab.lootIndex))
         if not currencyID then
             itemLink= GetLootSlotLink(tab.lootIndex)
         end
+
     elseif tab.bag then
         containerInfo =C_Container.GetContainerItemInfo(tab.bag.bag, tab.bag.slot)
         if containerInfo then
@@ -108,6 +111,7 @@ local function Set_Item_Info(self, tab)
             itemID= containerInfo.itemID
             isBound= containerInfo.isBound
         end
+
     elseif tab.merchant then
         if tab.merchant.buyBack then
             itemLink= GetBuybackItemLink(tab.merchant.slot)
@@ -115,11 +119,13 @@ local function Set_Item_Info(self, tab)
             itemLink= GetMerchantItemLink(tab.merchant.slot)
             itemID= GetMerchantItemID(tab.merchant.slot)
         end
+
     elseif tab.guidBank then
         itemLink= GetGuildBankItemLink(tab.guidBank.tab, tab.guidBank.slot)
     elseif tab.itemLocation and tab.itemLocation:IsValid() then
         itemLink= C_Item.GetItemLink(tab.itemLocation)
         itemID= C_Item.GetItemID(tab.itemLocation)
+
     elseif tab.itemKey then
         local itemKeyInfo = C_AuctionHouse.GetItemKeyInfo(tab.itemKey) or {}
         itemID= tab.itemKey.itemID or itemKeyInfo.itemID
@@ -127,12 +133,17 @@ local function Set_Item_Info(self, tab)
         itemLink= itemKeyInfo.battlePetLink or (itemID and select(2, C_Item.GetItemInfo(itemID)))
         itemQuality= itemKeyInfo.quality
         battlePetSpeciesID= tab.itemKey.battlePetSpeciesID
+
+    elseif tab.itemLocation and tab.itemLocation:IsValid() then
+	    itemLink= C_Item.GetItemLink(tab.itemLocation)
+        itemID= C_Item.GetItemID(tab.itemLocation)
+        print(itemLink, itemID)
     end
 
 
 
     if itemLink then
-        
+
         itemID= itemID or C_Item.GetItemInfoInstant(itemLink)
         if not itemID then
             itemID= itemLink:match('|H.-:(%d+):')
@@ -144,7 +155,7 @@ local function Set_Item_Info(self, tab)
         itemLevel= itemLevel or GetDetailedItemLevelInfo(itemLink) or itemLevel2
         itemQuality= itemQuality or itemQuality2
         expacID= expacID or 0
-       
+
         setIDItem= setID and true or nil--套装
 
         local isMaxLevel= e.Player.level==MAX_PLAYER_LEVEL
@@ -481,7 +492,7 @@ local function Set_Item_Info(self, tab)
             elseif dateInfo.red then
                 topRightText= e.Icon.O2
             end
-            
+
         elseif itemStackCount==1 then
             local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={chargesStr}, wow=true, red=true})--物品提示，信息
             bottomLeftText=dateInfo.text[chargesStr]
@@ -1128,6 +1139,8 @@ local function Init()
     end)
 
     Init_Bag()
+
+
 end
 
 
@@ -1186,7 +1199,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save= WoWToolsSave[addName] or Save
 
             --添加控制面板
-            e.AddPanel_Check({
+            Initializer= e.AddPanel_Check({
                 name= e.Icon.bag2..(e.onlyChinese and '物品信息' or addName),
                 tooltip= e.onlyChinese and '系统背包|n商人' or (BAGSLOT..'|n'..MERCHANT),--'Inventorian, Baggins', 'Bagnon'
                 value= not Save.disabled,
@@ -1201,7 +1214,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     print(id, e.cn(addName), e.GetEnabeleDisable(Save.disabled))
                 end
             })
-
+            
             if Save.disabled then
                 panel:UnregisterAllEvents()
             else
@@ -1288,6 +1301,25 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 else
                     Set_Item_Info(self.ItemBuyFrame.ItemDisplay.ItemButton, {itemKey= itemKey, size=12})
                 end
+            end)
+
+        elseif arg1=='Blizzard_ScrappingMachineUI' then--分解 ScrappingMachineFrame
+            for btn in ScrappingMachineFrame.ItemSlots.scrapButtons:EnumerateActive() do
+                if (btn) then
+                    hooksecurefunc(btn, 'RefreshIcon', function(self)
+                        Set_Item_Info(self, {itemLocation= self.itemLocation})
+                    end)
+                end
+            end
+            ScrappingMachineFrame.CelarAllItemButton= e.Cbtn(ScrappingMachineFrame, {size={22,22}, atlas='bags-button-autosort-up'})
+            ScrappingMachineFrame.CelarAllItemButton:SetScript('OnLeave', GameTooltips_Hide)
+            ScrappingMachineFrame.CelarAllItemButton:SetScript('OnEnter', function(self)
+                e.tips:SetOwner(self, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine(id, Initializer:GetName())
+                e.tips:AddLine(' ')
+                e.tips:AddLine(e.onlyChinese and '全部清除' or CLEAR_ALL)
+                e.tips:Show()
             end)
         end
 
