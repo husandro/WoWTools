@@ -970,6 +970,7 @@ end
 
 local AndStr = COVENANT_RENOWN_TOAST_REWARD_COMBINER:format('(.-)','(.+)')--"%s 和 %s"
 function e.Get_Gem_Stats(tab, itemLink, self)--显示, 宝石, 属性
+    tab= tab or {}
     local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={'(%+%d+ .+)', }})--物品提示，信息
     local text= dateInfo.text['(%+%d+ .+)']
     local leftText, bottomLeftText
@@ -1827,7 +1828,9 @@ function e.GetItemSlotIcon(slotID)
 end
 
 function e.GetItemSlotID(itemEquipLoc)
-    return itemSlotTable[itemEquipLoc]
+    if itemEquipLoc then
+        return itemSlotTable[itemEquipLoc]
+    end
 end
 
 

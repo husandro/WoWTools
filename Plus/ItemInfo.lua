@@ -133,10 +133,6 @@ local function Set_Item_Info(self, tab)
         itemLink= itemKeyInfo.battlePetLink or (itemID and select(2, C_Item.GetItemInfo(itemID)))
         itemQuality= itemKeyInfo.quality
         battlePetSpeciesID= tab.itemKey.battlePetSpeciesID
-
-    elseif tab.itemLocation and tab.itemLocation:IsValid() then
-	    itemLink= C_Item.GetItemLink(tab.itemLocation)
-        itemID= C_Item.GetItemID(tab.itemLocation)
     end
 
 
@@ -1317,7 +1313,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             for btn in ScrappingMachineFrame.ItemSlots.scrapButtons:EnumerateActive() do
                 if (btn) then
                     hooksecurefunc(btn, 'RefreshIcon', function(self)
-                        Set_Item_Info(self, {itemLocation= self.itemLocation})
+                        Set_Item_Info(self, {itemLink=self.itemLink})-- itemLocation= self.itemLocation})
                     end)
                 end
             end
@@ -1344,37 +1340,60 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine(id, Initializer:GetName())
                 e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(format('|cnGREEN_FONT_COLOR:%s', e.onlyChinese and '添加' or ADD), e.onlyChinese and '物品' or ITEMS)
+                e.tips:AddDoubleLine(
+                    format('|cnGREEN_FONT_COLOR:%s', e.onlyChinese and '添加' or ADD),
+                    format('|A:charactercreate-icon-customize-body-selected:0:0|a%s', e.onlyChinese and '装备' or BAG_FILTER_EQUIPMENT)
+                )
                 e.tips:Show()
             end)
             function ScrappingMachineFrame.AutoAddItemButton:get_num_items()
                 local n, all= 0, 0
                 for btn in ScrappingMachineFrame.ItemSlots.scrapButtons:EnumerateActive() do
-                    if btn.itemLocation and btn.itemLocation:IsValid() then
+                    if btn.itemLink then
                         n=n +1
                     end
                     all= all+1
                 end
-                return n, n<all
+                return n, all, n<all
             end
-            ScrappingMachineFrame.AutoAddItemButton:SetScript('OnClick', function()
+            ScrappingMachineFrame.AutoAddItemButton:SetScript('OnClick', function(self)
+                if UnitAffectingCombat('player') then
+                    print(id, Initializer:GetName(), '|cnRED_FONT_COLOR:', e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
+                    return
+                end
+                local n, all= self:get_num_items()
+                local need= all-n
+
                 for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES do--NUM_REAGENTBAG_FRAMES
                     for slot=1, C_Container.GetContainerNumSlots(bag) do--背包数量
                         local info = C_Container.GetContainerItemInfo(bag,slot)
                         if info
                             and info.hyperlink
                             and info.isBound
+                            and not info.isLocked
                             and not info.isFiltered
                         then
-                            
-                            print(info.hyperlink)
+                            local itemEquipLoc= select(4, C_Item.GetItemInfoInstant(info.hyperlink))
+                            local invSlot= e.GetItemSlotID(itemEquipLoc)
+                            if invSlot then
+                                local itemLevel= GetDetailedItemLevelInfo(info.hyperlink) or 0
+                                local itemLinkPlayer = GetInventoryItemLink('player', invSlot)
+                                local equipedLevel= itemLinkPlayer and GetDetailedItemLevelInfo(itemLinkPlayer)
+                                if equipedLevel and equipedLevel>=itemLevel then
+                                    C_Container.UseContainerItem(bag, slot)
+                                    need= need-1
+                                    if need<=0 then
+                                        return
+                                    end
+                                end
+                            end
                         end
                     end
                 end
             end)
             hooksecurefunc(ScrappingMachineFrame, 'UpdateScrapButtonState', function(self)
                 self.CelarAllItemButton:SetShown(C_ScrappingMachineUI.HasScrappableItems())
-                self.AutoAddItemButton:SetShown(select(2, self.AutoAddItemButton:get_num_items()))
+                self.AutoAddItemButton:SetShown(select(3, self.AutoAddItemButton:get_num_items()))
             end)
         end
 

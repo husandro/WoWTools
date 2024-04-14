@@ -15,27 +15,44 @@ for _, spellID in pairs(SpellsTab) do
     e.LoadDate({id=spellID, type='spell'})
 end
 
---[[local GEM_TYPE_INFO =	{
-    Yellow = EMPTY_SOCKET_YELLOW,--黄色插槽
-    Red = EMPTY_SOCKET_RED,--红色插槽
-    Blue = EMPTY_SOCKET_BLUE,--蓝色插槽
-    Hydraulic = EMPTY_SOCKET_HYDRAULIC,--染煞
-    Cogwheel = EMPTY_SOCKET_COGWHEEL,--齿轮插槽
-    Meta = EMPTY_SOCKET_META,--多彩插槽
-    Prismatic =EMPTY_SOCKET_PRISMATIC,--棱彩插槽
-    PunchcardRed = EMPTY_SOCKET_PUNCHCARDRED,--红色打孔卡插槽
-    PunchcardYellow = EMPTY_SOCKET_PUNCHCARDYELLOW,--黄色打孔卡插槽
-    PunchcardBlue = EMPTY_SOCKET_PUNCHCARDBLUE,--蓝色打孔卡插槽
-    Domination = EMPTY_SOCKET_DOMINATION,--统御插槽
-    Cypher = EMPTY_SOCKET_CYPHER,--晶态插槽
-    Tinker = EMPTY_SOCKET_TINKER,--匠械插槽
-    Primordial = EMPTY_SOCKET_PRIMORDIAL,--始源镶孔
-}]]
---EMPTY_SOCKET_NO_COLOR,--棱彩插槽
+local GEM_TYPE_INFO
 
+local function creatd_button(index)
+    local btn= e.Cbtn(Frame, {button='ItemButton', icon='hide'})
+    btn:SetScript('OnClick', function(self, d)
+        if not self.itemLocation then
+            return
+        end
+        --if self.bag and self.slot then
+            if d=='LeftButton' then
+                C_Container.PickupContainerItem(self.itemLocation:GetSlotAndBagID())
+            elseif d=='RightButton' then
+                ClearCursor()
+            end
+    end)
 
+    btn:SetScript('OnEnter', function(self)
+        if self.itemLocation then--self.bag and self.slot then
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            --e.tips:SetBagItem(self.bag, self.slot)
+            e.tips:SetItemLocation(self.itemLocation)
+            e.tips:Show()
+            e.FindBagItem(true, {itemLocation=itemLocation})--{bag={bag=self.bag, slot=self.slot}})
+        end
+    end)
+    btn:SetScript('OnLeave', function()
+        GameTooltip_Hide()
+        e.FindBagItem()
+    end)
 
-
+    btn.level=e.Cstr(btn)
+    btn.level:SetPoint('TOPRIGHT')
+    btn.type= e.Cstr(btn)
+    btn.type:SetPoint('LEFT', btn, 'RIGHT')
+    Buttons[index]= btn
+    return btn
+end
 
 
 local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
@@ -44,7 +61,7 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
     end
 
     local items={}
-    local gem1007= select(2, GetSocketItemInfo())== 4638590 --204000, 204030
+    --local gem1007= select(2, GetSocketItemInfo())== 4638590 --204000, 204030
 
     --[[local findGem
     local gemType={}
@@ -65,26 +82,25 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
                 and info.hyperlink
                 and info.itemID
                 and info.quality
-                and (
+                --[[and (
                         (gem1007 and info.itemID>=204000 and info.itemID<=204030)
                     or (not gem1007 and (info.itemID<204000 or info.itemID>204030))
-                )
+                )]]
             then
                 local level= GetDetailedItemLevelInfo(info.hyperlink) or 0
                 local classID, _, _, expacID= select(12, C_Item.GetItemInfo(info.hyperlink))
 
                 if classID==3
-                    and (e.Player.levelMax and e.ExpansionLevel== expacID or not e.Player.levelMax)--最高等级
+                    --and (e.Player.levelMax and e.ExpansionLevel== expacID or not e.Player.levelMax)--最高等级
                 then
-                    --[[local date= e.GetTooltipData({hyperLink=info.hyperlink, index=2})
-                    local type= date.indexText and date.indexText:match('|c........(.-)|r') or date.indexText
-                    local find= false]]
-                  
-                    table.insert(items, {
+                    local date= e.GetTooltipData({hyperLink=info.hyperlink, index=2})
+                    local type= date.indexText and date.indexText:match('|c........(.-)|r') or date.indexText or ' '
+                    
+                    items[type]= items[type] or {}
+                    table.insert(items[type], {
                         info= info,
-                        bag= bag,
-                        slot=slot,
-                        level= level,
+                        itemLocation= ItemLocation:CreateFromBagAndSlot(bag, slot),
+                        level= level or 0,
                         --find=find
                     })
                 end
@@ -93,76 +109,50 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
     end
 
 
-    table.sort(items, function(a, b)
-        if a.info.quality== b.info.quality then
-           return a.level>b.level
-        else
-           return a.info.quality>b.info.quality
-        end
-    end)
-
-
-
-    local x, y= 10, -4
-    for index=1, #items do
-        local btn=Buttons[index]
-        if select(2, math.modf(index /10))==0 then
-            x=10
-            y=y -40
-        elseif index>1 then
-            x= x -40
-        end
-        if not btn then
-            btn= e.Cbtn(ItemSocketingFrame, {button='ItemButton', icon='hide'})
-            btn:SetPoint('TOPRIGHT', ItemSocketingFrame, 'BOTTOMRIGHT', x, y)
-            btn:SetScript('OnClick', function(self, d)
-                if self.bag and self.slot then
-                    if d=='LeftButton' then
-                        C_Container.PickupContainerItem(self.bag, self.slot)
-                    elseif d=='RightButton' then
-                        ClearCursor()
-                    end
-                end
-            end)
-            btn:SetScript('OnEnter', function(self)
-                if self.bag and self.slot then
-                    e.tips:SetOwner(self, "ANCHOR_LEFT")
-                    e.tips:ClearLines()
-                    e.tips:SetBagItem(self.bag, self.slot)
-                    e.tips:AddLine(' ')
-                    e.tips:AddDoubleLine(id, e.cn(addName))
-                    e.tips:Show()
-                    e.FindBagItem(true, {bag={bag=self.bag, slot=self.slot}})
-                end
-            end)
-            btn:SetScript('OnLeave', function()
-                GameTooltip_Hide()
-                e.FindBagItem()
-            end)
-
-            btn.level=e.Cstr(btn)
-            btn.level:SetPoint('TOPRIGHT')
-
-            table.insert(Buttons, btn)
-        end
-
-        local info= items[index].info
-        btn.level:SetText(items[index].level>1 and items[index].level or '')
-
-        btn.bag= items[index].bag
-        btn.slot= items[index].slot
-
-        btn:SetItem(info.hyperlink)
-        btn:SetItemButtonCount(C_Item.GetItemCount(info.hyperlink))
-        btn:SetAlpha(info.isLocked and 0.3 or 1)
-        btn:SetShown(true)
-
-        e.Get_Gem_Stats({bag={bag=items[index].bag, slot=items[index].slot}}, nil, btn)
+    for _, tab in pairs(items) do
+        table.sort(tab, function(a, b)
+            if a.info.quality== b.info.quality then
+                return a.level>b.level
+            else
+                return a.info.quality>b.info.quality
+            end
+        end)
     end
 
-    for index= #items+1, #Buttons, 1 do
-        Buttons[index]:SetShown(false)
-        Buttons[index]:Reset()
+
+
+    local x, y, index= 0, 0, 1
+
+    for type, tab in pairs(items) do
+        for _, info in pairs(tab) do
+            local btn= Buttons[index] or creatd_button(index)
+            btn:ClearAllPoints()
+            btn:SetPoint('TOPRIGHT', x, y)
+            btn.itemLocation= info.itemLocation
+            if index==1 then
+                btn.type:SetText(type)
+            else
+                btn.type:SetText("")
+            end
+            btn.level:SetText(info.level>1 and info.level or '')
+            btn:SetItemLocation(info.itemLocation)
+            btn:SetItemButtonCount(info.info.stackCount)
+            btn:SetAlpha(info.isLocked and 0.3 or 1)
+            btn:SetShown(true)
+            e.Get_Gem_Stats(nil, info.info.hyperlink, btn)
+            x=x-22
+            index= index+1
+        end
+        x=0
+        y=y-22
+    end
+    
+
+    for i= index+1, #Buttons, 1 do
+        Buttons[i]:SetShown(false)
+        Buttons[i]:Reset()
+        Buttons[i].type:SetText('')
+        Buttons[i].level:SetText('')
     end
 end
 
@@ -268,11 +258,29 @@ end
 
 
 local function Init()
-    Frame= CreateFrame("Frame")
+    GEM_TYPE_INFO =	{
+        Yellow = e.onlyChinese and EMPTY_SOCKET_YELLOW or '黄色插槽',
+        Red = e.onlyChinese and EMPTY_SOCKET_RED or '红色插槽',
+        Blue = e.onlyChinese and EMPTY_SOCKET_BLUE or '蓝色插槽',
+        Hydraulic = e.onlyChinese and EMPTY_SOCKET_HYDRAULIC or '染煞',
+        Cogwheel = e.onlyChinese and EMPTY_SOCKET_COGWHEEL or '齿轮插槽',
+        Meta = e.onlyChinese and EMPTY_SOCKET_META or '多彩插槽',
+        Prismatic =EMPTY_SOCKET_PRISMATIC or '棱彩插槽',
+        PunchcardRed = e.onlyChinese and EMPTY_SOCKET_PUNCHCARDRED or '红色打孔卡插槽',
+        PunchcardYellow = e.onlyChinese and EMPTY_SOCKET_PUNCHCARDYELLOW or '黄色打孔卡插槽',
+        PunchcardBlue = e.onlyChinese and EMPTY_SOCKET_PUNCHCARDBLUE or '蓝色打孔卡插槽',
+        Domination = e.onlyChinese and EMPTY_SOCKET_DOMINATION or '统御插槽',
+        Cypher = e.onlyChinese and EMPTY_SOCKET_CYPHER or '晶态插槽',
+        Tinker = e.onlyChinese and EMPTY_SOCKET_TINKER or '匠械插槽',
+        Primordial = e.onlyChinese and EMPTY_SOCKET_PRIMORDIAL or '始源镶孔',
+    }--EMPTY_SOCKET_NO_COLOR,--棱彩插槽
+
+    Frame= CreateFrame("Frame", nil, ItemSocketingFrame)
+    Frame:SetPoint('BOTTOMRIGHT', 0, -20)
+    Frame:SetSize(1,1)
     ItemSocketingFrame:HookScript('OnShow', function()
         local tab={
             'BAG_UPDATE_DELAYED',
-            'BAG_UPDATE',
             'ITEM_UNLOCKED',
             'ITEM_LOCKED',
             'SOCKET_INFO_UPDATE',
