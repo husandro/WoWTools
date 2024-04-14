@@ -17,7 +17,7 @@ for _, spellID in pairs(SpellsTab) do
 end
 
 local AUCTION_CATEGORY_GEMS= AUCTION_CATEGORY_GEMS
-local GEM_TYPE_INFO =	{
+--[[local GEM_TYPE_INFO =	{
     Yellow = EMPTY_SOCKET_YELLOW,--黄色插槽',
     Red = EMPTY_SOCKET_RED,--红色插槽',
     Blue = EMPTY_SOCKET_BLUE,--蓝色插槽',
@@ -32,7 +32,7 @@ local GEM_TYPE_INFO =	{
     Cypher = EMPTY_SOCKET_CYPHER,--晶态插槽',
     Tinker = EMPTY_SOCKET_TINKER,--匠械插槽',
     Primordial = EMPTY_SOCKET_PRIMORDIAL,--始源镶孔',
-}--EMPTY_SOCKET_NO_COLOR,--棱彩插槽
+}--EMPTY_SOCKET_NO_COLOR,--棱彩插槽]]
 
 
 local function creatd_button(index)
@@ -302,7 +302,7 @@ end
 
 
 local function Init()
-    GEM_TYPE_INFO =	{
+    --[[GEM_TYPE_INFO =	{
         Yellow = e.onlyChinese and EMPTY_SOCKET_YELLOW or '黄色插槽',
         Red = e.onlyChinese and EMPTY_SOCKET_RED or '红色插槽',
         Blue = e.onlyChinese and EMPTY_SOCKET_BLUE or '蓝色插槽',
@@ -317,8 +317,8 @@ local function Init()
         Cypher = e.onlyChinese and EMPTY_SOCKET_CYPHER or '晶态插槽',
         Tinker = e.onlyChinese and EMPTY_SOCKET_TINKER or '匠械插槽',
         Primordial = e.onlyChinese and EMPTY_SOCKET_PRIMORDIAL or '始源镶孔',
-    }--EMPTY_SOCKET_NO_COLOR,--棱彩插槽
-
+   }--EMPTY_SOCKET_NO_COLOR,--棱彩插槽
+ ]]
     Frame= CreateFrame("Frame", nil, ItemSocketingFrame)
     Frame:SetPoint('BOTTOMRIGHT', 0, -10)
     Frame:SetSize(1,1)
@@ -349,7 +349,8 @@ local function Init()
         ItemSocketingFrame.typeTab={}
         for i, socket in ipairs(ItemSocketingFrame.Sockets) do
             if ( i <= numSockets ) then
-                local name= GEM_TYPE_INFO[GetSocketTypes(i)]
+                local name= GetSocketTypes(i)
+                name= name and _G['EMPTY_SOCKET_'..string.upper(name)]
                 if name then
                     ItemSocketingFrame.typeTab[name]=true
                 end
