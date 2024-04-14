@@ -15,7 +15,7 @@ local itemLevelStr= ITEM_LEVEL:gsub('%%d', '%(%%d%+%)')--"物品等级：%d"
 local FMTab={}--附魔
 local useStr=ITEM_SPELL_TRIGGER_ONUSE..'(.+)'--使用：
 --local andStr = COVENANT_RENOWN_TOAST_REWARD_COMBINER:format('(.-)','(.+)')--"%s 和 %s";
-local BOSS_BANNER_LOOT_SET= e.Magic(BOSS_BANNER_LOOT_SET)--套装：%s
+--local BOSS_BANNER_LOOT_SET= e.Magic(BOSS_BANNER_LOOT_SET)--套装：%s
 local ITEM_SPELL_KNOWN= ITEM_SPELL_KNOWN
 
 local size= 10--字体大小
@@ -1314,12 +1314,16 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             ScrappingMachineFrame.CelarAllItemButton= e.Cbtn(ScrappingMachineFrame, {size={22,22}, atlas='bags-button-autosort-up'})
             ScrappingMachineFrame.CelarAllItemButton:SetScript('OnLeave', GameTooltips_Hide)
             ScrappingMachineFrame.CelarAllItemButton:SetScript('OnEnter', function(self)
-                e.tips:SetOwner(self, "ANCHOR_LEFT")
+                e.tips:SetOwner(self, "ANCHOR_RIGHT")
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine(id, Initializer:GetName())
                 e.tips:AddLine(' ')
-                e.tips:AddLine(e.onlyChinese and '全部清除' or CLEAR_ALL)
+                e.tips:AddLine(e.onlyChinese and '全部清除' or CLEAR_ALL, e.onlyChinese and '物品' or ITEMS)
                 e.tips:Show()
+            end)
+            ScrappingMachineFrame.CelarAllItemButton:SetScript('OnClick', C_ScrappingMachineUI.RemoveAllScrapItems)
+            hooksecurefunc(ScrappingMachineFrame, 'UpdateScrapButtonState', function(self)
+                self.CelarAllItemButton:SetEnabled(C_ScrappingMachineUI.HasScrappableItems());
             end)
         end
 
