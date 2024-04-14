@@ -10,11 +10,11 @@ local equipStr= e.Magic(EQUIPMENT_SETS)--:gsub('|cFFFFFFFF', ''):gsub('|r', ''))
 local pvpItemStr= PVP_ITEM_LEVEL_TOOLTIP:gsub('%%d', '%(%%d%+%)')--"装备：在竞技场和战场中将物品等级提高至%d。"
 local upgradeStr= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT:gsub('%%s/%%s','(.-%%d%+/%%d%+)')-- "升级：%s/%s"
 --local upgradeStr2= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT_STRING:gsub('%%s %%s/%%s','(.+)' ) --"升级：%s %s/%s"
-local classStr= format(ITEM_CLASSES_ALLOWED, '(.+)') --"职业：%s";
+local classStr= format(ITEM_CLASSES_ALLOWED, '(.+)') --"职业：%s"
 local itemLevelStr= ITEM_LEVEL:gsub('%%d', '%(%%d%+%)')--"物品等级：%d"
 local FMTab={}--附魔
 local useStr=ITEM_SPELL_TRIGGER_ONUSE..'(.+)'--使用：
---local andStr = COVENANT_RENOWN_TOAST_REWARD_COMBINER:format('(.-)','(.+)')--"%s 和 %s";
+--local andStr = COVENANT_RENOWN_TOAST_REWARD_COMBINER:format('(.-)','(.+)')--"%s 和 %s"
 --local BOSS_BANNER_LOOT_SET= e.Magic(BOSS_BANNER_LOOT_SET)--套装：%s
 local ITEM_SPELL_KNOWN= ITEM_SPELL_KNOWN
 
@@ -137,7 +137,6 @@ local function Set_Item_Info(self, tab)
     elseif tab.itemLocation and tab.itemLocation:IsValid() then
 	    itemLink= C_Item.GetItemLink(tab.itemLocation)
         itemID= C_Item.GetItemID(tab.itemLocation)
-        print(itemLink, itemID)
     end
 
 
@@ -229,7 +228,7 @@ local function Set_Item_Info(self, tab)
             end
 
         elseif isCraftingReagent or classID==8 or classID==9 or (classID==0 and (subclassID==1 or subclassID==3 or subclassID==5)) or classID==19 or classID==7 then--附魔, 19专业装备 ,7商业技能
-            local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={ITEM_SPELL_KNOWN, useStr,}, wow=true, red=true})--物品提示，信息 ITEM_SPELL_KNOWN = "已经学会";
+            local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={ITEM_SPELL_KNOWN, useStr,}, wow=true, red=true})--物品提示，信息 ITEM_SPELL_KNOWN = "已经学会"
             if not (classID==15 and (subclassID== 0 or subclassID==4)) then
                 if classID==0 and subclassID==5 then
                     topRightText= e.WA_Utf8Sub(POWER_TYPE_FOOD, 2,3, true)--食物
@@ -446,10 +445,10 @@ local function Set_Item_Info(self, tab)
 
             if classID==0 and subclassID==8 and C_Item.GetItemSpell(itemLink) then--传家宝，升级，物品
                 local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={useStr}, wow=true, red=true})--物品提示，信息
-                if dateInfo.text[useStr] and dateInfo.text[useStr]:find(UPGRADE) then--UPGRADE = "升级";
+                if dateInfo.text[useStr] and dateInfo.text[useStr]:find(UPGRADE) then--UPGRADE = "升级"
                     local tipText= string.lower(dateInfo.text[useStr])
-                    local weapon= tipText:find(string.lower(WEAPON))--WEAPON = "武器";
-                    local shield= tipText:find(string.lower(SHIELDSLOT))--SHIELDSLOT = "盾牌";
+                    local weapon= tipText:find(string.lower(WEAPON))--WEAPON = "武器"
+                    local shield= tipText:find(string.lower(SHIELDSLOT))--SHIELDSLOT = "盾牌"
                     local num
                     num= dateInfo.text[useStr]:match('%d+')
                     num= num and tonumber(num)
@@ -481,7 +480,7 @@ local function Set_Item_Info(self, tab)
 
 
         elseif classID==0 and subclassID==8 and itemName:find(WARDROBE_SETS) then--套装：炎阳珠衣装
-            local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={ITEM_SPELL_KNOWN, '外观仅供(.-)使用'}, wow=true, red=true})--物品提示，信息 ITEM_SPELL_KNOWN = "已经学会";
+            local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={ITEM_SPELL_KNOWN, '外观仅供(.-)使用'}, wow=true, red=true})--物品提示，信息 ITEM_SPELL_KNOWN = "已经学会"
             local text= dateInfo.text['外观仅供(.-)使用']
             if dateInfo.text[ITEM_SPELL_KNOWN] then
                 bottomLeftText= get_has_text(true)
@@ -520,7 +519,7 @@ local function Set_Item_Info(self, tab)
         end
     --[[
     elseif tab.petID then
-        local speciesID, customName, level, xp, maxXp, displayID, isFavorite, name, icon = C_PetJournal.GetPetInfoByPetID(petID);
+        local speciesID, customName, level, xp, maxXp, displayID, isFavorite, name, icon = C_PetJournal.GetPetInfoByPetID(petID)
         ]]
     end
 
@@ -672,18 +671,18 @@ end
 
 
 --hooksecurefunc(GuildBankFrame,'Update', function(self)--Blizzard_GuildBankUI.lua
-local MAX_GUILDBANK_SLOTS_PER_TAB = 98;
-local NUM_SLOTS_PER_GUILDBANK_GROUP = 14;
+local MAX_GUILDBANK_SLOTS_PER_TAB = 98
+local NUM_SLOTS_PER_GUILDBANK_GROUP = 14
 local function setGuildBank()--公会银行,设置
     if GuildBankFrame and GuildBankFrame:IsVisible() then
-        local tab = GetCurrentGuildBankTab() or 1;--Blizzard_GuildBankUI.lua
+        local tab = GetCurrentGuildBankTab() or 1--Blizzard_GuildBankUI.lua
         for i=1, MAX_GUILDBANK_SLOTS_PER_TAB do
-            local index = mod(i, NUM_SLOTS_PER_GUILDBANK_GROUP);
+            local index = mod(i, NUM_SLOTS_PER_GUILDBANK_GROUP)
             if ( index == 0 ) then
-                index = NUM_SLOTS_PER_GUILDBANK_GROUP;
+                index = NUM_SLOTS_PER_GUILDBANK_GROUP
             end
-            local column = ceil((i-0.5)/NUM_SLOTS_PER_GUILDBANK_GROUP);
-            local button = (GuildBankFrame.Columns[column] and GuildBankFrame.Columns[column].Buttons) and GuildBankFrame.Columns[column].Buttons[index];
+            local column = ceil((i-0.5)/NUM_SLOTS_PER_GUILDBANK_GROUP)
+            local button = (GuildBankFrame.Columns[column] and GuildBankFrame.Columns[column].Buttons) and GuildBankFrame.Columns[column].Buttons[index]
             if button then
                 Set_Item_Info(button,{guidBank={tab=tab, slot=i}})
             end
@@ -904,7 +903,7 @@ local function Init_Bag()
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
 
                 info={
-                    text= id..' '..e.cn(addName),
+                    text= id..' '..Initializer:GetName(),
                     isTitle=true,
                     notCheckable=true,
                 }
@@ -983,7 +982,7 @@ local function Init()
             return
         end
         for i=1, ATTACHMENTS_MAX_RECEIVE do
-            local attachmentButton = OpenMailFrame.OpenMailAttachments[i];
+            local attachmentButton = OpenMailFrame.OpenMailAttachments[i]
             if attachmentButton and attachmentButton:IsShown() then
                 Set_Item_Info(attachmentButton, {itemLink= HasInboxItem(InboxFrame.openMailID, i) and GetInboxItemLink(InboxFrame.openMailID, i)})
             end
@@ -1019,7 +1018,7 @@ local function Init()
         e.Set_Item_Stats(frame, frame.hyperlink, {point= frame.Icon})
     end)
     --[[hooksecurefunc(LootItemExtended, 'Init', function(self, itemLink2, originalQuantity, _, isCurrency)--ItemDisplay.lua
-        local _, _, _, _, itemLink = ItemUtil.GetItemDetails(itemLink2, originalQuantity, isCurrency);
+        local _, _, _, _, itemLink = ItemUtil.GetItemDetails(itemLink2, originalQuantity, isCurrency)
         e.Set_Item_Stats(self, itemLink, {point= self.lootItem.Icon})
         if e.Player.husandro then
             print('LootItemExtended', itemLink, self.lootItem.Icon)
@@ -1027,7 +1026,7 @@ local function Init()
     end)]]
 
     hooksecurefunc(LootItemExtendedMixin, 'Init', function(self, itemLink2, originalQuantity, _, isCurrency)--ItemDisplay.lua
-        local _, _, _, _, itemLink = ItemUtil.GetItemDetails(itemLink2, originalQuantity, isCurrency);
+        local _, _, _, _, itemLink = ItemUtil.GetItemDetails(itemLink2, originalQuantity, isCurrency)
         e.Set_Item_Stats(self, itemLink, {point= self.Icon})
     end)
 
@@ -1062,15 +1061,15 @@ local function Init()
     --##商人，物品，货币，数量
     --MerchantFrame.lua
     hooksecurefunc('MerchantFrame_UpdateAltCurrency', function(index, indexOnPage, canAfford)
-        local itemCount = GetMerchantItemCostInfo(index);
-        local frameName = "MerchantItem"..indexOnPage.."AltCurrencyFrame";
-        local usedCurrencies = 0;
+        local itemCount = GetMerchantItemCostInfo(index)
+        local frameName = "MerchantItem"..indexOnPage.."AltCurrencyFrame"
+        local usedCurrencies = 0
         if ( itemCount > 0 ) then
             for i=1, MAX_ITEM_COST do
-                local _, itemValue, itemLink, currencyName = GetMerchantItemCostItem(index, i);
+                local _, itemValue, itemLink, currencyName = GetMerchantItemCostItem(index, i)
                 if itemLink then
-                    usedCurrencies = usedCurrencies + 1;
-                    local btn = _G[frameName.."Item"..usedCurrencies];
+                    usedCurrencies = usedCurrencies + 1
+                    local btn = _G[frameName.."Item"..usedCurrencies]
                     if btn and btn:IsShown() then
                         local num
                         if currencyName then
@@ -1110,13 +1109,13 @@ local function Init()
                                 if self.itemLink and e.tips:IsShown() then
                                     e.tips:AddLine(' ')
                                     e.tips:AddDoubleLine(e.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, e.Icon.left)
-                                    e.tips:AddDoubleLine(id, e.cn(addName))
+                                    e.tips:AddDoubleLine(id, Initializer:GetName())
                                     e.tips:Show()
                                 end
                             end)
                         end
                         btn.quantityAll.itemValue= itemValue
-                        btn.quantityAll:SetText(num or '');
+                        btn.quantityAll:SetText(num or '')
                     end
                 end
             end
@@ -1211,7 +1210,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                         Save.disabled=true
                         panel:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
                     end
-                    print(id, e.cn(addName), e.GetEnabeleDisable(Save.disabled))
+                    print(id, Initializer:GetName(), e.GetEnabeleDisable(Save.disabled))
                 end
             })
             
@@ -1270,7 +1269,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
         elseif arg1=='Blizzard_WeeklyRewards' then--周奖励, 物品提示，信息
             hooksecurefunc(WeeklyRewardsFrame, 'Refresh', function(self2)--Blizzard_WeeklyRewards.lua WeeklyRewardsMixin:Refresh(playSheenAnims)
                 for _, activityInfo in ipairs(C_WeeklyRewards.GetActivities() or {}) do
-                    local frame = self2:GetActivityFrame(activityInfo.type, activityInfo.index);
+                    local frame = self2:GetActivityFrame(activityInfo.type, activityInfo.index)
                     local itemFrame= frame and frame.ItemFrame
                     if itemFrame then
                         e.Set_Item_Stats(itemFrame, itemFrame.displayedItemDBID and C_WeeklyRewards.GetItemHyperlink(itemFrame.displayedItemDBID), {point=itemFrame.Icon})
@@ -1279,7 +1278,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             end)
             hooksecurefunc(WeeklyRewardsFrame, 'UpdateSelection', function(self2)
                 for _, activityInfo in ipairs(C_WeeklyRewards.GetActivities() or {}) do
-                    local frame = self2:GetActivityFrame(activityInfo.type, activityInfo.index);
+                    local frame = self2:GetActivityFrame(activityInfo.type, activityInfo.index)
                     local itemFrame= frame and frame.ItemFrame
                     if itemFrame then
                         e.Set_Item_Stats(itemFrame, itemFrame.displayedItemDBID and C_WeeklyRewards.GetItemHyperlink(itemFrame.displayedItemDBID), {point=itemFrame.Icon})
@@ -1294,7 +1293,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             end)
 
             hooksecurefunc(AuctionHouseFrame, 'SelectBrowseResult', function(self, browseResult)
-                local itemKey = browseResult.itemKey;
+                local itemKey = browseResult.itemKey
                 local itemKeyInfo = C_AuctionHouse.GetItemKeyInfo(itemKey) or {}
                 if itemKeyInfo.isCommodity then
                     Set_Item_Info(self.CommoditiesBuyFrame.BuyDisplay.ItemDisplay.ItemButton, {itemKey= itemKey, size=12})
@@ -1304,6 +1303,17 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             end)
 
         elseif arg1=='Blizzard_ScrappingMachineUI' then--分解 ScrappingMachineFrame
+            ScrappingMachineFrame.ScrapButton:HookScript('OnLeave', GameTooltip_Hide)
+            ScrappingMachineFrame.ScrapButton:HookScript('OnEnter', function(self)--拆解法术，提示
+                local spellID= C_ScrappingMachineUI.GetScrapSpellID()
+                if not spellID or GameTooltip:IsOwned(self) then
+                    return
+                end
+                e.tips:SetOwner(self:GetParent(), "ANCHOR_BOTTOMRIGHT")
+                e.tips:ClearLines()
+                e.tips:SetSpellByID(spellID)
+                e.tips:Show()
+            end)
             for btn in ScrappingMachineFrame.ItemSlots.scrapButtons:EnumerateActive() do
                 if (btn) then
                     hooksecurefunc(btn, 'RefreshIcon', function(self)
@@ -1312,18 +1322,59 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 end
             end
             ScrappingMachineFrame.CelarAllItemButton= e.Cbtn(ScrappingMachineFrame, {size={22,22}, atlas='bags-button-autosort-up'})
-            ScrappingMachineFrame.CelarAllItemButton:SetScript('OnLeave', GameTooltips_Hide)
+            ScrappingMachineFrame.CelarAllItemButton:SetPoint('LEFT', ScrappingMachineFrame.ScrapButton, 'RIGHT', 2, 0)
+            ScrappingMachineFrame.CelarAllItemButton:SetScript('OnLeave', GameTooltip_Hide)
             ScrappingMachineFrame.CelarAllItemButton:SetScript('OnEnter', function(self)
-                e.tips:SetOwner(self, "ANCHOR_RIGHT")
+                e.tips:SetOwner(self:GetParent(), "ANCHOR_BOTTOMRIGHT")
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine(id, Initializer:GetName())
                 e.tips:AddLine(' ')
-                e.tips:AddLine(e.onlyChinese and '全部清除' or CLEAR_ALL, e.onlyChinese and '物品' or ITEMS)
+                e.tips:AddDoubleLine(format('|cnGREEN_FONT_COLOR:%s', e.onlyChinese and '全部清除' or CLEAR_ALL), e.onlyChinese and '物品' or ITEMS)
                 e.tips:Show()
             end)
             ScrappingMachineFrame.CelarAllItemButton:SetScript('OnClick', C_ScrappingMachineUI.RemoveAllScrapItems)
+           
+
+
+            ScrappingMachineFrame.AutoAddItemButton= e.Cbtn(ScrappingMachineFrame, {size={22,22}, atlas='communities-chat-icon-plus'})
+            ScrappingMachineFrame.AutoAddItemButton:SetPoint('LEFT', ScrappingMachineFrame.CelarAllItemButton, 'RIGHT', 2, 0)
+            ScrappingMachineFrame.AutoAddItemButton:SetScript('OnLeave', GameTooltip_Hide)
+            ScrappingMachineFrame.AutoAddItemButton:SetScript('OnEnter', function(self)
+                e.tips:SetOwner(self:GetParent(), "ANCHOR_BOTTOMRIGHT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine(id, Initializer:GetName())
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine(format('|cnGREEN_FONT_COLOR:%s', e.onlyChinese and '添加' or ADD), e.onlyChinese and '物品' or ITEMS)
+                e.tips:Show()
+            end)
+            function ScrappingMachineFrame.AutoAddItemButton:get_num_items()
+                local n, all= 0, 0
+                for btn in ScrappingMachineFrame.ItemSlots.scrapButtons:EnumerateActive() do
+                    if btn.itemLocation and btn.itemLocation:IsValid() then
+                        n=n +1
+                    end
+                    all= all+1
+                end
+                return n, n<all
+            end
+            ScrappingMachineFrame.AutoAddItemButton:SetScript('OnClick', function()
+                for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES do--NUM_REAGENTBAG_FRAMES
+                    for slot=1, C_Container.GetContainerNumSlots(bag) do--背包数量
+                        local info = C_Container.GetContainerItemInfo(bag,slot)
+                        if info
+                            and info.hyperlink
+                            and info.isBound
+                            and not info.isFiltered
+                        then
+                            
+                            print(info.hyperlink)
+                        end
+                    end
+                end
+            end)
             hooksecurefunc(ScrappingMachineFrame, 'UpdateScrapButtonState', function(self)
-                self.CelarAllItemButton:SetEnabled(C_ScrappingMachineUI.HasScrappableItems());
+                self.CelarAllItemButton:SetShown(C_ScrappingMachineUI.HasScrappableItems())
+                self.AutoAddItemButton:SetShown(select(2, self.AutoAddItemButton:get_num_items()))
             end)
         end
 
@@ -1346,7 +1397,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             if not  IsBagOpen(i) then
                 OpenBag(i)
             end
-            --ToggleBag(i);
+            --ToggleBag(i)
         end
     end
 end)
