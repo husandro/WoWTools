@@ -971,15 +971,16 @@ end
 local AndStr = COVENANT_RENOWN_TOAST_REWARD_COMBINER:format('(.-)','(.+)')--"%s 和 %s"
 function e.Get_Gem_Stats(tab, itemLink, self)--显示, 宝石, 属性
     tab= tab or {}
-    local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={'(%+%d+ .+)', }})--物品提示，信息
-    local text= dateInfo.text['(%+%d+ .+)']
+    local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={'(%+.+)', }})--物品提示，信息
+    local text= dateInfo.text['(%+.+)']
     local leftText, bottomLeftText
-    if text and text:find('%+') then
+    if text then
         local str2, str3
         if text:find(', ') then
             str2, str3= text:match('(.-), (.+)')
         elseif text:find('，') then
             str2, str3= text:match('(.-)，(.+)')
+        
         else
             str2, str3= text:match(AndStr)
         end
@@ -993,6 +994,10 @@ function e.Get_Gem_Stats(tab, itemLink, self)--显示, 宝石, 属性
                 bottomLeftText= e.WA_Utf8Sub(str3,1,3, true)
                 bottomLeftText= bottomLeftText and '|cffffffff'..bottomLeftText..'|r'
             end
+        elseif not text:find('%d') then
+            str2, str3= text:match('(.-+)(.+)')
+            leftText= str2
+            bottomLeftText= e.WA_Utf8Sub(str3,1,3, true)
         end
     end
     if self then
