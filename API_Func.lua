@@ -995,11 +995,12 @@ function e.Get_Gem_Stats(tab, itemLink, self)--显示, 宝石, 属性
                 bottomLeftText= bottomLeftText and '|cffffffff'..bottomLeftText..'|r'
             end
         elseif not text:find('%d') then
-            str2, str3= text:match('(.-+)(.+)')
+            str2, str3= text:match('(.-%+)(.+)')
             leftText= str2
             bottomLeftText= e.WA_Utf8Sub(str3,1,3, true)
         end
     end
+     
     if self then
         if leftText and not self.leftText then
             self.leftText= e.Cstr(self, {size=10})
