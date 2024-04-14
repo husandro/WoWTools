@@ -9,7 +9,7 @@ local Frame
 
 local SpellsTab={
     433397,--取出宝石
-    405805,--拔出始源之石
+    --405805,--拔出始源之石
 }
 
 for _, spellID in pairs(SpellsTab) do
@@ -231,11 +231,17 @@ local function Init_Spell_Button()
     btn.count:SetPoint('BOTTOMRIGHT',-2, 9)
 
     function btn:set_count()
-        local num, max= GetSpellCharges(self.spellID)
+        local num, max
+        if self.spellID then
+            num, max= GetSpellCharges(self.spellID)
+        end
         self.count:SetText((max and max>1) and num or '')
         self.texture:SetDesaturated(num and num>0)
     end
     btn:SetScript('OnEnter', function(self)
+        if not self.spellID then
+            return
+        end
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:SetSpellByID(self.spellID)
@@ -259,16 +265,15 @@ local function Init_Spell_Button()
     btn:SetScript('OnHide', btn.UnregisterAllEvents)
 
     function btn:set()
-        if not self.CanChangeAttribute() then
+        if not self:CanChangeAttribute() then
             return
         end
 
         local spellID
         local extBar={}
         if HasExtraActionBar() then
-            local page = GetExtraBarIndex()
             local i = 1
-            local slot = i + (page - 1) * NUM_ACTIONBAR_BUTTONS
+            local slot = i + ((GetExtraBarIndex() or 19) - 1) * (NUM_ACTIONBAR_BUTTONS or 12)
             local action, spellID = GetActionInfo(slot)
             if action == "spell" and spellID then
                 extBar[spellID]=true
@@ -280,7 +285,6 @@ local function Init_Spell_Button()
                 break
             end
         end
-        
         if spellID then
             local name, _, icon = GetSpellInfo(spellID)
             self:SetAttribute("spell1", name or spellID)
@@ -291,8 +295,8 @@ local function Init_Spell_Button()
         end
         self.spellID= spellID
     end
+    btn:set()
     ItemSocketingFrame.SpellButton= btn
-    
 end
 
 
