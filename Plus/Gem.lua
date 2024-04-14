@@ -8,7 +8,8 @@ local Frame
 
 
 local SpellsTab={
-    433397,--/取出宝石
+    433397,--取出宝石
+    405805,--拔出始源之石
 }
 
 for _, spellID in pairs(SpellsTab) do
@@ -214,70 +215,84 @@ local function Init_Spell_Button()
     if UnitAffectingCombat('player') then
         return
     end
-
-    local spellID
-    for _, spell in pairs(SpellsTab) do
-        if IsSpellKnownOrOverridesKnown(spell) then
-            spellID=spell
-            break
-        end
-    end
-
     local btn = ItemSocketingFrame.SpellButton
-    if not btn and spellID then
-        btn= e.Cbtn(Frame, {size={32,32}, icon='hide', type=true})
-        btn:SetAttribute("type1", "spell")
-        btn:Hide()
-        btn:SetPoint('BOTTOMRIGHT', -3, 44)
-        btn.texture= btn:CreateTexture(nil, 'OVERLAY')
-        btn.texture:SetAllPoints(btn)
-        btn.count=e.Cstr(btn, {color={r=1,g=1,b=1}})--nil,nil,nil,true)
-        btn.count:SetPoint('BOTTOMRIGHT',-2, 9)
-
-        function btn:set_count()
-            local num, max= GetSpellCharges(self.spellID)
-            self.count:SetText((max and max>1) and num or '')
-            self.texture:SetDesaturated(num and num>0)
-        end
-        btn:SetScript('OnEnter', function(self)
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:SetSpellByID(self.spellID)
-            e.tips:Show()
-        end)
-        btn:SetScript('OnLeave', GameTooltip_Hide)
-        btn:SetScript("OnEvent", function(self, event)
-            if event=='SPELL_UPDATE_USABLE' then
-                self:set_count()
-            elseif event=='SPELL_UPDATE_COOLDOWN' then
-                e.SetItemSpellCool({frame=self, spell=self.spellID})
-            end
-        end)
-
-        btn:SetScript('OnShow', function(self)
-            self:RegisterEvent('SPELL_UPDATE_USABLE')
-            self:RegisterEvent('SPELL_UPDATE_COOLDOWN')
-            e.SetItemSpellCool({frame=self, spell=self.spellID})
-            self:set_count()
-        end)
-        btn:SetScript('OnHide', btn.UnregisterAllEvents)
-
-        function btn:set()
-           local show = self.spellID and IsSpellKnownOrOverridesKnown(self.spellID) and self:CanChangeAttribute()
-           if show then
-                local name, _, icon = GetSpellInfo(self.spellID)
-                self:SetAttribute("spell1", name or spellID)
-                self.texture:SetTexture(icon or nil)
-            end
-            if not UnitAffectingCombat('player') then
-                self:SetShown(show)
-            end
-        end
-    end
     if btn then
-        btn.spellID= spellID
         btn:set()
+        return
     end
+
+    btn= e.Cbtn(Frame, {size={32,32}, icon='hide', type=true})
+    btn:SetAttribute("type1", "spell")
+    btn:Hide()
+    btn:SetPoint('BOTTOMRIGHT', -3, 44)
+    btn.texture= btn:CreateTexture(nil, 'OVERLAY')
+    btn.texture:SetAllPoints(btn)
+    btn.count=e.Cstr(btn, {color={r=1,g=1,b=1}})--nil,nil,nil,true)
+    btn.count:SetPoint('BOTTOMRIGHT',-2, 9)
+
+    function btn:set_count()
+        local num, max= GetSpellCharges(self.spellID)
+        self.count:SetText((max and max>1) and num or '')
+        self.texture:SetDesaturated(num and num>0)
+    end
+    btn:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:SetSpellByID(self.spellID)
+        e.tips:Show()
+    end)
+    btn:SetScript('OnLeave', GameTooltip_Hide)
+    btn:SetScript("OnEvent", function(self, event)
+        if event=='SPELL_UPDATE_USABLE' then
+            self:set_count()
+        elseif event=='SPELL_UPDATE_COOLDOWN' then
+            e.SetItemSpellCool({frame=self, spell=self.spellID})
+        end
+    end)
+
+    btn:SetScript('OnShow', function(self)
+        self:RegisterEvent('SPELL_UPDATE_USABLE')
+        self:RegisterEvent('SPELL_UPDATE_COOLDOWN')
+        e.SetItemSpellCool({frame=self, spell=self.spellID})
+        self:set_count()
+    end)
+    btn:SetScript('OnHide', btn.UnregisterAllEvents)
+
+    function btn:set()
+        if not self.CanChangeAttribute() then
+            return
+        end
+
+        local spellID
+        local extBar={}
+        if HasExtraActionBar() then
+            local page = GetExtraBarIndex()
+            local i = 1
+            local slot = i + (page - 1) * NUM_ACTIONBAR_BUTTONS
+            local action, spellID = GetActionInfo(slot)
+            if action == "spell" and spellID then
+                extBar[spellID]=true
+            end
+        end
+        for _, spell in pairs(SpellsTab) do
+            if extBar[spell] or IsSpellKnownOrOverridesKnown(spell) then
+                spellID=spell
+                break
+            end
+        end
+        
+        if spellID then
+            local name, _, icon = GetSpellInfo(spellID)
+            self:SetAttribute("spell1", name or spellID)
+            self.texture:SetTexture(icon or nil)
+        end
+        if not UnitAffectingCombat('player') then
+            self:SetShown(spellID and true or false)
+        end
+        self.spellID= spellID
+    end
+    ItemSocketingFrame.SpellButton= btn
+    
 end
 
 
