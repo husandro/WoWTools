@@ -15,31 +15,42 @@ for _, spellID in pairs(SpellsTab) do
     e.LoadDate({id=spellID, type='spell'})
 end
 
-local GEM_TYPE_INFO
+local AUCTION_CATEGORY_GEMS= AUCTION_CATEGORY_GEMS
+local GEM_TYPE_INFO =	{
+    Yellow = EMPTY_SOCKET_YELLOW,--黄色插槽',
+    Red = EMPTY_SOCKET_RED,--红色插槽',
+    Blue = EMPTY_SOCKET_BLUE,--蓝色插槽',
+    Hydraulic = EMPTY_SOCKET_HYDRAULIC,--染煞',
+    Cogwheel = EMPTY_SOCKET_COGWHEEL,--齿轮插槽',
+    Meta = EMPTY_SOCKET_META,--多彩插槽',
+    Prismatic =EMPTY_SOCKET_PRISMATIC,--棱彩插槽',
+    PunchcardRed = EMPTY_SOCKET_PUNCHCARDRED,--红色打孔卡插槽',
+    PunchcardYellow = EMPTY_SOCKET_PUNCHCARDYELLOW,--黄色打孔卡插槽',
+    PunchcardBlue = EMPTY_SOCKET_PUNCHCARDBLUE,--蓝色打孔卡插槽',
+    Domination = EMPTY_SOCKET_DOMINATION,--统御插槽',
+    Cypher = EMPTY_SOCKET_CYPHER,--晶态插槽',
+    Tinker = EMPTY_SOCKET_TINKER,--匠械插槽',
+    Primordial = EMPTY_SOCKET_PRIMORDIAL,--始源镶孔',
+}--EMPTY_SOCKET_NO_COLOR,--棱彩插槽
+
 
 local function creatd_button(index)
     local btn= e.Cbtn(Frame, {button='ItemButton', icon='hide'})
     btn:SetScript('OnClick', function(self, d)
-        if not self.itemLocation then
-            return
+        if d=='LeftButton' then
+            C_Container.PickupContainerItem(self.bagID, self.slotID)
+        elseif d=='RightButton' then
+            ClearCursor()
         end
-        --if self.bag and self.slot then
-            if d=='LeftButton' then
-                C_Container.PickupContainerItem(self.itemLocation:GetSlotAndBagID())
-            elseif d=='RightButton' then
-                ClearCursor()
-            end
     end)
 
     btn:SetScript('OnEnter', function(self)
-        if self.itemLocation then--self.bag and self.slot then
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            --e.tips:SetBagItem(self.bag, self.slot)
-            e.tips:SetItemLocation(self.itemLocation)
-            e.tips:Show()
-            e.FindBagItem(true, {itemLocation=itemLocation})--{bag={bag=self.bag, slot=self.slot}})
-        end
+        e.tips:SetOwner(ItemSocketingFrame, "ANCHOR_RIGHT")
+        e.tips:ClearLines()
+        e.tips:SetBagItem(self.bagID, self.slotID)
+        e.tips:Show()
+        e.FindBagItem(true, {bag={bag=self.bagID, slot=self.slotID}})
+
     end)
     btn:SetScript('OnLeave', function()
         GameTooltip_Hide()
@@ -95,13 +106,13 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
                 then
                     local date= e.GetTooltipData({hyperLink=info.hyperlink, index=2})
                     local type= date.indexText and date.indexText:match('|c........(.-)|r') or date.indexText or ' '
-                    
                     items[type]= items[type] or {}
                     table.insert(items[type], {
                         info= info,
-                        itemLocation= ItemLocation:CreateFromBagAndSlot(bag, slot),
+                        bag=bag,
+                        slot=slot,
                         level= level or 0,
-                        --find=find
+                        expacID= expacID or 0,
                     })
                 end
             end
@@ -111,7 +122,9 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
 
     for _, tab in pairs(items) do
         table.sort(tab, function(a, b)
-            if a.info.quality== b.info.quality then
+            if a.expacID> b.expacID then
+                return true
+            elseif a.info.quality== b.info.quality then
                 return a.level>b.level
             else
                 return a.info.quality>b.info.quality
@@ -124,29 +137,41 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
     local x, y, index= 0, 0, 1
 
     for type, tab in pairs(items) do
-        for _, info in pairs(tab) do
+        for i, info in pairs(tab) do
             local btn= Buttons[index] or creatd_button(index)
             btn:ClearAllPoints()
             btn:SetPoint('TOPRIGHT', x, y)
-            btn.itemLocation= info.itemLocation
-            if index==1 then
-                btn.type:SetText(type)
+            if i==1 then
+                local findGem
+                local gemName= type:gsub(AUCTION_CATEGORY_GEMS, '')
+                for name in pairs(ItemSocketingFrame.typeTab or {}) do
+                    if name:find(gemName) then
+                        type= format('|cnGREEN_FONT_COLOR:%s|r', type or '')
+                        findGem=true
+                        break
+                    end
+                end
+                btn.type:SetText(type or '')
+                btn.type:SetScale(findGem and 1.35 or 1)
             else
-                btn.type:SetText("")
+                btn.type:SetText('')
             end
+            
             btn.level:SetText(info.level>1 and info.level or '')
-            btn:SetItemLocation(info.itemLocation)
+            btn:SetItem(info.info.hyperlink)
+            btn.bagID= info.bag
+            btn.slotID= info.slot
             btn:SetItemButtonCount(info.info.stackCount)
-            btn:SetAlpha(info.isLocked and 0.3 or 1)
+            btn:SetAlpha(info.info.isLocked and 0.3 or 1)
             btn:SetShown(true)
             e.Get_Gem_Stats(nil, info.info.hyperlink, btn)
-            x=x-22
+            x=x-40--34
             index= index+1
         end
         x=0
-        y=y-22
+        y=y-40--34
     end
-    
+
 
     for i= index+1, #Buttons, 1 do
         Buttons[i]:SetShown(false)
@@ -200,10 +225,10 @@ local function Init_Spell_Button()
 
     local btn = ItemSocketingFrame.SpellButton
     if not btn and spellID then
-        btn= e.Cbtn(ItemSocketingFrame, {size={32,32}, icon='hide', type=true})
+        btn= e.Cbtn(Frame, {size={32,32}, icon='hide', type=true})
         btn:SetAttribute("type1", "spell")
         btn:Hide()
-        btn:SetPoint('BOTTOMLEFT', ItemSocketingFrame, 'BOTTOMRIGHT', 2, 35)
+        btn:SetPoint('BOTTOMRIGHT', -3, 44)
         btn.texture= btn:CreateTexture(nil, 'OVERLAY')
         btn.texture:SetAllPoints(btn)
         btn.count=e.Cstr(btn, {color={r=1,g=1,b=1}})--nil,nil,nil,true)
@@ -276,7 +301,7 @@ local function Init()
     }--EMPTY_SOCKET_NO_COLOR,--棱彩插槽
 
     Frame= CreateFrame("Frame", nil, ItemSocketingFrame)
-    Frame:SetPoint('BOTTOMRIGHT', 0, -20)
+    Frame:SetPoint('BOTTOMRIGHT', 0, -10)
     Frame:SetSize(1,1)
     ItemSocketingFrame:HookScript('OnShow', function()
         local tab={
@@ -287,17 +312,38 @@ local function Init()
         }
         FrameUtil.RegisterFrameForEvents(Frame, tab)
         set_Gem()
+        Init_Spell_Button()
     end)
     ItemSocketingFrame:HookScript('OnHide', function()
         Frame:UnregisterAllEvents()
         for index= 1, #Buttons do
             Buttons[index]:Reset()
+            Buttons[index].level:SetText('')
+            Buttons[index].type:SetText('')
         end
     end)
     Frame:SetScript('OnEvent', set_Gem)
 
-    Init_Spell_Button()
-    ItemSocketingFrame:HookScript('OnShow', Init_Spell_Button)
+    
+    hooksecurefunc('ItemSocketingFrame_Update', function()
+        local numSockets = GetNumSockets();
+        ItemSocketingFrame.typeTab={}
+        for i, socket in ipairs(ItemSocketingFrame.Sockets) do
+            if ( i <= numSockets ) then
+                local name= GEM_TYPE_INFO[GetSocketTypes(i)]
+                if name then
+                    ItemSocketingFrame.typeTab[name]=true
+                end
+                if not socket.type and name then
+                    socket.type=e.Cstr(socket)
+                    socket.type:SetPoint('BOTTOM', socket, 'TOP', 0, 2)
+                end
+                if socket.type then
+                    socket.type:SetText(name or '')
+                end
+            end
+        end
+    end)
 end
 
 
