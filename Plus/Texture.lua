@@ -2179,8 +2179,8 @@ local function Init_Event(arg1)
 
     elseif arg1=='Blizzard_ScrappingMachineUI' then--分解 ScrappingMachineFrame
         e.Set_NineSlice_Color_Alpha(ScrappingMachineFrame, true)
-        hide_Texture(ScrappingMachineFrameBg)
-        set_Alpha_Color(ScrappingMachineFrame.Background, nil, nil,min03)
+        set_Alpha_Color(ScrappingMachineFrameBg, nil, nil, min03)
+        hide_Texture(ScrappingMachineFrame.Background)
         hide_Texture(ScrappingMachineFrameInset.Bg)
         e.Set_NineSlice_Color_Alpha(ScrappingMachineFrameInset, true)
     end
