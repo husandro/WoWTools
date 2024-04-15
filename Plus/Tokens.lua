@@ -19,7 +19,7 @@ local Save={
 }
 local Button
 local TrackButton
-
+local Initializer
 
 for itemID, _ in pairs(Save.item) do
 	e.LoadDate({id=itemID, type='item'})--加载 item quest spell
@@ -91,8 +91,6 @@ local function Get_Item(itemID)
 	if icon and num>0 then
 
 		itemQuality = C_Item.GetItemQualityByID(itemID)
-		local hex = itemQuality and select(4, C_Item.GetItemQualityColor(itemQuality))
-		hex= hex and '|c'..hex
 
 		local numText
 		if bag==num then
@@ -110,15 +108,16 @@ local function Get_Item(itemID)
 			end
 		end
 
-		name= C_Item.GetItemNameByID(itemID)
+		name= e.cn(C_Item.GetItemNameByID(itemID)) or ''
 
 		local nameText
+		local hex= select(4, C_Item.GetItemQualityColor(itemQuality)) or 'ffffffff'
 		if Save.nameShow then
-			name= e.cn(name)
-			nameText = (name and hex) and hex..name..'|r' or name
+			nameText= '|c'..hex..name..'|r'
 		else
-			numText= hex and hex..numText or numText
+			numText= '|c'..hex..numText..'|r'
 		end
+
 		if Save.toRightTrackText then--向右平移
 			text=(nameText and nameText..' ' or '')..numText
 		else
@@ -134,12 +133,12 @@ end
 
 local function Get_Currency(currencyID, index)--货币
 	local info, num, total, percent, isMax, canWeek, canEarned, canQuantity= e.GetCurrencyMaxInfo(currencyID, index)
-    --local info= Get_For_index_To_currencyID(currencyID, index)--从currencyID, index中取得 info, currencyID
+
 	local text
     if not info
 		or info.isHeader
 		or not info.iconFileID
-		--or not info.quantity or info.quantity<0
+
 		or (info.quantity==0 and not (canWeek or canEarned or canQuantity))
 	then
 		return
@@ -348,7 +347,7 @@ local function Set_TrackButton_Text()
 
 					e.tips:SetCurrencyByID(self.currencyID)
 				end
-				e.tips:AddDoubleLine(id, e.cn(addName))
+				e.tips:AddDoubleLine(id, Initializer:GetName())
 				e.tips:Show()
 				Set_TrackButton_Pushed(true, self.text)--提示
 			end)
@@ -479,7 +478,7 @@ local function MenuList_Item(level)
 			func= function(_, arg1)
 				Save.item[arg1]= nil
 				Set_TrackButton_Text()
-				print(id, e.cn(addName), e.onlyChinese and '移除' or REMOVE, select(2, C_Item.GetItemInfo(itemID)) or ('itemID '..itemID))
+				print(id, Initializer:GetName(), e.onlyChinese and '移除' or REMOVE, select(2, C_Item.GetItemInfo(itemID)) or ('itemID '..itemID))
 			end
 		}
 		e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -495,7 +494,7 @@ local function MenuList_Item(level)
 			if IsShiftKeyDown() then
 				Save.item= {}
 				Set_TrackButton_Text()
-				print(id, e.cn(addName), e.onlyChinese and '全部清除' or CLEAR_ALL)
+				print(id, Initializer:GetName(), e.onlyChinese and '全部清除' or CLEAR_ALL)
 			end
 		end
 	}
@@ -595,7 +594,7 @@ local function Init_TrackButton()
 			self:set_Texture(C_Item.GetItemIconByID(itemID))
 		else
 
-			e.tips:AddDoubleLine(id, e.cn(addName))
+			e.tips:AddDoubleLine(id, Initializer:GetName())
 			e.tips:AddLine(' ')
 			e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭货币页面' or BINDING_NAME_TOGGLECURRENCY, e.Icon.left)
 			e.tips:AddDoubleLine((e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU)..' '..e.GetShowHide(Save.str), e.Icon.right)
@@ -648,7 +647,7 @@ local function Init_TrackButton()
 			Save.scaleTrackButton=n
 			self:set_Scale()
 			self:set_Tooltips()
-			print(id, e.cn(addName), e.onlyChinese and '缩放' or UI_SCALE, n)
+			print(id, Initializer:GetName(), e.onlyChinese and '缩放' or UI_SCALE, n)
 		end
 	end)
 	TrackButton:SetScript("OnMouseDown", function(self, d)
@@ -660,7 +659,7 @@ local function Init_TrackButton()
 		local infoType, itemID, itemLink = GetCursorInfo()
         if infoType == "item" and itemID then
 			Save.item[itemID]= not Save.item[itemID] and true or nil
-			print(id, e.cn(addName), e.onlyChinese and '追踪' or TRACKING,
+			print(id, Initializer:GetName(), e.onlyChinese and '追踪' or TRACKING,
 					Save.item[itemID] and
 					('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.select2)
 					or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2),
@@ -690,7 +689,7 @@ local function Init_TrackButton()
 							Save.str= not Save.str and true or nil
 							TrackButton:set_Texture()
 							TrackButton.Frame:set_shown()
-							print(id, e.cn(addName), e.GetShowHide(Save.str))
+							print(id, Initializer:GetName(), e.GetShowHide(Save.str))
 						end
 					}
 					e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -748,6 +747,16 @@ local function Init_TrackButton()
 						end
 					}
 					e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+					e.LibDD:UIDropDownMenu_AddSeparator(level)
+					e.LibDD:UIDropDownMenu_AddButton({
+						text= e.onlyChinese and '选项' or OPTIONS,
+						notCheckable=true,
+						icon= 'mechagon-projects',
+						func= function()
+							e.OpenPanelOpting(Initializer:GetName())
+						end
+					}, level)
 				end, 'MENU')
 			end
 			e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
@@ -888,7 +897,7 @@ local function set_ItemInteractionFrame_Currency(self)
 					e.tips:ClearLines()
 					e.tips:SetCurrencyByID(self2.chargeCurrencyTypeId)
 					e.tips:AddLine(' ')
-					e.tips:AddDoubleLine(id, e.cn(addName))
+					e.tips:AddDoubleLine(id, Initializer:GetName())
 					e.tips:Show()
 				end
 			end)
@@ -935,8 +944,10 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 	if not frame or not frame.index then
 		return
 	end
-	local info, currencyID = Get_For_index_To_currencyID(nil, frame.index)
-	if not frame.isHeader and info and currencyID  and not frame.check then
+	local info, num, total, percent, isMax, canWeek, canEarned, canQuantity= e.GetCurrencyMaxInfo(nil, frame.index)
+	local currencyID= info and info.currencyID
+	--local info, currencyID = Get_For_index_To_currencyID(nil, frame.index)
+	if not frame.isHeader and info and not frame.check then
 		frame.check= CreateFrame("CheckButton", nil, frame, "InterfaceOptionsCheckButtonTemplate")
 		frame.check:SetPoint('LEFT', -4,0)
 		frame.check:SetScript('OnClick', function(self)
@@ -954,7 +965,7 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 				e.tips:AddLine(" ")
 			end
 			e.tips:AddDoubleLine(e.onlyChinese and '追踪' or TRACKING, e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
-			e.tips:AddDoubleLine(id, e.cn(addName))
+			e.tips:AddDoubleLine(id, Initializer:GetName())
 			e.tips:Show()
 		end)
 		frame.check:SetScript('OnLeave', GameTooltip_Hide)
@@ -970,43 +981,21 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 		frame.check:SetAlpha(Save.tokens[currencyID] and 1 or 0.5)
 	end
 
-	if info and frame.Count then--设置，数量，颜色		
-		local canQuantity= info.maxQuantity and info.maxQuantity>0--最大数 quantity maxQuantity
-		local canWeek= info.canEarnPerWeek and info.maxWeeklyQuantity and info.maxWeeklyQuantity>0--本周 quantityEarnedThisWeek maxWeeklyQuantity
-		local canEarned= info.useTotalEarnedForMaxQty and canQuantity--赛季 totalEarned已获取 maxQuantity
-		local isMax= (canWeek and info.maxWeeklyQuantity==info.quantityEarnedThisWeek)
-				or (canEarned and info.totalEarned==info.maxQuantity)
-				or (canQuantity and info.quantity==info.maxQuantity)
-
+	if info and frame.Count then--设置，数量，颜色	
 		if isMax then
 			frame.Count:SetTextColor(1,0,0)
-
 		elseif canWeek or canEarned or canQuantity then
 			frame.Count:SetTextColor(0,1,0)
 		else
 			frame.Count:SetTextColor(1,1,1)
 		end
 
-		local percent
-		if not isMax then
-			local num, to
-			if canWeek then
-				num, to= info.quantityEarnedThisWeek, info.maxWeeklyQuantity
-			elseif canEarned then
-				num, to= info.totalEarned, info.maxQuantity
-			elseif canQuantity then
-				num, to=  info.quantity, info.maxQuantity
-			end
-			if num and to and num<to then
-				percent=  format('(%d%%) ', math.modf(num/to*100))
-			end
-		end
 		if percent and not frame.percentText then
-			frame.percentText= e.Cstr(frame, {color={r=0,g=1,b=0}})
+			frame.percentText= e.Cstr(frame, {color={r=1,g=1,b=1}})
 			frame.percentText:SetPoint('RIGHT', frame.Count, 'LEFT')
 		end
 		if frame.percentText then
-			frame.percentText:SetText(percent or '')
+			frame.percentText:SetText(percent and format('%d%%', percent) or '')
 		end
 	end
 
@@ -1069,7 +1058,7 @@ local function InitMenu(_, level, menuList)--主菜单
 				func= function(_, arg1)
 					Save.tokens[arg1]=nil
 					e.call('TokenFrame_Update')
-					print(id, e.cn(addName), e.onlyChinese and '移除' or REMOVE, C_CurrencyInfo.GetCurrencyLink(arg1) or arg1)
+					print(id, Initializer:GetName(), e.onlyChinese and '移除' or REMOVE, C_CurrencyInfo.GetCurrencyLink(arg1) or arg1)
 				end
 			}
 			e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1100,7 +1089,7 @@ local function InitMenu(_, level, menuList)--主菜单
 						local n= s.editBox:GetNumber()
 						if n then
 							Save.tokens[n]=0
-							print(id, e.cn(addName), e.onlyChinese and '添加' or ADD,  C_CurrencyInfo.GetCurrencyLink(n))
+							print(id, Initializer:GetName(), e.onlyChinese and '添加' or ADD,  C_CurrencyInfo.GetCurrencyLink(n))
 							e.call('TokenFrame_Update')
 						end
 					end,
@@ -1142,7 +1131,7 @@ local function InitMenu(_, level, menuList)--主菜单
 				if IsShiftKeyDown() then
 					Save.tokens= {}
 					e.call('TokenFrame_Update')
-					print(id, e.cn(addName), e.onlyChinese and '全部清除' or CLEAR_ALL)
+					print(id, Initializer:GetName(), e.onlyChinese and '全部清除' or CLEAR_ALL)
 				end
 			end
 		}
@@ -1177,7 +1166,7 @@ local function InitMenu(_, level, menuList)--主菜单
 					TrackButton:ClearAllPoints()
 					TrackButton:set_Point()
 				end
-				print(id, e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
+				print(id, Initializer:GetName(), e.onlyChinese and '重置位置' or RESET_POSITION)
 			end
 		}
 		e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1196,7 +1185,7 @@ local function InitMenu(_, level, menuList)--主菜单
 		func= function()
 			Save.Hide= not Save.Hide and true or nil
 			Init_TrackButton()
-			print(id, e.cn(addName), e.onlyChinese and '追踪' or TRACKING, e.GetEnabeleDisable(not Save.Hide))
+			print(id, Initializer:GetName(), e.onlyChinese and '追踪' or TRACKING, e.GetEnabeleDisable(not Save.Hide))
 		end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1242,8 +1231,9 @@ local function InitMenu(_, level, menuList)--主菜单
 			Save.hideCurrencyMax= not Save.hideCurrencyMax and true or nil
 			Button:set_Event()--已达到资源上限
 			if not Save.hideCurrencyMax then
-				Button:currency_Max(true)--已达到资源上限
-				print(id, e.cn(addName), 'Test', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已达到资源上限' or SPELL_FAILED_CUSTOM_ERROR_248))
+				Button.currencyMax={}--已达到资源上限
+				Button:currency_Max()
+				print(id, Initializer:GetName(), 'Test', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已达到资源上限' or SPELL_FAILED_CUSTOM_ERROR_248))
 			end
 		end
     }
@@ -1314,7 +1304,7 @@ local function Init()
 		local infoType, itemID, itemLink = GetCursorInfo()
         if infoType == "item" and itemID then
 			Save.item[itemID]= not Save.item[itemID] and true or nil
-			print(id, e.cn(addName), e.onlyChinese and '追踪' or TRACKING,
+			print(id, Initializer:GetName(), e.onlyChinese and '追踪' or TRACKING,
 					Save.item[itemID] and
 					('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.select2)
 					or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2),
@@ -1349,7 +1339,7 @@ local function Init()
 		end
 		e.tips:AddLine(' ')
 
-		e.tips:AddDoubleLine(id, e.cn(addName))
+		e.tips:AddDoubleLine(id, Initializer:GetName())
 		e.tips:Show()
 		self.texture:SetAlpha(1)
 		Set_TrackButton_Pushed(true)--提示
@@ -1392,7 +1382,7 @@ local function Init()
 		e.tips:SetOwner(self, "ANCHOR_LEFT")
 		e.tips:ClearLines()
 		e.tips:AddDoubleLine(' ', e.onlyChinese and '展开选项|A:editmode-down-arrow:16:11:0:-7|a' or HUD_EDIT_MODE_EXPAND_OPTIONS)
-		e.tips:AddDoubleLine(id, e.cn(addName))
+		e.tips:AddDoubleLine(id, Initializer:GetName())
 		e.tips:Show()
 	end)
 
@@ -1412,7 +1402,7 @@ local function Init()
 		e.tips:SetOwner(self, "ANCHOR_LEFT")
 		e.tips:ClearLines()
 		e.tips:AddDoubleLine(' ',e.onlyChinese and '收起选项|A:editmode-up-arrow:16:11:0:3|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS)
-		e.tips:AddDoubleLine(id, e.cn(addName))
+		e.tips:AddDoubleLine(id, Initializer:GetName())
 		e.tips:Show()
 	end)
 
@@ -1443,59 +1433,43 @@ local function Init()
 	end)
 	Button.bag:SetScript('OnLeave', GameTooltip_Hide)
 
-
-	function Button:currency_Max(init, curID)--已达到资源上限
-		self.currencyMax= (init or not self.currencyMax) and {} or self.currencyMax
-		local text
+	Button.currencyMax={}
+	function Button:currency_Max(curID)--已达到资源上限
+		local tab={}
 		if curID then
-			local info = C_CurrencyInfo.GetCurrencyInfo(curID)
-			if info then
-				if info and info.quantity and info.quantity>0
-					and (
-						(info.maxQuantity and info.maxQuantity>0 and info.quantity==info.maxQuantity)--最大数
-						or (info.canEarnPerWeek and info.canEarnPerWeek>0 and info.maxWeeklyQuantity==info.quantityEarnedThisWeek)--本周
-						or (info.useTotalEarnedForMaxQty and info.totalEarned==info.maxQuantity)--赛季
-					)
-				then
-					text= C_CurrencyInfo.GetCurrencyLink(curID) or info.name or curID
-				end
+			if self.currencyMax[curID] then
+				return
+			end
+			local info, num, total, percent, isMax, canWeek, canEarned, canQuantity= e.GetCurrencyMaxInfo(curID, nil)
+			if info and isMax then
+				tab[info.currencyID]= info.link
 			end
 		else
-			local tab={}
 			for currencyID, _ in pairs(Save.tokens) do
 				if not self.currencyMax[currencyID] then
-					local info = C_CurrencyInfo.GetCurrencyInfo(currencyID)
-					if info and info.quantity and info.quantity>0
-						and (
-							(info.maxQuantity and info.maxQuantity>0 and info.quantity==info.maxQuantity)--最大数
-							or (info.canEarnPerWeek and info.canEarnPerWeek>0 and info.maxWeeklyQuantity==info.quantityEarnedThisWeek)--本周
-							or (info.useTotalEarnedForMaxQty and info.totalEarned==info.maxQuantity)--赛季
-						)
-					then
-						tab[currencyID]= C_CurrencyInfo.GetCurrencyLink(currencyID) or info.name or currencyID
+					local info, _, total, percent, isMax, canWeek, canEarned, canQuantity= e.GetCurrencyMaxInfo(currencyID, nil)
+					if info and isMax then
+						tab[currencyID]= info.link
 					end
 				end
 			end
 			for i=1, C_CurrencyInfo.GetCurrencyListSize() do
-				local info, currencyID, link= Get_For_index_To_currencyID(nil,i)--从 currencyID, index中取得 info, currencyID
-				if info and info.quantity and info.quantity>0
-					and currencyID and link and currencyID and not self.currencyMax[currencyID]
-					and (
-						(info.maxQuantity and info.maxQuantity>0 and info.quantity==info.maxQuantity)--最大数
-						or (info.canEarnPerWeek and info.canEarnPerWeek>0 and info.maxWeeklyQuantity==info.quantityEarnedThisWeek)--本周
-						or (info.useTotalEarnedForMaxQty and info.totalEarned==info.maxQuantity)--赛季
-					)
+				local info, num, total, percent, isMax, canWeek, canEarned, canQuantity= e.GetCurrencyMaxInfo(nil, i)
+				if info
+					and not self.currencyMax[info.currencyID]
+					and isMax
 				then
-					tab[currencyID]= link
+					tab[info.currencyID]= info.link
 				end
 			end
-			for currencyID, link in pairs(tab) do
-				text= (text and text..' ' or '|cnGREEN_FONT_COLOR:')..link
-				self.currencyMax[currencyID]=true
-			end
+		end
+		local text
+		for currencyID, link in pairs(tab) do
+			text= (text or '')..link
+			self.currencyMax[currencyID]=true
 		end
 		if text then
-			print(id, e.cn(addName), text, '|r|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已达到资源上限' or SPELL_FAILED_CUSTOM_ERROR_248))
+			print(id, Initializer:GetName(), text, '|r|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已达到资源上限' or SPELL_FAILED_CUSTOM_ERROR_248))
 		end
 	end
 
@@ -1507,7 +1481,7 @@ local function Init()
 		end
 	end
 	Button:SetScript('OnEvent', function(self, _, arg1)
-		if arg1 and not self.currencyMax[arg1] then
+		if arg1 then
 			self:currency_Max(nil, arg1)
 		end
 	end)
@@ -1526,7 +1500,7 @@ local function Init()
 		end)
 
 		if not Save.hideCurrencyMax then
-			Button:currency_Max(true)--已达到资源上限
+			Button:currency_Max()--已达到资源上限
 			Button:set_Event()--已达到资源上限
 		end
 
@@ -1564,13 +1538,13 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 			Save.item= Save.item or {}
 
 			--添加控制面板
-			e.AddPanel_Check({
+			Initializer= e.AddPanel_Check({
 				name= '|A:bags-junkcoin:0:0|a'..(e.onlyChinese and '货币' or addName),
-				tooltip= e.cn(addName),
+				tooltip= addName,
 				value= not Save.disabled,
 				func= function()
 					Save.disabled= not Save.disabled and true or nil
-					print(e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+					print(id, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
 				end
 			})
 
