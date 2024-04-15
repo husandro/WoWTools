@@ -951,6 +951,7 @@ function Set_StableFrame_List()
 
     for i=Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX+ 1, Constants.PetConsts.NUM_PET_SLOTS do
         local btn= CreateFrame('Button', nil, frame, 'StableActivePetButtonTemplate', i)
+        btn.Icon:SetHorizTile(true)
         --btn:SetScript('OnLeave', GameTooltip_Hide)
         btn:HookScript('OnEnter', function(self)
             if not self.petData then return end
