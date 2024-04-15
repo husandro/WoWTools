@@ -663,7 +663,7 @@ local function set_pet_tooltips(frame, pet, y)
         end
         i=i+1
     end
-    e.tips:AddDoubleLine(format('|cff00ccff%s', e.onlyChinese and '食物' or POWER_TYPE_FOOD), format('|cff00ccff%s', BuildListString(GetStablePetFoodTypes(pet.slotID))))
+    e.tips:AddDoubleLine(format('|cff00ccff%s', e.onlyChinese and '食物' or POWER_TYPE_FOOD), format('|cff00ccff%s', BuildListString(GetStablePetFoodTypes(pet.slotID)) or ''))
 end
 
 
@@ -960,6 +960,10 @@ function Set_StableFrame_List()
 
     for i=Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX+ 1, Constants.PetConsts.NUM_PET_SLOTS do
         local btn= CreateFrame('Button', nil, frame, 'StableActivePetButtonTemplate', i)
+        --[[btn.Text= btn:CreateFontString(nil, 'BACKGROUND')
+        btn.Text=e.Cstr(btn, {layer='BACKGROUND'})
+        btn.Text:SetPoint('CENTER')
+        btn.Text:SetText(i)]]
         btn:HookScript('OnEnter', function(self)
             if not self.petData then return end
             set_pet_tooltips(self, self.petData, 0)
