@@ -946,7 +946,9 @@ function Set_StableFrame_List()
     frame.s= Save.all_List_Size or 28
 
     frame.Bg= frame:CreateTexture(nil, "BACKGROUND")
-    frame.Bg:SetAtlas('pet-list-bg')
+    frame.Bg:SetAtlas('footer-bg')
+    frame.Bg:SetPoint('TOPLEFT')
+
     for i=Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX+ 1, Constants.PetConsts.NUM_PET_SLOTS do
         local btn= CreateFrame('Button', nil, frame, 'StableActivePetButtonTemplate', i)
         --btn:SetScript('OnLeave', GameTooltip_Hide)
@@ -963,22 +965,28 @@ function Set_StableFrame_List()
         btn.Border:Hide()
         frame.Buttons[i]= btn
     end
-    frame.Bg:SetPoint('TOPLEFT', frame.Buttons[Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX+ 1])
-    frame.Bg:SetPoint('BOTTOMRIGHT', frame.Buttons[Constants.PetConsts.NUM_PET_SLOTS])
+    
 
     function frame:set_point()
         if not self:IsShown() then return end
-        local x, y= 0, 0
+
+        local x, y = 0, 0
+        local btnY
         local s= StableFrame:GetHeight()
         for _, btn in pairs(self.Buttons) do
             btn:ClearAllPoints()
             btn:SetPoint('TOPLEFT', x, y)
             y= y-self.s
             if -y> s then
+                btnY=btn
                 y=0
                 x=x+ self.s
             end
         end
+        frame.Bg:ClearAllPoints()
+        frame.Bg:SetPoint('TOPLEFT', frame.Buttons[Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX+ 1])
+        frame.Bg:SetPoint('BOTTOM', btnY)
+        frame.Bg:SetPoint('RIGHT', frame.Buttons[Constants.PetConsts.NUM_PET_SLOTS])
     end
 
     function frame:Refresh()
@@ -1290,6 +1298,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             else
                 if StableFrame then--10.2.7
                     Init_StableFrame_List()
+                    Init_StableFrame_Plus()
                     Init_UI()
                 else
                     self:RegisterEvent('PET_STABLE_SHOW')
