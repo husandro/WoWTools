@@ -812,3 +812,7 @@ function SubscriptionInterstitial_LoadUI()
 	C_AddOns.LoadAddOn("Blizzard_SubscriptionInterstitialUI");
 end
 
+:SetAttribute("spell", flyout[i].spellID)
+:SetAttribute("flyoutID", flyoutID)
+:SetAttribute("flyoutIndex", i)
+:SetAttribute("_onclick", [=[self:Hide(); self:GetFrameRef("RaidUtilityPanel"):Show();]=])

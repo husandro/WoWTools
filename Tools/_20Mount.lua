@@ -31,7 +31,8 @@ local Save={
             --[212653]= true,--闪光术
             [1953]=true,--闪现术
             [115008]=true,--真气突
-            [121536]='player',
+            [121536]=true,--天堂之羽
+            [189110]=true,--地狱火撞击
             
         },
         [FLOOR]={},--{[spellID]=uiMapID}
@@ -210,6 +211,7 @@ local function checkSpell()--检测法术
         for spellID, _ in pairs(Save.Mounts[SPELLS]) do
             if IsSpellKnownOrOverridesKnown(spellID) then
                 button.spellID=spellID
+                --button.spellTarget= target~=true and target or nil
                 break
             end
         end
@@ -362,11 +364,21 @@ local function setClickAtt()--设置 Click属性
     if spellID then
         name, _, icon=GetSpellInfo(spellID)
         if name and icon then
-            button:SetAttribute("type1", "spell")
-            button:SetAttribute("spell1", name)
-            button:SetAttribute('target1', 'mouseover')
-            button.typeSpell=true--提示用
-            button.typeID=spellID
+            if spellID==6544 or spellID==189110 then--6544英勇飞跃 189110地狱火撞击
+                button:SetAttribute("type1", "macro")
+                button:SetAttribute("macrotext1", format('/cast [@cursor]%s', name))
+                button:SetAttribute('unit', nil)
+            else
+                button:SetAttribute("type1", "spell")
+                button:SetAttribute("spell1", name)
+                if spellID==121536 then--天堂之羽 
+                    button:SetAttribute('unit', "cursor")--mouseover player
+                else
+                    button:SetAttribute('unit', nil)
+                end
+                button.typeSpell=true--提示用
+                button.typeID=spellID
+            end
         else
             e.LoadDate({id=spellID, type='spell'})
             button.Combat=true
@@ -374,12 +386,14 @@ local function setClickAtt()--设置 Click属性
     elseif button.itemID then
         button:SetAttribute("type1", "item")
         button:SetAttribute("item1", C_Item.GetItemNameByID(button.itemID)  or button.itemID)
+        button:SetAttribute('unit', nil)
         button.typeID= MountTab[type][1]
         button.typeSpell=nil--提示用
         button.typeID=spellID
     else
         button:SetAttribute("item1", nil)
         button:SetAttribute("spell1", nil)
+        button:SetAttribute('unit', nil)
         button.typeSpell=nil--提示用
         button.typeID=nil
     end
@@ -1392,7 +1406,7 @@ local function Init()
         sizi=nil,
     })
     button:SetAttribute("type1", "spell")
-    button:SetAttribute("target-spell", "cursor")
+    --button:SetAttribute('unit', "player")
     button:SetAttribute("alt-type1", "spell")
     button:SetAttribute("shift-type1", "spell")
     button:SetAttribute("ctrl-type1", "spell")
