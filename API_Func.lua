@@ -399,9 +399,10 @@ end
 
 
 
-
-
-
+--[[
+ChatEdit_TryInsertChatLink(link)
+ChatEdit_LinkItem(itemID, itemLink)
+--]]
 function e.Chat(text, name, printText)
     if text then
         if name then

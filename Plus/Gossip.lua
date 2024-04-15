@@ -3023,7 +3023,8 @@ local function Init_Quest()
     QuestFrame.sel.questIDLabel:SetScript('OnMouseDown',function(self)
         local questID= QuestButton:questInfo_GetQuestID()
         if questID then
-            e.Chat(GetQuestLink(questID), nil, true)
+            ChatEdit_TryInsertQuestLinkForQuestID(questID)
+            --e.Chat(GetQuestLink(questID), nil, true)
         end
     end)
 
