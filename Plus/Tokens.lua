@@ -703,6 +703,7 @@ local function Init_TrackButton()
 						text= e.onlyChinese and '向右平移' or BINDING_NAME_STRAFERIGHT,
 						checked= Save.toRightTrackText,
 						keepShownOnClick=true,
+						icon= 'NPE_ArrowRight',
 						func= function()
 							Save.toRightTrackText = not Save.toRightTrackText and true or nil
 							for _, btn in pairs(TrackButton.btn) do
