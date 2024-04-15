@@ -2980,7 +2980,7 @@ local function Init_Quest()
     QuestFrame.sel=CreateFrame("CheckButton", nil, QuestFrame, 'InterfaceOptionsCheckButtonTemplate')--禁用此npc,任务,选项
     QuestFrame.sel:SetPoint("TOPLEFT", QuestFrame, 40, 20)
     QuestFrame.sel.Text:SetText(e.onlyChinese and '禁用' or DISABLE)
-    QuestFrame.sel.questIDLabel= e.Cstr(QuestFrame.sel, {mouse=true})
+    QuestFrame.sel.questIDLabel= e.Cstr(QuestFrame.sel, {mouse=true})--任务ID
     QuestFrame.sel.questIDLabel:SetPoint('LEFT', QuestFrame.sel.Text, 'RIGHT', 12, 0)
     QuestFrame.sel:SetScript("OnLeave", GameTooltip_Hide)
     QuestFrame.sel:SetScript('OnEnter',function (self)
