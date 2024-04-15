@@ -10,7 +10,20 @@ local Save={
 local panel = CreateFrame("Frame", 'WoWTools')--Panel
 
 
-
+--[[
+e.ReloadPanel(tab)
+e.CSlider(self, {w=, h=, min=, max=, value=, setp=, color=, text=, func=clickfunc, tips=func})
+e.OpenPanelOpting(name, category)
+e.AddPanel_Sub_Category(tab)
+e.AddPanel_Header(layout, title)
+e.AddPanel_Check(tab)
+e.AddPanel_Button(tab)
+e.AddPanel_DropDown(tab)
+e.AddPanel_Check_Button(tab)
+e.GetFormatter1to10(value, minValue, maxValue)
+e.AddPanel_Check_Sider(tab)
+e.AddPanelSider(tab)
+]]
 
 
 

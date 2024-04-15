@@ -31,7 +31,7 @@ local Save={
 local addName= MERCHANT
 local panel= CreateFrame("Frame")
 local RepairSave={date=date('%x'), player=0, guild=0, num=0}
-
+local Initializer
 
 --MerchantFrame.lua
 local bossSave={}
@@ -164,7 +164,7 @@ local function Set_Merchant_Info()--设置, 提示, 信息
                     if not self.itemID then return end
                     e.tips:SetOwner(self, "ANCHOR_LEFT")
 					e.tips:ClearLines()
-                    e.tips:AddDoubleLine(id, e.cn(addName))
+                    e.tips:AddDoubleLine(id, Initializer:GetName())
                     e.tips:AddLine(' ')
                     e.tips:AddDoubleLine('|T236994:0|t'..(e.onlyChinese and '自动购买物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, PURCHASE)), not Save.notAutoBuy and buySave[self.itemID] or (e.onlyChinese and '无' or NONE))
                     local all= C_Item.GetItemCount(self.itemID, true, false, true)
@@ -196,7 +196,7 @@ local function Set_Merchant_Info()--设置, 提示, 信息
                             e.tips:ClearLines()
                             e.tips:SetSpellByID(self.spellID)
                             e.tips:AddLine(' ')
-                            e.tips:AddDoubleLine(id, e.cn(addName))
+                            e.tips:AddDoubleLine(id, Initializer:GetName())
                             e.tips:Show()
                         end
                         self:SetAlpha(0.5)
@@ -304,7 +304,7 @@ end
 
 local function Init_WidthX2()
     if C_AddOns.IsAddOnLoaded("CompactVendor") then
-        print(id, e.cn(addName), format(e.onlyChinese and "|cffff0000与%s发生冲突！|r" or ALREADY_BOUND, 'CompactVendor'), e.onlyChinese and '插件' or ADDONS)
+        print(id, Initializer:GetName(), format(e.onlyChinese and "|cffff0000与%s发生冲突！|r" or ALREADY_BOUND, 'CompactVendor'), e.onlyChinese and '插件' or ADDONS)
     end
 
     MERCHANT_ITEMS_PER_PAGE= Save.MERCHANT_ITEMS_PER_PAGE or MERCHANT_ITEMS_PER_PAGE or 24
@@ -510,7 +510,7 @@ local function Init_StackSplitFrame()
     frame.restButton:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, 'ANCHOR_LEFT')
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddDoubleLine(id, Initializer:GetName())
         e.tips:AddLine(e.onlyChinese and '重置' or RESET)
         e.tips:Show()
     end)
@@ -631,7 +631,7 @@ local function Init_Auto_Repair()
     function AutoRepairCheck:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddDoubleLine(id, Initializer:GetName())
         e.tips:AddDoubleLine(e.onlyChinese and '自动修理所有物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, REPAIR_ALL_ITEMS), e.GetEnabeleDisable(not Save.notAutoRepairAll))
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine('|cffff00ff'..(e.onlyChinese and '记录' or EVENTTRACE_LOG_HEADER), RepairSave.date)
@@ -679,17 +679,17 @@ local function Init_Auto_Repair()
                 RepairAllItems(true)
                 RepairSave.guild=RepairSave.guild+Co
                 RepairSave.num=RepairSave.num+1
-                print(id, e.cn(addName), '|cffff00ff'..(e.onlyChinese and '使用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP)..'|r', GetCoinTextureString(Co))
+                print(id, Initializer:GetName(), '|cffff00ff'..(e.onlyChinese and '使用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP)..'|r', GetCoinTextureString(Co))
                 e.call('MerchantFrame_Update')
             else
                 if GetMoney()>=Co then
                     RepairAllItems()
                     RepairSave.player=RepairSave.player+Co
                     RepairSave.num=RepairSave.num+1
-                    print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '修理花费：' or REPAIR_COST)..'|r', GetCoinTextureString(Co))
+                    print(id, Initializer:GetName(), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '修理花费：' or REPAIR_COST)..'|r', GetCoinTextureString(Co))
                     e.call('MerchantFrame_Update')
                 else
-                    print(id, e.cn(addName), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '失败' or FAILED)..'|r', e.onlyChinese and '修理花费：' or REPAIR_COST, GetCoinTextureString(Co))
+                    print(id, Initializer:GetName(), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '失败' or FAILED)..'|r', e.onlyChinese and '修理花费：' or REPAIR_COST, GetCoinTextureString(Co))
                 end
             end
         end
@@ -829,7 +829,7 @@ local function Init_Auto_Sell_Junk()
     function AutoSellJunkCheck:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddDoubleLine(id, Initializer:GetName())
         e.tips:AddLine('|A:Cursor_lootall_128:0:0|a'..(e.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT)..' Plus')
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '自动出售垃圾' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SELL_ALL_JUNK_ITEMS_EXCLUDE_HEADER), e.GetEnabeleDisable(not Save.notSellJunk))
@@ -893,7 +893,7 @@ local function Init_Auto_Sell_Junk()
         end
         if num > 0 then
             print(
-                id, e.cn(addName),
+                id, Initializer:GetName(),
                 (e.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB)..' |cnGREEN_FONT_COLOR:'..gruop..'|r'..(e.onlyChinese and '组' or AUCTION_PRICE_PER_STACK),
                 '|cnGREEN_FONT_COLOR:'..num..'|r'..(e.onlyChinese and '件' or AUCTION_HOUSE_QUANTITY_LABEL),
                 GetCoinTextureString(preceTotale)
@@ -958,7 +958,7 @@ local function Init_Loot_Plus()
         end
         C_CVar.SetCVar("autoLootDefault", not C_CVar.GetCVarBool("autoLootDefault") and '1' or '0')
         local value= C_CVar.GetCVarBool("autoLootDefault")
-        print(id, e.cn(addName), '|cffff00ff|A:Cursor_lootall_128:0:0|a'..(e.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT)..' Plus|r|n', not e.onlyChinese and AUTO_LOOT_DEFAULT_TEXT or "自动拾取", e.GetEnabeleDisable(value))
+        print(id, Initializer:GetName(), '|cffff00ff|A:Cursor_lootall_128:0:0|a'..(e.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT)..' Plus|r|n', not e.onlyChinese and AUTO_LOOT_DEFAULT_TEXT or "自动拾取", e.GetEnabeleDisable(value))
         if value and not IsModifierKeyDown() then
             for i = GetNumLootItems(), 1, -1 do
                 LootSlot(i)
@@ -969,7 +969,7 @@ local function Init_Loot_Plus()
     check:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddDoubleLine(id, Initializer:GetName())
         e.tips:AddLine('|cffff00ff|A:Cursor_lootall_128:0:0|a'..(e.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT)..' Plus|r')
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '自动拾取' or AUTO_LOOT_DEFAULT_TEXT, (e.onlyChinese and '当前' or REFORGE_CURRENT)..': '..e.GetEnabeleDisable(C_CVar.GetCVarBool("autoLootDefault")))
@@ -987,7 +987,7 @@ local function Init_Loot_Plus()
     check:SetScript('OnEvent', function()
         if IsShiftKeyDown() and not UnitAffectingCombat('player') then
             C_CVar.SetCVar("autoLootDefault", '0')
-            print(id, e.cn(addName),'|cffff00ff|A:Cursor_lootall_128:0:0|a'..(e.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT)..' Plus|r','|cnGREEN_FONT_COLOR:Shift|r', e.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT, e.GetEnabeleDisable(C_CVar.GetCVarBool("autoLootDefault")))
+            print(id, Initializer:GetName(),'|cffff00ff|A:Cursor_lootall_128:0:0|a'..(e.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT)..' Plus|r','|cnGREEN_FONT_COLOR:Shift|r', e.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT, e.GetEnabeleDisable(C_CVar.GetCVarBool("autoLootDefault")))
         elseif C_CVar.GetCVarBool("autoLootDefault") then
             for i = GetNumLootItems(), 1, -1 do
                 LootSlot(i)
@@ -1054,7 +1054,7 @@ local function Init_Menu(_, level, type)
                     arg2= itemLink,
                     func=function(_, arg1, arg2)
                         Save.Sell[arg1]= nil
-                        print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r'..(e.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB)..'|r', arg2, arg1)
+                        print(id, Initializer:GetName(), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r'..(e.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB)..'|r', arg2, arg1)
                     end
                 }
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1086,7 +1086,7 @@ local function Init_Menu(_, level, type)
                 arg2= itemLink,
                 func=function(_, arg1, arg2)
                     Save.bossSave[arg1]=nil
-                    print(id, e.cn(addName), arg2, arg1)
+                    print(id, Initializer:GetName(), arg2, arg1)
                 end,
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1132,7 +1132,7 @@ local function Init_Menu(_, level, type)
                     func=function(_, arg1, arg2)
                         buySave[arg1]=nil
                         Set_Merchant_Info()--设置, 提示, 信息
-                        print(id, e.cn(addName), arg2, arg1)
+                        print(id, Initializer:GetName(), arg2, arg1)
                     end,
                 }
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1170,7 +1170,7 @@ local function Init_Menu(_, level, type)
                     arg2= itemLink,
                     func=function(_, arg1, arg2)
                         Save.noSell[arg1]=nil
-                        print(id, e.cn(addName), arg2, arg1)
+                        print(id, Initializer:GetName(), arg2, arg1)
                         BuybackButton:set_text()--回购，数量，提示
                     end,
                 }
@@ -1311,7 +1311,7 @@ local function Init_Menu(_, level, type)
         keepShownOnClick=true,
         func=function ()
             Save.notPlus = not Save.notPlus and true or nil
-            print(id, e.cn(addName), '|cnRED_FONT_COLOR:',e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(id, Initializer:GetName(), '|cnRED_FONT_COLOR:',e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
     }
     e.LibDD:UIDropDownMenu_AddButton(info)
@@ -1338,7 +1338,7 @@ local function Init_Menu(_, level, type)
         tooltipText= (not e.onlyChinese and HUD_EDIT_MODE_LOOT_FRAME_LABEL..'Shift: '..DISABLE or '拾取窗口 Shift: 禁用')..'|n|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '不在战斗中' or 'not in combat'),
         func= function()
             Save.notAutoLootPlus= not Save.notAutoLootPlus and true or nil
-            print(id, e.cn(addName), '|cnRED_FONT_COLOR:',e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(id, Initializer:GetName(), '|cnRED_FONT_COLOR:',e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
 
     }
@@ -1347,7 +1347,7 @@ local function Init_Menu(_, level, type)
         text= '    |A:SpellIcon-256x256-SellJunk:0:0|a'..(e.onlyChinese and '选项' or OPTIONS),
         notCheckable=true,
         func= function()
-            e.OpenPanelOpting('|A:SpellIcon-256x256-SellJunk:0:0|a'..(e.onlyChinese and '商人' or addName))
+            e.OpenPanelOpting(Initializer:GetName())
         end
     }
     e.LibDD:UIDropDownMenu_AddButton(info)
@@ -1384,7 +1384,7 @@ local function Init_Buy_Items_Button()
     function BuyItemButton:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddDoubleLine(id, Initializer:GetName())
 
         local num= self:set_text()--回购，数量，提示
 
@@ -1434,12 +1434,12 @@ local function Init_Buy_Items_Button()
         if infoType=='item' and itemID then
             if Save.Sell[itemID] then
                 Save.Sell[itemID]=nil
-                print(id, e.cn(addName), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', e.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB, itemLink)
+                print(id, Initializer:GetName(), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', e.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB, itemLink)
             else
                 Save.Sell[itemID]=true
                 Save.noSell[itemID]=nil
                 buySave[itemID]=nil
-                print(id,e.cn(addName), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r'..(e.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB), itemLink )
+                print(id,Initializer:GetName(), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r'..(e.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB), itemLink )
                 AutoSellJunkCheck:set_sell_junk()--出售物品
             end
             ClearCursor()
@@ -1465,11 +1465,11 @@ local function Init_Buy_Items_Button()
                         local num= s.editBox:GetNumber()
                         if num==0 then
                             buySave[itemID]=nil
-                            print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..'|r', itemLink)
+                            print(id, Initializer:GetName(), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..'|r', itemLink)
                         else
                             buySave[itemID]=num
                             Save.Sell[itemID]=nil
-                            print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '购买' or PURCHASE)..'|rx|cffff00ff'..num..'|r', itemLink)
+                            print(id, Initializer:GetName(), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '购买' or PURCHASE)..'|rx|cffff00ff'..num..'|r', itemLink)
                             BuyItemButton:set_buy_item()--购买物品
                         end
                         BuyItemButton:set_text()--回购，数量，提示
@@ -1571,7 +1571,7 @@ local function Init_Buy_Items_Button()
         end
         C_Timer.After(1.5, function()
             for itemLink2, num2 in pairs(Tab) do
-                print(e.cn(addName), e.onlyChinese and '正在购买' or TUTORIAL_TITLE20, '|cnGREEN_FONT_COLOR:'..num2..'|r', itemLink2)
+                print(Initializer:GetName(), e.onlyChinese and '正在购买' or TUTORIAL_TITLE20, '|cnGREEN_FONT_COLOR:'..num2..'|r', itemLink2)
             end
         end)
     end
@@ -1628,7 +1628,7 @@ local function Init_Buyback_Button()
     function BuybackButton:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddDoubleLine(id, Initializer:GetName())
         local num= self:set_text()
         e.tips:AddDoubleLine('|cffff00ff'..(e.onlyChinese and '回购' or BUYBACK), '|cnGREEN_FONT_COLOR: #'..num)
         e.tips:AddLine(' ')
@@ -1679,11 +1679,11 @@ local function Init_Buyback_Button()
         if (infoType=='item' or infoType=='merchant') and itemID then
             if Save.noSell[itemID] then
                 Save.noSell[itemID]=nil
-                print(id, e.cn(addName),'|cnRED_FONT_COLOR:', e.onlyChinese and '移除' or REMOVE, e.onlyChinese and '回购' or BUYBACK, itemLink)
+                print(id, Initializer:GetName(),'|cnRED_FONT_COLOR:', e.onlyChinese and '移除' or REMOVE, e.onlyChinese and '回购' or BUYBACK, itemLink)
             else
                 Save.noSell[itemID]=true
                 Save.Sell[itemID]=nil
-                print(id,e.cn(addName), '|cnGREEN_FONT_COLOR:', e.onlyChinese and '添加' or ADD, e.onlyChinese and '回购' or BUYBACK, itemLink )
+                print(id,Initializer:GetName(), '|cnGREEN_FONT_COLOR:', e.onlyChinese and '添加' or ADD, e.onlyChinese and '回购' or BUYBACK, itemLink )
                 self:set_buyback_item()--购回物品
             end
             ClearCursor()
@@ -1704,7 +1704,7 @@ local function Init_Buyback_Button()
                 if itemID then
                     Save.noSell[itemID]= true
                     Save.Sell[itemID]= nil
-                    print(id,e.cn(addName), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r', e.onlyChinese and '回购' or BUYBACK, GetMerchantItemLink(num) or buybackName)
+                    print(id,Initializer:GetName(), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r', e.onlyChinese and '回购' or BUYBACK, GetMerchantItemLink(num) or buybackName)
                     self:set_buyback_item()--购回物品
                 end
             end
@@ -1750,10 +1750,10 @@ local function Init_Buyback_Button()
         end
         C_Timer.After(0.3, function()
             for index, itemLink in pairs(tab) do
-                print(id, e.cn(addName), index..')|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '购回' or BUYBACK), itemLink)
+                print(id, Initializer:GetName(), index..')|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '购回' or BUYBACK), itemLink)
             end
             for index, info in pairs(no) do
-                print(id, e.cn(addName), index..')|cnRED_FONT_COLOR:'..(e.onlyChinese and '购回失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, BUYBACK, INCOMPLETE)), info[1], GetCoinTextureString(info[2]))
+                print(id, Initializer:GetName(), index..')|cnRED_FONT_COLOR:'..(e.onlyChinese and '购回失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, BUYBACK, INCOMPLETE)), info[1], GetCoinTextureString(info[2]))
             end
         end)
     end
@@ -1874,13 +1874,13 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2, arg3, _, arg5)
             bossSave= Save.bossSave or {}
 
             --添加控制面板
-            e.AddPanel_Check({
+            Initializer= e.AddPanel_Check({
                 name= '|A:SpellIcon-256x256-SellJunk:0:0|a'..(e.onlyChinese and '商人' or addName),
                 tooltip= e.cn(addName),
                 value= not Save.disabled,
                 func= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+                    print(id, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
                 end
             })
 
@@ -1940,7 +1940,7 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2, arg3, _, arg5)
                 end
                 bossSave[itemID]= itemLevel
                 if not Save.notSellBoss then
-                    print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:'.. (e.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB) , itemLink)
+                    print(id, Initializer:GetName(), '|cnGREEN_FONT_COLOR:'.. (e.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB) , itemLink)
                 end
             end
         end

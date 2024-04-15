@@ -1,6 +1,7 @@
 local id, e = ...
 local addName= HUD_EDIT_MODE_MINIMAP_LABEL
 local addName2
+local Initializer
 local Save={
         scale=e.Player.husandro and 1 or 0.85,
         ZoomOut=true,--更新地区时,缩小化地图
@@ -938,7 +939,7 @@ local function Init_Button_Menu(_, level, menuList)--菜单
                 arg1= questID,
                 func= function(_, arg1)
                     Save.questIDs[arg1]=nil
-                    print(id, e.cn(addName), e.cn(addName2), GetQuestLink(questID) or questID,
+                    print(id, Initializer:GetName(), e.cn(addName2), GetQuestLink(questID) or questID,
                     '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2
                 )
                 end
@@ -971,7 +972,7 @@ local function Init_Button_Menu(_, level, menuList)--菜单
                 arg2= uiMapID,
                 func= function(_, arg1,arg2)
                     Save.areaPoiIDs[arg1]=nil
-                    print(id,e.cn(addName), e.cn(addName2),
+                    print(id,Initializer:GetName(), e.cn(addName2),
                         get_AreaPOIInfo_Name(C_AreaPoiInfo.GetAreaPOIInfo(arg2, arg1) or {}),
                         arg1 and 'areaPoiID '..arg1 or '',
                         ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
@@ -1003,7 +1004,7 @@ local function Init_Button_Menu(_, level, menuList)--菜单
                 arg1= uiMapID,
                 func= function(_, arg1)
                     Save.uiMapIDs[arg1]=nil
-                    print(id,e.cn(addName), e.cn(addName2),
+                    print(id,Initializer:GetName(), e.cn(addName2),
                     (C_Map.GetMapInfo(uiMapID) or {}).name,
                     arg1 and 'uiMapID '..arg1 or '',
                     ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
@@ -1048,7 +1049,7 @@ local function Init_Button_Menu(_, level, menuList)--菜单
                 arg2= uiMapID,
                 func= function(_, arg1,arg2)
                     Save.areaPoiIDs[arg1]=nil
-                    print(id,e.cn(addName), e.cn(addName2),
+                    print(id,Initializer:GetName(), e.cn(addName2),
                         get_AreaPOIInfo_Name(C_AreaPoiInfo.GetAreaPOIInfo(arg2, arg1) or {})
                         'areaPoiID '..arg1,
                         ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
@@ -1092,7 +1093,7 @@ local function Init_Button_Menu(_, level, menuList)--菜单
                 Save.pointVigentteButton=nil
                 Button:ClearAllPoints()
                 Button:Set_Point()
-                print(id, e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
+                print(id, Initializer:GetName(), e.onlyChinese and '重置位置' or RESET_POSITION)
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1326,7 +1327,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
     function Button:set_Tootips()
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.cn(addName), e.cn(addName2))
+        e.tips:AddDoubleLine(Initializer:GetName(), e.cn(addName2))
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.GetShowHide(nil, true), e.Icon.left)
         e.tips:AddDoubleLine(e.onlyChinese and '主菜单' or MAINMENU_BUTTON, e.Icon.right)
@@ -1346,7 +1347,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
             end
             scale= scale>2.5 and 2.5  or scale
             scale= scale<0.4 and 0.4 or scale
-            print(id, e.cn(addName), e.onlyChinese and '缩放' or UI_SCALE, scale)
+            print(id, Initializer:GetName(), e.onlyChinese and '缩放' or UI_SCALE, scale)
             Save.vigentteButtonTextScale= scale
             self:set_Frame_Scale()--设置，Button的 Frame Text 属性
             self:set_Tootips()
@@ -1428,7 +1429,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
         hooksecurefunc(self, 'OnMouseClickAction', function(self, d)
             if self.questID and d=='LeftButton' and IsAltKeyDown() then
                 Save.questIDs[self.questID]= not Save.questIDs[self.questID] and true or nil
-                print(id,e.cn(addName), e.cn(addName2),
+                print(id,Initializer:GetName(), e.cn(addName2),
                     GetQuestLink(self.questID) or self.questID,
                     Save.questIDs[self.questID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.select2 or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
                 )
@@ -1455,7 +1456,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
                     local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, self.areaPoiID) or {}
                     local name= get_AreaPOIInfo_Name(poiInfo)--取得 areaPoiID 名称
                     name= name=='' and 'areaPoiID '..self.areaPoiID or name
-                    print(id,e.cn(addName), e.cn(addName2),
+                    print(id,Initializer:GetName(), e.cn(addName2),
                         (C_Map.GetMapInfo(uiMapID) or {}).name or ('uiMapID '..uiMapID),
                         name,
                         Save.areaPoiIDs[self.areaPoiID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.select2 or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
@@ -1481,7 +1482,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
         if uiMapID then
             Save.uiMapIDs[uiMapID]= not Save.uiMapIDs[uiMapID] and true or nil
             local name= (C_Map.GetMapInfo(uiMapID) or {}).name or ('uiMapID '..uiMapID)
-            print(id,e.cn(addName), e.cn(addName2),
+            print(id,Initializer:GetName(), e.cn(addName2),
                 name,
                 Save.uiMapIDs[uiMapID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.select2 or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
             )
@@ -1496,7 +1497,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
             e.tips:AddDoubleLine(addName2..(Save.uiMapIDs[uiMapID] and e.Icon.select2 or ''), ((C_Map.GetMapInfo(uiMapID) or {}).name or '')..' '..uiMapID)
-            e.tips:AddDoubleLine(id, e.cn(addName))
+            e.tips:AddDoubleLine(id, Initializer:GetName())
             e.tips:Show()
         end
     end)
@@ -1602,7 +1603,7 @@ local function set_MINIMAP_UPDATE_ZOOM()
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
             e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE, self:GetText())
-            e.tips:AddDoubleLine(id, e.cn(addName))
+            e.tips:AddDoubleLine(id, Initializer:GetName())
             e.tips:Show()
             self:SetAlpha(1)
         end)
@@ -1619,7 +1620,7 @@ local function set_MINIMAP_UPDATE_ZOOM()
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
             e.tips:AddDoubleLine(e.onlyChinese and '镜头视野范围' or CAMERA_FOV, format(e.onlyChinese and '%s码' or IN_GAME_NAVIGATION_RANGE, format('%i', C_Minimap.GetViewRadius() or 100)))
-            e.tips:AddDoubleLine(id, e.cn(addName))
+            e.tips:AddDoubleLine(id, Initializer:GetName())
             e.tips:Show()
             self:SetAlpha(1)
         end)
@@ -1714,7 +1715,7 @@ local function Init_M_Portal_Room_Labels()
     lable:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddDoubleLine(id, Initializer:GetName())
         e.tips:AddLine(e.onlyChinese and '挑战传送门标签' or 'M+ Portal Room Labels')
         e.tips:Show()
         self:SetAlpha(0.3)
@@ -1989,7 +1990,7 @@ local function Init_MajorFactionRenownFrame()
     function MajorFactionRenownFrame.WoWToolsFaction:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddDoubleLine(id, Initializer:GetName())
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.GetShowHide(not Save.hide_MajorFactionRenownFrame_Button), e.Icon.left)
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.MajorFactionRenownFrame_Button_Scale or 1), e.Icon.mid)
@@ -2276,7 +2277,7 @@ local function Init_Menu(_, level, menuList)
                 Save.pointVigentteButton=nil
                 Button:ClearAllPoints()
                 Button:Set_Point()
-                print(id, e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
+                print(id, Initializer:GetName(), e.onlyChinese and '重置位置' or RESET_POSITION)
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -2298,7 +2299,7 @@ local function Init_Menu(_, level, menuList)
                 TimeManagerClockButton:SetParent(MinimapCluster)
                 TimeManagerClockButton:SetPoint('TOPRIGHT', MinimapCluster.BorderTop,-4,0)--Blizzard_TimeManager.xml
                 --<Anchor point="TOPRIGHT" relativeKey="$parent.BorderTop" x="-4" y="0"/>
-                print(id, e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
+                print(id, Initializer:GetName(), e.onlyChinese and '重置位置' or RESET_POSITION)
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -2329,7 +2330,7 @@ local function Init_Menu(_, level, menuList)
             checked= Save.ZoomOut,
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '更新地区时' or UPDATE..ZONE,
-            tooltipText= id..' '..e.cn(addName),
+            tooltipText= id..' '..Initializer:GetName(),
             keepShownOnClick=true,
             func= function()
                 Save.ZoomOut= not Save.ZoomOut and true or nil
@@ -2380,7 +2381,7 @@ local function Init_Menu(_, level, menuList)
             keepShownOnClick=true,
             func= function()
                 Save.disabledInstanceDifficulty= not Save.disabledInstanceDifficulty and true or nil
-                print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabledInstanceDifficulty), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                print(id, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabledInstanceDifficulty), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -2428,7 +2429,7 @@ local function Init_Menu(_, level, menuList)
             menuList='ResetTimeManagerClockButton',
             func= function()
                 Save.disabledClockPlus= not Save.disabledClockPlus and true or nil
-                print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:' , e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                print(id, Initializer:GetName(), '|cnGREEN_FONT_COLOR:' , e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -2586,14 +2587,14 @@ local function click_Func(self, d)
             if expButton and expButton.ToggleLandingPage and expButton.title then
                 expButton:ToggleLandingPage()--Minimap.lua
             else
-                e.OpenPanelOpting('|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..(e.onlyChinese and '小地图' or addName))
+                e.OpenPanelOpting(Initializer:GetName())
                 --Settings.OpenToCategory(id)
                 --e.call(InterfaceOptionsFrame_OpenToCategory, id)
             end
 
     elseif d=='RightButton' and not key then
         if SettingsPanel:IsShown() then
-            e.OpenPanelOpting('|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..(e.onlyChinese and '小地图' or addName))
+            e.OpenPanelOpting(Initializer:GetName())
         else
             e.OpenPanelOpting()
         end
@@ -2624,7 +2625,7 @@ local function enter_Func(self)
     e.tips:AddDoubleLine(e.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT , 'Shift'..e.Icon.left)
 
     e.tips:AddLine(' ')
-    e.tips:AddDoubleLine(id, e.cn(addName))
+    e.tips:AddDoubleLine(id, Initializer:GetName())
     e.tips:Show()
 end
 
@@ -2753,7 +2754,7 @@ local function Init_InstanceDifficulty()--副本，难图，指示
             e.tips:AddLine((self.tips==text and e.Icon.toRight2 or '')..text..(self.tips==text and e.Icon.toLeft2 or ''))
         end
         e.tips:AddDoubleLine('difficultyID', difficultyID)
-        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddDoubleLine(id, Initializer:GetName())
         e.tips:Show()
         if self.labelType then
             self.labelType:SetAlpha(1)
@@ -2814,7 +2815,7 @@ local function Blizzard_TimeManager()
         n= n<0.4 and 0.4 or n
         Save.TimeManagerClockButtonScale= n
         self:set_scale()
-        print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:', n)
+        print(id, Initializer:GetName(), '|cnGREEN_FONT_COLOR:', n)
     end)
     --时钟，移动
     TimeManagerClockButton:SetMovable(true)
@@ -2876,7 +2877,7 @@ local function Blizzard_TimeManager()
     check:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddDoubleLine(id, Initializer:GetName())
         e.tips:AddLine((e.onlyChinese and '时钟' or TIMEMANAGER_TITLE)..' Plus')
         e.tips:Show()
     end)
@@ -2887,7 +2888,7 @@ local function Blizzard_TimeManager()
         e.tips:AddDoubleLine('|cffffffff'..(e.onlyChinese and '服务器时间' or TIMEMANAGER_TOOLTIP_REALMTIME), '|cnGREEN_FONT_COLOR:'..e.SecondsToClock(GetServerTime())..e.Icon.left)
         e.tips:AddDoubleLine('|cffffffff'..(e.onlyChinese and '移动' or NPE_MOVE), e.Icon.right)
         e.tips:AddDoubleLine('|cffffffff'..((e.onlyChinese and '缩放' or UI_SCALE)), '|cnGREEN_FONT_COLOR:'..(Save.TimeManagerClockButtonScale or 1)..e.Icon.mid)
-        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddDoubleLine(id, Initializer:GetName())
         e.tips:Show()
     end)
 
@@ -2914,7 +2915,7 @@ local function Blizzard_TimeManager()
     function StopwatchFrame:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddDoubleLine(id, Initializer:GetName())
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.StopwatchFrameScale or 1), e.Icon.mid)
         e.tips:AddDoubleLine(e.onlyChinese and '开始/暂停' or NEWBIE_TOOLTIP_STOPWATCH_PLAYPAUSEBUTTON, '|A:newplayertutorial-drag-cursor:0:0|a'..(e.onlyChinese and '移过' or 'Move over'))
         e.tips:Show()
@@ -2941,7 +2942,7 @@ local function Blizzard_TimeManager()
         Save.StopwatchFrameScale= n
         self:set_scale()
         self:set_tooltips()
-        print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:', n)
+        print(id, Initializer:GetName(), '|cnGREEN_FONT_COLOR:', n)
     end)
     StopwatchFrame:set_scale()
 
@@ -3141,13 +3142,13 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             addName2= '|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING)
 
             --添加控制面板
-            e.AddPanel_Check({
+            Initializer= e.AddPanel_Check({
                 name= '|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..(e.onlyChinese and '小地图' or addName),
                 tooltip= e.cn(addName),
                 value= not Save.disabled,
                 func= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 
