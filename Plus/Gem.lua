@@ -17,6 +17,51 @@ for _, spellID in pairs(SpellsTab) do
 end
 
 local AUCTION_CATEGORY_GEMS= AUCTION_CATEGORY_GEMS
+--[[
+function PaperDollItemSocketDisplayMixin:SetItem(item)
+	-- Currently only showing socket display for timerunning characters
+	local showSocketDisplay = item ~= nil and PlayerGetTimerunningSeasonID() ~= nil;
+	self:SetShown(showSocketDisplay);
+
+	if not showSocketDisplay then
+		return;
+	end
+
+	local numSockets = C_Item.GetItemNumSockets(item);
+	for index, slot in ipairs(self.Slots) do
+		slot:SetShown(index <= numSockets);
+
+		-- Can get gemID without the gem being loaded in item sparse (can't use GetItemGem)
+		local gemID = C_Item.GetItemGemID(item, index);
+		local hasGem = gemID ~= nil;
+
+		slot.Gem:SetShown(hasGem);
+
+		if hasGem then
+			local gemItem = Item:CreateFromItemID(gemID);
+
+			-- Prevent edge case a different gem was previously shown, but new gem not cached yet
+			if not gemItem:IsItemDataCached() then
+				slot.Gem:SetTexture();
+			end
+
+			-- Icon requires item sparse, need to use a callback if not loaded
+			gemItem:ContinueOnItemLoad(function()
+				local gemIcon = C_Item.GetItemIconByID(gemID);
+				slot.Gem:SetTexture(gemIcon);
+			end);
+		end
+	end
+
+	self:Layout();
+end
+]]
+
+
+
+
+
+
 --[[local GEM_TYPE_INFO =	{
     Yellow = EMPTY_SOCKET_YELLOW,--黄色插槽',
     Red = EMPTY_SOCKET_RED,--红色插槽',
