@@ -663,7 +663,7 @@ local function set_pet_tooltips(frame, pet, y)
         end
         i=i+1
     end
-    e.tips:AddDoubleLine(e.onlyChinese and '食物' or POWER_TYPE_FOOD, BuildListString(GetStablePetFoodTypes(pet.slotID)))
+    e.tips:AddDoubleLine(format('|cff00ccff%s', e.onlyChinese and '食物' or POWER_TYPE_FOOD), format('|cff00ccff%s', BuildListString(GetStablePetFoodTypes(pet.slotID))))
 end
 
 
