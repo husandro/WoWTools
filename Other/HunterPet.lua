@@ -834,6 +834,13 @@ local function Init_StableFrame_Plus()
     frame.Icon:SetPoint('RIGHT')
     frame.Name:ClearAllPoints()
     frame.Name:SetPoint('RIGHT', frame.Icon, 'LEFT')
+
+    --食物
+    StableFrame.PetModelScene.PetInfo.Food=e.Cstr(StableFrame.PetModelScene.PetInfo, {copyFont=StableFrame.PetModelScene.PetInfo.Specialization, color={r=1,g=1,b=1}, size=16})
+    StableFrame.PetModelScene.PetInfo.Food:SetPoint('TOPRIGHT', StableFrame.PetModelScene.PetInfo.Exotic, 'BOTTOMRIGHT')
+    hooksecurefunc(StableFrame.PetModelScene.PetInfo, 'SetPet', function(self)
+        self.Food:SetFormattedText(e.onlyChinese and '|cffffd200食物：|r%s' or PET_DIET_TEMPLATE, BuildListString(GetStablePetFoodTypes(self.petData.slotID)) or '')
+    end)
 end
 
 
@@ -872,6 +879,7 @@ function Init_UI()
     StableFrame.PetModelScene.AbilitiesList:SetPoint('LEFT', 8, -40)
 
 
+    --StableFrame.PetModelScene.PetInfo.Type:SetJustifyH('RIGHT')
     StableFrame.PetModelScene.PetInfo.Specialization:ClearAllPoints()
     StableFrame.PetModelScene.PetInfo.Specialization:SetPoint('TOPRIGHT', StableFrame.PetModelScene.PetInfo.Type, 'BOTTOMRIGHT', 0, -2)
 
