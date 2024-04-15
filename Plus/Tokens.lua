@@ -82,6 +82,7 @@ end
 --###########
 --监视声望按钮
 --###########
+--物品
 local function Get_Item(itemID)
 	local text, name
 	local icon= C_Item.GetItemIconByID(itemID)
@@ -130,8 +131,8 @@ end
 
 
 
-
-local function Get_Currency(currencyID, index)--货币
+--货币
+local function Get_Currency(currencyID, index)
 	local info, num, total, percent, isMax, canWeek, canEarned, canQuantity= e.GetCurrencyMaxInfo(currencyID, index)
 
 	local text
@@ -144,16 +145,17 @@ local function Get_Currency(currencyID, index)--货币
 		return
     end
 
-    local name=  Save.nameShow and e.cn(info.name) or nil
-	if name then
-		local col= (ITEM_QUALITY_COLORS[info.quality] or {}).hex
-		name = name format('%s%s|r', col, name)
+    local name
+	if Save.nameShow then
+		local hex= select(4, C_Item.GetItemQualityColor(info and info.quality or 1))
+		--local col= (ITEM_QUALITY_COLORS[info.quality] or {}).hex
+		name = format('|c%s%s|r', hex, e.cn(info.name))
 	end
 
 
 	local need
 	if percent then
-		need= format('%d%%', percent)
+		need= format('(%d%%)', percent)
 	end
 
 	num= e.MK(num, 3)
@@ -169,17 +171,9 @@ local function Get_Currency(currencyID, index)--货币
 
 
 	if Save.toRightTrackText then
-		text=(name and name..' ' or '')
-			..(name and '|cffff7d00' or '')
-			..num
-			..(need and ' '..need or '')
-			..(max or '')
+		text= format('%s%s%s%s', name and name..' ' or '',  num, need and ' '..need or '', max or '')
 	else
-		text=(max or '')
-		 	..(need and need..' ' or '')
-			..(name and '|cffff7d00' or '')
-			..num
-			..(name and '|r '..name or '')
+		text= format('%s%s%s%s', max or '', need and need..' ' or '', num, name and ' '..name)
 	end
 
 
