@@ -2,10 +2,8 @@ local id, e= ...
 if e.Player.class~='HUNTER' then --or C_AddOns.IsAddOnLoaded("ImprovedStableFrame") then
     return
 end
-
 --PetStableFrame, C_AddOns.IsAddOnLoaded("ImprovedStableFrame")
 --PetStable.lua
-
 local addName= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,  UnitClass('player'), DUNGEON_FLOOR_ORGRIMMARRAID8) --猎人兽栏
 local Save={
     --hideIndex=true,--隐藏索引
@@ -19,6 +17,13 @@ local Save={
     --sortDown= true,--排序, 降序
     --all_List_Size==28--图标表表，图标大小
 }
+local Initializer
+
+
+
+
+
+
 
 
 
@@ -133,7 +138,7 @@ local function Set_Slot_Info(btn, index, isActiveSlot)--创建，提示内容
                 e.tips:ClearLines()
                 e.tips:SetSpellByID(self.spellID)
                 e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(id, e.cn(addName))
+                e.tips:AddDoubleLine(id, Initializer:GetName())
                 e.tips:Show()
                 self:SetAlpha(1)
             end)
@@ -202,7 +207,7 @@ local function Set_Slot_Info(btn, index, isActiveSlot)--创建，提示内容
             end
             e.tips:AddDoubleLine('creatureDisplayID:', creatureDisplayID)
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(id, e.cn(addName))
+            e.tips:AddDoubleLine(id, Initializer:GetName())
             e.tips:Show()
         end
     end)
@@ -350,7 +355,7 @@ local function Init()
     function PetStableModelScene.zoomModelButton:set_Tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddDoubleLine(id, Initializer:GetName())
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine((e.onlyChinese and '天赋' or TALENT)..': '..e.GetShowHide(not Save.hideTalent),  e.Icon.left)
         e.tips:AddDoubleLine((e.onlyChinese and '索引' or 'Index')..': '..e.GetShowHide(not Save.hideIndex),  e.Icon.right)
@@ -464,7 +469,7 @@ local function Init()
             e.Icon.toRight2..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP_UP)..e.Icon.left,
             e.Icon.right..(e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP_UP)..e.Icon.toLeft2)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddDoubleLine(id, Initializer:GetName())
         e.tips:Show()
         self:SetAlpha(1)
     end)
@@ -520,7 +525,7 @@ do
 end
         PetStable_Update= func
         self.num= self.num and self.num+1 or 1
-        print(id, e.cn(addName), e.onlyChinese and '完成' or DONE, '|cnGREEN_FONT_COLOR:'..self.num)
+        print(id, Initializer:GetName(), e.onlyChinese and '完成' or DONE, '|cnGREEN_FONT_COLOR:'..self.num)
         IsInSearch=nil
         e.call('PetStable_Update')
         self:SetEnabled(true)
@@ -636,7 +641,7 @@ local function set_pet_tooltips(frame, pet, y)
     end
     e.tips:SetOwner(frame, "ANCHOR_LEFT", y or 0, 0)
     e.tips:ClearLines()
-    e.tips:AddDoubleLine(id, '|A:groupfinder-icon-class-hunter:0:0|a'..(e.onlyChinese and '猎人兽栏' or addName))
+    e.tips:AddDoubleLine(id, Initializer:GetName())
     e.tips:AddLine(' ')
     local i=1
     for indexType, name in pairs(pet) do
@@ -939,8 +944,9 @@ function Set_StableFrame_List()
     frame.Buttons={}
 
     frame.s= Save.all_List_Size or 28
-  
 
+    frame.Bg= frame:CreateTexture(nil, "BACKGROUND")
+    frame.Bg:SetAtlas('pet-list-bg')
     for i=Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX+ 1, Constants.PetConsts.NUM_PET_SLOTS do
         local btn= CreateFrame('Button', nil, frame, 'StableActivePetButtonTemplate', i)
         --btn:SetScript('OnLeave', GameTooltip_Hide)
@@ -957,6 +963,8 @@ function Set_StableFrame_List()
         btn.Border:Hide()
         frame.Buttons[i]= btn
     end
+    frame.Bg:SetPoint('TOPLEFT', frame.Buttons[Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX+ 1])
+    frame.Bg:SetPoint('BOTTOMRIGHT', frame.Buttons[Constants.PetConsts.NUM_PET_SLOTS])
 
     function frame:set_point()
         if not self:IsShown() then return end
@@ -1124,7 +1132,7 @@ function Init_StableFrame_List()
     function btn:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, '|A:groupfinder-icon-class-hunter:0:0|a'..(e.onlyChinese and '猎人兽栏' or addName))
+        e.tips:AddDoubleLine(id, Initializer:GetName())
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(format('%s %s', e.onlyChinese and '所有宠物' or BATTLE_PETS_TOTAL_PETS, e.GetEnabeleDisable(Save.show_All_List)), e.Icon.left)
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
@@ -1202,7 +1210,7 @@ function Init_StableFrame_List()
                         notCheckable=true,
                         icon='mechagon-projects',
                         func= function()
-                            e.OpenPanelOpting('|A:groupfinder-icon-class-hunter:0:0|a'..(e.onlyChinese and '猎人兽栏' or addName))
+                            e.OpenPanelOpting(Initializer:GetName())
                         end
                     }, level)
                 end, "MENU")
@@ -1233,7 +1241,7 @@ function Init_StableFrame_List()
         self:set_tooltips()
     end)
 
-    
+
     btn:SetScript('OnLeave', function(self)
         self:set_show_tips()
         e.tips:Hide()
@@ -1266,13 +1274,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save.sortIndex= Save.sortIndex or 4
 
             --添加控制面板
-            e.AddPanel_Check({
+            Initializer= e.AddPanel_Check({
                 name= '|A:groupfinder-icon-class-hunter:0:0|a'..(e.onlyChinese and '猎人兽栏' or addName),
                 tooltip= nil,
                 value= not Save.disabled,
                 func= function()
                     Save.disabled = not Save.disabled and true or nil
-                    print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                    print(id, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
                 end
             })
 
@@ -1281,7 +1289,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:UnregisterAllEvents()
             else
                 if StableFrame then--10.2.7
-                    Init_StableFrame_Plus()
                     Init_StableFrame_List()
                     Init_UI()
                 else
