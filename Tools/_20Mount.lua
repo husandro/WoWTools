@@ -13,28 +13,31 @@ local MOUNT_JOURNAL_FILTER_FLYING= MOUNT_JOURNAL_FILTER_FLYING
 local MOUNT_JOURNAL_FILTER_AQUATIC= MOUNT_JOURNAL_FILTER_AQUATIC
 local MOUNT_JOURNAL_FILTER_DRAGONRIDING= MOUNT_JOURNAL_FILTER_DRAGONRIDING
 
+local P_Spells_Tab={
+    [2645]=true,--幽魂之狼
+    [111400]=true,--爆燃冲刺
+    [2983]=true,--疾跑
+    [190784]=true,--神圣马驹
+    [48265]=true,--死亡脚步
+    [186257]=true,--猎豹守护
+    [6544]=true,--英勇飞跃
+    [358267]= true,--悬空
+    --[212653]= true,--闪光术
+    [1953]=true,--闪现术
+
+    [109132]=true,--滚地翻
+    --[115008]=true,--真气突
+
+    [121536]=true,--天堂之羽
+    [189110]=true,--地狱火撞击
+    [195072]=true,--邪能冲撞
+}
+
 local Save={
     --disabled= not e.Player.husandro,
     Mounts={
         [ITEMS]={[174464]=true, [168035]=true},--幽魂缰绳 噬渊鼠缰绳
-        [SPELLS]={
-            [2645]=true,
-            [111400]=true,
-            [343016]=true,
-            [195072]=true,
-            [2983]=true,
-            [190784]=true,
-            [48265]=true,
-            [186257]=true,--猎豹守护
-            [6544]=true,--英勇飞跃
-            [358267]= true,--悬空
-            --[212653]= true,--闪光术
-            [1953]=true,--闪现术
-            [115008]=true,--真气突
-            [121536]=true,--天堂之羽
-            [189110]=true,--地狱火撞击
-            
-        },
+        [SPELLS]=P_Spells_Tab,
         [FLOOR]={},--{[spellID]=uiMapID}
         [MOUNT_JOURNAL_FILTER_GROUND]={
             --[339588]=true,--[罪奔者布兰契]
@@ -897,9 +900,11 @@ local function InitMenu(_, level, type)--主菜单
                 func=function(_, arg1)
                     if IsControlKeyDown() then
                         if Save.Mounts[SPELLS][arg1] then
-                            print(id, addName, e.onlyChinese and '移除' or REMOVE, GetSpellLink(arg1) or arg1)
+                            print(id, e.cn(addName), e.onlyChinese and '移除' or REMOVE, GetSpellLink(arg1) or arg1)
                         end
                         Save.Mounts[SPELLS][arg1]=nil
+                        checkSpell()--检测法术
+                        setClickAtt()--设置
                     end
                 end,
             }
@@ -915,11 +920,28 @@ local function InitMenu(_, level, type)--主菜单
             func= function()
                 if IsControlKeyDown() then
                     Save.Mounts[SPELLS]={}
-                    print(id, addName, e.onlyChinese and '全部清除' or CLEAR_ALL, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '完成' or DONE)
+                    print(id, e.cn(addName), e.onlyChinese and '全部清除' or CLEAR_ALL, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '完成' or DONE)
+                    checkSpell()--检测法术
+                    setClickAtt()--设置
                 end
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+        e.LibDD:UIDropDownMenu_AddButton({
+            text=e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT,
+            notCheckable=true,
+            tooltipOnButton=true,
+            tooltipTitle='|cnGREEN_FONT_COLOR:Ctrl+'..e.Icon.left,
+            func= function()
+                Save.Mounts[SPELLS]=P_Spells_Tab
+                if IsControlKeyDown() then
+                    print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:', e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT, '|r', e.onlyChinese and '完成' or DONE)
+                    checkSpell()--检测法术
+                    setClickAtt()--设置
+                end
+            end
+        }, level)
         return
 
     elseif type=='Shift' or type=='Alt' or type=='Ctrl' then--二级菜单
@@ -1035,7 +1057,7 @@ local function InitMenu(_, level, type)--主菜单
             info={
                 text=(num>0 and '|cnGREEN_FONT_COLOR:'..num..'|r' or '')..(icon and '|T'..icon..':0|t' or '')..(e.onlyChinese and tab.name or indexType),
                 menuList=indexType,
-                hasArrow=num>0,
+                hasArrow=true,
                 keepShownOnClick=true,
                 notCheckable=true,
                 colorCode=num==0 and '|cff606060',
