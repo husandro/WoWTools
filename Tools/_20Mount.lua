@@ -31,7 +31,8 @@ local Save={
             --[212653]= true,--闪光术
             [1953]=true,--闪现术
             [115008]=true,--真气突
-            [642580]='player',
+            [121536]='player',
+            
         },
         [FLOOR]={},--{[spellID]=uiMapID}
         [MOUNT_JOURNAL_FILTER_GROUND]={
