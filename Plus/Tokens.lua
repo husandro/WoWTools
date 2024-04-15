@@ -162,7 +162,7 @@ local function Get_Currency(currencyID, index)
 
 	local max
 	if isMax then
-		max= '|A:QuestDaily-MainMap:0:0|a'--e.Icon.select2
+		max= '|A:quest-important-available:0:0|a'--e.Icon.select2
 		num= '|cnRED_FONT_COLOR:'..num..'|r'
 	elseif canWeek or canEarned or canQuantity then
 		num= '|cnGREEN_FONT_COLOR:'..num..'|r'
@@ -173,7 +173,7 @@ local function Get_Currency(currencyID, index)
 	if Save.toRightTrackText then
 		text= format('%s%s%s%s', name and name..' ' or '',  num, need and ' '..need or '', max or '')
 	else
-		text= format('%s%s%s%s', max or '', need and need..' ' or '', num, name and ' '..name)
+		text= format('%s%s%s%s', max or '', need and need..' ' or '', num, name and ' '..name or '')
 	end
 
 
@@ -297,9 +297,9 @@ local function Set_TrackButton_Text()
 
 
 			if Save.toTopTrack then
-				btn:SetPoint("BOTTOM", last or TrackButton, 'TOP', 0,  (endTokenIndex>1 and index==endTokenIndex) and 5 or 0) --货物，物品，分开
+				btn:SetPoint("BOTTOM", last or TrackButton, 'TOP', 0,  (endTokenIndex>1 and index==endTokenIndex) and 10 or 0) --货物，物品，分开
 			else
-				btn:SetPoint("TOP", last or TrackButton, 'BOTTOM', 0,  (endTokenIndex>1 and index==endTokenIndex) and -4 or 0) --货物，物品，分开
+				btn:SetPoint("TOP", last or TrackButton, 'BOTTOM', 0,  (endTokenIndex>1 and index==endTokenIndex) and -10 or 0) --货物，物品，分开
 			end
 
 
@@ -427,7 +427,7 @@ local function Set_TrackButton_Text()
 			if btn then
 				btn:ClearAllPoints()
 				if endTokenIndex>1 and i==endTokenIndex then--货物，物品，分开
-					btn:SetPoint("TOP", last or TrackButton, 'BOTTOM',0, -6)
+					btn:SetPoint("TOP", last or TrackButton, 'BOTTOM',0, -10)
 				else
 					btn:SetPoint("TOP", last or TrackButton, 'BOTTOM',0, -1)
 				end
