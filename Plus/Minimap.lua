@@ -1966,7 +1966,8 @@ local function Set_Faction_Menu(factionID)
                         Get_Major_Faction_Level(factionID, data.renownLevel)),
             checked= MajorFactionRenownFrame and MajorFactionRenownFrame.majorFactionID==factionID,
             keepShownOnClick=true,
-            colorCode= UnitAffectingCombat('player') and '|cnRED_FONT_COLOR:' or ((not data.isUnlocked and data.renownLevel==0) and '|cff606060') or nil,
+            disabled= UnitAffectingCombat('player'),
+            colorCode= (not data.isUnlocked and data.renownLevel==0) and '|cff606060' or nil,
             --tooltipOnButton=true,
             --tooltipTitle='FactionID '..factionID,
             arg1=factionID,
@@ -2451,13 +2452,14 @@ local function Init_Menu(_, level, menuList)
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     elseif menuList=='FACTION' then--派系声望
-        local major= Get_Major_Faction_List()
-        for i=2, #major do
-            info= Set_Faction_Menu(major[i])
+        for _, factionID in pairs(Get_Major_Faction_List()) do
+            info= Set_Faction_Menu(factionID)
             if info then
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
             end
         end
+
+        --盟约
         local covenantID= C_Covenants.GetActiveCovenantID() or 0
         local data = C_Covenants.GetCovenantData(covenantID) or {}
         if data then--and C_CovenantSanctumUI.HasMaximumRenown(covenantID) then
@@ -2502,9 +2504,8 @@ local function Init_Menu(_, level, menuList)
         text= format('|A:dragonriding-barbershop-icon-protodrake:0:0|a%s%s', e.onlyChinese and '驭龙术' or GENERIC_TRAIT_FRAME_DRAGONRIDING_TITLE, numDragonriding),
         checked= GenericTraitFrame and GenericTraitFrame:IsShown() and GenericTraitFrame:GetConfigID() == C_Traits.GetConfigIDBySystemID(1),
         keepShownOnClick=true,
-
-        colorCode= UnitAffectingCombat('player') and '|cnRED_FONT_COLOR:'
-                or ((select(4, GetAchievementInfo(15794)) or C_QuestLog.IsQuestFlaggedCompleted(68798)) and '' or '|cff606060'),
+        disabled= UnitAffectingCombat('player'),
+        colorCode= (select(4, GetAchievementInfo(15794)) or C_QuestLog.IsQuestFlaggedCompleted(68798)) and '' or '|cff606060',
         func= function()
             GenericTraitUI_LoadUI()
             local DRAGONRIDING_TRAIT_SYSTEM_ID = 1
@@ -2519,9 +2520,7 @@ local function Init_Menu(_, level, menuList)
         info= Set_Faction_Menu(factionID)
         if info then
             --e.LibDD:UIDropDownMenu_AddSeparator(level)
-            if #major>1 then
-                info.hasArrow= true
-            end
+            info.hasArrow= true
             info.keepShownOnClick=true
             info.menuList='FACTION'
             e.LibDD:UIDropDownMenu_AddButton(info, level)
