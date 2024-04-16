@@ -397,7 +397,38 @@ local function Init_All_Buttons()
             end
         end
     end
-
+if not e.Player.husandro then
+    return
+end
+local tab= {223}
+    for _, flyoutID in pairs(tab) do --Save.flyout) do
+        local name, description, numSlots, isKnown = GetFlyoutInfo(flyoutID)
+        
+        if isKnown then
+            --local btn= CreateFrame('CheckButton', id..'ToolsFlyout'..name, e.toolsFrame, 'SpellFlyoutButtonTemplate')
+            
+            local btn= e.Cbtn2({
+                name=nil,
+                parent= e.toolsFrame,
+                click=true,-- right left
+                notSecureActionButton=nil,
+                notTexture=nil,
+                showTexture=true,
+                sizi=nil,
+            })
+            btn.flyoutID=flyoutID
+            btn.spellID= flyoutID
+            --[[btn:SetScript('OnClick', function(self)
+                SpellFlyout:Toggle(self.flyoutID, self, "RIGHT", 1, false, nil, true);
+            end)]]
+            
+            e.ToolsSetButtonPoint(btn)--设置位置
+            btn:SetAttribute('type', 'flyout')
+            btn:SetAttribute('spell', flyoutID)
+            btn:SetAttribute("flyoutDirection", "LEFT")
+            btn.texture:SetTexture(519384)
+        end
+    end
 end
 
 
@@ -564,12 +595,14 @@ local function Init_Options_SpellBook()
         local btn= _G['SpellButton'..i]
         if btn and btn.UpdateButton then
             hooksecurefunc(btn, 'UpdateButton', function(self)--SpellBookFrame.lua
-                
                 --[[local slot, slotType, slotID = SpellBook_GetSpellBookSlot(self)
                 if slot then
+                    local slotType, spellID = GetSpellBookItemInfo(slot, SpellBookFrame.bookType);
                     local texture = GetSpellBookItemTexture(slot, SpellBookFrame.bookType)
-                    
-                    
+                    if (slotType == "FLYOUT") then
+                        --SpellFlyout:Toggle(spellID, self, "RIGHT", 1, false, nil, true);
+
+                    end
                 end]]
                 if not slot or SpellBookFrame.bookType~='spell' then
                     if self.useSpell then
