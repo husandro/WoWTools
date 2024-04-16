@@ -52,7 +52,7 @@ local function Vstr(t)--垂直文字
     end
 end
 local function Init()
-    
+
 
 --[[
 传送至永茂林地入口处。
@@ -82,11 +82,11 @@ Teleporta para a entrada de Floretérnia.
                     or des:match('Teletrasporta all\'ingresso di (.-)%.')--Teletrasporta all'ingresso di Verdeterno.
                     or des:match('Teletrasporta all\'ingresso del (.-)%.')
                     or des:match('Teletrasporta all\'ingresso dell\'(.-)%.')
-                    
+
                     or des:match('Teleporta para a entrada de (.-)')--Teleporta para a entrada de Floretérnia.
                     or des:match('Телепортирует заклинателя в (.-)%.')--Телепортирует заклинателя в Вечное Цветение.
                     or des:match('(.-) 입구로 순간이동합니다')--상록숲 입구로 순간이동합니다.
-            
+
             end
             text= text or select(2, GetCallPetSpellInfo(self.spellID))
             text= text~='' and text or nil
