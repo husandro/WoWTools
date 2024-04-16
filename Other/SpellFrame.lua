@@ -54,17 +54,44 @@ end
 local function Init()
     
 
-
+--[[
+传送至永茂林地入口处。
+Teleportiert zum Eingang des Immergrünen Flors.
+Teleport to the entrance to The Everbloom.
+Teletransporte a la entrada del Vergel Eterno.
+Téléporte à l’entrée de la Flore éternelle.
+Teletrasporta all'ingresso di Verdeterno.
+Teleporta para a entrada de Floretérnia.
+Телепортирует заклинателя в Вечное Цветение.
+상록숲 입구로 순간이동합니다.
+( ) . % + - * ? [ ^ $
+]]
     hooksecurefunc('SpellFlyoutButton_UpdateGlyphState', function(self)
         local text
         if self.spellID and not IsPassiveSpell(self.spellID) then
             local des= GetSpellDescription(self.spellID)
+            if des then
+                des= e.cn(des)
+                text= des:match('|cff00ccff(.-)|r')
+                    or des:match('传送至(.-)入口处')--传送至永茂林地入口处。
+                    or des:match('Teleportiert zum Eingang des (.-)%.')--Teleportiert zum Eingang des Immergrünen Flors.
+                    or des:match('Teleport to the entrance to (.-)%.')--Teleport to the entrance to The Everbloom.
+                    or des:match('Teletransporte a la entrada del (.-)%.')--Teletransporte a la entrada del Vergel Eterno.
+                    or des:match('Téléporte à l’entrée de la (.-)%.')--Téléporte à l’entrée de la Flore éternelle.
+
+                    or des:match('Teletrasporta all\'ingresso di (.-)%.')--Teletrasporta all'ingresso di Verdeterno.
+                    or des:match('Teletrasporta all\'ingresso del (.-)%.')
+                    or des:match('Teletrasporta all\'ingresso dell\'(.-)%.')
+                    
+                    or des:match('Teleporta para a entrada de (.-)')--Teleporta para a entrada de Floretérnia.
+                    or des:match('Телепортирует заклинателя в (.-)%.')--Телепортирует заклинателя в Вечное Цветение.
+                    or des:match('(.-) 입구로 순간이동합니다')--상록숲 입구로 순간이동합니다.
             
-            text= select(2, GetCallPetSpellInfo(self.spellID))
+            end
+            text= text or select(2, GetCallPetSpellInfo(self.spellID))
             text= text~='' and text or nil
             text= text or GetSpellInfo(self.spellID)
             text= e.cn(text)
-            print(text)
             if text then
 
                 if not self.Text then
