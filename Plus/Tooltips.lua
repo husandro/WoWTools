@@ -730,9 +730,10 @@ end
 
 function func.Set_Currency(self, currencyID)--货币
     local info2 = currencyID and C_CurrencyInfo.GetCurrencyInfo(currencyID)
-    if info2 then
-        self:AddDoubleLine((e.onlyChinese and '货币' or TOKENS)..' '..currencyID, info2.iconFileID and '|T'..info2.iconFileID..':0|t'..info2.iconFileID)
+    if not info2 then
+        return
     end
+    self:AddDoubleLine((e.onlyChinese and '货币' or TOKENS)..' '..currencyID, info2.iconFileID and '|T'..info2.iconFileID..':0|t'..info2.iconFileID)
     local factionID = C_CurrencyInfo.GetFactionGrantedByCurrency(currencyID)--派系声望
     if factionID and factionID>0 then
         local name= GetFactionInfoByID(factionID)
@@ -1955,9 +1956,9 @@ local function Init()
     --Blizzard_ScenarioObjectiveTracker.lua
     hooksecurefunc(ScenarioChallengeModeAffixMixin, 'OnEnter', function(self)
         if self.affixID then
-            local name, description, filedataid = C_ChallengeMode.GetAffixInfo(self.affixID);
-            GameTooltip:SetText(e.cn(name), 1, 1, 1, 1, true);
-            GameTooltip:AddLine(e.cn(description), nil, nil, nil, true);
+            local name, description, filedataid = C_ChallengeMode.GetAffixInfo(self.affixID)
+            GameTooltip:SetText(e.cn(name), 1, 1, 1, 1, true)
+            GameTooltip:AddLine(e.cn(description), nil, nil, nil, true)
             GameTooltip:AddDoubleLine('affixID '..self.affixID, filedataid and '|T'..filedataid..':0|t'..filedataid or ' ')
             func.Set_Web_Link({frame=GameTooltip, type='affix', id=self.affixID, name=name, isPetUI=false})--取得网页，数据链接
             GameTooltip:Show()
@@ -1966,9 +1967,9 @@ local function Init()
     if ScenarioChallengeModeBlock and ScenarioChallengeModeBlock.Affixes and ScenarioChallengeModeBlock.Affixes[1] then
         ScenarioChallengeModeBlock.Affixes[1]:HookScript('OnEnter', function(self)
             if self.affixID then
-                local name, description, filedataid = C_ChallengeMode.GetAffixInfo(self.affixID);
-                GameTooltip:SetText(e.cn(name), 1, 1, 1, 1, true);
-                GameTooltip:AddLine(e.cn(description), nil, nil, nil, true);
+                local name, description, filedataid = C_ChallengeMode.GetAffixInfo(self.affixID)
+                GameTooltip:SetText(e.cn(name), 1, 1, 1, 1, true)
+                GameTooltip:AddLine(e.cn(description), nil, nil, nil, true)
                 GameTooltip:AddDoubleLine('affixID '..self.affixID, filedataid and '|T'..filedataid..':0|t'..filedataid or ' ')
                 func.Set_Web_Link({frame=GameTooltip, type='affix', id=self.affixID, name=name, isPetUI=false})--取得网页，数据链接
                 GameTooltip:Show()
@@ -2803,15 +2804,15 @@ local function Init_Event(arg1)
                 local name, description, filedataid = C_ChallengeMode.GetAffixInfo(self.affixID)
                 if (self.affixID or self.info) then
                     if (self.info) then
-                        local tbl = CHALLENGE_MODE_EXTRA_AFFIX_INFO[self.info.key];
-                        name = tbl.name;
-                        description = string.format(tbl.desc, self.info.pct);
+                        local tbl = CHALLENGE_MODE_EXTRA_AFFIX_INFO[self.info.key]
+                        name = tbl.name
+                        description = string.format(tbl.desc, self.info.pct)
                     else
                         name= e.cn(name)
                         description= e.cn(description)
                     end
-                    GameTooltip:SetText(name, 1, 1, 1, 1, true);
-                    GameTooltip:AddLine(description, nil, nil, nil, true);
+                    GameTooltip:SetText(name, 1, 1, 1, 1, true)
+                    GameTooltip:AddLine(description, nil, nil, nil, true)
                 end
                 GameTooltip:AddDoubleLine('affixID '..self.affixID, filedataid and '|T'..filedataid..':0|t'..filedataid or ' ')
                 func.Set_Web_Link({frame=GameTooltip, type='affix', id=self.affixID, name=name, isPetUI=false})--取得网页，数据链接
@@ -2887,7 +2888,7 @@ local function Init_Event(arg1)
     elseif arg1=='Blizzard_ClassTalentUI' then--天赋
         hooksecurefunc(ClassTalentFrame.SpecTab, 'UpdateSpecFrame', function(self)--ClassTalentSpecTabMixin
             if not C_SpecializationInfo.IsInitialized() then
-                return;
+                return
             end
             for frame in self.SpecContentFramePool:EnumerateActive() do
                 if not frame.specIDLabel then
@@ -2943,16 +2944,16 @@ local function Init_Event(arg1)
             end
         end)
 
-    --[[elseif arg1=='Blizzard_GenericTraitUI' then
-        hooksecurefunc(GenericTraitFrame.Currency, 'Setup', function(self, currencyInfo)
-            if not self.Currency then
+    elseif arg1=='Blizzard_GenericTraitUI' then
+        GenericTraitFrame.Currency:HookScript('OnEnter', function(self)
+            local currencyInfo = self:GetParent().treeCurrencyInfo and self:GetParent().treeCurrencyInfo[1] or {}
+            if not currencyInfo.traitCurrencyID or currencyInfo.traitCurrencyID<=0 then
                 return
             end
-            if (currencyInfo and currencyInfo.traitCurrencyID) then
-                print(currencyInfo.traitCurrencyID)
-            end
-
-        end)]]
+            local overrideIcon = select(4, C_Traits.GetTraitCurrencyInfo(currencyInfo.traitCurrencyID))
+            e.tips:AddDoubleLine(format('traitCurrencyID: %d', currencyInfo.traitCurrencyID), format('|T%d:0|t%d', overrideIcon or 0, overrideIcon or 0))
+            e.tips:Show()
+        end)
     end
 
 

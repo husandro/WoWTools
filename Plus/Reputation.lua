@@ -675,6 +675,9 @@ local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--R
 	--local name, description, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild, factionID, hasBonusRepGain, canSetInactive
 	local _, _, standingID, _, _, _, _, _, isHeader, _, hasRep, isWatched, _, factionID= GetFactionInfo(factionIndex)
 	if (isHeader and not hasRep) or not factionID or Save.notPlus then
+		if isHeader and not hasRep and frame.Name then
+			frame.Name:SetTextColor(1,1,1)
+		end
 		if frame.watchedIcon then--显示为经验条
 			frame.watchedIcon:SetShown(false)
 		end

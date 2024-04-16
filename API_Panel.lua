@@ -244,6 +244,7 @@ Settings.SetKeybindingsCategory(Category)
 
 --打开，选项
 function e.OpenPanelOpting(name, category)
+    name= type(name)=='table' and name:GetName() or name
     Settings.OpenToCategory(Category:GetID(), name)
     if category then
         Settings.OpenToCategory(category:GetID(), category:GetName())

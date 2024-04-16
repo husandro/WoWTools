@@ -78,6 +78,9 @@ local Button
 
 
 
+
+
+
 --取得 areaPoiID 名称
 local barColor = {
 	--[Enum.StatusBarColorTintValue.Black] = BLACK_FONT_COLOR,
@@ -1777,7 +1780,7 @@ end
 	["SelectedLevelGlow"] = "CovenantSanctum-Renown-Next-Glow-%s",
 }
 local function SetupTextureKit(frame, regions, covenantData)
-	SetupTextureKitOnRegions(covenantData.textureKit, frame, regions, TextureKitConstants.SetVisibility, TextureKitConstants.UseAtlasSize);
+	SetupTextureKitOnRegions(covenantData.textureKit, frame, regions, TextureKitConstants.SetVisibility, TextureKitConstants.UseAtlasSize)
 end
 
 local function Set_Covenant_Button(self, covenantID, activityID)
@@ -1800,34 +1803,34 @@ local function Set_Covenant_Button(self, covenantID, activityID)
 
             --CovenantRenownMixin:SetUpCovenantData()
             local covenantData = C_Covenants.GetCovenantData(frame.covenantID) or {}
-            local textureKit = covenantData.textureKit;
-            NineSliceUtil.ApplyUniqueCornersLayout(CovenantRenownFrame.NineSlice, textureKit);
-            NineSliceUtil.DisableSharpening(CovenantRenownFrame.NineSlice);
-            local atlas = "CovenantSanctum-RenownLevel-Border-%s";
-            CovenantRenownFrame.HeaderFrame.Background:SetAtlas(atlas:format(textureKit), TextureKitConstants.UseAtlasSize);
-            UIPanelCloseButton_SetBorderAtlas(CovenantRenownFrame.CloseButton, "UI-Frame-%s-ExitButtonBorder", -1, 1, textureKit);
-            SetupTextureKit(CovenantRenownFrame, mainTextureKitRegions, covenantData);
+            local textureKit = covenantData.textureKit
+            NineSliceUtil.ApplyUniqueCornersLayout(CovenantRenownFrame.NineSlice, textureKit)
+            NineSliceUtil.DisableSharpening(CovenantRenownFrame.NineSlice)
+            local atlas = "CovenantSanctum-RenownLevel-Border-%s"
+            CovenantRenownFrame.HeaderFrame.Background:SetAtlas(atlas:format(textureKit), TextureKitConstants.UseAtlasSize)
+            UIPanelCloseButton_SetBorderAtlas(CovenantRenownFrame.CloseButton, "UI-Frame-%s-ExitButtonBorder", -1, 1, textureKit)
+            SetupTextureKit(CovenantRenownFrame, mainTextureKitRegions, covenantData)
             local renownLevelsInfo = C_CovenantSanctumUI.GetRenownLevels(frame.covenantID) or {}
             for i, levelInfo in ipairs(renownLevelsInfo) do
-                levelInfo.textureKit = textureKit;
-                levelInfo.rewardInfo = C_CovenantSanctumUI.GetRenownRewardsForLevel(frame.covenantID, i);
+                levelInfo.textureKit = textureKit
+                levelInfo.rewardInfo = C_CovenantSanctumUI.GetRenownRewardsForLevel(frame.covenantID, i)
             end
-            CovenantRenownFrame.TrackFrame:Init(renownLevelsInfo);
-            CovenantRenownFrame.maxLevel = renownLevelsInfo[#renownLevelsInfo].level;
+            CovenantRenownFrame.TrackFrame:Init(renownLevelsInfo)
+            CovenantRenownFrame.maxLevel = renownLevelsInfo[#renownLevelsInfo].level
 
             --CovenantRenownMixin:GetLevels()
-            local renownLevel = C_CovenantSanctumUI.GetRenownLevel();
-            self.actualLevel = renownLevel;
+            local renownLevel = C_CovenantSanctumUI.GetRenownLevel()
+            self.actualLevel = renownLevel
             local cvarName = "lastRenownForCovenant"..frame.covenantID
-            local lastRenownLevel = tonumber(GetCVar(cvarName)) or 1;
+            local lastRenownLevel = tonumber(GetCVar(cvarName)) or 1
             if lastRenownLevel < renownLevel then
-                renownLevel = lastRenownLevel;
+                renownLevel = lastRenownLevel
             end
-            self.displayLevel = renownLevel;
+            self.displayLevel = renownLevel
 
             CovenantRenownFrame:Refresh(true)
 
-            C_CovenantSanctumUI.RequestCatchUpState();
+            C_CovenantSanctumUI.RequestCatchUpState()
         end)
         btn.covenantID= covenantID
         self['covenant'..covenantID]=btn
@@ -1964,8 +1967,8 @@ local function Set_Faction_Menu(factionID)
             checked= MajorFactionRenownFrame and MajorFactionRenownFrame.majorFactionID==factionID,
             keepShownOnClick=true,
             colorCode= UnitAffectingCombat('player') and '|cnRED_FONT_COLOR:' or ((not data.isUnlocked and data.renownLevel==0) and '|cff606060') or nil,
-            tooltipOnButton=true,
-            tooltipTitle='FactionID '..factionID,
+            --tooltipOnButton=true,
+            --tooltipTitle='FactionID '..factionID,
             arg1=factionID,
             func= function(_, arg1)
                 if MajorFactionRenownFrame and MajorFactionRenownFrame.majorFactionID==arg1 then
@@ -2316,7 +2319,7 @@ local function Init_Menu(_, level, menuList)
             checked= C_CVar.GetCVarBool("minimapTrackingShowAll"),
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '显示: 追踪' or SHOW..': '..TRACKING,
-            tooltipText= id..' '..addName..'|n|nCVar minimapTrackingShowAll',
+            tooltipText= 'CVar minimapTrackingShowAll',
             keepShownOnClick=true,
             func= function()
                 C_CVar.SetCVar('minimapTrackingShowAll', not C_CVar.GetCVarBool("minimapTrackingShowAll") and '1' or '0' )
@@ -2330,7 +2333,6 @@ local function Init_Menu(_, level, menuList)
             checked= Save.ZoomOut,
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '更新地区时' or UPDATE..ZONE,
-            tooltipText= id..' '..Initializer:GetName(),
             keepShownOnClick=true,
             func= function()
                 Save.ZoomOut= not Save.ZoomOut and true or nil
@@ -2480,17 +2482,34 @@ local function Init_Menu(_, level, menuList)
 
     Init_Garrison_Menu(level)--要塞报告
 
+    --驭龙术
+    --[[local DRAGONRIDING_INTRO_QUEST_ID = 68798;
+    local DRAGONRIDING_ACCOUNT_ACHIEVEMENT_ID = 15794;
+    local DRAGONRIDING_TRAIT_SYSTEM_ID = 1;
+    local DRAGONRIDING_TREE_ID = 672;]]
+
+    local numDragonriding=''
+    local dragonridingConfigID = C_Traits.GetConfigIDBySystemID(1);
+    if dragonridingConfigID then
+        local treeCurrencies = C_Traits.GetTreeCurrencyInfo(dragonridingConfigID, 672, false) or {}
+        local num= treeCurrencies[1] and treeCurrencies[1].quantity
+        if num and num>=0 then
+            numDragonriding= format(' %s%d|r|T%d:0|t', num==0 and '|cff606060' or '|cnGREEN_FONT_COLOR:', num, select(4, C_Traits.GetTraitCurrencyInfo(2563)) )
+        end
+    end
 
     e.LibDD:UIDropDownMenu_AddButton({--Blizzard_DragonflightLandingPage.lua
-        text= format('|A:dragonriding-barbershop-icon-protodrake:0:0|a%s', e.onlyChinese and '驭龙术' or GENERIC_TRAIT_FRAME_DRAGONRIDING_TITLE),
-        checked= GenericTraitFrame and GenericTraitFrame:IsShown(),
+        text= format('|A:dragonriding-barbershop-icon-protodrake:0:0|a%s%s', e.onlyChinese and '驭龙术' or GENERIC_TRAIT_FRAME_DRAGONRIDING_TITLE, numDragonriding),
+        checked= GenericTraitFrame and GenericTraitFrame:IsShown() and GenericTraitFrame:GetConfigID() == C_Traits.GetConfigIDBySystemID(1),
         keepShownOnClick=true,
-        colorCode= (select(4, GetAchievementInfo(68798)) or select(4, GetAchievementInfo(15794))) and '' or '|cff606060',
+
+        colorCode= UnitAffectingCombat('player') and '|cnRED_FONT_COLOR:'
+                or ((select(4, GetAchievementInfo(15794)) or C_QuestLog.IsQuestFlaggedCompleted(68798)) and '' or '|cff606060'),
         func= function()
-            GenericTraitUI_LoadUI();
-            local DRAGONRIDING_TRAIT_SYSTEM_ID = 1;
-            GenericTraitFrame:SetSystemID(DRAGONRIDING_TRAIT_SYSTEM_ID);
-            ToggleFrame(GenericTraitFrame);
+            GenericTraitUI_LoadUI()
+            local DRAGONRIDING_TRAIT_SYSTEM_ID = 1
+            GenericTraitFrame:SetSystemID(DRAGONRIDING_TRAIT_SYSTEM_ID)
+            ToggleFrame(GenericTraitFrame)
         end
     }, level)
 
@@ -2529,15 +2548,24 @@ local function Init_Menu(_, level, menuList)
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-    e.LibDD:UIDropDownMenu_AddSeparator(level)
     info= {
         text= '    |A:mechagon-projects:0:0|a'..(e.onlyChinese and '选项' or OPTIONS),
         notCheckable=true,
         keepShownOnClick=true,
         menuList='OPTIONS',
         hasArrow=true,
+        func= function()
+            e.OpenPanelOpting(Initializer)
+        end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    e.LibDD:UIDropDownMenu_AddSeparator(level)
+    e.LibDD:UIDropDownMenu_AddButton({
+        text= '    '..Initializer:GetName(),
+        isTitle=true,
+        notCheckable=true,
+    }, level)
 end
 
 
