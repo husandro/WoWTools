@@ -140,13 +140,21 @@ local function set_WorldQuestPinMixin_RefreshVisuals(self)--WorldQuestDataProvid
             end
         end
     else
-
-        itemName, texture, numItems, _, quality = GetQuestLogRewardCurrencyInfo(1, self.questID)--货币
+        local currencyID
+        itemName, texture, numItems, currencyID, quality = GetQuestLogRewardCurrencyInfo(1, self.questID)--货币
         if itemName and numItems and numItems>1 then
-            text= numItems
+            local info, _, _, _, isMax, canWeek, canEarned, canQuantity= e.GetCurrencyMaxInfo(currencyID, nil)
+            if info then
+                if isMax then
+                    text= format('|cnRED_FONT_COLOR:%d|r', numItems)
+                elseif canWeek or canEarned or canQuantity then
+                    text= format('|cnGREEN_FONT_COLOR:%d|r', numItems)
+                end
+            end
+            text= text or numItems
         end
 
-        if not itemName then
+        if not text then
             local gold= GetQuestLogRewardMoney(self.questID)
             if gold and gold>0 then
                 text= e.MK(gold/10000, 0)
