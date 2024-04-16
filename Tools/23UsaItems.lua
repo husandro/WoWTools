@@ -271,10 +271,7 @@ end
 
 
 
-
---###
 --法术
---###
 local function set_Spell_Count(self)--次数
     local num, max= GetSpellCharges(self.spellID)
     if max and max>1 and not self.count then
@@ -319,11 +316,7 @@ end
 
 
 
-
-
-
 local function Init_All_Buttons()
-
     for _, itemID in pairs(Save.item) do
         local name ,icon
         if get_Find(itemID) then
@@ -595,15 +588,6 @@ local function Init_Options_SpellBook()
         set_Use_Spell_Button(self, self.spellID)
     end)
 end
-
-
-
-
-
-
-
-
-
 
 
 
