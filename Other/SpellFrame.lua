@@ -235,3 +235,198 @@ panel:SetScript("OnEvent", function(_, event, arg1)
     end
 end)
 
+--[[ https://wago.io/dungeonports
+    -- Non rimuovere questo commento, fa parte di quest'aura:DF_AA_PORT 2
+aura_env.spellID = 393273
+
+-- Non rimuovere questo commento, fa parte di quest'aura:DF_AV_PORT 2
+aura_env.spellID = 393279
+
+-- Non rimuovere questo commento, fa parte di quest'aura:DF_BH_PORT 2
+aura_env.spellID = 393267
+
+-- Non rimuovere questo commento, fa parte di quest'aura:DF_HOI_PORT 2
+aura_env.spellID = 393283
+
+-- Non rimuovere questo commento, fa parte di quest'aura:DF_NELT_PORT 2
+aura_env.spellID = 393276
+
+-- Non rimuovere questo commento, fa parte di quest'aura:DF_NO_PORT 2
+aura_env.spellID = 393262
+
+-- Non rimuovere questo commento, fa parte di quest'aura:DF_RLP_PORT 2
+aura_env.spellID = 393256
+
+-- Non rimuovere questo commento, fa parte di quest'aura:DF_ULD_PORT 2
+aura_env.spellID = 393222
+
+-- Non rimuovere questo commento, fa parte di quest'aura:DF_S1_COS_PORT
+aura_env.spellID = 393766
+
+-- Non rimuovere questo commento, fa parte di quest'aura:DF_S1_HOV_PORT
+aura_env.spellID = 393764
+
+-- Non rimuovere questo commento, fa parte di quest'aura:DF_S1_SBG_PORT
+aura_env.spellID = 159899
+
+-- Non rimuovere questo commento, fa parte di quest'aura:DF_S1_TJS_PORT
+aura_env.spellID = 131204
+
+-- Non rimuovere questo commento, fa parte di quest'aura:DF_S2_VP_PORT
+aura_env.spellID = 410080
+
+-- Non rimuovere questo commento, fa parte di quest'aura:DF_S2_NL_PORT
+aura_env.spellID = 410078
+
+-- Non rimuovere questo commento, fa parte di quest'aura:DF_S2_FH_PORT
+aura_env.spellID = 410071
+
+-- Non rimuovere questo commento, fa parte di quest'aura:DF_S2_UNDR_PORT
+aura_env.spellID = 410074
+
+-- Non rimuovere questo commento, fa parte di quest'aura:DF_S3_AD_PORT
+aura_env.spellID = 424187
+
+-- Non rimuovere questo commento, fa parte di quest'aura:DF_S3_BRH_PORT
+aura_env.spellID = 424153
+
+-- Non rimuovere questo commento, fa parte di quest'aura:DF_S3_DHT_PORT
+aura_env.spellID = 424163
+
+-- Non rimuovere questo commento, fa parte di quest'aura:DF_S3_EB_PORT
+aura_env.spellID = 159901
+
+-- Non rimuovere questo commento, fa parte di quest'aura:DF_S3_FALL_PORT
+aura_env.spellID = 424197
+
+-- Non rimuovere questo commento, fa parte di quest'aura:DF_S3_RISE_PORT
+aura_env.spellID = 424197
+
+-- Non rimuovere questo commento, fa parte di quest'aura:DF_S3_TOTT_PORT
+aura_env.spellID = 424142
+
+-- Non rimuovere questo commento, fa parte di quest'aura:DF_S3_WM_PORT
+aura_env.spellID = 424167
+
+-- Non rimuovere questo commento, fa parte di quest'aura:M+TP_PL_Background
+aura_env.active = false
+
+-- Non rimuovere questo commento, fa parte di quest'aura:M+TP_PL_TOTT
+aura_env.spellID = 424142
+
+-- Non rimuovere questo commento, fa parte di quest'aura:M+TP_PL_VP
+aura_env.spellID = 410080
+
+-- Non rimuovere questo commento, fa parte di quest'aura:M+TP_PL_TJS
+aura_env.spellID = 131204
+
+-- Non rimuovere questo commento, fa parte di quest'aura:M+TP_PL_SONT
+aura_env.spellID = 131228
+
+-- Non rimuovere questo commento, fa parte di quest'aura:M+TP_PL_MSP
+aura_env.spellID = 131222
+
+-- Non rimuovere questo commento, fa parte di quest'aura:M+TP_PL_GOTSS
+aura_env.spellID = 131225
+
+-- Non rimuovere questo commento, fa parte di quest'aura:M+TP_PL_SPM
+aura_env.spellID = 131206
+
+-- Non rimuovere questo commento, fa parte di quest'aura:M+TP_PL_SSB
+aura_env.spellID = 131205
+
+-- Non rimuovere questo commento, fa parte di quest'aura:M+TP_PL_SCHOLO
+aura_env.spellID = 131232
+
+-- Non rimuovere questo commento, fa parte di quest'aura:M+TP_PL_SH
+aura_env.spellID = 131231
+
+-- Non rimuovere questo commento, fa parte di quest'aura:M+TP_PL_SM
+aura_env.spellID = 131229
+
+-- Non rimuovere questo commento, fa parte di quest'aura:DF_S3_EB_PORT 2
+aura_env.spellID = 159901
+
+-- Non rimuovere questo commento, fa parte di quest'aura:M+TP_PL_SBG
+aura_env.spellID = 159899
+
+-- Non rimuovere questo commento, fa parte di quest'aura:M+TP_PL_GD
+aura_env.spellID = 159900
+
+-- Non rimuovere questo commento, fa parte di quest'aura:M+TP_PL_ID
+aura_env.spellID = 159896
+
+-- Non rimuovere questo commento, fa parte di quest'aura:M+TP_PL_BSM
+aura_env.spellID = 159895
+
+-- Non rimuovere questo commento, fa parte di quest'aura:M+TP_PL_UBS
+aura_env.spellID = 159902
+
+-- Non rimuovere questo commento, fa parte di quest'aura:M+TP_PL_SKY
+aura_env.spellID = 159898
+
+-- Non rimuovere questo commento, fa parte di quest'aura:M+TP_PL_AUCH
+aura_env.spellID = 159897
+
+-- Non rimuovere questo commento, fa parte di quest'aura:M+TP_PL_DHT
+aura_env.spellID = 424163
+
+-- Non rimuovere questo commento, fa parte di quest'aura:M+TP_PL_BRH
+aura_env.spellID = 424153
+
+-- Non rimuovere questo commento, fa parte di quest'aura:M+TP_PL_NL
+aura_env.spellID = 410078
+
+-- Non rimuovere questo commento, fa parte di quest'aura:M+TP_PL_HOV
+aura_env.spellID = 393764
+
+-- Non rimuovere questo commento, fa parte di quest'aura:M+TP_PL_COS
+aura_env.spellID = 393766
+
+-- Non rimuovere questo commento, fa parte di quest'aura:M+TP_PL_KARA
+aura_env.spellID = 373262
+
+-- Non rimuovere questo commento, fa parte di quest'aura:M+TP_PL_WM
+aura_env.spellID = 424167
+
+-- Non rimuovere questo commento, fa parte di quest'aura:M+TP_PL_AD
+aura_env.spellID = 424187
+
+-- Non rimuovere questo commento, fa parte di quest'aura:M+TP_PL_UNDR
+aura_env.spellID = 410074
+
+-- Non rimuovere questo commento, fa parte di quest'aura:M+TP_PL_FH
+aura_env.spellID = 410071
+
+-- Non rimuovere questo commento, fa parte di quest'aura:M+TP_PL_MECHA
+aura_env.spellID = 373274
+
+-- Non rimuovere questo commento, fa parte di quest'aura:M+TP_PL_PF
+aura_env.spellID = 354463
+
+-- Non rimuovere questo commento, fa parte di quest'aura:M+TP_PL_MISTS
+aura_env.spellID = 354464
+
+-- Non rimuovere questo commento, fa parte di quest'aura:M+TP_PL_DOS
+aura_env.spellID = 354468
+
+-- Non rimuovere questo commento, fa parte di quest'aura:M+TP_PL_SD
+aura_env.spellID = 354469
+
+-- Non rimuovere questo commento, fa parte di quest'aura:M+TP_PL_HOA
+aura_env.spellID = 354465
+
+-- Non rimuovere questo commento, fa parte di quest'aura:M+TP_PL_TOP
+aura_env.spellID = 354467
+
+-- Non rimuovere questo commento, fa parte di quest'aura:M+TP_PL_NW
+aura_env.spellID = 354462
+
+-- Non rimuovere questo commento, fa parte di quest'aura:M+TP_PL_SOA
+aura_env.spellID = 354466 
+
+-- Non rimuovere questo commento, fa parte di quest'aura:M+TP_PL_TAZ
+aura_env.spellID = 367416
+
+
+]]
