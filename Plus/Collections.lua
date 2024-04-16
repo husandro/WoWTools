@@ -1294,6 +1294,9 @@ end
 --传家宝, 按钮，提示
 --Blizzard_HeirloomCollection.lua
 local function Init_Heirloom()
+    if e.Is_Timerunning then
+        return
+    end
     hooksecurefunc(HeirloomsJournal, 'UpdateButton', function(_, button)
         if Save.hideHeirloom then
             if button.isPvP then
