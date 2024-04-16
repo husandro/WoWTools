@@ -405,7 +405,7 @@ local tab= {223}
         local name, description, numSlots, isKnown = GetFlyoutInfo(flyoutID)
         
         if isKnown then
-            --local btn= CreateFrame('CheckButton', id..'ToolsFlyout'..name, e.toolsFrame, 'SpellFlyoutButtonTemplate')
+            --local btn= CreateFrame('CheckButton', id..'ToolsFlyout'..name, e.toolsFrame, 'SpellFlyoutButtonTemplate')--SmallActionButtonTemplate
             
             local btn= e.Cbtn2({
                 name=nil,
