@@ -397,35 +397,7 @@ local function Init_All_Buttons()
             end
         end
     end
-if not e.Player.husandro then
-    return
-end
-local tab= {223}
-    for _, flyoutID in pairs(tab) do --Save.flyout) do
-        local name, description, numSlots, isKnown = GetFlyoutInfo(flyoutID)
-        
-        if isKnown then
-            local btn= CreateFrame('CheckButton', id..'ToolsFlyout'..name, e.toolsFrame, 'SpellFlyoutButtonTemplate')
-            
-            --[[local btn= e.Cbtn2({
-                name=nil,
-                parent= e.toolsFrame,
-                click=true,-- right left
-                notSecureActionButton=nil,
-                notTexture=nil,
-                showTexture=true,
-                sizi=nil,
-            })]]
-            btn.flyoutID=flyoutID
-            
-            e.ToolsSetButtonPoint(btn)--设置位置
-            btn.spellID= flyoutID
-            btn:SetAttribute('type', 'flyout')
-            btn:SetAttribute('flyout', flyoutID)
-           -- btn:SetAttribute("flyoutDirection", "LEFT")
-            --btn.texture:SetTexture(icon)
-        end
-    end
+
 end
 
 
