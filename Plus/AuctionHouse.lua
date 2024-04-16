@@ -730,7 +730,7 @@ local function Init_Sell()
                     col='|cnRED_FONT_COLOR:'
                     text= col..(e.onlyChinese and '危险' or VOICEMACRO_1_Sc_0)
                     local itemID=  C_Item.GetItemID(itemLocation)
-                    if itemID and not Save.hideSellItem[itemID] then
+                    if itemID and not Save.hideSellItem[itemID] then--加入，隐藏，物品列表
                         Save.hideSellItem[itemID]=true
                         self:init_items()
                         AuctionHouseFrame:ClearPostItem()

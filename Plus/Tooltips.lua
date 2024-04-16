@@ -424,7 +424,7 @@ function func.Set_Pet(self, speciesID, setSearchText)--宠物
         local abilityIconA, abilityIconB = '', ''
         for k, info in pairs(tab) do
             local icon, type = select(2, C_PetJournal.GetPetAbilityInfo(info.abilityID))
-            icon='|TInterface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[type]..':0|t|T'..icon..':0|t'..info.level.. ((k~=3 or k~=6) and '  ' or '')
+            icon='|TInterface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[type]..':0|t|T'..(icon or 0)..':0|t'..info.level.. ((k~=3 or k~=6) and '  ' or '')
             if k>3 then
                 abilityIconA=abilityIconA..icon
             else
@@ -1549,9 +1549,10 @@ local function set_Battle_Pet(self, speciesID, level, breedQuality, maxHealth, p
     BattlePetTooltipTemplate_AddTextLine(self, abilityIcon)
 
     if tooltipSource then
-        tooltipSource= tooltipSource:gsub(':', ':|n')
-        tooltipSource= tooltipSource:gsub('：', ':|n')
+        --tooltipSource= tooltipSource:gsub(':', ':|n')
+        --tooltipSource= tooltipSource:gsub('：', ':|n')
         BattlePetTooltipTemplate_AddTextLine(self, tooltipSource)--来源提示
+        --print(tooltipSource)
     end
 
     if PetJournalSearchBox and PetJournalSearchBox:IsVisible() then--设置搜索
