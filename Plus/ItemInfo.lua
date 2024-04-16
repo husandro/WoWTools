@@ -463,7 +463,7 @@ local function Set_Item_Info(self, tab)
                             if heirloomID and C_Heirloom.PlayerHasHeirloom(heirloomID) then
                                 local _, itemEquipLoc2, _, _, upgradeLevel, _, _, _, _, maxLevel= C_Heirloom.GetHeirloomInfo(heirloomID)
                                 local maxUp=C_Heirloom.GetHeirloomMaxUpgradeLevel(heirloomID)
-                                if upgradeLevel< maxUp and maxLevel< num-1  and (weapon and heirloomWeapontemEquipLocTab[itemEquipLoc2] or (not weapon and shield)) then
+                                if upgradeLevel and maxLevel and maxUp and upgradeLevel< maxUp and maxLevel< num-1  and (weapon and heirloomWeapontemEquipLocTab[itemEquipLoc2] or (not weapon and shield)) then
                                     heirloomNum= heirloomNum+1
                                 end
                             end
