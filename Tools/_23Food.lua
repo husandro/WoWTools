@@ -35,6 +35,8 @@ local function set_Item_Cooldown_Count(self)--图标冷却
 end
 
 
+
+
 --#########
 --提示, 事件
 --#########
@@ -94,7 +96,9 @@ local function find_Item_Type(class, subclass)
             local info = C_Container.GetContainerItemInfo(bag, slot)
             if info and info.hyperlink and info.itemID and C_Item.GetItemSpell(info.itemID) then
                 local classID, subClassID, _, expacID = select(12, C_Item.GetItemInfo(info.hyperlink))
-                if classID==class and subClassID==subclass and (Save.onlyMaxExpansion and (info.itemID==113509 or e.ExpansionLevel==expacID) or not Save.onlyMaxExpansion) then
+                if classID==class and subClassID==subclass
+                    and (Save.onlyMaxExpansion and (info.itemID==113509 or e.ExpansionLevel==expacID or not e.Is_Timerunning) or not Save.onlyMaxExpansion)
+                then
                     e.LoadDate({id=info.itemID, type='item'})
                     table.insert(tab, info.itemID)
                 end
@@ -305,6 +309,7 @@ local function InitMenu(self, level, type)--主菜单
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 
+if not e.Is_Timerunning then
         info={
             text= e.onlyChinese and '仅当前版本物品' or format(LFG_LIST_CROSS_FACTION, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, GAME_VERSION_LABEL)),
             checked= Save.onlyMaxExpansion,
@@ -317,6 +322,7 @@ local function InitMenu(self, level, type)--主菜单
             end,
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
+end
         return
 
     elseif type then
@@ -550,18 +556,18 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 button.itemID= 5512--治疗石
                 set_Button_Init(button)--提示, 事件
 
-                panel:RegisterEvent("PLAYER_LOGOUT")
+                self:RegisterEvent("PLAYER_LOGOUT")
 
                 C_Timer.After(2.3, function()
                     if UnitAffectingCombat('player') then
-                        panel.setInitBat=true
-                        panel:RegisterEvent('PLAYER_REGEN_ENABLED')
+                        self.setInitBat=true
+                        self:RegisterEvent('PLAYER_REGEN_ENABLED')
                     else
                         Init()--初始
                     end
                 end)
             end
-            panel:UnregisterEvent('ADDON_LOADED')
+            self:UnregisterEvent('ADDON_LOADED')
         end
 
     elseif event == "PLAYER_LOGOUT" then
