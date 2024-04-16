@@ -43,23 +43,30 @@ end
 --######
 --初始化
 --######
-local function Init()
-    local Vstr=function(t)--垂直文字
-        local len = select(2, t:gsub("[^\128-\193]", ""))
-        if(len == #t) then
-            return t:gsub(".", "%1|n")
-        else
-            return t:gsub("([%z\1-\127\194-\244][\128-\191]*)", "%1|n")
-        end
+local function Vstr(t)--垂直文字
+    local len = select(2, t:gsub("[^\128-\193]", ""))
+    if(len == #t) then
+        return t:gsub(".", "%1|n")
+    else
+        return t:gsub("([%z\1-\127\194-\244][\128-\191]*)", "%1|n")
     end
+end
+local function Init()
+    
+
+
     hooksecurefunc('SpellFlyoutButton_UpdateGlyphState', function(self)
+        local text
         if self.spellID and not IsPassiveSpell(self.spellID) then
-            local text
+            local des= GetSpellDescription(self.spellID)
+            
             text= select(2, GetCallPetSpellInfo(self.spellID))
             text= text~='' and text or nil
             text= text or GetSpellInfo(self.spellID)
             text= e.cn(text)
+            print(text)
             if text then
+
                 if not self.Text then
                     self.Text=e.Cstr(self);
                 else
@@ -77,11 +84,9 @@ local function Init()
                     self.Text:SetPoint('BOTTOM', self, 'TOP', 0, 4);
                     text=Vstr(text);
                 end
-                self.Text:SetText(text);
-                return
             end
         end
-        if self.Text then self.TextSetText('') end
+        if self.Text then self.Text:SetText( text or "") end
     end)
 
     --#############
