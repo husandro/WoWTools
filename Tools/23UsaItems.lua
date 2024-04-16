@@ -46,7 +46,9 @@ local P_Spell_Tabs={
     18960,--[梦境行者]
     126892,--[禅宗朝圣]
 }
-local P_Flyout_Tab={}
+local P_Flyout_Tab={
+    
+}
 local P_Equip_Tab={
     65274,65360, 63206, 63207, 63352, 63353,--协同披风
     103678,--迷时神器
@@ -58,7 +60,7 @@ local P_Equip_Tab={
 local Save= {
         item=P_Item_Tabs,
         spell=P_Spell_Tabs,
-        flyout={},
+        flyout=P_Flyout_Tab,
         equip=P_Equip_Tab
 }
 
@@ -397,6 +399,35 @@ local function Init_All_Buttons()
             end
         end
     end
+if not e.Player.husandro then
+    return
+end
+local tab= {223}
+    for _, flyoutID in pairs(tab) do --Save.flyout) do
+        local name, description, numSlots, isKnown = GetFlyoutInfo(flyoutID)
+        
+        if isKnown then
+            local btn= CreateFrame('CheckButton', id..'ToolsFlyout'..name, e.toolsFrame, 'SpellFlyoutButtonTemplate')
+            
+            --[[local btn= e.Cbtn2({
+                name=nil,
+                parent= e.toolsFrame,
+                click=true,-- right left
+                notSecureActionButton=nil,
+                notTexture=nil,
+                showTexture=true,
+                sizi=nil,
+            })]]
+            btn.flyoutID=flyoutID
+            
+            e.ToolsSetButtonPoint(btn)--设置位置
+            btn.spellID= flyoutID
+            btn:SetAttribute('type', 'flyout')
+            btn:SetAttribute('flyout', flyoutID)
+           -- btn:SetAttribute("flyoutDirection", "LEFT")
+            --btn.texture:SetTexture(icon)
+        end
+    end
 end
 
 
@@ -563,8 +594,13 @@ local function Init_Options_SpellBook()
         local btn= _G['SpellButton'..i]
         if btn and btn.UpdateButton then
             hooksecurefunc(btn, 'UpdateButton', function(self)--SpellBookFrame.lua
-                local slot, slotType, slotID = SpellBook_GetSpellBookSlot(self)
-
+                
+                --[[local slot, slotType, slotID = SpellBook_GetSpellBookSlot(self)
+                if slot then
+                    local texture = GetSpellBookItemTexture(slot, SpellBookFrame.bookType)
+                    
+                    
+                end]]
                 if not slot or SpellBookFrame.bookType~='spell' then
                     if self.useSpell then
                         self.useSpell:SetShown(false)
@@ -779,7 +815,7 @@ local function Init_Options_Button()
                         notCheckable=true,
                         keepShownOnClick=true,
                         tooltipOnButton=true,
-                        tooltipTitle='/reload',
+                        tooltipTitle=SLASH_RELOAD2,
                         func=function()
                             e.Reload()
                         end

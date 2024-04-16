@@ -1491,9 +1491,16 @@ function func.Set_Flyout(self, flyoutID)--法术, 弹出框
             end
         end
     end
-    self:AddLine(' ')
-    self:AddDoubleLine((not isKnown and '|cnRED_FONT_COLOR:' or '')..'flyoutID|r '..flyoutID, numSlots..' '..(e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL))
-    self:AddDoubleLine(id, Category:GetName())
+    local btn= self:GetOwner()
+    local icon
+
+    
+    if btn and (btn.IconTexture or btn.icon) then
+        icon= (btn.IconTexture or btn.icon):GetTextureFileID()
+        
+    end
+    self:AddDoubleLine((not isKnown and '|cnRED_FONT_COLOR:' or '')..'flyoutID|r '..flyoutID, icon and icon>0 and format('|T%d:0|t%d', icon, icon))
+
 end
 
 
