@@ -729,6 +729,13 @@ local function Init_Sell()
                 else
                     col='|cnRED_FONT_COLOR:'
                     text= col..(e.onlyChinese and '危险' or VOICEMACRO_1_Sc_0)
+                    local itemID=  C_Item.GetItemID(itemLocation)
+                    if itemID and not Save.hideSellItem[itemID] then
+                        Save.hideSellItem[itemID]=true
+                        self:init_items()
+                        AuctionHouseFrame:ClearPostItem()
+                        C_Timer.After(0.3, function() self:set_next_item() end)--放入，第一个，物品
+                    end
                 end
             end
             if vendorPrice then
