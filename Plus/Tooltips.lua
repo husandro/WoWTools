@@ -49,7 +49,7 @@ local func={
 function func.Set_PlayerModel(self)
     if not self.playerModel then
         self.playerModel= CreateFrame("PlayerModel", nil, self)--DressUpModel PlayerModel
-        self.playerModel:SetFrameLevel(self:GetFrameLevel()-1)
+        --self.playerModel:SetFrameLevel(self:GetFrameLevel()-1)
         --[[
         self.itemModel= CreateFrame("DressUpModel", nil, self)--DressUpModel PlayerModel
         self.itemModel:SetPoint('TOP', self, 'BOTTOM')
