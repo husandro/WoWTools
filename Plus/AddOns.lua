@@ -573,7 +573,7 @@ local function Init()
     AddonListForceLoad:SetPoint('TOP', AddonList, -16, -26)
 
     AddonListEnableAllButton.AllNumText= e.Cstr(AddonListEnableAllButton, {color={r=1,g=1,b=1}})
-    AddonListEnableAllButton.AllNumText:SetPoint('LEFT',5,0)
+    AddonListEnableAllButton.AllNumText:SetPoint('LEFT',3,0)
     AddonListEnableAllButton.AllNumText:SetText(C_AddOns.GetNumAddOns())
     Init_Add_Save_Button()--新建按钮
     --Set_Fast_Button()
