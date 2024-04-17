@@ -282,9 +282,9 @@ local function Init()
 	            local iconAtlas = C_AddOns.GetAddOnMetadata(name, "IconAtlas")
                 local icon= ''
                 if iconTexture then
-                    icon= '|T'..iconTexture..':22|t'
+                    icon= '|T'..iconTexture..':26|t'
                 elseif iconAtlas then
-                    icon='|A:'..iconAtlas..':22:22|a'
+                    icon='|A:'..iconAtlas..':26:26|a'
                 end
                 check.Text:SetText(name..icon)
                 if checked then
