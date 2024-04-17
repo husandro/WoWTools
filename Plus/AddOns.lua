@@ -121,7 +121,7 @@ local function Create_Button(btn)
         for name, value in pairs(Save.buttons[self.name]) do
             local isLoaded= C_AddOns.IsAddOnLoaded(name)
             local vType= type(value)
-            local text= vType=='table' and e.GetPlayerInfo({unit=value, reName=true, reRealm=true})
+            local text= vType=='string' and e.GetPlayerInfo({guid=value, reName=true, reRealm=true})
             if not text and not isLoaded then
                 local reason= select(2, C_AddOns.IsAddOnLoadable(name))
                 if reason then
@@ -130,7 +130,7 @@ local function Create_Button(btn)
             end
             e.tips:AddDoubleLine(
                 format('%s|cffffd100%d)|r %s%s|r', index<10 and ' ' or '', index, isLoaded and '|cnGREEN_FONT_COLOR:' or '|cff606060', name),
-                text
+                text or ' '
             )
             index= index+1
         end
@@ -229,8 +229,27 @@ local function Init_Add_Save_Button()
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id , Initializer:GetName())
         e.tips:AddLine(' ')
-        e.tips:AddLine(e.onlyChinese and '新建' or NEW)
-
+        local index=1
+        local load, some, sel, all, tab= Get_AddList_Info()
+        for name, value in pairs(tab) do
+            local isLoaded= C_AddOns.IsAddOnLoaded(name)
+            local vType= type(value)
+            local text= vType=='string' and e.GetPlayerInfo({guid=value})
+            if not text and not isLoaded then
+                local reason= select(2, C_AddOns.IsAddOnLoadable(name))
+                if reason then
+                    text= '|cff606060'..e.cn(_G['ADDON_'..reason] or reason)..' ('..index
+                end
+            end
+            e.tips:AddDoubleLine(
+                format('%s|cffffd100%d)|r %s%s|r', index<10 and ' ' or '', index, isLoaded and '|cnGREEN_FONT_COLOR:' or '|cff606060', name),
+                text or ' '
+            )
+            index= index+1
+        end
+        e.tips:AddLine(' ')
+        e.tips:AddLine(format('|A:communities-chat-icon-plus:0:0|a|cffff00ff%s|r', e.onlyChinese and '新建' or NEW))
+        
         e.tips:Show()
     end)
     btn:SetScript('OnClick',function()
