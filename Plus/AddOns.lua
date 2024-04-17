@@ -50,6 +50,8 @@ local function get_buttons()
     table.sort(addTab, function(a,b) return a.num< b.num end)
     return addTab
 end
+
+
 local function set_Buttons()--设置按钮, 和位置
     local last=panel
     for _, info in pairs(get_buttons()) do
@@ -280,9 +282,9 @@ local function Init()
 	            local iconAtlas = C_AddOns.GetAddOnMetadata(name, "IconAtlas")
                 local icon= ''
                 if iconTexture then
-                    icon= '|T'..iconTexture..':0|t'
+                    icon= '|T'..iconTexture..':22|t'
                 elseif iconAtlas then
-                    icon='|A:'..iconAtlas..':0:0|a'
+                    icon='|A:'..iconAtlas..':22:22|a'
                 end
                 check.Text:SetText(name..icon)
                 if checked then
@@ -347,43 +349,115 @@ local function Init()
     end)
 
 
-    hooksecurefunc('AddonList_InitButton', function(self, addonIndex)
+    hooksecurefunc('AddonList_InitButton', function(frame, addonIndex)
         local name= C_AddOns.GetAddOnInfo(addonIndex)
         if Save.fast[name] then
             Save.fast[name]= addonIndex
         end
         local checked= Save.fast[name]
 
-        if not self.check then
-            self.check=CreateFrame("CheckButton", nil, self, "InterfaceOptionsCheckButtonTemplate")
-            self.check:SetSize(22,22)
-            self.check:SetCheckedTexture(e.Icon.icon)
-            self.check:SetPoint('RIGHT', self)
-            self.check:SetScript('OnClick', function(self2)
-                Save.fast[self2.name]= not Save.fast[self2.name] and self2.index or nil
-                self2:SetAlpha(Save.fast[self2.name] and 1 or 0.1)
+        if not frame.check then
+            frame.check=CreateFrame("CheckButton", nil, frame, "InterfaceOptionsCheckButtonTemplate")
+            function frame.check:set_alpha()
+                self:SetAlpha(Save.fast[self.name] and 1 or 0)
+                self.Text:SetAlpha(C_AddOns.GetAddOnDependencies(self.index) and 0.3 or 1)
+            end
+            frame.check:SetSize(22,22)
+            frame.check:SetCheckedTexture(e.Icon.icon)
+            frame.check:SetPoint('RIGHT', frame)
+            frame.check:SetScript('OnClick', function(self)
+                Save.fast[self.name]= not Save.fast[self.name] and self.index or nil
                 set_Fast_Button()
             end)
-            self.check:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(Save.fast[self2.name] and 1 or 0.1) self2:GetParent():SetAlpha(1) end)
-            self.check:SetScript('OnEnter', function(self2)
-                e.tips:SetOwner(self2, "ANCHOR_RIGHT")
+            frame.check:SetScript('OnLeave', function(self)
+                e.tips:Hide()
+                self:set_alpha()
+                self.select:SetShown(false)
+            end)
+            frame.check:SetScript('OnEnter', function(self)
+                e.tips:SetOwner(self, "ANCHOR_RIGHT")
                 e.tips:ClearLines()
-                e.tips:AddDoubleLine(self2.icon..self2.name, self2.index)
+                e.tips:AddDoubleLine((self.icon or '')..self.name, self.index)
                 e.tips:AddLine(' ')
                 e.tips:AddLine(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)
                 e.tips:AddDoubleLine(id, e.cn(addName))
                 e.tips:Show()
-                self2:SetAlpha(1)
-                self2:GetParent():SetAlpha(0.3)
+                self:SetAlpha(1)
+                self.Text:SetAlpha(1)
+                self.select:SetShown(true)
             end)
+
+            --[[frame.check.dep= frame:CreateTexture(nil, 'BACKGROUND')
+            frame.check.dep:SetAtlas('callingsheader_selectedglow')
+            frame.check.dep:SetAllPoints(frame.Title)
+            frame.check.dep:Hide()]]
+
+            frame.check.select= frame:CreateTexture(nil, 'OVERLAY')
+            frame.check.select:SetAtlas('CreditsScreen-Selected')
+            frame.check.select:SetAllPoints(frame)
+            frame.check.select:Hide()
+
+            
+
+            frame:HookScript('OnLeave', function(self)
+                self.check:set_alpha()
+                --self.check.Text:SetAlpha(0.3)
+                self.check.select:SetShown(false)
+            end)
+            frame:HookScript('OnEnter', function(self)
+                self.check:SetAlpha(1)
+                --self.check.Text:SetAlpha(1)
+                self.check.select:SetShown(true)
+            end)
+
+            frame.check.Text:SetParent(frame)
+            frame.check.Text:ClearAllPoints()
+            frame.check.Text:SetPoint('RIGHT', frame.check, 'LEFT')
+            --frame.check.Text:SetAlpha(0.3)
+
+            frame.Enabled:HookScript('OnLeave', function(self)
+                local f=self:GetParent()
+                f.check:set_alpha()
+                --f.check.Text:SetAlpha(0.3)
+                f.check.select:SetShown(false)
+            end)
+            frame.Enabled:HookScript('OnEnter', function(self)
+                local f=self:GetParent()
+                f.check:SetAlpha(1)
+                --f.check.Text:SetAlpha(1)
+                f.check.select:SetShown(true)
+            end)
+
+            --frame.Title
         end
+
         local iconTexture = C_AddOns.GetAddOnMetadata(name, "IconTexture")
         local iconAtlas = C_AddOns.GetAddOnMetadata(name, "IconAtlas")
-        self.check.icon= iconTexture and '|T'..iconTexture..':0|t' or (iconAtlas and '|A:'..iconAtlas..':0:0|a') or ''
-        self.check.index= addonIndex
-        self.check.name= name
-        self.check:SetChecked(checked and true or false)
-        self.check:SetAlpha(checked and 1 or 0.1)
+        frame.check.icon= iconTexture and '|T'..iconTexture..':32|t' or (iconAtlas and '|A:'..iconAtlas..':32:32|a') or nil
+        if not iconTexture and not iconAtlas then
+            local title= frame.Title:GetText()
+            if title and title:find('|TInterface\\ICONS\\INV_Misc_QuestionMark:%d+:%d+|t') then
+                frame.Title:SetText(title:gsub('|TInterface\\ICONS\\INV_Misc_QuestionMark:%d+:%d+|t', '      '))
+            end
+        end
+
+        frame.check.index= addonIndex
+        frame.check.name= name
+        frame.check:SetChecked(checked and true or false)--fast
+        frame.check:SetAlpha(checked and 1 or 0.1)
+
+        frame.check.Text:SetText(addonIndex or '')--索引
+        if C_AddOns.GetAddOnDependencies(addonIndex) then
+            frame.check.select:SetVertexColor(0,1,0)
+            frame.check.Text:SetTextColor(0,1,0)
+            frame.check.Text:SetAlpha(0.3)
+            --frame.check.dep:SetShown(false)
+        else
+            frame.check.select:SetVertexColor(1,1,1)
+            frame.check.Text:SetTextColor(1, 0.82, 0)
+            frame.check.Text:SetAlpha(1)
+            --frame.check.dep:SetShown(true)
+        end
     end)
 
     --#############
