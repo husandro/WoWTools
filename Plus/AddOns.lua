@@ -32,7 +32,7 @@ local FastButton={}
 
 
 local function Get_AddList_Info()
-    local load, some, select, all= 0, 0, 0, C_AddOns.GetNumAddOns()
+    local load, some, sel= 0, 0, 0
     local tab= {}
     for i=1, C_AddOns.GetNumAddOns() do
         local name=C_AddOns.GetAddOnInfo(i)
@@ -44,12 +44,12 @@ local function Get_AddList_Info()
             if stat==1 then
                 some= some +1
             elseif stat==2 then
-                select= select+1
+                sel= sel+1
             end
             tab[name]= stat==1 and e.Player.guid or i
         end
     end
-    return load, some, select, all, tab
+    return load, some, sel, tab
 end
 
 
@@ -155,13 +155,6 @@ end
 --####
 --按钮
 --####
---[[
-[BASE_SETTINGS_TAB]={
-    ['WeakAuras']=true,
-    ['WeakAurasOptions']=true,
-},
-]]
-
 local function Set_Buttons()--设置按钮, 和位置
     local list={}
     for name, tab in pairs(Save.buttons) do
@@ -230,7 +223,7 @@ local function Init_Add_Save_Button()
         e.tips:AddDoubleLine(id , Initializer:GetName())
         e.tips:AddLine(' ')
         local index=1
-        local load, some, sel, all, tab= Get_AddList_Info()
+        local tab= select(4, Get_AddList_Info())
         for name, value in pairs(tab) do
             local isLoaded= C_AddOns.IsAddOnLoaded(name)
             local vType= type(value)
@@ -248,46 +241,52 @@ local function Init_Add_Save_Button()
             index= index+1
         end
         e.tips:AddLine(' ')
-        e.tips:AddLine(format('|A:communities-chat-icon-plus:0:0|a|cffff00ff%s|r', e.onlyChinese and '新建' or NEW))
-        
+        e.tips:AddDoubleLine(
+            format('|A:communities-chat-icon-plus:0:0|a|cffff00ff%s|r%s', e.onlyChinese and '新建' or NEW, e.Icon.left),
+            format('%s%s', e.onlyChinese and '选项' or OPTIONS, e.Icon.right)
+        )
         e.tips:Show()
     end)
-    btn:SetScript('OnClick',function()
-        StaticPopupDialogs['WoWTools_AddOns_NEW']= StaticPopupDialogs['WoWTools_AddOns_NEW'] or {
-            text =id..' '..Initializer:GetName()
-                ..'|n|n'
-                ..(e.onlyChinese and '当前已选择' or ICON_SELECTION_TITLE_CURRENT)
-                ..' %s|n|n'
-                ..(e.onlyChinese and '新的方案' or PAPERDOLL_NEWEQUIPMENTSET),
-            button1 = e.onlyChinese and '新建' or NEW,
-            button2 = e.onlyChinese and '取消' or CANCEL,
-            whileDead=true, hideOnEscape=true, exclusive=true,
-            hasEditBox=true,
-            OnAccept=function(self)
-                local text = self.editBox:GetText()
-                Save.buttons[text]= select(5 ,Get_AddList_Info())
-                e.call('AddonList_Update')
-            end,
-            OnShow=function(self)
-                self.editBox:SetText(e.onlyChinese and '一般' or RESISTANCE_FAIR)
-            end,
-            EditBoxOnTextChanged= function(self)
-                local btn=self:GetParent().button1
-                btn:SetText(Save.buttons[text] and (e.onlyChinese and '替换' or REPLACE) or (e.onlyChinese and '新建' or NEW))
-                btn:SetEnabled(self:GetText():gsub(' ', '')~='')
-            end,
-            EditBoxOnEscapePressed = function(self)
-                self:GetParent():Hide()
-            end,
-        }
+    btn:SetScript('OnClick',function(_, d)
+        if d=='LeftButton' then
+            StaticPopupDialogs['WoWTools_AddOns_NEW']= StaticPopupDialogs['WoWTools_AddOns_NEW'] or {
+                text =id..' '..Initializer:GetName()
+                    ..'|n|n'
+                    ..(e.onlyChinese and '当前已选择' or ICON_SELECTION_TITLE_CURRENT)
+                    ..' %s|n|n'
+                    ..(e.onlyChinese and '新的方案' or PAPERDOLL_NEWEQUIPMENTSET),
+                button1 = e.onlyChinese and '新建' or NEW,
+                button2 = e.onlyChinese and '取消' or CANCEL,
+                whileDead=true, hideOnEscape=true, exclusive=true,
+                hasEditBox=true,
+                OnAccept=function(self)
+                    local text = self.editBox:GetText()
+                    Save.buttons[text]= select(4 ,Get_AddList_Info())
+                    e.call('AddonList_Update')
+                end,
+                OnShow=function(self)
+                    self.editBox:SetText(e.onlyChinese and '一般' or RESISTANCE_FAIR)
+                end,
+                EditBoxOnTextChanged= function(self)
+                    local btn=self:GetParent().button1
+                    btn:SetText(Save.buttons[text] and (e.onlyChinese and '替换' or REPLACE) or (e.onlyChinese and '新建' or NEW))
+                    btn:SetEnabled(self:GetText():gsub(' ', '')~='')
+                end,
+                EditBoxOnEscapePressed = function(self)
+                    self:GetParent():Hide()
+                end,
+            }
 
-        local _, some, select, all= Get_AddList_Info()--检查列表, 选取数量, 总数, 数量/总数
-        StaticPopup_Show('WoWTools_AddOns_NEW',
-            format('%d%s/%d',
-                select,
-                some>0 and format(' (%s%d)', e.Icon.player, some) or '',
-                all
-            ))
+            local _, some, sel= Get_AddList_Info()--检查列表, 选取数量, 总数, 数量/总数
+            StaticPopup_Show('WoWTools_AddOns_NEW',
+                format('%d%s',
+                    sel,
+                    some>0 and format(' (%s%d)', e.Icon.player, some) or ''
+                )
+            )
+        elseif d=='RightButton' then
+            e.OpenPanelOpting(Initializer)
+        end
     end)
     btn.Text= e.Cstr(btn)
     btn.Text:SetPoint('RIGHT', btn, 'LEFT')
@@ -307,7 +306,6 @@ end
 
 
 --插件，快捷，选中
-
 local function Set_Fast_Button()
     local newTab={}
     for name, index in pairs(Save.fast) do
@@ -467,11 +465,14 @@ local function Init_Set_List(frame, addonIndex)
             self:SetAlpha(Save.fast[self.name] and 1 or 0)
             self.Text:SetAlpha(C_AddOns.GetAddOnDependencies(self.index) and 0.3 or 1)
             self.select:SetShown(false)
+            local check= self:GetParent().Enabled
+            check:SetAlpha(check:GetChecked() and 1 or 0)
         end
         function frame.check:set_enter_alpha()
             self:SetAlpha(1)
             self.Text:SetAlpha(1)
             self.select:SetShown(true)
+            self:GetParent().Enabled:SetAlpha(1)
         end
 
         frame.check:SetScript('OnLeave', function(self)
@@ -500,6 +501,8 @@ local function Init_Set_List(frame, addonIndex)
         frame:HookScript('OnEnter', function(self)
             self.check:set_enter_alpha()
         end)
+        
+        frame.Enabled:SetAlpha(frame.Enabled:GetChecked() and 1 or 0)
     end
 
     local iconTexture = C_AddOns.GetAddOnMetadata(name, "IconTexture")
@@ -570,14 +573,18 @@ local function Init()
     AddonListForceLoad:ClearAllPoints()
     AddonListForceLoad:SetPoint('TOP', AddonList, -16, -26)
 
+    AddonListEnableAllButton.AllNumText= e.Cstr(AddonListEnableAllButton, {color={r=1,g=1,b=1}})
+    AddonListEnableAllButton.AllNumText:SetPoint('LEFT',5,0)
+    AddonListEnableAllButton.AllNumText:SetText(C_AddOns.GetNumAddOns())
     Init_Add_Save_Button()--新建按钮
     --Set_Fast_Button()
     hooksecurefunc('AddonList_InitButton', Init_Set_List)--列表，内容
 -- e.call('AddonList_HasAnyChanged')
     hooksecurefunc('AddonList_Update', function()
-        local num, some, all= Get_AddList_Info()--检查列表, 选取数量, 总数, 数量/总数
-        AddonList.WoWToolsButton:SetShown(num>0)
-        AddonList.WoWToolsButton.Text:SetFormattedText('%d%s/%d', num, some>0 and format('|cff606060(%d)|r', some) or '', all)
+        local load, some, sel, tab= Get_AddList_Info()--检查列表, 选取数量, 总数, 数量/总数
+        local all= some+ sel
+        AddonList.WoWToolsButton:SetShown(all>0)
+        AddonList.WoWToolsButton.Text:SetFormattedText('%d%s/|cnGREEN_FONT_COLOR:%d|r', sel, some>0 and format(' (%s%d) ', e.Icon.player, some) or '', load)
         Set_Fast_Button()--插件，快捷，选中
         Set_Buttons()
 

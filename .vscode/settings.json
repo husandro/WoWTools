@@ -4105,6 +4105,5 @@
         "duplicate-set-field",
         "assign-type-mismatch",
         "redefined-local",
-        "unused-local"
     ]
 }
