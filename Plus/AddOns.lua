@@ -501,8 +501,6 @@ local function Init_Set_List(frame, addonIndex)
         frame:HookScript('OnEnter', function(self)
             self.check:set_enter_alpha()
         end)
-        
-        frame.Enabled:SetAlpha(frame.Enabled:GetChecked() and 1 or 0)
     end
 
     local iconTexture = C_AddOns.GetAddOnMetadata(name, "IconTexture")
@@ -536,6 +534,7 @@ local function Init_Set_List(frame, addonIndex)
         frame.check.dep:SetShown(true)
     end
     frame.Status:SetAlpha(0.5)
+    frame.Enabled:SetAlpha(frame.Enabled:GetChecked() and 1 or 0)
 end
 
 
