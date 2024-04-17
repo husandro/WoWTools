@@ -1,6 +1,6 @@
 local id, e = ...
 local addName= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDONS, CHAT_MODERATE)
-local panel=e.Cbtn(AddonList, {type=false, size={80,22}})
+local Button
 
 local Save={
         buttons={
@@ -53,12 +53,12 @@ end
 
 
 local function set_Buttons()--设置按钮, 和位置
-    local last=panel
+    local last=Button
     for _, info in pairs(get_buttons()) do
-        local button=panel.buttons[info.name]
+        local button=Button.buttons[info.name]
         if info.num>0 then
             if not button then
-                button=e.Cbtn(panel, {type=false, size={88,22}})
+                button=e.Cbtn(Button, {type=false, size={88,22}})
                 button:SetScript('OnMouseDown',function(self, d)
                     if d=='LeftButton' then--加载
                         for i=1, C_AddOns.GetNumAddOns() do
@@ -80,9 +80,9 @@ local function set_Buttons()--设置按钮, 和位置
                             OnAccept=function(_,data)
                                 Save.buttons[data.name]=nil
                                 data.frame:SetShown(false)
-                                local last2=panel
+                                local last2=Button
                                 local tabs={}
-                                for _, btn in pairs(panel.buttons) do
+                                for _, btn in pairs(Button.buttons) do
                                     table.insert(tabs, btn)
                                 end
                                 table.sort(tabs, function(a,b) return a.totaleAddons< b.totaleAddons end)
@@ -139,7 +139,7 @@ local function set_Buttons()--设置按钮, 和位置
             button.name= info.name
             button.lable:SetText(info.load..'/'..info.num)
 
-            panel.buttons[info.name]=button
+            Button.buttons[info.name]=button
             last=button
         end
         if button then
@@ -160,9 +160,11 @@ end
 --初始化
 --#####
 local function Init()
-    panel:SetPoint('TOPLEFT', AddonList ,'TOPRIGHT',0, -20)
-    panel:SetText(e.onlyChinese and '新建' or NEW)
-    panel:SetScript('OnClick',function()
+    Button= e.Cbtn(AddonList, {size={22,22}, atlas='communities-chat-icon-plus'})
+    Button.fast={}
+    Button:SetPoint('TOPLEFT', AddonList ,'TOPRIGHT',0, -20)
+    Button:SetText(e.onlyChinese and '新建' or NEW)
+    Button:SetScript('OnClick',function()
         StaticPopupDialogs[id..addName..'NEW']={
             text =id..' '..addName..'|n|n'..(e.onlyChinese and '当前已选择' or ICON_SELECTION_TITLE_CURRENT)..' %s|n|n'..(e.onlyChinese and '新的方案' or PAPERDOLL_NEWEQUIPMENTSET),
             button1 = e.onlyChinese and '新建' or NEW,
@@ -198,7 +200,7 @@ local function Init()
         local text= select(3, get_AddList())--检查列表, 选取数量, 总数, 数量/总数
         StaticPopup_Show(id..addName..'NEW', text, nil)--新建按钮
     end)
-    panel.buttons={}--存放按钮
+    Button.buttons={}--存放按钮
 
 
 
@@ -229,7 +231,6 @@ local function Init()
     --###############
     --插件，快捷，选中
     --###############
-    panel.fast={}
     local function set_Fast_Button()
         local newTab={}
         for name, index in pairs(Save.fast) do
@@ -242,7 +243,7 @@ local function Init()
             local name, _, _, _, reason = C_AddOns.GetAddOnInfo(tab.name)
             if name and reason~='MISSING' then
                 index= index+1
-                local check= panel.fast[index]
+                local check= Button.fast[index]
                 if not check then
                     check= CreateFrame("CheckButton", nil, AddonList, "InterfaceOptionsCheckButtonTemplate")
                     if not last then
@@ -272,7 +273,7 @@ local function Init()
                         self2:SetAlpha(0.3)
                     end)
                     check.index= tab.index
-                    panel.fast[index]= check
+                    Button.fast[index]= check
                 end
                 local checked= C_AddOns.GetAddOnEnableState(name)~=0
                 check:SetChecked(checked)
@@ -297,8 +298,8 @@ local function Init()
                 check.name= name
             end
         end
-        for i= index+1, #panel.fast, 1 do
-            local check= panel.fast[i]
+        for i= index+1, #Button.fast, 1 do
+            local check= Button.fast[i]
             if check then
                 check:SetShown(false)
             end
@@ -312,7 +313,7 @@ local function Init()
     hooksecurefunc('AddonList_Update', function()
         local num, all, text = get_AddList()--检查列表, 选取数量, 总数, 数量/总数,
         local findButton=nil
-        for name, button in pairs(panel.buttons) do
+        for name, button in pairs(Button.buttons) do
             if button:IsShown() then
                 local find--测试按钮内容是否全选定
                 if num==button.totaleAddons and Save.buttons[name] then
@@ -338,12 +339,12 @@ local function Init()
                 end
             end
         end
-        panel:SetEnabled(num~=0 and num~=all and not findButton)--新建按钮, 没有选定,或全选时, 禁用
-        if not panel.text then
-            panel.text=e.Cstr(panel,{size=16})--16)
-            panel.text:SetPoint('BOTTOM',panel, 'TOP',0,2)
+        Button:SetEnabled(num~=0 and num~=all and not findButton)--新建按钮, 没有选定,或全选时, 禁用
+        if not Button.text then
+            Button.text=e.Cstr(Button,{size=16})--16)
+            Button.text:SetPoint('BOTTOM',Button, 'TOP',0,2)
         end
-        panel.text:SetText(text)
+        Button.text:SetText(text)
         set_Fast_Button()--插件，快捷，选中
         set_Buttons()--设置按钮
     end)
@@ -358,21 +359,45 @@ local function Init()
 
         if not frame.check then
             frame.check=CreateFrame("CheckButton", nil, frame, "InterfaceOptionsCheckButtonTemplate")
-            function frame.check:set_alpha()
-                self:SetAlpha(Save.fast[self.name] and 1 or 0)
-                self.Text:SetAlpha(C_AddOns.GetAddOnDependencies(self.index) and 0.3 or 1)
-            end
-            frame.check:SetSize(22,22)
+
+            frame.check:SetSize(22,22)--Fast，选项
             frame.check:SetCheckedTexture(e.Icon.icon)
             frame.check:SetPoint('RIGHT', frame)
             frame.check:SetScript('OnClick', function(self)
                 Save.fast[self.name]= not Save.fast[self.name] and self.index or nil
                 set_Fast_Button()
             end)
+          
+            frame.check.dep= frame:CreateLine()--依赖，提示
+            frame.check.dep:SetColorTexture(1, 0.82, 0)
+            frame.check.dep:SetStartPoint('BOTTOMLEFT', 10,2)
+            frame.check.dep:SetEndPoint('BOTTOMRIGHT', -10,2)
+            frame.check.dep:SetThickness(0.5)
+            frame.check.dep:SetAlpha(0.2)
+
+            frame.check.select= frame:CreateTexture(nil, 'OVERLAY')--光标，移过提示
+            frame.check.select:SetAtlas('CreditsScreen-Selected')
+            frame.check.select:SetAllPoints(frame)
+            frame.check.select:Hide()
+
+            frame.check.Text:SetParent(frame)--索引
+            frame.check.Text:ClearAllPoints()
+            frame.check.Text:SetPoint('RIGHT', frame.check, 'LEFT')
+
+            function frame.check:set_leave_alpha()
+                self:SetAlpha(Save.fast[self.name] and 1 or 0)
+                self.Text:SetAlpha(C_AddOns.GetAddOnDependencies(self.index) and 0.3 or 1)
+                self.select:SetShown(false)
+            end
+            function frame.check:set_enter_alpha()
+                self:SetAlpha(1)
+                self.Text:SetAlpha(1)
+                self.select:SetShown(true)
+            end
+
             frame.check:SetScript('OnLeave', function(self)
                 e.tips:Hide()
-                self:set_alpha()
-                self.select:SetShown(false)
+                self:set_leave_alpha()
             end)
             frame.check:SetScript('OnEnter', function(self)
                 e.tips:SetOwner(self, "ANCHOR_RIGHT")
@@ -382,81 +407,55 @@ local function Init()
                 e.tips:AddLine(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)
                 e.tips:AddDoubleLine(id, e.cn(addName))
                 e.tips:Show()
-                self:SetAlpha(1)
-                self.Text:SetAlpha(1)
-                self.select:SetShown(true)
+                self:set_enter_alpha()
             end)
-
-            --[[frame.check.dep= frame:CreateTexture(nil, 'BACKGROUND')
-            frame.check.dep:SetAtlas('callingsheader_selectedglow')
-            frame.check.dep:SetAllPoints(frame.Title)
-            frame.check.dep:Hide()]]
-
-            frame.check.select= frame:CreateTexture(nil, 'OVERLAY')
-            frame.check.select:SetAtlas('CreditsScreen-Selected')
-            frame.check.select:SetAllPoints(frame)
-            frame.check.select:Hide()
-
-            
-
-            frame:HookScript('OnLeave', function(self)
-                self.check:set_alpha()
-                --self.check.Text:SetAlpha(0.3)
-                self.check.select:SetShown(false)
-            end)
-            frame:HookScript('OnEnter', function(self)
-                self.check:SetAlpha(1)
-                --self.check.Text:SetAlpha(1)
-                self.check.select:SetShown(true)
-            end)
-
-            frame.check.Text:SetParent(frame)
-            frame.check.Text:ClearAllPoints()
-            frame.check.Text:SetPoint('RIGHT', frame.check, 'LEFT')
-            --frame.check.Text:SetAlpha(0.3)
-
             frame.Enabled:HookScript('OnLeave', function(self)
-                local f=self:GetParent()
-                f.check:set_alpha()
-                --f.check.Text:SetAlpha(0.3)
-                f.check.select:SetShown(false)
+               self:GetParent().check:set_leave_alpha()
             end)
             frame.Enabled:HookScript('OnEnter', function(self)
-                local f=self:GetParent()
-                f.check:SetAlpha(1)
-                --f.check.Text:SetAlpha(1)
-                f.check.select:SetShown(true)
+                self:GetParent().check:set_enter_alpha()
+            end)
+            frame:HookScript('OnLeave', function(self)
+                self.check:set_leave_alpha()
+            end)
+            frame:HookScript('OnEnter', function(self)
+                self.check:set_enter_alpha()
             end)
 
-            --frame.Title
+           
+            
+
+           
         end
 
         local iconTexture = C_AddOns.GetAddOnMetadata(name, "IconTexture")
         local iconAtlas = C_AddOns.GetAddOnMetadata(name, "IconAtlas")
-        frame.check.icon= iconTexture and '|T'..iconTexture..':32|t' or (iconAtlas and '|A:'..iconAtlas..':32:32|a') or nil
-        if not iconTexture and not iconAtlas then
+        
+        if not iconTexture and not iconAtlas then--去掉，没有图标，提示
             local title= frame.Title:GetText()
             if title and title:find('|TInterface\\ICONS\\INV_Misc_QuestionMark:%d+:%d+|t') then
                 frame.Title:SetText(title:gsub('|TInterface\\ICONS\\INV_Misc_QuestionMark:%d+:%d+|t', '      '))
             end
         end
 
+        frame.check.icon= iconTexture and '|T'..iconTexture..':32|t' or (iconAtlas and '|A:'..iconAtlas..':32:32|a') or nil
         frame.check.index= addonIndex
         frame.check.name= name
         frame.check:SetChecked(checked and true or false)--fast
         frame.check:SetAlpha(checked and 1 or 0.1)
 
         frame.check.Text:SetText(addonIndex or '')--索引
-        if C_AddOns.GetAddOnDependencies(addonIndex) then
+    
+        if C_AddOns.GetAddOnDependencies(addonIndex) then--依赖
             frame.check.select:SetVertexColor(0,1,0)
             frame.check.Text:SetTextColor(0,1,0)
             frame.check.Text:SetAlpha(0.3)
-            --frame.check.dep:SetShown(false)
+            frame.check.dep:SetShown(false)
         else
             frame.check.select:SetVertexColor(1,1,1)
             frame.check.Text:SetTextColor(1, 0.82, 0)
             frame.check.Text:SetAlpha(1)
-            --frame.check.dep:SetShown(true)
+            frame.check.dep:SetShown(true)
         end
     end)
 
@@ -512,6 +511,7 @@ end
 --###########
 --加载保存数据
 --###########
+local panel= CreateFrame('Frame')
 panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
