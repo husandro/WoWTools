@@ -525,7 +525,7 @@ local function Init_Set_List(frame, addonIndex)
     if C_AddOns.GetAddOnDependencies(addonIndex) then--依赖
         frame.check.select:SetVertexColor(0,1,0)
         frame.check.Text:SetTextColor(0,1,0)
-        frame.check.Text:SetAlpha(0.3)
+        frame.check.Text:SetAlpha(0.2)
         frame.check.dep:SetShown(false)
     else
         frame.check.select:SetVertexColor(1,1,1)
