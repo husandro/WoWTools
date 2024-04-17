@@ -113,6 +113,7 @@ e.Icon={
 
     --player= e.GetUnitRaceInfo({unit='player', guid=nil , race=nil , sex=nil , reAtlas=false}),
 
+    
     bank2='|A:Banker:0:0|a',
     bag='bag-main',
     bag2='|A:bag-main:0:0|a',

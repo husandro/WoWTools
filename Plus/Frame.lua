@@ -829,6 +829,10 @@ end
 
 
 local function setAddLoad(arg1)
+    if Save.disabled then
+        return
+    end
+
     if arg1=='Blizzard_TrainerUI' then--专业训练师
         e.Set_Move_Frame(ClassTrainerFrame, {minW=328, minH=197, setSize=true, initFunc=function(btn)
             ClassTrainerFrameSkillStepButton:SetPoint('RIGHT', -12, 0)
@@ -2057,6 +2061,9 @@ end
 --初始,移动
 --########
 local function Init_Move()
+    if Save.disabled then
+        return
+    end
     --set_Move_Alpha(MicroMenu)--主菜单
     set_Move_Alpha(BagsBar)--背包
     set_Move_Alpha(ObjectiveTrackerFrame)
