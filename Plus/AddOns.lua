@@ -268,6 +268,7 @@ local function Init_Add_Save_Button()
                     self.editBox:SetText(e.onlyChinese and '一般' or RESISTANCE_FAIR)
                 end,
                 EditBoxOnTextChanged= function(self)
+                    local text= self:GetText()
                     local btn=self:GetParent().button1
                     btn:SetText(Save.buttons[text] and (e.onlyChinese and '替换' or REPLACE) or (e.onlyChinese and '新建' or NEW))
                     btn:SetEnabled(self:GetText():gsub(' ', '')~='')
