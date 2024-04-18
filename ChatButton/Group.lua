@@ -163,7 +163,7 @@ local function InitMenu(_, level, type)--主菜单
                             ..(e.onlyChinese and '队伍' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS),
                         whileDead=true, hideOnEscape=true, exclusive=true,
                         hasEditBox=1,
-                        button1= e.onlyChinese and '修改' or SLASH_CHAT_MODERATE2:gsub('/',''),
+                        button1= e.onlyChinese and '修改' or EDIT,
                         button2= e.onlyChinese and '取消' or CANCEL,
                         OnShow = function(self2, data)
                             self2.editBox:SetWidth(self2:GetWidth()-30)
@@ -184,7 +184,7 @@ local function InitMenu(_, level, type)--主菜单
                             if text2:gsub(' ','')=='' then
                                 self2:GetParent().button1:SetText(e.onlyChinese and '移除' or REMOVE)
                             else
-                                self2:GetParent().button1:SetText(e.onlyChinese and '修改' or SLASH_CHAT_MODERATE2:gsub('/',''))
+                                self2:GetParent().button1:SetText(e.onlyChinese and '修改' or EDIT)
                             end
                         end,
                         EditBoxOnEscapePressed = function(s)

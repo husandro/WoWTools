@@ -127,14 +127,15 @@ local function Init_set_Tank_Healer()
         if IsInRaid() then
             local tab={}--设置团队标记
             for index=1, MAX_RAID_MEMBERS do-- GetNumGroupMembers
-                local online, _, role, _, combatRole = select(8, GetRaidRosterInfo(index))
+                --local online, _, role, _, combatRole = select(8, GetRaidRosterInfo(index))
+                local name, _, _, _, _, _, _, online, _, role, _, combatRole= GetRaidRosterInfo(index)
                 local unit= 'raid'..index
                 if (role=='TANK' or combatRole=='TANK') and online then
                     table.insert(tab, {
                         unit=unit,
                         hp=UnitHealthMax(unit)
                     })
-                else
+                elseif name then
                     local raidIndex= GetRaidTargetIndex(unit)
                     if raidIndex and raidIndex>0 and raidIndex<=8 then
                         set_Taget(unit, 0)

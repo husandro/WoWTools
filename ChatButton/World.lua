@@ -228,7 +228,7 @@ local function InitMenu(_, level, type)--主菜单
                     text=id..' '..addName..'|n|n'..get_myChatFilter_Text(),
                     whileDead=true, hideOnEscape=true, exclusive=true,
                     hasEditBox=true,
-                    button1= e.onlyChinese and '修改' or SLASH_CHAT_MODERATE2:gsub('/', ''),
+                    button1= e.onlyChinese and '修改' or EDIT,
                     button2= e.onlyChinese and '取消' or CANCEL,
                     OnShow = function(self)
                         self.editBox:SetNumeric(true)

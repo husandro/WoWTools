@@ -4,7 +4,7 @@ local Save={
         buttons={
             [BASE_SETTINGS_TAB]={
                 ['WeakAuras']=true,
-                --['WeakAurasOptions']=true,
+                ['WeakAurasOptions']=true,
                 ['BugSack']=true,
                 ['!BugGrabber']=true,
                 ['TextureAtlasViewer']=true,-- true, i or guid
@@ -20,7 +20,7 @@ local Save={
 local Initializer
 local Buttons={}
 local FastButton={}
-
+local AddLoadedList={}
 
 
 
@@ -73,14 +73,29 @@ end
 
 
 
-
 local function Create_Button(btn)
     btn=e.Cbtn(AddonList, {icon='hide', size={88,22}})
     btn:SetHighlightAtlas('auctionhouse-nav-button-secondary-select')
     btn.Text= e.Cstr(btn)
     btn.Text:SetPoint('LEFT', 2, 0)
 
-    function btn:set_status()
+    function btn:set_settings()
+        local load, all= 0, 0
+        for name in pairs(Save.buttons[self.name] or {}) do
+            if AddLoadedList[name] then
+                load= load +1
+            end
+            all= all+1
+        end
+        self.Text:SetFormattedText(
+            '%s %s%d|r/%s%d|r',
+            self.name,
+            load==0 and '|cff606060' or '|cnGREEN_FONT_COLOR:',
+            load,
+            load==all and '|cnGREEN_FONT_COLOR:' or '',
+            all
+        )
+        self:SetWidth(btn.Text:GetWidth()+4)
         self:SetButtonState(self.load==self.all and 'PUSHED' or 'NORMAL')
     end
 
@@ -100,47 +115,88 @@ local function Create_Button(btn)
             e.Reload()
 
         elseif d=='RightButton' then--移除
-            StaticPopupDialogs['WoWTools_AddOns_DELETE']= StaticPopupDialogs['WoWTools_AddOns_DELETE'] or {
-                text =id..' '..Initializer:GetName()..'|n|n< |cff00ff00%s|r >',
-                button1 = e.onlyChinese and '删除' or DELETE,
-                button2 = e.onlyChinese and '取消' or CANCEL,
-                whileDead=true, hideOnEscape=true, exclusive=true,
-                OnAccept=function(_, name)
-                    Save.buttons[name]=nil
-                    e.call('AddonList_Update')
-                end,
-            }
-            StaticPopup_Show('WoWTools_AddOns_DELETE', self.name, nil, self.name)
+            if not self.Menu then
+                self.Menu= CreateFrame("Frame", nil, AddonList, "UIDropDownMenuTemplate")--菜单框架
+                e.LibDD:UIDropDownMenu_Initialize(self.Menu, function(_, level)--主菜单
+                    local some, sel= select(2, Get_AddList_Info())
+                    e.LibDD:UIDropDownMenu_AddButton({
+                        text= format('%s #%d', e.onlyChinese and '保存' or SAVE, some+sel),
+                        notCheckable=true,
+                        disabled= (some+sel)==0,
+                        arg1= self.name,
+                        func= function(_, arg1)
+                            Save.buttons[arg1]= select(4, Get_AddList_Info())
+                        end
+                    }, level)
+
+                    e.LibDD:UIDropDownMenu_AddSeparator(level)
+                    e.LibDD:UIDropDownMenu_AddButton({
+                        text= e.onlyChinese and '名称' or NAME,
+                        icon= 'QuestLegendaryTurnin',
+                        notCheckable=true,
+                        arg1= self.name,
+                        func= function(_, arg1)
+                            StaticPopup_Show('WoWTools_AddOns_NAME', arg1, nil, arg1)
+                        end
+                    }, level)
+                    e.LibDD:UIDropDownMenu_AddButton({
+                        text= e.onlyChinese and '删除' or DELETE,
+                        icon= 'XMarksTheSpot',
+                        colorCode='|cnRED_FONT_COLOR:',
+                        notCheckable= true,
+                        arg1= self.name,
+                        func= function(_, arg1)
+                            Save.buttons[arg1]=nil
+                            e.call('AddonList_Update')
+                        end
+                    }, level)
+                    e.LibDD:UIDropDownMenu_AddButton({text=self.name, notCheckable=true, isTitle=true}, level)
+                    --[[e.LibDD:UIDropDownMenu_AddButton({
+                        text= e.onlyChinese and '选项' or OPTIONS,
+                        icon= 'mechagon-projects',
+                        notCheckable= true,
+                        func= function()
+                            e.OpenPanelOpting(Initializer)
+                        end
+                    }, level)]]
+                end, 'MENU')
+
+            end
+            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
         end
     end)
 
     btn:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
+        e.tips:AddLine(format('|cffff00ff%s|r', self.name))
+        e.tips:AddLine(' ')
         local index=1
         for name, value in pairs(Save.buttons[self.name]) do
+            local iconTexture = C_AddOns.GetAddOnMetadata(name, "IconTexture")
+            local iconAtlas = C_AddOns.GetAddOnMetadata(name, "IconAtlas")
+            local icon= iconTexture and format('|T%s:0|t', iconTexture) or (iconAtlas and format('|A:%s:0:0|a', iconAtlas)) or '    '
             local isLoaded= C_AddOns.IsAddOnLoaded(name)
             local vType= type(value)
             local text= vType=='string' and e.GetPlayerInfo({guid=value, reName=true, reRealm=true})
-            if not text and not isLoaded then
-                local reason= select(2, C_AddOns.IsAddOnLoadable(name))
-                if reason then
-                    text= '|cff606060'..e.cn(_G['ADDON_'..reason] or reason)..' ('..index
-                end
+            local reason= select(2, C_AddOns.IsAddOnLoadable(name))
+            local col= reason=='DEMAND_LOADED' and '|cffff00ff'
+            if not text and not isLoaded and reason then
+                text= (col or '|cff606060')..e.cn(_G['ADDON_'..reason] or reason)..' ('..index
             end
             e.tips:AddDoubleLine(
-                format('%s|cffffd100%d)|r %s%s|r', index<10 and ' ' or '', index, isLoaded and '|cnGREEN_FONT_COLOR:' or '|cff606060', name),
+                format('%s|cffffd100%d)|r%s%s%s|r', index<10 and ' ' or '', index, icon, isLoaded and '|cnGREEN_FONT_COLOR:' or col or '|cff606060', name),
                 text or ' '
             )
             index= index+1
         end
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine((e.onlyChinese and '加载插件' or LOAD_ADDON)..e.Icon.left, (e.onlyChinese and '删除' or DELETE)..e.Icon.right,1,0,1, 1,0,1)
-        e.tips:AddLine(format('|cffff00ff%s|r', self.name))
+        
         e.tips:Show()
     end)
     btn:SetScript('OnLeave', function(self)
-      --  self:set_status()
+        self:set_settings()
         e.tips:Hide()
     end)
     return btn
@@ -156,7 +212,7 @@ end
 --按钮
 --####
 local function Set_Buttons()--设置按钮, 和位置
-    local list={}
+    --[[local list={}
     for name, tab in pairs(Save.buttons) do
         local load, all=0, 0
         for add in pairs(tab) do
@@ -164,6 +220,11 @@ local function Set_Buttons()--设置按钮, 和位置
                 all=all+1
                 if C_AddOns.IsAddOnLoaded(add) then
                     load= load+1
+                else
+                    local reason= select(2, C_AddOns.IsAddOnLoadable(add))
+                    if reason=='DEMAND_LOADED' then
+                        load= load+1
+                    end
                 end
             else
                 tab[add]= nil
@@ -172,9 +233,19 @@ local function Set_Buttons()--设置按钮, 和位置
         table.insert(list, {name= name, tab=tab, load=load, all=all})
     end
     table.sort(list, function(a,b) return a.load< b.load end)
-
-
-    for index, info in pairs(list) do
+]]
+    AddLoadedList={}
+    for i=1, C_AddOns.GetNumAddOns() do
+        if C_AddOns.IsAddOnLoaded(i) or select(2, C_AddOns.GetAddOnEnableState(i))=='' then
+            local name= C_AddOns.GetAddOnInfo(i)
+            if name then
+                AddLoadedList[name]= true
+            end
+        end
+    end
+    
+    local index=1
+    for name in pairs(Save.buttons) do
         local btn=Buttons[index]
         if not btn then
             btn= Create_Button()
@@ -183,25 +254,34 @@ local function Set_Buttons()--设置按钮, 和位置
             else
                 btn:SetPoint('TOPLEFT', Buttons[index-1], 'BOTTOMLEFT')
             end
-
             Buttons[index]= btn
         end
 
-        btn.name= info.name
-        btn.load= info.load
-        btn.all= info.all
+        btn.name= name
+        --btn.load= info.load
+        --btn.all= info.all
+        index=i
 
-        btn.Text:SetFormattedText(
+        --[[btn.Text:SetFormattedText(
             '%s %s%d|r/%s%d|r',
             info.name,
             info.load==0 and '|cff606060' or '|cnGREEN_FONT_COLOR:',
             info.load,
-            
             info.load==info.all and '|cnGREEN_FONT_COLOR:' or '',
             info.all
         )
-        btn:SetWidth(btn.Text:GetWidth()+4)
-        btn:set_status()
+        btn:SetWidth(btn.Text:GetWidth()+4)]]
+        btn:set_settings()
+        btn:SetShown(true)
+    end
+    for i= index+1, #Buttons do
+        local btn= Buttons[i]
+        if btn then
+            btn:SetShown(false)
+            btn.name= nil
+            btn.load= nil
+            btn.all= nil
+        end
     end
 end
 
@@ -270,7 +350,7 @@ local function Init_Add_Save_Button()
                 EditBoxOnTextChanged= function(self)
                     local text= self:GetText()
                     local btn=self:GetParent().button1
-                    btn:SetText(Save.buttons[text] and (e.onlyChinese and '替换' or REPLACE) or (e.onlyChinese and '新建' or NEW))
+                    btn:SetText(Save.buttons[text] and format('|cffff00ff%s', e.onlyChinese and '替换' or REPLACE) or format('|cnGREEN_FONT_COLOR:%s', e.onlyChinese and '新建' or NEW))
                     btn:SetEnabled(self:GetText():gsub(' ', '')~='')
                 end,
                 EditBoxOnEscapePressed = function(self)
@@ -570,6 +650,66 @@ end
 --初始化
 --#####
 local function Init()
+--[[StaticPopupDialogs['WoWTools_AddOns_DELETE']= StaticPopupDialogs['WoWTools_AddOns_DELETE'] or {
+                        text =id..' '..Initializer:GetName()..'|n|n< |cff00ff00%s|r >|n',
+                        button1 = e.onlyChinese and '删除' or DELETE,
+                        button2 = e.onlyChinese and '取消' or CANCEL,
+                        whileDead=true, hideOnEscape=true, exclusive=true,
+                        OnAccept=function(_, name)
+                            Save.buttons[name]=nil
+                            e.call('AddonList_Update')
+                        end,
+                    }-- StaticPopup_Show('WoWTools_AddOns_DELETE', self.name, nil, self.name)]]
+
+    StaticPopupDialogs['WoWTools_AddOns_NAME']= {
+        text =id..' '..Initializer:GetName()
+            ..'|n|n'
+            ..(e.onlyChinese and '为布局%s输入新名称' or HUD_EDIT_MODE_RENAME_LAYOUT_DIALOG_TITLE)
+            ..'|n|n'
+            ..(e.onlyChinese and '新的方案' or PAPERDOLL_NEWEQUIPMENTSET),
+        button1 = e.onlyChinese and '新建' or NEW,
+        button2 = e.onlyChinese and '取消' or CANCEL,
+        whileDead=true, hideOnEscape=true, exclusive=true, hasEditBox=true,
+        OnAccept=function(self, name)
+            local tab=Save.buttons[name]
+            if tab then
+                local text= self.editBox:GetText()
+                for n in pairs(Save.buttons) do
+                    if name==n then
+                        Save.buttons[n]= nil
+                        Save.buttons[text]= tab
+                        e.call('AddonList_Update')
+                        return
+                    end
+                end
+            end
+            print(id, Initializer:GetName(), format('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE), name)
+        end,
+        OnShow=function(self, name)
+            self.editBox:SetText(name)
+        end,
+        EditBoxOnTextChanged= function(self, name)
+            local text= self:GetText()
+            self:GetParent().button1:SetEnabled(text:gsub(' ', '')~='' and not Save.buttons[text])
+        end,
+        EditBoxOnEscapePressed = function(self)
+            self:GetParent():Hide()
+        end,
+    }
+    --StaticPopup_Show('WoWTools_AddOns_EDIT', self.name, nil, self.name)
+
+    e.Set_Move_Frame(AddonList, {needSize=true, needMove=true, minW=430, minH=120, setSize=true, initFunc=function()
+        AddonList.ScrollBox:ClearAllPoints()
+        AddonList.ScrollBox:SetPoint('TOPLEFT', 7, -64)
+        AddonList.ScrollBox:SetPoint('BOTTOMRIGHT', -22,32)
+        hooksecurefunc('AddonList_InitButton', function(entry)
+            entry.Title:SetPoint('RIGHT', -220, 0 )
+        end)
+        --e.call(AddonList_Update)
+    end, sizeRestFunc=function(self)
+        self.target:SetSize("500", "478")
+    end})
+
     AddonListForceLoad:ClearAllPoints()
     AddonListForceLoad:SetPoint('TOP', AddonList, -16, -26)
 
@@ -581,13 +721,12 @@ local function Init()
     hooksecurefunc('AddonList_InitButton', Init_Set_List)--列表，内容
 -- e.call('AddonList_HasAnyChanged')
     hooksecurefunc('AddonList_Update', function()
-        local load, some, sel, tab= Get_AddList_Info()--检查列表, 选取数量, 总数, 数量/总数
+        local load, some, sel= Get_AddList_Info()--检查列表, 选取数量, 总数, 数量/总数
         local all= some+ sel
         AddonList.WoWToolsButton:SetShown(all>0)
         AddonList.WoWToolsButton.Text:SetFormattedText('%d%s/|cnGREEN_FONT_COLOR:%d|r', sel, some>0 and format(' (%s%d) ', e.Icon.player, some) or '', load)
         Set_Fast_Button()--插件，快捷，选中
         Set_Buttons()
-
     end)
 
 
@@ -618,6 +757,10 @@ local function Init()
             C_AddOns.EnableAddOn(id)
             e.call('AddonList_Update')
         end
+    end)
+
+    AddLoadList:HookScript('OnHide', function()
+        AddLoadedList={}
     end)
 end
 

@@ -1411,7 +1411,7 @@ local function Init_Buy_Items_Button()
             if itemID and itemLink then
                 local name = '|T'..(icon or 0)..':0|t'..itemLink
                 if buySave[itemID] then
-                    e.tips:AddDoubleLine(name..' x|cnGREEN_FONT_COLOR:'..buySave[itemID], '|cffff00ff'..(e.onlyChinese and '修改' or SLASH_CHAT_MODERATE2:gsub('%/',''))..e.Icon.left)
+                    e.tips:AddDoubleLine(name..' x|cnGREEN_FONT_COLOR:'..buySave[itemID], '|cffff00ff'..(e.onlyChinese and '修改' or EDIT)..e.Icon.left)
                 else
                     e.tips:AddDoubleLine(name, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '购买' or PURCHASE)..e.Icon.left)
                 end

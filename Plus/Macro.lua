@@ -1568,7 +1568,7 @@ local function Init()
     MacroEditButton:ClearAllPoints()
     MacroEditButton:SetPoint('TOPLEFT', MacroFrameSelectedMacroButton, 'TOPRIGHT',2,2)
     MacroEditButton:SetSize(60,22)--170 22
-    MacroEditButton:SetText(e.onlyChinese and '修改' or SLASH_CHAT_MODERATE2:gsub('/' , ''))
+    MacroEditButton:SetText(e.onlyChinese and '修改' or EDIT)
 
     --选定宏，名称
     MacroFrameSelectedMacroName:ClearAllPoints()

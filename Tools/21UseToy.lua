@@ -433,9 +433,9 @@ local function InitMenu(_, level, menuList)--主菜单
                     OnShow = function(self2, data)
                         self2.editBox:SetText(Save.KEY or ';')
                         if Save.KEY then
-                            self2.button1:SetText(SLASH_CHAT_MODERATE2:gsub('/', ''))--修该
+                            self2.button1:SetText(e.onlyChinese and '修改' or EDIT)--修该
                         end
-                        self2.button3:SetEnabled(Save.KEY)
+                        self2.button3:SetEnabled(Save.KEY and true or false)
                     end,
                     OnHide= function(self2)
                         self2.editBox:SetText("")

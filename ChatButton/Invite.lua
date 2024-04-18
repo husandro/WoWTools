@@ -815,7 +815,7 @@ local function InitList(self, level, type)
                     text=id..' '..addName..' '..(e.onlyChinese and '频道' or CHANNEL)..'|n|n'..(e.onlyChinese and '关键词' or KBASE_DEFAULT_SEARCH_TEXT),
                     whileDead=true, hideOnEscape=true, exclusive=true,
                     hasEditBox=true,
-                    button1= e.onlyChinese and '修改' or SLASH_CHAT_MODERATE2:gsub('/',''),
+                    button1= e.onlyChinese and '修改' or EDIT,
                     button2=CANCEL,
                     OnShow = function(self2, data)
                         self2.editBox:SetText(Save.ChannelText or e.Player.cn and '1' or 'inv')

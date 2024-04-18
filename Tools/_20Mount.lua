@@ -338,20 +338,20 @@ local function setClickAtt()--设置 Click属性
     local isMoving= IsPlayerMoving()
     local isBat= UnitAffectingCombat('player')
     local spellID
-
+    local isAdvancedFlyableArea = IsAdvancedFlyableArea()
     if XD then
         if IsSubmerged() then
             spellID= 783
         elseif isMoving or isBat then
             spellID= IsIndoors() and 768 or 783
-        elseif IsAdvancedFlyableArea() then
+        elseif isAdvancedFlyableArea then
             spellID= getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING)
         end
         spellID= spellID or (IsIndoors() and 768 or 783)
     else
         spellID= (IsIndoors() or isMoving or isBat) and button.spellID--进入战斗, 室内
             or getRandomRoll(FLOOR)--区域
-            or (IsAdvancedFlyableArea() and getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING))
+            or ((isAdvancedFlyableArea1 or IsUsableSpell(368896)) and getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING))-- [368896]=true,--[复苏始祖幼龙]
             or (IsSubmerged() and getRandomRoll(MOUNT_JOURNAL_FILTER_AQUATIC))--水平中
             or (isFlyableArea and getRandomRoll(MOUNT_JOURNAL_FILTER_FLYING))--飞行区域
             or (IsOutdoors() and getRandomRoll(MOUNT_JOURNAL_FILTER_GROUND))--室内
@@ -554,10 +554,10 @@ local function Init_Dialogs()
         button1= e.onlyChinese and '设置' or SETTINGS,
         button2= e.onlyChinese and '取消' or CANCEL,
         button3= e.onlyChinese and '移除' or REMOVE,
-        OnShow = function(self2, data)
+        OnShow = function(self2)
             self2.editBox:SetText(Save.KEY or 'BUTTON5')
             if Save.KEY then
-                self2.button1:SetText(SLASH_CHAT_MODERATE2:gsub('/', ''))--修该
+                self2.button1:SetText(e.onlyChinese and '修改' or EDIT)
             end
             self2.button3:SetEnabled(Save.KEY)
         end,
@@ -867,7 +867,7 @@ local function InitMenu(_, level, type)--主菜单
             info={
                 text= text,
                 tooltipOnButton=true,
-                tooltipTitle= (e.onlyChinese and '修改' or HUD_EDIT_MODE_RENAME_LAYOUT)..e.Icon.left,
+                tooltipTitle= (e.onlyChinese and '修改' or EDIT)..e.Icon.left,
                 notCheckable=true,
                 keepShownOnClick=true,
                 arg1= itemID,
@@ -1522,6 +1522,14 @@ local function Init()
         elseif d=='LeftButton' then
             if IsMounted() then
                C_MountJournal.Dismiss()
+
+            --战斗中，可用，驭龙术
+            elseif UnitAffectingCombat('player') and not IsPlayerMoving() and  IsUsableSpell(368896) then
+                local spellID= getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING)
+                local mountID= spellID and C_MountJournal.GetMountFromSpell(spellID) or 368896
+                if mountID then
+                    C_MountJournal.SummonByID(mountID)
+                end
             end
             --[[if IsSpellKnownOrOverridesKnown(111400) and not UnitAffectingCombat('player') then--SS爆燃冲刺
                 for i = 1, 40 do
@@ -1793,7 +1801,7 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2)
 
     elseif event=='PLAYER_STARTED_MOVING' then
         setClickAtt()--设置属性
-       
+
 
     elseif event=='NEUTRAL_FACTION_SELECT_RESULT' then
         set_ShiJI()

@@ -1294,6 +1294,8 @@ local function Init_All_Frame()
             set_Alpha_Color(nine.NineSlice.RightEdge, true)
         end
     end)
+
+
 end
 
 

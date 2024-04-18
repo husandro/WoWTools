@@ -901,7 +901,7 @@ local function InitMenu(_, level, menuList)
     local info
     if menuList=='modifyGuildWelcomeText' then--三级
         info={
-            text= e.onlyChinese and '修改' or SLASH_CHAT_MODERATE2:gsub('/', ''),--公会新成员
+            text= e.onlyChinese and '修改' or EDIT,--公会新成员
             notCheckable=true,
             tooltipOnButton=true,
             tooltipTitle=Save.guildWelcomeText,
@@ -911,7 +911,7 @@ local function InitMenu(_, level, menuList)
                     text=id..' '..addName..'|n|n'..(e.onlyChinese and '欢迎加入' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,  EMOTE103_CMD1:gsub('/',''), JOIN))..'|n'..(e.onlyChinese and '公会新成员' or LFG_LIST_GUILD_MEMBER),
                     whileDead=true, hideOnEscape=true, exclusive=true,
                     hasEditBox=true,
-                    button1= e.onlyChinese and '修改' or SLASH_CHAT_MODERATE2:gsub('/', ''),
+                    button1= e.onlyChinese and '修改' or EDIT,
                     button2= e.onlyChinese and '取消' or CANCEL,
                     OnShow = function(self)
                         self.editBox:SetText(Save.guildWelcomeText)
@@ -937,7 +937,7 @@ local function InitMenu(_, level, menuList)
         e.LibDD:UIDropDownMenu_AddButton(info, level)
     elseif menuList=='modifyGroupWelcomeText' then--三级
         info={
-            text= e.onlyChinese and '修改' or SLASH_CHAT_MODERATE2:gsub('/', ''),--公会新成员
+            text= e.onlyChinese and '修改' or EDIT,--公会新成员
             notCheckable=true,
             tooltipOnButton=true,
             tooltipTitle=Save.groupWelcomeText,
@@ -947,7 +947,7 @@ local function InitMenu(_, level, menuList)
                     text=id..' '..addName..'|n|n'..(e.onlyChinese and '欢迎加入' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,  EMOTE103_CMD1:gsub('/',''), JOIN))..'|n'..(e.onlyChinese and '公会新成员' or LFG_LIST_GUILD_MEMBER),
                     whileDead=true, hideOnEscape=true, exclusive=true,
                     hasEditBox=true,
-                    button1= e.onlyChinese and '修改' or SLASH_CHAT_MODERATE2:gsub('/', ''),
+                    button1= e.onlyChinese and '修改' or EDIT,
                     button2= e.onlyChinese and '取消' or CANCEL,
                     OnShow = function(self)
                         self.editBox:SetText(Save.groupWelcomeText)

@@ -2954,7 +2954,7 @@ local function Init()
                 e.tips:AddLine(' ')
                 e.tips:AddDoubleLine(self.str,
                     C_EquipmentSet.GetEquipmentSetID(self.str)
-                    and ('|cffff00ff'..(e.onlyChinese and '修改' or EQUIPMENT_SET_EDIT)..'|r')
+                    and ('|cffff00ff'..(e.onlyChinese and '修改' or EDIT)..'|r')
                     or ('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '新建' or NEW)..'|r')
                 )
                 e.tips:Show()
@@ -2970,7 +2970,7 @@ local function Init()
                 end
                 C_EquipmentSet.CreateEquipmentSet(self.str)
                 if setID then
-                    print(id,e.cn(addName), '|cffff00ff'..(e.onlyChinese and '修改' or EQUIPMENT_SET_EDIT)..'|r', self.str)
+                    print(id,e.cn(addName), '|cffff00ff'..(e.onlyChinese and '修改' or EDIT)..'|r', self.str)
                 else
                     print(id,e.cn(addName), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '新建' or NEW)..'|r', self.str)
                 end
