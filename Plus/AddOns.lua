@@ -83,10 +83,14 @@ local function Create_Button(btn)
     function btn:set_settings()
         local load, all= 0, 0
         for name in pairs(Save.buttons[self.name] or {}) do
-            if Is_Load(name) then
-                load= load +1
+            if C_AddOns.DoesAddOnExist(name) then
+                if Is_Load(name) then
+                    load= load +1
+                end
+                all= all+1
+            else
+                Save.buttons[self.name][name]=nil
             end
-            all= all+1
         end
         self.Text:SetFormattedText(
             '%s %s%d|r/%s%d|r',
@@ -175,7 +179,7 @@ local function Create_Button(btn)
         if not Save.buttons[self.name] then return end
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddLine(format('|cffff00ff%s|r', self.name))
+        e.tips:AddLine(format('|cffffd100%s|r', self.name))
         e.tips:AddLine(' ')
         local index=1
         for name, value in pairs(Save.buttons[self.name]) do
@@ -198,7 +202,7 @@ local function Create_Button(btn)
             index= index+1
         end
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine((e.onlyChinese and '加载插件' or LOAD_ADDON)..e.Icon.left, (e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..e.Icon.right,1,0,1, 1,0,1)
+        e.tips:AddDoubleLine((e.onlyChinese and '加载插件' or LOAD_ADDON)..e.Icon.left, (e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..e.Icon.right)
         
         e.tips:Show()
     end)
@@ -208,6 +212,18 @@ local function Create_Button(btn)
     end)
     return btn
 end
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -269,6 +285,27 @@ local function Set_Buttons()--设置按钮, 和位置
         end
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -394,7 +431,56 @@ local function Init_Add_Save_Button()
     local label= e.Cstr(AddonListEnableAllButton)--插件，总数
     label:SetPoint('LEFT',3,0)
     label:SetText(C_AddOns.GetNumAddOns())
+
+
+    local btn= e.Cbtn(AddonList, {atlas='talents-button-undo', size={22,22}})
+    btn:SetPoint('TOPLEFT', 150, -33)
+    btn:SetScript('OnLeave', GameTooltip_Hide)
+    btn:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, Initializer:GetName())
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(' ', e.onlyChinese and '刷新' or REFRESH)
+        e.tips:Show()
+    end)
+    btn:SetScript('OnClick', function()
+        if AddonList.startStatus then
+            for i=1,C_AddOns.GetNumAddOns() do
+                if AddonList.startStatus[i] then
+                    C_AddOns.EnableAddOn(i)
+                else
+                    C_AddOns.DisableAddOn(i)
+                end
+            end
+        else
+            for i=1, C_AddOns.GetNumAddOns() do
+            if C_AddOns.IsAddOnLoaded(i) then
+                C_AddOns.EnableAddOn(i)
+            else
+                C_AddOns.DisableAddOn(i)
+            end
+        end
+        e.call('AddonList_Update')
+    end)
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
