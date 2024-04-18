@@ -67,8 +67,8 @@ end
 
 
 
-local function Create_Button(btn)
-    btn=e.Cbtn(AddonList, {icon='hide', size={88,22}})
+local function Create_Button(indexAdd)
+    local btn=e.Cbtn(AddonList, {icon='hide', size={88,22}})
     btn:SetHighlightAtlas('auctionhouse-nav-button-secondary-select')
     btn.Text= e.Cstr(btn)
     btn.Text:SetPoint('LEFT', 2, 0)
@@ -203,6 +203,14 @@ local function Create_Button(btn)
         self:set_settings()
         e.tips:Hide()
     end)
+
+    if indexAdd==1 then
+        btn:SetPoint('TOPLEFT', AddonList, 'TOPRIGHT', 0, -22)
+    else
+        btn:SetPoint('TOPLEFT', Buttons[indexAdd-1], 'BOTTOMLEFT')
+    end
+    Buttons[indexAdd]= btn
+
     return btn
 end
 
@@ -247,16 +255,7 @@ local function Set_Buttons()--设置按钮, 和位置
     end
     local index=1
     for name in pairs(Save.buttons) do
-        local btn=Buttons[index]
-        if not btn then
-            btn= Create_Button()
-            if index==1 then
-                btn:SetPoint('TOPLEFT', AddonList, 'TOPRIGHT', 0, -22)
-            else
-                btn:SetPoint('TOPLEFT', Buttons[index-1], 'BOTTOMLEFT')
-            end
-            Buttons[index]= btn
-        end
+        local btn=Buttons[index] or  Create_Button(index)
         btn.name= name
         btn.numAllLoad= load+ need
         btn:set_settings()
@@ -487,8 +486,63 @@ end
 
 
 
-
-
+local function Create_Fast_Button(indexAdd)
+    local btn= e.Cbtn(AddonList, {size={18,18}})
+    btn.Text= e.Cstr(btn)
+    btn.Text:SetPoint('RIGHT', btn, 'LEFT')
+    function btn:get_add_info()
+        local atlas = C_AddOns.GetAddOnMetadata(self.name, "IconAtlas")
+        local texture = C_AddOns.GetAddOnMetadata(self.name, "IconTexture")
+        local name, title = C_AddOns.GetAddOnInfo(self.name)
+        name= title or name or self.name or ''
+        return name, atlas, texture
+    end
+    function btn:settings()
+        local name, atlas, texture= self:get_add_info()
+        if atlas then
+            self:SetNormalAtlas(atlas)
+        else
+            self:SetNormalTexture(texture or 0)
+        end
+        self.Text:SetText(title or name or self.name)
+        if C_AddOns.GetAddOnEnableState(self.name)~=0 then
+            self.Text:SetTextColor(0,1,0)
+        else
+            self.Text:SetTextColor(1, 0.82,0)
+        end
+    end
+    btn:SetScript('OnLeave', GameTooltip_Hide)
+    btn:SetScript('OnEnter', function(self)
+        if C_AddOns.GetAddOnInfo(self:GetID())==self.name then
+            AddonTooltip:SetOwner(self.Text, "ANCHOR_LEFT")
+            AddonTooltip_Update(self)
+        else
+            local name, atlas, texture= self:get_add_info()
+            local icon= atlas and format('|A:%s:26:26|a', atlas) or (texture and format('|T%d:26|t', texture)) or ''
+            e.tips:SetOwner(self.Text, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine(id, Initializer:GetName())
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(' ', icon..name)
+            e.tips:Show()
+        end
+    end)
+    btn:SetScript('OnClick', function(self)
+        if C_AddOns.GetAddOnEnableState(self.name)~=0 then
+            C_AddOns.DisableAddOn(self.name)
+        else
+            C_AddOns.EnableAddOn(self.name)
+        end
+        e.call('AddonList_Update')
+    end)
+    if indexAdd==1 then
+        btn:SetPoint('TOPRIGHT', AddonList, 'TOPLEFT', 8,0)
+    else
+        btn:SetPoint('TOPRIGHT', FastButton[indexAdd-1], 'BOTTOMRIGHT')
+    end
+    FastButton[indexAdd]= btn
+    return btn
+end
 
 
 
@@ -499,16 +553,33 @@ local function Set_Fast_Button()
     local newTab={}
     for name, index in pairs(Save.fast) do
         if C_AddOns.DoesAddOnExist(name) then
-            table.insert(newTab, {name=name, index= index or 0})
+            table.insert(newTab, {name=name, index=index or 0})
         else
             Save.fast[name]= nil
         end
     end
     table.sort(newTab, function(a, b) return a.index< b.index end)
 
+    for i, info in pairs(newTab) do
+        local btn= FastButton[i] or Create_Fast_Button(i)
+        btn.name= info.name
+        btn:SetID(info.index)
+        btn:settings()
+        btn:SetShown(true)   
+    end
+    for i= #newTab +1, #FastButton do
+        local btn= FastButton[i]
+        if btn then
+            btn:SetShown(false)
+            btn.name=nil
+        end
+    end
+end
+
+ --[[
     local last
     local index= 0
-    for _, tab in pairs(newTab) do
+   for _, tab in pairs(newTab) do
         local name, _, _, _, reason = C_AddOns.GetAddOnInfo(tab.name)
         if name and reason~='MISSING' then
             index= index+1
@@ -572,38 +643,107 @@ local function Set_Fast_Button()
         if check then
             check:SetShown(false)
         end
+    end]]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Create_Check(frame)
+    if frame.check then
+        return
     end
+    frame.check=CreateFrame("CheckButton", nil, frame, "InterfaceOptionsCheckButtonTemplate")
+
+    frame.check:SetSize(20,20)--Fast，选项
+
+    frame.check:SetPoint('RIGHT', frame)
+    frame.check:SetScript('OnClick', function(self)
+        Save.fast[self.name]= not Save.fast[self.name] and self.index or nil
+        Set_Fast_Button()
+    end)
+
+    frame.check.dep= frame:CreateLine()--依赖，提示
+    frame.check.dep:SetColorTexture(1, 0.82, 0)
+    frame.check.dep:SetStartPoint('BOTTOMLEFT', 55,2)
+    frame.check.dep:SetEndPoint('BOTTOMRIGHT', -20,2)
+    frame.check.dep:SetThickness(0.5)
+    frame.check.dep:SetAlpha(0.2)
+
+    frame.check.select= frame:CreateTexture(nil, 'OVERLAY')--光标，移过提示
+    frame.check.select:SetAtlas('CreditsScreen-Selected')
+    frame.check.select:SetAllPoints(frame)
+    frame.check.select:Hide()
+
+    frame.check.Text:SetParent(frame)--索引
+    frame.check.Text:ClearAllPoints()
+    frame.check.Text:SetPoint('RIGHT', frame.check, 'LEFT')
+
+    function frame.check:set_leave_alpha()
+        self:SetAlpha(Save.fast[self.name] and 1 or 0)
+        self.Text:SetAlpha(C_AddOns.GetAddOnDependencies(self.index) and 0.3 or 1)
+        self.select:SetShown(false)
+        local check= self:GetParent().Enabled
+        check:SetAlpha(check:GetChecked() and 1 or 0)
+    end
+    function frame.check:set_enter_alpha()
+        self:SetAlpha(1)
+        self.Text:SetAlpha(1)
+        self.select:SetShown(true)
+        self:GetParent().Enabled:SetAlpha(1)
+    end
+
+    frame.check:SetScript('OnLeave', function(self)
+        e.tips:Hide()
+        self:set_leave_alpha()
+    end)
+    frame.check:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_RIGHT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, Initializer:GetName())
+        e.tips:AddLine(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine((self.icon or '')..self.name, self.index)
+        e.tips:Show()
+        self:set_enter_alpha()
+    end)
+    frame.Enabled:HookScript('OnLeave', function(self)
+        self:GetParent().check:set_leave_alpha()
+    end)
+    frame.Enabled:HookScript('OnEnter', function(self)
+        self:GetParent().check:set_enter_alpha()
+    end)
+    frame:HookScript('OnLeave', function(self)
+        self.check:set_leave_alpha()
+    end)
+    frame:HookScript('OnEnter', function(self)
+        self.check:set_enter_alpha()
+    end)
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -617,79 +757,12 @@ end
 
 --列表，内容
 local function Init_Set_List(frame, addonIndex)
+    Create_Check(frame)
+
     local name= C_AddOns.GetAddOnInfo(addonIndex)
-    if Save.fast[name] then
+    local isChecked= Save.fast[name] and true or false
+    if isChecked then
         Save.fast[name]= addonIndex
-    end
-    local checked= Save.fast[name]
-
-    if not frame.check then
-        frame.check=CreateFrame("CheckButton", nil, frame, "InterfaceOptionsCheckButtonTemplate")
-
-        frame.check:SetSize(20,20)--Fast，选项
-
-        frame.check:SetPoint('RIGHT', frame)
-        frame.check:SetScript('OnClick', function(self)
-            Save.fast[self.name]= not Save.fast[self.name] and self.index or nil
-            Set_Fast_Button()
-        end)
-
-        frame.check.dep= frame:CreateLine()--依赖，提示
-        frame.check.dep:SetColorTexture(1, 0.82, 0)
-        frame.check.dep:SetStartPoint('BOTTOMLEFT', 55,2)
-        frame.check.dep:SetEndPoint('BOTTOMRIGHT', -20,2)
-        frame.check.dep:SetThickness(0.5)
-        frame.check.dep:SetAlpha(0.2)
-
-        frame.check.select= frame:CreateTexture(nil, 'OVERLAY')--光标，移过提示
-        frame.check.select:SetAtlas('CreditsScreen-Selected')
-        frame.check.select:SetAllPoints(frame)
-        frame.check.select:Hide()
-
-        frame.check.Text:SetParent(frame)--索引
-        frame.check.Text:ClearAllPoints()
-        frame.check.Text:SetPoint('RIGHT', frame.check, 'LEFT')
-
-        function frame.check:set_leave_alpha()
-            self:SetAlpha(Save.fast[self.name] and 1 or 0)
-            self.Text:SetAlpha(C_AddOns.GetAddOnDependencies(self.index) and 0.3 or 1)
-            self.select:SetShown(false)
-            local check= self:GetParent().Enabled
-            check:SetAlpha(check:GetChecked() and 1 or 0)
-        end
-        function frame.check:set_enter_alpha()
-            self:SetAlpha(1)
-            self.Text:SetAlpha(1)
-            self.select:SetShown(true)
-            self:GetParent().Enabled:SetAlpha(1)
-        end
-
-        frame.check:SetScript('OnLeave', function(self)
-            e.tips:Hide()
-            self:set_leave_alpha()
-        end)
-        frame.check:SetScript('OnEnter', function(self)
-            e.tips:SetOwner(self, "ANCHOR_RIGHT")
-            e.tips:ClearLines()
-            e.tips:AddDoubleLine(id, Initializer:GetName())
-            e.tips:AddLine(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine((self.icon or '')..self.name, self.index)
-            e.tips:Show()
-            self:set_enter_alpha()
-        end)
-        frame.Enabled:HookScript('OnLeave', function(self)
-            self:GetParent().check:set_leave_alpha()
-        end)
-        frame.Enabled:HookScript('OnEnter', function(self)
-            self:GetParent().check:set_enter_alpha()
-        end)
-        frame:HookScript('OnLeave', function(self)
-            self.check:set_leave_alpha()
-        end)
-        frame:HookScript('OnEnter', function(self)
-            self.check:set_enter_alpha()
-        end)
     end
 
     local iconTexture = C_AddOns.GetAddOnMetadata(name, "IconTexture")
@@ -706,8 +779,8 @@ local function Init_Set_List(frame, addonIndex)
     frame.check.icon= iconTexture and '|T'..iconTexture..':32|t' or (iconAtlas and '|A:'..iconAtlas..':32:32|a') or nil
     frame.check.index= addonIndex
     frame.check.name= name
-    frame.check:SetChecked(checked and true or false)--fast
-    frame.check:SetAlpha(checked and 1 or 0.1)
+    frame.check:SetChecked(isChecked)--fast
+    frame.check:SetAlpha(isChecked and 1 or 0.1)
 
     frame.check.Text:SetText(addonIndex or '')--索引
 
@@ -804,16 +877,13 @@ local function Init()
             self:GetParent():Hide()
         end,
     }
-    --StaticPopup_Show('WoWTools_AddOns_EDIT', self.name, nil, self.name)
+
 
     e.Set_Move_Frame(AddonList, {needSize=true, needMove=true, minW=430, minH=120, setSize=true, initFunc=function()
         AddonList.ScrollBox:ClearAllPoints()
         AddonList.ScrollBox:SetPoint('TOPLEFT', 7, -64)
         AddonList.ScrollBox:SetPoint('BOTTOMRIGHT', -22,32)
-        hooksecurefunc('AddonList_InitButton', function(entry)
-            entry.Title:SetPoint('RIGHT', -220, 0 )
-        end)
-        --e.call(AddonList_Update)
+        --hooksecurefunc('AddonList_InitButton', function(entry) entry.Title:SetPoint('RIGHT', -220, 0)end)
     end, sizeRestFunc=function(self)
         self.target:SetSize("500", "478")
     end})
@@ -822,8 +892,10 @@ local function Init()
     AddonListForceLoad:SetPoint('TOP', AddonList, -16, -26)
 
     Init_Add_Save_Button()--新建按钮
-    --Set_Fast_Button()
-    hooksecurefunc('AddonList_InitButton', Init_Set_List)--列表，内容
+    hooksecurefunc('AddonList_InitButton', function(frame, addonIndex)
+        frame.Title:SetPoint('RIGHT', -220, 0 )
+        Init_Set_List(frame, addonIndex)--列表，内容
+    end)
 -- e.call('AddonList_HasAnyChanged')
     hooksecurefunc('AddonList_Update', function()
         Set_Fast_Button()--插件，快捷，选中
