@@ -67,13 +67,6 @@ end
 
 
 
-
-
-
-
-
-
-
 local function Create_Button(btn)
     btn=e.Cbtn(AddonList, {icon='hide', size={88,22}})
     btn:SetHighlightAtlas('auctionhouse-nav-button-secondary-select')
@@ -274,7 +267,7 @@ local function Set_Buttons()--设置按钮, 和位置
 
     --NewButton:SetShown(all>0)
     NewButton.Text:SetFormattedText('%d%s', sel, some>0 and format('%s%d', e.Icon.player, some) or '')
-    NewButton.Text2:SetFormattedText('%s%d', need>0 and format('|cff606060%d+|r', need) or '', load)--总已加载，数量
+    NewButton.Text2:SetFormattedText('%s%d', need>0 and format('|cffff00ff%d|r|cffffd100+|r', need) or '', load)--总已加载，数量
 
     for i= index, #Buttons do
         local btn= Buttons[i]
@@ -327,6 +320,9 @@ local function Init_Add_Save_Button()
         local index=1
         local tab= select(4, Get_AddList_Info())
         for name, value in pairs(tab) do
+            local iconTexture = C_AddOns.GetAddOnMetadata(name, "IconTexture")
+            local iconAtlas = C_AddOns.GetAddOnMetadata(name, "IconAtlas")
+            local icon= iconTexture and format('|T%s:0|t', iconTexture) or (iconAtlas and format('|A:%s:0:0|a', iconAtlas)) or '    '
             local isLoaded= C_AddOns.IsAddOnLoaded(name)
             local vType= type(value)
             local text= vType=='string' and e.GetPlayerInfo({guid=value})
@@ -337,10 +333,8 @@ local function Init_Add_Save_Button()
                 end
             end
             local title= C_AddOns.GetAddOnInfo(name) or name
-            e.tips:AddDoubleLine(
-                format('%s|cffffd100%d)|r %s%s|r', index<10 and ' ' or '', index, isLoaded and '|cnGREEN_FONT_COLOR:' or '|cff606060', title),
-                text or ' '
-            )
+            local col= C_AddOns.GetAddOnDependencies(name) and '|cffff00ff' or (isLoaded and '|cnGREEN_FONT_COLOR:') or ''
+            e.tips:AddDoubleLine(format(col..(index<10 and ' ' or '')..index..')'..icon..title), text or ' ')
             index= index+1
         end
         e.tips:AddLine(' ')
@@ -402,6 +396,7 @@ local function Init_Add_Save_Button()
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, Initializer:GetName())
         e.tips:AddLine(' ')
+        local find
         local need, load= 0, 0
         for index=1, C_AddOns.GetNumAddOns() do
             local isLoaded= C_AddOns.IsAddOnLoaded(index)
@@ -411,8 +406,9 @@ local function Init_Add_Save_Button()
                 local iconTexture = C_AddOns.GetAddOnMetadata(index, "IconTexture")
                 local iconAtlas = C_AddOns.GetAddOnMetadata(index, "IconAtlas")
                 local icon= iconTexture and format('|T%s:0|t', iconTexture) or (iconAtlas and format('|A:%s:0:0|a', iconAtlas)) or '    '
-                local col= isLoaded and '|cnGREEN_FONT_COLOR:' or '|cff606060'
+                local col= isLoaded and '|cnGREEN_FONT_COLOR:' or '|cffff00ff'
                 e.tips:AddDoubleLine(col..(index<10 and '  ' and (index<100 and ' ') or '')..index..') '.. icon..title, dema and col..e.cn(_G['ADDON_DEMAND_LOADED'])..' ('..index)
+                find=true
             end
             if isLoaded then
                 load= load+1
@@ -420,8 +416,11 @@ local function Init_Add_Save_Button()
                 need= need+1
             end
         end
+        if find then
+            e.tips:AddLine(' ')
+        end
         e.tips:AddDoubleLine(
-            '|cff606060'..(e.onlyChinese and '只能按需加载' or ADDON_DEMAND_LOADED)..' '..need,
+            '|cffff00ff'..(e.onlyChinese and '只能按需加载' or ADDON_DEMAND_LOADED)..' '..need,
             '|cnGREEN_FONT_COLOR:'..load..' '..(e.onlyChinese and '已加载' or LOAD_ADDON)
         )
         e.tips:Show()
@@ -714,8 +713,8 @@ local function Init_Set_List(frame, addonIndex)
 
     if C_AddOns.GetAddOnDependencies(addonIndex) then--依赖
         frame.check.select:SetVertexColor(0,1,0)
-        frame.check.Text:SetTextColor(0,1,0)
-        frame.check.Text:SetAlpha(0.2)
+        frame.check.Text:SetTextColor(0.5,0.5,0.5)
+        frame.check.Text:SetAlpha(0.3)
         frame.check.dep:SetShown(false)
     else
         frame.check.select:SetVertexColor(1,1,1)
