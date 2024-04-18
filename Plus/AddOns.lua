@@ -5,6 +5,7 @@ local Save={
             [BASE_SETTINGS_TAB]={
                 ['WeakAuras']=true,
                 ['WeakAurasOptions']=true,
+                ['WeakAurasArchive']=true,
                 ['BugSack']=true,
                 ['!BugGrabber']=true,
                 ['TextureAtlasViewer']=true,-- true, i or guid
@@ -17,19 +18,19 @@ local Save={
         enableAllButtn= e.Player.husandro,--全部禁用时，不禁用本插件
     }
 
+local NewButton
 local Initializer
 local Buttons={}
 local FastButton={}
-local AddLoadedList={}
 
 
 
 
 
 
-
-
-
+local function Is_Load(nameORindex)
+    return C_AddOns.IsAddOnLoaded(nameORindex) or select(2, C_AddOns.IsAddOnLoadable(nameORindex))=='DEMAND_LOADED'
+end
 
 local function Get_AddList_Info()
     local load, some, sel= 0, 0, 0
@@ -82,7 +83,7 @@ local function Create_Button(btn)
     function btn:set_settings()
         local load, all= 0, 0
         for name in pairs(Save.buttons[self.name] or {}) do
-            if AddLoadedList[name] then
+            if Is_Load(name) then
                 load= load +1
             end
             all= all+1
@@ -95,8 +96,9 @@ local function Create_Button(btn)
             load==all and '|cnGREEN_FONT_COLOR:' or '',
             all
         )
+        self.isLoadAll= self.numAllLoad==all and load==all
         self:SetWidth(btn.Text:GetWidth()+4)
-        self:SetButtonState(self.load==self.all and 'PUSHED' or 'NORMAL')
+        self:SetButtonState(self.isLoadAll and 'PUSHED' or 'NORMAL')
     end
 
     btn:SetScript('OnClick',function(self, d)
@@ -121,15 +123,17 @@ local function Create_Button(btn)
                     local some, sel= select(2, Get_AddList_Info())
                     e.LibDD:UIDropDownMenu_AddButton({
                         text= format('%s #%d', e.onlyChinese and '保存' or SAVE, some+sel),
+                        icon= 'ShipMission_ShipFollower-Lock-Rare',
                         notCheckable=true,
                         disabled= (some+sel)==0,
                         arg1= self.name,
                         func= function(_, arg1)
                             Save.buttons[arg1]= select(4, Get_AddList_Info())
+                            e.call('AddonList_Update')
                         end
                     }, level)
 
-                    e.LibDD:UIDropDownMenu_AddSeparator(level)
+
                     e.LibDD:UIDropDownMenu_AddButton({
                         text= e.onlyChinese and '名称' or NAME,
                         icon= 'QuestLegendaryTurnin',
@@ -139,6 +143,7 @@ local function Create_Button(btn)
                             StaticPopup_Show('WoWTools_AddOns_NAME', arg1, nil, arg1)
                         end
                     }, level)
+                    e.LibDD:UIDropDownMenu_AddSeparator(level)
                     e.LibDD:UIDropDownMenu_AddButton({
                         text= e.onlyChinese and '删除' or DELETE,
                         icon= 'XMarksTheSpot',
@@ -167,6 +172,7 @@ local function Create_Button(btn)
     end)
 
     btn:SetScript('OnEnter', function(self)
+        if not Save.buttons[self.name] then return end
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
         e.tips:AddLine(format('|cffff00ff%s|r', self.name))
@@ -184,14 +190,15 @@ local function Create_Button(btn)
             if not text and not isLoaded and reason then
                 text= (col or '|cff606060')..e.cn(_G['ADDON_'..reason] or reason)..' ('..index
             end
+            local title= C_AddOns.GetAddOnInfo(name) or name
             e.tips:AddDoubleLine(
-                format('%s|cffffd100%d)|r%s%s%s|r', index<10 and ' ' or '', index, icon, isLoaded and '|cnGREEN_FONT_COLOR:' or col or '|cff606060', name),
+                format('%s|cffffd100%d)|r%s%s%s|r', index<10 and ' ' or '', index, icon, isLoaded and '|cnGREEN_FONT_COLOR:' or col or '|cff606060', title),
                 text or ' '
             )
             index= index+1
         end
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine((e.onlyChinese and '加载插件' or LOAD_ADDON)..e.Icon.left, (e.onlyChinese and '删除' or DELETE)..e.Icon.right,1,0,1, 1,0,1)
+        e.tips:AddDoubleLine((e.onlyChinese and '加载插件' or LOAD_ADDON)..e.Icon.left, (e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..e.Icon.right,1,0,1, 1,0,1)
         
         e.tips:Show()
     end)
@@ -212,38 +219,23 @@ end
 --按钮
 --####
 local function Set_Buttons()--设置按钮, 和位置
-    --[[local list={}
-    for name, tab in pairs(Save.buttons) do
-        local load, all=0, 0
-        for add in pairs(tab) do
-            if C_AddOns.DoesAddOnExist(add) then
-                all=all+1
-                if C_AddOns.IsAddOnLoaded(add) then
-                    load= load+1
-                else
-                    local reason= select(2, C_AddOns.IsAddOnLoadable(add))
-                    if reason=='DEMAND_LOADED' then
-                        load= load+1
-                    end
-                end
-            else
-                tab[add]= nil
-            end
-        end
-        table.insert(list, {name= name, tab=tab, load=load, all=all})
-    end
-    table.sort(list, function(a,b) return a.load< b.load end)
-]]
-    AddLoadedList={}
+    local load, need, sel, some= 0, 0, 0, 0
     for i=1, C_AddOns.GetNumAddOns() do
-        if C_AddOns.IsAddOnLoaded(i) or select(2, C_AddOns.GetAddOnEnableState(i))=='' then
-            local name= C_AddOns.GetAddOnInfo(i)
-            if name then
-                AddLoadedList[name]= true
+        if C_AddOns.IsAddOnLoaded(i) then--已加载
+            load= load+1
+
+        elseif select(2, C_AddOns.IsAddOnLoadable(i))=='DEMAND_LOADED' then--需要时加载
+            need= need+1
+        end
+        local stat= C_AddOns.GetAddOnEnableState(i)
+        if stat and stat>0 then
+            if stat==1 then--角色专用
+                some= some +1
+            elseif stat==2 then--开启
+                sel= sel+1
             end
         end
     end
-    
     local index=1
     for name in pairs(Save.buttons) do
         local btn=Buttons[index]
@@ -256,31 +248,24 @@ local function Set_Buttons()--设置按钮, 和位置
             end
             Buttons[index]= btn
         end
-
         btn.name= name
-        --btn.load= info.load
-        --btn.all= info.all
-        index=i
-
-        --[[btn.Text:SetFormattedText(
-            '%s %s%d|r/%s%d|r',
-            info.name,
-            info.load==0 and '|cff606060' or '|cnGREEN_FONT_COLOR:',
-            info.load,
-            info.load==info.all and '|cnGREEN_FONT_COLOR:' or '',
-            info.all
-        )
-        btn:SetWidth(btn.Text:GetWidth()+4)]]
+        btn.numAllLoad= load+ need
         btn:set_settings()
         btn:SetShown(true)
+        index= index+1
     end
-    for i= index+1, #Buttons do
+
+
+    --NewButton:SetShown(all>0)
+    NewButton.Text:SetFormattedText('%d%s', sel, some>0 and format('%s%d', e.Icon.player, some) or '')
+    NewButton.Text2:SetFormattedText('%s%d', need>0 and format('|cff606060%d+|r', need) or '', load)--总已加载，数量
+
+    for i= index, #Buttons do
         local btn= Buttons[i]
         if btn then
             btn:SetShown(false)
             btn.name= nil
-            btn.load= nil
-            btn.all= nil
+            btn.numAllLoad= nil
         end
     end
 end
@@ -294,10 +279,10 @@ end
 
 --新建按钮
 local function Init_Add_Save_Button()
-    local btn= e.Cbtn(AddonList, {size={26,26}, atlas='communities-chat-icon-plus'})
-    btn:SetPoint('TOPRIGHT', -2, -28)
-    btn:SetScript('OnLeave', GameTooltip_Hide)
-    btn:SetScript('OnEnter', function(self)
+    NewButton= e.Cbtn(AddonList, {size={26,26}, atlas='communities-chat-icon-plus'})
+    NewButton:SetPoint('TOPRIGHT', -2, -28)
+    NewButton:SetScript('OnLeave', GameTooltip_Hide)
+    NewButton:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id , Initializer:GetName())
@@ -314,8 +299,9 @@ local function Init_Add_Save_Button()
                     text= '|cff606060'..e.cn(_G['ADDON_'..reason] or reason)..' ('..index
                 end
             end
+            local title= C_AddOns.GetAddOnInfo(name) or name
             e.tips:AddDoubleLine(
-                format('%s|cffffd100%d)|r %s%s|r', index<10 and ' ' or '', index, isLoaded and '|cnGREEN_FONT_COLOR:' or '|cff606060', name),
+                format('%s|cffffd100%d)|r %s%s|r', index<10 and ' ' or '', index, isLoaded and '|cnGREEN_FONT_COLOR:' or '|cff606060', title),
                 text or ' '
             )
             index= index+1
@@ -327,7 +313,7 @@ local function Init_Add_Save_Button()
         )
         e.tips:Show()
     end)
-    btn:SetScript('OnClick',function(_, d)
+    NewButton:SetScript('OnClick',function(_, d)
         if d=='LeftButton' then
             StaticPopupDialogs['WoWTools_AddOns_NEW']= StaticPopupDialogs['WoWTools_AddOns_NEW'] or {
                 text =id..' '..Initializer:GetName()
@@ -369,9 +355,45 @@ local function Init_Add_Save_Button()
             e.OpenPanelOpting(Initializer)
         end
     end)
-    btn.Text= e.Cstr(btn)
-    btn.Text:SetPoint('RIGHT', btn, 'LEFT')
-    AddonList.WoWToolsButton= btn
+    NewButton.Text= e.Cstr(AddonList)
+    NewButton.Text:SetPoint('RIGHT', NewButton, 'LEFT')
+    NewButton.Text2=e.Cstr(AddonList, {color={r=0,g=1,b=0}, mouse=true})--总已加载，数量
+    NewButton.Text2:SetPoint('RIGHT', AddonListForceLoad, 'LEFT')
+    NewButton.Text2:SetScript('OnLeave', function(self) self:SetAlpha(1) GameTooltip_Hide() end)
+    NewButton.Text2:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, Initializer:GetName())
+        e.tips:AddLine(' ')
+        local need, load= 0, 0
+        for index=1, C_AddOns.GetNumAddOns() do
+            local isLoaded= C_AddOns.IsAddOnLoaded(index)
+            local dema= select(2, C_AddOns.IsAddOnLoadable(index))=='DEMAND_LOADED'
+            if isLoaded or dema then--已加载, 带加载
+                local title = select(2, C_AddOns.GetAddOnInfo(index))
+                local iconTexture = C_AddOns.GetAddOnMetadata(index, "IconTexture")
+                local iconAtlas = C_AddOns.GetAddOnMetadata(index, "IconAtlas")
+                local icon= iconTexture and format('|T%s:0|t', iconTexture) or (iconAtlas and format('|A:%s:0:0|a', iconAtlas)) or '    '
+                local col= isLoaded and '|cnGREEN_FONT_COLOR:' or '|cff606060'
+                e.tips:AddDoubleLine(col..(index<10 and '  ' and (index<100 and ' ') or '')..index..') '.. icon..title, dema and col..e.cn(_G['ADDON_DEMAND_LOADED'])..' ('..index)
+            end
+            if isLoaded then
+                load= load+1
+            elseif dema then
+                need= need+1
+            end
+        end
+        e.tips:AddDoubleLine(
+            '|cff606060'..(e.onlyChinese and '只能按需加载' or ADDON_DEMAND_LOADED)..' '..need,
+            '|cnGREEN_FONT_COLOR:'..load..' '..(e.onlyChinese and '已加载' or LOAD_ADDON)
+        )
+        e.tips:Show()
+        self:SetAlpha(0.3)
+    end)
+    
+    local label= e.Cstr(AddonListEnableAllButton)--插件，总数
+    label:SetPoint('LEFT',3,0)
+    label:SetText(C_AddOns.GetNumAddOns())
 end
 
 
@@ -713,18 +735,11 @@ local function Init()
     AddonListForceLoad:ClearAllPoints()
     AddonListForceLoad:SetPoint('TOP', AddonList, -16, -26)
 
-    AddonListEnableAllButton.AllNumText= e.Cstr(AddonListEnableAllButton, {color={r=1,g=1,b=1}})
-    AddonListEnableAllButton.AllNumText:SetPoint('LEFT',3,0)
-    AddonListEnableAllButton.AllNumText:SetText(C_AddOns.GetNumAddOns())
     Init_Add_Save_Button()--新建按钮
     --Set_Fast_Button()
     hooksecurefunc('AddonList_InitButton', Init_Set_List)--列表，内容
 -- e.call('AddonList_HasAnyChanged')
     hooksecurefunc('AddonList_Update', function()
-        local load, some, sel= Get_AddList_Info()--检查列表, 选取数量, 总数, 数量/总数
-        local all= some+ sel
-        AddonList.WoWToolsButton:SetShown(all>0)
-        AddonList.WoWToolsButton.Text:SetFormattedText('%d%s/|cnGREEN_FONT_COLOR:%d|r', sel, some>0 and format(' (%s%d) ', e.Icon.player, some) or '', load)
         Set_Fast_Button()--插件，快捷，选中
         Set_Buttons()
     end)
@@ -759,9 +774,6 @@ local function Init()
         end
     end)
 
-    AddLoadList:HookScript('OnHide', function()
-        AddLoadedList={}
-    end)
 end
 
 
@@ -793,7 +805,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save= WoWToolsSave[addName] or Save
             Save.fast= Save.fast or {}
 
-            --[[if e.Player.husandro then
+            if e.Player.husandro then
                 Save.buttons[e.onlyChinese and '宠物对战' or PET_BATTLE_COMBAT_LOG ]={
                     ['BugSack']=true,
                     ['!BugGrabber']=true,
@@ -817,7 +829,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     ['TextureAtlasViewer']=78,
                     ['WoWeuCN_Tooltips']=96,
                 }
-            end]]
+            end
 
             --添加控制面板
             Initializer= e.AddPanel_Check({
