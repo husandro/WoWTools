@@ -455,10 +455,11 @@ local function Init_Add_Save_Button()
             end
         else
             for i=1, C_AddOns.GetNumAddOns() do
-            if C_AddOns.IsAddOnLoaded(i) then
-                C_AddOns.EnableAddOn(i)
-            else
-                C_AddOns.DisableAddOn(i)
+                if C_AddOns.IsAddOnLoaded(i) then
+                    C_AddOns.EnableAddOn(i)
+                else
+                    C_AddOns.DisableAddOn(i)
+                end
             end
         end
         e.call('AddonList_Update')
