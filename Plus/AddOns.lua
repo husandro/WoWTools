@@ -59,7 +59,33 @@ local function Get_AddList_Info()
     return load, some, sel, tab
 end
 
+local function Update_Usage()--更新，使用情况
+    if not UnitAffectingCombat('player') then
+        UpdateAddOnMemoryUsage()
+        UpdateAddOnCPUUsage()
+    end
+end
 
+local function Get_Memory_Value(indexORname, showText)
+    local va
+    local value= GetAddOnMemoryUsage(indexORname)
+    if value and value>0 then
+        if value<1000 then
+            if showText then
+                va= format(e.onlyChinese and '插件内存：%.2f KB' or TOTAL_MEM_KB_ABBR, value)
+            else
+                va= format('%ifKB', value)
+            end
+        else
+            if showText then
+                va= format(e.onlyChinese and '插件内存：%.2f MB' or TOTAL_MEM_MB_ABBR, value/1000)
+            else
+                va= format('%iMB', value/1000)
+            end
+        end
+    end
+    return va
+end
 
 
 
@@ -176,6 +202,7 @@ local function Create_Button(indexAdd)
 
     btn:SetScript('OnEnter', function(self)
         if not Save.buttons[self.name] then return end
+        Update_Usage()
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(format('|cffffd100%s|r', self.name), Initializer:GetName())
@@ -194,10 +221,16 @@ local function Create_Button(indexAdd)
                 text= (col or '|cff606060')..e.cn(_G['ADDON_'..reason] or reason)..' ('..index
             end
             local title= C_AddOns.GetAddOnInfo(name) or name
+            local memo= Get_Memory_Value(name, false)--内存
             e.tips:AddDoubleLine(
-                format('%s|cffffd100%d)|r%s%s%s|r', index<10 and ' ' or '', index, icon, isLoaded and '|cnGREEN_FONT_COLOR:' or col or '|cff606060', title),
-                text or ' '
-            )
+                format('%s|cffffd100%d)|r%s%s%s|r |cffffffff%s|r',
+                    index<10 and ' ' or '',
+                    index,
+                    icon,
+                    isLoaded and '|cnGREEN_FONT_COLOR:' or col or '|cff606060',
+                    title,
+                    memo or ''
+                ), text or ' ')
             index= index+1
         end
         e.tips:AddLine(' ')
@@ -308,6 +341,7 @@ local function Init_Add_Save_Button()
     NewButton:SetPoint('TOPRIGHT', -2, -28)
     NewButton:SetScript('OnLeave', function(self) self:SetAlpha(0.5) self.Text:SetAlpha(1) GameTooltip_Hide() end)
     NewButton:SetScript('OnEnter', function(self)
+        Update_Usage()
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id , Initializer:GetName())
@@ -329,7 +363,9 @@ local function Init_Add_Save_Button()
             end
             local title= C_AddOns.GetAddOnInfo(name) or name
             local col= C_AddOns.GetAddOnDependencies(name) and '|cffff00ff' or (isLoaded and '|cnGREEN_FONT_COLOR:') or ''
-            e.tips:AddDoubleLine(format(col..(index<10 and ' ' or '')..index..')'..icon..title), text or ' ')
+            local memo= Get_Memory_Value(name, false)--内存
+            memo= memo and ' |cffffffff'..meno..'|r' or ''
+            e.tips:AddDoubleLine(format(col..(index<10 and ' ' or '')..index..')'..icon..title..memo), text or ' ')
             index= index+1
         end
         e.tips:AddLine(' ')
@@ -389,6 +425,7 @@ local function Init_Add_Save_Button()
     NewButton.Text2:SetPoint('RIGHT', AddonListForceLoad, 'LEFT')
     NewButton.Text2:SetScript('OnLeave', function(self) self:SetAlpha(1) GameTooltip_Hide() end)
     NewButton.Text2:SetScript('OnEnter', function(self)
+        Update_Usage()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, Initializer:GetName())
@@ -404,7 +441,9 @@ local function Init_Add_Save_Button()
                 local iconAtlas = C_AddOns.GetAddOnMetadata(index, "IconAtlas")
                 local icon= iconTexture and format('|T%s:0|t', iconTexture..'') or (iconAtlas and format('|A:%s:0:0|a', iconAtlas)) or '    '
                 local col= isLoaded and '|cnGREEN_FONT_COLOR:' or '|cffff00ff'
-                e.tips:AddDoubleLine(col..(index<10 and '  ' and (index<100 and ' ') or '')..index..') '.. icon..title, dema and col..e.cn(_G['ADDON_DEMAND_LOADED'])..' ('..index)
+                local memo= Get_Memory_Value(index, false)
+                memo= memo and ' |cffffffff'..memo..'|r' or ''
+                e.tips:AddDoubleLine(col..(index<10 and '  ' and (index<100 and ' ') or '')..index..') '.. icon..title.. memo, dema and col..e.cn(_G['ADDON_DEMAND_LOADED'])..' ('..index)
                 find=true
             end
             if isLoaded then
@@ -796,7 +835,10 @@ local function Init_Load_Button()
     AddonList:HookScript('OnSizeChanged', function()
         LoadFrame:set_button_point()
     end)
-    AddonList:HookScript('OnShow', Set_Load_Button)
+    AddonList:HookScript('OnShow', function()
+        Update_Usage()
+        Set_Load_Button()
+    end)
     LoadFrame:set_frame_point()
 
 
@@ -930,6 +972,10 @@ local function Create_Check(frame)
     frame.check.Text:ClearAllPoints()
     frame.check.Text:SetPoint('RIGHT', frame.check, 'LEFT')
 
+    frame.check.memoText= e.Cstr(frame, {justifyH='RIGHT'})
+    frame.check.memoText:SetPoint('RIGHT', frame.Status, 'LEFT')
+    frame.check.memoText:SetAlpha(0.5)
+
     function frame.check:set_leave_alpha()
         self:SetAlpha(Save.fast[self.name] and 1 or 0)
         self.Text:SetAlpha(C_AddOns.GetAddOnDependencies(self.index) and 0.3 or 1)
@@ -942,6 +988,9 @@ local function Create_Check(frame)
         self.Text:SetAlpha(1)
         self.select:SetShown(true)
         self:GetParent().Enabled:SetAlpha(1)
+    end
+    function frame.check:set_usage()
+        self.memoText:SetText(Get_Memory_Value(self.index, false) or '')
     end
 
     frame.check:SetScript('OnLeave', function(self)
@@ -968,6 +1017,7 @@ local function Create_Check(frame)
         self.check:set_leave_alpha()
     end)
     frame:HookScript('OnEnter', function(self)
+        self.check:set_usage()
         self.check:set_enter_alpha()
     end)
 end
@@ -1010,6 +1060,8 @@ local function Init_Set_List(frame, addonIndex)
     frame.check:SetAlpha(isChecked and 1 or 0.1)
 
     frame.check.Text:SetText(addonIndex or '')--索引
+    frame.check:set_usage()
+    
 
     if C_AddOns.GetAddOnDependencies(addonIndex) then--依赖
         frame.check.select:SetVertexColor(0,1,0)
@@ -1024,6 +1076,7 @@ local function Init_Set_List(frame, addonIndex)
     end
     frame.Status:SetAlpha(0.5)
     frame.Enabled:SetAlpha(frame.Enabled:GetChecked() and 1 or 0)
+    
 end
 
 
@@ -1193,6 +1246,17 @@ local function Init()
     end)
 
     Init_Load_Button()
+
+
+    hooksecurefunc('AddonTooltip_Update', function(frame)
+        Update_Usage()
+        local va=Get_Memory_Value(frame:GetID(), true)
+        if va then
+            AddonTooltip:AddLine(va, 1,0.82,0)
+            AddonTooltip:Show()
+        end
+    end)
+    --hooksecurefunc(AddonList, 'Update', function()
 end
 
 
