@@ -74,7 +74,7 @@ local function Get_Memory_Value(indexORname, showText)
             if showText then
                 va= format(e.onlyChinese and '插件内存：%.2f KB' or TOTAL_MEM_KB_ABBR, value)
             else
-                va= format('%ifKB', value)
+                va= format('%iKB', value)
             end
         else
             if showText then
