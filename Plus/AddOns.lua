@@ -178,7 +178,7 @@ local function Create_Button(indexAdd)
         if not Save.buttons[self.name] then return end
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddLine(format('|cffffd100%s|r', self.name))
+        e.tips:AddDoubleLine(format('|cffffd100%s|r', self.name), Initializer:GetName())
         e.tips:AddLine(' ')
         local index=1
         for name, value in pairs(Save.buttons[self.name]) do
@@ -227,17 +227,6 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 --####
 --按钮
 --####
@@ -268,7 +257,6 @@ local function Set_Buttons()--设置按钮, 和位置
         btn:SetShown(true)
         index= index+1
     end
-
 
     --NewButton:SetShown(all>0)
     NewButton.Text:SetFormattedText('%d%s', sel, some>0 and format('%s%d', e.Icon.player, some) or '')
@@ -315,8 +303,9 @@ end
 --新建按钮
 local function Init_Add_Save_Button()
     NewButton= e.Cbtn(AddonList, {size={26,26}, atlas='communities-chat-icon-plus'})
+    NewButton:SetAlpha(0.5)
     NewButton:SetPoint('TOPRIGHT', -2, -28)
-    NewButton:SetScript('OnLeave', GameTooltip_Hide)
+    NewButton:SetScript('OnLeave', function(self) self:SetAlpha(0.5) GameTooltip_Hide() end)
     NewButton:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
@@ -348,6 +337,7 @@ local function Init_Add_Save_Button()
             format('%s%s', e.onlyChinese and '选项' or OPTIONS, e.Icon.right)
         )
         e.tips:Show()
+        self:SetAlpha(1)
     end)
     NewButton:SetScript('OnClick',function(_, d)
         if d=='LeftButton' then
@@ -437,9 +427,10 @@ local function Init_Add_Save_Button()
     label:SetText(C_AddOns.GetNumAddOns())
 
 
-    local btn= e.Cbtn(AddonList, {atlas='talents-button-undo', size={22,22}})
+    local btn= e.Cbtn(AddonList, {atlas='talents-button-undo', size=22})
+    btn:SetAlpha(0.5)
     btn:SetPoint('TOPLEFT', 150, -33)
-    btn:SetScript('OnLeave', GameTooltip_Hide)
+    btn:SetScript('OnLeave', function(self) self:SetAlpha(0.5) GameTooltip_Hide() end)
     btn:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
@@ -447,6 +438,7 @@ local function Init_Add_Save_Button()
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(' ', e.onlyChinese and '刷新' or REFRESH)
         e.tips:Show()
+        self:SetAlpha(1)
     end)
     btn:SetScript('OnClick', function()
         if AddonList.startStatus then
@@ -1116,23 +1108,27 @@ local function Init()
     --#############
     --不禁用，本插件
     --#############
-    AddonListDisableAllButton.btn= e.Cbtn(AddonListDisableAllButton, {size={18,18}, icon= Save.enableAllButtn})
-    AddonListDisableAllButton.btn:SetPoint('LEFT', AddonListDisableAllButton, 'RIGHT', 2,0)
-    AddonListDisableAllButton.btn:SetScript('OnClick', function(self2)
-        Save.enableAllButtn= not Save.enableAllButtn and true or nil
-        self2:SetNormalAtlas(Save.enableAllButtn and e.Icon.icon or e.Icon.disabled)
-    end)
-    AddonListDisableAllButton.btn:SetAlpha(0.3)
-    AddonListDisableAllButton.btn:SetScript('OnLeave', function(self2) e.tips:Hide() self2:GetParent():SetAlpha(1) end)
-    AddonListDisableAllButton.btn:SetScript('OnEnter', function(self2)
-        e.tips:SetOwner(self2, "ANCHOR_RIGHT")
+    local btn= e.Cbtn(AddonList, {size={18,18}, icon= Save.enableAllButtn})
+    btn:SetPoint('LEFT', AddonListDisableAllButton, 'RIGHT', 2,0)
+
+    btn:SetAlpha(0.5)
+    function btn:set_tooltips()
+        e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, Initializer:GetName())
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '启用' or ENABLE, id)
+        e.tips:AddDoubleLine(e.onlyChinese and '启用' or ENABLE, Initializer:GetName())
         e.tips:AddDoubleLine(e.onlyChinese and '设置' or SETTINGS, e.GetEnabeleDisable(Save.enableAllButtn))
         e.tips:Show()
-        self2:GetParent():SetAlpha(0.3)
+        self:SetAlpha(1)
+    end
+    btn:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.5) AddonListDisableAllButton:SetAlpha(1) end)
+    btn:SetScript('OnEnter', function(self)
+        self:set_tooltips()
+        AddonListDisableAllButton:SetAlpha(0.5)
+    end)
+    btn:SetScript('OnClick', function(self)
+        Save.enableAllButtn= not Save.enableAllButtn and true or nil
+        self:SetNormalAtlas(Save.enableAllButtn and e.Icon.icon or e.Icon.disabled)
+        self:set_tooltips()
     end)
     AddonListDisableAllButton:HookScript('OnClick', function()
         if Save.enableAllButtn then
@@ -1142,7 +1138,6 @@ local function Init()
     end)
 
     Init_Load_Button()
-    
 end
 
 
