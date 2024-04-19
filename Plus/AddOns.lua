@@ -695,6 +695,7 @@ local function Set_Load_Button()--LoadButtons
                 end
                 GameTooltip_Hide()
                 self:set_alpha()
+                LoadFrame.btn:SetAlpha(0.5)
             end)
             btn:SetScript('OnEnter', function(self)
                 local findIndex= self:GetID()
@@ -711,6 +712,7 @@ local function Set_Load_Button()--LoadButtons
                     end
                 end
                 self:SetAlpha(1)
+                LoadFrame.btn:SetAlpha(1)
             end)
             LoadFrame.buttons[i]= btn
        end
@@ -804,7 +806,9 @@ local function Init_Load_Button()
     btn:set_icon()
 
     LoadFrame= CreateFrame('Frame', nil, AddonList)
+    LoadFrame.btn= btn
     LoadFrame:SetSize(1,1)
+
     function LoadFrame:set_frame_point()
         LoadFrame:ClearAllPoints()
         if Save.load_list_top then
@@ -813,7 +817,7 @@ local function Init_Load_Button()
             LoadFrame:SetPoint('TOPRIGHT', AddonList, 'BOTTOMRIGHT', 1, -2)
         end
     end
-    
+
     LoadFrame.buttons={}
     function LoadFrame:set_button_point()
         local last= self
@@ -845,6 +849,7 @@ local function Init_Load_Button()
     end)
     AddonList:HookScript('OnShow', Set_Load_Button)
     LoadFrame:set_frame_point()
+
 end
 
 
