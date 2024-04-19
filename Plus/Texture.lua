@@ -1018,7 +1018,8 @@ local function Init_All_Frame()
      e.Set_NineSlice_Color_Alpha(AddonList,true)
      e.Set_ScrollBar_Color_Alpha(AddonList)
      set_Alpha_Color(AddonListBg)
-     set_Alpha_Color(AddonListInset.Bg, nil, nil, min03)
+     e.Set_NineSlice_Color_Alpha(AddonListInset, true)
+     set_Alpha_Color(AddonListInset.Bg, nil, nil, min05)
      set_Menu(AddonCharacterDropDown)
 
      --场景 Blizzard_ScenarioObjectiveTracker.lua
