@@ -405,7 +405,7 @@ local function setClickAtt()--设置 Click属性
                 button:SetAttribute("type1", "spell")
                 button:SetAttribute("spell1", name)
                 if spellID==121536 then--天堂之羽 
-                    button:SetAttribute('unit', "cursor")--mouseover player
+                    button:SetAttribute('unit', "player")--mouseover player
                 else
                     button:SetAttribute('unit', nil)
                 end
