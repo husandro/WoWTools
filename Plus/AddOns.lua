@@ -13,7 +13,7 @@ local Save={
             },
         },
         fast={
-            --[name]= index,
+            [id]= 1,
         },
         enableAllButtn= e.Player.husandro,--全部禁用时，不禁用本插件
     }
@@ -503,10 +503,12 @@ local function Create_Fast_Button(indexAdd)
     end
     function btn:settings()
         local name, atlas, texture= self:get_add_info()
-        if atlas then
+        if texture then
+            self:SetNormalTexture(texture)
+        elseif atlas then
             self:SetNormalAtlas(atlas)
         else
-            self:SetNormalTexture(texture or 0)
+            self:SetNormalTexture(0)
         end
         self.Text:SetText(title or name or self.name)
         if C_AddOns.GetAddOnEnableState(self.name)~=0 then
@@ -517,7 +519,6 @@ local function Create_Fast_Button(indexAdd)
             self.checkTexture:SetShown(false)
         end
     end
-  
     btn:SetScript('OnLeave', function(self)
         if self.findFrame then
             if self.findFrame.check then
@@ -527,27 +528,36 @@ local function Create_Fast_Button(indexAdd)
         end
         GameTooltip_Hide()
     end)
+    function btn:set_tooltips()
+        AddonTooltip:SetOwner(self.checkTexture, "ANCHOR_LEFT")
+        AddonTooltip_Update(self)
+    end
     btn:SetScript('OnEnter', function(self)
         local index= self:GetID()
         if C_AddOns.GetAddOnInfo(index)==self.name then
-            AddonTooltip:SetOwner(self.checkTexture, "ANCHOR_LEFT")
-            AddonTooltip_Update(self)
+            self:set_tooltips()
         else
-            local name, atlas, texture= self:get_add_info()
-            local icon= atlas and format('|A:%s:26:26|a', atlas) or (texture and format('|T%d:26|t', texture)) or ''
-            e.tips:SetOwner(self.Text, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:AddDoubleLine(id, Initializer:GetName())
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(' ', icon..name)
-            e.tips:Show()
+           local findIndex
             for i=1, C_AddOns.GetNumAddOns() do
                 if C_AddOns.GetAddOnInfo(i)== self.name then
-                    index= i
+                    findIndex= i
                     self:SetID(i)
                     Save.fast[self.name]= i
+                    self:set_tooltips()
                     break
                 end
+            end
+            if not findIndex then
+                local name, atlas, texture= self:get_add_info()
+                local icon= atlas and format('|A:%s:26:26|a', atlas) or (texture and format('|T%d:26|t', texture)) or ''
+                e.tips:SetOwner(self.Text, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine(id, Initializer:GetName())
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine(' ', icon..name)
+                e.tips:Show()
+            else
+                index=findIndex
             end
         end
         if index then
@@ -1022,6 +1032,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 Save.fast={
                     ['TextureAtlasViewer']=78,
                     ['WoWeuCN_Tooltips']=96,
+                    [id]=1,
                 }
             end
 
