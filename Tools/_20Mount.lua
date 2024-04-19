@@ -274,6 +274,20 @@ local function getRandomRoll(type)--随机坐骑
         end
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function setShiftCtrlAltAtt()--设置Shift Ctrl Alt 属性
     if not button:CanChangeAttribute() then
         button.Combat=true
@@ -326,6 +340,22 @@ local mapIDs={
     [2093]=true
 }
 ]]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 local function setClickAtt()--设置 Click属性
     --local inCombat=UnitAffectingCombat('player')

@@ -490,6 +490,10 @@ local function Create_Fast_Button(indexAdd)
     local btn= e.Cbtn(AddonList, {size={18,18}})
     btn.Text= e.Cstr(btn)
     btn.Text:SetPoint('RIGHT', btn, 'LEFT')
+    btn.checkTexture= btn:CreateTexture()
+    btn.checkTexture:SetAtlas('checkmark-minimal')
+    btn.checkTexture:SetSize(16,16)
+    btn.checkTexture:SetPoint('RIGHT', btn.Text, 'LEFT',0,-2)
     function btn:get_add_info()
         local atlas = C_AddOns.GetAddOnMetadata(self.name, "IconAtlas")
         local texture = C_AddOns.GetAddOnMetadata(self.name, "IconTexture")
@@ -507,14 +511,16 @@ local function Create_Fast_Button(indexAdd)
         self.Text:SetText(title or name or self.name)
         if C_AddOns.GetAddOnEnableState(self.name)~=0 then
             self.Text:SetTextColor(0,1,0)
+            self.checkTexture:SetShown(true)
         else
             self.Text:SetTextColor(1, 0.82,0)
+            self.checkTexture:SetShown(false)
         end
     end
     btn:SetScript('OnLeave', GameTooltip_Hide)
     btn:SetScript('OnEnter', function(self)
         if C_AddOns.GetAddOnInfo(self:GetID())==self.name then
-            AddonTooltip:SetOwner(self.Text, "ANCHOR_LEFT")
+            AddonTooltip:SetOwner(self.checkTexture, "ANCHOR_LEFT")
             AddonTooltip_Update(self)
         else
             local name, atlas, texture= self:get_add_info()
