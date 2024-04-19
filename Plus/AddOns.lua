@@ -517,9 +517,22 @@ local function Create_Fast_Button(indexAdd)
             self.checkTexture:SetShown(false)
         end
     end
-    btn:SetScript('OnLeave', GameTooltip_Hide)
+    function btn:set_onenter_tips(show)
+        if not self.findTips then return end
+
+    end
+    btn:SetScript('OnLeave', function(self)
+        if self.findFrame then
+            if self.findFrame.check then
+                self.findFrame.check:set_leave_alpha()
+            end
+            self.findFrame=nil
+        end
+        GameTooltip_Hide()
+    end)
     btn:SetScript('OnEnter', function(self)
-        if C_AddOns.GetAddOnInfo(self:GetID())==self.name then
+        local index= self:GetID()
+        if C_AddOns.GetAddOnInfo(index)==self.name then
             AddonTooltip:SetOwner(self.checkTexture, "ANCHOR_LEFT")
             AddonTooltip_Update(self)
         else
@@ -531,6 +544,26 @@ local function Create_Fast_Button(indexAdd)
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(' ', icon..name)
             e.tips:Show()
+            for i=1, C_AddOns.GetNumAddOns() do
+                if C_AddOns.GetAddOnInfo(i)== self.name then
+                    index= i
+                    self:SetID(i)
+                    Save.fast[self.name]= i
+                    break
+                end
+            end
+        end
+        if index then
+            AddonList.ScrollBox:ScrollToElementDataIndex(index)
+            for _, frame in pairs( AddonList.ScrollBox:GetFrames() or {}) do
+                if frame:GetID()==index then
+                    if frame.check then
+                        frame.check:set_enter_alpha()
+                        self.findFrame=frame
+                    end
+                    break
+                end
+            end
         end
     end)
     btn:SetScript('OnClick', function(self)
