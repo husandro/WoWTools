@@ -364,7 +364,7 @@ local function Init_Add_Save_Button()
             local title= C_AddOns.GetAddOnInfo(name) or name
             local col= C_AddOns.GetAddOnDependencies(name) and '|cffff00ff' or (isLoaded and '|cnGREEN_FONT_COLOR:') or ''
             local memo= Get_Memory_Value(name, false)--内存
-            memo= memo and ' |cffffffff'..meno..'|r' or ''
+            memo= memo and (' |cffffffff'..memo..'|r') or ''
             e.tips:AddDoubleLine(format(col..(index<10 and ' ' or '')..index..')'..icon..title..memo), text or ' ')
             index= index+1
         end
