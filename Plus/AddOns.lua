@@ -1110,20 +1110,49 @@ local function Init()
     --#############
     local btn= e.Cbtn(AddonList, {size={18,18}, icon= Save.enableAllButtn})
     btn:SetPoint('LEFT', AddonListDisableAllButton, 'RIGHT', 2,0)
-
-    btn:SetAlpha(0.5)
+    btn:SetAlpha(0.3)
     function btn:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinese and '启用' or ENABLE, Initializer:GetName())
-        e.tips:AddDoubleLine(e.onlyChinese and '设置' or SETTINGS, e.GetEnabeleDisable(Save.enableAllButtn))
+        e.tips:AddLine(e.onlyChinese and '全部禁用' or DISABLE_ALL_ADDONS)
+        e.tips:AddDoubleLine(format('%s|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r', e.onlyChinese and '启用' or ENABLE, ''), e.GetYesNo(Save.enableAllButtn))
         e.tips:Show()
         self:SetAlpha(1)
     end
-    btn:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.5) AddonListDisableAllButton:SetAlpha(1) end)
+    btn:SetScript('OnLeave', function(self)
+        e.tips:Hide()
+        self:SetAlpha(0.3)
+        AddonListDisableAllButton:SetAlpha(1)
+        if self.findFrame then
+            if self.findFrame.check then
+                self.findFrame.check:set_leave_alpha()
+            end
+            self.findFrame=nil
+        end
+    end)
     btn:SetScript('OnEnter', function(self)
         self:set_tooltips()
-        AddonListDisableAllButton:SetAlpha(0.5)
+        AddonListDisableAllButton:SetAlpha(0.3)
+        if not self.index then
+            for i=1, C_AddOns.GetNumAddOns() do
+                if C_AddOns.GetAddOnInfo(i)== id then
+                    self.index=i
+                    break
+                end
+            end
+        end
+        if self.index then
+            AddonList.ScrollBox:ScrollToElementDataIndex(self.index)
+            for _, frame in pairs( AddonList.ScrollBox:GetFrames() or {}) do
+                if frame:GetID()==index then
+                    if frame.check then
+                        frame.check:set_enter_alpha()
+                        self.findFrame=frame
+                    end
+                    break
+                end
+            end
+        end
     end)
     btn:SetScript('OnClick', function(self)
         Save.enableAllButtn= not Save.enableAllButtn and true or nil
