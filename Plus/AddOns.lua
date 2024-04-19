@@ -757,6 +757,49 @@ end
 
 
 local function Init_Load_Button()
+    LoadFrame= CreateFrame('Frame', nil, AddonList)
+
+    LoadFrame:SetSize(1,1)
+    function LoadFrame:set_frame_point()
+        LoadFrame:ClearAllPoints()
+        if Save.load_list_top then
+            LoadFrame:SetPoint('BOTTOMRIGHT', AddonList, 'TOPRIGHT', 1, 2)
+        else
+            LoadFrame:SetPoint('TOPRIGHT', AddonList, 'BOTTOMRIGHT', 1, -2)
+        end
+    end
+    LoadFrame.buttons={}
+    function LoadFrame:set_button_point()
+        local last= self
+        for _, btn in pairs(self.buttons) do
+            btn:SetSize(Save.load_list_size, Save.load_list_size)
+            btn:ClearAllPoints()
+            if Save.load_list_top then
+                btn:SetPoint('BOTTOMRIGHT', last, 'BOTTOMLEFT')
+            else
+                btn:SetPoint('TOPRIGHT', last, 'TOPLEFT')
+            end
+            last=btn
+        end
+        local num= math.modf((AddonList:GetWidth()+12)/Save.load_list_size)
+        num= num<4 and 4 or num
+        for i=num+1, #self.buttons, num do
+            local btn= self.buttons[i]
+            btn:ClearAllPoints()
+            if Save.load_list_top then
+                btn:SetPoint('BOTTOMRIGHT', self.buttons[i- num], 'TOPRIGHT')
+            else
+                btn:SetPoint('TOPRIGHT', self.buttons[i- num], 'BOTTOMRIGHT')
+            end
+        end
+    end
+    AddonList:HookScript('OnSizeChanged', function()
+        LoadFrame:set_button_point()
+    end)
+    AddonList:HookScript('OnShow', Set_Load_Button)
+    LoadFrame:set_frame_point()
+
+
     local btn= e.Cbtn(AddonList.TitleContainer, {size=22, icon='hide'})
     btn:SetPoint('RIGHT', AddonListCloseButton, 'LEFT', -2, 0)
     btn:SetAlpha(0.5)
@@ -804,52 +847,7 @@ local function Init_Load_Button()
         self:set_tooltips()
     end)
     btn:set_icon()
-
-    LoadFrame= CreateFrame('Frame', nil, AddonList)
     LoadFrame.btn= btn
-    LoadFrame:SetSize(1,1)
-
-    function LoadFrame:set_frame_point()
-        LoadFrame:ClearAllPoints()
-        if Save.load_list_top then
-            LoadFrame:SetPoint('BOTTOMRIGHT', AddonList, 'TOPRIGHT', 1, 2)
-        else
-            LoadFrame:SetPoint('TOPRIGHT', AddonList, 'BOTTOMRIGHT', 1, -2)
-        end
-    end
-
-    LoadFrame.buttons={}
-    function LoadFrame:set_button_point()
-        local last= self
-        for _, btn in pairs(self.buttons) do
-            btn:SetSize(Save.load_list_size, Save.load_list_size)
-            btn:ClearAllPoints()
-            if Save.load_list_top then
-                btn:SetPoint('BOTTOMRIGHT', last, 'BOTTOMLEFT')
-            else
-                btn:SetPoint('TOPRIGHT', last, 'TOPLEFT')
-            end
-            last=btn
-        end
-        local num= math.modf((AddonList:GetWidth()+12)/Save.load_list_size)
-
-        num= num<4 and 4 or num
-        for i=num+1, #self.buttons, num do
-            local btn= self.buttons[i]
-            btn:ClearAllPoints()
-            if Save.load_list_top then
-                btn:SetPoint('BOTTOMRIGHT', self.buttons[i- num], 'TOPRIGHT')
-            else
-                btn:SetPoint('TOPRIGHT', self.buttons[i- num], 'BOTTOMRIGHT')
-            end
-        end
-    end
-    AddonList:HookScript('OnSizeChanged', function()
-        LoadFrame:set_button_point()
-    end)
-    AddonList:HookScript('OnShow', Set_Load_Button)
-    LoadFrame:set_frame_point()
-
 end
 
 

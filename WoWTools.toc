@@ -2,7 +2,7 @@
 ## Title: |cffff00ffWoW|r|cff00ff00Tools|r
 ## Author: husandro
 ## Version: 1
-## Notes: WoW |cffff0000Plus|r
+## Notes: |A:Icon-WoW:0:0|aWoW |cffff0000Plus|r|n|cffffd100|A:communities-icon-invitemail:0:0|ahusandro@qq.com|r|n|cff00ccffhttps://www.curseforge.com/wow/addons/wowtools|r
 ## SavedVariables: WoWToolsSave, WoWDate
 ## DefaultState: Enabled
 ## X-Wago-ID: baND1J6o
