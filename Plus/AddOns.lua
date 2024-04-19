@@ -751,7 +751,7 @@ local function Set_Load_Button()--LoadButtons
         end
     end
 
-    LoadFrame:set_point()
+    LoadFrame:set_button_point()
 end
 
 
@@ -768,9 +768,15 @@ local function Init_Load_Button()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, Initializer:GetName())
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(format('%s %s', e.onlyChinese and '已经打开' or SPELL_FAILED_ALREADY_OPEN, e.GetEnabeleDisable(Save.load_list)), e.Icon.left)
         e.tips:AddLine(e.onlyChinese and '仅限有图标' or format(LFG_LIST_CROSS_FACTION, EMBLEM_SYMBOL))
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(format('%s %s', e.onlyChinese and '已经打开' or SPELL_FAILED_ALREADY_OPEN, e.GetShowHide(Save.load_list)), e.Icon.left)
+        e.tips:AddDoubleLine(
+            format('%s |cnGREEN_FONT_COLOR:%s|r',
+                e.onlyChinese and '方向' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION,
+                Save.load_list_top and (e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP) or (e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
+            ), e.Icon.right)
+        e.tips:AddDoubleLine(format('%s |cnGREEN_FONT_COLOR:%d|r', e.onlyChinese and '图标尺寸' or HUD_EDIT_MODE_SETTING_ACTION_BAR_ICON_SIZE, Save.load_list_size or 22), e.Icon.mid)
         e.tips:Show()
         self:SetAlpha(1)
     end
@@ -779,37 +785,72 @@ local function Init_Load_Button()
     end
     btn:SetScript('OnLeave', function(self) self:SetAlpha(0.5) GameTooltip_Hide() end)
     btn:SetScript('OnEnter', btn.set_tooltips)
-    btn:SetScript('OnClick', function(self)
-        Save.load_list= not Save.load_list and true or nil
-        self:set_icon()
-        Set_Load_Button()
+    btn:SetScript('OnClick', function(self, d)
+        if d=='LeftButton' then
+            Save.load_list= not Save.load_list and true or nil
+            self:set_icon()
+            Set_Load_Button()
+        elseif d=='RightButton' then
+            Save.load_list_top= not Save.load_list_top and true or nil
+            LoadFrame:set_frame_point()
+            LoadFrame:set_button_point()
+        end
+        self:set_tooltips()
+    end)
+    btn:SetScript('OnMouseWheel', function(_, d)
+        local n= Save.load_list_size or 22
+        n= d==1 and n-2 or n
+        n= d==-1 and n+2 or n
+        n= n>72 and 72 or n
+        n= n<8 and 8 or n
+        Save.load_list_size= n
+        LoadFrame:set_button_point()
+        self:set_tooltips()
     end)
     btn:set_icon()
 
     LoadFrame= CreateFrame('Frame', nil, AddonList)
     LoadFrame:SetSize(1,1)
-    LoadFrame:SetPoint('TOPRIGHT', AddonList, 'BOTTOMRIGHT', 1, -2)
+    function LoadFrame:set_frame_point()
+        LoadFrame:ClearAllPoints()
+        if Save.load_list_top then
+            LoadFrame:SetPoint('BOTTOMRIGHT', AddonList, 'TOPRIGHT', 1, 2)
+        else
+            LoadFrame:SetPoint('TOPRIGHT', AddonList, 'BOTTOMRIGHT', 1, -2)
+        end
+    end
+    
     LoadFrame.buttons={}
-    function LoadFrame:set_point()
+    function LoadFrame:set_button_point()
         local last= self
         for _, btn in pairs(self.buttons) do
             btn:SetSize(Save.load_list_size, Save.load_list_size)
             btn:ClearAllPoints()
-            btn:SetPoint('TOPRIGHT', last, 'TOPLEFT')
+            if Save.load_list_top then
+                btn:SetPoint('BOTTOMRIGHT', last, 'BOTTOMLEFT')
+            else
+                btn:SetPoint('TOPRIGHT', last, 'TOPLEFT')
+            end
             last=btn
         end
-        local num= math.modf(AddonList:GetWidth()/Save.load_list_size)
+        local num= math.modf((AddonList:GetWidth()+12)/Save.load_list_size)
 
         num= num<4 and 4 or num
         for i=num+1, #self.buttons, num do
             local btn= self.buttons[i]
             btn:ClearAllPoints()
-            btn:SetPoint('TOPRIGHT', self.buttons[i- num], 'BOTTOMRIGHT')
+            if Save.load_list_top then
+                btn:SetPoint('BOTTOMRIGHT', self.buttons[i- num], 'TOPRIGHT')
+            else
+                btn:SetPoint('TOPRIGHT', self.buttons[i- num], 'BOTTOMRIGHT')
+            end
         end
     end
     AddonList:HookScript('OnSizeChanged', function()
-        LoadFrame:set_point()
+        LoadFrame:set_button_point()
     end)
+    AddonList:HookScript('OnShow', Set_Load_Button)
+    LoadFrame:set_frame_point()
 end
 
 
@@ -1101,7 +1142,7 @@ local function Init()
     end)
 
     Init_Load_Button()
-    AddonList:HookScript('OnShow', Set_Load_Button)
+    
 end
 
 
