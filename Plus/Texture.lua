@@ -559,6 +559,7 @@ local function Init_All_Frame()
      set_Alpha_Color(QuestScrollFrame.Contents.Separator.Divider, nil, nil, min03)
      e.Set_ScrollBar_Color_Alpha(QuestScrollFrame)
      e.Set_ScrollBar_Color_Alpha(QuestMapFrame.DetailsFrame.RewardsFrame.RewardsScrollFrame)
+     e.Set_ScrollBar_Color_Alpha(QuestRewardScrollFrame)
 
 
 

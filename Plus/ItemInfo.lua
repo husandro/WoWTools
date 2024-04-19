@@ -1136,6 +1136,13 @@ local function Init()
     Init_Bag()
 
 
+    --[[任务，奖励物品
+    hooksecurefunc('QuestInfo_ShowRewards', function()
+        print(id,addName)
+  
+        print('QuestInfo_ShowRewards')
+    end)
+    print('numQuestChoicesnumQuestChoices')]]
 end
 
 

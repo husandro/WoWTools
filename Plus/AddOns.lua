@@ -16,12 +16,17 @@ local Save={
             [id]= 1,
         },
         enableAllButtn= e.Player.husandro,--全部禁用时，不禁用本插件
+
+        load_list=e.Player.husandro,--禁用, 已加载，列表
+        load_list_size=22,
     }
 
-local NewButton
+local NewButton--新建按钮
+local LoadFrame--已加载，插件列表
 local Initializer
-local Buttons={}
-local FastButton={}
+local Buttons={}--方案
+local FastButtons={}--快捷键
+
 
 
 
@@ -36,17 +41,17 @@ local function Get_AddList_Info()
     local load, some, sel= 0, 0, 0
     local tab= {}
     for i=1, C_AddOns.GetNumAddOns() do
-        local name=C_AddOns.GetAddOnInfo(i)
-        if C_AddOns.IsAddOnLoaded(name) then
+        if C_AddOns.IsAddOnLoaded(i) then
             load= load+1
         end
-        local stat= C_AddOns.GetAddOnEnableState(name) or 0
+        local stat= C_AddOns.GetAddOnEnableState(i) or 0
         if stat>0 then
             if stat==1 then
                 some= some +1
             elseif stat==2 then
                 sel= sel+1
             end
+            local name=C_AddOns.GetAddOnInfo(i)
             tab[name]= stat==1 and e.Player.guid or i
         end
     end
@@ -178,7 +183,7 @@ local function Create_Button(indexAdd)
         for name, value in pairs(Save.buttons[self.name]) do
             local iconTexture = C_AddOns.GetAddOnMetadata(name, "IconTexture")
             local iconAtlas = C_AddOns.GetAddOnMetadata(name, "IconAtlas")
-            local icon= iconTexture and format('|T%s:0|t', iconTexture) or (iconAtlas and format('|A:%s:0:0|a', iconAtlas)) or '    '
+            local icon= iconTexture and format('|T%s:0|t', iconTexture..'') or (iconAtlas and format('|A:%s:0:0|a', iconAtlas)) or '    '
             local isLoaded= C_AddOns.IsAddOnLoaded(name)
             local vType= type(value)
             local text= vType=='string' and e.GetPlayerInfo({guid=value, reName=true, reRealm=true})
@@ -196,7 +201,7 @@ local function Create_Button(indexAdd)
         end
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine((e.onlyChinese and '加载插件' or LOAD_ADDON)..e.Icon.left, (e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..e.Icon.right)
-        
+
         e.tips:Show()
     end)
     btn:SetScript('OnLeave', function(self)
@@ -321,7 +326,7 @@ local function Init_Add_Save_Button()
         for name, value in pairs(tab) do
             local iconTexture = C_AddOns.GetAddOnMetadata(name, "IconTexture")
             local iconAtlas = C_AddOns.GetAddOnMetadata(name, "IconAtlas")
-            local icon= iconTexture and format('|T%s:0|t', iconTexture) or (iconAtlas and format('|A:%s:0:0|a', iconAtlas)) or '    '
+            local icon= iconTexture and format('|T%s:0|t', iconTexture..'') or (iconAtlas and format('|A:%s:0:0|a', iconAtlas)) or '    '
             local isLoaded= C_AddOns.IsAddOnLoaded(name)
             local vType= type(value)
             local text= vType=='string' and e.GetPlayerInfo({guid=value})
@@ -404,7 +409,7 @@ local function Init_Add_Save_Button()
                 local title = select(2, C_AddOns.GetAddOnInfo(index))
                 local iconTexture = C_AddOns.GetAddOnMetadata(index, "IconTexture")
                 local iconAtlas = C_AddOns.GetAddOnMetadata(index, "IconAtlas")
-                local icon= iconTexture and format('|T%s:0|t', iconTexture) or (iconAtlas and format('|A:%s:0:0|a', iconAtlas)) or '    '
+                local icon= iconTexture and format('|T%s:0|t', iconTexture..'') or (iconAtlas and format('|A:%s:0:0|a', iconAtlas)) or '    '
                 local col= isLoaded and '|cnGREEN_FONT_COLOR:' or '|cffff00ff'
                 e.tips:AddDoubleLine(col..(index<10 and '  ' and (index<100 and ' ') or '')..index..') '.. icon..title, dema and col..e.cn(_G['ADDON_DEMAND_LOADED'])..' ('..index)
                 find=true
@@ -425,7 +430,7 @@ local function Init_Add_Save_Button()
         e.tips:Show()
         self:SetAlpha(0.3)
     end)
-    
+
     local label= e.Cstr(AddonListEnableAllButton)--插件，总数
     label:SetPoint('LEFT',3,0)
     label:SetText(C_AddOns.GetNumAddOns())
@@ -584,11 +589,17 @@ local function Create_Fast_Button(indexAdd)
     if indexAdd==1 then
         btn:SetPoint('TOPRIGHT', AddonList, 'TOPLEFT', 8,0)
     else
-        btn:SetPoint('TOPRIGHT', FastButton[indexAdd-1], 'BOTTOMRIGHT')
+        btn:SetPoint('TOPRIGHT', FastButtons[indexAdd-1], 'BOTTOMRIGHT')
     end
-    FastButton[indexAdd]= btn
+    FastButtons[indexAdd]= btn
     return btn
 end
+
+
+
+
+
+
 
 
 
@@ -607,14 +618,14 @@ local function Set_Fast_Button()
     table.sort(newTab, function(a, b) return a.index< b.index end)
 
     for i, info in pairs(newTab) do
-        local btn= FastButton[i] or Create_Fast_Button(i)
+        local btn= FastButtons[i] or Create_Fast_Button(i)
         btn.name= info.name
         btn:SetID(info.index)
         btn:settings()
-        btn:SetShown(true)   
+        btn:SetShown(true)
     end
-    for i= #newTab +1, #FastButton do
-        local btn= FastButton[i]
+    for i= #newTab +1, #FastButtons do
+        local btn= FastButtons[i]
         if btn then
             btn:SetShown(false)
             btn.name=nil
@@ -622,74 +633,184 @@ local function Set_Fast_Button()
     end
 end
 
- --[[
-    local last
-    local index= 0
-   for _, tab in pairs(newTab) do
-        local name, _, _, _, reason = C_AddOns.GetAddOnInfo(tab.name)
-        if name and reason~='MISSING' then
-            index= index+1
-            local check= FastButton[index]
-            if not check then
-                check= CreateFrame("CheckButton", nil, AddonList, "InterfaceOptionsCheckButtonTemplate")
-                if not last then
-                    check:SetPoint('TOPRIGHT', AddonList, 'TOPLEFT', 8,0)
-                else
-                    check:SetPoint('TOPRIGHT', last, 'BOTTOMRIGHT',0,9)
-                end
-                check.Text:ClearAllPoints()
-                check.Text:SetPoint('RIGHT', check, 'LEFT')
-                check:SetScript('OnClick', function(self2)
-                    if C_AddOns.GetAddOnEnableState(self2.name)~=0 then
-                        C_AddOns.DisableAddOn(self2.name)
-                    else
-                        C_AddOns.EnableAddOn(self2.name)
-                    end
-                    e.call('AddonList_Update')
-                end)
-                check:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
-                check:SetScript('OnEnter', function(self2)
-                    e.tips:SetOwner(self2, "ANCHOR_RIGHT")
-                    e.tips:ClearLines()
-                    e.tips:AddDoubleLine(self2.icon ..self2.name, self2.index)
-                    e.tips:AddLine(' ')
-                    e.tips:AddLine(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)
-                    e.tips:AddDoubleLine(id, Initializer:GetName())
-                    e.tips:Show()
-                    self2:SetAlpha(0.3)
-                end)
-                check.index= tab.index
-                FastButton[index]= check
-            end
-            local checked= C_AddOns.GetAddOnEnableState(name)~=0
-            check:SetChecked(checked)
-            check:SetShown(true)
 
-            local iconTexture = C_AddOns.GetAddOnMetadata(name, "IconTexture")
-            local iconAtlas = C_AddOns.GetAddOnMetadata(name, "IconAtlas")
-            local icon= ''
-            if iconTexture then
-                icon= '|T'..iconTexture..':26|t'
-            elseif iconAtlas then
-                icon='|A:'..iconAtlas..':26:26|a'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--已加载，插件列表
+local function Set_Load_Button()--LoadButtons
+    LoadFrame:SetShown(Save.load_list)
+    if not Save.load_list then
+        return
+    end
+
+    local newTab={}
+    for i=1, C_AddOns.GetNumAddOns() do
+        if not C_AddOns.GetAddOnDependencies(i) then
+            local texture = C_AddOns.GetAddOnMetadata(i, "IconTexture")
+            local atlas = C_AddOns.GetAddOnMetadata(i, "IconAtlas")
+            if texture or atlas then
+                if C_AddOns.IsAddOnLoaded(i) then
+                    table.insert(newTab, {index=i, load=true, atlas=atlas, texture=texture})
+                elseif select(2, C_AddOns.IsAddOnLoadable(i))=='DEMAND_LOADED' then
+                    table.insert(newTab, {index=i, load=false, atlas=atlas, texture=texture})
+                end
             end
-            check.Text:SetText(name..icon)
-            if checked then
-                check.Text:SetTextColor(0,1,0)
-            else
-                check.Text:SetTextColor(1, 0.82, 0)
-            end
-            check.icon= icon
-            last= check
-            check.name= name
         end
     end
-    for i= index+1, #FastButton, 1 do
-        local check= FastButton[i]
-        if check then
-            check:SetShown(false)
+
+    for i, info in pairs(newTab) do
+       local btn= LoadFrame.buttons[i]
+       if not btn then
+            btn= e.Cbtn(LoadFrame, {icon='hide'})--, size=22})
+            btn.texture= btn:CreateTexture()
+            btn.texture:SetAllPoints(btn)
+            function btn:set_alpha()
+                self:SetAlpha(self.load and 1 or 0.3)
+            end
+
+            btn.Text= e.Cstr(btn)
+            btn.Text:SetPoint('CENTER')
+
+            btn:SetScript('OnLeave', function(self)
+                if self.findFrame then
+                    if self.findFrame.check then
+                        self.findFrame.check:set_leave_alpha()
+                    end
+                    self.findFrame=nil
+                end
+                GameTooltip_Hide()
+                self:set_alpha()
+            end)
+            btn:SetScript('OnEnter', function(self)
+                local findIndex= self:GetID()
+                AddonTooltip:SetOwner(self:GetParent().buttons[1], "ANCHOR_RIGHT")
+                AddonTooltip_Update(self)
+                AddonList.ScrollBox:ScrollToElementDataIndex(findIndex)
+                for _, frame in pairs( AddonList.ScrollBox:GetFrames() or {}) do
+                    if frame:GetID()==findIndex then
+                        if frame.check then
+                            frame.check:set_enter_alpha()
+                            self.findFrame=frame
+                        end
+                        break
+                    end
+                end
+                self:SetAlpha(1)
+            end)
+            LoadFrame.buttons[i]= btn
+       end
+
+       btn:SetAlpha(info.loaded and 1 or 0.3)
+
+       if info.texture then
+            btn.texture:SetTexture(info.texture)
+            btn.Text:SetText('')
+       elseif info.atlas then
+            btn.texture:SetAtlas(info.atlas)
+            btn.Text:SetText('')
+       else
+            local name, title=C_AddOns.GetAddOnInfo(info.index)
+            name= name or title or ''
+            name= name:gsub('!', '')
+            name= e.WA_Utf8Sub(name, 2, 3)
+            btn.Text:SetText(name)
+            btn:SetTexture(0)
+       end
+
+       btn:SetID(info.index)
+       btn.load= info.load
+       btn:set_alpha()
+       btn:SetShown(true)
+    end
+
+    for i=#newTab +1,  #LoadFrame.buttons do
+        local btn= LoadFrame.buttons[i]
+        if btn then
+            btn:SetShown(false)
         end
-    end]]
+    end
+
+    LoadFrame:set_point()
+end
+
+
+
+
+
+
+
+local function Init_Load_Button()
+    local btn= e.Cbtn(AddonList, {size=22, icon='hide'})
+    btn:SetPoint('RIGHT', AddonListCloseButton, 'LEFT', -2, 0)
+    btn:SetAlpha(0.5)
+    function btn:set_tooltips()
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, Initializer:GetName())
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(format('%s %s', e.onlyChinese and '已经打开' or SPELL_FAILED_ALREADY_OPEN, e.GetEnabeleDisable(Save.load_list)), e.Icon.left)
+        e.tips:AddLine(e.onlyChinese and '仅限有图标' or format(LFG_LIST_CROSS_FACTION, EMBLEM_SYMBOL))
+        e.tips:Show()
+        e.tips:SetAlpha(1)
+    end
+    function btn:set_icon()
+        self:SetNormalAtlas(Save.load_list and 'auctionhouse-ui-dropdown-arrow-up' or 'dressingroom-button-appearancelist-up')
+    end
+    btn:SetScript('OnLeave', function(self) self:SetAlpha(0.5) GameTooltip_Hide() end)
+    btn:SetScript('OnEnter', btn.set_tooltips)
+    btn:SetScript('OnClick', function(self)
+        Save.load_list= not Save.load_list and true or nil
+        self:set_icon()
+        Set_Load_Button()
+    end)
+    btn:set_icon()
+
+    LoadFrame= CreateFrame('Frame', nil, AddonList)
+    LoadFrame:SetSize(1,1)
+    LoadFrame:SetPoint('TOPRIGHT', AddonList, 'BOTTOMRIGHT', 1, -2)
+    LoadFrame.buttons={}
+    function LoadFrame:set_point()
+        local last= self
+        for _, btn in pairs(self.buttons) do
+            btn:SetSize(Save.load_list_size, Save.load_list_size)
+            btn:ClearAllPoints()
+            btn:SetPoint('TOPRIGHT', last, 'TOPLEFT')
+            last=btn
+        end
+        local num= math.modf(AddonList:GetWidth()/Save.load_list_size)
+
+        num= num<4 and 4 or num
+        for i=num+1, #self.buttons, num do
+            local btn= self.buttons[i]
+            btn:ClearAllPoints()
+            btn:SetPoint('TOPRIGHT', self.buttons[i- num], 'BOTTOMRIGHT')
+        end
+    end
+    AddonList:HookScript('OnSizeChanged', function()
+        LoadFrame:set_point()
+    end)
+end
+
 
 
 
@@ -962,12 +1083,12 @@ local function Init()
     AddonListDisableAllButton.btn:SetAlpha(0.3)
     AddonListDisableAllButton.btn:SetScript('OnLeave', function(self2) e.tips:Hide() self2:GetParent():SetAlpha(1) end)
     AddonListDisableAllButton.btn:SetScript('OnEnter', function(self2)
-        e.tips:SetOwner(self2, "ANCHOR_RIGHT")
+        e.tips:SetOwner(self2, "ANCHOR_RIGHT")        
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinese and '启用' or ENABLE, id)
+        e.tips:AddDoubleLine(id, Initializer:GetName())
         e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.onlyChinese and '启用' or ENABLE, id)
         e.tips:AddDoubleLine(e.onlyChinese and '设置' or SETTINGS, e.GetEnabeleDisable(Save.enableAllButtn))
-        e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
         self2:GetParent():SetAlpha(0.3)
     end)
@@ -978,6 +1099,8 @@ local function Init()
         end
     end)
 
+    Init_Load_Button()
+    AddonList:HookScript('OnShow', Set_Load_Button)
 end
 
 
@@ -1008,6 +1131,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
             Save.fast= Save.fast or {}
+            Save.load_list_size= Save.load_list_size or 22
 
             if e.Player.husandro then
                 Save.buttons[e.onlyChinese and '宠物对战' or PET_BATTLE_COMBAT_LOG ]={
