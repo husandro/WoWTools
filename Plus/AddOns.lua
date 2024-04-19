@@ -19,6 +19,7 @@ local Save={
 
         load_list=e.Player.husandro,--禁用, 已加载，列表
         load_list_size=22,
+        --load_list_top=true,
     }
 
 local NewButton--新建按钮
@@ -760,7 +761,7 @@ end
 
 
 local function Init_Load_Button()
-    local btn= e.Cbtn(AddonList, {size=22, icon='hide'})
+    local btn= e.Cbtn(AddonList.TitleContainer, {size=22, icon='hide'})
     btn:SetPoint('RIGHT', AddonListCloseButton, 'LEFT', -2, 0)
     btn:SetAlpha(0.5)
     function btn:set_tooltips()
@@ -771,7 +772,7 @@ local function Init_Load_Button()
         e.tips:AddDoubleLine(format('%s %s', e.onlyChinese and '已经打开' or SPELL_FAILED_ALREADY_OPEN, e.GetEnabeleDisable(Save.load_list)), e.Icon.left)
         e.tips:AddLine(e.onlyChinese and '仅限有图标' or format(LFG_LIST_CROSS_FACTION, EMBLEM_SYMBOL))
         e.tips:Show()
-        e.tips:SetAlpha(1)
+        self:SetAlpha(1)
     end
     function btn:set_icon()
         self:SetNormalAtlas(Save.load_list and 'auctionhouse-ui-dropdown-arrow-up' or 'dressingroom-button-appearancelist-up')
@@ -1083,7 +1084,7 @@ local function Init()
     AddonListDisableAllButton.btn:SetAlpha(0.3)
     AddonListDisableAllButton.btn:SetScript('OnLeave', function(self2) e.tips:Hide() self2:GetParent():SetAlpha(1) end)
     AddonListDisableAllButton.btn:SetScript('OnEnter', function(self2)
-        e.tips:SetOwner(self2, "ANCHOR_RIGHT")        
+        e.tips:SetOwner(self2, "ANCHOR_RIGHT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, Initializer:GetName())
         e.tips:AddLine(' ')
