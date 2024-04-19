@@ -804,7 +804,11 @@ local function Init_Load_Button()
     btn:SetPoint('RIGHT', AddonListCloseButton, 'LEFT', -2, 0)
     btn:SetAlpha(0.5)
     function btn:set_tooltips()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        if Save.load_list_top  then
+            e.tips:SetOwner(AddonList, "ANCHOR_RIGHT")
+        else
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+        end
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, Initializer:GetName())
         e.tips:AddLine(e.onlyChinese and '仅限有图标' or format(LFG_LIST_CROSS_FACTION, EMBLEM_SYMBOL))
