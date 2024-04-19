@@ -1172,12 +1172,15 @@ local function Init()
     AddonListForceLoad:SetPoint('TOP', AddonList, -16, -26)
 
     Init_Add_Save_Button()--新建按钮
+    Init_Load_Button()
+
     hooksecurefunc('AddonList_InitButton', function(frame, addonIndex)
         frame.Title:SetPoint('RIGHT', -220, 0 )
         Init_Set_List(frame, addonIndex)--列表，内容
     end)
 -- e.call('AddonList_HasAnyChanged')
     hooksecurefunc('AddonList_Update', function()
+        Update_Usage()--更新，使用情况
         Set_Fast_Button()--插件，快捷，选中
         Set_Buttons()
     end)
@@ -1245,7 +1248,7 @@ local function Init()
         end
     end)
 
-    Init_Load_Button()
+  
 
 
     hooksecurefunc('AddonTooltip_Update', function(frame)
