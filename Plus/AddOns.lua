@@ -517,10 +517,7 @@ local function Create_Fast_Button(indexAdd)
             self.checkTexture:SetShown(false)
         end
     end
-    function btn:set_onenter_tips(show)
-        if not self.findTips then return end
-
-    end
+  
     btn:SetScript('OnLeave', function(self)
         if self.findFrame then
             if self.findFrame.check then
