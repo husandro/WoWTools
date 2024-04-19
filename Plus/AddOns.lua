@@ -797,7 +797,7 @@ local function Init_Load_Button()
         end
         self:set_tooltips()
     end)
-    btn:SetScript('OnMouseWheel', function(_, d)
+    btn:SetScript('OnMouseWheel', function(self, d)
         local n= Save.load_list_size or 22
         n= d==1 and n-2 or n
         n= d==-1 and n+2 or n
