@@ -816,22 +816,32 @@ local function Init_Load_Button()
                 Save.load_list_top and (e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP) or (e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
             ), e.Icon.right)
         e.tips:AddDoubleLine(format('%s |cnGREEN_FONT_COLOR:%d|r', e.onlyChinese and '图标尺寸' or HUD_EDIT_MODE_SETTING_ACTION_BAR_ICON_SIZE, Save.load_list_size or 22), e.Icon.mid)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(format('List Bg%s |cnGREEN_FONT_COLOR:%.1f|r (1)', e.onlyChinese and '透明度' or ' alpha',  AddonListInset.Bg:GetAlpha()), 'Alt+'..e.Icon.right)
         e.tips:Show()
         self:SetAlpha(1)
     end
     function btn:set_icon()
         self:SetNormalAtlas(Save.load_list and (Save.load_list_top and 'MiniMap-QuestArrow' or 'auctionhouse-ui-dropdown-arrow-up') or 'dressingroom-button-appearancelist-up')
     end
+
     btn:SetScript('OnLeave', function(self) self:SetAlpha(0.5) GameTooltip_Hide() end)
     btn:SetScript('OnEnter', btn.set_tooltips)
+
     btn:SetScript('OnClick', function(self, d)
-        if d=='LeftButton' then
-            Save.load_list= not Save.load_list and true or nil
-            Set_Load_Button()
-        elseif d=='RightButton' then
-            Save.load_list_top= not Save.load_list_top and true or nil
-            LoadFrame:set_frame_point()
-            LoadFrame:set_button_point()
+        if IsAltKeyDown() and d=='RightButton' then--Bg 透明度
+            Save.Bg_Alpha1= not Save.Bg_Alpha1 and true or nil
+            AddonListInset.Bg:SetAlpha(Save.Bg_Alpha1 and 1 or 0.5)
+
+        elseif not IsModifierKeyDown() then
+            if d=='LeftButton' then--已加载，图标列表
+                Save.load_list= not Save.load_list and true or nil
+                Set_Load_Button()
+            elseif d=='RightButton' then--方向
+                Save.load_list_top= not Save.load_list_top and true or nil
+                LoadFrame:set_frame_point()
+                LoadFrame:set_button_point()
+            end
         end
         self:set_icon()
         self:set_tooltips()
@@ -846,8 +856,15 @@ local function Init_Load_Button()
         LoadFrame:set_button_point()
         self:set_tooltips()
     end)
+
     btn:set_icon()
     LoadFrame.btn= btn
+
+    C_Timer.After(2, function()--Bg 透明度
+        if AddonListInset.Bg:GetAlpha()~=1 and Save.Bg_Alpha1 then
+            AddonListInset.Bg:SetAlpha(1)
+        end
+    end)
 end
 
 
