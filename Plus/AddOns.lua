@@ -62,7 +62,7 @@ end
 local function Update_Usage()--更新，使用情况
     if not UnitAffectingCombat('player') then
         UpdateAddOnMemoryUsage()
-        UpdateAddOnCPUUsage()
+        --UpdateAddOnCPUUsage()
     end
 end
 
