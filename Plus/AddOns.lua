@@ -781,20 +781,20 @@ local function Init_Load_Button()
         self:SetAlpha(1)
     end
     function btn:set_icon()
-        self:SetNormalAtlas(Save.load_list and 'auctionhouse-ui-dropdown-arrow-up' or 'dressingroom-button-appearancelist-up')
+        self:SetNormalAtlas(Save.load_list and (Save.load_list_top and 'MiniMap-QuestArrow' or 'auctionhouse-ui-dropdown-arrow-up') or 'dressingroom-button-appearancelist-up')
     end
     btn:SetScript('OnLeave', function(self) self:SetAlpha(0.5) GameTooltip_Hide() end)
     btn:SetScript('OnEnter', btn.set_tooltips)
     btn:SetScript('OnClick', function(self, d)
         if d=='LeftButton' then
             Save.load_list= not Save.load_list and true or nil
-            self:set_icon()
             Set_Load_Button()
         elseif d=='RightButton' then
             Save.load_list_top= not Save.load_list_top and true or nil
             LoadFrame:set_frame_point()
             LoadFrame:set_button_point()
         end
+        self:set_icon()
         self:set_tooltips()
     end)
     btn:SetScript('OnMouseWheel', function(self, d)
