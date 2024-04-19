@@ -202,12 +202,13 @@ local function Create_Button(indexAdd)
         end
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine((e.onlyChinese and '加载插件' or LOAD_ADDON)..e.Icon.left, (e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..e.Icon.right)
-
         e.tips:Show()
+        NewButton:SetAlpha(1)
     end)
     btn:SetScript('OnLeave', function(self)
         self:set_settings()
         e.tips:Hide()
+        NewButton:SetAlpha(0.5)
     end)
 
     if indexAdd==1 then
