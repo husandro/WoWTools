@@ -172,7 +172,6 @@ local function Create_Button(indexAdd)
                             StaticPopup_Show('WoWTools_AddOns_NAME', arg1, nil, arg1)
                         end
                     }, level)
-                    e.LibDD:UIDropDownMenu_AddSeparator(level)
                     e.LibDD:UIDropDownMenu_AddButton({
                         text= e.onlyChinese and '删除' or DELETE,
                         icon= 'XMarksTheSpot',
@@ -184,15 +183,8 @@ local function Create_Button(indexAdd)
                             e.call('AddonList_Update')
                         end
                     }, level)
+                    e.LibDD:UIDropDownMenu_AddSeparator(level)
                     e.LibDD:UIDropDownMenu_AddButton({text=self.name, notCheckable=true, isTitle=true}, level)
-                    --[[e.LibDD:UIDropDownMenu_AddButton({
-                        text= e.onlyChinese and '选项' or OPTIONS,
-                        icon= 'mechagon-projects',
-                        notCheckable= true,
-                        func= function()
-                            e.OpenPanelOpting(Initializer)
-                        end
-                    }, level)]]
                 end, 'MENU')
 
             end
@@ -361,14 +353,11 @@ local function Init_Add_Save_Button()
             local iconTexture = C_AddOns.GetAddOnMetadata(name, "IconTexture")
             local iconAtlas = C_AddOns.GetAddOnMetadata(name, "IconAtlas")
             local icon= iconTexture and format('|T%s:0|t', iconTexture..'') or (iconAtlas and format('|A:%s:0:0|a', iconAtlas)) or '    '
-            local isLoaded= C_AddOns.IsAddOnLoaded(name)
+            local isLoaded, reason= C_AddOns.IsAddOnLoaded(name)
             local vType= type(value)
             local text= vType=='string' and e.GetPlayerInfo({guid=value})
-            if not text and not isLoaded then
-                local reason= select(2, C_AddOns.IsAddOnLoadable(name))
-                if reason then
-                    text= '|cff606060'..e.cn(_G['ADDON_'..reason] or reason)..' ('..index
-                end
+            if not text and not isLoaded and reason then
+                text= '|cff606060'..e.cn(_G['ADDON_'..reason] or reason)..' ('..index
             end
             local title= C_AddOns.GetAddOnInfo(name) or name
             local col= C_AddOns.GetAddOnDependencies(name) and '|cffff00ff' or (isLoaded and '|cnGREEN_FONT_COLOR:') or '|cff606060'
@@ -423,7 +412,7 @@ local function Init_Add_Save_Button()
                 text =id..' '..Initializer:GetName()
                     ..'|n|n'
                     ..(e.onlyChinese and '当前已选择' or ICON_SELECTION_TITLE_CURRENT)
-                    ..' %s|n|n'
+                    ..' |cnGREEN_FONT_COLOR:%s|r '..(e.onlyChinese and '插件' or ADDONS)..'|n|n'
                     ..(e.onlyChinese and '新的方案' or PAPERDOLL_NEWEQUIPMENTSET),
                 button1 = e.onlyChinese and '新建' or NEW,
                 button2 = e.onlyChinese and '取消' or CANCEL,
@@ -487,10 +476,11 @@ local function Init_Add_Save_Button()
                 })
                 allMomo= allMomo+ (value or 0)
             end
-            if isLoaded then
-                load= load+1
-            elseif dema then
+            
+            if dema then
                 need= need+1
+            elseif isLoaded then
+                load= load+1
             end
         end
 
@@ -1330,15 +1320,16 @@ local function Init()
 
     hooksecurefunc('AddonTooltip_Update', function(frame)
         Update_Usage()
-        local va=Get_Memory_Value(frame:GetID(), true)
+        local index= frame:GetID()
+        local va=Get_Memory_Value(index, true)
         if va then
-            AddonTooltip:AddLine(va, 1,0.82,0)
+            local iconTexture = C_AddOns.GetAddOnMetadata(index, "IconTexture")
+            local iconAtlas = C_AddOns.GetAddOnMetadata(index, "IconAtlas")
+            local icon= iconTexture and format('|T%s:0|t', iconTexture..'') or (iconAtlas and format('|A:%s:0:0|a', iconAtlas)) or ''
+            AddonTooltip:AddLine(icon..va, 1,0.82,0)
             AddonTooltip:Show()
         end
     end)
-
-
-    local frame= Create
 end
 
 
