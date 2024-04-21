@@ -1825,7 +1825,7 @@ local function Set_Dragonriding_Speed(frame)
         return
     end
     if frame.speedBar then
-        frame.speedBar:SetShown(true)
+        frame.speedBar:SetShown(frame:IsShown())
         return
     end
     frame.speedBar= CreateFrame('StatusBar', nil, frame)
