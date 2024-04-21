@@ -110,9 +110,9 @@ Teleporta para a entrada de Floretérnia.
                 text=text:gsub(SUMMONS,'');
                 local p=self:GetPoint(1);
                 if p=='TOP' or p=='BOTTOM' then
-                    self.Text:SetPoint('RIGHT', self, 'LEFT')--, 0, 0);
+                    self.Text:SetPoint('RIGHT', self, 'LEFT',-1, 0)--, 0, 0);
                 else
-                    self.Text:SetPoint('BOTTOM', self, 'TOP')--, 2, 4);
+                    self.Text:SetPoint('BOTTOM', self, 'TOP', 0,1)--, 2, 4);
                     text=Vstr(text);
                 end
             end
