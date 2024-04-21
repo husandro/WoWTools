@@ -482,17 +482,21 @@ local function Init_Opetions_ToyBox(btn)--标记, 是否已选取
             self:SetAlpha(find and 1 or 0.1)
         end
         function btn.useItem:set_tooltips()
+            local itemID=self:get_itemID()
+            if not itemID then
+                return
+            end
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
             e.tips:AddDoubleLine(id, addName2)
             e.tips:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             e.tips:AddLine(' ')
-            local itemID=self:get_itemID()
+            
             local icon= C_Item.GetItemIconByID(itemID)
             local find=find_Type('item', itemID)
             e.tips:AddDoubleLine(
-                (icon and '|T'..icon..':0|t' or '')..(itemID and C_ToyBox.GetToyLink(itemID) or itemID),
-                e.GetEnabeleDisable(find)..e.Icon.left
+                (icon and '|T'..icon..':0|t' or '')..(C_ToyBox.GetToyLink(itemID) or itemID)..' '..e.GetEnabeleDisable(find),
+                e.Icon.left
             )
             e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
             e.tips:Show()
@@ -501,8 +505,10 @@ local function Init_Opetions_ToyBox(btn)--标记, 是否已选取
 
         btn.useItem:SetScript('OnMouseDown', function(self, d)
             if d=='LeftButton' then
-                local frame=self:GetParent()
-                local itemID= frame and frame.itemID
+                local itemID= self:GetParent().itemID
+                if not itemID then
+                    return
+                end
                 local find=find_Type('item', itemID)
                 if find then
                     table.remove(Save.item, find)
@@ -550,8 +556,8 @@ local function set_Use_Spell_Button(btn, spellID)
                 local text
                 local icon= GetSpellTexture(self.spellID)
                 text= icon and '|T'..icon..':0|t' or ''
-                text= text..(C_SpellBook.GetSpellLinkFromSpellID(self.spellID) or '')..self.spellID
-                e.tips:AddDoubleLine(text..': ', e.GetEnabeleDisable(find_Type('spell', self.spellID)), e.Icon.left)
+                text= text..(C_SpellBook.GetSpellLinkFromSpellID(self.spellID) or self.spellID)
+                e.tips:AddDoubleLine(text..' '..e.GetEnabeleDisable(find_Type('spell', self.spellID)), e.Icon.left)
             end
             e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
             e.tips:Show()
