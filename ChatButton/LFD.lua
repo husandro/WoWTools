@@ -2239,17 +2239,20 @@ local function Init()
         end
     end)
     button:SetScript('OnEnter',function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.Get_Weekly_Rewards_Activities({showTooltip=true})--周奖励，提示
+
         if self.name and (self.dungeonID or self.RaidID) then
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
-            e.tips:ClearLines()
+            e.tips:AddLine(' ')
             e.tips:AddLine(self.name..e.Icon.left)
-            e.tips:Show()
         end
         if tipsButton and tipsButton:IsShown() then
             tipsButton:SetButtonState('PUSHED')
         end
+         e.tips:Show()
     end)
-    button:SetScript('OnLeave', function(self)
+    button:SetScript('OnLeave', function()
         e.tips:Hide()
         if tipsButton and tipsButton:IsShown() then
             tipsButton:SetButtonState('NORMAL')
