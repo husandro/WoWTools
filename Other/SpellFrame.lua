@@ -120,18 +120,9 @@ Teleporta para a entrada de Floretérnia.
         if self.Text then self.Text:SetText( text or "") end
     end)
 
-    --[[hooksecurefunc('SpellFlyout_Toggle', function(self, flyoutID)
-        print("SpellFlyout_Toggle")
-        if self:IsShown() then
-            return
-        end
-        local _, _, numSlots, isKnown = GetFlyoutInfo(flyoutID)
-        local btn1= _G['SpellFlyoutButton1']
-        local btn2= _G['SpellFlyoutButton'..numSlots]
-        if btn1 and btn2 then
-           print(btn1.Text, btn2.Text) 
-        end
-    end)]]
+    SpellFlyout:HookScript('OnShow', function()
+        e.tips:Hide()
+    end)
 
     --#############
     --法术按键, 颜色
