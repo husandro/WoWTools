@@ -1,6 +1,7 @@
 local id, e = ...
 local addName= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDONS, CHAT_MODERATE)
 local Save={
+        --load_Button_Name=BASE_SETTINGS_TAB,--记录，已加载方案
         buttons={
             [BASE_SETTINGS_TAB]={
                 ['WeakAuras']=true,
@@ -20,6 +21,7 @@ local Save={
         load_list=e.Player.husandro,--禁用, 已加载，列表
         load_list_size=22,
         --load_list_top=true,
+        
     }
 
 local NewButton--新建按钮
@@ -105,6 +107,11 @@ local function Create_Button(indexAdd)
     btn.Text= e.Cstr(btn)
     btn.Text:SetPoint('LEFT', 2, 0)
 
+    btn.loadTexture= btn:CreateTexture()
+    btn.loadTexture:SetPoint('LEFT', btn, 'RIGHT')
+    btn.loadTexture:SetSize(8,8)
+    btn.loadTexture:SetAtlas('AnimaChannel-Bar-Necrolord-Gem')
+
     function btn:set_settings()
         local load, all= 0, 0
         for name in pairs(Save.buttons[self.name] or {}) do
@@ -128,6 +135,7 @@ local function Create_Button(indexAdd)
         self.isLoadAll= self.numAllLoad==all and load==all
         self:SetWidth(btn.Text:GetWidth()+4)
         self:SetButtonState(self.isLoadAll and 'PUSHED' or 'NORMAL')
+        self.loadTexture:SetShown(Save.load_Button_Name==self.name)
     end
 
     btn:SetScript('OnClick',function(self, d)
@@ -144,6 +152,7 @@ local function Create_Button(indexAdd)
                 end
             end
             e.Reload()
+            Save.load_Button_Name= self.name
 
         elseif d=='RightButton' then--移除
             if not self.Menu then
