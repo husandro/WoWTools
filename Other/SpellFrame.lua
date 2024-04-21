@@ -95,7 +95,11 @@ Teleporta para a entrada de Floretérnia.
             if text then
 
                 if not self.Text then
-                    self.Text=e.Cstr(self);
+                    self.Text=e.Cstr(self, {color={r=1,g=1,b=1}, justifyH='CENTER'})
+                    self.TextBg= self:CreateTexture(nil, 'BACKGROUND')
+                    self.TextBg:SetPoint('TOPLEFT', self.Text,-1, 1)
+                    self.TextBg:SetPoint('BOTTOMRIGHT', self.Text, 1,-1 )
+                    self.TextBg:SetAtlas('ChallengeMode-guild-background')
                 else
                     self.Text:ClearAllPoints();
                 end
@@ -106,15 +110,28 @@ Teleporta para a entrada de Floretérnia.
                 text=text:gsub(SUMMONS,'');
                 local p=self:GetPoint(1);
                 if p=='TOP' or p=='BOTTOM' then
-                    self.Text:SetPoint('RIGHT', self, 'LEFT', -2, 0);
+                    self.Text:SetPoint('RIGHT', self, 'LEFT')--, 0, 0);
                 else
-                    self.Text:SetPoint('BOTTOM', self, 'TOP', 0, 4);
+                    self.Text:SetPoint('BOTTOM', self, 'TOP')--, 2, 4);
                     text=Vstr(text);
                 end
             end
         end
         if self.Text then self.Text:SetText( text or "") end
     end)
+
+    --[[hooksecurefunc('SpellFlyout_Toggle', function(self, flyoutID)
+        print("SpellFlyout_Toggle")
+        if self:IsShown() then
+            return
+        end
+        local _, _, numSlots, isKnown = GetFlyoutInfo(flyoutID)
+        local btn1= _G['SpellFlyoutButton1']
+        local btn2= _G['SpellFlyoutButton'..numSlots]
+        if btn1 and btn2 then
+           print(btn1.Text, btn2.Text) 
+        end
+    end)]]
 
     --#############
     --法术按键, 颜色

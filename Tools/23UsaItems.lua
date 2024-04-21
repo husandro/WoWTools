@@ -551,7 +551,7 @@ local function set_Use_Spell_Button(btn, spellID)
                 local icon= GetSpellTexture(self.spellID)
                 text= icon and '|T'..icon..':0|t' or ''
                 text= text..(C_SpellBook.GetSpellLinkFromSpellID(self.spellID) or '')..self.spellID
-                e.tips:AddDoubleLine(text, e.GetEnabeleDisable(find_Type('spell', self.spellID))..e.Icon.left)
+                e.tips:AddDoubleLine(text..': ', e.GetEnabeleDisable(find_Type('spell', self.spellID)), e.Icon.left)
             end
             e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
             e.tips:Show()
