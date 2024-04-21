@@ -744,7 +744,6 @@ local function set_SPEED_Text(frame, elapsed)
         frame.elapsed= 0
         local value
         local isGliding, _, forwardSpeed = C_PlayerInfo.GetGlidingInfo()
-        --print(UnitExists('vehicle'))
         if isGliding and forwardSpeed then
             value= forwardSpeed
             -- local unit= PlayerFrame.displayedUnit or PlayerFrame.unit or 'player'
