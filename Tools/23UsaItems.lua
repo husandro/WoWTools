@@ -216,7 +216,7 @@ local function set_Bling_Quest(self)--布林顿任务
         self.quest=e.Cstr(self, {size=8})
         self.quest:SetPoint('BOTTOM',0,8)
     end
-    self.quest:SetText(complete and '|cnGREEN_FONT_COLOR:'..COMPLETE..'|r' or e.Icon.info2)
+    self.quest:SetText(complete and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '完成' or COMPLETE)..'|r' or '|A:questlegendary:0:0|a')
 end
 local function init_Item_Button(self, equip)--设置按钮
     self:SetScript('OnEnter', function()
@@ -397,7 +397,8 @@ local function Init_All_Buttons()
             end
         end
     end
-if not e.Player.husandro then
+end
+--[[if not e.Player.husandro then
     return
 end
 local tab= {223}
@@ -405,7 +406,7 @@ local tab= {223}
         local name, description, numSlots, isKnown = GetFlyoutInfo(flyoutID)
         
         if isKnown then
-            --local btn= CreateFrame('CheckButton', id..'ToolsFlyout'..name, e.toolsFrame, 'SpellFlyoutButtonTemplate')--SmallActionButtonTemplate
+            local btn= CreateFrame('CheckButton', id..'ToolsFlyout'..name, e.toolsFrame, 'SpellFlyoutButtonTemplate')--SmallActionButtonTemplate SpellFlyoutButtonTemplate
             
             local btn= e.Cbtn2({
                 name=nil,
@@ -417,19 +418,19 @@ local tab= {223}
                 sizi=nil,
             })
             btn.flyoutID=flyoutID
-            btn.spellID= flyoutID
-            --[[btn:SetScript('OnClick', function(self)
-                SpellFlyout:Toggle(self.flyoutID, self, "RIGHT", 1, false, nil, true);
-            end)]]
+            --btn.spellID= flyoutID
+            btn:SetScript('OnClick', function(self)
+                SpellFlyout:Toggle(self.flyoutID, self, "LEFT", 1, false, nil, true);
+            end)
             
             e.ToolsSetButtonPoint(btn)--设置位置
-            btn:SetAttribute('type', 'flyout')
-            btn:SetAttribute('spell', flyoutID)
-            btn:SetAttribute("flyoutDirection", "LEFT")
-            btn.texture:SetTexture(519384)
+            --btn:SetAttribute('type', 'flyout')
+            --btn:SetAttribute('flyoutID', flyoutID)
+            --btn:SetAttribute('spellID', flyoutID)
+            --btn:SetAttribute("flyoutDirection", "LEFT")
+            --btn.texture:SetTexture(519384)
         end
-    end
-end
+    end]]
 
 
 

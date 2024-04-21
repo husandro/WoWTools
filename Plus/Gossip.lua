@@ -2129,8 +2129,7 @@ local function Init_Gossip()
                 if StaticPopup1:IsShown() then
                     StaticPopup1:Hide()
                 end
-                print(id, Initializer:GetName(), '|n|cnRED_FONT_COLOR:',  format(e.onlyChinese and '%s已被禁用，因为该功能只对暴雪的UI开放。\n你可以禁用这个插件并重新装载UI。' or ADDON_ACTION_FORBIDDEN, arg1 or '', ...))
-
+                print(id, Initializer:GetName(), '|n|cnRED_FONT_COLOR:',  format(e.onlyChinese and '|cffff00ff%s|r已被禁用，因为该功能只对暴雪的UI开放。\n你可以禁用这个插件并重新装载UI。' or ADDON_ACTION_FORBIDDEN, arg1 or '', ...))
             end
         end
     end)

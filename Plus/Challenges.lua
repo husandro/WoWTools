@@ -299,7 +299,7 @@ local function UI_Party_Info(self)--队友位置
             elseif name2 then
                 text=text ..e.Icon.map2..name2
             else
-                text= text.. e.Icon.info2
+                text= text.. '|A:questlegendary:0:0|a'
             end
 
             local reason=UnitPhaseReason(unit)--位面

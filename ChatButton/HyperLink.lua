@@ -31,6 +31,7 @@ local button
 local panel= CreateFrame("Frame")
 DEFAULT_CHAT_FRAME.ADD= DEFAULT_CHAT_FRAME.AddMessage
 
+local not_Colleced_Icon='|A:questlegendary:0:0|a'
 
 local LOOT_ITEM= e.Magic(LOOT_ITEM)--:gsub('%%s', '(.+)')--%s获得了战利品：%s。
 
@@ -106,7 +107,7 @@ local function Mount(id2, item)
             if isCollected then
                 return e.Icon.select2, icon
             else
-                return e.Icon.info2, icon
+                return '|A:questlegendary:0:0|a', icon
             end
         end
     end
@@ -157,7 +158,7 @@ local function Item(link)--物品超链接
             end
         end
     elseif C_ToyBox.GetToyInfo(itemID) then--玩具
-        t= PlayerHasToy(itemID) and t..e.Icon.select2 or t..e.Icon.info2
+        t= PlayerHasToy(itemID) and (t..e.Icon.select2) or (t..'|A:questlegendary:0:0|a')
     end
     local bag= C_Item.GetItemCount(link, true, false, true)--数量
     if bag and bag>0 then
@@ -258,7 +259,7 @@ local function Achievement(link)--成就
     if id2 then
         local _, _, _, completed, _, _, _, _, _, icon = GetAchievementInfo(id2)
         local texture=icon and '|T'..icon..':0|t' or ''
-        return texture..link..(completed and e.Icon.select2 or e.Icon.info2)
+        return texture..link..(completed and e.Icon.select2 or '|A:questlegendary:0:0|a')
     end
 end
 
@@ -269,7 +270,7 @@ local function Quest(link)--任务
         if C_QuestLog.IsQuestFlaggedCompleted(id2) then
             return wow..link..e.Icon.select2
         else
-            return wow..link..e.Icon.info2
+            return wow..link..'|A:questlegendary:0:0|a'
         end
     end
 end
@@ -279,7 +280,7 @@ end
     if id2 then
         local _, _, icon, _, _, _, _, _ ,_, known=GetTalentInfoByID(id2)
         if icon then
-            return '|T'..icon..':0|t'..link..(known and e.Icon.select2 or e.Icon.info2)
+            return '|T'..icon..':0|t'..link..(known and e.Icon.select2 or '|A:questlegendary:0:0|a')
         end
     end
 end]]
@@ -288,7 +289,7 @@ local function Pvptal(link)--pvp天赋
     local id2=link:match('Hpvptal:(%d+)')
     if id2 then
         local _, _, icon, _, _, _, _, _ ,_, known=GetPvpTalentInfoByID(id2)
-        return '|T'..icon..':0|t'..link..(known and e.Icon.select2 or e.Icon.info2)
+        return '|T'..icon..':0|t'..link..(known and e.Icon.select2 or '|A:questlegendary:0:0|a')
     end
 end
 
@@ -356,7 +357,7 @@ local function TransmogAppearance(link)--幻化
         if has then
             return link.e.Icon.select2
         else
-            return link..e.Icon.info2
+            return link..'|A:questlegendary:0:0|a'
         end
     end
 end

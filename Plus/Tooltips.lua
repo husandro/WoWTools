@@ -293,10 +293,10 @@ local function Init_Web_Link()
             end
         elseif tab.unitName then
             if tab.frame then
-                tab.frame:SetText(e.Icon.info2..(tab.col or '')..'Raider.IO Ctrl+Shift')
+                tab.frame:SetText('|A:questlegendary:0:0|a'..(tab.col or '')..'Raider.IO Ctrl+Shift')
                 tab.frame:SetShown(true)
             else
-                e.tips:AddDoubleLine(e.Icon.info2..(tab.col or '')..'Raider.IO', (tab.col or '')..'Ctrl+Shift')
+                e.tips:AddDoubleLine('|A:questlegendary:0:0|a'..(tab.col or '')..'Raider.IO', (tab.col or '')..'Ctrl+Shift')
                 e.tips:SetShown(true)
             end
             if IsControlKeyDown() and IsShiftKeyDown() then
@@ -561,7 +561,7 @@ function func.Set_Item(self, itemLink, itemID)
         func.Set_Item_Model(self, {itemID=itemID, sourceID=sourceID, appearanceID=appearanceID, visualID=visualID, col=col})--设置, 3D模型
 
         if bindType==LE_ITEM_BIND_ON_EQUIP or bindType==LE_ITEM_BIND_ON_USE then--绑定装备,使用时绑定
-            self.Portrait:SetAtlas(e.Icon.unlocked)
+            self.Portrait:SetAtlas('greatVault-lock')
         end
 
         local specTable = itemLink and GetItemSpecInfo(itemLink) or {}--专精图标
@@ -1186,7 +1186,7 @@ function func.Set_Unit(self)--设置单位提示信息
         if line then
             local text=line:GetText()
             if text then
-                line:SetText(e.Icon.guild2..col..text:gsub('(%-.+)','')..'|r')
+                line:SetText('|A:UI-HUD-MicroMenu-GuildCommunities-Mouseover:0:0|a'..col..text:gsub('(%-.+)','')..'|r')
                 if GameTooltipTextRight2 then
                     GameTooltipTextRight2:SetText(' ')
                     GameTooltipTextRight2:SetShown(false)

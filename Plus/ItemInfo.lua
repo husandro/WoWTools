@@ -105,7 +105,7 @@ local function Set_Item_Info(self, tab)
         end
 
     elseif tab.bag then
-        containerInfo =C_Container.GetContainerItemInfo(tab.bag.bag, tab.bag.slot)
+        containerInfo = C_Container.GetContainerItemInfo(tab.bag.bag, tab.bag.slot)
         if containerInfo then
             itemLink= containerInfo.hyperlink
             itemID= containerInfo.itemID
@@ -145,7 +145,7 @@ local function Set_Item_Info(self, tab)
             itemID= itemID and tonumber(itemID)
         end
 
-        local itemName, _, itemQuality2, itemLevel2, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, _, _, classID, subclassID, _, expacID, setID, isCraftingReagent = C_Item.GetItemInfo(itemLink)
+        local itemName, _, itemQuality2, itemLevel2, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, _, _, classID, subclassID, bindType, expacID, setID, isCraftingReagent = C_Item.GetItemInfo(itemLink)
 
         itemLevel= itemLevel or GetDetailedItemLevelInfo(itemLink) or itemLevel2
         itemQuality= itemQuality or itemQuality2
@@ -203,7 +203,7 @@ local function Set_Item_Info(self, tab)
         elseif classID==1 then--背包
             bottomLeftText= e.WA_Utf8Sub(itemSubType, 2, 3, true)
             if containerInfo and not containerInfo.isBound then--没有锁定
-                topRightText='|A:'..e.Icon.unlocked..':0:0|a'
+                topRightText='|A:greatVault-lock:0:0|a'
             end
             --多少格
             local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, index=3})
@@ -405,6 +405,9 @@ local function Set_Item_Info(self, tab)
                     end
                 elseif containerInfo and itemQuality==0 then
                     topRightText= '|A:Coin-Silver:0:0|a'
+                end
+                if containerInfo and not containerInfo.isBound and (bindType==LE_ITEM_BIND_ON_EQUIP or bindType==LE_ITEM_BIND_ON_USE) and not topRightText then
+                    rightText='|A:greatVault-lock:0:0|a'--可交易
                 end
             end
 

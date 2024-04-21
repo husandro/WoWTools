@@ -126,9 +126,9 @@ e.Icon={
     toRight='common-icon-rotateright',--向右
     toRight2='|A:common-icon-rotateright:0:0|a',
 
-    unlocked='tradeskills-icon-locked',--'Levelup-Icon-Lock',--没锁
+    --unlocked='tradeskills-icon-locked',--'Levelup-Icon-Lock',--没锁
     quest='AutoQuest-Badge-Campaign',--任务
-    guild2='|A:UI-HUD-MicroMenu-GuildCommunities-Mouseover:0:0|a',--guild2='|A:communities-guildbanner-background:0:0|a',
+    --guild2='|A:UI-HUD-MicroMenu-GuildCommunities-Mouseover:0:0|a',--guild2='|A:communities-guildbanner-background:0:0|a',
 
     TANK='|A:UI-LFG-RoleIcon-Tank:0:0|a',--INLINE_TANK_ICON
     HEALER='|A:UI-LFG-RoleIcon-Healer:0:0|a',--INLINE_HEALER_ICON
@@ -136,7 +136,7 @@ e.Icon={
     NONE='|A:UI-LFG-RoleIcon-Pending:0:0|a',
     leader='|A:UI-HUD-UnitFrame-Player-Group-GuideIcon:0:0|a',--队长
 
-    info2='|A:questlegendary:0:0|a',--黄色!
+    --info2='|A:questlegendary:0:0|a',--黄色!
     star2='|A:auctionhouse-icon-favorite:0:0|a',--星星
 }
 
