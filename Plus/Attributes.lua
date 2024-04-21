@@ -1821,11 +1821,7 @@ end
 
 
 local function Set_Dragonriding_Speed(frame)
-    if not frame then
-        return
-    end
-    if frame.speedBar then
-        frame.speedBar:SetShown(frame:IsShown())
+    if not frame or frame.speedBar then
         return
     end
     frame.speedBar= CreateFrame('StatusBar', nil, frame)
@@ -1889,11 +1885,16 @@ local function Set_Dragonriding_Speed(frame)
                 self.Text:SetText('')
             end
             self:SetValue(base)
-            if not canGlide then
+            --[[if not canGlide then
                 self:Hide()
-            end
+            end]]
         end
     end)
+
+    frame:HookScript('OnShow', function(self)
+        self.speedBar:SetShown(self:IsShown())
+    end)
+    frame.speedBar:SetShown(frame:IsShown())
 end
 
 

@@ -150,8 +150,7 @@ local function Init()
         end
     end
     function Button:set_Shown()
-        local show= self.uiMapID and not C_PetBattles.IsInBattle() and not UnitAffectingCombat('player')
-        self:SetShown(show)
+        self:SetShown(self.uiMapID and not C_PetBattles.IsInBattle() and not IsInInstance())
     end
     function Button:get_UIMapID()
         self.uiMapID= C_Map.GetBestMapForUnit('player')==2200 and true or false
@@ -172,10 +171,8 @@ local function Init()
                 self:set_Currency()
             end
         end
-
-        if event=='PLAYER_REGEN_DISABLED' or event=='PLAYER_REGEN_ENABLED' then
-            self:set_Shown()
-        elseif not UnitAffectingCombat('player') then
+       
+        if not UnitAffectingCombat('player') then
             self:set_Shown()
         end
     end)

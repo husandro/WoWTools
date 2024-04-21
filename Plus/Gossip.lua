@@ -2733,9 +2733,10 @@ local function Init_Quest()
                         --and not C_QuestLog.IsWorldQuest(info.questID)
                     then
 
-                        if info.isOnMap  --or GetQuestUiMapID(info.questID)==uiMapID)
-                       --     and not C_QuestLog.IsComplete(info.questID)
-                            --and info.hasLocalPOI 
+                        if info.isOnMap or C_TaskQuest.IsActive(info.questID)
+                        --or GetQuestUiMapID(info.questID)==uiMapID)
+                        --and not C_QuestLog.IsComplete(info.questID)
+                        --and info.hasLocalPOI 
                         then
                             C_QuestLog.AddQuestWatch(info.questID)
                         else
