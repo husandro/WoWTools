@@ -804,7 +804,7 @@ local function set_memberFrame(memberFrame)
             'UNIT_SPELLCAST_DELAYED',
             'UNIT_SPELLCAST_FAILED',
             'UNIT_SPELLCAST_FAILED_QUIET',
-            'UNIT_SPELLCAST_INTERRUPTED', 
+            'UNIT_SPELLCAST_INTERRUPTED',
             'UNIT_SPELLCAST_SUCCEEDED',
             'UNIT_SPELLCAST_STOP',
             'UNIT_SPELLCAST_RETICLE_TARGET',
@@ -1931,6 +1931,19 @@ local function Init()
 
     --施法条
     --CastingBarFrame.lua
+
+    PlayerCastingBarFrame.Icon:EnableMouse(true)
+    --PlayerCastingBarFrame.Icon:SetScript('OnLeave', function() e.tips:Hide() end)
+    PlayerCastingBarFrame.Icon:SetScript('OnEnter', function(self)
+        local spellID= select(9, UnitCastingInfo('player')) or select(8, UnitChannelInfo('player')) or 0
+        if spellID==0 then
+            return
+        end
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:SetSpellByID(spellID)
+        e.tips:Show()
+    end)
     PlayerCastingBarFrame:HookScript('OnShow', function(self)--图标
         self.Icon:SetShown(true)
     end)
