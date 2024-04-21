@@ -1128,7 +1128,7 @@ local function Init()
             ..(e.onlyChinese and '为布局%s输入新名称' or HUD_EDIT_MODE_RENAME_LAYOUT_DIALOG_TITLE)
             ..'|n|n'
             ..(e.onlyChinese and '新的方案' or PAPERDOLL_NEWEQUIPMENTSET),
-        button1 = e.onlyChinese and '新建' or NEW,
+        button1 = e.onlyChinese and '更新' or UPDATE,
         button2 = e.onlyChinese and '取消' or CANCEL,
         whileDead=true, hideOnEscape=true, exclusive=true, hasEditBox=true,
         OnAccept=function(self, name)
