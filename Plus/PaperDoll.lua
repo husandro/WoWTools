@@ -1234,7 +1234,7 @@ function Init_TrackButton_ShowHide_Button()
         panel.equipmentButton:SetShown(true)
         return
     end
-    panel.equipmentButton = e.Cbtn(PaperDollFrame.EquipmentManagerPane, {size={20,20}, atlas= Save.equipment and 'auctionhouse-icon-favorite' or e.Icon.disabled})--显示/隐藏装备管理框选项
+    panel.equipmentButton = e.Cbtn(PaperDollFrame.EquipmentManagerPanel, {size={20,20}, atlas= Save.equipment and 'auctionhouse-icon-favorite' or e.Icon.disabled})--显示/隐藏装备管理框选项
     panel.equipmentButton:SetPoint('RIGHT', CharacterFrameCloseButton, 'LEFT')
     panel.equipmentButton:SetFrameStrata(CharacterFrameCloseButton:GetFrameStrata())
     panel.equipmentButton:SetFrameLevel(CharacterFrameCloseButton:GetFrameLevel()+1)
