@@ -62,7 +62,7 @@ end
 local function Update_Usage()--更新，使用情况
     if not UnitAffectingCombat('player') then
         UpdateAddOnMemoryUsage()
-        --UpdateAddOnCPUUsage()
+        UpdateAddOnCPUUsage()
     end
 end
 
@@ -84,7 +84,7 @@ local function Get_Memory_Value(indexORname, showText)
             end
         end
     end
-    return va
+    return va, value
 end
 
 
@@ -337,6 +337,14 @@ end
 --新建按钮
 local function Init_Add_Save_Button()
     NewButton= e.Cbtn(AddonList, {size={26,26}, atlas='communities-chat-icon-plus'})
+        
+    NewButton.Text= e.Cstr(AddonList)--已选中，数量
+    NewButton.Text:SetPoint('RIGHT', NewButton, 'LEFT')
+    NewButton.Text2=e.Cstr(AddonList, {color={r=0,g=1,b=0}, mouse=true, justifyH='RIGHT'})--总已加载，数量
+    NewButton.Text2:SetPoint('RIGHT', AddonListForceLoad, 'LEFT',2,6)
+    NewButton.Text3=e.Cstr(AddonList, {mouse=true, justifyH='RIGHT'})--总内存
+    NewButton.Text3:SetPoint('RIGHT', AddonListForceLoad, 'LEFT',2,-6)
+
     NewButton:SetAlpha(0.5)
     NewButton:SetPoint('TOPRIGHT', -2, -28)
     NewButton:SetScript('OnLeave', function(self) self:SetAlpha(0.5) self.Text:SetAlpha(1) GameTooltip_Hide() end)
@@ -346,8 +354,9 @@ local function Init_Add_Save_Button()
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id , Initializer:GetName())
         e.tips:AddLine(' ')
-        local index=1
+        local index, newTab, allMemo= 0, {}, 0
         local tab= select(4, Get_AddList_Info())
+
         for name, value in pairs(tab) do
             local iconTexture = C_AddOns.GetAddOnMetadata(name, "IconTexture")
             local iconAtlas = C_AddOns.GetAddOnMetadata(name, "IconAtlas")
@@ -362,15 +371,46 @@ local function Init_Add_Save_Button()
                 end
             end
             local title= C_AddOns.GetAddOnInfo(name) or name
-            local col= C_AddOns.GetAddOnDependencies(name) and '|cffff00ff' or (isLoaded and '|cnGREEN_FONT_COLOR:') or ''
-            local memo= Get_Memory_Value(name, false)--内存
-            memo= memo and (' |cffffffff'..memo..'|r') or ''
-            e.tips:AddDoubleLine(format(col..(index<10 and ' ' or '')..index..')'..icon..title..memo), text or ' ')
+            local col= C_AddOns.GetAddOnDependencies(name) and '|cffff00ff' or (isLoaded and '|cnGREEN_FONT_COLOR:') or '|cff606060'
+            local memo, value= Get_Memory_Value(name, false)--内存
+            memo= memo and (' |cnRED_FONT_COLOR:'..memo..'|r') or ''
+            table.insert(newTab, {
+                left=col..icon..title..'|r'..memo,
+                right= text or ' ',
+                memo= value or 0
+            })
+            allMemo= allMemo+ (value or 0)
             index= index+1
         end
+
+        table.sort(newTab, function(a,b) return a.memo<b.memo end)
+        for _, info in pairs(newTab) do
+            local left=info.left
+            if info.memo>0 and allMemo>0 then
+                local percent= info.memo/allMemo*100
+                if percent>1 then
+                    left= format('%s |cffffffff%i%%|r', left, percent)
+                end
+            end
+            e.tips:AddDoubleLine(left, info.right)
+        end
+
+
         e.tips:AddLine(' ')
+        local percentText=''
+        if allMemo>0 then
+            if allMemo<1000 then
+                percentText= format('%iKB',allMemo)
+            else
+                percentText= format('%0.2fMB',allMemo/1000)
+            end
+        end
         e.tips:AddDoubleLine(
-            format('|A:communities-chat-icon-plus:0:0|a|cffff00ff%s|r%s', e.onlyChinese and '新建' or NEW, e.Icon.left),
+            format('%d|A:communities-chat-icon-plus:0:0|a|cffff00ff%s|r |cnRED_FONT_COLOR:%s|rs%s',
+                index,
+                e.onlyChinese and '新建' or NEW,
+                percentText,
+                e.Icon.left),
             format('%s%s', e.onlyChinese and '选项' or OPTIONS, e.Icon.right)
         )
         e.tips:Show()
@@ -419,19 +459,16 @@ local function Init_Add_Save_Button()
             e.OpenPanelOpting(Initializer)
         end
     end)
-    NewButton.Text= e.Cstr(AddonList)
-    NewButton.Text:SetPoint('RIGHT', NewButton, 'LEFT')
-    NewButton.Text2=e.Cstr(AddonList, {color={r=0,g=1,b=0}, mouse=true})--总已加载，数量
-    NewButton.Text2:SetPoint('RIGHT', AddonListForceLoad, 'LEFT')
-    NewButton.Text2:SetScript('OnLeave', function(self) self:SetAlpha(1) GameTooltip_Hide() end)
-    NewButton.Text2:SetScript('OnEnter', function(self)
+
+    function NewButton:set_memoria_tooltips(frame)
         Update_Usage()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:SetOwner(frame, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, Initializer:GetName())
         e.tips:AddLine(' ')
-        local find
-        local need, load= 0, 0
+
+        local newTab={}
+        local need, load, allMomo= 0, 0, 0
         for index=1, C_AddOns.GetNumAddOns() do
             local isLoaded= C_AddOns.IsAddOnLoaded(index)
             local dema= select(2, C_AddOns.IsAddOnLoadable(index))=='DEMAND_LOADED'
@@ -440,11 +477,15 @@ local function Init_Add_Save_Button()
                 local iconTexture = C_AddOns.GetAddOnMetadata(index, "IconTexture")
                 local iconAtlas = C_AddOns.GetAddOnMetadata(index, "IconAtlas")
                 local icon= iconTexture and format('|T%s:0|t', iconTexture..'') or (iconAtlas and format('|A:%s:0:0|a', iconAtlas)) or '    '
-                local col= isLoaded and '|cnGREEN_FONT_COLOR:' or '|cffff00ff'
-                local memo= Get_Memory_Value(index, false)
-                memo= memo and ' |cffffffff'..memo..'|r' or ''
-                e.tips:AddDoubleLine(col..(index<10 and '  ' and (index<100 and ' ') or '')..index..') '.. icon..title.. memo, dema and col..e.cn(_G['ADDON_DEMAND_LOADED'])..' ('..index)
-                find=true
+                local col= dema and '|cffff00ff' or '|cnGREEN_FONT_COLOR:'
+                local memo, value= Get_Memory_Value(index, false)
+                memo= memo and ' |cnRED_FONT_COLOR:'..memo..'|r' or ''
+                table.insert(newTab, {
+                    left=icon..col..title..memo,
+                    right=dema and col..e.cn(_G['ADDON_DEMAND_LOADED']) or ' ',
+                    memo=value or 0
+                })
+                allMomo= allMomo+ (value or 0)
             end
             if isLoaded then
                 load= load+1
@@ -452,23 +493,70 @@ local function Init_Add_Save_Button()
                 need= need+1
             end
         end
-        if find then
-            e.tips:AddLine(' ')
+
+        table.sort(newTab, function(a, b) return a.memo<b.memo end)
+        for _, tab in pairs(newTab) do
+            local left= tab.left
+            if tab.memo>0 and allMomo>0 then
+                local percent= tab.memo/allMomo*100
+                if percent>1 then
+                    left= format('%s |cffffffff%i%%|r', left, tab.memo/allMomo*100)
+                end
+            end
+           e.tips:AddDoubleLine(left, tab.right)
         end
+
+        local allMemberText=''--内存
+        if allMomo>0 then
+            e.tips:AddLine(' ')
+            if allMomo<1000 then
+                allMemberText= format(' |cnRED_FONT_COLOR:%0.2fKB|r', allMomo)
+            else
+                allMemberText=format(' |cnRED_FONT_COLOR:%0.2fMB|r', allMomo/1000)
+            end
+        end
+
         e.tips:AddDoubleLine(
-            '|cffff00ff'..(e.onlyChinese and '只能按需加载' or ADDON_DEMAND_LOADED)..' '..need,
-            '|cnGREEN_FONT_COLOR:'..load..' '..(e.onlyChinese and '已加载' or LOAD_ADDON)
+            load..' |cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已加载' or LOAD_ADDON)..'|r |cnRED_FONT_COLOR:'..allMemberText,
+            '|cffff00ff'..need..' '..(e.onlyChinese and '只能按需加载' or ADDON_DEMAND_LOADED)
         )
+
         e.tips:Show()
-        self:SetAlpha(0.3)
+    end
+    NewButton.Text2:SetScript('OnLeave', function(self) self:SetAlpha(1) GameTooltip_Hide() end)
+    NewButton.Text2:SetScript('OnEnter', function(self) NewButton:set_memoria_tooltips(self) self:SetAlpha(0.3) end)
+
+    NewButton:SetScript('OnUpdate', function(self, elapsed)
+        self.elapsed= (self.elapsed or 2) +elapsed
+        if self.elapsed>2 then
+            self.elapsed=0
+            if UnitAffectingCombat('player') then return end--战斗中，不刷新
+            Update_Usage()
+            local value, text= 0, ''
+            for i=1, C_AddOns.GetNumAddOns() do
+                if C_AddOns.IsAddOnLoaded(i) then
+                    value= value+ (GetAddOnMemoryUsage(i) or 0)
+                end
+            end
+            if value>0 then
+                if value<1000 then
+                    text= format('%iKB', value)
+                else
+                    text= format('%0.2fMB', value/1000)
+                end
+            end
+            self.Text3:SetText(text)
+        end
     end)
+    NewButton.Text3:SetScript('OnLeave', function(self) self:SetAlpha(1) e.tips:Hide() end)
+    NewButton.Text3:SetScript('OnEnter', function(self) NewButton:set_memoria_tooltips(self) self:SetAlpha(0.5) end)
 
     local label= e.Cstr(AddonListEnableAllButton)--插件，总数
     label:SetPoint('LEFT',3,0)
     label:SetText(C_AddOns.GetNumAddOns())
 
 
-    local btn= e.Cbtn(AddonList, {atlas='talents-button-undo', size=22})
+    local btn= e.Cbtn(AddonList, {atlas='talents-button-undo', size=18})
     btn:SetAlpha(0.5)
     btn:SetPoint('TOPLEFT', 150, -33)
     btn:SetScript('OnLeave', function(self) self:SetAlpha(0.5) GameTooltip_Hide() end)
@@ -741,7 +829,7 @@ local function Set_Load_Button()--LoadButtons
                 AddonTooltip:SetOwner(self:GetParent().buttons[1], "ANCHOR_RIGHT")
                 AddonTooltip_Update(self)
                 AddonList.ScrollBox:ScrollToElementDataIndex(findIndex)
-                for _, frame in pairs( AddonList.ScrollBox:GetFrames() or {}) do
+                for _, frame in pairs(AddonList.ScrollBox:GetFrames() or {}) do
                     if frame:GetID()==findIndex then
                         if frame.check then
                             frame.check:set_enter_alpha()
@@ -1061,7 +1149,7 @@ local function Init_Set_List(frame, addonIndex)
 
     frame.check.Text:SetText(addonIndex or '')--索引
     frame.check:set_usage()
-    
+
 
     if C_AddOns.GetAddOnDependencies(addonIndex) then--依赖
         frame.check.select:SetVertexColor(0,1,0)
@@ -1076,7 +1164,7 @@ local function Init_Set_List(frame, addonIndex)
     end
     frame.Status:SetAlpha(0.5)
     frame.Enabled:SetAlpha(frame.Enabled:GetChecked() and 1 or 0)
-    
+
 end
 
 
@@ -1111,17 +1199,6 @@ end
 --初始化
 --#####
 local function Init()
---[[StaticPopupDialogs['WoWTools_AddOns_DELETE']= StaticPopupDialogs['WoWTools_AddOns_DELETE'] or {
-                        text =id..' '..Initializer:GetName()..'|n|n< |cff00ff00%s|r >|n',
-                        button1 = e.onlyChinese and '删除' or DELETE,
-                        button2 = e.onlyChinese and '取消' or CANCEL,
-                        whileDead=true, hideOnEscape=true, exclusive=true,
-                        OnAccept=function(_, name)
-                            Save.buttons[name]=nil
-                            e.call('AddonList_Update')
-                        end,
-                    }-- StaticPopup_Show('WoWTools_AddOns_DELETE', self.name, nil, self.name)]]
-
     StaticPopupDialogs['WoWTools_AddOns_NAME']= {
         text =id..' '..Initializer:GetName()
             ..'|n|n'
@@ -1248,7 +1325,7 @@ local function Init()
         end
     end)
 
-  
+
 
 
     hooksecurefunc('AddonTooltip_Update', function(frame)
@@ -1259,7 +1336,9 @@ local function Init()
             AddonTooltip:Show()
         end
     end)
-    --hooksecurefunc(AddonList, 'Update', function()
+
+
+    local frame= Create
 end
 
 
