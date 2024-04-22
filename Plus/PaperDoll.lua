@@ -473,6 +473,13 @@ if not e.Is_Timerunning then--10.2.7
         local x= isLeftSlot and 8 or -8--左边插曹
         for n=1, MAX_NUM_SOCKETS do
             local gemLink= link and select(2, C_Item.GetItemGem(link, n))
+        --[[
+            local numSockets = C_Item.GetItemNumSockets(item)
+            for index= 1, numSockets do
+                local gemID = C_Item.GetItemGemID(item, index)
+                local hasGem = gemID ~= nil
+            end
+        ]]
             if gemLink then
                 e.LoadDate({id=gemLink, type='item'})
                 if not self['gem'..n] then
