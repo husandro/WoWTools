@@ -388,7 +388,7 @@ local function Init()
     ItemSocketingSocket3:ClearAllPoints()
     ItemSocketingSocket3:SetPoint('BOTTOMRIGHT', -50, 33)
     ItemSocketingDescription:SetPoint('LEFT')
-    e.Set_Move_Frame(ItemSocketingFrame, {needSize=true, needMove=true, setSize=true, minW=338, sizeRestFunc=function(btn)
+    e.Set_Move_Frame(ItemSocketingFrame, {needSize=true, needMove=true, setSize=true, minW=338, minH=424, sizeRestFunc=function(btn)
         btn.target:SetSize(338, 424) end, sizeUpdateFunc=function()
             ItemSocketingDescription:SetMinimumWidth(ItemSocketingScrollChild:GetWidth()-18, true);
 
