@@ -219,7 +219,7 @@ local function Init_Spell_Button()
 
     SpellButton= e.Cbtn(Frame, {size={32,32}, icon='hide', type=true})
     SpellButton:Hide()
-    SpellButton:SetPoint('BOTTOMRIGHT', -14, 46)
+    SpellButton:SetPoint('BOTTOMRIGHT', -8, 46)
     SpellButton.texture= SpellButton:CreateTexture(nil, 'OVERLAY')
     SpellButton.texture:SetAllPoints(SpellButton)
     SpellButton.count=e.Cstr(SpellButton, {color={r=1,g=1,b=1}})--nil,nil,nil,true)
