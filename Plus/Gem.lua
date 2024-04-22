@@ -2,18 +2,17 @@ local id, e = ...
 local Save={}
 local addName= SOCKET_GEMS
 
-
 local Buttons={}
 local Frame
-
-
 local SpellsTab={
     433397,--取出宝石
     --405805,--拔出始源之石
 }
+
 --[[local ActionTab={
     [405805]=true,--405805/拔出始源之石
 }]]
+
 for _, spellID in pairs(SpellsTab) do
     e.LoadDate({id=spellID, type='spell'})
 end
@@ -31,48 +30,6 @@ local function Get_Item_Color(itemLink)
     end
     return r or 1, g or 1, b or 1
 end
-
---[[
-function PaperDollItemSocketDisplayMixin:SetItem(item)
-	-- Currently only showing socket display for timerunning characters
-	local showSocketDisplay = item ~= nil and PlayerGetTimerunningSeasonID() ~= nil
-	self:SetShown(showSocketDisplay)
-
-	if not showSocketDisplay then
-		return
-	end
-
-	local numSockets = C_Item.GetItemNumSockets(item)
-	for index, slot in ipairs(self.Slots) do
-		slot:SetShown(index <= numSockets)
-
-		-- Can get gemID without the gem being loaded in item sparse (can't use GetItemGem)
-		local gemID = C_Item.GetItemGemID(item, index)
-		local hasGem = gemID ~= nil
-
-		slot.Gem:SetShown(hasGem)
-
-		if hasGem then
-			local gemItem = Item:CreateFromItemID(gemID)
-
-			-- Prevent edge case a different gem was previously shown, but new gem not cached yet
-			if not gemItem:IsItemDataCached() then
-				slot.Gem:SetTexture()
-			end
-
-			-- Icon requires item sparse, need to use a callback if not loaded
-			gemItem:ContinueOnItemLoad(function()
-				local gemIcon = C_Item.GetItemIconByID(gemID)
-				slot.Gem:SetTexture(gemIcon)
-			end)
-		end
-	end
-
-	self:Layout()
-end]]
-
-
-
 
 
 
@@ -127,25 +84,8 @@ end
 
 
 local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
-    --[[if not ItemSocketingFrame or not ItemSocketingFrame:IsVisible() then
-        return
-    end]]
-
     local items={}
-    --local gem1007= select(2, GetSocketItemInfo())== 4638590 --204000, 204030
-
-    --[[local findGem
-    local gemType={}
-    for i= 1, GetNumSockets() or 0 do
-        local type= GetSocketTypes(i)
-        if type then
-            local name= GEM_TYPE_INFO[type]
-            if name then
-                gemType[name]=true
-            end
-        end
-    end]]
-
+   
     for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES do-- + NUM_REAGENTBAG_FRAMES do
         for slot=1, C_Container.GetContainerNumSlots(bag) do
             local info = C_Container.GetContainerItemInfo(bag, slot)
@@ -384,23 +324,7 @@ end
 
 
 local function Init()
-    --[[GEM_TYPE_INFO =	{
-        Yellow = e.onlyChinese and EMPTY_SOCKET_YELLOW or '黄色插槽',
-        Red = e.onlyChinese and EMPTY_SOCKET_RED or '红色插槽',
-        Blue = e.onlyChinese and EMPTY_SOCKET_BLUE or '蓝色插槽',
-        Hydraulic = e.onlyChinese and EMPTY_SOCKET_HYDRAULIC or '染煞',
-        Cogwheel = e.onlyChinese and EMPTY_SOCKET_COGWHEEL or '齿轮插槽',
-        Meta = e.onlyChinese and EMPTY_SOCKET_META or '多彩插槽',
-        Prismatic =EMPTY_SOCKET_PRISMATIC or '棱彩插槽',
-        PunchcardRed = e.onlyChinese and EMPTY_SOCKET_PUNCHCARDRED or '红色打孔卡插槽',
-        PunchcardYellow = e.onlyChinese and EMPTY_SOCKET_PUNCHCARDYELLOW or '黄色打孔卡插槽',
-        PunchcardBlue = e.onlyChinese and EMPTY_SOCKET_PUNCHCARDBLUE or '蓝色打孔卡插槽',
-        Domination = e.onlyChinese and EMPTY_SOCKET_DOMINATION or '统御插槽',
-        Cypher = e.onlyChinese and EMPTY_SOCKET_CYPHER or '晶态插槽',
-        Tinker = e.onlyChinese and EMPTY_SOCKET_TINKER or '匠械插槽',
-        Primordial = e.onlyChinese and EMPTY_SOCKET_PRIMORDIAL or '始源镶孔',
-   }--EMPTY_SOCKET_NO_COLOR,--棱彩插槽
- ]]
+
 
 
     Frame= CreateFrame("Frame", nil, ItemSocketingFrame)
@@ -437,8 +361,6 @@ local function Init()
                 local name= GetSocketTypes(i)
                 name= name and _G['EMPTY_SOCKET_'..string.upper(name)]
                 if name then
-                    --["EMPTY_SOCKET_BLUE"] = "蓝色插槽",
-                    --["BLUE_GEM"] = "蓝色",
                     local text= EMPTY_SOCKET_BLUE:gsub(BLUE_GEM, '')
                     if text and text~='' then
                         name= name:gsub(text, '')
@@ -446,11 +368,9 @@ local function Init()
                     CurTypeGemTab[name]=true
                 end
                 if not btn.type then
-                    btn.type=e.Cstr(btn)--, {color={r=1,g=1,b=1}})
+                    btn.type=e.Cstr(btn)
                     btn.type:SetPoint('BOTTOM', btn, 'TOP', 0, 2)
                     btn.qualityTexture= btn:CreateTexture(nil, 'OVERLAY')
-                    --btn.qualityTexture:SetPoint('TOPLEFT')
-                    --btn.qualityTexture:SetPoint('LEFT')
                     btn.qualityTexture:SetPoint('RIGHT', btn, 'LEFT',15,-8)
                     btn.qualityTexture:SetSize(30,30)
                     btn.levelText=e.Cstr(btn)
@@ -482,7 +402,6 @@ local function Init()
                 end
             end
         end
-        --ItemSocketingDescription:SetMinimumWidth(ItemSocketingScrollChild:GetWidth()-18, true)--调整，宽度
 
         if numSockets==1 then--宝石，位置
             ItemSocketingSocket1:ClearAllPoints()
@@ -507,30 +426,6 @@ local function Init()
 
 
     Init_Spell_Button()
-
-     --[[ItemSocketingFrame:HookScript('OnShow', function()
-        local tab={
-            'BAG_UPDATE_DELAYED',
-            'ITEM_UNLOCKED',
-            'ITEM_LOCKED',
-            'SOCKET_INFO_UPDATE',
-        }
-        FrameUtil.RegisterFrameForEvents(Frame, tab)
-        set_Gem()
-        Init_Spell_Button()
-    end)
-    ItemSocketingFrame:HookScript('OnHide', function()
-        Frame:UnregisterAllEvents()
-        for index= 1, #Buttons do
-            Buttons[index]:Reset()
-            Buttons[index].level:SetText('')
-            Buttons[index].type:SetText('')
-        end
-    end)
-    Frame:SetScript('OnEvent', set_Gem)]]
-
-
-
 end
 
 
@@ -593,11 +488,24 @@ end)
 
 
 
-
-
-
-
 --[[
+
+ local gem1007= select(2, GetSocketItemInfo())== 4638590 --204000, 204030
+
+    local findGem
+    local gemType={}
+    for i= 1, GetNumSockets() or 0 do
+        local type= GetSocketTypes(i)
+        if type then
+            local name= GEM_TYPE_INFO[type]
+            if name then
+                gemType[name]=true
+            end
+        end
+    end
+
+
+
     panel:RegisterEvent('SOCKET_INFO_CLOSE')
 panel:RegisterEvent('SOCKET_INFO_UPDATE')
 panel:RegisterEvent('UPDATE_EXTRA_ACTIONBAR')
@@ -672,4 +580,41 @@ ItemSocketingFrame.setTipsFrame:SetShown(select(2,GetSocketItemInfo())== 4638590
             ExtraActionButton1:SetPoint(ExtraActionButton1Point[1], ExtraActionButton1Point[2], ExtraActionButton1Point[3], ExtraActionButton1Point[4], ExtraActionButton1Point[5])
             ExtraActionButton1Point=nil
         end
-]]
+
+function PaperDollItemSocketDisplayMixin:SetItem(item)
+	-- Currently only showing socket display for timerunning characters
+	local showSocketDisplay = item ~= nil and PlayerGetTimerunningSeasonID() ~= nil
+	self:SetShown(showSocketDisplay)
+
+	if not showSocketDisplay then
+		return
+	end
+
+	local numSockets = C_Item.GetItemNumSockets(item)
+	for index, slot in ipairs(self.Slots) do
+		slot:SetShown(index <= numSockets)
+
+		-- Can get gemID without the gem being loaded in item sparse (can't use GetItemGem)
+		local gemID = C_Item.GetItemGemID(item, index)
+		local hasGem = gemID ~= nil
+
+		slot.Gem:SetShown(hasGem)
+
+		if hasGem then
+			local gemItem = Item:CreateFromItemID(gemID)
+
+			-- Prevent edge case a different gem was previously shown, but new gem not cached yet
+			if not gemItem:IsItemDataCached() then
+				slot.Gem:SetTexture()
+			end
+
+			-- Icon requires item sparse, need to use a callback if not loaded
+			gemItem:ContinueOnItemLoad(function()
+				local gemIcon = C_Item.GetItemIconByID(gemID)
+				slot.Gem:SetTexture(gemIcon)
+			end)
+		end
+	end
+
+	self:Layout()
+end]]
