@@ -308,6 +308,8 @@ local function Init_Spell_Button()
             self:set_count()
         elseif event=='SPELL_UPDATE_COOLDOWN' then
             e.SetItemSpellCool({frame=self, spell=self.spellID})
+        elseif event=='ACTIONBAR_UPDATE_STATE' then
+            self:set()
         end
     end)
 
@@ -317,7 +319,12 @@ local function Init_Spell_Button()
         e.SetItemSpellCool({frame=self, spell=self.spellID})
         self:set_count()
     end)
-    SpellButton:SetScript('OnHide', SpellButton.UnregisterAllEvents)
+    SpellButton:SetScript('OnHide', function(self)
+        self:UnregisterEvent('SPELL_UPDATE_USABLE')
+        self:UnregisterEvent('SPELL_UPDATE_COOLDOWN')
+    end)
+
+
 
     function SpellButton:set()
         if not self:CanChangeAttribute() then
@@ -355,7 +362,15 @@ local function Init_Spell_Button()
         self.spellID= spellID
         self.action= action
     end
+
     SpellButton:set()
+    ItemSocketingFrame:HookScript('OnShow', function()
+        SpellButton:RegisterEvent('ACTIONBAR_UPDATE_STATE')
+        SpellButton:set()
+    end)
+    ItemSocketingFrame:HookScript('OnHide', function()
+        SpellButton:UnregisterAllEvents()
+    end)
 end
 
 
@@ -378,6 +393,12 @@ local function Init()
         Primordial = e.onlyChinese and EMPTY_SOCKET_PRIMORDIAL or '始源镶孔',
    }--EMPTY_SOCKET_NO_COLOR,--棱彩插槽
  ]]
+
+
+    Frame= CreateFrame("Frame", nil, ItemSocketingFrame)
+    Frame:SetPoint('BOTTOMRIGHT', 0, -10)
+    Frame:SetSize(1,1)
+    Frame:SetScript('OnHide', function() CurTypeGemTab={} end)
 
 
     ItemSocketingSocket3Left:ClearAllPoints()
@@ -435,7 +456,7 @@ local function Init()
                         atlas = ("Professions-Icon-Quality-Tier%d-Inv"):format(quality);
                     end
                 end
-                
+
                 btn.type:SetText(name or '')
                 btn.leftText:SetText(left or '')
                 btn.rightText:SetText(right or '')
@@ -473,14 +494,6 @@ local function Init()
 
 
 
-
-    Frame= CreateFrame("Frame", nil, ItemSocketingFrame)
-    Frame:SetPoint('BOTTOMRIGHT', 0, -10)
-    Frame:SetSize(1,1)
-    ItemSocketingFrame:HookScript('OnShow', Init_Spell_Button)
-    ItemSocketingFrame:HookScript('OnHide', function()
-        CurTypeGemTab={}
-    end)
     Init_Spell_Button()
 
      --[[ItemSocketingFrame:HookScript('OnShow', function()
