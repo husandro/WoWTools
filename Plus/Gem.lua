@@ -271,26 +271,23 @@ end
 
 
 --433397/取出宝石
+local SpellButton
 local function Init_Spell_Button()
-    if UnitAffectingCombat('player') then
-        return
-    end
-    local btn = ItemSocketingFrame.SpellButton
-    if btn then
-        btn:set()
+    if UnitAffectingCombat('player') or SpellButton then
+        if SpellButton then SpellButton:set() end
         return
     end
 
-    btn= e.Cbtn(Frame, {size={32,32}, icon='hide', type=true})
-    btn:SetAttribute("type1", "spell")
-    btn:Hide()
-    btn:SetPoint('BOTTOMRIGHT', -3, 44)
-    btn.texture= btn:CreateTexture(nil, 'OVERLAY')
-    btn.texture:SetAllPoints(btn)
-    btn.count=e.Cstr(btn, {color={r=1,g=1,b=1}})--nil,nil,nil,true)
-    btn.count:SetPoint('BOTTOMRIGHT',-2, 9)
+    SpellButton= e.Cbtn(Frame, {size={32,32}, icon='hide', type=true})
+    SpellButton:SetAttribute("type1", "spell")
+    SpellButton:Hide()
+    SpellButton:SetPoint('BOTTOMRIGHT', -3, 44)
+    SpellButton.texture= SpellButton:CreateTexture(nil, 'OVERLAY')
+    SpellButton.texture:SetAllPoints(SpellButton)
+    SpellButton.count=e.Cstr(SpellButton, {color={r=1,g=1,b=1}})--nil,nil,nil,true)
+    SpellButton.count:SetPoint('BOTTOMRIGHT',-2, 9)
 
-    function btn:set_count()
+    function SpellButton:set_count()
         local num, max
         if self.spellID then
             num, max= GetSpellCharges(self.spellID)
@@ -298,7 +295,7 @@ local function Init_Spell_Button()
         self.count:SetText((max and max>1) and num or '')
         self.texture:SetDesaturated(num and num>0)
     end
-    btn:SetScript('OnEnter', function(self)
+    SpellButton:SetScript('OnEnter', function(self)
         if not self.spellID then
             return
         end
@@ -307,8 +304,8 @@ local function Init_Spell_Button()
         e.tips:SetSpellByID(self.spellID)
         e.tips:Show()
     end)
-    btn:SetScript('OnLeave', GameTooltip_Hide)
-    btn:SetScript("OnEvent", function(self, event)
+    SpellButton:SetScript('OnLeave', GameTooltip_Hide)
+    SpellButton:SetScript("OnEvent", function(self, event)
         if event=='SPELL_UPDATE_USABLE' then
             self:set_count()
         elseif event=='SPELL_UPDATE_COOLDOWN' then
@@ -316,15 +313,15 @@ local function Init_Spell_Button()
         end
     end)
 
-    btn:SetScript('OnShow', function(self)
+    SpellButton:SetScript('OnShow', function(self)
         self:RegisterEvent('SPELL_UPDATE_USABLE')
         self:RegisterEvent('SPELL_UPDATE_COOLDOWN')
         e.SetItemSpellCool({frame=self, spell=self.spellID})
         self:set_count()
     end)
-    btn:SetScript('OnHide', btn.UnregisterAllEvents)
+    SpellButton:SetScript('OnHide', SpellButton.UnregisterAllEvents)
 
-    function btn:set()
+    function SpellButton:set()
         if not self:CanChangeAttribute() then
             return
         end
@@ -355,8 +352,7 @@ local function Init_Spell_Button()
         end
         self.spellID= spellID
     end
-    btn:set()
-    ItemSocketingFrame.SpellButton= btn
+    SpellButton:set()
 end
 
 
@@ -418,7 +414,7 @@ local function Init()
                     btn.qualityTexture= btn:CreateTexture(nil, 'OVERLAY')
                     --btn.qualityTexture:SetPoint('TOPLEFT')
                     --btn.qualityTexture:SetPoint('LEFT')
-                    btn.qualityTexture:SetPoint('RIGHT', btn, 'LEFT',18,-8)
+                    btn.qualityTexture:SetPoint('RIGHT', btn, 'LEFT',15,-8)
                     btn.qualityTexture:SetSize(30,30)
                     btn.levelText=e.Cstr(btn)
                     btn.levelText:SetPoint('CENTER')
@@ -445,7 +441,7 @@ local function Init()
                 if atlas then
                     btn.qualityTexture:SetAtlas(atlas)
                 else
-                    btn.qualityTexture:SetTexture(e.Icon.icon)
+                    btn.qualityTexture:SetTexture(0)
                 end
             end
         end
@@ -479,6 +475,7 @@ local function Init()
     Frame:SetPoint('BOTTOMRIGHT', 0, -10)
     Frame:SetSize(1,1)
     ItemSocketingFrame:HookScript('OnShow', Init_Spell_Button)
+    Init_Spell_Button()
 
      --[[ItemSocketingFrame:HookScript('OnShow', function()
         local tab={
@@ -523,7 +520,7 @@ local panel=CreateFrame("Frame")
 panel:RegisterEvent('ADDON_LOADED')
 panel:RegisterEvent('PLAYER_LOGOUT')
 
-panel:SetScript("OnEvent", function(_, event, arg1)
+panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
@@ -539,7 +536,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 end
             })
             if Save.disabled then
-                panel:UnregisterEvent('ADDON_LOADED')
+                self:UnregisterEvent('ADDON_LOADED')
             end
 
         elseif arg1=='Blizzard_ItemSocketingUI' then

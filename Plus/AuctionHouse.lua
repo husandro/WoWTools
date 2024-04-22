@@ -1149,10 +1149,12 @@ local function Init_BrowseResultsFrame()
                         text= '|A:common-icon-checkmark-yellow:0:0|a'
                     end
                 end
-                --[[if not text then
-                    local t1, t2= e.Get_Gem_Stats({itemKey=itemKey}, nil, nil)--显示, 宝石, 属性
-                    print(t1,t2)
-                end]]
+                if not text then
+                    local t1, t2= e.Get_Gem_Stats(nil, Get_ItemLink_For_rowData(btn.rowData))--显示, 宝石, 属性
+                    if t1 then
+                        text= t1..(t2 and ' '..t2 or '')
+                    end
+                end
                 --[[if not text then
                     --local itmeLink= Get_ItemLink_For_rowData(btn.rowData)
                     local itemLink= Get_ItemLink_For_rowData(btn.rowData)
@@ -1186,10 +1188,10 @@ local function Init_BrowseResultsFrame()
 
         end
     end
-    hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame.ItemList.ScrollBox, 'Update', Set_BrowseResultsFrame)
-    hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame, 'UpdateBrowseResults', function(self)
+    hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame.ItemList.ScrollBox, 'SetScrollTargetOffset', Set_BrowseResultsFrame)
+    --[[hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame, 'UpdateBrowseResults', function(self)
         Set_BrowseResultsFrame(self.ItemList.ScrollBox)
-    end)
+    end)]]
 
 
 
