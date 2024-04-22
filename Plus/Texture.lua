@@ -21,8 +21,6 @@ local Save={
 
 
 
-
-
 local min03, min05
 min03, min05= 0.3, 0.5
 local function GetMinValueAlpha()--min03，透明度，最小值
@@ -595,7 +593,7 @@ local function Init_All_Frame()
 
      e.Set_ScrollBar_Color_Alpha(LFGListFrame.ApplicationViewer)
      e.Set_NineSlice_Color_Alpha(LFGListFrame.ApplicationViewer.Inset)
-    
+
      set_Alpha_Color(RaidFinderQueueFrameBackground)
      set_Menu(RaidFinderQueueFrameSelectionDropDown)
      hide_Texture(RaidFinderFrameRoleBackground)
@@ -653,7 +651,7 @@ local function Init_All_Frame()
             set_Alpha_Color(StableFrameBg, nil, nil, min05)
             --hide_Texture(StableFrame.PetModelScene.Background)
            -- hide_Texture(StableFrame.PetModelScene.Inset.Bg)
-            
+
             set_SearchBox(StableFrame.StabledPetList.FilterBar.SearchBox)
             set_Menu(StableFrame.StabledPetList.FilterBar.FilterButton)
             e.Set_NineSlice_Color_Alpha(StableFrame, true)
@@ -760,7 +758,7 @@ local function Init_All_Frame()
             end
         end
     end)
-    
+
     local tab={
         'CharacterBag0Slot',
         'CharacterBag1Slot',
@@ -816,7 +814,7 @@ local function Init_All_Frame()
         e.Set_NineSlice_Color_Alpha(RecruitAFriendFrame.RecruitList.ScrollFrameInset)
         hide_Texture(RecruitAFriendFrame.RecruitList.Header.Background)
         set_Alpha_Color(RecruitAFriendFrame.RewardClaiming.Inset.Bg)
-        
+
      end
      if RaidInfoFrame then--团队信息
         hide_Texture(RaidInfoDetailHeader)
@@ -858,7 +856,7 @@ local function Init_All_Frame()
      hide_Texture(ChannelFrameInset.Bg)
      hide_Texture(ChannelFrame.RightInset.Bg)
      hide_Texture(ChannelFrame.LeftInset.Bg)
-     
+
      e.Set_ScrollBar_Color_Alpha(ChannelFrame.ChannelRoster)
      e.Set_ScrollBar_Color_Alpha(ChannelFrame.ChannelList)
 
@@ -1149,7 +1147,7 @@ local function Init_All_Frame()
      hide_Frame_Texture(MerchantRepairAllButton, {index=1})
      hide_Frame_Texture(MerchantGuildBankRepairButton, {index=1})
      hide_Frame_Texture(MerchantSellAllJunkButton, {index=1})
-     
+
 
     --考古学 ArchaeologyProgressBar.xml
     if ArcheologyDigsiteProgressBar then
@@ -1897,7 +1895,7 @@ local function Init_Event(arg1)
 
         hooksecurefunc(WardrobeCollectionFrame, 'SetTab', function(self)
             local frame= self.activeFrame
-            if frame and frame==self.SetsTransmogFrame then            
+            if frame and frame==self.SetsTransmogFrame then
                 for i=1, frame.PAGE_SIZE or 8 do
                     local btn= frame.Models[i]
                     if btn then
@@ -1978,11 +1976,11 @@ local function Init_Event(arg1)
         hide_Texture(FlightMapFrameBg)
 
     elseif arg1=='Blizzard_ItemSocketingUI' then--镶嵌宝石，界面
-        
+
         e.Set_NineSlice_Color_Alpha(ItemSocketingFrame, true)
         e.Set_NineSlice_Color_Alpha(ItemSocketingFrameInset, nil, true)
         set_Alpha_Color(ItemSocketingFrameBg)
-        
+
         ----hide_Texture(ItemSocketingFrameInset.Bg)
         ItemSocketingFrameInset.Bg:ClearAllPoints()
         ItemSocketingFrameInset.Bg:SetAllPoints(ItemSocketingScrollFrame)

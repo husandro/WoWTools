@@ -1426,7 +1426,7 @@ local function set_CVar(reset, tips, notPrint)
             value= "1",
             msg= e.onlyChinese and '总是显示目标的目标' or OPTION_TOOLTIP_TARGETOFTARGET5,
         },
-        {   name='worldPreloadNonCritical',
+        {   name='worldPreloadNonCritical',--https://wago.io/ZtSxpza28
             value='0',
             --msg='worldPreloadNonCritical'
         }
@@ -2608,6 +2608,7 @@ local function Init_Panel()
         category= Category,
         func= function()
             Save.setCVar= not Save.setCVar and true or nil
+            Save.graphicsViewDistance=nil
         end
     })
 
@@ -2986,9 +2987,11 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
+
+panel:RegisterEvent('PLAYER_LEAVING_WORLD')
+panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 local eventTab={}
-panel:SetScript("OnEvent", function(_, event, arg1)
+panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
@@ -3010,9 +3013,9 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             })
 
             if Save.disabled then
-                panel:UnregisterEvent('ADDON_LOADED')
-
+                self:UnregisterAllEvents()
             else
+                
                 Init()--初始
                 for _, evt in pairs(eventTab or {}) do
                     Init_Event(evt)
@@ -3025,6 +3028,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 end
             end
             eventTab=nil
+            self:RegisterEvent("PLAYER_LOGOUT")
 
         elseif arg1=='Blizzard_Settings' then
             Init_Panel()
@@ -3040,6 +3044,22 @@ panel:SetScript("OnEvent", function(_, event, arg1)
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             WoWToolsSave[addName]=Save
+        end
+
+    elseif event=='PLAYER_LEAVING_WORLD' then
+        if Save.setCVar then
+            if not UnitAffectingCombat('player') then
+                Save.graphicsViewDistance= C_CVar.GetCVar('graphicsViewDistance')
+                SetCVar("graphicsViewDistance", 0)
+            else
+                Save.graphicsViewDistance=nil
+            end
+        end
+
+    elseif event=='PLAYER_ENTERING_WORLD' then--https://wago.io/ZtSxpza28
+        if Save.setCVar and Save.graphicsViewDistance and not UnitAffectingCombat('player') then
+            C_CVar.SetCVar('graphicsViewDistance', Save.graphicsViewDistance)
+            Save.graphicsViewDistance=nil
         end
     end
 end)
