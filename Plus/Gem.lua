@@ -319,6 +319,11 @@ end
 
 
 local function set_point()
+    ItemSocketingScrollFrame:SetPoint('BOTTOMRIGHT', -22, 90)    
+    ItemSocketingScrollChild:ClearAllPoints()
+    ItemSocketingScrollChild:SetPoint('TOPLEFT')
+    ItemSocketingScrollChild:SetPoint('TOPRIGHT', -18, -254)
+    ItemSocketingDescription:SetPoint('LEFT')
     ItemSocketingDescription:SetMinimumWidth(ItemSocketingScrollChild:GetWidth()-18, true)--调整，宽度
     ItemSocketingDescription:SetSocketedItem()
 end
@@ -333,11 +338,6 @@ local function Init()
     Frame:SetSize(1,1)
     Frame:SetScript('OnHide', function() CurTypeGemTab={} end)
 
-    ItemSocketingScrollFrame:SetPoint('BOTTOMRIGHT', -22, 90)    
-    ItemSocketingScrollChild:ClearAllPoints()
-    ItemSocketingScrollChild:SetPoint('TOPLEFT')
-    ItemSocketingScrollChild:SetPoint('TOPRIGHT', -18, -254)
-    ItemSocketingDescription:SetPoint('LEFT')
 
     ItemSocketingSocket3Left:ClearAllPoints()
     ItemSocketingSocket2Left:ClearAllPoints()
