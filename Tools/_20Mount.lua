@@ -869,16 +869,6 @@ local function InitMenu(_, level, type)--主菜单
             notCheckable=true,
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-        info={
-            text=e.toolsFrame.addName,
-            notCheckable=true,
-            colorCode='|cffffd100',
-            func= function()
-                e.OpenPanelOpting(e.toolsFrame.addName)
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info,level)
         return
 
     elseif type==ITEMS then--物品, 二级菜单
@@ -1165,6 +1155,16 @@ local function InitMenu(_, level, type)--主菜单
         keepShownOnClick=true,
     }
     e.LibDD:UIDropDownMenu_AddButton(info)
+    
+    info={
+        text=e.toolsFrame.addName,
+        notCheckable=true,
+        colorCode='|cffffd100',
+        func= function()
+            e.OpenPanelOpting(e.toolsFrame.addName)
+        end
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info,level)
 end
 
 

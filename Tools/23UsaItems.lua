@@ -488,7 +488,7 @@ local function Init_Opetions_ToyBox(btn)--标记, 是否已选取
             end
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(id, addName2)
+            e.tips:AddDoubleLine(e.toolsFrame.addName, addName2)
             e.tips:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             e.tips:AddLine(' ')
             
@@ -549,7 +549,7 @@ local function set_Use_Spell_Button(btn, spellID)
         function btn.useSpell:set_tooltips()
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(id, addName2)
+            e.tips:AddDoubleLine(e.toolsFrame.addName, addName2)
             e.tips:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             e.tips:AddLine(' ')
             if self.spellID then
@@ -574,7 +574,7 @@ local function set_Use_Spell_Button(btn, spellID)
                     else
                         table.insert(Save.spell, self.spellID)
                     end
-                    --print(id, e.cn(addName), C_SpellBook.GetSpellLinkFromSpellID(self.spellID), findIndex and (e.onlyChinese and '移除' or REMOVE) or (e.onlyChinese and '添加' or ADD), '|cffff00ff', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    --print(e.toolsFrame.addName, e.cn(addName), C_SpellBook.GetSpellLinkFromSpellID(self.spellID), findIndex and (e.onlyChinese and '移除' or REMOVE) or (e.onlyChinese and '添加' or ADD), '|cffff00ff', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                     self:set_tooltips()
                     self:set_alpha()
                 end
@@ -808,9 +808,9 @@ local function Init_Options_Button()
             else
                 if Save[data.type][data.index] and Save[data.type][data.index]==data.ID then
                     table.remove(Save[data.type], data.index)
-                    print(id, addName2, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r'..(e.onlyChinese and '完成' or COMPLETE), data.name, '|cnRED_FONT_COLOR:'..REQUIRES_RELOAD..'|r')
+                    print(e.toolsFrame.addName, addName2, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r'..(e.onlyChinese and '完成' or COMPLETE), data.name, '|cnRED_FONT_COLOR:'..REQUIRES_RELOAD..'|r')
                 else
-                    print(id, addName2,'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '错误' or ERROR_CAPS)..'|r', e.onlyChinese and '未发现物品' or	BROWSE_NO_RESULTS, data.name)
+                    print(e.toolsFrame.addName, addName2,'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '错误' or ERROR_CAPS)..'|r', e.onlyChinese and '未发现物品' or	BROWSE_NO_RESULTS, data.name)
                 end
             end
         end,
@@ -841,17 +841,18 @@ local function Init_Options_Button()
         end,
         OnAccept = function(_, data)
             table.insert(Save[data.type], data.ID)
-            print(id, addName2, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r', e.onlyChinese and '完成' or COMPLETE, data.name, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(e.toolsFrame.addName, addName2, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r', e.onlyChinese and '完成' or COMPLETE, data.name, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
         OnAlt = function(_, data)
             table.remove(Save[data.type], data.index)
-            print(id, addName2, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', e.onlyChinese and '完成' or COMPLETE, data.name, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(e.toolsFrame.addName, addName2, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', e.onlyChinese and '完成' or COMPLETE, data.name, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
     }
 
 
     button.Menu=CreateFrame("Frame", nil, button, "UIDropDownMenuTemplate")
     e.LibDD:UIDropDownMenu_Initialize(button.Menu, Init_Menu_List, 'MENU')--主菜单
+
 
     button:SetScript('OnMouseDown',function(self, d)--添加, 移除
         local infoType, itemID, itemLink ,spellID= GetCursorInfo()
@@ -870,20 +871,18 @@ local function Init_Options_Button()
             StaticPopup_Show(id..addName..'ADD', SPELLS , (icon and '|T'..icon..':0|t' or '')..spellLink, {type='spell', name=spellLink, ID=spellID})
             ClearCursor()
 
-        elseif d=='LeftButton' then
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:AddDoubleLine(id, addName2)
-            e.tips:AddDoubleLine(e.onlyChinese and '拖曳' or DRAG_MODEL, e.onlyChinese and '添加' or ADD)
-            e.tips:AddDoubleLine(SPELLS, ITEMS, 0,1,0, 0,1,0)
-            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
-            e.tips:Show()
-        elseif d=='RightButton' then
-            
+        else            
             e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
         end
     end)
     button:SetScript('OnEnter',function (self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(e.toolsFrame.addName, addName2)
+        e.tips:AddDoubleLine(e.onlyChinese and '拖曳' or DRAG_MODEL, e.onlyChinese and '添加' or ADD)
+        e.tips:AddDoubleLine(e.onlyChinese and '法术' or SPELLS, e.onlyChinese and '物品，装备' or (ITEMS..', '..EQUIPSET_EQUIP), 0,1,0, 0,1,0)
+        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.left)
+        e.tips:Show()
         self:SetAlpha(1.0)
     end)
     button:SetScript('OnLeave', function (self)
@@ -970,7 +969,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave[addName..'Tools'] or Save
             Save.flyout= Save.flyout or {}
 
-            addName2= 'Tools |A:soulbinds_tree_conduit_icon_utility:0:0|a'..(e.onlyChinese and '使用物品' or addName)
+            addName2= '|A:soulbinds_tree_conduit_icon_utility:0:0|a'..(e.onlyChinese and '使用物品' or addName)
 
             if not e.toolsFrame.disabled then
                 for _, ID in pairs(Save.item) do
