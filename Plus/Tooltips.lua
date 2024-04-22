@@ -1427,7 +1427,7 @@ local function set_CVar(reset, tips, notPrint)
             msg= e.onlyChinese and '总是显示目标的目标' or OPTION_TOOLTIP_TARGETOFTARGET5,
         },
         {   name='worldPreloadNonCritical',--https://wago.io/ZtSxpza28
-            value='0',
+            value='0',--2
             --msg='worldPreloadNonCritical'
         }
     }
