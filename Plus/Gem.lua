@@ -458,6 +458,8 @@ local function Init()
                 local left, right= e.Get_Gem_Stats(nil, itemLink)
                 local atlas
                 if itemLink then
+                    info= C_Item.GetItemStatDelta(itemLink)
+                    for k, v in pairs(info) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
                     local quality= C_TradeSkillUI.GetItemReagentQualityByItemInfo(itemLink) or C_TradeSkillUI.GetItemCraftedQualityByItemInfo(itemLink)
                     if quality then
                         atlas = ("Professions-Icon-Quality-Tier%d-Inv"):format(quality);
