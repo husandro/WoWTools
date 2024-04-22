@@ -375,6 +375,18 @@ end
 
 
 
+
+
+local function set_point()
+    ItemSocketingScrollFrame:SetPoint('BOTTOMRIGHT', -22, 90)
+    ItemSocketingDescription:SetPoint('LEFT')
+    ItemSocketingScrollChild:ClearAllPoints()
+    ItemSocketingScrollChild:SetPoint('TOPLEFT')
+    ItemSocketingScrollChild:SetPoint('TOPRIGHT', -18, -254)
+    ItemSocketingDescription:SetMinimumWidth(ItemSocketingScrollChild:GetWidth()-18, true)--调整，宽度
+end
+
+
 local function Init()
     --[[GEM_TYPE_INFO =	{
         Yellow = e.onlyChinese and EMPTY_SOCKET_YELLOW or '黄色插槽',
@@ -410,18 +422,11 @@ local function Init()
     ItemSocketingFrame['SocketFrame-Left']:SetPoint('TOPRIGHT', ItemSocketingFrame, 'BOTTOM',0, 77)
     ItemSocketingFrame['SocketFrame-Right']:SetPoint('BOTTOMLEFT', ItemSocketingFrame, 'BOTTOM', 0, 26)
 
-    ItemSocketingScrollFrame:SetPoint('BOTTOMRIGHT', -22, 90)
-    ItemSocketingScrollChild:ClearAllPoints()
-    ItemSocketingScrollChild:SetPoint('TOPLEFT')
-    ItemSocketingScrollChild:SetPoint('TOPRIGHT', -18, -254)
 
-    ItemSocketingDescription:SetPoint('LEFT')
     e.Set_Move_Frame(ItemSocketingFrame, {needSize=true, needMove=true, setSize=true, minW=338, minH=424, sizeRestFunc=function(btn)
         btn.target:SetSize(338, 424)
-        ItemSocketingDescription:SetMinimumWidth(ItemSocketingScrollChild:GetWidth()-18, true)--调整，宽度
-    end, sizeUpdateFunc=function()
-        ItemSocketingDescription:SetMinimumWidth(ItemSocketingScrollChild:GetWidth()-18, true)--调整，宽度
-    end})
+        set_point()
+    end, sizeUpdateFunc=set_point})
 
     hooksecurefunc('ItemSocketingFrame_Update', function()
         local numSockets = GetNumSockets() or 0
@@ -475,7 +480,7 @@ local function Init()
                     btn.qualityTexture:SetTexture(0)
                 end
             end
-            ItemSocketingDescription:SetMinimumWidth(ItemSocketingScrollChild:GetWidth()-18, true)--调整，宽度
+            set_point()
         end
 
         --ItemSocketingDescription:SetMinimumWidth(ItemSocketingScrollChild:GetWidth()-18, true)--调整，宽度

@@ -1980,6 +1980,7 @@ local function Init_Event(arg1)
     elseif arg1=='Blizzard_ItemSocketingUI' then--镶嵌宝石，界面
         e.Set_NineSlice_Color_Alpha(ItemSocketingFrame, true)
         e.Set_ScrollBar_Color_Alpha(ItemSocketingScrollFrame)
+        hide_Texture(ItemSocketingFrameBg)
         --[[e.Set_NineSlice_Color_Alpha(ItemSocketingFrame, true)
         e.Set_NineSlice_Color_Alpha(ItemSocketingFrameInset, nil, true)
         set_Alpha_Color(ItemSocketingFrameBg)
