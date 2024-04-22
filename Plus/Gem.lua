@@ -11,7 +11,9 @@ local SpellsTab={
     433397,--取出宝石
     --405805,--拔出始源之石
 }
-
+local ActionTab={
+    [405805]=true,--405805/拔出始源之石
+}
 for _, spellID in pairs(SpellsTab) do
     e.LoadDate({id=spellID, type='spell'})
 end
@@ -21,12 +23,15 @@ local CurTypeGemTab={}--当前，宝石，类型
 
 local function Get_Item_Color(itemLink)
     local r,g,b
-    local itemQuality= select(3, C_Item.GetItemInfo(itemLink))
-    if itemQuality then
-        r,g,b = C_Item.GetItemQualityColor(itemQuality)
+    if itemLink then
+        local itemQuality= select(3, C_Item.GetItemInfo(itemLink))
+        if itemQuality then
+            r,g,b = C_Item.GetItemQualityColor(itemQuality)
+        end
     end
     return r or 1, g or 1, b or 1
 end
+
 --[[
 function PaperDollItemSocketDisplayMixin:SetItem(item)
 	-- Currently only showing socket display for timerunning characters
@@ -163,6 +168,8 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
                     if e.Is_Timerunning then
                         local date= e.GetTooltipData({hyperLink=info.hyperlink, index=2})
                         type= date.indexText and date.indexText:match('|c........(.-)|r') or date.indexText
+                    else
+                        type=e.cn(C_Item.GetItemSubClassInfo(classID, subclassID))
                     end
                     type=type or ' '
                     items[type]= items[type] or {}
@@ -261,15 +268,6 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
 --433397/取出宝石
 local SpellButton
 local function Init_Spell_Button()
@@ -279,7 +277,6 @@ local function Init_Spell_Button()
     end
 
     SpellButton= e.Cbtn(Frame, {size={32,32}, icon='hide', type=true})
-    SpellButton:SetAttribute("type1", "spell")
     SpellButton:Hide()
     SpellButton:SetPoint('BOTTOMRIGHT', -3, 44)
     SpellButton.texture= SpellButton:CreateTexture(nil, 'OVERLAY')
@@ -296,12 +293,13 @@ local function Init_Spell_Button()
         self.texture:SetDesaturated(num and num>0)
     end
     SpellButton:SetScript('OnEnter', function(self)
-        if not self.spellID then
-            return
-        end
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:SetSpellByID(self.spellID)
+        if self.spellID then
+            e.tips:SetSpellByID(self.spellID)
+        elseif self.action then
+            e.tips:SetAction(self.action)
+        end
         e.tips:Show()
     end)
     SpellButton:SetScript('OnLeave', GameTooltip_Hide)
@@ -326,31 +324,36 @@ local function Init_Spell_Button()
             return
         end
 
-        local spellID
-        local extBar={}
-        if HasExtraActionBar() then
-            local i = 1
-            local slot = i + ((GetExtraBarIndex() or 19) - 1) * (NUM_ACTIONBAR_BUTTONS or 12)
-            local action, spellID = GetActionInfo(slot)
-            if action == "spell" and spellID then
-                extBar[spellID]=true
-            end
-        end
+        local spellID, action
         for _, spell in pairs(SpellsTab) do
-            if extBar[spell] or IsSpellKnownOrOverridesKnown(spell) then
+            if IsSpellKnownOrOverridesKnown(spell) then
+                local name, _, icon = GetSpellInfo(spell)
+                self:SetAttribute("type", "spell")
+                self:SetAttribute("spell", name or spell)
+                self:SetAttribute("action", nil)
+                self.texture:SetTexture(icon or 0)
                 spellID=spell
                 break
             end
         end
-        if spellID then
-            local name, _, icon = GetSpellInfo(spellID)
-            self:SetAttribute("spell1", name or spellID)
-            self.texture:SetTexture(icon or nil)
+        if not spellID and HasExtraActionBar() then
+            local i = 1
+            local slot = i + ((GetExtraBarIndex() or 19) - 1) * (NUM_ACTIONBAR_BUTTONS or 12)
+            local actionType, spell = GetActionInfo(slot)
+            if actionType== "spell" and ActionTab[spell] then
+                self:SetAttribute("type", "action")
+                self:SetAttribute("action", slot)
+                self:SetAttribute("spell", nil)
+                self.texture:SetTexture(GetActionTexture(slot) or 0)
+                action= slot
+                spellID= spell
+            end
         end
         if not UnitAffectingCombat('player') then
-            self:SetShown(spellID and true or false)
+            self:SetShown((spellID or action) and true or false)
         end
         self.spellID= spellID
+        self.action= action
     end
     SpellButton:set()
 end
@@ -475,6 +478,9 @@ local function Init()
     Frame:SetPoint('BOTTOMRIGHT', 0, -10)
     Frame:SetSize(1,1)
     ItemSocketingFrame:HookScript('OnShow', Init_Spell_Button)
+    ItemSocketingFrame:HookScript('OnHide', function()
+        CurTypeGemTab={}
+    end)
     Init_Spell_Button()
 
      --[[ItemSocketingFrame:HookScript('OnShow', function()
