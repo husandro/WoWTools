@@ -213,14 +213,12 @@ local function Set_Item_Info(self, tab)
             end
 
         elseif classID==3 then--宝石
-            if expacID== e.ExpansionLevel or not e.Player.levelMax then
-                leftText, bottomLeftText= e.Get_Gem_Stats(tab, itemLink)
-            end
             rightText= itemLevel
-
             topRightText= e.WA_Utf8Sub(subclassID==9 and itemType or itemSubType, 2,3)
             if lowerVer then--低版本
                 topRightText= '|cff606060'..topRightText..'|r'
+            else
+                leftText, bottomLeftText= e.Get_Gem_Stats(nil, itemLink)
             end
 
         elseif isCraftingReagent or classID==8 or classID==9 or (classID==0 and (subclassID==1 or subclassID==3 or subclassID==5)) or classID==19 or classID==7 then--附魔, 19专业装备 ,7商业技能

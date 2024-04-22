@@ -27,7 +27,7 @@ e.PlaySound(soundKitID, setPlayerSound)--播放, 声音 SoundKitConstants.lua e.
 e.Get_Week_Rewards_Text(type)--得到，周奖励，信息
 e.Get_Weekly_Rewards_Activities(settings) {frame=, point=, anchor=, showTooltip= }--周奖励，提示
 e.ItemCurrencyLabel(settings) {frame=, point=, showName=, showAll=, showTooltip=}物品升级界面，挑战界面，物品，货币提示
-e.Get_Gem_Stats(tab, itemLink, self)--显示, 宝石, 属性
+e.Get_Gem_Stats(itemLink, self)--显示, 宝石, 属性
 e.Get_Item_Stats(link)--取得，物品，次属性，表
 e.Set_Item_Stats(self, link, setting)--设置，物品，次属性，表
 
@@ -972,36 +972,27 @@ end
 
 
 
-local AndStr = COVENANT_RENOWN_TOAST_REWARD_COMBINER:format('(.-)','(.+)')--"%s 和 %s"
-function e.Get_Gem_Stats(tab, itemLink, self)--显示, 宝石, 属性
-    tab= tab or {}
-    local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={'(%+.+)', }})--物品提示，信息
-    local text= dateInfo.text['(%+.+)']
+--local AndStr = COVENANT_RENOWN_TOAST_REWARD_COMBINER:format('(.-)','(.+)')--"%s 和 %s"
+function e.Get_Gem_Stats(itemLink, self)--显示, 宝石, 属性
+    local dateInfo
+    if e.Is_Timerunning then
+        dateInfo= e.GetTooltipData({hyperLink=itemLink, index=2})--物品提示，信息
+    else
+        dateInfo= e.GetTooltipData({hyperLink=itemLink, text={'(%+.+)', }})--物品提示，信息
+    end
+    local text= dateInfo.text['(%+.+)'] or dateInfo.indexText
     local leftText, bottomLeftText
     if text then
-        local str2, str3
-        if text:find(', ') then
-            str2, str3= text:match('(.-), (.+)')
-        elseif text:find('，') then
-            str2, str3= text:match('(.-)，(.+)')
-        
-        else
-            str2, str3= text:match(AndStr)
-        end
-        str2= str2 or text:match('%+%d+ .+')
-        if str2 then
-            str2= str2:match('%+%d+ (.+)')
-            leftText= e.WA_Utf8Sub(str2,1,3, true)
-            leftText= leftText and '|cffffffff'..leftText..'|r'
-            if str3 then
-                str3= str3:match('%+%d+ (.+)')
-                bottomLeftText= e.WA_Utf8Sub(str3,1,3, true)
-                bottomLeftText= bottomLeftText and '|cffffffff'..bottomLeftText..'|r'
+        text= string.lower(text)
+        for name, name2 in pairs(e.StausText) do
+            if text:find(string.lower(name)) then
+                if not str2 then
+                    leftText= '|cffffffff'..name2..'|r'
+                elseif not str3 then
+                    bottomLeftText='|cffffffff'..name2..'|r'
+                    break
+                end
             end
-        elseif not text:find('%d') then
-            str2, str3= text:match('(.-%+)(.+)')
-            leftText= str2
-            bottomLeftText= e.WA_Utf8Sub(str3,1,3, true)
         end
     end
      
@@ -1033,33 +1024,33 @@ function e.Get_Item_Stats(link)--取得，物品，次属性，表
         return {}
     end
     local num, tab= 0, {}
-    local info= GetItemStats(link) or {}
+    local info= C_Item.GetItemStats(link) or {}
     if info['ITEM_MOD_CRIT_RATING_SHORT'] then
-        table.insert(tab, {text=e.onlyChinese and '爆' or e.WA_Utf8Sub(STAT_CRITICAL_STRIKE, 1, 2, true), value=info['ITEM_MOD_CRIT_RATING_SHORT'] or 1, index=1})
+        table.insert(tab, {text=e.StausText[ITEM_MOD_CRIT_RATING_SHORT], value=info['ITEM_MOD_CRIT_RATING_SHORT'] or 1, index=1})
         num= num +1
     end
     if info['ITEM_MOD_HASTE_RATING_SHORT'] then
-        table.insert(tab, {text=e.onlyChinese and '急' or e.WA_Utf8Sub(STAT_HASTE, 1, 2, true), value=info['ITEM_MOD_HASTE_RATING_SHORT'] or 1, index=1})
+        table.insert(tab, {text=e.StausText[ITEM_MOD_HASTE_RATING_SHORT], value=info['ITEM_MOD_HASTE_RATING_SHORT'] or 1, index=1})
         num= num +1
     end
     if info['ITEM_MOD_MASTERY_RATING_SHORT'] then
-        table.insert(tab, {text=e.onlyChinese and '精' or e.WA_Utf8Sub(STAT_MASTERY, 1, 2, true), value=info['ITEM_MOD_MASTERY_RATING_SHORT'] or 1, index=1})
+        table.insert(tab, {text=e.StausText[ITEM_MOD_MASTERY_RATING_SHORT], value=info['ITEM_MOD_MASTERY_RATING_SHORT'] or 1, index=1})
         num= num +1
     end
     if info['ITEM_MOD_VERSATILITY'] then
-        table.insert(tab, {text=e.onlyChinese and '全' or e.WA_Utf8Sub(STAT_VERSATILITY, 1, 2, true), value=info['ITEM_MOD_VERSATILITY'] or 1, index=1})
+        table.insert(tab, {text=e.StausText[ITEM_MOD_VERSATILITY], value=info['ITEM_MOD_VERSATILITY'] or 1, index=1})
         num= num +1
     end
     if num<4 and info['ITEM_MOD_CR_AVOIDANCE_SHORT'] then
-        table.insert(tab, {text=e.onlyChinese and '闪' or e.WA_Utf8Sub(STAT_AVOIDANCE, 1, 2, true), value=info['ITEM_MOD_CR_AVOIDANCE_SHORT'], index=2})
+        table.insert(tab, {text=e.StausText[ITEM_MOD_CR_AVOIDANCE_SHORT], value=info['ITEM_MOD_CR_AVOIDANCE_SHORT'], index=2})
         num= num +1
     end
     if num<4 and info['ITEM_MOD_CR_LIFESTEAL_SHORT'] then
-        table.insert(tab, {text=e.onlyChinese and '吸' or e.WA_Utf8Sub(STAT_LIFESTEAL, 1, 2, true), value=info['ITEM_MOD_CR_LIFESTEAL_SHORT'] or 1, index=2})
+        table.insert(tab, {text=e.StausText[ITEM_MOD_CR_LIFESTEAL_SHORT], value=info['ITEM_MOD_CR_LIFESTEAL_SHORT'] or 1, index=2})
         num= num +1
     end
     if num<4 and info['ITEM_MOD_CR_SPEED_SHORT'] then
-        table.insert(tab, {text=e.onlyChinese and '速' or e.WA_Utf8Sub(SPEED, 1,2,true), value=info['ITEM_MOD_CR_SPEED_SHORT'] or 1, index=2})
+        table.insert(tab, {text=e.StausText[ITEM_MOD_CR_SPEED_SHORT], value=info['ITEM_MOD_CR_SPEED_SHORT'] or 1, index=2})
         num= num +1
     end
     return tab
@@ -2275,8 +2266,21 @@ end
 
 
 
-
---e.GetTooltipData({bag={bag=nil, slot=nil}, guidBank={tab=nil, slot=nil}, merchant={slot, buyBack=true}, inventory=nil, hyperLink=nil, itemID=nil, text={}, onlyText=nil, wow=nil, onlyWoW=nil, red=nil, onlyRed=nil})--物品提示，信息
+--物品提示，信息
+--[[e.GetTooltipData(
+    {bag={bag=nil, slot=nil}, 
+    guidBank={tab=nil, slot=nil},
+    merchant={slot, buyBack=true},
+    itemKey=,
+    inventory=,
+    hyperLink=,
+    itemID=,
+    text={}, onlyText=nil,
+    wow=nil, onlyWoW=nil,
+    red=nil, onlyRed=nil
+    index=
+})
+]]
 function e.GetTooltipData(tab)
     local tooltipData
     if tab.bag then
@@ -2293,8 +2297,14 @@ function e.GetTooltipData(tab)
         tooltipData= C_TooltipInfo.GetInventoryItem('player', tab.inventory)
     elseif tab.hyperLink then
         tooltipData=  C_TooltipInfo.GetHyperlink(tab.hyperLink)
-    elseif tab.itemID and C_Heirloom.IsItemHeirloom(tab.itemID) then
-        tooltipData= C_TooltipInfo.GetHeirloomByItemID(tab.itemID)
+    elseif tab.itemID then
+        if C_Heirloom.IsItemHeirloom(tab.itemID) then
+            tooltipData= C_TooltipInfo.GetHeirloomByItemID(tab.itemID)
+        else
+            tooltipData= C_TooltipInfo.GetItemByID(tab.itemID, tab.quality)
+        end
+    elseif tab.itemKey then
+        tooltipData= C_TooltipInfo.GetItemKey(tab.itemKey.itemID, tab.itemKey.itemLevel, tab.itemKey.itemSuffix, tab.itemKey.requiredLevel)
     end
     local data={
         red=false,

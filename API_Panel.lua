@@ -23,6 +23,7 @@ e.AddPanel_Check_Button(tab)
 e.GetFormatter1to10(value, minValue, maxValue)
 e.AddPanel_Check_Sider(tab)
 e.AddPanelSider(tab)
+e.StausText={}--属性，截取表 API_Panel.lua
 ]]
 
 
@@ -651,7 +652,7 @@ end
 --####
 --开始
 --####
-local function Init()
+local function Init_Options()
     e.AddPanel_Header(nil, e.onlyChinese and '设置' or SETTINGS)
 
     e.AddPanel_Button({
@@ -838,7 +839,58 @@ end
 
 
 
+local function Init()
+    e.StausText={
+        [ITEM_MOD_HASTE_RATING_SHORT]= e.onlyChinese and '急' or e.WA_Utf8Sub(STAT_HASTE, 1, 2, true),
+        [ITEM_MOD_CRIT_RATING_SHORT]= e.onlyChinese and '爆' or e.WA_Utf8Sub(STAT_CRITICAL_STRIKE, 1, 2, true),
+        [ITEM_MOD_MASTERY_RATING_SHORT]= e.onlyChinese and '精' or e.WA_Utf8Sub(STAT_MASTERY, 1, 2, true),
+        [ITEM_MOD_VERSATILITY]= e.onlyChinese and '全' or e.WA_Utf8Sub(STAT_VERSATILITY, 1, 2, true),
+        [ITEM_MOD_CR_AVOIDANCE_SHORT]= e.onlyChinese and '闪' or e.WA_Utf8Sub(STAT_AVOIDANCE, 1, 2, true),
+        [ITEM_MOD_CR_LIFESTEAL_SHORT]= e.onlyChinese and '吸' or e.WA_Utf8Sub(STAT_LIFESTEAL, 1, 2, true),
+        [ITEM_MOD_CR_SPEED_SHORT]=e.onlyChinese and '速' or e.WA_Utf8Sub(SPEED, 1,2,true),
+    }
+end
+--[[
+["ITEM_MOD_HASTE_RATING_SHORT"] = "急速",
+["ITEM_MOD_CRIT_RATING_SHORT"] = "爆击",
+["ITEM_MOD_MASTERY_RATING_SHORT"] = "精通",
+["ITEM_MOD_VERSATILITY"] = "全能",
+["ITEM_MOD_CR_LIFESTEAL_SHORT"] = "吸血",
+["ITEM_MOD_CR_SPEED_SHORT"] = "加速",
 
+["ITEM_MOD_PVP_POWER_SHORT"] = "PvP强度",
+["ITEM_MOD_RESILIENCE_RATING_SHORT"] = "PvP韧性",
+["ITEM_MOD_SPELL_POWER_SHORT"] = "法术强度",    
+["ITEM_MOD_SPIRIT_SHORT"] = "精神",
+["ITEM_MOD_STAMINA_SHORT"] = "耐力",
+["ITEM_MOD_SPELL_DAMAGE_DONE_SHORT"] = "伤害加成",
+["ITEM_MOD_SPELL_HEALING_DONE_SHORT"] = "治疗加成",
+["ITEM_MOD_MULTICRAFT_SHORT"] = "产能",
+["ITEM_MOD_DEFTNESS_SHORT"] = "熟练",
+["ITEM_MOD_ARMOR_PENETRATION_RATING_SHORT"] = "护甲穿透",
+["ITEM_MOD_ATTACK_POWER_SHORT"] = "攻击强度",
+["ITEM_MOD_CORRUPTION"] = "腐蚀",
+["ITEM_MOD_CRAFTING_SPEED_SHORT"] = "制作速度",  
+["ITEM_MOD_CR_STURDINESS_SHORT"] = "永不磨损",
+["ITEM_MOD_EXPERTISE_RATING_SHORT"] = "精准",
+["ITEM_MOD_EXTRA_ARMOR_SHORT"] = "护甲加成",
+["ITEM_MOD_FINESSE_SHORT"] = "精细",
+["ITEM_MOD_HIT_RATING_SHORT"] = "命中",
+["ITEM_MOD_INSPIRATION_SHORT"] = "灵感",
+["ITEM_MOD_RESOURCEFULNESS_SHORT"] = "充裕",
+["ITEM_MOD_SPELL_PENETRATION_SHORT"] = "法术穿透",
+["ITEM_MOD_PERCEPTION_SHORT"] = "感知",
+["ITEM_MOD_DEFENSE_SKILL_RATING_SHORT"] = "防御",
+
+["ITEM_MOD_CR_MULTISTRIKE_SHORT"] = "溅射",
+["ITEM_MOD_BLOCK_RATING_SHORT"] = "格挡",
+["ITEM_MOD_CR_AVOIDANCE_SHORT"] = "闪避",
+["ITEM_MOD_DODGE_RATING_SHORT"] = "躲闪"
+["ITEM_MOD_PARRY_RATING_SHORT"] = "招架",
+
+["ITEM_MOD_AGILITY_SHORT"] = "敏捷",
+["ITEM_MOD_STRENGTH_SHORT"] = "力量",
+["ITEM_MOD_INTELLECT_SHORT"] = "智力",]]
 
 
 
@@ -871,6 +923,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             end
 
             Init()
+            Init_Options()
 
             if not StaticPopupDialogs['GAME_SETTINGS_APPLY_DEFAULTS'].OnShow then
                 --你想要将所有用户界面和插件设置重置为默认状态，还是只重置这个界面或插件的设置？

@@ -17,6 +17,7 @@ for _, spellID in pairs(SpellsTab) do
 end
 
 local AUCTION_CATEGORY_GEMS= AUCTION_CATEGORY_GEMS
+local CurTypeGemTab={}--当前，宝石，类型
 --[[
 function PaperDollItemSocketDisplayMixin:SetItem(item)
 	-- Currently only showing socket display for timerunning characters
@@ -113,9 +114,9 @@ end
 
 
 local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
-    if not ItemSocketingFrame or not ItemSocketingFrame:IsVisible() then
+    --[[if not ItemSocketingFrame or not ItemSocketingFrame:IsVisible() then
         return
-    end
+    end]]
 
     local items={}
     --local gem1007= select(2, GetSocketItemInfo())== 4638590 --204000, 204030
@@ -145,13 +146,17 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
                 )]]
             then
                 local level= GetDetailedItemLevelInfo(info.hyperlink) or 0
-                local classID, _, _, expacID= select(12, C_Item.GetItemInfo(info.hyperlink))
+                local classID, subclassID, _, expacID= select(12, C_Item.GetItemInfo(info.hyperlink))
 
                 if classID==3
-                    --and (e.Player.levelMax and e.ExpansionLevel== expacID or not e.Player.levelMax)--最高等级
+                    and (e.Is_Timerunning or (e.Player.levelMax and e.ExpansionLevel== expacID or not e.Player.levelMax))--最高等级
                 then
-                    local date= e.GetTooltipData({hyperLink=info.hyperlink, index=2})
-                    local type= date.indexText and date.indexText:match('|c........(.-)|r') or date.indexText or ' '
+                    local type
+                    if e.Is_Timerunning then
+                        local date= e.GetTooltipData({hyperLink=info.hyperlink, index=2})
+                        type= date.indexText and date.indexText:match('|c........(.-)|r') or date.indexText
+                    end
+                    type=type or ' '
                     items[type]= items[type] or {}
                     table.insert(items[type], {
                         info= info,
@@ -191,7 +196,7 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
             if i==1 then
                 local findGem
                 local gemName= type:gsub(AUCTION_CATEGORY_GEMS, '')
-                for name in pairs(ItemSocketingFrame.typeTab or {}) do
+                for name in pairs(CurTypeGemTab or {}) do
                     if name:find(gemName) then
                         type= format('|cnGREEN_FONT_COLOR:%s|r', type or '')
                         findGem=true
@@ -211,7 +216,7 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
             btn:SetItemButtonCount(info.info.stackCount)
             btn:SetAlpha(info.info.isLocked and 0.3 or 1)
             btn:SetShown(true)
-            e.Get_Gem_Stats(nil, info.info.hyperlink, btn)
+            e.Get_Gem_Stats(btn, info.info.hyperlink)
             x=x-40--34
             index= index+1
         end
@@ -366,14 +371,13 @@ local function Init()
    }--EMPTY_SOCKET_NO_COLOR,--棱彩插槽
  ]]
 
-    ItemSocketingSocket3Right:ClearAllPoints()
-    ItemSocketingSocket3Right:Hide()
+
     ItemSocketingSocket3Left:ClearAllPoints()
-    ItemSocketingSocket3Left:Hide()
     ItemSocketingSocket2Left:ClearAllPoints()
-    ItemSocketingSocket2Left:Hide()
     ItemSocketingSocket1Left:ClearAllPoints()
-    ItemSocketingSocket1Left:Hide()
+    ItemSocketingSocket1Right:ClearAllPoints()
+    ItemSocketingSocket2Right:ClearAllPoints()
+    ItemSocketingSocket3Right:ClearAllPoints()
     ItemSocketingFrame['SocketFrame-Left']:SetPoint('TOPRIGHT', ItemSocketingFrame, 'BOTTOM',0, 77)
     ItemSocketingFrame['SocketFrame-Right']:SetPoint('BOTTOMLEFT', ItemSocketingFrame, 'BOTTOM', 0, 26)
 
@@ -381,23 +385,67 @@ local function Init()
     ItemSocketingScrollChild:ClearAllPoints()
     ItemSocketingScrollChild:SetPoint('TOPLEFT')
     ItemSocketingScrollChild:SetPoint('TOPRIGHT', -18, -254)
-    ItemSocketingSocket1:ClearAllPoints()
-    ItemSocketingSocket1:SetPoint('BOTTOMLEFT', 50, 33)
-    ItemSocketingSocket2:ClearAllPoints()
-    ItemSocketingSocket2:SetPoint('BOTTOM', 0, 33)
-    ItemSocketingSocket3:ClearAllPoints()
-    ItemSocketingSocket3:SetPoint('BOTTOMRIGHT', -50, 33)
+
     ItemSocketingDescription:SetPoint('LEFT')
     e.Set_Move_Frame(ItemSocketingFrame, {needSize=true, needMove=true, setSize=true, minW=338, minH=424, sizeRestFunc=function(btn)
-        btn.target:SetSize(338, 424) end, sizeUpdateFunc=function()
-            ItemSocketingDescription:SetMinimumWidth(ItemSocketingScrollChild:GetWidth()-18, true)
+        btn.target:SetSize(338, 424)
+    end, sizeUpdateFunc=function()
+        ItemSocketingDescription:SetMinimumWidth(ItemSocketingScrollChild:GetWidth()-18, true)--调整，宽度
     end})
+
+    hooksecurefunc('ItemSocketingFrame_Update', function()
+        local numSockets = GetNumSockets() or 0
+        CurTypeGemTab={}
+        for i, socket in ipairs(ItemSocketingFrame.Sockets) do--插槽，名称
+            if ( i <= numSockets ) then
+                local name= GetSocketTypes(i)
+                name= name and _G['EMPTY_SOCKET_'..string.upper(name)]
+                if name then
+                    CurTypeGemTab[name]=true
+                end
+                if not socket.type and name then
+                    socket.type=e.Cstr(socket)
+                    socket.type:SetPoint('BOTTOM', socket, 'TOP', 0, 2)
+                end
+                if socket.type then
+                    socket.type:SetText(name or '')
+                end
+                e.Get_Gem_Stats(socket.BracketFrame, GetNewSocketLink(i) or GetExistingSocketLink(i))
+            end
+        end
+
+        ItemSocketingDescription:SetMinimumWidth(ItemSocketingScrollChild:GetWidth()-18, true)--调整，宽度
+
+        if numSockets==1 then--宝石，位置
+            ItemSocketingSocket1:ClearAllPoints()
+            ItemSocketingSocket1:SetPoint('BOTTOM', 0, 33)
+        elseif numSockets==3 then
+            ItemSocketingSocket1:ClearAllPoints()
+            ItemSocketingSocket1:SetPoint('BOTTOM', -60, 33)
+            ItemSocketingSocket2:ClearAllPoints()
+            ItemSocketingSocket2:SetPoint('BOTTOM', 60, 33)
+            ItemSocketingSocket3:ClearAllPoints()
+        elseif numSockets==3 then
+            ItemSocketingSocket1:ClearAllPoints()
+            ItemSocketingSocket1:SetPoint('BOTTOMLEFT', 50, 33)
+            ItemSocketingSocket2:ClearAllPoints()
+            ItemSocketingSocket2:SetPoint('BOTTOM', 0, 33)
+            ItemSocketingSocket3:ClearAllPoints()
+            ItemSocketingSocket3:SetPoint('BOTTOMRIGHT', -50, 33)
+        end
+
+        set_Gem()
+    end)
+
+
 
 
     Frame= CreateFrame("Frame", nil, ItemSocketingFrame)
     Frame:SetPoint('BOTTOMRIGHT', 0, -10)
     Frame:SetSize(1,1)
-    ItemSocketingFrame:HookScript('OnShow', function()
+    ItemSocketingFrame:HookScript('OnShow', Init_Spell_Button)
+
+     --[[ItemSocketingFrame:HookScript('OnShow', function()
         local tab={
             'BAG_UPDATE_DELAYED',
             'ITEM_UNLOCKED',
@@ -416,30 +464,10 @@ local function Init()
             Buttons[index].type:SetText('')
         end
     end)
-    Frame:SetScript('OnEvent', set_Gem)
+    Frame:SetScript('OnEvent', set_Gem)]]
 
 
-    hooksecurefunc('ItemSocketingFrame_Update', function()
-        local numSockets = GetNumSockets()
-        ItemSocketingFrame.typeTab={}
-        for i, socket in ipairs(ItemSocketingFrame.Sockets) do
-            if ( i <= numSockets ) then
-                local name= GetSocketTypes(i)
-                name= name and _G['EMPTY_SOCKET_'..string.upper(name)]
-                if name then
-                    ItemSocketingFrame.typeTab[name]=true
-                end
-                if not socket.type and name then
-                    socket.type=e.Cstr(socket)
-                    socket.type:SetPoint('BOTTOM', socket, 'TOP', 0, 2)
-                end
-                if socket.type then
-                    socket.type:SetText(name or '')
-                end
-            end
-        end
-        ItemSocketingDescription:SetMinimumWidth(ItemSocketingScrollChild:GetWidth()-18, true)
-    end)
+
 end
 
 

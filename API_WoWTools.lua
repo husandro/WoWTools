@@ -17,6 +17,7 @@ e.Icon={}
 --Blizzard_Deprecated/Deprecated_10_2_0.lua
 e.WoWDate={}
 e.strText={}
+e.StausText={}--属性，截取表 API_Panel.lua
 e.tips=GameTooltip
 e.call=securecall
 --securecallfunction
@@ -217,3 +218,8 @@ else
         key='Key words',
     }
 end
+
+
+
+
+

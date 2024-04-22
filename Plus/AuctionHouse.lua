@@ -1132,22 +1132,27 @@ local function Init_BrowseResultsFrame()
         end
         for _, btn in pairs(ScrollBox:GetFrames() or {}) do
             local text
-            local itemKeyInfo = btn.rowData and btn.rowData.itemKey and C_AuctionHouse.GetItemKeyInfo(btn.rowData.itemKey)--itemID battlePetSpeciesID itemName battlePetLink appearanceLink quality iconFileID isPet isCommodity isEquipment
+            local itemKey= btn.rowData and btn.rowData.itemKey
+            local itemKeyInfo = itemKey and C_AuctionHouse.GetItemKeyInfo(itemKey)--itemID battlePetSpeciesID itemName battlePetLink appearanceLink quality iconFileID isPet isCommodity isEquipment
             if itemKeyInfo then
                 local isCollectedAll--宠物
                 text, isCollectedAll= select(3, e.GetPetCollectedNum(itemKeyInfo.battlePetSpeciesID, itemKeyInfo.itemID, true))
                 if isCollectedAll then
                     text= '|A:common-icon-checkmark-yellow:0:0|a'
                 end
-                if not text then--物品是否收集
-                    text= e.GetItemCollected(itemKeyInfo.itemID, nil, true)
-                end
+                
+                text= text or e.GetItemCollected(itemKeyInfo.itemID, nil, true)--物品是否收集
+                
                 if not text then--坐骑
                     local isMountCollected= select(2, e.GetMountCollected(nil, itemKeyInfo.itemID))
                     if isMountCollected then
                         text= '|A:common-icon-checkmark-yellow:0:0|a'
                     end
                 end
+                --[[if not text then
+                    local t1, t2= e.Get_Gem_Stats({itemKey=itemKey}, nil, nil)--显示, 宝石, 属性
+                    print(t1,t2)
+                end]]
                 --[[if not text then
                     --local itmeLink= Get_ItemLink_For_rowData(btn.rowData)
                     local itemLink= Get_ItemLink_For_rowData(btn.rowData)
