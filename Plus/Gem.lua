@@ -151,6 +151,7 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
             if i==1 then
                 local findGem
                 local gemName= type:gsub(AUCTION_CATEGORY_GEMS, '')
+                
                 for name in pairs(CurTypeGemTab or {}) do
                     if name:find(gemName) then
                         type= format('|cnGREEN_FONT_COLOR:%s|r', type or '')
