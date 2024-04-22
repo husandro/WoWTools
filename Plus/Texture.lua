@@ -1978,14 +1978,14 @@ local function Init_Event(arg1)
         hide_Texture(FlightMapFrameBg)
 
     elseif arg1=='Blizzard_ItemSocketingUI' then--镶嵌宝石，界面
+        
         e.Set_NineSlice_Color_Alpha(ItemSocketingFrame, true)
-        e.Set_ScrollBar_Color_Alpha(ItemSocketingScrollFrame)
-        hide_Texture(ItemSocketingFrameBg)
-        --[[e.Set_NineSlice_Color_Alpha(ItemSocketingFrame, true)
         e.Set_NineSlice_Color_Alpha(ItemSocketingFrameInset, nil, true)
         set_Alpha_Color(ItemSocketingFrameBg)
-        set_Alpha_Color(ItemSocketingFrameInset.Bg, true)
-        --hide_Texture(ItemSocketingFrameInset.Bg)
+        
+        ----hide_Texture(ItemSocketingFrameInset.Bg)
+        ItemSocketingFrameInset.Bg:ClearAllPoints()
+        ItemSocketingFrameInset.Bg:SetAllPoints(ItemSocketingScrollFrame)
         hide_Texture(ItemSocketingFrame['SocketFrame-Right'])
         hide_Texture(ItemSocketingFrame['SocketFrame-Left'])
         hide_Texture(ItemSocketingFrame['ParchmentFrame-Top'])
@@ -2010,7 +2010,7 @@ local function Init_Event(arg1)
         hide_Texture(ItemSocketingFrame.MiddleLeftNub)
         hide_Texture(ItemSocketingFrame.MiddleRightNub)
         hide_Texture(ItemSocketingFrame.BottomLeftNub)
-        hide_Texture(ItemSocketingFrame.BottomRightNub)]]
+        hide_Texture(ItemSocketingFrame.BottomRightNub)
 
     elseif arg1=='Blizzard_ChallengesUI' then--挑战, 钥匙插入， 界面
         set_Alpha_Color(ChallengesFrameInset.Bg)

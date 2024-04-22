@@ -445,7 +445,7 @@ local function Init()
                     CurTypeGemTab[name]=true
                 end
                 if not btn.type then
-                    btn.type=e.Cstr(btn, {color={r=1,g=1,b=1}})
+                    btn.type=e.Cstr(btn)--, {color={r=1,g=1,b=1}})
                     btn.type:SetPoint('BOTTOM', btn, 'TOP', 0, 2)
                     btn.qualityTexture= btn:CreateTexture(nil, 'OVERLAY')
                     --btn.qualityTexture:SetPoint('TOPLEFT')
