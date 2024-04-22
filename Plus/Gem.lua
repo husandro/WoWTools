@@ -11,9 +11,9 @@ local SpellsTab={
     433397,--取出宝石
     --405805,--拔出始源之石
 }
-local ActionTab={
+--[[local ActionTab={
     [405805]=true,--405805/拔出始源之石
-}
+}]]
 for _, spellID in pairs(SpellsTab) do
     e.LoadDate({id=spellID, type='spell'})
 end
@@ -293,7 +293,7 @@ local function Init_Spell_Button()
         self.texture:SetDesaturated(num and num>0)
     end
     SpellButton:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
         if self.spellID then
             e.tips:SetSpellByID(self.spellID)
@@ -347,7 +347,7 @@ local function Init_Spell_Button()
             local i = 1
             local slot = i + ((GetExtraBarIndex() or 19) - 1) * (NUM_ACTIONBAR_BUTTONS or 12)
             local actionType, spell = GetActionInfo(slot)
-            if actionType== "spell" and ActionTab[spell] then
+            if actionType== "spell" and spell then--and ActionTab[spell] then
                 self:SetAttribute("type", "action")
                 self:SetAttribute("action", slot)
                 self:SetAttribute("spell", nil)
@@ -418,6 +418,7 @@ local function Init()
     ItemSocketingDescription:SetPoint('LEFT')
     e.Set_Move_Frame(ItemSocketingFrame, {needSize=true, needMove=true, setSize=true, minW=338, minH=424, sizeRestFunc=function(btn)
         btn.target:SetSize(338, 424)
+        ItemSocketingDescription:SetMinimumWidth(ItemSocketingScrollChild:GetWidth()-18, true)--调整，宽度
     end, sizeUpdateFunc=function()
         ItemSocketingDescription:SetMinimumWidth(ItemSocketingScrollChild:GetWidth()-18, true)--调整，宽度
     end})
@@ -430,10 +431,16 @@ local function Init()
                 local name= GetSocketTypes(i)
                 name= name and _G['EMPTY_SOCKET_'..string.upper(name)]
                 if name then
+                    --["EMPTY_SOCKET_BLUE"] = "蓝色插槽",
+                    --["BLUE_GEM"] = "蓝色",
+                    local text= EMPTY_SOCKET_BLUE:gsub(BLUE_GEM, '')
+                    if text and text~='' then
+                        name= name:gsub(text, '')
+                    end
                     CurTypeGemTab[name]=true
                 end
                 if not btn.type then
-                    btn.type=e.Cstr(btn)
+                    btn.type=e.Cstr(btn, {color={r=1,g=1,b=1}})
                     btn.type:SetPoint('BOTTOM', btn, 'TOP', 0, 2)
                     btn.qualityTexture= btn:CreateTexture(nil, 'OVERLAY')
                     --btn.qualityTexture:SetPoint('TOPLEFT')
@@ -468,9 +475,10 @@ local function Init()
                     btn.qualityTexture:SetTexture(0)
                 end
             end
+            ItemSocketingDescription:SetMinimumWidth(ItemSocketingScrollChild:GetWidth()-18, true)--调整，宽度
         end
 
-        ItemSocketingDescription:SetMinimumWidth(ItemSocketingScrollChild:GetWidth()-18, true)--调整，宽度
+        --ItemSocketingDescription:SetMinimumWidth(ItemSocketingScrollChild:GetWidth()-18, true)--调整，宽度
 
         if numSockets==1 then--宝石，位置
             ItemSocketingSocket1:ClearAllPoints()
