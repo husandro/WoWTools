@@ -85,7 +85,7 @@ end
 
 local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
     local items={}
-   
+
     for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES do-- + NUM_REAGENTBAG_FRAMES do
         for slot=1, C_Container.GetContainerNumSlots(bag) do
             local info = C_Container.GetContainerItemInfo(bag, slot)
@@ -151,7 +151,7 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
             if i==1 then
                 local findGem
                 local gemName= type:gsub(AUCTION_CATEGORY_GEMS, '')
-                
+
                 for name in pairs(CurTypeGemTab or {}) do
                     if name:find(gemName) then
                         type= format('|cnGREEN_FONT_COLOR:%s|r', type or '')
@@ -219,7 +219,7 @@ local function Init_Spell_Button()
 
     SpellButton= e.Cbtn(Frame, {size={32,32}, icon='hide', type=true})
     SpellButton:Hide()
-    SpellButton:SetPoint('BOTTOMRIGHT', -8, 46)
+    SpellButton:SetPoint('BOTTOMRIGHT', -2, 46)
     SpellButton.texture= SpellButton:CreateTexture(nil, 'OVERLAY')
     SpellButton.texture:SetAllPoints(SpellButton)
     SpellButton.count=e.Cstr(SpellButton, {color={r=1,g=1,b=1}})--nil,nil,nil,true)
@@ -319,7 +319,7 @@ end
 
 
 local function set_point()
-    ItemSocketingScrollFrame:SetPoint('BOTTOMRIGHT', -22, 90)    
+    ItemSocketingScrollFrame:SetPoint('BOTTOMRIGHT', -22, 90)
     ItemSocketingScrollChild:ClearAllPoints()
     ItemSocketingScrollChild:SetPoint('TOPLEFT')
     ItemSocketingScrollChild:SetPoint('TOPRIGHT', -18, -254)
