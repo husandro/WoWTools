@@ -105,7 +105,7 @@ local function creatd_button(index)
     end)
 
     btn:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(ItemSocketingFrame, "ANCHOR_BOTTOMRIGHT")
+        e.tips:SetOwner(ItemSocketingFrame, 'ANCHOR_BOTTOMRIGHT')
         e.tips:ClearLines()
         e.tips:SetBagItem(self.bagID, self.slotID)
         e.tips:Show()
