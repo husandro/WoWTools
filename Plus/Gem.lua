@@ -378,12 +378,8 @@ end
 
 
 local function set_point()
-    ItemSocketingScrollFrame:SetPoint('BOTTOMRIGHT', -22, 90)
-    ItemSocketingDescription:SetPoint('LEFT')
-    ItemSocketingScrollChild:ClearAllPoints()
-    ItemSocketingScrollChild:SetPoint('TOPLEFT')
-    ItemSocketingScrollChild:SetPoint('TOPRIGHT', -18, -254)
     ItemSocketingDescription:SetMinimumWidth(ItemSocketingScrollChild:GetWidth()-18, true)--调整，宽度
+    ItemSocketingDescription:SetSocketedItem()
 end
 
 
@@ -412,6 +408,11 @@ local function Init()
     Frame:SetSize(1,1)
     Frame:SetScript('OnHide', function() CurTypeGemTab={} end)
 
+    ItemSocketingScrollFrame:SetPoint('BOTTOMRIGHT', -22, 90)    
+    ItemSocketingScrollChild:ClearAllPoints()
+    ItemSocketingScrollChild:SetPoint('TOPLEFT')
+    ItemSocketingScrollChild:SetPoint('TOPRIGHT', -18, -254)
+    ItemSocketingDescription:SetPoint('LEFT')
 
     ItemSocketingSocket3Left:ClearAllPoints()
     ItemSocketingSocket2Left:ClearAllPoints()
@@ -480,9 +481,7 @@ local function Init()
                     btn.qualityTexture:SetTexture(0)
                 end
             end
-            set_point()
         end
-
         --ItemSocketingDescription:SetMinimumWidth(ItemSocketingScrollChild:GetWidth()-18, true)--调整，宽度
 
         if numSockets==1 then--宝石，位置
@@ -501,7 +500,7 @@ local function Init()
             ItemSocketingSocket3:ClearAllPoints()
             ItemSocketingSocket3:SetPoint('BOTTOMRIGHT', -50, 33)
         end
-
+        set_point()
         set_Gem()
     end)
 
