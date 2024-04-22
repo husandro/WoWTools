@@ -1426,6 +1426,10 @@ local function set_CVar(reset, tips, notPrint)
             value= "1",
             msg= e.onlyChinese and '总是显示目标的目标' or OPTION_TOOLTIP_TARGETOFTARGET5,
         },
+        {   name='worldPreloadNonCritical',
+            value='0',
+            --msg='worldPreloadNonCritical'
+        }
     }
 
     if tips then

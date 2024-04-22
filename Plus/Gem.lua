@@ -329,10 +329,20 @@ local function set_point()
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function Init()
-
-
-
     Frame= CreateFrame("Frame", nil, ItemSocketingFrame)
     Frame:SetPoint('BOTTOMRIGHT', 0, -10)
     Frame:SetSize(1,1)
@@ -353,6 +363,7 @@ local function Init()
         btn.target:SetSize(338, 424)
         set_point()
     end, sizeUpdateFunc=set_point})
+    e.Set_Move_Frame(ItemSocketingScrollChild, {frame=ItemSocketingFrame})
 
     hooksecurefunc('ItemSocketingFrame_Update', function()
         local numSockets = GetNumSockets() or 0
@@ -425,7 +436,7 @@ local function Init()
     end)
 
 
-
+    
     Init_Spell_Button()
 end
 
