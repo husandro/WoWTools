@@ -990,11 +990,11 @@ function e.Get_Gem_Stats(self, itemLink)--显示, 宝石, 属性
             for name, name2 in pairs(e.StausText) do
                 --print(string.lower(name), name2, text:find(string.lower(name)), text)
                 if text:find(string.lower(name)) then
-                    if not str2 then
+                    if not leftText then
                         leftText= '|cffffffff'..name2..'|r'
-                    elseif not str3 then
+                    elseif not bottomLeftText then
                         bottomLeftText='|cffffffff'..name2..'|r'
-                        break
+                        --break
                     end
                 end
             end

@@ -18,6 +18,15 @@ end
 
 local AUCTION_CATEGORY_GEMS= AUCTION_CATEGORY_GEMS
 local CurTypeGemTab={}--当前，宝石，类型
+
+local function Get_Item_Color(itemLink)
+    local r,g,b
+    local itemQuality= select(3, C_Item.GetItemInfo(itemLink))
+    if itemQuality then
+        r,g,b = C_Item.GetItemQualityColor(itemQuality)
+    end
+    return r or 1, g or 1, b or 1
+end
 --[[
 function PaperDollItemSocketDisplayMixin:SetItem(item)
 	-- Currently only showing socket display for timerunning characters
@@ -55,8 +64,7 @@ function PaperDollItemSocketDisplayMixin:SetItem(item)
 	end
 
 	self:Layout()
-end
-]]
+end]]
 
 
 
@@ -208,15 +216,16 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
             else
                 btn.type:SetText('')
             end
-
+            local itemLink= info.info.hyperlink
             btn.level:SetText(info.level>1 and info.level or '')
-            btn:SetItem(info.info.hyperlink)
+            btn.level:SetTextColor(Get_Item_Color(itemLink))
+            btn:SetItem(itemLink)
             btn.bagID= info.bag
             btn.slotID= info.slot
             btn:SetItemButtonCount(info.info.stackCount)
             btn:SetAlpha(info.info.isLocked and 0.3 or 1)
             btn:SetShown(true)
-            e.Get_Gem_Stats(btn, info.info.hyperlink)
+            e.Get_Gem_Stats(btn, itemLink)
             x=x-40--34
             index= index+1
         end
@@ -396,25 +405,48 @@ local function Init()
     hooksecurefunc('ItemSocketingFrame_Update', function()
         local numSockets = GetNumSockets() or 0
         CurTypeGemTab={}
-        for i, socket in ipairs(ItemSocketingFrame.Sockets) do--插槽，名称
+        for i, btn in ipairs(ItemSocketingFrame.Sockets) do--插槽，名称
             if ( i <= numSockets ) then
                 local name= GetSocketTypes(i)
                 name= name and _G['EMPTY_SOCKET_'..string.upper(name)]
                 if name then
                     CurTypeGemTab[name]=true
                 end
-                if not socket.type then
-                    socket.type=e.Cstr(socket)
-                    socket.type:SetPoint('BOTTOM', socket, 'TOP', 0, 2)
-                    socket.leftText=e.Cstr(socket)
-                    socket.leftText:SetPoint('TOPLEFT', socket, 'BOTTOMLEFT')
-                    socket.rightText=e.Cstr(socket)
-                    socket.rightText:SetPoint('TOPRIGHT', socket, 'BOTTOMRIGHT')
+                if not btn.type then
+                    btn.type=e.Cstr(btn)
+                    btn.type:SetPoint('BOTTOM', btn, 'TOP', 0, 2)
+                    btn.qualityTexture= btn:CreateTexture(nil, 'OVERLAY')
+                    --btn.qualityTexture:SetPoint('TOPLEFT')
+                    --btn.qualityTexture:SetPoint('LEFT')
+                    btn.qualityTexture:SetPoint('RIGHT', btn, 'LEFT',18,-8)
+                    btn.qualityTexture:SetSize(30,30)
+                    btn.levelText=e.Cstr(btn)
+                    btn.levelText:SetPoint('CENTER')
+                    btn.leftText=e.Cstr(btn)
+                    btn.leftText:SetPoint('TOPLEFT', btn, 'BOTTOMLEFT')
+                    btn.rightText=e.Cstr(btn)
+                    btn.rightText:SetPoint('TOPRIGHT', btn, 'BOTTOMRIGHT')
                 end
-                local left, right= e.Get_Gem_Stats(nil, GetNewSocketLink(i) or GetExistingSocketLink(i))
-                socket.type:SetText(name or '')
-                socket.leftText:SetText(left or '')
-                socket.rightText:SetText(right or '')
+                local itemLink= GetNewSocketLink(i) or GetExistingSocketLink(i)
+                local left, right= e.Get_Gem_Stats(nil, itemLink)
+                local atlas
+                if itemLink then
+                    local quality= C_TradeSkillUI.GetItemReagentQualityByItemInfo(itemLink) or C_TradeSkillUI.GetItemCraftedQualityByItemInfo(itemLink)
+                    if quality then
+                        atlas = ("Professions-Icon-Quality-Tier%d-Inv"):format(quality);
+                    end
+                end
+                
+                btn.type:SetText(name or '')
+                btn.leftText:SetText(left or '')
+                btn.rightText:SetText(right or '')
+                btn.levelText:SetText(itemLink and GetDetailedItemLevelInfo(itemLink) or '')
+                btn.levelText:SetTextColor(Get_Item_Color(itemLink))
+                if atlas then
+                    btn.qualityTexture:SetAtlas(atlas)
+                else
+                    btn.qualityTexture:SetTexture(e.Icon.icon)
+                end
             end
         end
 
@@ -423,12 +455,11 @@ local function Init()
         if numSockets==1 then--宝石，位置
             ItemSocketingSocket1:ClearAllPoints()
             ItemSocketingSocket1:SetPoint('BOTTOM', 0, 33)
-        elseif numSockets==3 then
+        elseif numSockets==2 then
             ItemSocketingSocket1:ClearAllPoints()
             ItemSocketingSocket1:SetPoint('BOTTOM', -60, 33)
             ItemSocketingSocket2:ClearAllPoints()
             ItemSocketingSocket2:SetPoint('BOTTOM', 60, 33)
-            ItemSocketingSocket3:ClearAllPoints()
         elseif numSockets==3 then
             ItemSocketingSocket1:ClearAllPoints()
             ItemSocketingSocket1:SetPoint('BOTTOMLEFT', 50, 33)
