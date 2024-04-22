@@ -20,40 +20,40 @@ local AUCTION_CATEGORY_GEMS= AUCTION_CATEGORY_GEMS
 --[[
 function PaperDollItemSocketDisplayMixin:SetItem(item)
 	-- Currently only showing socket display for timerunning characters
-	local showSocketDisplay = item ~= nil and PlayerGetTimerunningSeasonID() ~= nil;
-	self:SetShown(showSocketDisplay);
+	local showSocketDisplay = item ~= nil and PlayerGetTimerunningSeasonID() ~= nil
+	self:SetShown(showSocketDisplay)
 
 	if not showSocketDisplay then
-		return;
+		return
 	end
 
-	local numSockets = C_Item.GetItemNumSockets(item);
+	local numSockets = C_Item.GetItemNumSockets(item)
 	for index, slot in ipairs(self.Slots) do
-		slot:SetShown(index <= numSockets);
+		slot:SetShown(index <= numSockets)
 
 		-- Can get gemID without the gem being loaded in item sparse (can't use GetItemGem)
-		local gemID = C_Item.GetItemGemID(item, index);
-		local hasGem = gemID ~= nil;
+		local gemID = C_Item.GetItemGemID(item, index)
+		local hasGem = gemID ~= nil
 
-		slot.Gem:SetShown(hasGem);
+		slot.Gem:SetShown(hasGem)
 
 		if hasGem then
-			local gemItem = Item:CreateFromItemID(gemID);
+			local gemItem = Item:CreateFromItemID(gemID)
 
 			-- Prevent edge case a different gem was previously shown, but new gem not cached yet
 			if not gemItem:IsItemDataCached() then
-				slot.Gem:SetTexture();
+				slot.Gem:SetTexture()
 			end
 
 			-- Icon requires item sparse, need to use a callback if not loaded
 			gemItem:ContinueOnItemLoad(function()
-				local gemIcon = C_Item.GetItemIconByID(gemID);
-				slot.Gem:SetTexture(gemIcon);
-			end);
+				local gemIcon = C_Item.GetItemIconByID(gemID)
+				slot.Gem:SetTexture(gemIcon)
+			end)
 		end
 	end
 
-	self:Layout();
+	self:Layout()
 end
 ]]
 
@@ -390,9 +390,7 @@ local function Init()
     ItemSocketingDescription:SetPoint('LEFT')
     e.Set_Move_Frame(ItemSocketingFrame, {needSize=true, needMove=true, setSize=true, minW=338, minH=424, sizeRestFunc=function(btn)
         btn.target:SetSize(338, 424) end, sizeUpdateFunc=function()
-            ItemSocketingDescription:SetMinimumWidth(ItemSocketingScrollChild:GetWidth()-18, true);
-
-        --ItemSocketingDescription:SetPoint('LEFT')
+            ItemSocketingDescription:SetMinimumWidth(ItemSocketingScrollChild:GetWidth()-18, true)
     end})
 
 
@@ -422,7 +420,7 @@ local function Init()
 
 
     hooksecurefunc('ItemSocketingFrame_Update', function()
-        local numSockets = GetNumSockets();
+        local numSockets = GetNumSockets()
         ItemSocketingFrame.typeTab={}
         for i, socket in ipairs(ItemSocketingFrame.Sockets) do
             if ( i <= numSockets ) then
@@ -440,7 +438,7 @@ local function Init()
                 end
             end
         end
-        ItemSocketingDescription:SetMinimumWidth(ItemSocketingScrollChild:GetWidth()-18, true);
+        ItemSocketingDescription:SetMinimumWidth(ItemSocketingScrollChild:GetWidth()-18, true)
     end)
 end
 
