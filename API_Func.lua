@@ -973,24 +973,29 @@ end
 
 
 --local AndStr = COVENANT_RENOWN_TOAST_REWARD_COMBINER:format('(.-)','(.+)')--"%s 和 %s"
-function e.Get_Gem_Stats(itemLink, self)--显示, 宝石, 属性
-    local dateInfo
-    if e.Is_Timerunning then
-        dateInfo= e.GetTooltipData({hyperLink=itemLink, index=2})--物品提示，信息
-    else
-        dateInfo= e.GetTooltipData({hyperLink=itemLink, text={'(%+.+)', }})--物品提示，信息
-    end
-    local text= dateInfo.text['(%+.+)'] or dateInfo.indexText
+function e.Get_Gem_Stats(self, itemLink)--显示, 宝石, 属性
     local leftText, bottomLeftText
-    if text then
-        text= string.lower(text)
-        for name, name2 in pairs(e.StausText) do
-            if text:find(string.lower(name)) then
-                if not str2 then
-                    leftText= '|cffffffff'..name2..'|r'
-                elseif not str3 then
-                    bottomLeftText='|cffffffff'..name2..'|r'
-                    break
+    if itemLink then
+        local dateInfo
+        if e.Is_Timerunning then
+            dateInfo= e.GetTooltipData({hyperLink=itemLink, index=2})--物品提示，信息
+        else
+            dateInfo= e.GetTooltipData({hyperLink=itemLink, text={'(%+.+)', }})--物品提示，信息
+        end
+        local text= dateInfo.text['(%+.+)'] or dateInfo.indexText
+        
+        if text then
+            text= string.lower(text)
+            
+            for name, name2 in pairs(e.StausText) do
+                --print(string.lower(name), name2, text:find(string.lower(name)), text)
+                if text:find(string.lower(name)) then
+                    if not str2 then
+                        leftText= '|cffffffff'..name2..'|r'
+                    elseif not str3 then
+                        bottomLeftText='|cffffffff'..name2..'|r'
+                        break
+                    end
                 end
             end
         end

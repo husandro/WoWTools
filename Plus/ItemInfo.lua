@@ -27,7 +27,7 @@ local heirloomWeapontemEquipLocTab={--传家宝 ，武器，itemEquipLoc
         ['INVTYPE_RANGEDRIGHT']= true,
     }
 
---Set_Item_Info(itemButton, {bag={bag=bagID, slot=slotID}, merchant={slot=slot, buyBack= selectedTab==2}, guidBank={tab=tab, slot=i}, itemLink=nil, point=nil})
+--e.Set_Item_Info(itemButton, {bag={bag=bagID, slot=slotID}, merchant={slot=slot, buyBack= selectedTab==2}, guidBank={tab=tab, slot=i}, itemLink=nil, point=nil})
 
 
 
@@ -86,7 +86,7 @@ end
 
 
 
-local function Set_Item_Info(self, tab)
+function e.Set_Item_Info(self, tab)
     if not self or not self:IsShown() then
         return
     end
@@ -634,9 +634,9 @@ local function setBags(self)--背包设置
     for _, itemButton in self:EnumerateValidItems() do
         if itemButton.hasItem then
             local slotID, bagID= itemButton:GetSlotAndBagID()--:GetID() GetBagID()
-            Set_Item_Info(itemButton, {bag={bag=bagID, slot=slotID}})
+            e.Set_Item_Info(itemButton, {bag={bag=bagID, slot=slotID}})
         else
-            Set_Item_Info(itemButton, {})
+            e.Set_Item_Info(itemButton, {})
         end
     end
 end
@@ -680,7 +680,7 @@ local function setGuildBank()--公会银行,设置
             local column = ceil((i-0.5)/NUM_SLOTS_PER_GUILDBANK_GROUP)
             local button = (GuildBankFrame.Columns[column] and GuildBankFrame.Columns[column].Buttons) and GuildBankFrame.Columns[column].Buttons[index]
             if button then
-                Set_Item_Info(button,{guidBank={tab=tab, slot=i}})
+                e.Set_Item_Info(button,{guidBank={tab=tab, slot=i}})
             end
         end
     end
@@ -703,7 +703,7 @@ end
 
 local function set_BankFrameItemButton_Update(self)--银行, BankFrame.lua
     if not self.isBag then
-        Set_Item_Info(self, {bag={bag=self:GetParent():GetID(), slot=self:GetID()}})
+        e.Set_Item_Info(self, {bag={bag=self:GetParent():GetID(), slot=self:GetID()}})
     else
         local slot = self:GetBagID()
         local numFreeSlots
@@ -751,9 +751,9 @@ local function Init_Bag()
                 if slot and bag then
                     if self.hasItem then
                         local slotID, bagID= self:GetSlotAndBagID()--:GetID() GetBagID()
-                        Set_Item_Info(self, {bag={bag=bagID, slot=slotID}})
+                        e.Set_Item_Info(self, {bag={bag=bagID, slot=slotID}})
                     else
-                        Set_Item_Info(self, {})
+                        e.Set_Item_Info(self, {})
                     end
                 end
             end)
@@ -763,7 +763,7 @@ local function Init_Bag()
     elseif C_AddOns.IsAddOnLoaded("Baggins") then
         hooksecurefunc(Baggins, 'UpdateItemButton', function(_, _, button, bagID, slotID)
             if button and bagID and slotID then
-                Set_Item_Info(button, {bag={bag=bagID, slot=slotID}})
+                e.Set_Item_Info(button, {bag={bag=bagID, slot=slotID}})
             end
         end)
         return
@@ -774,7 +774,7 @@ local function Init_Bag()
             ADDON= lib:GetAddon("Inventorian")
             local InvLevel = ADDON:NewModule('InventorianWoWToolsItemInfo')
             function InvLevel:Update()
-                Set_Item_Info(self, {bag={bag=self.bag, slot=self.slot}})
+                e.Set_Item_Info(self, {bag={bag=self.bag, slot=self.slot}})
             end
             function InvLevel:WrapItemButton(item)
                 hooksecurefunc(item, "Update", InvLevel.Update)
@@ -969,7 +969,7 @@ local function Init()
             local btn=_G["MailItem"..i.."Button"]
             if btn and btn:IsShown() then
                 --local packageIcon, stationeryIcon, sender, subject, money, CODAmount, daysLeft, itemCount, wasRead, x, y, z, isGM, firstItemQuantity, firstItemLink = GetInboxHeaderInfo(btn.index)
-                Set_Item_Info(btn, {itemLink= select(15, GetInboxHeaderInfo(btn.index))})
+                e.Set_Item_Info(btn, {itemLink= select(15, GetInboxHeaderInfo(btn.index))})
             end
         end
     end)
@@ -980,7 +980,7 @@ local function Init()
         for i=1, ATTACHMENTS_MAX_RECEIVE do
             local attachmentButton = OpenMailFrame.OpenMailAttachments[i]
             if attachmentButton and attachmentButton:IsShown() then
-                Set_Item_Info(attachmentButton, {itemLink= HasInboxItem(InboxFrame.openMailID, i) and GetInboxItemLink(InboxFrame.openMailID, i)})
+                e.Set_Item_Info(attachmentButton, {itemLink= HasInboxItem(InboxFrame.openMailID, i) and GetInboxItemLink(InboxFrame.openMailID, i)})
             end
         end
     end)
@@ -988,7 +988,7 @@ local function Init()
         for i=1, ATTACHMENTS_MAX_SEND do
             local sendMailAttachmentButton = SendMailFrame.SendMailAttachments[i]
             if sendMailAttachmentButton and sendMailAttachmentButton:IsShown() then
-                Set_Item_Info(sendMailAttachmentButton, {itemLink= HasSendMailItem(i) and GetSendMailItemLink(i)})
+                e.Set_Item_Info(sendMailAttachmentButton, {itemLink= HasSendMailItem(i) and GetSendMailItemLink(i)})
             end
         end
     end)
@@ -1044,10 +1044,10 @@ local function Init()
             local slot = isBuy and (((MerchantFrame.page - 1) * MERCHANT_ITEMS_PER_PAGE) + i) or i
             local itemButton= _G["MerchantItem"..i..'ItemButton']
             if itemButton then
-                Set_Item_Info(itemButton, {merchant={slot=slot, buyBack= not isBuy}})
+                e.Set_Item_Info(itemButton, {merchant={slot=slot, buyBack= not isBuy}})
             end
         end
-        Set_Item_Info(MerchantBuyBackItemItemButton, {merchant={slot=GetNumBuybackItems(), buyBack=true}})
+        e.Set_Item_Info(MerchantBuyBackItemItemButton, {merchant={slot=GetNumBuybackItems(), buyBack=true}})
     end
     hooksecurefunc('MerchantFrame_UpdateMerchantInfo', setMerchantInfo)--MerchantFrame.lua
     hooksecurefunc('MerchantFrame_UpdateBuybackInfo', setMerchantInfo)
@@ -1124,12 +1124,12 @@ local function Init()
     --拾取
     hooksecurefunc(LootFrame, 'Open', function(self)--LootFrame.lua
         for index, btn in pairs(self.ScrollBox:GetFrames() or {}) do
-            Set_Item_Info(btn.Item, {lootIndex=btn.GetOrderIndex() or btn:GetSlotIndex() or index})
+            e.Set_Item_Info(btn.Item, {lootIndex=btn.GetOrderIndex() or btn:GetSlotIndex() or index})
         end
     end)
     hooksecurefunc(LootFrame.ScrollBox, 'SetScrollTargetOffset', function(self)
         for index, btn in pairs(self:GetFrames() or {}) do
-            Set_Item_Info(btn.Item, {lootIndex=btn.GetOrderIndex() or btn:GetSlotIndex() or index})
+            e.Set_Item_Info(btn.Item, {lootIndex=btn.GetOrderIndex() or btn:GetSlotIndex() or index})
         end
     end)
 
@@ -1249,7 +1249,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     local frame= PerksProgramFrame:GetFrozenItemFrame()
                     if frame then
                         local itemLink= frame.FrozenButton.itemID and select(2, C_Item.GetItemInfo(frame.FrozenButton.itemID))
-                        Set_Item_Info(frame.FrozenButton, {itemLink=itemLink, size=12})
+                        e.Set_Item_Info(frame.FrozenButton, {itemLink=itemLink, size=12})
                     end
                 end
             end
@@ -1257,12 +1257,12 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 for _, btn in pairs(self2:GetFrames()) do
                     if btn.itemID then
                         local itemLink= btn.itemID and select(2, C_Item.GetItemInfo(btn.itemID))
-                        Set_Item_Info(btn.ContentsContainer, {itemLink=itemLink, point=btn.ContentsContainer.Icon, size=12})
+                        e.Set_Item_Info(btn.ContentsContainer, {itemLink=itemLink, point=btn.ContentsContainer.Icon, size=12})
                     elseif btn.GetItemInfo then--10.2
                         local itemInfo=btn:GetItemInfo()
                         if itemInfo then
                             local itemLink= itemInfo.itemID and select(2, C_Item.GetItemInfo(itemInfo.itemID))
-                            Set_Item_Info(btn.ContentsContainer, {itemLink=itemLink, point=btn.ContentsContainer.Icon, size=12})
+                            e.Set_Item_Info(btn.ContentsContainer, {itemLink=itemLink, point=btn.ContentsContainer.Icon, size=12})
                         end
                     end
                 end
@@ -1292,16 +1292,16 @@ panel:SetScript("OnEvent", function(_, event, arg1)
         elseif arg1=='Blizzard_AuctionHouseUI' then--拍卖行
             --出售页面，买卖，物品信息 Blizzard_AuctionHouseSellFrame.lua
             hooksecurefunc(AuctionHouseSellFrameMixin, 'SetItem', function(self, itemLocation)
-                Set_Item_Info(self.ItemDisplay.ItemButton, {itemLocation= itemLocation, size=12})
+                e.Set_Item_Info(self.ItemDisplay.ItemButton, {itemLocation= itemLocation, size=12})
             end)
 
             hooksecurefunc(AuctionHouseFrame, 'SelectBrowseResult', function(self, browseResult)
                 local itemKey = browseResult.itemKey
                 local itemKeyInfo = C_AuctionHouse.GetItemKeyInfo(itemKey) or {}
                 if itemKeyInfo.isCommodity then
-                    Set_Item_Info(self.CommoditiesBuyFrame.BuyDisplay.ItemDisplay.ItemButton, {itemKey= itemKey, size=12})
+                    e.Set_Item_Info(self.CommoditiesBuyFrame.BuyDisplay.ItemDisplay.ItemButton, {itemKey= itemKey, size=12})
                 else
-                    Set_Item_Info(self.ItemBuyFrame.ItemDisplay.ItemButton, {itemKey= itemKey, size=12})
+                    e.Set_Item_Info(self.ItemBuyFrame.ItemDisplay.ItemButton, {itemKey= itemKey, size=12})
                 end
             end)
 
@@ -1320,7 +1320,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             for btn in ScrappingMachineFrame.ItemSlots.scrapButtons:EnumerateActive() do
                 if (btn) then
                     hooksecurefunc(btn, 'RefreshIcon', function(self)
-                        Set_Item_Info(self, {itemLink=self.itemLink})-- itemLocation= self.itemLocation})
+                        e.Set_Item_Info(self, {itemLink=self.itemLink})-- itemLocation= self.itemLocation})
                     end)
                 end
             end

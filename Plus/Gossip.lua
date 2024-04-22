@@ -3646,7 +3646,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save.Gossip_Text_Icon_Size= Save.Gossip_Text_Icon_Size or 18
 
              --添加控制面板
-             e.AddPanel_Header(nil, 'Plus')
+             --e.AddPanel_Header(nil, 'Plus')
             Initializer= e.AddPanel_Check_Button({
                  checkName= '|A:SpecDial_LastPip_BorderGlow:0:0|a'..(e.onlyChinese and '对话和任务' or addName),
                  checkValue= not Save.disabled,

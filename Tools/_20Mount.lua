@@ -871,9 +871,12 @@ local function InitMenu(_, level, type)--主菜单
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 
         info={
-            text=id..' Tools',
-            isTitle=true,
+            text=e.toolsFrame.addName,
             notCheckable=true,
+            colorCode='|cffffd100',
+            func= function()
+                e.OpenPanelOpting(e.toolsFrame.addName)
+            end
         }
         e.LibDD:UIDropDownMenu_AddButton(info,level)
         return
@@ -1707,7 +1710,7 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-panel:SetScript("OnEvent", function(_, event, arg1, arg2)
+panel:SetScript("OnEvent", function(frame, event, arg1, arg2)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
@@ -1723,31 +1726,31 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2)
 
                 Init()--初始
 
-                panel:RegisterEvent('PLAYER_REGEN_DISABLED')
-                panel:RegisterEvent('PLAYER_REGEN_ENABLED')
-                panel:RegisterEvent('SPELLS_CHANGED')
-                panel:RegisterEvent('SPELL_DATA_LOAD_RESULT')
-                panel:RegisterEvent('BAG_UPDATE_DELAYED')
-                panel:RegisterEvent('MOUNT_JOURNAL_USABILITY_CHANGED')
-                panel:RegisterEvent('PLAYER_MOUNT_DISPLAY_CHANGED')
-                panel:RegisterEvent('NEW_MOUNT_ADDED')
-                panel:RegisterEvent('MODIFIER_STATE_CHANGED')
-                panel:RegisterEvent('ZONE_CHANGED')
-                panel:RegisterEvent('ZONE_CHANGED_INDOORS')
-                panel:RegisterEvent('ZONE_CHANGED_NEW_AREA')
-                panel:RegisterEvent('SPELL_UPDATE_COOLDOWN')
-                panel:RegisterEvent('SPELL_UPDATE_USABLE')
-                panel:RegisterEvent('PET_BATTLE_CLOSE')
-                panel:RegisterUnitEvent('UNIT_EXITED_VEHICLE', "player")
+                frame:RegisterEvent('PLAYER_REGEN_DISABLED')
+                frame:RegisterEvent('PLAYER_REGEN_ENABLED')
+                frame:RegisterEvent('SPELLS_CHANGED')
+                frame:RegisterEvent('SPELL_DATA_LOAD_RESULT')
+                frame:RegisterEvent('BAG_UPDATE_DELAYED')
+                frame:RegisterEvent('MOUNT_JOURNAL_USABILITY_CHANGED')
+                frame:RegisterEvent('PLAYER_MOUNT_DISPLAY_CHANGED')
+                frame:RegisterEvent('NEW_MOUNT_ADDED')
+                frame:RegisterEvent('MODIFIER_STATE_CHANGED')
+                frame:RegisterEvent('ZONE_CHANGED')
+                frame:RegisterEvent('ZONE_CHANGED_INDOORS')
+                frame:RegisterEvent('ZONE_CHANGED_NEW_AREA')
+                frame:RegisterEvent('SPELL_UPDATE_COOLDOWN')
+                frame:RegisterEvent('SPELL_UPDATE_USABLE')
+                frame:RegisterEvent('PET_BATTLE_CLOSE')
+                frame:RegisterUnitEvent('UNIT_EXITED_VEHICLE', "player")
 
-                panel:RegisterEvent('PLAYER_STOPPED_MOVING')
-                panel:RegisterEvent('PLAYER_STARTED_MOVING')--设置, TOOLS 框架,隐藏
+                frame:RegisterEvent('PLAYER_STOPPED_MOVING')
+                frame:RegisterEvent('PLAYER_STARTED_MOVING')--设置, TOOLS 框架,隐藏
 
-                panel:RegisterEvent('NEUTRAL_FACTION_SELECT_RESULT')--ShiJI
-                panel:RegisterEvent('LEARNED_SPELL_IN_TAB')--OkMount
+                frame:RegisterEvent('NEUTRAL_FACTION_SELECT_RESULT')--ShiJI
+                frame:RegisterEvent('LEARNED_SPELL_IN_TAB')--OkMount
 
                 if Save.AFKRandom then
-                    panel:RegisterUnitEvent('PLAYER_FLAGS_CHANGED', 'player')--AFK
+                    frame:RegisterUnitEvent('PLAYER_FLAGS_CHANGED', 'player')--AFK
                     if not UnitAffectingCombat('player') and UnitIsAFK('player') and IsOutdoors() then
                         setMountShow()--坐骑展示
                     end
@@ -1755,9 +1758,9 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2)
 
             else
                 e.toolsFrame.disabled=true
-                panel:UnregisterAllEvents()
+                frame:UnregisterAllEvents()
             end
-            panel:RegisterEvent("PLAYER_LOGOUT")
+            frame:RegisterEvent("PLAYER_LOGOUT")
 
         elseif arg1=='Blizzard_Collections' then
             Init_MountJournal()

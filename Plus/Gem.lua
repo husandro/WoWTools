@@ -403,14 +403,18 @@ local function Init()
                 if name then
                     CurTypeGemTab[name]=true
                 end
-                if not socket.type and name then
+                if not socket.type then
                     socket.type=e.Cstr(socket)
                     socket.type:SetPoint('BOTTOM', socket, 'TOP', 0, 2)
+                    socket.leftText=e.Cstr(socket)
+                    socket.leftText:SetPoint('TOPLEFT', socket, 'BOTTOMLEFT')
+                    socket.rightText=e.Cstr(socket)
+                    socket.rightText:SetPoint('TOPRIGHT', socket, 'BOTTOMRIGHT')
                 end
-                if socket.type then
-                    socket.type:SetText(name or '')
-                end
-                e.Get_Gem_Stats(socket.BracketFrame, GetNewSocketLink(i) or GetExistingSocketLink(i))
+                local left, right= e.Get_Gem_Stats(nil, GetNewSocketLink(i) or GetExistingSocketLink(i))
+                socket.type:SetText(name or '')
+                socket.leftText:SetText(left or '')
+                socket.rightText:SetText(right or '')
             end
         end
 

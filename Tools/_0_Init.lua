@@ -94,10 +94,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== id then
             Save= WoWToolsSave[id..'_Tools'] or Save
             e.toolsFrame.disabled= Save.disabled
+            e.toolsFrame.addName= '|A:bag-border:0:0|aTools'
 
             e.AddPanel_Check({
-                name= e.onlyChinese and '启用' or ENABLE,
-                tooltip= e.cn(addName),
+                name= e.toolsFrame.addName,
+                --tooltip= e.cn(addName),
                 value= not Save.disabled,
                 category= Category,
                 func= function()

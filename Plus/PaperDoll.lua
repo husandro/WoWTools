@@ -3084,7 +3084,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save.itemLevelBit= Save.itemLevelBit or 1
 
             --添加控制面板
-            e.AddPanel_Header(nil, 'WoW')
+            e.AddPanel_Header(nil, 'Plus')
             e.AddPanel_Check({
                 name= (e.Player.sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a')..(e.onlyChinese and '角色' or addName),
                 tooltip= e.cn(addName),
