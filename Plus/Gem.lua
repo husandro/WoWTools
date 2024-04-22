@@ -203,7 +203,7 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
             else
                 btn.type:SetText('')
             end
-            
+
             btn.level:SetText(info.level>1 and info.level or '')
             btn:SetItem(info.info.hyperlink)
             btn.bagID= info.bag
@@ -365,6 +365,37 @@ local function Init()
         Primordial = e.onlyChinese and EMPTY_SOCKET_PRIMORDIAL or '始源镶孔',
    }--EMPTY_SOCKET_NO_COLOR,--棱彩插槽
  ]]
+
+    ItemSocketingSocket3Right:ClearAllPoints()
+    ItemSocketingSocket3Right:Hide()
+    ItemSocketingSocket3Left:ClearAllPoints()
+    ItemSocketingSocket3Left:Hide()
+    ItemSocketingSocket2Left:ClearAllPoints()
+    ItemSocketingSocket2Left:Hide()
+    ItemSocketingSocket1Left:ClearAllPoints()
+    ItemSocketingSocket1Left:Hide()
+    ItemSocketingFrame['SocketFrame-Left']:SetPoint('TOPRIGHT', ItemSocketingFrame, 'BOTTOM',0, 77)
+    ItemSocketingFrame['SocketFrame-Right']:SetPoint('BOTTOMLEFT', ItemSocketingFrame, 'BOTTOM', 0, 26)
+
+    ItemSocketingScrollFrame:SetPoint('BOTTOMRIGHT', -22, 90)
+    ItemSocketingScrollChild:ClearAllPoints()
+    ItemSocketingScrollChild:SetPoint('TOPLEFT')
+    ItemSocketingScrollChild:SetPoint('TOPRIGHT', -18, -254)
+    ItemSocketingSocket1:ClearAllPoints()
+    ItemSocketingSocket1:SetPoint('BOTTOMLEFT', 50, 33)
+    ItemSocketingSocket2:ClearAllPoints()
+    ItemSocketingSocket2:SetPoint('BOTTOM', 0, 33)
+    ItemSocketingSocket3:ClearAllPoints()
+    ItemSocketingSocket3:SetPoint('BOTTOMRIGHT', -50, 33)
+    ItemSocketingDescription:SetPoint('LEFT')
+    e.Set_Move_Frame(ItemSocketingFrame, {needSize=true, needMove=true, setSize=true, minW=338, sizeRestFunc=function(btn)
+        btn.target:SetSize(338, 424) end, sizeUpdateFunc=function()
+            ItemSocketingDescription:SetMinimumWidth(ItemSocketingScrollChild:GetWidth()-18, true);
+
+        --ItemSocketingDescription:SetPoint('LEFT')
+    end})
+
+
     Frame= CreateFrame("Frame", nil, ItemSocketingFrame)
     Frame:SetPoint('BOTTOMRIGHT', 0, -10)
     Frame:SetSize(1,1)
@@ -389,7 +420,7 @@ local function Init()
     end)
     Frame:SetScript('OnEvent', set_Gem)
 
-    
+
     hooksecurefunc('ItemSocketingFrame_Update', function()
         local numSockets = GetNumSockets();
         ItemSocketingFrame.typeTab={}
@@ -409,6 +440,7 @@ local function Init()
                 end
             end
         end
+        ItemSocketingDescription:SetMinimumWidth(ItemSocketingScrollChild:GetWidth()-18, true);
     end)
 end
 

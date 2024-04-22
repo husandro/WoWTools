@@ -1464,8 +1464,10 @@ local function setAddLoad(arg1)
         e.Set_Move_Frame(WeeklyRewardsFrame)
         e.Set_Move_Frame(WeeklyRewardsFrame.Blackout, {frame=WeeklyRewardsFrame})
 
-    elseif arg1=='Blizzard_ItemSocketingUI' then--镶嵌宝石，界面
-        e.Set_Move_Frame(ItemSocketingFrame)
+    --[[elseif arg1=='Blizzard_ItemSocketingUI' then--镶嵌宝石，界面
+        C_Timer.After(2, function()
+            e.Set_Move_Frame(ItemSocketingFrame)
+        end)]]
     elseif arg1=='Blizzard_ItemUpgradeUI' then--装备升级,界面
         e.Set_Move_Frame(ItemUpgradeFrame)
 
