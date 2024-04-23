@@ -3118,16 +3118,18 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
             end)]]
 
-            
+
             if not Save.disabled then
                 Init()
                 self:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
-                do
-                    ProfessionsUtil.OpenProfessionFrameToRecipe(126392)
-                end
-                if ProfessionsFrame then
-                    ProfessionsFrame:Hide()
-                end
+                C_Timer.After(2, function()
+                    do
+                        ProfessionsUtil.OpenProfessionFrameToRecipe(126392)
+                    end
+                    if ProfessionsFrame then
+                        ProfessionsFrame:Hide()
+                    end
+                end)
             else
                 self:UnregisterEvent('ADDON_LOADED')
             end
