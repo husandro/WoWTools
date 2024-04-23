@@ -223,8 +223,8 @@ local function Set_Slot_Info(btn, index, isActiveSlot)--创建，提示内容
         elseif self.talentText then
             self.talentText:SetText('')
         end
+        local creatureDisplayID = C_PlayerInfo.GetPetStableCreatureDisplayInfoID(self.petSlot);
         if self.model then--已激活宠物，提示
-            local creatureDisplayID = C_PlayerInfo.GetPetStableCreatureDisplayInfoID(self.petSlot);
             if creatureDisplayID and creatureDisplayID>0 then
                 if creatureDisplayID~=self.creatureDisplayID then
                     self.model:SetDisplayInfo(creatureDisplayID)
@@ -234,6 +234,12 @@ local function Set_Slot_Info(btn, index, isActiveSlot)--创建，提示内容
             end
             self.creatureDisplayID= creatureDisplayID--提示用，
         end
+        if creatureDisplayID then
+            SetPortraitTextureFromCreatureDisplayID(self.icon2, creatureDisplayID)
+        end
+        self.icon2:SetShown(creatureDisplayID and creatureDisplayID>0 and true or false)
+        --print(creatureDisplayID)
+        
     end
 
     btn.dimOverlay = btn.dimOverlay or btn:CreateTexture(nil, "OVERLAY");--查询提示用
@@ -242,13 +248,34 @@ local function Set_Slot_Info(btn, index, isActiveSlot)--创建，提示内容
     btn.dimOverlay:Hide();
 
 
-    if btn.Checked then
-        local w,h= btn:GetSize()
+    btn.icon2=btn:CreateTexture(nil, 'BORDER',nil, 1)
+    btn.icon2:SetAllPoints(btn)
+    btn.icon2:SetTexCoord(1,0,0,1)
+
+    local icon= _G[btn:GetName()..'IconTexture']
+    if icon then
+        icon:ClearAllPoints()
+        icon:SetShown(false)
+    end
+
+    btn.Checked:SetAtlas('bag-border')
+    local w,h= btn:GetSize()
+    btn.Checked:ClearAllPoints()
+    btn.Checked:SetPoint('CENTER',3,-2)
+    btn.Checked:SetSize(w+18, h+18)
+        --[[local w,h= btn:GetSize()
         btn.Checked:ClearAllPoints()
         btn.Checked:SetPoint('CENTER')
         btn.Checked:SetSize(w+10, h+10)
-        btn.Checked:SetVertexColor(0,1,0)
-    end
+        btn.Checked:SetVertexColor(0,1,0)]]
+    
+
+    --btn.Background:SetAtlas('bag-border-search')
+    --btn.Background:ClearAllPoints()
+    --btn.Background:SetPoint('CENTER', btn)
+    --btn.Background:SetSize(w/2,w/2)
+    e.Set_Label_Texture_Color(btn.Background, {type='Texture', alpha=0.1})--设置颜色
+
 
     btn:RegisterForDrag('LeftButton', "RightButton")
     btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
@@ -278,9 +305,7 @@ local function Init()
         btn:SetFrameLevel(layer)
         Set_Slot_Info(btn, i, nil)--创建，提示内容
 
-        --处理，按钮，背景 Texture.lua，中有处理过
-        e.Set_Label_Texture_Color(btn.Background, {type='Texture', alpha=0.5})--设置颜色
-
+       
         if i > 1 then--设置位置
             btn:ClearAllPoints()
             btn:SetPoint("LEFT", _G["PetStableStabledPet"..i-1], "RIGHT", 4, 0)
@@ -323,7 +348,7 @@ local function Init()
 
 
 
-    hooksecurefunc('PetStable_UpdateSlot', function(btn, petSlot)--宠物，类型，已激MODEL
+    hooksecurefunc('PetStable_UpdateSlot', function(btn)--宠物，类型，已激MODEL
         if btn.set_settings then
             btn:set_settings()
         end
@@ -964,6 +989,8 @@ function Set_StableFrame_List()
         btn.Text=e.Cstr(btn, {layer='BACKGROUND'})
         btn.Text:SetPoint('CENTER')
         btn.Text:SetText(i)]]
+
+        --texture:SetTexCoord(1, 0, 0, 1);--左右，对放
         btn:HookScript('OnEnter', function(self)
             if not self.petData then return end
             set_pet_tooltips(self, self.petData, 0)
@@ -977,7 +1004,7 @@ function Set_StableFrame_List()
         btn.Border:Hide()
         frame.Buttons[i]= btn
     end
-    
+
 
     function frame:set_point()
         if not self:IsShown() then return end

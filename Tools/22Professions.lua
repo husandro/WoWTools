@@ -519,6 +519,7 @@ local function Init_ProfessionsFrame()
         if not info or not info.recipeID then
             return
         end
+        --for k, v in pairs(info) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
         local text= C_TradeSkillUI.GetRecipeSourceText(info.recipeID)
         local tradeSkillID, _, parentTradeSkillID = C_TradeSkillUI.GetTradeSkillLineForRecipe(info.recipeID)
         e.tips:SetOwner(self, "ANCHOR_LEFT", -18, 0)
