@@ -238,8 +238,6 @@ local function Set_Slot_Info(btn, index, isActiveSlot)--创建，提示内容
             SetPortraitTextureFromCreatureDisplayID(self.icon2, creatureDisplayID)
         end
         self.icon2:SetShown(creatureDisplayID and creatureDisplayID>0 and true or false)
-        --print(creatureDisplayID)
-        
     end
 
     btn.dimOverlay = btn.dimOverlay or btn:CreateTexture(nil, "OVERLAY");--查询提示用
