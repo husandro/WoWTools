@@ -777,7 +777,7 @@ local function Init_Sell()
     AuctionHouseFrame.CommoditiesSellFrame.PostButton:SetHeight(32)--<Size x="194" y="22"/>
     AuctionHouseFrame.ItemSellFrame.PostButton:SetHeight(32)
 
-    
+
     --下一个，拍卖，物品        
     hooksecurefunc(AuctionHouseFrame.CommoditiesSellFrame, 'PostItem', function(self)
         self.isNextItem=true
@@ -1117,81 +1117,70 @@ end
 
 
 
+local function Set_BrowseResultsFrame(ScrollBox)
+    for _, btn in pairs(ScrollBox:GetFrames() or {}) do
+        local text
+        local itemKey= btn.rowData and btn.rowData.itemKey
+        local itemKeyInfo = itemKey and C_AuctionHouse.GetItemKeyInfo(itemKey)--itemID battlePetSpeciesID itemName battlePetLink appearanceLink quality iconFileID isPet isCommodity isEquipment
+        if itemKeyInfo then
+            local isCollectedAll--宠物
+            text, isCollectedAll= select(3, e.GetPetCollectedNum(itemKeyInfo.battlePetSpeciesID, itemKeyInfo.itemID, true))
+            if isCollectedAll then
+                text= '|A:common-icon-checkmark-yellow:0:0|a'
+            end
 
+            text= text or e.GetItemCollected(itemKeyInfo.itemID, nil, true)--物品是否收集
 
+            if not text then--坐骑
+                local isMountCollected= select(2, e.GetMountCollected(nil, itemKeyInfo.itemID))
+                if isMountCollected then
+                    text= '|A:common-icon-checkmark-yellow:0:0|a'
+                end
+            end
+            if not text then
+                local t1, t2= e.Get_Gem_Stats(nil, Get_ItemLink_For_rowData(btn.rowData))--显示, 宝石, 属性
+                if t1 then
+                    text= t1..(t2 and ' '..t2 or '')
+                end
+            end
+            --[[if not text then
+                --local itmeLink= Get_ItemLink_For_rowData(btn.rowData)
+                local itemLink= Get_ItemLink_For_rowData(btn.rowData)
+                local classID= select(6, C_Item.GetItemInfoInstant(itemKeyInfo.itemID))
+                
+                if classID==9 then--配方
+                    local dataTooltipsInfo = C_TooltipInfo.GetItemKey(btn.rowData.itemKey.itemID, btn.rowData.itemKey.itemLevel, btn.rowData.itemKey.itemSuffix, btn.rowData.itemKey.itemLevel)
 
-
+                    local dateInfo= e.GetTooltipData({itemID=itemKeyInfo.itemID, text={ITEM_SPELL_KNOWN}, onlyText=true})--物品提示，信息
+                    local isLearned= dateInfo.text[ITEM_SPELL_KNOWN]
+                    
+                    if dataTooltipsInfo then
+                        print(dataTooltipsInfo. hyperlink)
+                    end
+                    if isLearned then
+                        text= '|A:common-icon-checkmark-yellow:0:0|a'
+                    else
+                        text= '|A:AdventureMapIcon-Quest:0:0|a'
+                    end
+                end
+            end]]
+        end
+        if text and not btn.lable then
+            btn.lable= e.Cstr(btn)
+        end
+        if btn.lable then
+            btn.lable:SetPoint('RIGHT', btn.cells[2].Icon, 'LEFT')
+            btn.lable:SetText(text or '')
+        end
+    end
+end
 
 --浏览拍卖行
 --Blizzard_AuctionHouseUI.lua
 --local ITEM_SPELL_KNOWN = ITEM_SPELL_KNOWN--"已学习
 local function Init_BrowseResultsFrame()
-    local function Set_BrowseResultsFrame(ScrollBox)
-        for _, btn in pairs(ScrollBox:GetFrames() or {}) do
-            local text
-            local itemKey= btn.rowData and btn.rowData.itemKey
-            local itemKeyInfo = itemKey and C_AuctionHouse.GetItemKeyInfo(itemKey)--itemID battlePetSpeciesID itemName battlePetLink appearanceLink quality iconFileID isPet isCommodity isEquipment
-            if itemKeyInfo then
-                local isCollectedAll--宠物
-                text, isCollectedAll= select(3, e.GetPetCollectedNum(itemKeyInfo.battlePetSpeciesID, itemKeyInfo.itemID, true))
-                if isCollectedAll then
-                    text= '|A:common-icon-checkmark-yellow:0:0|a'
-                end
-                
-                text= text or e.GetItemCollected(itemKeyInfo.itemID, nil, true)--物品是否收集
-                
-                if not text then--坐骑
-                    local isMountCollected= select(2, e.GetMountCollected(nil, itemKeyInfo.itemID))
-                    if isMountCollected then
-                        text= '|A:common-icon-checkmark-yellow:0:0|a'
-                    end
-                end
-                if not text then
-                    local t1, t2= e.Get_Gem_Stats(nil, Get_ItemLink_For_rowData(btn.rowData))--显示, 宝石, 属性
-                    if t1 then
-                        text= t1..(t2 and ' '..t2 or '')
-                    end
-                end
-                --[[if not text then
-                    --local itmeLink= Get_ItemLink_For_rowData(btn.rowData)
-                    local itemLink= Get_ItemLink_For_rowData(btn.rowData)
-                    local classID= select(6, C_Item.GetItemInfoInstant(itemKeyInfo.itemID))
-                    
-                    if classID==9 then--配方
-                        local dataTooltipsInfo = C_TooltipInfo.GetItemKey(btn.rowData.itemKey.itemID, btn.rowData.itemKey.itemLevel, btn.rowData.itemKey.itemSuffix, btn.rowData.itemKey.itemLevel)
-
-                        local dateInfo= e.GetTooltipData({itemID=itemKeyInfo.itemID, text={ITEM_SPELL_KNOWN}, onlyText=true})--物品提示，信息
-                        local isLearned= dateInfo.text[ITEM_SPELL_KNOWN]
-                        
-                        if dataTooltipsInfo then
-                            print(dataTooltipsInfo. hyperlink)
-                        end
-                        if isLearned then
-                            text= '|A:common-icon-checkmark-yellow:0:0|a'
-                        else
-                            text= '|A:AdventureMapIcon-Quest:0:0|a'
-                        end
-                    end
-                end]]
-            end
-            if text and not btn.lable then
-                btn.lable= e.Cstr(btn)
-            end
-            if btn.lable then
-                btn.lable:SetPoint('RIGHT', btn.cells[2].Icon, 'LEFT')
-                btn.lable:SetText(text or '')
-            end
-
-
-        end
-    end
     hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame.ItemList.ScrollBox, 'SetScrollTargetOffset', Set_BrowseResultsFrame)
     hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame.ItemList.ScrollBox, 'Update', Set_BrowseResultsFrame)
-    --[[hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame, 'UpdateBrowseResults', function(self)--SetScrollTargetOffset
-        Set_BrowseResultsFrame(self.ItemList.ScrollBox)
-    end)]]
-
-
 
     --双击，一口价
     hooksecurefunc(AuctionHouseFrame.ItemBuyFrame.ItemList.ScrollBox, 'Update', function(frame)
@@ -1213,8 +1202,6 @@ local function Init_BrowseResultsFrame()
             end
         end
     end)
-    --hooksecurefunc(AuctionHouseFrame.ItemBuyFrame.ItemList, 'DirtyScrollFrame', OnDoubleClick_ItemBuyFrame)
-    --hooksecurefunc(AuctionHouseFrame.ItemBuyFrame.ItemList, 'UpdateRefreshFrame', OnDoubleClick_ItemBuyFrame)
 end
 
 

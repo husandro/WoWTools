@@ -323,12 +323,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             hooksecurefunc(ClubFinderGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_RequestToJoinFrame)
             hooksecurefunc(ClubFinderCommunityAndGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_RequestToJoinFrame)
 
-            hooksecurefunc(CommunitiesFrameCommunitiesList.ScrollBox, 'SetDataProvider', function(self)
-                local view = self:GetView()
-                if not view or not view.frames then
-                    return
-                end
-                for _, btn in pairs(view.frames or {}) do
+            hooksecurefunc(CommunitiesFrameCommunitiesList.ScrollBox, 'SetScrollTargetOffset', function(self)
+                for _, btn in pairs(self:GetFrames() or {}) do
                     local online, all= 0, 0
                     if btn.clubId then
                         local members= C_Club.GetClubMembers(btn.clubId) or {}
