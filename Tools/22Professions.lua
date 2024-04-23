@@ -929,7 +929,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if not e.toolsFrame.disabled then
                 ProfessionsFrame_LoadUI()
-                ProfessionsCustomerOrders_LoadUI()
+                --ProfessionsCustomerOrders_LoadUI()
                 C_Timer.After(2.2, function()
                     if UnitAffectingCombat('player') then
                         self.combat= true
