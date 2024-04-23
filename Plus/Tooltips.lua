@@ -1428,7 +1428,7 @@ local function set_CVar(reset, tips, notPrint)
         },
         {   name='worldPreloadNonCritical',--https://wago.io/ZtSxpza28
             value='0',--2
-            msg= e.onlyChinese and '非关键预加载' or 'World Preload Non Critical'
+            msg= e.onlyChinese and '世界非关键预加载' or 'World Preload Non Critical'
         }
     }
 

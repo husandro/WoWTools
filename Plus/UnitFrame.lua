@@ -1880,6 +1880,70 @@ end
 
 
 
+--施法条 CastingBarFrame.lua
+local function Init_CastingBar(frame)
+    frame.Icon:EnableMouse(true)
+    frame.Icon:SetScript('OnEnter', function(self)
+        local unit= self:GetParent().unit or 'player'
+        local spellID= select(9, UnitCastingInfo(unit)) or select(8, UnitChannelInfo(unit)) or 0
+        if spellID==0 then
+            return
+        end
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:SetSpellByID(spellID)
+        e.tips:Show()
+    end)
+    frame:HookScript('OnShow', function(self)--图标
+        self.Icon:SetShown(true)
+    end)
+
+    e.Set_Label_Texture_Color(frame.CastTimeText, {type='FontString'})--设置颜色
+    frame.CastTimeText:SetShadowOffset(1, -1)
+    frame.CastTimeText:ClearAllPoints()
+    frame.CastTimeText:SetPoint('RIGHT', frame.ChargeFlash, 'RIGHT')
+    e.Set_Label_Texture_Color(frame.Text, {type='FontString'})--设置颜色
+    frame.Text:SetShadowOffset(1, -1)
+
+    if frame==PlayerCastingBarFrame then
+        hooksecurefunc(frame, 'UpdateCastTimeText', function(self)--去掉 秒
+            local text= self.CastTimeText:GetText()
+            text= text:match('(%d+.%d)') or text
+            text= text=='0.0' and '' or text
+            self.CastTimeText:SetText(text)
+        end)
+    else
+        hooksecurefunc(frame, 'UpdateCastTimeText', function(self)
+            --local text= self.CastTimeText:GetText()
+            --text= text:match('(%d+.%d)') or text
+            --text= text=='0.0' and '' or text
+            --self.CastTimeText:SetText(text)
+            self.CastTimeText:SetShown(true)
+        end)
+    end
+
+    --[[if frame.CastTimeText then
+        else--旧版本
+        frame.castingText= e.Cstr(frame, {color=true, justifyH='RIGHT'})
+        frame.castingText:SetDrawLayer('OVERLAY', 2)
+        frame.castingText:SetPoint('RIGHT', frame.ChargeFlash, 'RIGHT')
+        frame:HookScript('OnUpdate', function(self, elapsed)--玩家, 施法, 时间
+            self.elapsed= (self.elapsed or 0.1) + elapsed
+            if self.elapsed>=0.1 and self.value and self.maxValue then
+                self.elapsed=0
+                local value= self.channeling and self.value or (self.maxValue-self.value)
+                if value<=0 then
+                    self.castingText:SetText(0)
+                elseif value>=3 then
+                    self.castingText:SetFormattedText('%i', value)
+                else
+                    self.castingText:SetFormattedText('%.01f', value)
+                end
+            end
+        end)
+        e.Set_Label_Texture_Color(frame.Text, {type='FontString'})--设置颜色
+    end]]
+end
 
 
 
@@ -1899,11 +1963,13 @@ end
 --初始化
 --######
 local function Init()
-     Init_PlayerFrame()--玩家
+    Init_PlayerFrame()--玩家
     Init_TargetFrame()--目标
     Init_PartyFrame()--小队
     Init_BossFrame()--BOSS
     Init_RaidFrame()--团队
+    Init_CastingBar(PlayerCastingBarFrame)
+    Init_CastingBar(PetCastingBarFrame)
 
     hooksecurefunc('UnitFrame_Update', Init_UnitFrame_Update)--职业, 图标， 颜色
 
@@ -1929,8 +1995,8 @@ local function Init()
         end
     end)
 
-    --施法条
-    --CastingBarFrame.lua
+    --施法条 CastingBarFrame.lua
+    --[[CastingBarFrame.lua
 
     PlayerCastingBarFrame.Icon:EnableMouse(true)
     --PlayerCastingBarFrame.Icon:SetScript('OnLeave', function() e.tips:Hide() end)
@@ -1980,7 +2046,10 @@ local function Init()
             end
         end)
         e.Set_Label_Texture_Color(PlayerCastingBarFrame.Text, {type='FontString'})--设置颜色
-    end
+    end]]
+
+
+    
 
     --修改, 宠物, 名称)
     hooksecurefunc('UnitFrame_OnEvent', function(self, event)

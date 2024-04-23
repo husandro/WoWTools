@@ -440,10 +440,17 @@ local function Init_All_Frame()
             CompactRaidFrameManagerDisplayFrameLeaderOptionsInitiateReadyCheckText:SetText('|A:'..e.Icon.select..':22:22|a')
         end
      end
+
+     --施法条
      set_Alpha_Color(PlayerCastingBarFrame.Border)
      set_Alpha_Color(PlayerCastingBarFrame.Background)
      set_Alpha_Color(PlayerCastingBarFrame.TextBorder)
      set_Alpha_Color(PlayerCastingBarFrame.Shine)
+
+     set_Alpha_Color(PetCastingBarFrame.Border)
+     set_Alpha_Color(PetCastingBarFrame.Background)
+     set_Alpha_Color(PetCastingBarFrame.TextBorder)
+     set_Alpha_Color(PetCastingBarFrame.Shine)
 
      --角色，界面
      e.Set_NineSlice_Color_Alpha(CharacterFrameInset, true)
