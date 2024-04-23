@@ -122,6 +122,8 @@ end
 
 local function set_Engineering(self, slot, link, use, isPaperDollItemSlot)--增加 [潘达利亚工程学: 地精滑翔器][诺森德工程学: 氮气推进器]
    -- print(recipeLearned(126392), recipeLearned(55016))
+   --local tradeSkillID, skillLineName, parentTradeSkillID = C_TradeSkillUI.GetTradeSkillLineForRecipe(recipeID);
+   --print(C_TradeSkillUI.GetTradeSkillLineForRecipe(126392))
     if not ((slot==15 and recipeLearned(126392)) or (slot==6 and recipeLearned(55016))) or use or Save.hide or not link or not isPaperDollItemSlot then
     --if not (slot==15 or slot==6 ) or use or Save.hide or not link or not isPaperDollItemSlot then
         if self.engineering  then
@@ -141,15 +143,17 @@ local function set_Engineering(self, slot, link, use, isPaperDollItemSlot)--增�
         end
         self.engineering.spell= slot==15 and 126392 or 55016
         self.engineering:SetScript('OnMouseDown' ,function(frame,d)
+            local parentTradeSkillID= C_TradeSkillUI.GetTradeSkillLineForRecipe(self.spell) or 202
+            print(parentTradeSkillID)
             if d=='LeftButton' then
                 --OpenProfessionUIToSkillLine(202)
-                OpenProfessionUIToSkillLine(202)
+                OpenProfessionUIToSkillLine(parentTradeSkillID)
                 --C_TradeSkillUI.OpenTradeSkill(202)
-                C_TradeSkillUI.CraftRecipe(frame.spell)
+                C_TradeSkillUI.CraftRecipe(frame.parentTradeSkillID)
                 C_TradeSkillUI.CloseTradeSkill()
                 ToggleCharacter("PaperDollFrame", true)
             elseif d=='RightButton' then
-                OpenProfessionUIToSkillLine(202)
+                OpenProfessionUIToSkillLine(parentTradeSkillID)
                 --C_TradeSkillUI.OpenTradeSkill(202)
             end
         end)
@@ -3089,7 +3093,7 @@ end
 --###########
 panel:RegisterEvent("ADDON_LOADED")
 
-panel:SetScript("OnEvent", function(_, event, arg1)
+panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1 == id then
             Save= WoWToolsSave[addName] or Save
@@ -3114,13 +3118,20 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
             end)]]
 
+            
             if not Save.disabled then
                 Init()
-                panel:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
+                self:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
+                do
+                    ProfessionsUtil.OpenProfessionFrameToRecipe(126392)
+                end
+                if ProfessionsFrame then
+                    ProfessionsFrame:Hide()
+                end
             else
-                panel:UnregisterEvent('ADDON_LOADED')
+                self:UnregisterEvent('ADDON_LOADED')
             end
-            panel:RegisterEvent("PLAYER_LOGOUT")
+            self:RegisterEvent("PLAYER_LOGOUT")
 
         elseif arg1=='Blizzard_ItemUpgradeUI' then--装备升级, 界面
             add_Button_OpenOption(ItemUpgradeFrameCloseButton)--添加一个按钮, 打开选项

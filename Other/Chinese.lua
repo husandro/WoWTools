@@ -181,7 +181,7 @@ local function get_gameTooltip_text(self)
                 local t1= gem1:match('%d+ (.+)')
                 if t1 then
                     local s1= e.strText[t1:match(".+ (.+)")] or e.strText[t1]
-                    if s1 then
+                    if s1 and gem1 then
                         gem1= gem1:gsub(t1, s1)
                         find=true
                     end
