@@ -1127,9 +1127,6 @@ end
 --local ITEM_SPELL_KNOWN = ITEM_SPELL_KNOWN--"已学习
 local function Init_BrowseResultsFrame()
     local function Set_BrowseResultsFrame(ScrollBox)
-        if not ScrollBox:GetView() then
-            return
-        end
         for _, btn in pairs(ScrollBox:GetFrames() or {}) do
             local text
             local itemKey= btn.rowData and btn.rowData.itemKey
@@ -1189,7 +1186,8 @@ local function Init_BrowseResultsFrame()
         end
     end
     hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame.ItemList.ScrollBox, 'SetScrollTargetOffset', Set_BrowseResultsFrame)
-    --[[hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame, 'UpdateBrowseResults', function(self)
+    hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame.ItemList.ScrollBox, 'Update', Set_BrowseResultsFrame)
+    --[[hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame, 'UpdateBrowseResults', function(self)--SetScrollTargetOffset
         Set_BrowseResultsFrame(self.ItemList.ScrollBox)
     end)]]
 

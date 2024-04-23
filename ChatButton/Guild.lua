@@ -323,24 +323,34 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             hooksecurefunc(ClubFinderGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_RequestToJoinFrame)
             hooksecurefunc(ClubFinderCommunityAndGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_RequestToJoinFrame)
 
-            --[[hooksecurefunc(CommunitiesFrame.MemberList.ScrollBox, 'Update', function(self)                
-                for _, btn in pairs(self:GetFrames()) do
-                    local info= btn.memberInfo or {}
-                    if info.guid then
-                        local name= e.GetPlayerInfo({guid=info.guid, reName=true, reRealm=true}):gsub('|A:UI-HUD-MicroMenu-GuildCommunities-Mouseover:0:0|a', '')
-                        if name~='' then
-                           -- btn.NameFrame.Name:SetText(name)
+            hooksecurefunc(CommunitiesFrameCommunitiesList.ScrollBox, 'SetDataProvider', function(self)
+                local view = self:GetView()
+                if not view or not view.frames then
+                    return
+                end
+                for _, btn in pairs(view.frames or {}) do
+                    local online, all= 0, 0
+                    if btn.clubId then
+                        local members= C_Club.GetClubMembers(btn.clubId) or {}
+                        all= #members
+                        for _, memberID in pairs(members) do--CommunitiesUtil.GetOnlineMembers
+                            local info = C_Club.GetMemberInfo(btn.clubId, memberID) or {}
+                            if not info.isSelf and info.presence~=Enum.ClubMemberPresence.Offline and info.presence~=Enum.ClubMemberPresence.Unknown then--CommunitiesUtil.GetOnlineMembers()
+                                online= online+1
+                            end
                         end
+                    end
+                    if not btn.onlineText then
+                        btn.onlineText=e.Cstr(btn)
+                        btn.onlineText:SetPoint('TOP', btn.Icon, 'BOTTOM')
+                    end
+                    if all>0 then
+                        btn.onlineText:SetFormattedText('%d/%s%d|r', all, online==0 and '|cff606060' or '|cnGREEN_FONT_COLOR:', online)
+                    else
+                        btn.onlineText:SetText('')
                     end
                 end
             end)
-            hooksecurefunc(CommunitiesMemberListEntryMixin, 'UpdatePresence', function(frame)
-                frame:HookScript('OnClick', function(f)
-                    if f.memberInfo and f.memberInfo.guid and IsAltKeyDown() then
-                        --C_GuildInfo.RemoveFromGuild(f.memberInfo.guid)
-                    end
-                end)
-            end)]]
         end
 
     elseif event == "PLAYER_LOGOUT" then

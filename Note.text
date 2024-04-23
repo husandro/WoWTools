@@ -4,9 +4,12 @@ hooksecurefunc(GroupLootHistoryFrame.ScrollBox, 'SetScrollTargetOffset', functio
         set_LootFrame_btn(btn)
     end
 end)
-for index, button in pairs(CalendarCreateEventInviteList.ScrollBox:GetFrames()) do--ScrollBox.lua
-	
-end
+ hooksecurefunc(CommunitiesFrameCommunitiesList.ScrollBox, 'SetDataProvider', function(self)
+	local view = self:GetView()
+	if view and view.frames then
+		for _, btn in pairs(view.frames or {}) do
+	end
+end)
 
 local numItems = C_LootHistory.GetNumItems()
 for i=1, numItems do
