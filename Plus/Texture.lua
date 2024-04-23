@@ -1467,12 +1467,13 @@ local function Init_Event(arg1)
         e.Set_NineSlice_Color_Alpha(ClubFinderCommunityAndGuildFinderFrame.InsetFrame, nil, true)
         hide_Texture(CommunitiesFrame.GuildBenefitsFrame.Rewards.Bg)
 
-        hooksecurefunc(CommunitiesFrameCommunitiesList,'UpdateCommunitiesList',function(self)
-            if not self:GetView() then
+        hooksecurefunc(CommunitiesFrameCommunitiesList,'UpdateCommunitiesList',function()
+            local frame= CommunitiesFrameCommunitiesList.ScrollBox
+            if not frame:GetView() then
                 return
             end
             C_Timer.After(0.3, function()
-                for _, button in pairs(CommunitiesFrameCommunitiesList.ScrollBox:GetFrames()) do
+                for _, button in pairs(frame:GetFrames()) do
                 set_Alpha_Color(button.Background)
                 end
             end)
