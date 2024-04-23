@@ -90,9 +90,11 @@ function func.Set_Init_Item(self, hide)--创建，设置，内容
         self.backgroundColor= self:CreateTexture(nil, 'BACKGROUND',nil, 1)--背景颜色
         self.backgroundColor:SetAllPoints(self)
 
-        self.Portrait= self:CreateTexture(nil, 'BACKGROUND',nil, 2)--右上角图标
-        self.Portrait:SetPoint('TOPRIGHT',-2, -3)
-        self.Portrait:SetSize(40,40)
+        if not self.Portrait then
+            self.Portrait= self:CreateTexture(nil, 'BACKGROUND',nil, 2)--右上角图标
+            self.Portrait:SetPoint('TOPRIGHT',-2, -3)
+            self.Portrait:SetSize(40,40)
+        end
     end
     if not self.playerModel and not Save.hideModel then
         func.Set_PlayerModel(self)
@@ -1708,8 +1710,23 @@ local function Init()
         end
     end)
 
+    --装备，对比，提示
+    ShoppingTooltip1.Portrait= ShoppingTooltip1:CreateTexture(nil, 'BACKGROUND',nil, 2)--右上角图标
+    ShoppingTooltip1.Portrait:SetPoint('TOPRIGHT',-2, -3)
+    ShoppingTooltip1.Portrait:SetSize(40,40)
+    ShoppingTooltip1.Portrait:SetAtlas('Adventures-Target-Indicator')
+    ShoppingTooltip1.Portrait:SetAlpha(0.5)
+
+    ShoppingTooltip2.Portrait= ShoppingTooltip2:CreateTexture(nil, 'BACKGROUND',nil, 2)--右上角图标
+    ShoppingTooltip2.Portrait:SetPoint('TOPRIGHT',-2, -3)
+    ShoppingTooltip2.Portrait:SetSize(40,40)
+    ShoppingTooltip2.Portrait:SetAtlas('Adventures-Target-Indicator')
+    ShoppingTooltip2.Portrait:SetAlpha(0.5)
 
     TooltipDataProcessor.AddTooltipPostCall(TooltipDataProcessor.AllTypes,  function(tooltip, data)--TooltipUtil.lua
+        if tooltip==ShoppingTooltip1 or ShoppingTooltip2==tooltip then
+            return
+        end
         if not tooltip.textLeft then
             func.Set_Init_Item(tooltip)
             tooltip:HookScript("OnHide", function(frame)--隐藏
@@ -2708,6 +2725,16 @@ end
 end
 
 ]]
+
+
+
+
+
+
+
+
+
+
 
 
 

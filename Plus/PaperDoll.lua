@@ -143,13 +143,18 @@ local function set_Engineering(self, slot, link, use, isPaperDollItemSlot)--增�
         end
         self.engineering.spell= slot==15 and 126392 or 55016
         self.engineering:SetScript('OnMouseDown' ,function(frame,d)
-            local parentTradeSkillID= C_TradeSkillUI.GetTradeSkillLineForRecipe(self.spell) or 202
-            print(parentTradeSkillID)
+            local parentTradeSkillID= select(3, C_TradeSkillUI.GetTradeSkillLineForRecipe(frame.spell)) or 202
+            
             if d=='LeftButton' then
+                local n=C_Item.GetItemCount(90146, true)
+                if n==0 then
+                    print(select(2, C_Item.GetItemInfo(90146)) or (e.onlyChinese and '附加材料' or OPTIONAL_REAGENT_TUTORIAL_TOOLTIP_TITLE), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE))
+                    return
+                end
                 --OpenProfessionUIToSkillLine(202)
                 OpenProfessionUIToSkillLine(parentTradeSkillID)
                 --C_TradeSkillUI.OpenTradeSkill(202)
-                C_TradeSkillUI.CraftRecipe(frame.parentTradeSkillID)
+                C_TradeSkillUI.CraftRecipe(frame.spell)
                 C_TradeSkillUI.CloseTradeSkill()
                 ToggleCharacter("PaperDollFrame", true)
             elseif d=='RightButton' then
@@ -165,12 +170,6 @@ local function set_Engineering(self, slot, link, use, isPaperDollItemSlot)--增�
                 e.tips:AddDoubleLine('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '商业技能' or TRADESKILLS), e.Icon.right)
                 e.tips:AddDoubleLine('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需求' or NEED), (e.onlyChinese and '打开一次' or CHALLENGES_LASTRUN_TIME)..'('..(e.onlyChinese and '打开' or UNWRAP)..')')
                 e.tips:Show()
-        end)
-        self.engineering:SetScript("OnMouseUp", function()
-            local n=C_Item.GetItemCount(90146, true)
-                if n==0 then
-                    print(select(2, C_Item.GetItemInfo(90146)) or (e.onlyChinese and '附加材料' or OPTIONAL_REAGENT_TUTORIAL_TOOLTIP_TITLE), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE))
-                end
         end)
         self.engineering:SetScript('OnLeave',GameTooltip_Hide)
     end
@@ -3122,14 +3121,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if not Save.disabled then
                 Init()
                 self:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
-                C_Timer.After(2, function()
-                    do
-                        ProfessionsUtil.OpenProfessionFrameToRecipe(126392)
-                    end
-                    if ProfessionsFrame then
-                        ProfessionsFrame:Hide()
-                    end
-                end)
+
+                
+                --[[ProfessionsFrame_LoadUI()
+                OpenProfessionUIToSkillLine(202)
+                C_TradeSkillUI.CloseTradeSkill()]]
+                
             else
                 self:UnregisterEvent('ADDON_LOADED')
             end

@@ -456,7 +456,7 @@ local function Init_ProfessionsFrame()
     btn2:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, 'Tools')
+        e.tips:AddDoubleLine(id, e.toolsFrame.addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.cn(addName), e.GetEnabeleDisable(not Save.disabled)..e.Icon.left)
         e.tips:Show()
@@ -515,21 +515,31 @@ local function Init_ProfessionsFrame()
     --Blizzard_ProfessionsRecipeList.lua
     hooksecurefunc(ProfessionsRecipeListRecipeMixin, 'OnEnter', function(self)
         local elementData = self:GetElementData()
-        local recipeID = elementData.data.recipeInfo.recipeID
-        if recipeID then
-            e.tips:SetOwner(self, "ANCHOR_RIGHT")
-            e.tips:ClearLines()
-            e.tips:SetRecipeResultItem(recipeID)
-            e.tips:AddLine(' ')
-            local text= C_TradeSkillUI.GetRecipeSourceText(recipeID)
-            if text and text~='' then
-                e.tips:AddLine(text)
-                e.tips:AddLine(' ')
-            end
-            e.tips:AddDoubleLine('recipeID', recipeID)
-            e.tips:AddDoubleLine(id, e.cn(addName))
-            e.tips:Show()
+        local info= elementData and elementData.data and elementData.data.recipeInfo
+        if not info or not info.recipeID then
+            return
         end
+        for k, v in pairs(info) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
+        local text= C_TradeSkillUI.GetRecipeSourceText(info.recipeID)
+        local tradeSkillID, _, parentTradeSkillID = C_TradeSkillUI.GetTradeSkillLineForRecipe(info.recipeID)
+        local allocations = {};
+        local allocationGUID = nil;
+        e.tips:SetOwner(self, "ANCHOR_LEFT", -18, 0)
+        e.tips:ClearLines()
+        e.tips:SetRecipeResultItem(info.recipeID, allocations, allocationGUID, info.unlockedRecipeLevel)
+        e.tips:AddLine(' ')
+        if text and text~='' then
+            e.tips:AddLine(text)
+            e.tips:AddLine(' ')
+        end
+        e.tips:AddLine('categoryID '..(info.categoryID or ''), 'tradeSkillID '..(tradeSkillID or ''))
+        e.tips:AddDoubleLine('recipeID '..info.recipeID, parentTradeSkillID and 'parentTradeSkillID '..parentTradeSkillID)
+        if info.itemLevel or info.skillLineAbilityID then
+            e.tips:AddDoubleLine('skillLineAbilityID '..(info.skillLineAbilityID or ''), 'itemLevel '..(info.itemLevel or ''))
+        end
+        
+        e.tips:AddDoubleLine(e.toolsFrame.addName, e.cn(addName))
+        e.tips:Show()
     end)
 
 
@@ -928,7 +938,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave[addName..'Tools'] or Save
 
             if not e.toolsFrame.disabled then
-                ProfessionsFrame_LoadUI()
+                --ProfessionsFrame_LoadUI()
                 --ProfessionsCustomerOrders_LoadUI()
                 C_Timer.After(2.2, function()
                     if UnitAffectingCombat('player') then
