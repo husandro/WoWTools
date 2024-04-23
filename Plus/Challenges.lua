@@ -1651,20 +1651,28 @@ local function Init_WeeklyRewardsFrame()
 
     --未提取,提示
     if WeeklyRewardExpirationWarningDialog then
-        WeeklyRewardExpirationWarningDialog:HookScript('OnShow', function(self)
-            local title = _G["EXPANSION_NAME"..LE_EXPANSION_LEVEL_CURRENT];
-            local text
-            if title and e.strText[title] then
-                title= e.strText[title] or title
-                text = C_WeeklyRewards.ShouldShowFinalRetirementMessage()
-                            and format(e.onlyChinese and '所有未领取的奖励都会在|cnGREEN_FONT_COLOR:%s|r上线后消失。' or GREAT_VAULT_RETIRE_WARNING_FINAL_WEEK, title)
-                            or format(e.onlyChinese and '本周后就不能获得新的奖励了。|cnGREEN_FONT_COLOR:%s|r上线后，所有未领取的奖励都会丢失。' or GREAT_VAULT_RETIRE_WARNING, title)
-            else
-                text= self.Description:GetText()
+        function WeeklyRewardExpirationWarningDialog:set_hide()--GreatVaultRetirementWarningFrameMixin:OnShow()
+            if not C_WeeklyRewards.HasInteraction() then
+                local title = _G["EXPANSION_NAME"..LE_EXPANSION_LEVEL_CURRENT];
+                local text
+                if title then
+                    title= e.cn(title)
+                    if C_WeeklyRewards.ShouldShowFinalRetirementMessage() then
+                        text= format(e.onlyChinese and '所有未领取的奖励都会在%s上线后消失。' or GREAT_VAULT_RETIRE_WARNING_FINAL_WEEK, title)
+                    elseif C_WeeklyRewards.HasAvailableRewards() or C_WeeklyRewards.HasGeneratedRewards() or C_WeeklyRewards.CanClaimRewards() then
+                        text= format(e.onlyChinese and '本周后就不能获得新的奖励了。|n%s上线后，所有未领取的奖励都会丢失。' or GREAT_VAULT_RETIRE_WARNING, title);
+                    end
+                    if text then
+                        print(id, Initializer:GetName(),'|n|cffff00ff',text)
+                    end
+                end
             end
-            print(id, Initializer:GetName(), '|n|cffff00ff', text or (e.onlyChinese and '关闭' or CLOSE))
             self:Hide()
-        end)
+        end
+        WeeklyRewardExpirationWarningDialog:HookScript('OnShow', WeeklyRewardExpirationWarningDialog.set_hide)
+        if WeeklyRewardExpirationWarningDialog:IsShown() then
+            WeeklyRewardExpirationWarningDialog:set_hide()
+        end
     end
 end
 
@@ -1715,7 +1723,7 @@ local function set_Week_Reward_Look_Specialization()
             self:RegisterEvent('UNIT_SPELLCAST_SENT')
         end
     end
-    
+
     function WeekRewardLookFrame:set_Show(show)
         if self.time and not self.time:IsCancelled() then
             self.time:Cancel()

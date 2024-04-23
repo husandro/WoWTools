@@ -121,7 +121,9 @@ end
 
 
 local function set_Engineering(self, slot, link, use, isPaperDollItemSlot)--增加 [潘达利亚工程学: 地精滑翔器][诺森德工程学: 氮气推进器]
+   -- print(recipeLearned(126392), recipeLearned(55016))
     if not ((slot==15 and recipeLearned(126392)) or (slot==6 and recipeLearned(55016))) or use or Save.hide or not link or not isPaperDollItemSlot then
+    --if not (slot==15 or slot==6 ) or use or Save.hide or not link or not isPaperDollItemSlot then
         if self.engineering  then
             self.engineering:SetShown(false)
         end
@@ -138,20 +140,23 @@ local function set_Engineering(self, slot, link, use, isPaperDollItemSlot)--增�
             self.engineering:SetPoint('TOPRIGHT', self, 'TOPLEFT', -8, 0)
         end
         self.engineering.spell= slot==15 and 126392 or 55016
-        self.engineering:SetScript('OnMouseDown' ,function(self2,d)
+        self.engineering:SetScript('OnMouseDown' ,function(frame,d)
             if d=='LeftButton' then
-                C_TradeSkillUI.OpenTradeSkill(202)
-                C_TradeSkillUI.CraftRecipe(self2.spell)
+                --OpenProfessionUIToSkillLine(202)
+                OpenProfessionUIToSkillLine(202)
+                --C_TradeSkillUI.OpenTradeSkill(202)
+                C_TradeSkillUI.CraftRecipe(frame.spell)
                 C_TradeSkillUI.CloseTradeSkill()
                 ToggleCharacter("PaperDollFrame", true)
             elseif d=='RightButton' then
-                C_TradeSkillUI.OpenTradeSkill(202)
+                OpenProfessionUIToSkillLine(202)
+                --C_TradeSkillUI.OpenTradeSkill(202)
             end
         end)
-        self.engineering:SetScript('OnEnter' ,function(self2)
-                e.tips:SetOwner(self2, "ANCHOR_LEFT")
+        self.engineering:SetScript('OnEnter' ,function(frame)
+                e.tips:SetOwner(frame, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                e.tips:SetSpellByID(self2.spell)
+                e.tips:SetSpellByID(frame.spell)
                 e.tips:AddLine(' ')
                 e.tips:AddDoubleLine('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '商业技能' or TRADESKILLS), e.Icon.right)
                 e.tips:AddDoubleLine('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需求' or NEED), (e.onlyChinese and '打开一次' or CHALLENGES_LASTRUN_TIME)..'('..(e.onlyChinese and '打开' or UNWRAP)..')')

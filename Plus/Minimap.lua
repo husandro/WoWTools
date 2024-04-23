@@ -2514,6 +2514,25 @@ local function Init_Menu(_, level, menuList)
         end
     }, level)
 
+    local has= C_WeeklyRewards.HasAvailableRewards()
+    e.LibDD:UIDropDownMenu_AddButton({
+        text= format('%s|A:oribos-weeklyrewards-orb-dialog:0:0|a%s%s',
+            has and '|cnGREEN_FONT_COLOR:' or '',
+            e.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT,
+            has and e.Icon.select2 or ''),
+        checked= WeeklyRewardsFrame and WeeklyRewardsFrame:IsShown(),
+        colorCode= (UnitAffectingCombat('player') or not e.Player.levelMax) and '|cff606060',
+        keepShownOnClick=true,
+        func=function()
+            if WeeklyRewardsFrame and WeeklyRewardsFrame:IsShown() then
+                WeeklyRewardsFrame:Hide()
+            else
+                WeeklyRewards_LoadUI()--宏伟宝库
+                WeeklyRewards_ShowUI()--WeeklyReward.lua
+            end
+        end
+    }, level)
+
     --派系声望
     local major= Get_Major_Faction_List()
     for _, factionID in pairs(major) do
@@ -2603,10 +2622,7 @@ local function click_Func(self, d)
         e.LibDD:ToggleDropDownMenu(1, nil,self.Menu, self, 15,0)
 
     elseif IsShiftKeyDown() then
-        WeeklyRewards_LoadUI()
-        --[[if not C_AddOns.IsAddOnLoaded("Blizzard_WeeklyRewards") then--周奖励面板
-            C_AddOns.LoadAddOn("Blizzard_WeeklyRewards")
-        end]]
+        WeeklyRewards_LoadUI()--宏伟宝库
         WeeklyRewards_ShowUI()--WeeklyReward.lua
 
     elseif d=='LeftButton' and not key then

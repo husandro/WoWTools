@@ -928,10 +928,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave[addName..'Tools'] or Save
 
             if not e.toolsFrame.disabled then
+                ProfessionsFrame_LoadUI()
+                ProfessionsCustomerOrders_LoadUI()
                 C_Timer.After(2.2, function()
                     if UnitAffectingCombat('player') then
-                        panel.combat= true
-                        panel:RegisterEvent("PLAYER_REGEN_ENABLED")
+                        self.combat= true
+                        self:RegisterEvent("PLAYER_REGEN_ENABLED")
                     else
                         Init_Tools_Button()
                     end
@@ -941,7 +943,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if not Save.disabled then
                 Init()
             end
-            panel:RegisterEvent("PLAYER_LOGOUT")
+            self:RegisterEvent("PLAYER_LOGOUT")
 
         elseif arg1== 'Blizzard_TrainerUI' then
             set_Blizzard_TrainerU()--添一个,全学,专业, 按钮
@@ -958,10 +960,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif event=='PLAYER_REGEN_ENABLED' then
-        if panel.combat then
-            panel.combat=nil
+        if self.combat then
+            self.combat=nil
             Init_Tools_Button()--初始
         end
-        panel:UnregisterEvent("PLAYER_REGEN_ENABLED")
+        self:UnregisterEvent("PLAYER_REGEN_ENABLED")
     end
 end)
