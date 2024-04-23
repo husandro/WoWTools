@@ -519,25 +519,21 @@ local function Init_ProfessionsFrame()
         if not info or not info.recipeID then
             return
         end
-        for k, v in pairs(info) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
         local text= C_TradeSkillUI.GetRecipeSourceText(info.recipeID)
         local tradeSkillID, _, parentTradeSkillID = C_TradeSkillUI.GetTradeSkillLineForRecipe(info.recipeID)
-        local allocations = {};
-        local allocationGUID = nil;
         e.tips:SetOwner(self, "ANCHOR_LEFT", -18, 0)
         e.tips:ClearLines()
-        e.tips:SetRecipeResultItem(info.recipeID, allocations, allocationGUID, info.unlockedRecipeLevel)
+        e.tips:SetRecipeResultItem(info.recipeID, {}, nil, info.unlockedRecipeLevel)
         e.tips:AddLine(' ')
         if text and text~='' then
             e.tips:AddLine(text)
             e.tips:AddLine(' ')
         end
-        e.tips:AddLine('categoryID '..(info.categoryID or ''), 'tradeSkillID '..(tradeSkillID or ''))
+        e.tips:AddLine(info.categoryID and 'categoryID '..info.categoryID, tradeSkillID and 'tradeSkillID '..tradeSkillID)
         e.tips:AddDoubleLine('recipeID '..info.recipeID, parentTradeSkillID and 'parentTradeSkillID '..parentTradeSkillID)
         if info.itemLevel or info.skillLineAbilityID then
-            e.tips:AddDoubleLine('skillLineAbilityID '..(info.skillLineAbilityID or ''), 'itemLevel '..(info.itemLevel or ''))
+            e.tips:AddDoubleLine(info.skillLineAbilityID and 'skillLineAbilityID '..info.skillLineAbilityID,  info.itemLevel and info.itemLevel>1 and format(e.onlyChinese and '物品等级%d' or ITEM_LEVEL, info.itemLevel))
         end
-        
         e.tips:AddDoubleLine(e.toolsFrame.addName, e.cn(addName))
         e.tips:Show()
     end)
