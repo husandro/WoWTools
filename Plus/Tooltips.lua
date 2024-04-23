@@ -2787,7 +2787,11 @@ local function Init_Event(arg1)
             end
         end)
         hooksecurefunc('AchievementFrameComparison_UpdateDataProvider', function()--比较成就, Blizzard_AchievementUI.lua
-            for _, button in pairs(AchievementFrameComparison.AchievementContainer.ScrollBox:GetFrames()) do
+            local frame= AchievementFrameComparison.AchievementContainer.ScrollBox
+            if not frame:GetView() then
+                return
+            end
+            for _, button in pairs(frame:GetFrames()) do
                 if not button.OnEnter then
                     button:SetScript('OnLeave', GameTooltip_Hide)
                     button:SetScript('OnEnter', function(self3)

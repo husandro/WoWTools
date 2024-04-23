@@ -747,6 +747,9 @@ end
 
 
 local function set_WhoList_Update()--查询, 名单列表
+    if not WhoFrame.ScrollBox:GetView() then
+        return
+    end
     for _, btn in pairs(WhoFrame.ScrollBox:GetFrames()) do
         if not btn.setOnDoubleClick then
             btn:SetScript('OnDoubleClick', function()

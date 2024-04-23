@@ -878,6 +878,9 @@ local function setAddLoad(arg1)
             hooksecurefunc(CommunitiesFrame.MaxMinButtonFrame, 'Minimize', set_size)--maximizedCallback
             hooksecurefunc(CommunitiesFrame.MaxMinButtonFrame, 'Maximize', set_size)
             hooksecurefunc(ClubFinderCommunityAndGuildFinderFrame.CommunityCards.ScrollBox, 'Update', function(frame)
+                if not frame:GetView() then
+                    return
+                end
                 for _, btn in pairs(frame:GetFrames() or {}) do
                     btn.Name:ClearAllPoints()
                     btn.Name:SetPoint('TOPLEFT', btn.LogoBorder, 'TOPRIGHT', 12,0)
@@ -1784,6 +1787,9 @@ local function setAddLoad(arg1)
             ProfessionsCustomerOrdersFrame.MyOrdersPage:SetPoint('TOPLEFT')
             ProfessionsCustomerOrdersFrame.MyOrdersPage:SetPoint('BOTTOMRIGHT')
             hooksecurefunc(ProfessionsCustomerOrdersFrame.BrowseOrders.CategoryList.ScrollBox, 'Update', function(self)
+                if not self:GetView() then
+                    return
+                end
                 for _, btn in pairs(self:GetFrames() or {}) do
                     btn.HighlightTexture:SetPoint('RIGHT')
                     btn.NormalTexture:SetPoint('RIGHT')
@@ -2361,6 +2367,9 @@ end)]]
             FriendsListFrame.ScrollBox:SetPoint('BOTTOMRIGHT', -24, 30)
             WhoFrameColumnHeader1:SetWidth(200)
             hooksecurefunc(WhoFrame.ScrollBox, 'Update', function(self)
+                if not self:GetView() then
+                    return
+                end
                 for _, btn in pairs(self:GetFrames() or {}) do
                     btn:SetPoint('RIGHT')
                 end

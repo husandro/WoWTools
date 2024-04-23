@@ -482,13 +482,21 @@ local function Init_All_Frame()
      set_Alpha_Color(CharacterStatsPane.AttributesCategory.Background)
      set_Alpha_Color(CharacterStatsPane.ItemLevelCategory.Background)
      hooksecurefunc('PaperDollTitlesPane_UpdateScrollBox', function()--PaperDollFrame.lua
-         for _, button in pairs(PaperDollFrame.TitleManagerPane.ScrollBox:GetFrames()) do
+        local frame= PaperDollFrame.TitleManagerPane.ScrollBox
+        if not frame:GetView() then
+            return
+        end
+         for _, button in pairs(frame:GetFrames()) do
              hide_Texture(button.BgMiddle)
          end
      end)
      e.Set_ScrollBar_Color_Alpha(PaperDollFrame.TitleManagerPane)
      hooksecurefunc('PaperDollEquipmentManagerPane_Update', function()--PaperDollFrame.lua
-        for _, button in pairs(PaperDollFrame.EquipmentManagerPane.ScrollBox:GetFrames()) do
+        local frame= PaperDollFrame.EquipmentManagerPane.ScrollBox
+        if not frame:GetView() then
+            return
+        end
+        for _, button in pairs(frame:GetFrames()) do
              hide_Texture(button.BgMiddle)
          end
      end)
@@ -1460,6 +1468,9 @@ local function Init_Event(arg1)
         hide_Texture(CommunitiesFrame.GuildBenefitsFrame.Rewards.Bg)
 
         hooksecurefunc(CommunitiesFrameCommunitiesList,'UpdateCommunitiesList',function(self)
+            if not self:GetView() then
+                return
+            end
             C_Timer.After(0.3, function()
                 for _, button in pairs(CommunitiesFrameCommunitiesList.ScrollBox:GetFrames()) do
                 set_Alpha_Color(button.Background)

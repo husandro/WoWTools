@@ -324,6 +324,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             hooksecurefunc(ClubFinderCommunityAndGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_RequestToJoinFrame)
 
             hooksecurefunc(CommunitiesFrameCommunitiesList.ScrollBox, 'SetScrollTargetOffset', function(self)
+                if not self:GetView() then
+                    return
+                end
                 for _, btn in pairs(self:GetFrames() or {}) do
                     local online, all= 0, 0
                     if btn.clubId then

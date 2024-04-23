@@ -1123,11 +1123,17 @@ local function Init()
 
     --拾取
     hooksecurefunc(LootFrame, 'Open', function(self)--LootFrame.lua
+        if not self:GetView() then
+            return
+        end
         for index, btn in pairs(self.ScrollBox:GetFrames() or {}) do
             e.Set_Item_Info(btn.Item, {lootIndex=btn.GetOrderIndex() or btn:GetSlotIndex() or index})
         end
     end)
     hooksecurefunc(LootFrame.ScrollBox, 'SetScrollTargetOffset', function(self)
+        if not self:GetView() then
+            return
+        end
         for index, btn in pairs(self:GetFrames() or {}) do
             e.Set_Item_Info(btn.Item, {lootIndex=btn.GetOrderIndex() or btn:GetSlotIndex() or index})
         end
@@ -1254,6 +1260,9 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 end
             end
             hooksecurefunc(PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer.ScrollBox, 'SetScrollTargetOffset', function(self2)
+                if not self2:GetView() then
+                    return
+                end
                 for _, btn in pairs(self2:GetFrames()) do
                     if btn.itemID then
                         local itemLink= btn.itemID and select(2, C_Item.GetItemInfo(btn.itemID))

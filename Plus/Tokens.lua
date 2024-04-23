@@ -1487,10 +1487,14 @@ local function Init()
 			set_Tokens_Button(frame)--设置, 列表, 内容
 		end)
 		hooksecurefunc('TokenFrame_Update', function()
-			for _, frame in pairs(TokenFrame.ScrollBox:GetFrames()) do
+			local f=TokenFrame
+			if not f.ScrollBox:GetView() then
+				return
+			end
+			for _, frame in pairs(f.ScrollBox:GetFrames()) do
 				set_Tokens_Button(frame)--设置, 列表, 内容
 			end
-			set_ItemInteractionFrame_Currency(TokenFrame)--套装,转换,货币
+			set_ItemInteractionFrame_Currency(f)--套装,转换,货币
 			Set_TrackButton_Text()
 		end)
 

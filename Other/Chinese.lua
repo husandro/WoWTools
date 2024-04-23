@@ -5684,6 +5684,9 @@ local function Init_Loaded(arg1)
             end
         end)
         hooksecurefunc(EncounterJournalMonthlyActivitiesFrame.FilterList.ScrollBox, 'Update', function(self)
+            if not self:GetView() then
+                return
+            end
             for _, btn in pairs(self:GetFrames() or {}) do
                 setLabel(btn.Label)
             end
@@ -5691,11 +5694,15 @@ local function Init_Loaded(arg1)
 
 
         hooksecurefunc('EncounterJournal_ListInstances', function()
-            for _, button in pairs(EncounterJournal.instanceSelect.ScrollBox:GetFrames()) do
-              setLabel(button.name)
-              if button.tooltiptext and e.strText[button.tooltiptext] then
-                button.tooltiptext= e.strText[button.tooltiptext]
-              end
+            local frame= EncounterJournal.instanceSelect.ScrollBox
+            if not frame:GetView() then
+                return
+            end
+            for _, button in pairs(frame:GetFrames()) do
+                setLabel(button.name)
+                if button.tooltiptext and e.strText[button.tooltiptext] then
+                    button.tooltiptext= e.strText[button.tooltiptext]
+                end
             end
         end)
 

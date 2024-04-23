@@ -670,8 +670,12 @@ local function Init_EncounterJournal()--冒险指南界面
     --界面, 副本击杀
     --Blizzard_EncounterJournal.lua
     hooksecurefunc('EncounterJournal_ListInstances', function()
+        local frame= EncounterJournal.instanceSelect.ScrollBox
+        if not frame:GetView() then
+            return
+        end
         if Save.hideEncounterJournal then
-            for _, button in pairs(EncounterJournal.instanceSelect.ScrollBox:GetFrames() or {}) do
+            for _, button in pairs(frame:GetFrames() or {}) do
                 if button then
                     if button.tipsText then
                         button.tipsText:SetText('')
@@ -689,7 +693,7 @@ local function Init_EncounterJournal()--冒险指南界面
             return
         end
 
-        for _, button in pairs(EncounterJournal.instanceSelect.ScrollBox:GetFrames() or {}) do--ScrollBox.lua
+        for _, button in pairs(frame:GetFrames() or {}) do--ScrollBox.lua
             if button and button.tooltipTitle and button.instanceID then--button.bgImage:GetTexture() button.name:GetText()
                 local textKill= encounterJournal_ListInstances_set_Instance(button)--界面,击杀,数据
                 if not button.tipsText and textKill then
@@ -1214,6 +1218,9 @@ local function Init_EncounterJournal()--冒险指南界面
 
 
     hooksecurefunc(EncounterJournal.encounter.info.BossesScrollBox, 'SetScrollTargetOffset', function(self2)
+        if not self2:GetView() then
+            return
+        end
         for _, button in pairs(self2:GetFrames()) do
             if not button.OnEnter then
                 button:SetScript('OnEnter', function(self3)
@@ -1265,6 +1272,9 @@ local function Init_EncounterJournal()--冒险指南界面
     --战利品, 套装, 收集数 Blizzard_LootJournalItems.lua
     if EncounterJournal.LootJournalItems.ItemSetsFrame and EncounterJournal.LootJournalItems.ItemSetsFrame.ScrollBox and EncounterJournal.LootJournalItems.ItemSetsFrame.ScrollBox.Update then
         hooksecurefunc(EncounterJournal.LootJournalItems.ItemSetsFrame.ScrollBox, 'Update', function(self)
+            if not self:GetView() then
+                return
+            end
             for _, frame in pairs(self:GetFrames()) do
                 local ItemButtons=frame.ItemButtons or {}
                 for _, itemButton in pairs(ItemButtons) do
@@ -1428,7 +1438,7 @@ local function Init_EncounterJournal()--冒险指南界面
     --贸易站
     --#####
     hooksecurefunc(EncounterJournalMonthlyActivitiesFrame.ScrollBox, 'SetScrollTargetOffset', function(self2)
-        if Save.hideEncounterJournal then
+        if Save.hideEncounterJournal or not self2:GetView() then
             return
         end
         for _, btn in pairs(self2:GetFrames()) do

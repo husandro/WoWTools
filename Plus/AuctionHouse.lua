@@ -1117,8 +1117,11 @@ end
 
 
 
-local function Set_BrowseResultsFrame(ScrollBox)
-    for _, btn in pairs(ScrollBox:GetFrames() or {}) do
+local function Set_BrowseResultsFrame(frame)
+    if not frame:GetView() then
+        return
+    end
+    for _, btn in pairs(frame:GetFrames() or {}) do
         local text
         local itemKey= btn.rowData and btn.rowData.itemKey
         local itemKeyInfo = itemKey and C_AuctionHouse.GetItemKeyInfo(itemKey)--itemID battlePetSpeciesID itemName battlePetLink appearanceLink quality iconFileID isPet isCommodity isEquipment

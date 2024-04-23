@@ -502,6 +502,9 @@ local function Init_Gossip_Text_Icon_Options()
 
 
     function menu:update_list()
+        if not self:GetView() then
+            return
+        end
         for _, btn in pairs(self:GetFrames() or {}) do
             if btn.gossipID==self.gossipID then
                 btn:LockHighlight()
@@ -512,6 +515,9 @@ local function Init_Gossip_Text_Icon_Options()
         local tab={}
         for _, data in pairs(C_GossipInfo.GetOptions() or {}) do
             tab[data.orderIndex]= data.gossipOptionID
+        end
+        if not GossipFrame.GreetingPanel.ScrollBox:GetView() then
+            return
         end
         for _, b in pairs(GossipFrame.GreetingPanel.ScrollBox:GetFrames() or {}) do
             if tab[b:GetID()]==self.gossipID then
@@ -1306,6 +1312,9 @@ local function Init_Gossip_Text_Icon_Options()
     Gossip_Text_Icon_Frame:SetScript('OnHide', function(self)
         GossipButton:update_gossip_frame()
         self.menu:set_list()
+        if not GossipFrame.GreetingPanel.ScrollBox:GetView() then
+            return
+        end
         for _, b in pairs(GossipFrame.GreetingPanel.ScrollBox:GetFrames() or {}) do
             b:UnlockHighlight()
         end

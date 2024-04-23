@@ -2038,6 +2038,9 @@ local function Loot_Plus()
     end
     hooksecurefunc(LootHistoryElementMixin, 'Init', set_LootFrame_btn)
     hooksecurefunc(GroupLootHistoryFrame.ScrollBox, 'SetScrollTargetOffset', function(self)
+        if not self:GetView() then
+            return
+        end
         for _, btn in pairs(self:GetFrames()) do
             set_LootFrame_btn(btn)
         end
