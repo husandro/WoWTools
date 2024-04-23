@@ -624,7 +624,7 @@ local function Init_Panel()
         if s:gsub(' ','')~='' then
             s=s..' '
             s=s:gsub('|n', ' ')
-            s:gsub('.- ', function(t)
+            s=s:gsub('.- ', function(t)
                 t=t:gsub(' ','')
                 if t and t~='' then
                     t=e.Magic(t)
@@ -661,7 +661,7 @@ local function Init_Panel()
         if s:gsub(' ','')~='' then
             s=s..' '
             s=s:gsub('|n', ' ')
-            s:gsub('.-=.- ', function(t)
+            s=s:gsub('.-=.- ', function(t)
                 local name,name2=t:match('(.-)=(.-) ')
                 if name and name2 and name~='' and name2~='' then
                     name=e.Magic(name)
