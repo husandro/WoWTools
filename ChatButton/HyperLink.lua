@@ -1290,7 +1290,7 @@ local function Init()
             local info= C_LFGList.GetSearchResultInfo(self.resultID)
             local name= info.name
             if name then--["INSTANCE_DIFFICULTY_FORMAT"] = "（%s）",
-                local name2= e.strText[name:match('(.-) %(') or name:match('(.-)（') or name]
+                local name2= e.strText[name:match('(.-)%(') or name:match('(.-)（') or name]
                 if name2 then
                     name= name..'( |cnGREEN_FONT_COLOR:'..name2..'|r)'
                 end
