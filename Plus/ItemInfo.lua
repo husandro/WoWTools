@@ -1123,7 +1123,7 @@ local function Init()
 
     --拾取
     hooksecurefunc(LootFrame, 'Open', function(self)--LootFrame.lua
-        if not self:GetView() then
+        if not self.ScrollBox:GetView() then
             return
         end
         for index, btn in pairs(self.ScrollBox:GetFrames() or {}) do
