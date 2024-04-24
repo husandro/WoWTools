@@ -30,7 +30,6 @@ local Save={
 local button
 local panel= CreateFrame("Frame")
 DEFAULT_CHAT_FRAME.ADD= DEFAULT_CHAT_FRAME.AddMessage
-
 local not_Colleced_Icon='|A:questlegendary:0:0|a'
 
 local LOOT_ITEM= e.Magic(LOOT_ITEM)--:gsub('%%s', '(.+)')--%s获得了战利品：%s。
@@ -1289,12 +1288,19 @@ local function Init()
         local status, _, _, role= select(2,C_LFGList.GetApplicationInfo(self.resultID))
         if status=="invited" then
             local info= C_LFGList.GetSearchResultInfo(self.resultID)
+            local name= info.name
+            if name then--["INSTANCE_DIFFICULTY_FORMAT"] = "（%s）",
+                local name2= e.strText[name:match('(.-) %(') or name:match('(.-)（') or name]
+                if name2 then
+                    name= name..'( |cnGREEN_FONT_COLOR:'..name2..'|r)'
+                end
+            end
             if self.AcceptButton and self.AcceptButton:IsEnabled() and info then
                 print(id, e.cn(addName),
                     info.leaderOverallDungeonScore and info.leaderOverallDungeonScore>0 and '|T4352494:0|t'..e.GetKeystoneScorsoColor(info.leaderOverallDungeonScore) or '',--地下城史诗,分数
                     info.leaderPvpRatingInfo and  info.leaderPvpRatingInfo.rating and info.leaderPvpRatingInfo.rating>0 and '|A:pvptalents-warmode-swords:0:0|a|cnRED_FONT_COLOR:'..info.leaderPvpRatingInfo.rating..'|r' or '',--PVP 分数
                     info.leaderName and (e.onlyChinese and '%s邀请你加入' or COMMUNITY_INVITATION_FRAME_INVITATION_TEXT):format(e.PlayerLink(info.leaderName)..' ') or '',--	%s邀请你加入
-                    info.name and info.name or '',--名称
+                    name,--名称
                     e.Icon[role] or '',
                     info.numMembers and (e.onlyChinese and '队员' or PLAYERS_IN_GROUP)..'|cff00ff00 '..info.numMembers..'|r' or '',--队伍成员数量
                     info.autoAccept and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '自动邀请' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, INVITE))..'|r' or '',--对方是否开启, 自动邀请
@@ -1325,7 +1331,7 @@ end
 --###########
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:RegisterEvent("ADDON_LOADED")
-panel:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
+panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
     if event == "ADDON_LOADED" then
         if arg1 == id then
             if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button
@@ -1336,7 +1342,7 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2, arg3)
                 Save.guildWelcomeText= Save.guildWelcomeText or (e.Player.cn and '宝贝，欢迎你加入' or EMOTE103_CMD1:gsub('/',''))
 
                 Init()
-                panel:RegisterEvent('CVAR_UPDATE')
+                self:RegisterEvent('CVAR_UPDATE')
             else
                 DEFAULT_CHAT_FRAME.ADD= nil
             end
