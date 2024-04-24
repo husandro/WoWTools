@@ -1288,19 +1288,19 @@ local function Init()
         local status, _, _, role= select(2,C_LFGList.GetApplicationInfo(self.resultID))
         if status=="invited" then
             local info= C_LFGList.GetSearchResultInfo(self.resultID)
-            local name= info.name
+            --[[local name= info.name
             if name then--["INSTANCE_DIFFICULTY_FORMAT"] = "（%s）",
                 local name2= e.strText[name:match('(.-)%(') or name:match('(.-)（') or name]
                 if name2 then
                     name= name..'( |cnGREEN_FONT_COLOR:'..name2..'|r)'
                 end
-            end
+            end]]
             if self.AcceptButton and self.AcceptButton:IsEnabled() and info then
                 print(id, e.cn(addName),
                     info.leaderOverallDungeonScore and info.leaderOverallDungeonScore>0 and '|T4352494:0|t'..e.GetKeystoneScorsoColor(info.leaderOverallDungeonScore) or '',--地下城史诗,分数
                     info.leaderPvpRatingInfo and  info.leaderPvpRatingInfo.rating and info.leaderPvpRatingInfo.rating>0 and '|A:pvptalents-warmode-swords:0:0|a|cnRED_FONT_COLOR:'..info.leaderPvpRatingInfo.rating..'|r' or '',--PVP 分数
                     info.leaderName and (e.onlyChinese and '%s邀请你加入' or COMMUNITY_INVITATION_FRAME_INVITATION_TEXT):format(e.PlayerLink(info.leaderName)..' ') or '',--	%s邀请你加入
-                    name,--名称
+                    info.name,--名称
                     e.Icon[role] or '',
                     info.numMembers and (e.onlyChinese and '队员' or PLAYERS_IN_GROUP)..'|cff00ff00 '..info.numMembers..'|r' or '',--队伍成员数量
                     info.autoAccept and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '自动邀请' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, INVITE))..'|r' or '',--对方是否开启, 自动邀请

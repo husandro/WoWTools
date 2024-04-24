@@ -1,12 +1,14 @@
 local e = select(2, ...)
+
+e.SetItemCurrencyID= 2912--套装，转换，货币
 local ItemCurrencyTips= {---物品升级界面，挑战界面，物品，货币提示
     {type='currency', id=2812},--守护巨龙的觉醒纹章
     {type='currency', id=2809},--魔龙的觉醒纹章
     {type='currency', id=2807},--幼龙的觉醒纹章
     {type='currency', id=2806},--雏龙的觉醒纹章
     {type='currency', id=2245},--飞珑石
-
-    {type='currency', id=2796, show=true},--苏生奇梦 10.2
+--2912
+    {type='currency', id=e.SetItemCurrencyID, show=true},--套装，转换，货币
     {type='currency', id=1602, line=true},--征服点数
     {type='currency', id=1191},--勇气点数
 }
@@ -908,7 +910,7 @@ function e.ItemCurrencyLabel(settings)--物品升级界面，挑战界面，物�
     local R={}
     for _, tab in pairs(ItemCurrencyTips) do
         local text=''
-        if tab.type=='currency' and tab.id then
+        if tab.type=='currency' and tab.id and tab.id>0 then
             local info, num, totale, percent, isMax, canWeek, canEarned, canQuantity= e.GetCurrencyMaxInfo(tab.id)
             if info and num and (num>0 or showAll or tab.show) then
                 if isMax then
