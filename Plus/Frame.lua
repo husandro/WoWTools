@@ -45,6 +45,9 @@ local function set_Move_Alpha(frame)
             target:SetAlpha(1)
         end
     end)
+    frame:HookScript('OnEnter', function(self)
+        self:SetAlpha(1)
+    end)
     function btn:set_move_event()
         if Save.disabledAlpha[self.name] or Save.alpha==1 then
             self:UnregisterAllEvents()

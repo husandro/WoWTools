@@ -8,7 +8,51 @@ local panel=CreateFrame("Frame")
 local Button
 local AllTipsFrame--冒险指南,右边,显示所数据
 
-local function getBossNameSort(name, worldBossID)--取得怪物名称, 短名称
+
+
+
+
+--[[
+
+local numTiers = EJ_GetNumTiers();
+local currTier = EJ_GetCurrentTier();
+--for i=1,numTiers do
+    
+
+    print(EJ_GetTierInfo(numTiers))
+    --info.text = EJ_GetTierInfo(i);
+    
+    --info.func = EncounterJournal_TierDropDown_Select
+    --info.checked = i == currTier;
+    --info.arg1 = i;
+    --UIDropDownMenu_AddButton(info, level)
+--end
+
+local dataIndex = 1;
+local showRaid = false
+local instanceID, name, description, _, buttonImage, _, _, _, link, _, mapID = EJ_GetInstanceByIndex(dataIndex, showRaid);
+local dataProvider = CreateDataProvider();
+while instanceID ~= nil do
+    dataProvider:Insert({
+        instanceID = instanceID,
+        name = name,
+        description = description,
+        buttonImage = buttonImage,
+        link = link,
+        mapID = mapID,
+    });
+
+    print(name,mapID)
+    dataIndex = dataIndex + 1;
+    instanceID, name, description, _, buttonImage, _, _, _, link, _, mapID = EJ_GetInstanceByIndex(dataIndex, showRaid);
+end]]
+
+
+
+
+
+
+local function getBossNameSort(name)--取得怪物名称, 短名称
     --[[if e.onlyChinese and not LOCALE_zhCN and not LOCALE_zhTW and worldBossID then
         if worldBossID==1 then--Sha della Rabbia
             return '怒之煞'
@@ -305,7 +349,7 @@ local function MoveFrame(self, savePointName)
         size= size>72 and 72 or size
         Save.EncounterJournalFontSize=size
         e.Cstr(nil, {size=size, changeFont=self2.Text})--size, nil, self2.Text)
-        print(id, e.cn(addName), 	FONT_SIZE, size)
+        print(id, e.cn(addName), e.onlyChinese and '字体大小' or FONT_SIZE, size)
     end)
 end
 
@@ -774,14 +818,14 @@ local function Init_EncounterJournal()--冒险指南界面
                             return
                         end
                         local name, _, _, _, loreImage, _, dungeonAreaMapID, _, _, mapID = EJ_GetInstanceInfo(frame.instanceID)
-                        e.tips:SetOwner(frame, "ANCHOR_RIGHT");
+                        e.tips:SetOwner(frame, "ANCHOR_LEFT");
                         e.tips:ClearLines();
                         if name then
                             e.tips:AddLine(name..' ')
                         end
                         e.tips:AddDoubleLine('journalInstanceID: |cnGREEN_FONT_COLOR:'..frame.instanceID, loreImage and '|T'..loreImage..':0|t'..loreImage)
                         e.tips:AddDoubleLine(
-                            dungeonAreaMapID and 'dungeonAreaMapID |cnGREEN_FONT_COLOR:'..dungeonAreaMapID,
+                            dungeonAreaMapID and dungeonAreaMapID>0 and 'dungeonAreaMapID |cnGREEN_FONT_COLOR:'..dungeonAreaMapID or ' ',
                             mapID and 'mapID |cnGREEN_FONT_COLOR:'..mapID
                         )
                         if frame.mapChallengeModeID then
@@ -1596,7 +1640,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
 
             if Save.disabled then
-                panel:UnregisterAllEvents()
+                self:UnregisterAllEvents()
             else
                 if not Save.hideEncounterJournal then
                     set_Loot_Spec_Event()--BOSS战时, 指定拾取, 专精, 事件
@@ -1604,16 +1648,16 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
                 Init()
             end
-            panel:RegisterEvent("PLAYER_LOGOUT")
+            self:RegisterEvent("PLAYER_LOGOUT")
 
 
         elseif arg1=='Blizzard_EncounterJournal' then---冒险指南
             Init_EncounterJournal()--冒险指南界面
             EncounterJournal_Set_All_Info_Text()--冒险指南,右边,显示所数据
-            panel:RegisterEvent('BOSS_KILL')
-            panel:RegisterEvent('UPDATE_INSTANCE_INFO')
-            panel:RegisterEvent('PLAYER_ENTERING_WORLD')
-            panel:RegisterEvent('WEEKLY_REWARDS_UPDATE')
+            self:RegisterEvent('BOSS_KILL')
+            self:RegisterEvent('UPDATE_INSTANCE_INFO')
+            self:RegisterEvent('PLAYER_ENTERING_WORLD')
+            self:RegisterEvent('WEEKLY_REWARDS_UPDATE')
         end
 
     elseif event == "PLAYER_LOGOUT" then

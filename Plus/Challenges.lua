@@ -56,6 +56,7 @@ local SpellTabs={--C_MythicPlus.GetCurrentSeason()
         [405]= {spell=393267, ins=1196, name='山谷'},--传送到蕨皮山谷的入口。 腐木之路
         [406]= {spell=393283, ins=1204, name='大厅'},----传送到注能大厅的入口 泰坦水库之路
 }
+
 --if C_MythicPlus.GetCurrentSeason()==12 then
 for _, tab in pairs(SpellTabs) do
     e.LoadDate({id=tab.spell, type='spell'})
@@ -1345,7 +1346,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                 frame.setTips=true
             end
 
-            --#########
+             --#########
             --名称, 缩写
             --#########
             local nameText = not Save.hideIns and C_ChallengeMode.GetMapUIInfo(frame.mapID)--名称
@@ -1381,6 +1382,59 @@ local function set_Update()--Blizzard_ChallengesUI.lua
             if frame.nameLable then
                 frame.nameLable:SetText(nameText or '')
             end
+
+            --######### BUG
+            --名称, 缩写
+            --[[#########
+            local nameText = not Save.hideIns and C_ChallengeMode.GetMapUIInfo(frame.mapID)--名称
+            if nameText then
+                if not frame.nameFrame then
+                    frame.nameFrame=CreateFrame('Frame', nil, frame)
+                    frame.nameFrame:SetHyperlinksEnabled(true)
+                    frame.nameFrame:SetScript("OnHyperlinkClick", ChatFrame_OnHyperlinkShow)
+                    frame.nameFrame.Text= e.Cstr(frame.nameFrame, {size=10, mouse= true, justifyH='CENTER'})
+                    frame.nameFrame.Text:SetPoint('BOTTOM', frame, 'TOP', 0, 3)
+                    frame.nameFrame:SetAllPoints(frame.nameFrame.Text)
+                    --frame.nameFrame.Text:HookScript('OnMouseDown', function(self2) self2:SetAlpha(0) end)
+                    --frame.nameFrame.Text:HookScript('OnMouseUp', function(self2) self2:SetAlpha(0.5) end)
+                    frame.nameFrame.Text:HookScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
+                    frame.nameFrame.Text:HookScript('OnEnter', function(self2)
+                        if not self2.name then
+                            return
+                        end
+                        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+                        e.tips:ClearLines()
+                        e.tips:AddLine(self2.name..(self2:GetParent().link and e.Icon.left or ' '))--加空，去掉，翻译
+                        local text= self2:GetText()
+                        if text~=self2.name then
+                            e.tips:AddLine(text)
+                        end
+                        e.tips:Show()
+                        self2:SetAlpha(0.5)
+                    end)
+                end
+                frame.nameFrame.Text.name= nameText
+
+                if (e.onlyChinese or LOCALE_zhCN) and SpellTabs[frame.mapID] then
+                    nameText= SpellTabs[frame.mapID].name
+                else
+                    nameText=nameText:match('%((.+)%)') or nameText
+                    nameText=nameText:match('%（(.+)%）') or nameText
+                    nameText=nameText:match('%- (.+)') or nameText
+                    nameText=nameText:match(HEADER_COLON..'(.+)') or nameText
+                    nameText=nameText:match('·(.+)') or nameText
+                    nameText=e.WA_Utf8Sub(nameText, 5, 12)
+                end
+                frame.nameFrame.Text:SetScale(Save.insScale or 1)
+                frame.nameFrame.link= frame.journalInstanceID and select(8, EJ_GetInstanceInfo(frame.journalInstanceID))
+                if frame.nameFrame.link then
+                    nameText= frame.nameFrame.link:gsub('%[(.-)]', nameText)
+                end
+                
+            end
+            if frame.nameFrame then
+                frame.nameFrame.Text:SetText(nameText or '')
+            end]]
 
 
             --#########

@@ -1,4 +1,28 @@
 local e = select(2, ...)
+local ItemCurrencyTips= {---物品升级界面，挑战界面，物品，货币提示
+    {type='currency', id=2812},--守护巨龙的觉醒纹章
+    {type='currency', id=2809},--魔龙的觉醒纹章
+    {type='currency', id=2807},--幼龙的觉醒纹章
+    {type='currency', id=2806},--雏龙的觉醒纹章
+    {type='currency', id=2245},--飞珑石
+
+    {type='currency', id=2796, show=true},--苏生奇梦 10.2
+    {type='currency', id=1602, line=true},--征服点数
+    {type='currency', id=1191},--勇气点数
+}
+
+--[[
+    {type='currency', id=2709},--守护巨龙的酣梦纹章
+    {type='currency', id=2708},--守护巨龙的酣梦纹章
+    {type='currency', id=2707},--魔龙的酣梦纹章
+    {type='currency', id=2706},--幼龙的酣梦纹章
+    {type='item', id=204196},--魔龙的暗影烈焰纹章10.1
+    {type='item', id=204195},--幼龙的暗影烈焰纹章
+    {type='item', id=204194},--守护巨龙的暗影烈焰纹章
+    {type='item', id=204193},--雏龙的暗影烈焰纹章
+]]
+
+
 
 --[[
 e.cn(text) 取得中文
@@ -73,6 +97,21 @@ e.Get_ColorFrame_RGBA()--取得, ColorFrame, 颜色
 e.ShowColorPicker(valueR, valueG, valueB, valueA, swatchFunc, cancelFunc)
 
 ]]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 --取得中文 
@@ -812,7 +851,7 @@ function e.Get_Weekly_Rewards_Activities(settings)--周奖励，提示
     return last
 end
 
---info, num, total, percent, isMax, canWeek, canEarned, canQuantity= e.GetCurrencyMaxInfo(currencyID, index)
+--info, num, total, percent, isMax, canWeek, canEarned, canQuantity= e.GetCurrencyMaxInfo(currencyID, index, allShow)
 function e.GetCurrencyMaxInfo(currencyID, index)
     local info, link
     if not currencyID and index then
@@ -866,36 +905,17 @@ function e.ItemCurrencyLabel(settings)--物品升级界面，挑战界面，物�
     local showAll= settings.showAll
     local showTooltip= settings.showTooltip
 
-    local itemS= {--数量提示
-            --{type='item', id=204196},--魔龙的暗影烈焰纹章10.1
-            --{type='item', id=204195},--幼龙的暗影烈焰纹章
-            --{type='item', id=204194},--守护巨龙的暗影烈焰纹章
-            --{type='item', id=204193},--雏龙的暗影烈焰纹章
-            {type='currency', id=2809},--魔龙的觉醒纹章
-            {type='currency', id=2806},--雏龙的觉醒纹章
-            {type='currency', id=2709},--守护巨龙的酣梦纹章
-
-            --{type='currency', id=2709},--守护巨龙的酣梦纹章
-            {type='currency', id=2708},--守护巨龙的酣梦纹章
-            {type='currency', id=2707},--魔龙的酣梦纹章
-            {type='currency', id=2706},--幼龙的酣梦纹章
-            {type='currency', id=2245},--飞珑石
-            {type='currency', id=2796, show=true},--苏生奇梦 10.2
-            {type='currency', id=1602, line=true},--征服点数
-            {type='currency', id=1191},--勇气点数
-        }
-
     local R={}
-    for _, tab in pairs(itemS) do
+    for _, tab in pairs(ItemCurrencyTips) do
         local text=''
         if tab.type=='currency' and tab.id then
             local info, num, totale, percent, isMax, canWeek, canEarned, canQuantity= e.GetCurrencyMaxInfo(tab.id)
-            if info and num and num>0 and (showAll or tab.show) then
+            if info and num and (num>0 or showAll or tab.show) then
                 if isMax then
                     text= text..format('|cnRED_FONT_COLOR:%s|r', e.MK(num,3))
 
                 elseif percent then
-                    text=text..format('|cnGREEN_FONT_COLOR:%s (%d%%)|r', e.MK(num, 3), percent)
+                    text=text..format('|cnGREEN_FONT_COLOR:%s |cffffffff(%d%%)|r|r', e.MK(num, 3), percent)
                 else
                     text= text..format('|cnRED_FONT_COLOR:%s|r', e.MK(num,3))
                 end
