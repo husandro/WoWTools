@@ -26,10 +26,6 @@ local Initializer
 
 
 
-
-
-
-
 -- Information from(资料来自)：https://www.wowhead.com/cn/guide/mythic-plus-dungeons/dragonflight-season-3/overview
 -- AngryKeystones Schedule
 local affixSchedule = {--C_MythicPlus.GetCurrentSeason() C_MythicPlus.GetCurrentUIDisplaySeason()
@@ -49,7 +45,23 @@ local affixSchedule = {--C_MythicPlus.GetCurrentSeason() C_MythicPlus.GetCurrent
 
 
 local SpellTabs={--C_MythicPlus.GetCurrentSeason()
-    --10.2 11赛季
+
+      --10.26 12赛季
+        [399]= {spell=393256, ins=1202, name='红玉'},--传送到红玉新生法池的入口。 利爪防御者之路
+        [400]= {spell=393262, ins=1198, name='诺库德'},--传送至诺库德阻击战的入口。 啸风平原之路
+        [401]= {spell=393279, ins=1203, name='魔馆'},--传送至碧蓝魔馆的入口。 奥秘之路
+        [402]= {spell=393273, ins=1201, name='学院'},--传送到艾杰斯亚学院的入口。 巨龙学位之路
+        [403]= {spell=393222, ins=1197, name='提尔遗产'},--传送到奥达曼：提尔的遗产的入口 看护者遗产之路
+        [404]= {spell=393276, ins=1199, name='奈萨鲁斯'},--传送到奈萨鲁斯的入口。 黑曜宝藏之路
+        [405]= {spell=393267, ins=1196, name='山谷'},--传送到蕨皮山谷的入口。 腐木之路
+        [406]= {spell=393283, ins=1204, name='大厅'},----传送到注能大厅的入口 泰坦水库之路
+}
+--if C_MythicPlus.GetCurrentSeason()==12 then
+for _, tab in pairs(SpellTabs) do
+    e.LoadDate({id=tab.spell, type='spell'})
+end
+--[[
+    -10.2 11赛季
     [198]= {spell=424163, ins=762, name='黑心林地'},--黑心林地 Darkheart Thicket (Legion)
     [199]= {spell=424153, ins=740, name='黑鸦堡垒'},--黑鸦堡垒 Black Rook Hold (Legion)
     [168]= {spell=159901, ins=556, name='永茂林地'},--永茂林地 The Everbloom (Warlords of Draenor)    
@@ -59,28 +71,6 @@ local SpellTabs={--C_MythicPlus.GetCurrentSeason()
     [464]= {spell=424197, ins=1209, name='崛起' },--永恒黎明：姆诺兹多的崛起 Dawn of the Infinite: Murozond's Rise    
     [456]= {spell=424142, ins=65, name='潮汐王座'},--潮汐王座 Throne of the Tides (Cataclysm)
 
-}
-
-if C_MythicPlus.GetCurrentSeason()==12 then
-    SpellTabs={
-        --10.26 12赛季
-        [399]= {spell=393256, ins=1202, name='红玉'},--传送到红玉新生法池的入口。 利爪防御者之路
-        [400]= {spell=393262, ins=1198, name='诺库德'},--传送至诺库德阻击战的入口。 啸风平原之路
-        [401]= {spell=393279, ins=1203, name='魔馆'},--传送至碧蓝魔馆的入口。 奥秘之路
-        [402]= {spell=393273, ins=1201, name='学院'},--传送到艾杰斯亚学院的入口。 巨龙学位之路
-        [403]= {spell=393222, ins=1197, name='提尔遗产'},--传送到奥达曼：提尔的遗产的入口 看护者遗产之路
-        [404]= {spell=393276, ins=1199, name='奈萨鲁斯'},--传送到奈萨鲁斯的入口。 黑曜宝藏之路
-        [405]= {spell=393267, ins=1196, name='山谷'},--传送到蕨皮山谷的入口。 腐木之路
-        [406]= {spell=393283, ins=1204, name='大厅'},----传送到注能大厅的入口 泰坦水库之路
-    }
-end
-for _, tab in pairs(SpellTabs) do
-    e.LoadDate({id=tab.spell, type='spell'})
-end
-
---[[
-
-    
     --10.1 10赛季
     [403]={spell=393222, ins=1197, name='奥达曼'},--奥达曼：提尔的遗产
     [404]={spell=393276, ins=1199, name='奈萨鲁斯'},--奈萨鲁斯
@@ -132,6 +122,74 @@ end
 {spell=131225, ins=, map=},--残阳关
 {spell=131206, ins=, map=},--影踪禅院
 ]]
+
+
+
+
+
+--难度 每周 掉落
+--https://www.wowhead.com/cn/guide/mythic-plus-dungeons/dragonflight-season-4
+local LimitMaxKeyLevel=10--限制，显示等级,不然，数据会出错
+local function Level_Text(text)
+    local tab={
+        ['Veteran']= format('%s%s|r', '|cff00ff00', e.onlyChinese and '老兵' or 'Veteran'),
+        ['Champion']= format('%s%s|r', '|cff2aa2ff', e.onlyChinese and '勇士' or FOLLOWERLIST_LABEL_CHAMPIONS),
+        ['Hero']= format('%s%s|r', '|cffff00ff', e.onlyChinese and '英雄' or ITEM_HEROIC),
+        ['Myth']= format('%s%s|r', '|cffb78f6a', e.onlyChinese and '史诗' or ITEM_QUALITY4_DESC),
+    }
+    return tab[text] or text
+end
+local function Get_Week_Item_Level(level)
+    level= min(LimitMaxKeyLevel, level)
+    level= max(2, level)
+    local tab={
+        [2]= '496'..Level_Text('Champion')..'2/8 509'..Level_Text('Hero')..'2/6',
+        [3]='499'..Level_Text('Champion')..'3/8 509'..Level_Text('Hero')..'2/6',
+        [4]='499'..Level_Text('Champion')..'3/8 512'..Level_Text('Hero')..'3/6',
+        [5]='502'..Level_Text('Champion')..'4/8 512'..Level_Text('Hero')..'3/6',
+        [6]='502'..Level_Text('Champion')..'4/8 515'..Level_Text('Hero')..'4/6',
+        [7]='506'..Level_Text('Hero')..'1/6 515'..Level_Text('Hero')..'4/6',
+        [8]='506'..Level_Text('Hero')..'1/6 519'..Level_Text('Myth')..'1/4',
+        [9]='509'..Level_Text('Hero')..'2/6 519'..Level_Text('Myth')..'1/4',
+        [10]='509'..Level_Text('Hero')..'2/6 522'..Level_Text('Myth')..'2/4',
+    }
+    return tab[level]
+end
+
+
+
+
+--[[if isLoot then--掉落
+    if level<=8 then
+        return '(|cff00ff00'..(e.onlyChinese and '老兵' or 'Veteran')..'|r)'
+    elseif level<=16 then
+        return '(|cff2aa2ff'..(e.onlyChinese and '勇士' or FOLLOWERLIST_LABEL_CHAMPIONS)..'|r)'
+    else
+        return '(|cffff00ff'..(e.onlyChinese and '英雄' or ITEM_HEROIC)..'|r)'
+    end
+else
+    if level<=7 then
+        return '(|cff2aa2ff'..(e.onlyChinese and '勇士' or FOLLOWERLIST_LABEL_CHAMPIONS)..'|r)'
+    elseif level<=17 then
+        return '(|cffff00ff'..(e.onlyChinese and '英雄' or ITEM_HEROIC)..'|r)'
+    else
+        return '(|cffb78f6a'..(e.onlyChinese and '史诗' or ITEM_QUALITY4_DESC)..'|r)'
+    end
+end]]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1045,73 +1103,23 @@ local function set_All_Text()--所有记录
     if not ChallengesFrame.weekLootItemLevelLable then
         ChallengesFrame.weekLootItemLevelLable= e.Cstr(TipsFrame, {mouse=true})--最右边, 数据
         ChallengesFrame.weekLootItemLevelLable:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0,-12)
-        --https://www.wowhead.com/cn/guide/mythic-plus-dungeons/dragonflight-season-3
-        function ChallengesFrame.weekLootItemLevelLable:get_item_label(level, isLoot)
-            if C_MythicPlus.GetCurrentSeason()==12 then
-                if isLoot then--掉落
-                    if level<=1 then
-                        return '(|cff00ff00'..(e.onlyChinese and '老兵' or 'Veteran')..'|r)'
-                    elseif level<=6 then
-                        return '(|cff2aa2ff'..(e.onlyChinese and '勇士' or FOLLOWERLIST_LABEL_CHAMPIONS)..'|r)'
-                    else
-                        return '(|cffff00ff'..(e.onlyChinese and '英雄' or ITEM_HEROIC)..'|r)'
-                    end
-                else--周长
-                    if level<=1 then
-                        return '(|cff2aa2ff'..(e.onlyChinese and '勇士' or FOLLOWERLIST_LABEL_CHAMPIONS)..'|r)'
-                    elseif level<=7 then
-                        return '(|cffff00ff'..(e.onlyChinese and '英雄' or ITEM_HEROIC)..'|r)'
-                    else
-                        return '(|cffb78f6a'..(e.onlyChinese and '史诗' or ITEM_QUALITY4_DESC)..'|r)'
-                    end
-                end
-            else
-                if isLoot then--掉落
-                    if level<=8 then
-                        return '(|cff00ff00'..(e.onlyChinese and '老兵' or 'Veteran')..'|r)'
-                    elseif level<=16 then
-                        return '(|cff2aa2ff'..(e.onlyChinese and '勇士' or FOLLOWERLIST_LABEL_CHAMPIONS)..'|r)'
-                    else
-                        return '(|cffff00ff'..(e.onlyChinese and '英雄' or ITEM_HEROIC)..'|r)'
-                    end
-                else
-                    if level<=7 then
-                        return '(|cff2aa2ff'..(e.onlyChinese and '勇士' or FOLLOWERLIST_LABEL_CHAMPIONS)..'|r)'
-                    elseif level<=17 then
-                        return '(|cffff00ff'..(e.onlyChinese and '英雄' or ITEM_HEROIC)..'|r)'
-                    else
-                        return '(|cffb78f6a'..(e.onlyChinese and '史诗' or ITEM_QUALITY4_DESC)..'|r)'
-                    end
-                end
-            end
-        end
-
         function ChallengesFrame.weekLootItemLevelLable:get_Loot_itemLevel(level)
-            local col= self.curLevel==level and '|cff00ff00' or select(2, math.modf(level/2))==0 and '|cffff8200' or '|cffffffff'
-            local weeklyRewardLevel2, endOfRunRewardLevel2 = C_MythicPlus.GetRewardLevelForDifficultyLevel(level)
-            if weeklyRewardLevel2 and weeklyRewardLevel2>=2 then
-                local index= format('%s%d ', level<10 and ' ' or '', level)
-                local week= weeklyRewardLevel2..(self:get_item_label(level, false))
-                local loot= ''
-                if endOfRunRewardLevel2>0 then
-                    loot= '  '..(endOfRunRewardLevel2 or 0)..(self:get_item_label(level, true))
-                end
-                local curkey= self.curKey==level and '|T4352494:0|t' or ''
-                local curLevel= self.curLevel==level and e.Icon.select2 or ''
-
-                return format('%s%s%s%s%s', index, week, loot, curkey, curLevel)
-            end
+            --local col= self.curLevel==level and '|cff00ff00' or (select(2, math.modf(level/2))==0 and '|cffff8200') or '|cffffffff'
+            local weeklyRewardLevel2 = C_MythicPlus.GetRewardLevelForDifficultyLevel(level)
+            weeklyRewardLevel2= max(weeklyRewardLevel2, 2)
+            weeklyRewardLevel2= min(weeklyRewardLevel2, LimitMaxKeyLevel)
+            local week= level..') '..(Get_Week_Item_Level(level) or '')
+            local curkey= self.curKey==level and '|T4352494:0|t' or ''
+            local curLevel= self.curLevel==level and e.Icon.select2 or ''
+            return week..curkey..curLevel
         end
         ChallengesFrame.weekLootItemLevelLable:SetScript('OnLeave', function(self) self:SetAlpha(1) e.tips:Hide() end)
         ChallengesFrame.weekLootItemLevelLable:SetScript('OnEnter', function(self)
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
             e.tips:AddLine(self:GetText())
-            for level=2, 24 do
-                local text= self:get_Loot_itemLevel(level)
-                if text then
-                    e.tips:AddLine(text)
-                end
+            for level=2, LimitMaxKeyLevel do--限制，显示等级                
+                e.tips:AddLine(self:get_Loot_itemLevel(level))
             end
             e.tips:Show()
             self:SetAlpha(0.5)
@@ -1120,6 +1128,8 @@ local function set_All_Text()--所有记录
     ChallengesFrame.weekLootItemLevelLable:SetText(e.onlyChinese and '难度 每周 掉落' or (PROFESSIONS_CRAFTING_STAT_TT_DIFFICULTY_HEADER..' '..CALENDAR_REPEAT_WEEKLY..' '..LOOT))
 
     local lootText
+
+    --限制，显示等级
     local curLevel=0
     local curKey= C_MythicPlus.GetOwnedKeystoneLevel() or 0
     local runInfo = C_MythicPlus.GetRunHistory(false, true) or {}--本周记录
@@ -1128,11 +1138,13 @@ local function set_All_Text()--所有记录
             curLevel= runs.level>curLevel and runs.level or curLevel
         end
     end
+    local minNum= max(2, curLevel-4)
+    local maxNum = min(minNum+3, LimitMaxKeyLevel)
+
     ChallengesFrame.weekLootItemLevelLable.curLevel= curLevel
     ChallengesFrame.weekLootItemLevelLable.curKey= curKey
 
-    local min= max(2, curLevel-4)
-    for level=min, min+3 do--显示，物品等级
+    for level=minNum, maxNum do--显示，物品等级
         local text= ChallengesFrame.weekLootItemLevelLable:get_Loot_itemLevel(level)
         if text then
             lootText= lootText and lootText..'|n'..text or text
