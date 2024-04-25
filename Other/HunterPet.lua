@@ -456,7 +456,7 @@ local function Init()
     PetStableDiet:HookScript('OnEnter', function(self) self:SetAlpha(0.5) end)
 
     PetStablePetInfo.foodLable= e.Cstr(PetStablePetInfo, {color=true})--食物
-    PetStablePetInfo.foodLable:SetPoint('LEFT', PetStableDiet, 'Right',0,0)
+    PetStablePetInfo.foodLable:SetPoint('LEFT', PetStableDiet, 'Right',0,-2)
 
     Set_Food_Lable()--食物
     hooksecurefunc('PetStable_UpdatePetModelScene', Set_Food_Lable)--食物
