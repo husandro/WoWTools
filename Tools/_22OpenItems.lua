@@ -177,9 +177,9 @@ local function setAtt(bag, slot, icon, itemID, spellID)--设置属性
     if bag and slot then
         Bag={bag=bag, slot=slot}
         if spellID then
-            button:SetAttribute("macrotext*",'/cast '..(GetSpellInfo(spellID) or spellID)..'\n/use '..bag ..' '..slot)
+            button:SetAttribute("macrotext1",'/cast '..(GetSpellInfo(spellID) or spellID)..'\n/use '..bag ..' '..slot)
         else
-            button:SetAttribute("macrotext", '/use '..bag..' '..slot)
+            button:SetAttribute("macrotext1", '/use '..bag..' '..slot)
         end
 
         button.texture:SetTexture(icon)
@@ -187,7 +187,7 @@ local function setAtt(bag, slot, icon, itemID, spellID)--设置属性
         num= num~=1 and num or ''
         button:SetShown(true)
     else
-        button:SetAttribute("macrotext", '')
+        button:SetAttribute("macrotext1", '')
         button:SetShown(not Save.noItemHide)
     end
     setCooldown()--冷却条
@@ -227,6 +227,7 @@ local function get_Items()--取得背包物品信息
                 duration, enable = select(2, C_Container.GetContainerItemCooldown(bag, slot))
             end
 
+            
             if info
                 and info.itemID
                 and info.hyperlink
@@ -300,7 +301,7 @@ local function get_Items()--取得背包物品信息
                                 end
                             end
 
-                        elseif itemEquipLoc and _G[itemEquipLoc] then--幻化
+                        elseif classID==4 or classID==2 then-- itemEquipLoc and _G[itemEquipLoc] then--幻化
                             if Save.mago then --and info.quality then
                                 local  isCollected, isSelf= select(2, e.GetItemCollected(info.hyperlink, nil, nil, true))
                                 if not isCollected and isSelf then
@@ -310,9 +311,13 @@ local function get_Items()--取得背包物品信息
                                 end
                             end
 
-                        elseif Save.alt and classID~=12 and (classID~=0 or classID==0 and subclassID==8)  then-- 8 使用: 在龙鳞探险队中的声望提高1000点
+                        elseif Save.alt and ((classID~=12 and (classID==0 and subclassID==8 or classID~=0))
+                           or (classID==15 and subclassID==4)
+                        )
+                        then-- 8 使用: 在龙鳞探险队中的声望提高1000点
                             local spell= select(2, C_Item.GetItemSpell(info.hyperlink))
-                            if spell and IsUsableSpell(spell) and not C_Item.IsAnimaItemByID(info.hyperlink) and IsUsableItem(info.hyperlink) then
+                            if spell  and not C_Item.IsAnimaItemByID(info.hyperlink) and IsUsableItem(info.hyperlink) then
+                                --and IsUsableSpell(spell)
                                 if info.itemID==207002 then--封装命运
                                     if not e.WA_GetUnitBuff('player', 415603, 'HELPFUL') then
                                         setAtt(bag, slot, info.iconFileID, info.itemID)
@@ -658,7 +663,7 @@ local function Init()
     })
 
     button:SetPoint('RIGHT', HearthstoneToolsButton, 'LEFT')
-    button:SetAttribute("type", "macro")
+    button:SetAttribute("type1", "macro")
     button.count=e.Cstr(button, {size=10, color=true})--10, nil, nil, true)
     button.count:SetPoint('BOTTOM',0,2)
 
