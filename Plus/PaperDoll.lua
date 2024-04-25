@@ -144,7 +144,7 @@ local function set_Engineering(self, slot, link, use, isPaperDollItemSlot)--增�
         self.engineering.spell= slot==15 and 126392 or 55016
         self.engineering:SetScript('OnMouseDown' ,function(frame,d)
             local parentTradeSkillID= select(3, C_TradeSkillUI.GetTradeSkillLineForRecipe(frame.spell)) or 202
-            
+
             if d=='LeftButton' then
                 local n=C_Item.GetItemCount(90146, true)
                 if n==0 then
@@ -1453,6 +1453,39 @@ local function setFlyout(button, itemLink, slot)
     if button.pvpItem then
         button.pvpItem:SetShown(pvpItem and true or false)
     end
+
+    if not button.isEquippedTexture then--提示，已装备
+        button.isEquippedTexture= button:CreateTexture(nil, 'OVERLAY')
+        button.isEquippedTexture:SetPoint('CENTER')
+        local w,h= button:GetSize()
+        button.isEquippedTexture:SetSize(w+10, h+10)
+        button.isEquippedTexture:SetAtlas('Forge-ColorSwatchSelection')
+
+        button:HookScript('OnEnter', function(self)--查询
+            if self.itemLink then
+                e.FindBagItem(true, {itemLink=self.itemLink})
+            end
+        end)
+        button:HookScript('OnLeave', function()
+           e.FindBagItem(false)
+        end)
+    end
+    local show=false
+    if not Save.hide and button.itemLink then
+        show= C_Item.IsEquippedItem(button.itemLink)
+       --[[ local itemLocation = button:GetItemLocation();
+        if itemLocation then
+            if itemLocation:IsEquipmentSlot() and itemLocation:GetEquipmentSlot() then
+                show=true
+            end
+        elseif type(button.location)=='number' then
+            local player, bank, bags, voidStorage, slot= EquipmentManager_UnpackLocation(button.location)--EquipmentManager.lua
+            if slot and player and not voidStorage and not bags and not bank then
+                show=GetInventoryItemLink('player', slot)==button.itemLink
+            end
+        end]]
+    end
+    button.isEquippedTexture:SetShown(show)
 end
 
 
@@ -2841,9 +2874,10 @@ local function Init()
     --#######
     --装备弹出
     --EquipmentFlyout.lua
-   hooksecurefunc('EquipmentFlyout_Show', function(itemButton)
+
+    local function set_equipment_flyout_buttons(itemButton)        
         for _, button in ipairs(EquipmentFlyoutFrame.buttons) do
-            if button and button:IsShown() then
+            if button and button:IsShown()  then
                 local itemLink, slot
                 if button.location and type(button.location)=='number' then--角色, 界面
                     local location = button.location
@@ -2866,9 +2900,16 @@ local function Init()
                     end
                 end
                 setFlyout(button, itemLink, slot)
+                button.itemLink= itemLink
             end
         end
+    end
+
+    hooksecurefunc('EquipmentFlyout_UpdateItems', function()
+        local itemButton = EquipmentFlyoutFrame.button;
+        set_equipment_flyout_buttons(itemButton)
     end)
+   hooksecurefunc('EquipmentFlyout_Show', set_equipment_flyout_buttons)
 
 
 
@@ -3122,11 +3163,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Init()
                 self:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
 
-                
+
                 --[[ProfessionsFrame_LoadUI()
                 OpenProfessionUIToSkillLine(202)
                 C_TradeSkillUI.CloseTradeSkill()]]
-                
+
             else
                 self:UnregisterEvent('ADDON_LOADED')
             end
