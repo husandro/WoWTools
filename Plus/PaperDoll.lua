@@ -1490,6 +1490,35 @@ end
 
 
 
+local function set_equipment_flyout_buttons(itemButton)
+    for _, button in ipairs(EquipmentFlyoutFrame.buttons) do
+        if button and button:IsShown()  then
+            local itemLink, slot
+            if button.location and type(button.location)=='number' then--角色, 界面
+                local location = button.location
+                slot= itemButton:GetID()
+                if location < EQUIPMENTFLYOUT_FIRST_SPECIAL_LOCATION then
+                    local player, bank, bags, voidStorage, slot2, bag, tab, voidSlot = EquipmentManager_UnpackLocation(location)
+                    if ( voidStorage and voidSlot ) then
+                        itemLink = GetVoidItemHyperlinkString(voidSlot)
+                    elseif ( not bags and slot2) then
+                        itemLink =GetInventoryItemLink("player",slot2)
+                    elseif bag and slot2 then
+                        itemLink = C_Container.GetContainerItemLink(bag, slot2)
+                    end
+                end
+            else--其它
+                local location = button:GetItemLocation()
+                if location and type(location)=='table' then
+                    itemLink= C_Item.GetItemLink(location)
+                    slot=C_Item.GetItemInventoryType(location)
+                end
+            end
+            setFlyout(button, itemLink, slot)
+            button.itemLink= itemLink
+        end
+    end
+end
 
 
 
@@ -2874,37 +2903,6 @@ local function Init()
     --#######
     --装备弹出
     --EquipmentFlyout.lua
-
-    local function set_equipment_flyout_buttons(itemButton)        
-        for _, button in ipairs(EquipmentFlyoutFrame.buttons) do
-            if button and button:IsShown()  then
-                local itemLink, slot
-                if button.location and type(button.location)=='number' then--角色, 界面
-                    local location = button.location
-                    slot= itemButton:GetID()
-                    if location < EQUIPMENTFLYOUT_FIRST_SPECIAL_LOCATION then
-                        local player, bank, bags, voidStorage, slot2, bag, tab, voidSlot = EquipmentManager_UnpackLocation(location)
-                        if ( voidStorage and voidSlot ) then
-                            itemLink = GetVoidItemHyperlinkString(voidSlot)
-                        elseif ( not bags and slot2) then
-                            itemLink =GetInventoryItemLink("player",slot2)
-                        elseif bag and slot2 then
-                            itemLink = C_Container.GetContainerItemLink(bag, slot2)
-                        end
-                    end
-                else--其它
-                    local location = button:GetItemLocation()
-                    if location and type(location)=='table' then
-                        itemLink= C_Item.GetItemLink(location)
-                        slot=C_Item.GetItemInventoryType(location)
-                    end
-                end
-                setFlyout(button, itemLink, slot)
-                button.itemLink= itemLink
-            end
-        end
-    end
-
     hooksecurefunc('EquipmentFlyout_UpdateItems', function()
         local itemButton = EquipmentFlyoutFrame.button;
         set_equipment_flyout_buttons(itemButton)
