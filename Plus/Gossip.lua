@@ -2731,7 +2731,7 @@ local function Init_Quest()
                 for index=1, C_QuestLog.GetNumQuestLogEntries() do
                     local info = C_QuestLog.GetInfo(index)
                     if info
-                        and info.questID
+                        and info.questID and info.questID>0
                         and not info.isHeader
                         --and not info.campaignID
                         --and not info.isScaling
