@@ -130,7 +130,7 @@ end
 
 --难度 每周 掉落
 --https://www.wowhead.com/cn/guide/mythic-plus-dungeons/dragonflight-season-4
-local LimitMaxKeyLevel=10--限制，显示等级,不然，数据会出错
+local LimitMaxKeyLevel=20--限制，显示等级,不然，数据会出错
 local function Level_Text(text)
     local tab={
         ['Veteran']= format('%s%s|r', '|cff00ff00', e.onlyChinese and '老兵' or 'Veteran'),
@@ -154,7 +154,7 @@ local function Get_Week_Item_Level(level)
         [9]='509'..Level_Text('Hero')..'2/6  519'..Level_Text('Myth')..'1/4',
         [10]='509'..Level_Text('Hero')..'2/6  522'..Level_Text('Myth')..'2/4',
     }
-    return tab[level]
+    return tab[level] or tab[10]
 end
 
 
