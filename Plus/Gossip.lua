@@ -2719,7 +2719,7 @@ local function Init_Quest()
     QuestButton:SetPoint('RIGHT', GossipButton, 'LEFT')
 
     function QuestButton:set_Only_Show_Zone_Quest()--显示本区域任务
-        if not Save.autoSortQuest or IsInInstance() then
+        if not Save.autoSortQuest or IsInInstance() or UnitAffectingCombat('player') then
             return
         end
         if self.setQuestWatchTime and not self.setQuestWatchTime:IsCancelled() then
