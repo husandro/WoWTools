@@ -26,13 +26,14 @@ local Initializer
 
 
 
-
 local ISF_SearchInput--查询
 local maxSlots
 local NUM_PER_ROW= 15--行数
 local IsInSearch--排序用
 local function Get_Food_Text(slotPet)
-    return BuildListString(GetStablePetFoodTypes(slotPet))
+    if slotPet then
+        return BuildListString(GetStablePetFoodTypes(slotPet))
+    end
 end
 local function Set_Food_Lable()--食物
     PetStablePetInfo.foodLable:SetText(Get_Food_Text(PetStableFrame.selectedPet) or '')
@@ -863,7 +864,8 @@ local function Init_StableFrame_Plus()
     StableFrame.PetModelScene.PetInfo.Food=e.Cstr(StableFrame.PetModelScene.PetInfo, {copyFont=StableFrame.PetModelScene.PetInfo.Specialization, color={r=1,g=1,b=1}, size=16})
     StableFrame.PetModelScene.PetInfo.Food:SetPoint('TOPRIGHT', StableFrame.PetModelScene.PetInfo.Exotic, 'BOTTOMRIGHT')
     hooksecurefunc(StableFrame.PetModelScene.PetInfo, 'SetPet', function(self)
-        self.Food:SetFormattedText(e.onlyChinese and '|cffffd200食物：|r%s' or PET_DIET_TEMPLATE, BuildListString(GetStablePetFoodTypes(self.petData.slotID)) or '')
+        self.Food:SetFormattedText(PET_DIET_TEMPLATE, BuildListString(GetStablePetFoodTypes(self.petData.slotID)) or '')
+        --(e.onlyChinese and '|cffffd200食物：|r%s' or 
     end)
 end
 
@@ -983,12 +985,7 @@ function Set_StableFrame_List()
 
     for i=Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX+ 1, Constants.PetConsts.NUM_PET_SLOTS do
         local btn= CreateFrame('Button', nil, frame, 'StableActivePetButtonTemplate', i)
-        --[[btn.Text= btn:CreateFontString(nil, 'BACKGROUND')
-        btn.Text=e.Cstr(btn, {layer='BACKGROUND'})
-        btn.Text:SetPoint('CENTER')
-        btn.Text:SetText(i)]]
-
-        --texture:SetTexCoord(1, 0, 0, 1);--左右，对放
+        --btn.Icon:SetTexCoord(1,0,0,1)--左右，对换
         btn:HookScript('OnEnter', function(self)
             if not self.petData then return end
             set_pet_tooltips(self, self.petData, 0)
@@ -1034,6 +1031,7 @@ function Set_StableFrame_List()
         end
         for index, btn in pairs(frame.Buttons) do
             btn:SetPet(pets[index])
+            
         end
     end
 
