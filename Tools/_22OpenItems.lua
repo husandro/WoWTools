@@ -682,6 +682,7 @@ local function Init()
                 if not UnitAffectingCombat('player') then
                     e.tips:AddLine(' ')
                     e.tips:AddDoubleLine(e.Icon.mid..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE))
+                    e.tips:AddLine(e.Icon.right..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL))
                 end
                 e.tips:Show()
                 if (BattlePetTooltip) then
@@ -691,6 +692,7 @@ local function Init()
             e.FindBagItem(true, {itemLink= itemLink})--查询，背包里物品
         else
             e.tips:AddDoubleLine(id, e.cn(addName))
+            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
             e.tips:Show()
             if (BattlePetTooltip) then
                 BattlePetTooltip:Hide()
