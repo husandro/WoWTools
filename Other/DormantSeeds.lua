@@ -150,7 +150,9 @@ local function Init()
         end
     end
     function Button:set_Shown()
-        self:SetShown(self.uiMapID and not C_PetBattles.IsInBattle() and not IsInInstance())
+        if UnitAffectingCombat('player') then
+            self:SetShown(self.uiMapID and not C_PetBattles.IsInBattle() and not IsInInstance())
+        end
     end
     function Button:get_UIMapID()
         self.uiMapID= C_Map.GetBestMapForUnit('player')==2200 and true or false
@@ -164,6 +166,7 @@ local function Init()
             end
         elseif event=='PLAYER_REGEN_ENABLED' then
             self:set_button()
+            self:set_Shown()
         elseif event=='BAG_UPDATE' or event=='BAG_UPDATE_DELAYED' then
             self:set_button()
         elseif event=='CURRENCY_DISPLAY_UPDATE' then--货币，数量
