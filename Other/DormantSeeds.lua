@@ -148,9 +148,10 @@ local function Init()
                 self:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
             end
         end
+        self:set_Shown()
     end
     function Button:set_Shown()
-        if UnitAffectingCombat('player') then
+        if not UnitAffectingCombat('player') then
             self:SetShown(self.uiMapID and not C_PetBattles.IsInBattle() and not IsInInstance())
         end
     end
@@ -162,7 +163,6 @@ local function Init()
             self:get_UIMapID()
             if not UnitAffectingCombat('player') then
                 self:set_Event()
-                self:set_Shown()
             end
         elseif event=='PLAYER_REGEN_ENABLED' then
             self:set_button()
@@ -233,7 +233,6 @@ local function Init()
     Button:set_Scale()
     Button:get_UIMapID()
     Button:set_Event()
-    Button:set_Shown()
 end
 
 
