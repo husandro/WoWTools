@@ -1553,8 +1553,9 @@ local function Init_Show_Hide_Button(frame)
     end
 
     local title= frame==PaperDollItemsFrame and CharacterFrame.TitleContainer or frame.TitleContainer
-
+    
     local btn= e.Cbtn(frame, {size={20,20}, atlas= not Save.hide and e.Icon.icon or e.Icon.disabled})
+    btn:SetFrameStrata(title:GetFrameStrata())
     btn:SetPoint('LEFT', title)
     btn:SetFrameLevel(title:GetFrameLevel()+1)
 

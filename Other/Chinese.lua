@@ -148,7 +148,6 @@ local function get_gameTooltip_text(self)
             if up then
                 local t= up:match(': (.-) %d')
                 if t and e.strText[t] then
-
                     text2= '升级'..up:gsub(t, e.strText[t])
                 else
                     text2= '升级'..up
