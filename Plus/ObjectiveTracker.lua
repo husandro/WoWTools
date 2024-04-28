@@ -395,11 +395,12 @@ local function Init()
             function btn:set_item_num()--物品数量
                 local nu=0
                 if self:IsShown() then
-                local itemLink= GetQuestLogSpecialItemInfo(self:GetID() or 0)
-                nu= itemLink and C_Item.GetItemCount(itemLink, true, true,true) or 0
-                if nu>1 and not self.Text then
-                    self.Text=e.Cstr(self, {color={r=1,g=1,b=1}})
-                    self.Text:SetPoint('BOTTOMRIGHT', -2, 2)
+                    local itemLink= GetQuestLogSpecialItemInfo(self:GetID() or 0)
+                    nu= itemLink and C_Item.GetItemCount(itemLink, true, true,true) or 0
+                    if nu>1 and not self.Text then
+                        self.Text=e.Cstr(self, {color={r=1,g=1,b=1}})
+                        self.Text:SetPoint('BOTTOMRIGHT', -2, 2)
+                    end
                 end
                 if self.Text then
                     self.Text:SetText(nu>1 and nu or '')
