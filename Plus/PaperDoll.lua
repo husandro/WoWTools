@@ -21,7 +21,11 @@ local panel= CreateFrame("Frame", nil, PaperDollFrame)
 local TrackButton
 local StatusPlusButton
 
-
+--[[local function Is_Load_ElvUI(btn)
+    if C_AddOns.IsAddOnLoaded('ElvUI') and not btn.icon then
+        btn.icon= btn:CreateTexture()
+    end
+end]]
 
 
 

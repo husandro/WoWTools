@@ -603,6 +603,9 @@ end
 
 
 
+e.Set_Move_Frame=function() end
+
+
 
 
 

@@ -1361,7 +1361,6 @@ local function Init_MountJournal()
         MountJournal_FullUpdate= _G['MountJournalFilterButtonWoWTools'].MountJournal_FullUpdate
         _G['MountJournalFilterButtonWoWTools']:SetText("")
         e.call('MountJournalFilterDropdown_ResetFilters')
-        --e.call('MountJournal_FullUpdate', MountJournal)
     end
 
     btn:SetScript('OnMouseDown', function(frame)
