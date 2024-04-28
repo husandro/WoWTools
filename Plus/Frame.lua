@@ -608,9 +608,6 @@ end
 
 
 
-
-
-
 --####
 --缩放
 --####
@@ -2696,19 +2693,6 @@ end)]]
     end)
 
 
-    --要塞，图标
-    if ExpansionLandingPageMinimapButton then
-        ExpansionLandingPageMinimapButton:SetFrameStrata('TOOLTIP')
-        C_Timer.After(2, function()
-            e.Set_Move_Frame(ExpansionLandingPageMinimapButton, {hideButton=true, click='RightButton', setResizeButtonPoint={
-                nil, nil, nil, -2, 2
-            }})
-            C_Timer.After(8, function()--盟约图标停止闪烁
-                ExpansionLandingPageMinimapButton.MinimapLoopPulseAnim:Stop()
-            end)
-        end)
-    end
-
 
 
 
@@ -2740,14 +2724,14 @@ end)]]
     end)
 
 
-    C_Timer.After(4, function()
+    --[[C_Timer.After(4, function()
         for text, _ in pairs(UIPanelWindows) do
             local frame=_G[text]
             if frame and (not frame.ResizeButton and not frame.targetMoveFrame) then
                 e.Set_Move_Frame(_G[text])
             end
         end
-    end)
+    end)]]
 end
 
 

@@ -36,7 +36,8 @@ local Save={
        --showStopwatchFrame=true,--加载游戏时，显示秒表
        --StopwatchFrameScale=1,--缩放
 
-       hideExpansionLandingPageMinimapButton= e.Player.husandro,--隐藏，图标
+       hideExpansionLandingPageMinimapButton= true,--隐藏，图标
+       --moveExpansionLandingPageMinimapButton=true,--移动动图标
 
        moving_over_Icon_show_menu=e.Player.husandro,--移过图标时，显示菜单
        --hide_MajorFactionRenownFrame_Button=true,--隐藏，派系声望，列表，图标
@@ -2390,22 +2391,27 @@ local function Init_Menu(_, level, menuList)
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 
         info={
-            text= '|A:dragonflight-landingbutton-up:0:0|a'..(e.onlyChinese and '要塞图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, GARRISON_LOCATION_TOOLTIP, EMBLEM_SYMBOL)),
+            text= '|A:dragonflight-landingbutton-up:0:0|a'..(e.onlyChinese and '隐藏要塞图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, GARRISON_LOCATION_TOOLTIP, EMBLEM_SYMBOL))),
             tooltipOnButton= true,
-            tooltipTitle= e.GetShowHide(nil, true),
-            checked= not Save.hideExpansionLandingPageMinimapButton,
+            checked= Save.hideExpansionLandingPageMinimapButton,
             colorCode= not ExpansionLandingPageMinimapButton and '|cff606060' or nil,
             keepShownOnClick=true,
             func= function()
                 Save.hideExpansionLandingPageMinimapButton= not Save.hideExpansionLandingPageMinimapButton and true or nil
-                if ExpansionLandingPageMinimapButton then
-                    if Save.hideExpansionLandingPageMinimapButton then
-                        ExpansionLandingPageMinimapButton:SetShown(false)
-                    else
-                        ExpansionLandingPageMinimapButton.mode=nil
-                        ExpansionLandingPageMinimapButton:RefreshButton()
-                    end
-                end
+                print(id, Initializer:GetName(), '|cnGREEN_FONT_COLOR:' , e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+        info={
+            text= '|A:dragonflight-landingbutton-up:0:0|a'..(e.onlyChinese and '移动要塞图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NPE_MOVE, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, GARRISON_LOCATION_TOOLTIP, EMBLEM_SYMBOL))),
+            checked= Save.moveExpansionLandingPageMinimapButton,
+            colorCode= not ExpansionLandingPageMinimapButton and '|cff606060' or nil,
+            disabled= Save.hideExpansionLandingPageMinimapButton,
+            keepShownOnClick=true,
+            func= function()
+                Save.moveExpansionLandingPageMinimapButton= not Save.moveExpansionLandingPageMinimapButton and true or nil
+                print(id, Initializer:GetName(), '|cnGREEN_FONT_COLOR:' , e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -3105,22 +3111,28 @@ local function Init()
                 e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
             end)
         end
-
-
-
-        if ExpansionLandingPageMinimapButton then
-            if Save.hideExpansionLandingPageMinimapButton then
-                ExpansionLandingPageMinimapButton:SetShown(false)
-            end
-            ExpansionLandingPageMinimapButton:HookScript('OnShow', function(self)
-                if Save.hideExpansionLandingPageMinimapButton then
-                   self:SetShown(false)
-                end
-            end)
-        end
     end
 
 
+    --要塞，图标
+    if ExpansionLandingPageMinimapButton then
+        if Save.hideExpansionLandingPageMinimapButton then
+            ExpansionLandingPageMinimapButton:SetShown(false)
+            ExpansionLandingPageMinimapButton:HookScript('OnShow', function(self)
+                self:SetShown(false)
+            end)
+        elseif Save.moveExpansionLandingPageMinimapButton then
+            ExpansionLandingPageMinimapButton:SetFrameStrata('TOOLTIP')
+            C_Timer.After(2, function()
+                e.Set_Move_Frame(ExpansionLandingPageMinimapButton, {hideButton=true, needMove=true, click='RightButton', setResizeButtonPoint={
+                    nil, nil, nil, -2, 2
+                }})
+                C_Timer.After(8, function()--盟约图标停止闪烁
+                    ExpansionLandingPageMinimapButton.MinimapLoopPulseAnim:Stop()
+                end)
+            end)
+        end
+    end
 end
 --[[
     panel.Texture= UIParent:CreateTexture()
