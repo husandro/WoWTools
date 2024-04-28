@@ -2527,7 +2527,7 @@ local function Init_Menu(_, level, menuList)
             has and '|cnGREEN_FONT_COLOR:' or '',
             e.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT,
             has and format('|A:GarrMission-%sChest:0:0|a', e.Player.faction=='Alliance' and 'Alliance' or 'Horde') or ''),
-        tooltipOnButton=true,
+        tooltipOnButton=has,
         tooltipTitle= has and (e.onlyChinese and '你有未领取的奖励' or WEEKLY_REWARDS_UNCLAIMED_TITLE),
         checked= WeeklyRewardsFrame and WeeklyRewardsFrame:IsShown(),
         colorCode= (UnitAffectingCombat('player') or not e.Player.levelMax) and '|cff606060',
