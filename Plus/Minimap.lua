@@ -2574,8 +2574,9 @@ local function Init_Menu(_, level, menuList)
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     info= {
-        text= '    |A:mechagon-projects:0:0|a'..(e.onlyChinese and '选项' or OPTIONS),
-        notCheckable=true,
+        text= Initializer:GetName(),--'    |A:mechagon-projects:0:0|a'..(e.onlyChinese and '选项' or OPTIONS),
+        --notCheckable=true,
+        checked= SettingsPanel:IsShown(),
         keepShownOnClick=true,
         menuList='OPTIONS',
         hasArrow=true,
@@ -2585,12 +2586,14 @@ local function Init_Menu(_, level, menuList)
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-    e.LibDD:UIDropDownMenu_AddSeparator(level)
+    --[[e.LibDD:UIDropDownMenu_AddSeparator(level)
     e.LibDD:UIDropDownMenu_AddButton({
         text= '    '..Initializer:GetName(),
-        isTitle=true,
         notCheckable=true,
-    }, level)
+        func= function()
+            e.OpenPanelOpting(Initializer)
+        end
+    }, level)]]
 end
 
 
