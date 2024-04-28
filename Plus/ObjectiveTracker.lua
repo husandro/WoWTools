@@ -20,20 +20,14 @@ local ModulTab={--Blizzard_ObjectiveTracker.lua
 }
 
 
-local function ItemNum(button)--增加物品数量
-    if button.itemLink then
-        local nu=C_Item.GetItemCount(button.itemLink, true, true,true)
-        if nu>1 then
-            if not button.num then
-                button.num=e.Cstr(button)
-                button.num:SetPoint('BOTTOMLEFT', button, 'BOTTOMLEFT', 0, 0)
-            end
-            button.num:SetText(nu)
-            return
-        end
+local function ItemNum(btn)--增加物品数量
+    local nu= btn.itemLink and C_Item.GetItemCount(btn.itemLink, true, true,true) or 0
+    if nu>1 and not btn.num then
+        btn.num=e.Cstr(btn)
+        btn.num:SetPoint('BOTTOMLEFT', btn, 'BOTTOMLEFT', 0, 0)
     end
-    if button.num then
-        button.num:SetText('')
+    if btn.num then
+        btn.num:SetText(nu>1 or '')
     end
 end
 
@@ -393,46 +387,54 @@ local function Init()
 
 
 
-    hooksecurefunc('QuestObjectiveSetupBlockButton_AddRightButton', function(block, button)--物品按钮左边,放大 --Blizzard_ObjectiveTrackerShared.lua
-        if not button or not block or not button:IsShown() or block.groupFinderButton == button then
+    hooksecurefunc('QuestObjectiveSetupBlockButton_AddRightButton', function(block, btn)--物品按钮左边,放大 --Blizzard_ObjectiveTrackerShared.lua
+        if not btn or not block or not btn:IsShown() or block.groupFinderButton == btn then
             return
         end
+        if not btn.setMove then
+            function btn:set_item_num()--物品数量
+                local nu=0
+                if self:IsShown() then
+                local itemLink= GetQuestLogSpecialItemInfo(self:GetID() or 0)
+                nu= itemLink and C_Item.GetItemCount(itemLink, true, true,true) or 0
+                if nu>1 and not self.Text then
+                    self.Text=e.Cstr(self, {color={r=1,g=1,b=1}})
+                    self.Text:SetPoint('BOTTOMRIGHT', -2, 2)
+                end
+                if self.Text then
+                    self.Text:SetText(nu>1 and nu or '')
+                end
+            end
+            function btn:set_event()
+                if self:IsShown() then
+                    self:RegisterEvent("BAG_UPDATE")
+                else
+                    self:UnregisterEvent("BAG_UPDATE")
+                end
+            end
+            btn:SetSize(35,35)--右击移动
+            if btn.NormalTexture then btn.NormalTexture:SetSize(60,60) end
+            btn:SetClampedToScreen(true)--保存
+            btn:SetMovable(true)
+            btn:RegisterForDrag("RightButton")
+            btn:HookScript("OnDragStart", btn.StartMoving)
+            btn:HookScript("OnDragStop", btn.StopMovingOrSizing)
+            btn:HookScript("OnEvent", btn.set_item_num)
+            btn:HookScript("OnShow", btn.set_event)
+            btn:HookScript("OnHide", btn.set_event)
 
-        button.itemLink=GetQuestLogSpecialItemInfo(button:GetID())--物品数量
-        if not button.setMove then
-            button:SetSize(35,35)--右击移动
-            if  button.NormalTexture then button.NormalTexture:SetSize(60,60) end
-            button:SetClampedToScreen(true)--保存
-            button:SetMovable(true)
-            button:RegisterForDrag("RightButton")
-            button:HookScript("OnDragStart", function(self)
-                self:StartMoving()
-            end)
-            button:HookScript("OnDragStop", function(self)
-                self:StopMovingOrSizing()
-            end)
-            button:RegisterEvent('BAG_UPDATE')
-            button:HookScript("OnEvent", function(self2)
-                ItemNum(self2)
-            end)
-            button:HookScript("OnShow", function()
-                button:RegisterEvent("BAG_UPDATE")
-            end)
-            button:HookScript("OnHide", function()
-                button.itemLink=nil
-                button:UnregisterEvent("BAG_UPDATE")
-            end)
-            ItemNum(button)
-            button.needMove=true
+            btn.needMove=true
+            btn:set_item_num()
+            btn:set_event()
         end
 
-        button:ClearAllPoints()
+        btn:ClearAllPoints()
         if block.HeaderText then
-            button:SetPoint('TOPRIGHT',  block.HeaderText, 'TOPLEFT',-28,0)
+            btn:SetPoint('TOPRIGHT',  block.HeaderText, 'TOPLEFT',-28,0)
         elseif block.TrackedQuest then
-            button:SetPoint('TOPRIGHT',  block.TrackedQuest, 'TOPLEFT',-5,0)
+            btn:SetPoint('TOPRIGHT',  block.TrackedQuest, 'TOPLEFT',-5,0)
         else
-            button:SetPoint('TOPRIGHT',  block, 'TOPLEFT',-20,0)
+            btn:SetPoint('TOPRIGHT',  block, 'TOPLEFT',-20,0)
         end
     end)
 
