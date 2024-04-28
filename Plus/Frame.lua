@@ -603,8 +603,6 @@ end
 
 
 
-e.Set_Move_Frame=function() end
-
 
 
 
@@ -2727,14 +2725,14 @@ end)]]
     end)
 
 
-    --[[C_Timer.After(4, function()
+    C_Timer.After(4, function()
         for text, _ in pairs(UIPanelWindows) do
             local frame=_G[text]
             if frame and (not frame.ResizeButton and not frame.targetMoveFrame) then
                 e.Set_Move_Frame(_G[text])
             end
         end
-    end)]]
+    end)
 end
 
 
