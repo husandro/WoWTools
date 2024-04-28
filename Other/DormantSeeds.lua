@@ -140,7 +140,7 @@ local function Init()
         if self.uiMapID then
             self:RegisterEvent('PLAYER_REGEN_DISABLED')
             self:RegisterEvent('PLAYER_REGEN_ENABLED')
-            self:RegisterEvent('BAG_UPDATE')
+            --self:RegisterEvent('BAG_UPDATE')
             self:RegisterEvent('BAG_UPDATE_DELAYED')
             self:RegisterEvent('PET_BATTLE_OPENING_DONE')
             self:RegisterEvent('PET_BATTLE_CLOSE')
@@ -167,7 +167,7 @@ local function Init()
         elseif event=='PLAYER_REGEN_ENABLED' then
             self:set_button()
             self:set_Shown()
-        elseif event=='BAG_UPDATE' or event=='BAG_UPDATE_DELAYED' then
+        elseif event=='BAG_UPDATE_DELAYED' then--event=='BAG_UPDATE' or 
             self:set_button()
         elseif event=='CURRENCY_DISPLAY_UPDATE' then--货币，数量
             if arg1==CurrencyID and CurrencyID and CurrencyID>0 then

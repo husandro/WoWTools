@@ -216,14 +216,14 @@ local function get_Items()--取得背包物品信息
 
     equipItem=nil
     Bag={}
-    local itemMinLevel, itemEquipLoc, classID, subclassID, _, info
+    local itemMinLevel, classID, subclassID, _, info
     local bagMax= Save.disabledCheckReagentBag and NUM_BAG_FRAMES or (NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES )
     for bag= Enum.BagIndex.Backpack, bagMax do--Constants.InventoryConstants.NumBagSlots
         for slot=1, C_Container.GetContainerNumSlots(bag) do
             info = C_Container.GetContainerItemInfo(bag, slot)
             local duration, enable
             if info and info.itemID then
-                itemMinLevel, _, _, _, itemEquipLoc, _, _, classID, subclassID= select(5, C_Item.GetItemInfo(info.itemID))
+                itemMinLevel, _, _, _, _, _, _, classID, subclassID= select(5, C_Item.GetItemInfo(info.itemID))
                 duration, enable = select(2, C_Container.GetContainerItemCooldown(bag, slot))
             end
 
@@ -852,7 +852,7 @@ local panel= CreateFrame("Frame")
 --##########
 function panel:set_Events()--注册， 事件
     if IsInInstance() and C_ChallengeMode.IsChallengeModeActive() then
-        self:UnregisterEvent('BAG_UPDATE')
+       -- self:UnregisterEvent('BAG_UPDATE')
         self:UnregisterEvent('BAG_UPDATE_DELAYED')
         self:UnregisterEvent('BAG_UPDATE_COOLDOWN')
         self:UnregisterEvent('PLAYER_REGEN_DISABLED')
@@ -861,7 +861,7 @@ function panel:set_Events()--注册， 事件
             button:SetShown(false)
         end
     else
-        self:RegisterEvent('BAG_UPDATE')
+       -- self:RegisterEvent('BAG_UPDATE')
         self:RegisterEvent('BAG_UPDATE_DELAYED')
         self:RegisterEvent('BAG_UPDATE_COOLDOWN')
         self:RegisterEvent('PLAYER_REGEN_DISABLED')
@@ -912,7 +912,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='PLAYER_ENTERING_WORLD' or event=='CHALLENGE_MODE_START' then
         self:set_Events()--注册， 事件
 
-    elseif event=='BAG_UPDATE_DELAYED' or event=='BAG_UPDATE' then
+    elseif event=='BAG_UPDATE_DELAYED' then-- or event=='BAG_UPDATE' then
             get_Items()
 
     elseif event=='PLAYER_REGEN_DISABLED' then

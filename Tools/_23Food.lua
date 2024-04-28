@@ -74,7 +74,7 @@ local function set_Button_Init(self)
         e.FindBagItem(false)
     end)
 
-    self:RegisterEvent('BAG_UPDATE')
+    self:RegisterEvent('BAG_UPDATE_DELAYED')
     self:RegisterEvent('SPELL_UPDATE_COOLDOWN')
     self:SetScript("OnEvent", set_Item_Cooldown_Count)
     if self~=button then

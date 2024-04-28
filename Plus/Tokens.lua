@@ -794,7 +794,7 @@ local function Init_TrackButton()
 	TrackButton.Frame:SetScript('OnShow', Set_TrackButton_Text)
 
 	TrackButton.Frame:RegisterEvent('BAG_UPDATE_DELAYED')
-	TrackButton.Frame:RegisterEvent('BAG_UPDATE')
+	--TrackButton.Frame:RegisterEvent('BAG_UPDATE')
 	TrackButton.Frame:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
 	TrackButton.Frame:SetScript('OnEvent', function(self, event)
 		if event=='PLAYER_REGEN_ENABLED' then
