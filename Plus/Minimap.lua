@@ -2395,7 +2395,7 @@ local function Init_Menu(_, level, menuList)
             tooltipOnButton= true,
             checked= Save.hideExpansionLandingPageMinimapButton,
             colorCode= not ExpansionLandingPageMinimapButton and '|cff606060' or nil,
-            keepShownOnClick=true,
+            --keepShownOnClick=true,
             func= function()
                 Save.hideExpansionLandingPageMinimapButton= not Save.hideExpansionLandingPageMinimapButton and true or nil
                 print(id, Initializer:GetName(), '|cnGREEN_FONT_COLOR:' , e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
