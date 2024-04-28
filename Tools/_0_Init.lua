@@ -104,7 +104,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 func= function()
                     Save.disabled= not Save.disabled and true or nil
                     print(e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                    Init_Options()--初始, 选项
+                    --Init_Options()--初始, 选项
                 end
             })
 

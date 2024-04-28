@@ -41,7 +41,8 @@ local function hide_Texture(self, notClear)
         return
     end
     if not notClear and self:GetObjectType()=='Texture' then
-        self:SetTexture(0)
+        --self:SetTexture(0)
+        self:ClearAllPoints()
     end
     self:SetShown(false)
 end
@@ -70,12 +71,13 @@ local function hide_Frame_Texture(frame, tab)
         if icon:GetObjectType()=="Texture" then
             if hideIndex then
                 if hideIndex==index then
-                    icon:SetTexture(0)
+                    icon:ClearAllPoints()
+                    --icon:SetTexture(0)
                     icon:SetShown(false)
                     break
                 end
             else
-                icon:SetTexture(0)
+                --icon:SetTexture(0)
                 icon:SetShown(false)
             end
         end
