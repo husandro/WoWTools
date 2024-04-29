@@ -737,6 +737,9 @@ local function Affix()
                         last=nil
                         local indexText= index==1 and one or index==2 and due or index==3 and tre
                         frame.Text= e.Cstr(frame, {mouse=true})
+                        if index==1 then
+                            frame.Text:SetTextColor(0,1,0)
+                        end
                         frame.Text:SetPoint('RIGHT', frame, 'LEFT')
                         frame.Text:SetText(indexText or '')
                         frame.Text.index= indexText
@@ -769,7 +772,6 @@ local function Affix()
                     ChallengesFrame['AffixWeek'..index..i]= frame
                 end
                 frame:SetShown(tab[i]>0)
-                --frame:SetScale(Save.tipsScale or 1)
             end
         end
     end
