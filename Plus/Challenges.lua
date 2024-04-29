@@ -26,39 +26,50 @@ local Initializer
 
 
 
--- Information from(资料来自)：https://www.wowhead.com/cn/guide/mythic-plus-dungeons/dragonflight-season-3/overview
--- AngryKeystones Schedule
+--[[Information from(资料来自)：https://www.wowhead.com/cn/guide/mythic-plus-dungeons/dragonflight-season-3/overview
+AngryKeystones Schedule
+1 Overflowing,
+2 Skittish
+3 Volcanic
+4 Necrotic
+5 Teeming
+6 Raging
+7 Bolstering
+8 Sanguine
+9 Tyrannical
+10 Fortified
+11 Bursting
+12 Grievous
+13 Explosive
+14 Quaking
+16 Infested
+117 Reaping
+119 Beguiling
+120 Awakened
+121 Prideful
+122 Inspiring
+123 Spiteful
+124 Storming
+134 Entangling
+135：Afflicted
+136 Incorporeal
+]]
 local affixSchedule = {--C_MythicPlus.GetCurrentSeason() C_MythicPlus.GetCurrentUIDisplaySeason()
     season=11,--当前赛季，必须设置
-        [1]  = { [1]=124,   [2]=6, [3]=9, },
-        --[[[2]  = { [1]=,  [2]=134, [3]=10,  },   -- Bursting   | Entangling  | Tyrannical
-        [3]  = { [1]=, [2]=3,   [3]=9, },   -- Spiteful   | Volcanic    | Fortified
-        [4]  = { [1]=6,   [2]=124, [3]=10,  },   -- Raging     | Storming    | Tyrannical
-        [5]  = { [1]=7,   [2]=134, [3]=9, },   -- Bolstering | Entangling  | Fortified
-        [6]  = { [1]=123, [2]=136, [3]=10,  },   -- Spiteful   | Incorporeal | Tyrannical
-        [7]  = { [1]=6,   [2]=135, [3]=9, },   -- Raging     | Afflicted   | Fortified
-        [8]  = { [1]=8,   [2]=3,   [3]=10,  },   -- Sanguine   | Volcanic    | Tyrannical
-        [9]  = { [1]=11,  [2]=124, [3]=9, },   -- Bursting   |Storming     | Fortified
-        [10] = { [1]=7,   [2]=135, [3]=10,  },   -- Bolstering |Afflicted    | Tyrannical]]
+    [1]={[1]=9, [2]=124, [3]=6},	--Tyrannical Storming Raging
+    [2]={[1]=10, [2]=134, [3]=7},	--Fortified Entangling Bolstering
+    [3]={[1]=9, [2]=136, [3]=123},	--Tyrannical Incorporeal Spiteful
+    [4]={[1]=10, [2]=135, [3]=6},	--Fortified 	Afflicted	Raging
+    [5]={[1]=9, [2]=3, [3]=8},	--Tyrannical Volcanic 	Sanguine
+    [6]={[1]=10, [2]=124, [3]=11},	--Fortified 	Storming Bursting
+    [7]={[1]=9, [2]=135, [3]=7},	--Tyrannical Afflicted 	Bolstering
+    [8]={[1]=10, [2]=136, [3]=8},	--Fortified 	Incorporeal Sanguine
+    [9]={[1]=9, [2]=134, [3]=11},	--Tyrannical Entangling Bursting
+    [10]={[1]=10, [2]=3, [3]=123},	--Fortified 	Volcanic 	Spiteful
     max= 10,
 }
---[[
-season=11,--当前赛季，必须设置
-[1]  = { [1]=8,   [2]=136, [3]=10, },   -- Sanguine   | Incorporeal | Fortified
-[2]  = { [1]=11,  [2]=134, [3]=9,  },   -- Bursting   | Entangling  | Tyrannical
-[3]  = { [1]=123, [2]=3,   [3]=10, },   -- Spiteful   | Volcanic    | Fortified
-[4]  = { [1]=6,   [2]=124, [3]=9,  },   -- Raging     | Storming    | Tyrannical
-[5]  = { [1]=7,   [2]=134, [3]=10, },   -- Bolstering | Entangling  | Fortified
-[6]  = { [1]=123, [2]=136, [3]=9,  },   -- Spiteful   | Incorporeal | Tyrannical
-[7]  = { [1]=6,   [2]=135, [3]=10, },   -- Raging     | Afflicted   | Fortified
-[8]  = { [1]=8,   [2]=3,   [3]=9,  },   -- Sanguine   | Volcanic    | Tyrannical
-[9]  = { [1]=11,  [2]=124, [3]=10, },   -- Bursting   |Storming     | Fortified
-[10] = { [1]=7,   [2]=135, [3]=9,  },   -- Bolstering |Afflicted    | Tyrannical
-]]
-
 
 local SpellTabs={--C_MythicPlus.GetCurrentSeason()
-
       --10.26 12赛季
         [399]= {spell=393256, ins=1202, name='红玉'},--传送到红玉新生法池的入口。 利爪防御者之路
         [400]= {spell=393262, ins=1198, name='诺库德'},--传送至诺库德阻击战的入口。 啸风平原之路
