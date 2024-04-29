@@ -55,6 +55,7 @@ AngryKeystones Schedule
 134 Entangling
 135：Afflicted
 136 Incorporeal
+137 Shielding
 ]]
 local affixSchedule = {--C_MythicPlus.GetCurrentSeason() C_MythicPlus.GetCurrentUIDisplaySeason()
     season=12,--当前赛季，必须设置
