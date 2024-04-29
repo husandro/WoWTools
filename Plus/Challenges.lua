@@ -30,18 +30,31 @@ local Initializer
 -- AngryKeystones Schedule
 local affixSchedule = {--C_MythicPlus.GetCurrentSeason() C_MythicPlus.GetCurrentUIDisplaySeason()
     season=11,--当前赛季，必须设置
-        [1]  = { [1]=8,   [2]=136, [3]=10, },   -- Sanguine   | Incorporeal | Fortified
-        [2]  = { [1]=11,  [2]=134, [3]=9,  },   -- Bursting   | Entangling  | Tyrannical
-        [3]  = { [1]=123, [2]=3,   [3]=10, },   -- Spiteful   | Volcanic    | Fortified
-        [4]  = { [1]=6,   [2]=124, [3]=9,  },   -- Raging     | Storming    | Tyrannical
-        [5]  = { [1]=7,   [2]=134, [3]=10, },   -- Bolstering | Entangling  | Fortified
-        [6]  = { [1]=123, [2]=136, [3]=9,  },   -- Spiteful   | Incorporeal | Tyrannical
-        [7]  = { [1]=6,   [2]=135, [3]=10, },   -- Raging     | Afflicted   | Fortified
-        [8]  = { [1]=8,   [2]=3,   [3]=9,  },   -- Sanguine   | Volcanic    | Tyrannical
-        [9]  = { [1]=11,  [2]=124, [3]=10, },   -- Bursting   |Storming     | Fortified
-        [10] = { [1]=7,   [2]=135, [3]=9,  },   -- Bolstering |Afflicted    | Tyrannical
+        [1]  = { [1]=124,   [2]=6, [3]=9, },
+        --[[[2]  = { [1]=,  [2]=134, [3]=10,  },   -- Bursting   | Entangling  | Tyrannical
+        [3]  = { [1]=, [2]=3,   [3]=9, },   -- Spiteful   | Volcanic    | Fortified
+        [4]  = { [1]=6,   [2]=124, [3]=10,  },   -- Raging     | Storming    | Tyrannical
+        [5]  = { [1]=7,   [2]=134, [3]=9, },   -- Bolstering | Entangling  | Fortified
+        [6]  = { [1]=123, [2]=136, [3]=10,  },   -- Spiteful   | Incorporeal | Tyrannical
+        [7]  = { [1]=6,   [2]=135, [3]=9, },   -- Raging     | Afflicted   | Fortified
+        [8]  = { [1]=8,   [2]=3,   [3]=10,  },   -- Sanguine   | Volcanic    | Tyrannical
+        [9]  = { [1]=11,  [2]=124, [3]=9, },   -- Bursting   |Storming     | Fortified
+        [10] = { [1]=7,   [2]=135, [3]=10,  },   -- Bolstering |Afflicted    | Tyrannical]]
     max= 10,
 }
+--[[
+season=11,--当前赛季，必须设置
+[1]  = { [1]=8,   [2]=136, [3]=10, },   -- Sanguine   | Incorporeal | Fortified
+[2]  = { [1]=11,  [2]=134, [3]=9,  },   -- Bursting   | Entangling  | Tyrannical
+[3]  = { [1]=123, [2]=3,   [3]=10, },   -- Spiteful   | Volcanic    | Fortified
+[4]  = { [1]=6,   [2]=124, [3]=9,  },   -- Raging     | Storming    | Tyrannical
+[5]  = { [1]=7,   [2]=134, [3]=10, },   -- Bolstering | Entangling  | Fortified
+[6]  = { [1]=123, [2]=136, [3]=9,  },   -- Spiteful   | Incorporeal | Tyrannical
+[7]  = { [1]=6,   [2]=135, [3]=10, },   -- Raging     | Afflicted   | Fortified
+[8]  = { [1]=8,   [2]=3,   [3]=9,  },   -- Sanguine   | Volcanic    | Tyrannical
+[9]  = { [1]=11,  [2]=124, [3]=10, },   -- Bursting   |Storming     | Fortified
+[10] = { [1]=7,   [2]=135, [3]=9,  },   -- Bolstering |Afflicted    | Tyrannical
+]]
 
 
 local SpellTabs={--C_MythicPlus.GetCurrentSeason()
