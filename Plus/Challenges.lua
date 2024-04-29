@@ -58,7 +58,7 @@ AngryKeystones Schedule
 137 Shielding
 ]]
 local affixSchedule = {--C_MythicPlus.GetCurrentSeason() C_MythicPlus.GetCurrentUIDisplaySeason()
-    season=12,--当前赛季，必须设置
+    --season=12,--当前赛季，必须设置
     [1]={[1]=9, [2]=124, [3]=6},	--Tyrannical Storming Raging
     [2]={[1]=10, [2]=134, [3]=7},	--Fortified Entangling Bolstering
     [3]={[1]=9, [2]=136, [3]=123},	--Tyrannical Incorporeal Spiteful
@@ -689,7 +689,7 @@ local function Affix()
     if C_AddOns.IsAddOnLoaded("AngryKeystones")
         or not e.Player.levelMax
         or not affixSchedule
-        or C_MythicPlus.GetCurrentSeason()~= affixSchedule.season
+        --or C_MythicPlus.GetCurrentSeason()~= affixSchedule.season
     then
         affixSchedule=nil
         return
