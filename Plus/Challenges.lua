@@ -26,8 +26,10 @@ local Initializer
 
 
 
---[[Information from(资料来自)：https://www.wowhead.com/cn/guide/mythic-plus-dungeons/dragonflight-season-3/overview
+--[[(资料来自)：
+ttps://www.wowhead.com/guide/mythic-plus-dungeons/dragonflight-season-4/overview#mythic-affixes
 AngryKeystones Schedule
+
 1 Overflowing,
 2 Skittish
 3 Volcanic
