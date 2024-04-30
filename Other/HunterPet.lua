@@ -1026,7 +1026,7 @@ function Set_StableFrame_List()
 
     local frame= CreateFrame('Frame', nil, StableFrame)
     StableFrame.AllListFrame=frame
-    frame:SetPoint('TOPLEFT', StableFrame, 'TOPRIGHT',12,0)
+    frame:SetPoint('TOPLEFT', StableFrame, 'TOPRIGHT', StableFrame.Topper:IsShown() and 0 or 12,0)
     frame:SetSize(1,1)
     frame:Hide()
     function frame:set_shown()
@@ -1038,7 +1038,7 @@ function Set_StableFrame_List()
     frame.s= Save.all_List_Size or 28
 
     frame.Bg= frame:CreateTexture(nil, "BACKGROUND")
-    frame.Bg:SetAtlas('footer-bg')
+    frame.Bg:SetAtlas(StableFrame.Topper:IsShown() and 'pet-list-bg' or 'footer-bg')
     frame.Bg:SetPoint('TOPLEFT')
 
     for i=Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX+ 1, Constants.PetConsts.NUM_PET_SLOTS do
