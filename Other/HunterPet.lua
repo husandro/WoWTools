@@ -836,7 +836,7 @@ local function Init_StableFrame_Plus()
     created_model(btn)--已激活宠物，Model 提示
     hooksecurefunc(btn, 'SetPet', set_model)
     btn.model:SetFacing(-0.5)
-    btn.model:SetPoint('RIGHT', btn, 'LEFT')
+    btn.model:SetPoint('TOP', btn, 'BOTTOM')
 
     btn:HookScript('OnEnter', function(self)
         if not self.petData or not self:IsEnabled() then
@@ -880,24 +880,15 @@ end
 
 function Init_UI()
     --移动，缩放
-
     StableFrame.PetModelScene:ClearAllPoints()
-    StableFrame.PetModelScene:SetPoint('TOPLEFT', StableFrame.Topper, 'BOTTOMLEFT', 330, 0)
+    StableFrame.PetModelScene:SetPoint('TOPLEFT', StableFrame, 330, -86)
     StableFrame.PetModelScene:SetPoint('BOTTOMRIGHT', -2, 92)
-    --[[StableFrame.ActivePetList:ClearAllPoints()
+    StableFrame.ActivePetList:ClearAllPoints()
     StableFrame.ActivePetList:SetPoint('TOPLEFT', StableFrame.PetModelScene, 'BOTTOMLEFT', 0, -45)
     StableFrame.ActivePetList:SetPoint('TOPRIGHT', StableFrame.PetModelScene, 'BOTTOMRIGHT', 0, -45)
-    ]]
-    e.Set_Move_Frame(StableFrame, {needSize=true, needMove=true, setSize=true, minW=860, minH=440, initFunc=function()
-            --[[StableFrame.PetModelScene:ClearAllPoints()
-            StableFrame.PetModelScene:SetPoint('TOPLEFT', StableFrame.Topper, 'BOTTOMLEFT', 330, 0)
-            StableFrame.PetModelScene:SetPoint('BOTTOMRIGHT', -2, 92)
-            StableFrame.ActivePetList:ClearAllPoints()
-            StableFrame.ActivePetList:SetPoint('TOPLEFT', StableFrame.PetModelScene, 'BOTTOMLEFT', 0, -45)
-            StableFrame.ActivePetList:SetPoint('TOPRIGHT', StableFrame.PetModelScene, 'BOTTOMRIGHT', 0, -45)
-            e.Set_Move_Frame(StableFrame.StabledPetList.ScrollBox, {frame=StableFrame})]]
-        end, sizeRestFunc=function(btn)
-            btn.target:SetSize(1040, 638)
+    e.Set_Move_Frame(StableFrame.StabledPetList.ScrollBox, {frame=StableFrame})
+    e.Set_Move_Frame(StableFrame, {needSize=true, needMove=true, setSize=true, minW=860, minH=440, sizeRestFunc=function(btn)
+        btn.target:SetSize(1040, 638)
     end})
 
     StableFrame.ReleasePetButton:ClearAllPoints()
@@ -1348,7 +1339,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     self:RegisterEvent('PET_STABLE_SHOW')
                 end
             end
-            self:UnregisterEvent('ADDON_LOADED')
+            --self:UnregisterEvent('ADDON_LOADED')
             self:RegisterEvent('PLAYER_LOGOUT')
         end
 
@@ -1361,4 +1352,5 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         Init()
         self:UnregisterEvent('PET_STABLE_SHOW')
     end
+    
 end)
