@@ -1716,6 +1716,7 @@ local function Init_Menu_Gossip(_, level, type)
         info={
             text=format('%s |cnGREEN_FONT_COLOR:%d|r', e.onlyChinese and '默认' or DEFAULT, num),
             notCheckable=true,
+            isTitle=true,
             icon=e.Icon.icon,
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -2196,8 +2197,6 @@ local function Init_Gossip()
         self.WoWToolsSelectNPC.name=UnitName("npc")
         self.WoWToolsSelectNPC:SetChecked(Save.NPC[npc])
     end)
-
-
 
 
 
