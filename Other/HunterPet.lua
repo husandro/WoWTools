@@ -836,7 +836,7 @@ local function Init_StableFrame_Plus()
     created_model(btn)--已激活宠物，Model 提示
     hooksecurefunc(btn, 'SetPet', set_model)
     btn.model:SetFacing(-0.5)
-    btn.model:SetPoint('TOP', btn, 'BOTTOM')
+    btn.model:SetPoint('BOTTOM', btn, 'TOP')
 
     btn:HookScript('OnEnter', function(self)
         if not self.petData or not self:IsEnabled() then
