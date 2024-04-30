@@ -904,11 +904,19 @@ local function Init_StableFrame_Plus()
     
 
     --食物
-    StableFrame.PetModelScene.PetInfo.Food=e.Cstr(StableFrame.PetModelScene.PetInfo, {copyFont=StableFrame.PetModelScene.PetInfo.Specialization, color={r=1,g=1,b=1}, size=16})
+    StableFrame.PetModelScene.PetInfo.Food=e.Cstr(StableFrame.PetModelScene.PetInfo, {copyFont=not e.onlyChinese and StableFrame.PetModelScene.PetInfo.Specialization, color={r=1,g=1,b=1}, size=16})--copyFont=StableFrame.PetModelScene.PetInfo.Specialization, 
     StableFrame.PetModelScene.PetInfo.Food:SetPoint('TOPRIGHT', StableFrame.PetModelScene.PetInfo.Exotic, 'BOTTOMRIGHT')
     hooksecurefunc(StableFrame.PetModelScene.PetInfo, 'SetPet', function(self)
-        self.Food:SetFormattedText(PET_DIET_TEMPLATE, BuildListString(GetStablePetFoodTypes(self.petData.slotID)) or '')
+        self.Food:SetFormattedText(e.onlyChinese and '食物：%s' or PET_DIET_TEMPLATE, BuildListString(GetStablePetFoodTypes(self.petData.slotID)) or '')
         --(e.onlyChinese and '|cffffd200食物：|r%s' or 
+    end)
+
+    StableFrame.PetModelScene.PetInfo.ExoticTexture= StableFrame.PetModelScene.PetInfo:CreateTexture()
+    StableFrame.PetModelScene.PetInfo.ExoticTexture:SetSize(18,18)
+    StableFrame.PetModelScene.PetInfo.ExoticTexture:SetPoint('RIGHT', StableFrame.PetModelScene.PetInfo.Exotic, 'LEFT')
+    StableFrame.PetModelScene.PetInfo.ExoticTexture:SetTexture(461112)
+    hooksecurefunc(StableFrame.PetModelScene.PetInfo, 'SetPet', function(self, petData)
+        self.ExoticTexture:SetShown(petData.isExotic)
     end)
 end
 
@@ -1287,6 +1295,7 @@ function Init_StableFrame_List()
                     e.LibDD:UIDropDownMenu_AddButton({
                         text= e.onlyChinese and '所有宠物' or BATTLE_PETS_TOTAL_PETS,
                         checked= Save.show_All_List,
+                        keepShownOnClick=true,
                         icon= 'dressingroom-button-appearancelist-up',
                         func= function()
                             Save.show_All_List= not Save.show_All_List and true or nil
