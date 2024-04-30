@@ -733,6 +733,7 @@ end
 
 local function created_button(index)
     local btn= CreateFrame('Button', nil, StableFrame.AllListFrame, 'StableActivePetButtonTemplate', index)
+    btn.Icon:SetTexCoord(1,0,0,1)
     btn:HookScript('OnEnter', function(self)
         if not self.petData then return end
         set_pet_tooltips(self, self.petData, 0)
@@ -831,7 +832,7 @@ local function Init_StableFrame_Plus()
 
 
         created_model(btn)--已激活宠物，Model 提示
-        btn.model:SetPoint('TOP', btn, 'BOTTOM', 0, -14)
+        btn.model:SetPoint('RIGHT', btn, 'LEFT', 0, -14)
 
         hooksecurefunc(btn, 'SetPet', function(self)--StableActivePetButtonTemplateMixin
             local icon= get_abilities_icons(self.petData)
@@ -910,7 +911,7 @@ function Init_UI()
 
     StableFrame.ReleasePetButton:ClearAllPoints()
     --StableFrame.ReleasePetButton:SetPoint('BOTTOMLEFT', StableFrame.PetModelScene, 'TOPLEFT', 0,20)
-    StableFrame.ReleasePetButton:SetPoint('BOTTOM', StableFrame.PetModelScene, 'TOP', 0, 8)
+    StableFrame.ReleasePetButton:SetPoint('BOTTOM', StableFrame.PetModelScene, 'TOP', 0, 12)
     StableFrame.ReleasePetButton:SetAlpha(0.5)
     StableFrame.ReleasePetButton:HookScript('OnLeave', function(self) self:SetAlpha(0.5) end)
     StableFrame.ReleasePetButton:HookScript('OnEnter', function(self) self:SetAlpha(1) end)
@@ -1012,12 +1013,7 @@ function Set_StableFrame_List()
         frame.Buttons[i]= btn
     end
 
-    --第6个，提示，如果，没有专精支持，它会禁用，所有，建立一个
-    frame.btn6= created_button(Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX)
-    frame.btn6:SetPoint('BOTTOM', frame.Buttons[Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX+ 1],'TOP')
-    hooksecurefunc(StableFrame.ActivePetList.BeastMasterSecondaryPetButton, 'SetEnabled', function(self)
-        StableFrame.AllListFrame.btn6:SetShown(not self:IsEnabled())
-    end)
+
 
     function frame:set_point()
         if not self:IsShown() then return end
@@ -1048,12 +1044,11 @@ function Set_StableFrame_List()
             pets[pet.slotID]= pet
         end
         for index, btn in pairs(frame.Buttons) do
-            btn:SetPet(pets[index])
+            btn.Portrait.Icon:SetPet(pets[index])
+            btn.Icon:SetTexCoord(1,0,0,1)
         end
-        frame.btn6:SetPet(pets[Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX])
     end
 
-    
     hooksecurefunc(StableFrame, 'Refresh', function(self)
         self.AllListFrame:Refresh()
     end)
@@ -1066,8 +1061,17 @@ function Set_StableFrame_List()
             btn:SetPet(nil)
         end
     end)
-
     StableFrame:HookScript('OnSizeChanged', function(self) self.AllListFrame:set_point() end)
+
+    --第6个，提示，如果，没有专精支持，它会禁用，所有，建立一个
+    frame.btn6= created_button(Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX)
+    frame.btn6:SetPoint('BOTTOM', frame.Buttons[Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX+ 1],'TOP')
+    hooksecurefunc(StableFrame.ActivePetList.BeastMasterSecondaryPetButton, 'Refresh', function(self)
+        local btn= StableFrame.AllListFrame.btn6
+        local show= not self:IsEnabled()
+        btn:SetShown(show)
+        btn:SetPet(show and C_StableInfo.GetStablePetInfo(Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX) or nil)
+    end)
 
     frame:set_shown()
 end
