@@ -688,6 +688,11 @@ local function set_pet_tooltips(frame, pet, y)
         i=i+1
     end
     e.tips:AddDoubleLine(format('|cff00ccff%s', e.onlyChinese and '食物' or POWER_TYPE_FOOD), format('|cff00ccff%s', BuildListString(GetStablePetFoodTypes(pet.slotID)) or ''))
+
+    if e.tips.playerModel and pet.displayID then
+        e.tips.playerModel:SetDisplayInfo(pet.displayID)
+        e.tips.playerModel:SetShown(true)
+    end
 end
 
 
@@ -733,7 +738,7 @@ end
 
 local function created_button(index)
     local btn= CreateFrame('Button', nil, StableFrame.AllListFrame, 'StableActivePetButtonTemplate', index)
-    btn.Icon:SetTexCoord(1,0,0,1)
+    --btn.Icon:SetTexCoord(1,0,0,1)
     btn:HookScript('OnEnter', function(self)
         if not self.petData then return end
         set_pet_tooltips(self, self.petData, 0)
@@ -769,10 +774,6 @@ local function Init_StableFrame_Plus()
             btn:set_list_button_settings()
             return
         end
-        btn:HookScript('OnEnter', function(self)--信息，提示
-            set_pet_tooltips(self, self.petData, -10)
-            e.tips:Show()
-        end)
         btn.Portrait2= btn:CreateTexture(nil, 'OVERLAY')--宠物，类型，图标
         btn.Portrait2:SetSize(20, 20)
         btn.Portrait2:SetPoint('RIGHT', btn.Portrait,'LEFT')
@@ -788,6 +789,11 @@ local function Init_StableFrame_Plus()
             self.Portrait2:SetTexture(data.icon or nil)
             self.indexText:SetText(data.slotID or '')
         end
+        btn:HookScript('OnEnter', function(self)--信息，提示
+            set_pet_tooltips(self, self.petData, -10)
+            e.tips:Show()
+            self:set_list_button_settings()
+        end)
     end)
 
 
@@ -832,7 +838,7 @@ local function Init_StableFrame_Plus()
 
 
         created_model(btn)--已激活宠物，Model 提示
-        btn.model:SetPoint('RIGHT', btn, 'LEFT', 0, -14)
+        btn.model:SetPoint('TOP', btn, 'BOTTOM', 0, -14)
 
         hooksecurefunc(btn, 'SetPet', function(self)--StableActivePetButtonTemplateMixin
             local icon= get_abilities_icons(self.petData)
@@ -854,7 +860,7 @@ local function Init_StableFrame_Plus()
     created_model(btn)--已激活宠物，Model 提示
     hooksecurefunc(btn, 'SetPet', set_model)
     btn.model:SetFacing(-0.5)
-    btn.model:SetPoint('BOTTOM', btn, 'TOP')
+    btn.model:SetPoint('RIGHT', btn, 'LEFT')
 
     btn:HookScript('OnEnter', function(self)
         if not self.petData or not self:IsEnabled() then
@@ -1039,13 +1045,8 @@ function Set_StableFrame_List()
 
     function frame:Refresh()
         if not self:IsShown() then return end
-        local pets={}
-        for _, pet in pairs(C_StableInfo.GetStabledPetList() or {}) do
-            pets[pet.slotID]= pet
-        end
-        for index, btn in pairs(frame.Buttons) do
-            btn.Portrait.Icon:SetPet(pets[index])
-            btn.Icon:SetTexCoord(1,0,0,1)
+        for _, btn in pairs(frame.Buttons) do
+            btn:SetPet(C_StableInfo.GetStablePetInfo(btn:GetID()))
         end
     end
 
@@ -1060,6 +1061,7 @@ function Set_StableFrame_List()
         for _, btn in pairs(self.Buttons) do
             btn:SetPet(nil)
         end
+        StableFrame.AllListFrame.btn6:SetPet(nil)
     end)
     StableFrame:HookScript('OnSizeChanged', function(self) self.AllListFrame:set_point() end)
 
