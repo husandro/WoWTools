@@ -1728,6 +1728,10 @@ local function Init_Menu_Gossip(_, level, type)
     info={
         text=e.onlyChinese and '启用' or ENABLE,
         checked= Save.gossip,
+        keepShownOnClick=true,
+        tooltipOnButton=true,
+        tooltipTitle=format('Alt+%s', e.onlyChinese and '禁用', DISABLE),
+        tooltipText= format('(%s)', e.onlyChinese and '暂时' or BOOSTED_CHAR_SPELL_TEMPLOCK..'|ntemporary'),
         func= function ()
             Save.gossip= not Save.gossip and true or nil
             GossipButton:set_Texture()--设置，图片
@@ -2582,6 +2586,9 @@ local function InitMenu_Quest(_, level, type)
         text=e.onlyChinese and '启用' or ENABLE,
         checked= Save.quest,
         keepShownOnClick=true,
+        tooltipOnButton=true,
+        tooltipTitle=format('Alt+%s', e.onlyChinese and '禁用', DISABLE),
+        tooltipText= format('(%s)', e.onlyChinese and '暂时' or BOOSTED_CHAR_SPELL_TEMPLOCK..'|ntemporary'),
         func= function ()
             Save.quest= not Save.quest and true or nil
             QuestButton:set_Texture()--设置，图片
