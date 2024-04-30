@@ -3096,8 +3096,11 @@ local function Init()
             set(StableFrame.ActivePetList.ListName, '激活')
             set(StableFrame.StabledPetList.ListName, '兽栏')
             dia('RELEASE_PET', {text ='你确定要|cnRED_FONT_COLOR:永久释放|r你的宠物吗？你将永远无法再召唤此宠物。', button1='|cnRED_FONT_COLOR:确定|r', button2='|cnGREEN_FONT_COLOR:取消|r',})
+            StableFrameTitleText:SetFormattedText('%s%s%s|r 的宠物', e.Icon.player, e.Player.col, e.Player.name)
             hooksecurefunc(StableFrame.PetModelScene.PetInfo, 'SetPet', function(self, petData)
-                set(self.Exotic, '特殊')
+                if petData.isExotic then
+                    set(self.Exotic, '特殊')
+                end
             end)
         end
     end
