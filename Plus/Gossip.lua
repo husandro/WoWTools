@@ -1717,7 +1717,6 @@ local function Init_Menu_Gossip(_, level, type)
             text=format('%s |cnGREEN_FONT_COLOR:%d|r', e.onlyChinese and '默认' or DEFAULT, num),
             notCheckable=true,
             isTitle=true,
-            icon=e.Icon.icon,
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
     end
