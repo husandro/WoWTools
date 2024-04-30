@@ -880,14 +880,22 @@ end
 
 function Init_UI()
     --移动，缩放
+
+    StableFrame.PetModelScene:ClearAllPoints()
+    StableFrame.PetModelScene:SetPoint('TOPLEFT', StableFrame.Topper, 'BOTTOMLEFT', 330, 0)
+    StableFrame.PetModelScene:SetPoint('BOTTOMRIGHT', -2, 92)
+    --[[StableFrame.ActivePetList:ClearAllPoints()
+    StableFrame.ActivePetList:SetPoint('TOPLEFT', StableFrame.PetModelScene, 'BOTTOMLEFT', 0, -45)
+    StableFrame.ActivePetList:SetPoint('TOPRIGHT', StableFrame.PetModelScene, 'BOTTOMRIGHT', 0, -45)
+    ]]
     e.Set_Move_Frame(StableFrame, {needSize=true, needMove=true, setSize=true, minW=860, minH=440, initFunc=function()
-            StableFrame.PetModelScene:ClearAllPoints()
+            --[[StableFrame.PetModelScene:ClearAllPoints()
             StableFrame.PetModelScene:SetPoint('TOPLEFT', StableFrame.Topper, 'BOTTOMLEFT', 330, 0)
             StableFrame.PetModelScene:SetPoint('BOTTOMRIGHT', -2, 92)
             StableFrame.ActivePetList:ClearAllPoints()
             StableFrame.ActivePetList:SetPoint('TOPLEFT', StableFrame.PetModelScene, 'BOTTOMLEFT', 0, -45)
             StableFrame.ActivePetList:SetPoint('TOPRIGHT', StableFrame.PetModelScene, 'BOTTOMRIGHT', 0, -45)
-            e.Set_Move_Frame(StableFrame.StabledPetList.ScrollBox, {frame=StableFrame})
+            e.Set_Move_Frame(StableFrame.StabledPetList.ScrollBox, {frame=StableFrame})]]
         end, sizeRestFunc=function(btn)
             btn.target:SetSize(1040, 638)
     end})
