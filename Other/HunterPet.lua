@@ -998,6 +998,7 @@ function Set_StableFrame_List()
         btn.Border:ClearAllPoints()
         btn.Border:Hide()
         frame.Buttons[i]= btn
+        --table.insert(frame.Buttons, btn)
     end
 
 
