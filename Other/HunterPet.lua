@@ -751,6 +751,13 @@ local function created_button(index)
     btn.Border:SetTexture(nil)
     btn.Border:ClearAllPoints()
     btn.Border:Hide()
+    btn.Text= e.Cstr(btn,{size=10, color={r=0.62,g=0.62,b=0.62,a=0.3}, layer='BACKGROUND'})
+    btn.Text:SetPoint('CENTER')
+    btn.Text:SetText(index)
+    btn.Icon:SetDrawLayer('BORDER')
+    hooksecurefunc(btn, 'SetPet', function(self)
+        self.Icon:SetTexCoord(0, 1, 0, 1);
+    end)
     return btn
 end
 
@@ -853,15 +860,11 @@ local function Init_StableFrame_Plus()
         end)
     end
 
-
-
-
     local btn= StableFrame.ActivePetList.BeastMasterSecondaryPetButton--第二个，宠物，提示
     created_model(btn)--已激活宠物，Model 提示
     hooksecurefunc(btn, 'SetPet', set_model)
     btn.model:SetFacing(-0.5)
     btn.model:SetPoint('RIGHT', btn, 'LEFT')
-
     btn:HookScript('OnEnter', function(self)
         if not self.petData or not self:IsEnabled() then
             return
@@ -876,6 +879,20 @@ local function Init_StableFrame_Plus()
         e.tips:Show()
     end)
 
+    hooksecurefunc(StableFrame.PetModelScene, 'SetPet', function()--选定时，隐藏model
+        local self= StableFrame
+        
+        local selecIndex= self.selectedPet and self.selectedPet.slotID
+
+        for _, btn in ipairs(StableFrame.ActivePetList.PetButtons) do    --已激，宠物栏，提示
+            btn.model:SetShown(btn:GetID()~=selecIndex)
+        end
+
+        local btn= self.ActivePetList.BeastMasterSecondaryPetButton
+        btn.model:SetShown(btn:IsEnabled() and (selecIndex~=Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX))
+    end)
+    
+
     local frame= CreateFrame('Frame', nil, btn, 'StablePetAbilityTemplate')--StablePetAbilityMixin
     frame:SetPoint('TOPRIGHT', btn, 'BOTTOMRIGHT', 10,-6)
     frame:Initialize(267116)--动物伙伴
@@ -883,6 +900,8 @@ local function Init_StableFrame_Plus()
     frame.Icon:SetPoint('RIGHT')
     frame.Name:ClearAllPoints()
     frame.Name:SetPoint('RIGHT', frame.Icon, 'LEFT')
+
+    
 
     --食物
     StableFrame.PetModelScene.PetInfo.Food=e.Cstr(StableFrame.PetModelScene.PetInfo, {copyFont=StableFrame.PetModelScene.PetInfo.Specialization, color={r=1,g=1,b=1}, size=16})
@@ -1221,6 +1240,7 @@ function Init_StableFrame_List()
                     if menuList=='SortType' then
                         e.LibDD:UIDropDownMenu_AddButton({
                             text= e.onlyChinese and '升序' or PERKS_PROGRAM_ASCENDING,
+                            keepShownOnClick=true,
                             checked= not Save.sortDown,
                             func= function()
                                 Save.sortDown= not Save.sortDown and true or nil
