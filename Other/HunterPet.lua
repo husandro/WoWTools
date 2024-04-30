@@ -731,6 +731,23 @@ local function set_button_size(btn)
     btn.Highlight:SetSize(w, h)
 end
 
+local function created_button(index)
+    local btn= CreateFrame('Button', nil, StableFrame.AllListFrame, 'StableActivePetButtonTemplate', index)
+    btn:HookScript('OnEnter', function(self)
+        if not self.petData then return end
+        set_pet_tooltips(self, self.petData, 0)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.onlyChinese and '激活' or SPEC_ACTIVE, e.Icon.right)
+        e.tips:Show()
+    end)
+    set_button_size(btn)
+
+    btn.Border:SetTexture(nil)
+    btn.Border:ClearAllPoints()
+    btn.Border:Hide()
+    return btn
+end
+
 --召唤，法术，提示
 local CALL_PET_SPELL_IDS = {0883, 83242, 83243, 83244, 83245, }
 
@@ -892,7 +909,8 @@ function Init_UI()
     end})
 
     StableFrame.ReleasePetButton:ClearAllPoints()
-    StableFrame.ReleasePetButton:SetPoint('BOTTOMLEFT', StableFrame.PetModelScene, 'TOPLEFT', 0,20)
+    --StableFrame.ReleasePetButton:SetPoint('BOTTOMLEFT', StableFrame.PetModelScene, 'TOPLEFT', 0,20)
+    StableFrame.ReleasePetButton:SetPoint('BOTTOM', StableFrame.PetModelScene, 'TOP', 0, 8)
     StableFrame.ReleasePetButton:SetAlpha(0.5)
     StableFrame.ReleasePetButton:HookScript('OnLeave', function(self) self:SetAlpha(0.5) end)
     StableFrame.ReleasePetButton:HookScript('OnEnter', function(self) self:SetAlpha(1) end)
@@ -945,6 +963,13 @@ function Init_UI()
 
     StableFrame.ActivePetList.ListName:ClearAllPoints()
     StableFrame.ActivePetList.ListName:SetPoint('BOTTOMLEFT', StableFrame.ActivePetList.ActivePetListBG, 'TOPLEFT',0,-6)
+
+    if StableFrame.Topper:IsShown() then--激活栏，添加材质
+        local texture= StableFrame:CreateTexture()
+        texture:SetPoint('TOPLEFT', StableFrame.PetModelScene, 'BOTTOMLEFT')
+        texture:SetPoint('BOTTOMRIGHT')
+        texture:SetAtlas('wood-topper')
+    end
 end
 
 
@@ -983,23 +1008,16 @@ function Set_StableFrame_List()
     frame.Bg:SetPoint('TOPLEFT')
 
     for i=Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX+ 1, Constants.PetConsts.NUM_PET_SLOTS do
-        local btn= CreateFrame('Button', nil, frame, 'StableActivePetButtonTemplate', i)
-        --btn.Icon:SetTexCoord(1,0,0,1)--左右，对换
-        btn:HookScript('OnEnter', function(self)
-            if not self.petData then return end
-            set_pet_tooltips(self, self.petData, 0)
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.onlyChinese and '激活' or SPEC_ACTIVE, e.Icon.right)
-            e.tips:Show()
-        end)
-        set_button_size(btn)
-        btn.Border:SetTexture(nil)
-        btn.Border:ClearAllPoints()
-        btn.Border:Hide()
+        local btn= created_button(i)
         frame.Buttons[i]= btn
-        --table.insert(frame.Buttons, btn)
     end
 
+    --第6个，提示，如果，没有专精支持，它会禁用，所有，建立一个
+    frame.btn6= created_button(Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX)
+    frame.btn6:SetPoint('BOTTOM', frame.Buttons[Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX+ 1],'TOP')
+    hooksecurefunc(StableFrame.ActivePetList.BeastMasterSecondaryPetButton, 'SetEnabled', function(self)
+        StableFrame.AllListFrame.btn6:SetShown(not self:IsEnabled())
+    end)
 
     function frame:set_point()
         if not self:IsShown() then return end
@@ -1031,10 +1049,11 @@ function Set_StableFrame_List()
         end
         for index, btn in pairs(frame.Buttons) do
             btn:SetPet(pets[index])
-            
         end
+        frame.btn6:SetPet(pets[Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX])
     end
 
+    
     hooksecurefunc(StableFrame, 'Refresh', function(self)
         self.AllListFrame:Refresh()
     end)
@@ -1131,7 +1150,7 @@ local function sort_pets_list(type, d)
         if not Save.sortDown then--点击，从前，向后
             for i, newTab in pairs(tab) do
                 do
-                    local index= i+  Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX+ 1
+                    local index= i+  Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX
                     C_StableInfo.SetPetSlot(newTab.slotID, index)
                 end
             end
