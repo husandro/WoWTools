@@ -1038,7 +1038,7 @@ local function Init_Wardrober_Transmog()
         e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
     end)
 
-    
+
     function check:set_event()
         if self:IsShown() and not Save.hideTransmog then
             self:RegisterEvent('PLAYER_TARGET_CHANGED')
@@ -1071,7 +1071,6 @@ local function Init_Wardrober_Transmog()
     end
     check:SetScript("OnEvent", check.set_target)
     hooksecurefunc(WardrobeTransmogFrame, 'RefreshPlayerModel', check.set_target)
-    
 
     check:SetScript('OnLeave', GameTooltip_Hide)
     check:SetScript('OnEnter', function(self)
@@ -1265,7 +1264,7 @@ local function Init_Wardrober()
     Init_Wardrober_ListContainer()
 
     --设置，目标为模型
-    Init_Wardrober_Transmog()
+    --Init_Wardrober_Transmog()
 end
 
 
