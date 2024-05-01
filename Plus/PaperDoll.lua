@@ -1462,8 +1462,9 @@ local function setFlyout(button, itemLink, slot)
         button.isEquippedTexture= button:CreateTexture(nil, 'OVERLAY')
         button.isEquippedTexture:SetPoint('CENTER')
         local w,h= button:GetSize()
-        button.isEquippedTexture:SetSize(w+10, h+10)
-        button.isEquippedTexture:SetAtlas('Forge-ColorSwatchSelection')
+        button.isEquippedTexture:SetSize(w+12, h+12)
+        button.isEquippedTexture:SetAtlas('Forge-ColorSwatchHighlight')--'Forge-ColorSwatchSelection')
+        --button.isEquippedTexture:SetVertexColor(0,1,0)
 
         button:HookScript('OnEnter', function(self)--查询
             if self.itemLink then

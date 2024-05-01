@@ -716,7 +716,7 @@ local function Init_Affix()
         btn:SetScript("OnEnter", ChallengesKeystoneFrameAffixMixin.OnEnter)
         btn:SetScript("OnLeave", GameTooltip_Hide)
         btn.affixID = affixID
-        btn:SetPoint('TOP', ChallengesFrame.WeeklyInfo.Child.AffixesContainer, 'BOTTOM', ((i-1)*24)-24, -4)---((index-1)*24))
+        btn:SetPoint('TOP', ChallengesFrame.WeeklyInfo.Child.AffixesContainer, 'BOTTOM', ((i-1)*24)-24, -3)---((index-1)*24))
 
         if i==1 then
             local label= e.Cstr(btn)
