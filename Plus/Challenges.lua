@@ -849,14 +849,14 @@ local function All_Player_Info()--所以角色信息
                 else
                     btn:SetPoint('TOPRIGHT', last, 'BOTTOMRIGHT')
                 end
-                
+
                 btn.link=link
                 function btn:set_tooltips(frame)
                     e.tips:SetOwner(frame, "ANCHOR_LEFT")
                     e.tips:ClearLines()
                     e.tips:SetHyperlink(self.link)
                     e.tips:Show()
-                    
+
                 end
                 btn:SetScript('OnLeave', function(self) self:SetAlpha(1) e.tips:Hide() end)
                 btn:SetScript('OnEnter', function(self)
@@ -873,7 +873,7 @@ local function All_Player_Info()--所以角色信息
                 create_lable(btn, 'b', score, {r=1,g=1,b=1}, 12)--分数
                 create_lable(btn, 'l', weekNum, {r=1,g=1,b=1})--次数
                 create_lable(btn, 'r', weekLevel, {r=1,g=1,b=1})--次数
-                
+
                 if e.onlyChinese then--取得中文，副本名称
                     local mapID, name= link:match('|Hkeystone:%d+:(%d+):.+%[(.+) %(%d+%)]')
                     mapID= mapID and tonumber(mapID)
@@ -898,7 +898,7 @@ local function All_Player_Info()--所以角色信息
                     self:SetAlpha(0.3)
                 end)
                 keyLable:SetText(link)
-                
+
                 last= nameLable
             else
                 last= btn
