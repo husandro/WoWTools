@@ -40,14 +40,14 @@ end
 local playerSound--播放，声音
 local function set_Count(self, event)
     if event=='PLAYER_TARGET_CHANGED' then
-        local plate= UnitExists('target') and C_NamePlate.GetNamePlateForUnit('target')
+        local plate= UnitExists('target') and C_NamePlate.GetNamePlateForUnit('target', issecure())
         if plate and plate.UnitFrame then
             if plate.UnitFrame:GetAlpha()<1 then plate.UnitFrame:SetAlpha(1) end
             if plate.UnitFrame:GetScale()<1 then plate.UnitFrame:SetScale(1) end
         end
     else
         local all, frames= 0, {}
-        local nameplates= C_NamePlate.GetNamePlates() or {}
+        local nameplates= C_NamePlate.GetNamePlates(issecure()) or {}
         for _, plate in pairs(nameplates) do
             local unit =plate.UnitFrame and plate.UnitFrame.unit-- or plate.namePlateUnitToken
             local guid= UnitExists(unit) and UnitGUID(unit)
@@ -98,7 +98,7 @@ local function set_Count(self, event)
 end
 
 local function set_Rest()
-    local nameplates= C_NamePlate.GetNamePlates() or {}
+    local nameplates= C_NamePlate.GetNamePlates(issecure()) or {}
     for _, plate in pairs(nameplates) do
         if plate and plate.UnitFrame then
             set_Plate(plate.UnitFrame, nil)--显示

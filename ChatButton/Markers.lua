@@ -892,7 +892,7 @@ local function Init_Markers_Frame()--设置标记, 框架
     end
     function Frame.target:set_Clear(index)--取消标记标    
         local u--取消怪物标记
-        local tab= C_NamePlate.GetNamePlates() or {}
+        local tab= C_NamePlate.GetNamePlates(issecure()) or {}
         for _, v in pairs(tab) do
             u = v.namePlateUnitToken or v.UnitFrame and v.UnitFrame.unit
             self:set_Clear_Unit(u, index)

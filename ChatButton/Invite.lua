@@ -94,7 +94,7 @@ local InvUnitFunc=function()--邀请，周围玩家
             return
         else
             --toRaidOrParty(co)--自动, 转团
-            local tab= C_NamePlate.GetNamePlates() or {}
+            local tab= C_NamePlate.GetNamePlates(issecure()) or {}
             for _, v in pairs(tab) do
                 local u = v.namePlateUnitToken or v.UnitFrame and v.UnitFrame.unit
                 if u then

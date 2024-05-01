@@ -211,7 +211,7 @@ function Init_Target()
         end
 
         function TargetFrame:set_target()
-            local plate= C_NamePlate.GetNamePlateForUnit("target")
+            local plate= C_NamePlate.GetNamePlateForUnit("target", issecure())
             if not plate or not plate.UnitFrame then
                 self:SetShown(false)
                 return
@@ -438,7 +438,7 @@ local function Init_Num()
         end
         function NumFrame:set_text()--local distanceSquared, checkedDistance = UnitDistanceSquared(u) inRange = CheckInteractDistance(unit, distIndex)
             local k,T,F=0,0,0
-            for _, plate in pairs(C_NamePlate.GetNamePlates() or {}) do
+            for _, plate in pairs(C_NamePlate.GetNamePlates(issecure()) or {}) do
                 local unit = plate.UnitFrame and plate.UnitFrame.unit
                 if UnitCanAttack('player', unit)
                     and (self.isPvPArena and UnitIsPlayer(unit) or not self.isPvPArena)
@@ -583,7 +583,7 @@ local function Init_Quest()
             end
         end
         function QuestFrame:set_quest_text(plate, unit)--设置，内容
-            local plate= unit and C_NamePlate.GetNamePlateForUnit(unit) or plate
+            local plate= unit and C_NamePlate.GetNamePlateForUnit(unit, issecure()) or plate
             local frame= plate and plate.UnitFrame
             if not frame then
                 return
@@ -603,12 +603,12 @@ local function Init_Quest()
             end
         end
         function QuestFrame:rest_all()--移除，所有内容
-            for _, plate in pairs(C_NamePlate.GetNamePlates() or {}) do
+            for _, plate in pairs(C_NamePlate.GetNamePlates(issecure()) or {}) do
                 QuestFrame:hide_plate(plate)
             end
         end
         function QuestFrame:check_all()--检查，所有
-            for _, plate in pairs(C_NamePlate.GetNamePlates() or {}) do
+            for _, plate in pairs(C_NamePlate.GetNamePlates(issecure()) or {}) do
                 self:set_quest_text(plate, nil)
             end
         end
@@ -691,7 +691,7 @@ local function Init_Unit_Is_Me()
     end
     if not Save.unitIsMe then
         if IsMeFrame then
-            for _, plate in pairs(C_NamePlate.GetNamePlates() or {}) do
+            for _, plate in pairs(C_NamePlate.GetNamePlates(issecure()) or {}) do
                 IsMeFrame:hide_plate(plate)
             end
         end
@@ -700,7 +700,7 @@ local function Init_Unit_Is_Me()
     if not IsMeFrame then
         IsMeFrame= CreateFrame('Frame')
         function IsMeFrame:set_texture(plate)--设置，参数
-            local frame= plate.UnitFrame
+            local frame= plate and plate.UnitFrame
             if not frame.UnitIsMe then
                 frame.UnitIsMe= frame:CreateTexture(nil, 'OVERLAY')
             end
@@ -726,7 +726,7 @@ local function Init_Unit_Is_Me()
             frame.UnitIsMe:SetSize(Save.unitIsMeSize, Save.unitIsMeSize)
         end
         function IsMeFrame:set_plate(plate, unit)--设置, Plate
-            plate= unit and C_NamePlate.GetNamePlateForUnit(unit) or plate
+            plate= UnitExists(unit) and C_NamePlate.GetNamePlateForUnit(unit, issecure()) or plate
             if plate and plate.UnitFrame then
                 local isMe= plate.UnitFrame.unit and UnitIsUnit((plate.UnitFrame.unit or '')..'target', 'player')
                 if isMe and not plate.UnitFrame.UnitIsMe then
@@ -743,12 +743,12 @@ local function Init_Unit_Is_Me()
             end
         end
         function IsMeFrame:init_all()--检查，所有
-            for _, plate in pairs(C_NamePlate.GetNamePlates() or {}) do
+            for _, plate in pairs(C_NamePlate.GetNamePlates(issecure()) or {}) do
                 self:set_plate(plate, nil)--设置
             end
         end
-        hooksecurefunc(NamePlateBaseMixin, 'OnAdded', function(plate)
-            IsMeFrame:set_plate(plate, nil)
+        hooksecurefunc(NamePlateBaseMixin, 'OnAdded', function(_, unit)
+            IsMeFrame:set_plate(nil, unit)
         end)
         hooksecurefunc(NamePlateBaseMixin, 'OnOptionsUpdated', function(plate)
             IsMeFrame:set_plate(plate, nil)
@@ -778,7 +778,7 @@ local function Init_Unit_Is_Me()
        -- 'CVAR_UPDATE',
     }
     FrameUtil.RegisterFrameForEvents(IsMeFrame, eventTab)
-    for _, plate in pairs(C_NamePlate.GetNamePlates() or {}) do--初始，数据
+    for _, plate in pairs(C_NamePlate.GetNamePlates(issecure()) or {}) do--初始，数据
         if plate.UnitFrame then
             if plate.UnitFrame.UnitIsMe then--修改
                 plate.UnitFrame.UnitIsMe:ClearAllPoints()

@@ -2522,13 +2522,14 @@ local function Init_Menu(_, level, menuList)
     }, level)
 
     local has= C_WeeklyRewards.HasAvailableRewards()
+    local icon= format('|A:GarrMission-%sChest:0:0|a', e.Player.faction=='Alliance' and 'Alliance' or 'Horde')
     e.LibDD:UIDropDownMenu_AddButton({
         text= format('%s|A:oribos-weeklyrewards-orb-dialog:0:0|a%s%s',
             has and '|cnGREEN_FONT_COLOR:' or '',
             e.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT,
-            has and format('|A:GarrMission-%sChest:0:0|a', e.Player.faction=='Alliance' and 'Alliance' or 'Horde') or ''),
+            has and icon or ''),
         tooltipOnButton=has,
-        tooltipTitle= has and (e.onlyChinese and '你有未领取的奖励' or WEEKLY_REWARDS_UNCLAIMED_TITLE),
+        tooltipTitle= has and format('%s|cffff00ff%s|r%s',icon, e.onlyChinese and '你有未领取的奖励' or WEEKLY_REWARDS_UNCLAIMED_TITLE, icon),
         checked= WeeklyRewardsFrame and WeeklyRewardsFrame:IsShown(),
         colorCode= (UnitAffectingCombat('player') or not e.Player.levelMax) and '|cff606060',
         keepShownOnClick=true,
