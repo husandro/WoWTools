@@ -623,11 +623,12 @@ function func.Set_Item(self, itemLink, itemID)
     if C_Item.IsItemKeystoneByID(itemID) then--挑战
         for guid, info in pairs(e.WoWDate or {}) do
             if guid and guid~=e.Player.guid and info.Keystone.link then
+                e.GetKeystoneScorsoColor(info.Keystone.score, false, nil)
                 self:AddDoubleLine(
-                    (info.Keystone.weekNum or 0)
-                    .. (info.Keystone.weekMythicPlus and '|cnGREEN_FONT_COLOR:('..info.Keystone.weekMythicPlus..') ' or '')
+                    (info.Keystone.weekNum==0 and '|cff6060600|r' or info.Keystone.weekNum or '')
+                    ..(info.Keystone.weekMythicPlus and '|cnGREEN_FONT_COLOR:('..info.Keystone.weekMythicPlus..') ' or '')
                     ..e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true})
-                    ..(info.Keystone.score and ' ' or '')..(e.GetKeystoneScorsoColor(info.Keystone.score,true)),
+                    ..e.GetKeystoneScorsoColor(info.Keystone.score, false, nil)..(e.GetKeystoneScorsoColor(info.Keystone.score,true)),
                     info.Keystone.link)
             end
         end
