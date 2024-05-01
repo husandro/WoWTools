@@ -856,12 +856,11 @@ local function All_Player_Info()--所以角色信息
                     e.tips:ClearLines()
                     e.tips:SetHyperlink(self.link)
                     e.tips:Show()
-
+                    frame:SetAlpha(0.3)
                 end
                 btn:SetScript('OnLeave', function(self) self:SetAlpha(1) e.tips:Hide() end)
                 btn:SetScript('OnEnter', function(self)
                     self:set_tooltips(self)
-                    self:SetAlpha(0.3)
                 end)
 
                 local score= e.GetKeystoneScorsoColor(info.Keystone.score, false, nil)
@@ -895,7 +894,6 @@ local function All_Player_Info()--所以角色信息
                 keyLable:SetScript('OnLeave', function(self) self:SetAlpha(1) e.tips:Hide() end)
                 keyLable:SetScript('OnEnter', function(self)
                     self:GetParent():set_tooltips(self)
-                    self:SetAlpha(0.3)
                 end)
                 keyLable:SetText(link)
 
