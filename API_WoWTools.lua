@@ -13,6 +13,17 @@ e.Player={}
 e.Icon={}
 ]]
 
+--建立func, 如果.toc禁用，会出错
+e.Set_Item_Info=function() end--ItemInfo.lua
+e.Set_Alpha_Frame_Texture=function()end--Texture.lua
+e.Set_NineSlice_Color_Alpha=function()end
+e.Set_ScrollBar_Color_Alpha=function()end
+e.Set_Move_Frame=function()end--Frame.lua
+
+
+
+
+
 
 --Blizzard_Deprecated/Deprecated_10_2_0.lua
 e.WoWDate={}

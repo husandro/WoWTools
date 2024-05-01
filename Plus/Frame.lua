@@ -19,7 +19,7 @@ local Save={
 local addName= 'Frame'
 local panel= CreateFrame("Frame")
 
-
+--e.Set_Move_Frame(self, tab)
 
 
 
@@ -2536,7 +2536,7 @@ end)]]
         --hooksecurefunc('PVEFrame_ShowFrame', function()self.activeTabIndex~=3
         hooksecurefunc('GroupFinderFrame_SelectGroupButton', function(index)
             local btn= PVEFrame.ResizeButton
-            if btn.disabledSize then
+            if btn.disabledSize or UnitAffectingCombat('player') then
                 return
             end
             if index==3 then
