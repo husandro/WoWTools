@@ -965,10 +965,8 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     frame.elapsed=0
                     if not UnitAffectingCombat('player') then
                         e.call('RaidGroupFrame_Update')
-                        --print(RaidFrame)
                     end
                 end
-                
             end)
         end
 
