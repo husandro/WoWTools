@@ -961,16 +961,7 @@ local function Init_Wardrober_Transmog()
 
     check:SetPoint('TOP',WardrobeTransmogFrame.ModelScene.ClearAllPendingButton, 'BOTTOM', 0, -2)
 
-    function check:set_event()
-        if self:IsShown() and not Save.hideTransmog then
-            self:RegisterEvent('PLAYER_TARGET_CHANGED')
-            self.Text:SetText(C_TransmogSets.GetBaseSetsCounts() or 0)
-        else
-            self:UnregisterAllEvents()
-        end
-    end
-    check:SetScript('OnShow', check.set_event)
-    check:SetScript('OnHide', check.set_event)
+
     check:SetScript('OnMouseDown', function(self)
         if not self.Menu then
             self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
@@ -1043,28 +1034,40 @@ local function Init_Wardrober_Transmog()
         e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
     end)
 
-    function check:set_target()
-        if Save.hideItems or not UnitExists('target') or not UnitIsPlayer('target') then
-            return
-        end
-        local frame= WardrobeTransmogFrame
-        local actor = frame.ModelScene:GetPlayerActor();
-        if actor then
-            local sheatheWeapons = false;
-            local autoDress = true;
-            local hideWeapons = false;
-            local useNativeForm = true;
-            local _, raceFilename = UnitRace("target");
-            if(raceFilename == "Dracthyr" or raceFilename == "Worgen") then
-                useNativeForm = not frame.inAlternateForm;
+    if e.Player.husandro then
+        function check:set_event()
+            if self:IsShown() and not Save.hideTransmog then
+                self:RegisterEvent('PLAYER_TARGET_CHANGED')
+                self.Text:SetText(C_TransmogSets.GetBaseSetsCounts() or 0)
+            else
+                self:UnregisterAllEvents()
             end
-            actor:SetModelByUnit("target", sheatheWeapons, autoDress, hideWeapons, useNativeForm);
-            frame.ModelScene.previousActor = actor
         end
-        frame:Update()
+        check:SetScript('OnShow', check.set_event)
+        check:SetScript('OnHide', check.set_event)
+        function check:set_target()
+            if Save.hideItems or not UnitExists('target') or not UnitIsPlayer('target') then
+                return
+            end
+            local frame= WardrobeTransmogFrame
+            local actor = frame.ModelScene:GetPlayerActor();
+            if actor then
+                local sheatheWeapons = false;
+                local autoDress = true;
+                local hideWeapons = false;
+                local useNativeForm = true;
+                local _, raceFilename = UnitRace("target");
+                if(raceFilename == "Dracthyr" or raceFilename == "Worgen") then
+                    useNativeForm = not frame.inAlternateForm;
+                end
+                actor:SetModelByUnit("target", sheatheWeapons, autoDress, hideWeapons, useNativeForm);
+                frame.ModelScene.previousActor = actor
+            end
+            frame:Update()
+        end
+        check:SetScript("OnEvent", check.set_target)
+        hooksecurefunc(WardrobeTransmogFrame, 'RefreshPlayerModel', check.set_target)
     end
-    check:SetScript("OnEvent", check.set_target)
-    hooksecurefunc(WardrobeTransmogFrame, 'RefreshPlayerModel', check.set_target)
 
     check:SetScript('OnLeave', GameTooltip_Hide)
     check:SetScript('OnEnter', function(self)
