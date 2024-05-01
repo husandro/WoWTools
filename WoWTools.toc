@@ -53,6 +53,8 @@ Plus\Frame.lua
 Plus\Texture.lua
 ##物品信息，显示包里，和商人，物品信息，现仅支持系统
 Plus\ItemInfo.lua
+##物品升级，增强
+Plus\ItemUpgrade.lua
 ##鼠标，提示
 Plus\Tooltips.lua
 

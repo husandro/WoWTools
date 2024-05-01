@@ -826,6 +826,7 @@ local function Init_Options()
             e.Get_Region=function() end
         end
     end
+    e.AddPanel_Header(nil, 'Plus')
 end
 
 

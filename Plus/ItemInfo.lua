@@ -948,7 +948,6 @@ end
 
 
 
-
 --####
 --初始
 --####
@@ -1411,6 +1410,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 self.CelarAllItemButton:SetShown(C_ScrappingMachineUI.HasScrappableItems())
                 self.AutoAddItemButton:SetShown(select(3, self.AutoAddItemButton:get_num_items()))
             end)
+       
         end
 
     elseif event == "PLAYER_LOGOUT" then

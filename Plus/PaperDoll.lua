@@ -3080,47 +3080,6 @@ end
 
 
 
---####################
---添加一个按钮, 打开选项
---####################
-local function add_Button_OpenOption(frame)
-    if not frame then
-        return
-    end
-    local btn= e.Cbtn(frame, {atlas='charactercreate-icon-customize-body-selected', size={40,40}})
-    btn:SetPoint('TOPRIGHT',-5,-25)
-    btn:SetScript('OnClick', function()
-        ToggleCharacter("PaperDollFrame")
-    end)
-    btn:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭角色界面' or BINDING_NAME_TOGGLECHARACTER0, e.Icon.left)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, e.cn(addName))
-        e.tips:Show()
-    end)
-    btn:SetScript('OnLeave', GameTooltip_Hide)
-    if frame==ItemUpgradeFrameCloseButton then--装备升级, 界面
-        --物品，货币提示
-        e.ItemCurrencyLabel({frame=ItemUpgradeFrame, point={'TOPLEFT', nil, 'TOPLEFT', 2, -55}})
-        btn:SetScript("OnEvent", function()
-            --物品，货币提示
-            e.ItemCurrencyLabel({frame=ItemUpgradeFrame, point={'TOPLEFT', nil, 'TOPLEFT', 2, -55}})
-        end)
-        btn:SetScript('OnShow', function(self)
-            e.ItemCurrencyLabel({frame=ItemUpgradeFrame, point={'TOPLEFT', nil, 'TOPLEFT', 2, -55}})
-            self:RegisterEvent('BAG_UPDATE_DELAYED')
-            self:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
-        end)
-        btn:SetScript('OnHide', function(self)
-            self:UnregisterAllEvents()
-        end)
-    end
-end
-
-
-
 
 
 
@@ -3144,7 +3103,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save.itemLevelBit= Save.itemLevelBit or 1
 
             --添加控制面板
-            e.AddPanel_Header(nil, 'Plus')
             e.AddPanel_Check({
                 name= (e.Player.sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a')..(e.onlyChinese and '角色' or addName),
                 tooltip= e.cn(addName),
@@ -3176,12 +3134,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:UnregisterEvent('ADDON_LOADED')
             end
             self:RegisterEvent("PLAYER_LOGOUT")
-
-        elseif arg1=='Blizzard_ItemUpgradeUI' then--装备升级, 界面
-            add_Button_OpenOption(ItemUpgradeFrameCloseButton)--添加一个按钮, 打开选项
-
-        elseif arg1=='Blizzard_ItemInteractionUI' then--套装转换, 界面
-            add_Button_OpenOption(ItemInteractionFrameCloseButton)--添加一个按钮, 打开选项
 
         elseif arg1=='Blizzard_InspectUI' then--目标, 装备
             Init_Target_InspectUI()
