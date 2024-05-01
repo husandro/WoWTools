@@ -69,7 +69,6 @@ local affixSchedule = {--C_MythicPlus.GetCurrentSeason() C_MythicPlus.GetCurrent
     [8]={[1]=10, [2]=136, [3]=8},	--Fortified 	Incorporeal Sanguine
     [9]={[1]=9, [2]=134, [3]=11},	--Tyrannical Entangling Bursting
     [10]={[1]=10, [2]=3, [3]=123},	--Fortified 	Volcanic 	Spiteful
-    max= 10,
 }
 
 local SpellTabs={--C_MythicPlus.GetCurrentSeason()
@@ -658,123 +657,103 @@ end
 --##################
 --史诗钥石地下城, 界面
 --词缀日程表AngryKeystones Schedule.lua
-
---建立 Affix 按钮
-local function Affix_CreateButton(self, affixID)--Blizzard_ScenarioObjectiveTracker.lua
-    local btn= e.Cbtn(self, {size={22,22}, pushe=true, icon='hide'})
-    btn.affixInfo= affixID
-    btn:SetSize(24, 24)
-    btn.Border= btn:CreateTexture(nil, "BORDER")
-    btn.Border:SetAllPoints()
-    btn.Border:SetAtlas("ChallengeMode-AffixRing-Sm")
-    btn.Portrait = btn:CreateTexture(nil, "BACKGROUND")
-    btn.Portrait:SetAllPoints(btn.Border)
-    local _, _, filedataid = C_ChallengeMode.GetAffixInfo(affixID);
-	SetPortraitToTexture(btn.Portrait, filedataid)--btn.SetUp = ScenarioChallengeModeAffixMixin.SetUp
-    btn:SetScript("OnEnter", ChallengesKeystoneFrameAffixMixin.OnEnter)
-    --[[btn:SetScript("OnEnter", function(self2)
-        GameTooltip:SetOwner(self2, "ANCHOR_LEFT");
-		local name, description = C_ChallengeMode.GetAffixInfo(self2.affixID);
-		GameTooltip:SetText(name, 1, 1, 1, 1, true);
-		GameTooltip:AddLine(description, nil, nil, nil, true);
-        GameTooltip:AddDoubleLine('affixID', self2.affixID)
-		GameTooltip:Show();
-    end)]]
-    btn:SetScript("OnLeave", GameTooltip_Hide)
-	btn.affixID = affixID;
-    return btn
-end
-
-local function Affix()
-    if C_AddOns.IsAddOnLoaded("AngryKeystones")
-        or not e.Player.levelMax
+local function Init_Affix()
+    if --C_AddOns.IsAddOnLoaded("AngryKeystones")
+        not e.Player.levelMax
         or not affixSchedule
+        or TipsFrame.affixesButton
         --or C_MythicPlus.GetCurrentSeason()~= affixSchedule.season
     then
         affixSchedule=nil
         return
     end
-
     local currentWeek
-    local max= affixSchedule.max
+    local max= 0
     local currentAffixes = C_MythicPlus.GetCurrentAffixes()
     if currentAffixes then
         for index, affixes in ipairs(affixSchedule) do
-            local matches = 0
-            for _, affix in ipairs(currentAffixes) do
-                if affix.id == affixes[1] or affix.id == affixes[2] or affix.id == affixes[3] then
-                    matches = matches + 1
+            if not currentWeek then
+                local matches = 0
+                for _, affix in ipairs(currentAffixes) do
+                    if affix.id == affixes[1] or affix.id == affixes[2] or affix.id == affixes[3] then
+                        matches = matches + 1
+                    end
+                end
+                if matches >= 3 then
+                    currentWeek = index
                 end
             end
-            if matches >= 3 then
-                currentWeek = index
-                break
-            end
+            max=max+1
         end
     end
 
-    if currentWeek then
-        local one= currentWeek
-        local due=one+1
-            due= due>max and 1 or due
-        local tre=due+1
-            tre= tre>max and 1 or tre
+    if not currentWeek then
+        affixSchedule=nil
+        return
+    end
 
-        local affixs={affixSchedule[one], affixSchedule[due], affixSchedule[tre]}
-        local last
-        for index, tab in pairs(affixs) do
-            for i=3 ,1, -1 do
-                local frame= ChallengesFrame['AffixWeek'..index..i]
-                if not frame then
-                    frame= Affix_CreateButton(TipsFrame, tab[i])
-                    if not last then
-                        frame:SetPoint('RIGHT', ChallengesFrame, -10, -((index-1)*(24)))
-                    else
-                        frame:SetPoint('RIGHT', last, 'LEFT', 0, 0)
-                    end
+    local one= currentWeek+1
+    one= one>max and 1 or one
+    --[[local due= one+1
+        due= due>max and 1 or due
+    local tre= due+1
+        tre= tre>max and 1 or tre]]
 
-                    if i==1 then
-                        last=nil
-                        local indexText= index==1 and one or index==2 and due or index==3 and tre
-                        frame.Text= e.Cstr(frame, {mouse=true})
-                        if index==1 then
-                            frame.Text:SetTextColor(0,1,0)
-                        end
-                        frame.Text:SetPoint('RIGHT', frame, 'LEFT')
-                        frame.Text:SetText(indexText or '')
-                        frame.Text.index= indexText
-                        frame.Text.weekIndex= index
-                        frame.Text:SetScript('OnEnter', function(self2)
-                            e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                            e.tips:ClearLines()
-                            e.tips:AddLine(self2.weekIndex==1 and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '本周' or CHALLENGE_MODE_THIS_WEEK) or format(e.onlyChinese and '%d周' or WEEKS_ABBR, self2.weekIndex))
-                            for i2= 1, affixSchedule.max do
-                                local text=''
-                                local sel= i2==self2.index
-                                for i3=1, 3 do
-                                    local affixID= affixSchedule[i2] and affixSchedule[i2][i3]
-                                    if affixID and affixID>0 then
-                                        local filedataid = select(3, C_ChallengeMode.GetAffixInfo(affixID)) or 0
-                                        text= text..' '..'|T'..filedataid..':0|t'
-                                    else
-                                        text= text..' '..(e.onlyChinese and '无' or NONE)
-                                    end
-                                end
-                                e.tips:AddDoubleLine((sel and '|cnGREEN_FONT_COLOR:' or '')..i2..(sel and e.Icon.toLeft2 or ''), (sel and e.Icon.toRight2 or '')..text)
-                            end
-                            e.tips:Show()
-                            self2:SetAlpha(0.3)
-                        end)
-                        frame.Text:SetScript('OnLeave', function(self2) self2:SetAlpha(1) end)
-                    else
-                        last=frame
+    --local affixs={affixSchedule[one], affixSchedule[due], affixSchedule[tre]}
+    --for index, tab in pairs(affixs) do
+    for i=1, 3 do
+        local btn= e.Cbtn(TipsFrame, {size={22,22}, pushe=true, icon='hide'})--建立 Affix 按钮
+        local affixID= affixSchedule[one][i]
+        btn.affixInfo= affixID
+        btn:SetSize(24, 24)
+        btn.Border= btn:CreateTexture(nil, "BORDER")
+        btn.Border:SetAllPoints()
+        btn.Border:SetAtlas("ChallengeMode-AffixRing-Sm")
+        btn.Portrait = btn:CreateTexture(nil, "BACKGROUND")
+        btn.Portrait:SetAllPoints(btn.Border)
+        local _, _, filedataid = C_ChallengeMode.GetAffixInfo(affixID);
+        SetPortraitToTexture(btn.Portrait, filedataid)--btn.SetUp = ScenarioChallengeModeAffixMixin.SetUp
+        btn:SetScript("OnEnter", ChallengesKeystoneFrameAffixMixin.OnEnter)
+        btn:SetScript("OnLeave", GameTooltip_Hide)
+        btn.affixID = affixID
+        btn:SetPoint('TOP', ChallengesFrame.WeeklyInfo.Child.AffixesContainer, 'BOTTOM', ((i-1)*24)-24, -4)---((index-1)*24))
+
+        if i==1 then
+            local label= e.Cstr(btn)
+            label:SetPoint('RIGHT', btn, 'LEFT')
+            label:SetText(one)
+            --if index==1 then
+            label:SetTextColor(0,1,0)
+            label:EnableMouse(true)
+            label.affixSchedule= affixSchedule
+            label.currentWeek= currentWeek
+            label.max= max
+            label:SetScript('OnLeave', function(self) self:SetAlpha(1) end)
+            label:SetScript('OnEnter', function(self)
+                e.tips:SetOwner(self, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddLine(Initializer:GetName())
+                e.tips:AddLine(' ')
+                for idx=1, self.max do
+                    local tab= self.affixSchedule[idx]
+                    local text=''
+                    for i2=1, 3 do
+                        local affixID= tab[i2]
+                        local name, _, filedataid = C_ChallengeMode.GetAffixInfo(affixID)
+                        text= text..'|T'..filedataid..':0|t'..e.cn(name)..'  '
                     end
-                    ChallengesFrame['AffixWeek'..index..i]= frame
+                    local col= idx==self.currentWeek and '|cnGREEN_FONT_COLOR:' or (select(2, math.modf(idx/2))==0 and '|cffff8200') or '|cffffffff'
+                    e.tips:AddLine(col..(idx<10 and '  ' or '')..idx..') '..text)
                 end
-                frame:SetShown(tab[i]>0)
-            end
+                e.tips:Show()
+                self:SetAlpha(0.3)
+            end)
+            --end
         end
     end
+    --end
+    --ChallengesFrame.WeeklyInfo.Child.WeeklyChest.RunStatus:ClearAllPoints()
+    --ChallengesFrame.WeeklyInfo.Child.WeeklyChest.RunStatus:SetPoint('BOTTOM', 0, -12)
 end
 
 
@@ -2065,7 +2044,8 @@ local function Init()
         self:SetAlpha(1)
     end)
 
-    Affix()
+    Init_Affix()
+
     --周奖励，提示
     e.Get_Weekly_Rewards_Activities({frame=TipsFrame, point={'TOPLEFT', ChallengesFrame, 'TOPLEFT', 10, -53}})
 
@@ -2075,7 +2055,7 @@ local function Init()
     hooksecurefunc(ChallengesFrame, 'Update', set_Update)
 
     ChallengesFrame:HookScript('OnShow', function()
-        Affix()
+        --Affix()
         --周奖励，提示
         e.Get_Weekly_Rewards_Activities({frame=TipsFrame, point={'TOPLEFT', ChallengesFrame, 'TOPLEFT', 10, -53}})
         C_Timer.After(2, set_All_Text)--所有记录
