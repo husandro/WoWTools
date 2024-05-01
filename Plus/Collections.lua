@@ -953,7 +953,7 @@ end
 
 
 
---设置，目标为模型
+--[[设置，目标为模型
 local function Init_Wardrober_Transmog()
     if not e.Player.husandro then
         return
@@ -1083,7 +1083,7 @@ local function Init_Wardrober_Transmog()
         e.tips:Show()
     end)
 end
-
+]]
 
 
 
