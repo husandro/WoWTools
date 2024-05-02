@@ -4376,7 +4376,11 @@
         "LFGInvitePopupRoleButtonTank",
         "StableFrame",
         "StableFrameTitleText",
-        "PlayerGetTimerunningSeasonID"
+        "PlayerGetTimerunningSeasonID",
+        "StableFrameBg",
+        "StableFrameCloseButton",
+        "MonthlyActivitiesButtonTextContainerMixin",
+        "StableStabledPetButtonTemplateMixin"
     ],
     "Lua.diagnostics.disable": [
         "inject-field",
