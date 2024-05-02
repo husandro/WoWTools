@@ -4375,7 +4375,8 @@
         "CALENDAR_STATUS_TENTATIVE",
         "LFGInvitePopupRoleButtonTank",
         "StableFrame",
-        "StableFrameTitleText"
+        "StableFrameTitleText",
+        "PlayerGetTimerunningSeasonID"
     ],
     "Lua.diagnostics.disable": [
         "inject-field",
@@ -4383,6 +4384,7 @@
         "redundant-parameter",
         "param-type-mismatch",
         "missing-parameter",
-        "duplicate-set-field"
+        "duplicate-set-field",
+        "assign-type-mismatch"
     ]
 }

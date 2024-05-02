@@ -1563,7 +1563,7 @@ local function Init_Menu_Gossip(_, level, type)
             { expansion=LE_EXPANSION_DRAGONFLIGHT,
               movieIDs = { 973 },
               upAtlas="StreamCinematic-Dragonflight2-Up",
-              title=DRAGONFLIGHT_TOTHESKIES,
+              title=_G['DRAGONFLIGHT_TOTHESKIES'],
               disableAutoPlay=true,
               text= e.onlyChinese and '巨龙时代' or nil,
             },

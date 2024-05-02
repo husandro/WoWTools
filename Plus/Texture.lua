@@ -1431,9 +1431,9 @@ local function Init_Event(arg1)
         e.Set_Alpha_Frame_Texture(AchievementFrameTab3, {alpha=min05})
         hide_Texture(AchievementFrameSummaryCategoriesStatusBarFillBar)
 
-        set_Alpha_Color(AchievementFrameSummaryCategoriesStatusBarFillRight)
+        --[[set_Alpha_Color(AchievementFrameSummaryCategoriesStatusBarFillRight)
         set_Alpha_Color(AchievementFrameSummaryCategoriesStatusBarFillMiddle)
-        set_Alpha_Color(AchievementFrameSummaryCategoriesStatusBarFillLeft)
+        set_Alpha_Color(AchievementFrameSummaryCategoriesStatusBarFillLeft)]]
         for i=1, 10 do
             hide_Texture(_G['AchievementFrameCategoriesCategory'..i..'Bar'])
             set_Alpha_Color(_G['AchievementFrameSummaryCategoriesCategory'..i..'Right'])
