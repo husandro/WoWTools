@@ -125,10 +125,10 @@ end
 
 for classID=0, 20 do
     if classID~=6 and classID~=10 and classID~=13 and classID~=14 and classID~=11 and classID~=18 then
-        local className=GetItemClassInfo(classID)--生成,物品列表
+        local className=C_Item.GetItemClassInfo(classID)--生成,物品列表
         if className then
             for subClassID= 0, 20 do
-                local subclassName=GetItemSubClassInfo(classID, subClassID)
+                local subclassName=C_Item.GetItemSubClassInfo(classID, subClassID)
                 if subclassName and subclassName~='' then
                     local tab={
                         className=className,
@@ -531,12 +531,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
             if not WoWToolsSave[addName..'Tools'] then--初始,类, 设置
-                local className=GetItemClassInfo(0)
+                local className=C_Item.GetItemClassInfo(0)
                 Save.itemClass={
-                    [className..GetItemSubClassInfo(0, 1)]=true,--药水
-                    [className..GetItemSubClassInfo(0, 2)]=true,--药剂
-                    [className..GetItemSubClassInfo(0, 3)]=true,--合计
-                    [className..GetItemSubClassInfo(0, 5)]=true,--食物
+                    [className..C_Item.GetItemSubClassInfo(0, 1)]=true,--药水
+                    [className..C_Item.GetItemSubClassInfo(0, 2)]=true,--药剂
+                    [className..C_Item.GetItemSubClassInfo(0, 3)]=true,--合计
+                    [className..C_Item.GetItemSubClassInfo(0, 5)]=true,--食物
                 }
             end
 

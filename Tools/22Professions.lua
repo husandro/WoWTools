@@ -316,7 +316,7 @@ local function set_Blizzard_TrainerU()
     ClassTrainerFrame.BuyAll.cost= 0
 	ClassTrainerFrame.BuyAll:SetText(ClassTrainerFrame.BuyAll.name)
     ClassTrainerFrame.BuyAll:SetScript("OnEnter",function(self)
-        local text= GetCoinTextureString(self.cost)
+        local text= C_CurrencyInfo.GetCoinTextureString(self.cost)
         if self.cost< GetMoney() then
             text= '|cnGREEN_FONT_COLOR:'..text..'|r'
         else
@@ -348,7 +348,7 @@ local function set_Blizzard_TrainerU()
                         table.insert(tab, link)
                     end
                 else
-                    print(id, e.cn(addName), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '金币不足' or NOT_ENOUGH_GOLD), GetCoinTextureString(money))
+                    print(id, e.cn(addName), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '金币不足' or NOT_ENOUGH_GOLD), C_CurrencyInfo.GetCoinTextureString(money))
                     break
                 end
             end
@@ -357,7 +357,7 @@ local function set_Blizzard_TrainerU()
             for i, link in pairs(tab) do
                 print('|cffff00ff'..i..'|r)', link)
             end
-            print(id, 'Tools', e.cn(addName), '|cffff00ff'..num..'|r '..(e.onlyChinese and '学习' or LEARN), (cost>0 and '|cnGREEN_FONT_COLOR:' or '')..GetCoinTextureString(cost))
+            print(id, 'Tools', e.cn(addName), '|cffff00ff'..num..'|r '..(e.onlyChinese and '学习' or LEARN), (cost>0 and '|cnGREEN_FONT_COLOR:' or '')..C_CurrencyInfo.GetCoinTextureString(cost))
         end)
 	end)
 

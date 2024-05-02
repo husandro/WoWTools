@@ -505,7 +505,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 button:SetAttribute("alt-type1", "item")
                 button:SetAttribute("shift-type1", "item")
                 button:SetAttribute("ctrl-type1", "item")
-                button:SetPoint('RIGHT', WoWToolsMountButton, 'LEFT')
+                button:SetPoint('RIGHT', _G['WoWToolsMountButton'], 'LEFT')
                 button.items={}--存放有效
 
                 CollectionsJournal_LoadUI()

@@ -381,7 +381,7 @@ local function setClickAtt()--设置 Click属性
     else
         spellID= (IsIndoors() or isMoving or isBat) and button.spellID--进入战斗, 室内
             or getRandomRoll(FLOOR)--区域
-            or ((isAdvancedFlyableArea1 or IsUsableSpell(368896)) and getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING))-- [368896]=true,--[复苏始祖幼龙]
+            or ((isAdvancedFlyableArea or IsUsableSpell(368896)) and getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING))-- [368896]=true,--[复苏始祖幼龙]
             or (IsSubmerged() and getRandomRoll(MOUNT_JOURNAL_FILTER_AQUATIC))--水平中
             or (isFlyableArea and getRandomRoll(MOUNT_JOURNAL_FILTER_FLYING))--飞行区域
             or (IsOutdoors() and getRandomRoll(MOUNT_JOURNAL_FILTER_GROUND))--室内

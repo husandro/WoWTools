@@ -98,7 +98,7 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
                     or (not gem1007 and (info.itemID<204000 or info.itemID>204030))
                 )]]
             then
-                local level= GetDetailedItemLevelInfo(info.hyperlink) or 0
+                local level= C_Item.GetDetailedItemLevelInfo(info.hyperlink) or 0
                 local classID, subclassID, _, expacID= select(12, C_Item.GetItemInfo(info.hyperlink))
 
                 if classID==3
@@ -405,7 +405,7 @@ local function Init()
                 btn.type:SetText(name or '')
                 btn.leftText:SetText(left or '')
                 btn.rightText:SetText(right or '')
-                btn.levelText:SetText(itemLink and GetDetailedItemLevelInfo(itemLink) or '')
+                btn.levelText:SetText(itemLink and C_Item.GetDetailedItemLevelInfo(itemLink) or '')
                 btn.levelText:SetTextColor(Get_Item_Color(itemLink))
                 if atlas then
                     btn.qualityTexture:SetAtlas(atlas)

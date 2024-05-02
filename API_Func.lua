@@ -1,4 +1,4 @@
-local e = select(2, ...)
+local id, e = ...
 
 e.SetItemCurrencyID= 2912--套装，转换，货币
 local ItemCurrencyTips= {---物品升级界面，挑战界面，物品，货币提示
@@ -737,7 +737,7 @@ function e.Get_Weekly_Rewards_Activities(settings)--周奖励，提示
                 if info.unlocked then
                     local itemLink=  C_WeeklyRewards.GetExampleRewardItemHyperlinks(info.id)
                     local texture= itemLink and C_Item.GetItemIconByID(itemLink)
-                    local itemLevel= itemLink and GetDetailedItemLevelInfo(itemLink)
+                    local itemLevel= itemLink and C_Item.GetDetailedItemLevelInfo(itemLink)
                     e.tips:AddLine(
                         '   '..index..') '
                         ..(texture and itemLevel and '|T'..texture..':0|t'..itemLevel or info.difficulty)
@@ -834,7 +834,7 @@ function e.Get_Weekly_Rewards_Activities(settings)--周奖励，提示
             local itemLink= label:Get_ItemLink()
             if itemLink then
                 local texture= C_Item.GetItemIconByID(itemLink)
-                local itemLevel= GetDetailedItemLevelInfo(itemLink)
+                local itemLevel= C_Item.GetDetailedItemLevelInfo(itemLink)
                 text= '    '..index..') '..(texture and '|T'..texture..':0|t' or itemLink)
                 text= text..((itemLevel and itemLevel>0) and itemLevel or '')..e.Icon.select2..((info.level and info.level>0) and info.level or '')
             else
@@ -1084,6 +1084,7 @@ function e.Get_Item_Stats(link)--取得，物品，次属性，表
 end
 
 --e.Set_Item_Stats(self, itemLink, {point=self.icon, itemID=nil, hideSet=false, hideLevel=false, hideStats=false})--设置，物品，4个次属性，套装，装等，
+local itemLevelStr= ITEM_LEVEL:gsub('%%d', '%(%%d%+%)')--"物品等级：%d"
 function e.Set_Item_Stats(self, link, setting) --设置，物品，次属性，表
     if not self then
         return
@@ -1092,7 +1093,7 @@ function e.Set_Item_Stats(self, link, setting) --设置，物品，次属性，�
     setting= setting or {}
 
     local hideSet= setting.hideSet
-    local point= setting.point
+    local point= setting.point or self
     local hideLevel= setting.hideLevel
     local itemID= setting.itemID
     local hideStats= setting.hideStats
@@ -1103,18 +1104,18 @@ function e.Set_Item_Stats(self, link, setting) --设置，物品，次属性，�
             if setID and not self.itemSet then
                 self.itemSet= self:CreateTexture()
                 self.itemSet:SetAtlas('UI-HUD-MicroMenu-Highlightalert')--'UI-HUD-MicroMenu-Highlightalert')--services-icon-goldborder
-                self.itemSet:SetAllPoints(point or self)
+                self.itemSet:SetAllPoints(self)
             end
         end
 
         if not hideLevel then--物品, 装等
             local quality = C_Item.GetItemQualityByID(link)--颜色
             if quality==7 then
-                local itemLevelStr=ITEM_LEVEL:gsub('%%d', '%(%%d%+%)')--"物品等级：%d"
+
                 local dataInfo= e.GetTooltipData({hyperLink=link, itemID= itemID or C_Item.GetItemInfoInstant(link), text={itemLevelStr}, onlyText=true})--物品提示，信息
                 itemLevel= tonumber(dataInfo.text[itemLevelStr])
             end
-            itemLevel= itemLevel or GetDetailedItemLevelInfo(link)
+            itemLevel= itemLevel or C_Item.GetDetailedItemLevelInfo(link)
             if itemLevel and itemLevel<3 then
                 itemLevel=nil
             end
@@ -1147,13 +1148,13 @@ function e.Set_Item_Stats(self, link, setting) --设置，物品，次属性，�
             if not text then
                 text= e.Cstr(self, {justifyH= (index==2 or index==4) and 'RIGHT'})
                 if index==1 then
-                    text:SetPoint('BOTTOMLEFT', point or self, 'BOTTOMLEFT')
+                    text:SetPoint('BOTTOMLEFT', point, 'BOTTOMLEFT')
                 elseif index==2 then
-                    text:SetPoint('BOTTOMRIGHT', point or self, 'BOTTOMRIGHT', 4,0)
+                    text:SetPoint('BOTTOMRIGHT', point, 'BOTTOMRIGHT', 4,0)
                 elseif index==3 then
-                    text:SetPoint('TOPLEFT', point or self, 'TOPLEFT')
+                    text:SetPoint('TOPLEFT', point, 'TOPLEFT')
                 else
-                    text:SetPoint('TOPRIGHT', point or self, 'TOPRIGHT',4,0)
+                    text:SetPoint('TOPRIGHT', point, 'TOPRIGHT',4,0)
                 end
                 self['statText'..index]=text
             end

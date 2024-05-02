@@ -6,9 +6,8 @@ local Initializer
 
 
 
---####################
---添加一个按钮, 打开选项
---####################
+
+--添加一个按钮, 打开，角色界面
 local function add_Button_OpenOption(frame)
     if not frame then
         return
@@ -55,6 +54,61 @@ local function Init_ItemInteractionFrame()
     e.Set_Move_Frame(ItemInteractionFrame, {setSize=true, needSize=true, needMove=true, restSizeFunc=function(btn)
 
     end})
+   
+    local frame= CreateFrame('EventScrollFrame', nil, ItemInteractionFrame, 'ScrollFrameTemplate')
+    frame:SetPoint('TOPRIGHT', ItemInteractionFrame, 'TOPLEFT', -24, 0)
+    frame:SetPoint('BOTTOMRIGHT', ItemInteractionFrame, 'BOTTOMLEFT', -24,0)
+    frame:SetWidth(253)
+    frame.scrollBarHideIfUnscrollable=true
+    frame.scrollBarX= -14
+    frame.scrollBarTopY= -5
+    frame.scrollBarBottomY=1
+
+    --local f= CreateFrame('Frame', nil, frame)
+   -- f:SetSize(240, 254)
+
+    local tip= CreateFrame('GameTooltip', nil, frame, 'GameTooltipTemplate')
+    tip:SetOwner(frame, "ANCHOR_PRESERVE")
+    tip:SetAllPoints(frame)
+    --tip:SetClampedToScreen(false)
+    --tip:SetScript('OnHide', tip.ClearLines)
+    --tip.supportsDataRefresh=true
+    --tip.updateTooltipTimer=0
+    --tip.IsEmbedded=true
+    --tip:SetScript('OnUpdate', GameTooltip_OnUpdate)
+
+    frame:SetScrollChild(tip)
+    frame:RegisterCallback("OnScrollRangeChanged", function()
+        tip:SetItemInteractionItem()
+    end)
+
+    --ItemInteractionFrame.ItemConversionFrame.ItemConversionOutputSlot.Text= e.Cstr(ItemInteractionFrame.ItemConversionFrame.ItemConversionOutputSlot)
+    --ItemInteractionFrame.ItemConversionFrame.ItemConversionOutputSlot.Text:SetPoint('LEFT', ItemInteractionFrame.ItemConversionFrame.ItemConversionOutputSlot, 'RIGHT',12,0)
+    ItemInteractionFrame.Tip= CreateFrame('GameTooltip', nil, ItemInteractionFrame, 'GameTooltipTemplate')
+    hooksecurefunc(ItemInteractionFrame.ItemConversionFrame.ItemConversionOutputSlot, 'RefreshIcon', function(self)
+        local itemInteractionFrame = self:GetParent():GetParent()
+        local itemLocation = itemInteractionFrame:GetItemLocation()
+        --local text=''
+        local itemLink
+        local show= (itemLocation and itemInteractionFrame:GetInteractionType() == Enum.UIItemInteractionType.ItemConversion)
+        if show then
+            --[[tip:SetMinimumWidth(240, true)
+            tip:SetOwner(frame, "ANCHOR_PRESERVE")
+            tip:SetItemInteractionItem()
+            tip:Show()]]
+
+            itemInteractionFrame.Tip:SetItemInteractionItem()
+            itemLink= select(2, itemInteractionFrame.Tip:GetItem())
+            --[[if itemLink then
+                for k, v in pairs(C_Item.GetItemStats(itemLink) or {}) do
+                    text= format("%s: %d", e.cn(_G[k]), v)..'|n'..text
+                end
+            end]]
+        end
+        e.Set_Item_Stats(self, itemLink, {}) --设置，物品，次属性，表
+        --self.Text:SetText(text)
+        --frame:SetShown(show)
+    end)
 end
 
 local panel= CreateFrame('Frame')

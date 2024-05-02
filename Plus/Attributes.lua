@@ -1572,7 +1572,7 @@ local function Init_Options()--设置 panel
             local hex= e.RGB_to_HEX(setR, setG, setB,setA, self)--RGB转HEX
             hex= hex and '|c'..hex or '|cffff8200'
             Save.greenColor= hex
-            GreenColor= {r=setR or 1, g=setG or 0, setB=b or 0, a=setA or 1}
+            GreenColor= {r=setR or 1, g=setG or 0, b=setB or 0, a=setA or 1}
         end
         e.ShowColorPicker(self.r, self.g, self.b,self.a, function()
                 setR, setG, setB, setA= e.Get_ColorFrame_RGBA()
@@ -1604,7 +1604,7 @@ local function Init_Options()--设置 panel
             local hex= e.RGB_to_HEX(setR, setG, setB,setA, self)--RGB转HEX
             hex= hex and '|c'..hex or '|cffff0000'
             Save.redColor= hex
-            RedColor= {r=setR or 1, g=setG or 0, setB=b or 0, a=setA or 1}
+            RedColor= {r=setR or 1, g=setG or 0, b=setB or 0, a=setA or 1}
         end
         e.ShowColorPicker(self.r, self.g, self.b,self.a, function()
                 setR, setG, setB, setA= e.Get_ColorFrame_RGBA()

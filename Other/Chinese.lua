@@ -751,7 +751,7 @@ local function Init()
         if ( activeEntryInfo.comment == "" ) then
             set(self.DescriptionFrame.Text, activityName)
         else
-            local comment= e.strText[comment]
+            local comment= e.strText[activeEntryInfo.comment]
             if comment or activityName then
                 set(self.DescriptionFrame.Text,  format("%s |cff888888- %s|r", activityName or self.DescriptionFrame.activityName, comment or self.DescriptionFrame.comment))
             end
@@ -1987,6 +1987,7 @@ local function Init()
         local inChallengeMode = (scenarioType == LE_SCENARIO_TYPE_CHALLENGE_MODE)
         local inProvingGrounds = (scenarioType == LE_SCENARIO_TYPE_PROVING_GROUNDS)
         local dungeonDisplay = (scenarioType == LE_SCENARIO_TYPE_USE_DUNGEON_DISPLAY)
+        local scenariocompleted = currentStage > numStages
         if ( not isInScenario ) then
         elseif ( scenariocompleted ) then
         elseif ( inChallengeMode ) then
@@ -4117,7 +4118,7 @@ local function Init()
     end)
     set(SubZoneTextString, e.strText[GetSubZoneText()])
     hooksecurefunc('SetZoneText', function()
-        local pvpType, isSubZonePvP, factionName = GetZonePVPInfo()
+        local pvpType, isSubZonePvP, factionName = C_PvP.GetZonePVPInfo()
         local pvpTextString = PVPInfoTextString
         if ( isSubZonePvP ) then
             pvpTextString = PVPArenaTextString
@@ -4163,7 +4164,7 @@ local function Init()
     for index, en in pairs(CONQUEST_TYPE_STRINGS) do
         local cn= e.strText[en]
         if cn then
-            CONQUEST_SIZE_SCONQUEST_TYPE_STRINGSTRINGS[index]= cn
+            CONQUEST_TYPE_STRINGS[index]= cn
         end
     end
 
@@ -6176,6 +6177,17 @@ local function Init_Loaded(arg1)
             end
         end)
 
+        local function ClubFinderGetTotalNumSpecializations()
+            local numClasses = GetNumClasses();
+            local count = 0;
+            for i = 1, numClasses do
+                local _, _, classID = GetClassInfo(i);
+                for i2 = 1, GetNumSpecializationsForClassID(classID) do
+                    count = count + 1
+                end
+            end
+            return count;
+        end
         local function set_ClubFinderRequestToJoin(self)
             if (not self.info) then
                 return
@@ -6194,7 +6206,7 @@ local function Init_Loaded(arg1)
             end
             local classDisplayName = UnitClass("player")
             classDisplayName= e.cn(classDisplayName)
-            local isRecruitingAllSpecs = #self.info.recruitingSpecIds == 0 or #self.info.recruitingSpecIds == CLUB_FINDER_MAX_NUM_SPECIALIZATIONS
+            local isRecruitingAllSpecs = #self.info.recruitingSpecIds == 0 or #self.info.recruitingSpecIds == ClubFinderGetTotalNumSpecializations()
             if(isRecruitingAllSpecs) then
                 if(self.info.isGuild) then
                     set(self.RecruitingSpecDescriptions, '此公会正在招募所有的专精类型。')
@@ -6638,7 +6650,7 @@ local function Init_Loaded(arg1)
             local playerName= e.GetPlayerInfo({name=inviter, reName=true, reRealm=true})
             playerName= playerName=='' and inviter or playerName
             LFGInvitePopupText:SetFormattedText(titleMarkup ..'%s邀请你加入队伍', inviter)
-
+            local tankButton = LFGInvitePopupRoleButtonTank
             if tankButton.disabledTooltip and e.strText[tankButton.disabledTooltip] then
                 tankButton.disabledTooltip = e.strText[tankButton.disabledTooltip]
             end
@@ -6651,7 +6663,7 @@ local function Init_Loaded(arg1)
                 text= (text and text..'|n|n' or '')..'接受此邀请会激活小队同步。任务会与小队进行同步。'
             end
             if text then
-                LFGInvitePopup.QueueWarningText:SetText(warningText)
+                LFGInvitePopup.QueueWarningText:SetText(text)
             end
         end)
 --hooksecurefunc('HonorFrame_UpdateQueueButtons', function()
@@ -7341,7 +7353,7 @@ local function Init_Loaded(arg1)
         --Blizzard_MajorFactionRenown.lua
         hooksecurefunc(MajorFactionRenownFrame, 'SetUpMajorFactionData', function(self)
             local majorFactionData = C_MajorFactions.GetMajorFactionData(self.majorFactionID) or {}
-            if majorFactionData.name and currentFactionID ~= self.majorFactionID then
+            if majorFactionData.name and majorFactionData.currentFactionID ~= self.majorFactionID then
                 set(self.TrackFrame.Title, e.strText[majorFactionData.name])
             end
         end)

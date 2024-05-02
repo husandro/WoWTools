@@ -125,7 +125,7 @@ local function Item(link)--物品超链接
     local icon, classID, subclassID= select(5, C_Item.GetItemInfoInstant(itemID))
     t= icon and '|T'..icon..':0|t'..t or t--加图标
     if classID==2 or classID==4 then
-        local lv=GetDetailedItemLevelInfo(link)--装等
+        local lv=C_Item.GetDetailedItemLevelInfo(link)--装等
         if lv and lv>10 then
             t=t..'['..lv..']'
         end

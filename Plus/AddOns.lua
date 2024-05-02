@@ -636,7 +636,7 @@ local function Create_Fast_Button(indexAdd)
         else
             self:SetNormalTexture(0)
         end
-        self.Text:SetText(title or name or self.name)
+        self.Text:SetText(name or self.name)
         if C_AddOns.GetAddOnEnableState(self.name)~=0 then
             self.Text:SetTextColor(0,1,0)
             self.checkTexture:SetShown(true)
@@ -1301,7 +1301,7 @@ local function Init()
         end
         if self.index then
             AddonList.ScrollBox:ScrollToElementDataIndex(self.index)
-            for _, frame in pairs( AddonList.ScrollBox:GetFrames() or {}) do
+            for index, frame in pairs( AddonList.ScrollBox:GetFrames() or {}) do
                 if frame:GetID()==index then
                     if frame.check then
                         frame.check:set_enter_alpha()

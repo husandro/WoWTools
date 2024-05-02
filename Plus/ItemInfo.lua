@@ -147,7 +147,7 @@ function e.Set_Item_Info(self, tab)
 
         local itemName, _, itemQuality2, itemLevel2, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, _, _, classID, subclassID, bindType, expacID, setID, isCraftingReagent = C_Item.GetItemInfo(itemLink)
 
-        itemLevel= itemLevel or GetDetailedItemLevelInfo(itemLink) or itemLevel2
+        itemLevel= itemLevel or C_Item.GetDetailedItemLevelInfo(itemLink) or itemLevel2
         itemQuality= itemQuality or itemQuality2
         expacID= expacID or 0
 
@@ -350,7 +350,7 @@ function e.Set_Item_Info(self, tab)
                             local upLevel, downLevel
                             local itemLinkPlayer =  GetInventoryItemLink('player', invSlot)
                             if itemLinkPlayer then
-                                local equipedLevel= GetDetailedItemLevelInfo(itemLinkPlayer)
+                                local equipedLevel= C_Item.GetDetailedItemLevelInfo(itemLinkPlayer)
                                 if equipedLevel then
                                     local equipedInfo= e.GetTooltipData({hyperLink=itemLinkPlayer, text={upgradeStr}, onlyText=true})--物品提示，信息
                                     if equipedInfo.text[upgradeStr] then--"升级：%s/%s"
@@ -761,7 +761,7 @@ local function Init_Bag()
         return
 
     elseif C_AddOns.IsAddOnLoaded("Baggins") then
-        hooksecurefunc(Baggins, 'UpdateItemButton', function(_, _, button, bagID, slotID)
+        hooksecurefunc(_G['Baggins'], 'UpdateItemButton', function(_, _, button, bagID, slotID)
             if button and bagID and slotID then
                 e.Set_Item_Info(button, {bag={bag=bagID, slot=slotID}})
             end
@@ -1183,6 +1183,53 @@ end
 
 
 
+--添加一个按钮, 打开，角色界面
+local function add_Button_OpenOption(frame)
+    if not frame then
+        return
+    end
+    local btn= e.Cbtn(frame, {atlas='charactercreate-icon-customize-body-selected', size={40,40}})
+    btn:SetPoint('TOPRIGHT',-5,-25)
+    btn:SetScript('OnClick', function()
+        ToggleCharacter("PaperDollFrame")
+    end)
+    btn:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭角色界面' or BINDING_NAME_TOGGLECHARACTER0, e.Icon.left)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(id, Initializer:GetName())
+        e.tips:Show()
+    end)
+    btn:SetScript('OnLeave', GameTooltip_Hide)
+    if frame==ItemUpgradeFrameCloseButton then--装备升级, 界面
+        --物品，货币提示
+        e.ItemCurrencyLabel({frame=ItemUpgradeFrame, point={'TOPLEFT', nil, 'TOPLEFT', 2, -55}})
+        btn:SetScript("OnEvent", function()
+            --物品，货币提示
+            e.ItemCurrencyLabel({frame=ItemUpgradeFrame, point={'TOPLEFT', nil, 'TOPLEFT', 2, -55}})
+        end)
+        btn:SetScript('OnShow', function(self)
+            e.ItemCurrencyLabel({frame=ItemUpgradeFrame, point={'TOPLEFT', nil, 'TOPLEFT', 2, -55}})
+            self:RegisterEvent('BAG_UPDATE_DELAYED')
+            self:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
+        end)
+        btn:SetScript('OnHide', function(self)
+            self:UnregisterAllEvents()
+        end)
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1391,9 +1438,9 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                             local itemEquipLoc= select(4, C_Item.GetItemInfoInstant(info.hyperlink))
                             local invSlot= e.GetItemSlotID(itemEquipLoc)
                             if invSlot then
-                                local itemLevel= GetDetailedItemLevelInfo(info.hyperlink) or 0
+                                local itemLevel= C_Item.GetDetailedItemLevelInfo(info.hyperlink) or 0
                                 local itemLinkPlayer = GetInventoryItemLink('player', invSlot)
-                                local equipedLevel= itemLinkPlayer and GetDetailedItemLevelInfo(itemLinkPlayer)
+                                local equipedLevel= itemLinkPlayer and C_Item.GetDetailedItemLevelInfo(itemLinkPlayer)
                                 if equipedLevel and equipedLevel>=itemLevel then
                                     C_Container.UseContainerItem(bag, slot)
                                     need= need-1
@@ -1410,6 +1457,35 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 self.CelarAllItemButton:SetShown(C_ScrappingMachineUI.HasScrappableItems())
                 self.AutoAddItemButton:SetShown(select(3, self.AutoAddItemButton:get_num_items()))
             end)
+
+        elseif arg1=='Blizzard_ItemInteractionUI' then--套装转换, 界面
+            add_Button_OpenOption(ItemInteractionFrameCloseButton)--添加一个按钮, 打开选项
+            ItemInteractionFrame.Tip= CreateFrame('GameTooltip', nil, ItemInteractionFrame, 'GameTooltipTemplate')
+            ItemInteractionFrame.Tip:SetScript('OnHide', ItemInteractionFrame.Tip.ClearLines)
+            hooksecurefunc(ItemInteractionFrame.ItemConversionFrame.ItemConversionOutputSlot, 'RefreshIcon', function(self)
+                local itemInteractionFrame = self:GetParent():GetParent()
+                local itemLocation = itemInteractionFrame:GetItemLocation()
+                local itemLink
+                local show= (itemLocation and itemInteractionFrame:GetInteractionType() == Enum.UIItemInteractionType.ItemConversion)
+                if show then
+                    itemInteractionFrame.Tip:SetItemInteractionItem()
+                    itemLink= select(2, itemInteractionFrame.Tip:GetItem())
+                end
+                e.Set_Item_Stats(self, itemLink, {}) --设置，物品，次属性，表
+            end)
+            hooksecurefunc(ItemInteractionFrame.ItemConversionFrame.ItemConversionInputSlot, 'RefreshIcon', function(self)
+                local itemInteractionFrame = self:GetParent():GetParent()
+                local itemLocation = itemInteractionFrame:GetItemLocation()
+                local itemLink
+                local show= (itemLocation and itemInteractionFrame:GetInteractionType() == Enum.UIItemInteractionType.ItemConversion)
+                if show then
+                    itemLink= C_Item.GetItemLink(itemLocation)
+                end
+                e.Set_Item_Stats(self, itemLink, {}) --设置，物品，次属性，表
+            end)
+
+        elseif arg1=='Blizzard_ItemUpgradeUI' then--装备升级, 界面
+            add_Button_OpenOption(ItemUpgradeFrameCloseButton)--添加一个按钮, 打开选项
        
         end
 

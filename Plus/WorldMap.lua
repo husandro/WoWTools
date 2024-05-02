@@ -122,7 +122,7 @@ local function set_WorldQuestPinMixin_RefreshVisuals(self)--WorldQuestDataProvid
             if invSlot and itemName and itemLevel and itemLevel>1 then--装等
                 local itemLinkPlayer =  GetInventoryItemLink('player', invSlot)
                 if itemLinkPlayer then
-                    local lv= GetDetailedItemLevelInfo(itemLinkPlayer)
+                    local lv= C_Item.GetDetailedItemLevelInfo(itemLinkPlayer)
                     if lv and itemLevel-lv>0 then
                         text= (text or '')..e.Icon.up2
                         setLevelUp=true

@@ -100,10 +100,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 name= e.toolsFrame.addName,
                 --tooltip= e.cn(addName),
                 value= not Save.disabled,
-                category= Category,
+                --category= Category,
                 func= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(id, e.toolsFrame.addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                     --Init_Options()--初始, 选项
                 end
             })

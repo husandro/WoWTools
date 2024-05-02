@@ -1168,7 +1168,7 @@ local function sort_pets_list(type, d)
                         type= get_text_byte(info.type),
                         creatureID= get_text_byte(info.CreatureID),
                         uiModelSceneID= get_text_byte(info.uiModelSceneID),
-                        displayID= get_text_byte(displayID),
+                        displayID= get_text_byte(info.displayID),
                         name= get_text_byte(info.name),
                         specialization= get_text_byte(info.specialization),
                         icon= get_text_byte(info.icon),

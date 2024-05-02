@@ -521,7 +521,7 @@ function func.Set_Item(self, itemLink, itemID)
     end
 
     if classID==2 or classID==4 then
-        itemLevel= itemLink and GetDetailedItemLevelInfo(itemLink) or itemLevel--装等
+        itemLevel= itemLink and C_Item.GetDetailedItemLevelInfo(itemLink) or itemLevel--装等
         if itemLevel and itemLevel>1 then
             local slot= e.GetItemSlotID(itemEquipLoc)--比较装等
             if slot then
@@ -534,7 +534,7 @@ function func.Set_Item(self, itemLink, itemID)
                 local slotLink=GetInventoryItemLink('player', slot)
                 local text
                 if slotLink then
-                    local slotItemLevel= GetDetailedItemLevelInfo(slotLink)
+                    local slotItemLevel= C_Item.GetDetailedItemLevelInfo(slotLink)
                     if slotItemLevel then
                         local num=itemLevel-slotItemLevel
                         if num>0 then
@@ -566,7 +566,7 @@ function func.Set_Item(self, itemLink, itemID)
             self.Portrait:SetAtlas('greatVault-lock')
         end
 
-        local specTable = itemLink and GetItemSpecInfo(itemLink) or {}--专精图标
+        local specTable = itemLink and C_Item.GetItemSpecInfo(itemLink) or {}--专精图标
         local specTableNum=#specTable
         if specTableNum>0 then
             --local num=math.modf(specTableNum/2)
@@ -589,7 +589,7 @@ function func.Set_Item(self, itemLink, itemID)
         C_WowTokenPublic.UpdateMarketPrice()
         local price= C_WowTokenPublic.GetCurrentMarketPrice()
         if price and price>0 then
-            self.textLeft:SetText('|A:token-choice-wow:0:0|a'..GetCoinTextureString(price))
+            self.textLeft:SetText('|A:token-choice-wow:0:0|a'..C_CurrencyInfo.GetCoinTextureString(price))
         end
 
     else
@@ -2057,7 +2057,7 @@ local function Init()
     if C_AddOns.IsAddOnLoaded('WoWeuCN_Quests') then
         QuestFrame.questIDLabel:SetPoint('BOTTOMRIGHT',QuestMapFrame.DetailsFrame, 'TOPRIGHT', 25, 28)
     else
-        QuestFrame.questIDLabel:SetPoint('TOPRIGHT', self, -30,-35)
+        QuestFrame.questIDLabel:SetPoint('TOPRIGHT', -30, -35)
     end
 
     hooksecurefunc('QuestMapFrame_ShowQuestDetails', function(questID)
@@ -2135,7 +2135,7 @@ local function Init()
                             func.Set_Spell(e.tips, ID)--法术
                             e.tips:AddDoubleLine('action '..self.action, subType and 'subType '..subType)
                         elseif actionType=='item' and ID then
-                            func.Set_Item(e.tip, nil, itemID)
+                            func.Set_Item(e.tips, nil, ID)
                             e.tips:AddDoubleLine('action '..self.action, subType and 'subType '..subType)
                         else
                             e.tips:AddDoubleLine('action '..self.action, 'ID '..ID)

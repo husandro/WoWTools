@@ -1404,7 +1404,7 @@ local function set_Option()
         local isAtlas, texture= e.IsAtlas(Save.unitIsMeTextrue)
         if isAtlas or not texture then
             e.LibDD:UIDropDownMenu_SetText(self, texture or 'auctionhouse-icon-favorite')
-            self.Icon:SetAtlas(texture or auctionhouse-icon-favorite)
+            self.Icon:SetAtlas(texture or 'auctionhouse-icon-favorite')
         else
             self.Icon:SetTexture(texture)
             e.LibDD:UIDropDownMenu_SetText(self, texture:match('.+\\(.+)%.') or texture)

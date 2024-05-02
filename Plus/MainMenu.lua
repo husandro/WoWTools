@@ -563,7 +563,7 @@ local function Init_Store()
         local price= C_WowTokenPublic.GetCurrentMarketPrice()
         if price and price>0 then
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine('|A:token-choice-wow:0:0|a'..e.MK(price/10000,4), GetCoinTextureString(price) )
+            e.tips:AddDoubleLine('|A:token-choice-wow:0:0|a'..e.MK(price/10000,4), C_CurrencyInfo.GetCoinTextureString(price) )
             e.tips:AddLine(' ')
         end
         local bagAll,bankAll,numPlayer=0,0,0--帐号数据
@@ -739,7 +739,7 @@ local function Init_Bag()
         for guid, infoMoney in pairs(e.WoWDate or {}) do
             if infoMoney.Money then
                 local nameText= e.GetPlayerInfo({guid=guid, faction=infoMoney.faction, reName=true, reRealm=true})
-                local moneyText= GetCoinTextureString(infoMoney.Money)
+                local moneyText= C_CurrencyInfo.GetCoinTextureString(infoMoney.Money)
                 local class= select(2, GetPlayerInfoByGUID(guid))
                 local col= '|c'..select(4, GetClassColor(class))
                 numPlayer=numPlayer+1
@@ -750,7 +750,7 @@ local function Init_Bag()
         table.sort(tab, function(a,b) return a.index< b.index end)
         e.tips:AddDoubleLine(
             (e.onlyChinese and '总计' or TOTAL)
-            ..' |cnGREEN_FONT_COLOR:'..(allMoney >=10000 and e.MK(allMoney/10000, 3) or GetCoinTextureString(allMoney))..'|r',
+            ..' |cnGREEN_FONT_COLOR:'..(allMoney >=10000 and e.MK(allMoney/10000, 3) or C_CurrencyInfo.GetCoinTextureString(allMoney))..'|r',
             '|cnGREEN_FONT_COLOR:'..numPlayer..'|r '..(e.onlyChinese and '角色' or CHARACTER)
         )
 

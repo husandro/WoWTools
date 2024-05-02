@@ -290,7 +290,7 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
     local unit = (not isPaperDollItemSlot and InspectFrame) and InspectFrame.unit or 'player'
     local isLeftSlot= is_Left_Slot(slot)
 
-    if link and not IsCorruptedItem(link) then
+    if link and not C_Item.IsCorruptedItem(link) then
         local dateInfo= e.GetTooltipData({hyperLink=link, text={enchantStr, pvpItemStr, upgradeStr,ITEM_CREATED_BY_Str}, onlyText=true})--物品提示，信息
         enchant, use, pvpItem, upgradeItem, createItem= dateInfo.text[enchantStr], dateInfo.red, dateInfo.text[pvpItemStr], dateInfo.text[upgradeStr], dateInfo.text[ITEM_CREATED_BY_Str]
     end
@@ -1382,7 +1382,7 @@ local function setFlyout(button, itemLink, slot)
         if dateInfo and dateInfo.text[itemLevelStr] then
             level= tonumber(dateInfo.text[itemLevelStr])
         end
-        level= level or itemLink and GetDetailedItemLevelInfo(itemLink)
+        level= level or itemLink and C_Item.GetDetailedItemLevelInfo(itemLink)
         text= level
         if text then
             local itemQuality = C_Item.GetItemQualityByID(itemLink)
@@ -1418,7 +1418,7 @@ local function setFlyout(button, itemLink, slot)
             if slot then
                 local itemLink2 = GetInventoryItemLink('player', slot)
                 if itemLink2 then
-                    updown = GetDetailedItemLevelInfo(itemLink2)
+                    updown = C_Item.GetDetailedItemLevelInfo(itemLink2)
                     if updown then
                         updown=level-updown
                         if updown>0 then
@@ -1610,7 +1610,7 @@ local function Init_Show_Hide_Button(frame)
             if InspectFrame:IsShown() then
                 e.call('InspectPaperDollFrame_UpdateButtons')--InspectPaperDollFrame.lua
                 e.call('InspectPaperDollFrame_SetLevel')--目标,天赋 装等
-                Init_Target_InspectUI()
+                panel:Init_Target_InspectUI()
             end
             if InspectLevelText then
                 e.Cstr(nil, {changeFont= InspectLevelText, size= not Save.hide and 20 or 12})
@@ -1654,23 +1654,23 @@ end
 --#########
 --目标, 装备
 --#########
-local function Init_Target_InspectUI()
-    local self= InspectPaperDollFrame
+function panel:Init_Target_InspectUI()
+    local frame= InspectPaperDollFrame
     Init_Show_Hide_Button(InspectFrame)
 
-    if not self.initButton and not Save.hide then
-        if self.ViewButton then
+    if not frame.initButton and not Save.hide then
+        if frame.ViewButton then
             e.Cstr(nil, {changeFont= InspectLevelText, size=20})
-            self.ViewButton:ClearAllPoints()
-            self.ViewButton:SetPoint('LEFT', InspectLevelText, 'RIGHT',20,0)
-            self.ViewButton:SetSize(25,25)
-            self.ViewButton:SetText(e.onlyChinese and '试' or e.WA_Utf8Sub(VIEW,1))
+            frame.ViewButton:ClearAllPoints()
+            frame.ViewButton:SetPoint('LEFT', InspectLevelText, 'RIGHT',20,0)
+            frame.ViewButton:SetSize(25,25)
+            frame.ViewButton:SetText(e.onlyChinese and '试' or e.WA_Utf8Sub(VIEW,1))
         end
         if InspectPaperDollItemsFrame.InspectTalents then
             InspectPaperDollItemsFrame.InspectTalents:SetSize(25,25)
             InspectPaperDollItemsFrame.InspectTalents:SetText(e.onlyChinese and '赋' or e.WA_Utf8Sub(TALENT,1))
         end
-        self.initButton=true
+        frame.initButton=true
     end
 end
 
@@ -1943,7 +1943,7 @@ local function Init_Status_Func()
             if ( avgItemLevel ~= avgItemLevelPvP ) then
                 pvp= format('/|cffff7f00%i|r', avgItemLevelPvP)
             end
-            if statFrame.numericValue ~= num then
+            if statFrame.numericValue ~= displayItemLevel then
                 statFrame.Value:SetFormattedText('%.0'..Save.itemLevelBit..'f%s', displayItemLevel, pvp)
             end
         end
@@ -2367,7 +2367,7 @@ local function Init_Status_Menu()
                 end
             end
         end
-        print(id, addName, foramt('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE), stat, name)
+        print(id, addName, format('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE), stat, name)
     end
 
     function StatusPlusButton.Menu:get_primary_text(primary)--主属性, 文本
@@ -2500,10 +2500,11 @@ local function Init_Status_Menu()
                         func= function(_, arg1)
                             for _, tab in pairs (PAPERDOLL_STATCATEGORIES[arg1.index] and PAPERDOLL_STATCATEGORIES[arg1.index].stats or {}) do
                                 if tab.stat==arg1.stat then
+                                    local findTank, findN, findDps
                                     if not tab.roles then
                                         tab.roles={arg1.value}
                                     else
-                                        local findTank, findN, findDps=  self:find_roles(stats.roles)--职责，设置                                    
+                                        findTank, findN, findDps=  self:find_roles(stats.roles)--职责，设置                                    
                                         if arg1.value==Enum.LFGRole.Tank then
                                             findTank = not findTank and true or false
                                         elseif arg1.value==Enum.LFGRole.Healer then
@@ -2752,7 +2753,7 @@ function panel:Init_Status_Plus()
     end)
     StatusPlusButton:SetScript('OnEnter', StatusPlusButton.set_tooltips)
 
-    StatusPlusButton.Menu= CreateFrame("Frame", nil, frame, "UIDropDownMenuTemplate")
+    StatusPlusButton.Menu= CreateFrame("Frame", nil, StatusPlusButton, "UIDropDownMenuTemplate")
 
     StatusPlusButton:SetScript("OnClick", StatusPlusButton.show_menu)
 
@@ -3136,7 +3137,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             self:RegisterEvent("PLAYER_LOGOUT")
 
         elseif arg1=='Blizzard_InspectUI' then--目标, 装备
-            Init_Target_InspectUI()
+            self:Init_Target_InspectUI()
             hooksecurefunc('InspectPaperDollItemSlotButton_Update', set_InspectPaperDollItemSlotButton_Update)--目标, 装备
             hooksecurefunc('InspectPaperDollFrame_SetLevel', set_InspectPaperDollFrame_SetLevel)--目标,天赋 装等
         end

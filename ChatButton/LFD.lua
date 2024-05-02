@@ -1592,7 +1592,7 @@ local function exit_Instance()
             LFGTeleport(true)
         end
     else
-        C_PartyInfo.LeaveParty(LE_PARTY_CATEGORY_INSTANC)
+        C_PartyInfo.LeaveParty(LE_PARTY_CATEGORY_INSTANCE)
     end
     print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '离开' or LEAVE)..'|r'..(name or e.onlyChinese and '副本' or INSTANCE), name and '|cnGREEN_FONT_COLOR:'..wowSave[INSTANCE][name]..'|r'..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1) or '')
     ExitIns=nil
@@ -1818,8 +1818,8 @@ local function Roll_Plus()
         if slot then
             local slotLink=GetInventoryItemLink('player', slot)
             if slotLink then
-                local slotItemLevel= GetDetailedItemLevelInfo(slotLink) or 0
-                local itemLevel= GetDetailedItemLevelInfo(link)
+                local slotItemLevel= C_Item.GetDetailedItemLevelInfo(slotLink) or 0
+                local itemLevel= C_Item.GetDetailedItemLevelInfo(link)
                 if itemLevel then
                     local num=itemLevel-slotItemLevel
                     if num>0 then
@@ -2758,7 +2758,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
             return
         end
         e.PlaySound()--播放, 声音
-        C_PartyInfo.LeaveParty(LE_PARTY_CATEGORY_INSTANC)
+        C_PartyInfo.LeaveParty(LE_PARTY_CATEGORY_INSTANCE)
         LFGTeleport(true)
         print(id, e.cn(addName), 	e.onlyChinese and '离开海岛' or ISLAND_LEAVE, '|cnGREEN_FONT_COLOR:'..wowSave[ISLANDS_HEADER]..'|r'..	VOICEMACRO_LABEL_CHARGE1)
 

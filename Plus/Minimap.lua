@@ -2097,7 +2097,7 @@ local function Init_MajorFactionRenownFrame()
     end
     hooksecurefunc(MajorFactionRenownFrame, 'Refresh', function(self)
         self.WoWToolsFaction:set_faction()
-        self.WoWToolsFaction.HeaderText:set_text(majorFactionID)
+        self.WoWToolsFaction.HeaderText:set_text()
     end)
 end
 

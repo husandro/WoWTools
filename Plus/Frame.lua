@@ -1532,9 +1532,7 @@ local function setAddLoad(arg1)
         end
 
     elseif arg1=='Blizzard_ItemInteractionUI' then--套装, 转换
-        C_Timer.After(2, function()
-            e.Set_Move_Frame(ItemInteractionFrame)
-        end)
+        e.Set_Move_Frame(ItemInteractionFrame)
 
     elseif arg1=='Blizzard_Professions' then--专业, 10.1.5
         --[[InspectRecipeFrame:HookScript('OnShow', function(self2)

@@ -61,7 +61,7 @@ end
 --ItemButtonTemplate.lua
 if C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(itemIDOrLink) then
 	button.IconOverlay:SetAtlas("AzeriteIconFrame");
-elseif IsCorruptedItem(itemIDOrLink) then
+elseif C_Item.IsCorruptedItem(itemIDOrLink) then
 	button.IconOverlay:SetAtlas("Nzoth-inventory-icon");
 elseif IsCosmeticItem(itemIDOrLink) then
 	button.IconOverlay:SetAtlas("CosmeticIconFrame");
@@ -213,6 +213,8 @@ GameTooltip_AddColoredLine(GameTooltip, '', NORMAL_FONT_COLOR, true);
 GameTooltip_AddBlankLineToTooltip(GameTooltip);
 BattlePetToolTip_ShowLink(itemKeyInfo.battlePetLink);
 
+
+GetMouseFocus() == self
 if ( GameTooltip:IsOwned(button) ) then
 	button:GetScript("OnEnter")(button);
 end

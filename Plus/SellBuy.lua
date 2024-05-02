@@ -76,7 +76,7 @@ function e.CheckItemSell(itemID, itemLink, quality, isBound)
     end
     local level= bossSave[itemID]
     if level and not Save.notSellBoss and itemLink  then
-        local itemLevel= GetDetailedItemLevelInfo(itemLink) or select(4, C_Item.GetItemInfo(itemLink))
+        local itemLevel= C_Item.GetDetailedItemLevelInfo(itemLink) or select(4, C_Item.GetItemInfo(itemLink))
         if level== itemLevel  then
             return e.onlyChinese and '首领' or BOSS
         end
@@ -638,16 +638,16 @@ local function Init_Auto_Repair()
         e.tips:AddDoubleLine(e.onlyChinese and '修理' or MINIMAP_TRACKING_REPAIR, (RepairSave.num or 0)..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1))
         local guild= RepairSave.guild or 0
         local player= RepairSave.player or 0
-        e.tips:AddDoubleLine(e.onlyChinese and '公会' or GUILD, GetCoinTextureString(guild))
-        e.tips:AddDoubleLine(e.onlyChinese and '玩家' or PLAYER, GetCoinTextureString(player))
+        e.tips:AddDoubleLine(e.onlyChinese and '公会' or GUILD, C_CurrencyInfo.GetCoinTextureString(guild))
+        e.tips:AddDoubleLine(e.onlyChinese and '玩家' or PLAYER, C_CurrencyInfo.GetCoinTextureString(player))
         if guild>0 and player>0 then
-            e.tips:AddDoubleLine(e.onlyChinese and '合计' or TOTAL, GetCoinTextureString(guild+player))
+            e.tips:AddDoubleLine(e.onlyChinese and '合计' or TOTAL, C_CurrencyInfo.GetCoinTextureString(guild+player))
         end
         e.tips:AddLine(' ')
         if CanGuildBankRepair() then
             local m= GetGuildBankMoney() or 0
             local col= m==0 and '|cff606060' or '|cnGREEN_FONT_COLOR:'
-            e.tips:AddDoubleLine(col..(e.onlyChinese and '使用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP), col..GetCoinTextureString(m))
+            e.tips:AddDoubleLine(col..(e.onlyChinese and '使用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP), col..C_CurrencyInfo.GetCoinTextureString(m))
         else
             e.tips:AddDoubleLine('|cff606060'..(e.onlyChinese and '使用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP), '|cff606060'..(e.onlyChinese and '禁用' or DISABLE))
         end
@@ -679,17 +679,17 @@ local function Init_Auto_Repair()
                 RepairAllItems(true)
                 RepairSave.guild=RepairSave.guild+Co
                 RepairSave.num=RepairSave.num+1
-                print(id, Initializer:GetName(), '|cffff00ff'..(e.onlyChinese and '使用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP)..'|r', GetCoinTextureString(Co))
+                print(id, Initializer:GetName(), '|cffff00ff'..(e.onlyChinese and '使用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP)..'|r', C_CurrencyInfo.GetCoinTextureString(Co))
                 e.call('MerchantFrame_Update')
             else
                 if GetMoney()>=Co then
                     RepairAllItems()
                     RepairSave.player=RepairSave.player+Co
                     RepairSave.num=RepairSave.num+1
-                    print(id, Initializer:GetName(), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '修理花费：' or REPAIR_COST)..'|r', GetCoinTextureString(Co))
+                    print(id, Initializer:GetName(), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '修理花费：' or REPAIR_COST)..'|r', C_CurrencyInfo.GetCoinTextureString(Co))
                     e.call('MerchantFrame_Update')
                 else
-                    print(id, Initializer:GetName(), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '失败' or FAILED)..'|r', e.onlyChinese and '修理花费：' or REPAIR_COST, GetCoinTextureString(Co))
+                    print(id, Initializer:GetName(), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '失败' or FAILED)..'|r', e.onlyChinese and '修理花费：' or REPAIR_COST, C_CurrencyInfo.GetCoinTextureString(Co))
                 end
             end
         end
@@ -879,7 +879,7 @@ local function Init_Auto_Sell_Junk()
                         gruop= gruop+ 1
                         num= num+ (C_Container.stackCount or 1)--数量
 
-                        print('|cnRED_FONT_COLOR:'..gruop..')|r', checkText or '', info.hyperlink, GetCoinTextureString(prece))
+                        print('|cnRED_FONT_COLOR:'..gruop..')|r', checkText or '', info.hyperlink, C_CurrencyInfo.GetCoinTextureString(prece))
 
                         if gruop>= 11 then
                             break
@@ -896,7 +896,7 @@ local function Init_Auto_Sell_Junk()
                 id, Initializer:GetName(),
                 (e.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB)..' |cnGREEN_FONT_COLOR:'..gruop..'|r'..(e.onlyChinese and '组' or AUCTION_PRICE_PER_STACK),
                 '|cnGREEN_FONT_COLOR:'..num..'|r'..(e.onlyChinese and '件' or AUCTION_HOUSE_QUANTITY_LABEL),
-                GetCoinTextureString(preceTotale)
+                C_CurrencyInfo.GetCoinTextureString(preceTotale)
             )
         end
     end
@@ -1283,12 +1283,12 @@ local function Init_Menu(_, level, type)
 
     e.LibDD:UIDropDownMenu_AddSeparator(level)
     local text=	(e.onlyChinese and '修理' or MINIMAP_TRACKING_REPAIR)..': '..RepairSave.num..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
-                ..'|n'..(e.onlyChinese and '公会' or GUILD)..': '..GetCoinTextureString(RepairSave.guild)
-                ..'|n'..(e.onlyChinese and '玩家' or PLAYER)..': '..GetCoinTextureString(RepairSave.player)
+                ..'|n'..(e.onlyChinese and '公会' or GUILD)..': '..C_CurrencyInfo.GetCoinTextureString(RepairSave.guild)
+                ..'|n'..(e.onlyChinese and '玩家' or PLAYER)..': '..C_CurrencyInfo.GetCoinTextureString(RepairSave.player)
     if RepairSave.guild>0 and RepairSave.player>0 then
-        text=text..'|n|n'..(e.onlyChinese and '合计' or TOTAL)..': '..GetCoinTextureString(RepairSave.guild+RepairSave.player)
+        text=text..'|n|n'..(e.onlyChinese and '合计' or TOTAL)..': '..C_CurrencyInfo.GetCoinTextureString(RepairSave.guild+RepairSave.player)
     end
-    text=text..'|n|n'..(e.onlyChinese and '使用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP)..'|n'..GetCoinTextureString(CanGuildBankRepair() and GetGuildBankMoney() or 0)
+    text=text..'|n|n'..(e.onlyChinese and '使用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP)..'|n'..C_CurrencyInfo.GetCoinTextureString(CanGuildBankRepair() and GetGuildBankMoney() or 0)
 
     info={--自动修理
         text= '|A:SpellIcon-256x256-RepairAll:0:0|a'..(e.onlyChinese and '自动修理所有物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, REPAIR_ALL_ITEMS)),
@@ -1753,7 +1753,7 @@ local function Init_Buyback_Button()
                 print(id, Initializer:GetName(), index..')|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '购回' or BUYBACK), itemLink)
             end
             for index, info in pairs(no) do
-                print(id, Initializer:GetName(), index..')|cnRED_FONT_COLOR:'..(e.onlyChinese and '购回失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, BUYBACK, INCOMPLETE)), info[1], GetCoinTextureString(info[2]))
+                print(id, Initializer:GetName(), index..')|cnRED_FONT_COLOR:'..(e.onlyChinese and '购回失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, BUYBACK, INCOMPLETE)), info[1], C_CurrencyInfo.GetCoinTextureString(info[2]))
             end
         end)
     end
@@ -1923,7 +1923,7 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2, arg3, _, arg5)
             local itemID, itemLink= arg2, arg3
             local avgItemLevel= GetAverageItemLevel() or 30
             local _, _, itemQuality, itemLevel, _, _, _, _, itemEquipLoc, _, _, classID, subclassID, bindType = C_Item.GetItemInfo(itemLink)
-            itemLevel= GetDetailedItemLevelInfo(itemLink) or itemLevel
+            itemLevel= C_Item.GetDetailedItemLevelInfo(itemLink) or itemLevel
             local other= classID==15 and subclassID==0
             if itemEquipLoc--绑定
             and itemQuality and itemQuality==4--最高史诗

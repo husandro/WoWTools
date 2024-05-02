@@ -888,8 +888,8 @@ local function Init_Fast_Menu(_, level, menuList)
                 local icon= C_Item.GetItemIconByID(link)
                 tooltip= (tooltip and tooltip..'|n' or '|n')..(icon and '|T'..icon..':0|t' or '')..link..'|cnGREEN_FONT_COLOR:#'..num..'|r'
             end
-            local className= GetItemSubClassInfo(menuList.class, tab.subClass) or ''
-            className= e.strText[className] or className
+            local className= C_Item.GetItemSubClassInfo(menuList.class, tab.subClass) or ''
+            className= e.cn[className] 
             local text =(tab.subClass<10 and ' ' or '')..tab.subClass..') '.. className
             info={
                 text= text..' |cnGREEN_FONT_COLOR:#'..tab.num,
@@ -908,7 +908,7 @@ local function Init_Fast_Menu(_, level, menuList)
         end
 
         e.LibDD:UIDropDownMenu_AddSeparator(level)
-        local className= GetItemClassInfo(menuList.class)
+        local className= C_Item.GetItemClassInfo(menuList.class)
         className= e.strText[className] or className
         info= {
             text= menuList.class..') '..className..' #'..menuList.num,
@@ -975,7 +975,7 @@ local function Init_Fast_Menu(_, level, menuList)
 
     local find
     for _, tab2 in pairs(newTab) do
-        local className=  GetItemClassInfo(tab2.class) or ''
+        local className=  C_Item.GetItemClassInfo(tab2.class) or ''
         className= e.strText[className] or className
         info={
             text= (tab2.class<10 and ' ' or '')..tab2.class..') '..className..((tab2.class==2 or tab2==4) and '|T132288:0|t' or ' ')..'|cnGREEN_FONT_COLOR:#'..tab2.num,
@@ -1273,7 +1273,7 @@ local function Init_Fast_Button()
 
             btn.classID= tab[2]
             btn.subClassID= tab[3]
-            btn.name= tab[4] or not tab[3] and GetItemClassInfo(tab[2]) or GetItemSubClassInfo(tab[2], tab[3])
+            btn.name= tab[4] or not tab[3] and C_Item.GetItemClassInfo(tab[2]) or C_Item.GetItemSubClassInfo(tab[2], tab[3])
             btn.findString= tab[5]
 
             btn.numLable= e.Cstr(btn, {size=10})
@@ -2221,12 +2221,12 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                         'Ms-Nemesis',--最大存20个
                     }
                     Save.fast={
-                        [e.onlyChinese and '布甲' or GetItemSubClassInfo(4, 1)]= 'Ms-Nemesis',--布甲
-                        [e.onlyChinese and '皮甲' or GetItemSubClassInfo(4, 2)]= 'Xiaod-Nemesis',--皮甲
-                        [e.onlyChinese and '锁甲' or GetItemSubClassInfo(4, 3)]= 'Fuocco-Nemesis',--锁甲
-                        [e.onlyChinese and '板甲' or GetItemSubClassInfo(4, 4)]= 'Zans-Nemesis',--板甲
-                        [e.onlyChinese and '盾牌' or GetItemSubClassInfo(4, 6)]= 'Zans-Nemesis',--盾牌
-                        [e.onlyChinese and '武器' or GetItemClassInfo(2)]= 'Zans-Nemesis',--武器
+                        [e.onlyChinese and '布甲' or C_Item.GetItemSubClassInfo(4, 1)]= 'Ms-Nemesis',--布甲
+                        [e.onlyChinese and '皮甲' or C_Item.GetItemSubClassInfo(4, 2)]= 'Xiaod-Nemesis',--皮甲
+                        [e.onlyChinese and '锁甲' or C_Item.GetItemSubClassInfo(4, 3)]= 'Fuocco-Nemesis',--锁甲
+                        [e.onlyChinese and '板甲' or C_Item.GetItemSubClassInfo(4, 4)]= 'Zans-Nemesis',--板甲
+                        [e.onlyChinese and '盾牌' or C_Item.GetItemSubClassInfo(4, 6)]= 'Zans-Nemesis',--盾牌
+                        [e.onlyChinese and '武器' or C_Item.GetItemClassInfo(2)]= 'Zans-Nemesis',--武器
 
                     }
                 end

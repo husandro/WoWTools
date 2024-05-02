@@ -898,12 +898,9 @@ local function All_Player_Info()--所以角色信息
                 keyLable:SetText(link)
 
                 last= nameLable
-            else
-                last= btn
             end
         end
     end
-    last=nil
 end
 
 

@@ -617,19 +617,19 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
             self.itemsLabel.classList= str
             str:SetPoint('TOPLEFT', last, 'BOTTOMLEFT', 0, -12)
             function str:set_class_text()
-                local text=''
+                local t=''
                 for _, info in pairs(self:GetParent():get_class_list(self.class)) do
-                    text= text..info.col..info.icon..info.name..' '..info.per..' '..info.num..'|r|n'
+                    t= t..info.col..info.icon..info.name..' '..info.per..' '..info.num..'|r|n'
                 end
                 if self.class~=e.Player.class then
                     local color= C_ClassColor.GetClassColor(self.class)
                     local className= e.cn(LOCALIZED_CLASS_NAMES_MALE[self.class])
-                    if colr and className then
+                    if color and className then
                         className= color:WrapTextInColorCode(className)
                     end
-                    text= e.Icon.toRight2..(e.Class(nil, self.class, false) or '')..(className or '')..e.Icon.toLeft2..'|n'..text
+                    t= e.Icon.toRight2..(e.Class(nil, self.class, false) or '')..(className or '')..e.Icon.toLeft2..'|n'..t
                 end
-                self:SetText(text)
+                self:SetText(t)
             end
         end
         str.class=e.Player.class
@@ -1492,13 +1492,13 @@ local function Init_Heirloom()
                 self:UnlockHighlight()
             end
         end
-        btn:SetScript('OnClick', function(self)
-            HeirloomsJournal:SetClassAndSpecFilters(self.classID, self.specID)
+        btn:SetScript('OnClick', function(f)
+            HeirloomsJournal:SetClassAndSpecFilters(f.classID, f.specID)
         end)
-        btn:SetScript('OnLeave', Gametooltip_Hide)
-        btn:SetScript('OnEnter', function(self)
+        btn:SetScript('OnLeave', GameTooltip_Hide)
+        btn:SetScript('OnEnter', function(f)
             if UnitAffectingCombat('player') then
-                e.tips:SetOwner(self, "ANCHOR_LEFT")
+                e.tips:SetOwner(f, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine(id, e.cn(addName))
                 e.tips:AddLine(' ')

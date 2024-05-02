@@ -134,7 +134,7 @@ local function Init_Gossip_Text()
         if name=='' or name==false then
             name= nil
         end
-        if name or (texture or atlas) then
+        if name then
             GossipTextIcon[gossipID]= {icon=tab.icon, name=name}
         end
     end
@@ -283,7 +283,7 @@ local function select_Reward(questID)--自动:选择奖励
                     if invSlot and itemLevel and itemLevel>1 then--装等
                         local itemLinkPlayer = GetInventoryItemLink('player', invSlot)
                         if itemLinkPlayer then
-                            local lv=GetDetailedItemLevelInfo(itemLinkPlayer)
+                            local lv=C_Item.GetDetailedItemLevelInfo(itemLinkPlayer)
                             if lv and lv>1 and itemLevel-lv>0 and (bestLevel and bestLevel<lv or not bestLevel) then
                                 bestLevel=lv
                                 bestItem = i

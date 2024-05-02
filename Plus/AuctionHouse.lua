@@ -739,7 +739,7 @@ local function Init_Sell()
                 end
             end
             if vendorPrice then
-                text2= col..GetMoneyString(vendorPrice)--GetCoinTextureString(vendorPrice)
+                text2= col..GetMoneyString(vendorPrice)--C_CurrencyInfo.GetCoinTextureString(vendorPrice)
             end
         end
         frame.vendorPriceLabel:SetText(text2)

@@ -538,7 +538,7 @@ local function set_EncounterJournal_Money_Tips(self)--险指南界面, 钱
     local numPlayer, allMoney  = 0, 0
     for guid, info in pairs(e.WoWDate or {}) do
         if info.Money then
-            e.tips:AddDoubleLine(e.GetPlayerInfo({ guid=guid, faction=info.faction, reName=true, reRealm=true}), GetCoinTextureString(info.Money))
+            e.tips:AddDoubleLine(e.GetPlayerInfo({ guid=guid, faction=info.faction, reName=true, reRealm=true}), C_CurrencyInfo.GetCoinTextureString(info.Money))
             numPlayer=numPlayer+1
             allMoney= allMoney + info.Money
         end
@@ -547,7 +547,7 @@ local function set_EncounterJournal_Money_Tips(self)--险指南界面, 钱
         e.tips:AddDoubleLine(e.onlyChinese and '钱' or MONEY, e.onlyChinese and '无' or NONE)
     else
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine((e.onlyChinese and '角色' or CHARACTER)..' '..numPlayer..' '..(e.onlyChinese and '总计：' or FROM_TOTAL)..e.MK(allMoney/10000, 3), GetCoinTextureString(allMoney))
+        e.tips:AddDoubleLine((e.onlyChinese and '角色' or CHARACTER)..' '..numPlayer..' '..(e.onlyChinese and '总计：' or FROM_TOTAL)..e.MK(allMoney/10000, 3), C_CurrencyInfo.GetCoinTextureString(allMoney))
     end
     e.tips:Show()
 end
@@ -914,7 +914,7 @@ local function Init_EncounterJournal()--冒险指南界面
 
         if not Save.hideEncounterJournal and btn.link then
             if isEquipItem then
-                local specTable = GetItemSpecInfo(btn.link) or {}--专精图标
+                local specTable = C_Item.GetItemSpecInfo(btn.link) or {}--专精图标
                 local specTableNum=#specTable
                 if specTableNum>0 then
                     local specA=''
