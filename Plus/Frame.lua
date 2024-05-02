@@ -2702,7 +2702,7 @@ end)]]
     e.Set_Move_Frame(GameMenuFrame, {notSave=true})--菜单
     e.Set_Move_Frame(ExtraActionButton1, {click='RightButton', notSave=true, notMoveAlpha=true, notFuori=true})--额外技能
     e.Set_Move_Frame(ContainerFrameCombinedBags)
-    e.Set_Move_Frame(MirrorTimer1, {notSave=true})
+    --e.Set_Move_Frame(MirrorTimer1, {notSave=true})
     e.Set_Move_Frame(ColorPickerFrame, {click='RightButton'})--颜色选择器
     e.Set_Move_Frame(PartyFrame.Background, {frame=PartyFrame, notZoom=true, notSave=true})
     e.Set_Move_Frame(OpacityFrame)

@@ -120,8 +120,7 @@ local function Init_Gossip_Text()
             local info = C_Map.GetMapInfo(tab.mapID) or {}
             name= info.name
         else
-            name=(LOCALE_enUS and tab.en)
-                or (LOCALE_koKR and tab.ko)
+            name=(LOCALE_koKR and tab.ko)
                 or (LOCALE_frFR and tab.fr)
                 or (LOCALE_deDE and tab.de)
                 or (LOCALE_esES and tab.es)
@@ -130,6 +129,7 @@ local function Init_Gossip_Text()
                 or (LOCALE_ruRU and tab.ru)
                 or (LOCALE_ptBR and tab.pt)
                 or (LOCALE_itIT and tab.it)
+                or tab.en
         end
         if name=='' or name==false then
             name= nil
@@ -1509,7 +1509,7 @@ local function Init_Menu_Gossip(_, level, type)
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     elseif type=='WoWMovie' then
-        local MovieList= MOVIE_LIST or {--cinematicsframe.lua
+        local MovieList= _G['MOVIE_LIST'] or {--cinematicsframe.lua
             { expansion=LE_EXPANSION_CLASSIC,
               movieIDs = { 1, 2 },
               upAtlas="StreamCinematic-Classic-Up",
