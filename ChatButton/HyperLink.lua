@@ -743,7 +743,7 @@ local function Create_Texture_Tips(frame, atlas, coord)
     if frame then
         local texture= frame:CreateTexture(nil, 'BORDER')
         local h= frame:GetHeight()
-        texture:SetSize(h-4, h-4)
+        texture:SetSize(h-5, h-5)
         texture:SetPoint('RIGHT')
         texture:SetAtlas(atlas)
         if coord then
