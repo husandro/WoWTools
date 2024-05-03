@@ -739,6 +739,18 @@ end
 
 
 
+local function Create_Texture_Tips(frame, atlas, coord)
+    if frame then
+        local texture= frame:CreateTexture(nil, 'BORDER')
+        local h= frame:GetHeight()
+        texture:SetSize(h-4, h-4)
+        texture:SetPoint('RIGHT')
+        texture:SetAtlas(atlas)
+        if coord then
+            texture:SetTexCoord(1,0,1,0)
+        end
+    end
+end
 
 
 --添加 RELOAD 按钮
@@ -752,8 +764,7 @@ local function Init_Add_Reload_Button()
     end
     for _, frame in pairs({GameMenuFrame, SettingsPanel.AddOnsTab}) do
         frame.reload= CreateFrame('Button', nil, frame, 'GameMenuButtonTemplate')
-        frame.reload:SetFormattedText('%s|A:characterundelete-RestoreButton:0:0|a',e.onlyChinese and '重新加载UI' or RELOADUI)
---|TInterface\\Vehicles\\UI-Vehicles-Button-Exit-Up:0|t
+        frame.reload:SetText(e.onlyChinese and '重新加载UI' or RELOADUI)
         frame.reload:SetScript('OnLeave', GameTooltip_Hide)
         frame.reload:SetScript('OnEnter', function(self)
             e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -763,11 +774,10 @@ local function Init_Add_Reload_Button()
             e.tips:Show()
         end)
         frame.reload:SetScript('OnClick', e.Reload)
+        Create_Texture_Tips(frame.reload, 'BattleBar-SwapPetIcon')
     end
 
     GameMenuFrame.reload:SetPoint('TOP', GameMenuButtonQuit, 'BOTTOM', 0, -2)
-
-    --GameMenuFrame.reload:SetPoint('TOP', GameMenuButtonContinue, 'BOTTOM', 0, -20)
 
     hooksecurefunc('GameMenuFrame_UpdateVisibleButtons', function(self)
         if not Save.not_Add_Reload_Button then
@@ -783,6 +793,16 @@ local function Init_Add_Reload_Button()
     SettingsPanel.OutputText:SetPoint('BOTTOMLEFT', 20, 18)
 
 
+    Create_Texture_Tips(GameMenuButtonSettings, 'mechagon-projects', false)--选项
+    Create_Texture_Tips(GameMenuButtonEditMode, 'UI-HUD-Minimap-CraftingOrder-Over')--编辑模式
+    Create_Texture_Tips(GameMenuButtonMacros, 'NPE_Icon', false)--宏命令设置
+    Create_Texture_Tips(GameMenuButtonAddons, 'dressingroom-button-appearancelist-up', false)--插件
+
+    Create_Texture_Tips(GameMenuButtonLogout, 'perks-warning-large', false)--登出
+    Create_Texture_Tips(GameMenuButtonQuit, 'Ping_Chat_Warning', false)--退出游戏
+
+    Create_Texture_Tips(GameMenuButtonContinue, 'poi-traveldirections-arrow', true)--返回游戏
+    
 end
 
 
