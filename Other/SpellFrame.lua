@@ -74,6 +74,8 @@ Teleporta para a entrada de Floretérnia.
                 des= e.cn(des)
                 text= des:match('|cff00ccff(.-)|r')
                     or des:match('传送至(.-)入口处')--传送至永茂林地入口处。
+                    or des:match('传送到(.-)的入口')--传送到自由镇的入口
+
                     or des:match('Teleportiert zum Eingang des (.-)%.')--Teleportiert zum Eingang des Immergrünen Flors.
                     or des:match('Teleport to the entrance to (.-)%.')--Teleport to the entrance to The Everbloom.
                     or des:match('Teletransporte a la entrada del (.-)%.')--Teletransporte a la entrada del Vergel Eterno.
