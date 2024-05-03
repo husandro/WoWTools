@@ -4382,7 +4382,8 @@
         "MonthlyActivitiesButtonTextContainerMixin",
         "StableStabledPetButtonTemplateMixin",
         "enabled",
-        "CREATE_NEW_COMPACT_UNIT_FRAME_PROFILE"
+        "CREATE_NEW_COMPACT_UNIT_FRAME_PROFILE",
+        "UIParentLoadAddOn"
     ],
     "Lua.diagnostics.disable": [
         "inject-field",

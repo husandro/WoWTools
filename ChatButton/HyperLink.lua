@@ -792,7 +792,6 @@ local function Init_Add_Reload_Button()
     SettingsPanel.OutputText:ClearAllPoints()
     SettingsPanel.OutputText:SetPoint('BOTTOMLEFT', 20, 18)
 
-
     Create_Texture_Tips(GameMenuButtonSettings, 'mechagon-projects', false)--选项
     Create_Texture_Tips(GameMenuButtonEditMode, 'UI-HUD-Minimap-CraftingOrder-Up')--编辑模式
     Create_Texture_Tips(GameMenuButtonMacros, 'NPE_Icon', false)--宏命令设置
@@ -803,9 +802,6 @@ local function Init_Add_Reload_Button()
 
     Create_Texture_Tips(GameMenuButtonContinue, 'poi-traveldirections-arrow', true)--返回游戏
 end
-
-
-
 
 
 
