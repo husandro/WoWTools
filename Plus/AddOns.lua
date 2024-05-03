@@ -1097,9 +1097,7 @@ local function Create_Check(frame)
 
     frame.check:SetPoint('RIGHT', frame)
     frame.check:SetScript('OnClick', function(self)
-        local addonIndex= self:GetID()
-        local name=C_AddOns.GetAddOnInfo(addonIndex)
-        Save.fast[name]= not Save.fast[name] and addonIndex or nil
+        Save.fast[self.name]= not Save.fast[self.name] and self:GetID() or nil
         Set_Fast_Button()
     end)
 
@@ -1121,7 +1119,7 @@ local function Create_Check(frame)
     frame.check.Text:SetPoint('RIGHT', frame.check, 'LEFT')
 
     frame.check.memoFrame= CreateFrame("Frame", nil, frame.check)
-    frame.check.memoFrame.Text= e.Cstr(frame, {justifyH='RIGHT'})
+    frame.check.memoFrame.Text= e.Cstr(frame.check.memoFrame, {justifyH='RIGHT'})
     frame.check.memoFrame.Text:SetPoint('RIGHT', frame.Status, 'LEFT')
     frame.check.memoFrame.Text:SetAlpha(0.5)
     frame.check.memoFrame:Hide()
@@ -1129,7 +1127,7 @@ local function Create_Check(frame)
         self.elapsed = (self.elapsed or 3) + elapsed
         if self.elapsed > 3 then
             self.elapsed = 0
-            self.Text:SetText(Get_Memory_Value(self:GetParent():GetID(), false) or '')
+            self.Text:SetText(Get_Memory_Value(self:GetID(), false) or '')
         end
     end)
     frame.check.memoFrame:SetScript('OnHide', function(self)
@@ -1139,8 +1137,9 @@ local function Create_Check(frame)
 
 
     function frame.check:set_leave_alpha()
+        local addonIndex= self:GetID()
         self:SetAlpha(Save.fast[self.name] and 1 or 0)
-        self.Text:SetAlpha(C_AddOns.GetAddOnDependencies(self:GetID()) and 0.3 or 1)
+        self.Text:SetAlpha(C_AddOns.GetAddOnDependencies(addonIndex) and 0.3 or 1)
         local check= self:GetParent().Enabled
         check:SetAlpha(check:GetChecked() and 1 or 0)
         Find_AddOn_Dependencies(false, self)--依赖，移过，提示
@@ -1162,12 +1161,9 @@ local function Create_Check(frame)
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, Initializer:GetName())
         local addonIndex= self:GetID()
-        local name= C_AddOns.GetAddOnInfo(addonIndex) or ''
-        local iconTexture = C_AddOns.GetAddOnMetadata(addonIndex, "IconTexture")
-        local iconAtlas = C_AddOns.GetAddOnMetadata(addonIndex, "IconAtlas")
-        local icon= select(3, e.IsAtlas(iconTexture or iconAtlas)) or ''--Atlas or Texture
+        local icon= select(3, e.IsAtlas( C_AddOns.GetAddOnMetadata(addonIndex, "IconTexture") or C_AddOns.GetAddOnMetadata(addonIndex, "IconAtlas"))) or ''--Atlas or Texture
         e.tips:AddDoubleLine(
-            format('%s%s |cnGREEN_FONT_COLOR:%d|r', icon, name, addonIndex),
+            format('%s%s |cnGREEN_FONT_COLOR:%d|r', icon, self.name or '', addonIndex),
             format('%s%s', e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL, e.Icon.left)
         )
         e.tips:Show()
@@ -1207,8 +1203,8 @@ local function Init_Set_List(frame, addonIndex)
         Save.fast[name]= addonIndex
     end
 
-    local iconTexture = C_AddOns.GetAddOnMetadata(name, "IconTexture")
-    local iconAtlas = C_AddOns.GetAddOnMetadata(name, "IconAtlas")
+    local iconTexture = C_AddOns.GetAddOnMetadata(addonIndex, "IconTexture")
+    local iconAtlas = C_AddOns.GetAddOnMetadata(addonIndex, "IconAtlas")
 
     if not iconTexture and not iconAtlas then--去掉，没有图标，提示
        frame.Title:SetText('       '..(title or name))
@@ -1216,13 +1212,13 @@ local function Init_Set_List(frame, addonIndex)
 
     frame.check:SetID(addonIndex)
     frame.check:SetCheckedTexture(iconTexture or e.Icon.icon)
-    --frame.check.icon= iconTexture and '|T'..iconTexture..':32|t' or (iconAtlas and '|A:'..iconAtlas..':32:32|a') or nil
-    --frame.check.name= name
+    frame.check.name= name
     frame.check.isDependencies= C_AddOns.GetAddOnDependencies(addonIndex) and true or nil
     frame.check:SetChecked(isChecked)--fast
     frame.check:SetAlpha(isChecked and 1 or 0.1)
 
     frame.check.Text:SetText(addonIndex or '')--索引
+    frame.check.memoFrame:SetID(addonIndex)
     frame.check.memoFrame:SetShown(C_AddOns.IsAddOnLoaded(addonIndex))
 
 
