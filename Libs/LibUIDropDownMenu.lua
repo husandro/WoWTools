@@ -2,6 +2,7 @@
 -- ----------------------------------------------------------------------------
 -- Localized Lua globals.
 -- ----------------------------------------------------------------------------
+---@diagnostic disable-next-line: deprecated
 local _G = getfenv(0)
 local tonumber, type, string, table = _G.tonumber, _G.type, _G.string, _G.table
 local tinsert = table.insert
@@ -2134,7 +2135,7 @@ function lib:UIDropDownMenu_SetButtonClickable(level, id)
 end
 
 
-function lib:UIDropDownMenu_DisableDropDown(dropDown)
+function lib:UIDropDownMenu_DisableDropDown(dropDown, disabledtooltip)
 	lib:UIDropDownMenu_SetDropDownEnabled(dropDown, false, disabledtooltip);
 end
 
@@ -2177,11 +2178,11 @@ function lib:UIDropDownMenu_SetDropDownEnabled(dropDown, enabled, disabledtoolti
 		dropDown.isDisabled = 1;
 
 		if button then
-			if disabledTooltip then
+			if disabledtooltip then
 				button:SetMotionScriptsWhileDisabled(true);
 				button:SetScript("OnEnter", function()
 					GameTooltip:SetOwner(button, "ANCHOR_RIGHT");
-					GameTooltip_AddErrorLine(GameTooltip, disabledTooltip);
+					GameTooltip_AddErrorLine(GameTooltip, disabledtooltip);
 					GameTooltip:Show();
 				end);
 
