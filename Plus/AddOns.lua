@@ -21,7 +21,7 @@ local Save={
         load_list=e.Player.husandro,--禁用, 已加载，列表
         load_list_size=22,
         --load_list_top=true,
-        
+
     }
 
 local NewButton--新建按钮
@@ -338,7 +338,7 @@ end
 --新建按钮
 local function Init_Add_Save_Button()
     NewButton= e.Cbtn(AddonList, {size={26,26}, atlas='communities-chat-icon-plus'})
-        
+
     NewButton.Text= e.Cstr(AddonList)--已选中，数量
     NewButton.Text:SetPoint('RIGHT', NewButton, 'LEFT')
     NewButton.Text2=e.Cstr(AddonList, {color={r=0,g=1,b=0}, mouse=true, justifyH='RIGHT'})--总已加载，数量
@@ -485,7 +485,7 @@ local function Init_Add_Save_Button()
                 })
                 allMomo= allMomo+ (value or 0)
             end
-            
+
             if dema then
                 need= need+1
             elseif isLoaded then
@@ -834,7 +834,7 @@ local function Set_Load_Button()--LoadButtons
                 local character = UIDropDownMenu_GetSelectedValue(AddonCharacterDropDown);
                 if ( character == true ) then
                     character = nil;
-                end                
+                end
                 local loadable, reason = C_AddOns.IsAddOnLoadable(addonIndex, character)
                 local checkboxState = C_AddOns.GetAddOnEnableState(addonIndex, character);
                 if ( not InGlue() ) then
@@ -854,7 +854,7 @@ local function Set_Load_Button()--LoadButtons
                     reason and col..(e.cn(_G["ADDON_"..reason]) or ' ') or ' ',
                     format('%s%s', e.onlyChinese and '查询' or WHO, e.Icon.left)
                 )
-                
+
                 AddonTooltip:Show()
                 self:SetAlpha(1)
                 LoadFrame.btn:SetAlpha(1)
