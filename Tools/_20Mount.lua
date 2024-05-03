@@ -111,8 +111,18 @@ local MountType={
 }
 
 
-local function set_ShiJI()--召唤司机
+local function set_ShiJI()--召唤司机 代驾型机械路霸
     ShiJI= e.Player.faction=='Horde' and 179244 or (e.Player.faction=='Alliance' and 179245) or nil--"Alliance", "Horde", "Neutral"
+    --[[if not ShiJI then
+        CollectionsJournal_LoadUI()
+        for _, mountID in pairs(C_MountJournal.GetMountIDs() or {}) do
+            local _, spellID, _, isActive, isUsable= C_MountJournal.GetMountInfoByID(mountID)
+            if isActive and isUsable then
+                ShiJI= spellID
+                break
+            end
+        end
+    end]]
 end
 local function set_OkMout()--是否已学, 骑术
     OkMount= IsSpellKnownOrOverridesKnown(90265)
