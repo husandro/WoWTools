@@ -11,10 +11,29 @@ local Save={
                 ['!BugGrabber']=true,
                 ['TextureAtlasViewer']=true,-- true, i or guid
                 [id]=true,
-            },
+            }, [PET_BATTLE_COMBAT_LOG]={
+                ['BugSack']=true,
+                ['!BugGrabber']=true,
+                ['tdBattlePetScript']=true,
+                --['zAutoLoadPetTeam_Rematch']=true,
+                ['Rematch']=true,
+                [id]=true,
+            }, [INSTANCE]={
+                ['BugSack']=true,
+                ['!BugGrabber']=true,
+                ['WeakAuras']=true,
+                ['WeakAurasOptions']=true,
+                ['Details']=true,
+                ['DBM-Core']=true,
+                ['DBM-Challenges']=true,
+                ['DBM-StatusBarTimers']=true,
+                [id]=true,
+            }
         },
         fast={
-            [id]= 1,
+            ['TextureAtlasViewer']=78,
+            ['WoWeuCN_Tooltips']=96,
+            [id]=99,
         },
         enableAllButtn= e.Player.husandro,--全部禁用时，不禁用本插件
 
@@ -29,8 +48,6 @@ local LoadFrame--已加载，插件列表
 local Initializer
 local Buttons={}--方案
 local FastButtons={}--快捷键
-
-
 
 
 
@@ -458,8 +475,6 @@ local function Init_Add_Save_Button()
 
     NewButton.Text2=e.Cstr(AddonList, {mouse=true, justifyH='RIGHT'})--总内存
     NewButton.Text2:SetPoint('TOPRIGHT', NewButton, 'LEFT', 0, -1)
-    NewButton.Text3=e.Cstr(AddonList, {justifyH='RIGHT'})--总已加载，数量
-    NewButton.Text3:SetPoint('RIGHT', NewButton.Text2, 'LEFT', -8, 0)
     NewButton.Text2:SetScript('OnLeave', function(self) self:SetAlpha(1) e.tips:Hide() end)
     NewButton.Text2:SetScript('OnEnter', function(self)
         Update_Usage()
@@ -525,6 +540,19 @@ local function Init_Add_Save_Button()
 
         e.tips:Show()
         self:SetAlpha(0.5)
+    end)
+
+    NewButton.Text3=e.Cstr(AddonList, {justifyH='RIGHT'})--总已加载，数量
+    NewButton.Text3:SetPoint('RIGHT', NewButton.Text2, 'LEFT', -8, 0)
+    NewButton.Text3:SetScript('OnLeave', function(self) self:SetAlpha(1) e.tips:Hide() end)
+    NewButton.Text3:SetScript('OnEnter', function (self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, Initializer:GetName())
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(format('|cnGREEN_FONT_COLOR:%s', e.onlyChinese and '已加载', LOAD_ADDON), format('+|cffff00ff%s', e.onlyChinese and '只能按需加载' or ADDON_DEMAND_LOADED))
+        e.tips:Show()
+        self:SetAlpha(0.3)
     end)
 
     NewButton:SetScript('OnUpdate', function(self, elapsed)
@@ -823,7 +851,6 @@ local function Set_Load_Button()--LoadButtons
                     self.findFrame=nil
                 end
                 GameTooltip_Hide()
-                self:set_alpha()
                 LoadFrame.btn:SetAlpha(0.5)
             end)
             btn:SetScript('OnEnter', function(self)
@@ -1429,33 +1456,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave[addName] or Save
             Save.fast= Save.fast or {}
             Save.load_list_size= Save.load_list_size or 22
-
-            if e.Player.husandro then
-                Save.buttons[e.onlyChinese and '宠物对战' or PET_BATTLE_COMBAT_LOG ]={
-                    ['BugSack']=true,
-                    ['!BugGrabber']=true,
-                    ['tdBattlePetScript']=true,
-                    --['zAutoLoadPetTeam_Rematch']=true,
-                    ['Rematch']=true,
-                    [id]=true,
-                }
-                Save.buttons[e.onlyChinese and '副本' or INSTANCE ]={
-                    ['BugSack']=true,
-                    ['!BugGrabber']=true,
-                    ['WeakAuras']=true,
-                    ['WeakAurasOptions']=true,
-                    ['Details']=true,
-                    ['DBM-Core']=true,
-                    ['DBM-Challenges']=true,
-                    ['DBM-StatusBarTimers']=true,
-                    [id]=true,
-                }
-                Save.fast={
-                    ['TextureAtlasViewer']=78,
-                    ['WoWeuCN_Tooltips']=96,
-                    [id]=1,
-                }
-            end
 
             --添加控制面板
             Initializer= e.AddPanel_Check({
