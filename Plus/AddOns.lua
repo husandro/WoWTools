@@ -657,6 +657,9 @@ local function Create_Fast_Button(indexAdd)
     function btn:set_tooltips()
         AddonTooltip:SetOwner(self.checkTexture, "ANCHOR_LEFT")
         AddonTooltip_Update(self)
+        AddonTooltip:AddLine(' ')
+        AddonTooltip:AddDoubleLine(e.GetEnabeleDisable(C_AddOns.GetAddOnEnableState(self:GetID())~=0), e.Icon.left)
+        AddonTooltip:Show()
     end
     btn:SetScript('OnEnter', function(self)
         local index= self:GetID()
@@ -706,6 +709,7 @@ local function Create_Fast_Button(indexAdd)
             C_AddOns.EnableAddOn(self.name)
         end
         e.call('AddonList_Update')
+        self:set_tooltips()
     end)
     if indexAdd==1 then
         btn:SetPoint('TOPRIGHT', AddonList, 'TOPLEFT', 8,0)
@@ -1056,8 +1060,26 @@ end
 
 
 
-
-
+--依赖，移过，提示
+local function Find_AddOn_Dependencies(find, check)--依赖，提示
+    local addonIndex= check:GetID()
+    local tab={}
+    for _, depName in pairs({C_AddOns.GetAddOnDependencies(addonIndex)}) do
+        tab[depName]=true
+    end
+    for _, frame in pairs(AddonList.ScrollBox:GetFrames() or {}) do
+        if frame.check then
+            local show=false
+            if find then
+                local index= frame:GetID()
+                if index== addonIndex or tab[C_AddOns.GetAddOnInfo(index)] then
+                    show=true
+                end
+            end
+            frame.check.select:SetShown(show)
+        end
+    end
+end
 
 
 
@@ -1072,7 +1094,7 @@ local function Create_Check(frame)
 
     frame.check:SetPoint('RIGHT', frame)
     frame.check:SetScript('OnClick', function(self)
-        Save.fast[self.name]= not Save.fast[self.name] and self.index or nil
+        Save.fast[self.name]= not Save.fast[self.name] and self:GetID() or nil
         Set_Fast_Button()
     end)
 
@@ -1082,7 +1104,7 @@ local function Create_Check(frame)
     frame.check.dep:SetEndPoint('BOTTOMRIGHT', -20,2)
     frame.check.dep:SetThickness(0.5)
     frame.check.dep:SetAlpha(0.2)
-
+    
     frame.check.select= frame:CreateTexture(nil, 'OVERLAY')--光标，移过提示
     frame.check.select:SetAtlas('CreditsScreen-Selected')
     frame.check.select:SetAllPoints(frame)
@@ -1096,21 +1118,22 @@ local function Create_Check(frame)
     frame.check.memoText:SetPoint('RIGHT', frame.Status, 'LEFT')
     frame.check.memoText:SetAlpha(0.5)
 
+
     function frame.check:set_leave_alpha()
         self:SetAlpha(Save.fast[self.name] and 1 or 0)
-        self.Text:SetAlpha(C_AddOns.GetAddOnDependencies(self.index) and 0.3 or 1)
-        self.select:SetShown(false)
+        self.Text:SetAlpha(C_AddOns.GetAddOnDependencies(self:GetID()) and 0.3 or 1)
         local check= self:GetParent().Enabled
         check:SetAlpha(check:GetChecked() and 1 or 0)
+        Find_AddOn_Dependencies(false, self)--依赖，移过，提示
     end
     function frame.check:set_enter_alpha()
         self:SetAlpha(1)
         self.Text:SetAlpha(1)
-        self.select:SetShown(true)
         self:GetParent().Enabled:SetAlpha(1)
+        Find_AddOn_Dependencies(true, self)--依赖，移过，提示
     end
     function frame.check:set_usage()
-        self.memoText:SetText(Get_Memory_Value(self.index, false) or '')
+        self.memoText:SetText(Get_Memory_Value(self:GetID(), false) or '')
     end
 
     frame.check:SetScript('OnLeave', function(self)
@@ -1123,7 +1146,7 @@ local function Create_Check(frame)
         e.tips:AddDoubleLine(id, Initializer:GetName())
         e.tips:AddLine(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine((self.icon or '')..self.name, self.index)
+        e.tips:AddDoubleLine((self.icon or '')..self.name, self:GetID())
         e.tips:Show()
         self:set_enter_alpha()
     end)
@@ -1156,7 +1179,7 @@ end
 local function Init_Set_List(frame, addonIndex)
     Create_Check(frame)
 
-    local name= C_AddOns.GetAddOnInfo(addonIndex)
+    local name, title= C_AddOns.GetAddOnInfo(addonIndex)
     local isChecked= Save.fast[name] and true or false
     if isChecked then
         Save.fast[name]= addonIndex
@@ -1166,24 +1189,23 @@ local function Init_Set_List(frame, addonIndex)
     local iconAtlas = C_AddOns.GetAddOnMetadata(name, "IconAtlas")
 
     if not iconTexture and not iconAtlas then--去掉，没有图标，提示
-        local title= frame.Title:GetText()
-        if title and title:find('|TInterface\\ICONS\\INV_Misc_QuestionMark:%d+:%d+|t') then
-            frame.Title:SetText(title:gsub('|TInterface\\ICONS\\INV_Misc_QuestionMark:%d+:%d+|t', '      '))
-        end
+       frame.Title:SetText('       '..(title or name))
     end
 
+    frame.check:SetID(addonIndex)
     frame.check:SetCheckedTexture(iconTexture or e.Icon.icon)
     frame.check.icon= iconTexture and '|T'..iconTexture..':32|t' or (iconAtlas and '|A:'..iconAtlas..':32:32|a') or nil
-    frame.check.index= addonIndex
+    --frame.check.index= addonIndex
     frame.check.name= name
+    frame.check.isDependencies= C_AddOns.GetAddOnDependencies(addonIndex) and true or nil
     frame.check:SetChecked(isChecked)--fast
     frame.check:SetAlpha(isChecked and 1 or 0.1)
 
     frame.check.Text:SetText(addonIndex or '')--索引
     frame.check:set_usage()
 
-
-    if C_AddOns.GetAddOnDependencies(addonIndex) then--依赖
+    
+    if frame.check.isDependencies then--依赖
         frame.check.select:SetVertexColor(0,1,0)
         frame.check.Text:SetTextColor(0.5,0.5,0.5)
         frame.check.Text:SetAlpha(0.3)
@@ -1196,7 +1218,6 @@ local function Init_Set_List(frame, addonIndex)
     end
     frame.Status:SetAlpha(0.5)
     frame.Enabled:SetAlpha(frame.Enabled:GetChecked() and 1 or 0)
-
 end
 
 
@@ -1397,7 +1418,7 @@ end
 local panel= CreateFrame('Frame')
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
-panel:SetScript("OnEvent", function(_, event, arg1)
+panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
@@ -1445,7 +1466,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             if not Save.disabled then
                 Init()
             end
-          panel:UnregisterEvent('ADDON_LOADED')
+          self:UnregisterEvent('ADDON_LOADED')
         end
 
     elseif event == "PLAYER_LOGOUT" then
