@@ -4380,7 +4380,8 @@
         "StableFrameBg",
         "StableFrameCloseButton",
         "MonthlyActivitiesButtonTextContainerMixin",
-        "StableStabledPetButtonTemplateMixin"
+        "StableStabledPetButtonTemplateMixin",
+        "enabled"
     ],
     "Lua.diagnostics.disable": [
         "inject-field",
