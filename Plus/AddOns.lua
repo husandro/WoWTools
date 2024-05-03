@@ -82,7 +82,7 @@ local function Get_Memory_Value(indexORname, showText)
             if showText then
                 va= format(e.onlyChinese and '插件内存：%.2f MB' or TOTAL_MEM_MB_ABBR, value/1000)
             else
-                va= format('%iMB', value/1000)
+                va= format('%.2fMB', value/1000)
             end
         end
     end
@@ -354,6 +354,7 @@ local function Init_Add_Save_Button()
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id , Initializer:GetName())
+        e.tips:AddLine(e.onlyChinese and '创建一个新配置方案' or CREATE_NEW_COMPACT_UNIT_FRAME_PROFILE)
         e.tips:AddLine(' ')
         local index, newTab, allMemo= 0, {}, 0
         local tab= select(4, Get_AddList_Info())
@@ -403,6 +404,8 @@ local function Init_Add_Save_Button()
                 percentText= format('%0.2fMB',allMemo/1000)
             end
         end
+        
+        
         e.tips:AddDoubleLine(
             format('%d|A:communities-chat-icon-plus:0:0|a|cffff00ff%s|r |cnRED_FONT_COLOR:%s|rs%s',
                 index,
@@ -1094,17 +1097,20 @@ local function Create_Check(frame)
 
     frame.check:SetPoint('RIGHT', frame)
     frame.check:SetScript('OnClick', function(self)
-        Save.fast[self.name]= not Save.fast[self.name] and self:GetID() or nil
+        local addonIndex= self:GetID()
+        local name=C_AddOns.GetAddOnInfo(addonIndex)
+        Save.fast[name]= not Save.fast[name] and addonIndex or nil
         Set_Fast_Button()
     end)
 
     frame.check.dep= frame:CreateLine()--依赖，提示
+    frame.check.dep:Hide()
     frame.check.dep:SetColorTexture(1, 0.82, 0)
     frame.check.dep:SetStartPoint('BOTTOMLEFT', 55,2)
     frame.check.dep:SetEndPoint('BOTTOMRIGHT', -20,2)
     frame.check.dep:SetThickness(0.5)
     frame.check.dep:SetAlpha(0.2)
-    
+
     frame.check.select= frame:CreateTexture(nil, 'OVERLAY')--光标，移过提示
     frame.check.select:SetAtlas('CreditsScreen-Selected')
     frame.check.select:SetAllPoints(frame)
@@ -1114,9 +1120,22 @@ local function Create_Check(frame)
     frame.check.Text:ClearAllPoints()
     frame.check.Text:SetPoint('RIGHT', frame.check, 'LEFT')
 
-    frame.check.memoText= e.Cstr(frame, {justifyH='RIGHT'})
-    frame.check.memoText:SetPoint('RIGHT', frame.Status, 'LEFT')
-    frame.check.memoText:SetAlpha(0.5)
+    frame.check.memoFrame= CreateFrame("Frame", nil, frame.check)
+    frame.check.memoFrame.Text= e.Cstr(frame, {justifyH='RIGHT'})
+    frame.check.memoFrame.Text:SetPoint('RIGHT', frame.Status, 'LEFT')
+    frame.check.memoFrame.Text:SetAlpha(0.5)
+    frame.check.memoFrame:Hide()
+    frame.check.memoFrame:SetScript('OnUpdate', function(self, elapsed)
+        self.elapsed = (self.elapsed or 3) + elapsed
+        if self.elapsed > 3 then
+            self.elapsed = 0
+            self.Text:SetText(Get_Memory_Value(self:GetParent():GetID(), false) or '')
+        end
+    end)
+    frame.check.memoFrame:SetScript('OnHide', function(self)
+        self.Text:SetText('')
+        self.elapsed=nil
+    end)
 
 
     function frame.check:set_leave_alpha()
@@ -1132,9 +1151,7 @@ local function Create_Check(frame)
         self:GetParent().Enabled:SetAlpha(1)
         Find_AddOn_Dependencies(true, self)--依赖，移过，提示
     end
-    function frame.check:set_usage()
-        self.memoText:SetText(Get_Memory_Value(self:GetID(), false) or '')
-    end
+
 
     frame.check:SetScript('OnLeave', function(self)
         e.tips:Hide()
@@ -1144,9 +1161,15 @@ local function Create_Check(frame)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, Initializer:GetName())
-        e.tips:AddLine(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine((self.icon or '')..self.name, self:GetID())
+        local addonIndex= self:GetID()
+        local name= C_AddOns.GetAddOnInfo(addonIndex) or ''
+        local iconTexture = C_AddOns.GetAddOnMetadata(addonIndex, "IconTexture")
+        local iconAtlas = C_AddOns.GetAddOnMetadata(addonIndex, "IconAtlas")
+        local icon= select(3, e.IsAtlas(iconTexture or iconAtlas)) or ''--Atlas or Texture
+        e.tips:AddDoubleLine(
+            format('%s%s |cnGREEN_FONT_COLOR:%d|r', icon, name, addonIndex),
+            format('%s%s', e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL, e.Icon.left)
+        )
         e.tips:Show()
         self:set_enter_alpha()
     end)
@@ -1160,7 +1183,6 @@ local function Create_Check(frame)
         self.check:set_leave_alpha()
     end)
     frame:HookScript('OnEnter', function(self)
-        self.check:set_usage()
         self.check:set_enter_alpha()
     end)
 end
@@ -1194,17 +1216,16 @@ local function Init_Set_List(frame, addonIndex)
 
     frame.check:SetID(addonIndex)
     frame.check:SetCheckedTexture(iconTexture or e.Icon.icon)
-    frame.check.icon= iconTexture and '|T'..iconTexture..':32|t' or (iconAtlas and '|A:'..iconAtlas..':32:32|a') or nil
-    --frame.check.index= addonIndex
-    frame.check.name= name
+    --frame.check.icon= iconTexture and '|T'..iconTexture..':32|t' or (iconAtlas and '|A:'..iconAtlas..':32:32|a') or nil
+    --frame.check.name= name
     frame.check.isDependencies= C_AddOns.GetAddOnDependencies(addonIndex) and true or nil
     frame.check:SetChecked(isChecked)--fast
     frame.check:SetAlpha(isChecked and 1 or 0.1)
 
     frame.check.Text:SetText(addonIndex or '')--索引
-    frame.check:set_usage()
+    frame.check.memoFrame:SetShown(C_AddOns.IsAddOnLoaded(addonIndex))
 
-    
+
     if frame.check.isDependencies then--依赖
         frame.check.select:SetVertexColor(0,1,0)
         frame.check.Text:SetTextColor(0.5,0.5,0.5)
