@@ -357,7 +357,16 @@ local function Init_Add_Save_Button()
 
     NewButton.Text= e.Cstr(AddonList)--已选中，数量
     NewButton.Text:SetPoint('BOTTOMRIGHT', NewButton, 'LEFT',0, 1)
-
+    NewButton.Text:SetScript('OnLeave', function(self) self:SetAlpha(1) e.tips:Hide() end)
+    NewButton.Text:SetScript('OnEnter', function (self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, Initializer:GetName())
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(' ', e.onlyChinese and '已选中', 'Selected')
+        e.tips:Show()
+        self:SetAlpha(0.3)
+    end)
     NewButton:SetAlpha(0.5)
     NewButton:SetPoint('TOPRIGHT', -2, -28)
     NewButton:SetScript('OnLeave', function(self) self:SetAlpha(0.5) self.Text:SetAlpha(1) GameTooltip_Hide() end)
@@ -473,7 +482,7 @@ local function Init_Add_Save_Button()
         end
     end)
 
-    NewButton.Text2=e.Cstr(AddonList, {mouse=true, justifyH='RIGHT'})--总内存
+    NewButton.Text2=e.Cstr(AddonList, {justifyH='RIGHT'})--总内存
     NewButton.Text2:SetPoint('TOPRIGHT', NewButton, 'LEFT', 0, -1)
     NewButton.Text2:SetScript('OnLeave', function(self) self:SetAlpha(1) e.tips:Hide() end)
     NewButton.Text2:SetScript('OnEnter', function(self)
@@ -550,7 +559,7 @@ local function Init_Add_Save_Button()
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, Initializer:GetName())
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(format('|cnGREEN_FONT_COLOR:%s', e.onlyChinese and '已加载', LOAD_ADDON), format('+|cffff00ff%s', e.onlyChinese and '只能按需加载' or ADDON_DEMAND_LOADED))
+        e.tips:AddDoubleLine(format('|cnGREEN_FONT_COLOR:%s', e.onlyChinese and '已加载', LOAD_ADDON), format('|cffff00ff+%s', e.onlyChinese and '只能按需加载' or ADDON_DEMAND_LOADED))
         e.tips:Show()
         self:SetAlpha(0.3)
     end)
