@@ -1509,7 +1509,7 @@ local function Init_Menu_Gossip(_, level, type)
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     elseif type=='WoWMovie' then
-        local MovieList= _G['MOVIE_LIST'] or {--cinematicsframe.lua
+        local MovieList= _G['MOVIE_LIST'] or {--CinematicsMenu.lua
             { expansion=LE_EXPANSION_CLASSIC,
               movieIDs = { 1, 2 },
               upAtlas="StreamCinematic-Classic-Up",
