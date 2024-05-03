@@ -370,14 +370,14 @@ local function Init_Add_Save_Button()
             end
             local title= C_AddOns.GetAddOnInfo(name) or name
             local col= C_AddOns.GetAddOnDependencies(name) and '|cffff00ff' or (isLoaded and '|cnGREEN_FONT_COLOR:') or '|cff606060'
-            local memo, value= Get_Memory_Value(name, false)--内存
+            local memo, va= Get_Memory_Value(name, false)--内存
             memo= memo and (' |cnRED_FONT_COLOR:'..memo..'|r') or ''
             table.insert(newTab, {
                 left=col..icon..title..'|r'..memo,
                 right= text or ' ',
-                memo= value or 0
+                memo= va or 0
             })
-            allMemo= allMemo+ (value or 0)
+            allMemo= allMemo+ (va or 0)
             index= index+1
         end
 
