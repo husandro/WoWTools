@@ -101,10 +101,6 @@ local OkMount--是否已学, 骑术
 local XD
 
 
-
-
-
-
 local MountType={
     MOUNT_JOURNAL_FILTER_GROUND,
     MOUNT_JOURNAL_FILTER_AQUATIC,
@@ -115,15 +111,15 @@ local MountType={
 }
 
 
-
-
-
-
-local function set_ShiJI()
-    ShiJI= e.Player.faction==0 and 179244 or (e.Player.faction=='Alliance' and 179245) or nil
+local function set_ShiJI()--召唤司机
+    ShiJI= e.Player.faction=='Horde' and 179244 or (e.Player.faction=='Alliance' and 179245) or nil--"Alliance", "Horde", "Neutral"
 end
-
-
+local function set_OkMout()--是否已学, 骑术
+    OkMount= IsSpellKnownOrOverridesKnown(90265)
+            or IsSpellKnownOrOverridesKnown(33391)
+            or IsSpellKnownOrOverridesKnown(34090)
+            or IsSpellKnownOrOverridesKnown(33388)
+end
 
 
 
@@ -1460,7 +1456,6 @@ local function Init()
         sizi=nil,
     })
     button:SetAttribute("type1", "spell")
-    --button:SetAttribute('unit', "player")
     button:SetAttribute("alt-type1", "spell")
     button:SetAttribute("shift-type1", "spell")
     button:SetAttribute("ctrl-type1", "spell")
@@ -1482,12 +1477,8 @@ local function Init()
     e.LibDD:UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
 
     Init_Dialogs()--初始化，对话框
-    set_ShiJI()
-
-    OkMount= IsSpellKnownOrOverridesKnown(90265)--是否已学, 骑术
-                or IsSpellKnownOrOverridesKnown(33391)
-                or IsSpellKnownOrOverridesKnown(34090)
-                or IsSpellKnownOrOverridesKnown(33388)
+    set_ShiJI()--召唤司机
+    set_OkMout()--是否已学, 骑术
 
     for type, tab in pairs(Save.Mounts) do
         for ID, _ in pairs(tab) do
@@ -1841,10 +1832,6 @@ panel:SetScript("OnEvent", function(frame, event, arg1, arg2)
         setClickAtt()--设置属性
 
     elseif event=='LEARNED_SPELL_IN_TAB' then
-        OkMount= IsSpellKnownOrOverridesKnown(90265)--是否已学, 骑术
-                or IsSpellKnownOrOverridesKnown(33391)
-                or IsSpellKnownOrOverridesKnown(34090)
-                or IsSpellKnownOrOverridesKnown(33388)
-
+        set_OkMout()
     end
 end)
