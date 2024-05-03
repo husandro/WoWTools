@@ -556,7 +556,7 @@ local function Init_Add_Save_Button()
 
     local btn= e.Cbtn(AddonList, {atlas='talents-button-undo', size=18})
     btn:SetAlpha(0.5)
-    btn:SetPoint('TOPLEFT', 150, -33)
+    btn:SetPoint('TOPLEFT', 160, -33)
     btn:SetScript('OnLeave', function(self) self:SetAlpha(0.5) GameTooltip_Hide() end)
     btn:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -808,16 +808,13 @@ local function Set_Load_Button()--LoadButtons
        local btn= LoadFrame.buttons[i]
        if not btn then
             btn= e.Cbtn(LoadFrame, {icon='hide'})
-            btn.texture= btn:CreateTexture()
+            btn.texture= btn:CreateTexture(nil, 'BORDER')
             btn.texture:SetAllPoints(btn)
-            function btn:set_alpha()
-                self:SetAlpha(self.disabled and 0.3 or 1)
-                self.texture:SetDesaturated(self.load==false)
-            end
-
-            btn.Text= e.Cstr(btn)
-            btn.Text:SetPoint('CENTER')
-
+            btn.texture2= btn:CreateTexture(nil, 'OVERLAY')
+            btn.texture2:SetAllPoints(btn)
+            btn.texture2:SetAtlas('Forge-ColorSwatchSelection')
+            --btn.Text= e.Cstr(btn)
+            --btn.Text:SetPoint('CENTER')
             btn:SetScript('OnLeave', function(self)
                 if self.findFrame then
                     if self.findFrame.check then
@@ -878,37 +875,32 @@ local function Set_Load_Button()--LoadButtons
             LoadFrame.buttons[i]= btn
        end
 
-       btn:SetAlpha(info.loaded and 1 or 0.3)
-
        if info.texture then
             btn.texture:SetTexture(info.texture)
-            btn.Text:SetText('')
+           -- btn.Text:SetText('')
        elseif info.atlas then
             btn.texture:SetAtlas(info.atlas)
-            btn.Text:SetText('')
-       else
+            --btn.Text:SetText('')
+       --[[else
             local name, title=C_AddOns.GetAddOnInfo(info.index)
             name= name or title or ''
             name= name:gsub('!', '')
             name= e.WA_Utf8Sub(name, 2, 3)
             btn.Text:SetText(name)
-            btn:SetNormalTexture(0)
+            btn:SetNormalTexture(0)]]
        end
-
        btn:SetID(info.index)
        btn.load= info.load
-       btn.disabled=info.disabled
-       btn:set_alpha()
+       btn.disabled= info.disabled
+       btn.texture2:SetShown(not info.disabled)
        btn:SetShown(true)
     end
-
     for i=#newTab +1,  #LoadFrame.buttons do
         local btn= LoadFrame.buttons[i]
         if btn then
             btn:SetShown(false)
         end
     end
-
     LoadFrame:set_button_point()
 end
 
