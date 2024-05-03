@@ -294,8 +294,14 @@ local function Set_Buttons()--设置按钮, 和位置
     end
 
     --NewButton:SetShown(all>0)
-    NewButton.Text:SetFormattedText('%d%s', sel, some>0 and format('%s%d', e.Icon.player, some) or '')
-    NewButton.Text2:SetFormattedText('%s%d', need>0 and format('|cffff00ff%d|r|cffffd100+|r', need) or '', load)--总已加载，数量
+    NewButton.Text:SetFormattedText(
+        '%s%d (%d%s)',
+        need>0 and format('|cffff00ff%d|r|cffffd100+|r', need) or '', load,
+        sel, some>0 and format('%s%d', e.Icon.player, some) or ''
+    )
+
+    --NewButton.Text:SetFormattedText('%d%s', sel, some>0 and format('%s%d', e.Icon.player, some) or '')
+    --NewButton.Text2:SetFormattedText('%s%d', need>0 and format('|cffff00ff%d|r|cffffd100+|r', need) or '', load)--总已加载，数量
 
     for i= index, #Buttons do
         local btn= Buttons[i]
@@ -340,11 +346,14 @@ local function Init_Add_Save_Button()
     NewButton= e.Cbtn(AddonList, {size={26,26}, atlas='communities-chat-icon-plus'})
 
     NewButton.Text= e.Cstr(AddonList)--已选中，数量
-    NewButton.Text:SetPoint('RIGHT', NewButton, 'LEFT')
-    NewButton.Text2=e.Cstr(AddonList, {color={r=0,g=1,b=0}, mouse=true, justifyH='RIGHT'})--总已加载，数量
-    NewButton.Text2:SetPoint('RIGHT', AddonListForceLoad, 'LEFT',2,6)
+    --NewButton.Text:SetPoint('RIGHT', NewButton, 'LEFT')
+    NewButton.Text:SetPoint('BOTTOMRIGHT', NewButton, 'LEFT',0, 1)
+    --NewButton.Text2=e.Cstr(AddonList, {color={r=0,g=1,b=0}, mouse=true, justifyH='RIGHT'})--总已加载，数量
+    --NewButton.Text2:SetPoint('BOTTOMRIGHT', NewButton, 'LEFT',0, 1)
+    --NewButton.Text2:SetPoint('RIGHT', AddonListForceLoad, 'LEFT',2,6)
     NewButton.Text3=e.Cstr(AddonList, {mouse=true, justifyH='RIGHT'})--总内存
-    NewButton.Text3:SetPoint('RIGHT', AddonListForceLoad, 'LEFT',2,-6)
+    --NewButton.Text3:SetPoint('RIGHT', AddonListForceLoad, 'LEFT',2,-6)
+    NewButton.Text3:SetPoint('TOPRIGHT', NewButton, 'LEFT', 0, -1)
 
     NewButton:SetAlpha(0.5)
     NewButton:SetPoint('TOPRIGHT', -2, -28)
@@ -525,8 +534,8 @@ local function Init_Add_Save_Button()
 
         e.tips:Show()
     end
-    NewButton.Text2:SetScript('OnLeave', function(self) self:SetAlpha(1) GameTooltip_Hide() end)
-    NewButton.Text2:SetScript('OnEnter', function(self) NewButton:set_memoria_tooltips(self) self:SetAlpha(0.3) end)
+    NewButton.Text:SetScript('OnLeave', function(self) self:SetAlpha(1) GameTooltip_Hide() end)
+    NewButton.Text:SetScript('OnEnter', function(self) NewButton:set_memoria_tooltips(self) self:SetAlpha(0.3) end)
 
     NewButton:SetScript('OnUpdate', function(self, elapsed)
         self.elapsed= (self.elapsed or 2) +elapsed
