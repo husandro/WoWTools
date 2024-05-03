@@ -802,7 +802,6 @@ local function Init_Add_Reload_Button()
     Create_Texture_Tips(GameMenuButtonQuit, 'Ping_Chat_Warning', false)--退出游戏
 
     Create_Texture_Tips(GameMenuButtonContinue, 'poi-traveldirections-arrow', true)--返回游戏
-    
 end
 
 
