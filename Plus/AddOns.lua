@@ -268,11 +268,10 @@ end
 local function Set_Buttons()--设置按钮, 和位置
     local load, need, sel, some= 0, 0, 0, 0
     for i=1, C_AddOns.GetNumAddOns() do
-        if C_AddOns.IsAddOnLoaded(i) then--已加载
-            load= load+1
-
-        elseif select(2, C_AddOns.IsAddOnLoadable(i))=='DEMAND_LOADED' then--需要时加载
+        if select(2, C_AddOns.IsAddOnLoadable(i))=='DEMAND_LOADED' then--需要时加载
             need= need+1
+        elseif C_AddOns.IsAddOnLoaded(i) then--已加载
+            load= load+1
         end
         local stat= C_AddOns.GetAddOnEnableState(i)
         if stat and stat>0 then
@@ -293,15 +292,9 @@ local function Set_Buttons()--设置按钮, 和位置
         index= index+1
     end
 
-    --NewButton:SetShown(all>0)
-    NewButton.Text:SetFormattedText(
-        '%s%d (%d%s)',
-        need>0 and format('|cffff00ff%d|r|cffffd100+|r', need) or '', load,
-        sel, some>0 and format('%s%d', e.Icon.player, some) or ''
-    )
 
-    --NewButton.Text:SetFormattedText('%d%s', sel, some>0 and format('%s%d', e.Icon.player, some) or '')
-    --NewButton.Text2:SetFormattedText('%s%d', need>0 and format('|cffff00ff%d|r|cffffd100+|r', need) or '', load)--总已加载，数量
+    NewButton.Text:SetFormattedText('%d%s', sel, some>0 and format('%s%d', e.Icon.player, some) or '')
+    NewButton.Text3:SetFormattedText('|cnGREEN_FONT_COLOR:%d|r%s', load, need>0 and format('|cffff00ff+%d|r', need) or '')--总已加载，数量
 
     for i= index, #Buttons do
         local btn= Buttons[i]
@@ -346,14 +339,7 @@ local function Init_Add_Save_Button()
     NewButton= e.Cbtn(AddonList, {size={26,26}, atlas='communities-chat-icon-plus'})
 
     NewButton.Text= e.Cstr(AddonList)--已选中，数量
-    --NewButton.Text:SetPoint('RIGHT', NewButton, 'LEFT')
     NewButton.Text:SetPoint('BOTTOMRIGHT', NewButton, 'LEFT',0, 1)
-    --NewButton.Text2=e.Cstr(AddonList, {color={r=0,g=1,b=0}, mouse=true, justifyH='RIGHT'})--总已加载，数量
-    --NewButton.Text2:SetPoint('BOTTOMRIGHT', NewButton, 'LEFT',0, 1)
-    --NewButton.Text2:SetPoint('RIGHT', AddonListForceLoad, 'LEFT',2,6)
-    NewButton.Text3=e.Cstr(AddonList, {mouse=true, justifyH='RIGHT'})--总内存
-    --NewButton.Text3:SetPoint('RIGHT', AddonListForceLoad, 'LEFT',2,-6)
-    NewButton.Text3:SetPoint('TOPRIGHT', NewButton, 'LEFT', 0, -1)
 
     NewButton:SetAlpha(0.5)
     NewButton:SetPoint('TOPRIGHT', -2, -28)
@@ -470,9 +456,14 @@ local function Init_Add_Save_Button()
         end
     end)
 
-    function NewButton:set_memoria_tooltips(frame)
+    NewButton.Text2=e.Cstr(AddonList, {mouse=true, justifyH='RIGHT'})--总内存
+    NewButton.Text2:SetPoint('TOPRIGHT', NewButton, 'LEFT', 0, -1)
+    NewButton.Text3=e.Cstr(AddonList, {justifyH='RIGHT'})--总已加载，数量
+    NewButton.Text3:SetPoint('RIGHT', NewButton.Text2, 'LEFT', -8, 0)
+    NewButton.Text2:SetScript('OnLeave', function(self) self:SetAlpha(1) e.tips:Hide() end)
+    NewButton.Text2:SetScript('OnEnter', function(self)
         Update_Usage()
-        e.tips:SetOwner(frame, "ANCHOR_LEFT")
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, Initializer:GetName())
         e.tips:AddLine(' ')
@@ -533,15 +524,13 @@ local function Init_Add_Save_Button()
         )
 
         e.tips:Show()
-    end
-    NewButton.Text:SetScript('OnLeave', function(self) self:SetAlpha(1) GameTooltip_Hide() end)
-    NewButton.Text:SetScript('OnEnter', function(self) NewButton:set_memoria_tooltips(self) self:SetAlpha(0.3) end)
+        self:SetAlpha(0.5)
+    end)
 
     NewButton:SetScript('OnUpdate', function(self, elapsed)
-        self.elapsed= (self.elapsed or 2) +elapsed
-        if self.elapsed>2 then
+        self.elapsed= (self.elapsed or 3) +elapsed
+        if self.elapsed>3 or UnitAffectingCombat('player') then
             self.elapsed=0
-            if UnitAffectingCombat('player') then return end--战斗中，不刷新
             Update_Usage()
             local value, text= 0, ''
             for i=1, C_AddOns.GetNumAddOns() do
@@ -556,11 +545,9 @@ local function Init_Add_Save_Button()
                     text= format('%0.2fMB', value/1000)
                 end
             end
-            self.Text3:SetText(text)
+            self.Text2:SetText(text)
         end
     end)
-    NewButton.Text3:SetScript('OnLeave', function(self) self:SetAlpha(1) e.tips:Hide() end)
-    NewButton.Text3:SetScript('OnEnter', function(self) NewButton:set_memoria_tooltips(self) self:SetAlpha(0.5) end)
 
     local label= e.Cstr(AddonListEnableAllButton)--插件，总数
     label:SetPoint('LEFT',3,0)
@@ -1128,7 +1115,7 @@ local function Create_Check(frame)
     frame.check.Text:SetPoint('RIGHT', frame.check, 'LEFT')
 
     frame.check.memoFrame= CreateFrame("Frame", nil, frame.check)
-    frame.check.memoFrame.Text= e.Cstr(frame.check.memoFrame, {justifyH='RIGHT'})
+    frame.check.memoFrame.Text= e.Cstr(frame, {justifyH='RIGHT'})
     frame.check.memoFrame.Text:SetPoint('RIGHT', frame.Status, 'LEFT')
     frame.check.memoFrame.Text:SetAlpha(0.5)
     frame.check.memoFrame:Hide()
