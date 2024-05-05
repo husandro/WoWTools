@@ -897,15 +897,18 @@ local function Init_StableFrame_Plus()
             return
         end
         set_pet_tooltips(self, self.petData, 0)
-        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.onlyChinese and '放入兽栏' or STABLE_PET_BUTTON_LABEL, e.Icon.right)
         e.tips:AddDoubleLine(
-            format('|A:UI-HUD-MicroMenu-SpecTalents-Mouseover:0:0|a|cffaad372%s|r', e.onlyChinese and '天赋' or TALENT),
+            --format('|A:UI-HUD-MicroMenu-SpecTalents-Mouseover:0:0|a|cffaad372%s|r', e.onlyChinese and '天赋' or TALENT),
+            format('|cffaad372%s|r', e.onlyChinese and '天赋' or TALENT),
             format('|T461112:0|t|cffaad372%s|r', e.onlyChinese and '动物伙伴' or GetSpellLink(267116) or GetSpellInfo(267116) or 'Animal Companion')
         )
-        e.tips:AddDoubleLine(e.onlyChinese and '放入兽栏' or STABLE_PET_BUTTON_LABEL, e.Icon.right)
         e.tips:Show()
     end)
 
+    
+
+    
     hooksecurefunc(StableFrame.PetModelScene, 'SetPet', function()--选定时，隐藏model
         local self= StableFrame
 
@@ -927,7 +930,18 @@ local function Init_StableFrame_Plus()
     frame.Icon:SetPoint('RIGHT')
     frame.Name:ClearAllPoints()
     frame.Name:SetPoint('RIGHT', frame.Icon, 'LEFT')
+    btn.SpellFrame= frame
 
+    hooksecurefunc(StableFrame.ActivePetList.BeastMasterSecondaryPetButton, 'Refresh', function(self)
+        if AllListFrame then
+            AllListFrame.btn6:settings()
+        end
+        if self:IsEnabled() then
+            self.SpellFrame.Name:SetTextColor(1,1,1)
+        else
+            self.SpellFrame.Name:SetTextColor(0.6,0.6,0.6)
+        end
+    end)
 
 
     --食物
@@ -1147,9 +1161,11 @@ function Set_StableFrame_List()
         self:SetPet(show and C_StableInfo.GetStablePetInfo(self:GetID()) or nil)
         self:SetShown(show)
     end
-    hooksecurefunc(StableFrame.ActivePetList.BeastMasterSecondaryPetButton, 'Refresh', function()
-        AllListFrame.btn6:settings()
-    end)
+    --[[hooksecurefunc(StableFrame.ActivePetList.BeastMasterSecondaryPetButton, 'Refresh', function()
+        if AllListFrame then
+            AllListFrame.btn6:settings()
+        end
+    end)]]
 
     AllListFrame:set_shown()
 end
