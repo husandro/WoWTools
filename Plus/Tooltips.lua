@@ -15,7 +15,7 @@ local Save={
     --modelLeft=true,--左边
     modelX= 0,
     modelY= -24,
-    modelFacing= -0.35,--方向
+    modelFacing= -0.5,--方向
     showModelFileID=e.Player.husandro,--显示，文件ID
     --WidgetSetID=848,--自定义，监视 WidgetSetID
 
@@ -3032,7 +3032,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save.modelSize= Save.modelSize or 100
             Save.modelX= Save.modelX or 0
             Save.modelY= Save.modelY or -24
-            Save.modelFacing= Save.modelFacing or -0.35
+            Save.modelFacing= Save.modelFacing or -0.5
 
             --Save.WidgetSetID = Save.WidgetSetID or 0
             e.AddPanel_Check({
