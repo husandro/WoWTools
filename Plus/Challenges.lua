@@ -71,8 +71,10 @@ local affixSchedule = {--C_MythicPlus.GetCurrentSeason() C_MythicPlus.GetCurrent
     [10]={[1]=10, [2]=3, [3]=123},	--Fortified 	Volcanic 	Spiteful
 }
 
+--https://wago.io/dungeonports
+--https://wago.io/meD8JMW3C
+
 e.ChallengesSpellTabs={--C_MythicPlus.GetCurrentSeason()
---10.26 12赛季
     [399]= {spell=393256, ins=1202, name='红玉', spellName='利爪防御者之路', spellDes='传送到|cff00ccff红玉新生法池|r的入口。'},--传送到红玉新生法池的入口。 利爪防御者之路
     [400]= {spell=393262, ins=1198, name='诺库德', spellName='啸风平原之路', spellDes='|cff00ccff传送至诺库德阻击战|r的入口。'},--传送至诺库德阻击战的入口。 啸风平原之路
     [401]= {spell=393279, ins=1203, name='魔馆', spellName='奥秘之路',  spellDes='传送至|cff00ccff碧蓝魔馆|r的入口。'},--传送至碧蓝魔馆的入口。 奥秘之路
@@ -88,7 +90,7 @@ e.ChallengesSpellTabs={--C_MythicPlus.GetCurrentSeason()
     [248]= {spell=424167, ins=1021, name='庄园', spellName='巫心灾厄之路', spellDes='传送到|cff00ccff维克雷斯庄园|r的入口。'},--维克雷斯庄园 Waycrest Manor (Battle for Azeroth)
     [244]= {spell=424187, ins=1176, name='阿塔达萨', spellName='鎏金皇陵之路', spellDes='传送到|cff00ccff阿塔达萨|r的入口。'},--阿塔达萨 Atal'Dazar (Battle for Azeroth)
     [463]= {spell=424197, ins=1209, name='陨落', insName='永恒黎明', spellName='扭曲之光之路', spellDes='传送到|cff00ccff永恒黎明|r的入口。'},--永恒黎明：迦拉克隆的陨落 Dawn of the Infinite: Galakrond's Fall
-    [464]= {spell=424197, ins=1209, name='崛起' },--永恒黎明：姆诺兹多的崛起 Dawn of the Infinite: Murozond's Rise    
+    --[464]= {spell=424197, ins=1209, name='崛起' },--永恒黎明：姆诺兹多的崛起 Dawn of the Infinite: Murozond's Rise    
     [456]= {spell=424142, ins=65, name='潮汐王座', spellName='猎潮者之路', spellDes='传送到潮|cff00ccff汐王座|r的入口。'},--潮汐王座 Throne of the Tides (Cataclysm)
 
     [206]= {spell=410078, ins=767, name='巢穴', spellName='大地守护者之路', spellDes='传送到|cff00ccff奈萨里奥的巢穴|r的入口。'},--奈萨里奥的巢穴
@@ -108,41 +110,39 @@ e.ChallengesSpellTabs={--C_MythicPlus.GetCurrentSeason()
     [370]={spell=373274, ins=1178, name='麦卡贡', spellName='机械王子之路', spellDes='传送到|cff00ccff麦卡贡|r行动的入口。'},
     [169]={spell=159896, ins=558, name='钢铁码头', spellName='铁船之路', spellDes='传送至|cff00ccff钢铁码头|r入口处。'},
     [227]={spell=373262, ins=860, name='卡拉赞', '堕落守护者之路', '传送到|cff00ccff卡拉赞|r的入口。'},
-    --[234]={spell=373262, ins=860, name='卡拉赞', '堕落守护者之路', '传送到|cff00ccff卡拉赞|r的入口。'},
+    [234]={spell=373262, ins=860, name='卡拉赞', '堕落守护者之路', '传送到|cff00ccff卡拉赞|r的入口。'},
+
+
+    --[[
+    {spell=131228, ins=324},--'玄牛之路', '传送至|cff00ccff围攻砮皂寺|r入口处'},
+    {spell=131222, ins=321},--'魔古皇帝之路', '传送至|cff00ccff魔古山宫殿|r入口处。'},
+    {spell=131225, ins=303},--'残阳之路', '传送至|cff00ccff残阳关|r入口处。'},
+    {spell=131206, ins=321},--'影踪派之路', '将施法者传送到|cff00ccff影踪禅院|r入口。'},
+    {spell=131205, ins=302},--'烈酒之路', '将施法者传送到|cff00ccff风暴烈酒酿造厂|r入口。'},
+    {spell=131232, ins=246},--'通灵师之路', '传送至|cff00ccff通灵学院|r入口处。'},
+    {spell=131231, ins=311},--'血色利刃之路', '传送至|cff00ccff血色大厅|r入口处。'},
+    {spell=131229, ins=316},--'血色法冠之路', '传送至|cff00ccff血色修道院|r入口处。'},
+    ]]
+
+    [163]={spell=159895, ins=385, name='渣矿井', spellName='血槌之路', spellDes='传送至|cff00ccff血槌炉渣矿井|r入口处。'},
+    [167]={spell=159902, ins=559, name='上黑石塔', spellName='火山之路', spellDes='传送至|cff00ccff黑石塔上层|r入口处。'},
+    [161]={spell=159898, ins=476, name='通天峰', spellName='通天之路', spellDes='传送至|cff00ccff通天峰|r入口处。'},
+    [164]={spell=159897, ins=547, name='奥金顿', spellName='警戒者之路', spellDes='传送至|cff00ccff奥金顿|r入口处。'},
+    [379]={spell=354463, ins=1183, name='凋魂之殇', spellName='瘟疫之路', spellDes='传送到|cff00ccff凋魂之殇|r的入口。'},
+    [375]={spell=354464, ins=1184, name='塞兹仙林', spellName='雾林之路', spellDes='传送到|cff00ccff塞兹仙林|r的迷雾的入口。'},
+    [377]={spell= 354468, ins=1188, name='彼界', spellName='狡诈之神之路', spellDes='传送到|cff00ccff彼界|r入口。'},
+
+    [380]={spell=354469, ins=1189, name='赤红深渊', spellName='石头守望者之路', spellDes='传送至|cff00ccff赤红深渊|r入口。'},
+    [378]={spell=354465, ins=1185, name='赎罪大厅', spellName='罪魂之路', spellDes='传送到|cff00ccff赎罪大厅|r的入口。'},
+    [382]={spell=354467, ins=1187, name='伤逝剧场', spellName='不败之路', spellDes='传送到|cff00ccff伤逝剧场|r的入口。'},
+    [376]={spell=354462, ins=1182, name='通灵战潮', spellName='勇者之路', spellDes='传送到|cff00ccff通灵战潮|r的入口。'},
+    [381]={spell=354466, ins=1186, name='晋升高塔', spellName='晋升者之路', spellDes='传送到|cff00ccff晋升高塔|r的入口。'},
 }
 
 --if C_MythicPlus.GetCurrentSeason()==12 then
 for _, tab in pairs(e.ChallengesSpellTabs) do
     e.LoadDate({id=tab.spell, type='spell'})
 end
-
-
-
---[[没找到，数据
-{131228, '玄牛之路', '传送至|cff00ccff围攻砮皂寺|r入口处'},
-{131222, '魔古皇帝之路', '传送至|cff00ccff魔古山宫殿|r入口处。'},
-{131225, '残阳之路', '传送至|cff00ccff残阳关|r入口处。'},
-{131206, '影踪派之路', '将施法者传送到|cff00ccff影踪禅院|r入口。'},
-{131205, '烈酒之路', '将施法者传送到|cff00ccff风暴烈酒酿造厂|r入口。'},
-{131232, '通灵师之路', '传送至|cff00ccff通灵学院|r入口处。'},
-{131231, '血色利刃之路', '传送至|cff00ccff血色大厅|r入口处。'},
-{131229, '血色法冠之路', '传送至|cff00ccff血色修道院|r入口处。'},
-
-
-{159895, '血槌之路', '传送至|cff00ccff血槌炉渣矿井|r入口处。'},
-{159902, '火山之路', '传送至|cff00ccff黑石塔上层|r入口处。'},
-{159898, '通天之路', '传送至|cff00ccff通天峰|r入口处。'},
-{159897, '警戒者之路', '传送至|cff00ccff奥金顿|r入口处。'},
-
-
-{354463, '瘟疫之路', '传送到|cff00ccff凋魂之殇|r的入口。'},
-{354468, '雾林之路', '传送到|cff00ccff塞兹仙林的迷雾|r的入口。'},
-{354469, '石头守望者之路', '传送至|cff00ccff赤红深渊|r入口。'},
-{354465, '罪魂之路', '传送到|cff00ccff赎罪大厅|r的入口。'},
-{354467, '不败之路', '传送到|cff00ccff伤逝剧场|r的入口。'},
-{354462, '勇者之路', '传送到|cff00ccff通灵战潮|r的入口。'},
-{354466 , '晋升者之路', '传送到|cff00ccff晋升高塔|r的入口。'},
-}]]
 
 
 
