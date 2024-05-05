@@ -1015,7 +1015,7 @@ local function Init_TrackButton()--添加装备管理框
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.equipmentFrameScale or 1),'Alt+'..e.Icon.mid)
-        e.tips:AddDoubleLine(not Save.EquipmentH and e.Icon.toRight2..(e.onlyChinese and '向右' or BINDING_NAME_STRAFERIGHT) or (e.Icon.down2..(e.onlyChinese and '向下' or BINDING_NAME_PITCHDOWN)),
+        e.tips:AddDoubleLine(not Save.EquipmentH and e.Icon.toRight2..(e.onlyChinese and '向右' or BINDING_NAME_STRAFERIGHT) or ('|A:UI-HUD-MicroMenu-StreamDLRed-Up:0:0|a'..(e.onlyChinese and '向下' or BINDING_NAME_PITCHDOWN)),
                 'Ctrl+'..e.Icon.right)
 
         e.tips:AddLine(' ')
@@ -1429,10 +1429,10 @@ local function setFlyout(button, itemLink, slot)
                             updown= nil
                         end
                     else
-                        updown= e.Icon.up2
+                        updown= '|A:bags-greenarrow:0:0|a'
                     end
                 else
-                    updown= e.Icon.up2
+                    updown= '|A:bags-greenarrow:0:0|a'
                 end
             end
         end
@@ -1799,7 +1799,7 @@ function panel:Init_Server_equipmentButton_Lable()
             local ok2
             for k, v in pairs(GetAutoCompleteRealms()) do
                 if v==e.Player.realm then
-                    e.tips:AddDoubleLine(v..e.Icon.star2, k, 0,1,0)
+                    e.tips:AddDoubleLine(v..'|A:auctionhouse-icon-favorite:0:0|a', k, 0,1,0)
                 else
                     e.tips:AddDoubleLine(v, k)
                 end

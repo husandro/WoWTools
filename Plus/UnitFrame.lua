@@ -1234,7 +1234,7 @@ local function Init_UnitFrame_Update(frame, isParty)--UnitFrame.lua--职业, 图
     if frame.name then
         local name
         if UnitIsUnit(unit, 'pet') then
-            frame.name:SetText(e.Icon.star2)
+            frame.name:SetText('|A:auctionhouse-icon-favorite:0:0|a')
         else
             frame.name:SetTextColor(r,g,b)
             if isParty then
@@ -1993,7 +1993,7 @@ local function Init()
     --修改, 宠物, 名称)
     hooksecurefunc('UnitFrame_OnEvent', function(self, event)
         if self.unit=='pet' and event == "UNIT_NAME_UPDATE" then
-            self.name:SetText(e.Icon.star2)
+            self.name:SetText('|A:auctionhouse-icon-favorite:0:0|a')
         end
     end)
 

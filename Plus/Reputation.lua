@@ -132,7 +132,7 @@ local function get_Faction_Info(index, factionID)
 	local hasRewardPending
 	if isParagon then--奖励
 		local currentValue, threshold, rewardQuestID, hasRewardPending2, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(factionID);
-		hasRewardPending= hasRewardPending2 and e.Icon.bank2 or nil
+		hasRewardPending= hasRewardPending2 and '|A:Banker:0:0|a' or nil
 		if not tooLowLevelForParagon and currentValue and threshold then
 			local completed= math.modf(currentValue/threshold)--完成次数
 			currentValue= completed>0 and currentValue - threshold * completed or currentValue
@@ -933,7 +933,7 @@ local function FactionUpdate(_, _, text, ...)
 			end
 			m=(icon or ('|A:'..e.Icon.icon..':0:0|a'))..m
 			if hasRewardPending then
-				m=m..e.Icon.bank2..(rewardQuestID and GetQuestLink(rewardQuestID) or '')
+				m=m..'|A:Banker:0:0|a'..(rewardQuestID and GetQuestLink(rewardQuestID) or '')
 			end
 
 			return false, text..m, ...

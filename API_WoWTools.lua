@@ -127,13 +127,13 @@ e.Icon={
     --player= e.GetUnitRaceInfo({unit='player', guid=nil , race=nil , sex=nil , reAtlas=false}),
 
     
-    bank2='|A:Banker:0:0|a',
-    bag='bag-main',
-    bag2='|A:bag-main:0:0|a',
+    --bank2='|A:Banker:0:0|a',
+    --bag='bag-main',
+    --bag2='|A:bag-main:0:0|a',
     --bagEmpty='bag-reagent-border-empty',
 
-    up2='|A:bags-greenarrow:0:0|a',--绿色向上, 红色向上 UI-HUD-Minimap-Arrow-Corpse， 金色 UI-HUD-Minimap-Arrow-Guard
-    down2='|A:UI-HUD-MicroMenu-StreamDLRed-Up:0:0|a',--红色向下
+   --up2='|A:bags-greenarrow:0:0|a',--绿色向上, 红色向上 UI-HUD-Minimap-Arrow-Corpse， 金色 UI-HUD-Minimap-Arrow-Guard
+    --down2='|A:UI-HUD-MicroMenu-StreamDLRed-Up:0:0|a',--红色向下
     toLeft='common-icon-rotateleft',--向左
     toLeft2='|A:common-icon-rotateleft:0:0|a',
     toRight='common-icon-rotateright',--向右
@@ -150,7 +150,7 @@ e.Icon={
     leader='|A:UI-HUD-UnitFrame-Player-Group-GuideIcon:0:0|a',--队长
 
     --info2='|A:questlegendary:0:0|a',--黄色!
-    star2='|A:auctionhouse-icon-favorite:0:0|a',--星星
+    --star2='|A:auctionhouse-icon-favorite:0:0|a',--星星
 }
 
 

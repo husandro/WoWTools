@@ -544,13 +544,13 @@ function func.Set_Item(self, itemLink, itemID)
                     if slotItemLevel then
                         local num=itemLevel-slotItemLevel
                         if num>0 then
-                            text=itemLevel..e.Icon.up2..'|cnGREEN_FONT_COLOR:+'..num..'|r'
+                            text=itemLevel..'|A:bags-greenarrow:0:0|a'..'|cnGREEN_FONT_COLOR:+'..num..'|r'
                         elseif num<0 then
-                            text=itemLevel..e.Icon.down2..'|cnRED_FONT_COLOR:'..num..'|r'
+                            text=itemLevel..'|A:UI-HUD-MicroMenu-StreamDLRed-Up:0:0|a'..'|cnRED_FONT_COLOR:'..num..'|r'
                         end
                     end
                 else
-                    text=itemLevel..e.Icon.up2
+                    text=itemLevel..'|A:bags-greenarrow:0:0|a'
                 end
                 text= col..(text or itemLevel)..'|r'
                 self.textLeft:SetText(text)
@@ -669,7 +669,7 @@ function func.Set_Item(self, itemLink, itemID)
         for guid, info in pairs(e.WoWDate or {}) do
             if guid and guid~=e.Player.guid and info.Item[itemID] then
                 local tab=info.Item[itemID]
-                self:AddDoubleLine(e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}), e.Icon.bank2..(tab.bank==0 and '|cff606060'..tab.bank..'|r' or tab.bank)..' '..e.Icon.bag2..(tab.bag==0 and '|cff606060'..tab.bag..'|r' or tab.bag))
+                self:AddDoubleLine(e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}), '|A:Banker:0:0|a'..(tab.bank==0 and '|cff606060'..tab.bank..'|r' or tab.bank)..' '..'|A:bag-main:0:0|a'..(tab.bag==0 and '|cff606060'..tab.bag..'|r' or tab.bag))
                 bagAll=bagAll +tab.bag
                 bankAll=bankAll +tab.bank
                 numPlayer=numPlayer +1
@@ -678,11 +678,11 @@ function func.Set_Item(self, itemLink, itemID)
 
         if numPlayer>0 then
             wowNum= bagAll+ bankAll
-            self:AddDoubleLine(numPlayer..' '..(e.onlyChinese and '角色' or CHARACTER)..' '..e.MK(wowNum+bag+bank, 3), format('|T%d:0|t', e.Icon.wow)..e.MK(bagAll+bankAll, 3)..' = '..e.Icon.bank2..(bankAll==0 and '|cff606060'..bankAll..'|r' or e.MK(bankAll,3))..' '..e.Icon.bag2..(bagAll==0 and '|cff606060'..bagAll..'|r' or e.MK(bagAll, 3)))
+            self:AddDoubleLine(numPlayer..' '..(e.onlyChinese and '角色' or CHARACTER)..' '..e.MK(wowNum+bag+bank, 3), format('|T%d:0|t', e.Icon.wow)..e.MK(bagAll+bankAll, 3)..' = '..'|A:Banker:0:0|a'..(bankAll==0 and '|cff606060'..bankAll..'|r' or e.MK(bankAll,3))..' '..'|A:bag-main:0:0|a'..(bagAll==0 and '|cff606060'..bagAll..'|r' or e.MK(bagAll, 3)))
         end
     end
 
-    self.textRight:SetText(col..e.MK(wowNum, 3)..format('|T%d:0|t', e.Icon.wow)..' '..e.MK(bank, 3)..e.Icon.bank2..' '..e.MK(bag, 3)..e.Icon.bag2..'|r')
+    self.textRight:SetText(col..e.MK(wowNum, 3)..format('|T%d:0|t', e.Icon.wow)..' '..e.MK(bank, 3)..'|A:Banker:0:0|a'..' '..e.MK(bag, 3)..'|A:bag-main:0:0|a'..'|r')
 
     --setItemCooldown(self, itemID)--物品冷却
 
@@ -1178,14 +1178,14 @@ function func.Set_Unit(self)--设置单位提示信息
                     GameTooltipTextRight1:SetShown(true)
                 end
             end
-            line:SetText((isSelf and e.Icon.star2 or e.GetFriend(nil, guid, nil) or '')
+            line:SetText((isSelf and '|A:auctionhouse-icon-favorite:0:0|a' or e.GetFriend(nil, guid, nil) or '')
                         ..col..e.Icon.toRight2..name..e.Icon.toLeft2
                         ..'|r')
         end
 
 
         local region= e.Get_Region(realm)--服务器，EU， US
-        self.textRight:SetText(col..realm..'|r'..(isSelf and e.Icon.star2 or realm==e.Player.realm and format('|A:%s:0:0|a', e.Icon.select) or e.Player.Realms[realm] and '|A:Adventures-Checkmark:0:0|a' or '')..(region and region.col or ''))
+        self.textRight:SetText(col..realm..'|r'..(isSelf and '|A:auctionhouse-icon-favorite:0:0|a' or realm==e.Player.realm and format('|A:%s:0:0|a', e.Icon.select) or e.Player.Realms[realm] and '|A:Adventures-Checkmark:0:0|a' or '')..(region and region.col or ''))
 
         line=isInGuild and GameTooltipTextLeft2
         if line then

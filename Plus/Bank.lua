@@ -789,7 +789,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             --添加控制面板
             --local initializer2= 
             e.AddPanel_Check({
-                name= e.Icon.bank2..(e.onlyChinese and '银行' or addName),
+                name= '|A:Banker:0:0|a'..(e.onlyChinese and '银行' or addName),
                 tooltip= e.cn(addName),
                 value= not Save.disabled,
                 func= function()

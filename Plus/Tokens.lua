@@ -1403,7 +1403,7 @@ local function Init()
 
 	Button.bag=e.Cbtn(Button, {icon='hide', size={18,18}})
 	Button.bag:SetPoint('RIGHT', Button.up, 'LEFT',-4,0)
-	Button.bag:SetNormalAtlas(e.Icon.bag)
+	Button.bag:SetNormalAtlas('bag-main')
 	Button.bag:SetScript("OnClick", function(self)
 		for index=1, BackpackTokenFrame:GetMaxTokensWatched() do--Blizzard_TokenUI.lua
 			local info = C_CurrencyInfo.GetBackpackCurrencyInfo(index)

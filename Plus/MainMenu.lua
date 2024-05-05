@@ -348,7 +348,7 @@ local function Init_Guild()
                     all= all+1
                 end
             end
-            local icon=(tab.clubId==guildClubId) and e.Icon.star2 or '|T'..tab.avatarId..':0|t'
+            local icon=(tab.clubId==guildClubId) and '|A:auctionhouse-icon-favorite:0:0|a' or '|T'..tab.avatarId..':0|t'
             local col= online>0 and '|cnGREEN_FONT_COLOR:' or '|cff606060'
             e.tips:AddDoubleLine(icon..col..tab.name, col..online..icon)--..tab.memberCount
         end
@@ -570,7 +570,7 @@ local function Init_Store()
         for guid, info in pairs(e.WoWDate or {}) do
             local tab=info.Item[122284]
             if tab and guid then
-                e.tips:AddDoubleLine(e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}), e.Icon.bank2..(tab.bank==0 and '|cff606060'..tab.bank..'|r' or tab.bank)..' '..e.Icon.bag2..(tab.bag==0 and '|cff606060'..tab.bag..'|r' or tab.bag))
+                e.tips:AddDoubleLine(e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}), '|A:Banker:0:0|a'..(tab.bank==0 and '|cff606060'..tab.bank..'|r' or tab.bank)..' '..'|A:bag-main:0:0|a'..(tab.bag==0 and '|cff606060'..tab.bag..'|r' or tab.bag))
                 bagAll=bagAll +tab.bag
                 bankAll=bankAll +tab.bank
                 numPlayer=numPlayer +1
@@ -586,7 +586,7 @@ local function Init_Store()
     for guid, info in pairs(e.WoWDate or {}) do
         local tab=info.Item[122284]
         if tab and guid then
-            e.tips:AddDoubleLine(e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}), e.Icon.bank2..(tab.bank==0 and '|cff606060'..tab.bank..'|r' or tab.bank)..' '..e.Icon.bag2..(tab.bag==0 and '|cff606060'..tab.bag..'|r' or tab.bag))
+            e.tips:AddDoubleLine(e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}), '|A:Banker:0:0|a'..(tab.bank==0 and '|cff606060'..tab.bank..'|r' or tab.bank)..' '..'|A:bag-main:0:0|a'..(tab.bag==0 and '|cff606060'..tab.bag..'|r' or tab.bag))
             all= all +tab.bag +tab.bank
         end
     end
@@ -770,7 +770,7 @@ local function Init_Bag()
                 use= use+ freeSlots
                 local icon
                 if i== BACKPACK_CONTAINER then
-                    icon= e.Icon.bag2
+                    icon= '|A:bag-main:0:0|a'
                 else
                     local inventoryID = C_Container.ContainerIDToInventoryID(i)
                     local texture = inventoryID and GetInventoryItemTexture('player', inventoryID)

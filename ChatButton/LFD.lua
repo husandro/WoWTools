@@ -546,7 +546,7 @@ local function Set_Queue_Status()--小眼睛, 信息
         end
         if list then
             text= (text and text..'|n' or '')
-            ..(LFGListUtil_IsEntryEmpowered() and e.Icon.player or e.Icon.star2)
+            ..(LFGListUtil_IsEntryEmpowered() and e.Icon.player or '|A:auctionhouse-icon-favorite:0:0|a')
             ..(e.onlyChinese and '招募' or RAF_RECRUITMENT)..(info.autoAccept and ' ('..(e.onlyChinese and '自动加入' or AUTO_JOIN)..')' or '')
             ..'|n'..list
         end
@@ -935,7 +935,7 @@ local set_Raid_Menu_List=function(level)--团队本
 
 
             info={
-                text=((LfgDungeonID==sortedDungeons[i].id or scenarioName== strlower(sortedDungeons[i].name or '')) and e.Icon.star2 or '')--在当前副本
+                text=((LfgDungeonID==sortedDungeons[i].id or scenarioName== strlower(sortedDungeons[i].name or '')) and '|A:auctionhouse-icon-favorite:0:0|a' or '')--在当前副本
                     ..sortedDungeons[i].name
                     ..get_Reward_Info(sortedDungeons[i].id)--名称
                     ..killText,
@@ -1422,11 +1422,14 @@ local function InitList(_, level, type)--LFDFrame.lua
 
     local isLeader, isTank, isHealer, isDPS = GetLFGRoles()--角色职责
     info={
-        text= (e.onlyChinese and '设置' or SETTINGS)..(isLeader and e.Icon.leader or '')--提示信息
-        ..(isTank and e.Icon.TANK or '')
-        ..(isHealer and e.Icon.HEALER or '')
-        ..(isDPS and e.Icon.DAMAGER or '')
-        ..((not isTank and not isHealer and not isDPS) and ' |cnRED_FONT_COLOR:'..(e.onlyChinese and '无职责' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NONE, ROLE))..'|r' or ''),
+        text= format('%s%s%s%s%s%s',
+            e.onlyChinese and '设置' or SETTINGS,
+            isLeader and '|A:UI-HUD-UnitFrame-Player-Group-GuideIcon:0:0|a' or '',--提示信息
+            isTank and e.Icon.TANK or '',
+            isHealer and e.Icon.HEALER or '',
+            isDPS and e.Icon.DAMAGER or '',
+            not (isTank or isHealer or isDPS) and format(' |cnRED_FONT_COLOR:%s|r', e.onlyChinese and '无职责' or NO_ROLE) or ''
+        ),
         --..(not Save.hideQueueStatus and '|A:groupfinder-eye-frame:0:0|a' or '')
         --..(Save.autoROLL and '|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t' or '')--自动,战利品掷骰
         --..(Save.LFGPlus and '|A:UI-HUD-MicroMenu-Groupfinder-Mouseover:0:0|a' or ''),

@@ -282,7 +282,7 @@ function e.Set_Item_Info(self, tab)
                                 bottomLeftText= bottomLeftText.. itemLevel
                                 local level= GetAverageItemLevel()
                                 if not dateInfo.red then
-                                    bottomLeftText= bottomLeftText.. (level<itemLevel and e.Icon.up2 or format('|A:%s:0:0|a', e.Icon.select))
+                                    bottomLeftText= bottomLeftText.. (level<itemLevel and '|A:bags-greenarrow:0:0|a' or format('|A:%s:0:0|a', e.Icon.select))
                                 else
                                     bottomLeftText= format('%s|A:%s:0:0|a', bottomLeftText, e.Icon.disabled)
                                 end
@@ -1254,7 +1254,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 
             --添加控制面板
             Initializer= e.AddPanel_Check({
-                name= e.Icon.bag2..(e.onlyChinese and '物品信息' or addName),
+                name= '|A:bag-main:0:0|a'..(e.onlyChinese and '物品信息' or addName),
                 tooltip= e.onlyChinese and '系统背包|n商人' or (BAGSLOT..'|n'..MERCHANT),--'Inventorian, Baggins', 'Bagnon'
                 value= not Save.disabled,
                 func= function()

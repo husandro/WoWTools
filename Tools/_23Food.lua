@@ -380,7 +380,7 @@ end
     end
 
     info={
-        text=e.Icon.up2.. (e.onlyChinese and '全部取消' or CALENDAR_EVENT_REMOVED_MAIL_SUBJECT:format(ALL)),
+        text='|A:bags-greenarrow:0:0|a'.. (e.onlyChinese and '全部取消' or CALENDAR_EVENT_REMOVED_MAIL_SUBJECT:format(ALL)),
         colorCode= '|cffff0000',
         notCheckable=true,
         keepShownOnClick=true,

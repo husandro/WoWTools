@@ -467,7 +467,7 @@ local function get_vignette_Text()
                     end
                 end
                 if index==bestUniqueVignetteIndex then--唯一
-                    name= '|cnGREEN_FONT_COLOR:'..name..'|r'..e.Icon.star2
+                    name= '|cnGREEN_FONT_COLOR:'..name..'|r'..'|A:auctionhouse-icon-favorite:0:0|a'
                 end
 
                 --local point= C_VignetteInfo.GetVignettePosition(guid, uiMapID)

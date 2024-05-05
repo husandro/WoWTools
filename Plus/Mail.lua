@@ -70,7 +70,7 @@ local function get_Name_Info(name)--取得名称，信息
         name = e.GetUnitName(name)
         for guid, tab in pairs(e.WoWDate or {}) do
             if name== e.GetUnitName(nil, nil, guid) then
-                reName= e.Icon.star2..e.GetPlayerInfo({guid=guid, faction=tab.faction, reName=true, realm=true})
+                reName= '|A:auctionhouse-icon-favorite:0:0|a'..e.GetPlayerInfo({guid=guid, faction=tab.faction, reName=true, realm=true})
                 break
             end
         end

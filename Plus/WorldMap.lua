@@ -124,7 +124,7 @@ local function set_WorldQuestPinMixin_RefreshVisuals(self)--WorldQuestDataProvid
                 if itemLinkPlayer then
                     local lv= C_Item.GetDetailedItemLevelInfo(itemLinkPlayer)
                     if lv and itemLevel-lv>0 then
-                        text= (text or '')..e.Icon.up2
+                        text= (text or '')..'|A:bags-greenarrow:0:0|a'
                         setLevelUp=true
                     end
                 end

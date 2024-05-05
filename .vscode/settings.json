@@ -4386,7 +4386,7 @@
         "UIParentLoadAddOn",
         "InterfaceOptions_AddCategory",
         "InterfaceOptionsFrame_OpenToCategory",
-        "TRANSMOG_SHOW_ALL_FACTIONS"
+        "NO_ROLE"
     ],
     "Lua.diagnostics.disable": [
         "inject-field",

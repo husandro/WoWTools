@@ -161,7 +161,7 @@ local function Item(link)--物品超链接
     end
     local bag= C_Item.GetItemCount(link, true, false, true)--数量
     if bag and bag>0 then
-        t=t..e.Icon.bag2..e.MK(bag, 3)
+        t=t..'|A:bag-main:0:0|a'..e.MK(bag, 3)
     end
 
     if t~=link then

@@ -153,7 +153,7 @@ local function Set_Merchant_Info()--设置, 提示, 信息
             --包里，银行，总数
             local bag=itemID and C_Item.GetItemCount(itemID, true, false, true)
             if bag and bag>0 then
-                num=(num and num..'|n' or '')..bag..e.Icon.bank2
+                num=(num and num..'|n' or '')..bag..'|A:Banker:0:0|a'
             end
             if num and not btn.buyItemNum then
                 btn.buyItemNum=e.Cstr(btn)
@@ -169,7 +169,7 @@ local function Set_Merchant_Info()--设置, 提示, 信息
                     e.tips:AddDoubleLine('|T236994:0|t'..(e.onlyChinese and '自动购买物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, PURCHASE)), not Save.notAutoBuy and buySave[self.itemID] or (e.onlyChinese and '无' or NONE))
                     local all= C_Item.GetItemCount(self.itemID, true, false, true)
                     local bag2= C_Item.GetItemCount(self.itemID)
-                    e.tips:AddDoubleLine(e.Icon.bank2..(e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL), all..'= '.. e.Icon.bag2.. bag2..'+ '..e.Icon.bank2..(all-bag))
+                    e.tips:AddDoubleLine('|A:Banker:0:0|a'..(e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL), all..'= '.. '|A:bag-main:0:0|a'.. bag2..'+ '..'|A:Banker:0:0|a'..(all-bag))
 					e.tips:Show()
                 end)
             end
@@ -1122,7 +1122,7 @@ local function Init_Menu(_, level, type)
                 local itemLink= select(2, C_Item.GetItemInfo(itemID))
                 itemLink= itemLink or C_Item.GetItemNameByID(itemID) or ('itemID: ' .. itemID)
                 info= {
-                    text='|cnGREEN_FONT_COLOR:'..num..'|r '..itemLink..' '..'|cnYELLOW_FONT_COLOR:'..bag..e.Icon.bag2..bank..e.Icon.bank2..'|r',
+                    text='|cnGREEN_FONT_COLOR:'..num..'|r '..itemLink..' '..'|cnYELLOW_FONT_COLOR:'..bag..'|A:bag-main:0:0|a'..bank..'|A:Banker:0:0|a'..'|r',
                     notCheckable=true,
                     tooltipOnButton=true,
                     tooltipTitle=e.onlyChinese and '移除' or REMOVE,
@@ -1161,7 +1161,7 @@ local function Init_Menu(_, level, type)
                 local itemLink= select(2, C_Item.GetItemInfo(itemID))
                 itemLink= itemLink or C_Item.GetItemNameByID(itemID) or ('itemID: ' .. itemID)
                 info= {
-                    text=itemLink..' '..'|cnYELLOW_FONT_COLOR:'..bag..e.Icon.bag2..bank..e.Icon.bank2..'|r',
+                    text=itemLink..' '..'|cnYELLOW_FONT_COLOR:'..bag..'|A:bag-main:0:0|a'..bank..'|A:Banker:0:0|a'..'|r',
                     notCheckable=true,
                     tooltipOnButton=true,
                     tooltipTitle=e.onlyChinese and '移除' or REMOVE,

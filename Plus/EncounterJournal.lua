@@ -109,7 +109,7 @@ local function set_EncounterJournal_World_Tips(self2)
             find=true
         end
         if find then
-            e.tips:AddDoubleLine(e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}), guid==e.Player.guid and e.Icon.star2)
+            e.tips:AddDoubleLine(e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}), guid==e.Player.guid and '|A:auctionhouse-icon-favorite:0:0|a')
         end
     end
     e.tips:Show()
@@ -1088,7 +1088,7 @@ local function Init_EncounterJournal()--冒险指南界面
                     local col= select(4, GetClassColor(classInfo.classFile))
                     col= col and '|c'..col or col
                     info={
-                        text= (e.Class(nil, classInfo.classFile) or '')..classInfo.className..(e.Player.class==classInfo.classFile and e.Icon.star2 or '')..(n>0 and ' |cnGREEN_FONT_COLOR:#'..n..'|r' or ''),
+                        text= (e.Class(nil, classInfo.classFile) or '')..classInfo.className..(e.Player.class==classInfo.classFile and '|A:auctionhouse-icon-favorite:0:0|a' or '')..(n>0 and ' |cnGREEN_FONT_COLOR:#'..n..'|r' or ''),
                         colorCode= col,
                         notCheckable=true,
                         arg1= classInfo.classFile,
@@ -1142,7 +1142,7 @@ local function Init_EncounterJournal()--冒险指南界面
             local specID, name, _ , icon= GetSpecializationInfo(specIndex)
             if icon and specID and name then
                 info= {
-                    text=name..(curSpec==specIndex and e.Icon.star2 or ''),
+                    text=name..(curSpec==specIndex and '|A:auctionhouse-icon-favorite:0:0|a' or ''),
                     colorCode= e.Player.col,
                     icon=icon,
                     checked= Save.loot[e.Player.class][self.dungeonEncounterID]== specID,

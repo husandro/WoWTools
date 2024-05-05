@@ -817,7 +817,7 @@ local function set_WhoList_Update()--查询, 名单列表
                     if nameText then
                         nameText= nameText..info.fullName
                         if info.fullName== e.Player.name then
-                            nameText= nameText..e.Icon.star2
+                            nameText= nameText..'|A:auctionhouse-icon-favorite:0:0|a'
                         end
                         btn.Name:SetText(nameText)
                     end
