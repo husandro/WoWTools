@@ -707,7 +707,7 @@ local function set_model(self)--StableActivePetButtonTemplateMixin
     if displayID==0 then
         self.model:ClearModel()
     elseif displayID~=self.displayID then
-            self.model:SetDisplayInfo(displayID)
+        self.model:SetDisplayInfo(displayID)
     end
     self.displayID= displayID--提示用，
     if self.model.bg then
