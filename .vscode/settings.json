@@ -4387,7 +4387,9 @@
         "InterfaceOptions_AddCategory",
         "InterfaceOptionsFrame_OpenToCategory",
         "NO_ROLE",
-        "MicroMenu"
+        "MicroMenu",
+        "SOULBINDS_ACTIVATED_FOR_SPEC",
+        "TRANSMOG_SHOW_ALL_FACTIONS"
     ],
     "Lua.diagnostics.disable": [
         "inject-field",

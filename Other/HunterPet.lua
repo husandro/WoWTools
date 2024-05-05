@@ -18,7 +18,7 @@ local Save={
     --all_List_Size==28--图标表表，图标大小
 }
 local Initializer
-
+local AllListFrame
 
 
 
@@ -644,6 +644,9 @@ end
 
 
 
+--召唤，法术，提示
+local CALL_PET_SPELL_IDS = {0883, 83242, 83243, 83244, 83245, }
+e.LoadDate({id=267116, type='spell'})--动物伙伴
 
 
 --取得，宠物，技能，图标
@@ -726,7 +729,7 @@ end
 
 local function set_button_size(btn)
     local n= Save.all_List_Size or 28
-    StableFrame.AllListFrame.s= n
+    AllListFrame.s= n
     btn:SetSize(n, n)
     btn.Icon:SetSize(n, n)
     local s= n*0.5
@@ -737,7 +740,7 @@ local function set_button_size(btn)
 end
 
 local function created_button(index)
-    local btn= CreateFrame('Button', nil, StableFrame.AllListFrame, 'StableActivePetButtonTemplate', index)
+    local btn= CreateFrame('Button', nil, AllListFrame, 'StableActivePetButtonTemplate', index)
     --btn.Icon:SetTexCoord(1,0,0,1)
     btn:HookScript('OnEnter', function(self)
         if not self.petData then return end
@@ -751,7 +754,7 @@ local function created_button(index)
     btn.Border:SetTexture(nil)
     btn.Border:ClearAllPoints()
     btn.Border:Hide()
-    btn.Text= e.Cstr(btn,{size=10, color={r=1,g=1,b=1,a=0.3}, layer='BACKGROUND'})
+    btn.Text= e.Cstr(btn,{size=10, color={r=1,g=1,b=1,a=0.2}, layer='BACKGROUND'})
     btn.Text:SetPoint('CENTER', btn.Background)
     btn.Text:SetText(index)
     btn.Icon:SetDrawLayer('BORDER')
@@ -761,10 +764,7 @@ local function created_button(index)
     return btn
 end
 
---召唤，法术，提示
-local CALL_PET_SPELL_IDS = {0883, 83242, 83243, 83244, 83245, }
 
-e.LoadDate({id=267116, type='spell'})--动物伙伴
 
 
 
@@ -846,6 +846,7 @@ local function Init_StableFrame_Plus()
 
         created_model(btn)--已激活宠物，Model 提示
         btn.model:SetPoint('TOP', btn, 'BOTTOM', 0, -14)
+        --btn.model:SetPoint('BOTTOM', btn, 'TOP', 0, 14)
 
         hooksecurefunc(btn, 'SetPet', function(self)--StableActivePetButtonTemplateMixin
             local icon= get_abilities_icons(self.petData)
@@ -859,6 +860,13 @@ local function Init_StableFrame_Plus()
             set_model(self)
         end)
     end
+
+    local bg= StableFrame.ActivePetList:CreateTexture(nil, "BACKGROUND")
+    bg:SetAtlas(StableFrame.Topper:IsShown() and 'pet-list-bg' or 'footer-bg')
+    bg:SetTexCoord(1,0,1,0)
+    bg:SetPoint('TOPLEFT', StableFrame.ActivePetList.PetButtons[1].model)
+    bg:SetPoint('BOTTOMRIGHT', StableFrame.ActivePetList.PetButtons[#StableFrame.ActivePetList.PetButtons].model)
+
 
     local btn= StableFrame.ActivePetList.BeastMasterSecondaryPetButton--第二个，宠物，提示
     created_model(btn)--已激活宠物，Model 提示
@@ -884,12 +892,12 @@ local function Init_StableFrame_Plus()
         
         local selecIndex= self.selectedPet and self.selectedPet.slotID
 
-        for _, btn in ipairs(StableFrame.ActivePetList.PetButtons) do    --已激，宠物栏，提示
-            btn.model:SetShown(btn:GetID()~=selecIndex)
+        for _, btn2 in ipairs(StableFrame.ActivePetList.PetButtons) do    --已激，宠物栏，提示
+            btn2.model:SetShown(btn2:GetID()~=selecIndex)
         end
 
-        local btn= self.ActivePetList.BeastMasterSecondaryPetButton
-        btn.model:SetShown(btn:IsEnabled() and (selecIndex~=Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX))
+        local btn2= self.ActivePetList.BeastMasterSecondaryPetButton
+        btn2.model:SetShown(btn2:IsEnabled() and (selecIndex~=Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX))
     end)
     
 
@@ -951,6 +959,7 @@ function Init_UI()
 
     StableFrame.StableTogglePetButton:ClearAllPoints()
     StableFrame.StableTogglePetButton:SetPoint('BOTTOMRIGHT', StableFrame.PetModelScene)
+    --StableFrame.StableTogglePetButton:SetWidth(StableFrame.StableTogglePetButton:GetFontString():GetWidth()+24)
 
     StableFrame.PetModelScene.AbilitiesList:ClearAllPoints()
     StableFrame.PetModelScene.AbilitiesList:SetPoint('LEFT', 8, -40)
@@ -1017,38 +1026,38 @@ end
 
 --初始，宠物列表
 function Set_StableFrame_List()
-    if StableFrame.AllListFrame or not Save.show_All_List then
-        if StableFrame.AllListFrame then
-            StableFrame.AllListFrame:set_shown()
+    if AllListFrame or not Save.show_All_List then
+        if AllListFrame then
+            AllListFrame:set_shown()
         end
         return
     end
 
-    local frame= CreateFrame('Frame', nil, StableFrame)
-    StableFrame.AllListFrame=frame
-    frame:SetPoint('TOPLEFT', StableFrame, 'TOPRIGHT', StableFrame.Topper:IsShown() and 0 or 12,0)
-    frame:SetSize(1,1)
-    frame:Hide()
-    function frame:set_shown()
+    AllListFrame= CreateFrame('Frame', nil, StableFrame)
+    AllListFrame:SetPoint('TOPLEFT', StableFrame, 'TOPRIGHT', StableFrame.Topper:IsShown() and 0 or 12,0)
+    AllListFrame:SetSize(1,1)
+    AllListFrame:Hide()
+    function AllListFrame:set_shown()
         self:SetShown(Save.show_All_List)
     end
 
-    frame.Buttons={}
+    AllListFrame.Buttons={}
 
-    frame.s= Save.all_List_Size or 28
+    AllListFrame.s= Save.all_List_Size or 28
 
-    frame.Bg= frame:CreateTexture(nil, "BACKGROUND")
-    frame.Bg:SetAtlas(StableFrame.Topper:IsShown() and 'pet-list-bg' or 'footer-bg')
-    frame.Bg:SetPoint('TOPLEFT')
+    AllListFrame.Bg= AllListFrame:CreateTexture(nil, "BACKGROUND")
+    AllListFrame.Bg:SetAtlas(StableFrame.Topper:IsShown() and 'pet-list-bg' or 'footer-bg')
+    AllListFrame.Bg:SetTexCoord(1,0,1,0)
+    AllListFrame.Bg:SetPoint('TOPLEFT')
 
     for i=Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX+ 1, Constants.PetConsts.NUM_PET_SLOTS do
         local btn= created_button(i)
-        frame.Buttons[i]= btn
+        AllListFrame.Buttons[i]= btn
     end
 
 
 
-    function frame:set_point()
+    function AllListFrame:set_point()
         if not self:IsShown() then return end
 
         local x, y = 0, 0
@@ -1064,45 +1073,48 @@ function Set_StableFrame_List()
                 x=x+ self.s
             end
         end
-        frame.Bg:ClearAllPoints()
-        frame.Bg:SetPoint('TOPLEFT', frame.Buttons[Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX+ 1])
-        frame.Bg:SetPoint('BOTTOM', btnY)
-        frame.Bg:SetPoint('RIGHT', frame.Buttons[Constants.PetConsts.NUM_PET_SLOTS])
+        AllListFrame.Bg:ClearAllPoints()
+        AllListFrame.Bg:SetPoint('TOPLEFT', AllListFrame.Buttons[Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX+ 1])
+        AllListFrame.Bg:SetPoint('BOTTOM', btnY)
+        AllListFrame.Bg:SetPoint('RIGHT', AllListFrame.Buttons[Constants.PetConsts.NUM_PET_SLOTS])
     end
 
-    function frame:Refresh()
+    function AllListFrame:Refresh()
         if not self:IsShown() then return end
-        for _, btn in pairs(frame.Buttons) do
+        for _, btn in pairs(AllListFrame.Buttons) do
             btn:SetPet(C_StableInfo.GetStablePetInfo(btn:GetID()))
         end
+        self.btn6:settings()
     end
 
-    hooksecurefunc(StableFrame, 'Refresh', function(self)
-        self.AllListFrame:Refresh()
+    hooksecurefunc(StableFrame, 'Refresh', function()
+        AllListFrame:Refresh()
     end)
-    frame:SetScript('OnShow', function(self)
+    AllListFrame:SetScript('OnShow', function(self)
         self:Refresh()
         self:set_point()
     end)
-    frame:SetScript('OnHide', function(self)
+    AllListFrame:SetScript('OnHide', function(self)
         for _, btn in pairs(self.Buttons) do
             btn:SetPet(nil)
         end
-        StableFrame.AllListFrame.btn6:SetPet(nil)
+        self.btn6:settings()
     end)
-    StableFrame:HookScript('OnSizeChanged', function(self) self.AllListFrame:set_point() end)
+    StableFrame:HookScript('OnSizeChanged', function() AllListFrame:set_point() end)
 
     --第6个，提示，如果，没有专精支持，它会禁用，所有，建立一个
-    frame.btn6= created_button(Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX)
-    frame.btn6:SetPoint('BOTTOM', frame.Buttons[Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX+ 1],'TOP')
-    hooksecurefunc(StableFrame.ActivePetList.BeastMasterSecondaryPetButton, 'Refresh', function(self)
-        local btn= StableFrame.AllListFrame.btn6
-        local show= not self:IsEnabled()
-        btn:SetShown(show)
-        btn:SetPet(show and C_StableInfo.GetStablePetInfo(Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX) or nil)
+    AllListFrame.btn6= created_button(Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX)
+    AllListFrame.btn6:SetPoint('BOTTOM', AllListFrame.Buttons[Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX+ 1],'TOP')
+    function AllListFrame.btn6:settings()
+        local show= self:GetParent():IsShown() and not StableFrame.ActivePetList.BeastMasterSecondaryPetButton:IsEnabled()
+        self:SetPet(show and C_StableInfo.GetStablePetInfo(self:GetID()) or nil)
+        self:SetShown(show)
+    end
+    hooksecurefunc(StableFrame.ActivePetList.BeastMasterSecondaryPetButton, 'Refresh', function()
+        AllListFrame.btn6:settings()
     end)
 
-    frame:set_shown()
+    AllListFrame:set_shown()
 end
 
 
@@ -1159,7 +1171,7 @@ local function sort_pets_list(type, d)
     Is_In_Search= true
     do
         local tab= {}
-        for _, btn in pairs(StableFrame.AllListFrame.Buttons) do
+        for _, btn in pairs(AllListFrame.Buttons) do
             if btn.petData and btn.petData.slotID then
                 local info = C_StableInfo.GetStablePetInfo(btn.petData.slotID)
                     table.insert(tab, {
@@ -1188,7 +1200,7 @@ local function sort_pets_list(type, d)
                 end
             end
         else
-            local all= #StableFrame.AllListFrame.Buttons
+            local all= #AllListFrame.Buttons
             for i, newTab in pairs(tab) do
                 do
                     local newIndex= all-i+1
@@ -1282,7 +1294,7 @@ function Init_StableFrame_List()
                             notCheckable=true,
                             arg1=name,
                             keepShownOnClick=true,
-                            disabled= not StableFrame.AllListFrame or not StableFrame.AllListFrame:IsShown(),
+                            disabled= not AllListFrame or not AllListFrame:IsShown(),
                             func=function(_, arg1)
                                 sort_pets_list(arg1)
                             end
@@ -1302,6 +1314,9 @@ function Init_StableFrame_List()
                             Set_StableFrame_List()--初始，宠物列表
                         end
                     }, level)
+
+                    
+
                     e.LibDD:UIDropDownMenu_AddButton({
                         text= e.onlyChinese and '选项' or OPTIONS,
                         notCheckable=true,
@@ -1325,14 +1340,13 @@ function Init_StableFrame_List()
         n= n>66 and 66 or n
         n= n<8 and 8 or n
         Save.all_List_Size= n
-        local frame= StableFrame.AllListFrame
-        if frame then
-            frame.s=n
-            for _, btn in pairs(StableFrame.AllListFrame.Buttons) do
-                set_button_size(btn)
+        if AllListFrame then
+            AllListFrame.s=n
+            for _, btn2 in pairs(AllListFrame.Buttons) do
+                set_button_size(btn2)
             end
-            if frame:IsShown() then
-                frame:set_point()
+            if AllListFrame:IsShown() then
+                AllListFrame:set_point()
             end
         end
         self:set_tooltips()
