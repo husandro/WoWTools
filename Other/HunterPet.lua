@@ -704,16 +704,12 @@ end
 local function set_model(self)--StableActivePetButtonTemplateMixin
     local data= self.petData or {}--宠物，类型，图标
     local displayID= data.displayID or 0
-    
-    if displayID~=self.displayID then
-        if displayID==0 then
-            self.model:ClearModel()
-        else
+    if displayID==0 then
+        self.model:ClearModel()
+    elseif displayID~=self.displayID then
             self.model:SetDisplayInfo(displayID)
-        end
     end
     self.displayID= displayID--提示用，
-
     if self.model.bg then
         local atlas
         if displayID>0 then
@@ -724,12 +720,9 @@ local function set_model(self)--StableActivePetButtonTemplateMixin
             }
             atlas = backgroundForPetSpec[data.specialization]
         end
-        if atlas then
-            self.model.bg:SetAtlas(atlas)
-        else
-            self.model.bg:SetTexture(0)
-        end
-       self.model.shadow:SetShown(displayID>0)
+        self.model.bg:SetAtlas(atlas or 'footer-bg')
+        
+       --self.model.shadow:SetShown(displayID>0)
     end
 end
 
@@ -742,12 +735,12 @@ local function created_model(btn, setBg)
     btn.model:SetFacing(0.5)
     
     if setBg then
-        btn.model.bg= btn.model:CreateTexture(nil, 'BACKGROUND')
+        btn.model.bg= btn:CreateTexture(nil, 'BACKGROUND')
         btn.model.bg:SetAllPoints(btn.model)
 
         btn.model.shadow= btn.model:CreateTexture(nil, 'ARTWORK')
         btn.model.shadow:SetAtlas('perks-char-shadow')
-        btn.model.shadow:SetPoint('BOTTOMLEFT',0,-3)
+        btn.model.shadow:SetPoint('BOTTOMLEFT',btn.model, 0,-3)
         btn.model.shadow:SetSize(w-18, 18)
         btn.model.shadow:SetAlpha(0.4)
     end
