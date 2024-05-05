@@ -472,7 +472,7 @@ end
         if cur then
             info =info or {}
             if cur== max then
-                text= (info.quantity and e.MK(info.quantity, 1) or e.Icon.select2)
+                text= (info.quantity and e.MK(info.quantity, 1) or format('|A:%s:0:0|a', e.Icon.select))
             else
                 text= format('%i%%', cur/max*100)
             end

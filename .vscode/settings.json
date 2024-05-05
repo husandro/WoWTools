@@ -4385,7 +4385,8 @@
         "CREATE_NEW_COMPACT_UNIT_FRAME_PROFILE",
         "UIParentLoadAddOn",
         "InterfaceOptions_AddCategory",
-        "InterfaceOptionsFrame_OpenToCategory"
+        "InterfaceOptionsFrame_OpenToCategory",
+        "TRANSMOG_SHOW_ALL_FACTIONS"
     ],
     "Lua.diagnostics.disable": [
         "inject-field",

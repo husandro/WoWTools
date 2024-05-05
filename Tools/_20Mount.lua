@@ -917,7 +917,7 @@ local function InitMenu(_, level, type)--主菜单
             local name, _, icon = GetSpellInfo(spellID)
             local text= (icon and '|T'..icon..':0|t' or '').. (e.cn(name) or ('spellID: '..spellID))
             local known= spellID and IsSpellKnownOrOverridesKnown(spellID)
-            text= text..(known and e.Icon.select2 or e.Icon.O2)
+            text= text..format('|A:%s:0:0|a', known and e.Icon.select or e.Icon.disabled)
             info={
                 text= text,
                 tooltipOnButton=true,

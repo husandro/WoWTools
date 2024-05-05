@@ -380,7 +380,7 @@ local function set_FriendsList_Init()--好友列表, 初始化
                 local info
                 if menuList=='OnlyWOWFriendInfo' then
                     info={
-                        text= format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, 'WoW'..e.Icon.wow2..(e.onlyChinese and '好友' or FRIEND)),
+                        text= format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, 'WoW'..format('|T%d:0|t', e.Icon.wow)..(e.onlyChinese and '好友' or FRIEND)),
                         disabled= Save.disabledBNFriendInfo,
                         checked= not Save.allFriendInfo,
                         keepShownOnClick=true,
@@ -659,7 +659,7 @@ local function Init_RaidGroupFrame_Update()--团队, 模块
                             if distance and distance > DISTANCE_THRESHOLD_SQUARED then
                                 text= e.GetUnitMapName(unit)--单位, 地图名称
                                 if text then
-                                    text= e.Icon.map2..'|cnGREEN_FONT_COLOR:'..text..'|r'
+                                    text= '|A:poi-islands-table:0:0|a|cnGREEN_FONT_COLOR:'..text..'|r'
                                 end
                             end
                         end
@@ -778,7 +778,7 @@ local function set_WhoList_Update()--查询, 名单列表
                             )
                     e.tips:AddLine('|A:UI-HUD-MicroMenu-GuildCommunities-GuildColor-Mouseover:0:0|a'..self.col..(info.fullGuildName or ''))
                     e.tips:AddLine('|A:groupfinder-waitdot:0:0|a'..self.col..(info.raceStr or ''))
-                    e.tips:AddLine(e.Icon.map2..self.col..(info.area or ''))
+                    e.tips:AddLine('|A:poi-islands-table:0:0|a'..self.col..(info.area or ''))
                 end
 
                 e.tips:AddLine(' ')
@@ -890,7 +890,7 @@ local function Init()--FriendsFrame.lua
                     local t=''
                     for j=1,numEncounters do
                         local isKilled = select(3, GetSavedInstanceEncounterInfo(index,j))
-                        t= t..(isKilled and e.Icon.X2 or e.Icon.select2)
+                        t= t..(isKilled and '|A:common-icon-redx:0:0|a' or format('|A:%s:0:0|a', e.Icon.select))
                     end
                     text= t..' '..text
                 end

@@ -607,7 +607,7 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
         end
         local text
         if totaleClass>1 then
-            text= e.Icon.wow2..format('%i%% %s/%s ', totaleCollected/totaleAll*100, e.MK(totaleCollected, 3), e.MK(totaleAll,3))..(e.onlyChinese and '职业' or CLASS)..' '..totaleClass
+            text= format('|T%d:0|t', e.Icon.wow)..format('%i%% %s/%s ', totaleCollected/totaleAll*100, e.MK(totaleCollected, 3), e.MK(totaleAll,3))..(e.onlyChinese and '职业' or CLASS)..' '..totaleClass
         end
         str:SetText(text or '')
 
@@ -1129,7 +1129,7 @@ local function Init_Wardrober_ListContainer()
 
             btn.limited=btn:CreateTexture(nil, 'OVERLAY')--限时
             btn.limited:SetSize(12, 12)
-            btn.limited:SetAtlas(e.Icon.clock)
+            btn.limited:SetAtlas('socialqueuing-icon-clock')
             btn.limited:SetPoint('TOPRIGHT', btn.Icon)
             btn.limited:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
             btn.limited:SetScript('OnEnter', function(self)
@@ -1188,7 +1188,7 @@ local function Init_Wardrober_ListContainer()
                                 ..'/'..numAll--收集数量
                                 ..' '..meno..(not isCollected and ' ' or '')
                                 ..name--名称
-                                ..(info.limitedTimeSet and e.Icon.clock2 or '')--限时套装
+                                ..(info.limitedTimeSet and '|A:socialqueuing-icon-clock:0:0|a' or '')--限时套装
                                 ..' '..info.setID
                                 --..(info.setID==btn.setID and ' '..e.Icon.toLeft2 or '')
                     tipsText= tipsText..'|n'..(isCollected and '|cnGREEN_FONT_COLOR:'..tip..'|r' or tip)
@@ -1357,7 +1357,7 @@ local function Init_Heirloom()
             button.upLevel.upgradeLevel= upgradeLevel
             button.upLevel:SetShown(has and level>0)
             if level>0 then
-                button.upLevel:SetAtlas(e.Icon.number..level)
+                button.upLevel:SetAtlas('services-number-%d'..level)
             else
                 button.upLevel:SetTexture(0)
             end

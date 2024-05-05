@@ -842,17 +842,12 @@ local function set_memberFrame(memberFrame)
             local faction= UnitFactionGroup(self.unit)
             local atlas
             if faction~= e.Player.faction or self.isPlayer then
-                if faction=='Horde' then
-                    atlas= e.Icon.horde
-                elseif faction=='Alliance' then
-                    atlas= e.Icon.alliance
-                elseif faction=='Neutral' then
-                    atlas='nameplates-icon-flag-neutral'
-                end
+                atlas= e.Icon[faction]
             end
-            self.faction:SetShown(atlas and true or false)
             if atlas then
                 self.faction:SetAtlas(atlas)
+            else
+                self.faction:SetTexture(0)
             end
         end
 
@@ -946,7 +941,7 @@ local function set_memberFrame(memberFrame)
                     text= (text and text..' ' or '')..e.cn(mapInfo.name)
                     local mapID2= C_Map.GetBestMapForUnit('player')
                     if mapID2== mapID then
-                        text= e.Icon.select2..text
+                        text= format('|A:%s:0:0|a', e.Icon.select)..text
                     end
                 end
                 self.Text:SetText(text or '')
@@ -1716,7 +1711,7 @@ local function Init_RaidFrame()--设置,团队
         end
     end)
     hooksecurefunc('CompactRaidGroup_InitializeForGroup', function(frame, groupIndex)--处理, 队伍号
-        frame.title:SetText('|A:'..e.Icon.number..groupIndex..':18:18|a')
+        frame.title:SetText('|A:services-number-'..groupIndex..':18:18|a')
     end)
 
 

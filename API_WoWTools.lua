@@ -103,27 +103,26 @@ e.Icon={
     icon= 'orderhalltalents-done-glow',
     disabled='talents-button-reset',
     select='common-icon-checkmark',--'GarrMission_EncounterBar-CheckMark',--绿色√
-    select2='|A:common-icon-checkmark:0:0|a',--绿色√
+    --select2='|A:common-icon-checkmark:0:0|a',--绿色√
     --selectYellow='common-icon-checkmark-yellow',--黄色√
-    X2='|A:common-icon-redx:0:0|a',
-    O2='|A:talents-button-reset:0:0|a',--￠
+    --X2='|A:common-icon-redx:0:0|a',
+    --O2='|A:talents-button-reset:0:0|a',--￠
     right='|A:newplayertutorial-icon-mouse-rightbutton:0:0|a',
     left='|A:newplayertutorial-icon-mouse-leftbutton:0:0|a',
     mid='|A:newplayertutorial-icon-mouse-middlebutton:0:0|a',
-    map='poi-islands-table',
-    map2='|A:poi-islands-table:0:0|a',
+    --map='poi-islands-table',
+    --map2='|A:poi-islands-table:0:0|a',
     wow=136235,
-    wow2= '|T136235:0|t',--'|A:Icon-WoW:0:0|a',--136235  BNet_GetClientEmbeddedTexture(-2, 32, 32)
+    --wow2= '|T136235:0|t',--'|A:Icon-WoW:0:0|a',--136235  BNet_GetClientEmbeddedTexture(-2, 32, 32)
     net2= '|A:questlog-questtypeicon-account:0:0|a',-- '|A:gmchat-icon-blizz:0:0|a',-- BNet_GetClientEmbeddedTexture(-2, 32, 32), questlog-questtypeicon-account
-    horde= 'charcreatetest-logo-horde',
-    alliance='charcreatetest-logo-alliance',
-    horde2='|A:charcreatetest-logo-horde:0:0|a',
-    alliance2='|A:charcreatetest-logo-alliance:0:0|a',
 
-    number='services-number-',
-    number2='|A:services-number-%d:0:0|a',
-    clock='socialqueuing-icon-clock',
-    clock2='|A:socialqueuing-icon-clock:0:0|a',
+    Alliance='charcreatetest-logo-alliance',
+    Horde='charcreatetest-logo-horde',
+    Neutral='nameplates-icon-flag-neutral',
+    --number='services-number-',
+    --number2='|A:services-number-%d:0:0|a',
+    --clock='socialqueuing-icon-clock',
+    --clock2='|A:socialqueuing-icon-clock:0:0|a',
 
     --player= e.GetUnitRaceInfo({unit='player', guid=nil , race=nil , sex=nil , reAtlas=false}),
 
@@ -141,7 +140,7 @@ e.Icon={
     toRight2='|A:common-icon-rotateright:0:0|a',
 
     --unlocked='tradeskills-icon-locked',--'Levelup-Icon-Lock',--没锁
-    quest='AutoQuest-Badge-Campaign',--任务
+    --quest='AutoQuest-Badge-Campaign',--任务
     --guild2='|A:UI-HUD-MicroMenu-GuildCommunities-Mouseover:0:0|a',--guild2='|A:communities-guildbanner-background:0:0|a',
 
     TANK='|A:UI-LFG-RoleIcon-Tank:0:0|a',--INLINE_TANK_ICON
@@ -158,7 +157,6 @@ e.Icon={
 C_Texture.GetTitleIconTexture(BNET_CLIENT_WOW, Enum.TitleIconVersion.Medium, function(success, texture)--FriendsFrame.lua BnetShared.lua    
     if success and texture then
         e.Icon.wow=texture
-        e.Icon.wow2= '|T'..texture..':0|t'
     end
 end)
 C_Texture.GetTitleIconTexture('BSAp', Enum.TitleIconVersion.Small, function(success, texture)

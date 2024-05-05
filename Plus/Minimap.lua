@@ -936,7 +936,7 @@ local function Init_Button_Menu(_, level, menuList)--菜单
                 text= GetQuestLink(questID) or questID,
                 icon= select(2, GetQuestLogRewardInfo(1, questID))
                      or select(2, GetQuestLogRewardCurrencyInfo(1, questID))
-                     or e.Icon.quest,
+                     or 'AutoQuest-Badge-Campaign',
                 notCheckable=true,
                 tooltipOnButton=true,
                 tooltipTitle= (e.onlyChinese and '移除' or REMOVE)..' '..questID,
@@ -944,7 +944,7 @@ local function Init_Button_Menu(_, level, menuList)--菜单
                 func= function(_, arg1)
                     Save.questIDs[arg1]=nil
                     print(id, Initializer:GetName(), e.cn(addName2), GetQuestLink(questID) or questID,
-                    '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2
+                    '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a'
                 )
                 end
             }
@@ -979,7 +979,7 @@ local function Init_Button_Menu(_, level, menuList)--菜单
                     print(id,Initializer:GetName(), e.cn(addName2),
                         get_AreaPOIInfo_Name(C_AreaPoiInfo.GetAreaPOIInfo(arg2, arg1) or {}),
                         arg1 and 'areaPoiID '..arg1 or '',
-                        ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
+                        ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
                 )
                 end
             }
@@ -1001,7 +1001,7 @@ local function Init_Button_Menu(_, level, menuList)--菜单
             name= name or uiMapID
             info={
                 text= name,
-                icon= e.Icon.map,
+                icon= 'poi-islands-table',
                 notCheckable=true,
                 tooltipOnButton=true,
                 tooltipTitle= (e.onlyChinese and '移除' or REMOVE)..' '..uiMapID,
@@ -1011,7 +1011,7 @@ local function Init_Button_Menu(_, level, menuList)--菜单
                     print(id,Initializer:GetName(), e.cn(addName2),
                     (C_Map.GetMapInfo(uiMapID) or {}).name,
                     arg1 and 'uiMapID '..arg1 or '',
-                    ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
+                    ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
                 )
                 end
             }
@@ -1056,7 +1056,7 @@ local function Init_Button_Menu(_, level, menuList)--菜单
                     print(id,Initializer:GetName(), e.cn(addName2),
                         get_AreaPOIInfo_Name(C_AreaPoiInfo.GetAreaPOIInfo(arg2, arg1) or {})
                         'areaPoiID '..arg1,
-                        ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
+                        ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
                 )
                 end
             }
@@ -1422,7 +1422,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
 
     hooksecurefunc('TaskPOI_OnEnter', function(self)--世界任务，提示 WorldMapFrame.lua
         if self.questID and self.OnMouseClickAction then
-            e.tips:AddDoubleLine(addName2..(Save.questIDs[self.questID] and e.Icon.select2 or ''), 'Alt+'..e.Icon.left)
+            e.tips:AddDoubleLine(addName2..(Save.questIDs[self.questID] and format('|A:%s:0:0|a', e.Icon.select) or ''), 'Alt+'..e.Icon.left)
             e.tips:Show()
         end
     end)
@@ -1435,7 +1435,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
                 Save.questIDs[self.questID]= not Save.questIDs[self.questID] and true or nil
                 print(id,Initializer:GetName(), e.cn(addName2),
                     GetQuestLink(self.questID) or self.questID,
-                    Save.questIDs[self.questID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.select2 or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
+                    Save.questIDs[self.questID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', e.Icon.select) or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
                 )
             end
         end)
@@ -1444,7 +1444,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
 
     hooksecurefunc(AreaPOIPinMixin,'TryShowTooltip', function(self)--areaPoiID,提示 AreaPOIDataProvider.lua
         if self.areaPoiID and  self:GetMap() and self:GetMap():GetMapID() then
-            e.tips:AddDoubleLine(addName2..(Save.areaPoiIDs[self.areaPoiID] and e.Icon.select2 or ''), 'Alt+'..e.Icon.left)
+            e.tips:AddDoubleLine(addName2..(Save.areaPoiIDs[self.areaPoiID] and format('|A:%s:0:0|a', e.Icon.select) or ''), 'Alt+'..e.Icon.left)
             e.tips:Show()
         end
     end)
@@ -1463,7 +1463,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
                     print(id,Initializer:GetName(), e.cn(addName2),
                         (C_Map.GetMapInfo(uiMapID) or {}).name or ('uiMapID '..uiMapID),
                         name,
-                        Save.areaPoiIDs[self.areaPoiID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.select2 or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
+                        Save.areaPoiIDs[self.areaPoiID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', e.Icon.select) or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
                     )
                 end
             end
@@ -1488,7 +1488,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
             local name= (C_Map.GetMapInfo(uiMapID) or {}).name or ('uiMapID '..uiMapID)
             print(id,Initializer:GetName(), e.cn(addName2),
                 name,
-                Save.uiMapIDs[uiMapID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.select2 or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
+                Save.uiMapIDs[uiMapID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', e.Icon.select) or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
             )
             self:set_texture()
         end
@@ -1500,7 +1500,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
         if uiMapID then
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(addName2..(Save.uiMapIDs[uiMapID] and e.Icon.select2 or ''), ((C_Map.GetMapInfo(uiMapID) or {}).name or '')..' '..uiMapID)
+            e.tips:AddDoubleLine(addName2..(Save.uiMapIDs[uiMapID] and format('|A:%s:0:0|a', e.Icon.select) or ''), ((C_Map.GetMapInfo(uiMapID) or {}).name or '')..' '..uiMapID)
             e.tips:AddDoubleLine(id, Initializer:GetName())
             e.tips:Show()
         end
@@ -1918,7 +1918,7 @@ local function Get_Major_Faction_Level(factionID, level)
             if not tooLowLevelForParagon and currentValue and threshold then
                 local completed= math.modf(currentValue/threshold)--完成次数
                 currentValue= completed>0 and currentValue - threshold * completed or currentValue
-                text= format('%i%%|A:GarrMission-%sChest:0:0|a%s%d', currentValue/threshold*100, e.Player.faction, hasRewardPending and e.Icon.select2 or '', completed)
+                text= format('%i%%|A:GarrMission-%sChest:0:0|a%s%d', currentValue/threshold*100, e.Player.faction, hasRewardPending and format('|A:%s:0:0|a', e.Icon.select) or '', completed)
 
             end
         end
@@ -2139,7 +2139,7 @@ local function Get_Garrison_List_Num(followerType)
     elseif num==0 then
         text= format('|cff606060%d|r/%d', num, all)
     elseif all==num then
-        text= format('|cffff00ff%d/%d|r', num, all)..e.Icon.select2
+        text= format('|cffff00ff%d/%d|r', num, all)..format('|A:%s:0:0|a', e.Icon.select)
     else
         text= format('|cnGREEN_FONT_COLOR:%d|r/%d', num, all)
     end

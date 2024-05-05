@@ -303,7 +303,7 @@ local function Init_Ready_Tips_Button()
         local mapText, mapID e.GetUnitMapName(unit)--单位, 地图名称
         return (
                     stat== 'waiting' and '|A:QuestTurnin:0:0|a'
-                    or stat== 'notready' and e.Icon.X2
+                    or (stat== 'notready' and '|A:common-icon-redx:0:0|a')
                     or stat
                     or ''
                 )
@@ -1216,7 +1216,7 @@ local function InitMenu(_, level, type)--主菜单
 
     elseif type=='ready' then
         info={
-            text=e.Icon.select2..(e.onlyChinese and '就绪' or READY),--就绪
+            text=format('|A:%s:0:0|a', e.Icon.select)..(e.onlyChinese and '就绪' or READY),--就绪
             colorCode='|cff00ff00',
             checked= Save.autoReady==1,
             keepShownOnClick=true,
@@ -1228,7 +1228,7 @@ local function InitMenu(_, level, type)--主菜单
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
         info={
-            text=e.Icon.X2..(e.onlyChinese and '未就绪' or NOT_READY_FEMALE),--未就绪
+            text=format('|A:common-icon-redx:0:0|a%s', e.onlyChinese and '未就绪' or NOT_READY_FEMALE),--未就绪
             colorCode='|cffff0000',
             checked= Save.autoReady==2,
             keepShownOnClick= true,
@@ -1403,8 +1403,8 @@ local function InitMenu(_, level, type)--主菜单
 
     info={
         text=(
-            Save.autoReady==1 and e.Icon.select2
-            or Save.autoReady==2 and e.Icon.O2
+            Save.autoReady==1 and format('|A:%s:0:0|a', e.Icon.select)
+            or Save.autoReady==2 and format('|A:%s:0:0|a', e.Icon.disabled)
             or (e.onlyChinese and '无' or NONE)
         )
         ..format(e.onlyChinese and '%s%s' or CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '自动' or SELF_CAST_AUTO, (
@@ -1519,9 +1519,9 @@ local function Init()
             if self.autoReadyText then
                 local text=''
                 if Save.autoReady==1 then
-                    text=id..' '..addName..'|n|cnGREEN_FONT_COLOR:'..AUTO_JOIN:gsub(JOIN, '')..READY..'|r'..e.Icon.select2
+                    text=id..' '..addName..'|n|cnGREEN_FONT_COLOR:'..AUTO_JOIN:gsub(JOIN, '')..READY..'|r'..format('|A:%s:0:0|a', e.Icon.select)
                 elseif Save.autoReady==2 then
-                    text=id..' '..addName..'|n|cnRED_FONT_COLOR:'..AUTO_JOIN:gsub(JOIN, '')..NOT_READY_FEMALE..'|r'..e.Icon.O2
+                    text=id..' '..addName..'|n|cnRED_FONT_COLOR:'..AUTO_JOIN:gsub(JOIN, '')..NOT_READY_FEMALE..'|r'..format('|A:%s:0:0|a', e.Icon.disabled)
                 end
                self.autoReadyText:SetText(text)
             end

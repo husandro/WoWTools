@@ -104,7 +104,7 @@ local function Mount(id2, item)
         if  mountID then
             local _, _, icon, _, _, _, _, _, _, _, isCollected =C_MountJournal.GetMountInfoByID(mountID)
             if isCollected then
-                return e.Icon.select2, icon
+                return format('|A:%s:0:0|a', e.Icon.select), icon
             else
                 return '|A:questlegendary:0:0|a', icon
             end
@@ -157,7 +157,7 @@ local function Item(link)--物品超链接
             end
         end
     elseif C_ToyBox.GetToyInfo(itemID) then--玩具
-        t= PlayerHasToy(itemID) and (t..e.Icon.select2) or (t..'|A:questlegendary:0:0|a')
+        t= PlayerHasToy(itemID) and (t..format('|A:%s:0:0|a', e.Icon.select)) or (t..'|A:questlegendary:0:0|a')
     end
     local bag= C_Item.GetItemCount(link, true, false, true)--数量
     if bag and bag>0 then
@@ -258,16 +258,16 @@ local function Achievement(link)--成就
     if id2 then
         local _, _, _, completed, _, _, _, _, _, icon = GetAchievementInfo(id2)
         local texture=icon and '|T'..icon..':0|t' or ''
-        return texture..link..(completed and e.Icon.select2 or '|A:questlegendary:0:0|a')
+        return texture..link..(completed and format('|A:%s:0:0|a', e.Icon.select) or '|A:questlegendary:0:0|a')
     end
 end
 
 local function Quest(link)--任务
     local id2=link:match('Hquest:(%d+)')
     if id2 then
-        local wow= C_QuestLog.IsAccountQuest(id2) and e.Icon.wow2 or ''--帐号通用        
+        local wow= C_QuestLog.IsAccountQuest(id2) and format('|T%d:0|t', e.Icon.wow) or ''--帐号通用        
         if C_QuestLog.IsQuestFlaggedCompleted(id2) then
-            return wow..link..e.Icon.select2
+            return wow..link..format('|A:%s:0:0|a', e.Icon.select)
         else
             return wow..link..'|A:questlegendary:0:0|a'
         end
@@ -279,7 +279,7 @@ end
     if id2 then
         local _, _, icon, _, _, _, _, _ ,_, known=GetTalentInfoByID(id2)
         if icon then
-            return '|T'..icon..':0|t'..link..(known and e.Icon.select2 or '|A:questlegendary:0:0|a')
+            return '|T'..icon..':0|t'..link..(known and format('|A:%s:0:0|a', e.Icon.select) or '|A:questlegendary:0:0|a')
         end
     end
 end]]
@@ -288,7 +288,7 @@ local function Pvptal(link)--pvp天赋
     local id2=link:match('Hpvptal:(%d+)')
     if id2 then
         local _, _, icon, _, _, _, _, _ ,_, known=GetPvpTalentInfoByID(id2)
-        return '|T'..icon..':0|t'..link..(known and e.Icon.select2 or '|A:questlegendary:0:0|a')
+        return '|T'..icon..':0|t'..link..(known and format('|A:%s:0:0|a', e.Icon.select) or '|A:questlegendary:0:0|a')
     end
 end
 
@@ -323,7 +323,7 @@ local function Outfit(link)--外观方案链接
         end
         if to>0 then
             if to==co then
-                return link..e.Icon.select2
+                return link..format('|A:%s:0:0|a', e.Icon.select)
             elseif co>0 then
                 return link..YELLOW_FONT_COLOR_CODE..co..'/'..to..'|r'
             else
@@ -342,7 +342,7 @@ local function Transmogillusion(link)--幻化
             if info.isCollected and info.isUsable then
                 icon='|T132288:0|t'
             elseif info.isCollected then
-                icon=e.Icon.select2
+                icon=format('|A:%s:0:0|a', e.Icon.select)
             end
             return link..icon
         end
@@ -354,7 +354,7 @@ local function TransmogAppearance(link)--幻化
     if appearanceID then
         local has=C_TransmogCollection.PlayerHasTransmogItemModifiedAppearance(appearanceID)
         if has then
-            return link.e.Icon.select2
+            return link.format('|A:%s:0:0|a', e.Icon.select)
         else
             return link..'|A:questlegendary:0:0|a'
         end
@@ -450,7 +450,7 @@ local function TransmogSet(link)--幻化套装
             end
             if to>0 then
                 if n==to then
-                    return e.Icon.select2
+                    return format('|A:%s:0:0|a', e.Icon.select)
                 elseif n==0 then
                     return link..RED_FONT_COLOR_CODE..n..'/'..to..'|r'
                 else

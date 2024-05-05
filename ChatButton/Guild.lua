@@ -186,7 +186,7 @@ local function InitMenu(_, level)--主菜单
             local text=e.GetPlayerInfo({guid=guid, name=name, reName=true, reRealm=true})
             text=(lv and lv~=MAX_PLAYER_LEVEL) and text..' |cnGREEN_FONT_COLOR:'..lv..'|r' or text--等级
             if zone then--地区
-                text= zone==map and text..e.Icon.map2 or text..' '..zone
+                text= zone==map and text..'|A:poi-islands-table:0:0|a' or text..' '..zone
             end
             text= rankName and text..' '..rankName..(rankIndex or '') or text
             info={

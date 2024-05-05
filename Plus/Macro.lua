@@ -1434,9 +1434,9 @@ local function Init_Macro_List()
         local text= e.onlyChinese and '备注' or LABEL_NOTE
         text= (Save.toRightLeft and MacroFrame.macroBase==0) and '|cnGREEN_FONT_COLOR:'..text..'|r'
             or ('|cff606060'..text..'|r')
-        e.tips:AddDoubleLine(e.Icon.toLeft2..(e.onlyChinese and '左' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT), (Save.toRightLeft==1 and e.Icon.select2 or '')..text)
-        e.tips:AddDoubleLine(e.Icon.toRight2..(e.onlyChinese and '右' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT), (Save.toRightLeft==2 and e.Icon.select2 or '')..text)
-        e.tips:AddDoubleLine('|A:'..e.Icon.icon..':0:0|a'..(e.onlyChinese and '默认' or DEFAULT), not Save.toRightLeft and e.Icon.select2)
+        e.tips:AddDoubleLine(e.Icon.toLeft2..(e.onlyChinese and '左' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT), (Save.toRightLeft==1 and format('|A:%s:0:0|a', e.Icon.select) or '')..text)
+        e.tips:AddDoubleLine(e.Icon.toRight2..(e.onlyChinese and '右' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT), (Save.toRightLeft==2 and format('|A:%s:0:0|a', e.Icon.select) or '')..text)
+        e.tips:AddDoubleLine('|A:'..e.Icon.icon..':0:0|a'..(e.onlyChinese and '默认' or DEFAULT), not Save.toRightLeft and format('|A:%s:0:0|a', e.Icon.select))
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '选项' or OPTIONS, e.Icon.right)
         e.tips:Show()

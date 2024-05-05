@@ -2943,7 +2943,7 @@ local function Init()
         if ( effectiveLevel ~= level ) then
             level = EFFECTIVE_LEVEL_FORMAT:format('|cnGREEN_FONT_COLOR:'..effectiveLevel..'|r', level)
         end
-        local faction= e.Player.faction=='Alliance' and '|A:charcreatetest-logo-alliance:26:26|a' or e.Player.faction=='Horde' and '|A:charcreatetest-logo-horde:26:26|a' or ''
+        local faction= format('|A:%s:26:26|a', e.Icon[e.Player.faction] or '')
         CharacterLevelText:SetText('  '..faction..(race and '|A:'..race..':26:26|a' or '')..(class and '|A:'..class..':26:26|a  ' or '')..level)
         if not CharacterLevelText.set then
             e.Set_Label_Texture_Color(CharacterLevelText, {type='FontString'})

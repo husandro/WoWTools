@@ -563,7 +563,7 @@ local function Init_set_Map_ID()--显示地图ID
         else
             Button:SetPoint('RIGHT', WorldMapFrame.BorderFrame.TitleContainer, 'RIGHT', -50,0)
         end
-        Button:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.map)
+        Button:SetNormalAtlas(Save.hide and e.Icon.disabled or 'poi-islands-table')
 
         function Button:set_Map_ID_Text()
             local m=''
@@ -734,7 +734,7 @@ local function Init_set_Map_ID()--显示地图ID
                 self:set_Map_ID_Text()
                 setMapQuestList()--世界地图,任务, 加 - + 按钮
                 print(id, e.cn(addName), e.GetShowHide(not Save.hide), e.onlyChinese and ' 刷新' or REFRESH)
-                self:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.map)
+                self:SetNormalAtlas(Save.hide and e.Icon.disabled or 'poi-islands-table')
             elseif d=='RightButton' and not IsModifierKeyDown() then--实时玩家当前坐标
                 if Save.PlayerXY then
                     Save.PlayerXY=nil
@@ -1010,7 +1010,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 
             --添加控制面板
             e.AddPanel_Check({
-                name= e.Icon.map2..(e.onlyChinese and '地图' or addName),
+                name= format('|A:poi-islands-table:0:0|a%s', e.onlyChinese and '地图' or addName),
                 tooltip= e.cn(addName),
                 value= not Save.disabled,
                 func= function()

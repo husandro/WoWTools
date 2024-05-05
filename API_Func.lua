@@ -599,7 +599,7 @@ end
 
 function e.Get_CVar_Tooltips(info)--取得CVar信息 e.Get_CVar_Tooltips({name= ,msg=, value=})
     return (info.msg and info.msg..'|n' or '')..info.name..'|n'
-    ..(info.value and C_CVar.GetCVar(info.name)== info.value and e.Icon.select2 or '')
+    ..(info.value and C_CVar.GetCVar(info.name)== info.value and format('|A:%s:0:0|a', e.Icon.select) or '')
     ..(info.value and (e.onlyChinese and '设置' or SETTINGS)..info.value..' ' or '')
     ..'('..(e.onlyChinese and '当前' or REFORGE_CURRENT)..'|cnGREEN_FONT_COLOR:'..format('%.1f',C_CVar.GetCVar(info.name))..'|r |r'
     ..(e.onlyChinese and '默认' or DEFAULT)..'|cffff00ff'..format('%.1f', C_CVar.GetCVarDefault(info.name))..')|r'
@@ -741,7 +741,7 @@ function e.Get_Weekly_Rewards_Activities(settings)--周奖励，提示
                     e.tips:AddLine(
                         '   '..index..') '
                         ..(texture and itemLevel and '|T'..texture..':0|t'..itemLevel or info.difficulty)
-                        ..e.Icon.select2..((info.level and info.level>0) and info.level or ''))
+                        ..format('|A:%s:0:0|a', e.Icon.select)..((info.level and info.level>0) and info.level or ''))
                 else
                     e.tips:AddLine('    |cff828282'..index..') '
                         ..info.difficulty
@@ -836,10 +836,10 @@ function e.Get_Weekly_Rewards_Activities(settings)--周奖励，提示
                 local texture= C_Item.GetItemIconByID(itemLink)
                 local itemLevel= C_Item.GetDetailedItemLevelInfo(itemLink)
                 text= '    '..index..') '..(texture and '|T'..texture..':0|t' or itemLink)
-                text= text..((itemLevel and itemLevel>0) and itemLevel or '')..e.Icon.select2..((info.level and info.level>0) and info.level or '')
+                text= text..((itemLevel and itemLevel>0) and itemLevel or '')..format('|A:%s:0:0|a', e.Icon.select)..((info.level and info.level>0) and info.level or '')
             else
                 if info.unlocked then
-                    text='   '..index..') '..info.difficulty..e.Icon.select2..(info.level or '')--.. ' '..(e.onlyChinese and '完成' or COMPLETE)
+                    text='   '..index..') '..info.difficulty..format('|A:%s:0:0|a', e.Icon.select)..(info.level or '')--.. ' '..(e.onlyChinese and '完成' or COMPLETE)
                 else
                     text='    |cff828282'..index..') '
                         ..info.difficulty
@@ -1343,7 +1343,7 @@ function e.GetUnitFaction(unit, faction, all)--检查, 是否同一阵营
         faction= UnitFactionGroup(unit)
     end
     if faction and (faction~= e.Player.faction or all) then
-        return faction=='Horde' and e.Icon.horde2 or faction=='Alliance' and e.Icon.alliance2 or '|A:nameplates-icon-flag-neutral:0:0|a'
+        return format('|A:%s:0:0|a', e.Icon[faction] or '')
     end
 end
 
@@ -1589,7 +1589,7 @@ function e.QuestLogQuests_GetBestTagID(questID, info, tagInfo, isComplete)--Ques
         if tagInfo.tagID == Enum.QuestTag.Legendary then
             tagID, color, atlas= "COMPLETED_LEGENDARY", e.GetQestColor('Complete'), nil
         else
-            tagID, color, atlas=  nil, e.GetQestColor('Complete'), e.Icon.select2--"COMPLETED", e.GetQestColor('Complete')
+            tagID, color, atlas=  nil, e.GetQestColor('Complete'), format('|A:%s:0:0|a', e.Icon.select)--"COMPLETED", e.GetQestColor('Complete')
         end
     elseif C_QuestLog.IsFailed(questID) then
         tagID, color, atlas= "FAILED", e.GetQestColor('Failed'), nil
@@ -1670,7 +1670,7 @@ function e.GetQuestAllTooltip()--所有，任务，提示
     end
     local num= select(2, C_QuestLog.GetNumQuestLogEntries())
     local all=C_QuestLog.GetAllCompletedQuestIDs() or {}--完成次数
-    e.tips:AddDoubleLine((e.onlyChinese and '已完成' or  CRITERIA_COMPLETED)..' '..e.MK(#all, 3), e.GetQestColor('Day').hex..(e.onlyChinese and '日常' or DAILY)..': '..GetDailyQuestsCompleted()..e.Icon.select2)
+    e.tips:AddDoubleLine((e.onlyChinese and '已完成' or  CRITERIA_COMPLETED)..' '..e.MK(#all, 3), e.GetQestColor('Day').hex..(e.onlyChinese and '日常' or DAILY)..': '..GetDailyQuestsCompleted()..format('|A:%s:0:0|a', e.Icon.select))
     e.tips:AddLine(e.Player.col..(e.onlyChinese and '上限' or CAPPED)..': '..(numQuest+ dayNum+ weekNum)..'/'..(C_QuestLog.GetMaxNumQuestsCanAccept() or 38))
     e.tips:AddLine(' ')
     e.tips:AddLine('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '当前地图' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, WORLD_MAP))..': '..inMapNum)
@@ -2130,7 +2130,7 @@ function e.GetItemCollected(itemIDOrLink, sourceID, icon, onlyBool)--物品是�
             if isCollected==true then
                 if icon then
                     if isSelf then
-                        text= e.Icon.select2
+                        text= format('|A:%s:0:0|a', e.Icon.select)
                     else
                         text= '|A:Adventures-Checkmark:0:0|a'--黄色√
                     end

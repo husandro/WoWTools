@@ -162,7 +162,7 @@ local function Get_Currency(currencyID, index)
 
 	local max
 	if isMax then
-		max= '|A:quest-important-available:0:0|a'--e.Icon.select2
+		max= '|A:quest-important-available:0:0|a'--format('|A:%s:0:0|a', e.Icon.select)
 		num= '|cnRED_FONT_COLOR:'..num..'|r'
 	elseif canWeek or canEarned or canQuantity then
 		num= '|cnGREEN_FONT_COLOR:'..num..'|r'
@@ -582,8 +582,8 @@ local function Init_TrackButton()
 			e.tips:AddLine(' ')
 			e.tips:AddDoubleLine(itemLink or ('itemID'..itemID),
 					Save.item[itemID] and
-						('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
-					or ('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.select2)
+						('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
+					or ('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', e.Icon.select))
 			)
 			self:set_Texture(C_Item.GetItemIconByID(itemID))
 		else
@@ -655,8 +655,8 @@ local function Init_TrackButton()
 			Save.item[itemID]= not Save.item[itemID] and true or nil
 			print(id, Initializer:GetName(), e.onlyChinese and '追踪' or TRACKING,
 					Save.item[itemID] and
-					('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.select2)
-					or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2),
+					('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', e.Icon.select))
+					or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a'),
 					itemLink or itemID)
 			ClearCursor()
 			Set_TrackButton_Text()
@@ -1301,8 +1301,8 @@ local function Init()
 			Save.item[itemID]= not Save.item[itemID] and true or nil
 			print(id, Initializer:GetName(), e.onlyChinese and '追踪' or TRACKING,
 					Save.item[itemID] and
-					('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.select2)
-					or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2),
+					('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', e.Icon.select))
+					or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a'),
 					itemLink or itemID)
 			ClearCursor()
 			Set_TrackButton_Text()
@@ -1324,8 +1324,8 @@ local function Init()
 			e.tips:AddLine(' ')
 			e.tips:AddDoubleLine(itemLink or ('itemID'..itemID),
 					Save.item[itemID] and
-						('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.X2)
-					or ('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.select2)
+						('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
+					or ('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', e.Icon.select))
 			)
 			Button:set_bagButtonTexture(C_Item.GetItemIconByID(itemID))
 		else

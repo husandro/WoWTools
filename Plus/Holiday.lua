@@ -90,7 +90,7 @@ local function set_Quest_Completed(tab)--任务是否完成
     for _, questID in pairs(tab) do
         local completed= C_QuestLog.IsQuestFlaggedCompleted(questID)
         if completed then
-            return e.Icon.select2
+            return format('|A:%s:0:0|a', e.Icon.select)
         end
     end
 end
@@ -832,7 +832,7 @@ local function Init_Blizzard_Calendar()
                     local text= e.GetPlayerInfo({guid=wowInfo.playerGuid, faction=wowInfo.factionName, name=wowInfo.characterName, reName=true, reRealm=true})--角色信息
                     if wowInfo.areaName then --位置
                         if wowInfo.areaName==map then
-                            text=text..e.Icon.map2
+                            text=text..'|A:poi-islands-table:0:0|a'
                         else
                             text=text..' '..wowInfo.areaName
                         end
@@ -887,7 +887,7 @@ local function Init_Blizzard_Calendar()
                     text= (game.level and game.level~=MAX_PLAYER_LEVEL and game.level>0) and text .. ' |cff00ff00'..game.level..'|r' or text--等级
                     if game.area and game.connected then
                         if game.area == map then--地区
-                            text= text..e.Icon.map2
+                            text= text..'|A:poi-islands-table:0:0|a'
                         else
                             text= text..' |cnGREEN_FONT_COLOR:'..game.area..'|r'
                         end
@@ -938,7 +938,7 @@ local function Init_Blizzard_Calendar()
                     local text=e.GetPlayerInfo({guid=guid, name=name,  reName=true, reRealm=true})--名称
                     text=(lv and lv~=MAX_PLAYER_LEVEL and lv>0) and text..' |cnGREEN_FONT_COLOR:'..lv..'|r' or text--等级
                     if zone then--地区
-                        text= zone==map and text..e.Icon.map2 or text..' '..zone
+                        text= zone==map and text..'|A:poi-islands-table:0:0|a' or text..' '..zone
                     end
                     text= rankName and text..' '..rankName..(rankIndex or '') or text
                     local info={

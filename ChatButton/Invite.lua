@@ -958,7 +958,7 @@ local function InitList(self, level, type)
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
     info = {
-        text= e.Icon.select2..(e.onlyChinese and '接受邀请' or CALENDAR_ACCEPT_INVITATION),
+        text= format('|A:%s:0:0|a', e.Icon.select)..(e.onlyChinese and '接受邀请' or CALENDAR_ACCEPT_INVITATION),
         notCheckable=true,
         menuList='ACEINVITE',
         keepShownOnClick=true,
@@ -967,7 +967,7 @@ local function InitList(self, level, type)
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     info = {
-        text= e.Icon.O2..(e.onlyChinese and '拒绝邀请' or GUILD_INVITE_DECLINE),
+        text= format('|A:%s:0:0|a%s', e.Icon.disabled, e.onlyChinese and '拒绝邀请' or GUILD_INVITE_DECLINE),
         notCheckable=true,
         menuList='NoInv',
         hasArrow=true,
@@ -1186,7 +1186,7 @@ local function Init()
             local playerInfo=e.GetPlayerInfo({guid=info.guid, reLink=true})
             name= playerInfo~='' and playerInfo or name
         end
-        print(id, e.cn(addName), e.onlyChinese and '召唤' or SUMMON, name, e.Icon.map2..'|cnGREEN_FONT_COLOR:', C_SummonInfo.GetSummonConfirmAreaName())
+        print(id, e.cn(addName), e.onlyChinese and '召唤' or SUMMON, name, '|A:poi-islands-table:0:0|a|cnGREEN_FONT_COLOR:', C_SummonInfo.GetSummonConfirmAreaName())
     end)
 
 

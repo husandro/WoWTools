@@ -1087,9 +1087,9 @@ local function Init()
         for i=1, numBosses do
             local bossName, _, isKilled = GetLFGProposalEncounter(i)
             if ( isKilled ) then
-                GameTooltip:AddDoubleLine(e.Icon.X2.. e.cn(bossName), '|cnRED_FONT_COLOR:已消灭')
+                GameTooltip:AddDoubleLine('|A:common-icon-redx:0:0|a'.. e.cn(bossName), '|cnRED_FONT_COLOR:已消灭')
             else
-                GameTooltip:AddDoubleLine(e.Icon.select2..e.cn(bossName), '|cnGREEN_FONT_COLOR:可消灭')
+                GameTooltip:AddDoubleLine(format('|A:%s:0:0|a', e.Icon.select)..e.cn(bossName), '|cnGREEN_FONT_COLOR:可消灭')
             end
         end
         GameTooltip:Show()

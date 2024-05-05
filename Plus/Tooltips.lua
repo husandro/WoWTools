@@ -349,9 +349,15 @@ function func.Set_Mount(self, mountID, type)--坐骑
 
     if isFactionSpecific then
         if faction==0 then
-            self.textRight:SetFormattedText(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, e.Icon.horde2..(e.onlyChinese and '部落' or THE_HORDE))
+            self.textRight:SetFormattedText(
+                e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION,
+                format('|A:%s:0:0|a', e.Icon.Horde, e.onlyChinese and '部落' or THE_HORDE)
+            )
         elseif faction==1 then
-            self.textRight:SetFormattedText(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, e.Icon.alliance2..(e.onlyChinese and '联盟' or THE_ALLIANCE))
+            self.textRight:SetFormattedText(
+                e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION,
+                format('|A:%s:0:0|a', e.Icon.Alliance, e.onlyChinese and '联盟' or THE_ALLIANCE)
+            )
         end
     elseif isForDragonriding then
         self.textRight:SetFormattedText(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, e.onlyChinese and '驭龙术' or MOUNT_JOURNAL_FILTER_DRAGONRIDING)
@@ -672,11 +678,11 @@ function func.Set_Item(self, itemLink, itemID)
 
         if numPlayer>0 then
             wowNum= bagAll+ bankAll
-            self:AddDoubleLine(numPlayer..' '..(e.onlyChinese and '角色' or CHARACTER)..' '..e.MK(wowNum+bag+bank, 3), e.Icon.wow2..e.MK(bagAll+bankAll, 3)..' = '..e.Icon.bank2..(bankAll==0 and '|cff606060'..bankAll..'|r' or e.MK(bankAll,3))..' '..e.Icon.bag2..(bagAll==0 and '|cff606060'..bagAll..'|r' or e.MK(bagAll, 3)))
+            self:AddDoubleLine(numPlayer..' '..(e.onlyChinese and '角色' or CHARACTER)..' '..e.MK(wowNum+bag+bank, 3), format('|T%d:0|t', e.Icon.wow)..e.MK(bagAll+bankAll, 3)..' = '..e.Icon.bank2..(bankAll==0 and '|cff606060'..bankAll..'|r' or e.MK(bankAll,3))..' '..e.Icon.bag2..(bagAll==0 and '|cff606060'..bagAll..'|r' or e.MK(bagAll, 3)))
         end
     end
 
-    self.textRight:SetText(col..e.MK(wowNum, 3)..e.Icon.wow2..' '..e.MK(bank, 3)..e.Icon.bank2..' '..e.MK(bag, 3)..e.Icon.bag2..'|r')
+    self.textRight:SetText(col..e.MK(wowNum, 3)..format('|T%d:0|t', e.Icon.wow)..' '..e.MK(bank, 3)..e.Icon.bank2..' '..e.MK(bag, 3)..e.Icon.bag2..'|r')
 
     --setItemCooldown(self, itemID)--物品冷却
 
@@ -757,7 +763,7 @@ function func.Set_Currency(self, currencyID)--货币
         end
     end
     if numPlayer>1 then
-        self:AddDoubleLine(e.Icon.wow2..numPlayer..(e.onlyChinese and '角色' or CHARACTER), e.MK(all,3))
+        self:AddDoubleLine(format('|T%d:0|t', e.Icon.wow)..numPlayer..(e.onlyChinese and '角色' or CHARACTER), e.MK(all,3))
     end
 
     func.Set_Web_Link({frame=self, type='currency', id=currencyID, name=info2.name, col=nil, isPetUI=false})--取得网页，数据链接 npc item spell currency
@@ -790,7 +796,7 @@ function func.Set_Achievement(self, achievementID)--成就
     self.text2Left:SetText(completed and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已完成' or CRITERIA_COMPLETED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未完成' or ACHIEVEMENTFRAME_FILTER_INCOMPLETE)..'|r')--否是完成
     self.textRight:SetText(isGuild and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '公会' or GUILD) or flags==0x4000 and ('|cffff00ff'..e.Icon.net2..(e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET))  or '')
 
-    self:AddDoubleLine((e.onlyChinese and '成就' or ACHIEVEMENTS)..' '..(flags==0x20000 and '|cffff00ff'..e.Icon.wow2..achievementID..'|r' or achievementID), icon and '|T'..icon..':0|t'..icon)
+    self:AddDoubleLine((e.onlyChinese and '成就' or ACHIEVEMENTS)..' '..(flags==0x20000 and '|cffff00ff'..format('|T%d:0|t', e.Icon.wow)..achievementID..'|r' or achievementID), icon and '|T'..icon..':0|t'..icon)
     if flags==0x20000 then
         self.textRight:SetText(e.Icon.net2..'|cffff00ff'..(e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET))
     end
@@ -1104,15 +1110,11 @@ function func.Set_Unit(self)--设置单位提示信息
 
     --设置单位图标
     local englishFaction = isPlayer and UnitFactionGroup(unit)
-
     local textLeft, text2Left
     if isPlayer then
         local hideLine--取得网页，数据链接
-
-        if (englishFaction=='Alliance' or englishFaction=='Horde') then--派系
-            self.Portrait:SetAtlas(englishFaction=='Alliance' and e.Icon.alliance or e.Icon.horde)
-            self.Portrait:SetShown(true)
-        end
+        self.Portrait:SetAtlas(e.Icon[englishFaction] or 'Neutral')
+        self.Portrait:SetShown(true)
 
         --取得玩家信息
         local info= e.UnitItemLevel[guid]
@@ -1183,7 +1185,7 @@ function func.Set_Unit(self)--设置单位提示信息
 
 
         local region= e.Get_Region(realm)--服务器，EU， US
-        self.textRight:SetText(col..realm..'|r'..(isSelf and e.Icon.star2 or realm==e.Player.realm and e.Icon.select2 or e.Player.Realms[realm] and '|A:Adventures-Checkmark:0:0|a' or '')..(region and region.col or ''))
+        self.textRight:SetText(col..realm..'|r'..(isSelf and e.Icon.star2 or realm==e.Player.realm and format('|A:%s:0:0|a', e.Icon.select) or e.Player.Realms[realm] and '|A:Adventures-Checkmark:0:0|a' or '')..(region and region.col or ''))
 
         line=isInGuild and GameTooltipTextLeft2
         if line then
@@ -1273,7 +1275,7 @@ function func.Set_Unit(self)--设置单位提示信息
                         if mapInfo and mapInfo.name and _G["GameTooltipTextLeft"..i] then
                             if mapInfo.name then
                                 line=_G["GameTooltipTextLeft"..i]
-                                line:SetText(e.Icon.map2..col..mapInfo.name)
+                                line:SetText('|A:poi-islands-table:0:0|a'..col..mapInfo.name)
                                 line:SetShown(true)
                             end
                         end

@@ -309,7 +309,7 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
                 if uiMapID then--不在同地图
                     local text, mapID=e.GetUnitMapName(unit)
                     if text and mapID and mapID~=uiMapID then
-                        info.name= info.name..e.Icon.map2..'|cnRED_FONT_COLOR:'..text..'|r'
+                        info.name= info.name..'|A:poi-islands-table:0:0|a|cnRED_FONT_COLOR:'..text..'|r'
                     end
                 end
 

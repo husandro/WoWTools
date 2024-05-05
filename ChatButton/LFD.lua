@@ -388,7 +388,7 @@ local function Set_Queue_Status()--小眼睛, 信息
                     numMembers= ' |A:socialqueuing-icon-group:0:0|a'..info.numMembers--..(e.onlyChinese and '队员' or PLAYERS_IN_GROUP)
                     local friendly
                     if info.numBNetFriends and info.numBNetFriends>0 then
-                        friendly = (friendly and friendly..' ' or '')..info.numBNetFriends..e.Icon.wow2
+                        friendly = (friendly and friendly..' ' or '')..info.numBNetFriends..format('|T%d:0|t', e.Icon.wow)
                     end
                     if info.numCharFriends and info.numCharFriends>0 then
                         friendly = (friendly and friendly..' ' or '')..info.numCharFriends..'|A:recruitafriend_V2_tab_icon:0:0|a'
@@ -403,9 +403,9 @@ local function Set_Queue_Status()--小眼睛, 信息
 
                 local factionText--指定，派系 info.crossFactionListing
                 if info.leaderFactionGroup==0 and e.Player.faction=='Alliance' then
-                    factionText= e.Icon.horde2
+                    factionText= format('|A:%s:0:0|a', e.Icon.Horde)
                 elseif info.leaderFactionGroup==1 and e.Player.faction=='Horde' then
-                    factionText= e.Icon.alliance2
+                    factionText= format('|A:%s:0:0|a', e.Icon.Alliance)
                 end
 
                 local roleText--职责
@@ -799,13 +799,13 @@ local function set_Party_Menu_List(level)--5人，随机 LFDFrame.lua
             local info
             if isAvailableForAll then
                 local check= GetLFGQueueStats(LE_LFG_CATEGORY_LFD, dungeonID)--是否有排本
-                local doneToday= GetLFGDungeonRewards(dungeonID) and ' '..e.Icon.select2 or nil--local doneToday, moneyAmount, moneyVar, experienceGained, experienceVar, numRewards, spellID = GetLFGDungeonRewards(dungeonID)
+                local doneToday= GetLFGDungeonRewards(dungeonID) and ' '..format('|A:%s:0:0|a', e.Icon.select) or nil--local doneToday, moneyAmount, moneyVar, experienceGained, experienceVar, numRewards, spellID = GetLFGDungeonRewards(dungeonID)
                 local tooltip
                 if check then
                     tooltip= (tooltip or '')..e.Icon.left..'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '离开队列' or LEAVE_QUEUE)..'|r'
                 end
                 if doneToday then
-                    tooltip=(tooltip and tooltip..'|n' or '')..(e.onlyChinese and '今天' or GUILD_EVENT_TODAY)..e.Icon.select2..(e.onlyChinese and '完成' or COMPLETE)
+                    tooltip=(tooltip and tooltip..'|n' or '')..(e.onlyChinese and '今天' or GUILD_EVENT_TODAY)..format('|A:%s:0:0|a', e.Icon.select)..(e.onlyChinese and '完成' or COMPLETE)
                 end
                 info= {
                     text= name
@@ -921,7 +921,7 @@ local set_Raid_Menu_List=function(level)--团队本
                 else
                     killText= killText..' |cff00ff00'..j..'|r'
                 end
-                encounters= (encounters and encounters..'|n' or '')..(isKilled and '|cnRED_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:')..bossName..(isKilled and e.Icon.select2 or '')..'|r'
+                encounters= (encounters and encounters..'|n' or '')..(isKilled and '|cnRED_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:')..bossName..(isKilled and format('|A:%s:0:0|a', e.Icon.select) or '')..'|r'
             end
 
             local modifiedInstanceTooltipText, icon
@@ -1050,7 +1050,7 @@ local function set_LFGPlus()--预创建队伍增强
             end
             color= color or {r=1,g=1,b=1}
             if info.numBNetFriends and info.numBNetFriends>0 then--好友, 数量
-                text= text..' '..e.Icon.wow2..info.numBNetFriends
+                text= text..' '..format('|T%d:0|t', e.Icon.wow)..info.numBNetFriends
             end
             if info.numCharFriends and info.numCharFriends>0 then--好友, 数量
                 text= text..' |A:socialqueuing-icon-group:0:0|a'..info.numCharFriends
@@ -2374,10 +2374,10 @@ local function Init()
             if bossName then
                 text= (text and text..'|n' or '')..i..') '
                 if ( isKilled ) then
-                    text= text..e.Icon.X2..'|cnRED_FONT_COLOR:'..e.cn(bossName)..' '..(e.onlyChinese and '已消灭' or BOSS_DEAD);
+                    text= text..'|A:common-icon-redx:0:0|a|cnRED_FONT_COLOR:'..e.cn(bossName)..' '..(e.onlyChinese and '已消灭' or BOSS_DEAD);
                     dead= dead+1
                 else
-                    text= text..e.Icon.select2..'|cnGREEN_FONT_COLOR:'..e.cn(bossName)..' '..(e.onlyChinese and '可消灭' or BOSS_ALIVE);
+                    text= text..format('|A:%s:0:0|a', e.Icon.select)..'|cnGREEN_FONT_COLOR:'..e.cn(bossName)..' '..(e.onlyChinese and '可消灭' or BOSS_ALIVE);
                 end
                 text= text..'|r'
             end
@@ -2508,7 +2508,7 @@ local function get_Role_Info(env, Name, isT, isH, isD)
                         print(i..')',
                                 line,
                                 e.GetPlayerInfo({guid=guid, faction=UnitFactionGroup(unit), reLink=true}),
-                                e.Icon.map2,
+                                '|A:poi-islands-table:0:0|a',
                                 e.GetUnitMapName(unit)
                             )
                         find=true
@@ -2592,7 +2592,7 @@ local function get_Role_Info(env, Name, isT, isH, isD)
                 end
                 local text, unitMapID=e.GetUnitMapName(v.unit)
                 if text and unitMapID~= playerMapID then
-                    m=m..RED_FONT_COLOR_CODE..e.Icon.map2..text..'|r'
+                    m=m..'|cnRED_FONT_COLOR:|A:poi-islands-table:0:0|a'..text..'|r'
                 end
             end
         end

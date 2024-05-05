@@ -324,7 +324,7 @@ local function Init_Menu(_, level, menuList)
                 end
 
                 info={
-                    text= index..(index<10 and ')  ' or ') ')..text.. (tab.zone and e.Icon.select2 or ''),
+                    text= index..(index<10 and ')  ' or ') ')..text.. (tab.zone and format('|A:%s:0:0|a', e.Icon.select) or ''),
                     icon= icon,
                     keepShownOnClick= true,
                     notCheckable=true,

@@ -1255,11 +1255,10 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 		if arg1==id then
             Save= WoWToolsSave[addName] or Save
 			Save.factions= Save.factions or {}
-			
 
 			--添加控制面板
             e.AddPanel_Check({
-                name= (e.Player.faction=='Alliance' and e.Icon.alliance2 or e.Icon.horde2 )..(e.onlyChinese and '声望' or addName),
+                name= format('|A:%s:0:0|a%s', e.Icon[e.Player.faction] or '', e.onlyChinese and '声望' or addName),
                 tooltip= e.cn(addName),
                 value= not Save.disabled,
                 func= function()
@@ -1268,12 +1267,6 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 end
             })
 
-            --[[添加控制面板        
-            local sel=e.AddPanel_Check((e.Player.faction=='Alliance' and e.Icon.alliance2 or e.Icon.horde2 )..(e.onlyChinese and '声望' or addName), not Save.disabled)
-            sel:SetScript('OnMouseDown', function()
-                Save.disabled= not Save.disabled and true or nil
-                print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            end)]]
 
             if Save.disabled then
                 panel:UnregisterAllEvents()

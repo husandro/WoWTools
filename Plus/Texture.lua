@@ -2252,7 +2252,7 @@ local function Init_Class_Power(init)--职业
             self.numTexture= (parent or self):CreateTexture(nil, 'OVERLAY', nil, 7)
             self.numTexture:SetSize(Save.classPowerNumSize, Save.classPowerNumSize)
             self.numTexture:SetPoint('CENTER', self, 'CENTER')
-            self.numTexture:SetAtlas(e.Icon.number..(num or self.layoutIndex))
+            self.numTexture:SetAtlas('services-number-'..(num or self.layoutIndex))
             if color~=false then
                 if not color then
                     set_Alpha_Color(self.numTexture, true)

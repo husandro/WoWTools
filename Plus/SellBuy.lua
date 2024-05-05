@@ -719,7 +719,7 @@ local function Init_Auto_Repair()
     hooksecurefunc('MerchantFrame_UpdateGuildBankRepair', function()
         local repairAllCost = GetRepairAllCost()
         if not CanGuildBankRepair() then
-            MerchantGuildBankRepairButton.Text:SetText(e.Icon.O2)
+            MerchantGuildBankRepairButton.Text:SetFormattedText('|A:%s:0:0|a', e.Icon.disabled)
         else
             local co = GetGuildBankMoney() or 0
             local col= co==0 and '|cff606060' or (repairAllCost> co and '|cnRED_FONT_COLOR:') or '|cnGREEN_FONT_COLOR:'

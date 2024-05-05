@@ -234,11 +234,11 @@ function e.Set_Item_Info(self, tab)
                 end
             end
             if dateInfo.text[ITEM_SPELL_KNOWN] then--"已经学会"
-                bottomRightText= e.Icon.select2
+                bottomRightText= format('|A:%s:0:0|a', e.Icon.select)
             elseif dateInfo.red then--红色
-                bottomRightText= e.Icon.O2
+                bottomRightText= format('|A:%s:0:0|a', e.Icon.disabled)
             elseif dateInfo.wow then
-                bottomRightText= e.Icon.wow2
+                bottomRightText= format('|T%d:0|t', e.Icon.wow)
             end
 
             if expacID== e.ExpansionLevel and classID==8 and dateInfo.text[useStr] then--附魔
@@ -276,15 +276,15 @@ function e.Set_Item_Info(self, tab)
                         bottomLeftText= '|cff00ccff'..(e.WA_Utf8Sub(text,3,4, true) or '')..'|r'
 
                     elseif dateInfo.wow then--战网
-                        bottomLeftText= e.Icon.wow2
+                        bottomLeftText= format('|T%d:0|t', e.Icon.wow)
                         if subclassID==0 then
                             if itemLevel and itemLevel>1 then
                                 bottomLeftText= bottomLeftText.. itemLevel
                                 local level= GetAverageItemLevel()
                                 if not dateInfo.red then
-                                    bottomLeftText= bottomLeftText.. (level<itemLevel and e.Icon.up2 or e.Icon.select2)
+                                    bottomLeftText= bottomLeftText.. (level<itemLevel and e.Icon.up2 or format('|A:%s:0:0|a', e.Icon.select))
                                 else
-                                    bottomLeftText= bottomLeftText..e.Icon.O2
+                                    bottomLeftText= format('%s|A:%s:0:0|a', bottomLeftText, e.Icon.disabled)
                                 end
                             end
                             if dateInfo.text[classStr] then
@@ -377,7 +377,7 @@ function e.Set_Item_Info(self, tab)
                                             ..'|r' ..(topLeftText or '')
                             end
                         elseif itemMinLevel and itemMinLevel<=e.Player.level and itemQuality~=7 then--不可使用
-                            topLeftText=e.Icon.O2
+                            topLeftText=format('|A:%s:0:0|a', e.Icon.disabled)
                             isRedItem=true
                         end
                     end
@@ -437,7 +437,7 @@ function e.Set_Item_Info(self, tab)
             bottomRightText= get_has_text(PlayerHasToy(itemID))--已收集, 未收集
 
         elseif itemQuality==7 or itemQuality==8 then--7传家宝，8 WoWToken
-            topRightText=e.Icon.wow2
+            topRightText=format('|T%d:0|t', e.Icon.wow)
 
             if classID==0 and subclassID==8 and C_Item.GetItemSpell(itemLink) then--传家宝，升级，物品
                 local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={useStr}, wow=true, red=true})--物品提示，信息
@@ -483,18 +483,18 @@ function e.Set_Item_Info(self, tab)
             elseif text then
                 bottomLeftText= Get_Class_Icon_da_Text(text)
             elseif dateInfo.wow then
-                topRightText= e.Icon.wow2
+                topRightText= format('|T%d:0|t', e.Icon.wow)
             elseif dateInfo.red then
-                topRightText= e.Icon.O2
+                topRightText= format('|A:%s:0:0|a', e.Icon.disabled)
             end
 
         elseif itemStackCount==1 then
             local dateInfo= e.GetTooltipData({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={chargesStr}, wow=true, red=true})--物品提示，信息
             bottomLeftText=dateInfo.text[chargesStr]
             if dateInfo.wow then
-                topRightText= e.Icon.wow2
+                topRightText= format('|T%d:0|t', e.Icon.wow)
             elseif dateInfo.red then
-                topRightText= e.Icon.O2
+                topRightText= format('|A:%s:0:0|a', e.Icon.disabled)
             end
         end
 

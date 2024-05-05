@@ -73,7 +73,6 @@ local affixSchedule = {--C_MythicPlus.GetCurrentSeason() C_MythicPlus.GetCurrent
 
 --https://wago.io/dungeonports
 --https://wago.io/meD8JMW3C
-
 e.ChallengesSpellTabs={--C_MythicPlus.GetCurrentSeason()
     [399]= {spell=393256, ins=1202, name='红玉', spellName='利爪防御者之路', spellDes='传送到|cff00ccff红玉新生法池|r的入口。'},--传送到红玉新生法池的入口。 利爪防御者之路
     [400]= {spell=393262, ins=1198, name='诺库德', spellName='啸风平原之路', spellDes='|cff00ccff传送至诺库德阻击战|r的入口。'},--传送至诺库德阻击战的入口。 啸风平原之路
@@ -308,11 +307,11 @@ local function UI_Party_Info(self)--队友位置
 
             local stat=GetReadyCheckStatus(unit)
             if stat=='ready' then
-                text= text..e.Icon.select2
+                text= text..format('|A:%s:0:0|a', e.Icon.select)
             elseif stat=='waiting' then
                 text= text..'  '
             elseif stat=='notready' then
-                text= text ..e.Icon.O2
+                text= format('%s|A:%s:0:0|a', text, e.Icon.disabled)
             end
 
             local tab= e.UnitItemLevel[guid]--装等
@@ -344,9 +343,9 @@ local function UI_Party_Info(self)--队友位置
 
             local name2, uiMapID2=e.GetUnitMapName(unit)
             if (name and name==name2) or (uiMapID and uiMapID==uiMapID2) then--地图名字
-                text=text..e.Icon.select2
+                text=text..format('|A:%s:0:0|a', e.Icon.select)
             elseif name2 then
-                text=text ..e.Icon.map2..name2
+                text=text ..'|A:poi-islands-table:0:0|a'..name2
             else
                 text= text.. '|A:questlegendary:0:0|a'
             end
@@ -386,7 +385,7 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     self.keyFrame:SetFrameLevel(7)
 
     self.ready = CreateFrame("Button",nil, self.keyFrame, 'UIPanelButtonTemplate')--就绪
-    self.ready:SetText((e.onlyChinese and '就绪' or READY)..e.Icon.select2)
+    self.ready:SetText((e.onlyChinese and '就绪' or READY)..format('|A:%s:0:0|a', e.Icon.select))
     self.ready:SetPoint('LEFT', self.StartButton, 'RIGHT',2, 0)
     self.ready:SetSize(100,24)
     self.ready:SetScript("OnMouseDown", DoReadyCheck)
@@ -1092,7 +1091,7 @@ local function set_All_Text()--所有记录
             weeklyRewardLevel2= min(weeklyRewardLevel2, LimitMaxKeyLevel)
             local week= level..') '..(Get_Week_Item_Level(level) or '')
             local curkey= self.curKey==level and '|T4352494:0|t' or ''
-            local curLevel= self.curLevel==level and e.Icon.select2 or ''
+            local curLevel= self.curLevel==level and format('|A:%s:0:0|a', e.Icon.select) or ''
             return week..curkey..curLevel
         end
         ChallengesFrame.weekLootItemLevelLable:SetScript('OnLeave', function(self) self:SetAlpha(1) e.tips:Hide() end)

@@ -55,7 +55,7 @@ local function set_Tooltips_Info()
         Save.pet.capture..' |T646379:0|t'
     )
     e.tips:AddDoubleLine(
-        (e.onlyChinese and '离开' or AFK)..e.Icon.clock2..SecondsToTime(Save.afk.time),
+        (e.onlyChinese and '离开' or AFK)..'|A:socialqueuing-icon-clock:0:0|a'..SecondsToTime(Save.afk.time),
         Save.afk.num..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
     )
     e.tips:AddDoubleLine(
@@ -64,9 +64,9 @@ local function set_Tooltips_Info()
     )
     e.tips:AddLine(' ')
     local time=e.GetTimeInfo(OnLineTime)
-    e.tips:AddDoubleLine((e.onlyChinese and '在线' or GUILD_ONLINE_LABEL)..e.Icon.clock2, time)---在线时间
+    e.tips:AddDoubleLine((e.onlyChinese and '在线' or GUILD_ONLINE_LABEL)..'|A:socialqueuing-icon-clock:0:0|a', time)---在线时间
     local tab=e.WoWDate[e.Player.guid].Time
-    e.tips:AddDoubleLine((e.onlyChinese and '总计' or TOTAL)..e.Icon.clock2, tab.totalTime and SecondsToTime(tab.totalTime))
+    e.tips:AddDoubleLine((e.onlyChinese and '总计' or TOTAL)..'|A:socialqueuing-icon-clock:0:0|a', tab.totalTime and SecondsToTime(tab.totalTime))
     e.tips:AddDoubleLine(
         (e.onlyChinese and '本周%s' or CURRENCY_THIS_WEEK):format('CD'),
         SecondsToTime(C_DateAndTime.GetSecondsUntilWeeklyReset())
@@ -103,7 +103,7 @@ local function set_TrackButton_Text()--设置显示内容
 
     if OnAFKTime then
         text= text and text..'|n' or ''
-        text= text .. (e.onlyChinese and '离开' or AFK)..e.Icon.clock2..e.GetTimeInfo(OnAFKTime, not Save.timeTypeText)
+        text= text .. (e.onlyChinese and '离开' or AFK)..'|A:socialqueuing-icon-clock:0:0|a'..e.GetTimeInfo(OnAFKTime, not Save.timeTypeText)
     end
 
     if OnPetTime then
@@ -156,7 +156,7 @@ local function TrackButton_Frame_Init_Date()--初始, 数据
 
     elseif OnAFKTime then
         local text, sec = e.GetTimeInfo(OnAFKTime, not Save.timeTypeText)
-        LastText= e.Icon.clock2..'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '离开' or AFK)..text..'|r'
+        LastText= '|A:socialqueuing-icon-clock:0:0|a|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '离开' or AFK)..text..'|r'
         Save.afk.num= Save.afk.num + 1
         Save.afk.time= Save.afk.time + sec
         print(id, e.cn(addName), LastText)
@@ -501,7 +501,7 @@ local function Init()
                             if time and time>0 then
                                 timeAll= timeAll + time
                                 info= {
-                                    text= e.GetPlayerInfo({guid=guid,  reName=true, reRealm=true, factionName=tab.faction})..e.Icon.clock2..'  '..SecondsToTime(time),
+                                    text= e.GetPlayerInfo({guid=guid,  reName=true, reRealm=true, factionName=tab.faction})..'|A:socialqueuing-icon-clock:0:0|a  '..SecondsToTime(time),
                                     notCheckable=true,
                                     tooltipOnButton=true,
                                     tooltipTitle= tab.Time.levelTime and format(e.onlyChinese and '你在这个等级的游戏时间：%s' or TIME_PLAYED_LEVEL, '|n'..SecondsToTime(tab.Time.levelTime)),
@@ -820,4 +820,3 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 
     end
 end)
-

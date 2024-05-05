@@ -674,13 +674,13 @@ local function Init_Options()
     })
 
     e.AddPanel_Button({
-        title= e.Icon.wow2..(e.onlyChinese and '清除WoW数据' or 'Clear WoW data'),
+        title= format('|T%d:0|t', e.Icon.wow)..(e.onlyChinese and '清除WoW数据' or 'Clear WoW data'),
         buttonText= '|A:QuestArtifact:0:0|a'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
         addSearchTags= e.onlyChinese and '清除WoW数据' or 'Clear WoW data',
         func= function()
             StaticPopupDialogs[id..'RestWoWSetup']={
                 text = '|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r'
-                    ..'|n|n'..(e.Icon.wow2..(e.onlyChinese and '清除WoW数据' or 'Clear WoW data'))
+                    ..'|n|n'..(format('|T%d:0|t', e.Icon.wow)..(e.onlyChinese and '清除WoW数据' or 'Clear WoW data'))
                     ..'|n|n|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重新加载UI' or RELOADUI)..'|n|n'
                 ,
                 button1= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),

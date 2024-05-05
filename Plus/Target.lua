@@ -1514,7 +1514,10 @@ local function set_Option()
     end)
 
     local questAllFactionCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    questAllFactionCheck.Text:SetText((e.onlyChinese and '提示所有阵营' or (SHOW..'('..ALL..')'..FACTION))..e.Icon.horde2..e.Icon.alliance2)
+    questAllFactionCheck.Text:SetFormattedText(
+        '%s|A:%s:0:0|a|A:%s:0:0|a',
+        e.onlyChinese and '所有阵营' or TRANSMOG_SHOW_ALL_FACTIONS or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, FACTION),
+        e.Icon.Horde, e.Icon.Alliance)
     questAllFactionCheck:SetPoint('LEFT', questCheck.Text, 'RIGHT',2,0)
     questAllFactionCheck:SetChecked(Save.questShowAllFaction)
     questAllFactionCheck:SetScript('OnClick', function()

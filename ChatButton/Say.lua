@@ -125,7 +125,7 @@ local function Init_Menu(self, level, type)--主菜单
                             text= text..e.GetPlayerInfo({guid=gameAccountInfo.playerGuid, faction=gameAccountInfo.factionName, reName=true, reRealm=true,})
                             if gameAccountInfo.areaName then --位置
                                 if gameAccountInfo.areaName==map then
-                                    text=text..e.Icon.map2
+                                    text=text..'|A:poi-islands-table:0:0|a'
                                 else
                                     text=text..' '..gameAccountInfo.areaName
                                 end
@@ -163,7 +163,7 @@ local function Init_Menu(self, level, type)--主菜单
                     text= (game.level and game.level~=MAX_PLAYER_LEVEL) and text .. ' |cff00ff00'..game.level..'|r' or text--等级
                     if game.area then
                         if game.area == map then--地区
-                            text= text..e.Icon.map2
+                            text= text..'|A:poi-islands-table:0:0|a'
                         else
                             text= text..' '..game.area
                         end
@@ -202,7 +202,7 @@ local function Init_Menu(self, level, type)--主菜单
                 end
 
                 info={
-                    text=(tab.wow and e.Icon.wow2 or '')..e.GetPlayerInfo({unit=tab.unit, guid=tab.guid, name=tab.name, faction=tab.faction, reName=true, reRealm=true}),
+                    text=(tab.wow and format('|T%d:0|t', e.Icon.wow) or '')..e.GetPlayerInfo({unit=tab.unit, guid=tab.guid, name=tab.name, faction=tab.faction, reName=true, reRealm=true}),
                     notCheckable=true,
                     tooltipOnButton=true,
                     tooltipTitle= e.onlyChinese and '记录: 密语' or (PVP_RECORD..SLASH_TEXTTOSPEECH_WHISPER),
@@ -300,8 +300,8 @@ local function Init_Menu(self, level, type)--主菜单
                         if zone.area then --区域
                             if t2~='' then t2=t2..'|n' end
                             if zone.area==map then
-                                info.text=info.text..e.Icon.map2
-                                t2=t2..e.Icon.map2;
+                                info.text=info.text..'|A:poi-islands-table:0:0|a'
+                                t2=t2..'|A:poi-islands-table:0:0|a'
                             else
                                 info.text=info.text.. ' '..zone.area;
                             end
@@ -413,7 +413,7 @@ local function Init_Menu(self, level, type)--主菜单
         numOline = C_FriendList.GetNumWhoResults()
         numOline = (numOline and numOline>0)  and '|cnGREEN_FONT_COLOR:'..numOline..'|r' or ''
         info={--区域列表
-            text=e.Icon.map2..(e.onlyChinese and '区域' or FLOOR)..numOline,
+            text=format('|A:poi-islands-table:0:0|a%s%s', e.onlyChinese and '区域' or FLOOR, numOline),
             notCheckable=true,
             menuList='FLOOR',
             hasArrow=true,
