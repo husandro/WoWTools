@@ -749,7 +749,7 @@ local function created_model(btn, setBg)
         btn.model.shadow:SetAtlas('perks-char-shadow')
         btn.model.shadow:SetPoint('BOTTOMLEFT',0,-3)
         btn.model.shadow:SetSize(w-18, 18)
-        btn.model.shadow:SetAlpha(0.6)
+        btn.model.shadow:SetAlpha(0.4)
     end
 end
 
@@ -873,20 +873,6 @@ local function Init_StableFrame_Plus()
         created_model(btn, true)--已激活宠物，Model 提示
         btn.model:SetPoint('TOP', btn, 'BOTTOM', 0, -14)--btn.model:SetPoint('BOTTOM', btn, 'TOP', 0, 14)
  
-        --[[
-    local bg=btn.model:CreateTexture('BACKGROUND')
-    bg:SetAllPoints(btn.model)
-    bg:SetAtlas('ShipMission_RewardsBG-Desaturate')
-    e.Set_Label_Texture_Color(bg, {type='Texture', alpha=0.3})
-    ]]
-    --[[<Texture parentKey="PetShadow" atlas="perks-char-shadow" alpha="0.6">
-							<Size x="410" y="90"/>
-							<Anchors>
-								<Anchor point="CENTER" x="-8" y="-145"/>
-							</Anchors>
-						</Texture>]]
-        
-
         hooksecurefunc(btn, 'SetPet', function(self)--StableActivePetButtonTemplateMixin
             local icon= get_abilities_icons(self.petData)
             icon= icon:gsub('|T.-|t', function(a) return a..'|n' end)
@@ -916,7 +902,7 @@ local function Init_StableFrame_Plus()
             format('|A:UI-HUD-MicroMenu-SpecTalents-Mouseover:0:0|a|cffaad372%s|r', e.onlyChinese and '天赋' or TALENT),
             format('|T461112:0|t|cffaad372%s|r', e.onlyChinese and '动物伙伴' or GetSpellLink(267116) or GetSpellInfo(267116) or 'Animal Companion')
         )
-        e.tips:AddDoubleLine(e.onlyChinese and '移除' or REMOVE, e.Icon.right)
+        e.tips:AddDoubleLine(e.onlyChinese and '放入兽栏' or STABLE_PET_BUTTON_LABEL, e.Icon.right)
         e.tips:Show()
     end)
 
@@ -1291,7 +1277,7 @@ function Init_StableFrame_List()
         e.tips:Show()
         self:SetAlpha(1)
     end
-    btn:SetScript('OnClick', function(self, d)
+    btn:SetScript('OnMouseDown', function(self, d)
         --[[if d=='LeftButton' then
             Save.show_All_List= not Save.show_All_List and true or nil
             Set_StableFrame_List()--初始，宠物列表
