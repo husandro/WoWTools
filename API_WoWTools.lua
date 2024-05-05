@@ -100,58 +100,49 @@ end
 
 
 e.Icon={
+    --player= e.GetUnitRaceInfo({unit='player', guid=nil , race=nil , sex=nil , reAtlas=false}),
     icon= 'orderhalltalents-done-glow',
     disabled='talents-button-reset',
-    select='common-icon-checkmark',--'GarrMission_EncounterBar-CheckMark',--绿色√
-    --select2='|A:common-icon-checkmark:0:0|a',--绿色√
-    --selectYellow='common-icon-checkmark-yellow',--黄色√
-    --X2='|A:common-icon-redx:0:0|a',
-    --O2='|A:talents-button-reset:0:0|a',--￠
+    select='common-icon-checkmark',--'GarrMission_EncounterBar-CheckMark',--绿色√   
     right='|A:newplayertutorial-icon-mouse-rightbutton:0:0|a',
     left='|A:newplayertutorial-icon-mouse-leftbutton:0:0|a',
-    mid='|A:newplayertutorial-icon-mouse-middlebutton:0:0|a',
-    --map='poi-islands-table',
-    --map2='|A:poi-islands-table:0:0|a',
-    wow=136235,
-    --wow2= '|T136235:0|t',--'|A:Icon-WoW:0:0|a',--136235  BNet_GetClientEmbeddedTexture(-2, 32, 32)
+    mid='|A:newplayertutorial-icon-mouse-middlebutton:0:0|a',  
+    wow=136235,  
     net2= '|A:questlog-questtypeicon-account:0:0|a',-- '|A:gmchat-icon-blizz:0:0|a',-- BNet_GetClientEmbeddedTexture(-2, 32, 32), questlog-questtypeicon-account
-
     Alliance='charcreatetest-logo-alliance',
     Horde='charcreatetest-logo-horde',
     Neutral='nameplates-icon-flag-neutral',
-    --number='services-number-',
-    --number2='|A:services-number-%d:0:0|a',
-    --clock='socialqueuing-icon-clock',
-    --clock2='|A:socialqueuing-icon-clock:0:0|a',
-
-    --player= e.GetUnitRaceInfo({unit='player', guid=nil , race=nil , sex=nil , reAtlas=false}),
-
-    
-    --bank2='|A:Banker:0:0|a',
-    --bag='bag-main',
-    --bag2='|A:bag-main:0:0|a',
-    --bagEmpty='bag-reagent-border-empty',
-
-   --up2='|A:bags-greenarrow:0:0|a',--绿色向上, 红色向上 UI-HUD-Minimap-Arrow-Corpse， 金色 UI-HUD-Minimap-Arrow-Guard
-    --down2='|A:UI-HUD-MicroMenu-StreamDLRed-Up:0:0|a',--红色向下
     toLeft='common-icon-rotateleft',--向左
-    toLeft2='|A:common-icon-rotateleft:0:0|a',
+    --toLeft2='|A:common-icon-rotateleft:0:0|a',
     toRight='common-icon-rotateright',--向右
     toRight2='|A:common-icon-rotateright:0:0|a',
-
-    --unlocked='tradeskills-icon-locked',--'Levelup-Icon-Lock',--没锁
-    --quest='AutoQuest-Badge-Campaign',--任务
-    --guild2='|A:UI-HUD-MicroMenu-GuildCommunities-Mouseover:0:0|a',--guild2='|A:communities-guildbanner-background:0:0|a',
-
     TANK='|A:UI-LFG-RoleIcon-Tank:0:0|a',--INLINE_TANK_ICON
     HEALER='|A:UI-LFG-RoleIcon-Healer:0:0|a',--INLINE_HEALER_ICON
     DAMAGER='|A:UI-LFG-RoleIcon-DPS:0:0|a',--INLINE_DAMAGER_ICON
     NONE='|A:UI-LFG-RoleIcon-Pending:0:0|a',
     leader='|A:UI-HUD-UnitFrame-Player-Group-GuideIcon:0:0|a',--队长
-
-    --info2='|A:questlegendary:0:0|a',--黄色!
-    --star2='|A:auctionhouse-icon-favorite:0:0|a',--星星
 }
+--info2='|A:questlegendary:0:0|a',--黄色!
+--star2='|A:auctionhouse-icon-favorite:0:0|a',--星星
+--number='services-number-',
+--number2='|A:services-number-%d:0:0|a',
+--clock='socialqueuing-icon-clock',
+--clock2='|A:socialqueuing-icon-clock:0:0|a',
+--select2='|A:common-icon-checkmark:0:0|a',--绿色√
+--selectYellow='common-icon-checkmark-yellow',--黄色√
+--X2='|A:common-icon-redx:0:0|a',
+--O2='|A:talents-button-reset:0:0|a',--￠
+--map='poi-islands-table',
+--map2='|A:poi-islands-table:0:0|a',
+--unlocked='tradeskills-icon-locked',--'Levelup-Icon-Lock',--没锁
+--quest='AutoQuest-Badge-Campaign',--任务
+--guild2='|A:UI-HUD-MicroMenu-GuildCommunities-Mouseover:0:0|a',--guild2='|A:communities-guildbanner-background:0:0|a',
+--bank2='|A:Banker:0:0|a',
+--bag='bag-main',
+--bag2='|A:bag-main:0:0|a',
+--bagEmpty='bag-reagent-border-empty',
+--up2='|A:bags-greenarrow:0:0|a',--绿色向上, 红色向上 UI-HUD-Minimap-Arrow-Corpse， 金色 UI-HUD-Minimap-Arrow-Guard
+--down2='|A:UI-HUD-MicroMenu-StreamDLRed-Up:0:0|a',--红色向下
 
 
 C_Texture.GetTitleIconTexture(BNET_CLIENT_WOW, Enum.TitleIconVersion.Medium, function(success, texture)--FriendsFrame.lua BnetShared.lua    

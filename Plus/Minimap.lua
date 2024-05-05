@@ -2807,7 +2807,7 @@ local function Init_InstanceDifficulty()--副本，难图，指示
         }
         for _, ID in pairs(tab) do
             local text= e.GetDifficultyColor(nil, ID)
-            e.tips:AddLine((self.tips==text and e.Icon.toRight2 or '')..text..(self.tips==text and e.Icon.toLeft2 or ''))
+            e.tips:AddLine((self.tips==text and format('|A:%s:0:0|a', e.Icon.toRight) or '')..text..(self.tips==text and format('|A:%s:0:0|a', e.Icon.toLeft) or ''))
         end
         e.tips:AddDoubleLine('difficultyID', difficultyID)
         e.tips:AddDoubleLine(id, Initializer:GetName())

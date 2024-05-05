@@ -1015,7 +1015,7 @@ local function Init_TrackButton()--添加装备管理框
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.equipmentFrameScale or 1),'Alt+'..e.Icon.mid)
-        e.tips:AddDoubleLine(not Save.EquipmentH and e.Icon.toRight2..(e.onlyChinese and '向右' or BINDING_NAME_STRAFERIGHT) or ('|A:UI-HUD-MicroMenu-StreamDLRed-Up:0:0|a'..(e.onlyChinese and '向下' or BINDING_NAME_PITCHDOWN)),
+        e.tips:AddDoubleLine(not Save.EquipmentH and format('|A:%s:0:0|a', e.Icon.toRight)..(e.onlyChinese and '向右' or BINDING_NAME_STRAFERIGHT) or ('|A:UI-HUD-MicroMenu-StreamDLRed-Up:0:0|a'..(e.onlyChinese and '向下' or BINDING_NAME_PITCHDOWN)),
                 'Ctrl+'..e.Icon.right)
 
         e.tips:AddLine(' ')
@@ -1880,7 +1880,7 @@ local function Init_ChromieTime()--时空漫游战役, 提示
             e.tips:AddLine(' ')
             for _, info in pairs(C_ChromieTime.GetChromieTimeExpansionOptions() or {}) do
                 local col= info.alreadyOn and '|cffff00ff' or ''-- option and option.id==info.id
-                e.tips:AddDoubleLine((info.alreadyOn and e.Icon.toRight2 or '')..col..(info.previewAtlas and '|A:'..info.previewAtlas..':0:0|a' or '')..info.name..(info.alreadyOn and e.Icon.toLeft2 or '')..col..' ID '.. info.id, col..(e.onlyChinese and '完成' or COMPLETE)..': '..e.GetYesNo(info.completed))
+                e.tips:AddDoubleLine((info.alreadyOn and format('|A:%s:0:0|a', e.Icon.toRight) or '')..col..(info.previewAtlas and '|A:'..info.previewAtlas..':0:0|a' or '')..info.name..(info.alreadyOn and format('|A:%s:0:0|a', e.Icon.toLeft) or '')..col..' ID '.. info.id, col..(e.onlyChinese and '完成' or COMPLETE)..': '..e.GetYesNo(info.completed))
                 --e.tips:AddDoubleLine(' ', col..(info.mapAtlas and '|A:'..info.mapAtlas..':0:0|a'.. info.mapAtlas))
                 --e.tips:AddDoubleLine(' ', col..(info.previewAtlas and '|A:'..info.previewAtlas..':0:0|a'.. info.previewAtlas))
                 --e.tips:AddDoubleLine(' ', col..(e.onlyChinese and '完成' or COMPLETE)..': '..e.GetYesNo(info.completed))
@@ -2980,7 +2980,7 @@ local function Init()
                 e.tips:AddLine(' ')
                 for _, info in pairs(C_ChromieTime.GetChromieTimeExpansionOptions() or {}) do
                     local col= info.alreadyOn and '|cffff00ff' or ''-- option and option.id==info.id
-                    e.tips:AddDoubleLine((info.alreadyOn and e.Icon.toRight2 or '')..col..(info.previewAtlas and '|A:'..info.previewAtlas..':0:0|a' or '')..info.name..(info.alreadyOn and e.Icon.toLeft2 or '')..col..' ID '.. info.id, col..(e.onlyChinese and '完成' or COMPLETE)..': '..e.GetYesNo(info.completed))
+                    e.tips:AddDoubleLine((info.alreadyOn and format('|A:%s:0:0|a', e.Icon.toRight) or '')..col..(info.previewAtlas and '|A:'..info.previewAtlas..':0:0|a' or '')..info.name..(info.alreadyOn and format('|A:%s:0:0|a', e.Icon.toLeft) or '')..col..' ID '.. info.id, col..(e.onlyChinese and '完成' or COMPLETE)..': '..e.GetYesNo(info.completed))
                     --e.tips:AddDoubleLine(' ', col..(info.mapAtlas and '|A:'..info.mapAtlas..':0:0|a'.. info.mapAtlas))
                     --e.tips:AddDoubleLine(' ', col..(info.previewAtlas and '|A:'..info.previewAtlas..':0:0|a'.. info.previewAtlas))
                     --e.tips:AddDoubleLine(' ', col..(e.onlyChinese and '完成' or COMPLETE)..': '..e.GetYesNo(info.completed))

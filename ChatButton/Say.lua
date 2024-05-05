@@ -195,9 +195,9 @@ local function Init_Menu(self, level, type)--主菜单
                 for _, msg in pairs(tab.msg) do
                     text= text and text..'|n' or ''
                     if msg.type then--发送
-                        text= text..msg.time..' '..e.Icon.toLeft2..e.Player.col..msg.text..'|r'
+                        text= text..msg.time..' '..format('|A:%s:0:0|a', e.Icon.toLeft)..e.Player.col..msg.text..'|r'
                     else--接收
-                        text= text..msg.time..' '..e.Icon.toRight2..'|cnGREEN_FONT_COLOR:'..msg.text..'|r'
+                        text= text..msg.time..' '..format('|A:%s:0:0|a', e.Icon.toRight)..'|cnGREEN_FONT_COLOR:'..msg.text..'|r'
                     end
                 end
 

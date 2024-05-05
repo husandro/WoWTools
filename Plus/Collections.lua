@@ -627,7 +627,7 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
                     if color and className then
                         className= color:WrapTextInColorCode(className)
                     end
-                    t= e.Icon.toRight2..(e.Class(nil, self.class, false) or '')..(className or '')..e.Icon.toLeft2..'|n'..t
+                    t= format('|A:%s:0:0|a', e.Icon.toRight)..(e.Class(nil, self.class, false) or '')..(className or '')..format('|A:%s:0:0|a', e.Icon.toLeft)..'|n'..t
                 end
                 self:SetText(t)
             end
@@ -1190,7 +1190,7 @@ local function Init_Wardrober_ListContainer()
                                 ..name--名称
                                 ..(info.limitedTimeSet and '|A:socialqueuing-icon-clock:0:0|a' or '')--限时套装
                                 ..' '..info.setID
-                                --..(info.setID==btn.setID and ' '..e.Icon.toLeft2 or '')
+                                --..(info.setID==btn.setID and ' '..format('|A:%s:0:0|a', e.Icon.toLeft) or '')
                     tipsText= tipsText..'|n'..(isCollected and '|cnGREEN_FONT_COLOR:'..tip..'|r' or tip)
                 end
                 patch= patch or (info.patchID and info.patchID>0 and 'v'..(info.patchID/10000))

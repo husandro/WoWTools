@@ -2924,7 +2924,7 @@ local function Init_Quest()
 
                 local need= campaignNum+ legendaryNum+ storyNum +bountyNum
                 self.Text:SetText(
-                    (inMapNum>0 and '|cnGREEN_FONT_COLOR:'..inMapNum..e.Icon.toLeft2..'|r ' or '')
+                    (inMapNum>0 and '|cnGREEN_FONT_COLOR:'..inMapNum..format('|A:%s:0:0|a', e.Icon.toLeft)..'|r ' or '')
                     ..(dayNum>0 and e.GetQestColor('Day').hex..dayNum..'|r ' or '')
                     ..(weekNum>0 and e.GetQestColor('Week').hex..weekNum..'|r ' or '')
                     ..(numQuest>0 and '|cffffffff'..numQuest..'|r ' or '')

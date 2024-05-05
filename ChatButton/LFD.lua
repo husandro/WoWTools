@@ -1320,7 +1320,7 @@ local function InitList(_, level, type)--LFDFrame.lua
 
     elseif type=='SETTINGS' then
         info={--自动, 离开副本,选项
-            text= e.Icon.toLeft2..(e.onlyChinese and '离开副本' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,LEAVE, INSTANCE)),
+            text= format('|A:%s:0:0|a', e.Icon.toLeft)..(e.onlyChinese and '离开副本' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,LEAVE, INSTANCE)),
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '离开副本和战场' or (format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LEAVE, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INSTANCE, BATTLEFIELDS))),
             checked=Save.leaveInstance,

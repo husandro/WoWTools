@@ -583,7 +583,7 @@ local function Init_Markers_Frame()--设置标记, 框架
         elseif d=='RightButton' and IsControlKeyDown() then
             Save.H = not Save.H and true or nil
             print(id,e.cn(addName),
-                e.onlyChinese and '图标方向' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION..(Save.H and '|A:bags-greenarrow:0:0|a' or e.Icon.toLeft2),
+                e.onlyChinese and '图标方向' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION..(Save.H and '|A:bags-greenarrow:0:0|a' or format('|A:%s:0:0|a', e.Icon.toLeft)),
                 e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
             )
         end
@@ -600,7 +600,7 @@ local function Init_Markers_Frame()--设置标记, 框架
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'alt+'..e.Icon.right)
         e.tips:AddDoubleLine((UnitAffectingCombat('player') and '|cff606060' or '')..(e.onlyChinese and '缩放' or  UI_SCALE), (Save.markersScale or 1)..' Alt+'..e.Icon.mid)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine((e.onlyChinese and '图标方向' or  HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION)..(Save.H and e.Icon.toLeft2 or '|A:bags-greenarrow:0:0|a'), 'Ctrl+'..e.Icon.right)
+        e.tips:AddDoubleLine((e.onlyChinese and '图标方向' or  HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION)..(Save.H and format('|A:%s:0:0|a', e.Icon.toLeft) or '|A:bags-greenarrow:0:0|a'), 'Ctrl+'..e.Icon.right)
         e.tips:Show()
         self:set_Alpha(true)
     end)

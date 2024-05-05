@@ -892,7 +892,7 @@ local function set_Option()
         Save.target= not Save.target and true or nil
         set_All_Init()
     end)
-    sel.Text:SetText('1) '..e.Icon.toRight2..(e.onlyChinese and '目标' or addName))
+    sel.Text:SetText('1) '..format('|A:%s:0:0|a', e.Icon.toRight)..(e.onlyChinese and '目标' or addName))
     sel.Text:SetTextColor( Save.targetColor.r, Save.targetColor.g, Save.targetColor.b, Save.targetColor.a)
     sel.Text:EnableMouse(true)
     sel.Text:SetScript('OnMouseDown', function(self2, d)
@@ -1263,7 +1263,7 @@ local function set_Option()
         Save.creatureUIParent= not Save.creatureUIParent and true or nil
         set_All_Init()
         if not Save.creatureUIParent and not Save.target then
-            print('|cnRED_FONT_COLOR:'..(e.onlyChinese and '需要启用‘1) '..e.Icon.toRight2..'目标’' or 'Need to enable the \"1) '..e.Icon.toRight2..addName..'\"'))
+            print('|cnRED_FONT_COLOR:'..(e.onlyChinese and '需要启用‘1) '..format('|A:%s:0:0|a', e.Icon.toRight)..'目标’' or 'Need to enable the \"1) '..format('|A:%s:0:0|a', e.Icon.toRight)..addName..'\"'))
         end
         print(id, e.cn(addName), e.GetEnabeleDisable(Save.creatureUIParent), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
@@ -1606,7 +1606,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save.TargetFramePoint= Save.TargetFramePoint or 'LEFT'
 
             --添加控制面板
-            e.AddPanel_Sub_Category({name=e.Icon.toRight2..(e.onlyChinese and '目标' or addName)..'|r', frame=panel})
+            e.AddPanel_Sub_Category({name=format('|A:%s:0:0|a', e.Icon.toRight)..(e.onlyChinese and '目标' or addName)..'|r', frame=panel})
 
             e.ReloadPanel({panel=panel, addName= e.cn(addName), restTips=nil, checked=not Save.disabled, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
                 disabledfunc=function()

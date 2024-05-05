@@ -732,7 +732,7 @@ function e.Get_Weekly_Rewards_Activities(settings)--周奖励，提示
 
     if showTooltip then
         for head, tab in pairs(R) do
-            e.tips:AddLine(e.Icon.toRight2..head)
+            e.tips:AddLine(format('|A:%s:0:0|a', e.Icon.toRight)..head)
             for index, info in pairs(tab) do
                 if info.unlocked then
                     local itemLink=  C_WeeklyRewards.GetExampleRewardItemHyperlinks(info.id)
@@ -787,7 +787,7 @@ function e.Get_Weekly_Rewards_Activities(settings)--周奖励，提示
             end
             frame.WeekRewards['rewardChestHead'..head]= label
         end
-        label:SetText(e.Icon.toRight2..head)
+        label:SetText(format('|A:%s:0:0|a', e.Icon.toRight)..head)
         last= label
 
         for index, info in pairs(tab) do

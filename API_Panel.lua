@@ -121,7 +121,7 @@ function e.ReloadPanel(tab)
     end
     if tab.restTips then
         local needReload= e.Cstr(tab.panel)
-        needReload:SetText(e.Icon.toRight2..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)..e.Icon.toLeft2)
+        needReload:SetText(format('|A:%s:0:0|a', e.Icon.toRight)..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)..format('|A:%s:0:0|a', e.Icon.toLeft))
         needReload:SetPoint('BOTTOMRIGHT')
         needReload:SetTextColor(0,1,0)
     end
@@ -187,7 +187,7 @@ function e.CSlider(self, tab)--e.CSlider(self, {w=, h=, min=, max=, value=, setp
             e.tips:AddLine('|A:bags-greenarrow:0:0|a'..(e.onlyChinese and '最大' or MAXIMUM)..': '..tab.max)
             e.tips:AddLine('Setp: '..tab.setp)
             e.tips:AddLine(' ')
-            e.tips:AddLine(e.Icon.toRight2..(e.onlyChinese and '当前: ' or ITEM_UPGRADE_CURRENT)..self2:GetValue())
+            e.tips:AddLine(format('|A:%s:0:0|a', e.Icon.toRight)..(e.onlyChinese and '当前: ' or ITEM_UPGRADE_CURRENT)..self2:GetValue())
             e.tips:Show()
         end)
     end

@@ -490,8 +490,8 @@ local function Init()
         )
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(
-            e.Icon.toRight2..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP_UP)..e.Icon.left,
-            e.Icon.right..(e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP_UP)..e.Icon.toLeft2)
+            format('|A:%s:0:0|a', e.Icon.toRight)..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP_UP)..e.Icon.left,
+            e.Icon.right..(e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP_UP)..format('|A:%s:0:0|a', e.Icon.toLeft))
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, Initializer:GetName())
         e.tips:Show()

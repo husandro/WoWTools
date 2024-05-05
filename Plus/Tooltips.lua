@@ -1179,7 +1179,7 @@ function func.Set_Unit(self)--设置单位提示信息
                 end
             end
             line:SetText((isSelf and '|A:auctionhouse-icon-favorite:0:0|a' or e.GetFriend(nil, guid, nil) or '')
-                        ..col..e.Icon.toRight2..name..e.Icon.toLeft2
+                        ..col..format('|A:%s:0:0|a', e.Icon.toRight)..name..format('|A:%s:0:0|a', e.Icon.toLeft)
                         ..'|r')
         end
 

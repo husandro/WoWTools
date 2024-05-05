@@ -264,8 +264,8 @@ end)
             }
             for _, ID in pairs(tab) do
                 text= e.GetDifficultyColor(nil, ID)
-                text= ID==dungeonID and e.Icon.toRight2..text..e.Icon.toLeft2 or text
-                e.tips:AddLine((text==self.name and e.Icon.toRight2 or '')..text..(text==self.name and e.Icon.toLeft2 or ''))
+                text= ID==dungeonID and format('|A:%s:0:0|a', e.Icon.toRight)..text..format('|A:%s:0:0|a', e.Icon.toLeft) or text
+                e.tips:AddLine((text==self.name and format('|A:%s:0:0|a', e.Icon.toRight) or '')..text..(text==self.name and format('|A:%s:0:0|a', e.Icon.toLeft) or ''))
             end
 
             e.tips:Show()
@@ -302,7 +302,7 @@ end)
         }
         for index, ID in pairs(tab) do
             text= e.GetDifficultyColor(nil, ID)
-            text= ID==dungeonID and e.Icon.toRight2..text..e.Icon.toLeft2 or text
+            text= ID==dungeonID and format('|A:%s:0:0|a', e.Icon.toRight)..text..format('|A:%s:0:0|a', e.Icon.toLeft) or text
             local set
             if index==3 then
                 set= ((UnitIsGroupLeader("player") or not IsInGroup()) and dungeonID~=ID and '|cnGREEN_FONT_COLOR:' or '|cff606060')

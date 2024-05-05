@@ -769,7 +769,7 @@ local function set_WhoList_Update()--查询, 名单列表
                 local index= self.index
                 local info = index and C_FriendList.GetWhoInfo(index)
                 if info and info.fullName then
-                    e.tips:AddLine((info.gender==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or info.gender==3 and '|A:charactercreate-gendericon-female-selected:0:0|a' or e.Icon.toRight2)
+                    e.tips:AddLine((info.gender==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or info.gender==3 and '|A:charactercreate-gendericon-female-selected:0:0|a' or format('|A:%s:0:0|a', e.Icon.toRight))
                                 ..(e.Class(nil, info.filename) or '')
                                 ..self.col
                                 ..info.fullName
@@ -811,7 +811,7 @@ local function set_WhoList_Update()--查询, 名单列表
         if r and g and b then
             if btn.Name and info.fullName then
                 if info.fullName== e.Player.name then
-                    btn.Name:SetText(e.Icon.toRight2..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..e.Icon.toLeft2)
+                    btn.Name:SetText(format('|A:%s:0:0|a', e.Icon.toRight)..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..format('|A:%s:0:0|a', e.Icon.toLeft))
                 else
                     local nameText= e.GetFriend(info.fullName)--检测, 是否好友
                     if nameText then
