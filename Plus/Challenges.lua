@@ -90,7 +90,7 @@ e.ChallengesSpellTabs={--C_MythicPlus.GetCurrentSeason()
     [248]= {spell=424167, ins=1021, name='庄园', spellName='巫心灾厄之路', spellDes='传送到|cff00ccff维克雷斯庄园|r的入口。'},--维克雷斯庄园 Waycrest Manor (Battle for Azeroth)
     [244]= {spell=424187, ins=1176, name='阿塔达萨', spellName='鎏金皇陵之路', spellDes='传送到|cff00ccff阿塔达萨|r的入口。'},--阿塔达萨 Atal'Dazar (Battle for Azeroth)
     [463]= {spell=424197, ins=1209, name='陨落', insName='永恒黎明', spellName='扭曲之光之路', spellDes='传送到|cff00ccff永恒黎明|r的入口。'},--永恒黎明：迦拉克隆的陨落 Dawn of the Infinite: Galakrond's Fall
-    --[464]= {spell=424197, ins=1209, name='崛起' },--永恒黎明：姆诺兹多的崛起 Dawn of the Infinite: Murozond's Rise    
+    --[464]= {spell=424197, ins=1209, name='崛起', insName='永恒黎明', spellName='扭曲之光之路', spellDes='传送到|cff00ccff永恒黎明|r的入口。'},--永恒黎明：姆诺兹多的崛起 Dawn of the Infinite: Murozond's Rise    
     [456]= {spell=424142, ins=65, name='潮汐王座', spellName='猎潮者之路', spellDes='传送到潮|cff00ccff汐王座|r的入口。'},--潮汐王座 Throne of the Tides (Cataclysm)
 
     [206]= {spell=410078, ins=767, name='巢穴', spellName='大地守护者之路', spellDes='传送到|cff00ccff奈萨里奥的巢穴|r的入口。'},--奈萨里奥的巢穴
