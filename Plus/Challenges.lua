@@ -71,7 +71,7 @@ local affixSchedule = {--C_MythicPlus.GetCurrentSeason() C_MythicPlus.GetCurrent
     [10]={[1]=10, [2]=3, [3]=123},	--Fortified 	Volcanic 	Spiteful
 }
 
-local SpellTabs={--C_MythicPlus.GetCurrentSeason()
+e.ChallengesSpellTabs={--C_MythicPlus.GetCurrentSeason()
 --10.26 12赛季
     [399]= {spell=393256, ins=1202, name='红玉', spellName='利爪防御者之路', spellDes='传送到|cff00ccff红玉新生法池|r的入口。'},--传送到红玉新生法池的入口。 利爪防御者之路
     [400]= {spell=393262, ins=1198, name='诺库德', spellName='啸风平原之路', spellDes='|cff00ccff传送至诺库德阻击战|r的入口。'},--传送至诺库德阻击战的入口。 啸风平原之路
@@ -112,19 +112,13 @@ local SpellTabs={--C_MythicPlus.GetCurrentSeason()
 }
 
 --if C_MythicPlus.GetCurrentSeason()==12 then
-for _, tab in pairs(SpellTabs) do
+for _, tab in pairs(e.ChallengesSpellTabs) do
     e.LoadDate({id=tab.spell, type='spell'})
 end
 
 
 
---[[
-{424142, '猎潮者之路', '传送到潮|cff00ccff汐王座|r的入口。'},
-
-
-
-{410080, '风神领域之路', '传送到|cff00ccff旋云之巅|r的入口。'},
-{410078, '大地守护者之路', '传送到|cff00ccff奈萨里奥的巢穴|r的入口。'},
+--[[没找到，数据
 {131228, '玄牛之路', '传送至|cff00ccff围攻砮皂寺|r入口处'},
 {131222, '魔古皇帝之路', '传送至|cff00ccff魔古山宫殿|r入口处。'},
 {131225, '残阳之路', '传送至|cff00ccff残阳关|r入口处。'},
@@ -148,8 +142,12 @@ end
 {354467, '不败之路', '传送到|cff00ccff伤逝剧场|r的入口。'},
 {354462, '勇者之路', '传送到|cff00ccff通灵战潮|r的入口。'},
 {354466 , '晋升者之路', '传送到|cff00ccff晋升高塔|r的入口。'},
+}]]
 
-}】】
+
+
+
+
 
 --难度 每周 掉落
 --https://www.wowhead.com/cn/guide/mythic-plus-dungeons/dragonflight-season-4
@@ -179,37 +177,6 @@ local function Get_Week_Item_Level(level)
     }
     return tab[level] or tab[10]
 end
-
-
-
-
---[[if isLoot then--掉落
-    if level<=8 then
-        return '(|cff00ff00'..(e.onlyChinese and '老兵' or 'Veteran')..'|r)'
-    elseif level<=16 then
-        return '(|cff2aa2ff'..(e.onlyChinese and '勇士' or FOLLOWERLIST_LABEL_CHAMPIONS)..'|r)'
-    else
-        return '(|cffff00ff'..(e.onlyChinese and '英雄' or ITEM_HEROIC)..'|r)'
-    end
-else
-    if level<=7 then
-        return '(|cff2aa2ff'..(e.onlyChinese and '勇士' or FOLLOWERLIST_LABEL_CHAMPIONS)..'|r)'
-    elseif level<=17 then
-        return '(|cffff00ff'..(e.onlyChinese and '英雄' or ITEM_HEROIC)..'|r)'
-    else
-        return '(|cffb78f6a'..(e.onlyChinese and '史诗' or ITEM_QUALITY4_DESC)..'|r)'
-    end
-end]]
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -576,7 +543,7 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
         if not name then
             return
         end
-        local journalInstanceID= SpellTabs[mapChallengeModeID] and SpellTabs[mapChallengeModeID].ins
+        local journalInstanceID= e.ChallengesSpellTabs[mapChallengeModeID] and e.ChallengesSpellTabs[mapChallengeModeID].ins
         if journalInstanceID then
             name = select(8, EJ_GetInstanceInfo(journalInstanceID)) or name
         end
@@ -873,8 +840,8 @@ local function All_Player_Info()--所以角色信息
                 if e.onlyChinese then--取得中文，副本名称
                     local mapID, name= link:match('|Hkeystone:%d+:(%d+):.+%[(.+) %(%d+%)]')
                     mapID= mapID and tonumber(mapID)
-                    if mapID and name and SpellTabs[mapID] and SpellTabs[mapID].name then
-                        link= link:gsub(name, SpellTabs[mapID].name)
+                    if mapID and name and e.ChallengesSpellTabs[mapID] and e.ChallengesSpellTabs[mapID].name then
+                        link= link:gsub(name, e.ChallengesSpellTabs[mapID].name)
                     end
                 end
                 local nameLable= e.Cstr(btn, {color= classColor})--名字
@@ -1012,7 +979,7 @@ local function set_All_Text()--所有记录
                 local name, _, _, texture= C_ChallengeMode.GetMapUIInfo(tab.mapID)
                 if name then
                     if e.onlyChinese and not LOCALE_zhCN then
-                        name= SpellTabs[tab.mapID] and SpellTabs[tab.mapID].name or name
+                        name= e.ChallengesSpellTabs[tab.mapID] and e.ChallengesSpellTabs[tab.mapID].name or name
                     end
                     local text= (texture and '|T'..texture..':0|t' or '').. name..' ('..tab.level..') '
                     local text2= tab.c..'/'..tab.t
@@ -1085,7 +1052,7 @@ local function set_All_Text()--所有记录
         local name, _, _, texture = C_ChallengeMode.GetMapUIInfo(tab.mapID)
         if name then
             if e.onlyChinese then
-                name= SpellTabs[tab.mapID] and SpellTabs[tab.mapID].name or name
+                name= e.ChallengesSpellTabs[tab.mapID] and e.ChallengesSpellTabs[tab.mapID].name or name
             end
             weekText= weekText and weekText..'|n' or ''
             local bestOverAllScore = select(2, C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(tab.mapID)) or 0
@@ -1186,8 +1153,8 @@ local function set_All_Text()--所有记录
                 --  ( ) . % + - * ? [ ^ $
                 local mapID, name= link:match('|Hkeystone:%d+:(%d+):.+%[(.+) %(%d+%)]')
                 mapID= mapID and tonumber(mapID)
-                if mapID and name and SpellTabs[mapID] and SpellTabs[mapID].name then
-                    link= link:gsub(name, SpellTabs[mapID].name)
+                if mapID and name and e.ChallengesSpellTabs[mapID] and e.ChallengesSpellTabs[mapID].name then
+                    link= link:gsub(name, e.ChallengesSpellTabs[mapID].name)
                 end
             end
 
@@ -1253,7 +1220,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
         local frame = self.DungeonIcons[i]
         if frame and frame.mapID then
             if not frame.setTips then
-                local insTab=SpellTabs[frame.mapID] or {}
+                local insTab=e.ChallengesSpellTabs[frame.mapID] or {}
                 frame.spellID, frame.journalInstanceID= insTab.spell, insTab.ins
                 frame:HookScript('OnEnter', function(self2)--提示
                     if not self2.mapID or Save.hideIns then
@@ -1380,8 +1347,8 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                 end
                 frame.nameLable.name= nameText
                 --  ( ) . % + - * ? [ ^ $
-                if (e.onlyChinese or LOCALE_zhCN) and SpellTabs[frame.mapID] then
-                    nameText= SpellTabs[frame.mapID].name
+                if (e.onlyChinese or LOCALE_zhCN) and e.ChallengesSpellTabs[frame.mapID] then
+                    nameText= e.ChallengesSpellTabs[frame.mapID].name
                 else
                     nameText=nameText:match('%((.+)%)') or nameText
                     nameText=nameText:match('%（(.+)%）') or nameText
@@ -1428,8 +1395,8 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                 end
                 frame.nameFrame.Text.name= nameText
 
-                if (e.onlyChinese or LOCALE_zhCN) and SpellTabs[frame.mapID] then
-                    nameText= SpellTabs[frame.mapID].name
+                if (e.onlyChinese or LOCALE_zhCN) and e.ChallengesSpellTabs[frame.mapID] then
+                    nameText= e.ChallengesSpellTabs[frame.mapID].name
                 else
                     nameText=nameText:match('%((.+)%)') or nameText
                     nameText=nameText:match('%（(.+)%）') or nameText
@@ -2023,7 +1990,7 @@ local function Init()
             e.tips:AddDoubleLine('note:','If you get error, please disable this')
         end
         e.tips:AddLine(' ')
-        for _, tab in pairs(SpellTabs) do
+        for _, tab in pairs(e.ChallengesSpellTabs) do
             local spellLink= GetSpellLink(tab.spell) or GetSpellInfo(tab.spell) or ('ID'.. tab.spell)
             local icon= GetSpellTexture(tab.spell)
             e.tips:AddDoubleLine((icon and '|T'..icon..':0|t' or '')..spellLink,
@@ -2177,7 +2144,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 
             local cinese= WoWToolsSave[BUG_CATEGORY15] and WoWToolsSave[BUG_CATEGORY15].disabled
             if e.onlyChinese and not cinese and not (LOCALE_zhCN or LOCALE_zhTW) then
-                for mapChallengeModeID, info in pairs(SpellTabs) do
+                for mapChallengeModeID, info in pairs(e.ChallengesSpellTabs) do
                     if info.name then
                         local name= C_ChallengeMode.GetMapUIInfo(mapChallengeModeID)
                         if name then

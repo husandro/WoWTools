@@ -23,12 +23,12 @@ local function set_UpdateSpendText(btn)
             btn.maxText:SetScript('OnLeave', GameTooltip_Hide)
             btn.maxText:SetScript('OnEnter', function(self)
                 if self.maxRanks then
-                    e.tips:SetOwner(self, "ANCHOR_RIGHT");
-                    e.tips:ClearLines();
+                    e.tips:SetOwner(self, "ANCHOR_RIGHT")
+                    e.tips:ClearLines()
                     e.tips:AddDoubleLine(e.onlyChinese and '最高等级' or TRADESKILL_RECIPE_LEVEL_TOOLTIP_HIGHEST_RANK, self.maxRanks)
                     e.tips:AddLine(' ')
                     e.tips:AddDoubleLine(id, e.cn(addName))
-                    e.tips:Show();
+                    e.tips:Show()
                 end
             end)
         end
@@ -53,9 +53,7 @@ local function Vstr(t)--垂直文字
     end
 end
 
-local ChallengesTab={}
-
-
+local SpellTab={}--e.ChallengesSpellTabs
 local function Init()
 
 --[[
@@ -71,8 +69,8 @@ Teleporta para a entrada de Floretérnia.
 ( ) . % + - * ? [ ^ $
 ]]
     hooksecurefunc('SpellFlyoutButton_UpdateGlyphState', function(self)
-        local text
-        if self.spellID and not IsPassiveSpell(self.spellID) then
+        local text= SpellTab[self.spellID]
+        if not text and self.spellID and not IsPassiveSpell(self.spellID) then
             local des= GetSpellDescription(self.spellID)
             if des then
                 des= e.cn(des)
@@ -80,56 +78,93 @@ Teleporta para a entrada de Floretérnia.
                     or des:match('传送至(.-)入口处')--传送至永茂林地入口处。
                     or des:match('传送到(.-)的入口')--传送到自由镇的入口
                     or des:match('将施法者传送到(.-)入口')--将施法者传送到青龙寺入口。
-                    
-                    or des:match('Teleportiert zum Eingang des (.-)%.')--Teleportiert zum Eingang des Immergrünen Flors.
-                    or des:match('Teleport to the entrance to (.-)%.')--Teleport to the entrance to The Everbloom.
-                    or des:match('Teletransporte a la entrada del (.-)%.')--Teletransporte a la entrada del Vergel Eterno.
-                    or des:match('Téléporte à l’entrée de la (.-)%.')--Téléporte à l’entrée de la Flore éternelle.
-
-                    or des:match('Teletrasporta all\'ingresso di (.-)%.')--Teletrasporta all'ingresso di Verdeterno.
-                    or des:match('Teletrasporta all\'ingresso del (.-)%.')
-                    or des:match('Teletrasporta all\'ingresso dell\'(.-)%.')
-
-                    or des:match('Teleporta para a entrada de (.-)')--Teleporta para a entrada de Floretérnia.
-                    or des:match('Телепортирует заклинателя в (.-)%.')--Телепортирует заклинателя в Вечное Цветение.
-                    or des:match('(.-) 입구로 순간이동합니다')--상록숲 입구로 순간이동합니다.
-
             end
-            text= text or select(2, GetCallPetSpellInfo(self.spellID))
-            text= text~='' and text or nil
-            text= text or GetSpellInfo(self.spellID)
-            text= e.cn(text)
-            if text then
-
-                if not self.Text then
-                    self.Text=e.Cstr(self, {color={r=1,g=1,b=1}, justifyH='CENTER'})
-                    self.TextBg= self:CreateTexture(nil, 'BACKGROUND')
-                    self.TextBg:SetPoint('TOPLEFT', self.Text,-1, 1)
-                    self.TextBg:SetPoint('BOTTOMRIGHT', self.Text, 1,-1 )
-                    self.TextBg:SetAtlas('ChallengeMode-guild-background')
-                else
-                    self.Text:ClearAllPoints();
-                end
+            if not text then
+                text= select(2, GetCallPetSpellInfo(self.spellID))
+                text= text~='' and text or nil
+                text= text or GetSpellInfo(self.spellID)
+                text= e.cn(text)
                 text=text:match('%-(.+)') or text
                 text=text:match('：(.+)') or text
                 text=text:match(':(.+)') or text
                 text=text:gsub(' %d','')
-                text=text:gsub(SUMMONS,'');
-                local p=self:GetPoint(1);
-                if p=='TOP' or p=='BOTTOM' then
-                    self.Text:SetPoint('RIGHT', self, 'LEFT',-1, 0)--, 0, 0);
-                else
-                    self.Text:SetPoint('BOTTOM', self, 'TOP', 0,1)--, 2, 4);
-                    text=Vstr(text);
-                end
+                text=text:gsub(SUMMONS,'')
             end
         end
-        if self.Text then self.Text:SetText( text or "") end
+        if text then
+            if not self.Text then
+                self.Text=e.Cstr(self, {color={r=1,g=1,b=1}, justifyH='CENTER'})
+                self.TextBg= self:CreateTexture(nil, 'BACKGROUND')
+                self.TextBg:SetPoint('TOPLEFT', self.Text,-1, 1)
+                self.TextBg:SetPoint('BOTTOMRIGHT', self.Text, 1,-1 )
+                self.TextBg:SetAtlas('ChallengeMode-guild-background')
+            else
+                self.Text:ClearAllPoints()
+            end
+
+            local p=self:GetPoint(1)
+            if p=='TOP' or p=='BOTTOM' then
+                self.Text:SetPoint('RIGHT', self, 'LEFT',-1, 0)--, 0, 0)
+            else
+                self.Text:SetPoint('BOTTOM', self, 'TOP', 0,1)--, 2, 4)
+                text=Vstr(text)
+            end
+        end
+        if self.Text then
+            self.Text:SetText(text or "")
+        end
     end)
 
     SpellFlyout:HookScript('OnShow', function()
         e.tips:Hide()
     end)
+
+    --添加，挑战，数据
+    if not e.onlyChinese then
+        C_Timer.After(2, function()
+            for _, info in pairs(e.ChallengesSpellTabs) do
+                if info.spell and info.ins then
+                    local name= EJ_GetInstanceInfo(info.ins)
+                    if name then
+                        SpellTab[info.spell]=name
+                    end
+                end
+            end
+            local tab={--没找到，数据
+            {131228, 324},--'玄牛之路', '传送至|cff00ccff围攻砮皂寺|r入口处'},
+            {131222, 321},--'魔古皇帝之路', '传送至|cff00ccff魔古山宫殿|r入口处。'},
+            {131225, 303},--'残阳之路', '传送至|cff00ccff残阳关|r入口处。'},
+            {131206, 321},--'影踪派之路', '将施法者传送到|cff00ccff影踪禅院|r入口。'},
+            {131205, 302},--'烈酒之路', '将施法者传送到|cff00ccff风暴烈酒酿造厂|r入口。'},
+            {131232, 246},--'通灵师之路', '传送至|cff00ccff通灵学院|r入口处。'},
+            {131231, 311},--'血色利刃之路', '传送至|cff00ccff血色大厅|r入口处。'},
+            {131229, 316},--'血色法冠之路', '传送至|cff00ccff血色修道院|r入口处。'},
+
+
+            {159895, 385},--'血槌之路', '传送至|cff00ccff血槌炉渣矿井|r入口处。'},
+            {159902, 559},--'火山之路', '传送至|cff00ccff黑石塔上层|r入口处。'},
+            {159898, 476},--'通天之路', '传送至|cff00ccff通天峰|r入口处。'},
+            {159897, 547},--'警戒者之路', '传送至|cff00ccff奥金顿|r入口处。'},
+
+
+            {354463, 1183},--'瘟疫之路', '传送到|cff00ccff凋魂之殇|r的入口。'},
+            {354468, 1184},--'雾林之路', '传送到|cff00ccff塞兹仙林的迷雾|r的入口。'},
+            {354469, 1189},--'石头守望者之路', '传送至|cff00ccff赤红深渊|r入口。'},
+            {354465, 1185},--'罪魂之路', '传送到|cff00ccff赎罪大厅|r的入口。'},
+            {354467, 1187},--'不败之路', '传送到|cff00ccff伤逝剧场|r的入口。'},
+            {354462, 1182},--'勇者之路', '传送到|cff00ccff通灵战潮|r的入口。'},
+            {354466, 1186},--'晋升者之路', '传送到|cff00ccff晋升高塔|r的入口。'},
+            }
+            for _, info in pairs(tab) do
+                local name= EJ_GetInstanceInfo(info[2])
+                if name then
+                    SpellTab[info[1]]=name
+                end
+            end
+        end)
+    end
+
+
 
     --#############
     --法术按键, 颜色
@@ -151,12 +186,12 @@ Teleporta para a entrada de Floretérnia.
                         frame:UpdateUsable()
                     end
                 else
-                    frame.icon:SetVertexColor(1,0,0);
+                    frame.icon:SetVertexColor(1,0,0)
                 end
             end
         else
             if ( checksRange and not inRange ) then
-                frame.icon:SetVertexColor(1,0,0);
+                frame.icon:SetVertexColor(1,0,0)
             elseif frame.UpdateUsable then
                 frame:UpdateUsable()
             end
@@ -164,45 +199,9 @@ Teleporta para a entrada de Floretérnia.
 
     end)
 
-
+   
 end
-        --[[
-            
         
-        local isNotInRange= checksRange and inRange==false
-        if not frame.isNotInRange then
-            frame.isNotInRange= frame:CreateTexture(nil, 'OVERLAY')
-            frame.isNotInRange:SetAtlas('jailerstower-wayfinder-rewardbackground-mouseover')
-           -- frame.isNotInRange:SetVertexColor(1,0,0)
-            frame.isNotInRange:SetAllPoints(frame)
-        end
-        if frame.isNotInRange then
-           -- frame.isNotInRange:SetShown(isNotInRange)
-        end
-        
-        if not frame.UpdateUsable then
-            return
-        end
-        if not frame.setHooksecurefunc then
-            hooksecurefunc(frame, 'UpdateUsable', function(self)
-                if self.action and ActionHasRange(self.action) and IsUsableAction(self.action) then
-                    if not UnitExists('target')  then
-                        self.icon:SetVertexColor(1, 0, 1)
-                    elseif not IsActionInRange(self.action) then
-                        self.icon:SetVertexColor(1,0,0)
-                    end
-                end
-            end)
-            frame.setHooksecurefunc= true
-        end
-        frame:UpdateUsable()
-        if checksRange then
-           if not inRange then
-                self.icon:SetVertexColor(RED_FONT_COLOR:GetRGB())
-           else--if self.action then
-                self:UpdateUsable()
-            end
-        --end]]
 
 
 --###########
