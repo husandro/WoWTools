@@ -43,6 +43,7 @@ end
 --######
 --初始化
 --######
+
 local function Vstr(t)--垂直文字
     local len = select(2, t:gsub("[^\128-\193]", ""))
     if(len == #t) then
@@ -51,8 +52,11 @@ local function Vstr(t)--垂直文字
         return t:gsub("([%z\1-\127\194-\244][\128-\191]*)", "%1|n")
     end
 end
-local function Init()
 
+local ChallengesTab={}
+
+
+local function Init()
 
 --[[
 传送至永茂林地入口处。

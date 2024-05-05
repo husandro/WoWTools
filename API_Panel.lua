@@ -224,12 +224,6 @@ end
 
 
 
-
-
-
-
-
-
 --##############
 --创建, 添加控制面板
 --##############
@@ -238,10 +232,13 @@ local function get_variableIndex()
     variableIndex= variableIndex+1
     return variableIndex
 end
+
+--插件名称
 local Category, Layout = Settings.RegisterVerticalLayoutCategory('|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r')
-Category.expanded=true
 Settings.RegisterAddOnCategory(Category)
-Settings.SetKeybindingsCategory(Category)
+Category.expanded=true
+--Settings.SetKeybindingsCategory(Category)
+
 
 --打开，选项
 function e.OpenPanelOpting(name, category)

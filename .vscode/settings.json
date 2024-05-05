@@ -4383,7 +4383,9 @@
         "StableStabledPetButtonTemplateMixin",
         "enabled",
         "CREATE_NEW_COMPACT_UNIT_FRAME_PROFILE",
-        "UIParentLoadAddOn"
+        "UIParentLoadAddOn",
+        "InterfaceOptions_AddCategory",
+        "InterfaceOptionsFrame_OpenToCategory"
     ],
     "Lua.diagnostics.disable": [
         "inject-field",
