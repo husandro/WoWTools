@@ -939,7 +939,7 @@ local function Init_StableFrame_Plus()
         if self:IsEnabled() then
             self.SpellFrame.Name:SetTextColor(1,1,1)
         else
-            self.SpellFrame.Name:SetTextColor(0.6,0.6,0.6)
+            self.SpellFrame.Name:SetTextColor(0.5,0.5,0.5)
         end
     end)
 
