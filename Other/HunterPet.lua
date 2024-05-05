@@ -267,7 +267,7 @@ local function Set_Slot_Info(btn, index, isActiveSlot)--创建，提示内容
         btn.Checked:SetPoint('CENTER')
         btn.Checked:SetSize(w+10, h+10)
         btn.Checked:SetVertexColor(0,1,0)]]
-    
+
 
     --btn.Background:SetAtlas('bag-border-search')
     --btn.Background:ClearAllPoints()
@@ -304,7 +304,7 @@ local function Init()
         btn:SetFrameLevel(layer)
         Set_Slot_Info(btn, i, nil)--创建，提示内容
 
-       
+
         if i > 1 then--设置位置
             btn:ClearAllPoints()
             btn:SetPoint("LEFT", _G["PetStableStabledPet"..i-1], "RIGHT", 4, 0)
@@ -691,8 +691,10 @@ local function set_pet_tooltips(frame, pet, y)
         i=i+1
     end
     e.tips:AddDoubleLine(format('|cff00ccff%s', e.onlyChinese and '食物' or POWER_TYPE_FOOD), format('|cff00ccff%s', BuildListString(GetStablePetFoodTypes(pet.slotID)) or ''))
-
-    if e.tips.playerModel and pet.displayID then
+    e.tips:AddLine(' ')
+    e.tips:AddDoubleLine(e.onlyChinese and '拖曳' or DRAG_MODEL, e.Icon.left)
+    
+    if e.tips.playerModel and pet.displayID and pet.displayID>0 then
         e.tips.playerModel:SetDisplayInfo(pet.displayID)
         e.tips.playerModel:SetShown(true)
     end
@@ -701,29 +703,54 @@ end
 
 local function set_model(self)--StableActivePetButtonTemplateMixin
     local data= self.petData or {}--宠物，类型，图标
-    if data.displayID and data.displayID>0 then
-        if data.displayID~=self.displayID then
-            self.model:SetDisplayInfo(data.displayID)
+    local displayID= data.displayID or 0
+    
+    if displayID~=self.displayID then
+        if displayID==0 then
+            self.model:ClearModel()
+        else
+            self.model:SetDisplayInfo(displayID)
         end
-    else
-        self.model:ClearModel()
     end
-    self.displayID= data.displayID--提示用，
+    self.displayID= displayID--提示用，
+
+    if self.model.bg then
+        local atlas
+        if displayID>0 then
+            local backgroundForPetSpec = {
+                [STABLE_PET_SPEC_CUNNING] = "hunter-stable-bg-art_cunning",
+                [STABLE_PET_SPEC_FEROCITY] = "hunter-stable-bg-art_ferocity",
+                [STABLE_PET_SPEC_TENACITY] = "hunter-stable-bg-art_tenacity",
+            }
+            atlas = backgroundForPetSpec[data.specialization]
+        end
+        if atlas then
+            self.model.bg:SetAtlas(atlas)
+        else
+            self.model.bg:SetTexture(0)
+        end
+       self.model.shadow:SetShown(displayID>0)
+    end
 end
 
 
 --已激活宠物，Model 提示
-local function created_model(btn)
+local function created_model(btn, setBg)
     local w= btn:GetWidth()+40
     btn.model= CreateFrame("PlayerModel", nil, btn)
     btn.model:SetSize(w, w)
     btn.model:SetFacing(0.5)
-    --[[
-    local bg=btn.model:CreateTexture('BACKGROUND')
-    bg:SetAllPoints(btn.model)
-    bg:SetAtlas('ShipMission_RewardsBG-Desaturate')
-    e.Set_Label_Texture_Color(bg, {type='Texture', alpha=0.3})
-    ]]
+    
+    if setBg then
+        btn.model.bg= btn.model:CreateTexture(nil, 'BACKGROUND')
+        btn.model.bg:SetAllPoints(btn.model)
+
+        btn.model.shadow= btn.model:CreateTexture(nil, 'ARTWORK')
+        btn.model.shadow:SetAtlas('perks-char-shadow')
+        btn.model.shadow:SetPoint('BOTTOMLEFT',0,-3)
+        btn.model.shadow:SetSize(w-18, 18)
+        btn.model.shadow:SetAlpha(0.6)
+    end
 end
 
 
@@ -734,8 +761,8 @@ local function set_button_size(btn)
     btn.Icon:SetSize(n, n)
     local s= n*0.5
     btn.BackgroundMask:SetSize(s, s)
-    local w= n+ ((85-66)/66)*n--0.287
-    local h= n+ ((100-66)/66)*n--0.515
+    local w= n+ ((85-72)/72)*n--0.287
+    local h= n+ ((100-72)/72)*n--0.515
     btn.Highlight:SetSize(w, h)
 end
 
@@ -745,8 +772,8 @@ local function created_button(index)
     btn:HookScript('OnEnter', function(self)
         if not self.petData then return end
         set_pet_tooltips(self, self.petData, 0)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '激活' or SPEC_ACTIVE, e.Icon.right)
+        --e.tips:AddLine(' ')
+        --e.tips:AddDoubleLine(e.onlyChinese and '激活' or SPEC_ACTIVE, e.Icon.right)
         e.tips:Show()
     end)
     set_button_size(btn)
@@ -827,8 +854,7 @@ local function Init_StableFrame_Plus()
         btn:HookScript('OnEnter', function(self)--信息，提示
             set_pet_tooltips(self, self.petData, -10)
             if not self.petData then return end
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.onlyChinese and '移除' or REMOVE, e.Icon.right)
+            e.tips:AddDoubleLine(e.onlyChinese and '放入兽栏' or STABLE_PET_BUTTON_LABEL, e.Icon.right)
             e.tips:Show()
         end)
 
@@ -844,9 +870,22 @@ local function Init_StableFrame_Plus()
         btn.indexText:SetText(i)
 
 
-        created_model(btn)--已激活宠物，Model 提示
-        btn.model:SetPoint('TOP', btn, 'BOTTOM', 0, -14)
-        --btn.model:SetPoint('BOTTOM', btn, 'TOP', 0, 14)
+        created_model(btn, true)--已激活宠物，Model 提示
+        btn.model:SetPoint('TOP', btn, 'BOTTOM', 0, -14)--btn.model:SetPoint('BOTTOM', btn, 'TOP', 0, 14)
+ 
+        --[[
+    local bg=btn.model:CreateTexture('BACKGROUND')
+    bg:SetAllPoints(btn.model)
+    bg:SetAtlas('ShipMission_RewardsBG-Desaturate')
+    e.Set_Label_Texture_Color(bg, {type='Texture', alpha=0.3})
+    ]]
+    --[[<Texture parentKey="PetShadow" atlas="perks-char-shadow" alpha="0.6">
+							<Size x="410" y="90"/>
+							<Anchors>
+								<Anchor point="CENTER" x="-8" y="-145"/>
+							</Anchors>
+						</Texture>]]
+        
 
         hooksecurefunc(btn, 'SetPet', function(self)--StableActivePetButtonTemplateMixin
             local icon= get_abilities_icons(self.petData)
@@ -861,15 +900,9 @@ local function Init_StableFrame_Plus()
         end)
     end
 
-    local bg= StableFrame.ActivePetList:CreateTexture(nil, "BACKGROUND")
-    bg:SetAtlas(StableFrame.Topper:IsShown() and 'pet-list-bg' or 'footer-bg')
-    bg:SetTexCoord(1,0,1,0)
-    bg:SetPoint('TOPLEFT', StableFrame.ActivePetList.PetButtons[1].model)
-    bg:SetPoint('BOTTOMRIGHT', StableFrame.ActivePetList.PetButtons[#StableFrame.ActivePetList.PetButtons].model)
-
 
     local btn= StableFrame.ActivePetList.BeastMasterSecondaryPetButton--第二个，宠物，提示
-    created_model(btn)--已激活宠物，Model 提示
+    created_model(btn, false)--已激活宠物，Model 提示
     hooksecurefunc(btn, 'SetPet', set_model)
     btn.model:SetFacing(-0.5)
     btn.model:SetPoint('RIGHT', btn, 'LEFT')
@@ -889,7 +922,7 @@ local function Init_StableFrame_Plus()
 
     hooksecurefunc(StableFrame.PetModelScene, 'SetPet', function()--选定时，隐藏model
         local self= StableFrame
-        
+
         local selecIndex= self.selectedPet and self.selectedPet.slotID
 
         for _, btn2 in ipairs(StableFrame.ActivePetList.PetButtons) do    --已激，宠物栏，提示
@@ -899,7 +932,7 @@ local function Init_StableFrame_Plus()
         local btn2= self.ActivePetList.BeastMasterSecondaryPetButton
         btn2.model:SetShown(btn2:IsEnabled() and (selecIndex~=Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX))
     end)
-    
+
 
     local frame= CreateFrame('Frame', nil, btn, 'StablePetAbilityTemplate')--StablePetAbilityMixin
     frame:SetPoint('TOPRIGHT', btn, 'BOTTOMRIGHT', 10,-6)
@@ -909,7 +942,7 @@ local function Init_StableFrame_Plus()
     frame.Name:ClearAllPoints()
     frame.Name:SetPoint('RIGHT', frame.Icon, 'LEFT')
 
-    
+
 
     --食物
     StableFrame.PetModelScene.PetInfo.Food=e.Cstr(StableFrame.PetModelScene.PetInfo, {copyFont=not e.onlyChinese and StableFrame.PetModelScene.PetInfo.Specialization, color={r=1,g=1,b=1}, size=16})--copyFont=StableFrame.PetModelScene.PetInfo.Specialization, 
@@ -1013,6 +1046,22 @@ function Init_UI()
         texture:SetPoint('BOTTOMRIGHT')
         texture:SetAtlas('wood-topper')
     end
+
+    StableFrame.PetModelScene.PetInfo.NameBox.EditButton:SetHighlightAtlas('AlliedRace-UnlockingFrame-BottomButtonsSelectionGlow')--修该，名称
+    StableFrame.PetModelScene.PetInfo.NameBox.EditButton:HookScript('OnLeave', GameTooltip_Hide)
+    StableFrame.PetModelScene.PetInfo.NameBox.EditButton:HookScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddLine(e.onlyChinese and '修改宠物名字' or PET_RENAME_LABEL:gsub(HEADER_COLON, ''))
+        e.tips:Show()
+    end)
+    StableFrame.PetModelScene.PetInfo.FavoriteButton:HookScript('OnLeave', GameTooltip_Hide)
+    StableFrame.PetModelScene.PetInfo.FavoriteButton:HookScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddLine(e.onlyChinese and '收藏' or FAVORITES)
+        e.tips:Show()
+    end)
 end
 
 
@@ -1080,27 +1129,29 @@ function Set_StableFrame_List()
     end
 
     function AllListFrame:Refresh()
-        if not self:IsShown() then return end
+        local show= self:IsShown()
         for _, btn in pairs(AllListFrame.Buttons) do
-            btn:SetPet(C_StableInfo.GetStablePetInfo(btn:GetID()))
+            btn:SetPet(show and C_StableInfo.GetStablePetInfo(btn:GetID()) or nil)
         end
         self.btn6:settings()
     end
 
     hooksecurefunc(StableFrame, 'Refresh', function()
-        AllListFrame:Refresh()
+        if AllListFrame:IsShown() then
+            AllListFrame:Refresh()
+        end
     end)
+    AllListFrame:SetScript('OnHide', AllListFrame.Refresh)
     AllListFrame:SetScript('OnShow', function(self)
         self:Refresh()
         self:set_point()
     end)
-    AllListFrame:SetScript('OnHide', function(self)
-        for _, btn in pairs(self.Buttons) do
-            btn:SetPet(nil)
+
+    StableFrame:HookScript('OnSizeChanged', function()
+        if AllListFrame:IsShown() then
+            AllListFrame:Refresh()
         end
-        self.btn6:settings()
     end)
-    StableFrame:HookScript('OnSizeChanged', function() AllListFrame:set_point() end)
 
     --第6个，提示，如果，没有专精支持，它会禁用，所有，建立一个
     AllListFrame.btn6= created_button(Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX)
@@ -1228,108 +1279,100 @@ function Init_StableFrame_List()
     local btn= e.Cbtn(StableFrame, {size={20,20}, atlas='dressingroom-button-appearancelist-up'})
     btn:SetPoint('RIGHT', StableFrameCloseButton, 'LEFT', -2, 0)
     btn:SetFrameLevel(StableFrameCloseButton:GetFrameLevel()+1)
-    function btn:set_show_tips()
-        if Save.show_All_List then
-            self:SetButtonState('PUSHED')
-        else
-            self:SetButtonState('NORMAL')
-        end
-        self:SetAlpha(Save.show_All_List and 0.3 or 1)
-    end
+
     function btn:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, Initializer:GetName())
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(format('%s %s', e.onlyChinese and '所有宠物' or BATTLE_PETS_TOTAL_PETS, e.GetEnabeleDisable(Save.show_All_List)), e.Icon.left)
-        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
+        --e.tips:AddDoubleLine(format('%s %s', e.onlyChinese and '所有宠物' or BATTLE_PETS_TOTAL_PETS, e.GetEnabeleDisable(Save.show_All_List)), e.Icon.left)
+        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)
         e.tips:AddDoubleLine(format('%s |cnGREEN_FONT_COLOR:%d|r', e.onlyChinese and '图标尺寸' or HUD_EDIT_MODE_SETTING_ACTION_BAR_ICON_SIZE, Save.all_List_Size or 28), e.Icon.mid)
         e.tips:Show()
         self:SetAlpha(1)
     end
     btn:SetScript('OnClick', function(self, d)
-        if d=='LeftButton' then
+        --[[if d=='LeftButton' then
             Save.show_All_List= not Save.show_All_List and true or nil
             Set_StableFrame_List()--初始，宠物列表
             self:set_tooltips()
-        else
+        else]]
 
-            if not self.menu then
-                self.menu= CreateFrame('Frame', nil, btn , "UIDropDownMenuTemplate")
-                e.LibDD:UIDropDownMenu_Initialize(self.menu, function(_, level, menuList)
-                    if menuList=='SortType' then
-                        e.LibDD:UIDropDownMenu_AddButton({
-                            text= e.onlyChinese and '升序' or PERKS_PROGRAM_ASCENDING,
-                            keepShownOnClick=true,
-                            checked= not Save.sortDown,
-                            func= function()
-                                Save.sortDown= not Save.sortDown and true or nil
-                            end
-                        }, level)
-                        return
-                    end
+        if not self.menu then
+            self.menu= CreateFrame('Frame', nil, btn , "UIDropDownMenuTemplate")
+            e.LibDD:UIDropDownMenu_Initialize(self.menu, function(frame, level, menuList)
+                if menuList=='SortType' then
                     e.LibDD:UIDropDownMenu_AddButton({
-                        text= e.onlyChinese and '排序' or CLUB_FINDER_SORT_BY,
-                        colorCode='|cffff7f00',
-                        notCheckable=true,
+                        text= e.onlyChinese and '升序' or PERKS_PROGRAM_ASCENDING,
                         keepShownOnClick=true,
-                        hasArrow=true,
-                        menuList='SortType',
+                        checked= not Save.sortDown,
+                        func= function()
+                            Save.sortDown= not Save.sortDown and true or nil
+                        end
                     }, level)
+                    return
+                end
+                e.LibDD:UIDropDownMenu_AddButton({
+                    text= e.onlyChinese and '排序' or CLUB_FINDER_SORT_BY,
+                    colorCode='|cffff7f00',
+                    notCheckable=true,
+                    keepShownOnClick=true,
+                    hasArrow=true,
+                    menuList='SortType',
+                }, level)
 
-                    local tab={
-                        ['petNumber']=  'petNumber',
-                        [e.onlyChinese and '类型' or TYPE]= 'type',
-                        ['creatureID']= 'creatureID',
-                        ['uiModelSceneID']= 'uiModelSceneID',
-                        ['displayID']= 'displayID',
-                        [e.onlyChinese and '名称' or NAME]= 'name',
-                        [e.onlyChinese and '天赋' or TALENT]= 'specialization',
-                        [e.onlyChinese and '图标' or EMBLEM_SYMBOL]='icon',
-                        ['familyName']= 'familyName',
+                local tab={
+                    ['petNumber']=  'petNumber',
+                    [e.onlyChinese and '类型' or TYPE]= 'type',
+                    ['creatureID']= 'creatureID',
+                    ['uiModelSceneID']= 'uiModelSceneID',
+                    ['displayID']= 'displayID',
+                    [e.onlyChinese and '名称' or NAME]= 'name',
+                    [e.onlyChinese and '天赋' or TALENT]= 'specialization',
+                    [e.onlyChinese and '图标' or EMBLEM_SYMBOL]='icon',
+                    ['familyName']= 'familyName',
+                }
+                for text, name in pairs(tab) do
+                    local info={
+                        text=text,
+                        notCheckable=true,
+                        arg1=name,
+                        keepShownOnClick=true,
+                        disabled= not AllListFrame or not AllListFrame:IsShown(),
+                        func=function(_, arg1)
+                            sort_pets_list(arg1)
+                        end
                     }
-                   for text, name in pairs(tab) do
-                        local info={
-                            text=text,
-                            notCheckable=true,
-                            arg1=name,
-                            keepShownOnClick=true,
-                            disabled= not AllListFrame or not AllListFrame:IsShown(),
-                            func=function(_, arg1)
-                                sort_pets_list(arg1)
-                            end
-                        }
-                        e.LibDD:UIDropDownMenu_AddButton(info, level)
+                    e.LibDD:UIDropDownMenu_AddButton(info, level)
+                end
+
+                e.LibDD:UIDropDownMenu_AddSeparator(level)
+
+                e.LibDD:UIDropDownMenu_AddButton({
+                    text= e.onlyChinese and '所有宠物' or BATTLE_PETS_TOTAL_PETS,
+                    checked= Save.show_All_List,
+                    keepShownOnClick=true,
+                    icon= 'dressingroom-button-appearancelist-up',
+                    func= function()
+                        Save.show_All_List= not Save.show_All_List and true or nil
+                        Set_StableFrame_List()--初始，宠物列表
+                        frame:GetParent():set_show_tips()
                     end
+                }, level)
 
-                    e.LibDD:UIDropDownMenu_AddSeparator(level)
 
-                    e.LibDD:UIDropDownMenu_AddButton({
-                        text= e.onlyChinese and '所有宠物' or BATTLE_PETS_TOTAL_PETS,
-                        checked= Save.show_All_List,
-                        keepShownOnClick=true,
-                        icon= 'dressingroom-button-appearancelist-up',
-                        func= function()
-                            Save.show_All_List= not Save.show_All_List and true or nil
-                            Set_StableFrame_List()--初始，宠物列表
-                        end
-                    }, level)
 
-                    
-
-                    e.LibDD:UIDropDownMenu_AddButton({
-                        text= e.onlyChinese and '选项' or OPTIONS,
-                        notCheckable=true,
-                        icon='mechagon-projects',
-                        func= function()
-                            e.OpenPanelOpting(Initializer:GetName())
-                        end
-                    }, level)
-                end, "MENU")
-            end
-            e.LibDD:ToggleDropDownMenu(1, nil, self.menu, self, -100, 0)
-
+                e.LibDD:UIDropDownMenu_AddButton({
+                    text= e.onlyChinese and '选项' or OPTIONS,
+                    notCheckable=true,
+                    icon='mechagon-projects',
+                    func= function()
+                        e.OpenPanelOpting(Initializer:GetName())
+                    end
+                }, level)
+            end, "MENU")
         end
+        e.LibDD:ToggleDropDownMenu(1, nil, self.menu, self, -100, 0)
     end)
 
 
@@ -1337,7 +1380,7 @@ function Init_StableFrame_List()
         local n= Save.all_List_Size or 28
         n= d==1 and n-2 or n
         n= d==-1 and n+2 or n
-        n= n>66 and 66 or n
+        n= n>75 and 72 or n
         n= n<8 and 8 or n
         Save.all_List_Size= n
         if AllListFrame then
@@ -1353,6 +1396,14 @@ function Init_StableFrame_List()
     end)
 
 
+    function btn:set_show_tips()
+        if Save.show_All_List then
+            self:SetButtonState('PUSHED')
+        else
+            self:SetButtonState('NORMAL')
+        end
+        self:SetAlpha(Save.show_All_List and 0.3 or 1)
+    end
     btn:SetScript('OnLeave', function(self)
         self:set_show_tips()
         e.tips:Hide()
@@ -1420,5 +1471,5 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         Init()
         self:UnregisterEvent('PET_STABLE_SHOW')
     end
-    
+
 end)
