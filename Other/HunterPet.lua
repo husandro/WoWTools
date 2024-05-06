@@ -43,15 +43,14 @@ end]]
 
 
 
-local function get_abilities_icons(pet)--取得，宠物，技能，图标
+local function get_abilities_icons(pet, line)--取得，宠物，技能，图标
     local text=''
     if pet and pet.abilities then
-        local isActive= pet.slotID<=Constants.PetConsts.MAX_SUMMONABLE_HUNTER_PETS
         for _, spellID in pairs(pet.abilities) do
             e.LoadDate({id=spellID, type='spell'})
             local texture= GetSpellTexture(spellID)
             if texture and texture>0 then
-                text= format('%s%s|T%d:14|t', text, isActive and text~='' and '|n' or '', texture)
+                text= format('%s%s|T%d:14|t', text, line and text~='' and '|n' or '', texture)
             end
         end
     end
@@ -74,7 +73,7 @@ local function set_pet_tooltips(frame, pet)
                 or '|cff00ccff'
         if type(name)=='table' then
             if indexType=='abilities' then
-                e.tips:AddDoubleLine(col..indexType, get_abilities_icons(pet))
+                e.tips:AddDoubleLine(col..indexType, get_abilities_icons(pet, false))
             end
         else
             name= indexType=='icon' and format('|T%d:14|t%d', name, name)
@@ -172,7 +171,7 @@ local function created_model(btn, setBg)
 
         btn.Portrait2:SetPoint('LEFT', btn.callSpellButton, 'RIGHT')
         btn.abilitiesText= e.Cstr(btn, {SetJustifyH='RIGHT'})--宠物，技能，提示
-        btn.abilitiesText:SetPoint('BOTTOMRIGHT', btn.callSpellButton, 'BOTTOMLEFT', 2, -4)
+        btn.abilitiesText:SetPoint('BOTTOMRIGHT', btn.callSpellButton, 'BOTTOMLEFT', 2, -2)
 
         btn.indexText=e.Cstr(btn.callSpellButton)--索引
         btn.indexText:SetPoint('LEFT', btn.Portrait2, 'RIGHT', 4,0)
@@ -204,7 +203,7 @@ local function created_model(btn, setBg)
                 self.model.bg:SetTexture(0)
             end
             self.model.shadow:SetShown(displayID>0)
-            self.abilitiesText:SetText(get_abilities_icons(pet))--宠物，技能，提示
+            self.abilitiesText:SetText(get_abilities_icons(pet, true))--宠物，技能，提示
             self.Portrait2:SetTexture(pet.icon or 0)
         else
             self.Icon:SetTexCoord(0, 1, 0, 1)
@@ -252,7 +251,7 @@ local function Init_StableFrame_Plus()
             btn.indexText:SetPoint('TOPRIGHT', -9,-6)
             btn.indexText:SetAlpha(0.5)
             function btn:set_list_button_settings()
-                self.abilitiesText:SetText(get_abilities_icons(self.petData))--宠物，技能，提示
+                self.abilitiesText:SetText(get_abilities_icons(self.petData, false))--宠物，技能，提示
                 local data= self.petData or {}--宠物，类型，图标
                 self.Portrait2:SetTexture(data.icon or nil)
                 self.indexText:SetText(data.slotID or '')
