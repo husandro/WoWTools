@@ -1319,9 +1319,16 @@ local function Init_EncounterJournal()--冒险指南界面
             if not self:GetView() then
                 return
             end
-            for _, frame in pairs(self:GetFrames()) do
-                local ItemButtons=frame.ItemButtons or {}
-                for _, itemButton in pairs(ItemButtons) do
+            for _, frame in pairs(self:GetFrames() or {}) do
+                --[[local data= frame:GetData() or {}
+                local text= select(4, e.GetSetsCollectedNum(data.setID))
+                if not frame.setNum then
+                    frame.setNum= e.Cstr(frame)
+                    frame.setNum:SetPoint('RIGHT', frame.SetName)
+                end
+                frame.setNum:SetText(text or '')]]
+                
+                for _, itemButton in pairs(frame.ItemButtons or {}) do
                     local itemID= not Save.hideEncounterJournal and itemButton and itemButton.itemID
                     local has =itemID and C_TransmogCollection.PlayerHasTransmogByItemInfo(itemID)
                     if has and not itemButton.collection then

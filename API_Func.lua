@@ -2100,12 +2100,10 @@ end
 --[[function e.GetSetsCollectedNum(setID)--套装 , 收集数量, 返回: 图标, 数量, 最大数, 文本
     local info= setID and C_TransmogSets.GetSetPrimaryAppearances(setID)
     local numCollected, numAll=0,0
-    if info then
-        for _,v in pairs(info) do
-            numAll=numAll+1
-            if v.collected then
-                numCollected=numCollected + 1
-            end
+    for _,v in pairs(info or {}) do
+        numAll=numAll+1
+        if v.collected then
+            numCollected=numCollected + 1
         end
     end
     if numAll>0 then
