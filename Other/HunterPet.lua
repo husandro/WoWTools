@@ -19,31 +19,50 @@ local Save={
 }
 local Initializer
 local AllListFrame
-
+--[[
+    Constants.PetConsts = {
+		NUM_PET_SLOTS_THAT_NEED_LEARNED_SPELL = 5,
+		MAX_SUMMONABLE_HUNTER_PETS = 5,
+		EXTRA_PET_STABLE_SLOT = 5,
+		STABLED_PETS_FIRST_SLOT_INDEX = 6,
+		MAX_SUMMONABLE_PETS = 25,
+		MAX_STABLE_SLOTS = 200,
+		NUM_PET_SLOTS = 205,
+	},
+]]
 
 --召唤，法术，提示
 local CALL_PET_SPELL_IDS = {0883, 83242, 83243, 83244, 83245, }
 e.LoadDate({id=267116, type='spell'})--动物伙伴
 
 
---取得，宠物，技能，图标
-local function get_abilities_icons(pet)
-    local icon=''
-    for _, spellID in pairs(pet and pet.abilities or {}) do
-        e.LoadDate({id=spellID, type='spell'})
-        icon= icon..format('|T%d:14|t', GetSpellTexture(spellID) or 0)
+--[[local function Is_Selected_Pet(slotID)--是否，选中
+    local selectedPet = StableFrame.selectedPet
+    return selectedPet and selectedPet.slotID == slotID
+end]]
+
+
+
+local function get_abilities_icons(pet)--取得，宠物，技能，图标
+    local text=''
+    if pet and pet.abilities then
+        local isActive= pet.slotID< Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX
+        for _, spellID in pairs(pet.abilities) do
+            e.LoadDate({id=spellID, type='spell'})
+            local texture= GetSpellTexture(spellID)
+            if texture and texture>0 then
+                text= format('%s%s|T%d:14|t', text, isActive and text~='' and '|n' or '', texture)
+            end
+        end
     end
-    return icon
+    return text
 end
 
 
 
 --宠物，信息，提示
-local function set_pet_tooltips(frame, pet, y)
-    if not pet or not frame then
-        return
-    end
-    e.tips:SetOwner(frame, "ANCHOR_LEFT", y or 0, 0)
+local function set_pet_tooltips(frame, pet)
+    e.tips:SetOwner(frame, "ANCHOR_LEFT", -12, 0)
     e.tips:ClearLines()
     e.tips:AddDoubleLine(id, Initializer:GetName())
     e.tips:AddLine(' ')
@@ -78,39 +97,47 @@ local function set_pet_tooltips(frame, pet, y)
 end
 
 
-local function set_model(self)--StableActivePetButtonTemplateMixin
-    local data= self.petData or {}--宠物，类型，图标
-    local displayID= data.displayID or 0
-    if displayID==0 then
-        self.model:ClearModel()
-        print(self:GetID())
-    elseif displayID~=self.displayID then
-        self.model:SetDisplayInfo(displayID)
-        print(self:GetID(), displayID)
-    end
-    self.displayID= displayID--提示用，
-    if self.model.bg then
-        local atlas
-        if displayID>0 then
-            local backgroundForPetSpec = {
-                [STABLE_PET_SPEC_CUNNING] = "hunter-stable-bg-art_cunning",
-                [STABLE_PET_SPEC_FEROCITY] = "hunter-stable-bg-art_ferocity",
-                [STABLE_PET_SPEC_TENACITY] = "hunter-stable-bg-art_tenacity",
-            }
-            atlas = backgroundForPetSpec[data.specialization]
-        end
-        self.model.bg:SetAtlas(atlas or 'footer-bg')
-        --self.model.shadow:SetShown(displayID>0)
-    end
-end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 --已激活宠物，Model 提示
 local function created_model(btn, setBg)
-    local w= btn:GetWidth()+40
     btn.model= CreateFrame("PlayerModel", nil, btn)
+    local w= btn:GetWidth()
+    if btn:GetID()==Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX then
+        btn.model:SetFacing(-0.5)
+        w=w+80
+        btn.model:SetPoint('RIGHT', btn, 'LEFT')
+    else
+        btn.model:SetFacing(0.5)
+        w= w+40
+        btn.model:SetPoint('TOP', btn, 'BOTTOM', 0, -14)
+    end
     btn.model:SetSize(w, w)
-    btn.model:SetFacing(0.5)
 
     if setBg then
         btn.model.bg= btn:CreateTexture(nil, 'BACKGROUND')
@@ -121,59 +148,87 @@ local function created_model(btn, setBg)
         btn.model.shadow:SetPoint('BOTTOMLEFT',btn.model, 0,-3)
         btn.model.shadow:SetSize(w-18, 18)
         btn.model.shadow:SetAlpha(0.4)
+
+        local slotID= btn:GetID()
+        btn.callSpellButton= e.Cbtn(btn, {size={18,18},icon='hide'})--召唤，法术，提示
+        btn.callSpellButton.Texture=btn.callSpellButton:CreateTexture(nil, 'OVERLAY')
+        btn.callSpellButton.Texture:SetAllPoints(btn.callSpellButton)
+        SetPortraitToTexture(btn.callSpellButton.Texture, 132161)
+        btn.callSpellButton:SetPoint('BOTTOMLEFT', -8, -16)
+        btn.callSpellButton.spellID=CALL_PET_SPELL_IDS[slotID]
+        btn.callSpellButton:SetScript('OnLeave', function(self) self:SetAlpha(0.3) GameTooltip_Hide() end)
+        btn.callSpellButton:SetScript('OnEnter', function(self)
+            if self.spellID then
+                GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+                GameTooltip:ClearLines()
+                GameTooltip:SetSpellByID(self.spellID, true, true);
+                GameTooltip:Show();
+            end
+            self:SetAlpha(1)
+        end)
+        btn.callSpellButton:SetAlpha(0.5)
+        btn.Portrait2= btn.callSpellButton:CreateTexture(nil, 'OVERLAY')--宠物，类型，图标
+        btn.Portrait2:SetSize(18, 18)
+
+        btn.Portrait2:SetPoint('LEFT', btn.callSpellButton, 'RIGHT')
+        btn.abilitiesText= e.Cstr(btn, {SetJustifyH='RIGHT'})--宠物，技能，提示
+        btn.abilitiesText:SetPoint('BOTTOMRIGHT', btn.callSpellButton, 'BOTTOMLEFT', 2, -4)
+
+        btn.indexText=e.Cstr(btn.callSpellButton)--索引
+        btn.indexText:SetPoint('LEFT', btn.Portrait2, 'RIGHT', 4,0)
+        btn.indexText:SetText(slotID)
     end
-end
 
+    function btn:set_pet()
+        local pet= self:IsVisible() and self.petData or {}--宠物，类型，图标
+        local displayID= pet.displayID or 0
+        if displayID==0 then
+            self.model:ClearModel()
+        elseif displayID~=self.displayID then
+            self.model:SetDisplayInfo(displayID)
+        end
+        self.displayID= displayID--提示用，
+        if self.model.bg then
+            local atlas
+            if displayID>0 then
+                local backgroundForPetSpec = {
+                    [STABLE_PET_SPEC_CUNNING] = "hunter-stable-bg-art_cunning",
+                    [STABLE_PET_SPEC_FEROCITY] = "hunter-stable-bg-art_ferocity",
+                    [STABLE_PET_SPEC_TENACITY] = "hunter-stable-bg-art_tenacity",
+                }
+                atlas = backgroundForPetSpec[pet.specialization]
+            end
+            if atlas then
+                self.model.bg:SetAtlas(atlas)-- or 'footer-bg')
+            else
+                self.model.bg:SetTexture(0)
+            end
+            self.model.shadow:SetShown(displayID>0)
+            self.abilitiesText:SetText(get_abilities_icons(pet))--宠物，技能，提示
+            self.Portrait2:SetTexture(pet.icon or 0)
+        else
+            self.Icon:SetTexCoord(0, 1, 0, 1)
+        end
+    end
 
-local function set_button_size(btn)
-    local n= Save.all_List_Size or 28
-    AllListFrame.s= n
-    btn:SetSize(n, n)
-    btn.Icon:SetSize(n, n)
-    local s= n*0.5
-    btn.BackgroundMask:SetSize(s, s)
-    local w= n+ ((85-72)/72)*n--0.287
-    local h= n+ ((100-72)/72)*n--0.515
-    btn.Highlight:SetSize(w, h)
-end
-
-local function created_button(index)
-    local btn= CreateFrame('Button', nil, AllListFrame, 'StableActivePetButtonTemplate', index)
-    --btn.Icon:SetTexCoord(1,0,0,1)
-    btn:HookScript('OnEnter', function(self)
-        if not self.petData then return end
-        set_pet_tooltips(self, self.petData, 0)
-        --e.tips:AddLine(' ')
-        --e.tips:AddDoubleLine(e.onlyChinese and '激活' or SPEC_ACTIVE, e.Icon.right)
-        e.tips:Show()
+    hooksecurefunc(btn, 'SetPet', btn.set_pet)--StableActivePetButtonTemplateMixin
+    btn:HookScript('OnHide', btn.set_pet)
+    btn:HookScript('OnEnter', function(self)--信息，提示
+        if self.petData and not self.locked and self:IsEnabled() then
+            set_pet_tooltips(self, self.petData)
+            e.tips:AddDoubleLine(e.onlyChinese and '放入兽栏' or STABLE_PET_BUTTON_LABEL, e.Icon.right)
+            if self:GetID()==Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX then
+                e.tips:AddDoubleLine(
+                    format('|cffaad372%s|r', e.onlyChinese and '天赋' or TALENT),
+                    format('|T461112:0|t|cffaad372%s|r', e.onlyChinese and '动物伙伴' or GetSpellLink(267116) or GetSpellInfo(267116) or 'Animal Companion')
+                )
+            end
+            e.tips:Show()
+        end
     end)
-    set_button_size(btn)
 
-    btn.Border:SetTexture(nil)
-    btn.Border:ClearAllPoints()
-    btn.Border:Hide()
-    btn.Text= e.Cstr(btn,{size=10, color={r=1,g=1,b=1,a=0.2}, layer='BACKGROUND'})
-    btn.Text:SetPoint('CENTER', btn.Background)
-    btn.Text:SetText(index)
-    btn.Icon:SetDrawLayer('BORDER')
-    hooksecurefunc(btn, 'SetPet', function(self)
-        self.Icon:SetTexCoord(0, 1, 0, 1);
-    end)
-    return btn
+    btn:set_pet()
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -186,135 +241,64 @@ end
 --猎人，兽栏 Plus 10.2.7 Blizzard_StableUI.lua
 local function Init_StableFrame_Plus()
     hooksecurefunc(StableStabledPetButtonTemplateMixin, 'SetPet', function(btn)--宠物，列表，提示
-        if btn.set_list_button_settings then
-            btn:set_list_button_settings()
-            return
+        if not btn.set_list_button_settings then
+            btn.Portrait2= btn:CreateTexture(nil, 'OVERLAY')--宠物，类型，图标
+            btn.Portrait2:SetSize(20, 20)
+            btn.Portrait2:SetPoint('RIGHT', btn.Portrait,'LEFT')
+            btn.Portrait2:SetAlpha(0.5)
+            btn.abilitiesText= e.Cstr(btn)--宠物，技能，提示
+            btn.abilitiesText:SetPoint('BOTTOMRIGHT', btn.Background, -9, 8)
+            btn.indexText= e.Cstr(btn)--, {color={r=1,g=0,b=1}})--SlotID
+            btn.indexText:SetPoint('TOPRIGHT', -9,-6)
+            btn.indexText:SetAlpha(0.5)
+            function btn:set_list_button_settings()
+                self.abilitiesText:SetText(get_abilities_icons(self.petData))--宠物，技能，提示
+                local data= self.petData or {}--宠物，类型，图标
+                self.Portrait2:SetTexture(data.icon or nil)
+                self.indexText:SetText(data.slotID or '')
+            end
+            btn:HookScript('OnEnter', function(self)--信息，提示
+                if self.petData then
+                    set_pet_tooltips(self, self.petData)
+                    e.tips:Show()
+                end
+            end)
         end
-        btn.Portrait2= btn:CreateTexture(nil, 'OVERLAY')--宠物，类型，图标
-        btn.Portrait2:SetSize(20, 20)
-        btn.Portrait2:SetPoint('RIGHT', btn.Portrait,'LEFT')
-        btn.Portrait2:SetAlpha(0.5)
-        btn.abilitiesText= e.Cstr(btn)--宠物，技能，提示
-        btn.abilitiesText:SetPoint('BOTTOMRIGHT', btn.Background, -9, 8)
-        btn.indexText= e.Cstr(btn)--, {color={r=1,g=0,b=1}})--SlotID
-        btn.indexText:SetPoint('TOPRIGHT', -9,-6)
-        btn.indexText:SetAlpha(0.5)
-        function btn:set_list_button_settings()
-            self.abilitiesText:SetText(get_abilities_icons(self.petData))--宠物，技能，提示
-            local data= self.petData or {}--宠物，类型，图标
-            self.Portrait2:SetTexture(data.icon or nil)
-            self.indexText:SetText(data.slotID or '')
-        end
-        btn:HookScript('OnEnter', function(self)--信息，提示
-            set_pet_tooltips(self, self.petData, -10)
-            e.tips:Show()
-            self:set_list_button_settings()
-        end)
+        btn:set_list_button_settings()
     end)
 
 
-    for i, btn in ipairs(StableFrame.ActivePetList.PetButtons) do    --已激，宠物栏，提示
-        btn.index=btn:GetID()
-
-        btn.callSpellButton= e.Cbtn(btn, {size={18,18},icon='hide'})--召唤，法术，提示
-        btn.callSpellButton.Texture=btn.callSpellButton:CreateTexture(nil, 'OVERLAY')
-        btn.callSpellButton.Texture:SetAllPoints(btn.callSpellButton)
-        SetPortraitToTexture(btn.callSpellButton.Texture, 132161)
-        btn.callSpellButton:SetPoint('BOTTOMLEFT', -8, -16)
-        btn.callSpellButton.spellID=CALL_PET_SPELL_IDS[btn.index]
-        btn.callSpellButton:SetScript('OnLeave', function(self) self:SetAlpha(0.3) GameTooltip_Hide() end)
-        btn.callSpellButton:SetScript('OnEnter', function(self)
-            if not self.spellID then return end
-            GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-            GameTooltip:ClearLines()
-            GameTooltip:SetSpellByID(self.spellID, true, true);
-            GameTooltip:Show();
-            self:SetAlpha(1)
-        end)
-        btn.callSpellButton:SetAlpha(0.5)
-
-        btn:HookScript('OnEnter', function(self)--信息，提示
-            set_pet_tooltips(self, self.petData, -10)
-            if not self.petData then return end
-            e.tips:AddDoubleLine(e.onlyChinese and '放入兽栏' or STABLE_PET_BUTTON_LABEL, e.Icon.right)
-            e.tips:Show()
-        end)
-
-        btn.Portrait2= btn.callSpellButton:CreateTexture(nil, 'OVERLAY')--宠物，类型，图标
-        btn.Portrait2:SetSize(18, 18)
-
-        btn.Portrait2:SetPoint('LEFT', btn.callSpellButton, 'RIGHT')
-        btn.abilitiesText= e.Cstr(btn, {SetJustifyH='RIGHT'})--宠物，技能，提示
-        btn.abilitiesText:SetPoint('BOTTOMRIGHT', btn.callSpellButton, 'BOTTOMLEFT', 2, -4)
-
-        btn.indexText=e.Cstr(btn.callSpellButton)--索引
-        btn.indexText:SetPoint('LEFT', btn.Portrait2, 'RIGHT', 4,0)
-        btn.indexText:SetText(i)
-
-
+    for _, btn in ipairs(StableFrame.ActivePetList.PetButtons) do--已激，宠物栏，提示
         created_model(btn, true)--已激活宠物，Model 提示
-        btn.model:SetPoint('TOP', btn, 'BOTTOM', 0, -14)--btn.model:SetPoint('BOTTOM', btn, 'TOP', 0, 14)
-
-        hooksecurefunc(btn, 'SetPet', function(self)--StableActivePetButtonTemplateMixin
-            local icon= get_abilities_icons(self.petData)
-            icon= icon:gsub('|T.-|t', function(a) return a..'|n' end)
-
-            self.abilitiesText:SetText(icon)--宠物，技能，提示
-
-            local data= self.petData or {}--宠物，类型，图标
-            self.Portrait2:SetTexture(data.icon or 0)
-
-            set_model(self)
-        end)
     end
 
-
-    local btn= StableFrame.ActivePetList.BeastMasterSecondaryPetButton--第二个，宠物，提示
-    created_model(btn, false)--已激活宠物，Model 提示
-    hooksecurefunc(btn, 'SetPet', set_model)
-    btn.model:SetFacing(-0.5)
-    btn.model:SetPoint('RIGHT', btn, 'LEFT')
-    btn:HookScript('OnEnter', function(self)
-        if not self.petData or not self:IsEnabled() then
-            return
-        end
-        set_pet_tooltips(self, self.petData, 0)
-        e.tips:AddDoubleLine(e.onlyChinese and '放入兽栏' or STABLE_PET_BUTTON_LABEL, e.Icon.right)
-        e.tips:AddDoubleLine(
-            --format('|A:UI-HUD-MicroMenu-SpecTalents-Mouseover:0:0|a|cffaad372%s|r', e.onlyChinese and '天赋' or TALENT),
-            format('|cffaad372%s|r', e.onlyChinese and '天赋' or TALENT),
-            format('|T461112:0|t|cffaad372%s|r', e.onlyChinese and '动物伙伴' or GetSpellLink(267116) or GetSpellInfo(267116) or 'Animal Companion')
-        )
-        e.tips:Show()
-    end)
-
-
+    created_model(StableFrame.ActivePetList.BeastMasterSecondaryPetButton, false)--第二个，宠物，提示
+    
+    
 
 
     hooksecurefunc(StableFrame.PetModelScene, 'SetPet', function()--选定时，隐藏model
         local self= StableFrame
 
         local selecIndex= self.selectedPet and self.selectedPet.slotID
-
-        for _, btn2 in ipairs(StableFrame.ActivePetList.PetButtons) do    --已激，宠物栏，提示
-            btn2.model:SetShown(btn2:GetID()~=selecIndex)
+        for _, btn2 in ipairs(StableFrame.ActivePetList.PetButtons) do--已激，宠物栏，提示
+            btn2.model:SetShown(btn2.petData and btn2:IsEnabled() and selecIndex~=btn2:GetID())
         end
 
         local btn2= self.ActivePetList.BeastMasterSecondaryPetButton
-        btn2.model:SetShown(btn2:IsEnabled() and (selecIndex~=Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX))
+        btn2.model:SetShown(btn2.petData and btn2:IsEnabled() and selecIndex~=btn2:GetID())
     end)
 
 
-    local frame= CreateFrame('Frame', nil, btn, 'StablePetAbilityTemplate')--StablePetAbilityMixin
-    frame:SetPoint('TOPRIGHT', btn, 'BOTTOMRIGHT', 10,-6)
-    frame:Initialize(267116)--动物伙伴
-    frame.Icon:ClearAllPoints()
-    frame.Icon:SetPoint('RIGHT')
-    frame.Name:ClearAllPoints()
-    frame.Name:SetPoint('RIGHT', frame.Icon, 'LEFT')
-    btn.SpellFrame= frame
-
-    hooksecurefunc(StableFrame.ActivePetList.BeastMasterSecondaryPetButton, 'Refresh', function(self)
+    local btnSecond= StableFrame.ActivePetList.BeastMasterSecondaryPetButton
+    btnSecond.SpellFrame= CreateFrame('Frame', nil, btnSecond, 'StablePetAbilityTemplate')--StablePetAbilityMixin
+    btnSecond.SpellFrame:SetPoint('TOPRIGHT', btnSecond, 'BOTTOMRIGHT', 10,-6)
+    btnSecond.SpellFrame:Initialize(267116)--动物伙伴
+    btnSecond.SpellFrame.Icon:ClearAllPoints()
+    btnSecond.SpellFrame.Icon:SetPoint('RIGHT')
+    btnSecond.SpellFrame.Name:ClearAllPoints()
+    btnSecond.SpellFrame.Name:SetPoint('RIGHT', btnSecond.SpellFrame.Icon, 'LEFT')
+    hooksecurefunc(btnSecond, 'Refresh', function(self)
         if AllListFrame then
             AllListFrame.btn6:settings()
         end
@@ -329,17 +313,20 @@ local function Init_StableFrame_Plus()
     --食物
     StableFrame.PetModelScene.PetInfo.Food=e.Cstr(StableFrame.PetModelScene.PetInfo, {copyFont=not e.onlyChinese and StableFrame.PetModelScene.PetInfo.Specialization, color={r=1,g=1,b=1}, size=16})--copyFont=StableFrame.PetModelScene.PetInfo.Specialization, 
     StableFrame.PetModelScene.PetInfo.Food:SetPoint('TOPRIGHT', StableFrame.PetModelScene.PetInfo.Exotic, 'BOTTOMRIGHT')
-    hooksecurefunc(StableFrame.PetModelScene.PetInfo, 'SetPet', function(self)
-        self.Food:SetFormattedText(e.onlyChinese and '食物：%s' or PET_DIET_TEMPLATE, BuildListString(GetStablePetFoodTypes(self.petData.slotID)) or '')
-        --(e.onlyChinese and '|cffffd200食物：|r%s' or 
-    end)
-
+    --特殊，加图标
     StableFrame.PetModelScene.PetInfo.ExoticTexture= StableFrame.PetModelScene.PetInfo:CreateTexture()
     StableFrame.PetModelScene.PetInfo.ExoticTexture:SetSize(18,18)
     StableFrame.PetModelScene.PetInfo.ExoticTexture:SetPoint('RIGHT', StableFrame.PetModelScene.PetInfo.Exotic, 'LEFT')
     StableFrame.PetModelScene.PetInfo.ExoticTexture:SetTexture(461112)
+
     hooksecurefunc(StableFrame.PetModelScene.PetInfo, 'SetPet', function(self, petData)
+        petData= petData or {}
         self.ExoticTexture:SetShown(petData.isExotic)
+        local text
+        if petData.slotID then
+            text= format(e.onlyChinese and '食物：%s' or PET_DIET_TEMPLATE, BuildListString(GetStablePetFoodTypes(petData.slotID)))
+        end
+        self.Food:SetText(text or '')
     end)
 end
 
@@ -508,6 +495,47 @@ end
 
 
 
+local function set_button_size(btn)
+    local n= Save.all_List_Size or 28
+    AllListFrame.s= n
+    btn:SetSize(n, n)
+    btn.Icon:SetSize(n, n)
+    local s= n*0.5
+    btn.BackgroundMask:SetSize(s, s)
+    local w= n+ ((85-72)/72)*n--0.287
+    local h= n+ ((100-72)/72)*n--0.515
+    btn.Highlight:SetSize(w, h)
+end
+
+
+
+local function created_button(index)
+    local btn= CreateFrame('Button', nil, AllListFrame, 'StableActivePetButtonTemplate', index)
+    btn:HookScript('OnEnter', function(self)
+        if self.petData then
+            set_pet_tooltips(self, self.petData)
+            e.tips:Show()
+        end
+    end)
+    set_button_size(btn)
+
+    btn.Border:SetTexture(nil)
+    btn.Border:ClearAllPoints()
+    btn.Border:Hide()
+    btn.Text= e.Cstr(btn,{size=10, color={r=1,g=1,b=1,a=0.2}, layer='BACKGROUND'})
+    btn.Text:SetPoint('CENTER', btn.Background)
+    btn.Text:SetText(index)
+    btn.Icon:SetDrawLayer('BORDER')
+    hooksecurefunc(btn, 'SetPet', function(self)
+        self.Icon:SetTexCoord(0, 1, 0, 1);
+    end)
+    return btn
+end
+
+
+
+
+
 
 
 
@@ -601,11 +629,6 @@ function Set_StableFrame_List()
         self:SetPet(show and C_StableInfo.GetStablePetInfo(self:GetID()) or nil)
         self:SetShown(show)
     end
-    --[[hooksecurefunc(StableFrame.ActivePetList.BeastMasterSecondaryPetButton, 'Refresh', function()
-        if AllListFrame then
-            AllListFrame.btn6:settings()
-        end
-    end)]]
 
     AllListFrame:set_shown()
 end
@@ -689,6 +712,8 @@ local function sort_pets_list(type, d)
     end
     Is_In_Search=nil
 end
+
+
 
 
 
