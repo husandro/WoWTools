@@ -46,7 +46,7 @@ end]]
 local function get_abilities_icons(pet)--取得，宠物，技能，图标
     local text=''
     if pet and pet.abilities then
-        local isActive= pet.slotID< Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX
+        local isActive= pet.slotID<=Constants.PetConsts.MAX_SUMMONABLE_HUNTER_PETS
         for _, spellID in pairs(pet.abilities) do
             e.LoadDate({id=spellID, type='spell'})
             local texture= GetSpellTexture(spellID)
