@@ -671,8 +671,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if not Save.disabled then
 				local check2= CreateFrame("CheckButton", nil, ColorPickerFrame, "InterfaceOptionsCheckButtonTemplate")--显示/隐藏
+				check2:SetCheckedTexture('MonsterFriend')
 				check2.type2= CreateFrame("CheckButton", nil, ColorPickerFrame, "InterfaceOptionsCheckButtonTemplate")--显示/隐藏
-
+				check2.type2:SetCheckedTexture('MonsterFriend')
 				check2:SetPoint("TOPLEFT", ColorPickerFrame, 7, -7)
 				check2:SetChecked(not Save.hide)
 				check2:SetScript('OnMouseDown', function()

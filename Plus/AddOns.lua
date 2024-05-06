@@ -689,6 +689,7 @@ local function Create_Fast_Button(indexAdd)
             self.findFrame=nil
         end
         GameTooltip_Hide()
+        self.Text:SetAlpha(1)
     end)
     function btn:set_tooltips()
         AddonTooltip:SetOwner(self.checkTexture, "ANCHOR_LEFT")
@@ -737,6 +738,7 @@ local function Create_Fast_Button(indexAdd)
                 end
             end
         end
+        self.Text:SetAlpha(0.3)
     end)
     btn:SetScript('OnClick', function(self)
         if C_AddOns.GetAddOnEnableState(self.name)~=0 then
@@ -1334,7 +1336,6 @@ local function Init()
         AddonList.ScrollBox:ClearAllPoints()
         AddonList.ScrollBox:SetPoint('TOPLEFT', 7, -64)
         AddonList.ScrollBox:SetPoint('BOTTOMRIGHT', -22,32)
-        --hooksecurefunc('AddonList_InitButton', function(entry) entry.Title:SetPoint('RIGHT', -220, 0)end)
     end, sizeRestFunc=function(self)
         self.target:SetSize("500", "478")
     end})
@@ -1349,11 +1350,12 @@ local function Init()
         frame.Title:SetPoint('RIGHT', -220, 0 )
         Init_Set_List(frame, addonIndex)--列表，内容
     end)
--- e.call('AddonList_HasAnyChanged')
+
     hooksecurefunc('AddonList_Update', function()
         Update_Usage()--更新，使用情况
         Set_Fast_Button()--插件，快捷，选中
         Set_Buttons()
+        AddonListOkayButton:SetWidth(AddonListOkayButton:GetFontString():GetWidth()+24)
     end)
 
 
