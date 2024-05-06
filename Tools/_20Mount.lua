@@ -1365,7 +1365,7 @@ local function Init_MountJournal()
     btn.MountJournal_FullUpdate= MountJournal_FullUpdate
     function btn.resetFunction()
         MountJournal_FullUpdate= _G['MountJournalFilterButtonWoWTools'].MountJournal_FullUpdate
-        _G['MountJournalFilterButtonWoWTools']:SetText(" ")
+        _G['MountJournalFilterButtonWoWTools']:SetText(id)
         e.call('MountJournalFilterDropdown_ResetFilters')
     end
 
