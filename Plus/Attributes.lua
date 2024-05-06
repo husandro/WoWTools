@@ -271,7 +271,7 @@ local function set_STATUS_Tooltip(self)
         get_PrimaryStat()--取得主属
     end
     local frame= self:GetParent()
-    e.tips:SetOwner(self, "ANCHOR_RIGHT")
+    e.tips:SetOwner(self, "ANCHOR_LEFT")
     e.tips:ClearLines()
     local stat, effectiveStat, posBuff, negBuff = UnitStat('player', PrimaryStat);
     local effectiveStatDisplay = BreakUpLargeNumbers(effectiveStat or 0);
@@ -401,7 +401,7 @@ local function set_CRITCHANCE_Text(frame)
 end
 local function set_CRITCHANCE_Tooltip(self)
     local frame= self:GetParent()
-    e.tips:SetOwner(self, "ANCHOR_RIGHT")
+    e.tips:SetOwner(self, "ANCHOR_LEFT")
     e.tips:ClearLines()
     local spellCrit = get_minCrit() or 0
 	local rangedCrit = GetRangedCritChance();
@@ -455,7 +455,7 @@ local function set_HASTE_Text(frame)
 end
 local function set_HASTE_Tooltip(self)
     local frame= self:GetParent()
-    e.tips:SetOwner(self, "ANCHOR_RIGHT")
+    e.tips:SetOwner(self, "ANCHOR_LEFT")
     e.tips:ClearLines()
 
     local haste = GetHaste();
@@ -518,7 +518,7 @@ local function set_VERSATILITY_Text(frame)
 end
 local function set_VERSATILITY_Tooltip(self)
     local frame= self:GetParent()
-    e.tips:SetOwner(self, "ANCHOR_RIGHT")
+    e.tips:SetOwner(self, "ANCHOR_LEFT")
     e.tips:ClearLines()
     local versatility = GetCombatRating(CR_VERSATILITY_DAMAGE_DONE);
 	local versatilityDamageBonus = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_DONE);
@@ -547,7 +547,7 @@ local function set_LIFESTEAL_Text(frame)
 end
 local function set_LIFESTEAL_Tooltip(self)
     local frame= self:GetParent()
-    e.tips:SetOwner(self, "ANCHOR_RIGHT")
+    e.tips:SetOwner(self, "ANCHOR_LEFT")
     e.tips:ClearLines()
 
     local lifesteal = GetLifesteal();
@@ -574,7 +574,7 @@ local function set_AVOIDANCE_Text(frame)
 end
 local function set_AVOIDANCE_Tooltip(self)
     local frame= self:GetParent()
-    e.tips:SetOwner(self, "ANCHOR_RIGHT")
+    e.tips:SetOwner(self, "ANCHOR_LEFT")
     e.tips:ClearLines()
 
     local Avoidance = GetAvoidance();
@@ -601,7 +601,7 @@ local function set_DODGE_Text(frame)
 end
 local function set_DODGE_Tooltip(self)
     local frame= self:GetParent()
-    e.tips:SetOwner(self, "ANCHOR_RIGHT")
+    e.tips:SetOwner(self, "ANCHOR_LEFT")
     e.tips:ClearLines()
 
     local chance = GetDodgeChance();
@@ -633,7 +633,7 @@ local function set_ARMOR_Text(frame)
 end
 local function set_ARMOR_Tooltip(self)
     local frame= self:GetParent()
-    e.tips:SetOwner(self, "ANCHOR_RIGHT")
+    e.tips:SetOwner(self, "ANCHOR_LEFT")
     e.tips:ClearLines()
 
     local _, effectiveArmor = UnitArmor('player');
@@ -668,7 +668,7 @@ local function set_PARRY_Text(frame)
 end
 local function set_PARRY_Tooltip(self)
     local frame= self:GetParent()
-    e.tips:SetOwner(self, "ANCHOR_RIGHT")
+    e.tips:SetOwner(self, "ANCHOR_LEFT")
     e.tips:ClearLines()
 
     local chance = GetParryChance();
@@ -695,7 +695,7 @@ local function set_BLOCK_Text(frame)
 end
 local function set_BLOCK_Tooltip(self)
     local frame= self:GetParent()
-    e.tips:SetOwner(self, "ANCHOR_RIGHT")
+    e.tips:SetOwner(self, "ANCHOR_LEFT")
     e.tips:ClearLines()
 
     local chance = GetBlockChance();
@@ -725,7 +725,7 @@ local function set_STAGGER_Tooltip(self)
         return
     end
     local frame= self:GetParent()
-    e.tips:SetOwner(self, "ANCHOR_RIGHT")
+    e.tips:SetOwner(self, "ANCHOR_LEFT")
     e.tips:ClearLines()
     e.tips:AddDoubleLine(frame.nameText,  format("%0.2f%%", stagger), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
 	e.tips:AddLine(format(e.onlyChinese and '你的醉拳可化解%0.2f%%的伤害' or STAT_STAGGER_TOOLTIP, stagger), frame.r, frame.g, frame.b,true)
@@ -761,7 +761,7 @@ local function set_SPEED_Text(frame, elapsed)
 end
 local function set_SPEED_Tooltip(self)
     local frame= self:GetParent()
-    e.tips:SetOwner(self, "ANCHOR_RIGHT")
+    e.tips:SetOwner(self, "ANCHOR_LEFT")
     e.tips:ClearLines()
     local currentSpeed, runSpeed, flightSpeed, swimSpeed = GetUnitSpeed('player')
     e.tips:AddDoubleLine(frame.nameText, 'player', frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
@@ -1474,7 +1474,7 @@ local function Init_Options()--设置 panel
     textColor:EnableMouse(true)
     textColor:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
     textColor:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_RIGHT")
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.onlyChinese and '设置' or SETTINGS, e.Icon.left..self.hex..(e.onlyChinese and '颜色' or COLOR))
         e.tips:Show()
@@ -1557,7 +1557,7 @@ local function Init_Options()--设置 panel
     panel.barGreenColor:EnableMouse(true)
     panel.barGreenColor:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
     panel.barGreenColor:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_RIGHT")
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.onlyChinese and '设置' or SETTINGS, e.Icon.left..self.hex..(e.onlyChinese and '颜色' or COLOR))
         e.tips:Show()
@@ -1589,7 +1589,7 @@ local function Init_Options()--设置 panel
     panel.barRedColor:EnableMouse(true)
     panel.barRedColor:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
     panel.barRedColor:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_RIGHT")
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.onlyChinese and '设置' or SETTINGS, e.Icon.left..self.hex..(e.onlyChinese and '颜色' or COLOR))
         e.tips:Show()
