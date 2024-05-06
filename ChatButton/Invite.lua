@@ -919,7 +919,7 @@ local function InitList(self, level, type)
                 checked= Save.focusKey== key,
                 disabled= UnitAffectingCombat('player') or Save.focusKey== key,
                 arg1= key,
-                keepShownOnClick=true,
+                --keepShownOnClick=true,
                 func= function(_, arg1)
                     Save.focusKey= arg1
                     set_Shift_Click_focurs()--Shift+点击设置焦点
