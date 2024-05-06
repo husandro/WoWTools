@@ -271,21 +271,14 @@ local function Init_StableFrame_Plus()
     for _, btn in ipairs(StableFrame.ActivePetList.PetButtons) do--已激，宠物栏，提示
         created_model(btn, true)--已激活宠物，Model 提示
     end
-
     created_model(StableFrame.ActivePetList.BeastMasterSecondaryPetButton, false)--第二个，宠物，提示
-    
-    
-
-
-    hooksecurefunc(StableFrame.PetModelScene, 'SetPet', function()--选定时，隐藏model
-        local self= StableFrame
-
-        local selecIndex= self.selectedPet and self.selectedPet.slotID
-        for _, btn2 in ipairs(StableFrame.ActivePetList.PetButtons) do--已激，宠物栏，提示
-            btn2.model:SetShown(btn2.petData and btn2:IsEnabled() and selecIndex~=btn2:GetID())
+    hooksecurefunc(StableFrame.PetModelScene, 'SetPet', function(self)--选定时，隐藏model
+        local frame= self:GetParent()
+        local selecIndex= frame.selectedPet and frame.selectedPet.slotID
+        for _, btn2 in ipairs(frame.ActivePetList.PetButtons) do--已激，宠物栏，提示
+            btn2.model:SetShown(btn2.petData and not btn2.locked and selecIndex~=btn2:GetID())
         end
-
-        local btn2= self.ActivePetList.BeastMasterSecondaryPetButton
+        local btn2= frame.ActivePetList.BeastMasterSecondaryPetButton
         btn2.model:SetShown(btn2.petData and btn2:IsEnabled() and selecIndex~=btn2:GetID())
     end)
 
