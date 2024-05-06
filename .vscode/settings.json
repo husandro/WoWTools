@@ -4394,7 +4394,11 @@
         "STABLE_PET_SPEC_CUNNING",
         "STABLE_PET_SPEC_FEROCITY",
         "STABLE_PET_SPEC_TENACITY",
-        "STABLE_PET_BUTTON_LABEL"
+        "STABLE_PET_BUTTON_LABEL",
+        "UIWidgetContainerMixin",
+        "DefaultWidgetLayout",
+        "EncounterBar",
+        "UIParent_ManageFramePositions"
     ],
     "Lua.diagnostics.disable": [
         "inject-field",
