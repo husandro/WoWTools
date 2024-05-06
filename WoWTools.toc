@@ -178,6 +178,7 @@ Other\Brewfest.lua
 Other\DormantSeeds.lua
 ##仅限猎人加载，专门，宠物管理，增强
 Other\HunterPet.lua
+Other\HunterPet10_26.lua
 ##法术弹出框，加名称, 和颜色
 Other\SpellFrame.lua
 
