@@ -223,21 +223,21 @@ local function set_Scale_Size(frame, tab)
 
             e.tips:AddDoubleLine((e.onlyChinese and '大小' or 'Size')..format(' %s |cffffffffx|r %s', w, h), e.Icon.right)
 
-            local col
+            local col2
             if self.sizeRestTooltipColorFunc then
-                col=self.sizeRestTooltipColorFunc(self)
+                col2=self.sizeRestTooltipColorFunc(self)
             end
-            col=col or (Save.size[self.name] and '' or '|cff606060')
+            col2=col2 or (Save.size[self.name] and '' or '|cff606060')
             e.tips:AddDoubleLine(
-                col..(self.sizeRestFunc and (e.onlyChinese and '默认' or DEFAULT) or (e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)),
-                col..'Alt+'..e.Icon.right
+                col2..(self.sizeRestFunc and (e.onlyChinese and '默认' or DEFAULT) or (e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)),
+                col2..'Alt+'..e.Icon.right
             )
             e.tips:AddDoubleLine(e.GetEnabeleDisable(true), 'Ctrl+'..e.Icon.right)
         end
         if self.target.setMoveFrame and not self.target.notSave then
-            local col= Save.point[self.name] and '' or '|cff606060'
+            local col2= Save.point[self.name] and '' or '|cff606060'
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(col..(e.onlyChinese and '清除位置' or (SLASH_STOPWATCH_PARAM_STOP2..CHOOSE_LOCATION:gsub(CHOOSE , ''))), col..'Shift+'..e.Icon.left)
+            e.tips:AddDoubleLine(col2..(e.onlyChinese and '清除位置' or (SLASH_STOPWATCH_PARAM_STOP2..CHOOSE_LOCATION:gsub(CHOOSE , ''))), col2..'Shift+'..e.Icon.left)
         else
             e.tips:AddLine(' ')
         end
@@ -360,27 +360,27 @@ local function set_Scale_Size(frame, tab)
                 self.SOS.x, self.SOS.y = self.SOS.left, self.SOS.top-(UIParent:GetHeight()/self.SOS.scale)
                 self.SOS.EFscale = target:GetEffectiveScale()
                 self.SOS.dist = GetScaleDistance(self.SOS)
-                self:SetScript("OnUpdate", function(frame)
-                    local SOS= frame.SOS
+                self:SetScript("OnUpdate", function(frame2)
+                    local SOS= frame2.SOS
                     local distance= GetScaleDistance(SOS)
-                    local scale = distance/SOS.dist*SOS.scale
-                    if scale < 0.4 then -- clamp min and max scale
-                        scale = 0.4
-                    elseif scale > 2.5 then
-                        scale = 2.5
+                    local scale2 = distance/SOS.dist*SOS.scale
+                    if scale2 < 0.4 then -- clamp min and max scale
+                        scale2 = 0.4
+                    elseif scale2 > 2.5 then
+                        scale2 = 2.5
                     end
-                    scale= tonumber(format('%.2f', scale))
-                    local target= frame.target
-                    target:SetScale(scale)
+                    scale2= tonumber(format('%.2f', scale2))
+                    local target2= frame2.target
+                    target2:SetScale(scale2)
 
                     local s = SOS.scale/target:GetScale()
                     local x = SOS.x*s
                     local y = SOS.y*s
-                    target:ClearAllPoints()
-                    target:SetPoint("TOPLEFT", UIParent, "TOPLEFT", x, y)
-                    frame:set_tooltip()
-                    if frame.scaleUpdateFunc then
-                        frame.scaleUpdateFunc(frame)
+                    target2:ClearAllPoints()
+                    target2:SetPoint("TOPLEFT", UIParent, "TOPLEFT", x, y)
+                    frame2:set_tooltip()
+                    if frame2.scaleUpdateFunc then
+                        frame2.scaleUpdateFunc(frame2)
                     end
                 end)
             end
@@ -424,13 +424,13 @@ local function set_Scale_Size(frame, tab)
     if onShowFunc then
         if onShowFunc==true then
             frame:HookScript('OnShow', function(self)
-                local name= self:GetName()
-                local scale= Save.scale[name]
-                if scale then
-                    self:SetScale(scale)
+                local name2= self:GetName()
+                local scale2= Save.scale[name2]
+                if scale2 then
+                    self:SetScale(scale2)
                 end
                 if self.ResizeButton.setSize then
-                    local size= Save.size[name]
+                    local size= Save.size[name2]
                     if size then
                         self:SetSize(size[1], size[2])
                     end
