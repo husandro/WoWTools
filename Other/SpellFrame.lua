@@ -285,47 +285,47 @@ function Init_All_Flyout()
     local x=-12
     for _, flyoutID in pairs(tab) do--1024 MAX_SPELLS
         local numSlots, isKnown= select(3, GetFlyoutInfo(flyoutID))
-        if not isKnown then
-            local btn= e.Cbtn(SpellBookSpellIconsFrame, {texture=519384, size=22, alpha=0.3})
+        local btn= e.Cbtn(SpellBookSpellIconsFrame, {texture=519384, size=22, alpha=isKnown and 0 or 0.3})
 
-            btn:SetPoint('TOPRIGHT', x, -30)
-            btn:SetScript('OnLeave', function(self) self:SetAlpha(0.3) end)
-            btn:SetScript('OnEnter', function(self)
-                e.tips:SetOwner(self, "ANCHOR_LEFT")
-                e.tips:ClearLines()
+        btn:SetPoint('TOPRIGHT', x, -30)
+        btn:SetScript('OnLeave', function(self) self:SetAlpha(isKnown and 0 or 0.3) end)
+        btn:SetScript('OnEnter', function(self)
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:ClearLines()
 
-                local name, description, numSlots= GetFlyoutInfo(self.flyoutID)
-                e.tips:AddLine(name, 1,1,1)
-                e.tips:AddLine(description, nil,nil,nil,true)
-                e.tips:AddLine(' ')
+            local name, description, numSlots2= GetFlyoutInfo(self.flyoutID)
+            e.tips:AddLine(name, 1,1,1)
+            e.tips:AddLine(description, nil,nil,nil,true)
+            e.tips:AddLine(' ')
 
-                for slot= 1, numSlots or 0 do
-                    local flyoutSpellID, overrideSpellID, isKnown2, spellName = GetFlyoutSlotInfo(self.flyoutID, slot)
-                    local spellID= overrideSpellID or flyoutSpellID
-                    if spellID then
-                        e.LoadDate({id=spellID, type='spell'})
-                        local name2, _, icon = GetSpellInfo(spellID)
-                        if name2 and icon then
-                            e.tips:AddDoubleLine('|T'..icon..':0|t'..(not isKnown2 and ' |cnRED_FONT_COLOR:' or '')..e.cn(name2)..'|r', (not isKnown2 and '|cnRED_FONT_COLOR:' or '').. spellID..' '..(e.onlyChinese and '法术' or SPELLS)..'('..slot)
-                        else
-                            e.tips:AddDoubleLine((not isKnown2 and ' |cnRED_FONT_COLOR:' or '')..spellName..'|r',(not isKnown2 and '|cnRED_FONT_COLOR:' or '')..spellID..' '..(e.onlyChinese and '法术' or SPELLS)..'('..slot)
-                        end
+            for slot= 1, numSlots2 do
+                local flyoutSpellID, overrideSpellID, isKnown2, spellName = GetFlyoutSlotInfo(self.flyoutID, slot)
+                local spellID= overrideSpellID or flyoutSpellID
+                if spellID then
+                    e.LoadDate({id=spellID, type='spell'})
+                    local name2, _, icon = GetSpellInfo(spellID)
+                    if name2 and icon then
+                        e.tips:AddDoubleLine('|T'..icon..':0|t'..(not isKnown2 and ' |cnRED_FONT_COLOR:' or '')..e.cn(name2)..'|r', (not isKnown2 and '|cnRED_FONT_COLOR:' or '').. spellID..' '..(e.onlyChinese and '法术' or SPELLS)..'('..slot)
+                    else
+                        e.tips:AddDoubleLine((not isKnown2 and ' |cnRED_FONT_COLOR:' or '')..spellName..'|r',(not isKnown2 and '|cnRED_FONT_COLOR:' or '')..spellID..' '..(e.onlyChinese and '法术' or SPELLS)..'('..slot)
                     end
                 end
+            end
 
-                e.tips:AddLine(' ')
-                e.tips:AddDoubleLine('flyoutID '..self.flyoutID, Initializer:GetName(), 1,1,1, 1,1,1)
-                e.tips:Show()
-                self:SetAlpha(1)
-            end)
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine('flyoutID '..self.flyoutID, Initializer:GetName(), 1,1,1, 1,1,1)
+            e.tips:Show()
+            self:SetAlpha(1)
+        end)
 
-            btn.Text= e.Cstr(btn, {color={r=1,g=1,b=1}})
-            btn.Text:SetPoint('CENTER')
-            btn.Text:SetText(numSlots or '')
+        btn.Text= e.Cstr(btn, {color={r=1,g=1,b=1}})
+        btn.Text:SetPoint('CENTER')
+        btn.Text:SetText(numSlots or '')
 
-            btn.flyoutID= flyoutID
-            x= x-24
-        end
+        btn.isKnown= isKnown
+        btn.flyoutID= flyoutID
+        x= x-24
+        
     end
 end
 
