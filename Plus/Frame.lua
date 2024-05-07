@@ -288,7 +288,7 @@ local function set_Scale_Size(frame, tab)
     end
 
     btn:SetScript("OnMouseUp", function(self, d)
-        if not self.isActive or (self.notInCombat and UnitAffectingCombat('player')) then
+        if not self.isActive or (self.notInCombat and not self:CanChangeAttribute()) then
             return
         end
         self.isActive= nil
@@ -317,7 +317,7 @@ local function set_Scale_Size(frame, tab)
         self:SetScript("OnUpdate", nil)
     end)
     btn:SetScript("OnMouseDown",function(self, d)
-        if self.isActive or (self.notInCombat and UnitAffectingCombat('player')) then
+        if self.isActive or (self.notInCombat and UnitAffectingCombat('player')) or not self:CanChangeAttribute() then
             return
         end
         if IsShiftKeyDown() then
