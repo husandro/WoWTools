@@ -288,7 +288,7 @@ local function set_Scale_Size(frame, tab)
     end
 
     btn:SetScript("OnMouseUp", function(self, d)
-        if not self.isActive or (self.notInCombat and not self:CanChangeAttribute()) then
+        if not self.isActive or (self.notInCombat and not self:CanChangeAttribute()) or not self:CanChangeAttribute() then
             return
         end
         self.isActive= nil
@@ -424,12 +424,15 @@ local function set_Scale_Size(frame, tab)
     if onShowFunc then
         if onShowFunc==true then
             frame:HookScript('OnShow', function(self)
+                if not self:CanChangeAttribute() then
+                    return
+                end
                 local name2= self:GetName()
                 local scale2= Save.scale[name2]
                 if scale2 then
                     self:SetScale(scale2)
                 end
-                if self.ResizeButton.setSize and self:CanChangeAttribute() then
+                if self.ResizeButton.setSize then
                     local size= Save.size[name2]
                     if size then
                         self:SetSize(size[1], size[2])
