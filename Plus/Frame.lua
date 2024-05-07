@@ -429,7 +429,7 @@ local function set_Scale_Size(frame, tab)
                 if scale2 then
                     self:SetScale(scale2)
                 end
-                if self.ResizeButton.setSize then
+                if self.ResizeButton.setSize and self:CanChangeAttribute() then
                     local size= Save.size[name2]
                     if size then
                         self:SetSize(size[1], size[2])
@@ -447,7 +447,7 @@ local function set_Scale_Size(frame, tab)
         end
         if btn.set_move_event then
             btn:SetScript('OnMouseWheel', function(self, d)--是否设置，移动时，设置透明度
-                if self.notInCombat and UnitAffectingCombat('player') then
+                if self.notInCombat and UnitAffectingCombat('player') or not self:CanChangeAttribute() then
                     return
                 end
                 local col
