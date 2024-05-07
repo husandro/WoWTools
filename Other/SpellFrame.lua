@@ -285,10 +285,10 @@ function Init_All_Flyout()
     local x=-12
     for _, flyoutID in pairs(tab) do--1024 MAX_SPELLS
         local numSlots, isKnown= select(3, GetFlyoutInfo(flyoutID))
-        local btn= e.Cbtn(SpellBookSpellIconsFrame, {texture=519384, size=22, alpha=isKnown and 0 or 0.3})
+        local btn= e.Cbtn(SpellBookSpellIconsFrame, {texture=519384, size=22, alpha=isKnown and 0.1 or 0.5})
 
         btn:SetPoint('TOPRIGHT', x, -30)
-        btn:SetScript('OnLeave', function(self) self:SetAlpha(isKnown and 0 or 0.3) end)
+        btn:SetScript('OnLeave', function(self) self:SetAlpha(isKnown and 0.1 or 0.5) end)
         btn:SetScript('OnEnter', function(self)
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
