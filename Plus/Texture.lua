@@ -1134,11 +1134,11 @@ local function Init_All_Frame()
      hide_Texture(MerchantFrameBottomLeftBorder)
 
      C_Timer.After(2, function()
-         if SpellFlyout and SpellFlyout.Background then--Spell Flyout
+         --[[if SpellFlyout and SpellFlyout.Background then--Spell Flyout
              hide_Texture(SpellFlyout.Background.HorizontalMiddle)
              hide_Texture(SpellFlyout.Background.End)
              hide_Texture(SpellFlyout.Background.VerticalMiddle)
-         end
+         end]]
 
 
          for i=1, C_AddOns.GetNumAddOns() do

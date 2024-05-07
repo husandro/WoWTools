@@ -4399,7 +4399,11 @@
         "DefaultWidgetLayout",
         "EncounterBar",
         "UIParent_ManageFramePositions",
-        "DressUpFrame_Show"
+        "DressUpFrame_Show",
+        "MAX_SPELLS",
+        "SpellBookSpellIconsFrame",
+        "SpellFlyoutButton_UpdateGlyphState",
+        "WorldFrame"
     ],
     "Lua.diagnostics.disable": [
         "inject-field",

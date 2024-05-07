@@ -130,6 +130,9 @@ function e.Cbtn(self, tab)--type, icon(atlas, texture), name, size, pushe, butto
     if tab.text then
         btn:SetText(tab.text)
     end
+    if tab.alpha then
+        btn:SetAlpha(tab.alpha)
+    end
     return btn, template
 end
 

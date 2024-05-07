@@ -1587,29 +1587,29 @@ local function Init()
     --##################
     --世界地图，副本，提示
     --##################
-    hooksecurefunc(DungeonEntrancePinMixin, 'OnAcquired', function(self2)
-        if self2.setEnter or Save.hideEncounterJournal then
+    hooksecurefunc(DungeonEntrancePinMixin, 'OnAcquired', function(frame)
+        if frame.setEnter or Save.hideEncounterJournal then
             return
         end
 
-        self2:HookScript('OnEnter', function(self3)
-            if Save.hideEncounterJournal or not self3.journalInstanceID then
+        frame:HookScript('OnEnter', function(self)
+            if Save.hideEncounterJournal or not self.journalInstanceID then
                 return
             end
-            local name, _, _, _, _, _, dungeonAreaMapID, _, _, mapID = EJ_GetInstanceInfo(self3.journalInstanceID)
-            e.tips:SetOwner(self3, "ANCHOR_RIGHT")
+            local name, _, _, _, _, _, dungeonAreaMapID, _, _, mapID = EJ_GetInstanceInfo(self.journalInstanceID)
+            e.tips:SetOwner(self, "ANCHOR_RIGHT")
             e.tips:ClearLines()
             e.tips:AddDoubleLine(e.cn(name), mapID and 'mapID '..mapID or '')
-            e.tips:AddDoubleLine('journalInstanceID: |cnGREEN_FONT_COLOR:'..self3.journalInstanceID, (dungeonAreaMapID and dungeonAreaMapID>0) and 'dungeonAreaMapID '..dungeonAreaMapID or '')
+            e.tips:AddDoubleLine('journalInstanceID: |cnGREEN_FONT_COLOR:'..self.journalInstanceID, (dungeonAreaMapID and dungeonAreaMapID>0) and 'dungeonAreaMapID '..dungeonAreaMapID or '')
             e.tips:AddLine(' ')
-            if encounterJournal_ListInstances_set_Instance(self3, true) then
+            if encounterJournal_ListInstances_set_Instance(self, true) then
                 e.tips:AddLine(' ')
             end
             e.tips:AddDoubleLine(id, Initializer:GetName())
             e.tips:Show()
         end)
-        self2:SetScript('OnLeave', GameTooltip_Hide)
-        self2.setEnter=true
+        frame:SetScript('OnLeave', GameTooltip_Hide)
+        frame.setEnter=true
     end)
 
     Init_Set_Worldboss_Text()

@@ -215,6 +215,7 @@ BattlePetToolTip_ShowLink(itemKeyInfo.battlePetLink);
 
 
 GetMouseFocus() == self
+GameTooltip:GetOwner()
 if ( GameTooltip:IsOwned(button) ) then
 	button:GetScript("OnEnter")(button);
 end

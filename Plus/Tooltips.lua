@@ -1485,8 +1485,12 @@ end
 --法术, 弹出框
 --###########
 function func.Set_Flyout(self, flyoutID)--法术, 弹出框
+    local name, _, numSlots, isKnown= GetFlyoutInfo(flyoutID)
+    if not name then
+        return
+    end
+
     self:AddLine(' ')
-    local _, _, numSlots, isKnown= GetFlyoutInfo(flyoutID)
     for slot= 1, numSlots do
         local flyoutSpellID, overrideSpellID, isKnown2, spellName = GetFlyoutSlotInfo(flyoutID, slot)
         local spellID= overrideSpellID or flyoutSpellID
@@ -1500,16 +1504,14 @@ function func.Set_Flyout(self, flyoutID)--法术, 弹出框
             end
         end
     end
-    local btn= self:GetOwner()
-    local icon
 
-    
+    local icon
+    local btn= self:GetOwner()
     if btn and (btn.IconTexture or btn.icon) then
         icon= (btn.IconTexture or btn.icon):GetTextureFileID()
-        
     end
-    self:AddDoubleLine((not isKnown and '|cnRED_FONT_COLOR:' or '')..'flyoutID|r '..flyoutID, icon and icon>0 and format('|T%d:0|t%d', icon, icon))
-
+    self:AddLine(' ')
+    self:AddDoubleLine((not isKnown and '|cnRED_FONT_COLOR:' or '')..'flyoutID|r '..flyoutID, icon and icon>0 and format('|T%d:0|t%d', icon, icon), 1,1,1, 1,1,1)
 end
 
 
@@ -3049,7 +3051,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if Save.disabled then
                 self:UnregisterAllEvents()
             else
-                
+
                 Init()--初始
                 for _, evt in pairs(eventTab or {}) do
                     Init_Event(evt)

@@ -46,7 +46,8 @@ local P_Spell_Tabs={
     18960,--[梦境行者]
     126892,--[禅宗朝圣]
 }
-local P_Flyout_Tab={}
+local P_Flyout_Tab={
+}
 local P_Equip_Tab={
     65274,65360, 63206, 63207, 63352, 63353,--协同披风
     103678,--迷时神器
@@ -398,10 +399,10 @@ local function Init_All_Buttons()
         end
     end
 end
---[[if not e.Player.husandro then
+--[[f not e.Player.husandro then
     return
 end
-local tab= {223}
+local tab= {103}
     for _, flyoutID in pairs(tab) do --Save.flyout) do
         local name, description, numSlots, isKnown = GetFlyoutInfo(flyoutID)
         
@@ -417,20 +418,22 @@ local tab= {223}
                 showTexture=true,
                 sizi=nil,
             })
-            btn.flyoutID=flyoutID
+            --btn.flyoutId=flyoutID
             --btn.spellID= flyoutID
-            btn:SetScript('OnClick', function(self)
-                SpellFlyout:Toggle(self.flyoutID, self, "LEFT", 1, false, nil, true);
-            end)
-            
+
+           
+
             e.ToolsSetButtonPoint(btn)--设置位置
-            --btn:SetAttribute('type', 'flyout')
-            --btn:SetAttribute('flyoutID', flyoutID)
+            btn:SetAttribute("type", "flyout")
+--btn:SetAttribute("spell", flyoutID)
+            btn:SetAttribute("flyout", flyoutID)
+            btn:SetAttribute("flyoutDirection", 'RIGHT')
             --btn:SetAttribute('spellID', flyoutID)
             --btn:SetAttribute("flyoutDirection", "LEFT")
             --btn.texture:SetTexture(519384)
         end
-    end]]
+    end
+    ]]
 
 
 
