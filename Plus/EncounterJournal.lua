@@ -1316,32 +1316,46 @@ local function Init_EncounterJournal()--冒险指南界面
     --战利品, 套装, 收集数 Blizzard_LootJournalItems.lua
     if EncounterJournal.LootJournalItems.ItemSetsFrame and EncounterJournal.LootJournalItems.ItemSetsFrame.ScrollBox and EncounterJournal.LootJournalItems.ItemSetsFrame.ScrollBox.Update then
         hooksecurefunc(EncounterJournal.LootJournalItems.ItemSetsFrame.ScrollBox, 'Update', function(self)
-            if not self:GetView() then
+            local view = self:GetView()
+            if not view or not view.frames then
                 return
             end
-            for _, frame in pairs(self:GetFrames() or {}) do
-                --[[local data= frame:GetData() or {}
-                local text= select(4, e.GetSetsCollectedNum(data.setID))
+            for _, frame in pairs(view.frames) do
+                local coll, all, text= 0, 0, nil
+                for _, btn in pairs(frame.ItemButtons or {}) do
+                    local has= false
+                    local itemLink= not Save.hideEncounterJournal and btn.itemLink
+                    if itemLink then--itemID
+                        has = C_TransmogCollection.PlayerHasTransmogByItemInfo(itemLink)
+                        all= all+1
+                        coll= has and coll+1 or coll
+                    end
+                    e.Set_Item_Stats(btn, itemLink, {hideLevel=true, hideSet=true})
+
+                    if has and not btn.collection then
+                        btn.collection= btn:CreateTexture()
+                        btn.collection:SetSize(10,10)
+                        btn.collection:SetPoint('TOP', btn, 'BOTTOM',0,2)
+                        btn.collection:SetAtlas(e.Icon.select)
+                    end
+                    if btn.collection then
+                        btn.collection:SetShown(has)
+                    end
+                end
                 if not frame.setNum then
                     frame.setNum= e.Cstr(frame)
                     frame.setNum:SetPoint('RIGHT', frame.SetName)
                 end
-                frame.setNum:SetText(text or '')]]
-                
-                for _, itemButton in pairs(frame.ItemButtons or {}) do
-                    local itemID= not Save.hideEncounterJournal and itemButton and itemButton.itemID
-                    local has =itemID and C_TransmogCollection.PlayerHasTransmogByItemInfo(itemID)
-                    if has and not itemButton.collection then
-                        itemButton.collection= itemButton:CreateTexture()
-                        itemButton.collection:SetSize(16,16)
-                        itemButton.collection:SetPoint('BOTTOMRIGHT', 2, -2)
-                        itemButton.collection:SetAtlas(e.Icon.select)
-                    end
-                    if itemButton.collection then
-                        itemButton.collection:SetShown(has)
+                if all>0 then
+                    if coll==all then
+                        text= format('|A:%s:0:0|a', e.Icon.select)
+                    else
+                        text= format('%s%d/%d', coll==0 and '|cff606060' or '', coll, all)
                     end
                 end
+                frame.setNum:SetText(text or '')
             end
+
         end)
     end
 

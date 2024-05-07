@@ -7,7 +7,7 @@ end)
  hooksecurefunc(CommunitiesFrameCommunitiesList.ScrollBox, 'SetDataProvider', function(self)
 	local view = self:GetView()
 	if view and view.frames then
-		for _, btn in pairs(view.frames or {}) do
+		for _, btn in pairs(view.frames) do
 	end
 end)
 
