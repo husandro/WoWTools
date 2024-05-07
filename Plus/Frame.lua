@@ -2585,9 +2585,18 @@ end)]]
         end
     end})
 
-
-
-
+    --试衣间
+    e.Set_Move_Frame(DressUpFrame, {setSize=true, minH=330, minW=330, initFunc=function(btn)
+        btn.target:HookScript('OnShow', function(self)--DressUpFrame_Show
+            local size= Save.size[self:GetName()]
+            if size then
+                self:SetSize(size[1], size[2])
+                print(id,addName)
+            end
+        end)
+    end, sizeRestFunc=function(btn)
+        btn.target:SetSize(450, 545)
+    end})
 
 
     created_Move_Button(ZoneAbilityFrame, {frame=ZoneAbilityFrame.SpellButtonContainer})
@@ -2712,7 +2721,7 @@ end)]]
     e.Set_Move_Frame(PlayerPowerBarAlt)
     e.Set_Move_Frame(CreateChannelPopup)
     e.Set_Move_Frame(BattleTagInviteFrame)
-
+    
 
 
      C_Timer.After(2, function()

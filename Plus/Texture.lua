@@ -1280,7 +1280,7 @@ local function Init_All_Frame()
     e.Set_Alpha_Frame_Texture(DressUpFrameInset)
     set_Alpha_Color(DressUpFrame.ModelBackground, nil, nil, min05)
     e.Set_Alpha_Frame_Texture(DressUpFrame.OutfitDetailsPanel, {alpha=min03})
-    hide_Texture(DressUpFrame.OutfitDetailsPanel.BlackBackground)
+    set_Alpha_Color(DressUpFrame.OutfitDetailsPanel.BlackBackground)
     set_Menu(DressUpFrameOutfitDropDown)
 
     --插件，UIDropDownMenu

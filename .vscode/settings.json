@@ -4398,7 +4398,8 @@
         "UIWidgetContainerMixin",
         "DefaultWidgetLayout",
         "EncounterBar",
-        "UIParent_ManageFramePositions"
+        "UIParent_ManageFramePositions",
+        "DressUpFrame_Show"
     ],
     "Lua.diagnostics.disable": [
         "inject-field",
