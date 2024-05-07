@@ -1780,9 +1780,10 @@ end
 --Blizzard_PetCollection.lua
 local function Init_Pet()
     --增加，总数
+    PetJournal.PetCount.CountAll= e.Cstr(PetJournal.PetCount, {color={r=1,g=1,b=1}, size=16})
+    PetJournal.PetCount.CountAll:SetPoint('LEFT', PetJournal.PetCount.Count, 'RIGHT')
     hooksecurefunc('PetJournal_UpdatePetList', function()
-        local numPets, numOwned = C_PetJournal.GetNumPets()
-	    PetJournal.PetCount.Count:SetText(numOwned..'/'..numPets)
+	    PetJournal.PetCount.CountAll:SetFormattedText('/%d', C_PetJournal.GetNumPets() or 0)
     end)
 end
 
