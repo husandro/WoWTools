@@ -499,7 +499,7 @@ end
 --设置, 移动, 位置
 --###############
 local function set_Frame_Point(self, name)--设置, 移动, 位置
-    if self and (Save.SavePoint  or not self.notSave) then
+    if self and (Save.SavePoint or not self.notSave) and self:CanChangeAttribute() then
         name= name or self.FrameName or self:GetName()
         if name then
             local p= Save.point[name]
@@ -2598,7 +2598,7 @@ end)]]
         btn.target:SetSize(450, 545)
     end})
 
-
+    --e.Set_Move_Frame(SpellBookFrame, {notSave=true})--战斗中，禁止操作
 
     created_Move_Button(ZoneAbilityFrame, {frame=ZoneAbilityFrame.SpellButtonContainer})
     --跟点击，功能冲突 ZoneAbilityFrameSpellButtonMixin:OnDragStart()
