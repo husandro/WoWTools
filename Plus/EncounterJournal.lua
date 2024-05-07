@@ -1324,7 +1324,7 @@ local function Init_EncounterJournal()--冒险指南界面
                 local coll, all, text= 0, 0, nil
                 for _, btn in pairs(frame.ItemButtons or {}) do
                     local has= false
-                    local itemLink= not Save.hideEncounterJournal and btn.itemLink
+                    local itemLink= not Save.hideEncounterJournal and btn:IsShown() and btn.itemLink
                     if itemLink then--itemID
                         has = C_TransmogCollection.PlayerHasTransmogByItemInfo(itemLink)
                         all= all+1
