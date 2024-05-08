@@ -1780,10 +1780,16 @@ end
 --Blizzard_PetCollection.lua
 local function Init_Pet()
     --增加，总数
-    PetJournal.PetCount.CountAll= e.Cstr(PetJournal.PetCount, {color={r=1,g=1,b=1}, size=16})
-    PetJournal.PetCount.CountAll:SetPoint('LEFT', PetJournal.PetCount.Count, 'RIGHT')
+    --PetJournal.PetCount.CountAll= e.Cstr(PetJournal.PetCount, {color={r=1,g=1,b=1}, size=16})
+    --PetJournal.PetCount.CountAll:SetPoint('LEFT', PetJournal.PetCount.Count, 'RIGHT')
+    
+    --PetJournal.PetCount.Label:SetText(e.onlyChinese and '宠物' or PET)--中文
+    PetJournal.PetCount.Label:ClearAllPoints()--太长了，
+    PetJournal.PetCount.Label:SetPoint('RIGHT', PetJournal.PetCount.Count, 'LEFT', -2, 0)
+    PetJournal.PetCount.Label:SetJustifyH('RIGHT')
     hooksecurefunc('PetJournal_UpdatePetList', function()
-	    PetJournal.PetCount.CountAll:SetFormattedText('/%d', C_PetJournal.GetNumPets() or 0)
+	    PetJournal.PetCount.Count:SetFormattedText('%d/%d', C_PetJournal.GetNumPets())
+        
     end)
 end
 

@@ -179,6 +179,7 @@ local function set_Scale_Size(frame, tab)
         e.tips:AddDoubleLine(id, e.cn(addName))
 
         if not self:CanChangeAttribute() then
+            e.tips:AddLine(format('|cnRED_FONT_COLOR:%s', e.onlyChinese and '当前不可更改' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, DISABLE)))
             e.tips:Show()
             return
         end
@@ -2606,7 +2607,7 @@ end)]]
         btn.target:SetSize(450, 545)
     end})
 
-    --e.Set_Move_Frame(SpellBookFrame, {notSave=true})--战斗中，禁止操作
+    e.Set_Move_Frame(SpellBookFrame, {notSave=true})--战斗中，禁止操作
 
     created_Move_Button(ZoneAbilityFrame, {frame=ZoneAbilityFrame.SpellButtonContainer})
     --跟点击，功能冲突 ZoneAbilityFrameSpellButtonMixin:OnDragStart()
