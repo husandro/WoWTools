@@ -294,7 +294,7 @@ local function set_Scale_Size(frame, tab)
     end
 
     btn:SetScript("OnMouseUp", function(self, d)
-        if not self.isActive or (self.notInCombat and not self:CanChangeAttribute()) or not self:CanChangeAttribute() then
+        if not self.isActive or (self.notInCombat and not UnitAffectingCombat('player')) or not self:CanChangeAttribute() then
             return
         end
         self.isActive= nil
@@ -430,7 +430,7 @@ local function set_Scale_Size(frame, tab)
     if onShowFunc then
         if onShowFunc==true then
             frame:HookScript('OnShow', function(self)
-                if not self:CanChangeAttribute() then
+                if (self.notInCombat and UnitAffectingCombat('player')) or not self:CanChangeAttribute() then
                     return
                 end
                 local name2= self:GetName()
