@@ -178,6 +178,11 @@ local function set_Scale_Size(frame, tab)
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, e.cn(addName))
 
+        if not self:CanChangeAttribute() then
+            e.tips:Show()
+            return
+        end
+
         if self.notInCombat and UnitAffectingCombat('player') then
             e.tips:AddDoubleLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT), e.GetEnabeleDisable(false))
             e.tips:Show()
