@@ -508,15 +508,22 @@ end
 --设置, 移动, 位置
 --###############
 local function set_Frame_Point(self, name)--设置, 移动, 位置
-    if self and (Save.SavePoint or not self.notSave) and self:CanChangeAttribute() then
-        name= name or self.FrameName or self:GetName()
-        if name then
-            local p= Save.point[name]
-            if p and p[1] and p[3] and p[4] and p[5] then
-                local frame= self.targetMoveFrame or self
-                frame:ClearAllPoints()
-                frame:SetPoint(p[1], UIParent, p[3], p[4], p[5])
-            end
+    if not self
+        or not Save.SavePoint
+        or self.notSave
+        or not self:CanChangeAttribute()
+        --or (self.ResizeButton and self.ResizeButton.notInCombat and UnitAffectingCombat('player'))
+    then
+        return
+    end
+    
+    name= name or self.FrameName or self:GetName()
+    if name then
+        local p= Save.point[name]
+        if p and p[1] and p[3] and p[4] and p[5] then
+            local frame= self.targetMoveFrame or self
+            frame:ClearAllPoints()
+            frame:SetPoint(p[1], UIParent, p[3], p[4], p[5])
         end
     end
 end
@@ -534,7 +541,6 @@ function e.Set_Move_Frame(self, tab)
     local frame= tab.frame
     local name= tab.name or (frame and frame:GetName()) or (self and self:GetName())
     local click= tab.click
-    local frame= tab.frame
     local notSave= ((tab.notSave or not Save.SavePoint) and not tab.save) and true or nil
     local notFuori= tab.notFuori
 
@@ -2608,7 +2614,7 @@ end)]]
     end})
 
     --法术书
-    e.Set_Move_Frame(SpellBookFrame, {notSave=true})--战斗中，禁止操作
+    e.Set_Move_Frame(SpellBookFrame, {notInCombat=true})--战斗中，禁止操作
 
     created_Move_Button(ZoneAbilityFrame, {frame=ZoneAbilityFrame.SpellButtonContainer})
     --跟点击，功能冲突 ZoneAbilityFrameSpellButtonMixin:OnDragStart()
