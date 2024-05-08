@@ -18,7 +18,7 @@ local Save={
     modelFacing= -0.5,--方向
     showModelFileID=e.Player.husandro,--显示，文件ID
     --WidgetSetID=848,--自定义，监视 WidgetSetID
-
+    --disabledNPCcolor=true,--禁用NPC颜色
     --hideHealth=true,----生命条提示
 }
 local panel=CreateFrame("Frame")
@@ -1312,10 +1312,12 @@ function func.Set_Unit(self)--设置单位提示信息
         func.Set_Pet(self, UnitBattlePetSpeciesID(unit), true)
 
     else
-        for i=1, self:NumLines() do
-            local line=_G["GameTooltipTextLeft"..i]
-            if line then
-                line:SetTextColor(r,g,b)
+        if not Save.disabledNPCcolor then
+            for i=1, self:NumLines() do
+                local line=_G["GameTooltipTextLeft"..i]
+                if line then
+                    line:SetTextColor(r,g,b)
+                end
             end
         end
 
@@ -2598,9 +2600,18 @@ local function Init_Panel()
     })
     initializer:SetParentInitializer(initializer2, function() if Save.hideModel then return false else return true end end)
 
+    e.AddPanel_Check({
+        name= e.onlyChinese and 'NPC颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, 'NPC', COLOR),
+        tooltip= Category:GetName(),
+        value= not Save.disabledNPCcolor,
+        category= Category,
+        func= function()
+            Save.disabledNPCcolor= not Save.disabledNPCcolor and true or nil
+        end
+    })
 
     e.AddPanel_Check({
-        name= e.onlyChinese and '生命值 ' or HEALTH,
+        name= e.onlyChinese and '生命值' or HEALTH,
         tooltip= Category:GetName(),
         value= not Save.hideHealth,
         category= Category,
