@@ -683,10 +683,12 @@ local function Init_tipsButton()
             local status, mapName, teamSize, registeredMatch, suspendedQueue, queueType = GetBattlefieldStatus(i);
         end]]
 
-        for i=1,  GetNumWorldPVPAreas() do --World PvP
-            local queueID = select(3, GetWorldPVPQueueStatus(i))
-            if queueID and queueID>0 then
-                BattlefieldMgrExitRequest(queueID)
+        if GetNumWorldPVPAreas then--10.2.7 移除
+            for i=1,  GetNumWorldPVPAreas() do --World PvP
+                local queueID = select(3, GetWorldPVPQueueStatus(i))
+                if queueID and queueID>0 then
+                    BattlefieldMgrExitRequest(queueID)
+                end
             end
         end
 
