@@ -2607,6 +2607,7 @@ end)]]
         btn.target:SetSize(450, 545)
     end})
 
+    --法术书
     e.Set_Move_Frame(SpellBookFrame, {notSave=true})--战斗中，禁止操作
 
     created_Move_Button(ZoneAbilityFrame, {frame=ZoneAbilityFrame.SpellButtonContainer})
