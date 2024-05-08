@@ -686,7 +686,7 @@ local function Init_Affix()
             label:SetPoint('RIGHT', btn, 'LEFT')
             label:SetText(one)
             --if index==1 then
-            label:SetTextColor(0,1,0)
+            --label:SetTextColor(0,1,0)
             label:EnableMouse(true)
             label.affixSchedule= affixSchedule
             label.currentWeek= currentWeek

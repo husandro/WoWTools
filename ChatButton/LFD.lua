@@ -1179,7 +1179,7 @@ local function set_LFGPlus()--预创建队伍增强
         end
     end)
 
-    hooksecurefunc('LFGListUtil_SetSearchEntryTooltip', function(tooltip, resultID, autoAcceptOption)
+    --[[hooksecurefunc('LFGListUtil_SetSearchEntryTooltip', function(tooltip, resultID, autoAcceptOption)
         if not Save.LFGPlus then
             return
         end
@@ -1223,7 +1223,7 @@ local function set_LFGPlus()--预创建队伍增强
         tooltip:AddDoubleLine(e.onlyChinese and '申请' or SIGN_UP, (e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left, 0,1,0, 0,1,0)
         tooltip:AddDoubleLine(id, e.cn(addName))
         tooltip:Show()
-    end)
+    end)]]
 end
 
 local function set_button_LFGPlus_Texture()--预创建队伍增强
