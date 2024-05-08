@@ -1,4 +1,4 @@
-## Interface: 100206
+## Interface: 100207
 ## Title: |cffff00ffWoW|r|cff00ff00Tools|r
 ## Author: husandro
 ## Version: 1
@@ -177,8 +177,8 @@ Other\Brewfest.lua
 ##10.1 梦境之种
 Other\DormantSeeds.lua
 ##仅限猎人加载，专门，宠物管理，增强
+##Other\HunterPet10_26.lua
 Other\HunterPet.lua
-Other\HunterPet10_26.lua
 ##法术弹出框，加名称, 和颜色
 Other\SpellFrame.lua
 
