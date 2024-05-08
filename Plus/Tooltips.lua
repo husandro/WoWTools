@@ -2601,7 +2601,7 @@ local function Init_Panel()
     initializer:SetParentInitializer(initializer2, function() if Save.hideModel then return false else return true end end)
 
     e.AddPanel_Check({
-        name= e.onlyChinese and 'NPC颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, 'NPC', COLOR),
+        name= e.onlyChinese and 'NPC职业颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, 'NPC', CLASS_COLORS),
         tooltip= Category:GetName(),
         value= not Save.disabledNPCcolor,
         category= Category,
