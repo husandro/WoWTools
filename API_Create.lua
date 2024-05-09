@@ -90,6 +90,7 @@ function e.Cbtn(self, tab)--type, icon(atlas, texture), name, size, pushe, butto
     SecureGroupPetHeaderTemplate	Frame	Managing group pets.
     SecurePartyPetHeaderTemplate	Frame	Managing party pets.
     SecureRaidPetHeaderTemplate
+    btn:RegisterForClicks("AnyDown", "AnyUp")
 ]]
     local btn= CreateFrame(tab.button or 'Button', tab.name, self or UIParent, template, tab.setID)
     btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)

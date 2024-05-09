@@ -4403,7 +4403,9 @@
         "MAX_SPELLS",
         "SpellBookSpellIconsFrame",
         "SpellFlyoutButton_UpdateGlyphState",
-        "WorldFrame"
+        "WorldFrame",
+        "SET_FOCUS",
+        "COVENANT_MISSIONS_UNITS"
     ],
     "Lua.diagnostics.disable": [
         "inject-field",
