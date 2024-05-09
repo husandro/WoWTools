@@ -406,50 +406,88 @@ end
 
 
 
+
+
+
+
+
+
+
+
+--Shift+点击设置焦点
 --跟随，密语
-local function Set_Say_Follow(frame)
-    if frame.unit and frame:GetAttribute('unit') then
-        print(id, addName, frame, frame:GetName())
-    end
-    if not Save.setFrameFun or not frame or not (frame.unit and frame:GetAttribute('unit')) then
+--鼠标按键 1是左键、2是右键、3是中键
+local ClearFoucsFrame
+local function Init_Shift_Click_Focus()
+    if not Save.setFucus then
         return
     end
-    frame:EnableMouseWheel(true)
-    frame:SetScript('OnMouseWheel', function(self, d)
-        local unit= self.unit or self:GetAttribute('unit')
-        if UnitExists(unit)
-            and UnitIsPlayer(unit)
-            and not UnitIsUnit('player', unit)
-            and UnitIsFriend('player', unit)
-        then
-            if d==1 then
-                e.Say(nil, UnitName(unit), nil, nil)--密语
-            elseif d==-1 then
-                FollowUnit(unit)--跟随
-            end
+
+    local key= strlower(Save.focusKey)
+
+    ClearFoucsFrame= e.Cbtn(nil, {type=true, name='WoWToolsClearFocusButton'})--清除，焦点
+    ClearFoucsFrame:SetAttribute('type1','macro')
+    ClearFoucsFrame:SetAttribute('macrotext1','/clearfocus')
+    e.SetButtonKey(ClearFoucsFrame, true, strupper(key)..'-BUTTON2', nil)--设置, 快捷键
+
+    
+
+    ClearFoucsFrame.key= key
+    ClearFoucsFrame.frames={}
+
+    function ClearFoucsFrame:set_event(frame)
+        self:RegisterEvent('PLAYER_REGEN_ENABLED')
+        self.frames[frame]=true
+    end
+
+    --跟随，密语
+    function ClearFoucsFrame:set_say_follow(frame)
+        if not Save.setFrameFun or not frame then--or not (frame.unit and frame:GetAttribute('unit')) then
+            return
         end
-    end)
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
---Shift+点击设置焦点 鼠标按键 1是左键、2是右键、3是中键
-local FocusKey
-local function set_Shift_Click_focurs()
-    if not Save.setFucus or FocusKey then
-        return
+        frame:EnableMouseWheel(true)
+        frame:HookScript('OnMouseWheel', function(f, d)
+            local unit= f.unit or f:GetAttribute('unit')
+            if UnitExists(unit)
+                and UnitIsPlayer(unit)
+                and not UnitIsUnit('player', unit)
+                and UnitIsFriend('player', unit)
+            then
+                if d==1 then
+                    e.Say(nil, UnitName(unit), nil, nil)--密语
+                elseif d==-1 then
+                    FollowUnit(unit)--跟随
+                end
+            end
+        end)
     end
+
+    --设置, 属性
+    function ClearFoucsFrame:set_key(frame)
+        if not frame then
+            return
+        end
+        if frame:CanChangeAttribute() then
+            if frame==FocusFrame then
+                frame:SetAttribute(key..'-type1','macro')
+                frame:SetAttribute(key..'-macrotext1','/clearfocus')
+            else
+                frame:SetAttribute(self.key..'-type1', 'focus')--设置, 属性
+            end
+        else
+            self:set_event(frame)
+        end
+    end
+
+    ClearFoucsFrame:SetScript('OnEvent', function(self)
+        for frame, _ in pairs(self.frames) do
+            self:set_key(frame)
+        end
+        self.frames={}
+        self:UnregisterEvent('PLAYER_REGEN_ENABLED')
+    end)
+
+
 
     local tab = {
         PlayerFrame,
@@ -457,6 +495,7 @@ local function set_Shift_Click_focurs()
         TargetFrame,
         TargetFrameToT,
         FocusFrameToT,
+        FocusFrame,
     }
     for i=1, MAX_BOSS_FRAMES do--boss
         local frame= _G['Boss'..i..'TargetFrame']
@@ -466,6 +505,7 @@ local function set_Shift_Click_focurs()
             table.insert(tab, frame.TotButton)
         end
     end
+
     for i=1, MAX_PARTY_MEMBERS do--队伍
         local member= 'MemberFrame'..i
         if PartyFrame and PartyFrame[member] then
@@ -480,42 +520,47 @@ local function set_Shift_Click_focurs()
         end
     end
 
-    FocusKey= strlower(Save.focusKey)
+
 
     for _, frame in pairs(tab) do--设置焦点
-        if frame and frame:CanChangeAttribute() then
-            frame:SetAttribute(FocusKey..'-type1', 'focus')--设置, 属性
-            Set_Say_Follow(frame)
+        if frame then
+            ClearFoucsFrame:set_key(frame)
+            ClearFoucsFrame:set_say_follow(frame)
         end
     end
 
-    if FocusFrame and FocusFrame:CanChangeAttribute() then--清除，焦点
-        FocusFrame:SetAttribute(FocusKey..'-type1','macro')
-        FocusFrame:SetAttribute(FocusKey..'-macrotext1','/clearfocus')
-        Set_Say_Follow(FocusFrame)
-    end
-
-    local btn= e.Cbtn(nil, {type=true, name='WoWToolsClearFocusButton'})--清除，焦点
-    btn:SetAttribute('type1','macro')
-    btn:SetAttribute('macrotext1','/clearfocus')
-    e.SetButtonKey(btn, true, strupper(FocusKey)..'-BUTTON1', nil)--设置, 快捷键
 
 
+    --设置单位焦点
+    local btn= e.Cbtn(nil, {type=true, name='WoWToolsOverFocusButton'})
+    btn:SetAttribute("type1", "focus")
+    btn:SetAttribute('unit', 'mouseover')
+    e.SetButtonKey(btn, true, strupper(key)..'-BUTTON1', nil)--设置, 快捷键
 
-    --if Save.overSetFocus then--设置单位焦点
-        hooksecurefunc("CreateFrame", function(_, name, _, template)--为新的框架，加属性
-            local frame= name and _G[name]
-            if template and template:find("SecureUnitButtonTemplate") and frame and frame:CanChangeAttribute() and not frame:GetAttribute(FocusKey..'-type1') then
-                frame:SetAttribute(FocusKey..'-type1', 'focus')--设置, 属性
-                Set_Say_Follow(frame)
-            end
-        end)
+    hooksecurefunc("CreateFrame", function(_, name, _, template)--为新的框架，加属性
+        local frame= name and _G[name]
+        if template
+            and (
+                template:find("SecureUnitButtonTemplate")
+            )
+            and frame
+            and not frame:GetAttribute(ClearFoucsFrame.key..'-type1')
+        then
+            ClearFoucsFrame:set_key(frame)
+            ClearFoucsFrame:set_say_follow(frame)
+        end
+    end)
 
-        btn= e.Cbtn(nil, {type=true, name='WoWToolsOverFocusButton'})
-        btn:SetAttribute("type1", "focus")
-        btn:SetAttribute('unit1', 'mouseover')
-        e.SetButtonKey(btn, true, strupper(FocusKey)..'-BUTTON1', nil)--设置, 快捷键
-    --end
+
+
+    hooksecurefunc('CompactRaidGroup_InitializeForGroup', function(self, groupIndex)
+        for i=1, MEMBERS_PER_RAID_GROUP do
+            local frame= _G[self:GetName().."Member"..i]
+            ClearFoucsFrame:set_key(frame)
+            ClearFoucsFrame:set_say_follow(frame)
+        end
+    end)
+
 end
 
 
@@ -778,62 +823,62 @@ local function InitList(self, level, menuList)
             notCheckable=true,
             keepShownOnClick=true,
             func= function()
-                StaticPopupDialogs[id..addName..'CHANNEL']={--设置,内容,频道, 邀请,事件
-                    text=id..' '..addName..' '..(e.onlyChinese and '频道' or CHANNEL)..'|n|n'..(e.onlyChinese and '关键词' or KBASE_DEFAULT_SEARCH_TEXT),
-                    whileDead=true, hideOnEscape=true, exclusive=true,
-                    hasEditBox=true,
-                    button1= e.onlyChinese and '修改' or EDIT,
-                    button2=CANCEL,
-                    OnShow = function(self2, data)
-                        self2.editBox:SetText(Save.ChannelText or e.Player.cn and '1' or 'inv')
-                        --self.button3:SetEnabled(Save.Mounts[FLOOR][data.spellID] and true or false)
-                    end,
-                    OnHide= function(self2)
-                        self2.editBox:SetText("")
-                        e.call('ChatEdit_FocusActiveWindow')
-                    end,
-                    OnAccept = function(self2, data)
-                        Save.ChannelText = string.upper(self.editBox:GetText())
-                        print(id, e.cn(addName), e.onlyChinese and '频道' or CHANNEL,'|cnGREEN_FONT_COLOR:'..Save.ChannelText..'|r')
-                    end,
-                    EditBoxOnTextChanged=function(self2, data)
-                        local text= self2:GetText()
-                        text=text:gsub(' ','')
-                        self2:GetParent().button1:SetEnabled(text~='')
-                    end,
-                    EditBoxOnEscapePressed = function(s)
-                        s:SetAutoFocus(false)
-                        s:ClearFocus()
-                        s:GetParent():Hide()
-                    end,
-                }
+                if not StaticPopupDialogs[id..addName..'CHANNEL'] then
+                    StaticPopupDialogs[id..addName..'CHANNEL']= {--设置,内容,频道, 邀请,事件
+                        text=id..' '..addName..' '..(e.onlyChinese and '频道' or CHANNEL)..'|n|n'..(e.onlyChinese and '关键词' or KBASE_DEFAULT_SEARCH_TEXT),
+                        whileDead=true, hideOnEscape=true, exclusive=true,
+                        hasEditBox=true,
+                        button1= e.onlyChinese and '修改' or EDIT,
+                        button2= e.onlyChinese and '取消' or CANCEL,
+                        OnShow = function(frame)
+                            frame.editBox:SetText(Save.ChannelText or e.Player.cn and '1' or 'inv')
+                        end,
+                        OnHide= function(frame)
+                            frame.editBox:ClearFocus()
+                        end,
+                        OnAccept = function(frame)
+                            Save.ChannelText = string.upper(frame.editBox:GetText())
+                            print(id, e.cn(addName), e.onlyChinese and '频道' or CHANNEL,'|cnGREEN_FONT_COLOR:'..Save.ChannelText..'|r')
+                        end,
+                        EditBoxOnTextChanged=function(frame)
+                            local text= frame:GetText()
+                            text=text:gsub(' ','')
+                            frame:GetParent().button1:SetEnabled(text~='')
+                        end,
+                        EditBoxOnEscapePressed = function(s)
+                            s:GetParent():Hide()
+                        end,
+                    }
+                end
                 StaticPopup_Show(id..addName..'CHANNEL')
             end
         }, level)
 
 
     elseif menuList=='FOCUSKEY' then
-        info= {
-            text= '    Shift + '..e.Icon.left..' + '..(e.onlyChinese and '空' or EMPTY)..' = '..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
-            notCheckable=true,
-            isTitle=true,
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
         for _, key in pairs({'Shift', 'Ctrl', 'Alt'}) do
             e.LibDD:UIDropDownMenu_AddButton({
                 text= key..' + '.. e.Icon.left,
                 checked= Save.focusKey== key,
                 disabled= UnitAffectingCombat('player') or Save.focusKey== key,
                 arg1= key,
-                tooltipOnButton=true,
-                tooltipTitle= e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD,
                 func= function(_, arg1)
                     Save.focusKey= arg1
+                    print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:'..arg1..'|r'..e.Icon.left, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end,
             }, level)
         end
-
+        e.LibDD:UIDropDownMenu_AddButton({
+            text= format('%s+%s%s=%s',
+                Save.focusKey,
+                e.Icon.right,
+                e.onlyChinese and '空' or EMPTY,
+                e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2
+            ),
+            colorCode= '|cffff0000',
+            notCheckable=true,
+            isTitle=true,
+        }, level)
         --[[e.LibDD:UIDropDownMenu_AddSeparator(level)
         e.LibDD:UIDropDownMenu_AddButton({
             text= e.onlyChinese and '设置单位焦点' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SET_FOCUS, COVENANT_MISSIONS_UNITS),
@@ -853,25 +898,15 @@ local function InitList(self, level, menuList)
             format('|n|A:UI-HUD-MicroMenu-StreamDLRed-Up:0:0|a%s', e.onlyChinese and'鼠标滚轮向下滚动: 跟随' or (KEY_MOUSEWHEELDOWN..': '..FOLLOW)),
             checked=Save.setFrameFun,
             keepShownOnClick=true,
-            tooltipOnButton=true,
-            tooltipTitle= e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD,
             func=function()
                 Save.setFrameFun= not Save.setFrameFun and true or nil
+                print(id, e.cn(addName), e.GetEnabeleDisable(Save.setFrameFun), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
         }, level)
 
-
-        --[[
-        info= {
-            text= (e.onlyChinese and '仅限系统' or LFG_LIST_CROSS_FACTION:format(SYSTEM)),
-            notCheckable=true,
-            isTitle=true,
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)]]
         e.LibDD:UIDropDownMenu_AddSeparator(level)
         e.LibDD:UIDropDownMenu_AddButton({
-            text= e.onlyChinese and'友情提示: 可能会出现错误' or ('note: '..ENABLE_ERROR_SPEECH),
-            colorCode= '|cffff0000',
+            text=e.onlyChinese and'友情提示: 可能会出现错误' or 'note: errors may occur',
             notCheckable=true,
             isTitle=true,
         }, level)
@@ -918,10 +953,9 @@ local function InitList(self, level, menuList)
         hasArrow=true,
         menuList='FOCUSKEY',
         keepShownOnClick=true,
-        tooltipOnButton=true,
-        tooltipTitle= e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD,
         func= function()
             Save.setFucus= not Save.setFucus and true or nil
+            print(id, e.cn(addName), e.GetEnabeleDisable(Save.setFucus), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
     }, level)
 end
@@ -1107,14 +1141,7 @@ local function Init()
 
 
 
-
-    --[[if UnitAffectingCombat('player') and (Save.setFrameFun or Save.setFucus) then
-        panel:RegisterEvent('PLAYER_REGEN_ENABLED')
-    else
-        if Save.setFrameFun then
-            set_Frame_Fun()--日标框, 向上:密语, 向下:跟随
-        end]]
-    set_Shift_Click_focurs()--Shift+点击设置焦点
+    Init_Shift_Click_Focus()--Shift+点击设置焦点
 
 end
 
@@ -1233,14 +1260,5 @@ panel:SetScript("OnEvent", function(_, event, arg1, ...)
                 end
             end
         end
-
-    --[[elseif event=='PLAYER_REGEN_ENABLED' then
-        if Save.setFrameFun then
-            set_Frame_Fun()--日标框, 向上:密语, 向下:跟随
-        end
-        if Save.setFucus then
-            set_Shift_Click_focurs()--Shift+点击设置焦点
-        end
-        panel:UnregisterEvent('PLAYER_REGEN_ENABLED')]]
     end
 end)

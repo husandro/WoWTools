@@ -4405,7 +4405,11 @@
         "SpellFlyoutButton_UpdateGlyphState",
         "WorldFrame",
         "SET_FOCUS",
-        "COVENANT_MISSIONS_UNITS"
+        "COVENANT_MISSIONS_UNITS",
+        "MEMBERS_PER_RAID_GROUP",
+        "CompactUnitFrame_SetUpFrame",
+        "CompactUnitFrame_SetUpdateAllEvent",
+        "DefaultCompactUnitFrameSetup"
     ],
     "Lua.diagnostics.disable": [
         "inject-field",
