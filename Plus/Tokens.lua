@@ -941,7 +941,6 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 	end
 	local info, num, total, percent, isMax, canWeek, canEarned, canQuantity= e.GetCurrencyMaxInfo(nil, frame.index)
 	local currencyID= info and info.currencyID
-	--local info, currencyID = Get_For_index_To_currencyID(nil, frame.index)
 	if not frame.isHeader and info and not frame.check then
 		frame.check= CreateFrame("CheckButton", nil, frame, "InterfaceOptionsCheckButtonTemplate")
 		frame.check:SetPoint('LEFT', -4,0)
