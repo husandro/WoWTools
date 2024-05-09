@@ -310,6 +310,15 @@ local function Init_WidthX2()
     MERCHANT_ITEMS_PER_PAGE= Save.MERCHANT_ITEMS_PER_PAGE or MERCHANT_ITEMS_PER_PAGE or 24
     Create_ItemButton()
 
+    --物品数量
+    MerchantFrameTab1.numLable= e.Cstr(MerchantFrameTab1)
+    MerchantFrameTab1.numLable:SetPoint('TOPRIGHT')
+    MerchantFrame:HookScript('OnShow', function()
+        local num= GetMerchantNumItems()
+        print(num)
+        MerchantFrameTab1.numLable:SetText(num and num>0 and num or '')
+    end)
+
     --回购，数量，提示
     MerchantFrameTab2.numLable= e.Cstr(MerchantFrameTab2)
     MerchantFrameTab2.numLable:SetPoint('TOPRIGHT')
