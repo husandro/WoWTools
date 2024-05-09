@@ -947,12 +947,12 @@ local function InitList(self, level, menuList)
 
     e.LibDD:UIDropDownMenu_AddSeparator(level)
     e.LibDD:UIDropDownMenu_AddButton({
-        text= e.Icon.left..(e.onlyChinese and '焦点' or HUD_EDIT_MODE_FOCUS_FRAME_LABEL)..'|cnGREEN_FONT_COLOR:'..Save.focusKey..'|r',
+        text= e.Icon.left..(e.onlyChinese and '焦点' or HUD_EDIT_MODE_FOCUS_FRAME_LABEL)..(Save.setFucus and '|cnGREEN_FONT_COLOR:'..Save.focusKey..'|r' or ''),
         checked= Save.setFucus,
         disabled= UnitAffectingCombat('player'),
         hasArrow=true,
         menuList='FOCUSKEY',
-        keepShownOnClick=true,
+        --keepShownOnClick=true,
         func= function()
             Save.setFucus= not Save.setFucus and true or nil
             print(id, e.cn(addName), e.GetEnabeleDisable(Save.setFucus), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
