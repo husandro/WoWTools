@@ -4409,7 +4409,8 @@
         "MEMBERS_PER_RAID_GROUP",
         "CompactUnitFrame_SetUpFrame",
         "CompactUnitFrame_SetUpdateAllEvent",
-        "DefaultCompactUnitFrameSetup"
+        "DefaultCompactUnitFrameSetup",
+        "CompactRaidFrameManagerDisplayFrameEveryoneIsAssistButtonText"
     ],
     "Lua.diagnostics.disable": [
         "inject-field",

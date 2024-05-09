@@ -3734,13 +3734,15 @@ local function Init()
     end)
 
 
-        --团队
+    --团队
+    set(CompactRaidFrameManager.displayFrame.label, IsInRaid() and '团员' or '队员')
     hooksecurefunc('CompactRaidFrameManager_UpdateLabel', function()
         set(CompactRaidFrameManager.displayFrame.label, IsInRaid() and '团员' or '队员')
     end)
     hooksecurefunc(CompactRaidFrameManagerDisplayFrame.RestrictPingsButton, 'UpdateLabel', function(self)
         set(self.Text, IsInRaid() and '只限助手发送信号' or '只限领袖发送信号')
     end)
+    set(CompactRaidFrameManagerDisplayFrameEveryoneIsAssistButtonText, '将所有人提升为助理')
 
     set(CompactRaidFrameManagerDisplayFrameEditMode, '编辑')
     set(CompactRaidFrameManagerDisplayFrameConvertToRaid, '转团')

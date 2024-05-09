@@ -424,7 +424,7 @@ local function Init_All_Frame()
         hide_Texture(CompactRaidFrameManagerBorderBottomLeft)
         hide_Texture(CompactRaidFrameManagerBorderBottomRight)
 
-        set_Alpha_Color(CompactRaidFrameManagerDisplayFrameHeaderDelineator)
+        set_Alpha_Color(CompactRaidFrameManagerDisplayFrameHeaderDelineator, nil, nil, 0)
         hide_Texture(CompactRaidFrameManagerDisplayFrameHeaderBackground)
         set_Alpha_Color(CompactRaidFrameManagerBg, nil, nil, min03)
         hide_Texture(CompactRaidFrameManagerDisplayFrameFilterOptionsFooterDelineator)
