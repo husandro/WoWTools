@@ -989,9 +989,9 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 			frame.percentText= e.Cstr(frame, {color={r=1,g=1,b=1}})
 			frame.percentText:SetPoint('RIGHT', frame.Count, 'LEFT')
 		end
-		if frame.percentText then
-			frame.percentText:SetText(percent and format('%d%%', percent) or '')
-		end
+	end
+	if frame.percentText then
+		frame.percentText:SetText(percent and format('%d%%', percent) or '')
 	end
 
 	if frame.Name then
