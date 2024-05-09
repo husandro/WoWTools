@@ -488,7 +488,7 @@ local function Init_Shift_Click_Focus()
             self:set_key(frame)
         end
         self.frames={}
-        self:UnregisterEvent('PLAYER_REGEN_ENABLED')
+        self:UnregisterAllEvents()
     end)
 
 
