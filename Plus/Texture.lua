@@ -414,17 +414,19 @@ local function Init_All_Frame()
 
     if MultiBarBottomLeftButton10 then hide_Texture(MultiBarBottomLeftButton10.SlotBackground) end
 
-     if CompactRaidFrameManager then--隐藏, 团队, 材质 Blizzard_CompactRaidFrameManager.lua
+    if CompactRaidFrameManager then--隐藏, 团队, 材质 Blizzard_CompactRaidFrameManager.lua
         hide_Texture(CompactRaidFrameManagerBorderTop)
         hide_Texture(CompactRaidFrameManagerBorderRight)
         hide_Texture(CompactRaidFrameManagerBorderBottom)
         hide_Texture(CompactRaidFrameManagerBorderTopRight)
+
         hide_Texture(CompactRaidFrameManagerBorderTopLeft)
         hide_Texture(CompactRaidFrameManagerBorderBottomLeft)
         hide_Texture(CompactRaidFrameManagerBorderBottomRight)
-        hide_Texture(CompactRaidFrameManagerDisplayFrameHeaderDelineator)
+
+        set_Alpha_Color(CompactRaidFrameManagerDisplayFrameHeaderDelineator)
         hide_Texture(CompactRaidFrameManagerDisplayFrameHeaderBackground)
-        hide_Texture(CompactRaidFrameManagerBg)
+        set_Alpha_Color(CompactRaidFrameManagerBg, nil, nil, min03)
         hide_Texture(CompactRaidFrameManagerDisplayFrameFilterOptionsFooterDelineator)
 
         CompactRaidFrameManager.toggleButton:SetNormalAtlas(e.Icon.toRight,true)--展开, 图标
