@@ -430,13 +430,17 @@ local function Init_Shift_Click_Focus()
     ClearFoucsFrame:SetAttribute('macrotext1','/clearfocus')
     e.SetButtonKey(ClearFoucsFrame, true, strupper(key)..'-BUTTON2', nil)--设置, 快捷键
 
-    
+
 
     ClearFoucsFrame.key= key
     ClearFoucsFrame.frames={}
 
     function ClearFoucsFrame:set_event(frame)
-        self:RegisterEvent('PLAYER_REGEN_ENABLED')
+        if UnitAffectingCombat('player') then
+            self:RegisterEvent('PLAYER_REGEN_ENABLED')
+        else
+            self:RegisterEvent('PLAYER_ENTERING_WORLD')
+        end
         self.frames[frame]=true
     end
 
