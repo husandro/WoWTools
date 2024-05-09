@@ -20,6 +20,7 @@ local Save={
 local panel= CreateFrame("Frame", nil, PaperDollFrame)
 local TrackButton
 local StatusPlusButton
+local Initializer
 
 --[[local function Is_Load_ElvUI(btn)
     if C_AddOns.IsAddOnLoaded('ElvUI') and not btn.icon then
@@ -71,7 +72,7 @@ local function LvTo()--总装等
                 e.tips:AddLine(CharacterStatsPane.ItemLevelFrame.tooltip2)
                 e.tips:AddLine(' ')
                 e.tips:AddLine('|cnGREEN_FONT_COLOR:'..format(e.onlyChinese and '物品等级：%d' or CHARACTER_LINK_ITEM_LEVEL_TOOLTIP, self.avgItemLevel or ''))
-                e.tips:AddDoubleLine(id, e.cn(addName))
+                e.tips:AddDoubleLine(id, Initializer:GetName())
                 e.tips:Show()
                 self:SetAlpha(0.3)
             end)
@@ -92,7 +93,7 @@ local function LvTo()--总装等
                 e.tips:AddLine(CharacterStatsPane.ItemLevelFrame.tooltip2)
                 e.tips:AddLine(' ')
                 e.tips:AddLine('|cnGREEN_FONT_COLOR:'..format(e.onlyChinese and 'PvP物品等级 %d' or ITEM_UPGRADE_PVP_ITEM_LEVEL_STAT_FORMAT, self.avgItemLevel or '0'))
-                e.tips:AddDoubleLine(id, e.cn(addName))
+                e.tips:AddDoubleLine(id, Initializer:GetName())
                 e.tips:Show()
                 self:SetAlpha(0.3)
             end)
@@ -603,7 +604,7 @@ local function set_Slot_Num_Label(self, slot, isEquipped)--栏位
             e.tips:ClearLines()
             e.tips:AddDoubleLine((e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS)..' '..(self2.name and _G[strupper(strsub(self2.name, 10))] or self2.name or ''), self2.slot)
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(id, e.cn(addName))
+            e.tips:AddDoubleLine(id, Initializer:GetName())
             e.tips:Show()
             self2:SetAlpha(1)
         end)
@@ -744,7 +745,7 @@ local function Init_Title()--头衔数量
                     }
                     e.LibDD:UIDropDownMenu_AddButton(info, level)
                     info= {
-                        text= id..' '..e.cn(addName),
+                        text= id..' '..Initializer:GetName(),
                         isTitle=true,
                         notCheckable=true,
                     }
@@ -771,7 +772,7 @@ local function Init_Title()--头衔数量
             e.tips:AddDoubleLine(format(e.onlyChinese and '头衔：%s' or RENOWN_REWARD_TITLE_NAME_FORMAT,  '|cnGREEN_FONT_COLOR:'..(#GetKnownTitles()-1)..'|r'), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '未收集' or  NOT_COLLECTED))
             e.tips:AddDoubleLine(#PaperDollFrame.TitleManagerPane.tipsButton:get_tab(), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or  NOT_COLLECTED))
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(id, e.cn(addName))
+            e.tips:AddDoubleLine(id, Initializer:GetName())
             e.tips:Show()
             self:SetAlpha(0.3)
         end)
@@ -822,7 +823,7 @@ local function set_set_PaperDollSidebarTab3_Text_Tips(self)
             e.tips:AddLine(' ')
         end
         e.tips:AddDoubleLine(self2.tooltip, self2.tooltip2, 0,1,0,0,1,0)
-        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddDoubleLine(id, Initializer:GetName())
         e.tips:Show()
         self2:SetAlpha(0.3)
     end)
@@ -1004,7 +1005,7 @@ local function Init_TrackButton()--添加装备管理框
             n= n<0.4 and 0.4 or n
             Save.equipmentFrameScale=n
             self:set_scale()--缩放
-            print(id, e.cn(addName), e.onlyChinese and '缩放' or UI_SCALE, GREEN_FONT_COLOR_CODE..n)
+            print(id, Initializer:GetName(), e.onlyChinese and '缩放' or UI_SCALE, GREEN_FONT_COLOR_CODE..n)
         end
     end)
     TrackButton:SetScript("OnEnter", function (self)
@@ -1114,7 +1115,7 @@ local function Init_TrackButton()--添加装备管理框
                     LvTo()--修改总装等
                 end)
             else
-                print(id, e.cn(addName), RED_FONT_COLOR_CODE, e.onlyChinese and '你无法在战斗中实施那个动作' or ERR_NOT_IN_COMBAT)
+                print(id, Initializer:GetName(), RED_FONT_COLOR_CODE, e.onlyChinese and '你无法在战斗中实施那个动作' or ERR_NOT_IN_COMBAT)
             end
         end)
         btn:SetScript("OnEnter", function(frame)
@@ -1134,7 +1135,7 @@ local function Init_TrackButton()--添加装备管理框
                     end
                 end
                 e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(id, e.cn(addName))
+                e.tips:AddDoubleLine(id, Initializer:GetName())
                 e.tips:Show()
                 --local name, iconFileID, _, isEquipped2, numItems, numEquipped, numInInventory, numLost, numIgnored = C_EquipmentSet.GetEquipmentSetInfo(self.setID)
                 if panel.equipmentButton and panel.equipmentButton:IsVisible() then
@@ -1263,20 +1264,20 @@ function Init_TrackButton_ShowHide_Button()
             Save.equipment= not Save.equipment and true or nil
             self:SetNormalAtlas(Save.equipment and 'auctionhouse-icon-favorite' or e.Icon.disabled)
             Init_TrackButton()--添加装备管理框
-            print(id, e.cn(addName), e.GetShowHide(Save.equipment))
+            print(id, Initializer:GetName(), e.GetShowHide(Save.equipment))
         elseif d=='RightButton' and IsControlKeyDown() then
             Save.Equipment=nil
             if TrackButton then
                 TrackButton:ClearAllPoints()
                 TrackButton:set_point()
             end
-            print(id, e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
+            print(id, Initializer:GetName(), e.onlyChinese and '重置位置' or RESET_POSITION)
         end
     end)
     panel.equipmentButton:SetScript("OnEnter", function (self)
         e.tips:SetOwner(self, "ANCHOR_TOPLEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddDoubleLine(id, Initializer:GetName())
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '装备管理' or EQUIPMENT_MANAGER, e.Icon.left..e.GetShowHide(Save.equipment))
         local col= not (self.btn and Save.Equipment) and '|cff606060' or ''
@@ -1340,7 +1341,7 @@ local function GetDurationTotale()
         panel.durabilityText:SetScript('OnEnter', function(self)
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(id, e.cn(addName))
+            e.tips:AddDoubleLine(id, Initializer:GetName())
             e.tips:AddLine(' ')
             e.GetDurabiliy_OnEnter()
             e.tips:Show()
@@ -1561,7 +1562,11 @@ local function Init_Show_Hide_Button(frame)
     btn:SetFrameLevel(title:GetFrameLevel()+1)
 
     btn:SetAlpha(0.5)
-    btn:SetScript('OnClick', function()
+    btn:SetScript('OnClick', function(_, d)
+        if d=='RightButton' then
+            e.OpenPanelOpting(Initializer)
+            return
+        end
         Save.hide= not Save.hide and true or nil
 
         GetDurationTotale()--装备,总耐久度
@@ -1600,9 +1605,9 @@ local function Init_Show_Hide_Button(frame)
             [17] = "CharacterSecondaryHandSlot",
         }
         for _, slot in pairs(Slot) do
-            local btn= _G[slot]
-            if btn then
-                e.call('PaperDollItemSlotButton_Update', btn)
+            local btn2= _G[slot]
+            if btn2 then
+                e.call('PaperDollItemSlotButton_Update', btn2)
             end
         end
 
@@ -1625,11 +1630,15 @@ local function Init_Show_Hide_Button(frame)
     btn:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddDoubleLine(id, Initializer:GetName())
         e.tips:AddLine(' ')
 
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.GetShowHide(not Save.hide), e.Icon.left)
+
+        e.tips:AddDoubleLine(e.onlyChinese and '选项' or SETTINGS_TITLE, e.Icon.right)
+            
+
         e.tips:Show()
         self:SetAlpha(1)
     end)
@@ -1822,7 +1831,7 @@ function panel:Init_Server_equipmentButton_Lable()
                 e.tips:AddDoubleLine(e.onlyChinese and '专业技能' or PROFESSIONS_TRACKER_HEADER_PROFESSION, profCap, 1,0,0, 1,0,0)
                 e.tips:AddLine(' ')
             end
-            e.tips:AddDoubleLine(id, e.cn(addName))
+            e.tips:AddDoubleLine(id, Initializer:GetName())
             e.tips:Show()
             self:SetAlpha(0.3)
         end)
@@ -1886,7 +1895,7 @@ local function Init_ChromieTime()--时空漫游战役, 提示
                 --e.tips:AddDoubleLine(' ', col..(e.onlyChinese and '完成' or COMPLETE)..': '..e.GetYesNo(info.completed))
             end
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(id, e.cn(addName))
+            e.tips:AddDoubleLine(id, Initializer:GetName())
             e.tips:Show()
             self2:SetAlpha(1)
         end)
@@ -1955,7 +1964,7 @@ local function Init_Status_Func()
         end
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddDoubleLine(id, Initializer:GetName())
         e.tips:AddLine(format('|A:communities-icon-addchannelplus:0:0|a%s Plus', e.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES))
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine((e.onlyChinese and '小数点 ' or 'bit ')..(Save.itemLevelBit==0 and '|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE)..'|r' or ('|cnGREEN_FONT_COLOR:'..Save.itemLevelBit)), '-1'..e.Icon.left)
@@ -2351,7 +2360,7 @@ local function Init_Status_Menu()
                 --showFunc= tab.showFunc,
             })
         end
-        print(id, e.cn(addName), format('|cnGREEN_FONT_COLOR:%s|r', stat), e.onlyChinese and '添加' or ADD)
+        print(id, Initializer:GetName(), format('|cnGREEN_FONT_COLOR:%s|r', stat), e.onlyChinese and '添加' or ADD)
     end
 
     function StatusPlusButton.Menu:remove_stat(tab)--移除        
@@ -2362,12 +2371,12 @@ local function Init_Status_Menu()
             for i, info in pairs(PAPERDOLL_STATCATEGORIES[index].stats or {}) do
                 if info.stat==stat then
                     table.remove(PAPERDOLL_STATCATEGORIES[index].stats, i)
-                    print(id, addName, format('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '移除' or REMOVE), stat, name)
+                    print(id, Initializer:GetName(), format('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '移除' or REMOVE), stat, name)
                     return
                 end
             end
         end
-        print(id, addName, format('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE), stat, name)
+        print(id, Initializer:GetName(), format('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE), stat, name)
     end
 
     function StatusPlusButton.Menu:get_primary_text(primary)--主属性, 文本
@@ -2405,7 +2414,7 @@ local function Init_Status_Menu()
                     PAPERDOLL_STATCATEGORIES= {}
                     e.LibDD:CloseDropDownMenus(1)
                     self:save()
-                    print(id, addName, format('|cnGREEN_FONT_COLOR:%s|r', e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT), e.onlyChinese and '完成' or DONE)
+                    print(id, Initializer:GetName(), format('|cnGREEN_FONT_COLOR:%s|r', e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT), e.onlyChinese and '完成' or DONE)
                 end
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -2445,7 +2454,7 @@ local function Init_Status_Menu()
                 hasArrow=true,
                 func= function()
                     Save.notStatusPlusFunc= not Save.notStatusPlusFunc and true or nil
-                    print(id, e.cn(addName), e.GetEnabeleDisable(not Save.notStatusPlusFunc), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(id, Initializer:GetName(), e.GetEnabeleDisable(not Save.notStatusPlusFunc), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -2477,11 +2486,11 @@ local function Init_Status_Menu()
                                     end
                                     PAPERDOLL_STATCATEGORIES[arg1.index].stats[i].hideAt= value
                                     self:save()
-                                    print(id, e.cn(addName), format('|cnGREEN_FONT_COLOR:%s|r', arg1.stat), value)
+                                    print(id, Initializer:GetName(), format('|cnGREEN_FONT_COLOR:%s|r', arg1.stat), value)
                                     return
                                 end
                             end
-                            print(id, e.cn(addName), format('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE), arg1.stat)
+                            print(id, Initializer:GetName(), format('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE), arg1.stat)
                         end
                     }
                     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -2523,11 +2532,11 @@ local function Init_Status_Menu()
                                         end
                                     end
                                     self:save()
-                                    print(id, addName, format('|cnGREEN_FONT_COLOR:%s|r', stats.stat) , findTank and e.Icon.TANK or '', findN and e.Icon.HEALER or '', findDps and e.Icon.DAMAGER or '')
+                                    print(id, Initializer:GetName(), format('|cnGREEN_FONT_COLOR:%s|r', stats.stat) , findTank and e.Icon.TANK or '', findN and e.Icon.HEALER or '', findDps and e.Icon.DAMAGER or '')
                                     return
                                 end
                             end
-                            print(id, e.cn(addName), format('|cnRED_FONT_COLOR:%s|r %s', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE, arg1.stat))
+                            print(id, Initializer:GetName(), format('|cnRED_FONT_COLOR:%s|r %s', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE, arg1.stat))
                         end
                     }
                     if i==Enum.LFGRole.Tank then
@@ -2557,11 +2566,11 @@ local function Init_Status_Menu()
                                         tab.primary=nil
                                     end
                                     self:save()
-                                    print(id, e.cn(addName), format('|cnGREEN_FONT_COLOR:%s|r', stats.stat) , format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, self:get_primary_text(tab.primary) or format('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '无' or NONE)))
+                                    print(id, Initializer:GetName(), format('|cnGREEN_FONT_COLOR:%s|r', stats.stat) , format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, self:get_primary_text(tab.primary) or format('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '无' or NONE)))
                                     return
                                 end
                             end
-                            print(id, e.cn(addName), format('|cnRED_FONT_COLOR:%s|r %s', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE, arg1.stat))
+                            print(id, Initializer:GetName(), format('|cnRED_FONT_COLOR:%s|r %s', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE, arg1.stat))
                         end
                     }
                     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -2733,7 +2742,7 @@ function panel:Init_Status_Plus()
     function StatusPlusButton:set_enabel_disable()
         Save.notStatusPlus= not Save.notStatusPlus and true or nil
         self:set_texture()
-        print(id, e.cn(addName), e.GetEnabeleDisable(not Save.notStatusPlus), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(id, Initializer:GetName(), e.GetEnabeleDisable(not Save.notStatusPlus), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end
     function StatusPlusButton:show_menu()
         e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 40, 0)--主菜单
@@ -2741,7 +2750,7 @@ function panel:Init_Status_Plus()
     function StatusPlusButton:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_TOPLEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddDoubleLine(id, Initializer:GetName())
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)
         e.tips:Show()
@@ -2957,7 +2966,7 @@ local function Init()
                 end
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                e.tips:AddDoubleLine(id, e.cn(addName))
+                e.tips:AddDoubleLine(id, Initializer:GetName())
                 e.tips:AddLine(' ')
                 e.tips:AddLine('name |cnGREEN_FONT_COLOR:'..info.name)
                 e.tips:AddLine('fileName |cnGREEN_FONT_COLOR:'..info.fileName)
@@ -3011,7 +3020,7 @@ local function Init()
             btn.createButton:SetScript('OnEnter', function(self)
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                e.tips:AddDoubleLine(id, e.cn(addName))
+                e.tips:AddDoubleLine(id, Initializer:GetName())
                 e.tips:AddLine(' ')
                 e.tips:AddDoubleLine(self.str,
                     C_EquipmentSet.GetEquipmentSetID(self.str)
@@ -3031,9 +3040,9 @@ local function Init()
                 end
                 C_EquipmentSet.CreateEquipmentSet(self.str)
                 if setID then
-                    print(id,e.cn(addName), '|cffff00ff'..(e.onlyChinese and '修改' or EDIT)..'|r', self.str)
+                    print(id,Initializer:GetName(), '|cffff00ff'..(e.onlyChinese and '修改' or EDIT)..'|r', self.str)
                 else
-                    print(id,e.cn(addName), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '新建' or NEW)..'|r', self.str)
+                    print(id,Initializer:GetName(), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '新建' or NEW)..'|r', self.str)
                 end
             end)
         end
@@ -3048,7 +3057,7 @@ local function Init()
                 end
                 C_EquipmentSet.UseEquipmentSet(self.setID)
                 local name, iconFileID = C_EquipmentSet.GetEquipmentSetInfo(self.setID)
-                print(id, e.cn(addName), iconFileID and '|T'..iconFileID..':0|t|cnGREEN_FONT_COLOR:' or '', name)
+                print(id, Initializer:GetName(), iconFileID and '|T'..iconFileID..':0|t|cnGREEN_FONT_COLOR:' or '', name)
             end)
             btn.setScripOK=true
         end
@@ -3104,13 +3113,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save.itemLevelBit= Save.itemLevelBit or 1
 
             --添加控制面板
-            e.AddPanel_Check({
+            Initializer= e.AddPanel_Check({
                 name= (e.Player.sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a')..(e.onlyChinese and '角色' or addName),
-                tooltip= e.cn(addName),
+                --tooltip= Initializer:GetName(),
                 value= not Save.disabled,
                 func= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(id, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end,
             })
 
@@ -3118,7 +3127,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             local sel=e.AddPanel_Check((e.Player.sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a')..(e.onlyChinese and '角色' or addName), not Save.disabled)
             sel:SetScript('OnMouseDown', function()
                 Save.disabled = not Save.disabled and true or nil
-                print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                print(id, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
             end)]]
 
 
