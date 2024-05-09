@@ -408,11 +408,11 @@ end
 
 --跟随，密语
 local function Set_Say_Follow(frame)
-    if not Save.setFrameFun or not frame then
-        return
-    end
-    if not frame.unit and e.Player.husandro then
+    if frame.unit and frame:GetAttribute('unit') then
         print(id, addName, frame, frame:GetName())
+    end
+    if not Save.setFrameFun or not frame or not (frame.unit and frame:GetAttribute('unit')) then
+        return
     end
     frame:EnableMouseWheel(true)
     frame:SetScript('OnMouseWheel', function(self, d)
