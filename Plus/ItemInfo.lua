@@ -31,10 +31,6 @@ local heirloomWeapontemEquipLocTab={--传家宝 ，武器，itemEquipLoc
 
 
 
-
-
-
-
 local ClassNameIconTab={}--职业图标 ClassNameIconTab['法师']=图标
 for classID= 1, GetNumClasses() do
     local classInfo = C_CreatureInfo.GetClassInfo(classID)
@@ -73,7 +69,6 @@ local function get_has_text(has)
         return format('|cnGREEN_FONT_COLOR:%s|r',  e.onlyChinese and '未收集' or e.WA_Utf8Sub(NOT_COLLECTED, 3, 5, true))
     end
 end
-
 
 
 
@@ -606,6 +601,74 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+--CurrencyHorizontalLayoutFrameMixin
+--[[物品，货币，已有，提示
+local function Create_Lable_Currency_Item_Numri_Info(btn, item, currencyIDorLink, needNum)    
+    local num
+    if currencyIDorLink then
+        local info
+        if type(currencyIDorLink)=='number' then
+            info=C_CurrencyInfo.GetCurrencyInfo(currencyIDorLink)
+        else
+            info= C_CurrencyInfo.GetCurrencyInfoFromLink(currencyIDorLink)
+        end
+        num= info and info.quantity
+    else
+        num= C_Item.GetItemCount(item, true, false, true)
+    end
+    local label= btn.quantityAll
+    if not label then
+        label= e.Cstr(btn, {size=10, justifyH='RIGHT'})--10, nil, nil, nil, nil, 'RIGHT')
+        label:SetPoint('BOTTOMRIGHT', btn, 'TOPRIGHT', 3,0)
+        label:SetAlpha(0.7)
+        btn:EnableMouse(true)
+        btn:HookScript('OnMouseDown', function(self)
+            if self.itemLink then
+                local link= self.itemLink..(
+                    self.quantityAll.needNum and ' x'..self.quantityAll.needNum or ''
+                )
+                e.Chat(link, nil, true)
+            end
+            self:SetAlpha(0.3)
+        end)
+        btn:HookScript('OnEnter', function(self)
+            self:SetAlpha(0.5)
+        end)
+        btn:HookScript('OnMouseUp', function(self)
+            self:SetAlpha(0.5)
+        end)
+        btn:HookScript('OnLeave', function(self) self:SetAlpha(1) end)
+        btn:HookScript('OnEnter', function(self)
+            if self.itemLink and e.tips:IsShown() then
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine(e.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, e.Icon.left)
+                e.tips:AddDoubleLine(id, Initializer:GetName())
+                e.tips:Show()
+            end
+        end)
+        btn.quantityAll= label
+    end
+    label.needNum= needNum
+    label:SetText(num and e.MK(num,0) or '')    
+    local r,g,b=1,1,1
+    if needNum and num then
+        if num>= needNum then
+            r,g,b= 0,1,0
+        else
+            r,g,b= 1,0,0
+        end
+    end
+    label:SetTextColor(r,g,b)
+end]]
 
 
 
@@ -1485,8 +1548,8 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             end)
 
         elseif arg1=='Blizzard_ItemUpgradeUI' then--装备升级, 界面
-            add_Button_OpenOption(ItemUpgradeFrameCloseButton)--添加一个按钮, 打开选项
-       
+            add_Button_OpenOption(ItemUpgradeFrameCloseButton)--添加一个按钮, 打开选项            
+            --hooksecurefunc(ItemUpgradeFrame.UpgradeCostFrame, 'AddCurrency', function(self, currencyID)            
         end
 
     elseif event == "PLAYER_LOGOUT" then

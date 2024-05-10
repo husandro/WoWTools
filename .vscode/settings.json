@@ -4435,7 +4435,8 @@
         "InspectSecondaryHandSlot",
         "InspectShirtSlot",
         "InspectTabardSlot",
-        "CHALLENGE_MODE_KEYSTONE_HYPERLINK"
+        "CHALLENGE_MODE_KEYSTONE_HYPERLINK",
+        "CurrencyHorizontalLayoutFrameMixin"
     ],
     "Lua.diagnostics.disable": [
         "inject-field",

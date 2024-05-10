@@ -315,7 +315,6 @@ local function Init_WidthX2()
     MerchantFrameTab1.numLable:SetPoint('TOPRIGHT')
     MerchantFrame:HookScript('OnShow', function()
         local num= GetMerchantNumItems()
-        print(num)
         MerchantFrameTab1.numLable:SetText(num and num>0 and num or '')
     end)
 
