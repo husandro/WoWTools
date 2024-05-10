@@ -41,8 +41,8 @@ local function hide_Texture(self, notClear)
         return
     end
     if not notClear and self:GetObjectType()=='Texture' then
-        --self:SetTexture(0)
-        self:ClearAllPoints()
+        self:SetTexture(0)
+        --self:ClearAllPoints()
     end
     self:SetShown(false)
 end
