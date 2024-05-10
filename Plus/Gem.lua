@@ -102,10 +102,10 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
                 local classID, subclassID, _, expacID= select(12, C_Item.GetItemInfo(info.hyperlink))
 
                 if classID==3
-                    and (e.Is_Timerunning or (e.Player.levelMax and e.ExpansionLevel== expacID or not e.Player.levelMax))--最高等级
+                    and (PlayerGetTimerunningSeasonID() or (e.Player.levelMax and e.ExpansionLevel== expacID or not e.Player.levelMax))--最高等级
                 then
                     local type
-                    if e.Is_Timerunning then
+                    if PlayerGetTimerunningSeasonID() then
                         local date= e.GetTooltipData({hyperLink=info.hyperlink, index=2})
                         type= date.indexText and date.indexText:match('|c........(.-)|r') or date.indexText
                     else

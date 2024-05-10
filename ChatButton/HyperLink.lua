@@ -10,7 +10,7 @@ local Save={
     text={--内容颜色,
         [ACHIEVEMENTS]=true,
     },
-    --disabledKeyColor= true,--禁用，内容颜色，和频道名称替换
+    disabledKeyColor= not e.Player.husandro,--禁用，内容颜色，和频道名称替换
 
     groupWelcome= e.Player.husandro,--欢迎
     --groupWelcomeText= e.Player.cn and '{rt1}欢迎{rt1}' or '{rt1}Hi{rt1}',
@@ -30,7 +30,7 @@ local Save={
 local button
 local panel= CreateFrame("Frame")
 DEFAULT_CHAT_FRAME.ADD= DEFAULT_CHAT_FRAME.AddMessage
-local not_Colleced_Icon='|A:questlegendary:0:0|a'
+--local not_Colleced_Icon='|A:questlegendary:0:0|a'
 
 local LOOT_ITEM= e.Magic(LOOT_ITEM)--:gsub('%%s', '(.+)')--%s获得了战利品：%s。
 
@@ -66,7 +66,13 @@ local function Realm(link)--去服务器为*, 加队友种族图标,和N,T
     local name= split and split:match('player:(.-):') or link:match('|Hplayer:.-|h%[|cff......(.-)|r]') or link:match('|Hplayer:.-|h%[(.-)]|h')
     local server= name and name:match('%-(.+)')
     if name==e.Player.name_realm or name==e.Player.name then
-        return format('|A:%s:0:0|a', e.Icon.toRight)..e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r'..format('|A:%s:0:0|a', e.Icon.toLeft)
+        return format(
+            '|A:%s:0:0|a%s%s|r|A:%s:0:0|a',
+            e.Icon.toRight,
+            e.Player.col,
+            e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME,
+            e.Icon.toLeft
+        )
     else
         local text= e.GetPlayerInfo({name=name})
         if server then

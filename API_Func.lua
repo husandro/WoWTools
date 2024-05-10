@@ -999,7 +999,7 @@ function e.Get_Gem_Stats(self, itemLink)--显示, 宝石, 属性
     local leftText, bottomLeftText
     if itemLink then
         local dateInfo
-        if e.Is_Timerunning then
+        if PlayerGetTimerunningSeasonID() then
             dateInfo= e.GetTooltipData({hyperLink=itemLink, index=2})--物品提示，信息
         else
             dateInfo= e.GetTooltipData({hyperLink=itemLink, text={'(%+.+)', }})--物品提示，信息

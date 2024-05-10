@@ -481,59 +481,76 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
 
 
 
-if not e.Is_Timerunning then--10.2.7
-    if not Save.hide then--宝石
-        local x= isLeftSlot and 8 or -8--左边插曹
-        for n=1, MAX_NUM_SOCKETS do
-            local gemLink= link and select(2, C_Item.GetItemGem(link, n))
-        --[[
-            local numSockets = C_Item.GetItemNumSockets(item)
-            for index= 1, numSockets do
-                local gemID = C_Item.GetItemGemID(item, index)
-                local hasGem = gemID ~= nil
-            end
-        ]]
-            if gemLink then
-                e.LoadDate({id=gemLink, type='item'})
-                if not self['gem'..n] then
-                    self['gem'..n]=self:CreateTexture()
-                    self['gem'..n]:SetSize(12.3, 12.3)--local h=self:GetHeight()/3 37 12.3
-                    self['gem'..n]:EnableMouse(true)
-                    self['gem'..n]:SetScript('OnEnter' ,function(self2)
-                        if self2.gemLink then
-                            e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                            e.tips:ClearLines()
-                            e.tips:SetHyperlink(self2.gemLink)
-                            e.tips:Show()
-                            self2:SetAlpha(0.3)
-                        end
-                    end)
-                    self['gem'..n]:SetScript('OnLeave',function(self2) e.tips:Hide() self2:SetAlpha(1) end)
-                else
-                    self['gem'..n]:ClearAllPoints()
-                end
-                if isLeftSlot then--左边插曹
-                    self['gem'..n]:SetPoint('BOTTOMLEFT', self, 'BOTTOMRIGHT', x, 0)
-                else
-                    self['gem'..n]:SetPoint('BOTTOMRIGHT', self, 'BOTTOMLEFT', x, 0)
-                end
-            end
-            if self['gem'..n] then
-                self['gem'..n].gemLink= gemLink
-                self['gem'..n]:SetTexture(gemLink and C_Item.GetItemIconByID(gemLink) or 0)
-                self['gem'..n]:SetShown(not gemLink and false or true)
-            end
+if not PlayerGetTimerunningSeasonID() then--10.2.7
+    if not Save.hide and link then--宝石
+        local numSockets= C_Item.GetItemNumSockets(link) or 0--MAX_NUM_SOCKETS
+        for n=1, numSockets do
+            local gemLink= select(2, C_Item.GetItemGem(link, n))
+            e.LoadDate({id=gemLink, type='item'})
 
-            x= isLeftSlot and x+ 12.3 or x- 12.3--左边插曹
+            local gem= self['gem'..n]
+            if not gem then
+                gem=self:CreateTexture()
+                gem.index= n
+                gem:SetSize(12.3, 12.3)--local h=self:GetHeight()/3 37 12.3
+                gem:EnableMouse(true)
+                gem:SetScript('OnLeave',function(frame) e.tips:Hide() frame:SetAlpha(1) end)
+                gem:SetScript('OnEnter' ,function(frame)
+                    if frame.gemLink then
+                        e.tips:SetOwner(frame, "ANCHOR_LEFT")
+                        e.tips:ClearLines()
+                        e.tips:SetHyperlink(frame.gemLink)
+                        e.tips:Show()
+                        frame:SetAlpha(0.3)
+                    end
+                end)
+                
+                if isLeftSlot then--左边插曹
+                    if n==1 then
+                        gem:SetPoint('BOTTOMLEFT', self, 'BOTTOMRIGHT', 8, 0)
+                    else
+                        gem:SetPoint('LEFT',  self['gem'..n-1], 'RIGHT')
+                    end
+                else
+                    if n==1 then
+                        gem:SetPoint('BOTTOMRIGHT', self, 'BOTTOMLEFT', -8, 0)
+                    else
+                        gem:SetPoint('RIGHT',  self['gem'..n-1], 'LEFT')
+                    end
+                end
+                self['gem'..n]= gem
+            end
+            gem.gemLink= gemLink
+            local icon
+            if gemLink then
+                icon = C_Item.GetItemIconByID(gemLink) or select(5, C_Item.GetItemInfoInstant(gemLink))
+            end
+            if icon then
+                gem:SetTexture(icon)
+            else
+                gem:SetAtlas(gemLink and 'Islands-QuestDisable' or 'socket-hydraulic-background')
+            end
+            gem:SetShown(true)
+            --local x= isLeftSlot and 8 or -8--左边插曹
+            --x= isLeftSlot and x+ 12.3 or x- 12.3--左边插曹
+        end
+        for n=numSockets+1, MAX_NUM_SOCKETS do
+            local gem= self['gem'..n]
+            if gem then
+                gem:SetShown(false)
+            end
         end
     else
         for n=1, MAX_NUM_SOCKETS do
-            if self['gem'..n] then
-                self['gem'..n]:SetShown(false)
+            local gem= self['gem'..n]
+            if gem then
+                gem:SetShown(false)
             end
         end
     end
 end
+
+
     local du, min, max
     if link then
         min, max=GetInventoryItemDurability(slot)
@@ -712,9 +729,9 @@ local function Init_Title()--头衔数量
                                     tooltipText=name,
                                     notCheckable=true,
                                     arg1=name,
-                                    func= function(_, name)
-                                        if not e.call('ChatEdit_InsertLink', name) then
-                                            e.call('ChatFrame_OpenChat', name)
+                                    func= function(_, arg1)
+                                        if not e.call('ChatEdit_InsertLink', arg1) then
+                                            e.call('ChatFrame_OpenChat', arg1)
                                         end
                                     end
                                 }
@@ -1555,7 +1572,7 @@ local function Init_Show_Hide_Button(frame)
     end
 
     local title= frame==PaperDollItemsFrame and CharacterFrame.TitleContainer or frame.TitleContainer
-    
+
     local btn= e.Cbtn(frame, {size={20,20}, atlas= not Save.hide and e.Icon.icon or e.Icon.disabled})
     btn:SetFrameStrata(title:GetFrameStrata())
     btn:SetPoint('LEFT', title)
@@ -1637,7 +1654,7 @@ local function Init_Show_Hide_Button(frame)
         e.tips:AddDoubleLine(e.GetShowHide(not Save.hide), e.Icon.left)
 
         e.tips:AddDoubleLine(e.onlyChinese and '选项' or SETTINGS_TITLE, e.Icon.right)
-            
+
 
         e.tips:Show()
         self:SetAlpha(1)
@@ -3134,7 +3151,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if not Save.disabled then
                 Init()
                 self:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
-
+                self:RegisterEvent('SOCKET_INFO_UPDATE')--宝石，更新
 
                 --[[ProfessionsFrame_LoadUI()
                 OpenProfessionUIToSkillLine(202)
@@ -3158,5 +3175,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='UPDATE_INVENTORY_DURABILITY' then
         GetDurationTotale()--装备,总耐久度
+
+    elseif event=='SOCKET_INFO_UPDATE' then--宝石，更新
+        if PaperDollItemsFrame:IsShown() then
+            e.call('PaperDollFrame_UpdateStats')
+        end
     end
 end)
