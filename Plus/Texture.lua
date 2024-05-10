@@ -37,26 +37,24 @@ end
 
 --隐藏，材质
 local function hide_Texture(self, notClear)
-    if not self then
-        return
+    if self then
+        if not notClear and self:GetObjectType()=='Texture' then
+            self:SetTexture(0)
+            --self:ClearAllPoints()
+        end
+        self:SetShown(false)
     end
-    if not notClear and self:GetObjectType()=='Texture' then
-        self:SetTexture(0)
-        --self:ClearAllPoints()
-    end
-    self:SetShown(false)
 end
 
 --设置，颜色，透明度
 local function set_Alpha_Color(self, notAlpha, notColor, alpha)
-    if not self then
-        return
-    end
-    if not notColor and e.Player.useColor then
-        e.Set_Label_Texture_Color(self, {type=self:GetObjectType()})
-    end
-    if not notAlpha then
-        self:SetAlpha(alpha or Save.alpha)
+    if self then
+        if not notColor and e.Player.useColor then
+            e.Set_Label_Texture_Color(self, {type=self:GetObjectType()})
+        end
+        if not notAlpha then
+            self:SetAlpha(alpha or Save.alpha)
+        end
     end
 end
 
