@@ -863,6 +863,7 @@ end
 local function Init()--FriendsFrame.lua
     BNToastFrame:ClearAllPoints()
     BNToastFrame:SetPoint('BOTTOMLEFT', QuickJoinToastButton, 'TOPLEFT')
+    
     set_QuinkJoin_Init()--快速加入, 模块
     set_FriendsList_Init()--好友列表, 模块
     hooksecurefunc('WhoList_Update', set_WhoList_Update)
