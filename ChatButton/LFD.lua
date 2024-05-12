@@ -1057,8 +1057,8 @@ local function Init_LFGListSearchEntry_Update(self)
     end
     if text~='' and not self.scorsoText then
         self.scorsoText= e.Cstr(self, {justifyH='RIGHT'})
-        --self.scorsoText:SetPoint('TOPLEFT', self.DataDisplay.Enumerate, 0, 5)
-        self.scorsoText:SetPoint('RIGHT', self.DataDisplay.Enumerate.Icon5, 'LEFT', -2, 0)
+        self.scorsoText:SetPoint('TOPLEFT', self.DataDisplay.Enumerate, 0, 5)
+        --self.scorsoText:SetPoint('RIGHT', self.DataDisplay.Enumerate.Icon5, 'LEFT', -2, 0)
     end
     if self.scorsoText then
         self.scorsoText:SetText(text)
