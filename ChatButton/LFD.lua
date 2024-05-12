@@ -1173,51 +1173,52 @@ end
 
 
 
-    --[[hooksecurefunc('LFGListUtil_SetSearchEntryTooltip', function(tooltip, resultID, autoAcceptOption)
-        if not Save.LFGPlus then
-            return
+--预创建队伍增强, 提示
+local function Init_LFGListUtil_SetSearchEntryTooltip(tooltip, resultID, autoAcceptOption)
+    if not Save.LFGPlus then
+        return
+    end
+    local info = C_LFGList.GetSearchResultInfo(resultID)
+    local _, appStatus, pendingStatus = C_LFGList.GetApplicationInfo(resultID)
+    local isAppFinished = LFGListUtil_IsStatusInactive(appStatus) or LFGListUtil_IsStatusInactive(pendingStatus) or info.isDelisted
+    if isAppFinished then
+        return
+    end
+    local tab={}
+    for i=1, info.numMembers do
+        local role, classFile = C_LFGList.GetSearchResultMemberInfo(resultID, i)
+        if classFile then
+            tab[classFile]= tab[classFile] or {num=0, role={}}
+            tab[classFile].num= tab[classFile].num +1
+            table.insert(tab[classFile].role, {role=role, index= role=='TANK' and 1 or role=='HEALER' and 2 or 3})
         end
-        local info = C_LFGList.GetSearchResultInfo(resultID)
-        local _, appStatus, pendingStatus = C_LFGList.GetApplicationInfo(resultID)
-        local isAppFinished = LFGListUtil_IsStatusInactive(appStatus) or LFGListUtil_IsStatusInactive(pendingStatus) or info.isDelisted
-        if isAppFinished then
-            return
-        end
-        local tab={}
-        for i=1, info.numMembers do
-            local role, classFile = C_LFGList.GetSearchResultMemberInfo(resultID, i)
-            if classFile then
-                tab[classFile]= tab[classFile] or {num=0, role={}}
-                tab[classFile].num= tab[classFile].num +1
-                table.insert(tab[classFile].role, {role=role, index= role=='TANK' and 1 or role=='HEALER' and 2 or 3})
-            end
-        end
-        tooltip:AddLine(' ')
-        for i=1,  GetNumClasses() do
-            local classInfo = C_CreatureInfo.GetClassInfo(i)
-            if classInfo and classInfo.classFile then
-                local col='|c'..select(4, GetClassColor(classInfo.classFile))
-                local text
-                if tab[classInfo.classFile] then
-                    local num=tab[classInfo.classFile].num
-                    text= ' '..col..num..'|r'
-                    local roleText=' '
-                    table.sort(tab[classInfo.classFile].role, function(a,b) return a.index< b.index end)
-                    for _, role in pairs(tab[classInfo.classFile].role) do
-                        if e.Icon[role.role] then
-                            roleText= roleText..e.Icon[role.role]
-                        end
+    end
+    tooltip:AddLine(' ')
+    for i=1,  GetNumClasses() do
+        local classInfo = C_CreatureInfo.GetClassInfo(i)
+        if classInfo and classInfo.classFile then
+            local col='|c'..select(4, GetClassColor(classInfo.classFile))
+            local text
+            if tab[classInfo.classFile] then
+                local num=tab[classInfo.classFile].num
+                text= ' '..col..num..'|r'
+                local roleText=' '
+                table.sort(tab[classInfo.classFile].role, function(a,b) return a.index< b.index end)
+                for _, role in pairs(tab[classInfo.classFile].role) do
+                    if e.Icon[role.role] then
+                        roleText= roleText..e.Icon[role.role]
                     end
-                    text= text.. roleText
                 end
-                tooltip:AddDoubleLine(e.Class(nil, classInfo.classFile).. (text or ''), col..i)
+                text= text.. roleText
             end
+            tooltip:AddDoubleLine(e.Class(nil, classInfo.classFile).. (text or ''), col..i)
         end
-        tooltip:AddLine(' ')
-        tooltip:AddDoubleLine(e.onlyChinese and '申请' or SIGN_UP, (e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left, 0,1,0, 0,1,0)
-        tooltip:AddDoubleLine(id, e.cn(addName))
-        tooltip:Show()
-    end)]]
+    end
+    tooltip:AddLine(' ')
+    tooltip:AddDoubleLine(e.onlyChinese and '申请' or SIGN_UP, (e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left, 0,1,0, 0,1,0)
+    tooltip:AddDoubleLine(id, e.cn(addName))
+    tooltip:Show()
+end
 
 local function set_button_LFGPlus_Texture()--预创建队伍增强
     if not button.LFGPlus then
@@ -1248,27 +1249,6 @@ local function set_button_LFGPlus_Texture()--预创建队伍增强
         end)
     end
 end
-
-
---[[hooksecurefunc('LFGListCategorySelection_UpdateCategoryButtons', function(self2)--可能，会现错误, 双击， 预创建队伍，目录
-    for i=1, #self2.CategoryButtons do
-        local frame=self2.CategoryButtons[i]
-        if frame and frame:IsShown() then
-            if not frame.setOnDoubleClick then
-                frame:SetScript('OnDoubleClick', function()
-                    if LFGListFrame.CategorySelection.FindGroupButton:IsEnabled() then
-                        LFGListFrame.CategorySelection.FindGroupButton:Click()
-                    end
-                    local frame2 = self3:GetParent();
-                    if frame2.selectedCategory then
-                        e.call('LFGListCategorySelection_StartFindGroup', frame2)
-                    end
-                end)
-                frame.setOnDoubleClick=true
-            end
-        end
-    end
-end)]]
 
 
 
@@ -1460,7 +1440,7 @@ local function InitList(_, level, type)--LFDFrame.lua
     local deserterExpiration = GetLFGDeserterExpiration();
 
 	if ( deserterExpiration ) then
-		shouldtext = format(RED_FONT_COLOR_CODE.."%s|r "..e.GetPlayerInfo({guid=e.Player.guid}), e.onlyChinese and '逃亡者' or DESERTER);
+		shouldtext = format("|cnRED_FONT_COLOR:%s|r "..e.GetPlayerInfo({guid=e.Player.guid}), e.onlyChinese and '逃亡者' or DESERTER);
         local timeRemaining = deserterExpiration - GetTime();
         if timeRemaining>0 then
             shouldtext= shouldtext..' '..SecondsToTime(ceil(timeRemaining))
@@ -1469,7 +1449,7 @@ local function InitList(_, level, type)--LFDFrame.lua
 	else
 		local myExpireTime = GetLFGRandomCooldownExpiration();
         if myExpireTime then
-            cooldowntext= format(RED_FONT_COLOR_CODE.."%s|r "..e.GetPlayerInfo({guid=e.Player.guid}), e.onlyChinese and '冷却中' or ON_COOLDOWN)
+            cooldowntext= format("|cnRED_FONT_COLOR:%s|r "..e.GetPlayerInfo({guid=e.Player.guid}), e.onlyChinese and '冷却中' or ON_COOLDOWN)
             local timeRemaining = myExpireTime - GetTime();
             if timeRemaining>0 then
                 cooldowntext= cooldowntext..' '..SecondsToTime(ceil(timeRemaining))
@@ -2037,11 +2017,7 @@ local function Loot_Plus()
             set_LootFrame_btn(btn)
         end
     end)
-    --[[hooksecurefunc(GroupLootHistoryFrame , 'OpenToEncounter', function(self, encounterID)
-        for _, btn in pairs(self.ScrollBox:GetFrames()) do
-            set_LootFrame_btn(btn)
-        end
-    end)]]
+
 
     local btn= e.Cbtn(GroupLootHistoryFrame.TitleContainer, {size={18,18}, icon='hide'})
     if _G['MoveZoomInButtonPerGroupLootHistoryFrame'] then
@@ -2087,58 +2063,6 @@ local function Loot_Plus()
         self2:SetAlpha(1)
     end)
 end
---[[
-    GroupLootHistoryFrame:SetResizable(true)
-    GroupLootHistoryFrame.ResizeButton2= CreateFrame('Button', nil, GroupLootHistoryFrame)
-    GroupLootHistoryFrame.ResizeButton2:SetSize(12, 32)
-    GroupLootHistoryFrame.ResizeButton2:SetFrameLevel(600)
-    GroupLootHistoryFrame.ResizeButton2:SetFrameStrata("HIGH")
-    GroupLootHistoryFrame.ResizeButton2:SetNormalAtlas('lootroll-resizehandle')
-    GroupLootHistoryFrame.ResizeButton2:SetPoint("RIGHT", GroupLootHistoryFrame, "LEFT")
-    GroupLootHistoryFrame.ResizeButton2:SetScript("OnMouseDown", function(self)
-		local alwaysStartFromMouse = true;
-		self:GetParent():StartSizing("LEFT", alwaysStartFromMouse);
-	end);
-	GroupLootHistoryFrame.ResizeButton2:SetScript("OnMouseUp", function(self)
-		self:GetParent():StopMovingOrSizing();
-	end);
-    hooksecurefunc(GroupLootHistoryFrame, 'UpdateTimer', function(self)
-        if self.Timer and self.Timer:IsShown() then
-            local text
-            if self.encounterInfo and self.encounterInfo.startTime and self.encounterInfo.duration then
-                if not self.TimerLabel then
-                    self.TimerLabel= e.Cstr(self.Timer)
-                    self.TimerLabel:SetPoint('RIGHT')
-                end
-                local info= self.encounterInfo--C_LootHistory.GetInfoForEncounter(encounterID)
-                text= (info.encounterInfo.duration- GetTime()-info.startTime)
-                time= text and e.SecondsToClock(text) or ''
-            end
-            if self.TimerLabel then
-                self.TimerLabel:SetText(text or '')
-            end
-        end
-    end)
-    
-    ]]
-
-
---[[
-local frame= GroupLootHistoryFrame
-frame.ResizeButton2= CreateFrame('Button', nil, frame)
-frame.ResizeButton2:SetSize(12, 32)
-frame.ResizeButton2:SetFrameLevel(600)
-frame.ResizeButton2:SetFrameStrata("HIGH")
-frame.ResizeButton2:SetNormalAtlas('lootroll-resizehandle')
-frame.ResizeButton2:SetPoint("BOTTOMRIGHT", frame)
-frame:SetResizable(true)
-frame.ResizeButton2:SetScript("OnMouseDown", function(self)
-    local alwaysStartFromMouse = true;
-    self:GetParent():StartSizing("BOTTOMRIGHT", alwaysStartFromMouse);
-end);
-frame.ResizeButton2:SetScript("OnMouseUp", function(self)
-    self:GetParent():StopMovingOrSizing();
-end);]]
 
 
 
@@ -2269,6 +2193,7 @@ local function Init()
     if Save.LFGPlus then
         --预创建队伍增强
         hooksecurefunc('LFGListSearchEntry_Update', Init_LFGListSearchEntry_Update)
+        hooksecurefunc('LFGListUtil_SetSearchEntryTooltip', Init_LFGListUtil_SetSearchEntryTooltip)
     end
 
     Loot_Plus()--历史, 拾取框
