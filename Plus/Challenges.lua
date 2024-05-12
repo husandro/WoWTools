@@ -1213,14 +1213,15 @@ local function set_Update()--Blizzard_ChallengesUI.lua
     local keyStoneLevel = C_MythicPlus.GetOwnedKeystoneLevel()--当前KEY，等级
 
 
-    local isInBat= UnitAffectingCombat('player')
+    
 
     for i=1, #self.maps do
         local frame = self.DungeonIcons[i]
         if frame and frame.mapID then
+            local insTab=e.ChallengesSpellTabs[frame.mapID] or {}
+            frame.spellID= insTab.spell
+            frame.journalInstanceID= insTab.ins
             if not frame.setTips then
-                local insTab=e.ChallengesSpellTabs[frame.mapID] or {}
-                frame.spellID, frame.journalInstanceID= insTab.spell, insTab.ins
                 frame:HookScript('OnEnter', function(self2)--提示
                     if not self2.mapID or Save.hideIns then
                         return
@@ -1576,7 +1577,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
             --#####
             --传送门
             --#####
-            if not Save.hidePort and not isInBat then
+            if not Save.hidePort then
                 if frame.spellID then
                     if not frame.spellPort then
                         local h=frame:GetWidth()/3 +8
@@ -1615,7 +1616,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                     end
                 end
             end
-            if frame.spellPort and not isInBat then
+            if frame.spellPort and frame.spellPort:CanChangeAttribute() then
                 if frame.spellID and IsSpellKnownOrOverridesKnown(frame.spellID) then
                     local name= GetSpellInfo(frame.spellID)
                     frame.spellPort:SetAttribute("type", "spell")
