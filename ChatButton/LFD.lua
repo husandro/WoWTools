@@ -1009,175 +1009,169 @@ end
 
 
 
---############
 --预创建队伍增强
---############
-local setLFGPlusOK
-local function set_LFGPlus()--预创建队伍增强
-    if setLFGPlusOK then
+local function getIndex(values, val)
+    local index={}
+    for k,v in pairs(values) do
+        index[v]=k
+    end
+    return index[val]
+end
+
+local function Init_LFGListSearchEntry_Update(self)
+    local resultID = self.resultID
+    if not resultID or not C_LFGList.HasSearchResultInfo(resultID) then
         return
     end
-    setLFGPlusOK=true
 
-    local function getIndex(values, val)
-        local index={}
-        for k,v in pairs(values) do
-            index[v]=k
+    local info = C_LFGList.GetSearchResultInfo(resultID)
+    local categoryID= LFGListFrame.SearchPanel.categoryID
+    local _, appStatus, pendingStatus = C_LFGList.GetApplicationInfo(resultID)
+    local isAppFinished = LFGListUtil_IsStatusInactive(appStatus) or LFGListUtil_IsStatusInactive(pendingStatus) or info.isDelisted
+
+    local text, color, autoAccept = '', nil, nil
+    if not isAppFinished then
+        text, color= e.GetKeystoneScorsoColor(info.leaderOverallDungeonScore, true)--地下城, 分数
+        if info.leaderPvpRatingInfo and info.leaderPvpRatingInfo.rating and info.leaderPvpRatingInfo.rating>0 then--PVP, 分数
+            local text2, color2=e.GetKeystoneScorsoColor(info.leaderPvpRatingInfo.rating)
+            local icon= info.leaderPvpRatingInfo.tier and info.leaderPvpRatingInfo.tier>0 and ('|A:honorsystem-icon-prestige-'..info.leaderPvpRatingInfo.tier..':0:0|a') or '|A:pvptalents-warmode-swords:0:0|a'
+            if info.isWarMode then
+                text= icon..text2..' '..text
+            else
+                text= text..' '..icon..text2
+            end
+            color= info.isWarMode and color2 or color
+
         end
-        return index[val]
+        color= color or {r=1,g=1,b=1}
+        if info.numBNetFriends and info.numBNetFriends>0 then--好友, 数量
+            text= text..' '..format('|T%d:0|t', e.Icon.wow)..info.numBNetFriends
+        end
+        if info.numCharFriends and info.numCharFriends>0 then--好友, 数量
+            text= text..' |A:socialqueuing-icon-group:0:0|a'..info.numCharFriends
+        end
+        if info.numGuildMates and info.numGuildMates>0 then--好友, 数量
+            text= text..' |A:UI-HUD-MicroMenu-GuildCommunities-Mouseover:0:0|a'..info.numCharFriends
+        end
+        autoAccept= info.autoAccept--自动, 邀请
     end
-    hooksecurefunc("LFGListSearchEntry_Update", function(self)----查询,自定义, 预创建队伍, LFG队长分数, 双击加入 LFGList.lua
-        local resultID = self.resultID
-        if not C_LFGList.HasSearchResultInfo(resultID) then
-            return
-	    end
-        local info = C_LFGList.GetSearchResultInfo(resultID)
-        local categoryID= LFGListFrame.SearchPanel.categoryID
-        local _, appStatus, pendingStatus = C_LFGList.GetApplicationInfo(resultID)
-        local isAppFinished = LFGListUtil_IsStatusInactive(appStatus) or LFGListUtil_IsStatusInactive(pendingStatus) or info.isDelisted
+    if text~='' and not self.scorsoText then
+        self.scorsoText= e.Cstr(self)
+        self.scorsoText:SetPoint('TOPLEFT', self.DataDisplay.Enumerate , 0, 5)
+    end
+    if self.scorsoText then
+        self.scorsoText:SetText(text)
+        if color then
+            self.Name:SetTextColor(color.r, color.g, color.b)
+        end
+    end
+    if autoAccept and not self.autoAcceptTexture then--自动, 邀请
+        self.autoAcceptTexture=self:CreateTexture(nil,'OVERLAY')
+        self.autoAcceptTexture:SetPoint('LEFT')
+        self.autoAcceptTexture:SetAtlas(e.Icon.select)
+        self.autoAcceptTexture:SetSize(12,12)
+        self.autoAcceptTexture:EnableMouse(true)
+        self.autoAcceptTexture:SetScript('OnEnter', function(self2)
+            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddLine(e.onlyChinese and '自动接受' or LFG_LIST_AUTO_ACCEPT)
+            e.tips:AddDoubleLine(id, e.cn(addName))
+            e.tips:Show()
+        end)
+        self.autoAcceptTexture:SetScript("OnLeave", GameTooltip_Hide)
+    end
+    if self.autoAcceptTexture then
+        self.autoAcceptTexture:SetShown(autoAccept)
+    end
 
-        local text, color, autoAccept = '', nil, nil
-        if not isAppFinished and Save.LFGPlus then
-            text, color=e.GetKeystoneScorsoColor(info.leaderOverallDungeonScore, true)--地下城, 分数
-            if info.leaderPvpRatingInfo and info.leaderPvpRatingInfo.rating and info.leaderPvpRatingInfo.rating>0 then--PVP, 分数
-                local text2, color2=e.GetKeystoneScorsoColor(info.leaderPvpRatingInfo.rating)
-                local icon= info.leaderPvpRatingInfo.tier and info.leaderPvpRatingInfo.tier>0 and ('|A:honorsystem-icon-prestige-'..info.leaderPvpRatingInfo.tier..':0:0|a') or '|A:pvptalents-warmode-swords:0:0|a'
-                if info.isWarMode then
-                    text= icon..text2..' '..text
-                else
-                    text= text..' '..icon..text2
-                end
-                color= info.isWarMode and color2 or color
-
-            end
-            color= color or {r=1,g=1,b=1}
-            if info.numBNetFriends and info.numBNetFriends>0 then--好友, 数量
-                text= text..' '..format('|T%d:0|t', e.Icon.wow)..info.numBNetFriends
-            end
-            if info.numCharFriends and info.numCharFriends>0 then--好友, 数量
-                text= text..' |A:socialqueuing-icon-group:0:0|a'..info.numCharFriends
-            end
-            if info.numGuildMates and info.numGuildMates>0 then--好友, 数量
-                text= text..' |A:UI-HUD-MicroMenu-GuildCommunities-Mouseover:0:0|a'..info.numCharFriends
-            end
-            autoAccept= info.autoAccept--自动, 邀请
-        end
-        if text~='' and not self.scorsoText then
-            self.scorsoText= e.Cstr(self)
-            self.scorsoText:SetPoint('TOPLEFT', self.DataDisplay.Enumerate,0,5)
-        end
-        if self.scorsoText then
-            self.scorsoText:SetText(text)
-            if color then
-                self.Name:SetTextColor(color.r, color.g, color.b)
-            end
-        end
-        if autoAccept and not self.autoAcceptTexture and Save.LFGPlus then--自动, 邀请
-            self.autoAcceptTexture=self:CreateTexture(nil,'OVERLAY')
-            self.autoAcceptTexture:SetPoint('LEFT')
-            self.autoAcceptTexture:SetAtlas(e.Icon.select)
-            self.autoAcceptTexture:SetSize(12,12)
-            self.autoAcceptTexture:EnableMouse(true)
-            self.autoAcceptTexture:SetScript('OnEnter', function(self2)
+    local realm, realmText
+    if info.leaderName and not isAppFinished then
+        local server= info.leaderName:match('%-(.+)') or e.Player.realm
+        server=e.Get_Region(server)--服务器，EU， US {col, text}
+        realm= server and server.col
+        realmText=server and server.realm
+    end
+    if realm and not self.realmText then
+        self.realmText= e.Cstr(self)
+        self.realmText:SetPoint('BOTTOMRIGHT', self.DataDisplay.Enumerate,0,-3)
+        self.realmText:EnableMouse(true)
+        self.realmText:SetScript('OnEnter', function(self2)
+            if self2.realm then
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                e.tips:AddLine(e.onlyChinese and '自动接受' or LFG_LIST_AUTO_ACCEPT)
+                e.tips:AddDoubleLine(e.onlyChinese and '服务器' or 'Realm', '|cnGREEN_FONT_COLOR:'..self2.realm)
                 e.tips:AddDoubleLine(id, e.cn(addName))
                 e.tips:Show()
-            end)
-            self.autoAcceptTexture:SetScript("OnLeave", GameTooltip_Hide)
-        end
-        if self.autoAcceptTexture then
-            self.autoAcceptTexture:SetShown(autoAccept)
-        end
-
-        local realm, realmText
-        if Save.LFGPlus then
-            if info.leaderName and not isAppFinished then
-                local server= info.leaderName:match('%-(.+)') or e.Player.realm
-                server=e.Get_Region(server)--服务器，EU， US {col, text}
-                realm= server and server.col
-                realmText=server and server.realm
             end
-            if realm and not self.realmText then
-                self.realmText= e.Cstr(self)
-                self.realmText:SetPoint('BOTTOMRIGHT', self.DataDisplay.Enumerate,0,-3)
-                self.realmText:EnableMouse(true)
-                self.realmText:SetScript('OnEnter', function(self2)
-                    if self2.realm then
-                        e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                        e.tips:ClearLines()
-                        e.tips:AddDoubleLine(e.onlyChinese and '服务器' or 'Realm', '|cnGREEN_FONT_COLOR:'..self2.realm)
-                        e.tips:AddDoubleLine(id, e.cn(addName))
-                        e.tips:Show()
+        end)
+        self.realmText:SetScript("OnLeave", GameTooltip_Hide)
+    end
+
+    if self.realmText then
+        self.realmText.realm= realmText
+        self.realmText:SetText(realm or '')
+    end
+
+    if not self.OnDoubleClick then
+        self:SetScript('OnDoubleClick', function()--LFGListApplicationDialogSignUpButton_OnClick(button) LFG队长分数, 双击加入 LFGListSearchPanel_UpdateResults
+            if LFGListFrame.SearchPanel.SignUpButton:IsEnabled() then
+                LFGListFrame.SearchPanel.SignUpButton:Click()
+            end
+            local frame=LFGListApplicationDialog
+            if not frame.TankButton.CheckButton:GetChecked() and not frame.HealerButton.CheckButton:GetChecked() and not frame.DamagerButton.CheckButton:GetChecked() then
+                local specID=GetSpecialization()--当前专精
+                if specID then
+                    local role = select(5, GetSpecializationInfo(specID))
+                    if role=='DAMAGER' and frame.DamagerButton:IsShown() then
+                        frame.DamagerButton.CheckButton:SetChecked(true)
+
+                    elseif role=='TANK' and frame.TankButton:IsShown() then
+                        frame.TankButton.CheckButton:SetChecked(true)
+
+                    elseif role=='HEALER' and frame.HealerButton:IsShown() then
+                        frame.HealerButton.CheckButton:SetChecked(true)
                     end
-            end)
-            self.realmText:SetScript("OnLeave", GameTooltip_Hide)
+                    LFGListApplicationDialog_UpdateValidState(frame)
+                end
             end
-        end
-        if self.realmText then
-            self.realmText.realm= realmText
-            self.realmText:SetText(realm or '')
-        end
-        if not self.OnDoubleClick then
-            self:SetScript('OnDoubleClick', function()--LFGListApplicationDialogSignUpButton_OnClick(button) LFG队长分数, 双击加入 LFGListSearchPanel_UpdateResults
-                if not Save.LFGPlus then
-                    return
-                end
-                if LFGListFrame.SearchPanel.SignUpButton:IsEnabled() then
-                    LFGListFrame.SearchPanel.SignUpButton:Click()
-                end
-                local frame=LFGListApplicationDialog
-                if not frame.TankButton.CheckButton:GetChecked() and not frame.HealerButton.CheckButton:GetChecked() and not frame.DamagerButton.CheckButton:GetChecked() then
-                    local specID=GetSpecialization()--当前专精
-                    if specID then
-                        local role = select(5, GetSpecializationInfo(specID))
-                        if role=='DAMAGER' and frame.DamagerButton:IsShown() then
-                            frame.DamagerButton.CheckButton:SetChecked(true)
+            if frame:IsShown() and frame.SignUpButton:IsEnabled() then
+                frame.SignUpButton:Click()
+            end
+        end)
+    end
 
-                        elseif role=='TANK' and frame.TankButton:IsShown() then
-                            frame.TankButton.CheckButton:SetChecked(true)
+    local orderIndexes = {}
+    if categoryID == 2 and not isAppFinished then--_G["ShowRIORaitingWA1NotShowClasses"] ~= true--https://wago.io/klC4qqHaF
+        for i=1, info.numMembers do
+            --local role, class, classLocalized, specLocalized, isLeader = C_LFGList.GetSearchResultMemberInfo(resultID, i);
+            local role, class = C_LFGList.GetSearchResultMemberInfo(resultID, i)
+            local orderIndex = getIndex(LFG_LIST_GROUP_DATA_ROLE_ORDER, role)
+            table.insert(orderIndexes, {orderIndex, class})
+        end
+        table.sort(orderIndexes, function(a,b) return a[1] < b[1] end)
+    end
+    local xOffset = -88
+    for i = 1, 5 do
+        local texture = "tex"..i
+        local class= orderIndexes[i] and orderIndexes[i][2] and e.Class(nil, orderIndexes[i][2], true)
+        if not self.DataDisplay.Enumerate[texture] then
+            self.DataDisplay.Enumerate[texture] = self.DataDisplay.Enumerate:CreateTexture(nil, "OVERLAY")
+            self.DataDisplay.Enumerate[texture]:SetSize(12, 12)
+            self.DataDisplay.Enumerate[texture]:SetPoint("RIGHT", self.DataDisplay.Enumerate, "RIGHT", xOffset, -10)
+        end
+        if class then
+            self.DataDisplay.Enumerate[texture]:SetAtlas(class)
+        end
+        self.DataDisplay.Enumerate[texture]:SetShown(class and true or false)
+        xOffset = xOffset + 18
+    end
+end
 
-                        elseif role=='HEALER' and frame.HealerButton:IsShown() then
-                            frame.HealerButton.CheckButton:SetChecked(true)
-                        end
-                        LFGListApplicationDialog_UpdateValidState(frame)
-                    end
-                end
-                if frame:IsShown() and frame.SignUpButton:IsEnabled() then
-                    frame.SignUpButton:Click()
-                end
-            end)
-        end
 
-        local orderIndexes = {}
-        if categoryID == 2 and not isAppFinished and Save.LFGPlus then--_G["ShowRIORaitingWA1NotShowClasses"] ~= true--https://wago.io/klC4qqHaF
-            for i=1, info.numMembers do
-                local role, class = C_LFGList.GetSearchResultMemberInfo(self.resultID, i)
-                local orderIndex = getIndex(LFG_LIST_GROUP_DATA_ROLE_ORDER, role)
-                table.insert(orderIndexes, {orderIndex, class})
-            end
-            table.sort(orderIndexes, function(a,b) return a[1] < b[1] end)
-        end
-        local xOffset = -88
-        for i = 1, 5 do
-            local texture = "tex"..i
-            local class= orderIndexes[i] and orderIndexes[i][2] and e.Class(nil, orderIndexes[i][2], true)
-            if class and not self.DataDisplay.Enumerate[texture] then
-                self.DataDisplay.Enumerate[texture] = self.DataDisplay.Enumerate:CreateTexture(nil, "OVERLAY")
-                self.DataDisplay.Enumerate[texture]:SetSize(12, 12)
-                self.DataDisplay.Enumerate[texture]:SetPoint("RIGHT", self.DataDisplay.Enumerate, "RIGHT", xOffset, -10)
-            end
-            if self.DataDisplay.Enumerate[texture] then
-                if class then
-                    self.DataDisplay.Enumerate[texture]:SetAtlas(class)
-                else
-                    self.DataDisplay.Enumerate[texture]:SetTexture(0)
-                end
-            end
-            xOffset = xOffset + 18
-        end
-    end)
+
+
+
+
 
     --[[hooksecurefunc('LFGListUtil_SetSearchEntryTooltip', function(tooltip, resultID, autoAcceptOption)
         if not Save.LFGPlus then
@@ -1224,7 +1218,6 @@ local function set_LFGPlus()--预创建队伍增强
         tooltip:AddDoubleLine(id, e.cn(addName))
         tooltip:Show()
     end)]]
-end
 
 local function set_button_LFGPlus_Texture()--预创建队伍增强
     if not button.LFGPlus then
@@ -1242,10 +1235,7 @@ local function set_button_LFGPlus_Texture()--预创建队伍增强
         button.LFGPlus:SetScript('OnClick', function(self)
             Save.LFGPlus= not Save.LFGPlus and true or nil
             self:set_texture()
-            if Save.LFGPlus then
-                set_LFGPlus()--预创建队伍增强
-            end
-            print(id,e.cn(addName), e.GetEnabeleDisable(Save.LFGPlus), e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
+            print(id,e.cn(addName), e.GetEnabeleDisable(Save.LFGPlus), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
         end)
         button.LFGPlus:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(0.5) end)
         button.LFGPlus:SetScript('OnEnter', function(self2)
@@ -1358,13 +1348,10 @@ local function InitList(_, level, type)--LFDFrame.lua
             keepShownOnClick=true,
             func=function()
                 Save.LFGPlus = not Save.LFGPlus and true or nil
-                if Save.LFGPlus then
-                    set_LFGPlus()--预创建队伍增强
-                end
                 if button.LFGPlus then
                     button.LFGPlus:set_texture()
                 end
-                print(id, e.cn(addName), e.GetEnabeleDisable(Save.LFGPlus), e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
+                print(id, e.cn(addName), e.GetEnabeleDisable(Save.LFGPlus),  e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
             end,
             checked=Save.LFGPlus,
             tooltipOnButton=true,
@@ -2280,7 +2267,8 @@ local function Init()
 
     set_button_LFGPlus_Texture()--预创建队伍增强
     if Save.LFGPlus then
-        set_LFGPlus()--预创建队伍增强
+        --预创建队伍增强
+        hooksecurefunc('LFGListSearchEntry_Update', Init_LFGListSearchEntry_Update)
     end
 
     Loot_Plus()--历史, 拾取框
