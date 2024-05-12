@@ -430,7 +430,7 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     self.ins:SetText(e.onlyChinese and '插入' or  COMMUNITIES_ADD_DIALOG_INVITE_LINK_JOIN)
     self.ins:SetScript("OnMouseDown",function()
             if UnitAffectingCombat('player') then
-                print(id, addName,'|cnRED_FONT_COLOR:', e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
+                print(id, Initializer:GetName(),'|cnRED_FONT_COLOR:', e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
                 return
             end
             ItemButtonUtil.OpenAndFilterBags(ChallengesKeystoneFrame)
