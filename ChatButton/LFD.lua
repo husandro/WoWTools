@@ -486,7 +486,7 @@ local function Set_Queue_Status()--小眼睛, 信息
                                     end
                                 end
 
-                                local scorsoText= e.GetKeystoneScorsoColor(dungeonScore, true) or ''--挑战分数，荣誉等级
+                                local scorsoText= e.GetKeystoneScorsoColor(dungeonScore, false) or ''--挑战分数，荣誉等级
                                 if honorLevel and honorLevel>1 then
                                     scorsoText= scorsoText~='' and scorsoText..' ' or scorsoText
                                     scorsoText= scorsoText..'|A:pvptalents-warmode-swords:0:0|a'..honorLevel
@@ -1056,8 +1056,9 @@ local function Init_LFGListSearchEntry_Update(self)
         autoAccept= info.autoAccept--自动, 邀请
     end
     if text~='' and not self.scorsoText then
-        self.scorsoText= e.Cstr(self)
-        self.scorsoText:SetPoint('TOPLEFT', self.DataDisplay.Enumerate , 0, 5)
+        self.scorsoText= e.Cstr(self, {justifyH='RIGHT'})
+        --self.scorsoText:SetPoint('TOPLEFT', self.DataDisplay.Enumerate, 0, 5)
+        self.scorsoText:SetPoint('RIGHT', self.DataDisplay.Enumerate.Icon5, 'LEFT', -2, 0)
     end
     if self.scorsoText then
         self.scorsoText:SetText(text)
@@ -1144,26 +1145,53 @@ local function Init_LFGListSearchEntry_Update(self)
     if categoryID == 2 and not isAppFinished then--_G["ShowRIORaitingWA1NotShowClasses"] ~= true--https://wago.io/klC4qqHaF
         for i=1, info.numMembers do
             --local role, class, classLocalized, specLocalized, isLeader = C_LFGList.GetSearchResultMemberInfo(resultID, i);
-            local role, class = C_LFGList.GetSearchResultMemberInfo(resultID, i)
+            local role, class, _, specLocalized, isLeader = C_LFGList.GetSearchResultMemberInfo(resultID, i)
             local orderIndex = getIndex(LFG_LIST_GROUP_DATA_ROLE_ORDER, role)
-            table.insert(orderIndexes, {orderIndex, class})
+            table.insert(orderIndexes, {orderIndex, class, specLocalized, isLeader})
         end
         table.sort(orderIndexes, function(a,b) return a[1] < b[1] end)
     end
-    local xOffset = -88
+    --local xOffset = -88
     for i = 1, 5 do
-        local texture = "tex"..i
-        local class= orderIndexes[i] and orderIndexes[i][2] and e.Class(nil, orderIndexes[i][2], true)
-        if not self.DataDisplay.Enumerate[texture] then
-            self.DataDisplay.Enumerate[texture] = self.DataDisplay.Enumerate:CreateTexture(nil, "OVERLAY")
-            self.DataDisplay.Enumerate[texture]:SetSize(12, 12)
-            self.DataDisplay.Enumerate[texture]:SetPoint("RIGHT", self.DataDisplay.Enumerate, "RIGHT", xOffset, -10)
+        local class, specLocalized, isLeader
+        if orderIndexes[i] then
+            class= e.Class(nil, orderIndexes[i][2], true)
+            specLocalized= orderIndexes[i][3]
+            isLeader= orderIndexes[i][4]
+        end
+        local texture = self.DataDisplay.Enumerate["tex"..i]
+        if not texture then
+            texture = self.DataDisplay.Enumerate:CreateTexture(nil, "OVERLAY")
+            self.DataDisplay.Enumerate["tex"..i]= texture
+            texture:EnableMouse(true)
+            texture:SetSize(12, 14)
+            texture:SetPoint("RIGHT", self.DataDisplay.Enumerate, -106+i*18 ,-12)--xOffset, -10)
+            texture:SetScript('OnLeave', function(f) f:SetAlpha(1) end)
+            texture:SetScript('OnEnter', function(f)
+                if f.specLocalized then
+                    e.tips:SetOwner(f, "ANCHOR_LEFT")
+                    e.tips:ClearLines()
+                    e.tips:AddLine(f.specLocalized)
+                    e.tips:Show()
+                end
+                f:SetAlpha(0.5)
+            end)
+            texture.leader = self.DataDisplay.Enumerate:CreateTexture(nil, "OVERLAY")
+            texture.leader:SetPoint('CENTER', texture, 0, 0)
+            texture.leader:SetAlpha(0.5)
+            texture.leader:SetAtlas('Forge-ColorSwatchSelection')
+            texture.leader:SetSize(16,16)
+
+            self.DataDisplay.Enumerate["tex"..i]= texture
         end
         if class then
-            self.DataDisplay.Enumerate[texture]:SetAtlas(class)
+            texture:SetAtlas(class)
+        else
+            texture:SetTexture(0)
         end
-        self.DataDisplay.Enumerate[texture]:SetShown(class and true or false)
-        xOffset = xOffset + 18
+        texture.leader:SetShown(isLeader)
+        texture.specLocalized= specLocalized
+        --xOffset = xOffset + 18
     end
 end
 
