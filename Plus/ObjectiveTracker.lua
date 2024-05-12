@@ -388,7 +388,7 @@ local function Init()
 
 
     hooksecurefunc('QuestObjectiveSetupBlockButton_AddRightButton', function(block, btn)--物品按钮左边,放大 --Blizzard_ObjectiveTrackerShared.lua
-        if not btn or not block or not btn:IsShown() or block.groupFinderButton == btn or block.rightButton==btn then
+        if not btn or not block or not btn:IsShown() or block.groupFinderButton == btn then-- or block.rightButton==btn then
             return
         end
         if not btn.set_item_num then
