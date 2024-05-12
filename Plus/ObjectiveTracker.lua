@@ -388,10 +388,10 @@ local function Init()
 
 
     hooksecurefunc('QuestObjectiveSetupBlockButton_AddRightButton', function(block, btn)--物品按钮左边,放大 --Blizzard_ObjectiveTrackerShared.lua
-        if not btn or not block or not btn:IsShown() or block.groupFinderButton == btn then
+        if not btn or not block or not btn:IsShown() or block.groupFinderButton == btn or block.rightButton==btn then
             return
         end
-        if not btn.setMove then
+        if not btn.set_item_num then
             function btn:set_item_num()--物品数量
                 local nu=0
                 if self:IsShown() then
@@ -424,7 +424,6 @@ local function Init()
             btn:HookScript("OnShow", btn.set_event)
             btn:HookScript("OnHide", btn.set_event)
 
-            btn.needMove=true
             btn:set_item_num()
             btn:set_event()
         end

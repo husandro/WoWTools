@@ -4437,7 +4437,8 @@
         "InspectTabardSlot",
         "CHALLENGE_MODE_KEYSTONE_HYPERLINK",
         "CurrencyHorizontalLayoutFrameMixin",
-        "MERCHANT_ITEMS_PER_PAGE"
+        "MERCHANT_ITEMS_PER_PAGE",
+        "WorldMap_WorldQuestPinMixin"
     ],
     "Lua.diagnostics.disable": [
         "inject-field",

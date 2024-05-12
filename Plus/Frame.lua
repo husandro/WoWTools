@@ -129,7 +129,7 @@ local function set_Scale_Size(frame, tab)
         local maxH= tab.maxH--最大，可无
         local rotationDegrees= tab.rotationDegrees--旋转度数
         local initFunc= tab.initFunc--初始
-
+        
 
 
 
@@ -137,6 +137,7 @@ local function set_Scale_Size(frame, tab)
         btn.sizeUpdateFunc= tab.sizeUpdateFunc--setSize时, OnUpdate
         btn.sizeRestTooltipColorFunc= tab.sizeRestTooltipColorFunc--重置，提示SIZE，颜色
         btn.sizeStopFunc= tab.sizeStopFunc--保存，大小，内容
+        btn.sizeTooltip= tab.sizeTooltip
 
 
 
@@ -239,6 +240,13 @@ local function set_Scale_Size(frame, tab)
                 col2..'Alt+'..e.Icon.right
             )
             e.tips:AddDoubleLine(e.GetEnabeleDisable(true), 'Ctrl+'..e.Icon.right)
+            if self.sizeTooltip then
+                if type(self.sizeTooltip)=='function' then
+                    self:sizeTooltip()
+                else
+                    e.tips:AddLine(self.sizeTooltip)
+                end
+            end
         end
         if self.target.setMoveFrame and not self.target.notSave then
             local col2= Save.point[self.name] and '' or '|cff606060'
@@ -2090,7 +2098,7 @@ local function Init_Move()
     end
     --set_Move_Alpha(MicroMenu)--主菜单
     set_Move_Alpha(BagsBar)--背包
-    set_Move_Alpha(ObjectiveTrackerFrame)
+    
 
 
 
@@ -2109,20 +2117,9 @@ local function Init_Move()
             self.minimizedWidth= w
             self.minimizedHeight= size[2]
             self.BorderFrame.MaximizeMinimizeFrame:Minimize()
-            --[[QUEST_TEMPLATE_LOG.contentWidth= w--285
-            QUEST_TEMPLATE_DETAIL.contentWidth= w-10
-            QUEST_TEMPLATE_REWARD.contentWidth= w
-            QUEST_TEMPLATE_MAP_DETAILS.contentWidth= w-41
-            QUEST_TEMPLATE_MAP_REWARDS.contentWidth= w-41]]
         end
     end
     e.Set_Move_Frame(WorldMapFrame, {minW=(WorldMapFrame.questLogWidth or 290)*2+37, minH=WorldMapFrame.questLogWidth, setSize=true, onShowFunc=true, notMoveAlpha=true, initFunc=function()
-        --[[WorldMapFrame:HookScript('OnShow', function(self)
-            local scale= Save.scale[self:GetName()]
-            if scale then
-                self:SetScale(scale)
-            end
-        end)]]
         hooksecurefunc(WorldMapFrame, 'Minimize', function(self)
             local name= self:GetName()
             local size= Save.size[name]
@@ -2163,62 +2160,7 @@ local function Init_Move()
         target.minimizedHeight= minimizedHeight
         target:SetSize(minimizedWidth+ (WorldMapFrame.questLogWidth or 290), minimizedHeight)
         target.BorderFrame.MaximizeMinimizeFrame:Minimize()
-    end})
---[[移动,宽度，设置
---ScrollFrame parentKey="QuestsFrame" name="QuestScrollFrame" inherits="ScrollFrameTemplate">
---QuestScrollFrame.Contents:SetPoint('BOTTOMRIGHT')
-QuestScrollFrame.Contents:SetPoint('BOTTOMRIGHT')
-QuestMapFrame.DetailsFrame.RewardsFrame.RewardsScrollFrame.Contents:SetPoint('BOTTOMRIGHT')
-QuestMapFrame.DetailsFrame.ScrollFrame.Contents:SetPoint('BOTTOMRIGHT')
-
-QuestScrollFrame.DetailFrame.TopDetail:ClearAllPoints()
-QuestScrollFrame.DetailFrame.TopDetail:SetPoint('TOPLEFT', 0, 9)
-QuestScrollFrame.DetailFrame.TopDetail:SetPoint('TOPRIGHT', 0,-15)
-
-QuestScrollFrame.DetailFrame.BottomDetail:ClearAllPoints()
-QuestScrollFrame.DetailFrame.BottomDetail:SetPoint('BOTTOMLEFT', 0, 18)
-QuestScrollFrame.DetailFrame.BottomDetail:SetPoint('BOTTOMRIGHT')
-
-QuestMapFrame.DetailsFrame.RewardsFrame:SetPoint('RIGHT')
-
-QuestMapDetailsScrollFrame.Contents:SetPoint('RIGHT')
-
-local btn= e.Cbtn(QuestMapFrame, {size={18,18}, icon=true})
-btn:SetPoint('LEFT', QuestMapFrame, 'RIGHT')
-btn.value= WorldMapFrame.questLogWidth or 290
-function btn:initFunc()
-    local w= Save.size['questLogWidth']
-    if w then
-        local p= self:GetParent()
-        p:SetWidth(w)
-        WorldMapFrame.questLogWidth=w
-        minimizedWidth= w
-        if not WorldMapFrame:IsMaximized() and WorldMapFrame:IsShown() then
-            WorldMapFrame.BorderFrame.MaximizeMinimizeFrame:Minimize()
-        end
-    end
-end
-btn:initFunc()
-btn:SetScript('OnClick', function(self)
-    local w= self.value
-    local w2= Save.size['questLogWidth']
-    if not self.slider then
-        self.slider= e.CSlider(self, {min=w/2, max=w*2, value=w2 or w, setp=1, color=true,
-        text= 'QuestMapFrame',
-        func=function(frame, value)
-            value= math.modf(value)
-            value= value==0 and 0 or value
-            frame:SetValue(value)
-            frame.Text:SetText(value)
-            Save.size['questLogWidth']= value
-            frame:GetParent():initFunc()
-        end})
-        self.slider:SetPoint('LEFT', self, 'RIGHT')
-        --self.slider:SetPoint('BOTTOMRIGHT', WorldMapFrame.BorderFrame.TitleContainer, 'TOPRIGHT', -23, 2)
-    else
-        self.slider:SetShown(not self.slider:IsShown() and true or false)
-    end
-end)]]
+    end, sizeTooltip='|cnRED_FONT_COLOR:BUG|r'})
 
 
 
@@ -2327,6 +2269,9 @@ end)]]
         --CHARACTERFRAME_EXPANDED_WIDTH 540
         --CharacterStatsPane width 197
         hooksecurefunc('CharacterFrame_Collapse', function()
+            if not CharacterFrameInset:CanChangeAttribute() then
+                return
+            end
             CharacterFrameInset:SetPoint('BOTTOMRIGHT',-4, 4)
             local size= Save.size['CharacterFrameCollapse']
             if size then
@@ -2337,7 +2282,10 @@ end)]]
             CharacterFrame.ResizeButton.minWidth= 270
             CharacterFrame.ResizeButton.minHeight= 115
         end)
-        hooksecurefunc('CharacterFrame_Expand', function()--显示角色，界面
+        hooksecurefunc('CharacterFrame_Expand', function()--显示角色，界面            
+            if not CharacterFrameInset:CanChangeAttribute() then
+                return
+            end
             CharacterFrameInset:SetPoint('BOTTOMRIGHT', -221, 4)
             local size= Save.size['CharacterFrameExpanded']
             if size then
@@ -2705,18 +2653,17 @@ end)]]
     --################################
     --场景 self==ObjectiveTrackerFrame
     --Blizzard_ObjectiveTracker.lua ObjectiveTracker_GetVisibleHeaders()
+    --set_Move_Alpha(ObjectiveTrackerFrame)
     hooksecurefunc('ObjectiveTracker_Initialize', function(self)
         for _, module in ipairs(self.MODULES) do
-            e.Set_Move_Frame(module.Header, {frame=self, notZoom=true})
+            e.Set_Move_Frame(module.Header, {frame=self, notZoom=true, notSave=true})
         end
-        self:SetClampedToScreen(false)
+        --self:SetClampedToScreen(false)
     end)
 
 
     hooksecurefunc('UpdateUIPanelPositions',function(currentFrame)
-        if not UnitAffectingCombat('player') then
-            set_Frame_Point(currentFrame)
-        end
+        set_Frame_Point(currentFrame)
     end)
 
 
@@ -2751,14 +2698,14 @@ end)]]
     end)
 
 
-    C_Timer.After(4, function()
+    --[[C_Timer.After(4, function()
         for text, _ in pairs(UIPanelWindows) do
             local frame=_G[text]
             if frame and (not frame.ResizeButton and not frame.targetMoveFrame) then
                 e.Set_Move_Frame(_G[text])
             end
         end
-    end)
+    end)]]
 end
 
 
