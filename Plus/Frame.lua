@@ -294,7 +294,7 @@ local function set_Scale_Size(frame, tab)
     end
 
     btn:SetScript("OnMouseUp", function(self, d)
-        if not self.isActive or (self.notInCombat and not UnitAffectingCombat('player')) or not self:CanChangeAttribute() then
+        if not self.isActive or (self.notInCombat and UnitAffectingCombat('player')) or not self:CanChangeAttribute() then
             return
         end
         self.isActive= nil
