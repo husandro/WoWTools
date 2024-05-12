@@ -2654,6 +2654,7 @@ local function Init_Move()
     --场景 self==ObjectiveTrackerFrame
     --Blizzard_ObjectiveTracker.lua ObjectiveTracker_GetVisibleHeaders()
     --set_Move_Alpha(ObjectiveTrackerFrame)
+    ObjectiveTrackerFrame:SetClampedToScreen(false)
     hooksecurefunc('ObjectiveTracker_Initialize', function(self)
         for _, module in ipairs(self.MODULES) do
             e.Set_Move_Frame(module.Header, {frame=self, notZoom=true, notSave=true})
