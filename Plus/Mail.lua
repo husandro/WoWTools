@@ -211,7 +211,7 @@ local function Init_Menu(_, level, menuList)
     elseif menuList=='GUILD' then
         local num=0
         for index=1, GetNumGuildMembers() do
-            local name, rankName, rankIndex, lv, _, zone, publicNote, officerNote, isOnline, status, _, _, _, _, _, _, guid = GetGuildRosterInfo(index)
+            local name, rankName, rankIndex, lv, _, zone, publicNote, officerNote, isOnline, _, _, _, _, _, _, _, guid = GetGuildRosterInfo(index)
             if name and guid and (isOnline or rankIndex<2 or (Save.show['GUILD'] and num<60)) and not e.WoWDate[guid] then
 
                 local text= e.GetPlayerInfo({guid=guid, reName=true, reRealm=true,})--角色信息
@@ -1237,7 +1237,7 @@ local function Init_Fast_Button()
             function btn:set_Player_Lable()--设置指定发送，玩家, 提示
                 self.playerTexture:SetShown(Save.fast[self.name] and true or false)
             end
-            btn.set_Player_Lable()
+            btn:set_Player_Lable()
 
             btn:SetScript('OnClick', function(self, d)
                 if d=='LeftButton' and not IsMetaKeyDown() then
