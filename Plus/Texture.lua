@@ -1184,11 +1184,11 @@ local function Init_All_Frame()
 
 
 
-    hooksecurefunc('CooldownFrame_Set', function(self, start, duration, enable)
+    --[[hooksecurefunc('CooldownFrame_Set', function(self, start, duration, enable)
         if enable and enable ~= 0 and start > 0 and duration > 0 then
             self:SetDrawEdge(true)--冷却动画的移动边缘绘制亮线
         end
-    end)
+    end)]]
 
 
 
