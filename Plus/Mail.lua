@@ -888,8 +888,7 @@ local function Init_Fast_Menu(_, level, menuList)
                 local icon= C_Item.GetItemIconByID(link)
                 tooltip= (tooltip and tooltip..'|n' or '|n')..(icon and '|T'..icon..':0|t' or '')..link..'|cnGREEN_FONT_COLOR:#'..num..'|r'
             end
-            local className= C_Item.GetItemSubClassInfo(menuList.class, tab.subClass) or ''
-            className= e.cn[className] 
+            local className= e.cn(C_Item.GetItemSubClassInfo(menuList.class, tab.subClass)) or ''
             local text =(tab.subClass<10 and ' ' or '')..tab.subClass..') '.. className
             info={
                 text= text..' |cnGREEN_FONT_COLOR:#'..tab.num,
@@ -1625,7 +1624,7 @@ local function Init_InBox()
         for i=1, INBOXITEMS_TO_DISPLAY do
             local btn=_G["MailItem"..i.."Button"]
             if btn and btn:IsShown() then
-                
+
                 --local _, _, sender, subject, money2, CODAmount2, _, itemCount2, wasRead, wasReturned, textCreated, canReply, isGM = GetInboxHeaderInfo(btn.index)
                 local packageIcon, stationeryIcon, sender, subject, money2, CODAmount2, daysLeft, itemCount2, wasRead, wasReturned, textCreated, canReply, isGM = GetInboxHeaderInfo(btn.index)
                 local invoiceType, itemName, playerName, bid, buyout, deposit, consignment = GetInboxInvoiceInfo(btn.index)
