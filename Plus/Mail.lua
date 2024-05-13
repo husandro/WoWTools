@@ -2232,7 +2232,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             end
 
             --添加控制面板
-            e.AddPanel_Check({
+            Initializer= e.AddPanel_Check({
                 name= '|A:UI-HUD-Minimap-Mail-Mouseover:0:0|a'..(e.onlyChinese and '邮件' or addName),
                 tooltip= e.cn(addName),
                 value= not Save.disabled,
