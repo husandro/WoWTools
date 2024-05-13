@@ -40,7 +40,15 @@ local Initializer
 
 
 
+local AutoGossipTab={--自动，对话 [gossipID]=总数
+    [56363]=3,--奥达曼， 传送门
+    [56364]=2,
+    [56365]=1,
 
+    [107451]=1,--魔馆，传送门
+    [107092]=2,
+    [107093]=3,
+}
 
 
 
@@ -706,13 +714,13 @@ local function Init_Gossip_Text_Icon_Options()
     menu.Name.Instructions:SetText(e.onlyChinese and '替换文本', format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REPLACE, LOCALE_TEXT_LABEL))
     menu.Name.searchIcon:SetAtlas('NPE_ArrowRight')
     menu.Name:HookScript("OnTextChanged", function(self) self:GetParent().menu:set_all() end)
-    
+
     menu.Name:SetFontObject('QuestFontLeft')
     menu.Name.r, menu.Name.g, menu.Name.b= menu.Name:GetTextColor()
     menu.Name.texture=menu.Name:CreateTexture(nil, 'BORDER')
     menu.Name.texture:SetAtlas('QuestBG-Parchment')
     menu.Name.texture:SetPoint('TOPLEFT', 8,-4)
-    menu.Name.texture:SetPoint('BOTTOMRIGHT', -18, 3)    
+    menu.Name.texture:SetPoint('BOTTOMRIGHT', -18, 3)
     menu.Name.texture:SetTexCoord(0.23243, 0.24698, 0.13550, 0.12206)
     --menu.Name.Middle:SetAtlas('QuestBG-Parchment')
 
@@ -1879,7 +1887,7 @@ end
 
 --建立，自动选取，选项
 local function Create_CheckButton(frame, info)
-    local gossipOptionID= info and info.gossipOptionID 
+    local gossipOptionID= info and info.gossipOptionID
     local check= frame.gossipCheckButton
     if gossipOptionID then
         if not check then
@@ -2293,12 +2301,16 @@ local function Init_Gossip()
 
             elseif index==107572 then--挑战，模式, 修理
                 local value= select(2, e.GetDurabiliy())
-                if value<85 then
+                if value<95 then
                     C_GossipInfo.SelectOption(index)
                     find=true
                 end
-
-            elseif index==56363 then--奥达曼， 传送门3
+            elseif AutoGossipTab[index]==allGossip then--自动，对话 [gossipID]=总数
+                C_GossipInfo.SelectOption(index)
+                find=true
+            end
+        end
+            --[[elseif index==56363 then--奥达曼， 传送门3
                 C_GossipInfo.SelectOption(index)
                 find=true
             elseif index==56364 and allGossip==2 then--奥达曼， 传送门2
@@ -2306,9 +2318,7 @@ local function Init_Gossip()
                 find=true
             elseif index==56365 and allGossip==1 then--奥达曼， 传送门1
                 C_GossipInfo.SelectOption(index)
-                find=true
-            end
-        end
+                find=true]]
 
         if find then
             GossipButton.selectGissipIDTab[index]=true
@@ -2987,7 +2997,7 @@ local function Init_Quest()
 
 
 
-   
+
 
 
     QuestFrame.sel=CreateFrame("CheckButton", nil, QuestFrame, 'InterfaceOptionsCheckButtonTemplate')--禁用此npc,任务,选项
@@ -3100,7 +3110,7 @@ local function Init_Quest()
         QuestFrame.sel:SetChecked(Save.NPC[npc])
         QuestFrame.sel.questIDLabel:SetText(QuestButton:questInfo_GetQuestID() or '')
 
-        local questID= QuestButton:questInfo_GetQuestID()        
+        local questID= QuestButton:questInfo_GetQuestID()
         if not questID or not Save.quest or IsModifierKeyDown() or (Save.NPC[npc] and not Save.questOption[questID]) then
             return
         end
