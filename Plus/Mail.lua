@@ -1289,17 +1289,99 @@ local function Init_Fast_Button()
             btn:set_Player_Lable()
 
             btn:SetScript('OnClick', function(self, d)
-                if d=='LeftButton' and not IsMetaKeyDown() then
+                if d=='LeftButton' then
                     local name= Save.fast[self.name]
                     if name and name~=e.Player.name_realm then
                         set_Text_SendMailNameEditBox(nil, name)--设置，发送名称，文
                     end
                     button.FastButton.set_PickupContainerItem(self.classID, self.subClassID, self.findString)--自动放物品
+                elseif d=='RightButton' then
+                    if not self.Menu then
+                        self.Menu= CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
+                        e.LibDD:UIDropDownMenu_Initialize(self.Menu, function(_, level, menuList)
+                            if menuList=='SELF' then
+                                local find
+                                local name= Save.fast[self.name]
+                                for guid, _ in pairs(e.WoWDate) do
+                                    if guid then
+                                        local playerName= e.GetUnitName(nil, nil, guid)
+                                        e.LibDD:UIDropDownMenu_AddButton({
+                                            text= e.GetPlayerInfo({guid=guid, reName=true, reRealm=true}),
+                                            checked= name and name==playerName,
+                                            icon= self:GetNormalTexture():GetTexture(),
+                                            tooltipOnButton=true,
+                                            tooltipTitle=self.name,
+                                            arg1= self.name,
+                                            arg2= playerName,
+                                            func= function(_, arg1, arg2)
+                                                if arg2 then
+                                                    Save.fast[arg1]= arg2
+                                                    print(id, Initializer:GetName(), arg1, arg2)
+                                                end
+                                            end,
+                                        }, level)
+                                        find=true
+                                    end
+                                end
+                                if not find then
+                                    e.LibDD:UIDropDownMenu_AddButton({text=e.onlyChinese and '无' or NONE, notCheckable=true, isTitle=true}, level)
+                                end
+                                return
+                            end
 
-                elseif d=='RightButton' and IsAltKeyDown() then
-                    Save.fast[self.name]= e.GetUnitName(SendMailNameEditBox:GetText())--取得， SendMailNameEditBox， 名称
+                            local playerName= Save.fast[self.name]
+                            local newName= e.GetUnitName(SendMailNameEditBox:GetText())
+                            e.LibDD:UIDropDownMenu_AddButton({
+                                text= self.name..': '..(playerName and e.GetPlayerInfo({name=playerName, reName=true}) or format('|cff606060%s|r', e.onlyChinese and '无' or NONE)),
+                                notCheckable=true,
+                                colorCode= not playerName and '|cff606060',
+                                isTitle=true,
+                            }, level)
+
+                            e.LibDD:UIDropDownMenu_AddButton({
+                                text= e.onlyChinese and '更新' or UPDATE,
+                                notCheckable=true,
+                                colorCode= (not newName or playerName==newName) and '|cff606060',
+                                tooltipOnButton=true,
+                                tooltipTitle= newName or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '需求' or NEED, e.onlyChinese and '收件人：' or MAIL_TO_LABEL),
+                                arg1=self.name,
+                                arg2=newName,
+                                func= function(_, arg1, arg2)
+                                    if arg2 then
+                                        Save.fast[arg1]= arg2
+                                        print(id, Initializer:GetName(), arg1, arg2)
+                                        self:set_Player_Lable()
+                                    end
+                                end
+                            }, level)
+
+                            e.LibDD:UIDropDownMenu_AddButton({
+                                text= e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
+                                notCheckable=true,
+                                colorCode= not playerName and '|cff606060',
+                                arg1=self.name,
+                                func=function(_, arg1)
+                                    Save.fast[arg1]=nil
+                                    print(id, Initializer:GetName(), arg1, e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
+                                    self:set_Player_Lable()
+                                end
+                            }, level)
+
+                            e.LibDD:UIDropDownMenu_AddSeparator(level)
+                            e.LibDD:UIDropDownMenu_AddButton({
+                                text= '|A:auctionhouse-icon-favorite:0:0|a'..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME),
+                                hasArrow= true,
+                                notCheckable=true,
+                                menuList= 'SELF',
+                            }, level)
+
+                        end, 'MENU')
+                    end
+                    e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
+
+                    --[[Save.fast[self.name]= e.GetUnitName(SendMailNameEditBox:GetText())--取得， SendMailNameEditBox， 名称
                     self:set_Player_Lable()--设置指定发送，玩家, 提示
-                    print(id, Initializer:GetName(), self.name, Save.fast[self.name] or (e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2))
+                    print(id, Initializer:GetName(), self.name, Save.fast[self.name] or (e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2))]]
                 end
             end)
 
@@ -1309,24 +1391,20 @@ local function Init_Fast_Button()
             end)
             btn:SetScript('OnEnter', function(self)
                 self.set_Player_Lable(self)--设置指定发送，玩家, 提示
+                local playerName= Save.fast[self.name]
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                e.tips:AddDoubleLine((e.onlyChinese and '添加' or ADD)..e.Icon.left, self.name)
-                e.tips:AddDoubleLine(self.classID and 'ClassID '..self.classID or '', self.subClassID and 'SubClassID '..self.subClassID or '')
+                e.tips:AddLine(self.name)
+                e.tips:AddDoubleLine((e.onlyChinese and '添加' or ADD)..e.Icon.left, e.GetPlayerInfo({name=playerName, reName=true}))
                 e.tips:AddLine(' ')
-
+                if self.classID==2 or self.classID==4 then
+                    e.tips:AddDoubleLine(format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, e.onlyChinese and '你还没有收藏过此外观' or TRANSMOGRIFY_STYLE_UNCOLLECTED))
+                end
+                e.tips:AddDoubleLine(self.classID and 'ClassID '..self.classID or '', self.subClassID and 'SubClassID '..self.subClassID or '')
                 e.tips:AddDoubleLine(e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL, self.num)
                 e.tips:AddDoubleLine(e.onlyChinese and '组数' or AUCTION_NUM_STACKS, self.stack)
                 e.tips:AddLine(' ')
-                local name= e.GetUnitName(SendMailNameEditBox:GetText())--取得， SendMailNameEditBox， 名称
-                e.tips:AddDoubleLine((e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)..'|A:AnimaChannel-Bar-Necrolord-Gem:0:0|a'..(e.onlyChinese and '收件人' or MAIL_TO_LABEL),
-                                    (get_Name_Info(Save.fast[self.name]) or (e.onlyChinese and '无' or NONE))..'|A:NPE_ArrowDown:0:0|a')
-
-                e.tips:AddDoubleLine('Alt+'..e.Icon.right..(name or ''), (name and (e.onlyChinese and '设置' or SETTINGS) or (e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2))..'|A:NPE_ArrowUp:0:0|a')
-                if self.classID==2 or self.classID==4 then
-                    e.tips:AddLine(' ')
-                    e.tips:AddDoubleLine(' ', format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, e.onlyChinese and '你还没有收藏过此外观' or TRANSMOGRIFY_STYLE_UNCOLLECTED))
-                end
+                e.tips:AddLine((e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU)..e.Icon.right)
                 e.tips:Show()
                 self:SetAlpha(1)
             end)
@@ -1624,7 +1702,7 @@ local function Init_InBox()
         for i=1, INBOXITEMS_TO_DISPLAY do
             local btn=_G["MailItem"..i.."Button"]
             if btn and btn:IsShown() then
-                
+
                 --local _, _, sender, subject, money2, CODAmount2, _, itemCount2, wasRead, wasReturned, textCreated, canReply, isGM = GetInboxHeaderInfo(btn.index)
                 local packageIcon, stationeryIcon, sender, subject, money2, CODAmount2, daysLeft, itemCount2, wasRead, wasReturned, textCreated, canReply, isGM = GetInboxHeaderInfo(btn.index)
                 local invoiceType, itemName, playerName, bid, buyout, deposit, consignment = GetInboxInvoiceInfo(btn.index)
