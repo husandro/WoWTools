@@ -896,44 +896,44 @@ local function set_All_Text()--所有记录
     local last
     if not ChallengesFrame.runHistoryLable then
         ChallengesFrame.runHistoryLable= e.Cstr(TipsFrame, {mouse=true, size=14})--最右边, 数据
-            ChallengesFrame.moveRightTipsButton= e.Cbtn(TipsFrame, {size={22,22}, atlas='common-icon-rotateright'})
-            ChallengesFrame.moveRightTipsButton:SetFrameLevel(PVEFrame.TitleContainer:GetFrameLevel()+1)
-            ChallengesFrame.moveRightTipsButton:SetPoint('TOP', PVEFrameCloseButton, 'BOTTOM', -8, 0)
-            ChallengesFrame.moveRightTipsButton:SetAlpha(0.3)
-            function ChallengesFrame.moveRightTipsButton:set_tooltips()
-                e.tips:SetOwner(self, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:AddDoubleLine(id, Initializer:GetName())
-                e.tips:AddLine(' ')
-                e.tips:AddLine(e.onlyChinese and '移动' or BUTTON_LAG_MOVEMENT)
-                e.tips:AddDoubleLine('x: '..Save.rightX, 'Shift+'..e.Icon.mid)
-                e.tips:AddDoubleLine('y: '..Save.rightY, 'Alt+'..e.Icon.mid)
-                e.tips:Show()
-                self:SetAlpha(1)
+        ChallengesFrame.moveRightTipsButton= e.Cbtn(TipsFrame, {size={22,22}, atlas='common-icon-rotateright'})
+        ChallengesFrame.moveRightTipsButton:SetFrameLevel(PVEFrame.TitleContainer:GetFrameLevel()+1)
+        ChallengesFrame.moveRightTipsButton:SetPoint('TOP', PVEFrameCloseButton, 'BOTTOM', -8, 0)
+        ChallengesFrame.moveRightTipsButton:SetAlpha(0.3)
+        function ChallengesFrame.moveRightTipsButton:set_tooltips()
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine(id, Initializer:GetName())
+            e.tips:AddLine(' ')
+            e.tips:AddLine(e.onlyChinese and '移动' or BUTTON_LAG_MOVEMENT)
+            e.tips:AddDoubleLine('x: '..Save.rightX, 'Shift+'..e.Icon.mid)
+            e.tips:AddDoubleLine('y: '..Save.rightY, 'Alt+'..e.Icon.mid)
+            e.tips:Show()
+            self:SetAlpha(1)
+        end
+        ChallengesFrame.moveRightTipsButton:SetScript('OnLeave', function(self) self:SetAlpha(0.3) GameTooltip_Hide() end)
+        ChallengesFrame.moveRightTipsButton:SetScript('OnEnter', ChallengesFrame.moveRightTipsButton.set_tooltips)
+        function ChallengesFrame.moveRightTipsButton:set_point()
+            ChallengesFrame.runHistoryLable:ClearAllPoints()
+            ChallengesFrame.runHistoryLable:SetPoint('TOPLEFT', ChallengesFrame, 'TOPRIGHT', Save.rightX, Save.rightY)
+        end
+        ChallengesFrame.moveRightTipsButton:SetScript('OnMouseWheel', function(self, d)
+            local x= Save.rightX
+            local y= Save.rightY
+            if IsShiftKeyDown() then
+                x= d==1 and x+5 or x-5
+            elseif IsAltKeyDown() then
+                y= d==1 and y+5 or y-5
             end
-            ChallengesFrame.moveRightTipsButton:SetScript('OnLeave', function(self) self:SetAlpha(0.3) GameTooltip_Hide() end)
-            ChallengesFrame.moveRightTipsButton:SetScript('OnEnter', ChallengesFrame.moveRightTipsButton.set_tooltips)
-            function ChallengesFrame.moveRightTipsButton:set_point()
-                ChallengesFrame.runHistoryLable:ClearAllPoints()
-                ChallengesFrame.runHistoryLable:SetPoint('TOPLEFT', ChallengesFrame, 'TOPRIGHT', Save.rightX, Save.rightY)
-            end
-            ChallengesFrame.moveRightTipsButton:SetScript('OnMouseWheel', function(self, d)
-                local x= Save.rightX
-                local y= Save.rightY
-                if IsShiftKeyDown() then
-                    x= d==1 and x+5 or x-5
-                elseif IsAltKeyDown() then
-                    y= d==1 and y+5 or y-5
-                end
-                Save.rightX= x
-                Save.rightY= y
-                self:set_point()
-                self:set_tooltips()
-            end)
-            ChallengesFrame.moveRightTipsButton:set_point()
+            Save.rightX= x
+            Save.rightY= y
+            self:set_point()
+            self:set_tooltips()
+        end)
+        ChallengesFrame.moveRightTipsButton:set_point()
 
 
-        ChallengesFrame.runHistoryLable:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
+        ChallengesFrame.runHistoryLable:SetScript('OnLeave', function(self2) self2:SetAlpha(1) end)
         ChallengesFrame.runHistoryLable:SetScript('OnEnter', function(self2)
             e.tips:SetOwner(self2, "ANCHOR_LEFT")
             e.tips:ClearLines()
@@ -1010,14 +1010,13 @@ local function set_All_Text()--所有记录
     --#######
     --本周记录
     --#######
-    local historyInfo = C_MythicPlus.GetRunHistory(false, true) or {}
     local completed, all= 0,0
     local tabs={}
-    for _, tab in pairs(historyInfo) do
+    for _, tab in pairs(C_MythicPlus.GetRunHistory(false, true) or {}) do
         local mapID= tab.mapChallengeModeID
         if tab and tab.level and mapID and mapID>0 and tab.thisWeek then
-            tabs[mapID]= tabs[mapID] or
-                {
+            if not tabs[mapID] then
+                tabs[mapID]={
                     LV={},--{level, completed}
                     runScore= 0,--分数
                     c=0,
@@ -1025,10 +1024,13 @@ local function set_All_Text()--所有记录
                     completed=false,
                     mapID= mapID,
                 }
+            end
 
             tabs[mapID].runScore= (tab.runScore and tab.runScore> tabs[mapID].runScore) and tab.runScore or tabs[mapID].runScore
 
-            table.insert(tabs[mapID].LV, {level=tab.level, text=tab.completed and '|cff00ff00'..tab.level..'|r' or '|cff828282'..tab.level..'|r'})
+            table.insert(tabs[mapID].LV, {
+                level=tab.level,
+                text=tab.completed and '|cff00ff00'..tab.level..'|r' or '|cff828282'..tab.level..'|r'})
 
             if tab.completed then
                 completed= completed+1

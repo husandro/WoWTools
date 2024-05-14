@@ -228,10 +228,14 @@ local function get_gameTooltip_text(self)
     end
 end
 local function set_gameTooltip_text(frame)
-    local name= frame:GetName() or 'GameTooltip'
-    for i=1, frame:NumLines() or 0 do
-        get_gameTooltip_text(_G[name.."TextLeft"..i])
-        get_gameTooltip_text(_G[name.."TextRight"..i])
+    if frame and frame.GetName then
+        local name= frame:GetName()-- or 'GameTooltip'
+        if name then
+            for i=1, frame:NumLines() or 0 do
+                get_gameTooltip_text(_G[name.."TextLeft"..i])
+                get_gameTooltip_text(_G[name.."TextRight"..i])
+            end
+        end
     end
 end
 local function set_GameTooltip_func(self)

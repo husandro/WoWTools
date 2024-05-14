@@ -1525,7 +1525,7 @@ local function Init_InBox()
     local function get_Money(num)
         if num and num>0 then
             if num>=1e4 then
-                return e.MK(num/1e4, 0)..'|TInterface/moneyframe/ui-goldicon:0|t'
+                return e.MK(num/1e4, 2)..'|TInterface/moneyframe/ui-goldicon:0|t'
             else
                 return GetMoneyString(num)
             end
