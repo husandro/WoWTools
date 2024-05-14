@@ -2191,7 +2191,7 @@ local function Init_UI()
     SendMailMoneyBg:ClearAllPoints()
     SendMailMoneyBg:SetAllPoints(SendMailMoneyInset)
     
-    --寄送金额
+    --[[寄送金额
     SendMailMoney:ClearAllPoints()
     SendMailMoney:SetPoint('BOTTOMLEFT', SendMailMoneyInset, 'TOPLEFT', 6, 4)
     SendMailMoneyButton:ClearAllPoints()
@@ -2200,7 +2200,9 @@ local function Init_UI()
     SendMailHorizontalBarLeft:ClearAllPoints()
     SendMailHorizontalBarLeft:SetPoint('BOTTOMLEFT', SendMailMoneyButton, 'TOPLEFT', -8, -8)
 
-    --SendMailAttachment1:ClearAllPoints()
+    SendMailAttachment1:ClearAllPoints()
+    SendMailAttachment1:SetPoint('BOTTOMLEFT', SendMailHorizontalBarLeft, 'TOPLEFT')
+    ]]
     if Save.INBOXITEMS_TO_DISPLAY then
         INBOXITEMS_TO_DISPLAY= Save.INBOXITEMS_TO_DISPLAY
         Set_Inbox_Button()--显示，隐藏，建立，收件，物品    
