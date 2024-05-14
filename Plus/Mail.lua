@@ -2174,7 +2174,7 @@ local function Init_UI()
     InboxFrameBg:SetTexture(0)
     InboxFrameBg:SetPoint('BOTTOMRIGHT', -4,4)
 
-
+--[[
     SendMailFrame:ClearAllPoints()--发件箱
     SendMailFrame:SetAllPoints(MailFrame)
     MailFrameInset:SetPoint('BOTTOMRIGHT', 0, 24)
@@ -2191,7 +2191,7 @@ local function Init_UI()
     SendMailMoneyBg:ClearAllPoints()
     SendMailMoneyBg:SetAllPoints(SendMailMoneyInset)
     
-    --[[寄送金额
+    寄送金额
     SendMailMoney:ClearAllPoints()
     SendMailMoney:SetPoint('BOTTOMLEFT', SendMailMoneyInset, 'TOPLEFT', 6, 4)
     SendMailMoneyButton:ClearAllPoints()
