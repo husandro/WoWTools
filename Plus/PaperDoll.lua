@@ -528,7 +528,7 @@ if not PlayerGetTimerunningSeasonID() then--10.2.7
             if icon then
                 gem:SetTexture(icon)
             else
-                gem:SetAtlas(gemLink and 'Islands-QuestDisable' or 'socket-hydraulic-background')
+                gem:SetAtlas(gemLink and 'Islands-QuestDisable' or 'FlightPath')--'socket-hydraulic-background')
             end
             gem:SetShown(true)
             --local x= isLeftSlot and 8 or -8--左边插曹
