@@ -4438,7 +4438,9 @@
         "CHALLENGE_MODE_KEYSTONE_HYPERLINK",
         "CurrencyHorizontalLayoutFrameMixin",
         "MERCHANT_ITEMS_PER_PAGE",
-        "WorldMap_WorldQuestPinMixin"
+        "WorldMap_WorldQuestPinMixin",
+        "InboxPrevPageButton",
+        "InboxNextPageButton"
     ],
     "Lua.diagnostics.disable": [
         "inject-field",

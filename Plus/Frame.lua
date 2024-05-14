@@ -1491,10 +1491,11 @@ local function setAddLoad(arg1)
         e.Set_Move_Frame(WeeklyRewardsFrame)
         e.Set_Move_Frame(WeeklyRewardsFrame.Blackout, {frame=WeeklyRewardsFrame})
 
-    --[[elseif arg1=='Blizzard_ItemSocketingUI' then--镶嵌宝石，界面
+    elseif arg1=='Blizzard_ItemSocketingUI' then--镶嵌宝石，界面
         C_Timer.After(2, function()
             e.Set_Move_Frame(ItemSocketingFrame)
-        end)]]
+            e.Set_Move_Frame(ItemSocketingScrollChild, {frame=ItemSocketingFrame})
+        end)
     elseif arg1=='Blizzard_ItemUpgradeUI' then--装备升级,界面
         e.Set_Move_Frame(ItemUpgradeFrame)
 
@@ -1555,7 +1556,9 @@ local function setAddLoad(arg1)
         end
 
     elseif arg1=='Blizzard_ItemInteractionUI' then--套装, 转换
-        e.Set_Move_Frame(ItemInteractionFrame)
+        C_Timer.After(2, function()
+            e.Set_Move_Frame(ItemInteractionFrame)
+        end)
 
     elseif arg1=='Blizzard_Professions' then--专业, 10.1.5
         --[[InspectRecipeFrame:HookScript('OnShow', function(self2)
@@ -2182,18 +2185,7 @@ local function Init_Move()
 
 
 
-    --插件
-    e.Set_Move_Frame(AddonList, {minW=430, minH=120, setSize=true, initFunc=function()
-        AddonList.ScrollBox:ClearAllPoints()
-        AddonList.ScrollBox:SetPoint('TOPLEFT', 7, -64)
-        AddonList.ScrollBox:SetPoint('BOTTOMRIGHT', -22,32)
-        hooksecurefunc('AddonList_InitButton', function(entry)
-            entry.Title:SetPoint('RIGHT', -220, 0 )
-        end)
-        --e.call(AddonList_Update)
-    end, sizeRestFunc=function(self)
-        self.target:SetSize("500", "478")
-    end})
+  
 
 
 
@@ -2476,18 +2468,7 @@ local function Init_Move()
         self.target:SetSize(920, 724)
     end})
 
-    --邮箱，信件
-    e.Set_Move_Frame(MailFrame)--[[, {setSize=true, initFunc=function()
-        InboxFrame:SetPoint('BOTTOMRIGHT')
-        InboxPrevPageButton:ClearAllPoints()
-        InboxPrevPageButton:SetPoint('BOTTOMLEFT', 4, 4)
-        OpenAllMail:ClearAllPoints()
-        OpenAllMail:SetPoint('BOTTOM', 0, 4)
-        InboxNextPageButton:ClearAllPoints()
-        InboxNextPageButton:SetPoint('BOTTOMRIGHT', -4, 4)
-    end})]]
-    e.Set_Move_Frame(SendMailFrame, {frame=MailFrame})
-
+    
 
 
 
@@ -2690,6 +2671,14 @@ local function Init_Move()
 
 
      C_Timer.After(2, function()
+        --邮箱，信件
+        
+            e.Set_Move_Frame(MailFrame)
+            e.Set_Move_Frame(SendMailFrame, {frame=MailFrame})
+            e.Set_Move_Frame(StableFrame)
+            e.Set_Move_Frame(MerchantFrame)          
+            e.Set_Move_Frame(AddonLis)--插件
+
         created_Move_Button(QueueStatusButton, {save=true, notZoom=true, show=true})--小眼睛, 
         --编辑模式
         hooksecurefunc(EditModeManagerFrame, 'ExitEditMode', function()
