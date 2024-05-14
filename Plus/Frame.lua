@@ -129,7 +129,7 @@ local function set_Scale_Size(frame, tab)
         local maxH= tab.maxH--最大，可无
         local rotationDegrees= tab.rotationDegrees--旋转度数
         local initFunc= tab.initFunc--初始
-        
+
 
 
 
@@ -524,7 +524,7 @@ local function set_Frame_Point(self, name)--设置, 移动, 位置
     then
         return
     end
-    
+
     name= name or self.FrameName or self:GetName()
     if name then
         local p= Save.point[name]
@@ -2101,7 +2101,7 @@ local function Init_Move()
     end
     --set_Move_Alpha(MicroMenu)--主菜单
     set_Move_Alpha(BagsBar)--背包
-    
+
 
 
 
@@ -2185,7 +2185,7 @@ local function Init_Move()
 
 
 
-  
+
 
 
 
@@ -2468,7 +2468,7 @@ local function Init_Move()
         self.target:SetSize(920, 724)
     end})
 
-    
+
 
 
 
@@ -2667,17 +2667,17 @@ local function Init_Move()
     e.Set_Move_Frame(PlayerPowerBarAlt)
     e.Set_Move_Frame(CreateChannelPopup)
     e.Set_Move_Frame(BattleTagInviteFrame)
-    
+
 
 
      C_Timer.After(2, function()
-        --邮箱，信件
-        
-            e.Set_Move_Frame(MailFrame)
+
+
+            e.Set_Move_Frame(MailFrame)--邮箱，信件
             e.Set_Move_Frame(SendMailFrame, {frame=MailFrame})
             e.Set_Move_Frame(StableFrame)
-            e.Set_Move_Frame(MerchantFrame)          
-            e.Set_Move_Frame(AddonLis)--插件
+            e.Set_Move_Frame(MerchantFrame)
+            e.Set_Move_Frame(AddonList)--插件
 
         created_Move_Button(QueueStatusButton, {save=true, notZoom=true, show=true})--小眼睛, 
         --编辑模式
