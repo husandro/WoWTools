@@ -1299,6 +1299,7 @@ local function Init_Fast_Button()
                     if not self.Menu then
                         self.Menu= CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
                         e.LibDD:UIDropDownMenu_Initialize(self.Menu, function(_, level, menuList)
+                            local icon= self:GetNormalTexture():GetTexture()
                             if menuList=='SELF' then
                                 local find
                                 local name= Save.fast[self.name]
@@ -1308,15 +1309,17 @@ local function Init_Fast_Button()
                                         e.LibDD:UIDropDownMenu_AddButton({
                                             text= e.GetPlayerInfo({guid=guid, reName=true, reRealm=true}),
                                             checked= name and name==playerName,
-                                            icon= self:GetNormalTexture():GetTexture(),
+                                            icon=icon,
                                             tooltipOnButton=true,
                                             tooltipTitle=self.name,
+                                            tooltipText=playerName,
                                             arg1= self.name,
                                             arg2= playerName,
                                             func= function(_, arg1, arg2)
                                                 if arg2 then
                                                     Save.fast[arg1]= arg2
                                                     print(id, Initializer:GetName(), arg1, arg2)
+                                                    self:set_Player_Lable()
                                                 end
                                             end,
                                         }, level)
@@ -1332,7 +1335,7 @@ local function Init_Fast_Button()
                             local playerName= Save.fast[self.name]
                             local newName= e.GetUnitName(SendMailNameEditBox:GetText())
                             e.LibDD:UIDropDownMenu_AddButton({
-                                text= self.name..': '..(playerName and e.GetPlayerInfo({name=playerName, reName=true}) or format('|cff606060%s|r', e.onlyChinese and '无' or NONE)),
+                                text='|T'..icon..':0|t'..self.name..': '..(playerName and e.GetPlayerInfo({name=playerName, reName=true}) or format('|cff606060%s|r', e.onlyChinese and '无' or NONE)),
                                 notCheckable=true,
                                 colorCode= not playerName and '|cff606060',
                                 isTitle=true,
@@ -1373,6 +1376,7 @@ local function Init_Fast_Button()
                                 hasArrow= true,
                                 notCheckable=true,
                                 menuList= 'SELF',
+                                keepShownOnClick=true,
                             }, level)
 
                         end, 'MENU')
@@ -1394,7 +1398,7 @@ local function Init_Fast_Button()
                 local playerName= Save.fast[self.name]
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                e.tips:AddLine(self.name)
+                e.tips:AddLine('|T'..(self:GetNormalTexture():GetTexture() or 0)..':0|t'..self.name)
                 e.tips:AddDoubleLine((e.onlyChinese and '添加' or ADD)..e.Icon.left, e.GetPlayerInfo({name=playerName, reName=true}))
                 e.tips:AddLine(' ')
                 if self.classID==2 or self.classID==4 then
