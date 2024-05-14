@@ -19,6 +19,8 @@ local Save={
     --scaleSendPlayerFrame=1.2,--清除历史数据，缩放
 
     scaleFastButton=1.25,
+
+    --INBOXITEMS_TO_DISPLAY=7,
 }
 
 
@@ -2124,29 +2126,148 @@ end
 
 
 
+
+
+local P_INBOXITEMS_TO_DISPLAY= INBOXITEMS_TO_DISPLAY--7
+
+local function Set_Inbox_btn_Point(frame, index)--设置，模板，内容，位置
+    if frame then
+        frame:SetPoint('RIGHT', -17, 0)
+        _G['MailItem'..index..'Sender']:SetPoint('RIGHT', -40, 0)
+        _G['MailItem'..index..'Subject']:SetPoint('RIGHT', -2, 0)
+    end
+end
+
+local function Set_Inbox_Button()--显示，隐藏，建立，收件，物品
+    for i=P_INBOXITEMS_TO_DISPLAY +1, INBOXITEMS_TO_DISPLAY, 1 do
+        local frame= _G['MailItem'..i]
+        if not frame then
+            frame= CreateFrame('Frame', 'MailItem'..i, InboxFrame, 'MailItemTemplate')
+            frame:SetPoint('TOPLEFT', _G['MailItem'..(i-1)], 'BOTTOMLEFT')
+            Set_Inbox_btn_Point(frame, i)--设置，模板，内容，位置
+        end
+        frame:SetShown(true)
+    end
+    local index= INBOXITEMS_TO_DISPLAY+1--隐藏    
+    while _G['MailItem'..index] do
+        _G['MailItem'..index]:SetShown(false)
+        index= index+1
+    end
+    --InboxFrameBg:SetShown(Save.INBOXITEMS_TO_DISPLAY)--因为图片，大小不一样，所有这样处理
+end
+
+local function Init_UI()
+    InboxFrame:SetPoint('RIGHT')--收件箱
+    for i= 1, INBOXITEMS_TO_DISPLAY do--7
+        Set_Inbox_btn_Point(_G['MailItem'..i], i)--设置，模板，内容，位置
+    end
+
+    InboxFrame:SetPoint('BOTTOMRIGHT')
+    InboxPrevPageButton:ClearAllPoints()
+    InboxPrevPageButton:SetPoint('BOTTOMLEFT', 10, 10)
+    InboxNextPageButton:SetPoint('BOTTOMRIGHT', -10, 10)
+    OpenAllMail:ClearAllPoints()--全部打开
+    OpenAllMail:SetPoint('BOTTOM', 0, 10)
+
+    --InboxFrameBg:SetAtlas('QuestBG-Parchment')
+    InboxFrameBg:SetAlpha(0.3)
+    InboxFrameBg:SetTexture(0)
+    InboxFrameBg:SetPoint('BOTTOMRIGHT', -4,4)
+
+
+    SendMailFrame:ClearAllPoints()--发件箱
+    SendMailFrame:SetAllPoints(MailFrame)
+    MailFrameInset:SetPoint('BOTTOMRIGHT', 0, 24)
+    SendMailCancelButton:ClearAllPoints()--取消
+    SendMailCancelButton:SetPoint('BOTTOMRIGHT', -4, 4)
+    SendMailMailButton:ClearAllPoints()
+    SendMailMailButton:SetPoint('RIGHT', SendMailCancelButton, 'LEFT', -4, 0)
+
+    SendMailMoneyFrame:ClearAllPoints()--钱
+    SendMailMoneyFrame:SetPoint('RIGHT', SendMailMailButton, 'LEFT', -4, 0)
+    SendMailMoneyInset:ClearAllPoints()
+    SendMailMoneyInset:SetPoint('RIGHT', SendMailMoneyFrame)
+    SendMailMoneyInset:SetPoint('BOTTOMLEFT', SendMailFrame, 2,2)    
+    SendMailMoneyBg:ClearAllPoints()
+    SendMailMoneyBg:SetAllPoints(SendMailMoneyInset)
+    
+    --寄送金额
+    SendMailMoney:ClearAllPoints()
+    SendMailMoney:SetPoint('BOTTOMLEFT', SendMailMoneyInset, 'TOPLEFT', 6, 4)
+    SendMailMoneyButton:ClearAllPoints()
+    SendMailMoneyButton:SetPoint('BOTTOMLEFT', SendMailMoney, 'TOPLEFT', 0, -16)
+
+    SendMailHorizontalBarLeft:ClearAllPoints()
+    SendMailHorizontalBarLeft:SetPoint('BOTTOMLEFT', SendMailMoneyButton, 'TOPLEFT', -8, -8)
+
+    --SendMailAttachment1:ClearAllPoints()
+    if Save.INBOXITEMS_TO_DISPLAY then
+        INBOXITEMS_TO_DISPLAY= Save.INBOXITEMS_TO_DISPLAY
+        Set_Inbox_Button()--显示，隐藏，建立，收件，物品    
+    end
+    e.Set_Move_Frame(MailFrame, {setSize=true, needSize=true, needMove=true, minW=338, minH=424, sizeUpdateFunc=function(btn)
+        local h= btn.target:GetHeight()-424
+        local num= P_INBOXITEMS_TO_DISPLAY
+        if h>45 then
+            num= num+ math.modf(h/45)
+        end
+        INBOXITEMS_TO_DISPLAY=num
+        Set_Inbox_Button()--显示，隐藏，建立，收件，物品
+        Save.INBOXITEMS_TO_DISPLAY= num>P_INBOXITEMS_TO_DISPLAY and num or nil
+        if InboxFrame:IsVisible() then
+            e.call('InboxFrame_Update')
+        end
+    end, sizeRestFunc=function(btn)
+        btn.target:SetSize(338, 424)
+        Save.INBOXITEMS_TO_DISPLAY=nil
+        INBOXITEMS_TO_DISPLAY= P_INBOXITEMS_TO_DISPLAY
+        Set_Inbox_Button()--显示，隐藏，建立，收件，物品
+    end
+
+    })
+    e.Set_Move_Frame(SendMailFrame, {frame=MailFrame})
+
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function set_button_Show_Hide()
+    if not Save.hide then
+        Init_Button()
+        Init_Fast_Button()
+        if button then
+            button.GetTargetNameButton:RegisterEvent('PLAYER_TARGET_CHANGED')
+            button.GetTargetNameButton:RegisterEvent('RAID_TARGET_UPDATE')
+        end
+        Init_InBox()--收信箱，物品，提示
+
+    else
+        if button then
+            button.GetTargetNameButton:UnregisterAllEvents()
+        end
+    end
+    if button then
+        button:SetShown(not Save.hide)
+    end
+end
+
+
 --####
 --初始
 --####
 local function Init()--SendMailNameEditBox
-    local function set_button_Show_Hide()
-        if not Save.hide then
-            Init_Button()
-            Init_Fast_Button()
-            if button then
-                button.GetTargetNameButton:RegisterEvent('PLAYER_TARGET_CHANGED')
-                button.GetTargetNameButton:RegisterEvent('RAID_TARGET_UPDATE')
-            end
-            Init_InBox()--收信箱，物品，提示
-
-        else
-            if button then
-                button.GetTargetNameButton:UnregisterAllEvents()
-            end
-        end
-        if button then
-            button:SetShown(not Save.hide)
-        end
-    end
+    Init_UI()
 
     panel.showButton= e.Cbtn(MailFrame.TitleContainer, {size={size,size}, icon='hide'})
     if _G['MoveZoomInButtonPerMailFrame'] then
@@ -2237,19 +2358,11 @@ local function Init()--SendMailNameEditBox
     end)
 
 end
-    --[[hooksecurefunc('HandleModifiedItemClick', function(itemLink, itemLocation)
-        if not Save.disableCtrlFast and not Save.hide and button and itemLink and itemLocation~=nil and itemLocation.bagID and itemLocation.slotIndex and SendMailFrame:IsShown() and GetMouseButtonClicked()=='RightButton' and IsModifierKeyDown() then
-            local findString
-            if itemLink:find('Hbattlepet') then
-                findString= 'Hbattlepet'
-            end
-            local classID, subClassID= select(6,  C_Item.GetItemInfoInstant(itemLink))
-            if classID==2 or classID==4 then
-                subClassID=nil
-            end
-            button.FastButton.set_PickupContainerItem(classID, subClassID, findString, {bag= itemLocation.bagID, slot= itemLocation.slotIndex, itemLink= itemLink})
-        end
-    end)]]
+
+
+
+
+
 
 
 

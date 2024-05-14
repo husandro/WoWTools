@@ -4440,7 +4440,14 @@
         "MERCHANT_ITEMS_PER_PAGE",
         "WorldMap_WorldQuestPinMixin",
         "InboxPrevPageButton",
-        "InboxNextPageButton"
+        "InboxNextPageButton",
+        "SendMailMoneyFrame",
+        "SendMailMoneyBg",
+        "SendMailMoneyFrameGoldButtonText",
+        "SendMailMoney",
+        "SendMailMoneyButton",
+        "SendMailHorizontalBarLeft",
+        "SendMailAttachment1"
     ],
     "Lua.diagnostics.disable": [
         "inject-field",

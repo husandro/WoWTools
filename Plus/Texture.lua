@@ -17,7 +17,7 @@ local Save={
 
 
 
-
+--e.Set_Alpha_Frame_Texture(frame, tab)
 
 
 
@@ -912,10 +912,14 @@ local function Init_All_Frame()
      set_Alpha_Color(QuestNPCModelTopBg)]]
 
      --信箱
-          e.Set_NineSlice_Color_Alpha(MailFrame, true)
+     e.Set_NineSlice_Color_Alpha(MailFrame, true)
      set_Alpha_Color(MailFrameBg)
-     hide_Texture(InboxFrameBg)
-     hide_Texture(MailFrameInset.Bg)
+     --hide_Texture(InboxFrameBg)
+     set_Alpha_Color(SendMailMoneyBgRight, nil, nil, min03)
+     set_Alpha_Color(SendMailMoneyBgLeft, nil, nil, min03)
+     set_Alpha_Color(SendMailMoneyBgMiddle, nil, nil, min03)
+
+     set_Alpha_Color(MailFrameInset.Bg)
      e.Set_NineSlice_Color_Alpha(OpenMailFrame, true)
      set_Alpha_Color(OpenMailFrameBg)
      set_Alpha_Color(OpenMailFrameInset.Bg)
