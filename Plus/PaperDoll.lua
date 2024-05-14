@@ -3004,9 +3004,9 @@ local function Init()
                                         text
                                     )
                 e.tips:AddLine(' ')
-                for _, info in pairs(C_ChromieTime.GetChromieTimeExpansionOptions() or {}) do
-                    local col= info.alreadyOn and '|cffff00ff' or ''-- option and option.id==info.id
-                    e.tips:AddDoubleLine((info.alreadyOn and format('|A:%s:0:0|a', e.Icon.toRight) or '')..col..(info.previewAtlas and '|A:'..info.previewAtlas..':0:0|a' or '')..info.name..(info.alreadyOn and format('|A:%s:0:0|a', e.Icon.toLeft) or '')..col..' ID '.. info.id, col..(e.onlyChinese and '完成' or COMPLETE)..': '..e.GetYesNo(info.completed))
+                for _, info2 in pairs(C_ChromieTime.GetChromieTimeExpansionOptions() or {}) do
+                    local col= info2.alreadyOn and '|cffff00ff' or ''-- option and option.id==info.id
+                    e.tips:AddDoubleLine((info2.alreadyOn and format('|A:%s:0:0|a', e.Icon.toRight) or '')..col..(info2.previewAtlas and '|A:'..info2.previewAtlas..':0:0|a' or '')..info2.name..(info2.alreadyOn and format('|A:%s:0:0|a', e.Icon.toLeft) or '')..col..' ID '.. info2.id, col..(e.onlyChinese and '完成' or COMPLETE)..': '..e.GetYesNo(info2.completed))
                     --e.tips:AddDoubleLine(' ', col..(info.mapAtlas and '|A:'..info.mapAtlas..':0:0|a'.. info.mapAtlas))
                     --e.tips:AddDoubleLine(' ', col..(info.previewAtlas and '|A:'..info.previewAtlas..':0:0|a'.. info.previewAtlas))
                     --e.tips:AddDoubleLine(' ', col..(e.onlyChinese and '完成' or COMPLETE)..': '..e.GetYesNo(info.completed))
