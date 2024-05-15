@@ -1222,7 +1222,7 @@ local function Init_Gossip_Text_Icon_Options()
                     info.tab.hex and format('|c%s%s', info.tab.hex, info.tab.hex) or '')
             end
             Gossip_Text_Icon_Frame.menu:set_list()
-            print(id, addName, '|n', format('%s|n%s|n%s', addText, delText, existText))
+            print(id, Initializer:GetName(), '|n', format('%s|n%s|n%s', addText, delText, existText))
             frame:SetText(text)
         else
             e.tips:AddLine(addText)
@@ -2563,7 +2563,7 @@ local function InitMenu_Quest(_, level, type)
                 tooltipText='|n'..e.Icon.left..(e.onlyChinese and '移除' or REMOVE),
                 func=function()
                     Save.questOption[questID]=nil
-                    print(id, QUESTS_LABEL, e.onlyChinese and '移除' or REMOVE, text, 'ID', questID)
+                    print(id, e.onlyChinese and '任务' or QUESTS_LABEL, e.onlyChinese and '移除' or REMOVE, text, 'ID', questID)
                 end
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -2578,7 +2578,7 @@ local function InitMenu_Quest(_, level, type)
             func= function()
                 if IsShiftKeyDown() then
                     Save.questOption={}
-                    print(id, QUESTS_LABEL, e.onlyChinese and '自定义' or CUSTOM, e.onlyChinese and '清除全部' or CLEAR_ALL)
+                    print(id, e.onlyChinese and '任务' or QUESTS_LABEL, e.onlyChinese and '自定义' or CUSTOM, e.onlyChinese and '清除全部' or CLEAR_ALL)
                 end
             end
         }
@@ -3066,7 +3066,6 @@ local function Init_Quest()
         QuestFrame.sel.name=UnitName("npc")
         QuestFrame.sel:SetChecked(Save.NPC[npc])
         QuestFrame.sel.questIDLabel:SetText(QuestButton:questInfo_GetQuestID() or '')
-        print(QuestButton:questInfo_GetQuestID())
         if not npc or not Save.quest or IsModifierKeyDown() or Save.NPC[npc] then
             return
         end
