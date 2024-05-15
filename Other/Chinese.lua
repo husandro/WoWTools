@@ -2156,6 +2156,23 @@ local function Init()
                 index = index + 1
             end
         end)
+        local region= InboxPrevPageButton:GetRegions()
+        if region and region:GetObjectType()=='FontString' then
+            region:SetText('上一页')
+        end
+        region= InboxNextPageButton:GetRegions()
+        if region and region:GetObjectType()=='FontString' then
+            region:SetText('下一页')
+        end
+        --[[region= select(3, SendMailNameEditBox:GetRegions())
+        if region and region:GetObjectType()=='FontString' then
+            region:SetText('收件人：')
+        end]]
+        region= select(3, SendMailSubjectEditBox:GetRegions())
+        if region and region:GetObjectType()=='FontString' then
+            region:SetText('主题：')
+        end
+       
 
 
     set(MailFrameTab2, '发件箱')

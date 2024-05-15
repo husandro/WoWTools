@@ -2054,8 +2054,8 @@ local function Init_InBox()
                 MailFrameTrialError:SetPoint('LEFT', InboxFrame, 55, 0)
                 MailFrameTrialError:SetPoint('RIGHT', InboxFrame)
                 MailFrameTrialError:SetWordWrap(false)
-                
-                InboxTooMuchMail:SetPoint('BOTTOM', InboxFrame.AllTipsLable, 'TOP', 0, 2)                
+
+                InboxTooMuchMail:SetPoint('BOTTOM', InboxFrame.AllTipsLable, 'TOP', 0, 2)
             end
         end
         if InboxFrame.AllTipsLable then
@@ -2405,8 +2405,8 @@ local function Init()--SendMailNameEditBox
             if InboxFrame:IsShown() then
                 e.call('InboxFrame_Update')
             end
-        elseif d=='RightButton'
-
+        elseif d=='RightButton' then
+            e.OpenPanelOpting(Initializer)
         end
     end)
 
@@ -2418,9 +2418,10 @@ local function Init()--SendMailNameEditBox
         self:SetAlpha(1)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(not e.onlyChinese and SHOW..'/'..HIDE or '显示/隐藏')
-        e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, Initializer:GetName())
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.GetShowHide(nil, true), e.Icon.left)--not e.onlyChinese and SHOW..'/'..HIDE or '显示/隐藏')
+        e.tips:AddDoubleLine(e.onlyChinese and '选项' or OPTIONS, e.Icon.right)
         e.tips:Show()
     end)
     panel.showButton:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
