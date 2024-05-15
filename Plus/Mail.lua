@@ -2231,7 +2231,7 @@ local function Init_UI()
 
     SendMailSubjectEditBox:SetPoint('RIGHT', MailFrame, -28, 0)--主题
     SendMailSubjectEditBoxMiddle:SetPoint('RIGHT', -8, 0)
-    SendMailNameEditBox:SetPoint('RIGHT', SendMailCostMoneyFrame, 'LEFT', -32, 0)--收件人
+    SendMailNameEditBox:SetPoint('RIGHT', SendMailCostMoneyFrame, 'LEFT', -54, 0)--收件人
     SendMailNameEditBoxMiddle:SetPoint('RIGHT', -8, 0)
 
 
@@ -2356,6 +2356,15 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
 local function set_button_Show_Hide()
     if not Save.hide then
         Init_Button()
@@ -2375,6 +2384,14 @@ local function set_button_Show_Hide()
         button:SetShown(not Save.hide)
     end
 end
+
+
+
+
+
+
+
+
 
 
 --####
@@ -2432,7 +2449,7 @@ local function Init()--SendMailNameEditBox
 
         end
         if button then
-            button.GetTargetNameButton.set_GetTargetNameButton_Texture(button.GetTargetNameButton)--目标，名称，按钮，显示/隐藏--目标，名称
+            button.GetTargetNameButton:set_GetTargetNameButton_Texture()--目标，名称，按钮，显示/隐藏--目标，名称
             button.ClearPlayerButton.setAlpha(button.ClearPlayerButton)--设置，历史记录，清除按钮透明度
         end
     end
@@ -2509,7 +2526,8 @@ end
 
 
 panel:RegisterEvent('ADDON_LOADED')
-panel:SetScript("OnEvent", function(_, event, arg1)
+panel:RegisterEvent('PLAYER_LOGOUT')
+panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
@@ -2557,13 +2575,10 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 end
             })
 
-            if Save.disabled then
-                panel:UnregisterAllEvents()
-            else
+            if not Save.disabled then
                 Init()
-                panel:UnregisterEvent('ADDON_LOADED')
             end
-            panel:RegisterEvent('PLAYER_LOGOUT')
+            self:UnregisterEvent('ADDON_LOADED')
         end
 
     elseif event == "PLAYER_LOGOUT" then
@@ -2571,5 +2586,4 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             WoWToolsSave[addName]=Save
         end
     end
-
 end)
