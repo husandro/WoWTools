@@ -4447,7 +4447,14 @@
         "SendMailMoney",
         "SendMailMoneyButton",
         "SendMailHorizontalBarLeft",
-        "SendMailAttachment1"
+        "SendMailAttachment1",
+        "SendMailScrollChildFrame",
+        "SendMailHorizontalBarLeft2",
+        "SendMailNameEditBoxMiddle",
+        "SendMailSubjectEditBoxMiddle",
+        "SendMailAttachment12",
+        "MailItem6ButtonSlot",
+        "InboxTooMuchMail"
     ],
     "Lua.diagnostics.disable": [
         "inject-field",

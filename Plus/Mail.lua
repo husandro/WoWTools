@@ -491,11 +491,12 @@ local function Init_Button()
 
     --下拉，菜单
     button= e.Cbtn(SendMailFrame, {size={size, size}, atlas='common-icon-rotateleft'})
-    if _G['SendMailNameEditBoxMiddle'] then
-        button:SetPoint('LEFT',    _G['SendMailNameEditBoxMiddle'] or SendMailNameEditBox, 'RIGHT', 6, 0)
+    button:SetPoint('LEFT', SendMailNameEditBox, 'RIGHT')
+    --[[if _G['SendMailNameEditBoxMiddle'] then
+        button:SetPoint('LEFT', _G['SendMailNameEditBoxMiddle'] or SendMailNameEditBox, 'RIGHT', 6, 0)
     else
-    button:SetPoint('LEFT',   _G['Postal_BlackBookButton'] or SendMailNameEditBox, 'RIGHT', 2, 0)--C_AddOns.IsAddOnLoaded('Postal')
-    end
+        button:SetPoint('LEFT', _G['Postal_BlackBookButton'] or SendMailNameEditBox, 'RIGHT', 2, 0)--C_AddOns.IsAddOnLoaded('Postal')
+    end]]
     button:SetFrameStrata('HIGH')
     button:SetScript('OnMouseDown', function(self)
         if not self.Menu then
@@ -1435,7 +1436,7 @@ local function Init_Fast_Button()
     end
 
     button.clearAllItmeButton=e.Cbtn(button, {size={size,size}, atlas='bags-button-autosort-up'})
-    button.clearAllItmeButton:SetPoint('BOTTOMLEFT', SendMailAttachment7, 'TOPLEFT',0, -4)
+    button.clearAllItmeButton:SetPoint('BOTTOMRIGHT', SendMailAttachment7, 'TOPRIGHT')--,0, -4)
     button.clearAllItmeButton:SetScript('OnClick', function()
         button.FastButton.set_Fast_Event(nil, true)--清除，注册，事件，显示/隐藏，设置数量
         for i= 1, ATTACHMENTS_MAX_SEND do
@@ -1477,6 +1478,31 @@ local function Init_Fast_Button()
     end)
     button.clearAllItmeButton.itemNumLabel= e.Cstr(button.clearAllItmeButton)
     button.clearAllItmeButton.itemNumLabel:SetPoint('BOTTOMRIGHT', button.clearAllItmeButton, 'BOTTOMLEFT',0,4)
+
+    local btn= _G['SendMailAttachment'..ATTACHMENTS_MAX_SEND]--最大数，提示
+    if btn then
+        btn.max= btn:CreateTexture(nil, 'OVERLAY')
+        btn.max:SetSize(20, 30)
+        btn.max:SetAtlas('poi-traveldirections-arrow2')
+        btn.max:SetAlpha(0.5)
+        btn.max:SetPoint('LEFT', btn, 'RIGHT', -2, 0)
+    end
+    for i=1, ATTACHMENTS_MAX_SEND do--索引，提示
+        btn= _G['SendMailAttachment'..i]
+        if btn then
+            btn.indexLable= e.Cstr(btn, {layer='BORDER'})
+            btn.indexLable:SetPoint('CENTER')
+            btn.indexLable:SetAlpha(0.3)
+            btn.indexLable:SetText(i)
+
+            for _, region in pairs({btn:GetRegions()}) do--背景，透明度
+                if region:GetObjectType()=="Texture" then
+                    region:SetAlpha(0.5)
+                    break
+                end
+            end
+        end
+    end
 end
 
 
@@ -2021,7 +2047,15 @@ local function Init_InBox()
             end
             if not InboxFrame.AllTipsLable then
                 InboxFrame.AllTipsLable= e.Cstr(InboxFrame)
-                InboxFrame.AllTipsLable:SetPoint('BOTTOMLEFT', MailItem1Button, 'TOPLEFT', -6, 3)
+                InboxFrame.AllTipsLable:SetPoint('TOP', 20, -48)
+
+                MailFrameTrialError:ClearAllPoints()--你需要升级你的账号才能开启这项功能。
+                MailFrameTrialError:SetPoint('BOTTOM', InboxFrame.AllTipsLable, 'TOP', 0, 2)
+                MailFrameTrialError:SetPoint('LEFT', InboxFrame, 55, 0)
+                MailFrameTrialError:SetPoint('RIGHT', InboxFrame)
+                MailFrameTrialError:SetWordWrap(false)
+                
+                InboxTooMuchMail:SetPoint('BOTTOM', InboxFrame.AllTipsLable, 'TOP', 0, 2)                
             end
         end
         if InboxFrame.AllTipsLable then
@@ -2135,6 +2169,10 @@ local function Set_Inbox_btn_Point(frame, index)--设置，模板，内容，位
         frame:SetPoint('RIGHT', -17, 0)
         _G['MailItem'..index..'Sender']:SetPoint('RIGHT', -40, 0)
         _G['MailItem'..index..'Subject']:SetPoint('RIGHT', -2, 0)
+        local region= select(2, frame:GetRegions())
+        if region and region:GetObjectType()=='Texture' then
+            region:SetPoint('LEFT', MailItem6ButtonSlot, 'RIGHT', -16, 0)
+        end
     end
 end
 
@@ -2157,7 +2195,8 @@ local function Set_Inbox_Button()--显示，隐藏，建立，收件，物品
 end
 
 local function Init_UI()
-    InboxFrame:SetPoint('RIGHT')--收件箱
+    --收件箱
+    InboxFrame:SetPoint('RIGHT')
     for i= 1, INBOXITEMS_TO_DISPLAY do--7
         Set_Inbox_btn_Point(_G['MailItem'..i], i)--设置，模板，内容，位置
     end
@@ -2174,35 +2213,31 @@ local function Init_UI()
     InboxFrameBg:SetTexture(0)
     InboxFrameBg:SetPoint('BOTTOMRIGHT', -4,4)
 
---[[
-    SendMailFrame:ClearAllPoints()--发件箱
-    SendMailFrame:SetAllPoints(MailFrame)
-    MailFrameInset:SetPoint('BOTTOMRIGHT', 0, 24)
-    SendMailCancelButton:ClearAllPoints()--取消
-    SendMailCancelButton:SetPoint('BOTTOMRIGHT', -4, 4)
-    SendMailMailButton:ClearAllPoints()
-    SendMailMailButton:SetPoint('RIGHT', SendMailCancelButton, 'LEFT', -4, 0)
-
-    SendMailMoneyFrame:ClearAllPoints()--钱
-    SendMailMoneyFrame:SetPoint('RIGHT', SendMailMailButton, 'LEFT', -4, 0)
-    SendMailMoneyInset:ClearAllPoints()
-    SendMailMoneyInset:SetPoint('RIGHT', SendMailMoneyFrame)
-    SendMailMoneyInset:SetPoint('BOTTOMLEFT', SendMailFrame, 2,2)    
-    SendMailMoneyBg:ClearAllPoints()
-    SendMailMoneyBg:SetAllPoints(SendMailMoneyInset)
-    
-    寄送金额
-    SendMailMoney:ClearAllPoints()
-    SendMailMoney:SetPoint('BOTTOMLEFT', SendMailMoneyInset, 'TOPLEFT', 6, 4)
-    SendMailMoneyButton:ClearAllPoints()
-    SendMailMoneyButton:SetPoint('BOTTOMLEFT', SendMailMoney, 'TOPLEFT', 0, -16)
-
+    --发件箱
+    SendMailFrame:SetPoint('BOTTOMRIGHT', 384-338, 424-512)
     SendMailHorizontalBarLeft:ClearAllPoints()
-    SendMailHorizontalBarLeft:SetPoint('BOTTOMLEFT', SendMailMoneyButton, 'TOPLEFT', -8, -8)
+    SendMailHorizontalBarLeft:SetPoint('BOTTOMLEFT', SendMailMoneyButton, 'TOPLEFT', -14, -4)
+    SendMailHorizontalBarLeft:SetPoint('RIGHT', MailFrame, -80, 0)
+    SendMailHorizontalBarLeft2:SetPoint('RIGHT', MailFrame, -80, 0)
 
-    SendMailAttachment1:ClearAllPoints()
-    SendMailAttachment1:SetPoint('BOTTOMLEFT', SendMailHorizontalBarLeft, 'TOPLEFT')
-    ]]
+    SendMailScrollFrame:SetPoint('RIGHT', MailFrame, -34, 0)
+    SendMailScrollFrame:SetPoint('BOTTOM', SendMailHorizontalBarLeft2, 'TOP')
+    SendMailScrollChildFrame:SetPoint('BOTTOMRIGHT')
+    SendStationeryBackgroundLeft:SetPoint('BOTTOMRIGHT', -42, 0)
+    SendStationeryBackgroundRight:SetPoint('BOTTOM')
+
+    SendMailBodyEditBox:SetPoint('BOTTOMRIGHT', SendMailScrollFrame)
+
+
+    SendMailSubjectEditBox:SetPoint('RIGHT', MailFrame, -28, 0)--主题
+    SendMailSubjectEditBoxMiddle:SetPoint('RIGHT', -8, 0)
+    SendMailNameEditBox:SetPoint('RIGHT', SendMailCostMoneyFrame, 'LEFT', -32, 0)--收件人
+    SendMailNameEditBoxMiddle:SetPoint('RIGHT', -8, 0)
+
+
+
+
+
     if Save.INBOXITEMS_TO_DISPLAY then
         INBOXITEMS_TO_DISPLAY= Save.INBOXITEMS_TO_DISPLAY
         Set_Inbox_Button()--显示，隐藏，建立，收件，物品    
@@ -2218,6 +2253,8 @@ local function Init_UI()
         Save.INBOXITEMS_TO_DISPLAY= num>P_INBOXITEMS_TO_DISPLAY and num or nil
         if InboxFrame:IsVisible() then
             e.call('InboxFrame_Update')
+        else
+            e.call('SendMailFrame_Update')
         end
     end, sizeRestFunc=function(btn)
         btn.target:SetSize(338, 424)
@@ -2230,6 +2267,81 @@ local function Init_UI()
     e.Set_Move_Frame(SendMailFrame, {frame=MailFrame})
 
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function set_SendStationeryBackground_Alpha(alpha)--收件箱，内容，背景，透明度
+    SendStationeryBackgroundLeft:SetAlpha(alpha)
+    SendStationeryBackgroundRight:SetAlpha(alpha)
+end
+
+local function Init_Edit_Letter_Num()--字数
+    for _, frame in pairs({SendMailNameEditBox, SendMailSubjectEditBox, SendMailBodyEditBox}) do
+        if frame:GetMaxLetters()>0 then
+            frame.numLetters= e.Cstr(frame)
+            if frame:IsMultiLine() then
+                frame.numLetters:SetPoint('BOTTOMRIGHT')
+            else
+                frame.numLetters:SetPoint('RIGHT')
+            end
+            frame.numLetters:SetAlpha(0)
+            frame:HookScript('OnTextChanged', function(self)
+                self.numLetters:SetFormattedText('%d/%d', self:GetNumLetters() or 0, self:GetMaxLetters())
+            end)
+
+            if frame==SendMailBodyEditBox then
+                set_SendStationeryBackground_Alpha(0.5)--收件箱，内容，背景，透明度
+                frame:HookScript('OnEditFocusGained', function(self)
+                    self.numLetters:SetAlpha(1)
+                    set_SendStationeryBackground_Alpha(1)--收件箱，内容，背景，透明度
+                end)
+                frame:HookScript('OnEditFocusLost', function(self)
+                    self.numLetters:SetAlpha(0)
+                    set_SendStationeryBackground_Alpha(0.5)--收件箱，内容，背景，透明度
+                end)
+            else
+                frame:HookScript('OnEditFocusGained', function(self)
+                    self.numLetters:SetAlpha(1)
+                end)
+                frame:HookScript('OnEditFocusLost', function(self)
+                    self.numLetters:SetAlpha(0)
+                end)
+            end
+        end
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2270,6 +2382,7 @@ end
 --####
 local function Init()--SendMailNameEditBox
     Init_UI()
+    Init_Edit_Letter_Num()--字数
 
     panel.showButton= e.Cbtn(MailFrame.TitleContainer, {size={size,size}, icon='hide'})
     if _G['MoveZoomInButtonPerMailFrame'] then
@@ -2280,16 +2393,20 @@ local function Init()--SendMailNameEditBox
     end
 
     panel.showButton:SetAlpha(0.3)
-    panel.showButton:SetScript('OnClick', function()
-        Save.hide= not Save.hide and true or nil
-        set_button_Show_Hide()
-        panel.showButton:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
+    panel.showButton:SetScript('OnClick', function(_, d)
+        if d=='LeftButton' then
+            Save.hide= not Save.hide and true or nil
+            set_button_Show_Hide()
+            panel.showButton:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
 
-        if OpenMailFrame:IsShown() then
-            e.call('OpenMail_Update')
-        end
-        if InboxFrame:IsShown() then
-            e.call('InboxFrame_Update')
+            if OpenMailFrame:IsShown() then
+                e.call('OpenMail_Update')
+            end
+            if InboxFrame:IsShown() then
+                e.call('InboxFrame_Update')
+            end
+        elseif d=='RightButton'
+
         end
     end)
 
