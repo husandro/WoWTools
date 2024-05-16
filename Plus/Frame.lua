@@ -2673,7 +2673,7 @@ local function Init_Move()
      C_Timer.After(2, function()
 
 
-            e.Set_Move_Frame(MailFrame)--邮箱，信件
+            
             e.Set_Move_Frame(SendMailFrame, {frame=MailFrame})
             e.Set_Move_Frame(StableFrame)
             e.Set_Move_Frame(MerchantFrame)
@@ -2847,10 +2847,10 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
+panel:RegisterEvent('MAIL_SHOW')
 
 local eventTab={}
-panel:SetScript("OnEvent", function(_, event, arg1)
+panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
@@ -2872,7 +2872,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             })
 
             if Save.disabled then
-                panel:UnregisterAllEvents()
+                self:UnregisterAllEvents()
             else
                 Init_Move()--初始, 移动
                 for _, ent in pairs(eventTab or {}) do
@@ -2880,6 +2880,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 end
             end
             eventTab=nil
+            self:RegisterEvent("PLAYER_LOGOUT")
 
         elseif arg1=='Blizzard_Settings' then
             Init_Options()--初始, 选项
@@ -2897,6 +2898,11 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             WoWToolsSave[addName]=Save
         end
 
+    elseif event=='MAIL_SHOW' then
+         C_Timer.After(2, function()
+            e.Set_Move_Frame(MailFrame)--邮箱，信件， Mail.lua，有操作
+        end)
+        self:UnregisterEvent('MAIL_SHOW')
     --[[elseif event=='PLAYER_REGEN_ENABLED' then
         if combatCollectionsJournal then
             set_Move_CollectionJournal()--藏品

@@ -4454,7 +4454,14 @@
         "SendMailSubjectEditBoxMiddle",
         "SendMailAttachment12",
         "MailItem6ButtonSlot",
-        "InboxTooMuchMail"
+        "InboxTooMuchMail",
+        "ERR_MAIL_CANT_SEND_REALM",
+        "ERR_PETITION_NOT_SAME_SERVER",
+        "UIDropDownMenu_AddButton",
+        "SHOW_FRIENDS_LIST",
+        "GUILDBANK_LOG_TITLE_FORMAT",
+        "SendMailFrame_Update",
+        "SendMailAttachment6"
     ],
     "Lua.diagnostics.disable": [
         "inject-field",

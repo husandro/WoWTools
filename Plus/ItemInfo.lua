@@ -1025,7 +1025,7 @@ local function Init()
 
 
 
-    --设置，收信箱，物品
+    --[[设置，收信箱，物品
     hooksecurefunc('InboxFrame_Update',function()
         for i=1, INBOXITEMS_TO_DISPLAY do
             local btn=_G["MailItem"..i.."Button"]
@@ -1053,7 +1053,7 @@ local function Init()
                 e.Set_Item_Info(sendMailAttachmentButton, {itemLink= HasSendMailItem(i) and GetSendMailItemLink(i)})
             end
         end
-    end)
+    end)]]
 
 
 
