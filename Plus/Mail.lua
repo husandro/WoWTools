@@ -507,6 +507,9 @@ local function Init_Menu(_, level, menuList)
         text= e.onlyChinese and '保存内容' or format(GUILDBANK_LOG_TITLE_FORMAT, INFO),--"%s 记录",
         keepShownOnClick=true,
         checked= Save.logSendInfo,
+        tooltipOnButton=true,
+        tooltipTitle= e.onlyChinese and '收件人：' or MAIL_TO_LABEL,
+        tooltipText= e.onlyChinese and '主题：' or MAIL_SUBJECT_LABEL,
         func=function()
             Save.logSendInfo= not Save.logSendInfo and true or nil
             SendMailNameEditBox:save_log()

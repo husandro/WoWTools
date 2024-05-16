@@ -4461,7 +4461,8 @@
         "SHOW_FRIENDS_LIST",
         "GUILDBANK_LOG_TITLE_FORMAT",
         "SendMailFrame_Update",
-        "SendMailAttachment6"
+        "SendMailAttachment6",
+        "MAIL_SUBJECT_LABEL"
     ],
     "Lua.diagnostics.disable": [
         "inject-field",
