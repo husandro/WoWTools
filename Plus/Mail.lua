@@ -1006,7 +1006,7 @@ local function Init_Fast_Button()
             end
             btn:set_Player_Lable()
             function btn:set_alpha()
-                self:SetAlpha(self.stack>0 and 1 or 0.1)
+                self:SetAlpha(self.stack and self.stack>0 and 1 or 0.1)
             end
             function btn:settings()
                 if self.checking then
