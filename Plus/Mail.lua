@@ -1034,7 +1034,7 @@ local function Init_Fast_Button()
                 if self:IsShown() then
                     self:settings()
                     self:RegisterEvent('BAG_UPDATE_DELAYED')
-                    --self:RegisterEvent('MAIL_SEND_INFO_UPDATE')
+                    self:RegisterEvent('MAIL_SEND_INFO_UPDATE')
                 else
                     self:UnregisterAllEvents()
                 end
