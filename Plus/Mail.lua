@@ -37,7 +37,7 @@ local Save={
 
 
 
-local panel= CreateFrame("Frame")
+
 local fastButton
 local Initializer
 
@@ -2519,7 +2519,7 @@ end
 
 
 
-
+local panel= CreateFrame("Frame")
 panel:RegisterEvent('ADDON_LOADED')
 panel:RegisterEvent('PLAYER_LOGOUT')
 panel:SetScript("OnEvent", function(self, event, arg1)
