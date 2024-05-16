@@ -933,7 +933,7 @@ local function Init_Fast_Button()
                     if info then
                         C_Container.PickupContainerItem(bag, slot)
                         ClickSendMailItemButton(self.canSendTab[1])
-                        if #self.canSendTab==0 then
+                        if #self.canSendTab==0 or not self:IsShown() then
                             return
                         end
                     end
