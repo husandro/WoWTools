@@ -1,5 +1,7 @@
 local id, e = ...
-local Save={}
+local Save={
+    --hide=true,--显示，隐藏 Frame
+}
 local addName= SOCKET_GEMS
 
 local Buttons={}
