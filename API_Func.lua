@@ -378,7 +378,7 @@ function e.WA_Utf8Sub(text, size, letterSize, lower)
 
     text= e.cn(text)
 
-    if le==le2 and text:find('%w') then
+    if le==le2 or text:find('%w') then
         text= text:sub(1, letterSize or size)
         return lower and strlower(text) or text
     else
@@ -888,7 +888,7 @@ function e.GetCurrencyMaxInfo(currencyID, index)
         if canWeek then
             percent= math.modf(info.quantityEarnedThisWeek/info.maxWeeklyQuantity*100)
         elseif canEarned then
-            percent= math.modf(info.totalEarned/info.maxQuantity*100) 
+            percent= math.modf(info.totalEarned/info.maxQuantity*100)
         elseif canQuantity then
             percent= math.modf(info.quantity/info.maxQuantity*100)
         end
@@ -1000,15 +1000,15 @@ function e.Get_Gem_Stats(self, itemLink)--显示, 宝石, 属性
     if itemLink then
         local dateInfo
         if PlayerGetTimerunningSeasonID() then
-            dateInfo= e.GetTooltipData({hyperLink=itemLink, index=2})--物品提示，信息
+            dateInfo= e.GetTooltipData({hyperLink=itemLink, index=3})--物品提示，信息
         else
             dateInfo= e.GetTooltipData({hyperLink=itemLink, text={'(%+.+)', }})--物品提示，信息
         end
         local text= dateInfo.text['(%+.+)'] or dateInfo.indexText
-        
+
         if text then
             text= string.lower(text)
-            
+
             for name, name2 in pairs(e.StausText) do
                 --print(string.lower(name), name2, text:find(string.lower(name)), text)
                 if text:find(string.lower(name)) then
@@ -1020,9 +1020,12 @@ function e.Get_Gem_Stats(self, itemLink)--显示, 宝石, 属性
                     end
                 end
             end
+            if not leftText and text:find(('%+(.+)')) then--+护甲
+                leftText= e.WA_Utf8Sub(text:match(('%+(.+)')), 1, 3, true)
+            end
         end
     end
-     
+
     if self then
         if leftText and not self.leftText then
             self.leftText= e.Cstr(self, {size=10})

@@ -4462,7 +4462,8 @@
         "GUILDBANK_LOG_TITLE_FORMAT",
         "SendMailFrame_Update",
         "SendMailAttachment6",
-        "MAIL_SUBJECT_LABEL"
+        "MAIL_SUBJECT_LABEL",
+        "ScrappingMachineFrameTitleText"
     ],
     "Lua.diagnostics.disable": [
         "inject-field",

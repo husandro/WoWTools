@@ -7425,6 +7425,10 @@ local function Init_Loaded(arg1)
         set(EventTrace.Filter.Bar.DiscardAllButton.Label, '全部删除')
         set(EventTrace.Filter.Bar.UncheckAllButton.Label, '全部取消')
         set(EventTrace.Filter.Bar.CheckAllButton.Label, '全部选取')
+    
+    elseif arg1=='Blizzard_ScrappingMachineUI' then--分解
+        set(ScrappingMachineFrame.ScrapButton, '拆解')
+        C_Timer.After(0.1, function() set(ScrappingMachineFrameTitleText, '拆解大师Mk1型') end)
     end
 end
 

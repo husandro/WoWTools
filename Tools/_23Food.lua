@@ -97,7 +97,9 @@ local function find_Item_Type(class, subclass)
             if info and info.hyperlink and info.itemID and C_Item.GetItemSpell(info.itemID) then
                 local classID, subClassID, _, expacID = select(12, C_Item.GetItemInfo(info.hyperlink))
                 if classID==class and subClassID==subclass
-                    and (Save.onlyMaxExpansion and (info.itemID==113509 or e.ExpansionLevel==expacID or not PlayerGetTimerunningSeasonID()) or not Save.onlyMaxExpansion)
+                    and (PlayerGetTimerunningSeasonID()
+                            or (Save.onlyMaxExpansion and (info.itemID==113509 or e.ExpansionLevel==expacID) or not Save.onlyMaxExpansion)
+                        )
                 then
                     e.LoadDate({id=info.itemID, type='item'})
                     table.insert(tab, info.itemID)

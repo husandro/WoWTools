@@ -53,6 +53,48 @@ end
 
 local function creatd_button(index)
     local btn= e.Cbtn(Frame, {button='ItemButton', icon='hide'})
+    
+    btn.level=e.Cstr(btn)
+    btn.level:SetPoint('TOPRIGHT')
+    btn.type= e.Cstr(btn)
+    btn.type:SetPoint('LEFT', btn, 'RIGHT')
+    btn.att= e.Cstr(btn)
+    btn.att:SetPoint('LEFT')
+
+    btn:Hide()
+    function btn:set_event()
+        if self:IsShown() then
+            self:RegisterEvent('ITEM_LOCKED')
+            self:RegisterEvent('SOCKET_INFO_UPDATE')
+        else
+            self:UnregisterAllEvents()
+        end
+    end
+    function btn:set_alpha()
+        local info
+        if self.bagID then
+            info = C_Container.GetContainerItemInfo(self.bagID, self.slotID)
+        end
+        local alpha= 1
+        if not info then
+            alpha=0
+        elseif info.isLocked then
+            alpha=0.3
+        end
+        self:SetAlpha(alpha)
+    end
+    function btn:rest()
+        self:SetShown(false)
+        self:Reset()
+        self.bagID= nil
+        self.slotID= nil
+        self.type:SetText('')
+        self.level:SetText('')
+    end
+    btn:SetScript('OnEvent', btn.alpha)
+
+        
+
     btn:SetScript('OnClick', function(self, d)
         if d=='LeftButton' then
             C_Container.PickupContainerItem(self.bagID, self.slotID)
@@ -74,10 +116,7 @@ local function creatd_button(index)
         e.FindBagItem()
     end)
 
-    btn.level=e.Cstr(btn)
-    btn.level:SetPoint('TOPRIGHT')
-    btn.type= e.Cstr(btn)
-    btn.type:SetPoint('LEFT', btn, 'RIGHT')
+
     Buttons[index]= btn
     return btn
 end
@@ -113,6 +152,7 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
                     end
                     type=type or ' '
                     items[type]= items[type] or {}
+
                     table.insert(items[type], {
                         info= info,
                         bag=bag,
@@ -170,8 +210,9 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
             btn:SetItem(itemLink)
             btn.bagID= info.bag
             btn.slotID= info.slot
+            btn.isLocked= info.info.isLocked
             btn:SetItemButtonCount(info.info.stackCount)
-            btn:SetAlpha(info.info.isLocked and 0.3 or 1)
+            btn:set_event()
             btn:SetShown(true)
             e.Get_Gem_Stats(btn, itemLink)
             x=x-40--34
@@ -183,10 +224,8 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
 
 
     for i= index+1, #Buttons, 1 do
-        Buttons[i]:SetShown(false)
-        Buttons[i]:Reset()
-        Buttons[i].type:SetText('')
-        Buttons[i].level:SetText('')
+        local btn= Buttons[1]
+        if btn then btn:rest() end
     end
 end
 
@@ -436,7 +475,7 @@ local function Init()
     end)
 
 
-    
+
     Init_Spell_Button()
 end
 
