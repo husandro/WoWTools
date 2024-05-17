@@ -4463,7 +4463,10 @@
         "SendMailFrame_Update",
         "SendMailAttachment6",
         "MAIL_SUBJECT_LABEL",
-        "ScrappingMachineFrameTitleText"
+        "ScrappingMachineFrameTitleText",
+        "EncounterJournal_SetBullets",
+        "EncounterJournal_ShiftHeaders",
+        "ItemSocketingFrame_OnEvent"
     ],
     "Lua.diagnostics.disable": [
         "inject-field",

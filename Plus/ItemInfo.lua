@@ -208,7 +208,9 @@ function e.Set_Item_Info(self, tab)
             end
 
         elseif classID==3 then--宝石
-            rightText= itemLevel
+            if itemLevel and itemLevel>10 then
+                rightText= itemLevel
+            end
             topRightText= e.WA_Utf8Sub(subclassID==9 and itemType or itemSubType, 2,3)
             if lowerVer then--低版本
                 topRightText= '|cff606060'..topRightText..'|r'

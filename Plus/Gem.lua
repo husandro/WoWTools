@@ -58,8 +58,7 @@ local function creatd_button(index)
     btn.level:SetPoint('TOPRIGHT')
     btn.type= e.Cstr(btn)
     btn.type:SetPoint('LEFT', btn, 'RIGHT')
-    btn.att= e.Cstr(btn)
-    btn.att:SetPoint('LEFT')
+
 
     btn:Hide()
     function btn:set_event()
@@ -224,7 +223,7 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
 
 
     for i= index+1, #Buttons, 1 do
-        local btn= Buttons[1]
+        local btn= Buttons[i]
         if btn then btn:rest() end
     end
 end
@@ -444,7 +443,8 @@ local function Init()
                 btn.type:SetText(name or '')
                 btn.leftText:SetText(left or '')
                 btn.rightText:SetText(right or '')
-                btn.levelText:SetText(itemLink and C_Item.GetDetailedItemLevelInfo(itemLink) or '')
+                local itemLevel= itemLink and C_Item.GetDetailedItemLevelInfo(itemLink) or 1
+                btn.levelText:SetText(itemLevel>10 or '')
                 btn.levelText:SetTextColor(Get_Item_Color(itemLink))
                 if atlas then
                     btn.qualityTexture:SetAtlas(atlas)
@@ -471,11 +471,12 @@ local function Init()
             ItemSocketingSocket3:SetPoint('BOTTOMRIGHT', -50, 33)
         end
         set_point()
-        set_Gem()
+        --set_Gem()
     end)
 
 
-
+    ItemSocketingFrame:HookScript('OnEvent', set_Gem)
+    set_Gem()
     Init_Spell_Button()
 end
 
@@ -526,146 +527,3 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
     end
 end)
-
-
-
-
-
-
-
-
-
-
-
-
-
---[[
-
- local gem1007= select(2, GetSocketItemInfo())== 4638590 --204000, 204030
-
-    local findGem
-    local gemType={}
-    for i= 1, GetNumSockets() or 0 do
-        local type= GetSocketTypes(i)
-        if type then
-            local name= GEM_TYPE_INFO[type]
-            if name then
-                gemType[name]=true
-            end
-        end
-    end
-
-
-
-    panel:RegisterEvent('SOCKET_INFO_CLOSE')
-panel:RegisterEvent('SOCKET_INFO_UPDATE')
-panel:RegisterEvent('UPDATE_EXTRA_ACTIONBAR')
-    local ExtraActionButton1Point--记录打开10.07 宝石戒指, 额外技能条,位置
-elseif arg1=='Blizzard_ItemSocketingUI' then--10.07 原石宝石，提示
-ItemSocketingFrame.setTipsFrame= CreateFrame("Frame", nil, ItemSocketingFrame)
-ItemSocketingFrame.setTipsFrame:SetFrameStrata('HIGH')
-
-local x,y,n= 54,-22,0
-for i=204000, 204030 do
-    local classID= select(6, C_Item.GetItemInfoInstant(i))
-    if classID==3 then
-        e.LoadDate({id=i, type='item'})
-        local icon= C_Item.GetItemIconByID(i)
-        if icon then
-            local texture= ItemSocketingFrame.setTipsFrame:CreateTexture()
-            texture:SetSize(20,20)
-            texture:SetTexture(icon)
-            texture:EnableMouse(true)
-            texture.id= i
-            texture:SetScript('OnEnter', function(self2)
-                e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:SetItemByID(self2.id)
-                e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(id, e.cn(addName))
-                e.tips:Show()
-            end)
-            texture:SetScript('OnLeave', GameTooltip_Hide)
-            n=n+1
-
-            texture:SetPoint('TOPLEFT', ItemSocketingFrame, 'TOPLEFT',x, y)
-            local one,two= math.modf(n / 14)
-            if two==0 and one==1 then
-                x=-2
-                y=y -20
-            else
-                x=x+20
-            end
-        end
-    end
-end
-ItemSocketingFrame.setTipsFrame:SetShown(select(2,GetSocketItemInfo())== 4638590)--10.07 原石宝石，提示
-
- elseif event=='SOCKET_INFO_UPDATE' then
-        panel:RegisterEvent('BAG_UPDATE_DELAYED')
-        set_Gem()
-
-        local gem1007= select(2, GetSocketItemInfo())== 4638590
-        if ItemSocketingFrame.setTipsFrame then
-            ItemSocketingFrame.setTipsFrame:SetShown(gem1007)--10.07 原石宝石，提示
-        end
-
-        if not IsInInstance() and gem1007 and ExtraActionButton1 and ExtraActionButton1:IsShown() and ExtraActionButton1.icon and ItemSocketingFrame and ItemSocketingFrame:IsVisible() then
-            local icon= ExtraActionButton1.icon:GetTexture()
-            if icon==4638590 or icon==876370 then
-                if not ExtraActionButton1Point then
-                    ExtraActionButton1Point= {ExtraActionButton1:GetPoint(1)}--记录打开10.07 宝石戒指, 额外技能条,位置
-                    ExtraActionButton1:ClearAllPoints()
-                    ExtraActionButton1:SetPoint('BOTTOMLEFT', ItemSocketingFrame, 'BOTTOMRIGHT', 0, 30)
-                end
-            end
-        end
-
-    elseif event=='SOCKET_INFO_CLOSE' then
-        panel:UnregisterEvent('BAG_UPDATE_DELAYED')
-        if ItemSocketingFrame and ItemSocketingFrame.setTipsFrame then
-            ItemSocketingFrame.setTipsFrame:SetShown(false)--10.07 原石宝石，提示
-        end
-        if ExtraActionButton1Point then--记录打开10.07 宝石戒指, 额外技能条,位置
-            ExtraActionButton1:ClearAllPoints()
-            ExtraActionButton1:SetPoint(ExtraActionButton1Point[1], ExtraActionButton1Point[2], ExtraActionButton1Point[3], ExtraActionButton1Point[4], ExtraActionButton1Point[5])
-            ExtraActionButton1Point=nil
-        end
-
-function PaperDollItemSocketDisplayMixin:SetItem(item)
-	-- Currently only showing socket display for timerunning characters
-	local showSocketDisplay = item ~= nil and PlayerGetTimerunningSeasonID() ~= nil
-	self:SetShown(showSocketDisplay)
-
-	if not showSocketDisplay then
-		return
-	end
-
-	local numSockets = C_Item.GetItemNumSockets(item)
-	for index, slot in ipairs(self.Slots) do
-		slot:SetShown(index <= numSockets)
-
-		-- Can get gemID without the gem being loaded in item sparse (can't use GetItemGem)
-		local gemID = C_Item.GetItemGemID(item, index)
-		local hasGem = gemID ~= nil
-
-		slot.Gem:SetShown(hasGem)
-
-		if hasGem then
-			local gemItem = Item:CreateFromItemID(gemID)
-
-			-- Prevent edge case a different gem was previously shown, but new gem not cached yet
-			if not gemItem:IsItemDataCached() then
-				slot.Gem:SetTexture()
-			end
-
-			-- Icon requires item sparse, need to use a callback if not loaded
-			gemItem:ContinueOnItemLoad(function()
-				local gemIcon = C_Item.GetItemIconByID(gemID)
-				slot.Gem:SetTexture(gemIcon)
-			end)
-		end
-	end
-
-	self:Layout()
-end]]
