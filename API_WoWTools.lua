@@ -118,6 +118,15 @@ e.Icon={
     Alliance='charcreatetest-logo-alliance',
     Horde='charcreatetest-logo-horde',
     Neutral='nameplates-icon-flag-neutral',
+    [Enum.ItemQuality.Poor] = "dressingroom-itemborder-gray",--0
+	[Enum.ItemQuality.Common] = "dressingroom-itemborder-white",
+	[Enum.ItemQuality.Uncommon] = "dressingroom-itemborder-green",
+	[Enum.ItemQuality.Rare] = "dressingroom-itemborder-blue",
+	[Enum.ItemQuality.Epic] = "dressingroom-itemborder-purple",
+	[Enum.ItemQuality.Legendary] = "dressingroom-itemborder-orange",
+	[Enum.ItemQuality.Artifact] = "dressingroom-itemborder-artifact",
+	[Enum.ItemQuality.Heirloom] = "dressingroom-itemborder-account",
+	[Enum.ItemQuality.WoWToken] = "dressingroom-itemborder-account",--8
 }
 --leader='|A:UI-HUD-UnitFrame-Player-Group-GuideIcon:0:0|a',--队长
 --toLeft2='|A:common-icon-rotateleft:0:0|a',

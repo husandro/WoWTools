@@ -481,7 +481,7 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
 
 
 
-if not PlayerGetTimerunningSeasonID() then--10.2.7
+if not self.SocketDisplay then-- PlayerGetTimerunningSeasonID() then--10.2.7
     if not Save.hide and link then--宝石
         local numSockets= C_Item.GetItemNumSockets(link) or 0--MAX_NUM_SOCKETS
         for n=1, numSockets do
@@ -504,7 +504,7 @@ if not PlayerGetTimerunningSeasonID() then--10.2.7
                         frame:SetAlpha(0.3)
                     end
                 end)
-                
+
                 if isLeftSlot then--左边插曹
                     if n==1 then
                         gem:SetPoint('BOTTOMLEFT', self, 'BOTTOMRIGHT', 8, 0)
@@ -548,6 +548,45 @@ if not PlayerGetTimerunningSeasonID() then--10.2.7
             end
         end
     end
+
+elseif not Save.hide and self.SocketDisplay:IsShown() and link then   
+    for index, frame in pairs(self.SocketDisplay.Slots) do
+        if frame and frame:IsShown() then
+            local gemID = C_Item.GetItemGemID(link, index)
+            frame.gemID= gemID
+            if not frame:IsMouseEnabled() then
+                frame:EnableMouse(true)
+                frame:SetScript('OnLeave', function(f) e.tips:Hide() f:SetScale(1) end)
+                frame:SetScript('OnEnter', function(f)
+                    if f.gemID then
+                        e.tips:SetOwner(f, "ANCHOR_LEFT")
+                        e.tips:ClearLines()
+                        e.tips:SetItemByID(f.gemID)
+                        e.tips:Show()
+                    end
+                    f:SetScale(1.5)
+                end)
+                self.SocketDisplay:ClearAllPoints()
+                if isLeftSlot then
+                    self.SocketDisplay:SetPoint('RIGHT', self, 'LEFT')
+                else
+                    self.SocketDisplay:SetPoint('LEFT', self, 'RIGHT')
+                end
+                frame:SetSize(16, 16)
+                frame:SetFrameStrata('HIGH')
+                frame.Slot:ClearAllPoints()
+                frame.Slot:SetPoint('CENTER')
+                frame.Slot:SetSize(14, 14)
+            end
+            local atlas
+            if gemID then
+                local quality= C_Item.GetItemQualityByID(gemID)--C_Item.GetItemQualityColor(quality)
+                atlas= e.Icon[quality]
+            end
+            frame.Slot:SetAtlas(atlas or 'character-emptysocket')
+        end
+    end
+
 end
 
 

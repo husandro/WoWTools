@@ -7428,7 +7428,7 @@ local function Init_Loaded(arg1)
     
     elseif arg1=='Blizzard_ScrappingMachineUI' then--分解
         set(ScrappingMachineFrame.ScrapButton, '拆解')
-        C_Timer.After(0.1, function() set(ScrappingMachineFrameTitleText, '拆解大师Mk1型') end)
+        C_Timer.After(0.3, function() set(ScrappingMachineFrameTitleText, '拆解大师Mk1型') end)
     end
 end
 

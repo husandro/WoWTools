@@ -37,7 +37,7 @@ local qualityToIconBorderAtlas ={
 	[Enum.ItemQuality.WoWToken] = "auctionhouse-itemicon-border-account",
 }
 
-local qualityToIconBorderAtlas4 ={
+--[[local qualityToIconBorderAtlas4 ={
 	[Enum.ItemQuality.Poor] = "dressingroom-itemborder-gray",
 	[Enum.ItemQuality.Common] = "dressingroom-itemborder-white",
 	[Enum.ItemQuality.Uncommon] = "dressingroom-itemborder-green",
@@ -48,7 +48,7 @@ local qualityToIconBorderAtlas4 ={
 	[Enum.ItemQuality.Heirloom] = "dressingroom-itemborder-account",
 	[Enum.ItemQuality.WoWToken] = "dressingroom-itemborder-account",
 }
-
+]]
 
 
 
@@ -398,7 +398,7 @@ local function Set_TrackButton_Text()
 			btn:SetNormalTexture(tables.icon)--设置，图片
 		end
 		if btn.border then
-			local atlas= btn.itemButtonUse and qualityToIconBorderAtlas[tables.itemQuality] or qualityToIconBorderAtlas4[tables.itemQuality]
+			local atlas= btn.itemButtonUse and qualityToIconBorderAtlas[tables.itemQuality] or e.Icon[tables.itemQuality]--qualityToIconBorderAtlas4[tables.itemQuality]
 			if atlas then
 				btn.border:SetAtlas(atlas)
 			end

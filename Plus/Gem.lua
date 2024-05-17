@@ -4,6 +4,7 @@ local addName= SOCKET_GEMS
 
 local Buttons={}
 local Frame
+local Initializer
 local SpellsTab={
     433397,--取出宝石
     --405805,--拔出始源之石
@@ -53,7 +54,7 @@ end
 
 local function creatd_button(index)
     local btn= e.Cbtn(Frame, {button='ItemButton', icon='hide'})
-    
+
     btn.level=e.Cstr(btn)
     btn.level:SetPoint('TOPRIGHT')
     btn.type= e.Cstr(btn)
@@ -64,11 +65,15 @@ local function creatd_button(index)
     function btn:set_event()
         if self:IsShown() then
             self:RegisterEvent('ITEM_LOCKED')
+            self:RegisterEvent('ITEM_UNLOCKED')
             self:RegisterEvent('SOCKET_INFO_UPDATE')
         else
             self:UnregisterAllEvents()
         end
     end
+    btn:SetScript('OnHide', btn.set_event)
+    btn:SetScript('OnShow', btn.set_event)
+
     function btn:set_alpha()
         local info
         if self.bagID then
@@ -90,10 +95,7 @@ local function creatd_button(index)
         self.type:SetText('')
         self.level:SetText('')
     end
-    btn:SetScript('OnEvent', btn.alpha)
-
-        
-
+    btn:SetScript('OnEvent', btn.set_alpha)
     btn:SetScript('OnClick', function(self, d)
         if d=='LeftButton' then
             C_Container.PickupContainerItem(self.bagID, self.slotID)
@@ -101,21 +103,17 @@ local function creatd_button(index)
             ClearCursor()
         end
     end)
-
     btn:SetScript('OnEnter', function(self)
         e.tips:SetOwner(ItemSocketingFrame, 'ANCHOR_BOTTOMRIGHT')
         e.tips:ClearLines()
         e.tips:SetBagItem(self.bagID, self.slotID)
         e.tips:Show()
         e.FindBagItem(true, {bag={bag=self.bagID, slot=self.slotID}})
-
     end)
     btn:SetScript('OnLeave', function()
         GameTooltip_Hide()
         e.FindBagItem()
     end)
-
-
     Buttons[index]= btn
     return btn
 end
@@ -171,7 +169,11 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
             if a.expacID> b.expacID then
                 return true
             elseif a.info.quality== b.info.quality then
-                return a.level>b.level
+                if a.level== b.level then
+                    return a.info.itemID> b.info.itemID
+                else
+                    return a.level>b.level
+                end
             else
                 return a.info.quality>b.info.quality
             end
@@ -211,7 +213,6 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
             btn.slotID= info.slot
             btn.isLocked= info.info.isLocked
             btn:SetItemButtonCount(info.info.stackCount)
-            btn:set_event()
             btn:SetShown(true)
             e.Get_Gem_Stats(btn, itemLink)
             x=x-40--34
@@ -222,7 +223,7 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
     end
 
 
-    for i= index+1, #Buttons, 1 do
+    for i= index, #Buttons, 1 do
         local btn= Buttons[i]
         if btn then btn:rest() end
     end
@@ -250,14 +251,9 @@ end
 --433397/取出宝石
 local SpellButton
 local function Init_Spell_Button()
-    if UnitAffectingCombat('player') or SpellButton then
-        if SpellButton then SpellButton:set() end
-        return
-    end
-
     SpellButton= e.Cbtn(Frame, {size={32,32}, icon='hide', type=true})
     SpellButton:Hide()
-    SpellButton:SetPoint('BOTTOMRIGHT', -2, 46)
+    SpellButton:SetPoint('BOTTOMRIGHT', ItemSocketingSocketButton, 'TOPRIGHT', 0, 10)
     SpellButton.texture= SpellButton:CreateTexture(nil, 'OVERLAY')
     SpellButton.texture:SetAllPoints(SpellButton)
     SpellButton.count=e.Cstr(SpellButton, {color={r=1,g=1,b=1}})--nil,nil,nil,true)
@@ -289,6 +285,9 @@ local function Init_Spell_Button()
             e.SetItemSpellCool({frame=self, spell=self.spellID})
         elseif event=='ACTIONBAR_UPDATE_STATE' then
             self:set()
+        elseif event=='PLAYER_REGEN_ENABLED' then
+            self:set()
+            self:UnregisterEvent('PLAYER_REGEN_ENABLED')
         end
     end)
 
@@ -298,15 +297,13 @@ local function Init_Spell_Button()
         e.SetItemSpellCool({frame=self, spell=self.spellID})
         self:set_count()
     end)
-    SpellButton:SetScript('OnHide', function(self)
-        self:UnregisterEvent('SPELL_UPDATE_USABLE')
-        self:UnregisterEvent('SPELL_UPDATE_COOLDOWN')
-    end)
+    SpellButton:SetScript('OnHide', SpellButton.UnregisterAllEvents)
 
 
 
     function SpellButton:set()
         if not self:CanChangeAttribute() then
+            self:RegisterEvent('PLAYER_REGEN_ENABLED')
             return
         end
 
@@ -335,9 +332,8 @@ local function Init_Spell_Button()
                 spellID= spell
             end
         end
-        if not UnitAffectingCombat('player') then
-            self:SetShown((spellID or action) and true or false)
-        end
+
+        self:SetShown((spellID or action) and true or false)
         self.spellID= spellID
         self.action= action
     end
@@ -381,11 +377,24 @@ end
 
 
 local function Init()
+
+
     Frame= CreateFrame("Frame", nil, ItemSocketingFrame)
     Frame:SetPoint('BOTTOMRIGHT', 0, -10)
     Frame:SetSize(1,1)
     Frame:SetScript('OnHide', function() CurTypeGemTab={} end)
 
+    function Frame:set_event()
+        if self:IsShown() then
+            self:RegisterEvent('BAG_UPDATE_DELAYED')
+        else
+            self:UnregisterAllEvents()
+        end
+    end
+    Frame:SetScript('OnHide', Frame.set_event)
+    Frame:SetScript('OnShow', Frame.set_event)
+    Frame:SetScript('OnEvent', set_Gem)
+    Frame:set_event()
 
     ItemSocketingSocket3Left:ClearAllPoints()
     ItemSocketingSocket2Left:ClearAllPoints()
@@ -421,8 +430,13 @@ local function Init()
                     btn.type=e.Cstr(btn)
                     btn.type:SetPoint('BOTTOM', btn, 'TOP', 0, 2)
                     btn.qualityTexture= btn:CreateTexture(nil, 'OVERLAY')
-                    btn.qualityTexture:SetPoint('RIGHT', btn, 'LEFT',15,-8)
-                    btn.qualityTexture:SetSize(30,30)
+                    if PlayerGetTimerunningSeasonID() then
+                        btn.qualityTexture:SetPoint('CENTER')
+                        btn.qualityTexture:SetSize(46,46)--40
+                    else
+                        btn.qualityTexture:SetPoint('RIGHT', btn, 'LEFT',15,-8)
+                        btn.qualityTexture:SetSize(30,30)
+                    end
                     btn.levelText=e.Cstr(btn)
                     btn.levelText:SetPoint('CENTER')
                     btn.leftText=e.Cstr(btn)
@@ -434,9 +448,14 @@ local function Init()
                 local left, right= e.Get_Gem_Stats(nil, itemLink)
                 local atlas
                 if itemLink then
-                    local quality= C_TradeSkillUI.GetItemReagentQualityByItemInfo(itemLink) or C_TradeSkillUI.GetItemCraftedQualityByItemInfo(itemLink)
-                    if quality then
-                        atlas = ("Professions-Icon-Quality-Tier%d-Inv"):format(quality);
+                    if PlayerGetTimerunningSeasonID() then
+                        local quality= C_Item.GetItemQualityByID(itemLink)--C_Item.GetItemQualityColor(quality)
+                        atlas= e.Icon[quality]
+                    else
+                        local quality= C_TradeSkillUI.GetItemReagentQualityByItemInfo(itemLink) or C_TradeSkillUI.GetItemCraftedQualityByItemInfo(itemLink)
+                        if quality then
+                            atlas = ("Professions-Icon-Quality-Tier%d-Inv"):format(quality)
+                        end
                     end
                 end
 
@@ -471,13 +490,87 @@ local function Init()
             ItemSocketingSocket3:SetPoint('BOTTOMRIGHT', -50, 33)
         end
         set_point()
-        --set_Gem()
+        set_Gem()
     end)
 
 
-    ItemSocketingFrame:HookScript('OnEvent', set_Gem)
+    --ItemSocketingFrame:HookScript('OnEvent', set_Gem)
     set_Gem()
     Init_Spell_Button()
+
+
+--总开关
+    local btn= e.Cbtn(ItemSocketingFrame.TitleContainer, {size=22, icon='hide'})
+    btn:SetPoint('LEFT', 26)
+    function btn:set_texture()
+        btn:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
+    end
+    function btn:set_shown()
+        if Frame:CanChangeAttribute() then
+            Frame:SetShown(not Save.hide)
+            self:set_texture()
+        else
+            self:RegisterEvent('PLAYER_REGEN_ENABLED')
+        end
+    end
+    function btn:set_scale()
+        if Frame:CanChangeAttribute() then
+            Frame:SetScale(Save.scale or 1)
+        else
+            self:RegisterEvent('PLAYER_REGEN_ENABLED')
+        end
+    end
+    function btn:set_tooltips()
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, Initializer:GetName())
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.GetShowHide(not Save.hide), e.Icon.left)
+        e.tips:AddDoubleLine(e.onlyChinese and '选项' or OPTIONS, e.Icon.right)
+        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.scale or 1), e.Icon.mid)
+        e.tips:Show()
+    end
+    btn:SetAlpha(0.5)
+    btn:SetScript('OnLeave', function(self) self:SetAlpha(0.5) e.tips:Hide() end)
+    btn:SetScript('OnEnter', function(self)
+        self:set_tooltips()
+        self:SetAlpha(1)
+    end)
+    btn:SetScript('OnEvent', function(self)
+        self:set_scale()
+        self:set_shown()
+        self:UnregisterAllEvents()
+    end)
+    btn:SetScript('OnClick', function(self, d)
+        if not self:CanChangeAttribute() then
+            return
+        end
+        if d=='LeftButton' then
+            Save.hide= not Save.hide and true or nil
+            self:set_shown()
+            self:set_texture()
+            self:set_tooltips()
+        else
+            e.OpenPanelOpting(Initializer)
+        end
+    end)
+    btn:SetScript('OnMouseWheel', function(self, d)
+        if not self:CanChangeAttribute() then
+            return
+        end
+        local n= Save.scale or 1
+        n= d==1 and n+0.05 or n
+        n= d==-1 and n-0.05 or n
+        n= n>4 and 4 or n
+        n= n<0.4 and 0.4 or n
+        Save.scale= n
+        self:set_scale()
+        self:set_tooltips()
+    end)
+
+    btn:set_texture()
+    btn:set_shown()
+    btn:set_scale()
 end
 
 
@@ -504,13 +597,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave[addName] or Save
 
             --添加控制面板
-            e.AddPanel_Check({
+            Initializer= e.AddPanel_Check({
                 name= '|T4555592:0|t'..(e.onlyChinese and '镶嵌宝石' or addName),
                 tooltip= e.cn(addName),
                 value= not Save.disabled,
                 func= function()
                     Save.disabled = not Save.disabled and true or nil
-                    print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+                    print(id, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
                 end
             })
             if Save.disabled then
