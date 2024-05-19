@@ -1948,7 +1948,7 @@ local function Loot_Plus()
                     end
                 end
                 return (not p or p.playerRollState==Enum.EncounterLootDropRollState.Greed) and ''
-                        or ((e.Player.region==1 or e.Player.region==3) and ' need, please{rt1}'..nu)
+                        or ((e.Player.region==1 or e.Player.region==3) and ' need, pls{rt1}'..nu)
                         or (e.Player.region==5 and ' 您好，我很需求这个，能让让吗？谢谢{rt1}'..nu)
                         or (' '..NEED..', '..VOICEMACRO_LABEL_THANKYOU3..'{rt1}'..nu)
             end

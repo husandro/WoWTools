@@ -1859,11 +1859,11 @@ function panel:Init_Server_equipmentButton_Lable()
         return
     end
    if not panel.serverText then
-        panel.serverText= e.Cstr(PaperDollItemsFrame,{color= GameLimitedMode_IsActive() and {r=0,g=1,b=0} or true, mouse=true, justifyH='RIGHT'})--显示服务器名称
-        panel.serverText:SetPoint('RIGHT', panel.durabilityText or CharacterLevelText, 'LEFT',-2,0)
-        panel.serverText:SetScript("OnLeave",function(self) e.tips:Hide() self:SetAlpha(1) end)
-        panel.serverText:SetScript("OnEnter",function(self)
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
+        panel.serverText= e.Cstr(CharacterFrame.TitleContainer, {color= GameLimitedMode_IsActive() and {r=0,g=1,b=0} or true, mouse=true, justifyH='RIGHT'})--显示服务器名称
+        panel.serverText:SetPoint('LEFT', PaperDollItemsFrame.ShowHideButton, 'RIGHT',2,0)
+        panel.serverText:SetScript("OnLeave",function(frame) e.tips:Hide() frame:SetAlpha(1) end)
+        panel.serverText:SetScript("OnEnter",function(frame)
+            e.tips:SetOwner(frame, "ANCHOR_LEFT")
             e.tips:ClearLines()
             local server= e.Get_Region(e.Player.realm, nil, nil)--服务器，EU， US {col=, text=, realm=}
             e.tips:AddDoubleLine(e.onlyChinese and '服务器:' or FRIENDS_LIST_REALM, server and server.col..' '..server.realm)
@@ -1895,7 +1895,7 @@ function panel:Init_Server_equipmentButton_Lable()
             end
             e.tips:AddDoubleLine(id, Initializer:GetName())
             e.tips:Show()
-            self:SetAlpha(0.3)
+            frame:SetAlpha(0.3)
         end)
     end
     local ser=GetAutoCompleteRealms() or {}

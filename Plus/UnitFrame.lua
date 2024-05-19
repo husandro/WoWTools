@@ -112,15 +112,14 @@ local function Init_PlayerFrame()--PlayerFrame.lua
 
     --等级，颜色
     hooksecurefunc('PlayerFrame_UpdateLevel', function()
-        local unit= PlayerFrame.unit
-        if (UnitExists(unit)) then
-            local effectiveLevel = UnitEffectiveLevel(unit)
+        if UnitExists("player") then
+            local effectiveLevel = UnitEffectiveLevel(PlayerFrame.unit)
             if effectiveLevel== MAX_PLAYER_LEVEL then
                 PlayerLevelText:SetText('')
-            else
-                PlayerLevelText:SetText(effectiveLevel)
+            --[[else
+                --PlayerLevelText:SetText(effectiveLevel)
                 local r,g,b= e.GetUnitColor(unit)
-                PlayerLevelText:SetTextColor(r,g,b)--设置颜色                
+                PlayerLevelText:SetTextColor(r,g,b)--设置颜色]]
             end
         end
     end)

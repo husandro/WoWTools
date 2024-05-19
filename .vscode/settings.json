@@ -4466,7 +4466,8 @@
         "ScrappingMachineFrameTitleText",
         "EncounterJournal_SetBullets",
         "EncounterJournal_ShiftHeaders",
-        "ItemSocketingFrame_OnEvent"
+        "ItemSocketingFrame_OnEvent",
+        "CharacterFrameTitleText"
     ],
     "Lua.diagnostics.disable": [
         "inject-field",
