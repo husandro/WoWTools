@@ -2580,6 +2580,8 @@ local function Init_Menu(_, level, menuList)
         text= Initializer:GetName(),--'    |A:mechagon-projects:0:0|a'..(e.onlyChinese and '选项' or OPTIONS),
         --notCheckable=true,
         checked= SettingsPanel:IsShown(),
+        tooltipOnButton=true,
+        tooltipTitle= e.onlyChinese and '选项' or OPTIONS,
         keepShownOnClick=true,
         menuList='OPTIONS',
         hasArrow=true,
@@ -2632,7 +2634,7 @@ local function click_Func(self, d)
             self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
             e.LibDD:UIDropDownMenu_Initialize(self.Menu, Init_Menu, 'MENU')
         end
-        e.LibDD:ToggleDropDownMenu(1, nil,self.Menu, self, 15,0)
+        e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
 
     elseif IsShiftKeyDown() then
         WeeklyRewards_LoadUI()--宏伟宝库
