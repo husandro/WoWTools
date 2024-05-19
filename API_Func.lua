@@ -1136,7 +1136,7 @@ function e.Set_Item_Stats(self, link, setting) --设置，物品，次属性，�
                     end
                 end
                 if count>0 then
-                    itemLevel= count
+                    itemLevel= e.MK(count,3)
                 end
             else
                 local quality = C_Item.GetItemQualityByID(link)--颜色
