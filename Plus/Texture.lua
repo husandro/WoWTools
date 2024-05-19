@@ -369,6 +369,9 @@ local function Init_All_Frame()
             hide_Texture(OverrideActionBarExpBarXpMid)
             hide_Texture(OverrideActionBarExpBarXpR)
             hide_Texture(OverrideActionBarExpBarXpL)
+            for i=1, 19 do
+                set_Alpha_Color(_G['OverrideActionBarXpDiv'..i], nil, nil, 0.3)
+            end
         end
     end)
     if ExtraActionButton1 then hide_Texture(ExtraActionButton1.style) end--额外技能

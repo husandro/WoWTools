@@ -2667,13 +2667,11 @@ local function Init_Move()
     e.Set_Move_Frame(PlayerPowerBarAlt)
     e.Set_Move_Frame(CreateChannelPopup)
     e.Set_Move_Frame(BattleTagInviteFrame)
-
+    e.Set_Move_Frame(OverrideActionBarExpBar, {notZoom=true})
 
 
      C_Timer.After(2, function()
 
-
-            
             e.Set_Move_Frame(SendMailFrame, {frame=MailFrame})
             e.Set_Move_Frame(StableFrame)
             e.Set_Move_Frame(MerchantFrame)
