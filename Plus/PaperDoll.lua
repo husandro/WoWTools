@@ -564,7 +564,7 @@ elseif not Save.hide and self.SocketDisplay:IsShown() and link then
                         e.tips:SetItemByID(f.gemID)
                         e.tips:Show()
                     end
-                    f:SetScale(1.5)
+                    f:SetScale(1.3)
                 end)
                 self.SocketDisplay:ClearAllPoints()
                 if isLeftSlot then
@@ -577,11 +577,11 @@ elseif not Save.hide and self.SocketDisplay:IsShown() and link then
                 else
                     self.SocketDisplay:SetPoint('LEFT', self, 'RIGHT')
                 end]]
-                frame:SetSize(16, 16)
+                frame:SetSize(15, 15)
                 frame:SetFrameStrata('HIGH')
                 frame.Slot:ClearAllPoints()
                 frame.Slot:SetPoint('CENTER')
-                frame.Slot:SetSize(15, 15)
+                frame.Slot:SetSize(14, 14)
             end
             local atlas
             if gemID then
