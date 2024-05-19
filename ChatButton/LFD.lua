@@ -29,7 +29,7 @@ local panel= CreateFrame("Frame")
 
 
 
-local get_Reward_Info=function(dungeonID)--FB奖励
+local function get_Reward_Info(dungeonID)--FB奖励
     local t=''
     if not dungeonID then
         return t
@@ -182,10 +182,10 @@ local function get_InviteButton_Frame(index)
             then
                 local dialog = StaticPopup_Show("LFG_LIST_INVITING_CONVERT_TO_RAID")
                 if ( dialog ) then
-                    dialog.data = self2:GetParent().applicantID;
+                    dialog.data = self2:GetParent().applicantID
                 end
             else
-                C_LFGList.InviteApplicant(self2:GetParent().applicantID);
+                C_LFGList.InviteApplicant(self2:GetParent().applicantID)
             end
         end)
         frame.InviteButton:SetScript('OnLeave', GameTooltip_Hide)
@@ -200,8 +200,8 @@ local function get_InviteButton_Frame(index)
         frame.DeclineButton= e.Cbtn(frame, {size={size,size}, atlas= 'communities-icon-redx'})
         frame.DeclineButton:SetPoint('LEFT', frame.InviteButton, 'RIGHT')
         frame.DeclineButton:SetScript('OnClick', function(self2)
-            --C_LFGList.RemoveApplicant(self2:GetParent().applicantID);
-            C_LFGList.DeclineApplicant(self2:GetParent().applicantID);
+            --C_LFGList.RemoveApplicant(self2:GetParent().applicantID)
+            C_LFGList.DeclineApplicant(self2:GetParent().applicantID)
         end)
         frame.DeclineButton:SetScript('OnLeave', GameTooltip_Hide)
         frame.DeclineButton:SetScript('OnEnter', function(self2)
@@ -667,6 +667,9 @@ local function Init_tipsButton()
             return
         end
 
+        if GetLFGQueueStats(LE_LFG_CATEGORY_SCENARIO) then
+            LeaveLFG(LE_LFG_CATEGORY_SCENARIO);
+        end
         --pve
         for i=1, NUM_LE_LFG_CATEGORYS do
             LeaveLFG(i)
@@ -680,7 +683,7 @@ local function Init_tipsButton()
 
         --[[PvP 不能用，保护 AcceptBattlefieldPort
         for i=1, GetMaxBattlefieldID() do
-            local status, mapName, teamSize, registeredMatch, suspendedQueue, queueType = GetBattlefieldStatus(i);
+            local status, mapName, teamSize, registeredMatch, suspendedQueue, queueType = GetBattlefieldStatus(i)
         end]]
 
         if GetNumWorldPVPAreas then--10.2.7 移除
@@ -996,6 +999,63 @@ end
 
 
 
+--场景
+local function Init_Scenarios_Menu(level)--ScenarioFinder.lua
+    local numScenario= GetNumRandomScenarios() or 0
+    if numScenario<=0 and ScenariosList and ScenariosHiddenByCollapseList then
+        return
+    end
+    e.LibDD:UIDropDownMenu_AddButton({
+        text=e.onlyChinese and '场景战役' or TRACKER_HEADER_SCENARIO,
+        isTitle=true,
+        notCheckable=true,
+        keepShownOnClick=true,
+    }, level)
+
+    for i=1, numScenario do
+        local scenarioID, name = GetRandomScenarioInfo(i)--local id, name, typeID, subtype, minLevel, maxLevel
+        local isAvailableForAll, isAvailableForPlayer = IsLFGDungeonJoinable(scenarioID)
+        local info
+        if ( isAvailableForPlayer ) then
+            if ( isAvailableForAll ) then
+                e.LibDD:UIDropDownMenu_AddButton({
+                    text = e.cn(name)..get_Reward_Info(scenarioID),
+                    arg1 = scenarioID,
+                    keepShownOnClick=true,
+                    --checked = (ScenarioQueueFrame.type == value),
+                    checked= GetLFGQueueStats(LE_LFG_CATEGORY_SCENARIO, scenarioID),
+                    isTitle = nil,
+                    func = function(_, arg1)
+                        --local mode, subMode = GetLFGMode(LE_LFG_CATEGORY_SCENARIO);
+                        if GetLFGQueueStats(LE_LFG_CATEGORY_SCENARIO) then--not ( mode == "queued" or mode == "listed" or mode == "rolecheck" or mode == "suspended" ) then
+                            LeaveLFG(LE_LFG_CATEGORY_SCENARIO)                           
+                        end
+                        LFG_JoinDungeon(LE_LFG_CATEGORY_SCENARIO, arg1, ScenariosList, ScenariosHiddenByCollapseList);--ScenarioQueueFrame_Join(); 
+                        
+                    end,
+                }, level)
+            else
+                e.LibDD:UIDropDownMenu_AddButton({
+                text = e.cn(name),
+                keepShownOnClick=true,
+                colorCode='|cff606060',
+                tooltipOnButton = true,
+                tooltipTitle = e.onlyChinese and '你不能进入此队列。' or YOU_MAY_NOT_QUEUE_FOR_THIS,
+                tooltipText = LFGConstructDeclinedMessage(scenarioID),
+            }, level)
+            end
+        end
+    end
+end
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1144,7 +1204,7 @@ local function Init_LFGListSearchEntry_Update(self)
     local orderIndexes = {}
     if categoryID == 2 and not isAppFinished then--_G["ShowRIORaitingWA1NotShowClasses"] ~= true--https://wago.io/klC4qqHaF
         for i=1, info.numMembers do
-            --local role, class, classLocalized, specLocalized, isLeader = C_LFGList.GetSearchResultMemberInfo(resultID, i);
+            --local role, class, classLocalized, specLocalized, isLeader = C_LFGList.GetSearchResultMemberInfo(resultID, i)
             local role, class, _, specLocalized, isLeader = C_LFGList.GetSearchResultMemberInfo(resultID, i)
             local orderIndex = getIndex(LFG_LIST_GROUP_DATA_ROLE_ORDER, role)
             table.insert(orderIndexes, {orderIndex, class, specLocalized, isLeader})
@@ -1464,21 +1524,21 @@ local function InitList(_, level, type)--LFDFrame.lua
     local shouldtext
     local cooldowntext
 
-    --local hasDeserter = false;
-    local deserterExpiration = GetLFGDeserterExpiration();
+    --local hasDeserter = false
+    local deserterExpiration = GetLFGDeserterExpiration()
 
 	if ( deserterExpiration ) then
-		shouldtext = format("|cnRED_FONT_COLOR:%s|r "..e.GetPlayerInfo({guid=e.Player.guid}), e.onlyChinese and '逃亡者' or DESERTER);
-        local timeRemaining = deserterExpiration - GetTime();
+		shouldtext = format("|cnRED_FONT_COLOR:%s|r "..e.GetPlayerInfo({guid=e.Player.guid}), e.onlyChinese and '逃亡者' or DESERTER)
+        local timeRemaining = deserterExpiration - GetTime()
         if timeRemaining>0 then
             shouldtext= shouldtext..' '..SecondsToTime(ceil(timeRemaining))
         end
-		--hasDeserter = true;
+		--hasDeserter = true
 	else
-		local myExpireTime = GetLFGRandomCooldownExpiration();
+		local myExpireTime = GetLFGRandomCooldownExpiration()
         if myExpireTime then
             cooldowntext= format("|cnRED_FONT_COLOR:%s|r "..e.GetPlayerInfo({guid=e.Player.guid}), e.onlyChinese and '冷却中' or ON_COOLDOWN)
-            local timeRemaining = myExpireTime - GetTime();
+            local timeRemaining = myExpireTime - GetTime()
             if timeRemaining>0 then
                 cooldowntext= cooldowntext..' '..SecondsToTime(ceil(timeRemaining))
             end
@@ -1488,7 +1548,7 @@ local function InitList(_, level, type)--LFDFrame.lua
         local unit= 'party'..i
 		if ( UnitHasLFGDeserter(unit) ) then
 			shouldtext= (shouldtext and shouldtext..'|n' or '')..e.GetPlayerInfo({unit=unit})..' '..(e.onlyChinese and '逃亡者' or DESERTER)
-			--hasDeserter = true;
+			--hasDeserter = true
 		elseif ( UnitHasLFGRandomCooldown(unit) ) then
 			cooldowntext= (cooldowntext and cooldowntext..'|n' or '')..e.GetPlayerInfo({unit=unit})..' '..(e.onlyChinese and '冷却中' or ON_COOLDOWN)
 		end
@@ -1506,6 +1566,9 @@ local function InitList(_, level, type)--LFDFrame.lua
         e.LibDD:UIDropDownMenu_AddButton(info, level)
     end
     set_Party_Menu_List(level)--随机
+
+
+    Init_Scenarios_Menu(level)--场景
 
     if cooldowntext then
         info={
@@ -1864,7 +1927,7 @@ local function Roll_Plus()
 
     hooksecurefunc('GroupLootContainer_Update', function(self)
         for i=1, self.maxIndex do
-            local frame = self.rollFrames[i];
+            local frame = self.rollFrames[i]
             if frame and frame:IsShown()  then
                 set_ROLL_Check(frame)
             end
@@ -2309,21 +2372,21 @@ local function Init()
     end)
     LFGDungeonReadyDialog:HookScript('OnShow', function(self)
         local numBosses = select(9, GetLFGProposal()) or 0
-        local isHoliday = select(13, GetLFGProposal());
+        local isHoliday = select(13, GetLFGProposal())
         if ( numBosses == 0 or isHoliday) then
-            return;
+            return
         end
         local text
         local dead=0
         for i=1, numBosses do
-            local bossName, _, isKilled = GetLFGProposalEncounter(i);
+            local bossName, _, isKilled = GetLFGProposalEncounter(i)
             if bossName then
                 text= (text and text..'|n' or '')..i..') '
                 if ( isKilled ) then
-                    text= text..'|A:common-icon-redx:0:0|a|cnRED_FONT_COLOR:'..e.cn(bossName)..' '..(e.onlyChinese and '已消灭' or BOSS_DEAD);
+                    text= text..'|A:common-icon-redx:0:0|a|cnRED_FONT_COLOR:'..e.cn(bossName)..' '..(e.onlyChinese and '已消灭' or BOSS_DEAD)
                     dead= dead+1
                 else
-                    text= text..format('|A:%s:0:0|a', e.Icon.select)..'|cnGREEN_FONT_COLOR:'..e.cn(bossName)..' '..(e.onlyChinese and '可消灭' or BOSS_ALIVE);
+                    text= text..format('|A:%s:0:0|a', e.Icon.select)..'|cnGREEN_FONT_COLOR:'..e.cn(bossName)..' '..(e.onlyChinese and '可消灭' or BOSS_ALIVE)
                 end
                 text= text..'|r'
             end
@@ -2361,7 +2424,7 @@ local function Init()
     RolePollPopup:HookScript('OnShow', function(self)
         e.PlaySound()--播放, 声音
 
-        local canBeTank, canBeHealer, canBeDamager = UnitGetAvailableRoles("player");
+        local canBeTank, canBeHealer, canBeDamager = UnitGetAvailableRoles("player")
         local specID=GetSpecialization()--当前专精
         local icon
         local btn2

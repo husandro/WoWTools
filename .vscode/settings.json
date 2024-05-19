@@ -4467,7 +4467,9 @@
         "EncounterJournal_SetBullets",
         "EncounterJournal_ShiftHeaders",
         "ItemSocketingFrame_OnEvent",
-        "CharacterFrameTitleText"
+        "CharacterFrameTitleText",
+        "LFG_JoinDungeon",
+        "TRACKER_HEADER_SCENARIO"
     ],
     "Lua.diagnostics.disable": [
         "inject-field",
