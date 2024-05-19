@@ -465,7 +465,7 @@ local function Init()
                 btn.leftText:SetText(left or '')
                 btn.rightText:SetText(right or '')
                 local itemLevel= itemLink and C_Item.GetDetailedItemLevelInfo(itemLink) or 1
-                btn.levelText:SetText(itemLevel>10 or '')
+                btn.levelText:SetText(itemLevel>10 and itemLevel or '')
                 btn.levelText:SetTextColor(Get_Item_Color(itemLink))
                 if atlas then
                     btn.qualityTexture:SetAtlas(atlas)
