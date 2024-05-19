@@ -481,7 +481,7 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
 
 
 
-if not self.SocketDisplay then-- PlayerGetTimerunningSeasonID() then--10.2.7
+if not PlayerGetTimerunningSeasonID() then-- PlayerGetTimerunningSeasonID() then--10.2.7
     if not Save.hide and link then--宝石
         local numSockets= C_Item.GetItemNumSockets(link) or 0--MAX_NUM_SOCKETS
         for n=1, numSockets do
