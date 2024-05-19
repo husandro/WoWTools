@@ -88,7 +88,9 @@ function func.Set_Init_Item(self, hide)--创建，设置，内容
         self.text2Right:SetPoint('BOTTOMRIGHT', self.textRight, 'TOPRIGHT')
 
         self.backgroundColor= self:CreateTexture(nil, 'BACKGROUND',nil, 1)--背景颜色
-        self.backgroundColor:SetAllPoints(self)
+        self.backgroundColor:SetPoint('TOPLEFT')
+        self.backgroundColor:SetPoint('BOTTOMRIGHT')
+        --self.backgroundColor:SetAllPoints(self)
 
         if not self.Portrait then
             self.Portrait= self:CreateTexture(nil, 'BACKGROUND',nil, 2)--右上角图标
