@@ -87,7 +87,6 @@ local function hookButton(self, setFont)
     end
     set(label, e.strText[label:GetText()])
     hooksecurefunc(self, 'SetText', function(frame, name)
-        print(e.cn(name), frame)
         if name and name~='' then
             set(frame.text or frame.Text or frame.Label, e.strText[name])
         end
