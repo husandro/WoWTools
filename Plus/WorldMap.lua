@@ -287,16 +287,19 @@ local function setMapQuestList()--世界地图,任务, 加 - + 按钮
                 or (text==self.REFORGE_CURRENT and info.questID and C_QuestLog.IsOnMap(info.questID))
             then
                 find=true
-            elseif name:find(text) then
-                find=true
             else
-                for _, boje in pairs(C_QuestLog.GetQuestObjectives(info.questID) or {}) do
-                    local str= boje.text
-                    if str then
-                        str= str:lower()
-                        if str:find(text) then
-                            find=true
-                            break
+                text= e.Magic(text)
+                if name:find(text) then
+                    find=true
+                else
+                    for _, boje in pairs(C_QuestLog.GetQuestObjectives(info.questID) or {}) do
+                        local str= boje.text
+                        if str then
+                            str= str:lower()
+                            if str:find(text) then
+                                find=true
+                                break
+                            end
                         end
                     end
                 end
