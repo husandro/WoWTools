@@ -566,18 +566,17 @@ elseif not Save.hide and self.SocketDisplay:IsShown() and link then
                     end
                     f:SetScale(1.5)
                 end)
-                --[[self.SocketDisplay:ClearAllPoints()
+                self.SocketDisplay:ClearAllPoints()
                 if isLeftSlot then
                     self.SocketDisplay:SetPoint('LEFT', self, 'RIGHT', 8, 0)
                 else
                     self.SocketDisplay:SetPoint('RIGHT', self, 'LEFT', -8, 0)
-                end]]
-                self.SocketDisplay:ClearAllPoints()
-                if isLeftSlot then
+                end
+                --[[if isLeftSlot then
                     self.SocketDisplay:SetPoint('RIGHT', self, 'LEFT')
                 else
                     self.SocketDisplay:SetPoint('LEFT', self, 'RIGHT')
-                end
+                end]]
                 frame:SetSize(16, 16)
                 frame:SetFrameStrata('HIGH')
                 frame.Slot:ClearAllPoints()

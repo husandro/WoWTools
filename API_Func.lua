@@ -1113,26 +1113,53 @@ function e.Set_Item_Stats(self, link, setting) --设置，物品，次属性，�
         end
 
         if not hideLevel then--物品, 装等
-            local quality = C_Item.GetItemQualityByID(link)--颜色
-            if quality==7 then
-
-                local dataInfo= e.GetTooltipData({hyperLink=link, itemID= itemID or C_Item.GetItemInfoInstant(link), text={itemLevelStr}, onlyText=true})--物品提示，信息
-                itemLevel= tonumber(dataInfo.text[itemLevelStr])
-            end
-            itemLevel= itemLevel or C_Item.GetDetailedItemLevelInfo(link)
-            if itemLevel and itemLevel<3 then
-                itemLevel=nil
-            end
-            local avgItemLevel= itemLevel and select(2, GetAverageItemLevel())--已装备, 装等
-            if itemLevel and avgItemLevel then
-                local lv = itemLevel- avgItemLevel
-                    if lv <= -6  then
-                        itemLevel =RED_FONT_COLOR_CODE..itemLevel..'|r'
-                    elseif lv>=7 then
-                        itemLevel= GREEN_FONT_COLOR_CODE..itemLevel..'|r'
-                    else
-                        itemLevel='|cffffffff'..itemLevel..'|r'
+            itemID= itemID or C_Item.GetItemInfoInstant(link)
+            if itemID==210333 then
+                local currencies={--https://wago.io/thread_count
+                    [2853] = 1, -- "power" aka str/agi/int
+                    [2854] = 0.5, -- stamina (1 thread gives 2 of this stat)
+                    [2855] = 1, -- crit
+                    [2856] = 1, -- haste
+                    [2857] = 1, -- leech
+                    [2858] = 1, -- mastery
+                    [2859] = 1, -- speed
+                    [2860] = 1, -- vers
+                    -- 2861-2869 are currencies which seem to be modifiers for damage(?) against different creature types (i.e. humanoid, undead, elemental, etc)
+                    -- 2870-2876 are currencies which seem to be modifiers for damage (resist?) of the various spell schools (i.e. physical, arcane, fire, etc)
+                    [3001] = 1, -- xp gain
+                }
+                local count = 0
+                for currencyID, mult in pairs(currencies) do
+                    local info = C_CurrencyInfo.GetCurrencyInfo(currencyID)
+                    if info and info.quantity and info.quantity>0 then
+                        count = count + info.quantity*mult
                     end
+                end
+                if count>0 then
+                    itemLevel= count
+                end
+            else
+                local quality = C_Item.GetItemQualityByID(link)--颜色
+                if quality==7 then
+
+                    local dataInfo= e.GetTooltipData({hyperLink=link, itemID= itemID or C_Item.GetItemInfoInstant(link), text={itemLevelStr}, onlyText=true})--物品提示，信息
+                    itemLevel= tonumber(dataInfo.text[itemLevelStr])
+                end
+                itemLevel= itemLevel or C_Item.GetDetailedItemLevelInfo(link)
+                if itemLevel and itemLevel<3 then
+                    itemLevel=nil
+                end
+                local avgItemLevel= itemLevel and select(2, GetAverageItemLevel())--已装备, 装等
+                if itemLevel and avgItemLevel then
+                    local lv = itemLevel- avgItemLevel
+                        if lv <= -6  then
+                            itemLevel =RED_FONT_COLOR_CODE..itemLevel..'|r'
+                        elseif lv>=7 then
+                            itemLevel= GREEN_FONT_COLOR_CODE..itemLevel..'|r'
+                        else
+                            itemLevel='|cffffffff'..itemLevel..'|r'
+                        end
+                end
             end
             if not self.itemLevel and itemLevel then
                 self.itemLevel= e.Cstr(self, {justifyH='CENTER'})
