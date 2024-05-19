@@ -6,10 +6,6 @@ end
 
 
 
-
-local function Init()
-    
-
 local tab={
     ["101_CutsceneName_Ref"] = "纳兹乌罗",
     ["101_CutsceneName_Ref2"] = "无拘传承",
@@ -20695,18 +20691,28 @@ local tab={
     ["ZOOM_OUT"] = "缩小",
     ["ZOOM_OUT_BUTTON_TEXT"] = "右键点击可以缩小地图",
     ["_RECORDING_WARNING_CORRUPTED"] = "视频文件无效。",
-    }
+}
 
-local function Init()
-for name, text in pairs(tab) do
-    name= _G[name]
-    if name and name:find('%w') then
-        e.strText[name]= text
-    end
-end
-tab= nil
-end
-end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -20721,10 +20727,18 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1==id then
         local Save= WoWToolsSave[BUG_CATEGORY15] or {}
         if e.onlyChinese and not Save.disabled then
-            Init()
+            do
+                for name, text in pairs(tab) do
+                    name= _G[name]
+                    if name and name:find('%w') then
+                        e.strText[name]= text
+                    end
+                end
+            end
         else
             Init=function() end
         end
+        tab=nil
         self:UnregisterAllEvents()
     end
 end)

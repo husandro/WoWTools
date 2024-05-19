@@ -87,6 +87,7 @@ local function hookButton(self, setFont)
     end
     set(label, e.strText[label:GetText()])
     hooksecurefunc(self, 'SetText', function(frame, name)
+        print(e.cn(name), frame)
         if name and name~='' then
             set(frame.text or frame.Text or frame.Label, e.strText[name])
         end
@@ -3085,45 +3086,21 @@ local function Init()
     set(ColorPickerFrame.Header.Text, '颜色选择器')
 
     if e.Player.class=='HUNTER' then
-        if PetStableFrame then--PetStable.lua
-            set(PetStableActivePetsLabel, '使用中')
-            hooksecurefunc('PetStable_Update', function()
-                PetStableFrame:SetTitleFormatted('%s 的小宠物', UnitName("player"))
-
-                if ( PetStableFrame.selectedPet ) then
-                    if ( GetStablePetFoodTypes(PetStableFrame.selectedPet) ) then
-                        PetStableDiet.tooltip = format('|cffffd200食物：|r%s', BuildListString(GetStablePetFoodTypes(PetStableFrame.selectedPet)))
-                    end
-                end
-                PetStableCurrentPage:SetFormattedText('页数 %s/%s', PetStableFrame.page, NUM_PET_STABLE_PAGES)
-            end)
-
-            hooksecurefunc('PetStable_UpdateSlot', function(button, petSlot)
-                local icon, name, _, family, talent = GetStablePetInfo(petSlot)
-                if ( icon and family and talent) then
-                    button.tooltip = e.strText[name] or name
-                    button.tooltipSubtext = format(STABLE_PET_INFO_TOOLTIP_TEXT, e.strText[family] or family, e.strText[talent] or talent)
-                else
-                    button.tooltip = '空的兽栏位置'
-                end
-            end)
-        elseif StableFrame then--10.27
-            set(StableFrame.StabledPetList.FilterBar.SearchBox.Instructions, '查询')
-            set(StableFrame.StabledPetList.FilterBar.FilterButton, '过滤')
-            hookButton(StableFrame.StableTogglePetButton, true)
-            set(StableFrame.ReleasePetButton, '释放')
-            StableFrame.ReleasePetButton.disabledTooltip='你只能释放你当前召唤的宠物。'
-            set(StableFrame.PetModelScene.AbilitiesList.ListHeader, '特殊技能')
-            set(StableFrame.ActivePetList.ListName, '激活')
-            set(StableFrame.StabledPetList.ListName, '兽栏')
-            dia('RELEASE_PET', {text ='你确定要|cnRED_FONT_COLOR:永久释放|r你的宠物吗？你将永远无法再召唤此宠物。', button1='|cnRED_FONT_COLOR:确定|r', button2='|cnGREEN_FONT_COLOR:取消|r',})
-            StableFrameTitleText:SetFormattedText('%s%s%s|r 的宠物', e.Icon.player, e.Player.col, e.Player.name)
-            hooksecurefunc(StableFrame.PetModelScene.PetInfo, 'SetPet', function(self, petData)
-                if petData.isExotic then
-                    set(self.Exotic, '特殊')
-                end
-            end)
-        end
+        set(StableFrame.StabledPetList.FilterBar.SearchBox.Instructions, '查询')
+        set(StableFrame.StabledPetList.FilterBar.FilterButton, '过滤')
+        hookButton(StableFrame.StableTogglePetButton, true)
+        set(StableFrame.ReleasePetButton, '释放')
+        StableFrame.ReleasePetButton.disabledTooltip='你只能释放你当前召唤的宠物。'
+        set(StableFrame.PetModelScene.AbilitiesList.ListHeader, '特殊技能')
+        set(StableFrame.ActivePetList.ListName, '激活')
+        set(StableFrame.StabledPetList.ListName, '兽栏')
+        dia('RELEASE_PET', {text ='你确定要|cnRED_FONT_COLOR:永久释放|r你的宠物吗？你将永远无法再召唤此宠物。', button1='|cnRED_FONT_COLOR:确定|r', button2='|cnGREEN_FONT_COLOR:取消|r',})
+        StableFrameTitleText:SetFormattedText('%s%s%s|r 的宠物', e.Icon.player, e.Player.col, e.Player.name)
+        hooksecurefunc(StableFrame.PetModelScene.PetInfo, 'SetPet', function(self, petData)
+            if petData.isExotic then
+                set(self.Exotic, '特殊')
+            end
+        end)
     end
 
 
