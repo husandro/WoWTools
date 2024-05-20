@@ -1858,7 +1858,7 @@ function panel:Init_Server_equipmentButton_Lable()
         return
     end
    if not panel.serverText then
-        panel.serverText= e.Cstr(CharacterFrame.TitleContainer, {color= GameLimitedMode_IsActive() and {r=0,g=1,b=0} or true, mouse=true, justifyH='RIGHT'})--显示服务器名称
+        panel.serverText= e.Cstr(PaperDollItemsFrame.ShowHideButton, {color= GameLimitedMode_IsActive() and {r=0,g=1,b=0} or true, mouse=true, justifyH='RIGHT'})--显示服务器名称
         panel.serverText:SetPoint('LEFT', PaperDollItemsFrame.ShowHideButton, 'RIGHT',2,0)
         panel.serverText:SetScript("OnLeave",function(frame) e.tips:Hide() frame:SetAlpha(1) end)
         panel.serverText:SetScript("OnEnter",function(frame)

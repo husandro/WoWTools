@@ -2,7 +2,7 @@ local id, e = ...
 local Save={
     --hide=true,--显示，隐藏 Frame
     favorites={},--{itemID=true},
-    --disableSpell=true,--禁用，法术按钮
+    disableSpell=e.Player.husandro,--禁用，法术按钮
 }
 local addName= SOCKET_GEMS
 
@@ -62,10 +62,11 @@ local function creatd_button(index)
     btn.level:SetPoint('TOPRIGHT')
     btn.type= e.Cstr(btn)
     btn.type:SetPoint('LEFT', btn, 'RIGHT')
-    btn.favorite= btn:CreateTexture(nil, 'OVERLAY')
-    btn.favorite:SetSize(14,14)
+    btn.favorite= btn:CreateTexture(nil, 'OVERLAY', nil, 2)
+    btn.favorite:SetSize(17,17)
     btn.favorite:SetAtlas('auctionhouse-icon-favorite')
-    btn.favorite:SetPoint('TOPRIGHT',2,2)
+    btn.favorite:SetPoint('TOPRIGHT',4,4)
+    --btn.favorite:SetVertexColor(0,1,0)
 
     btn:Hide()
     function btn:set_event()
@@ -611,6 +612,7 @@ local function Init()
                     e.LibDD:UIDropDownMenu_AddButton({
                         text= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '法术' or SPELLS, 'Button'),
                         checked=not Save.disableSpell,
+                        keepShownOnClick=true,
                         func= function()
                             Save.disableSpell= not Save.disableSpell and true or nil
                             print(id, Initializer:GetName(), e.GetEnabeleDisable(not Save.disableSpell), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
@@ -618,8 +620,28 @@ local function Init()
                     }, level)
 
                     e.LibDD:UIDropDownMenu_AddSeparator(level)
+                    local num= 0
+                    for _ in pairs(Save.favorites) do
+                        num= num+1
+                    end
+                    e.LibDD:UIDropDownMenu_AddButton({
+                        text=(e.onlyChinese and '清除收藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, FAVORITES))..' |cnGREEN_FONT_COLOR:#'..num,
+                        icon='auctionhouse-icon-favorite',
+                        colorCoed= num==0 and '|cff606060',
+                        notCheckable=true,
+                        keepShownOnClick=true,
+                        func=function()
+                            Save.favorites={}
+                            for _, frame in pairs(Frame.buttons) do
+                                frame:set_favorite()
+                            end
+                            print(id, Initializer:GetName(), e.onlyChinese and '完成' or COMPLETE)
+                        end
+                    }, level)
+
                     e.LibDD:UIDropDownMenu_AddButton({
                         text= e.onlyChinese and '选项' or OPTIONS,
+                        icon='mechagon-projects',
                         keepShownOnClick=true,
                         notCheckable=true,
                         func=function()

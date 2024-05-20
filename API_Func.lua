@@ -1020,10 +1020,10 @@ function e.Get_Gem_Stats(self, itemLink)--显示, 宝石, 属性
                     end
                 end
             end
-            --[[if text:find(('%+(.+)')) then--+护甲
+            if text:find(('%+(.+)')) then--+护甲
                 leftText= leftText or e.WA_Utf8Sub(text:gsub('%+', ''), 1, 3, true)
-                bottomLeftText= bottomLeftText or text:match('(.-%+)')
-            end]]
+                --bottomLeftText= bottomLeftText or text:match('(.-%+)')
+            end
         end
     end
 
@@ -1136,7 +1136,7 @@ function e.Set_Item_Stats(self, link, setting) --设置，物品，次属性，�
                     end
                 end
                 if count>0 then
-                    itemLevel= e.MK(count,3)
+                    itemLevel= e.MK(count, 2)
                 end
             else
                 local quality = C_Item.GetItemQualityByID(link)--颜色
