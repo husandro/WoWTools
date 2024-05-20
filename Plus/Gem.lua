@@ -1,11 +1,14 @@
 local id, e = ...
 local Save={
     --hide=true,--显示，隐藏 Frame
+    --scale=1,--缩放
     favorites={},--{itemID=true},
+    gemLeft={},--右边，按钮
     disableSpell=e.Player.husandro,--禁用，法术按钮
 }
 local addName= SOCKET_GEMS
 
+local panel=CreateFrame("Frame")
 local Frame
 local Initializer
 local SpellsTab={
@@ -85,11 +88,11 @@ local function creatd_button(index)
         self.favorite:SetShown(Save.favorites[self.itemID])
     end
     function btn:set_alpha()
+        local alpha= 1
         local info
         if self.bagID then
             info = C_Container.GetContainerItemInfo(self.bagID, self.slotID)
         end
-        local alpha= 1
         if not info then
             alpha=0
         elseif info.isLocked then
@@ -113,38 +116,68 @@ local function creatd_button(index)
             e.tips:ClearLines()
             e.tips:SetBagItem(self.bagID, self.slotID)
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(
-                format('|A:auctionhouse-icon-favorite:0:0|a%s%s',
-                    Save.favorites[self.itemID] and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:',
-                    e.onlyChinese and '收藏' or FAVORITES
-                ), 'Alt+'..e.Icon.right
-            )
+            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
+            --e.tips:AddDoubleLine((e.onlyChinese and '标记' or EVENTTRACE_BUTTON_MARKER)..'|A:bags-greenarrow:0:0|a', e.Icon.mid)
+            --e.tips:AddDoubleLine((e.onlyChinese and '收藏' or FAVORITES)..'|A:UI-HUD-MicroMenu-StreamDLRed-Up:0:0|a', e.Icon.mid)
             e.tips:Show()
-            
+
         end
     end
     btn:SetScript('OnClick', function(self, d)
+        if not self.bagID or not self.itemID then
+            return
+        end
+        ClearCursor()
         if d=='LeftButton' then
             C_Container.PickupContainerItem(self.bagID, self.slotID)
         elseif d=='RightButton' then
-            if IsAltKeyDown() then
-                if self.itemID then
-                    Save.favorites[self.itemID]= not Save.favorites[self.itemID] and true or nil
-                end
-                self:set_favorite()
-            else
-                ClearCursor()
+            if not self.Menu then
+                self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
+                e.LibDD:UIDropDownMenu_Initialize(self.Menu, function(_, level)
+                    e.LibDD:UIDropDownMenu_AddButton({
+                        text= e.onlyChinese and '标记' or EVENTTRACE_BUTTON_MARKER,
+                        icon='auctionhouse-icon-favorite',
+                        checked= Save.favorites[self.itemID],
+                        func= function()
+                            Save.favorites[self.itemID]= not Save.favorites[self.itemID] and true or nil
+                            self:set_favorite()
+                            print(id, Initializer:GetName(), Save.favorites[self.itemID] and self.itemID or '', e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
+                        end
+                    }, level)
+
+
+                    e.LibDD:UIDropDownMenu_AddButton({
+                        text= e.onlyChinese and '左边' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_LEFT,
+                        icon= e.Icon.toRight,
+                        checked=Save.gemLeft[self.itemID],
+                        --tooltipOnButton=true,
+                       --tooltipText=e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH),
+                        func= function()
+                            Save.gemLeft[self.itemID]= not Save.gemLeft[self.itemID] and true or nil
+                            panel:set_Gem()
+                        end
+                    }, level)
+                end, 'MENU')
             end
+            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
         end
         self:set_tooltips()
     end)
+    --[[btn:SetScript("OnMouseWheel", function(self, d)
+        if d==1 then
+            Save.favorites[self.itemID]= not Save.favorites[self.itemID] and true or nil
+            self:set_favorite()
+        elseif d==-1 then
+            Save.gemLeft[self.itemID]= not Save.gemLeft[self.itemID] and true or nil
+        end
+    end)]]
     btn:SetScript('OnEnter', function(self)
         self:set_tooltips()
         if self.bagID then
             e.FindBagItem(true, {bag={bag=self.bagID, slot=self.slotID}})
         end
     end)
-    btn:SetScript('OnLeave', function()
+    btn:SetScript('OnLeave', function(self)
         GameTooltip_Hide()
         e.FindBagItem()
     end)
@@ -153,9 +186,34 @@ local function creatd_button(index)
 end
 
 
-local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
-    local items={}
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function panel:set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
+    local items={}
+    local hides={}
     for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES do-- + NUM_REAGENTBAG_FRAMES do
         for slot=1, C_Container.GetContainerNumSlots(bag) do
             local info = C_Container.GetContainerItemInfo(bag, slot)
@@ -175,22 +233,28 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
                     and (PlayerGetTimerunningSeasonID() or (e.Player.levelMax and e.ExpansionLevel== expacID or not e.Player.levelMax))--最高等级
                 then
                     local type
-                    if PlayerGetTimerunningSeasonID() then
-                        local date= e.GetTooltipData({hyperLink=info.hyperlink, index=2})
-                        type= date.indexText and date.indexText:match('|c........(.-)|r') or date.indexText
-                    else
-                        type=e.cn(C_Item.GetItemSubClassInfo(classID, subclassID))
-                    end
-                    type=type or ' '
-                    items[type]= items[type] or {}
-
-                    table.insert(items[type], {
+                    local tab={
                         info= info,
                         bag=bag,
                         slot=slot,
                         level= level or 0,
                         expacID= expacID or 0,
-                    })
+                        --isFavorite= Save.favorites[info.itemID]
+                    }
+                    if Save.gemLeft[info.itemID] then
+                        type= e.onlyChinese and '隐藏' or HIDE
+                        table.insert(hides, tab)
+                    else
+                        if PlayerGetTimerunningSeasonID() then
+                            local date= e.GetTooltipData({hyperLink=info.hyperlink, index=2})
+                            type= date.indexText and date.indexText:match('|c........(.-)|r') or date.indexText
+                        else
+                            type=e.cn(C_Item.GetItemSubClassInfo(classID, subclassID))
+                        end
+                        type=type or ' '
+                        items[type]= items[type] or {}
+                        table.insert(items[type], tab)
+                    end
                 end
             end
         end
@@ -217,7 +281,6 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
 
 
     local x, y, index= 0, 0, 1
-
     for type, tab in pairs(items) do
         for i, info in pairs(tab) do
             local btn= Frame.buttons[index] or creatd_button(index)
@@ -240,7 +303,7 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
                 btn.type:SetText('')
             end
             local itemLink= info.info.hyperlink
-            local itemID= info.info.hyperlink
+            local itemID= info.info.itemID
             btn.bagID= info.bag
             btn.slotID= info.slot
             btn.itemID= itemID
@@ -252,7 +315,7 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
             btn:SetItemButtonCount(info.info.stackCount)
             e.Get_Gem_Stats(btn, itemLink)
 
-            
+
             btn:SetShown(true)
             x=x-40--34
             index= index+1
@@ -260,6 +323,57 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
         x=0
         y=y-40--34
     end
+
+    x, y= -10, 10
+    local h= ItemSocketingFrame:GetHeight()
+    table.sort(hides, function(a, b)
+        if a.expacID> b.expacID then
+            return true
+        elseif a.info.quality== b.info.quality then
+            if a.level== b.level then
+                return a.info.itemID> b.info.itemID
+            else
+                return a.level>b.level
+            end
+        else
+            return a.info.quality>b.info.quality
+        end
+    end)
+    for _, info in pairs(hides) do
+        local btn= Frame.buttons[index] or creatd_button(index)
+        btn:ClearAllPoints()
+        btn:SetPoint('TOPRIGHT', ItemSocketingFrame, 'TOPLEFT', x, y)
+        btn.type:SetText('')
+
+        local itemLink= info.info.hyperlink
+        local itemID= info.info.itemID
+        btn.bagID= info.bag
+        btn.slotID= info.slot
+        btn.itemID= itemID
+        btn.level:SetText(info.level>1 and info.level or '')
+        btn.level:SetTextColor(Get_Item_Color(itemLink))
+        btn:set_favorite()
+        btn:SetItem(itemLink)
+        btn:SetItemButtonCount(info.info.stackCount)
+        e.Get_Gem_Stats(btn, itemLink)
+        btn:SetShown(true)
+
+        y=y-40
+        if h<= ((-y+10)*(Save.scale or 1)) then
+            y=10
+            x=x-40
+        end
+        index= index+1
+    end
+
+
+
+
+
+
+
+
+
 
 
     for i= index, #Frame.buttons, 1 do
@@ -419,8 +533,6 @@ end
 
 
 local function Init()
-
-
     Frame= CreateFrame("Frame", nil, ItemSocketingFrame)
     Frame.buttons={}
     Frame:SetPoint('BOTTOMRIGHT', 0, -10)
@@ -436,7 +548,7 @@ local function Init()
     end
     Frame:SetScript('OnHide', Frame.set_event)
     Frame:SetScript('OnShow', Frame.set_event)
-    Frame:SetScript('OnEvent', set_Gem)
+    Frame:SetScript('OnEvent', panel.set_Gem)
     Frame:set_event()
 
     ItemSocketingSocket3Left:ClearAllPoints()
@@ -452,7 +564,11 @@ local function Init()
     e.Set_Move_Frame(ItemSocketingFrame, {needSize=true, needMove=true, setSize=true, minW=338, minH=424, sizeRestFunc=function(btn)
         btn.target:SetSize(338, 424)
         set_point()
-    end, sizeUpdateFunc=set_point})
+        panel:set_Gem()
+    end, sizeUpdateFunc=function()
+        set_point()
+        panel:set_Gem()
+    end})
     e.Set_Move_Frame(ItemSocketingScrollChild, {frame=ItemSocketingFrame})
 
     hooksecurefunc('ItemSocketingFrame_Update', function()
@@ -533,13 +649,11 @@ local function Init()
             ItemSocketingSocket3:SetPoint('BOTTOMRIGHT', -50, 33)
         end
         set_point()
-        set_Gem()
+        panel:set_Gem()
     end)
 
 
-    --ItemSocketingFrame:HookScript('OnEvent', set_Gem)
-    set_Gem()
-    Init_Spell_Button()
+   
 
 
 --总开关
@@ -548,7 +662,7 @@ local function Init()
     function btn:set_texture()
         btn:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
     end
-    function btn:set_shown()        
+    function btn:set_shown()
         if Frame:CanChangeAttribute() then
             Frame:SetShown(not Save.hide)
             self:set_texture()
@@ -559,6 +673,7 @@ local function Init()
     function btn:set_scale()
         if Frame:CanChangeAttribute() then
             Frame:SetScale(Save.scale or 1)
+            panel:set_Gem()
         else
             self:RegisterEvent('PLAYER_REGEN_ENABLED')
         end
@@ -625,11 +740,10 @@ local function Init()
                         num= num+1
                     end
                     e.LibDD:UIDropDownMenu_AddButton({
-                        text=(e.onlyChinese and '清除收藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, FAVORITES))..' |cnGREEN_FONT_COLOR:#'..num,
+                        text=(e.onlyChinese and '清除标记' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, EVENTTRACE_BUTTON_MARKER))..' |cnGREEN_FONT_COLOR:#'..num,
                         icon='auctionhouse-icon-favorite',
-                        colorCoed= num==0 and '|cff606060',
+                        colorCode= num==0 and '|cff606060',
                         notCheckable=true,
-                        keepShownOnClick=true,
                         func=function()
                             Save.favorites={}
                             for _, frame in pairs(Frame.buttons) do
@@ -639,6 +753,22 @@ local function Init()
                         end
                     }, level)
 
+                    num= 0
+                    for _ in pairs(Save.gemLeft) do
+                        num= num+1
+                    end
+                    e.LibDD:UIDropDownMenu_AddButton({
+                        text=(e.onlyChinese and '清除左边' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_LEFT))..' |cnGREEN_FONT_COLOR:#'..num,
+                        icon=e.Icon.toRight,
+                        colorCode= num==0 and '|cff606060',
+                        notCheckable=true,
+                        func=function()
+                            Save.gemLeft={}
+                            panel:set_Gem()
+                        end
+                    }, level)
+
+                    e.LibDD:UIDropDownMenu_AddSeparator(level)
                     e.LibDD:UIDropDownMenu_AddButton({
                         text= e.onlyChinese and '选项' or OPTIONS,
                         icon='mechagon-projects',
@@ -670,6 +800,7 @@ local function Init()
     btn:set_texture()
     btn:set_shown()
     btn:set_scale()
+    Init_Spell_Button()
 end
 
 
@@ -686,7 +817,7 @@ end
 
 
 
-local panel=CreateFrame("Frame")
+
 panel:RegisterEvent('ADDON_LOADED')
 panel:RegisterEvent('PLAYER_LOGOUT')
 
@@ -695,6 +826,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
             Save.favorites= Save.favorites or {}
+            Save.gemLeft= Save.gemLeft or {}
 
             --添加控制面板
             Initializer= e.AddPanel_Check({

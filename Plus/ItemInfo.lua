@@ -363,6 +363,15 @@ function e.Set_Item_Info(self, tab)
                                         upLevel=true
                                     elseif level< -5 then
                                         downLevel=true
+                                    else
+                                        local qualityPlayer= C_Item.GetItemQualityByID(itemLinkPlayer)
+                                        if qualityPlayer and itemQuality then
+                                            if qualityPlayer<itemQuality then
+                                                upLevel=true
+                                            elseif qualityPlayer>itemQuality then
+                                                downLevel=true
+                                            end
+                                        end
                                     end
                                 end
                             else
@@ -446,7 +455,7 @@ function e.Set_Item_Info(self, tab)
                     num= dateInfo.text[useStr]:match('%d+')
                     num= num and tonumber(num)
                     if num and (weapon or shield) then
-                        local tab={
+                        local tab2={
                                 [35]=29,
                                 [40]=34,
                                 [45]=39,
@@ -454,7 +463,7 @@ function e.Set_Item_Info(self, tab)
                                 [60]=49,
                                 [70]=59,
                         }
-                        rightText= format('%s%d|r',  tab[num] and '|cnGREEN_FONT_COLOR:' or '|cffff00ff', tab[num] or num)--设置, 最高,等级
+                        rightText= format('%s%d|r',  tab2[num] and '|cnGREEN_FONT_COLOR:' or '|cffff00ff', tab2[num] or num)--设置, 最高,等级
                         local heirloomNum=0
                         for _, heirloomID in pairs(C_Heirloom.GetHeirloomItemIDs() or {}) do
                             if heirloomID and C_Heirloom.PlayerHasHeirloom(heirloomID) then

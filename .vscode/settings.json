@@ -4470,8 +4470,7 @@
         "CharacterFrameTitleText",
         "LFG_JoinDungeon",
         "TRACKER_HEADER_SCENARIO",
-        "ScenariosList",
-        "ScenariosHiddenByCollapseList"
+        "EVENTTRACE_BUTTON_MARKER"
     ],
     "Lua.diagnostics.disable": [
         "inject-field",

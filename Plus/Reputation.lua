@@ -1108,7 +1108,7 @@ local function InitMenu(_, level, type)
 			Button:set_Shown()
 
 			e.call('ReputationFrame_Update')
-			--print(id, e.cn(addName), 'UI Plus', e.GetEnabeleDisable(not Save.notPlus), e.onlyChinese and '需要刷新' or NEED..REFRESH)
+			--print(id, e.cn(addName), 'UI Plus', e.GetEnabeleDisable(not Save.notPlus), e.onlyChinese and '需要刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
 		end
 	}
 	e.LibDD:UIDropDownMenu_AddButton(info, level)

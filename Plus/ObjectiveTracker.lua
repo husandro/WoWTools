@@ -592,7 +592,7 @@ local function Init()
             self.numLabel:SetPoint('LEFT', self.Stage, 'RIGHT')
         end
         local text
-        if currentStage and numStages then
+        if currentStage and numStages and numStages>1 then
             text= format('|cnGREEN_FONT_COLOR:%d|r%s/%d', currentStage, currentStage==numStages and '|cnGREEN_FONT_COLOR:' or '', numStages)
         end
         self.numLabel:SetText(text or '')

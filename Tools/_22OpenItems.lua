@@ -52,7 +52,9 @@ local Save={
         --10.2
         [208396]=2,--分裂的梦境火花
         --10.2.7
-        [219273]=1,--历久经验帛线
+        --[219273]=1,--历久经验帛线 从 219256 到 219282
+        
+
 
     },
     no={--禁用使用
@@ -330,6 +332,9 @@ local function get_Items()--取得背包物品信息
                                     return
                                 end
                             end
+                        elseif PlayerGetTimerunningSeasonID() and (info.itemID>=219256 and info.itemID<=219282) and C_Item.IsUsableItem(info.hyperlink) then--将帛线织入你的永恒潜能披风，使你获得的经验值永久提高12%。
+                            setAtt(bag, slot, info.iconFileID, info.itemID)
+                            return
                         end
                     end
                 end

@@ -1028,8 +1028,9 @@ local function Init_Scenarios_Menu(level)--ScenarioFinder.lua
                         --local mode, subMode = GetLFGMode(LE_LFG_CATEGORY_SCENARIO)
                         if GetLFGQueueStats(LE_LFG_CATEGORY_SCENARIO) then--not ( mode == "queued" or mode == "listed" or mode == "rolecheck" or mode == "suspended" ) then
                             LeaveLFG(LE_LFG_CATEGORY_SCENARIO)
-                        end
+                        else
                             LFG_JoinDungeon(LE_LFG_CATEGORY_SCENARIO, arg1, ScenariosList, ScenariosHiddenByCollapseList)--ScenarioQueueFrame_Join() 
+                        end
                     end,
                 }, level)
             else
@@ -1252,6 +1253,15 @@ local function Init_LFGListSearchEntry_Update(self)
         --xOffset = xOffset + 18
     end
 end
+
+
+
+
+
+
+
+
+
 
 
 

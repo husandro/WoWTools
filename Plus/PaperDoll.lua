@@ -577,11 +577,11 @@ elseif not Save.hide and self.SocketDisplay:IsShown() and link then
                 else
                     self.SocketDisplay:SetPoint('LEFT', self, 'RIGHT')
                 end]]
-                frame:SetSize(15, 15)
+                frame:SetSize(14, 14)
                 frame:SetFrameStrata('HIGH')
                 frame.Slot:ClearAllPoints()
                 frame.Slot:SetPoint('CENTER')
-                frame.Slot:SetSize(14, 14)
+                frame.Slot:SetSize(13, 13)
             end
             local atlas
             if gemID then
