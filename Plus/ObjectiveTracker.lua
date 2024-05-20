@@ -20,7 +20,7 @@ local ModulTab={--Blizzard_ObjectiveTracker.lua
 }
 
 
-local function ItemNum(btn)--增加物品数量
+--[[local function ItemNum(btn)--增加物品数量
     local nu= btn.itemLink and C_Item.GetItemCount(btn.itemLink, true, true,true) or 0
     if nu>1 and not btn.num then
         btn.num=e.Cstr(btn)
@@ -29,7 +29,7 @@ local function ItemNum(btn)--增加物品数量
     if btn.num then
         btn.num:SetText(nu>1 or '')
     end
-end
+end]]
 
 
 
@@ -580,6 +580,22 @@ local function Init()
                 end)
             end
         end
+    end)
+
+
+    hooksecurefunc(SCENARIO_CONTENT_TRACKER_MODULE, 'Update', function()
+        local self= ScenarioStageBlock
+        --local scenarioName, currentStage, numStages, flags, _, _, _, xp, money, scenarioType, _, textureKit = C_Scenario.GetInfo()
+        local currentStage, numStages= select(2, C_Scenario.GetInfo())
+        if not self.numLabel then
+            self.numLabel= e.Cstr(self, {copyFont=self.Stage})
+            self.numLabel:SetPoint('LEFT', self.Stage, 'RIGHT')
+        end
+        local text
+        if currentStage and numStages then
+            text= format('|cnGREEN_FONT_COLOR:%d|r%s/%d', currentStage, currentStage==numStages and '|cnGREEN_FONT_COLOR:' or '', numStages)
+        end
+        self.numLabel:SetText(text or '')
     end)
 end
 

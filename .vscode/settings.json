@@ -4469,7 +4469,9 @@
         "ItemSocketingFrame_OnEvent",
         "CharacterFrameTitleText",
         "LFG_JoinDungeon",
-        "TRACKER_HEADER_SCENARIO"
+        "TRACKER_HEADER_SCENARIO",
+        "ScenariosList",
+        "ScenariosHiddenByCollapseList"
     ],
     "Lua.diagnostics.disable": [
         "inject-field",

@@ -1,10 +1,11 @@
 local id, e = ...
 local Save={
     --hide=true,--显示，隐藏 Frame
+    favorites={},--{itemID=true},
+    --disableSpell=true,--禁用，法术按钮
 }
 local addName= SOCKET_GEMS
 
-local Buttons={}
 local Frame
 local Initializer
 local SpellsTab={
@@ -55,13 +56,16 @@ end
 
 
 local function creatd_button(index)
-    local btn= e.Cbtn(Frame, {button='ItemButton', icon='hide'})
+    local btn= e.Cbtn(Frame, {button='ItemButton', icon='hide'})--34, 34
 
     btn.level=e.Cstr(btn)
     btn.level:SetPoint('TOPRIGHT')
     btn.type= e.Cstr(btn)
     btn.type:SetPoint('LEFT', btn, 'RIGHT')
-
+    btn.favorite= btn:CreateTexture(nil, 'OVERLAY')
+    btn.favorite:SetSize(14,14)
+    btn.favorite:SetAtlas('auctionhouse-icon-favorite')
+    btn.favorite:SetPoint('TOPRIGHT',2,2)
 
     btn:Hide()
     function btn:set_event()
@@ -76,6 +80,9 @@ local function creatd_button(index)
     btn:SetScript('OnHide', btn.set_event)
     btn:SetScript('OnShow', btn.set_event)
 
+    function btn:set_favorite()
+        self.favorite:SetShown(Save.favorites[self.itemID])
+    end
     function btn:set_alpha()
         local info
         if self.bagID then
@@ -92,31 +99,55 @@ local function creatd_button(index)
     function btn:rest()
         self:SetShown(false)
         self:Reset()
-        self.bagID= nil
-        self.slotID= nil
+        self.bagID=nil
+        self.slotID=nil
+        self.itemID=nil
         self.type:SetText('')
         self.level:SetText('')
     end
     btn:SetScript('OnEvent', btn.set_alpha)
+    function btn:set_tooltips()
+        if self.bagID then
+            e.tips:SetOwner(ItemSocketingFrame, 'ANCHOR_BOTTOMRIGHT')
+            e.tips:ClearLines()
+            e.tips:SetBagItem(self.bagID, self.slotID)
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(
+                format('|A:auctionhouse-icon-favorite:0:0|a%s%s',
+                    Save.favorites[self.itemID] and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:',
+                    e.onlyChinese and '收藏' or FAVORITES
+                ), 'Alt+'..e.Icon.right
+            )
+            e.tips:Show()
+            
+        end
+    end
     btn:SetScript('OnClick', function(self, d)
         if d=='LeftButton' then
             C_Container.PickupContainerItem(self.bagID, self.slotID)
         elseif d=='RightButton' then
-            ClearCursor()
+            if IsAltKeyDown() then
+                if self.itemID then
+                    Save.favorites[self.itemID]= not Save.favorites[self.itemID] and true or nil
+                end
+                self:set_favorite()
+            else
+                ClearCursor()
+            end
         end
+        self:set_tooltips()
     end)
     btn:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(ItemSocketingFrame, 'ANCHOR_BOTTOMRIGHT')
-        e.tips:ClearLines()
-        e.tips:SetBagItem(self.bagID, self.slotID)
-        e.tips:Show()
-        e.FindBagItem(true, {bag={bag=self.bagID, slot=self.slotID}})
+        self:set_tooltips()
+        if self.bagID then
+            e.FindBagItem(true, {bag={bag=self.bagID, slot=self.slotID}})
+        end
     end)
     btn:SetScript('OnLeave', function()
         GameTooltip_Hide()
         e.FindBagItem()
     end)
-    Buttons[index]= btn
+    Frame.buttons[index]= btn
     return btn
 end
 
@@ -188,7 +219,7 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
 
     for type, tab in pairs(items) do
         for i, info in pairs(tab) do
-            local btn= Buttons[index] or creatd_button(index)
+            local btn= Frame.buttons[index] or creatd_button(index)
             btn:ClearAllPoints()
             btn:SetPoint('TOPRIGHT', x, y)
             if i==1 then
@@ -208,15 +239,20 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
                 btn.type:SetText('')
             end
             local itemLink= info.info.hyperlink
-            btn.level:SetText(info.level>1 and info.level or '')
-            btn.level:SetTextColor(Get_Item_Color(itemLink))
-            btn:SetItem(itemLink)
+            local itemID= info.info.hyperlink
             btn.bagID= info.bag
             btn.slotID= info.slot
-            btn.isLocked= info.info.isLocked
+            btn.itemID= itemID
+
+            btn.level:SetText(info.level>1 and info.level or '')
+            btn.level:SetTextColor(Get_Item_Color(itemLink))
+            btn:set_favorite()
+            btn:SetItem(itemLink)
             btn:SetItemButtonCount(info.info.stackCount)
-            btn:SetShown(true)
             e.Get_Gem_Stats(btn, itemLink)
+
+            
+            btn:SetShown(true)
             x=x-40--34
             index= index+1
         end
@@ -225,8 +261,8 @@ local function set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
     end
 
 
-    for i= index, #Buttons, 1 do
-        local btn= Buttons[i]
+    for i= index, #Frame.buttons, 1 do
+        local btn= Frame.buttons[i]
         if btn then btn:rest() end
     end
 end
@@ -253,6 +289,9 @@ end
 --433397/取出宝石
 local SpellButton
 local function Init_Spell_Button()
+    if Save.disableSpell then
+        return
+    end
     SpellButton= e.Cbtn(Frame, {size={32,32}, icon='hide', type=true})
     SpellButton:Hide()
     SpellButton:SetPoint('BOTTOMRIGHT', ItemSocketingSocketButton, 'TOPRIGHT', 0, 10)
@@ -382,6 +421,7 @@ local function Init()
 
 
     Frame= CreateFrame("Frame", nil, ItemSocketingFrame)
+    Frame.buttons={}
     Frame:SetPoint('BOTTOMRIGHT', 0, -10)
     Frame:SetSize(1,1)
     Frame:SetScript('OnHide', function() CurTypeGemTab={} end)
@@ -507,7 +547,7 @@ local function Init()
     function btn:set_texture()
         btn:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
     end
-    function btn:set_shown()
+    function btn:set_shown()        
         if Frame:CanChangeAttribute() then
             Frame:SetShown(not Save.hide)
             self:set_texture()
@@ -523,13 +563,17 @@ local function Init()
         end
     end
     function btn:set_tooltips()
+        if not Frame:CanChangeAttribute() then
+            e.tips:Hide()
+            return
+        end
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, Initializer:GetName())
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.GetShowHide(not Save.hide), e.Icon.left)
-        e.tips:AddDoubleLine(e.onlyChinese and '选项' or OPTIONS, e.Icon.right)
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.scale or 1), e.Icon.mid)
+        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
         e.tips:Show()
     end
     btn:SetAlpha(0.5)
@@ -544,16 +588,47 @@ local function Init()
         self:UnregisterAllEvents()
     end)
     btn:SetScript('OnClick', function(self, d)
-        if not self:CanChangeAttribute() then
-            return
-        end
         if d=='LeftButton' then
             Save.hide= not Save.hide and true or nil
             self:set_shown()
             self:set_texture()
             self:set_tooltips()
         else
-            e.OpenPanelOpting(Initializer)
+            if not self.Menu then
+                self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
+                e.LibDD:UIDropDownMenu_Initialize(self.Menu, function(_, level)
+                    e.LibDD:UIDropDownMenu_AddButton({
+                        text=e.onlyChinese and '显示' or SHOW,
+                        checked=not Save.hide,
+                        keepShownOnClick=true,
+                        disabled=not Frame:CanChangeAttribute(),
+                        func=function()
+                            Save.hide= not Save.hide and true or nil
+                            self:set_shown()
+                        end
+                    }, level)
+
+                    e.LibDD:UIDropDownMenu_AddButton({
+                        text= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '法术' or SPELLS, 'Button'),
+                        checked=not Save.disableSpell,
+                        func= function()
+                            Save.disableSpell= not Save.disableSpell and true or nil
+                            print(id, Initializer:GetName(), e.GetEnabeleDisable(not Save.disableSpell), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                        end
+                    }, level)
+
+                    e.LibDD:UIDropDownMenu_AddSeparator(level)
+                    e.LibDD:UIDropDownMenu_AddButton({
+                        text= e.onlyChinese and '选项' or OPTIONS,
+                        keepShownOnClick=true,
+                        notCheckable=true,
+                        func=function()
+                            e.OpenPanelOpting(Initializer)
+                        end
+                    }, level)
+                end, 'MENU')
+            end
+            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
         end
     end)
     btn:SetScript('OnMouseWheel', function(self, d)
@@ -597,6 +672,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
+            Save.favorites= Save.favorites or {}
 
             --添加控制面板
             Initializer= e.AddPanel_Check({

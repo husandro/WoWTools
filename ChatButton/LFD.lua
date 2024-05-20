@@ -668,7 +668,7 @@ local function Init_tipsButton()
         end
 
         if GetLFGQueueStats(LE_LFG_CATEGORY_SCENARIO) then
-            LeaveLFG(LE_LFG_CATEGORY_SCENARIO);
+            LeaveLFG(LE_LFG_CATEGORY_SCENARIO)
         end
         --pve
         for i=1, NUM_LE_LFG_CATEGORYS do
@@ -1015,7 +1015,6 @@ local function Init_Scenarios_Menu(level)--ScenarioFinder.lua
     for i=1, numScenario do
         local scenarioID, name = GetRandomScenarioInfo(i)--local id, name, typeID, subtype, minLevel, maxLevel
         local isAvailableForAll, isAvailableForPlayer = IsLFGDungeonJoinable(scenarioID)
-        local info
         if ( isAvailableForPlayer ) then
             if ( isAvailableForAll ) then
                 e.LibDD:UIDropDownMenu_AddButton({
@@ -1026,12 +1025,11 @@ local function Init_Scenarios_Menu(level)--ScenarioFinder.lua
                     checked= GetLFGQueueStats(LE_LFG_CATEGORY_SCENARIO, scenarioID),
                     isTitle = nil,
                     func = function(_, arg1)
-                        --local mode, subMode = GetLFGMode(LE_LFG_CATEGORY_SCENARIO);
+                        --local mode, subMode = GetLFGMode(LE_LFG_CATEGORY_SCENARIO)
                         if GetLFGQueueStats(LE_LFG_CATEGORY_SCENARIO) then--not ( mode == "queued" or mode == "listed" or mode == "rolecheck" or mode == "suspended" ) then
-                            LeaveLFG(LE_LFG_CATEGORY_SCENARIO)                           
+                            LeaveLFG(LE_LFG_CATEGORY_SCENARIO)
                         end
-                        LFG_JoinDungeon(LE_LFG_CATEGORY_SCENARIO, arg1, ScenariosList, ScenariosHiddenByCollapseList);--ScenarioQueueFrame_Join(); 
-                        
+                            LFG_JoinDungeon(LE_LFG_CATEGORY_SCENARIO, arg1, ScenariosList, ScenariosHiddenByCollapseList)--ScenarioQueueFrame_Join() 
                     end,
                 }, level)
             else
@@ -2229,7 +2227,7 @@ local function Init()
     button:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
     WoWToolsChatButtonFrame.last=button
 
-    button:SetScript('OnMouseDown', function(self, d)
+    button:SetScript('OnClick', function(self, d)
         if d=='LeftButton' and (self.dungeonID or self.RaidID) then
             if self.dungeonID then
                 e.call('LFDQueueFrame_SetType', self.dungeonID)
@@ -2701,25 +2699,25 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
                 wowSave=WoWToolsSave[INSTANCE] or wowSave
 
                 Init()
-                panel:RegisterEvent("PLAYER_LOGOUT")
-                panel:RegisterEvent('LFG_COMPLETION_REWARD')
-                --panel:RegisterEvent('SCENARIO_COMPLETED')
-                panel:RegisterEvent('PLAYER_ENTERING_WORLD')
-                panel:RegisterEvent('ISLAND_COMPLETED')
-                panel:RegisterEvent('LFG_UPDATE_RANDOM_INFO')
-                --panel:RegisterEvent('START_LOOT_ROLL')
-                panel:RegisterEvent('PVP_MATCH_COMPLETE')
-                panel:RegisterEvent('CORPSE_IN_RANGE')--仅限战场，释放, 复活
-                panel:RegisterEvent('PLAYER_DEAD')
-                panel:RegisterEvent('AREA_SPIRIT_HEALER_IN_RANGE')
-                panel:RegisterEvent('LFG_ROLE_CHECK_ROLE_CHOSEN')
-                panel:RegisterEvent('LFG_ROLE_CHECK_DECLINED')
-                panel:RegisterEvent('LFG_QUEUE_STATUS_UPDATE')
-                panel:RegisterEvent('UPDATE_BATTLEFIELD_STATUS')
-                panel:RegisterEvent('GROUP_LEFT')
-                panel:RegisterEvent('PLAYER_ROLES_ASSIGNED')--职责确认
+                self:RegisterEvent("PLAYER_LOGOUT")
+                self:RegisterEvent('LFG_COMPLETION_REWARD')
+                --self:RegisterEvent('SCENARIO_COMPLETED')
+                self:RegisterEvent('PLAYER_ENTERING_WORLD')
+                self:RegisterEvent('ISLAND_COMPLETED')
+                self:RegisterEvent('LFG_UPDATE_RANDOM_INFO')
+                --self:RegisterEvent('START_LOOT_ROLL')
+                self:RegisterEvent('PVP_MATCH_COMPLETE')
+                self:RegisterEvent('CORPSE_IN_RANGE')--仅限战场，释放, 复活
+                self:RegisterEvent('PLAYER_DEAD')
+                self:RegisterEvent('AREA_SPIRIT_HEALER_IN_RANGE')
+                self:RegisterEvent('LFG_ROLE_CHECK_ROLE_CHOSEN')
+                self:RegisterEvent('LFG_ROLE_CHECK_DECLINED')
+                self:RegisterEvent('LFG_QUEUE_STATUS_UPDATE')
+                self:RegisterEvent('UPDATE_BATTLEFIELD_STATUS')
+                self:RegisterEvent('GROUP_LEFT')
+                self:RegisterEvent('PLAYER_ROLES_ASSIGNED')--职责确认
             end
-            panel:UnregisterEvent('ADDON_LOADED')
+            self:UnregisterEvent('ADDON_LOADED')
         end
 
     elseif event == "PLAYER_LOGOUT" then
@@ -2752,9 +2750,9 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
 
     elseif event=='PLAYER_ENTERING_WORLD' then
         if IsInInstance() then--自动离开
-            panel:RegisterEvent('LOOT_CLOSED')
+            self:RegisterEvent('LOOT_CLOSED')
         else
-            panel:UnregisterEvent('LOOT_CLOSED')
+            self:UnregisterEvent('LOOT_CLOSED')
         end
         C_Timer.After(sec, function()
             setIslandButton(self)--离开海岛按钮

@@ -1020,10 +1020,10 @@ function e.Get_Gem_Stats(self, itemLink)--显示, 宝石, 属性
                     end
                 end
             end
-            if text:find(('%+(.+)')) then--+护甲
+            --[[if text:find(('%+(.+)')) then--+护甲
                 leftText= leftText or e.WA_Utf8Sub(text:gsub('%+', ''), 1, 3, true)
-                bottomLeftText= bottomLeftText or text:match('(.+%+)')
-            end
+                bottomLeftText= bottomLeftText or text:match('(.-%+)')
+            end]]
         end
     end
 
