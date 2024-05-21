@@ -896,6 +896,20 @@ local function Init()
 
                     e.LibDD:UIDropDownMenu_AddSeparator(level)
                     e.LibDD:UIDropDownMenu_AddButton({
+                        text=(e.onlyChinese and '清除记录' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, EVENTTRACE_LOG_HEADER))..' |cnGREEN_FONT_COLOR:#'..num,
+                        icon='bags-button-autosort-up',
+                        notCheckable=true,
+                        func=function()
+                            Save.gemLoc={
+                                [e.Player.class]={}
+                            }
+                            e.call('ItemSocketingFrame_Update')
+                            print(id, Initializer:GetName(), '|cnGREEN_FONT_COLOR:', e.onlyChinese and '完成' or COMPLETE)
+                        end
+                    }, level)
+
+                    e.LibDD:UIDropDownMenu_AddSeparator(level)
+                    e.LibDD:UIDropDownMenu_AddButton({
                         text= e.onlyChinese and '选项' or OPTIONS,
                         icon='mechagon-projects',
                         keepShownOnClick=true,
