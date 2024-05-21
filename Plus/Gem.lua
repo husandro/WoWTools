@@ -326,8 +326,9 @@ function panel:set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
             end
         end
     end
-
-    Set_Sort_Button(items)
+    for _, tab in pairs(items) do
+        Set_Sort_Button(tab)
+    end
     local x, y, index= 0, 0, 1
     for type, tab in pairs(items) do
         for i, info in pairs(tab) do
