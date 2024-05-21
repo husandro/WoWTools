@@ -613,7 +613,7 @@ local function Init()
         if itemEquipLoc then
             if itemEquipLoc=='INVTYPE_TRINKET' then--13, 14
                 itemEquipLoc= itemEquipLoc..(GetInventoryItemLink('player', 13)==link and 13 or 14)
-            elseif itemEquipLoc=='INVSLOT_FINGER' then--11, 12
+            elseif itemEquipLoc=='INVTYPE_FINGER' then--11, 12
                 itemEquipLoc= itemEquipLoc..(GetInventoryItemLink('player', 11)==link and 11 or 12)
             elseif itemEquipLoc=='INVTYPE_WEAPON' then--16,17
                 itemEquipLoc= itemEquipLoc..(GetInventoryItemLink('player', 16)==link and 16 or 17)
