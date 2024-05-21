@@ -141,6 +141,7 @@ function e.Set_Item_Info(self, tab)
         end
 
         local itemName, _, itemQuality2, itemLevel2, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, _, _, classID, subclassID, bindType, expacID, setID, isCraftingReagent = C_Item.GetItemInfo(itemLink)
+        itemMinLevel= itemMinLevel or 1
 
         itemLevel= itemLevel or C_Item.GetDetailedItemLevelInfo(itemLink) or itemLevel2
         itemQuality= itemQuality or itemQuality2
@@ -259,7 +260,7 @@ function e.Set_Item_Info(self, tab)
 
             else
                 local isRedItem
-                if itemQuality and (itemQuality>1 or (PlayerGetTimerunningSeasonID() and itemQuality>0)) then
+                if itemQuality and (itemQuality>1 or PlayerGetTimerunningSeasonID()) then
                     local upItemLevel= 0
                     local dateInfo= e.GetTooltipData({
                         bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, itemID=itemID,
@@ -342,7 +343,7 @@ function e.Set_Item_Info(self, tab)
                     end
 
                     local invSlot =e.GetItemSlotID(itemEquipLoc)
-                    if invSlot and itemLevel and itemLevel>1 and (itemLevel>29 or PlayerGetTimerunningSeasonID()) then
+                    if invSlot and itemLevel and (itemLevel>29 or PlayerGetTimerunningSeasonID()) then
                         if not dateInfo.red then--装等，提示
                             local upLevel, downLevel
                             local itemLinkPlayer =  GetInventoryItemLink('player', invSlot)
@@ -382,7 +383,7 @@ function e.Set_Item_Info(self, tab)
                                             ..itemLevel
                                             ..'|r' ..(topLeftText or '')
                             end
-                        elseif itemMinLevel and itemMinLevel<=e.Player.level and itemQuality~=7 then--不可使用
+                        elseif itemMinLevel<=e.Player.level and itemQuality~=7 then--不可使用
                             topLeftText=format('|A:%s:0:0|a', e.Icon.disabled)
                             isRedItem=true
                         end
@@ -395,7 +396,7 @@ function e.Set_Item_Info(self, tab)
                 if isCollected==false then
                     topRightText= topRightText or e.WA_Utf8Sub(itemSubType, 2, 3, true)
                     if itemQuality and itemQuality<=1 then
-                        if itemMinLevel and itemMinLevel<=e.Player.level then
+                        if itemMinLevel<=e.Player.level then
                             isRedItem=true
                         else
                             local dateInfo= e.GetTooltipData({
@@ -705,6 +706,9 @@ end]]
 
 
 local function setBags(self)--背包设置
+    if not self:IsVisible() then
+        return
+    end
     for _, itemButton in self:EnumerateValidItems() do
         if itemButton.hasItem then
             local slotID, bagID= itemButton:GetSlotAndBagID()--:GetID() GetBagID()

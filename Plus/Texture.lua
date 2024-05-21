@@ -266,6 +266,9 @@ local function set_BagTexture_Button(self)
 end
 
 local function set_BagTexture(self)
+    if not self:IsVisible() then
+        return
+    end
     for _, itemButton in self:EnumerateValidItems() do
         set_BagTexture_Button(itemButton)
     end
