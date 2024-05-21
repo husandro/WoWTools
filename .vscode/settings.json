@@ -4470,7 +4470,18 @@
         "CharacterFrameTitleText",
         "LFG_JoinDungeon",
         "TRACKER_HEADER_SCENARIO",
-        "EVENTTRACE_BUTTON_MARKER"
+        "EVENTTRACE_BUTTON_MARKER",
+        "EMPTY_SOCKET_PRIMORDIAL",
+        "EMPTY_SOCKET_PRISMATIC",
+        "EMPTY_SOCKET_TINKER",
+        "EMPTY_SOCKET_COGWHEEL",
+        "EMPTY_SOCKET_META",
+        "AutoCastShine_AutoCastStop",
+        "ActionButton_HideOverlayGlow",
+        "REPLACE_ENCHANT",
+        "AutoCastShine_AutoCastStart",
+        "CALENDAR_VIEW_EVENT_REMOVE",
+        "ActionButton_ShowOverlayGlow"
     ],
     "Lua.diagnostics.disable": [
         "inject-field",

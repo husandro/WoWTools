@@ -1,15 +1,19 @@
 local id, e = ...
+local addName= SOCKET_GEMS
 local Save={
     --hide=true,--显示，隐藏 Frame
     --scale=1,--缩放
     favorites={},--{itemID=true},
     gemLeft={},--右边，按钮
-    disableSpell=e.Player.husandro,--禁用，法术按钮
+    gemTop={},
+    gemRight={},
+    disableSpell=true,--禁用，法术按钮
 }
-local addName= SOCKET_GEMS
+
 
 local panel=CreateFrame("Frame")
 local Frame
+local SpellButton
 local Initializer
 local SpellsTab={
     433397,--取出宝石
@@ -69,7 +73,7 @@ local function creatd_button(index)
     btn.favorite:SetSize(17,17)
     btn.favorite:SetAtlas('auctionhouse-icon-favorite')
     btn.favorite:SetPoint('TOPRIGHT',4,4)
-    --btn.favorite:SetVertexColor(0,1,0)
+    btn.favorite:SetVertexColor(0,1,0)
 
     btn:Hide()
     function btn:set_event()
@@ -117,8 +121,9 @@ local function creatd_button(index)
             e.tips:SetBagItem(self.bagID, self.slotID)
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
-            --e.tips:AddDoubleLine((e.onlyChinese and '标记' or EVENTTRACE_BUTTON_MARKER)..'|A:bags-greenarrow:0:0|a', e.Icon.mid)
-            --e.tips:AddDoubleLine((e.onlyChinese and '收藏' or FAVORITES)..'|A:UI-HUD-MicroMenu-StreamDLRed-Up:0:0|a', e.Icon.mid)
+            e.tips:AddDoubleLine((e.onlyChinese and '左边' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_LEFT)..format('|A:%s:0:0|a', e.Icon.toRight), 'Alt+'..e.Icon.left)
+            e.tips:AddDoubleLine((e.onlyChinese and '上面' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP)..'|A:bags-greenarrow:0:0|a', 'Alt+'..e.Icon.mid)
+            e.tips:AddDoubleLine((e.onlyChinese and '右边' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_RIGHT)..format('|A:%s:0:0|a', e.Icon.toLeft), 'Alt+'..e.Icon.right)
             e.tips:Show()
 
         end
@@ -128,7 +133,15 @@ local function creatd_button(index)
             return
         end
         ClearCursor()
-        if d=='LeftButton' then
+        if IsAltKeyDown() then
+            if d=='LeftButton' then
+                Save.gemLeft[self.itemID]= not Save.gemLeft[self.itemID] and true or nil
+                panel:set_Gem()
+            elseif d=='RightButton' then
+                Save.gemRight[self.itemID]= not Save.gemRight[self.itemID] and true or nil
+                panel:set_Gem()
+            end
+        elseif d=='LeftButton' then
             C_Container.PickupContainerItem(self.bagID, self.slotID)
         elseif d=='RightButton' then
             if not self.Menu then
@@ -142,18 +155,37 @@ local function creatd_button(index)
                             Save.favorites[self.itemID]= not Save.favorites[self.itemID] and true or nil
                             self:set_favorite()
                             print(id, Initializer:GetName(), Save.favorites[self.itemID] and self.itemID or '', e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
+                            panel:set_Gem()
                         end
                     }, level)
 
-
+                    e.LibDD:UIDropDownMenu_AddSeparator(level)
                     e.LibDD:UIDropDownMenu_AddButton({
                         text= e.onlyChinese and '左边' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_LEFT,
                         icon= e.Icon.toRight,
                         checked=Save.gemLeft[self.itemID],
-                        --tooltipOnButton=true,
-                       --tooltipText=e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH),
                         func= function()
                             Save.gemLeft[self.itemID]= not Save.gemLeft[self.itemID] and true or nil
+                            panel:set_Gem()
+                        end
+                    }, level)
+
+                    e.LibDD:UIDropDownMenu_AddButton({
+                        text= e.onlyChinese and '上面' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP,
+                        icon= 'bags-greenarrow',
+                        checked=Save.gemTop[self.itemID],
+                        func= function()
+                            Save.gemTop[self.itemID]= not Save.gemTop[self.itemID] and true or nil
+                            panel:set_Gem()
+                        end
+                    }, level)
+
+                    e.LibDD:UIDropDownMenu_AddButton({
+                        text= e.onlyChinese and '右边' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_RIGHT,
+                        icon= e.Icon.toLeft,
+                        checked=Save.gemRight[self.itemID],
+                        func= function()
+                            Save.gemRight[self.itemID]= not Save.gemRight[self.itemID] and true or nil
                             panel:set_Gem()
                         end
                     }, level)
@@ -163,14 +195,12 @@ local function creatd_button(index)
         end
         self:set_tooltips()
     end)
-    --[[btn:SetScript("OnMouseWheel", function(self, d)
-        if d==1 then
-            Save.favorites[self.itemID]= not Save.favorites[self.itemID] and true or nil
-            self:set_favorite()
-        elseif d==-1 then
-            Save.gemLeft[self.itemID]= not Save.gemLeft[self.itemID] and true or nil
+    btn:SetScript("OnMouseWheel", function(self)
+        if IsAltKeyDown() then
+            Save.gemTop[self.itemID]= not Save.gemTop[self.itemID] and true or nil
+            panel:set_Gem()
         end
-    end)]]
+    end)
     btn:SetScript('OnEnter', function(self)
         self:set_tooltips()
         if self.bagID then
@@ -209,11 +239,43 @@ end
 
 
 
+local function Set_Button_Att(btn, info)
+    local itemLink= info.info.hyperlink
+    local itemID= info.info.itemID
+    btn.bagID= info.bag
+    btn.slotID= info.slot
+    btn.itemID= itemID
+    btn.level:SetText(info.level>1 and info.level or '')
+    btn.level:SetTextColor(Get_Item_Color(itemLink))
+    btn:set_favorite()
+    btn:SetItem(itemLink)
+    btn:SetItemButtonCount(info.info.stackCount)
+    e.Get_Gem_Stats(btn, itemLink)
+    btn:SetShown(true)
+end
 
+
+
+local function Set_Sort_Button(tab)
+    table.sort(tab, function(a, b)
+        if a.expacID> b.expacID then
+            return true
+        elseif a.info.quality== b.info.quality then
+            if a.level== b.level then
+                return a.info.itemID> b.info.itemID
+            else
+                return a.level>b.level
+            end
+        else
+            return a.info.quality>b.info.quality
+        end
+    end)
+end
 
 function panel:set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
-    local items={}
-    local hides={}
+    local items, gemLeft, gemTop, gemRight= {}, {}, {}, {}
+    local scale= Save.scale or 1
+
     for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES do-- + NUM_REAGENTBAG_FRAMES do
         for slot=1, C_Container.GetContainerNumSlots(bag) do
             local info = C_Container.GetContainerItemInfo(bag, slot)
@@ -221,30 +283,30 @@ function panel:set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
                 and info.hyperlink
                 and info.itemID
                 and info.quality
-                --[[and (
-                        (gem1007 and info.itemID>=204000 and info.itemID<=204030)
-                    or (not gem1007 and (info.itemID<204000 or info.itemID>204030))
-                )]]
             then
                 local level= C_Item.GetDetailedItemLevelInfo(info.hyperlink) or 0
                 local classID, subclassID, _, expacID= select(12, C_Item.GetItemInfo(info.hyperlink))
-
                 if classID==3
                     and (PlayerGetTimerunningSeasonID() or (e.Player.levelMax and e.ExpansionLevel== expacID or not e.Player.levelMax))--最高等级
                 then
-                    local type
                     local tab={
                         info= info,
                         bag=bag,
                         slot=slot,
                         level= level or 0,
                         expacID= expacID or 0,
-                        --isFavorite= Save.favorites[info.itemID]
+                        favorite= Save.favorites[info.itemID]
                     }
                     if Save.gemLeft[info.itemID] then
-                        type= e.onlyChinese and '隐藏' or HIDE
-                        table.insert(hides, tab)
+                        table.insert(gemLeft, tab)
+
+                    elseif Save.gemTop[info.itemID] then
+                        table.insert(gemTop, tab)
+
+                    elseif Save.gemRight[info.itemID] then
+                        table.insert(gemRight, tab)
                     else
+                        local type
                         if PlayerGetTimerunningSeasonID() then
                             local date= e.GetTooltipData({hyperLink=info.hyperlink, index=2})
                             type= date.indexText and date.indexText:match('|c........(.-)|r') or date.indexText
@@ -260,26 +322,7 @@ function panel:set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
         end
     end
 
-
-
-    for _, tab in pairs(items) do
-        table.sort(tab, function(a, b)
-            if a.expacID> b.expacID then
-                return true
-            elseif a.info.quality== b.info.quality then
-                if a.level== b.level then
-                    return a.info.itemID> b.info.itemID
-                else
-                    return a.level>b.level
-                end
-            else
-                return a.info.quality>b.info.quality
-            end
-        end)
-    end
-
-
-
+    Set_Sort_Button(items)
     local x, y, index= 0, 0, 1
     for type, tab in pairs(items) do
         for i, info in pairs(tab) do
@@ -289,7 +332,6 @@ function panel:set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
             if i==1 then
                 local findGem
                 local gemName= type:gsub(AUCTION_CATEGORY_GEMS, '')
-
                 for name in pairs(CurTypeGemTab or {}) do
                     if name:find(gemName) then
                         type= format('|cnGREEN_FONT_COLOR:%s|r', type or '')
@@ -302,79 +344,63 @@ function panel:set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
             else
                 btn.type:SetText('')
             end
-            local itemLink= info.info.hyperlink
-            local itemID= info.info.itemID
-            btn.bagID= info.bag
-            btn.slotID= info.slot
-            btn.itemID= itemID
-
-            btn.level:SetText(info.level>1 and info.level or '')
-            btn.level:SetTextColor(Get_Item_Color(itemLink))
-            btn:set_favorite()
-            btn:SetItem(itemLink)
-            btn:SetItemButtonCount(info.info.stackCount)
-            e.Get_Gem_Stats(btn, itemLink)
-
-
-            btn:SetShown(true)
-            x=x-40--34
+            Set_Button_Att(btn, info)
+            x=x-40
             index= index+1
         end
         x=0
-        y=y-40--34
+        y=y-40
     end
 
-    x, y= -10, 10
-    local h= ItemSocketingFrame:GetHeight()
-    table.sort(hides, function(a, b)
-        if a.expacID> b.expacID then
-            return true
-        elseif a.info.quality== b.info.quality then
-            if a.level== b.level then
-                return a.info.itemID> b.info.itemID
-            else
-                return a.level>b.level
-            end
-        else
-            return a.info.quality>b.info.quality
-        end
-    end)
-    for _, info in pairs(hides) do
+    x, y= -10, 0--左边
+    local w, h= ItemSocketingFrame:GetSize()
+    Set_Sort_Button(gemLeft)
+    for _, info in pairs(gemLeft) do
         local btn= Frame.buttons[index] or creatd_button(index)
         btn:ClearAllPoints()
         btn:SetPoint('TOPRIGHT', ItemSocketingFrame, 'TOPLEFT', x, y)
         btn.type:SetText('')
-
-        local itemLink= info.info.hyperlink
-        local itemID= info.info.itemID
-        btn.bagID= info.bag
-        btn.slotID= info.slot
-        btn.itemID= itemID
-        btn.level:SetText(info.level>1 and info.level or '')
-        btn.level:SetTextColor(Get_Item_Color(itemLink))
-        btn:set_favorite()
-        btn:SetItem(itemLink)
-        btn:SetItemButtonCount(info.info.stackCount)
-        e.Get_Gem_Stats(btn, itemLink)
-        btn:SetShown(true)
-
+        Set_Button_Att(btn, info)
         y=y-40
-        if h<= ((-y+10)*(Save.scale or 1)) then
-            y=10
+        if h<=(-y*scale+40) then
+            y=0
             x=x-40
         end
         index= index+1
     end
 
+    x, y= 0, 10--TOP
+    Set_Sort_Button(gemTop)
+    for _, info in pairs(gemTop) do
+        local btn= Frame.buttons[index] or creatd_button(index)
+        btn:ClearAllPoints()
+        btn:SetPoint('BOTTOMRIGHT', ItemSocketingFrame, 'TOPRIGHT', x, y)
+        btn.type:SetText('')
+        Set_Button_Att(btn, info)
+        x=x-40
+        if w<= (-x*scale+40) then
+            x=0
+            y=y+40
+        end
+        index= index+1
+    end
 
 
-
-
-
-
-
-
-
+    x, y= 10, 0--右边
+    Set_Sort_Button(gemRight)
+    for _, info in pairs(gemRight) do
+        local btn= Frame.buttons[index] or creatd_button(index)
+        btn:ClearAllPoints()
+        btn:SetPoint('TOPLEFT', ItemSocketingFrame, 'TOPRIGHT', x, y)
+        btn.type:SetText('')
+        Set_Button_Att(btn, info)
+        y=y-40
+        if h<= (-y*scale+40) then
+            y=0
+            x=x+40
+        end
+        index= index+1
+    end
 
     for i= index, #Frame.buttons, 1 do
         local btn= Frame.buttons[i]
@@ -402,14 +428,16 @@ end
 
 
 --433397/取出宝石
-local SpellButton
+
 local function Init_Spell_Button()
     if Save.disableSpell then
         return
     end
     SpellButton= e.Cbtn(Frame, {size={32,32}, icon='hide', type=true})
     SpellButton:Hide()
-    SpellButton:SetPoint('BOTTOMRIGHT', ItemSocketingSocketButton, 'TOPRIGHT', 0, 10)
+    --SpellButton:SetPoint('LEFT', ItemSocketingSocket3, 'RIGHT', 4,0)
+    --SpellButton:SetPoint('BOTTOMRIGHT', -4, 42)--, ItemSocketingSocketButton, 'TOPRIGHT', 20, 10)
+    SpellButton:SetPoint('BOTTOMLEFT', ItemSocketingFrame, 4, 4)
     SpellButton.texture= SpellButton:CreateTexture(nil, 'OVERLAY')
     SpellButton.texture:SetAllPoints(SpellButton)
     SpellButton.count=e.Cstr(SpellButton, {color={r=1,g=1,b=1}})--nil,nil,nil,true)
@@ -653,7 +681,7 @@ local function Init()
     end)
 
 
-   
+
 
 
 --总开关
@@ -753,6 +781,7 @@ local function Init()
                         end
                     }, level)
 
+                    e.LibDD:UIDropDownMenu_AddSeparator(level)
                     num= 0
                     for _ in pairs(Save.gemLeft) do
                         num= num+1
@@ -764,6 +793,36 @@ local function Init()
                         notCheckable=true,
                         func=function()
                             Save.gemLeft={}
+                            panel:set_Gem()
+                        end
+                    }, level)
+
+                    num= 0
+                    for _ in pairs(Save.gemTop) do
+                        num= num+1
+                    end
+                    e.LibDD:UIDropDownMenu_AddButton({
+                        text=(e.onlyChinese and '清除上面' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP))..' |cnGREEN_FONT_COLOR:#'..num,
+                        icon='bags-greenarrow',
+                        colorCode= num==0 and '|cff606060',
+                        notCheckable=true,
+                        func=function()
+                            Save.gemTop={}
+                            panel:set_Gem()
+                        end
+                    }, level)
+
+                    num= 0
+                    for _ in pairs(Save.gemRight) do
+                        num= num+1
+                    end
+                    e.LibDD:UIDropDownMenu_AddButton({
+                        text=(e.onlyChinese and '清除右边' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_RIGHT))..' |cnGREEN_FONT_COLOR:#'..num,
+                        icon=e.Icon.toLeft,
+                        colorCode= num==0 and '|cff606060',
+                        notCheckable=true,
+                        func=function()
+                            Save.gemRight={}
                             panel:set_Gem()
                         end
                     }, level)
@@ -827,6 +886,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave[addName] or Save
             Save.favorites= Save.favorites or {}
             Save.gemLeft= Save.gemLeft or {}
+            Save.gemTop= Save.gemTop or {}
+            Save.gemRight= Save.gemRight or {}
 
             --添加控制面板
             Initializer= e.AddPanel_Check({
@@ -838,12 +899,18 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     print(id, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
                 end
             })
+
             if Save.disabled then
                 self:UnregisterEvent('ADDON_LOADED')
+            elseif ItemSocketingFrame then
+                Init()
+                self:UnregisterEvent('ADDON_LOADED')
             end
-
         elseif arg1=='Blizzard_ItemSocketingUI' then
-            Init()
+            if Initializer then
+                Init()
+                self:UnregisterEvent('ADDON_LOADED')
+            end
         end
 
     elseif event=='PLAYER_LOGOUT' then
