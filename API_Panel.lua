@@ -236,12 +236,13 @@ end
 --插件名称
 local Category, Layout = Settings.RegisterVerticalLayoutCategory('|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r')
 Settings.RegisterAddOnCategory(Category)
-Category.expanded=true
+
 --Settings.SetKeybindingsCategory(Category)
 
 
 --打开，选项
 function e.OpenPanelOpting(name, category)
+    Category.expanded=true
     name= type(name)=='table' and name:GetName() or name
     Settings.OpenToCategory(Category:GetID(), name)
     if category then
