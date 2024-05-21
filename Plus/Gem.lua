@@ -8,6 +8,7 @@ local Save={
     gemTop={},
     gemRight={},
     disableSpell=true,--禁用，法术按钮
+    gemLoc= {}--{class={}}
 }
 
 
@@ -62,8 +63,8 @@ end
 }--EMPTY_SOCKET_NO_COLOR,--棱彩插槽]]
 
 
-local function creatd_button(index)
-    local btn= e.Cbtn(Frame, {button='ItemButton', icon='hide'})--34, 34
+local function creatd_button(index, parent)
+    local btn= e.Cbtn(parent or Frame, {button='ItemButton', icon='hide'})--34, 34
 
     btn.level=e.Cstr(btn)
     btn.level:SetPoint('TOPRIGHT')
@@ -125,7 +126,6 @@ local function creatd_button(index)
             e.tips:AddDoubleLine((e.onlyChinese and '上面' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP)..'|A:bags-greenarrow:0:0|a', 'Alt+'..e.Icon.mid)
             e.tips:AddDoubleLine((e.onlyChinese and '右边' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_RIGHT)..format('|A:%s:0:0|a', e.Icon.toLeft), 'Alt+'..e.Icon.right)
             e.tips:Show()
-
         end
     end
     btn:SetScript('OnClick', function(self, d)
@@ -211,7 +211,9 @@ local function creatd_button(index)
         GameTooltip_Hide()
         e.FindBagItem()
     end)
-    Frame.buttons[index]= btn
+    if index then
+        Frame.buttons[index]= btn
+    end
     return btn
 end
 
@@ -240,12 +242,13 @@ end
 
 
 local function Set_Button_Att(btn, info)
+    info= info or {}
     local itemLink= info.info.hyperlink
     local itemID= info.info.itemID
     btn.bagID= info.bag
     btn.slotID= info.slot
     btn.itemID= itemID
-    btn.level:SetText(info.level>1 and info.level or '')
+    btn.level:SetText(info.level and info.level>1 and info.level or '')
     btn.level:SetTextColor(Get_Item_Color(itemLink))
     btn:set_favorite()
     btn:SetItem(itemLink)
@@ -258,7 +261,9 @@ end
 
 local function Set_Sort_Button(tab)
     table.sort(tab, function(a, b)
-        if a.expacID> b.expacID then
+        if a.favorite and not b.favorite then
+            return true
+        elseif a.expacID> b.expacID then
             return true
         elseif a.info.quality== b.info.quality then
             if a.level== b.level then
@@ -602,6 +607,12 @@ local function Init()
     hooksecurefunc('ItemSocketingFrame_Update', function()
         local numSockets = GetNumSockets() or 0
         CurTypeGemTab={}
+        local itemID= select(3, ItemSocketingDescription:GetItem())
+        local itemEquipLoc= itemID and select(4, C_Item.GetItemInfoInstant(itemID))
+        if itemEquipLoc and not Save.gemLoc[e.Player.class][itemEquipLoc] then
+            Save.gemLoc[e.Player.class][itemEquipLoc]={}
+        end
+       
         for i, btn in ipairs(ItemSocketingFrame.Sockets) do--插槽，名称
             if ( i <= numSockets ) then
                 local name= GetSocketTypes(i)
@@ -630,8 +641,48 @@ local function Init()
                     btn.leftText:SetPoint('TOPLEFT', btn, 'BOTTOMLEFT')
                     btn.rightText=e.Cstr(btn)
                     btn.rightText:SetPoint('TOPRIGHT', btn, 'BOTTOMRIGHT')
+
+                    btn.gemButton=e.Cbtn(btn, {button='ItemButton', icon='hide'})--使用过宝石，提示
+                    btn.gemButton:SetPoint('BOTTOMLEFT', btn, 'BOTTOMRIGHT', 6, 0)
+                    btn.gemButton:Hide()
+                    function btn.gemButton:set_event()
+                        if self:IsShown() then
+                            self:RegisterEvent('BAG_UPDATE_DELAYED')
+                        else
+                            self:UnregisterAllEvents()
+                        end
+                    end
+                    function btn.gemButton:settings()
+                        local count= self.gemID and C_Item.GetItemCount(self.gemID, false, false, false) or 0
+                        self:SetItemButtonCount(count)
+                        self:SetEnabled(count>0)
+                        self:SetAlpha(count>0 and 1 or 0.3)
+                    end
+                    btn.gemButton:SetScript('OnEvent', btn.gemButton.settings)
+                    btn.gemButton:SetScript('OnShow',  btn.gemButton.set_event)
+                    btn.gemButton:SetScript('OnHide',  btn.gemButton.set_event)
+                    btn.gemButton:SetScript('OnLeave', function(self)
+                        e.FindBagItem(false)
+                    end)
+                    btn.gemButton:SetScript('OnEnter', function(self)
+                        e.FindBagItem(true, {itemID=self.gemID})
+                    end)
+                    btn.gemButton:SetScript('OnClick', function(self)
+                        for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES do
+                            for slot=1, C_Container.GetContainerNumSlots(bag) do
+                                local info = C_Container.GetContainerItemInfo(bag, slot)
+                                if info and info.itemID==self.gemID then
+                                    ClearCursor()
+                                    C_Container.PickupContainerItem(bag, slot)
+                                    break
+                                end
+                            end
+                        end
+                    end)
                 end
-                local itemLink= GetNewSocketLink(i) or GetExistingSocketLink(i)
+
+                local itemLinkExist= GetExistingSocketLink(i)
+                local itemLink= GetNewSocketLink(i) or itemLinkExist
                 local left, right= e.Get_Gem_Stats(nil, itemLink)
                 local atlas
                 if itemLink then
@@ -657,6 +708,21 @@ local function Init()
                 else
                     btn.qualityTexture:SetTexture(0)
                 end
+
+                local gemID--使用过宝石，提示
+                if itemEquipLoc then
+                    if itemLinkExist then
+                        gemID= C_Item.GetItemInfoInstant(itemLinkExist)
+                        if gemID then
+                            Save.gemLoc[e.Player.class][itemEquipLoc][i]= gemID
+                        end
+                    end
+                    gemID= gemID or Save.gemLoc[e.Player.class][itemEquipLoc][i]
+                end
+                btn.gemButton.gemID= gemID
+                btn.gemButton:settings()
+                btn.gemButton:SetItem(gemID)
+                btn.gemButton:SetShown(gemID and true or false )
             end
         end
 
@@ -888,6 +954,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save.gemLeft= Save.gemLeft or {}
             Save.gemTop= Save.gemTop or {}
             Save.gemRight= Save.gemRight or {}
+
+            Save.gemLoc= Save.gemLoc or {}
+            Save.gemLoc[e.Player.class]= Save.gemLoc[e.Player.class] or {}
 
             --添加控制面板
             Initializer= e.AddPanel_Check({

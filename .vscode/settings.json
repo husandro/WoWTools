@@ -4481,7 +4481,8 @@
         "REPLACE_ENCHANT",
         "AutoCastShine_AutoCastStart",
         "CALENDAR_VIEW_EVENT_REMOVE",
-        "ActionButton_ShowOverlayGlow"
+        "ActionButton_ShowOverlayGlow",
+        "class"
     ],
     "Lua.diagnostics.disable": [
         "inject-field",
