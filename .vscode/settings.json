@@ -4484,7 +4484,8 @@
         "ActionButton_ShowOverlayGlow",
         "class",
         "ITEM_MOD_EXTRA_ARMOR_SHORT",
-        "UIDropDownMenu_RefreshDropDownSize"
+        "UIDropDownMenu_RefreshDropDownSize",
+        "NUM_PET_STABLE_SLOTS"
     ],
     "Lua.diagnostics.disable": [
         "inject-field",
