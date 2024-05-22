@@ -71,8 +71,55 @@ local function get_has_text(has)
 end
 
 
+--装等，提示
+local function get_itemLeve_color(itemLevel, itemEquipLoc, itemQuality, upItemLevel)
+    local invSlot =e.GetItemSlotID(itemEquipLoc)
+    if not invSlot then
+        return
+    end
+    local upLevel, downLevel
+    local itemLinkPlayer =  GetInventoryItemLink('player', invSlot)
+    if itemLinkPlayer then
+        local equipedLevel= C_Item.GetDetailedItemLevelInfo(itemLinkPlayer)
+        if equipedLevel then
+            if e.Is_Timerunning then
+                upLevel= itemLevel <equipedLevel
+                downLevel= itemLevel> equipedLevel
+            else
+                local equipedInfo= e.GetTooltipData({hyperLink=itemLinkPlayer, text={upgradeStr}, onlyText=true})--物品提示，信息
+                if equipedInfo.text[upgradeStr] then--"升级：%s/%s"
+                    local min, max= equipedInfo.text[upgradeStr]:match('(%d+)/(%d+)')
+                    if min and max and min<max then
+                        min, max= tonumber(min) or 0, tonumber(max) or 0
+                        equipedLevel=equipedLevel+ (max-min)*5--已装备，物品，总装等
+                    end
+                end
 
-
+                local level= (itemLevel + upItemLevel*5) - equipedLevel
+                if level> 5 then
+                    upLevel=true
+                elseif level< -5 then
+                    downLevel=true
+                else
+                    local qualityPlayer= C_Item.GetItemQualityByID(itemLinkPlayer)
+                    if qualityPlayer and itemQuality then
+                        if qualityPlayer<itemQuality then
+                            upLevel=true
+                        elseif qualityPlayer>itemQuality then
+                            downLevel=true
+                        end
+                    end
+                end
+            end
+        end
+    else
+        upLevel=true
+    end
+    if upLevel or downLevel or e.Is_Timerunning then
+        return (upLevel and '|cnGREEN_FONT_COLOR:'  or (downLevel and '|cnRED_FONT_COLOR:') or  '|cffffffff')
+                ..itemLevel..'|r'
+    end
+end
 
 
 
@@ -149,8 +196,8 @@ function e.Set_Item_Info(self, tab)
 
         setIDItem= setID and true or nil--套装
 
-    
-        local lowerVer= not PlayerGetTimerunningSeasonID() and expacID< e.ExpansionLevel and itemID~='5512' and itemID~='113509'--低版本，5512糖 食物,113509[魔法汉堡]
+
+        local lowerVer= not e.Is_Timerunning and expacID< e.ExpansionLevel and itemID~='5512' and itemID~='113509'--低版本，5512糖 食物,113509[魔法汉堡]
         --[[if itemQuality then
             r,g,b = C_Item.GetItemQualityColor(itemQuality)
         end]]
@@ -257,10 +304,28 @@ function e.Set_Item_Info(self, tab)
         elseif classID==2 or classID==4 then--装备
             if C_Item.IsCosmeticItem(itemLink) then--装饰品
                 bottomLeftText= get_has_text(select(2, e.GetItemCollected(itemLink, nil, nil, true)))
+            elseif e.Is_Timerunning then
+                local stat= e.Get_Item_Stats(itemLink)
+                for i=1 ,4 do
+                    if stat[i] then
+                        if i==1 then
+                            bottomLeftText= stat[i].text
+                        elseif i==2 then
+                            bottomRightText= stat[i].text
+                        elseif i==3 then
+                            topLeftText= stat[i].text
+                        elseif i==4 then
+                            topRightText= stat[i].text
+                        end
+                    else
+                        break
+                    end
+                end
+                leftText= get_itemLeve_color(itemLevel, itemEquipLoc, itemQuality, nil)--装等，提示
 
             else
                 local isRedItem
-                if itemQuality and (itemQuality>1 or PlayerGetTimerunningSeasonID()) then
+                if itemQuality and (itemQuality>1 or e.Is_Timerunning) then
                     local upItemLevel= 0
                     local dateInfo= e.GetTooltipData({
                         bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, itemID=itemID,
@@ -342,52 +407,16 @@ function e.Set_Item_Info(self, tab)
                         end
                     end
 
-                    local invSlot =e.GetItemSlotID(itemEquipLoc)
-                    if invSlot and itemLevel and (itemLevel>29 or PlayerGetTimerunningSeasonID()) then
-                        if not dateInfo.red then--装等，提示
-                            local upLevel, downLevel
-                            local itemLinkPlayer =  GetInventoryItemLink('player', invSlot)
-                            if itemLinkPlayer then
-                                local equipedLevel= C_Item.GetDetailedItemLevelInfo(itemLinkPlayer)
-                                if equipedLevel then
-                                    local equipedInfo= e.GetTooltipData({hyperLink=itemLinkPlayer, text={upgradeStr}, onlyText=true})--物品提示，信息
-                                    if equipedInfo.text[upgradeStr] then--"升级：%s/%s"
-                                        local min, max= equipedInfo.text[upgradeStr]:match('(%d+)/(%d+)')
-                                        if min and max and min<max then
-                                            min, max= tonumber(min) or 0, tonumber(max) or 0
-                                            equipedLevel=equipedLevel+ (max-min)*5--已装备，物品，总装等
-                                        end
-                                    end
-
-                                    local level= (itemLevel + upItemLevel*5) - equipedLevel
-                                    if level> 5 then
-                                        upLevel=true
-                                    elseif level< -5 then
-                                        downLevel=true
-                                    else
-                                        local qualityPlayer= C_Item.GetItemQualityByID(itemLinkPlayer)
-                                        if qualityPlayer and itemQuality then
-                                            if qualityPlayer<itemQuality then
-                                                upLevel=true
-                                            elseif qualityPlayer>itemQuality then
-                                                downLevel=true
-                                            end
-                                        end
-                                    end
-                                end
-                            else
-                                upLevel=true
-                            end
-                            if itemQuality>2 or (not e.Player.levelMax and itemQuality==2) or upLevel then
-                                topLeftText=(upLevel and '|cnGREEN_FONT_COLOR:'  or (downLevel and '|cnRED_FONT_COLOR:') or  '|cffffffff')
-                                            ..itemLevel
-                                            ..'|r' ..(topLeftText or '')
-                            end
-                        elseif itemMinLevel<=e.Player.level and itemQuality~=7 then--不可使用
-                            topLeftText=format('|A:%s:0:0|a', e.Icon.disabled)
-                            isRedItem=true
+                    if not dateInfo.red then--装等，提示
+                        local text= get_itemLeve_color(itemLevel, itemEquipLoc, itemQuality, upItemLevel)
+                        if text then
+                            topLeftText= topLeftText and topLeftText..'|r'..text or text
                         end
+                    elseif itemMinLevel<=e.Player.level and itemQuality~=7 then--不可使用
+                        topLeftText=format('|A:%s:0:0|a', e.Icon.disabled)
+                        isRedItem=true
                     end
+
                 end
 
 
@@ -1346,7 +1375,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     print(id, Initializer:GetName(), e.GetEnabeleDisable(Save.disabled))
                 end
             })
-            
+
             if Save.disabled then
                 panel:UnregisterAllEvents()
             else
@@ -1469,7 +1498,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 e.tips:Show()
             end)
             ScrappingMachineFrame.CelarAllItemButton:SetScript('OnClick', C_ScrappingMachineUI.RemoveAllScrapItems)
-           
+
 
 
             ScrappingMachineFrame.AutoAddItemButton= e.Cbtn(ScrappingMachineFrame, {size={22,22}, atlas='communities-chat-icon-plus'})

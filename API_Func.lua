@@ -999,7 +999,7 @@ function e.Get_Gem_Stats(self, itemLink)--显示, 宝石, 属性
     local leftText, bottomLeftText
     if itemLink then
         local dateInfo
-        if PlayerGetTimerunningSeasonID() then
+        if e.Is_Timerunning then
             dateInfo= e.GetTooltipData({hyperLink=itemLink, index=3})--物品提示，信息
         else
             dateInfo= e.GetTooltipData({hyperLink=itemLink, text={'(%+.+)', }})--物品提示，信息
@@ -1088,6 +1088,7 @@ function e.Get_Item_Stats(link)--取得，物品，次属性，表
         table.insert(tab, {text=e.StausText[ITEM_MOD_EXTRA_ARMOR_SHORT], value=info['ITEM_MOD_EXTRA_ARMOR_SHORT'] or 1, index=2})
         num= num +1
     end]]
+    table.sort(tab, function(a,b) return a.value>b.value and a.index== b.index end)
     return tab
 end
 
@@ -1176,7 +1177,6 @@ function e.Set_Item_Stats(self, link, setting) --设置，物品，次属性，�
     if self.itemLevel then self.itemLevel:SetText(itemLevel or '') end--装等
 
     local tab= not hideStats and e.Get_Item_Stats(link) or {}--物品，次属性，表
-    table.sort(tab, function(a,b) return a.value>b.value and a.index== b.index end)
     for index=1 ,4 do
         local text=self['statText'..index]
         if tab[index] then

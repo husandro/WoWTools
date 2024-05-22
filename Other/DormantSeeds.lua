@@ -1,7 +1,6 @@
 if PlayerGetTimerunningSeasonID() then
     return
 end
-
 local id, e = ...
 local addName= 'DormantSeeds'
 local Save={

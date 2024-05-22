@@ -1,3 +1,7 @@
+if PlayerGetTimerunningSeasonID() then
+    return
+end
+
 local id, e = ...
 local addName= PROFESSIONS_TRACKER_HEADER_PROFESSION
 local Save={
@@ -7,11 +11,8 @@ local Save={
     --disabled--禁用，按钮
     ArcheologySound=true, --考古学
 }
+
 local panel=CreateFrame("Frame")
-
-
-
-
 local ArcheologyButton
 
 

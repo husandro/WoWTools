@@ -4483,7 +4483,8 @@
         "CALENDAR_VIEW_EVENT_REMOVE",
         "ActionButton_ShowOverlayGlow",
         "class",
-        "ITEM_MOD_EXTRA_ARMOR_SHORT"
+        "ITEM_MOD_EXTRA_ARMOR_SHORT",
+        "UIDropDownMenu_RefreshDropDownSize"
     ],
     "Lua.diagnostics.disable": [
         "inject-field",

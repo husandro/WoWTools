@@ -2671,7 +2671,7 @@ local function Init_Move()
 
 
      C_Timer.After(2, function()
-
+            e.Set_Move_Frame(BankFrame)
             e.Set_Move_Frame(SendMailFrame, {frame=MailFrame})
             e.Set_Move_Frame(StableFrame)
             e.Set_Move_Frame(MerchantFrame)

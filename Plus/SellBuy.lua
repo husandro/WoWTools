@@ -177,7 +177,6 @@ local function Set_Merchant_Info()--设置, 提示, 信息
             local classID= itemLink and select(6, C_Item.GetItemInfoInstant(itemLink))
             if classID==2 or classID==4 then--装备
                 local stat= e.Get_Item_Stats(itemLink)--物品，属性，表
-                table.sort(stat, function(a,b) return a.value>b.value and a.index== b.index end)
                 for _, tab in pairs(stat) do
                     text= text and text..' ' or ''
                     text= (text and text..' ' or '')..tab.text

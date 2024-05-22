@@ -813,7 +813,7 @@ local function set_Party_Menu_List(level)--5人，随机 LFDFrame.lua
                     tooltip=(tooltip and tooltip..'|n' or '')..(e.onlyChinese and '今天' or GUILD_EVENT_TODAY)..format('|A:%s:0:0|a', e.Icon.select)..(e.onlyChinese and '完成' or COMPLETE)
                 end
                 info= {
-                    text= name
+                    text= e.cn(name)
                         ..get_Reward_Info(dungeonID)
                         ..(doneToday or ''),
                     icon= select(11, GetLFGDungeonInfo(dungeonID)),
@@ -851,13 +851,27 @@ local function set_Party_Menu_List(level)--5人，随机 LFDFrame.lua
     end
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function isRaidFinderDungeonDisplayable(dungeonID)--RaidFinder.lua
     local _, _, _, minLevel, maxLevel, _, _, _, expansionLevel = GetLFGDungeonInfo(dungeonID)
     local myLevel = e.Player.level
     return myLevel >= minLevel and myLevel <= maxLevel and EXPANSION_LEVEL >= expansionLevel
 end
 
-local set_Raid_Menu_List=function(level)--团队本
+local function set_Raid_Menu_List(level)--团队本
     local sortedDungeons, info = {}, {}
     local LfgDungeonID = select(10, GetInstanceInfo())
 
@@ -902,13 +916,12 @@ local set_Raid_Menu_List=function(level)--团队本
     for i = 1, #sortedDungeons do
         if ( currentMapName ~= sortedDungeons[i].mapName ) then
             currentMapName = sortedDungeons[i].mapName
-            info= {
-                text = sortedDungeons[i].mapName,
+            e.LibDD:UIDropDownMenu_AddButton({
+                text = e.cn(sortedDungeons[i].mapName),
                 icon= select(11, GetLFGDungeonInfo(sortedDungeons[i].id)),
                 isTitle = 1,
                 notCheckable = 1,
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
+            }, level)
         end
 
         if ( sortedDungeons[i].isAvailable ) then
@@ -939,9 +952,9 @@ local set_Raid_Menu_List=function(level)--团队本
             end
 
 
-            info={
+            e.LibDD:UIDropDownMenu_AddButton({
                 text=((LfgDungeonID==sortedDungeons[i].id or scenarioName== strlower(sortedDungeons[i].name or '')) and '|A:auctionhouse-icon-favorite:0:0|a' or '')--在当前副本
-                    ..sortedDungeons[i].name
+                    ..e.cn(sortedDungeons[i].name)
                     ..get_Reward_Info(sortedDungeons[i].id)--名称
                     ..killText,
                 icon= icon,
@@ -963,8 +976,7 @@ local set_Raid_Menu_List=function(level)--团队本
                         setTexture(nil, arg1.id, arg1.name, nil)--设置图标, 点击,提示
                     end
                 end
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
+            }, level)
 
         else
             info= {
@@ -999,9 +1011,16 @@ end
 
 
 
+
+
+
+
+
+
+
 --场景
 local function Init_Scenarios_Menu(level)--ScenarioFinder.lua
-    if not PlayerGetTimerunningSeasonID() then
+    if not e.Is_Timerunning then
         return
     end
     local numScenario= GetNumRandomScenarios() or 0
@@ -1027,7 +1046,7 @@ local function Init_Scenarios_Menu(level)--ScenarioFinder.lua
                     --checked = (ScenarioQueueFrame.type == value),
                     checked= GetLFGQueueStats(LE_LFG_CATEGORY_SCENARIO, scenarioID),
                     isTitle = nil,
-                    func = function(_, arg1)
+                    func = function(frame, arg1)
                         --local mode, subMode = GetLFGMode(LE_LFG_CATEGORY_SCENARIO)
                         if GetLFGQueueStats(LE_LFG_CATEGORY_SCENARIO) then--not ( mode == "queued" or mode == "listed" or mode == "rolecheck" or mode == "suspended" ) then
                             LeaveLFG(LE_LFG_CATEGORY_SCENARIO)

@@ -1,4 +1,4 @@
-if C_Item.GetItemCount(8529)==0 then--没有时,不加载
+if PlayerGetTimerunningSeasonID() or C_Item.GetItemCount(8529)==0 then--没有时,不加载
     return
 end
 

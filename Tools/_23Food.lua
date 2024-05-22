@@ -97,7 +97,7 @@ local function find_Item_Type(class, subclass)
             if info and info.hyperlink and info.itemID and C_Item.GetItemSpell(info.itemID) then
                 local classID, subClassID, _, expacID = select(12, C_Item.GetItemInfo(info.hyperlink))
                 if classID==class and subClassID==subclass
-                    and (PlayerGetTimerunningSeasonID()
+                    and (e.Is_Timerunning
                             or (Save.onlyMaxExpansion and (info.itemID==113509 or e.ExpansionLevel==expacID) or not Save.onlyMaxExpansion)
                         )
                 then
@@ -311,7 +311,7 @@ local function InitMenu(self, level, type)--主菜单
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-if not PlayerGetTimerunningSeasonID() then
+if not e.Is_Timerunning then
         info={
             text= e.onlyChinese and '仅当前版本物品' or format(LFG_LIST_CROSS_FACTION, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, GAME_VERSION_LABEL)),
             checked= Save.onlyMaxExpansion,

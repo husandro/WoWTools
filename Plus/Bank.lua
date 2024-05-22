@@ -503,6 +503,8 @@ local function Init_All_Bank()
         SetAllBank:set_size()--设置，外框，大小
     end)
 
+
+    BankFramePurchaseButton:SetWidth(BankFramePurchaseButton:GetFontString():GetWidth()+12)
     hooksecurefunc('UpdateBagSlotStatus', function()
         if BankFramePurchaseInfo then
             BankFramePurchaseInfo:ClearAllPoints()
