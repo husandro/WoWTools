@@ -615,7 +615,7 @@ local function Init()
                 itemEquipLoc= itemEquipLoc..(GetInventoryItemLink('player', 13)==link and 13 or 14)
             elseif itemEquipLoc=='INVTYPE_FINGER' then--11, 12
                 itemEquipLoc= itemEquipLoc..(GetInventoryItemLink('player', 11)==link and 11 or 12)
-            elseif itemEquipLoc=='INVTYPE_WEAPON' then--16,17
+            elseif itemEquipLoc=='INVTYPE_WEAPON' then--16, 17
                 itemEquipLoc= itemEquipLoc..(GetInventoryItemLink('player', 16)==link and 16 or 17)
             end
             if not Save.gemLoc[e.Player.class][itemEquipLoc] then

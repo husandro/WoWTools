@@ -1084,6 +1084,10 @@ function e.Get_Item_Stats(link)--取得，物品，次属性，表
         table.insert(tab, {text=e.StausText[ITEM_MOD_CR_SPEED_SHORT], value=info['ITEM_MOD_CR_SPEED_SHORT'] or 1, index=2})
         num= num +1
     end
+    --[[if num<4 and info['ITEM_MOD_EXTRA_ARMOR_SHORT'] then
+        table.insert(tab, {text=e.StausText[ITEM_MOD_EXTRA_ARMOR_SHORT], value=info['ITEM_MOD_EXTRA_ARMOR_SHORT'] or 1, index=2})
+        num= num +1
+    end]]
     return tab
 end
 

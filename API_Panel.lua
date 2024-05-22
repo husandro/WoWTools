@@ -847,6 +847,7 @@ local function Init()
         [ITEM_MOD_CR_AVOIDANCE_SHORT]= e.onlyChinese and '闪' or e.WA_Utf8Sub(STAT_AVOIDANCE, 1, 2, true),
         [ITEM_MOD_CR_LIFESTEAL_SHORT]= e.onlyChinese and '吸' or e.WA_Utf8Sub(STAT_LIFESTEAL, 1, 2, true),
         [ITEM_MOD_CR_SPEED_SHORT]=e.onlyChinese and '速' or e.WA_Utf8Sub(SPEED, 1,2,true),
+        --[ITEM_MOD_EXTRA_ARMOR_SHORT]= e.onlyChinese and '护' or e.WA_Utf8Sub(ARMOR, 1,2,true)
     }
 end
 --[[

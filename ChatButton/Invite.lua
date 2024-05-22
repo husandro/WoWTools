@@ -446,7 +446,7 @@ local function Init_Shift_Click_Focus()
 
     --跟随，密语
     function ClearFoucsFrame:set_say_follow(frame)
-        if not Save.setFrameFun or not frame then--or not (frame.unit and frame:GetAttribute('unit')) then
+        if not Save.setFrameFun or not frame or not frame:CanChangeAttribute() then--or not (frame.unit and frame:GetAttribute('unit')) then
             return
         end
         frame:EnableMouseWheel(true)
