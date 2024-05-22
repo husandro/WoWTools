@@ -1001,6 +1001,9 @@ end
 
 --场景
 local function Init_Scenarios_Menu(level)--ScenarioFinder.lua
+    if not PlayerGetTimerunningSeasonID() then
+        return
+    end
     local numScenario= GetNumRandomScenarios() or 0
     if numScenario<=0 and ScenariosList and ScenariosHiddenByCollapseList then
         return

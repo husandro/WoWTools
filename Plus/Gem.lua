@@ -608,18 +608,21 @@ local function Init()
     hooksecurefunc('ItemSocketingFrame_Update', function()
         local numSockets = GetNumSockets() or 0
         CurTypeGemTab={}
-        local link, itemID= select(2, ItemSocketingDescription:GetItem())
-        local itemEquipLoc= itemID and select(4, C_Item.GetItemInfoInstant(itemID))
-        if itemEquipLoc then
-            if itemEquipLoc=='INVTYPE_TRINKET' then--13, 14
-                itemEquipLoc= itemEquipLoc..(GetInventoryItemLink('player', 13)==link and 13 or 14)
-            elseif itemEquipLoc=='INVTYPE_FINGER' then--11, 12
-                itemEquipLoc= itemEquipLoc..(GetInventoryItemLink('player', 11)==link and 11 or 12)
-            elseif itemEquipLoc=='INVTYPE_WEAPON' then--16, 17
-                itemEquipLoc= itemEquipLoc..(GetInventoryItemLink('player', 16)==link and 16 or 17)
-            end
-            if not Save.gemLoc[e.Player.class][itemEquipLoc] then
-                Save.gemLoc[e.Player.class][itemEquipLoc]={}
+        local itemEquipLoc
+        if PlayerGetTimerunningSeasonID() then
+            local link, itemID= select(2, ItemSocketingDescription:GetItem())
+            itemEquipLoc= itemID and select(4, C_Item.GetItemInfoInstant(itemID))
+            if itemEquipLoc then
+                if itemEquipLoc=='INVTYPE_TRINKET' then--13, 14
+                    itemEquipLoc= itemEquipLoc..(GetInventoryItemLink('player', 13)==link and 13 or 14)
+                elseif itemEquipLoc=='INVTYPE_FINGER' then--11, 12
+                    itemEquipLoc= itemEquipLoc..(GetInventoryItemLink('player', 11)==link and 11 or 12)
+                elseif itemEquipLoc=='INVTYPE_WEAPON' then--16, 17
+                    itemEquipLoc= itemEquipLoc..(GetInventoryItemLink('player', 16)==link and 16 or 17)
+                end
+                if not Save.gemLoc[e.Player.class][itemEquipLoc] then
+                    Save.gemLoc[e.Player.class][itemEquipLoc]={}
+                end
             end
         end
 
