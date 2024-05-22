@@ -72,7 +72,7 @@ end
 
 
 --装等，提示
-local function get_itemLeve_color(itemLevel, itemEquipLoc, itemQuality, upItemLevel)
+local function get_itemLeve_color(itemLink, itemLevel, itemEquipLoc, itemQuality, upItemLevel)
     local invSlot =e.GetItemSlotID(itemEquipLoc)
     if not invSlot then
         return
@@ -80,12 +80,21 @@ local function get_itemLeve_color(itemLevel, itemEquipLoc, itemQuality, upItemLe
     local upLevel, downLevel
     local itemLinkPlayer =  GetInventoryItemLink('player', invSlot)
     if itemLinkPlayer then
-        local equipedLevel= C_Item.GetDetailedItemLevelInfo(itemLinkPlayer)
-        if equipedLevel then
-            if e.Is_Timerunning then
-                upLevel= itemLevel <equipedLevel
-                downLevel= itemLevel> equipedLevel
-            else
+        if e.Is_Timerunning then
+            local numItem, numPlayer= 0, 0
+            for _, num in pairs(C_Item.GetItemStats(itemLink) or {}) do
+                numItem= numItem +num
+            end
+            for _, num in pairs(C_Item.GetItemStats(itemLinkPlayer) or {}) do
+                numPlayer= numPlayer +num
+            end
+            upLevel= numItem>numPlayer
+            downLevel= numItem<numPlayer
+            --upLevel= itemLevel <equipedLevel
+            --downLevel= itemLevel> equipedLevel
+        else
+            local equipedLevel= C_Item.GetDetailedItemLevelInfo(itemLinkPlayer)
+            if equipedLevel then
                 local equipedInfo= e.GetTooltipData({hyperLink=itemLinkPlayer, text={upgradeStr}, onlyText=true})--物品提示，信息
                 if equipedInfo.text[upgradeStr] then--"升级：%s/%s"
                     local min, max= equipedInfo.text[upgradeStr]:match('(%d+)/(%d+)')
@@ -321,7 +330,7 @@ function e.Set_Item_Info(self, tab)
                         break
                     end
                 end
-                leftText= get_itemLeve_color(itemLevel, itemEquipLoc, itemQuality, nil)--装等，提示
+                leftText= get_itemLeve_color(itemLink, itemLevel, itemEquipLoc, itemQuality, nil)--装等，提示
 
             else
                 local isRedItem
@@ -408,7 +417,7 @@ function e.Set_Item_Info(self, tab)
                     end
 
                     if not dateInfo.red then--装等，提示
-                        local text= get_itemLeve_color(itemLevel, itemEquipLoc, itemQuality, upItemLevel)
+                        local text= get_itemLeve_color(itemLink, itemLevel, itemEquipLoc, itemQuality, upItemLevel)
                         if text then
                             topLeftText= topLeftText and topLeftText..'|r'..text or text
                         end
