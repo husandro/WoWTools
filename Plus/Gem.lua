@@ -1010,7 +1010,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif event=='PLAYER_LOGOUT' then
-        if not e.ClearAllSave then
+        if not e.ClearAllSave or e.Player.husandro then
             WoWToolsSave[addName]=Save
         end
     end

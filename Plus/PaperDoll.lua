@@ -1683,7 +1683,7 @@ local function Init_Show_Hide_Button(frame)
                 panel:Init_Target_InspectUI()
             end
             if InspectLevelText then
-                e.Cstr(nil, {changeFont= InspectLevelText, size= not Save.hide and 20 or 12})
+                e.Cstr(nil, {changeFont= InspectLevelText, size= not Save.hide and 18 or 12})
             end
             if InspectFrame.ShowHideButton then
                 InspectFrame.ShowHideButton:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
@@ -1734,7 +1734,7 @@ function panel:Init_Target_InspectUI()
 
     if not frame.initButton and not Save.hide then
         if frame.ViewButton then
-            e.Cstr(nil, {changeFont= InspectLevelText, size=20})
+            e.Cstr(nil, {changeFont= InspectLevelText, size=18})
             frame.ViewButton:ClearAllPoints()
             frame.ViewButton:SetPoint('LEFT', InspectLevelText, 'RIGHT',20,0)
             frame.ViewButton:SetSize(25,25)

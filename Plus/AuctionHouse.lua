@@ -1,3 +1,7 @@
+if PlayerGetTimerunningSeasonID() then
+    return
+end
+
 local id, e = ...
 local addName= BUTTON_LAG_AUCTIONHOUSE--拍卖行
 local Save={

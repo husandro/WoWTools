@@ -829,7 +829,9 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
     elseif event == "PLAYER_LOGOUT" then
         if e.ClearAllSave then
             WoWToolsSave=nil
-            WoWDate=nil
+            if not e.Player.husandro then
+                WoWDate=nil
+            end
         else
 
 
