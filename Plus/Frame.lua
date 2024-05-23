@@ -7,7 +7,8 @@ local Save={
 
     --disabledZoom=true,--禁用缩放
     scale={--缩放
-        ['UIWidgetPowerBarContainerFrame']= 0.85,
+        ['UIWidgetPowerBarContainerFrame']= e.Player.husandro and 0.85 or 1,
+        ['ZoneAbilityFrame']= e.Player and 0.75 or 1,
     },
     size={},
     disabledSize={},--['CharacterFrame']= true

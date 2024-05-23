@@ -269,6 +269,9 @@ end
 
 
 function Init_All_Flyout()
+    if not e.Player.levelMax or PlayerGetTimerunningSeasonID() then
+        return
+    end
     local tab={
         --11
         227,--巨龙时代 10

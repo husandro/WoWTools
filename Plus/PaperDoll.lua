@@ -655,28 +655,32 @@ end
     end
 end
 
-local function set_Slot_Num_Label(self, slot, isEquipped)--栏位
-    if not self.slotText and not Save.hide and not isEquipped then
-        self.slotText=e.Cstr(self, {color=true, justifyH='CENTER', mouse=true})
-        self.slotText:EnableMouse(true)
-        self.slotText:SetAlpha(0.3)
-        self.slotText:SetScript('OnEnter', function(self2)
-            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+local function set_Slot_Num_Label(frame, slot, isEquipped)--栏位
+    if not frame.slotText and not Save.hide and not isEquipped then
+        frame.slotText=e.Cstr(frame, {color=true, justifyH='CENTER', mouse=true})
+        frame.slotText:EnableMouse(true)
+        frame.slotText:SetAlpha(0.3)
+        frame.slotText:SetScript('OnEnter', function(self)
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine((e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS)..' '..(self2.name and _G[strupper(strsub(self2.name, 10))] or self2.name or ''), self2.slot)
-            e.tips:AddLine(' ')
             e.tips:AddDoubleLine(id, Initializer:GetName())
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS, self.slot)
+            local name= self:GetParent():GetName()
+            if name then
+                e.tips:AddDoubleLine(_G[strupper(strsub(name, 10))], name)
+            end
             e.tips:Show()
-            self2:SetAlpha(1)
+            self:SetAlpha(1)
         end)
-        self.slotText:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(0.3) end)
-        self.slotText:SetPoint('CENTER')
+        frame.slotText:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.3) end)
+        frame.slotText:SetPoint('CENTER')
     end
-    if self.slotText then
-        self.slotText.slot= slot
-        self.slotText.name= self:GetName()
-        self.slotText:SetText(slot)
-        self.slotText:SetShown(not Save.hide and not isEquipped)
+    if frame.slotText then
+        frame.slotText.slot= slot
+        frame.slotText.name= frame:GetName()
+        frame.slotText:SetText(slot)
+        frame.slotText:SetShown(not Save.hide and not isEquipped)
     end
 end
 
