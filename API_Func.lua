@@ -673,7 +673,7 @@ end
 
 
 function e.Get_Weekly_Rewards_Activities(settings)--周奖励，提示
-    if not e.Player.levelMax then--不是，最高等级时，退出
+    if not e.Player.levelMax or PlayerGetTimerunningSeasonID() then--不是，最高等级时，退出
         return
     end
     --{frame=AllTipsFrame, point={'TOPLEFT', AllTipsFrame.weekLable, 'BOTTOMLEFT', 0, -2}, anchor='ANCHOR_RIGHT'}

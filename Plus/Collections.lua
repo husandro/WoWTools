@@ -1113,7 +1113,7 @@ local function Init_Wardrober_ListContainer()
         if not btn.set_Rest then
             btn:SetScript("OnEnter",function(self)
                 if not Save.hideSets then
-                    e.tips:SetOwner(self, "ANCHOR_RIGHT")--,8,-300)
+                    e.tips:SetOwner(self.Icon or self, "ANCHOR_LEFT")--,8,-300)
                     e.tips:ClearLines()
                     --e.tips:AddDoubleLine('setID', self.setID)
                     e.tips:AddLine(self.tooltip)
