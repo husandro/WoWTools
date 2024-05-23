@@ -716,7 +716,7 @@ local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name, point=left)
         e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:AddLine(self.name)
         e.tips:AddLine(' ')
-        local col= UnitAffectingCombat('player') and '|cff606060:' or ''
+        local col= UnitAffectingCombat('player') and '|cff606060' or ''
         e.tips:AddDoubleLine(col..(e.onlyChinese and '缩放' or UI_SCALE).. ' |cnGREEN_FONT_COLOR:'..(format('%.2f', Save.scale[self.name] or 1)), e.Icon.mid)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(col..(e.onlyChinese and '放大' or ZOOM_IN), e.Icon.left)
