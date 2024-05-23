@@ -38,7 +38,7 @@ e.LeftButtonDown = C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'LeftButtonD
 e.RightButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'RightButtonDown' or 'RightButtonUp'
 e.onlyChinese= LOCALE_zhCN and true or false
 e.ExpansionLevel= GetExpansionLevel()--版本数据
-e.Is_Timerunning= PlayerGetTimerunningSeasonID and PlayerGetTimerunningSeasonID()~=nil
+--e.Is_Timerunning= PlayerGetTimerunningSeasonID and PlayerGetTimerunningSeasonID()~=nil
 e.LibDD=LibStub:GetLibrary("LibUIDropDownMenu-4.0", true)--菜单
 
 local function GetWeek()--周数

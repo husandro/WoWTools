@@ -1020,7 +1020,7 @@ end
 
 --场景
 local function Init_Scenarios_Menu(level)--ScenarioFinder.lua
-    if not e.Is_Timerunning then
+    if not PlayerGetTimerunningSeasonID() then
         return
     end
     local numScenario= GetNumRandomScenarios() or 0

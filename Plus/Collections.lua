@@ -1300,7 +1300,7 @@ end
 --传家宝, 按钮，提示
 --Blizzard_HeirloomCollection.lua
 local function Init_Heirloom()
-    if e.Is_Timerunning then--10.2.7
+    if PlayerGetTimerunningSeasonID() then--10.2.7
         return
     end
     hooksecurefunc(HeirloomsJournal, 'UpdateButton', function(_, button)

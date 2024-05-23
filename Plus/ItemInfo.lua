@@ -80,7 +80,7 @@ local function get_itemLeve_color(itemLink, itemLevel, itemEquipLoc, itemQuality
     local upLevel, downLevel
     local itemLinkPlayer =  GetInventoryItemLink('player', invSlot)
     if itemLinkPlayer then
-        if e.Is_Timerunning then
+        if PlayerGetTimerunningSeasonID() then
             local numItem, numPlayer= 0, 0
             for _, num in pairs(C_Item.GetItemStats(itemLink) or {}) do
                 numItem= numItem +num
@@ -124,7 +124,7 @@ local function get_itemLeve_color(itemLink, itemLevel, itemEquipLoc, itemQuality
     else
         upLevel=true
     end
-    if upLevel or downLevel or e.Is_Timerunning then
+    if upLevel or downLevel or PlayerGetTimerunningSeasonID() then
         return (upLevel and '|cnGREEN_FONT_COLOR:'  or (downLevel and '|cnRED_FONT_COLOR:') or  '|cffffffff')
                 ..itemLevel..'|r'
     end
@@ -206,7 +206,7 @@ function e.Set_Item_Info(self, tab)
         setIDItem= setID and true or nil--套装
 
 
-        local lowerVer= not e.Is_Timerunning and expacID< e.ExpansionLevel and itemID~='5512' and itemID~='113509'--低版本，5512糖 食物,113509[魔法汉堡]
+        local lowerVer= not PlayerGetTimerunningSeasonID() and expacID< e.ExpansionLevel and itemID~='5512' and itemID~='113509'--低版本，5512糖 食物,113509[魔法汉堡]
         --[[if itemQuality then
             r,g,b = C_Item.GetItemQualityColor(itemQuality)
         end]]
@@ -313,7 +313,7 @@ function e.Set_Item_Info(self, tab)
         elseif classID==2 or classID==4 then--装备
             if C_Item.IsCosmeticItem(itemLink) then--装饰品
                 bottomLeftText= get_has_text(select(2, e.GetItemCollected(itemLink, nil, nil, true)))
-            elseif e.Is_Timerunning then
+            elseif PlayerGetTimerunningSeasonID() then
                 local stat= e.Get_Item_Stats(itemLink)
                 for i=1 ,4 do
                     if stat[i] then
@@ -334,7 +334,7 @@ function e.Set_Item_Info(self, tab)
 
             else
                 local isRedItem
-                if itemQuality and (itemQuality>1 or e.Is_Timerunning) then
+                if itemQuality and (itemQuality>1 or PlayerGetTimerunningSeasonID()) then
                     local upItemLevel= 0
                     local dateInfo= e.GetTooltipData({
                         bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, itemID=itemID,
