@@ -75,7 +75,7 @@ end
 local function get_itemLeve_color(itemLink, itemLevel, itemEquipLoc, itemQuality, upItemLevel)
     local invSlot =e.GetItemSlotID(itemEquipLoc)
     if not invSlot then
-        return
+        return itemLevel
     end
     local upLevel, downLevel
     local itemLinkPlayer =  GetInventoryItemLink('player', invSlot)

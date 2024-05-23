@@ -540,6 +540,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     [className..C_Item.GetItemSubClassInfo(0, 3)]=true,--合计
                     [className..C_Item.GetItemSubClassInfo(0, 5)]=true,--食物
                 }
+                if PlayerGetTimerunningSeasonID() then
+                    Save.itemClass[className..C_Item.GetItemSubClassInfo(0, 7)]=true
+                    Save.itemClass[className..C_Item.GetItemSubClassInfo(0, 8)]=true--其它
+                end
             end
 
             Save= WoWToolsSave[addName..'Tools'] or Save
@@ -581,14 +585,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         set_Item_Button()--检查,物品
 
     elseif event=='PLAYER_REGEN_ENABLED' then
-        if panel.bat then
+        if self.bat then
             set_Item_Button()--检查,物品
-            panel.bat=nil
+            self.bat=nil
 
-        elseif panel.setInitBat then
+        elseif self.setInitBat then
             Init()--初始
-            panel.setInitBat=nil
+            self.setInitBat=nil
         end
-        panel:UnregisterEvent('PLAYER_REGEN_ENABLED')
+        self:UnregisterEvent('PLAYER_REGEN_ENABLED')
     end
 end)

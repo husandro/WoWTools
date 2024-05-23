@@ -125,6 +125,10 @@ local Save={
         [217730]=true,
         [217901]=true,
 
+        [89770]=true,--一簇牦牛毛
+        [219940]=true,--流星残片
+        [95350]=true,---乌古的咒语
+
     },
     pet=true,
     open=true,
