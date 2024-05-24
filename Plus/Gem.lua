@@ -8,8 +8,14 @@ local Save={
     gemTop={},
     gemRight={},
     disableSpell=true,--禁用，法术按钮
-    gemLoc= {}--{class={}}
+    gemLoc= {}--{class={['INVSLOT_LEGS']={1=gemID, 2=gemID, 3=gemID}}
 }
+
+
+
+
+
+
 
 
 local panel=CreateFrame("Frame")
@@ -21,17 +27,12 @@ local SpellsTab={
     --405805,--拔出始源之石
 }
 
---[[local ActionTab={
-    [405805]=true,--405805/拔出始源之石
-}]]
 
 for _, spellID in pairs(SpellsTab) do
     e.LoadDate({id=spellID, type='spell'})
 end
-
 local AUCTION_CATEGORY_GEMS= AUCTION_CATEGORY_GEMS
 local CurTypeGemTab={}--当前，宝石，类型
-
 local function Get_Item_Color(itemLink)
     local r,g,b
     if itemLink then
@@ -42,6 +43,43 @@ local function Get_Item_Color(itemLink)
     end
     return r or 1, g or 1, b or 1
 end
+local function set_point()
+    ItemSocketingScrollFrame:SetPoint('BOTTOMRIGHT', -22, 90)
+    ItemSocketingScrollChild:ClearAllPoints()
+    ItemSocketingScrollChild:SetPoint('TOPLEFT')
+    ItemSocketingScrollChild:SetPoint('TOPRIGHT', -18, -254)
+    ItemSocketingDescription:SetPoint('LEFT')
+    ItemSocketingDescription:SetMinimumWidth(ItemSocketingScrollChild:GetWidth()-18, true)--调整，宽度
+    ItemSocketingDescription:SetSocketedItem()
+end
+
+--保存，slot, 数据
+local function set_save_gem(itemEquipLoc, gemLink, index)
+    if not itemEquipLoc then
+        return
+    end
+    Save.gemLoc[e.Player.class][itemEquipLoc]= Save.gemLoc[e.Player.class][itemEquipLoc] or {}
+    local gemID
+    if gemLink then
+        gemID= C_Item.GetItemInfoInstant(gemLink)
+        if gemID then
+            Save.gemLoc[e.Player.class][itemEquipLoc][index]= gemID
+        end
+    end
+
+    gemID= gemID or Save.gemLoc[e.Player.class][itemEquipLoc][index]
+    Save.gemLoc[e.Player.class][itemEquipLoc][index]= gemID
+    return gemID
+end
+
+
+
+
+
+
+
+
+
 
 
 
@@ -434,7 +472,6 @@ end
 
 
 --433397/取出宝石
-
 local function Init_Spell_Button()
     if Save.disableSpell then
         return
@@ -542,14 +579,51 @@ end
 
 
 
-local function set_point()
-    ItemSocketingScrollFrame:SetPoint('BOTTOMRIGHT', -22, 90)
-    ItemSocketingScrollChild:ClearAllPoints()
-    ItemSocketingScrollChild:SetPoint('TOPLEFT')
-    ItemSocketingScrollChild:SetPoint('TOPRIGHT', -18, -254)
-    ItemSocketingDescription:SetPoint('LEFT')
-    ItemSocketingDescription:SetMinimumWidth(ItemSocketingScrollChild:GetWidth()-18, true)--调整，宽度
-    ItemSocketingDescription:SetSocketedItem()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Init_Save_gemLoc()
+    local slots={
+        ['INVTYPE_HEAD']= 1,
+        ['INVTYPE_NECK']= 2,
+        ['INVTYPE_SHOULDER']= 3,
+        --['INVTYPE_CLOAK']= 15,
+        ['INVTYPE_CHEST']= 5,
+        ['INVTYPE_WRIST']= 9,
+
+        ['INVTYPE_HAND']= 10,
+        ['INVTYPE_WAIST']= 6,
+        ['INVTYPE_LEGS']= 7,
+        ['INVTYPE_FEET']= 8,
+        ['INVTYPE_FINGER11']= 11,
+        ['INVTYPE_FINGER12']= 12,
+        ['INVTYPE_TRINKET13']= 13,
+        ['INVTYPE_TRINKET14']=14,
+        --['INVTYPE_WEAPON']=16,
+	    --['INVTYPE_SHIELD']=17,
+    }
+    for itemEquipLoc, slotID in pairs(slots) do
+        local itemLink= GetInventoryItemLink('player', slotID)
+        if itemLink then
+            for index=1, MAX_NUM_SOCKETS do
+                local gemLink = select(2, C_Item.GetItemGem(itemLink, index))
+                if gemLink then
+                    set_save_gem(itemEquipLoc, gemLink, index)
+                end
+            end
+        end
+    end
 end
 
 
@@ -566,204 +640,201 @@ end
 
 
 
-local function Init()
-    Frame= CreateFrame("Frame", nil, ItemSocketingFrame)
-    Frame.buttons={}
-    Frame:SetPoint('BOTTOMRIGHT', 0, -10)
-    Frame:SetSize(1,1)
-    Frame:SetScript('OnHide', function() CurTypeGemTab={} end)
 
-    function Frame:set_event()
-        if self:IsShown() then
-            self:RegisterEvent('BAG_UPDATE_DELAYED')
-        else
-            self:UnregisterAllEvents()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--宝石，数据
+local function Init_ItemSocketingFrame_Update()
+    local numSockets = GetNumSockets() or 0
+    CurTypeGemTab={}
+    local itemEquipLoc
+    if PlayerGetTimerunningSeasonID() then
+        local link, itemID= select(2, ItemSocketingDescription:GetItem())
+        itemEquipLoc= itemID and select(4, C_Item.GetItemInfoInstant(itemID))
+        if itemEquipLoc then
+            if itemEquipLoc=='INVTYPE_TRINKET' then--13, 14
+                itemEquipLoc= itemEquipLoc..(GetInventoryItemLink('player', 13)==link and 13 or 14)
+            elseif itemEquipLoc=='INVTYPE_FINGER' then--11, 12
+                itemEquipLoc= itemEquipLoc..(GetInventoryItemLink('player', 11)==link and 11 or 12)
+            elseif itemEquipLoc=='INVTYPE_WEAPON' then--16, 17
+                itemEquipLoc= itemEquipLoc..(GetInventoryItemLink('player', 16)==link and 16 or 17)
+            end
+            if not Save.gemLoc[e.Player.class][itemEquipLoc] then
+                Save.gemLoc[e.Player.class][itemEquipLoc]={}
+            end
         end
     end
-    Frame:SetScript('OnHide', Frame.set_event)
-    Frame:SetScript('OnShow', Frame.set_event)
-    Frame:SetScript('OnEvent', panel.set_Gem)
-    Frame:set_event()
 
-    ItemSocketingSocket3Left:ClearAllPoints()
-    ItemSocketingSocket2Left:ClearAllPoints()
-    ItemSocketingSocket1Left:ClearAllPoints()
-    ItemSocketingSocket1Right:ClearAllPoints()
-    ItemSocketingSocket2Right:ClearAllPoints()
-    ItemSocketingSocket3Right:ClearAllPoints()
-    ItemSocketingFrame['SocketFrame-Left']:SetPoint('TOPRIGHT', ItemSocketingFrame, 'BOTTOM',0, 77)
-    ItemSocketingFrame['SocketFrame-Right']:SetPoint('BOTTOMLEFT', ItemSocketingFrame, 'BOTTOM', 0, 26)
-
-
-    e.Set_Move_Frame(ItemSocketingFrame, {needSize=true, needMove=true, setSize=true, minW=338, minH=424, sizeRestFunc=function(btn)
-        btn.target:SetSize(338, 424)
-        set_point()
-        panel:set_Gem()
-    end, sizeUpdateFunc=function()
-        set_point()
-        panel:set_Gem()
-    end})
-    e.Set_Move_Frame(ItemSocketingScrollChild, {frame=ItemSocketingFrame})
-
-    hooksecurefunc('ItemSocketingFrame_Update', function()
-        local numSockets = GetNumSockets() or 0
-        CurTypeGemTab={}
-        local itemEquipLoc
-        if PlayerGetTimerunningSeasonID() then
-            local link, itemID= select(2, ItemSocketingDescription:GetItem())
-            itemEquipLoc= itemID and select(4, C_Item.GetItemInfoInstant(itemID))
-            if itemEquipLoc then
-                if itemEquipLoc=='INVTYPE_TRINKET' then--13, 14
-                    itemEquipLoc= itemEquipLoc..(GetInventoryItemLink('player', 13)==link and 13 or 14)
-                elseif itemEquipLoc=='INVTYPE_FINGER' then--11, 12
-                    itemEquipLoc= itemEquipLoc..(GetInventoryItemLink('player', 11)==link and 11 or 12)
-                elseif itemEquipLoc=='INVTYPE_WEAPON' then--16, 17
-                    itemEquipLoc= itemEquipLoc..(GetInventoryItemLink('player', 16)==link and 16 or 17)
+    for i, btn in ipairs(ItemSocketingFrame.Sockets) do--插槽，名称
+        if ( i <= numSockets ) then
+            local name= GetSocketTypes(i)
+            name= name and _G['EMPTY_SOCKET_'..string.upper(name)]
+            if name then
+                local text= EMPTY_SOCKET_BLUE:gsub(BLUE_GEM, '')
+                if text and text~='' then
+                    name= name:gsub(text, '')
                 end
-                if not Save.gemLoc[e.Player.class][itemEquipLoc] then
-                    Save.gemLoc[e.Player.class][itemEquipLoc]={}
-                end
+                CurTypeGemTab[name]=true
             end
-        end
-
-        for i, btn in ipairs(ItemSocketingFrame.Sockets) do--插槽，名称
-            if ( i <= numSockets ) then
-                local name= GetSocketTypes(i)
-                name= name and _G['EMPTY_SOCKET_'..string.upper(name)]
-                if name then
-                    local text= EMPTY_SOCKET_BLUE:gsub(BLUE_GEM, '')
-                    if text and text~='' then
-                        name= name:gsub(text, '')
-                    end
-                    CurTypeGemTab[name]=true
+            if not btn.type then
+                btn.type=e.Cstr(btn)
+                btn.type:SetPoint('BOTTOM', btn, 'TOP', 0, 2)
+                btn.qualityTexture= btn:CreateTexture(nil, 'OVERLAY')
+                if PlayerGetTimerunningSeasonID() then
+                    btn.qualityTexture:SetPoint('CENTER')
+                    btn.qualityTexture:SetSize(46,46)--40
+                else
+                    btn.qualityTexture:SetPoint('RIGHT', btn, 'LEFT',15,-8)
+                    btn.qualityTexture:SetSize(30,30)
                 end
-                if not btn.type then
-                    btn.type=e.Cstr(btn)
-                    btn.type:SetPoint('BOTTOM', btn, 'TOP', 0, 2)
-                    btn.qualityTexture= btn:CreateTexture(nil, 'OVERLAY')
-                    if PlayerGetTimerunningSeasonID() then
-                        btn.qualityTexture:SetPoint('CENTER')
-                        btn.qualityTexture:SetSize(46,46)--40
-                    else
-                        btn.qualityTexture:SetPoint('RIGHT', btn, 'LEFT',15,-8)
-                        btn.qualityTexture:SetSize(30,30)
-                    end
-                    btn.levelText=e.Cstr(btn)
-                    btn.levelText:SetPoint('CENTER')
-                    btn.leftText=e.Cstr(btn)
-                    btn.leftText:SetPoint('TOPLEFT', btn, 'BOTTOMLEFT')
-                    btn.rightText=e.Cstr(btn)
-                    btn.rightText:SetPoint('TOPRIGHT', btn, 'BOTTOMRIGHT')
+                btn.levelText=e.Cstr(btn)
+                btn.levelText:SetPoint('CENTER')
+                btn.leftText=e.Cstr(btn)
+                btn.leftText:SetPoint('TOPLEFT', btn, 'BOTTOMLEFT')
+                btn.rightText=e.Cstr(btn)
+                btn.rightText:SetPoint('TOPRIGHT', btn, 'BOTTOMRIGHT')
 
-                    btn.gemButton=e.Cbtn(btn, {button='ItemButton', icon='hide'})--使用过宝石，提示
-                    btn.gemButton:SetPoint('BOTTOMLEFT', btn, 'BOTTOMRIGHT', 6, 0)
-                    btn.gemButton:Hide()
-                    function btn.gemButton:set_event()
-                        if self:IsShown() then
-                            self:RegisterEvent('BAG_UPDATE_DELAYED')
-                        else
-                            self:UnregisterAllEvents()
-                        end
+                btn.gemButton=e.Cbtn(btn, {button='ItemButton', icon='hide'})--使用过宝石，提示
+                btn.gemButton:SetPoint('BOTTOMLEFT', btn, 'BOTTOMRIGHT', 6, 0)
+                btn.gemButton:Hide()
+                function btn.gemButton:set_event()
+                    if self:IsShown() then
+                        self:RegisterEvent('BAG_UPDATE_DELAYED')
+                    else
+                        self:UnregisterAllEvents()
                     end
-                    function btn.gemButton:settings()
-                        local count= self.gemID and C_Item.GetItemCount(self.gemID, false, false, false) or 0
-                        self:SetItemButtonCount(count)
-                        self:SetEnabled(count>0)
-                        self:SetAlpha(count>0 and 1 or 0.3)
-                    end
-                    btn.gemButton:SetScript('OnEvent', btn.gemButton.settings)
-                    btn.gemButton:SetScript('OnShow',  btn.gemButton.set_event)
-                    btn.gemButton:SetScript('OnHide',  btn.gemButton.set_event)
-                    btn.gemButton:SetScript('OnLeave', function(self)
-                        e.FindBagItem(false)
-                    end)
-                    btn.gemButton:SetScript('OnEnter', function(self)
-                        e.FindBagItem(true, {itemID=self.gemID})
-                    end)
-                    btn.gemButton:SetScript('OnClick', function(self)
-                        for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES do
-                            for slot=1, C_Container.GetContainerNumSlots(bag) do
-                                local info = C_Container.GetContainerItemInfo(bag, slot)
-                                if info and info.itemID==self.gemID then
-                                    ClearCursor()
-                                    C_Container.PickupContainerItem(bag, slot)
-                                    break
-                                end
+                end
+                function btn.gemButton:settings()
+                    local count= self.gemID and C_Item.GetItemCount(self.gemID, false, false, false) or 0
+                    self:SetItemButtonCount(count)
+                    self:SetEnabled(count>0)
+                    self:SetAlpha(count>0 and 1 or 0.3)
+                end
+                btn.gemButton:SetScript('OnEvent', btn.gemButton.settings)
+                btn.gemButton:SetScript('OnShow',  btn.gemButton.set_event)
+                btn.gemButton:SetScript('OnHide',  btn.gemButton.set_event)
+                btn.gemButton:SetScript('OnLeave', function(self)
+                    e.FindBagItem(false)
+                end)
+                btn.gemButton:SetScript('OnEnter', function(self)
+                    e.FindBagItem(true, {itemID=self.gemID})
+                end)
+                btn.gemButton:SetScript('OnClick', function(self)
+                    for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES do
+                        for slot=1, C_Container.GetContainerNumSlots(bag) do
+                            local info = C_Container.GetContainerItemInfo(bag, slot)
+                            if info and info.itemID==self.gemID then
+                                ClearCursor()
+                                C_Container.PickupContainerItem(bag, slot)
+                                break
                             end
                         end
-                    end)
-                end
-
-                local itemLinkExist= GetExistingSocketLink(i)
-                local itemLink= GetNewSocketLink(i) or itemLinkExist
-                local left, right= e.Get_Gem_Stats(nil, itemLink)
-                local atlas
-                if itemLink then
-                    if PlayerGetTimerunningSeasonID() then
-                        local quality= C_Item.GetItemQualityByID(itemLink)--C_Item.GetItemQualityColor(quality)
-                        atlas= e.Icon[quality]
-                    else
-                        local quality= C_TradeSkillUI.GetItemReagentQualityByItemInfo(itemLink) or C_TradeSkillUI.GetItemCraftedQualityByItemInfo(itemLink)
-                        if quality then
-                            atlas = ("Professions-Icon-Quality-Tier%d-Inv"):format(quality)
-                        end
                     end
-                end
-
-                btn.type:SetText(name or '')
-                btn.leftText:SetText(left or '')
-                btn.rightText:SetText(right or '')
-                local itemLevel= itemLink and C_Item.GetDetailedItemLevelInfo(itemLink) or 1
-                btn.levelText:SetText(itemLevel>10 and itemLevel or '')
-                btn.levelText:SetTextColor(Get_Item_Color(itemLink))
-                if atlas then
-                    btn.qualityTexture:SetAtlas(atlas)
-                else
-                    btn.qualityTexture:SetTexture(0)
-                end
-
-                local gemID--使用过宝石，提示
-                if itemEquipLoc then
-                    if itemLinkExist then
-                        gemID= C_Item.GetItemInfoInstant(itemLinkExist)
-                        if gemID then
-                            Save.gemLoc[e.Player.class][itemEquipLoc][i]= gemID
-                        end
-                    end
-                    gemID= gemID or Save.gemLoc[e.Player.class][itemEquipLoc][i]
-                end
-                btn.gemButton.gemID= gemID
-                btn.gemButton:settings()
-                btn.gemButton:SetItem(gemID)
-                btn.gemButton:SetShown(gemID and true or false )
+                end)
             end
-        end
 
-        if numSockets==1 then--宝石，位置
-            ItemSocketingSocket1:ClearAllPoints()
-            ItemSocketingSocket1:SetPoint('BOTTOM', 0, 33)
-        elseif numSockets==2 then
-            ItemSocketingSocket1:ClearAllPoints()
-            ItemSocketingSocket1:SetPoint('BOTTOM', -60, 33)
-            ItemSocketingSocket2:ClearAllPoints()
-            ItemSocketingSocket2:SetPoint('BOTTOM', 60, 33)
-        elseif numSockets==3 then
-            ItemSocketingSocket1:ClearAllPoints()
-            ItemSocketingSocket1:SetPoint('BOTTOMLEFT', 50, 33)
-            ItemSocketingSocket2:ClearAllPoints()
-            ItemSocketingSocket2:SetPoint('BOTTOM', 0, 33)
-            ItemSocketingSocket3:ClearAllPoints()
-            ItemSocketingSocket3:SetPoint('BOTTOMRIGHT', -50, 33)
+            local gemLinkExist= GetExistingSocketLink(i)
+            local gemLink= GetNewSocketLink(i) or gemLinkExist
+            local left, right= e.Get_Gem_Stats(nil, gemLink)
+            local atlas
+            if gemLink then
+                if PlayerGetTimerunningSeasonID() then
+                    local quality= C_Item.GetItemQualityByID(gemLink)--C_Item.GetItemQualityColor(quality)
+                    atlas= e.Icon[quality]
+                else
+                    local quality= C_TradeSkillUI.GetItemReagentQualityByItemInfo(gemLink) or C_TradeSkillUI.GetItemCraftedQualityByItemInfo(gemLink)
+                    if quality then
+                        atlas = ("Professions-Icon-Quality-Tier%d-Inv"):format(quality)
+                    end
+                end
+            end
+
+            btn.type:SetText(name or '')
+            btn.leftText:SetText(left or '')
+            btn.rightText:SetText(right or '')
+            local itemLevel= gemLink and C_Item.GetDetailedItemLevelInfo(gemLink) or 1
+            btn.levelText:SetText(itemLevel>10 and itemLevel or '')
+            btn.levelText:SetTextColor(Get_Item_Color(gemLink))
+            if atlas then
+                btn.qualityTexture:SetAtlas(atlas)
+            else
+                btn.qualityTexture:SetTexture(0)
+            end
+
+            local gemID--使用过宝石，提示
+            if itemEquipLoc then
+                gemID= set_save_gem(itemEquipLoc, gemLinkExist, i)--保存，slot, 数据
+            end
+            btn.gemButton.gemID= gemID
+            btn.gemButton:settings()
+            btn.gemButton:SetItem(gemID)
+            btn.gemButton:SetShown(gemID and true or false )
         end
-        set_point()
-        panel:set_Gem()
-    end)
+    end
+
+    if numSockets==1 then--宝石，位置
+        ItemSocketingSocket1:ClearAllPoints()
+        ItemSocketingSocket1:SetPoint('BOTTOM', 0, 33)
+    elseif numSockets==2 then
+        ItemSocketingSocket1:ClearAllPoints()
+        ItemSocketingSocket1:SetPoint('BOTTOM', -60, 33)
+        ItemSocketingSocket2:ClearAllPoints()
+        ItemSocketingSocket2:SetPoint('BOTTOM', 60, 33)
+    elseif numSockets==3 then
+        ItemSocketingSocket1:ClearAllPoints()
+        ItemSocketingSocket1:SetPoint('BOTTOMLEFT', 50, 33)
+        ItemSocketingSocket2:ClearAllPoints()
+        ItemSocketingSocket2:SetPoint('BOTTOM', 0, 33)
+        ItemSocketingSocket3:ClearAllPoints()
+        ItemSocketingSocket3:SetPoint('BOTTOMRIGHT', -50, 33)
+    end
+    set_point()
+    panel:set_Gem()
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 
 
 --总开关
+local function Init_Button_All()
     local btn= e.Cbtn(ItemSocketingFrame.TitleContainer, {size=22, icon='hide'})
     btn:SetPoint('LEFT', 26)
     function btn:set_texture()
@@ -952,11 +1023,64 @@ local function Init()
     btn:set_texture()
     btn:set_shown()
     btn:set_scale()
-    Init_Spell_Button()
 end
 
 
 
+
+
+
+
+
+
+
+
+
+local function Init()
+    Frame= CreateFrame("Frame", nil, ItemSocketingFrame)
+    Frame.buttons={}
+    Frame:SetPoint('BOTTOMRIGHT', 0, -10)
+    Frame:SetSize(1,1)
+    Frame:SetScript('OnHide', function() CurTypeGemTab={} end)
+
+    function Frame:set_event()
+        if self:IsShown() then
+            self:RegisterEvent('BAG_UPDATE_DELAYED')
+        else
+            self:UnregisterAllEvents()
+        end
+    end
+    Frame:SetScript('OnHide', Frame.set_event)
+    Frame:SetScript('OnShow', Frame.set_event)
+    Frame:SetScript('OnEvent', panel.set_Gem)
+    Frame:set_event()
+
+    ItemSocketingSocket3Left:ClearAllPoints()
+    ItemSocketingSocket2Left:ClearAllPoints()
+    ItemSocketingSocket1Left:ClearAllPoints()
+    ItemSocketingSocket1Right:ClearAllPoints()
+    ItemSocketingSocket2Right:ClearAllPoints()
+    ItemSocketingSocket3Right:ClearAllPoints()
+    ItemSocketingFrame['SocketFrame-Left']:SetPoint('TOPRIGHT', ItemSocketingFrame, 'BOTTOM',0, 77)
+    ItemSocketingFrame['SocketFrame-Right']:SetPoint('BOTTOMLEFT', ItemSocketingFrame, 'BOTTOM', 0, 26)
+
+
+    e.Set_Move_Frame(ItemSocketingFrame, {needSize=true, needMove=true, setSize=true, minW=338, minH=424, sizeRestFunc=function(btn)
+        btn.target:SetSize(338, 424)
+        set_point()
+        panel:set_Gem()
+    end, sizeUpdateFunc=function()
+        set_point()
+        panel:set_Gem()
+    end})
+    e.Set_Move_Frame(ItemSocketingScrollChild, {frame=ItemSocketingFrame})
+
+    hooksecurefunc('ItemSocketingFrame_Update', Init_ItemSocketingFrame_Update)--宝石，数据
+
+
+    Init_Button_All()
+    Init_Spell_Button()
+end
 
 
 
@@ -976,6 +1100,10 @@ panel:RegisterEvent('PLAYER_LOGOUT')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
+            if not WoWToolsSave[addName] and PlayerGetTimerunningSeasonID() then
+                C_Timer.After(2, Init_Save_gemLoc)
+            end
+
             Save= WoWToolsSave[addName] or Save
             Save.favorites= Save.favorites or {}
             Save.gemLeft= Save.gemLeft or {}
@@ -984,6 +1112,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             Save.gemLoc= Save.gemLoc or {}
             Save.gemLoc[e.Player.class]= Save.gemLoc[e.Player.class] or {}
+
 
             --添加控制面板
             Initializer= e.AddPanel_Check({
@@ -1010,7 +1139,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif event=='PLAYER_LOGOUT' then
-        if not e.ClearAllSave or e.Player.husandro then
+        if not e.ClearAllSave then
             WoWToolsSave[addName]=Save
         end
     end
