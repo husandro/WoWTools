@@ -525,6 +525,7 @@ local function setAddMessageFunc(self, s, ...)
 
         if not showTimestamps and s:find(LOOT_ITEM) then--	%s获得了战利品：%s。
             local unitName= s:match(LOOT_ITEM)
+            --print(unitName, item)
             if unitName then
                 if unitName==e.Player.name then
                     s=s:gsub(unitName..'['..e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r]')

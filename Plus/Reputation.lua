@@ -856,7 +856,7 @@ end
 --#############
 local factionStr= FACTION_STANDING_INCREASED:gsub("%%s", "(.-)")--你在%s中的声望值提高了%d点。
 factionStr = factionStr:gsub("%%d", ".-")
-local function FactionUpdate(_, _, text, ...)
+local function Set_Faction_Update(_, _, text, ...)
 	local name=text and text:match(factionStr)
 	if not name then
 		return
@@ -935,7 +935,15 @@ local function FactionUpdate(_, _, text, ...)
 			if hasRewardPending then
 				m=m..'|A:Banker:0:0|a'..(rewardQuestID and GetQuestLink(rewardQuestID) or '')
 			end
-
+			local cnName= e.cn(name)
+			if cnName then
+				local num= text:match('%d+')
+				if num then
+					text= format("你在%s中的声望值提高了%s点。", cnName, num)
+				else
+					text= text:gsub(name, cnName)
+				end
+			end
 			return false, text..m, ...
 		end
 	end
@@ -1201,7 +1209,7 @@ local function Init()
 	Button:set_Shown()
 
 	if Save.factionUpdateTips then--声望更新, 提示
-		ChatFrame_AddMessageEventFilter('CHAT_MSG_COMBAT_FACTION_CHANGE', FactionUpdate)
+		ChatFrame_AddMessageEventFilter('CHAT_MSG_COMBAT_FACTION_CHANGE', Set_Faction_Update)
 
 		local text
 		for i=1, GetNumFactions() do--声望更新, 提示
