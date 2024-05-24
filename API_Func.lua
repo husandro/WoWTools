@@ -1891,6 +1891,8 @@ function e.GetItemSlotIcon(slotID)
     end
 end
 
+--local invTypeNum = C_Item.GetItemInventoryTypeByID(itemID)
+--local invType = C_Item.GetItemInventorySlotKey(invTypeNum)
 function e.GetItemSlotID(itemEquipLoc)
     if itemEquipLoc then
         return itemSlotTable[itemEquipLoc]
