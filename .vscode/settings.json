@@ -4534,7 +4534,8 @@
         "INVTYPE_TABARD",
         "INVTYPE_ROBE",
         "INVTYPE_WEAPONMAINHAND",
-        "INVTYPE_WEAPONOFFHAND"
+        "INVTYPE_WEAPONOFFHAND",
+        "PetActionButton10"
     ],
     "Lua.diagnostics.disable": [
         "inject-field",

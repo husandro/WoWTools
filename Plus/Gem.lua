@@ -593,40 +593,6 @@ end
 
 
 
-local function Init_Save_gemLoc()
-    local slots={
-        ['INVTYPE_HEAD']= 1,
-        ['INVTYPE_NECK']= 2,
-        ['INVTYPE_SHOULDER']= 3,
-        --['INVTYPE_CLOAK']= 15,
-        ['INVTYPE_CHEST']= 5,
-        ['INVTYPE_WRIST']= 9,
-
-        ['INVTYPE_HAND']= 10,
-        ['INVTYPE_WAIST']= 6,
-        ['INVTYPE_LEGS']= 7,
-        ['INVTYPE_FEET']= 8,
-        ['INVTYPE_FINGER11']= 11,
-        ['INVTYPE_FINGER12']= 12,
-        ['INVTYPE_TRINKET13']= 13,
-        ['INVTYPE_TRINKET14']=14,
-        --['INVTYPE_WEAPON']=16,
-	    --['INVTYPE_SHIELD']=17,
-    }
-    for itemEquipLoc, slotID in pairs(slots) do
-        local itemLink= GetInventoryItemLink('player', slotID)
-        if itemLink then
-            for index=1, MAX_NUM_SOCKETS do
-                local gemLink = select(2, C_Item.GetItemGem(itemLink, index))
-                if gemLink then
-                    set_save_gem(itemEquipLoc, gemLink, index)
-                end
-            end
-        end
-    end
-end
-
-
 
 
 
@@ -1101,7 +1067,38 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             if not WoWToolsSave[addName] and PlayerGetTimerunningSeasonID() then
-                C_Timer.After(2, Init_Save_gemLoc)
+                C_Timer.After(2, function()
+                    local slots={
+                        ['INVTYPE_HEAD']= 1,
+                        ['INVTYPE_NECK']= 2,
+                        ['INVTYPE_SHOULDER']= 3,
+                        --['INVTYPE_CLOAK']= 15,
+                        ['INVTYPE_CHEST']= 5,
+                        ['INVTYPE_WRIST']= 9,
+
+                        ['INVTYPE_HAND']= 10,
+                        ['INVTYPE_WAIST']= 6,
+                        ['INVTYPE_LEGS']= 7,
+                        ['INVTYPE_FEET']= 8,
+                        ['INVTYPE_FINGER11']= 11,
+                        ['INVTYPE_FINGER12']= 12,
+                        ['INVTYPE_TRINKET13']= 13,
+                        ['INVTYPE_TRINKET14']=14,
+                        --['INVTYPE_WEAPON']=16,
+                        --['INVTYPE_SHIELD']=17,
+                    }
+                    for itemEquipLoc, slotID in pairs(slots) do
+                        local itemLink= GetInventoryItemLink('player', slotID)
+                        if itemLink then
+                            for index=1, MAX_NUM_SOCKETS do
+                                local gemLink = select(2, C_Item.GetItemGem(itemLink, index))
+                                if gemLink then
+                                    set_save_gem(itemEquipLoc, gemLink, index)
+                                end
+                            end
+                        end
+                    end
+                end)
             end
 
             Save= WoWToolsSave[addName] or Save
