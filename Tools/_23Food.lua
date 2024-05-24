@@ -17,7 +17,7 @@ local function setPanelPostion()--设置按钮位置
     if Save.point then
         button:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
     elseif e.Player.husandro then
-        button:SetPoint('BOTTOMRIGHT', PetActionButton10, 'TOPRIGHT', 0, 20)
+        button:SetPoint('BOTTOMRIGHT', PetActionButton10, 'TOPRIGHT', 0, 30)
     else
         button:SetPoint('RIGHT', _G['WoWToolsOpenItemsButton'], 'LEFT')
     end
