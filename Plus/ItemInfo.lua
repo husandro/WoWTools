@@ -90,8 +90,6 @@ local function get_itemLeve_color(itemLink, itemLevel, itemEquipLoc, itemQuality
             end
             upLevel= numItem>numPlayer
             downLevel= numItem<numPlayer
-            --upLevel= itemLevel <equipedLevel
-            --downLevel= itemLevel> equipedLevel
         else
             local equipedLevel= C_Item.GetDetailedItemLevelInfo(itemLinkPlayer)
             if equipedLevel then
@@ -1116,9 +1114,6 @@ local function Init()
         e.Set_Item_Stats(frame, frame.itemLink or itemLink , {point=frame.texture})
     end)
     hooksecurefunc('LootWonAlertFrame_SetUp', function(self)
-        if e.Player.husandro then
-            print('LootWonAlertFrame_SetUp', self.hyperlink, self.lootItem.Icon)
-        end
         e.Set_Item_Stats(self, self.hyperlink, {point= self.lootItem.Icon})
     end)
     hooksecurefunc('LootUpgradeFrame_SetUp', function(self)

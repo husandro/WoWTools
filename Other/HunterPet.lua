@@ -128,11 +128,11 @@ local function created_model(btn, setBg)
     btn.model= CreateFrame("PlayerModel", nil, btn)
     local w= btn:GetWidth()
     if btn:GetID()==Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX then
-        btn.model:SetFacing(-0.5)
+        btn.model:SetFacing(-0.3)
         w=w+80
         btn.model:SetPoint('RIGHT', btn, 'LEFT')
     else
-        btn.model:SetFacing(0.5)
+        btn.model:SetFacing(0.3)
         w= w+40
         btn.model:SetPoint('TOP', btn, 'BOTTOM', 0, -14)
     end
