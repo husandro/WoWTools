@@ -2595,7 +2595,7 @@ local function InitMenu_Quest(_, level, type)
         checked= Save.quest,
         keepShownOnClick=true,
         tooltipOnButton=true,
-        tooltipTitle=format('Alt+%s', e.onlyChinese and '禁用', DISABLE),
+        tooltipTitle=format('Alt+%s', e.onlyChinese and '禁用' or DISABLE),
         tooltipText= format('(%s)', e.onlyChinese and '暂时' or BOOSTED_CHAR_SPELL_TEMPLOCK..'|ntemporary'),
         func= function ()
             Save.quest= not Save.quest and true or nil
