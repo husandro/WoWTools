@@ -112,12 +112,6 @@ local instanceTab={--{, ''},
 }
 
 
-for _, info in pairs(instanceTab) do
-    local name= EJ_GetInstanceInfo(info[1])
-    if name then
-        e.strText[name]= info[2]
-    end
-end
 
 
 
@@ -8039,6 +8033,12 @@ local function Init_Add_Data()
 
 
 
+    for _, info in pairs(instanceTab) do
+        local name= EJ_GetInstanceInfo(info[1])
+        if name then
+            e.strText[name]= info[2]
+        end
+    end
 
 
     for _, info in pairs(spellTab) do
