@@ -76,8 +76,8 @@ local function getBossNameSort(name)--取得怪物名称, 短名称
 end
 
 --所有角色已击杀世界BOSS提示
-local function set_EncounterJournal_World_Tips(self2)
-    e.tips:SetOwner(self2, "ANCHOR_LEFT")
+local function set_EncounterJournal_World_Tips(self)
+    e.tips:SetOwner(self, "ANCHOR_LEFT")
     e.tips:ClearLines()
     e.tips:AddDoubleLine(format('%s %s',
         e.onlyChinese and '世界BOSS/稀有 ' or format('%s/%s', format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHANNEL_CATEGORY_WORLD, BOSS), GARRISON_MISSION_RARE),
@@ -127,7 +127,7 @@ local function encounterJournal_ListInstances_set_Instance(self, showTips)
 
     if instanceID==1205 or instanceID==1192 or instanceID==1028 or instanceID==822 or instanceID==557 or instanceID==322 then--世界BOSS
         if showTips then
-            set_EncounterJournal_World_Tips(self)--角色世界BOSS提示
+            set_EncounterJournal_World_Tips(self)--角色世界BOSS提示            
             find=true
         else
             for guid, info in pairs(e.WoWDate or {}) do--世界BOSS
@@ -813,28 +813,30 @@ local function Init_EncounterJournal()--冒险指南界面
                     button.challengeText2= e.Cstr(button, {size=e.onlyChinese and 12 or 10})
                     button.challengeText2:SetPoint('BOTTOMLEFT', button.challengeText, 'BOTTOMRIGHT')
 
-                    button:HookScript('OnEnter', function(frame)
-                        if Save.hideEncounterJournal or not frame.instanceID then
+                    button:HookScript('OnEnter', function(self)
+                        if Save.hideEncounterJournal or not self.instanceID then
                             return
                         end
-                        local name, _, _, _, loreImage, _, dungeonAreaMapID, _, _, mapID = EJ_GetInstanceInfo(frame.instanceID)
-                        e.tips:SetOwner(frame, "ANCHOR_LEFT")
+                        local name, _, _, _, loreImage, _, dungeonAreaMapID, _, _, mapID = EJ_GetInstanceInfo(self.instanceID)
+                        e.tips:SetOwner(self, "ANCHOR_LEFT")
                         e.tips:ClearLines()
                         if name then
-                            e.tips:AddLine(name..' ')
+                            e.tips:AddDoubleLine(e.cn(name), e.strText[name] and name..' ')
                         end
-                        e.tips:AddDoubleLine('journalInstanceID: |cnGREEN_FONT_COLOR:'..frame.instanceID, loreImage and '|T'..loreImage..':0|t'..loreImage)
+                        
+                        e.tips:AddDoubleLine('journalInstanceID: |cnGREEN_FONT_COLOR:'..self.instanceID, loreImage and '|T'..loreImage..':0|t'..loreImage)
                         e.tips:AddDoubleLine(
                             dungeonAreaMapID and dungeonAreaMapID>0 and 'dungeonAreaMapID |cnGREEN_FONT_COLOR:'..dungeonAreaMapID or ' ',
                             mapID and 'mapID |cnGREEN_FONT_COLOR:'..mapID
                         )
-                        if frame.mapChallengeModeID then
-                            e.tips:AddLine( 'mapChallengeModeID: |cnGREEN_FONT_COLOR:'.. frame.mapChallengeModeID)
+                        if self.mapChallengeModeID then
+                            e.tips:AddLine( 'mapChallengeModeID: |cnGREEN_FONT_COLOR:'.. self.mapChallengeModeID)
                         end
                         e.tips:AddLine(' ')
-                        if encounterJournal_ListInstances_set_Instance(frame, true) then--界面,击杀,数据
+                        if encounterJournal_ListInstances_set_Instance(self, true) then--界面,击杀,数据
                             e.tips:AddLine(' ')
                         end
+                        e.tips:AddDoubleLine('instanceID', self.instanceID)
                         e.tips:AddDoubleLine(id, Initializer:GetName())
                         e.tips:Show()
                     end)
