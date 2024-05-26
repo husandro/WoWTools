@@ -112,6 +112,8 @@ local function set_EncounterJournal_World_Tips(self)
             e.tips:AddDoubleLine(e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}), guid==e.Player.guid and '|A:auctionhouse-icon-favorite:0:0|a')
         end
     end
+    e.tips:AddLine(' ')
+    e.tips:AddDoubleLine('instanceID', self.instanceID)
     e.tips:Show()
 end
 
@@ -159,7 +161,7 @@ local function encounterJournal_ListInstances_set_Instance(self, showTips)
                         e.tips:AddLine(' ')
                     end
 
-                    e.tips:AddDoubleLine(e.cn(name)..'(|cnGREEN_FONT_COLOR:'..difficultyName..'|r): ',num)
+                    e.tips:AddDoubleLine((difficultyName or e.cn(name) or '')..' '..(num or ''))
                     local t
                     for j=1,numEncounters do
                         local bossName,_,isKilled = GetSavedInstanceEncounterInfo(i,j)
@@ -835,8 +837,7 @@ local function Init_EncounterJournal()--冒险指南界面
                         e.tips:AddLine(' ')
                         if encounterJournal_ListInstances_set_Instance(self, true) then--界面,击杀,数据
                             e.tips:AddLine(' ')
-                        end
-                        e.tips:AddDoubleLine('instanceID', self.instanceID)
+                        end                        
                         e.tips:AddDoubleLine(id, Initializer:GetName())
                         e.tips:Show()
                     end)
@@ -1263,19 +1264,19 @@ local function Init_EncounterJournal()--冒险指南界面
     EncounterJournal.encounter.instance.mapButton:SetScript('OnLeave', GameTooltip_Hide)
 
 
-    hooksecurefunc(EncounterJournal.encounter.info.BossesScrollBox, 'SetScrollTargetOffset', function(self2)
-        if not self2:GetView() then
+    hooksecurefunc(EncounterJournal.encounter.info.BossesScrollBox, 'SetScrollTargetOffset', function(frame)
+        if not frame:GetView() then
             return
         end
-        for _, button in pairs(self2:GetFrames()) do
+        for _, button in pairs(frame:GetFrames()) do
             if not button.OnEnter then
-                button:SetScript('OnEnter', function(self3)
-                    if not Save.hideEncounterJournal and self3.encounterID then
-                        local name2, _, journalEncounterID, rootSectionID, _, journalInstanceID, dungeonEncounterID, instanceID2= EJ_GetEncounterInfo(self3.encounterID)--button.index= button.GetOrderIndex()
-                        e.tips:SetOwner(self3, "ANCHOR_RIGHT")
+                button:SetScript('OnEnter', function(self)
+                    if not Save.hideEncounterJournal and self.encounterID then
+                        local name2, _, journalEncounterID, rootSectionID, _, journalInstanceID, dungeonEncounterID, instanceID2= EJ_GetEncounterInfo(self.encounterID)--button.index= button.GetOrderIndex()
+                        e.tips:SetOwner(self, "ANCHOR_LEFT")
                         e.tips:ClearLines()
-                        e.tips:AddDoubleLine(name2,  'journalEncounterID: '..'|cnGREEN_FONT_COLOR:'..(journalEncounterID or self3.encounterID)..'|r')
-                        e.tips:AddDoubleLine(instanceID2 and 'instanceID: '..instanceID2, (rootSectionID and rootSectionID>0) and 'JournalEncounterSectionID: '..rootSectionID or ' ')
+                        e.tips:AddDoubleLine(name2,  'journalEncounterID: '..'|cnGREEN_FONT_COLOR:'..(journalEncounterID or self.encounterID)..'|r')
+                        e.tips:AddDoubleLine(instanceID2 and 'instanceID: '..instanceID2 or ' ', (rootSectionID and rootSectionID>0) and 'JournalEncounterSectionID: '..rootSectionID or ' ')
                         if dungeonEncounterID then
                             e.tips:AddDoubleLine('dungeonEncounterID: |cffff00ff'..dungeonEncounterID, (journalInstanceID and journalInstanceID>0) and 'journalInstanceID: '..journalInstanceID or ' ' )
                             local numKill=Save.wowBossKill[dungeonEncounterID]

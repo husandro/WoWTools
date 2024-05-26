@@ -46,6 +46,12 @@ local func={
     --func.set_Buff(type, self, ...)
 }
 
+local COMBAT_ALLY_START_MISSION= COMBAT_ALLY_START_MISSION
+
+
+
+
+
 function func.Set_PlayerModel(self)
     if not self.playerModel then
         self.playerModel= CreateFrame("PlayerModel", nil, self)--DressUpModel PlayerModel
