@@ -1738,7 +1738,7 @@ local function Init_Menu_Gossip(_, level, type)
         checked= Save.gossip,
         keepShownOnClick=true,
         tooltipOnButton=true,
-        tooltipTitle=format('Alt+%s', e.onlyChinese and '禁用', DISABLE),
+        tooltipTitle=format('Alt+%s', e.onlyChinese and '禁用' or DISABLE),
         tooltipText= format('(%s)', e.onlyChinese and '暂时' or BOOSTED_CHAR_SPELL_TEMPLOCK..'|ntemporary'),
         func= function ()
             Save.gossip= not Save.gossip and true or nil
