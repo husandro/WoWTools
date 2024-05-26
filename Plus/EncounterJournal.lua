@@ -91,7 +91,7 @@ local function set_EncounterJournal_World_Tips(self2)
         for bossName, worldBossID in pairs(info.Worldboss.boss) do--世界BOSS
             num=num+1
             text= text and text..' ' or '   '
-            text= text..'|cnGREEN_FONT_COLOR:'..num..')|r'..getBossNameSort(bossName, worldBossID)
+            text= text..'|cnGREEN_FONT_COLOR:'..num..')|r'..getBossNameSort(e.cn(bossName), worldBossID)
         end
         if text then
             e.tips:AddLine(text, nil,nil,nil, true)
@@ -102,7 +102,7 @@ local function set_EncounterJournal_World_Tips(self2)
         for bossName, _ in pairs(info.Rare.boss) do--稀有怪
             num= num+1
             text= text and text..' ' or ''
-            text= text..'(|cnGREEN_FONT_COLOR:'..num..'|r)'..getBossNameSort(bossName)
+            text= text..'(|cnGREEN_FONT_COLOR:'..num..'|r)'..getBossNameSort(e.cn(bossName))
         end
         if text then
             e.tips:AddLine(text, nil,nil,nil, true)
@@ -139,7 +139,7 @@ local function encounterJournal_ListInstances_set_Instance(self, showTips)
                         if num>2 and  select(2, math.modf(num / 3))==0 then
                             text=text..'|n'
                         end
-                        text= text..'|cnGREEN_FONT_COLOR:'..num..')|r'..getBossNameSort(bossName, worldBossID)
+                        text= text..'|cnGREEN_FONT_COLOR:'..num..')|r'..getBossNameSort(e.cn(bossName), worldBossID)
                     end
                     break
                 end
@@ -159,12 +159,12 @@ local function encounterJournal_ListInstances_set_Instance(self, showTips)
                         e.tips:AddLine(' ')
                     end
 
-                    e.tips:AddDoubleLine(name..'(|cnGREEN_FONT_COLOR:'..difficultyName..'|r): ',num)
+                    e.tips:AddDoubleLine(e.cn(name)..'(|cnGREEN_FONT_COLOR:'..difficultyName..'|r): ',num)
                     local t
                     for j=1,numEncounters do
                         local bossName,_,isKilled = GetSavedInstanceEncounterInfo(i,j)
                         local t2
-                        t2= bossName
+                        t2= e.cn(bossName)
                         if t then
                             t2=t2..' ('..j else t2=j..') '..t2
                         end
@@ -247,7 +247,7 @@ local function EncounterJournal_Set_All_Info_Text()
 
     for insName, info in pairs(e.WoWDate[e.Player.guid].Instance.ins or {}) do
         text= text and text..'|n' or ''
-        text= text..'|T450908:0|t'..insName
+        text= text..'|T450908:0|t'..e.cn(insName)
         for difficultyName, index in pairs(info) do
             text=text..'|n     '..index..' '.. difficultyName
         end
@@ -263,7 +263,7 @@ local function EncounterJournal_Set_All_Info_Text()
     for bossName, worldBossID in pairs(e.WoWDate[e.Player.guid].Worldboss.boss or {}) do--世界BOSS
         num=num+1
         text= text and text..', ' or ''
-        text= text.. getBossNameSort(bossName, worldBossID)
+        text= text.. getBossNameSort(e.cn(bossName), worldBossID)
     end
     if text then
         m= m and m..'|n|n' or ''
@@ -275,7 +275,7 @@ local function EncounterJournal_Set_All_Info_Text()
     num=0
     for name, _ in pairs(e.WoWDate[e.Player.guid].Rare.boss or {}) do--稀有怪
         text= text and text..', ' or ''
-        text= text..getBossNameSort(name)
+        text= text..getBossNameSort(e.cn(name))
         num=num+1
     end
     if text then
@@ -714,7 +714,7 @@ local function Init_EncounterJournal()--冒险指南界面
     --界面, 副本击杀
     --Blizzard_EncounterJournal.lua
     hooksecurefunc('EncounterJournal_ListInstances', function()
-        local frame= EncounterJournal.instanceSelect.ScrollBox
+            local frame= EncounterJournal.instanceSelect.ScrollBox
         if not frame:GetView() then
             return
         end
@@ -738,7 +738,7 @@ local function Init_EncounterJournal()--冒险指南界面
         end
 
         for _, button in pairs(frame:GetFrames() or {}) do--ScrollBox.lua
-            if button and button.tooltipTitle and button.instanceID then--button.bgImage:GetTexture() button.name:GetText()
+            if button and button.instanceID then --and button.tooltipTitle--button.bgImage:GetTexture() button.name:GetText()
                 local textKill= encounterJournal_ListInstances_set_Instance(button)--界面,击杀,数据
                 if not button.tipsText and textKill then
                     button.tipsText=e.Cstr(button, {size=e.onlyChinese and 12 or 10, copyFont= not e.onlyChinese and button.name or nil})--10, button.name)
@@ -1599,7 +1599,7 @@ local function Init()
             local name, _, _, _, _, _, dungeonAreaMapID, _, _, mapID = EJ_GetInstanceInfo(self.journalInstanceID)
             e.tips:SetOwner(self, "ANCHOR_RIGHT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(e.cn(name), mapID and 'mapID '..mapID or '')
+            e.tips:AddDoubleLine(name, (e.strText[name] and name or '') ..(mapID and ' mapID '..mapID or ''))
             e.tips:AddDoubleLine('journalInstanceID: |cnGREEN_FONT_COLOR:'..self.journalInstanceID, (dungeonAreaMapID and dungeonAreaMapID>0) and 'dungeonAreaMapID '..dungeonAreaMapID or '')
             e.tips:AddLine(' ')
             if encounterJournal_ListInstances_set_Instance(self, true) then

@@ -458,6 +458,7 @@ local function Update_Instance()--encounterID, encounterName)
 
     e.WoWDate[e.Player.guid].Worldboss={
         week=e.Player.week,
+        day=date('%x'),
         boss=tab
     }
 
@@ -474,6 +475,7 @@ local function Update_Instance()--encounterID, encounterName)
     end
     e.WoWDate[e.Player.guid].Instance = {
         week=e.Player.week,
+        day=date('%x'),
         ins=tab
     }
 end
@@ -624,7 +626,7 @@ panel:RegisterEvent('ENCOUNTER_END')
 
 panel:RegisterEvent('BN_FRIEND_INFO_CHANGED')--战网，好友GUID
 
-panel:SetScript('OnEvent', function(_, event, arg1, arg2)
+panel:SetScript('OnEvent', function(self, event, arg1, arg2)
     if event == "ADDON_LOADED" then
         if arg1==id then
             WoWToolsSave= WoWToolsSave or {}
@@ -632,6 +634,7 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
 
 
             local day= date('%x')--日期
+            local Is_Timerunning= PlayerGetTimerunningSeasonID()
             e.WoWDate[e.Player.guid] = e.WoWDate[e.Player.guid] or
                 {--默认数据
                     Item={},--{itemID={bag=包, bank=银行}},
@@ -640,13 +643,13 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
                     Keystone={week=e.Player.week},--{score=总分数, link=超连接, weekLevel=本周最高, weekNum=本周次数, all=总次数,week=周数},
                     --KeystoneLink=挑战，Link
 
-                    Instance={ins={}, week=e.Player.week},--ins={[名字]={[难度]=已击杀数}}
-                    Worldboss={boss={}, week=e.Player.week},--{week=周数, boss=table}
+                    Instance={ins={}, week=e.Player.week, day=day},--ins={[名字]={[难度]=已击杀数}}
+                    Worldboss={boss={}, week=e.Player.week, day=day},--{week=周数, boss=table}
                     Rare={day=day, boss={}},--稀有
                     Time={},--{totalTime=总游戏时间, levelTime=当前等级时间}总游戏时间
                     --Money=钱
                     --GuildInfo=公会信息,
-                    Bank={},--{[itemID]={num=数量,quality=品质}}银行，数据
+                    Bank={},--{[itemID]={num=数量,quality=品质}}银行，数据                    
                 }
             e.WoWDate[e.Player.guid].faction= e.Player.faction--派系
             e.WoWDate[e.Player.guid].Bank= e.WoWDate[e.Player.guid].Bank or {}--派系
@@ -657,11 +660,11 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
                 if tab.Keystone.week ~=e.Player.week then
                     e.WoWDate[guid].Keystone={week=e.Player.week}
                 end
-                if tab.Instance.week~=e.Player.week then
-                    e.WoWDate[guid].Instance={ins={}}
+                if tab.Instance.week~=e.Player.week or (Is_Timerunning and tab.Keystone.day and tab.Keystone.day~=day) then
+                    e.WoWDate[guid].Instance={ins={}, day=day}
                 end
-                if tab.Worldboss.week~=e.Player.week then
-                    e.WoWDate[guid].Worldboss={boss={}}
+                if (tab.Worldboss.week~=e.Player.week) or (Is_Timerunning and tab.Keystone.day and tab.Keystone.day~=day) then
+                    e.WoWDate[guid].Worldboss={boss={}, day=day}
                 end
 
                 if tab.Rare.day~=day then
@@ -707,7 +710,7 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
                 Get_WoW_GUID_Info()--战网，好友GUID                
 
             end)
-            panel:UnregisterEvent('ADDON_LOADED')
+            self:UnregisterEvent('ADDON_LOADED')
         end
 
     elseif event=='GROUP_ROSTER_UPDATE' or event=='GROUP_LEFT' then--队伍数据
@@ -737,11 +740,11 @@ panel:SetScript('OnEvent', function(_, event, arg1, arg2)
     elseif event=='PLAYER_ENTERING_WORLD' then--记录稀有怪
         e.Player.Layer=nil
         if IsInInstance() then--稀有怪
-            panel:UnregisterEvent('UNIT_FLAGS')
-            panel:UnregisterEvent('LOOT_OPENED')
+            self:UnregisterEvent('UNIT_FLAGS')
+            self:UnregisterEvent('LOOT_OPENED')
         else
-            panel:RegisterEvent('UNIT_FLAGS')
-            panel:RegisterEvent('LOOT_OPENED')
+            self:RegisterEvent('UNIT_FLAGS')
+            self:RegisterEvent('LOOT_OPENED')
         end
 
     elseif event=='BOSS_KILL' then
