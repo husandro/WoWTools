@@ -1830,8 +1830,40 @@ end
 
 
 
-
-
+--目标，属性
+local function Set_Target_Status(frame)
+    if frame.statusLabel then
+        frame.statusLabel:settings()
+        return
+    end
+    frame.statusLabel= e.Cstr(InspectPaperDollFrame)
+    frame.statusLabel:SetPoint('TOPLEFT', InspectFrameTab1, 'BOTTOMLEFT',0,-2)
+    function frame.statusLabel:settings()
+        local unit=InspectFrame.unit
+        local text
+        if not Save.hide and UnitExists(unit) then
+            local tab={ 1,2,3,15,5,9, 10,6,7,8,11,12,13,14, 16,17}
+            local sta, newSta={}, {}
+            for _, slotID in pairs(tab) do
+                local itemLink= GetInventoryItemLink(unit, slotID)
+                for a,b in pairs(itemLink and C_Item.GetItemStats(itemLink) or {}) do
+                    sta[a]= (sta[a] or 0) +b
+                end
+            end
+            for a, b in pairs(sta) do
+                table.insert(newSta, {text=e.cn(_G[a] or a), value=b})
+            end
+            table.sort(newSta, function(a,b) return a.value> b.value end)
+            for index, info in pairs(newSta) do
+                text= text and text..'|n' or ''
+                local col= select(2, math.modf(index/2))==0 and '|cffffffff' or '|cffff7f00'
+                text= text..col..info.text..': '..e.MK(info.value, 3)..'|r'
+            end
+        end
+        self:SetText(text or '')
+    end
+    frame.statusLabel:settings()
+end
 
 
 
@@ -1979,6 +2011,39 @@ end]]
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --属性 PLUS Func
 local function Init_Status_Func()
     --功击速度，放在前前，原生出错
@@ -2058,13 +2123,6 @@ local function Init_Status_Func()
         self:set_tooltips()
         self:SetAlpha(0.3)
     end)
-
-
-
-
-
-
-
 
 
 
@@ -2326,20 +2384,6 @@ local function Init_Status_Func()
         end
     end)
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -2775,17 +2819,6 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 --属性，增强 PaperDollFrame.lua
 function panel:Init_Status_Plus()
     if StatusPlusButton or Save.hide then
@@ -2862,6 +2895,15 @@ function panel:Init_Status_Plus()
     Init_Status_Menu()
     Init_Status_Func()
 end
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3212,6 +3254,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         elseif arg1=='Blizzard_InspectUI' then--目标, 装备
             self:Init_Target_InspectUI()
+            InspectFrame:HookScript('OnShow', Set_Target_Status)
+            --hooksecurefunc('InspectFrame_UnitChanged', Set_Target_Status)
             hooksecurefunc('InspectPaperDollItemSlotButton_Update', set_InspectPaperDollItemSlotButton_Update)--目标, 装备
             hooksecurefunc('InspectPaperDollFrame_SetLevel', set_InspectPaperDollFrame_SetLevel)--目标,天赋 装等
         end

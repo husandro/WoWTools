@@ -39,7 +39,7 @@ local function SetChannels(link)
     local name=link:match('%[(.-)]')
     if name then
         if name:find(WORLD) then
-            return link:gsub('%[.-]', '['..e.WA_Utf8Sub(WORLD, 2, 5)..']')
+            return link:gsub('%[.-]', '['..e.WA_Utf8Sub(e.cn(WORLD), 2, 6)..']')
         end
 
         if not Save.disabledKeyColor then
@@ -51,12 +51,12 @@ local function SetChannels(link)
         end
 
         if name:find(GENERAL_LABEL) then--综合
-            return link:gsub('%[.-]', '['..e.WA_Utf8Sub(GENERAL_LABEL, 2, 5)..']')
+            return link:gsub('%[.-]', '['..e.WA_Utf8Sub(e.cn(GENERAL_LABEL), 2, 6)..']')
         end
 
         name= name:match('%d+%. (.+)') or name:match('%d+．(.+)') or name--去数字
         name= name:match('%- (.+)') or name:match('：(.+)') or name:match(':(.+)') or name
-        name=e.WA_Utf8Sub(name, 2, 5)
+        name=e.WA_Utf8Sub(name, 2, 6)
         return link:gsub('%[.-]', '['..name..']')
     end
 end

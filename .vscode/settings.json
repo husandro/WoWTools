@@ -4535,7 +4535,8 @@
         "INVTYPE_ROBE",
         "INVTYPE_WEAPONMAINHAND",
         "INVTYPE_WEAPONOFFHAND",
-        "PetActionButton10"
+        "PetActionButton10",
+        "InspectFrame_UnitChanged"
     ],
     "Lua.diagnostics.disable": [
         "inject-field",
