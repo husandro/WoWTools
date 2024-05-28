@@ -61,7 +61,7 @@ local function SetChannels(link)
     end
 end
 
-local function Realm(link)--去服务器为*, 加队友种族图标,和N,T
+local function Set_Realm(link)--去服务器为*, 加队友种族图标,和N,T
     local split= LinkUtil.SplitLink(link)
     local name= split and split:match('player:(.-):') or link:match('|Hplayer:.-|h%[|cff......(.-)|r]') or link:match('|Hplayer:.-|h%[(.-)]|h')
     local server= name and name:match('%-(.+)')
@@ -78,10 +78,8 @@ local function Realm(link)--去服务器为*, 加队友种族图标,和N,T
         if server then
             if server== e.Player.realm then
                 return (text or '')..link:gsub('%-'..server..'|r]|h', '|r]|h')
-            elseif e.Player.Realms[server] then
-                return (text or '')..link:gsub('%-'..server..'|r]|h', GREEN_FONT_COLOR_CODE..'*|r|r]|h')
             else
-                return (text or '')..link:gsub('%-'..server..'|r]|h', '*|r]|h')
+                return (text or '')..link:gsub('%-'..server..'|r]|h', (e.Player.Realms[server] and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..'*|r|r]|h')
             end
         elseif text then
             return text..link
@@ -521,7 +519,7 @@ local function setAddMessageFunc(self, s, ...)
     s=s:gsub('(%d+%.%d%d %d+%.%d%d)', Waypoint)--地图标记xy, 格式 60.00 70.50
 
     if not Save.notShowPlayerInfo then--不处理，玩家信息
-        s=s:gsub('|Hplayer:.-]|h', Realm)
+        s=s:gsub('|Hplayer:.-]|h', Set_Realm)
 
         if not showTimestamps and s:find(LOOT_ITEM) then--	%s获得了战利品：%s。
             local unitName= s:match(LOOT_ITEM)

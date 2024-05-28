@@ -62,10 +62,11 @@ end
 
 local battleTag= select(2, BNGetInfo())
 local baseClass= UnitClassBase('player')
+local playerRealm= GetRealmName():gsub(' ', '')
 e.Player={
-    realm= GetRealmName(),
+    realm= playerRealm,
     Realms= {},--多服务器
-    name_realm= UnitName('player')..'-'..GetRealmName(),
+    name_realm= UnitName('player')..'-'..playerRealm,
     name= UnitName('player'),
     sex= UnitSex("player"),
     class= UnitClassBase('player'),
