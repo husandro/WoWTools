@@ -4536,7 +4536,10 @@
         "INVTYPE_WEAPONMAINHAND",
         "INVTYPE_WEAPONOFFHAND",
         "PetActionButton10",
-        "InspectFrame_UnitChanged"
+        "InspectFrame_UnitChanged",
+        "UIDropDownMenu_Refresh",
+        "HideDropDownMenu",
+        "UIDropDownMenu_GetCurrentDropDown"
     ],
     "Lua.diagnostics.disable": [
         "inject-field",

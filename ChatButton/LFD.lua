@@ -793,6 +793,10 @@ local function printListInfo()--输出当前列表
                 print(text)
             end
         end
+        if (e.LibDD:UIDropDownMenu_GetCurrentDropDown() == button.Menu) then
+            e.LibDD:HideDropDownMenu(1)
+            e.LibDD:ToggleDropDownMenu(1,nil, button.Menu, button, 15,0)
+        end
     end)
 end
 
@@ -2274,8 +2278,8 @@ local function Init()
             if not self.Menu then
                 self.Menu= CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")--菜单列表
                 e.LibDD:UIDropDownMenu_Initialize(self.Menu, InitList, "MENU")
-            end
-            e.LibDD:ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
+            end            e.LibDD:ToggleDropDownMenu(1,nil,self.Menu, self, 15,0)
+
         end
     end)
     button:SetScript('OnEnter',function(self)
