@@ -12,7 +12,44 @@ local Save={
 
 
 
+local instanceBossTab={-- []='',
+    [691]='怒之煞',
+    [725]='炮舰',
+    [814]='纳拉克',
+    [826]='乌达斯塔',
 
+    [857]='朱鹤赤精',
+    [859]='玄牛砮皂',
+    [861]='斡耳朵斯',
+    [858]='青龙玉珑',
+    [860]='白虎雪怒',
+
+    [1262]='鲁克玛',
+}
+for journalEncounterID, name in pairs(instanceBossTab) do
+    local bossName= EJ_GetEncounterInfo(journalEncounterID)
+    if bossName then
+        e.strText[bossName]= name
+    end
+end
+
+for journalInstanceID, info in pairs(instanceBossTab) do
+    --[[for index=1, 9 do--MAX_CREATURES_PER_ENCOUNTER
+        local name = EJ_GetEncounterInfoByIndex(index, journalInstanceID)
+        print(name)
+        if name then
+            local bossName= info[index]
+            if bossName then
+                print(name, bossName)
+                e.strText[name]= bossName
+            end
+        else
+            break
+        end
+    end]]
+end
+
+--return '鲁克玛'
 
 
 
@@ -49,7 +86,7 @@ local instanceTab={--{, ''},
     {284, '冠军的试炼'},
     {282, '魔环'},
     {273, '达克萨隆要塞'},
-    {285, '乌特加德城堡'},    
+    {285, '乌特加德城堡'},
     {754, '纳克萨玛斯'},
     {759, '奥杜尔'},
     {757, '十字军的试炼'},
@@ -2063,7 +2100,7 @@ local function Init()
 
                     local difficultyText= difficultyId and e.GetDifficultyColor(difficulty, difficultyId) or e.strText[difficulty]
                     set(button.difficulty, difficultyText)
-                    
+
                     if button.extended:IsShown() then
                         set(button.extended, '|cff00ff00已延长|r')
                     end
@@ -2077,7 +2114,7 @@ local function Init()
                     local name = GetSavedWorldBossInfo(index)
                     local locked = true
                     local extended = false
-                    if index==1 then--Sha della Rabbia
+                    --[[if index==1 then--Sha della Rabbia
                         e.strText[name]= '怒之煞'
                     elseif index==2 then --Galeone
                         e.strText[name]= '炮舰'
@@ -2087,7 +2124,7 @@ local function Init()
                         e.strText[name]= '乌达斯塔'
                     elseif index==9 then--Rukhmar
                         e.strText[name]= '鲁克玛'
-                    end
+                    end]]
                     InitButton(extended, locked, name, RAID_INFO_WORLD_BOSS)
                 end
             end)
@@ -2095,7 +2132,7 @@ local function Init()
                 self:GetParent():GetTitleText():SetText('团队')
             end)
             set(RaidInfoCancelButton, '关闭')
-            
+
 
         set(RaidFrameConvertToRaidButton, '转化为团队')
         set(RaidFrameRaidDescription, '团队是超过5个人的队伍，这是为了击败高等级的特定挑战而准备的大型队伍模式。\n\n|cffffffff- 团队成员无法获得非团队任务所需的物品或者杀死怪物的纪录。\n\n- 在团队中，你通过杀死怪物获得的经验值相对普通小队要少。\n\n- 团队让你可以赢得用其它方法根本无法通过的挑战。|r')
@@ -2532,7 +2569,7 @@ local function Init()
     set(ReadyCheckListenerFrame.TitleContainer.TitleText, '就位确认')
     set(ReadyCheckFrameYesButton, '就绪')--:SetText(GetText("READY", UnitSex("player")))
 	set(ReadyCheckFrameNoButton, '未就绪')--:SetText(GetText("NOT_READY", UnitSex("player")))
-    
+
 
     --插件
     set(AddonListTitleText, '插件列表')
@@ -2638,7 +2675,7 @@ local function Init()
         if region and region:GetObjectType()=='FontString' then
             region:SetText('主题：')
         end
-       
+
 
 
     set(MailFrameTab2, '发件箱')
@@ -4361,7 +4398,7 @@ local function Init()
             end
         end
     end)
-    
+
 
     --PlayerCastingBarFrame
     hooksecurefunc(PlayerCastingBarFrame, 'HandleInterruptOrSpellFailed', function(self, _, event, ...)
@@ -6010,7 +6047,7 @@ local function Init_Loaded(arg1)
                 hooksecurefunc(WardrobeCollectionFrame.SetsTransmogFrame.PagingFrame, 'Update', function(self)--Blizzard_CollectionTemplates.lua
                     self.PageText:SetFormattedText('%d/%d页', self.currentPage, self.maxPages)
                 end)
-        
+
             set(WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox.Label, '两侧肩膀使用不同的幻化外观')
 
         dia("BATTLE_PET_RENAME", {text = '重命名', button1 = '接受', button2 = '取消', button3 = '默认'})
@@ -6660,7 +6697,7 @@ local function Init_Loaded(arg1)
             for check in pairs(self.SpecsPool.activeObjects or {}) do
                 setLabel(check.SpecName)
             end
-          
+
             local specIds = ClubFinderGetPlayerSpecIds()
             local matchingSpecNames = { }
             for i, specId in ipairs(specIds) do
@@ -6696,7 +6733,7 @@ local function Init_Loaded(arg1)
         set(ClubFinderCommunityAndGuildFinderFrame.RequestToJoinFrame.Cancel, '取消')
         set(ClubFinderGuildFinderFrame.RequestToJoinFrame.DialogLabel, '申请加入')
         set(ClubFinderCommunityAndGuildFinderFrame.RequestToJoinFrame.DialogLabel, '申请加入')
-        
+
 
         hooksecurefunc(ClubsFinderJoinClubWarningMixin, 'OnShow', function(self)--没测试
             if (IsInGuild()) then
@@ -7867,7 +7904,7 @@ local function Init_Loaded(arg1)
         set(EventTrace.Filter.Bar.DiscardAllButton.Label, '全部删除')
         set(EventTrace.Filter.Bar.UncheckAllButton.Label, '全部取消')
         set(EventTrace.Filter.Bar.CheckAllButton.Label, '全部选取')
-    
+
     elseif arg1=='Blizzard_ScrappingMachineUI' then--分解
         set(ScrappingMachineFrame.ScrapButton, '拆解')
         C_Timer.After(0.3, function() set(ScrappingMachineFrameTitleText, '拆解大师Mk1型') end)

@@ -53,19 +53,6 @@ end]]
 
 
 local function getBossNameSort(name)--取得怪物名称, 短名称
-    --[[if e.onlyChinese and not LOCALE_zhCN and not LOCALE_zhTW and worldBossID then
-        if worldBossID==1 then--Sha della Rabbia
-            return '怒之煞'
-        elseif worldBossID==2 then --Galeone
-            return '炮舰'
-        elseif worldBossID==3 then--Nalak
-            return '纳拉克'
-        elseif worldBossID==4 then --Undasta
-            return '乌达斯塔'
-        elseif worldBossID==9 then--Rukhmar
-            return '鲁克玛'
-        end
-    end]]
     name= e.cn(name)
     name=name:gsub('(,.+)','')
     name=name:gsub('(，.+)','')
@@ -1275,7 +1262,7 @@ local function Init_EncounterJournal()--冒险指南界面
                         local name2, _, journalEncounterID, rootSectionID, _, journalInstanceID, dungeonEncounterID, instanceID2= EJ_GetEncounterInfo(self.encounterID)--button.index= button.GetOrderIndex()
                         e.tips:SetOwner(self, "ANCHOR_LEFT")
                         e.tips:ClearLines()
-                        e.tips:AddDoubleLine(name2,  'journalEncounterID: '..'|cnGREEN_FONT_COLOR:'..(journalEncounterID or self.encounterID)..'|r')
+                        e.tips:AddDoubleLine(name2..' '..(e.strText[name2] or ''),  'journalEncounterID: '..'|cnGREEN_FONT_COLOR:'..(journalEncounterID or self.encounterID)..'|r')
                         e.tips:AddDoubleLine(instanceID2 and 'instanceID: '..instanceID2 or ' ', (rootSectionID and rootSectionID>0) and 'JournalEncounterSectionID: '..rootSectionID or ' ')
                         if dungeonEncounterID then
                             e.tips:AddDoubleLine('dungeonEncounterID: |cffff00ff'..dungeonEncounterID, (journalInstanceID and journalInstanceID>0) and 'journalInstanceID: '..journalInstanceID or ' ' )
