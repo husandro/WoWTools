@@ -793,7 +793,7 @@ local function printListInfo()--输出当前列表
                 print(text)
             end
         end
-        if (e.LibDD:UIDropDownMenu_GetCurrentDropDown() == button.Menu) then
+        if button.Menu and e.LibDD:UIDropDownMenu_GetCurrentDropDown() == button.Menu then
             e.LibDD:HideDropDownMenu(1)
             e.LibDD:ToggleDropDownMenu(1,nil, button.Menu, button, 15,0)
         end
