@@ -4539,7 +4539,9 @@
         "InspectFrame_UnitChanged",
         "UIDropDownMenu_Refresh",
         "HideDropDownMenu",
-        "UIDropDownMenu_GetCurrentDropDown"
+        "UIDropDownMenu_GetCurrentDropDown",
+        "GetNumWorldPVPAreas",
+        "GetStablePetFoodTypes"
     ],
     "Lua.diagnostics.disable": [
         "inject-field",

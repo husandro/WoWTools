@@ -1119,7 +1119,7 @@ function e.Set_Item_Stats(self, link, setting) --设置，物品，次属性，�
 
         if not hideLevel then--物品, 装等
             itemID= itemID or C_Item.GetItemInfoInstant(link)
-            if itemID==210333 then
+            if itemID==210333 and self==CharacterBackSlot then--InspectBackSlot
                 local currencies={--https://wago.io/thread_count
                     [2853] = 1, -- "power" aka str/agi/int
                     [2854] = 0.5, -- stamina (1 thread gives 2 of this stat)
