@@ -146,7 +146,8 @@ local function set_Button_Postion()--设置按钮位置
     if Save.Point and Save.Point[1] and Save.Point[3] and Save.Point[4] and Save.Point[5] then
         button:SetPoint(Save.Point[1], UIParent, Save.Point[3], Save.Point[4], Save.Point[5])
     elseif e.Player.husandro then
-        button:SetPoint('RIGHT', QueueStatusButton, 'LEFT')
+        button:SetPoint('BOTTOMRIGHT', -385, 4)
+        --button:SetPoint('RIGHT', QueueStatusButton, 'LEFT')
     else
         button:SetPoint('CENTER', 300, 100)
     end
