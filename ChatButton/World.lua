@@ -134,7 +134,7 @@ local function addMenu(name, channelNumber, level)--添加菜单
     text=((channelNumber and channelNumber>0) and channelNumber..' ' or '')..text--频道数字
     text=text..(button.channelNumber==channelNumber and e.Icon.left or '')--当前点击提示
 
-    local info={
+    e.LibDD:UIDropDownMenu_AddButton({
         text= text,
         checked= check==1,
         colorCode= check==0 and '|cffff0000' or check==2 and '|cff606060',
@@ -153,9 +153,12 @@ local function addMenu(name, channelNumber, level)--添加菜单
                 sendSay(arg1.name, arg1.channelNumber)
                 setLeftClickTips(arg1.communityName or arg1.name, arg1.channelNumber, arg1.texture)--设置点击提示,频道字符
             end
+            if button and button.Menu and e.LibDD:UIDropDownMenu_GetCurrentDropDown() == button.Menu then
+                e.LibDD:HideDropDownMenu(1)
+                e.LibDD:ToggleDropDownMenu(1,nil, button.Menu, button, 15,0)
+            end
         end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
+    }, level)
 end
 
 local function InitMenu(_, level, type)--主菜单
