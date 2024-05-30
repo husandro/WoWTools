@@ -1,5 +1,5 @@
 local id, e = ...
-local addName= 'Tootips'
+local addName= 'Tooltips'
 local Save={
     setDefaultAnchor=true,--指定点
     --AnchorPoint={},--指定点，位置
@@ -3049,7 +3049,12 @@ local eventTab={}
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            Save= WoWToolsSave[addName] or Save
+            if WoWToolsSave['Tootips'] then
+                Save= WoWToolsSave['Tootips']
+                WoWToolsSave['Tootips']=nil
+            else
+                Save= WoWToolsSave[addName] or Save
+            end
             Save.modelSize= Save.modelSize or 100
             Save.modelX= Save.modelX or 0
             Save.modelY= Save.modelY or -24
