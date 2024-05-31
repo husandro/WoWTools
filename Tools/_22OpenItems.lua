@@ -953,6 +953,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif event=='BAG_UPDATE_COOLDOWN' then
+        do
+            get_Items()
+        end
         setCooldown()--冷却条
 
     end

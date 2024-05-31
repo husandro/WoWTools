@@ -4541,7 +4541,12 @@
         "HideDropDownMenu",
         "UIDropDownMenu_GetCurrentDropDown",
         "GetNumWorldPVPAreas",
-        "GetStablePetFoodTypes"
+        "GetStablePetFoodTypes",
+        "GUILDCONTROL_DEPOSIT_ITEMS",
+        "BankFrameItem1",
+        "BankFrameItemButton_Update",
+        "CloseBag",
+        "CalculateTotalNumberOfFreeBagSlots"
     ],
     "Lua.diagnostics.disable": [
         "inject-field",

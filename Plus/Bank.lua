@@ -16,7 +16,7 @@ local Save={
     --showIndex=true,--显示，索引
     --showBackground= true,--设置，背景
 }
-
+local Initializer
 
 
 
@@ -53,6 +53,8 @@ local function Init_Bank_Plus()--增强，原生
     function ReagentBankFrame.ShowHideButton:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, Initializer:GetName())
+        e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '显示材料银行' or REAGENT_BANK, e.GetShowHide(not Save.hideReagentBankFrame)..e.Icon.left)
         e.tips:AddLine(' ')
 
@@ -67,9 +69,6 @@ local function Init_Bank_Plus()--增强，原生
         e.tips:AddDoubleLine((col or '')..'Y |cnGREEN_FONT_COLOR:'..Save.yReagentBankFrame, (col or '')..'Shift+'..e.Icon.mid)
         col= Save.pointReagentBank and '' or '|cff606060'
         e.tips:AddDoubleLine(col..(e.onlyChinese and '还原位置' or RESET_POSITION), col..'Ctrl+'..e.Icon.right)
-
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
     end
     ReagentBankFrame.ShowHideButton:SetScript('OnClick', function(self, d)
@@ -77,7 +76,7 @@ local function Init_Bank_Plus()--增强，原生
             Save.pointReagentBank= nil
             self:show_hide()
             self:set_tooltips()
-            print(id, e.cn(addName), e.onlyChinese and '还原位置' or RESET_POSITION)
+            print(id, Initializer:GetName(), e.onlyChinese and '还原位置' or RESET_POSITION)
         else
             Save.hideReagentBankFrame= not Save.hideReagentBankFrame and true or nil
             self:show_hide(Save.hideReagentBankFrame)
@@ -217,7 +216,7 @@ local function Init_All_Bank()
     function SetAllBank:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddDoubleLine(id, Initializer:GetName())
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine((e.onlyChinese and '行数' or HUD_EDIT_MODE_SETTING_ACTION_BAR_NUM_ROWS)..' |cnGREEN_FONT_COLOR:'..Save.num, e.Icon.mid)
         e.tips:AddDoubleLine((e.onlyChinese and '间隔' or 'Interval')..' |cnGREEN_FONT_COLOR:'..Save.line, 'Alt+'..e.Icon.mid)
@@ -281,7 +280,7 @@ local function Init_All_Bank()
     SetAllBank:SetScript('OnLeave', function(self) self:SetAlpha(0.5) e.tips:Hide() end)
     SetAllBank:SetScript('OnEnter', SetAllBank.set_tooltips)
 
-    
+
     --索引，提示
     function SetAllBank:set_index_label(btn, index)
         if not btn.indexLable and Save.showIndex then
@@ -437,7 +436,6 @@ local function Init_All_Bank()
     end
 
     ReagentBankFrame:HookScript('OnShow', function(self)
-
         if self.isSetPoint or not self.slots_initialized then--or not IsReagentBankUnlocked() then
             return
         end
@@ -454,17 +452,22 @@ local function Init_All_Bank()
         BankItemSearchBox:SetPoint('TOP', 0,-33)
 
         BankItemAutoSortButton:ClearAllPoints()--移动，整理，按钮
-        BankItemAutoSortButton:SetPoint('RIGHT', BankItemSearchBox, 'LEFT', -2, 0)
+        BankItemAutoSortButton:SetPoint('RIGHT', BankItemSearchBox, 'LEFT', -6, 0)
         BankItemAutoSortButton:SetParent(BankSlotsFrame)
 
         ReagentBankFrame.autoSortButton:SetPoint('LEFT', BankItemSearchBox, 'RIGHT', 2, 0)--整理材料银行
 
         ReagentBankFrame.DespositButton:ClearAllPoints()
-        ReagentBankFrame.DespositButton:SetSize(32, 32)
+        ReagentBankFrame.DespositButton:SetSize(23, 23)
+        ReagentBankFrame.DespositButton:SetPoint('LEFT', ReagentBankFrame.autoSortButton, 'RIGHT', 2, 0)
         ReagentBankFrame.DespositButton:SetText('')
-        ReagentBankFrame.DespositButton:SetNormalAtlas('128-RedButton-Refresh')
-        ReagentBankFrame.DespositButton:SetPushedAtlas('128-RedButton-Refresh-Pressed')
-        ReagentBankFrame.DespositButton:SetPoint('TOPRIGHT', -8, -26)
+        ReagentBankFrame.DespositButton.Middle:Hide()
+        ReagentBankFrame.DespositButton.Right:Hide()
+        ReagentBankFrame.DespositButton.Left:Hide()
+        ReagentBankFrame.DespositButton:SetNormalAtlas('poi-traveldirections-arrow')
+        ReagentBankFrame.DespositButton:GetNormalTexture():SetTexCoord(0,1,1,0)
+        ReagentBankFrame.DespositButton:SetHighlightAtlas('auctionhouse-nav-button-select')
+        ReagentBankFrame.DespositButton:SetPushedAtlas('auctionhouse-nav-button-select')
         ReagentBankFrame.DespositButton:HookScript('OnLeave', GameTooltip_Hide)
         ReagentBankFrame.DespositButton:HookScript('OnEnter', function(s)
             e.tips:SetOwner(s, "ANCHOR_LEFT")
@@ -472,8 +475,6 @@ local function Init_All_Bank()
             e.tips:AddDoubleLine(e.onlyChinese and '存放各种材料' or REAGENTBANK_DEPOSIT)
             e.tips:Show()
         end)
-
-
     end)
 
 
@@ -648,37 +649,250 @@ end
 
 
 
+local function Init_Desposit_TakeOut_All_Items()--存放，取出，所有
+    --取出，所有, 物品
+    local btn= e.Cbtn(BankSlotsFrame, {size=23, icon='hide'})
+    btn:SetNormalAtlas('poi-traveldirections-arrow')
+    btn:GetNormalTexture():SetTexCoord(1,0,1,0)
+    if Save.allBank then
+        btn:SetPoint('RIGHT', BankItemAutoSortButton, 'LEFT', -2, 0)
+    else
+        btn:SetPoint('RIGHT', BankItemSearchBox, 'LEFT', -6, 0)
+    end
+    function btn:get_bag_slot(frame)
+        return frame.isBag and Enum.BagIndex.Bankbag or frame:GetParent():GetID(), frame:GetID()
+    end
+    function btn:get_free()
+        local free= 0--CalculateTotalNumberOfFreeBagSlots() MainMenuBarBagButtons.lua
+        for i = BACKPACK_CONTAINER, NUM_BAG_FRAMES do
+            free= free+ (C_Container.GetContainerNumFreeSlots(i) or 0)
+        end
+        return free
+    end
+    btn:SetScript('OnClick', function(self)
+        local free= self:get_free()
+        if free==0 then
+            return
+        end
+        for bag=(NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS), NUM_TOTAL_EQUIPPED_BAG_SLOTS+1, -1 do
+            for slot=1, C_Container.GetContainerNumSlots(bag) or 0, 1 do
+                if not self:IsVisible() or IsModifierKeyDown() or free<=0 then
+                    self:show_tooltips()
+                    return
+                end
+                local info = C_Container.GetContainerItemInfo(bag, slot) or {}
+                if info.itemID then
+                    C_Container.UseContainerItem(bag, slot)
+                    free= free-1
+                end
+            end
+        end
+        for i=NUM_BANKGENERIC_SLOTS, 1, -1 do--28
+            if not self:IsVisible() or IsModifierKeyDown() or free<=0 then
+                self:show_tooltips()
+                return
+            end
+            local bag, slot = self:get_bag_slot(BankSlotsFrame["Item"..i])
+            if bag and slot then
+                local info = C_Container.GetContainerItemInfo(bag, slot) or {}
+                if info.itemID then
+                    C_Container.UseContainerItem(bag, slot)
+                    free= free-1
+                end
+            end
+        end
+        self:show_tooltips()
+    end)
+    function btn:set_tooltips()
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        local free= self:get_free()
+        e.tips:AddDoubleLine(e.onlyChinese and '取出所有物品' or 'Take out all items',
+            format('|A:bag-main:0:0|a%s #%s%d',
+                e.onlyChinese and '背包' or HUD_EDIT_MODE_BAGS_LABEL,
+                free==0 and '|cnRED_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:',
+                free)
+        )
+        e.tips:Show()
+    end
+    function btn:show_tooltips()
+        C_Timer.After(1.8, function() if GameTooltip:IsOwned(self) then self:set_tooltips() end end)
+    end
+    btn:HookScript('OnLeave', GameTooltip_Hide)
+    btn:HookScript('OnEnter', btn.set_tooltips)
+    ReagentBankFrame.TakeOutAllItemButton= btn
+
+    --存放，所有，物品
+    btn= e.Cbtn(ReagentBankFrame.TakeOutAllItemButton, {size=23, icon='hide'})
+    btn:SetNormalAtlas('poi-traveldirections-arrow')
+    btn:GetNormalTexture():SetTexCoord(0,1,1,0)
+    btn:SetPoint('RIGHT', ReagentBankFrame.TakeOutAllItemButton, 'LEFT', -2, 0)
+
+    function btn:is_free(frame)
+        if frame and frame:IsShown() then
+            local info = C_Container.GetContainerItemInfo(frame.isBag and Enum.BagIndex.Bankbag or frame:GetParent():GetID(), frame:GetID()) or {}
+            if not info.itemID then
+                return true
+            end
+        end
+    end
+    function btn:get_free()
+        local free= 0
+        for i=1, NUM_BANKGENERIC_SLOTS do--28
+            if self:is_free(BankSlotsFrame["Item"..i]) then
+                free= free+1
+            end
+        end
+        for bag=NUM_TOTAL_EQUIPPED_BAG_SLOTS+1, (NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS), 1 do
+            for slot=1, C_Container.GetContainerNumSlots(bag) or 0, 1 do
+                local info = C_Container.GetContainerItemInfo(bag, slot) or {}
+                if not info.itemID then
+                    free= free+ 1
+                end
+            end
+        end
+        --for index, button in ReagentBankFrame:EnumerateItems() do
+        return free
+    end
+    btn:SetScript('OnClick', function(self)
+        local all= self:get_free()
+        if all==0 then
+            return
+        end
+        for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES do-- + NUM_REAGENTBAG_FRAMES do--NUM_TOTAL_EQUIPPED_BAG_SLOTS
+            for slot= C_Container.GetContainerNumSlots(bag), 1, -1 do
+                if not self:IsVisible() or IsModifierKeyDown() or all==0 then
+                    self:show_tooltips()
+                    return
+                end
+                local info = C_Container.GetContainerItemInfo(bag, slot)
+                if info and info.hyperlink and not select(17, C_Item.GetItemInfo(info.hyperlink)) then
+                    C_Container.UseContainerItem(bag, slot)
+                    all= all-1
+                end
+            end
+        end
+        self:show_tooltips()
+    end)
+    function btn:set_tooltips()
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        local free= self:get_free()
+        e.tips:AddDoubleLine(e.onlyChinese and '存放所有物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, GUILDCONTROL_DEPOSIT_ITEMS, ' ('..ALL..')'),
+            format('|A:Banker:0:0|a%s #%s%d',
+                e.onlyChinese and '银行' or BANK,
+                free==0 and '|cnRED_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:',
+                free)
+        )
+        e.tips:Show()
+    end
+    function btn:show_tooltips()
+        C_Timer.After(1.8, function() if GameTooltip:IsOwned(self) then self:set_tooltips() end end)
+    end
+    btn:HookScript('OnLeave', GameTooltip_Hide)
+    btn:HookScript('OnEnter', btn.set_tooltips)
+    ReagentBankFrame.DespositAllItemButton= btn
+
+
+    --取出，所有，材料
+    btn= e.Cbtn(ReagentBankFrame.DespositButton, {size=23, icon='hide'})
+    btn:SetNormalAtlas('poi-traveldirections-arrow')
+    btn:GetNormalTexture():SetTexCoord(1,0,1,0)
+    btn:SetPoint('LEFT', ReagentBankFrame.DespositButton, 'RIGHT', 2, 0)
+    function btn:get_bag_slot(frame)
+        return frame.isBag and Enum.BagIndex.Bankbag or frame:GetParent():GetID(), frame:GetID()
+    end
+    function btn:get_free()
+        return C_Container.GetContainerNumFreeSlots(NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES) or 0
+    end
+    btn:SetScript('OnClick', function(self)
+        local free= self:get_free()
+        if free==0 then
+            return
+        end
+        local tabs={}
+        for _, frame in ReagentBankFrame:EnumerateItems() do
+            table.insert(tabs, 1, frame)
+        end
+        for _, frame in pairs(tabs) do
+            if not self:IsVisible() or IsModifierKeyDown() or free<=0 then
+                self:show_tooltips()
+                return
+            end
+            local bag, slot = self:get_bag_slot(frame)
+            if bag and slot then
+                local info = C_Container.GetContainerItemInfo(bag, slot) or {}
+                if info.itemID then
+                    C_Container.UseContainerItem(bag, slot)
+                    free= free-1
+                end
+            end
+        end
+        self:show_tooltips()
+    end)
+    function btn:set_tooltips()
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        local free= self:get_free()
+        e.tips:AddDoubleLine(e.onlyChinese and '取出所有材料' or 'Take out all reagents',
+            format('|A:4549254:0:0|a%s #%s%d',
+                e.onlyChinese and '材料' or AUCTION_CATEGORY_TRADE_GOODS,
+                free==0 and '|cnRED_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:',
+                free)
+        )
+        e.tips:Show()
+    end
+    function btn:show_tooltips()
+        C_Timer.After(1, function() if GameTooltip:IsOwned(self) then self:set_tooltips() end end)
+    end
+    btn:HookScript('OnLeave', GameTooltip_Hide)
+    btn:HookScript('OnEnter', btn.set_tooltips)
+    ReagentBankFrame.TakeOutAllReagentsButton= btn
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --#######
 --设置菜单
 --#######
 local function Init_Menu(_, level)
-    local info
-    info= {
+    e.LibDD:UIDropDownMenu_AddButton({
         text= e.onlyChinese and '转化为联合的大包' or BAG_COMMAND_CONVERT_TO_COMBINED,
         checked= Save.allBank,
         keepShownOnClick=true,
         func= function()
             Save.allBank= not Save.allBank and true or nil
             BankFrame.optionButton:set_atlas()
-            print(id, e.cn(addName),'|cnGREEN_FONT_COLOR:', e.GetEnabeleDisable(Save.allBank),  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(id, Initializer:GetName(),'|cnGREEN_FONT_COLOR:', e.GetEnabeleDisable(Save.allBank),  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-    --[[info={
-        text= e.onlyChinese and '搜索' or SEARCH,
-        checked= not Save.notSearchItem,
-        tooltipOnButton=true,
-        tooltipTitle= 'OnEnter',
-        keepShownOnClick=true,
+    }, level)
+
+    e.LibDD:UIDropDownMenu_AddButton({
+        text= e.onlyChinese and '选项' or OPTIONS,
+        notCheckable=true,
+        icon= 'mechagon-projects',
         func= function()
-            Save.notSearchItem= not Save.notSearchItem and true or nil
-            print(id, e.cn(addName),'|cnGREEN_FONT_COLOR:', e.GetEnabeleDisable(not Save.notSearchItem),  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            e.OpenPanelOpting(Initializer)
         end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)]]
+    }, level)
     e.LibDD:UIDropDownMenu_AddSeparator(level)
-    info={--重载
+    e.LibDD:UIDropDownMenu_AddButton({--重载
         text= '|TInterface\\Vehicles\\UI-Vehicles-Button-Exit-Up:0|t'..(e.onlyChinese and '重新加载UI' or RELOADUI),
         notCheckable=true,
         tooltipOnButton=true,
@@ -688,8 +902,7 @@ local function Init_Menu(_, level)
         func=function()
             e.Reload()
         end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
+    }, level)
 end
 
 
@@ -742,22 +955,23 @@ local function Init_Bank_Frame()
     ReagentBankFrame.autoSortButton:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, Initializer:GetName())
         e.tips:AddLine(e.onlyChinese and '整理材料银行' or BAG_CLEANUP_REAGENT_BANK)
-        e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
     end)
     ReagentBankFrame.autoSortButton:SetScript('OnClick', function()
         C_Container.SortReagentBankBags()
     end)
 
-
-    if Save.allBank then
-        Init_All_Bank()--整合，一起
-    else
-        Init_Bank_Plus()--增强，原生
+    do
+        if Save.allBank then
+            Init_All_Bank()--整合，一起
+        else
+            Init_Bank_Plus()--增强，原生
+        end
     end
-
     --Init_Save_BankItem()
+    Init_Desposit_TakeOut_All_Items()--存放，取出，所有
 end
 
 
@@ -783,39 +997,27 @@ local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 
-panel:SetScript("OnEvent", function(_, event, arg1)
+panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
 
             --添加控制面板
-            --local initializer2= 
-            e.AddPanel_Check({
+            Initializer= e.AddPanel_Check({
                 name= '|A:Banker:0:0|a'..(e.onlyChinese and '银行' or addName),
                 tooltip= e.cn(addName),
                 value= not Save.disabled,
                 func= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+                    print(id, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
                 end
             })
-            --[[local initializer= e.AddPanel_Check({
-                name= (e.onlyChinese and '转化为联合的大包' or BAG_COMMAND_CONVERT_TO_COMBINED ),
-                value= Save.allBank,
-                func= function()
-                    Save.allBank = not Save.allBank and true or nil
-                    print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                end
-            })
-            initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)]]
 
             if not Save.disabled then
                 Init_Bank_Frame()--银行
             end
-            panel:UnregisterEvent('ADDON_LOADED')
+            self:UnregisterEvent('ADDON_LOADED')
         end
-
-
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then

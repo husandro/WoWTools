@@ -384,7 +384,7 @@ SliceDemo.ResizeButton:SetPoint("BOTTOMRIGHT");
 BreakUpLargeNumbers()
 InClickBindingMode()
 
-for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do--NUM_TOTAL_EQUIPPED_BAG_SLOTS
+for bag= BACKPACK_CONTAINER, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do--NUM_TOTAL_EQUIPPED_BAG_SLOTS Enum.BagIndex.Backpack
     for slot=1, C_Container.GetContainerNumSlots(bag) do
         local info = C_Container.GetContainerItemInfo(bag, slot)
         C_Container.UseContainerItem(bag, slot)
