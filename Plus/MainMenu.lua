@@ -820,7 +820,7 @@ local function Init_Bag()
 
     --if not MainMenuBarBackpackButton.OnClick then
     MainMenuBarBackpackButton:HookScript('OnClick', function(_, d)
-        if d=='RightButton' then
+        if d=='RightButton' and not KeybindFrames_InQuickKeybindMode() then
             ToggleAllBags()
         end
     end)

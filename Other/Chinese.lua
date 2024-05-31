@@ -32,9 +32,9 @@ for journalEncounterID, name in pairs(instanceBossTab) do
         e.strText[bossName]= name
     end
 end
-
+--[[
 for journalInstanceID, info in pairs(instanceBossTab) do
-    --[[for index=1, 9 do--MAX_CREATURES_PER_ENCOUNTER
+    for index=1, 9 do--MAX_CREATURES_PER_ENCOUNTER
         local name = EJ_GetEncounterInfoByIndex(index, journalInstanceID)
         print(name)
         if name then
@@ -46,8 +46,8 @@ for journalInstanceID, info in pairs(instanceBossTab) do
         else
             break
         end
-    end]]
-end
+    end
+end]]
 
 --return '鲁克玛'
 
@@ -2549,6 +2549,8 @@ local function Init()
         set(ReagentBankFrame.DespositButton, '存放各种材料')
     end
     set(BankItemSearchBox.Instructions, '搜索')
+    reg(BankSlotsFrame)
+
 
     --商人
     set(MerchantFrameTab1, '商人')
@@ -8012,6 +8014,9 @@ local function Init_Add_Data()
     e.strText[C_Item.GetItemSubClassInfo(7, 10)] = "元素"
     e.strText[C_Item.GetItemSubClassInfo(7, 18)] = "附加材料"
     e.strText[C_Item.GetItemSubClassInfo(7, 19)] = "成品材料"
+    
+    e.strText[C_Item.GetItemClassInfo(8)] = "物品强化"
+
     e.strText[C_Item.GetItemSubClassInfo(9, 1)] = "制皮"
     e.strText[C_Item.GetItemSubClassInfo(9, 2)] = "裁缝"
     e.strText[C_Item.GetItemSubClassInfo(9, 3)] = "工程"

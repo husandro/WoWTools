@@ -9,12 +9,13 @@ local Save={
     --pointReagentBank=｛｝--保存位置
     line=2,
     num=14,
-
-    allBank=true,--转化为联合的大包
     --notSearchItem=true,--OnEnter时，搜索物品
-
     --showIndex=true,--显示，索引
     --showBackground= true,--设置，背景
+
+    allBank=true,--转化为联合的大包
+    show_AllBank_Type=e.Player.husandro,--大包时，显示，存取，分类，按钮
+    --show_AllBank_Type_Scale=1,
 }
 local Initializer
 
@@ -34,8 +35,12 @@ local Initializer
 
 --增强，原生
 local function Init_Bank_Plus()--增强，原生
-    ReagentBankFrame.autoSortButton:SetPoint('LEFT', ReagentBankFrame.DespositButton, 'RIGHT', 2, 0)--整理材料银行
-
+    ReagentBankFrame.autoSortButton:SetPoint('LEFT', ReagentBankFrame.DespositButton, 'RIGHT', 25, 0)--整理材料银行
+    ReagentBankFrame.DespositButton.texture2= ReagentBankFrame.DespositButton:CreateTexture(nil, 'OVERLAY')--增加，提示图标
+    ReagentBankFrame.DespositButton.texture2:SetSize(23,23)
+    ReagentBankFrame.DespositButton.texture2:SetPoint('RIGHT', -4, 0)
+    ReagentBankFrame.DespositButton.texture2:SetAtlas('poi-traveldirections-arrow')
+    ReagentBankFrame.DespositButton.texture2:SetTexCoord(0,1,1,0)
 
     --选项
     ReagentBankFrame.ShowHideButton= e.Cbtn(BankFrame, {size={18,18}, atlas='hide'})
@@ -327,8 +332,11 @@ local function Init_All_Bank()
             local bagFrame= _G['ContainerFrame'..bag]
             local bagID= bagFrame and bagFrame:GetID() or 0
             if bagFrame and bagID>= numBag then
+
                 bagFrame:ClearAllPoints()
                 bagFrame:SetPoint('RIGHT', UIParent, 'LEFT', -10, 0)
+                bagFrame.isHideFrame=true
+
                 for slot=1, ContainerFrame_GetContainerNumSlots(bagFrame:GetID()) do-- C_Container.GetContainerNumSlots(bagindex) do
                     local btn=_G['ContainerFrame'..(bagindex)..'Item'..slot]
                     if btn then
@@ -498,6 +506,7 @@ local function Init_All_Bank()
 
     end)
 
+
     hooksecurefunc('BankFrameItemButtonBag_OnClick', function()
         SetAllBank:set_bank()--设置，银行，按钮
         SetAllBank:set_reagent()--设置，材料，按钮
@@ -520,6 +529,8 @@ local function Init_All_Bank()
     end)
     SetAllBank:set_bank()--设置，银行，按钮
     SetAllBank:set_background()--设置，背景
+
+
 end
 
 
@@ -635,8 +646,131 @@ local function Init_Save_BankItem()
 end
 ]]
 
+--大包时，显示，存取，分类，按钮
+local function Init_Desposit_TakeOut_Button()
+    local btn= e.Cbtn(BankSlotsFrame, {size=23, icon='hide'})
+    btn:SetPoint('TOPRIGHT', BankFrame, 'TOPLEFT', -2, -32)
+    btn.frame=CreateFrame('Frame', nil, btn)
+    btn.frame:SetPoint('BOTTOMRIGHT')
+    btn.frame:SetSize(1,1)
+    function btn:settings()
+        self:SetNormalAtlas(Save.show_AllBank_Type and 'NPE_ArrowDown' or e.Icon.disabled)
+        self:SetAlpha(Save.show_AllBank_Type and 1 or 0.3)
+        self.frame:SetShown(Save.show_AllBank_Type)
+        self.frame:SetScale(Save.show_AllBank_Type_Scale or 1)
+    end
+    function btn:set_tooltips()
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(id, Initializer:GetName())
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.GetShowHide(Save.show_AllBank_Type), e.Icon.left)
+        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..': |cnGREEN_FONT_COLOR:'..(Save.show_AllBank_Type_Scale or 1), e.Icon.mid)
+        e.tips:Show()
+    end
+    btn:SetScript('OnClick', function(self)
+        Save.show_AllBank_Type= not Save.show_AllBank_Type and true or nil
+        self:settings()
+        self:set_tooltips()
+    end)
+    btn:SetScript('OnMouseWheel', function(self, d)
+        local n
+        n= Save.show_AllBank_Type_Scale or 1
+        n= d==1 and n-0.05 or n
+        n= d==-1 and n+0.05 or n
+        n= n>4 and 4 or n
+        n= n<0.4 and 0.4 or n
+        if n==1 then n=nil end
+        Save.show_AllBank_Type_Scale= n
+        self:settings()
+        self:set_tooltips()
+    end)
+    btn:SetScript('OnLeave', GameTooltip_Hide)
+    btn:SetScript('OnEnter', btn.set_tooltips)
+    btn:settings()
 
+    btn.buttons={}
+    local last= btn.frame
+    for classID=0, 19 do
+        if classID~=6 and classID~=10 and classID~=13 and classID~=14 and classID~=11 then
+            local className=e.cn(C_Item.GetItemClassInfo(classID))--生成,物品列表
+            if className then
+                local frame= e.Cbtn(btn.frame, {icon='hide'})
+                frame.Text= e.Cstr(frame, {justifyH='RIGHT'})
+                frame.Text:SetPoint('RIGHT', -2,0)
+                frame.Text:SetText(className..' '..classID)
+                frame.Label= e.Cstr(frame, {justifyH='RIGHT'})
+                frame.Label:SetPoint('RIGHT', frame, 'LEFT')
+                frame:SetSize(frame.Text:GetWidth()+4, 18)
+                frame:SetPoint('TOPRIGHT', last, 'BOTTOMRIGHT')
+                frame.classID= classID
+                last=frame
+                table.insert(btn.buttons, frame)
+            end
+        end
+    end
+    function btn:set_event()
+        if self:IsShown() then
+            self:RegisterEvent('BAG_UPDATE_DELAYED')
+            self:set_label()
+        else
+            self:UnregisterAllEvents()
+        end
+    end
 
+    function btn:get_itemID(frame)
+        if frame and frame:IsShown() then
+            local info = C_Container.GetContainerItemInfo(frame.isBag and Enum.BagIndex.Bankbag or frame:GetParent():GetID(), frame:GetID()) or {}
+            
+            return info.itemID, info.stackCount
+        end
+    end
+    function btn:set_label()
+        if not self:IsShown() or self.isRun then return end
+        self.isRun=true
+        local bankClass={}
+        for i=1, NUM_BANKGENERIC_SLOTS do--28
+            local itemID, stackCount= self:get_itemID(BankSlotsFrame["Item"..i])
+            local classID = itemID and select(6, C_Item.GetItemInfoInstant(itemID))
+            if classID then
+                bankClass[classID]= (bankClass[classID] or 0)+ (stackCount or 1)
+            end
+        end
+        local bagNum= NUM_TOTAL_EQUIPPED_BAG_SLOTS+2--7
+        for bag=bagNum+ NUM_BANKBAGSLOTS, bagNum, -1 do
+            for slot=1, C_Container.GetContainerNumSlots(bag) or 0, 1 do
+                local info = C_Container.GetContainerItemInfo(bag, slot) or {}                
+                local classID = info.itemID and select(6, C_Item.GetItemInfoInstant(info.itemID))
+                if classID then
+                    bankClass[classID]= (bankClass[classID] or 0)+ (info.stackCount or 1)
+                end
+            end
+        end
+        local bagClass={}
+        for bag= BACKPACK_CONTAINER, NUM_BAG_FRAMES do
+            for slot=1, C_Container.GetContainerNumSlots(bag) do
+                local info = C_Container.GetContainerItemInfo(bag, slot) or {}
+                local classID = info.itemID and select(6, C_Item.GetItemInfoInstant(info.itemID))
+                if classID then
+                    bagClass[classID]= (bagClass[classID] or 0)+ (info.stackCount or 1)
+                end
+            end
+        end
+        for _, frame in pairs(self.buttons) do
+            local bank= bankClass[frame.classID] or 0
+            local bag= bagClass[frame.classID] or 0
+            frame.Label:SetFormattedText(
+                '%s%d|r/%s%d|r',
+                bank==0 and '|cff606060' or '|cnGREEN_FONT_COLOR:',
+                bank, bag==0 and '|cff606060' or '|cnGREEN_FONT_COLOR:', bag
+            )
+        end
+        self.isRun=nil
+    end
+    btn:SetScript('OnShow', btn.set_event)
+    btn:SetScript('OnHide', btn.set_event)
+    btn:SetScript('OnEvent', btn.set_label)
+end
 
 
 
@@ -674,7 +808,8 @@ local function Init_Desposit_TakeOut_All_Items()--存放，取出，所有
         if free==0 then
             return
         end
-        for bag=(NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS), NUM_TOTAL_EQUIPPED_BAG_SLOTS+1, -1 do
+        local bagNum= NUM_TOTAL_EQUIPPED_BAG_SLOTS+2--7
+        for bag=bagNum+ NUM_BANKBAGSLOTS, bagNum, -1 do
             for slot=1, C_Container.GetContainerNumSlots(bag) or 0, 1 do
                 if not self:IsVisible() or IsModifierKeyDown() or free<=0 then
                     self:show_tooltips()
@@ -687,6 +822,7 @@ local function Init_Desposit_TakeOut_All_Items()--存放，取出，所有
                 end
             end
         end
+
         for i=NUM_BANKGENERIC_SLOTS, 1, -1 do--28
             if not self:IsVisible() or IsModifierKeyDown() or free<=0 then
                 self:show_tooltips()
@@ -743,7 +879,8 @@ local function Init_Desposit_TakeOut_All_Items()--存放，取出，所有
                 free= free+1
             end
         end
-        for bag=NUM_TOTAL_EQUIPPED_BAG_SLOTS+1, (NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS), 1 do
+        local bagNum= NUM_TOTAL_EQUIPPED_BAG_SLOTS+2--7
+        for bag=bagNum, bagNum+ NUM_BANKBAGSLOTS, 1 do
             for slot=1, C_Container.GetContainerNumSlots(bag) or 0, 1 do
                 local info = C_Container.GetContainerItemInfo(bag, slot) or {}
                 if not info.itemID then
@@ -751,7 +888,6 @@ local function Init_Desposit_TakeOut_All_Items()--存放，取出，所有
                 end
             end
         end
-        --for index, button in ReagentBankFrame:EnumerateItems() do
         return free
     end
     btn:SetScript('OnClick', function(self)
@@ -759,7 +895,7 @@ local function Init_Desposit_TakeOut_All_Items()--存放，取出，所有
         if all==0 then
             return
         end
-        for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES do-- + NUM_REAGENTBAG_FRAMES do--NUM_TOTAL_EQUIPPED_BAG_SLOTS
+        for bag= NUM_BAG_FRAMES,  BACKPACK_CONTAINER, -1 do-- + NUM_REAGENTBAG_FRAMES do--NUM_TOTAL_EQUIPPED_BAG_SLOTS
             for slot= C_Container.GetContainerNumSlots(bag), 1, -1 do
                 if not self:IsVisible() or IsModifierKeyDown() or all==0 then
                     self:show_tooltips()
@@ -848,6 +984,12 @@ local function Init_Desposit_TakeOut_All_Items()--存放，取出，所有
     btn:HookScript('OnLeave', GameTooltip_Hide)
     btn:HookScript('OnEnter', btn.set_tooltips)
     ReagentBankFrame.TakeOutAllReagentsButton= btn
+
+    --分类，存取
+    if Save.allBank then
+       C_Timer.After(2, Init_Desposit_TakeOut_Button)
+    end
+
 end
 
 
