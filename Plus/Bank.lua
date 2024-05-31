@@ -648,6 +648,9 @@ end
 
 --大包时，显示，存取，分类，按钮
 local function Init_Desposit_TakeOut_Button()
+    if not e.Player.husandro then
+        return
+    end
     local btn= e.Cbtn(BankSlotsFrame, {size=23, icon='hide'})
     btn:SetPoint('TOPRIGHT', BankFrame, 'TOPLEFT', -2, -32)
     btn.frame=CreateFrame('Frame', nil, btn)
