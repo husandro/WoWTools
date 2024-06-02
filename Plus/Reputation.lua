@@ -19,7 +19,7 @@ local Button
 local TrackButton
 
 
-
+local onlyIcon
 
 
 
@@ -145,13 +145,13 @@ local function get_Faction_Info(index, factionID)
 	end
 
 	if (isCapped and not isParagon and index)--声望已满，没有奖励
-		or (Save.onlyIcon and not atlas and not texture)
+		or (onlyIcon and not atlas and not texture)
 	then
 		return
 	end
 
 	local text
-	if Save.onlyIcon then--仅显示有图标
+	if onlyIcon then--仅显示有图标
 		name=nil
 	else
 		name= e.cn(name)
@@ -565,6 +565,7 @@ local function Init_TrackButton()
 					e.LibDD:UIDropDownMenu_AddSeparator(level)
 					info={
 						text= e.onlyChinese and '隐藏名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, NAME),
+						disabled= PlayerGetTimerunningSeasonID() and true,
 						tooltipOnButton=true,
 						tooltipTitle= e.onlyChinese and '仅显示有图标声望' or format(LFG_LIST_CROSS_FACTION, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, FACTION, EMBLEM_SYMBOL)),
 						checked= Save.onlyIcon,
@@ -1263,6 +1264,12 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 		if arg1==id then
             Save= WoWToolsSave[addName] or Save
 			Save.factions= Save.factions or {}
+
+			if PlayerGetTimerunningSeasonID() then--隐藏名称
+				onlyIcon=nil
+			else
+				onlyIcon= Save.onlyIcon
+			end
 
 			--添加控制面板
             e.AddPanel_Check({
