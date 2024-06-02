@@ -8002,6 +8002,7 @@ local function Init_Add_Data()
     e.strText[C_Item.GetItemSubClassInfo(16, 12)] = "|cffa330c9恶魔猎手|r"
     e.strText[GetClassInfo(13)] = "|cff33937f唤魔师|r"
 
+    e.strText[C_Item.GetItemClassInfo(7)] = "商业技能"
     e.strText[C_Item.GetItemSubClassInfo(7, 5)] = "布料"
     e.strText[C_Item.GetItemSubClassInfo(7, 6)] = "皮料"
     e.strText[C_Item.GetItemSubClassInfo(7, 7)] = "金属和矿石"
@@ -8029,6 +8030,8 @@ local function Init_Add_Data()
     e.strText[C_Item.GetItemSubClassInfo(9, 7)] = "急救"
     e.strText[C_Item.GetItemSubClassInfo(9, 9)] = "钓鱼"
     e.strText[C_Item.GetItemSubClassInfo(9, 0)] = "书籍"
+
+    e.strText[C_Item.GetItemClassInfo(13)] = "钥匙"
     e.strText[C_Item.GetItemSubClassInfo(19, 5)] = "采矿"
     e.strText[C_Item.GetItemSubClassInfo(19, 3)] = "草药学"
     e.strText[C_Item.GetItemSubClassInfo(19, 10)] = "剥皮"
@@ -8042,6 +8045,8 @@ local function Init_Add_Data()
     e.strText[C_Item.GetItemSubClassInfo(17, 7)] = "野兽"
     e.strText[C_Item.GetItemSubClassInfo(17, 8)] = "水栖"
     e.strText[C_Item.GetItemSubClassInfo(17, 9)] = "机械"
+
+    e.strText[C_Item.GetItemClassInfo(15)] = "杂项"
     e.strText[C_Item.GetItemSubClassInfo(15, 0)] = "垃圾"
     e.strText[C_Item.GetItemSubClassInfo(15, 1)] = "材料"
     e.strText[C_Item.GetItemSubClassInfo(15, 3)] = "节日"

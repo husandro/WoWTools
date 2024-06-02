@@ -541,10 +541,10 @@ function e.Set_Item_Info(self, tab)
             end
         end
 
-        if not topRightText and C_Item.GetItemSpell(itemID) then
-            topRightText= '|A:soulbinds_tree_conduit_icon_utility:0:0|a'
-        end
-        if (tab.bag and tab.bag.bag <= NUM_BAG_SLOTS+1 and tab.bag.bag>=0) or not tab.bag then
+        
+        topRightText= topRightText or (C_Item.GetItemSpell(itemID) and '|A:soulbinds_tree_conduit_icon_utility:0:0|a')
+        
+        if not leftText and ((tab.bag and tab.bag.bag <= NUM_BAG_SLOTS+1 and tab.bag.bag>=0) or not tab.bag) then
             local num=C_Item.GetItemCount(itemLink, true, false, true)-C_Item.GetItemCount(itemLink)--银行数量
             if num>0  then
                 leftText= '+'..e.MK(num, 0)
