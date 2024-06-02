@@ -829,7 +829,7 @@ local function Init_Desposit_TakeOut_Button()
                         e.Icon.left..(e.onlyChinese and '取出' or 'take out'),--..(text:match('(.-|A:Banker:0:0|a)') or ''),
                         (e.onlyChinese and '存放' or 'on bank')..e.Icon.right
                     )
-                    
+
                     e.tips:Show()
                 end)
                 frame.classID= classID
@@ -1196,9 +1196,8 @@ local function Init_Bank_Frame()
         end
     end
     --Init_Save_BankItem()
-    do
-        Init_Desposit_TakeOut_All_Items()--存放，取出，所有
-    end
+
+    Init_Desposit_TakeOut_All_Items()--存放，取出，所有
 
     if Save.allBank then
         C_Timer.After(2, Init_Desposit_TakeOut_Button)--分类，存取, 2秒为翻译加载时间
