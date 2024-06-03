@@ -1,3 +1,7 @@
+if not C_MythicPlus.GetCurrentSeason() then
+    return
+end
+
 local id, e = ...
 
 

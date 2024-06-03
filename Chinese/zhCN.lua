@@ -1,8 +1,7 @@
-local id, e = ...
 if LOCALE_zhCN or LOCALE_zhTW then
     return
 end
-
+local id, e = ...
 
 
 

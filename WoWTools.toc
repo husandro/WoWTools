@@ -184,9 +184,10 @@ Other\SpellFrame.lua
 
 
 ##繁体，简体，不会载加
-
 ##中文内容库，大文件
-Other\zhCN.lua
+Chinese\zhCN.lua
+##增加，数据库
+Chinese\Data.lua
 ##界面，中文化，主要function
-Other\Chinese.lua
+Chinese\Func.lua
 
