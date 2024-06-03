@@ -2763,7 +2763,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
         end
 
     elseif event=='LFG_COMPLETION_REWARD' or event=='LOOT_CLOSED' then--or event=='SCENARIO_COMPLETED' then--自动离开
-        if Save.leaveInstance and IsInLFGDungeon() and IsLFGComplete() and not LFGDungeonReadyStatus:IsShown() then
+        if Save.leaveInstance and IsInLFGDungeon() and IsLFGComplete() and not LFGDungeonReadyStatus:IsVisible() then
             --local scenarioInfo = C_ScenarioInfo.GetScenarioInfo()
             --local isCompleteScenario= scenarioInfo and scenarioInfo.isComplete
             --local lfgComplete=  IsLFGComplete()

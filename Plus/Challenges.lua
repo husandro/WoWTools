@@ -1224,7 +1224,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
     local keyStoneLevel = C_MythicPlus.GetOwnedKeystoneLevel()--当前KEY，等级
 
 
-    
+
 
     for i=1, #self.maps do
         local frame = self.DungeonIcons[i]
@@ -2149,6 +2149,11 @@ panel:RegisterEvent("CHALLENGE_MODE_COMPLETED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
+            if PlayerGetTimerunningSeasonID() then
+                self:UnregisterAllEvents()
+                return
+            end
+
             Save= WoWToolsSave[addName] or Save
             Save.rightX= Save.rightX or 2--右边，提示，位置
             Save.rightY= Save.rightY or -22
