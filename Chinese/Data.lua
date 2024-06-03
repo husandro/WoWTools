@@ -844,8 +844,6 @@ panel:SetScript("OnEvent", function(self)
     local Save= WoWToolsSave[BUG_CATEGORY15] or {}
     do
         if e.onlyChinese and not Save.disabled then
-            Init_Add_Data()
-
             for journalEncounterID, name in pairs(instanceBossTab) do
                 local bossName= EJ_GetEncounterInfo(journalEncounterID)
                 if bossName then
@@ -951,6 +949,7 @@ panel:SetScript("OnEvent", function(self)
                     e.strText[description]= info[3]
                 end
             end
+            C_Timer.After(2, Init_Add_Data)
         else
             Init_Add_Data=function()end
         end
