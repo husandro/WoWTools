@@ -1162,7 +1162,7 @@ local function Init_EncounterJournal()--冒险指南界面
                 checked= not Save.loot[e.Player.class][self.dungeonEncounterID],
                 arg1= self.dungeonEncounterID,
                 arg2= self.button,
-                keepShownOnClick=true,
+                --keepShownOnClick=true,
                 func=function(_,arg1, arg2)
                     Save.loot[e.Player.class][arg1]=nil
                     set_Loot_Spec_Texture(arg2)
