@@ -1,7 +1,7 @@
 if LOCALE_zhCN or LOCALE_zhTW then
     return
 end
-local id, e = ...
+local e = select(2, ...)
 
 
 
