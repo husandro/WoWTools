@@ -4550,7 +4550,9 @@
         "CHAT_MSG_SYSTEM",
         "CHALLENGE_MODE_COMPLETED",
         "POWER_TYPE_ENERGY",
-        "CHARACTER_POINTS_CHANGED"
+        "CHARACTER_POINTS_CHANGED",
+        "PERKS_PROGRAM_CONFIRM_REFUND",
+        "PERKS_PROGRAM_REFUND"
     ],
     "Lua.diagnostics.disable": [
         "inject-field",
