@@ -166,8 +166,8 @@ end
 
 --QUEST_REPUTATION_REWARD_TOOLTIP = "在%2$s中的声望提高%1$d点";
 local function setCooldown()--冷却条
-    local start, duration, enable
     if button:IsShown() then
+        local start, duration, enable
         if Bag.bag and Bag.slot then
             local itemID = C_Container.GetContainerItemID(Bag.bag, Bag.slot)
             if itemID then
@@ -878,11 +878,10 @@ local panel= CreateFrame("Frame")
 function panel:set_Events()--注册， 事件
     if IsInInstance() and C_ChallengeMode.IsChallengeModeActive() then
        -- self:UnregisterEvent('BAG_UPDATE')
-        self:UnregisterEvent('BAG_UPDATE_DELAYED')
-        self:UnregisterEvent('BAG_UPDATE_COOLDOWN')
+        self:UnregisterEvent('BAG_UPDATE_DELAYED')        
         self:UnregisterEvent('PLAYER_REGEN_DISABLED')
         self:UnregisterEvent('PLAYER_REGEN_ENABLED')
-        if not UnitAffectingCombat('player') then
+        if button:CanChangeAttribute() then
             button:SetShown(false)
         end
     else
@@ -892,6 +891,11 @@ function panel:set_Events()--注册， 事件
         self:RegisterEvent('PLAYER_REGEN_DISABLED')
         self:RegisterEvent('PLAYER_REGEN_ENABLED')
         get_Items()
+    end
+    if button:IsShown() then
+        self:RegisterEvent('BAG_UPDATE_COOLDOWN')
+    else
+        self:UnregisterEvent('BAG_UPDATE_COOLDOWN')
     end
 end
 
@@ -953,9 +957,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif event=='BAG_UPDATE_COOLDOWN' then
-        do
-            get_Items()
-        end
         setCooldown()--冷却条
 
     end

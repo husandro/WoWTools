@@ -3,39 +3,10 @@ local id, e= ...
 if LOCALE_zhCN or LOCALE_zhTW then
     return
 end
-
-
 local addName= BUG_CATEGORY15
 local Save={
     disabled= not e.Player.husandro
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
