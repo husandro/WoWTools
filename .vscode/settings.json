@@ -4546,7 +4546,11 @@
         "BankFrameItem1",
         "BankFrameItemButton_Update",
         "CloseBag",
-        "CalculateTotalNumberOfFreeBagSlots"
+        "CalculateTotalNumberOfFreeBagSlots",
+        "CHAT_MSG_SYSTEM",
+        "CHALLENGE_MODE_COMPLETED",
+        "POWER_TYPE_ENERGY",
+        "CHARACTER_POINTS_CHANGED"
     ],
     "Lua.diagnostics.disable": [
         "inject-field",

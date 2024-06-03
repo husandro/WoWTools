@@ -571,6 +571,7 @@ local function Init_TrackButton()
 						checked= Save.onlyIcon,
 						func= function()
 							Save.onlyIcon= not Save.onlyIcon and true or nil
+							onlyIcon= Save.onlyIcon
 							e.call('ReputationFrame_Update')
 						end
 					}
