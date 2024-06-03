@@ -1078,7 +1078,7 @@ local function Init_EncounterJournal()--冒险指南界面
                     local col= select(4, GetClassColor(classInfo.classFile))
                     col= col and '|c'..col or col
                     info={
-                        text= (e.Class(nil, classInfo.classFile) or '')..classInfo.className..(e.Player.class==classInfo.classFile and '|A:auctionhouse-icon-favorite:0:0|a' or '')..(n>0 and ' |cnGREEN_FONT_COLOR:#'..n..'|r' or ''),
+                        text= (e.Class(nil, classInfo.classFile) or '')..e.cn(classInfo.className)..(e.Player.class==classInfo.classFile and '|A:auctionhouse-icon-favorite:0:0|a' or '')..(n>0 and ' |cnGREEN_FONT_COLOR:#'..n..'|r' or ''),
                         colorCode= col,
                         notCheckable=true,
                         arg1= classInfo.classFile,
@@ -1131,8 +1131,8 @@ local function Init_EncounterJournal()--冒险指南界面
         for specIndex= 1, GetNumSpecializations() do
             local specID, name, _ , icon= GetSpecializationInfo(specIndex)
             if icon and specID and name then
-                info= {
-                    text=name..(curSpec==specIndex and '|A:auctionhouse-icon-favorite:0:0|a' or ''),
+                e.LibDD:UIDropDownMenu_AddButton({
+                    text=e.cn(name)..(curSpec==specIndex and '|A:auctionhouse-icon-favorite:0:0|a' or ''),
                     colorCode= e.Player.col,
                     icon=icon,
                     checked= Save.loot[e.Player.class][self.dungeonEncounterID]== specID,
@@ -1151,8 +1151,7 @@ local function Init_EncounterJournal()--冒险指南界面
                         end
                         set_Loot_Spec_Texture(arg1.button)
                     end
-                }
-                e.LibDD:UIDropDownMenu_AddButton(info, level)
+                }, level)
                 find=true
             end
         end
@@ -1175,7 +1174,7 @@ local function Init_EncounterJournal()--冒险指南界面
         local name=self.encounterID and EJ_GetEncounterInfo(self.encounterID)
         if name and self.dungeonEncounterID then
             info= {
-                text= name..' '..self.dungeonEncounterID,
+                text= e.cn(name)..' '..self.dungeonEncounterID,
                 notCheckable=true,
                 isTitle=true,
             }
