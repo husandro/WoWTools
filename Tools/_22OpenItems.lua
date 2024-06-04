@@ -276,8 +276,7 @@ end
 
 local equipItem--是装备时, 打开角色界面
 local function get_Items()--取得背包物品信息
-    --if UnitAffectingCombat('player') or not UnitIsConnected('player') then
-    if not button:CanChangeAttribute() then
+    if UnitAffectingCombat('player') or not button:CanChangeAttribute() then
         Combat=true
         return
     end

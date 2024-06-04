@@ -1673,15 +1673,18 @@ local function exit_Instance()
     ins= IsInInstance()
     local name, _, _, difficultyName = GetInstanceInfo()
     ins = ins and name and difficultyName
-    if ins then
-        name= name..difficultyName
-        wowSave[INSTANCE][name]=wowSave[INSTANCE][name]  and wowSave[INSTANCE][name] +1 or 1
-    end
-    if not ExitIns or not ins or IsModifierKeyDown() then
+
+    if not ExitIns or not ins or IsModifierKeyDown() or LFGDungeonReadyStatus:IsVisible() then
         ExitIns= nil
         StaticPopup_Hide(addName..'ExitIns')
         return
     end
+
+    if ins then
+        name= name..difficultyName
+        wowSave[INSTANCE][name]=wowSave[INSTANCE][name]  and wowSave[INSTANCE][name] +1 or 1
+    end
+
     if IsInLFDBattlefield() then
         local currentMapID, _, lfgID = select(8, GetInstanceInfo())
         local _, _, subtypeID, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, lfgMapID = GetLFGDungeonInfo(lfgID)
@@ -2504,6 +2507,12 @@ local function Init()
         end
         e.Ccool(self)--冷却条
     end)
+
+    LFGDungeonReadyStatus:HookScript('OnShow', function()
+        if Save.leaveInstance then
+            exit_Instance()
+        end
+    end)
 end
 
 
@@ -2763,25 +2772,26 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
         end
 
     elseif event=='LFG_COMPLETION_REWARD' or event=='LOOT_CLOSED' then--or event=='SCENARIO_COMPLETED' then--自动离开
-        if Save.leaveInstance and IsInLFGDungeon() and IsLFGComplete() and not LFGDungeonReadyStatus:IsVisible() then
+        if Save.leaveInstance
+            and IsInLFGDungeon()
+            and IsLFGComplete()
+            and not LFGDungeonReadyStatus:IsVisible()
             --local scenarioInfo = C_ScenarioInfo.GetScenarioInfo()
             --local isCompleteScenario= scenarioInfo and scenarioInfo.isComplete
             --local lfgComplete=  IsLFGComplete()
             --if isCompleteScenario or lfgComplete then
-                if not StaticPopup_Visible(addName..'ExitIns') then
-                    e.PlaySound()--播放, 声音
-                    local leaveSce= 30
-                    if Save.autoROLL and event=='LOOT_CLOSED' then
-                        leaveSce= sec
-                    end
-                    ExitIns=true
-                    C_Timer.After(leaveSce, function()
-                        exit_Instance()
-                    end)
-                    StaticPopup_Show(addName..'ExitIns')
-                    e.Ccool(StaticPopup1, nil, leaveSce, nil, true, true)--冷却条
+            and not StaticPopup_Visible(addName..'ExitIns') then
+                e.PlaySound()--播放, 声音
+                local leaveSce= 30
+                if Save.autoROLL and event=='LOOT_CLOSED' then
+                    leaveSce= sec
                 end
-            --end
+                ExitIns=true
+                C_Timer.After(leaveSce, function()
+                    exit_Instance()
+                end)
+                StaticPopup_Show(addName..'ExitIns')
+                e.Ccool(StaticPopup1, nil, leaveSce, nil, true, true)--冷却条
         end
 
     elseif event=='PLAYER_ENTERING_WORLD' then
