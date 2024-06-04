@@ -902,6 +902,7 @@ local function Init_Add_Data()
     e.strText[ADDON_DISABLED] = "禁用"
     e.strText[EMOTE67_CMD1] = "/不"
     e.strText[SPEED] = "速度"
+    e.strText[GRAPHICS_LABEL] = "图形"
 end
 
 
