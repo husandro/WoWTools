@@ -673,7 +673,7 @@ end
 
 
 function e.Get_Weekly_Rewards_Activities(settings)--周奖励，提示
-    if not e.Player.levelMax or PlayerGetTimerunningSeasonID() then--不是，最高等级时，退出
+    if not e.Player.levelMax or e.Is_Timerunning then--不是，最高等级时，退出
         return
     end
     --{frame=AllTipsFrame, point={'TOPLEFT', AllTipsFrame.weekLable, 'BOTTOMLEFT', 0, -2}, anchor='ANCHOR_RIGHT'}
@@ -999,7 +999,7 @@ function e.Get_Gem_Stats(self, itemLink)--显示, 宝石, 属性
     local leftText, bottomLeftText
     if itemLink then
         local dateInfo
-        if PlayerGetTimerunningSeasonID() then
+        if e.Is_Timerunning then
             dateInfo= e.GetTooltipData({hyperLink=itemLink, index=3})--物品提示，信息
         else
             dateInfo= e.GetTooltipData({hyperLink=itemLink, text={'(%+.+)', }})--物品提示，信息
@@ -1089,7 +1089,7 @@ function e.Get_Item_Stats(link)--取得，物品，次属性，表
         num= num +1
     end]]
     table.sort(tab, function(a,b) return a.value>b.value and a.index== b.index end)
-    return tab
+    return tab, info
 end
 
 --e.Set_Item_Stats(self, itemLink, {point=self.icon, itemID=nil, hideSet=false, hideLevel=false, hideStats=false})--设置，物品，4个次属性，套装，装等，

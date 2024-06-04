@@ -396,7 +396,7 @@ local function get_Items()--取得背包物品信息
                                     return
                                 end
                             end
-                        elseif PlayerGetTimerunningSeasonID() and (info.itemID>=219256 and info.itemID<=219282) and C_Item.IsUsableItem(info.hyperlink) then--将帛线织入你的永恒潜能披风，使你获得的经验值永久提高12%。
+                        elseif e.Is_Timerunning and (info.itemID>=219256 and info.itemID<=219282) and C_Item.IsUsableItem(info.hyperlink) then--将帛线织入你的永恒潜能披风，使你获得的经验值永久提高12%。
                             setAtt(bag, slot, info.iconFileID, info.itemID)
                             return
                         end

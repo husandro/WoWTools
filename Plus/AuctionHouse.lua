@@ -1,7 +1,3 @@
-if PlayerGetTimerunningSeasonID() then
-    return
-end
-
 local id, e = ...
 local addName= BUTTON_LAG_AUCTIONHOUSE--拍卖行
 local Save={
@@ -1248,9 +1244,14 @@ end
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:RegisterEvent("ADDON_LOADED")
-panel:SetScript("OnEvent", function(_, event, arg1)
+panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
+            if e.Is_Timerunning then
+                self:UnregisterAllEvents()
+                return
+            end
+
             Save= WoWToolsSave[addName] or Save
 
             --添加控制面板
@@ -1265,14 +1266,14 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             })
 
             if Save.disabled then
-                panel:UnregisterEvent('ADDON_LOADED')
+                self:UnregisterEvent('ADDON_LOADED')
             end
 
         elseif arg1=='Blizzard_AuctionHouseUI' then
             Init_BrowseResultsFrame()
             Init_AllAuctions()
             Init_Sell()
-            panel:UnregisterEvent('ADDON_LOADED')
+            self:UnregisterEvent('ADDON_LOADED')
         end
 
     elseif event == "PLAYER_LOGOUT" then

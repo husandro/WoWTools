@@ -1,7 +1,3 @@
-if PlayerGetTimerunningSeasonID() or C_Item.GetItemCount(8529)==0 then--没有时,不加载
-    return
-end
-
 local id , e = ...
 local addName='NoggenfoggerElixir'
 local Save={
@@ -200,10 +196,13 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
+            if e.Is_Timerunning or C_Item.GetItemCount(8529)==0 then--没有时,不加载
+                self:UnregisterAllEvents()
+                return
+            end
             Save= WoWToolsSave[addName..'Tools'] or Save
             if not e.toolsFrame.disabled then
                 button= e.Cbtn2({

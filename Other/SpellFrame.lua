@@ -269,7 +269,7 @@ end
 
 
 function Init_All_Flyout()
-    if not e.Player.levelMax or PlayerGetTimerunningSeasonID() then
+    if not e.Player.levelMax or e.Is_Timerunning then
         return
     end
     local tab={

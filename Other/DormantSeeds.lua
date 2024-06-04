@@ -1,6 +1,3 @@
-if PlayerGetTimerunningSeasonID() then
-    return
-end
 local id, e = ...
 local addName= 'DormantSeeds'
 local Save={
@@ -244,6 +241,11 @@ panel:RegisterEvent('PLAYER_LOGOUT')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
+            if e.Is_Timerunning then
+                self:UnregisterEvent('ADDON_LOADED')
+                return
+            end
+
             Save= WoWToolsSave[addName] or Save
 
             --添加控制面板

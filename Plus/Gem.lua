@@ -330,7 +330,7 @@ function panel:set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
                 local level= C_Item.GetDetailedItemLevelInfo(info.hyperlink) or 0
                 local classID, subclassID, _, expacID= select(12, C_Item.GetItemInfo(info.hyperlink))
                 if classID==3
-                    and (PlayerGetTimerunningSeasonID() or (e.Player.levelMax and e.ExpansionLevel== expacID or not e.Player.levelMax))--最高等级
+                    and (e.Is_Timerunning or (e.Player.levelMax and e.ExpansionLevel== expacID or not e.Player.levelMax))--最高等级
                 then
                     local tab={
                         info= info,
@@ -350,7 +350,7 @@ function panel:set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
                         table.insert(gemRight, tab)
                     else
                         local type
-                        if PlayerGetTimerunningSeasonID() then
+                        if e.Is_Timerunning then
                             local date= e.GetTooltipData({hyperLink=info.hyperlink, index=2})
                             type= date.indexText and date.indexText:match('|c........(.-)|r') or date.indexText
                         else
@@ -627,7 +627,7 @@ local function Init_ItemSocketingFrame_Update()
     local numSockets = GetNumSockets() or 0
     CurTypeGemTab={}
     local itemEquipLoc
-    if PlayerGetTimerunningSeasonID() then
+    if e.Is_Timerunning then
         local link, itemID= select(2, ItemSocketingDescription:GetItem())
         itemEquipLoc= itemID and select(4, C_Item.GetItemInfoInstant(itemID))
         if itemEquipLoc then
@@ -659,7 +659,7 @@ local function Init_ItemSocketingFrame_Update()
                 btn.type=e.Cstr(btn)
                 btn.type:SetPoint('BOTTOM', btn, 'TOP', 0, 2)
                 btn.qualityTexture= btn:CreateTexture(nil, 'OVERLAY')
-                if PlayerGetTimerunningSeasonID() then
+                if e.Is_Timerunning then
                     btn.qualityTexture:SetPoint('CENTER')
                     btn.qualityTexture:SetSize(46,46)--40
                 else
@@ -717,7 +717,7 @@ local function Init_ItemSocketingFrame_Update()
             local left, right= e.Get_Gem_Stats(nil, gemLink)
             local atlas
             if gemLink then
-                if PlayerGetTimerunningSeasonID() then
+                if e.Is_Timerunning then
                     local quality= C_Item.GetItemQualityByID(gemLink)--C_Item.GetItemQualityColor(quality)
                     atlas= e.Icon[quality]
                 else
@@ -1066,7 +1066,7 @@ panel:RegisterEvent('PLAYER_LOGOUT')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            if not WoWToolsSave[addName] and PlayerGetTimerunningSeasonID() then
+            if not WoWToolsSave[addName] and e.Is_Timerunning then
                 C_Timer.After(2, function()
                     local slots={
                         ['INVTYPE_HEAD']= 1,

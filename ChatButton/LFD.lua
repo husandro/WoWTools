@@ -1024,15 +1024,15 @@ end
 
 --场景
 local function Init_Scenarios_Menu(level)--ScenarioFinder.lua
-    if not PlayerGetTimerunningSeasonID() then
+    if not e.Is_Timerunning then
         return
     end
     local numScenario= GetNumRandomScenarios() or 0
-    if numScenario<=0 and ScenariosList and ScenariosHiddenByCollapseList then
+    if numScenario<=0 then--and ScenariosList and ScenariosHiddenByCollapseList then
         return
     end
     e.LibDD:UIDropDownMenu_AddButton({
-        text=e.onlyChinese and '场景战役' or TRACKER_HEADER_SCENARIO,
+        text= e.onlyChinese and '场景战役' or TRACKER_HEADER_SCENARIO,
         isTitle=true,
         notCheckable=true,
         keepShownOnClick=true,

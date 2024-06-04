@@ -935,7 +935,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== id then
             Save= WoWToolsSave[addName..'Tools'] or Save
 
-            if not e.toolsFrame.disabled then
+            if not e.toolsFrame.disabled or e.Is_Timerunning then
                 --ProfessionsFrame_LoadUI()
                 --ProfessionsCustomerOrders_LoadUI()
                 C_Timer.After(2.2, function()

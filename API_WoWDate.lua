@@ -634,7 +634,6 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
 
 
             local day= date('%x')--日期
-            local Is_Timerunning= PlayerGetTimerunningSeasonID()
             e.WoWDate[e.Player.guid] = e.WoWDate[e.Player.guid] or
                 {--默认数据
                     Item={},--{itemID={bag=包, bank=银行}},
@@ -660,10 +659,10 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
                 if tab.Keystone.week ~=e.Player.week then
                     e.WoWDate[guid].Keystone={week=e.Player.week}
                 end
-                if tab.Instance.week~=e.Player.week or (Is_Timerunning and tab.Keystone.day and tab.Keystone.day~=day) then
+                if tab.Instance.week~=e.Player.week or (e.Is_Timerunning and tab.Keystone.day and tab.Keystone.day~=day) then
                     e.WoWDate[guid].Instance={ins={}, day=day}
                 end
-                if (tab.Worldboss.week~=e.Player.week) or (Is_Timerunning and tab.Keystone.day and tab.Keystone.day~=day) then
+                if (tab.Worldboss.week~=e.Player.week) or (e.Is_Timerunning and tab.Keystone.day and tab.Keystone.day~=day) then
                     e.WoWDate[guid].Worldboss={boss={}, day=day}
                 end
 

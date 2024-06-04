@@ -83,6 +83,7 @@ end
 if not e.Player.levelMax or PlayerGetTimerunningSeasonID() then
     return
 end
+
 local addName= CHALLENGES
 local Save= {
     --hideIns=true,--隐藏，副本，挑战，信息
@@ -2149,7 +2150,7 @@ panel:RegisterEvent("CHALLENGE_MODE_COMPLETED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            if PlayerGetTimerunningSeasonID() then
+            if e.Is_Timerunning then
                 self:UnregisterAllEvents()
                 return
             end

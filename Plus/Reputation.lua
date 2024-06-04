@@ -565,7 +565,7 @@ local function Init_TrackButton()
 					e.LibDD:UIDropDownMenu_AddSeparator(level)
 					info={
 						text= e.onlyChinese and '隐藏名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, NAME),
-						disabled= PlayerGetTimerunningSeasonID() and true,
+						disabled= e.Is_Timerunning and true,
 						tooltipOnButton=true,
 						tooltipTitle= e.onlyChinese and '仅显示有图标声望' or format(LFG_LIST_CROSS_FACTION, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, FACTION, EMBLEM_SYMBOL)),
 						checked= Save.onlyIcon,
@@ -1266,7 +1266,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save= WoWToolsSave[addName] or Save
 			Save.factions= Save.factions or {}
 
-			if PlayerGetTimerunningSeasonID() then--隐藏名称
+			if e.Is_Timerunning then--隐藏名称
 				onlyIcon=nil
 			else
 				onlyIcon= Save.onlyIcon
