@@ -138,6 +138,7 @@ local Save={
     ski=true,
     alt=true,
     noItemHide= true,--not e.Player.husandro,
+    KEY=e.Player.husandro and 'F',
     --disabledCheckReagentBag= true,--禁用，检查，材料包
 }
 
@@ -157,6 +158,48 @@ local Combat
 if e.Player.class=='ROGUE' then
     e.LoadDate({id=1804, type='spell'})--开锁 Pick Lock
 end
+
+
+
+
+local function setKEY(hide)--设置捷键
+    if not button:CanChangeAttribute() then
+        return
+    end
+    if Save.KEY and not hide and button:IsShown() and Bag.bag then
+        e.SetButtonKey(button, true, Save.KEY)
+        if #Save.KEY==1 then
+            if not button.KEY then
+                button.KEYstring=e.Cstr(button,{size=10, color=true})--10, nil, nil, true, 'OVERLAY')
+                button.KEYstring:SetPoint('BOTTOMRIGHT', button.border, 'BOTTOMRIGHT',-4,4)
+            end
+            button.KEYstring:SetText(Save.KEY)
+            if button.KEYtexture then
+                button.KEYtexture:SetShown(false)
+            end
+        else
+            if not button.KEYtexture then
+                button.KEYtexture=button:CreateTexture(nil,'OVERLAY')
+                button.KEYtexture:SetPoint('BOTTOM', button.border,'BOTTOM',-1,-5)
+                button.KEYtexture:SetAtlas('NPE_ArrowDown')
+                button.KEYtexture:SetDesaturated(true)
+                button.KEYtexture:SetSize(20,15)
+            end
+            button.KEYtexture:SetShown(true)
+        end
+    else
+        e.SetButtonKey(button)
+        if button.KEYstring then
+            button.KEYstring:SetText('')
+        end
+        if button.KEYtexture then
+            button.KEYtexture:SetShown(false)
+        end
+    end
+end
+
+
+
 
 
 
@@ -216,6 +259,9 @@ local function setAtt(bag, slot, icon, itemID, spellID)--设置属性
     button.count:SetText(num or '')
     button.texture:SetShown(bag and slot)
     Combat=nil
+    if Save.KEY then
+        setKEY()
+    end
 end
 
 
@@ -249,7 +295,7 @@ local function get_Items()--取得背包物品信息
                 duration, enable = select(2, C_Container.GetContainerItemCooldown(bag, slot))
             end
 
-            
+
             if info
                 and info.itemID
                 and info.hyperlink
@@ -360,6 +406,9 @@ local function get_Items()--取得背包物品信息
         end
     end
     setAtt()
+    if Save.KEY then
+        setKEY(true)
+    end
 end
 
 
@@ -389,6 +438,12 @@ local function setDisableCursorItem()--禁用当物品
     end
     get_Items()
 end
+
+
+
+
+
+
 
 
 
@@ -645,14 +700,26 @@ local function setMenuList(_, level, menuList)--主菜单
         text= e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE),
         keepShownOnClick=true,
         tooltipOnButton=true,
+        disabled=UnitAffectingCombat('player'),
         tooltipTitle= e.onlyChinese and '未发现物品' or BROWSE_NO_RESULTS,
         func=function()
             Save.noItemHide= not Save.noItemHide and true or nil
-            button:SetShown(Bag.bag or not Save.noItemHide)
+            button:set_shown((Bag.bag or not Save.noItemHide))
         end,
         checked= Save.noItemHide
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+    e.LibDD:UIDropDownMenu_AddButton({--快捷键,设置对话框
+        text= e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL,--..(Save.KEY and ' |cnGREEN_FONT_COLOR:'..Save.KEY..'|r' or ''),
+        icon= 'NPE_ArrowDown',
+        checked=Save.KEY and true or nil,
+        keepShownOnClick=true,
+        disabled=UnitAffectingCombat('player'),
+        func=function()
+            StaticPopup_Show(id..addName..'KEY')
+        end,
+    }, level)
 
     e.LibDD:UIDropDownMenu_AddButton({text= e.onlyChinese and '拖曳物品: 使用/禁用' or (DRAG_MODEL..ITEMS..'('..USE..'/'..DISABLE..')'), isTitle=true, notCheckable=true})
 end
@@ -851,6 +918,61 @@ local function Init()
     end)
 
     C_Timer.After(2, get_Items)
+
+
+
+
+
+
+
+
+
+
+    StaticPopupDialogs[id..addName..'KEY']={--快捷键,设置对话框
+        text=id..' '..addName..'|n'..(e.onlyChinese and '快捷键"' or SETTINGS_KEYBINDINGS_LABEL)..'|n|nQ, BUTTON5',
+        whileDead=true, hideOnEscape=true, exclusive=true,
+        hasEditBox=true,
+        button1= e.onlyChinese and '设置' or SETTINGS,
+        button2= e.onlyChinese and '取消' or CANCEL,
+        button3= e.onlyChinese and '移除' or REMOVE,
+        OnShow = function(self2)
+            self2.editBox:SetText(Save.KEY or 'BUTTON5')
+            if Save.KEY then
+                self2.button1:SetText(e.onlyChinese and '修改' or EDIT)
+            end
+            self2.button3:SetEnabled(Save.KEY)
+        end,
+        OnHide= function(self2)
+            self2.editBox:SetText("")
+            e.call('ChatEdit_FocusActiveWindow')
+        end,
+        OnAccept = function(self2)
+            local text= self2.editBox:GetText()
+            text=text:gsub(' ','')
+            text=text:gsub('%[','')
+            text=text:gsub(']','')
+            text=text:upper()
+            Save.KEY=text
+            setKEY()--设置捷键
+        end,
+        OnAlt = function()
+            Save.KEY=nil
+            setKEY()--设置捷键
+        end,
+        EditBoxOnTextChanged=function(self2)
+            local text= self2:GetText()
+            text=text:gsub(' ','')
+            self2:GetParent().button1:SetEnabled(text~='')
+        end,
+        EditBoxOnEscapePressed = function(s)
+            s:SetAutoFocus(false)
+            s:ClearFocus()
+            s:GetParent():Hide()
+        end,
+    }
+    if Save.KEY then
+        setKEY()
+    end
 end
 
 
@@ -878,7 +1000,7 @@ local panel= CreateFrame("Frame")
 function panel:set_Events()--注册， 事件
     if IsInInstance() and C_ChallengeMode.IsChallengeModeActive() then
        -- self:UnregisterEvent('BAG_UPDATE')
-        self:UnregisterEvent('BAG_UPDATE_DELAYED')        
+        self:UnregisterEvent('BAG_UPDATE_DELAYED')
         self:UnregisterEvent('PLAYER_REGEN_DISABLED')
         self:UnregisterEvent('PLAYER_REGEN_ENABLED')
         if button:CanChangeAttribute() then
@@ -948,6 +1070,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if Save.noItemHide then
             button:SetShown(false)
         end
+        if Save.KEY then
+            setKEY(true)
+        end
 
     elseif event=='PLAYER_REGEN_ENABLED' then
         if Combat then
@@ -955,7 +1080,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         else
             button:SetShown(Bag.bag or not Save.noItemHide)
         end
-
+        if Save.KEY then
+            setKEY()
+        end
     elseif event=='BAG_UPDATE_COOLDOWN' then
         setCooldown()--冷却条
 
