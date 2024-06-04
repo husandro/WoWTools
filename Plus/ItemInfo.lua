@@ -73,7 +73,10 @@ end
 
 --装等，提示
 local function get_itemLeve_color(itemLink, itemLevel, itemEquipLoc, itemQuality, upItemLevel)
-    local invSlot =e.GetItemSlotID(itemEquipLoc)
+    if not itemLevel or itemLevel==1 then
+        return
+    end
+    local invSlot = e.GetItemSlotID(itemEquipLoc)
     if not invSlot then
         return itemLevel
     end

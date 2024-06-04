@@ -82,6 +82,9 @@ local Save={
         [92675]=true,--无瑕野兽战斗石
         [92741]=true,--无瑕战斗石
 
+        --熊猫人之谜
+        [102464]=true,--黑色灰烬
+
         --10.0
         [194510]=true,--伊斯卡拉鱼叉
         [199197]=true,--瓶装精
@@ -304,6 +307,7 @@ local function get_Items()--取得背包物品信息
                 and C_PlayerInfo.CanUseItem(info.itemID)--是否可使用
                 and not (duration and duration>2 or enable==0) and classID~=8--冷却
                 and ((itemMinLevel and itemMinLevel<=e.Player.level) or not itemMinLevel)--使用等级
+                and classID~=13
             then
                 --e.LoadDate({id=info.itemID, type='item'})
                 if Save.use[info.itemID] then--自定义
