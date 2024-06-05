@@ -80,8 +80,6 @@ end
 
 
 
-
---C_Item.GetItemClassInfo
 function Init_Menu(self, level, menuList)
     if menuList=='DISABLE' then
         local n=0
