@@ -4561,6 +4561,7 @@
         "param-type-mismatch",
         "missing-parameter",
         "duplicate-set-field",
-        "assign-type-mismatch"
+        "assign-type-mismatch",
+        "trailing-space"
     ]
 }

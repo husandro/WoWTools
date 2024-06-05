@@ -903,6 +903,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event=='ADDON_LOADED' then
         if arg1==id then
             e.Is_Timerunning= PlayerGetTimerunningSeasonID()
+           
+
             WoWToolsSave= WoWToolsSave or {}
             --e.WoWDate= e.WoWDate or e.WoWDate or {}
 
@@ -937,6 +939,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
 
             self:UnregisterEvent('ADDON_LOADED')
+            
+            C_Timer.After(2, function()
+                e.Is_Timerunning= PlayerGetTimerunningSeasonID()
+            end)
         end
 
     elseif event == "PLAYER_LOGOUT" then
