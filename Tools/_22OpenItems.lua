@@ -84,6 +84,7 @@ local Save={
 
         --熊猫人之谜
         [102464]=true,--黑色灰烬
+        [94233]=true,--镫恒的咒语
 
         --10.0
         [194510]=true,--伊斯卡拉鱼叉
@@ -901,11 +902,14 @@ local function Init()
             if d=='LeftButton' and not key and equipItem and not PaperDollFrame:IsVisible() then
                 ToggleCharacter("PaperDollFrame")
             end
-            if MerchantFrame:IsVisible() then
-                MerchantFrame:SetShown(false)
+            if MerchantFrame:IsShown() and MerchantFrame:CanChangeAttribute() then
+                MerchantFrame:Hide()
             end
-            if SendMailFrame:IsShown() then
-                MailFrame:SetShown(false)
+            if SendMailFrame:IsShown() and SendMailFrame:CanChangeAttribute() then
+                MailFrame:Hide()
+            end
+            if ScrappingMachineFrame and ScrappingMachineFrame:IsShown() and ScrappingMachineFrame:CanChangeAttribute() then
+                ScrappingMachineFrame:Hide()
             end
         end
     end)

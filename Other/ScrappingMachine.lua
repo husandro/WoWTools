@@ -1,7 +1,7 @@
 local id, e = ...
 local addName= SCRAPPING_MACHINE_TITLE
 local Save={
-    items={
+    items={--禁用，自动添加，物品
         --+精通
         [210715]=true,--缺口精湛紫晶 
         [216640]=true,--瑕疵精湛紫晶
@@ -25,7 +25,7 @@ local Save={
         [220372]=true,--瑕疵万能钻石
         [220374]=true,--万能钻石
         [220373]=true,--完美万能钻石
-    },--禁用，自动添加，物品
+    },
 }
 local Initializer
 local MaxNumeri= 9
@@ -426,7 +426,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
 
-            
             --添加控制面板
             Initializer= e.AddPanel_Check({
                 name= '|TInterface\\Icons\\inv_gizmo_03:0|t'..(e.onlyChinese and '拆解大师Mk1型' or addName),
