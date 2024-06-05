@@ -52,7 +52,7 @@ local function can_scrap_item(bag, slot, onlyEquip, classID)
     local itemLocation= ItemLocation:CreateFromBagAndSlot(bag, slot)
     if itemLocation and itemLocation:IsValid() and C_Item.CanScrapItem(itemLocation) then
         local itemID= C_Item.GetItemID(itemLocation)
-        if Save.items[itemID] then
+        if Save.items[itemID] then--禁用，自动添加，物品
             return
         end
 
@@ -90,8 +90,10 @@ function Init_Menu(self, level, menuList)
             e.LibDD:UIDropDownMenu_AddButton({
                 text= select(2, C_Item.GetItemInfo(itemID)) or itemID,
                 icon= C_Item.GetItemIconByID(itemID),
+                tooltipOnButton=true,
                 tooltipTitle= itemID,
                 tooltipText= e.cn(GetSpellDescription(itemID)),
+                checked=true,
                 arg1= itemID,
                 keepShownOnClick=true,
                 func= function(_, arg1)
@@ -339,7 +341,7 @@ local function Init()
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, Initializer:GetName())
         e.tips:AddLine(' ')
-        e.tips:AddLine((e.onlyChinese and '添加' or ADD)..'|T135998:0|t'..(e.onlyChinese and '宝石' or BAG_FILTER_EQUIPMENT))
+        e.tips:AddLine((e.onlyChinese and '添加' or ADD)..'|T135998:0|t'..(e.onlyChinese and '宝石' or AUCTION_CATEGORY_GEMS))
         e.tips:Show()
     end)
     ScrappingMachineFrame.addAllGem:SetScript('OnClick', function()
