@@ -1,12 +1,42 @@
 local id, e = ...
 local addName= SCRAPPING_MACHINE_TITLE
 local Save={
-    items={},--禁用，自动添加，物品
+    items={
+        --+精通
+        [210715]=true,--缺口精湛紫晶 
+        [216640]=true,--瑕疵精湛紫晶
+        [211106]=true,--精湛紫晶
+        [211108]=true,--完美精湛紫晶
+
+        --+爆击
+        [210714]=true,--缺口致命蓝玉
+        [216644]=true,--瑕疵致命蓝玉
+        [211123]=true,--致命蓝玉
+        [211102]=true,--完美致命蓝玉
+
+        --+急速
+        [210681]=true,--缺口迅捷黄晶
+        [216643]=true,--瑕疵迅捷黄晶
+        [211107]=true,--迅捷黄晶
+        [211110]=true,--完美迅捷黄晶
+
+        --+全能
+        [220371]=true,--缺口万能钻石
+        [220372]=true,--瑕疵万能钻石
+        [220374]=true,--万能钻石
+        [220373]=true,--完美万能钻石
+    },--禁用，自动添加，物品
 }
 local Initializer
-
-
 local MaxNumeri= 9
+
+
+
+
+
+
+
+
 
 local function get_num_items()
     local n= 0
@@ -21,9 +51,15 @@ end
 local function can_scrap_item(bag, slot, onlyEquip, classID)
     local itemLocation= ItemLocation:CreateFromBagAndSlot(bag, slot)
     if itemLocation and itemLocation:IsValid() and C_Item.CanScrapItem(itemLocation) then
+        local itemID= C_Item.GetItemID(itemLocation)
+        if Save.items[itemID] then
+            return
+        end
+
         if not onlyEquip and not classID then
             return itemLocation
         end
+
         local itemLink= C_Item.GetItemLink(itemLocation)
         if itemLink then
             local itemEquipLoc, _, classID2 = select(4, C_Item.GetItemInfoInstant(itemLink))
@@ -54,8 +90,8 @@ function Init_Menu(self, level, menuList)
             e.LibDD:UIDropDownMenu_AddButton({
                 text= select(2, C_Item.GetItemInfo(itemID)) or itemID,
                 icon= C_Item.GetItemIconByID(itemID),
-                tooltipOnButton=true,
-                tooltipTitle= e.cn(GetSpellDescription(itemID)),
+                tooltipTitle= itemID,
+                tooltipText= e.cn(GetSpellDescription(itemID)),
                 arg1= itemID,
                 keepShownOnClick=true,
                 func= function(_, arg1)
@@ -101,7 +137,8 @@ function Init_Menu(self, level, menuList)
                 checked= Save.items[itemID],
                 arg1= itemID,
                 tooltipOnButton=true,
-                tooltipTitle= e.cn(GetSpellDescription(itemID)),
+                tooltipTitle=itemID,
+                tooltipText= e.cn(GetSpellDescription(itemID)),
                 keepShownOnClick=true,
                 func= function(_, arg1)
                     Save.items[arg1]= not Save.items[arg1] and true or nil
