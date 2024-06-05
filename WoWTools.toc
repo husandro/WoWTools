@@ -181,6 +181,7 @@ Other\DormantSeeds.lua
 Other\HunterPet.lua
 ##法术弹出框，加名称, 和颜色
 Other\SpellFrame.lua
+Other\ScrappingMachine.lua
 
 
 ##繁体，简体，不会载加

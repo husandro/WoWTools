@@ -4552,7 +4552,8 @@
         "POWER_TYPE_ENERGY",
         "CHARACTER_POINTS_CHANGED",
         "PERKS_PROGRAM_CONFIRM_REFUND",
-        "PERKS_PROGRAM_REFUND"
+        "PERKS_PROGRAM_REFUND",
+        "SCRAPPING_MACHINE_TITLE"
     ],
     "Lua.diagnostics.disable": [
         "inject-field",

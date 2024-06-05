@@ -153,7 +153,7 @@ end
 
 
 local function set_Item_Button()--检查,物品
-    if UnitAffectingCombat('player') then
+    if not button:CanChangeAttribute() then
         panel.bat=true
         panel:RegisterEvent('PLAYER_REGEN_ENABLED')
         return

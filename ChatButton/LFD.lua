@@ -1674,7 +1674,7 @@ local function exit_Instance()
     local name, _, _, difficultyName = GetInstanceInfo()
     ins = ins and name and difficultyName
 
-    if not ExitIns or not ins or IsModifierKeyDown() or LFGDungeonReadyStatus:IsVisible() then
+    if not ExitIns or not ins or IsModifierKeyDown() or LFGDungeonReadyStatus:IsVisible() or LFGDungeonReadyDialog:IsVisible() then
         ExitIns= nil
         StaticPopup_Hide(addName..'ExitIns')
         return
@@ -2513,6 +2513,11 @@ local function Init()
             exit_Instance()
         end
     end)
+    LFGDungeonReadyDialog:HookScript('OnShow', function()
+        if Save.leaveInstance then
+            exit_Instance()
+        end
+    end)
 end
 
 
@@ -2776,6 +2781,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
             and IsInLFGDungeon()
             and IsLFGComplete()
             and not LFGDungeonReadyStatus:IsVisible()
+            and not LFGDungeonReadyDialog:IsVisible()
             --local scenarioInfo = C_ScenarioInfo.GetScenarioInfo()
             --local isCompleteScenario= scenarioInfo and scenarioInfo.isComplete
             --local lfgComplete=  IsLFGComplete()
