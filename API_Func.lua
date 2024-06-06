@@ -1113,7 +1113,7 @@ function e.Set_Item_Stats(self, link, setting) --设置，物品，次属性，�
             if setID and not self.itemSet then
                 self.itemSet= self:CreateTexture()
                 self.itemSet:SetAtlas('UI-HUD-MicroMenu-Highlightalert')--'UI-HUD-MicroMenu-Highlightalert')--services-icon-goldborder
-                self.itemSet:SetAllPoints(self)
+                self.itemSet:SetAllPoints(point or self)
             end
         end
 
@@ -1144,13 +1144,13 @@ function e.Set_Item_Stats(self, link, setting) --设置，物品，次属性，�
                     itemLevel= e.MK(count, 2)
                 end
             else
-                local quality = C_Item.GetItemQualityByID(link)--颜色
+                --local quality = C_Item.GetItemQualityByID(link)--颜色
                 --if quality==7 then
-                    local dataInfo= e.GetTooltipData({hyperLink=link, itemID= itemID or C_Item.GetItemInfoInstant(link), text={itemLevelStr}, onlyText=true})--物品提示，信息
-                    if dataInfo.text[itemLevelStr] then
-                        itemLevel= tonumber(dataInfo.text[itemLevelStr])
-                    end
-                --end
+                local dataInfo= e.GetTooltipData({hyperLink=link, itemID= itemID or C_Item.GetItemInfoInstant(link), text={itemLevelStr}, onlyText=true})--物品提示，信息
+                if dataInfo.text[itemLevelStr] then
+                    itemLevel= tonumber(dataInfo.text[itemLevelStr])
+                end
+               
                 itemLevel= itemLevel or C_Item.GetDetailedItemLevelInfo(link)
                 if itemLevel and itemLevel<3 then
                     itemLevel=nil
