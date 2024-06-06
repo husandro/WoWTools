@@ -901,7 +901,6 @@ local function Init_EncounterJournal()--冒险指南界面
 
         local slotText= btn.slot and btn.slot:GetText()
         local isEquipItem= not Save.hideEncounterJournal and slotText and slotText~=''--是装备物品
-
         if not Save.hideEncounterJournal and btn.link then
             if isEquipItem then
                 local specTable = C_Item.GetItemSpecInfo(btn.link) or {}--专精图标

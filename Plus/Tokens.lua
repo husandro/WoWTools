@@ -55,7 +55,7 @@ local qualityToIconBorderAtlas ={
 
 
 --从currencyID, index中取得 info, currencyID
---从index直接取得info, 会出现，赛季内容错误，10.2中出现
+--[[从index直接取得info, 会出现，赛季内容错误，10.2中出现
 local function Get_For_index_To_currencyID(currencyID, index)--从currencyID, index中取得 info, currencyID
 	local link
 	if index then
@@ -68,7 +68,7 @@ local function Get_For_index_To_currencyID(currencyID, index)--从currencyID, in
 		return C_CurrencyInfo.GetCurrencyInfo(currencyID), currencyID, link
 	end
 end
-
+]]
 
 
 

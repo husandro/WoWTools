@@ -80,6 +80,20 @@ end
 
 
 
+
+
+
+local function Init_Currency()
+    
+end
+
+
+
+
+
+
+
+
 function Init_Menu(self, level, menuList)
     if menuList=='DISABLE' then
         local n=0
@@ -172,6 +186,22 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function Init_Disabled_Button()
     local btn= e.Cbtn(ScrappingMachineFrame, {size=28, icon='hide'})
     btn.Text= e.Cstr(btn)
@@ -245,6 +275,19 @@ local function Init_Disabled_Button()
 
     btn:settings()
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -442,7 +485,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         elseif arg1=='Blizzard_ScrappingMachineUI' then--分解 ScrappingMachineFrame
             Init()
-            Init_Disabled_Button()            
+            Init_Disabled_Button()
+            Init_Currency()
             self:UnregisterEvent('ADDON_LOADED')
         end
 
