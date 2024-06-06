@@ -439,8 +439,8 @@ local function Init()
 
 
     hooksecurefunc(ScrappingMachineFrame, 'UpdateScrapButtonState', function(self)
-        self.celarAllItem:SetShown(C_ScrappingMachineUI.HasScrappableItems())
-        self.addAllItem:SetShown(MaxNumeri> get_num_items())
+        self.celarAllItem:SetAlpha(C_ScrappingMachineUI.HasScrappableItems() and 1 or 0.3)
+        self.addAllItem:SetAlpha(MaxNumeri> get_num_items() and 1 or 0.3)
     end)
 end
 
