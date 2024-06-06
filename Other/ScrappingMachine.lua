@@ -83,9 +83,9 @@ end
 
 
 
-local function Init_Currency()
+--[[local function Init_Currency()
     
-end
+end]]
 
 
 
@@ -486,7 +486,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         elseif arg1=='Blizzard_ScrappingMachineUI' then--分解 ScrappingMachineFrame
             Init()
             Init_Disabled_Button()
-            Init_Currency()
+            --Init_Currency()
             self:UnregisterEvent('ADDON_LOADED')
         end
 
