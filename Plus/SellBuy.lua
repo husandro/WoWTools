@@ -74,11 +74,13 @@ function e.CheckItemSell(itemID, itemLink, quality, isBound)
     if Save.Sell[itemID] and not Save.notSellCustom then
         return e.onlyChinese and '自定义' or CUSTOM
     end
-    local level= bossSave[itemID]
-    if level and not Save.notSellBoss and itemLink  then
-        local itemLevel= C_Item.GetDetailedItemLevelInfo(itemLink) or select(4, C_Item.GetItemInfo(itemLink))
-        if level== itemLevel  then
-            return e.onlyChinese and '首领' or BOSS
+    if not e.Is_Timerunning and not Save.notSellBoss and itemLink then
+        local level= bossSave[itemID]
+        if level then
+            local itemLevel= C_Item.GetDetailedItemLevelInfo(itemLink) or select(4, C_Item.GetItemInfo(itemLink))
+            if level== itemLevel  then
+                return e.onlyChinese and '首领' or BOSS
+            end
         end
     end
     if quality==0 then
@@ -1249,6 +1251,7 @@ local function Init_Menu(_, level, type)
         tooltipText= '|cffff00ff'..(e.onlyChinese and '在战斗中无法出售物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, ITEM_UNSELLABLE)),
         checked= not Save.notSellBoss,
         keepShownOnClick=true,
+        colorCode= e.Is_Timerunning and '|cff606060',
         menuList='BOSS',
         hasArrow=true,
         func=function ()
@@ -1872,8 +1875,8 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('ENCOUNTER_LOOT_RECEIVED')
-panel:SetScript("OnEvent", function(_, event, arg1, arg2, arg3, _, arg5)
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, _, arg5)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
@@ -1890,22 +1893,25 @@ panel:SetScript("OnEvent", function(_, event, arg1, arg2, arg3, _, arg5)
                     print(id, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
                 end
             })
-
-
-
+            
             if Save.disabled then
                 e.CheckItemSell=nil
-                panel:UnregisterAllEvents()
+                self:UnregisterAllEvents()
             else
                 if WoWToolsSave then
                     buySave=WoWToolsSave.BuyItems and WoWToolsSave.BuyItems[e.Player.name_realm] or buySave--购买物品
                     RepairSave=WoWToolsSave.Repair and WoWToolsSave.Repair[e.Player.name_realm] or RepairSave--修理
                 end
-
+                                
                 Init()
-                panel:UnregisterEvent('ADDON_LOADED')
+
+                C_Timer.After(2.2, function()
+                    if not e.Is_Timerunning then
+                        self:RegisterEvent('ENCOUNTER_LOOT_RECEIVED')
+                    end
+                end)
             end
-            panel:RegisterEvent("PLAYER_LOGOUT")
+            self:UnregisterEvent('ADDON_LOADED')
         end
 
     elseif event == "PLAYER_LOGOUT" then
