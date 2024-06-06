@@ -84,7 +84,11 @@ end
 
 
 --[[local function Init_Currency()
-    
+    if not e.Is_Timerunning then
+        return
+    end
+
+    local frame=CreateFrame('Frame')
 end]]
 
 
