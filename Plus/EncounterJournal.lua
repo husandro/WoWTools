@@ -952,8 +952,10 @@ local function Init_EncounterJournal()--冒险指南界面
             upText= dateInfo.text[ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT]
             if classText then
                 local className= UnitClass('player')
-                if className and not classText:find(className) or (not className and dateInfo.red) then
-                    classText =  '|cffffffff'..e.cn(classText)..'|r'
+                local locaClass= className and not classText:find(className) or dateInfo.red
+                classText= e.cn(classText)
+                if locaClass then
+                    classText =  '|cff606060'..classText..'|r'
                 end
             end
 
