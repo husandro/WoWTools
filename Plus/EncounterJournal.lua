@@ -47,8 +47,8 @@ while instanceID ~= nil do
     instanceID, name, description, _, buttonImage, _, _, _, link, _, mapID = EJ_GetInstanceByIndex(dataIndex, showRaid)
 end]]
 
-
-
+local ITEM_CLASSES_ALLOWED= format(ITEM_CLASSES_ALLOWED, '(.+)')
+local ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT:gsub('%%s/%%s','(.-%%d%+/%%d%+)')-- "升级：%s/%s"
 
 
 
@@ -944,12 +944,12 @@ local function Init_EncounterJournal()--冒险指南界面
             end
 
             --拾取, 职业
-            local classStr= format(ITEM_CLASSES_ALLOWED, '(.+)')
-            local upgradeStr= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT:gsub('%%s/%%s','(.-%%d%+/%%d%+)')-- "升级：%s/%s"
+            --local classStr= format(ITEM_CLASSES_ALLOWED, '(.+)')
+            --local upgradeStr= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT:gsub('%%s/%%s','(.-%%d%+/%%d%+)')-- "升级：%s/%s"
 
-            local dateInfo= e.GetTooltipData({hyperLink=btn.link, text={classStr, upgradeStr}, red=true})--物品提示，信息 format(ITEM_CLASSES_ALLOWED, '(.+)') --"职业：%s"
-            classText= dateInfo.text[classStr]
-            upText= dateInfo.text[upgradeStr]
+            local dateInfo= e.GetTooltipData({hyperLink=btn.link, text={ITEM_CLASSES_ALLOWED, ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT}, red=true})--物品提示，信息 format(ITEM_CLASSES_ALLOWED, '(.+)') --"职业：%s"
+            classText= dateInfo.text[ITEM_CLASSES_ALLOWED]
+            upText= dateInfo.text[ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT]
             if classText then
                 local className= UnitClass('player')
                 if className and not classText:find(className) or (not className and dateInfo.red) then
@@ -998,11 +998,6 @@ local function Init_EncounterJournal()--冒险指南界面
         end
 
         --显示, 物品, 属性
-        local hideLevel=false
-        if btn.link then
-            local classID= select(6, C_Item.GetItemInfoInstant(btn.link))
-            hideLevel= classID~=2 and classID~=4
-        end
         e.Set_Item_Stats(btn, not Save.hideEncounterJournal and btn.link, {point= btn.IconBorder, hideLevel=hideLevel})
 
         local spellID--物品法术，提示

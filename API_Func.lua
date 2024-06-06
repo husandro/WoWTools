@@ -1089,7 +1089,7 @@ function e.Get_Item_Stats(link)--取得，物品，次属性，表
         num= num +1
     end]]
     table.sort(tab, function(a,b) return a.value>b.value and a.index== b.index end)
-    return tab, info
+    return tab
 end
 
 --e.Set_Item_Stats(self, itemLink, {point=self.icon, itemID=nil, hideSet=false, hideLevel=false, hideStats=false})--设置，物品，4个次属性，套装，装等，
@@ -1108,17 +1108,25 @@ function e.Set_Item_Stats(self, link, setting) --设置，物品，次属性，�
     local hideStats= setting.hideStats
 
     if link then
+        local itemID2, _, _, _, _, classID= C_Item.GetItemInfoInstant(link)
+        if classID==2 or classID==4 then
+            itemID= itemID or itemID2
+        else
+            link=nil
+        end
+    end
+    if link then
         if not hideSet then
             setID= select(16 , C_Item.GetItemInfo(link))--套装
             if setID and not self.itemSet then
                 self.itemSet= self:CreateTexture()
                 self.itemSet:SetAtlas('UI-HUD-MicroMenu-Highlightalert')--'UI-HUD-MicroMenu-Highlightalert')--services-icon-goldborder
-                self.itemSet:SetAllPoints(point or self)
+                self.itemSet:SetAllPoints(point)
             end
         end
-
+        
         if not hideLevel then--物品, 装等
-            itemID= itemID or C_Item.GetItemInfoInstant(link)
+            --itemID= itemID or C_Item.GetItemInfoInstant(link)
             if itemID==210333 and self==CharacterBackSlot then--InspectBackSlot
                 local currencies={--https://wago.io/thread_count
                     [2853] = 1, -- "power" aka str/agi/int
@@ -1141,7 +1149,7 @@ function e.Set_Item_Stats(self, link, setting) --设置，物品，次属性，�
                     end
                 end
                 if count>0 then
-                    itemLevel= e.MK(count, 2)
+                    itemLevel= e.MK(count, 1)
                 end
             else
                 --local quality = C_Item.GetItemQualityByID(link)--颜色
@@ -1152,12 +1160,10 @@ function e.Set_Item_Stats(self, link, setting) --设置，物品，次属性，�
                 end
                
                 itemLevel= itemLevel or C_Item.GetDetailedItemLevelInfo(link)
-                if itemLevel and itemLevel<3 then
-                    itemLevel=nil
-                end
-                local avgItemLevel= itemLevel and select(2, GetAverageItemLevel())--已装备, 装等
-                if itemLevel and avgItemLevel then
-                    local lv = itemLevel- avgItemLevel
+                if itemLevel and itemLevel>3 then
+                    local avgItemLevel= select(2, GetAverageItemLevel())--已装备, 装等
+                    if avgItemLevel then
+                        local lv = itemLevel- avgItemLevel
                         if lv <= -6  then
                             itemLevel =RED_FONT_COLOR_CODE..itemLevel..'|r'
                         elseif lv>=7 then
@@ -1165,6 +1171,9 @@ function e.Set_Item_Stats(self, link, setting) --设置，物品，次属性，�
                         else
                             itemLevel='|cffffffff'..itemLevel..'|r'
                         end
+                    end
+                else
+                    itemLevel=nil
                 end
             end
             if not self.itemLevel and itemLevel then
@@ -1174,6 +1183,7 @@ function e.Set_Item_Stats(self, link, setting) --设置，物品，次属性，�
             end
         end
     end
+
     if self.itemSet then self.itemSet:SetShown(setID) end--套装
     if self.itemLevel then self.itemLevel:SetText(itemLevel or '') end--装等
 
