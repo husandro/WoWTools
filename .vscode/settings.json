@@ -4553,7 +4553,9 @@
         "CHARACTER_POINTS_CHANGED",
         "PERKS_PROGRAM_CONFIRM_REFUND",
         "PERKS_PROGRAM_REFUND",
-        "SCRAPPING_MACHINE_TITLE"
+        "SCRAPPING_MACHINE_TITLE",
+        "CalendarViewHolidayFrame_Update",
+        "CalendarDayButton16EventButton1Text1"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

@@ -19,6 +19,7 @@ e.Set_Alpha_Frame_Texture=function()end--Texture.lua
 e.Set_NineSlice_Color_Alpha=function()end
 e.Set_ScrollBar_Color_Alpha=function()end
 e.Set_Move_Frame=function()end--Frame.lua
+e.Show_WoWHead_URL=function()end--Tooltips.lua
 
 
 

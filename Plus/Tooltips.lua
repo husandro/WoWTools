@@ -24,6 +24,9 @@ local Save={
 local panel=CreateFrame("Frame")
 local Category, Layout= e.AddPanel_Sub_Category({name=e.Icon.mid..addName})
 
+--全局
+--e.Show_WoWHead_URL(isWoWHead, typeOrRegion, typeIDOrRealm, name)
+
 local func={
     --func.Set_PlayerModel(self)
     --func.Set_Spell(self, spellID)--法术
@@ -171,9 +174,8 @@ end
 --################
 local wowheadText
 local raiderioText
-local RegionName
-local function Init_Web_Link()
-    StaticPopupDialogs["WowheadQuickLinkUrl"] = {
+local function Init_StaticPopupDialogs()
+    StaticPopupDialogs["WoWTools_Tooltips_LinkURL"] = {
         text= id..' '..Category:GetName()..'|n|cffff00ff%s|r |cnGREEN_FONT_COLOR:Ctrl+C |r'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK),
         button1 = e.onlyChinese and '关闭' or CLOSE,
         OnShow = function(self, web)
@@ -219,10 +221,16 @@ local function Init_Web_Link()
         timeout = 0,
         whileDead=true, hideOnEscape=true, exclusive=true,
     }
-
-    if LOCALE_zhCN or LOCALE_zhTW or e.onlyChinese then--https://www.wowhead.com/cn/pet-ability=509/汹涌
-        wowheadText= 'https://www.wowhead.com/cn/%s=%d/%s'
+    if e.onlyChinese then
         raiderioText= 'https://raider.io/cn/characters/%s/%s/%s'
+        if not LOCALE_zhCN then
+            wowheadText= 'https://www.wowhead.com/cn/%s=%d'
+        else
+            wowheadText= 'https://www.wowhead.com/cn/%s=%d/%s'
+        end
+    --[[if LOCALE_zhCN or LOCALE_zhTW or e.onlyChinese then--https://www.wowhead.com/cn/pet-ability=509/汹涌
+        wowheadText= 'https://www.wowhead.com/cn/%s=%d/%s'
+        raiderioText= 'https://raider.io/cn/characters/%s/%s/%s']]
     elseif LOCALE_deDE then
         wowheadText= 'https://www.wowhead.com/de/%s=%d/%s'
         raiderioText= 'https://raider.io/de/characters/%s/%s/%s'
@@ -249,73 +257,101 @@ local function Init_Web_Link()
         raiderioText= 'https://raider.io/characters/%s/%s/%s'
     end
 
-    RegionName= GetCurrentRegionName()
+end
+
+function e.Show_WoWHead_URL(isWoWHead, typeOrRegion, typeIDOrRealm, name)
+   if isWoWHead==true then
+        if typeIDOrRealm and type(typeIDOrRealm)~='number' then
+            typeIDOrRealm= tonumber(typeIDOrRealm)
+        end
+        StaticPopup_Show("WoWTools_Tooltips_LinkURL",
+            'WoWHead',
+            nil,
+            format(wowheadText, typeOrRegion or '', typeIDOrRealm or 0, name or '')
+        )
+    elseif isWoWHead==false then
+        StaticPopup_Show("WoWTools_Tooltips_LinkURL",
+            'Raider.IO',
+            nil,
+            format(raiderioText, typeOrRegion or GetCurrentRegionName() or '', typeIDOrRealm or e.Player.realm, name)
+        )
+    else
+        StaticPopup_Show("WoWTools_Tooltips_LinkURL", '', nil, name or '')
+   end
+end
 
     --func.Set_Web_Link({frame=self, type='npc', id=companionID, name=speciesName, col=nil, isPetUI=false})--取得网页，数据链接 npc item spell currency
     --func.Set_Web_Link({unitName=name, realm=realm, col=nil})--取得单位, raider.io 网页，数据链接
-    function func.Set_Web_Link(tab)
-        if tab.frame==ItemRefTooltip or tab.frame==FloatingBattlePetTooltip then
-            if tab.type and tab.id then
-                if not tab.frame.wowhead then
-                    tab.frame.wowhead=e.Cbtn(tab.frame, {size={20,20},type=false})--取得网页，数据链接
-                    tab.frame.wowhead:SetPoint('RIGHT',tab.frame.CloseButton, 'LEFT',0,2)
-                    tab.frame.wowhead:SetNormalAtlas('questlegendary')
-                    tab.frame.wowhead:SetScript('OnClick', function(self)
-                        if self.web then
-                            StaticPopup_Show("WowheadQuickLinkUrl",
-                                'WoWHead',
-                                nil,
-                                self.web
-                            )
-                        end
-                    end)
-                end
-                tab.frame.wowhead.web= format(wowheadText, tab.type, tab.id, tab.name or '')
-                tab.frame.wowhead:SetShown(true)
+function func.Set_Web_Link(tab)
+    if tab.frame==ItemRefTooltip or tab.frame==FloatingBattlePetTooltip then
+        if tab.type and tab.id then
+            if not tab.frame.wowhead then
+                tab.frame.wowhead=e.Cbtn(tab.frame, {size={20,20},type=false})--取得网页，数据链接
+                tab.frame.wowhead:SetPoint('RIGHT',tab.frame.CloseButton, 'LEFT',0,2)
+                tab.frame.wowhead:SetNormalAtlas('questlegendary')
+                tab.frame.wowhead:SetScript('OnClick', function(f)
+                    if f.type and f.id then
+                        e.Show_WoWHead_URL(true, f.type, f.id, f.name)
+                    end
+                    --[[if self.web then
+                        StaticPopup_Show("WoWTools_Tooltips_LinkURL",
+                            'WoWHead',
+                            nil,
+                            self.web
+                        )
+                    end]]
+                end)
             end
-            return
+            tab.frame.wowhead.type= tab.type
+            tab.frame.wowhead.id= tab.id
+            tab.frame.wowhead= tab.name
+            --tab.frame.wowhead.web= format(wowheadText, tab.type, tab.id, tab.name or '')
+            tab.frame.wowhead:SetShown(true)
         end
-        if not Save.ctrl or UnitAffectingCombat('player')  then
-            return
-        end
+        return
+    end
+    if not Save.ctrl or UnitAffectingCombat('player')  then
+        return
+    end
 
-        if tab.id then
-            if tab.type=='quest' then
-                if not tab.name then
-                    local index= C_QuestLog.GetLogIndexForQuestID(tab.id)
-                    local info= index and C_QuestLog.GetInfo(index)
-                    tab.name= info and info.title
-                end
+    if tab.id then
+        if tab.type=='quest' then
+            if not tab.name then
+                local index= C_QuestLog.GetLogIndexForQuestID(tab.id)
+                local info= index and C_QuestLog.GetInfo(index)
+                tab.name= info and info.title
             end
-            if tab.isPetUI then
-                if tab.frame then
-                    BattlePetTooltipTemplate_AddTextLine(tab.frame, 'wowhead  Ctrl+Shift')
-                end
-            elseif tab.frame== e.tips then
-                tab.frame:AddDoubleLine((tab.col or '')..'WoWHead', (tab.col or '')..'Ctrl+Shift')
-            end
-            if IsControlKeyDown() and IsShiftKeyDown() then
-                StaticPopup_Show("WowheadQuickLinkUrl",
-                    'WoWHead',
-                    nil,
-                    format(wowheadText, tab.type, tab.id, tab.name or '')
-                )
-            end
-        elseif tab.unitName then
+        end
+        if tab.isPetUI then
             if tab.frame then
-                tab.frame:SetText('|A:questlegendary:0:0|a'..(tab.col or '')..'Raider.IO Ctrl+Shift')
-                tab.frame:SetShown(true)
-            else
-                e.tips:AddDoubleLine('|A:questlegendary:0:0|a'..(tab.col or '')..'Raider.IO', (tab.col or '')..'Ctrl+Shift')
-                e.tips:SetShown(true)
+                BattlePetTooltipTemplate_AddTextLine(tab.frame, 'wowhead  Ctrl+Shift')
             end
-            if IsControlKeyDown() and IsShiftKeyDown() then
-                StaticPopup_Show("WowheadQuickLinkUrl",
-                    'Raider.IO',
-                    nil,
-                    format(raiderioText, RegionName, tab.realm or e.Player.realm, tab.unitName)
-                )
-            end
+        elseif tab.frame== e.tips then
+            tab.frame:AddDoubleLine((tab.col or '')..'WoWHead', (tab.col or '')..'Ctrl+Shift')
+        end
+        if IsControlKeyDown() and IsShiftKeyDown() then
+            e.Show_WoWHead_URL(true, tab.type, tab.id, tab.name)
+            --[[StaticPopup_Show("WoWTools_Tooltips_LinkURL",
+                'WoWHead',
+                nil,
+                format(wowheadText, tab.type, tab.id, tab.name or '')
+            )]]
+        end
+    elseif tab.unitName then
+        if tab.frame then
+            tab.frame:SetText('|A:questlegendary:0:0|a'..(tab.col or '')..'Raider.IO Ctrl+Shift')
+            tab.frame:SetShown(true)
+        else
+            e.tips:AddDoubleLine('|A:questlegendary:0:0|a'..(tab.col or '')..'Raider.IO', (tab.col or '')..'Ctrl+Shift')
+            e.tips:SetShown(true)
+        end
+        if IsControlKeyDown() and IsShiftKeyDown() then
+            e.Show_WoWHead_URL(false, nil, tab.realm or e.Player.realm, tab.unitName)
+            --[[StaticPopup_Show("WoWTools_Tooltips_LinkURL",
+                'Raider.IO',
+                nil,
+                format(raiderioText, GetCurrentRegionName() or '', tab.realm or e.Player.realm, tab.unitName)
+            )]]
         end
     end
 end
@@ -1661,7 +1697,7 @@ local function Init()
     func.Set_Init_Item(e.tips)
     func.Set_Init_Item(EmbeddedItemTooltip)]]
 
-    Init_Web_Link()--取得网页，数据链接
+    --Init_Web_Link()--取得网页，数据链接
     Int_Health_Bar_Unit()--生命条提示
     --Init_StableFrame_Plus()--猎人，兽栏 Plus 10.2.7
 
@@ -2051,16 +2087,19 @@ local function Init()
         end)
         frame.questIDLabel:SetScript('OnMouseDown', function(self)
             if self.questID then
-                local info = C_QuestLog.GetQuestTagInfo(self.questID)
-                StaticPopup_Show("WowheadQuickLinkUrl",
+                local info = C_QuestLog.GetQuestTagInfo(self.questID) or {}
+                e.Show_WoWHead_URL(true, 'quest', self.questID, info.tagName)
+                --[[StaticPopup_Show("WoWTools_Tooltips_LinkURL",
                 'WoWHead',
                 nil,
                 format(wowheadText, 'quest', self.questID, info and info.tagName or '')
-            )
+                )]]
             end
         end)
     end
+
     create_Quest_Label(QuestMapFrame.DetailsFrame)
+    
     if C_AddOns.IsAddOnLoaded('WoWeuCN_Quests') then
         QuestMapFrame.DetailsFrame.questIDLabel:SetPoint('BOTTOMRIGHT',QuestMapFrame.DetailsFrame, 'TOPRIGHT', -2, 30)
     else
@@ -3072,22 +3111,21 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
             })
 
+            Init_StaticPopupDialogs()--全局
+
             if Save.disabled then
                 self:UnregisterAllEvents()
+                eventTab=nil
+                func={}
             else
-
                 Init()--初始
-                for _, evt in pairs(eventTab or {}) do
-                    Init_Event(evt)
-                end
-                if e.onlyChinese then
-                    raiderioText= 'https://raider.io/cn/characters/%s/%s/%s'
-                    if not LOCALE_zhCN then
-                        wowheadText= 'https://www.wowhead.com/cn/%s=%d'
+                do
+                    for _, evt in pairs(eventTab or {}) do
+                        Init_Event(evt)
                     end
                 end
+                eventTab=nil
             end
-            eventTab=nil
             self:RegisterEvent("PLAYER_LOGOUT")
 
         elseif arg1=='Blizzard_Settings' then

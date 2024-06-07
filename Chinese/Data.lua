@@ -956,8 +956,6 @@ end
 
 
 
-
-
 local function rest_all()
     specTab=nil
     spellTab=nil
