@@ -4557,6 +4557,8 @@
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",
-        "inject-field"
+        "inject-field",
+        "missing-parameter",
+        "undefined-field"
     ],
 }

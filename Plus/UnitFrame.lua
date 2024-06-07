@@ -1442,42 +1442,49 @@ local function Init_BossFrame()
         --##############
         frame.numSelectFrame= CreateFrame('Frame', frame)
         frame.numSelectFrame.unit= frame.unit
-        frame.numSelectFrame.Text= e.Cstr(frame.BossButton, {color={r=1,g=1,b=1}})
-        frame.numSelectFrame.Text:SetPoint('CENTER')
+        frame.numSelectFrame.Text= e.Cstr(frame.BossButton, {color={r=1,g=1,b=1}, size=20})
+        frame.numSelectFrame.Text:SetPoint('BOTTOM', 0, -16)
         function frame.numSelectFrame:set_event(f)
             if f:IsShown() then
-                self:UnregisterEvent('UNIT_TARGET')
-            else
                 self:RegisterEvent('UNIT_TARGET')
-                self:settings()
+                if BossTargetFrameContainer.isInEditMode then
+                    self.Text:SetText(40)
+                else
+                    self:settings()
+                end
+            else
+                self:UnregisterEvent('UNIT_TARGET')
+                self.Text:SetText('')
+                self.isRun=nil
             end
         end
         function frame.numSelectFrame:settings()
+            if self.isRun then
+                return
+            end
+            self.isRun=true
             local n=0
             if IsInRaid() then
-                for i=1, MAX_RAID_MEMBERS do
-                    local unit= 'raid'..i
-                    if UnitIsUnit(unit..'target', self.unit) then-- and not UnitIsUnit(unit, 'player') then
+                for index=1, MAX_RAID_MEMBERS do
+                    local unit= 'raid'..index
+                    if UnitIsUnit(unit..'target', self.unit) and not UnitIsUnit(unit, 'player') then
                         n= n+1
                     end
                 end
             elseif IsInGroup() then
-                for i=1, GetNumGroupMembers()-1, 1 do
-                    local unit= 'party'..i
+                for index=1, GetNumGroupMembers()-1, 1 do
+                    local unit= 'party'..index
                     if UnitIsUnit(unit..'target', self.unit) then
                         n= n+1
                     end
                 end
             end
-            self.Text:SetText(n>0 and n or '')
+            self.Text:SetText(n>0 and n or '40')
+            self.isRun=nil
         end
         frame.numSelectFrame:SetScript('OnEvent', function(self, _, unit)
-            if UnitIsPlayer(unit) and not self.isRun  then
-                self.isRun=true
-                do
-                    self:settings()
-                end
-                self.isRun=nil
+            if UnitIsPlayer(unit) and not UnitIsUnit(unit, 'player') then
+                self:settings()
             end
         end)
         frame:HookScript('OnShow', function(self)
@@ -1486,7 +1493,9 @@ local function Init_BossFrame()
         frame:HookScript('OnHide', function(self)
             self.numSelectFrame:set_event(self)
         end)
-        frame.numSelectFrame:set_event(frame)
+        if frame:IsShown() then
+            frame.numSelectFrame:set_event(frame)
+        end
 
         --目标的目标，点击
         --##############
