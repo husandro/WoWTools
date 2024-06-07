@@ -5583,6 +5583,15 @@ local function Init_Loaded(arg1)
 
 
     elseif arg1=='Blizzard_EncounterJournal' then--冒险指南
+        local t= EJ_GetTierInfo(2)
+        if t then
+            e.strText[t]='燃烧远征'
+        end
+        t= EJ_GetTierInfo(10)
+        if t then
+            e.strText[t]='本赛季'
+        end
+
         set(EncounterJournalTitleText, '冒险指南')
 
         if EncounterJournalMonthlyActivitiesTab then

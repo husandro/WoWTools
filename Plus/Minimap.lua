@@ -2503,7 +2503,7 @@ local function Init_Menu(_, level, menuList)
         local treeCurrencies = C_Traits.GetTreeCurrencyInfo(dragonridingConfigID, 672, false) or {}
         local num= treeCurrencies[1] and treeCurrencies[1].quantity
         if num and num>=0 then
-            numDragonriding= format(' %s%d|r|T%d:0|t', num==0 and '|cff606060' or '|cnGREEN_FONT_COLOR:', num, select(4, C_Traits.GetTraitCurrencyInfo(2563)) )
+            numDragonriding= format(' %s%d|r |T%d:0|t', num==0 and '|cff606060' or '|cnGREEN_FONT_COLOR:', num, select(4, C_Traits.GetTraitCurrencyInfo(2563)) )
         end
     end
 

@@ -1,7 +1,7 @@
 if LOCALE_zhCN or LOCALE_zhTW then
     return
 end
-local e = select(2, ...)
+local id, e = ...
 
 
 
@@ -131,6 +131,7 @@ local instanceTab={--{, ''},
 
 local fanctionTab={ --{', ''},
     {2640, '布莱恩·铜须', },
+
     {2506, '巨龙时代'},
     {2503, '马鲁克半人马', '各个半人马氏族遨游于欧恩哈拉平原。他们听取轻风的召唤，探求狩猎的刺激。'},
     {2574, '梦境守望者', '许多种族的构成的同盟，誓要守护翡翠梦境，抗击所有威胁。'},
@@ -188,7 +189,7 @@ local fanctionTab={ --{', ''},
     {2446, '瓦丝琪女男爵', '这名锲而不舍的纳迦领袖始终在观察和审视。'},
     {2448, '米卡尼科斯', '身为晋升堡垒的掌炉宗师，米卡尼科斯总在构思新的发明。'},
 
-    
+
 
     --争霸艾泽拉斯
     {2104, '争霸艾泽拉斯'},
@@ -305,7 +306,7 @@ local fanctionTab={ --{', ''},
     {1351, '酒仙会', '这些高贵的熊猫人守护着世代相传的酿酒秘诀，为了酿造出烈性美酒而甘冒奇险。'},
     {1440, '暗矛起义军', '沃金已经公开宣布反抗加尔鲁什·地狱咆哮。在部落和联盟军队的帮助下，他正在收集资源，准备对奥格瑞玛发动总攻。'},
 
-    {1162, '大地的裂变'},
+    {1162, '大地裂变'},
     {1135, '大地之环', '艾泽拉斯最强大的萨满祭司都聚集到了一起，期望能够维持这个世界各股元素力量之间的平衡。在这场大灾变中，他们正竭力修复死亡之翼的来临对世界造成的伤害。'},
     {1171, '塞拉赞恩', '塞拉赞恩和她的石领主子嗣们统治着土元素位面深岩之洲。在见证了死亡之翼及其追随者对她的国度造成的伤害后，塞拉赞恩对所有外来者都充满了敌意。'},
     {1173, '拉穆卡恒', '拉穆卡恒的猫形子民是奥丹姆守护者托维尔一族的后裔。尽管他们失去了石头的身体，但保护泰坦秘密的使命仍然留在了他们一成不变的传统中。'},
@@ -957,6 +958,134 @@ end
 
 
 
+local function rest_all()
+    specTab=nil
+    spellTab=nil
+    fanctionTab=nil
+    curcurrencyTab=nil
+    raceTab=nil
+    affixTab=nil
+    instanceTab=nil
+    instanceBossTab=nil
+    Init_Add_Data=function()end
+end
+
+
+
+
+function Init()
+    for journalEncounterID, name in pairs(instanceBossTab) do
+        local bossName= EJ_GetEncounterInfo(journalEncounterID)
+        if bossName then
+            e.strText[bossName]= name
+        end
+    end
+
+    for _, info in pairs(instanceTab) do
+        local name= EJ_GetInstanceInfo(info[1])
+        if name then
+            e.strText[name]= info[2]
+        end
+    end
+
+    for _, info in pairs(spellTab) do
+        if info[2] then
+            local name= GetSpellInfo(info[1])
+            if name then
+                e.strText[name]=  info[2]
+            end
+        end
+        if info[3] then
+            local des= GetSpellDescription(info[1])
+            if des then
+                e.strText[des]= info[3]
+            end
+        end
+    end
+
+    for mapChallengeModeID, info in pairs(e.ChallengesSpellTabs) do
+        if info.spell then
+            if info.spellName then
+                local name= GetSpellInfo(info.spell)
+                e.strText[name]= info.spellName
+            end
+            if info.spellDes then
+                local desc = GetSpellDescription(info.spell)
+                if desc then
+                    e.strText[desc]= info.spellDes
+                end
+            end
+        end
+        if info.insName and info.ins then
+            local name, description= EJ_GetInstanceInfo(info.ins)
+            if name then
+                e.strText[name]= info.insName
+            end
+            if info.insDesc and description then
+                e.strText[description]= info.insDesc
+            end
+        end
+        if info.name then
+            local name= C_ChallengeMode.GetMapUIInfo(mapChallengeModeID)
+            if name then
+                e.strText[name]= info.name
+            end
+        end
+    end
+
+    for _, info in pairs(fanctionTab) do
+        local name, description = GetFactionInfoByID(info[1])
+        if name then
+            e.strText[name] = info[2]
+        end
+        if description and info[3] and info[3]~='' then
+            e.strText[description]= info[3]
+        end
+    end
+
+    for _, curTab in pairs(curcurrencyTab) do
+        local info =C_CurrencyInfo.GetCurrencyInfo(curTab[1]) or {}
+        if info.name then
+            e.strText[info.name]= curTab[2]
+        end
+        if info.description and curTab[3] then
+            e.strText[info.description]= curTab[3]
+        end
+    end
+
+    for _, info in pairs(specTab) do
+        local name, description, _, role= select(2, GetSpecializationInfoByID(info[1]))
+        if name and info[2] then
+            e.strText[name]= info[2]..(e.Icon[role] or '')
+        end
+        if description and info[3] then
+            e.strText[description]= info[3]
+        end
+    end
+
+    for raceID, name in pairs(raceTab) do
+        local info = C_CreatureInfo.GetRaceInfo(raceID) or {}
+        if info.clientFileString then
+            e.strText[info.clientFileString]= name
+        end
+    end
+
+    for _, info in pairs(affixTab) do
+        local name, description = C_ChallengeMode.GetAffixInfo(info[1])
+        if name then
+            e.strText[name]= info[2]
+        end
+        if info[3] and description then
+            e.strText[description]= info[3]
+        end
+    end
+    Init_Add_Data()
+end
+
+
+
+
+
 
 
 
@@ -970,127 +1099,19 @@ end
 --###########
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:SetScript("OnEvent", function(self)
-    local Save= WoWToolsSave[BUG_CATEGORY15] or {}
-    do
+panel:SetScript("OnEvent", function(self, _, arg1)
+    if arg1== id then
+        local Save= WoWToolsSave[BUG_CATEGORY15] or {}
         if e.onlyChinese and not Save.disabled then
-            for journalEncounterID, name in pairs(instanceBossTab) do
-                local bossName= EJ_GetEncounterInfo(journalEncounterID)
-                if bossName then
-                    e.strText[bossName]= name
+            C_Timer.After(2, function()
+                do
+                    Init()
                 end
-            end
-
-            for _, info in pairs(instanceTab) do
-                local name= EJ_GetInstanceInfo(info[1])
-                if name then
-                    e.strText[name]= info[2]
-                end
-            end
-
-            for _, info in pairs(spellTab) do
-                if info[2] then
-                    local name= GetSpellInfo(info[1])
-                    if name then
-                        e.strText[name]=  info[2]
-                    end
-                end
-                if info[3] then
-                    local des= GetSpellDescription(info[1])
-                    if des then
-                        e.strText[des]= info[3]
-                    end
-                end
-            end
-
-            for mapChallengeModeID, info in pairs(e.ChallengesSpellTabs) do
-                if info.spell then
-                    if info.spellName then
-                        local name= GetSpellInfo(info.spell)
-                        e.strText[name]= info.spellName
-                    end
-                    if info.spellDes then
-                        local desc = GetSpellDescription(info.spell)
-                        if desc then
-                            e.strText[desc]= info.spellDes
-                        end
-                    end
-                end
-                if info.insName and info.ins then
-                    local name, description= EJ_GetInstanceInfo(info.ins)
-                    if name then
-                        e.strText[name]= info.insName
-                    end
-                    if info.insDesc and description then
-                        e.strText[description]= info.insDesc
-                    end
-                end
-                if info.name then
-                    local name= C_ChallengeMode.GetMapUIInfo(mapChallengeModeID)
-                    if name then
-                        e.strText[name]= info.name
-                    end
-                end
-            end
-
-            for _, info in pairs(fanctionTab) do
-                local name, description = GetFactionInfoByID(info[1])
-                if name then
-                    e.strText[name] = info[2]
-                end
-                if description and info[3] and info[3]~='' then
-                    e.strText[description]= info[3]
-                end
-            end
-
-            for _, curTab in pairs(curcurrencyTab) do
-                local info =C_CurrencyInfo.GetCurrencyInfo(curTab[1]) or {}
-                if info.name then
-                    e.strText[info.name]= curTab[2]
-                end
-                if info.description and curTab[3] then
-                    e.strText[info.description]= curTab[3]
-                end
-            end
-
-            for _, info in pairs(specTab) do
-                local name, description, _, role= select(2, GetSpecializationInfoByID(info[1]))
-                if name and info[2] then
-                    e.strText[name]= info[2]..(e.Icon[role] or '')
-                end
-                if description and info[3] then
-                    e.strText[description]= info[3]
-                end
-            end
-
-            for raceID, name in pairs(raceTab) do
-                local info = C_CreatureInfo.GetRaceInfo(raceID) or {}
-                if info.clientFileString then
-                    e.strText[info.clientFileString]= name
-                end
-            end
-
-            for _, info in pairs(affixTab) do
-                local name, description = C_ChallengeMode.GetAffixInfo(info[1])
-                if name then
-                    e.strText[name]= info[2]
-                end
-                if info[3] and description then
-                    e.strText[description]= info[3]
-                end
-            end
-            C_Timer.After(2, Init_Add_Data)
+                rest_all()
+            end)
         else
-            Init_Add_Data=function()end
+            rest_all()
         end
+        self:UnregisterEvent('ADDON_LOADED')
     end
-    specTab=nil
-    spellTab=nil
-    fanctionTab=nil
-    curcurrencyTab=nil
-    raceTab=nil
-    affixTab=nil
-    instanceTab=nil
-    instanceBossTab=nil
-    self:UnregisterEvent('ADDON_LOADED')
 end)
