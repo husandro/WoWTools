@@ -274,7 +274,7 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
     end
 
     local UnitTab={}--取得装等
-    
+
     local u= raid and 'raid' or 'party'
     local tabT, tabN, tabDPS, totaleHP = {}, {}, {}, 0
     local uiMapID= select(2, e.GetUnitMapName('player'))
@@ -443,7 +443,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1==id then
             if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button
                 Save= WoWToolsSave[addName] or Save
-                
+
                 button= e.Cbtn2({
                     name=nil,
                     parent=WoWToolsChatButtonFrame,

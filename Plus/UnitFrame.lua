@@ -1438,6 +1438,55 @@ local function Init_BossFrame()
         frame.BossButton:set_event()
 
 
+        --队友，选中BOSS，数量
+        --##############
+        frame.numSelectFrame= CreateFrame('Frame', frame)
+        frame.numSelectFrame.unit= frame.unit
+        frame.numSelectFrame.Text= e.Cstr(frame.BossButton, {color={r=1,g=1,b=1}})
+        frame.numSelectFrame.Text:SetPoint('CENTER')
+        function frame.numSelectFrame:set_event(f)
+            if f:IsShown() then
+                self:UnregisterEvent('UNIT_TARGET')
+            else
+                self:RegisterEvent('UNIT_TARGET')
+                self:settings()
+            end
+        end
+        function frame.numSelectFrame:settings()
+            local n=0
+            if IsInRaid() then
+                for i=1, MAX_RAID_MEMBERS do
+                    local unit= 'raid'..i
+                    if UnitIsUnit(unit..'target', self.unit) then-- and not UnitIsUnit(unit, 'player') then
+                        n= n+1
+                    end
+                end
+            elseif IsInGroup() then
+                for i=1, GetNumGroupMembers()-1, 1 do
+                    local unit= 'party'..i
+                    if UnitIsUnit(unit..'target', self.unit) then
+                        n= n+1
+                    end
+                end
+            end
+            self.Text:SetText(n>0 and n or '')
+        end
+        frame.numSelectFrame:SetScript('OnEvent', function(self, _, unit)
+            if UnitIsPlayer(unit) and not self.isRun  then
+                self.isRun=true
+                do
+                    self:settings()
+                end
+                self.isRun=nil
+            end
+        end)
+        frame:HookScript('OnShow', function(self)
+            self.numSelectFrame:set_event(self)
+        end)
+        frame:HookScript('OnHide', function(self)
+            self.numSelectFrame:set_event(self)
+        end)
+        frame.numSelectFrame:set_event(frame)
 
         --目标的目标，点击
         --##############
