@@ -1448,7 +1448,7 @@ local function Init_BossFrame()
             if f:IsShown() then
                 self:RegisterEvent('UNIT_TARGET')
                 if BossTargetFrameContainer.isInEditMode then
-                    self.Text:SetText(40)
+                    self.Text:SetText('40')
                 else
                     self:settings()
                 end
