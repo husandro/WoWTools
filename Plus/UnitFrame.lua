@@ -1479,7 +1479,7 @@ local function Init_BossFrame()
                     end
                 end
             end
-            self.Text:SetText(n>0 and n or '40')
+            self.Text:SetText(n>0 and n or '')
             self.isRun=nil
         end
         frame.numSelectFrame:SetScript('OnEvent', function(self, _, unit)
