@@ -21143,23 +21143,22 @@ local tab={
 --###########
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" and arg1==id then
-        local Save= WoWToolsSave[BUG_CATEGORY15] or {}
-        do
-            if e.onlyChinese and not Save.disabled then
+panel:SetScript("OnEvent", function(self, _, arg1)
+    if arg1==id then
+        local Save= WoWToolsSave[BUG_CATEGORY15] or {disabled= not e.Player.husandro}
+        if e.onlyChinese and not Save.disabled then
+            do
                 for name, text in pairs(tab) do
                     name= _G[name]
                     if name and name:find('%w') then
                         e.strText[name]= text
                     end
                 end
-
-            else
-                Init=function() end
             end
+            tab=nil
+        else
+            tab=nil
         end
-        tab=nil
         self:UnregisterAllEvents()
     end
 end)

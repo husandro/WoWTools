@@ -973,7 +973,7 @@ end
 
 
 
-function Init()
+local function Init()
     for journalEncounterID, name in pairs(instanceBossTab) do
         local bossName= EJ_GetEncounterInfo(journalEncounterID)
         if bossName then
@@ -1042,7 +1042,6 @@ function Init()
             e.strText[description]= info[3]
         end
     end
-
     for _, curTab in pairs(curcurrencyTab) do
         local info =C_CurrencyInfo.GetCurrencyInfo(curTab[1]) or {}
         if info.name then
@@ -1101,7 +1100,7 @@ local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, _, arg1)
     if arg1== id then
-        local Save= WoWToolsSave[BUG_CATEGORY15] or {}
+        local Save= WoWToolsSave[BUG_CATEGORY15] or {disabled= not e.Player.husandro}
         if e.onlyChinese and not Save.disabled then
             C_Timer.After(2, function()
                 do

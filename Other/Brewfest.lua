@@ -11,7 +11,7 @@ local button
 --####
 --初始
 --####
-function Init()
+local function Init()
     button= e.Cbtn(UIParent, {size={48, 48}, texture=132248})
     button:SetShown(false)
 
