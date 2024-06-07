@@ -1040,34 +1040,36 @@ local function Init_Scenarios_Menu(level)--ScenarioFinder.lua
 
     for i=1, numScenario do
         local scenarioID, name = GetRandomScenarioInfo(i)--local id, name, typeID, subtype, minLevel, maxLevel
-        local isAvailableForAll, isAvailableForPlayer = IsLFGDungeonJoinable(scenarioID)
-        if ( isAvailableForPlayer ) then
-            if ( isAvailableForAll ) then
-                e.LibDD:UIDropDownMenu_AddButton({
-                    text = e.cn(name)..get_Reward_Info(scenarioID),
-                    arg1 = scenarioID,
-                    keepShownOnClick=true,
-                    --checked = (ScenarioQueueFrame.type == value),
-                    checked= GetLFGQueueStats(LE_LFG_CATEGORY_SCENARIO, scenarioID),
-                    isTitle = nil,
-                    func = function(frame, arg1)
-                        --local mode, subMode = GetLFGMode(LE_LFG_CATEGORY_SCENARIO)
-                        if GetLFGQueueStats(LE_LFG_CATEGORY_SCENARIO) then--not ( mode == "queued" or mode == "listed" or mode == "rolecheck" or mode == "suspended" ) then
-                            LeaveLFG(LE_LFG_CATEGORY_SCENARIO)
-                        else
-                            LFG_JoinDungeon(LE_LFG_CATEGORY_SCENARIO, arg1, ScenariosList, ScenariosHiddenByCollapseList)--ScenarioQueueFrame_Join() 
-                        end
-                    end,
-                }, level)
-            else
-                e.LibDD:UIDropDownMenu_AddButton({
-                text = e.cn(name),
-                keepShownOnClick=true,
-                colorCode='|cff606060',
-                tooltipOnButton = true,
-                tooltipTitle = e.onlyChinese and '你不能进入此队列。' or YOU_MAY_NOT_QUEUE_FOR_THIS,
-                tooltipText = LFGConstructDeclinedMessage(scenarioID),
-            }, level)
+        if scenarioID then
+            local isAvailableForAll, isAvailableForPlayer = IsLFGDungeonJoinable(scenarioID)
+            if ( isAvailableForPlayer ) then
+                if ( isAvailableForAll ) then
+                    e.LibDD:UIDropDownMenu_AddButton({
+                        text = e.cn(name)..get_Reward_Info(scenarioID),
+                        arg1 = scenarioID,
+                        keepShownOnClick=true,
+                        --checked = (ScenarioQueueFrame.type == value),
+                        checked= GetLFGQueueStats(LE_LFG_CATEGORY_SCENARIO, scenarioID),
+                        isTitle = nil,
+                        func = function(frame, arg1)
+                            --local mode, subMode = GetLFGMode(LE_LFG_CATEGORY_SCENARIO)
+                            if GetLFGQueueStats(LE_LFG_CATEGORY_SCENARIO) then--not ( mode == "queued" or mode == "listed" or mode == "rolecheck" or mode == "suspended" ) then
+                                LeaveLFG(LE_LFG_CATEGORY_SCENARIO)
+                            else
+                                LFG_JoinDungeon(LE_LFG_CATEGORY_SCENARIO, arg1, ScenariosList, ScenariosHiddenByCollapseList)--ScenarioQueueFrame_Join() 
+                            end
+                        end,
+                    }, level)
+                else
+                    e.LibDD:UIDropDownMenu_AddButton({
+                        text = e.cn(name),
+                        keepShownOnClick=true,
+                        colorCode='|cff606060',
+                        tooltipOnButton = true,
+                        tooltipTitle = e.onlyChinese and '你不能进入此队列。' or YOU_MAY_NOT_QUEUE_FOR_THIS,
+                        tooltipText = LFGConstructDeclinedMessage(scenarioID),
+                    }, level)
+                end
             end
         end
     end

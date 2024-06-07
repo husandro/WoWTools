@@ -142,9 +142,11 @@ end
 function e.Cedit(self)--frame, name, size={} SecureScrollTemplates.xml
     local frame= CreateFrame('ScrollFrame', nil, self, 'ScrollFrameTemplate')
     local level= frame:GetFrameLevel()
-    frame.ScrollBar:ClearAllPoints()
-    frame.ScrollBar:SetPoint('TOPRIGHT', -10, -10)
-    frame.ScrollBar:SetPoint('BOTTOMRIGHT', -10, 10)
+    if frame.ScrollBar then
+        frame.ScrollBar:ClearAllPoints()
+        frame.ScrollBar:SetPoint('TOPRIGHT', -10, -10)
+        frame.ScrollBar:SetPoint('BOTTOMRIGHT', -10, 10)
+    end
     e.Set_ScrollBar_Color_Alpha(frame)
     frame.bg= CreateFrame('Frame', nil, frame, 'TooltipBackdropTemplate')
     frame.bg:SetPoint('TOPLEFT', -5, 5)
