@@ -112,7 +112,7 @@ local function Get_Item(itemID)
 		name= e.cn(C_Item.GetItemNameByID(itemID)) or ''
 
 		local nameText
-		local hex= select(4, C_Item.GetItemQualityColor(itemQuality)) or 'ffffffff'
+		local hex= itemQuality and select(4, C_Item.GetItemQualityColor(itemQuality)) or 'ffffffff'
 		if Save.nameShow then
 			nameText= '|c'..hex..name..'|r'
 		else

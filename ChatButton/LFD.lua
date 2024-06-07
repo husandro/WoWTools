@@ -803,53 +803,55 @@ end
 local function set_Party_Menu_List(level)--5人，随机 LFDFrame.lua
     for i=1, GetNumRandomDungeons() do
         local dungeonID, name = GetLFGRandomDungeonInfo(i)
-        local isAvailableForAll, isAvailableForPlayer, hid2eIfNotJoinable = IsLFGDungeonJoinable(dungeonID)
-        if (isAvailableForPlayer or not hid2eIfNotJoinable) then
-            local info
-            if isAvailableForAll then
-                local check= GetLFGQueueStats(LE_LFG_CATEGORY_LFD, dungeonID)--是否有排本
-                local doneToday= GetLFGDungeonRewards(dungeonID) and ' '..format('|A:%s:0:0|a', e.Icon.select) or nil--local doneToday, moneyAmount, moneyVar, experienceGained, experienceVar, numRewards, spellID = GetLFGDungeonRewards(dungeonID)
-                local tooltip
-                if check then
-                    tooltip= (tooltip or '')..e.Icon.left..'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '离开队列' or LEAVE_QUEUE)..'|r'
+        if dungeonID then
+            local isAvailableForAll, isAvailableForPlayer, hid2eIfNotJoinable = IsLFGDungeonJoinable(dungeonID)
+            if (isAvailableForPlayer or not hid2eIfNotJoinable) then
+                local info
+                if isAvailableForAll then
+                    local check= GetLFGQueueStats(LE_LFG_CATEGORY_LFD, dungeonID)--是否有排本
+                    local doneToday= GetLFGDungeonRewards(dungeonID) and ' '..format('|A:%s:0:0|a', e.Icon.select) or nil--local doneToday, moneyAmount, moneyVar, experienceGained, experienceVar, numRewards, spellID = GetLFGDungeonRewards(dungeonID)
+                    local tooltip
+                    if check then
+                        tooltip= (tooltip or '')..e.Icon.left..'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '离开队列' or LEAVE_QUEUE)..'|r'
+                    end
+                    if doneToday then
+                        tooltip=(tooltip and tooltip..'|n' or '')..(e.onlyChinese and '今天' or GUILD_EVENT_TODAY)..format('|A:%s:0:0|a', e.Icon.select)..(e.onlyChinese and '完成' or COMPLETE)
+                    end
+                    info= {
+                        text= e.cn(name)
+                            ..get_Reward_Info(dungeonID)
+                            ..(doneToday or ''),
+                        icon= select(11, GetLFGDungeonInfo(dungeonID)),
+                        arg1= dungeonID,
+                        arg2= check,
+                        keepShownOnClick=true,
+                        func= function(_, arg1, arg2)
+                            LFDQueueFrame_SetType(arg1)
+                            if arg2 then
+                                LeaveSingleLFG(LE_LFG_CATEGORY_LFD, arg1)
+                            else
+                                LFDQueueFrame_Join()
+                                printListInfo()--输出当前列表
+                                setTexture(arg1, nil, name, nil)--设置图标, 点击,提示
+                            end
+                        end,
+                        checked= GetLFGQueueStats(LE_LFG_CATEGORY_LFD, dungeonID),--是否有排本
+                        tooltipOnButton=true,
+                        tooltipTitle='dungeonID: '..dungeonID,
+                        tooltipText= tooltip,
+                    }
+                    e.LibDD:UIDropDownMenu_AddButton(info, level)
+                else
+                    info= {
+                        text = name,
+                        disabled = 1,
+                        tooltipWhileDisabled = 1,
+                        tooltipOnButton = 1,
+                        tooltipTitle= e.onlyChinese and '你不能进入此队列。' or YOU_MAY_NOT_QUEUE_FOR_THIS,
+                        tooltipText = LFGConstructDeclinedMessage(dungeonID),
+                    }
+                    e.LibDD:UIDropDownMenu_AddButton(info, level)
                 end
-                if doneToday then
-                    tooltip=(tooltip and tooltip..'|n' or '')..(e.onlyChinese and '今天' or GUILD_EVENT_TODAY)..format('|A:%s:0:0|a', e.Icon.select)..(e.onlyChinese and '完成' or COMPLETE)
-                end
-                info= {
-                    text= e.cn(name)
-                        ..get_Reward_Info(dungeonID)
-                        ..(doneToday or ''),
-                    icon= select(11, GetLFGDungeonInfo(dungeonID)),
-                    arg1= dungeonID,
-                    arg2= check,
-                    keepShownOnClick=true,
-                    func= function(_, arg1, arg2)
-                        LFDQueueFrame_SetType(arg1)
-                        if arg2 then
-                            LeaveSingleLFG(LE_LFG_CATEGORY_LFD, arg1)
-                        else
-                            LFDQueueFrame_Join()
-                            printListInfo()--输出当前列表
-                            setTexture(arg1, nil, name, nil)--设置图标, 点击,提示
-                        end
-                    end,
-                    checked= GetLFGQueueStats(LE_LFG_CATEGORY_LFD, dungeonID),--是否有排本
-                    tooltipOnButton=true,
-                    tooltipTitle='dungeonID: '..dungeonID,
-                    tooltipText= tooltip,
-                }
-                e.LibDD:UIDropDownMenu_AddButton(info, level)
-            else
-                info= {
-                    text = name,
-				    disabled = 1,
-				    tooltipWhileDisabled = 1,
-				    tooltipOnButton = 1,
-				    tooltipTitle= e.onlyChinese and '你不能进入此队列。' or YOU_MAY_NOT_QUEUE_FOR_THIS,
-				    tooltipText = LFGConstructDeclinedMessage(dungeonID),
-                }
-                e.LibDD:UIDropDownMenu_AddButton(info, level)
             end
         end
     end
