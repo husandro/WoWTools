@@ -4555,14 +4555,4 @@
         "PERKS_PROGRAM_REFUND",
         "SCRAPPING_MACHINE_TITLE"
     ],
-    "Lua.diagnostics.disable": [
-        "inject-field",
-        "undefined-field",
-        "redundant-parameter",
-        "param-type-mismatch",
-        "missing-parameter",
-        "duplicate-set-field",
-        "assign-type-mismatch",
-        "trailing-space"
-    ]
 }
