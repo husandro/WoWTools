@@ -822,8 +822,7 @@ end
 --初始，插件
 --#########
 
-local function Init_Blizzard_Calendar()
-   
+local function Init_Blizzard_Calendar()   
     if CalendarViewHolidayFrame.update then
         hooksecurefunc(CalendarViewHolidayFrame, 'update', calendar_Uptate)--提示节目ID
     end
