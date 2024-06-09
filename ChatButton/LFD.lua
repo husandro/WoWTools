@@ -349,6 +349,7 @@ local function Set_Queue_Status()--小眼睛, 信息
                         ..' '..(level<25 and '|cnRED_FONT_COLOR:'..level..'|r' or level)
                     for index= 2, 4 do
                         local abilityID= tab[index]
+---@diagnostic disable-next-line: param-type-mismatch
                         local abilityIcon= abilityID and select(2, C_PetJournal.GetPetAbilityInfo(abilityID))
                         if abilityIcon then
                             pet= pet..(index==2 and ' ' or '')..'|T'..abilityIcon..':0|t'
@@ -1058,6 +1059,7 @@ local function Init_Scenarios_Menu(level)--ScenarioFinder.lua
                             if GetLFGQueueStats(LE_LFG_CATEGORY_SCENARIO) then--not ( mode == "queued" or mode == "listed" or mode == "rolecheck" or mode == "suspended" ) then
                                 LeaveLFG(LE_LFG_CATEGORY_SCENARIO)
                             else
+---@diagnostic disable-next-line: undefined-global
                                 LFG_JoinDungeon(LE_LFG_CATEGORY_SCENARIO, arg1, ScenariosList, ScenariosHiddenByCollapseList)--ScenarioQueueFrame_Join() 
                             end
                         end,

@@ -1950,7 +1950,7 @@ local function Init()
         end
     end)
 
-    hooksecurefunc('ReputationFrame_InitReputationRow',function(factionRow, elementData)--ReputationFrame.lua 声望 界面,
+    hooksecurefunc('ReputationFrame_InitReputationRow',function(_, elementData)--ReputationFrame.lua 声望 界面,
         local factionIndex = elementData.index
         local factionID
         if ( factionIndex == GetSelectedFaction() ) then
@@ -1990,6 +1990,7 @@ local function Init()
             SetCVar("profanityFilter", '0')
 
             local pre = C_BattleNet.GetFriendGameAccountInfo
+---@diagnostic disable-next-line: duplicate-set-field
             C_BattleNet.GetFriendGameAccountInfo = function(...)
                 local gameAccountInfo = pre(...)
                 gameAccountInfo.isInCurrentRegion = true

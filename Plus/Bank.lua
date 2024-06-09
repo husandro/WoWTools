@@ -679,9 +679,9 @@ local function Get_Bank_Button_ItemID(btn)--银行，ButtonID, 测试是否是�
     end
 end
 
-local function Get_Bag_Free()--背包，空位
+local function Get_Bag_Free(all)--背包，空位
     local free= 0--CalculateTotalNumberOfFreeBagSlots() MainMenuBarBagButtons.lua
-    for i = BACKPACK_CONTAINER, NUM_BAG_FRAMES do
+    for i = BACKPACK_CONTAINER, NUM_BAG_FRAMES+(all and NUM_REAGENTBAG_FRAMES or 0) do
         free= free+ (C_Container.GetContainerNumFreeSlots(i) or 0)
     end
     return free
@@ -976,11 +976,11 @@ local function Init_Desposit_TakeOut_All_Items()
     ReagentBankFrame.TakeOutAllItemButton= btn
 
     --存放，所有，物品
-    btn= e.Cbtn(ReagentBankFrame.TakeOutAllItemButton, {size=23, icon='hide'})
-    btn:SetNormalAtlas('poi-traveldirections-arrow')
-    btn:GetNormalTexture():SetTexCoord(0,1,1,0)
-    btn:SetPoint('RIGHT', ReagentBankFrame.TakeOutAllItemButton, 'LEFT', -2, 0)
-    btn:SetScript('OnClick', function(self)
+    local btnOut= e.Cbtn(ReagentBankFrame.TakeOutAllItemButton, {size=23, icon='hide'})
+    btnOut:SetNormalAtlas('poi-traveldirections-arrow')
+    btnOut:GetNormalTexture():SetTexCoord(0,1,1,0)
+    btnOut:SetPoint('RIGHT', ReagentBankFrame.TakeOutAllItemButton, 'LEFT', -2, 0)
+    btnOut:SetScript('OnClick', function(self)
         local free= Get_Bank_Free()--银行，空位
         if free==0 then
             return
@@ -999,7 +999,7 @@ local function Init_Desposit_TakeOut_All_Items()
             end
         end
     end)
-    function btn:set_tooltips()
+    function btnOut:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         local free=Get_Bank_Free()--银行，空位
@@ -1011,27 +1011,27 @@ local function Init_Desposit_TakeOut_All_Items()
         )
         e.tips:Show()
     end
-    function btn:show_tooltips()
+    function btnOut:show_tooltips()
         C_Timer.After(1.5, function() if GameTooltip:IsOwned(self) then self:set_tooltips() end end)
     end
-    btn:HookScript('OnLeave', GameTooltip_Hide)
-    btn:HookScript('OnEnter', btn.set_tooltips)
-    ReagentBankFrame.DespositAllItemButton= btn
+    btnOut:HookScript('OnLeave', GameTooltip_Hide)
+    btnOut:HookScript('OnEnter', btnOut.set_tooltips)
+    ReagentBankFrame.DespositAllItemButton= btnOut
 
 
     --取出，所有，材料
-    btn= e.Cbtn(ReagentBankFrame.DespositButton, {size=23, icon='hide'})
-    btn:SetNormalAtlas('poi-traveldirections-arrow')
-    btn:GetNormalTexture():SetTexCoord(1,0,1,0)
-    btn:SetPoint('LEFT', ReagentBankFrame.DespositButton, 'RIGHT', 2, 0)
-    function btn:get_bag_slot(frame)
+    local btnR= e.Cbtn(ReagentBankFrame.DespositButton, {size=23, icon='hide'})
+    btnR:SetNormalAtlas('poi-traveldirections-arrow')
+    btnR:GetNormalTexture():SetTexCoord(1,0,1,0)
+    btnR:SetPoint('LEFT', ReagentBankFrame.DespositButton, 'RIGHT', 2, 0)
+    function btnR:get_bag_slot(frame)
         return frame.isBag and Enum.BagIndex.Bankbag or frame:GetParent():GetID(), frame:GetID()
     end
-    function btn:get_free()
+    --[[function btnR:get_free()
         return C_Container.GetContainerNumFreeSlots(NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES) or 0
-    end
-    btn:SetScript('OnClick', function(self)
-        local free= self:get_free()
+    end]]
+    btnR:SetScript('OnClick', function(self)
+        local free= Get_Bag_Free(true)--self:get_free()
         if free==0 then
             return
         end
@@ -1055,10 +1055,10 @@ local function Init_Desposit_TakeOut_All_Items()
         end
         self:show_tooltips()
     end)
-    function btn:set_tooltips()
+    function btnR:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        local free= self:get_free()
+        local free= Get_Bag_Free(true)--self:get_free()
         e.tips:AddDoubleLine(e.onlyChinese and '取出所有材料' or 'Take out all reagents',
             format('|A:4549254:0:0|a%s #%s%d',
                 e.onlyChinese and '材料' or AUCTION_CATEGORY_TRADE_GOODS,
@@ -1067,12 +1067,12 @@ local function Init_Desposit_TakeOut_All_Items()
         )
         e.tips:Show()
     end
-    function btn:show_tooltips()
+    function btnR:show_tooltips()
         C_Timer.After(1, function() if GameTooltip:IsOwned(self) then self:set_tooltips() end end)
     end
-    btn:HookScript('OnLeave', GameTooltip_Hide)
-    btn:HookScript('OnEnter', btn.set_tooltips)
-    ReagentBankFrame.TakeOutAllReagentsButton= btn
+    btnR:HookScript('OnLeave', GameTooltip_Hide)
+    btnR:HookScript('OnEnter', btnR.set_tooltips)
+    ReagentBankFrame.TakeOutAllReagentsButton= btnR
 end
 
 
