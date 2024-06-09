@@ -1000,7 +1000,7 @@ local function Init_EncounterJournal()--冒险指南界面
         end
 
         --显示, 物品, 属性
-        e.Set_Item_Stats(btn, not Save.hideEncounterJournal and btn.link, {point= btn.IconBorder, hideLevel=hideLevel})
+        e.Set_Item_Stats(btn, not Save.hideEncounterJournal and btn.link, {point= btn.IconBorder})
 
         local spellID--物品法术，提示
         if (btn.link or btn.itemID) and not Save.hideEncounterJournal then

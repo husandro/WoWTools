@@ -2743,7 +2743,7 @@ local function Init_Options()
         func= function(_, _, value2)
             local value3= e.GetFormatter1to10(value2, 0, 1)
             Save.alpha= value3
-            Init()
+            --Init()
             print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     })
