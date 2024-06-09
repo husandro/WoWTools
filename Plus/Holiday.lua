@@ -15,109 +15,6 @@ local Initializer
 
 
 
-local eventTab={-- [',''},
-[658]={'烟花庆典', '艾泽拉斯的大庆典！每个种族的主城中都会燃放美丽的烟花，每小时一次，整夜不停！'},
-[1335]={'巨龙时代地下城活动', '在此活动期间，每个“巨龙时代”地下城的最终首领都会在被击败后额外奖励玩家一件物品'},
-[642]={'赛艇大会','艾泽拉斯的居民需要休息。让我们去千针石林划船吧！'},
-[1396]={'艾泽拉斯之秘','这片土地充满了秘密！隐世的奇珍，失窃的财宝，探明的线索…… 这背后是谁的阴谋？寻找捍卫者，帮他们查出真相！每天下午3点（太平洋时间）都会有新的秘密被发掘！'},
-[691]={'时尚试炼','掸去肩甲上的征尘，加入艾泽拉斯的时尚比拼吧！与任意主城的幻化师对话，参与时尚试炼'},
-[1525]={'《魔兽世界》幻境新生-熊猫人之谜','永恒龙军团正在调查潘达利亚的历史。重新游玩“熊猫人之谜”内容更新，体验全新赛季技能，赢取全新赛季奖励！'},
-[1052]={'云游节','前往卡桑琅丛林的海龟沙滩，纪念刘浪和神真子的传奇。这是沉思的时刻，也是欢歌的时刻'},
-[1462]={'《炉石传说》10周年','一起在瓦德拉肯、暴风城和奥格瑞玛庆祝这款给大家带来十年欢乐的卡牌游戏吧！'},
-[1429]={'诺森德杯','驭龙者受到艾泽拉斯骑手会的邀请，前往诺森德参加各地的赛事！和瓦德拉肯的安德斯塔兹领主谈谈，了解更多信息。'},
---[563]={'战场假日活动','在此活动期间，随机战场奖励的荣誉值提高。荣耀在战场上等着你！'},
-[1053]={'免费t恤日','目击者称，艾泽拉斯有多处出现了T恤商，而且他们的T恤……不要钱！！！甚至还有传言说，有艺人正在主城中发放免费的二手衬衫！'},
-[1425]={'紊乱时间流','青铜龙军团再次发现时间流变得越发紊乱，有好几条时间流在与我们的时间流迅速交叉！ 连续完成时空漫游地下城后，你会获得时间流学识，暂时提升你获得的经验值。此外，在限定时间内，瓦德拉肯的卡兹拉提供的时空漫游任务奖励也会提升，会变为全新的英雄等级牢窟珍宝箱。'},
---[1335]={'巨龙时代地下城活动','在此活动期间，每个“巨龙时代”地下城的最终首领都会在被击败后额外奖励玩家一件物品'},
-[1382]={'贪婪的特使','诡谲的烈风从另一个世界吹来，还有零星的传闻说，手持麻袋的奇怪生物现身于世…… 快去找找，看看它们究竟藏着什么样的财宝！'},
-[648]={'亮顶节','今天，赞加沼泽孢子村的孢子人们将举行他们一年一度的蘑菇节。尽可能帮助他们保护伟大的弗肖，不要让她死亡！'},
-[645]={'春日气球节','这是一个风和日丽的日子……最适合坐着热气球观光了。快乘上热气球饱览美景，结交新朋友吧'},
-[1395]={'卡利姆多杯','驭龙者受到艾泽拉斯骑手会的邀请，前往卡利姆多参加各地的赛事！和瓦德拉肯的安德斯塔兹领主谈谈，了解更多信息。'},
-[635]={'志愿军日','今天，艾泽拉斯和德拉诺的居民将共同表彰他们的保卫者所作出的贡献。向一名卫兵敬礼以表达你的敬意吧！'},
-[694]={'枭兽节','今天，月光林地将举办一场有关枭兽的有趣庆典。快来看看你能学到些什么吧！'},
---[561]={'竞技场练习赛假日活动','在此活动期间，竞技场练习赛奖励的荣誉值提高。你是否愿意响应战斗的召唤呢？'},
-[692]={'舞会','今天，奥格瑞玛和暴风城的主拍卖行已经清场并改为了舞会！快来展示一下你们的阵营荣誉感吧'},
-[560]={'埃匹希斯假日活动','在此活动期间，埃匹希斯水晶的产量将离奇增长，德拉诺各地的敌人掉落水晶的概率将大幅提高。'},
-[644]={'安戈洛狂欢节','安戈洛环形山的恐龙越来越焦躁了。该去拜访它们一下了！'},
-[638]={'甲虫的召唤','历史上的今天，甲虫之锣被敲响，开启了安其拉的大门。代表你的阵营收集补给品，或者击杀暮光之锤和其拉虫族的部队。获胜的阵营可以将自己的旗帜挂在甲虫之锣旁，直至年末！'},
-[1400]={'东部王国杯','驭龙者受到艾泽拉斯骑手会的邀请，前往东部王国参加各地的赛事！和瓦德拉肯的安德斯塔兹领主谈谈，了解更多信息。'},
-[634]={'角鹰兽孵化日','今天是乱羽角鹰兽孵化的日子。前往位于菲拉斯的乱羽高地，亲眼见证这一奇景吧！'},
-[407]={'外域杯','驭龙者受到艾泽拉斯骑手会的邀请，前往外域参加各地的赛事！和瓦德拉肯的安德斯塔兹领主谈谈，了解更多信息。'},
-[1216]={'托加斯特-丧魂合唱队','丧魂在托加斯特，罪魂之塔中肆虐！'},
-[647]={'蝌蚪远足日','今天，北风苔原的冬鳍部族的幼年鱼人们将完成他们穿越西部裂谷的旅程。'},
-[696]={'诺莫瑞根马拉松','和侏儒们一起向他们百折不挠的精神致敬！跨越东部王国，从诺莫瑞根南下，一直跑到藏宝海湾！'},
-[1054]={'幽光之星', 'GG工程公司在瓦丝琪尔的深海里发现了冷光生物。他们急需你的帮助才能展开研究，因为这些生物很快就会重新消失在深海中！'},
-[1383]={'欢迎来到庇护之地','诡谲的烈风从另一个世界吹来，令英雄们感到精力愈加充沛。 活动期间，角色获得更多的经验值和声望。'},
-[918]={'荆棘战争','黑海岸烽烟再起，部落和联盟会在这个限时事件中争夺对泰达希尔的控制权！'},
-[1432]={'阿梅达希尔-梦境之愿','深入圣泉神殿，追击菲莱克，不能让他吞噬阿梅达希尔之心！'},
-[564]={'德拉诺地下城活动','在此活动期间，击败任意100级英雄或史诗地下城里的敌人可获得相应德拉诺阵营的声望'},
---[1217]={'暗影界地下城活动','在此活动期间，每个“暗影国度”地下城的最终首领都会在被击败后额外奖励玩家一件物品。'},
-[1316]={'宿命团队副本-统御圣所','本周内，统御圣所的首领难度提高并拥有一项特殊的词缀强化。掉落的战利品的物品等级提高。'},
-[1217]={'暗影界地下城活动','在此活动期间，每个“暗影国度”地下城的最终首领都会在被击败后额外奖励玩家一件物品。'},
-[1215]={'托加斯特-无拘黑暗','无拘黑暗已被释放到了托加斯特，罪魂之塔！'},
-[965]={'荆棘战争','黑海岸烽烟再起，部落和联盟会在这个限时事件中争夺对泰达希尔的控制权！'},
-[1214]={'托加斯特-浪骸野兽','浪骸野兽已被释放到了托加斯特，罪魂之塔！'},
---[591]={'军团再临-地下城活动','在此活动期间，每个“军团再临”地下城的最终首领都会在被击败后额外奖励玩家一件物品。'},
-[941]={'争霸艾泽拉斯-地下城活动','在此活动期间，每个“争霸艾泽拉斯”地下城的最终首领都会在被击败后额外奖励玩家一件物品'},
-
-
-[341]={'仲夏火焰节', '一个欢笑与庆祝的时刻，以纪念一年中最热的季节。'},
-[327]={'春节', '月光林地的德鲁伊每年都会举行一次庆典，以庆祝他们对一股远古的邪恶力量所取得的胜利。在春节期间，艾泽拉斯的人民可以祭拜睿智的祖先，共享美味的盛宴，还有……绚丽的烟花！'},
-[201]={'儿童周', '让孤儿看看英雄的生活是怎样的！拜访暴风城的孤儿监护员奈丁加尔，奥格瑞玛的孤儿监护员巴特维尔，沙塔斯城的孤儿院长莫希，达拉然的孤儿监护员艾蕊娅，达萨罗的看护者帕戴，或是伯拉勒斯的孤儿院长维斯特森。让孩子们梦想成真吧！'},
-[423]={'情人节', '艾泽拉斯的各大主城中弥漫着某种气息。工匠齐聚一堂，展开了馈赠盛典。市民们会收到所爱之人饱含善意和爱意的礼物。'},
-[324]={'万圣节', '万圣节是被遗忘者庆祝自己摆脱天灾军团控制的节日。 艾泽拉斯的旅店老板们会向所有上门问候的人送出糖果或恶作剧，到处都是欢乐的笑声。'},
-[372]={'美酒节', '美酒节最初是矮人的节日，但现在已经成为了艾泽拉斯所有种族都喜欢的节日！ 前往铁炉堡外面的联盟营地，或是奥格瑞玛外面的部落营地参加狂欢吧！'},
-[398]={'海盗日', '德梅萨船长正在地精城市藏宝海湾征募海盗。 如果你对海盗生涯感兴趣的话，就去各大主城拜访她和她的随从们吧！'},
-[321]={'收获节', '收获节的意义，在于纪念那些为帮助朋友和伙伴而牺牲的英雄们。奥格瑞玛和铁炉堡外都在举行盛宴，向那些英雄表示敬意。'},
-[181]={'复活节', '复活节到了。许多彩蛋巧妙地隐藏在每个种族的新手区域——年轻的英雄们初次检验自己力量的地方，你能找到多少呢？'},
-[141]={'冬幕节', '冬天爷爷正在带着烟林牧场的礼物访问铁炉堡和奥格瑞玛。整个艾泽拉斯到处充满着节日的喜庆气氛！'},
-[409]={'悼念日', '在悼念日，人们会聚集在墓地来告慰逝者的亡魂。 届时任何主城的公墓都会举行仪式，在那里有悼念日食品、舞蹈、化装聚会和其他活动。'},
-[404]={'感恩节','感恩节是一场感谢好运，并将自己的幸福和周围的人们共同分享的节日。'},
-[62]={'焰火表演','在日落之后，伴随着每小时一次的焰火舞会，仲夏火焰节将缓缓落下帷幕。 想要观看表演的话，可以前去各大主城或者藏宝海湾。'},
-
---循环 事件
-[479]={'暗月马戏团', '暗月马戏团已经开张营业！ 去拜访希拉斯·暗月和他的马戏团，玩一玩考验头脑和胆量的游戏，看一看来自艾泽拉斯各地的奇特珍品……还有更多的乐趣在等着你！'},
-[587]={'漫游大地裂变','在此活动期间，35级及以上玩家可以加入特殊的随机时空漫游地下城队列，将玩家的角色及物品等级降低到“大地的裂变”的旧地下城的相同水平。在时空漫游中，首领会掉落适合玩家真实等级的战利品。 在“大地的裂变”时空漫游期间，你可以组建一个10人到30人的团队，前往奥格瑞玛或暴风城，与沃尔姆谈话以进入火焰之地团队副本的时空漫游版本。'},
-[559]={'漫游燃烧远征', '在此活动期间，30级及以上玩家可以加入特殊的随机时空漫游地下城队列，将玩家的角色及物品等级降低到“燃烧的远征”的旧地下城的相同水平。在时空漫游中，首领会掉落适合玩家真实等级的战利品。 在“燃烧的远征”时空漫游期间，你可以组建一个10人到30人的团队，前往外域的沙塔斯，与沃尔姆谈话以进入黑暗神殿团队副本的时空漫游版本。'},
-[562]={'漫游巫妖王之怒', '在此活动期间，30级及以上玩家可以加入特殊的随机时空漫游地下城队列，将玩家的角色及物品等级降低到“巫妖王之怒”的旧地下城的相同水平。在时空漫游中，首领会掉落适合玩家真实等级的战利品。 在“巫妖王之怒”时空漫游期间，你可以组建一个10人到30人的团队，前往诺森德的达拉然，与沃尔姆谈话以进入奥杜尔团队副本的时空漫游版本。'},
-[592]={'世界任务奖励活动','在此活动期间，完成世界任务会额外奖励对应阵营的声望值。'},
-[563]={'战场假日活动','在此活动期间，随机战场奖励的荣誉值提高。荣耀在战场上等着你！'},
-[561]={'竞技场练习赛假日活动','在此活动期间，竞技场练习赛奖励的荣誉值提高。你是否愿意响应战斗的召唤呢？'},
-[565]={'宠物对战假日活动','在此活动期间，你的宠物可获得双倍经验值！快出去战斗吧！'},
-[646]={'肯瑞托旅店趴','艾泽拉斯的法师们也需要休闲。快去你所在地的酒吧，进入传送门，参加旅店趴活动吧！'},
-[591]={'军团再临-地下城活动','在此活动期间，每个“军团再临”地下城的最终首领都会在被击败后额外奖励玩家一件物品。'},
-
-[1235]={'PvP乱斗-人机对决'},
-[1240]={'PvP乱斗-深风大灌篮'},
-[1120]={'PvP乱斗-经典阿什兰'},
-[664]={'PvP乱斗-战歌争夺战'},
-[666]={'PvP乱斗-阿拉希暴风雪'},
-[1233]={'PvP乱斗-决战影踪派'},
-[663]={'PvP乱斗-引力失效'},
-[1311]={'PvP乱斗-单排轮斗'},
-[667]={'PvP乱斗-爆棚乱战'},
-[702]={'PvP乱斗-六人战'},
-[1452]={'PvP乱斗-战场闪电战'},
-[1047]={'PvP乱斗-碟中碟'},
-[662]={'PvP乱斗-南海镇vs塔伦米尔'},
-[1170]={'PvP乱斗-魔古接力'},
-
-
-[590]={'魔兽世界周年庆典'},
-[693]={'魔兽世界十三周年'},
-[589]={'魔兽世界十二周年'},
-[566]={'魔兽世界十一周年'},
-[514]={'魔兽世界十周年'},
-[808]={'魔兽世界十五周年'},
-[1181]={'魔兽世界十六周年'},
-[1225]={'魔兽世界十七周年'},
-[1262]={'魔兽世界十八周年'},
-[1397]={'魔兽世界十九周年'},
-[1501]={'《魔兽世界》二十一周年'},
-}
-
-
-
 
 
 
@@ -214,8 +111,8 @@ local function Get_Button_Text(event)
     local texture
     local title
 
-    if eventTab[event.eventID] then
-        title=eventTab[event.eventID][1]
+    if e.HolidayEvent[event.eventID] then
+        title=e.HolidayEvent[event.eventID][1]
     end
     title= title or e.cn(event.title)
 
@@ -491,9 +388,9 @@ local function Set_TrackButton_Text(monthOffset, day)
                 if (self.monthOffset and self.day and self.index) then
                     local holidayInfo= C_Calendar.GetHolidayInfo(self.monthOffset, self.day, self.index);
                     if (holidayInfo) then
-                        if eventTab[self.eventID] then
-                            title= eventTab[self.eventID][1]
-                            description= eventTab[self.eventID][2]
+                        if e.HolidayEvent[self.eventID] then
+                            title= e.HolidayEvent[self.eventID][1]
+                            description= e.HolidayEvent[self.eventID][2]
                         end
                         title= title or holidayInfo.name
                         description = description or holidayInfo.description;
@@ -870,9 +767,9 @@ local function calendar_Uptate()
     local info= indexInfo and C_Calendar.GetDayEvent(indexInfo.offsetMonths, indexInfo.monthDay, indexInfo.eventIndex) or {}
     local text
     if info.eventID then
-        local head, desc
-        if eventTab[info.eventID] then
-            head, desc= eventTab[info.eventID][1], eventTab[info.eventID][2]
+        local head, desc--汉化
+        if e.HolidayEvent[info.eventID] then
+            head, desc= e.HolidayEvent[info.eventID][1], e.HolidayEvent[info.eventID][2]
         end
         text= (info.iconTexture and '|T'..info.iconTexture..':0|t'..info.iconTexture..'|n' or '')
             ..'eventID '..info.eventID
@@ -887,7 +784,6 @@ local function calendar_Uptate()
             end
             CalendarViewHolidayFrame.ScrollingFont:SetText(desc)
         end
-        
     end
     if text and not CalendarViewHolidayFrame.Text then
         CalendarViewHolidayFrame.Text= e.Cstr(CalendarViewHolidayFrame, {mouse=true, color={r=0, g=0.68, b=0.94, a=1}})
@@ -925,35 +821,9 @@ end
 --#########
 --初始，插件
 --#########
-local CALENDAR_DAYBUTTON_MAX_VISIBLE_EVENTS		= 4;
-local function ShouldDisplayEventOnCalendar(event)
-	local shouldDisplayBeginEnd = event and event.sequenceType ~= "ONGOING";
-	if ( event.sequenceType == "END" and event.dontDisplayEnd ) then
-		shouldDisplayBeginEnd = false;
-	end
-	return shouldDisplayBeginEnd;
-end
 
 local function Init_Blizzard_Calendar()
-    hooksecurefunc('CalendarFrame_UpdateDayEvents', function(index, day, monthOffset, selectedEventIndex, contextEventIndex)
-        local dayButtonName= 'CalendarDayButton'..index
-
-        local numEvents = C_Calendar.GetNumDayEvents(monthOffset, day);
-        local eventIndex = 1;
-        local eventButtonIndex = 1;        
-        while ( eventButtonIndex <= CALENDAR_DAYBUTTON_MAX_VISIBLE_EVENTS and eventIndex <= numEvents ) do
-            local eventButtonText1 = _G[dayButtonName..'EventButton'..eventButtonIndex.."Text1"];--CalendarDayButton16EventButton1Text1
-            local event = C_Calendar.GetDayEvent(monthOffset, day, eventIndex);
-            if ShouldDisplayEventOnCalendar(event) then
-                local title= eventTab[event.eventID] and eventTab[event.eventID][1]
-                if title then--and not event.isCustomTitle  then
-                    eventButtonText1:SetText(title)
-                end
-                eventButtonIndex = eventButtonIndex + 1;
-            end
-            eventIndex = eventIndex + 1;
-        end
-    end)
+   
     if CalendarViewHolidayFrame.update then
         hooksecurefunc(CalendarViewHolidayFrame, 'update', calendar_Uptate)--提示节目ID
     end
@@ -1153,7 +1023,8 @@ end
 
 
 panel:RegisterEvent('ADDON_LOADED')
-panel:SetScript("OnEvent", function(_, event, arg1)
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
@@ -1180,36 +1051,14 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             })
 
             if  Save.disabled then
-                panel:UnregisterAllEvents()
+                self:UnregisterEvent('ADDON_LOADED')
             else
-
-                if not e.onlyChinese or LOCALE_zhCN or LOCALE_zhTW then
-                    eventTab={}
-                else
-                    local tab= WoWToolsSave[BUG_CATEGORY15] or {disabled= not e.Player.husandro}
-                    if tab.disabled then
-                        eventTab={}
-                    end
-                end
-
-
                 Calendar_LoadUI()
             end
-            panel:RegisterEvent("PLAYER_LOGOUT")
 
         elseif arg1=='Blizzard_Calendar' then
             Init_Blizzard_Calendar()--初始，插件
-            Init_TrackButton()
-            C_Timer.After(2, function()
-                --[[e.call('Calendar_Toggle')
-                C_Timer.After(2, function()
-                    if CalendarFrame:IsShown() then
-                        e.call('Calendar_Toggle')
-                    end
-                    Init_Blizzard_Calendar()--初始，插件
-                    Init_TrackButton()
-                end)]]
-            end)
+            C_Timer.After(2, Init_TrackButton)
         end
 
     elseif event == "PLAYER_LOGOUT" then

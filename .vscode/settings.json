@@ -4555,7 +4555,10 @@
         "PERKS_PROGRAM_REFUND",
         "SCRAPPING_MACHINE_TITLE",
         "CalendarViewHolidayFrame_Update",
-        "CalendarDayButton16EventButton1Text1"
+        "CalendarDayButton16EventButton1Text1",
+        "CalendarEventPickerFrame_InitButton",
+        "CalendarEventPickerCloseButton",
+        "CalendarEventPickerCloseButtonText"
     ],
     "Lua.diagnostics.disable": [
         "redundant-parameter",

@@ -7380,6 +7380,8 @@ local function Init_Loaded(arg1)
 
     elseif arg1=='Blizzard_Calendar' then--日历
         set(CalendarFilterFrameText, '过滤器')
+        set(CalendarEventPickerFrame.Header.Text, '选择一个活动')
+        set(CalendarEventPickerCloseButtonText, '关闭')
         hooksecurefunc('CalendarFrame_Update', function()
             for i= 1, 7 do
                 setLabel(_G['CalendarWeekday'..i..'Name'])
@@ -7388,6 +7390,45 @@ local function Init_Loaded(arg1)
         hooksecurefunc('CalendarFrame_UpdateTitle', function()
             setLabel(CalendarMonthName)
         end)
+
+        hooksecurefunc('CalendarEventPickerFrame_InitButton', function(btn, elementData)
+            local dayButton = CalendarEventPickerFrame.dayButton;
+            local monthOffset = dayButton.monthOffset;
+            local day = dayButton.day;
+            local eventIndex = elementData.index;
+            local event = C_Calendar.GetDayEvent(monthOffset, day, eventIndex) or {}
+            local tab= e.HolidayEvent[event.eventID]
+            if tab and tab[1] then
+                btn.Title:SetText(tab[1])
+            end
+        end)
+
+        local function ShouldDisplayEventOnCalendar(event)
+            local shouldDisplayBeginEnd = event and event.sequenceType ~= "ONGOING";
+            if ( event.sequenceType == "END" and event.dontDisplayEnd ) then
+                shouldDisplayBeginEnd = false;
+            end
+            return shouldDisplayBeginEnd;
+        end
+        hooksecurefunc('CalendarFrame_UpdateDayEvents', function(index, day, monthOffset, selectedEventIndex, contextEventIndex)
+            local dayButtonName= 'CalendarDayButton'..index    
+            local numEvents = C_Calendar.GetNumDayEvents(monthOffset, day);
+            local eventIndex = 1;
+            local eventButtonIndex = 1;
+            while ( eventButtonIndex <= 4 and eventIndex <= numEvents ) do
+                local eventButtonText1 = _G[dayButtonName..'EventButton'..eventButtonIndex.."Text1"];--CalendarDayButton16EventButton1Text1
+                local event = C_Calendar.GetDayEvent(monthOffset, day, eventIndex);
+                if ShouldDisplayEventOnCalendar(event) then
+                    local title= e.HolidayEvent[event.eventID] and e.HolidayEvent[event.eventID][1]
+                    if title then--and not event.isCustomTitle  then
+                        eventButtonText1:SetText(title)
+                    end
+                    eventButtonIndex = eventButtonIndex + 1;
+                end
+                eventIndex = eventIndex + 1;
+            end
+        end)
+        
 
     elseif arg1=='Blizzard_EventTrace' then--ETRACE
         set(EventTraceTitleText, '事件记录')

@@ -28,8 +28,9 @@ e.Show_WoWHead_URL=function()end--Tooltips.lua
 
 
 --Blizzard_Deprecated/Deprecated_10_2_0.lua
-e.WoWDate={}
-e.strText={}
+e.WoWDate={}--战网，数据
+e.strText={}--主要，汉化
+e.HolidayEvent={}--节日，汉化
 e.StausText={}--属性，截取表 API_Panel.lua
 e.ChallengesSpellTabs={}--Challenges.lua
 e.tips=GameTooltip
