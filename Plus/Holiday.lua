@@ -674,7 +674,6 @@ local function Init_TrackButton()
             elseif sacle<0.4 then
                 sacle=0.4
             end
-            print(id, Initializer:GetName(), e.onlyChinese and '缩放' or UI_SCALE, sacle)
             Save.scale=sacle
             self:set_Scale()
             self:set_Tooltips()
@@ -822,7 +821,7 @@ end
 --初始，插件
 --#########
 
-local function Init_Blizzard_Calendar()   
+local function Init_Blizzard_Calendar()
     if CalendarViewHolidayFrame.update then
         hooksecurefunc(CalendarViewHolidayFrame, 'update', calendar_Uptate)--提示节目ID
     end
