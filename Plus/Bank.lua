@@ -1032,7 +1032,7 @@ local function Init_Desposit_TakeOut_All_Items()
     end]]
     btnR:SetScript('OnClick', function(self)
         local free= Get_Bag_Free(true)--self:get_free()
-        if free==0 then
+        if free==0 or not IsReagentBankUnlocked() then
             return
         end
         local tabs={}
@@ -1073,6 +1073,23 @@ local function Init_Desposit_TakeOut_All_Items()
     btnR:HookScript('OnLeave', GameTooltip_Hide)
     btnR:HookScript('OnEnter', btnR.set_tooltips)
     ReagentBankFrame.TakeOutAllReagentsButton= btnR
+
+
+    --[[ReagentBankFrame.DespositButton:SetScript('OnEnter', function(self)
+        local free=0
+        if IsReagentBankUnlocked() then
+            for i=1, 98 do
+                local slot= _G['ReagentBankFrameItem'..i]
+                if slot and not Get_Bank_Button_ItemID(slot) then
+                    free= free+1
+                end
+            end
+        end
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()        
+        e.tips:AddDoubleLine(e.onlyChinese and '存放各种材料' or REAGENTBANK_DEPOSIT, '#|cnGREEN_FONT_COLOR:'..free)
+        e.tips:Show()
+    end)]]
 end
 
 
@@ -1109,9 +1126,8 @@ local function Init_Menu(_, level)
     }, level)
 
     e.LibDD:UIDropDownMenu_AddButton({
-        text= e.onlyChinese and '选项' or OPTIONS,
+        text= '    '..(e.onlyChinese and '选项' or OPTIONS)..'|A:mechagon-projects:0:0|a',
         notCheckable=true,
-        icon= 'mechagon-projects',
         func= function()
             e.OpenPanelOpting(Initializer)
         end
