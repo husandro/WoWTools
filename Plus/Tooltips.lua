@@ -1923,8 +1923,9 @@ local function Init()
         local name, description, standingID, barMin, barMax, barValue, _, _, isHeader, _, hasRep, _, _, factionID, _, _ = GetFactionInfoByID(self.factionID)
         if factionID and not isHeader or (isHeader and hasRep) then
             e.tips:SetOwner(self, "ANCHOR_RIGHT")
-            e.tips:AddLine(name..' '..standingID..'/'..MAX_REPUTATION_REACTION, 1,1,1)
-            e.tips:AddLine(description, nil,nil,nil, true)
+            e.tips:AddLine(e.cn(name), 1,1,1)--..' '..standingID..'/'..MAX_REPUTATION_REACTION, 1,1,1)
+            e.tips:AddLine(' ')
+            e.tips:AddLine(e.cn(description), nil,nil,nil, true)
             e.tips:AddLine(' ')
             local factionStandingtext = GetText("FACTION_STANDING_LABEL"..standingID, e.Player.sex)
             factionStandingtext= e.strText[factionStandingtext] or factionStandingtext
