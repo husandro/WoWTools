@@ -1408,7 +1408,7 @@ function func.Set_Unit(self)--设置单位提示信息
 
         local type=UnitCreatureType(unit)--生物类型
         if type and not type:find(COMBAT_ALLY_START_MISSION) then
-            self.textRight:SetText(col..type..'|r')
+            self.textRight:SetText(col..e.cn(type)..'|r')
         end
     end
 
