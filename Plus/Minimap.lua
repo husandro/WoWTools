@@ -3193,7 +3193,7 @@ end)]]
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-panel:SetScript("OnEvent", function(_, event, arg1)
+panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
@@ -3217,17 +3217,17 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             })
 
             if not Save.disabled then
-                panel:RegisterEvent("ZONE_CHANGED_NEW_AREA")
-                panel:RegisterEvent('ZONE_CHANGED')
-                panel:RegisterEvent("PLAYER_ENTERING_WORLD")
+                self:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+                self:RegisterEvent('ZONE_CHANGED')
+                self:RegisterEvent("PLAYER_ENTERING_WORLD")
                 if Save.ZoomOutInfo then
                     set_Event_MINIMAP_UPDATE_ZOOM()--当前缩放，显示数值
                 end
                 Init()
             else
-                panel:UnregisterAllEvents()
+                self:UnregisterAllEvents()
             end
-            panel:RegisterEvent("PLAYER_LOGOUT")
+            self:RegisterEvent("PLAYER_LOGOUT")
 
         elseif arg1=='Blizzard_TimeManager' then
             Blizzard_TimeManager()--秒表

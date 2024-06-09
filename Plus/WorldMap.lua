@@ -888,7 +888,7 @@ local function set_AreaPOIPinMixin_OnAcquired(frame)
         if frame and frame.Text then
             local text--地图，地名，名称
             if not Save.hide and frame.name then
-                text= frame.name:match(INSTANCE_DIFFICULTY_FORMAT) or frame.name
+                text= e.cn(frame.name:match(INSTANCE_DIFFICULTY_FORMAT) or frame.name)
             end
             frame.Text:SetText(text or '')
         end
@@ -1066,7 +1066,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     end
                     text= self.taxiNodeData.name
                     if text then
-                        text= text:match('(.-)'..KEY_COMMA) or text:match('(.-)'..PLAYER_LIST_DELIMITER) or text
+                        text= e.cn(text:match('(.-)'..KEY_COMMA) or text:match('(.-)'..PLAYER_LIST_DELIMITER) or text)
                     end
                 end
                 if self.Text then

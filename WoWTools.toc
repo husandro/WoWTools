@@ -46,6 +46,16 @@ API_Panel.lua
 API_WoWDate.lua
 
 
+##繁体，简体，不会载加
+##中文内容库，大文件
+Chinese\zhCN.lua
+##增加，数据库
+Chinese\Data.lua
+##界面，中文化，主要function
+Chinese\Func.lua
+
+
+
 ##WoWPlus
 ##移动框架, 缩放--放在第一个，有些，需要放置点，到移动按钮上
 Plus\Frame.lua
@@ -183,12 +193,4 @@ Other\HunterPet.lua
 Other\SpellFrame.lua
 Other\ScrappingMachine.lua
 
-
-##繁体，简体，不会载加
-##中文内容库，大文件
-Chinese\zhCN.lua
-##增加，数据库
-Chinese\Data.lua
-##界面，中文化，主要function
-Chinese\Func.lua
 

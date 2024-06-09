@@ -2285,7 +2285,7 @@ end
 
 
 panel:RegisterEvent("ADDON_LOADED")
-panel:SetScript("OnEvent", function(_, event, arg1)
+panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
@@ -2305,9 +2305,9 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 
 
             --添加控制面板
-            e.AddPanel_Sub_Category({name='|A:charactercreate-icon-customize-body-selected:0:0|a'..(e.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES), frame=panel})
+            e.AddPanel_Sub_Category({name='|A:charactercreate-icon-customize-body-selected:0:0|a'..(e.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES), frame=self})
 
-            e.ReloadPanel({panel=panel, addName=e.cn(addName), restTips=nil, checked=not Save.disabled, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
+            e.ReloadPanel({panel=self, addName=e.cn(addName), restTips=nil, checked=not Save.disabled, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
                 disabledfunc=function()
                     Save.disabled = not Save.disabled and true or nil
                     if not Save.disabled and not button then
@@ -2323,7 +2323,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             )
 
             if Save.disabled then
-                panel:UnregisterAllEvents()
+                self:UnregisterAllEvents()
             else
                 local r,g,b,a= e.HEX_to_RGB(Save.redColor)
                 RedColor= {r=r or 1, g=g or 0, b=b or 0, a=a or 1}
@@ -2332,7 +2332,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 Init()
                 set_ShowHide_Event()--显示，隐藏，事件
             end
-            panel:RegisterEvent("PLAYER_LOGOUT")
+            self:RegisterEvent("PLAYER_LOGOUT")
 
         elseif arg1=='Blizzard_Settings' then
             Init_Options()

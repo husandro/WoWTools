@@ -802,12 +802,12 @@ local function Init_Desposit_TakeOut_Button()
     local last= btn.frame
     for classID=0, 19 do
         if classID~=6 and classID~=10 and classID~=14 and classID~=11 and classID~=7 then
-            local className=e.cn(C_Item.GetItemClassInfo(classID))--生成,物品列表
+            local className=C_Item.GetItemClassInfo(classID)--生成,物品列表
             if className then
                 local frame= e.Cbtn(btn.frame, {icon='hide'})
                 frame.Text= e.Cstr(frame, {justifyH='RIGHT'})
                 frame.Text:SetPoint('RIGHT', -2,0)
-                frame.Text:SetText(className..' '..classID)
+                frame.Text:SetText(e.cn(className)..' '..classID)
                 frame.Label= e.Cstr(frame, {justifyH='RIGHT'})
                 frame.Label:SetPoint('RIGHT', frame, 'LEFT', -4, 0)
                 frame:SetSize(frame.Text:GetWidth()+4, 18)
@@ -1216,7 +1216,7 @@ local function Init_Bank_Frame()
     Init_Desposit_TakeOut_All_Items()--存放，取出，所有
 
     if Save.allBank then
-        C_Timer.After(2, Init_Desposit_TakeOut_Button)--分类，存取, 2秒为翻译加载时间
+        C_Timer.After(4, Init_Desposit_TakeOut_Button)--分类，存取, 2秒为翻译加载时间
      end
 end
 
