@@ -1481,7 +1481,7 @@ local function Init()
 	end)
 
 
-	C_Timer.After(2, function()
+	C_Timer.After(3, function()
 		hooksecurefunc('TokenFrame_InitTokenButton',function(_, frame)--Blizzard_TokenUI.lua
 			set_Tokens_Button(frame)--设置, 列表, 内容
 		end)

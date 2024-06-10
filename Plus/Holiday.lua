@@ -791,7 +791,7 @@ local function calendar_Uptate()
         CalendarViewHolidayFrame.Text:SetScript('OnEnter', function(self)
             self:SetAlpha(0.3)
             if not self.eventID then return end
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:SetOwner(self:GetParent(), "ANCHOR_BOTTOMRIGHT")
             e.tips:ClearLines()
             e.tips:AddDoubleLine(id, Initializer:GetName())
             e.tips:AddLine(' ')
@@ -1056,7 +1056,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         elseif arg1=='Blizzard_Calendar' then
             Init_Blizzard_Calendar()--初始，插件
-            C_Timer.After(2, Init_TrackButton)
+            C_Timer.After(3, Init_TrackButton)
         end
 
     elseif event == "PLAYER_LOGOUT" then

@@ -35,120 +35,31 @@ local onlyIcon
 
 
 local function get_Faction_Info(index, factionID)
-	local name, standingID, barMin, barMax, barValue, isHeader,  hasRep,  _
-	if index then
-		name, _, standingID, barMin, barMax, barValue, _, _, isHeader, _, hasRep, _, _, factionID= GetFactionInfo(index)
-	else
-		name, _, standingID, barMin, barMax, barValue, _, _, isHeader, _, hasRep, _, _, factionID= GetFactionInfoByID(factionID)
-	end
-
+	local faction= e.GetFactionInfo(factionID, index, Save.toRightTrackText)
+	factionID= faction.factionID
+	local name= faction.name
+	local hasRep= faction.hasRep
+	local isHeader= faction.isHeader
 	if not factionID or not name or name==HIDE or (not hasRep and isHeader) then
 		return
 	end
-	local factionStandingtext, value, texture, atlas, barColor
 
-	local isCapped= standingID == MAX_REPUTATION_REACTION--8
-	local isMajorFaction = C_Reputation.IsMajorFaction(factionID)
-	local repInfo = C_GossipInfo.GetFriendshipReputation(factionID)
-	local friendshipID--个人声望
-
-	if repInfo and repInfo.friendshipFactionID> 0 then--个人声望
-		if repInfo.nextThreshold then
-			factionStandingtext = e.cn(repInfo.reaction)
-			local rankInfo = C_GossipInfo.GetFriendshipReputationRanks(factionID)
-			if rankInfo and rankInfo.maxLevel>0  and rankInfo.currentLevel~=rankInfo.maxLevel then
-				if Save.toRightTrackText then--向右平移 
-					factionStandingtext= (factionStandingtext and factionStandingtext..' ' or '')..rankInfo.currentLevel..'/'..rankInfo.maxLevel
-				else
-					factionStandingtext= rankInfo.currentLevel..'/'..rankInfo.maxLevel..(factionStandingtext and ' '..factionStandingtext or '')
-
-				end
-				barColor= FACTION_BAR_COLORS[standingID]
-			end
-			value= format('%i%%', repInfo.standing/repInfo.nextThreshold*100)
-			isCapped= false
-			friendshipID= repInfo.friendshipFactionID
-		else
-			if factionID then-- 隐藏最高级, 且没有奖励声望
-				value= '|cff606060'..(e.onlyChinese and '已满' or VIDEO_OPTIONS_ULTRA_HIGH)..'|r'
-			end
-			isCapped=true
-		end
-		texture=repInfo.texture--图标
-
-	elseif isMajorFaction then--名望
-		isCapped=C_MajorFactions.HasMaximumRenown(factionID)
-		local info = C_MajorFactions.GetMajorFactionData(factionID)
-		if not isCapped then
-			if info then
-				if info.renownLevel then
-					factionStandingtext= info.renownLevel
-					local levels = C_MajorFactions.GetRenownLevels(factionID)
-					if levels then
-						factionStandingtext= factionStandingtext..'/'..#levels
-					end
-				end
-				--if Save.toRightTrackText then--向右平移 
-					value= format('%i%%', info.renownReputationEarned/info.renownLevelThreshold*100)
-				--else
-					--value= format('%i%%', info.renownReputationEarned/info.renownLevelThreshold*100)
-				--end
-				barColor= GREEN_FONT_COLOR
-			end
-		else
-			if factionID then-- 隐藏最高级, 且没有奖励声望
-				value= '|cff606060'..(e.onlyChinese and '最高' or VIDEO_OPTIONS_ULTRA_HIGH)..'|r'
-			end
-		end
-
-		atlas=(info and info.textureKit) and 'MajorFactions_Icons_'..info.textureKit..'512'
-
-	else
-		if (isHeader and hasRep) or not isHeader then
-			if not isCapped then
-				factionStandingtext = e.cn(GetText("FACTION_STANDING_LABEL"..standingID, e.Player.sex))
-				if barValue and barMax then
-					if barMax==0 then
-						value= format('%i%%', (barMin-barValue)/barMin*100)
-					else
-						value= format('%i%%', barValue/barMax*100)
-					end
-					if Save.toRightTrackText then--向右平移 
-						factionStandingtext= factionStandingtext..' '..standingID..'/'..MAX_REPUTATION_REACTION
-					else
-						factionStandingtext= standingID..'/'..MAX_REPUTATION_REACTION..' '..factionStandingtext
-					end
-					barColor= FACTION_BAR_COLORS[standingID]
-				end
-			else
-				if factionID then-- 隐藏最高级, 且没有奖励声望
-					value= '|cff606060'..(e.onlyChinese and '最高' or VIDEO_OPTIONS_ULTRA_HIGH)..'|r'
-				end
-			end
-		end
-	end
-
-	local isParagon = C_Reputation.IsFactionParagon(factionID)--奖励
-	local hasRewardPending
-	if isParagon then--奖励
-		local currentValue, threshold, rewardQuestID, hasRewardPending2, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(factionID);
-		hasRewardPending= hasRewardPending2 and '|A:Banker:0:0|a' or nil
-		if not tooLowLevelForParagon and currentValue and threshold then
-			local completed= math.modf(currentValue/threshold)--完成次数
-			currentValue= completed>0 and currentValue - threshold * completed or currentValue
-			if Save.toRightTrackText then--向右平移 
-				value= '('..completed..') '..format('%i%%', currentValue/threshold*100)
-			else
-				value= format('%i%%', currentValue/threshold*100)..' ('..completed..')'
-			end
-		end
-	end
-
+	
+	local value= faction.valueText
+	local texture= faction.texture
+	local atlas= faction.atlas
+	local barColor= faction.barColor
+	local isCapped= faction.isCapped
+	local isParagon= faction.isParagon
+	local factionStandingtext= not faction.isCapped and faction.factionStandingtext
 	if (isCapped and not isParagon and index)--声望已满，没有奖励
 		or (onlyIcon and not atlas and not texture)
 	then
 		return
 	end
+
+	local hasRewardPending= faction.hasRewardPending
+	local friendshipID= faction.friendshipID
 
 	local text
 	if onlyIcon then--仅显示有图标
@@ -157,7 +68,7 @@ local function get_Faction_Info(index, factionID)
 		name= e.cn(name)
 		name= name:match('%- (.+)') or name
 	end
-	
+
 	if Save.toRightTrackText then--向右平移 
 		text= name and e.cn(name)..' ' or ''
 		if factionStandingtext then--等级
@@ -987,13 +898,14 @@ local function InitMenu(_, level, type)
 	if type=='INDICATOLIST' then
 		local find
 		for factionID, index in pairs(Save.factions) do
-			local name=GetFactionInfoByID(factionID)
-			name= name and name..' '..factionID or ('factionID '..factionID)
+			local name2= GetFactionInfoByID(factionID)
+			local name= name2 and e.cn(name2)..' '..factionID or ('factionID '..factionID)
 			info={
 				text= name..' |cnGREEN_FONT_COLOR:'..index..'|r',
 				tooltipOnButton=true,
 				colorCode= not Save.indicato and '|cff606060' or nil,
 				tooltipTitle= e.onlyChinese and '移除' or REMOVE,
+				tooltipText= e.strText[name2] and name2..' ',
 				notCheckable= true,
 				arg1= name,
 				arg2= factionID,
@@ -1206,7 +1118,7 @@ local function Init()
 		self.up:SetShown(not Save.notPlus)
 	end
 
-	C_Timer.After(2, Init_TrackButton)--监视, 文本
+	C_Timer.After(3, Init_TrackButton)--监视, 文本
 	hooksecurefunc('ReputationFrame_InitReputationRow', set_ReputationFrame_InitReputationRow)-- 声望, 界面, 增强
 	Button:set_Shown()
 

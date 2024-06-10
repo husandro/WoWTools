@@ -1132,138 +1132,37 @@ local itemSubTypeTab={
 }
 
 
+
+
+
+local friendFactionTab={-- []= {[1]='', [2]='', [3]='', [4]='', [5]=''},--
+[2544]= {[1]='中立', [2]='偏爱', [3]='尊重', [4]='重视', [5]='崇尚'},--工匠商盟-巨龙群岛支部
+[2550]= {[1]='空', [2]='低', [3]='中', [4]='高', [5]='最大'},--钴蓝集所
+[2517]= {[1]='熟人', [2]= '同好', [3]='盟友', [4]='龙牙', [5]='朋友', [6]='挚友'},--拉希奥
+[2518]= {[1]='熟人', [2]= '同好', [3]='盟友', [4]='龙牙', [5]='朋友', [6]='挚友'},--萨贝里安
+[2553]= {[1]='畸体', [2]='未来之友', [3]='裂隙修复者', [4]='时间行者', [5]='传奇'},--索莉多米
+[2615]= {[1]='学士', [2]='助理', [3]='合约', [4]='常驻', [5]='终身'},--艾泽拉斯档案馆
+[2568]= {[1]='有抱负', [2]='业余', [3]='能干', [4]='老练', [5]='专业'},--格里梅罗格竞速者
+
+[2432]= {[1]='猜忌', [2]='防备', [3]='犹豫', [4]='纠结', [5]='和善', [6]='欣赏'},--威-娜莉
+
+[1740]= {[1]='保镖', [2]='贴身保镖', [3]='亲密搭档'},--艾达-晨光
+[1739]= {[1]='保镖', [2]='贴身保镖', [3]='亲密搭档'},--薇薇安
+[1738]= {[1]='保镖', [2]='贴身保镖', [3]='亲密搭档'},--防御者艾萝娜
+[1733]= {[1]='保镖', [2]='贴身保镖', [3]='亲密搭档'},--德尔瓦-铁拳
+[1737]= {[1]='保镖', [2]='贴身保镖', [3]='亲密搭档'},--鸦爪祭司伊沙尔
+[1736]= {[1]='保镖', [2]='贴身保镖', [3]='亲密搭档'},--托莫克
+[1741]= {[1]='保镖', [2]='贴身保镖', [3]='亲密搭档'},--利奥拉
+
+}
+
+
+
+
+
+
+
 local function Init_Add_Data()
-    --[[e.strText[C_Item.GetItemSubClassInfo(2, 0)]= "单手斧"
-    e.strText[C_Item.GetItemSubClassInfo(2, 4)]= "单手锤"
-    e.strText[C_Item.GetItemSubClassInfo(2, 7)]= "单手剑"
-    e.strText[C_Item.GetItemSubClassInfo(2, 9)]= "战刃"
-    e.strText[C_Item.GetItemSubClassInfo(2, 15)]= "匕首"
-    e.strText[C_Item.GetItemSubClassInfo(2, 13)]= "拳套"
-    e.strText[C_Item.GetItemSubClassInfo(2, 19)]= "魔杖"
-    e.strText[C_Item.GetItemSubClassInfo(2, 1)]= "双手斧"
-    e.strText[C_Item.GetItemSubClassInfo(2, 5)]= "双手锤"
-    e.strText[C_Item.GetItemSubClassInfo(2, 8)]= "双手剑"
-    e.strText[C_Item.GetItemSubClassInfo(2, 6)]= "长柄武器"
-    e.strText[C_Item.GetItemSubClassInfo(2, 10)]= "法杖"
-    e.strText[C_Item.GetItemSubClassInfo(2, 2)]= "弓"
-    e.strText[C_Item.GetItemSubClassInfo(2, 18)]= "弩"
-    e.strText[C_Item.GetItemSubClassInfo(2, 3)]= "枪械"
-    e.strText[C_Item.GetItemSubClassInfo(2, 16)]= "投掷武器"
-    e.strText[C_Item.GetItemSubClassInfo(2, 20)]= "鱼竿"
-
-    e.strText[C_Item.GetItemSubClassInfo(1, 0)]= "容器"
-    e.strText[C_Item.GetItemSubClassInfo(1, 2)]= "草药"
-    e.strText[C_Item.GetItemSubClassInfo(1, 3)]= "附魔"
-    e.strText[C_Item.GetItemSubClassInfo(1, 4)]= "工程"
-    e.strText[C_Item.GetItemSubClassInfo(1, 5)]= "宝石"
-    e.strText[C_Item.GetItemSubClassInfo(1, 6)]= "矿石"
-    e.strText[C_Item.GetItemSubClassInfo(1, 7)]= "制皮"
-    e.strText[C_Item.GetItemSubClassInfo(1, 8)]= "铭文"
-    e.strText[C_Item.GetItemSubClassInfo(1, 9)]= "钓鱼"
-    e.strText[C_Item.GetItemSubClassInfo(1, 10)]= "烹饪"
-    e.strText[C_Item.GetItemSubClassInfo(1, 11)]= "材料"
-    e.strText[C_Item.GetItemSubClassInfo(3, 11)]= "神器圣物"
-    e.strText[C_Item.GetItemSubClassInfo(3, 0)]= "智力"
-    e.strText[C_Item.GetItemSubClassInfo(3, 1)]= "敏捷"
-    e.strText[C_Item.GetItemSubClassInfo(3, 2)]= "力量"
-    e.strText[C_Item.GetItemSubClassInfo(3, 3)]= "耐力"
-    e.strText[C_Item.GetItemSubClassInfo(3, 5)]= "爆击"
-    e.strText[C_Item.GetItemSubClassInfo(3, 6)]= "精通"
-    e.strText[C_Item.GetItemSubClassInfo(3, 7)]= "急速"
-    e.strText[C_Item.GetItemSubClassInfo(3, 8)]= "全能"
-    e.strText[C_Item.GetItemSubClassInfo(3, 10)]= "复合属性"
-    e.strText[C_Item.GetItemSubClassInfo(8, 0)] = "头部"
-    e.strText[C_Item.GetItemSubClassInfo(8, 1)] = "颈部"
-    e.strText[C_Item.GetItemSubClassInfo(8, 2)] = "肩部"
-    e.strText[C_Item.GetItemSubClassInfo(8, 3)] = "披风"
-    e.strText[C_Item.GetItemSubClassInfo(8, 4)] = "胸部"
-    e.strText[C_Item.GetItemSubClassInfo(8, 5)] = "手腕"
-    e.strText[C_Item.GetItemSubClassInfo(8, 6)] = "手部"
-    e.strText[C_Item.GetItemSubClassInfo(8, 7)] = "腰部"
-    e.strText[C_Item.GetItemSubClassInfo(8, 8)] = "腿部"
-    e.strText[C_Item.GetItemSubClassInfo(8, 9)] = "脚部"
-    e.strText[C_Item.GetItemSubClassInfo(8, 10)] = "手指"
-    e.strText[C_Item.GetItemSubClassInfo(8, 11)] = "武器"
-    e.strText[C_Item.GetItemSubClassInfo(8, 12)] = "双手武器"
-    e.strText[C_Item.GetItemSubClassInfo(8, 13)] = "盾牌/副手"
-    e.strText[C_Item.GetItemSubClassInfo(0, 0)] = "爆炸物和装置"
-    e.strText[C_Item.GetItemSubClassInfo(0, 1)] = "药水"
-    e.strText[C_Item.GetItemSubClassInfo(0, 2)] = "药剂"
-    e.strText[C_Item.GetItemSubClassInfo(0, 3)] = "合剂和瓶剂"
-    e.strText[C_Item.GetItemSubClassInfo(0, 5)] = "食物和饮水"
-    e.strText[C_Item.GetItemSubClassInfo(0, 7)] = "绷带"
-    e.strText[C_Item.GetItemSubClassInfo(0, 9)] = "凡图斯符文"
-    e.strText[C_Item.GetItemSubClassInfo(16, 1)] = "|cffc69b6d战士|r"
-    e.strText[C_Item.GetItemSubClassInfo(16, 2)] = "|cfff48cba圣骑士|r"
-    e.strText[C_Item.GetItemSubClassInfo(16, 3)] = "|cffaad372猎人|r"
-    e.strText[C_Item.GetItemSubClassInfo(16, 4)] = "|cfffff468盗贼|r"
-    e.strText[C_Item.GetItemSubClassInfo(16, 5)] = "|cffffffff牧师|r"
-    e.strText[C_Item.GetItemSubClassInfo(16, 6)] = "|cffc41e3a死亡骑士|r"
-    e.strText[C_Item.GetItemSubClassInfo(16, 7)] = "|cff0070dd萨满|r"
-    e.strText[C_Item.GetItemSubClassInfo(16, 8)] = "|cff3fc7eb法师|r"
-    e.strText[C_Item.GetItemSubClassInfo(16, 9)] = "|cff8788ee术士|r"
-    e.strText[C_Item.GetItemSubClassInfo(16, 10)] = "|cff00ff98武僧|r"
-    e.strText[C_Item.GetItemSubClassInfo(16, 11)] = "|cffff7c0a德鲁伊|r"
-    e.strText[C_Item.GetItemSubClassInfo(16, 12)] = "|cffa330c9恶魔猎手|r"
-    e.strText[GetClassInfo(13)] = "|cff33937f唤魔师|r"
-
-    e.strText[C_Item.GetItemClassInfo(7)] = "商业技能"
-    e.strText[C_Item.GetItemSubClassInfo(7, 5)] = "布料"
-    e.strText[C_Item.GetItemSubClassInfo(7, 6)] = "皮料"
-    e.strText[C_Item.GetItemSubClassInfo(7, 7)] = "金属和矿石"
-    e.strText[C_Item.GetItemSubClassInfo(7, 8)] = "烹饪"
-    e.strText[C_Item.GetItemSubClassInfo(7, 9)] = "草药"
-    e.strText[C_Item.GetItemSubClassInfo(7, 12)] = "附魔材料"
-    e.strText[C_Item.GetItemSubClassInfo(7, 16)] = "铭文"
-    e.strText[C_Item.GetItemSubClassInfo(7, 4)] = "珠宝加工"
-    e.strText[C_Item.GetItemSubClassInfo(7, 1)] = "零件"
-    e.strText[C_Item.GetItemSubClassInfo(7, 10)] = "元素"
-    e.strText[C_Item.GetItemSubClassInfo(7, 18)] = "附加材料"
-    e.strText[C_Item.GetItemSubClassInfo(7, 19)] = "成品材料"
-
-    e.strText[C_Item.GetItemClassInfo(8)] = "物品强化"
-
-    e.strText[C_Item.GetItemSubClassInfo(9, 1)] = "制皮"
-    e.strText[C_Item.GetItemSubClassInfo(9, 2)] = "裁缝"
-    e.strText[C_Item.GetItemSubClassInfo(9, 3)] = "工程"
-    e.strText[C_Item.GetItemSubClassInfo(9, 4)] = "锻造"
-    e.strText[C_Item.GetItemSubClassInfo(9, 6)] = "炼金术"
-    e.strText[C_Item.GetItemSubClassInfo(9, 8)] = "附魔"
-    e.strText[C_Item.GetItemSubClassInfo(9, 10)] = "珠宝加工"
-    e.strText[C_Item.GetItemSubClassInfo(9, 11)] = "铭文"
-    e.strText[C_Item.GetItemSubClassInfo(9, 5)] = "烹饪"
-    e.strText[C_Item.GetItemSubClassInfo(9, 7)] = "急救"
-    e.strText[C_Item.GetItemSubClassInfo(9, 9)] = "钓鱼"
-    e.strText[C_Item.GetItemSubClassInfo(9, 0)] = "书籍"
-
-    e.strText[C_Item.GetItemClassInfo(13)] = "钥匙"
-    e.strText[C_Item.GetItemSubClassInfo(19, 5)] = "采矿"
-    e.strText[C_Item.GetItemSubClassInfo(19, 3)] = "草药学"
-    e.strText[C_Item.GetItemSubClassInfo(19, 10)] = "剥皮"
-    e.strText[C_Item.GetItemSubClassInfo(17, 0)] = "人形"
-    e.strText[C_Item.GetItemSubClassInfo(17, 1)] = "龙类"
-    e.strText[C_Item.GetItemSubClassInfo(17, 2)] = "飞行"
-    e.strText[C_Item.GetItemSubClassInfo(17, 3)] = "亡灵"
-    e.strText[C_Item.GetItemSubClassInfo(17, 4)] = "小动物"
-    e.strText[C_Item.GetItemSubClassInfo(17, 5)] = "魔法"
-    e.strText[C_Item.GetItemSubClassInfo(17, 6)] = "元素"
-    e.strText[C_Item.GetItemSubClassInfo(17, 7)] = "野兽"
-    e.strText[C_Item.GetItemSubClassInfo(17, 8)] = "水栖"
-    e.strText[C_Item.GetItemSubClassInfo(17, 9)] = "机械"
-
-    e.strText[C_Item.GetItemClassInfo(15)] = "杂项"
-    e.strText[C_Item.GetItemSubClassInfo(15, 0)] = "垃圾"
-    e.strText[C_Item.GetItemSubClassInfo(15, 1)] = "材料"
-    e.strText[C_Item.GetItemSubClassInfo(15, 3)] = "节日"
-    e.strText[C_Item.GetItemSubClassInfo(15, 5)] = "坐骑"
-    e.strText[C_Item.GetItemSubClassInfo(15, 6)] = "坐骑装备"
-    e.strText[C_Item.GetItemSubClassInfo(18, 0)] = "时光徽章"
-
-    e.strText[C_Item.GetItemSubClassInfo(4, 4)]= "板甲"
-    e.strText[C_Item.GetItemSubClassInfo(4, 3)]= "锁甲"
-    e.strText[C_Item.GetItemSubClassInfo(4, 2)]= "皮甲"
-    e.strText[C_Item.GetItemSubClassInfo(4, 1)]= "布甲"]]
-
     e.strText[GetClassInfo(13)] = "|cff33937f唤魔师|r"
 
     e.strText[format('\124T%s.tga:16:16:0:0\124t %s', FRIENDS_TEXTURE_ONLINE, FRIENDS_LIST_AVAILABLE)] = "|TInterface\\FriendsFrame\\StatusIcon-Online:16:16|t 有空"
@@ -1298,6 +1197,7 @@ local function rest_all()
     instanceTab=nil
     instanceBossTab=nil
     itemSubTypeTab=nil
+    friendFactionTab=nil
     Init_Add_Data=function()end
 end
 
@@ -1409,6 +1309,7 @@ local function Init()
             e.strText[description]= info[3]
         end
     end
+
     for name, info in pairs(itemSubTypeTab) do
         if info[2] then
             local sub= C_Item.GetItemSubClassInfo(info[1], info[2])
@@ -1419,17 +1320,26 @@ local function Init()
             local class= C_Item.GetItemClassInfo(info[1])
             if class then
                 e.strText[class]= name
-            else
-                print(name, info[1])
             end
         end
     end
+
+    for friendshipFactionID, info in pairs(friendFactionTab) do
+        local rankInfo = C_GossipInfo.GetFriendshipReputation(friendshipFactionID) or {}
+        local rank = C_GossipInfo.GetFriendshipReputationRanks(friendshipFactionID) or {}
+        if rankInfo.reaction and info[rank.currentLevel] then
+            e.strText[rankInfo.reaction]= info[rank.currentLevel]
+        end
+    end
+
+
+
     Init_Add_Data()
 
 
 
-    hooksecurefunc(UIWidgetPowerBarContainerFrame, 'CreateWidget', function(_, widgetID)--RemoveWidget Blizzard_UIWidgetManager.lua
-    end)
+    --hooksecurefunc(UIWidgetPowerBarContainerFrame, 'CreateWidget', function(_, widgetID)--RemoveWidget Blizzard_UIWidgetManager.lua
+    
 end
 
 

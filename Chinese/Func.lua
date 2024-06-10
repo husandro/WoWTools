@@ -7318,7 +7318,7 @@ local function Init_Loaded(arg1)
                 local description = format('继续获取%s的声望以赢取奖励。', e.strText[majorFactionData.name] or majorFactionData.name)
                 if hasRewardPending then
                     local questIndex = C_QuestLog.GetLogIndexForQuestID(rewardQuestID)
-                    local text = GetQuestLogCompletionText(questIndex)
+                    local text = questIndex and GetQuestLogCompletionText(questIndex)
                     if text and text ~= "" then
                         description = e.strText[text] or text
                     end

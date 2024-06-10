@@ -56,6 +56,8 @@ e.ItemCurrencyLabel(settings) {frame=, point=, showName=, showAll=, showTooltip=
 e.Get_Gem_Stats(itemLink, self)--显示, 宝石, 属性
 e.Get_Item_Stats(link)--取得，物品，次属性，表
 e.Set_Item_Stats(self, link, setting)--设置，物品，次属性，表
+e.GetCurrencyMaxInfo(currencyID, index)--货币
+e.GetFactionInfo(factionID, index, toRight)--声望
 
 e.GetUnitColor(unit)--职业颜色
 e.GetUnitName(name, unit, guid)--取得全名
@@ -899,6 +901,130 @@ function e.GetCurrencyMaxInfo(currencyID, index)
     return info, num, totale, percent, isMax, canWeek, canEarned, canQuantity
 end
 
+function e.GetFactionInfo(factionID, index, toRight)
+    local name, standingID, barMin, barMax, barValue, isHeader,  hasRep,  _
+    if index then
+        name, description, standingID, barMin, barMax, barValue, _, _, isHeader, _, hasRep, _, _, factionID= GetFactionInfo(index)
+    else
+        name, description, standingID, barMin, barMax, barValue, _, _, isHeader, _, hasRep, _, _, factionID= GetFactionInfoByID(factionID)
+    end
+    if not factionID or not name then
+        return {}
+    end
+
+    local factionStandingtext, value, texture, atlas, barColor
+
+    local isCapped= standingID == MAX_REPUTATION_REACTION--8
+    local isMajorFaction = C_Reputation.IsMajorFaction(factionID)
+    local repInfo = C_GossipInfo.GetFriendshipReputation(factionID)
+    local friendshipID--个人声望
+    if repInfo and repInfo.friendshipFactionID> 0 then--个人声望
+        local rankInfo = C_GossipInfo.GetFriendshipReputationRanks(factionID) or {}
+        factionStandingtext = e.cn(repInfo.reaction)
+
+        if rankInfo.currentLevel and rankInfo.maxLevel and rankInfo.maxLevel>0 then
+            factionStandingtext= (factionStandingtext and factionStandingtext..' ' or '')..rankInfo.currentLevel..'/'..rankInfo.maxLevel
+        end
+        if repInfo.nextThreshold then
+            if rankInfo.maxLevel>0  and rankInfo.currentLevel~=rankInfo.maxLevel then
+                barColor= FACTION_BAR_COLORS[standingID]
+            end
+            value= format('%i%%', repInfo.standing/repInfo.nextThreshold*100)
+            isCapped= false
+            friendshipID= repInfo.friendshipFactionID
+        else
+            value= '|cff606060'..(e.onlyChinese and '已满' or VIDEO_OPTIONS_ULTRA_HIGH)..'|r'
+            isCapped=true
+        end
+        texture=repInfo.texture--图标
+
+    elseif isMajorFaction then--名望
+        isCapped=C_MajorFactions.HasMaximumRenown(factionID)
+        local info = C_MajorFactions.GetMajorFactionData(factionID) or {}
+        if info.renownLevel then
+            factionStandingtext= info.renownLevel
+            local levels = C_MajorFactions.GetRenownLevels(factionID)
+            if levels then
+                factionStandingtext= factionStandingtext..'/'..#levels
+            end
+        end
+        if not isCapped then
+            value= format('%i%%', info.renownReputationEarned/info.renownLevelThreshold*100)
+            barColor= GREEN_FONT_COLOR
+        else
+            value= '|cff606060'..(e.onlyChinese and '最高' or VIDEO_OPTIONS_ULTRA_HIGH)..'|r'
+        end
+        atlas=info.textureKit and 'MajorFactions_Icons_'..info.textureKit..'512'
+    else
+        if (isHeader and hasRep) or not isHeader then
+            factionStandingtext = e.cn(GetText("FACTION_STANDING_LABEL"..standingID, e.Player.sex))
+            if barValue and barMax then
+                if barMax==0 then
+                    value= format('%i%%', (barMin-barValue)/barMin*100)
+                else
+                    value= format('%i%%', barValue/barMax*100)
+                end
+                if toRight then--向右平移 
+                    factionStandingtext= factionStandingtext..' '..standingID..'/'..MAX_REPUTATION_REACTION
+                else
+                    factionStandingtext= standingID..'/'..MAX_REPUTATION_REACTION..' '..factionStandingtext
+                end
+            end
+            if not isCapped then
+                factionStandingtext = e.cn(GetText("FACTION_STANDING_LABEL"..standingID, e.Player.sex))
+                if barValue and barMax then
+                    if barMax==0 then
+                        value= format('%i%%', (barMin-barValue)/barMin*100)
+                    else
+                        value= format('%i%%', barValue/barMax*100)
+                    end
+                    if toRight then--向右平移 
+                        factionStandingtext= factionStandingtext..' '..standingID..'/'..MAX_REPUTATION_REACTION
+                    else
+                        factionStandingtext= standingID..'/'..MAX_REPUTATION_REACTION..' '..factionStandingtext
+                    end
+                    barColor= FACTION_BAR_COLORS[standingID]
+                end
+            else
+                value= '|cff606060'..(e.onlyChinese and '最高' or VIDEO_OPTIONS_ULTRA_HIGH)..'|r'
+            end
+        end
+    end
+
+    local isParagon = C_Reputation.IsFactionParagon(factionID)--奖励
+    local hasRewardPending
+    if isParagon then--奖励
+        local currentValue, threshold, rewardQuestID, hasRewardPending2, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(factionID);
+        hasRewardPending= hasRewardPending2 and format('|A:GarrMission-%sChest:0:0|a', e.Player.faction) or nil
+        if not tooLowLevelForParagon and currentValue and threshold then
+            local completed= math.modf(currentValue/threshold)--完成次数
+            currentValue= completed>0 and currentValue - threshold * completed or currentValue
+            if toRight then--向右平移 
+                value= '('..completed..') '..format('%i%%', currentValue/threshold*100)
+            else
+                value= format('%i%%', currentValue/threshold*100)..' ('..completed..')'
+            end
+        end
+    end
+
+    return {
+        name= name,
+        description= description,
+        factionID= factionID,
+        color= barColor,
+        isMajorFaction=isMajorFaction,
+        friendshipID= friendshipID,
+        isParagon= isParagon,
+        texture= texture,
+        atlas= atlas,
+        factionStandingtext= factionStandingtext,
+        hasRewardPending=hasRewardPending,
+        valueText= value,
+        isCapped= isCapped,
+        isHeader=isHeader,
+        hasRep=hasRep,        
+    }
+end
 
 function e.ItemCurrencyLabel(settings)--物品升级界面，挑战界面，物品，货币提示
     local frame= settings.frame
@@ -1124,7 +1250,7 @@ function e.Set_Item_Stats(self, link, setting) --设置，物品，次属性，�
                 self.itemSet:SetAllPoints(point)
             end
         end
-        
+
         if not hideLevel then--物品, 装等
             --itemID= itemID or C_Item.GetItemInfoInstant(link)
             if itemID==210333 and self==CharacterBackSlot then--InspectBackSlot
@@ -1158,7 +1284,7 @@ function e.Set_Item_Stats(self, link, setting) --设置，物品，次属性，�
                 if dataInfo.text[itemLevelStr] then
                     itemLevel= tonumber(dataInfo.text[itemLevelStr])
                 end
-               
+
                 itemLevel= itemLevel or C_Item.GetDetailedItemLevelInfo(link)
                 if itemLevel and itemLevel>3 then
                     local avgItemLevel= select(2, GetAverageItemLevel())--已装备, 装等

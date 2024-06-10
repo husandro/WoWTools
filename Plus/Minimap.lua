@@ -1909,16 +1909,20 @@ end
 
 
 --取得，等级，派系声望
-local function Get_Major_Faction_Level(factionID, level)
+local function Get_Major_Faction_Level(factionID, level)    
     local text=''
     level= level or 0
     if C_MajorFactions.HasMaximumRenown(factionID) then
         if C_Reputation.IsFactionParagon(factionID) then--奖励
             local currentValue, threshold, _, hasRewardPending, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(factionID)
-            if not tooLowLevelForParagon and currentValue and threshold then
+            if not tooLowLevelForParagon and currentValue and threshold and threshold>0 then
                 local completed= math.modf(currentValue/threshold)--完成次数
                 currentValue= completed>0 and currentValue - threshold * completed or currentValue
-                text= format('%i%%|A:GarrMission-%sChest:0:0|a%s%d', currentValue/threshold*100, e.Player.faction, hasRewardPending and format('|A:%s:0:0|a', e.Icon.select) or '', completed)
+                if hasRewardPending then
+                    text= format('|cnGREEN_FONT_COLOR:%i%%|A:GarrMission-%sChest:0:0|a%s%d|r', currentValue/threshold*100, e.Player.faction, hasRewardPending and format('|A:%s:0:0|a', e.Icon.select) or '', completed)
+                else
+                    text= format('%i%%|A:Banker:0:0|a%s%d', currentValue/threshold*100, hasRewardPending and format('|A:%s:0:0|a', e.Icon.select) or '', completed)
+                end
 
             end
         end

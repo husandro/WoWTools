@@ -4558,12 +4558,12 @@
         "CalendarDayButton16EventButton1Text1",
         "CalendarEventPickerFrame_InitButton",
         "CalendarEventPickerCloseButton",
-        "CalendarEventPickerCloseButtonText"
+        "CalendarEventPickerCloseButtonText",
+        "QUEST_REPUTATION_REWARD_TITLE"
     ],
     "Lua.diagnostics.disable": [
-        "redundant-parameter",
+        "undefined-field",
         "inject-field",
-        "missing-parameter",
-        "undefined-field"
+        "missing-parameter"
     ],
 }

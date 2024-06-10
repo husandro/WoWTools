@@ -22,7 +22,7 @@ local Save={
     --hideHealth=true,----生命条提示
 }
 local panel=CreateFrame("Frame")
-local Category, Layout= e.AddPanel_Sub_Category({name=e.Icon.mid..addName})
+local Initializer, Layout= e.AddPanel_Sub_Category({name=e.Icon.mid..addName})
 
 --全局
 --e.Show_WoWHead_URL(isWoWHead, typeOrRegion, typeIDOrRealm, name)
@@ -36,8 +36,7 @@ local func={
     --func.Set_Currency(self, currencyID)--货币
     --func.Set_Achievement(self, achievementID)--成就
     --func.Set_Quest(self, questID, info)--任务
-    --func.Set_FriendshipFaction(self, friendshipID)--friend声望
-    --func.Set_MajorFactionRenown(self, majorFactionID)--名望
+    --func.Set_Faction(self, factionID)
     --func.Set_Flyout(self, flyoutID)--法术, 弹出框
 
     --func.GetItemInfoFromHyperlink(link)--LinkUtil.lua  GetItemInfoFromHyperlink()不能正解，读取 |Hkeystone:
@@ -176,12 +175,12 @@ local wowheadText
 local raiderioText
 local function Init_StaticPopupDialogs()
     StaticPopupDialogs["WoWTools_Tooltips_LinkURL"] = {
-        text= id..' '..Category:GetName()..'|n|cffff00ff%s|r |cnGREEN_FONT_COLOR:Ctrl+C |r'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK),
+        text= id..' '..Initializer:GetName()..'|n|cffff00ff%s|r |cnGREEN_FONT_COLOR:Ctrl+C |r'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK),
         button1 = e.onlyChinese and '关闭' or CLOSE,
         OnShow = function(self, web)
             self.editBox:SetScript("OnKeyUp", function(s, key)
                 if IsControlKeyDown() and key == "C" then
-                    print(id, Category:GetName(),
+                    print(id, Initializer:GetName(),
                             '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r',
                             s:GetText()
                         )
@@ -420,7 +419,7 @@ function func.Set_Mount(self, mountID, type)--坐骑
     local can= isCollected and isUsable and not isActive and not UnitCastingInfo('player')
     if can and IsAltKeyDown() then
         C_MountJournal.SummonByID(mountID)
-        print(id, Category:GetName(), spellID and GetSpellLink(spellID), '|cnGREEN_FONT_COLOR:Alt+'..(e.onlyChinese and '召唤坐骑' or MOUNT))
+        print(id, Initializer:GetName(), spellID and GetSpellLink(spellID), '|cnGREEN_FONT_COLOR:Alt+'..(e.onlyChinese and '召唤坐骑' or MOUNT))
     end
     local col= can and '|cnGREEN_FONT_COLOR:' or '|cff606060'
     e.tips:AddDoubleLine(col..(e.onlyChinese and '召唤坐骑' or MOUNT), col..'Alt+')
@@ -1002,18 +1001,50 @@ end
 --####
 --声望
 --####
-function func.Set_FriendshipFaction(self, friendshipID)--friend声望
+function func.Set_Faction(self, factionID, frame)
+    local info= e.GetFactionInfo(factionID, nil, true)
+    if not info.factionID then return end
+    if frame and not self:IsShown() then
+        e.tips:SetOwner(frame, "ANCHOR_RIGHT")
+        e.tips:AddLine(e.cn(info.name))
+        e.tips:AddLine(' ')
+        if info.description and info.description~='' then
+            e.tips:AddLine(e.cn(description), nil,nil,nil, true)
+            e.tips:AddLine(' ')
+        end
+    end
+    local icon= info.texture and ('|T'..info.texture..':0|t'..info.texture)
+                or (info.atlas and '|A:'..info.atlas..':0:0|a'..info.atlas)
+    if info.friendshipID then
+        self:AddDoubleLine((e.onlyChinese and '个人声望' or format(QUEST_REPUTATION_REWARD_TITLE, 'NPC'))..' '..info.friendshipID, icon)
+    elseif info.isMajorFaction then
+        self:AddDoubleLine((e.onlyChinese and '主要阵营' or MAJOR_FACTION_LIST_TITLE)..' '..info.factionID, icon)
+    else
+        self:AddDoubleLine((e.onlyChinese and '声望' or REPUTATION)..' '..info.factionID, icon)
+    end
+    if info.factionStandingtext or info.valueText then
+        self:AddDoubleLine(info.factionStandingtext or ' ', (info.hasRewardPending or '')..(info.valueText or '')..(info.valueText and info.isParagon and '|A:Banker:0:0|a' or ''))
+    end
+    if info.hasRewardPending then
+        self:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '你有未领取的奖励' or WEEKLY_REWARDS_UNCLAIMED_TITLE))
+    end
+    func.Set_Web_Link({frame=self, type='faction', id=info.friendshipID or info.factionID, name=info.name, col=nil, isPetUI=false})--取得网页，数据链接
+    self:Show()
+end
+
+--[[function func.Set_FriendshipFaction(self, friendshipID)--friend声望
     local repInfo = C_GossipInfo.GetFriendshipReputation(friendshipID)
 	if ( repInfo and repInfo.friendshipFactionID and repInfo.friendshipFactionID > 0) then
         local icon = (repInfo.texture and repInfo.texture>0) and repInfo.texture
         self:AddDoubleLine((e.onlyChinese and '个人声望' or (INDIVIDUALS..REPUTATION))..' '..friendshipID, icon and '|T'..icon..':0|t'..icon)
+       
         func.Set_Web_Link({frame=self, type='faction', id=friendshipID, name=repInfo.name, col=nil, isPetUI=false})--取得网页，数据链接
         self:Show()
     end
-end
+end]]
 
-function func.Set_MajorFactionRenown(self, majorFactionID)--名望
-	local info = C_Reputation.IsMajorFaction(majorFactionID) and C_MajorFactions.GetMajorFactionData(majorFactionID)
+--[[function func.Set_MajorFactionRenown(self, majorFactionID)--名望
+	local info = C_MajorFactions.GetMajorFactionData(majorFactionID)--C_Reputation.IsMajorFaction(majorFactionID)
     if info then
         if info.textureKit then
             self.Portrait:SetShown(true)
@@ -1032,9 +1063,7 @@ function func.Set_MajorFactionRenown(self, majorFactionID)--名望
         func.Set_Web_Link({frame=self, type='faction', id=majorFactionID, name=info.name, col=nil, isPetUI=false})--取得网页，数据链接
         self:Show()
     end
-end
-
-
+end]]
 
 
 
@@ -1501,7 +1530,7 @@ local function set_CVar(reset, tips, notPrint)
                 if defaultValue~=value then
                     C_CVar.SetCVar(info.name, defaultValue)
                     if not notPrint then
-                        print(id, Category:GetName(), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '恢复默认设置' or RESET_TO_DEFAULT)..'|r', info.name, defaultValue, info.msg)
+                        print(id, Initializer:GetName(), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '恢复默认设置' or RESET_TO_DEFAULT)..'|r', info.name, defaultValue, info.msg)
                     end
                 end
             else
@@ -1509,7 +1538,7 @@ local function set_CVar(reset, tips, notPrint)
                 if value~=info.value then
                     C_CVar.SetCVar(info.name, info.value)
                     if not notPrint then
-                        print(id,Category:GetName(), info.name, info.value..'('..value..')', info.msg)
+                        print(id,Initializer:GetName(), info.name, info.value..'('..value..')', info.msg)
                     end
                 end
             end
@@ -1897,57 +1926,14 @@ local function Init()
     --####
     --声望
     --####
-    hooksecurefunc(ReputationBarMixin, 'ShowMajorFactionRenownTooltip', function(self)--Major名望, ReputationFrame.lua
-        func.Set_MajorFactionRenown(e.tips, self.factionID)
+    --[[hooksecurefunc(ReputationBarMixin, 'ShowMajorFactionRenownTooltip', function(self)--Major名望, ReputationFrame.lua
+        func.Set_Faction(e.tips, self.factionID)
     end)
     hooksecurefunc(ReputationBarMixin, 'ShowFriendshipReputationTooltip', function(self, friendshipID)--个人声望 ReputationFrame.lua
-        func.Set_FriendshipFaction(e.tips, friendshipID)
-    end)
-    hooksecurefunc(ReputationBarMixin, 'OnEnter', function(self)--角色栏,声望
-        if not self.factionID or self.Container.Name:IsTruncated() then
-            return
-        end
-
-        local isParagon = C_Reputation.IsFactionParagon(self.factionID)--奖励			
-        local completedParagon--完成次数
-        if ( isParagon ) then--奖励
-            local currentValue, threshold, _, _, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(self.factionID)
-            if not tooLowLevelForParagon then
-                local completed= math.modf(currentValue/threshold)--完成次数
-                if completed>0 then
-                    completedParagon=(e.onlyChinese and '奖励 '..completed..' 次' or (QUEST_REWARDS.. ' '..completed..' '..VOICEMACRO_LABEL_CHARGE1))
-                end
-            end
-        end
-
-        local name, description, standingID, barMin, barMax, barValue, _, _, isHeader, _, hasRep, _, _, factionID, _, _ = GetFactionInfoByID(self.factionID)
-        if factionID and not isHeader or (isHeader and hasRep) then
-            e.tips:SetOwner(self, "ANCHOR_RIGHT")
-            e.tips:AddLine(e.cn(name), 1,1,1)--..' '..standingID..'/'..MAX_REPUTATION_REACTION, 1,1,1)
-            e.tips:AddLine(' ')
-            e.tips:AddLine(e.cn(description), nil,nil,nil, true)
-            e.tips:AddLine(' ')
-            local factionStandingtext = GetText("FACTION_STANDING_LABEL"..standingID, e.Player.sex)
-            factionStandingtext= e.strText[factionStandingtext] or factionStandingtext
-            local barColor = FACTION_BAR_COLORS[standingID]
-            factionStandingtext=barColor:WrapTextInColorCode(factionStandingtext)--颜色
-            if barValue and barMax then
-                if barMax==0 then
-                    e.tips:AddLine(factionStandingtext..' '..('%i%%'):format( (barMin-barValue)/barMin*100), 1,1,1)
-                else
-                    e.tips:AddLine(factionStandingtext..' '..e.MK(barValue, 3)..'/'..e.MK(barMax, 3)..' '..('%i%%'):format(barValue/barMax*100), 1,1,1)
-                end
-                e.tips:AddLine(' ')
-            end
-
-            e.tips:AddDoubleLine((e.onlyChinese and '声望' or REPUTATION)..' '..self.factionID, completedParagon)
-            func.Set_Web_Link({frame=e.tips, type='faction', id=factionID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
-            e.tips:Show()
-        elseif factionID or self.factionID then
-            e.tips:AddDoubleLine((e.onlyChinese and '声望' or REPUTATION)..' '..(self.factionID or factionID), completedParagon)
-            func.Set_Web_Link({frame=e.tips, type='faction', id=factionID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
-            e.tips:Show()
-        end
+        func.Set_Faction(e.tips, friendshipID)
+    end)]]
+    hooksecurefunc(ReputationBarMixin, 'OnEnter', function(frame)--角色栏,声望
+        func.Set_Faction(e.tips, frame.factionID, frame)
     end)
 
     hooksecurefunc('ReputationFrame_InitReputationRow',function(_, elementData)--ReputationFrame.lua 声望 界面,
@@ -2022,7 +2008,7 @@ local function Init()
             e.tips:AddDoubleLine('uiMapID', uiMapID)
         end
         if self.factionID then
-            func.Set_MajorFactionRenown(e.tips, self.factionID)--名望
+            func.Set_Faction(e.tips, self.factionID)
         end
         if self.areaPoiID and uiMapID then
             local poiInfo= C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, self.areaPoiID)
@@ -2175,7 +2161,7 @@ local function Init()
             e.tips:ClearLines()
             GameTooltip_AddQuest(block.TrackedQuest or block, block.id)
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(id, Category:GetName())
+            e.tips:AddDoubleLine(id, Initializer:GetName())
             e.tips:Show()
         end
     end)
@@ -2252,7 +2238,7 @@ local function Init()
                 if isSecure then
                     GameTooltip_AddNormalLine(SettingsTooltip, '|cnRED_FONT_COLOR:isSecure: true|r', true)
                 end
-                GameTooltip_AddNormalLine(SettingsTooltip, id..Category:GetName())
+                GameTooltip_AddNormalLine(SettingsTooltip, id..Initializer:GetName())
             end
         end
         local function CreateOptionsInitTooltip(setting, name, tooltip, options, variable)--Blizzard_SettingControls.lua
@@ -2403,7 +2389,7 @@ local function Init()
                 if category then
                     GameTooltip_AddNormalLine(SettingsTooltip, category, true)
                 end
-                GameTooltip_AddNormalLine(SettingsTooltip, id..' '..Category:GetName(), true)
+                GameTooltip_AddNormalLine(SettingsTooltip, id..' '..Initializer:GetName(), true)
             end
 
             for index, button in ipairs(self.Buttons) do
@@ -2479,9 +2465,9 @@ local function Init_Panel()
 
     local initializer2= e.AddPanel_Check({
         name= e.onlyChinese and '跟随鼠标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, FOLLOW, MOUSE_LABEL),
-        tooltip= Category:GetName(),
+        tooltip= Initializer:GetName(),
         value= Save.setDefaultAnchor,
-        category= Category,
+        category= Initializer,
         func= function()
             Save.setDefaultAnchor= not Save.setDefaultAnchor and true or nil
             if Save.setDefaultAnchor then
@@ -2497,8 +2483,8 @@ local function Init_Panel()
             minValue= -240,
             maxValue= 240,
             setp= 1,
-            tooltip= Category:GetName(),
-            category= Category,
+            tooltip= Initializer:GetName(),
+            category= Initializer,
             func= function(_, _, value2)
                 local value3= e.GetFormatter1to10(value2, -200, 200)
                 Save.cursorX= value3
@@ -2513,8 +2499,8 @@ local function Init_Panel()
             minValue= -240,
             maxValue= 240,
             setp= 1,
-            tooltip= Category:GetName(),
-            category= Category,
+            tooltip= Initializer:GetName(),
+            category= Initializer,
             func= function(_, _, value2)
                 local value3= e.GetFormatter1to10(value2, -200, 200)
                 Save.cursorY= value3
@@ -2525,9 +2511,9 @@ local function Init_Panel()
 
         initializer= e.AddPanel_Check({
             name= e.onlyChinese and '右边' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT,
-            tooltip= Category:GetName(),
+            tooltip= Initializer:GetName(),
             value= Save.cursorRight,
-            category= Category,
+            category= Initializer,
             func= function()
                 Save.cursorRight= not Save.cursorRight and true or nil
                 set_Cursor_Tips()
@@ -2537,9 +2523,9 @@ local function Init_Panel()
 
         initializer= e.AddPanel_Check({
             name= e.onlyChinese and '战斗中：默认' or (HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..': '..DEFAULT),
-            tooltip= Category:GetName(),
+            tooltip= Initializer:GetName(),
             value= Save.inCombatDefaultAnchor,
-            category= Category,
+            category= Initializer,
             func= function()
                 Save.inCombatDefaultAnchor= not Save.inCombatDefaultAnchor and true or nil
                 set_Cursor_Tips()
@@ -2552,9 +2538,9 @@ local function Init_Panel()
 
     initializer2= e.AddPanel_Check({
         name= e.onlyChinese and '模型' or MODEL,
-        tooltip= Category:GetName(),
+        tooltip= Initializer:GetName(),
         value= not Save.hideModel,
-        category= Category,
+        category= Initializer,
         func= function()
             Save.hideModel= not Save.hideModel and true or nil
             set_Cursor_Tips()
@@ -2563,9 +2549,9 @@ local function Init_Panel()
 
     initializer= e.AddPanel_Check({
         name= e.onlyChinese and '左' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT,
-        tooltip= Category:GetName(),
+        tooltip= Initializer:GetName(),
         value= Save.modelLeft,
-        category= Category,
+        category= Initializer,
         func= function()
             Save.modelLeft= not Save.modelLeft and true or nil
             set_Cursor_Tips()
@@ -2575,9 +2561,9 @@ local function Init_Panel()
 
     initializer= e.AddPanel_Check({
         name= (e.onlyChinese and '模型' or MODEL)..' ID',
-        tooltip= Category:GetName(),
+        tooltip= Initializer:GetName(),
         value= Save.showModelFileID,
-        category= Category,
+        category= Initializer,
         func= function()
             Save.showModelFileID= not Save.showModelFileID and true or nil
             set_Cursor_Tips()
@@ -2591,8 +2577,8 @@ local function Init_Panel()
         minValue= 40,
         maxValue= 300,
         setp= 1,
-        tooltip= Category:GetName(),
-        category= Category,
+        tooltip= Initializer:GetName(),
+        category= Initializer,
         func= function(_, _, value2)
             local value3= e.GetFormatter1to10(value2, 40, 300)
             Save.modelSize= value3
@@ -2607,8 +2593,8 @@ local function Init_Panel()
         minValue= -240,
         maxValue= 240,
         setp= 1,
-        tooltip= Category:GetName(),
-        category= Category,
+        tooltip= Initializer:GetName(),
+        category= Initializer,
         func= function(_, _, value2)
             local value3= e.GetFormatter1to10(value2, -200, 200)
             Save.modelX= value3
@@ -2623,8 +2609,8 @@ local function Init_Panel()
         minValue= -240,
         maxValue= 240,
         setp= 1,
-        tooltip= Category:GetName(),
-        category= Category,
+        tooltip= Initializer:GetName(),
+        category= Initializer,
         func= function(_, _, value2)
             local value3= e.GetFormatter1to10(value2, -200, 200)
             Save.modelY= value3
@@ -2639,8 +2625,8 @@ local function Init_Panel()
         minValue= -1,
         maxValue= 1,
         setp= 0.1,
-        tooltip= Category:GetName(),
-        category= Category,
+        tooltip= Initializer:GetName(),
+        category= Initializer,
         func= function(_, _, value2)
             local value3= e.GetFormatter1to10(value2, -1, 1)
             Save.modelFacing= value3
@@ -2651,9 +2637,9 @@ local function Init_Panel()
 
     e.AddPanel_Check({
         name= e.onlyChinese and 'NPC职业颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, 'NPC', CLASS_COLORS),
-        tooltip= Category:GetName(),
+        tooltip= Initializer:GetName(),
         value= not Save.disabledNPCcolor,
-        category= Category,
+        category= Initializer,
         func= function()
             Save.disabledNPCcolor= not Save.disabledNPCcolor and true or nil
         end
@@ -2661,19 +2647,19 @@ local function Init_Panel()
 
     e.AddPanel_Check({
         name= e.onlyChinese and '生命值' or HEALTH,
-        tooltip= Category:GetName(),
+        tooltip= Initializer:GetName(),
         value= not Save.hideHealth,
-        category= Category,
+        category= Initializer,
         func= function()
             Save.hideHealth= not Save.hideHealth and true or nil
-            print(id, Category:GetName(),  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(id, Initializer:GetName(),  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     })
     e.AddPanel_Check({
         name= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, 'Ctrl+Shift', e.onlyChinese and '复制链接' or BROWSER_COPY_LINK),
         tooltip= 'wowhead.com|nraider.io',
         value= Save.ctrl,
-        category= Category,
+        category= Initializer,
         func= function()
             Save.ctrl= not Save.ctrl and true or nil
             set_Cursor_Tips()
@@ -2687,7 +2673,7 @@ local function Init_Panel()
         name= e.onlyChinese and '自动设置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SETTINGS),
         tooltip= function() return set_CVar(nil, true, true) end,
         value= Save.setCVar,
-        category= Category,
+        category= Initializer,
         func= function()
             Save.setCVar= not Save.setCVar and true or nil
             Save.graphicsViewDistance=nil
@@ -2735,17 +2721,17 @@ local function Init_Panel()
                     name='ActionButtonUseKeyDown',
                     msg=e.onlyChinese and '在按下快捷键时施法，而不是在松开快捷键时施法。' or OPTION_TOOLTIP_ACTION_BUTTON_USE_KEY_DOWN,
                 }) end,
-        category=Category
+        category=Initializer
     })
 
     initializer2= e.AddPanel_Check({
         name= (e.onlyChinese and '提示选项CVar名称' or 'Show Option CVar Name'),
         tooltip= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '友情提示: 可能会出现错误' or ('note: '..ENABLE_ERROR_SPEECH)..'|r'),
         value= Save.ShowOptionsCVarTips,
-        category= Category,
+        category= Initializer,
         func= function()
             Save.ShowOptionsCVarTips= not Save.ShowOptionsCVarTips and true or nil
-            print(id, Category:GetName(), e.GetEnabeleDisable(not Save.ShowOptionsCVarTips), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(id, Initializer:GetName(), e.GetEnabeleDisable(not Save.ShowOptionsCVarTips), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     })
 end
@@ -2824,7 +2810,7 @@ local function Init_Event(arg1)
                             e.tips:SetAchievementByID(achievementID)
                             e.tips:AddLine(' ')
                             e.tips:AddDoubleLine('|A:communities-icon-chat:0:0|a'..(e.onlyChinese and '说' or SAY), e.Icon.left)
-                            e.tips:AddDoubleLine(id, Category:GetName())
+                            e.tips:AddDoubleLine(id, Initializer:GetName())
                             e.tips:Show()
                         end
                         self:SetAlpha(0.5)
@@ -3017,7 +3003,7 @@ local function Init_Event(arg1)
                     frame.specIDLabel:SetScript('OnEnter', function(s)
                         e.tips:SetOwner(s, "ANCHOR_LEFT")
                         e.tips:ClearLines()
-                        e.tips:AddDoubleLine(id, Category:GetName())
+                        e.tips:AddDoubleLine(id, Initializer:GetName())
                         local specIndex= s:GetParent().specIndex
                         if specIndex then
                             local specID, name, _, icon= GetSpecializationInfo(specIndex)
@@ -3104,12 +3090,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             --Save.WidgetSetID = Save.WidgetSetID or 0
             e.AddPanel_Check({
                 name= e.onlyChinese and '启用' or ENABLE,
-                tooltip= Category:GetName(),
+                tooltip= Initializer:GetName(),
                 value= not Save.disabled,
-                category= Category,
+                category= Initializer,
                 func= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(id, Category:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(id, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 
