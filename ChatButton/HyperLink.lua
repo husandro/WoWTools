@@ -445,6 +445,7 @@ local function Instancelock(link)
 end
 
 local function TransmogSet(link)--幻化套装
+    local t= cn_Link_Text(link)
     local setID=link:match('transmogset:(%d+)')
     if setID then
         local info=C_TransmogSets.GetSetPrimaryAppearances(setID)
@@ -458,14 +459,17 @@ local function TransmogSet(link)--幻化套装
             end
             if to>0 then
                 if n==to then
-                    return format('|A:%s:0:0|a', e.Icon.select)
+                    t= t..format('|A:%s:0:0|a', e.Icon.select)
                 elseif n==0 then
-                    return link..RED_FONT_COLOR_CODE..n..'/'..to..'|r'
+                    t= t..RED_FONT_COLOR_CODE..n..'/'..to..'|r'
                 else
-                    return link..YELLOW_FONT_COLOR_CODE..n..'/'..to..'|r'
+                    t= t..YELLOW_FONT_COLOR_CODE..n..'/'..to..'|r'
                 end
             end
         end
+    end
+    if t~=link then
+        return t
     end
 end
 
@@ -474,7 +478,7 @@ local function setMount(link)--设置,坐骑
     if spellID then
         local mount,icon= Mount(spellID)
         if mount then
-            return (icon and '|T'..icon..':0|t' or '')..link..mount
+            return (icon and '|T'..icon..':0|t' or '')..cn_Link_Text(link)..mount
         end
     end
 end
