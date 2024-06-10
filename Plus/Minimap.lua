@@ -114,6 +114,9 @@ end
 
 --任务奖励 QuestUtils_AddQuestRewardsToTooltip(tooltip, questID, style)
 local function Get_QuestReward_Texture(questID)
+    if not questID then
+        return
+    end
     local itemTexture, bestQuality
 
     local numQuestChoices = GetNumQuestLogChoices(questID)--可选任务，奖励
