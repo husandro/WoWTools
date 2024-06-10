@@ -1009,7 +1009,7 @@ function func.Set_Faction(self, factionID, frame)
         e.tips:AddLine(e.cn(info.name))
         e.tips:AddLine(' ')
         if info.description and info.description~='' then
-            e.tips:AddLine(e.cn(description), nil,nil,nil, true)
+            e.tips:AddLine(e.cn(info.description), nil,nil,nil, true)
             e.tips:AddLine(' ')
         end
     end

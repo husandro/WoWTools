@@ -902,10 +902,10 @@ function e.GetCurrencyMaxInfo(currencyID, index)
 end
 
 function e.GetFactionInfo(factionID, index, toRight)
-    local name, standingID, barMin, barMax, barValue, isHeader,  hasRep,  _
+    local name, description, standingID, barMin, barMax, barValue, isHeader,  hasRep, _
     if index then
         name, description, standingID, barMin, barMax, barValue, _, _, isHeader, _, hasRep, _, _, factionID= GetFactionInfo(index)
-    else
+    elseif factionID then
         name, description, standingID, barMin, barMax, barValue, _, _, isHeader, _, hasRep, _, _, factionID= GetFactionInfoByID(factionID)
     end
     if not factionID or not name then
