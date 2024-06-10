@@ -855,24 +855,21 @@ function e.Get_Weekly_Rewards_Activities(settings)--周奖励，提示
     return last
 end
 
---info, num, total, percent, isMax, canWeek, canEarned, canQuantity= e.GetCurrencyMaxInfo(currencyID, index, allShow)
-function e.GetCurrencyMaxInfo(currencyID, index)
-    local info, link
-    if not currencyID and index then
-        link= C_CurrencyInfo.GetCurrencyListLink(index)
-		if link then
-			currencyID= C_CurrencyInfo.GetCurrencyIDFromLink(link)
-		end
+--info, num, total, percent, isMax, canWeek, canEarned, canQuantity= e.GetCurrencyMaxInfo(currencyID, index)
+function e.GetCurrencyMaxInfo(currencyID, index, link)
+    local info
+    if not currencyID then
+        link= link or (index and C_CurrencyInfo.GetCurrencyListLink(index))
+        currencyID= link and C_CurrencyInfo.GetCurrencyIDFromLink(link)
     end
     if currencyID then
         info=C_CurrencyInfo.GetCurrencyInfo(currencyID)
+        link= link or C_CurrencyInfo.GetCurrencyLink(currencyID)
     end
 
     if not info or not info.quantity or not info.discovered then
         return
     end
-
-    link= link or C_CurrencyInfo.GetCurrencyLink(currencyID)
 
     local canQuantity= info.maxQuantity and info.maxQuantity>0--最大数 quantity maxQuantity
     local canWeek= info.canEarnPerWeek and info.quantityEarnedThisWeek and info.maxWeeklyQuantity and info.maxWeeklyQuantity>0--本周 quantityEarnedThisWeek maxWeeklyQuantity
@@ -1022,7 +1019,7 @@ function e.GetFactionInfo(factionID, index, toRight)
         valueText= value,
         isCapped= isCapped,
         isHeader=isHeader,
-        hasRep=hasRep,        
+        hasRep=hasRep,
     }
 end
 

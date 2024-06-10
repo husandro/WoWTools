@@ -335,18 +335,24 @@ local function Set_TrackButton_Text()
 					end
 					e.tips:AddDoubleLine(col..(e.onlyChinese and '拿取' or 'Pickup'), col..('Alt+'..e.Icon.left))
 					e.FindBagItem(true, {itemID=self.itemID})--查询，背包里物品
+				elseif self.currencyID then
+					e.tips:SetCurrencyByID(self.currencyID)
+					local link= C_CurrencyInfo.GetCurrencyLink(self.currencyID) or (e.onlyChinese and '超链接' or COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK)
+					e.tips:AddDoubleLine(link..'|A:transmog-icon-chat:0:0|a', e.Icon.left)
 				elseif self.index then
 					e.tips:SetCurrencyToken(self.index)
-				elseif self.currencyID then
-
-					e.tips:SetCurrencyByID(self.currencyID)
 				end
-				e.tips:AddDoubleLine(id, Initializer:GetName())
+				--e.tips:AddDoubleLine(id, Initializer:GetName())
 				e.tips:Show()
 				Set_TrackButton_Pushed(true, self.text)--提示
 			end)
 			btn:SetScript("OnMouseDown", function(self)
+				if self.currencyID then					
+					e.Chat(C_CurrencyInfo.GetCurrencyLink(self.currencyID), nil, true)
+					return
+				end
 				if not self.itemID or not IsAltKeyDown() or C_Item.GetItemCount(self.itemID)==0 then return end
+
 				for bag= Enum.BagIndex.Backpack, NUM_TOTAL_EQUIPPED_BAG_SLOTS do
 					for slot=1, C_Container.GetContainerNumSlots(bag) do
 						if C_Container.GetContainerItemID(bag, slot)== self.itemID then
@@ -826,7 +832,7 @@ local function Init_TrackButton()
 	Set_TrackButton_Text()
 
 
-	
+
 end
 
 
@@ -975,8 +981,8 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 		end)
 		frame.check:SetScript('OnLeave', GameTooltip_Hide)
 		frame.check:SetSize(15,15)
-		
-		frame:HookScript('OnEnter', function(self)			
+
+		frame:HookScript('OnEnter', function(self)
 			for _, btn in pairs(TrackButton and TrackButton.btn or {}) do
 				local show= self.check.currencyID and self.check.currencyID== btn.currencyID
 				if btn:CanChangeAttribute() then

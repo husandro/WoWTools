@@ -35,6 +35,16 @@ DEFAULT_CHAT_FRAME.ADD= DEFAULT_CHAT_FRAME.AddMessage
 local LOOT_ITEM= e.Magic(LOOT_ITEM)--:gsub('%%s', '(.+)')--%s获得了战利品：%s。
 
 
+
+local function cn_Link_Text(link)
+    local name= e.strText[link:match('|h%[(.-)]|h')]--汉化
+    if name then
+        link= link:gsub('|h%[(.-)]|h', '|h['..name..']|h')
+    end
+    return link
+end
+
+
 local function SetChannels(link)
     local name=link:match('%[(.-)]')
     if name then
@@ -125,7 +135,7 @@ end
 
 local function Item(link)--物品超链接    
     local itemID= link:match('Hitem:(%d+)')
-    local t=link
+    local t= cn_Link_Text(link)
     local icon, classID, subclassID= select(5, C_Item.GetItemInfoInstant(itemID))
     t= icon and '|T'..icon..':0|t'..t or t--加图标
     if classID==2 or classID==4 then
@@ -167,25 +177,24 @@ local function Item(link)--物品超链接
     if bag and bag>0 then
         t=t..'|A:bag-main:0:0|a'..e.MK(bag, 3)
     end
-
+    
     if t~=link then
         return t
     end
 end
 
 local function Spell(link)--法术图标
-    local t=link
+    local t=cn_Link_Text(link)
     local icon= select(3, GetSpellInfo(link))
     local id2=link:match('Hspell:(%d+)')
     if icon then
-        return '|T'..icon..':0|t'..link
+        t= '|T'..icon..':0|t'..t
     elseif id2 then
         icon = GetSpellTexture(id2)
         if icon then
             t='|T'..icon..':0|t'..t
         end
     end
-
     local nu=Mount(id2)
     if nu then
         t=t..nu
@@ -201,7 +210,7 @@ local function PetLink(link)--宠物超链接
         local nu=Pet(speciesID )
         if nu then
             local _, icon, petType= C_PetJournal.GetPetInfoBySpeciesID(speciesID)
-            return (PetType(petType) or '') .. (icon and '|T'..icon..':0|t' or '')..link..nu
+            return (PetType(petType) or '') .. (icon and '|T'..icon..':0|t' or '')..cn_Link_Text(link)..nu
         end
     end
 end
@@ -225,7 +234,7 @@ local function Trade(link)--贸易技能
     if id2 then
         local icon = GetSpellTexture(id2)
         if icon then
-            return '|T'..icon..':0|t'..link
+            return '|T'..icon..':0|t'..cn_Link_Text(link)
         end
     end
 end
@@ -235,25 +244,20 @@ local function Enchant(link)--附魔
     if id2 then
         local icon = GetSpellTexture(id2)
         if icon then
-            return '|T'..icon..':0|t'..link
+            return '|T'..icon..':0|t'..cn_Link_Text(link)
         end
     end
 end
 
-local function Currency(link)--货币
-    local info= C_CurrencyInfo.GetCurrencyInfoFromLink(link)
-    if info and info.iconFileID then
-        local nu=''
-        if info.quantity and info.quantity>0 then
-            nu=e.MK(info.quantity, 3)
-            if (info.quantity==info.maxQuantity--最大数
-                or (info.canEarnPerWeek and info.maxWeeklyQuantity==info.quantityEarnedThisWeek)--本周
-                or (info.useTotalEarnedForMaxQty and info.totalEarned==info.maxQuantity)--赛季
-            ) then
-                nu= '|cnRED_FONT_COLOR:'..nu..'|r'
-            end
+local function Currency(link)--货币 "|cffffffff|Hcurrency:1744|h[Corrupted Memento]|h|r"
+    local info, num, _, _, isMax, canWeek, canEarned, canQuantity= e.GetCurrencyMaxInfo(nil, nil, link)
+    if info and info.iconFileID  then
+        local numText
+        if num then
+            numText=(isMax and '|cnRED_FONT_COLOR:' or ((canWeek or canEarned or canQuantity) and '|cnGREEN_FONT_COLOR:' ) or '|cffffffff')
+                ..e.MK(num,3)..'|r'
         end
-        return  '|T'..info.iconFileID..':0|t'..link..nu
+        return  '|T'..info.iconFileID..':0|t'..cn_Link_Text(link)..(numText or '')
     end
 end
 
@@ -262,7 +266,7 @@ local function Achievement(link)--成就
     if id2 then
         local _, _, _, completed, _, _, _, _, _, icon = GetAchievementInfo(id2)
         local texture=icon and '|T'..icon..':0|t' or ''
-        return texture..link..(completed and format('|A:%s:0:0|a', e.Icon.select) or '|A:questlegendary:0:0|a')
+        return texture..cn_Link_Text(link)..(completed and format('|A:%s:0:0|a', e.Icon.select) or '|A:questlegendary:0:0|a')
     end
 end
 
@@ -271,9 +275,9 @@ local function Quest(link)--任务
     if id2 then
         local wow= C_QuestLog.IsAccountQuest(id2) and format('|T%d:0|t', e.Icon.wow) or ''--帐号通用        
         if C_QuestLog.IsQuestFlaggedCompleted(id2) then
-            return wow..link..format('|A:%s:0:0|a', e.Icon.select)
+            return wow..cn_Link_Text(link)..format('|A:%s:0:0|a', e.Icon.select)
         else
-            return wow..link..'|A:questlegendary:0:0|a'
+            return wow..cn_Link_Text(link)..'|A:questlegendary:0:0|a'
         end
     end
 end
@@ -292,7 +296,7 @@ local function Pvptal(link)--pvp天赋
     local id2=link:match('Hpvptal:(%d+)')
     if id2 then
         local _, _, icon, _, _, _, _, _ ,_, known=GetPvpTalentInfoByID(id2)
-        return '|T'..icon..':0|t'..link..(known and format('|A:%s:0:0|a', e.Icon.select) or '|A:questlegendary:0:0|a')
+        return '|T'..icon..':0|t'..cn_Link_Text(link)..(known and format('|A:%s:0:0|a', e.Icon.select) or '|A:questlegendary:0:0|a')
     end
 end
 
@@ -327,11 +331,11 @@ local function Outfit(link)--外观方案链接
         end
         if to>0 then
             if to==co then
-                return link..format('|A:%s:0:0|a', e.Icon.select)
+                return cn_Link_Text(link)..format('|A:%s:0:0|a', e.Icon.select)
             elseif co>0 then
-                return link..YELLOW_FONT_COLOR_CODE..co..'/'..to..'|r'
+                return cn_Link_Text(link)..YELLOW_FONT_COLOR_CODE..co..'/'..to..'|r'
             else
-                return link..RED_FONT_COLOR_CODE..co..'/'..to..'|r'
+                return cn_Link_Text(link)..RED_FONT_COLOR_CODE..co..'/'..to..'|r'
             end
         end
     end
@@ -348,7 +352,7 @@ local function Transmogillusion(link)--幻化
             elseif info.isCollected then
                 icon=format('|A:%s:0:0|a', e.Icon.select)
             end
-            return link..icon
+            return cn_Link_Text(link)..icon
         end
     end
 end
@@ -358,9 +362,9 @@ local function TransmogAppearance(link)--幻化
     if appearanceID then
         local has=C_TransmogCollection.PlayerHasTransmogItemModifiedAppearance(appearanceID)
         if has then
-            return link.format('|A:%s:0:0|a', e.Icon.select)
+            return cn_Link_Text(link).format('|A:%s:0:0|a', e.Icon.select)
         else
-            return link..'|A:questlegendary:0:0|a'
+            return cn_Link_Text(link)..'|A:questlegendary:0:0|a'
         end
     end
 end
@@ -381,7 +385,7 @@ local function Keystone(link)
         local  icon=C_Item.GetItemIconByID(item)
         if icon then
             local texture= '|T'..icon..':0|t'
-            return texture..link..GetKeyAffix({affix1, affix2, affix3, affix4})
+            return texture..cn_Link_Text(link)..GetKeyAffix({affix1, affix2, affix3, affix4})
         end
     end
 end
@@ -389,7 +393,7 @@ end
 local function DungeonScore(link)--史诗钥石评分
     local score, guid, itemLv=link:match('|HdungeonScore:(%d+):(.-):.-:%d+:(%d+):')
     local t=e.GetPlayerInfo({guid=guid})..e.GetKeystoneScorsoColor(score)
-    t=t..link
+    t=t..cn_Link_Text(link)
     if itemLv and itemLv~='0' then
         t=t..'|A:charactercreate-icon-customize-body-selected:0:0|a'..itemLv
     end
@@ -404,7 +408,7 @@ local function Journal(link)--冒险指南 |Hjournal:0:1031:14|h[Uldir]|h 0=Inst
            if sectionID then
                 local info = C_EncounterJournal.GetSectionInfo(sectionID)
                 if info and info.abilityIcon then
-                    return '|T'..info.abilityIcon..':0|t'..link
+                    return '|T'..info.abilityIcon..':0|t'..cn_Link_Text(link)
                 end
            end
         elseif journalType=='1' and journalName then
@@ -413,7 +417,7 @@ local function Journal(link)--冒险指南 |Hjournal:0:1031:14|h[Uldir]|h 0=Inst
                 local _, name, _, _, iconImage = EJ_GetCreatureInfo(index, encounterID)
                 if name and iconImage then
                     if name==journalName then
-                        return '|T'..iconImage..':0|t'..link
+                        return '|T'..iconImage..':0|t'..cn_Link_Text(link)
                     end
                 else
                     break
@@ -422,7 +426,7 @@ local function Journal(link)--冒险指南 |Hjournal:0:1031:14|h[Uldir]|h 0=Inst
         elseif journalType=='0' then--Instance
             local buttonImage2 = select(6, EJ_GetInstanceInfo(journalID))
             if buttonImage2 then
-                return '|T'..buttonImage2..':0|t'..link
+                return '|T'..buttonImage2..':0|t'..cn_Link_Text(link)
             end
         end
     end
@@ -430,9 +434,9 @@ end
 
 local function Instancelock(link)
     local guid, InstanceID, DifficultyID=link:match('Hinstancelock:(.-):(%d+):(%d+):')
-    local t=e.GetPlayerInfo({guid=guid})..link
+    local t=e.GetPlayerInfo({guid=guid})..cn_Link_Text(link)
     if DifficultyID and InstanceID then
-        local name= GetDifficultyInfo(DifficultyID)
+        local name= e.GetDifficultyColor(nil, tonumber(DifficultyID)) or GetDifficultyInfo(DifficultyID)
         if name then
             t=t..'|Hjournal:0:'..InstanceID..':'..DifficultyID..'|h['..name..']|h'
         end
