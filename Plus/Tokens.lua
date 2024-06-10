@@ -177,7 +177,7 @@ local function Get_Currency(currencyID, index)
 	end
 
 
-    return text, info.iconFileID
+    return text, info.iconFileID, info.currencyID
 end
 
 
@@ -238,9 +238,9 @@ local function Set_TrackButton_Text()
 		end)
 	else
 		for index=1, C_CurrencyInfo.GetCurrencyListSize() do
-			local text, icon = Get_Currency(nil, index)--货币
+			local text, icon, currencyID = Get_Currency(nil, index)--货币
 			if text and icon then
-				table.insert(tab, {text= text, icon=icon, index=index})
+				table.insert(tab, {text= text, icon=icon, index=index, currencyID= currencyID})
 				endTokenIndex= endTokenIndex+1--货物，物品，分开
 			end
 		end
@@ -392,6 +392,8 @@ local function Set_TrackButton_Text()
 		btn.name= tables.name
 		btn.currencyID= tables.currencyID
 
+		local can= btn:CanChangeAttribute()
+
 		if btn.texture then
 			SetPortraitToTexture(btn.texture, tables.icon)
 		else
@@ -402,18 +404,20 @@ local function Set_TrackButton_Text()
 			if atlas then
 				btn.border:SetAtlas(atlas)
 			end
-			btn:SetShown(atlas and true or false)
+			if can then
+				btn:SetShown(atlas and true or false)
+			end
 		end
 
 		btn.text:SetText(tables.text)--设置，文本
 
 		btn:set_item_cool()
 
-		if itemButtonUse and not bat then--使用物品
+		if itemButtonUse and can then--使用物品
 			btn:SetAttribute('item',  tables.itemID and tables.name or nil )
 		end
 
-		if btn.itemButtonUse and not bat or not btn.itemButtonUse then
+		if btn.itemButtonUse and can or not btn.itemButtonUse then
 			btn:SetShown(true)
 		end
 
@@ -424,7 +428,7 @@ local function Set_TrackButton_Text()
 		last=nil
 		for i= 1, #TrackButton.btn do
 			local btn= TrackButton.btn[i]
-			if btn then
+			if btn and btn:CanChangeAttribute() then
 				btn:ClearAllPoints()
 				if endTokenIndex>1 and i==endTokenIndex then--货物，物品，分开
 					btn:SetPoint("TOP", last or TrackButton, 'BOTTOM',0, -10)
@@ -441,12 +445,15 @@ local function Set_TrackButton_Text()
 	for i= #tab+1, #TrackButton.btn do--隐藏，多余
 		local btn= TrackButton.btn[i]
 		if btn then
-			if (btn.itemButtonUse and not bat) or not btn.itemButtonUse then
+			btn.text:SetText('')
+			btn:SetNormalTexture(0)
+			if btn:CanChangeAttribute() then
 				btn:SetShown(false)
-			else
-				btn.text:SetText('')
-				btn:SetNormalTexture(0)
 			end
+			btn.itemID= nil
+			btn.index= nil
+			btn.name= nil
+			btn.currencyID= nil
 		end
 	end
 end
@@ -558,12 +565,15 @@ local function Init_TrackButton()
 		 	or (
 				not Save.notAutoHideTrack and (IsInInstance() or C_PetBattles.IsInBattle() or UnitAffectingCombat('player'))
 			)
-
-		self:SetShown(not hide)
+		if self:CanChangeAttribute() then
+			self:SetShown(not hide)
+		end
 	end
 
 	function TrackButton:set_Scale()
-		self.Frame:SetScale(Save.scaleTrackButton or 1)
+		if self.Frame:CanChangeAttribute() then
+			self.Frame:SetScale(Save.scaleTrackButton or 1)
+		end
 	end
 
 
@@ -587,16 +597,16 @@ local function Init_TrackButton()
 			)
 			self:set_Texture(C_Item.GetItemIconByID(itemID))
 		else
-
+			local canFrame= self.Frame:CanChangeAttribute() and '|cnGREEN_FONT_COLOR:' or ''
 			e.tips:AddDoubleLine(id, Initializer:GetName())
 			e.tips:AddLine(' ')
 			e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭货币页面' or BINDING_NAME_TOGGLECURRENCY, e.Icon.left)
 			e.tips:AddDoubleLine((e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU)..' '..e.GetShowHide(Save.str), e.Icon.right)
 			e.tips:AddLine(' ')
-			e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Atl+'..e.Icon.right)
-			e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.scaleTrackButton or 1), 'Alt+'..e.Icon.mid)
+			e.tips:AddDoubleLine(canFrame..(e.onlyChinese and '移动' or NPE_MOVE), 'Atl+'..e.Icon.right)
+			e.tips:AddDoubleLine(canFrame..(e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.scaleTrackButton or 1), 'Alt+'..e.Icon.mid)
 			e.tips:AddLine(' ')
-			e.tips:AddDoubleLine((e.onlyChinese and '拖曳' or DRAG_MODEL)..e.Icon.left..(e.onlyChinese and '物品' or ITEMS), e.onlyChinese and '追踪' or TRACKING)
+			e.tips:AddDoubleLine(canFrame..(e.onlyChinese and '拖曳' or DRAG_MODEL)..e.Icon.left..(e.onlyChinese and '物品' or ITEMS), e.onlyChinese and '追踪' or TRACKING)
 		end
 		e.tips:Show()
 	end
@@ -769,8 +779,6 @@ local function Init_TrackButton()
 	end)
 	TrackButton:SetScript('OnMouseUp', ResetCursor)
 	TrackButton:SetScript("OnLeave", function(self)
-
-
 		e.tips:Hide()
 		self:set_Texture()
 		self.texture:SetAlpha(0.5)
@@ -816,6 +824,9 @@ local function Init_TrackButton()
 	TrackButton:set_Texture()
 
 	Set_TrackButton_Text()
+
+
+	
 end
 
 
@@ -964,6 +975,25 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 		end)
 		frame.check:SetScript('OnLeave', GameTooltip_Hide)
 		frame.check:SetSize(15,15)
+		
+		frame:HookScript('OnEnter', function(self)			
+			for _, btn in pairs(TrackButton and TrackButton.btn or {}) do
+				local show= self.check.currencyID and self.check.currencyID== btn.currencyID
+				if btn:CanChangeAttribute() then
+					btn:SetScale(show and 2 or 1)
+				else
+					btn:SetAlpha(show and 0.3 or 1)
+				end
+			end
+		end)
+		frame:HookScript('OnLeave', function(self)
+			for _, btn in pairs(TrackButton and TrackButton.btn or {}) do
+				if btn:CanChangeAttribute() then
+					btn:SetScale(1)
+				end
+				btn:SetAlpha(1)
+			end
+		end)
 	end
 
 	if frame.check then
@@ -1556,6 +1586,22 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 
 		elseif arg1=='Blizzard_ItemInteractionUI' then
             hooksecurefunc(ItemInteractionFrame, 'SetupChargeCurrency', set_ItemInteractionFrame_Currency)
+
+		--[[elseif arg1=='Blizzard_TokenUI' then
+			hooksecurefunc(TokenEntryMixin, 'OnEnter', function(frame)--角色栏,声望
+				for _, btn in pairs(TrackButton and TrackButton.btn or {}) do
+					if frame.check and frame.check.currencyID and frame.check.currencyID== btn.currencyID then
+						btn:SetScale(2)
+					else
+						btn:SetScale(1)
+					end
+				end
+			end)
+			hooksecurefunc(TokenEntryMixin, 'OnLeave', function(frame)--角色栏,声望
+				for _, btn in pairs(TrackButton and TrackButton.btn or {}) do
+					btn:SetScale(1)
+				end
+			end)]]
 		end
 
     elseif event == "PLAYER_LOGOUT" then

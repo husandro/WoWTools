@@ -42,7 +42,6 @@ local func={
     --func.GetItemInfoFromHyperlink(link)--LinkUtil.lua  GetItemInfoFromHyperlink()不能正解，读取 |Hkeystone:
     --func.Set_Init_Item(self, hide)--创建，设置，内容
     --func.Set_Item_Model(self, tab)--设置, 3D模型{unit=, guid=, creatureDisplayID=, animID=, appearanceID=, visualID=, col=}
-    --e.Set_Web_Link(tab)
     --func.Set_Unit(self, unit)--设置单位提示信息
     --func.set_All_Aura(self, data)--Aura
     --func.set_Buff(type, self, ...)
@@ -284,28 +283,26 @@ end
 function func.Set_Web_Link(tab)
     if tab.frame==ItemRefTooltip or tab.frame==FloatingBattlePetTooltip then
         if tab.type and tab.id then
-            if not tab.frame.wowhead then
-                tab.frame.wowhead=e.Cbtn(tab.frame, {size={20,20},type=false})--取得网页，数据链接
-                tab.frame.wowhead:SetPoint('RIGHT',tab.frame.CloseButton, 'LEFT',0,2)
-                tab.frame.wowhead:SetNormalAtlas('questlegendary')
-                tab.frame.wowhead:SetScript('OnClick', function(f)
+            if not tab.frame.WoWHeadButton then
+                tab.frame.WoWHeadButton=e.Cbtn(tab.frame, {size={20,20}, type=false})--取得网页，数据链接
+                tab.frame.WoWHeadButton:SetPoint('RIGHT',tab.frame.CloseButton, 'LEFT',0,2)
+                tab.frame.WoWHeadButton:SetNormalAtlas('questlegendary')
+                tab.frame.WoWHeadButton:SetScript('OnClick', function(f)
                     if f.type and f.id then
                         e.Show_WoWHead_URL(true, f.type, f.id, f.name)
                     end
-                    --[[if self.web then
-                        StaticPopup_Show("WoWTools_Tooltips_LinkURL",
-                            'WoWHead',
-                            nil,
-                            self.web
-                        )
-                    end]]
                 end)
+                function tab.frame.WoWHeadButton:rest()
+                    self.type=nil
+                    self.id=nil
+                    self.name=nil
+                    self:SetShown(false)
+                end
             end
-            tab.frame.wowhead.type= tab.type
-            tab.frame.wowhead.id= tab.id
-            tab.frame.wowhead= tab.name
-            --tab.frame.wowhead.web= format(wowheadText, tab.type, tab.id, tab.name or '')
-            tab.frame.wowhead:SetShown(true)
+            tab.frame.WoWHeadButton.type= tab.type
+            tab.frame.WoWHeadButton.id= tab.id
+            tab.frame.WoWHeadButton.name= tab.name
+            tab.frame.WoWHeadButton:SetShown(true)
         end
         return
     end
@@ -330,11 +327,6 @@ function func.Set_Web_Link(tab)
         end
         if IsControlKeyDown() and IsShiftKeyDown() then
             e.Show_WoWHead_URL(true, tab.type, tab.id, tab.name)
-            --[[StaticPopup_Show("WoWTools_Tooltips_LinkURL",
-                'WoWHead',
-                nil,
-                format(wowheadText, tab.type, tab.id, tab.name or '')
-            )]]
         end
     elseif tab.unitName then
         if tab.frame then
@@ -346,11 +338,6 @@ function func.Set_Web_Link(tab)
         end
         if IsControlKeyDown() and IsShiftKeyDown() then
             e.Show_WoWHead_URL(false, nil, tab.realm or e.Player.realm, tab.unitName)
-            --[[StaticPopup_Show("WoWTools_Tooltips_LinkURL",
-                'Raider.IO',
-                nil,
-                format(raiderioText, GetCurrentRegionName() or '', tab.realm or e.Player.realm, tab.unitName)
-            )]]
         end
     end
 end
@@ -1722,51 +1709,7 @@ end
 --初始
 --####
 local function Init()
-    --[[func.Set_Init_Item(ItemRefTooltip)
-    func.Set_Init_Item(e.tips)
-    func.Set_Init_Item(EmbeddedItemTooltip)]]
-
-    --Init_Web_Link()--取得网页，数据链接
     Int_Health_Bar_Unit()--生命条提示
-    --Init_StableFrame_Plus()--猎人，兽栏 Plus 10.2.7
-
-    --[[e.tips:HookScript("OnHide", function(self)--隐藏
-        func.Set_Init_Item(self, true)
-    end)
-    ItemRefTooltip:HookScript("OnHide", function (self)--隐藏
-        func.Set_Init_Item(self, true)
-        if ItemRefTooltip.wowhead then
-            ItemRefTooltip.wowhead.web=nil--取得网页，数据链接
-            ItemRefTooltip.wowhead:SetShown(false)
-        end
-    end)
-    EmbeddedItemTooltip:HookScript('OnHide', function(self)
-        func.Set_Init_Item(self, true)
-    end)]]
-
-    --[[Blizzard_UIWidgetTemplateBase.lua
-    hooksecurefunc(EmbeddedItemTooltip, 'SetSpellByID', function(self, spellID)--法术 Blizzard_UIWidgetTemplateBase.lua
-        if spellID and spellID>0 then
-            local _, _, icon, _, _, _, _, originalIcon= GetSpellInfo(spellID)
-            local spellTexture=  originalIcon or icon or GetSpellTexture(spellID)
-            GameTooltip_AddColoredLine(
-                EmbeddedItemTooltip,
-                (e.onlyChinese and '法术' or SPELLS)..' '..spellID..(spellTexture and '  |T'..spellTexture..':0|t'..spellTexture or ''),
-                self.tooltipColor or HIGHLIGHT_FONT_COLOR, true
-            )
-        end
-    end)
-    hooksecurefunc(EmbeddedItemTooltip, 'SetItemByID', function(self, itemID)--物品 Blizzard_UIWidgetTemplateBase.lua
-        if itemID and itemID>0 then
-            local texture= C_Item.GetItemNameByID(itemID) or select(10, C_Item.GetItemInfo(itemID))
-            GameTooltip_AddColoredLine(
-                EmbeddedItemTooltip,
-                (e.onlyChinese and '物品' or ITEMS)..' '..itemID..(texture and '  |T'..texture..':0|t'..texture or ''),
-                self.tooltipColor or HIGHLIGHT_FONT_COLOR, true
-            )
-        end
-    end)]]
-
 
     hooksecurefunc('GameTooltip_AddQuestRewardsToTooltip', func.Set_Quest)--世界任务ID GameTooltip_AddQuest
 
@@ -1811,9 +1754,8 @@ local function Init()
             func.Set_Init_Item(tooltip)
             tooltip:HookScript("OnHide", function(frame)--隐藏
                 func.Set_Init_Item(frame, true)
-                if frame.wowhead then
-                    frame.wowhead.web=nil--取得网页，数据链接
-                    frame.wowhead:SetShown(false)
+                if frame.WoWHeadButton then
+                    frame.WoWHeadButton:rest()
                 end
             end)
         end
@@ -2077,11 +2019,6 @@ local function Init()
             if self.questID then
                 local info = C_QuestLog.GetQuestTagInfo(self.questID) or {}
                 e.Show_WoWHead_URL(true, 'quest', self.questID, info.tagName)
-                --[[StaticPopup_Show("WoWTools_Tooltips_LinkURL",
-                'WoWHead',
-                nil,
-                format(wowheadText, 'quest', self.questID, info and info.tagName or '')
-                )]]
             end
         end)
     end

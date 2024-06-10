@@ -319,6 +319,8 @@ local function Set_TrackButton_Text()
 		btn.text:SetText('')
 		btn:SetShown(false)
 		btn:SetNormalTexture(0)
+		btn.factionID= nil
+		btn.friendshipID=nil
 	end
 end
 
@@ -417,6 +419,7 @@ local function Init_TrackButton()
 
 		elseif d=='LeftButton' and not IsModifierKeyDown() then--右击, 移动
 			ToggleCharacter("ReputationFrame")
+
 
 		elseif d=='RightButton' and not IsModifierKeyDown() then
 			if not self.Menu then
@@ -519,7 +522,6 @@ local function Init_TrackButton()
 			Save.scaleTrackButton= num
 			self:set_Scale()
 			self:set_Tooltips()
-			print(id, e.cn(addName), e.onlyChinese and '追踪' or TRACKING, e.onlyChinese and '字体大小' or FONT_SIZE, num)
 		end
 	end)
 
@@ -552,6 +554,26 @@ local function Init_TrackButton()
 	TrackButton:set_Shown()
 	TrackButton:set_Texture()
 	Set_TrackButton_Text()
+
+
+
+
+
+
+	hooksecurefunc(ReputationBarMixin, 'OnEnter', function(frame)--角色栏,声望
+		for _, btn in pairs(TrackButton.btn) do
+			if frame.factionID and frame.factionID== btn.factionID then
+				btn:SetScale(2)
+			else
+				btn:SetScale(1)
+			end
+		end
+    end)
+	hooksecurefunc(ReputationBarMixin, 'OnLeave', function(frame)--角色栏,声望
+		for _, btn in pairs(TrackButton.btn) do
+			btn:SetScale(1)
+		end
+    end)
 end
 
 

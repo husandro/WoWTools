@@ -1339,14 +1339,25 @@ local function Init()
         end
     end
 
-
+    local Covenant={
+        [1]='格里恩',
+        [2]='温西尔',
+        [3]='法夜',
+        [4]='通灵领主',
+    }
+    for covenantID=1, 4 do
+        local data = C_Covenants.GetCovenantData(covenantID) or {}
+        if data.name then
+            e.strText[data.name]= Covenant[covenantID]
+        end
+    end
 
     Init_Add_Data()
 
 
 
     --hooksecurefunc(UIWidgetPowerBarContainerFrame, 'CreateWidget', function(_, widgetID)--RemoveWidget Blizzard_UIWidgetManager.lua
-    
+
 end
 
 
