@@ -942,7 +942,7 @@ function e.GetFactionInfo(factionID, index, toRight)
         isCapped=C_MajorFactions.HasMaximumRenown(factionID)
         local info = C_MajorFactions.GetMajorFactionData(factionID) or {}
         if info.renownLevel then
-            factionStandingtext= info.renownLevel
+            factionStandingtext= (e.onlyChinese and '名望' or RENOWN_LEVEL_LABEL)..' '..info.renownLevel
             local levels = C_MajorFactions.GetRenownLevels(factionID)
             if levels then
                 factionStandingtext= factionStandingtext..'/'..#levels

@@ -1909,21 +1909,21 @@ end
 
 
 --取得，等级，派系声望
-local function Get_Major_Faction_Level(factionID, level)    
-    local text=''
+local function Get_Major_Faction_Level(factionID, level)
+    local text,hasRewardPending ='', false
     level= level or 0
     if C_MajorFactions.HasMaximumRenown(factionID) then
         if C_Reputation.IsFactionParagon(factionID) then--奖励
-            local currentValue, threshold, _, hasRewardPending, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(factionID)
+            local currentValue, threshold, _, hasRewardPending2, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(factionID)
             if not tooLowLevelForParagon and currentValue and threshold and threshold>0 then
+                hasRewardPending= hasRewardPending2
                 local completed= math.modf(currentValue/threshold)--完成次数
                 currentValue= completed>0 and currentValue - threshold * completed or currentValue
-                if hasRewardPending then
+                if hasRewardPending2 then
                     text= format('|cnGREEN_FONT_COLOR:%i%%|A:GarrMission-%sChest:0:0|a%s%d|r', currentValue/threshold*100, e.Player.faction, hasRewardPending and format('|A:%s:0:0|a', e.Icon.select) or '', completed)
                 else
                     text= format('%i%%|A:Banker:0:0|a%s%d', currentValue/threshold*100, hasRewardPending and format('|A:%s:0:0|a', e.Icon.select) or '', completed)
                 end
-
             end
         end
         text= text or format('|cnGREEN_FONT_COLOR:%d|r|A:common-icon-checkmark:0:0|a', level)
@@ -1939,7 +1939,7 @@ local function Get_Major_Faction_Level(factionID, level)
             text= format('%s %i%%', text, info.renownReputationEarned/info.renownLevelThreshold*100)
         end
     end
-    return text
+    return text, hasRewardPending
 end
 
 
@@ -1963,14 +1963,17 @@ end
 local function Set_Faction_Menu(factionID)
     local data = C_MajorFactions.GetMajorFactionData(factionID or 0)
     if data and data.name then
+        local name, hasRewardPending= Get_Major_Faction_Level(factionID, data.renownLevel)
         return {
             text=format('|A:majorfactions_icons_%s512:0:0|a%s %s',
                         data.textureKit or '',
                         e.cn(data.name) or (e.onlyChinese and '主要阵营' or MAJOR_FACTION_LIST_TITLE),
                         --C_MajorFactions.HasMaximumRenown(factionID) and '|cnGREEN_FONT_COLOR:' or '',
-                        Get_Major_Faction_Level(factionID, data.renownLevel)),
+                        name),
             checked= MajorFactionRenownFrame and MajorFactionRenownFrame.majorFactionID==factionID,
             keepShownOnClick=true,
+            tooltipOnButton= hasRewardPending,
+            tooltipTitle=e.onlyChinese and '你有未领取的奖励' or WEEKLY_REWARDS_UNCLAIMED_TITLE,
             disabled= UnitAffectingCombat('player'),
             colorCode= (not data.isUnlocked and data.renownLevel==0) and '|cff606060' or nil,
             --tooltipOnButton=true,
