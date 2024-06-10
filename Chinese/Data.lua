@@ -896,7 +896,6 @@ local raceTab={
 
 
 
---https://www.wowhead.com/cn/affix=135/%E5%8F%97%E9%9A%BE
 local affixTab= {-- {', ''},
     {1, '溢出', '对目标的过量治疗会被转化为治疗吸收效果。'},
     {2, '无常', '敌人对坦克所产生威胁值的关注程度大幅下降。'},
