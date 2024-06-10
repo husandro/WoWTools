@@ -403,7 +403,7 @@ function func.Set_Mount(self, mountID, type)--坐骑
             )
         end
     elseif isForDragonriding then
-        self.textRight:SetFormattedText(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, e.onlyChinese and '驭龙术' or MOUNT_JOURNAL_FILTER_DRAGONRIDING)
+        self.textRight:SetFormattedText(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, e.onlyChinese and '驭空术' or MOUNT_JOURNAL_FILTER_DRAGONRIDING)
     end
     local creatureDisplayInfoID, _, source, isSelfMount, _, _, animID = C_MountJournal.GetMountInfoExtraByID(mountID)
     if creatureDisplayInfoID then

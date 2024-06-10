@@ -2224,7 +2224,7 @@ local function Init_Status_Func()
         GameTooltip:AddLine(format(e.onlyChinese and '游泳速度：%d%%' or STAT_MOVEMENT_SWIM_TOOLTIP, statFrame.swimSpeed+0.5))
         if (statFrame.unit ~= "pet") then
             GameTooltip:AddLine(format(e.onlyChinese and '飞行速度：%d%%' or STAT_MOVEMENT_FLIGHT_TOOLTIP, statFrame.flightSpeed+0.5))
-            GameTooltip:AddLine(format('%s: %i%%', e.onlyChinese and '驭龙术' or LANDING_DRAGONRIDING_PANEL_TITLE, 100*100/BASE_MOVEMENT_SPEED))
+            GameTooltip:AddLine(format('%s: %i%%', e.onlyChinese and '驭空术' or LANDING_DRAGONRIDING_PANEL_TITLE, 100*100/BASE_MOVEMENT_SPEED))
         end
         GameTooltip:AddLine(" ")
         GameTooltip:AddLine(format(e.onlyChinese and '提升移动速度。|n|n速度：%s [+%.2f%%]' or CR_SPEED_TOOLTIP, BreakUpLargeNumbers(GetCombatRating(CR_SPEED)), GetCombatRatingBonus(CR_SPEED)))

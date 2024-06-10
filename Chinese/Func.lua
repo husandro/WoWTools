@@ -5480,7 +5480,7 @@ local function Init_Loaded(arg1)
                 local creatureName= C_MountJournal.GetDisplayedMountInfo(elementData.index)
                 set(button.name, e.strText[creatureName])
                 if button.DragonRidingLabel:IsShown() then
-                    set(button.DragonRidingLabel, '驭龙术')
+                    set(button.DragonRidingLabel, '驭空术')
                 end
             end)
 

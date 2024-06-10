@@ -2501,7 +2501,7 @@ local function Init_Menu(_, level, menuList)
 
     Init_Garrison_Menu(level)--要塞报告
 
-    --驭龙术
+    --驭空术
     --[[local DRAGONRIDING_INTRO_QUEST_ID = 68798;
     local DRAGONRIDING_ACCOUNT_ACHIEVEMENT_ID = 15794;
     local DRAGONRIDING_TRAIT_SYSTEM_ID = 1;
@@ -2518,7 +2518,7 @@ local function Init_Menu(_, level, menuList)
     end
 
     e.LibDD:UIDropDownMenu_AddButton({--Blizzard_DragonflightLandingPage.lua
-        text= format('|A:dragonriding-barbershop-icon-protodrake:0:0|a%s%s', e.onlyChinese and '驭龙术' or GENERIC_TRAIT_FRAME_DRAGONRIDING_TITLE, numDragonriding),
+        text= format('|A:dragonriding-barbershop-icon-protodrake:0:0|a%s%s', e.onlyChinese and '驭空术' or GENERIC_TRAIT_FRAME_DRAGONRIDING_TITLE, numDragonriding),
         checked= GenericTraitFrame and GenericTraitFrame:IsShown() and GenericTraitFrame:GetConfigID() == C_Traits.GetConfigIDBySystemID(1),
         keepShownOnClick=true,
         disabled= UnitAffectingCombat('player'),

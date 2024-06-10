@@ -1068,7 +1068,7 @@ local function InitMenu(_, level, type)--主菜单
         {type=MOUNT_JOURNAL_FILTER_GROUND, name='地面'},
         {type=MOUNT_JOURNAL_FILTER_AQUATIC, name='水栖'},
         {type=MOUNT_JOURNAL_FILTER_FLYING, name='飞行'},
-        {type=MOUNT_JOURNAL_FILTER_DRAGONRIDING, name='驭龙术'},
+        {type=MOUNT_JOURNAL_FILTER_DRAGONRIDING, name='驭空术'},
         {type='-', name=''},
         {type='Shift', name=''}, {type='Alt', name=''}, {type='Ctrl', name=''},
         {type='-', name=''},
@@ -1557,7 +1557,7 @@ local function Init()
             if IsMounted() then
                C_MountJournal.Dismiss()
 
-            --战斗中，可用，驭龙术
+            --战斗中，可用，驭空术
             elseif UnitAffectingCombat('player') and not IsPlayerMoving() and  IsUsableSpell(368896) then
                 local spellID= getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING)
                 local mountID= spellID and C_MountJournal.GetMountFromSpell(spellID) or 368896

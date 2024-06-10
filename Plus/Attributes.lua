@@ -39,7 +39,7 @@ local Save={
     --notText=false,--禁用，数值
     textColor= {r=1,g=1,b=1,a=1},--数值，颜色
     bit=0,--数值，位数
-    --disabledDragonridingSpeed=true,--禁用，驭龙术UI，速度
+    --disabledDragonridingSpeed=true,--禁用，驭空术UI，速度
     --disabledVehicleSpeed=true, --禁用，载具，速度
 
     hideInPetBattle=true,--宠物战斗中, 隐藏
@@ -770,7 +770,7 @@ local function set_SPEED_Tooltip(self)
     e.tips:AddDoubleLine((e.onlyChinese and '地面' or MOUNT_JOURNAL_FILTER_GROUND)..format(' %.0f%%', runSpeed*100/BASE_MOVEMENT_SPEED), format('%.2f', runSpeed), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
     e.tips:AddDoubleLine((e.onlyChinese and '水栖' or MOUNT_JOURNAL_FILTER_AQUATIC )..format(' %.0f%%', swimSpeed*100/BASE_MOVEMENT_SPEED), format('%.2f', swimSpeed), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
     e.tips:AddDoubleLine((e.onlyChinese and '飞行' or MOUNT_JOURNAL_FILTER_FLYING )..format(' %.0f%%', flightSpeed*100/BASE_MOVEMENT_SPEED), format('%.2f', flightSpeed), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
-    e.tips:AddDoubleLine((e.onlyChinese and '驭龙术' or LANDING_DRAGONRIDING_PANEL_TITLE)..format(' %.0f%%', 100*100/BASE_MOVEMENT_SPEED), '100', frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
+    e.tips:AddDoubleLine((e.onlyChinese and '驭空术' or LANDING_DRAGONRIDING_PANEL_TITLE)..format(' %.0f%%', 100*100/BASE_MOVEMENT_SPEED), '100', frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
     if UnitExists('vehicle') then
         currentSpeed = GetUnitSpeed('vehicle')
         e.tips:AddDoubleLine((e.onlyChinese and '载具' or 'Vehicle')..format(' %.0f%%', currentSpeed*100/BASE_MOVEMENT_SPEED), format('%.2f', currentSpeed), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
@@ -1337,11 +1337,11 @@ local function Init_Options()--设置 panel
             current:SetScript('OnEnter', set_SPEED_Tooltip)
             current:SetScript('OnLeave', GameTooltip_Hide)]]
 
-            --驭龙术UI，速度
+            --驭空术UI，速度
             local dragonriding= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
             dragonriding:SetChecked(not Save.disabledDragonridingSpeed)
             dragonriding:SetPoint('LEFT', text, 'RIGHT',2,0)
-            dragonriding.text:SetFormattedText('|A:dragonriding_vigor_decor:0:0|a%s', e.onlyChinese and '驭龙术' or GENERIC_TRAIT_FRAME_DRAGONRIDING_TITLE)
+            dragonriding.text:SetFormattedText('|A:dragonriding_vigor_decor:0:0|a%s', e.onlyChinese and '驭空术' or GENERIC_TRAIT_FRAME_DRAGONRIDING_TITLE)
             dragonriding:SetScript('OnClick',function()
                 Save.disabledDragonridingSpeed= not Save.disabledDragonridingSpeed and true or nil
                 print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabledDragonridingSpeed), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
@@ -1904,7 +1904,7 @@ end
 
 
 
---驭龙术UI，速度
+--驭空术UI，速度
 local function Init_Dragonriding_Speed()
     if Save.disabledDragonridingSpeed then
         return
@@ -2003,7 +2003,7 @@ end
 --初始
 --####
 local function Init()
-    Init_Dragonriding_Speed()--驭龙术UI，速度
+    Init_Dragonriding_Speed()--驭空术UI，速度
     Init_Vehicle_Speed()--载具，移动，速度
 
     button= e.Cbtn(nil, {icon='hide', size={22,22}, pushe=true})
