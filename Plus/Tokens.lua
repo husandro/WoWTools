@@ -956,7 +956,7 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 	if not frame or not frame.index then
 		return
 	end
-	local info, num, total, percent, isMax, canWeek, canEarned, canQuantity= e.GetCurrencyMaxInfo(nil, frame.index)
+	local info, _, _, percent, isMax, canWeek, canEarned, canQuantity= e.GetCurrencyMaxInfo(nil, frame.index)
 	local currencyID= info and info.currencyID
 	if not frame.isHeader and info and not frame.check then
 		frame.check= CreateFrame("CheckButton", nil, frame, "InterfaceOptionsCheckButtonTemplate")
@@ -1032,10 +1032,10 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 	if frame.Name then
 		local r, g, b= C_Item.GetItemQualityColor(info and info.quality or 1)
 		frame.Name:SetTextColor(r or 1, g or 1, b or 1)
-		local name= e.strText[frame.Name:GetText()]--汉化
+		--[[local name= e.strText[frame.Name:GetText()]--汉化
 		if name then
 			frame.Name:SetText(name)
-		end
+		end]]
 	end
 end
 

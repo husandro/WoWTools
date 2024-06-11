@@ -17,7 +17,7 @@ local addName=REPUTATION
 
 local Button
 local TrackButton
-
+local Initializer
 
 local onlyIcon
 
@@ -365,7 +365,7 @@ local function Init_TrackButton()
 	function TrackButton:set_Tooltips()
 		e.tips:SetOwner(self, "ANCHOR_RIGHT")
 		e.tips:ClearLines()
-		e.tips:AddDoubleLine(id, e.cn(addName))
+		e.tips:AddDoubleLine(id, Initializer:GetName())
 		e.tips:AddLine(' ')
 		e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭声望界面' or BINDING_NAME_TOGGLECHARACTER2, e.Icon.left)
 		e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
@@ -756,7 +756,7 @@ local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--R
 				e.tips:AddLine(' ')
 			end
 			e.tips:AddDoubleLine(e.onlyChinese and '追踪' or TRACKING, e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
-			e.tips:AddDoubleLine(id, e.cn(addName))
+			e.tips:AddDoubleLine(id, Initializer:GetName())
 			e.tips:Show()
 			self:SetAlpha(1)
 		end)
@@ -934,7 +934,7 @@ local function InitMenu(_, level, type)
 				func= function(_,arg1, arg2)
 					Save.factions[arg2]=nil
 					e.call('ReputationFrame_Update')
-					print(id, e.cn(addName), e.onlyChinese and '移除' or REMOVE, arg1, arg2)
+					print(id, Initializer:GetName(), e.onlyChinese and '移除' or REMOVE, arg1, arg2)
 				end
 			}
 			find=true
@@ -988,7 +988,7 @@ local function InitMenu(_, level, type)
 					TrackButton:ClearAllPoints()
 					TrackButton:set_Point()
 				end
-				print(id, e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
+				print(id, Initializer:GetName(), e.onlyChinese and '重置位置' or RESET_POSITION)
 			end
 		}
 		e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1010,7 +1010,7 @@ local function InitMenu(_, level, type)
 			else
 				Init_TrackButton()--监视, 文本
 			end
-			print(id, e.cn(addName),e.onlyChinese and '追踪' or TRACKING, e.GetShowHide(Save.btn))
+			print(id, Initializer:GetName(),e.onlyChinese and '追踪' or TRACKING, e.GetShowHide(Save.btn))
 		end
 	}
 	e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1039,7 +1039,7 @@ local function InitMenu(_, level, type)
 		func= function()
 			Save.factionUpdateTips= not Save.factionUpdateTips and true or nil
 			--set_RegisterEvent_CHAT_MSG_COMBAT_FACTION_CHANGE()--更新, 提示, 事件
-			print(id, e.cn(addName), e.onlyChinese and '声望变化' or COMBAT_TEXT_SHOW_REPUTATION_TEXT,'|A:voicechat-icon-textchat-silenced:0:0|a', e.GetEnabeleDisable(Save.factionUpdateTips), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+			print(id, Initializer:GetName(), e.onlyChinese and '声望变化' or COMBAT_TEXT_SHOW_REPUTATION_TEXT,'|A:voicechat-icon-textchat-silenced:0:0|a', e.GetEnabeleDisable(Save.factionUpdateTips), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
 		end
 	}
 	e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1052,7 +1052,7 @@ local function InitMenu(_, level, type)
 			Button:set_Shown()
 
 			e.call('ReputationFrame_Update')
-			--print(id, e.cn(addName), 'UI Plus', e.GetEnabeleDisable(not Save.notPlus), e.onlyChinese and '需要刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
+			--print(id, Initializer:GetName(), 'UI Plus', e.GetEnabeleDisable(not Save.notPlus), e.onlyChinese and '需要刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
 		end
 	}
 	e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1099,7 +1099,7 @@ local function Init()
 		e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.left)
-        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddDoubleLine(id, Initializer:GetName())
         e.tips:Show()
 		Set_TrackButton_Pushed(true)--TrackButton，提示
 	end)
@@ -1120,7 +1120,7 @@ local function Init()
 		e.tips:SetOwner(self, "ANCHOR_LEFT")
 		e.tips:ClearLines()
 		e.tips:AddDoubleLine(' ', e.onlyChinese and '收起选项|A:editmode-up-arrow:16:11:0:3|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS)
-		e.tips:AddDoubleLine(id, e.cn(addName))
+		e.tips:AddDoubleLine(id, Initializer:GetName())
 		e.tips:Show()
 	end)
 
@@ -1132,7 +1132,7 @@ local function Init()
 		e.tips:SetOwner(self, "ANCHOR_LEFT")
 		e.tips:ClearLines()
 		e.tips:AddDoubleLine(' ', e.onlyChinese and '展开选项|A:editmode-down-arrow:16:11:0:-7|a' or HUD_EDIT_MODE_EXPAND_OPTIONS)
-		e.tips:AddDoubleLine(id, e.cn(addName))
+		e.tips:AddDoubleLine(id, Initializer:GetName())
 		e.tips:Show()
 	end)
 
@@ -1166,7 +1166,7 @@ local function Init()
 			end
 		end
 		if text then
-			print(id, e.cn(addName), '|cffff00ff'..text..'|r', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '你有未领取的奖励' or WEEKLY_REWARDS_UNCLAIMED_TITLE))
+			print(id, Initializer:GetName(), '|cffff00ff'..text..'|r', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '你有未领取的奖励' or WEEKLY_REWARDS_UNCLAIMED_TITLE))
 		end
 	end
 end
@@ -1207,15 +1207,16 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 			end
 
 			--添加控制面板
-            e.AddPanel_Check({
+            Initializer= e.AddPanel_Check({
                 name= format('|A:%s:0:0|a%s', e.Icon[e.Player.faction] or '', e.onlyChinese and '声望' or addName),
                 tooltip= e.cn(addName),
                 value= not Save.disabled,
                 func= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(id, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
+
 
 
             if Save.disabled then
