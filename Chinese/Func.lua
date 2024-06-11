@@ -77,6 +77,17 @@ local function reg(self, text, index)
     end
 end
 
+local function hookLable(lable)
+    if lable and lable.SetText then
+        set(lable)
+        hooksecurefunc(lable, 'SetText', function(frame, name)
+            if name and name~='' then
+                set(frame, e.strText[name])
+            end
+        end)
+    end
+end
+
 local function hookButton(self, setFont)
     local label= self.text or self.Text or self.Label
     if not self or not self.SetText or not label or not label.GetText then
@@ -92,6 +103,7 @@ local function hookButton(self, setFont)
         end
     end)
 end
+
 
 
 local function set_model_tooltip(self)
@@ -2493,6 +2505,8 @@ local function Init()
         GameTooltip:SetText(headerText)
         GameTooltip:Show()
     end)
+    
+    hookLable(MinimapZoneText)
 
     --背包
     set(BagItemSearchBox.Instructions, '搜索')
