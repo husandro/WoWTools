@@ -66,7 +66,7 @@ local function SetChannels(link)
 
         name= name:match('%d+%. (.+)') or name:match('%d+．(.+)') or name--去数字
         name= name:match('%- (.+)') or name:match('：(.+)') or name:match(':(.+)') or name
-        name=e.WA_Utf8Sub(name, 2, 6)
+        name=e.WA_Utf8Sub(e.cn(name), 2, 6)
         return link:gsub('%[.-]', '['..name..']')
     end
 end
@@ -437,7 +437,7 @@ local function Instancelock(link)
     local t=e.GetPlayerInfo({guid=guid})..cn_Link_Text(link)
     if DifficultyID and InstanceID then
         local name= e.GetDifficultyColor(nil, tonumber(DifficultyID)) or GetDifficultyInfo(DifficultyID)
-        if name then
+        if name then--[[|Hjournal:0:320:5|h[Terrazza dell'Eterna Primavera]|h]]
             t=t..'|Hjournal:0:'..InstanceID..':'..DifficultyID..'|h['..name..']|h'
         end
     end
