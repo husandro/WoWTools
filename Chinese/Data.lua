@@ -15,6 +15,7 @@ instanceTab=nil
 instanceBossTab=nil
 itemSubTypeTab=nil
 friendFactionTab=nil
+mapTab=nil
 ]]
 
 
@@ -1234,7 +1235,87 @@ local friendFactionTab={-- []= {[1]='', [2]='', [3]='', [4]='', [5]=''},--
 
 
 
+local mapTab={-- []='',
+    --[1978]='巨龙群岛',
+    [2112]='瓦德拉肯',
+    [2022]='觉醒海岸',
+    [2133]='查拉雷克洞窟',
+    [2239]='阿梅达希尔',
+    
+    --[]='提尔要塞水库',
+    [2151]='禁忌离岛',
+    [2023]='欧恩哈拉平原',
+    [2025]='索德拉苏斯',
+    [2024]='碧蓝林海',
+    [2262]='叛徒之眠',
+    --[14529]='翡翠梦境',
 
+    [1670]='奥利波斯',
+    [1533]='晋升堡垒',
+    [1961]='希亚',
+    [1543]='噬渊',
+    [1536]='玛卓克萨斯',
+    [1525]='雷文德斯',
+    [1565]='炽蓝仙野',
+    [1970]='扎雷殁提斯',
+
+    --赞达拉
+    [1165]='达萨罗',
+    [862]='祖达萨',
+    [863]='纳兹米尔',
+    [864]='沃顿',
+
+    --库尔提拉斯
+    [896]='德鲁斯瓦',
+    [895]='提拉加德海峡',
+    [942]='斯托颂谷地',
+    [1462]='麦卡贡',
+    [1161]='伯拉勒斯',
+
+    --破碎群岛
+    [630]='阿苏纳',
+    [634]='风暴峡湾',
+    [680]='苏拉玛',
+    [641]='瓦尔莎拉',
+    --阿古斯
+    [830]='克罗库恩',
+    [885]='安托兰废土',
+    [882]='艾瑞达斯',
+
+    --潘达利亚
+    [433]='雾纱栈道',
+    [379]='昆莱山',
+    [418]='卡桑琅丛林',
+    [504]='雷神岛',
+    [371]='翡翠林',
+    --[]='盎迦猴岛',
+    [376]='四风谷',
+    [390]='锦绣谷',
+    [388]='螳螂高原',
+    [422]='恐惧废土',
+    [554]='永恒岛',
+    [507]='巨兽岛',
+    
+--诺森德
+    [115]='龙骨荒野',
+    [121]='祖达克',
+    [123]='冬拥湖',
+    [118]='冰冠冰川',
+    [127]='晶歌森林',
+    [119]='索拉查盆地',
+    [117]='嚎风峡湾',
+    [120]='风暴峭壁',
+    [114]='北风苔原',
+
+
+    --大漩涡
+    [174]='失落群岛',
+    [194]='科赞',
+    --[]='迷踪岛',
+    --[]='暗月岛',
+    --[]='托尔巴拉德半岛',
+    --[]='托尔巴拉德',
+}
 
 
 
@@ -1258,6 +1339,19 @@ local function Init_Add_Data()
     e.strText[EMOTE67_CMD1] = "/不"
     e.strText[SPEED] = "速度"
     e.strText[GRAPHICS_LABEL] = "图形"
+
+    local Covenant={
+        [1]='格里恩',
+        [2]='温西尔',
+        [3]='法夜',
+        [4]='通灵领主',
+    }
+    for covenantID=1, 4 do
+        local data = C_Covenants.GetCovenantData(covenantID) or {}
+        if data.name then
+            e.strText[data.name]= Covenant[covenantID]
+        end
+    end
 end
 
 
@@ -1274,6 +1368,7 @@ local function rest_all()
     instanceBossTab=nil
     itemSubTypeTab=nil
     friendFactionTab=nil
+    mapTab=nil
     Init_Add_Data=function()end
 end
 
@@ -1408,25 +1503,18 @@ local function Init()
         end
     end
 
-    local Covenant={
-        [1]='格里恩',
-        [2]='温西尔',
-        [3]='法夜',
-        [4]='通灵领主',
-    }
-    for covenantID=1, 4 do
-        local data = C_Covenants.GetCovenantData(covenantID) or {}
-        if data.name then
-            e.strText[data.name]= Covenant[covenantID]
+    for uiMapID, name in pairs(mapTab) do
+        local info = C_Map.GetMapInfo(uiMapID)
+        if info and info.name then
+            e.strText[info.name]= name
         end
     end
 
+
+
+
     Init_Add_Data()
-
-
-
     --hooksecurefunc(UIWidgetPowerBarContainerFrame, 'CreateWidget', function(_, widgetID)--RemoveWidget Blizzard_UIWidgetManager.lua
-
 end
 
 
