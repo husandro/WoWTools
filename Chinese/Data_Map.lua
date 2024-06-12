@@ -2,7 +2,7 @@ if LOCALE_zhCN or LOCALE_zhTW then
     return
 end
 local id, e = ...
-
+--https://wago.tools/db2/UiMap?locale=zhCN
 
 local tab={
 [1]= '杜隆塔尔',
