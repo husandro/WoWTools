@@ -1,9 +1,9 @@
 --1US (includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5Chin e.Player.region~=3 
-if LOCALE_zhCN or LOCALE_zhTW then
+local id, e= ...
+if LOCALE_zhCN or LOCALE_zhTW then--e.Player.region~=3 then-- LOCALE_zhCN or LOCALE_zhTW 
     return
 end
 
-local id, e= ...
 local addName= BUG_CATEGORY15
 local Save={
     disabled= not e.Player.husandro
@@ -7529,9 +7529,8 @@ panel:RegisterEvent('PLAYER_LOGOUT')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            Save= WoWToolsSave[addName] or Save
-
             if e.onlyChinese then
+                Save= WoWToolsSave[addName] or Save
                 if not Save.disabled then
                     Init()
                     for _, name in pairs(EnabledTab or {}) do
