@@ -2163,7 +2163,7 @@ function e.GetDurabiliy_OnEnter()--耐久度, 提示
 
     local co = GetRepairAllCost()--显示，修理所有，金钱
     local coText=''
-    if co>0 then
+    if co and co>0 then
         coText= ' |cnRED_FONT_COLOR:'..GetMoneyString(co)..'|r'
     end
     e.tips:AddDoubleLine(
