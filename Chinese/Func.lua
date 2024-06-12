@@ -1,14 +1,15 @@
-local id, e= ...
 --1US (includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5Chin e.Player.region~=3 
 if LOCALE_zhCN or LOCALE_zhTW then
     return
 end
+
+local id, e= ...
 local addName= BUG_CATEGORY15
 local Save={
     disabled= not e.Player.husandro
 }
 
-
+--e.disbledCN=true,--禁用汉化
 
 
 local function font(lable)
@@ -7531,6 +7532,17 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave[addName] or Save
 
             if e.onlyChinese then
+                if not Save.disabled then
+                    Init()
+                    for _, name in pairs(EnabledTab or {}) do
+                        Init_Loaded(name)
+                    end
+                    EnabledTab=nil
+                    return
+                    --退出，下面不要加代码
+                else
+                    e.disbledCN=true
+                end
                 --添加控制面板
                 e.AddPanel_Check({
                     name= e.onlyChinese and '语言翻译' or e.cn(addName),
@@ -7541,16 +7553,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
                     end
                 })
-
-                if not Save.disabled then
-                    Init()
-                    for _, name in pairs(EnabledTab or {}) do
-                        Init_Loaded(name)
-                    end
-                    EnabledTab=nil
-                    return
-                    --退出，下面不要加代码
-                end
             end
             self:UnregisterEvent("ADDON_LOADED")
             EnabledTab=nil

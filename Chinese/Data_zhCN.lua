@@ -21145,8 +21145,7 @@ local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, _, arg1)
     if arg1==id then
-        local Save= WoWToolsSave[BUG_CATEGORY15] or {disabled= not e.Player.husandro}
-        if e.onlyChinese and not Save.disabled then
+        if not e.disbledCN then
             do
                 for name, text in pairs(tab) do
                     name= _G[name]

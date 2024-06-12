@@ -47,12 +47,12 @@ API_WoWDate.lua
 
 
 ##繁体，简体，不会载加
-##中文内容库，大文件
-Chinese\zhCN.lua
-##增加，数据库
-Chinese\Data.lua
 ##界面，中文化，主要function
 Chinese\Func.lua
+##增加，数据库
+Chinese\Data_zhCN.lua
+Chinese\Data_Other.lua
+Chinese\Data_Map.lua
 
 
 

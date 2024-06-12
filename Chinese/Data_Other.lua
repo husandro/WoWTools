@@ -1,6 +1,7 @@
 if LOCALE_zhCN or LOCALE_zhTW then
     return
 end
+
 local id, e = ...
 
 
@@ -15,7 +16,6 @@ instanceTab=nil
 instanceBossTab=nil
 itemSubTypeTab=nil
 friendFactionTab=nil
-mapTab=nil
 ]]
 
 
@@ -1233,7 +1233,7 @@ local friendFactionTab={-- []= {[1]='', [2]='', [3]='', [4]='', [5]=''},--
 [1358]= {[1]='陌生人', [2]='同伴', [3]='哥们', [4]='朋友', [5]='好友', [6]='挚友'},--纳特·帕格
 }
 
-
+--[[
 
 local mapTab={-- []='',
     --[1978]='巨龙群岛',
@@ -1318,7 +1318,7 @@ local mapTab={-- []='',
     --[]='托尔巴拉德',
 }
 
-
+]]
 
 local function Init_Add_Data()
     e.strText[GetClassInfo(13)] = "|cff33937f唤魔师|r"
@@ -1369,7 +1369,6 @@ local function rest_all()
     instanceBossTab=nil
     itemSubTypeTab=nil
     friendFactionTab=nil
-    mapTab=nil
     Init_Add_Data=function()end
 end
 
@@ -1504,12 +1503,7 @@ local function Init()
         end
     end
 
-    for uiMapID, name in pairs(mapTab) do
-        local info = C_Map.GetMapInfo(uiMapID)
-        if info and info.name then
-            e.strText[info.name]= name
-        end
-    end
+   
 
 
 
@@ -1539,8 +1533,7 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     if event=='ADDON_LOADED' then
         if arg1== id then
-            local Save= WoWToolsSave[BUG_CATEGORY15] or {disabled= not e.Player.husandro}
-            if e.onlyChinese and not Save.disabled then
+            if not e.disbledCN then
                 C_Timer.After(2, function()
                     do
                         Init()
