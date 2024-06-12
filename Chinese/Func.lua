@@ -7532,16 +7532,19 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if e.onlyChinese then
                 Save= WoWToolsSave[addName] or Save
                 if not Save.disabled then
+                    e.disbledCN=nil
                     Init()
-                    for _, name in pairs(EnabledTab or {}) do
-                        Init_Loaded(name)
+                    do
+                        for _, name in pairs(EnabledTab or {}) do
+                            Init_Loaded(name)
+                        end
                     end
                     EnabledTab=nil
                 else
-                    e.disbledCN=true
                     EnabledTab=nil
                     self:UnregisterEvent("ADDON_LOADED")
                 end
+                
                 --添加控制面板
                 e.AddPanel_Check({
                     name= e.onlyChinese and '语言翻译' or e.cn(addName),
@@ -7553,7 +7556,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     end
                 })
             else
-                e.disbledCN=true
                 self:UnregisterEvent("ADDON_LOADED")
                 EnabledTab=nil
             end

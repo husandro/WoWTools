@@ -27,7 +27,7 @@ e.ExpansionLevel= GetExpansionLevel()--版本数据
 e.onlyChinese= LOCALE_zhCN and true or false
 e.Is_Timerunning= PlayerGetTimerunningSeasonID()-- 1=幻境新生：潘达利亚
 e.Is_PTR= PTR_IssueReporter and true or nil--测试服
---e.disbledCN=true--禁用，汉化
+e.disbledCN=true--禁用，汉化
 
 local function GetWeek()--周数
     local region= GetCurrentRegion()
