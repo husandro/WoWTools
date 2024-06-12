@@ -1,8 +1,8 @@
-local id, e = ...
 if LOCALE_zhCN or LOCALE_zhTW then--e.Player.region~=3 then-- LOCALE_zhCN or LOCALE_zhTW 
     return
 end
 
+local id, e = ...
 
 local tab={
     ["101_CutsceneName_Ref"] = "纳兹乌罗",

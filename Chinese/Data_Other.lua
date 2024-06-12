@@ -1,8 +1,8 @@
-local id, e = ...
 if LOCALE_zhCN or LOCALE_zhTW then--e.Player.region~=3 then-- LOCALE_zhCN or LOCALE_zhTW 
     return
 end
 
+local id, e = ...
 
 --[[
 specTab=nil
