@@ -4560,7 +4560,8 @@
         "CalendarEventPickerCloseButton",
         "CalendarEventPickerCloseButtonText",
         "QUEST_REPUTATION_REWARD_TITLE",
-        "MinimapZoneText"
+        "MinimapZoneText",
+        "ID"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",
