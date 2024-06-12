@@ -2054,10 +2054,10 @@ local function Init()
         end
     end)
 
-    --############
+    --############10.2.7，没有这个 FUNC
     --去掉生命条 % extStatusBar.lua TextStatusBar.lua
     --高CPU
-    local deadText= e.onlyChinese and '死亡' or DEAD
+    --[[local deadText= e.onlyChinese and '死亡' or DEAD
     hooksecurefunc('TextStatusBar_UpdateTextStringWithValues', function(frame, textString, value)
         if not UnitExists(frame.unit) then
             return
@@ -2106,7 +2106,7 @@ local function Init()
             end
             frame.DeadText:SetText(text)
         end
-    end)
+    end)]]
 end
 
 

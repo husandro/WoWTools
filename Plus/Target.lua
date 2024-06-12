@@ -562,7 +562,7 @@ local function Init_Quest()
                 if tooltipData and tooltipData.lines then
                     for i = 4, #tooltipData.lines do
                         local line = tooltipData.lines[i]
-                        TooltipUtil.SurfaceArgs(line)
+                        --TooltipUtil.SurfaceArgs(line) 10.2.7没有FUNC
                         local text= self:find_text(line.leftText)
                         if text then
                             return text~=true and text
