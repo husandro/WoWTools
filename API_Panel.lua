@@ -747,7 +747,7 @@ local function Init_Options()
 
 
     if not LOCALE_zhCN then
-        if (e.Player.region==3 or e.Is_PTR) and e.onlyChinese then
+        --[[if (e.Player.region==3 or e.Is_PTR) and e.onlyChinese then
             e.AddPanel_Check_Button({
                 checkName= 'Chinese',
                 checkValue= Save.onlyChinese,
@@ -766,7 +766,7 @@ local function Init_Options()
                 category= Category
             })
 
-        else
+        else]]
             e.AddPanel_Check({
                 name= 'Chinese',
                 tooltip= e.onlyChinese and '语言: 简体中文'
@@ -779,7 +779,7 @@ local function Init_Options()
                     print(id,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
-        end
+        --end
     end
 
     if e.Player.region==1 or e.Player.region==3 then--US EU realm提示
