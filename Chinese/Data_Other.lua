@@ -1,8 +1,7 @@
-if LOCALE_zhCN or LOCALE_zhTW then--e.Player.region~=3 then-- LOCALE_zhCN or LOCALE_zhTW 
+local id, e = ...
+if e.Player.region~=3 and not e.Is_PTR then-- LOCALE_zhCN or LOCALE_zhTW 
     return
 end
-
-local id, e = ...
 
 --[[
 specTab=nil

@@ -745,8 +745,9 @@ local function Init_Options()
         category=Category
     })
 
+
     if not LOCALE_zhCN then
-        if e.Player.region==3 then
+        if e.Player.region==3 or e.Is_PTR then
             e.AddPanel_Check_Button({
                 checkName= 'Chinese',
                 checkValue= Save.onlyChinese,

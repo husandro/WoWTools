@@ -1,17 +1,5 @@
 local e = select(2, ...)
---[[
-e.WoWDate={}
-e.strText={}
-e.tips=GameTooltip
-e.call=securecall
-e.LeftButtonDown
-e.RightButtonDown
-e.onlyChinese
-e.itemSlotTable
-e.ExpansionLevel
-e.Player={}
-e.Icon={}
-]]
+
 
 --建立func, 如果.toc禁用，会出错
 e.Set_Item_Info=function() end--ItemInfo.lua
@@ -21,27 +9,25 @@ e.Set_ScrollBar_Color_Alpha=function()end
 e.Set_Move_Frame=function()end--Frame.lua
 e.Show_WoWHead_URL=function()end--Tooltips.lua
 
-
-
-
-
-
-
---Blizzard_Deprecated/Deprecated_10_2_0.lua
+--securecallfunction
 e.WoWDate={}--战网，数据
-e.strText={}--主要，汉化
-e.HolidayEvent={}--节日，汉化
 e.StausText={}--属性，截取表 API_Panel.lua
 e.ChallengesSpellTabs={}--Challenges.lua
+e.strText={}--主要，汉化
+e.HolidayEvent={}--节日，汉化
+
 e.tips=GameTooltip
 e.call=securecall
---securecallfunction
+e.LibDD=LibStub:GetLibrary("LibUIDropDownMenu-4.0", true)--菜单
+
 e.LeftButtonDown = C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'LeftButtonDown' or 'LeftButtonUp'
 e.RightButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'RightButtonDown' or 'RightButtonUp'
-e.onlyChinese= LOCALE_zhCN and true or false
+
 e.ExpansionLevel= GetExpansionLevel()--版本数据
-e.Is_Timerunning= PlayerGetTimerunningSeasonID()
-e.LibDD=LibStub:GetLibrary("LibUIDropDownMenu-4.0", true)--菜单
+e.onlyChinese= LOCALE_zhCN and true or false
+e.Is_Timerunning= PlayerGetTimerunningSeasonID()-- 1=幻境新生：潘达利亚
+e.Is_PTR= PTR_IssueReporter and true or nil--测试服
+--e.disbledCN=true--禁用，汉化
 
 local function GetWeek()--周数
     local region= GetCurrentRegion()

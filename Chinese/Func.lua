@@ -1,8 +1,8 @@
 --1US (includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5Chin e.Player.region~=3 
-if LOCALE_zhCN or LOCALE_zhTW then--e.Player.region~=3 then-- LOCALE_zhCN or LOCALE_zhTW 
+local id, e = ...
+if e.Player.region~=3 and not e.Is_PTR then-- LOCALE_zhCN or LOCALE_zhTW 
     return
 end
-local id, e= ...
 
 local addName= BUG_CATEGORY15
 local Save={
@@ -7537,10 +7537,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         Init_Loaded(name)
                     end
                     EnabledTab=nil
-                    return
-                    --退出，下面不要加代码
                 else
                     e.disbledCN=true
+                    EnabledTab=nil
+                    self:UnregisterEvent("ADDON_LOADED")
                 end
                 --添加控制面板
                 e.AddPanel_Check({
@@ -7552,9 +7552,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
                     end
                 })
+            else
+                e.disbledCN=true
+                self:UnregisterEvent("ADDON_LOADED")
+                EnabledTab=nil
             end
-            self:UnregisterEvent("ADDON_LOADED")
-            EnabledTab=nil
 
         elseif arg1 then
             if EnabledTab then
