@@ -486,8 +486,9 @@ C_Timer.NewTicker(.1, function()
 	f.movespeed:SetText(format("Move speed: |cffffff00%d%%|r", movespeed))
 end)
 
-IsPublicBuild()
-
+IsPublicBuild() 
+IsTestBuild() 
+IsGMClient()
 
 
 
