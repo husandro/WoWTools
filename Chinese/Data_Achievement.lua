@@ -11696,6 +11696,14 @@ local function set(label, text)
         label:SetText(text)
     end
 end
+local function setLabel(label)
+    if label then
+        local text= e.strText[label:GetText()]
+        if text then
+            label:SetText(text)
+        end
+    end
+end
 
 local function Init_AchievementUI()
     hooksecurefunc(AchievementFrameCategories.ScrollBox, 'Update', function(frame)
@@ -11724,55 +11732,55 @@ local function Init_AchievementUI()
     AchievementFrameSummaryCategoriesHeaderTitle:SetText('进展总览')
 
     hooksecurefunc('AchievementFrame_RefreshView', function(self)--Blizzard_AchievementUI.lua
-        if AchievementFrame.Header.Title:GetText()==GUILD_ACHIEVEMENTS_TITLE then
+        setLabel(AchievementFrame.Header.Title)
+        --[[if AchievementFrame.Header.Title:GetText()==GUILD_ACHIEVEMENTS_TITLE then
             AchievementFrame.Header.Title:SetText('公会成就')
         else
             AchievementFrame.Header.Title:SetText('成就点数')
-        end
+        end]]
     end)
 
-    hooksecurefunc('AchievementFrameSummary_UpdateAchievements', function(...)
-        local numAchievements = select("#", ...);
-        local id, name, points, completed, month, day, year, description, flags, icon, rewardText, isGuild, wasEarnedByMe, earnedBy;
-        local buttons = AchievementFrameSummaryAchievements.buttons;
-        local  anchorTo, achievementID;
-        local defaultAchievementCount = 1;
-
-        for i=1, ACHIEVEMENTUI_MAX_SUMMARY_ACHIEVEMENTS do--4
-            local button = AchievementFrameSummaryAchievements.buttons[i];
-            if  buttons then
-                
-            
+    hooksecurefunc('AchievementFrameSummary_UpdateAchievements', function(...)--近期成就
+        local numAchievements = select("#", ...)
+        if not AchievementFrameSummaryAchievements.buttons or not numAchievements then 
+            return
+        end
         
+        local id, name, completed, description, achievementID
+        local defaultAchievementCount = 1
+        for i=1, ACHIEVEMENTUI_MAX_SUMMARY_ACHIEVEMENTS do--4
+            local button = AchievementFrameSummaryAchievements.buttons[i]
+            if  button then
                 if ( i <= numAchievements ) then
-                    achievementID = select(i, ...);
-                    id, name, points, completed, month, day, year, description, flags, icon, rewardText, isGuild, wasEarnedByMe, earnedBy = GetAchievementInfo(achievementID);
-                    set(button.Label, name);
-                    set(button.Description, description);
+                    achievementID = select(i, ...)
+                    if achievementID then
+                        _, name, _, _, _, _, _, description = GetAchievementInfo(achievementID)
+                        set(button.Label, name)
+                        set(button.Description, description)
+                    end
                 else
-                    local tAchievements;
+                    local tAchievements
                     if ( InGuildView() ) then
-                        tAchievements = ACHIEVEMENTUI_DEFAULTGUILDSUMMARYACHIEVEMENTS;
+                        tAchievements = ACHIEVEMENTUI_DEFAULTGUILDSUMMARYACHIEVEMENTS
                     else
-                        tAchievements = ACHIEVEMENTUI_DEFAULTSUMMARYACHIEVEMENTS;
+                        tAchievements = ACHIEVEMENTUI_DEFAULTSUMMARYACHIEVEMENTS
                     end
                     for i=defaultAchievementCount, ACHIEVEMENTUI_MAX_SUMMARY_ACHIEVEMENTS do
-                        achievementID = tAchievements[defaultAchievementCount];
+                        achievementID = tAchievements[defaultAchievementCount]
                         if ( not achievementID ) then
-                            break;
+                            break
                         end
-                        id, name, points, completed, month, day, year, description, flags, icon, rewardText, isGuild, wasEarnedByMe, earnedBy = GetAchievementInfo(achievementID);
+                        _, name, _, completed, _, _, _, description = GetAchievementInfo(achievementID)
                         if ( completed ) then
-                            defaultAchievementCount = defaultAchievementCount+1;
+                            defaultAchievementCount = defaultAchievementCount+1
                         else
-                            set(button.Label, name);
-                            set(button.Description, description);
-                            
-                            button:Show();
-                            defaultAchievementCount = defaultAchievementCount+1;
+                            set(button.Label, name)
+                            set(button.Description, description)
+                            button:Show()
+                            defaultAchievementCount = defaultAchievementCount+1
                             button.tooltipTitle = "未获得的成就"
                             button.tooltip = "达到每个成就所要求的条件，赢取成就点数、奖励和荣耀！"
-                            break;
+                            break
                         end
                     end
                 end
