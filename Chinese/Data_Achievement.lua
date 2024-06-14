@@ -246,7 +246,7 @@ local tab={--[ID]= {'Title_lang', 'Description_lang',  'Reward_lang'},
 [452]= {'一等军士长', '在60级时获得头衔“一等军士长”。'},
 [453]= {'中士', '在60级时获得头衔“中士”。'},
 [454]= {'侦察兵', '在60级时获得头衔“侦察兵”。'},
-[456]= {'服务器第一！黑曜石杀手', '参与在本服务器首次消灭黑岩守护者萨塔里奥（25人）。',  'Title: Obsidian Slayer'},
+[456]= {'服务器第一！黑曜石杀手', '参与在本服务器首次消灭黑岩守护者萨塔里奥（25人）。',  '头衔：黑曜石杀手'},
 [457]= {'服务器第一！80级', '本服务器第一个达到80级的玩家。'},
 [458]= {'服务器第一！80级潜行者', '本服务器第一个达到80级的潜行者。'},
 [459]= {'服务器第一！80级战士', '本服务器第一个达到80级的战士。'},
@@ -597,7 +597,7 @@ local tab={--[ID]= {'Title_lang', 'Description_lang',  'Reward_lang'},
 [950]= {'狂心氏族', '在狂心氏族阵营中达到崇拜声望。'},
 [951]= {'神谕者', '在神谕者阵营中达到崇拜声望。'},
 [952]= {'索拉查雇佣兵', '在神谕者和狂心氏族阵营中达到崇拜声望。'},
-[953]= {'塞纳留斯的卫士', '在塞纳里奥议会和塞纳里奥远征队阵营中达到崇拜声望。',  'Title: Guardian of Cenarius'},
+[953]= {'塞纳留斯的卫士', '在塞纳里奥议会和塞纳里奥远征队阵营中达到崇拜声望。',  '头衔：塞纳留斯的卫士'},
 [955]= {'海达希亚水元素', '在海达希亚水元素阵营中达到崇拜声望。'},
 [956]= {'诺兹多姆的子嗣', '在诺兹多姆的子嗣阵营中达到崇拜声望。'},
 [957]= {'赞达拉部族的英雄', '在赞达拉部族阵营中达到崇拜声望。'},
@@ -871,8 +871,8 @@ local tab={--[ID]= {'Title_lang', 'Description_lang',  'Reward_lang'},
 [1393]= {'消灭萨塔里奥（25人龙神之厅）', '消灭萨塔里奥（25人龙神之厅）'},
 [1394]= {'消灭玛里苟斯（25人）', '消灭玛里苟斯（25人）'},
 [1396]= {'诺森德的长者', '祭拜诺森德的长者。'},
-[1400]= {'服务器第一！魔法追寻者', '参与在本服务器首次消灭玛里苟斯（25人）。',  'Title: The Magic Seeker'},
-[1402]= {'服务器第一！纳克萨玛斯的征服者', '参与在本服务器首次消灭克尔苏加德（25人）。',  'Title: Conqueror of Naxxramas'},
+[1400]= {'服务器第一！魔法追寻者', '参与在本服务器首次消灭玛里苟斯（25人）。',  '头衔：魔法追寻者'},
+[1402]= {'服务器第一！纳克萨玛斯的征服者', '参与在本服务器首次消灭克尔苏加德（25人）。',  '头衔：纳克萨玛斯的征服者'},
 [1404]= {'服务器第一！80级侏儒', '本服务器第一个达到80级的侏儒。'},
 [1405]= {'服务器第一！80级血精灵', '本服务器第一个达到80级的血精灵。'},
 [1406]= {'服务器第一！80级德莱尼', '本服务器第一个达到80级的德莱尼。'},
@@ -11100,7 +11100,7 @@ local tab={--[ID]= {'Title_lang', 'Description_lang',  'Reward_lang'},
 [40502]= {'50个阿加垂钓之丝', '收集并使用50个阿加垂钓之丝，永久提升你的阿加梭绸鱼线的强度。',  '在战团中分享收集的寻猎之丝。'},
 [40503]= {'90个阿加垂钓之丝', '收集并使用90个阿加垂钓之丝，永久提升你的阿加梭绸鱼线的强度。',  '在战团中分享收集的寻猎之丝。'},
 [40504]= {'石头摇篮曲', '阅读下列失能土灵的铭牌。'},
-[40506]= {'No Stone Unturned', '在“地心之战”地下堡中找到并打开所有的坚固宝箱。'},
+[40506]= {'', '在“地心之战”地下堡中找到并打开所有的坚固宝箱。'},
 [40507]= {'悬空闯关', '以25个或更少的握点完成喧鸣深窟的世界任务“获取资源”。'},
 [40509]= {'主机觉醒：第10波', '在主机觉醒中到达第10波。'},
 [40510]= {'仅需呼吸一次'},
@@ -11628,10 +11628,12 @@ local category={
 
 
 local function is_add(a, b)
-    if a and a~='' and b and b~='' and not b:find('%w') then
+    if a and a~='' and b and b~='' then
+        
         e.strText[a]=b
     end
 end
+
 
 
 local function Add_Text()
@@ -11645,13 +11647,14 @@ local function Add_Text()
             is_add(desc, info[2])
             is_add(re, info[3])
         end
-        if re and re~='' and not e.strText[re] and e.strText[name] then
-            print(achievementID, re)
-        end
-
+        
         if name then
+            if achievementID==518 then
+                print(e.cn(name), info[1]:find('%w'), info[1])
+            end
             tab[achievementID]= nil
         end
+      
     end
 
     for achievementID, text in pairs(category) do
@@ -11661,6 +11664,7 @@ local function Add_Text()
             category[achievementID]= nil
         end
     end
+    
 end
 
 
@@ -11848,7 +11852,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif arg1=='Blizzard_AchievementUI' then
         --hooksecurefunc('AchievementFrameStats_OnEvent', function(_, event)
         --AchievementFrameStats:HookScript('OnEnter', function(_, event)
-        C_Timer.After(2, function()            
+        C_Timer.After(4, function()            
             if not e.disbledCN then
                 Init_AchievementUI()
 
