@@ -1194,7 +1194,7 @@ end
 --###########
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:SetScript("OnEvent", function(_, event, arg1)
+panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
 		if arg1==id then
             Save= WoWToolsSave[addName] or Save
@@ -1220,12 +1220,12 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 
 
             if Save.disabled then
-                panel:UnregisterAllEvents()
+                self:UnregisterAllEvents()
             else
                 Init()
-				panel:UnregisterEvent('ADDON_LOADED')
+				self:UnregisterEvent('ADDON_LOADED')
             end
-            panel:RegisterEvent("PLAYER_LOGOUT")
+            self:RegisterEvent("PLAYER_LOGOUT")
 		end
 
     elseif event == "PLAYER_LOGOUT" then

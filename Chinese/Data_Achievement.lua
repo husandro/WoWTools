@@ -4,14 +4,14 @@ if e.Player.region~=3 and not e.Is_PTR then-- LOCALE_zhCN or LOCALE_zhTW
     return
 end
 --https://wago.tools/db2/Achievement?build=11.0.0.55120&locale=zhCN
+
+
+
+
+
+
+
 local tab={--[ID]= {'Title_lang', 'Description_lang',  'Reward_lang'},
-
-
-
-
-
-
-
 [6]= {'10级', '升到10级。'},
 [7]= {'20级', '升到20级。'},
 [8]= {'30级', '升到30级。'},
@@ -4390,10 +4390,10 @@ local tab={--[ID]= {'Title_lang', 'Description_lang',  'Reward_lang'},
 [9828]= {'十大劲歌金曲', '为你要塞的点唱机收集十张乐谱。'},
 [9833]= {'德拉诺的博学者', '完成下列德拉诺任务成就。'},
 [9836]= {'大师级遗物猎人', '完成你要塞中的哈里森·琼斯提供的全部6个遗物猎人任务。'},
-[9838]= {'奇妙的异次元之旅', '在有佩佩陪伴的情况下击败下列德拉诺首领。',  'Toy: Trans-Dimensional Bird Whistle'},
+[9838]= {'奇妙的异次元之旅', '在有佩佩陪伴的情况下击败下列德拉诺首领。'},
 [9858]= {'指挥大师', '在要塞中击败所有可召唤的团队首领。'},
-[9885]= {'王牌坦克指挥官', '在一次蒸汽坦克大挑战游戏中获得45分。',  'Toy: Darkmoon Tonk Controller'},
-[9894]= {'套龟高手', '在一次套圈圈游戏中成功将10个投环扔到暗月乌龟杜本科的背上。',  'Toy: Darkmoon Ring-Flinger'},
+[9885]= {'王牌坦克指挥官', '在一次蒸汽坦克大挑战游戏中获得45分。'},
+[9894]= {'套龟高手', '在一次套圈圈游戏中成功将10个投环扔到暗月乌龟杜本科的背上。'},
 [9897]= {'十大劲歌金曲', '为你要塞的点唱机收集十张乐谱。'},
 [9900]= {'探索任务大师', '完成下列所有要塞探索任务。'},
 [9901]= {'别叫我二世', '完成下列成就：',  '追随者：哈里森·琼斯'},
@@ -4401,8 +4401,8 @@ local tab={--[ID]= {'Title_lang', 'Description_lang',  'Reward_lang'},
 [9908]= {'动力升级', '收集15种传家宝。'},
 [9909]= {'传家宝收藏家', '收集35种传家宝。',  '坐骑：代驾型摩托'},
 [9911]= {'邮箱在哪儿？', '收集1种传家宝。'},
-[9912]= {'艾泽拉斯二十大劲歌金曲', '为你要塞的点唱机收集二十张乐谱。',  'Toy: Portable Audiophone'},
-[9914]= {'艾泽拉斯二十大劲歌金曲', '为你要塞的点唱机收集二十张乐谱。',  'Toy: Portable Audiophone'},
+[9912]= {'艾泽拉斯二十大劲歌金曲', '为你要塞的点唱机收集二十张乐谱。'},
+[9914]= {'艾泽拉斯二十大劲歌金曲', '为你要塞的点唱机收集二十张乐谱。'},
 [9915]= {'癫狂切割者', '拥有2014年冬幕节礼物，癫狂切割者。'},
 [9923]= {'德拉诺的博学者', '完成下列德拉诺任务成就。'},
 [9924]= {'野外摄影师', '在下列所有地点使用自拍神器拍一张照片。',  'Title: Field Photographer'},
@@ -4627,19 +4627,10 @@ local tab={--[ID]= {'Title_lang', 'Description_lang',  'Reward_lang'},
 [10350]= {'塔纳安外交家', '在塔纳安丛林的所有三个阵营中达到崇敬声望。'},
 [10353]= {'钢铁大军', '收集癫狂“钢铁大军”套装的全部5个玩具组件。'},
 [10354]= {'癫狂指挥官', '收集200种玩具。'},
-[10355]= {'缰绳王', '获得300种坐骑（需可被同一个角色使用）。',  'Mount: Heavenly Azure Cloud Serpent'},
-[10356]= {'缰绳王', '获得300种坐骑（需可被同一个角色使用）。',  'Mount: Heavenly Azure Cloud Serpent'},
+[10355]= {'缰绳王', '获得300种坐骑（需可被同一个角色使用）。'},
+[10356]= {'缰绳王', '获得300种坐骑（需可被同一个角色使用）。'},
 [10365]= {'吓人的小伙伴', '在佩佩穿着幽灵稻草人服时找到它。'},
-[10366]= {'<DND> Account Has Curious Wolvar Pup', 'Added for playercondition issues.'},
-[10367]= {'<DND> Account Has Oracle Hatchling', 'Added for playercondition issues.'},
-[10372]= {'<DND> Player has learned Blige Pump'},
-[10373]= {'<DND> Player has learned Felsmoke'},
-[10374]= {'<DND> Player has learned Fog Lights'},
-[10375]= {'<DND> Player has learned Ghostly Spyglass'},
-[10376]= {'<DND> Player has learned Gyroscopic Internal Stabilizer'},
-[10377]= {'<DND> Player has learned Ice Cutter'},
-[10378]= {'<DND> Player has learned Trained Shark Tank'},
-[10379]= {'<DND> Player has learned True Iron Rudder'},
+
 [10380]= {'服务器第一！阿克蒙德', '在公会队伍中，成为本服务器首个在史诗难度的地狱火堡垒中成功消灭阿克蒙德的公会。'},
 [10398]= {'战鼓法阵', '在至高岭的雷霆战鼓练习一个战鼓法阵。'},
 [10411]= {'冥狱好进，船夫难缠', '在噬魂之喉解救被俘的瓦格里（史诗难度）。'},
@@ -7383,54 +7374,44 @@ local tab={--[ID]= {'Title_lang', 'Description_lang',  'Reward_lang'},
 [15217]= {'我为舞狂', '在最难的难度下获得10次暗月马戏团跳舞游戏的完美评分。'},
 [15218]= {'魔兽世界十八周年', '在魔兽世界十八周年庆典期间登录游戏。'},
 [15220]= {'开悟者', '在开悟者阵营中达到崇拜声望。'},
-[15221]= {'跳舞机器', '完成下列暗月马戏团成就。',  'Toy: Dance Dance Darkmoon'},
+[15221]= {'跳舞机器', '完成下列暗月马戏团成就。'},
 [15222]= {'跟上节拍', '在最简单的难度下获得暗月马戏团跳舞游戏的完美评分。'},
 [15223]= {'感受节奏', '在最简单的难度下获得10次暗月马戏团跳舞游戏的完美评分。'},
 [15224]= {'探索扎雷殁提斯', '探索扎雷殁提斯，走过世界地图中被遮住的各个角落。'},
-[15226]= {'<Hidden> 9.1.5 Maw Intro Skip [DNT]'},
-[15227]= {'<Hidden> (Druid) Unlocked Twilight Runestag Form [DNT]', '用来控制自定义选项里暮光符文牡鹿德鲁伊旅行形态的可用性。'},
-[15228]= {'<Hidden> (Druid) Unlocked Shimmering Ardenmoth Form [DNT]', '用来控制自定义选项里烁光炽蓝蛾德鲁伊旅行形态的可用性。'},
+[15227]= {'', '用来控制自定义选项里暮光符文牡鹿德鲁伊旅行形态的可用性。'},
+[15228]= {'', '用来控制自定义选项里烁光炽蓝蛾德鲁伊旅行形态的可用性。'},
 [15229]= {'横越诸球', '对扎雷殁提斯各处的元尊锻炉使用菲历姆的锻炉阀门，从而获得下列的稀有原型材料。',  '玩具：殁提斯滚动球'},
-[15230]= {'<Hidden> (Druid) Unlocked Nightwing Raven Form [DNT]', '用来控制自定义选项里夜翼渡鸦德鲁伊的可用性。'},
-[15231]= {'<Hidden> (Druid) Unlocked Gloomstalker Dredbat Form [DNT]', '用来控制自定义选项里黯行恐惧蝠德鲁伊的可用性。'},
+[15230]= {'', '用来控制自定义选项里夜翼渡鸦德鲁伊的可用性。'},
+[15231]= {'', '用来控制自定义选项里黯行恐惧蝠德鲁伊的可用性。'},
 [15232]= {'争斗者 II：“暗影国度”第2赛季', '在“暗影国度”第2赛季中获得“争斗者 II”评级。'},
 [15233]= {'挑战者 II：“暗影国度”第2赛季', '在“暗影国度”第2赛季中获得“挑战者 II”评级。'},
 [15234]= {'竞争者 II：“暗影国度”第2赛季', '在“暗影国度”第2赛季中获得“竞争者 II”评级。'},
-[15235]= {'<Hidden> (Druid) Unlocked Duskwing Raven Form [DNT]', '用来控制自定义选项里暗翼渡鸦德鲁伊旅行形态的可用性。'},
-[15236]= {'<Hidden> (Druid) Unlocked Regal Dredbat Form [DNT]', '用来控制自定义选项里庄严恐惧蝠德鲁伊旅行形态的可用性。'},
-[15237]= {'<Hidden> (Druid) Unlocked Midnight Runestag Form [DNT]', '用来控制自定义选项里午夜符文牡鹿德鲁伊旅行形态的可用性。'},
-[15238]= {'<Hidden> (Druid) Unlocked Sable Ardenmoth Form [DNT]', '用来控制自定义选项里玄黑炽蓝蛾德鲁伊旅行形态的可用性。'},
+[15235]= {'', '用来控制自定义选项里暗翼渡鸦德鲁伊旅行形态的可用性。'},
+[15236]= {'', '用来控制自定义选项里庄严恐惧蝠德鲁伊旅行形态的可用性。'},
+[15237]= {'', '用来控制自定义选项里午夜符文牡鹿德鲁伊旅行形态的可用性。'},
+[15238]= {'', '用来控制自定义选项里玄黑炽蓝蛾德鲁伊旅行形态的可用性。'},
 [15241]= {'声名显赫', '名望等级达到80级。'},
-[15242]= {'声名显赫 - 格里恩', 'Reach Renown level 80 with the Kyrian. [DNT]'},
-[15243]= {'声名显赫 - 通灵领主', 'Reach Renown level 80 with the Necrolords. [DNT]'},
-[15244]= {'声名显赫 - 法夜', 'Reach Renown level 80 with the Night Fae. [DNT]'},
-[15245]= {'声名显赫 - 温西尔', 'Reach Renown level 80 with the Venthyr. [DNT]'},
+[15242]= {'声名显赫 - 格里恩'},
+[15243]= {'声名显赫 - 通灵领主'},
+[15244]= {'声名显赫 - 法夜'},
+[15245]= {'声名显赫 - 温西尔'},
 [15247]= {'解锁第三个灵魂羁绊 - 格里恩'},
 [15248]= {'解锁第三个灵魂羁绊 - 通灵领主'},
 [15249]= {'解锁第三个灵魂羁绊 - 法夜'},
 [15250]= {'解锁第三个灵魂羁绊 - 温西尔'},
 [15251]= {'典狱长的挑战：难度1', '在托加斯特，罪魂之塔中完成典狱长的挑战的难度1。',  '宠物：无光折磨者'},
 [15252]= {'典狱长的挑战：难度2', '在托加斯特，罪魂之塔中完成典狱长的挑战的难度2。',  '奖励：被统御的炉石'},
-[15253]= {'典狱长的挑战：难度3', '在托加斯特，罪魂之塔中完成典狱长的挑战的难度3。',  'Title: Gauntlet Runner'},
-[15254]= {'典狱长的挑战：难度4', '在托加斯特，罪魂之塔中完成典狱长的挑战的难度4。',  'Mount: Colossal Ebonclaw Mawrat'},
+[15253]= {'典狱长的挑战：难度3', '在托加斯特，罪魂之塔中完成典狱长的挑战的难度3。'},
+[15254]= {'典狱长的挑战：难度4', '在托加斯特，罪魂之塔中完成典狱长的挑战的难度4。'},
 [15255]= {'典狱长的挑战：难度5', '在托加斯特，罪魂之塔中完成典狱长的挑战的难度5。'},
 [15256]= {'典狱长的挑战：难度6', '在托加斯特，罪魂之塔中完成典狱长的挑战的难度6。'},
 [15257]= {'典狱长的挑战：难度7', '在托加斯特，罪魂之塔中完成典狱长的挑战的难度7。'},
 [15258]= {'典狱长的挑战：难度8', '在托加斯特，罪魂之塔中完成典狱长的挑战的难度8。'},
 [15259]= {'初诞者的秘密', '完成下列故事线。'},
-[15282]= {'Torghast Tracking 9.2 - Layer 13 Unlocked - Account [DNT]', 'Unlocked Layer 13 (Achieved 4+ Gems on Layer 12) Hidden.'},
-[15283]= {'Torghast Tracking 9.2 - Layer 14 Unlocked - Account [DNT]', 'Unlocked Layer 14 (Achieved 4+ Gems on Layer 13) Hidden.'},
-[15284]= {'Torghast Tracking 9.2 - Layer 15 Unlocked - Account [DNT]', 'Unlocked Layer 15 (Achieved 4+ Gems on Layer 14) Hidden.'},
-[15285]= {'Torghast Tracking 9.2 - Layer 16 Unlocked - Account [DNT]', 'Unlocked Layer 16 (Achieved 4+ Gems on Layer 15) Hidden.'},
-[15286]= {'Torghast Tracking 9.2 - Layer 13 Unlocked - Character [DNT]', 'Unlock Layer 13 (4+ Gem Layer 12) Hidden.'},
-[15287]= {'Torghast Tracking 9.2 - Layer 14 Unlocked - Character [DNT]', 'Unlock Layer 14 (4+ Gem Layer 13) Hidden.'},
-[15288]= {'Torghast Tracking 9.2 - Layer 15 Unlocked - Character [DNT]', 'Unlock Layer 15 (4+ Gem Layer 14) Hidden.'},
-[15289]= {'Torghast Tracking 9.2 - Layer 16 Unlocked - Character [DNT]', 'Unlock Layer 16 (4+ Gem Layer 15) Hidden.'},
-[15307]= {'9.2 Campaign - Quest Launch [DNT]'},
 [15308]= {'法师塔主宰', '在“军团再临”时空漫游活动期间在法师塔完成所有职业和专精的每一项挑战。'},
 [15309]= {'法师塔胜利', '在“军团再临”时空漫游活动期间在法师塔完成任意专精的一个挑战。'},
-[15310]= {'法师塔巡礼', '在“军团再临”时空漫游活动期间在法师塔完成每一个独一无二的挑战。',  'Mount: Mage-Bound Spelltome'},
-[15312]= {'<Hidden> (Druid) Unlocked Blight of the Grizlemaw Form [DNT]', '用来控制自定义选项里灰喉之灾熊形态德鲁伊的可用性。'},
+[15310]= {'法师塔巡礼', '在“军团再临”时空漫游活动期间在法师塔完成每一个独一无二的挑战。'},
+[15312]= {'', '用来控制自定义选项里灰喉之灾熊形态德鲁伊的可用性。'},
 [15313]= {'摇滚赛车', '拥有2021年冬幕节礼物，摇滚赛车改装器19.9.3版。'},
 [15314]= {'完美无瑕：斯科杜斯之厅（难度16）', '在难度16的斯科杜斯之厅获得完美无瑕评价。'},
 [15315]= {'我们中……', '在恐惧潜入期间找到并完成一项简单使命后击败初诞者圣墓的恐惧双王（普通或更高难度）。'},
@@ -7439,15 +7420,14 @@ local tab={--[ID]= {'Title_lang', 'Description_lang',  'Reward_lang'},
 [15318]= {'完美无瑕：凇心间隙（难度16）', '在难度16的凇心间隙获得完美无瑕评价。'},
 [15319]= {'完美无瑕：莫尔特雷加（难度16）', '在难度16的莫尔特雷加获得完美无瑕评价。'},
 [15320]= {'完美无瑕：上层区域（难度16）', '在难度16的上层区域获得完美无瑕评价。'},
-[15322]= {'无瑕大师（难度16）', '在难度16的托加斯特，罪魂之塔的每个区都获得完美无瑕评价。',  'Mount: Colossal Soulshredder Mawrat'},
+[15322]= {'无瑕大师（难度16）', '在难度16的托加斯特，罪魂之塔的每个区都获得完美无瑕评价。'},
 [15323]= {'传说中的萨齐', '通过《炉石传说》“佣兵战纪”推广活动获得萨齐坐骑。'},
 [15324]= {'塔楼游侠', '完成下列托加斯特成就。',  '头衔：塔楼游侠'},
 [15325]= {'苏醒的龙希尔', '完成禁忌离岛的下列故事线。'},
-[15327]= {'磨难英雄：“暗影国度”第2赛季', '在你的阵营以排名前0.1%的史诗钥石评分结束“暗影国度”史诗钥石第2赛季。',  'Title: Tormented Hero'},
+[15327]= {'磨难英雄：“暗影国度”第2赛季', '在你的阵营以排名前0.1%的史诗钥石评分结束“暗影国度”史诗钥石第2赛季。'},
 [15331]= {'扎雷殁提斯的宝藏', '发现扎雷殁提斯的隐藏宝藏。'},
-[15336]= {'扎雷字母表', '完成下列所有扎雷殁提斯成就。',  'Mount: Cryptic Aurelid'},
+[15336]= {'扎雷字母表', '完成下列所有扎雷殁提斯成就。'},
 [15344]= {'“S.A.F.E.”飞行员', '通过《魔兽大作战》推广活动获得诺莉亚·轮心。'},
-[15345]= {'<Hidden> 9.2 Content Skip Unlock [DNT]'},
 [15346]= {'宇宙争斗者'},
 [15347]= {'宇宙争斗者'},
 [15348]= {'争斗者 I：“暗影国度”第3赛季', '在“暗影国度”第3赛季中获得“争斗者 I”评级。',  '赛季角色头衔：争斗者'},
@@ -7483,10 +7463,9 @@ local tab={--[ID]= {'Title_lang', 'Description_lang',  'Reward_lang'},
 [15409]= {'魅力初诞', '从初诞者圣墓收集一套护甲套装。'},
 [15410]= {'原生体生“五×五”', '在扎雷殁提斯的原生体锻炉处打造二十五只不同的原生体生物。'},
 [15411]= {'原生体生“五×十”', '在扎雷殁提斯的原生体锻炉处打造五十只不同的原生体生物。'},
-[15412]= {'Torghast Tracking 9.2 - Boss Rush Unlocked - Account [DNT]', 'Unlocked Boss Rush'},
-[15413]= {'Torghast Tracking 9.2 - Boss Rush Plus Unlocked - Account [DNT]', '解锁首领连战加强版'},
-[15414]= {'Torghast Tracking 9.2 - Boss Rush Unlocked - Character [DNT]', '解锁首领连战'},
-[15415]= {'Torghast Tracking 9.2 - Boss Rush Plus Unlocked - Character [DNT]', '解锁首领连战加强版'},
+[15413]= {'', '解锁首领连战加强版'},
+[15414]= {'', '解锁首领连战'},
+[15415]= {'', '解锁首领连战加强版'},
 [15416]= {'统御之握', '击败初诞者圣墓的下列首领。'},
 [15417]= {'初诞者圣墓', '击败下列首领（任意难度）。'},
 [15418]= {'宏伟蓝图', '深入初诞者圣墓的法则核心，直面典狱长。'},
@@ -7555,60 +7534,38 @@ local tab={--[ID]= {'Title_lang', 'Description_lang',  'Reward_lang'},
 [15486]= {'安度因·乌瑞恩（史诗难度）', '击败初诞者圣墓的安度因·乌瑞恩（史诗难度）。'},
 [15487]= {'恐惧双王（史诗难度）', '击败初诞者圣墓的恐惧双王（史诗难度）。'},
 [15488]= {'莱葛隆（史诗难度）', '击败初诞者圣墓的莱葛隆（史诗难度）。'},
-[15876]= {'Dragon Isles Leatherworking 25 (DNT)'},
-[15489]= {'典狱长（史诗难度）', '击败初诞者圣墓的典狱长（史诗难度）。',  'Title: Guardian of the Pattern'},
+[15489]= {'典狱长（史诗难度）', '击败初诞者圣墓的典狱长（史诗难度）。'},
 [15490]= {'初诞者圣墓（史诗难度）', '击败下列首领（史诗难度）。'},
-[15491]= {'圣墓团队的荣耀', '完成下列初诞者圣墓团队副本成就。',  'Mount: Shimmering Aurelid'},
+[15491]= {'圣墓团队的荣耀', '完成下列初诞者圣墓团队副本成就。'},
 [15492]= {'创生基石', '击败初诞者圣墓的下列首领。'},
 [15493]= {'幻磷平原', '击败初诞者圣墓的下列首领。'},
 [15494]= {'咒罚飞升', '收集6个元尊宝珠后再击败初诞者圣墓中的典狱长（普通或更高难度）。'},
 [15496]= {'“暗影国度”钥石探索者：第三赛季', '在“暗影国度”第三赛季中的史诗钥石评分达到至少900。'},
 [15498]= {'“暗影国度”钥石征服者：第三赛季', '在“暗影国度”第三赛季中的史诗钥石评分达到至少1850。',  '头衔：隐秘者'},
-[15499]= {'“暗影国度”钥石大师：第三赛季', '在“暗影国度”第三赛季中的史诗钥石评分达到至少2500。',  'Mount: Wastewarped Deathwalker'},
+[15499]= {'“暗影国度”钥石大师：第三赛季', '在“暗影国度”第三赛季中的史诗钥石评分达到至少2500。'},
 [15500]= {'钥石英雄：塔扎维什，帷纱集市', '在限制时间内完成20级或更高的史诗难度的塔扎维什：琳彩天街和塔扎维什：索·莉亚的宏图。',  '满级解锁：传送到塔扎维什'},
 [15502]= {'到处都是沙子！', '从散布在扎雷殁提斯各处的沙堆里发现宝藏。'},
-[15503]= {'9.2 Tracking - Legendary Crafting - Unity Learned [DNT]', 'Hidden account-wide tracking achievement which gets flagged when you learn the Unity legendary memory at the Runecarver [DNT]'},
 [15504]= {'玛卓克萨斯角斗场比赛', '玛卓克萨斯角斗场比赛'},
 [15505]= {'玛卓克萨斯角斗场胜利', '玛卓克萨斯角斗场胜利'},
 [15506]= {'“暗影国度”钥石英雄：第三赛季', '在“暗影国度”第三赛季中的史诗钥石评分达到至少3000。'},
 [15508]= {'初诞者风潮', '收集下列所有波可波克服装：',  '宠物服装：可爱的皇家波可波克'},
 [15509]= {'流亡传说', '阅读在扎雷殁提斯发现的下列《流亡者菲历姆》章节。'},
-[15510]= {'9.2 Tracking - Protoform Synthesis - Mount Crafting Unlocked [DNT]', 'Hidden account-wide tracking achievement which gets flagged when you unlock mount crafting for the first time on any character [DNT]'},
 [15511]= {'自立自强', '完成50回合单排轮斗。'},
 [15512]= {'扎雷殁提斯的冒险', '在扎雷殁提斯完成下列特殊战斗中的10个。'},
 [15513]= {'神奇收藏', '发现扎雷殁提斯的5个隐藏宝藏。'},
-[15514]= {'解锁奥秘', '完成下列扎雷殁提斯成就。',  'Unlock: Zereth Mortis Flying'},
+[15514]= {'解锁奥秘', '完成下列扎雷殁提斯成就。'},
 [15515]= {'开悟之路', '完成下列故事线。'},
 [15518]= {'解决方案', '完成下列故事线。'},
-[15519]= {'<Hidden> 9.2 Flying Unlock [DNT]'},
 [15539]= {'自食其力', '完成15回合单排轮斗。'},
 [15540]= {'坚定独行', '完成150回合单排轮斗。'},
 [15541]= {'自力更生', '在15回合单排轮斗中获胜。'},
 [15542]= {'波可波克启示录', '使用波可波克附身扎雷殁提斯的100只野生动物。'},
 [15543]= {'自强不息', '在50回合单排轮斗中获胜。'},
 [15544]= {'孤高之狼', '在150回合单排轮斗中获胜。',  '头衔：孤狼'},
-[15559]= {'<Hidden> 9.2 ZM - Cypher System - Talent Unlocked - Aealic'},
-[15560]= {'<Hidden> 9.2 ZM - Cypher System - Talent Unlocked - Dealic'},
-[15561]= {'<Hidden> 9.2 ZM - Cypher System - Talent Unlocked - Trebalim'},
-[15562]= {'<Hidden> 9.2 ZM - Cypher System - Talent Unlocked - Cachial'},
-[15563]= {'<Hidden> 9.2 ZM - Cypher System - Talent Unlocked - Altonian'},
-[15564]= {'<Hidden> 9.2 ZM - Cypher System - Talent Unlocked - Sopranian'},
-[15565]= {'<Hidden> 9.2 ZM - Cypher System - Talent Unlocked - Bassalim'},
-[15566]= {'<Hidden> 9.2 ZM - Cypher System - Talent Unlocked - Metrial'},
-[15568]= {'<Hidden> 9.2 ZM - Cypher System - Talent Research Started - Metrial'},
-[15569]= {'<Hidden> 9.2 ZM - Cypher System - Talent Research Started - Aealic'},
-[15570]= {'<Hidden> 9.2 ZM - Cypher System - Talent Research Started - Dealic'},
-[15571]= {'<Hidden> 9.2 ZM - Cypher System - Talent Research Started - Trebalim (old)'},
-[15572]= {'<Hidden> 9.2 ZM - Cypher System - Talent Research Started - Cachial'},
-[15573]= {'<Hidden> 9.2 ZM - Cypher System - Talent Research Started - Altonian'},
-[15574]= {'<Hidden> 9.2 ZM - Cypher System - Talent Research Started - Sopranian'},
-[15575]= {'<Hidden> 9.2 ZM - Cypher System - Talent Research Started - Bassalim'},
 [15576]= {'迷阵竞技场参赛', '迷阵竞技场参赛'},
 [15577]= {'迷阵竞技场获胜', '迷阵竞技场获胜'},
 [15579]= {'重回洛丹伦', '完成重回洛丹伦故事线。',  '奖励：“洛丹伦的”头衔奖励，“黑暗游侠”精灵外观'},
-[15592]= {'<Hidden> 9.2 ZM - Cypher System - Talent Research Started - Trebalim (fixed)'},
-[15593]= {'<Hidden> 9.2 ZM - Cypher System - Talent Research Started - Sopranian (copy)'},
-[15594]= {'无畏观战者', '见证2022魔兽世界电子竞技赛事活动总决赛！',  'Title: Fearless Spectator'},
+[15594]= {'无畏观战者', '见证2022魔兽世界电子竞技赛事活动总决赛！'},
 [15596]= {'重回洛丹伦（隐藏角色成就）', '完成重回洛丹伦故事线。'},
 [15598]= {'永恒争斗者'},
 [15599]= {'永恒争斗者'},
@@ -7627,8 +7584,8 @@ local tab={--[ID]= {'Title_lang', 'Description_lang',  'Reward_lang'},
 [15638]= {'苏醒的龙希尔', '完成禁忌离岛的下列故事线。'},
 [15639]= {'精锐：“暗影国度”第4赛季', '在“暗影国度”第4赛季中获得精锐评级。',  '赛季角色头衔：精锐'},
 [15640]= {'回归黑暗', '通过《暗黑破坏神IV》推广活动获得愤怒阿玛甘。'},
-[15641]= {'小小爪牙的司令官', '收集1200种独特的宠物。',  'Pet: Crystalline Mini-Monster'},
-[15642]= {'合格的宠物家长', '收集1400种独特的宠物。',  'Pet: Secretive Frogduck'},
+[15641]= {'小小爪牙的司令官', '收集1200种独特的宠物。'},
+[15642]= {'合格的宠物家长', '收集1400种独特的宠物。'},
 [15643]= {'我有什么办法？它们爱死我了。', '收集1600种独特的宠物。',  '宠物：紫狂'},
 [15645]= {'摘星星', '拥有2022年冬幕节礼物，流星捕手。'},
 [15646]= {'德高望重', '在四个盟约中都达到80级名望。'},
@@ -7640,12 +7597,6 @@ local tab={--[ID]= {'Title_lang', 'Description_lang',  'Reward_lang'},
 [15652]= {'索·莉亚的宏图（史诗难度）', '在索·莉亚的宏图中击败索·莉亚（史诗或史诗钥石难度）。'},
 [15653]= {'星星的奥秘', '使用2022冬幕节的礼物流星捕手捕获100颗流星。'},
 [15654]= {'彼岸归来（旧版）', '通过完成下列成就，使暗影界因为你的冒险而焕然一新。',  '头衔：彼岸来客'},
-[15655]= {'Dragon Isles Blacksmithing 25 (DNT)'},
-[15656]= {'Dragon Isles Blacksmithing 50 (DNT)'},
-[15657]= {'Dragon Isles Blacksmithing 75 (DNT)'},
-[15658]= {'Dragon Isles Alchemy 25 (DNT)'},
-[15659]= {'Dragon Isles Alchemy 50 (DNT)'},
-[15660]= {'Dragon Isles Alchemy 75 (DNT)'},
 [15663]= {'宿命纳斯利亚堡', '在任意难度下的宿命纳斯利亚堡团队副本中击败下列首领。'},
 [15664]= {'宿命纳斯利亚堡（英雄难度）', '在宿命纳斯利亚堡团队副本中击败下列首领（英雄难度）。'},
 [15665]= {'宿命纳斯利亚堡（史诗难度）', '在宿命纳斯利亚堡团队副本中击败下列首领（史诗难度）。'},
@@ -11428,29 +11379,436 @@ local tab={--[ID]= {'Title_lang', 'Description_lang',  'Reward_lang'},
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--https://wago.tools/db2/Achievement_Category?locale=zhCN&page=1
+local category={
+[1]= '属性',
+[21]= 'PvP',
+[81]= '光辉事迹',
+[92]= '角色',
+[95]= 'PvP',
+[96]= '任务',
+[97]= '探索',
+[122]= '死亡',
+[128]= '击败',
+[130]= '角色',
+[131]= '社交',
+[132]= '技能',
+[133]= '任务',
+[134]= '旅行',
+[135]= '怪物',
+[136]= '荣誉消灭',
+[137]= '消灭',
+[140]= '财富',
+[145]= '消耗品',
+[152]= '竞技场积分赛',
+[153]= '战场',
+[154]= '世界',
+[155]= '世界事件',
+[156]= '冬幕节',
+[158]= '万圣节',
+[159]= '复活节',
+[160]= '春节',
+[161]= '仲夏节',
+[162]= '美酒节',
+[163]= '儿童周',
+[165]= '竞技场',
+[168]= '地下城和团队',
+[169]= '专业',
+[170]= '烹饪',
+[171]= '钓鱼',
+--[172]= '专业',
+--[173]= '专业',
+[178]= '辅助技能',
+[187]= '情人节',
+[201]= '声望',
+[14777]= '东部王国',
+[14778]= '卡利姆多',
+[14779]= '外域',
+[14780]= '诺森德',
+[14801]= '奥特兰克山谷',
+[14802]= '阿拉希盆地',
+[14803]= '风暴之眼',
+[14804]= '战歌峡谷',
+[14805]= '燃烧的远征',
+[14806]= '巫妖王地下城',
+[14807]= '地下城与团队副本',
+[14808]= '经典旧世',
+--[14821]= '经典旧世',
+[14822]= '燃烧的远征',
+[14823]= '巫妖王之怒',
+[14861]= '东部王国',
+[14862]= '外域',
+[14863]= '诺森德',
+[14864]= '经典旧世',
+[14865]= '燃烧的远征',
+[14866]= '巫妖王之怒',
+[14901]= '冬拥湖',
+[14922]= '巫妖王团队',
+[14941]= '银色锦标赛',
+[14981]= '感恩节',
+[15003]= '征服之岛',
+[15067]= '大地的裂变地下城',
+[15068]= '大地的裂变团队',
+--[15069]= '大地的裂变',
+[15070]= '大地的裂变',
+[15071]= '考古学',
+--[15072]= '大地的裂变',
+[15073]= '吉尔尼斯之战',
+[15074]= '双子峰',
+[15075]= '托尔巴拉德',
+[15076]= '公会',
+[15077]= '任务',
+[15078]= 'PvP',
+--[15079]= '地下城和团队',
+[15080]= '专业',
+[15081]= '卡利姆多',
+[15082]= '经典旧世',
+[15083]= '大地的裂变地下城',
+[15084]= '燃烧的远征',
+[15085]= '巫妖王地下城',
+[15086]= '巫妖王团队',
+--[15087]= '大地的裂变团队',
+[15088]= '综合',
+[15089]= '声望',
+[15090]= '战场',
+[15091]= '竞技场',
+[15092]= '评级战场',
+[15093]= '公会光辉事迹',
+[15096]= '大地的裂变',
+[15101]= '暗月马戏团',
+[15106]= '潘达利亚地下城',
+[15107]= '潘达利亚团队',
+[15110]= '潘达利亚',
+--[15113]= '潘达利亚',
+--[15114]= '潘达利亚',
+[15117]= '宠物对战',
+[15118]= '收集',
+[15119]= '战斗',
+[15120]= '等级',
+[15153]= '潘达利亚地下城',
+[15154]= '潘达利亚团队',
+[15162]= '碎银矿脉',
+[15163]= '寇魔古寺',
+[15164]= '熊猫人之谜',
+[15176]= '传承',
+[15218]= '深风峡谷',
+[15219]= '宠物对战',
+[15220]= '德拉诺',
+[15222]= '试炼场',
+[15227]= '试炼场',
+[15228]= '德拉诺地下城',
+[15231]= '德拉诺团队',
+[15232]= '德拉诺',
+[15233]= '德拉诺之王',
+[15234]= '绝版',
+[15235]= '德拉诺',
+--[15243]= '德拉诺地下城',
+--[15244]= '德拉诺团队',
+[15246]= '藏品',
+[15247]= '玩具箱',
+[15248]= '坐骑',
+[15252]= '军团再临',
+[15254]= '军团地下城',
+[15255]= '军团团队',
+[15257]= '军团再临',
+[15258]= '军团再临',
+[15259]= '外观',
+--[15262]= '军团地下城',
+--[15263]= '军团团队',
+--[15264]= '军团再临',
+[15266]= '荣誉',
+[15268]= '推广活动',
+[15269]= '坐骑',
+[15270]= 'PvP',
+[15271]= '团队副本',
+[15272]= '地下城',
+[15273]= '声望',
+[15274]= '游戏活动',
+[15277]= '地下城',
+[15278]= '团队副本',
+[15279]= 'PvP',
+[15280]= '货币',
+[15283]= '世界',
+[15284]= '争霸艾泽拉斯',
+[15285]= '争霸艾泽拉斯地下城',
+[15286]= '争霸艾泽拉斯团队',
+[15292]= '涌泉海滩',
+--[15298]= '争霸艾泽拉斯',
+--[15299]= '争霸艾泽拉斯地下城',
+--[15300]= '争霸艾泽拉斯团队',
+[15301]= '特色更新',
+[15302]= '潘达利亚场景战役',
+[15303]= '德拉诺要塞',
+[15304]= '军团再临职业大厅',
+[15305]= '争霸艾泽拉斯',
+[15307]= '海岛探险',
+[15308]= '军事行动',
+[15409]= '争霸艾泽拉斯',
+[15411]= '特色更新',
+[15414]= '阿什兰',
+[15416]= '世界事件',
+[15417]= '艾泽拉斯之心',
+[15422]= '暗影国度',
+[15426]= '恩佐斯的幻象',
+[15428]= '暗影国度地下城',
+--[15429]= '暗影国度地下城',
+--[15430]= '暗影国度',
+--[15436]= '暗影国度',
+[15438]= '暗影国度团队',
+--[15439]= '暗影国度',
+[15440]= '托加斯特',
+[15441]= '盟约圣所',
+--[15442]= '暗影国度团队',
+[15446]= '角色',
+[15447]= '任务',
+[15454]= '时空漫游',
+[15455]= '巨龙时代',
+[15462]= '驭空术',
+[15465]= '巨龙群岛',
+--[15466]= '巨龙时代',
+[15467]= '巨龙时代地下城',
+[15468]= '巨龙时代团队',
+[15469]= '巨龙时代',
+--[15470]= '巨龙时代地下城',
+--[15471]= '巨龙时代团队',
+[15478]= '巨龙群岛幼龙外观',
+[15489]= '炼金',
+[15490]= '锻造',
+[15491]= '附魔',
+[15492]= '工程学',
+[15493]= '铭文',
+[15494]= '珠宝加工',
+[15495]= '制皮',
+[15496]= '裁缝',
+[15497]= '采矿',
+[15498]= '剥皮',
+[15499]= '草药学',
+[15506]= '地心之战',
+[15509]= '幻境新生：潘达利亚',
+[15510]= '任务',
+[15511]= '探索',
+[15512]= '场景战役',
+[15513]= '声望',
+[15514]= '地下城',
+[15515]= '团队副本',
+[15520]= '地心之战',
+--[15521]= '地心之战',
+[15522]= '地下堡',
+--[15523]= '地心之战',
+[15524]= '地心之战地下城',
+[15525]= '御渊溪谷',
+[15526]= '地心之战团队',
+[15528]= '地心之战地下城',
+[15529]= '地心之战团队',
+[15530]= '地心之战',
+[15531]= '地下堡',
+--[15533]= '地下堡',
+[15534]= '地心之战',
+}
+
+local function Add_Text()
+    if not tab then
+        return
+    end
+
+
+    for achievementID, info in pairs(tab) do
+        local _, name, _, _, _, _, _, desc, _, _, reward = GetAchievementInfo(achievementID)
+        local a, b, c= info[1], info[2], info[3]
+        if name and a and a:find('%w') then
+            e.strText[name]= a
+        end
+        if desc and b and b:find('%w') then
+            e.strText[desc]= b
+        end
+        if reward and c and c:find('%w') then
+            e.strText[reward]= c
+        end
+        
+        if name or desc or reward then
+            tab[achievementID]= nil
+        end
+    end
+
+    for achievementID, text in pairs(category) do
+        local name = select(2, GetAchievementInfo(achievementID))
+        if name then
+            e.strText[name]= text
+            category[achievementID]= nil
+        end
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function set(label, text)
+    text= e.strText[text]
+    if label and text and text~='' then--CanAccessObject(self) then
+        label:SetText(text)
+    end
+end
+
+local function Init_AchievementUI()
+    hooksecurefunc(AchievementFrameCategories.ScrollBox, 'Update', function(frame)
+        if not frame:GetView() then
+            return
+        end
+        for _, btn in pairs(frame:GetFrames() or {}) do
+            if btn.Button then
+                set(btn.Button.Label, btn.Button.name)
+            end
+        end
+    end)
+    hooksecurefunc(AchievementCategoryTemplateMixin, 'Init', function(self, info)
+        if ( info.id == 81 ) then
+            self.Button.text = "对于许多玩家来说，“光辉事迹”中的成就几乎不可能完成，至少是极端困难的。它们并不奖励成就点数，而是你在艾泽拉斯世界曾经创下的丰功伟绩的纪录。"
+        elseif ( info.id == 15093 ) then
+            self.Button.text = "对于许多公会来说，“光辉事迹”几乎不可能完成，至少是极端困难的。它们并不奖励点数，而是见证了这个公会在艾泽拉斯世界曾经创下的丰功伟绩的纪录。"
+        end        
+    end)
+
+    AchievementFrameTab1:SetText('成就')
+    AchievementFrameTab2:SetText('公会')
+    AchievementFrameTab3:SetText('统计')
+    AchievementFrame.SearchBox.Instructions:SetText('搜索')
+    AchievementFrameSummaryAchievementsHeaderTitle:SetText('近期成就')
+    AchievementFrameSummaryCategoriesHeaderTitle:SetText('进展总览')
+
+    hooksecurefunc('AchievementFrame_RefreshView', function(self)--Blizzard_AchievementUI.lua
+        if AchievementFrame.Header.Title:GetText()==GUILD_ACHIEVEMENTS_TITLE then
+            AchievementFrame.Header.Title:SetText('公会成就')
+        else
+            AchievementFrame.Header.Title:SetText('成就点数')
+        end
+    end)
+
+    hooksecurefunc('AchievementFrameSummary_UpdateAchievements', function(...)
+        local numAchievements = select("#", ...);
+        local id, name, points, completed, month, day, year, description, flags, icon, rewardText, isGuild, wasEarnedByMe, earnedBy;
+        local buttons = AchievementFrameSummaryAchievements.buttons;
+        local  anchorTo, achievementID;
+        local defaultAchievementCount = 1;
+
+        for i=1, ACHIEVEMENTUI_MAX_SUMMARY_ACHIEVEMENTS do--4
+            local button = AchievementFrameSummaryAchievements.buttons[i];
+            if  buttons then
+                
+            
+        
+                if ( i <= numAchievements ) then
+                    achievementID = select(i, ...);
+                    id, name, points, completed, month, day, year, description, flags, icon, rewardText, isGuild, wasEarnedByMe, earnedBy = GetAchievementInfo(achievementID);
+                    set(button.Label, name);
+                    set(button.Description, description);
+                else
+                    local tAchievements;
+                    if ( InGuildView() ) then
+                        tAchievements = ACHIEVEMENTUI_DEFAULTGUILDSUMMARYACHIEVEMENTS;
+                    else
+                        tAchievements = ACHIEVEMENTUI_DEFAULTSUMMARYACHIEVEMENTS;
+                    end
+                    for i=defaultAchievementCount, ACHIEVEMENTUI_MAX_SUMMARY_ACHIEVEMENTS do
+                        achievementID = tAchievements[defaultAchievementCount];
+                        if ( not achievementID ) then
+                            break;
+                        end
+                        id, name, points, completed, month, day, year, description, flags, icon, rewardText, isGuild, wasEarnedByMe, earnedBy = GetAchievementInfo(achievementID);
+                        if ( completed ) then
+                            defaultAchievementCount = defaultAchievementCount+1;
+                        else
+                            set(button.Label, name);
+                            set(button.Description, description);
+                            
+                            button:Show();
+                            defaultAchievementCount = defaultAchievementCount+1;
+                            button.tooltipTitle = "未获得的成就"
+                            button.tooltip = "达到每个成就所要求的条件，赢取成就点数、奖励和荣耀！"
+                            break;
+                        end
+                    end
+                end
+            end
+        end
+    end)
+end
+
 --###########
 --加载保存数据
 --###########
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:SetScript("OnEvent", function(self, _, arg1)
+panel:SetScript("OnEvent", function(self, event, arg1)
     if arg1==id then
         if not e.disbledCN then
-            do
-                for uiMapID, name in pairs(tab) do
-                    local info = C_Map.GetMapInfo(uiMapID)
-                    if info and info.name and info.name~='' and name~='' then
-                        e.strText[info.name]= name
-                    end
-                end
-            end
-
-            Init()
-
-            tab=nil
+            Add_Text()
         else
             tab=nil
+            self:UnregisterEvent('ADDON_LOADED')
         end
-        self:UnregisterAllEvents()
+
+    elseif arg1=='Blizzard_AchievementUI' then
+        --hooksecurefunc('AchievementFrameStats_OnEvent', function(_, event)
+        --AchievementFrameStats:HookScript('OnEnter', function(_, event)
+        C_Timer.After(2, function()            
+            if not e.disbledCN then
+                Init_AchievementUI()
+
+                do 
+                    Add_Text()
+                end
+                tab=nil
+                category=nil
+                self:UnregisterEvent('ADDON_LOADED')
+            end
+        end)
     end
 end)

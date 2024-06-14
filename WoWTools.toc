@@ -54,7 +54,7 @@ Chinese\Func.lua
 Chinese\Data_zhCN.lua
 Chinese\Data_Other.lua
 Chinese\Data_Map.lua
-
+Chinese\Data_Achievement.lua
 
 
 ##WoWPlus

@@ -5891,7 +5891,7 @@ local function Init_Loaded(arg1)
 
 
 
-    elseif arg1=='Blizzard_AchievementUI' then--成就
+    --[[elseif arg1=='Blizzard_AchievementUI' then--成就
         set(AchievementFrameTab1, '成就')
         set(AchievementFrameTab2, '公会')
         set(AchievementFrameTab3, '统计')
@@ -5914,7 +5914,7 @@ local function Init_Loaded(arg1)
                     set(btn.Button.Label, e.strText[btn.Button.name])
                 end
             end
-        end)
+        end)]]
 
 
 
