@@ -4562,7 +4562,15 @@
         "QUEST_REPUTATION_REWARD_TITLE",
         "MinimapZoneText",
         "ID",
-        "PTR_IssueReporter"
+        "PTR_IssueReporter",
+        "AreaLabelDataProviderMixin",
+        "ZoneLabelDataProviderMixin",
+        "BaseMapPoiPinMixin",
+        "EncounterJournalPinMixin",
+        "EncounterJournalDataProviderMixin",
+        "AreaLabelFrameMixin",
+        "MapCanvasMixin",
+        "MapCanvasScrollControllerMixin"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

@@ -1085,13 +1085,13 @@ local tab={
 [1321]= '希利苏斯',
 [1322]= '冬泉谷',
 [1323]= '雷霆崖',
-[1324]= '达纳苏斯',
+--[1324]= '达纳苏斯',
 [1325]= '秘蓝岛',
 [1326]= '埃索达',
 [1327]= '秘血岛',
 [1328]= '海加尔山',
 [1329]= '南贫瘠之地',
-[1330]= '奥丹姆',
+--[1330]= '奥丹姆',
 [1331]= '埃索达',
 [1332]= '黑海岸',
 [1333]= '黑海岸',
@@ -1187,7 +1187,7 @@ local tab={
 --[1523]= 'Solesa Naksu [DNT]',
 --[1524]= '',
 [1525]= '雷文德斯',
-[1527]= '奥丹姆',
+--[1527]= '奥丹姆',
 [1528]= '纳沙塔尔',
 [1530]= '锦绣谷',
 [1531]= '渣客城',
@@ -1224,7 +1224,7 @@ local tab={
 [1565]= '炽蓝仙野',
 [1569]= '晋升堡垒',
 [1570]= '锦绣谷',
-[1571]= '奥丹姆',
+--[1571]= '奥丹姆',
 [1573]= '麦卡贡市',
 --[1574]= '麦卡贡市',
 [1576]= '深风峡谷',
@@ -1777,8 +1777,24 @@ local tab={
 
 
 
-
-
+local function Init()
+    --飞行地图，地图名称
+    hooksecurefunc(ZoneLabelDataProviderMixin, 'EvaluateBestAreaTrigger', function(self)
+        local label= self.ZoneLabel and self.ZoneLabel.Text
+        local name= label and e.strText[label:GetText()]
+        if name then
+            label:SetText(name)
+        end        
+    end)
+    --[[hooksecurefunc(BaseMapPoiPinMixin, 'OnAcquired', function(self, poiInfo)
+        print(e.cn(poiInfo.name))
+    end)]]
+    local frame= WorldMapFrame.ScrollContainer
+    for a,b in pairs({frame:GetRegions()}) do
+        print(a,b)
+    end
+    
+end
 
 
 
@@ -1800,6 +1816,9 @@ panel:SetScript("OnEvent", function(self, _, arg1)
                     end
                 end
             end
+
+            Init()
+
             tab=nil
         else
             tab=nil

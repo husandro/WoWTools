@@ -11,8 +11,8 @@ local Button--开关
 local PostionButton--实时玩家， 当前坐标
 local PlayerButton--世界地图， 当前坐标
 
-local function create_Wolor_Font(self, size)
-    local font= e.Cstr(self, {size=size, justifyH='CENTER', color=false, fontName='WorldMapTextFont'})--WorldMapTextFont
+local function create_Wolor_Font(self, size)--AreaLabelDataProvider.xml
+    local font= e.Cstr(self, {size=size, justifyH='CENTER', color=false, fontName='WorldMapTextFont'})--WorldMapTextFont SubZoneTextFont
     return font
 end
 
@@ -959,11 +959,13 @@ local function Init()
 
     CursorPositionInt()
 
+    --BaseMapPoiPinMixin
     hooksecurefunc(AreaPOIPinMixin,'OnAcquired', set_AreaPOIPinMixin_OnAcquired)--地图POI提示 AreaPOIDataProvider.lua
 
 
     Init_set_Map_ID()--显示地图ID
     if Button then
+        --hooksecurefunc(WorldMapFrame.ScrollContainer, 'SetMapID', function(self, mapID)--MapCanvasScrollControllerMixin
         hooksecurefunc(WorldMapFrame, 'OnMapChanged', Button.set_Map_ID_Text)--Blizzard_WorldMap.lua
     end
     setMapQuestList()--世界地图,任务, 加 - + 按钮
