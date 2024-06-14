@@ -2,9 +2,14 @@ local id, e = ...
 if e.Player.region~=3 and not e.Is_PTR then-- LOCALE_zhCN or LOCALE_zhTW 
     return
 end
---https://wago.tools/db2/UiMap?locale=zhCN
-
+--https://wago.tools/db2/UiMap?build=11.0.0.55120&locale=zhCN
 local tab={
+
+
+
+
+
+
 [1]= '杜隆塔尔',
 [2]= '火刃集会所',
 [3]= '提拉加德城堡',
@@ -1771,6 +1776,15 @@ local tab={
 [2345]= '御渊溪谷',
 [2347]= '螺旋织纹',
 [2348]= '泽克维尔的巢穴',
+
+
+
+
+
+
+
+
+
 }
 
 
