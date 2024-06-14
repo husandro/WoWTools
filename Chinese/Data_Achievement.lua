@@ -3752,7 +3752,7 @@ local tab={--[ID]= {'Title_lang', 'Description_lang',  'Reward_lang'},
 [8820]= {'魔兽世界十周年', '在魔兽世界十周年庆典期间登录游戏。',  '宠物：熔火幼犬'},
 [8843]= {'通天峰', '击败通天峰的高阶贤者维里克斯。'},
 [8844]= {'通天峰（英雄难度）', '击败通天峰的高阶贤者维里克斯（英雄难度）。'},
-[8845]= {'空谷幽兰月影残', '完成下列影月谷故事线。',  '"Unlock: ""Treasure Map: Shadowmoon Valley"""'},
+[8845]= {'空谷幽兰月影残', '完成下列影月谷故事线。',  '解锁“藏宝图：影月谷”'},
 [8871]= {'通天峰挑战者', '完成通天峰挑战模式。'},
 [8872]= {'通天峰：青铜', '完成通天峰挑战模式且评价不低于青铜级。'},
 [8873]= {'通天峰：白银', '完成通天峰挑战模式且评价不低于白银级。'},
@@ -3760,23 +3760,23 @@ local tab={--[ID]= {'Title_lang', 'Description_lang',  'Reward_lang'},
 [8875]= {'血槌炉渣矿井挑战者', '完成血槌炉渣矿井挑战模式。'},
 [8876]= {'血槌炉渣矿井：青铜', '完成血槌炉渣矿井挑战模式且评价不低于青铜级。'},
 [8877]= {'血槌炉渣矿井：白银', '完成血槌炉渣矿井挑战模式且评价不低于白银级。'},
-[8878]= {'血槌炉渣矿井：黄金', '完成血槌炉渣矿井挑战模式且评价达到黄金级。',  'Max Level Unlock: Teleport to Bloodmaul Slag Mines'},
+[8878]= {'血槌炉渣矿井：黄金', '完成血槌炉渣矿井挑战模式且评价达到黄金级。',  '法术：	传送：血槌炉渣矿井'},
 [8879]= {'奥金顿挑战者', '完成奥金顿挑战模式。'},
 [8880]= {'奥金顿：青铜', '完成奥金顿挑战模式且评价不低于青铜级。'},
 [8881]= {'奥金顿：白银', '完成奥金顿挑战模式且评价不低于白银级。'},
-[8882]= {'奥金顿：黄金', '完成奥金顿挑战模式且评价达到黄金级。',  'Max Level Unlock: Teleport to Auchindoun'},
+[8882]= {'奥金顿：黄金', '完成奥金顿挑战模式且评价达到黄金级。',  '法术：传送：奥金顿'},
 [8883]= {'影月墓地挑战者', '完成影月墓地挑战模式。'},
 [8884]= {'影月墓地：青铜', '完成影月墓地挑战模式且评价不低于青铜级。'},
 [8885]= {'影月墓地：白银', '完成影月墓地挑战模式且评价不低于白银级。'},
-[8886]= {'影月墓地：黄金', '完成影月墓地挑战模式且评价达到黄金级。',  'Max Level Unlock: Teleport to Shadowmoon Burial Grounds'},
+[8886]= {'影月墓地：黄金', '完成影月墓地挑战模式且评价达到黄金级。',  '法术：传送：影月墓地'},
 [8887]= {'恐轨车站挑战者', '完成恐轨车站挑战模式。'},
 [8888]= {'恐轨车站：青铜', '完成恐轨车站挑战模式且评价不低于青铜级。'},
 [8889]= {'恐轨车站：白银', '完成恐轨车站挑战模式且评价不低于白银级。'},
-[8890]= {'恐轨车站：黄金', '完成恐轨车站挑战模式且评价不低于黄金级。',  'Max Level Unlock: Teleport to Grimrail Depot'},
+[8890]= {'恐轨车站：黄金', '完成恐轨车站挑战模式且评价不低于黄金级。',  '法术：传送：恐轨车站'},
 [8891]= {'黑石塔上层挑战者', '完成黑石塔上层挑战模式。'},
 [8892]= {'黑石塔上层：青铜', '完成黑石塔上层挑战模式且评价不低于青铜级。'},
 [8893]= {'黑石塔上层：白银', '完成黑石塔上层挑战模式且评价不低于白银级。'},
-[8894]= {'黑石塔上层：黄金', '完成黑石塔上层挑战模式且评价达到黄金级。',  'Max Level Unlock: Teleport to Upper Blackrock Spire'},
+[8894]= {'黑石塔上层：黄金', '完成黑石塔上层挑战模式且评价达到黄金级。',  '法术：传送：黑石塔上层'},
 [8895]= {'挑战德拉诺', '完成“德拉诺之王”所有的地下城挑战。'},
 [8897]= {'挑战德拉诺：青铜', '完成“德拉诺之王”所有的地下城挑战，且评价不低于青铜级。'},
 [8898]= {'挑战德拉诺：白银', '完成“德拉诺之王”所有的地下城挑战，且评价不低于白银级。'},
@@ -3785,7 +3785,7 @@ local tab={--[ID]= {'Title_lang', 'Description_lang',  'Reward_lang'},
 [8916]= {'典藏版：恐惧渡鸦', '拥有“德拉诺之王”典藏版赠送的恐惧渡鸦坐骑。'},
 [8917]= {'典藏版：恐惧雏鸦', '拥有“德拉诺之王”典藏版赠送的恐惧雏鸦宠物。'},
 [8919]= {'穿林过险如履平地', '完成下列塔拉多故事线。'},
-[8920]= {'穿林过险如履平地', '完成下列塔拉多故事线。',  '"Unlock: ""Treasure Map: Talador"""'},
+[8920]= {'穿林过险如履平地', '完成下列塔拉多故事线。',  '解锁“藏宝图：塔拉多”'},
 [8921]= {'欢迎来到德拉诺', '完成进攻黑暗之门。'},
 [8922]= {'欢迎来到德拉诺', '完成进攻黑暗之门。'},
 [8923]= {'目标：戈尔隆德', '完成下列戈尔隆德故事线。'},
@@ -3836,7 +3836,7 @@ local tab={--[ID]= {'Title_lang', 'Description_lang',  'Reward_lang'},
 [8982]= {'大火车吃小火车', '让黑石铸造厂中的狂喜的发条式火车破坏者充满讽刺意味地死去（普通或更高难度）。'},
 [8983]= {'能把你的手给我吗？', '在5秒内击败10个纠缠之地符文所产生的手，然后击败黑石铸造厂的克罗莫格（普通或更高难度）。'},
 [8984]= {'速战还是速死', '在黑石铸造厂同时击败所有钢铁女武神，死亡时间相差不超过10秒（普通或更高难度）。'},
-[8985]= {'德拉诺团队的荣耀', '完成下列德拉诺团队副本成就。',  'Mount: Gorestrider Gronnling'},
+[8985]= {'德拉诺团队的荣耀', '完成下列德拉诺团队副本成就。',  '坐骑：踏血小戈隆'},
 [8986]= {'围城', '击败悬槌堡下平民区里的首领。'},
 [8987]= {'奥秘圣殿', '击败从海滩到悬槌堡的奥秘圣殿间所有拦路的首领。'},
 [8988]= {'元首之陨', '在悬槌堡的顶端击败元首马尔高克。'},
@@ -6623,7 +6623,7 @@ local tab={--[ID]= {'Title_lang', 'Description_lang',  'Reward_lang'},
 [14068]= {'引领潮流：腐蚀者恩佐斯', '在下一阶段团队副本开放前击败尼奥罗萨，觉醒之城的腐蚀者恩佐斯（英雄或更高难度）。'},
 [14069]= {'千钧一发：腐蚀者恩佐斯', '在下一阶段团队副本开放前击败尼奥罗萨，觉醒之城的腐蚀者恩佐斯（史诗难度）。'},
 [14071]= {'名人堂：腐蚀者恩佐斯（联盟）', '跻身世界前一百家率先击败腐蚀者恩佐斯（史诗难度）的联盟公会之一。'},
-[14072]= {'名人堂：腐蚀者恩佐斯（部落）', '跻身世界前一百家率先击败腐蚀者恩佐斯（史诗难度）的部落公会之一。'},
+[14072]= {'名人堂：腐蚀者恩佐斯（部落）', '跻身世界前一百家率先击败腐蚀者恩佐斯（史诗难度）的部落公会之一。', '头衔：闻名遐迩的恩佐斯杀手'},
 [14073]= {'无面者的刺痛面具', '获得无面者的刺痛面具。'},
 [14074]= {'无面者的暗思面具', '获得无面者的暗思面具。'},
 [14075]= {'无面者的绝路面具', '获得无面者的绝路面具。'},
@@ -10836,23 +10836,6 @@ local tab={--[ID]= {'Title_lang', 'Description_lang',  'Reward_lang'},
 [40056]= {'风暴之怒（角色隐藏版本）', '击败化身巨龙牢窟的下列首领，他们位于最幽远的位置。'},
 [40057]= {'雷矛卫队的英雄（角色隐藏版本）', '在雷矛卫队阵营中达到崇拜声望。'},
 [40060]= {'联盟之力（角色隐藏版本）', '见证你的盟友在达萨罗之战中的英勇事迹。'},
-[40065]= {'<Hidden> 10.2.6 Void Zone - Keg Leg Renown 6 [DNT]'},
-[40066]= {'<Hidden> 10.2.6 Void Zone - Keg Leg  Renown 2 [DNT]'},
-[40067]= {'<Hidden> 10.2.6 Void Zone - Keg Leg Renown 5 [DNT]'},
-[40068]= {'<Hidden> 10.2.6 Void Zone - Keg Leg Renown 8 [DNT]'},
-[40069]= {'<Hidden> 10.2.6 Void Zone - Keg Leg Renown 10 [DNT]'},
-[40070]= {'<Hidden> 10.2.6 Void Zone - Keg Leg Renown 11 [DNT]'},
-[40071]= {'<Hidden> 10.2.6 Void Zone - Keg Leg Renown 13 [DNT]'},
-[40072]= {'<Hidden> 10.2.6 Void Zone - Keg Leg Renown 16 [DNT]'},
-[40073]= {'<Hidden> 10.2.6 Void Zone - Keg Leg Renown 18 [DNT]'},
-[40074]= {'<Hidden> 10.2.6 Void Zone - Keg Leg Renown 20 [DNT]'},
-[40075]= {'<Hidden> 10.2.6 Void Zone - Keg Leg Renown 22 [DNT]'},
-[40076]= {'<Hidden> 10.2.6 Void Zone - Keg Leg Renown 27 [DNT]'},
-[40077]= {'<Hidden> 10.2.6 Void Zone - Keg Leg Renown 30 [DNT]'},
-[40078]= {'<Hidden> 10.2.6 Void Zone - Keg Leg Renown 31 [DNT]'},
-[40079]= {'<Hidden> 10.2.6 Void Zone - Keg Leg Renown 32 [DNT]'},
-[40080]= {'<Hidden> 10.2.6 Void Zone - Keg Leg Renown 36 [DNT]'},
-[40081]= {'<Hidden> 10.2.6 Void Zone - Keg Leg Renown 40 [DNT]'},
 [40082]= {'Never Enough', '在陨圣峪的饥寒之池中与阿丽扎·博布雷兹一起消灭蜃鱼人。'},
 [40083]= {'使命之旅：多恩岛', '开启战争模式期间，在多恩岛获得1000点荣誉点数。'},
 [40084]= {'使命之旅：喧鸣深窟', '开启战争模式期间，在喧鸣深窟获得1000点荣誉点数。'},
@@ -10927,7 +10910,6 @@ local tab={--[ID]= {'Title_lang', 'Description_lang',  'Reward_lang'},
 [40221]= {'战场闪电战大师', '赢得150次战场闪电战。'},
 [40222]= {'危险回响', '在卡兹阿加光耀不谐难度的世界之魂的回忆事件中，击败以下每一个稀有生物。',  '头衔：回响追寻者'},
 [40223]= {'时空奔行者', '以一名时空奔行者的身份升到70级。',  '头衔：时空奔行者 & 物品：时空奔行者的神像'},
-[40231]= {''},
 [40232]= {'尼鲁巴尔团队的荣耀', '完成下列尼鲁巴尔王宫团队副本成就。',  '坐骑：影遁群聚虫'},
 [40233]= {'战略专家：“地心之战”第1赛季', '在“地心之战”第1赛季的评级战场闪电战中以精锐排名赢得25场胜利。',  '奖励：旗帜和赛季角色头衔'},
 [40234]= {'炉铸督军：“地心之战”第1赛季', '以评级战场闪电战排名前0.1%的战绩结束“地心之战”PvP第1赛季的战斗（需要在“地心之战”第0.1赛季赢得50场战斗）。',  '角色头衔：炉铸督军'},
@@ -10940,7 +10922,6 @@ local tab={--[ID]= {'Title_lang', 'Description_lang',  'Reward_lang'},
 [40241]= {'节点女亲王凯威扎（史诗难度）', '击败尼鲁巴尔王宫的节点女亲王凯威扎（史诗难度）。'},
 [40242]= {'流丝之庭（史诗难度）', '击败尼鲁巴尔王宫的流丝之庭（史诗难度）。'},
 [40243]= {'安苏雷克女王（史诗难度）', '击败尼鲁巴尔王宫的安苏雷克女王（史诗难度）。',  '称号：女王灾星'},
-[40244]= {''},
 [40245]= {'尼鲁巴尔王宫（英雄难度）'},
 [40246]= {'尼鲁巴尔王宫（史诗难度）'},
 [40247]= {'掠丝城楼', '在尼鲁巴尔王宫中击败以下镇守掠丝城楼的首领。'},
@@ -10989,7 +10970,7 @@ local tab={--[ID]= {'Title_lang', 'Description_lang',  'Reward_lang'},
 [40296]= {'消灭安苏雷克女王（普通尼鲁巴尔王宫）'},
 [40297]= {'消灭安苏雷克女王（英雄尼鲁巴尔王宫）'},
 [40298]= {'消灭安苏雷克女王（史诗尼鲁巴尔王宫）'},
-[40307]= {'Allied Races: Earthen', 'Complete the War Within storylines listed below.',  'Reward: Earthen Race Unlocked'},
+--[40307]= {'Allied Races: Earthen', 'Complete the War Within storylines listed below.',  'Reward: Earthen Race Unlocked'},
 [40308]= {'Beacon of Hope', '向小型钥焰捐献光耀残渣，并完成以下任务。'},
 [40309]= {'Heritage of the Earthen', '将新创建的土灵角色升到50级。',  '奖励：土灵传承护甲'},
 [40311]= {'分享光明', '在大型激活的钥焰处完成以下每一个奖励活动。'},
@@ -11638,33 +11619,44 @@ local category={
 [15534]= '地心之战',
 }
 
+
+
+
+
+
+
+
+
+local function is_add(a, b)
+    if a and a~='' and b and b~='' and not b:find('%w') then
+        e.strText[a]=b
+    end
+end
+
+
 local function Add_Text()
     if not tab then
         return
     end
-
-
     for achievementID, info in pairs(tab) do
-        local _, name, _, _, _, _, _, desc, _, _, reward = GetAchievementInfo(achievementID)
-        local a, b, c= info[1], info[2], info[3]
-        if name and a and a:find('%w') then
-            e.strText[name]= a
+        local _, name, _, _, _, _, _, desc, _, _, re= GetAchievementInfo(achievementID)
+        do
+            is_add(name, info[1])
+            is_add(desc, info[2])
+            is_add(re, info[3])
         end
-        if desc and b and b:find('%w') then
-            e.strText[desc]= b
+        if re and re~='' and not e.strText[re] and e.strText[name] then
+            print(achievementID, re)
         end
-        if reward and c and c:find('%w') then
-            e.strText[reward]= c
-        end
-        
-        if name or desc or reward then
+
+        if name then
             tab[achievementID]= nil
         end
     end
 
     for achievementID, text in pairs(category) do
         local name = select(2, GetAchievementInfo(achievementID))
-        if name then
+        if name and text then
             e.strText[name]= text
             category[achievementID]= nil
         end
@@ -11705,7 +11697,28 @@ local function setLabel(label)
     end
 end
 
+
+--InGuildView() 是否，查看，公会
+local achievementFunctions = ACHIEVEMENT_FUNCTIONS
+local function InGuildView()
+	--return achievementFunctions == GUILD_ACHIEVEMENT_FUNCTIONS
+    return AchievementFrame.selectedTab==2
+end
+--[[local function set_index(tabIndex)--InGuildView()
+    if tabIndex == AchievementCategoryIndex then
+        achievementFunctions = ACHIEVEMENT_FUNCTIONS
+    elseif tabIndex == GuildCategoryIndex then
+        achievementFunctions = GUILD_ACHIEVEMENT_FUNCTIONS
+    elseif tabIndex == StatisticsCategoryIndex then
+        achievementFunctions = STAT_FUNCTIONS
+    end
+end]]
+
+
 local function Init_AchievementUI()
+    --hooksecurefunc('AchievementFrameBaseTab_OnClick', set_index)
+    --hooksecurefunc('AchievementFrameComparisonTab_OnClick', set_index)
+
     hooksecurefunc(AchievementFrameCategories.ScrollBox, 'Update', function(frame)
         if not frame:GetView() then
             return
@@ -11723,6 +11736,38 @@ local function Init_AchievementUI()
             self.Button.text = "对于许多公会来说，“光辉事迹”几乎不可能完成，至少是极端困难的。它们并不奖励点数，而是见证了这个公会在艾泽拉斯世界曾经创下的丰功伟绩的纪录。"
         end        
     end)
+    hooksecurefunc('AchievementFrameCategories_OnCategoryChanged', function()
+        if AchievementFrameAchievementsFeatOfStrengthText:IsShown() then
+            AchievementFrameAchievementsFeatOfStrengthText:SetText(AchievementFrame.selectedTab == 2
+                and '对于许多公会来说，“光辉事迹”几乎不可能完成，至少是极端困难的。它们并不奖励点数，而是见证了这个公会在艾泽拉斯世界曾经创下的丰功伟绩的纪录。'
+                or '对于许多玩家来说，“光辉事迹”中的成就几乎不可能完成，至少是极端困难的。它们并不奖励成就点数，而是你在艾泽拉斯世界曾经创下的丰功伟绩的纪录。'
+            )
+        end
+    end)
+    hooksecurefunc('AchievementFrameComparison_UpdateStatusBars', function(ID)
+        local name
+        if ID == ACHIEVEMENT_COMPARISON_SUMMARY_ID then-- -1
+            name = '总览'
+        else
+            name= e.cn(GetCategoryInfo(ID))
+        end
+        if name then
+            AchievementFrameComparison.Summary.Player.StatusBar.Title:SetFormattedText('已获得%s项成就', name)
+        end
+    end)
+
+    hooksecurefunc(AchievementTemplateMixin, 'Init', function(self, elementData)
+        local _, name, description,rewardText
+        if self.index then
+            _, name, _, _, _, _, _, description, _, _, rewardText = GetAchievementInfo(elementData.category, self.index)
+        else            
+            _, name, _, _, _, _, _, description, _, _, rewardText = GetAchievementInfo(self.id)--Social
+        end
+        set(self.Label, name)
+        set(self.Description, description)
+        set(self.HiddenDescription, description)
+        set(self.Reward, rewardText)
+    end)
 
     AchievementFrameTab1:SetText('成就')
     AchievementFrameTab2:SetText('公会')
@@ -11733,11 +11778,6 @@ local function Init_AchievementUI()
 
     hooksecurefunc('AchievementFrame_RefreshView', function(self)--Blizzard_AchievementUI.lua
         setLabel(AchievementFrame.Header.Title)
-        --[[if AchievementFrame.Header.Title:GetText()==GUILD_ACHIEVEMENTS_TITLE then
-            AchievementFrame.Header.Title:SetText('公会成就')
-        else
-            AchievementFrame.Header.Title:SetText('成就点数')
-        end]]
     end)
 
     hooksecurefunc('AchievementFrameSummary_UpdateAchievements', function(...)--近期成就
@@ -11787,6 +11827,8 @@ local function Init_AchievementUI()
             end
         end
     end)
+
+    --hooksecurefunc('AchievementFrameCategory_StatusBarTooltip', function(info)
 end
 
 --###########

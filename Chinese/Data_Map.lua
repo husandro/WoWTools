@@ -1803,10 +1803,6 @@ local function Init()
     --[[hooksecurefunc(BaseMapPoiPinMixin, 'OnAcquired', function(self, poiInfo)
         print(e.cn(poiInfo.name))
     end)]]
-    local frame= WorldMapFrame.ScrollContainer
-    for a,b in pairs({frame:GetRegions()}) do
-        print(a,b)
-    end
     
 end
 

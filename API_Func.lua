@@ -28,6 +28,7 @@ local ItemCurrencyTips= {---物品升级界面，挑战界面，物品，货币�
 
 --[[
 e.cn(text) 取得中文
+e.IS_Chinese_Text(str)--字符中，是否有汉字
 e.GetExpansionText(expacID, questID)--版本数据
 e.Is_In_PvP_Area()--是否在，PVP区域中
 e.IsAtlas(texture)--Atlas or Texture
@@ -125,6 +126,20 @@ function e.cn(text)
     end
 end
 
+
+function e.Is_Chinese_Text(str)--字符中，是否有汉字
+    if str then
+        for i = 1, #str do
+            local uchar = string.byte(str, i)
+            -- 如果字符不是单字节ASCII字符（即不在0x00-0x7F之间）
+            if uchar > 0x7F then
+                -- 这里可以添加更精确的检查来确保是汉字，但简单起见，我们假设所有非ASCII字符都是汉字
+                return true
+            end
+        end
+        return false
+    end
+end
 
 function e.GetExpansionText(expacID, questID)--版本数据
     expacID= expacID or questID and GetQuestExpansion(questID)
@@ -380,7 +395,7 @@ function e.WA_Utf8Sub(text, size, letterSize, lower)
 
     text= e.cn(text)
 
-    if le==le2 or text:find('%w') then
+    if le==le2 and text:find('%w') then
         text= text:sub(1, letterSize or size)
         return lower and strlower(text) or text
     else
