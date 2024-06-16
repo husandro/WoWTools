@@ -4581,7 +4581,9 @@
         "ACHIEVEMENTUI_DEFAULTSUMMARYACHIEVEMENTS",
         "ACHIEVEMENTBUTTON_CRITERIAROWHEIGHT",
         "ACHIEVEMENTUI_MAXCONTENTWIDTH",
-        "ACHIEVEMENTUI_CRITERIACHECKWIDTH"
+        "ACHIEVEMENTUI_CRITERIACHECKWIDTH",
+        "AchievementFrameSummaryCategoriesStatusBarTitle",
+        "AchievementComparisonTemplateMixin"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

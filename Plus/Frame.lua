@@ -1000,6 +1000,8 @@ local function setAddLoad(arg1)
             AchievementFrameCategories:SetPoint('TOPLEFT', 21, -19)
             AchievementFrameCategories:SetPoint('BOTTOMLEFT', 175, 19)
             AchievementFrameMetalBorderRight:ClearAllPoints()
+
+            AchievementFrame.SearchResults:SetPoint('TOP', 0, -15)
         end, sizeRestFunc=function(self)
             self.target:SetSize(768, 500)
         end})

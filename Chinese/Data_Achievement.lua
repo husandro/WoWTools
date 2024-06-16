@@ -11413,11 +11413,12 @@ local function Init_AchievementUI()
     AchievementFrame.SearchBox.Instructions:SetText('搜索')
     AchievementFrameSummaryAchievementsHeaderTitle:SetText('近期成就')
     AchievementFrameSummaryCategoriesHeaderTitle:SetText('进展总览')
-   setLabel(AchievementFrameSummaryCategoriesStatusBarTitle)
-    
+    setLabel(AchievementFrameSummaryCategoriesStatusBarTitle)  
+    AchievementFrame.Header.Title:SetText('成就点数')
 
     hooksecurefunc('AchievementFrame_RefreshView', function(self)--Blizzard_AchievementUI.lua
         setLabel(AchievementFrame.Header.Title)
+        local name=AchievementFrame.Header.Title:GetText()
     end)
 
     hooksecurefunc('AchievementFrameSummary_UpdateAchievements', function(...)--近期成就
@@ -11468,7 +11469,7 @@ local function Init_AchievementUI()
     end)
     hooksecurefunc('AchievementFrameSummary_UpdateSummaryProgressBars', function(categories)
         for i = 1, 12 do
-            local statusBar = _G["AchievementFrameSummaryCategoriesCategory"..i];
+            local statusBar = _G["AchievementFrameSummaryCategoriesCategory"..i]
             if statusBar and i <= #categories then
                 local categoryName = GetCategoryInfo(categories[i])
                 set(statusBar.Label, categoryName)
@@ -11529,19 +11530,19 @@ local function Init_AchievementUI()
 
     hooksecurefunc('AchievementObjectives_DisplayCriteria', function(objectivesFrame, ID)--条件， 汉化
         if not objectivesFrame or not ID then
-            return;
+            return
         end        
         local requiresRep
         if ( not objectivesFrame.completed ) then
-            requiresRep = GetAchievementGuildRep(ID);           
+            requiresRep = GetAchievementGuildRep(ID)           
         end    
-        local numCriteria = GetAchievementNumCriteria(ID);
+        local numCriteria = GetAchievementNumCriteria(ID)
         if ( numCriteria == 0 and not requiresRep ) then
-            return;
+            return
         end
         local textStrings, metas = 0, 0
         for i = 1, numCriteria do
-            local criteriaString, criteriaType, completed, _, _, _, flags, assetID, _ = GetAchievementCriteriaInfo(ID, i);
+            local criteriaString, criteriaType, completed, _, _, _, flags, assetID, _ = GetAchievementCriteriaInfo(ID, i)
             if ( criteriaType == CRITERIA_TYPE_ACHIEVEMENT and assetID ) then
                 metas = metas + 1
                 local achievementName = e.strText[select(2, GetAchievementInfo(assetID))]
@@ -11551,7 +11552,7 @@ local function Init_AchievementUI()
                 end
 
             elseif not (bit.band(flags, EVALUATION_TREE_FLAG_PROGRESS_BAR) == EVALUATION_TREE_FLAG_PROGRESS_BAR) then
-                textStrings = textStrings + 1;
+                textStrings = textStrings + 1
                 criteriaString= e.strText[criteriaString]
                 if not completed and criteriaString then
                     local criteria = objectivesFrame:GetCriteria(textStrings)
@@ -11564,8 +11565,99 @@ local function Init_AchievementUI()
     end)
 
 
-    --hooksecurefunc('AchievementFrameCategory_StatusBarTooltip', function(info)
+    --搜索
+    hooksecurefunc('AchievementFrame_ShowSearchPreviewResults', function()
+        local numResults = GetNumFilteredAchievements() or 0
+        if numResults == 0 then 
+            return
+        end
+        local searchPreviewContainer = AchievementFrame.SearchPreviewContainer
+        local searchPreviews = searchPreviewContainer.searchPreviews
+        for index = 1, 5 do
+            local searchPreview = searchPreviews[index]
+            if ( index <= numResults ) then
+                local achievementID = GetFilteredAchievementID(index)
+                local name= achievementID and select(2, GetAchievementInfo(achievementID))
+                set(searchPreview.Name, name)
+            end
+        end
+
+        if numResults > 5 then
+            searchPreviewContainer.ShowAllSearchResults.Text:SetFormattedText('显示全部|cnGREEN_FONT_COLOR:%d|r个结果', numResults)
+        end
+    end)
+    hooksecurefunc(AchievementFullSearchResultsButtonMixin, 'Init', function(self)
+        local _, name, _, completed = GetAchievementInfo(self.achievementID)
+        set(self.Name, name)
+
+        if ( completed ) then
+            self.ResultType:SetText('已获得')
+        else
+            self.ResultType:SetText('未完成')
+        end
+        
+        local categoryID = GetAchievementCategory(self.achievementID)
+        local categoryName, parentCategoryID = GetCategoryInfo(categoryID)
+        
+        path = e.cn(categoryName)
+        while ( not (parentCategoryID == -1) ) do
+            categoryName, parentCategoryID = GetCategoryInfo(parentCategoryID)
+            path = e.cn(categoryName).." > "..path
+        end
+        self.Path:SetText(path)
+    end)
+    hooksecurefunc('AchievementFrame_UpdateFullSearchResults', function()
+        local numResults = GetNumFilteredAchievements() or 0
+	    AchievementFrame.SearchResults.TitleText:SetFormattedText('搜索|cffff00ff%s|r 结果|cnGREEN_FONT_COLOR:%d|r', AchievementFrame.SearchBox:GetText(), numResults)
+    end)
+
+
+    hooksecurefunc(AchievementStatTemplateMixin, 'Init', function(self, elementData)
+        local category = elementData.id
+        local colorIndex = elementData.colorIndex
+        if elementData.header then
+            local text
+            if ( category == ACHIEVEMENT_COMPARISON_STATS_SUMMARY_ID ) then
+                text = '总览'
+            else
+                text = e.strText[GetCategoryInfo(category)]
+            end
+            if text then
+                self.Title:SetText(text)
+            end
+        else
+            local name= select(2, GetAchievementInfo(category))
+            set(self.Text, name)
+        end
+    end)
+    
+    --比较
+    hooksecurefunc(AchievementComparisonTemplateMixin, 'Init', function(self, elementData)
+        local _, name, _, _, _, _, _, description = GetAchievementInfo(elementData.category, elementData.index)
+        set(self.Player.Label, name)
+        set(self.Player.Description, description)    
+        if not GetAchievementComparisonInfo(self.id) then
+            self.Friend.Status:SetText('未完成')
+        end        
+    end)
+
+
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --###########
 --加载保存数据
