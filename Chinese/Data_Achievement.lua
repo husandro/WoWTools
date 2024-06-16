@@ -9357,7 +9357,7 @@ local tab={--[ID]= {'Title_lang', 'Description_lang',  'Reward_lang'},
 [18702]= {'魔兽世界十九周年', '在魔兽世界十九周年庆典期间登录游戏。'},
 [18703]= {'永恒黎明：迦拉克隆的陨落', '击败永恒黎明的伊律迪孔。'},
 [18704]= {'永恒黎明：姆诺兹多的崛起', '击败永恒黎明的时空领主戴欧斯。'},
-[18705]= {'时间流卫士', '在下一阶段团队副本开放前击败永恒黎明的所有首领（史诗难度）。'},
+[18705]= {'时间流卫士', '在下一阶段团队副本开放前击败永恒黎明的所有首领（史诗难度）。', '头衔：永恒龙军团的'},
 [18706]= {'请放回原处', '在单次永恒黎明的冒险中，击败所有首领并修复四个迷时神器，过程中没有任何玩家死亡（史诗难度）。', '套装：永恒助祭的魔装'},
 [18707]= {'生态圆顶远游：青铜', '完成外域的生态圆顶远游。'},
 [18708]= {'生态圆顶远游：白银', '在外域的生态圆顶远游中获得白银评级。'},
@@ -11413,7 +11413,8 @@ local function Init_AchievementUI()
     AchievementFrame.SearchBox.Instructions:SetText('搜索')
     AchievementFrameSummaryAchievementsHeaderTitle:SetText('近期成就')
     AchievementFrameSummaryCategoriesHeaderTitle:SetText('进展总览')
-   
+   setLabel(AchievementFrameSummaryCategoriesStatusBarTitle)
+    
 
     hooksecurefunc('AchievementFrame_RefreshView', function(self)--Blizzard_AchievementUI.lua
         setLabel(AchievementFrame.Header.Title)
@@ -11455,7 +11456,6 @@ local function Init_AchievementUI()
                         else
                             set(button.Label, name)
                             set(button.Description, description)
-                            button:Show()
                             defaultAchievementCount = defaultAchievementCount+1
                             button.tooltipTitle = "未获得的成就"
                             button.tooltip = "达到每个成就所要求的条件，赢取成就点数、奖励和荣耀！"
@@ -11463,6 +11463,15 @@ local function Init_AchievementUI()
                         end
                     end
                 end
+            end
+        end
+    end)
+    hooksecurefunc('AchievementFrameSummary_UpdateSummaryProgressBars', function(categories)
+        for i = 1, 12 do
+            local statusBar = _G["AchievementFrameSummaryCategoriesCategory"..i];
+            if statusBar and i <= #categories then
+                local categoryName = GetCategoryInfo(categories[i])
+                set(statusBar.Label, categoryName)
             end
         end
     end)
@@ -11498,10 +11507,10 @@ local function Init_AchievementUI()
         if ID == ACHIEVEMENT_COMPARISON_SUMMARY_ID then-- -1
             name = '总览'
         else
-            name= e.cn(GetCategoryInfo(ID))
+            name= e.strText[GetCategoryInfo(ID)]
         end
         if name then
-            AchievementFrameComparison.Summary.Player.StatusBar.Title:SetFormattedText('已获得%s项成就', name)
+            AchievementFrameComparison.Summary.Player.StatusBar.Title:SetFormattedText('已获得 %s 项成就', name)
         end
     end)
 

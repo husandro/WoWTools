@@ -1418,6 +1418,8 @@ local function Init_Event(arg1)
         e.Set_Alpha_Frame_Texture(AchievementFrameTab3, {alpha=min05})
         hide_Texture(AchievementFrameSummaryCategoriesStatusBarFillBar)
 
+        hide_Texture(AchievementFrameComparisonHeaderBG)
+        
         --[[set_Alpha_Color(AchievementFrameSummaryCategoriesStatusBarFillRight)
         set_Alpha_Color(AchievementFrameSummaryCategoriesStatusBarFillMiddle)
         set_Alpha_Color(AchievementFrameSummaryCategoriesStatusBarFillLeft)]]
