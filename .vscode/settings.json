@@ -4571,7 +4571,14 @@
         "AreaLabelFrameMixin",
         "MapCanvasMixin",
         "MapCanvasScrollControllerMixin",
-        "ACHIEVEMENT_FUNCTIONS"
+        "ACHIEVEMENT_FUNCTIONS",
+        "AchievementCategoryTemplateMixin",
+        "ACHIEVEMENTUI_MAX_SUMMARY_ACHIEVEMENTS",
+        "ACHIEVEMENT_COMPARISON_SUMMARY_ID",
+        "AchievementFrameAchievementsFeatOfStrengthText",
+        "AchievementFrameSummaryAchievements",
+        "ACHIEVEMENTUI_DEFAULTGUILDSUMMARYACHIEVEMENTS",
+        "ACHIEVEMENTUI_DEFAULTSUMMARYACHIEVEMENTS"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",
