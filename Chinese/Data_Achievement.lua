@@ -11315,8 +11315,7 @@ local category={
 
 
 local function is_add(a, b)
-    if a and a~='' and b and b~='' then
-        
+    if a and a~='' and b and b~='' then        
         e.strText[a]=b
     end
 end
@@ -11324,34 +11323,31 @@ end
 
 
 local function Add_Text()
-    if not tab then
-        return
-    end
-    for achievementID, info in pairs(tab) do
-        local _, name, _, _, _, _, _, desc, _, _, re= GetAchievementInfo(achievementID)
-        do
-            is_add(name, info[1])
-            is_add(desc, info[2])
-            is_add(re, info[3])
-        end
-        
-        if name then
-            if achievementID==518 then
-                print(e.cn(name), info[1]:find('%w'), info[1])
+    do
+        for achievementID, info in pairs(tab) do
+            local _, name, _, _, _, _, _, desc, _, _, re= GetAchievementInfo(achievementID)
+            do
+                is_add(name, info[1])
+                is_add(desc, info[2])
+                is_add(re, info[3])
             end
-            tab[achievementID]= nil
-        end
-      
-    end
-
-    for achievementID, text in pairs(category) do
-        local name = select(2, GetAchievementInfo(achievementID))
-        if name and text then
-            e.strText[name]= text
-            category[achievementID]= nil
+            if name then
+                tab[achievementID]= nil
+            end
         end
     end
+    tab= nil
     
+    do
+        for categoryID, text in pairs(category) do
+            local name = GetCategoryInfo((categoryID))
+            if name and text then
+                e.strText[name]= text
+                category[categoryID]= nil
+            end
+        end
+    end
+    category= nil
 end
 
 
@@ -11390,7 +11386,7 @@ end
 
 
 --InGuildView() 是否，查看，公会
-local achievementFunctions = ACHIEVEMENT_FUNCTIONS
+--local achievementFunctions = ACHIEVEMENT_FUNCTIONS
 local function InGuildView()
 	--return achievementFunctions == GUILD_ACHIEVEMENT_FUNCTIONS
     return AchievementFrame.selectedTab==2
@@ -11417,23 +11413,27 @@ local function Init_AchievementUI()
         for _, btn in pairs(frame:GetFrames() or {}) do
             if btn.Button then
                 set(btn.Button.Label, btn.Button.name)
+                --print(btn.Button.Label:GetText(), e.cn(btn.Button.name))
             end
         end
     end)
     hooksecurefunc(AchievementCategoryTemplateMixin, 'Init', function(self, info)
-        if ( info.id == 81 ) then
+        if info.id == 81 then
             self.Button.text = "对于许多玩家来说，“光辉事迹”中的成就几乎不可能完成，至少是极端困难的。它们并不奖励成就点数，而是你在艾泽拉斯世界曾经创下的丰功伟绩的纪录。"
-        elseif ( info.id == 15093 ) then
+        elseif info.id == 15093 then
             self.Button.text = "对于许多公会来说，“光辉事迹”几乎不可能完成，至少是极端困难的。它们并不奖励点数，而是见证了这个公会在艾泽拉斯世界曾经创下的丰功伟绩的纪录。"
-        end        
+        
+        end
     end)
-    hooksecurefunc('AchievementFrameCategories_OnCategoryChanged', function()
+    hooksecurefunc('AchievementFrameCategories_OnCategoryChanged', function(category)
         if AchievementFrameAchievementsFeatOfStrengthText:IsShown() then
             AchievementFrameAchievementsFeatOfStrengthText:SetText(AchievementFrame.selectedTab == 2
                 and '对于许多公会来说，“光辉事迹”几乎不可能完成，至少是极端困难的。它们并不奖励点数，而是见证了这个公会在艾泽拉斯世界曾经创下的丰功伟绩的纪录。'
                 or '对于许多玩家来说，“光辉事迹”中的成就几乎不可能完成，至少是极端困难的。它们并不奖励成就点数，而是你在艾泽拉斯世界曾经创下的丰功伟绩的纪录。'
             )
         end
+       print(category)
+
     end)
     hooksecurefunc('AchievementFrameComparison_UpdateStatusBars', function(ID)
         local name
@@ -11539,15 +11539,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif arg1=='Blizzard_AchievementUI' then
         --hooksecurefunc('AchievementFrameStats_OnEvent', function(_, event)
         --AchievementFrameStats:HookScript('OnEnter', function(_, event)
-        C_Timer.After(4, function()            
+        C_Timer.After(2, function()            
             if not e.disbledCN then
                 Init_AchievementUI()
-
-                do 
-                    Add_Text()
-                end
-                tab=nil
-                category=nil
                 self:UnregisterEvent('ADDON_LOADED')
             end
         end)
