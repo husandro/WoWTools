@@ -4586,7 +4586,8 @@
         "AchievementComparisonTemplateMixin",
         "AchievementFullSearchResultsButtonMixin",
         "AchievementStatTemplateMixin",
-        "ACHIEVEMENT_COMPARISON_STATS_SUMMARY_ID"
+        "ACHIEVEMENT_COMPARISON_STATS_SUMMARY_ID",
+        "CompactArenaFrame"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

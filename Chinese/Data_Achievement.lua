@@ -11602,7 +11602,7 @@ local function Init_AchievementUI()
         local categoryID = GetAchievementCategory(self.achievementID)
         local categoryName, parentCategoryID = GetCategoryInfo(categoryID)
         
-        path = e.cn(categoryName)
+        local path = e.cn(categoryName)
         while ( not (parentCategoryID == -1) ) do
             categoryName, parentCategoryID = GetCategoryInfo(parentCategoryID)
             path = e.cn(categoryName).." > "..path
@@ -11616,21 +11616,23 @@ local function Init_AchievementUI()
 
     --统计
     hooksecurefunc(AchievementStatTemplateMixin, 'Init', function(self, elementData)
-        local category = elementData.id
-        local colorIndex = elementData.colorIndex
-        if elementData.header then
-            local text
-            if ( category == ACHIEVEMENT_COMPARISON_STATS_SUMMARY_ID ) then
-                text = '总览'
+        if elementData then
+            local category = elementData.id
+            local colorIndex = elementData.colorIndex
+            if elementData.header then
+                local text
+                if ( category == ACHIEVEMENT_COMPARISON_STATS_SUMMARY_ID ) then
+                    text = '总览'
+                else
+                    text = e.strText[GetCategoryInfo(category)]
+                end
+                if text then
+                    self.Title:SetText(text)
+                end
             else
-                text = e.strText[GetCategoryInfo(category)]
+                local name= select(2, GetAchievementInfo(category))
+                set(self.Text, name)
             end
-            if text then
-                self.Title:SetText(text)
-            end
-        else
-            local name= select(2, GetAchievementInfo(category))
-            set(self.Text, name)
         end
     end)
     
@@ -11644,7 +11646,24 @@ local function Init_AchievementUI()
         end        
     end)
 
-
+--DEFAULT_OBJECTIVE_TRACKER_MODULE:AddObjective(
+    hooksecurefunc(ACHIEVEMENT_TRACKER_MODULE, 'AddObjective', function(self, block, objectiveKey, text, lineType, useFullHeight, dashStyle, colorStyle, adjustForNoText, overrideHeight)
+        text= e.strText[text]
+        if text then
+            local line = self:GetLine(block, objectiveKey, lineType);
+            local textHeight = self:SetStringText(line.Text, text, useFullHeight, colorStyle, block.isHighlighted);
+            local height = overrideHeight or textHeight;
+            line:SetHeight(height);
+        end
+    end)
+    hooksecurefunc(ACHIEVEMENT_TRACKER_MODULE, 'SetBlockHeader', function(self, block, text)
+        text= e.strText[text]
+        if text then
+            local height = self:SetStringText(block.HeaderText, text, nil, OBJECTIVE_TRACKER_COLOR["Header"], block.isHighlighted);
+            block.height = height;
+        end
+    end)
+    e.call(ACHIEVEMENT_TRACKER_MODULE.Update, ACHIEVEMENT_TRACKER_MODULE)
 end
 
 

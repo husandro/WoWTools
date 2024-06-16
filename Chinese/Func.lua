@@ -2009,6 +2009,7 @@ local function Init()
             set(ScenarioChallengeModeBlock.Level, format('%d级', level))
         end
     end)
+    
     --出现Bug SCENARIO_CONTENT_TRACKER_MODULE:SetHeader(ObjectiveTrackerFrame.BlocksFrame.ScenarioHeader, '场景战役', nil)
     --Blizzard_ScenarioObjectiveTracker.lua
     hooksecurefunc(SCENARIO_CONTENT_TRACKER_MODULE, 'Update', function()
