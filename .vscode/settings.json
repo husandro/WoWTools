@@ -4583,7 +4583,10 @@
         "ACHIEVEMENTUI_MAXCONTENTWIDTH",
         "ACHIEVEMENTUI_CRITERIACHECKWIDTH",
         "AchievementFrameSummaryCategoriesStatusBarTitle",
-        "AchievementComparisonTemplateMixin"
+        "AchievementComparisonTemplateMixin",
+        "AchievementFullSearchResultsButtonMixin",
+        "AchievementStatTemplateMixin",
+        "ACHIEVEMENT_COMPARISON_STATS_SUMMARY_ID"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

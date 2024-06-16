@@ -11532,10 +11532,14 @@ local function Init_AchievementUI()
         if not objectivesFrame or not ID then
             return
         end        
-        local requiresRep
+        local requiresRep, repLevel, _
         if ( not objectivesFrame.completed ) then
-            requiresRep = GetAchievementGuildRep(ID)           
-        end    
+            requiresRep, _, repLevel = GetAchievementGuildRep(ID)
+            if ( requiresRep and repLevel) then
+                local factionStandingtext = GetText("FACTION_STANDING_LABEL"..repLevel, e.Player.sex);
+                objectivesFrame.RepCriteria:SetFormattedText('|cffffffff需要公会声望：|r %s', e.cn(factionStandingtext) or '')
+            end
+        end
         local numCriteria = GetAchievementNumCriteria(ID)
         if ( numCriteria == 0 and not requiresRep ) then
             return
@@ -11545,11 +11549,9 @@ local function Init_AchievementUI()
             local criteriaString, criteriaType, completed, _, _, _, flags, assetID, _ = GetAchievementCriteriaInfo(ID, i)
             if ( criteriaType == CRITERIA_TYPE_ACHIEVEMENT and assetID ) then
                 metas = metas + 1
-                local achievementName = e.strText[select(2, GetAchievementInfo(assetID))]
+                local achievementName = select(2, GetAchievementInfo(assetID))
                 local metaCriteria = objectivesFrame:GetMeta(metas)
-                if achievementName and metaCriteria then
-                    metaCriteria.Label:SetText(achievementName)
-                end
+                set(metaCriteria.Label, achievementName)
 
             elseif not (bit.band(flags, EVALUATION_TREE_FLAG_PROGRESS_BAR) == EVALUATION_TREE_FLAG_PROGRESS_BAR) then
                 textStrings = textStrings + 1
@@ -11564,6 +11566,7 @@ local function Init_AchievementUI()
         end 
     end)
 
+   
 
     --搜索
     hooksecurefunc('AchievementFrame_ShowSearchPreviewResults', function()
@@ -11611,7 +11614,7 @@ local function Init_AchievementUI()
 	    AchievementFrame.SearchResults.TitleText:SetFormattedText('搜索|cffff00ff%s|r 结果|cnGREEN_FONT_COLOR:%d|r', AchievementFrame.SearchBox:GetText(), numResults)
     end)
 
-
+    --统计
     hooksecurefunc(AchievementStatTemplateMixin, 'Init', function(self, elementData)
         local category = elementData.id
         local colorIndex = elementData.colorIndex
