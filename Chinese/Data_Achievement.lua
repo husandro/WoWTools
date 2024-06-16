@@ -11337,7 +11337,7 @@ local function Add_Text()
         end
     end
     tab= nil
-    
+
     do
         for categoryID, text in pairs(category) do
             local name = GetCategoryInfo((categoryID))
@@ -11406,60 +11406,7 @@ local function Init_AchievementUI()
     --hooksecurefunc('AchievementFrameBaseTab_OnClick', set_index)
     --hooksecurefunc('AchievementFrameComparisonTab_OnClick', set_index)
 
-    hooksecurefunc(AchievementFrameCategories.ScrollBox, 'Update', function(frame)
-        if not frame:GetView() then
-            return
-        end
-        for _, btn in pairs(frame:GetFrames() or {}) do
-            if btn.Button then
-                set(btn.Button.Label, btn.Button.name)
-                --print(btn.Button.Label:GetText(), e.cn(btn.Button.name))
-            end
-        end
-    end)
-    hooksecurefunc(AchievementCategoryTemplateMixin, 'Init', function(self, info)
-        if info.id == 81 then
-            self.Button.text = "对于许多玩家来说，“光辉事迹”中的成就几乎不可能完成，至少是极端困难的。它们并不奖励成就点数，而是你在艾泽拉斯世界曾经创下的丰功伟绩的纪录。"
-        elseif info.id == 15093 then
-            self.Button.text = "对于许多公会来说，“光辉事迹”几乎不可能完成，至少是极端困难的。它们并不奖励点数，而是见证了这个公会在艾泽拉斯世界曾经创下的丰功伟绩的纪录。"
-        
-        end
-    end)
-    hooksecurefunc('AchievementFrameCategories_OnCategoryChanged', function(category)
-        if AchievementFrameAchievementsFeatOfStrengthText:IsShown() then
-            AchievementFrameAchievementsFeatOfStrengthText:SetText(AchievementFrame.selectedTab == 2
-                and '对于许多公会来说，“光辉事迹”几乎不可能完成，至少是极端困难的。它们并不奖励点数，而是见证了这个公会在艾泽拉斯世界曾经创下的丰功伟绩的纪录。'
-                or '对于许多玩家来说，“光辉事迹”中的成就几乎不可能完成，至少是极端困难的。它们并不奖励成就点数，而是你在艾泽拉斯世界曾经创下的丰功伟绩的纪录。'
-            )
-        end
-       print(category)
-
-    end)
-    hooksecurefunc('AchievementFrameComparison_UpdateStatusBars', function(ID)
-        local name
-        if ID == ACHIEVEMENT_COMPARISON_SUMMARY_ID then-- -1
-            name = '总览'
-        else
-            name= e.cn(GetCategoryInfo(ID))
-        end
-        if name then
-            AchievementFrameComparison.Summary.Player.StatusBar.Title:SetFormattedText('已获得%s项成就', name)
-        end
-    end)
-
-    hooksecurefunc(AchievementTemplateMixin, 'Init', function(self, elementData)
-        local _, name, description,rewardText
-        if self.index then
-            _, name, _, _, _, _, _, description, _, _, rewardText = GetAchievementInfo(elementData.category, self.index)
-        else            
-            _, name, _, _, _, _, _, description, _, _, rewardText = GetAchievementInfo(self.id)--Social
-        end
-        set(self.Label, name)
-        set(self.Description, description)
-        set(self.HiddenDescription, description)
-        set(self.Reward, rewardText)
-    end)
-
+    
     AchievementFrameTab1:SetText('成就')
     AchievementFrameTab2:SetText('公会')
     AchievementFrameTab3:SetText('统计')
@@ -11518,6 +11465,95 @@ local function Init_AchievementUI()
             end
         end
     end)
+
+    hooksecurefunc(AchievementFrameCategories.ScrollBox, 'Update', function(frame)
+        if not frame:GetView() then
+            return
+        end
+        for _, btn in pairs(frame:GetFrames() or {}) do
+            if btn.Button then
+                set(btn.Button.Label, btn.Button.name)
+                --print(btn.Button.Label:GetText(), e.cn(btn.Button.name))
+            end
+        end
+    end)
+    hooksecurefunc(AchievementCategoryTemplateMixin, 'Init', function(self, info)
+        if info.id == 81 then
+            self.Button.text = "对于许多玩家来说，“光辉事迹”中的成就几乎不可能完成，至少是极端困难的。它们并不奖励成就点数，而是你在艾泽拉斯世界曾经创下的丰功伟绩的纪录。"
+        elseif info.id == 15093 then
+            self.Button.text = "对于许多公会来说，“光辉事迹”几乎不可能完成，至少是极端困难的。它们并不奖励点数，而是见证了这个公会在艾泽拉斯世界曾经创下的丰功伟绩的纪录。"
+        
+        end
+    end)
+    hooksecurefunc('AchievementFrameCategories_OnCategoryChanged', function(category)
+        if AchievementFrameAchievementsFeatOfStrengthText:IsShown() then
+            AchievementFrameAchievementsFeatOfStrengthText:SetText(AchievementFrame.selectedTab == 2
+                and '对于许多公会来说，“光辉事迹”几乎不可能完成，至少是极端困难的。它们并不奖励点数，而是见证了这个公会在艾泽拉斯世界曾经创下的丰功伟绩的纪录。'
+                or '对于许多玩家来说，“光辉事迹”中的成就几乎不可能完成，至少是极端困难的。它们并不奖励成就点数，而是你在艾泽拉斯世界曾经创下的丰功伟绩的纪录。'
+            )
+        end
+    end)
+    hooksecurefunc('AchievementFrameComparison_UpdateStatusBars', function(ID)
+        local name
+        if ID == ACHIEVEMENT_COMPARISON_SUMMARY_ID then-- -1
+            name = '总览'
+        else
+            name= e.cn(GetCategoryInfo(ID))
+        end
+        if name then
+            AchievementFrameComparison.Summary.Player.StatusBar.Title:SetFormattedText('已获得%s项成就', name)
+        end
+    end)
+
+    hooksecurefunc(AchievementTemplateMixin, 'Init', function(self, elementData)--成就，法化
+        local _, name, description,rewardText
+        if self.index then
+            _, name, _, _, _, _, _, description, _, _, rewardText = GetAchievementInfo(elementData.category, self.index)
+        else            
+            _, name, _, _, _, _, _, description, _, _, rewardText = GetAchievementInfo(self.id)--Social
+        end
+        set(self.Label, name)
+        set(self.Description, description)
+        set(self.HiddenDescription, description)
+        set(self.Reward, rewardText)
+    end)
+
+    hooksecurefunc('AchievementObjectives_DisplayCriteria', function(objectivesFrame, ID)--条件， 汉化
+        if not objectivesFrame or not ID then
+            return;
+        end        
+        local requiresRep
+        if ( not objectivesFrame.completed ) then
+            requiresRep = GetAchievementGuildRep(ID);           
+        end    
+        local numCriteria = GetAchievementNumCriteria(ID);
+        if ( numCriteria == 0 and not requiresRep ) then
+            return;
+        end
+        local textStrings, metas = 0, 0
+        for i = 1, numCriteria do
+            local criteriaString, criteriaType, completed, _, _, _, flags, assetID, _ = GetAchievementCriteriaInfo(ID, i);
+            if ( criteriaType == CRITERIA_TYPE_ACHIEVEMENT and assetID ) then
+                metas = metas + 1
+                local achievementName = e.strText[select(2, GetAchievementInfo(assetID))]
+                local metaCriteria = objectivesFrame:GetMeta(metas)
+                if achievementName and metaCriteria then
+                    metaCriteria.Label:SetText(achievementName)
+                end
+
+            elseif not (bit.band(flags, EVALUATION_TREE_FLAG_PROGRESS_BAR) == EVALUATION_TREE_FLAG_PROGRESS_BAR) then
+                textStrings = textStrings + 1;
+                criteriaString= e.strText[criteriaString]
+                if not completed and criteriaString then
+                    local criteria = objectivesFrame:GetCriteria(textStrings)
+                    if criteria then
+                        criteria.Name:SetText("- "..criteriaString)
+                    end
+                end
+            end
+        end 
+    end)
+
 
     --hooksecurefunc('AchievementFrameCategory_StatusBarTooltip', function(info)
 end

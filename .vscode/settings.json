@@ -4578,7 +4578,10 @@
         "AchievementFrameAchievementsFeatOfStrengthText",
         "AchievementFrameSummaryAchievements",
         "ACHIEVEMENTUI_DEFAULTGUILDSUMMARYACHIEVEMENTS",
-        "ACHIEVEMENTUI_DEFAULTSUMMARYACHIEVEMENTS"
+        "ACHIEVEMENTUI_DEFAULTSUMMARYACHIEVEMENTS",
+        "ACHIEVEMENTBUTTON_CRITERIAROWHEIGHT",
+        "ACHIEVEMENTUI_MAXCONTENTWIDTH",
+        "ACHIEVEMENTUI_CRITERIACHECKWIDTH"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",
