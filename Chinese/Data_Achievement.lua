@@ -11413,6 +11413,7 @@ local function Init_AchievementUI()
     AchievementFrame.SearchBox.Instructions:SetText('搜索')
     AchievementFrameSummaryAchievementsHeaderTitle:SetText('近期成就')
     AchievementFrameSummaryCategoriesHeaderTitle:SetText('进展总览')
+   
 
     hooksecurefunc('AchievementFrame_RefreshView', function(self)--Blizzard_AchievementUI.lua
         setLabel(AchievementFrame.Header.Title)
@@ -11482,7 +11483,6 @@ local function Init_AchievementUI()
             self.Button.text = "对于许多玩家来说，“光辉事迹”中的成就几乎不可能完成，至少是极端困难的。它们并不奖励成就点数，而是你在艾泽拉斯世界曾经创下的丰功伟绩的纪录。"
         elseif info.id == 15093 then
             self.Button.text = "对于许多公会来说，“光辉事迹”几乎不可能完成，至少是极端困难的。它们并不奖励点数，而是见证了这个公会在艾泽拉斯世界曾经创下的丰功伟绩的纪录。"
-        
         end
     end)
     hooksecurefunc('AchievementFrameCategories_OnCategoryChanged', function(category)
@@ -11515,7 +11515,7 @@ local function Init_AchievementUI()
         set(self.Label, name)
         set(self.Description, description)
         set(self.HiddenDescription, description)
-        set(self.Reward, rewardText)
+        set(self.Reward, rewardText)        
     end)
 
     hooksecurefunc('AchievementObjectives_DisplayCriteria', function(objectivesFrame, ID)--条件， 汉化
