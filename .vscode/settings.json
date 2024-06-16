@@ -4570,7 +4570,8 @@
         "EncounterJournalDataProviderMixin",
         "AreaLabelFrameMixin",
         "MapCanvasMixin",
-        "MapCanvasScrollControllerMixin"
+        "MapCanvasScrollControllerMixin",
+        "ACHIEVEMENT_FUNCTIONS"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",
