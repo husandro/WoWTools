@@ -11418,7 +11418,6 @@ local function Init_AchievementUI()
 
     hooksecurefunc('AchievementFrame_RefreshView', function(self)--Blizzard_AchievementUI.lua
         setLabel(AchievementFrame.Header.Title)
-        local name=AchievementFrame.Header.Title:GetText()
     end)
 
     hooksecurefunc('AchievementFrameSummary_UpdateAchievements', function(...)--近期成就
@@ -11427,7 +11426,7 @@ local function Init_AchievementUI()
             return
         end
         
-        local id, name, completed, description, achievementID
+        local name, completed, description, achievementID
         local defaultAchievementCount = 1
         for i=1, ACHIEVEMENTUI_MAX_SUMMARY_ACHIEVEMENTS do--4
             local button = AchievementFrameSummaryAchievements.buttons[i]

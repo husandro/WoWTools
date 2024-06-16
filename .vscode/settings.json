@@ -4587,7 +4587,11 @@
         "AchievementFullSearchResultsButtonMixin",
         "AchievementStatTemplateMixin",
         "ACHIEVEMENT_COMPARISON_STATS_SUMMARY_ID",
-        "CompactArenaFrame"
+        "CompactArenaFrame",
+        "OBJECTIVE_TRACKER_COLOR",
+        "OBJECTIVE_DASH_STYLE_SHOW",
+        "OBJECTIVE_DASH_STYLE_HIDE",
+        "AchievementFrameComparisonHeaderBG"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",
