@@ -4594,7 +4594,18 @@
         "AchievementFrameComparisonHeaderBG",
         "AchivementComparisonStatMixin",
         "AchievementFrame_SetFilter",
-        "AchievementFrameFilterDropDownText"
+        "AchievementFrameFilterDropDownText",
+        "WorldMapMixin",
+        "WorldMapActivityTrackerMixin",
+        "WorldMapThreatEyeMixin",
+        "WORLD_MAP_ACTIVITY_TRACKER_RING_TOOLTIP",
+        "WORLD_MAP_THREATS_TOOLTIP",
+        "GroupFinderFrameGroupButton3Name",
+        "GroupFinderFrameGroupButton2Name",
+        "GroupFinderFrameGroupButton1Name",
+        "GroupFinderFrameGroupButton1",
+        "RaidFinderQueueFrameScrollFrameChildFrameTitle",
+        "RaidFinderQueueFrameScrollFrameChildFrameDescription"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

@@ -1793,9 +1793,84 @@ local tab={
 
 
 
+--[[
+1	self:AddOverlayFrame("WorldMapFloorNavigationFrameTemplate", "FRAME", "TOPLEFT", self:GetCanvasContainer(), "TOPLEFT", -15, 2)
 
+	if C_GameModeManager.IsFeatureEnabled(Enum.GameModeFeatureSetting.WorldMapTrackingOptions) then
+2		self:AddOverlayFrame("WorldMapTrackingOptionsButtonTemplate", "DROPDOWNTOGGLEBUTTON", "TOPRIGHT", self:GetCanvasContainer(), "TOPRIGHT", -4, -2)
+	end
 
+	if C_GameModeManager.IsFeatureEnabled(Enum.GameModeFeatureSetting.WorldMapTrackingPin) then
+3		self:AddOverlayFrame("WorldMapTrackingPinButtonTemplate", "BUTTON", "TOPRIGHT", self:GetCanvasContainer(), "TOPRIGHT", -36, -2)
+	end
 
+4	self:AddOverlayFrame("WorldMapBountyBoardTemplate", "FRAME", nil, self:GetCanvasContainer())
+5	self:AddOverlayFrame("WorldMapActionButtonTemplate", "FRAME", nil, self:GetCanvasContainer())
+6	self:AddOverlayFrame("WorldMapZoneTimerTemplate", "FRAME", "BOTTOM", self:GetCanvasContainer(), "BOTTOM", 0, 20)
+7	self:AddOverlayFrame("WorldMapThreatFrameTemplate", "FRAME", "BOTTOMLEFT", self:GetCanvasContainer(), "BOTTOMLEFT", 0, 0)
+8	self:AddOverlayFrame("WorldMapActivityTrackerTemplate", "BUTTON", "BOTTOMLEFT", self:GetCanvasContainer(), "BOTTOMLEFT", 0, 0)--WorldMapBountyBoard.lua
+
+]]
+
+local function Init_overlayFrames()--WorldMapMixin:AddOverlayFrames()    
+    local index=1
+    local btn
+    local isTracking= C_GameModeManager.IsFeatureEnabled(Enum.GameModeFeatureSetting.WorldMapTrackingOptions)
+    if isTracking then
+        index=index+1
+        local optionButton=WorldMapFrame.overlayFrames[index]
+        if optionButton then
+            optionButton:HookScript('OnEnter', function()
+                GameTooltip_SetTitle(GameTooltip, '地图筛选')
+                GameTooltip:Show()
+            end)
+        end
+    end
+
+    local isPin= C_GameModeManager.IsFeatureEnabled(Enum.GameModeFeatureSetting.WorldMapTrackingPin)
+    if isPin then
+        index=index+1
+        btn= WorldMapFrame.overlayFrames[index]
+        if btn then
+            btn:HookScript('OnEnter', function(self)
+                GameTooltip_SetTitle(GameTooltip, '地图标记')--WorldMapTrackingPinButtonMixin:OnEnter()
+                local mapID = self:GetParent():GetMapID()
+                if C_Map.CanSetUserWaypointOnMap(mapID) then
+                    GameTooltip_AddNormalLine(GameTooltip, '在地图上放置一个位置标记，此标记可以追踪，也可以分享给其他玩家。')
+                    GameTooltip_AddBlankLineToTooltip(GameTooltip)
+                    GameTooltip_AddInstructionLine(GameTooltip, '点击这个按钮，然后在地图上点击来放置一个标记，或者直接<按住Ctrl点击地图>。')
+                else
+                    GameTooltip_AddErrorLine(GameTooltip, '你不能在这张地图上放置标记。')-- heheheha
+
+                end
+                GameTooltip:Show()
+            end)
+        end
+    end
+ 
+    index=index+4
+    --[[btn=  WorldMapFrame.overlayFrames[index]
+    if btn then
+        btn:HookScript('OnEnter', function()
+            GameTooltip_SetTitle(GameTooltip, '恩佐斯突袭')
+            GameTooltip_AddColoredLine(GameTooltip, '点击浏览被恩佐斯的军队突袭的地区。', GREEN_FONT_COLOR)
+            GameTooltip:Show()
+        end)
+    end]]
+
+   index=index+1
+    btn= WorldMapFrame.overlayFrames[index]
+    if btn then
+        hooksecurefunc(btn, 'ShowMapJumpTooltip', function(self)
+            local factionName = select(1, GetFactionInfoByID(self.selectedBounty.factionID))
+            if factionName then
+                GameTooltip_SetTitle(GameTooltip, factionName)                
+                GameTooltip_AddInstructionLine(GameTooltip, "<左键点击在可用活动间轮换>|n<右键点击取消追踪阵营>", false)
+                GameTooltip:Show()
+            end
+        end)
+    end
+end
 
 
 
@@ -1834,6 +1909,8 @@ local function setRegion(frame)
 end
 
 local function Init()
+    Init_overlayFrames()
+
     --飞行地图，地图名称
     hooksecurefunc(ZoneLabelDataProviderMixin, 'EvaluateBestAreaTrigger', function(self)
         local label= self.ZoneLabel and self.ZoneLabel.Text
@@ -1887,51 +1964,7 @@ local function Init()
     setFont(WorldMapFrameHomeButtonText)
     WorldMapFrameHomeButtonText:SetText('世界')
     
-
-    local optionButton=WorldMapFrame.overlayFrames[2]
-    if optionButton then
-        optionButton:HookScript('OnEnter', function()
-            GameTooltip_SetTitle(GameTooltip, '地图筛选')
-	        GameTooltip:Show()
-        end)
-    end
-
-    local pingButton= WorldMapFrame.overlayFrames[3]
-    if pingButton then
-        pingButton:HookScript('OnEnter', function(self)--WorldMapTrackingPinButtonMixin:OnEnter()
-            GameTooltip_SetTitle(GameTooltip, '地图标记')
-            local mapID = self:GetParent():GetMapID()
-            if C_Map.CanSetUserWaypointOnMap(mapID) then
-                GameTooltip_AddNormalLine(GameTooltip, '在地图上放置一个位置标记，此标记可以追踪，也可以分享给其他玩家。')
-                GameTooltip_AddBlankLineToTooltip(GameTooltip)
-                GameTooltip_AddInstructionLine(GameTooltip, '点击这个按钮，然后在地图上点击来放置一个标记，或者直接<按住Ctrl点击地图>。')
-            else
-                GameTooltip_AddErrorLine(GameTooltip, '你不能在这张地图上放置标记。')
-            end
-            GameTooltip:Show()
-        end)
-    end
-
-
-    local threatButton=  WorldMapFrame.overlayFrames[7]
-    if threatButton then
-        GameTooltip_SetTitle(GameTooltip, '恩佐斯突袭')
-        GameTooltip_AddColoredLine(GameTooltip, '点击浏览被恩佐斯的军队突袭的地区。', GREEN_FONT_COLOR)
-        GameTooltip:Show()
-    end
-
-    hooksecurefunc(WorldMapTrackingPinButtonMixin, 'OnEnter', function(self)
-        GameTooltip_SetTitle(GameTooltip, '地图标记')
-        local mapID = self:GetParent():GetMapID()
-        if C_Map.CanSetUserWaypointOnMap(mapID) then
-            GameTooltip_AddNormalLine(GameTooltip, '在地图上放置一个位置标记，此标记可以追踪，也可以分享给其他玩家。')
-            GameTooltip_AddBlankLineToTooltip(GameTooltip)
-            GameTooltip_AddInstructionLine(GameTooltip, '点击这个按钮，然后在地图上点击来放置一个标记，或者直接<按住Ctrl点击地图>。')
-        else
-            GameTooltip_AddErrorLine(GameTooltip, '你不能在这张地图上放置标记。')
-        end
-        GameTooltip:Show()
-    end)
+    
 end
 
 

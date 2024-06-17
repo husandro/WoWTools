@@ -546,7 +546,17 @@ local function Init()
     GroupFinderFrame:HookScript('OnShow', function()
         PVEFrame:SetTitle('地下城和团队副本')
     end)
-
+  
+    
+    
+    --set(GroupFinderFrameGroupButton1Name, '地下城查找器')
+    --set(GroupFinderFrameGroupButton2Name, '团队查找器')
+    --set(GroupFinderFrameGroupButton3Name, '预创建队伍')
+    hookLable(GroupFinderFrameGroupButton1Name)
+    hookLable(GroupFinderFrameGroupButton2Name)
+    hookLable(GroupFinderFrameGroupButton3Name)
+    hookLable(RaidFinderQueueFrameScrollFrameChildFrameTitle)
+    hookLable(RaidFinderQueueFrameScrollFrameChildFrameDescription)
 
     set(PVEFrameTab1, '地下城和团队副本')
     set(PVEFrameTab2, 'PvP')
@@ -2464,19 +2474,7 @@ local function Init()
         GameTooltip_SetTitle(GameTooltip, '恩佐斯突袭')
         GameTooltip_AddColoredLine(GameTooltip, '点击浏览被恩佐斯的军队突袭的地区。', GREEN_FONT_COLOR)
         GameTooltip:Show()
-    end
-    hooksecurefunc(WorldMapTrackingPinButtonMixin, 'OnEnter', function(self)
-        GameTooltip_SetTitle(GameTooltip, '地图标记')
-        local mapID = self:GetParent():GetMapID()
-        if C_Map.CanSetUserWaypointOnMap(mapID) then
-            GameTooltip_AddNormalLine(GameTooltip, '在地图上放置一个位置标记，此标记可以追踪，也可以分享给其他玩家。')
-            GameTooltip_AddBlankLineToTooltip(GameTooltip)
-            GameTooltip_AddInstructionLine(GameTooltip, '点击这个按钮，然后在地图上点击来放置一个标记，或者直接<按住Ctrl点击地图>。')
-        else
-            GameTooltip_AddErrorLine(GameTooltip, '你不能在这张地图上放置标记。')
-        end
-        GameTooltip:Show()
-    end)]]
+    end]]
 
     --小地图
     MinimapCluster.ZoneTextButton.tooltipText = MicroButtonTooltipText('世界地图', "TOGGLEWORLDMAP")
