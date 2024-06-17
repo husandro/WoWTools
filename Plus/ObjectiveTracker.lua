@@ -364,8 +364,7 @@ end
 
 
 --清除, 追踪, 按钮
-local function Init_ClearButton_ObjectiveTracker_Initialize(frame)
-    print('Init_ClearButton_ObjectiveTracker_Initialize')
+local function Init_ClearButton_ObjectiveTracker_Initialize(frame) 
     for _, module in ipairs(frame.MODULES) do
         if module== WORLD_QUEST_TRACKER_MODULE then--4世界任务 TRACKER_HEADER_WORLD_QUESTS
             create_ClearAll_Button(module.Header)
