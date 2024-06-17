@@ -1820,9 +1820,9 @@ local function setLabel(label)
     end
 end
 local function setFont(label)
-    if lable then
-        local _, size, fontFlag= lable:GetFont()
-        lable:SetFont('Fonts\\ARHei.ttf', size, fontFlag2 or 'OUTLINE')
+    if label then
+        local _, size, fontFlag= label:GetFont()
+        label:SetFont('Fonts\\ARHei.ttf', size, fontFlag or 'OUTLINE')
     end
 end
 local function setRegion(frame)
