@@ -4591,7 +4591,9 @@
         "OBJECTIVE_TRACKER_COLOR",
         "OBJECTIVE_DASH_STYLE_SHOW",
         "OBJECTIVE_DASH_STYLE_HIDE",
-        "AchievementFrameComparisonHeaderBG"
+        "AchievementFrameComparisonHeaderBG",
+        "AchivementComparisonStatMixin",
+        "AchievementFrame_SetFilter"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

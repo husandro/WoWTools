@@ -2824,7 +2824,12 @@ local function Init_Event(arg1)
                 end
             end)
         end
-       
+        if Save.AchievementFrameFilterDropDown then--保存，过滤
+            AchievementFrame_SetFilter(Save.AchievementFrameFilterDropDown)
+        end
+        hooksecurefunc('AchievementFrame_SetFilter', function(value)
+            Save.AchievementFrameFilterDropDown = value
+        end)
 
     elseif arg1=='Blizzard_Collections' then--宠物手册， 召唤随机，偏好宠物，技能ID    
         hooksecurefunc('PetJournalSummonRandomFavoritePetButton_OnEnter', function()--PetJournalSummonRandomFavoritePetButton
