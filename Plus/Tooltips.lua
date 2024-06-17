@@ -2815,14 +2815,16 @@ local function Init_Event(arg1)
             AchievementFrameComparisonHeader:EnableMouse(true)
             AchievementFrameComparisonHeader:HookScript('OnLeave', GameTooltip_Hide)
             AchievementFrameComparisonHeader:HookScript('OnEnter', function()
-                if AchievementFrameComparisonHeaderPortrait.unit then
+                local unit= AchievementFrameComparisonHeaderPortrait.unit
+                if unit then
                     e.tips:SetOwner(AchievementFrameComparison, "ANCHOR_RIGHT",0,-250)
                     e.tips:ClearLines()
-                    e.tips:SetUnit(AchievementFrameComparisonHeaderPortrait.unit)
+                    e.tips:SetUnit(unit)
                     e.tips:Show()
                 end
             end)
         end
+       
 
     elseif arg1=='Blizzard_Collections' then--宠物手册， 召唤随机，偏好宠物，技能ID    
         hooksecurefunc('PetJournalSummonRandomFavoritePetButton_OnEnter', function()--PetJournalSummonRandomFavoritePetButton

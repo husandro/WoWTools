@@ -31,6 +31,8 @@ local ModulTab={--Blizzard_ObjectiveTracker.lua
     end
 end]]
 
+--DEFAULT_OBJECTIVE_TRACKER_MODULE
+
 --清除, 追踪，按钮
 local function create_ClearAll_Button(frame)
     if frame.clearAll then
@@ -78,9 +80,7 @@ local function set_Quest_Color(block, questID)
     for objectiveIndex = 1, numObjectives do
         local line = block.lines[objectiveIndex]
         if line and line.Text then
-            if line.state == "COMPLETED" then
-                line:SetAlpha(0.3)
-            end
+            line:SetAlpha(line.state == "COMPLETED" and 0.3 or 1)
             if block.r and block.g and block.b then
                 line.Text:SetTextColor(block.r, block.g, block.b)
             end
@@ -144,6 +144,7 @@ local function Init_Quest()
     hooksecurefunc('QuestObjectiveTracker_DoQuestObjectives', function(_, block)--, questCompleted, questSequenced, existingBlock, useFullHeight)
         set_Quest_Color(block)
     end)
+    --战役
     hooksecurefunc(CAMPAIGN_QUEST_TRACKER_MODULE, 'SetBlockHeader', function(_, block, text, questLogIndex, isQuestComplete, questID)--任务颜色 图标
         local info = questLogIndex and C_QuestLog.GetInfo(questLogIndex)
         if not info then
@@ -160,7 +161,8 @@ local function Init_Quest()
         block.r, block.g, block.b= color.r, color.g, color.b
         set_Quest_Color(block, questID)
     end)
-    hooksecurefunc(QUEST_TRACKER_MODULE, 'SetBlockHeader', function(_, block, text, questLogIndex, isQuestComplete, questID)--任务颜色 图标
+    --任务, 图标
+    hooksecurefunc(QUEST_TRACKER_MODULE, 'SetBlockHeader', function(self, block, text, questLogIndex, isQuestComplete, questID)
         local info = questLogIndex and C_QuestLog.GetInfo(questLogIndex)
         if not info then
             return
@@ -192,8 +194,10 @@ local function Init_Quest()
             end
         end
 
-        if m~='' or e.strText[text] then--汉化，图标
-            block.HeaderText:SetText(m..e.cn(text))
+        local name= e.strText[text]
+        if m~='' or name then--汉化，图标
+            local height = self:SetStringText(block.HeaderText, m..(name or text), nil, OBJECTIVE_TRACKER_COLOR["Header"], block.isHighlighted)
+            block.height = height
         end
     end)
 
@@ -584,7 +588,7 @@ end
 local function Init()    
     Init_MinimizeButton_Options()--操作
     Init_Quest()--任务
-    hooksecurefunc(PROFESSION_RECIPE_TRACKER_MODULE, 'Update', function(frame)--8 追踪配方
+    hooksecurefunc(PROFESSION_RECIPE_TRACKER_MODULE, 'Update', function()--8 追踪配方
         Profession_Add_Objectives(true)
         Profession_Add_Objectives(false)
     end)
@@ -608,13 +612,25 @@ local function Init()
         self.numLabel:SetText(text or '')
     end)
 
-    hooksecurefunc(ACHIEVEMENT_TRACKER_MODULE, 'SetBlockHeader', function(self, block, text)
-        text= e.strText[text]
-        if text then
+    --成就
+    hooksecurefunc(ACHIEVEMENT_TRACKER_MODULE, 'SetBlockHeader', function(self, block, text)--Blizzard_AchievementObjectiveTracker.lua
+        local name= e.strText[text]--汉化
+        local icon= select(10, GetAchievementInfo(block.id))--local achievementID = block.id
+        if name or icon then
+            text= '|T'..icon..':0|t'..(name or text)
             local height = self:SetStringText(block.HeaderText, text, nil, OBJECTIVE_TRACKER_COLOR["Header"], block.isHighlighted)
             block.height = height
         end
     end)
+    hooksecurefunc(ACHIEVEMENT_TRACKER_MODULE, 'AddObjective', function(self, block, objectiveKey, text, lineType, useFullHeight, dashStyle, colorStyle, adjustForNoText, overrideHeight)
+        local name= e.strText[text]--汉化
+        if name then
+            local line = self:GetLine(block, objectiveKey, lineType)
+            local textHeight = self:SetStringText(line.Text, name, useFullHeight, colorStyle, block.isHighlighted)
+            local height = overrideHeight or textHeight
+            line:SetHeight(height)
+        end
+    end)  
 end
 
 

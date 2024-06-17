@@ -1006,6 +1006,7 @@ local function setAddLoad(arg1)
             self.target:SetSize(768, 500)
         end})
         e.Set_Move_Frame(AchievementFrameComparisonHeader, {frame=AchievementFrame})
+        e.Set_Move_Frame(AchievementFrameComparison, {frame=AchievementFrame})
         e.Set_Move_Frame(AchievementFrame.Header, {frame=AchievementFrame})
 
 

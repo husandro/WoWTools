@@ -57,6 +57,12 @@ if IsModifiedClick("CHATLINK") then
     local spellLink = GetSpellLink(self:GetSpellID())
     ChatEdit_InsertLink(spellLink)
 end
+if ( IsModifiedClick("CHATLINK") and ChatEdit_GetActiveWindow() ) then
+	local achievementLink = GetAchievementLink(block.id);
+	if ( achievementLink ) then
+		ChatEdit_InsertLink(achievementLink);
+	end
+end
 
 --ItemButtonTemplate.lua
 if C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(itemIDOrLink) then

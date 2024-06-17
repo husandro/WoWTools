@@ -1428,8 +1428,10 @@ local function Init_Event(arg1)
             set_Alpha_Color(_G['AchievementFrameSummaryCategoriesCategory'..i..'Right'])
             set_Alpha_Color(_G['AchievementFrameSummaryCategoriesCategory'..i..'Middle'])
             set_Alpha_Color(_G['AchievementFrameSummaryCategoriesCategory'..i..'Left'])
-
         end
+        --比较
+        AchievementFrameComparisonHeader:ClearAllPoints()
+        AchievementFrameComparisonHeader:SetPoint('BOTTOMLEFT', AchievementFrameComparison, 'TOPRIGHT', -125, 0)
 
     elseif arg1=='Blizzard_Communities' then--公会和社区
         e.Set_NineSlice_Color_Alpha(CommunitiesFrame, true)

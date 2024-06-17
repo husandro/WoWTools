@@ -11691,7 +11691,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif arg1=='Blizzard_AchievementUI' then
-        C_Timer.After(2, function()            
+        C_Timer.After(2, function()
             if not e.disbledCN then
                 Init_AchievementUI()
                 self:UnregisterEvent('ADDON_LOADED')
