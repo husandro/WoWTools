@@ -166,7 +166,7 @@ local instanceBossTab={-- []='',
 
 
 
-local instanceTab={--{, ''},
+--[[local instanceTab={--{, ''},
     --经典怀旧服
     {227, '黑暗深渊'},
     {229, '黑石塔'},
@@ -258,7 +258,7 @@ local instanceTab={--{, ''},
     {1208, '亚贝鲁斯,焰影熔炉'},
     {1207, '阿梅达希尔,梦境之愿'},
 
-}
+}]]
 
 
 
@@ -1363,7 +1363,7 @@ local function rest_all()
     curcurrencyTab=nil
     raceTab=nil
     affixTab=nil
-    instanceTab=nil
+    --instanceTab=nil
     instanceBossTab=nil
     itemSubTypeTab=nil
     friendFactionTab=nil
@@ -1381,12 +1381,12 @@ local function Init()
         end
     end
 
-    for _, info in pairs(instanceTab) do
+    --[[for _, info in pairs(instanceTab) do
         local name= EJ_GetInstanceInfo(info[1])
         if name then
             e.strText[name]= info[2]
         end
-    end
+    end]]
 
     for spellID, info in pairs(spellTab) do
         local name= GetSpellInfo(spellID)
