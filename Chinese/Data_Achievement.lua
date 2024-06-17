@@ -11640,25 +11640,7 @@ local function Init_AchievementUI()
         end
     end)
 
---ObjectiveTracker.lua 已加载
---[[DEFAULT_OBJECTIVE_TRACKER_MODULE:AddObjective(
-    hooksecurefunc(ACHIEVEMENT_TRACKER_MODULE, 'AddObjective', function(self, block, objectiveKey, text, lineType, useFullHeight, dashStyle, colorStyle, adjustForNoText, overrideHeight)
-        text= e.strText[text]
-        if text then
-            local line = self:GetLine(block, objectiveKey, lineType)
-            local textHeight = self:SetStringText(line.Text, text, useFullHeight, colorStyle, block.isHighlighted)
-            local height = overrideHeight or textHeight
-            line:SetHeight(height)
-        end
-    end)    
-    hooksecurefunc(ACHIEVEMENT_TRACKER_MODULE, 'SetBlockHeader', function(self, block, text)
-        text= e.strText[text]
-        if text then
-            local height = self:SetStringText(block.HeaderText, text, nil, OBJECTIVE_TRACKER_COLOR["Header"], block.isHighlighted)
-            block.height = height
-        end
-    end)
-    e.call(ACHIEVEMENT_TRACKER_MODULE.Update, ACHIEVEMENT_TRACKER_MODULE)]]
+    --ObjectiveTracker.lua 已加载 汉化
 end
 
 
