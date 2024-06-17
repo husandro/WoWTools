@@ -1807,12 +1807,12 @@ local tab={
 
 
 
-local function set(label, text)
+--[[local function set(label, text)
     text= e.strText[text]
     if label and text and text~='' then--CanAccessObject(self) then
         label:SetText(text)
     end
-end
+end]]
 local function setLabel(label)
     local text= label and e.strText[label:GetText()]
     if text then
