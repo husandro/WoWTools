@@ -11619,6 +11619,9 @@ local function Init_AchievementUI()
         end
     end)
     
+    
+
+
     --比较
     hooksecurefunc(AchievementComparisonTemplateMixin, 'Init', function(self, elementData)
         local _, name, _, _, _, _, _, description = GetAchievementInfo(elementData.category, elementData.index)
@@ -11637,6 +11640,21 @@ local function Init_AchievementUI()
         end
         if name then
             AchievementFrameComparison.Summary.Player.StatusBar.Title:SetFormattedText('已获得 %s 项成就', name)
+        end
+    end)
+    hooksecurefunc(AchivementComparisonStatMixin, 'Init', function(self, elementData)--比较, 统计        
+        if not elementData then return end
+        local category = elementData.id
+        local colorIndex = elementData.colorIndex
+        if elementData.header then
+            local title= e.strText[GetCategoryInfo(category)]
+            if title then
+                self.Title:SetText(title)
+            end
+            
+        else
+            local name= select(2, GetAchievementInfo(category))            
+            set(self.Text, name)
         end
     end)
 
