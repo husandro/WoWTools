@@ -4593,7 +4593,8 @@
         "OBJECTIVE_DASH_STYLE_HIDE",
         "AchievementFrameComparisonHeaderBG",
         "AchivementComparisonStatMixin",
-        "AchievementFrame_SetFilter"
+        "AchievementFrame_SetFilter",
+        "AchievementFrameFilterDropDownText"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

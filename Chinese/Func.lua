@@ -2384,7 +2384,7 @@ local function Init()
         set(PetBattleFrame.BottomFrame.TurnTimer.SkipButton, '待命')
     end
 
-    --任务对话框
+    --[[任务对话框
     set(GossipFrame.GreetingPanel.GoodbyeButton, '再见')
     set(QuestFrameAcceptButton, '接受')
     set(QuestFrameGreetingGoodbyeButton, '再见')
@@ -2476,7 +2476,7 @@ local function Init()
             GameTooltip_AddErrorLine(GameTooltip, '你不能在这张地图上放置标记。')
         end
         GameTooltip:Show()
-    end)
+    end)]]
 
     --小地图
     MinimapCluster.ZoneTextButton.tooltipText = MicroButtonTooltipText('世界地图', "TOGGLEWORLDMAP")
