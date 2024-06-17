@@ -11331,9 +11331,6 @@ local function Add_Text()
                 is_add(desc, info[2])
                 is_add(re, info[3])
             end
-            if name then
-                tab[achievementID]= nil
-            end
         end
     end
     tab= nil
@@ -11343,7 +11340,6 @@ local function Add_Text()
             local name = GetCategoryInfo((categoryID))
             if name and text then
                 e.strText[name]= text
-                category[categoryID]= nil
             end
         end
     end
@@ -11376,11 +11372,9 @@ local function set(label, text)
     end
 end
 local function setLabel(label)
-    if label then
-        local text= e.strText[label:GetText()]
-        if text then
-            label:SetText(text)
-        end
+    local text= label and e.strText[label:GetText()]
+    if text then
+        label:SetText(text)
     end
 end
 
@@ -11400,13 +11394,10 @@ end
         achievementFunctions = STAT_FUNCTIONS
     end
 end]]
+--hooksecurefunc('AchievementFrameBaseTab_OnClick', set_index)
+--hooksecurefunc('AchievementFrameComparisonTab_OnClick', set_index)
 
-
-local function Init_AchievementUI()
-    --hooksecurefunc('AchievementFrameBaseTab_OnClick', set_index)
-    --hooksecurefunc('AchievementFrameComparisonTab_OnClick', set_index)
-
-    
+local function Init_AchievementUI()    
     AchievementFrameTab1:SetText('成就')
     AchievementFrameTab2:SetText('公会')
     AchievementFrameTab3:SetText('统计')
@@ -11414,13 +11405,16 @@ local function Init_AchievementUI()
     AchievementFrameSummaryAchievementsHeaderTitle:SetText('近期成就')
     AchievementFrameSummaryCategoriesHeaderTitle:SetText('进展总览')
     setLabel(AchievementFrameSummaryCategoriesStatusBarTitle)  
-    AchievementFrame.Header.Title:SetText('成就点数')
+    
 
+    --标题
+    AchievementFrame.Header.Title:SetText('成就点数')
     hooksecurefunc('AchievementFrame_RefreshView', function(self)--Blizzard_AchievementUI.lua
         setLabel(AchievementFrame.Header.Title)
     end)
 
-    hooksecurefunc('AchievementFrameSummary_UpdateAchievements', function(...)--近期成就
+    --近期成就
+    hooksecurefunc('AchievementFrameSummary_UpdateAchievements', function(...)
         local numAchievements = select("#", ...)
         if not AchievementFrameSummaryAchievements.buttons or not numAchievements then 
             return
@@ -11476,6 +11470,7 @@ local function Init_AchievementUI()
         end
     end)
 
+    --列表
     hooksecurefunc(AchievementFrameCategories.ScrollBox, 'Update', function(frame)
         if not frame:GetView() then
             return
@@ -11496,25 +11491,15 @@ local function Init_AchievementUI()
     end)
     hooksecurefunc('AchievementFrameCategories_OnCategoryChanged', function(category)
         if AchievementFrameAchievementsFeatOfStrengthText:IsShown() then
-            AchievementFrameAchievementsFeatOfStrengthText:SetText(AchievementFrame.selectedTab == 2
-                and '对于许多公会来说，“光辉事迹”几乎不可能完成，至少是极端困难的。它们并不奖励点数，而是见证了这个公会在艾泽拉斯世界曾经创下的丰功伟绩的纪录。'
+            AchievementFrameAchievementsFeatOfStrengthText:SetText(
+                InGuildView() and '对于许多公会来说，“光辉事迹”几乎不可能完成，至少是极端困难的。它们并不奖励点数，而是见证了这个公会在艾泽拉斯世界曾经创下的丰功伟绩的纪录。'
                 or '对于许多玩家来说，“光辉事迹”中的成就几乎不可能完成，至少是极端困难的。它们并不奖励成就点数，而是你在艾泽拉斯世界曾经创下的丰功伟绩的纪录。'
             )
         end
     end)
-    hooksecurefunc('AchievementFrameComparison_UpdateStatusBars', function(ID)
-        local name
-        if ID == ACHIEVEMENT_COMPARISON_SUMMARY_ID then-- -1
-            name = '总览'
-        else
-            name= e.strText[GetCategoryInfo(ID)]
-        end
-        if name then
-            AchievementFrameComparison.Summary.Player.StatusBar.Title:SetFormattedText('已获得 %s 项成就', name)
-        end
-    end)
 
-    hooksecurefunc(AchievementTemplateMixin, 'Init', function(self, elementData)--成就，法化
+    --成就
+    hooksecurefunc(AchievementTemplateMixin, 'Init', function(self, elementData)
         local _, name, description,rewardText
         if self.index then
             _, name, _, _, _, _, _, description, _, _, rewardText = GetAchievementInfo(elementData.category, self.index)
@@ -11526,8 +11511,7 @@ local function Init_AchievementUI()
         set(self.HiddenDescription, description)
         set(self.Reward, rewardText)        
     end)
-
-    hooksecurefunc('AchievementObjectives_DisplayCriteria', function(objectivesFrame, ID)--条件， 汉化
+    hooksecurefunc('AchievementObjectives_DisplayCriteria', function(objectivesFrame, ID)--条件
         if not objectivesFrame or not ID then
             return
         end        
@@ -11535,11 +11519,11 @@ local function Init_AchievementUI()
         if ( not objectivesFrame.completed ) then
             requiresRep, _, repLevel = GetAchievementGuildRep(ID)
             if ( requiresRep and repLevel) then
-                local factionStandingtext = GetText("FACTION_STANDING_LABEL"..repLevel, e.Player.sex);
+                local factionStandingtext = GetText("FACTION_STANDING_LABEL"..repLevel, e.Player.sex)
                 objectivesFrame.RepCriteria:SetFormattedText('|cffffffff需要公会声望：|r %s', e.cn(factionStandingtext) or '')
             end
         end
-        local numCriteria = GetAchievementNumCriteria(ID)
+        local numCriteria = GetAchievementNumCriteria(ID) or 0
         if ( numCriteria == 0 and not requiresRep ) then
             return
         end
@@ -11644,25 +11628,37 @@ local function Init_AchievementUI()
             self.Friend.Status:SetText('未完成')
         end        
     end)
+    hooksecurefunc('AchievementFrameComparison_UpdateStatusBars', function(ID)
+        local name
+        if ID == ACHIEVEMENT_COMPARISON_SUMMARY_ID then-- -1
+            name = '总览'
+        else
+            name= e.strText[GetCategoryInfo(ID)]
+        end
+        if name then
+            AchievementFrameComparison.Summary.Player.StatusBar.Title:SetFormattedText('已获得 %s 项成就', name)
+        end
+    end)
 
---DEFAULT_OBJECTIVE_TRACKER_MODULE:AddObjective(
+--ObjectiveTracker.lua 已加载
+--[[DEFAULT_OBJECTIVE_TRACKER_MODULE:AddObjective(
     hooksecurefunc(ACHIEVEMENT_TRACKER_MODULE, 'AddObjective', function(self, block, objectiveKey, text, lineType, useFullHeight, dashStyle, colorStyle, adjustForNoText, overrideHeight)
         text= e.strText[text]
         if text then
-            local line = self:GetLine(block, objectiveKey, lineType);
-            local textHeight = self:SetStringText(line.Text, text, useFullHeight, colorStyle, block.isHighlighted);
-            local height = overrideHeight or textHeight;
-            line:SetHeight(height);
+            local line = self:GetLine(block, objectiveKey, lineType)
+            local textHeight = self:SetStringText(line.Text, text, useFullHeight, colorStyle, block.isHighlighted)
+            local height = overrideHeight or textHeight
+            line:SetHeight(height)
         end
-    end)
+    end)    
     hooksecurefunc(ACHIEVEMENT_TRACKER_MODULE, 'SetBlockHeader', function(self, block, text)
         text= e.strText[text]
         if text then
-            local height = self:SetStringText(block.HeaderText, text, nil, OBJECTIVE_TRACKER_COLOR["Header"], block.isHighlighted);
-            block.height = height;
+            local height = self:SetStringText(block.HeaderText, text, nil, OBJECTIVE_TRACKER_COLOR["Header"], block.isHighlighted)
+            block.height = height
         end
     end)
-    e.call(ACHIEVEMENT_TRACKER_MODULE.Update, ACHIEVEMENT_TRACKER_MODULE)
+    e.call(ACHIEVEMENT_TRACKER_MODULE.Update, ACHIEVEMENT_TRACKER_MODULE)]]
 end
 
 
@@ -11695,8 +11691,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif arg1=='Blizzard_AchievementUI' then
-        --hooksecurefunc('AchievementFrameStats_OnEvent', function(_, event)
-        --AchievementFrameStats:HookScript('OnEnter', function(_, event)
         C_Timer.After(2, function()            
             if not e.disbledCN then
                 Init_AchievementUI()
