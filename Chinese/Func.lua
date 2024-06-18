@@ -5617,7 +5617,7 @@ local function Init_Loaded(arg1)
 
 
 
-    elseif arg1=='Blizzard_EncounterJournal' then--冒险指南
+    --[[elseif arg1=='Blizzard_EncounterJournal' then--冒险指南
         local t= EJ_GetTierInfo(2)
         if t then
             e.strText[t]='燃烧远征'
@@ -5864,7 +5864,7 @@ local function Init_Loaded(arg1)
         end)
 
         hookButton(EncounterJournalEncounterFrameInfoSlotFilterToggle)
-        hookButton(EncounterJournalEncounterFrameInfoDifficulty)
+        hookButton(EncounterJournalEncounterFrameInfoDifficulty)]]
 
 
 

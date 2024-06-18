@@ -55,7 +55,7 @@ Chinese\Data_zhCN.lua
 Chinese\Data_Other.lua
 Chinese\Data_Map.lua
 Chinese\Data_Achievement.lua
-##Chinese\Data_Instance.lua
+Chinese\Data_Instance.lua
 
 ##WoWPlus
 ##移动框架, 缩放--放在第一个，有些，需要放置点，到移动按钮上

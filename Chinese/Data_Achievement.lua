@@ -11362,19 +11362,13 @@ end
 
 
 
-
-
-
 local function set(label, text)
-    text= e.strText[text]
-    if label and text and text~='' then--CanAccessObject(self) then
-        label:SetText(text)
-    end
-end
-local function setLabel(label)
-    local text= label and e.strText[label:GetText()]
-    if text then
-        label:SetText(text)
+    if label then
+        text= text or label:GetText()
+        text= e.strText[text]
+        if text then
+            label:SetText(text)
+        end
     end
 end
 
@@ -11404,13 +11398,13 @@ local function Init_AchievementUI()
     AchievementFrame.SearchBox.Instructions:SetText('搜索')
     AchievementFrameSummaryAchievementsHeaderTitle:SetText('近期成就')
     AchievementFrameSummaryCategoriesHeaderTitle:SetText('进展总览')
-    setLabel(AchievementFrameSummaryCategoriesStatusBarTitle)  
-    setLabel(AchievementFrameFilterDropDownText)--全部，已获得，未完成
+    set(AchievementFrameSummaryCategoriesStatusBarTitle)  
+    set(AchievementFrameFilterDropDownText)--全部，已获得，未完成
 
     --标题
     AchievementFrame.Header.Title:SetText('成就点数')
     hooksecurefunc('AchievementFrame_RefreshView', function(self)--Blizzard_AchievementUI.lua
-        setLabel(AchievementFrame.Header.Title)
+        set(AchievementFrame.Header.Title)
     end)
 
     --近期成就

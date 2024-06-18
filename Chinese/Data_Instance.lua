@@ -3,9 +3,7 @@ if e.Player.region~=3 and not e.Is_PTR then-- LOCALE_zhCN or LOCALE_zhTW
     return
 end
 --https://wago.tools/db2/JournalInstance?locale=zhCN&build=11.0.0.55120
-local tab={
-
-
+local instanceTab={
     [63]= {'死亡矿井', '曾经有人称死亡矿井的黄金乃是暴风城国库储备的三分之一。在第一次大战的混乱中，矿井遭到了遗弃，闹鬼不断、无人问津，直到迪菲亚兄弟会的到来——他们曾经是一群工人，如今却成了强盗，他们将这迷宫变成了自己的行动基地，来实施对暴风城的破坏活动。'},
     [64]= {'影牙城堡', '在银松森林南部悬崖的焚木村上，影牙城堡犹如一道黑影矗立。从前这里是疯狂大法师阿鲁高狼人们的居所，如今它的废墟被罪恶的力量所占据。席瓦莱恩男爵阴魂不散，高弗雷勋爵和他的幕僚，往昔的吉尔尼斯贵族阴谋对付他们的敌人，无论对方是生者还是亡灵。'},
     [65]= {'潮汐王座', '在深渊之喉无底的广袤深处，座落着潮汐王座。在那里，伟大的元素领主，猎潮者耐普图隆坚守着他的水域。现在，蛇行的纳迦和凶残的无面者成了他的心腹大敌，威胁着他的统治，觊觎着他的王国，垂涎着其中的秘密。'},
@@ -1915,6 +1913,296 @@ local worldBossTab={-- []='',
     [1262]='鲁克玛',
 }
 
+
+
+
+
+
+
+
+
+local function set(label, text, isHook)
+    if label then
+        text= text or label:GetText()
+        text= e.strText[text]
+        if text then
+            label:SetText(text)
+        end
+        if isHook then
+            hooksecurefunc(label, 'SetText', function(frame, name)
+                name= e.strText[name]
+                if name then
+                    frame:SetText(name)
+                end
+            end)
+        end
+    end
+end
+
+
+
+
+
+
+local function Init()
+    local t= EJ_GetTierInfo(2)
+    if t then
+        e.strText[t]='燃烧远征'
+    end
+    t= EJ_GetTierInfo(10)
+    if t then
+        e.strText[t]='本赛季'
+    end
+
+    set(EncounterJournalTitleText, '冒险指南')
+
+    if EncounterJournalMonthlyActivitiesTab then
+        set(EncounterJournalMonthlyActivitiesTab, '旅行者日志')
+        EncounterJournalMonthlyActivitiesTab:SetScript('OnEnter', function()
+            if not C_PlayerInfo.IsTravelersLogAvailable() then
+                local tradingPostLocation = e.Player.faction == "Alliance" and '暴风城' or '奥格瑞玛'
+                GameTooltip_AddBlankLineToTooltip(GameTooltip)
+                GameTooltip_AddErrorLine(GameTooltip, format('拜访%s的商栈，查看旅行者日志。', tradingPostLocation))
+                if AreMonthlyActivitiesRestricted() then
+                    GameTooltip_AddBlankLineToTooltip(GameTooltip)
+                    GameTooltip_AddErrorLine(GameTooltip, '需要可用的游戏时间。')
+                end
+
+                GameTooltip:Show()
+            end
+        end)
+    end
+
+    set(EncounterJournalSuggestTab, '推荐玩法')
+    set(EncounterJournalDungeonTab, '地下城')
+    set(EncounterJournalRaidTab, '团队副本')
+    set(EncounterJournalLootJournalTab, '套装物品')
+    set(EncounterJournalSearchBox.Instructions, '搜索')
+
+    hooksecurefunc('EJInstanceSelect_UpdateTitle', function(tabId)
+        local text
+        if ( tabId == EncounterJournal.suggestTab:GetID()) then
+            text= '推荐玩法'
+        elseif ( tabId == EncounterJournal.raidsTab:GetID()) then
+            text= '团队副本'
+        elseif ( tabId == EncounterJournal.dungeonsTab:GetID()) then
+            text= '地下城'
+        --elseif ( tabId == EncounterJournal.MonthlyActivitiesTab:GetID()) then
+        elseif (tabId == EncounterJournal.LootJournalTab:GetID()) then
+            text= '套装物品'
+        end
+        if text then
+            set(EncounterJournal.instanceSelect.Title, text)
+        end
+    end)
+    if EncounterJournalMonthlyActivitiesFrame and EncounterJournalMonthlyActivitiesFrame.HeaderContainer then
+        set(EncounterJournalMonthlyActivitiesFrame.HeaderContainer.Title, '旅行者日志')
+        set(EncounterJournalMonthlyActivitiesFrame.BarComplete.AllRewardsCollectedText, '你已经收集完了本月的所有奖励')
+    end
+
+    set(EncounterJournalEncounterFrameInfoFilterToggle.Text, '过滤器')
+    set(EncounterJournalEncounterFrameInstanceFrameMapButtonText, '显示\n地图')
+    set(EncounterJournalEncounterFrameInfoOverviewScrollFrameScrollChildTitle, '综述')
+
+    local function EncounterJournal_SetupIconFlags(sectionID, infoHeaderButton, index)--Blizzard_EncounterJournal.lua
+        local iconFlags = C_EncounterJournal.GetSectionIconFlags(sectionID)
+        for index2, icon in ipairs(infoHeaderButton.icons or {}) do
+            local iconFlag = iconFlags and iconFlags[index2]
+            if iconFlag then
+                local tab={
+                    [0] = "坦克预警",
+                    [1] = "伤害输出预警",
+                    [10] = "疾病效果",
+                    [11] = "激怒",
+                    [12] = "史诗难度",
+                    [13] = "流血",
+                    [2] = "治疗预警",
+                    [3] = "英雄难度",
+                    [4] = "灭团技",
+                    [5] = "重要",
+                    [6] = "可打断技能",
+                    [7] = "法术效果",
+                    [8] = "诅咒效果",
+                    [9] = "中毒效果",
+                }
+                if tab[iconFlag] then
+                    icon.tooltipTitle = tab[iconFlag]--_G["ENCOUNTER_JOURNAL_SECTION_FLAG"..iconFlag]
+                    if index then
+                        if iconFlag==1 then
+                            set(infoHeaderButton.title, '伤害')
+                        elseif iconFlag==2 then
+                            set(infoHeaderButton.title, '治疗者')
+                        elseif iconFlag==0 then
+                            set(infoHeaderButton.title, '坦克')
+                        end
+                    end
+                end
+            end
+        end
+    end
+    hooksecurefunc('EncounterJournal_SetUpOverview', function(self, overviewSectionID, index)
+        local infoHeader= self.overviews[index]
+        --local sectionInfo = C_EncounterJournal.GetSectionInfo(overviewSectionID)
+        if infoHeader and infoHeader.button and overviewSectionID then
+            EncounterJournal_SetupIconFlags(overviewSectionID, infoHeader.button, index)
+        end
+    end)
+    hooksecurefunc('EncounterJournal_ToggleHeaders', function()
+        for _, infoHeader in pairs(EncounterJournal.encounter.usedHeaders or {}) do
+            if infoHeader.myID and  infoHeader.button then
+                EncounterJournal_SetupIconFlags(infoHeader.myID, infoHeader.button)
+            end
+        end
+    end)
+
+
+
+
+    hooksecurefunc(MonthlyActivitiesButtonTextContainerMixin, 'UpdateText', function(self, data)
+        if data.name then
+            local a,b= data.name:match('(.-): (.+)')
+            a= e.strText[a] or a
+            b= e.strText[b] or b
+            if a and b then
+                set(self.NameText, (e.strText[a] or a)..': '..(e.strText[b] or b))
+            else
+                set(self.NameText, e.strText[data.name])
+            end
+        end
+    end)
+    hooksecurefunc(EncounterJournalMonthlyActivitiesFrame.FilterList.ScrollBox, 'Update', function(self)
+        if not self:GetView() then
+            return
+        end
+        for _, btn in pairs(self:GetFrames() or {}) do
+            set(btn.Label)
+        end
+    end)
+
+
+    hooksecurefunc('EncounterJournal_ListInstances', function()
+        local frame= EncounterJournal.instanceSelect.ScrollBox
+        if not frame:GetView() then
+            return
+        end
+        for _, button in pairs(frame:GetFrames()) do
+            set(button.name)
+            if button.tooltiptext and e.strText[button.tooltiptext] then
+                button.tooltiptext= e.strText[button.tooltiptext]
+            end
+        end
+    end)
+
+    hooksecurefunc(EncounterJournalItemMixin,'Init', function(self)--Blizzard_EncounterJournal.lua
+        local itemInfo = C_EncounterJournal.GetLootInfoByIndex(self.index)
+        if ( itemInfo and itemInfo.name ) then
+            local name= e.strText[itemInfo.name]
+            if name then
+                set(self.name, WrapTextInColorCode(name, itemInfo.itemQuality))
+            end
+            local slot= e.strText[itemInfo.slot]
+            if slot then
+                if itemInfo.handError then
+                    set(self.slot, INVALID_EQUIPMENT_COLOR:WrapTextInColorCode(slot))
+                else
+                    set(self.slot, slot)
+                end
+            end
+            local armorType= e.strText[itemInfo.armorType]
+            if armorType then
+                if itemInfo.weaponTypeError then
+                    set(self.armorType, INVALID_EQUIPMENT_COLOR:WrapTextInColorCode(armorType))
+                else
+                    set(self.armorType, armorType)
+                end
+            end
+
+            local numEncounters = EJ_GetNumEncountersForLootByIndex(self.index)
+            if ( numEncounters == 1 ) then
+                set(self.boss, format('首领：%s', EJ_GetEncounterInfo(itemInfo.encounterID)))
+            elseif ( numEncounters == 2) then
+                local itemInfoSecond = C_EncounterJournal.GetLootInfoByIndex(self.index, 2)
+                local secondEncounterID = itemInfoSecond and itemInfoSecond.encounterID
+                if ( itemInfo.encounterID and secondEncounterID ) then
+                    set(self.boss:SetFormattedText('首领：%s，%s', e.cn(EJ_GetEncounterInfo(itemInfo.encounterID)), e.cn(EJ_GetEncounterInfo(secondEncounterID))))
+                end
+            elseif ( numEncounters > 2 ) then
+                set(self.boss:SetFormattedText('首领：%s及其他', e.cn(EJ_GetEncounterInfo(itemInfo.encounterID))))
+            end
+        else
+            self.name:SetText('正在获取物品信息')
+        end
+    end)
+
+    hooksecurefunc(EncounterJournalItemHeaderMixin, 'Init', function(self, elementData)
+        set(self.name, e.strText[elementData.text])
+    end)
+
+    hooksecurefunc(EncounterBossButtonMixin, 'Init', function(self, elementData)
+        set(self, e.strText[elementData.name])
+    end)
+
+    hooksecurefunc('EncounterJournal_UpdateFilterString', function(self)
+        local name
+        local classID, specID = EJ_GetLootFilter()
+        if (specID > 0) then
+            local _
+            _, name = GetSpecializationInfoByID(specID, UnitSex("player"))
+        elseif (classID > 0) then
+            local classInfo = C_CreatureInfo.GetClassInfo(classID)
+            if classInfo then
+                name = classInfo.className
+            end
+        end
+        name= e.cn(name)
+        if name then
+            set(EncounterJournal.encounter.info.LootContainer.classClearFilter.text, format('职业筛选：%s', name))
+        end
+    end)
+
+
+    if EncounterJournal.encounter.info then
+        local btnTab={
+            --"overviewTab",
+            "lootTab",
+            "bossTab",
+            "modelTab"
+        }
+        for _, str in pairs (btnTab) do
+            local button= EncounterJournal.encounter.info[str]
+            if button then
+                local tooltip= e.strText[button.tooltip]
+                if tooltip then
+                    button.tooltip= tooltip
+                end
+            end
+        end
+    end
+    hooksecurefunc('EncounterJournal_DisplayInstance', function()
+        local self= EncounterJournal.encounter
+        local instanceName, description = EJ_GetInstanceInfo()
+        set(self.instance.title, e.strText[instanceName])
+        set(self.info.instanceTitle, e.strText[instanceName])
+        set(self.instance.LoreScrollingFont, e.strText[description])
+        local tooltip= e.strText[self.info['overviewTab'].tooltip]
+        if tooltip then
+            self.info['overviewTab'].tooltip= tooltip
+        end
+    end)
+
+    set(EncounterJournalEncounterFrameInfoSlotFilterToggle, nil, true)
+    set(EncounterJournalEncounterFrameInfoDifficulty, nil, true)
+end
+
+
+
+
+
+
+
+
+
+
 --###########
 --加载保存数据
 --###########
@@ -1923,15 +2211,13 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, _, arg1)
     if arg1==id then
         if not e.disbledCN then 
-            
-            for journalInstanceID, info in pairs(tab) do
+            for journalInstanceID, info in pairs(instanceTab) do
                 local desc= info
                 local name= EJ_GetInstanceInfo(journalInstanceID)
                 if name then
-                   -- e.strText[name]= info[1]
-                    
+                    e.strText[name]= info[1]                    
                 end
-                tab[journalInstanceID]= desc
+                instanceTab[journalInstanceID]= desc
             end
             do
                 for journalEncounterID, name in pairs(worldBossTab) do
@@ -1942,7 +2228,13 @@ panel:SetScript("OnEvent", function(self, _, arg1)
                 end
             end
             worldBossTab=nil
+        else
+            instanceTab=nil
+            worldBossTab=nil
         end
+    
+    elseif arg1=='Blizzard_EncounterJournal' then--冒险指南
+        Init()
         self:UnregisterEvent('ADDON_LOADED')
     end
 end)
