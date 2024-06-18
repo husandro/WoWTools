@@ -47,15 +47,7 @@ API_WoWDate.lua
 
 
 
-##繁体，简体，不会载加
-##界面，中文化，主要function
-Chinese\Func.lua
-##增加，数据库
-Chinese\Data_zhCN.lua
-Chinese\Data_Other.lua
-Chinese\Data_Map.lua
-Chinese\Data_Achievement.lua
-Chinese\Data_Instance.lua
+
 
 ##WoWPlus
 ##移动框架, 缩放--放在第一个，有些，需要放置点，到移动按钮上
@@ -195,3 +187,12 @@ Other\SpellFrame.lua
 Other\ScrappingMachine.lua
 
 
+##繁体，简体，不会载加
+##界面，中文化，主要function
+Chinese\Func.lua
+##增加，数据库
+Chinese\Data_zhCN.lua
+Chinese\Data_Other.lua
+Chinese\Data_Map.lua
+Chinese\Data_Achievement.lua
+Chinese\Data_Instance.lua

@@ -2826,7 +2826,7 @@ local encounterTab={
     [2435]= {'塔拉格鲁', '典狱长的残暴野兽塔拉格鲁从第一座塔柱耸立之时就一直在托加斯特的大厅中游荡。无数灵魂都在这只怪兽的脚下化为了灰烬。如今，他正等待着突破塔楼入口的凡人勇士。'},
     [2436]= {'收发室乱战', '寄送物品办公中心（P.O.S.T.）出了大乱子，维度传送门将包裹抛撒一地，经营办公中心的自动设备也发生了故障。如果不能尽快解决乱局，整座城市都会和邮局一同瘫痪。'},
     [2437]= {'哨卫佐·菲克斯', '要进入掮灵都市金碧辉煌的大门，一窥其中隐藏的宇宙奇迹，就必须通过哨卫佐·菲克斯这一关。  佐·菲克斯对安保工作如痴如醉，他会将违禁品和持有人一同焚毁。'},
-    [2438]= {'Generic Template', '[PLACEHOLDER] Summary and lore for the encounter.'},
+    --[2438]= {'Generic Template', '[PLACEHOLDER] Summary and lore for the encounter.'},
     [2439]= {'九武神', '希尔瓦娜斯和瓦格里达成了黑暗交易，借由此，希尔瓦娜斯铸就了和典狱长之间的纽带。多年来，这群飞翼姐妹忠诚地侍奉着黑暗女王，即使为了女王牺牲自己也在所不惜。现在，希尔瓦娜斯召唤她的九位瓦格里，这是她们最后一次为她而战。'},
     [2440]= {'克尔苏加德', '臭名昭著的克尔苏加德在灵魂之河的顶端等待着，这名巫妖可以吸取无尽的力量之井中的能量。他生前死后的无数阴谋诡计最终会在这场战斗中迸发。他早已做好了谋划，想让凡人勇士们最终陨落，从而侍奉自己的真正主人。'},
     [2441]= {'希尔瓦娜斯·风行者', '奥利波斯处于危难之中，统御圣所之巅也展开了一场孤注一掷的战斗。凡人们试图阻止典狱长，而希尔瓦娜斯·风行者则挡在典狱长之前。这位女妖之王终于抛弃了所有伪装，释放出了全部力量来保护被流放者，让他的终极计划得以实施。'},
@@ -2839,7 +2839,7 @@ local encounterTab={
     [2448]= {'希尔布兰德', '一件远古泰坦神器失窃后，奉命看守它的希尔布兰德，守护者之剑苏醒了过来。若不能破解希尔布兰德控制的众多安保协议，就只能在坟墓中永远沉眠。'},
     [2449]= {'时空船长钩尾', '当索·莉亚在时空船长钩尾的劫掠中凭空出现，将珍宝从她的爪子中盗走，几个月的深谋远虑全都打了水漂。被怒火吞噬的海盗女王展露了自己的真实形态，开始向眼前的所有人肆意宣泄愤怒。'},
     [2451]= {'索·阿兹密', '在仗剑谋生的掮灵之中，索·阿兹密的技艺无出其右。索·阿兹密是索财团最为致命的刺客，他对技艺的磨练永无止境。他很乐意就对手的武艺指点一二，随后将其大卸八块。'},
-    [2452]= {'麦扎的绿洲', '"The drinks are ethereal, the ambience is intoxicating, and Zo'gron the door guard is impatient. In this Oasis, live performers will not leave that way if they fail to please the crowd."'},
+    [2452]= {'麦扎的绿洲', ''},
     [2454]= {'卖品会', '赛财团“采购”了稀有而宝贵的物品来出售，拍卖的货物百无禁忌，珍奇猛兽、禁忌科技、乃至被诅咒的神器，一应俱全。只要你付得起价钱，赛财团一定能帮你采购到。'},
     [2455]= {'索·莉亚', '索·莉亚对力量的贪图在最终的战斗中显露无遗漏。财团领袖释放出了自己无法理解的力量，变化成了无拘无束的残暴生物。狂暴的能量从神器中溢流而出，必须阻止索·莉亚，不能让她摧毁暗影界的根基。'},
     [2456]= {'莫盖斯，罪人的折磨者', '即使在典狱长无穷的大军中，也很少有人像恶毒的莫盖斯一样，喜欢回味创造扭曲产物的乐趣。落入他手中的灵魂的意志必将被他粉碎，而他也痴迷于此。即使是在战场上，他也毫不放弃自己固执的控制欲。他要让敌人的每一步错棋都成为生命中最后的一份悔恨。'},
@@ -2939,10 +2939,10 @@ local encounterTab={
     [2571]= {'戴尔克莱上尉', '戴尔克莱上尉掌管着圣焰隐修院的训练场。他以帝国认可的练武教条教化侍僧们，并确保他们的武艺和忠诚都能达到帝国标准。'},
     [2572]= {'E.D.N.A.', '启动防御协议！土灵防御与灭除自动体已激活。非正式名称：E.D.N.A。此魔像会对任何潜在的入侵者采取不可预见的紧急措施。虽然它的主要指令是灭除斯卡丁，但任何未经授权的入侵者都会引发它作出致命应对。'},
     [2573]= {'隐修院长穆普雷', '隐修院长哈尔希·穆普雷指导建造了圣焰隐修院，在此深思神圣之星贝雷达尔的奥妙。尽管皇帝的愿景对她来说依然扑朔迷离，但她发现了神圣烈焰的秘密，这将帮助他们战胜来自陨圣峪及帝国内部的敌人。'},
-    [2579]= {'斯卡莫拉克', '"The High Speaker spent countless years attempting to restore the Awakening Machine. One failed attempt resulted in a new horror: a golem enfused with skardyn corruption. Crystals augment its elemental configuration. Though it barely communicates its alien mindset, its hatred for all creation is undeniable."'},
+    [2579]= {'斯卡莫拉克', ''},
     [2580]= {'夏多克朗', '身为玄夜会的新领袖，夏多克朗与艾基-卡赫特结盟，策划了一出窃取旗舰破晨号的大胆计划。她曾经是隐修院的焰牧，如今则被贝雷达尔之影的黑暗所吞噬。'},
-    [2581]= {'阿努布伊卡基', 'Anub'ikkaj is one of Queen Ansurek's most brilliant tacticians. A meticulous planner known for creative use of indigenous resources. His soldiers are fanatically loyal.'},
-    [2582]= {'Void Speaker Eirich', '艾里奇已被罢黜，权威尽失！他不堪失败，逃到了矶石宝库最深处的密室里。然而机关算尽的他最终屈服于异变：一件故障的神器渗出了虚空能量，并腐化了他的岩石之躯！如今，神秘的启示已经击碎了他的理智。'},
+    [2581]= {'阿努布伊卡基', ''},
+    [2582]= {'', '艾里奇已被罢黜，权威尽失！他不堪失败，逃到了矶石宝库最深处的密室里。然而机关算尽的他最终屈服于异变：一件故障的神器渗出了虚空能量，并腐化了他的岩石之躯！如今，神秘的启示已经击碎了他的理智。'},
     [2583]= {'阿瓦诺克斯', '当艾拉-卡拉毁灭时，这个名为阿瓦诺克斯的生物也被遗弃了，当时她还只是一只不起眼的蜘蛛。多年以来，她与世隔绝，在一片适合进食的地区自由地生长，用无与伦比的体格和凶悍监管着自己的子嗣、信众和领地。'},
     [2584]= {'阿努布泽克特', '虽然阿努布泽克特还没有获得扬升，但他已经得到了监督艾拉-卡拉收割行动的殊荣。阿努布泽克特的战术风格彪悍，自己也强悍无比，如果他的军队不足以保卫艾拉-卡拉，他会毫不犹豫地亲自上阵。'},
     [2585]= {'收割者吉卡塔尔', '作为安苏雷克麾下的一名扬升者，吉卡塔尔奉命监督从女王城堡下开始的黑血收割行动。吉卡塔尔冷酷无情，她会不惜一切代价继续收割，并充分利用她拥有的每一种强化之力。'},
@@ -2957,9 +2957,9 @@ local encounterTab={
     [2596]= {'大捻接师艾佐', '长久以来，进化一直都是蛛魔生活的核心部分，而没有蛛魔比艾佐更痴迷于此，更精于此道。安苏雷克赐予了艾佐扬升的方法，艾佐则坚定地追求这条完美之路，并不关心到底是在为谁效力、目的为何，也不在乎付出怎样的代价。'},
     [2599]= {'苏雷吉队长席克兰', '席克兰成为了安苏雷克女王宫廷中一位傲慢的决斗者。他从未知晓对手的剑刃有多锋利，因为他总能一个接一个地把他们解决，并被女王亲自授予苏雷吉队长的头衔。这位不服输的斗士会确保任何威胁到安苏雷克女王的家伙都倒在王座跟前。'},
     [2600]= {'凝结聚合体', '大捻接师艾佐的进化实验经常会带来废物和淤泥等副产品。对某些人来说，这些恶心的淤泥似乎毫无用处，但艾佐会发挥聪明才智，把它们变成更多实验的绝佳材料——以及一个静候生命的恶毒怪物。'},
-    [2601]= {'Nexus-Princess Ky'veza', '节点女亲王凯威扎最近才来到尼鲁巴尔王宫，却很快就成为了安苏雷克女王的亲信。宫内传言说她可能隐瞒了一个黑暗而致命的秘密。如果东窗事发，女亲王已经准备好毫不留情地除掉所有目击人士……'},
+    [2601]= {'', '节点女亲王凯威扎最近才来到尼鲁巴尔王宫，却很快就成为了安苏雷克女王的亲信。宫内传言说她可能隐瞒了一个黑暗而致命的秘密。如果东窗事发，女亲王已经准备好毫不留情地除掉所有目击人士……'},
     [2602]= {'安苏雷克女王', '发现宫中的叛徒之后，安苏雷克女王决定亲自铲除王宫的闯入者。但是偏执使她无法信任他人，并逐渐吞噬了她的内心。随着身边的盟友越来越少，安苏雷克女王可能会借助黑暗之力来赢取胜利，即便要让最忠心的士兵成为她下一顿的美餐也在所不惜……'},
-    [2607]= {'Ulgrax the Devourer', '安苏雷克女王的进化实验创造了许多骇人的守卫来守护她的王座，而其中最为贪婪的就是噬灭者乌格拉克斯。乌格拉克斯因为无尽的饥饿而癫狂，成为了安苏雷克女王宫中最欲壑难填的守护者。'},
+    [2607]= {'', '安苏雷克女王的进化实验创造了许多骇人的守卫来守护她的王座，而其中最为贪婪的就是噬灭者乌格拉克斯。乌格拉克斯因为无尽的饥饿而癫狂，成为了安苏雷克女王宫中最欲壑难填的守护者。'},
     [2608]= {'流丝之庭', '甲虫领主阿努巴拉什和纺束者塔卡兹基是安苏雷克女王最信任的顾问，但这两位强大的蛛魔对彼此的仇恨甚至比对王权的忠诚更为强烈。他们争相向敌人倾泻强大的力量，还不忘将对方置之死地。'},
     [2609]= {'拉夏南', '被安苏雷克女王的实验扭曲之后，拉夏南从一个骄傲的蛛魔变成了长着翅膀的恐怖怪物。受困于新形态之中的拉夏南对过往的记忆也已经支离破碎，陷入了无尽的怒火。'},
     [2611]= {'血缚恐魔', '在尼鲁巴尔王宫下方黑暗的深坑里，上古之神的血液凝结成了肮脏的黑色血池。血缚恐魔从这片邪恶的淤泥中现身——将遇到的一切拖入无明界。'},
@@ -2969,9 +2969,9 @@ local encounterTab={
     [2619]= {'地狱公爵埃鲁达克', '死亡之翼派出了他最厉害的副手之一，旨在探寻强大的红龙牺牲性命也要保住的秘密。这名无面者将军来自深岩之洲的洞穴世界，任何敢于向他发起挑战的蠢货，都会被其体内融合的新生代龙族之力所消灭。'},
     [2625]= {'欧尔塔，破碎山峦', '这位渊行者在艾基-卡赫特的深渊和传说中漫步已久。他声若地震、坚如磐石、力达高山。可如今，他来到了艾基-卡赫特，被黑血的脓包污染，需要一个体面的解脱。谁能奋起对抗他？'},
     [2627]= {'铸炉之主索朗格斯', '这名巨大的双头魔是暮光之锤教派的匠人，他热衷于用自己所铸造的武器和铠甲，消灭那些入侵者。'},
-    [2635]= {'Aggregation of Horrors', '虚空侵染的斯卡丁残骸融聚一处，孕育出了惊魂聚合体。这个可怕的畸形怪物正准备让自己的瘟疫席卷整个喧鸣深窟。'},
-    [2636]= {'修拉伊，地渊之海的暴虐者', '"The sea floor hides horrors beyond our imagining. Hallowfall's proximity to the Undersea brings it near the reach of creatures of the deep, and the kobyss are only eager to take advantage. Their summons raise Shurrai, Atrocity of the Undersea, to wreak havoc on their hunting grounds. Shurrai is an amalgamation of the worst terrors and putrefying flesh of the abyssal depths, and the Arathi will need all the help they can get to stop it."'},
-    [2637]= {'考尔达克，休眠的保护者', '[PH]'},
+    [2635]= {'', '虚空侵染的斯卡丁残骸融聚一处，孕育出了惊魂聚合体。这个可怕的畸形怪物正准备让自己的瘟疫席卷整个喧鸣深窟。'},
+    [2636]= {'修拉伊，地渊之海的暴虐者', ''},
+    [2637]= {'考尔达克，休眠的保护者', ''},
     }
 
 
@@ -3146,11 +3146,10 @@ local function Init_EncounterJournal()
         end
     end)]]
     hooksecurefunc(EncounterJournalMonthlyActivitiesFrame.FilterList.ScrollBox, 'Update', function(self)
-        if not self:GetView() then
-            return
-        end
-        for _, btn in pairs(self:GetFrames() or {}) do
-            set(btn.Label)
+        if self:GetView() then
+            for _, btn in pairs(self:GetFrames() or {}) do
+                set(btn.Label)
+            end
         end
     end)
 
@@ -3195,12 +3194,12 @@ local function Init_EncounterJournal()
 
             local numEncounters = EJ_GetNumEncountersForLootByIndex(self.index)
             if ( numEncounters == 1 ) then
-                self.boss:SetFormattedText('首领：%s', EJ_GetEncounterInfo(itemInfo.encounterID))
+                self.boss:SetFormattedText('首领：%s', e.cn(EJ_GetEncounterInfo(itemInfo.encounterID)) or '')
             elseif ( numEncounters == 2) then
                 local itemInfoSecond = C_EncounterJournal.GetLootInfoByIndex(self.index, 2)
                 local secondEncounterID = itemInfoSecond and itemInfoSecond.encounterID
                 if ( itemInfo.encounterID and secondEncounterID ) then
-                    self.boss:SetFormattedText('首领：%s，%s', e.cn(EJ_GetEncounterInfo(itemInfo.encounterID)), e.cn(EJ_GetEncounterInfo(secondEncounterID)))
+                    self.boss:SetFormattedText('首领：%s，%s', e.cn(EJ_GetEncounterInfo(itemInfo.encounterID)) or '', e.cn(EJ_GetEncounterInfo(secondEncounterID)) or '')
                 end
             elseif ( numEncounters > 2 ) then
                 self.boss:SetFormattedText('首领：%s及其他', e.cn(EJ_GetEncounterInfo(itemInfo.encounterID)))
@@ -3260,18 +3259,7 @@ local function Init_EncounterJournal()
             end
         end
     end
-    hooksecurefunc('EncounterJournal_DisplayInstance', function()
-        local self= EncounterJournal.encounter
-        local instanceName, description = EJ_GetInstanceInfo()
-        set(self.instance.title, instanceName)
-        set(self.info.instanceTitle, instanceName)
-        set(self.instance.LoreScrollingFont, description)
-        local tooltip= e.strText[self.info['overviewTab'].tooltip]
-        if tooltip then
-            self.info['overviewTab'].tooltip= tooltip
-        end
-    end)
-
+    
 
 
     hooksecurefunc(EncounterJournal.encounter.info.BossesScrollBox, 'Update', function(frame)
@@ -3285,13 +3273,31 @@ local function Init_EncounterJournal()
     hookLable(EncounterJournal.LootJournalItems.ItemSetsFrame.ClassButton)
     hookLable(EncounterJournalEncounterFrameInfoSlotFilterToggle)
     hookLable(EncounterJournalEncounterFrameInfoDifficulty)
-    set(EncounterJournalInstanceSelect.Title)
+    hookLable(EncounterJournalInstanceSelect.Title)
 
-    hooksecurefunc('EncounterJournal_DisplayInstance', function(instanceID, noButton)
-        --local instanceName, description, bgImage, _, loreImage, buttonImage, dungeonAreaMapID = EJ_GetInstanceInfo();
+    hooksecurefunc('EncounterJournal_DisplayInstance', function(instanceID)
+        local self= EncounterJournal.encounter
+        local instanceName, description = EJ_GetInstanceInfo()
+        set(self.instance.title, instanceName)
+        set(self.info.instanceTitle, instanceName)
+        set(self.instance.LoreScrollingFont, description)
+        local tooltip= e.strText[self.info['overviewTab'].tooltip]
+        if tooltip then
+            self.info['overviewTab'].tooltip= tooltip
+        end
         local desc= instanceTab[instanceID]
         if desc then
             EncounterJournal.encounter.instance.LoreScrollingFont:SetText(desc)
+        end
+    end)
+
+    hooksecurefunc('EncounterJournal_DisplayEncounter', function(encounterID)
+        local self = EncounterJournal.encounter
+        set(self.info.encounterTitle)
+        local desc= encounterTab[encounterID]        
+        if desc then
+            self.infoFrame.description:SetText(desc)
+            self.infoFrame.descriptionHeight = self.infoFrame.description:GetHeight()
         end
     end)
 end
@@ -3321,6 +3327,23 @@ panel:SetScript("OnEvent", function(self, _, arg1)
                 end
                 instanceTab[journalInstanceID]= desc
             end
+
+            
+            for journalEncounterID, info in pairs(encounterTab) do
+                local name, desc= EJ_GetEncounterInfo(journalEncounterID)
+                local cnName, cnDesc= info[1], info[2]
+                
+                if cnName and cnName~='' and name then
+                    e.strText[name]= cnName
+                end
+
+                if not desc or desc=='' or not cnDesc or cnDesc=='' then
+                    encounterTab[journalEncounterID]= nil
+                else
+                    encounterTab[journalEncounterID]= cnDesc
+                end
+            end
+            
             do
                 for boss, info in pairs(bossTab) do                    
                     local index= (info[2] or 0)+1
@@ -3331,23 +3354,10 @@ panel:SetScript("OnEvent", function(self, _, arg1)
                     end
                 end
             end
-            do
-                for journalEncounterID, info in pairs(encounterTab) do
-                    local name, desc= EJ_GetEncounterInfo(journalEncounterID)
-                    local cnName, cnDesc= info[1], info[2]
-                    if cnName and cnName~='' and name then
-                        e.strText[name]= cnName
-                    end
-                    if cnDesc and cnDesc~='' and desc then
-                        e.strText[desc]= cnDesc
-                    end
-                end
-            end
-            worldBossTab=nil
+
             bossTab=nil
         else
             instanceTab=nil
-            worldBossTab=nil
         end
     
     elseif arg1=='Blizzard_EncounterJournal' then--冒险指南

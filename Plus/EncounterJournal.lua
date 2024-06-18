@@ -1449,25 +1449,29 @@ local function Init_EncounterJournal()--冒险指南界面
 
     --BOSS模型 Blizzard_EncounterJournal.lua
     hooksecurefunc('EncounterJournal_DisplayCreature', function(self)
-        local text
+        local text=''
         if not Save.hideEncounterJournal and self.displayInfo and EncounterJournal.encounter and EncounterJournal.encounter.info and EncounterJournal.encounter.info.model and EncounterJournal.encounter.info.model.imageTitle then
             if not EncounterJournal.creatureDisplayIDText then
                 EncounterJournal.creatureDisplayIDText=e.Cstr(self,{size=10, fontType=EncounterJournal.encounter.info.model.imageTitle})--10, EncounterJournal.encounter.info.model.imageTitle)
                 EncounterJournal.creatureDisplayIDText:SetPoint('BOTTOM', EncounterJournal.encounter.info.model.imageTitle, 'TOP', 0 , 10)
             end
             if EncounterJournal.iconImage  then
-                text= (text or '')..'|T'..EncounterJournal.iconImage..':0|t'..EncounterJournal.iconImage..'|n'
+                text= text..'|T'..EncounterJournal.iconImage..':0|t'..EncounterJournal.iconImage..'|n'
             end
             if self.id then
-                text= (text or '')..'JournalEncounterCreatureID '.. self.id..'|n'
+                text= text..'JournalEncounterCreatureID '.. self.id..'|n'
             end
             if self.uiModelSceneID  then
-                text= (text or '')..'uiModelSceneID '..self.uiModelSceneID..'|n'
+                text= text..'uiModelSceneID '..self.uiModelSceneID..'|n'
             end
-            text= (text or '')..'CreatureDisplayID ' .. self.displayInfo
+            text= text..'CreatureDisplayID ' .. self.displayInfo
+            local name= e.strText[self.name]--汉化
+            if name then
+                text= text..'|n'..name
+            end
         end
         if EncounterJournal.creatureDisplayIDText then
-            EncounterJournal.creatureDisplayIDText:SetText(text or '')
+            EncounterJournal.creatureDisplayIDText:SetText(text)
         end
     end)
 

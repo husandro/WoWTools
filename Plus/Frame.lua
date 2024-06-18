@@ -1012,8 +1012,8 @@ local function setAddLoad(arg1)
 
     elseif arg1=='Blizzard_EncounterJournal' then--冒险指南
         e.Set_Move_Frame(EncounterJournal, {minW=800, minH=496, maxW=800, setSize=true, initFunc=function()
-            EncounterJournalMonthlyActivitiesFrame.FilterList:SetPoint('BOTTOMLEFT', 225, 5)-- Blizzard_MonthlyActivities.xml
-            EncounterJournalMonthlyActivitiesFrame.ScrollBox:SetPoint('BOTTOMLEFT', EncounterJournalMonthlyActivitiesFrame.FilterList, 'BOTTOMRIGHT')
+            EncounterJournalMonthlyActivitiesFrame.ScrollBox:SetPoint('BOTTOM')
+            
             EncounterJournalInstanceSelectBG:SetPoint('BOTTOMRIGHT', 0,2)
             EncounterJournalInstanceSelect.ScrollBox:SetPoint('BOTTOMLEFT', -3, 15)
             EncounterJournal.LootJournalItems.ItemSetsFrame:SetPoint('TOPRIGHT', -22, -10)
