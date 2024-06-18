@@ -196,3 +196,4 @@ Chinese\Data_Other.lua
 Chinese\Data_Map.lua
 Chinese\Data_Achievement.lua
 Chinese\Data_Instance.lua
+Chinese\Data_Instance_Boss.lua
