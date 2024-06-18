@@ -11,7 +11,6 @@ curcurrencyTab=nil
 raceTab=nil
 affixTab=nil
 instanceTab=nil
-instanceBossTab=nil
 itemSubTypeTab=nil
 friendFactionTab=nil
 ]]
@@ -148,20 +147,6 @@ e.HolidayEvent={-- [',''},
 
 
 
-local instanceBossTab={-- []='',
-    [691]='怒之煞',
-    [725]='炮舰',
-    [814]='纳拉克',
-    [826]='乌达斯塔',
-
-    [857]='朱鹤赤精',
-    [859]='玄牛砮皂',
-    [861]='斡耳朵斯',
-    [858]='青龙玉珑',
-    [860]='白虎雪怒',
-
-    [1262]='鲁克玛',
-}
 
 
 
@@ -1363,8 +1348,6 @@ local function rest_all()
     curcurrencyTab=nil
     raceTab=nil
     affixTab=nil
-    --instanceTab=nil
-    instanceBossTab=nil
     itemSubTypeTab=nil
     friendFactionTab=nil
     Init_Add_Data=function()end
@@ -1374,12 +1357,7 @@ end
 
 
 local function Init()
-    for journalEncounterID, name in pairs(instanceBossTab) do
-        local bossName= EJ_GetEncounterInfo(journalEncounterID)
-        if bossName then
-            e.strText[bossName]= name
-        end
-    end
+ 
 
     --[[for _, info in pairs(instanceTab) do
         local name= EJ_GetInstanceInfo(info[1])
