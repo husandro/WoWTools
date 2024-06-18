@@ -1568,9 +1568,8 @@ local function Init_Event(arg1)
                 hide_Texture(EncounterJournalMonthlyActivitiesFrame.Bg)
                 hide_Texture(EncounterJournalMonthlyActivitiesFrame.ShadowRight)
                 e.Set_ScrollBar_Color_Alpha(EncounterJournalMonthlyActivitiesFrame)
+                e.Set_ScrollBar_Color_Alpha(EncounterJournalMonthlyActivitiesFrame.FilterList)
             end
-
-
         end)
 
         e.Set_Alpha_Frame_Texture(EncounterJournalSuggestTab, {alpha=min05})
