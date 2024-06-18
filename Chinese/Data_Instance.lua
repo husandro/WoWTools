@@ -1322,7 +1322,9 @@ local function hookLable(lable)
     end
 end
 
-
+local function EncounterJournal_IsHeaderTypeOverview(headerType)
+	return headerType == EJ_HTYPE_OVERVIEW;
+end
 
 
 local function EncounterJournal_SetupIconFlags(sectionID, infoHeaderButton, index)--Blizzard_EncounterJournal.lua
@@ -1604,11 +1606,28 @@ local function Init_EncounterJournal()
         end
     end)
 
+    --BOSS，详细，信息
     hooksecurefunc('EncounterJournal_DisplayEncounter', function(encounterID)
         local self = EncounterJournal.encounter
         set(self.info.encounterTitle)
+        
         local desc= encounterTab[encounterID]        
         if desc then
+            local rootSectionID = select(4, EJ_GetEncounterInfo(encounterID))
+            if rootSectionID then
+                local sectionInfo = C_EncounterJournal.GetSectionInfo(rootSectionID);
+                if sectionInfo and sectionInfo.headerType==3 then
+                    self.overviewFrame.loreDescription:SetText(desc)                    
+                    if (self.overviewFrame.Bullets and #self.overviewFrame.Bullets > 0) then--更新，高度
+                        local bulletHeight = 0;
+                        for i = 1, #self.overviewFrame.Bullets do
+                            bulletHeight = bulletHeight + self.overviewFrame.Bullets[i]:GetHeight();
+                        end
+                        self.overviewFrame.descriptionHeight = self.overviewFrame.loreDescription:GetHeight() + self.overviewFrame.overviewDescription:GetHeight() + bulletHeight + 42;
+                    end
+                end
+            end        
+        
             self.infoFrame.description:SetText(desc)
             self.infoFrame.descriptionHeight = self.infoFrame.description:GetHeight()
         end
