@@ -35,31 +35,35 @@ local onlyIcon
 
 
 local function get_Faction_Info(index, factionID)
-	local faction= e.GetFactionInfo(factionID, index, Save.toRightTrackText)
-	factionID= faction.factionID
-	local name= faction.name
-	local hasRep= faction.hasRep
-	local isHeader= faction.isHeader
+	local data= e.GetFactionInfo(factionID, index, Save.toRightTrackText)
+	factionID= data.factionID
+	local name= data.name
+	
+	local isHeader= data.isHeader
+	local isHeaderWithRep= data.isHeaderWithRep
+	local hasRep= data.hasRep
+	
 	if not factionID or not name or name==HIDE or (not hasRep and isHeader) then
 		return
 	end
 
 	
-	local value= faction.valueText
-	local texture= faction.texture
-	local atlas= faction.atlas
-	local barColor= faction.barColor
-	local isCapped= faction.isCapped
-	local isParagon= faction.isParagon
-	local factionStandingtext= not faction.isCapped and faction.factionStandingtext
+	local value= data.valueText
+	local texture= data.texture
+	local atlas= data.atlas
+	local barColor= data.barColor
+	local isCapped= data.isCapped
+	local isParagon= data.isParagon
+
+	local factionStandingtext= not data.isCapped and data.factionStandingtext
 	if (isCapped and not isParagon and index)--声望已满，没有奖励
 		or (onlyIcon and not atlas and not texture)
 	then
 		return
 	end
 
-	local hasRewardPending= faction.hasRewardPending
-	local friendshipID= faction.friendshipID
+	local hasRewardPending= data.hasRewardPending
+	local friendshipID= data.friendshipID
 
 	local text
 	if onlyIcon then--仅显示有图标
@@ -186,7 +190,7 @@ local function ShowFactionTooltip(self)--Tooltips.lua
 	local info= e.GetFactionInfo(self.factionID, nil, true)
 	if not info.name then return end
 	Set_SetOwner(self)
-	GameTooltip_SetTitle(e.cn(info.name))
+	GameTooltip_SetTitle(GameTooltip, e.cn(info.name))
 	e.tips:AddLine(e.cn(info.description), nil,nil,nil, true)
 	e.tips:AddLine(' ')
 	e.tips:AddDoubleLine((e.onlyChinese and '声望ID' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REPUTATION, 'ID'))..' '..self.factionID, info.factionStandingtext)
@@ -208,7 +212,7 @@ local function Set_TrackButton_Text()
 	if not TrackButton or not TrackButton:IsShown() then
 		return
 	end
-	print('Set_TrackButton_Text')
+	
 	local faction={}
 	if Save.indicato then
 		for factionID, _ in pairs(Save.factions) do
@@ -400,7 +404,7 @@ local function Init_TrackButton()
 
 		elseif d=='RightButton' and not IsModifierKeyDown() then
 			if not self.Menu then
-				self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
+				self.Menu= CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
 				e.LibDD:UIDropDownMenu_Initialize(self.Menu, function(_, level)
 					local info={
 						text= e.onlyChinese and '显示' or SHOW,
@@ -411,7 +415,7 @@ local function Init_TrackButton()
 						func= function()
 							Save.btnstr= not Save.btnstr and true or false
 							TrackButton:set_Shown()
-							e.call('ReputationFrame_Update')
+							ReputationFrame:Update()
 						end
 					}
 					e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -426,7 +430,7 @@ local function Init_TrackButton()
 								btn.text:ClearAllPoints()
 								btn:set_text_point()
 							end
-							e.call('ReputationFrame_Update')
+							ReputationFrame:Update()
 						end
 					}
 					e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -448,7 +452,7 @@ local function Init_TrackButton()
 								end
 								last=btn
 							end
-							e.call('ReputationFrame_Update')
+							ReputationFrame:Update()
 						end
 					}
 					e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -463,7 +467,7 @@ local function Init_TrackButton()
 						func= function()
 							Save.onlyIcon= not Save.onlyIcon and true or nil
 							onlyIcon= Save.onlyIcon
-							e.call('ReputationFrame_Update')
+							ReputationFrame:Update()
 						end
 					}
 					e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -722,7 +726,7 @@ local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--R
 		frame.check:SetScript('OnClick', function(self)
 			if self.factionID then
 				Save.factions[self.factionID ]= not Save.factions[self.factionID ] and self.factionIndex or nil
-				e.call('ReputationFrame_Update')
+				ReputationFrame:Update()
 			end
 		end)
 		frame.check:SetScript('OnEnter', function(self)
@@ -851,7 +855,7 @@ local function InitMenu(_, level, type)
 					arg2= factionID,
 					func= function(_,arg1, arg2)
 						Save.factions[arg2]=nil
-						e.call('ReputationFrame_Update')
+						ReputationFrame:Update()
 						print(id, Initializer:GetName(), e.onlyChinese and '移除' or REMOVE, arg1, arg2)
 					end
 				}
@@ -866,7 +870,7 @@ local function InitMenu(_, level, type)
 				notCheckable=true,
 				func= function()
 					Save.factions={}
-					e.call('ReputationFrame_Update')
+					ReputationFrame:Update()
 				end
 			}
 			e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -943,7 +947,7 @@ local function InitMenu(_, level, type)
 		keepShownOnClick=true,
 		func= function()
 			Save.indicato= not Save.indicato and true or nil
-			e.call('ReputationFrame_Update')
+			ReputationFrame:Update()
 		end
 	}
 	e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -970,7 +974,7 @@ local function InitMenu(_, level, type)
 			Save.notPlus= not Save.notPlus and true or nil
 			Button:set_Shown()
 
-			e.call('ReputationFrame_Update')
+			ReputationFrame:Update()
 			--print(id, Initializer:GetName(), 'UI Plus', e.GetEnabeleDisable(not Save.notPlus), e.onlyChinese and '需要刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
 		end
 	}

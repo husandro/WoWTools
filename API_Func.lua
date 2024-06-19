@@ -918,26 +918,25 @@ end
 
 
 function e.GetFactionInfo(factionID, index, toRight)
-    local factionData= factionID and C_Reputation.GetFactionDataByID(factionID) or (index and C_Reputation.GetFactionDataByIndex(index)) or {}
+    local data= factionID and C_Reputation.GetFactionDataByID(factionID) or (index and C_Reputation.GetFactionDataByIndex(index)) or {}
+--info= data
+--for k, v in pairs(info) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
     --factionID, description, name, reaction
     --hasBonusRepCain, isHeaderWithRep, isHeader, canSetInactive, atWarWith, isWatched, isCollapsed, canToggleAtWar, isAccountWide, isChild
     --currentReactionThresholod, nextReactionThreshold, currentStanding
-    local name= factionData.name
-    local description= factionData.description
-    local isHeader= factionData.isHealer   
-
-    local standingID= factionData.reaction
-
-    local barMin= factionData.currentReactionThresholod
-    local barValue= factionData.currentStanding
-    local barMax= factionData.nextReactionThreshold
-    
-    
-    local hasRep= factionData.hasBonusRepCain
-
+    local name= data.name
+    factionID= factionID or data.factionID
     if not factionID or not name then
         return {}
     end
+    local description= data.description
+    local isHeader= data.isHeader
+    local standingID= data.reaction
+    local barMin= data.currentReactionThresholod
+    local barValue= data.currentStanding
+    local barMax= data.nextReactionThreshold  
+    local hasRep= data.hasBonusRepCain
+
 
     local factionStandingtext, value, texture, atlas, barColor
 
@@ -985,7 +984,7 @@ function e.GetFactionInfo(factionID, index, toRight)
     else
         if (isHeader and hasRep) or not isHeader then
             factionStandingtext = e.cn(GetText("FACTION_STANDING_LABEL"..standingID, e.Player.sex))
-            if barValue and barMax then
+            if barValue and barMax and barMin then
                 if barMax==0 then
                     value= format('%i%%', (barMin-barValue)/barMin*100)
                 else
@@ -999,7 +998,7 @@ function e.GetFactionInfo(factionID, index, toRight)
             end
             if not isCapped then
                 factionStandingtext = e.cn(GetText("FACTION_STANDING_LABEL"..standingID, e.Player.sex))
-                if barValue and barMax then
+                if barValue and barMax and barMin then
                     if barMax==0 then
                         value= format('%i%%', (barMin-barValue)/barMin*100)
                     else
@@ -1033,8 +1032,10 @@ function e.GetFactionInfo(factionID, index, toRight)
             end
         end
     end
-
+    
     return {
+        --info=data,
+
         name= name,
         description= description,
         factionID= factionID,
@@ -1048,8 +1049,9 @@ function e.GetFactionInfo(factionID, index, toRight)
         hasRewardPending=hasRewardPending,
         valueText= value,
         isCapped= isCapped,
-        isHeader=isHeader,
-        hasRep=hasRep,
+        isHeader= isHeader,
+        hasRep= hasRep,
+        --isHeaderWithRep= data.isHeaderWithRep
     }
 end
 
