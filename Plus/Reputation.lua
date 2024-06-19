@@ -583,16 +583,23 @@ end
 --#########
 --界面, 增强
 --######### 11版本
-local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--ReputationFrame.lua
-    local factionIndex = elementData.index;
-	local frame = factionRow.Container
-	local factionBar = frame.ReputationBar;
-	--local name, description, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild, factionID, hasBonusRepGain, canSetInactive
-	local _, _, standingID, _, _, _, _, _, isHeader, _, hasRep, isWatched, _, factionID= GetFactionInfo(factionIndex)
-	if (isHeader and not hasRep) or not factionID or Save.notPlus then
-		if isHeader and not hasRep and frame.Name then
-			frame.Name:SetTextColor(1,1,1)
-		end
+local function set_ReputationFrame_InitReputationRow(btn)--factionRow, elementData)--ReputationFrame.lua
+	local data= btn.elementData or {}
+	local factionID = data.factionID --or btn.factionIndex
+	local frame = btn.Content
+	if not frame or factionID==0 then
+		return
+	end
+	
+	local bar = frame.ReputationBar;
+	--[[elementData
+    --factionID, description, name, reaction
+    --hasBonusRepCain, isHeaderWithRep, isHeader, canSetInactive, atWarWith, isWatched, isCollapsed, canToggleAtWar, isAccountWide, isChild
+    --currentReactionThresholod, nextReactionThreshold, currentStanding
+	]]
+
+	if Save.notPlus then
+		frame.Name:SetTextColor(1,1,1)
 		if frame.watchedIcon then--显示为经验条
 			frame.watchedIcon:SetShown(false)
 		end
@@ -611,8 +618,8 @@ local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--R
 		return
 	end
 
+	
 	local barColor, levelText, texture, atlas,isCapped
-	local factionTitle = frame.Name
 	local isMajorFaction = C_Reputation.IsMajorFaction(factionID);
 	local repInfo = C_GossipInfo.GetFriendshipReputation(factionID);
 
@@ -627,6 +634,7 @@ local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--R
 				isCapped= true
 			end
 		end
+
 	elseif isMajorFaction then-- 名望
 		local info = C_MajorFactions.GetMajorFactionData(factionID)
 			if info then
@@ -645,28 +653,28 @@ local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--R
 			end
 		end
 
-	elseif (isHeader and hasRep) or not isHeader then
-		if (standingID == MAX_REPUTATION_REACTION) then--已满
+	elseif data.reaction then
+		if (data.reaction == MAX_REPUTATION_REACTION) then--已满
 			barColor=FACTION_ORANGE_COLOR
 			isCapped=true
 		else
-			barColor = FACTION_BAR_COLORS[standingID]
-			levelText= standingID..'/'..MAX_REPUTATION_REACTION
+			barColor = FACTION_BAR_COLORS[data.reaction]
+			levelText= data.reaction..'/'..MAX_REPUTATION_REACTION
 		end
 	end
 
 	if barColor then--标题, 颜色
-		factionTitle:SetTextColor(barColor.r, barColor.g, barColor.b)
+		frame.Name:SetTextColor(barColor.r, barColor.g, barColor.b)
 	end
 
-	if isWatched and not factionBar.watchedIcon then--显示为经验条
-		frame.watchedIcon=factionBar:CreateTexture(nil, 'OVERLAY')
+	if data.isWatched and not bar.watchedIcon then--显示为经验条
+		frame.watchedIcon=bar:CreateTexture(nil, 'OVERLAY')
 		frame.watchedIcon:SetPoint('LEFT')
 		frame.watchedIcon:SetAtlas('common-icon-checkmark-yellow')
 		frame.watchedIcon:SetSize(16, 16)
 	end
 	if frame.watchedIcon then
-		frame.watchedIcon:SetShown(isWatched)
+		frame.watchedIcon:SetShown(data.isWatched)
 	end
 
 	local completedParagon--完成次数
@@ -678,20 +686,21 @@ local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--R
 				completed= math.modf(currentValue/threshold)--完成次数
 				completedParagon= completed>0 and completed
 			end
-			factionBar:SetMinMaxValues(0, threshold)
-			factionBar:SetValue(currentValue-(threshold*completed))
+			bar:SetMinMaxValues(0, threshold)
+			bar:SetValue(currentValue-(threshold*completed))
 		end
 	end
 	if completedParagon and not frame.completed then
-		frame.completed= e.Cstr(factionBar, {justifyH='RIGHT'})
-		frame.completed:SetPoint('RIGHT',- 5,0)
+		frame.completed= e.Cstr(bar, {justifyH='CENTER'})
+		frame.completed:SetPoint(bar.RightTexture)
+		--frame.completed:SetPoint('RIGHT',- 5,0)
 	end
 	if frame.completed then
 		frame.completed:SetText(completedParagon or '')
 	end
 
 	if barColor and isCapped then
-		factionBar:SetStatusBarColor(barColor.r, barColor.g, barColor.b)
+		bar:SetStatusBarColor(barColor.r, barColor.g, barColor.b)
 	end
 
 	if levelText and not frame.levelText then--等级
@@ -705,9 +714,10 @@ local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--R
 	if (texture or atlas) and not frame.texture then--图标
 		local h=frame:GetHeight() or 20
 		frame.texture= frame:CreateTexture(nil, 'OVERLAY')
-		frame.texture:SetPoint('RIGHT', factionTitle, 'RIGHT',6,0)
-		frame.texture:SetSize(h,h)
+		frame.texture:SetPoint('RIGHT', frame.Name, 'RIGHT',6,0)
+		frame.texture:SetSize(h, h)
 	end
+
 	if frame.texture then
 		if texture then
 			frame.texture:SetTexture(texture)
@@ -721,22 +731,30 @@ local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--R
 	if not frame.check then
 		frame.check= CreateFrame("CheckButton", nil, frame, "InterfaceOptionsCheckButtonTemplate")
 		frame.check:SetPoint('LEFT',-4,0)
+		function frame.check:get_info()
+			return self:GetParent().elementData or {}
+		end
 		frame.check:SetScript('OnClick', function(self)
-			if self.factionID then
-				Save.factions[self.factionID ]= not Save.factions[self.factionID ] and self.factionIndex or nil
+			local info= self:get_info()
+			local factionID2= info.factionID
+			local factionIndex2= info.factionIndex or 1
+			if factionID2 then
+				Save.factions[factionID2]= not Save.factions[factionID2] and factionIndex2 or nil
 				ReputationFrame:Update()
 			end
 		end)
 		frame.check:SetScript('OnEnter', function(self)
+			local info= self:get_info()
+			local factionID2= info.factionID
+			if not factionID2 then
+				return
+			end
 			e.tips:SetOwner(self, "ANCHOR_LEFT")
 			e.tips:ClearLines()
-			if self.factionID then
-				local name2=GetFactionInfoByID(self.factionID)
-				e.tips:AddDoubleLine(name2, self.factionID, 0,1,0,0,1,0)
-				e.tips:AddLine(' ')
-			end
-			e.tips:AddDoubleLine(e.onlyChinese and '追踪' or TRACKING, e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
 			e.tips:AddDoubleLine(id, Initializer:GetName())
+			e.tips:AddDoubleLine(e.onlyChinese and '追踪' or TRACKING, e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
+			e.tips:AddLine(' ')
+			e.tips:AddDoubleLine(e.cn(info.name), info.factionID, 0,1,0,0,1,0)
 			e.tips:Show()
 			self:SetAlpha(1)
 		end)
@@ -745,8 +763,6 @@ local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--R
 		frame.check:SetCheckedTexture(e.Icon.icon)
 	end
 	frame.check:SetShown(true)
-	frame.check.factionID= factionID
-	frame.check.factionIndex= factionIndex
 	frame.check:SetChecked(Save.factions[factionID])
 	frame.check:SetAlpha(0.3)
 end
@@ -1064,6 +1080,11 @@ local function Init()
 	C_Timer.After(3, Init_TrackButton)--监视, 文本
 
 	--11版本
+	hooksecurefunc(ReputationFrame.ScrollBox, 'Update', function(self)
+		for _, btn in pairs(self:GetFrames()or {}) do
+			set_ReputationFrame_InitReputationRow(btn)
+		end
+	end)
 	--hooksecurefunc('ReputationFrame_InitReputationRow', set_ReputationFrame_InitReputationRow)-- 声望, 界面, 增强
 	Button:set_Shown()
 
