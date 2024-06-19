@@ -2254,9 +2254,9 @@ local function Init_Status_Func()
         if StatusPlusButton:create_status_label(frame) then
             local rating, spellCrit, rangedCrit, meleeCrit
             local holySchool = 2
-            local minCrit = C_Spell.GetSpellCritChance(holySchool)
+            local minCrit = GetSpellCritChance(holySchool)
             for i=(holySchool+1), MAX_SPELL_SCHOOLS do
-                spellCrit = C_Spell.GetSpellCritChance(i)
+                spellCrit = GetSpellCritChance(i)
                 minCrit = min(minCrit, spellCrit)
             end
             spellCrit = minCrit
