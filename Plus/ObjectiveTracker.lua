@@ -136,8 +136,11 @@ end
 
 
 
---任务
+--任务 11版本
 local function Init_Quest()
+    if not QUEST_TRACKER_MODULE then
+        return
+    end
     hooksecurefunc(QUEST_TRACKER_MODULE, 'OnBlockHeaderLeave', function(_ ,block)
         set_Quest_Color(block, block.id)
     end)
@@ -484,12 +487,16 @@ end
 
 
 
---操作
+--操作 11版本
 local function Init_MinimizeButton_Options()
-    function ObjectiveTrackerFrame.HeaderMenu.MinimizeButton:set_scale()
+    local btn = ObjectiveTrackerFrame.Header.MinimizeButton
+    if not btn then
+        return
+    end
+    function btn:set_scale()
         ObjectiveTrackerFrame:SetScale(Save.scale or 1)
     end
-    function ObjectiveTrackerFrame.HeaderMenu.MinimizeButton:colla_module(type)
+    function btn:colla_module(type)
         for _, frame in pairs(ModulTab) do
             frame= _G[frame]
             if frame and frame.Header and frame.Header.MinimizeButton then
@@ -503,7 +510,7 @@ local function Init_MinimizeButton_Options()
         end
     end
 
-    function ObjectiveTrackerFrame.HeaderMenu.MinimizeButton:set_tooltips()
+    function btn:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, Initializer:GetName())
@@ -513,9 +520,9 @@ local function Init_MinimizeButton_Options()
         e.tips:AddDoubleLine('|A:mechagon-projects:0:0|a'..(e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE))..': '..e.GetEnabeleDisable(Save.autoHide), 'Alt+ '..e.Icon.right)
         e.tips:Show()
     end
-    ObjectiveTrackerFrame.HeaderMenu.MinimizeButton:HookScript("OnLeave", GameTooltip_Hide)
-    ObjectiveTrackerFrame.HeaderMenu.MinimizeButton:HookScript("OnEnter",ObjectiveTrackerFrame.HeaderMenu.MinimizeButton.set_tooltips)
-    ObjectiveTrackerFrame.HeaderMenu.MinimizeButton:HookScript('OnMouseWheel',function(self, d)
+    btn:HookScript("OnLeave", GameTooltip_Hide)
+    btn:HookScript("OnEnter",btn.set_tooltips)
+    btn:HookScript('OnMouseWheel',function(self, d)
         if not IsModifierKeyDown() then
             self:colla_module( d==1 and true or false)
         elseif IsAltKeyDown() then
@@ -531,7 +538,7 @@ local function Init_MinimizeButton_Options()
     end)
 
     --战斗中收起
-    function ObjectiveTrackerFrame.HeaderMenu.MinimizeButton:set_evnet()
+    function btn:set_evnet()
         if Save.inCombatHide then
             self:RegisterEvent('PLAYER_REGEN_DISABLED')
             self:RegisterEvent('PLAYER_REGEN_ENABLED')
@@ -540,7 +547,7 @@ local function Init_MinimizeButton_Options()
             self:UnregisterEvent('PLAYER_REGEN_ENABLED')
         end
     end
-    ObjectiveTrackerFrame.HeaderMenu.MinimizeButton:HookScript('OnEvent', function(_, event)
+    btn:HookScript('OnEvent', function(_, event)
         if event=='PLAYER_REGEN_DISABLED' then
             e.call('ObjectiveTracker_Collapse')
 
@@ -549,15 +556,15 @@ local function Init_MinimizeButton_Options()
         end
     end)
 
-    ObjectiveTrackerFrame.HeaderMenu.MinimizeButton:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
-    ObjectiveTrackerFrame.HeaderMenu.MinimizeButton:HookScript('OnClick', function(_, d)
+    btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
+    btn:HookScript('OnClick', function(_, d)
         if IsAltKeyDown() and d=='RightButton' then
             e.OpenPanelOpting('|A:Objective-Nub:0:0|a'..(e.onlyChinese and '目标追踪栏' or HUD_EDIT_MODE_OBJECTIVE_TRACKER_LABEL))
         end
     end)
 
-    ObjectiveTrackerFrame.HeaderMenu.MinimizeButton:set_scale()
-    ObjectiveTrackerFrame.HeaderMenu.MinimizeButton:set_evnet()
+    btn:set_scale()
+    btn:set_evnet()
 end
 
 
@@ -584,8 +591,11 @@ end
 
 --####
 --初始
---####
+--#### 11版本
 local function Init()    
+    if not PROFESSION_RECIPE_TRACKER_MODULE then
+        return
+    end
     Init_MinimizeButton_Options()--操作
     Init_Quest()--任务
     hooksecurefunc(PROFESSION_RECIPE_TRACKER_MODULE, 'Update', function()--8 追踪配方
@@ -682,8 +692,8 @@ local function Init_Options()
             print(id, Initializer:GetName(), e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE),
                 e.onlyChinese and '任务追踪栏' or QUEST_OBJECTIVES, e.GetEnabeleDisable(Save.autoHide)
             )
-            if ObjectiveTrackerFrame.HeaderMenu.MinimizeButton.set_evnet then
-                ObjectiveTrackerFrame.HeaderMenu.MinimizeButton:set_evnet()
+            if ObjectiveTrackerFrame.Header.MinimizeButton.set_evnet then
+                ObjectiveTrackerFrame.Header.MinimizeButton:set_evnet()
             end
         end
     })
@@ -693,8 +703,8 @@ local function Init_Options()
         value= Save.inCombatHide,
         func= function()
             Save.inCombatHide= not Save.inCombatHide and true or nil
-            if ObjectiveTrackerFrame.HeaderMenu.MinimizeButton.set_evnet then
-                ObjectiveTrackerFrame.HeaderMenu.MinimizeButton:set_evnet()
+            if ObjectiveTrackerFrame.Header.MinimizeButton.set_evnet then
+                ObjectiveTrackerFrame.Header.MinimizeButton:set_evnet()
             end
         end
     })
