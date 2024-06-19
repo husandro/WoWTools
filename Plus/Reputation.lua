@@ -691,8 +691,8 @@ local function set_ReputationFrame_InitReputationRow(btn)--factionRow, elementDa
 		end
 	end
 	if completedParagon and not frame.completed then
-		frame.completed= e.Cstr(frame)
-		frame.completed:SetPoint('CENTER',frame.ParagonIcon)
+		frame.completed= e.Cstr(bar)
+		frame.completed:SetPoint('RIGHT')
 		--frame.completed:SetPoint('RIGHT',- 5,0)
 	end
 	if frame.completed then
