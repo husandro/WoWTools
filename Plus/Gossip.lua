@@ -2022,7 +2022,7 @@ local function Init_Gossip()
         if Save.point then
             self:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
         else
-            self:SetPoint('BOTTOM', _G['!KalielsTrackerFrame'] or ObjectiveTrackerBlocksFrame, 'TOP', 0 , 0)
+            self:SetPoint('BOTTOM', _G['!KalielsTrackerFrame'] or ObjectiveTrackerFrame, 'TOP', 0 , 0)
         end
     end
     function GossipButton:set_Scale()--设置，缩放

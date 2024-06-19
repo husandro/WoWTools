@@ -208,6 +208,7 @@ local function Set_TrackButton_Text()
 	if not TrackButton or not TrackButton:IsShown() then
 		return
 	end
+	print('Set_TrackButton_Text')
 	local faction={}
 	if Save.indicato then
 		for factionID, _ in pairs(Save.factions) do

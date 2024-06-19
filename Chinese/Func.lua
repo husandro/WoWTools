@@ -445,14 +445,23 @@ local function Init()
         set(TokenFramePopup.InactiveCheckBox.Text, '未使用')
         set(TokenFramePopup.BackpackCheckBox.Text, '在行囊上显示')
 
-        hooksecurefunc('TokenFrame_InitTokenButton',function(_, frame)--Blizzard_TokenUI.lua
+        hooksecurefunc(TokenFrame.ScrollBox, 'Update', function(f)
+			if not f:GetView() then
+				return
+			end
+			for _, frame in pairs(f:GetFrames()) do
+				setLabel(frame.Content.Name)
+			end
+		end)
+
+        --[[hooksecurefunc('TokenFrame_InitTokenButton',function(_, frame)--Blizzard_TokenUI.lua
 			if frame and frame.Name then
                 local name= e.strText[frame.Name:GetText()]--汉化
                 if name then
                     frame.Name:SetText(name)
                 end
             end
-		end)
+		end)]]
         hooksecurefunc('TokenFrame_Update', function()
 			local f=TokenFrame
 			if not f.ScrollBox:GetView() then
