@@ -219,7 +219,7 @@ local function created_model(btn, setBg)
             if self:GetID()==Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX then
                 e.tips:AddDoubleLine(
                     format('|cffaad372%s|r', e.onlyChinese and '天赋' or TALENT),
-                    format('|T461112:0|t|cffaad372%s|r', e.onlyChinese and '动物伙伴' or GetSpellLink(267116) or GetSpellInfo(267116) or 'Animal Companion')
+                    format('|T461112:0|t|cffaad372%s|r', e.onlyChinese and '动物伙伴' or C_Spell.GetSpellLink(267116) or GetSpellInfo(267116) or 'Animal Companion')
                 )
             end
             e.tips:Show()

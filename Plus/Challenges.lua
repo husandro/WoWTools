@@ -2003,7 +2003,7 @@ local function Init()
         end
         e.tips:AddLine(' ')
         for _, tab in pairs(e.ChallengesSpellTabs) do
-            local spellLink= GetSpellLink(tab.spell) or GetSpellInfo(tab.spell) or ('ID'.. tab.spell)
+            local spellLink= C_Spell.GetSpellLink(tab.spell) or GetSpellInfo(tab.spell) or ('ID'.. tab.spell)
             local icon= GetSpellTexture(tab.spell)
             e.tips:AddDoubleLine((icon and '|T'..icon..':0|t' or '')..spellLink,
                                 'spellID '..tab.spell..' '..

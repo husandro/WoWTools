@@ -20,7 +20,7 @@ local function setAura()--光环取消
             break
         elseif Save.aura[spellID] then
             CancelUnitBuff("player", i, nil)-- 'CANCELABLE')
-            print(id, e.onlyChinese '取消光环' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CANCEL, AURAS), GetSpellLink(spellID) or spellID)
+            print(id, e.onlyChinese '取消光环' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CANCEL, AURAS), C_Spell.GetSpellLink(spellID) or spellID)
             break
         end
     end

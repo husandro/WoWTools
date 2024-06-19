@@ -928,7 +928,7 @@ local function Init_List_Button()
                             tooltipText= '|n'..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS, slot)
                                     ..(spellID and '|n|n' or '')
                                     ..(spellTexture and '|T'..spellTexture..':0|t' or '')
-                                    ..(spellID and GetSpellLink(spellID) or spellName or spellID or '')..(spellID and ' '..spellID or ''),
+                                    ..(spellID and C_Spell.GetSpellLink(spellID) or spellName or spellID or '')..(spellID and ' '..spellID or ''),
                             arg1={name=name, spellID=spellID, icon=textureName},
                             func= function(_, tab)
                                 if IsAltKeyDown() then

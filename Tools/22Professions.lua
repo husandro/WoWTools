@@ -62,7 +62,7 @@ local function Init_Tools_Button()
                 e.tips:ClearLines()
                 e.tips:SetSpellByID(self.spellID)
                 if self.index==5 then
-                    local link= GetSpellLink(818)
+                    local link= C_Spell.GetSpellLink(818)
                     local texture= GetSpellTexture(818)
                     if link and texture then
                         local text= '|T'..texture..':0|t'.. link
@@ -76,7 +76,7 @@ local function Init_Tools_Button()
                         e.tips:AddDoubleLine(text, e.Icon.right)
                     end
                 elseif self.spellID2 then
-                    local link= GetSpellLink(self.spellID2)
+                    local link= C_Spell.GetSpellLink(self.spellID2)
                     local texture= GetSpellTexture(self.spellID2)
                     if link and texture then
                         e.tips:AddLine(' ')

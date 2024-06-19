@@ -406,7 +406,7 @@ function func.Set_Mount(self, mountID, type)--坐骑
     local can= isCollected and isUsable and not isActive and not UnitCastingInfo('player')
     if can and IsAltKeyDown() then
         C_MountJournal.SummonByID(mountID)
-        print(id, Initializer:GetName(), spellID and GetSpellLink(spellID), '|cnGREEN_FONT_COLOR:Alt+'..(e.onlyChinese and '召唤坐骑' or MOUNT))
+        print(id, Initializer:GetName(), spellID and C_Spell.GetSpellLink(spellID), '|cnGREEN_FONT_COLOR:Alt+'..(e.onlyChinese and '召唤坐骑' or MOUNT))
     end
     local col= can and '|cnGREEN_FONT_COLOR:' or '|cff606060'
     e.tips:AddDoubleLine(col..(e.onlyChinese and '召唤坐骑' or MOUNT), col..'Alt+')
@@ -754,7 +754,7 @@ function func.Set_Spell(self, spellID)--法术
         local overrideSpellID = FindSpellOverrideByID(spellID)
         if overrideSpellID and overrideSpellID~=spellID then
             e.LoadDate({id=overrideSpellID, type='spell'})--加载 item quest spell
-            local link= GetSpellLink(overrideSpellID)
+            local link= C_Spell.GetSpellLink(overrideSpellID)
             local name2, _, icon2, _, _, _, _, originalIcon2= GetSpellInfo(overrideSpellID)
             link= link or name2
             link= link and link..overrideSpellID or ('overrideSpellID '..overrideSpellID)

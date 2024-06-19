@@ -2027,7 +2027,7 @@ local function Init()
             if specID then
                 local specTab= C_SpecializationInfo.GetSpellsDisplay(specID) or {}
                 for _, spellID in pairs (specTab) do
-                    local link= GetSpellLink(spellID)
+                    local link= C_Spell.GetSpellLink(spellID)
                     if link then
                         text= link
                         break

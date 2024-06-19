@@ -930,7 +930,7 @@ local function InitMenu(_, level, type)--主菜单
                 func=function(_, arg1)
                     if IsControlKeyDown() then
                         if Save.Mounts[SPELLS][arg1] then
-                            print(id, e.cn(addName), e.onlyChinese and '移除' or REMOVE, GetSpellLink(arg1) or arg1)
+                            print(id, e.cn(addName), e.onlyChinese and '移除' or REMOVE, C_Spell.GetSpellLink(arg1) or arg1)
                         end
                         Save.Mounts[SPELLS][arg1]=nil
                         checkSpell()--检测法术

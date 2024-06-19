@@ -1482,7 +1482,7 @@ local function Init_Menu_Gossip(_, level, type)
         for spellID, rarity in pairs(Save.choice) do
             e.LoadDate({id=spellID, type='spell'})
             local icon= GetSpellTexture(spellID)
-            local name= GetSpellLink(spellID) or ('spellID '..spellID)
+            local name= C_Spell.GetSpellLink(spellID) or ('spellID '..spellID)
             rarity= rarity+1
             local hex= select(4, C_Item.GetItemQualityColor(rarity))
             local quality=(hex and '|c'..hex or '')..(e.cn(_G['ITEM_QUALITY'..rarity..'_DESC']) or rarity)
@@ -1496,7 +1496,7 @@ local function Init_Menu_Gossip(_, level, type)
                 arg1=spellID,
                 func= function(_, arg1)
                     Save.choice[arg1]=nil
-                    print(id, Initializer:GetName(), e.onlyChinese and '选择' or CHOOSE, e.onlyChinese and '移除' or REMOVE, GetSpellLink(arg1) or ('spellID '..arg1))
+                    print(id, Initializer:GetName(), e.onlyChinese and '选择' or CHOOSE, e.onlyChinese and '移除' or REMOVE, C_Spell.GetSpellLink(arg1) or ('spellID '..arg1))
                 end
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -3211,7 +3211,7 @@ local function Init_Quest()
         local spellRewards = C_QuestInfoSystem.GetQuestRewardSpells(questID) or {}--QuestInfo.lua QuestInfo_ShowRewards()
         for _, spellID in pairs(spellRewards) do
             e.LoadDate({id=spellID, type='spell'})
-            local spellLink= GetSpellLink(spellID)
+            local spellLink= C_Spell.GetSpellLink(spellID)
             itemLink= itemLink.. (spellLink or (' spellID'..spellID))
         end
 
@@ -3409,7 +3409,7 @@ local function Init_Blizzard_PlayerChoice()
     local function Send_Player_Choice_Response(optionInfo)
         if optionInfo then
             C_PlayerChoice.SendPlayerChoiceResponse(optionInfo.buttons[1].id)
-            print(id, Initializer:GetName(), (optionInfo.spellID and GetSpellLink(optionInfo.spellID) or ''),
+            print(id, Initializer:GetName(), (optionInfo.spellID and C_Spell.GetSpellLink(optionInfo.spellID) or ''),
                 '|n',
                 '|T'..(optionInfo.choiceArtID or 0)..':0|t'..optionInfo.rarityColor:WrapTextInColorCode(optionInfo.description or '')
             )

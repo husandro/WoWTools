@@ -54,7 +54,7 @@ quality = item:GetItemQuality()
 
 GetItemInfoFromHyperlink(itemLink) LinkUtil.lua
 if IsModifiedClick("CHATLINK") then
-    local spellLink = GetSpellLink(self:GetSpellID())
+    local spellLink = C_Spell.GetSpellLink(self:GetSpellID())
     ChatEdit_InsertLink(spellLink)
 end
 if ( IsModifiedClick("CHATLINK") and ChatEdit_GetActiveWindow() ) then
