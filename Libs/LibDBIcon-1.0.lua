@@ -182,7 +182,6 @@ local function onMouseUp(self)
 end
 
 do
----@diagnostic disable-next-line: deprecated
 	local deg, atan2 = math.deg, math.atan2
 	local function onUpdate(self)
 		local mx, my = Minimap:GetCenter()
