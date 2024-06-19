@@ -919,26 +919,27 @@ end
 
 function e.GetFactionInfo(factionID, index, toRight)
     local data= factionID and C_Reputation.GetFactionDataByID(factionID) or (index and C_Reputation.GetFactionDataByIndex(index)) or {}
---info= data
---for k, v in pairs(info) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
+
     --factionID, description, name, reaction
     --hasBonusRepCain, isHeaderWithRep, isHeader, canSetInactive, atWarWith, isWatched, isCollapsed, canToggleAtWar, isAccountWide, isChild
     --currentReactionThresholod, nextReactionThreshold, currentStanding
+
     local name= data.name
     factionID= factionID or data.factionID
     if not factionID or not name then
         return {}
     end
-    local description= data.description
+    
     local isHeader= data.isHeader
+    local isHeaderWithRep= data.isHeaderWithRep
     local standingID= data.reaction
-    local barMin= data.currentReactionThresholod
+    local barMin= data.currentReactionThreshold
     local barValue= data.currentStanding
     local barMax= data.nextReactionThreshold  
-    local hasRep= data.hasBonusRepCain
-
+    
 
     local factionStandingtext, value, texture, atlas, barColor
+
 
     local isCapped= standingID == MAX_REPUTATION_REACTION--8
     local isMajorFaction = C_Reputation.IsMajorFaction(factionID)
@@ -982,7 +983,7 @@ function e.GetFactionInfo(factionID, index, toRight)
         end
         atlas=info.textureKit and 'MajorFactions_Icons_'..info.textureKit..'512'
     else
-        if (isHeader and hasRep) or not isHeader then
+        if isHeaderWithRep or not isHeader then
             factionStandingtext = e.cn(GetText("FACTION_STANDING_LABEL"..standingID, e.Player.sex))
             if barValue and barMax and barMin then
                 if barMax==0 then
@@ -1034,24 +1035,28 @@ function e.GetFactionInfo(factionID, index, toRight)
     end
     
     return {
-        --info=data,
-
         name= name,
-        description= description,
         factionID= factionID,
+        description= data.description,
         color= barColor,
+
         isMajorFaction=isMajorFaction,
         friendshipID= friendshipID,
         isParagon= isParagon,
+
         texture= texture,
         atlas= atlas,
-        factionStandingtext= factionStandingtext,
-        hasRewardPending=hasRewardPending,
+
+        factionStandingtext= factionStandingtext,        
         valueText= value,
+
+        hasRewardPending=hasRewardPending,
+
         isCapped= isCapped,
         isHeader= isHeader,
-        hasRep= hasRep,
-        --isHeaderWithRep= data.isHeaderWithRep
+        isHeaderWithRep= isHeaderWithRep,
+
+        hasRep= data.hasBonusRepGain,--额外，声望
     }
 end
 

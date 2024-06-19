@@ -39,11 +39,7 @@ local function get_Faction_Info(index, factionID)
 	factionID= data.factionID
 	local name= data.name
 	
-	local isHeader= data.isHeader
-	local isHeaderWithRep= data.isHeaderWithRep
-	local hasRep= data.hasRep
-	
-	if not factionID or not name or name==HIDE or (not hasRep and isHeader) then
+	if not factionID or not name or name==HIDE or (not data.isHeaderWithRep and data.isHeader) then
 		return
 	end
 
@@ -55,15 +51,14 @@ local function get_Faction_Info(index, factionID)
 	local isCapped= data.isCapped
 	local isParagon= data.isParagon
 
-	local factionStandingtext= not data.isCapped and data.factionStandingtext
+	
 	if (isCapped and not isParagon and index)--声望已满，没有奖励
 		or (onlyIcon and not atlas and not texture)
 	then
 		return
 	end
 
-	local hasRewardPending= data.hasRewardPending
-	local friendshipID= data.friendshipID
+	local factionStandingtext= data.isCapped and data.factionStandingtext
 
 	local text
 	if onlyIcon then--仅显示有图标
@@ -73,32 +68,32 @@ local function get_Faction_Info(index, factionID)
 		name= name:match('%- (.+)') or name
 	end
 
-	if Save.toRightTrackText then--向右平移 
-		text= name and e.cn(name)..' ' or ''
-		if factionStandingtext then--等级
-			factionStandingtext= barColor and barColor:WrapTextInColorCode(factionStandingtext) or factionStandingtext
-			text= text..factionStandingtext..' '
+	if barColor then
+		if value and not factionStandingtext then--值
+			value= barColor:WrapTextInColorCode(value)
 		end
-		if value then--值
-			value= (not factionStandingtext and barColor) and barColor:WrapTextInColorCode(value) or value
-			text= text..value
+		if factionStandingtext  then--等级
+			factionStandingtext= barColor:WrapTextInColorCode(factionStandingtext)
 		end
-		text= hasRewardPending and text..hasRewardPending or text--有奖励
-	else
-
-		text= hasRewardPending or ''--有奖励
-		if value then--值
-			value= (not factionStandingtext and barColor) and barColor:WrapTextInColorCode(value) or value
-			text= text..value
-		end
-
-		if factionStandingtext then--等级
-			factionStandingtext= barColor and barColor:WrapTextInColorCode(factionStandingtext) or factionStandingtext
-			text= text..' '..factionStandingtext
-		end
-		text= name and text..' '..name or text
 	end
-	return text, texture, atlas, factionID, friendshipID
+
+	if Save.toRightTrackText then--向右平移 
+		text= (name or '')
+			..(data.hasRep and '|cnGREEN_FONT_COLOR:+|r' or '')--额外，声望
+			..(name and ' ' or '')
+			..(factionStandingtext or '')
+			..(value and ' '..value or '')
+			..(data.hasRewardPending or '')--有奖励
+
+	else
+		text=(data.hasRewardPending or '')--有奖励
+			..(value or '')
+			..(factionStandingtext and ' '..factionStandingtext or '')
+			..(name and ' ' or '')
+			..(data.hasRep and '|cnGREEN_FONT_COLOR:+|r' or '')--额外，声望
+			..(name or '')
+	end
+	return text, texture, atlas, factionID, data.friendshipID
 end
 
 
