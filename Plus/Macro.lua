@@ -58,10 +58,10 @@ local function Get_Spell_Macro(name, spellID)
 
     --SS
     elseif spellID==6201 then--[制造治疗石]ss
-        local right= GetSpellInfo(29893)--[制造灵魂之井] ss
-        local alt= GetSpellInfo(6201)--[制造治疗石] ss
-        local ctrl= GetSpellInfo(698)--[召唤仪式]ss
-        local shift= GetSpellInfo(20707)--[灵魂石]ss
+        local right= C_Spell.GetSpellName(29893)--[制造灵魂之井] ss
+        local alt= C_Spell.GetSpellName(6201)--[制造治疗石] ss
+        local ctrl= C_Spell.GetSpellName(698)--[召唤仪式]ss
+        local shift= C_Spell.GetSpellName(20707)--[灵魂石]ss
         local itemName= C_Item.GetItemInfo(5512)--[治疗石]ss
         if itemName and alt and ctrl and right and shift then
             return '/stopcasting'
@@ -74,8 +74,8 @@ local function Get_Spell_Macro(name, spellID)
     elseif spellID==48018--[恶魔法阵]ss
         or spellID==48020--[恶魔法阵：传送]ss
     then
-        local alt= GetSpellInfo(48018)
-        local spellName= GetSpellInfo(48020)
+        local alt= C_Spell.GetSpellName(48018)
+        local spellName= C_Spell.GetSpellName(48020)
         if alt and spellName then
             return '/cast [mod:alt,@cursor]'.. alt
                 ..'\n/cast '..spellName
@@ -86,7 +86,7 @@ local function Get_Spell_Macro(name, spellID)
     --LR
     elseif spellID==5384 then--[假死]LR
         if IsSpellKnownOrOverridesKnown(209997) then
-            local spellName= GetSpellInfo(209997)
+            local spellName= C_Spell.GetSpellName(209997)
             if spellName then
                 return '/petfollow\n/cast '..spellName..'\n/cast '..name
             end
@@ -96,7 +96,7 @@ local function Get_Spell_Macro(name, spellID)
         or spellID==257620--[多重射击]LR
         or spellID==187708--[削凿]LR
     then
-        local spellName= GetSpellInfo(186265)
+        local spellName= C_Spell.GetSpellName(186265)
         if spellName then
             return '/cancelaura '..spellName..'\n/cast '..name
         end
@@ -107,7 +107,7 @@ local function Get_Spell_Macro(name, spellID)
         or spellID==66--[隐形术]
         or spellID==110959--[强化隐形术]
     then
-        local cancel= GetSpellInfo(45438)--[寒冰屏障]
+        local cancel= C_Spell.GetSpellName(45438)--[寒冰屏障]
         local text='/stopcasting'
         if cancel then
             text= text..'\n/cancelaura '..cancel
@@ -116,7 +116,7 @@ local function Get_Spell_Macro(name, spellID)
 
     --FS
     elseif spellID==190336 then--[造餐术]
-        local spellName= GetSpellInfo(190336)
+        local spellName= C_Spell.GetSpellName(190336)
         local itemName= C_Item.GetItemNameByID(113509)
         if spellName and itemName then
             return '/use [btn:1]'..itemName..'\n/cast [btn:2]'..spellName
@@ -375,7 +375,7 @@ end
 local function Create_Spell_Menu(spellID, icon, name, texture)--创建，法术，列表
     e.LoadDate({id=spellID, type='spell'})
     local isKnown= IsSpellKnownOrOverridesKnown(spellID)
-    local isPassive= IsPassiveSpell(spellID)
+    local isPassive= C_Spell.IsSpellPassive(spellID)
     local spellIcon= icon
 
     local color
@@ -390,7 +390,7 @@ local function Create_Spell_Menu(spellID, icon, name, texture)--创建，法术�
     local  macroText= Get_Spell_Macro(name, spellID)
     macroText= macroText and '|cnGREEN_FONT_COLOR:'..macroText..'|n |r' or nil
 
-    local tipText= GetSpellDescription(spellID)
+    local tipText= C_Spell.GetSpellDescription(spellID)
     if tipText then
         local head
         if isPassive then
@@ -424,7 +424,7 @@ local function Create_Spell_Menu(spellID, icon, name, texture)--创建，法术�
         notCheckable=true,
         func= function(_, tab)
             if IsShiftKeyDown() then
-                local link=GetSpellLink(tab.spellID) or GetSpellInfo(tab.spellID) or tab.spellID
+                local link=GetSpellLink(tab.spellID) or C_Spell.GetSpellName(tab.spellID) or tab.spellID
                 link= 'spellID=='..tab.spellID..'--'..link
                 e.Chat(link, nil, true)
                 --if not ChatEdit_InsertLink(link) then
@@ -481,7 +481,8 @@ local function set_btn_tooltips(self, index)
             local spellID= GetMacroSpell(index)
             if spellID then
                 e.LoadDate({id=spellID, type='spell'})
-                local spellName, _, spellIcon= GetSpellInfo(spellID)
+                local spellName= C_Spell.GetSpellName(spellID)
+                local spellIcon= C_Spell.GetSpellTexture(spellID)
                 if spellName and spellIcon then
                     e.tips:AddDoubleLine('|T'..spellIcon..':0|t'..spellName, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '法术' or SPELLS, spellID))
                 end
@@ -780,7 +781,7 @@ local function Init_List_Button()
     --法术书
     local last
     for i=1, MAX_SKILLLINE_TABS do
-        local name, icon, _, _, _, _, shouldHide, specID = GetSpellTabInfo(i)
+        local name, icon, _, _, _, _, shouldHide, specID = C_Spell.GetSpellTabInfo(i)
         if (i==1 or i==2 or specID) and not shouldHide and name then
             local btn= e.Cbtn(MacroEditButton, {size={24,24}, texture=icon})
             btn.index= i
@@ -800,12 +801,13 @@ local function Init_List_Button()
             end
             btn:SetScript('OnMouseDown', function(self)
                 e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function()
-                    local _, _, offset, numSlots = GetSpellTabInfo(self.index)
+                    local _, _, offset, numSlots = C_Spell.GetSpellTabInfo(self.index)
                     local num=0
                     for index= offset+1, offset+ numSlots do
-                        local name2, _, icon2, _, _, _, spellID= GetSpellInfo(index, BOOKTYPE_SPELL)
+                        local spellInfo= C_Spell.GetSpellInfo(index, BOOKTYPE_SPELL) or {}
+                        local name2, icon2, spellID= spellInfo.name, spellInfo.iconID, spellInfo.spellID
                         num= num +1
-                        if name2 and not IsPassiveSpell(index, BOOKTYPE_SPELL) and spellID then
+                        if name2 and not C_Spell.IsSpellPassive(index, BOOKTYPE_SPELL) and spellID then
                             Create_Spell_Menu(spellID, icon2, name2, 'services-number-'..math.ceil(num / SPELLS_PER_PAGE))
                         end
                     end
@@ -838,7 +840,7 @@ local function Init_List_Button()
             end)
             btn:RegisterUnitEvent('PLAYER_SPECIALIZATION_CHANGED', 'player')
             btn:SetScript('OnEvent', function(self)
-                self:SetNormalTexture( select(2, GetSpellTabInfo(self.index)) or 0)
+                self:SetNormalTexture( select(2, C_Spell.GetSpellTabInfo(self.index)) or 0)
             end)
             last= btn
         end
@@ -881,7 +883,7 @@ local function Init_List_Button()
                 end)
                 for _, talentID in pairs(slotInfo.availableTalentIDs) do
                     local talentInfo = C_SpecializationInfo.GetPvpTalentInfo(talentID) or {}
-                    if talentInfo.spellID and talentInfo.name then--and not IsPassiveSpell(talentInfo.spellID)then
+                    if talentInfo.spellID and talentInfo.name then--and not C_Spell.IsSpellPassive(talentInfo.spellID)then
                         Create_Spell_Menu(talentInfo.spellID, talentInfo.icon, talentInfo.name, talentInfo.selected and e.Icon.select)
                     end
                 end
@@ -914,7 +916,7 @@ local function Init_List_Button()
 
                         if spellID then
                             e.LoadDate({id=spellID, type='spell'})
-                            spellTexture= GetSpellTexture(spellID)
+                            spellTexture= C_Spell.GetSpellTexture(spellID)
 
                         end
                         e.LibDD:UIDropDownMenu_AddButton({
@@ -1251,9 +1253,9 @@ local function Init_Select_Macro_Button()
             --添加，物品，法术，图标=物品名称
             local function get_SpellItem_Texture(spell, item)
                 if spell then--spell 字符
-                    local icon= GetSpellTexture(spell) or select(3, GetSpellInfo(spell))
+                    local icon= C_Spell.GetSpellTexture(spell)
                     if icon then
-                        local name= GetSpellInfo(spell) or spell
+                        local name= C_Spell.GetSpellName(spell) or spell
                         allTab[icon]= name
                     end
 

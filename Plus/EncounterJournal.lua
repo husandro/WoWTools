@@ -1031,7 +1031,7 @@ local function Init_EncounterJournal()--冒险指南界面
             btn.spellTexture:SetShown(spellID and true or false)
             if spellID then
                 e.LoadDate({id=spellID, type='spell'})
-                SetPortraitToTexture(btn.spellTexture, GetSpellTexture(spellID) or 'soulbinds_tree_conduit_icon_utility')
+                SetPortraitToTexture(btn.spellTexture, C_Spell.GetSpellTexture(spellID) or 'soulbinds_tree_conduit_icon_utility')
             end
         end
     end)
@@ -1365,8 +1365,7 @@ local function Init_EncounterJournal()--冒险指南界面
     local function EncounterJournal_SetBullets_setLink(text)--技能加图标
         local find
         text=text:gsub('|Hspell:.-]|h',function(link)
-            local t=link
-            local icon= select(3, GetSpellInfo(link)) or GetSpellTexture(link:match('Hspell:(%d+)'))
+            local icon= C_Spell.GetSpellTexture(link:match('Hspell:(%d+)'))
             if icon then
                 find=true
                 return '|T'..icon..':0|t'..link

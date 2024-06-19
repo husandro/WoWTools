@@ -274,7 +274,7 @@ end
 
 --法术
 local function set_Spell_Count(self)--次数
-    local num, max= GetSpellCharges(self.spellID)
+    local num, max= C_Spell.GetSpellCharges(self.spellID)
     if max and max>1 and not self.count then
         self.count=e.Cstr(self, {color=true})--nil,nil,nil,true)
         self.count:SetPoint('BOTTOMRIGHT',-2, 9)
@@ -376,7 +376,8 @@ local function Init_All_Buttons()
 
     for _, spellID in pairs(Save.spell) do
         if IsSpellKnownOrOverridesKnown(spellID) then
-            local name, _, icon = GetSpellInfo(spellID)
+            local name= C_Spell.GetSpellName(spellID)
+            local icon= C_Spell.GetSpellTexture(spellID)
             if name and icon then
                 if name and icon then
                     local btn= e.Cbtn2({
@@ -557,9 +558,9 @@ local function set_Use_Spell_Button(btn, spellID)
             e.tips:AddLine(' ')
             if self.spellID then
                 local text
-                local icon= GetSpellTexture(self.spellID)
+                local icon= C_Spell.GetSpellTexture(self.spellID)
                 text= icon and '|T'..icon..':0|t' or ''
-                text= text..(C_SpellBook.GetSpellLinkFromSpellID(self.spellID) or self.spellID)
+                text= text..(C_Spell.GetSpellLink(self.spellID) or self.spellID)
                 e.tips:AddDoubleLine(text..' '..e.GetEnabeleDisable(find_Type('spell', self.spellID)), e.Icon.left)
             end
             e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
@@ -577,7 +578,6 @@ local function set_Use_Spell_Button(btn, spellID)
                     else
                         table.insert(Save.spell, self.spellID)
                     end
-                    --print(e.toolsFrame.addName, e.cn(addName), C_SpellBook.GetSpellLinkFromSpellID(self.spellID), findIndex and (e.onlyChinese and '移除' or REMOVE) or (e.onlyChinese and '添加' or ADD), '|cffff00ff', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                     self:set_tooltips()
                     self:set_alpha()
                 end
@@ -604,27 +604,27 @@ local function Init_Options_SpellBook()
                 local slot, slotType, slotID = SpellBook_GetSpellBookSlot(self)
                 --[[local slot, slotType, slotID = SpellBook_GetSpellBookSlot(self)
                 if slot then
-                    local slotType, spellID = GetSpellBookItemInfo(slot, SpellBookFrame.bookType);
-                    local texture = GetSpellBookItemTexture(slot, SpellBookFrame.bookType)
+                    local slotType, spellID = C_Spell.GetSpellBookItemInfo(slot, SpellBookFrame.bookType);
+                    local texture = C_Spell.GetSpellBookItemTexture(slot, SpellBookFrame.bookType)
                     if (slotType == "FLYOUT") then
                         --SpellFlyout:Toggle(spellID, self, "RIGHT", 1, false, nil, true);
 
                     end
                 end]]
-                if not slot or slotType~='SPELL' or not slotID or IsPassiveSpell(slotID) then--or SpellBookFrame.bookType~='spell' 
+                if not slot or slotType~='SPELL' or not slotID or C_Spell.IsSpellPassive(slotID) then--or SpellBookFrame.bookType~='spell' 
                     if self.useSpell then
                         self.useSpell:SetShown(false)
                     end
                     return
                 end
-                set_Use_Spell_Button(self, slotID)--select(3, GetSpellBookItemName(slot, SpellBookFrame.bookType)))
+                set_Use_Spell_Button(self, slotID)--select(3, C_Spell.GetSpellBookItemName(slot, SpellBookFrame.bookType)))
             end)
         end
     end
     --法术书，界面, 菜单
     hooksecurefunc('SpellFlyoutButton_UpdateGlyphState', function(self)
         local name = self:GetParent():GetParent():GetName()
-        if not (name and name:find('SpellButton')) or not self.spellID or IsPassiveSpell(self.spellID) then
+        if not (name and name:find('SpellButton')) or not self.spellID or C_Spell.IsSpellPassive(self.spellID) then
             if self.useSpell then
                 self.useSpell:SetShown(false)
             end

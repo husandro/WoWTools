@@ -194,8 +194,8 @@ end
 --Flyout, 技能，提示
 local function set_SpellFlyoutButton_UpdateGlyphState(self)
     local text= SpellTab[self.spellID]
-    if not text and self.spellID and not IsPassiveSpell(self.spellID) then
-        local des= GetSpellDescription(self.spellID)
+    if not text and self.spellID and not C_Spell.IsSpellPassive(self.spellID) then
+        local des= C_Spell.GetSpellDescription(self.spellID)
         if des then
             des= e.cn(des)
             text= des:match('|cff00ccff(.-)|r')
@@ -219,7 +219,7 @@ local function set_SpellFlyoutButton_UpdateGlyphState(self)
         if not text then
             text= select(2, GetCallPetSpellInfo(self.spellID))
             text= text~='' and text or nil
-            text= text or GetSpellInfo(self.spellID)
+            text= text or C_Spell.GetSpellName(self.spellID)
             text= e.cn(text)
             text=text:match('%-(.+)') or text
             text=text:match('：(.+)') or text
@@ -306,7 +306,8 @@ function Init_All_Flyout()
                 local spellID= overrideSpellID or flyoutSpellID
                 if spellID then
                     e.LoadDate({id=spellID, type='spell'})
-                    local name2, _, icon = GetSpellInfo(spellID)
+                    local name2= C_Spell.GetSpellName(spellID)
+                    local icon= C_Spell.GetSpellTexture(spellID)
                     if name2 and icon then
                         e.tips:AddDoubleLine('|T'..icon..':0|t'..(not isKnown2 and ' |cnRED_FONT_COLOR:' or '')..e.cn(name2)..'|r', (not isKnown2 and '|cnRED_FONT_COLOR:' or '').. spellID..' '..(e.onlyChinese and '法术' or SPELLS)..'('..slot)
                     else

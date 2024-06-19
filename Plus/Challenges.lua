@@ -1630,7 +1630,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
             end
             if frame.spellPort and frame.spellPort:CanChangeAttribute() then
                 if frame.spellID and IsSpellKnownOrOverridesKnown(frame.spellID) then
-                    local name= GetSpellInfo(frame.spellID)
+                    local name= C_Spell.GetSpellName(frame.spellID)
                     frame.spellPort:SetAttribute("type", "spell")
                     frame.spellPort:SetAttribute("spell", name or frame.spellID)
                     frame.spellPort:SetAlpha(1)
@@ -2003,8 +2003,8 @@ local function Init()
         end
         e.tips:AddLine(' ')
         for _, tab in pairs(e.ChallengesSpellTabs) do
-            local spellLink= C_Spell.GetSpellLink(tab.spell) or GetSpellInfo(tab.spell) or ('ID'.. tab.spell)
-            local icon= GetSpellTexture(tab.spell)
+            local spellLink= C_Spell.GetSpellLink(tab.spell) or C_Spell.GetSpellName(tab.spell) or ('ID'.. tab.spell)
+            local icon= C_Spell.GetSpellTexture(tab.spell)
             e.tips:AddDoubleLine((icon and '|T'..icon..':0|t' or '')..spellLink,
                                 'spellID '..tab.spell..' '..
                                 (IsSpellKnownOrOverridesKnown(tab.spell) and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已获得' or ACHIEVEMENTFRAME_FILTER_COMPLETED)

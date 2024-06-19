@@ -792,7 +792,7 @@ local function Init_TrackButton()
                     PetActionBar:SetShown(true)
                 end
                 if not UnitAffectingCombat('player') then--UIParent.lua
-                    local duration = select(2, GetSpellCooldown(125439))
+                    local duration = select(2, C_Spell.GetSpellCooldown(125439))
                     if duration and duration<=2  or not duration then
                         if (CollectionsJournal and not PetJournal:IsVisible()) or not CollectionsJournal then
                             ToggleCollectionsJournal(2)

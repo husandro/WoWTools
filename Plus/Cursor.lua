@@ -715,7 +715,7 @@ local function GCD_Init()
     gcdFrame:SetShown(false)
 
     gcdFrame:SetScript('OnEvent', function(self)
-        local start, duration, enabled, modRate = GetSpellCooldown(61304)
+        local start, duration, enabled, modRate = C_Spell.GetSpellCooldown(61304)
         if enabled==1 and start > 0 and duration > 0 then
             self.cooldown:SetCooldown(start, duration, modRate)
             self:SetShown(true)

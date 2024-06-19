@@ -357,10 +357,10 @@ end
 --####
 local function get_minCrit()
     local holySchool = 2;
-    local minCrit = GetSpellCritChance(holySchool) or 0;
+    local minCrit = C_Spell.GetSpellCritChance(holySchool) or 0;
     local spellCrit;
     for i=(holySchool+1), MAX_SPELL_SCHOOLS do
-        spellCrit = GetSpellCritChance(i);
+        spellCrit = C_Spell.GetSpellCritChance(i);
         minCrit = min(minCrit, spellCrit);
     end
     return minCrit or 0

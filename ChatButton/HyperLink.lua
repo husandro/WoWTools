@@ -185,12 +185,12 @@ end
 
 local function Spell(link)--法术图标
     local t=cn_Link_Text(link)
-    local icon= select(3, GetSpellInfo(link))
+    local icon= C_Spell.GetSpellTexture(link)
     local id2=link:match('Hspell:(%d+)')
     if icon then
         t= '|T'..icon..':0|t'..t
     elseif id2 then
-        icon = GetSpellTexture(id2)
+        icon = C_Spell.GetSpellTexture(id2)
         if icon then
             t='|T'..icon..':0|t'..t
         end
@@ -232,7 +232,7 @@ end
 local function Trade(link)--贸易技能
     local id2=link:match('Htrade:.-:(%d+):')
     if id2 then
-        local icon = GetSpellTexture(id2)
+        local icon = C_Spell.GetSpellTexture(id2)
         if icon then
             return '|T'..icon..':0|t'..cn_Link_Text(link)
         end
@@ -242,7 +242,7 @@ end
 local function Enchant(link)--附魔
     local id2=link:match('Henchant:(%d+)')
     if id2 then
-        local icon = GetSpellTexture(id2)
+        local icon = C_Spell.GetSpellTexture(id2)
         if icon then
             return '|T'..icon..':0|t'..cn_Link_Text(link)
         end

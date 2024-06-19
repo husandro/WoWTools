@@ -506,7 +506,7 @@ local function Init()
             return
         end
         local spellIndex = self:GetID() + parent.spellOffset
-        local spellName, _, spellID = GetSpellBookItemName(spellIndex, SpellBookFrame.bookType)
+        local spellName, _, spellID = C_Spell.GetSpellBookItemName(spellIndex, SpellBookFrame.bookType)
         set(self.spellString, e.strText[spellName])
         if spellID then
             local spell = Spell:CreateFromSpellID(spellID)
@@ -2354,9 +2354,9 @@ local function Init()
     hooksecurefunc('NewRecipeLearnedAlertFrame_SetUp', function(self, recipeID, recipeLevel)
         local tradeSkillID = C_TradeSkillUI.GetTradeSkillLineForRecipe(recipeID)
         if tradeSkillID then
-            local recipeName = GetSpellInfo(recipeID)
+            local recipeName = C_Spell.GetSpellName(recipeID)
             if recipeName then
-                local rank = GetSpellRank(recipeID)
+                local rank = C_Spell.GetSpellSkillLineAbilityRank(recipeID)
                 self.Title:SetText(rank and rank > 1 and '配方升级！' or '学会了新配方！')
 
                 if recipeLevel ~= nil then
@@ -3597,7 +3597,7 @@ local function Init()
 		local ratedDeserterPenalty = C_PvP.GetPVPActiveRatedMatchDeserterPenalty()
 		if ( ratedDeserterPenalty ) then
 			local ratingChange = math.abs(ratedDeserterPenalty.personalRatingChange)
-			local queuePenaltySpellLink, queuePenaltyDuration = C_SpellBook.GetSpellLinkFromSpellID(ratedDeserterPenalty.queuePenaltySpellID), SecondsToTime(ratedDeserterPenalty.queuePenaltyDuration)
+			local queuePenaltySpellLink, queuePenaltyDuration = C_Spell.GetSpellLink(ratedDeserterPenalty.queuePenaltySpellID), SecondsToTime(ratedDeserterPenalty.queuePenaltyDuration)
 			self.text:SetFormattedText('现在离开比赛会使你失去至少|cnORANGE_FONT_COLOR:%1$d|r点评级分数，而且你会受到%3$s的影响，持续%2$s。|n|n如果你现在离开，你将无法获得你完成的回合的荣誉或征服点数。|n|n你确定要离开比赛吗？', ratingChange, queuePenaltyDuration, queuePenaltySpellLink)
 		elseif ( IsActiveBattlefieldArena() and not C_PvP.IsInBrawl() ) then
 			self.text:SetText('确定要离开竞技场吗？')
@@ -7059,7 +7059,7 @@ local function Init_Loaded(arg1)
                 local actionName
                 if type == Enum.ClickBindingType.Spell or type == Enum.ClickBindingType.PetAction then
                     local overrideID = FindSpellOverrideByID(actionID)
-                    actionName = GetSpellInfo(overrideID)
+                    actionName = C_Spell.GetSpellName(overrideID)
                 elseif type == Enum.ClickBindingType.Macro then
                     local macroName
                     macroName = GetMacroInfo(actionID)

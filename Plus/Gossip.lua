@@ -1481,7 +1481,7 @@ local function Init_Menu_Gossip(_, level, type)
     elseif type=='PlayerChoiceFrame' then
         for spellID, rarity in pairs(Save.choice) do
             e.LoadDate({id=spellID, type='spell'})
-            local icon= GetSpellTexture(spellID)
+            local icon= C_Spell.GetSpellTexture(spellID)
             local name= C_Spell.GetSpellLink(spellID) or ('spellID '..spellID)
             rarity= rarity+1
             local hex= select(4, C_Item.GetItemQualityColor(rarity))

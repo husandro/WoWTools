@@ -389,7 +389,7 @@ local function get_Items()--取得背包物品信息
                         then-- 8 使用: 在龙鳞探险队中的声望提高1000点
                             local spell= select(2, C_Item.GetItemSpell(info.hyperlink))
                             if spell  and not C_Item.IsAnimaItemByID(info.hyperlink) and C_Item.IsUsableItem(info.hyperlink) then
-                                --and IsUsableSpell(spell)
+                                --and C_Spell.IsSpellUsable(spell)
                                 if info.itemID==207002 then--封装命运
                                     if not e.WA_GetUnitBuff('player', 415603, 'HELPFUL') then
                                         setAtt(bag, slot, info.iconFileID, info.itemID)

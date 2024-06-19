@@ -276,7 +276,7 @@ local function getRandomRoll(type)--随机坐骑
     local tab=MountTab[type] or {}
     if #tab>0 then
         local index=math.random(1,#tab)
-        if IsUsableSpell(tab[index]) and not select(2, C_MountJournal.GetMountUsabilityByID(tab[index], true)) then
+        if C_Spell.IsSpellUsable(tab[index]) and not select(2, C_MountJournal.GetMountUsabilityByID(tab[index], true)) then
             return tab[index]
         end
     end
@@ -388,7 +388,7 @@ local function setClickAtt()--设置 Click属性
     else
         spellID= (IsIndoors() or isMoving or isBat) and button.spellID--进入战斗, 室内
             or getRandomRoll(FLOOR)--区域
-            or ((isAdvancedFlyableArea or IsUsableSpell(368896)) and getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING))-- [368896]=true,--[复苏始祖幼龙]
+            or ((isAdvancedFlyableArea or C_Spell.IsSpellUsable(368896)) and getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING))-- [368896]=true,--[复苏始祖幼龙]
             or (IsSubmerged() and getRandomRoll(MOUNT_JOURNAL_FILTER_AQUATIC))--水平中
             or (isFlyableArea and getRandomRoll(MOUNT_JOURNAL_FILTER_FLYING))--飞行区域
             or (IsOutdoors() and getRandomRoll(MOUNT_JOURNAL_FILTER_GROUND))--室内
@@ -915,7 +915,8 @@ local function InitMenu(_, level, type)--主菜单
 
     elseif type==SPELLS then--法术, 二级菜单
         for spellID, _ in pairs(Save.Mounts[SPELLS]) do
-            local name, _, icon = GetSpellInfo(spellID)
+            local name= C_Spell.GetSpellName(spellID)
+            local icon= C_Spell.GetSpellTexture(spellID)
             local text= (icon and '|T'..icon..':0|t' or '').. (e.cn(name) or ('spellID: '..spellID))
             local known= spellID and IsSpellKnownOrOverridesKnown(spellID)
             text= text..format('|A:%s:0:0|a', known and e.Icon.select or e.Icon.disabled)
@@ -1017,8 +1018,8 @@ local function InitMenu(_, level, type)--主菜单
             local name, _, icon, mountID
             local isXDSpell= XD and XD[type]
             if isXDSpell then
-                icon=GetSpellTexture(spellID)
-                name, _, icon = GetSpellInfo(spellID)
+                name= C_Spell.GetSpellName(spellID)
+                icon= C_Spell.GetSpellTexture(spellID)
             else
                 mountID = C_MountJournal.GetMountFromSpell(spellID)
                 if mountID then
@@ -1083,7 +1084,7 @@ local function InitMenu(_, level, type)--主菜单
 
         elseif indexType==SPELLS or indexType==ITEMS then
             local num=getTableNum(indexType)--检测,表里的数量
-            local icon= (indexType==SPELLS and button.spellID) and GetSpellTexture(button.spellID) or button.itemID and C_Item.GetItemIconByID(button.itemID)
+            local icon= (indexType==SPELLS and button.spellID) and C_Spell.GetSpellTexture(button.spellID) or button.itemID and C_Item.GetItemIconByID(button.itemID)
             info={
                 text=(num>0 and '|cnGREEN_FONT_COLOR:'..num..'|r' or '')..(icon and '|T'..icon..':0|t' or '')..(e.onlyChinese and tab.name or indexType),
                 menuList=indexType,
@@ -1097,7 +1098,7 @@ local function InitMenu(_, level, type)--主菜单
         elseif indexType=='Shift' or indexType=='Alt' or indexType=='Ctrl' then
             local tab2=MountTab[indexType] or {}
             local spellID=tab2[1]
-            local icon =spellID and GetSpellTexture(spellID)
+            local icon =spellID and C_Spell.GetSpellTexture(spellID)
             local mountID= spellID and C_MountJournal.GetMountFromSpell(spellID)
             local useError = mountID and select(2, C_MountJournal.GetMountUsabilityByID(mountID, true))
             info={
@@ -1122,7 +1123,7 @@ local function InitMenu(_, level, type)--主菜单
         else
             local tab2=MountTab[indexType] or {}
             local spellID= tab2[1]
-            local icon= spellID and GetSpellTexture(spellID)
+            local icon= spellID and C_Spell.GetSpellTexture(spellID)
             local isXDSpell= XD and XD[indexType]
             local mountID= not isXDSpell and spellID and C_MountJournal.GetMountFromSpell(spellID)
             info={
@@ -1542,7 +1543,7 @@ local function Init()
 
         elseif infoType =='spell' and spellID then
             local exits=Save.Mounts[SPELLS][spellID] and ERR_ZONE_EXPLORED:format(PROFESSIONS_CURRENT_LISTINGS) or NEW
-            local icon = GetSpellTexture(spellID)
+            local icon = C_Spell.GetSpellTexture(spellID)
             local text= (icon and '|T'..icon..':0|t' or '').. (GetSpellLink(spellID) or ('spellID: '..spellID))
             StaticPopup_Show(id..addName..'SPELLS',text, exits , {spellID=spellID})
             ClearCursor()
@@ -1558,7 +1559,7 @@ local function Init()
                C_MountJournal.Dismiss()
 
             --战斗中，可用，驭空术
-            elseif UnitAffectingCombat('player') and not IsPlayerMoving() and  IsUsableSpell(368896) then
+            elseif UnitAffectingCombat('player') and not IsPlayerMoving() and  C_Spell.IsSpellUsable(368896) then
                 local spellID= getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING)
                 local mountID= spellID and C_MountJournal.GetMountFromSpell(spellID) or 368896
                 if mountID then
@@ -1634,7 +1635,7 @@ local function Init()
             e.tips:AddLine(' ')
         elseif infoType =='spell' and spellID then
             local exits=Save.Mounts[SPELLS][spellID] and ERR_ZONE_EXPLORED:format(PROFESSIONS_CURRENT_LISTINGS) or NEW
-            local icon = GetSpellTexture(spellID)
+            local icon = C_Spell.GetSpellTexture(spellID)
             local text= (icon and '|T'..icon..':0|t' or '').. (GetSpellLink(spellID) or ('spellID: '..spellID))
             e.tips:AddDoubleLine(text, exits..e.Icon.left, 0,1,0, 0,1,0)
             e.tips:AddLine(' ')

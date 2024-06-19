@@ -489,7 +489,7 @@ local function Init_Spell_Button()
     function SpellButton:set_count()
         local num, max
         if self.spellID then
-            num, max= GetSpellCharges(self.spellID)
+            num, max= C_Spell.GetSpellCharges(self.spellID)
         end
         self.count:SetText((max and max>1) and num or '')
         self.texture:SetDesaturated(num and num>0)
@@ -536,8 +536,9 @@ local function Init_Spell_Button()
 
         local spellID, action
         for _, spell in pairs(SpellsTab) do
-            if IsSpellKnownOrOverridesKnown(spell) then
-                local name, _, icon = GetSpellInfo(spell)
+            if IsSpellKnownOrOverridesKnown(spell) then                
+                local name= C_Spell.GetSpellName(spell)
+                local icon= C_Spell.GetSpellTexture(spell)
                 self:SetAttribute("type", "spell")
                 self:SetAttribute("spell", name or spell)
                 self:SetAttribute("action", nil)

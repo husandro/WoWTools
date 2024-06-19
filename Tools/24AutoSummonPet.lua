@@ -124,7 +124,7 @@ local function Init()
                         emote= info.emote,
                         emoteText= info.emoteText,
                         auraID= info.auraID,
-                        auraName= info.auraID and GetSpellInfo(info.auraID) or nil,
+                        auraName= info.auraID and C_Spell.GetSpellName(info.auraID) or nil,
                     }
                     if Save.speciesID== speciesID then
                         self.texture:SetTexture(speciesIcon or 0)

@@ -1367,12 +1367,12 @@ local function Init()
     end]]
 
     for spellID, info in pairs(spellTab) do
-        local name= GetSpellInfo(spellID)
+        local name=C_Spell.GetSpellName(spellID)
         if name then
             e.strText[name]= info[1]
         
             if info[2] and info[2]~='' then
-                local desc= GetSpellDescription(spellID)
+                local desc= C_Spell.GetSpellDescription(spellID)
                 if desc and desc~='' then
                     e.strText[desc]= info[2]
                 end
@@ -1384,11 +1384,13 @@ local function Init()
     for mapChallengeModeID, info in pairs(e.ChallengesSpellTabs) do
         if info.spell then
             if info.spellName then
-                local name= GetSpellInfo(info.spell)
-                e.strText[name]= info.spellName
+                local name= C_Spell.GetSpellName(info.spell)
+                if name then
+                    e.strText[name]= info.spellName
+                end
             end
             if info.spellDes then
-                local desc = GetSpellDescription(info.spell)
+                local desc = C_Spell.GetSpellDescription(info.spell)
                 if desc and desc~='' then
                     e.strText[desc]= info.spellDes
                 end
@@ -1530,12 +1532,12 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     elseif event=='SPELL_DATA_LOAD_RESULT' and arg1 and arg2 then
         local info= spellTab[arg1]
         if info then
-            local name= GetSpellInfo(arg1)
+            local name=  C_Spell.GetSpellName(arg1)
             if name then
                 e.strText[name]= info[1]
             end
             if info[2] and info[2]~='' then
-                local desc= GetSpellDescription(arg1)
+                local desc= C_Spell.GetSpellDescription(arg1)
                 if desc and desc~='' then
                     e.strText[desc]= info[2]
                 end

@@ -76,8 +76,8 @@ local function Init()
 
         btn.spell= tab.spell
         btn.spell2= tab.spell2
-        local name, _, icon = GetSpellInfo(tab.spell)
-
+        local name= C_Spell.GetSpellName(tab.spell)
+        local icon= C_Spell.GetSpellTexture(tab.spell)
         btn:SetAttribute('type', 'spell')--设置属性
         btn:SetAttribute('spell', name or tab.spell)
         btn.texture:SetTexture(icon)
@@ -99,14 +99,16 @@ local function Init()
         end
 
         if tab.spell2 then--and IsSpellKnownOrOverridesKnown(tab.spell2) then--右击
-            name,_,icon = GetSpellInfo(tab.spell2)
+            local name2= C_Spell.GetSpellName(tab.spell2)
+            local icon2= C_Spell.GetSpellTexture(tab.spell2)
+
             btn:SetAttribute('type2', 'spell')
-            btn:SetAttribute('spell2', name or tab.spell2)
+            btn:SetAttribute('spell2', name2 or tab.spell2)
 
             btn.texture2= btn:CreateTexture(nil,'OVERLAY')
             btn.texture2:SetPoint('TOPRIGHT',-6,-6)
             btn.texture2:SetSize(10, 10)
-            btn.texture2:SetTexture(icon)
+            btn.texture2:SetTexture(icon2)
             btn.texture2:AddMaskTexture(btn.mask)
             btn:SetScript('OnShow', function(self2)
                 self2:RegisterEvent('SPELL_UPDATE_COOLDOWN')
@@ -139,7 +141,7 @@ local function Init()
             if self.spell2 then
                 e.tips:AddLine(' ')
                 local link= icon and '|T'..icon..':0|t' or ''
-                link= link.. (GetSpellLink(self.spell2) or GetSpellInfo(self.spell2) or ('spellID'..self.spell2))
+                link= link.. (GetSpellLink(self.spell2) or C_Spell.GetSpellName(self.spell2) or ('spellID'..self.spell2))
                 link= link .. (e.GetSpellItemCooldown(self.spell2, nil) or '')
                 e.tips:AddDoubleLine(link,
                     format('%s%s',

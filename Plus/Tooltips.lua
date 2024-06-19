@@ -372,7 +372,7 @@ function func.Set_Mount(self, mountID, type)--坐骑
     local creatureName, spellID, _,isActive, isUsable, _, _, isFactionSpecific, faction, _, isCollected, _, isForDragonriding =C_MountJournal.GetMountInfoByID(mountID)
     local spell
     if spellID then
-        local icon= select(3, GetSpellInfo(spellID))
+        local icon= C_Spell.GetSpellTexture(spellID) or 0
         spell= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, (icon and '|T'..icon..':0|t' or '')..(e.onlyChinese and '法术' or SPELLS), spellID)
     end
     self:AddDoubleLine(format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '坐骑' or MOUNTS, mountID), spell)
@@ -648,7 +648,7 @@ function func.Set_Item(self, itemLink, itemID)
 
     local spellName, spellID = C_Item.GetItemSpell(itemID)--物品法术
     if spellName and spellID then
-        local spellTexture= GetSpellTexture(spellID)
+        local spellTexture= C_Spell.GetSpellTexture(spellID)
         self:AddDoubleLine((itemName~=spellName and col..'['..spellName..']|r' or '')..(e.onlyChinese and '法术' or SPELLS)..' '..spellID, spellTexture and spellTexture~=itemTexture  and '|T'..spellTexture..':0|t'..spellTexture or ' ')
     end
 
@@ -740,29 +740,37 @@ end
 
 function func.Set_Spell(self, spellID)--法术
     spellID = spellID or select(2, self:GetSpell())
-    if not spellID then
+    local name, icon, originalIcon
+    local spellInfo= spellID and C_Spell.GetSpellInfo(spellID)
+    if spellInfo then
+        name= spellInfo.name
+        icon= spellInfo.iconID
+        originalIcon= spellInfo.originalIconID
+    end
+    if not name then
         return
     end
-    local name, _, icon, _, _, _, _, originalIcon= GetSpellInfo(spellID)
-    local spellTexture=  originalIcon or icon or GetSpellTexture(spellID)
+    local spellTexture=  originalIcon or icon
     self:AddLine(' ')
     self:AddDoubleLine((e.onlyChinese and '法术' or SPELLS)..' '..spellID, spellTexture and '|T'..spellTexture..':0|t'..spellTexture, 1,1,1, 1,1,1)
     local mountID = spellID~=150544 and C_MountJournal.GetMountFromSpell(spellID)--坐骑
     if mountID then
         func.Set_Mount(self, mountID)
     else
-        local overrideSpellID = FindSpellOverrideByID(spellID)
+        --[[local overrideSpellID = FindSpellOverrideByID(spellID)
         if overrideSpellID and overrideSpellID~=spellID then
             e.LoadDate({id=overrideSpellID, type='spell'})--加载 item quest spell
             local link= C_Spell.GetSpellLink(overrideSpellID)
-            local name2, _, icon2, _, _, _, _, originalIcon2= GetSpellInfo(overrideSpellID)
+            if link then
+
+            local name2, _, icon2, _, _, _, _, originalIcon2= C_Spell.GetSpellInfo(overrideSpellID)
             link= link or name2
             link= link and link..overrideSpellID or ('overrideSpellID '..overrideSpellID)
             if link then
-                spellTexture=  originalIcon2 or icon2 or GetSpellTexture(overrideSpellID)
+                spellTexture=  originalIcon2 or icon2 or C_Spell.GetSpellTexture(overrideSpellID)
                 e.tips:AddDoubleLine(format(e.onlyChinese and '代替%s' or REPLACES_SPELL, link), spellTexture and '|T'..spellTexture..':0|t'..spellTexture)
             end
-        end
+        end]]
         func.Set_Web_Link({frame=self, type='spell', id=spellID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
     end
 end
@@ -924,18 +932,18 @@ end
 --Buff
 --####
 function func.set_All_Aura(self, data)--Aura
-    local name, _, icon, _, _, _, spellID = GetSpellInfo(data.id)
-   if icon and spellID then
-        self:AddLine(' ')
-        self:AddDoubleLine((e.onlyChinese and '光环' or AURAS)..' '..spellID, '|T'..icon..':0|t'..icon)
-        local mountID = C_MountJournal.GetMountFromSpell(spellID)
-        if mountID then
-            func.Set_Mount(self, mountID, 'aura')
-
-        else
-            func.Set_Web_Link({frame=self, type='spell', id=spellID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
-        end
+    local spellID= data.id
+    local name= C_Spell.GetSpellName(spellID)
+    local icon= C_Spell.GetSpellTexture(spellID)    
+    self:AddLine(' ')
+    self:AddDoubleLine((e.onlyChinese and '光环' or AURAS)..' '..spellID, icon and '|T'..icon..':0|t'..icon)
+    local mountID = C_MountJournal.GetMountFromSpell(spellID)
+    if mountID then
+        func.Set_Mount(self, mountID, 'aura')
+    else
+        func.Set_Web_Link({frame=self, type='spell', id=spellID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
     end
+    
 end
 function func.set_Buff(type, self, ...)
     local source--local unit= ...
@@ -1558,7 +1566,8 @@ function func.Set_Flyout(self, flyoutID)--法术, 弹出框
         local spellID= overrideSpellID or flyoutSpellID
         if spellID then
             e.LoadDate({id=spellID, type='spell'})
-            local name2, _, icon = GetSpellInfo(spellID)
+            local name2= C_Spell.GetSpellName(spellID)
+            local icon= C_Spell.GetSpellTexture(spellID)
             if name2 and icon then
                 self:AddDoubleLine('|T'..icon..':0|t'..(not isKnown2 and ' |cnRED_FONT_COLOR:' or '')..e.cn(name2)..'|r', (not isKnown2 and '|cnRED_FONT_COLOR:' or '').. spellID..' '..(e.onlyChinese and '法术' or SPELLS)..'('..slot)
             else
@@ -1827,11 +1836,11 @@ local function Init()
     hooksecurefunc(GameTooltip, 'SetSpellBookItem', function(_, slot, unit)--技能收，宠物，技能，提示
         if unit=='pet' and slot then
             local icon=GetSpellBookItemTexture(slot, 'pet')
-            local spellID = select(3, GetSpellBookItemName(slot, 'pet'))
+            local spellID = select(3, C_Spell.GetSpellBookItemName(slot, 'pet'))
             if spellID then
                 e.tips:AddLine(' ')
                 e.tips:AddDoubleLine((e.onlyChinese and '法术' or SPELLS)..' '..spellID, icon and '|T'..icon..':0|t'..icon)
-                local slotType, actionID = GetSpellBookItemInfo(slot, 'pet')
+                local slotType, actionID = C_Spell.GetSpellBookItemInfo(slot, 'pet')
                 if slotType and actionID then
                     e.tips:AddDoubleLine('slotType '..slotType, 'actionID '..actionID)
                 end

@@ -32,8 +32,9 @@ local function Init_Tools_Button()
     for index, type in pairs(tab) do
         if type then --and index~=4 and index~=3 then
             local name, _, _, _, numAbilities, spelloffset = GetProfessionInfo(type)
-            local _, _, icon, _, _, _, spellID= GetSpellInfo(spelloffset+ 1, 'spell')
-
+            local spellInfo= C_Spell.GetSpellInfo(spelloffset+ 1, 'spell') or {}
+            local icon= spellInfo.iconID
+            local spellID= spellInfo.spellID
 
             local btn= e.Cbtn2({
                 name=id..addName..name,
@@ -63,7 +64,7 @@ local function Init_Tools_Button()
                 e.tips:SetSpellByID(self.spellID)
                 if self.index==5 then
                     local link= C_Spell.GetSpellLink(818)
-                    local texture= GetSpellTexture(818)
+                    local texture= C_Spell.GetSpellTexture(818)
                     if link and texture then
                         local text= '|T'..texture..':0|t'.. link
                         if PlayerHasToy(134020) then--玩具,大厨的帽子
@@ -77,7 +78,7 @@ local function Init_Tools_Button()
                     end
                 elseif self.spellID2 then
                     local link= C_Spell.GetSpellLink(self.spellID2)
-                    local texture= GetSpellTexture(self.spellID2)
+                    local texture= C_Spell.GetSpellTexture(self.spellID2)
                     if link and texture then
                         e.tips:AddLine(' ')
                         e.tips:AddDoubleLine('|T'..texture..':0|t'.. link, e.Icon.right)
@@ -139,7 +140,7 @@ local function Init_Tools_Button()
             end
 
             if index==5 then--烹饪用火
-                local name2=IsSpellKnownOrOverridesKnown(818) and GetSpellInfo(818)
+                local name2=IsSpellKnownOrOverridesKnown(818) and C_Spell.GetSpellName(818)
                 if name2 then
                     local text=''
                     if PlayerHasToy(134020) then--玩具,大厨的帽子
@@ -162,7 +163,9 @@ local function Init_Tools_Button()
                     btn:SetAttribute("macrotext2", text)
                 end
             elseif numAbilities and numAbilities>1 then
-                local _, _, icon2, _, _, _, spellID2= GetSpellInfo(spelloffset+ 2, 'spell')
+                local info2= C_Spell.GetSpellInfo(spelloffset+ 2, 'spell') or {}
+                local icon2= info2.iconID
+                local spellID2= info2.spellID
                 if icon2 and spellID2 and icon2~=icon then
                     if not btn.textureRight then
                         btn.textureRight= btn:CreateTexture(nil,'OVERLAY')
@@ -241,7 +244,7 @@ local function Init_ProfessionsFrame_Button()
             button.skillLine= skillLine
 
             if skillLine==185 then--烹饪用火
-                local name2= GetSpellInfo(818)
+                local name2= C_Spell.GetSpellName(818)
                 if name2 then
                     local btn= e.Cbtn(button, {type= true, texture=135805 ,size={32, 32}})
                     btn:SetPoint('LEFT', button, 'RIGHT',2,0)

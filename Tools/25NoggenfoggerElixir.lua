@@ -81,7 +81,8 @@ end
 --#####
 local function InitMenu(self, level)--主菜单
     for spellID, type in pairs(Save.aura) do
-        local name, _, icon = GetSpellInfo(spellID)
+        local name= C_Spell.GetSpellName(spellID)
+        local icon= C_Spell.GetSpellTexture(spellID)
         name= name or (e.onlyChinese and '光环' or AURAS)..' '..spellID
         local info={
             text=name,
@@ -172,7 +173,8 @@ local function Init()
         e.tips:SetItemByID(button.itemID)
         e.tips:AddLine(' ')
         for spellID, type in pairs(Save.aura) do
-            local name, _, icon = GetSpellInfo(spellID)
+            local name= C_Spell.GetSpellName(spellID)
+            local icon= C_Spell.GetSpellTexture(spellID)
             name= name or (AURAS..' ID'..spellID)
             name= (icon and '|T'..icon..':0|t' or '')..name
             e.tips:AddDoubleLine(name, type and	'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '取消' or CANCEL)..'|r' or '...')

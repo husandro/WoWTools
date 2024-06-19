@@ -48,7 +48,7 @@ local function get_abilities_icons(pet, line)--取得，宠物，技能，图标
     if pet and pet.abilities then
         for _, spellID in pairs(pet.abilities) do
             e.LoadDate({id=spellID, type='spell'})
-            local texture= GetSpellTexture(spellID)
+            local texture= C_Spell.GetSpellTexture(spellID)
             if texture and texture>0 then
                 text= format('%s%s|T%d:14|t', text, line and text~='' and '|n' or '', texture)
             end
@@ -219,7 +219,7 @@ local function created_model(btn, setBg)
             if self:GetID()==Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX then
                 e.tips:AddDoubleLine(
                     format('|cffaad372%s|r', e.onlyChinese and '天赋' or TALENT),
-                    format('|T461112:0|t|cffaad372%s|r', e.onlyChinese and '动物伙伴' or C_Spell.GetSpellLink(267116) or GetSpellInfo(267116) or 'Animal Companion')
+                    format('|T461112:0|t|cffaad372%s|r', e.onlyChinese and '动物伙伴' or C_Spell.GetSpellLink(267116) or C_Spell.GetSpellName(267116) or 'Animal Companion')
                 )
             end
             e.tips:Show()

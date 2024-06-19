@@ -187,7 +187,7 @@ local function Init_Quest()
         end
         if C_QuestInfoSystem.HasQuestRewardSpells(questID) then
             for _, spellID in pairs(C_QuestInfoSystem.GetQuestRewardSpells(questID) or {}) do
-                local texture= GetSpellTexture(spellID)
+                local texture= C_Spell.GetSpellTexture(spellID)
                 if texture then
                     m= format('%s|T%d:0|t', m, texture)
                 end
