@@ -1,6 +1,6 @@
 --1US (includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5Chin e.Player.region~=3 
 local id, e = ...
-if e.Player.region~=3 and not e.Is_PTR then-- LOCALE_zhCN or LOCALE_zhTW 
+if (e.Player.region~=3 and not e.Is_PTR) or LOCALE_zhCN or LOCALE_zhTW then
     return
 end
 

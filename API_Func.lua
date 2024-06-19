@@ -142,7 +142,7 @@ function e.Is_Chinese_Text(str)--字符中，是否有汉字
 end
 
 function e.GetExpansionText(expacID, questID)--版本数据 11版本
-    if not expacID and questID and GetQuestExpansion then
+    if not expacID and questID then
         expacID= GetQuestExpansion(questID)
     end
     if expacID and _G['EXPANSION_NAME'..expacID] then
