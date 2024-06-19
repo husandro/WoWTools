@@ -1021,7 +1021,7 @@ function e.GetFactionInfo(factionID, index, toRight)
     local isParagon = C_Reputation.IsFactionParagon(factionID)--奖励
     local hasRewardPending
     if isParagon then--奖励
-        local currentValue, threshold, rewardQuestID, hasRewardPending2, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(factionID);
+        local currentValue, threshold, _, hasRewardPending2, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(factionID);
         hasRewardPending= hasRewardPending2 and format('|A:GarrMission-%sChest:0:0|a', e.Player.faction) or nil
         if not tooLowLevelForParagon and currentValue and threshold then
             local completed= math.modf(currentValue/threshold)--完成次数

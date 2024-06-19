@@ -998,7 +998,9 @@ end
 --####
 function func.Set_Faction(self, factionID, frame)
     local info= e.GetFactionInfo(factionID, nil, true)
-    if not info.factionID then return end
+    if not info.factionID then
+        return
+    end
     if frame and not self:IsShown() then
         e.tips:SetOwner(frame, "ANCHOR_RIGHT")
         e.tips:AddLine(e.cn(info.name))
