@@ -1876,14 +1876,8 @@ local function Init()
 
     --####
     --声望
-    --####
-    --[[hooksecurefunc(ReputationBarMixin, 'ShowMajorFactionRenownTooltip', function(self)--Major名望, ReputationFrame.lua
-        func.Set_Faction(e.tips, self.factionID)
-    end)
-    hooksecurefunc(ReputationBarMixin, 'ShowFriendshipReputationTooltip', function(self, friendshipID)--个人声望 ReputationFrame.lua
-        func.Set_Faction(e.tips, friendshipID)
-    end)]]
-    hooksecurefunc(ReputationBarMixin, 'OnEnter', function(frame)--角色栏,声望
+    --#### 11版本
+    --[[hooksecurefunc(ReputationBarMixin, 'OnEnter', function(frame)--角色栏,声望
         func.Set_Faction(e.tips, frame.factionID, frame)
     end)
 
@@ -1902,7 +1896,7 @@ local function Init()
         if ReputationDetailFrame.factionIDText then
             ReputationDetailFrame.factionIDText:SetText(factionID and (e.onlyChinese and '声望' or REPUTATION)..' '..factionID or '')
         end
-    end)
+    end)]]
 
     --###########
     --宠物面板提示
@@ -2100,7 +2094,7 @@ local function Init()
 
 
 
-    --追踪栏
+    --[[追踪栏
     hooksecurefunc('BonusObjectiveTracker_OnBlockEnter', function(block)
         if block.id and not block.module.tooltipBlock and block.TrackedQuest then
             e.tips:SetOwner(block, "ANCHOR_LEFT")
@@ -2110,7 +2104,7 @@ local function Init()
             e.tips:AddDoubleLine(id, Initializer:GetName())
             e.tips:Show()
         end
-    end)
+    end)]]
 
    for i= 1, NUM_OVERRIDE_BUTTONS do-- ActionButton.lua
         if _G['OverrideActionBarButton'..i] then
@@ -2135,36 +2129,9 @@ local function Init()
         end
     end
 
-    --显示选项中的CVar
-    --Blizzard_SettingControls.lua
+    --显示选项中的CVar 11版本
+    --[[Blizzard_SettingControls.lua
     if Save.ShowOptionsCVarTips then
-        --[[local function set_onenter(self)
-            if self.onEnter or not self.variable then
-                return
-            end
-            self:HookScript('OnEnter', function(frame)
-                if not frame.variable then
-                    return
-                end
-                local value, defaultValue, _, _, _, isSecure = C_CVar.GetCVarInfo(frame.variable)
-                GameTooltip_AddBlankLineToTooltip(SettingsTooltip)
-                GameTooltip_AddNormalLine(SettingsTooltip,
-                    HIGHLIGHT_FONT_COLOR:WrapTextInColorCode('CVar|cff00ff00'..e.Icon.right..frame.variable..'|r')
-                    ..(value and ' ('..(value or '')..'/'..(defaultValue or '')..')' or ''),
-                    true)
-                if isSecure then
-                    GameTooltip_AddNormalLine(SettingsTooltip, '|cnRED_FONT_COLOR:isSecure: true|r', true)
-                end
-                GameTooltip_AddNormalLine(SettingsTooltip, id.. ' '..addName)
-                SettingsTooltip:Show()
-            end)
-            self:HookScript('OnMouseDown', function(frame, d)
-                if d=='RightButton' and frame.variable then
-                    e.Chat(frame.variable, nil, true)
-                end
-            end)
-            self.onEnter=true
-        end]]
         local function InitTooltip(name, tooltip, variable)
             GameTooltip_AddHighlightLine(SettingsTooltip, e.strText[name] or name)
             if tooltip then
@@ -2253,24 +2220,18 @@ local function Init()
 
 
         hooksecurefunc(SettingsCheckBoxControlMixin, 'Init', function(self, initializer)
-            --[[self.CheckBox.variable= initializer.data.setting.variable
-            set_onenter(self.CheckBox)]]
             local setting = initializer.data.setting
             local initTooltip= GenerateClosure(InitTooltip, initializer:GetName(), initializer:GetTooltip(), setting.variable)
             self:SetTooltipFunc(initTooltip)
             self.CheckBox:SetTooltipFunc(initTooltip)
         end)
         hooksecurefunc(SettingsSliderControlMixin, 'Init', function(self, initializer)
-            --[[self.SliderWithSteppers.Slider.variable= initializer.data.setting.variable
-            set_onenter(self.SliderWithSteppers.Slider)]]
             local setting = initializer.data.setting
             local initTooltip= GenerateClosure(InitTooltip, initializer:GetName(), initializer:GetTooltip(), setting.variable)
             self:SetTooltipFunc(initTooltip)
             self.SliderWithSteppers.Slider:SetTooltipFunc(initTooltip)
         end)
         hooksecurefunc(SettingsDropDownControlMixin, 'Init', function(self, initializer)
-            --[[self.DropDown.Button.variable= initializer.data.setting.variable
-            set_onenter(self.DropDown.Button)]]
             local setting = self:GetSetting()
             local options = initializer:GetOptions()
             local initTooltip= GenerateClosure(InitTooltip, initializer:GetName(), initializer:GetTooltip(), setting.variable)
@@ -2280,18 +2241,12 @@ local function Init()
             self.DropDown.Button:SetTooltipFunc(initTooltip)
         end)
         hooksecurefunc(SettingsCheckBoxWithButtonControlMixin, 'Init', function(self, initializer)
-            --[[self.CheckBox.variable= initializer.data.setting.variable
-            set_onenter(self.CheckBox)]]
             local setting = initializer:GetSetting()
             local initTooltip= GenerateClosure(InitTooltip, initializer:GetName(), initializer:GetTooltip(), setting.variable)
 	        self:SetTooltipFunc(initTooltip)
             self.CheckBox:SetTooltipFunc(initTooltip)
         end)
         hooksecurefunc(SettingsCheckBoxSliderControlMixin, 'Init', function(self, initializer)--Blizzard_SettingControls.lua
-            --[[self.CheckBox.variable= initializer.data.cbSetting.variable
-            set_onenter(self.CheckBox)
-            self.SliderWithSteppers.Slider.variable= initializer.data.sliderSetting.variable
-            set_onenter(self.SliderWithSteppers.Slider)]]
             local cbSetting = initializer.data.cbSetting
             local cbLabel = initializer.data.cbLabel
             local cbTooltip = initializer.data.cbTooltip
@@ -2303,10 +2258,6 @@ local function Init()
             self.SliderWithSteppers.Slider:SetTooltipFunc(GenerateClosure(InitTooltip, sliderLabel, sliderTooltip, cbSetting.variable))
         end)
         hooksecurefunc(SettingsCheckBoxDropDownControlMixin, 'Init', function(self, initializer)--Blizzard_SettingControls.lua
-            --[[self.CheckBox.variable= initializer.data.cbSetting.variable
-            set_onenter(self.CheckBox)
-            self.DropDown.Button.variable= initializer.data.dropDownSetting.variable
-            set_onenter(self.DropDown.Button)]]
             local cbSetting = initializer.data.cbSetting
             local cbLabel = initializer.data.cbLabel
             local cbTooltip = initializer.data.cbTooltip
@@ -2342,7 +2293,7 @@ local function Init()
                 button:SetTooltipFunc(GenerateClosure(InitializeKeyBindingButtonTooltip, index))
             end
         end)
-    end
+    end]]
 
     --添加 WidgetSetID
     hooksecurefunc('GameTooltip_AddWidgetSet', function(self, uiWidgetSetID)

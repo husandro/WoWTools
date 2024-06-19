@@ -1423,14 +1423,14 @@ local function Init_MountJournal()
         e.LibDD:ToggleDropDownMenu(1, nil, frame.Menu, frame, 74, 15)
     end)
 
-    MountJournal.MountCount:ClearAllPoints()
+    --[[MountJournal.MountCount:ClearAllPoints() --11版本
     MountJournal.MountCount:SetPoint('BOTTOMLEFT', MountJournalSearchBox, 'TOPLEFT',-3, 0)
     MountJournal.MountCount:SetPoint('RIGHT', MountJournalFilterButton, 'LEFT', -2, 0)
     MountJournalFilterButton.ResetButton:HookScript('OnClick', function()
         if _G['MountJournalFilterButtonWoWTools'].ResetButton:IsShown() then
             _G['MountJournalFilterButtonWoWTools'].ResetButton:Click()
         end
-    end)
+    end)]]
 end
 
 

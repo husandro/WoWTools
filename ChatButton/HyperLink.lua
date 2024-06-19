@@ -792,13 +792,14 @@ local function Init_Add_Reload_Button()
 
     GameMenuFrame.reload:SetPoint('TOP', GameMenuButtonQuit, 'BOTTOM', 0, -2)
 
-    hooksecurefunc('GameMenuFrame_UpdateVisibleButtons', function(self)
+    --11版本
+    --[[hooksecurefunc('GameMenuFrame_UpdateVisibleButtons', function(self)
         if not Save.not_Add_Reload_Button then
             GameMenuButtonContinue:ClearAllPoints()
             GameMenuButtonContinue:SetPoint('TOP', GameMenuFrame.reload, 'BOTTOM', 0, -16)
             self:SetHeight(self:GetHeight()+ 16)
         end
-    end)
+    end)]]
 
     SettingsPanel.AddOnsTab.reload:SetPoint('RIGHT', SettingsPanel.ApplyButton, 'LEFT', -15,0)
     e.Cstr(nil, {changeFont= SettingsPanel.OutputText, size=14})

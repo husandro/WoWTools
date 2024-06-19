@@ -2746,16 +2746,12 @@ WowTools_OnAddonCompartmentFuncOnEnter= enter_Func
 
 --##############
 --副本，难图，指示
---##############
+--############## 11版本
 local function Init_InstanceDifficulty()--副本，难图，指示
     local btn= MinimapCluster.InstanceDifficulty
-    if Save.disabledInstanceDifficulty then
+    if Save.disabledInstanceDifficulty or not btn.Instance then
         return
     end
-
-    --btn.Instance.Border:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
-    --btn.Guild.Border:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
-    --btn.ChallengeMode.Border:SetVertexColor(e.Player.r, e.Player.g, e.Player.b, 1)
     e.Set_Label_Texture_Color(btn.Instance.Border, {type='Texture'})
     e.Set_Label_Texture_Color(btn.Guild.Border, {type='Texture'})
     e.Set_Label_Texture_Color(btn.ChallengeMode.Border, {type='Texture'})
