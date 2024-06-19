@@ -590,7 +590,7 @@ local function set_ReputationFrame_InitReputationRow(btn)--factionRow, elementDa
 	if not frame or factionID==0 then
 		return
 	end
-	
+
 	local bar = frame.ReputationBar;
 	--[[elementData
     --factionID, description, name, reaction
@@ -686,13 +686,13 @@ local function set_ReputationFrame_InitReputationRow(btn)--factionRow, elementDa
 				completed= math.modf(currentValue/threshold)--完成次数
 				completedParagon= completed>0 and completed
 			end
-			bar:SetMinMaxValues(0, threshold)
-			bar:SetValue(currentValue-(threshold*completed))
+			--bar:SetMinMaxValues(0, threshold)
+			--bar:SetValue(currentValue-(threshold*completed))
 		end
 	end
 	if completedParagon and not frame.completed then
-		frame.completed= e.Cstr(bar, {justifyH='CENTER'})
-		frame.completed:SetPoint(bar.RightTexture)
+		frame.completed= e.Cstr(frame)
+		frame.completed:SetPoint('CENTER',frame.ParagonIcon)
 		--frame.completed:SetPoint('RIGHT',- 5,0)
 	end
 	if frame.completed then
@@ -704,8 +704,8 @@ local function set_ReputationFrame_InitReputationRow(btn)--factionRow, elementDa
 	end
 
 	if levelText and not frame.levelText then--等级
-		frame.levelText= e.Cstr(frame, {size=10, justifyH='RIGHT'})--10, nil, nil, nil, nil, 'RIGHT')
-		frame.levelText:SetPoint('RIGHT', frame, 'LEFT',-2,0)
+		frame.levelText= e.Cstr(bar, {size=10})--10, nil, nil, nil, nil, 'RIGHT')
+		frame.levelText:SetPoint('LEFT', bar, 'RIGHT')
 	end
 	if frame.levelText then
 		frame.levelText:SetText(levelText or '')
