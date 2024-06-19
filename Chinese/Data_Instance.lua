@@ -1322,47 +1322,7 @@ local function hookLable(lable)
     end
 end
 
-local function EncounterJournal_IsHeaderTypeOverview(headerType)
-	return headerType == EJ_HTYPE_OVERVIEW;
-end
 
-
-local function EncounterJournal_SetupIconFlags(sectionID, infoHeaderButton, index)--Blizzard_EncounterJournal.lua
-    local iconFlags = C_EncounterJournal.GetSectionIconFlags(sectionID)
-    for index2, icon in ipairs(infoHeaderButton.icons or {}) do
-        local iconFlag = iconFlags and iconFlags[index2]
-        if iconFlag then
-            local tab={
-                [0] = "坦克预警",
-                [1] = "伤害输出预警",
-                [10] = "疾病效果",
-                [11] = "激怒",
-                [12] = "史诗难度",
-                [13] = "流血",
-                [2] = "治疗预警",
-                [3] = "英雄难度",
-                [4] = "灭团技",
-                [5] = "重要",
-                [6] = "可打断技能",
-                [7] = "法术效果",
-                [8] = "诅咒效果",
-                [9] = "中毒效果",
-            }
-            if tab[iconFlag] then
-                icon.tooltipTitle = tab[iconFlag]--_G["ENCOUNTER_JOURNAL_SECTION_FLAG"..iconFlag]
-                if index then
-                    if iconFlag==1 then
-                        infoHeaderButton.title:SetText('伤害')
-                    elseif iconFlag==2 then
-                        infoHeaderButton.title:SetText('治疗者')
-                    elseif iconFlag==0 then
-                        infoHeaderButton.title:SetText('坦克')
-                    end
-                end
-            end
-        end
-    end
-end
 
 
 
@@ -1430,20 +1390,7 @@ local function Init_EncounterJournal()
     EncounterJournalEncounterFrameInfoOverviewScrollFrameScrollChildTitle:SetText('综述')
 
   
-    hooksecurefunc('EncounterJournal_SetUpOverview', function(self, overviewSectionID, index)
-        local infoHeader= self.overviews[index]
-        --local sectionInfo = C_EncounterJournal.GetSectionInfo(overviewSectionID)
-        if infoHeader and infoHeader.button and overviewSectionID then
-            EncounterJournal_SetupIconFlags(overviewSectionID, infoHeader.button, index)
-        end
-    end)
-    hooksecurefunc('EncounterJournal_ToggleHeaders', function()
-        for _, infoHeader in pairs(EncounterJournal.encounter.usedHeaders or {}) do
-            if infoHeader.myID and  infoHeader.button then
-                EncounterJournal_SetupIconFlags(infoHeader.myID, infoHeader.button)
-            end
-        end
-    end)
+
 
 
 
