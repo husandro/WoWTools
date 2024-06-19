@@ -58,7 +58,10 @@ local function get_Faction_Info(index, factionID)
 		return
 	end
 
-	local factionStandingtext= data.isCapped and data.factionStandingtext
+	local factionStandingtext
+	if not data.isCapped then 
+		factionStandingtext= data.factionStandingtext
+	end
 
 	local text
 	if onlyIcon then--仅显示有图标
