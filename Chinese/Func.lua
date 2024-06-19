@@ -399,7 +399,8 @@ local function Init()
         set(ReputationDetailMainScreenCheckBoxText, '显示为经验条')
         set(ReputationDetailInactiveCheckBoxText, '隐藏')
         set(ReputationDetailAtWarCheckBoxText, '交战状态')
-        hooksecurefunc('ReputationFrame_InitReputationRow', function(factionRow, elementData)
+        --11版本
+        --[[hooksecurefunc('ReputationFrame_InitReputationRow', function(factionRow, elementData)
             local factionIndex = elementData.index
             local name, description, standingID, _, _, _, _, _, _, _, _, _, _, factionID = GetFactionInfo(factionIndex)
             name= name and e.strText[name]
@@ -431,7 +432,7 @@ local function Init()
                     set(ReputationDetailFactionDescription, e.strText[description])
                 end
             end
-        end)
+        end)]]
 
 
 

@@ -1862,7 +1862,7 @@ local function Init_overlayFrames()--WorldMapMixin:AddOverlayFrames()
     btn= WorldMapFrame.overlayFrames[index]
     if btn then
         hooksecurefunc(btn, 'ShowMapJumpTooltip', function(self)
-            local factionName = select(1, GetFactionInfoByID(self.selectedBounty.factionID))
+            local factionName = (C_Reputation.GetFactionDataByID(self.selectedBounty.factionID) or {}).name
             if factionName then
                 GameTooltip_SetTitle(GameTooltip, factionName)                
                 GameTooltip_AddInstructionLine(GameTooltip, "<左键点击在可用活动间轮换>|n<右键点击取消追踪阵营>", false)

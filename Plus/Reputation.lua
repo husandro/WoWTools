@@ -183,38 +183,14 @@ end
 
 --阵营声望，提示
 local function ShowFactionTooltip(self)--Tooltips.lua
-	local isParagon = C_Reputation.IsFactionParagon(self.factionID)--奖励			
-	local completedParagon--完成次数
-	if ( isParagon ) then--奖励
-		local currentValue, threshold, _, _, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(self.factionID)
-		if not tooLowLevelForParagon then
-			local completed= math.modf(currentValue/threshold)--完成次数
-			if completed>0 then
-				completedParagon=(e.onlyChinese and '奖励 '..completed..' 次' or (QUEST_REWARDS.. ' '..completed..' '..VOICEMACRO_LABEL_CHARGE1))
-			end
-		end
-	end
-	local name, description, standingID, barMin, barMax, barValue, _, _, isHeader, _, hasRep, _, _, factionID, _, _ = GetFactionInfoByID(self.factionID)
-	if factionID then
-		Set_SetOwner(self)
-		e.tips:AddLine(e.cn(name)..' '..standingID..'/'..MAX_REPUTATION_REACTION, 1,1,1)
-		e.tips:AddLine(e.cn(description), nil,nil,nil, true)
-		e.tips:AddLine(' ')
-		local gender = e.Player.sex
-		local factionStandingtext = e.cn(GetText("FACTION_STANDING_LABEL"..standingID, gender))
-		local barColor = FACTION_BAR_COLORS[standingID]
-		factionStandingtext=barColor:WrapTextInColorCode(factionStandingtext)--颜色
-		if barValue and barMax then
-			if barMax==0 then
-				e.tips:AddLine(factionStandingtext..' '..('%i%%'):format( (barMin-barValue)/barMin*100), 1,1,1)
-			else
-				e.tips:AddLine(factionStandingtext..' '..e.MK(barValue, 3)..'/'..e.MK(barMax, 3)..' '..('%i%%'):format(barValue/barMax*100), 1,1,1)
-			end
-			e.tips:AddLine(' ')
-		end
-		e.tips:AddDoubleLine((e.onlyChinese and '声望' or REPUTATION)..' '..self.factionID, completedParagon)
-		e.tips:Show();
-	end
+	local info= e.GetFactionInfo(self.factionID, nil, true)
+	if not info.name then return end
+	Set_SetOwner(self)
+	GameTooltip_SetTitle(e.cn(info.name))
+	e.tips:AddLine(e.cn(info.description), nil,nil,nil, true)
+	e.tips:AddLine(' ')
+	e.tips:AddDoubleLine((e.onlyChinese and '声望ID' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REPUTATION, 'ID'))..' '..self.factionID, info.factionStandingtext)
+	e.tips:Show()
 end
 
 
@@ -242,7 +218,7 @@ local function Set_TrackButton_Text()
 		end
 		table.sort(faction, function(a, b) return a.factionID > b.factionID end)
 	else
-		for index=1, GetNumFactions() do
+		for index=1, C_Reputation.GetNumFactions() do
 			local text, texture, atlas, factionID, friendshipID=get_Faction_Info(index, nil)
 			if text and factionID then
 				table.insert(faction, {text= text, texture=texture, atlas=atlas, factionID= factionID, friendshipID=friendshipID})
@@ -546,7 +522,8 @@ local function Init_TrackButton()
 		end
 	end)
 
-	hooksecurefunc('ReputationFrame_Update',Set_TrackButton_Text)--更新, 监视, 文本
+	hooksecurefunc(ReputationFrame, 'Update', Set_TrackButton_Text)
+	--hooksecurefunc('ReputationFrame_Update',Set_TrackButton_Text)--更新, 监视, 文本
 
 	TrackButton:set_Scale()
 	TrackButton:set_Point()
@@ -560,7 +537,7 @@ local function Init_TrackButton()
 
 
 
-	hooksecurefunc(ReputationBarMixin, 'OnEnter', function(frame)--角色栏,声望
+	--[[hooksecurefunc(ReputationBarMixin, 'OnEnter', function(frame)--角色栏,声望
 		for _, btn in pairs(TrackButton.btn) do
 			if frame.factionID and frame.factionID== btn.factionID then
 				btn:SetScale(2)
@@ -573,7 +550,7 @@ local function Init_TrackButton()
 		for _, btn in pairs(TrackButton.btn) do
 			btn:SetScale(1)
 		end
-    end)
+    end)]]
 end
 
 
@@ -602,7 +579,7 @@ end
 
 --#########
 --界面, 增强
---#########
+--######### 11版本
 local function set_ReputationFrame_InitReputationRow(factionRow, elementData)--ReputationFrame.lua
     local factionIndex = elementData.index;
 	local frame = factionRow.Container
@@ -791,85 +768,18 @@ end
 --#############
 local factionStr= FACTION_STANDING_INCREASED:gsub("%%s", "(.-)")--你在%s中的声望值提高了%d点。
 factionStr = factionStr:gsub("%%d", ".-")
-local function Set_Faction_Update(_, _, text, ...)
+
+local function Set_Faction_Update(_, _, text, ...)	
 	local name=text and text:match(factionStr)
 	if not name then
 		return
 	end
 
-	for i=1, GetNumFactions() do
-		local name2, _, standingID, barMin, barMax, barValue, _, _, _, _, _, _, _, factionID = GetFactionInfo(i)
+	for i=1, C_Reputation.GetNumFactions() do
+		local data= C_Reputation.GetFactionDataByIndex(i) or {}
+		local name2= data.name
+		local factionID= data.factionID
 		if name2==name and factionID then
-			local isCapped= standingID == MAX_REPUTATION_REACTION
-			local factionStandingtext, value, icon
-			local barColor = FACTION_BAR_COLORS[standingID]
-			local isMajorFaction = C_Reputation.IsMajorFaction(factionID)
-			local repInfo = C_GossipInfo.GetFriendshipReputation(factionID)
-			if (repInfo and repInfo.friendshipFactionID > 0) then--个人声望
-				factionStandingtext = repInfo.reaction
-				if ( repInfo.nextThreshold ) then
-					value=('%i%%'):format(repInfo.standing/repInfo.nextThreshold*100);
-					barColor = FACTION_BAR_COLORS[standingID]
-				else
-					barColor = FACTION_ORANGE_COLOR
-					isCapped=true
-				end
-				if repInfo.texture then--图标
-					icon='|T'..repInfo.texture..':0|t'
-				end
-			elseif ( isMajorFaction ) then--名望
-				isCapped=C_MajorFactions.HasMaximumRenown(factionID)
-				local info = C_MajorFactions.GetMajorFactionData(factionID);
-				if isCapped then
-					barColor = FACTION_ORANGE_COLOR
-					value= e.onlyChinese and '已满' or VIDEO_OPTIONS_ULTRA_HIGH
-				else
-					barColor = GREEN_FONT_COLOR
-					if info then
-						if info.name and info.name~=name then
-							factionStandingtext=name
-						end
-						value= (e.onlyChinese and '名望' or RENOWN_LEVEL_LABEL)..' '..info.renownLevel.. (' %i%%'):format(info.renownReputationEarned/info.renownLevelThreshold*100)--名望 RENOWN_LEVEL_LABEL
-					end
-				end
-				if info and info.textureKit then
-					icon='|A:MajorFactions_Icons_'..info.textureKit..'512:0:0|a'
-				end
-			else
-				factionStandingtext = GetText("FACTION_STANDING_LABEL"..standingID, e.Player.sex)
-				if isCapped then
-					barColor = FACTION_ORANGE_COLOR
-				elseif barValue and barMax then
-					if barMax==0 then
-						value=format('%i%%', (barMin-barValue)/barMin*100)
-					else
-						value=format('%i%%', barValue/barMax*100)
-					end
-				end
-			end
-
-			local hasRewardPending, rewardQuestID
-			if C_Reputation.IsFactionParagon(factionID) then--奖励
-				local currentValue, threshold, rewardQuestID2, hasRewardPending2, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(factionID);
-				hasRewardPending=hasRewardPending2
-				rewardQuestID= rewardQuestID2
-				if not tooLowLevelForParagon then
-					local completed= math.modf(currentValue/threshold)
-					currentValue= completed>0 and currentValue - threshold*completed or currentValue
-					value= '|cnGREEN_FONT_COLOR:'..format('%i%%',currentValue/threshold*100)..'|r'..(completed>0 and ' '..(e.onlyChinese and '奖励' or QUEST_REWARDS)..'|cnGREEN_FONT_COLOR: '..completed..' |r'..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1) or '')
-				end
-			end
-			local m= e.cn(factionStandingtext) or ''
-			if barColor then
-				m= barColor:WrapTextInColorCode(m)
-			end
-			if value then
-				m=m..' |cffff00ff'..value..'|r'
-			end
-			m=(icon or ('|A:'..e.Icon.icon..':0:0|a'))..m
-			if hasRewardPending then
-				m=m..'|A:Banker:0:0|a'..(rewardQuestID and GetQuestLink(rewardQuestID) or '')
-			end
 			local cnName= e.cn(name)
 			if cnName then
 				local num= text:match('%d+')
@@ -879,7 +789,13 @@ local function Set_Faction_Update(_, _, text, ...)
 					text= text:gsub(name, cnName)
 				end
 			end
-			return false, text..m, ...
+
+			local info= e.GetFactionInfo(factionID, nil, true)			
+			text= text..(info.atla and '|A:'..info.atlas..':0:0|a' or (info.texture and '|T'..info.texture..':0|t') or '')
+				..(info.factionStandingtext or '')
+					..(info.hasRewardPending or '') 
+
+			return false, text, ...
 		end
 	end
 end
@@ -920,25 +836,27 @@ local function InitMenu(_, level, type)
 	if type=='INDICATOLIST' then
 		local find
 		for factionID, index in pairs(Save.factions) do
-			local name2= GetFactionInfoByID(factionID)
-			local name= name2 and e.cn(name2)..' '..factionID or ('factionID '..factionID)
-			info={
-				text= name..' |cnGREEN_FONT_COLOR:'..index..'|r',
-				tooltipOnButton=true,
-				colorCode= not Save.indicato and '|cff606060' or nil,
-				tooltipTitle= e.onlyChinese and '移除' or REMOVE,
-				tooltipText= e.strText[name2] and name2..' ',
-				notCheckable= true,
-				arg1= name,
-				arg2= factionID,
-				func= function(_,arg1, arg2)
-					Save.factions[arg2]=nil
-					e.call('ReputationFrame_Update')
-					print(id, Initializer:GetName(), e.onlyChinese and '移除' or REMOVE, arg1, arg2)
-				end
-			}
-			find=true
-			e.LibDD:UIDropDownMenu_AddButton(info, level)
+			local name2= (C_Reputation.GetFactionDataByID(factionID) or {}).name
+			if name2 then
+				local name= name2 and e.cn(name2)..' '..factionID or ('factionID '..factionID)
+				info={
+					text= name..' |cnGREEN_FONT_COLOR:'..index..'|r',
+					tooltipOnButton=true,
+					colorCode= not Save.indicato and '|cff606060' or nil,
+					tooltipTitle= e.onlyChinese and '移除' or REMOVE,
+					tooltipText= e.strText[name2] and name2..' ',
+					notCheckable= true,
+					arg1= name,
+					arg2= factionID,
+					func= function(_,arg1, arg2)
+						Save.factions[arg2]=nil
+						e.call('ReputationFrame_Update')
+						print(id, Initializer:GetName(), e.onlyChinese and '移除' or REMOVE, arg1, arg2)
+					end
+				}
+				find=true
+				e.LibDD:UIDropDownMenu_AddButton(info, level)
+			end
 		end
 		if find then
 			e.LibDD:UIDropDownMenu_AddSeparator(level)
@@ -1111,7 +1029,7 @@ local function Init()
 	Button.up= e.Cbtn(Button, {size={22,22}, atlas='NPE_ArrowUp'})--texture='Interface\\Buttons\\UI-PlusButton-Up'})--收起所有
 	Button.up:SetPoint("LEFT", ReputationFrameFactionLabel, 'RIGHT',5,0)
 	Button.up:SetScript("OnClick", function()
-		for i=GetNumFactions(), 1, -1 do
+		for i=C_Reputation.GetNumFactions(), 1, -1 do
 			CollapseFactionHeader(i)
 		end
 	end)
@@ -1141,15 +1059,19 @@ local function Init()
 	end
 
 	C_Timer.After(3, Init_TrackButton)--监视, 文本
-	hooksecurefunc('ReputationFrame_InitReputationRow', set_ReputationFrame_InitReputationRow)-- 声望, 界面, 增强
+
+	--11版本
+	--hooksecurefunc('ReputationFrame_InitReputationRow', set_ReputationFrame_InitReputationRow)-- 声望, 界面, 增强
 	Button:set_Shown()
 
 	if Save.factionUpdateTips then--声望更新, 提示
 		ChatFrame_AddMessageEventFilter('CHAT_MSG_COMBAT_FACTION_CHANGE', Set_Faction_Update)
 
 		local text
-		for i=1, GetNumFactions() do--声望更新, 提示
-			local name, _, _, _, _, _, _, _, _, _, _, _, _, factionID = GetFactionInfo(i)
+		for i=1, C_Reputation.GetNumFactions() do--声望更新, 提示
+			local infoFaction= C_Reputation.GetFactionDataByIndex(i) or {}
+			local name= infoFaction.name
+			local factionID= infoFaction.factionID
 			if name and factionID and C_Reputation.IsFactionParagon(factionID) and select(4, C_Reputation.GetFactionParagonInfo(factionID)) then--奖励
 				text= text and text..' ' or ''
 

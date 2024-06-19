@@ -783,9 +783,9 @@ function func.Set_Currency(self, currencyID)--货币
     self:AddDoubleLine((e.onlyChinese and '货币' or TOKENS)..' '..currencyID, info2.iconFileID and '|T'..info2.iconFileID..':0|t'..info2.iconFileID)
     local factionID = C_CurrencyInfo.GetFactionGrantedByCurrency(currencyID)--派系声望
     if factionID and factionID>0 then
-        local name= GetFactionInfoByID(factionID)
+        local name= (C_Reputation.GetFactionDataByID(factionID) or {}).name
         if name then
-            self:AddDoubleLine(e.onlyChinese and '声望' or REPUTATION, name..' '..factionID)
+            self:AddDoubleLine(e.onlyChinese and '声望' or REPUTATION, e.cn(name)..' '..factionID)
         end
     end
 

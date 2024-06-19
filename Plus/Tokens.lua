@@ -1523,8 +1523,8 @@ local function Init()
 		--[[hooksecurefunc('TokenFrame_InitTokenButton',function(_, frame)--Blizzard_TokenUI.lua
 			set_Tokens_Button(frame)--设置, 列表, 内容
 		end)]]
-		hooksecurefunc(TokenFrame.ScrollBox, 'Update', function(self)
-			if not f.ScrollBox:GetView() then
+		hooksecurefunc(TokenFrame.ScrollBox, 'Update', function(f)
+			if not f:GetView() then
 				return
 			end
 			for _, frame in pairs(f:GetFrames()) do

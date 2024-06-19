@@ -1414,12 +1414,12 @@ local function Init()
     end
 
     for _, info in pairs(fanctionTab) do
-        local name, description = GetFactionInfoByID(info[1])
-        if name then
-            e.strText[name] = info[2]
+        local data= C_Reputation.GetFactionDataByID(info[1]) or {}
+        if data.name then
+            e.strText[data.name] = info[2]
         end
-        if description and info[3] and info[3]~='' then
-            e.strText[description]= info[3]
+        if data.description and info[3] and info[3]~='' then
+            e.strText[data.description]= info[3]
         end
     end
     for _, curTab in pairs(curcurrencyTab) do

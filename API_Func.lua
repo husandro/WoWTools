@@ -915,13 +915,26 @@ function e.GetCurrencyMaxInfo(currencyID, index, link)
     return info, num, totale, percent, isMax, canWeek, canEarned, canQuantity
 end
 
+
+
 function e.GetFactionInfo(factionID, index, toRight)
-    local name, description, standingID, barMin, barMax, barValue, isHeader,  hasRep, _
-    if index then
-        name, description, standingID, barMin, barMax, barValue, _, _, isHeader, _, hasRep, _, _, factionID= GetFactionInfo(index)
-    elseif factionID then
-        name, description, standingID, barMin, barMax, barValue, _, _, isHeader, _, hasRep, _, _, factionID= GetFactionInfoByID(factionID)
-    end
+    local factionData= factionID and C_Reputation.GetFactionDataByID(factionID) or (index and C_Reputation.GetFactionDataByIndex(index)) or {}
+    --factionID, description, name, reaction
+    --hasBonusRepCain, isHeaderWithRep, isHeader, canSetInactive, atWarWith, isWatched, isCollapsed, canToggleAtWar, isAccountWide, isChild
+    --currentReactionThresholod, nextReactionThreshold, currentStanding
+    local name= factionData.name
+    local description= factionData.description
+    local isHeader= factionData.isHealer   
+
+    local standingID= factionData.reaction
+
+    local barMin= factionData.currentReactionThresholod
+    local barValue= factionData.currentStanding
+    local barMax= factionData.nextReactionThreshold
+    
+    
+    local hasRep= factionData.hasBonusRepCain
+
     if not factionID or not name then
         return {}
     end
