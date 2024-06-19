@@ -141,8 +141,10 @@ function e.Is_Chinese_Text(str)--字符中，是否有汉字
     end
 end
 
-function e.GetExpansionText(expacID, questID)--版本数据
-    expacID= expacID or questID and GetQuestExpansion(questID)
+function e.GetExpansionText(expacID, questID)--版本数据 11版本
+    if not expacID and questID and GetQuestExpansion then
+        expacID= GetQuestExpansion(questID)
+    end
     if expacID and _G['EXPANSION_NAME'..expacID] then
         local text= e.strText[_G['EXPANSION_NAME'..expacID]] or _G['EXPANSION_NAME'..expacID]
         if e.ExpansionLevel >= expacID then

@@ -86,6 +86,7 @@ function Save_Items_Date()
     wowSaveItems[e.Player.class]=List
 end
 
+
 --保存，套装，数据
 --wowSaveSets= {[1]={class=str,numCollected=number, numTotal=number}
 local wowSaveSets = {
@@ -103,12 +104,16 @@ local wowSaveSets = {
     ['2048']={['class']='DEMONHUNTER'},
     ['4096']={['class']='EVOKER'},
 }
+
+--info=  C_TransmogSets
+--for k, v in pairs(info) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
+
 local function Save_Sets_Colleced()
     if not SetsDataProvider then
         return
     end
 
-    local numCollected, numTotal = C_TransmogSets.GetBaseSetsCounts()
+    --local numCollected, numTotal = C_TransmogSets.GetBaseSetsCounts()--11版本
     local coll, all= 0, 0
 
     for _, set in pairs(C_TransmogSets.GetBaseSets() or {}) do
@@ -127,8 +132,8 @@ local function Save_Sets_Colleced()
         if info.class==e.Player.class then
             wowSaveSets[index]={
                 class= info.class,
-                numCollected= numCollected,
-                numTotal= numTotal,
+                --numCollected= numCollected,
+                --numTotal= numTotal,
                 coll= coll,
                 all= all,
             }

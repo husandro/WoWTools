@@ -1,5 +1,7 @@
 local e = select(2, ...)
-
+if e.Player.region~=1 and e.Player.region~=3 then
+    return
+end
 --[[
 e.Get_Region(realm, guid, unit, disabled)
 e.Player.L={layer=, size=, key=}

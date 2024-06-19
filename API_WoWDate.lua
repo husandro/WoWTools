@@ -676,7 +676,7 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
             end
 
             RequestRaidInfo()
-            C_MajorFactions.RequestCatchUpState()
+            --C_MajorFactions.RequestCatchUpState()
             C_FriendList.ShowFriends()
             if IsInGuild() then--请求，公会名单
                 C_GuildInfo.GuildRoster()

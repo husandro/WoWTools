@@ -1518,15 +1518,16 @@ local function Init()
 
 
 	C_Timer.After(3, function()
-		hooksecurefunc('TokenFrame_InitTokenButton',function(_, frame)--Blizzard_TokenUI.lua
+		
+		--11版本
+		--[[hooksecurefunc('TokenFrame_InitTokenButton',function(_, frame)--Blizzard_TokenUI.lua
 			set_Tokens_Button(frame)--设置, 列表, 内容
-		end)
-		hooksecurefunc('TokenFrame_Update', function()
-			local f=TokenFrame
+		end)]]
+		hooksecurefunc(TokenFrame.ScrollBox, 'Update', function(self)
 			if not f.ScrollBox:GetView() then
 				return
 			end
-			for _, frame in pairs(f.ScrollBox:GetFrames()) do
+			for _, frame in pairs(f:GetFrames()) do
 				set_Tokens_Button(frame)--设置, 列表, 内容
 			end
 			set_ItemInteractionFrame_Currency(f)--套装,转换,货币

@@ -27,7 +27,7 @@ local function GetMinValueAlpha()--min03，透明度，最小值
     min03= Save.alpha<0.3 and 0.3 or nil
     min05= Save.alpha<0.5 and 0.5 or nil
 end
-
+local Category, Layout= e.AddPanel_Sub_Category({name= '|A:AnimCreate_Icon_Texture:0:0|a'..(e.onlyChinese and '材质' or addName)})
 
 
 
@@ -522,7 +522,7 @@ local function Init_All_Frame()
      set_Alpha_Color(GearManagerPopupFrame.BG, nil, nil, min03)
      e.Set_ScrollBar_Color_Alpha(GearManagerPopupFrame.IconSelector)
      set_SearchBox(GearManagerPopupFrame.BorderBox.IconSelectorEditBox)
-     set_Menu(GearManagerPopupFrame.BorderBox.IconTypeDropDown.DropDownMenu)
+     --set_Menu(GearManagerPopupFrame.BorderBox.IconTypeDropDown.DropDownMenu)
 
      --法术书
      e.Set_NineSlice_Color_Alpha(SpellBookFrame, true)
@@ -534,7 +534,7 @@ local function Init_All_Frame()
      hide_Texture(SpellBookPage1)
      hide_Texture(SpellBookPage2)
      set_Alpha_Color(SpellBookFrameBg)
-     hide_Texture(SpellBookFrameInset.Bg)
+     --hide_Texture(SpellBookFrameInset.Bg)
 
      for i=1, 12 do
          set_Alpha_Color(_G['SpellButton'..i..'Background'])
@@ -572,7 +572,7 @@ local function Init_All_Frame()
         end
     end)
 
-
+--[[
      set_Alpha_Color(QuestMapFrame.VerticalSeparator)
      set_Alpha_Color(QuestScrollFrame.DetailFrame.BottomDetail)
      set_Alpha_Color(QuestScrollFrame.Edge)
@@ -581,7 +581,7 @@ local function Init_All_Frame()
      e.Set_ScrollBar_Color_Alpha(QuestScrollFrame)
      e.Set_ScrollBar_Color_Alpha(QuestMapFrame.DetailsFrame.RewardsFrame.RewardsScrollFrame)
      e.Set_ScrollBar_Color_Alpha(QuestRewardScrollFrame)
-
+]]
 
 
      --地下城和团队副本
@@ -708,7 +708,7 @@ local function Init_All_Frame()
 
 
 
-     --银行
+     --[[银行
      e.Set_NineSlice_Color_Alpha(BankFrame,true)
 
      hide_Texture(BankFrameMoneyFrameInset.Bg)
@@ -739,7 +739,7 @@ local function Init_All_Frame()
      end)
      e.Set_Alpha_Frame_Texture(BankFrameTab1, {alpha=min05})
      e.Set_Alpha_Frame_Texture(BankFrameTab2, {alpha=min05})
-
+]]
      --背包
      if ContainerFrameCombinedBags and ContainerFrameCombinedBags.NineSlice then
         e.Set_NineSlice_Color_Alpha(ContainerFrameCombinedBags, true)
@@ -1024,21 +1024,12 @@ local function Init_All_Frame()
      set_Alpha_Color(AddonListInset.Bg, nil, nil, min05)
      set_Menu(AddonCharacterDropDown)
 
-     --场景 Blizzard_ScenarioObjectiveTracker.lua
+     --[[场景 Blizzard_ScenarioObjectiveTracker.lua
      hooksecurefunc('Scenario_ChallengeMode_ShowBlock', function()--Blizzard_ScenarioObjectiveTracker.lua
         e.Set_Alpha_Frame_Texture(ScenarioChallengeModeBlock, {alpha=min05})
      end)
      set_Alpha_Color(ScenarioStageBlock.NormalBG, nil, nil, min05)
-     --[[if ObjectiveTrackerBlocksFrame then
-         set_Alpha_Color(ObjectiveTrackerBlocksFrame.ScenarioHeader.Background)
-         set_Alpha_Color(ObjectiveTrackerBlocksFrame.AchievementHeader.Background)
-         set_Alpha_Color(ObjectiveTrackerBlocksFrame.QuestHeader.Background)
-         hooksecurefunc('ScenarioStage_UpdateOptionWidgetRegistration', function(stageBlock, widgetSetID)
-             set_Alpha_Color(stageBlock.NormalBG, nil, true)
-             set_Alpha_Color(stageBlock.FinalBG)
-         end)
-     end]]
-
+]]
      if MainStatusTrackingBarContainer then--货币，XP，追踪，最下面BAR
          hide_Texture(MainStatusTrackingBarContainer.BarFrameTexture)
      end
@@ -1065,12 +1056,12 @@ local function Init_All_Frame()
      --小队，背景
     e.Set_Alpha_Frame_Texture(PartyFrame.Background, {alpha= min03})
 
-     --任务，追踪柆
+     --[[任务，追踪柆
      hooksecurefunc('ObjectiveTracker_Initialize', function(self)
          for _, module in ipairs(self.MODULES) do
              set_Alpha_Color(module.Header.Background)
          end
-     end)
+     end)]]
 
      --社交，按钮     
 
@@ -2692,6 +2683,21 @@ local function Init_HelpTip()
             SplashFrame:Close();
             print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '隐藏' or HIDE)..'|r|n|cff00ff00', SplashFrame.Label and SplashFrame.Label:GetText() or '')
         end
+
+        if not Save.disabledHelpTip then--错误，提示
+            if ScriptErrorsFrame then
+                if ScriptErrorsFrame:IsShown() then
+                    print(id, Category:GetName())
+                    print(ScriptErrorsFrame.ScrollFrame.Text:GetText())
+                    ScriptErrorsFrame.Close:Click()
+                end
+                ScriptErrorsFrame:HookScript('OnShow', function(self)
+                    print(id, Category:GetName())
+                    print(self.ScrollFrame.Text:GetText())
+                    ScriptErrorsFrame.Close:Click()
+                end)
+            end
+        end
     end)
 end
 
@@ -2716,7 +2722,7 @@ end
 
 
 
-local Category, Layout= e.AddPanel_Sub_Category({name= '|A:AnimCreate_Icon_Texture:0:0|a'..(e.onlyChinese and '材质' or addName)})
+
 local function Init_Options()
     e.AddPanel_Header(Layout, e.onlyChinese and '材质' or TEXTURES_SUBHEADER)
     local initializer2= e.AddPanel_Check_Button({

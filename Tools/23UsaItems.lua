@@ -596,21 +596,12 @@ end
 
 --法术书，界面, 菜单
 local function Init_Options_SpellBook()
-    --法术书，界面, 菜单
+    --[[法术书，界面, 菜单 11版本
     for i=1, SPELLS_PER_PAGE  do--SPELLS_PER_PAGE = 12
         local btn= _G['SpellButton'..i]
         if btn and btn.UpdateButton then
             hooksecurefunc(btn, 'UpdateButton', function(self)--SpellBookFrame.lua
                 local slot, slotType, slotID = SpellBook_GetSpellBookSlot(self)
-                --[[local slot, slotType, slotID = SpellBook_GetSpellBookSlot(self)
-                if slot then
-                    local slotType, spellID = C_Spell.GetSpellBookItemInfo(slot, SpellBookFrame.bookType);
-                    local texture = C_Spell.GetSpellBookItemTexture(slot, SpellBookFrame.bookType)
-                    if (slotType == "FLYOUT") then
-                        --SpellFlyout:Toggle(spellID, self, "RIGHT", 1, false, nil, true);
-
-                    end
-                end]]
                 if not slot or slotType~='SPELL' or not slotID or C_Spell.IsSpellPassive(slotID) then--or SpellBookFrame.bookType~='spell' 
                     if self.useSpell then
                         self.useSpell:SetShown(false)
@@ -620,7 +611,7 @@ local function Init_Options_SpellBook()
                 set_Use_Spell_Button(self, slotID)--select(3, C_Spell.GetSpellBookItemName(slot, SpellBookFrame.bookType)))
             end)
         end
-    end
+    end]]
     --法术书，界面, 菜单
     hooksecurefunc('SpellFlyoutButton_UpdateGlyphState', function(self)
         local name = self:GetParent():GetParent():GetName()

@@ -36,9 +36,6 @@ e.StausText={}--属性，截取表 API_Panel.lua
 
 
 
-
-
-
 --#####################
 --重新加载UI, 重置, 按钮
 --#####################
@@ -126,6 +123,7 @@ function e.ReloadPanel(tab)
         needReload:SetTextColor(0,1,0)
     end
 end
+
 
 
 
@@ -233,6 +231,11 @@ local function get_variableIndex()
     return variableIndex
 end
 
+local function AddInitializerToLayout(category, initializer)
+	local layout = SettingsPanel:GetLayout(category);
+	layout:AddInitializer(initializer);
+end
+
 --插件名称
 local Category, Layout = Settings.RegisterVerticalLayoutCategory('|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r')
 Settings.RegisterAddOnCategory(Category)
@@ -295,7 +298,8 @@ function e.AddPanel_Check(tab)
     local variable = id..name..(category.order or '')..get_variableIndex()
     local setting= Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue)
 
-    local initializer= Settings.CreateCheckBox(category, setting, tooltip)
+    --local initializer= Settings.CreateCheckBox(category, setting, tooltip)
+    local initializer= Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip);
     Settings.SetOnValueChangedCallback(variable, func, initializer)
     return initializer
 end
@@ -352,7 +356,11 @@ function e.AddPanel_DropDown(tab)
 
     local variable= id..name..(category.order or '')..get_variableIndex()
     local setting = Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue)
-    local initializer= Settings.CreateDropDown(category, setting, GetOptions, tooltip)
+    
+    --local initializer= Settings.CreateDropDown(category, setting, GetOptions, tooltip)
+    local initializer = Settings.CreateDropdownInitializer(setting, GetOptions, tooltip);
+	AddInitializerToLayout(category, initializer);
+
     Settings.SetOnValueChangedCallback(variable, SetValue, initializer)
     return initializer
 end
@@ -390,7 +398,14 @@ function e.AddPanel_Check_Button(tab)
 
     local variable = id..checkName..(category.order or '')..get_variableIndex()
     local setting= Settings.RegisterAddOnSetting(category, checkName, variable, type(defaultValue), defaultValue)
-    local initializer= CreateSettingsCheckBoxWithButtonInitializer(setting, buttonText, buttonFunc, false, tooltip)
+    
+    --local initializer= CreateSettingsCheckBoxWithButtonInitializer(setting, buttonText, buttonFunc, false, tooltip)
+    local data = Settings.CreateSettingInitializerData(setting, nil, tooltip);
+	data.buttonText = buttonText;
+	data.OnButtonClick = buttonClick;
+	data.clickRequiresSet = clickRequiresSet;
+	local initializer= Settings.CreateSettingInitializer("SettingsCheckboxWithButtonControlTemplate", data);
+
     layout:AddInitializer(initializer)
     Settings.SetOnValueChangedCallback(variable, checkFunc, initializer)
     return initializer
@@ -446,7 +461,22 @@ function e.AddPanel_Check_Sider(tab)
     local options = Settings.CreateSliderOptions(sliderMinValue, sliderMaxValue, sliderStep)
     options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right, GetFormatter1to10(sliderMinValue, sliderMaxValue));
 
-    local initializer = CreateSettingsCheckBoxSliderInitializer(checkSetting, checkName, checkTooltip, siderSetting, options, siderName, siderTooltip);
+    --local initializer = CreateSettingsCheckBoxSliderInitializer(checkSetting, checkName, checkTooltip, siderSetting,   options,      siderName,   siderTooltip);
+    --                                                            cbSetting,    cbLabel,   cbTooltip,    sliderSetting, sliderOptions, sliderLabel, sliderTooltip
+    local data =
+	{
+		name = checkName,
+		tooltip = checkTooltip,
+		cbSetting = checkSetting,
+		cbLabel = checkName,
+		cbTooltip = checkTooltip,
+		sliderSetting = siderSetting,
+		sliderOptions = options,
+		sliderLabel = siderName,
+		sliderTooltip = siderTooltip,
+	};
+	local initializer= Settings.CreateSettingInitializer("SettingsCheckboxSliderControlTemplate", data);
+
     Settings.SetOnValueChangedCallback(variable..'Check', checkFunc, initializer)
     Settings.SetOnValueChangedCallback(variable..'Sider', siderFunc, initializer)
     layout:AddInitializer(initializer)

@@ -1808,8 +1808,8 @@ local function Init()
             elseif data.type==23 then
                 func.Set_Quest(tooltip, data.id)--任务
 
-            elseif data.type==25 then--宏
-                local frame= GetMouseFocus()
+            elseif data.type==25 then--宏 11版本
+                local frame= GetMouseFocus and GetMouseFocus()
                 if frame and frame.action then
                     local type, macroID, subType= GetActionInfo(frame.action)
                     if type=='macro' and macroID then

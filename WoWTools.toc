@@ -41,7 +41,6 @@ Libs\LibUIDropDownMenu.lua
 API_WoWTools.lua
 API_Create.lua
 API_Func.lua
-API_Realm.lua
 API_Panel.lua
 API_WoWDate.lua
 
@@ -185,7 +184,8 @@ Other\HunterPet.lua
 ##法术弹出框，加名称, 和颜色
 Other\SpellFrame.lua
 Other\ScrappingMachine.lua
-
+##美服，欧服，服器语言，提示
+Other\Realm.lua
 
 ##繁体，简体，不会载加
 ##界面，中文化，主要function

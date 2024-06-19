@@ -80,6 +80,9 @@ end
 
 --天赋
 local function Init_Talent()
+    if not TalentMicroButton then
+        return
+    end
     local frame= CreateFrame("Frame")
     --table.insert(Frames, frame)
     TalentMicroButton.frame= frame

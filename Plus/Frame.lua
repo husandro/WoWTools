@@ -1308,7 +1308,7 @@ local function setAddLoad(arg1)
             for _, region in pairs({MountJournal.BottomLeftInset:GetRegions()}) do
                 region:SetPoint('RIGHT')
             end
-            MountJournalSearchBox:SetPoint('RIGHT', MountJournalFilterButton, 'LEFT', -2, 0)
+            --MountJournalSearchBox:SetPoint('RIGHT', MountJournalFilterButton, 'LEFT', -2, 0)
 
             PetJournalRightInset:ClearAllPoints()
             PetJournalRightInset:SetPoint('TOPRIGHT', PetJournalPetCardInset, 'BOTTOMRIGHT', 0, -22)
@@ -1316,7 +1316,7 @@ local function setAddLoad(arg1)
             PetJournalLeftInset:SetPoint('RIGHT', PetJournalRightInset, 'LEFT', -24, 0)
             PetJournalLoadoutBorder:ClearAllPoints()
             PetJournalLoadoutBorder:SetPoint('TOP', PetJournalRightInset)
-            PetJournalSearchBox:SetPoint('LEFT', PetJournalFilterButton, 'RIGHT',-2, 0)
+            --PetJournalSearchBox:SetPoint('LEFT', PetJournalFilterButton, 'RIGHT',-2, 0)
 
 
             WardrobeCollectionFrame.SetsCollectionFrame.RightInset:ClearAllPoints()
@@ -2050,7 +2050,7 @@ local function Init_Class()--职业，能量条
     end
     Set_Class_Frame(frame)
 
-    frame= TotemFrame--elseif e.Player.class=='SHAMAN' then--SM
+    --[[frame= TotemFrame--elseif e.Player.class=='SHAMAN' then--SM
     if TotemFrame and not Save.disabledMove then
         Set_Class_Frame(TotemFrame)
         hooksecurefunc(TotemFrame, 'Update', function(self)
@@ -2062,7 +2062,7 @@ local function Init_Class()--职业，能量条
                 end
             end
         end)
-    end
+    end]]
 end
 
 
@@ -2147,13 +2147,14 @@ local function Init_Move()
             end
             self.ResizeButton:SetShown(false)
         end)
-        QuestMapFrame.Background:ClearAllPoints()
+        --[[QuestMapFrame.Background:ClearAllPoints()
         QuestMapFrame.Background:SetAllPoints(QuestMapFrame)
         QuestMapFrame.DetailsFrame:ClearAllPoints()
         QuestMapFrame.DetailsFrame:SetPoint('TOPLEFT', 0, -42)
         QuestMapFrame.DetailsFrame:SetPoint('BOTTOMRIGHT')
         QuestMapFrame.DetailsFrame.Bg:SetPoint('BOTTOMRIGHT')
         QuestMapFrame.DetailsFrame.SealMaterialBG:SetPoint('BOTTOMRIGHT', QuestMapFrame.DetailsFrame.RewardsFrame, 'TOPRIGHT', 0, -6)
+        ]]
         e.Set_Move_Frame(MapQuestInfoRewardsFrame, {frame= WorldMapFrame})
         e.Set_Move_Frame(QuestMapFrame, {frame= WorldMapFrame})
         e.Set_Move_Frame(QuestMapFrame.DetailsFrame, {frame= WorldMapFrame})
@@ -2264,7 +2265,7 @@ local function Init_Move()
         --PANEL_DEFAULT_WIDTH 338
         --CHARACTERFRAME_EXPANDED_WIDTH 540
         --CharacterStatsPane width 197
-        hooksecurefunc('CharacterFrame_Collapse', function()
+        --[[hooksecurefunc('CharacterFrame_Collapse', function()
             if not CharacterFrameInset:CanChangeAttribute() then
                 return
             end
@@ -2291,7 +2292,7 @@ local function Init_Move()
             end
             CharacterFrame.ResizeButton.minWidth= CHARACTERFRAME_EXPANDED_WIDTH
             CharacterFrame.ResizeButton.minHeight= 424
-        end)
+        end)]]
         e.Set_Move_Frame(ReputationFrame, {frame=CharacterFrame})
         e.Set_Move_Frame(TokenFrame, {frame=CharacterFrame})
 
@@ -2640,12 +2641,12 @@ local function Init_Move()
     --Blizzard_ObjectiveTracker.lua ObjectiveTracker_GetVisibleHeaders()
     --set_Move_Alpha(ObjectiveTrackerFrame)
     ObjectiveTrackerFrame:SetClampedToScreen(false)
-    hooksecurefunc('ObjectiveTracker_Initialize', function(self)
+    --[[hooksecurefunc('ObjectiveTracker_Initialize', function(self)
         for _, module in ipairs(self.MODULES) do
             e.Set_Move_Frame(module.Header, {frame=self, notZoom=true, notSave=true})
         end
         --self:SetClampedToScreen(false)
-    end)
+    end)]]
 
 
     hooksecurefunc('UpdateUIPanelPositions',function(currentFrame)
