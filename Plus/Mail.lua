@@ -948,14 +948,14 @@ local function Init_Fast_Button()
 
 
     local fast={
-        {GetSpellTexture(3908) or 4620681, 7, 5, e.onlyChinese and '布'},--1
-        {GetSpellTexture(2108) or 4620678, 7, 6, e.onlyChinese and '皮革'},--2
-        {GetSpellTexture(2656) or 4625105, 7, 7, e.onlyChinese and '金属 矿石'},--3
-        {GetSpellTexture(2550) or 4620671, 7, 8, e.onlyChinese and '烹饪'},--4
-        {GetSpellTexture(2383) or 133939, 7, 9, e.onlyChinese and '草药'},--5
-        {GetSpellTexture(7411) or 4620672, 7, 12, e.onlyChinese and '附魔'},--6
-        {GetSpellTexture(45357) or 4620676, 7, 16, e.onlyChinese and '铭文'},--7
-        {GetSpellTexture(25229) or 4620677, 7, 4, e.onlyChinese and '珠宝加工'},--8
+        {C_Spell.GetSpellTexture(3908) or 4620681, 7, 5, e.onlyChinese and '布'},--1
+        {C_Spell.GetSpellTexture(2108) or 4620678, 7, 6, e.onlyChinese and '皮革'},--2
+        {C_Spell.GetSpellTexture(2656) or 4625105, 7, 7, e.onlyChinese and '金属 矿石'},--3
+        {C_Spell.GetSpellTexture(2550) or 4620671, 7, 8, e.onlyChinese and '烹饪'},--4
+        {C_Spell.GetSpellTexture(2383) or 133939, 7, 9, e.onlyChinese and '草药'},--5
+        {C_Spell.GetSpellTexture(7411) or 4620672, 7, 12, e.onlyChinese and '附魔'},--6
+        {C_Spell.GetSpellTexture(45357) or 4620676, 7, 16, e.onlyChinese and '铭文'},--7
+        {C_Spell.GetSpellTexture(25229) or 4620677, 7, 4, e.onlyChinese and '珠宝加工'},--8
 
         {"Interface/Icons/INV_Gizmo_FelIronCasing", 7, 1, e.onlyChinese and '零部'},--9
         {"Interface/Icons/INV_Elemental_Primal_Air", 7, 10, e.onlyChinese and '元素'},--10
