@@ -349,7 +349,7 @@ end
 --修改，当前图标
 --Blizzard_MacroIconSelector.lua MacroPopupFrameMixin:OkayButton_OnClick()
 local function Set_Texture_Macro(iconTexture)--修改，当前图标
-    if UnitAffectingCombat('player') or not iconTexture then
+    if UnitAffectingCombat('player') or not iconTexture or iconTexture==0 then
         return
     end
     local macroFrame =MacroFrame
@@ -375,43 +375,30 @@ end
 local function Create_Spell_Menu(spellID, icon, name, texture)--创建，法术，列表
     e.LoadDate({id=spellID, type='spell'})
     local isKnown= IsSpellKnownOrOverridesKnown(spellID)
-    local isPassive= C_Spell.IsSpellPassive(spellID)
+    --local isPassive= C_Spell.IsSpellPassive(spellID)
     local spellIcon= icon
 
     local color
-    if isPassive then
-        color= '|cff606060'
-    elseif not isKnown then
+    if not isKnown then
         color= '|cnRED_FONT_COLOR:'
     end
 
-
-    --icon= icon and '|T'..icon..':0|t' or ''
     local  macroText= Get_Spell_Macro(name, spellID)
     macroText= macroText and '|cnGREEN_FONT_COLOR:'..macroText..'|n |r' or nil
 
     local tipText= C_Spell.GetSpellDescription(spellID)
-    if tipText then
-        local head
-        if isPassive then
-            head= '|cff606060'..(e.onlyChinese and '被动' or SPELL_PASSIVE)..'|r'
-        end
-        if not isKnown then
-            head= head and head..', ' or ''
-            head= head..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '未学习' or TRADE_SKILLS_UNLEARNED_TAB)..'|r'
-        end
-
-        tipText= head and head..'|n'..tipText or tipText
+    if not isKnown then
+        tipText= (tipText and tipText..'|n|n' or '')
+                ..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '未学习' or TRADE_SKILLS_UNLEARNED_TAB)..'|r'
     end
     tipText= ((macroText or tipText) and '|n' or '')..(macroText and macroText..'|n' or '')..(tipText or '')
 
     local headText= (UnitAffectingCombat('player') and '|cnRED_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:')
-            ..'Alt '..icon
-            ..(e.onlyChinese and '设置图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, EMBLEM_SYMBOL))
-            ..'|r|n|cff606060Ctrl '..(e.onlyChinese and '查询' or WHO)..' (BUG)|r'
+            ..'Alt |T'..(icon or 0)..':0|t'..(e.onlyChinese and '设置图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, EMBLEM_SYMBOL))
+            --..'|r|n|cff606060Ctrl '..(e.onlyChinese and '查询' or WHO)..' (BUG)|r'
             ..'|nShift '..(e.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT)
     e.LibDD:UIDropDownMenu_AddButton({
-        text=format('|A:%s:0:0|a', texture or '')..name..(macroText and '|cnGREEN_FONT_COLOR:*|r' or ''),
+        text= format('|A:%s:0:0|a', texture or '')..name..(macroText and '|cnGREEN_FONT_COLOR:*|r' or ''),
         tooltipOnButton=true,
         tooltipTitle=headText,
         tooltipText=tipText,
@@ -419,6 +406,7 @@ local function Create_Spell_Menu(spellID, icon, name, texture)--创建，法术�
         icon=icon,
         tSizeX=32,
         tSizeY=32,
+        --keepShownOnClick=true,
         arg1={spellName=name, spellID=spellID, icon=spellIcon},
 
         notCheckable=true,
@@ -431,9 +419,9 @@ local function Create_Spell_Menu(spellID, icon, name, texture)--创建，法术�
                     --ChatFrame_OpenChat(link)
                 --end
 
-            elseif IsControlKeyDown() then
-                e.call('SpellBookFrame_OpenToSpell', tab.spellID)
-                print(id, e.cn(addName), '|cnRED_FONT_COLOR:BUG|r', 'Ctrl+'..e.Icon.left..(e.onlyChinese and '查询' or WHO))
+           -- elseif IsControlKeyDown() then
+                --e.call('SpellBookFrame_OpenToSpell', tab.spellID)
+                --print(id, e.cn(addName), '|cnRED_FONT_COLOR:BUG|r', 'Ctrl+'..e.Icon.left..(e.onlyChinese and '查询' or WHO))
 
             elseif IsAltKeyDown() then
                 Set_Texture_Macro(tab.icon)--修改，当前图标
@@ -778,69 +766,84 @@ local function Init_List_Button()
 
 
 local last
-    --法术书 11版本
-    for i=1, 8 do--MAX_SKILLLINE_TABS
-        local name, icon, _, _, _, _, shouldHide, specID = C_Spell.GetSpellTabInfo(i)
-        if (i==1 or i==2 or specID) and not shouldHide and name then
-            local btn= e.Cbtn(MacroEditButton, {size={24,24}, texture=icon})
+local size= 24
+    for i=1, 12 do
+        local data= C_SpellBook.GetSpellBookSkillLineInfo(i)--shouIdHide name numSpellBookItems iconID isGuild itemIndexOffset
+        if data and data.name and not data.shouIdHide then
+            local btn= e.Cbtn(MacroEditButton, {size=size, texture=data.iconID})
+            btn.name= data.name
             btn.index= i
+            btn:SetScript('OnLeave', GameTooltip_Hide)
+            btn:SetScript('OnEnter', function(self)
+                e.tips:SetOwner(self, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine(e.cn(self.name), self.index)
+                e.tips:Show()
+            end)
             if not last then
-                btn:SetPoint('TOPLEFT', MacroFrameSelectedMacroButton, 'BOTTOMRIGHT',0,8)
+                btn:SetPoint('TOPLEFT', MacroFrame, 'BOTTOMLEFT', 0, -4)
             else
                 btn:SetPoint('LEFT', last, 'RIGHT')
             end
 
-            if i==3 then
+            --[[if i==3 then
                 local texture= btn:CreateTexture(nil, 'OVERLAY')
                 texture:SetAtlas('Forge-ColorSwatchSelection')
                 texture:SetPoint('CENTER')
                 texture:SetVertexColor(0,1,0)
                 texture:SetSize(28,28)
                 texture:SetAlpha(0.7)
-            end
+            end]]
             btn:SetScript('OnMouseDown', function(self)
-                e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function()
-                    local _, _, offset, numSlots = C_Spell.GetSpellTabInfo(self.index)
-                    local num=0
-                    for index= offset+1, offset+ numSlots do
-                        local spellInfo= C_Spell.GetSpellInfo(index, BOOKTYPE_SPELL) or {}
-                        local name2, icon2, spellID= spellInfo.name, spellInfo.iconID, spellInfo.spellID
-                        num= num +1
-                        if name2 and not C_Spell.IsSpellPassive(index, BOOKTYPE_SPELL) and spellID then
-                            Create_Spell_Menu(spellID, icon2, name2, 'services-number-'..math.ceil(num / SPELLS_PER_PAGE))
-                        end
-                    end
-                    if self.index==1 then
-                        e.LibDD:UIDropDownMenu_AddButton({
-                            text='ExtraActionButton1',
-                            tooltipOnButton=true,
-                            tooltipTitle='/click ExtraActionButton1',
-                            notCheckable=true,
-                            func= function()
-                                MacroFrameText:Insert('/click ExtraActionButton1\n')
-                                MacroFrameText:SetFocus()
+                --if not self.Menu then
+                    --self.Menu= CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
+                    e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function()                    
+                        local info= C_SpellBook.GetSpellBookSkillLineInfo(self.index)
+                        local num=1
+                        if info and info.name and info.itemIndexOffset and info.numSpellBookItems and info.numSpellBookItems>0 then
+                            
+                            
+                            for index= info.itemIndexOffset+1, info.itemIndexOffset+ info.numSpellBookItems do
+                                local spellData= C_SpellBook.GetSpellBookItemInfo(index, Enum.SpellBookSpellBank.Player) or {}--skillLineIndex itemType isOffSpec subName actionID name iconID isPassive spellID
+                                if not spellData.isPassive and spellData.spellID and spellData.name then
+                                    Create_Spell_Menu(spellData.spellID, spellData.iconID, spellData.name, 'services-number-'..num)
+                                    num= num+1
+                                end
                             end
-                        }, 1)
-                        if e.Player.class=='MAGE' then--FS
+                        end
+                        if self.index==1 then
                             e.LibDD:UIDropDownMenu_AddButton({
-                                text=e.onlyChinese and '解散水元素' or 'PetDismiss',
+                                text='ExtraActionButton1',
                                 tooltipOnButton=true,
-                                tooltipTitle='/script PetDismiss()',
+                                tooltipTitle='/click ExtraActionButton1',
                                 notCheckable=true,
                                 func= function()
-                                    MacroFrameText:Insert('/script PetDismiss()\n')
+                                    MacroFrameText:Insert('/click ExtraActionButton1\n')
                                     MacroFrameText:SetFocus()
                                 end
                             }, 1)
+                            if e.Player.class=='MAGE' then--FS
+                                e.LibDD:UIDropDownMenu_AddButton({
+                                    text=e.onlyChinese and '解散水元素' or 'PetDismiss',
+                                    tooltipOnButton=true,
+                                    tooltipTitle='/script PetDismiss()',
+                                    notCheckable=true,
+                                    func= function()
+                                        MacroFrameText:Insert('/script PetDismiss()\n')
+                                        MacroFrameText:SetFocus()
+                                    end
+                                }, 1)
+                            end
                         end
-                    end
-                end, 'MENU')
+                    end, 'MENU')
+                --end
                 e.LibDD:ToggleDropDownMenu(1, nil, MacroFrame.Menu, self, 15,0)--主菜单
             end)
-            btn:RegisterUnitEvent('PLAYER_SPECIALIZATION_CHANGED', 'player')
+
+            --[[btn:RegisterUnitEvent('PLAYER_SPECIALIZATION_CHANGED', 'player')
             btn:SetScript('OnEvent', function(self)
-                self:SetNormalTexture( select(2, C_Spell.GetSpellTabInfo(self.index)) or 0)
-            end)
+                --self:SetNormalTexture( select(2, C_Spell.GetSpellTabInfo(self.index)) or 0)
+            end)]]
             last= btn
         end
     end
@@ -853,12 +856,8 @@ local last
 
 
     --PVP， 天赋，法术
-    local pvpButton= e.Cbtn(MacroEditButton, {size={24,24}, atlas='pvptalents-warmode-swords'})--pvptalents-warmode-swords-disabled
-    if not last then
-        pvpButton:SetPoint('TOPLEFT', MacroFrameSelectedMacroButton, 'BOTTOMRIGHT',0,8)
-    else
-        pvpButton:SetPoint('LEFT', last, 'RIGHT')
-    end
+    local pvpButton= e.Cbtn(last, {size=size, atlas='pvptalents-warmode-swords'})--pvptalents-warmode-swords-disabled
+    pvpButton:SetPoint('LEFT', last, 'RIGHT')
     pvpButton:SetScript('OnMouseDown', function(self)
         e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function()
             local slotInfo = C_SpecializationInfo.GetPvpTalentSlotInfo(1)
@@ -886,7 +885,7 @@ local last
                 end)
                 for _, talentID in pairs(slotInfo.availableTalentIDs) do
                     local talentInfo = C_SpecializationInfo.GetPvpTalentInfo(talentID) or {}
-                    if talentInfo.spellID and talentInfo.name then--and not C_Spell.IsSpellPassive(talentInfo.spellID)then
+                    if talentInfo.spellID and talentInfo.name and not C_Spell.IsSpellPassive(talentInfo.spellID) then
                         Create_Spell_Menu(talentInfo.spellID, talentInfo.icon, talentInfo.name, talentInfo.selected and e.Icon.select)
                     end
                 end
@@ -904,8 +903,8 @@ local last
 
 
     --角色，装备
-    local equipButton= e.Cbtn(MacroEditButton, {size={24,24}, atlas=e.GetUnitRaceInfo({unit='player', reAtlas=true})})--atlas=e.Player.sex==2 and 'charactercreate-gendericon-male-selected' or 'charactercreate-gendericon-female-selected'})--pvptalents-warmode-swords-disabled
-    equipButton:SetPoint('LEFT', pvpButton, 'RIGHT')
+    local equipButton= e.Cbtn(last, {size=size, atlas=e.GetUnitRaceInfo({unit='player', reAtlas=true})})--atlas=e.Player.sex==2 and 'charactercreate-gendericon-male-selected' or 'charactercreate-gendericon-female-selected'})--pvptalents-warmode-swords-disabled
+    equipButton:SetPoint('LEFT', last, 'RIGHT')
     equipButton:SetScript('OnMouseDown', function(self)
         e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function()
             for slot=1,22 do
@@ -958,13 +957,63 @@ local last
 
 
 
+    
+    
+    --谈话
+    local spellchButton= e.Cbtn(last, {size=size, atlas='communities-icon-chat'})
+    function spellchButton:Chat_Init_menu(list, level)--表情，列表 
+        for _, value in pairs(list or {}) do
+            local i = 1;
+            local token = _G["EMOTE"..i.."_TOKEN"];
+            while ( i < 627 ) do--local MAXEMOTEINDEX = 627;
+                if ( token == value ) then
+                    break;
+                end
+                i = i + 1;
+                token = _G["EMOTE"..i.."_TOKEN"];
+            end
+            local label = _G["EMOTE"..i.."_CMD1"];
+            if ( not label ) then
+                label = value;
+            end
+            if label then
+                e.LibDD:UIDropDownMenu_AddButton({
+                    text=label,
+                    notCheckable=true,
+                    arg1=label,
+                    func= function(_, arg1)
+                        MacroFrameText:Insert(arg1..'\n')
+                        MacroFrameText:SetFocus()
+                    end,
+                }, level)
+            end
+        end
+    end
+    spellchButton:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',-6,-1)
+    spellchButton:SetScript('OnMouseDown', function(self)
+        e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function(_, level)
+            self:Chat_Init_menu(TextEmoteSpeechList, level)
+        end, 'MENU')
+        e.LibDD:ToggleDropDownMenu(1, nil, MacroFrame.Menu, self, 15,0)
+    end)
+    last= spellchButton
 
+    --表情
+    local emoteButton= e.Cbtn(last, {size=size, texture='Interface\\Addons\\WoWTools\\Sesource\\Emojis\\greet'})
+    emoteButton:SetPoint('LEFT', last, 'RIGHT')
+    emoteButton:SetScript('OnMouseDown', function(self)
+        e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function(_, level)
+            self:GetParent():Chat_Init_menu(EmoteList, level)
+        end, 'MENU')
+        e.LibDD:ToggleDropDownMenu(1, nil, MacroFrame.Menu, self, 15,0)
+    end)
+    last= emoteButton
 
 
 
     --常用，宏
-    local starButton= e.Cbtn(MacroEditButton, {size={24,24}, atlas='PetJournal-FavoritesIcon'})
-    starButton:SetPoint('LEFT', equipButton, 'RIGHT')
+    local starButton= e.Cbtn(last, {size=size, atlas='PetJournal-FavoritesIcon'})
+    starButton:SetPoint('LEFT', last, 'RIGHT')
     starButton:SetScript('OnMouseDown', function(self)
         e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function(_, level, menuList)
             local macroList={
@@ -1108,57 +1157,7 @@ local last
         end, 'MENU')
         e.LibDD:ToggleDropDownMenu(1, nil, MacroFrame.Menu, self, 15,0)--主菜单
     end)
-
-
-
-
-    --表情，列表 
-    local function Chat_Init_menu(list, level)
-        for _, value in pairs(list or {}) do
-            local i = 1;
-            local token = _G["EMOTE"..i.."_TOKEN"];
-            while ( i < 627 ) do--local MAXEMOTEINDEX = 627;
-                if ( token == value ) then
-                    break;
-                end
-                i = i + 1;
-                token = _G["EMOTE"..i.."_TOKEN"];
-            end
-            local label = _G["EMOTE"..i.."_CMD1"];
-            if ( not label ) then
-                label = value;
-            end
-            if label then
-                e.LibDD:UIDropDownMenu_AddButton({
-                    text=label,
-                    notCheckable=true,
-                    arg1=label,
-                    func= function(_, arg1)
-                        MacroFrameText:Insert(arg1..'\n')
-                        MacroFrameText:SetFocus()
-                    end,
-                }, level)
-            end
-        end
-    end
-    --谈话
-    local spellchButton= e.Cbtn(MacroFrameSelectedMacroButton, {size={22,22}, atlas='communities-icon-chat'})
-    spellchButton:SetPoint('TOPLEFT', MacroFrameSelectedMacroButton, 'BOTTOMLEFT',-6,-1)
-    spellchButton:SetScript('OnMouseDown', function(self)
-        e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function(_, level)
-            Chat_Init_menu(TextEmoteSpeechList, level)
-        end, 'MENU')
-        e.LibDD:ToggleDropDownMenu(1, nil, MacroFrame.Menu, self, 15,0)
-    end)
-    --表情
-    local emoteButton= e.Cbtn(MacroFrameSelectedMacroButton, {size={22,22}, texture='Interface\\Addons\\WoWTools\\Sesource\\Emojis\\greet'})
-    emoteButton:SetPoint('LEFT', spellchButton, 'RIGHT')
-    emoteButton:SetScript('OnMouseDown', function(self)
-        e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function(_, level)
-            Chat_Init_menu(EmoteList, level)
-        end, 'MENU')
-        e.LibDD:ToggleDropDownMenu(1, nil, MacroFrame.Menu, self, 15,0)
-    end)
+    last=nil
 end
 
 
