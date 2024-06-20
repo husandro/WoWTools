@@ -1047,7 +1047,7 @@ local function setAddLoad(arg1)
         end})
        --e.Set_Move_Frame(EncounterJournal.NineSlice, {frame=EncounterJournal})
 
-    elseif arg1=='Blizzard_ClassTalentUI' then--天赋
+    --[[elseif arg1=='Blizzard_ClassTalentUI' then--天赋
         local frame=ClassTalentFrame
         if frame then
             e.Set_Move_Frame(frame, {save=true})
@@ -1083,7 +1083,7 @@ local function setAddLoad(arg1)
                     end
                 end
             end)
-        end
+        end]]
 
     elseif arg1=='Blizzard_AuctionHouseUI' then--拍卖行
         e.Set_Move_Frame(AuctionHouseFrame, {setSize=true, initFunc=function()
@@ -1952,8 +1952,19 @@ local function setAddLoad(arg1)
     elseif arg1=='Blizzard_ScrappingMachineUI' then
         e.Set_Move_Frame(ScrappingMachineFrame)
 
-    --elseif arg1=='Blizzard_StableUI' then
+    elseif arg1=='Blizzard_PlayerSpells' then--法术书
+        e.Set_Move_Frame(PlayerSpellsFrame)
+        --e.Set_Move_Frame(PlayerSpellsFrame.SpecFrame, {frame=PlayerSpellsFrame})
+        for specContentFrame in PlayerSpellsFrame.SpecFrame.SpecContentFramePool:EnumerateActive() do 
+            e.Set_Move_Frame(specContentFrame, {frame=PlayerSpellsFrame})
+        end
+        
+        e.Set_Move_Frame(PlayerSpellsFrame.TalentsFrame, {frame=PlayerSpellsFrame})
+        --e.Set_Move_Frame(PlayerSpellsFrame.TalentsFrame.HeroTalentsContainer, {frame=PlayerSpellsFrame})
+        e.Set_Move_Frame(PlayerSpellsFrame.TalentsFrame.ButtonsParent, {frame=PlayerSpellsFrame})
+        e.Set_Move_Frame(PlayerSpellsFrame.SpellBookFrame, {frame=PlayerSpellsFrame})
 
+        
     end
 end
 
@@ -2358,9 +2369,9 @@ local function Init_Move()
                     end
                 end
                 for i=1, 40 do
-                    local btn= _G['RaidGroupButton'..i]
-                    if btn then
-                        btn:SetWidth(w)
+                    local btn2= _G['RaidGroupButton'..i]
+                    if btn2 then
+                        btn2:SetWidth(w)
                     end
                     local name= _G['RaidGroupButton'..i..'Name']
                     if name then--11+23+50 
@@ -2548,7 +2559,7 @@ local function Init_Move()
     end})
 
     --法术书
-    e.Set_Move_Frame(SpellBookFrame, {notInCombat=true})--战斗中，禁止操作
+    --e.Set_Move_Frame(SpellBookFrame, {notInCombat=true})--战斗中，禁止操作
 
     created_Move_Button(ZoneAbilityFrame, {frame=ZoneAbilityFrame.SpellButtonContainer})
     --跟点击，功能冲突 ZoneAbilityFrameSpellButtonMixin:OnDragStart()

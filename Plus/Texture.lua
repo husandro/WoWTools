@@ -275,6 +275,12 @@ local function set_BagTexture(self)
 end
 
 
+local function set_TabSystem_Button(self)--TabSystemOwner.lua
+    for _, tabID in pairs(self:GetTabSet() or {}) do
+        local btn= self:GetTabButton(tabID)
+        e.Set_Alpha_Frame_Texture(btn, {alpha=min05})
+    end
+end
 
 
 
@@ -529,7 +535,7 @@ local function Init_All_Frame()
      e.Set_ScrollBar_Color_Alpha(ReputationFrame)
      set_Menu(ReputationFrame.filterDropdown)
 
-     --法术书
+     --[[法术书
      e.Set_NineSlice_Color_Alpha(SpellBookFrame, true)
      e.Set_NineSlice_Color_Alpha(SpellBookFrameInset)
      if SpellBookPageText then
@@ -539,7 +545,6 @@ local function Init_All_Frame()
      hide_Texture(SpellBookPage1)
      hide_Texture(SpellBookPage2)
      set_Alpha_Color(SpellBookFrameBg)
-     --hide_Texture(SpellBookFrameInset.Bg)
 
      for i=1, 12 do
          set_Alpha_Color(_G['SpellButton'..i..'Background'])
@@ -556,7 +561,7 @@ local function Init_All_Frame()
      e.Set_Alpha_Frame_Texture(SpellBookFrameTabButton1, {alpha=min05})
      e.Set_Alpha_Frame_Texture(SpellBookFrameTabButton2, {alpha=min05})
      e.Set_Alpha_Frame_Texture(SpellBookFrameTabButton3, {alpha=min05})
-
+]]
 
      --世界地图
      e.Set_NineSlice_Color_Alpha(WorldMapFrame.BorderFrame, true)
@@ -1355,46 +1360,23 @@ local function Init_Event(arg1)
              hide_Texture(StopwatchTabFrameLeft)
          end
 
-    elseif arg1=='Blizzard_ClassTalentUI' then--天赋
-        set_Alpha_Color(ClassTalentFrame.TalentsTab.BottomBar)--下面
-        e.Set_NineSlice_Color_Alpha(ClassTalentFrame, true)
-        set_Alpha_Color(ClassTalentFrameBg)--里面
-        hide_Texture(ClassTalentFrame.TalentsTab.BlackBG)
-        hooksecurefunc(ClassTalentFrame.TalentsTab, 'UpdateSpecBackground', function(self2)--Blizzard_ClassTalentTalentsTab.lua
-            if self2.specBackgrounds then
-                for _, background in ipairs(self2.specBackgrounds) do
-                    hide_Texture(background)
-                end
-            end
-        end)
 
-        hide_Texture(ClassTalentFrame.SpecTab.Background)
-        hide_Texture(ClassTalentFrame.SpecTab.BlackBG)
-        hooksecurefunc(ClassTalentFrame.SpecTab, 'UpdateSpecContents', function(self2)--Blizzard_ClassTalentSpecTab.lua
-            local numSpecs= self2.numSpecs
-            if numSpecs and numSpecs>0 then
-                for i = 1, numSpecs do
-                    local contentFrame = self2.SpecContentFramePool:Acquire();
-                    if contentFrame then
-                        hide_Texture(contentFrame.HoverBackground)
-                    end
-                end
-            end
-        end)
+    elseif arg1=='Blizzard_PlayerSpells' then--天赋和法术书
+        set_Alpha_Color(PlayerSpellsFrameBg, min03)
+        e.Set_NineSlice_Color_Alpha(PlayerSpellsFrame, min03)
+        set_TabSystem_Button(PlayerSpellsFrame)
 
-        set_Alpha_Color(ClassTalentFrameMiddle)
-        set_Alpha_Color(ClassTalentFrameLeft)
-        set_Alpha_Color(ClassTalentFrameRight)
-        set_SearchBox(ClassTalentFrame.TalentsTab.SearchBox)
+        set_Alpha_Color(PlayerSpellsFrame.SpecFrame.Background)--专精
+        hide_Texture(PlayerSpellsFrame.SpecFrame.BlackBG)
 
+        set_Alpha_Color(PlayerSpellsFrame.TalentsFrame.BottomBar, min05)--天赋
+        hide_Texture(PlayerSpellsFrame.TalentsFrame.BlackBG)
+        set_Menu(PlayerSpellsFrame.TalentsFrame.LoadSystem.Dropdown)
+        set_SearchBox(PlayerSpellsFrame.TalentsFrame.SearchBox)
 
-
-        --TabSystemOwner.lua
-        for _, tabID in pairs(ClassTalentFrame:GetTabSet() or {}) do
-            local btn= ClassTalentFrame:GetTabButton(tabID)
-            e.Set_Alpha_Frame_Texture(btn, {alpha=min05})
-        end
-
+        set_Alpha_Color(PlayerSpellsFrame.SpellBookFrame.TopBar)--法术书
+        set_SearchBox(PlayerSpellsFrame.SpellBookFrame.SearchBox)
+        set_TabSystem_Button(PlayerSpellsFrame.SpellBookFrame)
 
     elseif arg1=='Blizzard_AchievementUI' then--成就
         hide_Frame_Texture(AchievementFrame)
@@ -2130,10 +2112,7 @@ local function Init_Event(arg1)
 
         set_Alpha_Color(InspectRecipeFrameBg)
         set_Alpha_Color(InspectRecipeFrame.SchematicForm.MinimalBackground)
-        for _, tabID in pairs(ProfessionsFrame:GetTabSet() or {}) do
-            local btn= ProfessionsFrame:GetTabButton(tabID)
-            e.Set_Alpha_Frame_Texture(btn, {alpha=min05})
-        end
+        set_TabSystem_Button(ProfessionsFrame)
 
         if ProfessionsFrame.SpecPage then
             hooksecurefunc(ProfessionsFrame.SpecPage, 'UpdateTabs', function(self)

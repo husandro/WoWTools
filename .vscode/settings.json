@@ -4607,7 +4607,10 @@
         "RaidFinderQueueFrameScrollFrameChildFrameTitle",
         "RaidFinderQueueFrameScrollFrameChildFrameDescription",
         "ScriptErrorsFrame",
-        "LE_MOUNT_JOURNAL_FILTER_UNUSABLE"
+        "LE_MOUNT_JOURNAL_FILTER_UNUSABLE",
+        "PlayerSpellsFrame",
+        "ProfessionMicroButton",
+        "PlayerSpellsFrameBg"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

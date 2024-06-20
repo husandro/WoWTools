@@ -777,9 +777,9 @@ local function Init_List_Button()
 
 
 
-
-    --法术书
-    local last
+local last
+    --法术书 11版本
+    --[[
     for i=1, MAX_SKILLLINE_TABS do
         local name, icon, _, _, _, _, shouldHide, specID = C_Spell.GetSpellTabInfo(i)
         if (i==1 or i==2 or specID) and not shouldHide and name then
@@ -845,6 +845,7 @@ local function Init_List_Button()
             last= btn
         end
     end
+    ]]
 
 
 
@@ -855,7 +856,11 @@ local function Init_List_Button()
 
     --PVP， 天赋，法术
     local pvpButton= e.Cbtn(MacroEditButton, {size={24,24}, atlas='pvptalents-warmode-swords'})--pvptalents-warmode-swords-disabled
-    pvpButton:SetPoint('LEFT', last, 'RIGHT')
+    if not last then
+        pvpButton:SetPoint('TOPLEFT', MacroFrameSelectedMacroButton, 'BOTTOMRIGHT',0,8)
+    else
+        pvpButton:SetPoint('LEFT', last, 'RIGHT')
+    end
     pvpButton:SetScript('OnMouseDown', function(self)
         e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function()
             local slotInfo = C_SpecializationInfo.GetPvpTalentSlotInfo(1)

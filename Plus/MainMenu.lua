@@ -80,38 +80,35 @@ end
 
 --天赋
 local function Init_Talent()
-    if not TalentMicroButton then
-        return
-    end
     local frame= CreateFrame("Frame")
     --table.insert(Frames, frame)
-    TalentMicroButton.frame= frame
+    PlayerSpellsMicroButton.frame= frame
 
-    TalentMicroButton.Portrait= TalentMicroButton:CreateTexture(nil, 'BORDER', nil, 1)
-    --TalentMicroButton.Portrait:SetAllPoints(TalentMicroButton)
-    TalentMicroButton.Portrait:SetPoint('CENTER')
+    PlayerSpellsMicroButton.Portrait= PlayerSpellsMicroButton:CreateTexture(nil, 'BORDER', nil, 1)
+    --PlayerSpellsMicroButton.Portrait:SetAllPoints(PlayerSpellsMicroButton)
+    PlayerSpellsMicroButton.Portrait:SetPoint('CENTER')
 
-    TalentMicroButton.Portrait:SetSize(22, 28)
-
-
+    PlayerSpellsMicroButton.Portrait:SetSize(22, 28)
 
 
-    TalentMicroButton.Texture2= TalentMicroButton:CreateTexture(nil, 'BORDER', nil, 2)
-    TalentMicroButton.Texture2:SetPoint('BOTTOMRIGHT', -8, 6)
-    TalentMicroButton.Texture2:SetSize(20, 24)
-    TalentMicroButton.Texture2:SetScale(0.5)
 
-    local mask= TalentMicroButton:CreateMaskTexture(nil, 'BORDER', nil, 3)
+
+    PlayerSpellsMicroButton.Texture2= PlayerSpellsMicroButton:CreateTexture(nil, 'BORDER', nil, 2)
+    PlayerSpellsMicroButton.Texture2:SetPoint('BOTTOMRIGHT', -8, 6)
+    PlayerSpellsMicroButton.Texture2:SetSize(20, 24)
+    PlayerSpellsMicroButton.Texture2:SetScale(0.5)
+
+    local mask= PlayerSpellsMicroButton:CreateMaskTexture(nil, 'BORDER', nil, 3)
     mask:SetTexture("Interface/CHARACTERFRAME/TempPortraitAlphaMask", "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
     mask:SetPoint('CENTER',0,-1)
     mask:SetSize(19, 24)
-    --mask:SetAllPoints(TalentMicroButton.Portrait)
-    TalentMicroButton.Portrait:AddMaskTexture(mask)
+    --mask:SetAllPoints(PlayerSpellsMicroButton.Portrait)
+    PlayerSpellsMicroButton.Portrait:AddMaskTexture(mask)
 
-    mask= TalentMicroButton:CreateMaskTexture(nil, 'BORDER', nil, 4)
+    mask= PlayerSpellsMicroButton:CreateMaskTexture(nil, 'BORDER', nil, 4)
     mask:SetTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')
-    mask:SetAllPoints(TalentMicroButton.Texture2)
-    TalentMicroButton.Texture2:AddMaskTexture(mask)
+    mask:SetAllPoints(PlayerSpellsMicroButton.Texture2)
+    PlayerSpellsMicroButton.Texture2:AddMaskTexture(mask)
 
     function frame:settings()
         local lootID=  GetLootSpecialization()
@@ -121,8 +118,8 @@ local function Init_Talent()
         if lootID>0 and specID and specID~= lootID then
             icon2 = select(4, GetSpecializationInfoByID(lootID))
         end
-        TalentMicroButton.Portrait:SetTexture(icon or 0)
-        TalentMicroButton.Texture2:SetTexture(icon2 or 0)
+        PlayerSpellsMicroButton.Portrait:SetTexture(icon or 0)
+        PlayerSpellsMicroButton.Texture2:SetTexture(icon2 or 0)
     end
     frame:RegisterUnitEvent('PLAYER_SPECIALIZATION_CHANGED', 'Player')
     frame:RegisterEvent('PLAYER_LOOT_SPEC_UPDATED')
@@ -130,12 +127,12 @@ local function Init_Talent()
     frame:SetScript('OnEvent', frame.settings)
     C_Timer.After(2, function() frame:settings() end)
 
-    TalentMicroButton:SetNormalTexture(0)
-    TalentMicroButton:HookScript('OnLeave', function(self)
+    PlayerSpellsMicroButton:SetNormalTexture(0)
+    PlayerSpellsMicroButton:HookScript('OnLeave', function(self)
         self.Portrait:SetShown(true)
         self.Texture2:SetShown(true)
     end)
-    TalentMicroButton:HookScript('OnEnter', function(self)
+    PlayerSpellsMicroButton:HookScript('OnEnter', function(self)
         self.Portrait:SetShown(false)
         self.Texture2:SetShown(false)
         if KeybindFrames_InQuickKeybindMode() then
@@ -859,8 +856,8 @@ local function Init_MainMenu(init)
     end
     local tab = {
         'CharacterMicroButton',--菜单
-        'SpellbookMicroButton',
-        'TalentMicroButton',
+        'ProfessionMicroButton',
+        'PlayerSpellsMicroButton',
         'AchievementMicroButton',
         'QuestLogMicroButton',
         'GuildMicroButton',

@@ -2915,21 +2915,21 @@ local function Init()
         end
     end)
 
-    SpellbookMicroButton.tooltipText = MicroButtonTooltipText('法术书和专业', "TOGGLESPELLBOOK")
+    ProfessionMicroButton.tooltipText = MicroButtonTooltipText('专业', "TOGGLEPROFESSIONBOOK")
+    ProfessionMicroButton:HookScript('OnEvent', function(self, event)
+        if ( event == "UPDATE_BINDINGS" ) then
+		    self.tooltipText = MicroButtonTooltipText('专业', "TOGGLEPROFESSIONBOOK")
+        end
+    end)
+
+    SpellbookMicroButton.tooltipText = MicroButtonTooltipText('天赋和法术书', "TOGGLETALENTS")
     SpellbookMicroButton:HookScript('OnEvent', function(self, event)
         if ( event == "UPDATE_BINDINGS" ) then
-		    self.tooltipText = MicroButtonTooltipText('法术书和专业', "TOGGLESPELLBOOK")
+		    self.tooltipText = MicroButtonTooltipText('天赋和法术书', "TOGGLETALENTS")
         end
     end)
 
-    TalentMicroButton.tooltipText = MicroButtonTooltipText('专精和天赋', "TOGGLETALENTS")
-    TalentMicroButton.newbieText = '天赋的各种组合选择能够强化你的角色，并使你的角色与众不同。'
-    TalentMicroButton:HookScript('OnEvent', function(self, event)
-        if ( event == "UPDATE_BINDINGS" ) then
-		    self.tooltipText = MicroButtonTooltipText('专精和天赋', "TOGGLETALENTS")
-        end
-    end)
-
+    
     AchievementMicroButton.tooltipText = MicroButtonTooltipText('成就', "TOGGLEACHIEVEMENT")
     AchievementMicroButton.newbieText = '浏览有关你的成就和统计数据的信息。'
     AchievementMicroButton:HookScript('OnEvent', function(self, event)
