@@ -274,7 +274,8 @@ end
 
 --法术
 local function set_Spell_Count(self)--次数
-    local num, max= C_Spell.GetSpellCharges(self.spellID)
+    local data= self.spellID and C_Spell.GetSpellCharges(self.spellID) or {}
+    local num, max= data.currentCharges, data.maxCharges
     if max and max>1 and not self.count then
         self.count=e.Cstr(self, {color=true})--nil,nil,nil,true)
         self.count:SetPoint('BOTTOMRIGHT',-2, 9)

@@ -488,7 +488,7 @@ local function Init()
 
 
 
-    --法术 SpellBookFrame.lua
+    --[[法术 SpellBookFrame.lua
     hooksecurefunc('SpellBookFrame_Update', function()
         set(SpellBookFrameTabButton1, '法术')
         set(SpellBookFrameTabButton2, '专业')
@@ -525,7 +525,7 @@ local function Init()
                 set(self.subSpellString, e.strText[text] or text)
             end)
         end
-    end)
+    end)]]
 
 
 

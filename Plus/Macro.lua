@@ -797,12 +797,10 @@ local size= 24
             btn:SetScript('OnMouseDown', function(self)
                 --if not self.Menu then
                     --self.Menu= CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
-                    e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function()                    
+                    e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function(_, level)                    
                         local info= C_SpellBook.GetSpellBookSkillLineInfo(self.index)
                         local num=1
                         if info and info.name and info.itemIndexOffset and info.numSpellBookItems and info.numSpellBookItems>0 then
-                            
-                            
                             for index= info.itemIndexOffset+1, info.itemIndexOffset+ info.numSpellBookItems do
                                 local spellData= C_SpellBook.GetSpellBookItemInfo(index, Enum.SpellBookSpellBank.Player) or {}--skillLineIndex itemType isOffSpec subName actionID name iconID isPassive spellID
                                 if not spellData.isPassive and spellData.spellID and spellData.name then
@@ -822,7 +820,7 @@ local size= 24
                                     MacroFrameText:Insert('/click ExtraActionButton1\n')
                                     MacroFrameText:SetFocus()
                                 end
-                            }, 1)
+                            }, level)
                             if e.Player.class=='MAGE' then--FS
                                 e.LibDD:UIDropDownMenu_AddButton({
                                     text=e.onlyChinese and '解散水元素' or 'PetDismiss',
@@ -833,7 +831,7 @@ local size= 24
                                         MacroFrameText:Insert('/script PetDismiss()\n')
                                         MacroFrameText:SetFocus()
                                     end
-                                }, 1)
+                                }, level)
                             end
 
                             --[[if HasExtraActionBar() then

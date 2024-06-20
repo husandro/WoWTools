@@ -487,10 +487,8 @@ local function Init_Spell_Button()
     SpellButton.count:SetPoint('BOTTOMRIGHT',-2, 9)
 
     function SpellButton:set_count()
-        local num, max
-        if self.spellID then
-            num, max= C_Spell.GetSpellCharges(self.spellID)
-        end
+        local data= self.spellID and C_Spell.GetSpellCharges(self.spellID) or {}
+        local num, max= data.currentCharges, data.maxCharges
         self.count:SetText((max and max>1) and num or '')
         self.texture:SetDesaturated(num and num>0)
     end

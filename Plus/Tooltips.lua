@@ -1835,17 +1835,16 @@ local function Init()
         end
     end)
 
-    hooksecurefunc(GameTooltip, 'SetSpellBookItem', function(_, slot, unit)--技能收，宠物，技能，提示
-        if unit=='pet' and slot then
-            local icon=GetSpellBookItemTexture(slot, 'pet')
-            local spellID = select(3, C_Spell.GetSpellBookItemName(slot, 'pet'))
-            if spellID then
-                e.tips:AddLine(' ')
-                e.tips:AddDoubleLine((e.onlyChinese and '法术' or SPELLS)..' '..spellID, icon and '|T'..icon..':0|t'..icon)
-                local slotType, actionID = C_Spell.GetSpellBookItemInfo(slot, 'pet')
-                if slotType and actionID then
-                    e.tips:AddDoubleLine('slotType '..slotType, 'actionID '..actionID)
+    hooksecurefunc(GameTooltip, 'SetSpellBookItem', function(self, slot, unit)--宠物，技能书，提示        
+        if unit==Enum.SpellBookSpellBank.Pet and slot then
+            local data= C_SpellBook.GetSpellBookItemInfo(slot, Enum.SpellBookSpellBank.Pet)
+            if data then
+                self:AddLine(' ')
+                self:AddDoubleLine(data.spellID and (e.onlyChinese and '法术' or SPELLS)..' '..data.spellID or ' ', data.iconID and '|T'..data.iconID..':0|t'..data.iconID)
+                if data.actionID or data.itemType then
+                    self:AddDoubleLine(data.itemType and 'itemType '..data.itemType or ' ', 'actionID '..data.actionID)
                 end
+                --self:Show()
             end
         end
     end)
