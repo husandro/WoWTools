@@ -28,14 +28,16 @@ local ArcheologyButton
 --TOOLS，按钮
 --##########
 local function Init_Tools_Button()
+    --11版本
+    
     local tab={GetProfessions()}--local prof1, prof2, archaeology, fishing, cooking = GetProfessions()
     for index, type in pairs(tab) do
         if type then --and index~=4 and index~=3 then
             local name, _, _, _, numAbilities, spelloffset = GetProfessionInfo(type)
-            local spellInfo= C_Spell.GetSpellInfo(spelloffset+ 1, 'spell') or {}
-            local icon= spellInfo.iconID
-            local spellID= spellInfo.spellID
+            local info= C_Spell.GetSpellInfo(spelloffset+ 1, 'spell') or {}
 
+            local icon= info.iconID
+            local spellID= info.spellID
             local btn= e.Cbtn2({
                 name=id..addName..name,
                 parent= e.toolsFrame,
@@ -938,10 +940,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== id then
             Save= WoWToolsSave[addName..'Tools'] or Save
 
-            if not e.toolsFrame.disabled or e.Is_Timerunning then
+            --[[if not e.toolsFrame.disabled or e.Is_Timerunning then
                 --ProfessionsFrame_LoadUI()
                 --ProfessionsCustomerOrders_LoadUI()
-                C_Timer.After(2.2, function()
+                -C_Timer.After(2.2, function()
                     if UnitAffectingCombat('player') then
                         self.combat= true
                         self:RegisterEvent("PLAYER_REGEN_ENABLED")
@@ -949,7 +951,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         Init_Tools_Button()
                     end
                 end)
-            end
+            end]]
 
             if not Save.disabled then
                 Init()

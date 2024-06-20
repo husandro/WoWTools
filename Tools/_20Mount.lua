@@ -1363,13 +1363,14 @@ local function Init_MountJournal()
     end
 
     local btn= CreateFrame('DropDownToggleButton', 'MountJournalFilterButtonWoWTools', MountJournal, 'UIResettableDropdownButtonTemplate')--SharedUIPanelTemplates.lua
-    btn:SetPoint('BOTTOM', MountJournalFilterButton, 'TOP')
+    btn:SetPoint('BOTTOM', MountJournal.FilterDropdown, 'TOP')
     btn.MountJournal_FullUpdate= MountJournal_FullUpdate
     function btn.resetFunction()
         MountJournal_FullUpdate= _G['MountJournalFilterButtonWoWTools'].MountJournal_FullUpdate
         _G['MountJournalFilterButtonWoWTools']:SetText(id)
         e.call('MountJournalFilterDropdown_ResetFilters')
     end
+    
 
     btn:SetScript('OnMouseDown', function(frame)
         if not frame.Menu then
@@ -1401,9 +1402,11 @@ local function Init_MountJournal()
                                     MountJournal_UpdateMountDisplay()
                                 end
                             end
-                            e.call('MountJournalFilterDropdown_ResetFilters')
+                            --e.call('MountJournalFilterDropdown_ResetFilters')
                             e.call('MountJournal_SetUnusableFilter',true)
                             --e.call('MountJournal_FullUpdate')
+                            MountJournal.FilterDropdown:Reset();
+                            C_MountJournal.SetCollectedFilterSetting(LE_MOUNT_JOURNAL_FILTER_UNUSABLE or 3, true);
 
                             parent.ResetButton:SetShown(true)
                             parent:SetText(e.cn(arg1))
@@ -1423,14 +1426,14 @@ local function Init_MountJournal()
         e.LibDD:ToggleDropDownMenu(1, nil, frame.Menu, frame, 74, 15)
     end)
 
-    --[[MountJournal.MountCount:ClearAllPoints() --11版本
+    MountJournal.MountCount:ClearAllPoints()
     MountJournal.MountCount:SetPoint('BOTTOMLEFT', MountJournalSearchBox, 'TOPLEFT',-3, 0)
-    MountJournal.MountCount:SetPoint('RIGHT', MountJournalFilterButton, 'LEFT', -2, 0)
-    MountJournalFilterButton.ResetButton:HookScript('OnClick', function()
+    MountJournal.MountCount:SetPoint('RIGHT', MountJournal.FilterDropdown, 'LEFT', -2, 0)
+    MountJournal.FilterDropdown.ResetButton:HookScript('OnClick', function()
         if _G['MountJournalFilterButtonWoWTools'].ResetButton:IsShown() then
             _G['MountJournalFilterButtonWoWTools'].ResetButton:Click()
         end
-    end)]]
+    end)
 end
 
 

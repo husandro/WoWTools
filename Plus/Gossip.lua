@@ -325,7 +325,7 @@ local function select_Reward(questID)--自动:选择奖励
     if bestItem and not IsModifierKeyDown() then
         _G['QuestInfoRewardsFrameQuestInfoItem'..bestItem]:Click()--QuestFrame.lua
         if selectItemLink then
-            print(id, e.onlyChinese and '任务' or QUESTS_LABEL, '|cffff00ff'..CHOOSE..'|r', selectItemLink)
+            print(id, Initializer:GetName(), '|cffff00ff'..(e.onlyChinese and '选择' or CHOOSE)..'|r', selectItemLink)
         end
     end
 end
@@ -1425,7 +1425,7 @@ local function Init_Menu_Gossip(_, level, type)
                 arg1= gossipOptionID,
                 func=function(_, arg1)
                     Save.gossipOption[arg1]=nil
-                    print(id, e.onlyChinese and '对话' or ENABLE_DIALOG, e.onlyChinese and '移除' or REMOVE, text, 'gossipOptionID:', arg1)
+                    print(id, Initializer:GetName(), e.onlyChinese and '移除' or REMOVE, text, 'gossipOptionID:', arg1)
                 end
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1923,8 +1923,7 @@ local function Create_CheckButton(frame, info)
             check:SetScript("OnMouseDown", function(self)
                 Save.gossipOption[self.id]= not Save.gossipOption[self.id] and (self.name or '') or nil
                 if Save.gossipOption[self.id] and not IsModifierKeyDown() and Save.gossip then
-                    print(id, e.onlyChinese and '自动对话' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, ENABLE_DIALOG),
-                    format('|cnGREEN_FONT_COLOR:%s|r %d', self.name or '', self.id))
+                    print(id, Initializer:GetName(), format('|cnGREEN_FONT_COLOR:%s|r %d', self.name or '', self.id))
                     C_GossipInfo.SelectOption(self.id)
                 end
             end)
@@ -2089,7 +2088,6 @@ local function Init_Gossip()
             Save.scale=n
             self:set_Scale()
             self:tooltip_Show()
-            print(id, Initializer:GetName(), e.onlyChinese and '缩放' or UI_SCALE, n)
         elseif not IsModifierKeyDown() then
             if not Gossip_Text_Icon_Frame then
                 Init_Gossip_Text_Icon_Options()
@@ -2322,7 +2320,7 @@ local function Init_Gossip()
 
         if find then
             GossipButton.selectGissipIDTab[index]=true
-            print(id, e.onlyChinese and '对话' or ENABLE_DIALOG, '|T'..(info.overrideIconID or info.icon or 0)..':0|t', '|cffff00ff'..name..'|r', index)
+            print(id, Initializer:GetName(), '|T'..(info.overrideIconID or info.icon or 0)..':0|t', '|cffff00ff'..name..'|r', index)
         end
     end)
 
@@ -2563,7 +2561,7 @@ local function InitMenu_Quest(_, level, type)
                 tooltipText='|n'..e.Icon.left..(e.onlyChinese and '移除' or REMOVE),
                 func=function()
                     Save.questOption[questID]=nil
-                    print(id, e.onlyChinese and '任务' or QUESTS_LABEL, e.onlyChinese and '移除' or REMOVE, text, 'ID', questID)
+                    print(id, Initializer:GetName(), e.onlyChinese and '移除' or REMOVE, text, 'ID', questID)
                 end
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -2578,7 +2576,7 @@ local function InitMenu_Quest(_, level, type)
             func= function()
                 if IsShiftKeyDown() then
                     Save.questOption={}
-                    print(id, e.onlyChinese and '任务' or QUESTS_LABEL, e.onlyChinese and '自定义' or CUSTOM, e.onlyChinese and '清除全部' or CLEAR_ALL)
+                    print(id, Initializer:GetName(), e.onlyChinese and '自定义' or CUSTOM, e.onlyChinese and '清除全部' or CLEAR_ALL)
                 end
             end
         }
@@ -3143,7 +3141,7 @@ local function Init_Quest()
                         end
                         questLink=questLink or ('|cnGREEN_FONT_COLOR:'..questID..'|r')
                     end
-                    print(id, e.onlyChinese and '任务' or QUESTS_LABEL, questLink, text and '|cffff00ff'..text..'|r', link, QuestFrameGoodbyeButton and '|cnRED_FONT_COLOR:'..QuestFrameGoodbyeButton:GetText())
+                    print(id, Initializer:GetName(), questLink, text and '|cffff00ff'..text..'|r', link, QuestFrameGoodbyeButton and '|cnRED_FONT_COLOR:'..QuestFrameGoodbyeButton:GetText())
                 end)
             end
             e.call('QuestGoodbyeButton_OnClick')
@@ -3234,7 +3232,7 @@ local function Init_Quest()
 
         if not QuestButton.questSelect[questID] then--已选任务, 提示用
             C_Timer.After(0.5, function()
-                print(id, e.onlyChinese and '任务' or QUESTS_LABEL, GetQuestLink(questID) or questID, (complete and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..acceptButton:GetText()..'|r', itemLink)
+                print(id, Initializer:GetName(), GetQuestLink(questID) or questID, (complete and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..acceptButton:GetText()..'|r', itemLink)
             end)
             QuestButton.questSelect[questID]=true
         end

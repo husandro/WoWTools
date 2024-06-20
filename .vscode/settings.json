@@ -4606,7 +4606,8 @@
         "GroupFinderFrameGroupButton1",
         "RaidFinderQueueFrameScrollFrameChildFrameTitle",
         "RaidFinderQueueFrameScrollFrameChildFrameDescription",
-        "ScriptErrorsFrame"
+        "ScriptErrorsFrame",
+        "LE_MOUNT_JOURNAL_FILTER_UNUSABLE"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

@@ -1110,9 +1110,9 @@ local function Init()
 
 		local text
 		for i=1, C_Reputation.GetNumFactions() do--声望更新, 提示
-			local infoFaction= C_Reputation.GetFactionDataByIndex(i) or {}
-			local name= infoFaction.name
-			local factionID= infoFaction.factionID
+			local data= C_Reputation.GetFactionDataByIndex(i) or {}
+			local name= data.name
+			local factionID= data.factionID
 			if name and factionID and C_Reputation.IsFactionParagon(factionID) and select(4, C_Reputation.GetFactionParagonInfo(factionID)) then--奖励
 				text= text and text..' ' or ''
 
