@@ -989,7 +989,7 @@ local size= 24
             end
         end
     end
-    spellchButton:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',-6,-1)
+    spellchButton:SetPoint('LEFT', last, 'RIGHT')
     spellchButton:SetScript('OnMouseDown', function(self)
         e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function(_, level)
             self:Chat_Init_menu(TextEmoteSpeechList, level)
