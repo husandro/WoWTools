@@ -2986,13 +2986,13 @@ local function Init()
         end
     end)
 
-    CollectionsMicroButton.tooltipText = MicroButtonTooltipText('藏品', "TOGGLECOLLECTIONS")
+    CollectionsMicroButton.tooltipText = MicroButtonTooltipText('战团藏品', "TOGGLECOLLECTIONS")
     CollectionsMicroButton:HookScript('OnEvent', function(self, event)
         if CollectionsJournal and CollectionsJournal:IsShown() then
             return
         end
         if ( event == "UPDATE_BINDINGS" ) then
-		    self.tooltipText = MicroButtonTooltipText('藏品', "TOGGLECOLLECTIONS")
+		    self.tooltipText = MicroButtonTooltipText('战团藏品', "TOGGLECOLLECTIONS")
         end
     end)
 

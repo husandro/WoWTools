@@ -112,14 +112,14 @@ local function Init()
             btn.texture2:AddMaskTexture(btn.mask)
             btn:SetScript('OnShow', function(self2)
                 self2:RegisterEvent('SPELL_UPDATE_COOLDOWN')
-                e.SetItemSpellCool({frame=btn, spell=self2.spell2})--设置冷却
+                e.SetItemSpellCool(btn, {spell=self2.spell2})--设置冷却
             end)
             btn:SetScript('OnHide', function(self2)
                 self2:UnregisterEvent('SPELL_UPDATE_COOLDOWN')
             end)
             btn:SetScript("OnEvent", function(self, event)
                 if event=='SPELL_UPDATE_COOLDOWN' then
-                    e.SetItemSpellCool({frame=self, spell=self.spell2})--设置冷却
+                    e.SetItemSpellCool(self, {spell=self.spell2})--设置冷却
                 end
             end)
         end

@@ -158,7 +158,7 @@ local function Init_Tools_Button()
                         btn.textureRight:SetSize(8,8)
                         btn.textureRight:SetTexture(135805)
                         btn:SetScript('OnShow',function(self)
-                            e.SetItemSpellCool({frame=self, sepll=818})
+                            e.SetItemSpellCool(self, {sepll=818})
                         end)
                     end
                     btn:SetAttribute('type2', 'macro')
@@ -251,42 +251,44 @@ local function Init_ProfessionsFrame_Button()
                     local btn= e.Cbtn(button, {type= true, texture=135805 ,size={32, 32}})
                     btn:SetPoint('LEFT', button, 'RIGHT',2,0)
 
-                    btn:SetScript('OnShow',function(self)
-                        e.SetItemSpellCool({frame=self, sepll=818})
-                        self:RegisterEvent('SPELL_UPDATE_COOLDOWN')
-                    end)
-                    btn:SetScript('OnHide', function(self)
-                        self:UnregisterAllEvents()
-                    end)
-                    btn:SetScript('OnEvent', function(self)
-                        e.SetItemSpellCool({frame=self, sepll=818})
-                    end)
+                    function btn:set_event()
+                        e.SetItemSpellCool(self, {spell=818})
+                    end
+                    function btn:settings()
+                        if self:IsVisible() then
+                            self:set_event()
+                            self:RegisterEvent('SPELL_UPDATE_COOLDOWN')
+                        else
+                            self:UnregisterAllEvents()
+                        end
+                    end
+                    btn:SetScript('OnEvent', btn.set_event)
+                    btn:SetScript('OnShow', btn.settings)
+                    btn:SetScript('OnHide', btn.settings)
+                    btn:settings()
+
+                  
                     btn:SetScript('OnLeave', GameTooltip_Hide)
                     btn:SetScript('OnEnter', function(self)
                         e.tips:SetOwner(self, "ANCHOR_RIGHT")
                         e.tips:ClearLines()
                         e.tips:SetSpellByID(818)
-                        e.tips:AddLine(' ')
-                        e.tips:AddLine(self.macrotext)
+                        
+                        if self.toyName then
+                            e.tips:AddLine(' ')
+                            e.tips:AddDoubleLine('|T236571:0|t|cnGREEN_FONT_COLOR:'..self.toyName, e.Icon.right)
+                        end
                         e.tips:Show()
                     end)
 
-                    local text=''
-                    --if PlayerHasToy(134020) then--玩具,大厨的帽子
-                        local toyname=C_Item.GetItemNameByID('134020')
-                        if toyname then
-                            text= '/use '..toyname..'|n'
-                            btn.rightTexture= btn:CreateTexture(nil, 'OVERLAY')
-                            btn.rightTexture:SetPoint('TOPRIGHT')
-                            btn.rightTexture:SetSize(16,16)
-                            btn.rightTexture:SetTexture(236571)
-                        end
-                    --end
-                    text=text..'/cast [@player]'..name2
+                    btn:SetAttribute('type1', 'spell')
+                    btn:SetAttribute('spell1', name2)
+                    btn:SetAttribute('unit', 'player')
 
-                    btn:SetAttribute('type', 'macro')
-                    btn:SetAttribute("macrotext", text)
-                    btn.macrotext= text
+                    local toyName=C_Item.GetItemNameByID(134020)--玩具,大厨的帽子
+                    btn:SetAttribute('type2', 'item')
+                    btn:SetAttribute('item2', toyName)
+                    btn.toyName= toyName
                 end
             end
             last= button
@@ -560,7 +562,6 @@ local function Init_ProfessionsFrame()
         if self.texture then
             self.texture:SetTexture(icon or 0)
         end
-
     end)
 
 
@@ -676,7 +677,7 @@ local function Init_Archaeology()
         for i=1, ARCHAEOLOGY_MAX_COMPLETED_SHOWN do
             local btn=  self["artifact"..i]
             if btn and btn:IsShown() then
-                local name, description, rarity, icon, spellDescription,  _, _, spellID, firstCompletionTime, completionCount = GetArtifactInfoByRace(btn.raceIndex, btn.projectIndex);
+                local name, _, rarity, _, _,  _, _, _, _, completionCount = GetArtifactInfoByRace(btn.raceIndex, btn.projectIndex);
                 local raceName = GetArchaeologyRaceInfo(btn.raceIndex)
                 if raceName and name and completionCount and completionCount>0 then
                     local sub= raceName
@@ -773,16 +774,13 @@ end
 
 
 
-
-
-
-local UNLEARN_SKILL_CONFIRMATION= UNLEARN_SKILL_CONFIRMATION
-local function Init()
+--专业书
+local function Init_ProfessionsBook()
     --########################
     --自动输入，忘却，文字，专业
     --########################
-    local btn2= e.Cbtn(SpellBookProfessionFrame, {size={22,22}, icon='hide'})
-    btn2:SetPoint('TOP', SpellBookFramePortrait, 'BOTTOM')
+    local btn2= e.Cbtn(ProfessionsBookFrame, {size={22,22}, icon='hide'})
+    btn2:SetPoint('TOP', ProfessionsBookFramePortrait, 'BOTTOM')
     function btn2:set_alpha()
         self:SetAlpha(Save.wangquePrefessionText and 1 or 0.3)
         self:SetNormalAtlas(not Save.wangquePrefessionText and e.Icon.icon or e.Icon.disabled)
@@ -812,6 +810,19 @@ local function Init()
             self.editBox:SetText(UNLEARN_SKILL_CONFIRMATION);
         end
     end)
+end
+
+
+
+
+
+
+
+
+
+local UNLEARN_SKILL_CONFIRMATION= UNLEARN_SKILL_CONFIRMATION
+local function Init()
+
 
 
     ArcheologyDigsiteProgressBar:HookScript('OnShow', function(frame)
@@ -965,6 +976,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Init_ProfessionsFrame()--初始
         elseif arg1=='Blizzard_ArchaeologyUI' then
             Init_Archaeology()
+        elseif arg1=='Blizzard_ProfessionsBook' then--专业书
+            Init_ProfessionsBook()
         end
 
     elseif event == "PLAYER_LOGOUT" then

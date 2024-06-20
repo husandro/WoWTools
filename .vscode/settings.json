@@ -4610,7 +4610,14 @@
         "LE_MOUNT_JOURNAL_FILTER_UNUSABLE",
         "PlayerSpellsFrame",
         "ProfessionMicroButton",
-        "PlayerSpellsFrameBg"
+        "PlayerSpellsFrameBg",
+        "ProfessionsBookFrame",
+        "PlayerSpellsMicroButton",
+        "ProfessionsBookFramePortrait",
+        "ProfessionsBookFrameBg",
+        "ProfessionsBookFrameInset",
+        "ProfessionsBookPage1",
+        "ProfessionsBookPage2"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

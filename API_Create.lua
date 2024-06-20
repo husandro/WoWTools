@@ -78,7 +78,7 @@ end
 
 function e.Cbtn(self, tab)--type, icon(atlas, texture), name, size, pushe, button='ItemButton', notWheel, setID, text
     tab=tab or {}
-    local template= tab.type==false and 'UIPanelButtonTemplate' or tab.type==true and 'SecureActionButtonTemplate' or tab.type
+    local template= tab.type==false and 'UIPanelButtonTemplate' or (tab.type==true and 'SecureActionButtonTemplate') or tab.type
     --[[SharedUIPanelTemplates.xml
     SecureTemplates
     SecureActionButtonTemplate	Button	Perform protected actions.
@@ -215,15 +215,15 @@ function e.Ccool(self, start, duration, modRate, HideCountdownNumbers, Reverse, 
     self.cooldown:SetCooldown(start, duration, modRate)
 end
 
-function e.SetItemSpellCool(tab)--{frame=, item=, spell=, type=, isUnit=true} type=true圆形，false方形
-    if not tab.frame then
+function e.SetItemSpellCool(frame, tab)--{item=, spell=, type=, isUnit=true} type=true圆形，false方形
+    if not frame then
         return
     end
-    local frame= tab.frame
     local item= tab.item
     local spell= tab.spell
     local type= tab.type
     local unit= tab.unit
+
     if unit then
         local texture, startTime, endTime, duration, channel
 
@@ -247,9 +247,10 @@ function e.SetItemSpellCool(tab)--{frame=, item=, spell=, type=, isUnit=true} ty
         local startTime, duration = C_Container.GetItemCooldown(item)
         e.Ccool(frame, startTime, duration, nil, true, nil, not type)
     elseif spell then
-        local start, duration, _, modRate = C_Spell.GetSpellCooldown(spell)
-        e.Ccool(frame, start, duration, modRate, true, nil, not type)--冷却条
-    elseif tab.frame.cooldown then
+        local data= C_Spell.GetSpellCooldown(spell) or {}
+        e.Ccool(frame, data.startTime, data.duration, data.modRate, true, nil, not type)--冷却条
+        
+    elseif frame.cooldown then
         e.Ccool(frame)
     end
 end
@@ -257,7 +258,9 @@ end
 function e.GetSpellItemCooldown(spellID, itemID)--法术,物品,冷却
     local startTime, duration, enable
     if spellID then
-        startTime, duration, enable = C_Spell.GetSpellCooldown(spellID)
+        ---startTime, duration, enable = C_Spell.GetSpellCooldown(spellID)
+        local data= C_Spell.GetSpellCooldown(spellID) or {}
+        startTime, duration, enable= data.startTime, data.duration, data.modRate
         if enable==0 then
             return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '即时冷却' or SPELL_RECAST_TIME_INSTANT)..'|r'
         elseif startTime and duration and startTime>0 and duration>0 then

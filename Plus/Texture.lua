@@ -1683,6 +1683,13 @@ local function Init_Event(arg1)
         e.Set_ScrollBar_Color_Alpha(AuctionHouseFrame.ItemBuyFrame.ItemList)
         e.Set_NineSlice_Color_Alpha(AuctionHouseFrame.ItemBuyFrame.ItemList, nil, true)
 
+    elseif arg1=='Blizzard_ProfessionsBook' then--专业书
+        e.Set_NineSlice_Color_Alpha(ProfessionsBookFrame, nil, nil, min03)
+        hide_Texture(ProfessionsBookFrameBg)
+        hide_Texture(ProfessionsBookFrameInset.Bg)
+        set_Alpha_Color(ProfessionsBookPage1, nil, true, min03)
+        set_Alpha_Color(ProfessionsBookPage2, nil, nil, min03)
+
     elseif arg1=='Blizzard_ProfessionsCustomerOrders' then--专业定制
         e.Set_NineSlice_Color_Alpha(ProfessionsCustomerOrdersFrame, true)
 

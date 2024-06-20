@@ -1564,17 +1564,7 @@ local function setAddLoad(arg1)
             e.Set_Move_Frame(ItemInteractionFrame)
         end)
 
-    elseif arg1=='Blizzard_Professions' then--专业, 10.1.5
-        --[[InspectRecipeFrame:HookScript('OnShow', function(self2)
-            local name= self2:GetName()
-            if name and Save.scale[name] then
-                self2:SetScale(Save.scale[name])
-            end
-        end)]]
-        --e.Set_Move_Frame(InspectRecipeFrame)
-            --ProfessionsFrame.CraftingPage        
-            --ProfessionsFrame.SpecPage
-            --ProfessionsFrame.OrdersPage
+    elseif arg1=='Blizzard_Professions' then--专业
         e.Set_Move_Frame(ProfessionsFrame, {setSize=true, initFunc=function()--ProfessionsUtil.SetCraftingMinimized(false)
             ProfessionsFrame.CraftingPage.P_GetDesiredPageWidth= ProfessionsFrame.CraftingPage.GetDesiredPageWidth
             function ProfessionsFrame.CraftingPage:GetDesiredPageWidth()--Blizzard_ProfessionsCrafting.lua
@@ -1800,6 +1790,9 @@ local function setAddLoad(arg1)
                 self:Refresh(self.professionInfo)
             end
         end})
+
+    elseif arg1=='Blizzard_ProfessionsBook' then--专业书
+        e.Set_Move_Frame(ProfessionsBookFrame)
 
     elseif arg1=='Blizzard_ProfessionsCustomerOrders' then--专业定制
         e.Set_Move_Frame(ProfessionsCustomerOrdersFrame, {setSize=true, minW=825, minH=200, onShowFunc=true, initFunc=function()

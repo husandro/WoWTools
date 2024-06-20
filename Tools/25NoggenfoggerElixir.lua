@@ -259,6 +259,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         setAura()--光环取消
 
     elseif event=='BAG_UPDATE_COOLDOWN' then
-        e.SetItemSpellCool({frame=button, item=button.itemID})
+        e.SetItemSpellCool(button, {item=button.itemID})
     end
 end)

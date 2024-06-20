@@ -364,7 +364,7 @@ local function Set_TrackButton_Text()
 			end)
 
 			function btn:set_item_cool()
-				e.SetItemSpellCool({frame=self, item=self.itemID, type= self.itemButtonUs })
+				e.SetItemSpellCool(self, {item=self.itemID, type= self.itemButtonUs })
 			end
 			function btn:set_btn_Event()
 				if self.itemID then

@@ -75,7 +75,7 @@ end
 --#########
 local function setCooldown()--主图标冷却
     if button:IsShown() then
-        e.SetItemSpellCool({frame=button, item=button.itemID})--冷却条
+        e.SetItemSpellCool(button, {item=button.itemID})--冷却条
     end
 end
 

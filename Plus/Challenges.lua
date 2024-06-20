@@ -1620,10 +1620,10 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                         frame.spellPort:RegisterEvent('SPELL_UPDATE_COOLDOWN')
                         frame.spellPort:SetScript('OnShow', function(self2)
                             self2:RegisterEvent('SPELL_UPDATE_COOLDOWN')
-                            e.SetItemSpellCool({frame=self2, spell=self2:GetParent().spellID})
+                            e.SetItemSpellCool(self2, {spell=self2:GetParent().spellID})
                         end)
                         frame.spellPort:SetScript('OnEvent', function(self2)
-                            e.SetItemSpellCool({frame=self2, spell=self2:GetParent().spellID})
+                            e.SetItemSpellCool(self2, {spell=self2:GetParent().spellID})
                         end)
                     end
                 end
