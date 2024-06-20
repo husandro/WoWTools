@@ -812,6 +812,7 @@ local size= 24
                             end
                         end
                         if self.index==1 then
+                            e.LibDD:UIDropDownMenu_AddSeparator(level)
                             e.LibDD:UIDropDownMenu_AddButton({
                                 text='ExtraActionButton1',
                                 tooltipOnButton=true,
@@ -834,6 +835,13 @@ local size= 24
                                     end
                                 }, 1)
                             end
+
+                            --[[if HasExtraActionBar() then
+                                local slot = i + ((GetExtraBarIndex() or 19) - 1) * (NUM_ACTIONBAR_BUTTONS or 12)
+                                local actionType, spell = GetActionInfo(slot)
+                                if actionType== "spell" and spell then--and ActionTab[spell] then
+                                end
+                            end]]
                         end
                     end, 'MENU')
                 --end
@@ -1631,10 +1639,10 @@ local function Init()
 
 
     --保存，提示
-    MacroSaveButton.saveTip= MacroSaveButton:CreateTexture()
-    MacroSaveButton.saveTip:SetPoint('RIGHT', MacroSaveButton, 'LEFT')
+    MacroSaveButton.saveTip= MacroSaveButton:CreateTexture(nil, 'OVERLAY')
+    MacroSaveButton.saveTip:SetPoint('LEFT')
     MacroSaveButton.saveTip:SetSize(22,22)
-    MacroSaveButton.saveTip:SetAtlas('common-icon-rotateright')
+    MacroSaveButton.saveTip:SetAtlas('auctionhouse-icon-favorite')
     MacroSaveButton.saveTip:Hide()
     local function set_saveTip()
         local show= false
