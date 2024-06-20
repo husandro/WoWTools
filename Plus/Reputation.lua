@@ -654,7 +654,7 @@ local function set_ReputationFrame_InitReputationRow(btn)--factionRow, elementDa
 		end
 
 	elseif data.reaction then
-		if (data.reaction == MAX_REPUTATION_REACTION) then--已满
+		if data.reaction == MAX_REPUTATION_REACTION then--已满
 			barColor=FACTION_ORANGE_COLOR
 			isCapped=true
 		else
@@ -686,14 +686,11 @@ local function set_ReputationFrame_InitReputationRow(btn)--factionRow, elementDa
 				completed= math.modf(currentValue/threshold)--完成次数
 				completedParagon= completed>0 and completed
 			end
-			--bar:SetMinMaxValues(0, threshold)
-			--bar:SetValue(currentValue-(threshold*completed))
 		end
 	end
 	if completedParagon and not frame.completed then
 		frame.completed= e.Cstr(bar)
-		frame.completed:SetPoint('RIGHT')
-		--frame.completed:SetPoint('RIGHT',- 5,0)
+		frame.completed:SetPoint('RIGHT', frame.ParagonIcon, 'LEFT', 4,0)
 	end
 	if frame.completed then
 		frame.completed:SetText(completedParagon or '')
@@ -705,7 +702,7 @@ local function set_ReputationFrame_InitReputationRow(btn)--factionRow, elementDa
 
 	if levelText and not frame.levelText then--等级
 		frame.levelText= e.Cstr(bar, {size=10})--10, nil, nil, nil, nil, 'RIGHT')
-		frame.levelText:SetPoint('LEFT', bar, 'RIGHT')
+		frame.levelText:SetPoint('RIGHT')
 	end
 	if frame.levelText then
 		frame.levelText:SetText(levelText or '')
@@ -730,23 +727,20 @@ local function set_ReputationFrame_InitReputationRow(btn)--factionRow, elementDa
 
 	if not frame.check then
 		frame.check= CreateFrame("CheckButton", nil, frame, "InterfaceOptionsCheckButtonTemplate")
-		frame.check:SetPoint('LEFT',-4,0)
+		frame.check:SetPoint('LEFT',-12,0)
 		function frame.check:get_info()
-			return self:GetParent().elementData or {}
+			return self:GetParent():GetParent().elementData or {}
 		end
 		frame.check:SetScript('OnClick', function(self)
 			local info= self:get_info()
-			local factionID2= info.factionID
-			local factionIndex2= info.factionIndex or 1
-			if factionID2 then
-				Save.factions[factionID2]= not Save.factions[factionID2] and factionIndex2 or nil
+			if info.factionID then
+				Save.factions[info.factionID]= not Save.factions[info.factionID] and (info.factionIndex or 1) or nil
 				ReputationFrame:Update()
 			end
 		end)
 		frame.check:SetScript('OnEnter', function(self)
 			local info= self:get_info()
-			local factionID2= info.factionID
-			if not factionID2 then
+			if not info.factionID then
 				return
 			end
 			e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -765,6 +759,8 @@ local function set_ReputationFrame_InitReputationRow(btn)--factionRow, elementDa
 	frame.check:SetShown(true)
 	frame.check:SetChecked(Save.factions[factionID])
 	frame.check:SetAlpha(0.3)
+
+	frame.AccountWideIcon:SetShown(data.isAccountWide)--战团
 end
 
 
@@ -1023,8 +1019,8 @@ end
 --初始化
 --######
 local function Init()
-	Button= e.Cbtn(ReputationFrame, {atlas='auctionhouse-icon-favorite',size={18, 18}})
-	Button:SetPoint("LEFT", ReputationFrameStandingLabel, 'RIGHT',5,0)
+	Button= e.Cbtn(ReputationFrame, {atlas='auctionhouse-icon-favorite',size={22, 22}})
+	Button:SetPoint("RIGHT", ReputationFrame.filterDropdown, 'LEFT',5,0)
 	Button:SetScript("OnMouseDown", function(self)
 		if not self.Menu then
 			self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
@@ -1045,12 +1041,32 @@ local function Init()
 		Set_TrackButton_Pushed(false)--TrackButton，提示
 	end)
 
-	Button.up= e.Cbtn(Button, {size={22,22}, atlas='NPE_ArrowUp'})--texture='Interface\\Buttons\\UI-PlusButton-Up'})--收起所有
-	Button.up:SetPoint("LEFT", ReputationFrameFactionLabel, 'RIGHT',5,0)
-	Button.up:SetScript("OnClick", function()
-		for i=C_Reputation.GetNumFactions(), 1, -1 do
-			CollapseFactionHeader(i)
+	function Button:set_expand_collapse(show)
+		if self.isGo then
+			return
 		end
+		self.isGo=true
+		for index=1, C_Reputation.GetNumFactions() do
+			local data= C_Reputation.GetFactionDataByIndex(index) or {}
+			if data.isHeader then
+				if show then
+					if data.isCollapsed then
+						C_Reputation.ExpandFactionHeader(index);
+					end
+				else
+					if not data.isCollapsed then
+						C_Reputation.CollapseFactionHeader(index);
+					end
+				end
+			end
+		end
+		self.isGo=nil
+	end
+
+	Button.up= e.Cbtn(Button, {size={22,22}, atlas='NPE_ArrowUp'})--texture='Interface\\Buttons\\UI-PlusButton-Up'})--收起所有
+	Button.up:SetPoint("RIGHT", Button, 'LEFT',-2,0)
+	Button.up:SetScript("OnClick", function(self)
+		self:GetParent():set_expand_collapse(false)
 	end)
 	Button.up:SetScript("OnLeave", GameTooltip_Hide)
 	Button.up:SetScript('OnEnter', function(self)
@@ -1061,9 +1077,11 @@ local function Init()
 		e.tips:Show()
 	end)
 
-	Button.down= e.Cbtn(Button.up, {size={22,22}, atlas='NPE_ArrowDown'})--texture='Interface\\Buttons\\UI-MinusButton-Up'})--展开所有
-	Button.down:SetPoint('LEFT', Button.up, 'RIGHT')
-	Button.down:SetScript("OnClick", ExpandAllFactionHeaders)
+	Button.down= e.Cbtn(Button, {size={22,22}, atlas='NPE_ArrowDown'})--texture='Interface\\Buttons\\UI-MinusButton-Up'})--展开所有
+	Button.down:SetPoint("RIGHT", Button.up, 'LEFT',-2,0)
+	Button.down:SetScript("OnClick", function(self)
+		self:GetParent():set_expand_collapse(true)
+	end)
 	Button.down:SetScript("OnLeave", GameTooltip_Hide)
 	Button.down:SetScript('OnEnter', function(self)
 		e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -1079,13 +1097,12 @@ local function Init()
 
 	C_Timer.After(3, Init_TrackButton)--监视, 文本
 
-	--11版本
 	hooksecurefunc(ReputationFrame.ScrollBox, 'Update', function(self)
 		for _, btn in pairs(self:GetFrames()or {}) do
 			set_ReputationFrame_InitReputationRow(btn)
 		end
 	end)
-	--hooksecurefunc('ReputationFrame_InitReputationRow', set_ReputationFrame_InitReputationRow)-- 声望, 界面, 增强
+	
 	Button:set_Shown()
 
 	if Save.factionUpdateTips then--声望更新, 提示

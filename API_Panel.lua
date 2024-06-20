@@ -399,11 +399,12 @@ function e.AddPanel_Check_Button(tab)
     local variable = id..checkName..(category.order or '')..get_variableIndex()
     local setting= Settings.RegisterAddOnSetting(category, checkName, variable, type(defaultValue), defaultValue)
     
-    --local initializer= CreateSettingsCheckBoxWithButtonInitializer(setting, buttonText, buttonFunc, false, tooltip)
+    --local initializer= CreateSettingsCheckBoxWithButtonInitializer(setting, buttonText, buttonFunc,  false,            tooltip)
+    --                                                               setting, buttonText, buttonClick, clickRequiresSet, tooltip
     local data = Settings.CreateSettingInitializerData(setting, nil, tooltip);
 	data.buttonText = buttonText;
-	data.OnButtonClick = buttonClick;
-	data.clickRequiresSet = clickRequiresSet;
+	data.OnButtonClick = buttonFunc;
+	data.clickRequiresSet = false;
 	local initializer= Settings.CreateSettingInitializer("SettingsCheckboxWithButtonControlTemplate", data);
 
     layout:AddInitializer(initializer)

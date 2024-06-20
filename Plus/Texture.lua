@@ -467,6 +467,8 @@ local function Init_All_Frame()
 
      set_Alpha_Color(CharacterFrameBg)
      hide_Texture(CharacterFrameInset.Bg)
+     
+     set_Alpha_Color(CharacterFrame.Background)
 
      set_Alpha_Color(PaperDollInnerBorderBottom, nil, nil, min03)
      set_Alpha_Color(PaperDollInnerBorderRight, nil, nil, min03)
@@ -482,7 +484,7 @@ local function Init_All_Frame()
      hide_Texture(PaperDollInnerBorderBottom2)
      hide_Texture(CharacterFrameInsetRight.Bg)
 
-     e.Set_ScrollBar_Color_Alpha(ReputationFrame)
+
      e.Set_ScrollBar_Color_Alpha(TokenFrame)
 
      set_Alpha_Color(CharacterStatsPane.ClassBackground, nil, nil, min03)
@@ -508,8 +510,7 @@ local function Init_All_Frame()
              hide_Texture(button.BgMiddle)
          end
      end)
-     e.Set_ScrollBar_Color_Alpha(PaperDollFrame.EquipmentManagerPane)
-     e.Set_ScrollBar_Color_Alpha(ReputationFrame)
+     e.Set_ScrollBar_Color_Alpha(PaperDollFrame.EquipmentManagerPane)    
      e.Set_ScrollBar_Color_Alpha(TokenFrame)
 
      hide_Texture(CharacterModelFrameBackgroundTopLeft)--角色3D背景
@@ -523,6 +524,10 @@ local function Init_All_Frame()
      e.Set_ScrollBar_Color_Alpha(GearManagerPopupFrame.IconSelector)
      set_SearchBox(GearManagerPopupFrame.BorderBox.IconSelectorEditBox)
      --set_Menu(GearManagerPopupFrame.BorderBox.IconTypeDropDown.DropDownMenu)
+
+     --声望
+     e.Set_ScrollBar_Color_Alpha(ReputationFrame)
+     set_Menu(ReputationFrame.filterDropdown)
 
      --法术书
      e.Set_NineSlice_Color_Alpha(SpellBookFrame, true)
