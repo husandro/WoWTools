@@ -560,7 +560,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     showTexture=true,
                     sizi=nil,
                 })
-
+                button:SetFrameStrata('HIGH')
+                
                 button.itemID= 5512--治疗石
                 set_Button_Init(button)--提示, 事件
 

@@ -1474,6 +1474,7 @@ local function Init()
     button:SetAttribute("alt-type1", "spell")
     button:SetAttribute("shift-type1", "spell")
     button:SetAttribute("ctrl-type1", "spell")
+    button:SetFrameStrata('HIGH')
 
     button.textureModifier=button:CreateTexture(nil,'OVERLAY')--提示 Shift, Ctrl, Alt
     button.textureModifier:SetAllPoints(button.texture)
