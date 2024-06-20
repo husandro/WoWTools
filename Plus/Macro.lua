@@ -779,8 +779,7 @@ local function Init_List_Button()
 
 local last
     --法术书 11版本
-    --[[
-    for i=1, MAX_SKILLLINE_TABS do
+    for i=1, 8 do--MAX_SKILLLINE_TABS
         local name, icon, _, _, _, _, shouldHide, specID = C_Spell.GetSpellTabInfo(i)
         if (i==1 or i==2 or specID) and not shouldHide and name then
             local btn= e.Cbtn(MacroEditButton, {size={24,24}, texture=icon})
@@ -845,7 +844,6 @@ local last
             last= btn
         end
     end
-    ]]
 
 
 
