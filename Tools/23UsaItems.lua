@@ -543,7 +543,7 @@ end
 
 
 local function set_Use_Spell_Button(btn, spellID)
-    if not btn.useSpell and spellID then
+    if not btn.useSpell then
         btn.useSpell= e.Cbtn(btn, {size={16,16}, atlas='soulbinds_tree_conduit_icon_utility'})
         btn.useSpell:SetPoint('TOP', btn, 'BOTTOM')
         function btn.useSpell:set_alpha()
@@ -587,44 +587,12 @@ local function set_Use_Spell_Button(btn, spellID)
             end
         end)
     end
-    if btn.useSpell then
-        btn.useSpell.spellID= spellID
-        btn.useSpell:set_alpha()
-        btn.useSpell:SetShown(spellID and true or false)
-    end
+    
+    btn.useSpell.spellID= spellID
+    btn.useSpell:set_alpha()
+    btn.useSpell:SetShown(spellID and true or false)    
 end
 
-
---法术书，界面, 菜单
-local function Init_Options_SpellBook()
-    --[[法术书，界面, 菜单 11版本
-    for i=1, SPELLS_PER_PAGE  do--SPELLS_PER_PAGE = 12
-        local btn= _G['SpellButton'..i]
-        if btn and btn.UpdateButton then
-            hooksecurefunc(btn, 'UpdateButton', function(self)--SpellBookFrame.lua
-                local slot, slotType, slotID = SpellBook_GetSpellBookSlot(self)
-                if not slot or slotType~='SPELL' or not slotID or C_Spell.IsSpellPassive(slotID) then--or SpellBookFrame.bookType~='spell' 
-                    if self.useSpell then
-                        self.useSpell:SetShown(false)
-                    end
-                    return
-                end
-                set_Use_Spell_Button(self, slotID)--select(3, C_Spell.GetSpellBookItemName(slot, SpellBookFrame.bookType)))
-            end)
-        end
-    end]]
-    --法术书，界面, 菜单
-    hooksecurefunc('SpellFlyoutButton_UpdateGlyphState', function(self)
-        local name = self:GetParent():GetParent():GetName()
-        if not (name and name:find('SpellButton')) or not self.spellID or C_Spell.IsSpellPassive(self.spellID) then
-            if self.useSpell then
-                self.useSpell:SetShown(false)
-            end
-            return
-        end
-        set_Use_Spell_Button(self, self.spellID)
-    end)
-end
 
 
 
@@ -931,7 +899,17 @@ end
 local function Init()
     Init_All_Buttons()
     Init_Options_Button()
-    Init_Options_SpellBook()--法术书，界面, 菜单
+    
+    hooksecurefunc('SpellFlyoutButton_UpdateGlyphState', function(self)--法术书，界面, Flyout, 菜单
+        local frame= self:GetParent():GetParent()
+        if not frame or not frame.useSpell or not self.spellID or C_Spell.IsSpellPassive(self.spellID) then
+            if self.useSpell then
+                self.useSpell:SetShown(false)
+            end
+        else
+            set_Use_Spell_Button(self, self.spellID)
+        end
+    end)
 end
 
 
@@ -991,6 +969,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         elseif arg1=='Blizzard_Collections' then
             hooksecurefunc('ToySpellButton_UpdateButton', Init_Opetions_ToyBox)--玩具界面, 菜单
+
+        elseif arg1=='Blizzard_PlayerSpells' then--法术书
+            hooksecurefunc(SpellBookItemMixin, 'UpdateVisuals', function(frame)
+                set_Use_Spell_Button(frame.Button, frame.spellBookItemInfo.spellID)
+            end)
         end
 
     elseif event == "PLAYER_LOGOUT" then

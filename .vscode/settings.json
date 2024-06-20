@@ -4617,7 +4617,8 @@
         "ProfessionsBookFrameBg",
         "ProfessionsBookFrameInset",
         "ProfessionsBookPage1",
-        "ProfessionsBookPage2"
+        "ProfessionsBookPage2",
+        "SpellBookItemMixin"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",
