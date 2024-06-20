@@ -946,6 +946,7 @@ local function Init_Fast_Button()
 
 
 
+    
 
     local fast={
         {C_Spell.GetSpellTexture(3908) or 4620681, 7, 5, e.onlyChinese and '布'},--1
