@@ -186,15 +186,3 @@ Other\SpellFrame.lua
 Other\ScrappingMachine.lua
 ##美服，欧服，服器语言，提示
 Other\Realm.lua
-
-##繁体，简体，不会载加
-##界面，中文化，主要function
-##Chinese\Func.lua
-##增加，数据库
-##Chinese\Data_zhCN.lua
-##Chinese\Data_Other.lua
-##Chinese\Data_Map.lua
-##Chinese\Data_Achievement.lua
-##Chinese\Data_Instance.lua
-##Chinese\Data_Instance_Boss.lua
-##Chinese\Data_Instance_Section.lua
