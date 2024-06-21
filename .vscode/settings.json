@@ -4618,7 +4618,10 @@
         "ProfessionsBookFrameInset",
         "ProfessionsBookPage1",
         "ProfessionsBookPage2",
-        "SpellBookItemMixin"
+        "SpellBookItemMixin",
+        "GetPlayerMapPosition",
+        "HarmColor",
+        "FriendColor"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",
@@ -4626,6 +4629,7 @@
         "missing-parameter",
         "redundant-parameter",
         "trailing-space",
-        "assign-type-mismatch"
+        "assign-type-mismatch",
+        "param-type-mismatch"
     ],
 }

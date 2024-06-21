@@ -143,7 +143,7 @@ end
 local ITEM_UPGRADE_TOOLTIP_FORMAT_STRING= ITEM_UPGRADE_TOOLTIP_FORMAT_STRING:gsub(': (.+)', '(.+)')
 local ENCHANTED_TOOLTIP_LINE = ENCHANTED_TOOLTIP_LINE:gsub('%%s', '(.+)')--附魔：%s
 local COVENANT_RENOWN_TOAST_REWARD_COMBINER= COVENANT_RENOWN_TOAST_REWARD_COMBINER:gsub('%%s', '(.+)')--%s 和 %s
-local EQUIPMENT_SETS= EQUIPMENT_SETS:match('(.-):')..'(.+)'
+local EQUIPMENT_SETS= EQUIPMENT_SETS:match('(.-):')..'(.+)'--"Set di equipaggiamenti: |cFFFFFFFF%s|r"
 local function get_gameTooltip_text(self)
     local text= self and self:IsShown() and self:GetText()
     if text and text~='' and not text:find('|') then

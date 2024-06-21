@@ -1,3 +1,4 @@
+---@diagnostic disable: duplicate-set-field, deprecated
 --@curseforge-project-slug: libdbicon-1-0@
 -----------------------------------------------------------------------
 -- LibDBIcon-1.0

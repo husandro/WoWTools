@@ -1,3 +1,4 @@
+---@diagnostic disable: cast-local-type, deprecated
 --[[
 Name: LibRangeCheck-3.0
 Author(s): mitch0, WoWUIDev Community
@@ -1610,7 +1611,9 @@ local GetPlayerMapPosition = GetPlayerMapPosition
   or function(unit)
     local map = C_Map.GetBestMapForUnit(unit)
     local pos = C_Map.GetPlayerMapPosition(map, unit)
-    return pos:GetXY()
+    if pos then
+      return pos:GetXY()
+    end
   end
 function lib:updateMeasurements()
   local now = GetTime() - self.measurementStart
