@@ -810,7 +810,8 @@ local function Init_EncounterJournal()--冒险指南界面
                         e.tips:SetOwner(self, "ANCHOR_LEFT")
                         e.tips:ClearLines()
                         if name then
-                            e.tips:AddDoubleLine(e.cn(name), e.strText[name] and name..' ')
+                            local cnName=e.cn(name, true)
+                            e.tips:AddDoubleLine(cnName or name, cnName and name..' ')
                         end
                         
                         e.tips:AddDoubleLine('journalInstanceID: |cnGREEN_FONT_COLOR:'..self.instanceID, loreImage and '|T'..loreImage..':0|t'..loreImage)
@@ -1262,7 +1263,8 @@ local function Init_EncounterJournal()--冒险指南界面
                         local name2, _, journalEncounterID, rootSectionID, _, journalInstanceID, dungeonEncounterID, instanceID2= EJ_GetEncounterInfo(self.encounterID)--button.index= button.GetOrderIndex()
                         e.tips:SetOwner(self, "ANCHOR_LEFT")
                         e.tips:ClearLines()
-                        e.tips:AddDoubleLine(name2..' '..(e.strText[name2] or ''),  'journalEncounterID: '..'|cnGREEN_FONT_COLOR:'..(journalEncounterID or self.encounterID)..'|r')
+                        local cnName= e.cn(name2, true)
+                        e.tips:AddDoubleLine(cnName and cnName..' '..name2 or name2,  'journalEncounterID: '..'|cnGREEN_FONT_COLOR:'..(journalEncounterID or self.encounterID)..'|r')
                         e.tips:AddDoubleLine(instanceID2 and 'instanceID: '..instanceID2 or ' ', (rootSectionID and rootSectionID>0) and 'JournalEncounterSectionID: '..rootSectionID or ' ')
                         if dungeonEncounterID then
                             e.tips:AddDoubleLine('dungeonEncounterID: |cffff00ff'..dungeonEncounterID, (journalInstanceID and journalInstanceID>0) and 'journalInstanceID: '..journalInstanceID or ' ' )
@@ -1464,7 +1466,7 @@ local function Init_EncounterJournal()--冒险指南界面
                 text= text..'uiModelSceneID '..self.uiModelSceneID..'|n'
             end
             text= text..'CreatureDisplayID ' .. self.displayInfo
-            local name= e.strText[self.name]--汉化
+            local name= e.cn(self.name, true)--汉化
             if name then
                 text= text..'|n'..name
             end
@@ -1592,7 +1594,8 @@ local function Init()
             local name, _, _, _, _, _, dungeonAreaMapID, _, _, mapID = EJ_GetInstanceInfo(self.journalInstanceID)
             e.tips:SetOwner(self, "ANCHOR_RIGHT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(name, (e.strText[name] and name or '') ..(mapID and ' mapID '..mapID or ''))
+            local cnName=e.cn(name)
+            e.tips:AddDoubleLine(name,  (cnName and name..' ' or '')..(mapID and ' mapID '..mapID or ''))
             e.tips:AddDoubleLine('journalInstanceID: |cnGREEN_FONT_COLOR:'..self.journalInstanceID, (dungeonAreaMapID and dungeonAreaMapID>0) and 'dungeonAreaMapID '..dungeonAreaMapID or '')
             e.tips:AddLine(' ')
             if encounterJournal_ListInstances_set_Instance(self, true) then

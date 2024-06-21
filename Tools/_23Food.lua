@@ -333,7 +333,7 @@ end
         for _, tab in pairs(itemClass) do
             if type==tab.className then
                 info={
-                    text=tab.subClassID..' '..(e.strText[tab.subclassName] or tab.subclassName),
+                    text=tab.subClassID..' '..e.cn(tab.subclassName),
                     keepShownOnClick=true,
                     checked= Save.itemClass[tab.className..tab.subclassName],
                     tooltipOnButton=true,
@@ -372,7 +372,7 @@ end
     for index, tab in pairs(itemClass) do
         if not find[tab.className] then
             info={
-                text= tab.classID.. ' '..(e.strText[tab.className] or tab.className)..' '..get_Save_Numer_SubClass(tab.className),
+                text= tab.classID.. ' '..e.cn(tab.className)..' '..get_Save_Numer_SubClass(tab.className),
                 notCheckable=true,
                 keepShownOnClick=true,
                 menuList=tab.className,

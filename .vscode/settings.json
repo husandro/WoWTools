@@ -4621,7 +4621,8 @@
         "SpellBookItemMixin",
         "GetPlayerMapPosition",
         "HarmColor",
-        "FriendColor"
+        "FriendColor",
+        "WoW_Tools_Chinese_CN"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

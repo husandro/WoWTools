@@ -120,9 +120,12 @@ e.ShowColorPicker(valueR, valueG, valueB, valueA, swatchFunc, cancelFunc)
 
 
 --取得中文 
-function e.cn(text)
-    if text then
-        return e.strText[text] or text
+function e.cn(text, notFind_notReturn, tab)--{gossipOptionID=, questID=}
+    if not WoW_Tools_Chinese_CN then return end--调用 WoWTools_Chinese 插件
+    if notFind_notReturn then
+        return WoW_Tools_Chinese_CN(text, tab)
+    else
+        return WoW_Tools_Chinese_CN(text, tab) or text
     end
 end
 
@@ -146,7 +149,7 @@ function e.GetExpansionText(expacID, questID)--版本数据 11版本
         expacID= GetQuestExpansion(questID)
     end
     if expacID and _G['EXPANSION_NAME'..expacID] then
-        local text= e.strText[_G['EXPANSION_NAME'..expacID]] or _G['EXPANSION_NAME'..expacID]
+        local text= e.cn(_G['EXPANSION_NAME'..expacID])
         if e.ExpansionLevel >= expacID then
             return text, (e.onlyChinese and '版本' or GAME_VERSION_LABEL)..' '..(expacID+1)
         else

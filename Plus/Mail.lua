@@ -636,20 +636,20 @@ local function Init_Fast_Menu(frame, level, menuList)
 
         e.LibDD:UIDropDownMenu_AddSeparator(level)
         local className= C_Item.GetItemClassInfo(menuList.class)
-        className= e.strText[className] or className
-        info= {
-            text= menuList.class..') '..className..' #'..menuList.num,
-            notCheckable= true,
-            isTitle= true,
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
+        className= e.cn(className)
+        if className then
+            e.LibDD:UIDropDownMenu_AddButton({
+                text= menuList.class..') '..className..' #'..menuList.num,
+                notCheckable= true,
+                isTitle= true,
+            }, level)
+        end
         if menuList.class==2 or menuList.class==4 then
-            info= {
+            e.LibDD:UIDropDownMenu_AddButton({
                 text= '|T132288:0|t'..format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, e.onlyChinese and '你还没有收藏过此外观' or TRANSMOGRIFY_STYLE_UNCOLLECTED),
                 notCheckable= true,
                 isTitle= true,
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
+            }, level)
 
         end
         return
@@ -703,7 +703,7 @@ local function Init_Fast_Menu(frame, level, menuList)
     local find
     for _, tab2 in pairs(newTab) do
         local className=  C_Item.GetItemClassInfo(tab2.class) or ''
-        className= e.strText[className] or className
+        className= e.cn(className)
         info={
             text= (tab2.class<10 and ' ' or '')..tab2.class..') '..className..((tab2.class==2 or tab2==4) and '|T132288:0|t' or ' ')..'|cnGREEN_FONT_COLOR:#'..tab2.num,
             keepShownOnClick= true,

@@ -37,7 +37,7 @@ local LOOT_ITEM= e.Magic(LOOT_ITEM)--:gsub('%%s', '(.+)')--%s获得了战利品�
 
 
 local function cn_Link_Text(link)
-    local name= e.strText[link:match('|h%[(.-)]|h')]--汉化
+    local name= e.cn(link:match('|h%[(.-)]|h'), true)--汉化
     if name then
         link= link:gsub('|h%[(.-)]|h', '|h['..name..']|h')
     end
@@ -1319,7 +1319,7 @@ local function Init()
             local info= C_LFGList.GetSearchResultInfo(self.resultID)
             --[[local name= info.name
             if name then--["INSTANCE_DIFFICULTY_FORMAT"] = "（%s）",
-                local name2= e.strText[name:match('(.-)%(') or name:match('(.-)（') or name]
+                local name2= e.cn(name:match('(.-)%(') or name:match('(.-)（') or name)
                 if name2 then
                     name= name..'( |cnGREEN_FONT_COLOR:'..name2..'|r)'
                 end

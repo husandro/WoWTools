@@ -553,7 +553,7 @@ function func.Set_Item(self, itemLink, itemID)
     self:AddDoubleLine(format('%s%d %s', e.onlyChinese and '物品' or ITEMS, itemID , setID and (e.onlyChinese and '套装' or WARDROBE_SETS)..setID or ''),
                     itemTexture and '|T'..itemTexture..':0|t'..itemTexture, 1,1,1, 1,1,1)--ID, texture
     if classID and subclassID then
-        self:AddDoubleLine((itemType and (e.strText[itemType] or itemType)..' classID'  or 'classID') ..' '..classID, (itemSubType and (e.strText[itemSubType] or itemSubType)..' subID' or 'subclassID')..' '..subclassID)
+        self:AddDoubleLine((e.cn(itemType) or 'itemType')..classID, (e.cn(itemSubType) or 'itemSubType')..subclassID)
     end
 
     if classID==2 or classID==4 then
@@ -566,7 +566,7 @@ function func.Set_Item(self, itemLink, itemID)
                     self.Portrait:SetTexture(slotTexture)
                     self.Portrait:SetShown(true)
                 end
-                self:AddDoubleLine(format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, (e.strText[_G[itemEquipLoc]] or _G[itemEquipLoc] or ''), itemEquipLoc), format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS, slot), 1,1,1, 1,1,1)--栏位
+                self:AddDoubleLine(format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.cn(_G[itemEquipLoc]) or '', itemEquipLoc), format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS, slot), 1,1,1, 1,1,1)--栏位
                 local slotLink=GetInventoryItemLink('player', slot)
                 local text
                 if slotLink then
@@ -1308,7 +1308,7 @@ function func.Set_Unit(self)--设置单位提示信息
                 end
             else
                 text= text..' '..(e.GetUnitRaceInfo({unit=unit, guid=guid, race=raceFile, sex=sex, reAtlas=false})  or '')
-                        ..(e.strText[raceFile] or raceName or '')
+                        ..(e.cn(raceFile) or raceName or '')
                         ..' '..(e.Class(nil, classFilename) or '')
                         ..' '..(UnitIsPVP(unit) and '(|cnGREEN_FONT_COLOR:'..(e.onlyChinese and 'PvP' or TRANSMOG_SET_PVP)..'|r)' or ('('..(e.onlyChinese and 'PvE' or TRANSMOG_SET_PVE)..')'))
             end
@@ -2914,7 +2914,7 @@ local function Init_Event(arg1)
                             local specID, name, _, icon= GetSpecializationInfo(specIndex)
                             if specID then
                                 e.tips:AddLine(' ')
-                                e.tips:AddDoubleLine(name, e.strText[name])
+                                e.tips:AddLine(name)
                                 e.tips:AddDoubleLine((e.onlyChinese and '专精' or SPECIALIZATION)..' ID', specID)
                                 e.tips:AddDoubleLine((e.onlyChinese and '专精' or SPECIALIZATION)..' Index', specIndex)
                                 if icon then

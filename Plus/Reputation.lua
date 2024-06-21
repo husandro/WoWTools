@@ -853,15 +853,14 @@ local function InitMenu(_, level, type)
 		for factionID, index in pairs(Save.factions) do
 			local name2= (C_Reputation.GetFactionDataByID(factionID) or {}).name
 			if name2 then
-				local name= name2 and e.cn(name2)..' '..factionID or ('factionID '..factionID)
+				local name= e.cn(name2)..' '..factionID
 				info={
 					text= name..' |cnGREEN_FONT_COLOR:'..index..'|r',
 					tooltipOnButton=true,
 					colorCode= not Save.indicato and '|cff606060' or nil,
 					tooltipTitle= e.onlyChinese and '移除' or REMOVE,
-					tooltipText= e.strText[name2] and name2..' ',
 					notCheckable= true,
-					arg1= name,
+					arg1= name2,
 					arg2= factionID,
 					func= function(_,arg1, arg2)
 						Save.factions[arg2]=nil

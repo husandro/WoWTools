@@ -1032,10 +1032,6 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 	if frame.Name then
 		local r, g, b= C_Item.GetItemQualityColor(info and info.quality or 1)
 		frame.Name:SetTextColor(r or 1, g or 1, b or 1)
-		--[[local name= e.strText[frame.Name:GetText()]--汉化
-		if name then
-			frame.Name:SetText(name)
-		end]]
 	end
 end
 

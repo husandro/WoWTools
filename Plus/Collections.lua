@@ -1184,7 +1184,7 @@ local function Init_Wardrober_ListContainer()
                     isLimited= isLimited or info.limitedTimeSet--限时套装
 
                     local name= info.description or info.name or ''
-                    name= e.strText[name] or name
+                    name= e.cn(name)
                     name= numAll==collect and '|cnGREEN_FONT_COLOR:'..name..'|r' or name--已收集
 
                     local isCollected= collect== numAll--是否已收
@@ -1200,7 +1200,7 @@ local function Init_Wardrober_ListContainer()
                 end
                 patch= patch or (info.patchID and info.patchID>0 and 'v'..(info.patchID/10000))
                 version= version or (info.expansionID and _G['EXPANSION_NAME'..info.expansionID])
-                version= e.strText[version] or version
+                version= e.cn(version)
             end
         end
 

@@ -197,7 +197,7 @@ local function Init_Quest()
             end
         end
 
-        local name= e.strText[text]
+        local name= e.cn(text, nil, {questID=questID})
         if m~='' or name then--汉化，图标
             local height = self:SetStringText(block.HeaderText, m..(name or text), nil, OBJECTIVE_TRACKER_COLOR["Header"], block.isHighlighted)
             block.height = height
@@ -622,25 +622,6 @@ local function Init()
         self.numLabel:SetText(text or '')
     end)
 
-    --成就
-    hooksecurefunc(ACHIEVEMENT_TRACKER_MODULE, 'SetBlockHeader', function(self, block, text)--Blizzard_AchievementObjectiveTracker.lua
-        local name= e.strText[text]--汉化
-        local icon= select(10, GetAchievementInfo(block.id))--local achievementID = block.id
-        if name or icon then
-            text= '|T'..icon..':0|t'..(name or text)
-            local height = self:SetStringText(block.HeaderText, text, nil, OBJECTIVE_TRACKER_COLOR["Header"], block.isHighlighted)
-            block.height = height
-        end
-    end)
-    hooksecurefunc(ACHIEVEMENT_TRACKER_MODULE, 'AddObjective', function(self, block, objectiveKey, text, lineType, useFullHeight, dashStyle, colorStyle, adjustForNoText, overrideHeight)
-        local name= e.strText[text]--汉化
-        if name then
-            local line = self:GetLine(block, objectiveKey, lineType)
-            local textHeight = self:SetStringText(line.Text, name, useFullHeight, colorStyle, block.isHighlighted)
-            local height = overrideHeight or textHeight
-            line:SetHeight(height)
-        end
-    end)  
 end
 
 
