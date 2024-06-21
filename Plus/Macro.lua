@@ -810,6 +810,18 @@ local size= 24
                             end
                         end
                         if self.index==1 then
+                            e.LibDD:UIDropDownMenu_AddSeparator(level)                            
+                            for _, zone in pairs( C_ZoneAbility.GetActiveAbilities() or {}) do
+                                if zone.spellID and not C_Spell.IsSpellPassive(zone.spellID) then
+                                    local zoneName= C_Spell.GetSpellName(zone.spellID)
+                                    local zoneIcon= C_Spell.GetSpellTexture(zone.spellID)
+                                    if zoneName and zoneIcon then
+                                        num= num+1
+                                        Create_Spell_Menu(zone.spellID, zoneIcon, zoneName, 'services-number-'..num)
+                                    end
+                                end
+                            end
+
                             e.LibDD:UIDropDownMenu_AddSeparator(level)
                             e.LibDD:UIDropDownMenu_AddButton({
                                 text='ExtraActionButton1',
@@ -822,6 +834,7 @@ local size= 24
                                 end
                             }, level)
                             if e.Player.class=='MAGE' then--FS
+                                
                                 e.LibDD:UIDropDownMenu_AddButton({
                                     text=e.onlyChinese and '解散水元素' or 'PetDismiss',
                                     tooltipOnButton=true,
@@ -833,7 +846,6 @@ local size= 24
                                     end
                                 }, level)
                             end
-
                             --[[if HasExtraActionBar() then
                                 local slot = i + ((GetExtraBarIndex() or 19) - 1) * (NUM_ACTIONBAR_BUTTONS or 12)
                                 local actionType, spell = GetActionInfo(slot)
