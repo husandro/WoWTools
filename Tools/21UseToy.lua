@@ -114,7 +114,6 @@ local function setAtt(set)--设置属性
                 button.texture:SetTexture(icon)
             end
             local  name= select(2, C_ToyBox.GetToyInfo(itemID)) or C_Item.GetItemNameByID(itemID) or itemID
-            print(name)
             button:SetAttribute('item1', name)
             button.itemID=itemID
         end

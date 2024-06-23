@@ -246,9 +246,17 @@ local function setAtt(bag, slot, icon, itemID, spellID)--设置属性
     if bag and slot then
         Bag={bag=bag, slot=slot}
         if spellID then
-            button:SetAttribute("macrotext1",'/cast '..(GetSpellInfo(spellID) or spellID)..'\n/use '..bag ..' '..slot)
+            button:SetAttribute('type1', 'spell')
+            local name= C_Spell.GetSpellName(spellID)
+            button:SetAttribute('spell1', name or spellID)
+            button:SetAttribute('target-item', bag..' '..slot)
+
+            --button:SetAttribute("macrotext1",'/cast '..(GetSpellInfo(spellID) or spellID)..'\n/use '..bag ..' '..slot)
         else
-            button:SetAttribute("macrotext1", '/use '..bag..' '..slot)
+            button:SetAttribute('type1', 'item')
+            button:SetAttribute('item1', bag..' '..slot)
+            button:SetAttribute('spell1', nil)
+            --button:SetAttribute("macrotext1", '/use '..bag..' '..slot)
         end
 
         button.texture:SetTexture(icon)
@@ -256,7 +264,9 @@ local function setAtt(bag, slot, icon, itemID, spellID)--设置属性
         num= num~=1 and num or ''
         button:SetShown(true)
     else
-        button:SetAttribute("macrotext1", '')
+        button:SetAttribute('type1', nil)
+        button:SetAttribute('item1', nil)
+        button:SetAttribute('spell1', nil)
         button:SetShown(not Save.noItemHide)
     end
     setCooldown()--冷却条
@@ -759,7 +769,8 @@ local function Init()
     })
 
     button:SetPoint('RIGHT', _G['HearthstoneToolsButton'], 'LEFT')
-    button:SetAttribute("type1", "macro")
+    --button:SetAttribute("type1", "macro")
+    
     button.count=e.Cstr(button, {size=10, color=true})--10, nil, nil, true)
     button.count:SetPoint('BOTTOM',0,2)
 
