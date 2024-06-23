@@ -1688,13 +1688,13 @@ local function Init_Show_Hide_Button(frame)
             if InspectFrame.ShowHideButton then
                 InspectFrame.ShowHideButton:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
             end
+            if InspectFrame.statusLabel then--目标，属性
+                InspectFrame.statusLabel:settings()
+            end
         end
         PaperDollItemsFrame.ShowHideButton:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
-
-        --目标，属性
-        if InspectFrame.statusLabel then
-            InspectFrame.statusLabel:settings()
-        end
+        
+        
     end)
     btn:SetScript('OnLeave', function(self) GameTooltip_Hide() self:SetAlpha(0.5) end)
     btn:SetScript('OnEnter', function(self)
