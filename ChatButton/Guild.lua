@@ -82,44 +82,48 @@ end
 --###############
 --自动选取当前专精
 --###############
-local function set_RequestToJoinFrame(self)
+local function set_RequestToJoinFrame(frame)
     local text
-    if self.MessageFrame and self.MessageFrame.MessageScroll and self.MessageFrame.MessageScroll.EditBox then
+    local edit= frame.MessageFrame and frame.MessageFrame.MessageScroll and frame.MessageFrame.MessageScroll.EditBox
+    if edit then
         local avgItemLevel, _, avgItemLevelPvp = GetAverageItemLevel()
         if avgItemLevel then
-            local cd= e.Player.region==1 or e.Player.region==3--1US(includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
-            text= format(cd and 'Item Level %d' or CHARACTER_LINK_ITEM_LEVEL_TOOLTIP, avgItemLevel)
-            if avgItemLevelPvp and avgItemLevelPvp- avgItemLevel>=10 then
-                text= text..'|n'..format(cd and 'PvP Item Level %d' or ITEM_UPGRADE_PVP_ITEM_LEVEL_STAT_FORMAT, avgItemLevelPvp)--PvP物品等级 %d
+            local cd= e.Player.region==1 or e.Player.region==3
+            text= format(cd and 'Level %d' or UNIT_LEVEL_TEMPLATE, UnitLevel('player') or 0)
+            text= text..'|n' ..format((cd and 'Item' or ITEMS)..' %d', avgItemLevel or 0)
+            text= text..'|n'..format('PvP %d', avgItemLevelPvp or 0)--PvP物品等级 %d
+            local data= C_PlayerInfo.GetPlayerMythicPlusRatingSummary('player') or {}
+            if data.currentSeasonScore then
+                text= text..'|n'..(cd and 'Challenge' or PLAYER_DIFFICULTY5)..' '..data.currentSeasonScore
             end
-            self.MessageFrame.MessageScroll.EditBox:SetText(text)
+            edit:SetText(text)
         end
     end
-
+    
     local text2
-    if self.SpecsPool and self.SpecsPool.activeObjects then--专精，职责，图标，自动选取当前专精
+    if frame.SpecsPool and frame.SpecsPool.activeObjects then--专精，职责，图标，自动选取当前专精
         local currSpecID= GetSpecializationInfo(GetSpecialization() or 0)
-        for frame, _ in pairs(self.SpecsPool.activeObjects) do
+        for f, _ in pairs(frame.SpecsPool.activeObjects) do
             if frame.specID then
                 local _, name, _, icon, role
-                _, name, _, icon, role =GetSpecializationInfoByID(frame.specID)
-                if frame.CheckBox and frame.CheckBox.Click and currSpecID== frame.specID then
-                    frame.CheckBox:Click()--自动选取当前专精
+                _, name, _, icon, role =GetSpecializationInfoByID(f.specID)
+                if frame.CheckBox and f.CheckBox.Click and currSpecID== f.specID then
+                    f.CheckBox:Click()--自动选取当前专精
                     text2= (icon and '|T'..icon..':0|t' or '')..(e.Icon[role] or '')..name
                 end
-                _, name, _, icon, role =GetSpecializationInfoByID(frame.specID)
-                if name and frame.SpecName then
-                    frame.SpecName:SetText((icon and '|T'..icon..':0|t' or '')..(e.Icon[role] or '')..name)
+                _, name, _, icon, role =GetSpecializationInfoByID(f.specID)
+                if name and f.SpecName then
+                    f.SpecName:SetText((icon and '|T'..icon..':0|t' or '')..(e.Icon[role] or '')..name)
                 end
             end
         end
     end
-    if self.Apply and self.Apply:IsEnabled() and self.Apply.Click
+    if frame.Apply and frame.Apply:IsEnabled() and frame.Apply.Click
         and not IsModifierKeyDown()
         and not Save.notAutoRequestToJoinClub
     then
-        print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:'..self.Apply:GetText()..'|r', text2, '|cffff00ff'..(text or ''))
-        self.Apply:Click()
+        print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:'..frame.Apply:GetText()..'|r', text2, '|cffff00ff'..(text or ''))
+        frame.Apply:Click()
     end
 end
 
@@ -294,6 +298,41 @@ local function Init()
         label:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '弹劾' or  e.WA_Utf8Sub(GUILD_IMPEACH_POPUP_CONFIRM, 2, 5,true))..'|r')
     end
 
+    set_check(ClubFinderGuildFinderFrame.OptionsList.Search and ClubFinderGuildFinderFrame.OptionsList and ClubFinderGuildFinderFrame.OptionsList.Search)
+    set_check(ClubFinderCommunityAndGuildFinderFrame.OptionsList.Search and ClubFinderCommunityAndGuildFinderFrame.OptionsList and ClubFinderCommunityAndGuildFinderFrame.OptionsList.Search)
+
+    hooksecurefunc(ClubFinderGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_RequestToJoinFrame)
+    hooksecurefunc(ClubFinderCommunityAndGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_RequestToJoinFrame)
+    
+
+    hooksecurefunc(CommunitiesFrameCommunitiesList.ScrollBox, 'SetScrollTargetOffset', function(self)
+        if not self:GetView() then
+            return
+        end
+        for _, btn in pairs(self:GetFrames() or {}) do
+            local online, all= 0, 0
+            if btn.clubId then
+                local members= C_Club.GetClubMembers(btn.clubId) or {}
+                all= #members
+                for _, memberID in pairs(members) do--CommunitiesUtil.GetOnlineMembers
+                    local info = C_Club.GetMemberInfo(btn.clubId, memberID) or {}
+                    if not info.isSelf and info.presence~=Enum.ClubMemberPresence.Offline and info.presence~=Enum.ClubMemberPresence.Unknown then--CommunitiesUtil.GetOnlineMembers()
+                        online= online+1
+                    end
+                end
+            end
+            if not btn.onlineText then
+                btn.onlineText=e.Cstr(btn)
+                btn.onlineText:SetPoint('TOP', btn.Icon, 'BOTTOM')
+            end
+            if all>0 then
+                btn.onlineText:SetFormattedText('%d/%s%d|r', all, online==0 and '|cff606060' or '|cnGREEN_FONT_COLOR:', online)
+            else
+                btn.onlineText:SetText('')
+            end
+        end
+    end)
+
 
     C_Timer.After(2, set_CHAT_MSG_SYSTEM)--事件, 公会新成员, 队伍新成员
 end
@@ -304,52 +343,23 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent('PLAYER_LOGOUT')
+panel:RegisterEvent('GUILD_ROSTER_UPDATE')
+panel:RegisterEvent('PLAYER_GUILD_UPDATE')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button
                 Save= WoWToolsSave[addName] or Save
                 Init()
-                self:RegisterEvent('PLAYER_LOGOUT')
-                self:RegisterEvent('GUILD_ROSTER_UPDATE')
-                self:RegisterEvent('PLAYER_GUILD_UPDATE')
                 --panel:RegisterUnitEvent('PLAYER_GUILD_UPDATE', "player")
+                self:UnregisterEvent('ADDON_LOADED')
+            else
+                self:UnregisterAllEvents()
             end
 
-        elseif arg1=='Blizzard_Communities' then
-            set_check(ClubFinderGuildFinderFrame.OptionsList.Search and ClubFinderGuildFinderFrame.OptionsList and ClubFinderGuildFinderFrame.OptionsList.Search)
-            set_check(ClubFinderCommunityAndGuildFinderFrame.OptionsList.Search and ClubFinderCommunityAndGuildFinderFrame.OptionsList and ClubFinderCommunityAndGuildFinderFrame.OptionsList.Search)
-
-            hooksecurefunc(ClubFinderGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_RequestToJoinFrame)
-            hooksecurefunc(ClubFinderCommunityAndGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_RequestToJoinFrame)
-
-            hooksecurefunc(CommunitiesFrameCommunitiesList.ScrollBox, 'SetScrollTargetOffset', function(self)
-                if not self:GetView() then
-                    return
-                end
-                for _, btn in pairs(self:GetFrames() or {}) do
-                    local online, all= 0, 0
-                    if btn.clubId then
-                        local members= C_Club.GetClubMembers(btn.clubId) or {}
-                        all= #members
-                        for _, memberID in pairs(members) do--CommunitiesUtil.GetOnlineMembers
-                            local info = C_Club.GetMemberInfo(btn.clubId, memberID) or {}
-                            if not info.isSelf and info.presence~=Enum.ClubMemberPresence.Offline and info.presence~=Enum.ClubMemberPresence.Unknown then--CommunitiesUtil.GetOnlineMembers()
-                                online= online+1
-                            end
-                        end
-                    end
-                    if not btn.onlineText then
-                        btn.onlineText=e.Cstr(btn)
-                        btn.onlineText:SetPoint('TOP', btn.Icon, 'BOTTOM')
-                    end
-                    if all>0 then
-                        btn.onlineText:SetFormattedText('%d/%s%d|r', all, online==0 and '|cff606060' or '|cnGREEN_FONT_COLOR:', online)
-                    else
-                        btn.onlineText:SetText('')
-                    end
-                end
-            end)
+        --elseif arg1=='Blizzard_Communities' then
+            
         end
 
     elseif event == "PLAYER_LOGOUT" then

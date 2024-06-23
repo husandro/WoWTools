@@ -4622,7 +4622,9 @@
         "GetPlayerMapPosition",
         "HarmColor",
         "FriendColor",
-        "WoW_Tools_Chinese_CN"
+        "WoW_Tools_Chinese_CN",
+        "ClubFinderRequestToJoinMixin",
+        "UNIT_LEVEL_TEMPLATE"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

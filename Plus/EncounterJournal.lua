@@ -1546,7 +1546,7 @@ local function Init_EncounterJournal()--冒险指南界面
     end
 
     --记录上次选择版本
-    hooksecurefunc('EncounterJournal_TierDropDown_Select', function(_, tier)
+    hooksecurefunc('EncounterJournal_ExpansionDropdown_Select', function(_, tier)
         Save.EncounterJournalTier=tier
     end)
 

@@ -198,8 +198,8 @@ local function Init_Quest()
         end
 
         --local name= e.cn(text, {questID=questID})
-        if m~='' or name then--汉化，图标
-            local height = self:SetStringText(block.HeaderText, m..(name or text), nil, OBJECTIVE_TRACKER_COLOR["Header"], block.isHighlighted)
+        if m~='' then--汉化，图标
+            local height = self:SetStringText(block.HeaderText, m, nil, OBJECTIVE_TRACKER_COLOR["Header"], block.isHighlighted)
             block.height = height
         end
     end)

@@ -166,7 +166,7 @@ local function Set_Gossip_Text(self, info)
         local zoneInfo= Save.Gossip_Text_Icon_Player[gossipOptionID] or GossipTextIcon[gossipOptionID]
         if not zoneInfo then
             if not IsInInstance() then
-                text= e.cn(info.name, {gossipOptionID=gossipOptionID})
+                text= e.cn(info.name)
             end
         else
             local icon
@@ -800,7 +800,8 @@ local function Init_Gossip_Text_Icon_Options()
             if self.iconDataProvider==nil then
                 self.iconDataProvider= CreateAndInitFromMixin(IconDataProviderMixin, IconDataProviderExtraType.None)
             end
-            self.BorderBox.IconTypeDropDown:SetSelectedValue(self.BorderBox.IconTypeDropDown:GetSelectedValue() or IconSelectorPopupFrameIconFilterTypes.All);
+            self:SetIconFilter(self:GetIconFilter() or IconSelectorPopupFrameIconFilterTypes.All);
+            --self.BorderBox.IconTypeDropDown:SetSelectedValue(self.BorderBox.IconTypeDropDown:GetSelectedValue() or IconSelectorPopupFrameIconFilterTypes.All);
             self:Update()
             self.BorderBox.IconSelectorEditBox:OnTextChanged()
             local function OnIconSelected(_, icon)
@@ -3604,10 +3605,7 @@ local function Init_Gossip_Other_Auto_Select()
     local frame= CreateFrame("Frame")
     frame:RegisterEvent('ADDON_LOADED')
     frame:SetScript('OnEvent', function(_, _, arg1)
-        if arg1=='Blizzard_Communities' then
-            Init_Blizzard_Communities()
-
-        elseif arg1=='Blizzard_PlayerChoice' then
+        if arg1=='Blizzard_PlayerChoice' then
             Init_Blizzard_PlayerChoice()
         end
     end)
@@ -3694,7 +3692,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 Init_Gossip()--对话，初始化
                 Init_Quest()--任务，初始化
                 Init_Gossip_Other_Auto_Select()
-
+                Init_Blizzard_Communities()
                 --[[if e.Player.husandro then
                     Init_Gossip_Text_Icon_Options()
                 end]]
