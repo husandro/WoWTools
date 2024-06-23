@@ -667,7 +667,7 @@ local function set_ReputationFrame_InitReputationRow(btn)--factionRow, elementDa
 		frame.Name:SetTextColor(barColor.r, barColor.g, barColor.b)
 	end
 
-	if data.isWatched and not bar.watchedIcon then--显示为经验条
+	--[[if data.isWatched and not bar.watchedIcon then--显示为经验条
 		frame.watchedIcon=bar:CreateTexture(nil, 'OVERLAY')
 		frame.watchedIcon:SetPoint('LEFT')
 		frame.watchedIcon:SetAtlas('common-icon-checkmark-yellow')
@@ -675,7 +675,7 @@ local function set_ReputationFrame_InitReputationRow(btn)--factionRow, elementDa
 	end
 	if frame.watchedIcon then
 		frame.watchedIcon:SetShown(data.isWatched)
-	end
+	end]]
 
 	local completedParagon--完成次数
 	if isCapped and C_Reputation.IsFactionParagon(factionID) then--奖励
@@ -1019,7 +1019,7 @@ end
 --######
 local function Init()
 	Button= e.Cbtn(ReputationFrame, {atlas='auctionhouse-icon-favorite',size={22, 22}})
-	Button:SetPoint("RIGHT", ReputationFrame.filterDropdown, 'LEFT',5,0)
+	Button:SetPoint("RIGHT", ReputationFrame.filterDropdown, 'LEFT',-5,0)
 	Button:SetScript("OnMouseDown", function(self)
 		if not self.Menu then
 			self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")

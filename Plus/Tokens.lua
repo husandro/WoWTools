@@ -321,9 +321,9 @@ local function Set_TrackButton_Text()
 			end)
 			btn:SetScript('OnEnter', function(self)
 				if Save.toRightTrackText then
-					e.tips:SetOwner(self.text, "ANCHOR_RIGHT");
+					e.tips:SetOwner(self.text, "ANCHOR_RIGHT")
 				else
-					e.tips:SetOwner(self.text, "ANCHOR_LEFT");
+					e.tips:SetOwner(self.text, "ANCHOR_LEFT")
 				end
 				e.tips:ClearLines()
 				if self.itemID then
@@ -630,8 +630,8 @@ local function Init_TrackButton()
 	end
 
 	TrackButton:RegisterForDrag("RightButton")
-	TrackButton:SetClampedToScreen(true);
-	TrackButton:SetMovable(true);
+	TrackButton:SetClampedToScreen(true)
+	TrackButton:SetMovable(true)
 	TrackButton:SetScript("OnDragStart", function(self)
 		if IsAltKeyDown() then
 			self:StartMoving()
@@ -953,14 +953,25 @@ end
 
 
 local function set_Tokens_Button(frame)--设置, 列表, 内容
-	if not frame or not frame.index then
+	local data= frame.elementData or {}
+	if not data.currencyIndex then
 		return
 	end
-	local info, _, _, percent, isMax, canWeek, canEarned, canQuantity= e.GetCurrencyMaxInfo(nil, frame.index)
-	local currencyID= info and info.currencyID
-	if not frame.isHeader and info and not frame.check then
+
+	local info, _, _, percent, isMax, canWeek, canEarned, canQuantity= e.GetCurrencyMaxInfo(nil, data.currencyIndex)
+	if not info or info.isHealer then
+		if frame.check then
+			frame.check:SetShown(false)
+		end
+		return
+	end
+
+	
+
+	local currencyID= info.currencyID
+	if not frame.check then
 		frame.check= CreateFrame("CheckButton", nil, frame, "InterfaceOptionsCheckButtonTemplate")
-		frame.check:SetPoint('LEFT', -4,0)
+		frame.check:SetPoint('RIGHT', frame, 'LEFT',4,0)
 		frame.check:SetScript('OnClick', function(self)
 			if self.currencyID then
 				Save.tokens[self.currencyID]= not Save.tokens[self.currencyID] and self.index or nil
@@ -992,7 +1003,7 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 				end
 			end
 		end)
-		frame:HookScript('OnLeave', function(self)
+		frame:HookScript('OnLeave', function()
 			for _, btn in pairs(TrackButton and TrackButton.btn or {}) do
 				if btn:CanChangeAttribute() then
 					btn:SetScale(1)
@@ -1006,33 +1017,35 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 		frame.check:SetCheckedTexture(info and info.iconFileID or e.Icon.icon)
 		frame.check.currencyID= currencyID
 		frame.check.index= frame.index
-		frame.check:SetShown(not frame.isHeader)
+		frame.check:SetShown(true)
 		frame.check:SetChecked(Save.tokens[currencyID])
 		frame.check:SetAlpha(Save.tokens[currencyID] and 1 or 0.5)
 	end
 
-	if info and frame.Count then--设置，数量，颜色	
-		if isMax then
-			frame.Count:SetTextColor(1,0,0)
-		elseif canWeek or canEarned or canQuantity then
-			frame.Count:SetTextColor(0,1,0)
-		else
-			frame.Count:SetTextColor(1,1,1)
-		end
-
-		if percent and not frame.percentText then
-			frame.percentText= e.Cstr(frame, {color={r=1,g=1,b=1}})
-			frame.percentText:SetPoint('RIGHT', frame.Count, 'LEFT')
-		end
+	
+	if isMax then
+		frame.Content.Count:SetTextColor(1,0,0)
+	elseif canWeek or canEarned or canQuantity then
+		frame.Content.Count:SetTextColor(0,1,0)
+	else
+		frame.Content.Count:SetTextColor(1,1,1)
 	end
+
+	if percent and not frame.percentText then
+		frame.percentText= e.Cstr(frame, {color={r=1,g=1,b=1}})
+		frame.percentText:SetPoint('RIGHT', frame.Content.Count, 'LEFT')
+	end
+
 	if frame.percentText then
 		frame.percentText:SetText(percent and format('%d%%', percent) or '')
 	end
 
 	if frame.Name then
 		local r, g, b= C_Item.GetItemQualityColor(info and info.quality or 1)
-		frame.Name:SetTextColor(r or 1, g or 1, b or 1)
+		frame.Content.Name:SetTextColor(r or 1, g or 1, b or 1)
 	end
+
+	frame.Content.AccountWideIcon:SetShown(info.isAccountTransferable)
 end
 
 
@@ -1083,7 +1096,7 @@ local function InitMenu(_, level, menuList)--主菜单
 				arg1= currencyID,
 				func= function(_, arg1)
 					Save.tokens[arg1]=nil
-					e.call('TokenFrame_Update')
+					TokenFrame:Update()
 					print(id, Initializer:GetName(), e.onlyChinese and '移除' or REMOVE, C_CurrencyInfo.GetCurrencyLink(arg1) or arg1)
 				end
 			}
@@ -1105,7 +1118,7 @@ local function InitMenu(_, level, menuList)--主菜单
 					button1= e.onlyChinese and '添加' or ADD,
 					button2= e.onlyChinese and '取消' or CANCEL,
 					OnShow=function(s)
-                        s.editBox:SetNumeric(true);
+                        s.editBox:SetNumeric(true)
 						s.editBox:SetFocus()
                     end,
 					OnHide= function()
@@ -1116,7 +1129,7 @@ local function InitMenu(_, level, menuList)--主菜单
 						if n then
 							Save.tokens[n]=0
 							print(id, Initializer:GetName(), e.onlyChinese and '添加' or ADD,  C_CurrencyInfo.GetCurrencyLink(n))
-							e.call('TokenFrame_Update')
+							TokenFrame:Update()
 						end
 					end,
 					EditBoxOnTextChanged=function(s)
@@ -1156,7 +1169,7 @@ local function InitMenu(_, level, menuList)--主菜单
 			func= function()
 				if IsShiftKeyDown() then
 					Save.tokens= {}
-					e.call('TokenFrame_Update')
+					TokenFrame:Update()
 					print(id, Initializer:GetName(), e.onlyChinese and '全部清除' or CLEAR_ALL)
 				end
 			end
@@ -1295,8 +1308,8 @@ end
 --初始化
 --######
 local function Init()
-	Button= e.Cbtn(TokenFrame, {icon='hide', size={18,18}})
-	Button:SetPoint("TOPRIGHT", TokenFrame, 'TOPRIGHT',-6,-35)
+	Button= e.Cbtn(TokenFrame, {icon='hide', size={22,22}})
+	Button:SetPoint("RIGHT", TokenFrame.CurrencyTransferLogToggleButton, 'LEFT',-2,0)
 	Button.texture= Button:CreateTexture()
 	Button.texture:SetAllPoints()
 	Button.texture:SetAlpha(0.5)
@@ -1398,10 +1411,10 @@ local function Init()
 		for i=1, C_CurrencyInfo.GetCurrencyListSize() do--展开所有
 			local info = C_CurrencyInfo.GetCurrencyListInfo(i)
 			if info  and info.isHeader and not info.isHeaderExpanded then
-				C_CurrencyInfo.ExpandCurrencyList(i,true);
+				C_CurrencyInfo.ExpandCurrencyList(i,true)
 			end
 		end
-		e.call('TokenFrame_Update')
+		TokenFrame:Update()
 	end)
 	Button.down:SetScript("OnLeave", GameTooltip_Hide)
 	Button.down:SetScript('OnEnter', function(self)
@@ -1416,12 +1429,12 @@ local function Init()
 	Button.up:SetPoint('RIGHT', Button.down, 'LEFT', -2, 0)
 	Button.up:SetScript("OnClick", function()
 		for i=1, C_CurrencyInfo.GetCurrencyListSize() do--展开所有
-			local info = C_CurrencyInfo.GetCurrencyListInfo(i);
+			local info = C_CurrencyInfo.GetCurrencyListInfo(i)
 			if info  and info.isHeader and info.isHeaderExpanded then
-				C_CurrencyInfo.ExpandCurrencyList(i, false);
+				C_CurrencyInfo.ExpandCurrencyList(i, false)
 			end
 		end
-		e.call('TokenFrame_Update')
+		TokenFrame:Update()
 	end)
 	Button.up:SetScript("OnLeave", GameTooltip_Hide)
 	Button.up:SetScript('OnEnter', function(self)
@@ -1443,7 +1456,7 @@ local function Init()
 			end
 		end
 		ToggleAllBags()
-		e.call('TokenFrame_Update')
+		TokenFrame:Update()
 	end)
 	Button.bag:SetScript('OnEnter', function(self2)
 		e.tips:SetOwner(self2, "ANCHOR_LEFT")
@@ -1514,20 +1527,14 @@ local function Init()
 
 
 	C_Timer.After(3, function()
-		
-		--11版本
-		--[[hooksecurefunc('TokenFrame_InitTokenButton',function(_, frame)--Blizzard_TokenUI.lua
-			set_Tokens_Button(frame)--设置, 列表, 内容
-		end)]]
+		hooksecurefunc(TokenFrame, 'Update', function(self)
+			set_ItemInteractionFrame_Currency(self)--套装,转换,货币
+			Set_TrackButton_Text()
+		end)
 		hooksecurefunc(TokenFrame.ScrollBox, 'Update', function(f)
-			if not f:GetView() then
-				return
-			end
 			for _, frame in pairs(f:GetFrames()) do
 				set_Tokens_Button(frame)--设置, 列表, 内容
 			end
-			set_ItemInteractionFrame_Currency(f)--套装,转换,货币
-			Set_TrackButton_Text()
 		end)
 
 		if not Save.hideCurrencyMax then
