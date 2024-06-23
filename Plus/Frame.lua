@@ -561,9 +561,7 @@ function e.Set_Move_Frame(self, tab)
     tab.name= name
 
     set_Scale_Size(self, tab)
-    if tab.needSize then
-        print(name, tab.needSize)
-    end
+
     if (Save.disabledMove and not tab.needMove) or tab.notMove or self.setMoveFrame then
         return
     end
