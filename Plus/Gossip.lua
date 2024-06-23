@@ -13,7 +13,7 @@ local Save={
         quest= true,
         questOption={},
         questRewardCheck={},--{任务ID= index}
-        autoSortQuest= e.Player.husandro,--仅显示当前地图任务
+        --autoSortQuest=  e.Player.husandro,--仅显示当前地图任务
         autoSelectReward= e.Player.husandro,--自动选择奖励
         showAllQuestNum= e.Player.husandro,--显示所有任务数量
 

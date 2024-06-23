@@ -393,6 +393,8 @@ local function setClickAtt()--设置 Click属性
             or (isFlyableArea and getRandomRoll(MOUNT_JOURNAL_FILTER_FLYING))--飞行区域
             or (IsOutdoors() and getRandomRoll(MOUNT_JOURNAL_FILTER_GROUND))--室内
             or button.spellID
+
+          
     end
     spellID= spellID or ShiJI
 
@@ -400,14 +402,19 @@ local function setClickAtt()--设置 Click属性
         return
     end
 
-    local name, _, icon
+    local name, icon
     if spellID then
-        name, _, icon=GetSpellInfo(spellID)
+        name= C_Spell.GetSpellName(spellID)
+        icon= C_Spell.GetSpellTexture(spellID)
+        --name, _, icon=GetSpellInfo(spellID)
         if name and icon then
             if spellID==6544 or spellID==189110 then--6544英勇飞跃 189110地狱火撞击
                 button:SetAttribute("type1", "macro")
                 button:SetAttribute("macrotext1", format('/cast [@cursor]%s', name))
                 button:SetAttribute('unit', nil)
+                --[[button:SetAttribute('type1', 'spell')
+                button:SetAttribute('spell1', name)
+                button:SetAttribute('unit', 'cursor')]]
             else
                 button:SetAttribute("type1", "spell")
                 button:SetAttribute("spell1", name)
@@ -424,8 +431,8 @@ local function setClickAtt()--设置 Click属性
             button.Combat=true
         end
     elseif button.itemID then
-        button:SetAttribute("type1", "item")
-        button:SetAttribute("item1", C_Item.GetItemNameByID(button.itemID)  or button.itemID)
+        button:SetAttribute("type1", "item")        
+        button:SetAttribute("item1", C_Item.GetItemNameByID(button.itemID))
         button:SetAttribute('unit', nil)
         button.typeID= MountTab[type][1]
         button.typeSpell=nil--提示用
@@ -1812,6 +1819,7 @@ panel:SetScript("OnEvent", function(frame, event, arg1, arg2)
         or event=='PET_BATTLE_CLOSE'
         or event=='UNIT_EXITED_VEHICLE'
         or event=='PLAYER_STOPPED_MOVING'
+        or event=='PLAYER_STARTED_MOVING'
     then-- or event=='AREA_POIS_UPDATED' then
         setClickAtt()--设置属性
 
@@ -1838,8 +1846,6 @@ panel:SetScript("OnEvent", function(frame, event, arg1, arg2)
             setMountShow()--坐骑展示
         end
 
-    elseif event=='PLAYER_STARTED_MOVING' then
-        setClickAtt()--设置属性
 
 
     elseif event=='NEUTRAL_FACTION_SELECT_RESULT' then

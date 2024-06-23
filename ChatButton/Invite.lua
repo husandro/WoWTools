@@ -426,8 +426,12 @@ local function Init_Shift_Click_Focus()
     local key= strlower(Save.focusKey)
 
     ClearFoucsFrame= e.Cbtn(nil, {type=true, name='WoWToolsClearFocusButton'})--清除，焦点
-    ClearFoucsFrame:SetAttribute('type1','macro')
-    ClearFoucsFrame:SetAttribute('macrotext1','/clearfocus')
+    --ClearFoucsFrame:SetAttribute('type1','macro')
+    --ClearFoucsFrame:SetAttribute('macrotext','/clearfocus')
+
+    ClearFoucsFrame:SetAttribute('type1','focus')
+    ClearFoucsFrame:SetAttribute('unit', nil)
+
     e.SetButtonKey(ClearFoucsFrame, true, strupper(key)..'-BUTTON2', nil)--设置, 快捷键
 
 
@@ -473,8 +477,10 @@ local function Init_Shift_Click_Focus()
         end
         if frame:CanChangeAttribute() then
             if frame==FocusFrame then
-                frame:SetAttribute(key..'-type1','macro')
-                frame:SetAttribute(key..'-macrotext1','/clearfocus')
+                --frame:SetAttribute(key..'-type1','macro')
+                --frame:SetAttribute(key..'-macrotext1','/clearfocus')
+                frame:SetAttribute(key..'-type1', 'focus')
+                frame:SetAttribute('unit', nil)
             else
                 frame:SetAttribute(self.key..'-type1', 'focus')--设置, 属性
             end
