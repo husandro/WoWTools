@@ -2179,6 +2179,9 @@ local function Init_Move()
             CharacterFrame.ResizeButton.minHeight= 424
         end)]]
         e.Set_Move_Frame(ReputationFrame, {frame=CharacterFrame})
+
+
+        --货币
         e.Set_Move_Frame(TokenFrame, {frame=CharacterFrame})
         e.Set_Move_Frame(CurrencyTransferLog, {frame=CharacterFrame})
         e.Set_Move_Frame(CurrencyTransferLog.TitleContainer, {frame=CharacterFrame})
@@ -2191,6 +2194,11 @@ local function Init_Move()
             btn.target:ClearAllPoints()
             btn.target:SetPoint('TOPLEFT', TokenFrame, 'TOPRIGHT', 5,0)
         end})
+
+        e.Set_Move_Frame(CurrencyTransferMenu)
+        e.Set_Move_Frame(CurrencyTransferMenu.TitleContainer, {frame=CurrencyTransferMenu})
+        
+        
 
     end, sizeUpdateFunc=function()
         if PaperDollFrame.EquipmentManagerPane:IsVisible() then

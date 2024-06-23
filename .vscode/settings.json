@@ -4626,7 +4626,12 @@
         "ClubFinderRequestToJoinMixin",
         "UNIT_LEVEL_TEMPLATE",
         "CurrencyTransferLog",
-        "BankFrameMoneyFrameBorder"
+        "BankFrameMoneyFrameBorder",
+        "CurrencyTransferMenu",
+        "CurrencyTransferLogBg",
+        "CurrencyTransferLogInset",
+        "CurrencyTransferMenuBg",
+        "CurrencyTransferMenuInset"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",
