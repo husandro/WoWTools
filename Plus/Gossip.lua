@@ -166,7 +166,7 @@ local function Set_Gossip_Text(self, info)
         local zoneInfo= Save.Gossip_Text_Icon_Player[gossipOptionID] or GossipTextIcon[gossipOptionID]
         if not zoneInfo then
             if not IsInInstance() then
-                text= e.cn(info.name, true, {gossipOptionID=gossipOptionID})
+                text= e.cn(info.name, {gossipOptionID=gossipOptionID})
             end
         else
             local icon
@@ -620,8 +620,8 @@ local function Init_Gossip_Text_Icon_Options()
             return
         end
         local name,icon,hex, name2, info
-        for _, info in pairs(C_GossipInfo.GetOptions() or {}) do
-            if info.gossipOptionID==gossipID then
+        for _, info2 in pairs(C_GossipInfo.GetOptions() or {}) do
+            if info2.gossipOptionID==gossipID then
                 name2= info.name
                 break
             end
@@ -1909,9 +1909,9 @@ local function Create_CheckButton(frame, info)
                 if f and not ColorPickerFrame:IsShown() then
                    f.menu:set_date(self.id)--设置，数据
                 elseif not Save.not_Gossip_Text_Icon and (Save.Gossip_Text_Icon_Player[self.id] or GossipTextIcon[self.id]) then
-                    for _, info in pairs( C_GossipInfo.GetOptions() or {}) do
-                        if info.gossipOptionID==self.id and info.name then
-                            e.tips:AddLine('|cnGREEN_FONT_COLOR:'..info.name)
+                    for _, info2 in pairs( C_GossipInfo.GetOptions() or {}) do
+                        if info2.gossipOptionID==self.id and info.name then
+                            e.tips:AddLine('|cnGREEN_FONT_COLOR:'..info2.name)
                             break
                         end
                     end
