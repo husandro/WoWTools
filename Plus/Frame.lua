@@ -95,6 +95,7 @@ end
 
 local function set_Scale_Size(frame, tab)
     local name= tab.name or frame:GetName()
+    
     if not name or (Save.disabledZoom and not tab.needSize) or tab.notZoom or frame.ResizeButton or tab.frame then
         return
     end
@@ -549,17 +550,20 @@ function e.Set_Move_Frame(self, tab)
 
     local frame= tab.frame
     local name= tab.name or (frame and frame:GetName()) or (self and self:GetName())
-    local click= tab.click
-    local notSave= ((tab.notSave or not Save.SavePoint) and not tab.save) and true or nil
-    local notFuori= tab.notFuori
 
     if not self or not name or self.setMoveFrame then
         return
     end
+    
+    local click= tab.click
+    local notSave= ((tab.notSave or not Save.SavePoint) and not tab.save) and true or nil
+    local notFuori= tab.notFuori
     tab.name= name
 
     set_Scale_Size(self, tab)
-
+    if tab.needSize then
+        print(name, tab.needSize)
+    end
     if (Save.disabledMove and not tab.needMove) or tab.notMove or self.setMoveFrame then
         return
     end
@@ -2178,6 +2182,17 @@ local function Init_Move()
         end)]]
         e.Set_Move_Frame(ReputationFrame, {frame=CharacterFrame})
         e.Set_Move_Frame(TokenFrame, {frame=CharacterFrame})
+        e.Set_Move_Frame(CurrencyTransferLog, {frame=CharacterFrame})
+        e.Set_Move_Frame(CurrencyTransferLog.TitleContainer, {frame=CharacterFrame})
+
+        set_Scale_Size(CurrencyTransferLog, {setSize=true, sizeRestFunc=function(btn)
+            btn.target:ClearAllPoints()
+            btn.target:SetPoint('TOPLEFT', TokenFrame, 'TOPRIGHT', 5,0)
+            btn.target:SetSize(340, 370)
+        end, scaleRestFunc= function(btn)
+            btn.target:ClearAllPoints()
+            btn.target:SetPoint('TOPLEFT', TokenFrame, 'TOPRIGHT', 5,0)
+        end})
 
     end, sizeUpdateFunc=function()
         if PaperDollFrame.EquipmentManagerPane:IsVisible() then

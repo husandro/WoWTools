@@ -453,129 +453,137 @@ local function Init_All_Frame()
             CompactRaidFrameManagerDisplayFrameLeaderOptionsInitiateRolePollText:SetText('|A:groupfinder-icon-role-large-tank:22:22:|a|A:groupfinder-icon-role-large-heal:22:22|a')
             CompactRaidFrameManagerDisplayFrameLeaderOptionsInitiateReadyCheckText:SetText('|A:'..e.Icon.select..':22:22|a')
         end
-     end
+    end
 
-     --施法条
-     set_Alpha_Color(PlayerCastingBarFrame.Border)
-     set_Alpha_Color(PlayerCastingBarFrame.Background)
-     set_Alpha_Color(PlayerCastingBarFrame.TextBorder)
-     set_Alpha_Color(PlayerCastingBarFrame.Shine)
+    --施法条
+    set_Alpha_Color(PlayerCastingBarFrame.Border)
+    set_Alpha_Color(PlayerCastingBarFrame.Background)
+    set_Alpha_Color(PlayerCastingBarFrame.TextBorder)
+    set_Alpha_Color(PlayerCastingBarFrame.Shine)
 
-     set_Alpha_Color(PetCastingBarFrame.Border)
-     set_Alpha_Color(PetCastingBarFrame.Background)
-     set_Alpha_Color(PetCastingBarFrame.TextBorder)
-     set_Alpha_Color(PetCastingBarFrame.Shine)
+    set_Alpha_Color(PetCastingBarFrame.Border)
+    set_Alpha_Color(PetCastingBarFrame.Background)
+    set_Alpha_Color(PetCastingBarFrame.TextBorder)
+    set_Alpha_Color(PetCastingBarFrame.Shine)
 
-     --角色，界面
-     e.Set_NineSlice_Color_Alpha(CharacterFrameInset, true)
-     e.Set_NineSlice_Color_Alpha(CharacterFrame, true)
-     e.Set_NineSlice_Color_Alpha(CharacterFrameInsetRight, true)
+    --角色，界面
+    e.Set_NineSlice_Color_Alpha(CharacterFrameInset, true)
+    e.Set_NineSlice_Color_Alpha(CharacterFrame, true)
+    e.Set_NineSlice_Color_Alpha(CharacterFrameInsetRight, true)
 
-     set_Alpha_Color(CharacterFrameBg)
-     hide_Texture(CharacterFrameInset.Bg)
-     
-     set_Alpha_Color(CharacterFrame.Background)
+    set_Alpha_Color(CharacterFrameBg)
+    hide_Texture(CharacterFrameInset.Bg)
+    
+    set_Alpha_Color(CharacterFrame.Background)
 
-     set_Alpha_Color(PaperDollInnerBorderBottom, nil, nil, min03)
-     set_Alpha_Color(PaperDollInnerBorderRight, nil, nil, min03)
-     set_Alpha_Color(PaperDollInnerBorderLeft, nil, nil, min03)
-     set_Alpha_Color(PaperDollInnerBorderTop, nil, nil, min03)
+    set_Alpha_Color(PaperDollInnerBorderBottom, nil, nil, min03)
+    set_Alpha_Color(PaperDollInnerBorderRight, nil, nil, min03)
+    set_Alpha_Color(PaperDollInnerBorderLeft, nil, nil, min03)
+    set_Alpha_Color(PaperDollInnerBorderTop, nil, nil, min03)
 
-     set_Alpha_Color(PaperDollInnerBorderTopLeft, nil, nil, min03)
-     set_Alpha_Color(PaperDollInnerBorderTopRight, nil, nil, min03)
-     set_Alpha_Color(PaperDollInnerBorderBottomLeft, nil, nil, min03)
-     set_Alpha_Color(PaperDollInnerBorderBottomRight, nil, nil, min03)
-
-
-     hide_Texture(PaperDollInnerBorderBottom2)
-     hide_Texture(CharacterFrameInsetRight.Bg)
+    set_Alpha_Color(PaperDollInnerBorderTopLeft, nil, nil, min03)
+    set_Alpha_Color(PaperDollInnerBorderTopRight, nil, nil, min03)
+    set_Alpha_Color(PaperDollInnerBorderBottomLeft, nil, nil, min03)
+    set_Alpha_Color(PaperDollInnerBorderBottomRight, nil, nil, min03)
 
 
-     e.Set_ScrollBar_Color_Alpha(TokenFrame)
+    hide_Texture(PaperDollInnerBorderBottom2)
+    hide_Texture(CharacterFrameInsetRight.Bg)
 
-     set_Alpha_Color(CharacterStatsPane.ClassBackground, nil, nil, min03)
-     set_Alpha_Color(CharacterStatsPane.EnhancementsCategory.Background)
-     set_Alpha_Color(CharacterStatsPane.AttributesCategory.Background)
-     set_Alpha_Color(CharacterStatsPane.ItemLevelCategory.Background)
-     hooksecurefunc('PaperDollTitlesPane_UpdateScrollBox', function()--PaperDollFrame.lua
-        local frame= PaperDollFrame.TitleManagerPane.ScrollBox
-        if not frame:GetView() then
-            return
-        end
-         for _, button in pairs(frame:GetFrames()) do
-             hide_Texture(button.BgMiddle)
-         end
-     end)
-     e.Set_ScrollBar_Color_Alpha(PaperDollFrame.TitleManagerPane)
-     hooksecurefunc('PaperDollEquipmentManagerPane_Update', function()--PaperDollFrame.lua
-        local frame= PaperDollFrame.EquipmentManagerPane.ScrollBox
-        if not frame:GetView() then
-            return
-        end
+
+
+
+    set_Alpha_Color(CharacterStatsPane.ClassBackground, nil, nil, min03)
+    set_Alpha_Color(CharacterStatsPane.EnhancementsCategory.Background)
+    set_Alpha_Color(CharacterStatsPane.AttributesCategory.Background)
+    set_Alpha_Color(CharacterStatsPane.ItemLevelCategory.Background)
+    hooksecurefunc('PaperDollTitlesPane_UpdateScrollBox', function()--PaperDollFrame.lua
+    local frame= PaperDollFrame.TitleManagerPane.ScrollBox
+    if not frame:GetView() then
+        return
+    end
         for _, button in pairs(frame:GetFrames()) do
-             hide_Texture(button.BgMiddle)
-         end
-     end)
-     e.Set_ScrollBar_Color_Alpha(PaperDollFrame.EquipmentManagerPane)    
-     e.Set_ScrollBar_Color_Alpha(TokenFrame)
+            hide_Texture(button.BgMiddle)
+        end
+    end)
+    e.Set_ScrollBar_Color_Alpha(PaperDollFrame.TitleManagerPane)
+    hooksecurefunc('PaperDollEquipmentManagerPane_Update', function()--PaperDollFrame.lua
+    local frame= PaperDollFrame.EquipmentManagerPane.ScrollBox
+    if not frame:GetView() then
+        return
+    end
+    for _, button in pairs(frame:GetFrames()) do
+            hide_Texture(button.BgMiddle)
+        end
+    end)
+    e.Set_ScrollBar_Color_Alpha(PaperDollFrame.EquipmentManagerPane)    
 
-     hide_Texture(CharacterModelFrameBackgroundTopLeft)--角色3D背景
-     hide_Texture(CharacterModelFrameBackgroundTopRight)
-     hide_Texture(CharacterModelFrameBackgroundBotLeft)
-     hide_Texture(CharacterModelFrameBackgroundBotRight)
-     hide_Texture(CharacterModelFrameBackgroundOverlay)
 
-     hide_Frame_Texture(GearManagerPopupFrame.BorderBox)
-     set_Alpha_Color(GearManagerPopupFrame.BG, nil, nil, min03)
-     e.Set_ScrollBar_Color_Alpha(GearManagerPopupFrame.IconSelector)
-     set_SearchBox(GearManagerPopupFrame.BorderBox.IconSelectorEditBox)
-     --set_Menu(GearManagerPopupFrame.BorderBox.IconTypeDropDown.DropDownMenu)
 
-     --声望
-     e.Set_ScrollBar_Color_Alpha(ReputationFrame)
-     set_Menu(ReputationFrame.filterDropdown)
+    hide_Texture(CharacterModelFrameBackgroundTopLeft)--角色3D背景
+    hide_Texture(CharacterModelFrameBackgroundTopRight)
+    hide_Texture(CharacterModelFrameBackgroundBotLeft)
+    hide_Texture(CharacterModelFrameBackgroundBotRight)
+    hide_Texture(CharacterModelFrameBackgroundOverlay)
 
-     --[[法术书
-     e.Set_NineSlice_Color_Alpha(SpellBookFrame, true)
-     e.Set_NineSlice_Color_Alpha(SpellBookFrameInset)
-     if SpellBookPageText then
-         SpellBookPageText:SetTextColor(1, 0.82, 0)
-     end
+    hide_Frame_Texture(GearManagerPopupFrame.BorderBox)
+    set_Alpha_Color(GearManagerPopupFrame.BG, nil, nil, min03)
+    e.Set_ScrollBar_Color_Alpha(GearManagerPopupFrame.IconSelector)
+    set_SearchBox(GearManagerPopupFrame.BorderBox.IconSelectorEditBox)
+    --set_Menu(GearManagerPopupFrame.BorderBox.IconTypeDropDown.DropDownMenu)
 
-     hide_Texture(SpellBookPage1)
-     hide_Texture(SpellBookPage2)
-     set_Alpha_Color(SpellBookFrameBg)
+    --声望
+    e.Set_ScrollBar_Color_Alpha(ReputationFrame)
+    set_Menu(ReputationFrame.filterDropdown)
 
-     for i=1, 12 do
-         set_Alpha_Color(_G['SpellButton'..i..'Background'])
-         set_Alpha_Color(_G['SpellButton'..i..'SlotFrame'])
+    --货币
+    e.Set_ScrollBar_Color_Alpha(TokenFrame)    
+    e.Set_NineSlice_Color_Alpha(CurrencyTransferLog, true)
+    set_Alpha_Color(CurrencyTransferLogBg, nil, nil, min03)
+    e.Set_NineSlice_Color_Alpha(CurrencyTransferLogInset, true)
+    e.Set_ScrollBar_Color_Alpha(CurrencyTransferLog)
+    
+    --[[法术书
+    e.Set_NineSlice_Color_Alpha(SpellBookFrame, true)
+    e.Set_NineSlice_Color_Alpha(SpellBookFrameInset)
+    if SpellBookPageText then
+        SpellBookPageText:SetTextColor(1, 0.82, 0)
+    end
 
-         local frame= _G['SpellButton'..i]
-         if frame then
-             hooksecurefunc(frame, 'UpdateButton', function(self)--SpellBookFrame.lua
-                 self.SpellSubName:SetTextColor(1, 1, 1)
-             end)
-         end
-     end
+    hide_Texture(SpellBookPage1)
+    hide_Texture(SpellBookPage2)
+    set_Alpha_Color(SpellBookFrameBg)
 
-     e.Set_Alpha_Frame_Texture(SpellBookFrameTabButton1, {alpha=min05})
-     e.Set_Alpha_Frame_Texture(SpellBookFrameTabButton2, {alpha=min05})
-     e.Set_Alpha_Frame_Texture(SpellBookFrameTabButton3, {alpha=min05})
+    for i=1, 12 do
+        set_Alpha_Color(_G['SpellButton'..i..'Background'])
+        set_Alpha_Color(_G['SpellButton'..i..'SlotFrame'])
+
+        local frame= _G['SpellButton'..i]
+        if frame then
+            hooksecurefunc(frame, 'UpdateButton', function(self)--SpellBookFrame.lua
+                self.SpellSubName:SetTextColor(1, 1, 1)
+            end)
+        end
+    end
+
+    e.Set_Alpha_Frame_Texture(SpellBookFrameTabButton1, {alpha=min05})
+    e.Set_Alpha_Frame_Texture(SpellBookFrameTabButton2, {alpha=min05})
+    e.Set_Alpha_Frame_Texture(SpellBookFrameTabButton3, {alpha=min05})
 ]]
 
-     --世界地图
-     e.Set_NineSlice_Color_Alpha(WorldMapFrame.BorderFrame, true)
-     set_Alpha_Color(WorldMapFrameBg)
-     set_Alpha_Color(QuestMapFrame.Background)
-     hide_Texture(WorldMapFrame.NavBar.overlay)
-     hide_Texture(WorldMapFrame.NavBar.InsetBorderBottom)
-     hide_Texture(WorldMapFrame.NavBar.InsetBorderRight)
-     hide_Texture(WorldMapFrame.NavBar.InsetBorderLeft)
-     hide_Texture(WorldMapFrame.NavBar.InsetBorderBottomRight)
-     hide_Texture(WorldMapFrame.NavBar.InsetBorderBottomLeft)
-     hide_Texture(WorldMapFrame.BorderFrame.InsetBorderTop)
-     WorldMapFrame.NavBar:DisableDrawLayer('BACKGROUND')
-     e.Set_ScrollBar_Color_Alpha(QuestMapDetailsScrollFrame)
+    --世界地图
+    e.Set_NineSlice_Color_Alpha(WorldMapFrame.BorderFrame, true)
+    set_Alpha_Color(WorldMapFrameBg)
+    set_Alpha_Color(QuestMapFrame.Background)
+    hide_Texture(WorldMapFrame.NavBar.overlay)
+    hide_Texture(WorldMapFrame.NavBar.InsetBorderBottom)
+    hide_Texture(WorldMapFrame.NavBar.InsetBorderRight)
+    hide_Texture(WorldMapFrame.NavBar.InsetBorderLeft)
+    hide_Texture(WorldMapFrame.NavBar.InsetBorderBottomRight)
+    hide_Texture(WorldMapFrame.NavBar.InsetBorderBottomLeft)
+    hide_Texture(WorldMapFrame.BorderFrame.InsetBorderTop)
+    WorldMapFrame.NavBar:DisableDrawLayer('BACKGROUND')
+    e.Set_ScrollBar_Color_Alpha(QuestMapDetailsScrollFrame)
     hooksecurefunc(WorldMapFrame, 'SynchronizeDisplayState', function(self)--最大化时，隐藏背景
         if self:IsMaximized() then
             self.BlackoutFrame:Hide()

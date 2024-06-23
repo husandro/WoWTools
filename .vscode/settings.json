@@ -4624,7 +4624,8 @@
         "FriendColor",
         "WoW_Tools_Chinese_CN",
         "ClubFinderRequestToJoinMixin",
-        "UNIT_LEVEL_TEMPLATE"
+        "UNIT_LEVEL_TEMPLATE",
+        "CurrencyTransferLog"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",
