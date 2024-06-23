@@ -585,11 +585,6 @@ end
 
 
 
-hooksecurefunc(ObjectiveTrackerBlockMixin, 'SetHeader', function(self, text)
-    print(text)
-end)
-
-
 
 --####
 --初始

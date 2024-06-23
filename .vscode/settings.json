@@ -4625,7 +4625,8 @@
         "WoW_Tools_Chinese_CN",
         "ClubFinderRequestToJoinMixin",
         "UNIT_LEVEL_TEMPLATE",
-        "CurrencyTransferLog"
+        "CurrencyTransferLog",
+        "BankFrameMoneyFrameBorder"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

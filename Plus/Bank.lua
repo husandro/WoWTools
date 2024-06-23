@@ -43,13 +43,6 @@ local Initializer
 
 --增强，原生
 local function Init_Bank_Plus()--增强，原生
-    ReagentBankFrame.autoSortButton:SetPoint('LEFT', ReagentBankFrame.DespositButton, 'RIGHT', 25, 0)--整理材料银行
-    ReagentBankFrame.DespositButton.texture2= ReagentBankFrame.DespositButton:CreateTexture(nil, 'OVERLAY')--增加，提示图标
-    ReagentBankFrame.DespositButton.texture2:SetSize(23,23)
-    ReagentBankFrame.DespositButton.texture2:SetPoint('RIGHT', -4, 0)
-    ReagentBankFrame.DespositButton.texture2:SetAtlas('poi-traveldirections-arrow')
-    ReagentBankFrame.DespositButton.texture2:SetTexCoord(0,1,1,0)
-
     --选项
     ReagentBankFrame.ShowHideButton= e.Cbtn(BankFrame, {size={18,18}, atlas='hide'})
     ReagentBankFrame.ShowHideButton:SetPoint('BOTTOMRIGHT', _G['BankFrameTab1'], 'BOTTOMLEFT')
@@ -162,21 +155,14 @@ local function Init_Bank_Plus()--增强，原生
     ReagentBankFrame:RegisterForDrag("RightButton", "LeftButton")
 
 
-    --添加，背景
-    ReagentBankFrame.Bg= ReagentBankFrame:CreateTexture(nil, 'BACKGROUND')
-    ReagentBankFrame.Bg:SetSize(715, 350)
-    ReagentBankFrame.Bg:SetPoint('BOTTOMLEFT',10, 10)
-    ReagentBankFrame.Bg:SetAtlas('auctionhouse-background-buy-noncommodities-market')
-    --ReagentBankFrame.Bg:SetAlpha(0.5)
-    e.Set_Label_Texture_Color(ReagentBankFrame.Bg, {type='Texture', alpha=0.5})--设置颜色
-    --ReagentBankFrame.Bg:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
-    ReagentBankFrame:SetSize(715, 415)--386, 415
+
+    
+
     --设置，显示材料银行
     function ReagentBankFrame.ShowHideButton:show_hide(hide)
         --local unlocked= IsReagentBankUnlocked()
         if (not Save.hideReagentBankFrame or hide) and BankFrame.activeTabIndex then
             if BankFrame.activeTabIndex==1 and not hide then
-            -- BankFrame:SetSize(370, 300)--<Size x="386" y="415"/>
                 ReagentBankFrame:ClearAllPoints()
                 if Save.pointReagentBank then
                     ReagentBankFrame:SetPoint(Save.pointReagentBank[1], UIParent, Save.pointReagentBank[3], Save.pointReagentBank[4],  Save.pointReagentBank[5])
@@ -198,6 +184,51 @@ local function Init_Bank_Plus()--增强，原生
     end
     hooksecurefunc('BankFrame_ShowPanel', ReagentBankFrame.ShowHideButton.show_hide)
 
+ 
+
+    
+    
+    ReagentBankFrame:SetSize(715, 415)--386, 415
+    --添加，背景
+    ReagentBankFrame.Bg= ReagentBankFrame:CreateTexture(nil, 'BACKGROUND')
+    ReagentBankFrame.Bg:SetSize(715, 350)
+    ReagentBankFrame.Bg:SetPoint('BOTTOMLEFT',10, 10)
+    ReagentBankFrame.Bg:SetAtlas('auctionhouse-background-buy-noncommodities-market')
+    ReagentBankFrame.Bg:SetAlpha(0.5)
+
+    ReagentBankFrame.NineSlice:Hide()
+    ReagentBankFrame.EdgeShadows:Hide()    
+
+    ReagentBankFrame.DespositButton:ClearAllPoints()
+    ReagentBankFrame.DespositButton:SetPoint('BOTTOM',0 ,18)
+
+    ReagentBankFrame.autoSortButton:SetPoint('LEFT', ReagentBankFrame.DespositButton, 'RIGHT', 25, 0)--整理材料银行
+    ReagentBankFrame.DespositButton.texture2= ReagentBankFrame.DespositButton:CreateTexture(nil, 'OVERLAY')--增加，提示图标
+    ReagentBankFrame.DespositButton.texture2:SetSize(23,23)
+    ReagentBankFrame.DespositButton.texture2:SetPoint('RIGHT', -4, 0)
+    ReagentBankFrame.DespositButton.texture2:SetAtlas('poi-traveldirections-arrow')
+    ReagentBankFrame.DespositButton.texture2:SetTexCoord(0,1,1,0)
+   
+    --[[ReagentBankFrame.DespositButton:SetScript('OnClick', function()--11版本，错误
+        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION);
+        print(id,addName)
+		DepositReagentBank();
+    end)]]
+    ReagentBankFrame:HookScript('OnShow', function(self)
+        --[[for i=1, 7 do
+            local texture= self['BG'..i]
+            if texture then
+                texture:SetTexture(0)
+                texture:Hide()
+            end
+        end]]
+        for _, region in pairs({ReagentBankFrame:GetRegions()}) do--隐藏，材料包，背景
+            if region:GetObjectType()=='Texture' then
+                region:SetTexture(0)
+                region:Hide()
+            end
+        end     
+    end)
 end
 
 
@@ -342,10 +373,30 @@ local function Init_All_Bank()
             if bagFrame and bagID>= numBag then
 
                 bagFrame:ClearAllPoints()
-                bagFrame:SetPoint('RIGHT', UIParent, 'LEFT', -10, 0)
-                bagFrame.isHideFrame=true
+                bagFrame:SetPoint('RIGHT', UIParent, 'LEFT', -40, 0)                
+                if not bagFrame.isHideFrame then                    
+                    bagFrame.isHideFrame=true
+                    bagFrame:HookScript('OnShow', function(f)
+                        f:Hide()
+                    end)
+                end
 
-                for slot=1, ContainerFrame_GetContainerNumSlots(bagFrame:GetID()) do-- C_Container.GetContainerNumSlots(bagindex) do
+               for _, btn in bagFrame:EnumerateValidItems()  do
+                    if bagFrame:IsShown() then
+                        num=num+1
+                        btn:SetParent(BankSlotsFrame)
+                        btn:ClearAllPoints()
+                        btn:SetPoint('TOP', last, 'BOTTOM', 0, -Save.line)
+                        last=btn
+                        table.insert(tab, btn)
+                        btn:SetShown(true)
+                        self:set_index_label(btn, num+NUM_BANKGENERIC_SLOTS)--索引，提示
+                    else
+                        btn:SetShown(false)
+                    end
+               end
+
+                --[[for slot=1, ContainerFrame_GetContainerNumSlots(bagFrame:GetID()) do-- C_Container.GetContainerNumSlots(bagindex) do
                     local btn=_G['ContainerFrame'..(bagindex)..'Item'..slot]
                     if btn then
                         if bagFrame:IsShown() then
@@ -361,7 +412,7 @@ local function Init_All_Bank()
                             btn:SetShown(false)
                         end
                     end
-                end
+                end]]
             end
         end
 
@@ -443,55 +494,6 @@ local function Init_All_Bank()
 
 
 
-    --隐藏，ITEMSLOTTEXT"物品栏位" BAGSLOTTEXT"背包栏位"
-    for _, region in pairs({BankSlotsFrame:GetRegions()}) do
-        if region:GetObjectType()=='FontString' then
-            region:SetText('')
-            region:Hide()
-        end
-    end
-
-    ReagentBankFrame:HookScript('OnShow', function(self)
-        if self.isSetPoint or not self.slots_initialized then--or not IsReagentBankUnlocked() then
-            return
-        end
-        self.isSetPoint=true
-
-        for _, region in pairs({ReagentBankFrame:GetRegions()}) do--隐藏，材料包，背景
-            if region:GetObjectType()=='Texture' then
-                region:SetTexture(0)
-                region:Hide()
-            end
-        end
-
-        BankItemSearchBox:ClearAllPoints()--移动，搜索框
-        BankItemSearchBox:SetPoint('TOP', 0,-33)
-
-        BankItemAutoSortButton:ClearAllPoints()--移动，整理，按钮
-        BankItemAutoSortButton:SetPoint('RIGHT', BankItemSearchBox, 'LEFT', -6, 0)
-        BankItemAutoSortButton:SetParent(BankSlotsFrame)
-
-        ReagentBankFrame.autoSortButton:SetPoint('LEFT', BankItemSearchBox, 'RIGHT', 2, 0)--整理材料银行
-
-        ReagentBankFrame.DespositButton:ClearAllPoints()
-        ReagentBankFrame.DespositButton:SetSize(23, 23)
-        ReagentBankFrame.DespositButton:SetPoint('LEFT', ReagentBankFrame.autoSortButton, 'RIGHT', 2, 0)
-        ReagentBankFrame.DespositButton:SetText('')
-        ReagentBankFrame.DespositButton.Middle:Hide()
-        ReagentBankFrame.DespositButton.Right:Hide()
-        ReagentBankFrame.DespositButton.Left:Hide()
-        ReagentBankFrame.DespositButton:SetNormalAtlas('poi-traveldirections-arrow')
-        ReagentBankFrame.DespositButton:GetNormalTexture():SetTexCoord(0,1,1,0)
-        ReagentBankFrame.DespositButton:SetHighlightAtlas('auctionhouse-nav-button-select')
-        ReagentBankFrame.DespositButton:SetPushedAtlas('auctionhouse-nav-button-select')
-        ReagentBankFrame.DespositButton:HookScript('OnLeave', GameTooltip_Hide)
-        ReagentBankFrame.DespositButton:HookScript('OnEnter', function(s)
-            e.tips:SetOwner(s, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:AddDoubleLine(e.onlyChinese and '存放各种材料' or REAGENTBANK_DEPOSIT)
-            e.tips:Show()
-        end)
-    end)
 
 
     hooksecurefunc('BankFrame_ShowPanel', function()
@@ -539,6 +541,76 @@ local function Init_All_Bank()
     SetAllBank:set_background()--设置，背景
 
 
+
+
+
+
+
+
+
+
+
+
+    ReagentBankFrame.NineSlice:Hide()
+    if BankFrameMoneyFrameBorder then            
+        BankFrameMoneyFrameBorder:Hide()
+    end   
+
+    --隐藏，ITEMSLOTTEXT"物品栏位" BAGSLOTTEXT"背包栏位"
+    for _, region in pairs({BankSlotsFrame:GetRegions()}) do
+        if region:GetObjectType()=='FontString' then
+            region:SetText('')
+            region:Hide()
+        end
+    end
+
+
+    hooksecurefunc('BankFrame_UpdateAnchoringForPanel', function()
+        BankItemSearchBox:ClearAllPoints()--移动，搜索框
+        BankItemSearchBox:SetPoint('TOP', 0,-33)
+    end)
+    
+    
+
+    ReagentBankFrame:HookScript('OnShow', function(self)
+        if self.isSetPoint then--or not IsReagentBankUnlocked() then
+            return
+        end
+        self.isSetPoint=true
+       
+
+        for _, region in pairs({ReagentBankFrame:GetRegions()}) do--隐藏，材料包，背景
+            if region:GetObjectType()=='Texture' then
+                region:SetTexture(0)
+                region:Hide()
+            end
+        end        
+
+        BankItemAutoSortButton:ClearAllPoints()--移动，整理，按钮
+        BankItemAutoSortButton:SetPoint('RIGHT', BankItemSearchBox, 'LEFT', -6, 0)
+        BankItemAutoSortButton:SetParent(BankSlotsFrame)
+
+        ReagentBankFrame.autoSortButton:SetPoint('LEFT', BankItemSearchBox, 'RIGHT', 2, 0)--整理材料银行
+
+        ReagentBankFrame.DespositButton:ClearAllPoints()
+        ReagentBankFrame.DespositButton:SetSize(23, 23)
+        ReagentBankFrame.DespositButton:SetPoint('LEFT', ReagentBankFrame.autoSortButton, 'RIGHT', 2, 0)
+        ReagentBankFrame.DespositButton:SetText('')
+        ReagentBankFrame.DespositButton.Middle:Hide()
+        ReagentBankFrame.DespositButton.Right:Hide()
+        ReagentBankFrame.DespositButton.Left:Hide()
+        ReagentBankFrame.DespositButton:SetNormalAtlas('poi-traveldirections-arrow')
+        ReagentBankFrame.DespositButton:GetNormalTexture():SetTexCoord(0,1,1,0)
+        ReagentBankFrame.DespositButton:SetHighlightAtlas('auctionhouse-nav-button-select')
+        ReagentBankFrame.DespositButton:SetPushedAtlas('auctionhouse-nav-button-select')
+        ReagentBankFrame.DespositButton:HookScript('OnLeave', GameTooltip_Hide)
+        ReagentBankFrame.DespositButton:HookScript('OnEnter', function(s)
+            e.tips:SetOwner(s, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine(e.onlyChinese and '存放各种材料' or REAGENTBANK_DEPOSIT)
+            e.tips:Show()
+        end)
+    end)
 end
 
 
