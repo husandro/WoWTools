@@ -82,39 +82,40 @@ end
 --###############
 --自动选取当前专精
 --###############
-local function set_RequestToJoinFrame(frame)
+local function set_RequestToJoinFrame(frame)    
     local text
-    local edit= frame.MessageFrame and frame.MessageFrame.MessageScroll and frame.MessageFrame.MessageScroll.EditBox
-    if edit then
-        local avgItemLevel, _, avgItemLevelPvp = GetAverageItemLevel()
-        if avgItemLevel then
-            local cd= e.Player.region==1 or e.Player.region==3
-            text= format(cd and 'Level %d' or UNIT_LEVEL_TEMPLATE, UnitLevel('player') or 0)
-            text= text..'|n' ..format((cd and 'Item' or ITEMS)..' %d', avgItemLevel or 0)
-            text= text..'|n'..format('PvP %d', avgItemLevelPvp or 0)--PvP物品等级 %d
-            local data= C_PlayerInfo.GetPlayerMythicPlusRatingSummary('player') or {}
-            if data.currentSeasonScore then
-                text= text..'|n'..(cd and 'Challenge' or PLAYER_DIFFICULTY5)..' '..data.currentSeasonScore
-            end
-            edit:SetText(text)
+    local edit= frame.MessageFrame.MessageScroll.EditBox
+    local avgItemLevel, _, avgItemLevelPvp = GetAverageItemLevel()
+    if avgItemLevel then
+        local cd= e.Player.region==1 or e.Player.region==3
+        text= format(cd and 'Level %d' or UNIT_LEVEL_TEMPLATE, UnitLevel('player') or 0)
+        text= text..'|n' ..format((cd and 'Item' or ITEMS)..' %d', avgItemLevel or 0)
+        text= text..'|n'..format('PvP %d', avgItemLevelPvp or 0)--PvP物品等级 %d
+        local data= C_PlayerInfo.GetPlayerMythicPlusRatingSummary('player') or {}
+        if data.currentSeasonScore then
+            text= text..'|n'..(cd and 'Challenge' or PLAYER_DIFFICULTY5)..' '..data.currentSeasonScore
         end
+        edit:SetText(text)
     end
     
+    
     local text2
-    if frame.SpecsPool and frame.SpecsPool.activeObjects then--专精，职责，图标，自动选取当前专精
+    if frame.SpecsPool then--专精，职责，图标，自动选取当前专精
+        local _, name, _, icon, role
         local currSpecID= GetSpecializationInfo(GetSpecialization() or 0)
-        for f, _ in pairs(frame.SpecsPool.activeObjects) do
-            if frame.specID then
-                local _, name, _, icon, role
-                _, name, _, icon, role =GetSpecializationInfoByID(f.specID)
-                if frame.CheckBox and f.CheckBox.Click and currSpecID== f.specID then
-                    f.CheckBox:Click()--自动选取当前专精
-                    text2= (icon and '|T'..icon..':0|t' or '')..(e.Icon[role] or '')..name
+        
+        for btn in frame.SpecsPool:EnumerateActive() do
+            local check= not currSpecID or currSpecID==btn.specID
+            if check and not btn.Checkbox:GetChecked() then
+                btn.Checkbox:Click()--自动选取当前专精
+            end
+            _, name, _, icon, role= GetSpecializationInfoByID(btn.specID)
+            if name then
+                name= '|T'..(icon or 0)..':0|t'..(e.Icon[role] or '')..e.cn(name)
+                if check then
+                    text2= (text2 and text2..', ' or '').. name
                 end
-                _, name, _, icon, role =GetSpecializationInfoByID(f.specID)
-                if name and f.SpecName then
-                    f.SpecName:SetText((icon and '|T'..icon..':0|t' or '')..(e.Icon[role] or '')..name)
-                end
+                btn.SpecName:SetText(name)
             end
         end
     end
@@ -122,7 +123,7 @@ local function set_RequestToJoinFrame(frame)
         and not IsModifierKeyDown()
         and not Save.notAutoRequestToJoinClub
     then
-        print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:'..frame.Apply:GetText()..'|r', text2, '|cffff00ff'..(text or ''))
+        print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:', e.cn(frame.Apply:GetText()), '|r|n', text, '|n|cffff00ff',text2)
         frame.Apply:Click()
     end
 end
