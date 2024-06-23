@@ -123,7 +123,7 @@ local function set_RequestToJoinFrame(frame)
         and not IsModifierKeyDown()
         and not Save.notAutoRequestToJoinClub
     then
-        print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:', e.cn(frame.Apply:GetText()), '|r|n', text, '|n|cffff00ff',text2)
+        print(id, e.cn(addName), frame.ClubName:GetText(), e.cn(frame.Apply:GetText()), '|n', text, '|n|cffff00ff',text2)
         frame.Apply:Click()
     end
 end
@@ -131,17 +131,9 @@ end
 --####################
 --设置，自动申请，check
 --####################
-local function set_check(search)
-    if not search then
-        return
-    end
-    local w=search:GetHeight()
-    search:SetWidth(search:GetWidth()- w)
-    local point, relativeTo, relativePoint, offsetX, offsetY=search:GetPoint()
-    search:ClearAllPoints()
-    search:SetPoint(point, relativeTo, relativePoint, offsetX-(w/2), offsetY)
-    local check= CreateFrame("CheckButton", nil, search, "InterfaceOptionsCheckButtonTemplate")
-    check:SetPoint('LEFT', search, 'RIGHT',-2, -1)
+local function set_check(frame)
+    local check= CreateFrame("CheckButton", nil, frame, "InterfaceOptionsCheckButtonTemplate")
+    check:SetPoint('RIGHT', frame, 'LEFT', 0, 12)
     check:SetChecked(not Save.notAutoRequestToJoinClub)
     check:SetScript('OnClick', function()
         Save.notAutoRequestToJoinClub= not Save.notAutoRequestToJoinClub and true or nil
@@ -150,7 +142,7 @@ local function set_check(search)
     check:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine('|A:communities-icon-addgroupplus:0:0|a'..(e.onlyChinese and '自动申请' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SIGN_UP)), e.GetEnabeleDisable(not Save.notAutoRequestToJoinClub))
+        e.tips:AddDoubleLine('|A:communities-icon-addgroupplus:0:0|a'..(e.onlyChinese and '自动申请' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SIGN_UP))..e.Icon.left, e.GetEnabeleDisable(not Save.notAutoRequestToJoinClub))
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:Show()
@@ -298,9 +290,9 @@ local function Init()
         label:SetPoint('TOP')
         label:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '弹劾' or  e.WA_Utf8Sub(GUILD_IMPEACH_POPUP_CONFIRM, 2, 5,true))..'|r')
     end
-
-    set_check(ClubFinderGuildFinderFrame.OptionsList.Search and ClubFinderGuildFinderFrame.OptionsList and ClubFinderGuildFinderFrame.OptionsList.Search)
-    set_check(ClubFinderCommunityAndGuildFinderFrame.OptionsList.Search and ClubFinderCommunityAndGuildFinderFrame.OptionsList and ClubFinderCommunityAndGuildFinderFrame.OptionsList.Search)
+    
+    set_check(ClubFinderGuildFinderFrame.OptionsList.SearchBox)
+    set_check(ClubFinderCommunityAndGuildFinderFrame.OptionsList.SearchBox)
 
     hooksecurefunc(ClubFinderGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_RequestToJoinFrame)
     hooksecurefunc(ClubFinderCommunityAndGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_RequestToJoinFrame)

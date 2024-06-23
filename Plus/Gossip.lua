@@ -3303,65 +3303,64 @@ end
 
 
 
+--[[自动，申请，加入
+local function set_ClubFinderRequestToJoin(self)
+    local specID = PlayerUtil.GetCurrentSpecID()
+    if not self.info or not Save.gossip or not self.SpecsPool or not specID then
+        return
+    end
+    local specName
+    for btn in pairs(self.SpecsPool.activeObjects or {}) do
+    if btn.specID==specID then
+            btn.CheckBox:Click()
+            specName= btn.SpecName:GetText()
+            break
+    end
+    end
+    local level= UnitLevel('player') or MAX_PLAYER_LEVEL
+    local text
+    if level< MAX_PLAYER_LEVEL then
+        text= 'Level '..(level and format('%i', level) or '')
+    else
+        local avgItemLevel,_, avgItemLevelPvp= GetAverageItemLevel()
+        local score= C_ChallengeMode.GetOverallDungeonScore() or 0
+        local keyStoneLevel= C_MythicPlus.GetOwnedKeystoneLevel() or 0
+        local achievement= GetTotalAchievementPoints() or 0
 
-
---公会和社区 Blizzard_Communities
-local function Init_Blizzard_Communities()
-    --自动，申请，加入
-    local function set_ClubFinderRequestToJoin(self)
-        local specID = PlayerUtil.GetCurrentSpecID()
-        if not self.info or not Save.gossip or not self.SpecsPool or not specID then
-            return
+        text= 'Item Level '..(avgItemLevel and format('%i', avgItemLevel) or '')..'|n'--等级
+            ..(avgItemLevel and avgItemLevelPvp and avgItemLevelPvp- avgItemLevel>20 and 'Item PvP '..format('%i', avgItemLevel)..'|n' or '')
+        if score>1000 then--挑战
+            text= text..'Keystone '..score..(keyStoneLevel and keyStoneLevel>10 and ' ('..keyStoneLevel..')' or '')
+            text= text..'|n'
         end
-        local specName
-        for btn in pairs(self.SpecsPool.activeObjects or {}) do
-        if btn.specID==specID then
-                btn.CheckBox:Click()
-                specName= btn.SpecName:GetText()
-                break
+        if achievement>10000 then--成就
+            text= text..'Achievement '..achievement..'|n'
         end
-        end
-        local level= UnitLevel('player') or MAX_PLAYER_LEVEL
-        local text
-        if level< MAX_PLAYER_LEVEL then
-            text= 'Level '..(level and format('%i', level) or '')
-        else
-            local avgItemLevel,_, avgItemLevelPvp= GetAverageItemLevel()
-            local score= C_ChallengeMode.GetOverallDungeonScore() or 0
-            local keyStoneLevel= C_MythicPlus.GetOwnedKeystoneLevel() or 0
-            local achievement= GetTotalAchievementPoints() or 0
-
-            text= 'Item Level '..(avgItemLevel and format('%i', avgItemLevel) or '')..'|n'--等级
-                ..(avgItemLevel and avgItemLevelPvp and avgItemLevelPvp- avgItemLevel>20 and 'Item PvP '..format('%i', avgItemLevel)..'|n' or '')
-            if score>1000 then--挑战
-                text= text..'Keystone '..score..(keyStoneLevel and keyStoneLevel>10 and ' ('..keyStoneLevel..')' or '')
-                text= text..'|n'
+        local CONQUEST_SIZE_STRINGS = {'Solo', '2v2', '3v3', '10v10'}--PVP
+        for i=1, 4 do
+            local rating= GetPersonalRatedInfo(i)
+            if rating and rating>500 then
+                text= text..CONQUEST_SIZE_STRINGS[i]..' '..rating..'|n'
             end
-            if achievement>10000 then--成就
-                text= text..'Achievement '..achievement..'|n'
-            end
-            local CONQUEST_SIZE_STRINGS = {'Solo', '2v2', '3v3', '10v10'}--PVP
-            for i=1, 4 do
-                local rating= GetPersonalRatedInfo(i)
-                if rating and rating>500 then
-                    text= text..CONQUEST_SIZE_STRINGS[i]..' '..rating..'|n'
-                end
-            end
-        end
-        self.MessageFrame.MessageScroll.EditBox:SetText(text)
-        if IsModifierKeyDown() then
-            return
-        end
-        if self.Apply:IsEnabled() then
-            self.Apply:Click()
-            print(
-                id, Initializer:GetName(),'|cnGREEN_FONT_COLOR:', self.Apply:GetText(),'|n|cffff00ff',
-                (self.info.emblemInfo and '|T'..self.info.emblemInfo..':0|t' or '')..(self.info.name or '')..(self.info.numActiveMembers and  '|cff00ccff (|A:groupfinder-waitdot:0:0|a'..self.info.numActiveMembers..')|r' or ''), '|n',
-                '|cnGREEN_FONT_COLOR:'..text, specName,'|n', '|cffff7f00', self.info.comment)
         end
     end
-    hooksecurefunc(ClubFinderGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_ClubFinderRequestToJoin)
-    hooksecurefunc(ClubFinderCommunityAndGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_ClubFinderRequestToJoin)
+    self.MessageFrame.MessageScroll.EditBox:SetText(text)
+    if IsModifierKeyDown() then
+        return
+    end
+    if self.Apply:IsEnabled() then
+        self.Apply:Click()
+        print(
+            id, Initializer:GetName(),'|cnGREEN_FONT_COLOR:', self.Apply:GetText(),'|n|cffff00ff',
+            (self.info.emblemInfo and '|T'..self.info.emblemInfo..':0|t' or '')..(self.info.name or '')..(self.info.numActiveMembers and  '|cff00ccff (|A:groupfinder-waitdot:0:0|a'..self.info.numActiveMembers..')|r' or ''), '|n',
+            '|cnGREEN_FONT_COLOR:'..text, specName,'|n', '|cffff7f00', self.info.comment)
+    end
+end
+hooksecurefunc(ClubFinderGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_ClubFinderRequestToJoin)
+hooksecurefunc(ClubFinderCommunityAndGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_ClubFinderRequestToJoin)
+
+--公会和社区 Blizzard_Communities
+local function Init_Blizzard_Communities()    
     ClubFinderCommunityAndGuildFinderFrame.CommunityCards:HookScript('OnShow', function(self)
         if Save.gossip or not IsModifierKeyDown() then
             local btn= self:GetParent().OptionsList.Search
@@ -3378,7 +3377,7 @@ local function Init_Blizzard_Communities()
             end
         end
     end)
-end
+end]]
 
 
 
@@ -3692,7 +3691,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 Init_Gossip()--对话，初始化
                 Init_Quest()--任务，初始化
                 Init_Gossip_Other_Auto_Select()
-                Init_Blizzard_Communities()
+                --Init_Blizzard_Communities()
                 --[[if e.Player.husandro then
                     Init_Gossip_Text_Icon_Options()
                 end]]
