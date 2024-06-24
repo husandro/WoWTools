@@ -211,20 +211,6 @@ Interface\Cursor\UI-Cursor-Move   Redlist.xml
 securecall('',)
 wrapFunc(C_PetBattles.DeclineQueuedPVPMatch)
 
-SharedTooltipTemplates.lua
-securecallfunction(GameTooltip_AddQuest, self, questID)
-GameTooltip_SetDefaultAnchor(GameTooltip, self);
-GameTooltip_Hide()
-GameTooltip_AddColoredLine(GameTooltip, '', NORMAL_FONT_COLOR, true);
-GameTooltip_AddBlankLineToTooltip(GameTooltip);
-BattlePetToolTip_ShowLink(itemKeyInfo.battlePetLink);
-
-
-GetMouseFocus() == self
-GameTooltip:GetOwner()
-if ( GameTooltip:IsOwned(button) ) then
-	button:GetScript("OnEnter")(button);
-end
 
 
  MicroButtonTooltipText('法术书和专业', "TOGGLESPELLBOOK")
@@ -829,3 +815,6 @@ end
 :SetAttribute("flyoutID", flyoutID)
 :SetAttribute("flyoutIndex", i)
 :SetAttribute("_onclick", [=[self:Hide(); self:GetFrameRef("RaidUtilityPanel"):Show();]=])
+
+
+]]
