@@ -1372,11 +1372,15 @@ local function Init_MountJournal()
     local btn= CreateFrame('DropDownToggleButton', 'MountJournalFilterButtonWoWTools', MountJournal, 'UIResettableDropdownButtonTemplate')--SharedUIPanelTemplates.lua
     btn:SetPoint('BOTTOM', MountJournal.FilterDropdown, 'TOP')
     btn.MountJournal_FullUpdate= MountJournal_FullUpdate
-    function btn.resetFunction()
+    btn.ResetButton:SetScript('OnClick', function(self)
         MountJournal_FullUpdate= _G['MountJournalFilterButtonWoWTools'].MountJournal_FullUpdate
-        _G['MountJournalFilterButtonWoWTools']:SetText(id)
-        e.call('MountJournalFilterDropdown_ResetFilters')
-    end
+        _G['MountJournalFilterButtonWoWTools']:SetText(id)        
+        MountJournal.FilterDropdown:Reset();
+        C_MountJournal.SetCollectedFilterSetting(LE_MOUNT_JOURNAL_FILTER_UNUSABLE or 3, true);
+        e.call('MountJournal_SetUnusableFilter',true)     
+        e.call('MountJournal_FullUpdate', MountJournal)
+        self:Hide()
+    end)
     
 
     btn:SetScript('OnMouseDown', function(frame)
@@ -1409,10 +1413,10 @@ local function Init_MountJournal()
                                     MountJournal_UpdateMountDisplay()
                                 end
                             end
-                            --e.call('MountJournalFilterDropdown_ResetFilters')
-                            e.call('MountJournal_SetUnusableFilter',true)
-                            --e.call('MountJournal_FullUpdate')
+                            --e.call('MountJournalFilterDropdown_ResetFilters')                            
                             MountJournal.FilterDropdown:Reset();
+                            e.call('MountJournal_SetUnusableFilter',true)
+                            e.call('MountJournal_FullUpdate', MountJournal)
                             C_MountJournal.SetCollectedFilterSetting(LE_MOUNT_JOURNAL_FILTER_UNUSABLE or 3, true);
 
                             parent.ResetButton:SetShown(true)
