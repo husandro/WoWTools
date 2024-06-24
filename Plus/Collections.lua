@@ -1164,7 +1164,7 @@ local function Init_Wardrober_ListContainer()
         end
 
 
-        local tipsText= (displayData.name or btn.Name:GetText())..(displayData.label and displayData.name~= displayData.label and '|n'..displayData.label or '')
+        local tipsText= e.cn(displayData.name or btn.Name:GetText() or '')..(displayData.label and displayData.name~= displayData.label and '|n'..e.cn(displayData.label) or '')
         tipsText= tipsText and tipsText..'|n' or ''
 
         local variantSets = SetsDataProvider:GetVariantSets(setID) or {}
@@ -1184,6 +1184,7 @@ local function Init_Wardrober_ListContainer()
                     isLimited= isLimited or info.limitedTimeSet--限时套装
 
                     local name= info.description or info.name or ''
+                    print(e.cn(name), name)
                     name= e.cn(name)
                     name= numAll==collect and '|cnGREEN_FONT_COLOR:'..name..'|r' or name--已收集
 
@@ -1199,8 +1200,7 @@ local function Init_Wardrober_ListContainer()
                     tipsText= tipsText..'|n'..(isCollected and '|cnGREEN_FONT_COLOR:'..tip..'|r' or tip)
                 end
                 patch= patch or (info.patchID and info.patchID>0 and 'v'..(info.patchID/10000))
-                version= version or (info.expansionID and _G['EXPANSION_NAME'..info.expansionID])
-                version= e.cn(version)
+                version= version or (info.expansionID and e.cn(_G['EXPANSION_NAME'..info.expansionID]))
             end
         end
 
