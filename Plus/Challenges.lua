@@ -75,6 +75,16 @@ e.ChallengesSpellTabs={
     [382]={spell=354467, ins=1187, name='伤逝剧场', spellName='不败之路', spellDes='传送到|cff00ccff伤逝剧场|r的入口。'},
     [376]={spell=354462, ins=1182, name='通灵战潮', spellName='勇者之路', spellDes='传送到|cff00ccff通灵战潮|r的入口。'},
     [381]={spell=354466, ins=1186, name='晋升高塔', spellName='晋升者之路', spellDes='传送到|cff00ccff晋升高塔|r的入口。'},
+
+[499]= {spell=nil, ins=nil, name='圣焰隐修院', insName=nil, spellName=nil, spellDes=nil},
+[500]= {spell=nil, ins=nil, name='驭雷栖巢', insName=nil, spellName=nil, spellDes=nil},
+[501]= {spell=nil, ins=nil, name='矶石宝库', insName=nil, spellName=nil, spellDes=nil},
+[502]= {spell=nil, ins=nil, name='千丝之城', insName=nil, spellName=nil, spellDes=nil},
+[503]= {spell=nil, ins=nil, name='艾拉-卡拉，回响之城', insName=nil, spellName=nil, spellDes=nil},
+[504]= {spell=nil, ins=nil, name='暗焰裂口', insName=nil, spellName=nil, spellDes=nil},
+[505]= {spell=nil, ins=nil, name='破晨号', insName=nil, spellName=nil, spellDes=nil},
+[506]= {spell=nil, ins=nil, name='燧酿酒庄', insName=nil, spellName=nil, spellDes=nil},
+[507]= {spell=nil, ins=nil, name='格瑞姆巴托', insName=nil, spellName=nil, spellDes=nil},
 }
 
 --if C_MythicPlus.GetCurrentSeason()==12 then
