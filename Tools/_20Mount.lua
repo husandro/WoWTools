@@ -90,7 +90,7 @@ local Save={
     },
     XD= true,
     KEY= e.Player.husandro and 'BUTTON5', --为我自定义, 按键
-    --AFKRandom=e.Player.husandro,--离开时, 随机坐骑
+    AFKRandom=e.Player.husandro,--离开时, 随机坐骑
 }
 
 local panel= CreateFrame("Frame")
