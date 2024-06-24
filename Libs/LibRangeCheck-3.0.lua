@@ -77,16 +77,9 @@ local UnitIsUnit = UnitIsUnit
 local UnitGUID = UnitGUID
 local UnitIsDeadOrGhost = UnitIsDeadOrGhost
 local CheckInteractDistance = CheckInteractDistance
-local IsSpellInRange = _G.IsSpellInRange or function(id, unit)
-  local result = C_Spell.IsSpellInRange(id, unit)
-  if result == true then
-    return 1
-  elseif result == false then
-    return 0
-  end
-  return nil
-end
-local IsSpellBookItemInRange = _G.IsSpellInRange or function(index, spellBank, unit)
+
+
+local IsSpellBookItemInRange = function(index, spellBank, unit)
   local result = C_SpellBook.IsSpellBookItemInRange(index, spellBank, unit)
   if result == true then
     return 1
@@ -103,16 +96,16 @@ local HandSlotId = GetInventorySlotInfo("HANDSSLOT")
 local math_floor = math.floor
 local UnitIsVisible = UnitIsVisible
 
-local GetSpellInfo = GetSpellInfo or function(spellID)
+local GetSpellInfo = function(spellID)
   if not spellID then
     return nil;
   end
-
   local spellInfo = C_Spell.GetSpellInfo(spellID);
   if spellInfo then
     return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange, spellInfo.spellID, spellInfo.originalIconID;
   end
 end
+
 
 local GetNumSpellTabs = GetNumSpellTabs or C_SpellBook.GetNumSpellBookSkillLines
 local GetSpellTabInfo = GetSpellTabInfo or function(index)
