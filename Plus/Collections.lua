@@ -1184,7 +1184,6 @@ local function Init_Wardrober_ListContainer()
                     isLimited= isLimited or info.limitedTimeSet--限时套装
 
                     local name= info.description or info.name or ''
-                    print(e.cn(name), name)
                     name= e.cn(name)
                     name= numAll==collect and '|cnGREEN_FONT_COLOR:'..name..'|r' or name--已收集
 
