@@ -1091,8 +1091,6 @@ local function Init()
 		self.up:SetShown(not Save.notPlus)
 	end
 
-	C_Timer.After(3, Init_TrackButton)--监视, 文本
-
 	hooksecurefunc(ReputationFrame.ScrollBox, 'Update', function(self)
 		for _, btn in pairs(self:GetFrames()or {}) do
 			set_ReputationFrame_InitReputationRow(btn)
@@ -1128,6 +1126,8 @@ local function Init()
 			print(id, Initializer:GetName(), '|cffff00ff'..text..'|r', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '你有未领取的奖励' or WEEKLY_REWARDS_UNCLAIMED_TITLE))
 		end
 	end
+
+	C_Timer.After(4, Init_TrackButton)--监视, 文本
 end
 
 

@@ -1038,7 +1038,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         elseif arg1=='Blizzard_Calendar' then
             Init_Blizzard_Calendar()--初始，插件
-            C_Timer.After(3, Init_TrackButton)
+            C_Timer.After(4, Init_TrackButton)
         end
 
     elseif event == "PLAYER_LOGOUT" then

@@ -4636,7 +4636,10 @@
         "ReputationDetailFrameMixin",
         "EmbeddedItemTooltipTooltip",
         "REPUTATION_TOOLTIP_ACCOUNT_WIDE_LABEL",
-        "ACCOUNT_WIDE_FONT_COLOR"
+        "ACCOUNT_WIDE_FONT_COLOR",
+        "CurrencyTransferMenuCloseButton",
+        "CURRENCY_TRANSFER_DESTINATION",
+        "CURRENCY_TRANSFER_NEW_BALANCE_PREVIEW"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

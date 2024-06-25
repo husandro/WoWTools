@@ -545,7 +545,9 @@ local function Init_All_Frame()
     e.Set_NineSlice_Color_Alpha(CurrencyTransferMenu, true)
     set_Alpha_Color(CurrencyTransferMenuBg, nil, nil, min03)
     e.Set_NineSlice_Color_Alpha(CurrencyTransferMenuInset)
+    e.Set_Alpha_Frame_Texture(TokenFramePopup.Border, {alpha=min05})
 
+    set_SearchBox(CurrencyTransferMenu.AmountSelector.InputBox)
     
     --[[法术书
     e.Set_NineSlice_Color_Alpha(SpellBookFrame, true)

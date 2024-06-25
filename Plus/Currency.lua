@@ -1289,8 +1289,57 @@ end
 
 
 
+--货币，转移
+local function Init_Currency_Transfer()
+	hooksecurefunc(CurrencyTransferLog.ScrollBox, 'Update', function(self)
+		for _, btn in pairs(self:GetFrames() or {}) do
+			local data= btn.transactionData or {}
+			local guid= data.sourceCharacterGUID
+			if guid then
+				local name= e.GetPlayerInfo({guid=guid, reName=true, reRealm=true})
+				if name~='' then
+					btn.SourceName:SetText(name)
+				end
+			end
 
+			guid= data.destinationCharacterGUID
+			if guid then
+				local name= e.GetPlayerInfo({guid=guid, reName=true, reRealm=true})
+				if name~='' then
+					btn.DestinationName:SetText(name)
+				end
+			end
+		end
+	end)
+	CurrencyTransferMenuCloseButton:SetFrameLevel(CurrencyTransferMenuCloseButton:GetFrameLevel()+1)--原始，不好点击
 
+	hooksecurefunc(CurrencyTransferMenu.SourceSelector, 'RefreshPlayerName', function(self)--收取人，我 提示		
+		local name= e.GetPlayerInfo({guid=e.Player.guid, reName=true})
+		if name~='' then
+			self.PlayerName:SetFormattedText(e.onlyChinese and '收取人 %s' or CURRENCY_TRANSFER_DESTINATION, name)
+		end
+	end)
+
+	hooksecurefunc(CurrencyTransferMenu.SourceBalancePreview, 'SetCharacterName', function(self)
+		local data= self:GetParent().sourceCharacterData or {}
+		local name= e.GetPlayerInfo({guid=data.characterGUID, reName=true, reRealm=true})
+		if name~='' then
+			self.Label:SetFormattedText(e.onlyChinese and '%s |cnRED_FONT_COLOR:的新余额|r' or CURRENCY_TRANSFER_NEW_BALANCE_PREVIEW, name)
+		end
+    end)
+    hooksecurefunc(CurrencyTransferMenu.PlayerBalancePreview, 'SetCharacterName', function(self)
+		local name= e.GetPlayerInfo({guid=e.Player.guid, reName=true, reRealm=true})
+		if name~='' then
+			self.Label:SetFormattedText(e.onlyChinese and '%s |cnGREEN_FONT_COLOR:的新余额|r' or CURRENCY_TRANSFER_NEW_BALANCE_PREVIEW, name)
+		end
+    end)
+	CurrencyTransferMenu.AmountSelector.InputBox:HookScript('OnTextChanged', function(self, userInput)
+		if userInput then
+			self:ValidateAndSetValue()
+		end
+	end)
+	
+end
 
 
 
@@ -1525,8 +1574,23 @@ local function Init()
 		end
 	end)
 
+	
+	hooksecurefunc(TokenFrame, 'UpdatePopup', function(_, btn)--货币设置，加个图标
+		local self= TokenFramePopup
+		if not self.Icon then
+			self.Icon= self:CreateTexture()
+			self.Icon:SetSize(32,32)
+			self.Icon:SetPoint('TOPRIGHT', -22,-22)
+		end
+		self.Icon:SetTexture(btn.elementData.iconFileID or 0)
+	end)
 
-	C_Timer.After(3, function()
+
+	Init_Currency_Transfer()--货币，转移
+
+
+	C_Timer.After(4, function()
+		Init_TrackButton()
 		hooksecurefunc(TokenFrame, 'Update', function(self)
 			set_ItemInteractionFrame_Currency(self)--套装,转换,货币
 			Set_TrackButton_Text()
@@ -1540,9 +1604,7 @@ local function Init()
 		if not Save.hideCurrencyMax then
 			Button:currency_Max()--已达到资源上限
 			Button:set_Event()--已达到资源上限
-		end
-
-		Init_TrackButton()
+		end		
 	end)
 end
 

@@ -2179,12 +2179,13 @@ local function Init_Move()
             CharacterFrame.ResizeButton.minHeight= 424
         end)]]
         e.Set_Move_Frame(ReputationFrame, {frame=CharacterFrame})
-
+        e.Set_Move_Frame(ReputationFrame.ReputationDetailFrame, {frame=CharacterFrame})
 
         --货币
         e.Set_Move_Frame(TokenFrame, {frame=CharacterFrame})
         e.Set_Move_Frame(CurrencyTransferLog, {frame=CharacterFrame})
         e.Set_Move_Frame(CurrencyTransferLog.TitleContainer, {frame=CharacterFrame})
+        e.Set_Move_Frame(TokenFramePopup, {frame=CharacterFrame})
 
         set_Scale_Size(CurrencyTransferLog, {setSize=true, sizeRestFunc=function(btn)
             btn.target:ClearAllPoints()
