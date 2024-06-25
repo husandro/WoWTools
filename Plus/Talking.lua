@@ -46,32 +46,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
             initializer:SetParentInitializer(initializer2, function() if Save.disabled then return false else return true end end)
 
-
- --[[
-            --添加控制面板        
-            local sel=e.AddPanel_Check('|A:TalkingHeads-Glow-TopSpike:0:0|a'..(e.onlyChinese and '隐藏NPC发言' or addName), not Save.disabled, true)
-            sel:SetScript('OnMouseDown', function()
-                Save.disabled= not Save.disabled and true or nil
-                setRegister()--设置事件
-                print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled))
-            end)
-           sel:SetScript('OnEnter', function(self2)
-                e.tips:SetOwner(self2, "ANCHOR_RIGHT")
-                e.tips:ClearLines()
-                e.tips:AddDoubleLine(e.onlyChinese and '声音' or SOUND, e.GetEnabeleDisable(e.setPlayerSound))
-                e.tips:AddDoubleLine('ChatButton, '..(e.onlyChinese and '超链接图标' or COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK..EMBLEM_SYMBOL), e.onlyChinese and '事件声音' or EVENTS_LABEL..SOUND)
-                e.tips:Show()
-            end)
-            sel:SetScript('OnLeave', GameTooltip_Hide)
-
-            local sel2=CreateFrame("CheckButton", nil, sel, "InterfaceOptionsCheckButtonTemplate")
-            sel2.text:SetText(e.onlyChinese and '文本' or LOCALE_TEXT_LABEL)
-            sel2:SetPoint('LEFT', sel.text, 'RIGHT')
-            sel2:SetChecked(not Save.notPrint)
-            sel2:SetScript('OnMouseDown', function()
-                Save.notPrint= not Save.notPrint and true or nil
-            end)
-]]
             setRegister()--设置事件
             panel:UnregisterEvent('ADDON_LOADED')
         end

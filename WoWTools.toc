@@ -65,9 +65,9 @@ Plus\PaperDoll.lua
 ##角色，属性
 Plus\Attributes.lua
 ##声望面板
-Plus\Reputation.lua
+Plus\Faction.lua
 ##货币面板
-Plus\Tokens.lua
+Plus\Currency.lua
 ##任务框，增强
 Plus\ObjectiveTracker.lua
 ##藏品
