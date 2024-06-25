@@ -1883,36 +1883,24 @@ local function Init()
     end)
     hooksecurefunc(ReputationEntryMixin, 'OnClick', function(frame)
         local self= ReputationFrame.ReputationDetailFrame
-        if self:IsShown() then
+        if not self.factionIDText then
+            self.factionIDText=e.Cstr(self)
+            self.factionIDText:SetPoint('BOTTOM', self, 'TOP', 0,-4)
+        end
+        self.factionIDText:SetText(frame.elementData.factionID or '')
+    end)
+    ReputationFrame.ReputationDetailFrame:HookScript('OnShow', function(self)
+        local selectedFactionIndex = C_Reputation.GetSelectedFaction();
+        local factionData = C_Reputation.GetFactionDataByIndex(selectedFactionIndex);
+        if factionData or factionData.factionID> 0 then
             if not self.factionIDText then
                 self.factionIDText=e.Cstr(self)
                 self.factionIDText:SetPoint('BOTTOM', self, 'TOP', 0,-4)
             end
-            self.factionIDText:SetText(frame.elementData.factionID or '')
+            self.factionIDText:SetText(factionData.factionID)
         end
     end)
-    ReputationFrame.ReputationDetailFrame:HookScript('OnShow', function(self)
-        print('Refresh')
-    end)
-    hooksecurefunc(ReputationDetailFrameMixin, 'OnShow', function(self)
-        print('ReputationDetailFrameMixin')
-    end)
-    --[[hooksecurefunc('ReputationFrame_InitReputationRow',function(_, elementData)--ReputationFrame.lua 声望 界面,
-        local factionIndex = elementData.index
-        local factionID
-        if ( factionIndex == GetSelectedFaction() ) then
-            if ( ReputationDetailFrame:IsShown() ) then
-                factionID= select(14, GetFactionInfo(factionIndex))
-            end
-        end
-        if factionID and not ReputationDetailFrame.factionIDText then
-            ReputationDetailFrame.factionIDText=e.Cstr(ReputationDetailFrame)
-            ReputationDetailFrame.factionIDText:SetPoint('TOPLEFT', 6, -6)
-        end
-        if ReputationDetailFrame.factionIDText then
-            ReputationDetailFrame.factionIDText:SetText(factionID and (e.onlyChinese and '声望' or REPUTATION)..' '..factionID or '')
-        end
-    end)]]
+
 
     --###########
     --宠物面板提示
