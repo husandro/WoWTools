@@ -996,26 +996,17 @@ end
 --####
 --声望
 --####
-function func.Set_Faction(self, factionID, frame)
-    local info= e.GetFactionInfo(factionID, nil, true)
+function func.Set_Faction(self, factionID)--, frame)
+    local info= factionID and e.GetFactionInfo(factionID, nil, true)
     if not info.factionID then
         return
-    end
-    if frame and not self:IsShown() then
-        e.tips:SetOwner(frame, "ANCHOR_RIGHT")
-        e.tips:AddLine(e.cn(info.name))
-        e.tips:AddLine(' ')
-        if info.description and info.description~='' then
-            e.tips:AddLine(e.cn(info.description), nil,nil,nil, true)
-            e.tips:AddLine(' ')
-        end
     end
     local icon= info.texture and ('|T'..info.texture..':0|t'..info.texture)
                 or (info.atlas and '|A:'..info.atlas..':0:0|a'..info.atlas)
     if info.friendshipID then
-        self:AddDoubleLine((e.onlyChinese and '个人声望' or format(QUEST_REPUTATION_REWARD_TITLE, 'NPC'))..' '..info.friendshipID, icon)
+        self:AddDoubleLine((e.onlyChinese and '个人' or format(QUEST_REPUTATION_REWARD_TITLE, 'NPC'))..' '..info.friendshipID, icon)
     elseif info.isMajorFaction then
-        self:AddDoubleLine((e.onlyChinese and '主要阵营' or MAJOR_FACTION_LIST_TITLE)..' '..info.factionID, icon)
+        self:AddDoubleLine((e.onlyChinese and '阵营' or MAJOR_FACTION_LIST_TITLE)..' '..info.factionID, icon)
     else
         self:AddDoubleLine((e.onlyChinese and '声望' or REPUTATION)..' '..info.factionID, icon)
     end
@@ -1878,11 +1869,35 @@ local function Init()
     --####
     --声望
     --#### 11版本
-    --[[hooksecurefunc(ReputationBarMixin, 'OnEnter', function(frame)--角色栏,声望
-        func.Set_Faction(e.tips, frame.factionID, frame)
+    hooksecurefunc(ReputationEntryMixin, 'ShowStandardTooltip', function(self)
+        func.Set_Faction(GameTooltip, self.elementData.factionID)
     end)
-
-    hooksecurefunc('ReputationFrame_InitReputationRow',function(_, elementData)--ReputationFrame.lua 声望 界面,
+    hooksecurefunc(ReputationEntryMixin, 'ShowMajorFactionRenownTooltip', function(self)
+        func.Set_Faction(GameTooltip, self.elementData.factionID)
+    end)
+    hooksecurefunc(ReputationEntryMixin, 'ShowFriendshipReputationTooltip', function(self)
+        func.Set_Faction(GameTooltip, self.elementData.factionID)
+    end)
+    hooksecurefunc(ReputationEntryMixin, 'ShowParagonRewardsTooltip', function(self)
+        func.Set_Faction(EmbeddedItemTooltip, self.elementData.factionID)
+    end)
+    hooksecurefunc(ReputationEntryMixin, 'OnClick', function(frame)
+        local self= ReputationFrame.ReputationDetailFrame
+        if self:IsShown() then
+            if not self.factionIDText then
+                self.factionIDText=e.Cstr(self)
+                self.factionIDText:SetPoint('BOTTOM', self, 'TOP', 0,-4)
+            end
+            self.factionIDText:SetText(frame.elementData.factionID or '')
+        end
+    end)
+    ReputationFrame.ReputationDetailFrame:HookScript('OnShow', function(self)
+        print('Refresh')
+    end)
+    hooksecurefunc(ReputationDetailFrameMixin, 'OnShow', function(self)
+        print('ReputationDetailFrameMixin')
+    end)
+    --[[hooksecurefunc('ReputationFrame_InitReputationRow',function(_, elementData)--ReputationFrame.lua 声望 界面,
         local factionIndex = elementData.index
         local factionID
         if ( factionIndex == GetSelectedFaction() ) then

@@ -4631,7 +4631,10 @@
         "CurrencyTransferLogBg",
         "CurrencyTransferLogInset",
         "CurrencyTransferMenuBg",
-        "CurrencyTransferMenuInset"
+        "CurrencyTransferMenuInset",
+        "ReputationEntryMixin",
+        "ReputationDetailFrameMixin",
+        "EmbeddedItemTooltipTooltip"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",
