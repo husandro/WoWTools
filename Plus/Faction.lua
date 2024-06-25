@@ -126,8 +126,6 @@ local function ShowParagonRewardsTooltip(self)
 	ReputationParagonFrame_SetupParagonTooltip(self);	
 	EmbeddedItemTooltip:Show()
 end
-
-
 local function TryAppendAccountReputationLineToTooltip(tooltip, factionID)
 	if not tooltip or not factionID or not C_Reputation.IsAccountWideReputation(factionID) then
 		return;
@@ -163,15 +161,15 @@ local function ShowFriendshipReputationTooltip(self)
 end
 
 local function AddRenownRewardsToTooltip(self, renownRewards)
-	GameTooltip_AddHighlightLine(GameTooltip, MAJOR_FACTION_BUTTON_TOOLTIP_NEXT_REWARDS);
+	GameTooltip_AddHighlightLine(GameTooltip, '接下来的奖励：');
 
 	for i, rewardInfo in ipairs(renownRewards) do
 		local renownRewardString;
-		local icon, name, description = RenownRewardUtil.GetRenownRewardInfo(rewardInfo, GenerateClosure(self.ShowMajorFactionRenownTooltip, self));
+		local icon, name = RenownRewardUtil.GetRenownRewardInfo(rewardInfo, GenerateClosure(self.ShowMajorFactionRenownTooltip, self));
 		if icon then
 			local file, width, height = icon, 16, 16;
 			local rewardTexture = CreateSimpleTextureMarkup(file, width, height);
-			renownRewardString = rewardTexture .. " " .. name;
+			renownRewardString = rewardTexture .. " " .. e.cn(name)
 		end
 		local wrapText = false;
 		GameTooltip_AddNormalLine(GameTooltip, renownRewardString, wrapText);
@@ -180,27 +178,25 @@ end
 local function ShowMajorFactionRenownTooltip(self)
 	Set_SetOwner(self, GameTooltip)
 	local majorFactionData = C_MajorFactions.GetMajorFactionData(self.factionID) or {}
-	GameTooltip_SetTitle(GameTooltip, majorFactionData.name, HIGHLIGHT_FONT_COLOR);
+	GameTooltip_SetTitle(GameTooltip, e.cn(majorFactionData.name), HIGHLIGHT_FONT_COLOR);
 	TryAppendAccountReputationLineToTooltip(GameTooltip, self.factionID);
-	GameTooltip_AddHighlightLine(GameTooltip, '名望'.. majorFactionData.renownLevel);
-
+	GameTooltip_AddHighlightLine(GameTooltip, (e.onlyChinese and '名望' or RENOWN_LEVEL_LABEL).. majorFactionData.renownLevel);
 	GameTooltip_AddBlankLineToTooltip(GameTooltip);
-
-
-	GameTooltip_AddNormalLine(GameTooltip, MAJOR_FACTION_RENOWN_TOOLTIP_PROGRESS:format(majorFactionData.name));
+	GameTooltip_AddNormalLine(GameTooltip, format(e.onlyChinese and '继续获取%s的声望以提升名望并解锁奖励。' or MAJOR_FACTION_RENOWN_TOOLTIP_PROGRESS, e.cn(majorFactionData.name)))
 	GameTooltip_AddBlankLineToTooltip(GameTooltip);
-
-	local nextRenownRewards = C_MajorFactions.GetRenownRewardsForLevel(factionID, C_MajorFactions.GetCurrentRenownLevel(factionID) + 1);
+	local nextRenownRewards = C_MajorFactions.GetRenownRewardsForLevel(self.factionID, C_MajorFactions.GetCurrentRenownLevel(self.factionID) + 1);
 	if #nextRenownRewards > 0 then
 		AddRenownRewardsToTooltip(nextRenownRewards);
 	end
-
-	GameTooltip_AddBlankLineToTooltip(GameTooltip);
-	GameTooltip_AddInstructionLine(GameTooltip, REPUTATION_BUTTON_TOOLTIP_CLICK_INSTRUCTION);
-
 	GameTooltip:Show();
 end
 
+local function ShowStandardTooltip(self)
+	Set_SetOwner(self, GameTooltip)
+	GameTooltip_SetTitle(GameTooltip, e.cn(self.name))
+	TryAppendAccountReputationLineToTooltip(GameTooltip, self.factionID);
+	GameTooltip:Show();
+end
 
 
 
@@ -234,8 +230,7 @@ local function Set_TrackButton_Text()
 	for index, tab in pairs(faction) do
 		local btn= TrackButton.btn[index]
 		if not btn then
-			btn= e.Cbtn(TrackButton.Frame, {size={14,14}, icon='hide'})
-			Mixin(btn, ReputationEntryMixin)
+			btn= e.Cbtn(TrackButton.Frame, {size={14,14}, icon='hide'})			
 			if Save.toTopTrack then
 				btn:SetPoint('BOTTOM', last or TrackButton, 'TOP')
 			else
@@ -243,6 +238,7 @@ local function Set_TrackButton_Text()
 			end
 			btn:SetScript('OnLeave', function(self)
 				e.tips:Hide()
+				if EmbeddedItemTooltip then EmbeddedItemTooltip:Hide() end
 				Set_TrackButton_Pushed(false, self.text)--TrackButton，提示
 			end)
 			btn:SetScript('OnEnter', function(self)
@@ -251,9 +247,9 @@ local function Set_TrackButton_Text()
 				elseif self.isFriend then
 					ShowFriendshipReputationTooltip(self)
 				elseif self.isMajorFaction then
-					--ShowMajorFactionRenownTooltip(self);
+					ShowMajorFactionRenownTooltip(self);
 				else
-					--ShowStandardTooltip(self);
+					ShowStandardTooltip(self);
 				end
 				Set_TrackButton_Pushed(true, self.text)--TrackButton，提示
 			end)
@@ -281,6 +277,7 @@ local function Set_TrackButton_Text()
 		btn.isMajorFaction= tab.elementData.isMajorFaction
 		btn.isHeader= tab.elementData.isHeader
 		btn.isParagon= tab.elementData.isParagon
+		btn.name= tab.elementData.name
 
 		if tab.texture then
 			btn:SetNormalTexture(tab.texture)
