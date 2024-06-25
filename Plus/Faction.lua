@@ -140,18 +140,14 @@ local function ShowFriendshipReputationTooltip(self)
 	if not friendshipData or friendshipData.friendshipFactionID < 0 then
 		return;
 	end
-
 	Set_SetOwner(self, GameTooltip)
-
 	local rankInfo = C_GossipInfo.GetFriendshipReputationRanks(friendshipData.friendshipFactionID);
 	if rankInfo.maxLevel > 0 then
 		GameTooltip_SetTitle(GameTooltip, friendshipData.name.." ("..rankInfo.currentLevel.." / "..rankInfo.maxLevel..")", HIGHLIGHT_FONT_COLOR);
 	else
 		GameTooltip_SetTitle(GameTooltip, friendshipData.name, HIGHLIGHT_FONT_COLOR);
 	end
-
 	TryAppendAccountReputationLineToTooltip(GameTooltip, self.factionID);
-
 	GameTooltip_AddBlankLineToTooltip(GameTooltip);
 	GameTooltip:AddLine(friendshipData.text, nil, nil, nil, true);
 	if friendshipData.nextThreshold then
@@ -166,6 +162,44 @@ local function ShowFriendshipReputationTooltip(self)
 	GameTooltip:Show();
 end
 
+local function AddRenownRewardsToTooltip(self, renownRewards)
+	GameTooltip_AddHighlightLine(GameTooltip, MAJOR_FACTION_BUTTON_TOOLTIP_NEXT_REWARDS);
+
+	for i, rewardInfo in ipairs(renownRewards) do
+		local renownRewardString;
+		local icon, name, description = RenownRewardUtil.GetRenownRewardInfo(rewardInfo, GenerateClosure(self.ShowMajorFactionRenownTooltip, self));
+		if icon then
+			local file, width, height = icon, 16, 16;
+			local rewardTexture = CreateSimpleTextureMarkup(file, width, height);
+			renownRewardString = rewardTexture .. " " .. name;
+		end
+		local wrapText = false;
+		GameTooltip_AddNormalLine(GameTooltip, renownRewardString, wrapText);
+	end
+end
+local function ShowMajorFactionRenownTooltip(self)
+	Set_SetOwner(self, GameTooltip)
+	local majorFactionData = C_MajorFactions.GetMajorFactionData(self.factionID) or {}
+	GameTooltip_SetTitle(GameTooltip, majorFactionData.name, HIGHLIGHT_FONT_COLOR);
+	TryAppendAccountReputationLineToTooltip(GameTooltip, self.factionID);
+	GameTooltip_AddHighlightLine(GameTooltip, '名望'.. majorFactionData.renownLevel);
+
+	GameTooltip_AddBlankLineToTooltip(GameTooltip);
+
+
+	GameTooltip_AddNormalLine(GameTooltip, MAJOR_FACTION_RENOWN_TOOLTIP_PROGRESS:format(majorFactionData.name));
+	GameTooltip_AddBlankLineToTooltip(GameTooltip);
+
+	local nextRenownRewards = C_MajorFactions.GetRenownRewardsForLevel(factionID, C_MajorFactions.GetCurrentRenownLevel(factionID) + 1);
+	if #nextRenownRewards > 0 then
+		AddRenownRewardsToTooltip(nextRenownRewards);
+	end
+
+	GameTooltip_AddBlankLineToTooltip(GameTooltip);
+	GameTooltip_AddInstructionLine(GameTooltip, REPUTATION_BUTTON_TOOLTIP_CLICK_INSTRUCTION);
+
+	GameTooltip:Show();
+end
 
 
 
