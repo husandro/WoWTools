@@ -16,7 +16,6 @@ e.Get_Region=function()end--Realm.lua
 e.WoWDate={}--战网，数据
 e.StausText={}--属性，截取表 API_Panel.lua
 e.ChallengesSpellTabs={}--Challenges.lua
-e.HolidayEvent={}--节日，汉化
 
 e.tips=GameTooltip
 e.call=securecall

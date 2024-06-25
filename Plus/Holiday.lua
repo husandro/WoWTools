@@ -109,12 +109,9 @@ local function Get_Button_Text(event)
     local findQuest
     local text
     local texture
-    local title
-
-    if e.HolidayEvent[event.eventID] then
-        title=e.HolidayEvent[event.eventID][1]
-    end
-    title= title or e.cn(event.title)
+    
+    local tab= e.cn(nil, {holydayID=event.eventID}) or {}
+    local title=tab[1] or event.title
 
 
     if _CalendarFrame_IsPlayerCreatedEvent(event.calendarType) then--自定义,事件
@@ -388,12 +385,9 @@ local function Set_TrackButton_Text(monthOffset, day)
                 if (self.monthOffset and self.day and self.index) then
                     local holidayInfo= C_Calendar.GetHolidayInfo(self.monthOffset, self.day, self.index);
                     if (holidayInfo) then
-                        if e.HolidayEvent[self.eventID] then
-                            title= e.HolidayEvent[self.eventID][1]
-                            description= e.HolidayEvent[self.eventID][2]
-                        end
-                        title= title or holidayInfo.name
-                        description = description or holidayInfo.description;
+                        local data= e.cn(nil, {holydayID=self.eventID}) or {}
+                        title= data[1] or holidayInfo.name
+                        description = data[2] or holidayInfo.description;
 
                         if (holidayInfo.startTime and holidayInfo.endTime) then
                             description=format(e.onlyChinese and '%1$s|n|n开始：%2$s %3$s|n结束：%4$s %5$s' or CALENDAR_HOLIDAYFRAME_BEGINSENDS,
@@ -766,24 +760,13 @@ local function calendar_Uptate()
     local info= indexInfo and C_Calendar.GetDayEvent(indexInfo.offsetMonths, indexInfo.monthDay, indexInfo.eventIndex) or {}
     local text
     if info.eventID then
-        local head, desc--汉化
-        if e.HolidayEvent[info.eventID] then
-            head, desc= e.HolidayEvent[info.eventID][1], e.HolidayEvent[info.eventID][2]
-        end
+        local data= e.cn(nil, {holydayID= info.eventID}) or {}        
         text= (info.iconTexture and '|T'..info.iconTexture..':0|t'..info.iconTexture..'|n' or '')
             ..'eventID '..info.eventID
             ..(info.title and '|n'..info.title or '')
-            ..(head and '|n'..head or '')
-        if head then
-            CalendarViewHolidayFrame.Header:Setup(head)
-        end
-        if desc then
-            if (info.startTime and info.endTime) then
-                desc = format('%1$s|n|n开始：%2$s %3$s|n结束：%4$s %5$s', desc, FormatShortDate(info.startTime.monthDay, info.startTime.month), GameTime_GetFormattedTime(info.startTime.hour, info.startTime.minute, true), FormatShortDate(info.endTime.monthDay, info.endTime.month), GameTime_GetFormattedTime(info.endTime.hour, info.endTime.minute, true));
-            end
-            CalendarViewHolidayFrame.ScrollingFont:SetText(desc)
-        end
+            ..(data[1] and '|n'..data[1] or '')
     end
+
     if text and not CalendarViewHolidayFrame.Text then
         CalendarViewHolidayFrame.Text= e.Cstr(CalendarViewHolidayFrame, {mouse=true, color={r=0, g=0.68, b=0.94, a=1}})
         CalendarViewHolidayFrame.Text:SetPoint('BOTTOMLEFT',12,12)
@@ -822,9 +805,8 @@ end
 --#########
 
 local function Init_Blizzard_Calendar()
-    if CalendarViewHolidayFrame.update then
-        hooksecurefunc(CalendarViewHolidayFrame, 'update', calendar_Uptate)--提示节目ID
-    end
+
+    hooksecurefunc(CalendarViewHolidayFrame, 'update', calendar_Uptate)--提示节目ID    
     hooksecurefunc('CalendarViewHolidayFrame_Update', calendar_Uptate)
 
     hooksecurefunc('CalendarCreateEventInviteListScrollFrame_Update', function()
