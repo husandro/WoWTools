@@ -2,13 +2,12 @@ local id, e = ...
 
 e.SetItemCurrencyID= 2912--套装，转换，货币
 local ItemCurrencyTips= {---物品升级界面，挑战界面，物品，货币提示
-    {type='currency', id=2812},--守护巨龙的觉醒纹章
-    {type='currency', id=2809},--魔龙的觉醒纹章
-    {type='currency', id=2807},--幼龙的觉醒纹章
-    {type='currency', id=2806},--雏龙的觉醒纹章
-    {type='currency', id=2245},--飞珑石
---2912
-    {type='currency', id=e.SetItemCurrencyID, show=true},--套装，转换，货币
+    --{type='currency', id=2812},--守护巨龙的觉醒纹章
+    --{type='currency', id=2809},--魔龙的觉醒纹章
+    --{type='currency', id=2807},--幼龙的觉醒纹章
+    --{type='currency', id=2806},--雏龙的觉醒纹章
+    --{type='currency', id=2245},--飞珑石
+    --{type='currency', id=e.SetItemCurrencyID, show=true},--套装，转换，货币
     {type='currency', id=1602, line=true},--征服点数
     {type='currency', id=1191},--勇气点数
 }

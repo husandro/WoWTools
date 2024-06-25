@@ -1294,24 +1294,20 @@ local function Init_Currency_Transfer()
 	hooksecurefunc(CurrencyTransferLog.ScrollBox, 'Update', function(self)
 		for _, btn in pairs(self:GetFrames() or {}) do
 			local data= btn.transactionData or {}
-			local guid= data.sourceCharacterGUID
-			if guid then
-				local name= e.GetPlayerInfo({guid=guid, reName=true, reRealm=true})
-				if name~='' then
-					btn.SourceName:SetText(name)
-				end
+			local name= e.GetPlayerInfo({guid=data.sourceCharacterGUID, reName=true, reRealm=true})
+			if name~='' then
+				btn.SourceName:SetText(name)
 			end
 
-			guid= data.destinationCharacterGUID
-			if guid then
-				local name= e.GetPlayerInfo({guid=guid, reName=true, reRealm=true})
-				if name~='' then
-					btn.DestinationName:SetText(name)
-				end
+			name= e.GetPlayerInfo({guid=data.destinationCharacterGUID, reName=true, reRealm=true})
+			if name~='' then
+				btn.DestinationName:SetText(name)
 			end
+
 		end
 	end)
 	CurrencyTransferMenuCloseButton:SetFrameLevel(CurrencyTransferMenuCloseButton:GetFrameLevel()+1)--原始，不好点击
+	CurrencyTransferMenuCloseButton:SetFrameStrata('HIGH')
 
 	hooksecurefunc(CurrencyTransferMenu.SourceSelector, 'RefreshPlayerName', function(self)--收取人，我 提示		
 		local name= e.GetPlayerInfo({guid=e.Player.guid, reName=true})
@@ -1335,9 +1331,11 @@ local function Init_Currency_Transfer()
     end)
 	CurrencyTransferMenu.AmountSelector.InputBox:HookScript('OnTextChanged', function(self, userInput)
 		if userInput then
-			self:ValidateAndSetValue()
+			e.call(self.ValidateAndSetValue, self)
 		end
 	end)
+	CurrencyTransferMenu.SourceBalancePreview.BalanceInfo.Amount:SetTextColor(1,0,0)
+	CurrencyTransferMenu.PlayerBalancePreview.BalanceInfo.Amount:SetTextColor(0,1,0)
 	
 end
 

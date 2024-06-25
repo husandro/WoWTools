@@ -2183,7 +2183,7 @@ local function Init_Move()
 
         --货币
         e.Set_Move_Frame(TokenFrame, {frame=CharacterFrame})
-        e.Set_Move_Frame(CurrencyTransferLog, {frame=CharacterFrame})
+        --e.Set_Move_Frame(CurrencyTransferLog, {frame=CharacterFrame})
         e.Set_Move_Frame(CurrencyTransferLog.TitleContainer, {frame=CharacterFrame})
         e.Set_Move_Frame(TokenFramePopup, {frame=CharacterFrame})
 
@@ -2194,7 +2194,7 @@ local function Init_Move()
         end, scaleRestFunc= function(btn)
             btn.target:ClearAllPoints()
             btn.target:SetPoint('TOPLEFT', TokenFrame, 'TOPRIGHT', 5,0)
-        end})
+        end, })
 
         e.Set_Move_Frame(CurrencyTransferMenu)
         e.Set_Move_Frame(CurrencyTransferMenu.TitleContainer, {frame=CurrencyTransferMenu})
