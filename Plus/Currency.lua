@@ -1329,14 +1329,16 @@ local function Init_Currency_Transfer()
 			self.Label:SetFormattedText(e.onlyChinese and '%s |cnGREEN_FONT_COLOR:的新余额|r' or CURRENCY_TRANSFER_NEW_BALANCE_PREVIEW, name)
 		end
     end)
-	CurrencyTransferMenu.AmountSelector.InputBox:HookScript('OnTextChanged', function(self, userInput)
-		if userInput then
-			e.call(self.ValidateAndSetValue, self)
-		end
-	end)
+
+	--可能会出现错误
+		CurrencyTransferMenu.AmountSelector.InputBox:HookScript('OnTextChanged', function(self, userInput)
+			if userInput then
+				e.call(self.ValidateAndSetValue, self)
+			end
+		end)
+
 	CurrencyTransferMenu.SourceBalancePreview.BalanceInfo.Amount:SetTextColor(1,0,0)
 	CurrencyTransferMenu.PlayerBalancePreview.BalanceInfo.Amount:SetTextColor(0,1,0)
-	
 end
 
 
