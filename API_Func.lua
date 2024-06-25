@@ -940,7 +940,7 @@ function e.GetFactionInfo(factionID, index, toRight)
 
 
     local isCapped= standingID == MAX_REPUTATION_REACTION--8
-    local isMajorFaction = C_Reputation.IsMajorFaction(factionID)
+    local isMajor = C_Reputation.IsMajorFaction(factionID)
     local repInfo = C_GossipInfo.GetFriendshipReputation(factionID)
     local friendshipID--个人声望
     if repInfo and repInfo.friendshipFactionID> 0 then--个人声望
@@ -963,7 +963,7 @@ function e.GetFactionInfo(factionID, index, toRight)
         end
         texture=repInfo.texture--图标
 
-    elseif isMajorFaction then--名望
+    elseif isMajor then--名望
         isCapped=C_MajorFactions.HasMaximumRenown(factionID)
         local info = C_MajorFactions.GetMajorFactionData(factionID) or {}
         if info.renownLevel then
@@ -1038,9 +1038,9 @@ function e.GetFactionInfo(factionID, index, toRight)
         description= data.description,
         color= barColor,
 
-        isMajorFaction=isMajorFaction,
-        friendshipID= friendshipID,
+        isMajor=isMajor,
         isParagon= isParagon,
+        friendshipID= friendshipID,
 
         texture= texture,
         atlas= atlas,

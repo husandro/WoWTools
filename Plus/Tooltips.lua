@@ -1005,7 +1005,7 @@ function func.Set_Faction(self, factionID)--, frame)
                 or (info.atlas and '|A:'..info.atlas..':0:0|a'..info.atlas)
     if info.friendshipID then
         self:AddDoubleLine((e.onlyChinese and '个人' or format(QUEST_REPUTATION_REWARD_TITLE, 'NPC'))..' '..info.friendshipID, icon)
-    elseif info.isMajorFaction then
+    elseif info.isMajor then
         self:AddDoubleLine((e.onlyChinese and '阵营' or MAJOR_FACTION_LIST_TITLE)..' '..info.factionID, icon)
     else
         self:AddDoubleLine((e.onlyChinese and '声望' or REPUTATION)..' '..info.factionID, icon)

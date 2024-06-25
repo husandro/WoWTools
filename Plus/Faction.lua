@@ -211,17 +211,17 @@ local function Set_TrackButton_Text()
 	local faction={}
 	if Save.indicato then
 		for factionID, _ in pairs(Save.factions) do
-			local text, texture, atlas, elementData= get_Faction_Info(nil, factionID)
+			local text, texture, atlas, data= get_Faction_Info(nil, factionID)
 			if text then
-				table.insert(faction, {text= text, texture=texture, atlas=atlas, elementData=elementData})
+				table.insert(faction, {text= text, texture=texture, atlas=atlas, data=data})
 			end
 		end
-		table.sort(faction, function(a, b) return a.elementData.factionID > b.elementData.factionID end)
+		table.sort(faction, function(a, b) return a.data.factionID > b.data.factionID end)
 	else
 		for index=1, C_Reputation.GetNumFactions() do
-			local text, texture, atlas, elementData=get_Faction_Info(index, nil)
+			local text, texture, atlas, data=get_Faction_Info(index, nil)
 			if text then
-				table.insert(faction, {text= text, texture=texture, atlas=atlas, elementData=elementData})
+				table.insert(faction, {text= text, texture=texture, atlas=atlas, data=data})
 			end
 		end
 	end
@@ -272,12 +272,11 @@ local function Set_TrackButton_Text()
 		last=btn
 
 		btn.text:SetText(tab.text)		
-		btn.factionID= tab.elementData.factionID
-		btn.isFriend= tab.elementData.isParagon
-		btn.isMajorFaction= tab.elementData.isMajorFaction
-		btn.isHeader= tab.elementData.isHeader
-		btn.isParagon= tab.elementData.isParagon
-		btn.name= tab.elementData.name
+		btn.factionID= tab.data.factionID
+		btn.isFriend= tab.data.friendshipID
+		btn.isMajor= tab.data.isMajor
+		btn.isParagon= tab.data.isParagon
+		btn.name= tab.data.name
 
 		if tab.texture then
 			btn:SetNormalTexture(tab.texture)
@@ -293,7 +292,11 @@ local function Set_TrackButton_Text()
 		btn.text:SetText('')
 		btn:SetShown(false)
 		btn:SetNormalTexture(0)
-		btn.elementData={}
+		btn.factionID= nil
+		btn.isFriend= nil
+		btn.isMajor= nil
+		btn.isParagon= nil
+		btn.name= nil
 	end
 end
 
