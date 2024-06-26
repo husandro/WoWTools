@@ -449,7 +449,7 @@ local function get_vignette_Text()
                     info.rewardQuestID=nil
                 end
                 local text
-                local name= e.cn(info.name)
+                local name= e.cn(info.name, {vignetteID= info.vignetteID})
                 if info.widgetSetID then
                     text= Get_widgetSetID_Text(info.widgetSetID, true)
                 end
