@@ -1748,7 +1748,7 @@ local function Init()
     ShoppingTooltip2.Portrait:SetAtlas('Adventures-Target-Indicator')
     ShoppingTooltip2.Portrait:SetAlpha(0.5)
 
-    --[[TooltipDataRules.lua
+    --[[TooltipDataRules.lua 
     TooltipDataType = {
 		Item = 0,
 		Spell = 1,
@@ -1779,7 +1779,7 @@ local function Init()
 		Debug = 26,
 	},]]
 --Blizzard_SharedXMLGame/Tooltip/TooltipDataRules.lua
-    TooltipDataProcessor.AddTooltipPostCall(TooltipDataProcessor.AllTypes,  function(tooltip, data)--TooltipUtil.lua
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.AllTypes,  function(tooltip, data)--TooltipUtil.lua
         if tooltip==ShoppingTooltip1 or ShoppingTooltip2==tooltip then
             return
         end
