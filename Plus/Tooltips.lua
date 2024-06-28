@@ -477,8 +477,11 @@ function func.Set_Pet(self, speciesID, setSearchText)--宠物
             self:AddLine(e.onlyChinese and '该生物无法对战。' or BATTLE_PET_CANNOT_BATTLE, 1,0,0)
         end
     end
-    if tooltipSource then
-        self:AddLine(tooltipSource,nil,nil,nil, true)--来源
+
+    local sourceInfo= e.cn(nil, {speciesID=speciesID}) or {}
+
+    if tooltipSource or sourceInfo[2] then
+        self:AddLine(sourceInfo[2] or tooltipSource,nil,nil,nil, true)--来源
     end
     if petType then
         self.Portrait:SetTexture("Interface\\TargetingFrame\\PetBadge-"..PET_TYPE_SUFFIX[petType])
