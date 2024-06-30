@@ -446,7 +446,6 @@ function func.Set_Pet(self, speciesID, setSearchText)--宠物
         return
     end
     local speciesName, speciesIcon, petType, companionID, tooltipSource, tooltipDescription, isWild, canBattle, isTradeable, isUnique, obtainable, creatureDisplayID = C_PetJournal.GetPetInfoBySpeciesID(speciesID)
-    --print(C_PetJournal.GetPetModelSceneInfoBySpeciesID(speciesID))
     if obtainable then--可得到的
         self:AddLine(' ')
 
@@ -1605,7 +1604,7 @@ local function set_Battle_Pet(self, speciesID, level, breedQuality, maxHealth, p
     if not speciesID or speciesID < 1 then
         return
     end
-    local speciesName, speciesIcon, _, companionID, tooltipSource, _, _, _, _, _, obtainable, creatureDisplayID = C_PetJournal.GetPetInfoBySpeciesID(speciesID)
+    local speciesName, speciesIcon, _, companionID, tooltipSource, tooltipDescription, _, _, _, _, obtainable, creatureDisplayID = C_PetJournal.GetPetInfoBySpeciesID(speciesID)
     if not self.Portrait then
         func.Set_Init_Item(self, true)--创建物品
     end
@@ -1635,11 +1634,14 @@ local function set_Battle_Pet(self, speciesID, level, breedQuality, maxHealth, p
     end
     BattlePetTooltipTemplate_AddTextLine(self, abilityIcon)
 
+    local sourceInfo= e.cn(nil, {speciesID=speciesID}) or {}
+    tooltipDescription= sourceInfo[1] or tooltipDescription
+    if tooltipDescription then
+        BattlePetTooltipTemplate_AddTextLine(self, tooltipDescription, nil, nil, nil, true)--来源提示
+    end
+    tooltipSource= sourceInfo[2] or tooltipSource
     if tooltipSource then
-        --tooltipSource= tooltipSource:gsub(':', ':|n')
-        --tooltipSource= tooltipSource:gsub('：', ':|n')
-        BattlePetTooltipTemplate_AddTextLine(self, tooltipSource)--来源提示
-        --print(tooltipSource)
+        BattlePetTooltipTemplate_AddTextLine(self, tooltipSource, nil, nil, nil, true)--来源提示--来源
     end
 
     if PetJournalSearchBox and PetJournalSearchBox:IsVisible() then--设置搜索
