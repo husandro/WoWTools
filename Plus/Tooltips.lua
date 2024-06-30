@@ -1752,7 +1752,7 @@ local function Init()
     ShoppingTooltip2.Portrait:SetAlpha(0.5)
 
     --[[TooltipDataRules.lua 
-    TooltipDataType = {
+    Enum.TooltipDataType = {
 		Item = 0,
 		Spell = 1,
 		Unit = 2,
