@@ -479,7 +479,9 @@ function func.Set_Pet(self, speciesID, setSearchText)--宠物
     end
 
     local sourceInfo= e.cn(nil, {speciesID=speciesID}) or {}
-
+    if tooltipDescription or sourceInfo[1] then
+        self:AddLine(sourceInfo[1] or tooltipDescription, nil,nil,nil, true)--来源
+    end
     if tooltipSource or sourceInfo[2] then
         self:AddLine(sourceInfo[2] or tooltipSource,nil,nil,nil, true)--来源
     end
