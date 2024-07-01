@@ -110,7 +110,7 @@ local function Get_Button_Text(event)
     local text
     local texture
     
-    local tab= e.cn(nil, {holydayID=event.eventID}) or {}
+    local tab= e.cn(nil, {holydayID=event.eventID}) or {}    
     local title=tab[1] or event.title
 
 
@@ -162,18 +162,18 @@ local function Get_Button_Text(event)
             event.eventID==1269
         then
 
-            local tab={40168, 40173, 40786, 45563, 55499, 40168, 40173, 40787, 45563, 55498, 64710,64709,
+            local tab2={40168, 40173, 40786, 45563, 55499, 40168, 40173, 40787, 45563, 55498, 64710,64709,
                 72725,--迷离的时光之路 熊猫人之迷
             }
-            local isCompleted= set_Quest_Completed(tab)--任务是否完成
+            local isCompleted= set_Quest_Completed(tab2)--任务是否完成
             texture= isCompleted or '|A:AutoQuest-Badge-Campaign:0:0|a'
             title=(e.onlyChinese and '时空漫游' or PLAYER_DIFFICULTY_TIMEWALKER)
             findQuest= isCompleted and true or findQuest
             icon=463446--1166[时空扭曲徽章]
 
         elseif event.eventID==479 then--暗月--CALENDAR_FILTER_DARKMOON = "暗月马戏团"--515[暗月奖券]
-            local tab={36471, 32175}
-            local isCompleted= set_Quest_Completed(tab)--任务是否完成
+            local tab2={36471, 32175}
+            local isCompleted= set_Quest_Completed(tab2)--任务是否完成
             texture= isCompleted or '|A:AutoQuest-Badge-Campaign:0:0|a'
             findQuest=isCompleted and true or findQuest
             icon=134481
@@ -210,18 +210,18 @@ local function Get_Button_Text(event)
             or event.eventID==1269
          then
 
-            local tab={40168, 40173, 40786, 45563, 55499, 40168, 40173, 40787, 45563, 55498, 64710,64709,
+            local tab2={40168, 40173, 40786, 45563, 55499, 40168, 40173, 40787, 45563, 55498, 64710,64709,
             72725,--迷离的时光之路 熊猫人之迷
             }
-            local isCompleted= set_Quest_Completed(tab)--任务是否完成
+            local isCompleted= set_Quest_Completed(tab2)--任务是否完成
 
             texture= isCompleted or '|A:AutoQuest-Badge-Campaign:0:0|a'
             findQuest= isCompleted
             icon=463446--1166[时空扭曲徽章]
 
         elseif event.eventID==479 then--暗月--CALENDAR_FILTER_DARKMOON = "暗月马戏团"
-            local tab={36471, 32175}
-            local isCompleted= set_Quest_Completed(tab)--任务是否完成
+            local tab2={36471, 32175}
+            local isCompleted= set_Quest_Completed(tab2)--任务是否完成
             texture= isCompleted or '|A:AutoQuest-Badge-Campaign:0:0|a'
             findQuest=isCompleted
             icon=134481--515[暗月奖券]
@@ -238,7 +238,8 @@ local function Get_Button_Text(event)
             icon=event.iconTexture
         end
     end
-    title= e.cn(title:match(HEADER_COLON..'(.+)') or title)
+    
+    title= title:match(HEADER_COLON..'(.+)') or title
     title= not event.isValid and '|cff606060'..title..'|r' or title
     local msg
     if Save.left then
