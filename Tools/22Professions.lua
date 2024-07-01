@@ -14,8 +14,7 @@ local Save={
 
 local panel=CreateFrame("Frame")
 local ArcheologyButton
-
-
+local UNLEARN_SKILL_CONFIRMATION= UNLEARN_SKILL_CONFIRMATION
 
 
 
@@ -527,15 +526,19 @@ local function Init_ProfessionsFrame()
         if not info or not info.recipeID then
             return
         end
-        --for k, v in pairs(info) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
+        
         local text= C_TradeSkillUI.GetRecipeSourceText(info.recipeID)
         local tradeSkillID, _, parentTradeSkillID = C_TradeSkillUI.GetTradeSkillLineForRecipe(info.recipeID)
         e.tips:SetOwner(self, "ANCHOR_LEFT", -18, 0)
         e.tips:ClearLines()
         e.tips:SetRecipeResultItem(info.recipeID, {}, nil, info.unlockedRecipeLevel)
         e.tips:AddLine(' ')
+
+        local text2= e.cn(nil, {skillLineAbilityID=info.skillLineAbilityID})
+        
         if text and text~='' then
-            e.tips:AddLine(text)
+            e.tips:AddLine(text, nil, nil, nil, true)
+            e.tips:AddLine(text2)
             e.tips:AddLine(' ')
         end
         e.tips:AddLine(info.categoryID and 'categoryID '..info.categoryID, tradeSkillID and 'tradeSkillID '..tradeSkillID)
@@ -548,19 +551,32 @@ local function Init_ProfessionsFrame()
     end)
 
 
-    --专业，列表，增加图标
+    --专业，列表，增加图标, 颜色
     hooksecurefunc(ProfessionsRecipeListRecipeMixin, 'Init', function(self, node)
         local elementData = node:GetData();
         local recipeInfo = Professions.GetHighestLearnedRecipe(elementData.recipeInfo) or elementData.recipeInfo
-        local icon = recipeInfo and recipeInfo.icon
-        if icon and not self.texture then
+        if not recipeInfo then
+            return
+        end
+        if recipeInfo.icon and not self.texture then
             self.texture= self:CreateTexture(nil, 'OVERLAY')
             self.texture:SetPoint('RIGHT',2,0)
             self.texture:SetSize(22,22)
         end
-
         if self.texture then
-            self.texture:SetTexture(icon or 0)
+            self.texture:SetTexture(recipeInfo.icon or 0)
+        end
+
+        local r,g,b--颜色        
+        if recipeInfo.learned or recipeInfo.isRecraf then
+            local link= recipeInfo.hyperlink        
+            local quality= link and C_Item.GetItemQualityByID(link)
+            if quality then
+                r,g,b=C_Item.GetItemQualityColor(quality)
+            end
+            self.Label:SetTextColor(r or 1, g or 0.82, b or 0)
+        else
+            self.Label:SetTextColor(DISABLED_FONT_COLOR:GetRGB())
         end
     end)
 
@@ -820,7 +836,7 @@ end
 
 
 
-local UNLEARN_SKILL_CONFIRMATION= UNLEARN_SKILL_CONFIRMATION
+
 local function Init()
 
 
