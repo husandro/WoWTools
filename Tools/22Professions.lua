@@ -541,7 +541,7 @@ local function Init_ProfessionsFrame()
             e.tips:AddLine(text2)
             e.tips:AddLine(' ')
         end
-        e.tips:AddLine(info.categoryID and 'categoryID '..info.categoryID, tradeSkillID and 'tradeSkillID '..tradeSkillID)
+        e.tips:AddLine(info.categoryID and 'categoryID '..info.categoryID, tradeSkillID and 'tradeSkillID '..tradeSkillID or (info.sourceType and 'sourceType'..info.sourceType))
         e.tips:AddDoubleLine('recipeID '..info.recipeID, parentTradeSkillID and 'parentTradeSkillID '..parentTradeSkillID)
         if info.itemLevel or info.skillLineAbilityID then
             e.tips:AddDoubleLine(info.skillLineAbilityID and 'skillLineAbilityID '..info.skillLineAbilityID,  info.itemLevel and info.itemLevel>1 and format(e.onlyChinese and '物品等级%d' or ITEM_LEVEL, info.itemLevel))
