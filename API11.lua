@@ -19,7 +19,7 @@ C_Spell.IsSpellPassive= IsPassiveSpell
 C_SpellBook.GetSpellBookItemLink= GetSpellLink
 
 
-
+--[[
 
 C_Spell.GetSpellTradeSkillLink= GetSpellTradeSkillLink
 C_SpellBook.GetSpellBookItemTradeSkillLink= GetSpellTradeSkillLink
@@ -109,7 +109,7 @@ C_Spell.IsPvPTalentSpell=IsPvpTalentSpell
 C_Spell.IsPvPTalentSpellBookItem=IsPvpTalentSpell
 
 GameTooltip.SetSpellBookItem=GameTooltip.SetSpellBookItem
-
+]]
 C_Spell.GetSpellCooldown= function(spell)
 	local start, duration, enabled, modRate=  GetSpellCooldown(spell)
 	return{

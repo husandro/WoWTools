@@ -195,9 +195,10 @@ end
 local function set_SpellFlyoutButton_UpdateGlyphState(self)
     local text= SpellTab[self.spellID]
     if not text and self.spellID and not C_Spell.IsSpellPassive(self.spellID) then
-        local des= C_Spell.GetSpellDescription(self.spellID)
+        
+        
+        local des= e.cn(C_Spell.GetSpellDescription(self.spellID), {spellID=self.spellID, isDesc=true})
         if des then
-            des= e.cn(des) or e.cn(nil, {self.spellID, isDesc=true})
             text= des:match('|cff00ccff(.-)|r')
                 or des:match('传送至(.-)入口处')--传送至永茂林地入口处。
                 or des:match('传送到(.-)的入口')--传送到自由镇的入口
@@ -217,12 +218,9 @@ local function set_SpellFlyoutButton_UpdateGlyphState(self)
                 or des:match('(.-) 입구로 순간이동합니다')--상록숲 입구로 순간이동합니다.
         end
         if not text then
-            text= e.cn(nil, {spellID=self.spellID, isName=true})
-            print(text, self.spellID)
+            text= e.cn(C_Spell.GetSpellName(self.spellID), {spellID=self.spellID, isName=true})
             if not text then
-                text= select(2, GetCallPetSpellInfo(self.spellID))
-                text= text~='' and text or nil
-                text= text or C_Spell.GetSpellName(self.spellID)
+                text= select(2, GetCallPetSpellInfo(self.spellID))                
                 text= e.cn(text)
             end
             text=text:match('%-(.+)') or text
