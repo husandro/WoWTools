@@ -961,11 +961,11 @@ function func.set_Buff(type, self, ...)
     if source then--来源
         if source then
             local r, g ,b , col= e.GetUnitColor(source)-- GetClassColor(UnitClassBase(source))
-            if r and g and b then
+            if r and g and b and self.backgroundColor then
                 self.backgroundColor:SetColorTexture(r, g, b, 0.3)
                 self.backgroundColor:SetShown(true)
             end
-            if source~='player' then
+            if source~='player' and self.Portrait then
                 SetPortraitTexture(self.Portrait, source)
                 self.Portrait:SetShown(true)
             end

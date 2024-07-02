@@ -4639,7 +4639,8 @@
         "ACCOUNT_WIDE_FONT_COLOR",
         "CurrencyTransferMenuCloseButton",
         "CURRENCY_TRANSFER_DESTINATION",
-        "CURRENCY_TRANSFER_NEW_BALANCE_PREVIEW"
+        "CURRENCY_TRANSFER_NEW_BALANCE_PREVIEW",
+        "EncounterJournal_TierDropDown_Select"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",
