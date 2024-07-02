@@ -31,9 +31,6 @@ local onlyIcon
 
 
 
-
-
-
 local function get_Faction_Info(index, factionID)
 	local data= e.GetFactionInfo(factionID, index, Save.toRightTrackText)
 	factionID= data.factionID
@@ -522,8 +519,11 @@ local function Init_TrackButton()
 		end
 	end)
 
-	hooksecurefunc(ReputationFrame, 'Update', Set_TrackButton_Text)
-	--hooksecurefunc('ReputationFrame_Update',Set_TrackButton_Text)--更新, 监视, 文本
+	if ReputationFrame.Update then--11版本
+		hooksecurefunc(ReputationFrame, 'Update', Set_TrackButton_Text)	
+	else
+		hooksecurefunc('ReputationFrame_Update',Set_TrackButton_Text)--更新, 监视, 文本
+	end
 
 	TrackButton:set_Scale()
 	TrackButton:set_Point()
@@ -536,7 +536,7 @@ local function Init_TrackButton()
 
 
 
-
+if ReputationEntryMixin then--11版本
 	hooksecurefunc(ReputationEntryMixin, 'OnEnter', function(self)--角色栏,声望
 		for _, btn in pairs(TrackButton.btn) do
 			if self.elementData.factionID== btn.factionID then
@@ -551,6 +551,22 @@ local function Init_TrackButton()
 			btn:SetScale(1)
 		end
     end)
+else
+	hooksecurefunc(ReputationBarMixin, 'OnEnter', function(frame)--角色栏,声望
+		for _, btn in pairs(TrackButton.btn) do
+			if frame.factionID and frame.factionID== btn.factionID then
+				btn:SetScale(2)
+			else
+				btn:SetScale(1)
+			end
+		end
+    end)
+	hooksecurefunc(ReputationBarMixin, 'OnLeave', function(frame)--角色栏,声望
+		for _, btn in pairs(TrackButton.btn) do
+			btn:SetScale(1)
+		end
+    end)
+end
 end
 
 

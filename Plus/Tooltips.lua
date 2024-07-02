@@ -1907,6 +1907,7 @@ local function Init()
     --####
     --声望
     --#### 11版本
+if ReputationEntryMixin then
     hooksecurefunc(ReputationEntryMixin, 'ShowStandardTooltip', function(self)
         func.Set_Faction(GameTooltip, self.elementData.factionID)
     end)
@@ -1938,6 +1939,35 @@ local function Init()
             self.factionIDText:SetText(factionData.factionID)
         end
     end)
+
+else
+    hooksecurefunc(ReputationBarMixin, 'ShowMajorFactionRenownTooltip', function(self)--Major名望, ReputationFrame.lua
+        func.Set_Faction(e.tips, self.factionID)
+    end)
+    hooksecurefunc(ReputationBarMixin, 'ShowFriendshipReputationTooltip', function(self, friendshipID)--个人声望 ReputationFrame.lua
+        func.Set_Faction(e.tips, friendshipID)
+    end)
+    hooksecurefunc(ReputationBarMixin, 'OnEnter', function(frame)--角色栏,声望
+        func.Set_Faction(e.tips, frame.factionID, frame)
+    end)
+
+    hooksecurefunc('ReputationFrame_InitReputationRow',function(_, elementData)--ReputationFrame.lua 声望 界面,
+        local factionIndex = elementData.index
+        local factionID
+        if ( factionIndex == GetSelectedFaction() ) then
+            if ( ReputationDetailFrame:IsShown() ) then
+                factionID= select(14, GetFactionInfo(factionIndex))
+            end
+        end
+        if factionID and not ReputationDetailFrame.factionIDText then
+            ReputationDetailFrame.factionIDText=e.Cstr(ReputationDetailFrame)
+            ReputationDetailFrame.factionIDText:SetPoint('TOPLEFT', 6, -6)
+        end
+        if ReputationDetailFrame.factionIDText then
+            ReputationDetailFrame.factionIDText:SetText(factionID and (e.onlyChinese and '声望' or REPUTATION)..' '..factionID or '')
+        end
+    end)
+end
 
 
     --###########

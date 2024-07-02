@@ -489,7 +489,8 @@ end
 
 --操作 11版本
 local function Init_MinimizeButton_Options()
-    local btn = ObjectiveTrackerFrame.Header.MinimizeButton
+    local btn= ObjectiveTrackerFrame.HeaderMenu.MinimizeButton
+    --local btn = ObjectiveTrackerFrame.Header.MinimizeButton
     if not btn then
         return
     end

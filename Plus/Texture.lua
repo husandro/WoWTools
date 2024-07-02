@@ -320,6 +320,84 @@ end
 
 
 
+--公会和社区 Blizzard_Communities
+local function Init_Blizzard_Communities()--11版本
+    e.Set_NineSlice_Color_Alpha(CommunitiesFrame, true)
+    e.Set_ScrollBar_Color_Alpha(CommunitiesFrameCommunitiesList)
+    e.Set_ScrollBar_Color_Alpha(CommunitiesFrame.Chat)
+    e.Set_ScrollBar_Color_Alpha(CommunitiesFrame.MemberList)
+    e.Set_ScrollBar_Color_Alpha(CommunitiesFrame.GuildBenefitsFrame.Rewards)
+    e.Set_ScrollBar_Color_Alpha(CommunitiesFrameGuildDetailsFrameNews)
+    e.Set_ScrollBar_Color_Alpha(ClubFinderCommunityAndGuildFinderFrame.CommunityCards)
+
+    set_Alpha_Color(CommunitiesFrameBg)
+    set_Alpha_Color(CommunitiesFrame.MemberList.ColumnDisplay.Background)
+    set_Alpha_Color(CommunitiesFrameCommunitiesList.Bg)
+    set_Alpha_Color(CommunitiesFrameInset.Bg, nil, nil, min03)
+    e.Set_NineSlice_Color_Alpha(CommunitiesFrameInset, nil, true)
+    e.Set_NineSlice_Color_Alpha(CommunitiesFrameCommunitiesList.InsetFrame, true)
+    CommunitiesFrame.GuildBenefitsFrame.Perks:DisableDrawLayer('BACKGROUND')
+    CommunitiesFrameGuildDetailsFrameInfo:DisableDrawLayer('BACKGROUND')
+    CommunitiesFrameGuildDetailsFrameNews:DisableDrawLayer('BACKGROUND')
+
+    set_SearchBox(CommunitiesFrame.ChatEditBox)
+    e.Set_NineSlice_Color_Alpha(CommunitiesFrame.Chat.InsetFrame, true)
+    e.Set_NineSlice_Color_Alpha(CommunitiesFrame.MemberList.InsetFrame, true)
+    set_Alpha_Color(CommunitiesFrameMiddle)
+
+    e.Set_NineSlice_Color_Alpha(ClubFinderCommunityAndGuildFinderFrame.InsetFrame, nil, true)
+    hide_Texture(CommunitiesFrame.GuildBenefitsFrame.Rewards.Bg)
+
+    hooksecurefunc(CommunitiesFrameCommunitiesList,'UpdateCommunitiesList',function()
+        local frame= CommunitiesFrameCommunitiesList.ScrollBox
+        if not frame:GetView() then
+            return
+        end
+        C_Timer.After(0.3, function()
+            for _, button in pairs(frame:GetFrames()) do
+            set_Alpha_Color(button.Background)
+            end
+        end)
+    end)
+
+    set_Alpha_Color(ClubFinderCommunityAndGuildFinderFrame.InsetFrame.Bg)
+
+    hide_Frame_Texture(CommunitiesFrame.ChatTab, {index=1})
+    hide_Frame_Texture(CommunitiesFrame.RosterTab, {index=1})
+    hide_Frame_Texture(CommunitiesFrame.GuildBenefitsTab, {index=1})
+    hide_Frame_Texture(CommunitiesFrame.GuildInfoTab, {index=1})
+    --set_Menu(CommunitiesFrame.StreamDropDownMenu)
+    e.Set_Alpha_Frame_Texture(CommunitiesFrame.AddToChatButton, {notAlpha=true})
+
+    hide_Frame_Texture(ClubFinderCommunityAndGuildFinderFrame.ClubFinderSearchTab, {index=1})
+    hide_Frame_Texture(ClubFinderCommunityAndGuildFinderFrame.ClubFinderPendingTab, {index=1})
+
+    set_Alpha_Color(ClubFinderGuildFinderFrame.InsetFrame.Bg)
+
+    e.Set_Alpha_Frame_Texture(CommunitiesFrame.NotificationSettingsDialog.Selector)
+    e.Set_ScrollBar_Color_Alpha(CommunitiesFrame.NotificationSettingsDialog.ScrollFrame)
+    set_Alpha_Color(CommunitiesFrame.NotificationSettingsDialog.BG, {notAlpha=true})
+    --set_Menu(CommunitiesFrame.NotificationSettingsDialog.CommunitiesListDropDownMenu)
+
+    e.Set_Alpha_Frame_Texture(GuildControlUI)
+    e.Set_Alpha_Frame_Texture(GuildControlUIHbar)
+    --set_Menu(GuildControlUINavigationDropDown)
+
+    --set_Menu(CommunitiesFrame.GuildMemberListDropDownMenu)
+
+    e.Set_Alpha_Frame_Texture(CommunitiesGuildLogFrame)
+    e.Set_NineSlice_Color_Alpha(CommunitiesGuildLogFrame.Container, true)
+    e.Set_ScrollBar_Color_Alpha(CommunitiesGuildLogFrame.Container.ScrollFrame)
+    --set_Menu(CommunitiesFrame.CommunitiesListDropDownMenu)
+
+    --set_Menu(ClubFinderFilterDropdown)
+    --set_Menu(ClubFinderSortByDropdownButton)
+    --set_Menu(ClubFinderLookingForDropdown)
+    --set_Menu(ClubFinderLanguageDropdown)
+
+
+end
+
 
 
 
@@ -547,9 +625,10 @@ local function Init_All_Frame()
     e.Set_NineSlice_Color_Alpha(CurrencyTransferMenuInset)
     e.Set_Alpha_Frame_Texture(TokenFramePopup.Border, {alpha=min05})
 
+if CurrencyTransferMenu then--11版本
     set_SearchBox(CurrencyTransferMenu.AmountSelector.InputBox)
-    
-    --[[法术书
+else
+    --法术书
     e.Set_NineSlice_Color_Alpha(SpellBookFrame, true)
     e.Set_NineSlice_Color_Alpha(SpellBookFrameInset)
     if SpellBookPageText then
@@ -575,7 +654,7 @@ local function Init_All_Frame()
     e.Set_Alpha_Frame_Texture(SpellBookFrameTabButton1, {alpha=min05})
     e.Set_Alpha_Frame_Texture(SpellBookFrameTabButton2, {alpha=min05})
     e.Set_Alpha_Frame_Texture(SpellBookFrameTabButton3, {alpha=min05})
-]]
+end
 
     --世界地图
     e.Set_NineSlice_Color_Alpha(WorldMapFrame.BorderFrame, true)
@@ -1179,83 +1258,6 @@ local function Init_All_Frame()
 
 
 
-
-
-
-
-    --公会和社区 Blizzard_Communities
-    e.Set_NineSlice_Color_Alpha(CommunitiesFrame, true)
-    e.Set_ScrollBar_Color_Alpha(CommunitiesFrameCommunitiesList)
-    e.Set_ScrollBar_Color_Alpha(CommunitiesFrame.Chat)
-    e.Set_ScrollBar_Color_Alpha(CommunitiesFrame.MemberList)
-    e.Set_ScrollBar_Color_Alpha(CommunitiesFrame.GuildBenefitsFrame.Rewards)
-    e.Set_ScrollBar_Color_Alpha(CommunitiesFrameGuildDetailsFrameNews)
-    e.Set_ScrollBar_Color_Alpha(ClubFinderCommunityAndGuildFinderFrame.CommunityCards)
-
-    set_Alpha_Color(CommunitiesFrameBg)
-    set_Alpha_Color(CommunitiesFrame.MemberList.ColumnDisplay.Background)
-    set_Alpha_Color(CommunitiesFrameCommunitiesList.Bg)
-    set_Alpha_Color(CommunitiesFrameInset.Bg, nil, nil, min03)
-    e.Set_NineSlice_Color_Alpha(CommunitiesFrameInset, nil, true)
-    e.Set_NineSlice_Color_Alpha(CommunitiesFrameCommunitiesList.InsetFrame, true)
-    CommunitiesFrame.GuildBenefitsFrame.Perks:DisableDrawLayer('BACKGROUND')
-    CommunitiesFrameGuildDetailsFrameInfo:DisableDrawLayer('BACKGROUND')
-    CommunitiesFrameGuildDetailsFrameNews:DisableDrawLayer('BACKGROUND')
-
-    set_SearchBox(CommunitiesFrame.ChatEditBox)
-    e.Set_NineSlice_Color_Alpha(CommunitiesFrame.Chat.InsetFrame, true)
-    e.Set_NineSlice_Color_Alpha(CommunitiesFrame.MemberList.InsetFrame, true)
-    set_Alpha_Color(CommunitiesFrameMiddle)
-
-    e.Set_NineSlice_Color_Alpha(ClubFinderCommunityAndGuildFinderFrame.InsetFrame, nil, true)
-    hide_Texture(CommunitiesFrame.GuildBenefitsFrame.Rewards.Bg)
-
-    hooksecurefunc(CommunitiesFrameCommunitiesList,'UpdateCommunitiesList',function()
-        local frame= CommunitiesFrameCommunitiesList.ScrollBox
-        if not frame:GetView() then
-            return
-        end
-        C_Timer.After(0.3, function()
-            for _, button in pairs(frame:GetFrames()) do
-            set_Alpha_Color(button.Background)
-            end
-        end)
-    end)
-
-    set_Alpha_Color(ClubFinderCommunityAndGuildFinderFrame.InsetFrame.Bg)
-
-    hide_Frame_Texture(CommunitiesFrame.ChatTab, {index=1})
-    hide_Frame_Texture(CommunitiesFrame.RosterTab, {index=1})
-    hide_Frame_Texture(CommunitiesFrame.GuildBenefitsTab, {index=1})
-    hide_Frame_Texture(CommunitiesFrame.GuildInfoTab, {index=1})
-    --set_Menu(CommunitiesFrame.StreamDropDownMenu)
-    e.Set_Alpha_Frame_Texture(CommunitiesFrame.AddToChatButton, {notAlpha=true})
-
-    hide_Frame_Texture(ClubFinderCommunityAndGuildFinderFrame.ClubFinderSearchTab, {index=1})
-    hide_Frame_Texture(ClubFinderCommunityAndGuildFinderFrame.ClubFinderPendingTab, {index=1})
-
-    set_Alpha_Color(ClubFinderGuildFinderFrame.InsetFrame.Bg)
-
-    e.Set_Alpha_Frame_Texture(CommunitiesFrame.NotificationSettingsDialog.Selector)
-    e.Set_ScrollBar_Color_Alpha(CommunitiesFrame.NotificationSettingsDialog.ScrollFrame)
-    set_Alpha_Color(CommunitiesFrame.NotificationSettingsDialog.BG, {notAlpha=true})
-    --set_Menu(CommunitiesFrame.NotificationSettingsDialog.CommunitiesListDropDownMenu)
-
-    e.Set_Alpha_Frame_Texture(GuildControlUI)
-    e.Set_Alpha_Frame_Texture(GuildControlUIHbar)
-    --set_Menu(GuildControlUINavigationDropDown)
-
-    --set_Menu(CommunitiesFrame.GuildMemberListDropDownMenu)
-
-    e.Set_Alpha_Frame_Texture(CommunitiesGuildLogFrame)
-    e.Set_NineSlice_Color_Alpha(CommunitiesGuildLogFrame.Container, true)
-    e.Set_ScrollBar_Color_Alpha(CommunitiesGuildLogFrame.Container.ScrollFrame)
-    --set_Menu(CommunitiesFrame.CommunitiesListDropDownMenu)
-
-    --set_Menu(ClubFinderFilterDropdown)
-    --set_Menu(ClubFinderSortByDropdownButton)
-    --set_Menu(ClubFinderLookingForDropdown)
-    --set_Menu(ClubFinderLanguageDropdown)
 
 
 
@@ -2904,7 +2906,10 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             if Save.disabled then
                 panel:UnregisterEvent('ADDON_LOADED')
             else
-
+                if C_AddOns.IsAddOnLoaded('Blizzard_Communities') then--11版本
+                    Init_Blizzard_Communities()
+                end
+                
                 for _, ent in pairs(eventTab or {}) do
                     Init_Event(ent)
                 end
@@ -2936,6 +2941,10 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             e.Set_Alpha_Frame_Texture(SettingsPanel.AddOnsTab, {notAlpha=true})
             set_SearchBox(SettingsPanel.SearchBox)
             e.Set_Alpha_Frame_Texture(SettingsPanel, {index=1})
+        
+        elseif arg1=='Blizzard_Communities' then--11版本
+            Init_Blizzard_Communities()
+
         else
             if eventTab then
                 table.insert(eventTab, arg1)

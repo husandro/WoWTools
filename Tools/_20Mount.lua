@@ -1439,12 +1439,21 @@ local function Init_MountJournal()
 
     MountJournal.MountCount:ClearAllPoints()
     MountJournal.MountCount:SetPoint('BOTTOMLEFT', MountJournalSearchBox, 'TOPLEFT',-3, 0)
-    MountJournal.MountCount:SetPoint('RIGHT', MountJournal.FilterDropdown, 'LEFT', -2, 0)
-    MountJournal.FilterDropdown.ResetButton:HookScript('OnClick', function()
-        if _G['MountJournalFilterButtonWoWTools'].ResetButton:IsShown() then
-            _G['MountJournalFilterButtonWoWTools'].ResetButton:Click()
-        end
-    end)
+    if MountJournalFilterButton  then --11版本
+        MountJournal.MountCount:SetPoint('RIGHT', MountJournalFilterButton, 'LEFT', -2, 0)
+        MountJournalFilterButton.ResetButton:HookScript('OnClick', function()
+            if _G['MountJournalFilterButtonWoWTools'].ResetButton:IsShown() then
+                _G['MountJournalFilterButtonWoWTools'].ResetButton:Click()
+            end
+        end)
+    else
+        MountJournal.MountCount:SetPoint('RIGHT', MountJournal.FilterDropdown, 'LEFT', -2, 0)
+        MountJournal.FilterDropdown.ResetButton:HookScript('OnClick', function()
+            if _G['MountJournalFilterButtonWoWTools'].ResetButton:IsShown() then
+                _G['MountJournalFilterButtonWoWTools'].ResetButton:Click()
+            end
+        end)
+    end
 end
 
 

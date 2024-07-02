@@ -1,4 +1,4 @@
-## Interface: 110000
+## Interface: 100207
 ## Title: |cffff00ffWoW|r |cff00ff00Tools|r
 ## Author: husandro
 ## Version: 1
@@ -17,6 +17,8 @@
 ## AddonCompartmentFunc: WowTools_OnAddonCompartmentClick
 ## AddonCompartmentFuncOnEnter: WowTools_OnAddonCompartmentFuncOnEnter
 
+##10.27 到11版本的API, 修该
+API11.lua
 
 ##库，不能删除
 Libs\LibStub.lua
@@ -88,6 +90,7 @@ Plus\Challenges.lua
 Plus\mail.lua
 ##银行
 Plus\Bank.lua
+Plus\Bank1027.lua
 ##自动对话，任务
 Plus\Gossip.lua
 ##卖买

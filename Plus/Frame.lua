@@ -848,6 +848,163 @@ end
 
 
 
+local set_Init_Blizzard_Communities
+local function Init_Blizzard_Communities()--公会和社区 then--11版本
+    if set_Init_Blizzard_Communities then
+        return
+    end
+    set_Init_Blizzard_Communities=true
+    
+    e.Set_Move_Frame(CommunitiesFrame, {setSize=true, initFunc=function()--elseif arg1=='Blizzard_Communities' then--公会和社区
+        local function set_size(frame)
+            local self= frame:GetParent()
+            local size, scale
+            local displayMode = self:GetDisplayMode();
+            if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
+                self.ResizeButton.minWidth= 290
+                self.ResizeButton.minHeight= 115
+                size= Save.size['CommunitiesFrameMINIMIZED']
+                scale= Save.scale['CommunitiesFrameMINIMIZED']
+            else
+                size= Save.size['CommunitiesFrameNormal']
+                scale= Save.scale['CommunitiesFrameNormal']
+                self.ResizeButton.minWidth= 814
+                self.ResizeButton.minHeight= 426
+            end
+            if size then
+                self:SetSize(size[1], size[2])
+            end
+            if scale then
+                self:SetScale(scale)
+            end
+        end
+        hooksecurefunc(CommunitiesFrame.MaxMinButtonFrame, 'Minimize', set_size)--maximizedCallback
+        hooksecurefunc(CommunitiesFrame.MaxMinButtonFrame, 'Maximize', set_size)
+        hooksecurefunc(ClubFinderCommunityAndGuildFinderFrame.CommunityCards.ScrollBox, 'Update', function(frame)
+            if not frame:GetView() then
+                return
+            end
+            for _, btn in pairs(frame:GetFrames() or {}) do
+                btn.Name:ClearAllPoints()
+                btn.Name:SetPoint('TOPLEFT', btn.LogoBorder, 'TOPRIGHT', 12,0)
+                btn.Description:ClearAllPoints()
+                btn.Description:SetPoint('LEFT', btn.LogoBorder, 'RIGHT', 12,0)
+                btn.Description:SetPoint('RIGHT', btn.RequestJoin, 'LEFT', -26,0)
+                btn.Background:SetPoint('RIGHT', -12,0)--移动背景
+                local cardInfo= btn.cardInfo-- or {}-- clubFinderGUID, isCrossFaction, clubId, 
+
+                if not btn.corssFactionTexture and cardInfo.isCrossFaction then--跨阵营
+                    btn.corssFactionTexture= btn:CreateTexture(nil, 'OVERLAY')
+                    btn.corssFactionTexture:SetSize(18,18)
+                    btn.corssFactionTexture:SetAtlas('CrossedFlags')
+                    btn.corssFactionTexture:SetPoint('LEFT', btn.MemberIcon, 'RIGHT', 4, 0)
+                end
+                if btn.corssFactionTexture then
+                    btn.corssFactionTexture:SetShown(true)--not cardInfo.isCrossFaction)
+                end
+                local autoAccept--自动，批准, 无效
+                local clubStatus= cardInfo.clubFinderGUID and C_ClubFinder.GetPlayerClubApplicationStatus(cardInfo.clubFinderGUID)
+                btn:SetAlpha(btn.RequestJoin:IsShown() and 1 or 0.3)
+                if clubStatus then
+                    autoAccept= clubStatus== Enum.PlayerClubRequestStatus.AutoApproved--2
+                end
+                if not btn.autoAcceptTexture and autoAccept then
+                    btn.autoAcceptTexture= btn:CreateTexture(nil, 'OVERLAY')
+                    btn.autoAcceptTexture:SetSize(18,18)
+                    btn.autoAcceptTexture:SetAtlas(e.Icon.select)
+                    btn.autoAcceptTexture:SetPoint('LEFT', btn.MemberIcon, 'RIGHT', 24, 0)
+                end
+                if btn.autoAcceptTexture then
+                    btn.autoAcceptTexture:SetShown(autoAccept)
+                end
+            end
+        end)
+    end, scaleStoppedFunc= function(btn)
+        local self= btn.target
+        local displayMode = self:GetDisplayMode()
+        if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
+            Save.scale['CommunitiesFrameMINIMIZED']= self:GetScale()
+        else
+            Save.scale['CommunitiesFrameNormal']= self:GetScale()
+        end
+    end, scaleRestFunc=function(btn)
+        local displayMode = btn.target:GetDisplayMode()
+        if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
+            Save.scale['CommunitiesFrameMINIMIZED']= nil
+        else
+            Save.scale['CommunitiesFrameNormal']= nil
+        end
+    end, sizeStopFunc=function(btn)
+        local self= btn.target
+        local displayMode = self:GetDisplayMode()
+        if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
+            Save.size['CommunitiesFrameMINIMIZED']= {self:GetSize()}
+        else
+            Save.size['CommunitiesFrameNormal']= {self:GetSize()}
+        end
+    end, sizeRestFunc=function(btn)
+        local self= btn.target
+        local displayMode = self:GetDisplayMode()
+        if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
+            Save.size['CommunitiesFrameMINIMIZED']=nil
+            self:SetSize(322, 406)
+        elseif Save.size['CommunitiesFrameNormal'] then
+            Save.size['CommunitiesFrameNormal']= nil
+            self:SetSize(814, 426)
+        end
+    end, sizeRestTooltipColorFunc=function(btn)
+        local displayMode = btn.target:GetDisplayMode()
+        if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
+            if Save.size['CommunitiesFrameMINIMIZED'] then
+                return ''
+            end
+        elseif Save.size['CommunitiesFrameNormal'] then
+            return ''
+        end
+        return '|cff606060'
+    end,
+    })
+    e.Set_Move_Frame(CommunitiesFrame.RecruitmentDialog)
+    e.Set_Move_Frame(CommunitiesFrame.NotificationSettingsDialog)
+    e.Set_Move_Frame(CommunitiesFrame.NotificationSettingsDialog.Selector, {frame=CommunitiesFrame.NotificationSettingsDialog})
+    e.Set_Move_Frame(CommunitiesFrame.NotificationSettingsDialog.ScrollFrame, {frame=CommunitiesFrame.NotificationSettingsDialog})
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2102,6 +2259,7 @@ local function Init_Move()
 
 
     --角色
+if ReputationEntryMixin  then--11版本
     e.Set_Move_Frame(CharacterFrame, {minW=338, minH=424, setSize=true, initFunc=function()
         PaperDollFrame.TitleManagerPane:ClearAllPoints()
         PaperDollFrame.TitleManagerPane:SetPoint('TOPLEFT', CharacterFrameInsetRight, 4, -4)
@@ -2184,20 +2342,24 @@ local function Init_Move()
         --货币
         e.Set_Move_Frame(TokenFrame, {frame=CharacterFrame})
         --e.Set_Move_Frame(CurrencyTransferLog, {frame=CharacterFrame})
-        e.Set_Move_Frame(CurrencyTransferLog.TitleContainer, {frame=CharacterFrame})
+        if CurrencyTransferLog then
+            e.Set_Move_Frame(CurrencyTransferLog.TitleContainer, {frame=CharacterFrame})
+            set_Scale_Size(CurrencyTransferLog, {setSize=true, sizeRestFunc=function(btn)
+                btn.target:ClearAllPoints()
+                btn.target:SetPoint('TOPLEFT', TokenFrame, 'TOPRIGHT', 5,0)
+                btn.target:SetSize(340, 370)
+            end, scaleRestFunc= function(btn)
+                btn.target:ClearAllPoints()
+                btn.target:SetPoint('TOPLEFT', TokenFrame, 'TOPRIGHT', 5,0)
+            end, })
+            e.Set_Move_Frame(CurrencyTransferMenu)
+            e.Set_Move_Frame(CurrencyTransferMenu.TitleContainer, {frame=CurrencyTransferMenu})
+        end
         e.Set_Move_Frame(TokenFramePopup, {frame=CharacterFrame})
 
-        set_Scale_Size(CurrencyTransferLog, {setSize=true, sizeRestFunc=function(btn)
-            btn.target:ClearAllPoints()
-            btn.target:SetPoint('TOPLEFT', TokenFrame, 'TOPRIGHT', 5,0)
-            btn.target:SetSize(340, 370)
-        end, scaleRestFunc= function(btn)
-            btn.target:ClearAllPoints()
-            btn.target:SetPoint('TOPLEFT', TokenFrame, 'TOPRIGHT', 5,0)
-        end, })
+        
 
-        e.Set_Move_Frame(CurrencyTransferMenu)
-        e.Set_Move_Frame(CurrencyTransferMenu.TitleContainer, {frame=CurrencyTransferMenu})
+        
         
         
 
@@ -2227,6 +2389,134 @@ local function Init_Move()
     end, sizeRestTooltipColorFunc=function(self)
         return ((self.target.Expanded and Save.size['CharacterFrameExpanded']) or (not self.target.Expanded and Save.size['CharacterFrameCollapse'])) and '' or '|cff606060'
     end})
+
+else
+
+
+
+
+    e.Set_Move_Frame(CharacterFrame, {minW=338, minH=424, setSize=true, initFunc=function()
+        PaperDollFrame.TitleManagerPane:ClearAllPoints()
+        PaperDollFrame.TitleManagerPane:SetPoint('TOPLEFT', CharacterFrameInsetRight, 4, -4)
+        PaperDollFrame.TitleManagerPane:SetPoint('BOTTOMRIGHT', CharacterFrameInsetRight, -4, 4)
+        PaperDollFrame.TitleManagerPane.ScrollBox:ClearAllPoints()
+        PaperDollFrame.TitleManagerPane.ScrollBox:SetPoint('TOPLEFT',CharacterFrameInsetRight,4,-4)
+        PaperDollFrame.TitleManagerPane.ScrollBox:SetPoint('BOTTOMRIGHT', CharacterFrameInsetRight, -22,0)
+
+        PaperDollFrame.EquipmentManagerPane:ClearAllPoints()
+        PaperDollFrame.EquipmentManagerPane:SetPoint('TOPLEFT', CharacterFrameInsetRight, 4, -4)
+        PaperDollFrame.EquipmentManagerPane:SetPoint('BOTTOMRIGHT', CharacterFrameInsetRight, -4, 4)
+        PaperDollFrame.EquipmentManagerPane.ScrollBox:ClearAllPoints()
+        PaperDollFrame.EquipmentManagerPane.ScrollBox:SetPoint('TOPLEFT', CharacterFrameInsetRight, 4, -28)
+        PaperDollFrame.EquipmentManagerPane.ScrollBox:SetPoint('BOTTOMRIGHT', CharacterFrameInsetRight, -22,0)
+
+        CharacterModelScene:ClearAllPoints()
+        CharacterModelScene:SetPoint('TOPLEFT', 52, -66)
+        CharacterModelScene:SetPoint('BOTTOMRIGHT', CharacterFrameInset, -50, 34)
+
+        CharacterModelFrameBackgroundOverlay:ClearAllPoints()
+        CharacterModelFrameBackgroundOverlay:SetAllPoints(CharacterModelScene)
+
+        CharacterModelFrameBackgroundTopLeft:ClearAllPoints()
+        CharacterModelFrameBackgroundTopLeft:SetPoint('TOPLEFT')
+        CharacterModelFrameBackgroundTopLeft:SetPoint('BOTTOMRIGHT',-19, 128)
+
+        CharacterModelFrameBackgroundTopRight:ClearAllPoints()
+        CharacterModelFrameBackgroundTopRight:SetPoint('TOPLEFT', CharacterModelFrameBackgroundTopLeft, 'TOPRIGHT')
+        CharacterModelFrameBackgroundTopRight:SetPoint('BOTTOMRIGHT', 0, 128)
+
+        CharacterModelFrameBackgroundBotLeft:ClearAllPoints()
+        CharacterModelFrameBackgroundBotLeft:SetPoint('TOPLEFT', CharacterModelFrameBackgroundTopLeft, 'BOTTOMLEFT')
+        CharacterModelFrameBackgroundBotLeft:SetPoint('BOTTOMRIGHT', -19, 0)
+
+        CharacterModelFrameBackgroundBotRight:ClearAllPoints()
+        CharacterModelFrameBackgroundBotRight:SetPoint('TOPLEFT', CharacterModelFrameBackgroundBotLeft, 'TOPRIGHT')
+        CharacterModelFrameBackgroundBotRight:SetPoint('BOTTOMRIGHT')
+
+        CharacterStatsPane.ClassBackground:ClearAllPoints()
+        CharacterStatsPane.ClassBackground:SetAllPoints(CharacterStatsPane)
+
+        CharacterMainHandSlot:ClearAllPoints()
+        CharacterMainHandSlot:SetPoint('BOTTOMRIGHT', CharacterFrameInset, 'BOTTOM', -2.5, 16)
+        CharacterFrameInset:ClearAllPoints()
+        CharacterFrameInset:SetPoint('TOPLEFT', 4, -60)
+        --PANEL_DEFAULT_WIDTH 338
+        --CHARACTERFRAME_EXPANDED_WIDTH 540
+        --CharacterStatsPane width 197
+        hooksecurefunc('CharacterFrame_Collapse', function()
+            if not CharacterFrameInset:CanChangeAttribute() then
+                return
+            end
+            CharacterFrameInset:SetPoint('BOTTOMRIGHT',-4, 4)
+            local size= Save.size['CharacterFrameCollapse']
+            if size then
+                CharacterFrame:SetSize(size[1], size[2])
+            else
+                CharacterFrame:SetSize(PANEL_DEFAULT_WIDTH, 424)
+            end
+            CharacterFrame.ResizeButton.minWidth= 270
+            CharacterFrame.ResizeButton.minHeight= 115
+        end)
+        hooksecurefunc('CharacterFrame_Expand', function()--显示角色，界面            
+            if not CharacterFrameInset:CanChangeAttribute() then
+                return
+            end
+            CharacterFrameInset:SetPoint('BOTTOMRIGHT', -221, 4)
+            local size= Save.size['CharacterFrameExpanded']
+            if size then
+                CharacterFrame:SetSize(size[1], size[2])
+            elseif Save.size['CharacterFrameCollapse'] then
+                CharacterFrame:SetHeight(424)
+            end
+            CharacterFrame.ResizeButton.minWidth= CHARACTERFRAME_EXPANDED_WIDTH
+            CharacterFrame.ResizeButton.minHeight= 424
+        end)
+        e.Set_Move_Frame(ReputationFrame, {frame=CharacterFrame})
+        e.Set_Move_Frame(TokenFrame, {frame=CharacterFrame})
+
+    end, sizeUpdateFunc=function()
+        if PaperDollFrame.EquipmentManagerPane:IsVisible() then
+            e.call('PaperDollEquipmentManagerPane_Update')
+        end
+        if PaperDollFrame.TitleManagerPane:IsVisible() then
+            e.call('PaperDollTitlesPane_Update')
+        end
+    end, sizeStopFunc=function(btn)
+        local self= btn.target
+        if CharacterFrame.Expanded then
+            Save.size['CharacterFrameExpanded']={self:GetSize()}
+        else
+            Save.size['CharacterFrameCollapse']={self:GetSize()}
+        end
+    end, sizeRestFunc=function(btn)
+        local self= btn.target
+        if self.Expanded then
+            Save.size['CharacterFrameExpanded']=nil
+            self:SetSize(CHARACTERFRAME_EXPANDED_WIDTH, 424)
+        else
+            Save.size['CharacterFrameCollapse']=nil
+            self:SetSize(PANEL_DEFAULT_WIDTH, 424)
+        end
+    end, sizeRestTooltipColorFunc=function(self)
+        return ((self.target.Expanded and Save.size['CharacterFrameExpanded']) or (not self.target.Expanded and Save.size['CharacterFrameCollapse'])) and '' or '|cff606060'
+    end})
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     --好友列表
     e.Set_Move_Frame(FriendsFrame, {notInCombat=true, setSize=true, minW=338, minH=424, initFunc=function(btn)
@@ -2380,119 +2670,17 @@ local function Init_Move()
 
 
 
-    e.Set_Move_Frame(CommunitiesFrame, {setSize=true, initFunc=function()--elseif arg1=='Blizzard_Communities' then--公会和社区
-        local function set_size(frame)
-            local self= frame:GetParent()
-            local size, scale
-            local displayMode = self:GetDisplayMode();
-            if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
-                self.ResizeButton.minWidth= 290
-                self.ResizeButton.minHeight= 115
-                size= Save.size['CommunitiesFrameMINIMIZED']
-                scale= Save.scale['CommunitiesFrameMINIMIZED']
-            else
-                size= Save.size['CommunitiesFrameNormal']
-                scale= Save.scale['CommunitiesFrameNormal']
-                self.ResizeButton.minWidth= 814
-                self.ResizeButton.minHeight= 426
-            end
-            if size then
-                self:SetSize(size[1], size[2])
-            end
-            if scale then
-                self:SetScale(scale)
-            end
-        end
-        hooksecurefunc(CommunitiesFrame.MaxMinButtonFrame, 'Minimize', set_size)--maximizedCallback
-        hooksecurefunc(CommunitiesFrame.MaxMinButtonFrame, 'Maximize', set_size)
-        hooksecurefunc(ClubFinderCommunityAndGuildFinderFrame.CommunityCards.ScrollBox, 'Update', function(frame)
-            if not frame:GetView() then
-                return
-            end
-            for _, btn in pairs(frame:GetFrames() or {}) do
-                btn.Name:ClearAllPoints()
-                btn.Name:SetPoint('TOPLEFT', btn.LogoBorder, 'TOPRIGHT', 12,0)
-                btn.Description:ClearAllPoints()
-                btn.Description:SetPoint('LEFT', btn.LogoBorder, 'RIGHT', 12,0)
-                btn.Description:SetPoint('RIGHT', btn.RequestJoin, 'LEFT', -26,0)
-                btn.Background:SetPoint('RIGHT', -12,0)--移动背景
-                local cardInfo= btn.cardInfo-- or {}-- clubFinderGUID, isCrossFaction, clubId, 
 
-                if not btn.corssFactionTexture and cardInfo.isCrossFaction then--跨阵营
-                    btn.corssFactionTexture= btn:CreateTexture(nil, 'OVERLAY')
-                    btn.corssFactionTexture:SetSize(18,18)
-                    btn.corssFactionTexture:SetAtlas('CrossedFlags')
-                    btn.corssFactionTexture:SetPoint('LEFT', btn.MemberIcon, 'RIGHT', 4, 0)
-                end
-                if btn.corssFactionTexture then
-                    btn.corssFactionTexture:SetShown(true)--not cardInfo.isCrossFaction)
-                end
-                local autoAccept--自动，批准, 无效
-                local clubStatus= cardInfo.clubFinderGUID and C_ClubFinder.GetPlayerClubApplicationStatus(cardInfo.clubFinderGUID)
-                btn:SetAlpha(btn.RequestJoin:IsShown() and 1 or 0.3)
-                if clubStatus then
-                    autoAccept= clubStatus== Enum.PlayerClubRequestStatus.AutoApproved--2
-                end
-                if not btn.autoAcceptTexture and autoAccept then
-                    btn.autoAcceptTexture= btn:CreateTexture(nil, 'OVERLAY')
-                    btn.autoAcceptTexture:SetSize(18,18)
-                    btn.autoAcceptTexture:SetAtlas(e.Icon.select)
-                    btn.autoAcceptTexture:SetPoint('LEFT', btn.MemberIcon, 'RIGHT', 24, 0)
-                end
-                if btn.autoAcceptTexture then
-                    btn.autoAcceptTexture:SetShown(autoAccept)
-                end
-            end
-        end)
-    end, scaleStoppedFunc= function(btn)
-        local self= btn.target
-        local displayMode = self:GetDisplayMode()
-        if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
-            Save.scale['CommunitiesFrameMINIMIZED']= self:GetScale()
-        else
-            Save.scale['CommunitiesFrameNormal']= self:GetScale()
-        end
-    end, scaleRestFunc=function(btn)
-        local displayMode = btn.target:GetDisplayMode()
-        if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
-            Save.scale['CommunitiesFrameMINIMIZED']= nil
-        else
-            Save.scale['CommunitiesFrameNormal']= nil
-        end
-    end, sizeStopFunc=function(btn)
-        local self= btn.target
-        local displayMode = self:GetDisplayMode()
-        if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
-            Save.size['CommunitiesFrameMINIMIZED']= {self:GetSize()}
-        else
-            Save.size['CommunitiesFrameNormal']= {self:GetSize()}
-        end
-    end, sizeRestFunc=function(btn)
-        local self= btn.target
-        local displayMode = self:GetDisplayMode()
-        if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
-            Save.size['CommunitiesFrameMINIMIZED']=nil
-            self:SetSize(322, 406)
-        elseif Save.size['CommunitiesFrameNormal'] then
-            Save.size['CommunitiesFrameNormal']= nil
-            self:SetSize(814, 426)
-        end
-    end, sizeRestTooltipColorFunc=function(btn)
-        local displayMode = btn.target:GetDisplayMode()
-        if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
-            if Save.size['CommunitiesFrameMINIMIZED'] then
-                return ''
-            end
-        elseif Save.size['CommunitiesFrameNormal'] then
-            return ''
-        end
-        return '|cff606060'
-    end,
-    })
-    e.Set_Move_Frame(CommunitiesFrame.RecruitmentDialog)
-    e.Set_Move_Frame(CommunitiesFrame.NotificationSettingsDialog)
-    e.Set_Move_Frame(CommunitiesFrame.NotificationSettingsDialog.Selector, {frame=CommunitiesFrame.NotificationSettingsDialog})
-    e.Set_Move_Frame(CommunitiesFrame.NotificationSettingsDialog.ScrollFrame, {frame=CommunitiesFrame.NotificationSettingsDialog})
+
+
+
+
+
+
+
+
+
+
 
 
     --地下城和团队副本
@@ -2865,6 +3053,21 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --###########
 --加载保存数据
 --###########
@@ -2897,6 +3100,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:UnregisterAllEvents()
             else
                 Init_Move()--初始, 移动
+                if C_AddOns.IsAddOnLoaded('Blizzard_Communities') then--11版本
+                    Init_Blizzard_Communities()
+                end
                 for _, ent in pairs(eventTab or {}) do
                     setAddLoad(ent)
                 end
@@ -2907,6 +3113,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         elseif arg1=='Blizzard_Settings' then
             Init_Options()--初始, 选项
 
+        elseif arg1=='Blizzard_Communities' then--11版本
+            Init_Blizzard_Communities()
         else
             if eventTab then
                 table.insert(eventTab, arg1)

@@ -1289,8 +1289,11 @@ end
 
 
 
---货币，转移
+--货币，转移 11版本
 local function Init_Currency_Transfer()
+	if not CurrencyTransferLog then
+		return
+	end
 	hooksecurefunc(CurrencyTransferLog.ScrollBox, 'Update', function(self)
 		for _, btn in pairs(self:GetFrames() or {}) do
 			local data= btn.transactionData or {}
@@ -1574,32 +1577,51 @@ local function Init()
 		end
 	end)
 
-	
-	hooksecurefunc(TokenFrame, 'UpdatePopup', function(_, btn)--货币设置，加个图标
-		local self= TokenFramePopup
-		if not self.Icon then
-			self.Icon= self:CreateTexture()
-			self.Icon:SetSize(32,32)
-			self.Icon:SetPoint('TOPRIGHT', -22,-22)
-		end
-		self.Icon:SetTexture(btn.elementData.iconFileID or 0)
-	end)
+	if TokenFrame.UpdatePopup then--11版本
+		hooksecurefunc(TokenFrame, 'UpdatePopup', function(_, btn)--货币设置，加个图标
+			local self= TokenFramePopup
+			if not self.Icon then
+				self.Icon= self:CreateTexture()
+				self.Icon:SetSize(32,32)
+				self.Icon:SetPoint('TOPRIGHT', -22,-22)
+			end
+			self.Icon:SetTexture(btn.elementData.iconFileID or 0)
+		end)
+	end
 
 
 	Init_Currency_Transfer()--货币，转移
 
-
+	
 	C_Timer.After(4, function()
 		Init_TrackButton()
-		hooksecurefunc(TokenFrame, 'Update', function(self)
-			set_ItemInteractionFrame_Currency(self)--套装,转换,货币
-			Set_TrackButton_Text()
-		end)
-		hooksecurefunc(TokenFrame.ScrollBox, 'Update', function(f)
-			for _, frame in pairs(f:GetFrames()) do
+		if TokenFrame.Update then--11版本
+			hooksecurefunc(TokenFrame, 'Update', function(self)
+				set_ItemInteractionFrame_Currency(self)--套装,转换,货币
+				Set_TrackButton_Text()
+			end)
+			hooksecurefunc(TokenFrame.ScrollBox, 'Update', function(f)
+				for _, frame in pairs(f:GetFrames()) do
+					set_Tokens_Button(frame)--设置, 列表, 内容
+				end
+			end)
+
+		else
+			hooksecurefunc('TokenFrame_InitTokenButton',function(_, frame)--Blizzard_TokenUI.lua
 				set_Tokens_Button(frame)--设置, 列表, 内容
-			end
-		end)
+			end)
+			hooksecurefunc('TokenFrame_Update', function()
+				local f=TokenFrame
+				if not f.ScrollBox:GetView() then
+					return
+				end
+				for _, frame in pairs(f.ScrollBox:GetFrames()) do
+					set_Tokens_Button(frame)--设置, 列表, 内容
+				end
+				set_ItemInteractionFrame_Currency(f)--套装,转换,货币
+				Set_TrackButton_Text()
+			end)
+		end
 
 		if not Save.hideCurrencyMax then
 			Button:currency_Max()--已达到资源上限

@@ -344,15 +344,21 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1==id then
             if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button
                 Save= WoWToolsSave[addName] or Save
-                Init()
+                
                 --panel:RegisterUnitEvent('PLAYER_GUILD_UPDATE', "player")
-                self:UnregisterEvent('ADDON_LOADED')
+                if C_AddOns.IsAddOnLoaded('Blizzard_Communities') then--11版本
+                    Init()
+                    self:UnregisterEvent('ADDON_LOADED')
+                end
+                
             else
                 self:UnregisterAllEvents()
             end
 
-        --elseif arg1=='Blizzard_Communities' then
             
+        elseif arg1=='Blizzard_Communities' then
+            Init()
+            self:UnregisterEvent('ADDON_LOADED')
         end
 
     elseif event == "PLAYER_LOGOUT" then
