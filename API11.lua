@@ -11,6 +11,7 @@ C_Spell.IsSpellUsable= IsUsableSpell
 C_Spell.GetSpellName= GetSpellInfo
 C_Spell.GetSpellTexture= GetSpellTexture
 C_Spell.GetSpellLink= GetSpellLink
+C_Spell.GetSpellDescription= GetSpellDescription
 C_Spell.GetSpellCooldown= function(spell)
 	local start, duration, enabled, modRate=  GetSpellCooldown(spell)
 	return{
@@ -20,5 +21,13 @@ C_Spell.GetSpellCooldown= function(spell)
 		modRate=modRate
 	}
 end
-C_Spell.GetSpellDescription= GetSpellDescription
-
+C_Spell.GetSpellCharges= function(spell)
+	local urrentCharges, maxCharges, cooldownStart, cooldownDuration, chargeModRate= GetSpellCharges(spell)
+	return {
+		urrentCharges= urrentCharges,
+		maxCharges= maxCharges,
+		cooldownStart= cooldownStart,
+		cooldownDuration= cooldownDuration,
+		chargeModRate= chargeModRate,
+	}
+end
