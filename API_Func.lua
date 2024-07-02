@@ -915,18 +915,20 @@ end
 
 
 function e.GetFactionInfo(factionID, index, toRight)
-    local data= factionID and C_Reputation.GetFactionDataByID(factionID) or (index and C_Reputation.GetFactionDataByIndex(index)) or {}
+    local data
+    if factionID then
+        data= C_Reputation.GetFactionDataByID(factionID)
+    elseif index then
+        data= C_Reputation.GetFactionDataByIndex(index)    
+    end
 
-    --factionID, description, name, reaction
-    --hasBonusRepCain, isHeaderWithRep, isHeader, canSetInactive, atWarWith, isWatched, isCollapsed, canToggleAtWar, isAccountWide, isChild
-    --currentReactionThresholod, nextReactionThreshold, currentStanding
-
-    local name= data.name
-    factionID= factionID or data.factionID
-    if not factionID or not name then
+    if not data or not data.name then
         return {}
     end
     
+    factionID= factionID or data.factionID
+
+    local name= data.name
     local isHeader= data.isHeader
     local isHeaderWithRep= data.isHeaderWithRep
     local standingID= data.reaction

@@ -48,7 +48,9 @@ API_WoWDate.lua
 
 
 
-
+Plus\Faction1027.lua
+Plus\Bank1027.lua
+Plus\Currency1027.lua
 
 ##WoWPlus
 ##移动框架, 缩放--放在第一个，有些，需要放置点，到移动按钮上
@@ -90,7 +92,6 @@ Plus\Challenges.lua
 Plus\mail.lua
 ##银行
 Plus\Bank.lua
-Plus\Bank1027.lua
 ##自动对话，任务
 Plus\Gossip.lua
 ##卖买
