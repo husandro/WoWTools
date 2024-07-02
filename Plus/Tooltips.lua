@@ -1864,6 +1864,22 @@ local function Init()
         end
     end)
 
+if not Enum.SpellBookSpellBank then--11版本
+    hooksecurefunc(GameTooltip, 'SetSpellBookItem', function(_, slot, unit)--技能收，宠物，技能，提示
+        if unit=='pet' and slot then
+            local icon=GetSpellBookItemTexture(slot, 'pet')
+            local spellID = select(3, GetSpellBookItemName(slot, 'pet'))
+            if spellID then
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine((e.onlyChinese and '法术' or SPELLS)..' '..spellID, icon and '|T'..icon..':0|t'..icon)
+                local slotType, actionID = GetSpellBookItemInfo(slot, 'pet')
+                if slotType and actionID then
+                    e.tips:AddDoubleLine('slotType '..slotType, 'actionID '..actionID)
+                end
+            end
+        end
+    end)
+else
     hooksecurefunc(GameTooltip, 'SetSpellBookItem', function(self, slot, unit)--宠物，技能书，提示        
         if unit==Enum.SpellBookSpellBank.Pet and slot then
             local data= C_SpellBook.GetSpellBookItemInfo(slot, Enum.SpellBookSpellBank.Pet)
@@ -1877,7 +1893,7 @@ local function Init()
             end
         end
     end)
-
+end
     --################
     --Buff, 来源, 数据, 不可删除，如果删除，目标buff没有数据
     --################
