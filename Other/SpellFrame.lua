@@ -149,7 +149,7 @@ local function set_flyout_spell_tab()
         end
     end
 
-    local tab={--没找到，数据
+    --[[local tab={--没找到，数据
         {spell=131228, ins=324},--'玄牛之路', '传送至|cff00ccff围攻砮皂寺|r入口处'},
         {spell=131222, ins=321},--'魔古皇帝之路', '传送至|cff00ccff魔古山宫殿|r入口处。'},
         {spell=131225, ins=303},--'残阳之路', '传送至|cff00ccff残阳关|r入口处。'},
@@ -171,7 +171,7 @@ local function set_flyout_spell_tab()
         if name then
             SpellTab[info.spell]=name
         end
-    end
+    end]]
 end
 
 
@@ -197,7 +197,7 @@ local function set_SpellFlyoutButton_UpdateGlyphState(self)
     if not text and self.spellID and not C_Spell.IsSpellPassive(self.spellID) then
         local des= C_Spell.GetSpellDescription(self.spellID)
         if des then
-            des= e.cn(des)
+            des= e.cn(des) or e.cn(nil, {self.spellID, isDesc=true})
             text= des:match('|cff00ccff(.-)|r')
                 or des:match('传送至(.-)入口处')--传送至永茂林地入口处。
                 or des:match('传送到(.-)的入口')--传送到自由镇的入口
@@ -217,10 +217,14 @@ local function set_SpellFlyoutButton_UpdateGlyphState(self)
                 or des:match('(.-) 입구로 순간이동합니다')--상록숲 입구로 순간이동합니다.
         end
         if not text then
-            text= select(2, GetCallPetSpellInfo(self.spellID))
-            text= text~='' and text or nil
-            text= text or C_Spell.GetSpellName(self.spellID)
-            text= e.cn(text)
+            text= e.cn(nil, {spellID=self.spellID, isName=true})
+            print(text, self.spellID)
+            if not text then
+                text= select(2, GetCallPetSpellInfo(self.spellID))
+                text= text~='' and text or nil
+                text= text or C_Spell.GetSpellName(self.spellID)
+                text= e.cn(text)
+            end
             text=text:match('%-(.+)') or text
             text=text:match('：(.+)') or text
             text=text:match(':(.+)') or text

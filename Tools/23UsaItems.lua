@@ -910,6 +910,37 @@ local function Init()
             set_Use_Spell_Button(self, self.spellID)
         end
     end)
+
+
+--法术书，界面, 菜单11版本
+if SPELLS_PER_PAGE then
+    for i=1, SPELLS_PER_PAGE  do--SPELLS_PER_PAGE = 12
+        local btn= _G['SpellButton'..i]
+        if btn and btn.UpdateButton then
+            hooksecurefunc(btn, 'UpdateButton', function(self)--SpellBookFrame.lua
+                local slot, slotType, slotID = SpellBook_GetSpellBookSlot(self)
+                --[[local slot, slotType, slotID = SpellBook_GetSpellBookSlot(self)
+                if slot then
+                    local slotType, spellID = GetSpellBookItemInfo(slot, SpellBookFrame.bookType);
+                    local texture = GetSpellBookItemTexture(slot, SpellBookFrame.bookType)
+                    if (slotType == "FLYOUT") then
+                        --SpellFlyout:Toggle(spellID, self, "RIGHT", 1, false, nil, true);
+
+                    end
+                end]]
+                if not slot or slotType~='SPELL' or not slotID or IsPassiveSpell(slotID) then--or SpellBookFrame.bookType~='spell' 
+                    if self.useSpell then
+                        self.useSpell:SetShown(false)
+                    end
+                    return
+                end
+                set_Use_Spell_Button(self, slotID)--select(3, GetSpellBookItemName(slot, SpellBookFrame.bookType)))
+            end)
+        end
+    end
+end
+    
+
 end
 
 
