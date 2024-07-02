@@ -274,10 +274,15 @@ function Init_All_Flyout()
     if not e.Player.levelMax or e.Is_Timerunning then
         return
     end
+    --https://wago.tools/db2/SpellFlyout?build=11.0.0.55288&locale=zhCN
     local tab={
-        --11
+        --232,--'英雄之路：地心之战--11
+        231,--英雄之路：巨龙时代团队副本
         227,--巨龙时代 10
+
         220,--暗影国度 9
+        222,--英雄之路：暗影国度团队副本
+
         223,--争霸艾泽拉斯 8
         224,--军团再临 7
         96,--德拉诺这王 6
@@ -308,7 +313,7 @@ function Init_All_Flyout()
                 local spellID= overrideSpellID or flyoutSpellID
                 if spellID then
                     e.LoadDate({id=spellID, type='spell'})
-                    local name2= C_Spell.GetSpellName(spellID)
+                    local name2= e.cn(C_Spell.GetSpellName(spellID), {spellID=spellID, isName=true})
                     local icon= C_Spell.GetSpellTexture(spellID)
                     if name2 and icon then
                         e.tips:AddDoubleLine('|T'..icon..':0|t'..(not isKnown2 and ' |cnRED_FONT_COLOR:' or '')..e.cn(name2)..'|r', (not isKnown2 and '|cnRED_FONT_COLOR:' or '').. spellID..' '..(e.onlyChinese and '法术' or SPELLS)..'('..slot)
