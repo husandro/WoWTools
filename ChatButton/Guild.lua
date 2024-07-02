@@ -9,14 +9,16 @@ local panel= CreateFrame("Frame")
 --在线人数
 --#######
 local function set_Guild_Members()
-    local num = select(2, GetNumGuildMembers())
-    num = (num and num>1) and num-1 or nil
-    if not button.membersText and num then
-        button.membersText=e.Cstr(button, {size=10, color=true, justifyH='CENTER'})-- 10, nil, nil, true, nil, 'CENTER')
-        button.membersText:SetPoint('BOTTOM', 0, 7)
-    end
-    if button.membersText then
-        button.membersText:SetText(num or '')
+    if button then
+        local num = select(2, GetNumGuildMembers())
+        num = (num and num>1) and num-1 or nil
+        if not button.membersText and num then
+            button.membersText=e.Cstr(button, {size=10, color=true, justifyH='CENTER'})-- 10, nil, nil, true, nil, 'CENTER')
+            button.membersText:SetPoint('BOTTOM', 0, 7)
+        end
+        if button.membersText then
+            button.membersText:SetText(num or '')
+        end
     end
 end
 
@@ -106,16 +108,19 @@ local function set_RequestToJoinFrame(frame)
         
         for btn in frame.SpecsPool:EnumerateActive() do
             local check= not currSpecID or currSpecID==btn.specID
-            if check and not btn.Checkbox:GetChecked() then
-                btn.Checkbox:Click()--自动选取当前专精
-            end
-            _, name, _, icon, role= GetSpecializationInfoByID(btn.specID)
-            if name then
-                name= '|T'..(icon or 0)..':0|t'..(e.Icon[role] or '')..e.cn(name)
-                if check then
-                    text2= (text2 and text2..', ' or '').. name
+            local box= btn.Checkbox or btn.CheckBox
+            if box then
+                if check and not box:GetChecked() then
+                    box:Click()--自动选取当前专精
                 end
-                btn.SpecName:SetText(name)
+                _, name, _, icon, role= GetSpecializationInfoByID(btn.specID)
+                if name then
+                    name= '|T'..(icon or 0)..':0|t'..(e.Icon[role] or '')..e.cn(name)
+                    if check then
+                        text2= (text2 and text2..', ' or '').. name
+                    end
+                    btn.SpecName:SetText(name)
+                end
             end
         end
     end
@@ -254,6 +259,9 @@ end
 --初始
 --####
 local function Init()
+    if button then
+        return
+    end
     button= e.Cbtn2({
         name=nil,
         parent=WoWToolsChatButtonFrame,

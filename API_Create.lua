@@ -6,7 +6,7 @@ e.Cbtn(self, tab)--type, icon(atlas, texture), name, size, pushe, button='ItemBu
 e.Cedit(self)--frame, name, size={}
 
 e.Ccool(self, start, duration, modRate, HideCountdownNumbers, Reverse, SwipeTexture, hideDrawBling)--冷却条
-e.SetItemSpellCool(tab)--{frame=, item=, spell=, type=, isUnit=true} type=true圆形，false方形
+e.SetItemSpellCool(frame, {item=, spell=, type=, isUnit=true} type=true圆形，false方形
 e.GetSpellItemCooldown(spellID, itemID)--法术,物品,冷却
 
 e.Cbtn2(tab)
@@ -216,9 +216,10 @@ function e.Ccool(self, start, duration, modRate, HideCountdownNumbers, Reverse, 
 end
 
 function e.SetItemSpellCool(frame, tab)--{item=, spell=, type=, isUnit=true} type=true圆形，false方形
-    if not frame then
+    if not frame or not tab then
         return
     end
+
     local item= tab.item
     local spell= tab.spell
     local type= tab.type
