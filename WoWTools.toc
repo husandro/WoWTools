@@ -63,7 +63,7 @@ Plus\ItemInfo.lua
 ##Plus\ItemUpgrade.lua
 ##鼠标，提示
 Plus\Tooltips.lua
-
+##GameTooltip\GameTooltip.lua
 ##角色面板
 Plus\PaperDoll.lua
 ##角色，属性

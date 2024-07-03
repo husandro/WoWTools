@@ -6,7 +6,19 @@ end
 
 C_Reputation.GetNumFactions= GetNumFactions
 
-C_Spell.GetSpellInfo= GetSpellInfo
+C_Spell.GetSpellInfo= function(spell)
+	 local name, rank, icon, castTime, minRange, maxRange, spellID, originalIcon= GetSpellInfo(spell)
+	 return {
+		name=name,
+		rank=rank,
+		iconID=icon,
+		castTime=castTime,
+		minRange=minRange,
+		maxRange=maxRange,
+		spellID=spellID,
+		originalIcon=originalIcon,
+	 }
+end
 C_Spell.IsSpellUsable= IsUsableSpell
 C_Spell.GetSpellName= GetSpellInfo
 C_Spell.GetSpellTexture= GetSpellTexture

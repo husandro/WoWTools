@@ -3233,7 +3233,10 @@ local function Init_Quest()
 
         if not QuestButton.questSelect[questID] then--已选任务, 提示用
             C_Timer.After(0.5, function()
-                print(id, Initializer:GetName(), GetQuestLink(questID) or questID, (complete and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..acceptButton:GetText()..'|r', itemLink)
+                print(id, Initializer:GetName(),
+                    GetQuestLink(questID) or questID,
+                    (complete and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..acceptButton:GetText()..'|r',
+                    itemLink)
             end)
             QuestButton.questSelect[questID]=true
         end
