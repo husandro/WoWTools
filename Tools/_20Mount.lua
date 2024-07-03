@@ -1370,12 +1370,17 @@ local function Init_MountJournal()
     end
 
     local btn= CreateFrame('DropDownToggleButton', 'MountJournalFilterButtonWoWTools', MountJournal, 'UIResettableDropdownButtonTemplate')--SharedUIPanelTemplates.lua
-    btn:SetPoint('BOTTOM', MountJournal.FilterDropdown, 'TOP')
+
+    btn:SetPoint('BOTTOM', MountJournalFilterButton or MountJournal.FilterDropdown, 'TOP')--11版本
     btn.MountJournal_FullUpdate= MountJournal_FullUpdate
     btn.ResetButton:SetScript('OnClick', function(self)
         MountJournal_FullUpdate= _G['MountJournalFilterButtonWoWTools'].MountJournal_FullUpdate
         _G['MountJournalFilterButtonWoWTools']:SetText(id)        
-        MountJournal.FilterDropdown:Reset();
+        if MountJournalFilterButton then--11版本
+            e.call('MountJournalFilterDropdown_ResetFilters')
+        else
+            MountJournal.FilterDropdown:Reset();
+        end
         C_MountJournal.SetCollectedFilterSetting(LE_MOUNT_JOURNAL_FILTER_UNUSABLE or 3, true);
         e.call('MountJournal_SetUnusableFilter',true)     
         e.call('MountJournal_FullUpdate', MountJournal)
@@ -1413,8 +1418,12 @@ local function Init_MountJournal()
                                     MountJournal_UpdateMountDisplay()
                                 end
                             end
-                            --e.call('MountJournalFilterDropdown_ResetFilters')                            
-                            MountJournal.FilterDropdown:Reset();
+                            if MountJournalFilterButton then--11版本
+                                e.call('MountJournalFilterDropdown_ResetFilters')
+                            else
+                                MountJournal.FilterDropdown:Reset();
+                            end
+
                             e.call('MountJournal_SetUnusableFilter',true)
                             e.call('MountJournal_FullUpdate', MountJournal)
                             C_MountJournal.SetCollectedFilterSetting(LE_MOUNT_JOURNAL_FILTER_UNUSABLE or 3, true);
@@ -1438,7 +1447,7 @@ local function Init_MountJournal()
     end)
 
     MountJournal.MountCount:ClearAllPoints()
-    MountJournal.MountCount:SetPoint('BOTTOMLEFT', MountJournalSearchBox, 'TOPLEFT',-3, 0)
+    --MountJournal.MountCount:SetPoint('BOTTOMLEFT', MountJournalSearchBox, 'TOPLEFT',-3, 0)
     if MountJournalFilterButton  then --11版本
         MountJournal.MountCount:SetPoint('RIGHT', MountJournalFilterButton, 'LEFT', -2, 0)
         MountJournalFilterButton.ResetButton:HookScript('OnClick', function()
