@@ -811,10 +811,9 @@ local function Init_Blizzard_Calendar()
     hooksecurefunc('CalendarViewHolidayFrame_Update', calendar_Uptate)
 
     hooksecurefunc('CalendarCreateEventInviteListScrollFrame_Update', function()
-        local namesReady = C_Calendar.AreNamesReady();
         local frame= CalendarCreateEventInviteList.ScrollBox
-        if namesReady or not frame:GetView()  then
-            for index, btn in pairs(frame:GetFrames()) do--ScrollBox.lua
+        if C_Calendar.AreNamesReady() and frame:GetView()  then
+            for index, btn in pairs(frame:GetFrames() or {}) do--ScrollBox.lua
                 local inviteInfo = C_Calendar.EventGetInvite(index)
                 if inviteInfo and inviteInfo.guid then
                     btn.Class:SetText(e.GetPlayerInfo({guid=inviteInfo.guid, name=inviteInfo.name}))

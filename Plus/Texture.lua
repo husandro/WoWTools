@@ -348,14 +348,14 @@ local function Init_Blizzard_Communities()--11版本
     e.Set_NineSlice_Color_Alpha(ClubFinderCommunityAndGuildFinderFrame.InsetFrame, nil, true)
     hide_Texture(CommunitiesFrame.GuildBenefitsFrame.Rewards.Bg)
 
-    hooksecurefunc(CommunitiesFrameCommunitiesList,'UpdateCommunitiesList',function()
-        local frame= CommunitiesFrameCommunitiesList.ScrollBox
-        if not frame:GetView() then
-            return
-        end
+    hooksecurefunc(CommunitiesFrameCommunitiesList,'UpdateCommunitiesList',function()       
         C_Timer.After(0.3, function()
-            for _, button in pairs(frame:GetFrames()) do
-            set_Alpha_Color(button.Background)
+             local frame= CommunitiesFrameCommunitiesList.ScrollBox
+            if not frame:GetView() then
+                return
+            end
+            for _, button in pairs(frame:GetFrames() or {}) do
+                set_Alpha_Color(button.Background)
             end
         end)
     end)
@@ -576,11 +576,11 @@ local function Init_All_Frame()
     set_Alpha_Color(CharacterStatsPane.AttributesCategory.Background)
     set_Alpha_Color(CharacterStatsPane.ItemLevelCategory.Background)
     hooksecurefunc('PaperDollTitlesPane_UpdateScrollBox', function()--PaperDollFrame.lua
-    local frame= PaperDollFrame.TitleManagerPane.ScrollBox
-    if not frame:GetView() then
-        return
-    end
-        for _, button in pairs(frame:GetFrames()) do
+        local frame= PaperDollFrame.TitleManagerPane.ScrollBox
+        if not frame:GetView() then
+            return
+        end
+        for _, button in pairs(frame:GetFrames() or {}) do
             hide_Texture(button.BgMiddle)
         end
     end)
@@ -590,7 +590,7 @@ local function Init_All_Frame()
     if not frame:GetView() then
         return
     end
-    for _, button in pairs(frame:GetFrames()) do
+    for _, button in pairs(frame:GetFrames() or {}) do
             hide_Texture(button.BgMiddle)
         end
     end)

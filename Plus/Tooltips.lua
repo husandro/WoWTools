@@ -136,7 +136,7 @@ end
 --设置, 3D模型
 --###########
 function func:Set_Item_Model(tooltip, tab)--func:Set_Item_Model(tooltip, {unit=, guid=, creatureDisplayID=, animID=, appearanceID=, visualID=, col=})--设置, 3D模型
-    if Save.hideModel then
+    if Save.hideModel or not tooltip.playerModel then
         return
     end
     if tab.unit then
@@ -1778,7 +1778,11 @@ local function Init()
     TooltipDataProcessor.AllTypes
     Blizzard_SharedXMLGame/Tooltip/TooltipDataRules.lua
 ]]
-
+TooltipDataProcessor.AddTooltipPostCall(TooltipDataProcessor.AllTypes, function(tooltip)
+    if not tooltip.textLeft then
+        func:Set_Init_Item(tooltip)--创建，设置，内容
+    end
+end)
 
 
 TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, function(tooltip, data)
@@ -2790,7 +2794,7 @@ local function Init_Event(arg1)
             if not frame:GetView() then
                 return
             end
-            for _, button in pairs(frame:GetFrames()) do
+            for _, button in pairs(frame:GetFrames() or {}) do
                 if not button.OnEnter then
                     button:SetScript('OnLeave', GameTooltip_Hide)
                     button:SetScript('OnEnter', function(self3)

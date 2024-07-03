@@ -1299,6 +1299,9 @@ local function Init_Currency_Transfer()
 		return
 	end
 	hooksecurefunc(CurrencyTransferLog.ScrollBox, 'Update', function(self)
+		if not self:GetView() then
+            return
+        end
 		for _, btn in pairs(self:GetFrames() or {}) do
 			local data= btn.transactionData or {}
 			local name= e.GetPlayerInfo({guid=data.sourceCharacterGUID, reName=true, reRealm=true})
@@ -1605,7 +1608,10 @@ local function Init()
 				Set_TrackButton_Text()
 			end)
 			hooksecurefunc(TokenFrame.ScrollBox, 'Update', function(f)
-				for _, frame in pairs(f:GetFrames()) do
+				if f:GetView() then
+					return
+				end
+				for _, frame in pairs(f:GetFrames() or {}) do
 					set_Tokens_Button(frame)--设置, 列表, 内容
 				end
 			end)

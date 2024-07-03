@@ -703,7 +703,7 @@ local function Init_EncounterJournal()--冒险指南界面
     --界面, 副本击杀
     --Blizzard_EncounterJournal.lua
     hooksecurefunc('EncounterJournal_ListInstances', function()
-            local frame= EncounterJournal.instanceSelect.ScrollBox
+        local frame= EncounterJournal.instanceSelect.ScrollBox
         if not frame:GetView() then
             return
         end

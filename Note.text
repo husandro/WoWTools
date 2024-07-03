@@ -1,5 +1,8 @@
 
 hooksecurefunc(GroupLootHistoryFrame.ScrollBox, 'SetScrollTargetOffset', function(self)
+if not frame:GetView() then
+            return
+        end
     for _, btn in pairs(self:GetFrames()) do
         set_LootFrame_btn(btn)
     end

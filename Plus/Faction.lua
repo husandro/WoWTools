@@ -1112,6 +1112,9 @@ local function Init()
 	end
 
 	hooksecurefunc(ReputationFrame.ScrollBox, 'Update', function(self)
+		if not self:GetView() then
+            return
+        end
 		for _, btn in pairs(self:GetFrames()or {}) do
 			set_ReputationFrame_InitReputationRow(btn)
 		end
