@@ -1664,6 +1664,9 @@ local function set_Battle_Pet(self, speciesID, level, breedQuality, maxHealth, p
     self.backgroundColor:SetShown(breedQuality~=-1)
 
     local AllCollected, CollectedNum, CollectedText= e.GetPetCollectedNum(speciesID)--收集数量
+    if not self.text2Left then
+        func:Set_Init_Item(self)--创建，设置，内容
+    end
     self.textLeft:SetText(CollectedNum or '')
     self.text2Left:SetText(CollectedText or '')
     self.textRight:SetText(not CollectedNum and AllCollected or '')
