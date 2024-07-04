@@ -500,7 +500,7 @@ local function Init_ProfessionsFrame()
 
     --###
     --数量
-    --Blizzard_Professions.lua
+    --Blizzard_Professions.lua  ProfessionsRecipeSchematicFormMixin:Init
     hooksecurefunc(Professions,'SetupOutputIconCommon', function(outputIcon, quantityMin, quantityMax, icon, itemIDOrLink, quality)
         local num
         if itemIDOrLink and not Save.disabled then
@@ -541,18 +541,15 @@ local function Init_ProfessionsFrame()
             return
         end
         
-        local text= C_TradeSkillUI.GetRecipeSourceText(info.recipeID)
         local tradeSkillID, _, parentTradeSkillID = C_TradeSkillUI.GetTradeSkillLineForRecipe(info.recipeID)
         e.tips:SetOwner(self, "ANCHOR_LEFT", -18, 0)
         e.tips:ClearLines()
         e.tips:SetRecipeResultItem(info.recipeID, {}, nil, info.unlockedRecipeLevel)
         e.tips:AddLine(' ')
 
-        local text2= e.cn(nil, {skillLineAbilityID=info.skillLineAbilityID})
-        
-        if text and text~='' then
+        local text= e.cn(nil, {recipeID=info.recipeID}) or C_TradeSkillUI.GetRecipeSourceText(info.recipeID)
+        if text then
             e.tips:AddLine(text, nil, nil, nil, true)
-            e.tips:AddLine(text2)
             e.tips:AddLine(' ')
         end
         e.tips:AddLine(info.categoryID and 'categoryID '..info.categoryID, tradeSkillID and 'tradeSkillID '..tradeSkillID or (info.sourceType and 'sourceType'..info.sourceType))
