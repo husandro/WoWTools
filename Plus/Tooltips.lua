@@ -2958,8 +2958,14 @@ local function Init_Event(arg1)
 
         --专精，技能，查询
         hooksecurefunc(ProfessionsSpecPathMixin, 'OnEnter',function(self)
-            local name= WoWHead..'profession-trait/'..(self.nodeInfo.ID or '')
+            if not self.nodeInfo or not self.nodeInfo.ID then
+                return
+            end
+            GameTooltip:AddLine(' ')
+            GameTooltip:AddDoubleLine('nodeID', self.nodeInfo.ID)
+            local name= WoWHead..'profession-trait/'..(self.nodeInfo.ID or '')            
             func:Set_Web_Link(GameTooltip, {name=name})
+            GameTooltip:Show()
         end)
 
 
