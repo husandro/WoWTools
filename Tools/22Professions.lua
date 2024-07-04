@@ -712,6 +712,8 @@ local function Init_ProfessionsFrame()
             self.SpendText2:SetText(text or '')
         end
     end)
+    
+
 end
 
 

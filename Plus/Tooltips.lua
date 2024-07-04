@@ -178,6 +178,7 @@ end
 --################
 --取得网页，数据链接
 --################
+local WoWHead
 local wowheadText
 local raiderioText
 local function Init_StaticPopupDialogs()
@@ -227,38 +228,47 @@ local function Init_StaticPopupDialogs()
         timeout = 0,
         whileDead=true, hideOnEscape=true, exclusive=true,
     }
-    if e.onlyChinese then
-        raiderioText= 'https://raider.io/cn/characters/%s/%s/%s'
-        if not LOCALE_zhCN then
+    if e.onlyChinese or LOCALE_zhTW then        
+        WoWHead= 'https://www.wowhead.com/cn/'
+        if not LOCALE_zhCN then            
             wowheadText= 'https://www.wowhead.com/cn/%s=%d'
         else
             wowheadText= 'https://www.wowhead.com/cn/%s=%d/%s'
         end
+        raiderioText= 'https://raider.io/cn/characters/%s/%s/%s'
     --[[if LOCALE_zhCN or LOCALE_zhTW or e.onlyChinese then--https://www.wowhead.com/cn/pet-ability=509/汹涌
         wowheadText= 'https://www.wowhead.com/cn/%s=%d/%s'
         raiderioText= 'https://raider.io/cn/characters/%s/%s/%s']]
     elseif LOCALE_deDE then
+        WoWHead= 'https://www.wowhead.com/de/'
         wowheadText= 'https://www.wowhead.com/de/%s=%d/%s'
         raiderioText= 'https://raider.io/de/characters/%s/%s/%s'
     elseif LOCALE_esES or LOCALE_esMX then
+        WoWHead= 'https://www.wowhead.com/es/'
         wowheadText= 'https://www.wowhead.com/es/%s=%d/%s'
         raiderioText= 'https://raider.io/es/characters/%s/%s/%s'
     elseif LOCALE_frFR then
+        WoWHead= 'https://www.wowhead.com/fr/'
         wowheadText= 'https://www.wowhead.com/fr/%s=%d/%s'
         raiderioText= 'https://raider.io/fr/characters/%s/%s/%s'
     elseif LOCALE_itIT then
+        WoWHead= 'https://www.wowhead.com/it/'
         wowheadText= 'https://www.wowhead.com/it/%s=%d/%s'
         raiderioText= 'https://raider.io/it/characters/%s/%s/%s'
     elseif LOCALE_ptBR then
+        WoWHead= 'https://www.wowhead.com/pt/'
         wowheadText= 'https://www.wowhead.com/pt/%s=%d/%s'
         raiderioText= 'https://raider.io/br/characters/%s/%s/%s'
     elseif LOCALE_ruRU then
+        WoWHead= 'https://www.wowhead.com/ru/'
         wowheadText= 'https://www.wowhead.com/ru/%s=%d/%s'
         raiderioText= 'https://raider.io/ru/characters/%s/%s/%s'
     elseif LOCALE_koKR then
+        WoWHead= 'https://www.wowhead.com/ko/'
         wowheadText= 'https://www.wowhead.com/ko/%s=%d/%s'
         raiderioText= 'https://raider.io/kr/characters/%s/%s/%s'
     else
+        WoWHead= 'https://www.wowhead.com/'
         wowheadText= 'https://www.wowhead.com/%s=%d'
         raiderioText= 'https://raider.io/characters/%s/%s/%s'
     end
@@ -332,19 +342,26 @@ function func:Set_Web_Link(tooltip, tab)
         elseif tooltip== e.tips then
             tooltip:AddDoubleLine((tab.col or '')..'WoWHead', (tab.col or '')..'Ctrl+Shift')
         end
-        if IsControlKeyDown() and IsShiftKeyDown() then
-            e.Show_WoWHead_URL(true, tab.type, tab.id, tab.name)
-        end
-    elseif tab.unitName then
-        if tooltip then
-            tooltip:SetText('|A:questlegendary:0:0|a'..(tab.col or '')..'Raider.IO Ctrl+Shift')
-            tooltip:SetShown(true)
-        else
-            e.tips:AddDoubleLine('|A:questlegendary:0:0|a'..(tab.col or '')..'Raider.IO', (tab.col or '')..'Ctrl+Shift')
-            e.tips:SetShown(true)
-        end
+       
+    elseif tab.unitName then       
         if IsControlKeyDown() and IsShiftKeyDown() then
             e.Show_WoWHead_URL(false, nil, tab.realm or e.Player.realm, tab.unitName)
+        else
+            if tooltip then
+                tooltip:SetText('|A:questlegendary:0:0|a'..(tab.col or '')..'Raider.IO Ctrl+Shift')
+                tooltip:Show(true)
+            else
+                e.tips:AddDoubleLine('|A:questlegendary:0:0|a'..(tab.col or '')..'Raider.IO', (tab.col or '')..'Ctrl+Shift')
+                e.tips:Show(true)
+            end
+        end
+
+    elseif tab.name and tooltip then
+        if IsControlKeyDown() and IsShiftKeyDown() then
+            e.Show_WoWHead_URL(nil, nil, nil, tab.name)
+        else
+            tooltip:AddDoubleLine((tab.col or '')..'WoWHead', (tab.col or '')..'Ctrl+Shift')
+            tooltip:Show()
         end
     end
 end
@@ -2938,6 +2955,13 @@ local function Init_Event(arg1)
                 end
             end
         end)
+
+        --专精，技能，查询
+        hooksecurefunc(ProfessionsSpecPathMixin, 'OnEnter',function(self)
+            local name= WoWHead..'profession-trait/'..(self.nodeInfo.ID or '')
+            func:Set_Web_Link(GameTooltip, {name=name})
+        end)
+
 
     elseif arg1=='Blizzard_ClassTalentUI' then--天赋
         hooksecurefunc(ClassTalentFrame.SpecTab, 'UpdateSpecFrame', function(self)--ClassTalentSpecTabMixin
