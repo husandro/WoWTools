@@ -316,6 +316,7 @@ local function set_Blizzard_TrainerU()
     if Save.disabled then
         return
     end
+
     ClassTrainerFrame.BuyAll= e.Cbtn(ClassTrainerFrame, {type=false, size={ClassTrainerTrainButton:GetSize()}})
     ClassTrainerFrame.BuyAll:SetPoint('RIGHT', ClassTrainerTrainButton, 'LEFT',-2,0)
     ClassTrainerFrame.BuyAll.name=e.onlyChinese and '全部' or ALL
@@ -686,6 +687,30 @@ local function Init_ProfessionsFrame()
         button:SetEnabled(self.DetailedView.SpendPointsButton:IsEnabled())
         button.nodeID= self:GetDetailedPanelNodeID();
         button.configID= self:GetConfigID()
+    end)
+
+
+    --可加点数， 提示
+    hooksecurefunc(ProfessionsSpecPathMixin, 'UpdateProgressBar', function(self)
+        if not self.ProgressBar:IsShown() then
+            return
+        end
+        local currRank, maxRank = self:GetRanks()
+        local text
+        if currRank and maxRank then
+            if currRank<maxRank then
+                text= '+'..(maxRank-currRank)
+            else
+                text= '|A:auctionhouse-icon-favorite:0:0|a'
+            end
+        end
+        if text and not self.SpendText2 then
+            self.SpendText2= e.Cstr(self, {color={r=1, g=0, b=1}})
+            self.SpendText2:SetPoint('LEFT', self.SpendText, 'RIGHT')
+        end
+        if self.SpendText2 then
+            self.SpendText2:SetText(text or '')
+        end
     end)
 end
 
