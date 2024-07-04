@@ -186,7 +186,7 @@ local function InitMenu(_, level)--主菜单
         if name and guid and isOnline and name~=e.Player.name_realm then
             find=true
             local text=e.GetPlayerInfo({guid=guid, name=name, reName=true, reRealm=true})
-            text=(lv and lv~=MAX_PLAYER_LEVEL) and text..' |cnGREEN_FONT_COLOR:'..lv..'|r' or text--等级
+            text=(lv and lv~=GetMaxLevelForPlayerExpansion()) and text..' |cnGREEN_FONT_COLOR:'..lv..'|r' or text--等级
             if zone then--地区
                 text= zone==map and text..'|A:poi-islands-table:0:0|a' or text..' '..zone
             end

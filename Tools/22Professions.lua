@@ -425,6 +425,20 @@ local function set_Blizzard_TrainerU()
         local isTradeSkill = elementData.isTradeSkill;
         local serviceName, serviceType, texture, reqLevel = GetTrainerServiceInfo(skillIndex);
     end)]]
+
+
+    --增加物品，品质，颜色
+    hooksecurefunc('ClassTrainerFrame_InitServiceButton', function(skillButton, elementData)        
+        local itemLink= GetTrainerServiceItemLink(elementData.skillIndex)
+        local r,g,b
+        if itemLink then
+            local quality= C_Item.GetItemQualityByID(itemLink)
+            if quality then
+                r,g,b= C_Item.GetItemQualityColor(quality)
+            end
+        end
+        skillButton.name:SetTextColor(r or 1, g or 1, b or 1)
+    end)
 end
 
 

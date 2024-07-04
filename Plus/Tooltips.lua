@@ -1264,7 +1264,7 @@ function func:Set_Unit(tooltip)--, data)--设置单位提示信息
             local level= UnitLevel(unit)
             local text= sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a'
 
-            if MAX_PLAYER_LEVEL==level then
+            if GetMaxLevelForPlayerExpansion()==level then
                 text= text.. level
             else
                 text= text..'|cnGREEN_FONT_COLOR:'..level..'|r'

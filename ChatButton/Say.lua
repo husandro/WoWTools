@@ -131,7 +131,7 @@ local function Init_Menu(self, level, type)--主菜单
                                 end
                             end
                         end
-                        if gameAccountInfo.characterLevel and gameAccountInfo.characterLevel~=MAX_PLAYER_LEVEL then--等级
+                        if gameAccountInfo.characterLevel and gameAccountInfo.characterLevel~=GetMaxLevelForPlayerExpansion() then--等级
                             text=text ..' |cff00ff00'..gameAccountInfo.characterLevel..'|r'
                         end
                     end
@@ -160,7 +160,7 @@ local function Init_Menu(self, level, type)--主菜单
                 local game=C_FriendList.GetFriendInfoByIndex(i)
                 if game and game.connected and game.guid and not game.mobile then--and not game.afk and not game.dnd then 
                     local text=e.GetPlayerInfo({guid=game.guid, reName=true, reRealm=true})--角色信息
-                    text= (game.level and game.level~=MAX_PLAYER_LEVEL) and text .. ' |cff00ff00'..game.level..'|r' or text--等级
+                    text= (game.level and game.level~=GetMaxLevelForPlayerExpansion()) and text .. ' |cff00ff00'..game.level..'|r' or text--等级
                     if game.area then
                         if game.area == map then--地区
                             text= text..'|A:poi-islands-table:0:0|a'
@@ -278,7 +278,7 @@ local function Init_Menu(self, level, type)--主菜单
                         end
                         local t2='';
                         if zone.level then
-                            if zone.level~=MAX_PLAYER_LEVEL then
+                            if zone.level~=GetMaxLevelForPlayerExpansion() then
                                 info.text=info.text..' |cffff0000'..zone.level..'|r'
                                 t2=t2..LEVEL..': |cffff0000'..zone.level..'|r';
                             else

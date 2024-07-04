@@ -3320,9 +3320,9 @@ local function set_ClubFinderRequestToJoin(self)
             break
     end
     end
-    local level= UnitLevel('player') or MAX_PLAYER_LEVEL
+    local level= UnitLevel('player') or GetMaxLevelForPlayerExpansion()
     local text
-    if level< MAX_PLAYER_LEVEL then
+    if level< GetMaxLevelForPlayerExpansion() then
         text= 'Level '..(level and format('%i', level) or '')
     else
         local avgItemLevel,_, avgItemLevelPvp= GetAverageItemLevel()

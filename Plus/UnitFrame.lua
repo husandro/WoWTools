@@ -114,7 +114,7 @@ local function Init_PlayerFrame()--PlayerFrame.lua
     hooksecurefunc('PlayerFrame_UpdateLevel', function()
         if UnitExists("player") then
             local effectiveLevel = UnitEffectiveLevel(PlayerFrame.unit)
-            if effectiveLevel== MAX_PLAYER_LEVEL then
+            if effectiveLevel== GetMaxLevelForPlayerExpansion() then
                 PlayerLevelText:SetText('')
             --[[else
                 --PlayerLevelText:SetText(effectiveLevel)

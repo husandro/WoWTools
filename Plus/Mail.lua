@@ -191,7 +191,7 @@ local function Init_Menu(_, level, menuList)
                 local name= e.GetUnitName(nil, nil, game.guid)
                 if not Get_Realm_Info(name) then
                     local text= e.GetPlayerInfo({guid=game.guid, reName=true, reRealm=true})--角色信息
-                    text= (game.level and game.level~=MAX_PLAYER_LEVEL and game.level>0) and text .. ' |cff00ff00'..game.level..'|r' or text--等级
+                    text= (game.level and game.level~=GetMaxLevelForPlayerExpansion() and game.level>0) and text .. ' |cff00ff00'..game.level..'|r' or text--等级
                     if game.area and game.connected then
                         text= text..' '..game.area
                     elseif not game.connected then
@@ -242,7 +242,7 @@ local function Init_Menu(_, level, menuList)
                 if not Get_Realm_Info(name) then
                     local text= e.GetPlayerInfo({guid=wowInfo.playerGuid, reName=true, reRealm=true, factionName=wowInfo.factionName})--角色信息
 
-                    if wowInfo.characterLevel and wowInfo.characterLevel~=MAX_PLAYER_LEVEL and wowInfo.characterLevel>0 then--等级
+                    if wowInfo.characterLevel and wowInfo.characterLevel~=GetMaxLevelForPlayerExpansion() and wowInfo.characterLevel>0 then--等级
                         text=text ..' |cff00ff00'..wowInfo.characterLevel..'|r'
                     end
                     if not wowInfo.isOnline then
@@ -276,7 +276,7 @@ local function Init_Menu(_, level, menuList)
 
                 local text= e.GetPlayerInfo({guid=guid, reName=true, reRealm=true,})--角色信息
 
-                text= (lv and lv~=MAX_PLAYER_LEVEL and lv>0) and text .. ' |cff00ff00'..lv..'|r' or text--等级
+                text= (lv and lv~=GetMaxLevelForPlayerExpansion() and lv>0) and text .. ' |cff00ff00'..lv..'|r' or text--等级
                 if zone and isOnline then
                     text= text..' '..zone
                 elseif not isOnline then
@@ -331,7 +331,7 @@ local function Init_Menu(_, level, menuList)
                 local text=  i..')'.. (i<10 and '  ' or ' ')..e.GetPlayerInfo({unit= unit, reName=true, reRealm=true})
 
                 local lv= UnitLevel(unit)
-                text= (lv and lv~=MAX_PLAYER_LEVEL and lv>0) and text .. ' |cff00ff00'..lv..'|r' or text--等级
+                text= (lv and lv~=GetMaxLevelForPlayerExpansion() and lv>0) and text .. ' |cff00ff00'..lv..'|r' or text--等级
                 if not UnitIsConnected(unit) then
                     text= text..' '..(e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE)
                 end
@@ -363,7 +363,7 @@ local function Init_Menu(_, level, menuList)
                     local faction= tab.faction==Enum.PvPFaction.Alliance and 'Alliance' or tab.faction==Enum.PvPFaction.Horde and 'Horde'
                     local  text= e.GetPlayerInfo({guid=tab.guid,  reName=true, reRealm=true, factionName=faction})--角色信息
 
-                    text= (tab.level and tab.level~=MAX_PLAYER_LEVEL and tab.level>0) and text .. ' |cff00ff00'..tab.level..'|r' or text--等级
+                    text= (tab.level and tab.level~=GetMaxLevelForPlayerExpansion() and tab.level>0) and text .. ' |cff00ff00'..tab.level..'|r' or text--等级
                     if tab.zone then
                         text= text..' '..tab.zone
                     else

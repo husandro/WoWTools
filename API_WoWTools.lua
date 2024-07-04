@@ -1,7 +1,6 @@
 local e = select(2, ...)
 
 -- 11版本
-MAX_PLAYER_LEVEL= MAX_PLAYER_LEVEL or 80
 
 --建立func, 如果.toc禁用，会出错
 e.Set_Item_Info=function() end--ItemInfo.lua
@@ -68,7 +67,7 @@ e.Player={
     --Lo= GetLocale(),
     week= GetWeek(),--周数
     guid= UnitGUID('player'),
-    levelMax= UnitLevel('player')==MAX_PLAYER_LEVEL,--玩家是否最高等级
+    levelMax= UnitLevel('player')==GetMaxLevelForPlayerExpansion(),--玩家是否最高等级 GetMaxLevelForPlayerExpansion()
     level= UnitLevel('player'),--UnitEffectiveLevel('player')
     husandro= battleTag== '古月剑龙#5972' or battleTag=='SandroChina#2690' or battleTag=='Sandro126#2297' or battleTag=='Sandro163EU#2603',
     faction= UnitFactionGroup('player'),--玩家, 派系  "Alliance", "Horde", "Neutral"
@@ -79,7 +78,6 @@ e.Player={
 --e.Player.r, e.Player.g, e.Player.b, e.Player.col= e.GetUnitColor('player')--职业颜色
 e.Player.useColor= {r=e.Player.r, g=e.Player.g, b=e.Player.b, a=1, hex= e.Player.col}--使用颜色
 
- --MAX_PLAYER_LEVEL = GetMaxLevelForPlayerExpansion()
  --zh= LOCALE_zhCN or LOCALE_zhTW,--GetLocale()== ("zhCN" or 'zhTW'),
  --ver= select(4,GetBuildInfo())>=100100,--版本 100100
  --disabledLUA={},--禁用插件 {save='', text} e.DisabledLua=true

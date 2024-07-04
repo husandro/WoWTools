@@ -464,7 +464,7 @@ local function Set_Queue_Status()--小眼睛, 信息
                                 local col= '|c'..select(4, GetClassColor(class))--颜色
 
                                 local levelText--等级
-                                if level and level~=MAX_PLAYER_LEVEL then
+                                if level and level~=GetMaxLevelForPlayerExpansion() then
                                     levelText=' |cnRED_FONT_COLOR:'..level..'|r'
                                 end
 

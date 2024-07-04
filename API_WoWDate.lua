@@ -771,7 +771,7 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
 
     elseif event=='PLAYER_LEVEL_UP' then--玩家是否最高等级
         local level= arg1 or UnitLevel('player')
-        e.Player.levelMax= level==MAX_PLAYER_LEVEL--玩家是否最高等级
+        e.Player.levelMax= level==GetMaxLevelForPlayerExpansion()--玩家是否最高等级
         e.Player.level= level
 
     elseif event=='NEUTRAL_FACTION_SELECT_RESULT' then--玩家, 派系

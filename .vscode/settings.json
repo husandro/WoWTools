@@ -2605,7 +2605,7 @@
         "GUILD_IMPEACH_POPUP_CONFIRM",
         "ClubFinderCommunityAndGuildFinderFrame",
         "CHARACTER_LINK_ITEM_LEVEL_TOOLTIP",
-        "MAX_PLAYER_LEVEL",
+        "GetMaxLevelForPlayerExpansion()",
         "SIGN_UP",
         "ITEM_UPGRADE_PVP_ITEM_LEVEL_STAT_FORMAT",
         "DEFAULT_CHAT_FRAME",
