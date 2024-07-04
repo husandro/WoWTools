@@ -626,6 +626,8 @@ panel:RegisterEvent('ENCOUNTER_END')
 
 panel:RegisterEvent('BN_FRIEND_INFO_CHANGED')--战网，好友GUID
 
+panel:RegisterEvent('BARBER_SHOP_RESULT')--更新, 性别
+
 panel:SetScript('OnEvent', function(self, event, arg1, arg2)
     if event == "ADDON_LOADED" then
         if arg1==id then
@@ -790,7 +792,10 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
             Get_WoW_GUID_Info(arg1)--战网，好友GUID
         end
 
-
+    elseif event=='BARBER_SHOP_RESULT' then--更新, 性别
+        if arg1 then
+            e.Player.sex= UnitSex("player")
+        end
 
 
 

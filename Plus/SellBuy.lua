@@ -1660,10 +1660,10 @@ local function Init_Buyback_Button()
                 end
             end
         else
-            local num= GetNumBuybackItems()
+            num= GetNumBuybackItems()
 	        local buybackName, buybackTexture= GetBuybackItemInfo(num)
             if buybackName then
-                local itemID = C_MerchantFrame.GetBuybackItemID(num)
+                itemID = C_MerchantFrame.GetBuybackItemID(num)
                 if itemID then
                     e.tips:AddDoubleLine(
                         '|T'..(buybackTexture or 0)..':0|t'..(GetMerchantItemLink(num) or buybackName),
