@@ -2571,13 +2571,13 @@ end
         end, sizeUpdateFunc=function(btn)
             if RaidFrame:IsShown() and not UnitAffectingCombat('player') then
                 btn:set_RaidFrame_Button_size()
-                e.call('RaidGroupFrame_Update')
+                if RaidGroupFrame_Update then e.call('RaidGroupFrame_Update') end
             end
         end, sizeRestFunc=function(btn)
             btn.target:SetSize(338, 424)
             if RaidFrame:IsShown() and not UnitAffectingCombat('player') then
                 btn:set_RaidFrame_Button_size()
-                e.call('RaidGroupFrame_Update')
+                if RaidGroupFrame_Update then e.call('RaidGroupFrame_Update') end
             end
         end
     })

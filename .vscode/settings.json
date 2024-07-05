@@ -4641,7 +4641,8 @@
         "CURRENCY_TRANSFER_DESTINATION",
         "CURRENCY_TRANSFER_NEW_BALANCE_PREVIEW",
         "EncounterJournal_TierDropDown_Select",
-        "ProfessionsSpecPathMixin"
+        "ProfessionsSpecPathMixin",
+        "RaidGroupFrame_Update"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",
