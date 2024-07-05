@@ -2842,6 +2842,10 @@ end
 
     e.Set_Move_Frame(LootFrame, {save=false})--物品拾取
 
+    e.Set_Move_Frame(ChatConfigFrame)
+    e.Set_Move_Frame(ChatConfigFrame.Header, {frame=ChatConfigFrame})
+    e.Set_Move_Frame(ChatConfigFrame.Border, {frame=ChatConfigFrame})
+
     --################################
     --场景 self==ObjectiveTrackerFrame
     --Blizzard_ObjectiveTracker.lua ObjectiveTracker_GetVisibleHeaders()
