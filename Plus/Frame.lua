@@ -1085,7 +1085,7 @@ local function setAddLoad(arg1)
         end})
        --e.Set_Move_Frame(EncounterJournal.NineSlice, {frame=EncounterJournal})
 
-    --[[elseif arg1=='Blizzard_ClassTalentUI' then--天赋
+    elseif arg1=='Blizzard_ClassTalentUI' then--天赋 11版本
         local frame=ClassTalentFrame
         if frame then
             e.Set_Move_Frame(frame, {save=true})
@@ -1121,7 +1121,7 @@ local function setAddLoad(arg1)
                     end
                 end
             end)
-        end]]
+        end
 
     elseif arg1=='Blizzard_AuctionHouseUI' then--拍卖行
         e.Set_Move_Frame(AuctionHouseFrame, {setSize=true, initFunc=function()
