@@ -335,14 +335,18 @@ function func:Set_Web_Link(tooltip, tab)
                 tab.name= info and info.title
             end
         end
-        if tab.isPetUI then
-            if tooltip then
-                BattlePetTooltipTemplate_AddTextLine(tooltip, 'wowhead  Ctrl+Shift')
+        if IsControlKeyDown() and IsShiftKeyDown() then
+            e.Show_WoWHead_URL(true, tab.type, tab.id, tab.name)
+        else
+            if tab.isPetUI then
+                if tooltip then
+                    BattlePetTooltipTemplate_AddTextLine(tooltip, 'wowhead  Ctrl+Shift')
+                end
+            elseif tooltip== e.tips then
+                tooltip:AddDoubleLine((tab.col or '')..'WoWHead', (tab.col or '')..'Ctrl+Shift')
             end
-        elseif tooltip== e.tips then
-            tooltip:AddDoubleLine((tab.col or '')..'WoWHead', (tab.col or '')..'Ctrl+Shift')
         end
-       
+      
     elseif tab.unitName then       
         if IsControlKeyDown() and IsShiftKeyDown() then
             e.Show_WoWHead_URL(false, nil, tab.realm or e.Player.realm, tab.unitName)
@@ -421,9 +425,12 @@ function func:Set_Mount(tooltip, mountID, type)--坐骑
     if creatureDisplayInfoID then
         tooltip:AddDoubleLine(format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '模型' or MODEL, creatureDisplayInfoID), isSelfMount and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '变形' or TUTORIAL_TITLE61_DRUID) or nil)
     end
-    if source then
-        tooltip:AddLine(source,nil,nil,nil,true)
+    
+    if source then--显示来源
+        tooltip:AddLine(' ')
+        tooltip:AddLine(e.cn(source), nil,nil,nil,true)
     end
+
     func:Set_Item_Model(tooltip, {creatureDisplayID=creatureDisplayInfoID, animID=animID})--设置, 3D模型
 
     tooltip.text2Left:SetText(isCollected and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r')
@@ -505,9 +512,11 @@ function func:Set_Pet(tooltip, speciesID, setSearchText)--宠物
 
     local sourceInfo= e.cn(nil, {speciesID=speciesID}) or {}
     if tooltipDescription or sourceInfo[1] then
+        tooltip:AddLine(' ')
         tooltip:AddLine(sourceInfo[1] or tooltipDescription, nil,nil,nil, true)--来源
     end
     if tooltipSource or sourceInfo[2] then
+        tooltip:AddLine(' ')
         tooltip:AddLine(sourceInfo[2] or tooltipSource,nil,nil,nil, true)--来源
     end
     if petType then
@@ -1798,7 +1807,7 @@ local function Init()
     TooltipDataProcessor.AllTypes
     Blizzard_SharedXMLGame/Tooltip/TooltipDataRules.lua
 ]]
-TooltipDataProcessor.AddTooltipPostCall(TooltipDataProcessor.AllTypes, function(tooltip)
+TooltipDataProcessor.AddTooltipPostCall(TooltipDataProcessor.AllTypes, function(tooltip,data)
     if not tooltip.textLeft then
         func:Set_Init_Item(tooltip)--创建，设置，内容
     end
@@ -1809,6 +1818,14 @@ TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, function(tool
     func:Set_Unit(tooltip, data)--单位
 end)
 TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, function(tooltip, data)
+    if tooltip==ShoppingTooltip1 or ShoppingTooltip2==tooltip then
+        return
+    end
+    local itemLink, itemID= select(2, TooltipUtil.GetDisplayedItem(tooltip))--物品
+    itemLink= itemLink or itemID or data.id
+    func:Set_Item(tooltip, itemLink, itemID)
+end)
+TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Toy, function(tooltip, data)
     if tooltip==ShoppingTooltip1 or ShoppingTooltip2==tooltip then
         return
     end
@@ -1834,7 +1851,12 @@ end)
 TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Flyout, function(tooltip, data)
     func:Set_Flyout(tooltip, data.id)--法术弹出框
 end)
-TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Flyout, function(tooltip, data)
+TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Achievement, function(tooltip, data)
+    func:Set_Achievement(tooltip, data.id)--成就
+end)
+
+
+TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Macro, function(tooltip, data)
     local frame= GetMouseFocus and GetMouseFocus()--宏 11版本
     if frame and frame.action then
         local type, macroID, subType= GetActionInfo(frame.action)
@@ -1850,6 +1872,7 @@ TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Flyout, function(to
         end
     end
 end)
+
    
 
 if not Enum.SpellBookSpellBank then--11版本
@@ -2764,290 +2787,426 @@ end
 
 
 
-local function Init_Event(arg1)
-    --if arg1=='Blizzard_PerksProgram' then--Blizzard_PerksProgramProducts.lua
---PerksProgramFrame.PerksProgramTooltip
 
-    if arg1=='Blizzard_AchievementUI' then--成就ID
-        hooksecurefunc(AchievementTemplateMixin, 'Init', function(frame)
-            if frame.Shield and frame.id then
-                if not frame.AchievementIDLabel  then
-                    frame.AchievementIDLabel= e.Cstr(frame.Shield)
-                    frame.AchievementIDLabel:SetPoint('TOP', frame.Shield.Icon)
-                    frame.Shield:SetScript('OnEnter', function(self)
-                        local achievementID= self:GetParent().id
-                        if achievementID then
-                            e.tips:SetOwner(self:GetParent(), "ANCHOR_RIGHT")
-                            e.tips:ClearLines()
-                            e.tips:SetAchievementByID(achievementID)
-                            e.tips:AddLine(' ')
-                            e.tips:AddDoubleLine('|A:communities-icon-chat:0:0|a'..(e.onlyChinese and '说' or SAY), e.Icon.left)
-                            e.tips:AddDoubleLine(id, Initializer:GetName())
-                            e.tips:Show()
-                        end
-                        self:SetAlpha(0.5)
-                    end)
-                    frame.Shield:SetScript('OnLeave', function(self) self:SetAlpha(1) GameTooltip_Hide() end)
-                    frame.Shield:SetScript('OnMouseUp', function(self) self:SetAlpha(0.5) end)
-                    frame.Shield:SetScript('OnMouseDown', function(self) self:SetAlpha(0.3) end)
-                    frame.Shield:SetScript('OnClick', function(self)
-                        local achievementID= self:GetParent().id
-                        local achievementLink = achievementID and GetAchievementLink(achievementID)
-                        if achievementLink then
-                            e.Chat(achievementLink)
-                        end
-                    end)
-                    frame.Shield:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
+
+
+
+
+
+
+local function Init_Blizzard_AchievementUI()
+    hooksecurefunc(AchievementTemplateMixin, 'Init', function(frame)
+        if frame.Shield and frame.id then
+            if not frame.AchievementIDLabel  then
+                frame.AchievementIDLabel= e.Cstr(frame.Shield)
+                frame.AchievementIDLabel:SetPoint('TOP', frame.Shield.Icon)
+                frame.Shield:SetScript('OnEnter', function(self)
+                    local achievementID= self:GetParent().id
+                    if achievementID then
+                        e.tips:SetOwner(self:GetParent(), "ANCHOR_RIGHT")
+                        e.tips:ClearLines()
+                        e.tips:SetAchievementByID(achievementID)
+                        e.tips:AddLine(' ')
+                        e.tips:AddDoubleLine('|A:communities-icon-chat:0:0|a'..(e.onlyChinese and '说' or SAY), e.Icon.left)
+                        e.tips:AddDoubleLine(id, Initializer:GetName())
+                        e.tips:Show()
+                    end
+                    self:SetAlpha(0.5)
+                end)
+                frame.Shield:SetScript('OnLeave', function(self) self:SetAlpha(1) GameTooltip_Hide() end)
+                frame.Shield:SetScript('OnMouseUp', function(self) self:SetAlpha(0.5) end)
+                frame.Shield:SetScript('OnMouseDown', function(self) self:SetAlpha(0.3) end)
+                frame.Shield:SetScript('OnClick', function(self)
+                    local achievementID= self:GetParent().id
+                    local achievementLink = achievementID and GetAchievementLink(achievementID)
+                    if achievementLink then
+                        e.Chat(achievementLink)
+                    end
+                end)
+                frame.Shield:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
+            end
+        end
+        if frame.AchievementIDLabel then
+            local text= frame.id
+            local flags= frame.id and select(9, GetAchievementInfo(frame.id))
+            if flags==0x20000 then
+                text= e.Icon.net2..'|cff00ccff'..frame.id..'|r'
+            end
+            frame.AchievementIDLabel:SetText(text or '')
+        end
+    end)
+    hooksecurefunc('AchievementFrameComparison_UpdateDataProvider', function()--比较成就, Blizzard_AchievementUI.lua
+        local frame= AchievementFrameComparison.AchievementContainer.ScrollBox
+        if not frame:GetView() then
+            return
+        end
+        for _, button in pairs(frame:GetFrames() or {}) do
+            if not button.OnEnter then
+                button:SetScript('OnLeave', GameTooltip_Hide)
+                button:SetScript('OnEnter', function(self3)
+                    if self3.id then
+                        e.tips:SetOwner(AchievementFrameComparison, "ANCHOR_RIGHT",0,-250)
+                        e.tips:ClearLines()
+                        e.tips:SetAchievementByID(self3.id)
+                        e.tips:Show()
+                    end
+                end)
+                if button.Player and button.Player.Icon and not button.Player.idText then
+                    button.Player.idText= e.Cstr(button.Player)
+                    button.Player.idText:SetPoint('LEFT', button.Player.Icon, 'RIGHT', 0, 10)
                 end
             end
-            if frame.AchievementIDLabel then
-                local text= frame.id
-                local flags= frame.id and select(9, GetAchievementInfo(frame.id))
+            if button.Player and button.Player.idText then
+                local flags= button.id and select(9, GetAchievementInfo(button.id))
                 if flags==0x20000 then
-                    text= e.Icon.net2..'|cff00ccff'..frame.id..'|r'
-                end
-                frame.AchievementIDLabel:SetText(text or '')
-            end
-        end)
-        hooksecurefunc('AchievementFrameComparison_UpdateDataProvider', function()--比较成就, Blizzard_AchievementUI.lua
-            local frame= AchievementFrameComparison.AchievementContainer.ScrollBox
-            if not frame:GetView() then
-                return
-            end
-            for _, button in pairs(frame:GetFrames() or {}) do
-                if not button.OnEnter then
-                    button:SetScript('OnLeave', GameTooltip_Hide)
-                    button:SetScript('OnEnter', function(self3)
-                        if self3.id then
-                            e.tips:SetOwner(AchievementFrameComparison, "ANCHOR_RIGHT",0,-250)
-                            e.tips:ClearLines()
-                            e.tips:SetAchievementByID(self3.id)
-                            e.tips:Show()
-                        end
-                    end)
-                    if button.Player and button.Player.Icon and not button.Player.idText then
-                        button.Player.idText= e.Cstr(button.Player)
-                        button.Player.idText:SetPoint('LEFT', button.Player.Icon, 'RIGHT', 0, 10)
-                    end
-                end
-                if button.Player and button.Player.idText then
-                    local flags= button.id and select(9, GetAchievementInfo(button.id))
-                    if flags==0x20000 then
-                        button.Player.idText:SetText(e.Icon.net2..'|cffff00ff'..button.id..'|r')
-                    else
-                        button.Player.idText:SetText(button.id or '')
-                    end
+                    button.Player.idText:SetText(e.Icon.net2..'|cffff00ff'..button.id..'|r')
+                else
+                    button.Player.idText:SetText(button.id or '')
                 end
             end
-        end)
-        hooksecurefunc('AchievementFrameComparison_SetUnit', function(unit)--比较成就
-            local text= e.GetPlayerInfo({unit=unit, reName=true, reRealm=true})--玩家信息图标
-            if text~='' then
-                AchievementFrameComparisonHeaderName:SetText(text)
-            end
-        end)
-        if AchievementFrameComparisonHeaderPortrait then
-            AchievementFrameComparisonHeader:EnableMouse(true)
-            AchievementFrameComparisonHeader:HookScript('OnLeave', GameTooltip_Hide)
-            AchievementFrameComparisonHeader:HookScript('OnEnter', function()
-                local unit= AchievementFrameComparisonHeaderPortrait.unit
-                if unit then
-                    e.tips:SetOwner(AchievementFrameComparison, "ANCHOR_RIGHT",0,-250)
-                    e.tips:ClearLines()
-                    e.tips:SetUnit(unit)
-                    e.tips:Show()
-                end
-            end)
         end
-        if Save.AchievementFrameFilterDropDown then--保存，过滤
-            AchievementFrame_SetFilter(Save.AchievementFrameFilterDropDown)
+    end)
+    hooksecurefunc('AchievementFrameComparison_SetUnit', function(unit)--比较成就
+        local text= e.GetPlayerInfo({unit=unit, reName=true, reRealm=true})--玩家信息图标
+        if text~='' then
+            AchievementFrameComparisonHeaderName:SetText(text)
         end
-        hooksecurefunc('AchievementFrame_SetFilter', function(value)
-            Save.AchievementFrameFilterDropDown = value
-        end)
-
-    elseif arg1=='Blizzard_Collections' then--宠物手册， 召唤随机，偏好宠物，技能ID    
-        hooksecurefunc('PetJournalSummonRandomFavoritePetButton_OnEnter', function()--PetJournalSummonRandomFavoritePetButton
-            func:Set_Spell(e.tips, 243819)
-            e.tips:Show()
-        end)
-
-    elseif arg1=='Blizzard_ChallengesUI' then--挑战, AffixID
-        hooksecurefunc(ChallengesKeystoneFrameAffixMixin, 'OnEnter',function(self)
-            if self.affixID then
-                local name, description, filedataid = C_ChallengeMode.GetAffixInfo(self.affixID)
-                if (self.affixID or self.info) then
-                    if (self.info) then
-                        local tbl = CHALLENGE_MODE_EXTRA_AFFIX_INFO[self.info.key]
-                        name = tbl.name
-                        description = string.format(tbl.desc, self.info.pct)
-                    else
-                        name= e.cn(name)
-                        description= e.cn(description)
-                    end
-                    GameTooltip:SetText(name, 1, 1, 1, 1, true)
-                    GameTooltip:AddLine(description, nil, nil, nil, true)
-                end
-                GameTooltip:AddDoubleLine('affixID '..self.affixID, filedataid and '|T'..filedataid..':0|t'..filedataid or ' ')
-                func:Set_Web_Link(GameTooltip, {type='affix', id=self.affixID, name=name, isPetUI=false})--取得网页，数据链接
-                GameTooltip:Show()
-            end
-        end)
-
-    elseif arg1=='Blizzard_OrderHallUI' then--要塞，技能树
-        hooksecurefunc(GarrisonTalentButtonMixin, 'OnEnter', function(self2)--Blizzard_OrderHallTalents.lua
-            local info=self2.talent--C_Garrison.GetTalentInfo(self.talent.id)
-            if not info or not info.id then
-                return
-            end
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine('talentID '..info.id, info.icon and '|T'..info.icon..':0|t'..info.icon)
-            if info.ability and info.ability.id and info.ability.id>0 then
-                e.tips:AddDoubleLine('ability '..info.ability.id, info.ability.icon and '|T'..info.ability.icon..':0|t'..info.ability.icon)
-            end
-            e.tips:Show()
-        end)
-        hooksecurefunc(GarrisonTalentButtonMixin, 'SetTalent', function(self2)--是否已激活, 和等级
-            local info= self2.talent
-            if not info or not info.id then
-                return
-            end
-
-            if info.researched and not self2.researchedTexture then
-                self2.researchedTexture= self2:CreateTexture(nil, 'OVERLAY')
-                local w,h= self2:GetSize()
-                self2.researchedTexture:SetSize(w/3, h/3)
-                self2.researchedTexture:SetPoint('BOTTOMRIGHT')
-                self2.researchedTexture:SetAtlas(e.Icon.select)
-            end
-            if self2.researchedTexture then
-                self2.researchedTexture:SetShown(info.researched)
-            end
-
-            local rank
-            if info.talentMaxRank and info.talentMaxRank>1 and info.talentRank~= info.talentMaxRank then
-                if not info.rankText then
-                    info.rankText= e.Cstr(self2)
-                    info.rankText:SetPoint('BOTTOMLEFT')
-                end
-                rank= '|cnGREEN_FONT_COLOR:'..(info.talentRank or 0)..'|r/'..info.talentMaxRank
-            end
-            if info.rankText then
-                info.rankText:SetText(rank or '')
-            end
-        end)
-
-    elseif arg1=='Blizzard_FlightMap' then--飞行点，加名称
-        hooksecurefunc(FlightMap_FlightPointPinMixin, 'OnMouseEnter', function(self2)
-            local info= self2.taxiNodeData
-            if info then
-                e.tips:AddDoubleLine('nodeID '..(info.nodeID or ''), 'slotIndex '..(info.slotIndex or ''))
+    end)
+    if AchievementFrameComparisonHeaderPortrait then
+        AchievementFrameComparisonHeader:EnableMouse(true)
+        AchievementFrameComparisonHeader:HookScript('OnLeave', GameTooltip_Hide)
+        AchievementFrameComparisonHeader:HookScript('OnEnter', function()
+            local unit= AchievementFrameComparisonHeaderPortrait.unit
+            if unit then
+                e.tips:SetOwner(AchievementFrameComparison, "ANCHOR_RIGHT",0,-250)
+                e.tips:ClearLines()
+                e.tips:SetUnit(unit)
                 e.tips:Show()
             end
         end)
-
-    elseif arg1=='Blizzard_Professions' then--专业
-        hooksecurefunc(Professions, 'SetupProfessionsCurrencyTooltip', function(currencyInfo)--lizzard_Professions.lua
-            if currencyInfo then
-                local nodeID = ProfessionsFrame.SpecPage:GetDetailedPanelNodeID()
-                local currencyTypesID = Professions.GetCurrencyTypesID(nodeID)
-                if currencyTypesID then
-                    GameTooltip_AddBlankLineToTooltip(GameTooltip)
-                    func:Set_Currency(GameTooltip, currencyTypesID)--货币
-                    GameTooltip:AddDoubleLine('nodeID', '|cffffffff'..nodeID..'|r')
-                end
-            end
-        end)
-
-        --专精，技能，查询
-        hooksecurefunc(ProfessionsSpecPathMixin, 'OnEnter',function(self)
-            if not self.nodeInfo or not self.nodeInfo.ID then
-                return
-            end
-            GameTooltip:AddLine(' ')
-            GameTooltip:AddDoubleLine('nodeID', self.nodeInfo.ID)
-            local name= WoWHead..'profession-trait/'..(self.nodeInfo.ID or '')            
-            func:Set_Web_Link(GameTooltip, {name=name})
-            GameTooltip:Show()
-        end)
-
-
-    elseif arg1=='Blizzard_ClassTalentUI' then--天赋
-        hooksecurefunc(ClassTalentFrame.SpecTab, 'UpdateSpecFrame', function(self)--ClassTalentSpecTabMixin
-            if not C_SpecializationInfo.IsInitialized() then
-                return
-            end
-            for frame in self.SpecContentFramePool:EnumerateActive() do
-                if not frame.specIDLabel then
-                    frame.specIcon= frame:CreateTexture(nil, 'BORDER')
-                    frame.specIcon:SetPoint('TOP', frame.RoleIcon, 'BOTTOM', -2, -4)
-                    frame.specIcon:SetSize(22,22)
-
-                    frame.specIconBorder= frame:CreateTexture(nil, 'ARTWORK')
-                    frame.specIconBorder:SetPoint('CENTER', frame.specIcon,1.2,-1.2)
-                    frame.specIconBorder:SetAtlas('bag-border')
-                    frame.specIconBorder:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
-                    frame.specIconBorder:SetSize(32,32)
-
-                    frame.specIDLabel= e.Cstr(frame, {mouse=true, size=18, copyFont=frame.RoleName})
-                    frame.specIDLabel:SetPoint('LEFT', frame.specIcon, 'RIGHT', 12, 0)
-                    frame.specIDLabel:SetScript('OnLeave', function(s) s:SetAlpha(1) GameTooltip_Hide() end)
-                    frame.specIDLabel:SetScript('OnEnter', function(s)
-                        e.tips:SetOwner(s, "ANCHOR_LEFT")
-                        e.tips:ClearLines()
-                        e.tips:AddDoubleLine(id, Initializer:GetName())
-                        local specIndex= s:GetParent().specIndex
-                        if specIndex then
-                            local specID, name, _, icon= GetSpecializationInfo(specIndex)
-                            if specID then
-                                e.tips:AddLine(' ')
-                                e.tips:AddLine(name)
-                                e.tips:AddDoubleLine((e.onlyChinese and '专精' or SPECIALIZATION)..' ID', specID)
-                                e.tips:AddDoubleLine((e.onlyChinese and '专精' or SPECIALIZATION)..' Index', specIndex)
-                                if icon then
-                                    e.tips:AddDoubleLine(icon and '|T'..icon..':0|t'..icon)
-                                end
-                            end
-                        end
-                        e.tips:Show()
-                        s:SetAlpha(0.5)
-                    end)
-                end
-                local specID, icon, _
-                if frame.specIndex then
-                    specID, _, _, icon= GetSpecializationInfo(frame.specIndex)
-                end
-                frame.specIDLabel:SetText(specID or '')
-                frame.specIcon:SetTexture(icon or 0)
-            end
-        end)
-
-    elseif arg1=='Blizzard_PlayerChoice' then
-        hooksecurefunc(PlayerChoicePowerChoiceTemplateMixin, 'OnEnter', function(self)
-            if self.optionInfo and self.optionInfo.spellID then
-                GameTooltip:ClearLines()
-                GameTooltip:SetSpellByID(self.optionInfo.spellID)
-                GameTooltip:Show()
-            end
-        end)
-
-    elseif arg1=='Blizzard_GenericTraitUI' then
-        GenericTraitFrame.Currency:HookScript('OnEnter', function(self)
-            local currencyInfo = self:GetParent().treeCurrencyInfo and self:GetParent().treeCurrencyInfo[1] or {}
-            if not currencyInfo.traitCurrencyID or currencyInfo.traitCurrencyID<=0 then
-                return
-            end
-            local overrideIcon = select(4, C_Traits.GetTraitCurrencyInfo(currencyInfo.traitCurrencyID))
-            e.tips:AddDoubleLine(format('traitCurrencyID: %d', currencyInfo.traitCurrencyID), format('|T%d:0|t%d', overrideIcon or 0, overrideIcon or 0))
-            e.tips:Show()
-        end)
     end
-
-
+    if Save.AchievementFrameFilterDropDown then--保存，过滤
+        AchievementFrame_SetFilter(Save.AchievementFrameFilterDropDown)
+    end
+    hooksecurefunc('AchievementFrame_SetFilter', function(value)
+        Save.AchievementFrameFilterDropDown = value
+    end)
 end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+---宠物手册， 召唤随机，偏好宠物，技能ID 
+local function Init_Blizzard_Collections()
+    hooksecurefunc('PetJournalSummonRandomFavoritePetButton_OnEnter', function()--PetJournalSummonRandomFavoritePetButton
+        func:Set_Spell(e.tips, 243819)
+        e.tips:Show()
+    end)
+end
+
+
+
+
+
+
+
+
+
+--挑战, AffixID
+local function Init_Blizzard_ChallengesUI()
+    hooksecurefunc(ChallengesKeystoneFrameAffixMixin, 'OnEnter',function(self)
+        if self.affixID then
+            local name, description, filedataid = C_ChallengeMode.GetAffixInfo(self.affixID)
+            if (self.affixID or self.info) then
+                if (self.info) then
+                    local tbl = CHALLENGE_MODE_EXTRA_AFFIX_INFO[self.info.key]
+                    name = tbl.name
+                    description = string.format(tbl.desc, self.info.pct)
+                else
+                    name= e.cn(name)
+                    description= e.cn(description)
+                end
+                GameTooltip:SetText(name, 1, 1, 1, 1, true)
+                GameTooltip:AddLine(description, nil, nil, nil, true)
+            end
+            GameTooltip:AddDoubleLine('affixID '..self.affixID, filedataid and '|T'..filedataid..':0|t'..filedataid or ' ')
+            func:Set_Web_Link(GameTooltip, {type='affix', id=self.affixID, name=name, isPetUI=false})--取得网页，数据链接
+            GameTooltip:Show()
+        end
+    end)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+--要塞，技能树
+local function Init_Blizzard_OrderHallUI()
+    hooksecurefunc(GarrisonTalentButtonMixin, 'OnEnter', function(self2)--Blizzard_OrderHallTalents.lua
+        local info=self2.talent--C_Garrison.GetTalentInfo(self.talent.id)
+        if not info or not info.id then
+            return
+        end
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine('talentID '..info.id, info.icon and '|T'..info.icon..':0|t'..info.icon)
+        if info.ability and info.ability.id and info.ability.id>0 then
+            e.tips:AddDoubleLine('ability '..info.ability.id, info.ability.icon and '|T'..info.ability.icon..':0|t'..info.ability.icon)
+        end
+        e.tips:Show()
+    end)
+    hooksecurefunc(GarrisonTalentButtonMixin, 'SetTalent', function(self2)--是否已激活, 和等级
+        local info= self2.talent
+        if not info or not info.id then
+            return
+        end
+
+        if info.researched and not self2.researchedTexture then
+            self2.researchedTexture= self2:CreateTexture(nil, 'OVERLAY')
+            local w,h= self2:GetSize()
+            self2.researchedTexture:SetSize(w/3, h/3)
+            self2.researchedTexture:SetPoint('BOTTOMRIGHT')
+            self2.researchedTexture:SetAtlas(e.Icon.select)
+        end
+        if self2.researchedTexture then
+            self2.researchedTexture:SetShown(info.researched)
+        end
+
+        local rank
+        if info.talentMaxRank and info.talentMaxRank>1 and info.talentRank~= info.talentMaxRank then
+            if not info.rankText then
+                info.rankText= e.Cstr(self2)
+                info.rankText:SetPoint('BOTTOMLEFT')
+            end
+            rank= '|cnGREEN_FONT_COLOR:'..(info.talentRank or 0)..'|r/'..info.talentMaxRank
+        end
+        if info.rankText then
+            info.rankText:SetText(rank or '')
+        end
+    end)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--飞行点，加名称
+local function Init_Blizzard_FlightMap()
+    hooksecurefunc(FlightMap_FlightPointPinMixin, 'OnMouseEnter', function(self2)
+        local info= self2.taxiNodeData
+        if info then
+            e.tips:AddDoubleLine('nodeID '..(info.nodeID or ''), 'slotIndex '..(info.slotIndex or ''))
+            e.tips:Show()
+        end
+    end)
+end
+
+
+
+
+
+
+
+
+--专业
+local function Init_Blizzard_Professions()
+    hooksecurefunc(Professions, 'SetupProfessionsCurrencyTooltip', function(currencyInfo)--lizzard_Professions.lua
+        if currencyInfo then
+            local nodeID = ProfessionsFrame.SpecPage:GetDetailedPanelNodeID()
+            local currencyTypesID = Professions.GetCurrencyTypesID(nodeID)
+            if currencyTypesID then
+                GameTooltip_AddBlankLineToTooltip(GameTooltip)
+                func:Set_Currency(GameTooltip, currencyTypesID)--货币
+                GameTooltip:AddDoubleLine('nodeID', '|cffffffff'..nodeID..'|r')
+            end
+        end
+    end)
+
+    --专精，技能，查询
+    hooksecurefunc(ProfessionsSpecPathMixin, 'OnEnter',function(self)
+        if not self.nodeInfo or not self.nodeInfo.ID then
+            return
+        end
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine('nodeID', self.nodeInfo.ID)
+        local name= WoWHead..'profession-trait/'..(self.nodeInfo.ID or '')            
+        func:Set_Web_Link(GameTooltip, {name=name})
+        GameTooltip:Show()
+    end)
+end
+
+
+
+
+
+
+
+
+
+--天赋
+local function Init_Blizzard_ClassTalentUI()
+    hooksecurefunc(ClassTalentFrame.SpecTab, 'UpdateSpecFrame', function(self)--ClassTalentSpecTabMixin
+        if not C_SpecializationInfo.IsInitialized() then
+            return
+        end
+        for frame in self.SpecContentFramePool:EnumerateActive() do
+            if not frame.specIDLabel then
+                frame.specIcon= frame:CreateTexture(nil, 'BORDER')
+                frame.specIcon:SetPoint('TOP', frame.RoleIcon, 'BOTTOM', -2, -4)
+                frame.specIcon:SetSize(22,22)
+
+                frame.specIconBorder= frame:CreateTexture(nil, 'ARTWORK')
+                frame.specIconBorder:SetPoint('CENTER', frame.specIcon,1.2,-1.2)
+                frame.specIconBorder:SetAtlas('bag-border')
+                frame.specIconBorder:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
+                frame.specIconBorder:SetSize(32,32)
+
+                frame.specIDLabel= e.Cstr(frame, {mouse=true, size=18, copyFont=frame.RoleName})
+                frame.specIDLabel:SetPoint('LEFT', frame.specIcon, 'RIGHT', 12, 0)
+                frame.specIDLabel:SetScript('OnLeave', function(s) s:SetAlpha(1) GameTooltip_Hide() end)
+                frame.specIDLabel:SetScript('OnEnter', function(s)
+                    e.tips:SetOwner(s, "ANCHOR_LEFT")
+                    e.tips:ClearLines()
+                    e.tips:AddDoubleLine(id, Initializer:GetName())
+                    local specIndex= s:GetParent().specIndex
+                    if specIndex then
+                        local specID, name, _, icon= GetSpecializationInfo(specIndex)
+                        if specID then
+                            e.tips:AddLine(' ')
+                            e.tips:AddLine(name)
+                            e.tips:AddDoubleLine((e.onlyChinese and '专精' or SPECIALIZATION)..' ID', specID)
+                            e.tips:AddDoubleLine((e.onlyChinese and '专精' or SPECIALIZATION)..' Index', specIndex)
+                            if icon then
+                                e.tips:AddDoubleLine(icon and '|T'..icon..':0|t'..icon)
+                            end
+                        end
+                    end
+                    e.tips:Show()
+                    s:SetAlpha(0.5)
+                end)
+            end
+            local specID, icon, _
+            if frame.specIndex then
+                specID, _, _, icon= GetSpecializationInfo(frame.specIndex)
+            end
+            frame.specIDLabel:SetText(specID or '')
+            frame.specIcon:SetTexture(icon or 0)
+        end
+    end)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Init_Blizzard_PlayerChoice()
+    hooksecurefunc(PlayerChoicePowerChoiceTemplateMixin, 'OnEnter', function(self)
+        if self.optionInfo and self.optionInfo.spellID then
+            GameTooltip:ClearLines()
+            GameTooltip:SetSpellByID(self.optionInfo.spellID)
+            GameTooltip:Show()
+        end
+    end)
+end
+
+
+
+
+
+
+
+
+
+local function Init_Blizzard_GenericTraitUI()
+    GenericTraitFrame.Currency:HookScript('OnEnter', function(self)
+        local currencyInfo = self:GetParent().treeCurrencyInfo and self:GetParent().treeCurrencyInfo[1] or {}
+        if not currencyInfo.traitCurrencyID or currencyInfo.traitCurrencyID<=0 then
+            return
+        end
+        local overrideIcon = select(4, C_Traits.GetTraitCurrencyInfo(currencyInfo.traitCurrencyID))
+        e.tips:AddDoubleLine(format('traitCurrencyID: %d', currencyInfo.traitCurrencyID), format('|T%d:0|t%d', overrideIcon or 0, overrideIcon or 0))
+        e.tips:Show()
+    end)
+end
+
+
+
+
+
+
+
+
+
+
+local function Init_Event()
+    if C_AddOns.IsAddOnLoaded('Blizzard_AchievementUI') then
+        Init_Blizzard_AchievementUI()
+    end
+    if C_AddOns.IsAddOnLoaded('Blizzard_Collections') then
+        Init_Blizzard_Collections()
+    end    
+    if C_AddOns.IsAddOnLoaded('Blizzard_ChallengesUI') then
+        Init_Blizzard_ChallengesUI()
+    end
+    if C_AddOns.IsAddOnLoaded('Blizzard_OrderHallUI') then
+        Init_Blizzard_OrderHallUI()
+    end
+    if C_AddOns.IsAddOnLoaded('Blizzard_FlightMap') then
+        Init_Blizzard_FlightMap()
+    end
+    if C_AddOns.IsAddOnLoaded('Blizzard_Professions') then
+        Init_Blizzard_Professions()
+    end
+    if C_AddOns.IsAddOnLoaded('Blizzard_ClassTalentUI') then
+        Init_Blizzard_ClassTalentUI()
+    end
+    if C_AddOns.IsAddOnLoaded('Blizzard_PlayerChoice') then
+        Init_Blizzard_PlayerChoice()
+    end
+    if C_AddOns.IsAddOnLoaded('Blizzard_GenericTraitUI') then
+        Init_Blizzard_GenericTraitUI()
+    end
+end
 
 
 
@@ -3064,7 +3223,7 @@ panel:RegisterEvent("ADDON_LOADED")
 
 panel:RegisterEvent('PLAYER_LEAVING_WORLD')
 panel:RegisterEvent('PLAYER_ENTERING_WORLD')
-local eventTab={}
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
@@ -3095,28 +3254,45 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if Save.disabled then
                 self:UnregisterAllEvents()
-                eventTab=nil
+                
                 func={}
             else
+
                 Init()--初始
-                do
-                    for _, evt in pairs(eventTab or {}) do
-                        Init_Event(evt)
-                    end
-                end
-                eventTab=nil
+                Init_Event()            
             end
             self:RegisterEvent("PLAYER_LOGOUT")
 
         elseif arg1=='Blizzard_Settings' then
             Init_Panel()
 
-        else
-            if eventTab then
-                table.insert(eventTab, arg1)
-            else
-                Init_Event(arg1)
-            end
+
+        elseif arg1=='Blizzard_AchievementUI' then--成就ID
+            Init_Blizzard_AchievementUI()
+    
+        elseif arg1=='Blizzard_Collections' then--宠物手册， 召唤随机，偏好宠物，技能ID    
+            Init_Blizzard_Collections()
+
+        elseif arg1=='Blizzard_ChallengesUI' then
+            Init_Blizzard_ChallengesUI()
+
+        elseif arg1=='Blizzard_OrderHallUI' then
+            Init_Blizzard_OrderHallUI()
+    
+        elseif arg1=='Blizzard_FlightMap' then--飞行点，加名称
+            Init_Blizzard_FlightMap()
+    
+        elseif arg1=='Blizzard_Professions' then
+            Init_Blizzard_Professions()    
+    
+        elseif arg1=='Blizzard_ClassTalentUI' then
+            Init_Blizzard_ClassTalentUI()
+    
+        elseif arg1=='Blizzard_PlayerChoice' then
+            Init_Blizzard_PlayerChoice()
+     
+        elseif arg1=='Blizzard_GenericTraitUI' then
+            Init_Blizzard_GenericTraitUI()
         end
 
     elseif event == "PLAYER_LOGOUT" then
