@@ -1469,6 +1469,48 @@ local function Init_Event(arg1)
         set_SearchBox(PlayerSpellsFrame.SpellBookFrame.SearchBox)
         set_TabSystem_Button(PlayerSpellsFrame.SpellBookFrame)
 
+    elseif arg1=='Blizzard_ClassTalentUI' then--天赋 11版本
+        if ClassTalentFrame then
+            set_Alpha_Color(ClassTalentFrame.TalentsTab.BottomBar)--下面
+            e.Set_NineSlice_Color_Alpha(ClassTalentFrame, true)
+            set_Alpha_Color(ClassTalentFrameBg)--里面
+            hide_Texture(ClassTalentFrame.TalentsTab.BlackBG)
+            hooksecurefunc(ClassTalentFrame.TalentsTab, 'UpdateSpecBackground', function(self2)--Blizzard_ClassTalentTalentsTab.lua
+                if self2.specBackgrounds then
+                    for _, background in ipairs(self2.specBackgrounds) do
+                        hide_Texture(background)
+                    end
+                end
+            end)
+
+            hide_Texture(ClassTalentFrame.SpecTab.Background)
+            hide_Texture(ClassTalentFrame.SpecTab.BlackBG)
+            hooksecurefunc(ClassTalentFrame.SpecTab, 'UpdateSpecContents', function(self2)--Blizzard_ClassTalentSpecTab.lua
+                local numSpecs= self2.numSpecs
+                if numSpecs and numSpecs>0 then
+                    for i = 1, numSpecs do
+                        local contentFrame = self2.SpecContentFramePool:Acquire();
+                        if contentFrame then
+                            hide_Texture(contentFrame.HoverBackground)
+                        end
+                    end
+                end
+            end)
+
+            set_Alpha_Color(ClassTalentFrameMiddle)
+            set_Alpha_Color(ClassTalentFrameLeft)
+            set_Alpha_Color(ClassTalentFrameRight)
+            set_SearchBox(ClassTalentFrame.TalentsTab.SearchBox)
+
+
+
+            --TabSystemOwner.lua
+            for _, tabID in pairs(ClassTalentFrame:GetTabSet() or {}) do
+                local btn= ClassTalentFrame:GetTabButton(tabID)
+                e.Set_Alpha_Frame_Texture(btn, {alpha=min05})
+            end
+        end
+
     elseif arg1=='Blizzard_AchievementUI' then--成就
         hide_Frame_Texture(AchievementFrame)
         hide_Frame_Texture(AchievementFrame.Header)
