@@ -254,7 +254,7 @@ local function Create_ItemButton()
             btn.IndexLable= e.Cstr(btn)
             btn.IndexLable:SetPoint('TOPRIGHT', btn, -1, 4)
             btn.IndexLable:SetAlpha(0.3)
-            btn.IndexLable:SetText(i)
+            --btn.IndexLable:SetText(i)
             --建立，物品，背景
             btn.itemBG= btn:CreateTexture(nil, 'BACKGROUND')
             btn.itemBG:SetAtlas('ChallengeMode-guild-background')
@@ -342,7 +342,6 @@ local function Init_WidthX2()
         for i = 1, max(BUYBACK_ITEMS_PER_PAGE, MERCHANT_ITEMS_PER_PAGE) do
             local btn= _G['MerchantItem'..i]
             if i<=MERCHANT_ITEMS_PER_PAGE then
-
                 btn:SetShown(true)
                 btn.itemBG:SetShown(btn.ItemButton.hasItem)--Texture.lua
                 if i>1 then
@@ -351,6 +350,9 @@ local function Init_WidthX2()
                 end
             else
                 btn:Hide()
+            end
+            if btn.IndexLable then
+                btn.IndexLable:SetText(btn.ItemButton.hasItem and btn.ItemButton:GetID() or '')
             end
         end
         local line= MerchantFrame.ResizeButton and Save.numLine or 6
@@ -439,9 +441,9 @@ local function Init_WidthX2()
                         btn:SetPoint('TOPLEFT', _G['MerchantItem'..(i-1)], 'BOTTOMLEFT', 0, -8)
                     end
                     if not btn.ItemButton.hasItem then
-                        local name, texture= GetMerchantItemInfo(i)
+                        local name, texture2= GetMerchantItemInfo(i)
                         _G["MerchantItem"..i.."Name"]:SetText(name or '')
-                        SetItemButtonTexture(btn.ItemButton, texture or 0)
+                        SetItemButtonTexture(btn.ItemButton, texture2 or 0)
                     end
                 else
                     btn:Hide()
