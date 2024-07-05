@@ -2886,7 +2886,7 @@ end
     e.Set_Move_Frame(OverrideActionBarExpBar, {notZoom=true})
 
 
-     C_Timer.After(2, function()
+     C_Timer.After(4, function()
             e.Set_Move_Frame(BankFrame)
             e.Set_Move_Frame(SendMailFrame, {frame=MailFrame})
             e.Set_Move_Frame(StableFrame)
