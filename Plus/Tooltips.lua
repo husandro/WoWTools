@@ -1681,6 +1681,7 @@ local function set_Battle_Pet(self, speciesID, level, breedQuality, maxHealth, p
     self.textRight:SetText(not CollectedNum and AllCollected or '')
 
     func:Set_Web_Link(self, {type='npc', id=companionID, name=speciesName, col=nil, isPetUI=true})--取得网页，数据链接
+    self:Show()
 end
 
 function func:set_Azerite(tooltip, powerID)--艾泽拉斯之心
@@ -2001,9 +2002,8 @@ end
     --宠物面板提示
     --###########
     func:Set_Init_Item(BattlePetTooltip, true)--创建物品
-    func:Set_Init_Item(BattlePetTooltip, true)--创建物品
     hooksecurefunc("BattlePetToolTip_Show", function(...)--BattlePetTooltip.lua 
-        set_Battle_Pet(FloatingBattlePetTooltip, ...)
+        set_Battle_Pet(BattlePetTooltip, ...)
     end)
 
     hooksecurefunc('FloatingBattlePet_Show', function(...)--FloatingPetBattleTooltip.lua
