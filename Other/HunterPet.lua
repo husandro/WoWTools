@@ -587,7 +587,9 @@ function Set_StableFrame_List()
         AllListFrame.Bg:SetPoint('BOTTOM', btnY)
         AllListFrame.Bg:SetPoint('RIGHT', AllListFrame.Buttons[Constants.PetConsts.NUM_PET_SLOTS])
     end
+    
 
+    
     function AllListFrame:Refresh()
         local show= self:IsShown()
         for _, btn in pairs(AllListFrame.Buttons) do
@@ -623,6 +625,11 @@ function Set_StableFrame_List()
     end
 
     AllListFrame:set_shown()
+
+    
+    StableFrame:HookScript('OnSizeChanged', function()
+        AllListFrame:set_point()
+    end)
 end
 
 
@@ -666,19 +673,20 @@ local function sort_pets_list(type, d)
         local tab= {}
         for _, btn in pairs(AllListFrame.Buttons) do
             if btn.petData and btn.petData.slotID then
-                local info = C_StableInfo.GetStablePetInfo(btn.petData.slotID)
-                    table.insert(tab, {
-                        slotID= get_text_byte(info.slotID),
-                        petNumber= get_text_byte(info.petNumber),
-                        type= get_text_byte(info.type),
-                        creatureID= get_text_byte(info.CreatureID),
-                        uiModelSceneID= get_text_byte(info.uiModelSceneID),
-                        displayID= get_text_byte(info.displayID),
-                        name= get_text_byte(info.name),
-                        specialization= get_text_byte(info.specialization),
-                        icon= get_text_byte(info.icon),
-                        familyName= get_text_byte(info.familyName)
-                    })
+                local info = C_StableInfo.GetStablePetInfo(btn.petData.slotID) or {}
+                table.insert(tab, {
+                    slotID= get_text_byte(info.slotID),
+                    petNumber= get_text_byte(info.petNumber),
+                    type= get_text_byte(info.type),
+                    creatureID= get_text_byte(info.CreatureID),
+                    uiModelSceneID= get_text_byte(info.uiModelSceneID),
+                    displayID= get_text_byte(info.displayID),
+                    name= get_text_byte(info.name),
+                    specialization= get_text_byte(info.specialization),
+                    icon= get_text_byte(info.icon),
+                    familyName= get_text_byte(info.familyName)
+                })
+                
             end
         end
         table.sort(tab, function(a, b)
@@ -857,6 +865,7 @@ function Init_StableFrame_List()
 
     StableFrame.AllListButton= btn
     Set_StableFrame_List()--初始，宠物列表
+
 end
 
 
