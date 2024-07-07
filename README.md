@@ -1,11 +1,12 @@
+
+# WoWTools
+* World of Warcraft 正式服 插件
+* <自己写自已用>
+
 # 下载
 * https://www.curseforge.com/wow/addons/wowtools
 * https://addons.wago.io/addons/wowtools
 * https://github.com/husandro/WoWTools
-
-# WoWTools
-* World of Warcraft 正式服 插件
-* <自己专用>
 
 # 功能包含四大模块
 * WoWPlus: 系统功能增强
@@ -24,3 +25,17 @@
 # bbs
 * https://bbs.nga.cn/read.php?tid=34084034
 
+
+
+
+
+
+
+
+
+
+## WoW UI 中文化
+* 仅用于欧服，界面中文化（不完整）
+
+*下载
+** https://addons.wago.io/addons/wowtools-chinese
