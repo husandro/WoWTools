@@ -1060,6 +1060,8 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             end)
 
             hooksecurefunc(FlightMap_FlightPointPinMixin, 'SetFlightPathStyle', function(self)
+                info=  self.taxiNodeData
+                for k, v in pairs(info) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
                 local text
                 if self.taxiNodeData and Save.showFlightMapPinName then
                     if not self.Text and self.taxiNodeData.name then
@@ -1068,8 +1070,8 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     end
                     text= self.taxiNodeData.name
                     if text then
-                        text= e.cn(text)
                         text= text:match('(.-)'..KEY_COMMA) or text:match('(.-)'..PLAYER_LIST_DELIMITER) or text
+                        text= e.cn(text)
                     end
                 end
                 if self.Text then
