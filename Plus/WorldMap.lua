@@ -1068,7 +1068,8 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     end
                     text= self.taxiNodeData.name
                     if text then
-                        text= e.cn(text:match('(.-)'..KEY_COMMA) or text:match('(.-)'..PLAYER_LIST_DELIMITER) or text)
+                        text= e.cn(text)
+                        text= text:match('(.-)'..KEY_COMMA) or text:match('(.-)'..PLAYER_LIST_DELIMITER) or text
                     end
                 end
                 if self.Text then
