@@ -38,4 +38,5 @@
 * 仅用于欧服，界面中文化（不完整）
 
 *下载
+** https://www.curseforge.com/wow/addons/wowtoolschinese
 ** https://addons.wago.io/addons/wowtools-chinese
