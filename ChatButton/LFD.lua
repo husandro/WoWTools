@@ -2524,6 +2524,23 @@ local function Init()
             exit_Instance()
         end
     end)
+
+    --自定义，副本，创建，更多...
+    hooksecurefunc('LFGListEntryCreationActivityFinder_InitButton', function(btn)
+        local data = C_LFGList.GetActivityInfoTable(btn.activityID) or {}
+        if not data.shortName then 
+            return
+        end
+        local r,g,b= 1,1,1
+        if data.isMythicPlusActivity then--挑战
+            r,g,b= 1.00, 0.50, 0.00
+        elseif data.isMythicActivity then--史诗
+            r,g,b= 0.78, 0.27, 0.98
+        elseif data.shortName:find(PLAYER_DIFFICULTY2) then--英雄
+            r,g,b= 0.64, 0.21, 0.93
+        end
+        btn.Label:SetTextColor(r,g,b)
+    end)
 end
 
 

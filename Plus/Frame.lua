@@ -2708,6 +2708,7 @@ end
             --LFGListFrame.ApplicationViewer:SetPoint('RIGHT', -20, 0)
             LFGListFrame.ApplicationViewer.InfoBackground:SetPoint('RIGHT', -20, 0)
         end)
+
     end, sizeUpdateFunc=function()
         if PVEFrame.activeTabIndex==3 then
             e.call(ChallengesFrame.Update, ChallengesFrame)
@@ -2740,6 +2741,11 @@ end
         end
     end})
 
+    --自定义，副本，创建，更多...
+    LFGListFrame.EntryCreation.ActivityFinder.Dialog:ClearAllPoints()
+    LFGListFrame.EntryCreation.ActivityFinder.Dialog:SetPoint('TOPLEFT',0, -30)
+    LFGListFrame.EntryCreation.ActivityFinder.Dialog:SetPoint('BOTTOMRIGHT')
+
     --试衣间
     e.Set_Move_Frame(DressUpFrame, {setSize=true, minH=330, minW=330, initFunc=function(btn)
         btn.target:HookScript('OnShow', function(self)--DressUpFrame_Show
@@ -2753,10 +2759,7 @@ end
         btn.target:SetSize(450, 545)
     end})
 
-    --自定义，副本，创建，更多...
-    e.Set_Move_Frame(LFGListFrame.EntryCreation.ActivityFinder.Dialog, {setSize=true, notMove=true, sizeRestFunc=function(btn)
-        btn.target:SetSize(320, 250)
-    end})
+
 
     --法术书
     --e.Set_Move_Frame(SpellBookFrame, {notInCombat=true})--战斗中，禁止操作
