@@ -954,8 +954,7 @@ local function set_Raid_Menu_List(level)--团队本
                 local modifiedInstanceInfo = C_ModifiedInstance.GetModifiedInstanceInfoFromMapID(sortedDungeons[i].mapID)
                 if (modifiedInstanceInfo) then
                     icon = GetFinalNameFromTextureKit("%s-small", modifiedInstanceInfo.uiTextureKit)
-                    modifiedInstanceTooltipText = "|n|n" .. e.cn(modifiedInstanceInfo.description)
-                    print(modifiedInstanceInfo.description)
+                    modifiedInstanceTooltipText = "|n|n" .. e.cn(modifiedInstanceInfo.description)                    
                 end
             end
 
