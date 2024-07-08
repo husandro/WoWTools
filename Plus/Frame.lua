@@ -2753,6 +2753,11 @@ end
         btn.target:SetSize(450, 545)
     end})
 
+    --自定义，副本，创建，更多...
+    e.Set_Move_Frame(LFGListFrame.EntryCreation.ActivityFinder.Dialog, {setSize=true, notMove=true, sizeRestFunc=function(btn)
+        btn.target:SetSize(320, 250)
+    end})
+
     --法术书
     --e.Set_Move_Frame(SpellBookFrame, {notInCombat=true})--战斗中，禁止操作
 
