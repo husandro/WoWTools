@@ -819,7 +819,7 @@ local function set_Party_Menu_List(level)--5人，随机 LFDFrame.lua
                         tooltip=(tooltip and tooltip..'|n' or '')..(e.onlyChinese and '今天' or GUILD_EVENT_TODAY)..format('|A:%s:0:0|a', e.Icon.select)..(e.onlyChinese and '完成' or COMPLETE)
                     end
                     info= {
-                        text= e.cn(name, {lfgDungeonID=dungeonID, isName=true})
+                        text= e.cn(name)
                             ..get_Reward_Info(dungeonID)
                             ..(doneToday or ''),
                         icon= select(11, GetLFGDungeonInfo(dungeonID)),
@@ -961,7 +961,7 @@ local function set_Raid_Menu_List(level)--团队本
 
             e.LibDD:UIDropDownMenu_AddButton({
                 text=((LfgDungeonID==sortedDungeons[i].id or scenarioName== strlower(sortedDungeons[i].name or '')) and '|A:auctionhouse-icon-favorite:0:0|a' or '')--在当前副本
-                    ..e.cn(sortedDungeons[i].name, {lfgDungeonID=sortedDungeons[i].id, isName=true})
+                    ..e.cn(sortedDungeons[i].name)
                     ..get_Reward_Info(sortedDungeons[i].id)--名称
                     ..killText,
                 icon= icon,
