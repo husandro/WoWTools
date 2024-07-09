@@ -20,19 +20,28 @@ local Save={
 local Initializer
 local AllListFrame
 --[[
-    Constants.PetConsts = {
-		NUM_PET_SLOTS_THAT_NEED_LEARNED_SPELL = 5,
-		MAX_SUMMONABLE_HUNTER_PETS = 5,
-		EXTRA_PET_STABLE_SLOT = 5,
-		STABLED_PETS_FIRST_SLOT_INDEX = 6,
-		MAX_SUMMONABLE_PETS = 25,
-		MAX_STABLE_SLOTS = 200,
-		NUM_PET_SLOTS = 205,
-	},
+    Name = "PetConsts_PostCata",
+			Type = "Constants",
+			Values =
+			{
+				{ Name = "MAX_STABLE_SLOTS", Type = "number", Value = 200 },
+				{ Name = "MAX_SUMMONABLE_PETS", Type = "number", Value = 25 },
+				{ Name = "MAX_SUMMONABLE_HUNTER_PETS", Type = "number", Value = 5 },
+				{ Name = "NUM_PET_SLOTS_THAT_NEED_LEARNED_SPELL", Type = "number", Value = 5 },
+				{ Name = "NUM_PET_SLOTS", Type = "number", Value = Constants.PetConsts.MAX_STABLE_SLOTS + Constants.PetConsts.NUM_PET_SLOTS_THAT_NEED_LEARNED_SPELL },
+				{ Name = "EXTRA_PET_STABLE_SLOT", Type = "number", Value = 5 },
+				{ Name = "STABLED_PETS_FIRST_SLOT_INDEX", Type = "number", Value = Constants.PetConsts.EXTRA_PET_STABLE_SLOT + 1 },
+			},
 ]]
 
 --召唤，法术，提示
-local CALL_PET_SPELL_IDS = {0883, 83242, 83243, 83244, 83245, }
+local CALL_PET_SPELL_IDS = {
+    0883,
+	83242,
+	83243,
+	83244,
+	83245,
+}
 e.LoadDate({id=267116, type='spell'})--动物伙伴
 
 
@@ -41,6 +50,8 @@ e.LoadDate({id=267116, type='spell'})--动物伙伴
     return selectedPet and selectedPet.slotID == slotID
 end]]
 
+--PetConstantsDocumentation.lua
+local PetConsts= Constants.PetConsts_PostCata or Constants.PetConsts
 
 
 local function get_abilities_icons(pet, line)--取得，宠物，技能，图标
@@ -121,15 +132,12 @@ end
 
 
 
-
-
 --已激活宠物，Model 提示
 local function created_model(btn, setBg)
     btn.model= CreateFrame("PlayerModel", nil, btn)
     local w= btn:GetWidth()
-    --Constants.PetConsts_PostCata.STABLED_PETS_FIRST_SLOT_INDEX
 
-    if btn:GetID()==(Constants.PetConsts_PostCata or Constants.PetConsts).STABLED_PETS_FIRST_SLOT_INDEX then--11版本
+    if btn:GetID()==PetConsts.STABLED_PETS_FIRST_SLOT_INDEX then--11版本
         btn.model:SetFacing(-0.3)
         w=w+80
         btn.model:SetPoint('RIGHT', btn, 'LEFT')
@@ -218,7 +226,7 @@ local function created_model(btn, setBg)
         if self.petData and not self.locked and self:IsEnabled() then
             set_pet_tooltips(self, self.petData)
             e.tips:AddDoubleLine(e.onlyChinese and '放入兽栏' or STABLE_PET_BUTTON_LABEL, e.Icon.right)
-            if self:GetID()==Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX then
+            if self:GetID()==PetConsts.STABLED_PETS_FIRST_SLOT_INDEX then
                 e.tips:AddDoubleLine(
                     format('|cffaad372%s|r', e.onlyChinese and '天赋' or TALENT),
                     format('|T461112:0|t|cffaad372%s|r', e.onlyChinese and '动物伙伴' or C_Spell.GetSpellLink(267116) or C_Spell.GetSpellName(267116) or 'Animal Companion')
@@ -561,7 +569,7 @@ function Set_StableFrame_List()
     AllListFrame.Bg:SetTexCoord(1,0,1,0)
     AllListFrame.Bg:SetPoint('TOPLEFT')
 
-    for i=Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX+ 1, Constants.PetConsts.NUM_PET_SLOTS do
+    for i=PetConsts.STABLED_PETS_FIRST_SLOT_INDEX+ 1, PetConsts.NUM_PET_SLOTS do
         local btn= created_button(i)
         AllListFrame.Buttons[i]= btn
     end
@@ -585,9 +593,9 @@ function Set_StableFrame_List()
             end
         end
         AllListFrame.Bg:ClearAllPoints()
-        AllListFrame.Bg:SetPoint('TOPLEFT', AllListFrame.Buttons[Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX+ 1])
+        AllListFrame.Bg:SetPoint('TOPLEFT', AllListFrame.Buttons[PetConsts.STABLED_PETS_FIRST_SLOT_INDEX+ 1])
         AllListFrame.Bg:SetPoint('BOTTOM', btnY)
-        AllListFrame.Bg:SetPoint('RIGHT', AllListFrame.Buttons[Constants.PetConsts.NUM_PET_SLOTS])
+        AllListFrame.Bg:SetPoint('RIGHT', AllListFrame.Buttons[PetConsts.NUM_PET_SLOTS])
     end
     
 
@@ -618,8 +626,8 @@ function Set_StableFrame_List()
     end)
 
     --第6个，提示，如果，没有专精支持，它会禁用，所有，建立一个
-    AllListFrame.btn6= created_button(Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX)
-    AllListFrame.btn6:SetPoint('BOTTOM', AllListFrame.Buttons[Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX+ 1],'TOP')
+    AllListFrame.btn6= created_button(PetConsts.STABLED_PETS_FIRST_SLOT_INDEX)
+    AllListFrame.btn6:SetPoint('BOTTOM', AllListFrame.Buttons[PetConsts.STABLED_PETS_FIRST_SLOT_INDEX+ 1],'TOP')
     function AllListFrame.btn6:settings()
         local show= self:GetParent():IsShown() and not StableFrame.ActivePetList.BeastMasterSecondaryPetButton:IsEnabled()
         self:SetPet(show and C_StableInfo.GetStablePetInfo(self:GetID()) or nil)
@@ -698,7 +706,7 @@ local function sort_pets_list(type, d)
         if not Save.sortDown then--点击，从前，向后
             for i, newTab in pairs(tab) do
                 do
-                    local index= i+  Constants.PetConsts.STABLED_PETS_FIRST_SLOT_INDEX
+                    local index= i+  PetConsts.STABLED_PETS_FIRST_SLOT_INDEX
                     C_StableInfo.SetPetSlot(newTab.slotID, index)
                 end
             end
