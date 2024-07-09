@@ -10,6 +10,7 @@ local Save={
                 ['BugSack']=true,
                 ['!BugGrabber']=true,
                 ['TextureAtlasViewer']=true,-- true, i or guid
+                ['WoWTools_Chinese']=(not LOCALE_zhCN and not LOCALE_zhTW) and true or nil,
                 [id]=true,
             }, [e.Player.husandro and '宠物对战' or PET_BATTLE_COMBAT_LOG]={
                 ['BugSack']=true,

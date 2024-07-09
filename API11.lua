@@ -1,6 +1,70 @@
-if C_Reputation.GetNumFactions then--11版本
-	return
+if select(4,GetBuildInfo())>=110000  then--11版本
+
+	local function GetWorldQuestAtlasInfo(questID, tagInfo, inProgress)
+		if not tagInfo or type(tagInfo)~='table' then
+			return
+		end
+		-- NOTE: In-progress no longer matters, the center icon remains the same for world quests, even when active
+		local worldQuestType = tagInfo.worldQuestType;
+
+		if worldQuestType == Enum.QuestTagType.Capstone then
+			return "worldquest-Capstone";
+		elseif worldQuestType == Enum.QuestTagType.PvP then
+			return "worldquest-icon-pvp-ffa";
+		elseif worldQuestType == Enum.QuestTagType.PetBattle then
+			return "worldquest-icon-petbattle";
+		elseif worldQuestType == Enum.QuestTagType.Profession and WORLD_QUEST_ICONS_BY_PROFESSION[tagInfo.tradeskillLineID] then
+			return WORLD_QUEST_ICONS_BY_PROFESSION[tagInfo.tradeskillLineID];
+		elseif worldQuestType == Enum.QuestTagType.Dungeon then
+			return "worldquest-icon-dungeon";
+		elseif worldQuestType == Enum.QuestTagType.Raid then
+			return "worldquest-icon-raid";
+		elseif worldQuestType == Enum.QuestTagType.Invasion then
+			return "worldquest-icon-burninglegion";
+		elseif worldQuestType == Enum.QuestTagType.Islands then
+			return "poi-islands-table";
+		elseif worldQuestType == Enum.QuestTagType.FactionAssault then
+			local factionTag = UnitFactionGroup("player");
+			if factionTag == "Alliance" then
+				return "worldquest-icon-alliance";
+			else -- "Horde" or "Neutral"
+				return "worldquest-icon-horde";
+			end
+		elseif worldQuestType == Enum.QuestTagType.Threat then
+			return QuestUtil.GetThreatPOIIcon(questID);
+		elseif worldQuestType == Enum.QuestTagType.DragonRiderRacing then
+			return "worldquest-icon-race";
+		elseif (worldQuestType == Enum.QuestTagType.WorldBoss) or (worldQuestType == Enum.QuestTagType.Normal and tagInfo.isElite and tagInfo.quality == Enum.WorldQuestQuality.Epic) then
+			-- NOTE: Updated to include the new world boss type, but this continues to support the old way of identifying world bosses for now
+			return "worldquest-icon-boss";
+		else
+			if questID then
+				local theme = C_QuestLog.GetQuestDetailsTheme(questID);
+				if theme then
+					return theme.poiIcon;
+				end
+			end
+		end
+
+		return "Worldquest-icon";
+	end
+
+	function QuestUtil.GetWorldQuestAtlasInfo(questID, tagInfo, inProgress)
+		local iconAtlas, width, height = GetWorldQuestAtlasInfo(questID, tagInfo, inProgress);
+
+		if iconAtlas then
+			local info = C_Texture.GetAtlasInfo(iconAtlas);
+			if info then
+				return iconAtlas, width or info.width, height or info.height;
+			end
+		end
+
+		return "Worldquest-icon", 32, 32;
+	end
+    return
 end
+
+
 
 
 

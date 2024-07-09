@@ -4649,7 +4649,6 @@
         "inject-field",
         "missing-parameter",
         "redundant-parameter",
-        "trailing-space",
         "assign-type-mismatch",
         "param-type-mismatch"
     ],

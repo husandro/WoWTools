@@ -157,13 +157,15 @@ local function Get_QuestReward_Texture(questID)
         if itemTexture then return itemTexture end
     end
 
-    local numQuestCurrencies= GetNumQuestLogRewardCurrencies(questID)--货币
+    local numQuestCurrencies= GetNumQuestLogRewards(questID, true)-- GetNumQuestLogRewardCurrencies(questID)--货币
     if numQuestCurrencies>0 then
         bestQuality= -1
         for i=1, numQuestCurrencies do
-            local _, texture, _, _, quality = GetQuestLogRewardCurrencyInfo(i, questID)
-            if quality > bestQuality then
-                itemTexture= texture
+            --local _, texture, _, _, quality = GetQuestLogRewardCurrencyInfo(i, questID)
+            --if quality > bestQuality then
+            local data= C_QuestLog.GetQuestRewardCurrencyInfo(questID, i, true)
+            if data and data.quality and data.quality>bestQuality then
+                itemTexture= data.texture
             end
         end
         return itemTexture
@@ -938,7 +940,7 @@ local function Init_Button_Menu(_, level, menuList)--菜单
             info={
                 text= GetQuestLink(questID) or questID,
                 icon= select(2, GetQuestLogRewardInfo(1, questID))
-                     or select(2, GetQuestLogRewardCurrencyInfo(1, questID))
+                     or (C_QuestLog.GetQuestRewardCurrencyInf(questID, 1, false) or {}).texture--select(2, GetQuestLogRewardCurrencyInfo(1, questID))
                      or 'AutoQuest-Badge-Campaign',
                 notCheckable=true,
                 tooltipOnButton=true,

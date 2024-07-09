@@ -45,7 +45,7 @@ e.ChallengesSpellTabs={
     [166]={spell=159900, ins=536, name='恐轨车站', spellName='暗轨之路', spellDes='传送至|cff00ccff恐轨车站|r入口处。'},
     [369]={spell=373274, ins=1178, name='麦卡贡|cff00ccff垃圾场|r', spellName='机械王子之路', spellDes='传送到|cff00ccff麦卡贡|r行动的入口。'},
     [370]={spell=373274, ins=1178, name='麦卡贡|cff00ccff车间|r', spellName='机械王子之路', spellDes='传送到|cff00ccff麦卡贡|r行动的入口。'},
-    
+
 
     [169]={spell=159896, ins=558, name='钢铁码头', spellName='铁船之路', spellDes='传送至|cff00ccff钢铁码头|r入口处。'},
     [227]={spell=373262, ins=860, name='卡拉赞', spellName='堕落守护者之路', spellDes='传送到|cff00ccff卡拉赞|r的入口。'},
@@ -54,14 +54,14 @@ e.ChallengesSpellTabs={
 
     [56]={spell=131205, ins=302, name='风暴烈酒酿造厂', spellName='烈酒之路', spellDes='将施法者传送到|cff00ccff风暴烈酒酿造厂|r入口。'},
     [57]={spell=131225, ins=303, name='残阳关', spellName='残阳之路', spellDes='传送至|cff00ccff残阳关|r入口处。'},
-    [58]={spell=131206, ins=321, name='影踪禅院', spellName='影踪派之路', spellDes='将施法者传送到|cff00ccff影踪禅院|r入口。'},    
+    [58]={spell=131206, ins=321, name='影踪禅院', spellName='影踪派之路', spellDes='将施法者传送到|cff00ccff影踪禅院|r入口。'},
     [59]={spell=131228, ins=324, name='砮皂寺', spellName='玄牛之路', spellDes='传送至|cff00ccff围攻砮皂寺|r入口处'},
     [60]={spell=131222, ins=321, name='魔古山宫殿', spellName='魔古皇帝之路', spellDes='传送至|cff00ccff魔古山宫殿|r入口处。'},
     [76]={spell=131232, ins=246, name='通灵学院', spellName='通灵师之路', spellDes='传送至|cff00ccff通灵学院|r入口处。'},
     [77]={spell=131231, ins=311, name='血色大厅', spellName='血色利刃之路', spellDes='传送至|cff00ccff血色大厅|r入口处。'},
-    [78]={spell=131229, ins=316, name='血色修道院', spellName='血色法冠之路', spellDes='传送至|cff00ccff血色修道院|r入口处。'},    
-    
-    
+    [78]={spell=131229, ins=316, name='血色修道院', spellName='血色法冠之路', spellDes='传送至|cff00ccff血色修道院|r入口处。'},
+
+
 
 
     [163]={spell=159895, ins=385, name='渣矿井', spellName='血槌之路', spellDes='传送至|cff00ccff血槌炉渣矿井|r入口处。'},
@@ -78,15 +78,15 @@ e.ChallengesSpellTabs={
     [376]={spell=354462, ins=1182, name='通灵战潮', spellName='勇者之路', spellDes='传送到|cff00ccff通灵战潮|r的入口。'},
     [381]={spell=354466, ins=1186, name='晋升高塔', spellName='晋升者之路', spellDes='传送到|cff00ccff晋升高塔|r的入口。'},
 
-    [499]= {spell=nil, ins=1267, name='圣焰隐修院', spellName=nil, spellDes=nil},
-    [500]= {spell=nil, ins=1268, name='驭雷栖巢', spellName=nil, spellDes=nil},
-    [501]= {spell=nil, ins=1269, name='矶石宝库', spellName=nil, spellDes=nil},
-    [502]= {spell=nil, ins=1274, name='千丝之城', spellName=nil, spellDes=nil},
-    [503]= {spell=nil, ins=1271, name='艾拉-卡拉，回响之城', spellName=nil, spellDes=nil},
-    [504]= {spell=nil, ins=1210, name='暗焰裂口', spellName=nil, spellDes=nil},
-    [505]= {spell=nil, ins=1270, name='破晨号', spellName=nil, spellDes=nil},
-    [506]= {spell=nil, ins=1272, name='燧酿酒庄', spellName=nil, spellDes=nil},
-    [507]= {spell=nil, ins=71, name='格瑞姆巴托', spellName=nil, spellDes=nil},
+    [499]= {spell=445444, ins=1267, name='圣焰隐修院', spellName='圣焰隐修院之路', spellDes='传送至|cff00ccff圣焰隐修院|r入口处。'},
+    [500]= {spell=445443, ins=1268, name='驭雷栖巢', spellName='驭雷栖巢之路', spellDes='传送至|cff00ccff驭雷栖巢|r入口处。'},
+    [501]= {spell=445269, ins=1269, name='矶石宝库', spellName='矶石宝库之路', spellDes='传送至|cff00ccff矶石宝库|r入口处。'},
+    [502]= {spell=445416, ins=1274, name='千丝之城', spellName='千丝之城之路', spellDes='传送至|cff00ccff千丝之城|r入口处。'},
+    [503]= {spell=445417, ins=1271, name='回响之城', spellName='艾拉-卡拉，回响之城之路', spellDes='传送至|cff00ccff艾拉%-卡拉，回响之城入|r口处'},
+    [504]= {spell=445441, ins=1210, name='暗焰裂口', spellName='暗焰裂口之路', spellDes='传送至|cff00ccff暗焰裂口|r入口处。'},
+    [505]= {spell=445414, ins=1270, name='破晨号', spellName='破晨号之路', spellDes='传送至|cff00ccff破晨号|r入口处。'},
+    [506]= {spell=445440, ins=1272, name='燧酿酒庄', spellName='酒庄之路', spellDes='传送至|cff00ccff燧酿酒庄|r入口处。'},
+    [507]= {spell=445424, ins=71, name='格瑞姆巴托', spellName='格瑞姆巴托之路', spellDes='传送至|cff00ccff格瑞姆巴托|r入口处。'},
 }
 
 --if C_MythicPlus.GetCurrentSeason()==12 then

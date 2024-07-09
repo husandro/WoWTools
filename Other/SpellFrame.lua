@@ -7,6 +7,13 @@ local SpellTab={}--e.ChallengesSpellTabs
 
 
 
+
+
+
+
+
+
+
 local function Vstr(t)--垂直文字
     local len = select(2, t:gsub("[^\128-\193]", ""))
     if(len == #t) then
@@ -139,7 +146,6 @@ local function set_flyout_spell_tab()
     if e.onlyChinese then
         return
     end
-
     for _, info in pairs(e.ChallengesSpellTabs) do
         if info.spell and info.ins then
             local name= EJ_GetInstanceInfo(info.ins)
@@ -148,30 +154,6 @@ local function set_flyout_spell_tab()
             end
         end
     end
-
-    --[[local tab={--没找到，数据
-        {spell=131228, ins=324},--'玄牛之路', '传送至|cff00ccff围攻砮皂寺|r入口处'},
-        {spell=131222, ins=321},--'魔古皇帝之路', '传送至|cff00ccff魔古山宫殿|r入口处。'},
-        {spell=131225, ins=303},--'残阳之路', '传送至|cff00ccff残阳关|r入口处。'},
-        {spell=131206, ins=321},--'影踪派之路', '将施法者传送到|cff00ccff影踪禅院|r入口。'},
-        {spell=131205, ins=302},--'烈酒之路', '将施法者传送到|cff00ccff风暴烈酒酿造厂|r入口。'},
-        {spell=131232, ins=246},--'通灵师之路', '传送至|cff00ccff通灵学院|r入口处。'},
-        {spell=131231, ins=311},--'血色利刃之路', '传送至|cff00ccff血色大厅|r入口处。'},
-        {spell=131229, ins=316},--'血色法冠之路', '传送至|cff00ccff血色修道院|r入口处。'},
-
-        {spell=432257, ins=1208},-- '苦涩传承之路', '传送到|cff00ccff亚贝鲁斯，焰影熔炉|r的入口。'},--Dragonflight https://wago.io/meD8JMW3C
-        {spell=432258, ins=1207},--'熏火梦境之路', '传送到|cff00ccff阿梅达希尔，梦境之愿|r的入口。'},
-        {spell=432254, ins=1200},--'原始囚龙之路', '传送到|cff00ccff化身巨龙牢窟|r的入口。'},
-        {spell=373190, ins=1190},--'大帝之路', '传送到|cff00ccff纳斯利亚堡|r的入口。'},--Shadowlands
-        {spell=373191, ins=1193},--'磨难灵魂之路', '传送到|cff00ccff统御圣所|r的入口。'},
-        {spell=373192, ins=1195},--'初诞者之路', '传送到|cff00ccff初诞者圣墓|r的入口。'},
-    }
-    for _, info in pairs(tab) do
-        local name= EJ_GetInstanceInfo(info.ins)
-        if name then
-            SpellTab[info.spell]=name
-        end
-    end]]
 end
 
 
@@ -195,9 +177,10 @@ end
 local function set_SpellFlyoutButton_UpdateGlyphState(self)
     local text= SpellTab[self.spellID]
     if not text and self.spellID and not C_Spell.IsSpellPassive(self.spellID) then
-        
-        
-        local des= e.cn(C_Spell.GetSpellDescription(self.spellID), {spellID=self.spellID, isDesc=true})
+
+
+        local des= C_Spell.GetSpellDescription(self.spellID)
+        des= e.cn(des)
         if des then
             text= des:match('|cff00ccff(.-)|r')
                 or des:match('传送至(.-)入口处')--传送至永茂林地入口处。
@@ -220,7 +203,7 @@ local function set_SpellFlyoutButton_UpdateGlyphState(self)
         if not text then
             text= e.cn(C_Spell.GetSpellName(self.spellID), {spellID=self.spellID, isName=true})
             if not text then
-                text= select(2, GetCallPetSpellInfo(self.spellID))                
+                text= select(2, GetCallPetSpellInfo(self.spellID))
                 text= e.cn(text)
             end
             text=text:match('%-(.+)') or text
@@ -276,7 +259,7 @@ function Init_All_Flyout()
     end
     --https://wago.tools/db2/SpellFlyout?build=11.0.0.55288&locale=zhCN
     local tab={
-        --232,--'英雄之路：地心之战--11
+        232,--'英雄之路：地心之战--11
         231,--英雄之路：巨龙时代团队副本
         227,--巨龙时代 10
 
@@ -295,7 +278,7 @@ function Init_All_Flyout()
     local x=-12
     for _, flyoutID in pairs(tab) do--1024 MAX_SPELLS
         local numSlots, isKnown= select(3, GetFlyoutInfo(flyoutID))
-        local btn= e.Cbtn(SpellBookSpellIconsFrame, {texture=519384, size=22, alpha=isKnown and 0.1 or 0.5})
+        local btn= e.Cbtn(SpellBookSpellIconsFrame or PlayerSpellsFrame.SpellBookFrame, {texture=519384, size=22, alpha=isKnown and 0.1 or 0.5})
 
         btn:SetPoint('TOPRIGHT', x, -30)
         btn:SetScript('OnLeave', function(self) self:SetAlpha(isKnown and 0.1 or 0.5) end)
@@ -336,11 +319,27 @@ function Init_All_Flyout()
         btn.isKnown= isKnown
         btn.flyoutID= flyoutID
         x= x-24
-        
+
     end
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+local function Init_Blizzard_PlayerSpells()
+    hooksecurefunc(ClassTalentButtonSpendMixin, 'UpdateSpendText', set_UpdateSpendText)--天赋, 点数 
+    Init_All_Flyout()
+end
 
 
 
@@ -360,8 +359,7 @@ local function Init()
     hooksecurefunc('SpellFlyoutButton_UpdateGlyphState', set_SpellFlyoutButton_UpdateGlyphState)
     hooksecurefunc(SpellFlyout, 'Toggle',  GameTooltip_Hide)--隐藏
     C_Timer.After(2, set_flyout_spell_tab)--挑战传送门数据
-    C_Timer.After(4, Init_All_Flyout)
-    --SpellBookFrame:SetScript('OnShow', Init_All_Flyout)
+
 end
 
 
@@ -409,12 +407,20 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:UnregisterEvent('ADDON_LOADED')
             else
                 Init()
+                if C_AddOns.IsAddOnLoaded('Blizzard_PlayerSpells') then
+                    Init_Blizzard_PlayerSpells()
+                    self:UnregisterEvent('ADDON_LOADED')
+                end
             end
 
-        elseif arg1=='Blizzard_ClassTalentUI' then--天赋
+        --[[elseif arg1=='Blizzard_ClassTalentUI' then--天赋
             if not Save.disabled then
                 hooksecurefunc(ClassTalentButtonSpendMixin, 'UpdateSpendText', set_UpdateSpendText)--天赋, 点数 
-            end
+            end]]
+
+        elseif arg1=='Blizzard_PlayerSpells' then--天赋
+            Init_Blizzard_PlayerSpells()
+            self:UnregisterEvent('ADDON_LOADED')
         end
 
     elseif event == "PLAYER_LOGOUT" then

@@ -934,14 +934,14 @@ function func:Set_Quest(tooltip, questID, info)----任务
         info = questLogIndex and C_QuestLog.GetInfo(questLogIndex)
     end
 
-    local distanceSq= C_QuestLog.GetDistanceSqToQuest(questID)--距离
+    --[[local distanceSq= C_QuestLog.GetDistanceSqToQuest(questID)--距离 11版本 无QuestPOIGetIconInfo
     if distanceSq and distanceSq>0 then
         local _, x, y = QuestPOIGetIconInfo(questID)
         if x and y then
             x=math.modf(x*100) y=math.modf(y*100)
         end
         tooltip:AddDoubleLine(x and y and 'XY '..x..', '..y or ' ',  format(e.onlyChinese and '%s码' or IN_GAME_NAVIGATION_RANGE, e.MK(distanceSq)))
-    end
+    end]]
 
     local tagInfo = C_QuestLog.GetQuestTagInfo(questID)
     local name

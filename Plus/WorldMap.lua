@@ -139,19 +139,21 @@ local function set_WorldQuestPinMixin_RefreshVisuals(self)--WorldQuestDataProvid
                 end
             end
         end
-    else
-        local currencyID
-        itemName, texture, numItems, currencyID, quality = GetQuestLogRewardCurrencyInfo(1, self.questID)--货币
-        if itemName and numItems and numItems>1 then
+    else 
+        --itemName, texture, numItems, currencyID, quality =  GetQuestLogRewardCurrencyInfo(1, self.questID)--货币
+        local data= C_QuestLog.GetQuestRewardCurrencyInfo(self.questID, 1, false)
+        local currencyID= data and data.currencyID
+        if currencyID and data.quality and data.quality>0 then
             local info, _, _, _, isMax, canWeek, canEarned, canQuantity= e.GetCurrencyMaxInfo(currencyID, nil)
-            if info then
+            if info and data.quality>1 then
                 if isMax then
-                    text= format('|cnRED_FONT_COLOR:%d|r', numItems)
+                    text= format('|cnRED_FONT_COLOR:%d|r', data.quality)
                 elseif canWeek or canEarned or canQuantity then
-                    text= format('|cnGREEN_FONT_COLOR:%d|r', numItems)
+                    text= format('|cnGREEN_FONT_COLOR:%d|r', data.quality)
                 end
+                texture=info.iconFileID
             end
-            text= text or numItems
+            text= text or data.quality
         end
 
         if not text then
@@ -163,14 +165,24 @@ local function set_WorldQuestPinMixin_RefreshVisuals(self)--WorldQuestDataProvid
         end
     end
 
-    if texture then
-        self.Texture:SetTexture(texture)
-        self.Texture:SetSize(40, 40)
+
+        --[[if self.Texture then
+            self.Texture:SetTexture(texture)
+            self.Texture:SetSize(40, 40)
+        else]]
+    if self.Display and texture then
+        if type(texture)=='number' then
+            SetPortraitToTexture(self.Display.Icon, texture)
+        else
+            self.Display.Icon:SetTexture(texture)
+        end
+        self.Display.Icon:SetSize(20, 20)
     end
 
+
     if not self.Text and text then
-        self.Text= create_Wolor_Font(self, 22)
-        self.Text:SetPoint('TOP', self, 'BOTTOM',0,2)
+        self.Text= create_Wolor_Font(self, 12)
+        self.Text:SetPoint('TOP', self, 'BOTTOM',0, 2)
     end
     if self.Text then
         self.Text:SetText(text or '')
@@ -878,7 +890,7 @@ local function set_AreaPOIPinMixin_OnAcquired(frame)
     frame.updateWidgetID=nil
     frame.updateAreaPoiID=nil
     frame:SetScript('OnUpdate', nil)
-    
+
     if not frame.Text and not Save.hide and (frame.name or frame.widgetSetID or frame.areaPoiID) then
         frame.Text= create_Wolor_Font(frame, 10)
         frame.Text:SetPoint('TOP', frame, 'BOTTOM', 0, 3)
