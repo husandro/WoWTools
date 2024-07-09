@@ -16,7 +16,7 @@ e.ChallengesSpellTabs={
     [400]= {spell=393262, ins=1198, name='诺库德', spellName='啸风平原之路', spellDes='|cff00ccff传送至诺库德阻击战|r的入口。'},--传送至诺库德阻击战的入口。 啸风平原之路
     [401]= {spell=393279, ins=1203, name='魔馆', spellName='奥秘之路',  spellDes='传送至|cff00ccff碧蓝魔馆|r的入口。'},--传送至碧蓝魔馆的入口。 奥秘之路
     [402]= {spell=393273, ins=1201, name='学院', spellName='巨龙学位之路', spellDes='传送到|cff00ccff艾杰斯亚学院|r的入口。'},--传送到艾杰斯亚学院的入口。 巨龙学位之路
-    [403]= {spell=393222, ins=1197, name='奥达曼|cff00ccff遗产|r', spellName='看护者遗产之路', spellDes='传送到|cff00ccff奥达曼|r：|cffff00ff提尔的遗产|r的入口。'},--传送到奥达曼：提尔的遗产的入口 看护者遗产之路    
+    [403]= {spell=393222, ins=1197, name='奥达曼遗产', spellName='看护者遗产之路', spellDes='传送到|cff00ccff奥达曼|r：|cffff00ff提尔的遗产|r的入口。'},--传送到奥达曼：提尔的遗产的入口 看护者遗产之路    
     [404]= {spell=393276, ins=1199, name='奈萨鲁斯', spellName='黑曜宝藏之路', spellDes='传送到|cff00ccff奈萨鲁斯|r的入口。'},--传送到奈萨鲁斯的入口。 黑曜宝藏之路
     [405]= {spell=393267, ins=1196, name='蕨皮山谷', spellName='腐木之路',  spellDes='传送到|cff00ccff蕨皮山谷|r的入口。'},--传送到蕨皮山谷的入口。 腐木之路
     [406]= {spell=393283, ins=1204, name='注能大厅', spellName='泰坦水库之路', spellDes='传送到|cff00ccff注能大厅|r的入口。'},----传送到注能大厅的入口 泰坦水库之路
@@ -43,8 +43,8 @@ e.ChallengesSpellTabs={
     [391]={spell=367416, ins=1194, name='天街', spellName='街头商贩之路', spellDes='传送至|cff00ccff塔扎维什，帷纱集市|r入口处。'},
     [392]={spell=367416, ins=1194, name='宏图', spellName='街头商贩之路', spellDes='传送至|cff00ccff塔扎维什，帷纱集市|r入口处。'},
     [166]={spell=159900, ins=536, name='恐轨车站', spellName='暗轨之路', spellDes='传送至|cff00ccff恐轨车站|r入口处。'},
-    [369]={spell=373274, ins=1178, name='麦卡贡|cff00ccff垃圾场|r', spellName='机械王子之路', spellDes='传送到|cff00ccff麦卡贡|r行动的入口。'},
-    [370]={spell=373274, ins=1178, name='麦卡贡|cff00ccff车间|r', spellName='机械王子之路', spellDes='传送到|cff00ccff麦卡贡|r行动的入口。'},
+    [369]={spell=373274, ins=1178, name='麦卡贡垃圾场', spellName='机械王子之路', spellDes='传送到|cff00ccff麦卡贡|r行动的入口。'},
+    [370]={spell=373274, ins=1178, name='麦卡贡车间', spellName='机械王子之路', spellDes='传送到|cff00ccff麦卡贡|r行动的入口。'},
 
 
     [169]={spell=159896, ins=558, name='钢铁码头', spellName='铁船之路', spellDes='传送至|cff00ccff钢铁码头|r入口处。'},
