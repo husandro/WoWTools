@@ -260,13 +260,13 @@ function Init_All_Flyout()
         --燃烧的远征 2
         --经典旧世 1
     }
-    local x=-12
+    local y= -145
     for _, flyoutID in pairs(tab) do--1024 MAX_SPELLS
         local numSlots, isKnown= select(3, GetFlyoutInfo(flyoutID))
-        local btn= e.Cbtn(SpellBookSpellIconsFrame or PlayerSpellsFrame.SpellBookFrame, {texture=519384, size=22, alpha=isKnown and 0.1 or 0.5})
+        local btn= e.Cbtn(PlayerSpellsFrame.SpellBookFrame.PagedSpellsFrame, {texture=519384, size=32, alpha=isKnown and 0.1 or 0.5})
 
-        btn:SetPoint('TOPRIGHT', x, -30)
-        btn:SetScript('OnLeave', function(self) self:SetAlpha(isKnown and 0.1 or 0.5) end)
+        btn:SetPoint('TOPLEFT', 22, y)
+        btn:SetScript('OnLeave', function(self) self:SetAlpha(isKnown and 0.1 or 0.5) e.tips:Hide() end)
         btn:SetScript('OnEnter', function(self)
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
@@ -303,9 +303,10 @@ function Init_All_Flyout()
 
         btn.isKnown= isKnown
         btn.flyoutID= flyoutID
-        x= x-24
+        y= y-46
 
     end
+    
 end
 
 
@@ -347,7 +348,7 @@ local function Init()
     --挑战传送门数据 --Flyout, 挑战传送门数据e.ChallengesSpellTabs，仅限 不是中文
     if e.onlyChinese then
         C_Timer.After(4, function()
-            for _, info in pairs(e.ChallengesSpellTabs) do
+            for _, info in pairs(e.ChallengesSpellTabs or {}) do
                 if info.spell and info.name then--local name= EJ_GetInstanceInfo(info.ins)
                     SpellTab[info.spell]=info.name
                 end
