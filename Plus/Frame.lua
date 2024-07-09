@@ -2343,7 +2343,7 @@ if ReputationEntryMixin  then--11版本
         e.Set_Move_Frame(TokenFrame, {frame=CharacterFrame})
         --e.Set_Move_Frame(CurrencyTransferLog, {frame=CharacterFrame})
         if CurrencyTransferLog then
-            e.Set_Move_Frame(CurrencyTransferLog.TitleContainer, {frame=CharacterFrame})
+            --e.Set_Move_Frame(CurrencyTransferLog.TitleContainer, {frame=CharacterFrame})
             set_Scale_Size(CurrencyTransferLog, {setSize=true, sizeRestFunc=function(btn)
                 btn.target:ClearAllPoints()
                 btn.target:SetPoint('TOPLEFT', TokenFrame, 'TOPRIGHT', 5,0)
