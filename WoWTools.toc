@@ -1,4 +1,4 @@
-## Interface: 100207
+## Interface: 110000
 ## Title: |cffff00ffWoW|r |cff00ff00Tools|r
 ## Author: husandro
 ## Version: @project-version@
@@ -18,7 +18,7 @@
 ## AddonCompartmentFuncOnEnter: WowTools_OnAddonCompartmentFuncOnEnter
 
 ##10.27 到11版本的API, 修该
-API11.lua
+##API11.lua
 
 ##库，不能删除
 Libs\LibStub.lua
