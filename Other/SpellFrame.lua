@@ -141,20 +141,6 @@ end
 
 
 
---Flyout, 挑战传送门数据e.ChallengesSpellTabs，仅限 不是中文
-local function set_flyout_spell_tab()
-    if e.onlyChinese then--and not (LOCALE_zhCN or LOCALE_zhTW) then
-        for _, info in pairs(e.ChallengesSpellTabs) do
-            if info.spell and info.name then
-                --local name= EJ_GetInstanceInfo(info.ins)
-                --if name then
-                    SpellTab[info.spell]=info.name
-                --end
-            end
-        end
-    end
-end
-
 
 
 
@@ -357,7 +343,17 @@ local function Init()
     --Flyout, 技能，提示
     hooksecurefunc('SpellFlyoutButton_UpdateGlyphState', set_SpellFlyoutButton_UpdateGlyphState)
     hooksecurefunc(SpellFlyout, 'Toggle',  GameTooltip_Hide)--隐藏
-    C_Timer.After(4, set_flyout_spell_tab)--挑战传送门数据
+
+    --挑战传送门数据 --Flyout, 挑战传送门数据e.ChallengesSpellTabs，仅限 不是中文
+    if e.onlyChinese then
+        C_Timer.After(4, function()
+            for _, info in pairs(e.ChallengesSpellTabs) do
+                if info.spell and info.name then--local name= EJ_GetInstanceInfo(info.ins)
+                    SpellTab[info.spell]=info.name
+                end
+            end
+        end)
+    end
 
 end
 
