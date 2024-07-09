@@ -4,7 +4,7 @@ if e.Player.class~='HUNTER' or not StableFrame then --or C_AddOns.IsAddOnLoaded(
 end
 --PetStableFrame, C_AddOns.IsAddOnLoaded("ImprovedStableFrame")
 --PetStable.lua
-local addName= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,  UnitClass('player'), DUNGEON_FLOOR_ORGRIMMARRAID8) --猎人兽栏
+local addName= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,  'HUNTER', DUNGEON_FLOOR_ORGRIMMARRAID8) --猎人兽栏
 local Save={
     --hideIndex=true,--隐藏索引
     --hideTalent=true,--隐藏天赋
