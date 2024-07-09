@@ -28,7 +28,11 @@ e.onlyChinese= LOCALE_zhCN and true or false
 e.Is_Timerunning= PlayerGetTimerunningSeasonID()-- 1=幻境新生：潘达利亚
 e.Is_PTR= IsPublicBuild() or IsTestBuild()
 e.disbledCN=true--禁用，汉化
-
+--[[
+local isRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
+local isEra = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+local isCata = WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC
+]]
 local function GetWeek()--周数
     local region= GetCurrentRegion()
     local d = date("*t")
