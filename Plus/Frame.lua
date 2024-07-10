@@ -2521,7 +2521,7 @@ end
     --好友列表
     e.Set_Move_Frame(FriendsFrame, {notInCombat=true, setSize=true, minW=338, minH=424, initFunc=function(btn)
             FriendsListFrame.ScrollBox:SetPoint('BOTTOMRIGHT', -24, 30)
-            WhoFrameColumnHeader1:SetWidth(200)
+            --WhoFrameColumnHeader1:SetWidth(200)
             hooksecurefunc(WhoFrame.ScrollBox, 'Update', function(self)
                 if not self:GetView() then
                     return
