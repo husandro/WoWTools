@@ -997,7 +997,7 @@ end
 
 
 
-function Load_AddOn()
+local function Load_AddOn()
     if C_AddOns.IsAddOnLoaded("Blizzard_TrainerUI") then
         Init_Blizzard_TrainerUI()--添一个,全学,专业, 按钮
     end
