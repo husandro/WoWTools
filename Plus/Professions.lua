@@ -459,7 +459,7 @@ end
 local function Init_ProfessionsFrame()
     Init_ProfessionsFrame_Button()--专业界面, 按钮
 
-    local btn2= e.Cbtn(ProfessionsFrame.TitleContainer, {icon=not Save.disabled, size={20, 20}})
+    --[[local btn2= e.Cbtn(ProfessionsFrame.TitleContainer, {icon=not Save.disabled, size={20, 20}})
     if _G['MoveZoomInButtonPerProfessionsFrame'] then
         btn2:SetPoint('LEFT', _G['MoveZoomInButtonPerProfessionsFrame'], 'RIGHT')
     else
@@ -483,14 +483,14 @@ local function Init_ProfessionsFrame()
         e.tips:Hide()
         self2:SetAlpha(0.5)
     end)
-    btn2:SetAlpha(0.5)
+    btn2:SetAlpha(0.5)]]
 
     --###
     --数量
     --Blizzard_Professions.lua  ProfessionsRecipeSchematicFormMixin:Init
     hooksecurefunc(Professions,'SetupOutputIconCommon', function(outputIcon, quantityMin, quantityMax, icon, itemIDOrLink, quality)
         local num
-        if itemIDOrLink and not Save.disabled then
+        if itemIDOrLink then
             num= C_Item.GetItemCount(itemIDOrLink, true, false, true)
             local itemID= C_Item.GetItemInfoInstant(itemIDOrLink)
             if itemID then
@@ -589,7 +589,7 @@ local function Init_ProfessionsFrame()
         if not isEnchant
             or not self.enchantSlot
             or not self.enchantSlot:IsShown()
-            or Save.disabled--禁用，按钮
+            --or Save.disabled--禁用，按钮
             or ItemUtil.GetCraftingReagentCount(38682)==0--没有， 附魔纸
         then
             if self.enchantSlot and self.enchantSlot.btn then
