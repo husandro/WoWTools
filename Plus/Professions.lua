@@ -942,16 +942,7 @@ end
 
 --专业书
 local function Init_ProfessionsBook()
-    --########################
     --自动输入，忘却，文字，专业
-    --########################
-    hooksecurefunc(StaticPopupDialogs["UNLEARN_SKILL"], "OnShow",function(self)
-        print('aaaaaaaaaaaa')
-        if Save.wangquePrefessionText or IsPublicBuild() then
-            self.editBox:SetText(UNLEARN_SKILL_CONFIRMATION);
-        end
-    end)
-
     if IsPublicBuild() then
         return
     end
@@ -1011,6 +1002,14 @@ local function Load_AddOn()
     if C_AddOns.IsAddOnLoaded("Blizzard_ProfessionsBook") then
         Init_ProfessionsBook()--专业书
     end
+
+    --自动输入，忘却，文字，专业
+    hooksecurefunc(StaticPopupDialogs["UNLEARN_SKILL"], "OnShow",function(self)
+        if Save.wangquePrefessionText or IsPublicBuild() then
+            self.editBox:SetText(UNLEARN_SKILL_CONFIRMATION);
+        end
+    end)
+
     ArcheologyDigsiteProgressBar:HookScript('OnShow', Init_ArcheologyDigsiteProgressBar_OnShow)
 end
 
