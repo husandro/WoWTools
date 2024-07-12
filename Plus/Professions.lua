@@ -1004,7 +1004,7 @@ local function Load_AddOn()
     end
 
     --自动输入，忘却，文字，专业
-    hooksecurefunc(StaticPopupDialogs["UNLEARN_SKILL"], "OnShow",function(self)
+    hooksecurefunc(StaticPopupDialogs["UNLEARN_SKILL"], "OnShow", function(self)
         if Save.wangquePrefessionText or IsPublicBuild() then
             self.editBox:SetText(UNLEARN_SKILL_CONFIRMATION);
         end
