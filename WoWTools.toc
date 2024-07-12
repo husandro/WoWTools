@@ -121,6 +121,8 @@ Plus\Cursor.lua
 ##宏增强
 Plus\Macro.lua
 Plus\Macro1027.lua
+##专业按钮
+Plus\Professions.lua
 
 ##坐骑， Tools 主要的，
 ##如果要使用Tools中的一个模块，必须开启坐骑模块
@@ -136,8 +138,7 @@ Tools\_23Food.lua
 Tools\20ScoutingMapToy.lua
 ##随机玩具
 Tools\21UseToy.lua
-##专业按钮
-Tools\22Professions.lua
+
 ##各种专送门,物品，玩具
 Tools\23UsaItems.lua
 ##自动召唤，宠物

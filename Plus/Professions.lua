@@ -12,7 +12,7 @@ local Save={
     ArcheologySound=true, --考古学
 }
 
-local panel=CreateFrame("Frame")
+local Initializer
 local ArcheologyButton
 local UNLEARN_SKILL_CONFIRMATION= UNLEARN_SKILL_CONFIRMATION
 
@@ -26,9 +26,9 @@ local UNLEARN_SKILL_CONFIRMATION= UNLEARN_SKILL_CONFIRMATION
 --##########
 --TOOLS，按钮
 --##########
-local function Init_Tools_Button()
+--[[local function Init_Tools_Button()
     --11版本
-    
+
     local tab={GetProfessions()}--local prof1, prof2, archaeology, fishing, cooking = GetProfessions()
     for index, type in pairs(tab) do
         if type then --and index~=4 and index~=3 then
@@ -109,14 +109,14 @@ local function Init_Tools_Button()
                         e.SetButtonKey(self, true,'F', 'RightButton')
                         self:RegisterEvent('PLAYER_REGEN_ENABLED')
                         self:RegisterEvent('PLAYER_REGEN_DISABLED')
-                        print(id, e.cn(addName),'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '设置' or SETTINGS), self.name, e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL, '|cffff00ffF')
+                        print(id, Initializer:GetName(),'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '设置' or SETTINGS), self.name, e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL, '|cffff00ffF')
 
                     elseif d==-1 then
                         e.SetButtonKey(self)
                         self:UnregisterEvent('PLAYER_REGEN_DISABLED')
                         self:UnregisterEvent('PLAYER_REGEN_ENABLED')
 
-                        print(id, e.cn(addName),'|cnRED_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2), self.name, e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)
+                        print(id, Initializer:GetName(),'|cnRED_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2), self.name, e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)
                     end
                     self:set_tooltip()
                     self:set_key_text(d==1 and 'F' or '')
@@ -125,10 +125,10 @@ local function Init_Tools_Button()
                 btn:SetScript("OnEvent", function(self, event)
                     if event=='PLAYER_REGEN_ENABLED' then
                         e.SetButtonKey(self, true,'F', 'RightButton')
-                        print(id, e.cn(addName),'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '设置' or SETTINGS), self.name, e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL, '|cffff00ffF|r')
+                        print(id, Initializer:GetName(),'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '设置' or SETTINGS), self.name, e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL, '|cffff00ffF|r')
                     elseif event=='PLAYER_REGEN_DISABLED' then
                         e.SetButtonKey(self)
-                        print(id, e.cn(addName),'|cnRED_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2), self.name, e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)
+                        print(id, Initializer:GetName(),'|cnRED_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2), self.name, e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)
                     end
                     self:set_key_text(event=='PLAYER_REGEN_ENABLED' and 'F' or '')
                 end)
@@ -181,7 +181,7 @@ local function Init_Tools_Button()
             end
         end
     end
-end
+end]]
 
 
 
@@ -266,13 +266,13 @@ local function Init_ProfessionsFrame_Button()
                     btn:SetScript('OnHide', btn.settings)
                     btn:settings()
 
-                  
+
                     btn:SetScript('OnLeave', GameTooltip_Hide)
                     btn:SetScript('OnEnter', function(self)
                         e.tips:SetOwner(self, "ANCHOR_RIGHT")
                         e.tips:ClearLines()
                         e.tips:SetSpellByID(818)
-                        
+
                         if self.toyName then
                             e.tips:AddLine(' ')
                             e.tips:AddDoubleLine('|T236571:0|t|cnGREEN_FONT_COLOR:'..self.toyName, e.Icon.right)
@@ -312,11 +312,7 @@ end
 
 
 --添一个,全学,专业, 按钮, 插件 TrainAll 
-local function set_Blizzard_TrainerU()
-    if Save.disabled then
-        return
-    end
-
+local function Init_Blizzard_TrainerUI()
     ClassTrainerFrame.BuyAll= e.Cbtn(ClassTrainerFrame, {type=false, size={ClassTrainerTrainButton:GetSize()}})
     ClassTrainerFrame.BuyAll:SetPoint('RIGHT', ClassTrainerTrainButton, 'LEFT',-2,0)
     ClassTrainerFrame.BuyAll.name=e.onlyChinese and '全部' or ALL
@@ -335,7 +331,7 @@ local function set_Blizzard_TrainerU()
 		e.tips:AddDoubleLine(e.onlyChinese and '全部' or ALL, e.onlyChinese and '学习' or LEARN)
 		e.tips:AddDoubleLine(text, (e.onlyChinese and '可用' or AVAILABLE)..': '..'|cnGREEN_FONT_COLOR:'..self.all..'|r')
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddDoubleLine(id, Initializer:GetName())
 		e.tips:Show()
 	end)
 	ClassTrainerFrame.BuyAll:SetScript("OnLeave",GameTooltip_Hide)
@@ -356,7 +352,7 @@ local function set_Blizzard_TrainerU()
                         table.insert(tab, link)
                     end
                 else
-                    print(id, e.cn(addName), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '金币不足' or NOT_ENOUGH_GOLD), C_CurrencyInfo.GetCoinTextureString(money))
+                    print(id, Initializer:GetName(), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '金币不足' or NOT_ENOUGH_GOLD), C_CurrencyInfo.GetCoinTextureString(money))
                     break
                 end
             end
@@ -365,7 +361,7 @@ local function set_Blizzard_TrainerU()
             for i, link in pairs(tab) do
                 print('|cffff00ff'..i..'|r)', link)
             end
-            print(id, 'Tools', e.cn(addName), '|cffff00ff'..num..'|r '..(e.onlyChinese and '学习' or LEARN), (cost>0 and '|cnGREEN_FONT_COLOR:' or '')..C_CurrencyInfo.GetCoinTextureString(cost))
+            print(id, 'Tools', Initializer:GetName(), '|cffff00ff'..num..'|r '..(e.onlyChinese and '学习' or LEARN), (cost>0 and '|cnGREEN_FONT_COLOR:' or '')..C_CurrencyInfo.GetCoinTextureString(cost))
         end)
 	end)
 
@@ -411,7 +407,7 @@ local function set_Blizzard_TrainerU()
 		e.tips:ClearLines()
 		e.tips:AddDoubleLine(e.onlyChinese and '全部学习' or (ALL..' '.. LEARN), e.GetShowHide(not Save.disabledClassTrainer))
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddDoubleLine(id, Initializer:GetName())
 		e.tips:Show()
         self2:SetAlpha(1)
         ClassTrainerFrame.BuyAll:SetButtonState('PUSHED')
@@ -429,7 +425,7 @@ local function set_Blizzard_TrainerU()
 
 
     --增加物品，品质，颜色
-    hooksecurefunc('ClassTrainerFrame_InitServiceButton', function(skillButton, elementData)        
+    hooksecurefunc('ClassTrainerFrame_InitServiceButton', function(skillButton, elementData)
         local itemLink= GetTrainerServiceItemLink(elementData.skillIndex)
         local r,g,b
         if itemLink then
@@ -460,10 +456,9 @@ end
 
 
 
---####
---初始
---####
 local function Init_ProfessionsFrame()
+    Init_ProfessionsFrame_Button()--专业界面, 按钮
+
     local btn2= e.Cbtn(ProfessionsFrame.TitleContainer, {icon=not Save.disabled, size={20, 20}})
     if _G['MoveZoomInButtonPerProfessionsFrame'] then
         btn2:SetPoint('LEFT', _G['MoveZoomInButtonPerProfessionsFrame'], 'RIGHT')
@@ -473,14 +468,14 @@ local function Init_ProfessionsFrame()
     btn2:SetScript('OnMouseDown', function(self2)
         Save.disabled= not Save.disabled and true or nil
         self2:SetNormalAtlas(Save.disabled and e.Icon.disabled or e.Icon.icon)
-        print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled),  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(id, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled),  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
     btn2:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, e.toolsFrame.addName)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.cn(addName), e.GetEnabeleDisable(not Save.disabled)..e.Icon.left)
+        e.tips:AddDoubleLine(Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled)..e.Icon.left)
         e.tips:Show()
         self2:SetAlpha(1)
     end)
@@ -489,15 +484,6 @@ local function Init_ProfessionsFrame()
         self2:SetAlpha(0.5)
     end)
     btn2:SetAlpha(0.5)
-
-    if Save.disabled then
-        return
-    end
-
-
-    do
-        Init_ProfessionsFrame_Button()--专业界面, 按钮
-    end
 
     --###
     --数量
@@ -541,7 +527,7 @@ local function Init_ProfessionsFrame()
         if not info or not info.recipeID then
             return
         end
-        
+
         local tradeSkillID, _, parentTradeSkillID = C_TradeSkillUI.GetTradeSkillLineForRecipe(info.recipeID)
         e.tips:SetOwner(self, "ANCHOR_LEFT", -18, 0)
         e.tips:ClearLines()
@@ -558,7 +544,7 @@ local function Init_ProfessionsFrame()
         if info.itemLevel or info.skillLineAbilityID then
             e.tips:AddDoubleLine(info.skillLineAbilityID and 'skillLineAbilityID '..info.skillLineAbilityID,  info.itemLevel and info.itemLevel>1 and format(e.onlyChinese and '物品等级%d' or ITEM_LEVEL, info.itemLevel))
         end
-        e.tips:AddDoubleLine(e.toolsFrame.addName, e.cn(addName))
+        e.tips:AddDoubleLine(e.toolsFrame.addName, Initializer:GetName())
         e.tips:Show()
     end)
 
@@ -581,7 +567,7 @@ local function Init_ProfessionsFrame()
 
         local r,g,b--颜色        
         if recipeInfo.learned or recipeInfo.isRecraf then
-            local link= recipeInfo.hyperlink        
+            local link= recipeInfo.hyperlink
             local quality= link and C_Item.GetItemQualityByID(link)
             if quality then
                 r,g,b=C_Item.GetItemQualityColor(quality)
@@ -628,7 +614,7 @@ local function Init_ProfessionsFrame()
                 e.tips:SetItemByID(38682)
                 e.tips:AddLine(' ')
                 e.tips:AddDoubleLine(e.onlyChinese and '自动加入' or AUTO_JOIN, e.GetEnabeleDisable(not Save.disabledEnchant))
-                e.tips:AddDoubleLine(id, e.cn(addName))
+                e.tips:AddDoubleLine(id, Initializer:GetName())
                 e.tips:Show()
                 self2:SetAlpha(1)
             end)
@@ -677,7 +663,7 @@ local function Init_ProfessionsFrame()
                 e.tips:SetOwner(self2, "ANCHOR_TOPLEFT")
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine(not e.onlyChinese and PROFESSIONS_SPECS_ADD_KNOWLEDGE or "运用知识", e.onlyChinese and '全部' or ALL)
-                e.tips:AddDoubleLine(id, e.cn(addName))
+                e.tips:AddDoubleLine(id, Initializer:GetName())
                 e.tips:Show()
             end)
             button:SetScript('OnLeave', GameTooltip_Hide)
@@ -712,8 +698,6 @@ local function Init_ProfessionsFrame()
             self.SpendText2:SetText(text or '')
         end
     end)
-    
-
 end
 
 
@@ -721,10 +705,26 @@ end
 
 
 
-local function Init_Archaeology()
 
-    --提示
-    hooksecurefunc(ArchaeologyFrame.completedPage, 'UpdateFrame', function(self)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Init_Archaeology()
+    hooksecurefunc(ArchaeologyFrame.completedPage, 'UpdateFrame', function(self)--提示
         if not IsArtifactCompletionHistoryAvailable() then
             return
         end
@@ -765,7 +765,7 @@ local function Init_Archaeology()
                     if frame.itemID then
                         e.tips:SetItemByID(frame.itemID)
                     end
-                    e.tips:AddLine(id, e.cn(addName))
+                    e.tips:AddLine(id, Initializer:GetName())
                     e.tips:Show()
                 end)
 
@@ -776,7 +776,7 @@ local function Init_Archaeology()
                     e.tips:SetOwner(frame, "ANCHOR_LEFT")
                     e.tips:ClearLines()
                     e.tips:SetItemByID(87399)
-                    e.tips:AddLine(id, e.cn(addName))
+                    e.tips:AddLine(id, Initializer:GetName())
                     e.tips:Show()
                 end)
 
@@ -828,11 +828,133 @@ end
 
 
 
+
+
+
+
+local function Init_ArcheologyDigsiteProgressBar_OnShow(frame)
+    if not frame.tipsButton then
+        frame.tipsButton= e.Cbtn(frame, {size={20,20}, icon='hide'})
+        frame.tipsButton:SetPoint('RIGHT', frame, 'LEFT', 0, -4)
+        function frame.tipsButton:set_atlas()
+            self:SetNormalAtlas(Save.ArcheologySound and 'chatframe-button-icon-voicechat' or 'chatframe-button-icon-speaker-off')
+        end
+        function frame.tipsButton:set_tooltips()
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine(e.onlyChinese and '声音提示' or  SOUND, e.GetEnabeleDisable(Save.ArcheologySound))
+            e.tips:AddDoubleLine(id, Initializer:GetName())
+            e.tips:Show()
+        end
+        frame.tipsButton:SetAlpha(0.3)
+        frame.tipsButton:SetScript('OnLeave', function(self) GameTooltip_Hide() self:SetAlpha(0.3) end)
+        frame.tipsButton:SetScript('OnEnter', function(self)
+            self:set_tooltips()
+            self:SetAlpha(1)
+        end)
+
+        function frame.tipsButton:play_sound()
+            e.PlaySound()
+            e.Set_HelpTips({frame=ArcheologyDigsiteProgressBar, point='left', topoint=self, size={40,40}, color={r=1,g=0,b=0,a=1}, show=true, hideTime=3, y=0})--设置，提示
+        end
+
+        frame.tipsButton:SetScript('OnClick', function(self)
+            Save.ArcheologySound= not Save.ArcheologySound and true or nil
+            self:set_atlas()
+            self:set_event()
+            self:set_tooltips()
+            if Save.ArcheologySound then
+                self:play_sound()
+            end
+        end)
+
+        function frame.tipsButton:set_event()
+            if self:IsVisible() and Save.ArcheologySound then
+                self:RegisterUnitEvent('UNIT_AURA', 'player')
+            else
+                self:UnregisterAllEvents()
+            end
+        end
+        frame.tipsButton:SetScript('OnEvent', function(self, _, _, tab)
+            if tab and tab.addedAuras then
+                for _, info in pairs(tab.addedAuras) do
+                    if info.spellId==210837 then
+                        self:play_sound()
+                        break
+                    end
+                end
+            end
+        end)
+        frame.tipsButton:SetScript('OnShow', frame.tipsButton.set_event)
+        frame.tipsButton:SetScript('OnHide', frame.tipsButton.set_event)
+
+        frame.tipsButton:set_event()
+        frame.tipsButton:set_atlas()
+
+        ArcheologyDigsiteProgressBar:HookScript('OnHide', function(self)
+            self.tipsButton:set_event()
+        end)
+    end
+
+    if ArcheologyButton and not ArcheologyButton.keyButton then
+        ArcheologyButton.keyButton= e.Cbtn(frame, {size={20,20}, icon='hide'})
+        ArcheologyButton.keyButton:SetPoint('LEFT', frame, 'RIGHT', 0, -4)
+        ArcheologyButton.keyButton.text=e.Cstr(ArcheologyButton.keyButton, {color={r=0, g=1, b=0}, size=14})
+        ArcheologyButton.keyButton.text:SetPoint('CENTER')
+
+        ArcheologyButton.keyButton:SetScript('OnLeave', GameTooltip_Hide)
+        ArcheologyButton.keyButton:SetScript('OnEnter', ArcheologyButton.set_tooltip)
+
+        ArcheologyButton.keyButton:SetScript('OnMouseWheel', function(_, d)
+            if not UnitAffectingCombat('player') then
+                ArcheologyButton:set_OnMouseWheel(d)
+            end
+        end)
+
+        ArcheologyButton.keyButton.index=3
+        ArcheologyButton.keyButton.spellID= ArcheologyButton.spellID
+        ArcheologyButton.keyButton.index= ArcheologyButton.index
+
+        function ArcheologyButton.keyButton:set_text()
+            local text= ArcheologyButton.text:GetText() or ''
+            self.text:SetText(text)
+            if text=='' then
+                self:SetNormalAtlas('newplayertutorial-icon-key')
+            else
+                self:SetNormalTexture(134435)
+            end
+            self:SetAlpha(text=='' and 0.3 or 1)
+        end
+
+        ArcheologyButton.keyButton:set_text()
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
 --专业书
 local function Init_ProfessionsBook()
     --########################
     --自动输入，忘却，文字，专业
     --########################
+    hooksecurefunc(StaticPopupDialogs["UNLEARN_SKILL"], "OnShow",function(self)
+        if Save.wangquePrefessionText or IsPublicBuild() then
+            self.editBox:SetText(UNLEARN_SKILL_CONFIRMATION);
+        end
+    end)
+
+    if IsPublicBuild() then
+        return
+    end
+
     local btn2= e.Cbtn(ProfessionsBookFrame, {size={22,22}, icon='hide'})
     btn2:SetPoint('TOP', ProfessionsBookFramePortrait, 'BOTTOM')
     function btn2:set_alpha()
@@ -846,7 +968,7 @@ local function Init_ProfessionsBook()
         e.tips:AddLine(' ')
         e.tips:AddLine(e.onlyChinese and '你确定要忘却%s并遗忘所有已经学会的配方？如果你选择回到此专业，你的专精知识将依然存在。|n|n在框内输入 \"忘却\" 以确认。' or UNLEARN_SKILL, nil,nil,nil, true)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddDoubleLine(id, Initializer:GetName())
         e.tips:Show()
         self:SetAlpha(1)
     end
@@ -858,12 +980,6 @@ local function Init_ProfessionsBook()
     btn2:SetScript('OnLeave', function(self) e.tips:Hide() self:set_alpha()end)
     btn2:SetScript('OnEnter', btn2.set_tooltips)
     btn2:set_alpha()
-
-    hooksecurefunc(StaticPopupDialogs["UNLEARN_SKILL"], "OnShow",function(self)
-        if Save.wangquePrefessionText then
-            self.editBox:SetText(UNLEARN_SKILL_CONFIRMATION);
-        end
-    end)
 end
 
 
@@ -875,112 +991,27 @@ end
 
 
 
-local function Init()
 
 
 
-    ArcheologyDigsiteProgressBar:HookScript('OnShow', function(frame)
-        if not frame.tipsButton then
-            frame.tipsButton= e.Cbtn(frame, {size={20,20}, icon='hide'})
-            frame.tipsButton:SetPoint('RIGHT', frame, 'LEFT', 0, -4)
-            function frame.tipsButton:set_atlas()
-                self:SetNormalAtlas(Save.ArcheologySound and 'chatframe-button-icon-voicechat' or 'chatframe-button-icon-speaker-off')
-            end
-            function frame.tipsButton:set_tooltips()
-                e.tips:SetOwner(self, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:AddDoubleLine(e.onlyChinese and '声音提示' or  SOUND, e.GetEnabeleDisable(Save.ArcheologySound))
-                e.tips:AddDoubleLine(id, e.cn(addName))
-                e.tips:Show()
-            end
-            frame.tipsButton:SetAlpha(0.3)
-            frame.tipsButton:SetScript('OnLeave', function(self) GameTooltip_Hide() self:SetAlpha(0.3) end)
-            frame.tipsButton:SetScript('OnEnter', function(self)
-                self:set_tooltips()
-                self:SetAlpha(1)
-            end)
 
-            function frame.tipsButton:play_sound()
-                e.PlaySound()
-                e.Set_HelpTips({frame=ArcheologyDigsiteProgressBar, point='left', topoint=self, size={40,40}, color={r=1,g=0,b=0,a=1}, show=true, hideTime=3, y=0})--设置，提示
-            end
 
-            frame.tipsButton:SetScript('OnClick', function(self)
-                Save.ArcheologySound= not Save.ArcheologySound and true or nil
-                self:set_atlas()
-                self:set_event()
-                self:set_tooltips()
-                if Save.ArcheologySound then
-                    self:play_sound()
-                end
-            end)
 
-            function frame.tipsButton:set_event()
-                print(self:IsVisible() , Save.ArcheologySound)
-                if self:IsVisible() and Save.ArcheologySound then
-                    self:RegisterUnitEvent('UNIT_AURA', 'player')
-                else
-                    self:UnregisterAllEvents()
-                end
-            end
-            frame.tipsButton:SetScript('OnEvent', function(self, _, _, tab)
-                if tab and tab.addedAuras then
-                    for _, info in pairs(tab.addedAuras) do
-                        if info.spellId==210837 then
-                            self:play_sound()
-                            break
-                        end
-                    end
-                end
-            end)
-            frame.tipsButton:SetScript('OnShow', frame.tipsButton.set_event)
-            frame.tipsButton:SetScript('OnHide', frame.tipsButton.set_event)
-
-            frame.tipsButton:set_event()
-            frame.tipsButton:set_atlas()
-
-            ArcheologyDigsiteProgressBar:HookScript('OnHide', function(self)
-                self.tipsButton:set_event()
-            end)
-        end
-
-        if ArcheologyButton and not ArcheologyButton.keyButton then
-            ArcheologyButton.keyButton= e.Cbtn(frame, {size={20,20}, icon='hide'})
-            ArcheologyButton.keyButton:SetPoint('LEFT', frame, 'RIGHT', 0, -4)
-            ArcheologyButton.keyButton.text=e.Cstr(ArcheologyButton.keyButton, {color={r=0, g=1, b=0}, size=14})
-            ArcheologyButton.keyButton.text:SetPoint('CENTER')
-
-            ArcheologyButton.keyButton:SetScript('OnLeave', GameTooltip_Hide)
-            ArcheologyButton.keyButton:SetScript('OnEnter', ArcheologyButton.set_tooltip)
-
-            ArcheologyButton.keyButton:SetScript('OnMouseWheel', function(_, d)
-                if not UnitAffectingCombat('player') then
-                    ArcheologyButton:set_OnMouseWheel(d)
-                end
-            end)
-
-            ArcheologyButton.keyButton.index=3
-            ArcheologyButton.keyButton.spellID= ArcheologyButton.spellID
-            ArcheologyButton.keyButton.index= ArcheologyButton.index
-
-            function ArcheologyButton.keyButton:set_text()
-                local text= ArcheologyButton.text:GetText() or ''
-                self.text:SetText(text)
-                if text=='' then
-                    self:SetNormalAtlas('newplayertutorial-icon-key')
-                else
-                    self:SetNormalTexture(134435)
-                end
-                self:SetAlpha(text=='' and 0.3 or 1)
-            end
-
-            ArcheologyButton.keyButton:set_text()
-        end
-
-    end)
+function Load_AddOn()
+    if C_AddOns.IsAddOnLoaded("Blizzard_TrainerUI") then
+        Init_Blizzard_TrainerUI()--添一个,全学,专业, 按钮
+    end
+    if C_AddOns.IsAddOnLoaded("Blizzard_Professions") then
+        Init_ProfessionsFrame()--初始
+    end
+    if C_AddOns.IsAddOnLoaded("Blizzard_ArchaeologyUI") then
+        Init_Archaeology()--考古学
+    end
+    if C_AddOns.IsAddOnLoaded("Blizzard_ProfessionsBook") then
+        Init_ProfessionsBook()--专业书
+    end
+    ArcheologyDigsiteProgressBar:HookScript('OnShow', Init_ArcheologyDigsiteProgressBar_OnShow)
 end
-
-
 
 
 
@@ -999,7 +1030,10 @@ end
 --###########
 --加载保存数据
 --###########
+local panel=CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
@@ -1018,18 +1052,32 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end)
             end]]
 
-            if not Save.disabled then
-                Init()
+            --添加控制面板
+            Initializer= e.AddPanel_Check({
+                name= '|A:Professions_Icon_FirstTimeCraft:0:0|a'..(e.onlyChinese and '专业' or addName),
+                tooltip= e.cn(addName),
+                value= not Save.disabled,
+                func= function()
+                    Save.disabled= not Save.disabled and true or nil
+                    print(id, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                end
+            })
+
+            if Save.disabled or PlayerGetTimerunningSeasonID() then
+                self:UnregisterEvent('ADDON_LOADED')
+            else
+                Load_AddOn()
             end
-            self:RegisterEvent("PLAYER_LOGOUT")
 
         elseif arg1== 'Blizzard_TrainerUI' then
-            set_Blizzard_TrainerU()--添一个,全学,专业, 按钮
+            Init_Blizzard_TrainerUI()--添一个,全学,专业, 按钮
 
         elseif arg1== 'Blizzard_Professions' then --10.1.5
             Init_ProfessionsFrame()--初始
+
         elseif arg1=='Blizzard_ArchaeologyUI' then
             Init_Archaeology()
+
         elseif arg1=='Blizzard_ProfessionsBook' then--专业书
             Init_ProfessionsBook()
         end
@@ -1039,11 +1087,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave[addName..'Tools']=Save
         end
 
-    elseif event=='PLAYER_REGEN_ENABLED' then
+    --[[elseif event=='PLAYER_REGEN_ENABLED' then
         if self.combat then
             self.combat=nil
             Init_Tools_Button()--初始
         end
-        self:UnregisterEvent("PLAYER_REGEN_ENABLED")
+        self:UnregisterEvent("PLAYER_REGEN_ENABLED")]]
     end
 end)
