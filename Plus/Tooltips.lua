@@ -105,7 +105,7 @@ function func:Set_Init_Item(tooltip, hide)--创建，设置，内容
             tooltip.Portrait:SetSize(40,40)
         end
         tooltip:HookScript("OnHide", function(frame)--隐藏
-            func:Set_Init_Item(frame, true)            
+            func:Set_Init_Item(frame, true)
         end)
     end
     if not tooltip.playerModel and not Save.hideModel then
@@ -228,9 +228,9 @@ local function Init_StaticPopupDialogs()
         timeout = 0,
         whileDead=true, hideOnEscape=true, exclusive=true,
     }
-    if e.onlyChinese or LOCALE_zhTW then        
+    if e.onlyChinese or LOCALE_zhTW then
         WoWHead= 'https://www.wowhead.com/cn/'
-        if not LOCALE_zhCN then            
+        if not LOCALE_zhCN then
             wowheadText= 'https://www.wowhead.com/cn/%s=%d'
         else
             wowheadText= 'https://www.wowhead.com/cn/%s=%d/%s'
@@ -296,7 +296,7 @@ function e.Show_WoWHead_URL(isWoWHead, typeOrRegion, typeIDOrRealm, name)
    end
 end
 
-    
+
 function func:Set_Web_Link(tooltip, tab)
     if tooltip==ItemRefTooltip or tooltip==FloatingBattlePetTooltip then
         if tab.type and tab.id then
@@ -346,8 +346,8 @@ function func:Set_Web_Link(tooltip, tab)
                 tooltip:AddDoubleLine((tab.col or '')..'WoWHead', (tab.col or '')..'Ctrl+Shift')
             end
         end
-      
-    elseif tab.unitName then       
+
+    elseif tab.unitName then
         if IsControlKeyDown() and IsShiftKeyDown() then
             e.Show_WoWHead_URL(false, nil, tab.realm or e.Player.realm, tab.unitName)
         else
@@ -425,7 +425,7 @@ function func:Set_Mount(tooltip, mountID, type)--坐骑
     if creatureDisplayInfoID then
         tooltip:AddDoubleLine(format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '模型' or MODEL, creatureDisplayInfoID), isSelfMount and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '变形' or TUTORIAL_TITLE61_DRUID) or nil)
     end
-    
+
     if source then--显示来源
         tooltip:AddLine(' ')
         tooltip:AddLine(e.cn(source), nil,nil,nil,true)
@@ -983,7 +983,7 @@ end
 function func:set_All_Aura(tooltip, data)--Aura
     local spellID= data.id
     local name= C_Spell.GetSpellName(spellID)
-    local icon= C_Spell.GetSpellTexture(spellID)    
+    local icon= C_Spell.GetSpellTexture(spellID)
     tooltip:AddLine(' ')
     tooltip:AddDoubleLine((e.onlyChinese and '光环' or AURAS)..' '..spellID, icon and '|T'..icon..':0|t'..icon)
     local mountID = C_MountJournal.GetMountFromSpell(spellID)
@@ -992,7 +992,7 @@ function func:set_All_Aura(tooltip, data)--Aura
     else
         func:Set_Web_Link(tooltip, {type='spell', id=spellID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
     end
-    
+
 end
 function func:set_Buff(type, tooltip, ...)
     local source--local unit= ...
@@ -1183,7 +1183,7 @@ function func:Set_Unit(tooltip)--, data)--设置单位提示信息
     if not tooltip.textLeft then
         func:Set_Init_Item(tooltip)
     end
-    
+
     local realm= select(2, UnitName(unit)) or e.Player.realm--服务器
     local isPlayer = UnitIsPlayer(unit)
     local isSelf= UnitIsUnit('player', unit)--我
@@ -1874,7 +1874,7 @@ TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Macro, function(too
     end
 end)
 
-   
+
 
 if not Enum.SpellBookSpellBank then--11版本
     hooksecurefunc(GameTooltip, 'SetSpellBookItem', function(_, slot, unit)--技能收，宠物，技能，提示
@@ -2127,7 +2127,7 @@ end
     end
 
     create_Quest_Label(QuestMapFrame.DetailsFrame)
-    
+
     if C_AddOns.IsAddOnLoaded('WoWeuCN_Quests') then
         QuestMapFrame.DetailsFrame.questIDLabel:SetPoint('BOTTOMRIGHT',QuestMapFrame.DetailsFrame, 'TOPRIGHT', -2, 30)
     else
@@ -3055,14 +3055,14 @@ local function Init_Blizzard_Professions()
 
     --专精，技能，查询
     hooksecurefunc(ProfessionsSpecPathMixin, 'OnEnter',function(self)
-        if not self.nodeInfo or not self.nodeInfo.ID then
-            return
+        if self.nodeID then--self.nodeInfo.ID
+            GameTooltip:AddLine(' ')
+            GameTooltip:AddDoubleLine('nodeID '..self.nodeID, self.entryID and 'entryID '..self.entryID)
+
+            local name= WoWHead..'profession-trait/'..(self.nodeID or '')
+            func:Set_Web_Link(GameTooltip, {name=name})
+            GameTooltip:Show()
         end
-        GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine('nodeID', self.nodeInfo.ID)
-        local name= WoWHead..'profession-trait/'..(self.nodeInfo.ID or '')            
-        func:Set_Web_Link(GameTooltip, {name=name})
-        GameTooltip:Show()
     end)
 end
 
@@ -3184,7 +3184,7 @@ local function Init_Event()
     end
     if C_AddOns.IsAddOnLoaded('Blizzard_Collections') then
         Init_Blizzard_Collections()
-    end    
+    end
     if C_AddOns.IsAddOnLoaded('Blizzard_ChallengesUI') then
         Init_Blizzard_ChallengesUI()
     end
@@ -3254,12 +3254,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if Save.disabled then
                 self:UnregisterAllEvents()
-                
+
                 func={}
             else
 
                 Init()--初始
-                Init_Event()            
+                Init_Event()
             end
             self:RegisterEvent("PLAYER_LOGOUT")
 
@@ -3269,7 +3269,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         elseif arg1=='Blizzard_AchievementUI' then--成就ID
             Init_Blizzard_AchievementUI()
-    
+
         elseif arg1=='Blizzard_Collections' then--宠物手册， 召唤随机，偏好宠物，技能ID    
             Init_Blizzard_Collections()
 
@@ -3278,19 +3278,19 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         elseif arg1=='Blizzard_OrderHallUI' then
             Init_Blizzard_OrderHallUI()
-    
+
         elseif arg1=='Blizzard_FlightMap' then--飞行点，加名称
             Init_Blizzard_FlightMap()
-    
+
         elseif arg1=='Blizzard_Professions' then
-            Init_Blizzard_Professions()    
-    
+            Init_Blizzard_Professions()
+
         elseif arg1=='Blizzard_ClassTalentUI' then
             Init_Blizzard_ClassTalentUI()
-    
+
         elseif arg1=='Blizzard_PlayerChoice' then
             Init_Blizzard_PlayerChoice()
-     
+
         elseif arg1=='Blizzard_GenericTraitUI' then
             Init_Blizzard_GenericTraitUI()
         end
