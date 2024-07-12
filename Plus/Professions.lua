@@ -582,7 +582,7 @@ local function Init_ProfessionsFrame()
     --######
     --附魔纸
     --Blizzard_ProfessionsRecipeSchematicForm.lua
-    hooksecurefunc(ProfessionsFrame.CraftingPage.SchematicForm, 'Init', function(self, recipeInfo, isRecraftOverride)
+    hooksecurefunc(ProfessionsFrame.CraftingPage.SchematicForm, 'Init', function(self, recipeInfo)--, isRecraftOverride)
         local recipeID = recipeInfo and recipeInfo.recipeID
         local isEnchant = recipeID and (self.recipeSchematic.recipeType == Enum.TradeskillRecipeType.Enchant) and not C_TradeSkillUI.IsRuneforging()
 
@@ -946,6 +946,7 @@ local function Init_ProfessionsBook()
     --自动输入，忘却，文字，专业
     --########################
     hooksecurefunc(StaticPopupDialogs["UNLEARN_SKILL"], "OnShow",function(self)
+        print('aaaaaaaaaaaa')
         if Save.wangquePrefessionText or IsPublicBuild() then
             self.editBox:SetText(UNLEARN_SKILL_CONFIRMATION);
         end
