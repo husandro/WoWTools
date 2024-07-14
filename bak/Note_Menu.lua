@@ -413,4 +413,28 @@ end);
 *** 事件跟踪菜单发现 ***
 当打开带标签的菜单时，EventTrace 将显示带有标签的“Menu.OpenMenuTag”事件，以便轻松识别菜单。或者，可以调用
 Menu.PrintOpenMenuTags() 来打印所有打开的带标签的菜单。
-]]--
+
+
+
+
+
+
+local function GeneratorFunction(owner, rootDescription)
+	rootDescription:CreateTitle("My Title");
+	rootDescription:CreateButton("My Button", function(data)
+    	-- Button handling here.
+	end);
+    
+    local submenu = rootDescription:CreateButton("My Submenu");
+    submenu:CreateButton("Enable", SetEnabledFunction, true);
+    submenu:CreateButton("Disable", SetEnabledFunction, false);
+end
+
+local btn= CreateFrame('DropdownButton', nil, nil, 'UIPanelButtonTemplate')
+btn:SetPoint('CENTER')
+
+btn:SetScript('OnMouseDown', function(self)
+    MenuUtil.CreateContextMenu(self, GeneratorFunction)
+end)
+
+]]
