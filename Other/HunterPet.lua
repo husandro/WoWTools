@@ -300,6 +300,9 @@ local function Init_StableFrame_Plus()
     btnSecond.SpellFrame.Icon:SetPoint('RIGHT')
     btnSecond.SpellFrame.Name:ClearAllPoints()
     btnSecond.SpellFrame.Name:SetPoint('RIGHT', btnSecond.SpellFrame.Icon, 'LEFT')
+    if e.onlyChinese and not LOCALE_zhCN then
+        btnSecond.SpellFrame.Name:SetText('动物伙伴')
+    end
     hooksecurefunc(btnSecond, 'Refresh', function(self)
         if AllListFrame then
             AllListFrame.btn6:settings()
