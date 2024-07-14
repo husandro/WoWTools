@@ -73,7 +73,8 @@ Plus\Faction.lua
 ##货币面板
 Plus\Currency.lua
 ##任务框，增强
-Plus\ObjectiveTracker.lua
+Plus\ObjectiveTracker_1027.lua
+##Plus\ObjectiveTracker.lua
 ##藏品
 Plus\Collections.lua
 ##地图，增强
