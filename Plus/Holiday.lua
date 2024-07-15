@@ -1033,7 +1033,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if  Save.disabled then
                 self:UnregisterEvent('ADDON_LOADED')
             else
-                Calendar_LoadUI()
+                if not CalendarFrame then
+                    Calendar_LoadUI()
+                end
             end
 
         elseif arg1=='Blizzard_Calendar' then

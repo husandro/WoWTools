@@ -74,7 +74,8 @@ Plus\Faction.lua
 Plus\Currency.lua
 ##任务框，增强
 Plus\ObjectiveTracker_1027.lua
-##Plus\ObjectiveTracker.lua
+Plus\ObjectiveTracker.lua
+
 ##藏品
 Plus\Collections.lua
 ##地图，增强

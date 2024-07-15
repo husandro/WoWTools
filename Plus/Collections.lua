@@ -1850,7 +1850,9 @@ local function Init()
                 --[[if not C_AddOns.IsAddOnLoaded("Blizzard_Collections") then
                     C_AddOns.LoadAddOn('Blizzard_Collections')
                 end]]
-                CollectionsJournal_LoadUI()
+                if not CollectionsJournal then
+                    CollectionsJournal_LoadUI()
+                end
                 local wcFrame= WardrobeCollectionFrame
                 if not CollectionsJournal:IsVisible() or not wcFrame:IsVisible() then
                     ToggleCollectionsJournal(5)
@@ -1929,7 +1931,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 --[[if not C_AddOns.IsAddOnLoaded("Blizzard_Collections") then
                     C_AddOns.LoadAddOn('Blizzard_Collections')
                 end]]
-                CollectionsJournal_LoadUI()
+                if not CollectionsJournal then
+                    CollectionsJournal_LoadUI()
+                end
                 Init()--试衣间, 外观列表
             end
             self:RegisterEvent("PLAYER_LOGOUT")

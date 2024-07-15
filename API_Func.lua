@@ -100,6 +100,7 @@ e.HEX_to_RGB(hexColor, self)--HEX转RGB
 e.Get_ColorFrame_RGBA()--取得, ColorFrame, 颜色
 e.ShowColorPicker(valueR, valueG, valueB, valueA, swatchFunc, cancelFunc)
 
+e.Set_Frame_Scale()--设置Frame缩放
 ]]
 
 
@@ -2872,6 +2873,24 @@ function e.ShowColorPicker(valueR, valueG, valueB, valueA, swatchFunc, cancelFun
         opacity=valueA or 1,
     })
 end
+
+
+
+--设置Frame缩放
+
+function e.Set_Frame_Scale(self, delta, value)
+    if not self:CanChangeAttribute() or not IsAltKeyDown() then
+        return
+    end
+    local n= value or 1
+    n= delta==1 and n-0.05 or n
+    n= delta==-1 and n+0.05 or n
+    n= n>4 and 4 or n
+    n= n<0.4 and 0.4 or n
+    self:SetScale(n)
+    return n
+end
+
 --[[self.swatchFunc = info.swatchFunc
 self.hasOpacity = info.hasOpacity
 self.opacityFunc = info.opacityFunc

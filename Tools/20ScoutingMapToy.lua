@@ -112,8 +112,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
             if not e.toolsFrame.disabled then
-                AchievementFrame_LoadUI()
-                CollectionsJournal_LoadUI()
+                if not AchievementFrame then
+                    AchievementFrame_LoadUI();
+                end
+                if not CollectionsJournal then
+                    CollectionsJournal_LoadUI()
+                end
                 --[[if not C_AddOns.IsAddOnLoaded('Blizzard_AchievementUI') then
                     C_AddOns.LoadAddOn("Blizzard_AchievementUI")
                 end

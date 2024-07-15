@@ -1,3 +1,8 @@
+if not ObjectiveTrackerContainerMixin then
+    return
+end
+
+
 local id, e = ...
 local addName= HUD_EDIT_MODE_OBJECTIVE_TRACKER_LABEL
 local Save={
@@ -426,7 +431,7 @@ local function Init_ClearButton_ObjectiveTracker_Initialize(frame)
                     print(index..')', GetAchievementLink(achievementID) or achievementID)
                     num= num +1
                 end
-                if num>0 and AchievementFrame then
+                if num>0 and AchievementFrameAchievements_ForceUpdate then
                     e.call('AchievementFrameAchievements_ForceUpdate')--Blizzard_ObjectiveTracker
                 end
                 print(id, Initializer:GetName(), '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2), self.tooltip, '|cffff00ff'..num)

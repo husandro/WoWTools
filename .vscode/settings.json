@@ -4642,7 +4642,19 @@
         "CURRENCY_TRANSFER_NEW_BALANCE_PREVIEW",
         "EncounterJournal_TierDropDown_Select",
         "ProfessionsSpecPathMixin",
-        "RaidGroupFrame_Update"
+        "RaidGroupFrame_Update",
+        "ObjectiveTrackerContainerMixin",
+        "AchievementObjectiveTracker",
+        "QuestObjectiveTracker",
+        "CampaignQuestObjectiveTracker",
+        "WorldQuestObjectiveTracker",
+        "PROFESSIONS_RECIPES_TAB",
+        "ProfessionsRecipeTracker",
+        "MonthlyActivitiesObjectiveTracker",
+        "MenuUtil",
+        "MAINMENU",
+        "AchievementFrameAchievements_ForceUpdate",
+        "ObjectiveTrackerManager"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",
