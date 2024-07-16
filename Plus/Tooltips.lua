@@ -145,12 +145,14 @@ function func:Set_Item_Model(tooltip, tab)--func:Set_Item_Model(tooltip, {unit=,
             tooltip.playerModel.guid=tab.guid
             tooltip.playerModel.id=tab.guid
             tooltip.playerModel:SetShown(true)
+            --[[
             if Save.showModelFileID then
                 local modelFileID= tooltip.playerModel:GetModelFileID()
                 if modelFileID and modelFileID>0 then
                     tooltip.text2Right:SetText((tab.col or '')..modelFileID)
                 end
             end
+            ]]
         end
     elseif tab.creatureDisplayID  then
         if tooltip.playerModel.id~= tab.creatureDisplayID then
@@ -578,10 +580,6 @@ function func:Set_Item(tooltip, itemLink, itemID)
         return
     end
 
-    if not tooltip.textLeft then
-        func:Set_Init_Item(tooltip)
-    end
-
     local r, g, b, col= 1,1,1,e.Player.col
     if itemQuality then
         r, g, b, col= C_Item.GetItemQualityColor(itemQuality)
@@ -873,10 +871,6 @@ function func:Set_Achievement(tooltip, achievementID)--成就
         return
     end
 
-    if not tooltip.textLeft then
-        func:Set_Init_Item(tooltip)
-    end
-
     tooltip:AddLine(' ')
     local _, name, points, completed, month, day, year, description, flags, icon, rewardText, isGuild, wasEarnedByMe, earnedBy, isStatistic = GetAchievementInfo(achievementID)
     tooltip.textLeft:SetText(points..(e.onlyChinese and '点' or RESAMPLE_QUALITY_POINT))--点数
@@ -992,8 +986,9 @@ function func:set_All_Aura(tooltip, data)--Aura
     else
         func:Set_Web_Link(tooltip, {type='spell', id=spellID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
     end
-
 end
+
+
 function func:set_Buff(type, tooltip, ...)
     local source--local unit= ...
     if type=='Buff' then
@@ -1005,11 +1000,6 @@ function func:set_Buff(type, tooltip, ...)
     end
     if source then--来源
         if source then
-
-            if not tooltip.textLeft then
-                func:Set_Init_Item(tooltip)
-            end
-
             local r, g ,b , col= e.GetUnitColor(source)-- GetClassColor(UnitClassBase(source))
             if r and g and b and tooltip.backgroundColor then
                 tooltip.backgroundColor:SetColorTexture(r, g, b, 0.3)
@@ -1180,9 +1170,6 @@ function func:Set_Unit(tooltip)--, data)--设置单位提示信息
         return
     end
 
-    if not tooltip.textLeft then
-        func:Set_Init_Item(tooltip)
-    end
 
     local realm= select(2, UnitName(unit)) or e.Player.realm--服务器
     local isPlayer = UnitIsPlayer(unit)
@@ -1193,7 +1180,7 @@ function func:Set_Unit(tooltip)--, data)--设置单位提示信息
 
     --设置单位图标
     local englishFaction = isPlayer and UnitFactionGroup(unit)
-    local textLeft, text2Left
+    local textLeft, text2Left, textRight, text2Right
     if isPlayer then
         local hideLine--取得网页，数据链接
         tooltip.Portrait:SetAtlas(e.Icon[englishFaction] or 'Neutral')
@@ -1268,7 +1255,7 @@ function func:Set_Unit(tooltip)--, data)--设置单位提示信息
 
 
         local region= e.Get_Region(realm)--服务器，EU， US
-        tooltip.textRight:SetText(col..realm..'|r'..(isSelf and '|A:auctionhouse-icon-favorite:0:0|a' or realm==e.Player.realm and format('|A:%s:0:0|a', e.Icon.select) or e.Player.Realms[realm] and '|A:Adventures-Checkmark:0:0|a' or '')..(region and region.col or ''))
+        textRight=col..realm..'|r'..(isSelf and '|A:auctionhouse-icon-favorite:0:0|a' or realm==e.Player.realm and format('|A:%s:0:0|a', e.Icon.select) or e.Player.Realms[realm] and '|A:Adventures-Checkmark:0:0|a' or '')..(region and region.col or '')
 
         line=isInGuild and GameTooltipTextLeft2
         if line then
@@ -1409,9 +1396,9 @@ function func:Set_Unit(tooltip)--, data)--设置单位提示信息
             e.tips:AddDoubleLine('WidgetSetID', uiWidgetSet, r,g,b, r,g,b)
         end
 
-
+        local zone, npc
         if guid then
-            local zone, npc = select(5, strsplit("-", guid))--位面,NPCID
+            zone, npc = select(5, strsplit("-", guid))--位面,NPCID
             if zone then
                 tooltip:AddDoubleLine(col..e.Player.L.layer..' '..zone, col..'NPC '..npc, r,g,b, r,g,b)
                 e.Player.Layer=zone
@@ -1425,18 +1412,18 @@ function func:Set_Unit(tooltip)--, data)--设置单位提示信息
             tooltip.Portrait:SetShown(true)
 
         elseif UnitIsBossMob(unit) then--世界BOSS
-            tooltip.textLeft:SetText(col..(e.onlyChinese and '首领' or BOSS)..'|r')
+            text2Right= e.onlyChinese and '首领' or BOSS
             tooltip.Portrait:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Rare')
             tooltip.Portrait:SetShown(true)
         else
             local classification = UnitClassification(unit)--TargetFrame.lua
             if classification == "rareelite" then--稀有, 精英
-                tooltip.textLeft:SetText(col..(e.onlyChinese and '稀有' or GARRISON_MISSION_RARE)..'|r')
+                text2Right= e.onlyChinese and '稀有' or GARRISON_MISSION_RARE
                 tooltip.Portrait:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Rare')
                 tooltip.Portrait:SetShown(true)
 
             elseif classification == "rare" then--稀有
-                tooltip.textLeft:SetText(col..(e.onlyChinese and '稀有' or GARRISON_MISSION_RARE)..'|r')
+                text2Right= e.onlyChinese and '稀有' or GARRISON_MISSION_RARE
                 tooltip.Portrait:SetAtlas('UUnitFrame-Target-PortraitOn-Boss-Rare-Star')
                 tooltip.Portrait:SetShown(true)
             else
@@ -1447,12 +1434,20 @@ function func:Set_Unit(tooltip)--, data)--设置单位提示信息
 
         local type=UnitCreatureType(unit)--生物类型
         if type and not type:find(COMBAT_ALLY_START_MISSION) then
-            tooltip.textRight:SetText(col..e.cn(type)..'|r')
+            textRight= col..e.cn(type)..'|r'
+        end
+
+        --NPC 中文名称
+        textLeft, text2Left= e.cn(nil, {unit=unit, npcID=npc})
+        if textLeft then
+            textLeft= col..textLeft..'|r'
         end
     end
 
     tooltip.textLeft:SetText(textLeft or '')
     tooltip.text2Left:SetText(text2Left or '')
+    tooltip.textRight:SetText(textRight or '')
+    tooltip.text2Right:SetText(text2Right or '')    
 
     func:Set_HealthBar_Unit(GameTooltipStatusBar, unit)--生命条提示
     func:Set_Item_Model(tooltip, {unit=unit, guid=guid, col= col})--设置, 3D模型
@@ -1673,9 +1668,6 @@ local function set_Battle_Pet(self, speciesID, level, breedQuality, maxHealth, p
     self.backgroundColor:SetShown(breedQuality~=-1)
 
     local AllCollected, CollectedNum, CollectedText= e.GetPetCollectedNum(speciesID)--收集数量
-    if not self.text2Left then
-        func:Set_Init_Item(self)--创建，设置，内容
-    end
     self.textLeft:SetText(CollectedNum or '')
     self.text2Left:SetText(CollectedText or '')
     self.textRight:SetText(not CollectedNum and AllCollected or '')
@@ -1808,7 +1800,8 @@ local function Init()
     TooltipDataProcessor.AllTypes
     Blizzard_SharedXMLGame/Tooltip/TooltipDataRules.lua
 ]]
-TooltipDataProcessor.AddTooltipPostCall(TooltipDataProcessor.AllTypes, function(tooltip,data)
+
+TooltipDataProcessor.AddTooltipPostCall(TooltipDataProcessor.AllTypes, function(tooltip)
     if not tooltip.textLeft then
         func:Set_Init_Item(tooltip)--创建，设置，内容
     end
@@ -2001,7 +1994,7 @@ end
     --###########
     --宠物面板提示
     --###########
-    func:Set_Init_Item(BattlePetTooltip, true)--创建物品
+    --func:Set_Init_Item(BattlePetTooltip, true)--创建物品
     hooksecurefunc("BattlePetToolTip_Show", function(...)--BattlePetTooltip.lua 
         set_Battle_Pet(BattlePetTooltip, ...)
     end)
@@ -2556,7 +2549,7 @@ local function Init_Panel()
     })
     initializer:SetParentInitializer(initializer2, function() if Save.hideModel then return false else return true end end)
 
-    initializer= e.AddPanel_Check({
+    --[[initializer= e.AddPanel_Check({
         name= (e.onlyChinese and '模型' or MODEL)..' ID',
         tooltip= Initializer:GetName(),
         value= Save.showModelFileID,
@@ -2567,7 +2560,7 @@ local function Init_Panel()
         end
     })
     initializer:SetParentInitializer(initializer2, function() if Save.hideModel then return false else return true end end)
-
+]]
     initializer= e.AddPanelSider({
         name= e.Player.L.size,
         value= Save.modelSize or 100,
