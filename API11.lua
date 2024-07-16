@@ -249,3 +249,20 @@ C_Reputation.GetFactionDataByID= function(faction)
 		canBeLFGBonus=canBeLFGBonus
 	}
 end
+
+
+ --itemName, texture, numItems, currencyID, quality =  GetQuestLogRewardCurrencyInfo(1, self.questID)--货币
+ --local data= C_QuestLog.GetQuestRewardCurrencyInfo(self.questID, 1, false)
+C_QuestLog.GetQuestRewardCurrencyInfo= function(questID, index)
+	local name, texture, numItems, currencyId, quality = GetQuestLogRewardCurrencyInfo(index, questID)
+	if currencyId then
+		return {
+			name= name,
+			currencyID= currencyId,
+			quality= quality,
+			iconFileID= texture,
+			quantity= numItems,
+		}
+	end
+end
+
