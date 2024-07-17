@@ -4654,7 +4654,11 @@
         "MenuUtil",
         "MAINMENU",
         "AchievementFrameAchievements_ForceUpdate",
-        "ObjectiveTrackerManager"
+        "ObjectiveTrackerManager",
+        "SlashCmdList",
+        "LootFrameElementMixin",
+        "HeirloomsMixin",
+        "EncounterJournalEncounterFrame"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

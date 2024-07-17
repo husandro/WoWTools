@@ -14,40 +14,41 @@ local Save={
     modelSize=100,--大小
     --modelLeft=true,--左边
     modelX= 0,
-    modelY= -24,
+    modelY= -15,
     modelFacing= -0.3,--方向
     showModelFileID=e.Player.husandro,--显示，文件ID
     --WidgetSetID=848,--自定义，监视 WidgetSetID
     --disabledNPCcolor=true,--禁用NPC颜色
     --hideHealth=true,----生命条提示
 }
-local panel=CreateFrame("Frame")
+local panel= CreateFrame("Frame")
 local Initializer, Layout= e.AddPanel_Sub_Category({name=e.Icon.mid..addName})
 
 --全局
 --e.Show_WoWHead_URL(isWoWHead, typeOrRegion, typeIDOrRealm, name)
 
-local func={
-    --func:Set_PlayerModel(self)
-    --func:Set_Spell(self, spellID)--法术
-    --func:Set_Mount(self, mountID)--坐骑
-    --func:Set_Pet(self, speciesID, setSearchText)--宠物
-    --func:Set_Item(self, itemLink, itemID)--物品信息
-    --func:Set_Currency(self, currencyID)--货币
-    --func:Set_Achievement(self, achievementID)--成就
-    --func:Set_Quest(self, questID, info)--任务
-    --func:Set_Faction(self, factionID)
-    --func:Set_Flyout(self, flyoutID)--法术, 弹出框
+local func={}
+--[[
+func:Set_PlayerModel(self)
+func:Set_Spell(self, spellID)法术
+func:Set_Mount(self, mountID)坐骑
+func:Set_Pet(self, speciesID, setSearchText)宠物
+func:Set_Item(self, itemLink, itemID)物品信息
+func:Set_Currency(self, currencyID)货币
+func:Set_Achievement(self, achievementID)成就
+func:Set_Quest(self, questID, info)任务
+func:Set_Faction(self, factionID)
+func:Set_Flyout(self, flyoutID)法术, 弹出框
+func:GetItemInfoFromHyperlink(link)LinkUtil.lua  GetItemInfoFromHyperlink()不能正解，读取 |Hkeystone:
+func:Set_Init_Item(self, hide)创建，设置，内容
+func:Set_Item_Model(self, tab)设置, 3D模型{unit=, guid=, creatureDisplayID=, animID=, appearanceID=, visualID=}
+func:Set_All_Aura(self, data)Aura
+func:Set_Buff(type, self, ...)
+func:Set_Unit(self, unit)设置单位提示信息
+func:Set_Unit_Player(tooltip, name, unit, guid)
+func:Set_Unit_NPC(tooltip, name, unit, guid)
+]]
 
-    --func:GetItemInfoFromHyperlink(link)--LinkUtil.lua  GetItemInfoFromHyperlink()不能正解，读取 |Hkeystone:
-    --func:Set_Init_Item(self, hide)--创建，设置，内容
-    --func:Set_Item_Model(self, tab)--设置, 3D模型{unit=, guid=, creatureDisplayID=, animID=, appearanceID=, visualID=, col=}
-    --func:Set_Unit(self, unit)--设置单位提示信息
-    --func:set_All_Aura(self, data)--Aura
-    --func:set_Buff(type, self, ...)
-}
-
-local COMBAT_ALLY_START_MISSION= COMBAT_ALLY_START_MISSION
 
 
 
@@ -55,9 +56,9 @@ local COMBAT_ALLY_START_MISSION= COMBAT_ALLY_START_MISSION
 
 function func:Set_PlayerModel(tooltip)
     if not tooltip.playerModel then
-        tooltip.playerModel= CreateFrame("PlayerModel", nil, tooltip)--DressUpModel PlayerModel
-        --tooltip.playerModel:SetFrameLevel(tooltip:GetFrameLevel()-1)
+        tooltip.playerModel= CreateFrame("PlayerModel", nil, tooltip)--DressUpModel PlayerModel        
         --[[
+        tooltip.playerModel:SetFrameLevel(tooltip:GetFrameLevel()-1)
         tooltip.itemModel= CreateFrame("DressUpModel", nil, tooltip)--DressUpModel PlayerModel
         tooltip.itemModel:SetPoint('TOP', tooltip, 'BOTTOM')
         tooltip.itemModel:SetUnit('player')
@@ -92,7 +93,7 @@ function func:Set_Init_Item(tooltip, hide)--创建，设置，内容
         tooltip.textRight:SetPoint('BOTTOMRIGHT', tooltip, 'TOPRIGHT')
 
         tooltip.text2Right= e.Cstr(tooltip, {size=12, justifyH='RIGHT'})--右上角字符2
-        tooltip.text2Right:SetPoint('BOTTOMRIGHT', tooltip.textRight, 'TOPRIGHT')
+        tooltip.text2Right:SetPoint('BOTTOMRIGHT', tooltip.textRight, 'TOPRIGHT', 0, 4)
 
         tooltip.backgroundColor= tooltip:CreateTexture(nil, 'BACKGROUND',nil, 1)--背景颜色
         tooltip.backgroundColor:SetPoint('TOPLEFT')
@@ -117,6 +118,12 @@ function func:Set_Init_Item(tooltip, hide)--创建，设置，内容
         tooltip.text2Left:SetText('')
         tooltip.textRight:SetText('')
         tooltip.text2Right:SetText('')
+
+        tooltip.textLeft:SetTextColor(1, 0.82, 0)
+        tooltip.text2Left:SetTextColor(1, 0.82, 0)
+        tooltip.textRight:SetTextColor(1, 0.82, 0)
+        tooltip.text2Right:SetTextColor(1, 0.82, 0)
+
         tooltip.Portrait:SetShown(false)
         tooltip.backgroundColor:SetShown(false)
         if tooltip.playerModel then
@@ -135,7 +142,7 @@ end
 --###########
 --设置, 3D模型
 --###########
-function func:Set_Item_Model(tooltip, tab)--func:Set_Item_Model(tooltip, {unit=, guid=, creatureDisplayID=, animID=, appearanceID=, visualID=, col=})--设置, 3D模型
+function func:Set_Item_Model(tooltip, tab)--func:Set_Item_Model(tooltip, {unit=, guid=, creatureDisplayID=, animID=, appearanceID=, visualID=})--设置, 3D模型
     if Save.hideModel or not tooltip.playerModel then
         return
     end
@@ -145,14 +152,7 @@ function func:Set_Item_Model(tooltip, tab)--func:Set_Item_Model(tooltip, {unit=,
             tooltip.playerModel.guid=tab.guid
             tooltip.playerModel.id=tab.guid
             tooltip.playerModel:SetShown(true)
-            --[[
-            if Save.showModelFileID then
-                local modelFileID= tooltip.playerModel:GetModelFileID()
-                if modelFileID and modelFileID>0 then
-                    tooltip.text2Right:SetText((tab.col or '')..modelFileID)
-                end
-            end
-            ]]
+
         end
     elseif tab.creatureDisplayID  then
         if tooltip.playerModel.id~= tab.creatureDisplayID then
@@ -175,6 +175,16 @@ function func:Set_Item_Model(tooltip, tab)--func:Set_Item_Model(tooltip, {unit=,
         end
     end
 end
+
+
+
+
+
+
+
+
+
+
 
 
 --################
@@ -637,7 +647,7 @@ function func:Set_Item(tooltip, itemLink, itemID)
                 tooltip.text2Left:SetText(sourceInfo.isCollected and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r')
             end
         end
-        func:Set_Item_Model(tooltip, {itemID=itemID, sourceID=sourceID, appearanceID=appearanceID, visualID=visualID, col=col})--设置, 3D模型
+        func:Set_Item_Model(tooltip, {itemID=itemID, sourceID=sourceID, appearanceID=appearanceID, visualID=visualID})--设置, 3D模型
 
         if bindType==LE_ITEM_BIND_ON_EQUIP or bindType==LE_ITEM_BIND_ON_USE then--绑定装备,使用时绑定
             tooltip.Portrait:SetAtlas('greatVault-lock')
@@ -974,7 +984,7 @@ end
 --####
 --Buff
 --####
-function func:set_All_Aura(tooltip, data)--Aura
+function func:Set_All_Aura(tooltip, data)--Aura
     local spellID= data.id
     local name= C_Spell.GetSpellName(spellID)
     local icon= C_Spell.GetSpellTexture(spellID)
@@ -989,7 +999,7 @@ function func:set_All_Aura(tooltip, data)--Aura
 end
 
 
-function func:set_Buff(type, tooltip, ...)
+function func:Set_Buff(type, tooltip, ...)
     local source--local unit= ...
     if type=='Buff' then
         source= select(7, UnitBuff(...))
@@ -1159,303 +1169,427 @@ end
 
 
 
-
-
---#######
---设置单位
---#######
-function func:Set_Unit(tooltip)--, data)--设置单位提示信息
-    local name, unit, guid= TooltipUtil.GetDisplayedUnit(tooltip)
-    if not name or not UnitExists(unit) or not guid then
-        return
-    end
-
-
+--#############
+--设置单位, 玩家
+--#############
+function func:Set_Unit_Player(tooltip, name, unit, guid)
     local realm= select(2, UnitName(unit)) or e.Player.realm--服务器
     local isPlayer = UnitIsPlayer(unit)
     local isSelf= UnitIsUnit('player', unit)--我
     local isGroupPlayer= (not isSelf and e.GroupGuid[guid]) and true or nil--队友
     local r, g, b, col = e.GetUnitColor(unit)--颜色
     local isInCombat= UnitAffectingCombat('player')
-
-    --设置单位图标
     local englishFaction = isPlayer and UnitFactionGroup(unit)
-    local textLeft, text2Left, textRight, text2Right
-    if isPlayer then
-        local hideLine--取得网页，数据链接
-        tooltip.Portrait:SetAtlas(e.Icon[englishFaction] or 'Neutral')
-        tooltip.Portrait:SetShown(true)
+    local textLeft, text2Left, textRight, text2Right='', '', '', ''
+    local tooltipName=tooltip:GetName() or 'GameTooltip'
 
-        --取得玩家信息
-        local info= e.UnitItemLevel[guid]
-        if info then
-            if not isInCombat then
-                e.GetNotifyInspect(nil, unit)--取得装等
-            end
-            if info.itemLevel then--设置装等
-                if info.itemLevel>1 then
-                    col= col or select(4, e.GetUnitColor(unit))
-                    textLeft= (col or '|cffffffff')..info.itemLevel..'|r'
-                else
-                    textLeft= ' '
-                end
-            end
-            if info.specID then
-                local icon, role= select(4, GetSpecializationInfoByID(info.specID))--设置天赋
-                if icon then
-                    text2Left= "|T"..icon..':0|t'..(e.Icon[role] or '')
-                end
-            end
-        else
+
+    tooltip.Portrait:SetAtlas(e.Icon[englishFaction] or 'Neutral')
+    tooltip.Portrait:SetShown(true)
+
+    --取得玩家信息
+    local info= e.UnitItemLevel[guid]
+    if info then
+        if not isInCombat then
             e.GetNotifyInspect(nil, unit)--取得装等
         end
-
-        tooltip.backgroundColor:SetColorTexture(r, g, b, 0.2)--背景颜色
-        tooltip.backgroundColor:SetShown(true)
-
-        local isWarModeDesired=C_PvP.IsWarModeDesired()--争模式
-        local statusIcon, statusText= e.PlayerOnlineInfo(unit)--单位，状态信息
-        if statusIcon and statusText then
-            textLeft= (textLeft or '')..statusIcon..statusText
-
-        elseif isGroupPlayer then--队友
-            local reason=UnitPhaseReason(unit)
-            if reason then
-                if reason==0 then
-                    textLeft= (e.onlyChinese and '不同了阶段' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', MAP_BAR_THUNDER_ISLE_TITLE0:gsub('1','')))..(textLeft or '')
-                elseif reason==1 then
-                    textLeft= (e.onlyChinese and '不在同位面' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', e.Player.layer))..(textLeft or '')
-                elseif reason==2 then--战争模
-                    textLeft= (isWarModeDesired and (e.onlyChinese and '关闭战争模式' or ERR_PVP_WARMODE_TOGGLE_OFF) or (e.onlyChinese and '开启战争模式' or ERR_PVP_WARMODE_TOGGLE_ON))..(textLeft or '')
-                elseif reason==3 then
-                    textLeft= (e.onlyChinese and '时空漫游' or PLAYER_DIFFICULTY_TIMEWALKER)..(textLeft or '')
-                end
+        if info.itemLevel then--设置装等
+            if info.itemLevel>1 then
+                textLeft= info.itemLevel
             end
         end
-        if not IsInInstance() and UnitHasLFGRandomCooldown(unit) then
-            text2Left= (text2Left or '')..'|T236347:0|t'
+        if info.specID then
+            local icon, role= select(4, GetSpecializationInfoByID(info.specID))--设置天赋
+            if icon then
+                text2Left= "|T"..icon..':0|t'..(e.Icon[role] or '')
+            end
         end
+    else
+        e.GetNotifyInspect(nil, unit)--取得装等
+    end
 
-        local isInGuild= guid and IsPlayerInGuildFromGUID(guid)
-        local line=GameTooltipTextLeft1--名称
-        if line then
+    tooltip.backgroundColor:SetColorTexture(r, g, b, 0.2)--背景颜色
+    tooltip.backgroundColor:SetShown(true)
+
+    local isWarModeDesired= C_PvP.IsWarModeDesired()--争模式
+    local statusIcon, statusText= e.PlayerOnlineInfo(unit)--单位，状态信息
+    if statusIcon and statusText then
+        textLeft= textLeft..statusIcon..statusText
+
+    elseif isGroupPlayer then--队友
+        local reason=UnitPhaseReason(unit)
+        if reason then
+            if reason==0 then
+                textLeft= (e.onlyChinese and '不同了阶段' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', MAP_BAR_THUNDER_ISLE_TITLE0:gsub('1','')))..textLeft
+            elseif reason==1 then
+                textLeft= (e.onlyChinese and '不在同位面' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', e.Player.layer))..textLeft
+            elseif reason==2 then--战争模
+                textLeft= (isWarModeDesired and (e.onlyChinese and '关闭战争模式' or ERR_PVP_WARMODE_TOGGLE_OFF) or (e.onlyChinese and '开启战争模式' or ERR_PVP_WARMODE_TOGGLE_ON))..textLeft
+            elseif reason==3 then
+                textLeft= (e.onlyChinese and '时空漫游' or PLAYER_DIFFICULTY_TIMEWALKER)..textLeft
+            end
+        end
+    end
+    if not IsInInstance() and UnitHasLFGRandomCooldown(unit) then
+        text2Left= text2Left..'|T236347:0|t'
+    end
+
+    local region= e.Get_Region(realm)--服务器，EU， US
+    textRight=realm..(isSelf and '|A:auctionhouse-icon-favorite:0:0|a' or realm==e.Player.realm and format('|A:%s:0:0|a', e.Icon.select) or e.Player.Realms[realm] and '|A:Adventures-Checkmark:0:0|a' or '')..(region and region.col or '')
+
+
+    tooltip.textLeft:SetText(textLeft)
+    tooltip.text2Left:SetText(text2Left)
+    tooltip.textRight:SetText(textRight)
+    tooltip.text2Right:SetText(text2Right)
+
+    tooltip.textLeft:SetTextColor(r, g, b)
+    tooltip.text2Left:SetTextColor(r, g, b)
+    tooltip.textRight:SetTextColor(r, g, b)
+    tooltip.text2Right:SetTextColor(r, g, b)
+
+
+
+    local lineLeft1=_G[tooltipName..'TextLeft1']--名称
+    if lineLeft1 then
+        lineLeft1:SetText(
+            (isSelf and '|A:auctionhouse-icon-favorite:0:0|a' or e.GetFriend(nil, guid, nil) or '')
+            ..'|A:common-icon-rotateright:0:0|a'..name..'|A:common-icon-rotateleft:0:0|a'
+        )
+        local lineRight1= _G[tooltipName..'TextRight1']
+        if lineRight1 then
+            local text= ' '
             if isSelf then--魔兽世界时光徽章
                 C_WowTokenPublic.UpdateMarketPrice()
                 local price= C_WowTokenPublic.GetCurrentMarketPrice()
                 if price and price>0 then
                     local all, numPlayer= e.GetItemWoWNum(122284)--取得WOW物品数量
-                    GameTooltipTextRight1:SetText(col..all..(numPlayer>1 and '('..numPlayer..')' or '')..'|A:token-choice-wow:0:0|a'..e.MK(price/10000,3)..'|r|A:Front-Gold-Icon:0:0|a')
-                    GameTooltipTextRight1:SetShown(true)
+                    text= all..(numPlayer>1 and '('..numPlayer..')' or '')..'|A:token-choice-wow:0:0|a'..e.MK(price/10000,3)..'|A:Front-Gold-Icon:0:0|a'
                 end
             end
-            line:SetText((isSelf and '|A:auctionhouse-icon-favorite:0:0|a' or e.GetFriend(nil, guid, nil) or '')
-                        ..col..format('|A:%s:0:0|a', e.Icon.toRight)..name..format('|A:%s:0:0|a', e.Icon.toLeft)
-                        ..'|r')
+            lineRight1:SetText(text)
+            lineRight1:SetShown(true)
         end
+    end
 
 
-        local region= e.Get_Region(realm)--服务器，EU， US
-        textRight=col..realm..'|r'..(isSelf and '|A:auctionhouse-icon-favorite:0:0|a' or realm==e.Player.realm and format('|A:%s:0:0|a', e.Icon.select) or e.Player.Realms[realm] and '|A:Adventures-Checkmark:0:0|a' or '')..(region and region.col or '')
-
-        line=isInGuild and GameTooltipTextLeft2
-        if line then
-            local text=line:GetText()
-            if text then
-                line:SetText('|A:UI-HUD-MicroMenu-GuildCommunities-Mouseover:0:0|a'..col..text:gsub('(%-.+)','')..'|r')
-                if GameTooltipTextRight2 then
-                    GameTooltipTextRight2:SetText(' ')
-                    GameTooltipTextRight2:SetShown(false)
-                end
+    local isInGuild= IsPlayerInGuildFromGUID(guid)
+    local lineLeft2= isInGuild and _G[tooltipName..'TextLeft2']
+    if lineLeft2 then
+        local text=lineLeft2:GetText()
+        if text then
+            lineLeft2:SetText('|A:UI-HUD-MicroMenu-GuildCommunities-Mouseover:0:0|a'..text:gsub('(%-.+)',''))
+            local lineRight2= _G[tooltipName..'TextRight2']
+            if lineRight2 then
+                lineRight2:SetText(' ')
             end
         end
+    end
 
-        line= isInGuild and GameTooltipTextLeft3 or GameTooltipTextLeft2
-        if line then
-            local classFilename= select(2, UnitClass(unit))--职业名称
-            local sex = UnitSex(unit)
-            local raceName, raceFile= UnitRace(unit)
-            local level= UnitLevel(unit)
-            local text= sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a'
+    local lineLeft3= isInGuild and _G[tooltipName..'TextLeft3'] or _G[tooltipName..'TextLeft2']
+    if lineLeft3 then
+        local classFilename= select(2, UnitClass(unit))--职业名称
+        local sex = UnitSex(unit)
+        local raceName, raceFile= UnitRace(unit)
+        local level= UnitLevel(unit)
+        local text= sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a'
 
-            if GetMaxLevelForPlayerExpansion()==level then
-                text= text.. level
-            else
-                text= text..'|cnGREEN_FONT_COLOR:'..level..'|r'
-            end
+        if GetMaxLevelForPlayerExpansion()==level then
+            text= text.. level
+        else
+            text= text..'|cnGREEN_FONT_COLOR:'..level..'|r'
+        end
 
-            local effectiveLevel= UnitEffectiveLevel(unit)
-            if effectiveLevel~=level then
-                text= text..'(|cnGREEN_FONT_COLOR:'..effectiveLevel..'|r) '
-            end
+        local effectiveLevel= UnitEffectiveLevel(unit)
+        if effectiveLevel~=level then
+            text= text..'(|cnGREEN_FONT_COLOR:'..effectiveLevel..'|r) '
+        end
 
-            info= C_PlayerInfo.GetPlayerMythicPlusRatingSummary(unit)--挑战, 分数
-            if info and info.currentSeasonScore and info.currentSeasonScore>0 then
-                text= text..' '..(e.GetUnitRaceInfo({unit=unit, guid=guid, race=raceFile, sex=sex, reAtlas=false}) or '')
-                        ..' '..e.Class(nil, classFilename)
-                        ..' '..(UnitIsPVP(unit) and  '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and 'PvP' or PVP)..'|r' or (e.onlyChinese and 'PvE' or TRANSMOG_SET_PVE))
-                        ..'  '..e.GetKeystoneScorsoColor(info.currentSeasonScore,true)
+        info= C_PlayerInfo.GetPlayerMythicPlusRatingSummary(unit)--挑战, 分数
+        if info and info.currentSeasonScore and info.currentSeasonScore>0 then
+            text= text..' '..(e.GetUnitRaceInfo({unit=unit, guid=guid, race=raceFile, sex=sex, reAtlas=false}) or '')
+                    ..' '..e.Class(nil, classFilename)
+                    ..' '..(UnitIsPVP(unit) and  '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and 'PvP' or PVP)..'|r' or (e.onlyChinese and 'PvE' or TRANSMOG_SET_PVE))
+                    ..'  '..e.GetKeystoneScorsoColor(info.currentSeasonScore,true)
 
-                if info.runs and info.runs then
-                    local bestRunLevel=0
-                    for _, run in pairs(info.runs) do
-                        if run.bestRunLevel and run.bestRunLevel>bestRunLevel then
-                            bestRunLevel=run.bestRunLevel
-                        end
-                    end
-                    if bestRunLevel>0 then
-                        text= text..' ('..bestRunLevel..')'
+            if info.runs and info.runs then
+                local bestRunLevel=0
+                for _, run in pairs(info.runs) do
+                    if run.bestRunLevel and run.bestRunLevel>bestRunLevel then
+                        bestRunLevel=run.bestRunLevel
                     end
                 end
-            else
-                text= text..' '..(e.GetUnitRaceInfo({unit=unit, guid=guid, race=raceFile, sex=sex, reAtlas=false})  or '')
-                        ..(e.cn(raceName) or e.cn(raceFile) or '')
-                        ..' '..(e.Class(nil, classFilename) or '')
-                        ..' '..(UnitIsPVP(unit) and '(|cnGREEN_FONT_COLOR:'..(e.onlyChinese and 'PvP' or TRANSMOG_SET_PVP)..'|r)' or ('('..(e.onlyChinese and 'PvE' or TRANSMOG_SET_PVE)..')'))
+                if bestRunLevel>0 then
+                    text= text..' ('..bestRunLevel..')'
+                end
             end
-            text= col and col..text..'|r' or text
-            line:SetText(text)
-
-            line= isInGuild and GameTooltipTextRight3 or GameTooltipTextRight2
-            if line then
-                line:SetText(' ')
-                line:SetShown(true)
-            end
+        else
+            text= text..' '..(e.GetUnitRaceInfo({unit=unit, guid=guid, race=raceFile, sex=sex, reAtlas=false})  or '')
+                    ..(e.cn(raceName) or e.cn(raceFile) or '')
+                    ..' '..(e.Class(nil, classFilename) or '')
+                    ..' '..(UnitIsPVP(unit) and '(|cnGREEN_FONT_COLOR:'..(e.onlyChinese and 'PvP' or TRANSMOG_SET_PVP)..'|r)' or ('('..(e.onlyChinese and 'PvE' or TRANSMOG_SET_PVE)..')'))
         end
+        lineLeft3:SetText(text)
 
-        local num= isInGuild and 4 or 3
-        local allNum= tooltip:NumLines()
-        for i=num, allNum do
-            line=_G["GameTooltipTextLeft"..i]
-            if line then
-                if i==num then
-                    if isSelf then--位面ID, 战争模式
-                        line:SetText(e.Player.Layer and '|A:nameplates-holypower2-on:0:0|a'..col..e.Player.L.layer..' '..e.Player.Layer..'|r' or ' ')
-                        line=_G["GameTooltipTextRight"..i]
-                        if line then
-                            if isWarModeDesired then
-                                line:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '战争模式' or PVP_LABEL_WAR_MODE))
-                            else
-                                line:SetText(col..(e.onlyChinese and '关闭战争模式' or ERR_PVP_WARMODE_TOGGLE_OFF))
-                            end
-                            line:SetShown(true)
-                        end
-                    elseif isGroupPlayer then--队友位置
-                        local mapID= C_Map.GetBestMapForUnit(unit)--地图ID
-                        local mapInfo= mapID and C_Map.GetMapInfo(mapID)
-                        if mapInfo and mapInfo.name and _G["GameTooltipTextLeft"..i] then
-                            if mapInfo.name then
-                                line=_G["GameTooltipTextLeft"..i]
-                                line:SetText('|A:poi-islands-table:0:0|a'..col..mapInfo.name)
-                                line:SetShown(true)
-                            end
-                        end
-                    else
-                        if not hideLine  then
-                            hideLine=line
-                            line:SetTextColor(r,g,b)
+        local lineRight3= isInGuild and _G[tooltipName..'TextRight3'] or _G[tooltipName..'TextRight2']
+        if lineRight3 then
+            lineRight3:SetText(' ')
+        end
+    end
+
+    local hideLine--取得网页，数据链接
+    local num= isInGuild and 4 or 3
+    for i=1, tooltip:NumLines() or 0, 1 do
+        local lineLeft=_G[tooltipName..'TextLeft'..i]
+        if lineLeft then
+            local show=true
+            if i==num then
+                if isSelf then--位面ID, 战争模式
+                    lineLeft:SetText(e.Player.Layer and '|A:nameplates-holypower2-on:0:0|a'..e.Player.L.layer..' '..e.Player.Layer or ' ')
+                    local lineRight= _G[tooltipName..'TextRight'..i]
+                    if lineRight then
+                        if isWarModeDesired then
+                            lineRight:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '战争模式' or PVP_LABEL_WAR_MODE))
                         else
-                            line:SetText('')
-                            line:SetShown(false)
+                            lineRight:SetText(e.onlyChinese and '关闭战争模式' or ERR_PVP_WARMODE_TOGGLE_OFF)
+                        end
+                        lineLeft:SetShown(true)
+                    end
+                elseif isGroupPlayer then--队友位置
+                    local mapID= C_Map.GetBestMapForUnit(unit)--地图ID
+                    if mapID then
+                        local mapInfo= C_Map.GetMapInfo(mapID)
+                        if mapInfo and mapInfo.name then
+                            lineLeft:SetText('|A:poi-islands-table:0:0|a'..mapInfo.name)
+                            lineLeft:SetShown(true)
                         end
                     end
                 else
-                    if not hideLine then
-                        hideLine=line
-                        line:SetTextColor(r,g,b)
+                    if not hideLine  then
+                        hideLine=lineLeft
                     else
-                        line:SetText('')
-                        line:SetShown(false)
+                        show=false
                     end
+                end
+            elseif i>num then
+                if not hideLine then
+                    hideLine=lineLeft
+                else
+                    show=false
+                end
+            end
+            if show then
+                lineLeft:SetTextColor(r,g,b)
+                local lineRight= _G[tooltipName..'TextRight'..i]
+                if lineRight and lineRight:IsShown()then
+                    lineRight:SetTextColor(r,g,b)
+                end
+            else
+                lineLeft:SetShown(false)
+                local lineRight= _G[tooltipName..'TextRight'..i]
+                if lineRight then
+                    lineRight:SetShown(false)
                 end
             end
         end
-        if isInCombat then
-            if hideLine then
-                hideLine:SetText('')
-                hideLine:SetShown(false)
-            end
-        else
-            func:Set_Web_Link(hideLine, {unitName=name, realm=realm, col=nil})--取得单位, raider.io 网页，数据链接
+    end
+    if isInCombat then
+        if hideLine then
+            hideLine:SetShown(false)
         end
+    else
+        func:Set_Web_Link(hideLine, {unitName=name, realm=realm, col=col})--取得单位, raider.io 网页，数据链接
+    end
+
+    func:Set_HealthBar_Unit(GameTooltipStatusBar, unit)--生命条提示
+    func:Set_Item_Model(tooltip, {unit=unit, guid=guid})--设置, 3D模型
+
+    local w= tooltip:GetWidth()
+    local w2= tooltip.textLeft:GetStringWidth()+ tooltip.text2Left:GetStringWidth()+ tooltip.textRight:GetStringWidth()
+    if w<w2 then
+        tooltip:SetMinimumWidth(w2)
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--#############
+--设置单位, NPC
+--#############
+function func:Set_Unit_NPC(tooltip, name, unit, guid)
+    local textLeft, text2Left, textRight, text2Right=' ', '', '', ''
+
+    --怪物, 图标
+    if UnitIsQuestBoss(unit) then--任务
+        tooltip.Portrait:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Quest')
+        tooltip.Portrait:SetShown(true)
+
+    elseif UnitIsBossMob(unit) then--世界BOSS
+        text2Left= e.onlyChinese and '首领' or BOSS
+        tooltip.Portrait:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Rare')
+        tooltip.Portrait:SetShown(true)
+    else
+        local classification = UnitClassification(unit)--TargetFrame.lua
+        if classification == "rareelite" then--稀有, 精英
+            text2Left= e.onlyChinese and '稀有' or GARRISON_MISSION_RARE
+            tooltip.Portrait:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Rare')
+            tooltip.Portrait:SetShown(true)
+
+        elseif classification == "rare" then--稀有
+            text2Left= e.onlyChinese and '稀有' or GARRISON_MISSION_RARE
+            tooltip.Portrait:SetAtlas('UUnitFrame-Target-PortraitOn-Boss-Rare-Star')
+            tooltip.Portrait:SetShown(true)
+        else
+            SetPortraitTexture(tooltip.Portrait, unit)
+            tooltip.Portrait:SetShown(true)
+        end
+    end
+
+    local type=UnitCreatureType(unit)--生物类型
+    if type and not type:find(COMBAT_ALLY_START_MISSION) then
+        textRight=e.cn(type)
+    end
+
+    local uiWidgetSet= UnitWidgetSet(unit)
+    if uiWidgetSet and uiWidgetSet>0 then
+        e.tips:AddDoubleLine('WidgetSetID', uiWidgetSet)
+    end
+
+    local zone, npc
+    if guid then
+        zone, npc = select(5, strsplit("-", guid))--位面,NPCID
+        if zone then
+            tooltip:AddDoubleLine(e.Player.L.layer..' '..zone, 'NPC '..npc)
+            e.Player.Layer=zone
+        end
+        func:Set_Web_Link(tooltip, {type='npc', id=npc, name=name, isPetUI=false})--取得网页，数据链接 
+    end
+
+    --NPC 中文名称
+    local data= e.cn(nil, {unit=unit, npcID=npc})
+    if data then
+        textLeft= data[1]
+        text2Right= data[2]
+    end
+
+    tooltip.textLeft:SetText(textLeft)
+    tooltip.text2Left:SetText(text2Left)
+    tooltip.textRight:SetText(textRight)
+    tooltip.text2Right:SetText(text2Right)
+
+    if not Save.disabledNPCcolor then
+        local r, g, b = e.GetUnitColor(unit)--颜色
+        local tooltipName=tooltip:GetName() or 'GameTooltip'
+        for i=1, tooltip:NumLines() do
+            local lineLeft=_G[tooltipName.."TextLeft"..i]
+            if lineLeft then
+                lineLeft:SetTextColor(r, g, b)
+            end
+            local lineRight=_G[tooltipName.."TextRight"..i]
+            if lineRight and lineRight:IsShown() then
+                lineRight:SetTextColor(r, g, b)
+            end
+        end
+        tooltip.textLeft:SetTextColor(r, g, b)
+        tooltip.text2Left:SetTextColor(r, g, b)
+        tooltip.textRight:SetTextColor(r, g, b)
+        tooltip.text2Right:SetTextColor(r, g, b)
+    end
+
+    func:Set_HealthBar_Unit(GameTooltipStatusBar, unit)--生命条提示
+    func:Set_Item_Model(tooltip, {unit=unit, guid=guid})--设置, 3D模型
+
+    local w= tooltip:GetWidth()
+    local w2= tooltip.textLeft:GetStringWidth()+ tooltip.text2Left:GetStringWidth()+ tooltip.textRight:GetStringWidth()
+    if w<w2 then
+        tooltip:SetMinimumWidth(w2)
+    end
+end
+
+
+hooksecurefunc('GameTooltip_AddStatusBar',function()
+    print('GameTooltip_AddStatusBar')
+end)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--#######
+--设置单位
+--#######
+function func:Set_Unit(tooltip)--设置单位提示信息
+    local name, unit, guid= TooltipUtil.GetDisplayedUnit(tooltip)
+    if not name or not UnitExists(unit) or not guid then
+        return
+    end
+    if UnitIsPlayer(unit) then
+        func:Set_Unit_Player(tooltip, name, unit, guid)
 
     elseif (UnitIsWildBattlePet(unit) or UnitIsBattlePetCompanion(unit)) then--宠物TargetFrame.lua
         func:Set_Pet(tooltip, UnitBattlePetSpeciesID(unit), true)
 
     else
-        if not Save.disabledNPCcolor then
-            for i=1, tooltip:NumLines() do
-                local line=_G["GameTooltipTextLeft"..i]
-                if line then
-                    line:SetTextColor(r,g,b)
-                end
-            end
-        end
-
-        local uiWidgetSet= UnitWidgetSet(unit)
-        if uiWidgetSet and uiWidgetSet>0 then
-            e.tips:AddDoubleLine('WidgetSetID', uiWidgetSet, r,g,b, r,g,b)
-        end
-
-        local zone, npc
-        if guid then
-            zone, npc = select(5, strsplit("-", guid))--位面,NPCID
-            if zone then
-                tooltip:AddDoubleLine(col..e.Player.L.layer..' '..zone, col..'NPC '..npc, r,g,b, r,g,b)
-                e.Player.Layer=zone
-            end
-            func:Set_Web_Link(tooltip, {type='npc', id=npc, name=name, col=col, isPetUI=false})--取得网页，数据链接 
-        end
-
-        --怪物, 图标
-        if UnitIsQuestBoss(unit) then--任务
-            tooltip.Portrait:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Quest')
-            tooltip.Portrait:SetShown(true)
-
-        elseif UnitIsBossMob(unit) then--世界BOSS
-            text2Right= e.onlyChinese and '首领' or BOSS
-            tooltip.Portrait:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Rare')
-            tooltip.Portrait:SetShown(true)
-        else
-            local classification = UnitClassification(unit)--TargetFrame.lua
-            if classification == "rareelite" then--稀有, 精英
-                text2Right= e.onlyChinese and '稀有' or GARRISON_MISSION_RARE
-                tooltip.Portrait:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Rare')
-                tooltip.Portrait:SetShown(true)
-
-            elseif classification == "rare" then--稀有
-                text2Right= e.onlyChinese and '稀有' or GARRISON_MISSION_RARE
-                tooltip.Portrait:SetAtlas('UUnitFrame-Target-PortraitOn-Boss-Rare-Star')
-                tooltip.Portrait:SetShown(true)
-            else
-                SetPortraitTexture(tooltip.Portrait, unit)
-                tooltip.Portrait:SetShown(true)
-            end
-        end
-
-        local type=UnitCreatureType(unit)--生物类型
-        if type and not type:find(COMBAT_ALLY_START_MISSION) then
-            textRight= col..e.cn(type)..'|r'
-        end
-
-        --NPC 中文名称
-        textLeft, text2Left= e.cn(nil, {unit=unit, npcID=npc})
-        if textLeft then
-            textLeft= col..textLeft..'|r'
-        end
+        func:Set_Unit_NPC(tooltip, name, unit, guid)
     end
-
-    tooltip.textLeft:SetText(textLeft or '')
-    tooltip.text2Left:SetText(text2Left or '')
-    tooltip.textRight:SetText(textRight or '')
-    tooltip.text2Right:SetText(text2Right or '')    
-
-    func:Set_HealthBar_Unit(GameTooltipStatusBar, unit)--生命条提示
-    func:Set_Item_Model(tooltip, {unit=unit, guid=guid, col= col})--设置, 3D模型
-
-    --[[if isSelf and not isInCombat and Save.WidgetSetID>0 then
-        GameTooltip_AddWidgetSet(e.tips, Save.WidgetSetID, 10)
-    end]]
 end
+--[[if isSelf and not isInCombat and Save.WidgetSetID>0 then
+    GameTooltip_AddWidgetSet(e.tips, Save.WidgetSetID, 10)
+end]]
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1561,6 +1695,17 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 --###########
 --法术, 弹出框
 --###########
@@ -1610,10 +1755,24 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --###########
 --宠物面板提示
 --###########
-local function set_Battle_Pet(self, speciesID, level, breedQuality, maxHealth, power, speed, customName)
+local function Set_Battle_Pet(self, speciesID, level, breedQuality, maxHealth, power, speed, customName)
     if not speciesID or speciesID < 1 then
         return
     end
@@ -1715,25 +1874,7 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
---####
---初始
---####
-local function Init()
-    Int_Health_Bar_Unit()--生命条提示
-
-    hooksecurefunc('GameTooltip_AddQuestRewardsToTooltip', function(self)--世界任务ID GameTooltip_AddQuest
-        func:Set_Quest(self)
-    end)
+local function Init_Hook()
     --战斗宠物，技能 SharedPetBattleTemplates.lua
     hooksecurefunc('SharedPetBattleAbilityTooltip_SetAbility', function(self, abilityInfo, additionalText)
         local abilityID = abilityInfo:GetAbilityID()
@@ -1754,278 +1895,101 @@ local function Init()
         end
     end)
 
-    --装备，对比，提示
-    ShoppingTooltip1.Portrait= ShoppingTooltip1:CreateTexture(nil, 'BACKGROUND',nil, 2)--右上角图标
-    ShoppingTooltip1.Portrait:SetPoint('TOPRIGHT',-2, -3)
-    ShoppingTooltip1.Portrait:SetSize(40,40)
-    ShoppingTooltip1.Portrait:SetAtlas('Adventures-Target-Indicator')
-    ShoppingTooltip1.Portrait:SetAlpha(0.5)
-
-    ShoppingTooltip2.Portrait= ShoppingTooltip2:CreateTexture(nil, 'BACKGROUND',nil, 2)--右上角图标
-    ShoppingTooltip2.Portrait:SetPoint('TOPRIGHT',-2, -3)
-    ShoppingTooltip2.Portrait:SetSize(40,40)
-    ShoppingTooltip2.Portrait:SetAtlas('Adventures-Target-Indicator')
-    ShoppingTooltip2.Portrait:SetAlpha(0.5)
-
-    --[[TooltipDataRules.lua 
-    Enum.TooltipDataType = {
-		Item = 0,
-		Spell = 1,
-		Unit = 2,
-		Corpse = 3,
-		Object = 4,
-		Currency = 5,
-		BattlePet = 6,
-		UnitAura = 7,
-		AzeriteEssence = 8,
-		CompanionPet = 9,
-		Mount = 10,
-		PetAction = 11,
-		Achievement = 12,
-		EnhancedConduit = 13,
-		EquipmentSet = 14,
-		InstanceLock = 15,
-		PvPBrawl = 16,
-		RecipeRankInfo = 17,
-		Totem = 18,
-		Toy = 19,
-		CorruptionCleanser = 20,
-		MinimapMouseover = 21,
-		Flyout = 22,
-		Quest = 23,
-		QuestPartyProgress = 24,
-		Macro = 25,
-		Debug = 26,
-	},
-    TooltipDataProcessor.AllTypes
-    Blizzard_SharedXMLGame/Tooltip/TooltipDataRules.lua
-]]
-
-TooltipDataProcessor.AddTooltipPostCall(TooltipDataProcessor.AllTypes, function(tooltip)
-    if not tooltip.textLeft then
-        func:Set_Init_Item(tooltip)--创建，设置，内容
-    end
-end)
-
-
-TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, function(tooltip, data)
-    func:Set_Unit(tooltip, data)--单位
-end)
-TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, function(tooltip, data)
-    if tooltip==ShoppingTooltip1 or ShoppingTooltip2==tooltip then
-        return
-    end
-    local itemLink, itemID= select(2, TooltipUtil.GetDisplayedItem(tooltip))--物品
-    itemLink= itemLink or itemID or data.id
-    func:Set_Item(tooltip, itemLink, itemID)
-end)
-TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Toy, function(tooltip, data)
-    if tooltip==ShoppingTooltip1 or ShoppingTooltip2==tooltip then
-        return
-    end
-    local itemLink, itemID= select(2, TooltipUtil.GetDisplayedItem(tooltip))--物品
-    itemLink= itemLink or itemID or data.id
-    func:Set_Item(tooltip, itemLink, itemID)
-end)
-TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Spell, function(tooltip, data)
-    func:Set_Spell(tooltip, data.id)--法术
-end)
-TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Currency, function(tooltip, data)
-    func:Set_Currency(tooltip, data.id)--货币
-end)
-TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.UnitAura, function(tooltip, data)
-    func:set_All_Aura(tooltip, data)--Aura
-end)
-TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.AzeriteEssence, function(tooltip, data)
-    func:set_Azerite(tooltip, data.id)--艾泽拉斯之心
-end)
-TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Mount, function(tooltip, data)
-    func:Set_Mount(tooltip, data.id)--坐骑
-end)
-TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Flyout, function(tooltip, data)
-    func:Set_Flyout(tooltip, data.id)--法术弹出框
-end)
-TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Achievement, function(tooltip, data)
-    func:Set_Achievement(tooltip, data.id)--成就
-end)
-
-
-TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Macro, function(tooltip, data)
-    local frame= GetMouseFocus and GetMouseFocus()--宏 11版本
-    if frame and frame.action then
-        local type, macroID, subType= GetActionInfo(frame.action)
-        if type=='macro' and macroID then
-            if subType=='spell' then--and macroID or GetMacroSpell(macroID)
-                func:Set_Spell(tooltip, macroID)
-            elseif not subType or subType=='' then
-                local text=GetMacroBody(macroID)
-                if text then
-                    tooltip:AddLine(text)
+    if not Enum.SpellBookSpellBank then--11版本
+        hooksecurefunc(GameTooltip, 'SetSpellBookItem', function(_, slot, unit)--技能收，宠物，技能，提示
+            if unit=='pet' and slot then
+                local icon=GetSpellBookItemTexture(slot, 'pet')
+                local spellID = select(3, GetSpellBookItemName(slot, 'pet'))
+                if spellID then
+                    e.tips:AddLine(' ')
+                    e.tips:AddDoubleLine((e.onlyChinese and '法术' or SPELLS)..' '..spellID, icon and '|T'..icon..':0|t'..icon)
+                    local slotType, actionID = GetSpellBookItemInfo(slot, 'pet')
+                    if slotType and actionID then
+                        e.tips:AddDoubleLine('slotType '..slotType, 'actionID '..actionID)
+                    end
                 end
             end
-        end
+        end)
+    else
+        hooksecurefunc(GameTooltip, 'SetSpellBookItem', function(self, slot, unit)--宠物，技能书，提示        
+            if unit==Enum.SpellBookSpellBank.Pet and slot then
+                local data= C_SpellBook.GetSpellBookItemInfo(slot, Enum.SpellBookSpellBank.Pet)
+                if data then
+                    self:AddLine(' ')
+                    self:AddDoubleLine(data.spellID and (e.onlyChinese and '法术' or SPELLS)..' '..data.spellID or ' ', data.iconID and '|T'..data.iconID..':0|t'..data.iconID)
+                    if data.actionID or data.itemType then
+                        self:AddDoubleLine(data.itemType and 'itemType '..data.itemType or ' ', 'actionID '..data.actionID)
+                    end
+                    --self:Show()
+                end
+            end
+        end)
     end
-end)
-
-
-
-if not Enum.SpellBookSpellBank then--11版本
-    hooksecurefunc(GameTooltip, 'SetSpellBookItem', function(_, slot, unit)--技能收，宠物，技能，提示
-        if unit=='pet' and slot then
-            local icon=GetSpellBookItemTexture(slot, 'pet')
-            local spellID = select(3, GetSpellBookItemName(slot, 'pet'))
-            if spellID then
-                e.tips:AddLine(' ')
-                e.tips:AddDoubleLine((e.onlyChinese and '法术' or SPELLS)..' '..spellID, icon and '|T'..icon..':0|t'..icon)
-                local slotType, actionID = GetSpellBookItemInfo(slot, 'pet')
-                if slotType and actionID then
-                    e.tips:AddDoubleLine('slotType '..slotType, 'actionID '..actionID)
-                end
-            end
-        end
-    end)
-else
-    hooksecurefunc(GameTooltip, 'SetSpellBookItem', function(self, slot, unit)--宠物，技能书，提示        
-        if unit==Enum.SpellBookSpellBank.Pet and slot then
-            local data= C_SpellBook.GetSpellBookItemInfo(slot, Enum.SpellBookSpellBank.Pet)
-            if data then
-                self:AddLine(' ')
-                self:AddDoubleLine(data.spellID and (e.onlyChinese and '法术' or SPELLS)..' '..data.spellID or ' ', data.iconID and '|T'..data.iconID..':0|t'..data.iconID)
-                if data.actionID or data.itemType then
-                    self:AddDoubleLine(data.itemType and 'itemType '..data.itemType or ' ', 'actionID '..data.actionID)
-                end
-                --self:Show()
-            end
-        end
-    end)
-end
-    --################
-    --Buff, 来源, 数据, 不可删除，如果删除，目标buff没有数据
-    --################
-    hooksecurefunc(e.tips, "SetUnitBuff", function(...)
-        func:set_Buff('Buff', ...)
-    end)
-    hooksecurefunc(e.tips, "SetUnitDebuff", function(...)
-        func:set_Buff('Debuff', ...)
-    end)
-    hooksecurefunc(e.tips, "SetUnitAura", function(...)
-        func:set_Buff('Aura', ...)
-    end)
-
-
-    --****
-    --位置
-    --****
-    hooksecurefunc("GameTooltip_SetDefaultAnchor", function(self, parent)
-        if Save.setDefaultAnchor and not (Save.inCombatDefaultAnchor and UnitAffectingCombat('player')) then
-            self:ClearAllPoints()
-            self:SetOwner(parent, Save.cursorRight and 'ANCHOR_CURSOR_RIGHT' or 'ANCHOR_CURSOR_LEFT', Save.cursorX or 0, Save.cursorY or 0)
-        end
-    end)
-
 
 
     --####
     --声望
     --#### 11版本
-if ReputationEntryMixin then
-    hooksecurefunc(ReputationEntryMixin, 'ShowStandardTooltip', function(self)
-        func:Set_Faction(GameTooltip, self.elementData.factionID)
-    end)
-    hooksecurefunc(ReputationEntryMixin, 'ShowMajorFactionRenownTooltip', function(self)
-        func:Set_Faction(GameTooltip, self.elementData.factionID)
-    end)
-    hooksecurefunc(ReputationEntryMixin, 'ShowFriendshipReputationTooltip', function(self)
-        func:Set_Faction(GameTooltip, self.elementData.factionID)
-    end)
-    hooksecurefunc(ReputationEntryMixin, 'ShowParagonRewardsTooltip', function(self)
-        func:Set_Faction(EmbeddedItemTooltip, self.elementData.factionID)
-    end)
-    hooksecurefunc(ReputationEntryMixin, 'OnClick', function(frame)
-        local self= ReputationFrame.ReputationDetailFrame
-        if not self.factionIDText then
-            self.factionIDText=e.Cstr(self)
-            self.factionIDText:SetPoint('BOTTOM', self, 'TOP', 0,-4)
-        end
-        self.factionIDText:SetText(frame.elementData.factionID or '')
-    end)
-    ReputationFrame.ReputationDetailFrame:HookScript('OnShow', function(self)
-        local selectedFactionIndex = C_Reputation.GetSelectedFaction();
-        local factionData = C_Reputation.GetFactionDataByIndex(selectedFactionIndex);
-        if factionData or factionData.factionID> 0 then
+    if ReputationEntryMixin then
+        hooksecurefunc(ReputationEntryMixin, 'ShowStandardTooltip', function(self)
+            func:Set_Faction(GameTooltip, self.elementData.factionID)
+        end)
+        hooksecurefunc(ReputationEntryMixin, 'ShowMajorFactionRenownTooltip', function(self)
+            func:Set_Faction(GameTooltip, self.elementData.factionID)
+        end)
+        hooksecurefunc(ReputationEntryMixin, 'ShowFriendshipReputationTooltip', function(self)
+            func:Set_Faction(GameTooltip, self.elementData.factionID)
+        end)
+        hooksecurefunc(ReputationEntryMixin, 'ShowParagonRewardsTooltip', function(self)
+            func:Set_Faction(EmbeddedItemTooltip, self.elementData.factionID)
+        end)
+        hooksecurefunc(ReputationEntryMixin, 'OnClick', function(frame)
+            local self= ReputationFrame.ReputationDetailFrame
             if not self.factionIDText then
                 self.factionIDText=e.Cstr(self)
                 self.factionIDText:SetPoint('BOTTOM', self, 'TOP', 0,-4)
             end
-            self.factionIDText:SetText(factionData.factionID)
-        end
-    end)
-
-else
-    hooksecurefunc(ReputationBarMixin, 'ShowMajorFactionRenownTooltip', function(self)--Major名望, ReputationFrame.lua
-        func:Set_Faction(e.tips, self.factionID)
-    end)
-    hooksecurefunc(ReputationBarMixin, 'ShowFriendshipReputationTooltip', function(self, friendshipID)--个人声望 ReputationFrame.lua
-        func:Set_Faction(e.tips, friendshipID)
-    end)
-    hooksecurefunc(ReputationBarMixin, 'OnEnter', function(frame)--角色栏,声望
-        func:Set_Faction(e.tips, frame.factionID, frame)
-    end)
-
-    hooksecurefunc('ReputationFrame_InitReputationRow',function(_, elementData)--ReputationFrame.lua 声望 界面,
-        local factionIndex = elementData.index
-        local factionID
-        if ( factionIndex == GetSelectedFaction() ) then
-            if ( ReputationDetailFrame:IsShown() ) then
-                factionID= select(14, GetFactionInfo(factionIndex))
+            self.factionIDText:SetText(frame.elementData.factionID or '')
+        end)
+        ReputationFrame.ReputationDetailFrame:HookScript('OnShow', function(self)
+            local selectedFactionIndex = C_Reputation.GetSelectedFaction();
+            local factionData = C_Reputation.GetFactionDataByIndex(selectedFactionIndex);
+            if factionData or factionData.factionID> 0 then
+                if not self.factionIDText then
+                    self.factionIDText=e.Cstr(self)
+                    self.factionIDText:SetPoint('BOTTOM', self, 'TOP', 0,-4)
+                end
+                self.factionIDText:SetText(factionData.factionID)
             end
-        end
-        if factionID and not ReputationDetailFrame.factionIDText then
-            ReputationDetailFrame.factionIDText=e.Cstr(ReputationDetailFrame)
-            ReputationDetailFrame.factionIDText:SetPoint('TOPLEFT', 6, -6)
-        end
-        if ReputationDetailFrame.factionIDText then
-            ReputationDetailFrame.factionIDText:SetText(factionID and (e.onlyChinese and '声望' or REPUTATION)..' '..factionID or '')
-        end
-    end)
-end
+        end)
+    else
+        hooksecurefunc(ReputationBarMixin, 'ShowMajorFactionRenownTooltip', function(self)--Major名望, ReputationFrame.lua
+            func:Set_Faction(e.tips, self.factionID)
+        end)
+        hooksecurefunc(ReputationBarMixin, 'ShowFriendshipReputationTooltip', function(self, friendshipID)--个人声望 ReputationFrame.lua
+            func:Set_Faction(e.tips, friendshipID)
+        end)
+        hooksecurefunc(ReputationBarMixin, 'OnEnter', function(frame)--角色栏,声望
+            func:Set_Faction(e.tips, frame.factionID, frame)
+        end)
 
-
-    --###########
-    --宠物面板提示
-    --###########
-    --func:Set_Init_Item(BattlePetTooltip, true)--创建物品
-    hooksecurefunc("BattlePetToolTip_Show", function(...)--BattlePetTooltip.lua 
-        set_Battle_Pet(BattlePetTooltip, ...)
-    end)
-
-    hooksecurefunc('FloatingBattlePet_Show', function(...)--FloatingPetBattleTooltip.lua
-        set_Battle_Pet(FloatingBattlePetTooltip, ...)
-    end)
-
-    hooksecurefunc(GameTooltip, "SetCompanionPet", function(self, petGUID)--设置宠物信息
-        local speciesID= petGUID and C_PetJournal.GetPetInfoByPetID(petGUID)
-        func:Set_Pet(self, speciesID)--宠物
-    end)
-
-    if Save.setCVar then
-        set_CVar(nil, nil, true)--设置CVar
-        if LOCALE_zhCN then
-            ConsoleExec("portal TW")
-            SetCVar("profanityFilter", '0')
-
-            local pre = C_BattleNet.GetFriendGameAccountInfo
-            C_BattleNet.GetFriendGameAccountInfo = function(...)
-                local gameAccountInfo = pre(...)
-                gameAccountInfo.isInCurrentRegion = true
-                return gameAccountInfo
+        hooksecurefunc('ReputationFrame_InitReputationRow',function(_, elementData)--ReputationFrame.lua 声望 界面,
+            local factionIndex = elementData.index
+            local factionID
+            if ( factionIndex == GetSelectedFaction() ) then
+                if ( ReputationDetailFrame:IsShown() ) then
+                    factionID= select(14, GetFactionInfo(factionIndex))
+                end
             end
-        end
+            if factionID and not ReputationDetailFrame.factionIDText then
+                ReputationDetailFrame.factionIDText=e.Cstr(ReputationDetailFrame)
+                ReputationDetailFrame.factionIDText:SetPoint('TOPLEFT', 6, -6)
+            end
+            if ReputationDetailFrame.factionIDText then
+                ReputationDetailFrame.factionIDText:SetText(factionID and (e.onlyChinese and '声望' or REPUTATION)..' '..factionID or '')
+            end
+        end)
     end
-
-    --[[if ExtraActionButton1 then
-        ExtraActionButton1:HookScript('OnLeave', GameTooltip_Hide)
-    end]]
 
 
     hooksecurefunc(AreaPOIPinMixin,'TryShowTooltip', function(self)--POI提示 AreaPOIDataProvider.lua
@@ -2094,7 +2058,6 @@ end
 
 
 
-
     --添加任务ID
     local function create_Quest_Label(frame)
         frame.questIDLabel= e.Cstr(frame, {mouse=true, justifyH='RIGHT'})
@@ -2144,11 +2107,6 @@ end
         self.questIDLabel.questID= questID
     end)
 
-
-
-
-
-
     --任务日志 显示ID
     hooksecurefunc("QuestMapLogTitleButton_OnEnter", function(self)
         local info= self.questLogIndex and C_QuestLog.GetInfo(self.questLogIndex)
@@ -2181,25 +2139,16 @@ end
         e.tips:Show()
     end)
 
-
-
-
-
-
-
-    --[[追踪栏
-    hooksecurefunc('BonusObjectiveTracker_OnBlockEnter', function(block)
-        if block.id and not block.module.tooltipBlock and block.TrackedQuest then
-            e.tips:SetOwner(block, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            GameTooltip_AddQuest(block.TrackedQuest or block, block.id)
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(id, Initializer:GetName())
-            e.tips:Show()
+    --添加 WidgetSetID
+    hooksecurefunc('GameTooltip_AddWidgetSet', function(self, uiWidgetSetID)
+        if uiWidgetSetID then
+            self:AddDoubleLine('WidgetSetID', uiWidgetSetID)
+            self:Show()
         end
-    end)]]
+    end)
 
-   for i= 1, NUM_OVERRIDE_BUTTONS do-- ActionButton.lua
+
+    for i= 1, NUM_OVERRIDE_BUTTONS do-- ActionButton.lua
         if _G['OverrideActionBarButton'..i] then
             hooksecurefunc(_G['OverrideActionBarButton'..i], 'SetTooltip', function(self)
                 if self.action then
@@ -2221,6 +2170,237 @@ end
             end)
         end
     end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    --[[TooltipDataRules.lua 
+    Enum.TooltipDataType = {
+		Item = 0,
+		Spell = 1,
+		Unit = 2,
+		Corpse = 3,
+		Object = 4,
+		Currency = 5,
+		BattlePet = 6,
+		UnitAura = 7,
+		AzeriteEssence = 8,
+		CompanionPet = 9,
+		Mount = 10,
+		PetAction = 11,
+		Achievement = 12,
+		EnhancedConduit = 13,
+		EquipmentSet = 14,
+		InstanceLock = 15,
+		PvPBrawl = 16,
+		RecipeRankInfo = 17,
+		Totem = 18,
+		Toy = 19,
+		CorruptionCleanser = 20,
+		MinimapMouseover = 21,
+		Flyout = 22,
+		Quest = 23,
+		QuestPartyProgress = 24,
+		Macro = 25,
+		Debug = 26,
+	},
+    TooltipDataProcessor.AllTypes
+    Blizzard_SharedXMLGame/Tooltip/TooltipDataRules.lua
+]]
+
+local function Init_Settings()
+    --装备，对比，提示
+    ShoppingTooltip1.Portrait= ShoppingTooltip1:CreateTexture(nil, 'BACKGROUND',nil, 2)--右上角图标
+    ShoppingTooltip1.Portrait:SetPoint('TOPRIGHT',-2, -3)
+    ShoppingTooltip1.Portrait:SetSize(40,40)
+    ShoppingTooltip1.Portrait:SetAtlas('Adventures-Target-Indicator')
+    ShoppingTooltip1.Portrait:SetAlpha(0.5)
+
+    ShoppingTooltip2.Portrait= ShoppingTooltip2:CreateTexture(nil, 'BACKGROUND',nil, 2)--右上角图标
+    ShoppingTooltip2.Portrait:SetPoint('TOPRIGHT',-2, -3)
+    ShoppingTooltip2.Portrait:SetSize(40,40)
+    ShoppingTooltip2.Portrait:SetAtlas('Adventures-Target-Indicator')
+    ShoppingTooltip2.Portrait:SetAlpha(0.5)
+
+    TooltipDataProcessor.AddTooltipPostCall(TooltipDataProcessor.AllTypes, function(tooltip)
+        if not tooltip.textLeft then
+            func:Set_Init_Item(tooltip)--创建，设置，内容
+        end
+    end)
+
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, function(tooltip)
+        func:Set_Unit(tooltip)--单位
+    end)
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, function(tooltip, data)
+        if tooltip==ShoppingTooltip1 or ShoppingTooltip2==tooltip then
+            return
+        end
+        local itemLink, itemID= select(2, TooltipUtil.GetDisplayedItem(tooltip))--物品
+        itemLink= itemLink or itemID or data.id
+        func:Set_Item(tooltip, itemLink, itemID)
+    end)
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Toy, function(tooltip, data)
+        if tooltip==ShoppingTooltip1 or ShoppingTooltip2==tooltip then
+            return
+        end
+        local itemLink, itemID= select(2, TooltipUtil.GetDisplayedItem(tooltip))--物品
+        itemLink= itemLink or itemID or data.id
+        func:Set_Item(tooltip, itemLink, itemID)
+    end)
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Spell, function(tooltip, data)
+        func:Set_Spell(tooltip, data.id)--法术
+    end)
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Currency, function(tooltip, data)
+        func:Set_Currency(tooltip, data.id)--货币
+    end)
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.UnitAura, function(tooltip, data)
+        func:Set_All_Aura(tooltip, data)--Aura
+    end)
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.AzeriteEssence, function(tooltip, data)
+        func:set_Azerite(tooltip, data.id)--艾泽拉斯之心
+    end)
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Mount, function(tooltip, data)
+        func:Set_Mount(tooltip, data.id)--坐骑
+    end)
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Flyout, function(tooltip, data)
+        func:Set_Flyout(tooltip, data.id)--法术弹出框
+    end)
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Achievement, function(tooltip, data)
+        func:Set_Achievement(tooltip, data.id)--成就
+    end)
+
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Macro, function(tooltip, data)
+        local frame= GetMouseFocus and GetMouseFocus()--宏 11版本
+        if frame and frame.action then
+            local type, macroID, subType= GetActionInfo(frame.action)
+            if type=='macro' and macroID then
+                if subType=='spell' then--and macroID or GetMacroSpell(macroID)
+                    func:Set_Spell(tooltip, macroID)
+                elseif not subType or subType=='' then
+                    local text=GetMacroBody(macroID)
+                    if text then
+                        tooltip:AddLine(text)
+                    end
+                end
+            end
+        end
+    end)
+
+    --###########
+    --宠物面板提示
+    --###########
+    --func:Set_Init_Item(BattlePetTooltip, true)--创建物品
+    hooksecurefunc("BattlePetToolTip_Show", function(...)--BattlePetTooltip.lua 
+        Set_Battle_Pet(BattlePetTooltip, ...)
+    end)
+
+    hooksecurefunc('FloatingBattlePet_Show', function(...)--FloatingPetBattleTooltip.lua
+        Set_Battle_Pet(FloatingBattlePetTooltip, ...)
+    end)
+
+    hooksecurefunc(GameTooltip, "SetCompanionPet", function(self, petGUID)--设置宠物信息
+        local speciesID= petGUID and C_PetJournal.GetPetInfoByPetID(petGUID)
+        func:Set_Pet(self, speciesID)--宠物
+    end)
+
+    hooksecurefunc('GameTooltip_AddQuestRewardsToTooltip', function(self)--世界任务ID GameTooltip_AddQuest
+        func:Set_Quest(self)
+    end)
+
+    --################
+    --Buff, 来源, 数据, 不可删除，如果删除，目标buff没有数据
+    --################
+    hooksecurefunc(e.tips, "SetUnitBuff", function(...)
+        func:Set_Buff('Buff', ...)
+    end)
+    hooksecurefunc(e.tips, "SetUnitDebuff", function(...)
+        func:Set_Buff('Debuff', ...)
+    end)
+    hooksecurefunc(e.tips, "SetUnitAura", function(...)
+        func:Set_Buff('Aura', ...)
+    end)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--####
+--初始
+--####
+local function Init()
+    Int_Health_Bar_Unit()--生命条提示
+    Init_Hook()
+    Init_Settings()
+
+
+
+    --****
+    --位置
+    --****
+    hooksecurefunc("GameTooltip_SetDefaultAnchor", function(self, parent)
+        if Save.setDefaultAnchor and not (Save.inCombatDefaultAnchor and UnitAffectingCombat('player')) then
+            self:ClearAllPoints()
+            self:SetOwner(parent, Save.cursorRight and 'ANCHOR_CURSOR_RIGHT' or 'ANCHOR_CURSOR_LEFT', Save.cursorX or 0, Save.cursorY or 0)
+        end
+    end)
+
+
+    if Save.setCVar then
+        set_CVar(nil, nil, true)--设置CVar
+        if LOCALE_zhCN then
+            ConsoleExec("portal TW")
+            SetCVar("profanityFilter", '0')
+
+            local pre = C_BattleNet.GetFriendGameAccountInfo
+            C_BattleNet.GetFriendGameAccountInfo = function(...)
+                local gameAccountInfo = pre(...)
+                gameAccountInfo.isInCurrentRegion = true
+                return gameAccountInfo
+            end
+        end
+    end
+end
+    --[[追踪栏
+    hooksecurefunc('BonusObjectiveTracker_OnBlockEnter', function(block)
+        if block.id and not block.module.tooltipBlock and block.TrackedQuest then
+            e.tips:SetOwner(block, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            GameTooltip_AddQuest(block.TrackedQuest or block, block.id)
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(id, Initializer:GetName())
+            e.tips:Show()
+        end
+    end)]]
 
     --显示选项中的CVar 11版本
     --[[Blizzard_SettingControls.lua
@@ -2388,14 +2568,7 @@ end
         end)
     end]]
 
-    --添加 WidgetSetID
-    hooksecurefunc('GameTooltip_AddWidgetSet', function(self, uiWidgetSetID)
-        if uiWidgetSetID then
-            self:AddLine(format('WidgetSetID %d', uiWidgetSetID))
-            self:Show()
-        end
-    end)
-end
+
 
 
 
@@ -2725,6 +2898,8 @@ local function Init_Panel()
         end
     })
 end
+
+
 --[[
     --监视， WidgetSetID
     local widgetLabel= e.Cstr(panel)
@@ -2916,6 +3091,14 @@ end
 
 
 
+
+
+
+
+
+
+
+
 --挑战, AffixID
 local function Init_Blizzard_ChallengesUI()
     hooksecurefunc(ChallengesKeystoneFrameAffixMixin, 'OnEnter',function(self)
@@ -3032,6 +3215,11 @@ end
 
 
 
+
+
+
+
+
 --专业
 local function Init_Blizzard_Professions()
     hooksecurefunc(Professions, 'SetupProfessionsCurrencyTooltip', function(currencyInfo)--lizzard_Professions.lua
@@ -3058,6 +3246,16 @@ local function Init_Blizzard_Professions()
         end
     end)
 end
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3132,6 +3330,9 @@ end
 
 
 
+
+
+
 local function Init_Blizzard_PlayerChoice()
     hooksecurefunc(PlayerChoicePowerChoiceTemplateMixin, 'OnEnter', function(self)
         if self.optionInfo and self.optionInfo.spellID then
@@ -3141,6 +3342,14 @@ local function Init_Blizzard_PlayerChoice()
         end
     end)
 end
+
+
+
+
+
+
+
+
 
 
 
@@ -3209,14 +3418,21 @@ end
 
 
 
+
+
+
+
+
+
+
+
 --###########
 --加载保存数据
 --###########
+local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-
 panel:RegisterEvent('PLAYER_LEAVING_WORLD')
 panel:RegisterEvent('PLAYER_ENTERING_WORLD')
-
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
@@ -3258,7 +3474,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         elseif arg1=='Blizzard_Settings' then
             Init_Panel()
-
 
         elseif arg1=='Blizzard_AchievementUI' then--成就ID
             Init_Blizzard_AchievementUI()
