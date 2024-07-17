@@ -4658,7 +4658,20 @@
         "SlashCmdList",
         "LootFrameElementMixin",
         "HeirloomsMixin",
-        "EncounterJournalEncounterFrame"
+        "EncounterJournalEncounterFrame",
+        "MACROS",
+        "ShowMacroFrame",
+        "GAMEMENU_OPTIONS",
+        "GAMEMENU_SUPPORT",
+        "LOG_OUT",
+        "EXIT_GAME",
+        "RETURN_TO_GAME",
+        "BLIZZARD_STORE",
+        "GAMEMENU_NEW_BUTTON",
+        "RATINGS_MENU",
+        "ToggleHelpFrame",
+        "ToggleStoreUI",
+        "RatingMenuFrame"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

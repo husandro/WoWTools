@@ -177,7 +177,7 @@ local function Item(link)--物品超链接
     if bag and bag>0 then
         t=t..'|A:bag-main:0:0|a'..e.MK(bag, 3)
     end
-    
+
     if t~=link then
         return t
     end
@@ -752,70 +752,106 @@ end
 
 
 
-local function Create_Texture_Tips(frame, atlas, coord)
-    if frame then
-        local texture= frame:CreateTexture(nil, 'BORDER')
-        local h= frame:GetHeight()
-        texture:SetSize(h-5, h-5)
-        texture:SetPoint('RIGHT')
-        texture:SetAtlas(atlas)
-        if coord then
-            texture:SetTexCoord(1,0,1,0)
+local function Create_Texture_Tips(btn, data)--atlas, coord)
+    if not btn then
+        return
+    end
+    if data and not btn.Texture then
+        btn.Texture= btn:CreateTexture(nil, 'BORDER')
+        btn.Texture:SetSize(26, 26)--200, 36
+        btn.Texture:SetPoint('LEFT', btn, 'RIGHT', -6,0)
+    end
+    if btn.Texture then
+        if data and data[1] then
+            btn.Texture:SetAtlas(data[1])
+        else
+            btn.Texture:SetTexture(nil)
+        end
+        if data and data[2] then
+            btn.Texture:SetTexCoord(1,0,1,0)
         end
     end
+
+    local font= btn:GetFontString()
+    local r, g, b
+    if data and data[3] then
+        r, g, b= data[3][1], data[3][2], data[3][3]
+    elseif data then
+        r, g, b= 1, 1, 1
+    end
+    font:SetTextColor(r or 1, g or 0.82, b or 0)
+    
 end
 
 
 --添加 RELOAD 按钮
 local function Init_Add_Reload_Button()
-    if Save.not_Add_Reload_Button or GameMenuFrame.reload then
-        if GameMenuFrame.reload then
-            GameMenuFrame.reload:SetShown(not Save.not_Add_Reload_Button)
+    if Save.not_Add_Reload_Button or SettingsPanel.AddOnsTab.reload then
+        if SettingsPanel.AddOnsTab.reload then
             SettingsPanel.AddOnsTab.reload:SetShown(not Save.not_Add_Reload_Button)
         end
         return
     end
-    for _, frame in pairs({SettingsPanel.AddOnsTab}) do
-        frame.reload= CreateFrame('Button', nil, frame, 'GameMenuButtonTemplate')
-        frame.reload:SetText(e.onlyChinese and '重新加载UI' or RELOADUI)
-        frame.reload:SetScript('OnLeave', GameTooltip_Hide)
-        frame.reload:SetScript('OnEnter', function(self)
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:AddDoubleLine(id, 'Tools '..e.cn(addName))
-            e.tips:AddDoubleLine(e.onlyChinese and '重新加载UI' or RELOADUI, '|cnGREEN_FONT_COLOR:'..SLASH_RELOAD1)
-            e.tips:Show()
-        end)
-        frame.reload:SetScript('OnClick', e.Reload)
-        Create_Texture_Tips(frame.reload, 'BattleBar-SwapPetIcon')
-    end
---[[
-    GameMenuFrame.reload:SetPoint('TOP', GameMenuButtonQuit, 'BOTTOM', 0, -2)
 
-    --11版本
-    hooksecurefunc(GameMenuFrame, 'InitButtons', function(self)
-        if not Save.not_Add_Reload_Button then
-            
-            
-            --self:SetHeight(self:GetHeight()+ 16)
+    for _, frame in pairs({SettingsPanel.AddOnsTab}) do
+        if frame then
+            frame.reload= CreateFrame('Button', nil, frame, 'GameMenuButtonTemplate')
+            frame.reload:SetText(e.onlyChinese and '重新加载UI' or RELOADUI)
+            frame.reload:SetScript('OnLeave', GameTooltip_Hide)
+            frame.reload:SetScript('OnEnter', function(self)
+                e.tips:SetOwner(self, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:AddDoubleLine(id, 'Tools '..e.cn(addName))
+                e.tips:AddDoubleLine(e.onlyChinese and '重新加载UI' or RELOADUI, '|cnGREEN_FONT_COLOR:'..SLASH_RELOAD1)
+                e.tips:Show()
+            end)
+            frame.reload:SetScript('OnClick', e.Reload)
+            Create_Texture_Tips(frame.reload, 'BattleBar-SwapPetIcon')
         end
-        print('GameMenuFrameMixin')
-    end)]]
+    end
+
 
     SettingsPanel.AddOnsTab.reload:SetPoint('RIGHT', SettingsPanel.ApplyButton, 'LEFT', -15,0)
     e.Cstr(nil, {changeFont= SettingsPanel.OutputText, size=14})
     SettingsPanel.OutputText:ClearAllPoints()
     SettingsPanel.OutputText:SetPoint('BOTTOMLEFT', 20, 18)
 
-    Create_Texture_Tips(GameMenuButtonSettings, 'mechagon-projects', false)--选项
-    Create_Texture_Tips(GameMenuButtonEditMode, 'UI-HUD-Minimap-CraftingOrder-Up')--编辑模式
-    Create_Texture_Tips(GameMenuButtonMacros, 'NPE_Icon', false)--宏命令设置
-    Create_Texture_Tips(GameMenuButtonAddons, 'dressingroom-button-appearancelist-up', false)--插件
+    if GameMenuButtonSettings then--11版本
+        Create_Texture_Tips(GameMenuButtonSettings, {'mechagon-projects', false})--选项
+        Create_Texture_Tips(GameMenuButtonEditMode, {'UI-HUD-Minimap-CraftingOrder-Up', false})--编辑模式
+        Create_Texture_Tips(GameMenuButtonMacros, {'NPE_Icon', false})--宏命令设置
+        Create_Texture_Tips(GameMenuButtonAddons, {'dressingroom-button-appearancelist-up', false})--插件
 
-    Create_Texture_Tips(GameMenuButtonLogout, 'perks-warning-large', false)--登出
-    Create_Texture_Tips(GameMenuButtonQuit, 'Ping_Chat_Warning', false)--退出游戏
+        Create_Texture_Tips(GameMenuButtonLogout, {'perks-warning-large', false, {1,0,0}})--登出
+        Create_Texture_Tips(GameMenuButtonQuit, {'Ping_Chat_Warning', false, {1,0,0}})--退出游戏
 
-    Create_Texture_Tips(GameMenuButtonContinue, 'poi-traveldirections-arrow', true)--返回游戏
+        Create_Texture_Tips(GameMenuButtonContinue, {'poi-traveldirections-arrow', true, {0,1,0}})--返回游戏
+    else
+
+
+
+        local dataButton={--layoutIndex
+            [GAMEMENU_OPTIONS]= {'mechagon-projects', false},--选项
+            [HUD_EDIT_MODE_MENU]= {'UI-HUD-Minimap-CraftingOrder-Up', false},--编辑模式
+            [MACROS]= {'NPE_Icon', false},--宏命令设置
+
+            [ADDONS]= {'dressingroom-button-appearancelist-up', false},--插件
+            [LOG_OUT]= {'perks-warning-large', false, {0,0.8,1}},--登出
+            [EXIT_GAME]= {'Ping_Chat_Warning', false, {0,0.8,1}},--退出游戏
+            [RETURN_TO_GAME]= {'poi-traveldirections-arrow', true, {0,1,0}},--返回游戏
+        }
+        hooksecurefunc(GameMenuFrame, 'InitButtons', function(self)
+            for btn in self.buttonPool:EnumerateActive() do
+                local data= dataButton[btn:GetText()]
+                Create_Texture_Tips(btn, data)
+            end
+
+            self:AddSection()
+
+            local btn = self:AddButton(e.onlyChinese and '重新加载UI' or RELOADUI, e.Reload)
+            Create_Texture_Tips(btn, {'BattleBar-SwapPetIcon', false, {1,1,1}})
+        end)
+    end
 end
 
 
