@@ -1537,12 +1537,6 @@ function func:Set_Unit_NPC(tooltip, name, unit, guid)
 end
 
 
-hooksecurefunc('GameTooltip_AddStatusBar',function()
-    print('GameTooltip_AddStatusBar')
-end)
-
-
-
 
 
 
