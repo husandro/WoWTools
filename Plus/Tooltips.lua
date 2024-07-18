@@ -21,7 +21,7 @@ local Save={
     --disabledNPCcolor=true,--禁用NPC颜色
     --hideHealth=true,----生命条提示
 }
-local panel= CreateFrame("Frame")
+
 local Initializer, Layout= e.AddPanel_Sub_Category({name=e.Icon.mid..addName})
 
 --全局
@@ -30,6 +30,7 @@ local Initializer, Layout= e.AddPanel_Sub_Category({name=e.Icon.mid..addName})
 local func={}
 --[[
 func:Set_PlayerModel(self)
+func:Set_Width(tooltip)--设置，宽度
 func:Set_Spell(self, spellID)法术
 func:Set_Mount(self, mountID)坐骑
 func:Set_Pet(self, speciesID, setSearchText)宠物
@@ -47,6 +48,7 @@ func:Set_Buff(type, self, ...)
 func:Set_Unit(self, unit)设置单位提示信息
 func:Set_Unit_Player(tooltip, name, unit, guid)
 func:Set_Unit_NPC(tooltip, name, unit, guid)
+
 ]]
 
 
@@ -175,6 +177,33 @@ function func:Set_Item_Model(tooltip, tab)--func:Set_Item_Model(tooltip, {unit=,
         end
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--设置，宽度
+function func:Set_Width(tooltip)
+    local w= tooltip:GetWidth()
+    local w2= tooltip.textLeft:GetStringWidth()+ tooltip.text2Left:GetStringWidth()+ tooltip.textRight:GetStringWidth()
+    if w<w2 then
+        tooltip:SetMinimumWidth(w2)
+    end
+end
+
+
+
 
 
 
@@ -1166,9 +1195,6 @@ end
 
 
 
-
-
-
 --#############
 --设置单位, 玩家
 --#############
@@ -1237,6 +1263,19 @@ function func:Set_Unit_Player(tooltip, name, unit, guid)
     local region= e.Get_Region(realm)--服务器，EU， US
     textRight=realm..(isSelf and '|A:auctionhouse-icon-favorite:0:0|a' or realm==e.Player.realm and format('|A:%s:0:0|a', e.Icon.select) or e.Player.Realms[realm] and '|A:Adventures-Checkmark:0:0|a' or '')..(region and region.col or '')
 
+    if isSelf then
+        local titleID= GetCurrentTitle()
+        if titleID and titleID>1 then
+            local titleName= GetTitleName(titleID)
+            text2Right= e.cn(titleName, {titleID= titleID})
+            text2Right= text2Right and text2Right:gsub('%%s', '')
+        end
+    else
+        local lineLeft1=_G[tooltipName..'TextLeft1']--名称
+        if lineLeft1 then
+            text2Right= lineLeft1:GetText():gsub(name, '')
+        end
+    end
 
     tooltip.textLeft:SetText(textLeft)
     tooltip.text2Left:SetText(text2Left)
@@ -1404,11 +1443,7 @@ function func:Set_Unit_Player(tooltip, name, unit, guid)
     func:Set_HealthBar_Unit(GameTooltipStatusBar, unit)--生命条提示
     func:Set_Item_Model(tooltip, {unit=unit, guid=guid})--设置, 3D模型
 
-    local w= tooltip:GetWidth()
-    local w2= tooltip.textLeft:GetStringWidth()+ tooltip.text2Left:GetStringWidth()+ tooltip.textRight:GetStringWidth()
-    if w<w2 then
-        tooltip:SetMinimumWidth(w2)
-    end
+    func:Set_Width(tooltip)--设置，宽度
 end
 
 
@@ -1529,11 +1564,7 @@ function func:Set_Unit_NPC(tooltip, name, unit, guid)
     func:Set_HealthBar_Unit(GameTooltipStatusBar, unit)--生命条提示
     func:Set_Item_Model(tooltip, {unit=unit, guid=guid})--设置, 3D模型
 
-    local w= tooltip:GetWidth()
-    local w2= tooltip.textLeft:GetStringWidth()+ tooltip.text2Left:GetStringWidth()+ tooltip.textRight:GetStringWidth()
-    if w<w2 then
-        tooltip:SetMinimumWidth(w2)
-    end
+    func:Set_Width(tooltip)--设置，宽度
 end
 
 

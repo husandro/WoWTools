@@ -751,7 +751,7 @@ local function Init_Title()--头衔数量
                     local name, playerTitle = GetTitleName(i)
                     if name and playerTitle then
                         if not IsTitleKnown(i) then
-                            table.insert(tab, {index=i, name=name})
+                            table.insert(tab, {index=i, name=name, cnName=e.cn(name, {titleID=i})})
                         end
                     end
                 end
@@ -769,18 +769,18 @@ local function Init_Title()--头衔数量
                         for i= menuList, menuList+n-1 do
                             if tab[i] then
                                 local index= tab[i].index
+                                
                                 local name= tab[i].name
+                                local cnName=tab[i].cnName
                                 info= {
-                                    text= (index<10 and ' ' or '').. index..')'..e.Icon.left..e.cn(name),
+                                    text= (index<10 and ' ' or '').. index..')'..(cnName and format(cnName, '') or name),
                                     tooltipOnButton=true,
-                                    tooltipTitle= 'titleID '..index,
-                                    tooltipText=name,
+                                    tooltipTitle= name..' ',
+                                    tooltipText= (cnName and format(cnName, UnitName('player')..'|n') or '')..'titleID '..index..'|n'..e.Icon.left..'wowhead',
                                     notCheckable=true,
-                                    arg1=name,
+                                    arg1=i,
                                     func= function(_, arg1)
-                                        if not e.call('ChatEdit_InsertLink', arg1) then
-                                            e.call('ChatFrame_OpenChat', arg1)
-                                        end
+                                        e.Show_WoWHead_URL(true, 'title', arg1, nil)
                                     end
                                 }
                                 e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -843,6 +843,8 @@ local function Init_Title()--头衔数量
         end)
     end
     btn.titleNumeri:SetText(#GetKnownTitles()-1)
+
+
 end
 
 
