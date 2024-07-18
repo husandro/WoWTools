@@ -67,7 +67,42 @@ end
 
 
 
-local function Set_Block_Icon(block, icon)
+local function Set_Icon_Tooltip(icon)
+    icon:EnableMouse()
+    icon:SetScript('OnLeave', function(self) e.tips:Hide() self:GetParent():SetAlpha(1) end)
+    icon:SetScript('OnEnter', function(self)
+        local parent= self:GetParent()
+        local parentBlock= parent.parentBlock
+        info=parent
+        for k, v in pairs(info) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
+        
+        parent:SetAlpha(0.5)
+        
+        local typeID= parentBlock and parentBlock.id or parent.id 
+        if not typeID then
+            return
+        end
+
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+
+        --
+        if self.type=='isAchievement' then
+            e.tips:SetAchievementByID(typeID)
+        --elseif self.type=='isItem' then
+            --e.tips:SetItemByID(typeID)
+        elseif self.type=='isRecipe' then
+            if parentBlock then
+                e.tips:SetItemByID(typeID)
+            else
+                e.tips:SetRecipeResultItem(typeID)
+            end
+        end
+        e.tips:Show()
+    end)
+end
+
+
+local function Set_Block_Icon(block, icon, type)
     if icon and not block.Icon2 then
         block.Icon2= block:CreateTexture(nil, 'OVERLAY')
         if block.poiButton then
@@ -76,20 +111,25 @@ local function Set_Block_Icon(block, icon)
             block.Icon2:SetPoint('TOPRIGHT', block.HeaderText, 'TOPLEFT', -4,-1)
         end
         block.Icon2:SetSize(26,26)
+        Set_Icon_Tooltip(block.Icon2)
     end
     if block.Icon2 then
+        block.Icon2.type= type
         block.Icon2:SetTexture(icon or 0)
     end
 end
 
 
-local function Set_Line_Icon(line, icon)
+local function Set_Line_Icon(line, icon, type)
     if icon and not line.Icon2 then
         line.Icon2= line:CreateTexture(nil, 'OVERLAY')
         line.Icon2:SetPoint('RIGHT', line.Text)
         line.Icon2:SetSize(16, 16)
+        line.Icon2:EnableMouse()
+        Set_Icon_Tooltip(line.Icon2)
     end
     if line.Icon2 then
+        line.Icon2.type= type
         line.Icon2:SetTexture(icon or 0)
     end
 end
@@ -298,7 +338,8 @@ local function Init_Achievement()
         end
 
         local icon= select(10, GetAchievementInfo(achievementID))
-        Set_Block_Icon(block, icon)
+        Set_Block_Icon(block, icon, 'isAchievement')
+
 
         for index, line in pairs(block.usedLines or {}) do
             local subIcon
@@ -307,7 +348,7 @@ local function Init_Achievement()
                 local assetID= select(8, GetAchievementCriteriaInfo(achievementID, index))
                 subIcon = assetID and select(10, GetAchievementInfo(assetID))
             end
-            Set_Line_Icon(line, subIcon)
+            Set_Line_Icon(line, subIcon, 'isAchievement')
         end
     end)
 
@@ -367,7 +408,7 @@ local function Init_Professions()
 
         local data=  C_TradeSkillUI.GetRecipeInfo(recipeID)
         if data then
-            Set_Block_Icon(block, data.icon)
+            Set_Block_Icon(block, data.icon, 'isRecipe')
         end
 
         local recipeSchematic = C_TradeSkillUI.GetRecipeSchematic(recipeID, isRecraft)

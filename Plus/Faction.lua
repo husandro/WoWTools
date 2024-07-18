@@ -1142,7 +1142,7 @@ local function Init()
 						text= text..'|A:MajorFactions_Icons_'..info.textureKit..'512:0:0|a'
 					end
 				end
-				text= text..name
+				text= text..e.cn(name)
 			end
 		end
 		if text then
