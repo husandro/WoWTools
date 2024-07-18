@@ -403,7 +403,7 @@ UnitPopup 菜单标签的格式为 MENU_UNIT_<UNIT_TYPE>，其中 UNIT_TYPE 是�
 Menu.ModifyMenu("MENU_MINIMAP_TRACKING", function(owner, rootDescription, contextData)
 	rootDescription:CreateDivider();
 	rootDescription:CreateTitle("My Addon");
-	rootDescription:CreateButton("Button", function() print("Text here!" end);
+	rootDescription:CreateButton("Button", function() print("Text here!") end);
 end);
 
 *** 污点 ***

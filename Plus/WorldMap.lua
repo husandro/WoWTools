@@ -220,8 +220,10 @@ end
 --#######
 --任务日志
 --#######
-local function setMapQuestList()--世界地图,任务, 加 - + 按钮
-
+local function setMapQuestList()--世界地图,任务, 加 - + 按钮 11版本
+    if Menu then
+        return
+    end
     if Save.hide or QuestScrollFrame.btnCollapse then
         if QuestScrollFrame.btnCollapse then
             QuestScrollFrame.btnCollapse:SetShown(not Save.hide)
@@ -963,8 +965,46 @@ end
 
 
 
+local function Init_Menu()--11版本
+    if not Menu then
+        return
+    end
 
-
+    Menu.ModifyMenu("MENU_QUEST_MAP_FRAME_SETTINGS", function(_, root)
+        root:CreateDivider()
+        root:CreateButton('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部放弃' or LOOT_HISTORY_ALL_PASSED)..' #'..(select(2, C_QuestLog.GetNumQuestLogEntries()) or 0), function()
+            StaticPopupDialogs[id..addName.."ABANDON_QUEST"] =  {
+                text= (e.onlyChinese and "放弃\"%s\"？" or ABANDON_QUEST_CONFIRM)..'|n|n|cnYELLOW_FONT_COLOR:'..(not e.onlyChinese and VOICEMACRO_1_Sc_0..' ' or "危险！")..(not e.onlyChinese and VOICEMACRO_1_Sc_0..' ' or "危险！")..(not e.onlyChinese and VOICEMACRO_1_Sc_0 or "危险！"),
+                button1 = '|cnRED_FONT_COLOR:'..(not e.onlyChinese and ABANDON_QUEST_ABBREV or "放弃"),
+                button2 = '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '取消' or CANCEL),
+                OnAccept = function()
+                    local n=0
+                    print(id, e.cn(addName),  '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '放弃' or ABANDON_QUEST_ABBREV))
+                    for index=1 , C_QuestLog.GetNumQuestLogEntries() do
+                        do
+                            local questInfo=C_QuestLog.GetInfo(index)
+                            if questInfo and questInfo.questID and C_QuestLog.CanAbandonQuest(questInfo.questID) then
+                                local linkQuest=GetQuestLink(questInfo.questID)
+                                C_QuestLog.SetSelectedQuest(questInfo.questID)
+                                C_QuestLog.SetAbandonQuest();
+                                C_QuestLog.AbandonQuest()
+                                n=n+1
+                                print(n..') ', linkQuest or questInfo.questID)
+                            end
+                            if IsModifierKeyDown() then
+                                return
+                            end
+                        end
+                    end
+                    PlaySound(SOUNDKIT.IG_QUEST_LOG_ABANDON_QUEST);
+                end,
+                whileDead=true, hideOnEscape=true, exclusive=true,
+                showAlert= true,
+            }
+            StaticPopup_Show(id..addName.."ABANDON_QUEST", '|n|cnRED_FONT_COLOR:|n|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '所有任务' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, QUESTS_LABEL))..' |r#|cnGREEN_FONT_COLOR:'..select(2, C_QuestLog.GetNumQuestLogEntries())..'|r')
+        end)
+    end)
+end
 
 
 
@@ -974,6 +1014,8 @@ end
 --初始
 --####
 local function Init()
+    Init_Menu()
+
     hooksecurefunc(WorldQuestPinMixin, 'RefreshVisuals', set_WorldQuestPinMixin_RefreshVisuals)--世界地图任务
 
     CursorPositionInt()

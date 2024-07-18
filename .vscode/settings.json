@@ -4671,7 +4671,9 @@
         "RATINGS_MENU",
         "ToggleHelpFrame",
         "ToggleStoreUI",
-        "RatingMenuFrame"
+        "RatingMenuFrame",
+        "CURRENCY_TOTAL",
+        "Menu"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",
