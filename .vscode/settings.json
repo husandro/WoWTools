@@ -4673,7 +4673,8 @@
         "ToggleStoreUI",
         "RatingMenuFrame",
         "CURRENCY_TOTAL",
-        "Menu"
+        "Menu",
+        "QuestInfoObjectivesFrame"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",
