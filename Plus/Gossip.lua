@@ -3643,16 +3643,12 @@ end
 
 
 
-
- --label:SetTextColor(0, 1, 0)
-                --label:SetTextColor(0.180, 0.121, 0.588)
-            --else
-                --label:SetTextColor(0.180, 0.121, 0.588)
-hooksecurefunc('QuestInfo_Display', function()
+--任务目标，类型提示
+local function Set_QuestInfo_Display()
     for index, label in pairs(QuestInfoObjectivesFrame.Objectives) do
         if label:IsShown() then
             local text, type, finished = GetQuestLogLeaderBoard(index)
-            if finished then
+            if not finished then
                 label:SetTextColor(0.180, 0.121, 0.588)
             end
 
@@ -3663,7 +3659,7 @@ hooksecurefunc('QuestInfo_Display', function()
 
                 elseif type=='item' then
                     if text then
-                        local itemName= text:match('%d+/%d+ (.-) |A') or text:match('%d+/%d+ (.+)')                    
+                        local itemName= text:match('%d+/%d+ (.-) |A') or text:match('%d+/%d+ (.+)')
                         if itemName then
                             icon = C_Item.GetItemIconByID(itemName)
                         end
@@ -3698,7 +3694,27 @@ hooksecurefunc('QuestInfo_Display', function()
             end
         end
     end
-end)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3752,6 +3768,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 Init_Gossip()--对话，初始化
                 Init_Quest()--任务，初始化
                 Init_Gossip_Other_Auto_Select()
+                hooksecurefunc('QuestInfo_Display', Set_QuestInfo_Display)
                 --Init_Blizzard_Communities()
                 --[[if e.Player.husandro then
                     Init_Gossip_Text_Icon_Options()
