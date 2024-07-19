@@ -188,11 +188,16 @@ local function Set_Gossip_Text(self, info)
             end
         end
     end
+    if not text and info.questID then
+        text= e.cn(nil, {questID=info.questID, isName=true})
+    end
+
     if text then
         if Save.Gossip_Text_Icon_cnFont then
            self:GetFontString():SetFont('Fonts\\ARHei.ttf', 14)
         end
         info.name= text
+        self:SetText(text)
     elseif Save.Gossip_Text_Icon_cnFont then
         self:GetFontString():SetFontObject('QuestFontLeft')
     end
