@@ -186,6 +186,9 @@ local function Set_Gossip_Text(self, info)
             if icon or name then
                 text= format('%s%s', icon or '', name or '')
             end
+            if text=='' then
+                text= nil
+            end
         end
     end
     if not text and info.questID then
