@@ -1797,6 +1797,17 @@ local function set_InspectPaperDollItemSlotButton_Update(self)
         end
     end
     if self.itemLinkText then
+        if link then
+            local itemID= GetInventoryItemID(InspectFrame.unit, slot)
+            local cnName= e.cn(nil, {itemID=itemID, isName=true})
+            if cnName then
+                cnName= cnName:match('|cff......(.+)|r') or cnName
+                local atlas= link:match('%[(.-) |A') or link:match('%[(.-)]')
+                if atlas then
+                    link= link:gsub(atlas, cnName)
+                end
+            end
+        end
         self.itemLinkText:SetText(link or '')
     end
 end
