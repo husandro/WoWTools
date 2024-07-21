@@ -3407,7 +3407,7 @@ local SHADOWLANDS_EXPERIENCE_THREADS_OF_FATE_CONFIRMATION_STRING= SHADOWLANDS_EX
 --Blizzard_PlayerChoice
 local function Init_Blizzard_PlayerChoice()
     --命运, 字符
-    hooksecurefunc(StaticPopupDialogs["CONFIRM_PLAYER_CHOICE_WITH_CONFIRMATION_STRING"],"OnShow",function(s)
+    hooksecurefunc(StaticPopupDialogs["CONFIRM_PLAYER_CHOICE_WITH_CONFIRMATION_STRING"], "OnShow",function(s)
         if Save.gossip and s.editBox then
             s.editBox:SetText(SHADOWLANDS_EXPERIENCE_THREADS_OF_FATE_CONFIRMATION_STRING)
         end
@@ -3433,8 +3433,9 @@ local function Init_Blizzard_PlayerChoice()
         if IsModifierKeyDown() or not Save.gossip then
             return
         end
+
         local tab={}
-        local soloOption = (#frame.choiceInfo.options == 1)
+        local soloOption = (#frame.choiceInfo.options == 1)        
         for optionFrame in frame.optionPools:EnumerateActiveByTemplate(frame.optionFrameTemplate) do
             if optionFrame.optionInfo then
                 local enabled= not optionFrame.optionInfo.disabledOption and optionFrame.optionInfo.spellID and optionFrame.optionInfo.spellID>0
@@ -3464,7 +3465,7 @@ local function Init_Blizzard_PlayerChoice()
                         e.tips:AddDoubleLine(id, Initializer:GetName())
                         e.tips:Show()
                     end)
-                    optionFrame.check.Text2=e.Cstr(optionFrame.check)
+                    --[[optionFrame.check.Text2=e.Cstr(optionFrame.check)
                     optionFrame.check.Text2:SetPoint('RIGHT', optionFrame.check, 'LEFT')
                     optionFrame.check.Text2:SetTextColor(0,1,0)
                     optionFrame.check:SetScript('OnUpdate', function(self3, elapsed)
@@ -3485,7 +3486,7 @@ local function Init_Blizzard_PlayerChoice()
                             self3.Text2:SetText(count or '')
                             self3.elapsed=0
                         end
-                    end)
+                    end)]]
                 end
 
                 if optionFrame.check then
@@ -3598,28 +3599,80 @@ local function Init_Blizzard_PlayerChoice()
             PlayerChoiceFrame.allButton:SetShown(false)
         end
     end)
-end
 
 
 
 
-
-
-
-
-
-
-
---其它， 自动， 选择
-local function Init_Gossip_Other_Auto_Select()
-    local frame= CreateFrame("Frame")
-    frame:RegisterEvent('ADDON_LOADED')
-    frame:SetScript('OnEvent', function(_, _, arg1)
-        if arg1=='Blizzard_PlayerChoice' then
-            Init_Blizzard_PlayerChoice()
+    --PlayerChoiceGenericPowerChoiceOptionTemplat
+    hooksecurefunc(PlayerChoicePowerChoiceTemplateMixin, 'Setup', function(frame)
+        if frame.settings then
+            frame:settings()
+            return
         end
+
+        function frame:settings()
+            local text, charges, applications
+            local data= frame.optionInfo
+            if data and data.spellID then
+                local info= C_UnitAuras.GetPlayerAuraBySpellID(data.spellID)
+                if info then
+                    applications= info.applications
+                    if info.expirationTime then
+                        text= e.GetTimeInfo(nil, false, nil, info.expirationTime)
+                        applications= applications==0 and 1 or applications
+                    end
+                    if info.charges then
+                        charges=info.charges
+                        if info.maxCharges then
+                            if info.charges==info.maxCharges then
+                                charges= '|cnRED_FONT_COLOR:'..charges..'/'..info.maxCharges..'|r'
+                            else
+                                charges= charges..'/|cnRED_FONT_COLOR:'..info.maxCharges..'|r'
+                            end
+                        end
+                    end
+                end
+                text= text or (e.onlyChinese and '无' or NONE)
+            end
+            frame.TimeText:SetText(text or '')
+            frame.ChargeText:SetText(charges or '')
+            frame.ApplicationsText:SetText(applications or '')
+
+            frame.frameTips:SetShown(data.spellID)
+        end
+
+        frame.TimeText= e.Cstr(frame, {color={r=0, g=1, b=0}, size=18})
+        frame.TimeText:SetPoint('TOP', frame.Artwork, 'BOTTOM', 0, -4)
+        frame.ChargeText= e.Cstr(frame,  {color={r=0, g=1, b=0}, size=18})
+        frame.ChargeText:SetPoint('CENTER', frame.Artwork, 0, 0)
+        frame.ApplicationsText= e.Cstr(frame, {color={r=1, g=1, b=1}, size=22})
+        frame.ApplicationsText:SetPoint('BOTTOMRIGHT', frame.Artwork, -6, 6)
+
+        frame.frameTips= CreateFrame('Frame', nil, frame)
+        frame.frameTips:SetPoint('TOPLEFT')
+        frame.frameTips:SetSize(1,1)
+        frame.frameTips:SetScript('OnUpdate', function(self, elapsed)
+            self.elapsed= (self.elapsed or 2)+ elapsed
+            if self.elapsed<1 then
+                return
+            end
+            self.elapsed= 0
+            self:GetParent():settings()
+        end)
+        frame:SetScript('OnHide',function(self)
+            self.frameTips:SetShown(false)
+            self.elapsed=nil
+        end)
+
+        frame:settings()
     end)
+
+
 end
+
+
+
+
 
 
 
@@ -3729,7 +3782,7 @@ end
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:RegisterEvent("ADDON_LOADED")
-panel:SetScript("OnEvent", function(_, event, arg1)
+panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED"  then
         if arg1 == id then
             Save= WoWToolsSave[addName] or Save
@@ -3770,18 +3823,25 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 Init_Gossip_Text()--自定义，对话，文本
                 Init_Gossip()--对话，初始化
                 Init_Quest()--任务，初始化
-                Init_Gossip_Other_Auto_Select()
                 hooksecurefunc('QuestInfo_Display', Set_QuestInfo_Display)
-                --Init_Blizzard_Communities()
-                --[[if e.Player.husandro then
-                    Init_Gossip_Text_Icon_Options()
-                end]]
+
+                if C_AddOns.IsAddOnLoaded('Blizzard_PlayerChoice') then
+                    Init_Blizzard_PlayerChoice()
+                    self:UnregisterEvent('ADDON_LOADED')
+                end
+            else
+                self:UnregisterEvent('ADDON_LOADED')
             end
-            panel:UnregisterEvent('ADDON_LOADED')
+
+        elseif arg1=='Blizzard_PlayerChoice' then
+            Init_Blizzard_PlayerChoice()
         end
+
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             WoWToolsSave[addName]=Save
         end
+
+
     end
 end)

@@ -4674,7 +4674,8 @@
         "RatingMenuFrame",
         "CURRENCY_TOTAL",
         "Menu",
-        "QuestInfoObjectivesFrame"
+        "QuestInfoObjectivesFrame",
+        "PlayerChoiceTimeRemaining"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",
