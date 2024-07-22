@@ -952,9 +952,18 @@ local function Init_EncounterJournal()--冒险指南界面
             classText= dateInfo.text[ITEM_CLASSES_ALLOWED]
             upText= dateInfo.text[ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT]
             if classText then
+                if WoW_Tools_Chinese_CN then--汉化
+                    
+                    classText= string.gsub(classText..', ', '(.-), ', function(a)
+                        local b= e.cn(a)
+                        if b then
+                            return b..' '
+                        end
+                    end)
+                end
                 local className= UnitClass('player')
                 local locaClass= className and not classText:find(className) or dateInfo.red
-                classText= e.cn(classText)
+                
                 if locaClass then
                     classText =  '|cff606060'..classText..'|r'
                 end
