@@ -570,7 +570,19 @@ local function Init_ObjectiveTrackerFrame()
                     if isFind then
                         return true
                     else
-                        frame:ToggleCollapsed()
+                        local find= false
+                        local tab= self.usedBlocks and self.usedBlocks[self.blockTemplate]
+                        if tab then
+                            for _, block in pairs(tab) do
+                                if block.ItemButton then
+                                    find=true
+                                    break
+                                end
+                            end
+                        end
+                        if not find then
+                            frame:ToggleCollapsed()
+                        end
                     end
                 end
             end
@@ -663,8 +675,8 @@ end
 local function Init_ObjectiveTrackerShared()
     --物品按钮左边,放大
     hooksecurefunc(QuestObjectiveItemButtonMixin, 'SetUp', function(self)
-        self:ClearAllPoints()
-        self:SetPoint('TOPRIGHT', self:GetParent(), 'TOPLEFT', -8,-4)
+        --self:ClearAllPoints()
+        --self:SetPoint('TOPRIGHT', self:GetParent(), 'TOPLEFT', -8,-4)
         self:SetSize(42,42)
         self.NormalTexture:SetTexture(nil)
     end)
