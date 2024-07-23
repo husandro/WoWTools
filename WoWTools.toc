@@ -17,8 +17,6 @@
 ## AddonCompartmentFunc: WowTools_OnAddonCompartmentClick
 ## AddonCompartmentFuncOnEnter: WowTools_OnAddonCompartmentFuncOnEnter
 
-##10.27 到11版本的API, 修该
-API11.lua
 
 ##库，不能删除
 Libs\LibStub.lua
@@ -48,9 +46,6 @@ API_WoWDate.lua
 
 
 
-Plus\Faction1027.lua
-Plus\Bank1027.lua
-Plus\Currency1027.lua
 
 ##WoWPlus
 ##移动框架, 缩放--放在第一个，有些，需要放置点，到移动按钮上
@@ -73,7 +68,6 @@ Plus\Faction.lua
 ##货币面板
 Plus\Currency.lua
 ##任务框，增强
-Plus\ObjectiveTracker_1027.lua
 Plus\ObjectiveTracker.lua
 
 ##藏品
@@ -122,7 +116,6 @@ Plus\MainMenu.lua
 Plus\Cursor.lua
 ##宏增强
 Plus\Macro.lua
-Plus\Macro1027.lua
 ##专业按钮
 Plus\Professions.lua
 

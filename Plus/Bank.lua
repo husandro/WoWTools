@@ -1,8 +1,3 @@
-if select(4,GetBuildInfo())<110000  then--11版本
-    return
-end
-
-
 local id, e = ...
 local addName= BANK
 local Save={
@@ -214,7 +209,7 @@ local function Init_Bank_Plus()--增强，原生
     ReagentBankFrame.DespositButton.texture2:SetAtlas('poi-traveldirections-arrow')
     ReagentBankFrame.DespositButton.texture2:SetTexCoord(0,1,1,0)
    
-    --[[ReagentBankFrame.DespositButton:SetScript('OnClick', function()--11版本，错误
+    --[[ReagentBankFrame.DespositButton:SetScript('OnClick', function()
         PlaySound(SOUNDKIT.IG_MAINMENU_OPTION);
         print(id,addName)
 		DepositReagentBank();

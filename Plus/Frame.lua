@@ -848,12 +848,8 @@ end
 
 
 
-local set_Init_Blizzard_Communities
-local function Init_Blizzard_Communities()--公会和社区 then--11版本
-    if set_Init_Blizzard_Communities then
-        return
-    end
-    set_Init_Blizzard_Communities=true
+local function Init_Blizzard_Communities()--公会和社区 then
+
     
     e.Set_Move_Frame(CommunitiesFrame, {setSize=true, initFunc=function()--elseif arg1=='Blizzard_Communities' then--公会和社区
         local function set_size(frame)
@@ -1085,43 +1081,7 @@ local function setAddLoad(arg1)
         end})
        --e.Set_Move_Frame(EncounterJournal.NineSlice, {frame=EncounterJournal})
 
-    elseif arg1=='Blizzard_ClassTalentUI' then--天赋 11版本
-        local frame=ClassTalentFrame
-        if frame then
-            e.Set_Move_Frame(frame, {save=true})
-            if frame.TalentsTab and frame.TalentsTab.ButtonsParent then
-                e.Set_Move_Frame(frame.TalentsTab.ButtonsParent, {save=true, frame=frame})--里面, 背景
-            end
-            if frame.ResizeButton then
-                --设置,大小
-                --Blizzard_SharedTalentFrame.lua
-                hooksecurefunc(TalentFrameBaseMixin, 'OnShow', function (self)
-                    local name= ClassTalentFrame:GetName()
-                    if name then
-                        if Save.scale[name] and Save.scale[name]~= ClassTalentFrame:GetScale() then
-                            ClassTalentFrame:SetScale(Save.scale[name])
-                        end
-                    end
-                end)
-            end
-
-            --####################
-            --专精 UpdateSpecFrame
-            --Blizzard_ClassTalentSpecTab.lua
-            if frame.SpecTab and frame.SpecTab.SpecContentFramePool then
-                for specContentFrame in frame.SpecTab.SpecContentFramePool:EnumerateActive() do
-                    e.Set_Move_Frame(specContentFrame, {frame= frame, save=true})
-                end
-            end
-            hooksecurefunc(frame.SpecTab, 'UpdateSpecContents', function()--Blizzard_ClassTalentSpecTab.lua
-                local name= ClassTalentFrame:GetName()
-                if name then
-                    if Save.scale[name] and Save.scale[name]~= ClassTalentFrame:GetScale() then
-                        ClassTalentFrame:SetScale(Save.scale[name])
-                    end
-                end
-            end)
-        end
+  
 
     elseif arg1=='Blizzard_AuctionHouseUI' then--拍卖行
         e.Set_Move_Frame(AuctionHouseFrame, {setSize=true, initFunc=function()
@@ -1995,7 +1955,9 @@ local function setAddLoad(arg1)
         e.Set_Move_Frame(PlayerSpellsFrame.TalentsFrame.ButtonsParent, {frame=PlayerSpellsFrame})
         e.Set_Move_Frame(PlayerSpellsFrame.SpellBookFrame, {frame=PlayerSpellsFrame})
 
-        
+       
+    elseif arg1=='Blizzard_ArtifactUI' then
+        e.Set_Move_Frame(ArtifactFrame)
     end
 end
 
@@ -2259,7 +2221,6 @@ local function Init_Move()
 
 
     --角色
-if ReputationEntryMixin  then--11版本
     e.Set_Move_Frame(CharacterFrame, {minW=338, minH=424, setSize=true, initFunc=function()
         PaperDollFrame.TitleManagerPane:ClearAllPoints()
         PaperDollFrame.TitleManagerPane:SetPoint('TOPLEFT', CharacterFrameInsetRight, 4, -4)
@@ -2390,117 +2351,6 @@ if ReputationEntryMixin  then--11版本
         return ((self.target.Expanded and Save.size['CharacterFrameExpanded']) or (not self.target.Expanded and Save.size['CharacterFrameCollapse'])) and '' or '|cff606060'
     end})
 
-else
-
-
-
-
-    e.Set_Move_Frame(CharacterFrame, {minW=338, minH=424, setSize=true, initFunc=function()
-        PaperDollFrame.TitleManagerPane:ClearAllPoints()
-        PaperDollFrame.TitleManagerPane:SetPoint('TOPLEFT', CharacterFrameInsetRight, 4, -4)
-        PaperDollFrame.TitleManagerPane:SetPoint('BOTTOMRIGHT', CharacterFrameInsetRight, -4, 4)
-        PaperDollFrame.TitleManagerPane.ScrollBox:ClearAllPoints()
-        PaperDollFrame.TitleManagerPane.ScrollBox:SetPoint('TOPLEFT',CharacterFrameInsetRight,4,-4)
-        PaperDollFrame.TitleManagerPane.ScrollBox:SetPoint('BOTTOMRIGHT', CharacterFrameInsetRight, -22,0)
-
-        PaperDollFrame.EquipmentManagerPane:ClearAllPoints()
-        PaperDollFrame.EquipmentManagerPane:SetPoint('TOPLEFT', CharacterFrameInsetRight, 4, -4)
-        PaperDollFrame.EquipmentManagerPane:SetPoint('BOTTOMRIGHT', CharacterFrameInsetRight, -4, 4)
-        PaperDollFrame.EquipmentManagerPane.ScrollBox:ClearAllPoints()
-        PaperDollFrame.EquipmentManagerPane.ScrollBox:SetPoint('TOPLEFT', CharacterFrameInsetRight, 4, -28)
-        PaperDollFrame.EquipmentManagerPane.ScrollBox:SetPoint('BOTTOMRIGHT', CharacterFrameInsetRight, -22,0)
-
-        CharacterModelScene:ClearAllPoints()
-        CharacterModelScene:SetPoint('TOPLEFT', 52, -66)
-        CharacterModelScene:SetPoint('BOTTOMRIGHT', CharacterFrameInset, -50, 34)
-
-        CharacterModelFrameBackgroundOverlay:ClearAllPoints()
-        CharacterModelFrameBackgroundOverlay:SetAllPoints(CharacterModelScene)
-
-        CharacterModelFrameBackgroundTopLeft:ClearAllPoints()
-        CharacterModelFrameBackgroundTopLeft:SetPoint('TOPLEFT')
-        CharacterModelFrameBackgroundTopLeft:SetPoint('BOTTOMRIGHT',-19, 128)
-
-        CharacterModelFrameBackgroundTopRight:ClearAllPoints()
-        CharacterModelFrameBackgroundTopRight:SetPoint('TOPLEFT', CharacterModelFrameBackgroundTopLeft, 'TOPRIGHT')
-        CharacterModelFrameBackgroundTopRight:SetPoint('BOTTOMRIGHT', 0, 128)
-
-        CharacterModelFrameBackgroundBotLeft:ClearAllPoints()
-        CharacterModelFrameBackgroundBotLeft:SetPoint('TOPLEFT', CharacterModelFrameBackgroundTopLeft, 'BOTTOMLEFT')
-        CharacterModelFrameBackgroundBotLeft:SetPoint('BOTTOMRIGHT', -19, 0)
-
-        CharacterModelFrameBackgroundBotRight:ClearAllPoints()
-        CharacterModelFrameBackgroundBotRight:SetPoint('TOPLEFT', CharacterModelFrameBackgroundBotLeft, 'TOPRIGHT')
-        CharacterModelFrameBackgroundBotRight:SetPoint('BOTTOMRIGHT')
-
-        CharacterStatsPane.ClassBackground:ClearAllPoints()
-        CharacterStatsPane.ClassBackground:SetAllPoints(CharacterStatsPane)
-
-        CharacterMainHandSlot:ClearAllPoints()
-        CharacterMainHandSlot:SetPoint('BOTTOMRIGHT', CharacterFrameInset, 'BOTTOM', -2.5, 16)
-        CharacterFrameInset:ClearAllPoints()
-        CharacterFrameInset:SetPoint('TOPLEFT', 4, -60)
-        --PANEL_DEFAULT_WIDTH 338
-        --CHARACTERFRAME_EXPANDED_WIDTH 540
-        --CharacterStatsPane width 197
-        hooksecurefunc('CharacterFrame_Collapse', function()
-            if not CharacterFrameInset:CanChangeAttribute() then
-                return
-            end
-            CharacterFrameInset:SetPoint('BOTTOMRIGHT',-4, 4)
-            local size= Save.size['CharacterFrameCollapse']
-            if size then
-                CharacterFrame:SetSize(size[1], size[2])
-            else
-                CharacterFrame:SetSize(PANEL_DEFAULT_WIDTH, 424)
-            end
-            CharacterFrame.ResizeButton.minWidth= 270
-            CharacterFrame.ResizeButton.minHeight= 115
-        end)
-        hooksecurefunc('CharacterFrame_Expand', function()--显示角色，界面            
-            if not CharacterFrameInset:CanChangeAttribute() then
-                return
-            end
-            CharacterFrameInset:SetPoint('BOTTOMRIGHT', -221, 4)
-            local size= Save.size['CharacterFrameExpanded']
-            if size then
-                CharacterFrame:SetSize(size[1], size[2])
-            elseif Save.size['CharacterFrameCollapse'] then
-                CharacterFrame:SetHeight(424)
-            end
-            CharacterFrame.ResizeButton.minWidth= CHARACTERFRAME_EXPANDED_WIDTH
-            CharacterFrame.ResizeButton.minHeight= 424
-        end)
-        e.Set_Move_Frame(ReputationFrame, {frame=CharacterFrame})
-        e.Set_Move_Frame(TokenFrame, {frame=CharacterFrame})
-
-    end, sizeUpdateFunc=function()
-        if PaperDollFrame.EquipmentManagerPane:IsVisible() then
-            e.call('PaperDollEquipmentManagerPane_Update')
-        end
-        if PaperDollFrame.TitleManagerPane:IsVisible() then
-            e.call('PaperDollTitlesPane_Update')
-        end
-    end, sizeStopFunc=function(btn)
-        local self= btn.target
-        if CharacterFrame.Expanded then
-            Save.size['CharacterFrameExpanded']={self:GetSize()}
-        else
-            Save.size['CharacterFrameCollapse']={self:GetSize()}
-        end
-    end, sizeRestFunc=function(btn)
-        local self= btn.target
-        if self.Expanded then
-            Save.size['CharacterFrameExpanded']=nil
-            self:SetSize(CHARACTERFRAME_EXPANDED_WIDTH, 424)
-        else
-            Save.size['CharacterFrameCollapse']=nil
-            self:SetSize(PANEL_DEFAULT_WIDTH, 424)
-        end
-    end, sizeRestTooltipColorFunc=function(self)
-        return ((self.target.Expanded and Save.size['CharacterFrameExpanded']) or (not self.target.Expanded and Save.size['CharacterFrameCollapse'])) and '' or '|cff606060'
-    end})
-end
 
 
 
@@ -3112,7 +2962,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:UnregisterAllEvents()
             else
                 Init_Move()--初始, 移动
-                if C_AddOns.IsAddOnLoaded('Blizzard_Communities') then--11版本
+                if C_AddOns.IsAddOnLoaded('Blizzard_Communities') then
                     Init_Blizzard_Communities()
                 end
                 for _, ent in pairs(eventTab or {}) do
@@ -3125,7 +2975,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         elseif arg1=='Blizzard_Settings' then
             Init_Options()--初始, 选项
 
-        elseif arg1=='Blizzard_Communities' then--11版本
+        elseif arg1=='Blizzard_Communities' then
             Init_Blizzard_Communities()
         else
             if eventTab then

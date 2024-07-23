@@ -288,22 +288,6 @@ end
 
 
 --添加，Check
-if Settings.CreateCheckBox then--11版本
-    function e.AddPanel_Check(tab)
-        local name = tab.name
-        local tooltip = tab.tooltip
-        local category= tab.category or Category
-        local defaultValue= tab.value and true or false
-        local func= tab.func
-    
-        local variable = id..name..(category.order or '')..get_variableIndex()
-        local setting= Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue)
-    
-        local initializer= Settings.CreateCheckBox(category, setting, tooltip)
-        Settings.SetOnValueChangedCallback(variable, func, initializer)
-        return initializer
-    end
-else
     function e.AddPanel_Check(tab)
         local name = tab.name
         local tooltip = tab.tooltip
@@ -319,7 +303,6 @@ else
         Settings.SetOnValueChangedCallback(variable, func, initializer)
         return initializer
     end
-end
 --[[
 local initializer2= e.AddPanel_Check({
     name= ,
@@ -363,22 +346,7 @@ initializer:SetParentInitializer(initializer2, function() return not Save.disabl
 ]]
 
 --添加，下拉菜单
-if Settings.CreateDropDown then--11版本
-    function e.AddPanel_DropDown(tab)
-        local SetValue= tab.SetValueFunc
-        local GetOptions= tab.GetOptionsFunc
-        local defaultValue= tab.value
-        local name= tab.name
-        local tooltip= tab.tooltip
-        local category= tab.category or Category
-    
-        local variable= id..name..(category.order or '')..get_variableIndex()
-        local setting = Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue)
-        local initializer= Settings.CreateDropDown(category, setting, GetOptions, tooltip)
-        Settings.SetOnValueChangedCallback(variable, SetValue, initializer)
-        return initializer
-    end
-else
+
     function e.AddPanel_DropDown(tab)
         local SetValue= tab.SetValueFunc
         local GetOptions= tab.GetOptionsFunc
@@ -397,7 +365,6 @@ else
         Settings.SetOnValueChangedCallback(variable, SetValue, initializer)
         return initializer
     end
-end
 --[[
 e.AddPanel_DropDown({
     SetValueFunc= function(_, _, value)
@@ -418,27 +385,7 @@ e.AddPanel_DropDown({
 
 
 --添加，Check 和 按钮
-if CreateSettingsCheckBoxWithButtonInitializer then--11版本
-    function e.AddPanel_Check_Button(tab)
-        local checkName = tab.checkName
-        local defaultValue= tab.checkValue and true or false
-        local checkFunc= tab.checkFunc
-    
-        local buttonText= tab.buttonText
-        local buttonFunc= tab.buttonFunc
-    
-        local tooltip = tab.tooltip
-        local layout= tab.layout or Layout
-        local category= tab.category or Category
-    
-        local variable = id..checkName..(category.order or '')..get_variableIndex()
-        local setting= Settings.RegisterAddOnSetting(category, checkName, variable, type(defaultValue), defaultValue)
-        local initializer= CreateSettingsCheckBoxWithButtonInitializer(setting, buttonText, buttonFunc, false, tooltip)
-        layout:AddInitializer(initializer)
-        Settings.SetOnValueChangedCallback(variable, checkFunc, initializer)
-        return initializer
-    end
-else
+
     function e.AddPanel_Check_Button(tab)
         local checkName = tab.checkName
         local defaultValue= tab.checkValue and true or false
@@ -466,7 +413,6 @@ else
         Settings.SetOnValueChangedCallback(variable, checkFunc, initializer)
         return initializer
     end
-end
 --[[
 local initializer2= e.AddPanel_Check_Button({
     checkName= e.cn(addName),
@@ -496,37 +442,6 @@ local function GetFormatter1to10(minValue, maxValue)
     end
 end
 
-if CreateSettingsCheckBoxSliderInitializer then--11版本
-    function e.AddPanel_Check_Sider(tab)
-        local checkName= tab.checkName
-        local checkValue= tab.checkValue and true or false
-        local checkTooltip= tab.checkTooltip
-        local checkFunc= tab.checkFunc
-    
-        local sliderValue= tab.sliderValue
-        local sliderMinValue= tab.sliderMinValue
-        local sliderMaxValue= tab.sliderMaxValue
-        local sliderStep= tab.sliderStep
-        local siderName= tab.siderName or checkName
-        local siderTooltip= tab.siderTooltip or checkTooltip
-        local siderFunc= tab.siderFunc
-    
-        local category= tab.category or Category
-        local variable = id..checkName..(category.order or '')..get_variableIndex()
-        local layout= tab.layout or Layout
-        local checkSetting = Settings.RegisterAddOnSetting(category, checkName..'Check', variable..'Check', type(checkValue), checkValue)
-        local siderSetting = Settings.RegisterAddOnSetting(category, checkName..'Sider', variable..'Sider', type(sliderValue), sliderValue)
-    
-        local options = Settings.CreateSliderOptions(sliderMinValue, sliderMaxValue, sliderStep)
-        options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right, GetFormatter1to10(sliderMinValue, sliderMaxValue));
-    
-        local initializer = CreateSettingsCheckBoxSliderInitializer(checkSetting, checkName, checkTooltip, siderSetting, options, siderName, siderTooltip);
-        Settings.SetOnValueChangedCallback(variable..'Check', checkFunc, initializer)
-        Settings.SetOnValueChangedCallback(variable..'Sider', siderFunc, initializer)
-        layout:AddInitializer(initializer)
-        return initializer
-    end
-else
     function e.AddPanel_Check_Sider(tab)
         local checkName= tab.checkName
         local checkValue= tab.checkValue and true or false
@@ -571,7 +486,6 @@ else
         layout:AddInitializer(initializer)
         return initializer
     end
-end
 
 --[[
 e.AddPanel_Check_Sider({

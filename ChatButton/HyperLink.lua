@@ -816,17 +816,7 @@ local function Init_Add_Reload_Button()
     SettingsPanel.OutputText:ClearAllPoints()
     SettingsPanel.OutputText:SetPoint('BOTTOMLEFT', 20, 18)
 
-    if GameMenuButtonSettings then--11版本
-        Create_Texture_Tips(GameMenuButtonSettings, {'mechagon-projects', false})--选项
-        Create_Texture_Tips(GameMenuButtonEditMode, {'UI-HUD-Minimap-CraftingOrder-Up', false})--编辑模式
-        Create_Texture_Tips(GameMenuButtonMacros, {'NPE_Icon', false})--宏命令设置
-        Create_Texture_Tips(GameMenuButtonAddons, {'dressingroom-button-appearancelist-up', false})--插件
-
-        Create_Texture_Tips(GameMenuButtonLogout, {'perks-warning-large', false, {1,0,0}})--登出
-        Create_Texture_Tips(GameMenuButtonQuit, {'Ping_Chat_Warning', false, {1,0,0}})--退出游戏
-
-        Create_Texture_Tips(GameMenuButtonContinue, {'poi-traveldirections-arrow', true, {0,1,0}})--返回游戏
-    else
+ 
 
 
 
@@ -852,7 +842,6 @@ local function Init_Add_Reload_Button()
             Create_Texture_Tips(btn, {'BattleBar-SwapPetIcon', false, {1,1,1}})
         end)
     end
-end
 
 
 

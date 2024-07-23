@@ -84,7 +84,7 @@ end
 --###############
 --自动选取当前专精
 --###############
-local function set_RequestToJoinFrame(frame)    
+local function set_RequestToJoinFrame(frame)
     local text
     local edit= frame.MessageFrame.MessageScroll.EditBox
     local avgItemLevel, _, avgItemLevelPvp = GetAverageItemLevel()
@@ -99,13 +99,13 @@ local function set_RequestToJoinFrame(frame)
         end
         edit:SetText(text)
     end
-    
-    
+
+
     local text2
     if frame.SpecsPool then--专精，职责，图标，自动选取当前专精
         local _, name, _, icon, role
         local currSpecID= GetSpecializationInfo(GetSpecialization() or 0)
-        
+
         for btn in frame.SpecsPool:EnumerateActive() do
             local check= not currSpecID or currSpecID==btn.specID
             local box= btn.Checkbox or btn.CheckBox
@@ -298,13 +298,13 @@ local function Init()
         label:SetPoint('TOP')
         label:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '弹劾' or  e.WA_Utf8Sub(GUILD_IMPEACH_POPUP_CONFIRM, 2, 5,true))..'|r')
     end
-    
+
     set_check(ClubFinderGuildFinderFrame.OptionsList.SearchBox)
     set_check(ClubFinderCommunityAndGuildFinderFrame.OptionsList.SearchBox)
 
     hooksecurefunc(ClubFinderGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_RequestToJoinFrame)
     hooksecurefunc(ClubFinderCommunityAndGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_RequestToJoinFrame)
-    
+
 
     hooksecurefunc(CommunitiesFrameCommunitiesList.ScrollBox, 'SetScrollTargetOffset', function(self)
         if not self:GetView() then
@@ -352,18 +352,18 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1==id then
             if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button
                 Save= WoWToolsSave[addName] or Save
-                
+
                 --panel:RegisterUnitEvent('PLAYER_GUILD_UPDATE', "player")
-                if C_AddOns.IsAddOnLoaded('Blizzard_Communities') then--11版本
+                if C_AddOns.IsAddOnLoaded('Blizzard_Communities') then
                     Init()
                     self:UnregisterEvent('ADDON_LOADED')
                 end
-                
+
             else
                 self:UnregisterAllEvents()
             end
 
-            
+
         elseif arg1=='Blizzard_Communities' then
             Init()
             self:UnregisterEvent('ADDON_LOADED')

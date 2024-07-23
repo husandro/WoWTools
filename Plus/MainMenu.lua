@@ -166,94 +166,6 @@ end
 
 
 
---天赋
-local function Init_Talent_TalentMicroButton()
-    local frame= CreateFrame("Frame")
-    --table.insert(Frames, frame)
-    TalentMicroButton.frame= frame
-
-    TalentMicroButton.Portrait= TalentMicroButton:CreateTexture(nil, 'BORDER', nil, 1)
-    --TalentMicroButton.Portrait:SetAllPoints(TalentMicroButton)
-    TalentMicroButton.Portrait:SetPoint('CENTER')
-
-    TalentMicroButton.Portrait:SetSize(22, 28)
-
-
-
-
-    TalentMicroButton.Texture2= TalentMicroButton:CreateTexture(nil, 'BORDER', nil, 2)
-    TalentMicroButton.Texture2:SetPoint('BOTTOMRIGHT', -8, 6)
-    TalentMicroButton.Texture2:SetSize(20, 24)
-    TalentMicroButton.Texture2:SetScale(0.5)
-
-    local mask= TalentMicroButton:CreateMaskTexture(nil, 'BORDER', nil, 3)
-    mask:SetTexture("Interface/CHARACTERFRAME/TempPortraitAlphaMask", "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
-    mask:SetPoint('CENTER',0,-1)
-    mask:SetSize(19, 24)
-    --mask:SetAllPoints(TalentMicroButton.Portrait)
-    TalentMicroButton.Portrait:AddMaskTexture(mask)
-
-    mask= TalentMicroButton:CreateMaskTexture(nil, 'BORDER', nil, 4)
-    mask:SetTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')
-    mask:SetAllPoints(TalentMicroButton.Texture2)
-    TalentMicroButton.Texture2:AddMaskTexture(mask)
-
-    function frame:settings()
-        local lootID=  GetLootSpecialization()
-        local specID=  PlayerUtil.GetCurrentSpecID()
-        local icon2
-        local icon = specID and select(4, GetSpecializationInfoByID(specID))
-        if lootID>0 and specID and specID~= lootID then
-            icon2 = select(4, GetSpecializationInfoByID(lootID))
-        end
-        TalentMicroButton.Portrait:SetTexture(icon or 0)
-        TalentMicroButton.Texture2:SetTexture(icon2 or 0)
-    end
-    frame:RegisterUnitEvent('PLAYER_SPECIALIZATION_CHANGED', 'Player')
-    frame:RegisterEvent('PLAYER_LOOT_SPEC_UPDATED')
-    --frame:RegisterEvent('PLAYER_TALENT_UPDATE')
-    frame:SetScript('OnEvent', frame.settings)
-    C_Timer.After(2, function() frame:settings() end)
-
-    TalentMicroButton:SetNormalTexture(0)
-    TalentMicroButton:HookScript('OnLeave', function(self)
-        self.Portrait:SetShown(true)
-        self.Texture2:SetShown(true)
-    end)
-    TalentMicroButton:HookScript('OnEnter', function(self)
-        self.Portrait:SetShown(false)
-        self.Texture2:SetShown(false)
-        if KeybindFrames_InQuickKeybindMode() then
-            return
-        end
-        local a, b
-        local index= GetSpecialization()--当前专精
-        local specID
-        if index then
-            local ID, _, _, icon, role = GetSpecializationInfo(index)
-            specID= ID
-            if icon then
-                a= (e.Icon[role] or '')..'|T'..icon..':0|t'
-            end
-        end
-        local lootSpecID = GetLootSpecialization()
-        if lootSpecID or specID then
-            lootSpecID= lootSpecID==0 and specID or lootSpecID
-            local icon, role = select(4, GetSpecializationInfoByID(lootSpecID))
-            if icon then
-                b= '|T'..icon..':0|t'..(e.Icon[role] or '')
-            end
-        end
-        a= a or ''
-        b= b or a or ''
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine((e.onlyChinese and '当前专精' or TRANSMOG_CURRENT_SPECIALIZATION)..a, (lootSpecID==specID and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..b..(e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION))
-        e.tips:Show()
-    end)
-end
-
-
-
 
 
 
@@ -1085,11 +997,8 @@ local function Init_Plus()
     if not Frames then
         Frames={}
         Init_Character()--角色
-        if TalentMicroButton then--11版本
-            Init_Talent_TalentMicroButton()
-        else
-            Init_Talent()--天赋 
-        end
+
+        Init_Talent()--天赋 
         Init_Achievement()--成就
         Init_Quest()--任务
         Init_Guild()--公会

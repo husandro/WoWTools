@@ -1,7 +1,3 @@
-if select(4,GetBuildInfo())<110000  then--11版本
-    return
-end
-
 local id, e= ...
 local addName= MACRO--宏
 local Save={

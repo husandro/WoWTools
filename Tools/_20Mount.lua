@@ -394,7 +394,7 @@ local function setClickAtt()--设置 Click属性
             or (IsOutdoors() and getRandomRoll(MOUNT_JOURNAL_FILTER_GROUND))--室内
             or button.spellID
 
-          
+
     end
     spellID= spellID or ShiJI
 
@@ -431,7 +431,7 @@ local function setClickAtt()--设置 Click属性
             button.Combat=true
         end
     elseif button.itemID then
-        button:SetAttribute("type1", "item")        
+        button:SetAttribute("type1", "item")
         button:SetAttribute("item1", C_Item.GetItemNameByID(button.itemID))
         button:SetAttribute('unit', nil)
         button.typeID= MountTab[type][1]
@@ -1170,7 +1170,7 @@ local function InitMenu(_, level, type)--主菜单
         keepShownOnClick=true,
     }
     e.LibDD:UIDropDownMenu_AddButton(info)
-    
+
     info={
         text=e.toolsFrame.addName,
         notCheckable=true,
@@ -1371,22 +1371,18 @@ local function Init_MountJournal()
 
     local btn= CreateFrame('DropDownToggleButton', 'MountJournalFilterButtonWoWTools', MountJournal, 'UIResettableDropdownButtonTemplate')--SharedUIPanelTemplates.lua
 
-    btn:SetPoint('BOTTOM', MountJournalFilterButton or MountJournal.FilterDropdown, 'TOP')--11版本
+    btn:SetPoint('BOTTOM', MountJournal.FilterDropdown, 'TOP')
     btn.MountJournal_FullUpdate= MountJournal_FullUpdate
     btn.ResetButton:SetScript('OnClick', function(self)
         MountJournal_FullUpdate= _G['MountJournalFilterButtonWoWTools'].MountJournal_FullUpdate
-        _G['MountJournalFilterButtonWoWTools']:SetText(id)        
-        if MountJournalFilterButton then--11版本
-            e.call('MountJournalFilterDropdown_ResetFilters')
-        else
-            MountJournal.FilterDropdown:Reset();
-        end
+        _G['MountJournalFilterButtonWoWTools']:SetText(id)
+        MountJournal.FilterDropdown:Reset()
         C_MountJournal.SetCollectedFilterSetting(LE_MOUNT_JOURNAL_FILTER_UNUSABLE or 3, true);
-        e.call('MountJournal_SetUnusableFilter',true)     
+        e.call('MountJournal_SetUnusableFilter',true)
         e.call('MountJournal_FullUpdate', MountJournal)
         self:Hide()
     end)
-    
+
 
     btn:SetScript('OnMouseDown', function(frame)
         if not frame.Menu then
@@ -1418,11 +1414,8 @@ local function Init_MountJournal()
                                     MountJournal_UpdateMountDisplay()
                                 end
                             end
-                            if MountJournalFilterButton then--11版本
-                                e.call('MountJournalFilterDropdown_ResetFilters')
-                            else
-                                MountJournal.FilterDropdown:Reset();
-                            end
+                           
+                            MountJournal.FilterDropdown:Reset()
 
                             e.call('MountJournal_SetUnusableFilter',true)
                             e.call('MountJournal_FullUpdate', MountJournal)
@@ -1448,21 +1441,14 @@ local function Init_MountJournal()
 
     MountJournal.MountCount:ClearAllPoints()
     --MountJournal.MountCount:SetPoint('BOTTOMLEFT', MountJournalSearchBox, 'TOPLEFT',-3, 0)
-    if MountJournalFilterButton  then --11版本
-        MountJournal.MountCount:SetPoint('RIGHT', MountJournalFilterButton, 'LEFT', -2, 0)
-        MountJournalFilterButton.ResetButton:HookScript('OnClick', function()
-            if _G['MountJournalFilterButtonWoWTools'].ResetButton:IsShown() then
-                _G['MountJournalFilterButtonWoWTools'].ResetButton:Click()
-            end
-        end)
-    else
+    
+
         MountJournal.MountCount:SetPoint('RIGHT', MountJournal.FilterDropdown, 'LEFT', -2, 0)
         MountJournal.FilterDropdown.ResetButton:HookScript('OnClick', function()
             if _G['MountJournalFilterButtonWoWTools'].ResetButton:IsShown() then
                 _G['MountJournalFilterButtonWoWTools'].ResetButton:Click()
             end
         end)
-    end
 end
 
 

@@ -1,8 +1,3 @@
----@diagnostic disable: redundant-parameter
-if select(4,GetBuildInfo())<110000  then--11版本
-    return
-end
-
 local id, e = ...
 local Save={
 	btn=e.Player.husandro,--启用，TrackButton
@@ -523,11 +518,9 @@ local function Init_TrackButton()
 		end
 	end)
 
-	if ReputationFrame.Update then--11版本
-		hooksecurefunc(ReputationFrame, 'Update', Set_TrackButton_Text)	
-	else
-		hooksecurefunc('ReputationFrame_Update',Set_TrackButton_Text)--更新, 监视, 文本
-	end
+	
+	hooksecurefunc(ReputationFrame, 'Update', Set_TrackButton_Text)	--更新, 监视, 文本
+	
 
 	TrackButton:set_Scale()
 	TrackButton:set_Point()
@@ -540,7 +533,7 @@ local function Init_TrackButton()
 
 
 
-if ReputationEntryMixin then--11版本
+
 	hooksecurefunc(ReputationEntryMixin, 'OnEnter', function(self)--角色栏,声望
 		for _, btn in pairs(TrackButton.btn) do
 			if self.elementData.factionID== btn.factionID then
@@ -555,22 +548,7 @@ if ReputationEntryMixin then--11版本
 			btn:SetScale(1)
 		end
     end)
-else
-	hooksecurefunc(ReputationBarMixin, 'OnEnter', function(frame)--角色栏,声望
-		for _, btn in pairs(TrackButton.btn) do
-			if frame.factionID and frame.factionID== btn.factionID then
-				btn:SetScale(2)
-			else
-				btn:SetScale(1)
-			end
-		end
-    end)
-	hooksecurefunc(ReputationBarMixin, 'OnLeave', function(frame)--角色栏,声望
-		for _, btn in pairs(TrackButton.btn) do
-			btn:SetScale(1)
-		end
-    end)
-end
+
 end
 
 
@@ -599,7 +577,7 @@ end
 
 --#########
 --界面, 增强
---######### 11版本
+--#########
 local function set_ReputationFrame_InitReputationRow(btn)--factionRow, elementData)--ReputationFrame.lua
 	local data= btn.elementData or {}
 	local factionID = data.factionID --or btn.factionIndex

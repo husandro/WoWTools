@@ -1554,17 +1554,7 @@ local function Init_EncounterJournal()--冒险指南界面
         EJ_SelectTier(numTier)
     end
 
-    if EncounterJournal_TierDropDown_Select then --11版本
-        --记录上次选择版本
-        hooksecurefunc('EncounterJournal_TierDropDown_Select', function(_, tier)
-            Save.EncounterJournalTier=tier
-        end)
-    
-        --记录上次选择TAB
-        hooksecurefunc('EJ_ContentTab_Select', function(id2)
-            Save.EncounterJournalSelectTabID=id2
-        end)
-    else
+
         --记录上次选择版本
         hooksecurefunc('EncounterJournal_ExpansionDropdown_Select', function(_, tier)
             Save.EncounterJournalTier=tier
@@ -1574,7 +1564,6 @@ local function Init_EncounterJournal()--冒险指南界面
         hooksecurefunc('EJ_ContentTab_Select', function(id2)
             Save.EncounterJournalSelectTabID=id2
         end)
-    end
 end
 
 

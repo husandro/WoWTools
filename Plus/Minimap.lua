@@ -2747,7 +2747,7 @@ WowTools_OnAddonCompartmentFuncOnEnter= enter_Func
 
 
 --##############
---副本，难图，指示
+--副本，难度，指示
 --############## 11版本
 local function Init_InstanceDifficulty()--副本，难图，指示
     local btn= MinimapCluster.InstanceDifficulty

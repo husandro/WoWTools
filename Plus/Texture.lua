@@ -321,7 +321,7 @@ end
 
 
 --公会和社区 Blizzard_Communities
-local function Init_Blizzard_Communities()--11版本
+local function Init_Blizzard_Communities()
     e.Set_NineSlice_Color_Alpha(CommunitiesFrame, true)
     e.Set_ScrollBar_Color_Alpha(CommunitiesFrameCommunitiesList)
     e.Set_ScrollBar_Color_Alpha(CommunitiesFrame.Chat)
@@ -625,36 +625,8 @@ local function Init_All_Frame()
     e.Set_NineSlice_Color_Alpha(CurrencyTransferMenuInset)
     e.Set_Alpha_Frame_Texture(TokenFramePopup.Border, {alpha=min05})
 
-if CurrencyTransferMenu then--11版本
+
     set_SearchBox(CurrencyTransferMenu.AmountSelector.InputBox)
-else
-    --法术书
-    e.Set_NineSlice_Color_Alpha(SpellBookFrame, true)
-    e.Set_NineSlice_Color_Alpha(SpellBookFrameInset)
-    if SpellBookPageText then
-        SpellBookPageText:SetTextColor(1, 0.82, 0)
-    end
-
-    hide_Texture(SpellBookPage1)
-    hide_Texture(SpellBookPage2)
-    set_Alpha_Color(SpellBookFrameBg)
-
-    for i=1, 12 do
-        set_Alpha_Color(_G['SpellButton'..i..'Background'])
-        set_Alpha_Color(_G['SpellButton'..i..'SlotFrame'])
-
-        local frame= _G['SpellButton'..i]
-        if frame then
-            hooksecurefunc(frame, 'UpdateButton', function(self)--SpellBookFrame.lua
-                self.SpellSubName:SetTextColor(1, 1, 1)
-            end)
-        end
-    end
-
-    e.Set_Alpha_Frame_Texture(SpellBookFrameTabButton1, {alpha=min05})
-    e.Set_Alpha_Frame_Texture(SpellBookFrameTabButton2, {alpha=min05})
-    e.Set_Alpha_Frame_Texture(SpellBookFrameTabButton3, {alpha=min05})
-end
 
     --世界地图
     e.Set_NineSlice_Color_Alpha(WorldMapFrame.BorderFrame, true)
@@ -1127,12 +1099,7 @@ end
      set_Alpha_Color(AddonListInset.Bg, nil, nil, min05)
      set_Menu(AddonCharacterDropDown)
 
-     --[[场景 Blizzard_ScenarioObjectiveTracker.lua
-     hooksecurefunc('Scenario_ChallengeMode_ShowBlock', function()--Blizzard_ScenarioObjectiveTracker.lua
-        e.Set_Alpha_Frame_Texture(ScenarioChallengeModeBlock, {alpha=min05})
-     end)
-     set_Alpha_Color(ScenarioStageBlock.NormalBG, nil, nil, min05)
-]]
+
      if MainStatusTrackingBarContainer then--货币，XP，追踪，最下面BAR
          hide_Texture(MainStatusTrackingBarContainer.BarFrameTexture)
      end
@@ -1164,7 +1131,14 @@ end
          for _, module in ipairs(self.MODULES) do
              set_Alpha_Color(module.Header.Background)
          end
-     end)]]
+     end)
+     场景 Blizzard_ScenarioObjectiveTracker.lua
+     hooksecurefunc('Scenario_ChallengeMode_ShowBlock', function()--Blizzard_ScenarioObjectiveTracker.lua
+        e.Set_Alpha_Frame_Texture(ScenarioChallengeModeBlock, {alpha=min05})
+     end)
+     set_Alpha_Color(ScenarioStageBlock.NormalBG, nil, nil, min05)
+]]
+     set_Alpha_Color(ScenarioObjectiveTracker.StageBlock.NormalBG, nil, nil, min05)
 
      --社交，按钮     
 
@@ -1469,48 +1443,7 @@ local function Init_Event(arg1)
         set_SearchBox(PlayerSpellsFrame.SpellBookFrame.SearchBox)
         set_TabSystem_Button(PlayerSpellsFrame.SpellBookFrame)
 
-    elseif arg1=='Blizzard_ClassTalentUI' then--天赋 11版本
-        if ClassTalentFrame then
-            set_Alpha_Color(ClassTalentFrame.TalentsTab.BottomBar)--下面
-            e.Set_NineSlice_Color_Alpha(ClassTalentFrame, true)
-            set_Alpha_Color(ClassTalentFrameBg)--里面
-            hide_Texture(ClassTalentFrame.TalentsTab.BlackBG)
-            hooksecurefunc(ClassTalentFrame.TalentsTab, 'UpdateSpecBackground', function(self2)--Blizzard_ClassTalentTalentsTab.lua
-                if self2.specBackgrounds then
-                    for _, background in ipairs(self2.specBackgrounds) do
-                        hide_Texture(background)
-                    end
-                end
-            end)
-
-            hide_Texture(ClassTalentFrame.SpecTab.Background)
-            hide_Texture(ClassTalentFrame.SpecTab.BlackBG)
-            hooksecurefunc(ClassTalentFrame.SpecTab, 'UpdateSpecContents', function(self2)--Blizzard_ClassTalentSpecTab.lua
-                local numSpecs= self2.numSpecs
-                if numSpecs and numSpecs>0 then
-                    for i = 1, numSpecs do
-                        local contentFrame = self2.SpecContentFramePool:Acquire();
-                        if contentFrame then
-                            hide_Texture(contentFrame.HoverBackground)
-                        end
-                    end
-                end
-            end)
-
-            set_Alpha_Color(ClassTalentFrameMiddle)
-            set_Alpha_Color(ClassTalentFrameLeft)
-            set_Alpha_Color(ClassTalentFrameRight)
-            set_SearchBox(ClassTalentFrame.TalentsTab.SearchBox)
-
-
-
-            --TabSystemOwner.lua
-            for _, tabID in pairs(ClassTalentFrame:GetTabSet() or {}) do
-                local btn= ClassTalentFrame:GetTabButton(tabID)
-                e.Set_Alpha_Frame_Texture(btn, {alpha=min05})
-            end
-        end
-
+    
     elseif arg1=='Blizzard_AchievementUI' then--成就
         hide_Frame_Texture(AchievementFrame)
         hide_Frame_Texture(AchievementFrame.Header)
@@ -2948,9 +2881,8 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             if Save.disabled then
                 panel:UnregisterEvent('ADDON_LOADED')
             else
-                if C_AddOns.IsAddOnLoaded('Blizzard_Communities') then--11版本
-                    Init_Blizzard_Communities()
-                end
+               
+                Init_Blizzard_Communities()
                 
                 for _, ent in pairs(eventTab or {}) do
                     Init_Event(ent)
@@ -2984,8 +2916,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             set_SearchBox(SettingsPanel.SearchBox)
             e.Set_Alpha_Frame_Texture(SettingsPanel, {index=1})
         
-        elseif arg1=='Blizzard_Communities' then--11版本
-            Init_Blizzard_Communities()
+      
 
         else
             if eventTab then

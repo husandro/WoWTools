@@ -217,223 +217,6 @@ end
 
 
 
---#######
---任务日志
---#######
-local function setMapQuestList()--世界地图,任务, 加 - + 按钮 11版本
-    if Menu then
-        return
-    end
-    if Save.hide or QuestScrollFrame.btnCollapse then
-        if QuestScrollFrame.btnCollapse then
-            QuestScrollFrame.btnCollapse:SetShown(not Save.hide)
-        end
-        return
-    end
-
-
-    QuestScrollFrame.btnCollapse= e.Cbtn(QuestScrollFrame, {size={22,22}, atlas='NPE_ArrowUp'})--campaign_headericon_closed
-    QuestScrollFrame.btnCollapse:SetPoint('TOPRIGHT', WorldMapFrame, 'BOTTOMRIGHT', -275, 0)
-    QuestScrollFrame.btnCollapse:SetScript('OnLeave', GameTooltip_Hide)
-    QuestScrollFrame.btnCollapse:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddLine(not e.onlyChinese and HUD_EDIT_MODE_COLLAPSE_OPTIONS or "收起选项 |A:editmode-up-arrow:16:11:0:3|a")
-        e.tips:Show()
-    end)
-    QuestScrollFrame.btnCollapse:SetScript("OnMouseDown", function()
-        for i=1, C_QuestLog.GetNumQuestLogEntries() do
-            CollapseQuestHeader(i)
-        end
-    end)
-
-    local btnExpand= e.Cbtn(QuestScrollFrame.btnCollapse, {size={22,22}, atlas='NPE_ArrowDown'})
-    btnExpand:SetPoint('LEFT', QuestScrollFrame.btnCollapse, 'RIGHT', 2, 0)
-    btnExpand:SetScript('OnLeave', GameTooltip_Hide)
-    btnExpand:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddLine(not e.onlyChinese and HUD_EDIT_MODE_EXPAND_OPTIONS or "展开选项 |A:editmode-down-arrow:16:11:0:-7|a")
-        e.tips:Show()
-    end)
-    btnExpand:SetScript("OnMouseDown", function()
-        for i=1, C_QuestLog.GetNumQuestLogEntries() do
-            ExpandQuestHeader(i)
-        end
-    end)
-
-
-
-    local search= CreateFrame('EditBox', nil, QuestScrollFrame.btnCollapse, 'SearchBoxTemplate')
-    search:SetSize(174, 22)
-    search:SetPoint('LEFT', btnExpand, 'RIGHT',2,0)
-    search:SetAutoFocus(false)
-    search:ClearFocus()
-    search.Instructions:SetText(e.onlyChinese and '搜索' or SEARCH)
-    search.DAILY= e.onlyChinese and '日常' or DAILY:lower()
-    search.WEEKLY= e.onlyChinese and '周长' or WEEKLY:lower()
-    search.REFORGE_CURRENT = e.onlyChinese and "当前" or REFORGE_CURRENT:lower()
-
-    function search:set_search()
-        local text= self:GetText()
-        text= text:trim():lower()
-        if text=='' then
-            return
-        end
-        local num= tonumber(text)
-
-        local head={}
-        local isHealerIndex= 0
-        QuestMapFrame.ignoreQuestLogUpdate = true;
-        for index=1, C_QuestLog.GetNumQuestLogEntries() do
-            local info = C_QuestLog.GetInfo(index) or {}
-            local name= info.title:trim():lower()
-
-            isHealerIndex= info.isHeader and index or isHealerIndex
-            local find= false
-
-            if (info.questID and info.questID==num)
-                or (info.campaignID and info.campaignID==num)
-                or (info.level and info.level==num)
-                or (text==self.DAILY and info.frequency==Enum.QuestFrequency.Daily)
-                or (text==self.WEEKLY and info.frequency==Enum.QuestFrequency.Weekly)
-                or (text==self.REFORGE_CURRENT and info.questID and C_QuestLog.IsOnMap(info.questID))
-            then
-                find=true
-            else
-                text= e.Magic(text)
-                if name:find(text) then
-                    find=true
-                else
-                    for _, boje in pairs(C_QuestLog.GetQuestObjectives(info.questID) or {}) do
-                        local str= boje.text
-                        if str then
-                            str= str:lower()
-                            if str:find(text) then
-                                find=true
-                                break
-                            end
-                        end
-                    end
-                end
-            end
-            head[isHealerIndex]= head[isHealerIndex] or find
-        end
-        for index, expan in pairs(head) do
-            if expan then
-                ExpandQuestHeader(index)
-            else
-                CollapseQuestHeader(index)
-            end
-        end
-        QuestMapFrame.ignoreQuestLogUpdate = nil;
-    end
-    search:HookScript("OnTextChanged",  search.set_search);
-    search:HookScript("OnEditFocusGained", search.set_search)--search:HookScript("OnEditFocusLost",  function(self)
-
-    search.week= e.Cbtn(search, {size={22,22}, atlas='questlog-questtypeicon-weekly'})
-    search.week:SetPoint('LEFT', search, 'RIGHT')
-    search.week:SetScript('OnClick', function(self)
-        local edit= self:GetParent()
-        edit:SetText('')
-        edit:SetText(e.onlyChinese and '周长' or WEEKLY)
-    end)
-    search.week:SetScript("OnLeave", GameTooltip_Hide)
-    search.week:SetScript("OnEnter", function(self)
-        e.tips:SetOwner(self, "ANCHOR_RIGHT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(' ', '|A:questlog-questtypeicon-weekly:0:0|a'..(e.onlyChinese and '周长' or WEEKLY))
-        e.tips:AddDoubleLine(id, e.cn(addName))
-        e.tips:Show()
-    end)
-
-    search.Daily= e.Cbtn(search, {size={22,22}, atlas='AdventureMapIcon-DailyQuest'})
-    search.Daily:SetPoint('LEFT', search.week, 'RIGHT')
-    search.Daily:SetScript('OnClick', function(self)
-        local edit= self:GetParent()
-        edit:SetText('')
-        edit:SetText(e.onlyChinese and '日常' or DAILY)
-    end)
-    search.Daily:SetScript("OnLeave", GameTooltip_Hide)
-    search.Daily:SetScript("OnEnter", function(self)
-        e.tips:SetOwner(self, "ANCHOR_RIGHT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(' ', '|A:AdventureMapIcon-DailyQuest:0:0|a'..(e.onlyChinese and '日常' or DAILY))
-        e.tips:AddDoubleLine(id, e.cn(addName))
-        e.tips:Show()
-    end)
-
-    search.cur= e.Cbtn(search, {size={22,22}, atlas='Adventures-Target-Indicator'})
-    search.cur:SetPoint('LEFT', search.Daily, 'RIGHT')
-    search.cur:SetScript('OnClick', function(self)
-        local edit= self:GetParent()
-        edit:SetText('')
-        edit:SetText(e.onlyChinese and '当前' or REFORGE_CURRENT)
-    end)
-    search.cur:SetScript("OnLeave", GameTooltip_Hide)
-    search.cur:SetScript("OnEnter", function(self)
-        e.tips:SetOwner(self, "ANCHOR_RIGHT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(' ', '|A:Adventures-Target-Indicator:0:0|a'..(e.onlyChinese and '当前地图' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, WORLD_MAP)))
-        e.tips:AddDoubleLine(id, e.cn(addName))
-        e.tips:Show()
-    end)
-
-    local deleAllQuest=e.Cbtn(QuestScrollFrame.btnCollapse, {size={18,18}, atlas='xmarksthespot'})
-    deleAllQuest:SetPoint('RIGHT', QuestScrollFrame.btnCollapse, 'LEFT', -2, 0)
-    deleAllQuest:SetScript('OnLeave', GameTooltip_Hide)
-    deleAllQuest:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine('|cnRED_FONT_COLOR:'..(not e.onlyChinese and VOICEMACRO_1_Sc_0 or "危险！"), '|cnRED_FONT_COLOR:'..(not e.onlyChinese and VOICEMACRO_1_Sc_0 or "危险！"))
-        e.tips:AddLine(' ')
-      --  e.tips:AddDoubleLine(not e.onlyChinese and LOOT_HISTORY_ALL_PASSED or "全部放弃", (e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left)
-      e.tips:AddDoubleLine(not e.onlyChinese and LOOT_HISTORY_ALL_PASSED or "全部放弃", 'Shift+'..e.Icon.left)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, e.cn(addName))
-        e.tips:Show()
-        self:SetAlpha(1)
-    end)
-
-    --deleAllQuest:SetScript("OnDoubleClick", function()
-    deleAllQuest:SetScript('OnClick', function()
-        if not IsShiftKeyDown() then
-            return
-        end
-        StaticPopupDialogs[id..addName.."ABANDON_QUEST"] =  {
-            text= (e.onlyChinese and "放弃\"%s\"？" or ABANDON_QUEST_CONFIRM)..'|n|n|cnYELLOW_FONT_COLOR:'..(not e.onlyChinese and VOICEMACRO_1_Sc_0..' ' or "危险！")..(not e.onlyChinese and VOICEMACRO_1_Sc_0..' ' or "危险！")..(not e.onlyChinese and VOICEMACRO_1_Sc_0 or "危险！"),
-            button1 = '|cnRED_FONT_COLOR:'..(not e.onlyChinese and ABANDON_QUEST_ABBREV or "放弃"),
-            button2 = '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '取消' or CANCEL),
-            OnAccept = function()
-                local n=0
-                for index=1 , C_QuestLog.GetNumQuestLogEntries() do
-                    do
-                        local questInfo=C_QuestLog.GetInfo(index)
-                        if questInfo and questInfo.questID and C_QuestLog.CanAbandonQuest(questInfo.questID) then
-                            local linkQuest=GetQuestLink(questInfo.questID)
-                            C_QuestLog.SetSelectedQuest(questInfo.questID)
-                            C_QuestLog.SetAbandonQuest();
-                            C_QuestLog.AbandonQuest()
-                            n=n+1
-                            if linkQuest then
-                                print(id, e.cn(addName),  e.onlyChinese and '放弃|A:groupfinder-icon-redx:0:0|a' or (ABANDON_QUEST_ABBREV..'|A:groupfinder-icon-redx:0:0|a'), linkQuest, n..'|cnRED_FONT_COLOR:)')
-                            end
-                        end
-                        if IsModifierKeyDown() then
-                            return
-                        end
-                    end
-                end
-                PlaySound(SOUNDKIT.IG_QUEST_LOG_ABANDON_QUEST);
-            end,
-            whileDead=true, hideOnEscape=true, exclusive=true,
-            showAlert= true,
-        }
-        StaticPopup_Show(id..addName.."ABANDON_QUEST", '|n|cnRED_FONT_COLOR:'..(e.onlyChinese and '|n|A:groupfinder-icon-redx:0:0|a所有任务' or ('|n|A:groupfinder-icon-redx:0:0|a'..ALL))..' |r#|cnGREEN_FONT_COLOR:'..select(2, C_QuestLog.GetNumQuestLogEntries())..'|r')
-    end)
-end
-
-
 
 
 
@@ -756,7 +539,6 @@ local function Init_set_Map_ID()--显示地图ID
             elseif d=="LeftButton" and not IsModifierKeyDown() then
                 Save.hide= not Save.hide and true or nil
                 self:set_Map_ID_Text()
-                setMapQuestList()--世界地图,任务, 加 - + 按钮
                 print(id, e.cn(addName), e.GetShowHide(not Save.hide), e.onlyChinese and ' 刷新' or REFRESH)
                 self:SetNormalAtlas(Save.hide and e.Icon.disabled or 'poi-islands-table')
             elseif d=='RightButton' and not IsModifierKeyDown() then--实时玩家当前坐标
@@ -965,11 +747,7 @@ end
 
 
 
-local function Init_Menu()--11版本
-    if not Menu then
-        return
-    end
-
+local function Init_Menu()
     Menu.ModifyMenu("MENU_QUEST_MAP_FRAME_SETTINGS", function(_, root)
         root:CreateDivider()
         root:CreateButton('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部放弃' or LOOT_HISTORY_ALL_PASSED)..' #'..(select(2, C_QuestLog.GetNumQuestLogEntries()) or 0), function()
@@ -1029,7 +807,6 @@ local function Init()
         --hooksecurefunc(WorldMapFrame.ScrollContainer, 'SetMapID', function(self, mapID)--MapCanvasScrollControllerMixin
         hooksecurefunc(WorldMapFrame, 'OnMapChanged', Button.set_Map_ID_Text)--Blizzard_WorldMap.lua
     end
-    setMapQuestList()--世界地图,任务, 加 - + 按钮
     --hooksecurefunc('QuestMapLogTitleButton_OnClick',function(self, button)--任务日志 展开所有, 收起所有--QuestMapFrame.lua
 
     hooksecurefunc(DungeonEntrancePinMixin, 'OnAcquired', function(self)--地下城，加名称

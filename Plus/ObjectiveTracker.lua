@@ -1,8 +1,3 @@
-if not ObjectiveTrackerContainerMixin then--11版本
-    return
-end
-
-
 local id, e = ...
 local Save={
     scale= e.Player.husandro and 0.85 or 1,
@@ -13,23 +8,33 @@ local addName
 local HUD_EDIT_MODE_COLLAPSE_OPTIONS= HUD_EDIT_MODE_COLLAPSE_OPTIONS:gsub('|A:.-|a', '|A:NPE_ArrowUp:0:0|a')
 local HUD_EDIT_MODE_EXPAND_OPTIONS= HUD_EDIT_MODE_EXPAND_OPTIONS:gsub('|A:.-|a', '|A:NPE_ArrowDown:0:0|a')
 --[[
-TRACKER_HEADER_ACHIEVEMENTS = "成就"
-TRACKER_HEADER_BONUS_OBJECTIVES = "奖励目标"
-TRACKER_HEADER_CAMPAIGN_QUESTS = "战役"
+TRACKER_HEADER_ACHIEVEMENTS = "成就" AchievementObjectiveTracker
+TRACKER_HEADER_BONUS_OBJECTIVES = "奖励目标" BonusObjectiveTracker
+TRACKER_HEADER_CAMPAIGN_QUESTS = "战役" CampaignQuestObjectiveTracker
+TRACKER_HEADER_QUESTS = "任务" QuestObjectiveTracker
+TRACKER_HEADER_SCENARIO = "场景战役" ScenarioObjectiveTracker
+TRACKER_HEADER_WORLD_QUESTS = "世界任务" WorldQuestObjectiveTracker
+PROFESSIONS_TRACKER_HEADER_PROFESSION = "专业技能" ProfessionsRecipeTracker
+TRACKER_HEADER_MONTHLY_ACTIVITIES = "旅行者日志" MonthlyActivitiesObjectiveTracker
+TRACKER_HEADER_OBJECTIVE = "目标" BonusObjectiveTracker
+
 TRACKER_HEADER_DUNGEON = "地下城"
-TRACKER_HEADER_MONTHLY_ACTIVITIES = "旅行者日志"
-TRACKER_HEADER_OBJECTIVE = "目标"
 TRACKER_HEADER_PARTY_QUESTS = "任务"
 TRACKER_HEADER_PROVINGGROUNDS = "试炼场"
-TRACKER_HEADER_QUESTS = "任务"
-TRACKER_HEADER_SCENARIO = "场景战役"
-TRACKER_HEADER_WORLD_QUESTS = "世界任务"
-PROFESSIONS_TRACKER_HEADER_PROFESSION = "专业技能"
+AdventureObjectiveTracker
 ]]
 
 
-
-
+--[[
+local Frames={
+    'QuestObjectiveTracker',
+    'CampaignQuestObjectiveTracker',
+    'WorldQuestObjectiveTracker',
+    'AchievementObjectiveTracker',
+    'ProfessionsRecipeTracker',
+    'MonthlyActivitiesObjectiveTracker',
+    'BonusObjectiveTracker', --.Header
+}]]
 
 
 
@@ -175,7 +180,6 @@ local function Init_Quest()
         if color and block.HeaderText then
             block.HeaderText:SetTextColor(color.r, color.g, color.b)
         end
-        
     end)
 
 
@@ -481,6 +485,46 @@ end
 
 
 
+local function Init_ScenarioObjective()
+    ScenarioObjectiveTracker.StageBlock.numStagesLabel= e.Cstr(ScenarioObjectiveTracker.StageBlock, {copyFont=ScenarioObjectiveTracker.StageBlock.Name, justifyH='RIGHT'})
+    ScenarioObjectiveTracker.StageBlock.numStagesLabel:SetPoint('TOPRIGHT', -20,-8)
+    function ScenarioObjectiveTracker.StageBlock.numStagesLabel:settings()
+        local text
+        local currentStage, numStages = select(2, C_Scenario.GetInfo())
+        if numStages and numStages>0 and currentStage then
+            text= (numStages==currentStage and '|cnGREEN_FONT_COLOR:' or '')..currentStage..'/'..numStages
+        end
+        self:SetText(text or '')
+    end
+    hooksecurefunc(ScenarioObjectiveTracker, 'LayoutContents', function(self)
+        self.StageBlock.numStagesLabel:settings()
+    end)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --ObjectiveTrackerFrame
 local function Init_ObjectiveTrackerFrame()
     local btn= ObjectiveTrackerFrame.Header.MinimizeButton
@@ -504,28 +548,35 @@ local function Init_ObjectiveTrackerFrame()
     btn:HookScript('OnMouseWheel', function(self, d)
         Save.scale= e.Set_Frame_Scale(self:GetParent():GetParent(), d, Save.scale)
         self:set_tooltips()
+        print(id, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print('|cnRED_FONT_COLOR:', e.onlyChinese and '友情提示: 可能会出现错误' or 'note: errors may occur')
     end)
+
     --右击
     function btn:set_frames_show(collapse, isFind)
         local tabs={
-            QuestObjectiveTracker,
-            CampaignQuestObjectiveTracker,
-            WorldQuestObjectiveTracker,
-            AchievementObjectiveTracker,
-            ProfessionsRecipeTracker,
-            MonthlyActivitiesObjectiveTracker,
+            'QuestObjectiveTracker',
+            'CampaignQuestObjectiveTracker',
+            'WorldQuestObjectiveTracker',
+            'AchievementObjectiveTracker',
+            'ProfessionsRecipeTracker',
+            'MonthlyActivitiesObjectiveTracker',
         }
         for _, frame in pairs(tabs) do
-            local isCollapsed = frame:IsCollapsed()
-            if (collapse and not isCollapsed) or (not collapse and isCollapsed) then
-                if isFind then
-                    return true
-                else
-                    frame:ToggleCollapsed()
+            frame= _G[frame]
+            if frame then
+                local isCollapsed = frame:IsCollapsed()
+                if (collapse and not isCollapsed) or (not collapse and isCollapsed) then
+                    if isFind then
+                        return true
+                    else
+                        frame:ToggleCollapsed()
+                    end
                 end
             end
         end
     end
+
     btn:HookScript('OnMouseDown', function(frame, d)
         if d~='RightButton' then
             return
@@ -609,6 +660,31 @@ end
 
 
 
+local function Init_ObjectiveTrackerShared()
+    --物品按钮左边,放大
+    hooksecurefunc(QuestObjectiveItemButtonMixin, 'SetUp', function(self)
+        self:ClearAllPoints()
+        self:SetPoint('TOPRIGHT', self:GetParent(), 'TOPLEFT', -8,-4)
+        self:SetSize(42,42)
+        self.NormalTexture:SetTexture(nil)
+    end)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function Init()
     Init_Quest()
     Init_Campaign_Quest()
@@ -616,7 +692,9 @@ local function Init()
     Init_Achievement()
     Init_Professions()
     Init_MonthlyActivities()
+    Init_ScenarioObjective()
     Init_ObjectiveTrackerFrame()
+    Init_ObjectiveTrackerShared()
 end
 
 

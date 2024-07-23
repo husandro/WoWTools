@@ -967,14 +967,14 @@ function func:Set_Quest(tooltip, questID, info)----任务
         info = questLogIndex and C_QuestLog.GetInfo(questLogIndex)
     end
 
-    --[[local distanceSq= C_QuestLog.GetDistanceSqToQuest(questID)--距离 11版本 无QuestPOIGetIconInfo
+    local distanceSq= C_QuestLog.GetDistanceSqToQuest(questID)--距离
     if distanceSq and distanceSq>0 then
         local _, x, y = QuestPOIGetIconInfo(questID)
         if x and y then
             x=math.modf(x*100) y=math.modf(y*100)
         end
         tooltip:AddDoubleLine(x and y and 'XY '..x..', '..y or ' ',  format(e.onlyChinese and '%s码' or IN_GAME_NAVIGATION_RANGE, e.MK(distanceSq)))
-    end]]
+    end
 
     local tagInfo = C_QuestLog.GetQuestTagInfo(questID)
     local name
@@ -1920,22 +1920,7 @@ local function Init_Hook()
         end
     end)
 
-    if not Enum.SpellBookSpellBank then--11版本
-        hooksecurefunc(GameTooltip, 'SetSpellBookItem', function(_, slot, unit)--技能收，宠物，技能，提示
-            if unit=='pet' and slot then
-                local icon=GetSpellBookItemTexture(slot, 'pet')
-                local spellID = select(3, GetSpellBookItemName(slot, 'pet'))
-                if spellID then
-                    e.tips:AddLine(' ')
-                    e.tips:AddDoubleLine((e.onlyChinese and '法术' or SPELLS)..' '..spellID, icon and '|T'..icon..':0|t'..icon)
-                    local slotType, actionID = GetSpellBookItemInfo(slot, 'pet')
-                    if slotType and actionID then
-                        e.tips:AddDoubleLine('slotType '..slotType, 'actionID '..actionID)
-                    end
-                end
-            end
-        end)
-    else
+
         hooksecurefunc(GameTooltip, 'SetSpellBookItem', function(self, slot, unit)--宠物，技能书，提示        
             if unit==Enum.SpellBookSpellBank.Pet and slot then
                 local data= C_SpellBook.GetSpellBookItemInfo(slot, Enum.SpellBookSpellBank.Pet)
@@ -1949,13 +1934,11 @@ local function Init_Hook()
                 end
             end
         end)
-    end
 
 
     --####
     --声望
-    --#### 11版本
-    if ReputationEntryMixin then
+    --####
         hooksecurefunc(ReputationEntryMixin, 'ShowStandardTooltip', function(self)
             func:Set_Faction(GameTooltip, self.elementData.factionID)
         end)
@@ -1987,34 +1970,7 @@ local function Init_Hook()
                 self.factionIDText:SetText(factionData.factionID)
             end
         end)
-    else
-        hooksecurefunc(ReputationBarMixin, 'ShowMajorFactionRenownTooltip', function(self)--Major名望, ReputationFrame.lua
-            func:Set_Faction(e.tips, self.factionID)
-        end)
-        hooksecurefunc(ReputationBarMixin, 'ShowFriendshipReputationTooltip', function(self, friendshipID)--个人声望 ReputationFrame.lua
-            func:Set_Faction(e.tips, friendshipID)
-        end)
-        hooksecurefunc(ReputationBarMixin, 'OnEnter', function(frame)--角色栏,声望
-            func:Set_Faction(e.tips, frame.factionID, frame)
-        end)
-
-        hooksecurefunc('ReputationFrame_InitReputationRow',function(_, elementData)--ReputationFrame.lua 声望 界面,
-            local factionIndex = elementData.index
-            local factionID
-            if ( factionIndex == GetSelectedFaction() ) then
-                if ( ReputationDetailFrame:IsShown() ) then
-                    factionID= select(14, GetFactionInfo(factionIndex))
-                end
-            end
-            if factionID and not ReputationDetailFrame.factionIDText then
-                ReputationDetailFrame.factionIDText=e.Cstr(ReputationDetailFrame)
-                ReputationDetailFrame.factionIDText:SetPoint('TOPLEFT', 6, -6)
-            end
-            if ReputationDetailFrame.factionIDText then
-                ReputationDetailFrame.factionIDText:SetText(factionID and (e.onlyChinese and '声望' or REPUTATION)..' '..factionID or '')
-            end
-        end)
-    end
+   
 
 
     hooksecurefunc(AreaPOIPinMixin,'TryShowTooltip', function(self)--POI提示 AreaPOIDataProvider.lua
@@ -2312,7 +2268,7 @@ local function Init_Settings()
         func:Set_Achievement(tooltip, data.id)--成就
     end)
 
-    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Macro, function(tooltip, data)
+    --[[TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Macro, function(tooltip, data)
         local frame= GetMouseFocus and GetMouseFocus()--宏 11版本
         if frame and frame.action then
             local type, macroID, subType= GetActionInfo(frame.action)
@@ -2327,7 +2283,7 @@ local function Init_Settings()
                 end
             end
         end
-    end)
+    end)]]
 
     --###########
     --宠物面板提示

@@ -1,6 +1,6 @@
 local e = select(2, ...)
 
--- 11版本
+
 
 --建立func, 如果.toc禁用，会出错
 e.Set_Item_Info=function() end--ItemInfo.lua
