@@ -1043,20 +1043,16 @@ local function Init_All_Frame()
      end
 
      hooksecurefunc('ChatConfig_CreateCheckboxes', function(frame)--ChatConfigFrame.lua
-        if frame.NineSlice then
-            hide_Texture(frame.NineSlice.TopEdge)
-            hide_Texture(frame.NineSlice.BottomEdge)
-            hide_Texture(frame.NineSlice.RightEdge)
-            hide_Texture(frame.NineSlice.LeftEdge)
-            hide_Texture(frame.NineSlice.TopLeftCorner)
-            hide_Texture(frame.NineSlice.TopRightCorner)
-            hide_Texture(frame.NineSlice.BottomLeftCorner)
-            hide_Texture(frame.NineSlice.BottomRightCorner)
-            hide_Texture(frame.NineSlice.Center)
-        end
-        local checkBoxNameString = frame:GetName().."CheckBox";
-        for index, _ in ipairs(frame.checkBoxTable) do
-            local checkBox = _G[checkBoxNameString..index];
+        
+        e.Set_NineSlice_Color_Alpha(frame, nil, true)
+        
+
+        local checkBoxNameString = frame:GetName().."Checkbox";
+        local checkBoxName, checkBox;
+
+        for index in pairs(frame.checkBoxTable or {}) do
+            checkBoxName = checkBoxNameString..index;
+            checkBox = _G[checkBoxName];
             if checkBox and checkBox.NineSlice then
                 hide_Texture(checkBox.NineSlice.TopEdge)
                 hide_Texture(checkBox.NineSlice.RightEdge)
@@ -1069,26 +1065,74 @@ local function Init_All_Frame()
         end
     end)
     hooksecurefunc('ChatConfig_UpdateCheckboxes', function(frame)--频道颜色设置 ChatConfigFrame.lua
-        if not FCF_GetCurrentChatFrame() then
-            return
-        end
-        local checkBoxNameString = frame:GetName().."CheckBox";
-        for index, value in ipairs(frame.checkBoxTable) do
-            if value and value.type then
-                local r, g, b = GetMessageTypeColor(value.type)
-                if r and g and b then
-                    if _G[checkBoxNameString..index.."CheckText"] then
-                        _G[checkBoxNameString..index.."CheckText"]:SetTextColor(r,g,b)
-                    end
-                    local checkBox = _G[checkBoxNameString..index]
-                    if checkBox and checkBox.NineSlice and checkBox.NineSlice.BottomEdge then
-                        checkBox.NineSlice.BottomEdge:SetVertexColor(r,g,b)
-                    end
-                end
+        if not FCF_GetCurrentChatFrame() then return end
+        
+        local checkBoxNameString = frame:GetName().."Checkbox";
+        local baseName, colorSwatch;
+        for index, value in pairs(frame.checkBoxTable or {}) do
+            local r,g,b
+            baseName = checkBoxNameString..index;
+            colorSwatch = _G[baseName.."ColorSwatch"]
+            if  colorSwatch and not value.isBlank then
+                r, g, b = GetMessageTypeColor(value.type)
+            end
+            r,g,b= r or 1, g or 1, b or 1
+            if _G[checkBoxNameString..index.."CheckText"] then
+                _G[checkBoxNameString..index.."CheckText"]:SetTextColor(r,g,b)
+            end
+
+            local checkBox = _G[checkBoxNameString..index]
+            if checkBox and checkBox.NineSlice and checkBox.NineSlice.BottomEdge then
+                checkBox.NineSlice.BottomEdge:SetVertexColor(r,g,b)
             end
         end
     end)
 
+    
+    hooksecurefunc('ChatConfig_CreateColorSwatches', function(frame)
+        local checkBoxNameString = frame:GetName().."Swatch";
+        local checkBoxName, checkBox;
+        for index in pairs(frame.swatchTable or {}) do
+            checkBoxName = checkBoxNameString..index;
+            checkBox = _G[checkBoxName];
+            if checkBox and checkBox.NineSlice then
+                hide_Texture(checkBox.NineSlice.TopEdge)
+                hide_Texture(checkBox.NineSlice.RightEdge)
+                hide_Texture(checkBox.NineSlice.LeftEdge)
+                hide_Texture(checkBox.NineSlice.TopRightCorner)
+                hide_Texture(checkBox.NineSlice.TopLeftCorner)
+                hide_Texture(checkBox.NineSlice.BottomRightCorner)
+                hide_Texture(checkBox.NineSlice.BottomLeftCorner)
+            end
+        end
+    end)
+    hooksecurefunc('ChatConfig_UpdateSwatches', function(frame)
+        if ( not FCF_GetCurrentChatFrame() ) then
+            return;
+        end
+        local nameString = frame:GetName().."Swatch";
+        local baseName, colorSwatch
+        for index, value in ipairs(frame.swatchTable or {}) do
+            baseName = nameString..index;            
+            local r,g,b
+            colorSwatch = _G[baseName.."ColorSwatch"]
+            if ( colorSwatch ) then
+                r,g,b= GetChatUnitColor(value.type)
+            end
+            r,g,b= r or 1, g or 1, b or 1
+            _G[baseName.."Text"]:SetTextColor(r, g, b)
+            _G[baseName].NineSlice.BottomEdge:SetVertexColor(r, g, b)
+        end
+    end)
+    
+    e.Set_NineSlice_Color_Alpha(CombatConfigColorsUnitColors, nil, true)
+    e.Set_NineSlice_Color_Alpha(CombatConfigColorsHighlighting, nil, true)
+    e.Set_NineSlice_Color_Alpha(CombatConfigColorsColorizeUnitName, nil, true)
+    e.Set_NineSlice_Color_Alpha(CombatConfigColorsColorizeSpellNames, nil, true)
+    e.Set_NineSlice_Color_Alpha(CombatConfigColorsColorizeDamageNumber, nil, true)
+    e.Set_NineSlice_Color_Alpha(CombatConfigColorsColorizeDamageSchool, nil, true)
+    e.Set_NineSlice_Color_Alpha(CombatConfigColorsColorizeEntireLine, nil, true)
+    
     set_SearchBox(ChatFrame1EditBox)
 
      --插件，管理

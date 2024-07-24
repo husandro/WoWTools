@@ -4678,7 +4678,21 @@
         "PlayerChoiceTimeRemaining",
         "ArtifactFrame",
         "ScenarioObjectiveTracker",
-        "QuestObjectiveItemButtonMixin"
+        "QuestObjectiveItemButtonMixin",
+        "ChatConfig_UpdateCheckboxes",
+        "ChatConfig_UpdateSwatches",
+        "ChatConfig_CreateColorSwatches",
+        "CombatConfigColorsUnitColorsSwatch1Text",
+        "GetChatUnitColor",
+        "CombatConfigColorsUnitColorsSwatch7",
+        "CombatConfigColorsUnitColorsSwatch1",
+        "CombatConfigColorsHighlighting",
+        "CombatConfigColorsColorizeUnitName",
+        "CombatConfigColorsColorizeSpellNames",
+        "CombatConfigColorsColorizeDamageNumber",
+        "CombatConfigColorsColorizeDamageSchool",
+        "CombatConfigColorsColorizeEntireLine",
+        "CombatConfigColorsUnitColors"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",
