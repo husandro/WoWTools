@@ -1,6 +1,6 @@
 local id, e = ...
 
-e.SetItemCurrencyID= 2912--套装，转换，货币
+--e.SetItemCurrencyID= 2912--套装，转换，货币
 local ItemCurrencyTips= {---物品升级界面，挑战界面，物品，货币提示
     --{type='currency', id=2812},--守护巨龙的觉醒纹章
     --{type='currency', id=2809},--魔龙的觉醒纹章
