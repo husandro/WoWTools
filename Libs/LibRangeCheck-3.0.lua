@@ -85,7 +85,15 @@ local IsSpellInRange = _G.IsSpellInRange or function(id, unit)
   end
   return nil
 end
-
+local IsSpellBookItemInRange = _G.IsSpellInRange or function(index, spellBank, unit)
+  local result = C_SpellBook.IsSpellBookItemInRange(index, spellBank, unit)
+  if result == true then
+    return 1
+  elseif result == false then
+    return 0
+  end
+  return nil
+end
 local UnitClass = UnitClass
 local UnitRace = UnitRace
 local GetInventoryItemLink = GetInventoryItemLink
@@ -562,7 +570,7 @@ local lastUpdate = 0
 local checkers_Spell = setmetatable({}, {
   __index = function(t, spellIdx)
     local func = function(unit)
-      if C_SpellBook.IsSpellBookItemInRange(spellIdx, BOOKTYPE_SPELL, unit) then
+      if IsSpellBookItemInRange(spellIdx, BOOKTYPE_SPELL, unit) == 1 then
         return true
       end
     end
@@ -674,7 +682,7 @@ local function getCheckerForSpellWithMinRange(spellIdx, minRange, range, spellLi
   local minRangeChecker = findMinRangeChecker(minRange, range, spellList, interactLists)
   if minRangeChecker then
     checker = function(unit)
-      if C_SpellBook.IsSpellBookItemInRange(spellIdx, BOOKTYPE_SPELL, unit) then
+      if IsSpellBookItemInRange(spellIdx, BOOKTYPE_SPELL, unit) == 1 then
         return true
       elseif minRangeChecker(unit) then
         return true, true

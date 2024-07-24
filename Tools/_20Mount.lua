@@ -252,7 +252,7 @@ local function checkMount()--检测坐骑
 
         else
             MountTab[type]={}
-            for spellID, tab in pairs(Save.Mounts[type]) do
+            for spellID, tab in pairs(Save.Mounts[type] or {}) do
                 spellID= (spellID==179244 or spellID==179245) and ShiJI or spellID
                 local mountID = C_MountJournal.GetMountFromSpell(spellID)
                 if mountID then
