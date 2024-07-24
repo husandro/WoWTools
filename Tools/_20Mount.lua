@@ -66,7 +66,7 @@ local Save={
             --[368899]=true,--[载风迅疾幼龙]
             --[360954]=true,--[高地幼龙]
         },
-        Shift={
+        ['Shift']={
             --[[[75973]=true,--X-53型观光火箭
             [93326]=true,--沙石幼龙
             [121820]=true,--黑耀夜之翼]]
@@ -78,11 +78,11 @@ local Save={
             [98718]=true,
             [64731]=true,--[海龟]
         },
-        Alt={[264058]=true,--雄壮商队雷龙
+        ['Alt']={[264058]=true,--雄壮商队雷龙
             [122708]=true,--雄壮远足牦牛
             [61425]=true,--旅行者的苔原猛犸象
         },
-        Ctrl={
+        ['Ctrl']={
             --[118089]=true,--天蓝水黾
             --[127271]=true,--猩红水黾
             [107203]=true,--泰瑞尔的天使战马
@@ -252,7 +252,8 @@ local function checkMount()--检测坐骑
 
         else
             MountTab[type]={}
-            for spellID, tab in pairs(Save.Mounts[type] or {}) do
+            Save.Mounts[type]= Save.Mounts[type] or {}
+            for spellID, tab in pairs(Save.Mounts[type]) do
                 spellID= (spellID==179244 or spellID==179245) and ShiJI or spellID
                 local mountID = C_MountJournal.GetMountFromSpell(spellID)
                 if mountID then
