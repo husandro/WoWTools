@@ -4692,7 +4692,9 @@
         "CombatConfigColorsColorizeDamageNumber",
         "CombatConfigColorsColorizeDamageSchool",
         "CombatConfigColorsColorizeEntireLine",
-        "CombatConfigColorsUnitColors"
+        "CombatConfigColorsUnitColors",
+        "UIDropDownMenu_Initialize",
+        "DropdownTextMixin"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

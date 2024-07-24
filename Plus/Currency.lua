@@ -884,10 +884,10 @@ local function set_ItemInteractionFrame_Currency(self)
     local itemInfo= C_ItemInteraction.GetItemInteractionInfo() or {}
 	local currencyID= itemInfo.currencyTypeId or self.chargeCurrencyTypeId
 	currencyID= currencyID or e.SetItemCurrencyID--套装，转换，货币
-	--[[if not currencyID then
-		local ver= select(4,GetBuildInfo())-->=100100,--版本 100100
-	end]]
 
+	if not currencyID then
+		return
+	end
 
 	if self==ItemInteractionFrame then
 		TokenFrame.chargeCurrencyTypeId= currencyID
