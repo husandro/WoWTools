@@ -156,7 +156,7 @@ local function Init_Bank_Plus()--增强，原生
 
 
 
-    
+
 
     --设置，显示材料银行
     function ReagentBankFrame.ShowHideButton:show_hide(hide)
@@ -184,10 +184,10 @@ local function Init_Bank_Plus()--增强，原生
     end
     hooksecurefunc('BankFrame_ShowPanel', ReagentBankFrame.ShowHideButton.show_hide)
 
- 
 
-    
-    
+
+
+
     ReagentBankFrame:SetSize(715, 415)--386, 415
     --添加，背景
     ReagentBankFrame.Bg= ReagentBankFrame:CreateTexture(nil, 'BACKGROUND')
@@ -197,7 +197,7 @@ local function Init_Bank_Plus()--增强，原生
     ReagentBankFrame.Bg:SetAlpha(0.5)
 
     ReagentBankFrame.NineSlice:Hide()
-    ReagentBankFrame.EdgeShadows:Hide()    
+    ReagentBankFrame.EdgeShadows:Hide()
 
     ReagentBankFrame.DespositButton:ClearAllPoints()
     ReagentBankFrame.DespositButton:SetPoint('BOTTOM',0 ,18)
@@ -208,7 +208,7 @@ local function Init_Bank_Plus()--增强，原生
     ReagentBankFrame.DespositButton.texture2:SetPoint('RIGHT', -4, 0)
     ReagentBankFrame.DespositButton.texture2:SetAtlas('poi-traveldirections-arrow')
     ReagentBankFrame.DespositButton.texture2:SetTexCoord(0,1,1,0)
-   
+
     --[[ReagentBankFrame.DespositButton:SetScript('OnClick', function()
         PlaySound(SOUNDKIT.IG_MAINMENU_OPTION);
         print(id,addName)
@@ -227,7 +227,7 @@ local function Init_Bank_Plus()--增强，原生
                 region:SetTexture(0)
                 region:Hide()
             end
-        end     
+        end
     end)
 end
 
@@ -373,8 +373,8 @@ local function Init_All_Bank()
             if bagFrame and bagID>= numBag then
 
                 bagFrame:ClearAllPoints()
-                bagFrame:SetPoint('RIGHT', UIParent, 'LEFT', -40, 0)                
-                if not bagFrame.isHideFrame then                    
+                bagFrame:SetPoint('RIGHT', UIParent, 'LEFT', -40, 0)
+                if not bagFrame.isHideFrame then
                     bagFrame.isHideFrame=true
                     bagFrame:HookScript('OnShow', function(f)
                         f:Hide()
@@ -552,9 +552,9 @@ local function Init_All_Bank()
 
 
     ReagentBankFrame.NineSlice:Hide()
-    if BankFrameMoneyFrameBorder then            
+    if BankFrameMoneyFrameBorder then
         BankFrameMoneyFrameBorder:Hide()
-    end   
+    end
 
     --隐藏，ITEMSLOTTEXT"物品栏位" BAGSLOTTEXT"背包栏位"
     for _, region in pairs({BankSlotsFrame:GetRegions()}) do
@@ -569,22 +569,22 @@ local function Init_All_Bank()
         BankItemSearchBox:ClearAllPoints()--移动，搜索框
         BankItemSearchBox:SetPoint('TOP', 0,-33)
     end)
-    
-    
+
+
 
     ReagentBankFrame:HookScript('OnShow', function(self)
         if self.isSetPoint then--or not IsReagentBankUnlocked() then
             return
         end
         self.isSetPoint=true
-       
+
 
         for _, region in pairs({ReagentBankFrame:GetRegions()}) do--隐藏，材料包，背景
             if region:GetObjectType()=='Texture' then
                 region:SetTexture(0)
                 region:Hide()
             end
-        end        
+        end
 
         BankItemAutoSortButton:ClearAllPoints()--移动，整理，按钮
         BankItemAutoSortButton:SetPoint('RIGHT', BankItemSearchBox, 'LEFT', -6, 0)
@@ -1221,6 +1221,13 @@ end
 
 
 
+
+
+
+
+
+
+
 --银行
 --BankFrame.lua
 local function Init_Bank_Frame()
@@ -1262,6 +1269,14 @@ local function Init_Bank_Frame()
             ReagentBankFrame[textrue]:SetAlpha(0)
         end
     end
+
+    e.Set_NineSlice_Color_Alpha(BankFrame, true)
+    e.Set_NineSlice_Color_Alpha(AccountBankPanel, true)
+    e.Set_NineSlice_Color_Alpha(BankSlotsFrame, nil, true)
+    e.Set_Alpha_Frame_Texture(BankFrameTab1, {notAlpha=true})
+    e.Set_Alpha_Frame_Texture(BankFrameTab2, {notAlpha=true})
+    e.Set_Alpha_Frame_Texture(BankFrameTab3, {notAlpha=true})
+    BankFrameBg:SetTexture(0)
 
     --整理材料银行
     ReagentBankFrame.autoSortButton= CreateFrame("Button", nil, ReagentBankFrame, 'BankAutoSortButtonTemplate')

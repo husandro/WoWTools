@@ -93,7 +93,7 @@ function e.Set_Alpha_Frame_Texture(frame, tab)
     local notColor= tab.notColor
     local alpha
     if not tab.notAlpha then
-        alpha= tab.alpha or Save.alpha
+        alpha= tab.isMinAlpha and min05 or tab.alpha or Save.alpha
     end
     for index, icon in pairs({frame:GetRegions()}) do
         if icon:GetObjectType()=="Texture" then
@@ -826,14 +826,13 @@ local function Init_All_Frame()
 
 
 
-     --[[银行
-     e.Set_NineSlice_Color_Alpha(BankFrame,true)
+     --银行
+     --[[e.Set_NineSlice_Color_Alpha(BankFrame,true)
 
-     hide_Texture(BankFrameMoneyFrameInset.Bg)
+     
      hide_Texture(BankFrameMoneyFrameBorderMiddle)
      hide_Texture(BankFrameMoneyFrameBorderRight)
      hide_Texture(BankFrameMoneyFrameBorderLeft)
-     hide_Texture(BankFrameMoneyFrameInset.NineSlice)
 
      set_SearchBox(BankItemSearchBox)
 
@@ -855,9 +854,10 @@ local function Init_All_Frame()
              end
          end
      end)
-     e.Set_Alpha_Frame_Texture(BankFrameTab1, {alpha=min05})
-     e.Set_Alpha_Frame_Texture(BankFrameTab2, {alpha=min05})
-]]
+     e.Set_Alpha_Frame_Texture(BankFrameTab1, {isMinAlpha=true})
+     e.Set_Alpha_Frame_Texture(BankFrameTab2, {isMinAlpha=true})
+     e.Set_Alpha_Frame_Texture(BankFrameTab2, {isMinAlpha=true})]]
+
      --背包
      if ContainerFrameCombinedBags and ContainerFrameCombinedBags.NineSlice then
         e.Set_NineSlice_Color_Alpha(ContainerFrameCombinedBags, true)

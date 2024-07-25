@@ -4695,7 +4695,9 @@
         "CombatConfigColorsUnitColors",
         "UIDropDownMenu_Initialize",
         "DropdownTextMixin",
-        "EJ_ContentTab_Select"
+        "EJ_ContentTab_Select",
+        "BankFrameTab3",
+        "AccountBankPanel"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",
