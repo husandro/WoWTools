@@ -40,7 +40,7 @@ License: MIT
 -- @class file
 -- @name LibRangeCheck-3.0
 local MAJOR_VERSION = "LibRangeCheck-3.0"
-local MINOR_VERSION = 19
+local MINOR_VERSION = 20
 
 ---@class lib
 local lib, oldminor = LibStub:NewLibrary(MAJOR_VERSION, MINOR_VERSION)
@@ -86,6 +86,10 @@ local IsSpellInRange = _G.IsSpellInRange or function(id, unit)
   return nil
 end
 local IsSpellBookItemInRange = _G.IsSpellInRange or function(index, spellBank, unit)
+  -- Deprecated_11_0_0.lua set BOOKTYPE_SPELL to "spell" but doesn't provide a compatibility wrapper for IsSpellBookItemInRange
+  if type(spellBank) == "string" then
+    spellBank = (spellBank == "spell") and Enum.SpellBookSpellBank.Player or Enum.SpellBookSpellBank.Pet;
+  end
   local result = C_SpellBook.IsSpellBookItemInRange(index, spellBank, unit)
   if result == true then
     return 1
