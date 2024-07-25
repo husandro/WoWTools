@@ -4694,7 +4694,8 @@
         "CombatConfigColorsColorizeEntireLine",
         "CombatConfigColorsUnitColors",
         "UIDropDownMenu_Initialize",
-        "DropdownTextMixin"
+        "DropdownTextMixin",
+        "EJ_ContentTab_Select"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

@@ -307,6 +307,42 @@ local function Init_Mixin()
     hooksecurefunc(DropdownTextMixin, 'OnLoad', function(self)
         set_Menu(self)
     end)
+    hooksecurefunc(DropdownButtonMixin, 'SetupMenu', function(self)
+        set_Menu(self)
+    end)
+  
+
+    --插件，UIDropDownMenu
+    if e.LibDD then
+        hooksecurefunc(e.LibDD, 'UIDropDownMenu_Initialize', function(_, menu)
+            set_Menu(menu)
+        end)
+        hooksecurefunc(e.LibDD, 'ToggleDropDownMenu', function(_, level)
+            local nine= _G['L_DropDownList'..(level or '')..'MenuBackdrop']
+            if nine and nine.NineSlice then
+                set_Alpha_Color(nine.NineSlice.TopEdge, true)
+                set_Alpha_Color(nine.NineSlice.BottomEdge, true)
+                set_Alpha_Color(nine.NineSlice.LeftEdge, true)
+                set_Alpha_Color(nine.NineSlice.RightEdge, true)
+            end
+        end)
+    end
+    if UIDropDownMenu_Initialize then
+        hooksecurefunc('UIDropDownMenu_Initialize', function(menu)
+            set_Menu(menu)
+        end)
+        hooksecurefunc('ToggleDropDownMenu', function(level)
+            local nine= _G['DropDownList'..(level or '')..'MenuBackdrop']
+            if nine and nine.NineSlice then
+                set_Alpha_Color(nine.NineSlice.TopEdge, true)
+                set_Alpha_Color(nine.NineSlice.BottomEdge, true)
+                set_Alpha_Color(nine.NineSlice.LeftEdge, true)
+                set_Alpha_Color(nine.NineSlice.RightEdge, true)
+            end
+        end)
+    end
+
+
 end
 
 
@@ -1302,7 +1338,6 @@ local function Init_All_Frame()
     e.Set_Alpha_Frame_Texture(ColorPickerFrame.Border, {alpha= min05})
 
     --编辑模式
-
     e.Set_ScrollBar_Color_Alpha(EditModeManagerFrame.AccountSettings.SettingsContainer)
     e.Set_Alpha_Frame_Texture(EditModeManagerFrame.Border, {alpha=min05})
     e.Set_Alpha_Frame_Texture(EditModeManagerFrame.AccountSettings.SettingsContainer.BorderArt, {alpha=min05})
@@ -1387,35 +1422,7 @@ local function Init_All_Frame()
     set_Alpha_Color(DressUpFrame.OutfitDetailsPanel.BlackBackground)
 
 
-    --插件，UIDropDownMenu
-    if e.LibDD then
-        hooksecurefunc(e.LibDD, 'UIDropDownMenu_Initialize', function(_, menu)
-            set_Menu(menu)
-        end)
-        hooksecurefunc(e.LibDD, 'ToggleDropDownMenu', function(_, level)
-            local nine= _G['L_DropDownList'..(level or '')..'MenuBackdrop']
-            if nine and nine.NineSlice then
-                set_Alpha_Color(nine.NineSlice.TopEdge, true)
-                set_Alpha_Color(nine.NineSlice.BottomEdge, true)
-                set_Alpha_Color(nine.NineSlice.LeftEdge, true)
-                set_Alpha_Color(nine.NineSlice.RightEdge, true)
-            end
-        end)
-    end
-    if UIDropDownMenu_Initialize then
-        hooksecurefunc('UIDropDownMenu_Initialize', function(menu)
-            set_Menu(menu)
-        end)
-        hooksecurefunc('ToggleDropDownMenu', function(level)
-            local nine= _G['DropDownList'..(level or '')..'MenuBackdrop']
-            if nine and nine.NineSlice then
-                set_Alpha_Color(nine.NineSlice.TopEdge, true)
-                set_Alpha_Color(nine.NineSlice.BottomEdge, true)
-                set_Alpha_Color(nine.NineSlice.LeftEdge, true)
-                set_Alpha_Color(nine.NineSlice.RightEdge, true)
-            end
-        end)
-    end
+    
 
     
 
@@ -1798,7 +1805,7 @@ local function Init_Event(arg1)
         e.Set_NineSlice_Color_Alpha(MountJournal.RightInset, nil, true)
         e.Set_NineSlice_Color_Alpha(MountJournal.LeftInset, nil, true)
         
-        set_Alpha_Color(MountJournal.FilterDropdown.Background, nil, nil, min03)
+        --set_Alpha_Color(MountJournal.FilterDropdown.Background, nil, nil, min03)
         
 
         set_Alpha_Color(PetJournalPetCardBG, nil, nil, min03)

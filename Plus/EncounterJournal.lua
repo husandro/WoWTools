@@ -1547,23 +1547,26 @@ local function Init_EncounterJournal()--冒险指南界面
         end
     end)
 
-    if not Save.hideEncounterJournal then--记录上次选择TAB
-        local max=EJ_GetNumTiers()
-        local numTier= Save.EncounterJournalTier or max--记录上次选择版本
-        numTier= numTier>max and max or numTier
-        EJ_SelectTier(numTier)
+    if not Save.hideEncounterJournal and Save.EncounterJournalTier then--记录上次选择TAB
+        local max= EJ_GetNumTiers()
+        if max then
+            local tier= math.min(Save.EncounterJournalTier, max)
+            if tier~= max then
+                EJ_SelectTier(tier)
+            end
+        end
     end
 
+    --记录上次选择版本
+    hooksecurefunc('EJ_SelectTier', function(tier)
+        Save.EncounterJournalTier=tier
+    end)
 
-        --记录上次选择版本
-        hooksecurefunc('EncounterJournal_ExpansionDropdown_Select', function(_, tier)
-            Save.EncounterJournalTier=tier
-        end)
-
-        --记录上次选择TAB
-        hooksecurefunc('EJ_ContentTab_Select', function(id2)
-            Save.EncounterJournalSelectTabID=id2
-        end)
+    --记录上次选择TAB
+    --[[hooksecurefunc('EJ_ContentTab_Select', function(id2)
+        print(id2)
+        Save.EncounterJournalSelectTabID=id2
+    end)]]
 end
 
 
