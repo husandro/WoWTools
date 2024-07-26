@@ -54,7 +54,7 @@ local function set_Alpha_Color(self, notAlpha, notColor, alpha)
             e.Set_Label_Texture_Color(self, {type=self:GetObjectType()})
         end
         if not notAlpha then
-            self:SetAlpha(alpha or Save.alpha)
+            self:SetAlpha(alpha or Save.alpha or min05)
         end
     end
 end
