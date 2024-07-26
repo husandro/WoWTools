@@ -15,6 +15,32 @@ local Initializer
 
 
 
+local function Check_TimeWalker_Quest_Completed()--迷离的时光之路，任务是否完成
+    for _, questID in pairs({
+        40168, 40173, 40786, 45563, 55499, 40168, 40173, 40787, 45563, 55498, 64710,64709,
+        72725,--迷离的时光之路 熊猫人之迷
+    }) do
+        if C_QuestLog.IsQuestFlaggedCompleted(questID) then
+            return format('|A:%s:0:0|a', e.Icon.select)
+        end
+    end
+end
+
+local function Check_Darkmon_Quest_Completed()--暗月马戏团，宠物对战，任务是否完成
+    for _, questID in pairs({36471, 32175}) do
+        if C_QuestLog.IsQuestFlaggedCompleted(questID) then
+            return format('|A:%s:0:0|a', e.Icon.select)
+        end
+    end
+end
+
+
+
+
+
+
+
+
 
 
 
@@ -82,14 +108,7 @@ local function set_Time_Color(eventTime, hour, minute, init)
     return eventTime, true
 end
 
-local function set_Quest_Completed(tab)--任务是否完成
-    for _, questID in pairs(tab) do
-        local completed= C_QuestLog.IsQuestFlaggedCompleted(questID)
-        if completed then
-            return format('|A:%s:0:0|a', e.Icon.select)
-        end
-    end
-end
+
 
 local CALENDAR_EVENTTYPE_TEXTURES = {
 	[Enum.CalendarEventType.Raid]		= "Interface\\LFGFrame\\LFGIcon-Raid",
@@ -162,18 +181,14 @@ local function Get_Button_Text(event)
             event.eventID==1269
         then
 
-            local tab2={40168, 40173, 40786, 45563, 55499, 40168, 40173, 40787, 45563, 55498, 64710,64709,
-                72725,--迷离的时光之路 熊猫人之迷
-            }
-            local isCompleted= set_Quest_Completed(tab2)--任务是否完成
+            local isCompleted= Check_TimeWalker_Quest_Completed()--迷离的时光之路，任务是否完成
             texture= isCompleted or '|A:AutoQuest-Badge-Campaign:0:0|a'
             title=(e.onlyChinese and '时空漫游' or PLAYER_DIFFICULTY_TIMEWALKER)
             findQuest= isCompleted and true or findQuest
             icon=463446--1166[时空扭曲徽章]
 
         elseif event.eventID==479 then--暗月--CALENDAR_FILTER_DARKMOON = "暗月马戏团"--515[暗月奖券]
-            local tab2={36471, 32175}
-            local isCompleted= set_Quest_Completed(tab2)--任务是否完成
+            local isCompleted= Check_Darkmon_Quest_Completed()--暗月马戏团，宠物对战，任务是否完成
             texture= isCompleted or '|A:AutoQuest-Badge-Campaign:0:0|a'
             findQuest=isCompleted and true or findQuest
             icon=134481
@@ -209,19 +224,14 @@ local function Get_Button_Text(event)
             or event.eventID==1277
             or event.eventID==1269
          then
-
-            local tab2={40168, 40173, 40786, 45563, 55499, 40168, 40173, 40787, 45563, 55498, 64710,64709,
-            72725,--迷离的时光之路 熊猫人之迷
-            }
-            local isCompleted= set_Quest_Completed(tab2)--任务是否完成
+            local isCompleted= Check_TimeWalker_Quest_Completed()--迷离的时光之路，任务是否完成
 
             texture= isCompleted or '|A:AutoQuest-Badge-Campaign:0:0|a'
             findQuest= isCompleted
             icon=463446--1166[时空扭曲徽章]
 
         elseif event.eventID==479 then--暗月--CALENDAR_FILTER_DARKMOON = "暗月马戏团"
-            local tab2={36471, 32175}
-            local isCompleted= set_Quest_Completed(tab2)--任务是否完成
+            local isCompleted= Check_Darkmon_Quest_Completed()--暗月马戏团，宠物对战，任务是否完成
             texture= isCompleted or '|A:AutoQuest-Badge-Campaign:0:0|a'
             findQuest=isCompleted
             icon=134481--515[暗月奖券]
@@ -761,11 +771,11 @@ local function calendar_Uptate()
     local info= indexInfo and C_Calendar.GetDayEvent(indexInfo.offsetMonths, indexInfo.monthDay, indexInfo.eventIndex) or {}
     local text
     if info.eventID then
-        local data= e.cn(nil, {holydayID= info.eventID}) or {}        
+        local title= e.cn(nil, {holydayID= info.eventID, isName=true})
         text= (info.iconTexture and '|T'..info.iconTexture..':0|t'..info.iconTexture..'|n' or '')
             ..'eventID '..info.eventID
             ..(info.title and '|n'..info.title or '')
-            ..(data[1] and '|n'..data[1] or '')
+            ..(title and '|n'..title or '')
     end
 
     if text and not CalendarViewHolidayFrame.Text then
