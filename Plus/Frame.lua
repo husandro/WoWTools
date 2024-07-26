@@ -1719,6 +1719,9 @@ local function setAddLoad(arg1)
                     break
                 end
             end
+            hooksecurefunc(ProfessionsRecipeListRecipeMixin, 'Init', function(self)
+                self.Label:SetPoint('RIGHT', -22, 0)
+            end)
         end, scaleStoppedFunc=function(btn)
             local self= btn.target
             local sacle= self:GetScale()
