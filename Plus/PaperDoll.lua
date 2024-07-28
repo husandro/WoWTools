@@ -129,6 +129,7 @@ local function set_Engineering(self, slot, link, use, isPaperDollItemSlot)--å¢žå
    -- print(recipeLearned(126392), recipeLearned(55016))
    --local tradeSkillID, skillLineName, parentTradeSkillID = C_TradeSkillUI.GetTradeSkillLineForRecipe(recipeID);
    --print(C_TradeSkillUI.GetTradeSkillLineForRecipe(126392))
+   --Professions.InspectRecipe(recipeID)
     if not ((slot==15 and recipeLearned(126392)) or (slot==6 and recipeLearned(55016))) or use or Save.hide or not link or not isPaperDollItemSlot then
     --if not (slot==15 or slot==6 ) or use or Save.hide or not link or not isPaperDollItemSlot then
         if self.engineering  then

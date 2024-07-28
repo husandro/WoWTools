@@ -676,6 +676,15 @@ local function set_Widget_Text_OnUpDate(self, elapsed)
     end
 end
 
+
+
+
+
+
+
+
+
+
 local INSTANCE_DIFFICULTY_FORMAT='('..e.Magic(INSTANCE_DIFFICULTY_FORMAT)..')'-- "（%s）";
 local function set_AreaPOIPinMixin_OnAcquired(frame)
     frame.updateWidgetID=nil
