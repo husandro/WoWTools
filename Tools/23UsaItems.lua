@@ -608,9 +608,10 @@ function Init_Menu_List(_, level, type)
     local info
     if type then
         for index, ID in pairs(Save[type]) do
-            local name, icon, _
+            local name, icon
             if type=='spell' then
-                name, _, icon =GetSpellInfo(ID)
+                name= C_Spell.GetSpellName(ID)
+                icon= C_Spell.GetSpellTexture(ID)
             else
                 name= C_Item.GetItemNameByID(ID)
                 icon=C_Item.GetItemIconByID(ID)

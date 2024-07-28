@@ -363,11 +363,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
                 Init()
 
-                panel:UnregisterEvent('ADDON_LOADED')
+                self:UnregisterEvent('ADDON_LOADED')
             else
-                panel:UnregisterAllEvents()
+                self:UnregisterAllEvents()
             end
-            panel:RegisterEvent("PLAYER_LOGOUT")
+            self:RegisterEvent("PLAYER_LOGOUT")
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then

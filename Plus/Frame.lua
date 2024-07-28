@@ -1870,7 +1870,10 @@ local function setAddLoad(arg1)
         end, sizeRestFunc=function(btn)
             btn.target:SetSize(825, 568)
         end})
+        
         e.Set_Move_Frame(ProfessionsCustomerOrdersFrame.Form, {frame=ProfessionsCustomerOrdersFrame})
+
+        e.Set_Move_Frame(InspectRecipeFrame)
 
     elseif arg1=='Blizzard_VoidStorageUI' then--虚空，仓库
          e.Set_Move_Frame(VoidStorageFrame)

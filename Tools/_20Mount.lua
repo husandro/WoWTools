@@ -307,10 +307,11 @@ local function setShiftCtrlAltAtt()--设置Shift Ctrl Alt 属性
 
     for _, type in pairs(tab) do
         button.textureModifier[type]=nil
-        if MountTab[type] and MountTab[type][1] then
-            local name, _, icon=GetSpellInfo(MountTab[type][1])
-            --if name and icon then
-                button:SetAttribute(type.."-spell1", name or MountTab[type][1])
+        local spellID= MountTab[type] and MountTab[type][1]
+        if spellID then
+                local name= C_Spell.GetSpellName(spellID)
+                local icon= C_Spell.GetSpellTexture(spellID)
+                button:SetAttribute(type.."-spell1", name or spellID)
                 button.textureModifier[type]=icon
                 button.typeSpell=true--提示用
                 button.typeID=MountTab[type][1]
@@ -396,8 +397,6 @@ local function setClickAtt()--设置 Click属性
             or (isFlyableArea and getRandomRoll(MOUNT_JOURNAL_FILTER_FLYING))--飞行区域
             or (IsOutdoors() and getRandomRoll(MOUNT_JOURNAL_FILTER_GROUND))--室内
             or button.spellID
-
-
     end
     spellID= spellID or ShiJI
 

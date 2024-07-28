@@ -560,6 +560,8 @@ local function Init_ProfessionsFrame()
             self.texture= self:CreateTexture(nil, 'OVERLAY')
             self.texture:SetPoint('RIGHT',2,0)
             self.texture:SetSize(22,22)
+            self.Count:ClearAllPoints()
+            self.Count:SetPoint('RIGHT', self.texture, 'LEFT')
         end
         if self.texture then
             self.texture:SetTexture(recipeInfo.icon or 0)

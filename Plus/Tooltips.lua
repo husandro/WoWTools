@@ -2270,8 +2270,8 @@ local function Init_Settings()
         func:Set_Achievement(tooltip, data.id)--成就
     end)
 
-    --[[TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Macro, function(tooltip, data)
-        local frame= GetMouseFocus and GetMouseFocus()--宏 11版本
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Macro, function(tooltip)
+        local frame= tooltip:GetOwner()--宏 11版本
         if frame and frame.action then
             local type, macroID, subType= GetActionInfo(frame.action)
             if type=='macro' and macroID then
@@ -2285,7 +2285,7 @@ local function Init_Settings()
                 end
             end
         end
-    end)]]
+    end)
 
     --###########
     --宠物面板提示

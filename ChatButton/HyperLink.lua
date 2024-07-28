@@ -36,10 +36,26 @@ local LOOT_ITEM= e.Magic(LOOT_ITEM)--:gsub('%%s', '(.+)')--%s获得了战利品�
 
 
 
-local function cn_Link_Text(link)
-    local name= e.cn(link:match('|h%[(.-)]|h'), true)--汉化
+
+
+
+
+
+
+
+
+
+
+
+
+local function cn_Link_Text(link, tabInfo)
+    local name= link:match('|h%[|c........(.-)|r]|h') or link:match('|h%[(.-)]|h')
     if name then
-        link= link:gsub('|h%[(.-)]|h', '|h['..name..']|h')
+        local new= e.cn(name, tabInfo)--汉化
+        if new then
+            name= name:match('|c........(.-)|r') or name
+            link= link:gsub(name, new)
+        end
     end
     return link
 end
@@ -133,10 +149,9 @@ local function PetType(petType)
     end
 end
 
-local function Item(link)--物品超链接    
-    local itemID= link:match('Hitem:(%d+)')
-    local t= cn_Link_Text(link)
-    local icon, classID, subclassID= select(5, C_Item.GetItemInfoInstant(itemID))
+local function Item(link)--物品超链接
+    local itemID, _, _, _, icon, classID, subclassID= C_Item.GetItemInfoInstant(link)
+    local t= cn_Link_Text(link, {itemID=itemID, isName=true})
     t= icon and '|T'..icon..':0|t'..t or t--加图标
     if classID==2 or classID==4 then
         local lv=C_Item.GetDetailedItemLevelInfo(link)--装等
@@ -184,18 +199,22 @@ local function Item(link)--物品超链接
 end
 
 local function Spell(link)--法术图标
-    local t=cn_Link_Text(link)
-    local icon= C_Spell.GetSpellTexture(link)
-    local id2=link:match('Hspell:(%d+)')
-    if icon then
-        t= '|T'..icon..':0|t'..t
-    elseif id2 then
-        icon = C_Spell.GetSpellTexture(id2)
-        if icon then
-            t='|T'..icon..':0|t'..t
+    local spellID= (C_Spell.GetSpellInfo(link) or {}).spellID
+    if not spellID then
+        spellID= link:match('Hspell:(%d+)')
+        if spellID  then
+            spellID= spellID and tonumber(spellID)
         end
     end
-    local nu=Mount(id2)
+    if not spellID then
+        return
+    end
+    local t=cn_Link_Text(link, {spellID=spellID, isName=true})
+    local icon= C_Spell.GetSpellTexture(link)
+    if icon then
+        t= '|T'..icon..':0|t'..t
+    end
+    local nu=Mount(spellID)
     if nu then
         t=t..nu
     end
@@ -493,6 +512,19 @@ local function Waypoint(text)--地图标记xy, 格式 60.0 70.5
     end
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 local showTimestamps--聊天中时间戳
 local function setAddMessageFunc(self, s, ...)
     local petChannel=s:find('|Hchannel:.-'..PET_BATTLE_COMBAT_LOG..']|h') and true or false
@@ -550,6 +582,29 @@ local function setAddMessageFunc(self, s, ...)
 
     return self.ADD(self, s, ...)
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -780,7 +835,7 @@ local function Create_Texture_Tips(btn, data)--atlas, coord)
         r, g, b= 1, 1, 1
     end
     font:SetTextColor(r or 1, g or 0.82, b or 0)
-    
+
 end
 
 
@@ -816,7 +871,7 @@ local function Init_Add_Reload_Button()
     SettingsPanel.OutputText:ClearAllPoints()
     SettingsPanel.OutputText:SetPoint('BOTTOMLEFT', 20, 18)
 
- 
+
 
 
 

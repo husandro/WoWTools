@@ -2174,6 +2174,7 @@ local function Init_Event(arg1)
         set_Alpha_Color(ProfessionsFrame.SpecPage.DetailedView.Path.DialBG)
         set_Alpha_Color(ProfessionsFrame.SpecPage.DetailedView.UnspentPoints.CurrencyBackground)
 
+        e.Set_NineSlice_Color_Alpha(InspectRecipeFrame, true)
         set_Alpha_Color(InspectRecipeFrameBg)
         set_Alpha_Color(InspectRecipeFrame.SchematicForm.MinimalBackground)
         set_TabSystem_Button(ProfessionsFrame)
@@ -2440,7 +2441,7 @@ local function Init_Class_Power(init)--职业
 
     elseif e.Player.class=='SHAMAN' then--SM
         hooksecurefunc(TotemFrame, 'Update', function()
-            for btn, _ in pairs(TotemFrame.totemPool.activeObjects) do
+            for btn, _ in pairs(TotemFrame.totemPool.activeObjects or {}) do
                 set_Alpha_Color(btn.Border, true)
             end
         end)
