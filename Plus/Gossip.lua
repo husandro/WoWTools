@@ -3829,12 +3829,20 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     Init_Blizzard_PlayerChoice()
                     self:UnregisterEvent('ADDON_LOADED')
                 end
+
+                --时间到期，请冲时间
+                
             else
                 self:UnregisterEvent('ADDON_LOADED')
             end
 
         elseif arg1=='Blizzard_PlayerChoice' then
             Init_Blizzard_PlayerChoice()
+
+        elseif arg1=='Blizzard_SubscriptionInterstitialUI' then
+            if Save.gossip and SubscriptionInterstitialFrame:IsShown() then
+                SubscriptionInterstitialFrame:Hide()
+            end
         end
 
     elseif event == "PLAYER_LOGOUT" then

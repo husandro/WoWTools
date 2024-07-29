@@ -4697,7 +4697,9 @@
         "DropdownTextMixin",
         "EJ_ContentTab_Select",
         "BankFrameTab3",
-        "AccountBankPanel"
+        "AccountBankPanel",
+        "CommunitiesGuildNewsFiltersFrame",
+        "SubscriptionInterstitialFrame"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

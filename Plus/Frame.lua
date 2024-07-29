@@ -964,6 +964,8 @@ local function Init_Blizzard_Communities()--公会和社区 then
     e.Set_Move_Frame(CommunitiesFrame.NotificationSettingsDialog)
     e.Set_Move_Frame(CommunitiesFrame.NotificationSettingsDialog.Selector, {frame=CommunitiesFrame.NotificationSettingsDialog})
     e.Set_Move_Frame(CommunitiesFrame.NotificationSettingsDialog.ScrollFrame, {frame=CommunitiesFrame.NotificationSettingsDialog})
+    e.Set_Move_Frame(CommunitiesGuildNewsFiltersFrame)
+    e.Set_Move_Frame(CommunitiesGuildLogFrame)
 end
 
 
