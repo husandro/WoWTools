@@ -738,7 +738,7 @@ local function Init_Options()
 
 
     e.AddPanel_DropDown({
-        SetValueFunc= function(_, a, value)
+        SetValueFunc= function(_, _, value)
             if value==2 then
                 local valueR, valueG, valueB, valueA= Save.useCustomColorTab.r, Save.useCustomColorTab.g, Save.useCustomColorTab.b, Save.useCustomColorTab.a
                 local setA, setR, setG, setB
@@ -758,7 +758,7 @@ local function Init_Options()
                 )
             else
                 if ColorPickerFrame:IsShown() then
-                    ColorPickerCancelButton:Click()
+                    ColorPickerFrame.Footer.OkayButton:Click()
                 end
                 Set_Color()--自定义，颜色
                 print(id, e.Player.useColor and e.Player.useColor.hex or '', (e.onlyChinese and '颜色' or COLOR)..'|r',   e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
