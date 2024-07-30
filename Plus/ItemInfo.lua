@@ -1,8 +1,8 @@
 local id, e = ...
-local addName= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, INFO)
+local addName
 local Save={}
 local panel= CreateFrame("Frame")
-local Initializer
+
 
 local chargesStr= ITEM_SPELL_CHARGES:gsub('%%d', '%(%%d%+%)')--(%d+)次
 local keyStr= format(CHALLENGE_MODE_KEYSTONE_NAME,'(.+) ')--钥石
@@ -703,7 +703,7 @@ local function Create_Lable_Currency_Item_Numri_Info(btn, item, currencyIDorLink
             if self.itemLink and e.tips:IsShown() then
                 e.tips:AddLine(' ')
                 e.tips:AddDoubleLine(e.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, e.Icon.left)
-                e.tips:AddDoubleLine(id, Initializer:GetName())
+                e.tips:AddDoubleLine(id, addName)
                 e.tips:Show()
             end
         end)
@@ -922,122 +922,44 @@ local function Init_Bag()
     --############
     --排序:从右到左
     --############
-    local btn= e.Cbtn(ContainerFrameCombinedBags.TitleContainer, {icon=true, size={20,20}, name= 'ITEMSINFOMenuButton'})
-    if _G['MoveZoomInButtonPerContainerFrameCombinedBags'] then
-        btn:SetPoint('RIGHT', _G['MoveZoomInButtonPerContainerFrameCombinedBags'], 'LEFT')
-    else
-        btn:SetPoint('LEFT')
-    end
-    btn:SetAlpha(0.5)
-    btn:SetScript('OnMouseDown', function(self)
-        if not self.Menu then
-            self.Menu= CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")--菜单列表
-            e.LibDD:UIDropDownMenu_Initialize(self.Menu, function(_, level, menuList)
-                local info
-               --[[ if menuList and menuList:find('WOWDATA') then
-                    if menuList=='WOWDATA' then
-                        for guid, tab in pairs(e.WoWDate) do
-                            e.LibDD:UIDropDownMenu_AddButton({
-                                text= e.GetPlayerInfo({guid=guid, reName=true, reRealm=true}),
-                                notCheckable=true,
-                                keepShownOnClick=true,
-                                hasArrow=true,
-                                menuList='WOWDATA'..guid
-                            }, level)
-                        end
-                    else
-                        print()
-                    end
-                end
+    Menu.ModifyMenu("MENU_CONTAINER_FRAME_COMBINED", function(_, root)
+        root:CreateDivider()
+        local check= root:CreateCheckbox(e.onlyChinese and '反向整理背包' or REVERSE_CLEAN_UP_BAGS_TEXT, function()
+                return not C_Container.GetSortBagsRightToLeft()
+            end, function()
+                C_Container.SetSortBagsRightToLeft(not C_Container.GetSortBagsRightToLeft() and true or false)
+            end)
+        check:SetTooltip(function(tooltip, elementDescription)
+            GameTooltip_SetTitle(tooltip, id..' '..addName)
+            tooltip:AddDoubleLine(MenuUtil.GetElementText(elementDescription), e.GetEnabeleDisable(not C_Container.GetSortBagsRightToLeft()))
+            tooltip:AddDoubleLine('C_Container.SetSortBagsRightToLeft')
+        end)
 
-    e.WoWDate[e.Player.guid].Keystone={
-        score= score,
-        all= all,
-        week= e.Player.week,
-        weekNum= weekNum,
-        weekLevel= weekLevel,
-        weekPvE= e.Get_Week_Rewards_Text(3),--Raid
-        weekMythicPlus= e.Get_Week_Rewards_Text(1),--MythicPlus
-        weekPvP= e.Get_Week_Rewards_Text(2),--RankedPvP
-        link= e.WoWDate[e.Player.guid].Keystone.link,
-    }
+        check= root:CreateCheckbox(e.onlyChinese and '禁用排序' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISABLE, STABLE_FILTER_BUTTON_LABEL),
+            C_Container.GetBackpackAutosortDisabled,
+            function()
+                C_Container.SetBackpackAutosortDisabled(not C_Container.GetBackpackAutosortDisabled() and true or false)
+            end)
+        check:SetTooltip(function(tooltip, elementDescription)
+            GameTooltip_SetTitle(tooltip, id..' '..addName)
+            tooltip:AddDoubleLine(MenuUtil.GetElementText(elementDescription), e.GetEnabeleDisable(C_Container.GetBackpackAutosortDisabled()))
+            tooltip:AddLine('C_Container.SetBackpackAutosortDisabled')
+        end)
 
-                if menuList then
-                    return
-                end]]
-                info={
-                    text= e.onlyChinese and '反向整理背包' or REVERSE_CLEAN_UP_BAGS_TEXT,
-                    checked= C_Container.GetSortBagsRightToLeft(),
-                    tooltipOnButton=true,
-                    tooltipTitle='C_Container.|nSetSortBagsRightToLeft',
-                    tooltipText= e.onlyChinese and '整理背包会将物品移动到你最右边的背包里' or OPTION_TOOLTIP_REVERSE_CLEAN_UP_BAGS,
-                    func= function()
-                        C_Container.SetSortBagsRightToLeft(not C_Container.GetSortBagsRightToLeft() and true or false)
-                    end,
-                }
-                e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-                info={--排序:从右到左
-                    --text= e.onlyChinese and '新物品: 最左边' or (BUG_CATEGORY11..'('..NEW_CAPS..'): '..HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT),
-                    --text=(e.onlyChinese and '放入物品' or ITEMS)..': '.. (format(e.onlyChinese and '%s到%s' or INT_SPELL_POINTS_SPREAD_TEMPLATE, e.onlyChinese and '左' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_LEFT, e.onlyChinese and '右' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_RIGHT)),
-                    text= e.onlyChinese and '将战利品放入最左边的背包' or REVERSE_NEW_LOOT_TEXT ,
-                    icon= e.Icon.toLeft,
-                    checked= C_Container.GetInsertItemsLeftToRight(),
-                    tooltipOnButton=true,
-                    tooltipTitle='C_Container.|nSetInsertItemsLeftToRight',
-                    tooltipText= e.onlyChinese and '新物品会出现在你最左边的背包里' or OPTION_TOOLTIP_REVERSE_NEW_LOOT,
-                    func= function()
-                        C_Container.SetInsertItemsLeftToRight(not C_Container.GetInsertItemsLeftToRight() and true or false)
-                    end,
-                }
-                e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-                info={
-                    text= e.onlyChinese and '整理背包: 自动' or (BAG_CLEANUP_BAGS..': '..CLUB_FINDER_LOOKING_FOR_CLASS_SPEC),
-                    icon= 'bags-button-autosort-up',
-                    checked=not C_Container.GetBackpackAutosortDisabled(),
-                    tooltipOnButton=true,
-                    tooltipTitle='C_Container.|nSetBackpackAutosortDisabled',
-                    func= function()
-                        C_Container.SetBackpackAutosortDisabled(not C_Container.GetBackpackAutosortDisabled() and true or false)
-                    end,
-                }
-                e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-                info={
-                    text= e.onlyChinese and '整理银行: 自动' or (BAG_CLEANUP_BANK..': '..CLUB_FINDER_LOOKING_FOR_CLASS_SPEC),
-                    icon= 'bags-button-autosort-up',
-                    checked=not C_Container.GetBankAutosortDisabled(),
-                    tooltipOnButton=true,
-                    tooltipTitle='C_Container.|nSetBankAutosortDisabled',
-                    func= function()
-                        C_Container.SetBankAutosortDisabled(not C_Container.GetBankAutosortDisabled() and true or false)
-                    end,
-                }
-                e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-                info={
-                    text= id..' '..Initializer:GetName(),
-                    isTitle=true,
-                    notCheckable=true,
-                }
-                e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-                --[[e.LibDD:UIDropDownMenu_AddSeparator(level)
-                info={
-                    text= e.onlyChinese and 'WoW 数据' or 'WoW data',
-                    notCheckable=true,
-                    hasArrow=true,
-                    menuList='WOWDATA',
-                }
-                e.LibDD:UIDropDownMenu_AddButton(info, level)]]
-
-            end, "MENU")
-        end
-        e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
     end)
-    btn:SetScript('OnEnter', function(self2) self2:SetAlpha(1) end)
-    btn:SetScript('OnLeave', function(self2) self2:SetAlpha(0.5) end)
+
+    --[[info={
+        text= e.onlyChinese and '整理银行: 自动' or (BAG_CLEANUP_BANK..': '..CLUB_FINDER_LOOKING_FOR_CLASS_SPEC),
+        icon= 'bags-button-autosort-up',
+        checked=not C_Container.GetBankAutosortDisabled(),
+        tooltipOnButton=true,
+        tooltipTitle='C_Container.|nSetBankAutosortDisabled',
+        func= function()
+            C_Container.SetBankAutosortDisabled(not C_Container.GetBankAutosortDisabled() and true or false)
+        end,
+    }
+    e.LibDD:UIDropDownMenu_AddButton(info, level)
+    ]]
 
 end
 
@@ -1219,7 +1141,7 @@ local function Init()
                                 if self.itemLink and e.tips:IsShown() then
                                     e.tips:AddLine(' ')
                                     e.tips:AddDoubleLine(e.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, e.Icon.left)
-                                    e.tips:AddDoubleLine(id, Initializer:GetName())
+                                    e.tips:AddDoubleLine(id, addName)
                                     e.tips:Show()
                                 end
                             end)
@@ -1256,13 +1178,6 @@ local function Init()
     Init_Bag()
 
 
-    --[[任务，奖励物品
-    hooksecurefunc('QuestInfo_ShowRewards', function()
-        print(id,addName)
-  
-        print('QuestInfo_ShowRewards')
-    end)
-    print('numQuestChoicesnumQuestChoices')]]
 end
 
 
@@ -1313,7 +1228,7 @@ local function add_Button_OpenOption(frame)
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭角色界面' or BINDING_NAME_TOGGLECHARACTER0, e.Icon.left)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, Initializer:GetName())
+        e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
     end)
     btn:SetScript('OnLeave', GameTooltip_Hide)
@@ -1361,15 +1276,20 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-panel:SetScript("OnEvent", function(_, event, arg1)
+panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
 
         if arg1==id then
-            Save= WoWToolsSave[addName] or Save
+            addName= '|A:bag-main:0:0|a'..(e.onlyChinese and '物品信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, INFO))
+
+            Save= WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, INFO)]
+                or WoWToolsSave['ItemInfo_Lua']
+                or Save
+            WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, INFO)]=nil
 
             --添加控制面板
-            Initializer= e.AddPanel_Check({
-                name= '|A:bag-main:0:0|a'..(e.onlyChinese and '物品信息' or addName),
+            e.AddPanel_Check({
+                name= addName,
                 tooltip= e.onlyChinese and '系统背包|n商人' or (BAGSLOT..'|n'..MERCHANT),--'Inventorian, Baggins', 'Bagnon'
                 value= not Save.disabled,
                 func= function()
@@ -1380,12 +1300,12 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                         Save.disabled=true
                         panel:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
                     end
-                    print(id, Initializer:GetName(), e.GetEnabeleDisable(Save.disabled))
+                    print(id, addName, e.GetEnabeleDisable(Save.disabled))
                 end
             })
 
             if Save.disabled then
-                panel:UnregisterAllEvents()
+                self:UnregisterAllEvents()
             else
                 Init()
 
@@ -1405,7 +1325,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                         [ITEM_MOD_CR_SPEED_SHORT]= e.onlyChinese and '速' or e.WA_Utf8Sub(ITEM_MOD_CR_SPEED_SHORT, 1, 3, true),
                     }
             end
-            panel:RegisterEvent("PLAYER_LOGOUT")
+            self:RegisterEvent("PLAYER_LOGOUT")
 
         elseif arg1=='Blizzard_PerksProgram' then
             --##########################
@@ -1475,8 +1395,6 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 end
             end)
 
-       
-
         elseif arg1=='Blizzard_ItemInteractionUI' then--套装转换, 界面
             add_Button_OpenOption(ItemInteractionFrameCloseButton)--添加一个按钮, 打开选项
             ItemInteractionFrame.Tip= CreateFrame('GameTooltip', nil, ItemInteractionFrame, 'GameTooltipTemplate')
@@ -1510,7 +1428,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            WoWToolsSave[addName]=Save
+            WoWToolsSave['ItemInfo_Lua']=Save
         end
 
     elseif event == "GUILDBANKBAGSLOTS_CHANGED" or event =="GUILDBANK_ITEM_LOCK_CHANGED" then
@@ -1527,7 +1445,6 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             if not  IsBagOpen(i) then
                 OpenBag(i)
             end
-            --ToggleBag(i)
         end
     end
 end)

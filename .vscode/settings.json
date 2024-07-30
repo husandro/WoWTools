@@ -4699,7 +4699,14 @@
         "BankFrameTab3",
         "AccountBankPanel",
         "CommunitiesGuildNewsFiltersFrame",
-        "SubscriptionInterstitialFrame"
+        "SubscriptionInterstitialFrame",
+        "ToySpellButton_UpdateButton",
+        "ContainerFrame_OnLoad",
+        "QuestLogQuests_Update",
+        "LOCK",
+        "DND",
+        "FriendsFrame_CheckBattlenetStatus",
+        "FriendsFrameStatusDropdown"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

@@ -7,11 +7,15 @@ local Save={
         --showInCombatFriendInfo,--仅限，不在战斗中，好友，提示
     }
 local panel=CreateFrame("Frame")
+local FriendsButton
+local OptionText--= (e.onlyChinese and '设置' or SETTINGS).."|T%s:0:|t %s"
 
 
-
-
-
+local OptionTexture={
+    ['Availabel'] = FRIENDS_TEXTURE_ONLINE,
+    ['DND']= FRIENDS_TEXTURE_DND,
+    ['Away'] =FRIENDS_TEXTURE_AFK,
+}
 
 
 
@@ -70,7 +74,7 @@ local function set_QuinkJoin_Init()--快速加入, 初始化 QuickJoin.lua
                         e.tips:ClearLines()
                         e.tips:AddDoubleLine(e.onlyChinese and '/密语' or SLASH_SMART_WHISPER2, self2.col..self2.name)
                         e.tips:AddLine(' ')
-                        e.tips:AddDoubleLine(id, e.cn(addName))
+                        e.tips:AddDoubleLine(id, addName)
                         e.tips:Show()
                     end)
                     nameObj:SetScript('OnMouseDown',function(self2)
@@ -167,7 +171,7 @@ local function set_QuinkJoin_Init()--快速加入, 初始化 QuickJoin.lua
         if self.AcceptButton:IsEnabled() and not IsModifierKeyDown() then
             local tank2, healer2, dps2= self:GetSelectedRoles()
             self.AcceptButton:Click()
-            print(id, e.cn(addName),
+            print(id, addName,
                     tank2 and INLINE_TANK_ICON, healer2 and INLINE_HEALER_ICON, dps2 and INLINE_DAMAGER_ICON,
                     e.GetEnabeleDisable(false)..'Alt',
                     link
@@ -197,6 +201,78 @@ end
 
 
 
+local function Init_Friends_Menu(self, root)
+    if not BNConnected() then
+        root:CreateTitle('|cnRED_FONT_COLOR:'..(e.onlyChinese and '断开战网' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SOCIAL_TWITTER_DISCONNECT, COMMUNITY_COMMAND_BATTLENET))..'|r')
+        root:CreateDivider()
+    end
+
+    root:CreateTitle(e.onlyChinese and '登入游戏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LOG_IN, GAME))
+    root:CreateCheckbox(OptionText:format(FRIENDS_TEXTURE_ONLINE, e.onlyChinese and '有空' or FRIENDS_LIST_AVAILABLE), function()
+        return Save.Friends[e.Player.guid]== 'Availabel'
+    end, function()
+        if Save.Friends[e.Player.guid]== 'Availabel' then
+            Save.Friends[e.Player.guid]= nil
+        else
+            Save.Friends[e.Player.guid]= 'Availabel'
+        end
+        self:set_status()
+    end)
+
+    root:CreateCheckbox(OptionText:format(FRIENDS_TEXTURE_AFK, e.onlyChinese and '离开' or FRIENDS_LIST_AWAY), function()
+        return Save.Friends[e.Player.guid]== 'Away'
+    end, function()
+        if Save.Friends[e.Player.guid]== 'Away' then
+            Save.Friends[e.Player.guid]= nil
+        else
+            Save.Friends[e.Player.guid]= 'Away'
+        end
+        self:set_status()
+    end)
+
+    root:CreateCheckbox(OptionText:format(FRIENDS_TEXTURE_DND, e.onlyChinese and '忙碌' or FRIENDS_LIST_BUSY), function()
+        return Save.Friends[e.Player.guid]== 'DND'
+    end, function()
+        if Save.Friends[e.Player.guid]== 'DND' then
+            Save.Friends[e.Player.guid]= nil
+        else
+            Save.Friends[e.Player.guid]= 'DND'
+        end
+        self:set_status()
+    end)
+
+    root:CreateDivider()
+    local sub= root:CreateButton(e.onlyChinese and '其他玩家' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTINGS_CATEGORY_TITLE_MISC, PLAYER))
+    for guid, stat in pairs(Save.Friends) do
+        if guid~=e.Player.guid then
+            local btn= sub:CreateButton(format('|A:%s:0:0|a', OptionTexture[stat] or '').. e.GetPlayerInfo({guid=guid, reName=true, reRealm=true}), function(data)
+                if data then
+                    Save.Friends[data]= nil
+                end
+            end)
+            btn:SetData(guid)
+            btn:SetTooltip(function(tooltip, elementDescription)
+                GameTooltip_SetTitle(tooltip, MenuUtil.GetElementText(elementDescription))
+                GameTooltip_AddNormalLine(tooltip, e.onlyChinese and '移除' or REMOVE)
+            end)
+        end
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -205,8 +281,20 @@ end
 --#############
 --好友列表, 模块
 --#############
-local function set_FriendsList_Init()--好友列表, 初始化
-    Save.Friends[e.Player.name_realm]=Save.Friends[e.Player.name_realm] or {}
+local function Init_FriendsList()--好友列表, 初始化
+
+    --处理，上版本数据
+    if type(Save.Friends[e.Player.name_realm])=='table' then
+        if Save.Friends[e.Player.name_realm].Availabel then
+            Save.Friends[e.Player.guid]= 'Availabel'
+        elseif Save.Friends[e.Player.name_realm].Away then
+            Save.Friends[e.Player.guid]= 'Away'
+        elseif Save.Friends[e.Player.name_realm].DND then
+            Save.Friends[e.Player.guid]= 'DND'
+        else
+            Save.Friends[e.Player.name_realm]= nil
+        end
+    end
 
     local regionNames = {
         [1] = e.onlyChinese and '北美' or NORTH_AMERICA,
@@ -216,10 +304,12 @@ local function set_FriendsList_Init()--好友列表, 初始化
         [5] = e.onlyChinese and '中国' or CHINA,
     };
 
-    panel.btn= e.Cbtn(FriendsFrameStatusDropDownButton, {size={20,20}})
-    panel.btn:RegisterEvent('BN_FRIEND_INFO_CHANGED')
-    panel.btn.playerRealmID = GetRealmID()
-    panel.btn:SetScript('OnEvent', function(self, _, friendIndex)
+    FriendsButton= e.Cbtn(FriendsFrameStatusDropdown, {size={20,20}, icon='hide'})
+    FriendsButton:SetPoint('LEFT', FriendsFrameStatusDropdown, 'RIGHT',2,0)
+
+
+    FriendsButton.playerRealmID = GetRealmID()
+    FriendsButton:SetScript('OnEvent', function(self, _, friendIndex)
         if Save.disabledBNFriendInfo then
             return
         end
@@ -332,46 +422,97 @@ local function set_FriendsList_Init()--好友列表, 初始化
         end
     end)
 
+    C_Timer.After(2, function()
+        FriendsButton:RegisterEvent('BN_FRIEND_INFO_CHANGED')
+    end)
+
+
+
+
+
+
+
+
+
+
+
+
     --#######
     --好友列表
     --#######
-    local optionText= (e.onlyChinese and '设置' or SETTINGS).."|T%s:0:|t %s"
-    local function set_Status()
+
+    function FriendsButton:set_status(showPrint)
         if not BNConnected() then
+            self:SetNormalAtlas(e.Icon.icon)
             return
         end
         local bnetAFK, bnetDND= select(5, BNGetInfo())
-        if Save.Friends[e.Player.name_realm].Availabel then
+        local text
+
+
+        if Save.Friends[e.Player.guid]=='Availabel' then
             if bnetAFK or bnetDND then
                 BNSetAFK(false)
                 BNSetDND(false)
-                print(id, e.cn(addName), format(optionText, FRIENDS_TEXTURE_ONLINE, e.onlyChinese and '有空' or FRIENDS_LIST_AVAILABLE))
-            end
-            panel.btn:SetNormalTexture(FRIENDS_TEXTURE_ONLINE)
+                text= format(OptionText, FRIENDS_TEXTURE_ONLINE, e.onlyChinese and '有空' or FRIENDS_LIST_AVAILABLE)
 
-        elseif Save.Friends[e.Player.name_realm].Away then
+            end
+            self:SetNormalTexture(FRIENDS_TEXTURE_ONLINE)
+
+        elseif Save.Friends[e.Player.guid]=='Away' then
             if not bnetAFK then
                 BNSetAFK(true)
-                print(id, e.cn(addName), format(optionText, FRIENDS_TEXTURE_AFK, e.onlyChinese and '离开' or FRIENDS_LIST_AWAY))
+                text= format(OptionText, FRIENDS_TEXTURE_AFK, e.onlyChinese and '离开' or FRIENDS_LIST_AWAY)
             end
-            panel.btn:SetNormalTexture(FRIENDS_TEXTURE_AFK)
+            self:SetNormalTexture(FRIENDS_TEXTURE_AFK)
 
-        elseif Save.Friends[e.Player.name_realm].DND then
+        elseif Save.Friends[e.Player.guid]=='DND' then
             if not bnetDND then
                 BNSetDND(true)
-                print(id, e.cn(addName), format(optionText, FRIENDS_TEXTURE_DND, e.onlyChinese and '忙碌' or FRIENDS_LIST_BUSY))
-                panel.btn:SetNormalTexture(FRIENDS_TEXTURE_DND)
+                text= format(OptionText, FRIENDS_TEXTURE_DND, e.onlyChinese and '忙碌' or FRIENDS_LIST_BUSY)
             end
+            self:SetNormalTexture(FRIENDS_TEXTURE_DND)
 
         else
-            panel.btn:SetNormalAtlas(e.Icon.icon)
+            self:SetNormalAtlas(e.Icon.icon)
+        end
+        if text then
+            if showPrint then
+                print(id, addName, text)
+            else
+                e.call(FriendsFrame_CheckBattlenetStatus)
+            end
+
+C_Timer.After(1.3, function()
+            bnetAFK, bnetDND = select(5, BNGetInfo());
+            if bnetAFK then
+                FriendsTabHeader.bnStatus = FRIENDS_TEXTURE_AFK;
+            elseif bnetDND then
+                FriendsTabHeader.bnStatus = FRIENDS_TEXTURE_DND;
+            else
+                FriendsTabHeader.bnStatus = FRIENDS_TEXTURE_ONLINE;
+            end
+            FriendsFrameStatusDropdown.Text:SetFormattedText("\124T%s.tga:16:16:0:0\124t", FriendsTabHeader.bnStatus)
+end)
         end
     end
-    set_Status()
-    panel.btn:SetPoint('LEFT', FriendsFrameStatusDropDownButton, 'RIGHT',0,-2)
-    panel.btn:SetScript('OnMouseDown', function(self)
-        if not BNConnected() then
-            print(id, e.cn(addName), e.Icon.net2, e.onlyChinese and '断开战网' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SOCIAL_TWITTER_DISCONNECT, COMMUNITY_COMMAND_BATTLENET))
+    FriendsButton:set_status(true)
+
+
+
+
+
+
+
+
+
+
+    FriendsButton:SetScript('OnMouseDown', function(self)
+        MenuUtil.CreateContextMenu(self, Init_Friends_Menu)
+    end)
+end
+        --[[if not BNConnected() then
+            print(id, addName, e.Icon.net2, e.onlyChinese and '断开战网' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SOCIAL_TWITTER_DISCONNECT, COMMUNITY_COMMAND_BATTLENET))
             return
         end
         if not self.menu then
@@ -408,9 +549,9 @@ local function set_FriendsList_Init()--好友列表, 初始化
                         if name~=e.Player.name_realm and (tab.Availabel or tab.Away or tab.DND) then
                             info={
                                 text= name..' '
-                                    ..(tab.Availabel and  optionText:format(FRIENDS_TEXTURE_ONLINE, e.onlyChinese and '有空' or FRIENDS_LIST_AVAILABLE) or '')
-                                    ..(tab.Away and  optionText:format(FRIENDS_TEXTURE_AFK, e.onlyChinese and '离开' or FRIENDS_LIST_AWAY) or '' )
-                                    ..(tab.DND and optionText:format(FRIENDS_TEXTURE_DND, e.onlyChinese and '忙碌' or FRIENDS_LIST_BUSY) or ''),
+                                    ..(tab.Availabel and  OptionText:format(FRIENDS_TEXTURE_ONLINE, e.onlyChinese and '有空' or FRIENDS_LIST_AVAILABLE) or '')
+                                    ..(tab.Away and  OptionText:format(FRIENDS_TEXTURE_AFK, e.onlyChinese and '离开' or FRIENDS_LIST_AWAY) or '' )
+                                    ..(tab.DND and OptionText:format(FRIENDS_TEXTURE_DND, e.onlyChinese and '忙碌' or FRIENDS_LIST_BUSY) or ''),
                                 notCheckable= true,
                                 tooltipOnButton=true,
                                 tooltipTitle= e.onlyChinese and '移除' or REMOVE,
@@ -429,47 +570,55 @@ local function set_FriendsList_Init()--好友列表, 初始化
                     return
                 end
 
+
+
+
+
+
+
+
+
                 info= {
-                    text = optionText:format(FRIENDS_TEXTURE_ONLINE, e.onlyChinese and '有空' or FRIENDS_LIST_AVAILABLE),
+                    text = OptionText:format(FRIENDS_TEXTURE_ONLINE, e.onlyChinese and '有空' or FRIENDS_LIST_AVAILABLE),
                     checked= Save.Friends[e.Player.name_realm].Availabel,
                     tooltipOnButton=true,
                     tooltipTitle= e.onlyChinese and '登入(游戏)' or (LOG_IN..' ('..GAME..')'),
-                    tooltipText=id..' '..e.cn(addName),
+                    tooltipText=id..' '..addName,
                     func=function()
                         Save.Friends[e.Player.name_realm].Availabel = not Save.Friends[e.Player.name_realm].Availabel and true or nil
                         Save.Friends[e.Player.name_realm].Away= nil
                         Save.Friends[e.Player.name_realm].DND= nil
-                        set_Status()
+                        FriendsButton:set_status()
                     end
                 }
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
 
                 info= {
-                    text = optionText:format(FRIENDS_TEXTURE_AFK, e.onlyChinese and '离开' or FRIENDS_LIST_AWAY),
+                    text = OptionText:format(FRIENDS_TEXTURE_AFK, e.onlyChinese and '离开' or FRIENDS_LIST_AWAY),
                     checked= Save.Friends[e.Player.name_realm].Away,
                     tooltipOnButton=true,
                     tooltipTitle= e.onlyChinese and '登入(游戏)' or (LOG_IN..' ('..GAME..')'),
-                    tooltipText=id..' '..e.cn(addName),
+                    tooltipText=id..' '..addName,
                     func=function()
                         Save.Friends[e.Player.name_realm].Availabel = nil
                         Save.Friends[e.Player.name_realm].Away= not Save.Friends[e.Player.name_realm].Away and true or nil
                         Save.Friends[e.Player.name_realm].DND=nil
-                        set_Status()
+                        FriendsButton:set_status()
                     end
                 }
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
 
                 info= {
-                    text = optionText:format(FRIENDS_TEXTURE_DND, e.onlyChinese and '忙碌' or FRIENDS_LIST_BUSY),
+                    text = OptionText:format(FRIENDS_TEXTURE_DND, e.onlyChinese and '忙碌' or FRIENDS_LIST_BUSY),
                     checked= Save.Friends[e.Player.name_realm].DND,
                     tooltipOnButton=true,
                     tooltipTitle= e.onlyChinese and '登入(游戏)' or (LOG_IN..' ('..GAME..')'),
-                    tooltipText=id..' '..e.cn(addName),
+                    tooltipText=id..' '..addName,
                     func=function()
                         Save.Friends[e.Player.name_realm].Availabel = nil
                         Save.Friends[e.Player.name_realm].Away=nil
                         Save.Friends[e.Player.name_realm].DND= not Save.Friends[e.Player.name_realm].DND and true or nil
-                        set_Status()
+                        FriendsButton:set_status()
                     end
                 }
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -480,7 +629,7 @@ local function set_FriendsList_Init()--好友列表, 初始化
                         Save.Friends[e.Player.name_realm].Availabel = nil
                         Save.Friends[e.Player.name_realm].Away= nil
                         Save.Friends[e.Player.name_realm].DND= nil
-                        set_Status()
+                        FriendsButton:set_status()
                     end
                 }
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -513,79 +662,87 @@ local function set_FriendsList_Init()--好友列表, 初始化
                     keepShownOnClick=true,
                     func= function()
                         Save.disabledFriendPlus= not Save.disabledFriendPlus and true or nil
-                        print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabledFriendPlus), e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
+                        print(id, addName, e.GetEnabeleDisable(not Save.disabledFriendPlus), e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
                     end
                 }
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
+               
             end
             e.LibDD:UIDropDownMenu_Initialize(self.menu, Init_Status_Menu, 'MENU')
         end
-        e.LibDD:ToggleDropDownMenu(1, nil, self.menu, self, 15,0)
-    end)
+        --e.LibDD:ToggleDropDownMenu(1, nil, self.menu, self, 15,0)
+    end) ]]
 
 
-    hooksecurefunc('FriendsFrame_UpdateFriendButton', function(self)--FriendsFrame.lua
-        if Save.disabledFriendPlus then
+
+
+
+
+
+
+
+
+
+--好友PLUS
+--FriendsFrame.lua
+local function Set_FriendsFrame_UpdateFriendButton(self)
+    if Save.disabledFriendPlus then
+        return
+    end
+
+    if self.buttonType == FRIENDS_BUTTON_TYPE_WOW then
+        local info = C_FriendList.GetFriendInfoByIndex(self.id)
+        if not info or not info.guid then
+            return
+        end
+        local text=e.GetPlayerInfo({guid=info.guid})
+        if text~='' then
+            text= text..(info.area and info.connected and ' '..info.area or '')
+            self.info:SetText(text)
+        end
+
+    elseif self.buttonType == FRIENDS_BUTTON_TYPE_BNET then--2战网                
+        local accountInfo = C_BattleNet.GetFriendAccountInfo(self.id)
+        if not accountInfo then
+            return
+        end
+        if accountInfo.note and accountInfo.note:gsub(' ','')~='' then--备注，提示
+            self.name:SetText(accountInfo.accountName..' ('..accountInfo.note..')')
+        end
+        if not accountInfo.gameAccountInfo.isInCurrentRegion then--不在，当前地区
+            if accountInfo.gameAccountInfo.regionID and regionNames[accountInfo.gameAccountInfo.regionID] then
+                self.info:SetText('|cnRED_FONT_COLOR:'..regionNames[accountInfo.gameAccountInfo.regionID])
+            end
+            return
+        elseif not accountInfo.gameAccountInfo.isOnline then--or accountInfo.gameAccountInfo.wowProjectID~=WOW_PROJECT_ID then
+            return
+
+        elseif accountInfo.gameAccountInfo.clientProgram ~= BNET_CLIENT_WOW or accountInfo.gameAccountInfo.wowProjectID~= WOW_PROJECT_ID then
+            if accountInfo.gameAccountInfo.wowProjectID and accountInfo.gameAccountInfo.clientProgram then
+                self.info:SetText('|cnRED_FONT_COLOR:'..accountInfo.gameAccountInfo.clientProgram.. accountInfo.gameAccountInfo.wowProjectID)
+            end
             return
         end
 
-        if self.buttonType == FRIENDS_BUTTON_TYPE_WOW then
-            local info = C_FriendList.GetFriendInfoByIndex(self.id)
-            if not info or not info.guid then
-                return
-            end
-            local text=e.GetPlayerInfo({guid=info.guid})
-            if text~='' then
-               text= text..(info.area and info.connected and ' '..info.area or '')
-               self.info:SetText(text)
-            end
+        local text=''
 
-        elseif self.buttonType == FRIENDS_BUTTON_TYPE_BNET then--2战网                
-            local accountInfo = C_BattleNet.GetFriendAccountInfo(self.id)
-            if not accountInfo then
-                return
-            end
-            if accountInfo.note and accountInfo.note:gsub(' ','')~='' then--备注，提示
-                self.name:SetText(accountInfo.accountName..' ('..accountInfo.note..')')
-            end
-            if not accountInfo.gameAccountInfo.isInCurrentRegion then--不在，当前地区
-                if accountInfo.gameAccountInfo.regionID and regionNames[accountInfo.gameAccountInfo.regionID] then
-                    self.info:SetText('|cnRED_FONT_COLOR:'..regionNames[accountInfo.gameAccountInfo.regionID])
-                end
-                return
-            elseif not accountInfo.gameAccountInfo.isOnline then--or accountInfo.gameAccountInfo.wowProjectID~=WOW_PROJECT_ID then
-                return
-
-            elseif accountInfo.gameAccountInfo.clientProgram ~= BNET_CLIENT_WOW or accountInfo.gameAccountInfo.wowProjectID~= WOW_PROJECT_ID then
-                if accountInfo.gameAccountInfo.wowProjectID and accountInfo.gameAccountInfo.clientProgram then
-                    self.info:SetText('|cnRED_FONT_COLOR:'..accountInfo.gameAccountInfo.clientProgram.. accountInfo.gameAccountInfo.wowProjectID)
-                end
-               return
-            end
-
-            local text=''
-
-            if accountInfo.gameAccountInfo.characterLevel and accountInfo.gameAccountInfo.characterLevel>0 and accountInfo.gameAccountInfo.characterLevel~= GetMaxLevelForPlayerExpansion() then--角色等级
-                text= text..'|cnGREEN_FONT_COLOR:'..accountInfo.gameAccountInfo.characterLevel..'|r '
-            end
-            text= text.. e.GetPlayerInfo({guid=accountInfo.gameAccountInfo.playerGuid, reName=true, reRealm=true, faction=accountInfo.gameAccountInfo.factionName })
-
-            if accountInfo.gameAccountInfo.isOnline and accountInfo.gameAccountInfo.areaName then--区域
-                text= text..' '..accountInfo.gameAccountInfo.areaName
-            end
-            if accountInfo.gameAccountInfo.playerGuid then
-                local class= select(2, GetPlayerInfoByGUID(accountInfo.gameAccountInfo.playerGuid))
-                if class then
-                    text= '|c'..select(4, GetClassColor(class))..text..'|r'
-                end
-            end
-            self.info:SetText(text)
+        if accountInfo.gameAccountInfo.characterLevel and accountInfo.gameAccountInfo.characterLevel>0 and accountInfo.gameAccountInfo.characterLevel~= GetMaxLevelForPlayerExpansion() then--角色等级
+            text= text..'|cnGREEN_FONT_COLOR:'..accountInfo.gameAccountInfo.characterLevel..'|r '
         end
-    end)
+        text= text.. e.GetPlayerInfo({guid=accountInfo.gameAccountInfo.playerGuid, reName=true, reRealm=true, faction=accountInfo.gameAccountInfo.factionName })
+
+        if accountInfo.gameAccountInfo.isOnline and accountInfo.gameAccountInfo.areaName then--区域
+            text= text..' '..accountInfo.gameAccountInfo.areaName
+        end
+        if accountInfo.gameAccountInfo.playerGuid then
+            local class= select(2, GetPlayerInfoByGUID(accountInfo.gameAccountInfo.playerGuid))
+            if class then
+                text= '|c'..select(4, GetClassColor(class))..text..'|r'
+            end
+        end
+        self.info:SetText(text)
+    end
 end
-
-
-
 
 
 
@@ -786,7 +943,7 @@ local function set_WhoList_Update()--查询, 名单列表
                 e.tips:AddDoubleLine(self.col..(e.onlyChinese and '组队邀请' or GROUP_INVITE), (e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left)
                 e.tips:AddDoubleLine(self.col..(e.onlyChinese and '添加好友' or ADD_FRIEND), 'Alt+'..e.Icon.left)
                 e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(id, e.cn(addName))
+                e.tips:AddDoubleLine(id, addName)
                 e.tips:Show()
             end)
             btn.setOnDoubleClick= true
@@ -864,8 +1021,12 @@ local function Init()--FriendsFrame.lua
     BNToastFrame:ClearAllPoints()
     BNToastFrame:SetPoint('BOTTOMLEFT', QuickJoinToastButton, 'TOPLEFT')
 
+    Init_FriendsList()--好友列表, 模块
+    hooksecurefunc('FriendsFrame_UpdateFriendButton', Set_FriendsFrame_UpdateFriendButton)--好友PLUS
+
     set_QuinkJoin_Init()--快速加入, 模块
-    C_Timer.After(2, set_FriendsList_Init)--好友列表, 模块
+
+
     hooksecurefunc('WhoList_Update', set_WhoList_Update)
     hooksecurefunc(WhoFrame.ScrollBox, 'SetScrollTargetOffset', set_WhoList_Update)
 
@@ -926,39 +1087,34 @@ end
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent('SOCIAL_QUEUE_UPDATE')--快速加入
 
-panel:SetScript("OnEvent", function(_, event, arg1)
+panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            Save= WoWToolsSave[addName] or Save
+
+            Save= WoWToolsSave[FRIENDS_LIST] or WoWToolsSave['FriendsList_lua'] or Save
+            WoWToolsSave[FRIENDS_LIST]= nil
+
+            OptionText= (e.onlyChinese and '设置' or SETTINGS).."|T%s:0:|t %s"
+            addName= '|A:socialqueuing-icon-group:0:0|a'..(e.onlyChinese and '好友列表' or FRIENDS_LIST)
 
             --添加控制面板
             e.AddPanel_Check({
-                name= '|A:socialqueuing-icon-group:0:0|a'..(e.onlyChinese and '好友列表' or addName),
-                tooltip= e.cn(addName),
+                name= addName,
                 value= not Save.disabled,
                 func= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(id , addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 
-            --[[添加控制面板        
-            local sel=e.AddPanel_Check('|A:socialqueuing-icon-group:0:0|a'..(e.onlyChinese and '好友列表' or addName), not Save.disabled)
-            sel:SetScript('OnMouseDown', function()
-                if Save.disabled then
-                    Save.disabled=nil
-                else
-                    Save.disabled=true
-                end
-                print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            end)]]
+
 
             if Save.disabled then
-                panel:UnregisterAllEvents()
+                self:UnregisterAllEvents()
             else
                 Init()
             end
-            panel:RegisterEvent("PLAYER_LOGOUT")
+            self:RegisterEvent("PLAYER_LOGOUT")
 
         elseif arg1=='Blizzard_RaidUI' then
             hooksecurefunc('RaidGroupFrame_Update', Init_RaidGroupFrame_Update)--团队, 模块
@@ -975,7 +1131,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            WoWToolsSave[addName]=Save
+            WoWToolsSave['FriendsList_lua']=Save
         end
 
     elseif event=='SOCIAL_QUEUE_UPDATE' then--更新, 快速加入

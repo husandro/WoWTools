@@ -231,10 +231,10 @@ local function get_variableIndex()
     return variableIndex
 end
 
-local function AddInitializerToLayout(category, initializer)
+--[[local function AddInitializerToLayout(category, initializer)
 	local layout = SettingsPanel:GetLayout(category);
 	layout:AddInitializer(initializer);
-end
+end]]
 
 --插件名称
 local Category, Layout = Settings.RegisterVerticalLayoutCategory('|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r')
@@ -298,8 +298,8 @@ end
         local variable = id..name..(category.order or '')..get_variableIndex()
         local setting= Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue)
 
-        --local initializer= Settings.CreateCheckBox(category, setting, tooltip)
-        local initializer= Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip);
+        local initializer= Settings.CreateCheckbox(category, setting, tooltip)
+        --local initializer= Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip);
         Settings.SetOnValueChangedCallback(variable, func, initializer)
         return initializer
     end
@@ -358,9 +358,9 @@ initializer:SetParentInitializer(initializer2, function() return not Save.disabl
         local variable= id..name..(category.order or '')..get_variableIndex()
         local setting = Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue)
         
-        --local initializer= Settings.CreateDropDown(category, setting, GetOptions, tooltip)
-        local initializer = Settings.CreateDropdownInitializer(setting, GetOptions, tooltip);
-        AddInitializerToLayout(category, initializer);
+        local initializer= Settings.CreateDropdown(category, setting, GetOptions, tooltip)
+        --local initializer = Settings.CreateDropdownInitializer(setting, GetOptions, tooltip);
+        --AddInitializerToLayout(category, initializer);
 
         Settings.SetOnValueChangedCallback(variable, SetValue, initializer)
         return initializer
@@ -401,13 +401,14 @@ e.AddPanel_DropDown({
         local variable = id..checkName..(category.order or '')..get_variableIndex()
         local setting= Settings.RegisterAddOnSetting(category, checkName, variable, type(defaultValue), defaultValue)
         
-        --local initializer= CreateSettingsCheckBoxWithButtonInitializer(setting, buttonText, buttonFunc,  false,            tooltip)
-        --                                                               setting, buttonText, buttonClick, clickRequiresSet, tooltip
+        local initializer= CreateSettingsCheckboxWithButtonInitializer(setting, buttonText, buttonFunc,  false,            tooltip)
+        --[[
         local data = Settings.CreateSettingInitializerData(setting, nil, tooltip);
         data.buttonText = buttonText;
         data.OnButtonClick = buttonFunc;
         data.clickRequiresSet = false;
         local initializer= Settings.CreateSettingInitializer("SettingsCheckboxWithButtonControlTemplate", data);
+        ]]
 
         layout:AddInitializer(initializer)
         Settings.SetOnValueChangedCallback(variable, checkFunc, initializer)
@@ -465,9 +466,9 @@ end
         local options = Settings.CreateSliderOptions(sliderMinValue, sliderMaxValue, sliderStep)
         options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right, GetFormatter1to10(sliderMinValue, sliderMaxValue));
 
-        --local initializer = CreateSettingsCheckBoxSliderInitializer(checkSetting, checkName, checkTooltip, siderSetting,   options,      siderName,   siderTooltip);
-        --                                                            cbSetting,    cbLabel,   cbTooltip,    sliderSetting, sliderOptions, sliderLabel, sliderTooltip
-        local data =
+        local initializer = CreateSettingsCheckboxSliderInitializer(checkSetting, checkName, checkTooltip, siderSetting,   options,      siderName,   siderTooltip);
+        
+        --[[local data =
         {
             name = checkName,
             tooltip = checkTooltip,
@@ -480,7 +481,7 @@ end
             sliderTooltip = siderTooltip,
         };
         local initializer= Settings.CreateSettingInitializer("SettingsCheckboxSliderControlTemplate", data);
-
+]]
         Settings.SetOnValueChangedCallback(variable..'Check', checkFunc, initializer)
         Settings.SetOnValueChangedCallback(variable..'Sider', siderFunc, initializer)
         layout:AddInitializer(initializer)
@@ -781,40 +782,19 @@ local function Init_Options()
 
 
     if not LOCALE_zhCN then
-        --if (e.Player.region==3 or e.Is_PTR) and e.onlyChinese then
-        if e.onlyChinese then
-            e.AddPanel_Check_Button({
-                checkName= 'Chinese',
-                checkValue= Save.onlyChinese,
-                checkFunc= function()
-                    e.onlyChinese= not e.onlyChinese and true or nil
-                    Save.onlyChinese = e.onlyChinese
-                    print(id,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                end,
-                buttonText= e.onlyChinese and '语言翻译' or BUG_CATEGORY15,
-                buttonFunc= function()
-                    e.OpenPanelOpting(e.onlyChinese and '语言翻译' or BUG_CATEGORY15)
-                end,
-                tooltip=  e.onlyChinese and '语言: 简体中文'
-                    or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LANGUAGE..': ', LFG_LIST_LANGUAGE_ZHCN),
-                layout= Layout,
-                category= Category
-            })
-
-        else
-            e.AddPanel_Check({
-                name= 'Chinese',
-                tooltip= e.onlyChinese and '语言: 简体中文'
-                        or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LANGUAGE..': ', LFG_LIST_LANGUAGE_ZHCN),
-                category=Category,
-                value= Save.onlyChinese,
-                func= function()
-                    e.onlyChinese= not e.onlyChinese and true or nil
-                    Save.onlyChinese = e.onlyChinese
-                    print(id,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                end
-            })
-        end
+        e.AddPanel_Check({
+            name= 'Chinese',
+            tooltip= e.onlyChinese and '语言: 简体中文'
+                    or (LANGUAGE..': '..LFG_LIST_LANGUAGE_ZHCN),
+            category=Category,
+            value= Save.onlyChinese,
+            func= function()
+                e.onlyChinese= not e.onlyChinese and true or nil
+                Save.onlyChinese = e.onlyChinese
+                print(id,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            end
+        })
+   
     end
 
     if e.Player.region==1 or e.Player.region==3 then--US EU realm提示

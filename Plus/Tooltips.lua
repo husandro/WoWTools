@@ -40,7 +40,7 @@ func:Set_Achievement(self, achievementID)成就
 func:Set_Quest(self, questID, info)任务
 func:Set_Faction(self, factionID)
 func:Set_Flyout(self, flyoutID)法术, 弹出框
-func:GetItemInfoFromHyperlink(link)LinkUtil.lua  GetItemInfoFromHyperlink()不能正解，读取 |Hkeystone:
+
 func:Set_Init_Item(self, hide)创建，设置，内容
 func:Set_Item_Model(self, tab)设置, 3D模型{unit=, guid=, creatureDisplayID=, animID=, appearanceID=, visualID=}
 func:Set_All_Aura(self, data)Aura
@@ -53,6 +53,14 @@ func:Set_Unit_NPC(tooltip, name, unit, guid)
 
 
 
+
+
+function func:GetItemInfoFromHyperlink(link)--LinkUtil.lua  GetItemInfoFromHyperlink()不能正解，读取 |Hkeystone:
+	local itemID = link and link:match("|H.-:(%d+).-|h")
+	if itemID then
+		return tonumber(itemID)
+	end
+end
 
 
 
@@ -551,15 +559,21 @@ function func:Set_Pet(tooltip, speciesID, setSearchText)--宠物
         end
     end
 
+    tooltip:AddLine(' ')
     local sourceInfo= e.cn(nil, {speciesID=speciesID}) or {}
+    local cnName= e.cn(nil, {npcID=companionID, isName=true})
+
+    if cnName then
+        tooltip:AddLine('|cffffffff'..cnName..'|r')
+    end
+
     if tooltipDescription or sourceInfo[1] then
-        tooltip:AddLine(' ')
         tooltip:AddLine(sourceInfo[1] or tooltipDescription, nil,nil,nil, true)--来源
     end
     if tooltipSource or sourceInfo[2] then
-        tooltip:AddLine(' ')
         tooltip:AddLine(sourceInfo[2] or tooltipSource,nil,nil,nil, true)--来源
     end
+
     if petType then
         tooltip.Portrait:SetTexture("Interface\\TargetingFrame\\PetBadge-"..PET_TYPE_SUFFIX[petType])
         tooltip.Portrait:SetShown(true)
@@ -577,12 +591,16 @@ function func:Set_Pet(tooltip, speciesID, setSearchText)--宠物
     end
 end
 
-function func:GetItemInfoFromHyperlink(link)--LinkUtil.lua  GetItemInfoFromHyperlink()不能正解，读取 |Hkeystone:
-	local itemID = link and link:match("|H.-:(%d+).-|h")
-	if itemID then
-		return tonumber(itemID)
-	end
-end
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1830,6 +1848,11 @@ local function Set_Battle_Pet(self, speciesID, level, breedQuality, maxHealth, p
     end
     BattlePetTooltipTemplate_AddTextLine(self, abilityIcon)
 
+    local npcName= e.cn(nil, {npcID=companionID, isName=true})--中文名称
+    if npcName then
+        BattlePetTooltipTemplate_AddTextLine(self, npcName)
+    end
+
     local sourceInfo= e.cn(nil, {speciesID=speciesID}) or {}
     tooltipDescription= sourceInfo[1] or tooltipDescription
     if tooltipDescription then
@@ -1972,7 +1995,7 @@ local function Init_Hook()
                 self.factionIDText:SetText(factionData.factionID)
             end
         end)
-   
+
 
 
     hooksecurefunc(AreaPOIPinMixin,'TryShowTooltip', function(self)--POI提示 AreaPOIDataProvider.lua
@@ -2049,8 +2072,7 @@ local function Init_Hook()
         frame.questIDLabel:SetScript('OnEnter', function(self)
             if self.questID then
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                GameTooltip_AddQuest(self, self.questID)
+                GameTooltip_AddQuest(self)
                 e.tips:AddLine(' ')
                 e.tips:AddDoubleLine(id, addName..e.Icon.left)
                 e.tips:Show()
@@ -2063,33 +2085,32 @@ local function Init_Hook()
                 e.Show_WoWHead_URL(true, 'quest', self.questID, info.tagName)
             end
         end)
+        return frame.questIDLabel
     end
-
-    create_Quest_Label(QuestMapFrame.DetailsFrame)
-
-    if C_AddOns.IsAddOnLoaded('WoWeuCN_Quests') then
-        QuestMapFrame.DetailsFrame.questIDLabel:SetPoint('BOTTOMRIGHT',QuestMapFrame.DetailsFrame, 'TOPRIGHT', -2, 30)
-    else
-        QuestMapFrame.DetailsFrame.questIDLabel:SetPoint('BOTTOMRIGHT',QuestMapFrame.DetailsFrame, 'TOPRIGHT', -2, 10)
-    end
-
-    create_Quest_Label(QuestFrame)
-    if C_AddOns.IsAddOnLoaded('WoWeuCN_Quests') then
-        QuestFrame.questIDLabel:SetPoint('BOTTOMRIGHT',QuestMapFrame.DetailsFrame, 'TOPRIGHT', 25, 28)
-    else
-        QuestFrame.questIDLabel:SetPoint('TOPRIGHT', -30, -35)
-    end
-
+    
+    local label= create_Quest_Label(QuestMapDetailsScrollFrame)
+    label:SetPoint('BOTTOMRIGHT', QuestMapDetailsScrollFrame, 'TOPRIGHT', 0, 4)
     hooksecurefunc('QuestMapFrame_ShowQuestDetails', function(questID)
-        QuestMapFrame.DetailsFrame.questIDLabel:SetText(questID or '')
-        QuestMapFrame.DetailsFrame.questIDLabel.questID= questID
+        QuestMapDetailsScrollFrame.questIDLabel:SetText(questID or '')
+        QuestMapDetailsScrollFrame.questIDLabel.questID= questID
     end)
+
+    label= create_Quest_Label(QuestFrame)
+    if _G['WoWeuCN_Tooltips_BlizzardOptions'] then
+        label:SetPoint('BOTTOMRIGHT',QuestMapFrame.DetailsFrame.BackFrame, 'TOPRIGHT', 25, 28)
+    else
+        label:SetPoint('TOPRIGHT', -30, -35)
+    end
+
+    
     QuestFrame:HookScript('OnShow', function(self)
         local questID= QuestInfoFrame.questLog and  C_QuestLog.GetSelectedQuest() or GetQuestID()
         self.questIDLabel:SetText(questID or '')
         self.questIDLabel.questID= questID
     end)
 
+
+    
     --任务日志 显示ID
     hooksecurefunc("QuestMapLogTitleButton_OnEnter", function(self)
         local info= self.questLogIndex and C_QuestLog.GetInfo(self.questLogIndex)

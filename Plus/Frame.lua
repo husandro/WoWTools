@@ -95,7 +95,7 @@ end
 
 local function set_Scale_Size(frame, tab)
     local name= tab.name or frame:GetName()
-    
+
     if not name or (Save.disabledZoom and not tab.needSize) or tab.notZoom or frame.ResizeButton or tab.frame then
         return
     end
@@ -554,7 +554,7 @@ function e.Set_Move_Frame(self, tab)
     if not self or not name or self.setMoveFrame then
         return
     end
-    
+
     local click= tab.click
     local notSave= ((tab.notSave or not Save.SavePoint) and not tab.save) and true or nil
     local notFuori= tab.notFuori
@@ -850,7 +850,7 @@ end
 
 local function Init_Blizzard_Communities()--公会和社区 then
 
-    
+
     e.Set_Move_Frame(CommunitiesFrame, {setSize=true, initFunc=function()--elseif arg1=='Blizzard_Communities' then--公会和社区
         local function set_size(frame)
             local self= frame:GetParent()
@@ -1025,7 +1025,7 @@ local function setAddLoad(arg1)
             btn.target.ScrollBox:ClearAllPoints()
         end, sizeRestFunc=function(self)
             self.target:SetSize(338, 424)
-        end})    
+        end})
 
     elseif arg1=='Blizzard_TimeManager' then--小时图，时间
         e.Set_Move_Frame(TimeManagerFrame, {save=true})
@@ -1049,7 +1049,7 @@ local function setAddLoad(arg1)
     elseif arg1=='Blizzard_EncounterJournal' then--冒险指南
         e.Set_Move_Frame(EncounterJournal, {minW=800, minH=496, maxW=800, setSize=true, initFunc=function()
             EncounterJournalMonthlyActivitiesFrame.ScrollBox:SetPoint('BOTTOM')
-            
+
             EncounterJournalInstanceSelectBG:SetPoint('BOTTOMRIGHT', 0,2)
             EncounterJournalInstanceSelect.ScrollBox:SetPoint('BOTTOMLEFT', -3, 15)
             EncounterJournal.LootJournalItems.ItemSetsFrame:SetPoint('TOPRIGHT', -22, -10)
@@ -1083,7 +1083,7 @@ local function setAddLoad(arg1)
         end})
        --e.Set_Move_Frame(EncounterJournal.NineSlice, {frame=EncounterJournal})
 
-  
+
 
     elseif arg1=='Blizzard_AuctionHouseUI' then--拍卖行
         e.Set_Move_Frame(AuctionHouseFrame, {setSize=true, initFunc=function()
@@ -1872,7 +1872,7 @@ local function setAddLoad(arg1)
         end, sizeRestFunc=function(btn)
             btn.target:SetSize(825, 568)
         end})
-        
+
         e.Set_Move_Frame(ProfessionsCustomerOrdersFrame.Form, {frame=ProfessionsCustomerOrdersFrame})
 
         e.Set_Move_Frame(InspectRecipeFrame)
@@ -1954,16 +1954,16 @@ local function setAddLoad(arg1)
     elseif arg1=='Blizzard_PlayerSpells' then--法术书
         e.Set_Move_Frame(PlayerSpellsFrame)
         --e.Set_Move_Frame(PlayerSpellsFrame.SpecFrame, {frame=PlayerSpellsFrame})
-        for specContentFrame in PlayerSpellsFrame.SpecFrame.SpecContentFramePool:EnumerateActive() do 
+        for specContentFrame in PlayerSpellsFrame.SpecFrame.SpecContentFramePool:EnumerateActive() do
             e.Set_Move_Frame(specContentFrame, {frame=PlayerSpellsFrame})
         end
-        
+
         e.Set_Move_Frame(PlayerSpellsFrame.TalentsFrame, {frame=PlayerSpellsFrame})
         --e.Set_Move_Frame(PlayerSpellsFrame.TalentsFrame.HeroTalentsContainer, {frame=PlayerSpellsFrame})
         e.Set_Move_Frame(PlayerSpellsFrame.TalentsFrame.ButtonsParent, {frame=PlayerSpellsFrame})
         e.Set_Move_Frame(PlayerSpellsFrame.SpellBookFrame, {frame=PlayerSpellsFrame})
 
-       
+
     elseif arg1=='Blizzard_ArtifactUI' then
         e.Set_Move_Frame(ArtifactFrame)
     end
@@ -2167,11 +2167,7 @@ local function Init_Move()
         QuestMapFrame.DetailsFrame.Bg:SetPoint('BOTTOMRIGHT')
         QuestMapFrame.DetailsFrame.SealMaterialBG:SetPoint('BOTTOMRIGHT', QuestMapFrame.DetailsFrame.RewardsFrame, 'TOPRIGHT', 0, -6)
         ]]
-        e.Set_Move_Frame(MapQuestInfoRewardsFrame, {frame= WorldMapFrame})
-        e.Set_Move_Frame(QuestMapFrame, {frame= WorldMapFrame})
-        e.Set_Move_Frame(QuestMapFrame.DetailsFrame, {frame= WorldMapFrame})
-        e.Set_Move_Frame(QuestMapFrame.DetailsFrame.RewardsFrame, {frame= WorldMapFrame})
-        e.Set_Move_Frame(QuestMapDetailsScrollFrame, {frame= WorldMapFrame})
+
     end, sizeUpdateFunc= function(btn)--WorldMapMixin:UpdateMaximizedSize()
         set_min_max_value({btn.target:GetSize()})
     end, sizeRestFunc= function(self)
@@ -2182,9 +2178,13 @@ local function Init_Move()
         target.BorderFrame.MaximizeMinimizeFrame:Minimize()
     end, sizeTooltip='|cnRED_FONT_COLOR:BUG|r'})
 
-
-
-
+    QuestScrollFrame.Background:SetPoint('BOTTOM')
+    e.Set_Move_Frame(QuestScrollFrame, {frame=WorldMapFrame})
+    e.Set_Move_Frame(MapQuestInfoRewardsFrame, {frame=WorldMapFrame})
+    e.Set_Move_Frame(QuestMapFrame, {frame=WorldMapFrame})
+    e.Set_Move_Frame(QuestMapFrame.DetailsFrame, {frame=WorldMapFrame})
+    e.Set_Move_Frame(QuestMapFrame.DetailsFrame.RewardsFrame, {frame=WorldMapFrame})
+    e.Set_Move_Frame(QuestMapDetailsScrollFrame, {frame=WorldMapFrame})
 
 
 
@@ -2229,7 +2229,7 @@ local function Init_Move()
 
 
     --角色
-    e.Set_Move_Frame(CharacterFrame, {minW=338, minH=424, setSize=true, initFunc=function()
+    e.Set_Move_Frame(CharacterFrame, {minW=450, minH=424, setSize=true, initFunc=function()
         PaperDollFrame.TitleManagerPane:ClearAllPoints()
         PaperDollFrame.TitleManagerPane:SetPoint('TOPLEFT', CharacterFrameInsetRight, 4, -4)
         PaperDollFrame.TitleManagerPane:SetPoint('BOTTOMRIGHT', CharacterFrameInsetRight, -4, 4)
@@ -2272,65 +2272,42 @@ local function Init_Move()
 
         CharacterMainHandSlot:ClearAllPoints()
         CharacterMainHandSlot:SetPoint('BOTTOMRIGHT', CharacterFrameInset, 'BOTTOM', -2.5, 16)
-        CharacterFrameInset:ClearAllPoints()
-        CharacterFrameInset:SetPoint('TOPLEFT', 4, -60)
-        --PANEL_DEFAULT_WIDTH 338
-        --CHARACTERFRAME_EXPANDED_WIDTH 540
-        --CharacterStatsPane width 197
-        --[[hooksecurefunc('CharacterFrame_Collapse', function()
-            if not CharacterFrameInset:CanChangeAttribute() then
-                return
-            end
-            CharacterFrameInset:SetPoint('BOTTOMRIGHT',-4, 4)
-            local size= Save.size['CharacterFrameCollapse']
-            if size then
-                CharacterFrame:SetSize(size[1], size[2])
+
+        CharacterFrame.InsetRight:ClearAllPoints()
+        CharacterFrame.InsetRight:SetPoint('TOPRIGHT', 0, -58)
+        CharacterFrame.InsetRight:SetPoint('BOTTOMRIGHT')
+        CharacterFrame.InsetRight:SetWidth(203)
+
+        CharacterFrame.Inset:ClearAllPoints()
+        CharacterFrame.Inset:SetPoint('BOTTOMLEFT')
+        CharacterFrame.Inset:SetPoint('TOPRIGHT', CharacterFrame.InsetRight, 'TOPLEFT')
+        CharacterFrame.Inset.NineSlice:Hide()
+
+        CharacterFrame.Background:SetPoint('RIGHT')
+
+        ReputationFrame.ScrollBox:ClearAllPoints()
+        ReputationFrame.ScrollBox:SetPoint('TOPLEFT', 4, -58)
+        ReputationFrame.ScrollBox:SetPoint('BOTTOMRIGHT', -22, 2)
+
+        TokenFrame.ScrollBox:ClearAllPoints()
+        TokenFrame.ScrollBox:SetPoint('TOPLEFT', 4, -58)
+        TokenFrame.ScrollBox:SetPoint('BOTTOMRIGHT', -22, 2)
+
+        hooksecurefunc(CharacterFrame, 'UpdateSize', function(self)
+            local size
+            if self.Expanded then
+                self.ResizeButton.minWidth=450
+                size= Save.size['CharacterFrameExpanded']
             else
-                CharacterFrame:SetSize(PANEL_DEFAULT_WIDTH, 424)
+                size= Save.size['CharacterFrameCollapse']
+                self.ResizeButton.minWidth=320
             end
-            CharacterFrame.ResizeButton.minWidth= 270
-            CharacterFrame.ResizeButton.minHeight= 115
-        end)
-        hooksecurefunc('CharacterFrame_Expand', function()--显示角色，界面            
-            if not CharacterFrameInset:CanChangeAttribute() then
-                return
-            end
-            CharacterFrameInset:SetPoint('BOTTOMRIGHT', -221, 4)
-            local size= Save.size['CharacterFrameExpanded']
             if size then
-                CharacterFrame:SetSize(size[1], size[2])
-            elseif Save.size['CharacterFrameCollapse'] then
-                CharacterFrame:SetHeight(424)
+                self:SetSize(size[1], size[2])
             end
-            CharacterFrame.ResizeButton.minWidth= CHARACTERFRAME_EXPANDED_WIDTH
-            CharacterFrame.ResizeButton.minHeight= 424
-        end)]]
-        e.Set_Move_Frame(ReputationFrame, {frame=CharacterFrame})
-        e.Set_Move_Frame(ReputationFrame.ReputationDetailFrame, {frame=CharacterFrame})
-
-        --货币
-        e.Set_Move_Frame(TokenFrame, {frame=CharacterFrame})
-        --e.Set_Move_Frame(CurrencyTransferLog, {frame=CharacterFrame})
-        if CurrencyTransferLog then
-            --e.Set_Move_Frame(CurrencyTransferLog.TitleContainer, {frame=CharacterFrame})
-            set_Scale_Size(CurrencyTransferLog, {setSize=true, sizeRestFunc=function(btn)
-                btn.target:ClearAllPoints()
-                btn.target:SetPoint('TOPLEFT', TokenFrame, 'TOPRIGHT', 5,0)
-                btn.target:SetSize(340, 370)
-            end, scaleRestFunc= function(btn)
-                btn.target:ClearAllPoints()
-                btn.target:SetPoint('TOPLEFT', TokenFrame, 'TOPRIGHT', 5,0)
-            end, })
-            e.Set_Move_Frame(CurrencyTransferMenu)
-            e.Set_Move_Frame(CurrencyTransferMenu.TitleContainer, {frame=CurrencyTransferMenu})
-        end
-        e.Set_Move_Frame(TokenFramePopup, {frame=CharacterFrame})
-
-        
-
-        
-        
-        
+        end)
+        --hooksecurefunc(CharacterFrame, 'Collapse', function(self)--显示角色，界面
+        --hooksecurefunc(CharacterFrame, 'Expand', function(self)
 
     end, sizeUpdateFunc=function()
         if PaperDollFrame.EquipmentManagerPane:IsVisible() then
@@ -2346,20 +2323,33 @@ local function Init_Move()
         else
             Save.size['CharacterFrameCollapse']={self:GetSize()}
         end
-    end, sizeRestFunc=function(btn)
-        local self= btn.target
-        if self.Expanded then
-            Save.size['CharacterFrameExpanded']=nil
-            self:SetSize(CHARACTERFRAME_EXPANDED_WIDTH, 424)
-        else
-            Save.size['CharacterFrameCollapse']=nil
-            self:SetSize(PANEL_DEFAULT_WIDTH, 424)
+    end, sizeRestFunc=function()
+        local find= (Save.size['CharacterFrameExpanded'] or Save.size['CharacterFrameCollapse']) and true or false
+        Save.size['CharacterFrameExpanded']=nil
+        Save.size['CharacterFrameCollapse']=nil
+        if find then
+            CharacterFrame:SetHeight(424)  
         end
+        CharacterFrame:UpdateSize()
     end, sizeRestTooltipColorFunc=function(self)
         return ((self.target.Expanded and Save.size['CharacterFrameExpanded']) or (not self.target.Expanded and Save.size['CharacterFrameCollapse'])) and '' or '|cff606060'
     end})
 
+    e.Set_Move_Frame(TokenFrame, {frame=CharacterFrame})
+    e.Set_Move_Frame(TokenFramePopup, {frame=CharacterFrame})
+    e.Set_Move_Frame(ReputationFrame, {frame=CharacterFrame})
+    e.Set_Move_Frame(ReputationFrame.ReputationDetailFrame, {frame=CharacterFrame})
+    e.Set_Move_Frame(CurrencyTransferMenu)
+    e.Set_Move_Frame(CurrencyTransferMenu.TitleContainer, {frame=CurrencyTransferMenu})
 
+    set_Scale_Size(CurrencyTransferLog, {setSize=true, sizeRestFunc=function(btn)
+        btn.target:ClearAllPoints()
+        btn.target:SetPoint('TOPLEFT', TokenFrame, 'TOPRIGHT', 5,0)
+        btn.target:SetSize(340, 370)
+    end, scaleRestFunc= function(btn)
+        btn.target:ClearAllPoints()
+        btn.target:SetPoint('TOPLEFT', TokenFrame, 'TOPRIGHT', 5,0)
+    end, })
 
 
 

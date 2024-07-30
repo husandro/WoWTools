@@ -1313,16 +1313,46 @@ end
 
 
 
+local function Init_ToyBox()
+    hooksecurefunc('ToySpellButton_UpdateButton', function(self)
+        if not self.itemID and self.itemID>0 then
+            return
+        end
+        if ToyBox.fanfareToys[self.itemID] then
+            self.name:SetTextColor(0,1,0)
+        else
+            if not PlayerHasToy(self.itemID) then
+                self.name:SetTextColor(1,1,1)
+            end
+        end
+    end)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 local function Init()
     Init_SetsDataProvider()
-    --Init_ToyBox()--玩具
+    
     Init_Heirloom()--传家宝
     Init_Wardrober()--幻化
     Init_Mount()--坐骑, 界面
     Init_Pet()
+    Init_ToyBox()--玩具
 end
 
 

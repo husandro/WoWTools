@@ -1,5 +1,5 @@
 local id, e = ...
-local addName= BANK
+local addName
 local Save={
     --disabled=true,--禁用
     --hideReagentBankFrame=true,--银行,隐藏，材料包
@@ -17,7 +17,7 @@ local Save={
     show_AllBank_Type=e.Player.husandro,--大包时，显示，存取，分类，按钮
     --show_AllBank_Type_Scale=1,
 }
-local Initializer
+
 
 
 
@@ -59,7 +59,7 @@ local function Init_Bank_Plus()--增强，原生
     function ReagentBankFrame.ShowHideButton:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, Initializer:GetName())
+        e.tips:AddDoubleLine(id, addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '显示材料银行' or REAGENT_BANK, e.GetShowHide(not Save.hideReagentBankFrame)..e.Icon.left)
         e.tips:AddLine(' ')
@@ -82,7 +82,7 @@ local function Init_Bank_Plus()--增强，原生
             Save.pointReagentBank= nil
             self:show_hide()
             self:set_tooltips()
-            print(id, Initializer:GetName(), e.onlyChinese and '还原位置' or RESET_POSITION)
+            print(id, addName, e.onlyChinese and '还原位置' or RESET_POSITION)
         else
             Save.hideReagentBankFrame= not Save.hideReagentBankFrame and true or nil
             self:show_hide(Save.hideReagentBankFrame)
@@ -260,13 +260,13 @@ local function Init_All_Bank()
     function SetAllBank:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, Initializer:GetName())
+        e.tips:AddDoubleLine(id, addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine((e.onlyChinese and '行数' or HUD_EDIT_MODE_SETTING_ACTION_BAR_NUM_ROWS)..' |cnGREEN_FONT_COLOR:'..Save.num, e.Icon.mid)
         e.tips:AddDoubleLine((e.onlyChinese and '间隔' or 'Interval')..' |cnGREEN_FONT_COLOR:'..Save.line, 'Alt+'..e.Icon.mid)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '索引' or 'Index', e.Icon.left)
-        e.tips:AddDoubleLine(Save.showBackground and (e.onlyChinese and '显示背景' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SHOW_PARTY_FRAME_BACKGROUND) or (e.onlyChinese and '隐藏背景' or HIDE_PULLOUT_BG ), e.Icon.right)
+        --e.tips:AddLine(' ')
+        --e.tips:AddDoubleLine(e.onlyChinese and '索引' or 'Index', e.Icon.left)
+        --e.tips:AddDoubleLine(Save.showBackground and (e.onlyChinese and '显示背景' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SHOW_PARTY_FRAME_BACKGROUND) or (e.onlyChinese and '隐藏背景' or HIDE_PULLOUT_BG ), e.Icon.right)
         e.tips:Show()
         self:SetAlpha(1)
     end
@@ -280,7 +280,7 @@ local function Init_All_Bank()
             end
         end
     end
-    SetAllBank:SetScript('OnClick', function(self, d)
+    --[[SetAllBank:SetScript('OnClick', function(self, d)
         if d=='LeftButton' then
             Save.showIndex= not Save.showIndex and true or nil--显示，索引
             self:set_bank()--设置，银行，按钮
@@ -292,7 +292,7 @@ local function Init_All_Bank()
             self:set_background()--设置，背景
         end
         self:set_tooltips()
-    end)
+    end)]]
     SetAllBank:SetScript('OnMouseWheel', function(self, d)
         if not IsModifierKeyDown() then
             local n= Save.num
@@ -395,24 +395,6 @@ local function Init_All_Bank()
                         btn:SetShown(false)
                     end
                end
-
-                --[[for slot=1, ContainerFrame_GetContainerNumSlots(bagFrame:GetID()) do-- C_Container.GetContainerNumSlots(bagindex) do
-                    local btn=_G['ContainerFrame'..(bagindex)..'Item'..slot]
-                    if btn then
-                        if bagFrame:IsShown() then
-                            num=num+1
-                            btn:SetParent(BankSlotsFrame)
-                            btn:ClearAllPoints()
-                            btn:SetPoint('TOP', last, 'BOTTOM', 0, -Save.line)
-                            last=btn
-                            table.insert(tab, btn)
-                            btn:SetShown(true)
-                            self:set_index_label(btn, num+NUM_BANKGENERIC_SLOTS)--索引，提示
-                        else
-                            btn:SetShown(false)
-                        end
-                    end
-                end]]
             end
         end
 
@@ -794,7 +776,7 @@ local function Init_Desposit_TakeOut_Button()
     function btn:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, Initializer:GetName())
+        e.tips:AddDoubleLine(id, addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.GetShowHide(Save.show_AllBank_Type), e.Icon.left)
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..': |cnGREEN_FONT_COLOR:'..(Save.show_AllBank_Type_Scale or 1), e.Icon.mid)
@@ -1185,38 +1167,44 @@ end
 --#######
 --设置菜单
 --#######
-local function Init_Menu(_, level)
-    e.LibDD:UIDropDownMenu_AddButton({
-        text= e.onlyChinese and '转化为联合的大包' or BAG_COMMAND_CONVERT_TO_COMBINED,
-        checked= Save.allBank,
-        keepShownOnClick=true,
-        func= function()
-            Save.allBank= not Save.allBank and true or nil
-            BankFrame.optionButton:set_atlas()
-            print(id, Initializer:GetName(),'|cnGREEN_FONT_COLOR:', e.GetEnabeleDisable(Save.allBank),  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-        end
-    }, level)
+local function Init_Menu(_, root)
+    local btn= root:CreateCheckbox(e.onlyChinese and '转化为联合的大包' or BAG_COMMAND_CONVERT_TO_COMBINED, function()
+        return Save.allBank
+    end, function()
+        Save.allBank= not Save.allBank and true or nil
+        BankFrame.optionButton:set_atlas()
+        print(id, addName, e.GetEnabeleDisable(Save.allBank),  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+    end)
+    btn:SetTooltip(function(tooltip, elementDescription)
+        GameTooltip_SetTitle(tooltip, MenuUtil.GetElementText(elementDescription));
+    end)
 
-    e.LibDD:UIDropDownMenu_AddButton({
-        text= '    '..(e.onlyChinese and '选项' or OPTIONS)..'|A:mechagon-projects:0:0|a',
-        notCheckable=true,
-        func= function()
-            e.OpenPanelOpting(Initializer)
-        end
-    }, level)
-    e.LibDD:UIDropDownMenu_AddSeparator(level)
-    e.LibDD:UIDropDownMenu_AddButton({--重载
-        text= '|TInterface\\Vehicles\\UI-Vehicles-Button-Exit-Up:0|t'..(e.onlyChinese and '重新加载UI' or RELOADUI),
-        notCheckable=true,
-        tooltipOnButton=true,
-        tooltipTitle= SLASH_RELOAD1,-- '/reload',
-        colorCode='|cffff0000',
-        keepShownOnClick=true,
-        func=function()
-            e.Reload()
-        end
-    }, level)
+    if Save.allBank then
+        root:CreateDivider()
+        root:CreateCheckbox(e.onlyChinese and '索引' or 'Index', function()
+            return Save.showIndex
+        end, function()
+            Save.showIndex= not Save.showIndex and true or nil--显示，索引
+            SetAllBank:set_bank()--设置，银行，按钮
+            SetAllBank:set_reagent()--设置，材料，按钮
+            SetAllBank:set_size()--设置，外框，大小
+        end)
+
+        root:CreateCheckbox(e.onlyChinese and '显示背景' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SHOW_PARTY_FRAME_BACKGROUND, function()
+            return Save.showBackground or Save.showBackground==nil
+        end, function()
+            Save.showBackground= not Save.showBackground and true or false
+            SetAllBank:set_background()--设置，背景
+        end)
+    end
+
+    root:CreateDivider()
+    root:CreateButton(e.onlyChinese and '选项' or OPTIONS, function()
+        e.OpenPanelOpting(addName)
+    end)
+    root:CreateButton(e.onlyChinese and '重新加载UI' or RELOADUI, e.Reload)
 end
+
 
 
 
@@ -1243,11 +1231,7 @@ local function Init_Bank_Frame()
     BankFrame.optionButton:SetScript('OnLeave', function(self) self:SetAlpha(0.5) end)
     BankFrame.optionButton:SetScript('OnEnter', function(self) self:SetAlpha(1) end)
     BankFrame.optionButton:SetScript('OnMouseDown', function(self)
-        if not self.Menu then
-            self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
-            e.LibDD:UIDropDownMenu_Initialize(self.Menu, Init_Menu, 'MENU')
-        end
-        e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
+        MenuUtil.CreateContextMenu(self, Init_Menu)
     end)
     BankFrame.optionButton:SetAlpha(0.5)
     BankFrame.optionButton:set_atlas()
@@ -1283,7 +1267,7 @@ local function Init_Bank_Frame()
     ReagentBankFrame.autoSortButton:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, Initializer:GetName())
+        e.tips:AddDoubleLine(id, addName)
         e.tips:AddLine(e.onlyChinese and '整理材料银行' or BAG_CLEANUP_REAGENT_BANK)
         e.tips:Show()
     end)
@@ -1333,16 +1317,16 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            Save= WoWToolsSave[addName] or Save
+            addName= '|A:Banker:0:0|a'..(e.onlyChinese and '银行' or BANK)
+            Save= WoWToolsSave[BANK] or WoWToolsSave['Bank_Lua'] or Save
 
             --添加控制面板
-            Initializer= e.AddPanel_Check({
-                name= '|A:Banker:0:0|a'..(e.onlyChinese and '银行' or addName),
-                tooltip= e.cn(addName),
+            e.AddPanel_Check({
+                name= addName,
                 value= not Save.disabled,
                 func= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(id, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
                 end
             })
 
@@ -1354,7 +1338,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            WoWToolsSave[addName]= Save
+            WoWToolsSave['Bank_Lua']= Save
         end
     end
 end)
