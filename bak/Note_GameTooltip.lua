@@ -21,5 +21,4 @@ if GameTooltip:IsOwned(self) then
 	button:GetScript("OnEnter")(self);
 end
 
-
 ]]

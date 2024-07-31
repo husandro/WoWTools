@@ -364,13 +364,29 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
     e.GetNotifyInspect(UnitTab)--取得装等
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --####
 --初始
 --####
 local function Init()
-    button:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
-    WoWToolsChatButtonFrame.last=button
-
     if IsInRaid() then
         button.type=SLASH_RAID2
         setType(RAID)--使用,提示
@@ -432,34 +448,40 @@ local function Init()
     C_Timer.After(0.3, function() setGroupTips() end)--队伍信息提示
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --###########
 --加载保存数据
 --###########
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-
+panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button
-                Save= WoWToolsSave[addName] or Save
+            Save= WoWToolsSave[addName] or Save
 
-                button= e.Cbtn2({
-                    name=nil,
-                    parent=WoWToolsChatButtonFrame,
-                    click=true,-- right left
-                    notSecureActionButton=true,
-                    notTexture=nil,
-                    showTexture=true,
-                    sizi=nil,
-                })
+            button= WoWToolsChatButtonMixin:CreateButton('Group')
 
+            if button then--禁用Chat Button
                 Init()
-                panel:RegisterEvent("PLAYER_LOGOUT")
-                panel:RegisterEvent('GROUP_LEFT')
-                panel:RegisterEvent('GROUP_ROSTER_UPDATE')
+                self:RegisterEvent('GROUP_LEFT')
+                self:RegisterEvent('GROUP_ROSTER_UPDATE')
             end
-            panel:UnregisterEvent('ADDON_LOADED')
+            self:UnregisterEvent('ADDON_LOADED')
         end
 
     elseif event == "PLAYER_LOGOUT" then

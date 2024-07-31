@@ -110,7 +110,7 @@ local Save= {
     rightY= -22,
 
     hidePort= not e.Player.husandro,--传送门
-    portScale=0.85,--传送门, 缩放
+    portScale=e.Player.husandro and 0.85 or 1,--传送门, 缩放
 
     --hideKeyUI=true,--挑战,钥石,插入界面
     --slotKeystoneSay=true,--插入, KEY时, 说

@@ -445,15 +445,25 @@ local function Init_Menu(self, level, type)--主菜单
     end
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --####
 --初始
 --####
 local function Init()
-    button:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
-    WoWToolsChatButtonFrame.last=button
-
-    
-
     button.type=SLASH_SAY1
     setType(e.onlyChinese and '说' or SAY)--使用,提示
 
@@ -479,37 +489,38 @@ local function Init()
 
 end
 
+
+
+
+
+
+
+
+
+
+
 --###########
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-
+panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button
-                Save= WoWToolsSave[addName] or Save
+            Save= WoWToolsSave[addName] or Save
+            
+            button= WoWToolsChatButtonMixin:CreateButton('Say')
 
+            if button then--禁用Chat Button
                 WhisperTab= Save.WhisperTab or {}--保存, 密语
 
-                button= e.Cbtn2({
-                    name=nil,
-                    parent=WoWToolsChatButtonFrame,
-                    click=true,-- right left
-                    notSecureActionButton=true,
-                    notTexture=nil,
-                    showTexture=true,
-                    sizi=nil,
-                })
-
                 Init()
-                panel:RegisterEvent("PLAYER_LOGOUT")
-                panel:RegisterEvent("CHAT_MSG_WHISPER_INFORM")
-                panel:RegisterEvent("CHAT_MSG_WHISPER")
-                panel:RegisterEvent("CHAT_MSG_BN_WHISPER")
-                panel:RegisterEvent("CHAT_MSG_BN_WHISPER_INFORM")
-                panel:RegisterEvent('PLAYER_ENTERING_WORLD')
-                panel:RegisterEvent('CVAR_UPDATE')
+                self:RegisterEvent("CHAT_MSG_WHISPER_INFORM")
+                self:RegisterEvent("CHAT_MSG_WHISPER")
+                self:RegisterEvent("CHAT_MSG_BN_WHISPER")
+                self:RegisterEvent("CHAT_MSG_BN_WHISPER_INFORM")
+                self:RegisterEvent('PLAYER_ENTERING_WORLD')
+                self:RegisterEvent('CVAR_UPDATE')
             end
             panel:UnregisterEvent('ADDON_LOADED')
         end

@@ -1,5 +1,5 @@
 local id, e = ...
-local addName= BINDING_HEADER_RAID_TARGET
+local addName
 local Save={
         autoSet=true,
         tank= 2,
@@ -15,7 +15,7 @@ local Save={
         pingTime= e.Player.husandro,--显示ping冷却时间
     }
 
-local button
+local MarkerButton
 local panel= CreateFrame("Frame")
 
 local Color={
@@ -71,17 +71,17 @@ end
 
 
 local function setReadyTexureTips()--自动就绪, 主图标, 提示
-    if Save.autoReady and not button.ReadyTextrueTips then
-        button.ReadyTextrueTips=button:CreateTexture(nil,'OVERLAY')
-        button.ReadyTextrueTips:SetPoint('TOP')
-        local size=button:GetWidth()/2
-        button.ReadyTextrueTips:SetSize(size, size)
+    if Save.autoReady and not MarkerButton.ReadyTextrueTips then
+        MarkerButton.ReadyTextrueTips=MarkerButton:CreateTexture(nil,'OVERLAY')
+        MarkerButton.ReadyTextrueTips:SetPoint('TOP')
+        local size=MarkerButton:GetWidth()/2
+        MarkerButton.ReadyTextrueTips:SetSize(size, size)
     end
-    if button.ReadyTextrueTips then
+    if MarkerButton.ReadyTextrueTips then
         if Save.autoReady then
-            button.ReadyTextrueTips:SetAtlas(Save.autoReady==1 and e.Icon.select or 'auctionhouse-ui-filter-redx')
+            MarkerButton.ReadyTextrueTips:SetAtlas(Save.autoReady==1 and e.Icon.select or 'auctionhouse-ui-filter-redx')
         end
-        button.ReadyTextrueTips:SetShown(Save.autoReady and true or false)
+        MarkerButton.ReadyTextrueTips:SetShown(Save.autoReady and true or false)
     end
 end
 
@@ -104,11 +104,11 @@ end
 --###########
 local SetTankHealerFrame
 local function Init_set_Tank_Healer()
-    SetTankHealerFrame=CreateFrame("Frame", nil, button)
+    SetTankHealerFrame=CreateFrame("Frame", nil, MarkerButton)
 
     SetTankHealerFrame:SetPoint('BOTTOMLEFT',4, 4)
     SetTankHealerFrame:SetSize(12,12)
-    SetTankHealerFrame:SetFrameLevel(button:GetFrameLevel()+1)
+    SetTankHealerFrame:SetFrameLevel(MarkerButton:GetFrameLevel()+1)
 
     SetTankHealerFrame.autoSetTexture= SetTankHealerFrame:CreateTexture()
     SetTankHealerFrame.autoSetTexture:SetAtlas('mechagon-projects')
@@ -268,7 +268,7 @@ local function Init_Ready_Tips_Button()
         if Save.groupReadyTipsPoint then
             self:SetPoint(Save.groupReadyTipsPoint[1], UIParent, Save.groupReadyTipsPoint[3], Save.groupReadyTipsPoint[4], Save.groupReadyTipsPoint[5])
         else
-            self:SetPoint('BOTTOMLEFT', button, 'TOPLEFT', 0, 20)
+            self:SetPoint('BOTTOMLEFT', MarkerButton, 'TOPLEFT', 0, 20)
         end
     end
 
@@ -386,7 +386,7 @@ local function Init_Ready_Tips_Button()
 
     ReadyTipsButton:SetScript('OnLeave', function()
         e.tips:Hide()
-        button:SetButtonState('NORMAL')
+        MarkerButton:SetButtonState('NORMAL')
     end)
     ReadyTipsButton:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -397,7 +397,7 @@ local function Init_Ready_Tips_Button()
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.tipsTextSacle or 1), 'Alt+'..e.Icon.mid)
         e.tips:AddDoubleLine(e.cn(addName), e.onlyChinese and '队员就绪信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYERS_IN_GROUP, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, READY, INFO)))
         e.tips:Show()
-        button:SetButtonState('PUSHED')
+        MarkerButton:SetButtonState('PUSHED')
     end)
     ReadyTipsButton:SetScript('OnHide', function(self)
         e.Ccool(self, nil, 0)
@@ -1121,13 +1121,13 @@ end
 
 
 
-
+ --[[
 
 local function Init_Ping()
     if not Save.pingTime or not C_AddOns.IsAddOnLoaded('Blizzard_PingUI') then
         return
     end
- --[[
+
 local PingColor={
     ["Assist"] = {r=0.09, g=0.78, b=0.39, col='|cff17c864'},--协助
     ["Attack"] = {r=1.00, g=0.50, b=0.00, col='|cffff8000' },--攻击
@@ -1164,9 +1164,9 @@ local PingColor={
             ping.valueFrame.text:SetTextColor(color.r, color.g, color.b)
         end
         ping.valueFrame:SetShown(true)
-    end)]]
+    end)
 end
-
+]]
 
 
 
@@ -1192,7 +1192,7 @@ local function InitMenu(_, level, type)--主菜单
                 func=function(_, arg1)
                     Save[arg1]=index
                     if arg1=='tank' then
-                        button:set_Texture()--图标
+                        MarkerButton:set_Texture()--图标
                     end
                 end
             }
@@ -1438,18 +1438,15 @@ end
 --初始
 --####
 local function Init()
-    button:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
-    WoWToolsChatButtonFrame.last=button
-
     Init_Markers_Frame()--设置标记, 框架
     Init_set_Tank_Healer()--设置队伍标记
 
-    function button:set_Texture()--图标
+    function MarkerButton:set_Texture()--图标
         self.texture:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..Save.tank)
     end
-    button:set_Texture()--图标
+    MarkerButton:set_Texture()--图标
 
-    function button:set_Desaturated_Textrue()--主图标,是否有权限
+    function MarkerButton:set_Desaturated_Textrue()--主图标,是否有权限
         local raid= IsInRaid()
         local enabled= not e.Is_In_PvP_Area()
                 and (
@@ -1459,19 +1456,19 @@ local function Init()
         self.texture:SetDesaturated(not enabled)
     end
 
-    button:set_Desaturated_Textrue()--主图标,是否有权限
+    MarkerButton:set_Desaturated_Textrue()--主图标,是否有权限
 
-    button:RegisterEvent('PLAYER_ENTERING_WORLD')
-    button:RegisterEvent('GROUP_ROSTER_UPDATE')
-    button:RegisterEvent('GROUP_LEFT')
-    button:RegisterEvent('GROUP_JOINED')
-    button:SetScript("OnEvent", button.set_Desaturated_Textrue)
+    MarkerButton:RegisterEvent('PLAYER_ENTERING_WORLD')
+    MarkerButton:RegisterEvent('GROUP_ROSTER_UPDATE')
+    MarkerButton:RegisterEvent('GROUP_LEFT')
+    MarkerButton:RegisterEvent('GROUP_JOINED')
+    MarkerButton:SetScript("OnEvent", MarkerButton.set_Desaturated_Textrue)
 
 
     setReadyTexureTips()--自动就绪, 主图标, 提示
     Init_Ready_Tips_Button()--注册事件, 就绪,队员提示信息
 
-    button:SetScript("OnMouseDown", function(self, d)
+    MarkerButton:SetScript("OnMouseDown", function(self, d)
         if d=='LeftButton' then
             if SetTankHealerFrame:set_TankHealer(true) then--设置队伍标记
                 print(id, e.cn(addName), e.onlyChinese and '设置' or SETTINGS, e.onlyChinese and '坦克' or TANK, e.onlyChinese and '治疗' or HEALER)
@@ -1487,12 +1484,12 @@ local function Init()
         end
     end)
 
-    button:SetScript('OnEnter', function(self)
+    MarkerButton:SetScript('OnEnter', function(self)
         if self.groupReadyTips and self.groupReadyTips:IsShown() then
             self.groupReadyTips:SetButtonState('PUSHED')
         end
     end)
-    button:SetScript('OnLeave', function(self)
+    MarkerButton:SetScript('OnLeave', function(self)
         if self.groupReadyTips then
             self.groupReadyTips:SetButtonState('NORMAL')
         end
@@ -1507,8 +1504,8 @@ local function Init()
     local readyFrame=ReadyCheckListenerFrame--自动就绪事件, 提示
     if readyFrame then
         readyFrame:SetScript('OnHide',function ()
-            if button.autoReadyTime then
-                button.autoReadyTime:Cancel()
+            if MarkerButton.autoReadyTime then
+                MarkerButton.autoReadyTime:Cancel()
             end
         end)
         readyFrame:SetScript('OnShow',function(self)
@@ -1550,40 +1547,35 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-
+panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button
-                Save= WoWToolsSave[addName] or Save
-
+            if WoWToolsSave[BINDING_HEADER_RAID_TARGET] then--处理，上版本数据
+                Save= WoWToolsSave[BINDING_HEADER_RAID_TARGET]
                 Save.tank= Save.tank==0 and Save.tank or 2
                 Save.tank2= Save.tank2==0 and 6 or Save.tank2
                 Save.healer= Save.healer==0 and 1 or Save.healer
                 Save.FrameStrata= Save.FrameStrata or 'MEDIUM'
 
-                button= e.Cbtn2({
-                    name=nil,
-                    parent=WoWToolsChatButtonFrame,
-                    click=true,-- right left
-                    notSecureActionButton=true,
-                    notTexture=nil,
-                    showTexture=true,
-                    sizi=nil,
-                })
-                if e.Player.husandro then
-                    Init_Ping()
-                end
-                Init()
-                panel:RegisterEvent("PLAYER_LOGOUT")
-                panel:RegisterEvent('READY_CHECK')
+            else
+                Save= WoWToolsSave['ChatButton_Markers'] or Save
             end
-            panel:UnregisterEvent('ADDON_LOADED')
+
+            MarkerButton= WoWToolsChatButtonMixin:CreateButton('Markers')
+            if MarkerButton then
+                addName= '|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:0|t|cffffff00'..(e.onlyChinese and '队伍标记' or BINDING_HEADER_RAID_TARGET)..'|r'
+
+                Init()
+
+                self:RegisterEvent('READY_CHECK')
+            end
+            self:UnregisterEvent('ADDON_LOADED')
         end
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            WoWToolsSave[addName]=Save
+            WoWToolsSave['ChatButton_Markers']=Save
         end
 
     elseif event=='READY_CHECK' then--自动就绪事件

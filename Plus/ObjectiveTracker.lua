@@ -175,10 +175,13 @@ local function Init_Quest()
         self:print_text(num)
     end)
 
-    hooksecurefunc(QuestObjectiveTracker, 'AddBlock', function(self, block)
-        local color = select(2, e.QuestLogQuests_GetBestTagID(block.id))
-        if color and block.HeaderText then
-            block.HeaderText:SetTextColor(color.r, color.g, color.b)
+    hooksecurefunc(QuestObjectiveTracker, 'AddBlock', function(_, block)
+        local questID= block.id and tonumber(block.id)
+        if questID then
+            local color = select(2, e.QuestLogQuests_GetBestTagID(questID))
+            if color and block.HeaderText then
+                block.HeaderText:SetTextColor(color.r, color.g, color.b)
+            end
         end
     end)
 
@@ -546,10 +549,11 @@ local function Init_ObjectiveTrackerFrame()
         ObjectiveTrackerFrame:SetScale(Save.scale)
     end
     btn:HookScript('OnMouseWheel', function(self, d)
-        Save.scale= e.Set_Frame_Scale(self:GetParent():GetParent(), d, Save.scale)
+        Save.scale= e.Set_Frame_Scale(self:GetParent():GetParent(), d, Save.scale, function()
+            print(id, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print('|cnRED_FONT_COLOR:', e.onlyChinese and '友情提示: 可能会出现错误' or 'note: errors may occur')
+        end)
         self:set_tooltips()
-        print(id, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-        print('|cnRED_FONT_COLOR:', e.onlyChinese and '友情提示: 可能会出现错误' or 'note: errors may occur')
     end)
 
     --右击

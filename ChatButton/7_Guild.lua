@@ -259,21 +259,8 @@ end
 --初始
 --####
 local function Init()
-    if button then
-        return
-    end
-    button= e.Cbtn2({
-        name=nil,
-        parent=WoWToolsChatButtonFrame,
-        click=true,-- right left
-        notSecureActionButton=true,
-        notTexture=nil,
-        showTexture=true,
-        sizi=nil,
-    })
+    
 
-    button:SetPoint('LEFT', WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
-    WoWToolsChatButtonFrame.last=button
 
     set_Guild_Members()--在线人数
     button.texture:SetAtlas('UI-HUD-MicroMenu-GuildCommunities-Up')
@@ -340,32 +327,42 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --###########
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent('PLAYER_LOGOUT')
-panel:RegisterEvent('GUILD_ROSTER_UPDATE')
-panel:RegisterEvent('PLAYER_GUILD_UPDATE')
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button
-                Save= WoWToolsSave[addName] or Save
+            Save= WoWToolsSave[addName] or Save
+            
+            button= WoWToolsChatButtonMixin:CreateButton('Guild')
 
-                --panel:RegisterUnitEvent('PLAYER_GUILD_UPDATE', "player")
-                if C_AddOns.IsAddOnLoaded('Blizzard_Communities') then
-                    Init()
-                    self:UnregisterEvent('ADDON_LOADED')
-                end
-
-            else
-                self:UnregisterAllEvents()
+            if button then--禁用Chat Button
+                
+              
+                Init()
+                self:RegisterEvent('GUILD_ROSTER_UPDATE')
+                self:RegisterEvent('PLAYER_GUILD_UPDATE')
             end
-
-
-        elseif arg1=='Blizzard_Communities' then
-            Init()
             self:UnregisterEvent('ADDON_LOADED')
         end
 

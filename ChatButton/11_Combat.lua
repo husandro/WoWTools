@@ -451,8 +451,6 @@ end
 local function Init()
     OnLineTime=GetTime()
 
-    button:SetPoint('BOTTOMLEFT', WoWToolsChatButtonFrame.last, 'BOTTOMRIGHT')--设置位置
-
     if e.Player.faction=='Alliance' then
         button.texture:SetTexture(255130)
     elseif e.Player.faction=='Horde' then
@@ -784,7 +782,7 @@ end
 --###########
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-
+panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
@@ -792,21 +790,9 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             Save.inCombatScale= Save.inCombatScale or 1.3
             Save.SayTime= Save.SayTime or 120
 
-            if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button
-                button= e.Cbtn2({
-                    name=nil,
-                    parent=WoWToolsChatButtonFrame,
-                    click=true,-- right left
-                    notSecureActionButton=true,
-                    notTexture=nil,
-                    showTexture=true,
-                    sizi=nil,
-                })
+            button= WoWToolsChatButtonMixin:CreateButton('Emoji')
 
-
-
-                panel:RegisterEvent("PLAYER_LOGOUT")
-
+            if button then--禁用Chat Button
                 Init()
             end
             panel:UnregisterEvent('ADDON_LOADED')
@@ -816,7 +802,5 @@ panel:SetScript("OnEvent", function(_, event, arg1)
         if not e.ClearAllSave then
             WoWToolsSave[addName]=Save
         end
-
-
     end
 end)

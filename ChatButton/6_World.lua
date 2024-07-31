@@ -303,13 +303,22 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 --####
 --初始
 --####
 local function Init()
-    button:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
-    WoWToolsChatButtonFrame.last=button
-
     button.texture:SetAtlas('128-Store-Main')
 
     button:SetScript("OnMouseDown",function(self,d)
@@ -337,38 +346,55 @@ local function Init()
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --###########
 --加载保存数据
 --###########
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PLAYER_ENTERING_WORLD')
-
+panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" and arg1==id then
-            if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button
-                Save= WoWToolsSave[addName] or Save
+    if event == "ADDON_LOADED" then
+        if arg1==id then
+            Save= WoWToolsSave[addName] or Save
+            
+            button= WoWToolsChatButtonMixin:CreateButton('World')
+
+            if button then--禁用Chat Button
+                
                 Save.myChatFilterNum= Save.myChatFilterNum or 70
                 Save.world= Save.world or CHANNEL_CATEGORY_WORLD
 
-                button= e.Cbtn2({
-                    name=nil,
-                    parent=WoWToolsChatButtonFrame,
-                    click=true,-- right left
-                    notSecureActionButton=true,
-                    notTexture=nil,
-                    showTexture=true,
-                    sizi=nil,
-                })
 
                 Init()
-
+                self:RegisterEvent('PLAYER_ENTERING_WORLD')
                 self:UnregisterEvent('ADDON_LOADED')
             else
                 self:UnregisterAllEvents()
             end
-            self:RegisterEvent("PLAYER_LOGOUT")
-
+            
+        end
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             WoWToolsSave[addName]=Save

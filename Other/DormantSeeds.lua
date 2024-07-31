@@ -2,7 +2,7 @@ local id, e = ...
 local addName= 'DormantSeeds'
 local Save={
     disabled= not e.Player.husandro,
-    scale=0.85,
+    scale= e.Player.husandro and 0.85 or 1,
 }
 
 local panel= CreateFrame('Frame')

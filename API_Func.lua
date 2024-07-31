@@ -100,7 +100,7 @@ e.HEX_to_RGB(hexColor, self)--HEX转RGB
 e.Get_ColorFrame_RGBA()--取得, ColorFrame, 颜色
 e.ShowColorPicker(valueR, valueG, valueB, valueA, swatchFunc, cancelFunc)
 
-e.Set_Frame_Scale()--设置Frame缩放
+e.Set_Frame_Scale(self, delta, value, func)--设置Frame缩放
 ]]
 
 
@@ -1820,7 +1820,7 @@ end
 --任务图标，颜色
 function e.QuestLogQuests_GetBestTagID(questID, info, tagInfo, isComplete)--QuestMapFrame.lua QuestUtils.lua
     questID= questID or (info and info.questID)
-
+    questID= tonumber(questID)
     if not info and questID then
        local questLogIndex= C_QuestLog.GetLogIndexForQuestID(questID)
        info = questLogIndex and C_QuestLog.GetInfo(questLogIndex)
@@ -2742,17 +2742,19 @@ end
 
 
 --设置Frame缩放
-
-function e.Set_Frame_Scale(self, delta, value)
-    if not self:CanChangeAttribute() or not IsAltKeyDown() then
-        return
+function e.Set_Frame_Scale(self, delta, value, func)
+    local n= value
+    if self:CanChangeAttribute() and IsAltKeyDown() then
+        n= n or 1
+        n= delta==1 and n-0.05 or n
+        n= delta==-1 and n+0.05 or n
+        n= n>4 and 4 or n
+        n= n<0.4 and 0.4 or n
+        self:SetScale(n)
+        if func then
+            func()
+        end
     end
-    local n= value or 1
-    n= delta==1 and n-0.05 or n
-    n= delta==-1 and n+0.05 or n
-    n= n>4 and 4 or n
-    n= n<0.4 and 0.4 or n
-    self:SetScale(n)
     return n
 end
 

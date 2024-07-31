@@ -323,6 +323,9 @@ button:SetTooltip(function(tooltip, elementDescription)
 	GameTooltip_AddErrorLine(tooltip, "Test Tooltip Colored Line");
 end);
 
+GameTooltip_SetTitle(tooltip, text, overrideColor, wrap)
+GameTooltip_AddBlankLineToTooltip(tooltip)
+
 *** 显示模式 ***
 默认情况下，菜单垂直布局元素。要启用网格布局，请使用 SetGridMode。如果没有提供列，则列数将自动从 AutoCalculateColumns（下面提供）中选择：
 
@@ -356,10 +359,13 @@ rootDescription:SetScrollMode(maxScrollExtent);
 根上下文菜单将始终夹紧在屏幕上。
 下拉根菜单永远不会沿垂直轴夹紧在屏幕上。如果菜单无法容纳，它将在垂直轴上反射，然后在水平轴上夹紧在屏幕上。这可以防止菜单与其所连接的下拉菜单重叠。
 
-子菜单永远不会夹紧在屏幕上。与根菜单类似，如果子菜单无法容纳，它将在所连接的元素的水平轴上反射。此规则适用于任何深度的子菜单，但菜单元素将始终尝试在可能的情况下从左到右方向创建子菜单。
+子菜单永远不会夹紧在屏幕上。
+与根菜单类似，如果子菜单无法容纳，它将在所连接的元素的水平轴上反射。此规则适用于任何深度的子菜单，但菜单元素将始终尝试在可能的情况下从左到右方向创建子菜单。
 
 *** 样式 ***
-菜单背景纹理、内部范围填充和子范围填充的选择由分配给上下文菜单或下拉按钮的菜单样式决定。当打开上下文菜单时，除非所有者区域提供覆盖，否则菜单样式混合的选择由 MenuVariants.GetDefaultContextMenuMixin() 决定。同样，除非下拉按钮提供覆盖，否则菜单样式混合的选择由 MenuVariants.GetDefaultMenuMixin() 决定。
+菜单背景纹理、内部范围填充和子范围填充的选择由分配给上下文菜单或下拉按钮的菜单样式决定。当打开上下文菜单时，除非所有者区域提供覆盖，
+否则菜单样式混合的选择由 MenuVariants.GetDefaultContextMenuMixin() 决定。
+同样，除非下拉按钮提供覆盖，否则菜单样式混合的选择由 MenuVariants.GetDefaultMenuMixin() 决定。
 
 *** 帮助程序 ***
 
@@ -395,7 +401,8 @@ MenuUtil.CreateCheckboxContextMenu(ownerButton,
 *** 插件菜单自定义 ***
 根菜单描述标有字符串标识符，插件作者可以使用它来注册将元素附加到菜单的函数。
 
-UnitPopup 菜单标签的格式为 MENU_UNIT_<UNIT_TYPE>，其中 UNIT_TYPE 是单元类型之一（SELF、RAID、PARTY1 等），并附带 contextData 表，插件可以使用它来获取有关菜单的更多信息。
+UnitPopup 菜单标签的格式为 MENU_UNIT_<UNIT_TYPE>，其中 UNIT_TYPE 是单元类型之一（SELF、RAID、PARTY1 等），
+并附带 contextData 表，插件可以使用它来获取有关菜单的更多信息。
 
 要修改菜单：
 

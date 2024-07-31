@@ -1007,9 +1007,6 @@ end
 --初始
 --####
 local function Init()
-    button:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
-    WoWToolsChatButtonFrame.last=button
-
     button.texture:SetAtlas('communities-icon-addgroupplus')
     --setTexture()--设置图标颜色, 是否有权限
 
@@ -1191,40 +1188,31 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('LFG_LIST_APPLICATION_STATUS_UPDATED')
-
-panel:SetScript("OnEvent", function(_, event, arg1, ...)
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:SetScript("OnEvent", function(self, event, arg1, ...)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button
-                Save= WoWToolsSave[addName] or Save
+            Save= WoWToolsSave[addName] or Save
+            
+            button= WoWToolsChatButtonMixin:CreateButton('Invite')
+
+            if button then
+                
                 Save.frameList= nil --Save.frameList or {['Target']=true, ['Party1']=true, ['Party2']=true, ['Party3']=true, ['Party4']=true}--框架, 向上:密语, 向下:跟随
                 Save.focusKey= Save.focusKey or 'Shift'--焦点
 
-                button= e.Cbtn2({
-                    name=nil,
-                    parent=WoWToolsChatButtonFrame,
-                    click=true,-- right left
-                    notSecureActionButton=true,
-                    notTexture=nil,
-                    showTexture=true,
-                    sizi=nil,
-                })
-
                 Init()
 
-                panel:RegisterEvent("PLAYER_LOGOUT")
-                panel:RegisterEvent('GROUP_LEFT')
-                panel:RegisterEvent('GROUP_ROSTER_UPDATE')
-                panel:RegisterEvent('PARTY_INVITE_REQUEST')
-                panel:RegisterEvent('PLAYER_UPDATE_RESTING')----休息区提示
-                panel:RegisterEvent('PLAYER_ENTERING_WORLD')
-
-                panel:UnregisterEvent('ADDON_LOADED')
-            else
-                panel:UnregisterAllEvents()
+                self:RegisterEvent('GROUP_LEFT')
+                self:RegisterEvent('GROUP_ROSTER_UPDATE')
+                self:RegisterEvent('PARTY_INVITE_REQUEST')
+                self:RegisterEvent('PLAYER_UPDATE_RESTING')----休息区提示
+                self:RegisterEvent('PLAYER_ENTERING_WORLD')
+                self:RegisterEvent('LFG_LIST_APPLICATION_STATUS_UPDATED')
             end
+            self:UnregisterEvent('ADDON_LOADED')
         end
+        
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then

@@ -38,6 +38,8 @@ Libs\LibUIDropDownMenu.lua
 
 
 ##主要function，不能删除
+Mixin\Chat_Button_Mixin.lua
+
 API_WoWTools.lua
 API_Create.lua
 API_Func.lua
@@ -148,29 +150,29 @@ Tools\26MagePortal.lua
 
 ##Chat Button
 ##这是Chat主要，如果需要其中一个功能，这个不能关
-ChatButton\ChatButton.lua
+ChatButton\0_ChatButton.lua
 ##超链接， 欢迎, 一些其他功能
-ChatButton\HyperLink.lua
+ChatButton\1_HyperLink.lua
 ##ROLL
-ChatButton\Roll.lua
+ChatButton\2_Roll.lua
 ##标记
-ChatButton\Markers.lua
+ChatButton\3_Markers.lua
 ##邀请， 自动接受， 拒绝，屏蔽
-ChatButton\Invite.lua
+ChatButton\4_Invite.lua
 ##查找器， 地下城和团队， 自动退出，进入，Roll装
-ChatButton\LFD.lua
+ChatButton\5_LFD.lua
 ##世界频道
-ChatButton\World.lua
+ChatButton\6_World.lua
 ##公会
-ChatButton\Guild.lua
+ChatButton\7_Guild.lua
 ##队伍
-ChatButton\Group.lua
+ChatButton\8_Group.lua
 ##说
-ChatButton\Say.lua
+ChatButton\9_Say.lua
 ##表情，如不是中文，默认关闭
-ChatButton\Emoji.lua
+ChatButton\10_Emoji.lua
 ##各种, 战斗时间
-ChatButton\Combat.lua
+ChatButton\11_Combat.lua
 
 
 ##其它

@@ -2072,9 +2072,11 @@ local function Init_Hook()
         frame.questIDLabel:SetScript('OnEnter', function(self)
             if self.questID then
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
-                GameTooltip_AddQuest(self)
-                e.tips:AddLine(' ')
+                e.tips:ClearLines()
+                --GameTooltip_AddQuest(self, self.questID)
+                --e.tips:AddLine(' ')
                 e.tips:AddDoubleLine(id, addName..e.Icon.left)
+                e.tips:AddDoubleLine((e.onlyChinese and '任务' or QUESTS_LABEL)..' ID', self.questID)
                 e.tips:Show()
                 self:SetAlpha(1)
             end
@@ -2085,14 +2087,18 @@ local function Init_Hook()
                 e.Show_WoWHead_URL(true, 'quest', self.questID, info.tagName)
             end
         end)
+        function frame.questIDLabel:settings(questID)
+            local num= (questID and questID>0) and questID
+            self:SetText(num or '')
+            self.questID= num
+        end
         return frame.questIDLabel
     end
     
     local label= create_Quest_Label(QuestMapDetailsScrollFrame)
     label:SetPoint('BOTTOMRIGHT', QuestMapDetailsScrollFrame, 'TOPRIGHT', 0, 4)
     hooksecurefunc('QuestMapFrame_ShowQuestDetails', function(questID)
-        QuestMapDetailsScrollFrame.questIDLabel:SetText(questID or '')
-        QuestMapDetailsScrollFrame.questIDLabel.questID= questID
+        QuestMapDetailsScrollFrame.questIDLabel:settings(questID)
     end)
 
     label= create_Quest_Label(QuestFrame)
@@ -2101,12 +2107,9 @@ local function Init_Hook()
     else
         label:SetPoint('TOPRIGHT', -30, -35)
     end
-
-    
     QuestFrame:HookScript('OnShow', function(self)
         local questID= QuestInfoFrame.questLog and  C_QuestLog.GetSelectedQuest() or GetQuestID()
-        self.questIDLabel:SetText(questID or '')
-        self.questIDLabel.questID= questID
+        self.questIDLabel:settings(questID)
     end)
 
 

@@ -2,7 +2,7 @@ local id, e = ...
 local addName= UNITFRAME_LABEL
 local Save={
     --notRaidFrame= not e.Player.husandro,
-    raidFrameScale=0.8,
+    raidFrameScale= e.Player.husandro and 0.8 or 1,
     --raidFrameAlpha=1,
     --healthbar='UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status'
 }

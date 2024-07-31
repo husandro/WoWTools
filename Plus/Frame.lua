@@ -2374,8 +2374,8 @@ local function Init_Move()
                 if not self:GetView() then
                     return
                 end
-                for _, btn in pairs(self:GetFrames() or {}) do
-                    btn:SetPoint('RIGHT')
+                for _, btn2 in pairs(self:GetFrames() or {}) do
+                    btn2:SetPoint('RIGHT')
                 end
             end)
             function btn:set_RaidFrame_Button_size()
@@ -2394,9 +2394,9 @@ local function Init_Move()
                         end
                     end
                     for b=1, 5 do
-                        local btn= _G['RaidGroup'..i..'Slot'..b]
-                        if btn then
-                            btn:SetWidth(w)
+                        local btn2= _G['RaidGroup'..i..'Slot'..b]
+                        if btn2 then
+                            btn2:SetWidth(w)
                         end
                     end
                 end
@@ -2429,15 +2429,18 @@ local function Init_Move()
             end
         end
     })
+    e.Set_Move_Frame(FriendsFriendsFrame)
+    e.Set_Move_Frame(RecruitAFriendRewardsFrame)
+
     e.Set_Move_Frame(RaidInfoFrame, {setSize=true, minW=345, minH=128, notMoveAlpha=true, initFunc=function(btn)
             btn.target.ScrollBox:SetPoint('BOTTOMRIGHT',-35, 38)
             RaidInfoDetailFooter:SetPoint('RIGHT', -12, 0)
             RaidInfoInstanceLabel:SetWidth(200)
-            hooksecurefunc('RaidInfoFrame_InitButton', function(btn, elementData)
-                if not btn:IsVisible() then
+            hooksecurefunc('RaidInfoFrame_InitButton', function(btn2, elementData)
+                if not btn2:IsVisible() then
                     return
                 end
-                btn.name:SetPoint('RIGHT', btn.reset, 'LEFT')
+                btn2.name:SetPoint('RIGHT', btn.reset, 'LEFT')
             end)
             RaidInfoIDLabel:ClearAllPoints()
             RaidInfoIDLabel:SetPoint('TOPRIGHT', -13, -31)

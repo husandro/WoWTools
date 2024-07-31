@@ -2259,18 +2259,8 @@ local function Init()
         whileDead=true, hideOnEscape=true, exclusive=true,
         timeout=sec}
 
-    button= e.Cbtn2({
-        name=nil,
-        parent=WoWToolsChatButtonFrame,
-        click=true,-- right left
-        notSecureActionButton=true,
-        notTexture=nil,
-        showTexture=true,
-        sizi=nil,
-    })
 
-    button:SetPoint('LEFT',WoWToolsChatButtonFrame.last, 'RIGHT')--设置位置
-    WoWToolsChatButtonFrame.last=button
+
 
     button:SetScript('OnClick', function(self, d)
         if d=='LeftButton' and (self.dungeonID or self.RaidID) then
@@ -2763,16 +2753,16 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-
+panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            if not WoWToolsChatButtonFrame.disabled then--禁用Chat Button
+            button= WoWToolsChatButtonMixin:CreateButton('LFD')
+            if button then--禁用Chat Button
                 Save= WoWToolsSave[addName] or Save
-                wowSave=WoWToolsSave[INSTANCE] or wowSave
+                wowSave= WoWToolsSave[INSTANCE] or wowSave
 
                 Init()
-                self:RegisterEvent("PLAYER_LOGOUT")
                 self:RegisterEvent('LFG_COMPLETION_REWARD')
                 --self:RegisterEvent('SCENARIO_COMPLETED')
                 self:RegisterEvent('PLAYER_ENTERING_WORLD')
