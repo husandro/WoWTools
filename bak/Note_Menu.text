@@ -445,3 +445,13 @@ btn:SetScript('OnMouseDown', function(self)
 end)
 
 ]]
+
+
+
+
+
+
+
+
+
+MenuTemplates.SetHierarchyEnabled(button, enabled);

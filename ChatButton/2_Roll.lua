@@ -243,7 +243,8 @@ local function Init()
 
     function RollButton:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip_SetTitle(e.tips, id..' '..addName)
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(addName, e.Icon.left)
         if #RollTab>0 then
             e.tips:AddLine(' ')
             local tabNew={}

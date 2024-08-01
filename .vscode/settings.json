@@ -4712,7 +4712,9 @@
         "CreateSettingsCheckboxWithButtonInitializer",
         "CreateSettingsCheckboxSliderInitializer",
         "STABLE_FILTER_BUTTON_LABEL",
-        "DropdownButtonMixin"
+        "DropdownButtonMixin",
+        "TRADESKILL_RECIPE_LEVEL_DROPDOWN_BUTTON_FORMAT",
+        "MenuConstants"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

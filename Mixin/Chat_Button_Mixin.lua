@@ -39,11 +39,11 @@ function WoWToolsChatButtonMixin:CreateButton(name)
     btn.texture:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -6, 6)
     btn.texture:AddMaskTexture(btn.mask)
 
-    --[[btn.border=btn:CreateTexture(nil, 'ARTWORK')
+    btn.border=btn:CreateTexture(nil, 'ARTWORK')
     btn.border:SetAllPoints(btn)
     btn.border:SetAtlas('bag-reagent-border')
 
-    e.Set_Label_Texture_Color(btn.border, {type='Texture', alpha= 0.5})]]
+    e.Set_Label_Texture_Color(btn.border, {type='Texture', alpha= 0.3})
 
     function btn:state_enter()
         self:GetParent():SetButtonState('PUSHED')

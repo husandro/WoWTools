@@ -1175,9 +1175,113 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --#####
 --主菜单
 --#####
+local function Init_Menu(_, root)
+    local sub, tre, col
+
+    root:CreateCheckbox(
+        (Save.tank==0 and Save.healer==0 and '|cff606060' or '')
+        ..'|A:mechagon-projects:0:0|a'
+        ..((e.onlyChinese and '自动标记' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, EVENTTRACE_MARKER))
+        ..e.Icon.TANK..e.Icon.HEALER
+    ), function ()
+        return Save.autoSet
+    end, function ()
+        Save.autoSet= not Save.autoSet and true or nil
+        SetTankHealerFrame:set_Enabel_Event()
+        if Save.autoSet then
+            SetTankHealerFrame:set_TankHealer(true)--设置队伍标记
+        end
+    end)
+
+    local tab={
+        {text= e.Icon.TANK..(e.onlyChinese and '坦克' or TANK), type='tank'},
+        {text= e.Icon.HEALER..(e.onlyChinese and '治疗' or HEALER), type='healer', tip=e.onlyChinese and '仅限小队' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, GROUP)},
+        {text= e.Icon.TANK..(e.onlyChinese and '坦克' or TANK)..'2', type='tank2', tip=e.onlyChinese and '仅限团队' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, RAID)},
+    }
+    for _, info in pairs(tab) do
+        local index= Save[info.type]
+        col= index and Color[index].col or '|cff606060'
+        sub=root:CreateButton(
+            col
+            ..(index and '     |TInterface\\TargetingFrame\\UI-RaidTargetingIcon_'..index..':0|t' or '')
+            ..info.text, nil, info.tip
+        )
+
+
+        sub:SetTooltip(function(tooltip, data)
+            tooltip:AddLine(data.data)
+        end)
+
+        for i=1, NUM_RAID_ICONS do
+            tre=sub:CreateCheckbox(Color[i].col..'|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_'..i..':0|t'..e.cn(_G['RAID_TARGET_'..i]), function(data)
+                return Save[data.type]==data.index
+            end, function(data,a,b)
+                Save[data.type]=data.index
+                MarkerButton:set_Texture()--图标
+                info= b
+                for k, v in pairs(info) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
+
+            end, {index=i, type=info.type, text=info.text})
+            tre:SetTooltip(function(tooltip, data)
+                tooltip:AddLine(data.data.text)
+            end)
+           
+        end
+    end
+
+    root:CreateDivider()
+    
+    sub=root:CreateCheckbox(
+        (e.Is_In_PvP_Area() or UnitAffectingCombat('player') and '|cnRED_FONT_COLOR:' or '')
+        ..(e.onlyChinese and '队伍标记工具' or format(PROFESSION_TOOL_TOOLTIP_LINE, BINDING_HEADER_RAID_TARGET)
+    ), function()
+        return Save.markersFrame
+    end, function ()
+        Save.markersFrame= not Save.markersFrame and true or nil
+        Init_Markers_Frame()--设置标记, 框架
+    end)
+    sub:SetTooltip(function(tooltip)
+        GameTooltip_AddNormalLine(tooltip, e.onlyChinese and '世界标记' or SLASH_WORLD_MARKER3:gsub('/',''))
+        GameTooltip_AddNormalLine(tooltip, e.onlyChinese and '需求：队伍和权限' or (NEED..": "..format(COVENANT_RENOWN_TOAST_REWARD_COMBINER, HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS, CALENDAR_INVITELIST_SETMODERATOR)))
+    end)
+
+
+    sub=root:CreateCheckbox(e.onlyChinese and '队员就绪信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYERS_IN_GROUP, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, READY, INFO)), function()
+        return Save.groupReadyTips
+    end, function()
+        Save.groupReadyTips= not Save.groupReadyTips and true or nil
+        Init_Ready_Tips_Button()--注册事件, 就绪,队员提示信息
+        if Save.groupReadyTips then--测试
+            ReadyTipsButton.text:SetText('Test')
+            ReadyTipsButton:set_Shown()
+        end
+    end)
+
+end
+
+
+
+
 local function InitMenu(_, level, type)--主菜单
     local info
     if type=='tank' or type=='tank2' or type=='healer' then--3级
@@ -1330,6 +1434,11 @@ local function InitMenu(_, level, type)--主菜单
         return
     end
 
+
+
+
+
+
     info={
         text= (e.onlyChinese and '自动标记' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, EVENTTRACE_MARKER))..e.Icon.TANK..e.Icon.HEALER,
         icon= 'mechagon-projects',
@@ -1434,6 +1543,18 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 --####
 --初始
 --####
@@ -1468,7 +1589,7 @@ local function Init()
     setReadyTexureTips()--自动就绪, 主图标, 提示
     Init_Ready_Tips_Button()--注册事件, 就绪,队员提示信息
 
-    MarkerButton:SetScript("OnMouseDown", function(self, d)
+    MarkerButton:SetScript("OnClick", function(self, d)
         if d=='LeftButton' then
             if SetTankHealerFrame:set_TankHealer(true) then--设置队伍标记
                 print(id, e.cn(addName), e.onlyChinese and '设置' or SETTINGS, e.onlyChinese and '坦克' or TANK, e.onlyChinese and '治疗' or HEALER)
@@ -1476,23 +1597,35 @@ local function Init()
                 print(id, e.cn(addName), e.onlyChinese and '设置' or SETTINGS, e.onlyChinese and '坦克' or TANK, e.onlyChinese and '治疗' or HEALER, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE))
             end
         else
-            if not self.Menu then
+            MenuUtil.CreateContextMenu(self, Init_Menu)
+            e.tips:Hide()
+            --[[if not self.Menu then
                 self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
                 e.LibDD:UIDropDownMenu_Initialize(self.Menu, InitMenu, 'MENU')
             end
-            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
+            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)]]
         end
     end)
+
+    function MarkerButton:set_tooltip()
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine((e.onlyChinese and '标记' or EVENTTRACE_MARKER)..e.Icon.TANK..e.Icon.HEALER, e.Icon.left)
+        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or MAINMENU, e.Icon.right)
+        e.tips:Show()
+    end
 
     MarkerButton:SetScript('OnEnter', function(self)
         if self.groupReadyTips and self.groupReadyTips:IsShown() then
             self.groupReadyTips:SetButtonState('PUSHED')
         end
+        self:set_tooltip()
     end)
     MarkerButton:SetScript('OnLeave', function(self)
         if self.groupReadyTips then
             self.groupReadyTips:SetButtonState('NORMAL')
         end
+        e.tips:Hide()
     end)
 
 
