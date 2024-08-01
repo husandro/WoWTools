@@ -1334,7 +1334,7 @@ local function Init_Menu(_, root)
             end, value)
         sub:SetTooltip(function(tooltip, data)
             if data.data==1 or data.data==2 then
-                tooltip:AddLine(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO)
+                tooltip:AddLine(SELF_CAST_AUTO)
             end
         end)
     end
