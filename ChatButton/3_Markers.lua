@@ -13,9 +13,13 @@ local Save={
         markersFrame= e.Player.husandro,
         FrameStrata='MEDIUM',
         pingTime= e.Player.husandro,--显示ping冷却时间
+        autoReady=0,
     }
 
 local MarkerButton
+local SetTankHealerFrame--设置队伍标记
+local ReadyTipsButton--队员,就绪,提示信息
+local Frame--设置标记, 框架
 local panel= CreateFrame("Frame")
 
 local Color={
@@ -70,22 +74,6 @@ end
 
 
 
-local function setReadyTexureTips()--自动就绪, 主图标, 提示
-    if Save.autoReady and not MarkerButton.ReadyTextrueTips then
-        MarkerButton.ReadyTextrueTips=MarkerButton:CreateTexture(nil,'OVERLAY')
-        MarkerButton.ReadyTextrueTips:SetPoint('TOP')
-        local size=MarkerButton:GetWidth()/2
-        MarkerButton.ReadyTextrueTips:SetSize(size, size)
-    end
-    if MarkerButton.ReadyTextrueTips then
-        if Save.autoReady then
-            MarkerButton.ReadyTextrueTips:SetAtlas(Save.autoReady==1 and e.Icon.select or 'auctionhouse-ui-filter-redx')
-        end
-        MarkerButton.ReadyTextrueTips:SetShown(Save.autoReady and true or false)
-    end
-end
-
-
 
 
 
@@ -102,7 +90,6 @@ end
 --###########
 --设置队伍标记
 --###########
-local SetTankHealerFrame
 local function Init_set_Tank_Healer()
     SetTankHealerFrame=CreateFrame("Frame", nil, MarkerButton)
 
@@ -227,7 +214,6 @@ end
 --################
 --队员,就绪,提示信息
 --################
-local ReadyTipsButton
 local function Init_Ready_Tips_Button()
     if not Save.groupReadyTips then
         if ReadyTipsButton then
@@ -465,7 +451,6 @@ end
 --#############
 --设置标记, 框架
 --#############
-local Frame
 local function Init_Markers_Frame()--设置标记, 框架
     if not Save.markersFrame then
         if Frame then
@@ -504,36 +489,38 @@ local function Init_Markers_Frame()--设置标记, 框架
     Frame:Init_Set_Frame()
 
     function Frame:set_Shown()
-        if UnitAffectingCombat('player') then
+        if not self:CanChangeAttribute() then
             self:RegisterEvent('PLAYER_REGEN_ENABLED')
-        else
-            local raid= IsInRaid()
-            local isLeader= Is_Leader()
-            local isRaid= (raid and isLeader) or not raid
-            local isInGroup= IsInGroup()
-
-            local enabled= not e.Is_In_PvP_Area()
-                        and Save.markersFrame
-                        --and not InCinematic()
-                        --and not IsInCinematicScene()
-                        --and not MovieFrame:IsShown()
-
-            local ping= C_CVar.GetCVarBool("enablePings") and Save.markersFrame
-            self.ping:SetShown(ping )
-
-            local target= isRaid and enabled
-            self.target:SetShown(target)
-
-            local marker= isInGroup and isRaid and enabled
-            self.marker:SetShown(marker)
-
-            local check= isLeader and isInGroup and enabled
-            self.countdown:SetShown(check)
-            self.check:SetShown(check)
-
-            self:SetShown((ping or target or marker or check) and not C_PetBattles.IsInBattle())
+            return
         end
+
+        local raid= IsInRaid()
+        local isLeader= Is_Leader()
+        local isRaid= (raid and isLeader) or not raid
+        local isInGroup= IsInGroup()
+
+        local enabled= not e.Is_In_PvP_Area()
+                    and Save.markersFrame
+                    --and not InCinematic()
+                    --and not IsInCinematicScene()
+                    --and not MovieFrame:IsShown()
+
+        local ping= C_CVar.GetCVarBool("enablePings") and Save.markersFrame
+        self.ping:SetShown(ping )
+
+        local target= isRaid and enabled
+        self.target:SetShown(target)
+
+        local marker= isInGroup and isRaid and enabled
+        self.marker:SetShown(marker)
+
+        local check= isLeader and isInGroup and enabled
+        self.countdown:SetShown(check)
+        self.check:SetShown(check)
+
+        self:SetShown((ping or target or marker or check) and not C_PetBattles.IsInBattle())
     end
+
     function Frame:set_Event()
         if Save.markersFrame then
             self:RegisterEvent('PLAYER_ENTERING_WORLD')--显示/隐藏
@@ -543,10 +530,6 @@ local function Init_Markers_Frame()--设置标记, 框架
             self:RegisterEvent('GROUP_JOINED')
             self:RegisterEvent('PET_BATTLE_OPENING_DONE')
             self:RegisterEvent('PET_BATTLE_CLOSE')
-            --self:RegisterEvent('CINEMATIC_START')
-            --self:RegisterEvent('CINEMATIC_STOP')
-            --self:RegisterEvent('PLAY_MOVIE')
-            --self:RegisterEvent('STOP_MOVIE')
         else
             self:UnregisterAllEvents()
         end
@@ -1196,9 +1179,9 @@ end
 --主菜单
 --#####
 local function Init_Menu(_, root)
-    local sub, tre, col
+    local sub, tre, col, tab
 
-    root:CreateCheckbox(
+    sub=root:CreateCheckbox(
         (Save.tank==0 and Save.healer==0 and '|cff606060' or '')
         ..'|A:mechagon-projects:0:0|a'
         ..((e.onlyChinese and '自动标记' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, EVENTTRACE_MARKER))
@@ -1212,42 +1195,41 @@ local function Init_Menu(_, root)
             SetTankHealerFrame:set_TankHealer(true)--设置队伍标记
         end
     end)
+    sub:SetGridMode(MenuConstants.VerticalGridDirection, 3)
 
-    local tab={
+    tab={
         {text= e.Icon.TANK..(e.onlyChinese and '坦克' or TANK), type='tank'},
         {text= e.Icon.HEALER..(e.onlyChinese and '治疗' or HEALER), type='healer', tip=e.onlyChinese and '仅限小队' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, GROUP)},
         {text= e.Icon.TANK..(e.onlyChinese and '坦克' or TANK)..'2', type='tank2', tip=e.onlyChinese and '仅限团队' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, RAID)},
     }
     for _, info in pairs(tab) do
-        local index= Save[info.type]
-        col= index and Color[index].col or '|cff606060'
-        sub=root:CreateButton(
-            col
-            ..(index and '     |TInterface\\TargetingFrame\\UI-RaidTargetingIcon_'..index..':0|t' or '')
-            ..info.text, nil, info.tip
-        )
-
-
-        sub:SetTooltip(function(tooltip, data)
-            tooltip:AddLine(data.data)
+        tre=sub:CreateButton(info.text, function()
+            Save.tank= 2
+            Save.tank2= 6
+            Save.healer= 1
         end)
+        tre:SetTooltip(function(tooltip)
+            tooltip:AddLine(e.onlyChinese and '重置' or RESET)
+        end)
+        sub:CreateDivider()
 
         for i=1, NUM_RAID_ICONS do
             tre=sub:CreateCheckbox(Color[i].col..'|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_'..i..':0|t'..e.cn(_G['RAID_TARGET_'..i]), function(data)
                 return Save[data.type]==data.index
-            end, function(data,a,b)
+            end, function(data)
+                if Save.tank==data.index or Save.healer==data.index or Save.tank2==data.index then
+                    return
+                end
                 Save[data.type]=data.index
                 MarkerButton:set_Texture()--图标
-                info= b
-                for k, v in pairs(info) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
-
-            end, {index=i, type=info.type, text=info.text})
+                
+            end, {index=i, type=info.type, tip=info.tip})
             tre:SetTooltip(function(tooltip, data)
-                tooltip:AddLine(data.data.text)
+                tooltip:AddLine(data.data.tip)
             end)
-           
         end
     end
+
 
     root:CreateDivider()
     
@@ -1256,13 +1238,62 @@ local function Init_Menu(_, root)
         ..(e.onlyChinese and '队伍标记工具' or format(PROFESSION_TOOL_TOOLTIP_LINE, BINDING_HEADER_RAID_TARGET)
     ), function()
         return Save.markersFrame
-    end, function ()
+    end, function()
         Save.markersFrame= not Save.markersFrame and true or nil
         Init_Markers_Frame()--设置标记, 框架
     end)
     sub:SetTooltip(function(tooltip)
         GameTooltip_AddNormalLine(tooltip, e.onlyChinese and '世界标记' or SLASH_WORLD_MARKER3:gsub('/',''))
         GameTooltip_AddNormalLine(tooltip, e.onlyChinese and '需求：队伍和权限' or (NEED..": "..format(COVENANT_RENOWN_TOAST_REWARD_COMBINER, HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS, CALENDAR_INVITELIST_SETMODERATOR)))
+        if Frame and not Frame:CanChangeAttribute() then
+            GameTooltip_AddErrorLine(tooltip, e.onlyChinese and "当前禁用操作" or (REFORGE_CURRENT..': '..DISABLE))
+        end
+    end)
+
+    --重置位置， 队伍标记工具
+    local tab={
+        'BACKGROUND',
+        'LOW',
+        'MEDIUM',
+        'HIGH',
+        'DIALOG',
+        'FULLSCREEN',
+        'FULLSCREEN_DIALOG',
+        'TOOLTIP',
+    }
+    for _, name in pairs(tab) do
+        tre=sub:CreateCheckbox(name, function(data)
+            return Save.FrameStrata==data
+        end, function(data)
+            if Frame and not Frame:CanChangeAttribute() then
+                return
+            end
+            Save.FrameStrata= data
+            if Frame then
+                Frame:SetFrameStrata(data)
+            end
+            print(id, e.cn(addName), 'SetFrameStrata|cnGREEN_FONT_COLOR:', Save.FrameStrata)
+        end, name)
+        tre:SetTooltip(function(tooltip, data)
+            GameTooltip_AddNormalLine(tooltip, 'Frame:SetFrameStrata('..data.data..')')
+            if Frame and not Frame:CanChangeAttribute() then
+                GameTooltip_AddBlankLineToTooltip(tooltip);
+                GameTooltip_AddErrorLine(tooltip, e.onlyChinese and "当前禁用操作" or (REFORGE_CURRENT..': '..DISABLE))
+            end
+        end)
+    end
+
+    sub:CreateDivider()
+    col= not Save.markersFramePoint and '|cff606060'
+        and (Frame and not Frame:CanChangeAttribute() and '|cnGREEN_FONT_COLOR:')
+        or ''
+    sub:CreateButton(col..(e.onlyChinese and '重置位置' or RESET_POSITION), function()
+        if Frame and Frame:CanChangeAttribute() then
+            Frame:ClearAllPoints()
+            Save.markersFramePoint=nil
+            Frame:Init_Set_Frame()--位置
+            print(id,e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
+        end
     end)
 
 
@@ -1276,8 +1307,57 @@ local function Init_Menu(_, root)
             ReadyTipsButton:set_Shown()
         end
     end)
+    sub:CreateButton((Save.groupReadyTipsPoint and '' or '|cff606060')..(e.onlyChinese and '重置位置' or RESET_POSITION), function()
+        Save.groupReadyTipsPoint=nil
+        if ReadyTipsButton then
+            ReadyTipsButton:ClearAllPoints()
+            ReadyTipsButton:set_Point()--位置
+            print(id, e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
+        end
+    end)
+
+    tab={
+        [1]= format('|cff00ff00%s|r|A:common-icon-checkmark:0:0|a', e.onlyChinese and '就绪' or READY),
+        [2]= format('|cffff0000%s|r|A:auctionhouse-ui-filter-redx:0:0|a', e.onlyChinese and '未就绪' or NOT_READY_FEMALE),
+        [0]= e.onlyChinese and '无' or NONE
+    }
+    --sub=root:CreateButton( tab[Save.autoReady] or tab[0])
+    root:CreateDivider()
+    for value, text in pairs(tab) do
+        sub=root:CreateCheckbox(text, function(data)
+                return (data==0 and (Save.autoReady==0 or not Save.autoReady))
+                        or Save.autoReady==data
+            end, function(data)
+                Save.autoReady=data
+                MarkerButton.ReadyTextrueTips:settings()--自动就绪, 主图标, 提示
+                e.LibDD:CloseDropDownMenus()
+            end, value)
+        sub:SetTooltip(function(tooltip, data)
+            if data.data==1 or data.data==2 then
+                tooltip:AddLine(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO)
+            end
+        end)
+    end
 
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1310,10 +1390,7 @@ local function InitMenu(_, level, type)--主菜单
             colorCode= (not Save.groupReadyTips or not Save.groupReadyTipsPoint) and '|cff606060',
             disabled= not ReadyTipsButton,
             func= function()
-                ReadyTipsButton:ClearAllPoints()
-                Save.groupReadyTipsPoint=nil
-                ReadyTipsButton:set_Point()--位置
-                print(id,e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
+               
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1326,7 +1403,7 @@ local function InitMenu(_, level, type)--主菜单
             keepShownOnClick=true,
             func=function()
                 Save.autoReady=1
-                setReadyTexureTips()--自动就绪, 主图标, 提示
+                MarkerButton.ReadyTextrueTips:settings()--自动就绪, 主图标, 提示
                 e.LibDD:CloseDropDownMenus()
             end
         }
@@ -1338,7 +1415,7 @@ local function InitMenu(_, level, type)--主菜单
             keepShownOnClick= true,
             func=function()
                 Save.autoReady=2
-                setReadyTexureTips()--自动就绪, 主图标, 提示
+                MarkerButton.ReadyTextrueTips:settings()--自动就绪, 主图标, 提示
                 e.LibDD:CloseDropDownMenus();
             end
         }
@@ -1349,7 +1426,7 @@ local function InitMenu(_, level, type)--主菜单
             keepShownOnClick= true,
             func=function()
                 Save.autoReady=nil
-                setReadyTexureTips()--自动就绪, 主图标, 提示
+                MarkerButton.ReadyTextrueTips:settings()--自动就绪, 主图标, 提示
                 e.LibDD:CloseDropDownMenus();
             end
         }
@@ -1554,11 +1631,26 @@ end
 
 
 
-
 --####
 --初始
 --####
 local function Init()
+    
+    --自动就绪, 主图标, 提示
+    MarkerButton.ReadyTextrueTips=MarkerButton:CreateTexture(nil,'OVERLAY')
+    MarkerButton.ReadyTextrueTips:SetPoint('TOP')
+    local size=MarkerButton:GetWidth()/2
+    MarkerButton.ReadyTextrueTips:SetSize(size, size)
+    function MarkerButton.ReadyTextrueTips:settings()
+        if not Save.autoReady or Save.autoReady==0 then
+            MarkerButton.ReadyTextrueTips:SetTexture(0)
+        else
+            MarkerButton.ReadyTextrueTips:SetAtlas(Save.autoReady==1 and e.Icon.select or 'auctionhouse-ui-filter-redx')
+        end
+    end
+    MarkerButton.ReadyTextrueTips:settings()
+
+
     Init_Markers_Frame()--设置标记, 框架
     Init_set_Tank_Healer()--设置队伍标记
 
@@ -1586,7 +1678,7 @@ local function Init()
     MarkerButton:SetScript("OnEvent", MarkerButton.set_Desaturated_Textrue)
 
 
-    setReadyTexureTips()--自动就绪, 主图标, 提示
+    
     Init_Ready_Tips_Button()--注册事件, 就绪,队员提示信息
 
     MarkerButton:SetScript("OnClick", function(self, d)
@@ -1610,7 +1702,14 @@ local function Init()
     function MarkerButton:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine((e.onlyChinese and '标记' or EVENTTRACE_MARKER)..e.Icon.TANK..e.Icon.HEALER, e.Icon.left)
+        e.tips:AddDoubleLine((e.onlyChinese and '标记' or EVENTTRACE_MARKER), e.Icon.left)
+        e.tips:AddLine(e.Icon.TANK..format('|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t', Save.tank))
+        if IsInRaid() then
+            e.tips:AddLine(e.Icon.HEALER..format('|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t', Save.healer))
+        else
+            e.tips:AddLine(e.Icon.TANK..format('|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t', Save.tank2))
+        end
+        e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or MAINMENU, e.Icon.right)
         e.tips:Show()
     end
@@ -1642,7 +1741,7 @@ local function Init()
             end
         end)
         readyFrame:SetScript('OnShow',function(self)
-            if Save.autoReady  and not self.autoReadyText then
+            if Save.autoReady and not self.autoReadyText then
                 self.autoReadyText=e.Cstr(self)
                 self.autoReadyText:SetPoint('BOTTOM', self, 'TOP')
             end

@@ -4714,7 +4714,11 @@
         "STABLE_FILTER_BUTTON_LABEL",
         "DropdownButtonMixin",
         "TRADESKILL_RECIPE_LEVEL_DROPDOWN_BUTTON_FORMAT",
-        "MenuConstants"
+        "MenuConstants",
+        "PAPERDOLL_SELECT_TITLE",
+        "CLUB_FINDER_ANY_FLAG",
+        "CLUB_FINDER_MULTIPLE_ROLES",
+        "TALENT_SPEC_AND_CLASS"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",
