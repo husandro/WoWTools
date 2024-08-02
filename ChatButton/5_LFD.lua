@@ -13,8 +13,15 @@ local Save={
 }
 
 
-local wowSave={[INSTANCE]={}}--{
-[ISLANDS_HEADER]=次数, [副本名称..难度=次数]}
+local wowSave={
+    [INSTANCE]={}
+}
+--[[
+{
+[ISLANDS_HEADER]=次数,
+[副本名称..难度]=次数,
+}
+]]
 
 local sec=3--时间 timer
 local button, tipsButton
@@ -2762,12 +2769,16 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
             if WoWToolsSave[DUNGEONS_BUTTON] then--处理，上版本数据
                 Save= WoWToolsSave[DUNGEONS_BUTTON]
                 WoWToolsSave[DUNGEONS_BUTTON]=nil
-                Save.WoW= Save.WoW or {}
-                wowSave= WoWToolsSave[INSTANCE] or wowSave
+                Save.WoW={
+                    ['Instance']= WoWToolsSave[INSTANCE] or {}
+                }
+
+                Save.WoW WoWToolsSave[INSTANCE] or {}
+                
 
             else
                 Save= WoWToolsSave['ChatButton_LFD'] or Save
-                wowSave= WoWToolsSave['ChatButton_LFD_Instance'] or wowSave
+               
             end
 
             button= WoWToolsChatButtonMixin:CreateButton('LFD')
@@ -2796,10 +2807,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            WoWToolsSave[addName]=Save
-            WoWToolsSave[INSTANCE]=wowSave
             WoWToolsSave['ChatButton_LFD']= Save
-            WoWToolsSave['ChatButton_LFD_Instance']= wowSave
         end
 
     elseif event=='LFG_COMPLETION_REWARD' or event=='LOOT_CLOSED' then--or event=='SCENARIO_COMPLETED' then--自动离开
