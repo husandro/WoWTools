@@ -1073,6 +1073,28 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Init_Menu(_, root)
+
+end
+
+
+
+
+
 --####
 --初始
 --####
@@ -1081,7 +1103,7 @@ local function Init()
 
     set_SummonTips()--召唤，提示
 
-    InviteButton:SetScript('OnMouseDown', function(self, d)
+    InviteButton:SetScript('OnClick', function(self, d)
         if d=='LeftButton' then
             InvUnitFunc()--邀请，周围玩家
         else
@@ -1092,6 +1114,19 @@ local function Init()
             e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
         end
     end)
+
+    InviteButton:SetScript('OnLeave', function(self)
+        e.tips:Hide()
+        self:state_leave()
+    end)
+    InviteButton:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        
+        e.tips:Show()
+        self:state_enter()
+    end)
+
 
     set_event_PLAYER_TARGET_CHANGED()--设置, 邀请目标事件
     set_event_PLAYER_UPDATE_RESTING()--设置, 休息区提示事件

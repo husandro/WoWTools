@@ -472,7 +472,7 @@ local function Init_Markers_Frame()--设置标记, 框架
 
     local size, last, btn= 22, nil, nil
 
-    MakerFrame=CreateFrame('Frame', nil, UIParent)
+    MakerFrame=CreateFrame('Frame', 'WoWTools_ChatButton_MarkersFrame', UIParent)
     MakerFrame:SetFrameStrata(Save.FrameStrata)
     MakerFrame:SetMovable(true)--移动
     MakerFrame:SetClampedToScreen(true)
@@ -544,7 +544,7 @@ local function Init_Markers_Frame()--设置标记, 框架
 
 
 
-    btn= e.Cbtn(MakerFrame, {size={size,size}, texture='Interface\\Cursor\\UI-Cursor-Move'})--移动按钮
+    btn= e.Cbtn(MakerFrame, {name= 'WoWTools_Marker_Move_Button', size={size,size}, texture='Interface\\Cursor\\UI-Cursor-Move'})--移动按钮
     btn:SetAllPoints(MakerFrame)
     btn:RegisterForDrag("RightButton")
     btn:SetMovable(true)
@@ -1469,18 +1469,22 @@ local function Init()
         e.tips:Show()
     end
 
-    MarkerButton:SetScript('OnEnter', function(self)
-        if self.groupReadyTips and self.groupReadyTips:IsShown() then
-            self.groupReadyTips:SetButtonState('PUSHED')
-        end
-        self:set_tooltip()
-    end)
     MarkerButton:SetScript('OnLeave', function(self)
         if self.groupReadyTips then
             self.groupReadyTips:SetButtonState('NORMAL')
         end
         e.tips:Hide()
+        self:state_leave()
     end)
+    MarkerButton:SetScript('OnEnter', function(self)
+        if self.groupReadyTips and self.groupReadyTips:IsShown() then
+            self.groupReadyTips:SetButtonState('PUSHED')
+        end
+        self:set_tooltip()
+        self:state_enter()
+        local btn= _G['WoWTools_Marker_Move_Button']
+    end)
+
 
 
 
