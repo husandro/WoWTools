@@ -4722,7 +4722,8 @@
         "READY_CHECK_MESSAGE",
         "MOVIE_LIST",
         "ALT_KEY",
-        "IGNORE_LIST"
+        "IGNORE_LIST",
+        "MAX_PLAYER_LEVEL"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",
