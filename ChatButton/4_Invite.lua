@@ -1182,7 +1182,7 @@ local function Init_Menu(_, root)
 
     if all>30 then
         local line= math.ceil(all/30)
-        sub2:SetGridMode(MenuConstants.VerticalGridDirection, 3)
+        sub2:SetGridMode(MenuConstants.VerticalGridDirection, line)
     end
 
 
@@ -1195,7 +1195,25 @@ local function Init_Menu(_, root)
 
 
 
+    root:CreateDivider()
+    sub=root:CreateCheckbox((e.onlyChinese and '接受邀请' or CALENDAR_ACCEPT_INVITATION)..format('|A:%s:0:0|a', e.Icon.select), function()
+        return Save.FriendAceInvite
+    end, function()
+        Save.FriendAceInvite= not Save.FriendAceInvite and true or nil
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(e.onlyChinese and '战网, 好友, 公会' or (COMMUNITY_COMMAND_BATTLENET..', '..FRIENDS..', '..GUILD))
+    end)
 
+    sub=root:CreateCheckbox((e.onlyChinese and '召唤' or SUMMON)..'|A:Raid-Icon-SummonPending:0:0|a', function()
+        return Save.Summon
+    end, function()
+        Save.Summon= not Save.Summon and true or nil
+        set_SummonTips()--召唤，提示
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine((e.onlyChinese and '禁用' or DISABLE))
+    end)
 
 
 end
