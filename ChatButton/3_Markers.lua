@@ -544,7 +544,7 @@ local function Init_Markers_Frame()--设置标记, 框架
 
 
 
-    btn= e.Cbtn(MakerFrame, {name= 'WoWTools_Marker_Move_Button', size={size,size}, texture='Interface\\Cursor\\UI-Cursor-Move'})--移动按钮
+    btn= e.Cbtn(MakerFrame, {name= 'WoWTools_MarkerFrame_Move_Button', size={size,size}, texture='Interface\\Cursor\\UI-Cursor-Move'})--移动按钮
     btn:SetAllPoints(MakerFrame)
     btn:RegisterForDrag("RightButton")
     btn:SetMovable(true)
@@ -1482,7 +1482,10 @@ local function Init()
         end
         self:set_tooltip()
         self:state_enter()
-        local btn= _G['WoWTools_Marker_Move_Button']
+        local btn= _G['WoWTools_MarkerFrame_Move_Button']
+        if btn then
+            btn:set_Alpha(true)
+        end
     end)
 
 
