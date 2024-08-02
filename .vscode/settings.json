@@ -4721,7 +4721,8 @@
         "TALENT_SPEC_AND_CLASS",
         "READY_CHECK_MESSAGE",
         "MOVIE_LIST",
-        "ALT_KEY"
+        "ALT_KEY",
+        "IGNORE_LIST"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",
