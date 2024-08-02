@@ -2744,7 +2744,7 @@ end
 --设置Frame缩放
 function e.Set_Frame_Scale(self, delta, value, func)
     local n= value
-    if self:CanChangeAttribute() and IsAltKeyDown() then
+    if self:CanChangeAttribute() and not UnitAffectingCombat('player') and IsAltKeyDown() then
         n= n or 1
         n= delta==1 and n-0.05 or n
         n= delta==-1 and n+0.05 or n
@@ -2753,6 +2753,12 @@ function e.Set_Frame_Scale(self, delta, value, func)
         self:SetScale(n)
         if func then
             func()
+        end
+        if self.set_scale then
+            self:set_scale()
+        end
+        if self.set_tooltip then
+            self:set_tooltip()
         end
     end
     return n

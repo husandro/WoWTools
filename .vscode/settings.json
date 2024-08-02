@@ -4718,7 +4718,9 @@
         "PAPERDOLL_SELECT_TITLE",
         "CLUB_FINDER_ANY_FLAG",
         "CLUB_FINDER_MULTIPLE_ROLES",
-        "TALENT_SPEC_AND_CLASS"
+        "TALENT_SPEC_AND_CLASS",
+        "READY_CHECK_MESSAGE",
+        "MOVIE_LIST"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

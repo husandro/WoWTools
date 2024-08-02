@@ -531,29 +531,43 @@ end
 --ObjectiveTrackerFrame
 local function Init_ObjectiveTrackerFrame()
     local btn= ObjectiveTrackerFrame.Header.MinimizeButton
-    function btn:set_tooltips()
+
+    function btn:set_tooltip()
         local col= self:CanChangeAttribute() and '' or '|cff606060'
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, addName)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(col..(e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.scale or 1), col..'Alt+'..e.Icon.mid)
+        
+        local text= Save.scale
+        if not Save.scale or Save.scale==1 then
+            text=e.onlyChinese and '禁用' or DISABLE
+        end
+        
+        e.tips:AddDoubleLine(col..(e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..text, col..'Alt+'..e.Icon.mid)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or MAINMENU, e.Icon.right)
         e.tips:Show()
     end
-    btn:HookScript('OnLeave', GameTooltip_Hide)
-    btn:HookScript('OnEnter', btn.set_tooltips)
-    --缩放
-    if Save.scale and Save.scale~=1 and ObjectiveTrackerFrame:CanChangeAttribute() then
+
+    function btn:set_scale(isInit)
+        if (isInit and Save.scale==1) or not Save.scale or not ObjectiveTrackerFrame:CanChangeAttribute() then
+            return
+        end
         ObjectiveTrackerFrame:SetScale(Save.scale)
     end
+    btn:set_scale(true)
+
+    btn:HookScript('OnLeave', GameTooltip_Hide)
+    btn:HookScript('OnEnter', btn.set_tooltip)
+
+    --缩放
     btn:HookScript('OnMouseWheel', function(self, d)
-        Save.scale= e.Set_Frame_Scale(self:GetParent():GetParent(), d, Save.scale, function()
+        Save.scale= e.Set_Frame_Scale(ObjectiveTrackerFrame, d, Save.scale, function()
             print(id, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             print('|cnRED_FONT_COLOR:', e.onlyChinese and '友情提示: 可能会出现错误' or 'note: errors may occur')
         end)
-        self:set_tooltips()
+        self:set_tooltip()
     end)
 
     --右击

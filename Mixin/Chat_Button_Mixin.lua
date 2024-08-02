@@ -45,11 +45,13 @@ function WoWToolsChatButtonMixin:CreateButton(name)
 
     e.Set_Label_Texture_Color(btn.border, {type='Texture', alpha= 0.3})
 
-    function btn:state_enter()
-        self:GetParent():SetButtonState('PUSHED')
+    function btn:state_enter(isSelf)
+        local frame= isSelf and self or self:GetParent()
+        frame:SetButtonState('PUSHED')
     end
-    function btn:state_leave()
-        self:GetParent():SetButtonState('NORMAL')
+    function btn:state_leave(isSelf)
+        local frame= isSelf and self or self:GetParent()
+        frame:SetButtonState('NORMAL')
     end
 
     self.LastButton= btn

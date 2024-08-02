@@ -129,8 +129,6 @@ local function Init()
 
     ChatButton:SetScript('OnMouseWheel', function(self, d)--缩放
         Save.scale=e.Set_Frame_Scale(self, d, Save.scale, nil)
-        self:set_tooltip()
-        self:set_scale()
     end)
 
 
