@@ -833,7 +833,7 @@ local function InitList(self, level, menuList)
             notCheckable=true,
             keepShownOnClick=true,
             func= function()
-                
+
                 StaticPopupDialogs[id..addName..'ChatButton_CHANNEL']= {--设置,内容,频道, 邀请,事件
                     text=id..' '..addName..' '..(e.onlyChinese and '频道' or CHANNEL)..'|n|n'..(e.onlyChinese and '关键词' or KBASE_DEFAULT_SEARCH_TEXT),
                     whileDead=true, hideOnEscape=true, exclusive=true,
@@ -925,6 +925,11 @@ local function InitList(self, level, menuList)
     if menuList then
         return
     end
+
+
+
+
+
     e.LibDD:UIDropDownMenu_AddButton({
         text=e.Icon.left..(e.onlyChinese and '邀请成员' or GUILDCONTROL_OPTION7),
         notCheckable=true,
@@ -993,7 +998,7 @@ end
 
 --接受, 召唤
 local function Init_CONFIRM_SUMMON()
-    
+
     hooksecurefunc(StaticPopupDialogs["CONFIRM_SUMMON"], "OnUpdate",function(self)
         if IsModifierKeyDown() or self.isCancelledAuto or not Save.Summon then
             if not self.isCancelledAuto then
@@ -1088,8 +1093,131 @@ end
 
 
 local function Init_Menu(_, root)
+    local sub, sub2, sub3, tab, col
+
+    sub=root:CreateButton((getLeader() and '' or '|cff606060')..(e.onlyChinese and '邀请成员' or GUILDCONTROL_OPTION7), InvUnitFunc)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(e.onlyChinese and '周围玩家' or 'Players around')
+    end)
+
+    sub2=sub:CreateCheckbox((IsInInstance() and '|cff606060' or '')..(e.onlyChinese and '邀请目标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INVITE, TARGET)), function()
+        return Save.InvTar
+    end, function()
+        if IsInInstance() then
+            return
+        end
+        Save.InvTar= not Save.InvTar and true or nil
+        set_event_PLAYER_TARGET_CHANGED()--设置, 邀请目标事件
+        set_PLAYER_TARGET_CHANGED()--设置, 邀请目标事件
+    end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine(e.onlyChinese and '仅限队长' or format(LFG_LIST_CROSS_FACTION, LEADER))
+        tooltip:AddLine(e.onlyChinese and '不在副本中' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NO, INSTANCE))
+    end)
+
+    sub2=sub:CreateCheckbox((e.onlyChinese and '频道' or CHANNEL)..(Save.ChannelText and '|cnGREEN_FONT_COLOR: '..Save.ChannelText..'|r' or ''), function()
+        return Save.Channel
+    end, function()
+        Save.Channel = not Save.Channel and true or nil
+        set_Chanell_Event()--设置,频道,事件
+    end)
+    sub2:SetTooltip(function (tooltip)
+        tooltip:AddLine(Save.ChannelText or (e.onlyChinese and '无' or NONE))
+        tooltip:AddLine(e.onlyChinese and '说, 喊, 密语' or (SAY..', '..YELL..', '..WHISPER))
+    end)
+
+    sub2:CreateButton(e.onlyChinese and '关键词' or KBASE_DEFAULT_SEARCH_TEXT, function()
+        StaticPopupDialogs[id..'ChatButton_CHANNEL']= {--设置,内容,频道, 邀请,事件
+            text=id..' '..addName..' '..(e.onlyChinese and '频道' or CHANNEL)..'|n|n'..(e.onlyChinese and '关键词' or KBASE_DEFAULT_SEARCH_TEXT),
+            whileDead=true, hideOnEscape=true, exclusive=true,
+            hasEditBox=true,
+            button1= e.onlyChinese and '修改' or EDIT,
+            button2= e.onlyChinese and '取消' or CANCEL,
+            OnShow = function(frame)
+                frame.editBox:SetText(Save.ChannelText or e.Player.cn and '1' or 'inv')
+            end,
+            OnHide= function(frame)
+                frame.editBox:ClearFocus()
+            end,
+            OnAccept = function(frame)
+                Save.ChannelText = string.upper(frame.editBox:GetText())
+                print(id, addName, e.onlyChinese and '频道' or CHANNEL,'|cnGREEN_FONT_COLOR:'..Save.ChannelText..'|r')
+            end,
+            EditBoxOnTextChanged=function(frame)
+                local text= frame:GetText()
+                text=text:gsub(' ','')
+                frame:GetParent().button1:SetEnabled(text~='')
+            end,
+            EditBoxOnEscapePressed = function(s)
+                s:GetParent():Hide()
+            end,
+        }
+        StaticPopup_Show(id..'ChatButton_CHANNEL')
+    end)
+
+    sub2=sub:CreateButton(e.onlyChinese and '已邀请' or LFG_LIST_APP_INVITED, InvPlateGuidFunc)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine(e.onlyChinese and '再次邀请' or CALENDAR_INVITE_ALL)
+    end)
+
+    local n, all=0, 0
+    for guid, name in pairs(InvPlateGuid) do
+        if not e.GroupGuid[guid] then
+            sub3= sub2:CreateButton(e.GetPlayerInfo({unit=nil, guid=guid, name=name,  reName=true, reRealm=true}), function(data)
+                C_PartyInfo.InviteUnit(name)
+            end, name)
+            sub3:SetTooltip(function(tooltip)
+                tooltip:AddLine(e.onlyChinese and '再次邀请' or INVITE)
+            end)
+            n=n+1
+        end
+        all=all+1
+    end
+
+    sub2:CreateDivider()
+    sub2:CreateButton(e.onlyChinese and '再次邀请' or INVITE, InvPlateGuidFunc)
+    sub2:CreateButton(e.onlyChinese and '全部清除' or CLEAR_ALL, function()
+        InvPlateGuid={}
+    end)
+
+    if all>30 then
+        local line= math.ceil(all/30)
+        sub2:SetGridMode(MenuConstants.VerticalGridDirection, 3)
+    end
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1107,11 +1235,8 @@ local function Init()
         if d=='LeftButton' then
             InvUnitFunc()--邀请，周围玩家
         else
-            if not self.Menu then
-                self.Menu= CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")--菜单列表
-                e.LibDD:UIDropDownMenu_Initialize(self.Menu, InitList, "MENU")
-            end
-            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
+            MenuUtil.CreateContextMenu(self, Init_Menu)
+            e.tips:Hide()
         end
     end)
 
@@ -1122,7 +1247,8 @@ local function Init()
     InviteButton:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        
+        e.tips:AddDoubleLine(addName, e.Icon.left)
+        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or MAINMENU, e.Icon.right)
         e.tips:Show()
         self:state_enter()
     end)
@@ -1134,7 +1260,7 @@ local function Init()
     Init_Shift_Click_Focus()--Shift+点击设置焦点
 
     hooksecurefunc(StaticPopupDialogs["CONFIRM_SUMMON"], "OnUpdate", Init_CONFIRM_SUMMON)
-    
+
 
     StaticPopupDialogs["PARTY_INVITE"].button3= '|cff00ff00'..(e.onlyChinese and '总是' or ALWAYS)..'|r'..(e.onlyChinese and '拒绝' or DECLINE)..'|r'--添加总是拒绝按钮
     StaticPopupDialogs["PARTY_INVITE"].OnAlt=function()
@@ -1207,7 +1333,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, ...)
             InviteButton= WoWToolsChatButtonMixin:CreateButton('Invite')
 
             if InviteButton then
-                addName= '|A:communities-icon-addgroupplus:0:0|a'..INVITE
+                addName= '|A:communities-icon-addgroupplus:0:0|a'..(e.onlyChinese and '邀请' or INVITE)
                 Init()
 
                 self:RegisterEvent('GROUP_LEFT')

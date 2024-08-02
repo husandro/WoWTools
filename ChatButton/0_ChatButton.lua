@@ -203,7 +203,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if not Save.disabled then
                 ChatButton= WoWToolsChatButtonMixin:Init({
                     emoji= not Save.emoji and true or nil,
-                })                
+                })
                 Init()
 
             end

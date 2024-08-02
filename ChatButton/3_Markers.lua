@@ -1680,7 +1680,7 @@ local function Init()
     function MarkerButton:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine((e.onlyChinese and '标记' or EVENTTRACE_MARKER), e.Icon.left)
+        e.tips:AddDoubleLine(addName, (e.onlyChinese and '标记' or EVENTTRACE_MARKER), e.Icon.left)
         e.tips:AddLine(e.Icon.TANK..format('|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t', Save.tank))
         if not IsInRaid() then
             e.tips:AddLine(e.Icon.HEALER..format('|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t', Save.healer))
