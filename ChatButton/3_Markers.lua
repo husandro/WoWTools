@@ -1475,6 +1475,10 @@ local function Init()
         end
         e.tips:Hide()
         self:state_leave()
+        local btn= _G['WoWTools_MarkerFrame_Move_Button']
+        if btn then
+            btn:set_Alpha(false)
+        end
     end)
     MarkerButton:SetScript('OnEnter', function(self)
         if self.groupReadyTips and self.groupReadyTips:IsShown() then
