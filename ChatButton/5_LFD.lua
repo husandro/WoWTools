@@ -9,10 +9,12 @@ local Save={
     autoSetPvPRole=true,--自动职责确认， 排副本
     LFGPlus= e.Player.husandro,--预创建队伍增强
     --tipsScale=1,--提示内容,缩放
+    WoW={}
 }
 
 
-local wowSave={[INSTANCE]={}}--{[ISLANDS_HEADER]=次数, [副本名称..难度=次数]}
+local wowSave={[INSTANCE]={}}--{
+[ISLANDS_HEADER]=次数, [副本名称..难度=次数]}
 
 local sec=3--时间 timer
 local button, tipsButton
@@ -2757,12 +2759,21 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            button= WoWToolsChatButtonMixin:CreateButton('LFD')
-            if button then--禁用Chat Button
-                Save= WoWToolsSave[addName] or Save
+            if WoWToolsSave[DUNGEONS_BUTTON] then--处理，上版本数据
+                Save= WoWToolsSave[DUNGEONS_BUTTON]
+                WoWToolsSave[DUNGEONS_BUTTON]=nil
+                Save.WoW= Save.WoW or {}
                 wowSave= WoWToolsSave[INSTANCE] or wowSave
 
+            else
+                Save= WoWToolsSave['ChatButton_LFD'] or Save
+                wowSave= WoWToolsSave['ChatButton_LFD_Instance'] or wowSave
+            end
+
+            button= WoWToolsChatButtonMixin:CreateButton('LFD')
+            if button then--禁用Chat Button
                 Init()
+
                 self:RegisterEvent('LFG_COMPLETION_REWARD')
                 --self:RegisterEvent('SCENARIO_COMPLETED')
                 self:RegisterEvent('PLAYER_ENTERING_WORLD')
@@ -2787,6 +2798,8 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
         if not e.ClearAllSave then
             WoWToolsSave[addName]=Save
             WoWToolsSave[INSTANCE]=wowSave
+            WoWToolsSave['ChatButton_LFD']= Save
+            WoWToolsSave['ChatButton_LFD_Instance']= wowSave
         end
 
     elseif event=='LFG_COMPLETION_REWARD' or event=='LOOT_CLOSED' then--or event=='SCENARIO_COMPLETED' then--自动离开
@@ -2825,7 +2838,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
         ExitIns=nil
 
     elseif event=='ISLAND_COMPLETED' then--离开海岛
-        wowSave[ISLANDS_HEADER]=wowSave[ISLANDS_HEADER] and wowSave[ISLANDS_HEADER]+1 or 1
+        wowSave[ISLANDS_HEADER]= (wowSave[ISLANDS_HEADER] or 0)+1
         if not Save.leaveInstance then
             return
         end

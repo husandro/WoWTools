@@ -10,7 +10,6 @@ local Save={
     Summon= true,--接受, 召唤
 
     setFrameFun= e.Player.husandro,--跟随，密语
-    --已删除 frameList={['Target']=true, ['Party1']=true, ['Party2']=true, ['Party3']=true, ['Party4']=true},
 
     setFucus= e.Player.husandro,--焦点
     overSetFocus= e.Player.husandro,--移过是，
@@ -643,7 +642,7 @@ end
 
 --接受, 召唤
 local function Init_CONFIRM_SUMMON()
-    
+
     hooksecurefunc(StaticPopupDialogs["CONFIRM_SUMMON"], "OnUpdate",function(self)
         if IsModifierKeyDown() or self.isCancelledAuto or not Save.Summon then
             if not self.isCancelledAuto then
