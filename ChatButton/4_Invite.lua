@@ -1160,7 +1160,7 @@ local function Init_Menu(_, root)
         tooltip:AddLine(e.onlyChinese and '再次邀请' or CALENDAR_INVITE_ALL)
     end)
 
-    local n, all=0, 0
+    local all=0
     for guid, name in pairs(InvPlateGuid) do
         if not e.GroupGuid[guid] then
             sub3= sub2:CreateButton(e.GetPlayerInfo({unit=nil, guid=guid, name=name,  reName=true, reRealm=true}), function(data)
@@ -1169,9 +1169,8 @@ local function Init_Menu(_, root)
             sub3:SetTooltip(function(tooltip)
                 tooltip:AddLine(e.onlyChinese and '再次邀请' or INVITE)
             end)
-            n=n+1
         end
-        all=all+1
+        
     end
 
     sub2:CreateDivider()
@@ -1196,7 +1195,7 @@ local function Init_Menu(_, root)
 
 
     root:CreateDivider()
-    sub=root:CreateCheckbox((e.onlyChinese and '接受邀请' or CALENDAR_ACCEPT_INVITATION)..format('|A:%s:0:0|a', e.Icon.select), function()
+    sub=root:CreateCheckbox(format('|A:%s:0:0|a', e.Icon.select)..(e.onlyChinese and '接受邀请' or CALENDAR_ACCEPT_INVITATION), function()
         return Save.FriendAceInvite
     end, function()
         Save.FriendAceInvite= not Save.FriendAceInvite and true or nil
@@ -1205,17 +1204,76 @@ local function Init_Menu(_, root)
         tooltip:AddLine(e.onlyChinese and '战网, 好友, 公会' or (COMMUNITY_COMMAND_BATTLENET..', '..FRIENDS..', '..GUILD))
     end)
 
-    sub=root:CreateCheckbox((e.onlyChinese and '召唤' or SUMMON)..'|A:Raid-Icon-SummonPending:0:0|a', function()
+    sub=root:CreateCheckbox('|A:Raid-Icon-SummonPending:0:0|a'..(e.onlyChinese and '召唤' or SUMMON), function()
         return Save.Summon
     end, function()
         Save.Summon= not Save.Summon and true or nil
         set_SummonTips()--召唤，提示
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine((e.onlyChinese and '禁用' or DISABLE))
+        if e.onlyChinese then
+            tooltip:AddLine('取消: 战斗中, 离开, Alt键')
+        else
+            tooltip:AddLine(format('%s: %s, %s, %s', CANCEL, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, AFK, ALT_KEY))
+        end
     end)
 
 
+
+
+
+
+
+
+
+    root:CreateDivider()
+    sub=root:CreateButton(format('|A:%s:0:0|a%s', e.Icon.disabled, e.onlyChinese and '拒绝邀请' or GUILD_INVITE_DECLINE)..' '..(Save.InvNoFriendNum or 0))
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(
+            e.onlyChinese and ('拒绝 '..Save.InvNoFriendNum..' 次')
+             or (DECLINE..' '..format(ITEM_SPELL_CHARGES, Save.InvNoFriendNum))
+            )
+    end)
+
+    sub2=sub:CreateButton(e.onlyChinese and '拒绝邀请' or LFG_LIST_APP_INVITE_DECLINED)
+    all=0
+    for guid, nu in pairs(Save.InvNoFriend) do
+        local text=e.GetPlayerInfo({unit=nil, guid=guid, name=nil,  reName=true, reRealm=true})
+        if text then
+            all=all+1
+            e.LibDD:UIDropDownMenu_AddButton({
+                text=all..') '..text..' |cff00ff00'..nu..'|r',
+                notCheckable=true,
+                keepShownOnClick=true,
+                func=function()
+                    Save.InvNoFriend[guid]=nil
+                    print(id, addName, '|cff00ff00'..(e.onlyChinese and '移除' or REMOVE)..'|r: '..text)
+                end,
+                tooltipOnButton=true,
+                tooltipTitle= e.onlyChinese and '移除' or REMOVE,
+                tooltipText= format(e.onlyChinese and '%d次' or ITEM_SPELL_CHARGES, nu)..'|n|n'..(select(7,GetPlayerInfoByGUID(guid)) or ''),
+            }, level)
+        end
+    end
+    if all==0 then
+        e.LibDD:UIDropDownMenu_AddButton({
+            text= e.onlyChinese and '无' or NONE,
+            notCheckable=true,
+            isTitle=true,
+        }, level)
+    else
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
+        e.LibDD:UIDropDownMenu_AddButton({
+            text=e.onlyChinese and '全部清除' or CLEAR_ALL,
+            colorCode= '|cff00ff00',
+            notCheckable=true,
+            keepShownOnClick=true,
+            func=function()
+                Save.InvNoFriend={}
+                print(id, addName, '|cff00ff00'..(e.onlyChinese and '全部清除' or CLEAR_ALL)..'|r', e.onlyChinese and '完成' or DONE)
+            end,
+        }, level)
+    end
 end
 
 

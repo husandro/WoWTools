@@ -4720,7 +4720,8 @@
         "CLUB_FINDER_MULTIPLE_ROLES",
         "TALENT_SPEC_AND_CLASS",
         "READY_CHECK_MESSAGE",
-        "MOVIE_LIST"
+        "MOVIE_LIST",
+        "ALT_KEY"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",
