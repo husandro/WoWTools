@@ -1,5 +1,5 @@
 local id, e = ...
-local addName= INVITE
+local addName
 local Save={
     InvNoFriend={},
     --LFGListAceInvite=true,--接受,LFD, 邀请
@@ -17,7 +17,7 @@ local Save={
     focusKey= 'Shift',
 }
 local InvPlateGuid={}
-local button
+local InviteButton
 local panel= CreateFrame("Frame")
 
 
@@ -69,14 +69,14 @@ end
 local InvPlateTimer
 local InvUnitFunc=function()--邀请，周围玩家
     if not getLeader() then--取得权限
-        print(id,e.cn(addName), '|cnRED_FONT_COLOR:', e.onlyChinese and '你没有权利这样做' or ERR_GUILD_PERMISSIONS)
+        print(id, addName, '|cnRED_FONT_COLOR:', e.onlyChinese and '你没有权利这样做' or ERR_GUILD_PERMISSIONS)
         return
     end
 
     local p=C_CVar.GetCVarBool('nameplateShowFriends')
     if not p then
         if UnitAffectingCombat('player') then
-            print(id, e.cn(addName), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or COMBAT))
+            print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or COMBAT))
             return
         else
             C_CVar.SetCVar('nameplateShowFriends', '1')
@@ -107,7 +107,7 @@ local InvUnitFunc=function()--邀请，周围玩家
                             InvPlateGuid[guid]=name
                             print(id, '|cnGREEN_FONT_COLOR:'..n..'|r)', e.onlyChinese and '邀请' or INVITE ,e.PlayerLink(name, guid))
                             if not raid and n +co>=5  then
-                                print(id, e.cn(addName), format(PETITION_TITLE, '|cff00ff00'..(e.onlyChinese and '转团' or CONVERT_TO_RAID)..'|r'))
+                                print(id, addName, format(PETITION_TITLE, '|cff00ff00'..(e.onlyChinese and '转团' or CONVERT_TO_RAID)..'|r'))
                                 break
                             end
                             n=n+1
@@ -120,7 +120,7 @@ local InvUnitFunc=function()--邀请，周围玩家
             C_CVar.SetCVar('nameplateShowFriends', '0')
         end
         if n==1 then
-            print(id, e.cn(addName), e.onlyChinese and '邀请成员' or GUILDCONTROL_OPTION7, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE))
+            print(id, addName, e.onlyChinese and '邀请成员' or GUILDCONTROL_OPTION7, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE))
         end
     end)
 end
@@ -166,12 +166,12 @@ local function set_PLAYER_TARGET_CHANGED()--设置, 邀请目标
     if guid then
         InvPlateGuid[guid]=name--保存到已邀请列表
     end
-    print(id, e.cn(addName), e.onlyChinese and '目标' or TARGET, e.GetPlayerInfo({guid=guid, name=name, reLink=true}))
+    print(id, addName, e.onlyChinese and '目标' or TARGET, e.GetPlayerInfo({guid=guid, name=name, reLink=true}))
 end
 
 local function InvPlateGuidFunc()--从已邀请过列表里, 再次邀请 
     if not getLeader() then--取得权限
-        print(id, e.cn(addName), ERR_GUILD_PERMISSIONS)
+        print(id, addName, e.onlyChinese and '你没有权利这样做' or ERR_GUILD_PERMISSIONS)
         return
     end
     local n=0
@@ -181,7 +181,7 @@ local function InvPlateGuidFunc()--从已邀请过列表里, 再次邀请
         if num==40 then
             return
         elseif not IsInRaid() and num==5 and not Save.PartyToRaid then
-            print(id, e.cn(addName), PETITION_TITLE:format('|cff00ff00'..CONVERT_TO_RAID..'|r'))
+            print(id, addName, e.onlyChinese and '请求：转化为团队' or  PETITION_TITLE:format('|cff00ff00'..CONVERT_TO_RAID..'|r'))
             return
         end
 
@@ -234,7 +234,7 @@ local function set_PARTY_INVITE_REQUEST(name, isTank, isHealer, isDamage, isNati
 
     local function setPrint(sec, text)
         e.PlaySound(SOUNDKIT.IG_PLAYER_INVITE)--播放, 声音
-        print(id, 'ChatButton', e.cn(addName), text,
+        print(id, 'ChatButton', addName, text,
             '|cnGREEN_FONT_COLOR:'..sec.. ' |r'..(e.onlyChinese and '秒' or SECONDS),
             (isTank and e.Icon.TANK or '')..(isHealer and e.Icon.HEALER or '')..(isDamage and e.Icon.DAMAGER or ''),
             questSessionActive and (e.onlyChinese and '场景战役' or SCENARIOS) or '',--场景战役
@@ -325,9 +325,9 @@ local function set_event_PLAYER_UPDATE_RESTING()--设置, 休息区提示事件
 end
 local function set_PLAYER_UPDATE_RESTING()--设置, 休息区提示
     if IsResting() then
-        print(id, e.cn(addName), e.onlyChinese and '进入' or  ENTER_LFG, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '休息' or CALENDAR_STATUS_OUT)..'|r',  e.onlyChinese and '区域' or ZONE)
+        print(id, addName, e.onlyChinese and '进入' or  ENTER_LFG, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '休息' or CALENDAR_STATUS_OUT)..'|r',  e.onlyChinese and '区域' or ZONE)
     else
-        print(id, e.cn(addName), e.onlyChinese and '离开' or LEAVE, '|cnRED_FONT_COLOR:'..( e.onlyChinese and '休息' or CALENDAR_STATUS_OUT)..'|r', e.onlyChinese and '区域' or ZONE)
+        print(id, addName, e.onlyChinese and '离开' or LEAVE, '|cnRED_FONT_COLOR:'..( e.onlyChinese and '休息' or CALENDAR_STATUS_OUT)..'|r', e.onlyChinese and '区域' or ZONE)
     end
 end
 
@@ -586,14 +586,14 @@ end
 
 
 local function set_SummonTips()--召唤，提示
-    if Save.Summon and not button.summonTips then
-        button.summonTips= button:CreateTexture(nil,'OVERLAY')
-        button.summonTips:SetPoint('BOTTOMLEFT',2, 2)
-        button.summonTips:SetSize(15,16)
-        button.summonTips:SetAtlas('Raid-Icon-SummonPending')
+    if Save.Summon and not InviteButton.summonTips then
+        InviteButton.summonTips= InviteButton:CreateTexture(nil,'OVERLAY')
+        InviteButton.summonTips:SetPoint('BOTTOMLEFT',2, 2)
+        InviteButton.summonTips:SetSize(15,16)
+        InviteButton.summonTips:SetAtlas('Raid-Icon-SummonPending')
     end
-    if button.summonTips then
-        button.summonTips:SetShown(Save.Summon)
+    if InviteButton.summonTips then
+        InviteButton.summonTips:SetShown(Save.Summon)
     end
 end
 
@@ -799,7 +799,7 @@ local function InitList(self, level, menuList)
                     keepShownOnClick=true,
                     func=function()
                         Save.InvNoFriend[guid]=nil
-                        print(id, e.cn(addName), '|cff00ff00'..REMOVE..'|r: '..text)
+                        print(id, addName, '|cff00ff00'..(e.onlyChinese and '移除' or REMOVE)..'|r: '..text)
                     end,
                     tooltipOnButton=true,
                     tooltipTitle= e.onlyChinese and '移除' or REMOVE,
@@ -822,7 +822,7 @@ local function InitList(self, level, menuList)
                 keepShownOnClick=true,
                 func=function()
                     Save.InvNoFriend={}
-                    print(id, e.cn(addName), '|cff00ff00'..(e.onlyChinese and '全部清除' or CLEAR_ALL)..'|r', e.onlyChinese and '完成' or DONE)
+                    print(id, addName, '|cff00ff00'..(e.onlyChinese and '全部清除' or CLEAR_ALL)..'|r', e.onlyChinese and '完成' or DONE)
                 end,
             }, level)
         end
@@ -833,33 +833,32 @@ local function InitList(self, level, menuList)
             notCheckable=true,
             keepShownOnClick=true,
             func= function()
-                if not StaticPopupDialogs[id..addName..'CHANNEL'] then
-                    StaticPopupDialogs[id..addName..'CHANNEL']= {--设置,内容,频道, 邀请,事件
-                        text=id..' '..addName..' '..(e.onlyChinese and '频道' or CHANNEL)..'|n|n'..(e.onlyChinese and '关键词' or KBASE_DEFAULT_SEARCH_TEXT),
-                        whileDead=true, hideOnEscape=true, exclusive=true,
-                        hasEditBox=true,
-                        button1= e.onlyChinese and '修改' or EDIT,
-                        button2= e.onlyChinese and '取消' or CANCEL,
-                        OnShow = function(frame)
-                            frame.editBox:SetText(Save.ChannelText or e.Player.cn and '1' or 'inv')
-                        end,
-                        OnHide= function(frame)
-                            frame.editBox:ClearFocus()
-                        end,
-                        OnAccept = function(frame)
-                            Save.ChannelText = string.upper(frame.editBox:GetText())
-                            print(id, e.cn(addName), e.onlyChinese and '频道' or CHANNEL,'|cnGREEN_FONT_COLOR:'..Save.ChannelText..'|r')
-                        end,
-                        EditBoxOnTextChanged=function(frame)
-                            local text= frame:GetText()
-                            text=text:gsub(' ','')
-                            frame:GetParent().button1:SetEnabled(text~='')
-                        end,
-                        EditBoxOnEscapePressed = function(s)
-                            s:GetParent():Hide()
-                        end,
-                    }
-                end
+                
+                StaticPopupDialogs[id..addName..'ChatButton_CHANNEL']= {--设置,内容,频道, 邀请,事件
+                    text=id..' '..addName..' '..(e.onlyChinese and '频道' or CHANNEL)..'|n|n'..(e.onlyChinese and '关键词' or KBASE_DEFAULT_SEARCH_TEXT),
+                    whileDead=true, hideOnEscape=true, exclusive=true,
+                    hasEditBox=true,
+                    button1= e.onlyChinese and '修改' or EDIT,
+                    button2= e.onlyChinese and '取消' or CANCEL,
+                    OnShow = function(frame)
+                        frame.editBox:SetText(Save.ChannelText or e.Player.cn and '1' or 'inv')
+                    end,
+                    OnHide= function(frame)
+                        frame.editBox:ClearFocus()
+                    end,
+                    OnAccept = function(frame)
+                        Save.ChannelText = string.upper(frame.editBox:GetText())
+                        print(id, addName, e.onlyChinese and '频道' or CHANNEL,'|cnGREEN_FONT_COLOR:'..Save.ChannelText..'|r')
+                    end,
+                    EditBoxOnTextChanged=function(frame)
+                        local text= frame:GetText()
+                        text=text:gsub(' ','')
+                        frame:GetParent().button1:SetEnabled(text~='')
+                    end,
+                    EditBoxOnEscapePressed = function(s)
+                        s:GetParent():Hide()
+                    end,
+                }
                 StaticPopup_Show(id..addName..'CHANNEL')
             end
         }, level)
@@ -874,7 +873,7 @@ local function InitList(self, level, menuList)
                 arg1= key,
                 func= function(_, arg1)
                     Save.focusKey= arg1
-                    print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:'..arg1..'|r'..e.Icon.left, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(id, addName, '|cnGREEN_FONT_COLOR:'..arg1..'|r'..e.Icon.left, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end,
             }, level)
         end
@@ -889,6 +888,7 @@ local function InitList(self, level, menuList)
             notCheckable=true,
             isTitle=true,
         }, level)
+
         --[[e.LibDD:UIDropDownMenu_AddSeparator(level)
         e.LibDD:UIDropDownMenu_AddButton({
             text= e.onlyChinese and '设置单位焦点' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SET_FOCUS, COVENANT_MISSIONS_UNITS),
@@ -910,7 +910,7 @@ local function InitList(self, level, menuList)
             keepShownOnClick=true,
             func=function()
                 Save.setFrameFun= not Save.setFrameFun and true or nil
-                print(id, e.cn(addName), e.GetEnabeleDisable(Save.setFrameFun), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                print(id, addName, e.GetEnabeleDisable(Save.setFrameFun), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
         }, level)
 
@@ -965,7 +965,7 @@ local function InitList(self, level, menuList)
         --keepShownOnClick=true,
         func= function()
             Save.setFucus= not Save.setFucus and true or nil
-            print(id, e.cn(addName), e.GetEnabeleDisable(Save.setFucus), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(id, addName, e.GetEnabeleDisable(Save.setFucus), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
     }, level)
 end
@@ -991,93 +991,9 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
---####
---初始
---####
-local function Init()
-    button.texture:SetAtlas('communities-icon-addgroupplus')
-    --setTexture()--设置图标颜色, 是否有权限
-
-    set_SummonTips()--召唤，提示
-
-    button:SetScript('OnMouseDown', function(self, d)
-        if d=='LeftButton' then
-            InvUnitFunc()--邀请，周围玩家
-        else
-            if not self.Menu then
-                self.Menu= CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")--菜单列表
-                e.LibDD:UIDropDownMenu_Initialize(self.Menu, InitList, "MENU")
-            end
-            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
-        end
-    end)
-
-    set_event_PLAYER_TARGET_CHANGED()--设置, 邀请目标事件
-    set_event_PLAYER_UPDATE_RESTING()--设置, 休息区提示事件
-    set_Chanell_Event()--设置,内容,频道, 邀请,事件
-
-
-
-    StaticPopupDialogs["PARTY_INVITE"].button3= '|cff00ff00'..(e.onlyChinese and '总是' or ALWAYS)..'|r'..(e.onlyChinese and '拒绝' or DECLINE)..'|r'--添加总是拒绝按钮
-    StaticPopupDialogs["PARTY_INVITE"].OnAlt=function()
-        if notInviterGUID then
-            if Save.InvNoFriend[notInviterGUID] then
-                Save.InvNoFriend[notInviterGUID] =nil
-                print(id, 'ChatButton', e.cn(addName), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', e.PlayerLink(nil, notInviterGUID) or '', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '拒绝' or DECLINE)..'|r'..(e.onlyChinese and '邀请' or INVITE))
-                AcceptGroup()
-                StaticPopup_Hide("PARTY_INVITE")
-            else
-                Save.InvNoFriend[notInviterGUID] =Save.InvNoFriend[notInviterGUID] and Save.InvNoFriend[notInviterGUID]+1 or 1
-                Save.InvNoFriendNum=Save.InvNoFriendNum+1
-                DeclineGroup()
-                StaticPopup_Hide("PARTY_INVITE")
-                print(id, 'ChatButton', e.cn(addName), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r', e.PlayerLink(nil, notInviterGUID) or '', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '拒绝' or DECLINE)..'|r'..(e.onlyChinese and '邀请' or INVITE))
-            end
-        end
-        notInviterGUID=nil
-    end
-     --hooksecurefunc(StaticPopupDialogs["PARTY_INVITE"], "OnShow",function(self, ...)
-
-     --end)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    --#########
-    --接受, 召唤
-    --#########
+--接受, 召唤
+local function Init_CONFIRM_SUMMON()
+    
     hooksecurefunc(StaticPopupDialogs["CONFIRM_SUMMON"], "OnUpdate",function(self)
         if IsModifierKeyDown() or self.isCancelledAuto or not Save.Summon then
             if not self.isCancelledAuto then
@@ -1136,20 +1052,73 @@ local function Init()
             local playerInfo=e.GetPlayerInfo({guid=info.guid, reLink=true})
             name= playerInfo~='' and playerInfo or name
         end
-        print(id, e.cn(addName), e.onlyChinese and '召唤' or SUMMON, name, '|A:poi-islands-table:0:0|a|cnGREEN_FONT_COLOR:', C_SummonInfo.GetSummonConfirmAreaName())
+        print(id, addName, e.onlyChinese and '召唤' or SUMMON, name, '|A:poi-islands-table:0:0|a|cnGREEN_FONT_COLOR:', C_SummonInfo.GetSummonConfirmAreaName())
+    end)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--####
+--初始
+--####
+local function Init()
+    InviteButton.texture:SetAtlas('communities-icon-addgroupplus')
+
+    set_SummonTips()--召唤，提示
+
+    InviteButton:SetScript('OnMouseDown', function(self, d)
+        if d=='LeftButton' then
+            InvUnitFunc()--邀请，周围玩家
+        else
+            if not self.Menu then
+                self.Menu= CreateFrame("Frame", id..addName..'Menu', self, "UIDropDownMenuTemplate")--菜单列表
+                e.LibDD:UIDropDownMenu_Initialize(self.Menu, InitList, "MENU")
+            end
+            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
+        end
     end)
 
-
-
-
-
-
-
-
-
-
+    set_event_PLAYER_TARGET_CHANGED()--设置, 邀请目标事件
+    set_event_PLAYER_UPDATE_RESTING()--设置, 休息区提示事件
+    set_Chanell_Event()--设置,内容,频道, 邀请,事件
     Init_Shift_Click_Focus()--Shift+点击设置焦点
 
+    hooksecurefunc(StaticPopupDialogs["CONFIRM_SUMMON"], "OnUpdate", Init_CONFIRM_SUMMON)
+    
+
+    StaticPopupDialogs["PARTY_INVITE"].button3= '|cff00ff00'..(e.onlyChinese and '总是' or ALWAYS)..'|r'..(e.onlyChinese and '拒绝' or DECLINE)..'|r'--添加总是拒绝按钮
+    StaticPopupDialogs["PARTY_INVITE"].OnAlt=function()
+        if notInviterGUID then
+            if Save.InvNoFriend[notInviterGUID] then
+                Save.InvNoFriend[notInviterGUID] =nil
+                print(id, 'ChatButton', addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', e.PlayerLink(nil, notInviterGUID) or '', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '拒绝' or DECLINE)..'|r'..(e.onlyChinese and '邀请' or INVITE))
+                AcceptGroup()
+                StaticPopup_Hide("PARTY_INVITE")
+            else
+                Save.InvNoFriend[notInviterGUID] =Save.InvNoFriend[notInviterGUID] and Save.InvNoFriend[notInviterGUID]+1 or 1
+                Save.InvNoFriendNum=Save.InvNoFriendNum+1
+                DeclineGroup()
+                StaticPopup_Hide("PARTY_INVITE")
+                print(id, 'ChatButton', addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r', e.PlayerLink(nil, notInviterGUID) or '', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '拒绝' or DECLINE)..'|r'..(e.onlyChinese and '邀请' or INVITE))
+            end
+        end
+        notInviterGUID=nil
+    end
 end
 
 
@@ -1192,15 +1161,18 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1, ...)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            Save= WoWToolsSave[addName] or Save
-            
-            button= WoWToolsChatButtonMixin:CreateButton('Invite')
-
-            if button then
-                
+            if WoWToolsSave[INVITE] then--处理，上版本数据
+                Save= WoWToolsSave[INVITE]
                 Save.frameList= nil --Save.frameList or {['Target']=true, ['Party1']=true, ['Party2']=true, ['Party3']=true, ['Party4']=true}--框架, 向上:密语, 向下:跟随
                 Save.focusKey= Save.focusKey or 'Shift'--焦点
+            else
+                Save= WoWToolsSave['ChatButton_Invite'] or Save
+            end
 
+            InviteButton= WoWToolsChatButtonMixin:CreateButton('Invite')
+
+            if InviteButton then
+                addName= '|A:communities-icon-addgroupplus:0:0|a'..INVITE
                 Init()
 
                 self:RegisterEvent('GROUP_LEFT')
@@ -1212,11 +1184,11 @@ panel:SetScript("OnEvent", function(self, event, arg1, ...)
             end
             self:UnregisterEvent('ADDON_LOADED')
         end
-        
+
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            WoWToolsSave[addName]=Save
+            WoWToolsSave['ChatButton_Invite']=Save
         end
 
     elseif event=='GROUP_ROSTER_UPDATE' or event=='GROUP_LEFT' then
@@ -1254,7 +1226,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, ...)
 
                     InvPlateGuid[guid]=name--保存到已邀请列表
 
-                    print(id, e.cn(addName), CHANNEL, e.PlayerLink(name, guid))
+                    print(id, addName, e.onlyChinese and '频道' or CHANNEL, e.PlayerLink(name, guid))
                 end
             end
         end

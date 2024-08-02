@@ -19,8 +19,8 @@ local Save={
 local MarkerButton
 local SetTankHealerFrame--设置队伍标记
 local ReadyTipsButton--队员,就绪,提示信息
-local Frame--设置标记, 框架
-local panel= CreateFrame("Frame")
+local MakerFrame--设置标记, 框架
+
 
 local Color={
     [1]={r=1, g=1, b=0, col='|cffffff00'},--星星, 黄色
@@ -366,7 +366,7 @@ local function Init_Ready_Tips_Button()
             end
             Save.tipsTextSacle=sacle
             self:set_Scale()
-            print(id, e.cn(addName), e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..sacle)
+            print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..sacle)
         end
     end)
 
@@ -377,11 +377,12 @@ local function Init_Ready_Tips_Button()
     ReadyTipsButton:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinese and '隐藏' or HIDE, (e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left)
+        e.tips:AddDoubleLine(addName, e.onlyChinese and '队员就绪信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYERS_IN_GROUP, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, READY, INFO)))
         e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.onlyChinese and '隐藏' or HIDE, (e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left)
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE,'Alt+'..e.Icon.right)
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.tipsTextSacle or 1), 'Alt+'..e.Icon.mid)
-        e.tips:AddDoubleLine(e.cn(addName), e.onlyChinese and '队员就绪信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYERS_IN_GROUP, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, READY, INFO)))
+
         e.tips:Show()
         MarkerButton:SetButtonState('PUSHED')
     end)
@@ -394,7 +395,7 @@ local function Init_Ready_Tips_Button()
     ReadyTipsButton:set_Event()
     ReadyTipsButton:set_Shown()
 
-    
+
     hooksecurefunc('ShowReadyCheck', function(initiator)--ReadyCheckListenerFrame
         if not initiator then
             return
@@ -414,9 +415,11 @@ local function Init_Ready_Tips_Button()
         if ( toggleDifficultyID and toggleDifficultyID > 0 ) then
             -- the current difficulty might change while inside an instance so show the difficulty on the ready check
             difficultyName=  e.GetDifficultyColor(nil, difficultyID) or difficultyName
-            ReadyCheckFrameText:SetFormattedText("%s正在进行就位确认。\n团队副本难度: |cnGREEN_FONT_COLOR:"..difficultyName..'|r', name)
+            ReadyCheckFrameText:SetFormattedText(
+                (e.onlyChinese and "%s正在进行就位确认。\n团队副本难度: |cnGREEN_FONT_COLOR:" or READY_CHECK_MESSAGE..'|n'..RAID_DIFFICULTY..': ')
+                ..difficultyName..'|r', name)
         else
-            ReadyCheckFrameText:SetFormattedText('%s正在进行就位确认。', name)
+            ReadyCheckFrameText:SetFormattedText(e.onlyChinese and '%s正在进行就位确认。' or READY_CHECK_MESSAGE, name)
         end
     end)
 end
@@ -453,15 +456,15 @@ end
 --#############
 local function Init_Markers_Frame()--设置标记, 框架
     if not Save.markersFrame then
-        if Frame then
-            Frame:set_Shown()
-            Frame:set_Event()
+        if MakerFrame then
+            MakerFrame:set_Shown()
+            MakerFrame:set_Event()
         end
         return
     else
-        if Frame then
-            Frame:set_Shown()
-            Frame:set_Event()
+        if MakerFrame then
+            MakerFrame:set_Shown()
+            MakerFrame:set_Event()
             return
         end
 
@@ -469,15 +472,15 @@ local function Init_Markers_Frame()--设置标记, 框架
 
     local size, last, btn= 22, nil, nil
 
-    Frame=CreateFrame('Frame', nil, UIParent)
-    Frame:SetFrameStrata(Save.FrameStrata)
-    Frame:SetMovable(true)--移动
-    Frame:SetClampedToScreen(true)
+    MakerFrame=CreateFrame('Frame', nil, UIParent)
+    MakerFrame:SetFrameStrata(Save.FrameStrata)
+    MakerFrame:SetMovable(true)--移动
+    MakerFrame:SetClampedToScreen(true)
 
-    Frame:SetSize(size,size)--大小
-    Frame:SetScale(Save.markersScale or 1)--缩放
+    MakerFrame:SetSize(size,size)--大小
+    MakerFrame:SetScale(Save.markersScale or 1)--缩放
 
-    function Frame:Init_Set_Frame()--位置
+    function MakerFrame:Init_Set_Frame()--位置
         if Save.markersFramePoint then
             self:SetPoint(Save.markersFramePoint[1], UIParent, Save.markersFramePoint[3], Save.markersFramePoint[4], Save.markersFramePoint[5])
         elseif e.Player.husandro then
@@ -486,9 +489,9 @@ local function Init_Markers_Frame()--设置标记, 框架
             self:SetPoint('CENTER', -150, 50)
         end
     end
-    Frame:Init_Set_Frame()
+    MakerFrame:Init_Set_Frame()
 
-    function Frame:set_Shown()
+    function MakerFrame:set_Shown()
         if not self:CanChangeAttribute() then
             self:RegisterEvent('PLAYER_REGEN_ENABLED')
             return
@@ -521,7 +524,7 @@ local function Init_Markers_Frame()--设置标记, 框架
         self:SetShown((ping or target or marker or check) and not C_PetBattles.IsInBattle())
     end
 
-    function Frame:set_Event()
+    function MakerFrame:set_Event()
         if Save.markersFrame then
             self:RegisterEvent('PLAYER_ENTERING_WORLD')--显示/隐藏
             self:RegisterEvent('CVAR_UPDATE')
@@ -535,25 +538,26 @@ local function Init_Markers_Frame()--设置标记, 框架
         end
     end
 
-    function Frame:set_Tooltips_Point()
+    function MakerFrame:set_Tooltips_Point()
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
     end
 
 
 
-    btn= e.Cbtn(Frame, {size={size,size}, texture='Interface\\Cursor\\UI-Cursor-Move'})--移动按钮
-    btn:SetAllPoints(Frame)
+    btn= e.Cbtn(MakerFrame, {size={size,size}, texture='Interface\\Cursor\\UI-Cursor-Move'})--移动按钮
+    btn:SetAllPoints(MakerFrame)
     btn:RegisterForDrag("RightButton")
     btn:SetMovable(true)
-    btn:SetScript("OnDragStart", function(_, d)
+    btn:SetScript("OnDragStart", function(self, d)
         if d=='RightButton' and IsAltKeyDown() then
-            Frame:StartMoving()
+            self:GetParent():StartMoving()
         end
     end)
-    btn:SetScript("OnDragStop", function()
+    btn:SetScript("OnDragStop", function(self)
         ResetCursor()
-        Frame:StopMovingOrSizing()
-        Save.markersFramePoint={Frame:GetPoint(1)}
+        local frame= self:GetParent()
+        frame:StopMovingOrSizing()
+        Save.markersFramePoint={frame:GetPoint(1)}
         Save.markersFramePoint[2]=nil
     end)
     function btn:set_Alpha(enter)
@@ -565,7 +569,7 @@ local function Init_Markers_Frame()--设置标记, 框架
 
         elseif d=='RightButton' and IsControlKeyDown() then
             Save.H = not Save.H and true or nil
-            print(id,e.cn(addName),
+            print(id, addName,
                 e.onlyChinese and '图标方向' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION..(Save.H and '|A:bags-greenarrow:0:0|a' or format('|A:%s:0:0|a', e.Icon.toLeft)),
                 e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
             )
@@ -576,20 +580,19 @@ local function Init_Markers_Frame()--设置标记, 框架
     btn:SetScript('OnMouseUp', function(self) ResetCursor() self:set_Alpha(true) end)
     btn:SetScript('OnLeave', function(self) e.tips:Hide() self:set_Alpha() end)
     btn:SetScript('OnEnter', function(self)
-        Frame:set_Tooltips_Point()
+        self:GetParent():set_Tooltips_Point()
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddDoubleLine(id, addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'alt+'..e.Icon.right)
-        e.tips:AddDoubleLine((UnitAffectingCombat('player') and '|cff606060' or '')..(e.onlyChinese and '缩放' or  UI_SCALE), (Save.markersScale or 1)..' Alt+'..e.Icon.mid)
+        e.tips:AddDoubleLine((self:CanChangeAttribute() and '' or '|cff606060')..(e.onlyChinese and '缩放' or  UI_SCALE), (Save.markersScale or 1)..' Alt+'..e.Icon.mid)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine((e.onlyChinese and '图标方向' or  HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION)..(Save.H and format('|A:%s:0:0|a', e.Icon.toLeft) or '|A:bags-greenarrow:0:0|a'), 'Ctrl+'..e.Icon.right)
         e.tips:Show()
         self:set_Alpha(true)
     end)
-    btn:SetScript('OnMouseWheel', function(_, d)--缩放
-        if UnitAffectingCombat('player') then
-            print(id, e.cn(addName), e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+    btn:SetScript('OnMouseWheel', function(self, d)--缩放
+        if not self:CanChangeAttribute() then
             return
         end
         if IsAltKeyDown() then
@@ -604,8 +607,8 @@ local function Init_Markers_Frame()--设置标记, 框架
             elseif sacle<0.6 then
                 sacle=0.6
             end
-            print(id, e.cn(addName), e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..sacle)
-            Frame:SetScale(sacle)
+            print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..sacle)
+            self:GetParent():SetScale(sacle)
             Save.markersScale=sacle
         end
     end)
@@ -615,16 +618,16 @@ local function Init_Markers_Frame()--设置标记, 框架
 
 
     --Ping System Blizzard_PingUI.lua
-    Frame.ping= CreateFrame('Frame', nil, Frame)
-    Frame.ping:SetSize(size, size)
+    MakerFrame.ping= CreateFrame('Frame', nil, MakerFrame)
+    MakerFrame.ping:SetSize(size, size)
     if Save.H then
-        Frame.ping:SetPoint("BOTTOM", Frame, 'TOP')
+        MakerFrame.ping:SetPoint("BOTTOM", MakerFrame, 'TOP')
     else
-        Frame.ping:SetPoint('RIGHT', Frame, 'LEFT')
+        MakerFrame.ping:SetPoint('RIGHT', MakerFrame, 'LEFT')
     end
 
 
-    Frame.ping.tab={--Enum.PingSubjectType.Warning
+    MakerFrame.ping.tab={--Enum.PingSubjectType.Warning
         [8]={name= e.onlyChinese and '自动' or SELF_CAST_AUTO, atlas='Ping_Marker_Icon_NonThreat'},
 
         [7]={name=e.onlyChinese and '信号' or PING, atlas='Cursor_OpenHand_128', action='TOGGLEPINGLISTENER'},
@@ -637,31 +640,31 @@ local function Init_Markers_Frame()--设置标记, 框架
         [5]={name=e.onlyChinese and '看这里' or format(PING_SUBJECT_TYPE_ALERT_NOT_THREAT_POINT,'','',''), atlas='Ping_Marker_Icon_nonthreat'},
     }
 
-    Frame.ping.Button={}
+    MakerFrame.ping.Button={}
 
     for _, index in pairs({8, 0, 1, 3, 2}) do
-        btn= e.Cbtn(Frame.ping, {
+        btn= e.Cbtn(MakerFrame.ping, {
             size={size,size},
-            atlas= Frame.ping.tab[index].atlas,
+            atlas= MakerFrame.ping.tab[index].atlas,
             type=true,
         })
         if not last then
             btn:SetPoint('CENTER')
         else
             if Save.H then
-                btn:SetPoint('BOTTOMRIGHT', last or Frame.ping, 'TOPRIGHT')
+                btn:SetPoint('BOTTOMRIGHT', last or MakerFrame.ping, 'TOPRIGHT')
             else
-                btn:SetPoint('BOTTOMRIGHT', last or Frame.ping, 'BOTTOMLEFT')
+                btn:SetPoint('BOTTOMRIGHT', last or MakerFrame.ping, 'BOTTOMLEFT')
             end
         end
 
-        btn.name= '|A:'..Frame.ping.tab[index].atlas..':0:0|a'..Frame.ping.tab[index].name
-        btn.action= Frame.ping.tab[index].action
+        btn.name= '|A:'..MakerFrame.ping.tab[index].atlas..':0:0|a'..MakerFrame.ping.tab[index].name
+        btn.action= MakerFrame.ping.tab[index].action
 
         btn:SetAttribute('type1', 'macro')
         btn:SetAttribute('type2', 'macro')
-        btn:SetAttribute("macrotext1", SLASH_PING1..' [@target]'..(Frame.ping.tab[index].text or ''))
-        btn:SetAttribute("macrotext2", SLASH_PING1..' [@player]'..(Frame.ping.tab[index].text or ''))
+        btn:SetAttribute("macrotext1", SLASH_PING1..' [@target]'..(MakerFrame.ping.tab[index].text or ''))
+        btn:SetAttribute("macrotext2", SLASH_PING1..' [@player]'..(MakerFrame.ping.tab[index].text or ''))
 
         function btn:set_Event()
             if self:IsVisible() then
@@ -695,7 +698,7 @@ local function Init_Markers_Frame()--设置标记, 框架
 
         btn:SetScript('OnLeave', function() e.tips:Hide() ResetCursor() end)
         btn:SetScript('OnEnter', function(self)
-            Frame:set_Tooltips_Point()
+            self:GetParent():GetParent():set_Tooltips_Point()
             e.tips:ClearLines()
             if self.action then
                 e.tips:AddLine(MicroButtonTooltipText(self.name, self.action), 1,1,1)
@@ -729,26 +732,26 @@ local function Init_Markers_Frame()--设置标记, 框架
             end
             e.tips:Show()
         end)
-        table.insert(Frame.ping.Button, btn)
+        table.insert(MakerFrame.ping.Button, btn)
         last=btn
     end
     hooksecurefunc(PingListenerFrame, 'SetupCooldownTimer', function(self)--冷却，时间
-        if Frame.ping:IsShown() then
+        if MakerFrame.ping:IsShown() then
             local cooldownDuration = (self.cooldownInfo.endTimeMs / 1000) - GetTime()
-            for _, btn2 in pairs(Frame.ping.Button) do
+            for _, btn2 in pairs(MakerFrame.ping.Button) do
                 e.Ccool(btn2, nil, cooldownDuration, nil, true)
             end
         end
     end)
 
 
-    Frame.countdown= e.Cbtn(Frame, {size={size,size}, atlas='countdown-swords'})--倒计时10秒
+    MakerFrame.countdown= e.Cbtn(MakerFrame, {size={size,size}, atlas='countdown-swords'})--倒计时10秒
     if Save.H then
-        Frame.countdown:SetPoint('BOTTOM', last, 'TOP', 0, size)
+        MakerFrame.countdown:SetPoint('BOTTOM', last, 'TOP', 0, size)
     else
-        Frame.countdown:SetPoint('RIGHT', last, 'LEFT', -size, 0)
+        MakerFrame.countdown:SetPoint('RIGHT', last, 'LEFT', -size, 0)
     end
-    Frame.countdown:SetScript('OnClick', function(self, d)
+    MakerFrame.countdown:SetScript('OnClick', function(self, d)
         local key=IsModifierKeyDown()
         if d=='LeftButton' and not key then
             if not self.star then
@@ -788,8 +791,8 @@ local function Init_Markers_Frame()--设置标记, 框架
             StaticPopup_Show(id..addName..'COUNTDOWN')
         end
     end)
-    Frame.countdown:SetScript('OnEnter', function(self)
-        Frame:set_Tooltips_Point()
+    MakerFrame.countdown:SetScript('OnEnter', function(self)
+        self:GetParent():set_Tooltips_Point()
         e.tips:ClearLines()
         e.tips:AddLine(e.Icon.left..(e.onlyChinese and '/倒计时' or SLASH_COUNTDOWN2)..' '..(Save.countdown or 7))
         e.tips:AddLine(e.Icon.right..(e.Player.cn and '取消 取消 取消' or 'STOP STOP STOP'))
@@ -798,17 +801,17 @@ local function Init_Markers_Frame()--设置标记, 框架
         e.tips:AddLine('Ctrl+'..e.Icon.right..(e.onlyChinese and '设置' or SETTINGS))
         e.tips:Show()
     end)
-    Frame.countdown:SetScript('OnLeave', GameTooltip_Hide)
-    function Frame.countdown:set_Event()
+    MakerFrame.countdown:SetScript('OnLeave', GameTooltip_Hide)
+    function MakerFrame.countdown:set_Event()
         if self:IsVisible() then
             self:RegisterEvent('START_TIMER')
         else
             self:UnregisterAllEvents()
         end
     end
-    Frame.countdown:SetScript('OnShow', Frame.countdown.set_Event)
-    Frame.countdown:SetScript('OnHide', Frame.countdown.set_Event)
-    Frame.countdown:SetScript('OnEvent', function(self, event, timerType, timeRemaining, totalTime)
+    MakerFrame.countdown:SetScript('OnShow', MakerFrame.countdown.set_Event)
+    MakerFrame.countdown:SetScript('OnHide', MakerFrame.countdown.set_Event)
+    MakerFrame.countdown:SetScript('OnEvent', function(self, event, timerType, timeRemaining, totalTime)
         if timerType==3 and event=='START_TIMER' then
             if totalTime==0 then
                self.star=nil
@@ -821,27 +824,27 @@ local function Init_Markers_Frame()--设置标记, 框架
             e.Ccool(self, nil, timeRemaining or totalTime, nil, true)--冷却条
         end
     end)
-    Frame.countdown:set_Event()
+    MakerFrame.countdown:set_Event()
 
 
-    Frame.check=e.Cbtn(Frame, {size={size,size}, atlas=e.Icon.select})
-    Frame.check:SetNormalAtlas(e.Icon.select)
+    MakerFrame.check=e.Cbtn(MakerFrame, {size={size,size}, atlas=e.Icon.select})
+    MakerFrame.check:SetNormalAtlas(e.Icon.select)
     if Save.H then
-        Frame.check:SetPoint('BOTTOM', Frame.countdown, 'TOP')
+        MakerFrame.check:SetPoint('BOTTOM', MakerFrame.countdown, 'TOP')
     else
-        Frame.check:SetPoint('RIGHT', Frame.countdown, 'LEFT')
+        MakerFrame.check:SetPoint('RIGHT', MakerFrame.countdown, 'LEFT')
     end
-    Frame.check:SetScript('OnClick', function()
+    MakerFrame.check:SetScript('OnClick', function()
         DoReadyCheck()
     end)
-    Frame.check:SetScript('OnEnter', function(self)
-        Frame:set_Tooltips_Point()
+    MakerFrame.check:SetScript('OnEnter', function(self)
+        MakerFrame:set_Tooltips_Point()
         e.tips:ClearLines()
         e.tips:AddLine(EMOTE127_CMD3)
         e.tips:Show()
     end)
-    Frame.check:SetScript('OnLeave', GameTooltip_Hide)
-    function Frame.check:set_Event()
+    MakerFrame.check:SetScript('OnLeave', GameTooltip_Hide)
+    function MakerFrame.check:set_Event()
         if self:IsVisible() then
             self:RegisterEvent('READY_CHECK')
             self:RegisterEvent('READY_CHECK_FINISHED')
@@ -849,31 +852,30 @@ local function Init_Markers_Frame()--设置标记, 框架
             self:UnregisterAllEvents()
         end
     end
-    Frame.check:SetScript('OnShow', Frame.check.set_Event)
-    Frame.check:SetScript('OnHide', Frame.check.set_Event)
-    Frame.check:SetScript('OnEvent', function(self, event, _, arg2)
+    MakerFrame.check:SetScript('OnShow', MakerFrame.check.set_Event)
+    MakerFrame.check:SetScript('OnHide', MakerFrame.check.set_Event)
+    MakerFrame.check:SetScript('OnEvent', function(self, event, _, arg2)
         e.Ccool(self, nil, event=='READY_CHECK_FINISHED' and 0 or arg2 or 0, nil, true, true)--冷却条
     end)
-    Frame.check:set_Event()
+    MakerFrame.check:set_Event()
 
 
     --队伍标记
-    ---@class Frame.target
-    Frame.target= CreateFrame("Frame", nil, Frame)
-    Frame.target:SetSize(size, size)
+    MakerFrame.target= CreateFrame("Frame", nil, MakerFrame)
+    MakerFrame.target:SetSize(size, size)
     if Save.H then
-        Frame.target:SetPoint('RIGHT', Frame, 'LEFT')
+        MakerFrame.target:SetPoint('RIGHT', MakerFrame, 'LEFT')
     else
-        Frame.target:SetPoint('TOP', Frame, 'BOTTOM')
+        MakerFrame.target:SetPoint('TOP', MakerFrame, 'BOTTOM')
     end
 
-    function Frame.target:set_Clear_Unit(unit, index)
+    function MakerFrame.target:set_Clear_Unit(unit, index)
         local t= UnitExists(unit) and GetRaidTargetIndex(unit)
         if t and t>0 and (index==t or not index) then
             set_Taget(unit, 0)--设置,目标,标记
         end
     end
-    function Frame.target:set_Clear(index)--取消标记标    
+    function MakerFrame.target:set_Clear(index)--取消标记标    
         local u--取消怪物标记
         local tab= C_NamePlate.GetNamePlates(issecure()) or {}
         for _, v in pairs(tab) do
@@ -899,7 +901,7 @@ local function Init_Markers_Frame()--设置标记, 框架
 
     last=nil
     for index = 0, NUM_RAID_ICONS do
-        btn= e.Cbtn(Frame.target, {
+        btn= e.Cbtn(MakerFrame.target, {
             size={size,size},
             atlas= index==0 and 'auctionhouse-itemicon-border-orange' or nil,
             texture= index>0 and 'Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index or nil,
@@ -915,14 +917,14 @@ local function Init_Markers_Frame()--设置标记, 框架
         end
         if index==0 then
             btn:SetScript('OnClick', function()
-                Frame.target:set_Clear()--取消标记标
+                MakerFrame.target:set_Clear()--取消标记标
             end)
             btn:SetScript('OnLeave', function(self)
                 self:SetAlpha(0.5)
                 e.tips:Hide()
             end)
             btn:SetScript('OnEnter', function(self)
-                Frame:set_Tooltips_Point()
+                MakerFrame:set_Tooltips_Point()
                 e.tips:ClearLines()
                 e.tips:AddLine('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '清除全部' or CLEAR_ALL)..e.Icon.left)
                 e.tips:Show()
@@ -949,7 +951,7 @@ local function Init_Markers_Frame()--设置标记, 框架
                 self:set_Active()
             end)
             btn:SetScript('OnEnter', function(self)
-                Frame:set_Tooltips_Point()
+                self:GetParent():GetParent():set_Tooltips_Point()
                 e.tips:ClearLines()
                 local can= CanBeRaidTarget('target')
                 e.tips:AddLine(MicroButtonTooltipText(get_RaidTargetTexture(self.index), 'RAIDTARGET'..self.index))
@@ -961,7 +963,7 @@ local function Init_Markers_Frame()--设置标记, 框架
                 e.tips:AddLine(e.Icon.right..e.Icon.player..e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME))
                 e.tips:AddLine(' ')
                 e.tips:AddLine(MicroButtonTooltipText('Alt+'..e.Icon.left..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2), 'RAIDTARGETNONE'))
-                
+
                 e.tips:Show()
                 self:SetButtonState('NORMAL')
                 self:SetAlpha(1)
@@ -993,18 +995,18 @@ local function Init_Markers_Frame()--设置标记, 框架
 
 
     --世界标记
-    Frame.marker= CreateFrame("Frame", nil, Frame)
-    Frame.marker:SetSize(size, size)
+    MakerFrame.marker= CreateFrame("Frame", nil, MakerFrame)
+    MakerFrame.marker:SetSize(size, size)
     if Save.H then
-        Frame.marker:SetPoint('RIGHT', Frame.target, 'LEFT')
+        MakerFrame.marker:SetPoint('RIGHT', MakerFrame.target, 'LEFT')
     else
-        Frame.marker:SetPoint('TOP', Frame.target, 'BOTTOM')
+        MakerFrame.marker:SetPoint('TOP', MakerFrame.target, 'BOTTOM')
     end
 
     last=nil
     local markerTab={5,6,3,2,7,1,4,8}
     for index=0,  NUM_WORLD_RAID_MARKERS do
-        btn= e.Cbtn(Frame.marker, {
+        btn= e.Cbtn(MakerFrame.marker, {
             type=true,
             size={size,size},
             atlas= index==0 and 'auctionhouse-itemicon-border-orange',
@@ -1014,9 +1016,9 @@ local function Init_Markers_Frame()--设置标记, 框架
             btn:SetPoint('CENTER')
         else
             if Save.H then
-                btn:SetPoint('BOTTOMRIGHT', last or Frame.marker, 'TOPRIGHT')
+                btn:SetPoint('BOTTOMRIGHT', last or MakerFrame.marker, 'TOPRIGHT')
             else
-                btn:SetPoint('BOTTOMRIGHT', last or Frame.marker, 'BOTTOMLEFT')
+                btn:SetPoint('BOTTOMRIGHT', last or MakerFrame.marker, 'BOTTOMLEFT')
             end
         end
 
@@ -1029,7 +1031,7 @@ local function Init_Markers_Frame()--设置标记, 框架
         btn:SetAttribute("action2", "clear")
         btn:SetScript('OnLeave', function(self) e.tips:Hide() if self.index==0 then self:SetAlpha(0.5) end  end)
         btn:SetScript('OnEnter', function(self)
-            Frame:set_Tooltips_Point()
+            self:GetParent():GetParent():set_Tooltips_Point()
             e.tips:ClearLines()
             if self.index==0 then
                 e.tips:AddLine('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '清除全部' or CLEAR_ALL)..e.Icon.left)
@@ -1075,7 +1077,7 @@ local function Init_Markers_Frame()--设置标记, 框架
     end
 
 
-    Frame:SetScript('OnEvent', function(self, event, arg1)
+    MakerFrame:SetScript('OnEvent', function(self, event, arg1)
         if event=='PLAYER_REGEN_ENABLED' then
             self:UnregisterEvent('PLAYER_REGEN_ENABLED')
             self:set_Shown()
@@ -1091,10 +1093,10 @@ local function Init_Markers_Frame()--设置标记, 框架
             self:set_Shown()
         end
     end)
-    hooksecurefunc('MovieFrame_PlayMovie', function() Frame:set_Shown() end)
-    hooksecurefunc('MovieFrame_OnMovieFinished', function() Frame:set_Shown() end)
-    Frame:set_Event()
-    Frame:set_Shown()
+    hooksecurefunc('MovieFrame_PlayMovie', function() MakerFrame:set_Shown() end)
+    hooksecurefunc('MovieFrame_OnMovieFinished', function() MakerFrame:set_Shown() end)
+    MakerFrame:set_Event()
+    MakerFrame:set_Shown()
 end
 
 
@@ -1222,7 +1224,7 @@ local function Init_Menu(_, root)
                 end
                 Save[data.type]=data.index
                 MarkerButton:set_Texture()--图标
-                
+
             end, {index=i, type=info.type, tip=info.tip})
             tre:SetTooltip(function(tooltip, data)
                 tooltip:AddLine(data.data.tip)
@@ -1232,12 +1234,12 @@ local function Init_Menu(_, root)
 
 
     root:CreateDivider()
-    
+
     sub=root:CreateCheckbox(
-        (e.Is_In_PvP_Area() or UnitAffectingCombat('player') and '|cnRED_FONT_COLOR:' or '')
+        (e.Is_In_PvP_Area() or (MakerFrame and not MakerFrame:CanChangeAttribute()) and '|cff606060' or '')
         ..(e.onlyChinese and '队伍标记工具' or format(PROFESSION_TOOL_TOOLTIP_LINE, BINDING_HEADER_RAID_TARGET)
     ), function()
-        return Save.markersFrame
+        return MakerFrame and MakerFrame:IsShown()
     end, function()
         Save.markersFrame= not Save.markersFrame and true or nil
         Init_Markers_Frame()--设置标记, 框架
@@ -1245,7 +1247,7 @@ local function Init_Menu(_, root)
     sub:SetTooltip(function(tooltip)
         GameTooltip_AddNormalLine(tooltip, e.onlyChinese and '世界标记' or SLASH_WORLD_MARKER3:gsub('/',''))
         GameTooltip_AddNormalLine(tooltip, e.onlyChinese and '需求：队伍和权限' or (NEED..": "..format(COVENANT_RENOWN_TOAST_REWARD_COMBINER, HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS, CALENDAR_INVITELIST_SETMODERATOR)))
-        if Frame and not Frame:CanChangeAttribute() then
+        if MakerFrame and not MakerFrame:CanChangeAttribute() then
             GameTooltip_AddErrorLine(tooltip, e.onlyChinese and "当前禁用操作" or (REFORGE_CURRENT..': '..DISABLE))
         end
     end)
@@ -1265,18 +1267,18 @@ local function Init_Menu(_, root)
         tre=sub:CreateCheckbox(name, function(data)
             return Save.FrameStrata==data
         end, function(data)
-            if Frame and not Frame:CanChangeAttribute() then
+            if MakerFrame and not MakerFrame:CanChangeAttribute() then
                 return
             end
             Save.FrameStrata= data
-            if Frame then
-                Frame:SetFrameStrata(data)
+            if MakerFrame then
+                MakerFrame:SetFrameStrata(data)
             end
-            print(id, e.cn(addName), 'SetFrameStrata|cnGREEN_FONT_COLOR:', Save.FrameStrata)
+            print(id, addName, 'SetFrameStrata|cnGREEN_FONT_COLOR:', Save.FrameStrata)
         end, name)
         tre:SetTooltip(function(tooltip, data)
             GameTooltip_AddNormalLine(tooltip, 'Frame:SetFrameStrata('..data.data..')')
-            if Frame and not Frame:CanChangeAttribute() then
+            if MakerFrame and not MakerFrame:CanChangeAttribute() then
                 GameTooltip_AddBlankLineToTooltip(tooltip);
                 GameTooltip_AddErrorLine(tooltip, e.onlyChinese and "当前禁用操作" or (REFORGE_CURRENT..': '..DISABLE))
             end
@@ -1285,14 +1287,14 @@ local function Init_Menu(_, root)
 
     sub:CreateDivider()
     col= not Save.markersFramePoint and '|cff606060'
-        and (Frame and not Frame:CanChangeAttribute() and '|cnGREEN_FONT_COLOR:')
+        and (MakerFrame and not MakerFrame:CanChangeAttribute() and '|cnGREEN_FONT_COLOR:')
         or ''
     sub:CreateButton(col..(e.onlyChinese and '重置位置' or RESET_POSITION), function()
-        if Frame and Frame:CanChangeAttribute() then
-            Frame:ClearAllPoints()
+        if MakerFrame and MakerFrame:CanChangeAttribute() then
+            MakerFrame:ClearAllPoints()
             Save.markersFramePoint=nil
-            Frame:Init_Set_Frame()--位置
-            print(id,e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
+            MakerFrame:Init_Set_Frame()--位置
+            print(id,addName, e.onlyChinese and '重置位置' or RESET_POSITION)
         end
     end)
 
@@ -1312,7 +1314,7 @@ local function Init_Menu(_, root)
         if ReadyTipsButton then
             ReadyTipsButton:ClearAllPoints()
             ReadyTipsButton:set_Point()--位置
-            print(id, e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
+            print(id, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
         end
     end)
 
@@ -1362,253 +1364,6 @@ end
 
 
 
-local function InitMenu(_, level, type)--主菜单
-    local info
-    if type=='tank' or type=='tank2' or type=='healer' then--3级
-        for index=1, NUM_RAID_ICONS do
-            info={
-                text= _G['RAID_TARGET_'..index],
-                icon= 'Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index,
-                checked= Save[type]==index,
-                colorCode= Color[index] and Color[index].col,
-                disabled=  Save.tank==index or Save.healer==index or Save.tank2==index,
-                arg1=type,
-                func=function(_, arg1)
-                    Save[arg1]=index
-                    if arg1=='tank' then
-                        MarkerButton:set_Texture()--图标
-                    end
-                end
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
-        end
-
-    elseif type=='ReadyTipsRestPoint' then--重置位置， 就绪信信息，提示
-        info={
-            text= e.onlyChinese and '重置位置' or RESET_POSITION,
-            notCheckable=true,
-            colorCode= (not Save.groupReadyTips or not Save.groupReadyTipsPoint) and '|cff606060',
-            disabled= not ReadyTipsButton,
-            func= function()
-               
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    elseif type=='ready' then
-        info={
-            text=format('|A:%s:0:0|a', e.Icon.select)..(e.onlyChinese and '就绪' or READY),--就绪
-            colorCode='|cff00ff00',
-            checked= Save.autoReady==1,
-            keepShownOnClick=true,
-            func=function()
-                Save.autoReady=1
-                MarkerButton.ReadyTextrueTips:settings()--自动就绪, 主图标, 提示
-                e.LibDD:CloseDropDownMenus()
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-        info={
-            text=format('|A:common-icon-redx:0:0|a%s', e.onlyChinese and '未就绪' or NOT_READY_FEMALE),--未就绪
-            colorCode='|cffff0000',
-            checked= Save.autoReady==2,
-            keepShownOnClick= true,
-            func=function()
-                Save.autoReady=2
-                MarkerButton.ReadyTextrueTips:settings()--自动就绪, 主图标, 提示
-                e.LibDD:CloseDropDownMenus();
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-        info={--无
-            text= e.onlyChinese and '无' or NONE,
-            checked=not Save.autoReady,
-            keepShownOnClick= true,
-            func=function()
-                Save.autoReady=nil
-                MarkerButton.ReadyTextrueTips:settings()--自动就绪, 主图标, 提示
-                e.LibDD:CloseDropDownMenus();
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-
-
-    
-        --[[info={
-            text= e.onlyChinese and '冷却时间：信号' or format(CAPACITANCE_SHIPMENT_COOLDOWN, PING),
-            tooltipOnButton=true,
-            tooltipTitle= e.onlyChinese and '备注：如果错误，请取消此选项' or 'note: If you get error, please disable this',
-            colorCode= not C_CVar.GetCVarBool("enablePings") and '|cff606060' or nil,
-            checked= Save.pingTime,
-            keepShownOnClick=true,
-            func= function()
-                Save.pingTime= not Save.pingTime and true or nil
-                print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-        e.LibDD:UIDropDownMenu_AddSeparator(level)]]
-    elseif type=='MakerFrameSetFrameStrata' then
-        local tab={
-            'BACKGROUND',
-            'LOW',
-            'MEDIUM',
-            'HIGH',
-            'DIALOG',
-            'FULLSCREEN',
-            'FULLSCREEN_DIALOG',
-            'TOOLTIP',
-        }
-        for _, name in pairs(tab) do
-            info={
-                text= name,
-                checked= Save.FrameStrata==name,
-                colorCode= not Frame and '|cff606060' or nil,
-                tooltipOnButton=true,
-                tooltipTitle='SetFrameStrata()',
-                keepShownOnClick=true,
-                arg1= name,
-                func=function(_, arg1)
-                    Save.FrameStrata= arg1
-                    if Frame then
-                        Frame:SetFrameStrata(arg1)
-                    end
-                    print(id, e.cn(addName), 'SetFrameStrata|cnGREEN_FONT_COLOR:', Save.FrameStrata)
-                end
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
-        end
-    elseif type=='MakerFrameResetPost' then--重置位置， 队伍标记工具
-        info={
-            text= 'FrameStrata: '..Save.FrameStrata,
-            tooltipOnButton=true,
-            tooltipTitle= e.onlyChinese and '' or 'The frame layering strata',
-            menuList='MakerFrameSetFrameStrata',
-            hasArrow=true,
-            notCheckable=true,
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-        e.LibDD:UIDropDownMenu_AddSeparator(level)
-        info={
-            text= e.onlyChinese and '重置位置' or RESET_POSITION,
-            notCheckable=true,
-            colorCode= not Save.markersFramePoint and '|cff606060',
-            keepShownOnClick=true,
-            disabled= not Frame,
-            func= function()
-                Frame:ClearAllPoints()
-                Save.markersFramePoint=nil
-                Frame:Init_Set_Frame()--位置
-                print(id,e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-    end
-
-    if type then
-        return
-    end
-
-
-
-
-
-
-    info={
-        text= (e.onlyChinese and '自动标记' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, EVENTTRACE_MARKER))..e.Icon.TANK..e.Icon.HEALER,
-        icon= 'mechagon-projects',
-        checked= Save.autoSet,
-        disabled= Save.tank==0 and Save.healer==0,
-        keepShownOnClick= true,
-        func=function()
-            Save.autoSet= not Save.autoSet and true or nil
-            SetTankHealerFrame:set_Enabel_Event()
-            if Save.autoSet then
-                SetTankHealerFrame:set_TankHealer(true)--设置队伍标记
-            end
-        end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    local tab={
-            {text= e.Icon.TANK..(e.onlyChinese and '坦克' or TANK), type='tank', tip=format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, e.onlyChinese and '队伍' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS)},
-            {text= e.Icon.HEALER..(e.onlyChinese and '治疗' or HEALER), type='healer', tip=format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, e.onlyChinese and '小队' or GROUP)},
-            {text= e.Icon.TANK..(e.onlyChinese and '坦克' or TANK)..'2', type='tank2', tip=format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, e.onlyChinese and '团队' or RAID)},
-    }
-    for _, tab2 in pairs(tab) do
-        info={
-            text=(Save[tab2.type]>0 and '|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_'..Save[tab2.type]..':0|t' or '')..tab2.text,
-            colorCode= Color[Save[tab2.type]] and Color[Save[tab2.type]].col or '|cff606060',
-            tooltipOnButton=true,
-            tooltipTitle= tab2.tip,
-            --keepShownOnClick= true,
-            notCheckable=true,
-            menuList= tab2.type,
-            hasArrow=true,
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-    end
-
-    e.LibDD:UIDropDownMenu_AddSeparator(level)
-    info={
-        text=e.onlyChinese and '队伍标记工具' or format(PROFESSION_TOOL_TOOLTIP_LINE, BINDING_HEADER_RAID_TARGET),
-        checked=Save.markersFrame,
-        tooltipOnButton=true,
-        tooltipTitle= e.onlyChinese and '世界标记' or SLASH_WORLD_MARKER3:gsub('/',''),
-        tooltipText= (e.onlyChinese and '需求：队伍和权限' or (NEED..": "..format(COVENANT_RENOWN_TOAST_REWARD_COMBINER, HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS, CALENDAR_INVITELIST_SETMODERATOR))),
-        menuList= 'MakerFrameResetPost',
-        hasArrow=true,
-        keepShownOnClick= true,
-        disabled= e.Is_In_PvP_Area() or UnitAffectingCombat('player'),--是不有权限
-        func=function()
-            Save.markersFrame= not Save.markersFrame and true or nil
-            Init_Markers_Frame()--设置标记, 框架
-        end,
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    e.LibDD:UIDropDownMenu_AddSeparator(level)
-    info={
-        text= e.onlyChinese and '队员就绪信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYERS_IN_GROUP, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, READY, INFO)),
-        checked=Save.groupReadyTips,
-        keepShownOnClick= true,
-        hasArrow=true,
-        menuList= 'ReadyTipsRestPoint',
-        func=function()
-            Save.groupReadyTips= not Save.groupReadyTips and true or nil
-            Init_Ready_Tips_Button()--注册事件, 就绪,队员提示信息
-            if Save.groupReadyTips then--测试
-                ReadyTipsButton.text:SetText('Test')
-                ReadyTipsButton:set_Shown()
-            end
-        end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    info={
-        text=(
-            Save.autoReady==1 and format('|A:%s:0:0|a', e.Icon.select)
-            or Save.autoReady==2 and format('|A:%s:0:0|a', e.Icon.disabled)
-            or (e.onlyChinese and '无' or NONE)
-        )
-        ..format(e.onlyChinese and '%s%s' or CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '自动' or SELF_CAST_AUTO, (
-            (not Save.autoReady or Save.autoReady==1) and (e.onlyChinese and '就绪' or READY)
-            or Save.autoReady==2 and (e.onlyChinese and '未就绪'
-            or NOT_READY_FEMALE)
-            or ''
-        )),
-        notCheckable=true,
-        colorCode= Save.autoReady==1 and '|cff00ff00' or Save.autoReady==2 and '|cffff0000',
-        menuList='ready',
-        hasArrow=true,
-        keepShownOnClick= true,
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-end
-
-
 
 
 
@@ -1635,7 +1390,7 @@ end
 --初始
 --####
 local function Init()
-    
+
     --自动就绪, 主图标, 提示
     MarkerButton.ReadyTextrueTips=MarkerButton:CreateTexture(nil,'OVERLAY')
     MarkerButton.ReadyTextrueTips:SetPoint('TOP')
@@ -1678,15 +1433,15 @@ local function Init()
     MarkerButton:SetScript("OnEvent", MarkerButton.set_Desaturated_Textrue)
 
 
-    
+
     Init_Ready_Tips_Button()--注册事件, 就绪,队员提示信息
 
     MarkerButton:SetScript("OnClick", function(self, d)
         if d=='LeftButton' then
             if SetTankHealerFrame:set_TankHealer(true) then--设置队伍标记
-                print(id, e.cn(addName), e.onlyChinese and '设置' or SETTINGS, e.onlyChinese and '坦克' or TANK, e.onlyChinese and '治疗' or HEALER)
+                print(id, addName, e.onlyChinese and '设置' or SETTINGS, e.onlyChinese and '坦克' or TANK, e.onlyChinese and '治疗' or HEALER)
             else
-                print(id, e.cn(addName), e.onlyChinese and '设置' or SETTINGS, e.onlyChinese and '坦克' or TANK, e.onlyChinese and '治疗' or HEALER, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE))
+                print(id, addName, e.onlyChinese and '设置' or SETTINGS, e.onlyChinese and '坦克' or TANK, e.onlyChinese and '治疗' or HEALER, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE))
             end
         else
             MenuUtil.CreateContextMenu(self, Init_Menu)
@@ -1748,9 +1503,14 @@ local function Init()
             if self.autoReadyText then
                 local text=''
                 if Save.autoReady==1 then
-                    text=id..' '..addName..'|n|cnGREEN_FONT_COLOR:'..AUTO_JOIN:gsub(JOIN, '')..READY..'|r'..format('|A:%s:0:0|a', e.Icon.select)
+                    text=id..' '..addName
+                    ..'|n|cnGREEN_FONT_COLOR:'
+                    .. (e.onlyChinese and '自动就绪' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, READY))
+                    ..format('|A:%s:0:0|a', e.Icon.select)
                 elseif Save.autoReady==2 then
-                    text=id..' '..addName..'|n|cnRED_FONT_COLOR:'..AUTO_JOIN:gsub(JOIN, '')..NOT_READY_FEMALE..'|r'..format('|A:%s:0:0|a', e.Icon.disabled)
+                    text=id..' '..addName..'|n|cnRED_FONT_COLOR:'
+                    ..(e.onlyChinese and '自动未就绪' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, NOT_READY_FEMALE))
+                    ..'|r'..format('|A:%s:0:0|a', e.Icon.disabled)
                 end
                self.autoReadyText:SetText(text)
             end
@@ -1778,6 +1538,7 @@ end
 --###########
 --加载保存数据
 --###########
+local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1, arg2)
