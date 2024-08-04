@@ -4723,7 +4723,10 @@
         "MOVIE_LIST",
         "ALT_KEY",
         "IGNORE_LIST",
-        "MAX_PLAYER_LEVEL"
+        "MAX_PLAYER_LEVEL",
+        "LE_EXPANSION_WAR_WITHIN",
+        "ScenariosList",
+        "ScenariosHiddenByCollapseList"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",
