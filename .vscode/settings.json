@@ -4726,7 +4726,11 @@
         "MAX_PLAYER_LEVEL",
         "LE_EXPANSION_WAR_WITHIN",
         "ScenariosList",
-        "ScenariosHiddenByCollapseList"
+        "ScenariosHiddenByCollapseList",
+        "LFDQueueFrame",
+        "LFGLockList",
+        "LFG_TYPE_FOLLOWER_DUNGEON",
+        "LFDQueueFrame_SetTypeInternal"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

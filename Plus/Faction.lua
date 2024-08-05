@@ -34,12 +34,12 @@ local function get_Faction_Info(index, factionID)
 	local data= e.GetFactionInfo(factionID, index, Save.toRightTrackText)
 	factionID= data.factionID
 	local name= data.name
-	
+
 	if not factionID or not name or name==HIDE or (not data.isHeaderWithRep and data.isHeader) then
 		return
 	end
 
-	
+
 	local value= data.valueText
 	local texture= data.texture
 	local atlas= data.atlas
@@ -47,7 +47,7 @@ local function get_Faction_Info(index, factionID)
 	local isCapped= data.isCapped
 	local isParagon= data.isParagon
 
-	
+
 	if (isCapped and not isParagon and index)--声望已满，没有奖励
 		or (onlyIcon and not atlas and not texture)
 	then
@@ -55,7 +55,7 @@ local function get_Faction_Info(index, factionID)
 	end
 
 	local factionStandingtext
-	if not data.isCapped then 
+	if not data.isCapped then
 		factionStandingtext= data.factionStandingtext
 	end
 
@@ -119,7 +119,7 @@ end
 
 local function ShowParagonRewardsTooltip(self)
 	Set_SetOwner(self, EmbeddedItemTooltip);
-	ReputationParagonFrame_SetupParagonTooltip(self);	
+	ReputationParagonFrame_SetupParagonTooltip(self);
 	EmbeddedItemTooltip:Show()
 end
 local function TryAppendAccountReputationLineToTooltip(tooltip, factionID)
@@ -203,7 +203,7 @@ local function Set_TrackButton_Text()
 	if not TrackButton or not TrackButton:IsShown() then
 		return
 	end
-	
+
 	local faction={}
 	if Save.indicato then
 		for factionID, _ in pairs(Save.factions) do
@@ -226,7 +226,7 @@ local function Set_TrackButton_Text()
 	for index, tab in pairs(faction) do
 		local btn= TrackButton.btn[index]
 		if not btn then
-			btn= e.Cbtn(TrackButton.Frame, {size={14,14}, icon='hide'})			
+			btn= e.Cbtn(TrackButton.Frame, {size={14,14}, icon='hide'})
 			if Save.toTopTrack then
 				btn:SetPoint('BOTTOM', last or TrackButton, 'TOP')
 			else
@@ -267,7 +267,7 @@ local function Set_TrackButton_Text()
 		end
 		last=btn
 
-		btn.text:SetText(tab.text)		
+		btn.text:SetText(tab.text)
 		btn.factionID= tab.data.factionID
 		btn.isFriend= tab.data.friendshipID
 		btn.isMajor= tab.data.isMajor
@@ -518,9 +518,9 @@ local function Init_TrackButton()
 		end
 	end)
 
-	
+
 	hooksecurefunc(ReputationFrame, 'Update', Set_TrackButton_Text)	--更新, 监视, 文本
-	
+
 
 	TrackButton:set_Scale()
 	TrackButton:set_Point()
@@ -613,7 +613,7 @@ local function set_ReputationFrame_InitReputationRow(btn)--factionRow, elementDa
 		return
 	end
 
-	
+
 	local barColor, levelText, texture, atlas,isCapped
 	local isMajorFaction = C_Reputation.IsMajorFaction(factionID);
 	local repInfo = C_GossipInfo.GetFriendshipReputation(factionID);
@@ -779,7 +779,7 @@ end
 local factionStr= FACTION_STANDING_INCREASED:gsub("%%s", "(.-)")--你在%s中的声望值提高了%d点。
 factionStr = factionStr:gsub("%%d", ".-")
 
-local function Set_Faction_Update(_, _, text, ...)	
+local function Set_Faction_Update(_, _, text, ...)
 	local name=text and text:match(factionStr)
 	if not name then
 		return
@@ -800,10 +800,10 @@ local function Set_Faction_Update(_, _, text, ...)
 				end
 			end
 
-			local info= e.GetFactionInfo(factionID, nil, true)			
+			local info= e.GetFactionInfo(factionID, nil, true)
 			text= text..(info.atla and '|A:'..info.atlas..':0:0|a' or (info.texture and '|T'..info.texture..':0|t') or '')
 				..(info.factionStandingtext or '')
-					..(info.hasRewardPending or '') 
+					..(info.hasRewardPending or '')
 
 			return false, text, ...
 		end
@@ -1097,35 +1097,37 @@ local function Init()
 			set_ReputationFrame_InitReputationRow(btn)
 		end
 	end)
-	
+
 	Button:set_Shown()
 
 	if Save.factionUpdateTips then--声望更新, 提示
 		ChatFrame_AddMessageEventFilter('CHAT_MSG_COMBAT_FACTION_CHANGE', Set_Faction_Update)
 
-		local text
-		for i=1, C_Reputation.GetNumFactions() do--声望更新, 提示
-			local data= C_Reputation.GetFactionDataByIndex(i) or {}
-			local name= data.name
-			local factionID= data.factionID
-			if name and factionID and C_Reputation.IsFactionParagon(factionID) and select(4, C_Reputation.GetFactionParagonInfo(factionID)) then--奖励
-				text= text and text..' ' or ''
+		C_Timer.After(2, function()
+			local text
+			for i=1, C_Reputation.GetNumFactions() do--声望更新, 提示
+				local data= C_Reputation.GetFactionDataByIndex(i) or {}
+				local name= data.name
+				local factionID= data.factionID
+				if name and factionID and C_Reputation.IsFactionParagon(factionID) and select(4, C_Reputation.GetFactionParagonInfo(factionID)) then--奖励
+					text= text and text..' ' or ''
 
-				local repInfo = C_GossipInfo.GetFriendshipReputation(factionID)
-				if repInfo and repInfo.texture and repInfo.texture>0 then
-					text= text..'|T'..repInfo.texture..':0|t'
-				elseif C_Reputation.IsMajorFaction(factionID) then
-					local info = C_MajorFactions.GetMajorFactionData(factionID)
-					if info and info.textureKit then
-						text= text..'|A:MajorFactions_Icons_'..info.textureKit..'512:0:0|a'
+					local repInfo = C_GossipInfo.GetFriendshipReputation(factionID)
+					if repInfo and repInfo.texture and repInfo.texture>0 then
+						text= text..'|T'..repInfo.texture..':0|t'
+					elseif C_Reputation.IsMajorFaction(factionID) then
+						local info = C_MajorFactions.GetMajorFactionData(factionID)
+						if info and info.textureKit then
+							text= text..'|A:MajorFactions_Icons_'..info.textureKit..'512:0:0|a'
+						end
 					end
+					text= text..e.cn(name)
 				end
-				text= text..e.cn(name)
 			end
-		end
-		if text then
-			print(id, Initializer:GetName(), '|cffff00ff'..text..'|r', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '你有未领取的奖励' or WEEKLY_REWARDS_UNCLAIMED_TITLE))
-		end
+			if text then
+				print(id, Initializer:GetName(), '|cffff00ff'..text..'|r', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '你有未领取的奖励' or WEEKLY_REWARDS_UNCLAIMED_TITLE))
+			end
+		end)
 	end
 
 	C_Timer.After(4, Init_TrackButton)--监视, 文本
