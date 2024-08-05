@@ -1,5 +1,5 @@
 local id, e = ...
-local addName =	DUNGEONS_BUTTON
+local addName
 local Save={
     leaveInstance=e.Player.husandro,--自动离开,指示图标
     --enterInstance=e.Player.husandro,--10.07无效
@@ -3144,6 +3144,8 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
             LFDButton= WoWToolsChatButtonMixin:CreateButton('Invite')
 
             if LFDButton then--禁用Chat Button
+                addName= '|A:groupfinder-eye-frame:0:0|a'..(e.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON)
+
                 Init()
                 self:RegisterEvent('LFG_COMPLETION_REWARD')
                 --self:RegisterEvent('SCENARIO_COMPLETED')
@@ -3162,7 +3164,10 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
                 self:RegisterEvent('GROUP_LEFT')
                 self:RegisterEvent('PLAYER_ROLES_ASSIGNED')--职责确认
             end
+
             self:UnregisterEvent('ADDON_LOADED')
+
+           
         end
 
     elseif event == "PLAYER_LOGOUT" then
