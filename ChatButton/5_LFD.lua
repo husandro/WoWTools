@@ -10,7 +10,10 @@ local Save={
     LFGPlus= e.Player.husandro,--预创建队伍增强
     --tipsScale=1,--提示内容,缩放
 
-    wow={}
+    wow={
+        --['island']=0,
+        --[副本名称]=0,
+    }
 }
 
 
@@ -23,7 +26,6 @@ local panel= CreateFrame("Frame")
 
 
 
-local wowSave={[INSTANCE]={}}--{[ISLANDS_HEADER]=次数, [副本名称..难度=次数]}
 
 
 
@@ -38,39 +40,25 @@ local wowSave={[INSTANCE]={}}--{[ISLANDS_HEADER]=次数, [副本名称..难度=�
 
 
 
-
-local function Save_Instance_Num()
-    if not IsInInstance() then
-        return
-    end
-    local name, _, difficultyID = GetInstanceInfo()
-    if difficultyID and name then
-        Save.wow[name]= Save.wow[name] or {}
-        local num= (Save.wow[name][difficultyID] or 0) +1
-        Save.wow[name][difficultyID]= num
-        return num, name, difficultyID
+local function Save_Instance_Num(name)
+    name= name or GetInstanceInfo()
+    if name then
+        Save.wow[name]= (Save.wow[name] or 0)+1
     end
 end
 
-function e.Get_Instance_Num(name, difficultyID)
-    local num
-    if LFDButton then
-        if not name and not difficultyID and IsInInstance() then
-            name, _, difficultyID = GetInstanceInfo()
-        end
-        local data= name and Save.wow[name]
-        if data then
-            if difficultyID then
-                num= data[difficultyID]
-            else
-                num=0
-                for _, all in pairs(data) do
-                    num= num+all
-                end
-            end
-        end
+
+
+function e.Get_Instance_Num(name)
+    name= name or GetInstanceInfo()
+    local num = Save.wow[name] or 0
+    local text
+    if num >0 then
+        text= '|cnGREEN_FONT_COLOR:#'..num..'|r '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
+    else
+        text= '0 '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
     end
-    return num or 0
+    return text , num
 end
 
 
@@ -718,25 +706,12 @@ local function Init_tipsButton()
         Save.tipsFramePoint[2]=nil
     end)
 
-    function tipsButton:set_Scale()
+    function tipsButton:set_scale()
         self.text:SetScale(Save.tipsScale or 1)
     end
 
-    tipsButton:SetScript('OnMouseWheel', function(self, d)
-        if not IsAltKeyDown() then
-            return
-        end
-        local n= Save.tipsScale or 1
-        if d==1 then
-            n=n+ 0.05
-        elseif d==-1 then
-            n=n- 0.05
-        end
-        n= n>4 and 4 or n
-        n= n<0.4 and 0.4 or n
-        Save.tipsScale= n
-        self:set_Scale()
-        print(id, addName, e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..n)
+    tipsButton:SetScript('OnMouseWheel', function(self, delta)
+        Save.tipsScale= e.Set_Frame_Scale(self, delta, Save.tipsScale, nil)
     end)
 
     tipsButton:SetScript("OnMouseDown", function(_, d)
@@ -746,14 +721,12 @@ local function Init_tipsButton()
     end)
     tipsButton:SetScript('OnMouseUp', ResetCursor)
 
-    tipsButton:SetScript("OnLeave", function()
-        e.tips:Hide()
-        ResetCursor()
-        LFDButton:SetButtonState('NORMAL')
-    end)
-    tipsButton:SetScript('OnEnter', function(self)
+    function tipsButton:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
+        e.tips:AddDoubleLine(e.onlyChinese and '列表信息' or (SOCIAL_QUEUE_TOOLTIP_HEADER..INFO), '|A:groupfinder-eye-frame:0:0|a')
+        e.tips:AddLine(' ')
+
         e.tips:AddDoubleLine(
             (IsInGroup() and not UnitIsGroupLeader("player") and '|cff606060' or '|cnRED_FONT_COLOR:')..(e.onlyChinese and '离开所有队列' or LEAVE_ALL_QUEUES),
             '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left
@@ -764,16 +737,22 @@ local function Init_tipsButton()
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.tipsScale or 1), 'Alt+'..e.Icon.mid)
 
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '列表信息' or (SOCIAL_QUEUE_TOOLTIP_HEADER..INFO), '|A:groupfinder-eye-frame:0:0|a')
-        e.tips:AddDoubleLine(id, addName)
         e.tips:Show()
+    end
+    tipsButton:SetScript("OnLeave", function()
+        e.tips:Hide()
+        ResetCursor()
+        LFDButton:SetButtonState('NORMAL')
+    end)
+
+    tipsButton:SetScript('OnEnter', function(self)
+        self:set_tooltip()
         LFDButton:SetButtonState('PUSHED')
         Set_Queue_Status()--小眼睛, 更新信息
     end)
 
 
-    tipsButton:SetScript('OnDoubleClick', function(_, d)--离开所有队列
+    tipsButton:SetScript('OnDoubleClick', function()--离开所有队列
         if IsInGroup() and not UnitIsGroupLeader("player") then
             return
         end
@@ -837,7 +816,7 @@ local function Init_tipsButton()
 
 
     tipsButton:set_Point()
-    tipsButton:set_Scale()--设置, 缩放
+    tipsButton:set_scale()--设置, 缩放
     tipsButton:RegisterForDrag("RightButton")
     tipsButton:SetMovable(true)
     tipsButton:SetClampedToScreen(true)
@@ -863,11 +842,14 @@ end
 
 
 local function Add_Initializer(button, description)
-    button.texture = button:AttachTexture();
-    button.texture:SetSize(20, 20);
-    button.texture:SetAtlas(e.Icon.toRight)
-    button.texture:SetPoint("LEFT");
-    button.fontString:SetPoint('LEFT', button.texture, 'RIGHT')
+    if not button.leftTexture then
+        button.leftTexture = button:AttachTexture()
+        button.leftTexture:SetSize(20, 20)
+        button.leftTexture:SetAtlas(e.Icon.toRight)
+        button.leftTexture:SetPoint("LEFT")
+        button.fontString:SetPoint('LEFT', button.leftTexture, 'RIGHT')
+    end
+    
     button:SetScript("OnUpdate", function(self, elapsed)
         self.elapsed= (self.elapsed or 0.5) +elapsed
         if self.elapsed>0.5 then
@@ -878,19 +860,20 @@ local function Add_Initializer(button, description)
             else
                 self.fontString:SetTextColor(1,1,1)
             end
-            if self.texture then
-                self.texture:SetShown(isInQueue)
+            if self.leftTexture then
+                self.leftTexture:SetShown(isInQueue)
             end
         end
     end)
+
     button:SetScript('OnHide', function(self)
         self:SetScript('OnUpdate', nil)
         if self.fontString then
             self.fontString:SetTextColor(1,1,1)
             self.fontString:SetPoint('LEFT')
         end
-        if self.texture then
-            self.texture:SetShown(false)
+        if self.leftTexture then
+            self.leftTexture:SetShown(false)
         end
     end)
 end
@@ -920,7 +903,7 @@ local function Set_LFGFollower_Dungeon_List(root)--追随者，副本
     if PlayerGetTimerunningSeasonID() then
         return
     end
-    
+
     local followerList= {}
     local dungeoNum= 0
 	for _, dungeonID in ipairs( GetLFDChoiceOrder() or {}) do--LFDFrame.lua
@@ -931,7 +914,7 @@ local function Set_LFGFollower_Dungeon_List(root)--追随者，副本
 			end
 		end
 	end
-    
+
     if dungeoNum==0 then
         return
     end
@@ -940,21 +923,21 @@ local function Set_LFGFollower_Dungeon_List(root)--追随者，副本
     sub= root:CreateButton(e.onlyChinese and '追随者地下城' or LFG_TYPE_FOLLOWER_DUNGEON, function()
         return MenuResponse.Open
     end)
-    
+
     for _, dungeonID in pairs(followerList) do
         local info = C_LFGInfo.GetDungeonInfo(dungeonID)
         if info and info.name then
             local isAvailableForAll, isAvailableForPlayer, hid2eIfNotJoinable = IsLFGDungeonJoinable(dungeonID)
             if (isAvailableForAll or not hid2eIfNotJoinable) then
-                local name= e.cn(info.name)
+
 
                 if isAvailableForPlayer then
                     sub2= sub:CreateButton(
                             (info.iconID and '|T'..info.iconID..':0|t' or '')
-                            ..name
+                            ..e.cn(info.name)
                             ..get_Reward_Info(dungeonID)
                             ..(GetLFGDungeonRewards(dungeonID) and format('|A:%s:0:0|a', e.Icon.select) or ''),
-                        
+
                         function(description)
                             if GetLFGQueueStats(LE_LFG_CATEGORY_LFD, description.dungeonID) then
                                 LeaveSingleLFG(LE_LFG_CATEGORY_LFD, description.dungeonID)
@@ -962,23 +945,27 @@ local function Set_LFGFollower_Dungeon_List(root)--追随者，副本
                                 LFDQueueFrame_SetTypeInternal('follower')
                                 LFDQueueFrame_SetType(description.dungeonID)
                                 LFDQueueFrame_Join()
-                                Set_LFDButton_Data(description.dungeonID, LE_LFG_CATEGORY_LFD, description.dungeonName, nil)--设置图标, 点击,提示
+                                Set_LFDButton_Data(description.dungeonID, LE_LFG_CATEGORY_LFD, e.cn(description.dungeonName), nil)--设置图标, 点击,提示
                             end
                             return MenuResponse.Open
                         end, {
                             dungeonID=dungeonID,
-                            dungeonName=name,
+                            dungeonName=info.name,
                             type=LE_LFG_CATEGORY_LFD
                         })
 
                     sub2:SetTooltip(function(tooltip, description)
-                        tooltip:AddLine(description.data.dungeonName..' ')
+                        tooltip:AddLine(e.cn(description.data.dungeonName)..' ')
                         tooltip:AddLine(' ')
-                        tooltip:AddLine('dungeonID '..description.data.dungeonID)
+                        tooltip:AddDoubleLine(
+                            'dungeonID '..description.data.dungeonID,
+                            e.Get_Instance_Num(description.data.dungeonName),''
+                        )
+
                     end)
-                
+
                     sub2:AddInitializer(Add_Initializer)
-                    
+
                 --[[else
 
                     sub2=sub:CreateButton('   |cff606060'..name..' |r', function()
@@ -1041,12 +1028,11 @@ local function set_Party_Menu_List(root)
         if dungeonID and name then
             local isAvailableForAll, isAvailableForPlayer, hid2eIfNotJoinable = IsLFGDungeonJoinable(dungeonID)
             if (isAvailableForAll or not hid2eIfNotJoinable) then
-                name= e.cn(name)
                 if isAvailableForPlayer then
 
 
                     sub=root:CreateButton(
-                        name
+                        e.cn(name)
                         ..get_Reward_Info(dungeonID)
                         ..(GetLFGDungeonRewards(dungeonID) and format('|A:%s:0:0|a', e.Icon.select) or ''),
 
@@ -1057,7 +1043,7 @@ local function set_Party_Menu_List(root)
                             LFDQueueFrame_SetTypeInternal('specific')
                             LFDQueueFrame_SetType(description.dungeonID)
                             LFDQueueFrame_Join()
-                            Set_LFDButton_Data(description.dungeonID, LE_LFG_CATEGORY_LFD, description.dungeonName, nil)--设置图标, 点击,提示
+                            Set_LFDButton_Data(description.dungeonID, LE_LFG_CATEGORY_LFD, e.cn(description.dungeonName), nil)--设置图标, 点击,提示
                         end
                         return MenuResponse.Open
 
@@ -1069,9 +1055,9 @@ local function set_Party_Menu_List(root)
                     })
 
                     sub:SetTooltip(function(tooltip, description)
-                        tooltip:AddLine(description.data.dungeonName..' ')
+                        tooltip:AddLine(e.cn(description.data.dungeonName)..' ')
                         tooltip:AddLine(' ')
-                        tooltip:AddLine('dungeonID '..description.data.dungeonID)
+                        tooltip:AddDoubleLine('dungeonID '..description.data.dungeonID, e.Get_Instance_Num(description.data.dungeonName),nil)
                     end)
 
                     sub:AddInitializer(Add_Initializer)
@@ -1085,7 +1071,7 @@ local function set_Party_Menu_List(root)
                     })
 
                     sub:SetTooltip(function(tooltip, description)
-                        tooltip:AddLine(description.data.dungeonName..' ')
+                        tooltip:AddLine(e.cn(description.data.dungeonName)..' ')
                         tooltip:AddLine(' ')
                         tooltip:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '你不能进入此队列。' or YOU_MAY_NOT_QUEUE_FOR_THIS))
                         local declined= LFGConstructDeclinedMessage(description.data.dungeonID)
@@ -1093,7 +1079,7 @@ local function set_Party_Menu_List(root)
                             tooltip:AddLine('|cnRED_FONT_COLOR:'..e.cn(declined), nil,nil,nil, true)
                         end
                         tooltip:AddLine(' ')
-                        tooltip:AddLine('dungeonID: '..description.data.dungeonID)
+                        tooltip:AddDoubleLine('dungeonID '..description.data.dungeonID, e.Get_Instance_Num(description.data.dungeonName),nil)
                     end)
                 end
                 find=true
@@ -1127,7 +1113,7 @@ end
 --场景
 local function Init_Scenarios_Menu(root)--ScenarioFinder.lua
     if not PlayerGetTimerunningSeasonID() then
-       return
+      -- return
     end
 
     local sub, find
@@ -1155,7 +1141,7 @@ local function Init_Scenarios_Menu(root)--ScenarioFinder.lua
                 sub:SetTooltip(function(tooltip, description)
                     tooltip:AddLine(description.data.dungeonName)
                     tooltip:AddLine(' ')
-                    tooltip:AddLine('scenarioID '..description.data.dungeonID)
+                    tooltip:AddDoubleLine('scenarioID '..description.data.dungeonID, e.Get_Instance_Num(description.data.dungeonName), nil)
                 end)
 
                 sub:AddInitializer(Add_Initializer)
@@ -1169,7 +1155,7 @@ local function Init_Scenarios_Menu(root)--ScenarioFinder.lua
                 })
 
                 sub:SetTooltip(function(tooltip, description)
-                    tooltip:AddLine(description.data.dungeonName)
+                    tooltip:AddLine(e.cn(description.data.dungeonName))
                     tooltip:AddLine(' ')
                     tooltip:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '你不能进入此队列。' or YOU_MAY_NOT_QUEUE_FOR_THIS))
                     local text= LFGConstructDeclinedMessage(description.data.dungeonID)
@@ -1177,7 +1163,7 @@ local function Init_Scenarios_Menu(root)--ScenarioFinder.lua
                         tooltip:AddLine('|cnRED_FONT_COLOR:'..e.cn(text))
                     end
                     tooltip:AddLine(' ')
-                    tooltip:AddLine('scenarioID '..description.data.dungeonID)
+                    tooltip:AddDoubleLine('scenarioID '..description.data.dungeonID, e.Get_Instance_Num(description.data.dungeonName), nil)
                 end)
             end
             find=true
@@ -1334,13 +1320,13 @@ local function set_Raid_Menu_List(root)
                     e.call('RaidFinderQueueFrame_SetRaid', data.dungeonID)
                     e.call('RaidFinderQueueFrame_Join')
                     --printListInfo()--输出当前列表
-                    Set_LFDButton_Data(data.dungeonID, LE_LFG_CATEGORY_RF, data.dungeonName, nil)--设置图标, 点击,提示
+                    Set_LFDButton_Data(data.dungeonID, LE_LFG_CATEGORY_RF, e.cn(data.dungeonName), nil)--设置图标, 点击,提示
                 end
                 return MenuResponse.Open
 
             end, {
                 dungeonID=dungeonID,
-                dungeonName=e.cn(dungeonName),
+                dungeonName=dungeonName,
                 dungeonMapID=dungeonMapID,
 
                 modifiedDesc=modifiedDesc,
@@ -1351,7 +1337,7 @@ local function set_Raid_Menu_List(root)
             })
 
             sub:SetTooltip(function(tooltip, description)
-                tooltip:AddLine(description.data.dungeonName..' ')
+                tooltip:AddLine(e.cn(description.data.dungeonName)..' ')
                 tooltip:AddLine(description.data.bossKillText)
                 tooltip:AddLine(' ')
                 for index, text in pairs(description.data.bossTab) do
@@ -1362,7 +1348,7 @@ local function set_Raid_Menu_List(root)
                     tooltip:AddLine(description.data.modifiedDesc, nil,nil,nil, true)
                 end
                 tooltip:AddLine(' ')
-                tooltip:AddLine('dungeonID '..description.data.dungeonID)
+                tooltip:AddDoubleLine('dungeonID '..description.data.dungeonID, e.Get_Instance_Num(description.data.dungeonName), nil)
             end)
 
             sub:AddInitializer(Add_Initializer)
@@ -1383,7 +1369,7 @@ local function set_Raid_Menu_List(root)
                     tooltip:AddLine(e.cn(description.data.modifiedDesc), nil, nil, nil, true)
                 end
                 tooltip:AddLine(' ')
-                tooltip:AddLine('dungeonID '..description.data.dungeonID)
+                tooltip:AddDoubleLine('dungeonID '..description.data.dungeonID, e.Get_Instance_Num(description.data.dungeonName),nil)
             end)
 
         end
@@ -1755,6 +1741,11 @@ local function exit_Instance()
         return
     end
     local name= GetInstanceInfo()
+
+    Save_Instance_Num(name)
+
+    local num= e.Get_Instance_Num(name)
+
     if IsInLFDBattlefield() then
         local currentMapID, _, lfgID = select(8, GetInstanceInfo())
         local _, _, subtypeID, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, lfgMapID = GetLFGDungeonInfo(lfgID)
@@ -1764,7 +1755,13 @@ local function exit_Instance()
     else
         C_PartyInfo.LeaveParty(LE_PARTY_CATEGORY_INSTANCE)
     end
-    print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '离开' or LEAVE)..'|r'..(name or e.onlyChinese and '副本' or INSTANCE), name and '|cnGREEN_FONT_COLOR:'..wowSave[INSTANCE][name]..'|r'..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1) or '')
+
+
+    print(id, addName,
+        e.onlyChinese and '离开' or LEAVE,
+        e.cn(name) or e.onlyChinese and '副本' or INSTANCE,
+        num
+    )
     ExitIns=nil
 end
 
@@ -1807,7 +1804,8 @@ local function setIslandButton(self)--离开海岛按钮
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine(id, addName)
-                e.tips:AddDoubleLine(e.onlyChinese and '海岛探险' or ISLANDS_HEADER, (wowSave[ISLANDS_HEADER] and wowSave[ISLANDS_HEADER] or 0)..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1))
+                local num= e.Get_Instance_Num('island')
+                e.tips:AddDoubleLine(e.onlyChinese and '海岛探险' or ISLANDS_HEADER, num)
                 e.tips:AddLine(' ')
                 e.tips:AddDoubleLine(e.onlyChinese and '离开海岛' or ISLAND_LEAVE, e.Icon.left)
                 e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
@@ -2959,7 +2957,7 @@ local function Init_Menu(_, root)
             LeaveLFG(i)
         end
     end, tab)
-    
+
     sub:SetTooltip(function(tooltip, data)
         tooltip:AddLine(e.onlyChinese and '在队列中' or BATTLEFIELD_QUEUE_STATUS)
         for _, text in pairs(data.data or {}) do
@@ -3208,8 +3206,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
         ExitIns=nil
 
     elseif event=='ISLAND_COMPLETED' then--离开海岛
-        local num, name, difficultyID= Save_Instance_Num()
-        print(id, addName, e.cn(name), select(2, e.GetDifficultyColor(nil, difficultyID)), format('|cnGREEN_FONT_COLOR:%d|r', num or 0), e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
+        Save_Instance_Num('island')
 
         if not Save.leaveInstance then
             return
@@ -3218,7 +3215,10 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
         e.PlaySound()--播放, 声音
         C_PartyInfo.LeaveParty(LE_PARTY_CATEGORY_INSTANCE)
         LFGTeleport(true)
-
+        print(id, addName,
+            e.onlyChinese and '海岛探险' or ISLANDS_HEADER,
+            e.Get_Instance_Num('island')
+        )
 
     elseif event=='LFG_UPDATE_RANDOM_INFO' then
         setHoliday()--节日, 提示, LFDButton.texture
