@@ -884,8 +884,10 @@ local function set_Party_Menu_List(root)
                         e.cn(name)
                         ..get_Reward_Info(dungeonID)
                         ..(GetLFGDungeonRewards(dungeonID) and format('|A:%s:0:0|a', e.Icon.select) or ''),
+
                     function(data)
                         return GetLFGQueueStats(LE_LFG_CATEGORY_LFD, data)
+
                     end, function(data)
                         LFDQueueFrame_SetType(data)
                         if GetLFGQueueStats(LE_LFG_CATEGORY_LFD, data) then
@@ -895,6 +897,7 @@ local function set_Party_Menu_List(root)
                            -- printListInfo()--输出当前列表
                             Se_LFDButton_Texture(data, nil, name, nil)--设置图标, 点击,提示
                         end
+
                     end, dungeonID)
                     --[[sub:AddInitializer(function(button, description, menu)
                         button:SetScript("OnUpdate", function()
@@ -941,7 +944,8 @@ local function set_Party_Menu_List(root)
                         tooltip:AddLine('dungeonID: '..data.data)
                         tooltip:AddLine(' ')
                         tooltip:AddLine(e.onlyChinese and '你不能进入此队列。' or YOU_MAY_NOT_QUEUE_FOR_THIS)
-                        tooltip:AddLine(e.cn(LFGConstructDeclinedMessage(data.data)))
+                        tooltip:AddLine(' ')
+                        tooltip:AddLine(e.cn(LFGConstructDeclinedMessage(data.data)), 0.62, 0.62, 0.62, true)
                     end)
                 end
                 find=true
@@ -970,14 +974,16 @@ end
 
 
 
-
-local function isRaidFinderDungeonDisplayable(dungeonID)--RaidFinder.lua
+--RaidFinder.lua
+local function isRaidFinderDungeonDisplayable(dungeonID)
     local _, _, _, minLevel, maxLevel, _, _, _, expansionLevel = GetLFGDungeonInfo(dungeonID)
     local myLevel = e.Player.level
     return myLevel >= minLevel and myLevel <= maxLevel and EXPANSION_LEVEL >= expansionLevel
 end
 
-local function set_Raid_Menu_List(root)--团队本
+
+--团队本
+local function set_Raid_Menu_List(root)
     local sortedDungeons= {}
 
     local function InsertDungeonData(dungeonID, name, mapName, isAvailable, mapID)
@@ -1034,11 +1040,11 @@ local function set_Raid_Menu_List(root)--团队本
         local dungeonName= sortedDungeons[i].name
         local dungeonMapID= sortedDungeons[i].mapID
 
-        local modifiedDesc, dungeonIcon
+        local modifiedDesc, modifiedIcon
         if dungeonMapID then
             local modifiedInstanceInfo = C_ModifiedInstance.GetModifiedInstanceInfoFromMapID(dungeonMapID)
             if (modifiedInstanceInfo) then
-                dungeonIcon = GetFinalNameFromTextureKit("%s-small", modifiedInstanceInfo.uiTextureKit)
+                modifiedIcon = '|A:'..GetFinalNameFromTextureKit("%s-small", modifiedInstanceInfo.uiTextureKit)..':0:0|a'
                 modifiedDesc = e.cn(modifiedInstanceInfo.description)--, {lfgDungeonID=dungeonID, isDesc=true})
             end
         end
@@ -1067,7 +1073,7 @@ local function set_Raid_Menu_List(root)--团队本
             
 
             sub=root:CreateCheckbox(
-                (dungeonIcon or '')
+                (modifiedIcon or '')
                 ..(bossNum==killNum and '|cffff0000' or '')
                 ..((LfgDungeonID==dungeonID or scenarioName== strlower(dungeonName or '')) and '|A:auctionhouse-icon-favorite:0:0|a' or '')--在当前副本
                 ..e.cn(dungeonName)
@@ -1100,23 +1106,25 @@ local function set_Raid_Menu_List(root)--团队本
                     tooltip:AddLine(index..') '..text)
                 end
                 if data.data.modifiedDesc then
-                    tooltip:AddLine(data.data.modifiedDesc, nil, nil, nil, true)
+                    tooltip:AddLine(data.data.modifiedDesc, nil,nil,nil, true)
                 end
             end)
             find=true
 
         elseif dungeonName then
-            sub=root:CreateButton((dungeonIcon or '')..e.cn(dungeonName), nil, {modifiedDesc=modifiedDesc, dungeonID=dungeonID})
+            sub=root:CreateButton('    '..(modifiedIcon or '')..'|cff606060'..e.cn(dungeonName)..'|r',
+                nil,
+                {modifiedDesc=modifiedDesc, dungeonID=dungeonID}
+            )
             sub:SetTooltip(function(tooltip, data)
                 tooltip:AddLine(e.onlyChinese and '你不能进入此队列。' or YOU_MAY_NOT_QUEUE_FOR_THIS)
                 local msg= LFGConstructDeclinedMessage(data.data.dungeonID)
                 if msg then
-                    tooltip:AddLine(' ')
-                    tooltip:AddLine(msg)
+                    tooltip:AddLine(e.cn(msg), 0.62, 0.62, 0.62, true)
                 end
                 if data.data.modifiedDesc then
                     tooltip:AddLine(' ')
-                    tooltip:AddLine(data.data.modifiedDesc, nil, nil, nil, true)
+                    tooltip:AddLine(e.cn(data.data.modifiedDesc), nil, nil, nil, true)
                 end
             end)
             find=true
