@@ -44,7 +44,7 @@ local function set_COMBAT_LOG_EVENT_UNFILTERED()--https://wowpedia.fandom.com/wi
 end
 
 local function set_Events()--注册，事件
-    if IsInGroup() then
+    if IsInGroup() and not IsInRaid() then
         panel:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
     else
         panel:UnregisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
@@ -64,8 +64,8 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             --添加控制面板
             e.AddPanel_Check({
                 name= '|A:nameplates-holypower2-on:0:0|a'..(e.onlyChinese and '断驱散' or addName),
-                tooltip= e.onlyChinese and '说|n仅限： 我, 有队伍'
-                    or (SAY..'|n'..format(LFG_LIST_CROSS_FACTION, COMBATLOG_FILTER_STRING_ME)..'|n'..format(LFG_LIST_CROSS_FACTION, HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS)),
+                tooltip= e.onlyChinese and '说|n仅限：我, 小队'
+                    or (SAY..'|n'..format(LFG_LIST_CROSS_FACTION, COMBATLOG_FILTER_STRING_ME)..'|n'..format(LFG_LIST_CROSS_FACTION, SLASH_TEXTTOSPEECH_PARTY)),
                 value= not Save.disabled,
                 func= function()
                     if Save.disabled then

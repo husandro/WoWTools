@@ -4730,7 +4730,8 @@
         "LFDQueueFrame",
         "LFGLockList",
         "LFG_TYPE_FOLLOWER_DUNGEON",
-        "LFDQueueFrame_SetTypeInternal"
+        "LFDQueueFrame_SetTypeInternal",
+        "SLASH_TEXTTOSPEECH_PARTY"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

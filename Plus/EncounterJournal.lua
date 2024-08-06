@@ -1021,7 +1021,7 @@ local function Init_EncounterJournal()--冒险指南界面
                 btn.spellTexture:SetPoint('LEFT', btn.IconBorder, 'RIGHT',-6,0)
                 btn.spellTexture:SetScript('OnMouseDown', function(self)
                     if self.spellID then
-                        e.Chat(GetSpellLink(self.spellID) or self.spellID, nil, true)
+                        e.Chat( C_Spell.GetSpellLink(self.spellID) or self.spellID, nil, true)
                     end
                 end)
                 btn.spellTexture:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
@@ -1451,7 +1451,7 @@ local function Init_EncounterJournal()--冒险指南界面
         frame:HookScript('OnClick', function(self, d)
             local spellID= self:GetParent().spellID--self3.link
             if not Save.hideEncounterJournal and spellID and spellID>0 and d=='RightButton' then
-                e.Chat(GetSpellLink(spellID) or spellID, nil, not IsInGroup())
+                e.Chat(C_Spell.GetSpellLink(spellID) or spellID, nil, not IsInGroup())
             end
         end)
         frame.hook=true

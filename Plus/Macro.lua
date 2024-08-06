@@ -152,7 +152,7 @@ local function Get_Spell_Macro(name, spellID)
         or spellID==2825--[嗜血]sm
         or spellID==414664--[群体隐形]fs
     then
-        return '/cast '..name..'\n/y '..(GetSpellLink(spellID) or name)
+        return '/cast '..name..'\n/y '..(C_Spell.GetSpellLink(spellID) or name)
 
 
 
@@ -412,7 +412,7 @@ local function Create_Spell_Menu(spellID, icon, name, texture)--创建，法术�
         notCheckable=true,
         func= function(_, tab)
             if IsShiftKeyDown() then
-                local link=GetSpellLink(tab.spellID) or C_Spell.GetSpellName(tab.spellID) or tab.spellID
+                local link=C_Spell.GetSpellLink(tab.spellID) or C_Spell.GetSpellName(tab.spellID) or tab.spellID
                 link= 'spellID=='..tab.spellID..'--'..link
                 e.Chat(link, nil, true)
                 --if not ChatEdit_InsertLink(link) then

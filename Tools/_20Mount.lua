@@ -1565,7 +1565,7 @@ local function Init()
         elseif infoType =='spell' and spellID then
             local exits=Save.Mounts[SPELLS][spellID] and ERR_ZONE_EXPLORED:format(PROFESSIONS_CURRENT_LISTINGS) or NEW
             local icon = C_Spell.GetSpellTexture(spellID)
-            local text= (icon and '|T'..icon..':0|t' or '').. (GetSpellLink(spellID) or ('spellID: '..spellID))
+            local text= (icon and '|T'..icon..':0|t' or '').. (C_Spell.GetSpellLink(spellID) or ('spellID: '..spellID))
             StaticPopup_Show(id..addName..'SPELLS',text, exits , {spellID=spellID})
             ClearCursor()
 
@@ -1657,7 +1657,7 @@ local function Init()
         elseif infoType =='spell' and spellID then
             local exits=Save.Mounts[SPELLS][spellID] and ERR_ZONE_EXPLORED:format(PROFESSIONS_CURRENT_LISTINGS) or NEW
             local icon = C_Spell.GetSpellTexture(spellID)
-            local text= (icon and '|T'..icon..':0|t' or '').. (GetSpellLink(spellID) or ('spellID: '..spellID))
+            local text= (icon and '|T'..icon..':0|t' or '').. (C_Spell.GetSpellLink(spellID) or ('spellID: '..spellID))
             e.tips:AddDoubleLine(text, exits..e.Icon.left, 0,1,0, 0,1,0)
             e.tips:AddLine(' ')
         end

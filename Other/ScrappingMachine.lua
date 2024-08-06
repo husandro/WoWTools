@@ -108,7 +108,7 @@ function Init_Menu(self, level, menuList)
                 icon= C_Item.GetItemIconByID(itemID),
                 tooltipOnButton=true,
                 tooltipTitle= itemID,
-                tooltipText= e.cn(GetSpellDescription(itemID)),
+                tooltipText= e.cn(C_Spell.GetSpellDescription(itemID)),
                 checked=true,
                 arg1= itemID,
                 keepShownOnClick=true,
@@ -156,7 +156,7 @@ function Init_Menu(self, level, menuList)
                 arg1= itemID,
                 tooltipOnButton=true,
                 tooltipTitle=itemID,
-                tooltipText= e.cn(GetSpellDescription(itemID)),
+                tooltipText= e.cn(C_Spell.GetSpellDescription(itemID)),
                 keepShownOnClick=true,
                 func= function(_, arg1)
                     Save.items[arg1]= not Save.items[arg1] and true or nil

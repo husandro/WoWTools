@@ -1608,7 +1608,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                 if frame.spellID then
                     if not frame.spellPort then
                         local h=frame:GetWidth()/3 +8
-                        local texture=GetSpellTexture(frame.spellID)
+                        local texture= C_Spell.GetSpellTexture(frame.spellID)
                         frame.spellPort= e.Cbtn(frame, {type=true, size={h, h}, texture=texture, atlas='WarlockPortal-Yellow-32x32', pushe=not texture})
                         frame.spellPort:SetPoint('BOTTOMRIGHT', frame)--, 4,-4)
                         frame.spellPort:SetScript("OnEnter",function(self2)
@@ -2238,7 +2238,7 @@ end)
                         for _, v in pairs(IDs2) do
                             local name=e.WA_GetUnitBuff(u, v)
                             if  name then
-                                local link=GetSpellLink(v)
+                                local link= C_Spell.GetSpellLink(v)
                                 if link or name then
                                     buff=i..')'..name2..': '..(link or name)
                                     break

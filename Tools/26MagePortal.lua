@@ -141,7 +141,7 @@ local function Init()
             if self.spell2 then
                 e.tips:AddLine(' ')
                 local link= icon and '|T'..icon..':0|t' or ''
-                link= link.. (GetSpellLink(self.spell2) or C_Spell.GetSpellName(self.spell2) or ('spellID'..self.spell2))
+                link= link.. (C_Spell.GetSpellLink(self.spell2) or C_Spell.GetSpellName(self.spell2) or ('spellID'..self.spell2))
                 link= link .. (e.GetSpellItemCooldown(self.spell2, nil) or '')
                 e.tips:AddDoubleLine(link,
                     format('%s%s',
