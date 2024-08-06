@@ -4731,7 +4731,8 @@
         "LFGLockList",
         "LFG_TYPE_FOLLOWER_DUNGEON",
         "LFDQueueFrame_SetTypeInternal",
-        "SLASH_TEXTTOSPEECH_PARTY"
+        "SLASH_TEXTTOSPEECH_PARTY",
+        "CLUB_FINDER_JOINED"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",
