@@ -1113,7 +1113,7 @@ end
 --场景
 local function Init_Scenarios_Menu(root)--ScenarioFinder.lua
     if not PlayerGetTimerunningSeasonID() then
-      -- return
+       return
     end
 
     local sub, find
@@ -1899,7 +1899,7 @@ local function setHoliday()--节日, 提示, LFDButton.texture
     if not texturePath and not atlas then
         dungeonID, name= nil,nil
     end
-    Set_LFDButton_Data(dungeonID, LE_LFG_CATEGORY_LFD, name, texturePath,  atlas)--设置图标
+    Set_LFDButton_Data(dungeonID, LE_LFG_CATEGORY_LFD, e.cn(name), texturePath,  atlas)--设置图标
 end
 
 
