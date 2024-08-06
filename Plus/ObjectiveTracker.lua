@@ -539,7 +539,8 @@ local function Init_ObjectiveTrackerFrame()
         e.tips:AddDoubleLine(id, addName)
         e.tips:AddLine(' ')
         
-        local text= Save.scale
+        local text
+        text= Save.scale
         if not Save.scale or Save.scale==1 then
             text=e.onlyChinese and '禁用' or DISABLE
         end
@@ -573,31 +574,29 @@ local function Init_ObjectiveTrackerFrame()
     --右击
     function btn:set_frames_show(collapse, isFind)
         local tabs={
-            'QuestObjectiveTracker',
-            'CampaignQuestObjectiveTracker',
-            'WorldQuestObjectiveTracker',
-            'AchievementObjectiveTracker',
-            'ProfessionsRecipeTracker',
-            'MonthlyActivitiesObjectiveTracker',
+            QuestObjectiveTracker,
+            CampaignQuestObjectiveTracker,
+            WorldQuestObjectiveTracker,
+            AchievementObjectiveTracker,
+            ProfessionsRecipeTracker,
+            MonthlyActivitiesObjectiveTracker,
         }
         for _, frame in pairs(tabs) do
-            frame= _G[frame]
             if frame then
                 local isCollapsed = frame:IsCollapsed()
                 if (collapse and not isCollapsed) or (not collapse and isCollapsed) then
                     if isFind then
                         return true
                     else
-                        local find= false
-                        local tab= self.usedBlocks and self.usedBlocks[self.blockTemplate]
-                        if tab then
-                            for _, block in pairs(tab) do
-                                if block.ItemButton then
-                                    find=true
-                                    break
-                                end
+                        local find= false                        
+                        for _, block in pairs(frame.usedBlocks and frame.usedBlocks[frame.blockTemplate] or {}) do
+                            
+                            if block.ItemButton then
+                                find=true
+                                break
                             end
                         end
+                        --frame.Header.MinimizeButton:Click()
                         if not find then
                             frame:ToggleCollapsed()
                         end
@@ -612,7 +611,9 @@ local function Init_ObjectiveTrackerFrame()
             return
         end
         MenuUtil.CreateContextMenu(frame, function(owner, root)
-            local col= owner:set_frames_show(true, true) and '' or '|cff606060'
+            local sub, col
+           
+            col= owner:set_frames_show(true, true) and '' or '|cff606060'
             root:CreateButton(col..(e.onlyChinese and '收起选项 |A:NPE_ArrowUp:0:0|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS), function()
                 owner:set_frames_show(true, false)
             end)
@@ -622,13 +623,13 @@ local function Init_ObjectiveTrackerFrame()
                 owner:set_frames_show(false, false)
             end)
 
-            local button= root:CreateCheckbox(e.onlyChinese and '自动' or SELF_CAST_AUTO, function()
+            sub= root:CreateCheckbox(e.onlyChinese and '自动' or SELF_CAST_AUTO, function()
                 return Save.autoHide
             end, function()
                 Save.autoHide = not Save.autoHide and true or nil
                 owner.eventFrame:set_event()
             end)
-            button:SetTooltip(function(tooltip, elementDescription)
+            sub:SetTooltip(function(tooltip, elementDescription)
                 GameTooltip_SetTitle(tooltip, MenuUtil.GetElementText(elementDescription));
                 GameTooltip_AddInstructionLine(tooltip, e.onlyChinese and e.onlyChinese and '收起选项 |A:NPE_ArrowUp:0:0|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS)
                 GameTooltip_AddNormalLine(tooltip, e.onlyChinese and '仅限在副本中' or format(LFG_LIST_CROSS_FACTION, AGGRO_WARNING_IN_INSTANCE))
@@ -637,6 +638,13 @@ local function Init_ObjectiveTrackerFrame()
             root:CreateDivider()
             root:CreateButton(e.onlyChinese and '选项' or SETTINGS_TITLE, function()
                 e.OpenPanelOpting(addName)
+            end)
+
+            sub=root:CreateButton('BUG', function()
+                return MenuResponse.Open
+            end)
+            sub:SetTooltip(function(tooltip)
+                tooltip:AddLine(e.onlyChinese and '当有可点击物品按钮时会错误' or 'Wrong when there is an item button')
             end)
         end)
     end)

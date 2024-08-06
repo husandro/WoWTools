@@ -35,12 +35,13 @@ local function set_COMBAT_LOG_EVENT_UNFILTERED()--https://wowpedia.fandom.com/wi
     then
         return
     end
-    local text=(UMark[sourceRaidFlags] or '')..GetSpellLink(spellID)..de..GetSpellLink(extraSpellID)..(UMark[destRaidFlags] or '')
+    local text=(UMark[sourceRaidFlags] or '')..C_Spell.GetSpellLink(spellID)..de..C_Spell.GetSpellLink(extraSpellID)..(UMark[destRaidFlags] or '')
     if UnitIsUnit(target, 'player') then
         print(id, e.Icon.player..e.Player.col..(e.onlyChinese and '断驱散' or addName), text)
     else
         e.Chat(text, nil, nil)
     end
+    
 end
 
 local function set_Events()--注册，事件
