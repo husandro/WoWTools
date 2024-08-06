@@ -728,7 +728,7 @@ local function Init_tipsButton()
         e.tips:AddLine(' ')
 
         e.tips:AddDoubleLine(
-            (IsInGroup() and not UnitIsGroupLeader("player") and '|cff606060' or '|cnRED_FONT_COLOR:')..(e.onlyChinese and '离开所有队列' or LEAVE_ALL_QUEUES),
+            (IsInGroup() and not UnitIsGroupLeader("player") and '|cff606060' or '|cnGREEN_FONT_COLOR:')..(e.onlyChinese and '离开所有队列' or LEAVE_ALL_QUEUES),
             '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left
         )
         e.tips:AddDoubleLine(e.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON, e.Icon.right)
