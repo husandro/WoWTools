@@ -2,7 +2,7 @@ local id, e = ...
 local addName
 local Save={
         Friends={},
-        --disabledBNFriendInfo=true,--禁用战网，好友信息，提示
+        disabledBNFriendInfo=not e.Player.husandro and true or nil,--禁用战网，好友信息，提示
         --allFriendInfo= true,--所有，提示，WoW，好友，提示
         --showInCombatFriendInfo,--仅限，不在战斗中，好友，提示
     }
@@ -336,16 +336,12 @@ end
 --#############
 local function Init_FriendsList()--好友列表, 初始化
 
-  
-
-   
-
-    FriendsButton= e.Cbtn(FriendsFrameBattlenetFrame, {size={20,20}, icon='hide'})--button='DropdownButton', 
+    FriendsButton= e.Cbtn(FriendsListFrame, {size={20,20}, icon='hide'})--button='DropdownButton', 
     --FriendsButton:SetupMenu(Init_Friends_Menu)
     FriendsButton:SetScript('OnMouseDown', function(self)
         MenuUtil.CreateContextMenu(self, Init_Friends_Menu)
     end)
-    FriendsButton:SetPoint('LEFT')
+    FriendsButton:SetPoint('LEFT', FriendsFrameStatusDropdown, 'RIGHT')
 
 
     FriendsButton.playerRealmID = GetRealmID()

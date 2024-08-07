@@ -4734,7 +4734,8 @@
         "SLASH_TEXTTOSPEECH_PARTY",
         "CLUB_FINDER_JOINED",
         "SetItemRef",
-        "IGNORE_PLAYER"
+        "IGNORE_PLAYER",
+        "Add"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",
