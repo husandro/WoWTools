@@ -739,16 +739,18 @@ local function Init_tipsButton()
 
         e.tips:Show()
     end
-    tipsButton:SetScript("OnLeave", function()
+    tipsButton:SetScript("OnLeave", function(self)
         e.tips:Hide()
         ResetCursor()
         LFDButton:SetButtonState('NORMAL')
+        self:state_leave()
     end)
 
     tipsButton:SetScript('OnEnter', function(self)
         self:set_tooltip()
         LFDButton:SetButtonState('PUSHED')
         Set_Queue_Status()--小眼睛, 更新信息
+        self:state_leave()
     end)
 
 
@@ -2950,8 +2952,7 @@ local function Init_Menu(_, root)
     end
 
     if num>35 then
-        line= math.ceil(num/35)
-        root:SetGridMode(MenuConstants.VerticalGridDirection, line)
+        root:SetGridMode(MenuConstants.VerticalGridDirection, math.ceil(num/35))
     end
 
     sub=root:CreateButton((e.onlyChinese and '离开列队' or LEAVE_QUEUE)..' |cnGREEN_FONT_COLOR:#'..num..'|r', function()

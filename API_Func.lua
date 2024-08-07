@@ -1525,18 +1525,18 @@ e.Icon.player= e.GetUnitRaceInfo({unit='player', guid=nil , race=nil , sex=nil ,
 
 
 
-function e.Class(unit, class, reAltlas)--职业图标 groupfinder-icon-emptyslot'
-    class= unit and select(2, UnitClass(unit)) or class
-    if class then
-        if class=='EVOKER' then
-            class='classicon-evoker'
+function e.Class(unit, classFilename, reAltlas)--职业图标 groupfinder-icon-emptyslot'
+    classFilename= unit and select(2, UnitClass(unit)) or classFilename
+    if classFilename then
+        if classFilename=='EVOKER' then
+            classFilename='classicon-evoker'
         else
-            class= 'groupfinder-icon-class-'..class
+            classFilename= 'groupfinder-icon-class-'..classFilename
         end
         if reAltlas then
-            return class
+            return classFilename
         else
-            return '|A:'..class ..':0:0|a'
+            return '|A:'..classFilename ..':0:0|a'
         end
     end
 end
