@@ -83,7 +83,7 @@ end
 
 --队伍标记工具, 选项，菜单
 local function Init_MarkerTools_Menu(sub)
-    sub:CreateCheckbox((UnitAffectingCombat('player') and '|cff606060' or '')..'|A:bags-greenarrow:0:0|a'..(e.onlyChinese and '图标方向' or  HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION), function()
+    sub:CreateCheckbox((UnitAffectingCombat('player') and '|cff9e9e9e' or '')..'|A:bags-greenarrow:0:0|a'..(e.onlyChinese and '图标方向' or  HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION), function()
         return Save.H
     end, function()
         Save.H = not Save.H and true or nil
@@ -126,7 +126,7 @@ local function Init_MarkerTools_Menu(sub)
     end
 
     sub:CreateDivider()
-    local col= not Save.markersFramePoint and '|cff606060'
+    local col= not Save.markersFramePoint and '|cff9e9e9e'
         and (MakerFrame and not MakerFrame:CanChangeAttribute() and '|cnGREEN_FONT_COLOR:')
         or ''
     sub:CreateButton(col..(e.onlyChinese and '重置位置' or RESET_POSITION), function()
@@ -620,7 +620,7 @@ local function Init_Markers_Frame()--设置标记, 框架
         e.tips:AddDoubleLine(id, e.onlyChinese and '队伍标记工具' or format(PROFESSION_TOOL_TOOLTIP_LINE, BINDING_HEADER_RAID_TARGET))
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-        e.tips:AddDoubleLine((UnitAffectingCombat('player') and '|cff606060' or '')..(e.onlyChinese and '缩放' or  UI_SCALE), '|cnGREEN_FONT_COLOR:'..(Save.markersScale or 1)..'|r Alt+'..e.Icon.mid)
+        e.tips:AddDoubleLine((UnitAffectingCombat('player') and '|cff9e9e9e' or '')..(e.onlyChinese and '缩放' or  UI_SCALE), '|cnGREEN_FONT_COLOR:'..(Save.markersScale or 1)..'|r Alt+'..e.Icon.mid)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or MAINMENU, e.Icon.right)
         e.tips:Show()
@@ -744,7 +744,7 @@ local function Init_Markers_Frame()--设置标记, 框架
             e.tips:ClearLines()
             if self.action then
                 e.tips:AddLine(MicroButtonTooltipText(self.name, self.action), 1,1,1)
-                e.tips:AddLine(e.Icon.left..(not UnitExists('target') and '|cff606060' or '')..(e.onlyChinese and '设置' or SETTINGS), 1,1,1)
+                e.tips:AddLine(e.Icon.left..(not UnitExists('target') and '|cff9e9e9e' or '')..(e.onlyChinese and '设置' or SETTINGS), 1,1,1)
                 e.tips:AddLine(e.Icon.right..e.Icon.player..e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME), 1,1,1)
             else
                 local find
@@ -762,7 +762,7 @@ local function Init_Markers_Frame()--设置标记, 框架
                 end
                 local guid= UnitExists('target') and UnitGUID('target')
                 local type=guid and C_Ping.GetContextualPingTypeForUnit(guid)
-                e.tips:AddLine(e.Icon.left..(not UnitExists('target') and '|cff606060' or '')..(e.onlyChinese and '设置' or SETTINGS)
+                e.tips:AddLine(e.Icon.left..(not UnitExists('target') and '|cff9e9e9e' or '')..(e.onlyChinese and '设置' or SETTINGS)
                             ..((type and pingTab[type]) and '|A:'..pingTab[type].atlas..':0:0|a'..pingTab[type].name or '')
                 )
 
@@ -1453,7 +1453,7 @@ local function Init_Menu(_, root)
     local sub, tre, tab
 
     sub=root:CreateCheckbox(
-        (Save.tank==0 and Save.healer==0 and '|cff606060' or '')
+        (Save.tank==0 and Save.healer==0 and '|cff9e9e9e' or '')
         ..'|A:mechagon-projects:0:0|a'
         ..((e.onlyChinese and '自动标记' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, EVENTTRACE_MARKER))
         ..e.Icon.TANK..e.Icon.HEALER
@@ -1505,7 +1505,7 @@ local function Init_Menu(_, root)
     root:CreateDivider()
 
     sub=root:CreateCheckbox(
-        (e.Is_In_PvP_Area() or (MakerFrame and not MakerFrame:CanChangeAttribute()) and '|cff606060' or '')
+        (e.Is_In_PvP_Area() or (MakerFrame and not MakerFrame:CanChangeAttribute()) and '|cff9e9e9e' or '')
         ..(e.onlyChinese and '队伍标记工具' or format(PROFESSION_TOOL_TOOLTIP_LINE, BINDING_HEADER_RAID_TARGET)
     ), function()
         return MakerFrame and MakerFrame:IsShown()
@@ -1534,14 +1534,14 @@ local function Init_Menu(_, root)
         end
     end)
     sub:CreateButton(
-        (ReadyTipsButton and ReadyTipsButton:IsShown() and '' or '|cff606060')
+        (ReadyTipsButton and ReadyTipsButton:IsShown() and '' or '|cff9e9e9e')
         ..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2
     ), function()
         if ReadyTipsButton then
             ReadyTipsButton:set_Hide()
         end
     end)
-    sub:CreateButton((Save.groupReadyTipsPoint and '' or '|cff606060')..(e.onlyChinese and '重置位置' or RESET_POSITION), function()
+    sub:CreateButton((Save.groupReadyTipsPoint and '' or '|cff9e9e9e')..(e.onlyChinese and '重置位置' or RESET_POSITION), function()
         Save.groupReadyTipsPoint=nil
         if ReadyTipsButton then
             ReadyTipsButton:ClearAllPoints()

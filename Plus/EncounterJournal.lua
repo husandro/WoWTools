@@ -965,7 +965,7 @@ local function Init_EncounterJournal()--冒险指南界面
                 local locaClass= className and not classText:find(className) or dateInfo.red
                 
                 if locaClass then
-                    classText =  '|cff606060'..classText..'|r'
+                    classText =  '|cff9e9e9e'..classText..'|r'
                 end
             end
 
@@ -1351,7 +1351,7 @@ local function Init_EncounterJournal()--冒险指南界面
                     if coll==all then
                         text= format('|A:%s:0:0|a', e.Icon.select)
                     else
-                        text= format('%s%d/%d', coll==0 and '|cff606060' or '', coll, all)
+                        text= format('%s%d/%d', coll==0 and '|cff9e9e9e' or '', coll, all)
                     end
                 end
                 frame.setNum:SetText(text or '')
@@ -1516,8 +1516,8 @@ local function Init_EncounterJournal()--冒险指南界面
                     if self3.id and not Save.hideEncounterJournal then
                         e.tips:AddLine(' ')
                         e.tips:AddDoubleLine('perksActivityID', self3.id)
-                        e.tips:AddDoubleLine((self3.completed and '|cff606060' or '|cff00ff00')..(e.onlyChinese and '追踪' or TRACKING), e.Icon.left)
-                        e.tips:AddDoubleLine((not C_PerksActivities.GetPerksActivityChatLink(self3.id) and '|cff606060' or '|cff00ff00')..(e.onlyChinese and '超链接' or COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK), e.Icon.right)
+                        e.tips:AddDoubleLine((self3.completed and '|cff9e9e9e' or '|cff00ff00')..(e.onlyChinese and '追踪' or TRACKING), e.Icon.left)
+                        e.tips:AddDoubleLine((not C_PerksActivities.GetPerksActivityChatLink(self3.id) and '|cff9e9e9e' or '|cff00ff00')..(e.onlyChinese and '超链接' or COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK), e.Icon.right)
                         e.tips:AddDoubleLine(id, Initializer:GetName())
                         e.tips:Show()
                     end

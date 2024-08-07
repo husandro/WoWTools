@@ -194,7 +194,7 @@ local function InitMenu(_, level)--主菜单
             info={
                 text=text,
                 notCheckable=true,
-                colorCode= not IsInGuild() and '|cff606060' or nil,
+                colorCode= not IsInGuild() and '|cff9e9e9e' or nil,
                 tooltipOnButton=true,
                 tooltipTitle=publicNote or '',
                 tooltipText=officerNote or '',
@@ -314,7 +314,7 @@ local function Init()
                 btn.onlineText:SetPoint('TOP', btn.Icon, 'BOTTOM')
             end
             if all>0 then
-                btn.onlineText:SetFormattedText('%d/%s%d|r', all, online==0 and '|cff606060' or '|cnGREEN_FONT_COLOR:', online)
+                btn.onlineText:SetFormattedText('%d/%s%d|r', all, online==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:', online)
             else
                 btn.onlineText:SetText('')
             end

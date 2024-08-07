@@ -329,7 +329,7 @@ local function Set_TrackButton_Text()
 				if self.itemID then
 					e.tips:SetItemByID(self.itemID)
 					e.tips:AddLine(' ')
-					local col= C_Item.GetItemCount(self.itemID)==0 and '|cff606060' or '|cnGREEN_FONT_COLOR:'
+					local col= C_Item.GetItemCount(self.itemID)==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:'
 					if self.itemButtonUse then
 						e.tips:AddDoubleLine(col..(e.onlyChinese and '使用物品' or USE_ITEM), e.Icon.left)
 					end
@@ -1092,7 +1092,7 @@ local function InitMenu(_, level, menuList)--主菜单
 				tooltipOnButton=true,
 				tooltipTitle=e.onlyChinese and '移除' or REMOVE,
 				tooltipText='ID '..currencyID,
-				colorCode= not Save.indicato and '|cff606060' or (currencyInfo and ITEM_QUALITY_COLORS[currencyInfo.quality]).hex or nil,
+				colorCode= not Save.indicato and '|cff9e9e9e' or (currencyInfo and ITEM_QUALITY_COLORS[currencyInfo.quality]).hex or nil,
 				arg1= currencyID,
 				func= function(_, arg1)
 					Save.tokens[arg1]=nil
@@ -1196,7 +1196,7 @@ local function InitMenu(_, level, menuList)--主菜单
 		e.LibDD:UIDropDownMenu_AddSeparator(level)
 		info={
 			text=e.onlyChinese and '重置位置' or RESET_POSITION,
-			colorCode= (not Save.point or not TrackButton) and '|cff606060' or nil,
+			colorCode= (not Save.point or not TrackButton) and '|cff9e9e9e' or nil,
 			notCheckable=true,
 			keepShownOnClick=true,
 			func= function()
@@ -1250,7 +1250,7 @@ local function InitMenu(_, level, menuList)--主菜单
 		hasArrow=true,
 		keepShownOnClick=true,
 		disabled= UnitAffectingCombat('player'),
-		colorCode=Save.Hide and '|cff606060' or nil,
+		colorCode=Save.Hide and '|cff9e9e9e' or nil,
 		func= function()
 			Save.disabledItemTrack = not Save.disabledItemTrack and true or nil
 			Set_TrackButton_Text()

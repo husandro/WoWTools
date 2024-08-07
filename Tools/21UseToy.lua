@@ -327,7 +327,7 @@ local function InitMenu(_, level, menuList)--主菜单
             info={
                 text= toyName or itemID,
                 icon= icon or C_Item.GetItemIconByID(itemID),
-                colorCode=not PlayerHasToy(itemID) and '|cff606060',
+                colorCode=not PlayerHasToy(itemID) and '|cff9e9e9e',
                 keepShownOnClick=true,
                 notCheckable=true,
                 tooltipOnButton=true,
@@ -373,7 +373,7 @@ local function InitMenu(_, level, menuList)--主菜单
                 info={
                     text= toyName or itemID,
                     icon= icon or C_Item.GetItemIconByID(itemID),
-                    colorCode='|cff606060',
+                    colorCode='|cff9e9e9e',
                     notCheckable=true,
                     keepShownOnClick=true,
                     tooltipOnButton=true,

@@ -417,7 +417,7 @@ end
     info={
         text= e.onlyChinese and '还原位置' or RESET_POSITION,
         notCheckable=true,
-        colorCode= not Save.point and'|cff606060',
+        colorCode= not Save.point and'|cff9e9e9e',
         keepShownOnClick=true,
         func=function()
             Save.point=nil

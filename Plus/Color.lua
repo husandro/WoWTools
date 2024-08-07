@@ -322,21 +322,24 @@ local function Init()
 				r, g, b= text:match('(%d+) (%d+) (%d+)')
 			end
 		end
-		a= a or '1'
+
 		if r and g and b then
-			r, g, b, a= tonumber(r), tonumber(g), tonumber(b), tonumber(a)
+			r= r and tonumber(r) or 1
+			g= g and tonumber(g) or 1
+			b= b and tonumber(b) or 1
+			a= a and tonumber(a) or 1
+
 			r= r>1 and 1 or b<0 and 0 or r
 			g= g>1 and 1 or g<0 and 0 or g
 			b= b>1 and 1 or b<0 and 0 or b
 			a= a>1 and 1 or a<0 and 0 or a
-			if r and g and b then
-				local maxValue= max(r, g, b)
-				if maxValue<=1 then
-					return r,g,b,a
-				elseif maxValue<=255 then
-					a= (not a or a==1) and 255 or a
-					return r/255, g/255, b/255, a/255
-				end
+
+			local maxValue= max(r, g, b)
+			if maxValue<=1 then
+				return r,g,b,a
+			elseif maxValue<=255 then
+				a= (not a or a==1) and 255 or a
+				return r/255, g/255, b/255, a/255
 			end
 		end
 	end
@@ -620,7 +623,7 @@ local function Init()
 		end)
 		ColorPickerFrame.Content.ColorPicker:HookScript("OnColorSelect", set_Text)
 	end
-	
+
 	Frame:SetShown(not Save.hide)
 end
 

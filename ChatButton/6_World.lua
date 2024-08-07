@@ -1,11 +1,11 @@
 local id, e = ...
 
 local Save={
-    world= e.Player.region==5 and '大脚世界频道' or WORLD,
+    world= e.Player.region==5 and '大脚世界频道' or 'World',
     myChatFilter= true,--过滤，多次，内容
     myChatFilterNum=70,
 }
-local addName='ChatButtonWorldChannel'
+local addName
 local WorldButton
 
 
@@ -24,6 +24,12 @@ end
 
 
 
+
+
+
+
+
+
 local Check=function(name)
     if not select(2,GetChannelName(name)) then
         return 0--不存存在
@@ -38,7 +44,18 @@ local Check=function(name)
     end
 end
 
-local function setJoin(name, join, leave, remove)--加入,移除, 屏蔽
+
+
+
+
+
+
+
+
+
+
+
+local function Set_Join(name, join, leave, remove)--加入,移除, 屏蔽
     if leave then
         LeaveChannelByName(name);
     elseif join then
@@ -50,11 +67,17 @@ local function setJoin(name, join, leave, remove)--加入,移除, 屏蔽
     C_Timer.After(1, function() Check(name) end)
 end
 
-local function setLeftClickTips(name, channelNumber, texture)--设置点击提示,频道字符
-    if not WorldButton.leftClickTips then
-        WorldButton.leftClickTips=e.Cstr(WorldButton, {size=10, color=true, justifyH='CENTER'})--10, nil, nil, true, nil, 'CENTER')
-        WorldButton.leftClickTips:SetPoint('BOTTOM',0,2)
-    end
+
+
+
+
+
+
+
+
+
+
+local function Set_LeftClick_Tooltip(name, channelNumber, texture)--设置点击提示,频道字符
     WorldButton.channelNumber=channelNumber
     local text
     if name then
@@ -73,26 +96,34 @@ local function setLeftClickTips(name, channelNumber, texture)--设置点击提�
     WorldButton.leftClickTips:SetText(text)
 end
 
-local function sendSay(name, channelNumber)--发送
+
+
+
+
+
+
+
+
+local function Send_Say(name, channelNumber)--发送
     Save.lastName= name
     local check=Check(name)
     if check==0 or not channelNumber or channelNumber==0 then
-        setJoin(name, true)
+        Set_Join(name, true)
         C_Timer.After(1, function()
             local channelNumber2 = GetChannelName(name)
             if channelNumber2 and channelNumber2>0 then
                 e.Say('/'..channelNumber2)
-                setLeftClickTips(name, channelNumber2)--设置点击提示,频道字符
+                Set_LeftClick_Tooltip(name, channelNumber2)--设置点击提示,频道字符
             else
                 e.Say(SLASH_JOIN4..' '..name)
             end
         end)
     else
         if check==2 and SELECTED_CHAT_FRAME:GetID()~=2 then
-            setJoin(name, true)
+            Set_Join(name, true)
         end
         if channelNumber then
-            setLeftClickTips(name, channelNumber)--设置点击提示,频道字符
+            Set_LeftClick_Tooltip(name, channelNumber)--设置点击提示,频道字符
             e.Say('/'..channelNumber);
         else
             e.Say(SLASH_JOIN4..' '..name)
@@ -136,150 +167,8 @@ end
 
 
 
---#####
---主菜单
---#####
 
 
-local function InitMenu(_, level, type)--主菜单
-    local info
-    if type=='WORLD' then
-        info= {
-            text= e.onlyChinese and '修改名称' or EQUIPMENT_SET_EDIT:gsub('/.+',''),
-            notCheckable=true,
-            keepShownOnClick= true,
-            func= function()
-                StaticPopupDialogs[id..addName..'changeNamme']={
-                    text=(e.onlyChinese and '修改名称' or EQUIPMENT_SET_EDIT:gsub('/.+',''))..'|n|n'..(e.onlyChinese and '重新加载UI' or RELOADUI ),
-                    whileDead=true, hideOnEscape=true, exclusive=true,
-                    hasEditBox=1,
-                    button1= e.onlyChinese and '确定' or OKAY,
-                    button2= e.onlyChinese and '取消' or CANCEL,
-                    OnShow= function(self2)
-                        self2.editBox:SetText(Save.world)
-                        self2.button1:SetEnabled(false)
-                    end,
-                    OnHide= function(self2)
-                        self2.editBox:SetText("")
-                        e.call('ChatEdit_FocusActiveWindow')
-                    end,
-                    OnAccept= function(self2, data)
-                        Save.world= self2.editBox:GetText()
-                        e.Reload()
-                    end,
-                    EditBoxOnTextChanged=function(self2, data)
-                        local text= self2:GetText()
-                        self2:GetParent().button1:SetEnabled(text~= Save.world and text:gsub(' ', '')~='')
-                    end,
-                    EditBoxOnEscapePressed = function(self2)
-                        self2:SetAutoFocus(false)
-                        self2:ClearFocus()
-                        self2:GetParent():Hide()
-                    end,
-                }
-                StaticPopup_Show(id..addName..'changeNamme')
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-        return
-
-    elseif type=='IGNORE' then--屏蔽刷屏
-        for text, tab in pairs(filterTextTab) do
-            info={
-                text= text,
-                notCheckable=true,
-                tooltipOnButton=true,
-                tooltipTitle= format(e.onlyChinese and "%d次" or COMMUNITIES_INVITE_MANAGER_USES, tab.num),
-                tooltipText=tab.name,
-                arg1= tab.name,
-                keepShownOnClick= true,
-                func= function(_, arg1)
-                    if arg1 then
-                        e.Say(nil, arg1)
-                    end
-                end
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
-        end
-
-        e.LibDD:UIDropDownMenu_AddSeparator(level)
-        info={
-            text= (e.onlyChinese and '设置' or SETTINGS)..' |cnGREEN_FONT_COLOR:'..Save.myChatFilterNum,
-            notCheckable=true,
-            func= function()
-                StaticPopupDialogs[id..addName..'myChatFilterNum']= {
-                    text=id..' '..addName..'|n|n'..get_myChatFilter_Text(),
-                    whileDead=true, hideOnEscape=true, exclusive=true,
-                    hasEditBox=true,
-                    button1= e.onlyChinese and '修改' or EDIT,
-                    button2= e.onlyChinese and '取消' or CANCEL,
-                    OnShow = function(self)
-                        self.editBox:SetNumeric(true)
-                        self.editBox:SetNumber(Save.myChatFilterNum)
-                    end,
-                    OnAccept = function(self)
-                        local num= self.editBox:GetNumber()
-                        Save.myChatFilterNum= num
-                        print(id, e.cn(addName), get_myChatFilter_Text())
-                    end,
-                    EditBoxOnTextChanged=function(self)
-                        local num= self:GetNumber() or 0
-                        self:GetParent().button1:SetEnabled(num>=10)
-                    end,
-                    EditBoxOnEscapePressed = function(self2)
-                        self2:SetAutoFocus(false)
-                        self2:ClearFocus()
-                        self2:GetParent():Hide()
-                    end,
-                }
-                StaticPopup_Show(id..addName..'myChatFilterNum')
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-        return
-    end
-
-    local channelNumber2 = GetChannelName(Save.world)
-    addMenu(Save.world , channelNumber2, level)
-    e.LibDD:UIDropDownMenu_AddSeparator(level)
-
-    local find
-    local channels = {GetChannelList()}
-    for i = 1, #channels, 3 do
-        local channelNumber, name, disabled = channels[i], channels[i+1], channels[i+2]
-        if not disabled and channelNumber and name~=Save.world then
-            addMenu(name, channelNumber, level)
-            find=true
-        end
-    end
-
-    if find then
-        e.LibDD:UIDropDownMenu_AddSeparator(level)
-    end
-    find=0
-    for _, _ in pairs(filterTextTab) do
-        find= find+1
-    end
-    info={
-        text= (e.onlyChinese and '屏蔽刷屏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, IGNORE, CLUB_FINDER_REPORT_SPAM)).. (find>0 and ' |cnRED_FONT_COLOR:'..find..'|r' or ''),
-        checked= Save.myChatFilter,
-        menuList='IGNORE',
-        hasArrow=true,
-        tooltipOnButton=true,
-        tooltipTitle='CHAT_MSG_CHANNEL',
-        tooltipText= get_myChatFilter_Text(),
-        keepShownOnClick= true,
-        func= function()
-            Save.myChatFilter= not Save.myChatFilter and true or nil
-            if Save.myChatFilter then
-                ChatFrame_AddMessageEventFilter("CHAT_MSG_CHANNEL", myChatFilter)
-            else
-                ChatFrame_RemoveMessageEventFilter("CHAT_MSG_CHANNEL", myChatFilter)
-            end
-        end,
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-end
 
 
 
@@ -304,26 +193,26 @@ local function Add_World_Edit_Menu(sub, name)
             hasEditBox=1,
             button1= e.onlyChinese and '确定' or OKAY,
             button2= e.onlyChinese and '取消' or CANCEL,
-            OnShow= function(self2)
-                self2.editBox:SetText(Save.world)
-                self2.button1:SetEnabled(false)
+            OnShow= function(s)
+                s.editBox:SetText(e.Player.region==5 and '大脚世界频道' and Save.world or 'World')
+                s.button1:SetEnabled(false)
             end,
-            OnHide= function(self2)
-                self2.editBox:SetText("")
+            OnHide= function(s)
+                s.editBox:SetText("")
                 e.call('ChatEdit_FocusActiveWindow')
             end,
-            OnAccept= function(self2, data)
-                Save.world= self2.editBox:GetText()
+            OnAccept= function(s)
+                Save.world= s.editBox:GetText()
                 e.Reload()
             end,
-            EditBoxOnTextChanged=function(self2, data)
-                local t= self2:GetText()
-                self2:GetParent().button1:SetEnabled(t~= Save.world and t:gsub(' ', '')~='')
+            EditBoxOnTextChanged=function(s)
+                local t= s:GetText()
+                s:GetParent().button1:SetEnabled(t~= Save.world and t:gsub(' ', '')~='')
             end,
-            EditBoxOnEscapePressed = function(self2)
-                self2:SetAutoFocus(false)
-                self2:ClearFocus()
-                self2:GetParent():Hide()
+            EditBoxOnEscapePressed = function(s)
+                s:SetAutoFocus(false)
+                s:ClearFocus()
+                s:GetParent():Hide()
             end,
         }
         StaticPopup_Show(id..addName..'changeNamme')
@@ -338,9 +227,59 @@ end
 
 
 
+
+
+local function Add_Initializer(button, description)
+    if not button.leftTexture then
+        button.leftTexture = button:AttachTexture()
+        button.leftTexture:SetSize(12, 12)
+        button.leftTexture:SetAtlas('newplayertutorial-icon-mouse-leftbutton')
+        button.leftTexture:SetPoint("LEFT")
+        button.leftTexture:Hide()
+        button.fontString:SetPoint('LEFT', button.leftTexture, 'RIGHT')
+    end
+    button:SetScript("OnUpdate", function(self, elapsed)
+        self.elapsed= (self.elapsed or 1) +elapsed
+        if self.elapsed>1 then
+            self.elapsed=0
+            local value= Check(description.data.name)
+            if value==0 then--不存在
+                self.fontString:SetTextColor(0.62, 0.62, 0.62)
+            elseif value==2 then----屏蔽
+                self.fontString:SetTextColor(1,0,0)
+            else
+                self.fontString:SetTextColor(1,1,1)
+            end
+            if self.leftTexture then
+                self.leftTexture:SetShown(WorldButton.channelNumber and WorldButton.channelNumber==description.data.channelNumber)
+            end
+        end
+    end)
+
+    button:SetScript('OnHide', function(self)
+        self:SetScript('OnUpdate', nil)
+        self.elapsed=nil
+        if self.fontString then
+            self.fontString:SetTextColor(1,1,1)
+            self.fontString:SetPoint('LEFT')
+        end
+        if self.leftTexture then
+            self.leftTexture:SetShown(false)
+        end
+    end)
+end
+
+
+
+
+
+
+
+
+
+
 --初始菜单
-local function addMenu(root, name, channelNumber)--添加菜单
-   -- local check=Check(name)
+local function Add_Menu(root, name, channelNumber)--添加菜单
     local text=name
     local clubId=name:match('Community:(%d+)');
     if clubId then
@@ -349,33 +288,19 @@ local function addMenu(root, name, channelNumber)--添加菜单
     local communityName, communityTexture
     local clubInfo= clubId and C_Club.GetClubInfo(clubId)--社区名称
     if clubInfo and (clubInfo.shortName or clubInfo.name) then
-        text='|cnGREEN_FONT_COLOR:'..(clubInfo.shortName or clubInfo.name)..'|r'
+        text='|cnGREEN_FONT_COLOR:'..(clubInfo.shortName or clubInfo.name)..' |r'
         communityName=clubInfo.shortName or clubInfo.name
         communityTexture=clubInfo.avatarId
     end
     text=((channelNumber and channelNumber>0) and channelNumber..' ' or '')..text--频道数字
-    text=text..(WorldButton.channelNumber==channelNumber and e.Icon.left or '')--当前点击提示
+    
 
-    local sub=root:CreateCheckbox(text, function(data, description)
-        local value= Check(data.name)
-        local checked= true
-        local r,g,b= 1,1,1
-        if value==0 then--不存在
-            r,g,b= 0.62, 0.62, 0.62
-            checked=false
-        elseif value==2 then----屏蔽
-            r,g,b= 1,0,0
-            checked=false
-        end
-        description.fontString:SetTextColor(r,g,b)
-        return checked
-
-    end, function(data)
+    local sub=root:CreateButton(text, function(data)
         if IsAltKeyDown() then
-            setJoin(data.name, nil, nil, true)--加入,移除,屏蔽
+            Set_Join(data.name, nil, nil, true)--加入,移除,屏蔽
         else
-            sendSay(data.name, data.channelNumber)
-            setLeftClickTips(--设置点击提示,频道字符
+            Send_Say(data.name, data.channelNumber)
+            Set_LeftClick_Tooltip(--设置点击提示,频道字符
                 data.communityName or data.name,
                 data.channelNumber,
                 data.texture
@@ -390,48 +315,26 @@ local function addMenu(root, name, channelNumber)--添加菜单
         channelNumber= channelNumber,
     })
 
+
     sub:SetTooltip(function(tooltip, description)
         tooltip:AddDoubleLine('Alt+'..e.Icon.left, e.onlyChinese and '屏蔽' or IGNORE)
         tooltip:AddLine(' ')
         local value= Check(description.data.name)
         if value==0 then--不存在
-            tooltip:AddLine(e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE)
+            tooltip:AddLine('|cff9e9e9e'..(e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE))
         elseif value==1 then
             tooltip:AddLine(e.onlyChinese and '已加入' or CLUB_FINDER_JOINED)
         elseif value==2 then----屏蔽
-            tooltip:AddLine(e.onlyChinese and '已屏蔽' or IGNORED)
+            tooltip:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '已屏蔽' or IGNORED))
         end
     end)
+
+    sub:AddInitializer(Add_Initializer)
 
     Add_World_Edit_Menu(sub, name)--世界，修改
 end
 
---[[
-    e.LibDD:UIDropDownMenu_AddButton({
-        text= text,
-        checked= check==1,
-        colorCode= check==0 and '|cffff0000' or check==2 and '|cff606060',
-        tooltipOnButton=true,
-        tooltipTitle=(e.onlyChinese and '屏蔽' or IGNORE)..' Alt+'..e.Icon.left,
-        tooltipText= check==2 and (e.onlyChinese and '已屏蔽' or IGNORED),
-        menuList= name==Save.world and 'WORLD',
-        hasArrow= name==Save.world,
-        icon=communityTexture,
-        arg1={texture=communityTexture, name=name, communityName= communityName, channelNumber= channelNumber},
-        keepShownOnClick= true,
-        func=function(_, arg1)
-            if IsAltKeyDown() then
-                setJoin(arg1.name, nil, nil, true)--加入,移除,屏蔽
-            else
-                sendSay(arg1.name, arg1.channelNumber)
-                setLeftClickTips(arg1.communityName or arg1.name, arg1.channelNumber, arg1.texture)--设置点击提示,频道字符
-            end
-            if WorldButton and WorldButton.Menu and e.LibDD:UIDropDownMenu_GetCurrentDropDown() == WorldButton.Menu then
-                e.LibDD:HideDropDownMenu(1)
-                e.LibDD:ToggleDropDownMenu(1,nil, WorldButton.Menu, WorldButton, 15,0)
-            end
-        end
-    }, level)]]
+
 
 
 
@@ -444,8 +347,8 @@ local function Init_Menu(_, root)
     local sub, sub2
 
 --世界频道
-    local channelNumber2 = GetChannelName(Save.world)
-    addMenu(root, Save.world , channelNumber2)
+    local world = GetChannelName(Save.world)
+    Add_Menu(root, Save.world, world)
 
 --频道，列表
     root:CreateDivider()
@@ -454,7 +357,7 @@ local function Init_Menu(_, root)
     for i = 1, #channels, 3 do
         local channelNumber, name, disabled = channels[i], channels[i+1], channels[i+2]
         if not disabled and channelNumber and name~=Save.world then
-            addMenu(root, name, channelNumber)
+            Add_Menu(root, name, channelNumber)
             find=true
         end
     end
@@ -534,7 +437,7 @@ local function Init_Menu(_, root)
         end)
     end
 
-   -- sub:SetScrollMode(20*35)
+ --sub:SetScrollMode(20*4)
 
 
 
@@ -561,6 +464,9 @@ end
 local function Init()
     WorldButton.texture:SetAtlas('128-Store-Main')
 
+    WorldButton.leftClickTips=e.Cstr(WorldButton, {size=10, color=true, justifyH='CENTER'})--10, nil, nil, true, nil, 'CENTER')
+    WorldButton.leftClickTips:SetPoint('BOTTOM',0,2)
+
     WorldButton:SetScript("OnClick",function(self, d)
         if d=='LeftButton' and self.channelNumber and self.channelNumber>0 then
             e.Say('/'..self.channelNumber)
@@ -573,7 +479,7 @@ local function Init()
         local channelNumber = GetChannelName(Save.lastName)
         if channelNumber and channelNumber>0 then
             WorldButton.channelNumber= channelNumber
-            setLeftClickTips(Save.lastName, channelNumber)
+            Set_LeftClick_Tooltip(Save.lastName, channelNumber)
         end
     end
     if Save.myChatFilter then
@@ -618,7 +524,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WorldButton= WoWToolsChatButtonMixin:CreateButton('World')
 
             if WorldButton then--禁用Chat Button
-
+                addName= '|A:128-Store-Main:0:0|a'..(e.onlyChinese and '频道' or CHANNEL)
                 Save.myChatFilterNum= Save.myChatFilterNum or 70
                 Save.world= Save.world or CHANNEL_CATEGORY_WORLD
 

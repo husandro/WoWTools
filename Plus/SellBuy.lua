@@ -657,10 +657,10 @@ local function Init_Auto_Repair()
         e.tips:AddLine(' ')
         if CanGuildBankRepair() then
             local m= GetGuildBankMoney() or 0
-            local col= m==0 and '|cff606060' or '|cnGREEN_FONT_COLOR:'
+            local col= m==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:'
             e.tips:AddDoubleLine(col..(e.onlyChinese and '使用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP), col..C_CurrencyInfo.GetCoinTextureString(m))
         else
-            e.tips:AddDoubleLine('|cff606060'..(e.onlyChinese and '使用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP), '|cff606060'..(e.onlyChinese and '禁用' or DISABLE))
+            e.tips:AddDoubleLine('|cff9e9e9e'..(e.onlyChinese and '使用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP), '|cff9e9e9e'..(e.onlyChinese and '禁用' or DISABLE))
         end
         e.tips:Show()
     end
@@ -733,7 +733,7 @@ local function Init_Auto_Repair()
             MerchantGuildBankRepairButton.Text:SetFormattedText('|A:%s:0:0|a', e.Icon.disabled)
         else
             local co = GetGuildBankMoney() or 0
-            local col= co==0 and '|cff606060' or (repairAllCost> co and '|cnRED_FONT_COLOR:') or '|cnGREEN_FONT_COLOR:'
+            local col= co==0 and '|cff9e9e9e' or (repairAllCost> co and '|cnRED_FONT_COLOR:') or '|cnGREEN_FONT_COLOR:'
             MerchantGuildBankRepairButton.Text:SetText(col..(e.MK(co/10000, 0)))
         end
     end)
@@ -765,7 +765,7 @@ local function Init_Auto_Repair()
     hooksecurefunc('MerchantFrame_UpdateRepairButtons', function()
         if MerchantRepairAllButton:IsShown() then
             local co = GetRepairAllCost()--显示，修理所有，金钱
-            local col= co==0 and '|cff606060' or (co<= GetMoney() and '|cnGREEN_FONT_COLOR:') or '|cnRED_FONT_COLOR:'
+            local col= co==0 and '|cff9e9e9e' or (co<= GetMoney() and '|cnGREEN_FONT_COLOR:') or '|cnRED_FONT_COLOR:'
             MerchantRepairAllButton.Text2:SetText(col..e.MK(co/10000, 0))
 
             local num=0--提示，可修理，件数
@@ -775,7 +775,7 @@ local function Init_Auto_Repair()
                     num= num+1
                 end
             end
-            MerchantRepairItemButton.Text:SetText((num==0 and '|cff606060' or '|cnGREEN_FONT_COLOR:')..num)
+            MerchantRepairItemButton.Text:SetText((num==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:')..num)
 
             AutoRepairCheck.Text:SetText(e.GetDurabiliy(true))--显示耐久度
         end
@@ -845,7 +845,7 @@ local function Init_Auto_Sell_Junk()
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '自动出售垃圾' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SELL_ALL_JUNK_ITEMS_EXCLUDE_HEADER), e.GetEnabeleDisable(not Save.notSellJunk))
         if not Save.notSellJunk then
-            e.tips:AddLine(format(e.onlyChinese and '品质：%s' or PROFESSIONS_CRAFTING_QUALITY, '|cff606060'..(e.onlyChinese and '粗糙' or ITEM_QUALITY0_DESC)..'|r'))
+            e.tips:AddLine(format(e.onlyChinese and '品质：%s' or PROFESSIONS_CRAFTING_QUALITY, '|cff9e9e9e'..(e.onlyChinese and '粗糙' or ITEM_QUALITY0_DESC)..'|r'))
             e.tips:AddDoubleLine(e.onlyChinese and '未收集幻化' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NOT_COLLECTED, TRANSMOGRIFICATION), Save.sellJunkMago and '|cnRED_FONT_COLOR:'..(e.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB) or (e.onlyChinese and '不出售' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISABLE, AUCTION_HOUSE_SELL_TAB)))
         end
         e.tips:Show()
@@ -929,7 +929,7 @@ local function Init_Auto_Sell_Junk()
             return
         end
         local num= C_MerchantFrame.GetNumJunkItems() or 0
-        MerchantSellAllJunkButton.Text:SetText((num==0 and '|cff606060' or '|cnGREEN_FONT_COLOR:')..num)
+        MerchantSellAllJunkButton.Text:SetText((num==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:')..num)
     end)
 end
 
@@ -984,7 +984,7 @@ local function Init_Loot_Plus()
         e.tips:AddLine('|cffff00ff|A:Cursor_lootall_128:0:0|a'..(e.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT)..' Plus|r')
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '自动拾取' or AUTO_LOOT_DEFAULT_TEXT, (e.onlyChinese and '当前' or REFORGE_CURRENT)..': '..e.GetEnabeleDisable(C_CVar.GetCVarBool("autoLootDefault")))
-        local col= UnitAffectingCombat('player') and '|cff606060'
+        local col= UnitAffectingCombat('player') and '|cff9e9e9e'
         e.tips:AddDoubleLine((col or '')..(e.onlyChinese and '拾取时' or PROC_EVENT512_DESC:format(ITEM_LOOT)),
             (col or '|cnGREEN_FONT_COLOR:')..'Shift|r '..(e.onlyChinese and '禁用' or DISABLE))
         e.tips:Show()
@@ -1209,7 +1209,7 @@ local function Init_Menu(_, level, type)
         hasArrow= true,
         keepShownOnClick=true,
         tooltipOnButton=true,
-        tooltipTitle=format(e.onlyChinese and '品质：%s' or PROFESSIONS_CRAFTING_QUALITY, '|cff606060'..(e.onlyChinese and '粗糙' or ITEM_QUALITY0_DESC)..'|r')
+        tooltipTitle=format(e.onlyChinese and '品质：%s' or PROFESSIONS_CRAFTING_QUALITY, '|cff9e9e9e'..(e.onlyChinese and '粗糙' or ITEM_QUALITY0_DESC)..'|r')
             ..'|n|cffff00ff'..(e.onlyChinese and '在战斗中无法出售物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, ITEM_UNSELLABLE)),
         func= function()
             Save.notSellJunk= not Save.notSellJunk and true or nil
@@ -1253,7 +1253,7 @@ local function Init_Menu(_, level, type)
         tooltipText= '|cffff00ff'..(e.onlyChinese and '在战斗中无法出售物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, ITEM_UNSELLABLE)),
         checked= not Save.notSellBoss,
         keepShownOnClick=true,
-        colorCode= e.Is_Timerunning and '|cff606060',
+        colorCode= e.Is_Timerunning and '|cff9e9e9e',
         menuList='BOSS',
         hasArrow=true,
         func=function ()

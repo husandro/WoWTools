@@ -145,7 +145,7 @@ local function Create_Button(indexAdd)
         self.Text:SetFormattedText(
             '%s %s%d|r/%s%d|r',
             self.name,
-            load==0 and '|cff606060' or '|cnGREEN_FONT_COLOR:',
+            load==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:',
             load,
             load==all and '|cnGREEN_FONT_COLOR:' or '',
             all
@@ -237,7 +237,7 @@ local function Create_Button(indexAdd)
             local reason= select(2, C_AddOns.IsAddOnLoadable(name))
             local col= reason=='DEMAND_LOADED' and '|cffff00ff'
             if not text and not isLoaded and reason then
-                text= (col or '|cff606060')..e.cn(_G['ADDON_'..reason] or reason)..' ('..index
+                text= (col or '|cff9e9e9e')..e.cn(_G['ADDON_'..reason] or reason)..' ('..index
             end
             local title= C_AddOns.GetAddOnInfo(name) or name
             local memo= Get_Memory_Value(name, false)--内存
@@ -246,7 +246,7 @@ local function Create_Button(indexAdd)
                     index<10 and ' ' or '',
                     index,
                     icon,
-                    isLoaded and '|cnGREEN_FONT_COLOR:' or col or '|cff606060',
+                    isLoaded and '|cnGREEN_FONT_COLOR:' or col or '|cff9e9e9e',
                     title,
                     memo or ''
                 ), text or ' ')
@@ -389,10 +389,10 @@ local function Init_Add_Save_Button()
             local vType= type(value)
             local text= vType=='string' and e.GetPlayerInfo({guid=value})
             if not text and not isLoaded and reason then
-                text= '|cff606060'..e.cn(_G['ADDON_'..reason] or reason)..' ('..index
+                text= '|cff9e9e9e'..e.cn(_G['ADDON_'..reason] or reason)..' ('..index
             end
             local title= C_AddOns.GetAddOnInfo(name) or name
-            local col= C_AddOns.GetAddOnDependencies(name) and '|cffff00ff' or (isLoaded and '|cnGREEN_FONT_COLOR:') or '|cff606060'
+            local col= C_AddOns.GetAddOnDependencies(name) and '|cffff00ff' or (isLoaded and '|cnGREEN_FONT_COLOR:') or '|cff9e9e9e'
             local memo, va= Get_Memory_Value(name, false)--内存
             memo= memo and (' |cnRED_FONT_COLOR:'..memo..'|r') or ''
             table.insert(newTab, {

@@ -440,7 +440,7 @@ local function Init_set_Map_ID()--显示地图ID
                     story, _, completed= select(2, GetAchievementInfo(achievementID))
                     story= story or achievementID
                     if completed then
-                        story= '|cff606060'..story..'|r'
+                        story= '|cff9e9e9e'..story..'|r'
                     end
                 end
 
@@ -513,7 +513,7 @@ local function Init_set_Map_ID()--显示地图ID
             e.tips:AddDoubleLine(e.cn(addName), e.GetEnabeleDisable(not Save.hide)..e.Icon.left)
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(addName2, e.GetEnabeleDisable(Save.PlayerXY)..e.Icon.right)
-            local col= Save.PlayerXYPoint and '' or '|cff606060'
+            local col= Save.PlayerXYPoint and '' or '|cff9e9e9e'
             e.tips:AddDoubleLine(col..(e.onlyChinese and '重置位置' or RESET_POSITION), col..'Ctrl+'..e.Icon.right)
             e.tips:Show()
 

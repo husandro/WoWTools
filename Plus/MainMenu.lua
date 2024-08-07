@@ -326,7 +326,7 @@ local function Init_Guild()
             if day and day~='' then
                 e.tips:AddLine('|cffff00ff'..day..'|r', nil,nil, nil, true)
             end
-            local col= online>1 and '|cnGREEN_FONT_COLOR:' or '|cff606060'
+            local col= online>1 and '|cnGREEN_FONT_COLOR:' or '|cff9e9e9e'
             e.tips:AddDoubleLine(col..(e.onlyChinese and '在线成员：' or GUILD_MEMBERS_ONLINE_COLON), col..'|A:UI-HUD-UnitFrame-Player-Group-FriendOnlineIcon:0:0|a'..(online-1)..'|r/|A:UI-ChatIcon-App:0:0|a'..(app-1))
             if #clubs>0 then
                 e.tips:AddLine(' ')
@@ -345,7 +345,7 @@ local function Init_Guild()
                 end
             end
             local icon=(tab.clubId==guildClubId) and '|A:auctionhouse-icon-favorite:0:0|a' or '|T'..tab.avatarId..':0|t'
-            local col= online>0 and '|cnGREEN_FONT_COLOR:' or '|cff606060'
+            local col= online>0 and '|cnGREEN_FONT_COLOR:' or '|cff9e9e9e'
             e.tips:AddDoubleLine(icon..col..tab.name, col..online..icon)--..tab.memberCount
         end
         e.tips:Show()
@@ -566,7 +566,7 @@ local function Init_Store()
         for guid, info in pairs(e.WoWDate or {}) do
             local tab=info.Item[122284]
             if tab and guid then
-                e.tips:AddDoubleLine(e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}), '|A:Banker:0:0|a'..(tab.bank==0 and '|cff606060'..tab.bank..'|r' or tab.bank)..' '..'|A:bag-main:0:0|a'..(tab.bag==0 and '|cff606060'..tab.bag..'|r' or tab.bag))
+                e.tips:AddDoubleLine(e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}), '|A:Banker:0:0|a'..(tab.bank==0 and '|cff9e9e9e'..tab.bank..'|r' or tab.bank)..' '..'|A:bag-main:0:0|a'..(tab.bag==0 and '|cff9e9e9e'..tab.bag..'|r' or tab.bag))
                 bagAll=bagAll +tab.bag
                 bankAll=bankAll +tab.bank
                 numPlayer=numPlayer +1
@@ -582,7 +582,7 @@ local function Init_Store()
     for guid, info in pairs(e.WoWDate or {}) do
         local tab=info.Item[122284]
         if tab and guid then
-            e.tips:AddDoubleLine(e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}), '|A:Banker:0:0|a'..(tab.bank==0 and '|cff606060'..tab.bank..'|r' or tab.bank)..' '..'|A:bag-main:0:0|a'..(tab.bag==0 and '|cff606060'..tab.bag..'|r' or tab.bag))
+            e.tips:AddDoubleLine(e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}), '|A:Banker:0:0|a'..(tab.bank==0 and '|cff9e9e9e'..tab.bank..'|r' or tab.bank)..' '..'|A:bag-main:0:0|a'..(tab.bag==0 and '|cff9e9e9e'..tab.bag..'|r' or tab.bag))
             all= all +tab.bag +tab.bank
         end
     end

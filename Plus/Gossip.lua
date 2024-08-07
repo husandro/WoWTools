@@ -571,7 +571,7 @@ local function Init_Gossip_Text_Icon_Options()
                 for _, data in pairs(tabs) do
                     self.dataProvider:Insert({gossipID=data.gossipOptionID, icon=data.icon, name=data.name, hex=data.hex, spellID=data.spellID})
                 end
-                self.chat.Text:SetFormattedText('%s%d', gossipNum>0 and '|cnGREEN_FONT_COLOR:' or '|cff606060', gossipNum)--GossipFrame 有多少已设置
+                self.chat.Text:SetFormattedText('%s%d', gossipNum>0 and '|cnGREEN_FONT_COLOR:' or '|cff9e9e9e', gossipNum)--GossipFrame 有多少已设置
                 for _ in pairs(Save.Gossip_Text_Icon_Player) do
                     n=n+1
                 end
@@ -965,7 +965,7 @@ local function Init_Gossip_Text_Icon_Options()
         e.tips:AddDoubleLine(id , Initializer:GetName())
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine((self.hex and format('|c%s|r', self.hex) or '')..(e.onlyChinese and '设置颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, COLOR)), e.Icon.left)
-        local col= (not self.hex or self.hex=='ff000000') and '|cff606060' or ''
+        local col= (not self.hex or self.hex=='ff000000') and '|cff9e9e9e' or ''
         e.tips:AddDoubleLine(format('%s%s', col, e.onlyChinese and '默认' or DEFAULT), e.Icon.right)
         e.tips:Show()
     end
@@ -1466,7 +1466,7 @@ local function Init_Menu_Gossip(_, level, type)
         info={
             text= e.onlyChinese and '重置位置' or RESET_POSITION,
             notCheckable=true,
-            colorCode=not Save.point and '|cff606060',
+            colorCode=not Save.point and '|cff9e9e9e',
             keepShownOnClick=true,
             func= function()
                 Save.point=nil
@@ -1609,12 +1609,12 @@ local function Init_Menu_Gossip(_, level, type)
                     text= (movieEntry.title or movieEntry.text or _G["EXPANSION_NAME"..movieEntry.expansion])..' '..movieID,
                     tooltipOnButton=true,
                     tooltipTitle= e.Icon.left..(e.onlyChinese and '播放' or EVENTTRACE_BUTTON_PLAY),
-                    tooltipText=(isDownload and '|cff606060' or '')
+                    tooltipText=(isDownload and '|cff9e9e9e' or '')
                                 ..'Ctrl+'..e.Icon.left..(e.onlyChinese and '下载' or 'Download')
                                 ..(inProgress and downloaded and total and format('|n%i%%', downloaded/total*100) or ''),
                     notCheckable=true,
                     disabled= UnitAffectingCombat('player'),
-                    colorCode= not isDownload and '|cff606060' or nil,
+                    colorCode= not isDownload and '|cff9e9e9e' or nil,
                     icon= movieEntry.upAtlas,
                     arg1= movieID,
                     func= function(_, arg1)
@@ -1647,12 +1647,12 @@ local function Init_Menu_Gossip(_, level, type)
                 tooltipText= '|n'
                             ..e.Icon.left..(e.onlyChinese and '播放' or EVENTTRACE_BUTTON_PLAY)
                             ..'|nShift+'..e.Icon.left..(e.onlyChinese and '移除' or REMOVE)
-                            ..(isDownload and '|cff606060' or '')
+                            ..(isDownload and '|cff9e9e9e' or '')
                             ..'|nCtrl+'..e.Icon.left..(e.onlyChinese and '下载' or 'Download')
                             ..(inProgress and downloaded and total and format('|n%i%%', downloaded/total*100) or ''),
                 notCheckable=true,
                 disabled= UnitAffectingCombat('player'),
-                colorCode= not isDownload and '|cff606060' or nil,
+                colorCode= not isDownload and '|cff9e9e9e' or nil,
                 arg1= movieID,
                 func= function(_, arg1)
                     if not IsModifierKeyDown() then
@@ -2659,7 +2659,7 @@ local function InitMenu_Quest(_, level, type)
     info={
         text= e.onlyChinese and '共享任务' or SHARE_QUEST,
         checked=Save.pushable,
-        colorCode= not IsInGroup() and '|cff606060',
+        colorCode= not IsInGroup() and '|cff9e9e9e',
         tooltipOnButton=true,
         tooltipTitle= e.onlyChinese and '仅限在队伍中' or format(LFG_LIST_CROSS_FACTION, AGGRO_WARNING_IN_PARTY),
         keepShownOnClick=true,

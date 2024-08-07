@@ -164,7 +164,7 @@ local function Init_Menu(_, root)
 
     local tabNew={}
     for _, tab in pairs(RollTab) do
-        col=tabNew[tab.name] and '|cff606060' or ''
+        col=tabNew[tab.name] and '|cff9e9e9e' or ''
         icon=tab.roll==Max and '|A:auctionhouse-icon-checkmark:0:0|a' or (tab.roll==Min and '|T450905:0|a') or ''
         sub=root:CreateButton(col..'|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t|cffffffff'..tab.roll..'|r '..e.GetPlayerInfo({unit=tab.unit, guid=tab.guid, name=tab.name, reName=true, reRealm=true}) ..' '..tab.date..icon, function(text)
             e.Chat(text, nil, nil)
@@ -249,7 +249,7 @@ local function Init()
             e.tips:AddLine(' ')
             local tabNew={}
             for _, tab in pairs(RollTab) do
-                local col=tabNew[tab.name] and '|cff606060' or ''
+                local col=tabNew[tab.name] and '|cff9e9e9e' or ''
                 local icon=tab.roll==Max and '|A:auctionhouse-icon-checkmark:0:0|a' or (tab.roll==Min and '|T450905:0|a') or ''
                 e.tips:AddLine(col..'|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t|cffffffff'..tab.roll..'|r '..e.GetPlayerInfo({unit=tab.unit, guid=tab.guid, name=tab.name, reName=true, reRealm=true}) ..' '..tab.date..icon)
                 tabNew[tab.name]=true

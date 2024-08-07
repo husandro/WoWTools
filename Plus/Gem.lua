@@ -885,7 +885,7 @@ local function Init_Button_All()
                     e.LibDD:UIDropDownMenu_AddButton({
                         text=(e.onlyChinese and '清除标记' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, EVENTTRACE_BUTTON_MARKER))..' |cnGREEN_FONT_COLOR:#'..num,
                         icon='auctionhouse-icon-favorite',
-                        colorCode= num==0 and '|cff606060',
+                        colorCode= num==0 and '|cff9e9e9e',
                         notCheckable=true,
                         func=function()
                             Save.favorites={}
@@ -904,7 +904,7 @@ local function Init_Button_All()
                     e.LibDD:UIDropDownMenu_AddButton({
                         text=(e.onlyChinese and '清除左边' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_LEFT))..' |cnGREEN_FONT_COLOR:#'..num,
                         icon=e.Icon.toRight,
-                        colorCode= num==0 and '|cff606060',
+                        colorCode= num==0 and '|cff9e9e9e',
                         notCheckable=true,
                         func=function()
                             Save.gemLeft={}
@@ -919,7 +919,7 @@ local function Init_Button_All()
                     e.LibDD:UIDropDownMenu_AddButton({
                         text=(e.onlyChinese and '清除上面' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP))..' |cnGREEN_FONT_COLOR:#'..num,
                         icon='bags-greenarrow',
-                        colorCode= num==0 and '|cff606060',
+                        colorCode= num==0 and '|cff9e9e9e',
                         notCheckable=true,
                         func=function()
                             Save.gemTop={}
@@ -934,7 +934,7 @@ local function Init_Button_All()
                     e.LibDD:UIDropDownMenu_AddButton({
                         text=(e.onlyChinese and '清除右边' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_RIGHT))..' |cnGREEN_FONT_COLOR:#'..num,
                         icon=e.Icon.toLeft,
-                        colorCode= num==0 and '|cff606060',
+                        colorCode= num==0 and '|cff9e9e9e',
                         notCheckable=true,
                         func=function()
                             Save.gemRight={}

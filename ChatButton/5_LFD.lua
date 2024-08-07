@@ -728,7 +728,7 @@ local function Init_tipsButton()
         e.tips:AddLine(' ')
 
         e.tips:AddDoubleLine(
-            (IsInGroup() and not UnitIsGroupLeader("player") and '|cff606060' or '|cnGREEN_FONT_COLOR:')..(e.onlyChinese and '离开所有队列' or LEAVE_ALL_QUEUES),
+            (IsInGroup() and not UnitIsGroupLeader("player") and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:')..(e.onlyChinese and '离开所有队列' or LEAVE_ALL_QUEUES),
             '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left
         )
         e.tips:AddDoubleLine(e.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON, e.Icon.right)
@@ -847,6 +847,7 @@ local function Add_Initializer(button, description)
         button.leftTexture:SetSize(20, 20)
         button.leftTexture:SetAtlas(e.Icon.toRight)
         button.leftTexture:SetPoint("LEFT")
+        button.leftTexture:Hide()
         button.fontString:SetPoint('LEFT', button.leftTexture, 'RIGHT')
     end
     
@@ -868,6 +869,7 @@ local function Add_Initializer(button, description)
 
     button:SetScript('OnHide', function(self)
         self:SetScript('OnUpdate', nil)
+        self.elapsed=nil
         if self.fontString then
             self.fontString:SetTextColor(1,1,1)
             self.fontString:SetPoint('LEFT')
@@ -968,7 +970,7 @@ local function Set_LFGFollower_Dungeon_List(root)--追随者，副本
 
                 --[[else
 
-                    sub2=sub:CreateButton('   |cff606060'..name..' |r', function()
+                    sub2=sub:CreateButton('   |cff9e9e9e'..name..' |r', function()
                         return MenuResponse.Open
                     end, {
                         dungeonID=dungeonID,
@@ -1063,7 +1065,7 @@ local function set_Party_Menu_List(root)
                     sub:AddInitializer(Add_Initializer)
 
                 else
-                    sub=root:CreateButton('   |cff606060'..name..' |r', function()
+                    sub=root:CreateButton('   |cff9e9e9e'..name..' |r', function()
                         return MenuResponse.Open
                     end, {
                         dungeonID=dungeonID,
@@ -1147,7 +1149,7 @@ local function Init_Scenarios_Menu(root)--ScenarioFinder.lua
                 sub:AddInitializer(Add_Initializer)
 
             else
-                sub=root:CreateButton('     |cff606060'..e.cn(name)..' |r', function()
+                sub=root:CreateButton('     |cff9e9e9e'..e.cn(name)..' |r', function()
                     return MenuResponse.Open
                 end, {
                     dungeonID=scenarioID,
@@ -1292,7 +1294,7 @@ local function set_Raid_Menu_List(root)
                     local bossName, texture, isKilled = GetLFGDungeonEncounterInfo(dungeonID, encounterIndex)
                     if isKilled then
                         killNum= killNum+1
-                        killText= killText..' |cff606060x|r'
+                        killText= killText..' |cff9e9e9ex|r'
                     else
                         killText= killText..' '..encounterIndex
                     end
@@ -1309,7 +1311,7 @@ local function set_Raid_Menu_List(root)
             sub=root:CreateButton(
                 ((LfgDungeonID==dungeonID or scenarioName== strlower(dungeonName)) and '|A:auctionhouse-icon-favorite:0:0|a' or '')--在当前副本
                 ..(modifiedIcon or '')
-                ..(isKillAll and '|cff606060' or '')
+                ..(isKillAll and '|cff9e9e9e' or '')
                 ..e.cn(dungeonName)
                 ..get_Reward_Info(dungeonID)--名称
                 ..killText,
@@ -1354,7 +1356,7 @@ local function set_Raid_Menu_List(root)
             sub:AddInitializer(Add_Initializer)
 
         else
-            sub=root:CreateButton((modifiedIcon or '')..'|cff606060'..e.cn(dungeonName)..' |r', function()
+            sub=root:CreateButton((modifiedIcon or '')..'|cff9e9e9e'..e.cn(dungeonName)..' |r', function()
                 return MenuResponse.Open
              end, {modifiedDesc=modifiedDesc, dungeonID=dungeonID}
             )
@@ -2575,9 +2577,9 @@ local function Init_RolePollPopup_Plus()
             self.bossTips:SetPoint('BOTTOMLEFT', self, 'BOTTOMRIGHT', 4, 4)
         end
         if self.bossTips then
-            text= text and '|cff606060'..(e.onlyChinese and '首领：' or BOSSES)..'|r'
+            text= text and '|cff9e9e9e'..(e.onlyChinese and '首领：' or BOSSES)..'|r'
                 ..format(e.onlyChinese and '已消灭%d/%d个首领' or BOSSES_KILLED, dead, numBosses)
-                ..'|n|n'..text..'|n|n|cff606060'..id..' '..addName..' ' or ''
+                ..'|n|n'..text..'|n|n|cff9e9e9e'..id..' '..addName..' ' or ''
             self.bossTips:SetText(text)
         end
     end)
@@ -2796,7 +2798,7 @@ local function Init_Menu(_, root)
         Save.hideQueueStatus = not Save.hideQueueStatus and true or nil
         Set_Queue_Status()
     end)
-    sub2:CreateButton((Save.tipsFramePoint and '' or '|cff606060')..(e.onlyChinese and '重置位置' or RESET_POSITION), function()
+    sub2:CreateButton((Save.tipsFramePoint and '' or '|cff9e9e9e')..(e.onlyChinese and '重置位置' or RESET_POSITION), function()
         Save.tipsFramePoint=nil
         if tipsButton then
             tipsButton:ClearAllPoints()
@@ -2983,6 +2985,7 @@ local function Init_Menu(_, root)
         end)
         btn:SetScript('OnHide', function(self)
             self:SetScript('OnUpdate', nil)
+            self.elapsed= nil
         end)
     end)
 

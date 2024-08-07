@@ -521,7 +521,7 @@ local function Init()
                         info={
                             text=e.onlyChinese and '重置位置' or RESET_POSITION,
                             notCheckable=true,
-                            colorCode= (not Save.textFramePoint or Save.disabledText) and '|cff606060',
+                            colorCode= (not Save.textFramePoint or Save.disabledText) and '|cff9e9e9e',
                             func= function()
                                 Save.textFramePoint=nil
                                 if TrackButton then
@@ -635,7 +635,7 @@ local function Init()
                         tooltipTitle=  e.onlyChinese and '类型' or TYPE,
                         tooltipText='00:35|n'..SecondsToTime(35),
                         keepShownOnClick=true,
-                        colorCode= Save.disabledText and '|cff606060' or nil,
+                        colorCode= Save.disabledText and '|cff9e9e9e' or nil,
                         func= function()
                             Save.timeTypeText= not Save.timeTypeText and true or nil
                         end
@@ -654,7 +654,7 @@ local function Init()
                         tooltipTitle= e.onlyChinese and '说' or SAY,
                         keepShownOnClick=true,
                         notCheckable=true,
-                        colorCode= Save.disabledText and '|cff606060' or nil,
+                        colorCode= Save.disabledText and '|cff9e9e9e' or nil,
                         func= function()
                             StaticPopupDialogs[id..addName..'SayTime']= StaticPopupDialogs[id..addName..'SayTime'] or {
                                 text= id..' '..addName

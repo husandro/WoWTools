@@ -1097,7 +1097,7 @@ local function Init_Button_Menu(_, level, menuList)--菜单
             text= e.onlyChinese and '重置位置' or RESET_POSITION,
             notCheckable=true,
             disabled= not Button,
-            colorCode= not Save.pointVigentteButton and '|cff606060' or '',
+            colorCode= not Save.pointVigentteButton and '|cff9e9e9e' or '',
             func= function()
                 Save.pointVigentteButton=nil
                 Button:ClearAllPoints()
@@ -1980,7 +1980,7 @@ local function Set_Faction_Menu(factionID)
             tooltipOnButton= hasRewardPending,
             tooltipTitle=e.onlyChinese and '你有未领取的奖励' or WEEKLY_REWARDS_UNCLAIMED_TITLE,
             disabled= UnitAffectingCombat('player'),
-            colorCode= (not data.isUnlocked and data.renownLevel==0) and '|cff606060' or nil,
+            colorCode= (not data.isUnlocked and data.renownLevel==0) and '|cff9e9e9e' or nil,
             --tooltipOnButton=true,
             --tooltipTitle='FactionID '..factionID,
             arg1=factionID,
@@ -2147,9 +2147,9 @@ local function Get_Garrison_List_Num(followerType)
         all = all + 1
     end
     if all==0 then
-        text= ''--format('|cff606060%d/%d|r', num, all)
+        text= ''--format('|cff9e9e9e%d/%d|r', num, all)
     elseif num==0 then
-        text= format('|cff606060%d|r/%d', num, all)
+        text= format('|cff9e9e9e%d|r/%d', num, all)
     elseif all==num then
         text= format('|cffff00ff%d/%d|r', num, all)..format('|A:%s:0:0|a', e.Icon.select)
     else
@@ -2289,7 +2289,7 @@ local function Init_Menu(_, level, menuList)
             notCheckable=true,
             disabled= not Button,
             keepShownOnClick=true,
-            colorCode= not Save.pointVigentteButton and '|cff606060' or '',
+            colorCode= not Save.pointVigentteButton and '|cff9e9e9e' or '',
             func= function()
                 Save.pointVigentteButton=nil
                 Button:ClearAllPoints()
@@ -2307,7 +2307,7 @@ local function Init_Menu(_, level, menuList)
             tooltipOnButton=true,
             tooltipTitle= e.onlyChinese and '时钟' or TIMEMANAGER_TITLE,
             disabled= not Save.TimeManagerClockButtonScale and not Save.TimeManagerClockButtonPoint,
-            colorCode= Save.disabledClockPlus and '|cff606060',
+            colorCode= Save.disabledClockPlus and '|cff9e9e9e',
             func= function()
                 Save.TimeManagerClockButtonScale=nil
                 Save.TimeManagerClockButtonPoint=nil
@@ -2434,7 +2434,7 @@ local function Init_Menu(_, level, menuList)
             text= '|A:dragonflight-landingbutton-up:0:0|a'..(e.onlyChinese and '隐藏要塞图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, GARRISON_LOCATION_TOOLTIP, EMBLEM_SYMBOL))),
             tooltipOnButton= true,
             checked= Save.hideExpansionLandingPageMinimapButton,
-            colorCode= not ExpansionLandingPageMinimapButton and '|cff606060' or nil,
+            colorCode= not ExpansionLandingPageMinimapButton and '|cff9e9e9e' or nil,
             --keepShownOnClick=true,
             func= function()
                 Save.hideExpansionLandingPageMinimapButton= not Save.hideExpansionLandingPageMinimapButton and true or nil
@@ -2446,7 +2446,7 @@ local function Init_Menu(_, level, menuList)
         info={
             text= '|A:dragonflight-landingbutton-up:0:0|a'..(e.onlyChinese and '移动要塞图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NPE_MOVE, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, GARRISON_LOCATION_TOOLTIP, EMBLEM_SYMBOL))),
             checked= Save.moveExpansionLandingPageMinimapButton,
-            colorCode= not ExpansionLandingPageMinimapButton and '|cff606060' or nil,
+            colorCode= not ExpansionLandingPageMinimapButton and '|cff9e9e9e' or nil,
             disabled= Save.hideExpansionLandingPageMinimapButton,
             keepShownOnClick=true,
             func= function()
@@ -2515,7 +2515,7 @@ local function Init_Menu(_, level, menuList)
         local treeCurrencies = C_Traits.GetTreeCurrencyInfo(dragonridingConfigID, 672, false) or {}
         local num= treeCurrencies[1] and treeCurrencies[1].quantity
         if num and num>=0 then
-            numDragonriding= format(' %s%d|r |T%d:0|t', num==0 and '|cff606060' or '|cnGREEN_FONT_COLOR:', num, select(4, C_Traits.GetTraitCurrencyInfo(2563)) )
+            numDragonriding= format(' %s%d|r |T%d:0|t', num==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:', num, select(4, C_Traits.GetTraitCurrencyInfo(2563)) )
         end
     end
 
@@ -2524,7 +2524,7 @@ local function Init_Menu(_, level, menuList)
         checked= GenericTraitFrame and GenericTraitFrame:IsShown() and GenericTraitFrame:GetConfigID() == C_Traits.GetConfigIDBySystemID(1),
         keepShownOnClick=true,
         disabled= UnitAffectingCombat('player'),
-        colorCode= (select(4, GetAchievementInfo(15794)) or C_QuestLog.IsQuestFlaggedCompleted(68798)) and '' or '|cff606060',
+        colorCode= (select(4, GetAchievementInfo(15794)) or C_QuestLog.IsQuestFlaggedCompleted(68798)) and '' or '|cff9e9e9e',
         func= function()
             GenericTraitUI_LoadUI()
             local DRAGONRIDING_TRAIT_SYSTEM_ID = 1
@@ -2543,7 +2543,7 @@ local function Init_Menu(_, level, menuList)
         tooltipOnButton=has,
         tooltipTitle= has and format('%s|cffff00ff%s|r%s',icon, e.onlyChinese and '你有未领取的奖励' or WEEKLY_REWARDS_UNCLAIMED_TITLE, icon),
         checked= WeeklyRewardsFrame and WeeklyRewardsFrame:IsShown(),
-        colorCode= (UnitAffectingCombat('player') or not e.Player.levelMax) and '|cff606060',
+        colorCode= (UnitAffectingCombat('player') or not e.Player.levelMax) and '|cff9e9e9e',
         keepShownOnClick=true,
         func=function()
             if WeeklyRewardsFrame and WeeklyRewardsFrame:IsShown() then

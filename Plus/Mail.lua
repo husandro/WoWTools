@@ -796,16 +796,16 @@ local function Init_Fast_Button_Menu(frame, level, menuList)
     local playerName= Save.fast[self.name]
     local newName= e.GetUnitName(SendMailNameEditBox:GetText())
     e.LibDD:UIDropDownMenu_AddButton({
-        text=icon..self.name..': '..(playerName and e.GetPlayerInfo({name=playerName, reName=true}) or format('|cff606060%s|r', e.onlyChinese and '无' or NONE)),
+        text=icon..self.name..': '..(playerName and e.GetPlayerInfo({name=playerName, reName=true}) or format('|cff9e9e9e%s|r', e.onlyChinese and '无' or NONE)),
         notCheckable=true,
-        colorCode= not playerName and '|cff606060',
+        colorCode= not playerName and '|cff9e9e9e',
         isTitle=true,
     }, level)
 
     e.LibDD:UIDropDownMenu_AddButton({
         text= e.onlyChinese and '更新' or UPDATE,
         notCheckable=true,
-        colorCode= (not newName or playerName==newName) and '|cff606060',
+        colorCode= (not newName or playerName==newName) and '|cff9e9e9e',
         tooltipOnButton=true,
         tooltipTitle= newName or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '需求' or NEED, e.onlyChinese and '收件人：' or MAIL_TO_LABEL),
         arg1=self.name,
@@ -822,7 +822,7 @@ local function Init_Fast_Button_Menu(frame, level, menuList)
     e.LibDD:UIDropDownMenu_AddButton({
         text= e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
         notCheckable=true,
-        colorCode= not playerName and '|cff606060',
+        colorCode= not playerName and '|cff9e9e9e',
         arg1=self.name,
         func=function(_, arg1)
             Save.fast[arg1]=nil

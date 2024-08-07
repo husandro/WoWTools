@@ -310,12 +310,12 @@ local function Create_Button(name)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, e.cn(addName))
-        local col= self:find_text() and '|cff606060' or ''
+        local col= self:find_text() and '|cff9e9e9e' or ''
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(col..self.text..(self.tip or ''), e.Icon.left)
         if self.text2 then
             e.tips:AddLine(' ')
-            col= self:find_text(true) and '|cff606060' or ''
+            col= self:find_text(true) and '|cff9e9e9e' or ''
         end
         e.tips:AddDoubleLine(col..self.text2..(self.tip2 or ''), e.Icon.right)
         e.tips:Show()
@@ -395,7 +395,7 @@ local function Create_Spell_Menu(spellID, icon, name, texture)--创建，法术�
 
     local headText= (UnitAffectingCombat('player') and '|cnRED_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:')
             ..'Alt |T'..(icon or 0)..':0|t'..(e.onlyChinese and '设置图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, EMBLEM_SYMBOL))
-            --..'|r|n|cff606060Ctrl '..(e.onlyChinese and '查询' or WHO)..' (BUG)|r'
+            --..'|r|n|cff9e9e9eCtrl '..(e.onlyChinese and '查询' or WHO)..' (BUG)|r'
             ..'|nShift '..(e.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT)
     e.LibDD:UIDropDownMenu_AddButton({
         text= format('|A:%s:0:0|a', texture or '')..name..(macroText and '|cnGREEN_FONT_COLOR:*|r' or ''),
@@ -461,7 +461,7 @@ local function set_btn_tooltips(self, index)
             e.tips:AddDoubleLine('|cffffffff'..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,  e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS, index), '|cffff00ff|T'..icon..':0|t'..name)
             e.tips:AddLine(body, nil,nil,nil, true)
             e.tips:AddLine(' ')
-            local col= UnitAffectingCombat('player') and '|cff606060' or '|cffffffff'
+            local col= UnitAffectingCombat('player') and '|cff9e9e9e' or '|cffffffff'
             e.tips:AddDoubleLine(
                 col..(e.onlyChinese and '删除' or DELETE),
                 col..'Alt+'..(e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left
@@ -513,10 +513,10 @@ local function Init_Create_Button()
         e.tips:AddLine(' ')
         local bat= UnitAffectingCombat('player')
         e.tips:AddDoubleLine(
-            ((not MacroNewButton:IsEnabled() or bat) and '|cff606060' or '')
+            ((not MacroNewButton:IsEnabled() or bat) and '|cff9e9e9e' or '')
             ..(e.onlyChinese and '新建' or NEW), e.Icon.left
         )
-        e.tips:AddDoubleLine((bat and '|cff606060' or '')..(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU), e.Icon.right)
+        e.tips:AddDoubleLine((bat and '|cff9e9e9e' or '')..(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU), e.Icon.right)
         e.tips:Show()
         self:SetAlpha(0.5)
     end
@@ -647,14 +647,14 @@ local function Init_Create_Button()
                     },1)
                 else
                     e.LibDD:UIDropDownMenu_AddButton({
-                        text= '|cff606060'..(e.onlyChinese and '保存' or SAVE),
+                        text= '|cff9e9e9e'..(e.onlyChinese and '保存' or SAVE),
                         notCheckable=true,
                         isTitle=true,
                     }, level)
                 end
             else
                 e.LibDD:UIDropDownMenu_AddButton({
-                    text= '|cff606060'..(e.onlyChinese and '保存' or SAVE),
+                    text= '|cff9e9e9e'..(e.onlyChinese and '保存' or SAVE),
                     notCheckable=true,
                     isTitle=true,
                 }, level)
@@ -1455,7 +1455,7 @@ local function Init_Macro_List()
         e.tips:AddLine((e.onlyChinese and '图标' or EMBLEM_SYMBOL)..':', e.Icon.left)
         local text= e.onlyChinese and '备注' or LABEL_NOTE
         text= (Save.toRightLeft and MacroFrame.macroBase==0) and '|cnGREEN_FONT_COLOR:'..text..'|r'
-            or ('|cff606060'..text..'|r')
+            or ('|cff9e9e9e'..text..'|r')
         e.tips:AddDoubleLine(format('|A:%s:0:0|a', e.Icon.toLeft)..(e.onlyChinese and '左' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT), (Save.toRightLeft==1 and format('|A:%s:0:0|a', e.Icon.select) or '')..text)
         e.tips:AddDoubleLine(format('|A:%s:0:0|a', e.Icon.toRight)..(e.onlyChinese and '右' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT), (Save.toRightLeft==2 and format('|A:%s:0:0|a', e.Icon.select) or '')..text)
         e.tips:AddDoubleLine('|A:'..e.Icon.icon..':0:0|a'..(e.onlyChinese and '默认' or DEFAULT), not Save.toRightLeft and format('|A:%s:0:0|a', e.Icon.select))
@@ -1682,10 +1682,10 @@ local function Init()
     	local numAccountMacros, numCharacterMacros
         numAccountMacros, numCharacterMacros = GetNumMacros()
         numAccountMacros= numAccountMacros or 0
-        numAccountMacros= numAccountMacros==MAX_ACCOUNT_MACROS and '|cff606060'..numAccountMacros or numAccountMacros
+        numAccountMacros= numAccountMacros==MAX_ACCOUNT_MACROS and '|cff9e9e9e'..numAccountMacros or numAccountMacros
 
         numCharacterMacros= numCharacterMacros or 0
-        numCharacterMacros= numCharacterMacros==MAX_CHARACTER_MACROS and '|cff606060'..numCharacterMacros or numCharacterMacros
+        numCharacterMacros= numCharacterMacros==MAX_CHARACTER_MACROS and '|cff9e9e9e'..numCharacterMacros or numCharacterMacros
 
         MacroFrameTab1.label:SetText(numAccountMacros..'/'..MAX_ACCOUNT_MACROS)
         MacroFrameTab2.label:SetText(numCharacterMacros..'/'..MAX_CHARACTER_MACROS)

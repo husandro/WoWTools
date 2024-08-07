@@ -213,7 +213,7 @@ local function Init()
         e.tips:SetSpellByID(self.spellId or 43883)
         e.tips:AddLine(' ')
         local macro= select(3, GetMacroInfo('Ram'))
-        local col= (macro and macro:find('ExtraActionButton1')) and '|cff606060' or ''
+        local col= (macro and macro:find('ExtraActionButton1')) and '|cff9e9e9e' or ''
         e.tips:AddDoubleLine(col..(e.onlyChinese and '创建宏"' or CREATE_MACROS), col..'Shift+'..e.Icon.left)
         e.tips:AddLine(col..'/click ExtraActionButton1')
         e.tips:AddLine(' ')

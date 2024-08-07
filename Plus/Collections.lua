@@ -74,7 +74,7 @@ local function GetSetsCollectedNum(setID)--套装 , 收集数量, 返回: 图标
         if numCollected==numAll then
             return '|A:AlliedRace-UnlockingFrame-Checkmark:12:12|a', numCollected, numAll--, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r'
         elseif numCollected==0 then
-            return '|cff606060'..numAll-numCollected..'|r ', numCollected, numAll,  '|cff606060'..numCollected..'|r/'..numAll--, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
+            return '|cff9e9e9e'..numAll-numCollected..'|r ', numCollected, numAll,  '|cff9e9e9e'..numCollected..'|r/'..numAll--, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
         else
             return numAll-numCollected, numCollected, numAll, '|cffffffff'..numCollected..'|r/'..numAll--, '|cnYELLOW_FONT_COLOR:'..numCollected..'/'..numAll..' '..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
         end
@@ -652,7 +652,7 @@ local function Init_Wardrober_ListContainer()
 
                     local isCollected= collect== numAll--是否已收
 
-                    local tip= (collect==0 and '|cff606060'..collect..'|r' or collect)
+                    local tip= (collect==0 and '|cff9e9e9e'..collect..'|r' or collect)
                                 ..'/'..numAll--收集数量
                                 ..' '..meno..(not isCollected and ' ' or '')
                                 ..name--名称

@@ -852,7 +852,7 @@ local function InitMenu(_, level, type)
 				info={
 					text= name..' |cnGREEN_FONT_COLOR:'..index..'|r',
 					tooltipOnButton=true,
-					colorCode= not Save.indicato and '|cff606060' or nil,
+					colorCode= not Save.indicato and '|cff9e9e9e' or nil,
 					tooltipTitle= e.onlyChinese and '移除' or REMOVE,
 					notCheckable= true,
 					arg1= name2,
@@ -906,7 +906,7 @@ local function InitMenu(_, level, type)
 		e.LibDD:UIDropDownMenu_AddSeparator(level)
 		info={
 			text=e.onlyChinese and '重置位置' or RESET_POSITION,
-			colorCode= (not Save.point or not TrackButton) and '|cff606060' or nil,
+			colorCode= (not Save.point or not TrackButton) and '|cff9e9e9e' or nil,
 			notCheckable=true,
 			keepShownOnClick=true,
 			func= function()
@@ -946,7 +946,7 @@ local function InitMenu(_, level, type)
 		text= (e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION),
 		checked= Save.indicato,
 		menuList='INDICATOLIST',
-		colorCode= not Save.btn and '|cff606060' or nil,
+		colorCode= not Save.btn and '|cff9e9e9e' or nil,
 		hasArrow=true,
 		keepShownOnClick=true,
 		func= function()

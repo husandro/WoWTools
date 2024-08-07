@@ -1348,7 +1348,7 @@ function Init_TrackButton_ShowHide_Button()
         e.tips:AddDoubleLine(id, Initializer:GetName())
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '装备管理' or EQUIPMENT_MANAGER, e.Icon.left..e.GetShowHide(Save.equipment))
-        local col= not (self.btn and Save.Equipment) and '|cff606060' or ''
+        local col= not (self.btn and Save.Equipment) and '|cff9e9e9e' or ''
         e.tips:AddDoubleLine(col..(e.onlyChinese and '重置位置' or RESET_POSITION), col..'Ctrl+'..e.Icon.right)
         e.tips:Show()
         self:SetAlpha(1)
@@ -2550,7 +2550,7 @@ local function Init_Status_Menu()
                 text=e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT,
                 notCheckable=true,
                 icon='uitools-icon-refresh',
-                colorCode= Save.PAPERDOLL_STATCATEGORIES and '' or '|cff606060',
+                colorCode= Save.PAPERDOLL_STATCATEGORIES and '' or '|cff9e9e9e',
                 func= function()
                     PAPERDOLL_STATCATEGORIES= P_PAPERDOLL_STATCATEGORIES
                     Save.PAPERDOLL_STATCATEGORIES=nil

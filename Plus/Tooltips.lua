@@ -489,7 +489,7 @@ function func:Set_Mount(tooltip, mountID, type)--坐骑
         C_MountJournal.SummonByID(mountID)
         print(id, Initializer:GetName(), spellID and C_Spell.GetSpellLink(spellID), '|cnGREEN_FONT_COLOR:Alt+'..(e.onlyChinese and '召唤坐骑' or MOUNT))
     end
-    local col= can and '|cnGREEN_FONT_COLOR:' or '|cff606060'
+    local col= can and '|cnGREEN_FONT_COLOR:' or '|cff9e9e9e'
     tooltip:AddDoubleLine(col..(e.onlyChinese and '召唤坐骑' or MOUNT), col..'Alt+')
 
     if type and MountJournal and MountJournal:IsVisible() and creatureName then
@@ -759,7 +759,7 @@ function func:Set_Item(tooltip, itemLink, itemID)
             if guid and guid~=e.Player.guid and info.Keystone.link then
                 e.GetKeystoneScorsoColor(info.Keystone.score, false, nil)
                 tooltip:AddDoubleLine(
-                    (info.Keystone.weekNum==0 and '|cff6060600|r' or info.Keystone.weekNum or '')
+                    (info.Keystone.weekNum==0 and '|cff9e9e9e0|r' or info.Keystone.weekNum or '')
                     ..(info.Keystone.weekMythicPlus and '|cnGREEN_FONT_COLOR:('..info.Keystone.weekMythicPlus..') ' or '')
                     ..e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true})
                     ..e.GetKeystoneScorsoColor(info.Keystone.score, false, nil)..(e.GetKeystoneScorsoColor(info.Keystone.score,true)),
@@ -797,7 +797,7 @@ function func:Set_Item(tooltip, itemLink, itemID)
         for guid, info in pairs(e.WoWDate or {}) do
             if guid and guid~=e.Player.guid and info.Item[itemID] then
                 local tab=info.Item[itemID]
-                tooltip:AddDoubleLine(e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}), '|A:Banker:0:0|a'..(tab.bank==0 and '|cff606060'..tab.bank..'|r' or tab.bank)..' '..'|A:bag-main:0:0|a'..(tab.bag==0 and '|cff606060'..tab.bag..'|r' or tab.bag))
+                tooltip:AddDoubleLine(e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}), '|A:Banker:0:0|a'..(tab.bank==0 and '|cff9e9e9e'..tab.bank..'|r' or tab.bank)..' '..'|A:bag-main:0:0|a'..(tab.bag==0 and '|cff9e9e9e'..tab.bag..'|r' or tab.bag))
                 bagAll=bagAll +tab.bag
                 bankAll=bankAll +tab.bank
                 numPlayer=numPlayer +1
@@ -806,7 +806,7 @@ function func:Set_Item(tooltip, itemLink, itemID)
 
         if numPlayer>0 then
             wowNum= bagAll+ bankAll
-            tooltip:AddDoubleLine(numPlayer..' '..(e.onlyChinese and '角色' or CHARACTER)..' '..e.MK(wowNum+bag+bank, 3), format('|T%d:0|t', e.Icon.wow)..e.MK(bagAll+bankAll, 3)..' = '..'|A:Banker:0:0|a'..(bankAll==0 and '|cff606060'..bankAll..'|r' or e.MK(bankAll,3))..' '..'|A:bag-main:0:0|a'..(bagAll==0 and '|cff606060'..bagAll..'|r' or e.MK(bagAll, 3)))
+            tooltip:AddDoubleLine(numPlayer..' '..(e.onlyChinese and '角色' or CHARACTER)..' '..e.MK(wowNum+bag+bank, 3), format('|T%d:0|t', e.Icon.wow)..e.MK(bagAll+bankAll, 3)..' = '..'|A:Banker:0:0|a'..(bankAll==0 and '|cff9e9e9e'..bankAll..'|r' or e.MK(bankAll,3))..' '..'|A:bag-main:0:0|a'..(bagAll==0 and '|cff9e9e9e'..bagAll..'|r' or e.MK(bagAll, 3)))
         end
     end
 

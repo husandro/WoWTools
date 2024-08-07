@@ -3090,7 +3090,6 @@
         "CREATURE",
         "YOU",
         "FACTION",
-        "UnitAura",
         "UIDROPDOWNMENU_MAXLEVELS",
         "ExecuteFrameScript",
         "GameFontDisableSmallLeft",
@@ -3157,7 +3156,6 @@
         "SPELL_FAILED_ERROR",
         "EMOTE102_CMD1",
         "SLASH_RANDOMFAVORITEPET1",
-        "UnitBuff",
         "UNITNAME_SUMMON_TITLE14",
         "MOUNT_JOURNAL_FILTER_GROUND",
         "MOUNT_JOURNAL_FILTER_FLYING",
@@ -3978,7 +3976,6 @@
         "SettingsTooltip",
         "BATTLE_PET_NOT_TRADABLE",
         "BATTLE_PET_CANNOT_BATTLE",
-        "UnitDebuff",
         "DEAD",
         "GameTooltipTextRight3",
         "SPELL_MESSAGES",
@@ -4049,7 +4046,6 @@
         "PLAYER_LIST_DELIMITER",
         "BNet_GetClientEmbeddedTexture",
         "ChatFrame_OpenChat",
-        "GetItemStats",
         "ConvertSecondsToUnits",
         "ChatFrame_SendBNetTell",
         "SetItemButtonNormalTextureVertexColor",
@@ -4541,7 +4537,6 @@
         "HideDropDownMenu",
         "UIDropDownMenu_GetCurrentDropDown",
         "GetNumWorldPVPAreas",
-        "GetStablePetFoodTypes",
         "GUILDCONTROL_DEPOSIT_ITEMS",
         "BankFrameItem1",
         "BankFrameItemButton_Update",
@@ -4741,5 +4736,20 @@
         "redundant-parameter",
         "assign-type-mismatch",
         "param-type-mismatch"
+    ],
+    "Lua.runtime.version": "Lua 5.1",
+    "Lua.runtime.builtin": {
+        "basic": "disable",
+        "debug": "disable",
+        "io": "disable",
+        "math": "disable",
+        "os": "disable",
+        "package": "disable",
+        "string": "disable",
+        "table": "disable",
+        "utf8": "disable"
+    },
+    "Lua.workspace.library": [
+        "c:\\Users\\husan\\.vscode\\extensions\\ketho.wow-api-0.15.5\\Annotations"
     ],
 }

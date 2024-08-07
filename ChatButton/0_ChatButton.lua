@@ -32,11 +32,11 @@ local ChatButton
 
 
 local function Init_Menu(self, root)
-    root:CreateButton((Save.Point and '' or '|cff606060')..(e.onlyChinese and '重置位置' or RESET_POSITION), function()
+    root:CreateButton((Save.Point and '' or '|cff9e9e9e')..(e.onlyChinese and '重置位置' or RESET_POSITION), function()
         Save.Point=nil
         self:set_point()
     end)
-    root:CreateButton((Save.scale~=1 and '' or '|cff606060')..(e.onlyChinese and '重置缩放' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, RESET, UI_SCALE)), function(...)
+    root:CreateButton((Save.scale~=1 and '' or '|cff9e9e9e')..(e.onlyChinese and '重置缩放' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, RESET, UI_SCALE)), function(...)
         Save.scale= e.Player.husandro and 0.8 or 1
         self:set_scale()
     end)

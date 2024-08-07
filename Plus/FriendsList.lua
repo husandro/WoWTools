@@ -966,7 +966,7 @@ local function Init()--FriendsFrame.lua
                 num= numEncounters- encounterProgress
                 num= num<0 and 0 or num
                 if not (extended or locked) then
-                    text= '|cff606060'..num..'/'..numEncounters..'|r'
+                    text= '|cff9e9e9e'..num..'/'..numEncounters..'|r'
                 elseif num==0 then
                     text= '|cnRED_FONT_COLOR:'..num..'/'..numEncounters..'|r'
                 else

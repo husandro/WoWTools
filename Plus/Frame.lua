@@ -206,7 +206,7 @@ local function set_Scale_Size(frame, tab)
         scale= ((scale<=0.4 or scale>=2.5) and ' |cnRED_FONT_COLOR:' or ' |cnGREEN_FONT_COLOR:')..scale
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..scale, e.Icon.left)
 
-        local col= Save.scale[self.name] and '' or '|cff606060'
+        local col= Save.scale[self.name] and '' or '|cff9e9e9e'
         e.tips:AddDoubleLine(col..(e.onlyChinese and '默认' or DEFAULT), col..'Alt+'..e.Icon.left)
 
         if self.set_move_event then--Frame 移动时，设置透明度
@@ -214,7 +214,7 @@ local function set_Scale_Size(frame, tab)
             if not Save.disabledAlpha[self.name] then
                 e.tips:AddDoubleLine((e.onlyChinese and '移动时透明度 ' or MAP_FADE_TEXT:gsub(WORLD_MAP, 'Frame'))..'|cnGREEN_FONT_COLOR:'..Save.alpha, e.Icon.mid)
             else
-                e.tips:AddDoubleLine('|cff606060'..((e.onlyChinese and '移动时透明度 禁用' or (MAP_FADE_TEXT:gsub(WORLD_MAP, 'Frame')..' '..DISABLE))), e.Icon.mid)
+                e.tips:AddDoubleLine('|cff9e9e9e'..((e.onlyChinese and '移动时透明度 禁用' or (MAP_FADE_TEXT:gsub(WORLD_MAP, 'Frame')..' '..DISABLE))), e.Icon.mid)
             end
         end
 
@@ -236,7 +236,7 @@ local function set_Scale_Size(frame, tab)
             if self.sizeRestTooltipColorFunc then
                 col2=self.sizeRestTooltipColorFunc(self)
             end
-            col2=col2 or (Save.size[self.name] and '' or '|cff606060')
+            col2=col2 or (Save.size[self.name] and '' or '|cff9e9e9e')
             e.tips:AddDoubleLine(
                 col2..(self.sizeRestFunc and (e.onlyChinese and '默认' or DEFAULT) or (e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)),
                 col2..'Alt+'..e.Icon.right
@@ -251,7 +251,7 @@ local function set_Scale_Size(frame, tab)
             end
         end
         if self.target.setMoveFrame and not self.target.notSave then
-            local col2= Save.point[self.name] and '' or '|cff606060'
+            local col2= Save.point[self.name] and '' or '|cff9e9e9e'
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(col2..(e.onlyChinese and '清除位置' or (SLASH_STOPWATCH_PARAM_STOP2..CHOOSE_LOCATION:gsub(CHOOSE , ''))), col2..'Shift+'..e.Icon.left)
         else
@@ -472,7 +472,7 @@ local function set_Scale_Size(frame, tab)
                 local col
                 if d==1 then
                     Save.disabledAlpha[self.name]= true
-                    col= '|cff606060'
+                    col= '|cff9e9e9e'
                 else
                     Save.disabledAlpha[self.name]= nil
                     col= '|cnGREEN_FONT_COLOR:'
@@ -718,7 +718,7 @@ local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name, point=left)
         e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:AddLine(self.name)
         e.tips:AddLine(' ')
-        local col= UnitAffectingCombat('player') and '|cff606060' or ''
+        local col= UnitAffectingCombat('player') and '|cff9e9e9e' or ''
         e.tips:AddDoubleLine(col..(e.onlyChinese and '缩放' or UI_SCALE).. ' |cnGREEN_FONT_COLOR:'..(format('%.2f', Save.scale[self.name] or 1)), e.Icon.mid)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(col..(e.onlyChinese and '放大' or ZOOM_IN), e.Icon.left)
@@ -957,7 +957,7 @@ local function Init_Blizzard_Communities()--公会和社区 then
         elseif Save.size['CommunitiesFrameNormal'] then
             return ''
         end
-        return '|cff606060'
+        return '|cff9e9e9e'
     end,
     })
     e.Set_Move_Frame(CommunitiesFrame.RecruitmentDialog)
@@ -1752,13 +1752,13 @@ local function setAddLoad(arg1)
         end, sizeRestTooltipColorFunc= function(btn)
             local name= btn.name
             if ProfessionsUtil.IsCraftingMinimized() then
-                return Save.size[name..'Mini'] and '' or '|cff606060'
+                return Save.size[name..'Mini'] and '' or '|cff9e9e9e'
             elseif btn.target.TabSystem.selectedTabID==2 then
-                return Save.size[name..'Spec'] and '' or '|cff606060'
+                return Save.size[name..'Spec'] and '' or '|cff9e9e9e'
             elseif btn.target.TabSystem.selectedTabID==3 then
-                return Save.size[name..'Order'] and '' or '|cff606060'
+                return Save.size[name..'Order'] and '' or '|cff9e9e9e'
             else
-                return Save.size[name..'Normal'] and '' or '|cff606060'
+                return Save.size[name..'Normal'] and '' or '|cff9e9e9e'
             end
         end, sizeStopFunc=function(btn)
             local self= btn.target
@@ -2332,7 +2332,7 @@ local function Init_Move()
         end
         CharacterFrame:UpdateSize()
     end, sizeRestTooltipColorFunc=function(self)
-        return ((self.target.Expanded and Save.size['CharacterFrameExpanded']) or (not self.target.Expanded and Save.size['CharacterFrameCollapse'])) and '' or '|cff606060'
+        return ((self.target.Expanded and Save.size['CharacterFrameExpanded']) or (not self.target.Expanded and Save.size['CharacterFrameCollapse'])) and '' or '|cff9e9e9e'
     end})
 
     e.Set_Move_Frame(TokenFrame, {frame=CharacterFrame})

@@ -122,7 +122,7 @@ function Init_Menu(self, level, menuList)
         e.LibDD:UIDropDownMenu_AddSeparator(level)
         e.LibDD:UIDropDownMenu_AddButton({
             text= (e.onlyChinese and '全部清除' or CLEAR_ALL)..' #'..n,
-            colorCode= n==0 and '|cff606060',
+            colorCode= n==0 and '|cff9e9e9e',
             notCheckable=true,
             func=function()
                 Save.items={}

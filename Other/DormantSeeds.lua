@@ -53,9 +53,9 @@ local function Init()
         end
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-        local col= UnitAffectingCombat('player') and '|cff606060' or ''
+        local col= UnitAffectingCombat('player') and '|cff9e9e9e' or ''
         e.tips:AddDoubleLine(col..(e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.scale or 1), col..('Alt+'..e.Icon.mid))
-        col= not Save.point and '|cff606060' or ''
+        col= not Save.point and '|cff9e9e9e' or ''
         e.tips:AddDoubleLine(col..(e.onlyChinese and '重置位置' or RESET_POSITION), col..'Ctrl+'..e.Icon.right)
         e.tips:Show()
     end

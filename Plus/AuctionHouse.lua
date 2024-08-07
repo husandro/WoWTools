@@ -293,7 +293,7 @@ local function Init_Sell()
             end
         end
 
-        self.Text:SetText(Save.hideSellItemList and '|cff606060'..(e.onlyChinese and '隐藏' or HIDE) or index-1)
+        self.Text:SetText(Save.hideSellItemList and '|cff9e9e9e'..(e.onlyChinese and '隐藏' or HIDE) or index-1)
     end
 
 
@@ -712,7 +712,7 @@ local function Init_Sell()
                 if unitPrice> vendorPrice then
                     local x= unitPrice/vendorPrice
                     if x<5 then
-                        col= '|cff606060'
+                        col= '|cff9e9e9e'
                     elseif x<10 then
                         col= '|cffffffff'
                     elseif x<50 then

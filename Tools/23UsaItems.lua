@@ -627,7 +627,7 @@ function Init_Menu_List(_, level, type)
 
             if (type=='spell' and not IsSpellKnownOrOverridesKnown(ID)) or ((type=='item' or type=='equip') and C_Item.GetItemCount(ID)==0 and not PlayerHasToy(ID)) then
                 info.text=format('|A:%s:0:0|a%s', e.Icon.disabled, info.text)
-                info.colorCode='|cff606060'
+                info.colorCode='|cff9e9e9e'
             end
 
             local isToy= type=='item' and C_ToyBox.GetToyInfo(ID)

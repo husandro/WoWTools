@@ -64,16 +64,16 @@ local function Init_Bank_Plus()--增强，原生
         e.tips:AddDoubleLine(e.onlyChinese and '显示材料银行' or REAGENT_BANK, e.GetShowHide(not Save.hideReagentBankFrame)..e.Icon.left)
         e.tips:AddLine(' ')
 
-        local col= not ReagentBankFrame:IsShown() and '|cff606060'
+        local col= not ReagentBankFrame:IsShown() and '|cff9e9e9e'
         e.tips:AddDoubleLine((col or '')..(e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.scaleReagentBankFrame or 1), (col or '')..'Alt+'..e.Icon.mid)
 
         if Save.pointReagentBank then
-            col='|cff606060'
+            col='|cff9e9e9e'
         end
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine((col or '')..'X |cnGREEN_FONT_COLOR:'..Save.xReagentBankFrame, (col or '')..'Ctrl+'..e.Icon.mid)
         e.tips:AddDoubleLine((col or '')..'Y |cnGREEN_FONT_COLOR:'..Save.yReagentBankFrame, (col or '')..'Shift+'..e.Icon.mid)
-        col= Save.pointReagentBank and '' or '|cff606060'
+        col= Save.pointReagentBank and '' or '|cff9e9e9e'
         e.tips:AddDoubleLine(col..(e.onlyChinese and '还原位置' or RESET_POSITION), col..'Ctrl+'..e.Icon.right)
         e.tips:Show()
     end
@@ -940,8 +940,8 @@ local function Init_Desposit_TakeOut_Button()
                 frame.Label:SetText('')
             else
                 frame.Label:SetText(
-                    (bank==0 and '|cff606060' or '|cnGREEN_FONT_COLOR:')..e.MK(bank, 3)..'|A:Banker:0:0|a'
-                    ..'|A:bag-main:0:0|a'..( bag==0 and '|cff606060' or '|cnGREEN_FONT_COLOR:')..e.MK(bag, 3)
+                    (bank==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:')..e.MK(bank, 3)..'|A:Banker:0:0|a'
+                    ..'|A:bag-main:0:0|a'..( bag==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:')..e.MK(bag, 3)
                 )
             end
         end

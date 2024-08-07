@@ -661,7 +661,7 @@ local function add_Click_To_Move_Button()--点击移动，按钮
             e.tips:ClearLines()
             e.tips:AddDoubleLine(id, e.cn(addName))
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine((UnitAffectingCombat('player') and '|cff606060' or '')..(e.onlyChinese and '点击移动' or CLICK_TO_MOVE)..': '..e.GetEnabeleDisable(C_CVar.GetCVarBool("autoInteract")), e.Icon.left)
+            e.tips:AddDoubleLine((UnitAffectingCombat('player') and '|cff9e9e9e' or '')..(e.onlyChinese and '点击移动' or CLICK_TO_MOVE)..': '..e.GetEnabeleDisable(C_CVar.GetCVarBool("autoInteract")), e.Icon.left)
             e.tips:AddDoubleLine(e.onlyChinese and '选项' or OPTIONS, e.Icon.right)
             e.tips:AddLine(' ')
             e.tips:AddLine(e.Get_CVar_Tooltips({name='autoInteract'}))

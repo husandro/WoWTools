@@ -872,7 +872,7 @@ local function InitMenu(_, level, type)--主菜单
         info={
             text= e.onlyChinese and '重置位置' or RESET_POSITION,
             disabled=UnitAffectingCombat('player'),
-            colorCode=not Save.Point and '|cff606060',
+            colorCode=not Save.Point and '|cff9e9e9e',
             keepShownOnClick=true,
             func=function()
                 Save.Point=nil
@@ -933,7 +933,7 @@ local function InitMenu(_, level, type)--主菜单
                 text= text,
                 tooltipOnButton=true,
                 tooltipTitle= format('%sCtrl+%s', e.onlyChinese and '移除' or REMOVE, e.Icon.left),
-                colorCode= not known and '|cff606060',
+                colorCode= not known and '|cff9e9e9e',
                 checked= button.spellID==spellID,
                 keepShownOnClick=true,
                 arg1= spellID,
@@ -1000,7 +1000,7 @@ local function InitMenu(_, level, type)--主菜单
             info={
                 text=name or ('spellID '..spellID),
                 icon=icon,
-                colorCode= spellID~=MountTab[type][1] and '|cff606060' or '|cnGREEN_FONT_COLOR:',
+                colorCode= spellID~=MountTab[type][1] and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:',
                 notCheckable=true,
                 tooltipOnButton= true,
                 keepShownOnClick=true,
@@ -1100,7 +1100,7 @@ local function InitMenu(_, level, type)--主菜单
                 hasArrow=true,
                 keepShownOnClick=true,
                 notCheckable=true,
-                colorCode=num==0 and '|cff606060',
+                colorCode=num==0 and '|cff9e9e9e',
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level);
 
@@ -1235,7 +1235,7 @@ local function Init_Menu_Set_UI(self, level)--坐骑界面, 菜单
                     or not isCollected
                     or shouldHideOnChar
                     or (isFactionSpecific and faction~=Faction)
-                ) and '|cff606060'
+                ) and '|cff9e9e9e'
         }
         if type==FLOOR then
             info.func= function(_, tab)

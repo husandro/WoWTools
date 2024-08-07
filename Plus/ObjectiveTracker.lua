@@ -533,7 +533,7 @@ local function Init_ObjectiveTrackerFrame()
     local btn= ObjectiveTrackerFrame.Header.MinimizeButton
 
     function btn:set_tooltip()
-        local col= self:CanChangeAttribute() and '' or '|cff606060'
+        local col= self:CanChangeAttribute() and '' or '|cff9e9e9e'
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(id, addName)
@@ -613,12 +613,12 @@ local function Init_ObjectiveTrackerFrame()
         MenuUtil.CreateContextMenu(frame, function(owner, root)
             local sub, col
            
-            col= owner:set_frames_show(true, true) and '' or '|cff606060'
+            col= owner:set_frames_show(true, true) and '' or '|cff9e9e9e'
             root:CreateButton(col..(e.onlyChinese and '收起选项 |A:NPE_ArrowUp:0:0|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS), function()
                 owner:set_frames_show(true, false)
             end)
 
-            col= owner:set_frames_show(false, true) and '' or '|cff606060'
+            col= owner:set_frames_show(false, true) and '' or '|cff9e9e9e'
             root:CreateButton(col..(e.onlyChinese and '展开选项 |A:NPE_ArrowDown:0:0|a' or HUD_EDIT_MODE_EXPAND_OPTIONS), function()
                 owner:set_frames_show(false, false)
             end)

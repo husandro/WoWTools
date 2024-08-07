@@ -271,7 +271,7 @@ function e.Set_Item_Info(self, tab)
             end
             topRightText= e.WA_Utf8Sub(subclassID==9 and itemType or itemSubType, 2,3)
             if lowerVer then--低版本
-                topRightText= '|cff606060'..topRightText..'|r'
+                topRightText= '|cff9e9e9e'..topRightText..'|r'
             else
                 bottomLeftText, topLeftText= e.Get_Gem_Stats(nil, itemLink)
             end
@@ -285,7 +285,7 @@ function e.Set_Item_Info(self, tab)
                     topRightText= e.WA_Utf8Sub(itemSubType==OTHER and itemType or itemSubType, 2,3, true)
                 end
                 if lowerVer then--低版本
-                    topRightText= '|cff606060'..topRightText..'|r'
+                    topRightText= '|cff9e9e9e'..topRightText..'|r'
                 end
             end
             if dateInfo.text[ITEM_SPELL_KNOWN] then--"已经学会"

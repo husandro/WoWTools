@@ -1083,7 +1083,7 @@ local function Init_Menu(_, root)
             or C_CVar.GetCVar('Sound_MasterVolume')=='0'
             or C_CVar.GetCVar('Sound_DialogVolume')=='0'
             or not C_CVar.GetCVarBool('Sound_EnableDialog')
-        ) and '|cff606060' or ''
+        ) and '|cff9e9e9e' or ''
     sub=root:CreateCheckbox(col..'|A:chatframe-button-icon-voicechat:0:0|a'..(e.onlyChinese and '事件声音' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, EVENTS_LABEL, SOUND)), function()
         return Save.setPlayerSound
     end, function()

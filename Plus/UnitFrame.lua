@@ -304,7 +304,7 @@ end)
             text= ID==dungeonID and format('|A:%s:0:0|a', e.Icon.toRight)..text..format('|A:%s:0:0|a', e.Icon.toLeft) or text
             local set
             if index==3 then
-                set= ((UnitIsGroupLeader("player") or not IsInGroup()) and dungeonID~=ID and '|cnGREEN_FONT_COLOR:' or '|cff606060')
+                set= ((UnitIsGroupLeader("player") or not IsInGroup()) and dungeonID~=ID and '|cnGREEN_FONT_COLOR:' or '|cff9e9e9e')
                     ..(e.onlyChinese and '设置' or SETTINGS)
                     ..e.Icon.left
             end
@@ -1807,7 +1807,7 @@ local function Init_RaidFrame()--设置,团队
         e.tips:AddDoubleLine(id, e.cn(addName))
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-        local col= UnitAffectingCombat('player') and '|cff606060' or ''
+        local col= UnitAffectingCombat('player') and '|cff9e9e9e' or ''
         e.tips:AddDoubleLine(col..(e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.raidFrameScale or 1), col..'Alt+'..e.Icon.mid)
         e.tips:Show()
         self:SetAlpha(1)

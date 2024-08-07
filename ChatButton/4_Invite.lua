@@ -739,12 +739,12 @@ end
 local function Init_Menu(_, root)
     local sub, sub2, sub3, col, num, line
 
-    sub=root:CreateButton((getLeader() and '' or '|cff606060')..(e.onlyChinese and '邀请成员' or GUILDCONTROL_OPTION7), InvUnitFunc)
+    sub=root:CreateButton((getLeader() and '' or '|cff9e9e9e')..(e.onlyChinese and '邀请成员' or GUILDCONTROL_OPTION7), InvUnitFunc)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(e.onlyChinese and '周围玩家' or 'Players around')
     end)
 
-    sub2=sub:CreateCheckbox((IsInInstance() and '|cff606060' or '')..(e.onlyChinese and '邀请目标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INVITE, TARGET)), function()
+    sub2=sub:CreateCheckbox((IsInInstance() and '|cff9e9e9e' or '')..(e.onlyChinese and '邀请目标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INVITE, TARGET)), function()
         return Save.InvTar
     end, function()
         if IsInInstance() then
@@ -893,7 +893,7 @@ local function Init_Menu(_, root)
     end)
 
     for _, key in pairs({'Shift', 'Ctrl', 'Alt'}) do
-        col= (UnitAffectingCombat('player') or Save.focusKey== key) and '|cff606060' or ''
+        col= (UnitAffectingCombat('player') or Save.focusKey== key) and '|cff9e9e9e' or ''
         sub2=sub:CreateCheckbox(format('%s%s + %s', col, key, e.Icon.left), function(data)
             return Save.focusKey== data
         end, function(data)

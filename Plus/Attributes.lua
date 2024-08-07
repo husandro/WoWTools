@@ -1793,7 +1793,7 @@ local function Init_Options()--设置 panel
     restPosti:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddLine((not Save.point and '|cff606060' or '')..(e.onlyChinese and '重置位置' or RESET_POSITION))
+        e.tips:AddLine((not Save.point and '|cff9e9e9e' or '')..(e.onlyChinese and '重置位置' or RESET_POSITION))
         e.tips:Show()
     end)
 

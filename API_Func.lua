@@ -121,7 +121,7 @@ e.Set_Frame_Scale(self, delta, value, func)--设置Frame缩放
 
 --取得中文 
 function e.cn(text, tab)--{gossipOptionID=, questID=}
-    return WoW_Tools_Chinese_CN and WoW_Tools_Chinese_CN(text, tab) or text
+    return e.onlyChinese and WoW_Tools_Chinese_CN and WoW_Tools_Chinese_CN(text, tab) or text 
 end
 
 
@@ -982,7 +982,7 @@ function e.GetFactionInfo(factionID, index, toRight)
             isCapped= false
             friendshipID= repInfo.friendshipFactionID
         else
-            value= '|cff606060'..(e.onlyChinese and '已满' or VIDEO_OPTIONS_ULTRA_HIGH)..'|r'
+            value= '|cff9e9e9e'..(e.onlyChinese and '已满' or VIDEO_OPTIONS_ULTRA_HIGH)..'|r'
             isCapped=true
         end
         texture=repInfo.texture--图标
@@ -1001,7 +1001,7 @@ function e.GetFactionInfo(factionID, index, toRight)
             value= format('%i%%', info.renownReputationEarned/info.renownLevelThreshold*100)
             barColor= GREEN_FONT_COLOR
         else
-            value= '|cff606060'..(e.onlyChinese and '最高' or VIDEO_OPTIONS_ULTRA_HIGH)..'|r'
+            value= '|cff9e9e9e'..(e.onlyChinese and '最高' or VIDEO_OPTIONS_ULTRA_HIGH)..'|r'
         end
         atlas=info.textureKit and 'MajorFactions_Icons_'..info.textureKit..'512'
     else
@@ -1035,7 +1035,7 @@ function e.GetFactionInfo(factionID, index, toRight)
                     barColor= FACTION_BAR_COLORS[standingID]
                 end
             else
-                value= '|cff606060'..(e.onlyChinese and '最高' or VIDEO_OPTIONS_ULTRA_HIGH)..'|r'
+                value= '|cff9e9e9e'..(e.onlyChinese and '最高' or VIDEO_OPTIONS_ULTRA_HIGH)..'|r'
             end
         end
     end
@@ -2250,7 +2250,7 @@ function e.GetDurabiliy_OnEnter()--耐久度, 提示
     end
     e.tips:AddDoubleLine(
         (e.onlyChinese and '耐久度' or DURABILITY)..' ('..(max2>0 and math.modf(cur2/max2*100) or 100)..'%)'..coText,
-         '('..(num>0 and '|cnRED_FONT_COLOR:' or '|cff606060')..num..'|r) '..(e.onlyChinese and '修理物品' or REPAIR_ITEMS)..euip
+         '('..(num>0 and '|cnRED_FONT_COLOR:' or '|cff9e9e9e')..num..'|r) '..(e.onlyChinese and '修理物品' or REPAIR_ITEMS)..euip
     )
 
     local item, cur, pvp= GetAverageItemLevel()

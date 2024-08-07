@@ -223,7 +223,7 @@ local function InitMenu(_, level, type)--主菜单
                 or ((tab.text== INSTANCE or tab.text=='副本') and (not isInInstance or num<2))
                 or ((tab.text==RAID_WARNING or tab.text=='团队通知') and (not isInRaid or not le))
             then
-                info.colorCode='|cff606060'
+                info.colorCode='|cff9e9e9e'
             elseif (tab.text==RAID or tab.text=='团队') and not isInInstance then--在副本外,团
                 info.colorCode='|cffff0000'
             end
