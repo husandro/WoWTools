@@ -365,15 +365,25 @@ local function Init_Filter_Menu(root)
         filterNum= filterNum+1
     end
 
+    local filterPlayer=0
+    for _ in pairs(Save.myChatFilterPlayers) do
+        filterPlayer= filterPlayer+1
+    end
+
+
+
 --屏蔽刷屏
-    sub=root:CreateCheckbox((e.onlyChinese and '屏蔽刷屏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, IGNORE, CLUB_FINDER_REPORT_SPAM)).. ' '..filterNum,
+    sub=root:CreateCheckbox(
+        (e.onlyChinese and '屏蔽刷屏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, IGNORE, CLUB_FINDER_REPORT_SPAM))
+        .. ' '..(Save.myChatFilterAutoAdd and filterPlayer or filterNum),
+
         function()
             return Save.myChatFilter
 
         end, function()
             Save.myChatFilter= not Save.myChatFilter and true or nil
             Set_Filter()
-            --return MenuResponse.Open
+            return MenuResponse.CloseAll
         end)
 
     sub:SetTooltip(function(tooltip)
@@ -387,6 +397,10 @@ local function Init_Filter_Menu(root)
         tooltip:AddDoubleLine(e.onlyChinese and '总计' or TOTAL, e.MK(all, 3).. ' '..(e.onlyChinese and "次" or VOICEMACRO_LABEL_CHARGE1))
     end)
 
+
+if not Save.myChatFilter then
+    return
+end
 
 --设置, 屏蔽刷屏, 数量
     sub2=sub:CreateButton('     '..(e.onlyChinese and '设置' or SETTINGS)..' |cnGREEN_FONT_COLOR:'..Save.myChatFilterNum, function()
@@ -428,17 +442,12 @@ local function Init_Filter_Menu(root)
 
 
 
-    local filterPlayer=0
-    for _ in pairs(Save.myChatFilterPlayers) do
-        filterPlayer= filterPlayer+1
-    end
-
 --屏蔽玩家
     sub2=sub:CreateButton('     '..(e.onlyChinese and '屏蔽玩家' or IGNORE_PLAYER)..' #'..filterPlayer, function()
         return MenuResponse.Refresh
     end, filterPlayer)
 
-    
+
 
     if filterPlayer>0 then
 --全部清除
@@ -489,6 +498,10 @@ local function Init_Filter_Menu(root)
 
 
 
+    if Save.myChatFilterAutoAdd then
+        return
+    end
+    
 
 
     sub:CreateDivider()
@@ -563,15 +576,26 @@ local function Init_Filter_Menu(root)
     elseif filterNum>0 then
         sub:CreateTitle(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
     end
+end
 
 
 
 
 
-    
 
 
---自定义屏蔽
+
+
+
+
+
+
+
+
+--屏蔽刷屏, 自定义，菜单
+local function Init_User_Filter_Menu(root)
+    local sub, sub2
+
     local useNum= 0
     for _ in pairs(Save.userChatFilterTab) do
         useNum= useNum+1
@@ -581,6 +605,7 @@ local function Init_Filter_Menu(root)
     end, function()
         Save.userChatFilter= not Save.userChatFilter and true or false
         Set_Filter()
+        return MenuResponse.CloseAll
     end)
 
     sub:SetTooltip(function(tooltip)
@@ -591,6 +616,9 @@ local function Init_Filter_Menu(root)
         tooltip:AddDoubleLine(e.onlyChinese and '总计' or TOTAL, e.MK(all, 3).. ' '..(e.onlyChinese and "次" or VOICEMACRO_LABEL_CHARGE1))
     end)
 
+if not Save.userChatFilter then
+    return
+end
 
     sub:CreateButton(e.onlyChinese and '添加' or ADD, function()
         StaticPopupDialogs['WoWTools_ChatButton_Wolrd_userChatFilterADD']= {
@@ -647,7 +675,7 @@ local function Init_Filter_Menu(root)
 
     if useNum>0 then
 
---全部清除, 自定义屏蔽
+    --全部清除, 自定义屏蔽
         sub:CreateButton('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL)..' #'..useNum, function()
             Save.userChatFilterTab={}
         end)
@@ -675,11 +703,6 @@ local function Init_Filter_Menu(root)
         end
     end
 end
-
-
-
-
-
 
 
 
@@ -908,6 +931,8 @@ local function Init_Menu(_, root)
     end
 
     Init_Filter_Menu(root)--屏蔽刷屏, 菜单
+
+    Init_User_Filter_Menu(root)--屏蔽刷屏, 自定义，菜单
 end
 
 
