@@ -618,6 +618,9 @@ local function Init_Filter_Menu(root)
                 local text= self:GetText() or ''
                 local enabled=true
                 if text==''
+                    or text== e.Player.name_realm
+                    or text== e.Player.name
+
                     or text:find('^ ')
                     or text:find(' $')
 
