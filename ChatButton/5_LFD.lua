@@ -843,6 +843,31 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function Add_Initializer(button, description)
     if not button.leftTexture then
         button.leftTexture = button:AttachTexture()
@@ -1067,7 +1092,7 @@ local function set_Party_Menu_List(root)
                     sub:AddInitializer(Add_Initializer)
 
                 else
-                    sub=root:CreateButton('   |cff9e9e9e'..name..' |r', function()
+                    sub=root:CreateButton('   |cff9e9e9e'..e.cn(name)..' |r', function()
                         return MenuResponse.Open
                     end, {
                         dungeonID=dungeonID,

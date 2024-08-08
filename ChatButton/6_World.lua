@@ -7,6 +7,7 @@ local Save={
 
     myChatFilterAutoAdd= e.Player.husandro,
     myChatFilterPlayers={},--{[guid]=num,}
+
     userChatFilter=false,
     userChatFilterTab={},--{[name-realm]={num=0, guid=guid},}
 }
