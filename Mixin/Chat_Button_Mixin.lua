@@ -1,5 +1,22 @@
 local e= select(2, ...)
 
+
+
+
+function e.CeditBoxFrame(name, tab)
+    
+end
+
+
+
+
+
+
+
+
+
+
+
 WoWToolsChatButtonMixin= {}
 
 

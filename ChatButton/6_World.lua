@@ -381,10 +381,10 @@ local function Init_Filter_Menu(root)
         function()
             return Save.myChatFilter
 
-        end, function()
+        end, function(_, _, menu)
             Save.myChatFilter= not Save.myChatFilter and true or nil
             Set_Filter()
-            return MenuResponse.CloseAll
+            return MenuResponse.Close
         end)
 
     sub:SetTooltip(function(tooltip)
@@ -606,7 +606,7 @@ local function Init_User_Filter_Menu(root)
     end, function()
         Save.userChatFilter= not Save.userChatFilter and true or false
         Set_Filter()
-        return MenuResponse.CloseAll
+        return MenuResponse.Close
     end)
 
     sub:SetTooltip(function(tooltip)
@@ -728,14 +728,6 @@ end
 
 
 local function Add_Initializer(button, description)
-    if not button.leftTexture then
-        button.leftTexture = button:AttachTexture()
-        button.leftTexture:SetSize(12, 12)
-        button.leftTexture:SetAtlas('newplayertutorial-icon-mouse-leftbutton')
-        button.leftTexture:SetPoint("LEFT")
-        button.leftTexture:Hide()
-        button.fontString:SetPoint('LEFT', button.leftTexture, 'RIGHT')
-    end
     button:SetScript("OnUpdate", function(self, elapsed)
         self.elapsed= (self.elapsed or 1) +elapsed
         if self.elapsed>1 then
@@ -748,21 +740,21 @@ local function Add_Initializer(button, description)
             else
                 self.fontString:SetTextColor(1,1,1)
             end
-            if self.leftTexture then
-                self.leftTexture:SetShown(WorldButton.channelNumber and WorldButton.channelNumber==description.data.channelNumber)
-            end
         end
     end)
+
+    if button.leftTexture1 then
+        button.leftTexture1:SetShown(false)
+    end
+    if button.leftTexture2 then
+        button.leftTexture2:SetAtlas('newplayertutorial-icon-mouse-leftbutton')
+    end
 
     button:SetScript('OnHide', function(self)
         self:SetScript('OnUpdate', nil)
         self.elapsed=nil
         if self.fontString then
             self.fontString:SetTextColor(1,1,1)
-            self.fontString:SetPoint('LEFT')
-        end
-        if self.leftTexture then
-            self.leftTexture:SetShown(false)
         end
     end)
 end
@@ -857,14 +849,16 @@ local function Add_Menu(root, name, channelNumber)
     end
     text=((channelNumber and channelNumber>0) and channelNumber..' ' or '')..text--频道数字
 
-    local sub=root:CreateButton(text, function(data)
+    local sub=root:CreateCheckbox(text, function(data)
+        return WorldButton.channelNumber == GetChannelName(data.communityName or data.name)
+
+    end, function(data)
         Send_Say(data.name, data.channelNumber)
         Set_LeftClick_Tooltip(--设置点击提示,频道字符
             data.communityName or data.name,
             data.channelNumber,
             data.texture
         )
-        return MenuResponse.Open
 
     end, {
         texture=communityTexture,

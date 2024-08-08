@@ -2,49 +2,47 @@ local id, e = ...
 local Save= {
     --inInstanceBubblesDisabled= e.Player.husandro,
     saveWhisper=true,--保存, 密语
-    --WhisperTab={}--保存, 密语, 内容
+    WhisperTab={}--保存, 密语, 内容 {name=name, wow=wow, guid=guid, msg={text=text, type=type,time=time}}
+
+
+    --保存上次，内容
+    --type='/s',
+    --text= e.onlyChinese and '说' or SAY
+    --name=玩家名称,
+    --isWoW=bool,
+
 }
-local addName= SAY
-local button
+
+local addName
+local SayButton
 local panel= CreateFrame("Frame")
 
+local SLASH_SAY1= SLASH_SAY1
+local SLASH_YELL1= SLASH_YELL1
+local SLASH_WHISPER1= SLASH_WHISPER1
 
-local function setType(text)--使用,提示
-    if not button.typeText then
-        button.typeText=e.Cstr(button, {size=10, color=true})--10, nil, nil, true)
-        button.typeText:SetPoint('BOTTOM',0,2)
-    end
+local numWhisper=0--最后密语,数量
 
-    if text=='大喊' then
-        text='喊'
-    elseif button.type and text:find('%w') then--处理英文
-        text=button.type:gsub('/','')
-    else
-        text=e.WA_Utf8Sub(text, 1)
-    end
 
-    button.typeText:SetText(text)
-end
 
 
 --#######
 --密语列表
 --#######
-local WhisperTab={}--{name=name, wow=wow, guid=guid, msg={text=text, type=type,time=time}}
-local numWhisper=0--最后密语,数量
+
 
 local function set_numWhisper_Tips()--最后密语,数量, 提示
-    if numWhisper>0 and not button.numWhisper then
-        button.numWhisper=e.Cstr(button, {color={r=0,g=1,b=0}})
-        button.numWhisper:SetPoint('TOPRIGHT',-5,-5)
+    if numWhisper>0 and not SayButton.numWhisper then
+        SayButton.numWhisper=e.Cstr(SayButton, {color={r=0,g=1,b=0}})
+        SayButton.numWhisper:SetPoint('TOPRIGHT',-5,-5)
     end
-    if button.numWhisper then
-        button.numWhisper:SetText(numWhisper>0 and numWhisper or '')
+    if SayButton.numWhisper then
+        SayButton.numWhisper:SetText(numWhisper>0 and numWhisper or '')
     end
 end
 
 local function findWhisper(name)
-    for index, tab in pairs(WhisperTab) do
+    for index, tab in pairs(Save.WhisperTab) do
         if tab.name==name then
             return index
         end
@@ -57,10 +55,10 @@ local function getWhisper(event, text, name, _, _, _, _, _, _, _, _, _, guid)
         local index=findWhisper(name)
         local tab= {text=text, type=type, time=date('%X')}
         if index then
-            table.insert(WhisperTab[index].msg, tab)
+            table.insert(Save.WhisperTab[index].msg, tab)
         else
             local wow= event:find('MSG_BN') and true or nil
-            table.insert(WhisperTab, {name=name, wow=wow, guid=guid, msg={tab}})
+            table.insert(Save.WhisperTab, {name=name, wow=wow, guid=guid, msg={tab}})
         end
         if not type then
             numWhisper= numWhisper + 1--最后密语,数量
@@ -70,22 +68,11 @@ local function getWhisper(event, text, name, _, _, _, _, _, _, _, _, _, guid)
 end
 
 
-local function set_chatBubbles_Tips()--提示，聊天泡泡，开启/禁用
-    local bool= C_CVar.GetCVarBool("chatBubbles")
-    if not bool and not button.tipBubbles then
-        button.tipBubbles= button:CreateTexture(nil, 'OVERLAY')
-        local size=15
-        button.tipBubbles:SetSize(size, size)
-        button.tipBubbles:SetPoint('TOPLEFT', 3, -3)
-        button.tipBubbles:SetAtlas(e.Icon.disabled)
-    end
-    if button.tipBubbles then
-        button.tipBubbles:SetShown(not bool)
-    end
-end
+
+
 
 local function set_InInstance_Disabled_Bubbles()--副本禁用，其它开启
-    if Save.inInstanceBubblesDisabled then
+    if Save.inInstanceBubblesDisabled and not UnitAffectingCombat('player') then
         if IsInInstance() then
             C_CVar.SetCVar("chatBubbles", '0')
         else
@@ -94,14 +81,33 @@ local function set_InInstance_Disabled_Bubbles()--副本禁用，其它开启
     end
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --#####
 --主菜单
---#####
+--[[#####
 local function Init_Menu(self, level, type)--主菜单    
     local chatType={
         {text= e.onlyChinese and '说' or SAY, type= SLASH_SAY1},--/s
         {text= e.onlyChinese and '喊' or YELL, type= SLASH_YELL1},--/p
-        {text= e.onlyChinese and '密语' or SLASH_TEXTTOSPEECH_WHISPER, type= SLASH_SMART_WHISPER1}--/w
+        {text= e.onlyChinese and '密语' or SLASH_TEXTTOSPEECH_WHISPER, type= SLASH_WHISPER1}--/w
     }
     local info
     if type then
@@ -145,9 +151,10 @@ local function Init_Menu(self, level, type)--主菜单
                         keepShownOnClick= true,
                         func=function(_, arg1)
                             e.Say(nil, arg1, true)
-                            button.type=nil
-                            button.name=arg1
-                            button.wow=true
+                            SayButton.type=nil
+                            SayButton.name=arg1
+                            SayButton.wow=true
+
                             setType(e.onlyChinese and '战' or COMMUNITY_COMMAND_BATTLENET)--使用,提示
                         end
                     }
@@ -178,9 +185,9 @@ local function Init_Menu(self, level, type)--主菜单
                         keepShownOnClick= true,
                         func=function(_, arg1)
                             e.Say('/w', arg1)
-                            button.type='/w'
-                            button.name=arg1
-                            button.wow=nil
+                            SayButton.type='/w'
+                            SayButton.name=arg1
+                            SayButton.wow=nil
                             setType(e.onlyChinese and '密' or SLASH_TEXTTOSPEECH_WHISPER)--使用,提示
                         end
                     }
@@ -189,7 +196,7 @@ local function Init_Menu(self, level, type)--主菜单
             end
         elseif type=='WHISPER' then--密语列表 --{name=name, wow=wow, guid=guid, msg={text=text, type=type,time=time}}
             local find
-            for _, tab in pairs(WhisperTab) do
+            for _, tab in pairs(Save.WhisperTab) do
                 local text
 
                 for _, msg in pairs(tab.msg) do
@@ -212,9 +219,9 @@ local function Init_Menu(self, level, type)--主菜单
                     keepShownOnClick= true,
                     func=function(_, arg1, arg2)
                         e.Say(nil, arg1, arg2)
-                        button.type='/w'
-                        button.name=arg1
-                        button.wow=arg2
+                        SayButton.type='/w'
+                        SayButton.name=arg1
+                        SayButton.wow=arg2
                         setType(e.onlyChinese and '密' or SLASH_TEXTTOSPEECH_WHISPER)--使用,提示
                     end
                 }
@@ -228,7 +235,7 @@ local function Init_Menu(self, level, type)--主菜单
                     notCheckable=true,
                     keepShownOnClick= true,
                     func= function()
-                        WhisperTab={}
+                        Save.WhisperTab={}
                     end
                 }
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -265,9 +272,9 @@ local function Init_Menu(self, level, type)--主菜单
                             keepShownOnClick= true,
                             func=function(_, arg1, arg2)
                                 e.Say(nil, arg1)
-                                button.type='/w'
-                                button.name=arg2
-                                button.wow=nil
+                                SayButton.type='/w'
+                                SayButton.name=arg2
+                                SayButton.wow=nil
                             end
                         }
                         if zone.filename then
@@ -332,9 +339,24 @@ local function Init_Menu(self, level, type)--主菜单
             e.LibDD:UIDropDownMenu_AddButton(info, level)
         end
     else
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+    
         for index, tab in pairs(chatType) do
             info={
-                text=tab.text..(button.type==tab.type and e.Icon.left or ''),
+                text=tab.text..(SayButton.type==tab.type and e.Icon.left or ''),
                 notCheckable=true,
                 tooltipOnButton=true,
                 tooltipTitle=tab.type,
@@ -342,9 +364,9 @@ local function Init_Menu(self, level, type)--主菜单
                 arg2= tab.text,
                 func=function(_, arg1, arg2)
                     e.Say(arg1)
-                    button.type=arg1
-                    button.name=nil
-                    button.wow=nil
+                    SayButton.type=arg1
+                    SayButton.name=nil
+                    SayButton.wow=nil
                     setType(arg2)--使用,提示
                 end
             }
@@ -356,23 +378,23 @@ local function Init_Menu(self, level, type)--主菜单
                     info.arg2= tab.text
                     info.func=function(_, arg1, arg2)
                         e.Say('/w', arg1)
-                        button.type='/w'
-                        button.name=arg1
-                        button.wow=nil
+                        SayButton.type='/w'
+                        SayButton.name=arg1
+                        SayButton.wow=nil
                         setType(arg2)--使用,提示
                     end
-                elseif button.name then--最后密语
-                    info.text= info.text..' '.. button.name
-                    info.arg1= {name=button.name, wow=button.wow, text=tab.text}
+                elseif SayButton.name then--最后密语
+                    info.text= info.text..' '.. SayButton.name
+                    info.arg1= {name=SayButton.name, wow=SayButton.wow, text=tab.text}
                     info.func=function(_, arg1)
                         e.Say('/w', arg1.name, arg1.wow)
-                        button.type='/w'
+                        SayButton.type='/w'
                         setType(arg1.text)--使用,提示
                     end
                 end
                 info.menuList='WHISPER'
                 info.hasArrow=true
-                local num= #WhisperTab
+                local num= #Save.WhisperTab
                 if num>0 then
                     info.text= '|cnGREEN_FONT_COLOR:'..num..'|r'..info.text
                 end
@@ -444,6 +466,186 @@ local function Init_Menu(self, level, type)--主菜单
         e.LibDD:UIDropDownMenu_AddButton(info, level)
     end
 end
+]]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Init_Menu(self, root)
+    local sub, sub2, col
+    local isInCombat= UnitAffectingCombat('player')
+
+    local chatType={
+        {text= e.onlyChinese and '说' or SAY, type= SLASH_SAY1, type2='SLASH_SAY'},--/s
+        {text= e.onlyChinese and '喊' or YELL, type= SLASH_YELL1, type2='SLASH_YELL'},--/p
+        {text= e.onlyChinese and '密语' or SLASH_TEXTTOSPEECH_WHISPER, type=SLASH_WHISPER1, type2='SLASH_WHISPER', isWhisper=true,}
+    }
+    for _, tab in pairs(chatType) do
+        sub=root:CreateCheckbox(
+                tab.text
+                ..' '
+                ..tab.type
+                ..(tab.isWhisper and ' '..e.GetPlayerInfo({unit='target', reName=true})or ''),
+            function(data)
+                    return Save.type==data.type
+
+            end, function(data)
+                local name, isWoW
+                if not data.isWhisper then
+                    e.Say(data.type)
+                    self:settings(data.type, data.text, false, false)
+                else
+                    if UnitIsPlayer('target') and UnitIsFriend('target', 'player') then
+                        name= GetUnitName("target", true)
+                        isWoW=false
+                    elseif Save.name then
+                        name= Save.name
+                        isWoW= Save.isWoW
+                    end
+                end
+                e.Say(data.type, name, isWoW)
+                self:settings(data.type, data.text, name, isWoW)
+            end, tab)
+
+        sub:SetTooltip(function(tooltip, description)
+            tooltip:AddLine(description.data.text)
+            for i=2, 12 do
+                local str=_G[description.data.type2..i]
+                if str then
+                    if str~=description.data.type then
+                        tooltip:AddLine(str..' ')
+                    end
+                else
+                    break
+                end
+            end
+        end)
+
+        sub:AddInitializer(function(button)
+            if button.leftTexture1 then
+                button.leftTexture1:SetShown(false)
+            end
+            if button.leftTexture2 then
+                button.leftTexture2:SetAtlas('newplayertutorial-icon-mouse-leftbutton')
+            end
+        end)
+    end
+
+
+
+
+
+
+
+
+
+--密语列表 --{name=name, wow=wow, guid=guid, msg={text=text, type=type,time=time}}
+    --[[sub:CreateCheckbox(e.onlyChinese and '保存' or SAVE, function()
+        return Save.saveWhisper
+    end, function()
+        Save.saveWhisper= not Save.saveWhisper and true or nil
+    end)]]
+
+--全部清除
+    local num= #Save.WhisperTab
+    
+    if num>0 and (isInCombat and num<32 or not isInCombat) then
+        sub:CreateButton((e.onlyChinese and '全部清除' or CLEAR_ALL)..' #'..num, function()
+            Save.WhisperTab={}
+            numWhisper=0--最后密语,数量, 清空
+            set_numWhisper_Tips()--最后密语,数量, 提示
+            return MenuResponse.Close
+        end)
+        sub:CreateDivider()
+
+
+        for index, tab in pairs(Save.WhisperTab) do
+            sub2=sub:CreateButton('|cff9e9e9e'..index..')|r '..(tab.wow and format('|T%d:0|t', e.Icon.wow) or '')..e.GetPlayerInfo({unit=tab.unit, guid=tab.guid, name=tab.name, faction=tab.faction, reName=true, reRealm=true}), function(data)
+                e.Say(nil, data.name, data.wow)
+                self:settings(SLASH_WHISPER1, e.onlyChinese and '密语' or SLASH_TEXTTOSPEECH_WHISPER, data.name, data.wow)
+                return MenuResponse.Refresh
+            end, tab)
+
+            sub2:SetTooltip(function(tooltip, description)
+                col= select(4, e.GetUnitColor(nil, description.data.guid))
+                for _, msg in pairs(description.data.msg) do
+                    if msg.type then--发送
+                        tooltip:AddLine('|cff9e9e9e'..msg.time..' |A:voicechat-icon-textchat-silenced:0:0|a'..msg.text..'|r')
+                    else--接收
+                        tooltip:AddDoubleLine(
+                            col..msg.time,
+                            
+                            col..(e.GetFriend(description.data.name, description.data.guid, nil) or format('|A:%s:0:0|a', e.Icon.toRight))
+                            ..(e.GetUnitRaceInfo({guid=description.data.guid}) or '')
+                            ..msg.text
+                        )
+                    end
+                end
+            end)
+
+            sub2:CreateButton(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, function(data)
+                local findIndex= findWhisper(data)
+                if findIndex then
+                    Save.WhisperTab[findIndex]=nil
+                else
+                    print(id, addName, e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE, e.PlayerLink(data))
+                end
+            end, tab.name)
+
+            sub2:CreateButton(e.onlyChinese and '显示' or SHOW, function(data)
+                local text= data.name..'|n|n'
+                for _, msg in pairs(data.msg) do
+                    text= text and text..'|n' or ''
+                    if msg.type then--发送
+                        text= text.. msg.time..' -> '..msg.text
+                    else--接收
+                        text= text..msg.time..' <- '..msg.text
+                    end
+                end
+                print(text)
+                --e.ShowTextFrame(text)
+            end, tab)
+        end
+
+        sub:SetGridMode(MenuConstants.VerticalGridDirection, math.ceil(num/31))
+        
+
+    elseif isInCombat then
+        sub:CreateButton(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
+    end
+
+
+
+
+
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -464,29 +666,55 @@ end
 --初始
 --####
 local function Init()
-    button.type=SLASH_SAY1
-    setType(e.onlyChinese and '说' or SAY)--使用,提示
+    SayButton.typeText=e.Cstr(SayButton, {size=10, color=true})--10, nil, nil, true)
+    SayButton.typeText:SetPoint('BOTTOM',0,2)
 
-    button.texture:SetAtlas('transmog-icon-chat')
-    button:SetScript('OnMouseDown', function(self, d)
-        if d=='LeftButton' and (button.type or button.name) then
-            if button.type=='/w' then
-                local name= UnitIsPlayer('target') and GetUnitName('target', true) or button.name
-                e.Say(button.type, name , button.wow)
+    SayButton.tipBubbles= SayButton:CreateTexture(nil, 'OVERLAY')
+    SayButton.tipBubbles:SetSize(8, 8)
+    SayButton.tipBubbles:SetPoint('TOPLEFT', 3, -0)
+    SayButton.tipBubbles:SetAtlas(e.Icon.disabled)
+
+
+    SayButton.texture:SetAtlas('transmog-icon-chat')
+
+    SayButton:SetScript('OnClick', function(self, d)
+        if d=='LeftButton' and (SayButton.type or SayButton.name) then
+            if SayButton.type==SLASH_WHISPER1 then
+                local name= UnitIsPlayer('target') and GetUnitName('target', true) or SayButton.name
+                e.Say(SayButton.type, name , SayButton.wow)
             else
-                e.Say(button.type, button.name, button.wow)
+                e.Say(SayButton.type, SayButton.name, SayButton.wow)
             end
         else
-            if not self.Menu then
-                self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
-                e.LibDD:UIDropDownMenu_Initialize(self.Menu, Init_Menu, 'MENU')
-            end
-            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
+            MenuUtil.CreateContextMenu(self, Init_Menu)
+            e.tips:Hide()
         end
     end)
 
-    set_chatBubbles_Tips()--提示，聊天泡泡，开启/禁用
+    function SayButton:settings(type, text, name, isWoW)
+        type= type or Save.type or SLASH_SAY1
+        text= text or Save.text or (e.onlyChinese and '说' or SAY)
 
+        Save.type= type
+        Save.text= text
+        Save.name= name
+        Save.isWoW= isWoW
+
+        if text=='大喊' then
+            text='喊'
+        elseif self.type and text:find('%w') then--处理英文
+            text=self.type:gsub('/','')
+        else
+            text=e.WA_Utf8Sub(text, 1, 3)
+        end
+
+        self.typeText:SetText(text)
+
+        --提示，聊天泡泡，开启/禁用
+        self.tipBubbles:SetShown(not C_CVar.GetCVarBool("chatBubbles"))
+    end
+
+    SayButton:settings(Save.type, Save.text, Save.name, Save.isWoW)
 end
 
 
@@ -507,12 +735,22 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            Save= WoWToolsSave[addName] or Save
-            
-            button= WoWToolsChatButtonMixin:CreateButton('Say')
+            --处理，上版本数据
+            if WoWToolsSave[SAY] then
+                Save= WoWToolsSave[SAY]
+                Save.WhisperTab=Save.WhisperTab or {}
+                WoWToolsSave[SAY]=nil
 
-            if button then--禁用Chat Button
-                WhisperTab= Save.WhisperTab or {}--保存, 密语
+            else
+                Save= WoWToolsSave['ChatButton_Say'] or Save
+            end
+
+            SayButton= WoWToolsChatButtonMixin:CreateButton('Say')
+
+            if SayButton then--禁用Chat Button
+                addName= '|A:transmog-icon-chat:0:0|a'..(e.onlyChinese and '说' or SAY)
+
+              
 
                 Init()
                 self:RegisterEvent("CHAT_MSG_WHISPER_INFORM")
@@ -522,7 +760,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
                 self:RegisterEvent('PLAYER_ENTERING_WORLD')
                 self:RegisterEvent('CVAR_UPDATE')
             end
-            panel:UnregisterEvent('ADDON_LOADED')
+            self:UnregisterEvent('ADDON_LOADED')
         end
 
     elseif event=='CHAT_MSG_WHISPER_INFORM' or event=='CHAT_MSG_WHISPER' or event=='CHAT_MSG_BN_WHISPER' or event=='CHAT_MSG_BN_WHISPER_INFORM' then
@@ -530,19 +768,14 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            if Save.saveWhisper then--保存, 密语
-                Save.WhisperTab= WhisperTab
-            else
-                Save.WhisperTab=nil
-            end
-            WoWToolsSave[addName]=Save
+            WoWToolsSave['ChatButton_Say']=Save
         end
     elseif event== 'PLAYER_ENTERING_WORLD' then
         set_InInstance_Disabled_Bubbles()--副本禁用，其它开启
 
     elseif event=='CVAR_UPDATE' then
         if arg1=='chatBubbles' then
-            set_chatBubbles_Tips()--提示，聊天泡泡，开启/禁用
+            SayButton:settings()
         end
     end
 end)

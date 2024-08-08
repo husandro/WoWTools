@@ -966,8 +966,7 @@ local function Init_Menu(_, root)
     end
     
     if num>30 then
-        line= math.ceil(num/30)
-        sub2:SetGridMode(MenuConstants.VerticalGridDirection, line)
+        sub2:SetGridMode(MenuConstants.VerticalGridDirection, math.ceil(num/30))
     end
 
 
@@ -1026,7 +1025,6 @@ local function Init()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(addName, e.Icon.left)
-        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or MAINMENU, e.Icon.right)
         e.tips:Show()
         self:state_enter()
     end)

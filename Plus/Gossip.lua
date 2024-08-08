@@ -753,12 +753,12 @@ local function Init_Gossip_Text_Icon_Options()
 
         self:set_all()
         local icon
-        local isAtlas, texture= e.IsAtlas(texture)
-        if texture then
+        local isAtlas, texture2= e.IsAtlas(texture)
+        if texture2 then
             if isAtlas then
-                icon= '|A:'..texture..':0:0|a'
+                icon= '|A:'..texture2..':0:0|a'
             else
-                icon= '|T'..texture..':0|t'
+                icon= '|T'..texture2..':0|t'
             end
         end
         print(id, Initializer:GetName(), '|cnGREEN_FONT_COLOR:'..num..'|r', icon or '', '|c'..(hex or 'ff000000'), name)

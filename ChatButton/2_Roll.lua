@@ -155,7 +155,7 @@ local function Init_Menu(_, root)
     local rollNum= #RollTab
     local saveNum= #Save.save
 
-    root:SetScrollMode(20*35)
+    root:SetScrollMode(20*44)
 
     root:CreateButton('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL)..' |cnGREEN_FONT_COLOR:#'..rollNum..'|r', function()
         setRest()--重置
@@ -164,16 +164,19 @@ local function Init_Menu(_, root)
 
     local tabNew={}
     for _, tab in pairs(RollTab) do
-        col=tabNew[tab.name] and '|cff9e9e9e' or ''
-        icon=tab.roll==Max and '|A:auctionhouse-icon-checkmark:0:0|a' or (tab.roll==Min and '|T450905:0|a') or ''
-        sub=root:CreateButton(col..'|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t|cffffffff'..tab.roll..'|r '..e.GetPlayerInfo({unit=tab.unit, guid=tab.guid, name=tab.name, reName=true, reRealm=true}) ..' '..tab.date..icon, function(text)
-            e.Chat(text, nil, nil)
-        end, tab.text)
-        sub:SetTooltip(function(tooltip, data)
-            GameTooltip_SetTitle(tooltip, data.data)
-            GameTooltip_AddNormalLine(tooltip, '|A:voicechat-icon-textchat-silenced:0:0|a'..(e.onlyChinese and '发送信息' or SEND_MESSAGE))
-        end)
-        tabNew[tab.name]=true
+        if not tabNew[tab.name] then
+            --col=tabNew[tab.name] and '|cff9e9e9e' or ''
+            icon=tab.roll==Max and '|A:auctionhouse-icon-checkmark:0:0|a' or (tab.roll==Min and '|T450905:0|a') or ''
+            sub=root:CreateButton('|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t|cffffffff'..tab.roll..'|r '..e.GetPlayerInfo({unit=tab.unit, guid=tab.guid, name=tab.name, reName=true, reRealm=true}) ..' '..tab.date..icon, function(text)
+                e.Chat(text, nil, nil)
+                return MenuResponse.Refresh
+            end, tab.text)
+            sub:SetTooltip(function(tooltip, data)
+                GameTooltip_SetTitle(tooltip, data.data)
+                GameTooltip_AddNormalLine(tooltip, '|A:voicechat-icon-textchat-silenced:0:0|a'..(e.onlyChinese and '发送信息' or SEND_MESSAGE))
+            end)
+            tabNew[tab.name]=true
+        end
     end
 
     if rollNum>0 then
@@ -202,6 +205,7 @@ local function Init_Menu(_, root)
         for _, tab in pairs(Save.save) do
             local btn= tre:CreateButton('|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t|cffffffff'..tab.roll..'|r '..e.GetPlayerInfo({unit=tab.unit, guid=tab.guid, name=tab.name, reName=true, reRealm=true})..' '..tab.date, function(text)
                 e.Chat(text, nil, nil)
+                return MenuResponse.Refresh
             end, tab.text)
             btn:SetTooltip(function(tooltip, data)
                 GameTooltip_SetTitle(tooltip, data.data)
@@ -254,8 +258,6 @@ local function Init()
                 e.tips:AddLine(col..'|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t|cffffffff'..tab.roll..'|r '..e.GetPlayerInfo({unit=tab.unit, guid=tab.guid, name=tab.name, reName=true, reRealm=true}) ..' '..tab.date..icon)
                 tabNew[tab.name]=true
             end
-        else
-            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or MAINMENU, e.Icon.right)
         end
         e.tips:Show()
     end

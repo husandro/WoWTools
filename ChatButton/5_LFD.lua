@@ -3073,12 +3073,14 @@ local function Init()
             tipsButton:SetButtonState('PUSHED')
         end
          e.tips:Show()
+         self:state_enter()
     end)
-    LFDButton:SetScript('OnLeave', function()
+    LFDButton:SetScript('OnLeave', function(self)
         e.tips:Hide()
         if tipsButton and tipsButton:IsShown() then
             tipsButton:SetButtonState('NORMAL')
         end
+        self:state_leave()
     end)
 
     LFGDungeonReadyDialog:HookScript("OnShow", function(self)

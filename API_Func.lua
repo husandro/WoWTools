@@ -59,6 +59,8 @@ e.Set_Item_Stats(self, link, setting)--设置，物品，次属性，表
 e.GetCurrencyMaxInfo(currencyID, index)--货币
 e.GetFactionInfo(factionID, index, toRight)--声望
 
+e.GetGroupMembers(inclusoMe)--取得，队员, unit
+
 e.GetUnitColor(unit)--职业颜色
 e.GetUnitName(name, unit, guid)--取得全名
 e.GetUnitRaceInfo(tab)--玩家种族图标 {unit=nil, guid=nil, race=nil, sex=nil, reAtlas=false}
@@ -1436,18 +1438,20 @@ end
 
 
 
-function e.GetUnitColor(unit)--职业颜色
-    local r, g, b, hex
-    if unit then
+function e.GetUnitColor(unit, guid)--职业颜色
+    local r, g, b, hex, classFilename
+    if UnitExists(unit) then
         if UnitIsUnit('player', unit) then
-            return e.Player.r, e.Player.g, e.Player.b, e.Player.col
-        elseif UnitExists(unit) then
-            local classFilename= UnitClassBase(unit)
-            if classFilename then
-                r, g, b, hex= GetClassColor(classFilename)
-                hex= hex and '|c'..hex
-            end
+            r,g,b,hex= e.Player.r, e.Player.g, e.Player.b, e.Player.col
+        else
+            classFilename= UnitClassBase(unit)
         end
+    elseif guid then
+        classFilename = select(2, GetPlayerInfoByGUID(guid))
+    end
+    if classFilename then
+        r, g, b, hex= GetClassColor(classFilename)
+        hex= hex and '|c'..hex
     end
     return r or 1, g or 1, b or 1, hex or '|cffffffff'
 end
@@ -1692,6 +1696,58 @@ function e.PlayerOnlineInfo(unit)--单位，状态信息
         end
     end
 end
+
+
+
+
+
+--取得，队员, unit
+function e.GetGroupMembers(inclusoMe)
+    local tab={}
+    if not IsInGroup() then
+        return tab
+    end
+
+    if inclusoMe then--所有队员
+        if IsInRaid() then
+            for i= 1, MAX_RAID_MEMBERS, 1 do
+                local unit='raid'..i
+                if UnitExists(unit) then
+                    table.insert(tab, unit)
+                end
+            end
+        else
+            for i=1, GetNumGroupMembers() do
+                local unit='party'..i
+                if UnitExists(unit) then
+                    table.insert(tab, unit)
+                end
+            end
+        end
+    else--除我外，所有队员
+        if IsInRaid() then
+            for i= 1, MAX_RAID_MEMBERS, 1 do
+                local unit='raid'..i
+                if UnitExists(unit) and not UnitIsUnit(unit, 'player') then
+                    table.insert(tab, unit)
+                end
+            end
+        else
+            for i=1, GetNumGroupMembers()-1, 1 do
+                local unit='party'..i
+                if UnitExists(unit)  then
+                    table.insert(tab, unit)
+                end
+            end
+        end
+    end
+    return tab
+end
+
+
+
+
+
 
 function e.GetNpcID(unit)--NPC ID
     if UnitExists(unit) then

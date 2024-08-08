@@ -1687,8 +1687,6 @@ local function Init()
         else
             e.tips:AddLine(e.Icon.TANK..format('|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t', Save.tank2))
         end
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or MAINMENU, e.Icon.right)
         e.tips:Show()
     end
 
@@ -1699,12 +1697,11 @@ local function Init()
             self.groupReadyTips:SetButtonState('NORMAL')
         end
         e.tips:Hide()
-        self:state_leave()
         local btn= _G['WoWTools_MarkerFrame_Move_Button']
         if btn then
             btn:set_Alpha(false)
         end
-
+        self:state_leave()
     end)
     MarkerButton:SetScript('OnEnter', function(self)
         if self.groupReadyTips and self.groupReadyTips:IsShown() then

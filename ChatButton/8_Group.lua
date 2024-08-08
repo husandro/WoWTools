@@ -1,22 +1,25 @@
 local id, e = ...
-local addName= 'ChatButtonGroup'
+local addName
 local Save={
     --mouseUP=  not LOCALE_zhCN and SUMMON ..' '..COMBATLOG_FILTER_STRING_ME or '求拉, 谢谢',
     mouseUP=  (e.Player.region==1 or e.Player.region==3) and 'sum me, pls'
                 or e.Player.region==5  and '求拉, 谢谢'
                 or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,SUMMON, COMBATLOG_FILTER_STRING_ME),
     mouseDown= e.Player.region~=5 and 'inv, thx' or '1' ,
+    --type='/raid'
+    --text=团队
 }
 --1US (includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
-local button
 
+
+
+local GroupButton
 local roleAtlas={
     TANK='groupfinder-icon-role-large-tank',
     HEALER='groupfinder-icon-role-large-heal',
     DAMAGER='groupfinder-icon-role-large-dps',
     NONE='socialqueuing-icon-group',
 }
-
 local SLASH_PARTY1= SLASH_PARTY1
 local SLASH_RAID1= SLASH_RAID1
 local SLASH_INSTANCE_CHAT1= SLASH_INSTANCE_CHAT1
@@ -34,83 +37,87 @@ local SLASH_RAID_WARNING1= SLASH_RAID_WARNING1
 
 
 
-local function setType(text)--使用,提示
-    if not button.typeText then
-        button.typeText=e.Cstr(button,{size=10, color=true})-- 10, nil, nil, true)
-        button.typeText:SetPoint('BOTTOM',0,2)
-    end
-    if button.type and text:find('%w') then--处理英文
-        text=button.type:gsub('/','')
+
+
+
+
+
+
+
+
+
+
+local function Set_Type(type, text)--使用,提示
+    GroupButton.type= type
+    GroupButton.text= text
+
+    if type and text:find('%w') then--处理英文
+        text=type:gsub('/','')
     else
         text= text==RAID_WARNING and COMMUNITIES_NOTIFICATION_SETTINGS_DIALOG_SETTINGS_LABEL or text--团队通知->通知
-        text=e.WA_Utf8Sub(text, 1)
+        text= e.WA_Utf8Sub(text, 1, 3)
     end
 
-    button.typeText:SetText(text)
-    button.typeText:SetShown(IsInGroup())
+    GroupButton.typeText:SetText(text or '')
 end
 
-local function setGroupTips()--队伍信息提示
+
+
+
+
+
+local function Settings()--队伍信息提示
     local isInGroup= IsInGroup()
     local isInRaid= IsInRaid()
     local isInInstance= IsInInstance()
     local num=GetNumGroupMembers()
 
-    if not button.type then
-        if isInRaid then
-            button.type=SLASH_RAID2
-            setType(RAID)--使用,提示
-        elseif isInGroup then
-            button.type=SLASH_PARTY1
-            setType(HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS)--使用,提示
-        end
+    if Save.type and Save.text then
+        Set_Type(Save.type, Save.text)
+
+    elseif IsInRaid() then
+        Set_Type(SLASH_RAID2, RAID)--使用,提示
+    else
+        Set_Type(SLASH_PARTY1, HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS)--使用,提示
     end
 
-    if isInGroup and not button.membersText then--人数
-        button.membersText=e.Cstr(button, {size=10, color=true})--10, nil, nil, true)
-        button.membersText:SetPoint('TOPLEFT', 3, -3)
-    end
-    if button.membersText then
-        button.membersText:SetText(isInGroup and num or '')
-    end
-
-    local combatRole--subgroup,
+    local combatRole
     local tab=e.GroupGuid[e.Player.guid]
     if tab then
-      --  subgroup= tab and tab.subgroup
         combatRole=tab.combatRole
     end
 
-    --[[if subgroup and not button.subgroupTexture then--小队号
-        button.subgroupTexture=e.Cstr(button, {size=10, colro=true, justifyH='RIGHT'})--10, nil, nil, true, nil, 'RIGHT')
-        button.subgroupTexture:SetPoint('TOPRIGHT',-6,-3)
-        button.subgroupTexture:SetTextColor(0,1,0)
-    end
-    if button.subgroupTexture then
-        button.subgroupTexture:SetText(subgroup or '')
-    end]]
-
-    if isInRaid and not isInInstance and not button.textureNotInstance then--在副本外, 在团时, 提示
-        button.textureNotInstance=button:CreateTexture(nil,'BACKGROUND')
-        button.textureNotInstance:SetAllPoints(button)
-        button.textureNotInstance:SetAtlas('socket-punchcard-red-background')
-    end
-    if button.textureNotInstance then
-        button.textureNotInstance:SetShown(isInRaid and not isInInstance)
-    end
+    --队员，数量，提示
+    GroupButton.membersText:SetText(isInRaid and num or '')
 
     if isInGroup then--职责提示
-        button.texture:SetAtlas( roleAtlas[combatRole] or roleAtlas['NONE'])
+        GroupButton.texture:SetAtlas(roleAtlas[combatRole] or roleAtlas['NONE'])
     else
-        button.texture:SetAtlas('socialqueuing-icon-group')
+        GroupButton.texture:SetAtlas('socialqueuing-icon-group')
     end
-    --button.texture:SetDesaturated(not isInGroup)
-    --button.texture:SetShown(isInGroup)
 
-    if button.typeText then
-        button.typeText:SetShown(isInGroup)
-    end
+    --副本外，在团中提示
+    GroupButton.textureNotInstance:SetShown(isInRaid and not isInInstance)
+
+    --提示，聊天泡泡，开启/禁用
+    GroupButton.tipBubbles:SetShown(not C_CVar.GetCVarBool("chatBubblesParty"))
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 local function set_Text(text)--处理%s
     local groupTab= e.GroupGuid[e.Player.guid]
@@ -137,146 +144,228 @@ end
 
 
 
---#####
+
+
+
+
+
+
 --主菜单
---#####
-local function InitMenu(_, level, type)--主菜单
+local function Init_Menu(_, root)
+    local sub, col
+    local isInGroup= IsInGroup()
+    local isInRaid= IsInRaid()
+    local isInInstance= IsInInstance()
+    local num=GetNumGroupMembers()
+    local le=UnitIsGroupAssistant('player') or  UnitIsGroupLeader('player')
+    local isInBat= UnitAffectingCombat('player')
+
     local chatType={
-        {text= e.onlyChinese and '队伍' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS, type= SLASH_PARTY1},--/p
-        {text= e.onlyChinese and '团队' or RAID, type= SLASH_RAID1},--/raid
-        {text= e.onlyChinese and '副本' or INSTANCE, type= SLASH_INSTANCE_CHAT1},--/i
-        {text= e.onlyChinese and '团队通知' or RAID_WARNING, type= 	SLASH_RAID_WARNING1},--/rw
+        {text= e.onlyChinese and '队伍' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS, type=SLASH_PARTY1, type2='SLASH_PARTY'},--/p
+        {text= e.onlyChinese and '团队' or RAID, type=SLASH_RAID1, type2='SLASH_RAID'},--/raid
+        {text= e.onlyChinese and '副本' or INSTANCE, type=SLASH_INSTANCE_CHAT1, type2='SLASH_INSTANCE_CHAT'},--/i
+        {text= e.onlyChinese and '团队通知' or RAID_WARNING, type= SLASH_RAID_WARNING1, type2='SLASH_RAID_WARNING'},--/rw
     }
-    local info
-    if type then
-        local tab2={
-            {type= 'mouseUP', text= e.onlyChinese and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP, icon= 'bags-greenarrow'},
-            {type= 'mouseDown', text= e.onlyChinese and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN, icon= 'UI-HUD-MicroMenu-StreamDLYellow-Up'},
-        }
-        for _, tab in pairs(tab2) do
-            local text=(Save[tab.type] or tab.text)
-            if Save[tab.type] then
-                text=set_Text(text)--处理%s
-            end
-            info={
-                text= text,
-                icon= tab.icon,
-                notCheckable=true,
-                tooltipOnButton=true,
-                tooltipTitle=tab.text,
-                arg1=tab.text,
-                arg2=tab.type,
-                keepShownOnClick=true,
-                func=function(_, arg1, arg2)
-                    StaticPopupDialogs[id..addName..'CUSTOM']={--区域,设置对话框
-                        text=id..'    '..addName
-                            ..'|n|n'..(e.onlyChinese and '自定义发送信息' or (CUSTOM..SEND_MESSAGE))
-                            ..'|n|n|cnGREEN_FONT_COLOR:%s|r|n|n'
-                            ..(e.onlyChinese and '队伍' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS),
-                        whileDead=true, hideOnEscape=true, exclusive=true,
-                        hasEditBox=1,
-                        button1= e.onlyChinese and '修改' or EDIT,
-                        button2= e.onlyChinese and '取消' or CANCEL,
-                        OnShow = function(self2, data)
-                            self2.editBox:SetWidth(self2:GetWidth()-30)
-                            if Save[data.type] then
-                                self2.editBox:SetText(Save[data.type])
-                            end
-                        end,
-                        OnAccept = function(self2, data)
-                            local text2= self2.editBox:GetText()
-                            if text2:gsub(' ','')=='' then
-                                Save[data.type]=nil
-                            else
-                                Save[data.type]=text2
-                            end
-                        end,
-                        EditBoxOnTextChanged=function(self2, data)
-                            local text2= self2:GetText()
-                            if text2:gsub(' ','')=='' then
-                                self2:GetParent().button1:SetText(e.onlyChinese and '移除' or REMOVE)
-                            else
-                                self2:GetParent().button1:SetText(e.onlyChinese and '修改' or EDIT)
-                            end
-                        end,
-                        EditBoxOnEscapePressed = function(s)
-                            s:SetAutoFocus(false)
-                            s:ClearFocus()
-                            s:GetParent():Hide()
-                        end,
-                    }
-                    StaticPopup_Show(id..addName..'CUSTOM', arg1, nil , {type=arg2})
-                end
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
-        end
-    else
-        local isInGroup= IsInGroup()
-        local isInRaid= IsInRaid()
-        local isInInstance= IsInInstance()
-        local num=GetNumGroupMembers()
-        local le=UnitIsGroupAssistant('player') or  UnitIsGroupLeader('player')
 
-        for _, tab in pairs(chatType) do
-            info={
-                text=tab.text,
-                notCheckable=true,
-                tooltipOnButton=true,
-                tooltipTitle=tab.type,
-                keepShownOnClick=true,
-                func=function()
-                    e.Say(tab.type)
-                    button.type=tab.type
-                    setType(tab.text)--使用,提示
-                end
-            }
-            if ((tab.text==HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS or tab.text=='队伍') and not isInGroup)
-                or ((tab.text==RAID or tab.text=='团队') and not isInRaid)--设置颜色
-                or ((tab.text== INSTANCE or tab.text=='副本') and (not isInInstance or num<2))
-                or ((tab.text==RAID_WARNING or tab.text=='团队通知') and (not isInRaid or not le))
-            then
-                info.colorCode='|cff9e9e9e'
-            elseif (tab.text==RAID or tab.text=='团队') and not isInInstance then--在副本外,团
-                info.colorCode='|cffff0000'
-            end
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
+    for index, tab in pairs(chatType) do
+        col=''
+        if index==1 and not isInGroup
+            or (index==2 and not isInRaid)--设置颜色
+            or (index==3 and (not isInInstance or num<2 ))
+            or (index==4 and (not isInRaid or not le))
+        then
+            col='|cff9e9e9e'
         end
 
-        e.LibDD:UIDropDownMenu_AddSeparator(level)
+        sub=root:CreateCheckbox(col..tab.text..' '..tab.type, function(data)
+            return GroupButton.type==data.type
 
-        info={
-            text= (e.onlyChinese and '跨阵营' or COMMUNITIES_EDIT_DIALOG_CROSS_FACTION)
-                ..' '..(isInGroup and e.GetYesNo(C_PartyInfo.IsCrossFactionParty)
-                        or C_PartyInfo.CanFormCrossFactionParties() and (e.onlyChinese and '创建' or BATTLETAG_CREATE)
-                        or (e.onlyChinese and '无' or NONE)),
-            notCheckable=true,
-            isTitle=true,
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
+        end, function(data)
+            e.Say(data.type)
+            Save.type=data.type
+            Save.text=data.text
+            Settings()
 
-        info={
-            text=((Save.mouseDown or Save.mouseUP) and e.Icon.mid or '').. (e.onlyChinese and '自定义' or CUSTOM),
-            notCheckable=true,
-            menuList='CUSTOM',
-            hasArrow=true,
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
+        end, tab)
 
-        info={
-            text= e.onlyChinese and '聊天泡泡' or CHAT_BUBBLES_TEXT,
-            tooltipOnButton=true,
-            tooltipTitle= 'CVar chatBubblesParty',
-            checked= C_CVar.GetCVarBool("chatBubblesParty"),
-            disabled= UnitAffectingCombat('player'),
-            keepShownOnClick=true,
-            func= function()
-                C_CVar.SetCVar("chatBubblesParty", not C_CVar.GetCVarBool("chatBubblesParty") and '1' or '0')
+        sub:SetTooltip(function(tooltip, description)
+            tooltip:AddLine(description.data.text)
+            for i=2, 12 do
+                local str=_G[description.data.type2..i]
+                if str then
+                    if str~=description.data.type then
+                        tooltip:AddLine(str..' ')
+                    end
+                else
+                    break
+                end
             end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
+        end)
 
+        sub:AddInitializer(function(button)
+            if button.leftTexture1 then
+                button.leftTexture1:SetShown(false)
+            end
+            if button.leftTexture2 then
+                button.leftTexture2:SetAtlas('newplayertutorial-icon-mouse-leftbutton')
+            end
+        end)
+    end
+
+
+--跨阵营
+    root:CreateDivider()
+
+    local crossNum=0
+    local isCrossFactionParty = C_PartyInfo.IsCrossFactionParty()
+    if isCrossFactionParty then
+        for _, unit in pairs(e.GetGroupMembers(false)) do--取得，队员, unit
+            if UnitRealmRelationship(unit)==LE_REALM_RELATION_COALESCED then
+                crossNum= crossNum+1
+            end
+        end
+    end
+
+    sub=root:CreateButton(
+        (e.onlyChinese and '跨阵营' or COMMUNITIES_EDIT_DIALOG_CROSS_FACTION)
+        ..': '
+        ..(
+            isInGroup and e.GetYesNo(C_PartyInfo.IsCrossFactionParty())
+            or (C_PartyInfo.CanFormCrossFactionParties() and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '可创建' or BATTLETAG_CREATE)..'|r')
+            or ('|cff9e9e9e'..(e.onlyChinese and '无' or NONE)..'|r')
+        ).. ' #'..crossNum,
+    function()
+        return MenuResponse.Refresh
+    end, crossNum)
+
+    sub:SetTooltip(function(tooltip, description)
+        tooltip:AddLine(e.onlyChinese and '跨阵营' or COMMUNITIES_EDIT_DIALOG_CROSS_FACTION)
+        tooltip:AddLine(' ')
+        tooltip:AddDoubleLine(e.onlyChinese and '创建跨阵营队伍' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMMUNITIES_EDIT_DIALOG_CROSS_FACTION, START_A_GROUP),  e.GetEnabeleDisable(C_PartyInfo.CanFormCrossFactionParties()))
+        local col2= IsInGroup() and '' or '|cff9e9e9e'
+        tooltip:AddDoubleLine(
+            col2..(e.onlyChinese and '跨阵营队伍' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMMUNITIES_EDIT_DIALOG_CROSS_FACTION, HUD_EDIT_MODE_SETTING_UNIT_FRAME_SORT_BY_SETTING_GROUP)),
+            col2..e.GetYesNo(isCrossFactionParty)..' #'..description.data..' '..(e.onlyChinese and '队员' or PLAYERS_IN_GROUP)
+        )
+    end)
+
+
+
+
+--组队聊天泡泡
+    root:CreateDivider()
+    sub=root:CreateCheckbox((isInBat and '|cff9e9e9e' or '')..(e.onlyChinese and '组队聊天泡泡' or PARTY_CHAT_BUBBLES_TEXT), function()
+        return C_CVar.GetCVarBool("chatBubblesParty")
+    end, function()
+        if not UnitAffectingCombat('player') then
+            C_CVar.SetCVar("chatBubblesParty", C_CVar.GetCVarBool("chatBubblesParty") and '0' or '1')
+            print(id, addName, e.onlyChinese and '组队聊天泡泡' or PARTY_CHAT_BUBBLES_TEXT, e.GetEnabeleDisable(C_CVar.GetCVarBool("chatBubblesParty")))
+        else
+            print(id, addName, e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
+        end
+    end)
+
+    sub:SetTooltip(function (tooltip)
+        tooltip:AddDoubleLine('CVar.chatBubblesParty', e.GetEnabeleDisable(C_CVar.GetCVarBool("chatBubblesParty")))
+    end)
+
+
+    sub=root:CreateButton(
+        (Save.mouseUP and '|A:bags-greenarrow:0:0|a' or '')
+        ..(Save.mouseDown and '|A:UI-HUD-MicroMenu-StreamDLYellow-Up:0:0|a' or '')
+        ..(not Save.mouseUP and not Save.mouseDown and '|cff9e9e9e' or '')
+        ..(e.onlyChinese and '自定义' or CUSTOM)..'|A:voicechat-icon-textchat-silenced:0:0|a', function()
+        return MenuResponse.Refresh
+    end)
+
+
+    local tab2={
+        {type= 'mouseUP', text= e.onlyChinese and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP, icon= 'bags-greenarrow'},
+        {type= 'mouseDown', text= e.onlyChinese and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN, icon= 'UI-HUD-MicroMenu-StreamDLYellow-Up'},
+    }
+    for _, tab in pairs(tab2) do
+        local text=(Save[tab.type] or tab.text)
+        if Save[tab.type] then
+            text=set_Text(text)--处理%s
+        end
+        text=format('|A:%s:0:0|a', tab.icon)..text
+
+        sub:CreateCheckbox(text, function(data)
+            return Save[data.type]
+
+        end, function(data)
+            StaticPopupDialogs['WoWTools_ChatButton_Group_CUSTOM']={--区域,设置对话框
+                text=id..'    '..addName
+                    ..'|n|n'..(e.onlyChinese and '自定义发送信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CUSTOM, SEND_MESSAGE))
+                    ..'|n|n|cnGREEN_FONT_COLOR:'..format('|A:%s:0:0|a', data.icon)..data.text..'|r|n|n'
+                    ..(e.onlyChinese and '队伍' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS),
+                whileDead=true, hideOnEscape=true, exclusive=true,
+                hasEditBox=1,
+                button1= e.onlyChinese and '修改' or EDIT,
+                button2= e.onlyChinese and '取消' or CANCEL,
+                button3= e.onlyChinese and '禁用' or DISABLE,
+                OnShow = function(self)
+                    if Save[data.type] then
+                        self.editBox:SetText(Save[data.type])
+                    else
+                        if data.type=='mouseUP' then
+                            self.editBox:SetText(e.Player.region==5 and '求拉, 谢谢' or 'sum me, pls')
+                        else
+                            self.editBox:SetText(e.Player.region==5 and '1' or 'inv, thx')
+                        end
+                        self.button3:SetEnabled(false)
+                    end
+                    self.editBox:SetWidth(self:GetWidth())
+                end,
+                OnHide=function(self)
+                    self.editBox:ClearFocus()
+                end,
+                OnAccept = function(self)
+                    local text2= self.editBox:GetText()
+                    if text2:gsub(' ','')=='' then
+                        Save[data.type]=nil
+                    else
+                        Save[data.type]=text2
+                    end
+                end,
+                OnAlt = function()
+                    Save[data.type]=nil
+                end,
+                EditBoxOnTextChanged=function(self)
+                    local text2= self:GetText()
+                    if text2:gsub(' ','')=='' then
+                        self:GetParent().button1:SetText(e.onlyChinese and '禁用' or DISABLE)
+                    else
+                        self:GetParent().button1:SetText(e.onlyChinese and '修改' or EDIT)
+                    end
+                end,
+                EditBoxOnEscapePressed = function(s)
+                    s:GetParent():Hide()
+                end,
+            }
+            StaticPopup_Show('WoWTools_ChatButton_Group_CUSTOM')
+        end, tab)
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 local function show_Group_Info_Toolstip()--玩家,信息, 提示
     local raid= IsInRaid()
@@ -346,8 +435,8 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
     table.sort(tabN, function(a, b) if a and b then  return a.maxHP> b.maxHP end return false end)
     table.sort(tabDPS, function(a, b) if a and b then  return a.maxHP> b.maxHP end return false end)
 
-    e.tips:SetOwner(button, "ANCHOR_LEFT")
-    e.tips:ClearLines()
+    --[[e.tips:SetOwner(GroupButton, "ANCHOR_LEFT")
+    e.tips:ClearLines()]]
     e.tips:AddDoubleLine(format(e.onlyChinese and '%s玩家' or COMMUNITIES_CROSS_FACTION_BUTTON_TOOLTIP_TITLE, co), e.MK(totaleHP,3))
 
     local find
@@ -369,11 +458,16 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
     end
     for _, info in pairs(tabDPS) do
         e.tips:AddDoubleLine(info.name, info.col..e.MK(info.maxHP, 3)..INLINE_DAMAGER_ICON)
+        find= true
+    end
+    if find then
+        e.tips:AddLine(' ')
     end
 
-    e.tips:Show()
+    --e.tips:Show()
 
     e.GetNotifyInspect(UnitTab)--取得装等
+    return find
 end
 
 
@@ -399,29 +493,34 @@ end
 --初始
 --####
 local function Init()
-    if IsInRaid() then
-        button.type=SLASH_RAID2
-        setType(RAID)--使用,提示
-    elseif IsInGroup() then
-        button.type=SLASH_PARTY1
-        setType(HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS)--使用,提示
-    end
+    --使用,提示
+    GroupButton.typeText=e.Cstr(GroupButton,{size=10, color=true})
+    GroupButton.typeText:SetPoint('BOTTOM',0,2)
 
-    button.texture:SetAtlas('socialqueuing-icon-group')
-    button:SetScript('OnMouseDown', function(self, d)
-        if d=='LeftButton' and button.type then
-            e.Say(button.type)
+    --队员，数量，提示
+    GroupButton.membersText=e.Cstr(GroupButton, {size=8, color=true})--10, nil, nil, true)
+    GroupButton.membersText:SetPoint('TOPRIGHT', -3, 0)
+
+    GroupButton.tipBubbles= GroupButton:CreateTexture(nil, 'OVERLAY')
+    GroupButton.tipBubbles:SetSize(8, 8)
+    GroupButton.tipBubbles:SetPoint('TOPLEFT', 3, 0)
+    GroupButton.tipBubbles:SetAtlas(e.Icon.disabled)
+
+    --副本外，在团中提示
+    GroupButton.textureNotInstance=GroupButton:CreateTexture(nil,'BACKGROUND')
+    GroupButton.textureNotInstance:SetAllPoints(GroupButton)
+    GroupButton.textureNotInstance:SetAtlas('socket-punchcard-red-background')
+
+    GroupButton:SetScript('OnClick', function(self, d)
+        if d=='LeftButton' and self.type then
+            e.Say(self.type)
         else
-            show_Group_Info_Toolstip()--玩家,信息, 提示
-            if not self.Menu then
-                self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
-                e.LibDD:UIDropDownMenu_Initialize(self.Menu, InitMenu, 'MENU')
-            end
-            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
+            MenuUtil.CreateContextMenu(self, Init_Menu)
+            e.tips:Hide()
         end
     end)
 
-    button:SetScript('OnMouseWheel', function(self, d)--发送自定义信息
+    GroupButton:SetScript('OnMouseWheel', function(_, d)--发送自定义信息
         local text
         if d==1 then
             text= Save.mouseUP
@@ -440,25 +539,44 @@ local function Init()
         end
     end)
 
-    button:SetScript('OnLeave', GameTooltip_Hide)
-    button:SetScript('OnEnter', function(self2)
+
+    GroupButton:SetScript('OnLeave', function(self)
+        e.tips:Hide()
+        self:state_leave()
+    end)
+    GroupButton:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+
+        local find= show_Group_Info_Toolstip()--玩家,信息, 提示
+
+        if find then
+            e.tips:AddLine(' ')
+        end
+
+        e.tips:AddDoubleLine(self.text, self.type and self.type..e.Icon.left)
+
         if (Save.mouseDown or Save.mouseUP) then-- and IsInGroup()
-            e.tips:SetOwner(self2, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:AddDoubleLine(e.onlyChinese and '说' or SAY, IsInRaid() and (e.onlyChinese and '团队' or RAID) or IsInGroup() and (e.onlyChinese and '小队' or GROUP))
+            e.tips:AddLine(' ')
             if Save.mouseUP then
                 e.tips:AddDoubleLine(Save.mouseUP, (e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP)..e.Icon.mid)
             end
             if Save.mouseDown then
                 e.tips:AddDoubleLine(Save.mouseDown, (e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_DOWN)..e.Icon.mid)
             end
-            e.tips:Show()
+
         end
+        e.tips:Show()
+        self:state_enter()
     end)
 
-
-    C_Timer.After(0.3, function() setGroupTips() end)--队伍信息提示
+    C_Timer.After(0.3, Settings)--队伍信息提示
 end
+
+
+
+
+
 
 
 
@@ -484,25 +602,32 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            Save= WoWToolsSave[addName] or Save
+            Save= WoWToolsSave['ChatButtonGroup'] or Save
 
-            button= WoWToolsChatButtonMixin:CreateButton('Group')
+            GroupButton= WoWToolsChatButtonMixin:CreateButton('Group')
 
-            if button then--禁用Chat Button
+            if GroupButton then--禁用Chat Button
+                addName= '|A:socialqueuing-icon-group:0:0:|a'..(e.onlyChinese and '队伍' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SORT_BY_SETTING_GROUP)
                 Init()
                 self:RegisterEvent('GROUP_LEFT')
                 self:RegisterEvent('GROUP_ROSTER_UPDATE')
+                self:RegisterEvent('CVAR_UPDATE')
+
             end
             self:UnregisterEvent('ADDON_LOADED')
         end
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            WoWToolsSave[addName]=Save
+            WoWToolsSave['ChatButtonGroup']=Save
         end
 
     elseif event=='GROUP_ROSTER_UPDATE' or event=='GROUP_LEFT' then
-        C_Timer.After(0.3, function() setGroupTips() end)--队伍信息提示
+        C_Timer.After(0.3, Settings)--队伍信息提示
 
+    elseif event=='CVAR_UPDATE' then
+        if arg1=='chatBubblesParty' then
+            Settings()--提示，聊天泡泡，开启/禁用
+        end
     end
 end)
