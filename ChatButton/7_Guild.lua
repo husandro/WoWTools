@@ -286,11 +286,14 @@ local function Init()
         label:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '弹劾' or  e.WA_Utf8Sub(GUILD_IMPEACH_POPUP_CONFIRM, 2, 5,true))..'|r')
     end
 
-    set_check(ClubFinderGuildFinderFrame.OptionsList.SearchBox)
-    set_check(ClubFinderCommunityAndGuildFinderFrame.OptionsList.SearchBox)
 
-    hooksecurefunc(ClubFinderGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_RequestToJoinFrame)
-    hooksecurefunc(ClubFinderCommunityAndGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_RequestToJoinFrame)
+
+    if not IsVeteranTrialAccount() then--试用帐号
+        set_check(ClubFinderGuildFinderFrame.OptionsList.SearchBox)
+        set_check(ClubFinderCommunityAndGuildFinderFrame.OptionsList.SearchBox)
+        hooksecurefunc(ClubFinderGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_RequestToJoinFrame)
+        hooksecurefunc(ClubFinderCommunityAndGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_RequestToJoinFrame)
+    end
 
 
     hooksecurefunc(CommunitiesFrameCommunitiesList.ScrollBox, 'SetScrollTargetOffset', function(self)

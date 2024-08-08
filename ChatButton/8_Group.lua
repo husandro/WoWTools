@@ -22,6 +22,18 @@ local SLASH_RAID1= SLASH_RAID1
 local SLASH_INSTANCE_CHAT1= SLASH_INSTANCE_CHAT1
 local SLASH_RAID_WARNING1= SLASH_RAID_WARNING1
 
+
+
+
+
+
+
+
+
+
+
+
+
 local function setType(text)--使用,提示
     if not button.typeText then
         button.typeText=e.Cstr(button,{size=10, color=true})-- 10, nil, nil, true)
