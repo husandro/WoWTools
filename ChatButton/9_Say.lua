@@ -55,6 +55,7 @@ local function getWhisper(event, text, name, _, _, _, _, _, _, _, _, _, guid)
         local index=findWhisper(name)
         local tab= {text=text, type=type, time=date('%X')}
         if index then
+            Save.WhisperTab[index].guid=guid
             table.insert(Save.WhisperTab[index].msg, tab)
         else
             local wow= event:find('MSG_BN') and true or nil
@@ -574,7 +575,9 @@ local function Init_Menu(self, root)
 
 
         for index, tab in pairs(Save.WhisperTab) do
-            sub2=sub:CreateButton('|cff9e9e9e'..index..')|r '..(tab.wow and format('|T%d:0|t', e.Icon.wow) or '')..e.GetPlayerInfo({unit=tab.unit, guid=tab.guid, name=tab.name, faction=tab.faction, reName=true, reRealm=true}), function(data)
+            local playerName= e.GetPlayerInfo({unit=tab.unit, guid=tab.guid, name=tab.name, faction=tab.faction, reName=true, reRealm=true})
+            playerName= playerName=='' and tab.name or playerName
+            sub2=sub:CreateButton('|cff9e9e9e'..index..')|r '..(tab.wow and format('|T%d:0|t', e.Icon.wow) or '')..(playerName or ' '), function(data)
                 e.Say(nil, data.name, data.wow)
                 self:settings(SLASH_WHISPER1, e.onlyChinese and '密语' or SLASH_TEXTTOSPEECH_WHISPER, data.name, data.wow)
                 return MenuResponse.Refresh
@@ -597,6 +600,22 @@ local function Init_Menu(self, root)
                 end
             end)
 
+            sub2:CreateButton(e.onlyChinese and '显示' or SHOW, function(data)
+                col= select(4, e.GetUnitColor(nil, data.guid)) or '|cffffffff'
+                local text= '|cff9e9e9e'..e.Player.name_realm..'|r'..e.Icon.player..' <-> '..(e.GetUnitRaceInfo({guid=data.guid}) or '')..col..data.name..'|r|n|n'
+                
+                for _, msg in pairs(data.msg) do
+                    text= text and text..'|n' or ''
+                    if msg.type then--发送
+                        text= text..'|cff9e9e9e'..msg.time..' '..data.name..': '..msg.text..'|r'
+                    else--接收
+                        text= text..col..msg.time..' '..data.name..': '..msg.text..'|r'
+                    end
+                end
+                e.ShowTextFrame(text, e.GetPlayerInfo({name=data.name, guid=data.guid, reName=true, reRealm=true}))
+            end, tab)
+
+            sub2:CreateDivider()
             sub2:CreateButton(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, function(data)
                 local findIndex= findWhisper(data)
                 if findIndex then
@@ -606,19 +625,7 @@ local function Init_Menu(self, root)
                 end
             end, tab.name)
 
-            sub2:CreateButton(e.onlyChinese and '显示' or SHOW, function(data)
-                local text= data.name..'|n|n'
-                for _, msg in pairs(data.msg) do
-                    text= text and text..'|n' or ''
-                    if msg.type then--发送
-                        text= text.. msg.time..' -> '..msg.text
-                    else--接收
-                        text= text..msg.time..' <- '..msg.text
-                    end
-                end
-                print(text)
-                --e.ShowTextFrame(text)
-            end, tab)
+            
         end
 
         sub:SetGridMode(MenuConstants.VerticalGridDirection, math.ceil(num/31))

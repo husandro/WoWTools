@@ -11,6 +11,8 @@ e.GetSpellItemCooldown(spellID, itemID)--法术,物品,冷却
 
 e.Cbtn2(tab)
 e.ToolsSetButtonPoint(self, line, unoLine)--设置位置
+
+e.ShowTextFrame(内容, {})--显示带text内容
 ]]
 
 function e.Cstr(self, tab)
@@ -184,6 +186,49 @@ function e.Cedit(self)--frame, name, size={} SecureScrollTemplates.xml
     return frame
 end
 
+
+
+
+
+
+
+
+function e.ShowTextFrame(data, headerText)
+    if not data then
+        return
+    end
+
+    local frame= _G['WoWTools_EditBoxFrame']
+    if not frame then
+        frame= WoWToolsFrameMixin:CreateFrame('WoWTools_EditBoxFrame')
+        frame.ScrollBox= e.Cedit(frame, {font='GameFontHighlightSmall'})
+        frame.ScrollBox:SetPoint('TOPLEFT', 10, -32)
+        frame.ScrollBox:SetPoint('BOTTOMRIGHT', -7, 12)
+    end
+
+    local text
+    if type(data)=='table' then
+        for _, str in pairs(data) do
+            text= text and text..'\n' or ''
+            text= text.. str
+        end
+    else
+        text= data
+    end
+
+    text= text..'|n|n|n'..text..'|n|n|n'..text..'|n|n|n'..text..'|n|n|n'..text
+    frame.ScrollBox:SetText(text or '')
+
+    frame.Header:Setup(headerText..headerText..headerText )
+    frame:SetShown(true)
+end
+
+
+
+
+
+
+
 function e.Ccool(self, start, duration, modRate, HideCountdownNumbers, Reverse, SwipeTexture, hideDrawBling)--冷却条
     if not self then
         return
@@ -250,7 +295,7 @@ function e.SetItemSpellCool(frame, tab)--{item=, spell=, type=, isUnit=true} typ
     elseif spell then
         local data= C_Spell.GetSpellCooldown(spell) or {}
         e.Ccool(frame, data.startTime, data.duration, data.modRate, true, nil, not type)--冷却条
-        
+
     elseif frame.cooldown then
         e.Ccool(frame)
     end

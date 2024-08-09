@@ -2,26 +2,6 @@ local e= select(2, ...)
 
 WoWToolsFrameMixin= {}
 
-function e.ShowTextFrame(data)
-    if not data then
-        return
-    end
-
-    local frame= _G['WoWTools_EditBoxFrame']
-    if not frame then
-        frame= WoWToolsFrameMixin:CreateFrame('WoWTools_EditBoxFrame')
-    end
-
-    local text
-    if type(data)=='table' then
-        for _, str in pairs(data) do
-            text= text and text..'\n' or ''
-            text= text.. str
-        end
-    else
-        text= data
-    end
-end
 
 
 
@@ -87,6 +67,15 @@ function WoWToolsFrameMixin:CreateFrame(name, tab)
             btn.target:SetSize(btn.target.width or 580, btn.target.height or 370)
         end,
     })
+    e.Set_Move_Frame(frame.Header, {frame=frame})
+    e.Set_Move_Frame(frame.Border, {frame=frame})
+
+
+    frame:SetScript('OnKeyDown', function(f, key)
+        if key=='ESCAPE' then
+            f:Hide()
+        end
+    end)
 
     index= index+1
     return frame

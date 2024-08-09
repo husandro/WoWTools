@@ -18,14 +18,15 @@
 ## AddonCompartmentFuncOnEnter: WowTools_OnAddonCompartmentFuncOnEnter
 
 
-##库，不能删除
-Libs\LibStub.lua
-Libs\CallbackHandler-1.0.lua
-Libs\LibDataBroker-1.1.lua
+##调用库，不能删除
+Libs\Libs.xml
+##Libs\LibStub.lua
+##Libs\CallbackHandler-1.0.lua
+##Libs\LibDataBroker-1.1.lua
 
-Libs\LibDBIcon-1.0.lua
-Libs\LibRangeCheck-3.0.lua
-Libs\LibUIDropDownMenu.lua
+##Libs\LibDBIcon-1.0.lua
+##Libs\LibRangeCheck-3.0.lua
+##Libs\LibUIDropDownMenu.lua
 
 
 ##Libs\LibNameplateRegistry-1.0.lua
@@ -35,6 +36,7 @@ Libs\LibUIDropDownMenu.lua
 ##Libs\AceConsole-3.0\AceConsole-3.0.lua
 ##Libs\AceDB-3.0\AceDB-3.0.lua
 ##Libs\LibButtonGlow-1.0\LibButtonGlow-1.0.lua
+
 
 
 ##主要function，不能删除
