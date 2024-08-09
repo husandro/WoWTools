@@ -2,23 +2,16 @@
 local id, e = ...
 local Save={}
 local addName='ChatButtonGuild'
-local button
+local GuildButton
 local panel= CreateFrame("Frame")
 
 --#######
 --在线人数
 --#######
 local function set_Guild_Members()
-    if button then
-        local num = select(2, GetNumGuildMembers())
-        num = (num and num>1) and num-1 or nil
-        if not button.membersText and num then
-            button.membersText=e.Cstr(button, {size=10, color=true, justifyH='CENTER'})-- 10, nil, nil, true, nil, 'CENTER')
-            button.membersText:SetPoint('BOTTOM', 0, 7)
-        end
-        if button.membersText then
-            button.membersText:SetText(num or '')
-        end
+    if GuildButton then
+        local online = select(2, GetNumGuildMembers()) or 0
+        GuildButton.membersText:SetText(online>1 and online-1 or '')
     end
 end
 
@@ -259,29 +252,53 @@ end
 --初始
 --####
 local function Init()
-    
-
+    GuildButton.membersText=e.Cstr(GuildButton, {size=10, color=true})-- 10, nil, nil, true, nil, 'CENTER')
+    GuildButton.membersText:SetPoint('TOPRIGHT', -3, 0)
 
     set_Guild_Members()--在线人数
-    button.texture:SetAtlas('UI-HUD-MicroMenu-GuildCommunities-Up')
+    GuildButton.texture:SetAtlas('UI-HUD-MicroMenu-GuildCommunities-Up')
+    e.Set_Label_Texture_Color(GuildButton.texture, {type='Texture'})--设置颜色
 
-    e.Set_Label_Texture_Color(button.texture, {type='Texture'})--设置颜色
+    GuildButton:SetScript('OnLeave', function(self)
+        e.tips:Hide()
+        self:state_leave()
+    end)
+    GuildButton:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        if not IsInGuild() then
+            e.tips:AddLine('|cff9e9e9e'..(e.onlyChinese and '无公会' or ITEM_REQ_PURCHASE_GUILD))
+        end
+        e.Get_Guild_Enter_Info()--公会， 社区，信息
+        e.tips:Show()
+        self:state_enter()
+    end)
 
-    button:SetScript('OnMouseDown', function(self, d)
+    GuildButton:SetScript('OnClick', function(self, d)
         if d=='LeftButton' then
             e.Say('/g')
         else
             if not self.Menu then
                 self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
-                e.LibDD:UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
+                e.LibDD:UIDropDownMenu_Initialize(GuildButton.Menu, InitMenu, 'MENU')
             end
             e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
             --ToggleGuildFrame()
         end
     end)
 
+
+ 
+
+
+
+
+
+
+
+
     if CanReplaceGuildMaster() then--弹劾
-        local label= e.Cstr(button, {size=10, color=true, justifyH='CENTER'})
+        local label= e.Cstr(GuildButton, {size=10, color=true, justifyH='CENTER'})
         label:SetPoint('TOP')
         label:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '弹劾' or  e.WA_Utf8Sub(GUILD_IMPEACH_POPUP_CONFIRM, 2, 5,true))..'|r')
     end
@@ -357,9 +374,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
             
-            button= WoWToolsChatButtonMixin:CreateButton('Guild')
+            GuildButton= WoWToolsChatButtonMixin:CreateButton('Guild')
 
-            if button then--禁用Chat Button
+            if GuildButton then--禁用Chat Button
                 
               
                 Init()

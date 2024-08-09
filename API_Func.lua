@@ -50,6 +50,8 @@ e.Get_CVar_Tooltips(info)--取得CVar信息 e.Get_CVar_Tooltips({name= ,msg=, va
 e.SetButtonKey(self, set, key, click)--设置清除快捷键
 e.PlaySound(soundKitID, setPlayerSound)--播放, 声音 SoundKitConstants.lua e.PlaySound()--播放, 声音
 
+
+e.Get_Guild_Enter_Info()--公会， 社区，信息
 e.Get_Week_Rewards_Text(type)--得到，周奖励，信息
 e.Get_Weekly_Rewards_Activities(settings) {frame=, point=, anchor=, showTooltip= }--周奖励，提示
 e.ItemCurrencyLabel(settings) {frame=, point=, showName=, showAll=, showTooltip=}物品升级界面，挑战界面，物品，货币提示
@@ -661,8 +663,40 @@ end
 
 
 
-
-
+--公会， 社区，信息
+function e.Get_Guild_Enter_Info()
+    local clubs= C_Club.GetSubscribedClubs() or {}
+    if IsInGuild() then
+        local all, online, app = GetNumGuildMembers()
+        local guildName, guildRankName, _, realm = GetGuildInfo('player')
+        e.tips:AddDoubleLine(guildName..(realm and realm~=e.Player.realm and '-'..realm or ' ')..' ('..all..')', guildRankName)
+        local day= GetGuildRosterMOTD()--今天信息
+        if day and day~='' then
+            e.tips:AddLine('|cffff00ff'..day..'|r', nil,nil, nil, true)
+        end
+        local col= online>1 and '|cnGREEN_FONT_COLOR:' or '|cff9e9e9e'
+        e.tips:AddDoubleLine(col..(e.onlyChinese and '在线成员：' or GUILD_MEMBERS_ONLINE_COLON), col..'|A:UI-HUD-UnitFrame-Player-Group-FriendOnlineIcon:0:0|a'..(online-1)..'|r/|A:UI-ChatIcon-App:0:0|a'..(app-1))
+        if #clubs>0 then
+            e.tips:AddLine(' ')
+        end
+    end
+    local guildClubId= C_Club.GetGuildClubId()
+    local all=0
+    for _, tab in pairs(clubs) do
+        local members= C_Club.GetClubMembers(tab.clubId) or {}
+        local online= 0
+        for _, memberID in pairs(members) do--CommunitiesUtil.GetOnlineMembers
+            local info = C_Club.GetMemberInfo(tab.clubId, memberID) or {}
+            if not info.isSelf and info.presence~=Enum.ClubMemberPresence.Offline and info.presence~=Enum.ClubMemberPresence.Unknown then--CommunitiesUtil.GetOnlineMembers()
+                online= online+1
+                all= all+1
+            end
+        end
+        local icon=(tab.clubId==guildClubId) and '|A:auctionhouse-icon-favorite:0:0|a' or '|T'..tab.avatarId..':0|t'
+        local col= online>0 and '|cnGREEN_FONT_COLOR:' or '|cff9e9e9e'
+        e.tips:AddDoubleLine(icon..col..tab.name, col..online..icon)--..tab.memberCount
+    end
+end
 
 
 

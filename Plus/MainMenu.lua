@@ -25,7 +25,7 @@ local Frames
 
 
 
---角色 CharacterMicroButton
+--角色 CharacterMicroButton 
 local function Init_Character()
     local frame= CreateFrame("Frame")
     table.insert(Frames, frame)
@@ -316,39 +316,12 @@ local function Init_Guild()
         if KeybindFrames_InQuickKeybindMode() then
             return
         end
-        local clubs= C_Club.GetSubscribedClubs() or {}
         if IsInGuild() then
             e.tips:AddLine(' ')
-            local all, online, app = GetNumGuildMembers()
-            local guildName, guildRankName, _, realm = GetGuildInfo('player')
-            e.tips:AddDoubleLine(guildName..(realm and realm~=e.Player.realm and '-'..realm or '')..' ('..all..')', guildRankName)
-            local day= GetGuildRosterMOTD()--今天信息
-            if day and day~='' then
-                e.tips:AddLine('|cffff00ff'..day..'|r', nil,nil, nil, true)
-            end
-            local col= online>1 and '|cnGREEN_FONT_COLOR:' or '|cff9e9e9e'
-            e.tips:AddDoubleLine(col..(e.onlyChinese and '在线成员：' or GUILD_MEMBERS_ONLINE_COLON), col..'|A:UI-HUD-UnitFrame-Player-Group-FriendOnlineIcon:0:0|a'..(online-1)..'|r/|A:UI-ChatIcon-App:0:0|a'..(app-1))
-            if #clubs>0 then
-                e.tips:AddLine(' ')
-            end
         end
-        local guildClubId= C_Club.GetGuildClubId()
-        local all=0
-        for _, tab in pairs(clubs) do
-            local members= C_Club.GetClubMembers(tab.clubId) or {}
-            local online= 0
-            for _, memberID in pairs(members) do--CommunitiesUtil.GetOnlineMembers
-                local info = C_Club.GetMemberInfo(tab.clubId, memberID) or {}
-                if not info.isSelf and info.presence~=Enum.ClubMemberPresence.Offline and info.presence~=Enum.ClubMemberPresence.Unknown then--CommunitiesUtil.GetOnlineMembers()
-                    online= online+1
-                    all= all+1
-                end
-            end
-            local icon=(tab.clubId==guildClubId) and '|A:auctionhouse-icon-favorite:0:0|a' or '|T'..tab.avatarId..':0|t'
-            local col= online>0 and '|cnGREEN_FONT_COLOR:' or '|cff9e9e9e'
-            e.tips:AddDoubleLine(icon..col..tab.name, col..online..icon)--..tab.memberCount
-        end
+        e.Get_Guild_Enter_Info()
         e.tips:Show()
+        local all= GetNumGuildMembers() or 0
         self.Text2:SetText(all>0 and all or '')
     end)
 end

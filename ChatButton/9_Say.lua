@@ -870,7 +870,7 @@ local function Init()
         Save.text= text
         Save.name= name
         Save.isWoW= isWoW
-print(type, text, name, isWoW)
+
         if text=='大喊' then
             text='喊'
         elseif type and text:find('%w') then--处理英文

@@ -4742,7 +4742,8 @@
         "SLASH_WHISPER1",
         "SLASH_SAY3",
         "CreateAnchor",
-        "REPORTING_MINOR_CATEGORY_SPAM"
+        "REPORTING_MINOR_CATEGORY_SPAM",
+        "ITEM_REQ_PURCHASE_GUILD"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",
