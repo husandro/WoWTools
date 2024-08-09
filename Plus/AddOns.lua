@@ -870,7 +870,7 @@ local function Set_Load_Button()--LoadButtons
                 AddonTooltip_Update(self)
                 AddonTooltip:AddLine(' ')
                 local addonIndex= self:GetID()
-                local character = UIDropDownMenu_GetSelectedValue(AddonCharacterDropDown);
+                local character = UIDropDownMenu_GetSelectedValue(AddonList.Dropdown);
                 if ( character == true ) then
                     character = nil;
                 end

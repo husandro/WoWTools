@@ -252,7 +252,7 @@ end
 --初始
 --####
 local function Init()
-    GuildButton.membersText=e.Cstr(GuildButton, {size=10, color=true})-- 10, nil, nil, true, nil, 'CENTER')
+    GuildButton.membersText=e.Cstr(GuildButton, {color=true})-- 10, nil, nil, true, nil, 'CENTER')
     GuildButton.membersText:SetPoint('TOPRIGHT', -3, 0)
 
     set_Guild_Members()--在线人数

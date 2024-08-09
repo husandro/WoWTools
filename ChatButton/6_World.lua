@@ -463,10 +463,10 @@ end
         local index=0
         for guid, num in pairs(Save.myChatFilterPlayers) do
             index= index+1
-            if e.GetPlayerInfo({guid=guid, reName=true, reRealm=true})=='' then
-                print(guid, index)
-            end
-            sub3=sub2:CreateButton('|cff9e9e9e'..index..')|r '..e.GetPlayerInfo({guid=guid, reName=true, reRealm=true})..' |cff9e9e9e#'.. e.MK(num, 3)..'|r', function(data)
+            local name= e.GetPlayerInfo({guid=guid, reName=true, reRealm=true})
+            name= name=='' and guid or name
+            
+            sub3=sub2:CreateButton('|cff9e9e9e'..index..')|r '..name..' |cff9e9e9e#'.. e.MK(num, 3)..'|r', function(data)
                 local player= e.GetPlayerInfo({guid=data.guid, reName=true, reRealm=true, reLink=true})                
                 if Save.myChatFilterPlayers[data.guid] then
                     print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', player)
@@ -1006,7 +1006,7 @@ end
 local function Init()
     WorldButton.texture:SetAtlas('128-Store-Main')
 
-    WorldButton.leftClickTips=e.Cstr(WorldButton, {size=10, color=true, justifyH='CENTER'})--10, nil, nil, true, nil, 'CENTER')
+    WorldButton.leftClickTips=e.Cstr(WorldButton, {size=12, color=true, justifyH='CENTER'})--10, nil, nil, true, nil, 'CENTER')
     WorldButton.leftClickTips:SetPoint('BOTTOM',0,2)
 
     function WorldButton:set_tooltip()

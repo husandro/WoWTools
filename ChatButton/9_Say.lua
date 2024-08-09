@@ -808,7 +808,7 @@ end
 --初始
 --####
 local function Init()
-    SayButton.typeText=e.Cstr(SayButton, {size=10, color=true})--10, nil, nil, true)
+    SayButton.typeText=e.Cstr(SayButton, {color=true})--10, nil, nil, true)
     SayButton.typeText:SetPoint('BOTTOM',0,2)
 
     SayButton.tipBubbles= SayButton:CreateTexture(nil, 'OVERLAY')

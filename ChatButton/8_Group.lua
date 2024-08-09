@@ -152,7 +152,7 @@ end
 
 --主菜单
 local function Init_Menu(_, root)
-    local sub, col
+    local sub, sub2, col, playerName
     local isInGroup= IsInGroup()
     local isInRaid= IsInRaid()
     local isInInstance= IsInInstance()
@@ -210,6 +210,50 @@ local function Init_Menu(_, root)
                 button.leftTexture2:SetAtlas('newplayertutorial-icon-mouse-leftbutton')
             end
         end)
+
+
+        if isInGroup then
+            if index==1 then
+--队伍，子目录
+                for i=1, GetNumGroupMembers()-1, 1 do
+                    local unit='party'..i
+                    if UnitExists(unit) then
+                        playerName=GetUnitName(unit, true)
+                        sub2= sub:CreateButton(e.GetPlayerInfo({unit=unit, reName=true, reRealm=true}), function(data)
+                            if data and data~=e.Player.name then
+                                e.Say(nil, data, nil)
+                            end
+                            return MenuResponse.Open
+                        end, playerName)
+                        sub2:SetTooltip(function(tooltip)
+                            tooltip:AddLine(e.onlyChinese and '密语' or SLASH_TEXTTOSPEECH_WHISPER)
+                        end)
+                    end
+                end
+
+            elseif index==2 and isInRaid then
+                for i=1, MAX_RAID_MEMBERS,  1 do
+                    local unit='raid'..i
+                   if UnitExists(unit) and not UnitIsUnit(unit, 'player') then
+                    --playerName=GetUnitName(unit, true)
+                    --playerName= GetRaidRosterInfo(i)
+                    --e.GetPlayerInfo({unit=unit, reName=true, reRealm=true})
+                    sub2=sub:CreateButton(e.GetPlayerInfo({unit=unit, reName=true, reRealm=true}), function(data)
+                        if data and data~=e.Player.name then
+                            e.Say(nil, data, nil)
+                        end
+                        return MenuResponse.Open
+                    end, playerName)
+                    sub2:SetTooltip(function(tooltip, description)
+                        if description.data and description.data~=e.Player.name then
+                            tooltip:AddLine(e.onlyChinese and '密语' or SLASH_TEXTTOSPEECH_WHISPER)
+                        end
+                    end)
+                end
+                end
+                sub:SetGridMode(MenuConstants.VerticalGridDirection, 4)
+            end
+        end
     end
 
 
@@ -373,6 +417,7 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
     if not IsInGroup() or co<2 then
         return
     end
+    local playerNum=0
 
     local UnitTab={}--取得装等
 
@@ -389,6 +434,8 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
 
         local guid= UnitGUID(unit)
         if guid and UnitExists(unit) then
+            playerNum= playerNum+1
+
             if (not e.UnitItemLevel[guid] or not e.UnitItemLevel[guid].itemLeve) then
                 table.insert(UnitTab, unit)
             end
@@ -437,8 +484,10 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
 
     --[[e.tips:SetOwner(GroupButton, "ANCHOR_LEFT")
     e.tips:ClearLines()]]
-    e.tips:AddDoubleLine(format(e.onlyChinese and '%s玩家' or COMMUNITIES_CROSS_FACTION_BUTTON_TOOLTIP_TITLE, co), e.MK(totaleHP,3))
-
+    e.tips:AddDoubleLine(format(e.onlyChinese and '%s玩家' or COMMUNITIES_CROSS_FACTION_BUTTON_TOOLTIP_TITLE, playerNum), e.MK(totaleHP,3))
+    if playerNum>0 then
+        e.tips:AddLine(' ')
+    end
     local find
     for _, info in pairs(tabT) do
         e.tips:AddDoubleLine(info.name, info.col..e.MK(info.maxHP, 3)..INLINE_TANK_ICON)
@@ -494,11 +543,11 @@ end
 --####
 local function Init()
     --使用,提示
-    GroupButton.typeText=e.Cstr(GroupButton,{size=10, color=true})
+    GroupButton.typeText=e.Cstr(GroupButton,{color=true})
     GroupButton.typeText:SetPoint('BOTTOM',0,2)
 
     --队员，数量，提示
-    GroupButton.membersText=e.Cstr(GroupButton, {size=8, color=true})--10, nil, nil, true)
+    GroupButton.membersText=e.Cstr(GroupButton, {color=true})--10, nil, nil, true)
     GroupButton.membersText:SetPoint('TOPRIGHT', -3, 0)
 
     GroupButton.tipBubbles= GroupButton:CreateTexture(nil, 'OVERLAY')

@@ -1703,10 +1703,6 @@ function e.GetPlayerInfo(tab)--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, fa
             end
             text= '|c'..select(4,GetClassColor(englishClass))..text..'|r'
         end
-
-        if text=='' then
-            print(text, guid)   
-        end
     end
 
 
