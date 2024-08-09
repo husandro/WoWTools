@@ -1241,12 +1241,15 @@ local function Init_Menu(_, root)
 
 
     --文本转语音    
-    root:CreateCheckbox((isInBat and '|cnRED_FONT_COLOR:' or '')..'|A:chatframe-button-icon-TTS:0:0|a'..(e.onlyChinese and '文本转语音' or TEXT_TO_SPEECH), function ()
+    sub=root:CreateCheckbox((isInBat and '|cnRED_FONT_COLOR:' or '')..'|A:chatframe-button-icon-TTS:0:0|a'..(e.onlyChinese and '文本转语音' or TEXT_TO_SPEECH), function ()
         return C_CVar.GetCVarBool('textToSpeech')
     end, function ()
         if not UnitAffectingCombat('player') then
             C_CVar.SetCVar("textToSpeech", not C_CVar.GetCVarBool('textToSpeech') and '1' or '0' )
         end
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine('/tts')
     end)
 
     --etrace

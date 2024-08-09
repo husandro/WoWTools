@@ -1629,7 +1629,6 @@ local function Init_Show_Hide_Button(frame)
     btn:SetPoint('LEFT', title)
     btn:SetFrameLevel(title:GetFrameLevel()+1)
 
-    btn:SetAlpha(0.5)
     btn:SetScript('OnClick', function(_, d)
         if d=='RightButton' then
             e.OpenPanelOpting(Initializer)
@@ -1696,10 +1695,18 @@ local function Init_Show_Hide_Button(frame)
             end
         end
         PaperDollItemsFrame.ShowHideButton:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
-        
-        
+
     end)
-    btn:SetScript('OnLeave', function(self) GameTooltip_Hide() self:SetAlpha(0.5) end)
+    function btn:set_alpha(isEnter)
+        if isEnter then
+            self:SetAlpha(1)
+        else
+            self:SetAlpha(0.5)
+        end
+    end
+    btn:set_alpha(false)
+    
+    btn:SetScript('OnLeave', function(self) GameTooltip_Hide() self:set_alpha(false) end)
     btn:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
@@ -1713,7 +1720,7 @@ local function Init_Show_Hide_Button(frame)
 
 
         e.tips:Show()
-        self:SetAlpha(1)
+        self:set_alpha(true)
     end)
     frame.ShowHideButton= btn
 end
@@ -1915,7 +1922,7 @@ function panel:Init_Server_equipmentButton_Lable()
    if not panel.serverText then
         panel.serverText= e.Cstr(PaperDollItemsFrame.ShowHideButton, {color= GameLimitedMode_IsActive() and {r=0,g=1,b=0} or true, mouse=true, justifyH='RIGHT'})--显示服务器名称
         panel.serverText:SetPoint('LEFT', PaperDollItemsFrame.ShowHideButton, 'RIGHT',2,0)
-        panel.serverText:SetScript("OnLeave",function(frame) e.tips:Hide() frame:SetAlpha(1) end)
+        panel.serverText:SetScript("OnLeave",function(frame) e.tips:Hide() frame:GetParent():set_alpha(false) end)
         panel.serverText:SetScript("OnEnter",function(frame)
             e.tips:SetOwner(frame, "ANCHOR_LEFT")
             e.tips:ClearLines()
@@ -1949,7 +1956,7 @@ function panel:Init_Server_equipmentButton_Lable()
             end
             e.tips:AddDoubleLine(id, Initializer:GetName())
             e.tips:Show()
-            frame:SetAlpha(0.3)
+            frame:GetParent():set_alpha(true)
         end)
     end
     local ser=GetAutoCompleteRealms() or {}

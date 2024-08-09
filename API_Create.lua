@@ -149,20 +149,22 @@ function e.Cedit(self)--frame, name, size={} SecureScrollTemplates.xml
         frame.ScrollBar:SetPoint('TOPRIGHT', -10, -10)
         frame.ScrollBar:SetPoint('BOTTOMRIGHT', -10, 10)
     end
+
+
     e.Set_ScrollBar_Color_Alpha(frame)
     frame.bg= CreateFrame('Frame', nil, frame, 'TooltipBackdropTemplate')
     frame.bg:SetPoint('TOPLEFT', -5, 5)
     frame.bg:SetPoint('BOTTOMRIGHT', 0, -5)
     frame.bg:SetFrameLevel(level+1)
     e.Set_NineSlice_Color_Alpha(frame.bg, true, nil, nil, true)
-    frame.edit= CreateFrame('EditBox', nil, frame)
-    frame.edit:SetAutoFocus(false)
-    frame.edit:SetMultiLine(true)
-    frame.edit:SetFrameLevel(level+2)
-    frame.edit:SetFontObject('GameFontHighlightSmall')-- or "ChatFontNormal")
-    frame.edit:SetScript('OnEscapePressed', EditBox_ClearFocus)
-    frame.edit:SetScript('OnCursorChanged', ScrollingEdit_OnCursorChanged)
-    frame.edit:SetScript('OnUpdate', function(s, elapsed)
+    frame.EditBox= CreateFrame('EditBox', nil, frame)
+    frame.EditBox:SetAutoFocus(false)
+    frame.EditBox:SetMultiLine(true)
+    frame.EditBox:SetFrameLevel(level+2)
+    frame.EditBox:SetFontObject('GameFontHighlightSmall')-- or "ChatFontNormal")
+    frame.EditBox:SetScript('OnEscapePressed', EditBox_ClearFocus)
+    frame.EditBox:SetScript('OnCursorChanged', ScrollingEdit_OnCursorChanged)
+    frame.EditBox:SetScript('OnUpdate', function(s, elapsed)
 	    ScrollingEdit_OnUpdate(s, elapsed, s:GetParent())
     end)
     frame.bg:SetScript('OnMouseDown', function(self, d)
@@ -173,15 +175,30 @@ function e.Cedit(self)--frame, name, size={} SecureScrollTemplates.xml
             end
         end
     end)
-    frame:SetScrollChild(frame.edit)
+    frame:SetScrollChild(frame.EditBox)
     frame:HookScript('OnSizeChanged', function(f)
-       f.edit:SetWidth(f:GetWidth()-25)
+       f.EditBox:SetWidth(f:GetWidth()-25)
     end)
+
+--[[
+    local anchorsWithScrollBar = {
+        CreateAnchor("TOPLEFT", 4, -4);
+        CreateAnchor("BOTTOMRIGHT", frame.ScrollBar, -13, 4),
+    };
+    
+    local anchorsWithoutScrollBar = {
+        CreateAnchor("TOPLEFT", 4, -4),
+        CreateAnchor("BOTTOMRIGHT", -4, 4);
+    };
+   -- ScrollUtil.AddManagedScrollBarVisibilityBehavior(frame.EditBox, frame.ScrollBar, anchorsWithScrollBar, anchorsWithoutScrollBar);
+   ]]
+
+
     function frame:SetText(...)
-        self.edit:SetText(...)
+        self.EditBox:SetText(...)
     end
     function frame:GetText()
-        return self.edit:GetText()
+        return self.EditBox:GetText()
     end
     return frame
 end
@@ -201,8 +218,8 @@ function e.ShowTextFrame(data, headerText)
     local frame= _G['WoWTools_EditBoxFrame']
     if not frame then
         frame= WoWToolsFrameMixin:CreateFrame('WoWTools_EditBoxFrame')
-        frame.ScrollBox= e.Cedit(frame, {font='GameFontHighlightSmall'})
-        frame.ScrollBox:SetPoint('TOPLEFT', 10, -32)
+        frame.ScrollBox= e.Cedit(frame, {font='GameFontNormal'})
+        frame.ScrollBox:SetPoint('TOPLEFT', 11, -32)
         frame.ScrollBox:SetPoint('BOTTOMRIGHT', -7, 12)
     end
 
@@ -216,10 +233,10 @@ function e.ShowTextFrame(data, headerText)
         text= data
     end
 
-    text= text..'|n|n|n'..text..'|n|n|n'..text..'|n|n|n'..text..'|n|n|n'..text
+--    text= text..'|n|n|n'..text..'|n|n|n'..text..'|n|n|n'..text..'|n|n|n'..text
     frame.ScrollBox:SetText(text or '')
 
-    frame.Header:Setup(headerText..headerText..headerText )
+    frame.Header:Setup(headerText or '' )
     frame:SetShown(true)
 end
 

@@ -17,10 +17,12 @@ local addName
 local WorldButton
 local FilterTextTab={--记录, 屏蔽内容
 --[[
+[text]={
     num=1,
     guid={
         [guid]=name
-    },
+    }
+},
 ]]
 }
 
@@ -207,13 +209,13 @@ local function Set_myChat_Filter(_, _, msg, name, _, _, _, _, _, _, _, _, _, gui
         }
         return true
 
-    elseif Save.myChatFilter then
+    elseif Save.myChatFilter and guid then
         if Save.myChatFilterPlayers[guid] then--屏蔽，玩家
             Save.myChatFilterPlayers[guid]= Save.myChatFilterPlayers[guid]+1
             return true
 
         elseif FilterTextTab[msg] then
-            FilterTextTab[msg].guid[guid]= true
+            FilterTextTab[msg].guid[guid]= name
             FilterTextTab[msg].num= FilterTextTab[msg].num +1
             return true
 
@@ -227,7 +229,7 @@ local function Set_myChat_Filter(_, _, msg, name, _, _, _, _, _, _, _, _, _, gui
                 FilterTextTab[msg]={
                     num=1,
                     guid={
-                            [guid]=true
+                            [guid]=name,
                         },
                 }
             end
@@ -334,11 +336,11 @@ end
 local function Set_Add_All_Player_Filter()
     local index= 0
     for _, tab in pairs(FilterTextTab) do
-        for guid in pairs(tab.guid or {}) do
+        for guid, name in pairs(tab.guid or {}) do
             if not Save.myChatFilterPlayers[guid] then
                 Save.myChatFilterPlayers[guid]= 1
                 index= index+1
-                print(id, addName, e.onlyChinese and '屏蔽' or IGNORE, '|cff9e9e9e'..index..'|r', e.GetPlayerInfo({guid=guid, reLink=true, reName=true, reRealm=true}))
+                print(id, addName, e.onlyChinese and '屏蔽' or IGNORE, '|cff9e9e9e'..index..'|r', e.GetPlayerInfo({guid=guid, name=name, reLink=true, reName=true, reRealm=true}))
             end
         end
     end
@@ -381,7 +383,7 @@ local function Init_Filter_Menu(root)
         function()
             return Save.myChatFilter
 
-        end, function(_, _, menu)
+        end, function()
             Save.myChatFilter= not Save.myChatFilter and true or nil
             Set_Filter()
             return MenuResponse.Close
@@ -461,17 +463,38 @@ end
         local index=0
         for guid, num in pairs(Save.myChatFilterPlayers) do
             index= index+1
-            sub3=sub2:CreateButton('|cff9e9e9e'..index..')|r '..e.GetPlayerInfo({guid=guid, reName=true, reRealm=true})..' #'.. num, function(data)
-                if Save.myChatFilterPlayers[data] then
-                    print(id, addName, e.onlyChinese and '移除' or REMOVE, e.GetPlayerInfo({guid=data, reName=true, reRealm=true, reLink=true}))
+            if e.GetPlayerInfo({guid=guid, reName=true, reRealm=true})=='' then
+                print(guid, index)
+            end
+            sub3=sub2:CreateButton('|cff9e9e9e'..index..')|r '..e.GetPlayerInfo({guid=guid, reName=true, reRealm=true})..' |cff9e9e9e#'.. e.MK(num, 3)..'|r', function(data)
+                local player= e.GetPlayerInfo({guid=data.guid, reName=true, reRealm=true, reLink=true})                
+                if Save.myChatFilterPlayers[data.guid] then
+                    print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', player)
+                else
+                    print(id, addName, '|cff9e9e9e'..(e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE)..'|r', player)
                 end
-                Save.myChatFilterPlayers[data]=nil
-                return MenuResponse.Refresh
-            end, guid)
+                Save.myChatFilterPlayers[data.guid]=nil
+                return MenuResponse.Open
+            end, {guid=guid, num=num})
 
-            sub3:SetTooltip(function(tooltip)
-                tooltip:AddLine(e.onlyChinese and '移除' or REMOVE)
+            sub3:SetTooltip(function(tooltip, description)
+                tooltip:AddLine((e.onlyChinese and '刷屏' or REPORTING_MINOR_CATEGORY_SPAM)..' #'..description.data.num)
+                tooltip:AddLine(' ')
+                if Save.myChatFilterPlayers[description.data.guid] then
+                    tooltip:AddLine(e.onlyChinese and '移除' or REMOVE)
+                else
+                    tooltip:AddLine(e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE)
+                end
             end)
+
+            local name, realmName = select(6, GetPlayerInfoByGUID(guid))
+            if name and realmName then
+                realmName= realmName =='' and e.Player.realm or realmName
+                sub3:CreateButton(e.onlyChinese and '密语' or SLASH_TEXTTOSPEECH_WHISPER, function(data)
+                    e.Say(nil, data)
+                    return MenuResponse.Open
+                end, name..'-'..realmName)
+            end
         end
 
 
@@ -486,7 +509,7 @@ end
 
 
 
-    --自动添加
+--自动添加
     sub:CreateCheckbox((e.onlyChinese and '自动添加' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, ADD)), function()
         return Save.myChatFilterAutoAdd
     end, function()
@@ -494,89 +517,121 @@ end
         if Save.myChatFilterAutoAdd then
             Set_Add_All_Player_Filter()--全部屏蔽, 现有列表
         end
-        return MenuResponse.Close
+        return MenuResponse.CloseAll
     end)
 
 
 
-    if Save.myChatFilterAutoAdd then
-        return
-    end
-    
+--没有自动，添加时，显示其它，菜单
+ if not Save.myChatFilterAutoAdd and filterNum>0 then
+    sub:CreateDivider()
+
+--全部屏蔽, 现有列表
+    sub:CreateButton('|A:GreenCross:0:0|a'..(e.onlyChinese and '全部添加' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, ADD))..' #'..filterNum, Set_Add_All_Player_Filter)
+
+
+--全部清除, 屏蔽刷屏
+    sub:CreateButton('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL)..' #'..filterNum, function()
+        FilterTextTab={}
+    end)
 
 
     sub:CreateDivider()
-    if filterNum>0 and not UnitAffectingCombat('player') then
+--屏蔽刷屏，显示内容
+    local index=0
+    for text, tab in pairs(FilterTextTab) do
+        index= index+1
 
-    --全部屏蔽, 现有列表
-        sub:CreateButton('|A:GreenCross:0:0|a'..(e.onlyChinese and '全部屏蔽' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, IGNORE))..' #'..filterNum, Set_Add_All_Player_Filter)
+        local playerName
+        local playerName2
+        for guid, name in pairs(tab.guid) do
+            playerName=e.GetPlayerInfo({guid=guid, name=name, reName=true, reRealm=true})
+            playerName2= name
+            if playerName~='' then
+                break
+            end
+        end
 
-
-    --全部清除, 屏蔽刷屏
-        sub:CreateButton('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL)..' #'..filterNum, function()
-            FilterTextTab={}
+        sub2=sub:CreateButton('|cff9e9e9e'..index..')|r '..(playerName or text).. ' |cff9e9e9e'..strlenutf8(text)..'|r', function(data)
+            e.Say(nil, data.name)
+            return MenuResponse.Refresh
+        end, {data=tab, text=text, name=playerName2})
+        sub2:SetTooltip(function(tooltip, description)
+            for guid in pairs(description.data.data.guid or {}) do
+                tooltip:AddDoubleLine(e.GetPlayerInfo({guid=guid, reName=true, reRealm=true}), ' ')
+            end
+            --tooltip:AddDoubleLine(e.onlyChinese and '屏蔽玩家' or IGNORE_PLAYER, e.Icon.left)                
+            tooltip:AddDoubleLine(
+                '|cnGREEN_FONT_COLOR:'..strlenutf8(description.data.text)..(e.onlyChinese and '字符' or 'Word count'),
+                '|cnGREEN_FONT_COLOR:#'..(description.data.data.num or 0)..(e.onlyChinese and "次" or VOICEMACRO_LABEL_CHARGE1)
+            )
+            tooltip:AddLine(' ')
+            tooltip:AddLine(description.data.text, nil, nil,nil, true)
         end)
 
-
-
-        --屏蔽刷屏，显示内容
-        sub:CreateDivider()
-
-        local index=0
-        for text, tab in pairs(FilterTextTab) do
-            index= index+1
-            sub2=sub:CreateButton('|cff9e9e9e'..index..')|r '..text, function(data)
-                for guid in pairs(data.data.guid or {}) do
-                    local player= e.GetPlayerInfo({guid=guid, reLink=true, reName=true, reRealm=true})
-                    if Save.myChatFilterPlayers[guid] then
-                        print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已存在|r' or 'Existed|r'), player)
-                    else
-                        Save.myChatFilterPlayers[guid]= 1
-                        print(id, addName, e.onlyChinese and '屏蔽' or IGNORE, player)
-                    end
-                    FilterTextTab[data.text]= nil
-                end
-                --e.Say(nil, data.name)
-                return MenuResponse.Refresh
-
-            end, {data=tab, text=text})
-
-
-            sub2:SetTooltip(function(tooltip, description)
-                for guid in pairs(description.data.data.guid or {}) do
-                    tooltip:AddDoubleLine(e.GetPlayerInfo({guid=guid, reName=true, reRealm=true}), ' ')
-                end
-                tooltip:AddDoubleLine(e.onlyChinese and '屏蔽玩家' or IGNORE_PLAYER, e.Icon.left)
-                tooltip:AddLine(' ')
-
-                tooltip:AddDoubleLine('|cnGREEN_FONT_COLOR:#'..(description.data.data.num or 0),  e.onlyChinese and "次" or VOICEMACRO_LABEL_CHARGE1)
-            end)
-
-            sub2:AddInitializer(function(button)
-                button:SetHyperlinksEnabled(true)
-                button:SetScript('OnHyperlinkLeave', GameTooltip_Hide)
-                button:SetScript('OnHyperlinkEnter', function(self, link)
-                    if link then
+        --[[sub2:AddInitializer(function(button)
+            button:SetHyperlinksEnabled(true)
+            button:SetScript('OnHyperlinkLeave', GameTooltip_Hide)
+            button:SetScript('OnHyperlinkEnter', function(self, link)
+                if link then
                     e.tips:SetOwner(self, "ANCHOR_LEFT")
                     e.tips:ClearLines()
                     e.tips:SetHyperlink(link)
                     e.tips:Show()
-                    end
-                end)
-                button:SetScript('OnHyperlinkClick', function(_, link, text2, region)
-                    SetItemRef(link, text2, region, nil)
-                end)
-                button:SetScript('OnHide', function(self)
-                    self:SetScript('OnHyperlinkLeave', nil)
-                    self:SetScript('OnHyperlinkEnter', nil)
-                    self:SetScript('OnHyperlinkClick', nil)
-                end)
+                end
             end)
+            button:SetScript('OnHyperlinkClick', function(_, link, text2, region)
+                SetItemRef(link, text2, region, nil)
+            end)
+            button:SetScript('OnHide', function(self)
+                self:SetScript('OnHyperlinkLeave', nil)
+                self:SetScript('OnHyperlinkEnter', nil)
+                self:SetScript('OnHyperlinkClick', nil)
+            end)
+        end)]]
+
+
+
+--显示, 内容
+        sub2:CreateButton(e.onlyChinese and '显示' or SHOW, function(data)
+            local str=''
+            for guid, name in pairs(data.guid or {}) do
+                str= str..e.GetPlayerInfo({guid=guid, name=name, reName=true, reRealm=true})..'|n'
+            end
+            str=str..'|n'..data.text
+            e.ShowTextFrame(str, playerName.name)
+            return MenuResponse.Open
+        end, {text=text, guid=tab.guid, playerName=playerName})
+
+        if type(playerName2)=='string' then
+            sub2:CreateButton((e.onlyChinese and '密语' or SLASH_TEXTTOSPEECH_WHISPER)..e.Icon.left, function(data)
+                e.Say(nil, data)
+                return MenuResponse.Open
+            end, playerName2)
         end
 
-    elseif filterNum>0 then
-        sub:CreateTitle(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
+--屏蔽
+        sub2:CreateDivider()
+        sub2:CreateButton(e.onlyChinese and '屏蔽' or IGNORE, function(data)
+            for guid, name in pairs(data.guid or {}) do
+                local player= e.GetPlayerInfo({guid=guid, name=name, reLink=true, reName=true, reRealm=true})
+                if Save.myChatFilterPlayers[guid] then
+                    print(id, addName, '|cff9e9e9e'..(e.onlyChinese and '已存在|r' or 'Existed|r'), player)
+                else
+                    Save.myChatFilterPlayers[guid]= 1
+                    print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '屏蔽' or IGNORE)..'|r', player)
+                end
+            end
+            FilterTextTab[data.text]= nil
+            return MenuResponse.Close
+        end, {text=text, guid=tab.guid})
     end
+
+    if filterNum>35 then
+        sub:SetGridMode(MenuConstants.VerticalGridDirection, math.ceil(filterNum/35))
+    end
+end
+
 end
 
 

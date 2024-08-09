@@ -1,13 +1,7 @@
 local e= select(2, ...)
 
-WoWToolsFrameMixin= {}
-
-
-
-
-
 --[[
-WoWToolsEditBoxFrameMixin:CreateFrame(name, {
+WoWToolsFrameMixin:CreateFrame(name, {
     size={w, h} or numeri,
     parentFrame= frame or UIParent,
     setID=numeri, --SetID(1)
@@ -23,6 +17,8 @@ frame.Header:Setup(text)
 
 --]]
 
+
+WoWToolsFrameMixin= {}
 local index= 0
 function WoWToolsFrameMixin:CreateFrame(name, tab)
     if not name then
@@ -70,12 +66,12 @@ function WoWToolsFrameMixin:CreateFrame(name, tab)
     e.Set_Move_Frame(frame.Header, {frame=frame})
     e.Set_Move_Frame(frame.Border, {frame=frame})
 
-
-    frame:SetScript('OnKeyDown', function(f, key)
+   frame.Border:SetScript('OnKeyDown', function(f, key)
         if key=='ESCAPE' then
-            f:Hide()
+            f:GetParent():Hide()
         end
     end)
+
 
     index= index+1
     return frame

@@ -123,7 +123,7 @@ e.Set_Frame_Scale(self, delta, value, func)--设置Frame缩放
 
 --取得中文 
 function e.cn(text, tab)--{gossipOptionID=, questID=}
-    return e.onlyChinese and WoW_Tools_Chinese_CN and WoW_Tools_Chinese_CN(text, tab) or text 
+    return e.onlyChinese and WoW_Tools_Chinese_CN and WoW_Tools_Chinese_CN(text, tab) or text
 end
 
 
@@ -944,13 +944,13 @@ function e.GetFactionInfo(factionID, index, toRight)
     if factionID then
         data= C_Reputation.GetFactionDataByID(factionID)
     elseif index then
-        data= C_Reputation.GetFactionDataByIndex(index)    
+        data= C_Reputation.GetFactionDataByIndex(index)
     end
 
     if not data or not data.name then
         return {}
     end
-    
+
     factionID= factionID or data.factionID
 
     local name= data.name
@@ -959,8 +959,8 @@ function e.GetFactionInfo(factionID, index, toRight)
     local standingID= data.reaction
     local barMin= data.currentReactionThreshold
     local barValue= data.currentStanding
-    local barMax= data.nextReactionThreshold  
-    
+    local barMax= data.nextReactionThreshold
+
 
     local factionStandingtext, value, texture, atlas, barColor
 
@@ -1057,7 +1057,7 @@ function e.GetFactionInfo(factionID, index, toRight)
             end
         end
     end
-    
+
     return {
         name= name,
         factionID= factionID,
@@ -1071,7 +1071,7 @@ function e.GetFactionInfo(factionID, index, toRight)
         texture= texture,
         atlas= atlas,
 
-        factionStandingtext= factionStandingtext,        
+        factionStandingtext= factionStandingtext,
         valueText= value,
 
         hasRewardPending=hasRewardPending,
@@ -1627,9 +1627,14 @@ function e.GetPlayerInfo(tab)--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, fa
     local guid= tab.guid or e.GetGUID(tab.unit, tab.name)
     if guid==e.Player.guid then
         return e.Icon.player..((tab.reName or tab.reLink) and e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r' or '')..'|A:auctionhouse-icon-favorite:0:0|a'
-    elseif tab.reLink then
+    end
+
+    if tab.reLink then
         return e.PlayerLink(tab.name, guid, true) --玩家超链接
-    elseif guid and C_PlayerInfo.GUIDIsPlayer(guid) then
+    end
+
+    local text
+    if guid and C_PlayerInfo.GUIDIsPlayer(guid) then
         local _, englishClass, _, englishRace, sex, name, realm = GetPlayerInfoByGUID(guid)
         local unit= tab.unit
         if guid and (not tab.faction or unit) then
@@ -1643,7 +1648,7 @@ function e.GetPlayerInfo(tab)--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, fa
         local groupInfo= e.GroupGuid[guid] or {}--队伍成员
         local server= not tab.reNotRegion and e.Get_Region(realm)--服务器，EU， US {col=, text=, realm=}
 
-        local text= (server and server.col or '')
+        text= (server and server.col or '')
                     ..(friend or '')
                     ..(e.GetUnitFaction(unit, tab.faction) or '')--检查, 是否同一阵营
                     ..(e.GetUnitRaceInfo({unit=unit, guid=guid , race=englishRace, sex=sex, reAtlas=false}) or '')
@@ -1664,9 +1669,14 @@ function e.GetPlayerInfo(tab)--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, fa
             end
             text= '|c'..select(4,GetClassColor(englishClass))..text..'|r'
         end
-        return text
 
-    elseif tab.name then
+        if text=='' then
+            print(text, guid)   
+        end
+    end
+
+
+    if (not text or text=='') and tab.name then
         if tab.reLink then
             return e.PlayerLink(tab.name, nil, true) --玩家超链接
 
@@ -1675,11 +1685,11 @@ function e.GetPlayerInfo(tab)--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, fa
             if not tab.reRealm then
                 name= GetPlayerNameRemoveRealm(name)
             end
-            return name
+            text= name
         end
     end
 
-    return ''
+    return text or ''
 end
 
 
