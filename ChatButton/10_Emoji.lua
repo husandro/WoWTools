@@ -445,7 +445,7 @@ local function Init()
     function EmojiButton:get_emoji_text(index)
         index= index or Save.clickIndex or 18
         if index<=self.numFile then
-            return '{'..File[index]..'}'
+            return File[index]
         else
             return 'rt'..(index-self.numFile)
         end
