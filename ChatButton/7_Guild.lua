@@ -9,10 +9,11 @@ local panel= CreateFrame("Frame")
 --在线人数
 --#######
 local function set_Guild_Members()
-    if GuildButton then
-        local online = select(2, GetNumGuildMembers()) or 0
-        GuildButton.membersText:SetText(online>1 and online-1 or '')
+    local online=1
+    if GuildButton and IsInGuild() then
+        online = select(2, GetNumGuildMembers()) or 0
     end
+    GuildButton.membersText:SetText(online>1 and online-1 or '')
 end
 
 --#######
@@ -167,67 +168,82 @@ end
 
 
 
---#####
+
 --主菜单
---#####
-local function InitMenu(_, level)--主菜单    
-    local info
-    local find
-    local map=e.GetUnitMapName('paleyr')
-    for index=1,  GetNumGuildMembers() do
-        local name, rankName, rankIndex, lv, _, zone, publicNote, officerNote, isOnline, status, _, _, _, _, _, _, guid = GetGuildRosterInfo(index)
-        if name and guid and isOnline and name~=e.Player.name_realm then
-            find=true
-            local text=e.GetPlayerInfo({guid=guid, name=name, reName=true, reRealm=true})
-            text=(lv and lv~=GetMaxLevelForPlayerExpansion()) and text..' |cnGREEN_FONT_COLOR:'..lv..'|r' or text--等级
-            if zone then--地区
-                text= zone==map and text..'|A:poi-islands-table:0:0|a' or text..' '..zone
-            end
-            text= rankName and text..' '..rankName..(rankIndex or '') or text
-            info={
-                text=text,
-                notCheckable=true,
-                colorCode= not IsInGuild() and '|cff9e9e9e' or nil,
-                tooltipOnButton=true,
-                tooltipTitle=publicNote or '',
-                tooltipText=officerNote or '',
-                icon= status==1 and FRIENDS_TEXTURE_AFK or status==2 and FRIENDS_TEXTURE_DND,
-                arg1=name,
-                keepShownOnClick=true,
-                func=function(self2, arg1)
-                    e.Say(nil, arg1)
+local function Init_Menu(_, root)
+    local sub, text
+    local total, online = GetNumGuildMembers()
+    if online>1 then
+        local map=e.GetUnitMapName('paleyr')
+        local maxLevel= GetMaxLevelForLatestExpansion()
+        for index=1, total, 1 do
+            local name, _, rankIndex, lv, _, zone, publicNote, officerNote, isOnline, status, _, _, _, _, _, _, guid = GetGuildRosterInfo(index)
+            if name and guid and isOnline and guid~=e.Player.guid then
+                text=status==1 and format('|T:%s:0|t', FRIENDS_TEXTURE_AFK) or status==2 and format('|T:%s:0|t', FRIENDS_TEXTURE_DND) or ''
+                if rankIndex ==0 then
+                    text= text..'|TInterface\\GroupFrame\\UI-Group-LeaderIcon:0|t'
+                elseif rankIndex == 1 then
+                    text= text..'|TInterface\\GroupFrame\\UI-Group-AssistantIcon:0|t'
                 end
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
+
+                text=text..e.GetPlayerInfo({guid=guid, name=name, reName=true, reRealm=true})
+                text=(lv and lv~=maxLevel) and text..' |cnGREEN_FONT_COLOR:'..lv..'|r' or text--等级
+                if zone and zone==map then--地区
+                    text= text..'|A:poi-islands-table:0:0|a'
+                end
+               -- text= rankName and text..' '..rankName..(rankIndex or '') or text
+
+
+                sub=root:CreateButton(text, function(data)
+                    e.Say(nil, data.name)
+                    return MenuResponse.Open
+                end, {publicNote=publicNote, officerNote=officerNote, name=name, zone=zone})
+                sub:SetTooltip(function(tooltip, description)
+                    tooltip:AddLine((e.onlyChinese and '密语' or SLASH_TEXTTOSPEECH_WHISPER)..' '..SLASH_WHISPER1..' '..description.data.name)
+                    tooltip:AddLine(' ')                    
+                    tooltip:AddLine(description.data.zone)
+                    tooltip:AddLine(description.data.publicNote)
+                    tooltip:AddLine(description.data.officerNote)
+                end)
+
+            end
+        end
+        root:CreateDivider()
+
+        if online>35 then
+            root:SetGridMode(MenuConstants.VerticalGridDirection, math.ceil(online/35))
         end
     end
-    if find then
-        e.LibDD:UIDropDownMenu_AddSeparator(level)
-    end
-    info={
-        text=e.onlyChinese and '公会信息' or GUILD_INFORMATION,
-        checked=Save.guildInfo,
-        tooltipOnButton=true,
-        tooltipTitle= e.WoWDate[e.Player.guid].GuildInfo or (e.onlyChinese and '无' or NONE),
-        keepShownOnClick=true,
-        func=function()
-            Save.guildInfo= not Save.guildInfo and true or nil
-            set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
-        end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     if CanReplaceGuildMaster() then--弹劾
-        e.LibDD:UIDropDownMenu_AddSeparator(level)
-        e.LibDD:UIDropDownMenu_AddButton({
-            text=e.onlyChinese and '弹劾' or GUILD_IMPEACH_POPUP_CONFIRM,
-            isTitle=true,
-            notCheckable=true,
-            tooltipOnButton=true,
-            tooltipTitle= e.onlyChinese and '你所在公会的领袖已被标记为非活动状态。你现在可以争取公会领导权。是否要移除公会领袖？' or GUILD_IMPEACH_POPUP_TEXT,
-        }, level)
+        sub=root:CreateButton(e.onlyChinese and '弹劾' or GUILD_IMPEACH_POPUP_CONFIRM, ToggleGuildFrame)
+        sub:SetTooltip(function(tooltip)
+            tooltip:AddLine(e.onlyChinese and '你所在公会的领袖已被标记为非活动状态。你现在可以争取公会领导权。是否要移除公会领袖？' or GUILD_IMPEACH_POPUP_TEXT, nil,nil,nil, true)
+        end)
+        root:CreateDivider()
     end
+
+    sub=root:CreateCheckbox(e.onlyChinese and '公会信息' or GUILD_INFORMATION, function()
+        return Save.guildInfo
+    end, function()
+        Save.guildInfo= not Save.guildInfo and true or nil
+        set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine()
+        tooltip:AddLine(e.WoWDate[e.Player.guid].GuildInfo)
+    end)
+
+
 end
+
+
+
+
+
+
+
+
 
 
 
@@ -252,11 +268,19 @@ end
 --初始
 --####
 local function Init()
-    GuildButton.membersText=e.Cstr(GuildButton, {color=true})-- 10, nil, nil, true, nil, 'CENTER')
+    GuildButton.membersText=e.Cstr(GuildButton)-- 10, nil, nil, true, nil, 'CENTER')
     GuildButton.membersText:SetPoint('TOPRIGHT', -3, 0)
-
+    
+    
     set_Guild_Members()--在线人数
-    GuildButton.texture:SetAtlas('UI-HUD-MicroMenu-GuildCommunities-Up')
+    
+    --
+
+
+
+
+
+
     e.Set_Label_Texture_Color(GuildButton.texture, {type='Texture'})--设置颜色
 
     GuildButton:SetScript('OnLeave', function(self)
@@ -272,36 +296,54 @@ local function Init()
         e.Get_Guild_Enter_Info()--公会， 社区，信息
         e.tips:Show()
         self:state_enter()
+        if IsInGuild() then
+            C_GuildInfo.GuildRoster()
+        end
     end)
 
     GuildButton:SetScript('OnClick', function(self, d)
         if d=='LeftButton' then
             e.Say('/g')
         else
-            if not self.Menu then
-                self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
-                e.LibDD:UIDropDownMenu_Initialize(GuildButton.Menu, InitMenu, 'MENU')
+            if IsInGuild() then
+                MenuUtil.CreateContextMenu(self, Init_Menu)
+                e.tips:Hide()
+            else
+                ToggleGuildFrame()
             end
-            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
-            --ToggleGuildFrame()
         end
     end)
 
 
- 
+    if IsInGuild() then--GuildUtil.lua
+        --[[GuildButton.texture2= GuildButton:CreateTexture(nil, 'BACKGROUND')
+        GuildButton.texture2:SetAllPoints(GuildButton)
+        
+        GuildButton.texture3= GuildButton:CreateTexture(nil, 'BORDER', nil, 2)
+        GuildButton.texture3:SetAllPoints(GuildButton)]]
 
+        GuildButton.texture:ClearAllPoints()
+        GuildButton.texture:SetPoint('CENTER',-1.5, 1)
+        GuildButton.texture:SetSize(14,14)
 
+        SetSmallGuildTabardTextures('player', GuildButton.texture)--, GuildButton.texture, GuildButton.texture3)
+        --local tabardInfo = C_GuildInfo.GetGuildTabardInfo('player')
 
-
-
-
-
-
-    if CanReplaceGuildMaster() then--弹劾
-        local label= e.Cstr(GuildButton, {size=10, color=true, justifyH='CENTER'})
-        label:SetPoint('TOP')
-        label:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '弹劾' or  e.WA_Utf8Sub(GUILD_IMPEACH_POPUP_CONFIRM, 2, 5,true))..'|r')
+        if CanReplaceGuildMaster() then--弹劾
+            local label= e.Cstr(GuildButton, {size=10, color=true, justifyH='CENTER'})
+            label:SetPoint('TOP')
+            label:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '弹劾' or  e.WA_Utf8Sub(GUILD_IMPEACH_POPUP_CONFIRM, 2, 5,true))..'|r')
+        end
+    else
+        GuildButton.texture:SetAtlas('UI-HUD-MicroMenu-GuildCommunities-Up')
     end
+
+
+
+
+
+
+
 
 
 
@@ -373,12 +415,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
-            
+
             GuildButton= WoWToolsChatButtonMixin:CreateButton('Guild')
 
             if GuildButton then--禁用Chat Button
-                
-              
+
+
                 Init()
                 self:RegisterEvent('GUILD_ROSTER_UPDATE')
                 self:RegisterEvent('PLAYER_GUILD_UPDATE')
@@ -399,5 +441,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='PLAYER_GUILD_UPDATE' then
         set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
+        set_Guild_Members()
     end
 end)

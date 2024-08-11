@@ -36,9 +36,11 @@ e.FindBagItem(find, tab)--查询，背包里物品，itemName，itemLink，itemI
 e.MK(number, bit)
 e.GetShowHide(sh, all) 显示/隐藏
 e.Set_Label_Texture_Color(self, tab)--设置颜色{type='FontString','Texture','String', 'EditBox', 'Button', alpha=, color={r=,g=b=,a=}}
+
 e.WA_Utf8Sub(text, size, letterSize, lower)
 e.WA_GetUnitDebuff(unit, spell, filter, spellTab)
-e.WA_Utf8Sub(text, size, letterSize, lower)
+ e.WA_GetUnitBuff(unit, spell, filter)--HELPFUL HARMFUL
+
 e.Chat(text, name, printText)
 e.Say(type, name, wow, text)
 e.Reload()
@@ -366,28 +368,50 @@ function e.Set_Label_Texture_Color(self, tab)--设置颜色
     end
 end
 
-function e.WA_GetUnitBuff(unit, spell, filter)--HELPFUL HARMFUL
-    for i = 1, 40 do
-        local spellID = select(10, UnitBuff(unit, i, filter))
+
+
+local function UnitAura(unit, i, filter)
+    local data= C_UnitAuras.GetAuraDataByIndex(unit, i ,filter)
+    if data then
+        return AuraUtil.UnpackAuraData(data)
+    end 
+end
+
+
+--WeakAuras AuraEnvironment.lua
+function e.WA_GetUnitBuff(unit, spell, filter, spellTab)--HELPFUL HARMFUL
+    spellTab= spellTab or {}
+    filter = filter and filter.."|HELPFUL" or "HELPFUL"
+    for i = 1, 255 do
+        local spellID= select(10, UnitAura(unit, i, filter))
         if not spellID then
             return
-        elseif spell == spellID then
-          return UnitBuff(unit, i, filter)
+        elseif spellTab[spellID] or spell== spellID then
+            return UnitAura(unit, i, filter)
         end
     end
 end
 
 function e.WA_GetUnitDebuff(unit, spell, filter, spellTab)
+    filter = filter and filter.."|HARMFUL" or "HARMFUL"
     spellTab= spellTab or {}
-    for i = 1, 40 do
-        local spellID = select(10, UnitDebuff(unit, i, filter))
+    for i = 1, 255 do
+        local spellID= select(10, UnitAura(unit, i, filter))
         if not spellID then
             return
         elseif spellTab[spellID] or spell== spellID then
-            return UnitDebuff(unit, i, filter)
+            return UnitAura(unit, i, filter)
         end
     end
 end
+
+
+
+
+
+
+
+
 
 
 function e.WA_Utf8Sub(text, size, letterSize, lower)
@@ -1613,7 +1637,7 @@ function e.GetFriend(name, guid, unit)--检测, 是否好友
                 return e.Icon.net2
             elseif C_FriendList.IsFriend(guid) then
                 return '|A:groupfinder-icon-friend:0:0|a'--好友
-            elseif IsGuildMember(guid) then
+            elseif IsGuildMember(guid) then--IsPlayerInGuildFromGUID
                 return '|A:UI-HUD-MicroMenu-GuildCommunities-Mouseover:0:0|a'--公会
             end
         end

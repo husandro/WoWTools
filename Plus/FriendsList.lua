@@ -382,7 +382,7 @@ local function Init_FriendsList()--好友列表, 初始化
             text= text..'|T'..FRIENDS_TEXTURE_OFFLINE..':0|t'
         end
 
-        if accountInfo.gameAccountInfo.characterLevel and accountInfo.gameAccountInfo.characterLevel>0 and accountInfo.gameAccountInfo.characterLevel~= GetMaxLevelForPlayerExpansion() then--角色等级
+        if accountInfo.gameAccountInfo.characterLevel and accountInfo.gameAccountInfo.characterLevel>0 and accountInfo.gameAccountInfo.characterLevel~= GetMaxLevelForLatestExpansion() then--角色等级
             text= text..'|cnGREEN_FONT_COLOR:'..accountInfo.gameAccountInfo.characterLevel..'|r '
         end
 
@@ -644,7 +644,7 @@ local function Set_FriendsFrame_UpdateFriendButton(self)
 
         local text=''
 
-        if accountInfo.gameAccountInfo.characterLevel and accountInfo.gameAccountInfo.characterLevel>0 and accountInfo.gameAccountInfo.characterLevel~= GetMaxLevelForPlayerExpansion() then--角色等级
+        if accountInfo.gameAccountInfo.characterLevel and accountInfo.gameAccountInfo.characterLevel>0 and accountInfo.gameAccountInfo.characterLevel~= GetMaxLevelForLatestExpansion() then--角色等级
             text= text..'|cnGREEN_FONT_COLOR:'..accountInfo.gameAccountInfo.characterLevel..'|r '
         end
         text= text.. e.GetPlayerInfo({guid=accountInfo.gameAccountInfo.playerGuid, reName=true, reRealm=true, faction=accountInfo.gameAccountInfo.factionName })
@@ -710,6 +710,7 @@ local function Init_RaidGroupFrame_Update()--团队, 模块
     local itemLevel, itemNum, afkNum, deadNum, notOnlineNum= 0,0,0,0,0
     local getItemLevelTab={}--取得装等
     local setSize= WhoFrame:GetWidth()> 350
+    local maxLevel= GetMaxLevelForLatestExpansion()
     for i=1, MAX_RAID_MEMBERS do
         local button = _G["RaidGroupButton"..i]
         if button and button.subframes then
@@ -780,7 +781,7 @@ local function Init_RaidGroupFrame_Update()--团队, 模块
                     end
                 end
 
-                if subframes.level and level==GetMaxLevelForPlayerExpansion() then
+                if subframes.level and level==maxLevel then
                     subframes.level:SetText(e.GetUnitRaceInfo({unit=unit, guid=guid, race=nil, sex=nil, reAtlas=false}) or '')
                 end
             end
@@ -825,6 +826,7 @@ local function set_WhoList_Update()--查询, 名单列表
     if not WhoFrame.ScrollBox:GetView() then
         return
     end
+    local maxLevel= GetMaxLevelForLatestExpansion()
     for _, btn in pairs(WhoFrame.ScrollBox:GetFrames()) do
         if not btn.setOnDoubleClick then
             btn:SetScript('OnDoubleClick', function()
@@ -849,7 +851,7 @@ local function set_WhoList_Update()--查询, 名单列表
                                 ..self.col
                                 ..info.fullName
                                 ..(e.GetFriend(info.fullName) or '')
-                                ..(info.level and ' '..(info.level~=GetMaxLevelForPlayerExpansion() and '|cnGREEN_FONT_COLOR:' or '')..info.level or '')
+                                ..(info.level and ' '..(info.level~=GetMaxLevelForLatestExpansion() and '|cnGREEN_FONT_COLOR:' or '')..info.level or '')
                             )
                     e.tips:AddLine('|A:UI-HUD-MicroMenu-GuildCommunities-GuildColor-Mouseover:0:0|a'..self.col..(info.fullGuildName or ''))
                     e.tips:AddLine('|A:groupfinder-waitdot:0:0|a'..self.col..(info.raceStr or ''))
@@ -903,7 +905,7 @@ local function set_WhoList_Update()--查询, 名单列表
                 btn.Variable:SetTextColor(r,g,b)
             end
             if btn.Level then
-                if level==0 or level== GetMaxLevelForPlayerExpansion() then
+                if level==0 or level== maxLevel then
                     btn.Level:SetTextColor(r,g,b)
                     btn.Level:SetText('')
                 else

@@ -71,9 +71,7 @@ local function Init()
     SELECTED_DOCK_FRAME.editBox:SetAltArrowKeyMode(false)
 
     function ChatButton:set_scale()
-        if Save.scale then--缩放
-            self:SetScale(Save.scale)
-        end
+        self:SetScale(Save.scale or 1)
     end
     function ChatButton:set_point()
         self:ClearAllPoints()
@@ -116,7 +114,7 @@ local function Init()
     end)
 
     ChatButton:SetScript("OnMouseUp", ResetCursor)
-    ChatButton:SetScript("OnMouseDown", function(self, d)
+    ChatButton:SetScript("OnMouseDown", function(_, d)
         if IsAltKeyDown() and d=='RightButton' then--移动光标
             SetCursor('UI_MOVE_CURSOR')
         end

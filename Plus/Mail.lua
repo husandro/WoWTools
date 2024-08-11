@@ -185,13 +185,14 @@ local function Init_Menu(_, level, menuList)
 
     elseif menuList=='FRIEND'  then
         local find
+        local maxLevel= GetMaxLevelForLatestExpansion()
         for i=1 , C_FriendList.GetNumFriends() do
             local game=C_FriendList.GetFriendInfoByIndex(i)
             if game and game.guid and (game.connected or Save.show['FRIEND']) and not e.WoWDate[game.guid] then
                 local name= e.GetUnitName(nil, nil, game.guid)
                 if not Get_Realm_Info(name) then
                     local text= e.GetPlayerInfo({guid=game.guid, reName=true, reRealm=true})--角色信息
-                    text= (game.level and game.level~=GetMaxLevelForPlayerExpansion() and game.level>0) and text .. ' |cff00ff00'..game.level..'|r' or text--等级
+                    text= (game.level and game.level~=maxLevel and game.level>0) and text .. ' |cff00ff00'..game.level..'|r' or text--等级
                     if game.area and game.connected then
                         text= text..' '..game.area
                     elseif not game.connected then
@@ -230,6 +231,7 @@ local function Init_Menu(_, level, menuList)
 
     elseif menuList=='WOW' then
         local find
+        local maxLevel= GetMaxLevelForLatestExpansion()
         for i=1 ,BNGetNumFriends() do
             local wow= C_BattleNet.GetFriendAccountInfo(i);
             local wowInfo= wow and wow.gameAccountInfo
@@ -242,7 +244,7 @@ local function Init_Menu(_, level, menuList)
                 if not Get_Realm_Info(name) then
                     local text= e.GetPlayerInfo({guid=wowInfo.playerGuid, reName=true, reRealm=true, factionName=wowInfo.factionName})--角色信息
 
-                    if wowInfo.characterLevel and wowInfo.characterLevel~=GetMaxLevelForPlayerExpansion() and wowInfo.characterLevel>0 then--等级
+                    if wowInfo.characterLevel and wowInfo.characterLevel~=maxLevel and wowInfo.characterLevel>0 then--等级
                         text=text ..' |cff00ff00'..wowInfo.characterLevel..'|r'
                     end
                     if not wowInfo.isOnline then
@@ -270,13 +272,14 @@ local function Init_Menu(_, level, menuList)
 
     elseif menuList=='GUILD' then
         local num=0
+        local maxLevel= GetMaxLevelForLatestExpansion()
         for index=1, GetNumGuildMembers() do
             local name, rankName, rankIndex, lv, _, zone, publicNote, officerNote, isOnline, status, _, _, _, _, _, _, guid = GetGuildRosterInfo(index)
             if name and guid and (isOnline or rankIndex<2 or (Save.show['GUILD'] and num<60)) and not e.WoWDate[guid] then
 
                 local text= e.GetPlayerInfo({guid=guid, reName=true, reRealm=true,})--角色信息
 
-                text= (lv and lv~=GetMaxLevelForPlayerExpansion() and lv>0) and text .. ' |cff00ff00'..lv..'|r' or text--等级
+                text= (lv and lv~=maxLevel and lv>0) and text .. ' |cff00ff00'..lv..'|r' or text--等级
                 if zone and isOnline then
                     text= text..' '..zone
                 elseif not isOnline then
@@ -355,6 +358,7 @@ local function Init_Menu(_, level, menuList)
 
     elseif menuList and type(menuList)=='number' then--社区
         local num=0
+        local maxLevel= GetMaxLevelForLatestExpansion()
         local members= C_Club.GetClubMembers(menuList) or {}
         for index, memberID in pairs(members) do
             local tab = C_Club.GetMemberInfo(menuList, memberID) or {}
@@ -363,7 +367,7 @@ local function Init_Menu(_, level, menuList)
                     local faction= tab.faction==Enum.PvPFaction.Alliance and 'Alliance' or tab.faction==Enum.PvPFaction.Horde and 'Horde'
                     local  text= e.GetPlayerInfo({guid=tab.guid,  reName=true, reRealm=true, factionName=faction})--角色信息
 
-                    text= (tab.level and tab.level~=GetMaxLevelForPlayerExpansion() and tab.level>0) and text .. ' |cff00ff00'..tab.level..'|r' or text--等级
+                    text= (tab.level and tab.level~=maxLevel and tab.level>0) and text .. ' |cff00ff00'..tab.level..'|r' or text--等级
                     if tab.zone then
                         text= text..' '..tab.zone
                     else

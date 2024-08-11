@@ -852,6 +852,7 @@ local function Init_Blizzard_Calendar()
                 end
             end
             local find
+            local maxLevel= GetMaxLevelForLatestExpansion()
             for i=1 ,BNGetNumFriends() do
                 local wow=C_BattleNet.GetFriendAccountInfo(i);
                 local wowInfo= wow and wow.gameAccountInfo
@@ -866,7 +867,7 @@ local function Init_Blizzard_Calendar()
                         end
                     end
 
-                    if wowInfo.characterLevel and wowInfo.characterLevel~=GetMaxLevelForPlayerExpansion() and wowInfo.characterLevel>0 then--等级
+                    if wowInfo.characterLevel and wowInfo.characterLevel~=maxLevel and wowInfo.characterLevel>0 then--等级
                         text=text ..' |cff00ff00'..wowInfo.characterLevel..'|r'
                     end
                     if not wowInfo.isOnline then
@@ -908,11 +909,12 @@ local function Init_Blizzard_Calendar()
                 end
             end
             local find
+            local maxLevel= GetMaxLevelForLatestExpansion()
             for i=1 , C_FriendList.GetNumFriends() do
                 local game=C_FriendList.GetFriendInfoByIndex(i)
                 if game and game.name and not inviteTab[game.name] then--and not game.afk and not game.dnd then
                     local text=e.GetPlayerInfo({guid=game.guid, name=game.name,  reName=true, reRealm=true})--角色信息
-                    text= (game.level and game.level~=GetMaxLevelForPlayerExpansion() and game.level>0) and text .. ' |cff00ff00'..game.level..'|r' or text--等级
+                    text= (game.level and game.level~=maxLevel and game.level>0) and text .. ' |cff00ff00'..game.level..'|r' or text--等级
                     if game.area and game.connected then
                         if game.area == map then--地区
                             text= text..'|A:poi-islands-table:0:0|a'
@@ -960,11 +962,12 @@ local function Init_Blizzard_Calendar()
                 end
             end
             local find
+            local maxLevel= GetMaxLevelForLatestExpansion()
             for index=1,  GetNumGuildMembers() do
                 local name, rankName, rankIndex, lv, _, zone, publicNote, officerNote, isOnline, status, _, _, _, _, _, _, guid = GetGuildRosterInfo(index)
                 if name and guid and not inviteTab[name] and isOnline and name~=e.Player.name_realm then
                     local text=e.GetPlayerInfo({guid=guid, name=name,  reName=true, reRealm=true})--名称
-                    text=(lv and lv~=GetMaxLevelForPlayerExpansion() and lv>0) and text..' |cnGREEN_FONT_COLOR:'..lv..'|r' or text--等级
+                    text=(lv and lv~=maxLevel and lv>0) and text..' |cnGREEN_FONT_COLOR:'..lv..'|r' or text--等级
                     if zone then--地区
                         text= zone==map and text..'|A:poi-islands-table:0:0|a' or text..' '..zone
                     end

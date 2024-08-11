@@ -948,8 +948,8 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             local initializer= e.AddPanel_Check({
                 name= e.Icon.right..(e.onlyChinese and '点击移动' or CLICK_TO_MOVE),
                 tooltip= (not e.onlyChinese and CLICK_TO_MOVE..', '..REFORGE_CURRENT or '点击移动, 当前: ')..e.GetEnabeleDisable(C_CVar.GetCVarBool("autoInteract"))
-                    ..'|n'..(e.onlyChinese and '等级' or LEVEL)..' < '..GetMaxLevelForPlayerExpansion()..'  '..e.GetEnabeleDisable(false)
-                    ..'|n'..(e.onlyChinese and '等级' or LEVEL)..' = '..GetMaxLevelForPlayerExpansion()..'  '..e.GetEnabeleDisable(true),
+                    ..'|n'..(e.onlyChinese and '等级' or LEVEL)..' < '..GetMaxLevelForLatestExpansion()..'  '..e.GetEnabeleDisable(false)
+                    ..'|n'..(e.onlyChinese and '等级' or LEVEL)..' = '..GetMaxLevelForLatestExpansion()..'  '..e.GetEnabeleDisable(true),
                 value= Save.clickToMove,
                 func= function()
                     Save.clickToMove = not Save.clickToMove and true or nil

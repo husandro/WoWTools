@@ -702,6 +702,7 @@ local function Init_Menu(self, root)
         ToggleFriendsFrame(1)
     end)
 
+    local maxLevel= GetMaxLevelForLatestExpansion()
     for _, wow in pairs(onlineList) do
         col, icon=select(2, FriendsFrame_GetBNetAccountNameAndStatus(wow,true))
         local text=wow.accountName
@@ -724,7 +725,7 @@ local function Init_Menu(self, root)
                     zone= gameAccountInfo.areaName
                 end
             end
-            if gameAccountInfo.characterLevel and gameAccountInfo.characterLevel~=GetMaxLevelForPlayerExpansion() then--等级
+            if gameAccountInfo.characterLevel and gameAccountInfo.characterLevel~=maxLevel then--等级
                 text=text ..' |cff00ff00'..gameAccountInfo.characterLevel..'|r'
             end
         end

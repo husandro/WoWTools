@@ -1353,7 +1353,7 @@ function func:Set_Unit_Player(tooltip, name, unit, guid)
         local level= UnitLevel(unit)
         local text= sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a'
 
-        if GetMaxLevelForPlayerExpansion()==level then
+        if GetMaxLevelForLatestExpansion()==level then
             text= text.. level
         else
             text= text..'|cnGREEN_FONT_COLOR:'..level..'|r'

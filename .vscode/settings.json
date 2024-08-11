@@ -4738,7 +4738,10 @@
         "SLASH_SAY3",
         "CreateAnchor",
         "REPORTING_MINOR_CATEGORY_SPAM",
-        "ITEM_REQ_PURCHASE_GUILD"
+        "ITEM_REQ_PURCHASE_GUILD",
+        "ToggleGuildFrame",
+        "SetSmallGuildTabardTextures",
+        "ChatFrame_GetMessageEventFilters"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",
@@ -4746,7 +4749,8 @@
         "missing-parameter",
         "redundant-parameter",
         "assign-type-mismatch",
-        "param-type-mismatch"
+        "param-type-mismatch",
+        "unused-function"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
@@ -4761,6 +4765,6 @@
         "utf8": "disable"
     },
     "Lua.workspace.library": [
-        "$USERPROFILE\\.vscode\\extensions\\ketho.wow-api-0.15.8\\Annotations"
+        "~\\.vscode\\extensions\\ketho.wow-api-0.16.5\\Annotations"
     ],
 }
