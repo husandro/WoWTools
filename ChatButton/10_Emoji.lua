@@ -433,41 +433,42 @@ local function Init()
     else
         File=Texture
     end
-
+    EmojiButton.numFile= #File
+    
     FiileTexture={}
     for index, text in pairs(File) do
         FiileTexture['{'..text..'}']= '|TInterface\\Addons\\WoWTools\\Sesource\\Emojis\\'..Texture[index]..':0|t'
     end
 
-
-
-
     Init_EmojiFrame()
 
-    function EmojiButton:set_texture()
-        local index= Save.clickIndex or 18
-        local numFile= #File
-        if index<=numFile then
-            self.texture:SetTexture('Interface\\Addons\\WoWTools\\Sesource\\Emojis\\'..Texture[index])
+    function EmojiButton:get_emoji_text(index)
+        index= index or Save.clickIndex or 18
+        if index<=self.numFile then
+            return '{'..File[index]..'}'
         else
-            self.texture:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..(index-numFile))
+            return 'rt'..(index-self.numFile)
+        end
+    end
+    function EmojiButton:get_texture(index)
+        index= index or Save.clickIndex or 18
+        if index<=self.numFile then
+            return 'Interface\\Addons\\WoWTools\\Sesource\\Emojis\\'..Texture[index]
+        else
+            return 'Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..(index-self.numFile)
         end
     end
 
-    function EmojiButton:get_emoji_text()
-        local index= Save.clickIndex or 18
-        local numFile= #File
-        if index<=numFile then
-            return '{'..File[index]..'}'
-        else
-            return 'rt'..(index-numFile)
-        end
+    function EmojiButton:set_texture()
+        self.texture:SetTexture(self:get_texture())
     end
-    --EmojiButton.texture:SetTexture('Interface\\Addons\\WoWTools\\Sesource\\Emojis\\greet')
+
 
     function EmojiButton:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
+        e.tips:AddDoubleLine(format('|T%s:0|t', self:get_texture()), e.Icon.left)
+        e.tips:Show()
     end
 
     EmojiButton:SetScript('OnEnter', function(self)
