@@ -467,7 +467,7 @@ local function Init()
     function EmojiButton:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(format('|T%s:0|t%s', self:get_texture() or '' or self:get_emoji_text() or ''), e.Icon.left)
+        e.tips:AddDoubleLine(format('|T%s:0|t%s', self:get_texture() or '' , self:get_emoji_text() or ''), e.Icon.left)
         e.tips:Show()
     end
 
