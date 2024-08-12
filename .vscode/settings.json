@@ -4741,7 +4741,11 @@
         "ITEM_REQ_PURCHASE_GUILD",
         "ToggleGuildFrame",
         "SetSmallGuildTabardTextures",
-        "ChatFrame_GetMessageEventFilters"
+        "ChatFrame_GetMessageEventFilters",
+        "ChatEdit_GetLastActiveWindow",
+        "FCFDock_GetSelectedWindow",
+        "GENERAL_CHAT_DOCK",
+        "LAST_ACTIVE_CHAT_EDIT_BOX"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",
