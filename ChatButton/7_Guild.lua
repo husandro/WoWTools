@@ -270,18 +270,18 @@ end
 local function Init()
     GuildButton.membersText=e.Cstr(GuildButton)-- 10, nil, nil, true, nil, 'CENTER')
     GuildButton.membersText:SetPoint('TOPRIGHT', -3, 0)
-    
-    
-    set_Guild_Members()--在线人数
-    
-    --
 
-
-
-
-
-
-    e.Set_Label_Texture_Color(GuildButton.texture, {type='Texture'})--设置颜色
+    function GuildButton:settings()
+        if IsInGuild() then--GuildUtil.lua
+            GuildButton.texture:ClearAllPoints()
+            GuildButton.texture:SetPoint('CENTER',-1.5, 1)
+            GuildButton.texture:SetSize(14,14)
+            SetSmallGuildTabardTextures('player', GuildButton.texture)            
+        else
+            GuildButton.texture:SetAtlas('UI-HUD-MicroMenu-GuildCommunities-Up')
+        end
+        set_Guild_Members()--在线人数
+    end
 
     GuildButton:SetScript('OnLeave', function(self)
         e.tips:Hide()
@@ -302,50 +302,21 @@ local function Init()
     end)
 
     GuildButton:SetScript('OnClick', function(self, d)
-        if d=='LeftButton' then
-            e.Say('/g')
+        if not IsInGuild() then
+            ToggleGuildFrame()
         else
-            if IsInGuild() then
-                MenuUtil.CreateContextMenu(self, Init_Menu)
-                e.tips:Hide()
+            if d=='LeftButton' then
+                e.Say('/g')
             else
-                ToggleGuildFrame()
+                if IsInGuild() then
+                    MenuUtil.CreateContextMenu(self, Init_Menu)
+                    e.tips:Hide()
+                else
+                    ToggleGuildFrame()
+                end
             end
         end
-    end)
-
-
-    if IsInGuild() then--GuildUtil.lua
-        --[[GuildButton.texture2= GuildButton:CreateTexture(nil, 'BACKGROUND')
-        GuildButton.texture2:SetAllPoints(GuildButton)
-        
-        GuildButton.texture3= GuildButton:CreateTexture(nil, 'BORDER', nil, 2)
-        GuildButton.texture3:SetAllPoints(GuildButton)]]
-
-        GuildButton.texture:ClearAllPoints()
-        GuildButton.texture:SetPoint('CENTER',-1.5, 1)
-        GuildButton.texture:SetSize(14,14)
-
-        SetSmallGuildTabardTextures('player', GuildButton.texture)--, GuildButton.texture, GuildButton.texture3)
-        --local tabardInfo = C_GuildInfo.GetGuildTabardInfo('player')
-
-        if CanReplaceGuildMaster() then--弹劾
-            local label= e.Cstr(GuildButton, {size=10, color=true, justifyH='CENTER'})
-            label:SetPoint('TOP')
-            label:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '弹劾' or  e.WA_Utf8Sub(GUILD_IMPEACH_POPUP_CONFIRM, 2, 5,true))..'|r')
-        end
-    else
-        GuildButton.texture:SetAtlas('UI-HUD-MicroMenu-GuildCommunities-Up')
-    end
-
-
-
-
-
-
-
-
-
+    end)  
 
     if not IsVeteranTrialAccount() then--试用帐号
         set_check(ClubFinderGuildFinderFrame.OptionsList.SearchBox)
@@ -384,7 +355,19 @@ local function Init()
     end)
 
 
-    C_Timer.After(2, set_CHAT_MSG_SYSTEM)--事件, 公会新成员, 队伍新成员
+    C_Timer.After(2, function()
+        if IsInGuild()then
+            if CanReplaceGuildMaster() then--弹劾
+                local label= e.Cstr(GuildButton, {size=10, color=true, justifyH='CENTER'})
+                label:SetPoint('TOP')
+                label:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '弹劾' or  e.WA_Utf8Sub(GUILD_IMPEACH_POPUP_CONFIRM, 2, 5,true))..'|r')
+            end
+        else
+            GuildButton:settings()
+        end
+
+        set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
+    end)
 end
 
 
@@ -419,8 +402,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             GuildButton= WoWToolsChatButtonMixin:CreateButton('Guild')
 
             if GuildButton then--禁用Chat Button
-
-
                 Init()
                 self:RegisterEvent('GUILD_ROSTER_UPDATE')
                 self:RegisterEvent('PLAYER_GUILD_UPDATE')
@@ -434,7 +415,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif event=='GUILD_ROSTER_UPDATE' or event=='PLAYER_GUILD_UPDATE' then
-        set_Guild_Members()--在线人数
+        GuildButton:settings()
+
 
     elseif event=='CHAT_MSG_SYSTEM' then
         setMsg_CHAT_MSG_SYSTEM(arg1)--欢迎加入, 信息

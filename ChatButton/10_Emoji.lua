@@ -369,7 +369,6 @@ local function Init()
         self:set_tooltip()
         self:state_enter()
         self.chatFrameEditBox= ChatEdit_GetActiveWindow() and true or false
-        print(self.chatFrameEditBox)
     end)
     EmojiButton:SetScript('OnLeave', function(self)
         self:set_frame_state(false)

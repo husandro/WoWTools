@@ -10,7 +10,7 @@ e.Set_ScrollBar_Color_Alpha=function()end
 e.Set_Move_Frame=function()end--Frame.lua
 e.Show_WoWHead_URL=function()end--Tooltips.lua
 e.Get_Region=function()end--Realm.lua
---e.CeditBoxFrame=function()end-- EditBox_Frame_Mixin.lua
+
 
 --securecallfunction
 e.WoWDate={}--战网，数据

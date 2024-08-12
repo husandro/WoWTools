@@ -220,7 +220,7 @@ function e.ShowTextFrame(data, headerText)
         frame= WoWToolsFrameMixin:CreateFrame('WoWTools_EditBoxFrame')
         frame.ScrollBox= e.Cedit(frame, {font='GameFontNormal'})
         frame.ScrollBox:SetPoint('TOPLEFT', 11, -32)
-        frame.ScrollBox:SetPoint('BOTTOMRIGHT', -7, 12)
+        frame.ScrollBox:SetPoint('BOTTOMRIGHT', -6, 12)
     end
 
     local text
@@ -233,7 +233,6 @@ function e.ShowTextFrame(data, headerText)
         text= data
     end
 
---    text= text..'|n|n|n'..text..'|n|n|n'..text..'|n|n|n'..text..'|n|n|n'..text
     frame.ScrollBox:SetText(text or '')
 
     frame.Header:Setup(headerText or '' )
