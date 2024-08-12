@@ -50,12 +50,13 @@ local function Init_Chat_Filter(_, _, msg, ...)
 end
 
 
-local function send(text, d)--发送信息
+local function send(text, d, editBox)--发送信息
     text='{'..text..'}'
     if d =='LeftButton' then
-        local ChatFrameEditBox = ChatEdit_ChooseBoxForSend() or DEFAULT_CHAT_FRAME.editBox
-        ChatFrameEditBox:Insert(text)
+        local ChatFrameEditBox = editBox or ChatEdit_ChooseBoxForSend() or DEFAULT_CHAT_FRAME.editBox        
         ChatEdit_ActivateChat(ChatFrameEditBox)
+        ChatFrameEditBox:Insert(text)
+        
 
     elseif d=='RightButton' then
         e.Chat(text, nil, nil)
@@ -354,6 +355,10 @@ local function Init()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(format('|T%s:0|t%s', self:get_texture() or '' , self:get_emoji_text() or ''), e.Icon.left)
+        if self.numFilter==0 then
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(e.onlyChinese and '聊天频道' or CHAT_CHANNELS, numFilter)
+        end
         e.tips:Show()
     end
 
@@ -364,21 +369,23 @@ local function Init()
         self:set_frame_state(true)
         self:set_tooltip()
         self:state_enter()
+        self.chatFrameEditBox= ChatEdit_ChooseBoxForSend()
     end)
     EmojiButton:SetScript('OnLeave', function(self)
         self:set_frame_state(false)
         self:state_leave()
         e.tips:Hide()
+        self.chatFrameEditBox=nil
     end)
 
     EmojiButton:SetScript('OnClick', function(self, d)
         if d=='LeftButton' then
-            send(self:get_emoji_text(), ChatEdit_GetActiveWindow() and d or 'RightButton')
+            
+            send(self:get_emoji_text(),  ChatEdit_GetActiveWindow() and d or 'RightButton', self.chatFrameEditBox)
 
             if Save.On_Click_Show then
                 self:set_frame_shown(true)
             end
-
 
         elseif d=='RightButton' then
             MenuUtil.CreateContextMenu(self, Init_Menu)
