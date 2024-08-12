@@ -258,7 +258,7 @@ local function Init_Menu(self, root)
     end)
 
     for index, channel in pairs(Channels) do
-        sub2:CreateCheckbox('|cff9e9e9e'..index..'|r '..e.cn(_G[channel]) or channel, function(data)
+        sub2:CreateCheckbox('|cff9e9e9e'..index..'|r '..(e.cn(_G[channel]) or channel), function(data)
             return not Save.Channels[data]
         end, function(data)
             Save.Channels[data]= not Save.Channels[data] and true or nil

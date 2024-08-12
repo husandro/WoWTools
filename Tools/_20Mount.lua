@@ -1395,8 +1395,10 @@ local function Init_MountJournal()
                     local name= e.cn(t)
                     local info={
                         text= name,
-                        checked= parent:GetText()==name,
+                        --checked= parent:GetText()==name,
+                        notCheckable=true,
                         tooltipOnButton=true,
+                        keepShownOnClick=true,
                         tooltipTitle=id..' Tools',
                         arg1= t,
                         func= function(_, arg1)
