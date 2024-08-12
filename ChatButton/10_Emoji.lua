@@ -54,8 +54,8 @@ local function send(text, d)--发送信息
     text='{'..text..'}'
     if d =='LeftButton' then
         local ChatFrameEditBox = ChatEdit_ChooseBoxForSend() or DEFAULT_CHAT_FRAME.editBox
-        ChatFrameEditBox:Insert(text)
         ChatEdit_ActivateChat(ChatFrameEditBox)
+        ChatFrameEditBox:Insert(text)
 
     elseif d=='RightButton' then
         e.Chat(text, nil, nil)
@@ -368,7 +368,8 @@ local function Init()
         self:set_frame_state(true)
         self:set_tooltip()
         self:state_enter()
-        self.chatFrameEditBox= ChatEdit_ChooseBoxForSend() and true or false
+        self.chatFrameEditBox= ChatEdit_GetActiveWindow() and true or false
+        print(self.chatFrameEditBox)
     end)
     EmojiButton:SetScript('OnLeave', function(self)
         self:set_frame_state(false)
@@ -379,8 +380,7 @@ local function Init()
 
     EmojiButton:SetScript('OnClick', function(self, d)
         if d=='LeftButton' then
-
-            send(self:get_emoji_text(),  self.chatFrameEditBox and d or 'RightButton')
+            send(self:get_emoji_text(),  self.chatFrameEditBox and 'LeftButton' or 'RightButton')
 
             if Save.On_Click_Show then
                 self:set_frame_shown(true)
