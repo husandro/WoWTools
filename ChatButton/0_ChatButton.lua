@@ -36,10 +36,24 @@ local function Init_Menu(self, root)
         Save.Point=nil
         self:set_point()
     end)
-    root:CreateButton((Save.scale~=1 and '' or '|cff9e9e9e')..(e.onlyChinese and '重置缩放' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, RESET, UI_SCALE)), function(...)
-        Save.scale= e.Player.husandro and 0.8 or 1
-        self:set_scale()
+
+    --缩放
+    local sub= root:CreateButton(e.onlyChinese and '缩放' or 'Scale', function()
+        return MenuResponse.Open
     end)
+    for index=0.4, 4, 0.05 do
+        sub:CreateCheckbox(index, function(data)
+            return Save.scale==data
+        end, function(data)
+            Save.scale= data
+            self:set_scale()
+            return MenuResponse.Refresh
+        end, index)
+    end
+    sub:CreateDivider()
+    sub:CreateTitle(Save.scale or 1)
+    sub:SetGridMode(MenuConstants.VerticalGridDirection, 5)
+
 
     root:CreateDivider()
     root:CreateButton(e.onlyChinese and '选项' or OPTIONS, function()
@@ -88,7 +102,6 @@ local function Init()
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.scale or 1), 'Alt+'..e.Icon.mid)
-        e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or MAINMENU, e.Icon.right)
         e.tips:Show()
     end
@@ -120,7 +133,7 @@ local function Init()
         end
     end)
     ChatButton:SetScript("OnClick", function(self, d)
-        if d=='RightButton' and not IsModifierKeyDown() then
+        if d=='RightButton' and not IsAltKeyDown() then
             MenuUtil.CreateContextMenu(self, Init_Menu)
         end
     end)

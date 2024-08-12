@@ -595,11 +595,15 @@ end
 --显示, 内容
         sub2:CreateButton(e.onlyChinese and '显示' or SHOW, function(data)
             local str=''
+            local player2
             for guid, name in pairs(data.guid or {}) do
-                str= str..e.GetPlayerInfo({guid=guid, name=name, reName=true, reRealm=true})..'|n'
+                local player= e.GetPlayerInfo({guid=guid, name=name, reName=true, reRealm=true})
+                str= str..player..'|n'
+                player2= player2 or player
             end
             str=str..'|n'..data.text
-            e.ShowTextFrame(str, playerName.name)
+
+            e.ShowTextFrame(str, player2 or data.playerName)
             return MenuResponse.Open
         end, {text=text, guid=tab.guid, playerName=playerName})
 

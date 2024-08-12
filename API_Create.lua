@@ -221,6 +221,20 @@ function e.ShowTextFrame(data, headerText)
         frame.ScrollBox= e.Cedit(frame, {font='GameFontNormal'})
         frame.ScrollBox:SetPoint('TOPLEFT', 11, -32)
         frame.ScrollBox:SetPoint('BOTTOMRIGHT', -6, 12)
+
+        frame.ScrollBox.EditBox:SetHyperlinksEnabled(true)
+        frame.ScrollBox.EditBox:SetScript('OnHyperlinkLeave', GameTooltip_Hide)
+        frame.ScrollBox.EditBox:SetScript('OnHyperlinkEnter', function(self, link)
+            if link then
+                e.tips:SetOwner(self, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:SetHyperlink(link)
+                e.tips:Show()
+            end
+        end)
+        frame.ScrollBox.EditBox:SetScript('OnHyperlinkClick', function(self, link, text2)--, region)
+            SetItemRef(link, text2, self, nil)
+        end)
     end
 
     local text

@@ -2884,6 +2884,10 @@ function e.Set_Frame_Scale(self, delta, value, func)
     return n
 end
 
+
+
+
+
 --[[self.swatchFunc = info.swatchFunc
 self.hasOpacity = info.hasOpacity
 self.opacityFunc = info.opacityFunc

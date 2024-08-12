@@ -5,17 +5,20 @@ local Save={
     disabled= not e.Player.cn and not e.Player.husandro,
     --Point={}
     --scale=1
-    --show=true
+    show_background=e.Player.husandro,
+
+    --show=true    
     --On_Click_Show
     clickIndex=18,
+
 }
 
 local EmojiButton
 local Frame
 
-local EmojiText
+local EmojiText, EmojiText_EN
 local TextToTexture--过滤，事件
-local EmojiTextureName
+
 
 local Channels={
     "CHAT_MSG_CHANNEL", -- 公共频道
@@ -64,9 +67,115 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Create_Button(index, icon)
+    local btn= e.Cbtn(Frame, {icon='hide',size=30, setID=index})
+    btn:SetScript('OnLeave', GameTooltip_Hide)
+    btn:SetScript('OnEnter', function()
+        e.tips:SetOwner(last, "ANCHOR_RIGHT")
+        e.tips:ClearLines()
+        e.tips:AddLine(text)
+        e.tips:AddDoubleLine(e.Icon.left..(e.onlyChinese and '插入' or 'Insert'), (e.onlyChinese and '发送' or SEND_LABEL)..e.Icon.right)
+        e.tips:Show()
+    end)
+    btn:SetScript('OnClick', function(self, d)
+        send(self.text, d)
+        Save.clickIndex= self:GetID()
+        EmojiButton:set_texture()
+    end)
+    
+    btn:SetNormalTexture(EmojiButton:get_texture(index) or 0)
+    btn.text= EmojiButton:get_emoji_text(index)
+    table.Insert(Frame.Buttons, btn)
+
+    return btn
+end
+
+
+
+
+
+
+
+
+
 local function Init_Buttons()--设置按钮
-    local size= 30
-    local last, index, line=Frame, 0, nil
+    Frame.Buttons={}
+    
+    for index=1, EmojiButton.numFile+8 do
+        local btn= e.Cbtn(Frame, {icon='hide',size=30, setID=index})
+        btn:SetScript('OnLeave', GameTooltip_Hide)
+        btn:SetScript('OnEnter', function(self)
+            e.tips:SetOwner(Frame.Buttons[#Frame.Buttons], "ANCHOR_TOP")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine(self.text, '|T'..EmojiButton:get_texture(self:GetID())..':0|t')
+            e.tips:AddDoubleLine(e.Icon.left..(e.onlyChinese and '插入' or 'Insert'), (e.onlyChinese and '发送' or SEND_LABEL)..e.Icon.right)
+            e.tips:Show()
+        end)
+        btn:SetScript('OnClick', function(self, d)
+            send(self.text, d)
+            Save.clickIndex= self:GetID()
+            EmojiButton:set_texture()
+        end)
+        
+        btn:SetNormalTexture(EmojiButton:get_texture(index) or 0)
+        btn.text= EmojiButton:get_emoji_text(index)
+        table.insert(Frame.Buttons, btn)
+    end
+    
+    function Frame:set_buttons_point()
+        for index, btn in pairs(self.Buttons) do
+            btn:ClearAllPoints()
+            if index==1 then
+                btn:SetPoint('BOTTOMLEFT', Frame, 'BOTTOMRIGHT')
+            else
+                btn:SetPoint('LEFT', self.Buttons[index-1], 'RIGHT')
+            end
+        end
+        local num= Save.numButtonLine
+        for index= num+1 , #self.Buttons, num do
+            local btn= self.Buttons[index]
+            btn:ClearAllPoints()
+            btn:SetPoint('BOTTOM', self.Buttons[index-num], 'TOP')
+        end
+        self:set_background()
+    end
+
+    Frame.texture2= Frame:CreateTexture(nil, 'BACKGROUND')
+    
+    function Frame:set_background()
+        if Save.show_background then
+            self.texture2:ClearAllPoints()
+            self.texture2:SetPoint('BOTTOMLEFT', self.Buttons[1], -4, -4)
+            self.texture2:SetPoint('BOTTOMRIGHT', self.Buttons[Save.numButtonLine], 4, -4)
+            self.texture2:SetPoint('TOP', self.Buttons[#self.Buttons], 0, 4)
+            self.texture2:SetAlpha(0.5)
+            self.texture2:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
+        else
+            self.texture2:SetTexture(0)
+        end
+    end
+
+    Frame:set_buttons_point()
+end
+    --[[local last, index, line=Frame, 0, nil
 
     local function setPoint(btn, text)--设置位置, 操作
         if index>0 and select(2, math.modf(index / 10))==0 then
@@ -90,8 +199,9 @@ local function Init_Buttons()--设置按钮
         end)
         btn:SetScript('OnLeave', GameTooltip_Hide)
     end
+
     for i, texture in pairs(EmojiText) do
-        local btn=e.Cbtn(Frame, {icon='hide',size=size, setID=i})
+        local btn=e.Cbtn(Frame, {icon='hide',size=30, setID=i})
         setPoint(btn, EmojiText[i])
         btn:SetNormalTexture('Interface\\Addons\\WoWTools\\Sesource\\Emojis\\'..texture)
         last=btn
@@ -100,13 +210,78 @@ local function Init_Buttons()--设置按钮
 
     local numFile= #EmojiText
     for i= 1, 8 do
-        local btn=e.Cbtn(Frame, {icon='hide',size=size, setID= i+numFile})
+        local btn=e.Cbtn(Frame, {icon='hide',size=30, setID= i+numFile})
         setPoint(btn, 'rt'..i)
         btn:SetNormalTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..i)
         last=btn
         index=index+1
     end
+end]]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Init_Frame_Menu(self, root)
+    root:CreateButton((Save.Point and '' or '|cff9e9e9e')..(e.onlyChinese and '重置位置' or RESET_POSITION), function()
+        Save.Point=nil
+        self:set_point()
+    end)
+
+--缩放
+    local sub= root:CreateButton(e.onlyChinese and '缩放' or 'Scale', function()
+        return MenuResponse.Open
+    end)
+    for index=0.4, 4, 0.05 do
+        sub:CreateCheckbox(index, function(data)
+            return Save.scale==data
+        end, function(data)
+            Save.scale= data
+            self:set_scale()
+            return MenuResponse.Refresh
+        end, index)
+    end
+    sub:CreateDivider()
+    sub:CreateTitle(Save.scale or 1)
+    sub:SetGridMode(MenuConstants.VerticalGridDirection, 5)
+--数量
+    sub=root:CreateButton(e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL, function() return MenuResponse.Open end)
+    for index= 1, EmojiButton.numFile+8, 1 do
+        sub:CreateCheckbox(index, function(data)
+            return Save.numButtonLine==data
+        end, function(data)
+            Save.numButtonLine= data
+            self:set_buttons_point()
+            return MenuResponse.Refresh
+        end, index)
+    end
+    sub:CreateDivider()
+    sub:CreateTitle(Save.numButtonLine)
+    sub:SetGridMode(MenuConstants.VerticalGridDirection, 6)
+
+    root:CreateCheckbox(e.onlyChinese and '背景' or 'Background', function()
+        return Save.show_background
+    end, function()
+        Save.show_background= not Save.show_background and true or nil
+        self:set_background()
+    end)
 end
+
+
+
+
+
+
 
 
 
@@ -117,6 +292,7 @@ end
 
 local function Init_EmojiFrame()
     Frame=e.Cbtn(UIParent, {icon='hide', size={10, 30}})--控制图标,显示,隐藏
+    Frame:SetFrameStrata('HIGH')
 
     function Frame:set_point()
         self:ClearAllPoints()
@@ -177,8 +353,8 @@ local function Init_EmojiFrame()
 
 
     Frame:SetScript('OnClick',function(self, d)
-        if IsAltKeyDown() and d=='RightButton' then
-            return
+        if d=='RightButton' and not IsAltKeyDown() then
+            MenuUtil.CreateContextMenu(self, Init_Frame_Menu)
         end
     end)
 
@@ -308,26 +484,27 @@ end
 --初始
 --1US (includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
 local function Init()
-    EmojiTextureName={'Angel','Angry','Biglaugh','Clap','Cool','Cry','Cutie','Despise','Dreamsmile','Embarrass','Evil','Excited','Faint','Fight','Flu','Freeze','Frown','Greet','Grimace','Growl','Happy','Heart','Horror','Ill','Innocent','Kongfu','Love','Mail','Makeup','Meditate','Miserable','Okay','Pretty','Puke','Shake','Shout','Shuuuu','Shy','Sleep','Smile','Suprise','Surrender','Sweat','Tear','Tears','Think','Titter','Ugly','Victory','Hero','Wronged','Mario',}
+    EmojiText_EN= {'Angel','Angry','Biglaugh','Clap','Cool','Cry','Cutie','Despise','Dreamsmile','Embarrass','Evil','Excited','Faint','Fight','Flu','Freeze','Frown','Greet','Grimace','Growl','Happy','Heart','Horror','Ill','Innocent','Kongfu','Love','Mail','Makeup','Meditate','Miserable','Okay','Pretty','Puke','Shake','Shout','Shuuuu','Shy','Sleep','Smile','Suprise','Surrender','Sweat','Tear','Tears','Think','Titter','Ugly','Victory','Hero','Wronged','Mario',}
+    
     if e.Player.region==5 then
         EmojiText= {'天使','生气','大笑','鼓掌','酷','哭','可爱','鄙视','美梦','尴尬','邪恶','兴奋','晕','打架','流感','呆','皱眉','致敬','鬼脸','龇牙','开心','心','恐惧','生病','无辜','功夫','花痴','邮件','化妆','沉思','可怜','好','漂亮','吐','握手','喊','闭嘴','害羞','睡觉','微笑','吃惊','失败','流汗','流泪','悲剧','想','偷笑','猥琐','胜利','雷锋','委屈','马里奥'}
+        
     elseif e.Player.region==4 then
         EmojiText= {'天使','生氣','大笑','鼓掌','酷','哭','可愛','鄙視','美夢','尷尬','邪惡','興奮','暈','打架','流感','呆','皺眉','致敬','鬼臉','齜牙','開心','心','恐懼','生病','無辜','功夫','花痴','郵件','化妝','沉思','可憐','好','漂亮','吐','握手','喊','閉嘴','害羞','睡覺','微笑','吃驚','失敗','流汗','流淚','悲劇','想','偷笑','猥瑣','勝利','英雄','委屈','馬里奧'}
     elseif e.Player.region==2 then
         EmojiText= {'천사','화난','웃음','박수','시원함','울음','귀엽다','경멸','꿈','당혹 스러움','악','흥분','헤일로','싸움','독감','머무르기','찡그림','공물','grimface','눈에띄는이빨','행복','심장','두려움','나쁜','순진한','쿵푸','관용구','메일','메이크업','명상','나쁨','좋은','아름다운','침','악수','외침','닥치기','수줍음','수면','웃음','놀라움','실패','땀','눈물','비극','생각하기','shirking','걱정','victory','hero','wronged','Mario'}
     else
-        EmojiText=EmojiTextureName
+        EmojiText= EmojiText_EN
     end
 
     EmojiButton.numFile= #EmojiText
-
-    TextToTexture={}
+  
+    TextToTexture={}--过滤，事件
     for index, text in pairs(EmojiText) do
-        TextToTexture['{'..text..'}']= '|TInterface\\Addons\\WoWTools\\Sesource\\Emojis\\'..EmojiTextureName[index]..':0|t'
+        TextToTexture['{'..text..'}']= '|TInterface\\Addons\\WoWTools\\Sesource\\Emojis\\'..EmojiText_EN[index]..':0|t'
     end
 
-    Init_EmojiFrame()
-
+    
     function EmojiButton:get_emoji_text(index)
         index= index or Save.clickIndex or 18
         if index<=self.numFile then
@@ -339,7 +516,7 @@ local function Init()
     function EmojiButton:get_texture(index)
         index= index or Save.clickIndex or 18
         if index<=self.numFile then
-            return 'Interface\\Addons\\WoWTools\\Sesource\\Emojis\\'..EmojiTextureName[index]
+            return 'Interface\\Addons\\WoWTools\\Sesource\\Emojis\\'..EmojiText_EN[index]
         else
             return 'Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..(index-self.numFile)
         end
@@ -437,6 +614,7 @@ local function Init()
         self:set_frame_shown(false)
     end)
 
+    Init_EmojiFrame()
     EmojiButton:set_texture()
     EmojiButton:set_event()
     EmojiButton:set_filter_event()
@@ -467,7 +645,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Save.scale= Save.scale or 1
                 Save.Channels= Save.Channels or {}
                 Save.clickIndex= Save.clickIndex or 18
-
+                Save.numButtonLine= Save.numButtonLine or 10
                 Init()
             end
             self:UnregisterEvent('ADDON_LOADED')
