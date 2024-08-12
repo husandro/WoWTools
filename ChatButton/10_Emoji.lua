@@ -50,13 +50,12 @@ local function Init_Chat_Filter(_, _, msg, ...)
 end
 
 
-local function send(text, d, editBox)--发送信息
+local function send(text, d)--发送信息
     text='{'..text..'}'
     if d =='LeftButton' then
-        local ChatFrameEditBox = editBox or ChatEdit_ChooseBoxForSend() or DEFAULT_CHAT_FRAME.editBox        
-        ChatEdit_ActivateChat(ChatFrameEditBox)
+        local ChatFrameEditBox = ChatEdit_ChooseBoxForSend() or DEFAULT_CHAT_FRAME.editBox
         ChatFrameEditBox:Insert(text)
-        
+        ChatEdit_ActivateChat(ChatFrameEditBox)
 
     elseif d=='RightButton' then
         e.Chat(text, nil, nil)
@@ -182,7 +181,7 @@ local function Init_EmojiFrame()
             return
         end
     end)
-   
+
 
     Frame:set_point()
     Frame:set_scale()
@@ -321,7 +320,7 @@ local function Init()
     end
 
     EmojiButton.numFile= #EmojiText
-    
+
     TextToTexture={}
     for index, text in pairs(EmojiText) do
         TextToTexture['{'..text..'}']= '|TInterface\\Addons\\WoWTools\\Sesource\\Emojis\\'..EmojiTextureName[index]..':0|t'
@@ -369,7 +368,7 @@ local function Init()
         self:set_frame_state(true)
         self:set_tooltip()
         self:state_enter()
-        self.chatFrameEditBox= ChatEdit_ChooseBoxForSend()
+        self.chatFrameEditBox= ChatEdit_ChooseBoxForSend() and true or false
     end)
     EmojiButton:SetScript('OnLeave', function(self)
         self:set_frame_state(false)
@@ -380,8 +379,8 @@ local function Init()
 
     EmojiButton:SetScript('OnClick', function(self, d)
         if d=='LeftButton' then
-            
-            send(self:get_emoji_text(),  ChatEdit_GetActiveWindow() and d or 'RightButton', self.chatFrameEditBox)
+
+            send(self:get_emoji_text(),  self.chatFrameEditBox and d or 'RightButton')
 
             if Save.On_Click_Show then
                 self:set_frame_shown(true)
@@ -469,7 +468,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Save.scale= Save.scale or 1
                 Save.Channels= Save.Channels or {}
                 Save.clickIndex= Save.clickIndex or 18
-                
+
                 Init()
             end
             self:UnregisterEvent('ADDON_LOADED')
