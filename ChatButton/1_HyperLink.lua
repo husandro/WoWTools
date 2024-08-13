@@ -668,6 +668,12 @@ end
 
 
 
+
+
+
+
+
+
 --###########
 --设置控制面板
 --###########
@@ -1451,24 +1457,11 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
     if event == "ADDON_LOADED" then
         if arg1 == id then
-            
-            --处理，上版本数据
-            if WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, EMBLEM_SYMBOL)] then
-                Save= WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, EMBLEM_SYMBOL)]
-                WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, EMBLEM_SYMBOL)]= nil
-                Save.groupWelcomeText= Save.groupWelcomeText or (e.Player.cn and '{rt1}欢迎{rt1}' or '{rt1}Hi{rt1}')
-                Save.guildWelcomeText= Save.guildWelcomeText or (e.Player.cn and '宝贝，欢迎你加入' or EMOTE103_CMD1:gsub('/',''))
-                Save.Cvar= Save.Cvar or {}
-            else
-                Save= WoWToolsSave['ChatButton_HyperLink'] or Save
-            end
-                
-            
-            LinkButton= WoWToolsChatButtonMixin:CreateButton('HyperLink')
+            Save= WoWToolsSave['ChatButton_HyperLink'] or Save
+            addName= '|A:bag-reagent-border-empty:0:0|a'..(e.onlyChinese and '超链接图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, EMBLEM_SYMBOL))
+            LinkButton= WoWToolsChatButtonMixin:CreateButton('HyperLink', addName)
 
             if LinkButton then
-                addName= '|A:bag-reagent-border-empty:0:0|a'..(e.onlyChinese and '超链接图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, EMBLEM_SYMBOL))
-
                 e.setPlayerSound= Save.setPlayerSound--播放, 声音
 
                 Init()

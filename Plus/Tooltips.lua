@@ -3471,14 +3471,17 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if Save.disabled then
                 self:UnregisterAllEvents()
-
                 func={}
             else
 
                 Init()--初始
-                Init_Event()
+                Init_Event()                
             end
             self:RegisterEvent("PLAYER_LOGOUT")
+
+            if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
+                Init_Panel()
+            end
 
         elseif arg1=='Blizzard_Settings' then
             Init_Panel()

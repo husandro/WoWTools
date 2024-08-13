@@ -2,7 +2,7 @@ local id, e = ...
 local addName= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMBAT, TIMEMANAGER_TOOLTIP_TITLE)
 local Save= {textScale=1.2,
         Say=120,
-        --SayTime=120,--每隔
+        SayTime=120,--每隔
 
         --AllOnlineTime=true,--进入游戏时,提示游戏,时间
 
@@ -34,6 +34,22 @@ local PetAll={num= 0,  win=0, capture=0}--宠物战斗,全部,数据
 local PetRound={}--宠物战斗, 本次,数据
 local InstanceDate={num= 0, time= 0, kill=0, dead=0}--副本数据{dead死亡,kill杀怪, map地图}
 
+
+
+
+
+
+
+local function get_faction_texture()
+    return e.Icon[e.Player.faction] or e.Icon['Neutral']
+end
+--[[if e.Player.faction=='Alliance' then
+    return 255130
+elseif e.Player.faction=='Horde' then
+    button.texture:SetTexture(2565244)
+else
+    button.texture:SetAtlas('nameplates-icon-flag-neutral')
+end]]
 
 
 
@@ -450,14 +466,8 @@ end
 --####
 local function Init()
     OnLineTime=GetTime()
-
-    if e.Player.faction=='Alliance' then
-        button.texture:SetTexture(255130)
-    elseif e.Player.faction=='Horde' then
-        button.texture:SetTexture(2565244)
-    else
-        button.texture:SetAtlas('nameplates-icon-flag-neutral')
-    end
+    
+    button.texture:SetAtlas(get_faction_texture())
 
     button.texture2=button:CreateTexture(nil, 'OVERLAY')
     button.texture2:SetAllPoints(button)
@@ -783,24 +793,22 @@ end
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
-panel:SetScript("OnEvent", function(_, event, arg1)
+panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            Save= WoWToolsSave[addName] or Save
-            Save.inCombatScale= Save.inCombatScale or 1.3
-            Save.SayTime= Save.SayTime or 120
-
-            button= WoWToolsChatButtonMixin:CreateButton('Emoji')
+            addName= '|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'..(e.onlyChinese and '战斗时间' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMBAT, TIMEMANAGER_TOOLTIP_TITLE))
+            Save= WoWToolsSave['ChatButton_Combat'] or Save
+            button= WoWToolsChatButtonMixin:CreateButton('Combat', addName)
 
             if button then--禁用Chat Button
                 Init()
             end
-            panel:UnregisterEvent('ADDON_LOADED')
+            self:UnregisterEvent('ADDON_LOADED')
         end
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            WoWToolsSave[addName]=Save
+            WoWToolsSave['ChatButton_Combat']=Save
         end
     end
 end)

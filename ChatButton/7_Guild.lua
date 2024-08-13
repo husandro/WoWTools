@@ -1,7 +1,7 @@
 
 local id, e = ...
 local Save={}
-local addName='ChatButtonGuild'
+local addName
 local GuildButton
 local panel= CreateFrame("Frame")
 
@@ -122,7 +122,7 @@ local function set_RequestToJoinFrame(frame)
         and not IsModifierKeyDown()
         and not Save.notAutoRequestToJoinClub
     then
-        print(id, e.cn(addName), frame.ClubName:GetText(), e.cn(frame.Apply:GetText()), '|n', text, '|n|cffff00ff',text2)
+        print(id, addName, frame.ClubName:GetText(), e.cn(frame.Apply:GetText()), '|n', text, '|n|cffff00ff',text2)
         frame.Apply:Click()
     end
 end
@@ -141,9 +141,9 @@ local function set_check(frame)
     check:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine('|A:communities-icon-addgroupplus:0:0|a'..(e.onlyChinese and '自动申请' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SIGN_UP))..e.Icon.left, e.GetEnabeleDisable(not Save.notAutoRequestToJoinClub))
+        e.tips:AddDoubleLine(id, addName)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddDoubleLine('|A:communities-icon-addgroupplus:0:0|a'..(e.onlyChinese and '自动申请' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SIGN_UP))..e.Icon.left, e.GetEnabeleDisable(not Save.notAutoRequestToJoinClub))
         e.tips:Show()
     end)
     check:SetScript('OnShow', function(self2)
@@ -397,9 +397,9 @@ panel:RegisterEvent('PLAYER_LOGOUT')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            Save= WoWToolsSave[addName] or Save
-
-            GuildButton= WoWToolsChatButtonMixin:CreateButton('Guild')
+            Save= WoWToolsSave['ChatButtonGuild'] or Save
+            addName= '|A:UI-HUD-MicroMenu-GuildCommunities-Up:0:0|a'..(e.onlyChinese and '公会' or GUILD)
+            GuildButton= WoWToolsChatButtonMixin:CreateButton('Guild', addName)
 
             if GuildButton then--禁用Chat Button
                 Init()
@@ -411,7 +411,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            WoWToolsSave[addName]=Save
+            WoWToolsSave['ChatButtonGuild']=Save
         end
 
     elseif event=='GUILD_ROSTER_UPDATE' or event=='PLAYER_GUILD_UPDATE' then

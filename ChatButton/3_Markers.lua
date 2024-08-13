@@ -1778,21 +1778,11 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            if WoWToolsSave[BINDING_HEADER_RAID_TARGET] then--处理，上版本数据
-                Save= WoWToolsSave[BINDING_HEADER_RAID_TARGET]
-                Save.tank= Save.tank==0 and Save.tank or 2
-                Save.tank2= Save.tank2==0 and 6 or Save.tank2
-                Save.healer= Save.healer==0 and 1 or Save.healer
-                Save.FrameStrata= Save.FrameStrata or 'MEDIUM'
+            Save= WoWToolsSave['ChatButton_Markers'] or Save
+            addName= '|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:0|t|cffffff00'..(e.onlyChinese and '队伍标记' or BINDING_HEADER_RAID_TARGET)..'|r'           
+            MarkerButton= WoWToolsChatButtonMixin:CreateButton('Markers', addName)
 
-            else
-                Save= WoWToolsSave['ChatButton_Markers'] or Save
-            end
-
-            MarkerButton= WoWToolsChatButtonMixin:CreateButton('Markers')
             if MarkerButton then
-                addName= '|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:0|t|cffffff00'..(e.onlyChinese and '队伍标记' or BINDING_HEADER_RAID_TARGET)..'|r'
-
                 Init()
 
                 self:RegisterEvent('READY_CHECK')

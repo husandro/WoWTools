@@ -1,16 +1,15 @@
 local id, e = ...
 local Save={
-    --disabled=true,
-    emoji= e.Player.cn or e.Player.husandro,
+    --disabled=true,    
+    disabledADD={
+        ['ChatButton_Emoji']= not e.Player.cn and not e.Player.husandro,
+    },
     scale= 1,
 }
+
 local addName
 local ChatButton
-
-
-
-
-
+local Initializer, Layout
 
 
 
@@ -32,10 +31,7 @@ local ChatButton
 
 
 local function Init_Menu(self, root)
-    root:CreateButton((Save.Point and '' or '|cff9e9e9e')..(e.onlyChinese and '重置位置' or RESET_POSITION), function()
-        Save.Point=nil
-        self:set_point()
-    end)
+
 
     --缩放
     local sub= root:CreateButton(e.onlyChinese and '缩放' or 'Scale', function()
@@ -54,10 +50,26 @@ local function Init_Menu(self, root)
     sub:CreateTitle(Save.scale or 1)
     sub:SetGridMode(MenuConstants.VerticalGridDirection, 5)
 
+    root:CreateCheckbox(e.onlyChinese and '背景' or 'Background', function()
+        return Save.isShowBackground
+    end, function()
+        Save.isShowBackground= not Save.isShowBackground and true or nil
+        self.isShowBackground= Save.isShowBackground
+        WoWToolsChatButtonMixin:ShowBackgroud()
+    end)
 
     root:CreateDivider()
-    root:CreateButton(e.onlyChinese and '选项' or OPTIONS, function()
+    root:CreateButton((Save.Point and '' or '|cff9e9e9e')..(e.onlyChinese and '重置位置' or RESET_POSITION), function()
+        Save.Point=nil
+        self:set_point()
+    end)
+
+    root:CreateDivider()
+    sub=root:CreateButton(addName, function()
         e.OpenPanelOpting(addName)
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(e.onlyChinese and '打开选项界面' or OPTIONS)
     end)
 end
 
@@ -148,8 +160,77 @@ local function Init()
         e.tips:Hide()
     end)
     ChatButton:SetScript('OnEnter',ChatButton.set_tooltip)
-
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Init_Panel()
+    Initializer, Layout= e.AddPanel_Sub_Category({name=addName})
+
+    e.AddPanel_Check_Button({
+        checkName= e.onlyChinese and '启用' or ENABLE,
+        checkValue= not Save.disabled,
+        checkFunc= function()
+            Save.disabled= not Save.disabled and true or nil
+            print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end,
+        buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
+        buttonFunc= function()
+            Save.Point=nil
+            if ChatButton then
+                ChatButton:set_point()
+            end
+            print(id, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+        end,
+        tooltip= addName,
+        layout= Layout,
+        category= Initializer,
+    })
+
+    e.AddPanel_Header(Layout, e.onlyChinese and '选项' or OPTIONS)
+
+    for _, data in pairs (WoWToolsChatButtonMixin:GetAllAddList()) do
+        e.AddPanel_Check({
+            name= type(data.tooltip)=='function' and data.tooltip() or data.tooltip,
+            tooltip= data.name,
+            value= not Save.disabledADD[data.name],
+            category= Initializer,
+            func= function()
+                print(data.name)
+                Save.disabledADD[data.name]= not Save.disabledADD[data.name] and true or nil
+            end
+        })
+    end
+end
+
+
+
+
+
+
+
+
+
 
 
 
@@ -174,9 +255,30 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave['ChatButton'] or Save
-            addName='|A:transmog-icon-chat:0:0|a'..(e.onlyChinese and '聊天工具' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHAT, AUCTION_SUBCATEGORY_PROFESSION_TOOLS))
+            Save.disabledADD= Save.disabledADD or {}
+            addName='|A:voicechat-icon-textchat-silenced:0:0|a'..(e.onlyChinese and '聊天工具' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHAT, AUCTION_SUBCATEGORY_PROFESSION_TOOLS))
+            
+            if not Save.disabled then
+                ChatButton= WoWToolsChatButtonMixin:Init(Save.disabledADD, Save)
 
-            --添加控制面板
+                Init()
+            end
+            
+            if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
+                Init_Panel()
+            end
+
+        elseif arg1=='Blizzard_Settings' then
+            Init_Panel()
+        end
+
+    elseif event == "PLAYER_LOGOUT" then
+        if not e.ClearAllSave then
+            WoWToolsSave['ChatButton']=Save
+        end
+    end
+end)
+            --[[添加控制面板
             e.AddPanel_Header(nil, 'ChatButton')
 
             local initializer2= e.AddPanel_Check_Button({
@@ -209,21 +311,4 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
             })
             initializer:SetParentInitializer(initializer2, function() if Save.disabled then return false else return true end end)
-
-
-            if not Save.disabled then
-                ChatButton= WoWToolsChatButtonMixin:Init({
-                    emoji= not Save.emoji and true or nil,
-                })
-                Init()
-
-            end
-            self:UnregisterEvent('ADDON_LOADED')
-        end
-
-    elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
-            WoWToolsSave['ChatButton']=Save
-        end
-    end
-end)
+]]

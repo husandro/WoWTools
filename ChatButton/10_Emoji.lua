@@ -1,16 +1,15 @@
 local id, e = ...
 local addName= 'Emoji'
 local Save={
+    showEnter=true,
+    On_Click_Show=true,
     Channels={},
-    disabled= not e.Player.cn and not e.Player.husandro,
     --Point={}
-    --scale=1
-    show_background=e.Player.husandro,
-
-    --show=true    
-    --On_Click_Show
+    scale=1,
+    show_background=true,
+    --show=true
     clickIndex=18,
-
+    numButtonLine=10,
 }
 
 local EmojiButton
@@ -159,18 +158,17 @@ local function Init_Buttons()--设置按钮
     end
 
     Frame.texture2= Frame:CreateTexture(nil, 'BACKGROUND')
-    
+    Frame.texture2:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
+    Frame.texture2:SetAlpha(0.5)
+
     function Frame:set_background()
         if Save.show_background then
             self.texture2:ClearAllPoints()
             self.texture2:SetPoint('BOTTOMLEFT', self.Buttons[1], -4, -4)
             self.texture2:SetPoint('BOTTOMRIGHT', self.Buttons[Save.numButtonLine], 4, -4)
-            self.texture2:SetPoint('TOP', self.Buttons[#self.Buttons], 0, 4)
-            self.texture2:SetAlpha(0.5)
-            self.texture2:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
-        else
-            self.texture2:SetTexture(0)
+            self.texture2:SetPoint('TOP', self.Buttons[#self.Buttons], 0, 4)       
         end
+        self.texture2:SetShown(Save.show_background)
     end
 
     Frame:set_buttons_point()
@@ -233,11 +231,6 @@ end]]
 
 
 local function Init_Frame_Menu(self, root)
-    root:CreateButton((Save.Point and '' or '|cff9e9e9e')..(e.onlyChinese and '重置位置' or RESET_POSITION), function()
-        Save.Point=nil
-        self:set_point()
-    end)
-
 --缩放
     local sub= root:CreateButton(e.onlyChinese and '缩放' or 'Scale', function()
         return MenuResponse.Open
@@ -254,26 +247,36 @@ local function Init_Frame_Menu(self, root)
     sub:CreateDivider()
     sub:CreateTitle(Save.scale or 1)
     sub:SetGridMode(MenuConstants.VerticalGridDirection, 5)
+
+
 --数量
     sub=root:CreateButton(e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL, function() return MenuResponse.Open end)
-    for index= 1, EmojiButton.numFile+8, 1 do
-        sub:CreateCheckbox(index, function(data)
-            return Save.numButtonLine==data
-        end, function(data)
-            Save.numButtonLine= data
-            self:set_buttons_point()
-            return MenuResponse.Refresh
-        end, index)
+    for index= 1, EmojiButton.numAllFile, 1 do
+        if select(2, math.modf(EmojiButton.numAllFile/index))==0 then
+            sub:CreateCheckbox(index, function(data)
+                return Save.numButtonLine==data
+            end, function(data)
+                Save.numButtonLine= data
+                self:set_buttons_point()
+                return MenuResponse.Refresh
+            end, index)
+        end
     end
     sub:CreateDivider()
-    sub:CreateTitle(Save.numButtonLine)
-    sub:SetGridMode(MenuConstants.VerticalGridDirection, 6)
+    sub:CreateTitle(Save.numButtonLine..'/'..EmojiButton.numAllFile)
+    sub:SetGridMode(MenuConstants.VerticalGridDirection, 2)
 
     root:CreateCheckbox(e.onlyChinese and '背景' or 'Background', function()
         return Save.show_background
     end, function()
         Save.show_background= not Save.show_background and true or nil
         self:set_background()
+    end)
+
+    root:CreateDivider()
+    root:CreateButton((Save.Point and '' or '|cff9e9e9e')..(e.onlyChinese and '重置位置' or RESET_POSITION), function()
+        Save.Point=nil
+        self:set_point()
     end)
 end
 
@@ -299,7 +302,7 @@ local function Init_EmojiFrame()
         if Save.Point then
             self:SetPoint(Save.Point[1], UIParent, Save.Point[3], Save.Point[4], Save.Point[5])
         else
-            self:SetPoint('BOTTOMRIGHT',EmojiButton, 'TOPLEFT', -120,2)
+            self:SetPoint('BOTTOMRIGHT', EmojiButton, 'TOPLEFT', -120, 4)
         end
     end
     function Frame:set_scale()
@@ -328,8 +331,11 @@ local function Init_EmojiFrame()
     function Frame:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
+        e.tips:AddDoubleLine('ChatButton', addName)
+        e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..Save.scale, 'Alt+'..e.Icon.mid)
+        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or MAINMENU, e.Icon.right)
         e.tips:Show()
     end
     Frame:SetScript("OnMouseUp", ResetCursor)
@@ -398,38 +404,76 @@ local function Init_Menu(self, root)
         return MenuResponse.Open
     end)
 
+--显示/隐藏
+    sub2=sub:CreateButton(e.onlyChinese and '显示/隐藏' or format('%s/%s', SHOW, HIDE), function() return MenuResponse.Open end)
+    
+--显示
+    sub2:CreateTitle(e.onlyChinese and '显示' or SHOW)
+    sub2:CreateCheckbox('|A:newplayertutorial-drag-cursor:0:0|a'..(e.onlyChinese and '过移图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ENTER_LFG,EMBLEM_SYMBOL)), function()
+        return Save.showEnter
+    end, function()
+        Save.showEnter = not Save.showEnter and true or nil
+    end)
+
+    sub2:CreateCheckbox(e.Icon.left..(e.onlyChinese and '鼠标' or MOUSE_LABEL), function()
+        return Save.On_Click_Show
+    end, function()
+        Save.On_Click_Show= not Save.On_Click_Show and true or false
+    end)
+
 --隐藏
-    sub:CreateTitle(e.onlyChinese and '隐藏' or HIDE)
-    sub:CreateCheckbox('|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'..(e.onlyChinese and '进入战斗' or ENTERING_COMBAT), function()
+    sub2:CreateTitle(e.onlyChinese and '隐藏' or HIDE)
+    sub2:CreateCheckbox('|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'..(e.onlyChinese and '进入战斗' or ENTERING_COMBAT), function()
         return not Save.notHideCombat
     end, function()
         Save.notHideCombat = not Save.notHideCombat and true or nil
         self:set_event()
     end)
 
-    sub:CreateCheckbox('|A:transmog-nav-slot-feet:0:0|a'..(e.onlyChinese and '移动' or NPE_MOVE), function()
+    sub2:CreateCheckbox('|A:transmog-nav-slot-feet:0:0|a'..(e.onlyChinese and '移动' or NPE_MOVE), function()
         return not Save.notHideMoving
     end, function()
         Save.notHideMoving = not Save.notHideMoving and true or nil
         self:set_event()
     end)
 
---显示
-    sub:CreateTitle(e.onlyChinese and '显示' or SHOW)
-    sub:CreateCheckbox('|A:newplayertutorial-drag-cursor:0:0|a'..(e.onlyChinese and '过移图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ENTER_LFG,EMBLEM_SYMBOL)), function()
-        return Save.showEnter
-    end, function()
-        Save.showEnter = not Save.showEnter and true or nil
-    end)
 
-    sub:CreateCheckbox(e.Icon.left..(e.onlyChinese and '鼠标' or MOUSE_LABEL), function()
-        return Save.On_Click_Show
-    end, function()
-        Save.On_Click_Show= not Save.On_Click_Show and true or false
+--缩放
+    sub2= sub:CreateButton(e.onlyChinese and '缩放' or 'Scale', function()
+        return MenuResponse.Open
     end)
+    for index=0.4, 4, 0.05 do
+        sub2:CreateCheckbox(index, function(data)
+            return Save.scale==data
+        end, function(data)
+            Save.scale= data
+            Frame:set_scale()
+            return MenuResponse.Refresh
+        end, index)
+    end
+    sub2:CreateDivider()
+    sub2:CreateTitle(Save.scale or 1)
+    sub2:SetGridMode(MenuConstants.VerticalGridDirection, 5)
 
-    sub:CreateDivider()
-    sub2=sub:CreateButton((e.onlyChinese and '聊天频道' or CHAT_CHANNELS)..' '..EmojiButton.numFilter, function()
+--数量
+    sub2=sub:CreateButton(e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL, function() return MenuResponse.Open end)
+    for index= 1, self.numAllFile, 1 do
+        if select(2, math.modf(self.numAllFile/index))==0 then
+            sub2:CreateCheckbox(index, function(data)
+                return Save.numButtonLine==data
+            end, function(data)
+                Save.numButtonLine= data
+                Frame:set_buttons_point()
+                return MenuResponse.Refresh
+            end, index)
+        end
+    end
+    sub2:CreateDivider()
+    sub2:CreateTitle(Save.numButtonLine..'/'..self.numAllFile)
+    sub2:SetGridMode(MenuConstants.VerticalGridDirection, 2)
+
+--聊天频道
+    sub2=sub:CreateButton((e.onlyChinese and '聊天频道' or CHAT_CHANNELS)..' '..self.numFilter, function()
         return MenuResponse.Refresh
     end)
 
@@ -441,6 +485,14 @@ local function Init_Menu(self, root)
             self:set_filter_event()
         end, channel)
     end
+
+--背景
+    sub:CreateCheckbox(e.onlyChinese and '背景' or 'Background', function()
+        return Save.show_background
+    end, function()
+        Save.show_background= not Save.show_background and true or nil
+        Frame:set_background()
+    end)
 
     sub2:CreateDivider()
     sub2:CreateButton(e.onlyChinese and '全选' or ALL, function()
@@ -457,7 +509,6 @@ local function Init_Menu(self, root)
     end)
 
     sub:CreateDivider()
-
     sub:CreateButton((Save.Point and '' or '|cff9e9e9e')..(e.onlyChinese and '重置位置' or RESET_POSITION), function()
         Save.Point=nil
         Frame:set_point()
@@ -498,6 +549,7 @@ local function Init()
     end
 
     EmojiButton.numFile= #EmojiText
+    EmojiButton.numAllFile= EmojiButton.numFile+8
   
     TextToTexture={}--过滤，事件
     for index, text in pairs(EmojiText) do
@@ -530,7 +582,10 @@ local function Init()
     function EmojiButton:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(format('|T%s:0|t%s', self:get_texture() or '' , self:get_emoji_text() or ''), e.Icon.left)
+        e.tips:AddDoubleLine(
+            format('|T%s:0|t%s', self:get_texture() or '' , self:get_emoji_text() or ''), 
+            (self.chatFrameEditBox and (e.onlyChinese and '插入' or 'Insert') or (e.onlyChinese and '发送' or SEND_LABEL))..e.Icon.left
+        )
         if self.numFilter==0 then
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(e.onlyChinese and '聊天频道' or CHAT_CHANNELS, numFilter)
@@ -615,6 +670,7 @@ local function Init()
     end)
 
     Init_EmojiFrame()
+
     EmojiButton:set_texture()
     EmojiButton:set_event()
     EmojiButton:set_filter_event()
@@ -638,14 +694,11 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            Save= WoWToolsSave[addName] or Save
+            Save= WoWToolsSave['ChatButton_Emoji'] or Save
+            addName= '|TInterface\\Addons\\WoWTools\\Sesource\\Emojis\\Embarrass:0|tEmoji'
+            EmojiButton= WoWToolsChatButtonMixin:CreateButton('Emoji', addName)
 
-            EmojiButton= WoWToolsChatButtonMixin:CreateButton('Emoji')
             if EmojiButton then--禁用Chat Button
-                Save.scale= Save.scale or 1
-                Save.Channels= Save.Channels or {}
-                Save.clickIndex= Save.clickIndex or 18
-                Save.numButtonLine= Save.numButtonLine or 10
                 Init()
             end
             self:UnregisterEvent('ADDON_LOADED')
@@ -656,7 +709,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if Frame then
                 Save.show= Frame:IsShown()
             end
-            WoWToolsSave[addName]=Save
+            WoWToolsSave['ChatButton_Emoji']=Save
         end
     end
 end)

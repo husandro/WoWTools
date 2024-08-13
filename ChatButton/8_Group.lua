@@ -652,11 +652,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave['ChatButtonGroup'] or Save
+            addName= '|A:socialqueuing-icon-group:0:0:|a'..(e.onlyChinese and '队伍' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SORT_BY_SETTING_GROUP)
+            GroupButton= WoWToolsChatButtonMixin:CreateButton('Group', addName)
 
-            GroupButton= WoWToolsChatButtonMixin:CreateButton('Group')
-
-            if GroupButton then--禁用Chat Button
-                addName= '|A:socialqueuing-icon-group:0:0:|a'..(e.onlyChinese and '队伍' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SORT_BY_SETTING_GROUP)
+            if GroupButton then--禁用 ChatButton
                 Init()
                 self:RegisterEvent('GROUP_LEFT')
                 self:RegisterEvent('GROUP_ROSTER_UPDATE')

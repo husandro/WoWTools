@@ -2,13 +2,12 @@ local id, e = ...
 local addName
 local Save={
     leaveInstance=e.Player.husandro,--自动离开,指示图标
-    --enterInstance=e.Player.husandro,--10.07无效
     autoROLL= e.Player.husandro,--自动,战利品掷骰
     --disabledLootPlus=true,--禁用，战利品Plus
     ReMe=true,--仅限战场，释放，复活
     autoSetPvPRole=true,--自动职责确认， 排副本
     LFGPlus= e.Player.husandro,--预创建队伍增强
-    --tipsScale=1,--提示内容,缩放
+    tipsScale=1,--提示内容,缩放
 
     wow={
         --['island']=0,
@@ -3163,19 +3162,12 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            if WoWToolsSave[DUNGEONS_BUTTON] then
-                Save= WoWToolsSave[DUNGEONS_BUTTON]
-                WoWToolsSave[DUNGEONS_BUTTON]= nil
-                WoWToolsSave[INSTANCE]=nil
-                Save.wow={}
-            else
-                Save= WoWToolsSave['ChatButton_LFD'] or Save
-            end
-
-            LFDButton= WoWToolsChatButtonMixin:CreateButton('Invite')
+            Save= WoWToolsSave['ChatButton_LFD'] or Save
+            addName= '|A:groupfinder-eye-frame:0:0|a'..(e.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON)
+            LFDButton= WoWToolsChatButtonMixin:CreateButton('LFD', addName)
 
             if LFDButton then--禁用Chat Button
-                addName= '|A:groupfinder-eye-frame:0:0|a'..(e.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON)
+                
 
                 Init()
                 self:RegisterEvent('LFG_COMPLETION_REWARD')

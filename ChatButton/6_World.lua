@@ -1106,19 +1106,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave['ChatButtonWorldChannel'] or Save
-            WorldButton= WoWToolsChatButtonMixin:CreateButton('World')
-
-            --处理，上版本数据
-            if Save.userChatFilter==nil then
-                Save.userChatFilter= false
-                Save.userChatFilterTab= {}
-                Save.myChatFilterPlayers= {}
-                Save.myChatFilterNum= Save.myChatFilterNum or 70
-                Save.world= Save.world or CHANNEL_CATEGORY_WORLD
-            end
+            addName= '|A:tokens-WoW-generic-regular:0:0|a'..(e.onlyChinese and '频道' or CHANNEL)
+            WorldButton= WoWToolsChatButtonMixin:CreateButton('World', addName)
 
             if WorldButton then--禁用Chat Button
-                addName= '|A:tokens-WoW-generic-regular:0:0|a'..(e.onlyChinese and '频道' or CHANNEL)
 
                 Init()
                 self:RegisterEvent('PLAYER_ENTERING_WORLD')

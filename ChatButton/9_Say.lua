@@ -906,30 +906,18 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
     if event == "ADDON_LOADED" then
-        if arg1==id then
-            --处理，上版本数据
-            if WoWToolsSave[SAY] then
-                Save= WoWToolsSave[SAY]
-                Save.WhisperTab=Save.WhisperTab or {}
-                WoWToolsSave[SAY]=nil
-                Save.type= SLASH_SAY1
-                Save.text= (e.onlyChinese and '说' or SAY)
-            else
-                Save= WoWToolsSave['ChatButton_Say'] or Save
-            end
-
-            Save.numWhisper= Save.numWhisper or 0
-            SayButton= WoWToolsChatButtonMixin:CreateButton('Say')
-
+        if arg1==id then          
+            Save= WoWToolsSave['ChatButton_Say'] or Save
+            Save.text= Save.text or (e.onlyChinese and '说' or SAY)
+            addName= '|A:transmog-icon-chat:0:0|a'..(e.onlyChinese and '说' or SAY)
+            SayButton= WoWToolsChatButtonMixin:CreateButton('Say', addName)
 
             if SayButton then--禁用Chat Button
-                addName= '|A:transmog-icon-chat:0:0|a'..(e.onlyChinese and '说' or SAY)
                 if #Save.WhisperTab>120 then
                     for i=121, #Save.WhisperTab do
                         Save.WhisperTab[i]=nil
                     end
                 end
-
 
                 Init()
                 self:RegisterEvent("CHAT_MSG_WHISPER_INFORM")

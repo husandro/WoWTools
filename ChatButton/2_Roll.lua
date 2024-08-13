@@ -308,18 +308,12 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            if WoWToolsSave[ROLL] then--处理，上版本数据
-                Save= WoWToolsSave[ROLL]                
-                Save.save = Save.save or {}
-                WoWToolsSave[ROLL]= nil
-            else
-                Save= WoWToolsSave['ChatButton_Rool'] or Save
-            end
-
-            RollButton= WoWToolsChatButtonMixin:CreateButton('Roll')
+            Save= WoWToolsSave['ChatButton_Rool'] or Save
+            addName= '|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t'..(e.onlyChinese and '掷骰' or ROLL)
+            RollButton= WoWToolsChatButtonMixin:CreateButton('Roll', addName)
 
             if RollButton then
-                addName= '|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t'..(e.onlyChinese and '掷骰' or ROLL)
+                
 
                 Init()
                 self:RegisterEvent('CHAT_MSG_SYSTEM')

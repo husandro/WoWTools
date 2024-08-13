@@ -1098,20 +1098,12 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1, ...)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            if WoWToolsSave[INVITE] then--处理，上版本数据
-                Save= WoWToolsSave[INVITE]
-                Save.frameList= nil --Save.frameList or {['Target']=true, ['Party1']=true, ['Party2']=true, ['Party3']=true, ['Party4']=true}--框架, 向上:密语, 向下:跟随
-                Save.focusKey= Save.focusKey or 'Shift'--焦点
-            else
-                Save= WoWToolsSave['ChatButton_Invite'] or Save
-            end
-
-            InviteButton= WoWToolsChatButtonMixin:CreateButton('Invite')
+            Save= WoWToolsSave['ChatButton_Invite'] or Save
+            addName= '|A:communities-icon-addgroupplus:0:0|a'..(e.onlyChinese and '邀请' or INVITE)
+            InviteButton= WoWToolsChatButtonMixin:CreateButton('Invite', addName)
 
             if InviteButton then
-                addName= '|A:communities-icon-addgroupplus:0:0|a'..(e.onlyChinese and '邀请' or INVITE)
                 Init()
-
                 self:RegisterEvent('GROUP_LEFT')
                 self:RegisterEvent('GROUP_ROSTER_UPDATE')
                 self:RegisterEvent('PARTY_INVITE_REQUEST')
