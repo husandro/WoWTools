@@ -120,7 +120,7 @@ local function Init()
     SELECTED_DOCK_FRAME.editBox:SetAltArrowKeyMode(false)
 
     function ChatButton:set_strata()
-        self:SetFrameStrata(Save.strata or 'HIGH')    
+        self:SetFrameStrata(Save.strata or 'MEDIUM')    
     end
 
     function ChatButton:set_scale()
