@@ -302,11 +302,7 @@ local function Init_EmojiFrame()
         if Save.Point then
             self:SetPoint(Save.Point[1], UIParent, Save.Point[3], Save.Point[4], Save.Point[5])
         else
-            if WoWToolsChatButtonMixin:GetHV() then
-                self:SetPoint('RIGHT', EmojiButton, 'LEFT', -4, 120)
-            else
-                self:SetPoint('BOTTOMRIGHT', EmojiButton, 'TOPLEFT', -120, 4)
-            end
+            self:SetPoint('BOTTOMRIGHT', EmojiButton, 'TOPLEFT', -120, 4)            
         end
     end
     function Frame:set_scale()
@@ -586,10 +582,14 @@ local function Init()
     function EmojiButton:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(
-            format('|T%s:0|t%s', self:get_texture() or '' , self:get_emoji_text() or ''), 
-            (self.chatFrameEditBox and (e.onlyChinese and '插入' or 'Insert') or (e.onlyChinese and '发送' or SEND_LABEL))..e.Icon.left
-        )
+        if Save.On_Click_Show then
+            e.tips:AddDoubleLine(e.GetShowHide(not Frame:IsShown()), e.Icon.left)
+        else
+            e.tips:AddDoubleLine(
+                format('|T%s:0|t%s', self:get_texture() or '' , self:get_emoji_text() or ''), 
+                (self.chatFrameEditBox and (e.onlyChinese and '插入' or 'Insert') or (e.onlyChinese and '发送' or SEND_LABEL))..e.Icon.left
+            )
+        end
         if self.numFilter==0 then
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(e.onlyChinese and '聊天频道' or CHAT_CHANNELS, numFilter)
@@ -614,11 +614,12 @@ local function Init()
     end)
 
     EmojiButton:SetScript('OnClick', function(self, d)
-        if d=='LeftButton' then
-            send(self:get_emoji_text(),  self.chatFrameEditBox and 'LeftButton' or 'RightButton')
-
+        if d=='LeftButton' then           
             if Save.On_Click_Show then
-                self:set_frame_shown(true)
+                self:set_frame_shown(not Frame:IsShown())
+                self:set_tooltip()
+            else
+                send(self:get_emoji_text(),  self.chatFrameEditBox and 'LeftButton' or 'RightButton')
             end
 
         elseif d=='RightButton' then

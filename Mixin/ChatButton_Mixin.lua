@@ -116,11 +116,6 @@ function WoWToolsChatButtonMixin:RestHV(isVertical)--Horizontal and vertical
         btn:ClearAllPoints()
         self:SetPoint(btn)
     end
-    local emoji= _G['WoWToolsChatButtonEmojiFrame']
-    if emoji then
-        emoji:set_point()
-    end
-    print(emoji)
 end
 
 function WoWToolsChatButtonMixin:GetHV()
@@ -144,7 +139,6 @@ function WoWToolsChatButtonMixin:ShowBackgroud()
             btn.Background:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
             btn.Background:SetAlpha(0.5)
         end
-        
         btn.Background:SetPoint('TOPRIGHT', self.LastButton)
     end
     if btn.Background then
