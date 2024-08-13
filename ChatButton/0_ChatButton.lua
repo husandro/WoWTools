@@ -52,16 +52,17 @@ local function Init_Menu(self, root)
     sub:CreateTitle(Save.scale or 1)
     sub:SetGridMode(MenuConstants.VerticalGridDirection, 5)
 
-    sub=root:CreateButton(Save.strata or self:GetFrameStrata() or 'FrameStrata', function() return MenuResponse.Open end)
+    sub=root:CreateButton(self:GetFrameStrata() or Save.strata or 'FrameStrata', function() return MenuResponse.Open end)
 
 
     for _, strata in pairs({'BACKGROUND','LOW','MEDIUM','HIGH','DIALOG','FULLSCREEN','FULLSCREEN_DIALOG'}) do
         sub:CreateRadio((strata=='HIGH' and '|cnGREEN_FONT_COLOR:' or '')..strata, function(data)
-            return (not Save.strata and data=='HIGH') or data==Save.strata
+            return self:GetFrameStrata()== data
         end, function(data)
             Save.strata= data
             self:set_strata()
             print(id, addName ,'SetFrameStrata(\"|cnGREEN_FONT_COLOR:'..self:GetFrameStrata()..'|r\")')
+            return MenuResponse.Refresh
         end, strata)
     end
     
@@ -119,7 +120,7 @@ local function Init()
     SELECTED_DOCK_FRAME.editBox:SetAltArrowKeyMode(false)
 
     function ChatButton:set_strata()
-        self:SetFrameStrata(Save.start or 'HIGH')    
+        self:SetFrameStrata(Save.strata or 'HIGH')    
     end
 
     function ChatButton:set_scale()

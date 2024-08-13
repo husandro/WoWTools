@@ -294,7 +294,7 @@ end]]
 
 
 local function Init_EmojiFrame()
-    Frame=e.Cbtn(UIParent, {icon='hide', size={10, 30}})--控制图标,显示,隐藏
+    Frame=e.Cbtn(UIParent, {icon='hide', size={10, 30}, name='WoWToolsChatButtonEmojiFrame'})--控制图标,显示,隐藏
     Frame:SetFrameStrata('HIGH')
 
     function Frame:set_point()
@@ -302,7 +302,11 @@ local function Init_EmojiFrame()
         if Save.Point then
             self:SetPoint(Save.Point[1], UIParent, Save.Point[3], Save.Point[4], Save.Point[5])
         else
-            self:SetPoint('BOTTOMRIGHT', EmojiButton, 'TOPLEFT', -120, 4)
+            if WoWToolsChatButtonMixin:GetHV() then
+                self:SetPoint('RIGHT', EmojiButton, 'LEFT', -4, 120)
+            else
+                self:SetPoint('BOTTOMRIGHT', EmojiButton, 'TOPLEFT', -120, 4)
+            end
         end
     end
     function Frame:set_scale()
