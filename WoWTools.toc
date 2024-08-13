@@ -40,7 +40,7 @@ Libs\Libs.xml
 
 
 ##主要function，不能删除
-Mixin\Chat_Button_Mixin.lua
+Mixin\ChatButton_Mixin.lua
 Mixin\FrameMixin.lua
 
 API_WoWTools.lua

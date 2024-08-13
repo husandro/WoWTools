@@ -5,6 +5,8 @@ local Save={
         ['ChatButton_Emoji']= not e.Player.cn and not e.Player.husandro,
     },
     scale= 1,
+    --isVertical=nil,--方向, 竖
+    --isShowBackground=nil,--是否显示背景 bool
 }
 
 local addName
@@ -50,11 +52,31 @@ local function Init_Menu(self, root)
     sub:CreateTitle(Save.scale or 1)
     sub:SetGridMode(MenuConstants.VerticalGridDirection, 5)
 
+    sub=root:CreateButton(Save.strata or self:GetFrameStrata() or 'FrameStrata', function() return MenuResponse.Open end)
+
+
+    for _, strata in pairs({'BACKGROUND','LOW','MEDIUM','HIGH','DIALOG','FULLSCREEN','FULLSCREEN_DIALOG'}) do
+        sub:CreateRadio((strata=='HIGH' and '|cnGREEN_FONT_COLOR:' or '')..strata, function(data)
+            return (not Save.strata and data=='HIGH') or data==Save.strata
+        end, function(data)
+            Save.strata= data
+            self:set_strata()
+            print(id, addName ,'SetFrameStrata(\"'..self:GetFrameStrata()..'\")')
+        end, strata)
+    end
+    
+
+    root:CreateCheckbox('|A:bags-greenarrow:0:0|a'..(e.onlyChinese and '方向' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION), function()
+        return Save.isVertical
+    end, function()
+        Save.isVertical= not Save.isVertical and true or nil
+        WoWToolsChatButtonMixin:RestHV(Save.isVertical)--方向, 竖
+    end)
     root:CreateCheckbox(e.onlyChinese and '背景' or 'Background', function()
         return Save.isShowBackground
     end, function()
         Save.isShowBackground= not Save.isShowBackground and true or nil
-        self.isShowBackground= Save.isShowBackground
+        WoWToolsChatButtonMixin.isShowBackground= Save.isShowBackground
         WoWToolsChatButtonMixin:ShowBackgroud()
     end)
 
@@ -96,6 +118,10 @@ end
 local function Init()
     SELECTED_DOCK_FRAME.editBox:SetAltArrowKeyMode(false)
 
+    function ChatButton:set_strata()
+        self:SetFrameStrata(Save.start or 'HIGH')    
+    end
+
     function ChatButton:set_scale()
         self:SetScale(Save.scale or 1)
     end
@@ -118,8 +144,6 @@ local function Init()
         e.tips:Show()
     end
 
-    ChatButton:set_point()
-    ChatButton:set_scale()
     
     ChatButton:RegisterForDrag("RightButton")
     ChatButton:SetMovable(true)
@@ -160,6 +184,10 @@ local function Init()
         e.tips:Hide()
     end)
     ChatButton:SetScript('OnEnter',ChatButton.set_tooltip)
+
+    ChatButton:set_strata()
+    ChatButton:set_point()
+    ChatButton:set_scale()
 end
 
 

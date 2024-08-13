@@ -10,6 +10,7 @@ WoWToolsChatButtonMixin= {
     numButton=0,--总数, 按钮 numberi
 
     isVertical=nil,--方向, 竖
+    
 }
 
 
@@ -89,7 +90,7 @@ end
 
 function WoWToolsChatButtonMixin:SetPoint(btn)
     local id= btn:GetID()
-    if self.H then
+    if self.isVertical then
         btn:SetPoint('BOTTOM', id==1 and self.ChatButton or self.Buttons[id-1], 'TOP')        
     else
         btn:SetPoint('LEFT', id==1 and self.ChatButton or self.Buttons[id-1], 'RIGHT')
@@ -108,14 +109,18 @@ function WoWToolsChatButtonMixin:SetChatButtonSize()
 end
 
 
-function WoWToolsChatButtonMixin:RestHV()--Horizontal and vertical
+function WoWToolsChatButtonMixin:RestHV(isVertical)--Horizontal and vertical
+    self.isVertical=isVertical--方向, 竖
     self:SetChatButtonSize()
-    for _, btn in pairt(self.Buttons) do
-        btn:ClearAllPoint()
+    for _, btn in pairs(self.Buttons) do
+        btn:ClearAllPoints()
         self:SetPoint(btn)
     end
 end
 
+function WoWToolsChatButtonMixin:GetHV()
+    return self.isVertical
+end
 
 function WoWToolsChatButtonMixin:GetAllAddList()
     return self.AddList
@@ -130,10 +135,11 @@ function WoWToolsChatButtonMixin:ShowBackgroud()
     if self.isShowBackground then
         if not btn.Background then
             btn.Background= btn:CreateTexture(nil, 'BACKGROUND')
-            btn.Background:SetPoint('BOTTOMLEFT', self.Buttons[1])
+            btn.Background:SetPoint('BOTTOMLEFT', self.Buttons[1])            
             btn.Background:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
             btn.Background:SetAlpha(0.5)
         end
+        
         btn.Background:SetPoint('TOPRIGHT', self.LastButton)
     end
     if btn.Background then
