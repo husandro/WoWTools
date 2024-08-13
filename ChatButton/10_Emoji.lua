@@ -230,7 +230,7 @@ end]]
 
 
 
-local function Init_Frame_Menu(self, root)
+--[[local function Init_Frame_Menu(self, root)
 --缩放
     local sub= root:CreateButton(e.onlyChinese and '缩放' or 'Scale', function()
         return MenuResponse.Open
@@ -278,7 +278,7 @@ local function Init_Frame_Menu(self, root)
         Save.Point=nil
         self:set_point()
     end)
-end
+end]]
 
 
 
@@ -335,7 +335,7 @@ local function Init_EmojiFrame()
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..Save.scale, 'Alt+'..e.Icon.mid)
-        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or MAINMENU, e.Icon.right)
+        --e.tips:AddDoubleLine(e.onlyChinese and '菜单' or MAINMENU, e.Icon.right)
         e.tips:Show()
     end
     Frame:SetScript("OnMouseUp", ResetCursor)
@@ -358,11 +358,11 @@ local function Init_EmojiFrame()
     end)
 
 
-    Frame:SetScript('OnClick',function(self, d)
+    --[[Frame:SetScript('OnClick',function(self, d)
         if d=='RightButton' and not IsAltKeyDown() then
             MenuUtil.CreateContextMenu(self, Init_Frame_Menu)
         end
-    end)
+    end)]]
 
 
     Frame:set_point()

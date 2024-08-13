@@ -61,7 +61,7 @@ local function Init_Menu(self, root)
         end, function(data)
             Save.strata= data
             self:set_strata()
-            print(id, addName ,'SetFrameStrata(\"'..self:GetFrameStrata()..'\")')
+            print(id, addName ,'SetFrameStrata(\"|cnGREEN_FONT_COLOR:'..self:GetFrameStrata()..'|r\")')
         end, strata)
     end
     
