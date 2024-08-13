@@ -20,7 +20,7 @@ function WoWToolsChatButtonMixin:Init(disableTab, save)
     
     self.isShowBackground= save.isShowBackground--是否显示背景 bool
     self.isVertical= save.isVertical--方向, 竖
-    self.DisabledAdd= disableTab or {},--禁用, 按钮 {name}=true
+    self.DisabledAdd= disableTab or {}--禁用, 按钮 {name}=true
     self.LastButton= self.ChatButton
      
     self.numButton=0--总数, 按钮 numberi
