@@ -3249,8 +3249,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Initializer= e.AddPanel_Check({
                 name= (e.Player.sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a')..(e.onlyChinese and '角色' or addName),
                 --tooltip= Initializer:GetName(),
-                value= not Save.disabled,
-                func= function()
+                GetValue= function() return not Save.disabled end,
+                SetValue= function()
                     Save.disabled= not Save.disabled and true or nil
                     print(id, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end,

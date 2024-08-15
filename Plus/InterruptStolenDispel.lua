@@ -67,8 +67,8 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 name= '|A:nameplates-holypower2-on:0:0|a'..(e.onlyChinese and '断驱散' or addName),
                 tooltip= e.onlyChinese and '说|n仅限：我, 小队'
                     or (SAY..'|n'..format(LFG_LIST_CROSS_FACTION, COMBATLOG_FILTER_STRING_ME)..'|n'..format(LFG_LIST_CROSS_FACTION, SLASH_TEXTTOSPEECH_PARTY)),
-                value= not Save.disabled,
-                func= function()
+                GetValue= function() return not Save.disabled end,
+                SetValue= function()
                     if Save.disabled then
                         Save.disabled=nil
                         panel:UnregisterEvent('COMBAT_LOG_EVENT_UNFILTERED')

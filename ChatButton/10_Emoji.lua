@@ -84,28 +84,6 @@ end
 
 
 
-local function Create_Button(index, icon)
-    local btn= e.Cbtn(Frame, {icon='hide',size=30, setID=index})
-    btn:SetScript('OnLeave', GameTooltip_Hide)
-    btn:SetScript('OnEnter', function()
-        e.tips:SetOwner(last, "ANCHOR_RIGHT")
-        e.tips:ClearLines()
-        e.tips:AddLine(text)
-        e.tips:AddDoubleLine(e.Icon.left..(e.onlyChinese and '插入' or 'Insert'), (e.onlyChinese and '发送' or SEND_LABEL)..e.Icon.right)
-        e.tips:Show()
-    end)
-    btn:SetScript('OnClick', function(self, d)
-        send(self.text, d)
-        Save.clickIndex= self:GetID()
-        EmojiButton:set_texture()
-    end)
-    
-    btn:SetNormalTexture(EmojiButton:get_texture(index) or 0)
-    btn.text= EmojiButton:get_emoji_text(index)
-    table.Insert(Frame.Buttons, btn)
-
-    return btn
-end
 
 
 

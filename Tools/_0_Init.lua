@@ -99,7 +99,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             e.AddPanel_Check({
                 name= e.toolsFrame.addName,
                 --tooltip= e.cn(addName),
-                value= not Save.disabled,
+                GetValue= function() return not Save.disabled end,
                 --category= Category,
                 func= function()
                     Save.disabled= not Save.disabled and true or nil

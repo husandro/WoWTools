@@ -1323,8 +1323,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             --添加控制面板
             e.AddPanel_Check({
                 name= addName,
-                value= not Save.disabled,
-                func= function()
+                GetValue=function() return not Save.disabled end,
+                SetValue= function()
                     Save.disabled= not Save.disabled and true or nil
                     print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
                 end

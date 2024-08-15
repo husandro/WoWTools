@@ -476,8 +476,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             --添加控制面板
             Initializer= e.AddPanel_Check({
                 name= '|TInterface\\Icons\\inv_gizmo_03:0|t'..(e.onlyChinese and '拆解大师Mk1型' or addName),
-                value= not Save.disabled,
-                func= function()
+                Value= not Save.disabled,
+                GetValue=function() return not Save.disabled end,
+                SetValue= function()
                     Save.disabled= not Save.disabled and true or nil
                     print(id, Initializer:GetName(), e.GetEnabeleDisable(Save.disabled), ScrappingMachineFrame and (e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD) or '')
                 end

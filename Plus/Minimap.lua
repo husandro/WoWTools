@@ -3132,6 +3132,7 @@ local function Init()
 
 
     --要塞，图标
+    print(ExpansionLandingPageMinimapButton)
     if ExpansionLandingPageMinimapButton then
         if Save.hideExpansionLandingPageMinimapButton then
             ExpansionLandingPageMinimapButton:SetShown(false)
@@ -3217,8 +3218,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Initializer= e.AddPanel_Check({
                 name= '|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..(e.onlyChinese and '小地图' or addName),
                 tooltip= e.cn(addName),
-                value= not Save.disabled,
-                func= function()
+                GetValue= function() return not Save.disabled end,
+                SetValue= function()
                     Save.disabled= not Save.disabled and true or nil
                     print(Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end

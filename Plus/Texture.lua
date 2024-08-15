@@ -2815,8 +2815,8 @@ local function Init_Options()
                 ..'|n|n'..((e.onlyChinese and '说' or SAY)..' CVar: chatBubbles '.. e.GetShowHide(C_CVar.GetCVarBool("chatBubbles")))
                 ..'|n'..((e.onlyChinese and '小队' or SAY)..' CVar: chatBubblesParty '.. e.GetShowHide(C_CVar.GetCVarBool("chatBubblesParty"))),
         category= Category,
-        value= not Save.disabledChatBubble,
-        func= function()
+        GetValue= function() return not Save.disabledChatBubble end,
+        SetValue= function()
             Save.disabledChatBubble= not Save.disabledChatBubble and true or nil
             Init_Chat_Bubbles()
             if Save.disabledChatBubble and BubblesFrame then
@@ -2884,8 +2884,8 @@ local function Init_Options()
         name= e.onlyChinese and '隐藏教程' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, SHOW_TUTORIALS ),
         tooltip='HelpTip',
         category= Category,
-        value= not Save.disabledHelpTip,
-        func= function()
+        GetValue= function() return not Save.disabledHelpTip end,
+        SetValue= function()
             Save.disabledHelpTip= not Save.disabledHelpTip and true or nil
             print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
@@ -2935,8 +2935,8 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 name= e.onlyChinese and '启用' or ENABLE,
                 tooltip= e.cn(addName),
                 category= Category,
-                value= not Save.disabled,
-                func= function()
+                GetValue= function() return not Save.disabled end,
+                SetValue= function()
                     Save.disabled= not Save.disabled and true or nil
                     print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end

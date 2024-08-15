@@ -782,8 +782,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Initializer= e.AddPanel_Check({
                 name= addName,
                 tooltip= addName,
-                value= not Save.disabled,
-                func= function()
+                GetValue= function() return not Save.disabled end,
+                SetValue= function()
                     Save.disabled= not Save.disabled and true or nil
                     print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end

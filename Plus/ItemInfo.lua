@@ -1291,8 +1291,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             e.AddPanel_Check({
                 name= addName,
                 tooltip= e.onlyChinese and '系统背包|n商人' or (BAGSLOT..'|n'..MERCHANT),--'Inventorian, Baggins', 'Bagnon'
-                value= not Save.disabled,
-                func= function()
+                GetValue= function() return not Save.disabled end,
+                SetValue= function()
                     if Save.disabled then
                         Save.disabled=nil
                         panel:UnregisterEvent('COMBAT_LOG_EVENT_UNFILTERED')

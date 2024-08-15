@@ -950,8 +950,8 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 tooltip= (not e.onlyChinese and CLICK_TO_MOVE..', '..REFORGE_CURRENT or '点击移动, 当前: ')..e.GetEnabeleDisable(C_CVar.GetCVarBool("autoInteract"))
                     ..'|n'..(e.onlyChinese and '等级' or LEVEL)..' < '..GetMaxLevelForLatestExpansion()..'  '..e.GetEnabeleDisable(false)
                     ..'|n'..(e.onlyChinese and '等级' or LEVEL)..' = '..GetMaxLevelForLatestExpansion()..'  '..e.GetEnabeleDisable(true),
-                value= Save.clickToMove,
-                func= function()
+                GetValue= function() return Save.clickToMove end,
+                SetValue= function()
                     Save.clickToMove = not Save.clickToMove and true or nil
                     set_Click_To_Move()
                 end
@@ -962,8 +962,8 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             initializer= e.AddPanel_Check({
                 name= '|A:transmog-nav-slot-feet:0:0|a'..(e.onlyChinese and '添加按钮' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, 'Button')),
                 tooltip= e.onlyChinese and '位置：玩家框体' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHOOSE_LOCATION:gsub(CHOOSE, '')..': ', HUD_EDIT_MODE_PLAYER_FRAME_LABEL),
-                value= Save.clickToMoveButton,
-                func= function()
+                GetValue= function() return Save.clickToMoveButton end,
+                SetValue= function()
                     Save.clickToMoveButton = not Save.clickToMoveButton and true or nil
                     add_Click_To_Move_Button()
                 end

@@ -897,7 +897,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             e.AddPanel_Check({
                 name= format('|A:poi-islands-table:0:0|a%s', e.onlyChinese and '地图' or addName),
                 tooltip= e.cn(addName),
-                value= not Save.disabled,
+                GetValue= function() return not Save.disabled end,
                 func= function()
                     Save.disabled= not Save.disabled and true or nil
                     print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)

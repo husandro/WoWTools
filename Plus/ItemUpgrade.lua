@@ -123,8 +123,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Initializer= e.AddPanel_Check({
                 name= format('|A:Garr_UpgradeIcon:0:0|a%s', e.onlyChinese and '物品升级' or addName),
                 --tooltip= e.onlyChinese and '系统背包|n商人' or (BAGSLOT..'|n'..MERCHANT),--'Inventorian, Baggins', 'Bagnon'
-                value= not Save.disabled,
-                func= function()
+                GetValue= function() return not Save.disabled end,
+                SetValue= function()
                     Save.disabled= not Save.disabled and true or nil
                     print(id, Initializer:GetName(), e.GetEnabeleDisable(Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end

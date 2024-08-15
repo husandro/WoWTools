@@ -2797,9 +2797,9 @@ local function Init_Options()
     local initializer2= e.AddPanel_Check({
         name= '|TInterface\\Cursor\\UI-Cursor-Move:0|t'..(e.onlyChinese and '移动' or NPE_MOVE),
         tooltip= e.cn(addName),
-        value= not Save.disabledMove,
+        GetValue= function() return not Save.disabledMove end,
         category= Category,
-        func= function()
+        SetValue= function()
             Save.disabledMove= not Save.disabledMove and true or nil
             print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabledMove), e.onlyChinese and '重新加载UI' or RELOADUI)
         end
@@ -2835,9 +2835,9 @@ local function Init_Options()
         initializer= e.AddPanel_Check({
             name= e.onlyChinese and '可以移到屏幕外' or 'Can be moved off screen',
             tooltip= e.cn(addName),
-            value= Save.moveToScreenFuori,
+            GetValue= function() return Save.moveToScreenFuori end,
             category= Category,
-            func= function()
+            SetValue= function()
                 Save.moveToScreenFuori= not Save.moveToScreenFuori and true or nil
             end
         })
@@ -2951,9 +2951,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             e.AddPanel_Check({
                 name= e.onlyChinese and '启用' or ENABLE,
                 tooltip= e.cn(addName),
-                value= not Save.disabled,
+                GetValue= function() return not Save.disabled end,
                 category= Category,
-                func= function()
+                SetValue= function()
                     Save.disabled= not Save.disabled and true or nil
                     print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end

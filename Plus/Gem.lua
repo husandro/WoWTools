@@ -1114,8 +1114,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Initializer= e.AddPanel_Check({
                 name= '|T4555592:0|t'..(e.onlyChinese and '镶嵌宝石' or addName),
                 tooltip= e.cn(addName),
-                value= not Save.disabled,
-                func= function()
+                GetValue= function() return not Save.disabled end,
+                SetValue= function()
                     Save.disabled = not Save.disabled and true or nil
                     print(id, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
                 end

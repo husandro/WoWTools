@@ -28,8 +28,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         ..'|n|n'..(e.onlyChinese and '声音' or SOUND)
                         ..'|nChat Button, '..(e.onlyChinese and '超链接图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, EMBLEM_SYMBOL))
                         ..'|n'..(e.onlyChinese and '事件声音' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, EVENTS_LABEL, SOUND)),
-                value= not Save.disabled,
-                func= function()
+                GetValue= function() return not Save.disabled end,
+                SetValue= function()
                     Save.disabled= not Save.disabled and true or nil
                     setRegister()--设置事件
                     print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled))
@@ -39,8 +39,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             local initializer= e.AddPanel_Check({
                 name= e.onlyChinese and '文本' or LOCALE_TEXT_LABEL,
                 tooltip= e.cn(addName),
-                value= not Save.notPrint,
-                func= function()
+                GetValue= function() return not Save.notPrint end,
+                SetValue= function()
                     Save.notPrint= not Save.notPrint and true or nil
                 end
             })

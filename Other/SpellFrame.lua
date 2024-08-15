@@ -389,8 +389,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                             ..'|n'..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPELLS, 'Flyout')..': '..LFG_LIST_TITLE
                             ..'|n...'
                     ),
-                value= not Save.disabled,
-                func= function()
+                Value= not Save.disabled,
+                GetValue=function() return not Save.disabled end,
+                SetValue= function()
                     Save.disabled= not Save.disabled and true or nil
                     print(id, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end

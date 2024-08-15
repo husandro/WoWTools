@@ -11,7 +11,6 @@ local Save={
 
 local addName
 local ChatButton
-local Initializer, Layout
 
 
 
@@ -65,7 +64,7 @@ local function Init_Menu(self, root)
             return MenuResponse.Refresh
         end, strata)
     end
-    
+
 
     root:CreateCheckbox('|A:bags-greenarrow:0:0|a'..(e.onlyChinese and '方向' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION), function()
         return Save.isVertical
@@ -120,7 +119,7 @@ local function Init()
     SELECTED_DOCK_FRAME.editBox:SetAltArrowKeyMode(false)
 
     function ChatButton:set_strata()
-        self:SetFrameStrata(Save.strata or 'MEDIUM')    
+        self:SetFrameStrata(Save.strata or 'MEDIUM')
     end
 
     function ChatButton:set_scale()
@@ -145,7 +144,7 @@ local function Init()
         e.tips:Show()
     end
 
-    
+
     ChatButton:RegisterForDrag("RightButton")
     ChatButton:SetMovable(true)
     ChatButton:SetClampedToScreen(true)
@@ -214,7 +213,7 @@ end
 
 
 local function Init_Panel()
-    Initializer, Layout= e.AddPanel_Sub_Category({name=addName})
+    local Initializer, Layout= e.AddPanel_Sub_Category({name=addName})
 
     e.AddPanel_Check_Button({
         checkName= e.onlyChinese and '启用' or ENABLE,
@@ -240,12 +239,12 @@ local function Init_Panel()
 
     for _, data in pairs (WoWToolsChatButtonMixin:GetAllAddList()) do
         e.AddPanel_Check({
-            name= type(data.tooltip)=='function' and data.tooltip() or data.tooltip,
-            tooltip= data.name,
-            value= not Save.disabledADD[data.name],
             category= Initializer,
-            func= function()
-                print(data.name)
+            name= data.tooltip,
+            tooltip= data.name,
+            Value= not Save.disabledADD[data.name],
+            GetValue= function() return not Save.disabledADD[data.name] end,
+            SetValue= function()
                 Save.disabledADD[data.name]= not Save.disabledADD[data.name] and true or nil
             end
         })
@@ -286,13 +285,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave['ChatButton'] or Save
             Save.disabledADD= Save.disabledADD or {}
             addName='|A:voicechat-icon-textchat-silenced:0:0|a'..(e.onlyChinese and '聊天工具' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHAT, AUCTION_SUBCATEGORY_PROFESSION_TOOLS))
-            
+
             if not Save.disabled then
                 ChatButton= WoWToolsChatButtonMixin:Init(Save.disabledADD, Save)
 
                 Init()
             end
-            
+
             if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
                 Init_Panel()
             end
@@ -307,37 +306,3 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
     end
 end)
-            --[[添加控制面板
-            e.AddPanel_Header(nil, 'ChatButton')
-
-            local initializer2= e.AddPanel_Check_Button({
-                checkName= addName,
-                checkValue= not Save.disabled,
-                checkFunc= function()
-                    Save.disabled= not Save.disabled and true or nil
-                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                end,
-                buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
-                buttonFunc= function()
-                    Save.Point=nil
-                    if ChatButton then
-                        ChatButton:set_point()
-                    end
-                    print(id, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
-                end,
-                tooltip= addName,
-                layout= nil,
-                category= nil,
-            })
-
-            local initializer= e.AddPanel_Check({
-                name= '|TInterface\\Addons\\WoWTools\\Sesource\\Emojis\\greet:0|tEmoji',
-                tooltip= addName..', Emoji',
-                value= Save.emoji,
-                func= function()
-                    Save.emoji= not Save.emoji and true or nil
-                    print(id, addName, 'Emoji', e.GetEnabeleDisable(Save.emoji), e.GetEnabeleDisable(not WoWToolsChatButtonFrame.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                end
-            })
-            initializer:SetParentInitializer(initializer2, function() if Save.disabled then return false else return true end end)
-]]

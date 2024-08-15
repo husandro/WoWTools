@@ -1260,8 +1260,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             e.AddPanel_Check({
                 name= '|A:Auctioneer:0:0|a'..(e.onlyChinese and '拍卖行' or addName),
                 tooltip= e.cn(addName),
-                value= not Save.disabled,
-                func= function()
+                Value= not Save.disabled,
+                GetValue= function() return not Save.disabled end,
+                SetValue= function()
                     Save.disabled= not Save.disabled and true or nil
                     print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
                 end

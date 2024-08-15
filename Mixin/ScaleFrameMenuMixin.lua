@@ -1,2 +1,3 @@
 WoWToolsScaleFrameMenuMixin={}
-WoWToolsScaleFrameMenuMixin:Init(frame, )
+function WoWToolsScaleFrameMenuMixin:Init(frame)
+end

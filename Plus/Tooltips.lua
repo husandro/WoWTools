@@ -2637,9 +2637,9 @@ local function Init_Panel()
     local initializer2= e.AddPanel_Check({
         name= e.onlyChinese and '跟随鼠标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, FOLLOW, MOUSE_LABEL),
         tooltip= Initializer:GetName(),
-        value= Save.setDefaultAnchor,
+        GetValue= function() return Save.setDefaultAnchor end,
         category= Initializer,
-        func= function()
+        SetValue= function()
             Save.setDefaultAnchor= not Save.setDefaultAnchor and true or nil
             if Save.setDefaultAnchor then
                 Save.setAnchor=nil
@@ -2683,9 +2683,9 @@ local function Init_Panel()
         initializer= e.AddPanel_Check({
             name= e.onlyChinese and '右边' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT,
             tooltip= Initializer:GetName(),
-            value= Save.cursorRight,
+            GetValue= function() return Save.cursorRight end,
             category= Initializer,
-            func= function()
+            SetValue= function()
                 Save.cursorRight= not Save.cursorRight and true or nil
                 set_Cursor_Tips()
             end
@@ -2695,9 +2695,9 @@ local function Init_Panel()
         initializer= e.AddPanel_Check({
             name= e.onlyChinese and '战斗中：默认' or (HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..': '..DEFAULT),
             tooltip= Initializer:GetName(),
-            value= Save.inCombatDefaultAnchor,
+            GetValue= function() return Save.inCombatDefaultAnchor end,
             category= Initializer,
-            func= function()
+            SetValue= function()
                 Save.inCombatDefaultAnchor= not Save.inCombatDefaultAnchor and true or nil
                 set_Cursor_Tips()
             end
@@ -2710,9 +2710,9 @@ local function Init_Panel()
     initializer2= e.AddPanel_Check({
         name= e.onlyChinese and '模型' or MODEL,
         tooltip= Initializer:GetName(),
-        value= not Save.hideModel,
+        GetValue= function() return not Save.hideModel end,
         category= Initializer,
-        func= function()
+        SetValue= function()
             Save.hideModel= not Save.hideModel and true or nil
             set_Cursor_Tips()
         end
@@ -2721,9 +2721,9 @@ local function Init_Panel()
     initializer= e.AddPanel_Check({
         name= e.onlyChinese and '左' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT,
         tooltip= Initializer:GetName(),
-        value= Save.modelLeft,
+        GetValue= function() return Save.modelLeft end,
         category= Initializer,
-        func= function()
+        SetValue= function()
             Save.modelLeft= not Save.modelLeft and true or nil
             set_Cursor_Tips()
         end
@@ -2809,9 +2809,9 @@ local function Init_Panel()
     e.AddPanel_Check({
         name= e.onlyChinese and 'NPC职业颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, 'NPC', CLASS_COLORS),
         tooltip= Initializer:GetName(),
-        value= not Save.disabledNPCcolor,
+        GetValue= function() return not Save.disabledNPCcolor end,
         category= Initializer,
-        func= function()
+        SetValue= function()
             Save.disabledNPCcolor= not Save.disabledNPCcolor and true or nil
         end
     })
@@ -2819,9 +2819,9 @@ local function Init_Panel()
     e.AddPanel_Check({
         name= e.onlyChinese and '生命值' or HEALTH,
         tooltip= Initializer:GetName(),
-        value= not Save.hideHealth,
+        GetValue= function() return not Save.hideHealth end,
         category= Initializer,
-        func= function()
+        SetValue= function()
             Save.hideHealth= not Save.hideHealth and true or nil
             print(id, Initializer:GetName(),  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
@@ -2829,9 +2829,9 @@ local function Init_Panel()
     e.AddPanel_Check({
         name= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, 'Ctrl+Shift', e.onlyChinese and '复制链接' or BROWSER_COPY_LINK),
         tooltip= 'wowhead.com|nraider.io',
-        value= Save.ctrl,
+        GetValue= function() return Save.ctrl end,
         category= Initializer,
-        func= function()
+        SetValue= function()
             Save.ctrl= not Save.ctrl and true or nil
             set_Cursor_Tips()
         end
@@ -2843,9 +2843,9 @@ local function Init_Panel()
     initializer2= e.AddPanel_Check({
         name= e.onlyChinese and '自动设置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SETTINGS),
         tooltip= function() return set_CVar(nil, true, true) end,
-        value= Save.setCVar,
+        GetValue= function() return Save.setCVar end,
         category= Initializer,
-        func= function()
+        SetValue= function()
             Save.setCVar= not Save.setCVar and true or nil
             Save.graphicsViewDistance=nil
         end
@@ -2872,20 +2872,20 @@ local function Init_Panel()
     initializer:SetParentInitializer(initializer2)
 
     e.AddPanel_DropDown({
-        SetValueFunc= function(_, _, value)
+        SetValue= function(_, _, value)
             if value==1 then
                 C_CVar.SetCVar("ActionButtonUseKeyDown", '1')
             else
                 C_CVar.SetCVar("ActionButtonUseKeyDown", '0')
             end
         end,
-        GetOptionsFunc= function()
+        GetOptions= function()
             local container = Settings.CreateControlTextContainer()
             container:Add(1, e.onlyChinese and '是' or YES)
             container:Add(2, e.onlyChinese and '不' or NO)
             return container:GetData()
         end,
-        value=C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 1 or 2,
+        GetValue= function() return C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 1 or 2 end,
         name= e.onlyChinese and '按下快捷键时施法' or ACTION_BUTTON_USE_KEY_DOWN,
         tooltip= function()
             return e.Get_CVar_Tooltips({
@@ -2898,9 +2898,9 @@ local function Init_Panel()
     initializer2= e.AddPanel_Check({
         name= (e.onlyChinese and '提示选项CVar名称' or 'Show Option CVar Name'),
         tooltip= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '友情提示: 可能会出现错误' or ('note: '..ENABLE_ERROR_SPEECH)..'|r'),
-        value= Save.ShowOptionsCVarTips,
+        GetValue= function() return Save.ShowOptionsCVarTips end,
         category= Initializer,
-        func= function()
+        SetValue= function()
             Save.ShowOptionsCVarTips= not Save.ShowOptionsCVarTips and true or nil
             print(id, Initializer:GetName(), e.GetEnabeleDisable(not Save.ShowOptionsCVarTips), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
@@ -3459,7 +3459,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             e.AddPanel_Check({
                 name= e.onlyChinese and '启用' or ENABLE,
                 tooltip= Initializer:GetName(),
-                value= not Save.disabled,
+                GetValue= function() return not Save.disabled end,
                 category= Initializer,
                 func= function()
                     Save.disabled= not Save.disabled and true or nil

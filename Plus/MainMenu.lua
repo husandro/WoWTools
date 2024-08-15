@@ -1129,9 +1129,9 @@ local function Init_Options()--初始, 选项
     local initializer2= e.AddPanel_Check({
         name= 'Plus',
         tooltip= e.cn(addName),
-        value= Save.plus,
+        GetValue= function() return Save.plus end,
         category= Category,
-        func= function()
+        SetValue= function()
             Save.plus= not Save.plus and true or nil
             if Save.plus and not Frames then
                 Init_Plus()
@@ -1184,9 +1184,9 @@ local function Init_Options()--初始, 选项
     initializer2= e.AddPanel_Check({
         name= (e.onlyChinese and '每秒帧数:' or FRAMERATE_LABEL)..' Plus',
         tooltip= MicroButtonTooltipText(FRAMERATE_LABEL, "TOGGLEFPS"),
-        value= Save.frameratePlus,
+        GetValue= function() return Save.frameratePlus end,
         category= Category,
-        func= function()
+        SetValue= function()
             Save.frameratePlus= not Save.frameratePlus and true or nil
             if FramerateButton then
                 print(id, e.cn(addName), e.GetEnabeleDisable(Save.frameratePlus), e.onlyChinese and '重新加载UI' or RELOADUI)
@@ -1197,9 +1197,9 @@ local function Init_Options()--初始, 选项
     initializer= e.AddPanel_Check({
         name= (e.onlyChinese and '登入' or LOG_IN)..' WoW: '..(e.onlyChinese and '显示' or SHOW),
         tooltip=  MicroButtonTooltipText(FRAMERATE_LABEL, "TOGGLEFPS"),
-        value= Save.framerateLogIn,
+        GetValue= function() return Save.framerateLogIn end,
         category= Category,
-        func= function()
+        SetValue= function()
             Save.framerateLogIn= not Save.framerateLogIn and true or nil
             Init_Framerate_Plus()
             if Save.framerateLogIn and not FramerateFrame:IsShown() then

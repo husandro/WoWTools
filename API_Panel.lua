@@ -240,8 +240,6 @@ end]]
 local Category, Layout = Settings.RegisterVerticalLayoutCategory('|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r')
 Settings.RegisterAddOnCategory(Category)
 
---Settings.SetKeybindingsCategory(Category)
-
 
 --打开，选项
 function e.OpenPanelOpting(name, category)
@@ -288,37 +286,22 @@ end
 
 
 --添加，Check
-    function e.AddPanel_Check(tab)
-        local name = tab.name
-        local tooltip = tab.tooltip
-        local category= tab.category or Category
-        local defaultValue= tab.value and true or false
-        local func= tab.func
+--Settings.RegisterProxySetting(categoryTbl, variable, variableType, name, defaultValue, getValue, setValue)
+function e.AddPanel_Check(tab)
+    local setting=Settings.RegisterProxySetting(
+        tab.category or Category,
+        tab.name,
+        Settings.VarType.Boolean,
+        tab.name,
+        tab.value or tab.GetValue(),
+        tab.GetValue,
+        tab.SetValue or tab.func)
+    return Settings.CreateCheckbox(tab.category or Category, setting, tab.tooltip)
+end
 
-        local variable = id..name..(category.order or '')..get_variableIndex()
-        local setting= Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue)
-
-        local initializer= Settings.CreateCheckbox(category, setting, tooltip)
-        --local initializer= Settings.CreateCheckboxWithOptions(category, setting, nil, tooltip);
-        Settings.SetOnValueChangedCallback(variable, func, initializer)
-        return initializer
-    end
---[[
-local initializer2= e.AddPanel_Check({
-    name= ,
-    tooltip= e.cn(addName),
-    category= Category,
-    value= not Save.disabled,
-    func= function()
-        print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-    end
-})
-local initializer= e.AddPanel_Check({
-})
-initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
-]]
 
 --添加，按钮
+--CreateSettingsButtonInitializer(name, buttonText, buttonClick, tooltip, addSearchTags)
 function e.AddPanel_Button(tab)
     local title= tab.title or ''
     local buttonText= tab.buttonText or ''
@@ -346,31 +329,41 @@ initializer:SetParentInitializer(initializer2, function() return not Save.disabl
 ]]
 
 --添加，下拉菜单
+function e.AddPanel_DropDown(tab)
+    local setting= Settings.RegisterProxySetting(
+        tab.category or Category,
+        tab.name,
+        Settings.VarType.Number,
+        tab.name,
+        tab.GetValue(),
+        tab.GetValue,
+        tab.SetValue or tab.func
+    )
+    return Settings.CreateDropdown(
+            tab.category or Category,
+            setting,
+            tab.GetOptions,
+            tab.tooltip
+        )
+end
 
-    function e.AddPanel_DropDown(tab)
-        local SetValue= tab.SetValueFunc
-        local GetOptions= tab.GetOptionsFunc
-        local defaultValue= tab.value
-        local name= tab.name
-        local tooltip= tab.tooltip
-        local category= tab.category or Category
-
-        local variable= id..name..(category.order or '')..get_variableIndex()
-        local setting = Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue)
+        --local variable= id..name..(category.order or '')..get_variableIndex()
+        --local setting = Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue)
         
-        local initializer= Settings.CreateDropdown(category, setting, GetOptions, tooltip)
+        --local initializer= Settings.CreateDropdown(category, setting, GetOptions, tooltip)
         --local initializer = Settings.CreateDropdownInitializer(setting, GetOptions, tooltip);
         --AddInitializerToLayout(category, initializer);
 
-        Settings.SetOnValueChangedCallback(variable, SetValue, initializer)
-        return initializer
-    end
+        --Settings.SetOnValueChangedCallback(variable, SetValue, initializer)
+        --return initializer
+    --end
+
 --[[
 e.AddPanel_DropDown({
-    SetValueFunc= function(_, _, value)
+    SetValue= function(_, _, value)
         print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end,
-    GetOptionsFunc= function()
+    GetOptions= function()
         local container = Settings.CreateControlTextContainer()
         container:Add(1, e.onlyChinese and '职业' or CLASS)
         return container:GetData();
@@ -739,7 +732,7 @@ local function Init_Options()
 
 
     e.AddPanel_DropDown({
-        SetValueFunc= function(_, _, value)
+        SetValue= function(_, _, value)
             if value==2 then
                 local valueR, valueG, valueB, valueA= Save.useCustomColorTab.r, Save.useCustomColorTab.g, Save.useCustomColorTab.b, Save.useCustomColorTab.a
                 local setA, setR, setG, setB
@@ -767,14 +760,14 @@ local function Init_Options()
             Save.useColor= value
 
         end,
-        GetOptionsFunc= function()
+        GetOptions= function()
             local container = Settings.CreateControlTextContainer()
 			container:Add(1, e.onlyChinese and '职业' or CLASS)
 			container:Add(2, e.onlyChinese and '自定义' or CUSTOM)
 			container:Add(3, e.onlyChinese and '无' or NONE)
 			return container:GetData();
         end,
-        value= Save.useColor,
+        GetValue= function() return Save.useColor end,
         name= (e.Player.useColor and e.Player.useColor.hex or '')..(e.onlyChinese and '颜色' or COLOR),
         tooltip= e.cn(addName),
         category=Category
@@ -783,22 +776,22 @@ local function Init_Options()
 
     if not LOCALE_zhCN then
         e.AddPanel_Check({
-            name= 'Chinese',
+            name= 'Chinese ',
             tooltip= e.onlyChinese and '语言: 简体中文'
                     or (LANGUAGE..': '..LFG_LIST_LANGUAGE_ZHCN),
             category=Category,
-            value= Save.onlyChinese,
-            func= function()
+            Value= Save.onlyChinese,
+            GetValue= function() return Save.onlyChinese end,
+            SetValue= function()
                 e.onlyChinese= not e.onlyChinese and true or nil
                 Save.onlyChinese = e.onlyChinese
                 print(id,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
         })
-   
     end
 
     if e.Player.region==1 or e.Player.region==3 then--US EU realm提示
-        local function get_tooltip()
+        local function get_tooltip(tooltip)
             local tabs= e.Player.region==3 and
                 {
                     ["deDE"] = {col="|cFF00FF00DE|r", text='DE', realm="Germany"},
@@ -825,16 +818,19 @@ local function Init_Options()
             end
             return text
         end
+        
         e.AddPanel_Check({
             name= e.onlyChinese and '服务器' or 'Realm',
             tooltip=get_tooltip(),
             category=Category,
-            value= not Save.disabledRealm,
-            func= function()
+            Value= not Save.disabledRealm,
+            GetValue= function() return not Save.disabledRealm end,
+            SetValue= function()
                 Save.disabledRealm= not Save.disabledRealm and true or nil
                 print(id,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
         })
+
         if Save.disabledRealm then
             e.Get_Region(nil, nil, nil, true)
             e.Get_Region=function() end

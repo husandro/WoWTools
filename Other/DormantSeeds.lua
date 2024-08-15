@@ -236,32 +236,47 @@ local function Init()
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent('PLAYER_LOGOUT')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
+            Save= WoWToolsSave[addName] or Save
+
             if e.Is_Timerunning then
                 self:UnregisterEvent('ADDON_LOADED')
                 return
             end
 
-            Save= WoWToolsSave[addName] or Save
-
             --添加控制面板
             e.AddPanel_Check({
                 name= '|T656681:0|t'..e.cn(addName),
                 tooltip= function()
-                    e.tips:SetOwner(SettingsPanel, "ANCHOR_LEFT")
-                    e.tips:ClearLines()
-                    e.tips:SetItemByID(208047)
-                    e.tips:AddLine(' ')
-                    local info= C_Map.GetMapInfo(2200) or {}
-                    e.tips:AddDoubleLine( '|cnGREEN_FONT_COLOR:'..format(LFG_LIST_CROSS_FACTION, info.name or 'uiMapID 2200'), '|cnGREEN_FONT_COLOR:uiMapID 2200')
-                    e.tips:Show()
+                    return e.cn(C_Item.GetItemNameByID(2200), {itemID=2200, isName=true})
+                    --e.tips:SetOwner(SettingsPanel, "ANCHOR_LEFT")
+                   -- e.tips:ClearLines()
+                    --e.tips:SetItemByID(208047)
+                    --e.tips:AddLine(' ')
+                    --local info= C_Map.GetMapInfo(2200) or {}
+                    --e.tips:AddDoubleLine( '|cnGREEN_FONT_COLOR:'..format(LFG_LIST_CROSS_FACTION, info.name or 'uiMapID 2200'), '|cnGREEN_FONT_COLOR:uiMapID 2200')
+                    --e.tips:Show()
                 end,
-                value= not Save.disabled,
-                func= function()
+                Value= not Save.disabled,
+                GetValue= function() return not Save.disabled end,
+                SetValue= function()
                     Save.disabled = not Save.disabled and true or nil
                     print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
                 end
