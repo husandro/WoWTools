@@ -1149,8 +1149,7 @@ local function Init_Options()--初始, 选项
         tooltip= e.cn(addName),
         category= Category,
         SetValue= function(_, _, value2)
-            local value3= e.GetFormatter1to10(value2, 8, 18)
-            Save.size=value3
+            Save.size=value2
             Init_Plus()
         end
     })
@@ -1158,21 +1157,18 @@ local function Init_Options()--初始, 选项
 
     initializer= e.AddPanel_Check_Sider({
         checkName= e.onlyChinese and '透明度' or 'Alpha',
-        checkValue= Save.enabledMainMenuAlpha,
+        checkGetValue= function() return Save.enabledMainMenuAlpha end,
         checkTooltip= e.cn(addName),
-        checkFunc= function()
+        checkSetValue= function()
             Save.enabledMainMenuAlpha= not Save.enabledMainMenuAlpha and true or nil
             print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
-        sliderValue= Save.mainMenuAlphaValue,
-        sliderMinValue= 0.1,
-        sliderMaxValue= 1,
-        sliderStep= 0.1,
-        siderName= nil,
-        siderTooltip= nil,
-        siderFunc= function(_, _, value2)
-            local value3= e.GetFormatter1to10(value2, 0.1, 1)
-            Save.mainMenuAlphaValue= value3
+        sliderGetValue= function() return Save.mainMenuAlphaValue end,
+        minValue= 0,
+        maxValue= 0.9,
+        step= 0.1,
+        sliderSetValue= function(_, _, value2)
+            Save.mainMenuAlphaValue= e.GetFormatter1to10(value2, 0, 1)
             Init_MainMenu()
         end,
         layout= Layout,

@@ -226,15 +226,11 @@ end
 --创建, 添加控制面板
 --##############
 local variableIndex=0
-local function get_variableIndex()
+local function Set_VariableIndex(name)
     variableIndex= variableIndex+1
-    return variableIndex
+    return 'WoWToolsPanelVariable'..variableIndex
 end
 
---[[local function AddInitializerToLayout(category, initializer)
-	local layout = SettingsPanel:GetLayout(category);
-	layout:AddInitializer(initializer);
-end]]
 
 --插件名称
 local Category, Layout = Settings.RegisterVerticalLayoutCategory('|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r')
@@ -244,31 +240,11 @@ Settings.RegisterAddOnCategory(Category)
 --打开，选项
 --Settings.OpenToCategory(categoryID, scrollToElementName)
 function e.OpenPanelOpting(category, name)
-    category= Category
-    
+    category= category or Category
     Category.expanded=true
     Settings.OpenToCategory(category:GetID(), name)
 
-    --[[if category then
-        Settings.OpenToCategory(category:GetID(), category:GetName())
-    end]]
 end
-    --[[
-    if subCategoryName and Category:HasSubcategories() then
-        Settings.OpenToCategory(Category:GetID(), name)
-        print(SettingsPanel.CategoryList.ScrollBox.ScrollTarget.SetExpanded)
-        --SettingsPanel.CategoryList.ScrollBox
-        
-       for _, info in pairs(Category:GetSubcategories() or {}) do
-            if info.name==subCategoryName then
-                for k, v in pairs(info) do if v and type(v)=='table' then print('---------',k..'STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('---------',k..'END') end print(k,v) end
-                --Settings.OpenToCategory(info.ID, info.name)
-                return
-            end
-       end
-    else
-        Settings.OpenToCategory(Category:GetID(), name)
-    end]]
 
 
 --添加，子目录
@@ -288,17 +264,26 @@ function e.AddPanel_Header(layout, title)
 end
 
 
+
+
+
+
+
+
+
+
 --添加，Check
 --Settings.RegisterProxySetting(categoryTbl, variable, variableType, name, defaultValue, getValue, setValue)
 function e.AddPanel_Check(tab)
     local setting=Settings.RegisterProxySetting(
         tab.category or Category,
-        tab.name,
+        Set_VariableIndex(),
         Settings.VarType.Boolean,
         tab.name,
         tab.value or tab.GetValue(),
         tab.GetValue,
-        tab.SetValue or tab.func)
+        tab.SetValue or tab.func
+    )
     return Settings.CreateCheckbox(tab.category or Category, setting, tab.tooltip)
 end
 
@@ -317,25 +302,13 @@ function e.AddPanel_Button(tab)
 	layout:AddInitializer(initializer)
     return initializer
 end
---[[
- local initializer= e.AddPanel_Button({
-    title= nil,
-    buttonText= e.cn(addName),
-    tooltip= nil,--需要 title
-    layout= Layout,
-    addSearchTags= e.cn(addName),
-    func= function()
-        print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-    end
-})
-initializer:SetParentInitializer(initializer2, function() return not Save.disabled end)
-]]
+
 
 --添加，下拉菜单
 function e.AddPanel_DropDown(tab)
     local setting= Settings.RegisterProxySetting(
         tab.category or Category,
-        tab.name,
+        Set_VariableIndex(),
         Settings.VarType.Number,
         tab.name,
         tab.GetValue(),
@@ -350,70 +323,37 @@ function e.AddPanel_DropDown(tab)
         )
 end
 
-        --local variable= id..name..(category.order or '')..get_variableIndex()
-        --local setting = Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue)
-        
-        --local initializer= Settings.CreateDropdown(category, setting, GetOptions, tooltip)
-        --local initializer = Settings.CreateDropdownInitializer(setting, GetOptions, tooltip);
-        --AddInitializerToLayout(category, initializer);
-
-        --Settings.SetOnValueChangedCallback(variable, SetValue, initializer)
-        --return initializer
-    --end
-
---[[
-e.AddPanel_DropDown({
-    SetValue= function(_, _, value)
-        print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-    end,
-    GetOptions= function()
-        local container = Settings.CreateControlTextContainer()
-        container:Add(1, e.onlyChinese and '职业' or CLASS)
-        return container:GetData();
-    end,
-    value=,
-    name=,
-    tooltip= e.cn(addName),
-    category=Category
-})
-]]
 
 
 
 --添加，Check 和 按钮
 
     function e.AddPanel_Check_Button(tab)
-        local setting=Settings.RegisterProxySetting(
+        local layout= tab.layout or Layout
+
+        local checkSetting=Settings.RegisterProxySetting(
             tab.category or Category,
-            tab.checkName,
+            Set_VariableIndex(),
             Settings.VarType.Boolean,
             tab.checkName,
             tab.GetValue(),
             tab.GetValue,
             tab.SetValue)
-        local initializer= CreateSettingsCheckboxWithButtonInitializer(setting, tab.buttonText, tab.buttonFunc, true, tab.tooltip)
 
-        local layout= tab.layout or Layout
+        -- CreateSettingsCheckboxWithButtonInitializer(setting, buttonText, buttonClick, clickRequiresSet, tooltip)
+        local initializer= CreateSettingsCheckboxWithButtonInitializer(
+            checkSetting,
+            tab.buttonText,
+            tab.buttonFunc,
+            true,
+            tab.tooltip
+        )
+
+       
         layout:AddInitializer(initializer)
 
         return initializer
     end
---[[
-local initializer2= e.AddPanel_Check_Button({
-    checkName= e.cn(addName),
-    checkValue= not Save.disabled,
-    checkFunc= function()
-        print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-    end,
-    buttonText= '',
-    buttonFunc= function()
-        print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-    end,
-    tooltip= e.cn(addName),
-    layout= Layout,
-    category= Category
-})
-]]
 
 
 
@@ -421,215 +361,89 @@ local initializer2= e.AddPanel_Check_Button({
 function e.GetFormatter1to10(value, minValue, maxValue)
     return RoundToSignificantDigits(((value-minValue)/(maxValue-minValue) * (maxValue- minValue)) + minValue, maxValue)
 end
-local function GetFormatter1to10(minValue, maxValue)
+--[[local function GetFormatter1to10(minValue, maxValue)
     return function(value)
         return e.GetFormatter1to10(value, minValue, maxValue)
     end
-end
+end]]
+
+
+
+
+
 
     function e.AddPanel_Check_Sider(tab)
-        local checkName= tab.checkName
-        local checkValue= tab.checkValue and true or false
-        local checkTooltip= tab.checkTooltip
-        local checkFunc= tab.checkFunc
-
-        local sliderValue= tab.sliderValue
-        local sliderMinValue= tab.sliderMinValue
-        local sliderMaxValue= tab.sliderMaxValue
-        local sliderStep= tab.sliderStep
-        local siderName= tab.siderName or checkName
-        local siderTooltip= tab.siderTooltip or checkTooltip
-        local siderFunc= tab.siderFunc
-
-        local category= tab.category or Category
-        local variable = id..checkName..(category.order or '')..get_variableIndex()
         local layout= tab.layout or Layout
-        local checkSetting = Settings.RegisterAddOnSetting(category, checkName..'Check', variable..'Check', type(checkValue), checkValue)
-        local siderSetting = Settings.RegisterAddOnSetting(category, checkName..'Sider', variable..'Sider', type(sliderValue), sliderValue)
+        local checkSetting=Settings.RegisterProxySetting(
+            tab.category or Category,
+            Set_VariableIndex(),
+            Settings.VarType.Boolean,
+            tab.checkName,
+            tab.checkGetValue(),
+            tab.checkGetValue,
+            tab.checkSetValue
+        )
 
-        local options = Settings.CreateSliderOptions(sliderMinValue, sliderMaxValue, sliderStep)
-        options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right, GetFormatter1to10(sliderMinValue, sliderMaxValue));
+        local sliderSetting = Settings.RegisterProxySetting(
+            tab.category or Category,
+            Set_VariableIndex(),
+            Settings.VarType.Number,
+            tab.sliderName or tab.checkName,
+            tab.sliderGetValue(),
+            tab.sliderGetValue,
+            tab.sliderSetValue
+        )
 
-        local initializer = CreateSettingsCheckboxSliderInitializer(checkSetting, checkName, checkTooltip, siderSetting, options, siderName, siderTooltip);
-        
-        --[[local data =
-        {
-            name = checkName,
-            tooltip = checkTooltip,
-            cbSetting = checkSetting,
-            cbLabel = checkName,
-            cbTooltip = checkTooltip,
-            sliderSetting = siderSetting,
-            sliderOptions = options,
-            sliderLabel = siderName,
-            sliderTooltip = siderTooltip,
-        };
-        local initializer= Settings.CreateSettingInitializer("SettingsCheckboxSliderControlTemplate", data);
-]]
-        Settings.SetOnValueChangedCallback(variable..'Check', checkFunc, initializer)
-        Settings.SetOnValueChangedCallback(variable..'Sider', siderFunc, initializer)
+        local options = Settings.CreateSliderOptions(tab.minValue, tab.maxValue, tab.step);
+        options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right, function(value)
+            return e.GetFormatter1to10(value, 0, 1)
+        end)
+
+        local initializer = CreateSettingsCheckboxSliderInitializer(
+            checkSetting,
+            tab.checkName,
+            tab.checkTooltip,
+
+            sliderSetting,
+            options,
+            tab.sliderName or tab.checkName,
+            tab.siderTooltip or tab.checkTooltip
+        )
+
+        Settings.SetOnValueChangedCallback(sliderSetting:GetVariable(), tab.sliderSetValue)
         layout:AddInitializer(initializer)
         return initializer
     end
 
---[[
-e.AddPanel_Check_Sider({
-    checkName= e.cn(addName),
-    checkValue= not Save.disabled,
-    checkTooltip= e.cn(addName),
-    checkFunc= function()
-        print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-    end,
-    sliderValue= 0.5,
-    sliderMinValue= 0,
-    sliderMaxValue= 1,
-    sliderStep= 0.1,
-    siderName= nil,
-    siderTooltip= nil,
-    siderFunc= function(_, _, value2)
-        local value3= e.GetFormatter1to10(value2, MinValue, MaxValue)
-        print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-    end,
-    layout= Layout,
-    category= Category,
-})
-]]
+
 
 --添加，划动条
 function e.AddPanelSider(tab)
     local setting = Settings.RegisterProxySetting(
         tab.category or Category,
-        tab.name,
+        Set_VariableIndex(),
         Settings.VarType.Number,
         tab.name,
         tab.GetValue(),
         tab.GetValue,
         tab.SetValue
     )
-    local options = Settings.CreateSliderOptions(tab.minValue, tab.maxValue, tab.step);
+
+    local options = Settings.CreateSliderOptions(tab.minValue, tab.maxValue, tab.setp);
     options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right, function(value)
         return e.GetFormatter1to10(value, 0, 1)
-    end);
-    
-    return Settings.CreateSlider(tab.category or Category, setting, options, tab.tooltip);
+    end)
 
-    --[[local variable = id..name..(category.order or '')..get_variableIndex()
-    local setting = Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue)
-    local options = Settings.CreateSliderOptions(minValue, maxValue, step)
-    options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right, GetFormatter1to10(minValue, maxValue))
-    local initializer= Settings.CreateSlider(category, setting, options, tooltip)
-	Settings.SetOnValueChangedCallback(variable, func, initializer)]]
-    
-end
---[[
-e.AddPanelSider({
-    name= e.cn(addName),
-    value= 0,
-    minValue= 0,
-    maxValue= 1,
-    setp= 1,
-    tooltip= e.cn(addName),
-    category= Category,
-    func= function(_, _, value2)
-        local value3= e.GetFormatter1to10(value2, minValue, maxValue)
-        print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-    end
-})
-]]
-
-
-
-
---[[
-function CreateSettingsCheckBoxSliderInitializer(cbSetting, cbLabel, cbTooltip, sliderSetting, sliderOptions, sliderLabel, sliderTooltip)
-	local data =
-	{
-		name = cbLabel,
-		tooltip = cbTooltip,
-		cbSetting = cbSetting,
-		cbLabel = cbLabel,
-		cbTooltip = cbTooltip,
-		sliderSetting = sliderSetting,
-		sliderOptions = sliderOptions,
-		sliderLabel = sliderLabel,
-		sliderTooltip = sliderTooltip,
-	};
-	return Settings.CreateSettingInitializer("SettingsCheckBoxSliderControlTemplate", data);
+    local initializer=Settings.CreateSlider(tab.category or Category, setting, options, tab.tooltip);
+    Settings.SetOnValueChangedCallback(setting:GetVariable(), tab.SetValue)
+    return initializer
 end
 
-]]
 
 
 
 
 
-
---[[Blizzard_SettingControls.lua PingSystem.lua
-function CreateSettingsListSectionHeaderInitializer(name)
-	local data = {name = name};
-	return Settings.CreateElementInitializer("SettingsListSectionHeaderTemplate", data);
-end
-function CreateSettingsButtonInitializer(name, buttonText, buttonClick, tooltip)
-	local data = {name = name, buttonText = buttonText, buttonClick = buttonClick, tooltip = tooltip};
-	local initializer = Settings.CreateElementInitializer("SettingButtonControlTemplate", data);
-	initializer:AddSearchTags(name);
-	initializer:AddSearchTags(buttonText);
-	return initializer;
-end
-function CreateSettingsCheckBoxWithButtonInitializer(setting, buttonText, buttonClick, clickRequiresSet, tooltip)
-	local data = Settings.CreateSettingInitializerData(setting, nil, tooltip);
-	data.buttonText = buttonText;
-	data.OnButtonClick = buttonClick;
-	data.clickRequiresSet = clickRequiresSet;
-	return Settings.CreateSettingInitializer("SettingsCheckBoxWithButtonControlTemplate", data);
-end
-function CreateSettingsCheckBoxSliderInitializer(cbSetting, cbLabel, cbTooltip, sliderSetting, sliderOptions, sliderLabel, sliderTooltip)
-	local data =
-	{
-		name = cbLabel,
-		tooltip = cbTooltip,
-		cbSetting = cbSetting,
-		cbLabel = cbLabel,
-		cbTooltip = cbTooltip,
-		sliderSetting = sliderSetting,
-		sliderOptions = sliderOptions,
-		sliderLabel = sliderLabel,
-		sliderTooltip = sliderTooltip,
-	};
-	return Settings.CreateSettingInitializer("SettingsCheckBoxSliderControlTemplate", data);
-end
-function CreateSettingsCheckBoxDropDownInitializer(cbSetting, cbLabel, cbTooltip, dropDownSetting, dropDownOptions, dropDownLabel, dropDownTooltip)
-	local data =
-	{
-		name = cbLabel,
-		tooltip = cbTooltip,
-		cbSetting = cbSetting,
-		cbLabel = cbLabel,
-		cbTooltip = cbTooltip,
-		dropDownSetting = dropDownSetting,
-		dropDownOptions = dropDownOptions,
-		dropDownLabel = dropDownLabel,
-		dropDownTooltip = dropDownTooltip,
-	};
-	return Settings.CreateSettingInitializer("SettingsCheckBoxDropDownControlTemplate", data);
-end
-function CreateSettingsExpandableSectionInitializer(name)
-	local initializer = CreateFromMixins(SettingsExpandableSectionInitializer);
-	initializer:Init("SettingsExpandableSectionTemplate");
-	initializer.data = {name = name};
-	return initializer;
-end
-
-function CreateSettingsAddOnDisabledLabelInitializer()
-	local data = {};
-	return Settings.CreateElementInitializer("SettingsAddOnDisabledLabelTemplate", data);
-end
-function CreateSettingsSelectionCustomSelectedData(data, label)
-	data.selectedDataFunc = function()
-		return {label = label};
-	end;
-end
-]]
 
 
 
@@ -730,7 +544,7 @@ local function Init_Options()
 
 
     e.AddPanel_DropDown({
-        SetValue= function(_, _, value)
+        SetValue= function(value)
             if value==2 then
                 local valueR, valueG, valueB, valueA= Save.useCustomColorTab.r, Save.useCustomColorTab.g, Save.useCustomColorTab.b, Save.useCustomColorTab.a
                 local setA, setR, setG, setB
@@ -816,7 +630,7 @@ local function Init_Options()
             end
             return text
         end
-        
+
         e.AddPanel_Check({
             name= e.onlyChinese and '服务器' or 'Realm',
             tooltip=get_tooltip(),
@@ -913,7 +727,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event=='ADDON_LOADED' then
         if arg1==id then
             e.Is_Timerunning= PlayerGetTimerunningSeasonID()
-           
+
 
             WoWToolsSave= WoWToolsSave or {}
             --e.WoWDate= e.WoWDate or e.WoWDate or {}
@@ -949,7 +763,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
 
             self:UnregisterEvent('ADDON_LOADED')
-            
+
             C_Timer.After(2, function()
                 e.Is_Timerunning= PlayerGetTimerunningSeasonID()
             end)

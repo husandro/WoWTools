@@ -2659,8 +2659,7 @@ local function Init_Panel()
             tooltip= Initializer:GetName(),
             category= Initializer,
             SetValue= function(_, _, value2)
-                local value3= e.GetFormatter1to10(value2, -200, 200)
-                Save.cursorX= value3
+                Save.cursorX= e.GetFormatter1to10(value2, -200, 200)
                 set_Cursor_Tips()
             end
         })
@@ -2675,8 +2674,7 @@ local function Init_Panel()
             tooltip= Initializer:GetName(),
             category= Initializer,
             SetValue= function(_, _, value2)
-                local value3= e.GetFormatter1to10(value2, -200, 200)
-                Save.cursorY= value3
+                Save.cursorY= e.GetFormatter1to10(value2, -200, 200)
                 set_Cursor_Tips()
             end
         })
@@ -2753,8 +2751,7 @@ local function Init_Panel()
         tooltip= Initializer:GetName(),
         category= Initializer,
         SetValue= function(_, _, value2)
-            local value3= e.GetFormatter1to10(value2, 40, 300)
-            Save.modelSize= value3
+            Save.modelSize= e.GetFormatter1to10(value2, 40, 300)
             set_Cursor_Tips()
         end
     })
@@ -2769,8 +2766,7 @@ local function Init_Panel()
         tooltip= Initializer:GetName(),
         category= Initializer,
         SetValue= function(_, _, value2)
-            local value3= e.GetFormatter1to10(value2, -200, 200)
-            Save.modelX= value3
+            Save.modelX= e.GetFormatter1to10(value2, -200, 200)
             set_Cursor_Tips()
         end
     })
@@ -2785,8 +2781,7 @@ local function Init_Panel()
         tooltip= Initializer:GetName(),
         category= Initializer,
         SetValue= function(_, _, value2)
-            local value3= e.GetFormatter1to10(value2, -200, 200)
-            Save.modelY= value3
+            Save.modelY= e.GetFormatter1to10(value2, -200, 200)
             set_Cursor_Tips()
         end
     })
@@ -2801,8 +2796,7 @@ local function Init_Panel()
         tooltip= Initializer:GetName(),
         category= Initializer,
         SetValue= function(_, _, value2)
-            local value3= e.GetFormatter1to10(value2, -1, 1)
-            Save.modelFacing= value3
+            Save.modelFacing= e.GetFormatter1to10(value2, -1, 1)
             set_Cursor_Tips()
         end
     })
@@ -2874,7 +2868,7 @@ local function Init_Panel()
     initializer:SetParentInitializer(initializer2)
 
     e.AddPanel_DropDown({
-        SetValue= function(_, _, value)
+        SetValue= function(value)
             if value==1 then
                 C_CVar.SetCVar("ActionButtonUseKeyDown", '1')
             else

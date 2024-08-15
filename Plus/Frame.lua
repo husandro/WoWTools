@@ -2881,20 +2881,20 @@ local function Init_Options()
 
     initializer= e.AddPanel_Check_Sider({
         checkName= e.onlyChinese and '移动时Frame透明' or MAP_FADE_TEXT:gsub(WORLD_MAP, 'Frame'),
-        checkValue= not Save.notMoveAlpha,
+        checkGetValue= function() return not Save.notMoveAlpha end,
         checkTooltip= e.onlyChinese and '当你开始移动时，Frame变为透明状态。' or OPTION_TOOLTIP_MAP_FADE:gsub(string.lower(WORLD_MAP), 'Frame'),
-        checkFunc= function()
+        checkSetValue= function()
             Save.notMoveAlpha= not Save.notMoveAlpha and true or nil
             print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
-        sliderValue= Save.alpha or 0.5,
-        sliderMinValue= 0,
-        sliderMaxValue= 1,
-        sliderStep= 0.1,
-        siderName= nil,
-        siderTooltip= nil,
-        siderFunc= function(_, _, value2)
+
+        sliderGetValue= function() return Save.alpha or 0.5 end,
+        minValue= 0,
+        maxValue= 0.9,
+        step= 0.1,
+        sliderSetValue= function(a, b, value2)
             Save.alpha= e.GetFormatter1to10(value2, 0, 1)
+            print(value2)
         end,
         layout= Layout,
         category= Category,

@@ -2783,7 +2783,7 @@ local function Init_Options()
         end,
         buttonText= e.onlyChinese and '设置颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS ,COLOR),
         buttonFunc= function()
-            e.OpenPanelOpting(Category, (e.Player.useColor and e.Player.useColor.hex or '')..(e.onlyChinese and '颜色' or COLOR))
+            e.OpenPanelOpting(nil, (e.Player.useColor and e.Player.useColor.hex or '')..(e.onlyChinese and '颜色' or COLOR))
         end,
         tooltip= e.cn(addName),
         layout= Layout,
@@ -2799,9 +2799,7 @@ local function Init_Options()
         tooltip= e.cn(addName),
         category= Category,
         SetValue= function(_, _, value2)
-            local value3= e.GetFormatter1to10(value2, 0, 1)
-            Save.alpha= value3
-            print(value3)
+            Save.alpha= e.GetFormatter1to10(value2, 0, 1)
             --Init()
             print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
@@ -2834,8 +2832,7 @@ local function Init_Options()
         tooltip= e.cn(addName),
         category= Category,
         SetValue= function(_, _, value2)
-            local value3= e.GetFormatter1to10(value2, 0, 1)
-            Save.chatBubbleAlpha= value3
+            Save.chatBubbleAlpha= e.GetFormatter1to10(value2, 0, 1)
             Init_Chat_Bubbles()
         end
     })
@@ -2850,8 +2847,7 @@ local function Init_Options()
         tooltip= e.cn(addName),
         category= Category,
         SetValue= function(_, _, value2)
-            local value3= e.GetFormatter1to10(value2, 0.3, 1)
-            Save.chatBubbleSacal= value3
+            Save.chatBubbleSacal= e.GetFormatter1to10(value2, 0.3, 1)
             Init_Chat_Bubbles()
         end
     })
@@ -2859,19 +2855,17 @@ local function Init_Options()
 
     e.AddPanel_Check_Sider({
         checkName= (e.onlyChinese and '职业能量' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CLASS, ENERGY))..' 1 2 3',
-        checkValue= Save.classPowerNum,
+        checkGetValue= function() return Save.classPowerNum end,
         checkTooltip= e.cn(addName),
-        checkFunc= function()
+        checkSetValue= function()
             Save.classPowerNum= not Save.classPowerNum and true or false
             print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
-        sliderValue= Save.classPowerNumSize,
-        sliderMinValue= 6,
-        sliderMaxValue= 64,
-        sliderStep= 1,
-        siderName= nil,
-        siderTooltip= nil,
-        siderFunc= function(_, _, value2)
+        sliderGetValue= function() return Save.classPowerNumSize end,
+        minValue= 6,
+        maxValue= 64,
+        step= 1,
+        sliderSetValue= function(_, _, value2)
             local value3= e.GetFormatter1to10(value2, 6, 64)
             Save.classPowerNumSize= value3
             Init_Class_Power()--职业
