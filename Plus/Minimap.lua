@@ -3132,7 +3132,6 @@ local function Init()
 
 
     --要塞，图标
-    print(ExpansionLandingPageMinimapButton)
     if ExpansionLandingPageMinimapButton then
         if Save.hideExpansionLandingPageMinimapButton then
             ExpansionLandingPageMinimapButton:SetShown(false)

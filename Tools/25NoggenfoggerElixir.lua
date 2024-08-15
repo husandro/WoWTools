@@ -14,13 +14,15 @@ local function setAura()--光环取消
     if UnitAffectingCombat('player') then
         return
     end
-    for i = 1, 40 do
-        local spellID = select(10, UnitBuff('player', i))--, 'CANCELABLE'))
-        if not spellID then
-            break
-        elseif Save.aura[spellID] then
-            CancelUnitBuff("player", i, nil)-- 'CANCELABLE')
-            print(id, e.onlyChinese '取消光环' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CANCEL, AURAS), C_Spell.GetSpellLink(spellID) or spellID)
+    for i = 1, 255 do
+        local data=C_UnitAuras.GetAuraDataByIndex('player', i, 'CANCELABLE')
+        if data then
+            if Save.aura[data.spellId] then
+                CancelUnitBuff("player", i, nil)-- 'CANCELABLE')
+                print(id, e.onlyChinese '取消光环' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CANCEL, AURAS), C_Spell.GetSpellLink(data.spellId) or data.spellId)
+                break
+            end
+        else
             break
         end
     end

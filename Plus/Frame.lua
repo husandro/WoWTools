@@ -2603,7 +2603,6 @@ local function Init_Move()
             local size= Save.size[self:GetName()]
             if size then
                 self:SetSize(size[1], size[2])
-                print(id,addName)
             end
         end)
     end, sizeRestFunc=function(btn)
@@ -2894,7 +2893,6 @@ local function Init_Options()
         step= 0.1,
         sliderSetValue= function(a, b, value2)
             Save.alpha= e.GetFormatter1to10(value2, 0, 1)
-            print(value2)
         end,
         layout= Layout,
         category= Category,

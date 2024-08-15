@@ -1583,8 +1583,8 @@ local function Init()
 
             --战斗中，可用，驭空术
             elseif UnitAffectingCombat('player') and not IsPlayerMoving() and  C_Spell.IsSpellUsable(368896) then
-                local spellID= getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING)
-                local mountID= spellID and C_MountJournal.GetMountFromSpell(spellID) or 368896
+                local spellID2= getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING)
+                local mountID= spellID2 and C_MountJournal.GetMountFromSpell(spellID2) or 368896
                 if mountID then
                     C_MountJournal.SummonByID(mountID)
                 end
