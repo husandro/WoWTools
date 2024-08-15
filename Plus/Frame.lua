@@ -2808,8 +2808,8 @@ local function Init_Options()
     local initializer= e.AddPanel_Check_Button({
         checkName= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '保存位置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, CHOOSE_LOCATION:gsub(CHOOSE , ''))),
         tooltip= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '危险！' or VOICEMACRO_1_Sc_0),
-        checkValue= Save.SavePoint,
-        checkFunc=function()
+        GetValue= function() return Save.SavePoint end,
+        SetValue=function()
             Save.SavePoint= not Save.SavePoint and true or nil
         end,
         buttonText= e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
