@@ -1873,7 +1873,7 @@ local function Init_Menu_Gossip(_, level, type)
         hasArrow=true,
         menuList='OPTIONS',
         func= function()
-            e.OpenPanelOpting('|A:SpecDial_LastPip_BorderGlow:0:0|a'..(e.onlyChinese and '对话和任务' or addName))
+            e.OpenPanelOpting(nil, '|A:SpecDial_LastPip_BorderGlow:0:0|a'..(e.onlyChinese and '对话和任务' or addName))
         end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -3001,7 +3001,7 @@ local function Init_Quest()
         end
     end)
     QuestButton:SetScript('OnMouseWheel', function()
-        e.OpenPanelOpting('|A:SpecDial_LastPip_BorderGlow:0:0|a'..(e.onlyChinese and '对话和任务' or addName))
+        e.OpenPanelOpting(nil, '|A:SpecDial_LastPip_BorderGlow:0:0|a'..(e.onlyChinese and '对话和任务' or addName))
     end)
 
     QuestButton:SetScript('OnLeave', function(self) e.tips:Hide() self:set_Alpha() end)

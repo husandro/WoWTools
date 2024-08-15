@@ -1067,7 +1067,7 @@ local function Init_Menu(_, root)
     end)
 
     sub:CreateButton('|A:mechagon-projects:0:0|a'..(e.onlyChinese and '设置关键词' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, e.Player.L.key)), function()
-        e.OpenPanelOpting(addName)
+        e.OpenPanelOpting(nil, addName)
     end)
 
 

@@ -11,7 +11,7 @@ local Save={
 }
 
 local Frames
-
+local Category, Layout
 
 
 
@@ -641,7 +641,7 @@ local function Init_Help()
     end)
     MainMenuMicroButton:EnableMouseWheel(true)--主菜单, 打开插件选项
     MainMenuMicroButton:HookScript('OnMouseWheel', function()
-        e.OpenPanelOpting('|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..(e.onlyChinese and '小地图' or addName))
+        e.OpenPanelOpting(Category, '|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..(e.onlyChinese and '小地图' or addName))
     end)
 end
 
@@ -1124,7 +1124,7 @@ end
 --添加控制面板
 --###########
 local function Init_Options()--初始, 选项
-    local Category, Layout= e.AddPanel_Sub_Category({name= '|A:UI-HUD-MicroMenu-GameMenu-Mouseover:0:0|a'..(e.onlyChinese and '菜单 Plus' or addName)})
+    
 
     local initializer2= e.AddPanel_Check({
         name= 'Plus',
@@ -1237,6 +1237,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
             WoWToolsSave[SYSTEM_MESSAGES]= nil--清除，旧版本数据
+            Category, Layout= e.AddPanel_Sub_Category({name= '|A:UI-HUD-MicroMenu-GameMenu-Mouseover:0:0|a'..(e.onlyChinese and '菜单 Plus' or addName)})
 
             if Save.plus then
                 Init_Plus()

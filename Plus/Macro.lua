@@ -1478,7 +1478,7 @@ local function Init_Macro_List()
             self:set_texture()
             self:set_tooltips()
         else
-            e.OpenPanelOpting('|TInterface\\MacroFrame\\MacroFrame-Icon:0|t'..(e.onlyChinese and '宏' or addName))
+            e.OpenPanelOpting(nil, '|TInterface\\MacroFrame\\MacroFrame-Icon:0|t'..(e.onlyChinese and '宏' or addName))
         end
     end)
     toRightButton:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.5) end)

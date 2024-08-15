@@ -832,7 +832,7 @@ function Init_StableFrame_List()
                     notCheckable=true,
                     icon='mechagon-projects',
                     func= function()
-                        e.OpenPanelOpting(Initializer:GetName())
+                        e.OpenPanelOpting(Initializer, addName)
                     end
                 }, level)
             end, "MENU")

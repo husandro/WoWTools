@@ -13,7 +13,7 @@ local panel = CreateFrame("Frame", 'WoWTools')--Panel
 --[[
 e.ReloadPanel(tab)
 e.CSlider(self, {w=, h=, min=, max=, value=, setp=, color=, text=, func=clickfunc, tips=func})
-e.OpenPanelOpting(name, category)
+e.OpenPanelOpting(category, name)
 e.AddPanel_Sub_Category(tab)
 e.AddPanel_Header(layout, title)
 e.AddPanel_Check(tab)

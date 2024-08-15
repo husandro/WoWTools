@@ -1685,14 +1685,14 @@ local function Init()
             e.toolsFrame:SetShown(true)--设置, TOOLS 框架, 显示
         end
         self:set_tooltips()
-        self:SetScript('OnUpdate', function (self, elapsed)
-            self.elapsed = (self.elapsed or 0.3) + elapsed
-            if self.elapsed > 0.3 and self.typeID then
-                self.elapsed = 0
-                if GameTooltip:IsOwned(self) then
-                    local typeID= self.typeSpell and select(2, GameTooltip:GetSpell()) or select(3, GameTooltip:GetItem())
-                    if typeID and typeID~=self.typeID then
-                        self:set_tooltips()
+        self:SetScript('OnUpdate', function (s, elapsed)
+            s.elapsed = (s.elapsed or 0.3) + elapsed
+            if s.elapsed > 0.3 and s.typeID then
+                s.elapsed = 0
+                if GameTooltip:IsOwned(s) then
+                    local typeID= s.typeSpell and select(2, GameTooltip:GetSpell()) or select(3, GameTooltip:GetItem())
+                    if typeID and typeID~=s.typeID then
+                        s:set_tooltips()
                     end
                 end
             end

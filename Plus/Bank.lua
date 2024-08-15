@@ -1200,7 +1200,7 @@ local function Init_Menu(_, root)
 
     root:CreateDivider()
     root:CreateButton(e.onlyChinese and '选项' or OPTIONS, function()
-        e.OpenPanelOpting(addName)
+        e.OpenPanelOpting(nil, addName)
     end)
     root:CreateButton(e.onlyChinese and '重新加载UI' or RELOADUI, e.Reload)
 end

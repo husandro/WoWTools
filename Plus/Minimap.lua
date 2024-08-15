@@ -2657,14 +2657,14 @@ local function click_Func(self, d)
             if expButton and expButton.ToggleLandingPage and expButton.title then
                 expButton:ToggleLandingPage()--Minimap.lua
             else
-                e.OpenPanelOpting(Initializer:GetName())
+                e.OpenPanelOpting(Initializer)
                 --Settings.OpenToCategory(id)
                 --e.call(InterfaceOptionsFrame_OpenToCategory, id)
             end
 
     elseif d=='RightButton' and not key then
         if SettingsPanel:IsShown() then
-            e.OpenPanelOpting(Initializer:GetName())
+            e.OpenPanelOpting(Initializer)
         else
             e.OpenPanelOpting()
         end

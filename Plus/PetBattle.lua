@@ -639,7 +639,7 @@ local function add_Click_To_Move_Button()--点击移动，按钮
                     self:set_Tooltips()
                 end
             else
-                e.OpenPanelOpting('|A:transmog-nav-slot-feet:0:0|a'..(e.onlyChinese and '添加按钮' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, 'Button')))
+                e.OpenPanelOpting(nil, '|A:transmog-nav-slot-feet:0:0|a'..(e.onlyChinese and '添加按钮' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, 'Button')))
             end
         end)
         function btn:set_State()

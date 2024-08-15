@@ -765,7 +765,7 @@ local function Init_TrackButton()
 						notCheckable=true,
 						icon= 'mechagon-projects',
 						func= function()
-							e.OpenPanelOpting(Initializer:GetName())
+							e.OpenPanelOpting(Initializer, addName)
 						end
 					}, level)
 				end, 'MENU')

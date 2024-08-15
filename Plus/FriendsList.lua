@@ -308,7 +308,7 @@ local function Init_Friends_Menu(self, root)
 
     root:CreateDivider()
     root:CreateButton(id..' '..addName, function()
-        e.OpenPanelOpting(addName)
+        e.OpenPanelOpting(nil, addName)
     end)
 end
 

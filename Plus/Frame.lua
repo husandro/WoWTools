@@ -19,7 +19,7 @@ local Save={
 }
 local addName= 'Frame'
 local panel= CreateFrame("Frame")
-
+local Category, Layout
 --e.Set_Move_Frame(self, tab)
 
 
@@ -338,7 +338,7 @@ local function set_Scale_Size(frame, tab)
         end
         if IsShiftKeyDown() then
             if d=='RightButton' then
-                e.OpenPanelOpting()--打开，选项
+                e.OpenPanelOpting(Category)--打开，选项
 
             elseif d=='LeftButton' then
                 if self.target.setMoveFrame and not self.target.notSave then--清除，位置，数据
@@ -2789,7 +2789,7 @@ end
 --###########
 --添加控制面板
 --###########
-local Category, Layout= e.AddPanel_Sub_Category({name= '|TInterface\\Cursor\\UI-Cursor-Move:0|t'..addName})
+
 local function Init_Options()
     e.AddPanel_Header(Layout, e.onlyChinese and '选项' or OPTIONS)
 
@@ -2948,6 +2948,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save.disabledAlpha= Save.disabledAlpha or {}
             Save.alpha= Save.alpha or 0.5
 
+            Category, Layout= e.AddPanel_Sub_Category({name= '|TInterface\\Cursor\\UI-Cursor-Move:0|t'..addName})
+            
             e.AddPanel_Check({
                 name= e.onlyChinese and '启用' or ENABLE,
                 tooltip= e.cn(addName),

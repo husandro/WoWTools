@@ -53,6 +53,11 @@ local Save={
 local RedColor--变小值
 local GreenColor--变大值
 --PaperDollFrame.lua
+local Category
+
+
+
+
 
 local function get_PrimaryStat()--取得主属
     local spec= GetSpecialization()
@@ -2173,7 +2178,7 @@ local function Init()
                         icon='mechagon-projects',
                         notCheckable=true,
                         func= function()
-                            e.OpenPanelOpting()--nil, '|A:charactercreate-icon-customize-body-selected:0:0|a'..(e.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES))
+                            e.OpenPanelOpting(Category)--nil, '|A:charactercreate-icon-customize-body-selected:0:0|a'..(e.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES))
                         end
                     }
                     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -2305,7 +2310,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
 
             --添加控制面板
-            e.AddPanel_Sub_Category({name='|A:charactercreate-icon-customize-body-selected:0:0|a'..(e.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES), frame=self})
+            Category= e.AddPanel_Sub_Category({name='|A:charactercreate-icon-customize-body-selected:0:0|a'..(e.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES), frame=self})
 
             e.ReloadPanel({panel=self, addName=e.cn(addName), restTips=nil, checked=not Save.disabled, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
                 disabledfunc=function()

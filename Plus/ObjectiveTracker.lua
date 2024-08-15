@@ -637,7 +637,7 @@ local function Init_ObjectiveTrackerFrame()
 
             root:CreateDivider()
             root:CreateButton(e.onlyChinese and '选项' or SETTINGS_TITLE, function()
-                e.OpenPanelOpting(addName)
+                e.OpenPanelOpting(nil, addName)
             end)
 
             sub=root:CreateButton('BUG', function()

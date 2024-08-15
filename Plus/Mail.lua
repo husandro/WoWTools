@@ -1322,7 +1322,7 @@ local function Init_InBox()
             self:set_texture()
             Refresh_All()
         elseif d=='RightButton' then
-            e.OpenPanelOpting(Initializer)
+            e.OpenPanelOpting(Initializer, addName)
         end
     end)
 
