@@ -831,7 +831,7 @@ local function Init_Options_Button()
 
         elseif infoType =='spell' and spellID then
             local spellLink=C_Spell.GetSpellLink(spellID) or ((e.onlyChinese and '法术' or SPELLS)..' ID: '..spellID)
-            local icon=GetSpellTexture(spellID)
+            local icon=C_Spell.GetSpellTexture(spellID)
             StaticPopup_Show(id..addName..'ADD', SPELLS , (icon and '|T'..icon..':0|t' or '')..spellLink, {type='spell', name=spellLink, ID=spellID})
             ClearCursor()
 

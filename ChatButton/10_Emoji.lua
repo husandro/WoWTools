@@ -570,7 +570,7 @@ local function Init()
         end
         if self.numFilter==0 then
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.onlyChinese and '聊天频道' or CHAT_CHANNELS, numFilter)
+            e.tips:AddDoubleLine(e.onlyChinese and '聊天频道' or CHAT_CHANNELS, self.numFilter)
         end
         e.tips:Show()
     end
