@@ -242,13 +242,16 @@ Settings.RegisterAddOnCategory(Category)
 
 
 --打开，选项
-function e.OpenPanelOpting(name, category)
+--Settings.OpenToCategory(categoryID, scrollToElementName)
+function e.OpenPanelOpting(category, name)
+    category= Category
+    
     Category.expanded=true
-    name= type(name)=='table' and name:GetName() or name
-    Settings.OpenToCategory(Category:GetID(), name)
-    if category then
+    Settings.OpenToCategory(category:GetID(), name)
+
+    --[[if category then
         Settings.OpenToCategory(category:GetID(), category:GetName())
-    end
+    end]]
 end
     --[[
     if subCategoryName and Category:HasSubcategories() then
@@ -380,31 +383,19 @@ e.AddPanel_DropDown({
 --添加，Check 和 按钮
 
     function e.AddPanel_Check_Button(tab)
-        local checkName = tab.checkName
-        local defaultValue= tab.checkValue and true or false
-        local checkFunc= tab.checkFunc
+        local setting=Settings.RegisterProxySetting(
+            tab.category or Category,
+            tab.checkName,
+            Settings.VarType.Boolean,
+            tab.checkName,
+            tab.GetValue(),
+            tab.GetValue,
+            tab.SetValue)
+        local initializer= CreateSettingsCheckboxWithButtonInitializer(setting, tab.buttonText, tab.buttonFunc, true, tab.tooltip)
 
-        local buttonText= tab.buttonText
-        local buttonFunc= tab.buttonFunc
-
-        local tooltip = tab.tooltip
         local layout= tab.layout or Layout
-        local category= tab.category or Category
-
-        local variable = id..checkName..(category.order or '')..get_variableIndex()
-        local setting= Settings.RegisterAddOnSetting(category, checkName, variable, type(defaultValue), defaultValue)
-        
-        local initializer= CreateSettingsCheckboxWithButtonInitializer(setting, buttonText, buttonFunc,  false,            tooltip)
-        --[[
-        local data = Settings.CreateSettingInitializerData(setting, nil, tooltip);
-        data.buttonText = buttonText;
-        data.OnButtonClick = buttonFunc;
-        data.clickRequiresSet = false;
-        local initializer= Settings.CreateSettingInitializer("SettingsCheckboxWithButtonControlTemplate", data);
-        ]]
-
         layout:AddInitializer(initializer)
-        Settings.SetOnValueChangedCallback(variable, checkFunc, initializer)
+
         return initializer
     end
 --[[
@@ -506,22 +497,29 @@ e.AddPanel_Check_Sider({
 
 --添加，划动条
 function e.AddPanelSider(tab)
-    local name= tab.name
-    local defaultValue= tab.value
-    local minValue= tab.minValue
-    local maxValue= tab.maxValue
-    local step= tab.setp
-    local tooltip= tab.tooltip
-    local category= tab.category or Category
-    local func= tab.func
+    local setting = Settings.RegisterProxySetting(
+        tab.category or Category,
+        tab.name,
+        Settings.VarType.Number,
+        tab.name,
+        tab.GetValue(),
+        tab.GetValue,
+        tab.SetValue
+    )
+    local options = Settings.CreateSliderOptions(tab.minValue, tab.maxValue, tab.step);
+    options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right, function(value)
+        return e.GetFormatter1to10(value, 0, 1)
+    end);
+    
+    return Settings.CreateSlider(tab.category or Category, setting, options, tab.tooltip);
 
-    local variable = id..name..(category.order or '')..get_variableIndex()
+    --[[local variable = id..name..(category.order or '')..get_variableIndex()
     local setting = Settings.RegisterAddOnSetting(category, name, variable, type(defaultValue), defaultValue)
     local options = Settings.CreateSliderOptions(minValue, maxValue, step)
     options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right, GetFormatter1to10(minValue, maxValue))
     local initializer= Settings.CreateSlider(category, setting, options, tooltip)
-	Settings.SetOnValueChangedCallback(variable, func, initializer)
-    return initializer
+	Settings.SetOnValueChangedCallback(variable, func, initializer)]]
+    
 end
 --[[
 e.AddPanelSider({

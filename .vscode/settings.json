@@ -4747,7 +4747,8 @@
         "GENERAL_CHAT_DOCK",
         "LAST_ACTIVE_CHAT_EDIT_BOX",
         "CombatOverrides",
-        "VOICE_CHAT_AUDIO_DUCKING"
+        "VOICE_CHAT_AUDIO_DUCKING",
+        "ChatConfigFrameChatTabManager"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

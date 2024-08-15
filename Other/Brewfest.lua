@@ -250,8 +250,8 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             e.AddPanel_Header(nil, e.onlyChinese and '其它' or OTHER)
             e.AddPanel_Check_Button({
                 checkName= '|T132248:0|t'..e.cn(addName),
-                checkValue= not Save.disabled,
-                checkFunc= function()
+                GetValue= function() return not Save.disabled end,
+                SetValue= function()
                     Save.disabled= not Save.disabled and true or nil
                     if not Save.disabled then
                         if not button then

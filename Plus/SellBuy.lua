@@ -1359,7 +1359,7 @@ local function Init_Menu(_, level, type)
         text= '    |A:SpellIcon-256x256-SellJunk:0:0|a'..(e.onlyChinese and '选项' or OPTIONS),
         notCheckable=true,
         func= function()
-            e.OpenPanelOpting(Initializer:GetName())
+            e.OpenPanelOpting(Initializer)
         end
     }
     e.LibDD:UIDropDownMenu_AddButton(info)

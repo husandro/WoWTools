@@ -11,7 +11,7 @@ local Save={
 
 local addName
 local ChatButton
-
+local Initializer, Layout
 
 
 
@@ -88,7 +88,7 @@ local function Init_Menu(self, root)
 
     root:CreateDivider()
     sub=root:CreateButton(addName, function()
-        e.OpenPanelOpting(addName)
+        e.OpenPanelOpting(addName, Initializer)
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(e.onlyChinese and '打开选项界面' or OPTIONS)
@@ -213,12 +213,12 @@ end
 
 
 local function Init_Panel()
-    local Initializer, Layout= e.AddPanel_Sub_Category({name=addName})
+    Initializer, Layout= e.AddPanel_Sub_Category({name=addName})
 
     e.AddPanel_Check_Button({
         checkName= e.onlyChinese and '启用' or ENABLE,
-        checkValue= not Save.disabled,
-        checkFunc= function()
+        GetValue= function() return not Save.disabled end,
+        SetValue= function()
             Save.disabled= not Save.disabled and true or nil
             print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,

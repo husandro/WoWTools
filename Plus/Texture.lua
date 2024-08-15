@@ -2776,14 +2776,14 @@ local function Init_Options()
     e.AddPanel_Header(Layout, e.onlyChinese and '材质' or TEXTURES_SUBHEADER)
     local initializer2= e.AddPanel_Check_Button({
         checkName= e.onlyChinese and '材质' or TEXTURES_SUBHEADER,
-        checkValue= not Save.disabled,
-        checkFunc= function()
+        GetValue= function() return not Save.disabled end,
+        SetValue= function()
             Save.disabled= not Save.disabled and true or nil
             print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
         buttonText= e.onlyChinese and '设置颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS ,COLOR),
         buttonFunc= function()
-            e.OpenPanelOpting((e.Player.useColor and e.Player.useColor.hex or '')..(e.onlyChinese and '颜色' or COLOR))
+            e.OpenPanelOpting(Category, (e.Player.useColor and e.Player.useColor.hex or '')..(e.onlyChinese and '颜色' or COLOR))
         end,
         tooltip= e.cn(addName),
         layout= Layout,
@@ -2792,15 +2792,16 @@ local function Init_Options()
 
     local initializer= e.AddPanelSider({
         name= e.onlyChinese and '透明度' or 'Alpha',
-        value= Save.alpha,
+        GetValue= function() return Save.alpha end,
         minValue= 0,
         maxValue= 1,
         setp= 0.1,
         tooltip= e.cn(addName),
         category= Category,
-        func= function(_, _, value2)
+        SetValue= function(_, _, value2)
             local value3= e.GetFormatter1to10(value2, 0, 1)
             Save.alpha= value3
+            print(value3)
             --Init()
             print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end

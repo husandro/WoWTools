@@ -1142,13 +1142,13 @@ local function Init_Options()--初始, 选项
     })
     local initializer= e.AddPanelSider({
         name= e.onlyChinese and '字体大小' or FONT_SIZE,
-        value= Save.size,
+        GetValue= function() return Save.size end,
         minValue= 8,
         maxValue= 18,
         setp= 1,
         tooltip= e.cn(addName),
         category= Category,
-        func= function(_, _, value2)
+        SetValue= function(_, _, value2)
             local value3= e.GetFormatter1to10(value2, 8, 18)
             Save.size=value3
             Init_Plus()

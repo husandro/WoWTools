@@ -3815,8 +3815,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
              --e.AddPanel_Header(nil, 'Plus')
             Initializer= e.AddPanel_Check_Button({
                  checkName= '|A:SpecDial_LastPip_BorderGlow:0:0|a'..(e.onlyChinese and '对话和任务' or addName),
-                 checkValue= not Save.disabled,
-                 checkFunc= function()
+                 GetValue= function() return not Save.disabled end,
+                 SetValue= function()
                      Save.disabled = not Save.disabled and true or nil
                      print(id, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
                  end,

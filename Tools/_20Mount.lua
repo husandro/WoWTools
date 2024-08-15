@@ -1178,7 +1178,7 @@ local function InitMenu(_, level, type)--主菜单
         notCheckable=true,
         colorCode='|cffffd100',
         func= function()
-            e.OpenPanelOpting(e.toolsFrame.addName)
+            e.OpenPanelOpting(nil, e.toolsFrame.addName)
         end
     }
     e.LibDD:UIDropDownMenu_AddButton(info,level)

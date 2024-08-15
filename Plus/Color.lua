@@ -657,8 +657,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 			--添加控制面板
 			e.AddPanel_Check_Button({
 				checkName=  '|A:colorblind-colorwheel:0:0|a'..(e.onlyChinese and '颜色选择器' or addName),
-				checkValue= not Save.disabled,
-				checkFunc= function()
+				GetValue= function() return not Save.disabled end,
+				SetValue= function()
 					Save.disabled= not Save.disabled and true or nil
                 	print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
 				end,

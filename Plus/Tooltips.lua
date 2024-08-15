@@ -1048,15 +1048,17 @@ function func:Set_All_Aura(tooltip, data)--Aura
 end
 
 
-function func:Set_Buff(type, tooltip, ...)
-    local source--local unit= ...
-    if type=='Buff' then
+function func:Set_Buff(_, tooltip, ...)
+    local data=C_UnitAuras.GetAuraDataByIndex(...)
+    local source= data and data.sourceUnit
+    --local source--local unit= ...
+    --[[if type=='Buff' then
         source= select(7, UnitBuff(...))
     elseif type=='Debuff' then
         source= select(7, UnitDebuff(...))
     else
         source= select(7, UnitAura(...))
-    end
+    end]]
     if source then--来源
         if source then
             local r, g ,b , col= e.GetUnitColor(source)-- GetClassColor(UnitClassBase(source))

@@ -2846,8 +2846,8 @@ local function Init_Options()
     --缩放
     initializer2= e.AddPanel_Check_Button({
         checkName= '|A:UI-HUD-Minimap-Zoom-In:0:0|a'..(e.onlyChinese and '缩放' or UI_SCALE),
-        checkValue= not Save.disabledZoom,
-        checkFunc= function()
+        GetValue= function() return not Save.disabledZoom end,
+        SetValue= function()
             Save.disabledZoom= not Save.disabledZoom and true or nil
             print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabledZoom), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
