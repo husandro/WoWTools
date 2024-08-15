@@ -329,7 +329,7 @@ local function Init_StableFrame_Plus()
         self.ExoticTexture:SetShown(petData.isExotic)
         local text
         if petData.slotID then
-            text= format(e.onlyChinese and '食物：%s' or PET_DIET_TEMPLATE, BuildListString(GetStablePetFoodTypes(petData.slotID)))
+            text= format(e.onlyChinese and '食物：%s' or PET_DIET_TEMPLATE, BuildListString(C_StableInfo.GetStablePetFoodTypes(petData.slotID)))
         end
         self.Food:SetText(text or '')
     end)

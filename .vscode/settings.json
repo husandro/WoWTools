@@ -4748,7 +4748,14 @@
         "LAST_ACTIVE_CHAT_EDIT_BOX",
         "CombatOverrides",
         "VOICE_CHAT_AUDIO_DUCKING",
-        "ChatConfigFrameChatTabManager"
+        "ChatConfigFrameChatTabManager",
+        "TUTORIAL_TITLE58",
+        "MAX_PARTY_TOOLTIP_BUFFS",
+        "Boss1TargetFrame",
+        "Boss2TargetFrame",
+        "Boss3TargetFrame",
+        "Boss4TargetFrame",
+        "Boss5TargetFrame"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",
