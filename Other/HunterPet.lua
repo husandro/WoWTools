@@ -96,7 +96,8 @@ local function set_pet_tooltips(frame, pet)
         end
         i=i+1
     end
-    e.tips:AddDoubleLine(format('|cff00ccff%s', e.onlyChinese and '食物' or POWER_TYPE_FOOD), format('|cff00ccff%s', BuildListString(GetStablePetFoodTypes(pet.slotID)) or ''))
+    local dietString = table.concat(C_StableInfo.GetStablePetFoodTypes(pet.slotID), LIST_DELIMITER)
+    e.tips:AddDoubleLine(format('|cff00ccff%s', e.onlyChinese and '食物' or PET_DIET_TEMPLATE), dietString)
     e.tips:AddLine(' ')
     e.tips:AddDoubleLine(e.onlyChinese and '拖曳' or DRAG_MODEL, e.Icon.left)
 
@@ -329,7 +330,8 @@ local function Init_StableFrame_Plus()
         self.ExoticTexture:SetShown(petData.isExotic)
         local text
         if petData.slotID then
-            text= format(e.onlyChinese and '食物：%s' or PET_DIET_TEMPLATE, BuildListString(C_StableInfo.GetStablePetFoodTypes(petData.slotID)))
+            local dietString = table.concat(C_StableInfo.GetStablePetFoodTypes(petData.slotID), LIST_DELIMITER)
+            text= format(e.onlyChinese and '食物：%s' or PET_DIET_TEMPLATE, dietString)
         end
         self.Food:SetText(text or '')
     end)
@@ -572,7 +574,7 @@ function Set_StableFrame_List()
     AllListFrame.Bg:SetTexCoord(1,0,1,0)
     AllListFrame.Bg:SetPoint('TOPLEFT')
 
-    for i=PetConsts.STABLED_PETS_FIRST_SLOT_INDEX+ 1, PetConsts.NUM_PET_SLOTS do
+    for i=Constants.PetConsts_PostCata.STABLED_PETS_FIRST_SLOT_INDEX+ 1, Constants.PetConsts_PostCata.NUM_PET_SLOTS_HUNTER do
         local btn= created_button(i)
         AllListFrame.Buttons[i]= btn
     end
@@ -596,9 +598,9 @@ function Set_StableFrame_List()
             end
         end
         AllListFrame.Bg:ClearAllPoints()
-        AllListFrame.Bg:SetPoint('TOPLEFT', AllListFrame.Buttons[PetConsts.STABLED_PETS_FIRST_SLOT_INDEX+ 1])
+        AllListFrame.Bg:SetPoint('TOPLEFT', AllListFrame.Buttons[Constants.PetConsts_PostCata.STABLED_PETS_FIRST_SLOT_INDEX+ 1])
         AllListFrame.Bg:SetPoint('BOTTOM', btnY)
-        AllListFrame.Bg:SetPoint('RIGHT', AllListFrame.Buttons[PetConsts.NUM_PET_SLOTS])
+        AllListFrame.Bg:SetPoint('RIGHT', AllListFrame.Buttons[Constants.PetConsts_PostCata.NUM_PET_SLOTS_HUNTER])
     end
     
 
