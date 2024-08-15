@@ -450,7 +450,7 @@ end
         local options = Settings.CreateSliderOptions(sliderMinValue, sliderMaxValue, sliderStep)
         options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right, GetFormatter1to10(sliderMinValue, sliderMaxValue));
 
-        local initializer = CreateSettingsCheckboxSliderInitializer(checkSetting, checkName, checkTooltip, siderSetting,   options,      siderName,   siderTooltip);
+        local initializer = CreateSettingsCheckboxSliderInitializer(checkSetting, checkName, checkTooltip, siderSetting, options, siderName, siderTooltip);
         
         --[[local data =
         {

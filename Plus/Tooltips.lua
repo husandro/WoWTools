@@ -2652,13 +2652,13 @@ local function Init_Panel()
 
         local initializer= e.AddPanelSider({
             name= 'X',
-            value= Save.cursorX or 0,
+            GetValue= function() return Save.cursorX or 0 end,
             minValue= -240,
             maxValue= 240,
             setp= 1,
             tooltip= Initializer:GetName(),
             category= Initializer,
-            func= function(_, _, value2)
+            SetValue= function(_, _, value2)
                 local value3= e.GetFormatter1to10(value2, -200, 200)
                 Save.cursorX= value3
                 set_Cursor_Tips()
@@ -2668,13 +2668,13 @@ local function Init_Panel()
 
         initializer= e.AddPanelSider({
             name= 'Y',
-            value= Save.cursorY or 0,
+            GetValue= function() return Save.cursorY or 0 end,
             minValue= -240,
             maxValue= 240,
             setp= 1,
             tooltip= Initializer:GetName(),
             category= Initializer,
-            func= function(_, _, value2)
+            SetValue= function(_, _, value2)
                 local value3= e.GetFormatter1to10(value2, -200, 200)
                 Save.cursorY= value3
                 set_Cursor_Tips()
@@ -2746,13 +2746,13 @@ local function Init_Panel()
 ]]
     initializer= e.AddPanelSider({
         name= e.Player.L.size,
-        value= Save.modelSize or 100,
+        GetValue= function() return Save.modelSize or 100 end,
         minValue= 40,
         maxValue= 300,
         setp= 1,
         tooltip= Initializer:GetName(),
         category= Initializer,
-        func= function(_, _, value2)
+        SetValue= function(_, _, value2)
             local value3= e.GetFormatter1to10(value2, 40, 300)
             Save.modelSize= value3
             set_Cursor_Tips()
@@ -2762,13 +2762,13 @@ local function Init_Panel()
 
     initializer= e.AddPanelSider({
         name= 'X',
-        value= Save.modelX or 0,
+        GetValue= function() return Save.modelX or 0 end,
         minValue= -240,
         maxValue= 240,
         setp= 1,
         tooltip= Initializer:GetName(),
         category= Initializer,
-        func= function(_, _, value2)
+        SetValue= function(_, _, value2)
             local value3= e.GetFormatter1to10(value2, -200, 200)
             Save.modelX= value3
             set_Cursor_Tips()
@@ -2778,13 +2778,13 @@ local function Init_Panel()
 
     initializer= e.AddPanelSider({
         name= 'Y',
-        value= Save.modelY or -24,
+        GetValue= function() return Save.modelY or -24 end,
         minValue= -240,
         maxValue= 240,
         setp= 1,
         tooltip= Initializer:GetName(),
         category= Initializer,
-        func= function(_, _, value2)
+        SetValue= function(_, _, value2)
             local value3= e.GetFormatter1to10(value2, -200, 200)
             Save.modelY= value3
             set_Cursor_Tips()
@@ -2794,13 +2794,13 @@ local function Init_Panel()
 
     initializer= e.AddPanelSider({
         name= e.onlyChinese and '方向' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION,
-        value= Save.modelFacing or -24,
+        GetValue= function() return Save.modelFacing or -24 end,
         minValue= -1,
         maxValue= 1,
         setp= 0.1,
         tooltip= Initializer:GetName(),
         category= Initializer,
-        func= function(_, _, value2)
+        SetValue= function(_, _, value2)
             local value3= e.GetFormatter1to10(value2, -1, 1)
             Save.modelFacing= value3
             set_Cursor_Tips()

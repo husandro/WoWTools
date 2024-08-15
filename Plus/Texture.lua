@@ -2827,13 +2827,13 @@ local function Init_Options()
     })
     initializer= e.AddPanelSider({
         name= e.onlyChinese and '透明度' or 'Alpha',
-        value= Save.chatBubbleAlpha,
+        GetValue= function() return Save.chatBubbleAlpha end,
         minValue= 0,
         maxValue= 1,
         setp= 0.1,
         tooltip= e.cn(addName),
         category= Category,
-        func= function(_, _, value2)
+        SetValue= function(_, _, value2)
             local value3= e.GetFormatter1to10(value2, 0, 1)
             Save.chatBubbleAlpha= value3
             Init_Chat_Bubbles()
@@ -2843,13 +2843,13 @@ local function Init_Options()
 
     initializer= e.AddPanelSider({
         name= e.onlyChinese and '缩放' or UI_SCALE,
-        value= Save.chatBubbleSacal,
+        GetValue= function() return Save.chatBubbleSacal end,
         minValue= 0.3,
         maxValue= 1,
         setp= 0.1,
         tooltip= e.cn(addName),
         category= Category,
-        func= function(_, _, value2)
+        SetValue= function(_, _, value2)
             local value3= e.GetFormatter1to10(value2, 0.3, 1)
             Save.chatBubbleSacal= value3
             Init_Chat_Bubbles()
