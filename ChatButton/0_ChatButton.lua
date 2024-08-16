@@ -32,25 +32,17 @@ local Initializer, Layout
 
 
 local function Init_Menu(self, root)
+    local sub
 
-
-    --缩放
-    local sub= root:CreateButton(e.onlyChinese and '缩放' or UI_SCALE, function()
-        return MenuResponse.Open
+    WoWToolsScaleMenuMixin:Setup(root, function()
+        return Save.scale
+    end, function(value)
+        Save.scale= value
+        self:set_scale()
     end)
-    for index=0.4, 4, 0.05 do
-        sub:CreateCheckbox(index, function(data)
-            return Save.scale==data
-        end, function(data)
-            Save.scale= data
-            self:set_scale()
-        end, index)
-    end
-    sub:CreateDivider()
-    sub:CreateTitle(Save.scale or 1)
-    sub:SetGridMode(MenuConstants.VerticalGridDirection, 5)
 
-    sub=root:CreateButton(self:GetFrameStrata() or Save.strata or 'FrameStrata', function() return MenuResponse.Open end)
+
+    sub=root:CreateButton('FrameStrata', function() return MenuResponse.Open end)
 
 
     for _, strata in pairs({'BACKGROUND','LOW','MEDIUM','HIGH','DIALOG','FULLSCREEN','FULLSCREEN_DIALOG'}) do

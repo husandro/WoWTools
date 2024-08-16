@@ -521,16 +521,37 @@ local function Init_Menu(self, root)
 
 --缩放
     root:CreateDivider()
-    sub= root:CreateCheckbox((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..Save.inCombatScale, function()
+    --[[sub= root:CreateCheckbox((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..Save.inCombatScale, function()
         return Save.combatScale
     end, function()
         Save.combatScale= not Save.combatScale and true or nil
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
-    end)
+    end)]]
 
-    for index=0.4, 4, 0.05 do
+    sub2, sub= WoWToolsScaleMenuMixin:Setup(root, function()
+        return Save.inCombatScale
+    end, function(value)
+        Save.inCombatScale= value
+        CombatButton:set_Sacle_InCombat(true)
+        C_Timer.After(3, function()
+            CombatButton:set_Sacle_InCombat(UnitAffectingCombat('player'))
+        end)
+    end, function()
+        return Save.combatScale
+    end, function()
+        Save.combatScale= not Save.combatScale and true or nil
+        CombatButton:set_Sacle_InCombat(UnitAffectingCombat('player'))
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
+        self:set_Sacle_InCombat(UnitAffectingCombat('player'))
+    end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
+    end)
+    --[[for index=0.4, 4, 0.05 do
         sub:CreateCheckbox(index, function(data)
             return Save.inCombatScale==data
         end, function(data)
@@ -543,7 +564,7 @@ local function Init_Menu(self, root)
     end
     sub:CreateDivider()
     sub:CreateTitle(Save.scale or 1)
-    sub:SetGridMode(MenuConstants.VerticalGridDirection, 5)
+    sub:SetGridMode(MenuConstants.VerticalGridDirection, 5)]]
 
 
     local tab=e.WoWDate[e.Player.guid].Time

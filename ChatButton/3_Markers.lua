@@ -82,8 +82,9 @@ end
 
 
 --队伍标记工具, 选项，菜单
-local function Init_MarkerTools_Menu(sub)
-    sub:CreateCheckbox((UnitAffectingCombat('player') and '|cff9e9e9e' or '')..'|A:bags-greenarrow:0:0|a'..(e.onlyChinese and '图标方向' or  HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION), function()
+local function Init_MarkerTools_Menu(root)
+    local sub, sub2
+    root:CreateCheckbox((UnitAffectingCombat('player') and '|cff9e9e9e' or '')..'|A:bags-greenarrow:0:0|a'..(e.onlyChinese and '图标方向' or  HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION), function()
         return Save.H
     end, function()
         Save.H = not Save.H and true or nil
@@ -91,7 +92,10 @@ local function Init_MarkerTools_Menu(sub)
             MakerFrame:set_button_point()
         end
     end)
-    sub:CreateDivider()--重置位置
+
+    sub=root:CreateButton('FrameStrata', function()
+        return MenuResponse.Open
+    end)
     local tab={
         'BACKGROUND',
         'LOW',
@@ -103,7 +107,7 @@ local function Init_MarkerTools_Menu(sub)
         'TOOLTIP',
     }
     for _, name in pairs(tab) do
-        local tre=sub:CreateCheckbox(name, function(data)
+        sub2=sub:CreateCheckbox((name=='HIGH' and '|cnGREEN_FONT_COLOR:' or '')..name, function(data)
             return Save.FrameStrata==data
         end, function(data)
             Save.FrameStrata= data
@@ -113,7 +117,7 @@ local function Init_MarkerTools_Menu(sub)
             end
 
         end, name)
-        tre:SetTooltip(function(tooltip, data)
+        sub2:SetTooltip(function(tooltip, data)
             GameTooltip_AddNormalLine(tooltip, 'Frame:SetFrameStrata('..data.data..')')
             if MakerFrame then
                 tooltip:AddLine((e.onlyChinese and '当前' or REFORGE_CURRENT)..': '..MakerFrame:GetFrameStrata())
@@ -125,11 +129,21 @@ local function Init_MarkerTools_Menu(sub)
         end)
     end
 
-    sub:CreateDivider()
+    WoWToolsScaleMenuMixin:Setup(root, function()
+        return Save.markersScale
+    end, function(value)
+        Save.markersScale= value
+        local btn= _G['WoWTools_MarkerFrame_Move_Button']
+        if btn then
+            btn:set_scale()
+        end
+    end)
+
+    root:CreateDivider()
     local col= not Save.markersFramePoint and '|cff9e9e9e'
         and (MakerFrame and not MakerFrame:CanChangeAttribute() and '|cnGREEN_FONT_COLOR:')
         or ''
-    sub:CreateButton(col..(e.onlyChinese and '重置位置' or RESET_POSITION), function()
+    root:CreateButton(col..(e.onlyChinese and '重置位置' or RESET_POSITION), function()
         if MakerFrame and MakerFrame:CanChangeAttribute() then
             MakerFrame:ClearAllPoints()
             Save.markersFramePoint=nil
@@ -595,7 +609,7 @@ local function Init_Markers_Frame()--设置标记, 框架
         if d=='RightButton' and IsAltKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
         elseif not IsModifierKeyDown() and d=='RightButton' then
-            MenuUtil.CreateContextMenu(self, function(frame, root)
+            MenuUtil.CreateContextMenu(self, function(_, root)
                 Init_MarkerTools_Menu(root)--队伍标记工具, 选项，菜单    
             end)
         end
@@ -1357,65 +1371,6 @@ end
 
 
 
- --[[
-
-local function Init_Ping()
-    if not Save.pingTime or not C_AddOns.IsAddOnLoaded('Blizzard_PingUI') then
-        return
-    end
-
-local PingColor={
-    ["Assist"] = {r=0.09, g=0.78, b=0.39, col='|cff17c864'},--协助
-    ["Attack"] = {r=1.00, g=0.50, b=0.00, col='|cffff8000' },--攻击
-    ["OnMyWay"] = {r=0.16, g=0.64, b=1.00, col='|cff2aa2ff'},--正在赶来
-    ["Warning"] = {r=1.00, g=0.13, b=0.08, col='|c3fff2114'},--警告
-    ["NonThreat"] = {r=0.16, g=0.64, b=1.00, col='|cff2aa2ff'},--看这里
-    ["Threat"] = {r=0.8, g=0, b=0, col='|cffcc0000'},--威胁提示
-}
-    hooksecurefunc( PingListenerFrame, 'OnPingPinFrameAdded', function(self3, frame, uiTextureKit)
-        local ping= self3.activePinFrames[frame]
-        if not ping.valueFrame then
-            ping.valueFrame=CreateFrame("Frame",nil, ping)
-            ping.valueFrame.value=5
-            ping.valueFrame.elapsed=1
-            ping.valueFrame:SetSize(1,1)
-            ping.valueFrame:SetPoint('CENTER')
-            ping.valueFrame.text= e.Cstr(ping.valueFrame)
-            ping.valueFrame.text:SetPoint('CENTER')
-            ping.valueFrame:SetScript('OnUpdate', function(self2, elapsed)
-                self2.elapsed = self2.elapsed + elapsed
-                self2.value= self2.value - elapsed
-                if self2.elapsed>=1 then
-                    self2.text:SetFormattedText("%i", self2.value)
-                    self2.elapsed=0
-                end
-            end)
-        else
-            ping.valueFrame.value=5
-            ping.valueFrame.elapsed=1
-        end
-
-        local color= PingColor[uiTextureKit]
-        if color then
-            ping.valueFrame.text:SetTextColor(color.r, color.g, color.b)
-        end
-        ping.valueFrame:SetShown(true)
-    end)
-end
-]]
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1555,7 +1510,7 @@ local function Init_Menu(_, root)
         [2]= format('|cffff0000%s|r|A:auctionhouse-ui-filter-redx:0:0|a', e.onlyChinese and '未就绪' or NOT_READY_FEMALE),
         [0]= e.onlyChinese and '无' or NONE
     }
-    --sub=root:CreateButton( tab[Save.autoReady] or tab[0])
+
     root:CreateDivider()
     for value, text in pairs(tab) do
         sub=root:CreateCheckbox(text, function(data)
@@ -1564,11 +1519,10 @@ local function Init_Menu(_, root)
             end, function(data)
                 Save.autoReady=data
                 MarkerButton.ReadyTextrueTips:settings()--自动就绪, 主图标, 提示
-                e.LibDD:CloseDropDownMenus()
             end, value)
         sub:SetTooltip(function(tooltip, data)
             if data.data==1 or data.data==2 then
-                tooltip:AddLine(SELF_CAST_AUTO)
+                tooltip:AddLine(e.onlyChinese and '自动' or SELF_CAST_AUTO)
             end
         end)
     end
@@ -1779,7 +1733,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave['ChatButton_Markers'] or Save
-            addName= '|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:0|t|cffffff00'..(e.onlyChinese and '队伍标记' or BINDING_HEADER_RAID_TARGET)..'|r'           
+            addName= '|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:0|t|cffffff00'..(e.onlyChinese and '队伍标记' or BINDING_HEADER_RAID_TARGET)..'|r'
             MarkerButton= WoWToolsChatButtonMixin:CreateButton('Markers', addName)
 
             if MarkerButton then

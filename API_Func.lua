@@ -106,7 +106,7 @@ e.HEX_to_RGB(hexColor, self)--HEX转RGB
 e.Get_ColorFrame_RGBA()--取得, ColorFrame, 颜色
 e.ShowColorPicker(valueR, valueG, valueB, valueA, swatchFunc, cancelFunc)
 
-e.Set_Frame_Scale(self, delta, value, func)--设置Frame缩放
+
 ]]
 
 
@@ -2861,28 +2861,7 @@ end
 
 
 
---设置Frame缩放
-function e.Set_Frame_Scale(self, delta, value, func)
-    local n= value
-    if self:CanChangeAttribute() and not UnitAffectingCombat('player') and IsAltKeyDown() then
-        n= n or 1
-        n= delta==1 and n-0.05 or n
-        n= delta==-1 and n+0.05 or n
-        n= n>4 and 4 or n
-        n= n<0.4 and 0.4 or n
-        self:SetScale(n)
-        if func then
-            func()
-        end
-        if self.set_scale then
-            self:set_scale()
-        end
-        if self.set_tooltip then
-            self:set_tooltip()
-        end
-    end
-    return n
-end
+
 
 
 

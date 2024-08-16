@@ -10,46 +10,24 @@
 ## X-Category: Plugins
 ## IconTexture: Interface\AddOns\WoWTools\Sesource\Texture\WoWtools.tga
 ## IconAtlas: orderhalltalents-done-glow
-
 ## X-Website https://www.curseforge.com/wow/addons/wowtools
-
 ## OptionalDeps: LibStub-1.0, CallbackHandler-1.0, LibDataBroker-1.1, LibDBIcon-1.0, !LibUIDropDownMenu, LibRangeCheck-3.0
 ## AddonCompartmentFunc: WowTools_OnAddonCompartmentClick
 ## AddonCompartmentFuncOnEnter: WowTools_OnAddonCompartmentFuncOnEnter
 
-
 ##调用库，不能删除
 Libs\Libs.xml
-##Libs\LibStub.lua
-##Libs\CallbackHandler-1.0.lua
-##Libs\LibDataBroker-1.1.lua
-
-##Libs\LibDBIcon-1.0.lua
-##Libs\LibRangeCheck-3.0.lua
-##Libs\LibUIDropDownMenu.lua
-
-
-##Libs\LibNameplateRegistry-1.0.lua
-##Libs\AceAddon-3.0\AceAddon-3.0.lua
-##AceConsole-3.0, AceDB-3.0
-##LibButtonGlow-1.0,
-##Libs\AceConsole-3.0\AceConsole-3.0.lua
-##Libs\AceDB-3.0\AceDB-3.0.lua
-##Libs\LibButtonGlow-1.0\LibButtonGlow-1.0.lua
-
-
 
 ##主要function，不能删除
 Mixin\ChatButton_Mixin.lua
 Mixin\FrameMixin.lua
+Mixin\ScaleMenuMixin.lua
 
 API_WoWTools.lua
 API_Create.lua
 API_Func.lua
 API_Panel.lua
 API_WoWDate.lua
-
-
 
 
 ##WoWPlus
@@ -126,27 +104,27 @@ Plus\Professions.lua
 
 ##坐骑， Tools 主要的，
 ##如果要使用Tools中的一个模块，必须开启坐骑模块
-Tools\_0_Init.lua
-Tools\_20Mount.lua
+Tools\0_Init.lua
+Tools\1_Mount.lua
 ##随机炉石
-Tools\_21Hearthstone.lua
+Tools\2_Hearthstone.lua
 ##打开物品，各种物品
-Tools\_22OpenItems.lua
+Tools\3_OpenItems.lua
 ##食物
-Tools\_23Food.lua
+Tools\4_Food.lua
 ##侦察地图, 玩具, 没有小号，可以禁用
-Tools\20ScoutingMapToy.lua
+Tools\5_ScoutingMapToy.lua
 ##随机玩具
-Tools\21UseToy.lua
+Tools\6_UseToy.lua
 
 ##各种专送门,物品，玩具
-Tools\23UsaItems.lua
+Tools\7_UsaItems.lua
 ##自动召唤，宠物
-Tools\24AutoSummonPet.lua
+Tools\8_AutoSummonPet.lua
 ##诺格弗格药剂 Noggenfogger Elixir
-Tools\25NoggenfoggerElixir.lua
+Tools\9_NoggenfoggerElixir.lua
 ##法师传送门
-Tools\26MagePortal.lua
+Tools\10_MagePortal.lua
 
 
 

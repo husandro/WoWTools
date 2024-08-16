@@ -95,7 +95,7 @@ end
 
 local function Init_Buttons()--设置按钮
     Frame.Buttons={}
-    
+
     for index=1, EmojiButton.numFile+8 do
         local btn= e.Cbtn(Frame, {icon='hide',size=30, setID=index})
         btn:SetScript('OnLeave', GameTooltip_Hide)
@@ -111,12 +111,12 @@ local function Init_Buttons()--设置按钮
             Save.clickIndex= self:GetID()
             EmojiButton:set_texture()
         end)
-        
+
         btn:SetNormalTexture(EmojiButton:get_texture(index) or 0)
         btn.text= EmojiButton:get_emoji_text(index)
         table.insert(Frame.Buttons, btn)
     end
-    
+
     function Frame:set_buttons_point()
         for index, btn in pairs(self.Buttons) do
             btn:ClearAllPoints()
@@ -144,7 +144,7 @@ local function Init_Buttons()--设置按钮
             self.texture2:ClearAllPoints()
             self.texture2:SetPoint('BOTTOMLEFT', self.Buttons[1], -4, -4)
             self.texture2:SetPoint('BOTTOMRIGHT', self.Buttons[Save.numButtonLine], 4, -4)
-            self.texture2:SetPoint('TOP', self.Buttons[#self.Buttons], 0, 4)       
+            self.texture2:SetPoint('TOP', self.Buttons[#self.Buttons], 0, 4)
         end
         self.texture2:SetShown(Save.show_background)
     end
@@ -280,7 +280,7 @@ local function Init_EmojiFrame()
         if Save.Point then
             self:SetPoint(Save.Point[1], UIParent, Save.Point[3], Save.Point[4], Save.Point[5])
         else
-            self:SetPoint('BOTTOMRIGHT', EmojiButton, 'TOPLEFT', -120, 4)            
+            self:SetPoint('BOTTOMRIGHT', EmojiButton, 'TOPLEFT', -120, 4)
         end
     end
     function Frame:set_scale()
@@ -378,37 +378,34 @@ local function Init_Menu(self, root)
     end)
     root:CreateDivider()
 
-    sub=root:CreateButton(e.onlyChinese and '选项' or OPTIONS, function()
-        return MenuResponse.Open
-    end)
+
 
 --显示/隐藏
-    sub2=sub:CreateButton(e.onlyChinese and '显示/隐藏' or format('%s/%s', SHOW, HIDE), function() return MenuResponse.Open end)
-    
+    --sub2=sub:CreateButton(e.onlyChinese and '显示/隐藏' or format('%s/%s', SHOW, HIDE), function() return MenuResponse.Open end)
 --显示
-    sub2:CreateTitle(e.onlyChinese and '显示' or SHOW)
-    sub2:CreateCheckbox('|A:newplayertutorial-drag-cursor:0:0|a'..(e.onlyChinese and '过移图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ENTER_LFG,EMBLEM_SYMBOL)), function()
+    root:CreateTitle(e.onlyChinese and '显示' or SHOW)
+    root:CreateCheckbox('|A:newplayertutorial-drag-cursor:0:0|a'..(e.onlyChinese and '过移图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ENTER_LFG,EMBLEM_SYMBOL)), function()
         return Save.showEnter
     end, function()
         Save.showEnter = not Save.showEnter and true or nil
     end)
 
-    sub2:CreateCheckbox(e.Icon.left..(e.onlyChinese and '鼠标' or MOUSE_LABEL), function()
+    root:CreateCheckbox(e.Icon.left..(e.onlyChinese and '鼠标' or MOUSE_LABEL), function()
         return Save.On_Click_Show
     end, function()
         Save.On_Click_Show= not Save.On_Click_Show and true or false
     end)
 
 --隐藏
-    sub2:CreateTitle(e.onlyChinese and '隐藏' or HIDE)
-    sub2:CreateCheckbox('|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'..(e.onlyChinese and '进入战斗' or ENTERING_COMBAT), function()
+    root:CreateTitle(e.onlyChinese and '隐藏' or HIDE)
+    root:CreateCheckbox('|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'..(e.onlyChinese and '进入战斗' or ENTERING_COMBAT), function()
         return not Save.notHideCombat
     end, function()
         Save.notHideCombat = not Save.notHideCombat and true or nil
         self:set_event()
     end)
 
-    sub2:CreateCheckbox('|A:transmog-nav-slot-feet:0:0|a'..(e.onlyChinese and '移动' or NPE_MOVE), function()
+    root:CreateCheckbox('|A:transmog-nav-slot-feet:0:0|a'..(e.onlyChinese and '移动' or NPE_MOVE), function()
         return not Save.notHideMoving
     end, function()
         Save.notHideMoving = not Save.notHideMoving and true or nil
@@ -416,22 +413,22 @@ local function Init_Menu(self, root)
     end)
 
 
---缩放
-    sub2= sub:CreateButton(e.onlyChinese and '缩放' or UI_SCALE, function()
+    root:CreateDivider()
+    sub=root:CreateButton(e.onlyChinese and '选项' or OPTIONS, function()
         return MenuResponse.Open
     end)
-    for index=0.4, 4, 0.05 do
-        sub2:CreateCheckbox(index, function(data)
-            return Save.scale==data
-        end, function(data)
-            Save.scale= data
-            Frame:set_scale()
-            return MenuResponse.Refresh
-        end, index)
-    end
-    sub2:CreateDivider()
-    sub2:CreateTitle(Save.scale or 1)
-    sub2:SetGridMode(MenuConstants.VerticalGridDirection, 5)
+
+
+
+    --缩放
+    WoWToolsScaleMenuMixin:Setup(sub, function()
+        return Save.scale
+    end, function(value)
+        Save.scale= value        
+        Frame:SetShown(true)
+        Frame:set_scale()
+    end)
+
 
 --数量
     sub2=sub:CreateButton(e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL, function() return MenuResponse.Open end)
@@ -440,7 +437,8 @@ local function Init_Menu(self, root)
             sub2:CreateCheckbox(index, function(data)
                 return Save.numButtonLine==data
             end, function(data)
-                Save.numButtonLine= data
+                Save.numButtonLine= data                
+                Frame:SetShown(true)
                 Frame:set_buttons_point()
                 return MenuResponse.Refresh
             end, index)
@@ -469,6 +467,7 @@ local function Init_Menu(self, root)
         return Save.show_background
     end, function()
         Save.show_background= not Save.show_background and true or nil
+        Frame:SetShown(true)
         Frame:set_background()
     end)
 
@@ -514,10 +513,10 @@ end
 --1US (includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
 local function Init()
     EmojiText_EN= {'Angel','Angry','Biglaugh','Clap','Cool','Cry','Cutie','Despise','Dreamsmile','Embarrass','Evil','Excited','Faint','Fight','Flu','Freeze','Frown','Greet','Grimace','Growl','Happy','Heart','Horror','Ill','Innocent','Kongfu','Love','Mail','Makeup','Meditate','Miserable','Okay','Pretty','Puke','Shake','Shout','Shuuuu','Shy','Sleep','Smile','Suprise','Surrender','Sweat','Tear','Tears','Think','Titter','Ugly','Victory','Hero','Wronged','Mario',}
-    
+
     if e.Player.region==5 then
         EmojiText= {'天使','生气','大笑','鼓掌','酷','哭','可爱','鄙视','美梦','尴尬','邪恶','兴奋','晕','打架','流感','呆','皱眉','致敬','鬼脸','龇牙','开心','心','恐惧','生病','无辜','功夫','花痴','邮件','化妆','沉思','可怜','好','漂亮','吐','握手','喊','闭嘴','害羞','睡觉','微笑','吃惊','失败','流汗','流泪','悲剧','想','偷笑','猥琐','胜利','雷锋','委屈','马里奥'}
-        
+
     elseif e.Player.region==4 then
         EmojiText= {'天使','生氣','大笑','鼓掌','酷','哭','可愛','鄙視','美夢','尷尬','邪惡','興奮','暈','打架','流感','呆','皺眉','致敬','鬼臉','齜牙','開心','心','恐懼','生病','無辜','功夫','花痴','郵件','化妝','沉思','可憐','好','漂亮','吐','握手','喊','閉嘴','害羞','睡覺','微笑','吃驚','失敗','流汗','流淚','悲劇','想','偷笑','猥瑣','勝利','英雄','委屈','馬里奧'}
     elseif e.Player.region==2 then
@@ -528,13 +527,13 @@ local function Init()
 
     EmojiButton.numFile= #EmojiText
     EmojiButton.numAllFile= EmojiButton.numFile+8
-  
+
     TextToTexture={}--过滤，事件
     for index, text in pairs(EmojiText) do
         TextToTexture['{'..text..'}']= '|TInterface\\Addons\\WoWTools\\Sesource\\Emojis\\'..EmojiText_EN[index]..':0|t'
     end
 
-    
+
     function EmojiButton:get_emoji_text(index)
         index= index or Save.clickIndex or 18
         if index<=self.numFile then
@@ -564,7 +563,7 @@ local function Init()
             e.tips:AddDoubleLine(e.GetShowHide(not Frame:IsShown()), e.Icon.left)
         else
             e.tips:AddDoubleLine(
-                format('|T%s:0|t%s', self:get_texture() or '' , self:get_emoji_text() or ''), 
+                format('|T%s:0|t%s', self:get_texture() or '' , self:get_emoji_text() or ''),
                 (self.chatFrameEditBox and (e.onlyChinese and '插入' or 'Insert') or (e.onlyChinese and '发送' or SEND_LABEL))..e.Icon.left
             )
         end
@@ -592,7 +591,7 @@ local function Init()
     end)
 
     EmojiButton:SetScript('OnClick', function(self, d)
-        if d=='LeftButton' then           
+        if d=='LeftButton' then
             if Save.On_Click_Show then
                 self:set_frame_shown(not Frame:IsShown())
                 self:set_tooltip()

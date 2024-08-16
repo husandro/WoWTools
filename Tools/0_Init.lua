@@ -45,27 +45,6 @@ end
 
 
 
-
---[[local function Init_Options()
-    local Category, Layout= e.AddPanel_Sub_Category({name='|A:bag-border-empty:0:0|aTools'})
-    e.AddPanel_Check({
-        name= e.onlyChinese and '启用' or ENABLE,
-        tooltip= e.cn(addName),
-        value= not Save.disabled,
-        category= Category,
-        func= function()
-            Save.disabled= not Save.disabled and true or nil
-            print(e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            Init_Options()--初始, 选项
-        end
-    })
-
-end]]
-
-
-
-
-
 local function Init()
     e.toolsFrame:RegisterEvent('PLAYER_REGEN_DISABLED')
     e.toolsFrame:RegisterEvent('PLAYER_STARTED_MOVING')
@@ -98,13 +77,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             e.AddPanel_Check({
                 name= e.toolsFrame.addName,
-                --tooltip= e.cn(addName),
                 GetValue= function() return not Save.disabled end,
-                --category= Category,
                 func= function()
                     Save.disabled= not Save.disabled and true or nil
                     print(id, e.toolsFrame.addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                    --Init_Options()--初始, 选项
                 end
             })
 
@@ -114,9 +90,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Init()
                 self:UnregisterEvent('ADDON_LOADED')
             end
-
-        --elseif arg1=='Blizzard_Settings' then
-          --  Init_Options()--初始, 选项           
+ 
         end
 
     elseif event == "PLAYER_LOGOUT" then
