@@ -1363,10 +1363,10 @@ local function Init()
         self:state_leave()
     end)
     LinkButton:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        --[[e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.onlyChinese and '超链接图标'or addName, e.GetEnabeleDisable(Save.disabed))
-        e.tips:Show()
+        e.tips:Show()]]
         self:state_enter()
     end)
 

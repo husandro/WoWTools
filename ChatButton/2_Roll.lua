@@ -42,17 +42,10 @@ local function setCHAT_MSG_SYSTEM(text)
         elseif not Min or Min>roll then
             Min=roll
         end
-        if not RollButton.rightTopText then
-            RollButton.rightTopText=e.Cstr(RollButton, {color={r=0,g=1,b=0}})
-            RollButton.rightTopText:SetPoint('TOPLEFT',2,-3)
-        end
+
         RollButton.rightTopText:SetText(Max)
 
         if Min then
-            if not RollButton.rightBottomText then
-                RollButton.rightBottomText=e.Cstr(RollButton, {color={r=0,g=1,b=0}})
-                RollButton.rightBottomText:SetPoint('BOTTOMRIGHT',-2,3)
-            end
             RollButton.rightBottomText:SetText(Min)
         end
     end
@@ -76,8 +69,18 @@ local function setCHAT_MSG_SYSTEM(text)
 
     if GameTooltip:IsOwned(RollButton) then
         RollButton:set_tooltip()
-    end            
+    end
 end
+
+
+
+
+
+
+
+
+
+
 
 
 local function get_Save_Max()--清除时,保存数据
@@ -102,12 +105,8 @@ local function setRest()--重置
     get_Save_Max()--清除时,保存数据
     RollTab={}
     Max, Min= nil, nil
-    if RollButton.rightBottomText then
-        RollButton.rightBottomText:SetText('')
-    end
-    if RollButton.rightTopText then
-        RollButton.rightTopText:SetText('')
-    end
+    RollButton.rightBottomText:SetText('')
+    RollButton.rightTopText:SetText('')
 end
 
 
@@ -115,19 +114,10 @@ end
 local function setAutoClearRegisterEvent()--注册自动清除事件
     if Save.autoClear then
         panel:RegisterEvent('PLAYER_REGEN_DISABLED')
-        if not RollButton.autoClearTips then
-            RollButton.autoClearTips= RollButton:CreateTexture(nil,'OVERLAY')
-            RollButton.autoClearTips:SetPoint('BOTTOMLEFT',4, 4)
-            RollButton.autoClearTips:SetSize(12,12)
-            RollButton.autoClearTips:SetAtlas('bags-button-autosort-up')
-            --button.autoClearTips:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
-        end
     else
         panel:UnregisterEvent('PLAYER_REGEN_DISABLED')
     end
-    if RollButton.autoClearTips then
-        RollButton.autoClearTips:SetShown(Save.autoClear)
-    end
+    RollButton.autoClearTips:SetShown(Save.autoClear)
 end
 
 
@@ -151,17 +141,49 @@ end
 --#####
 
 local function Init_Menu(_, root)
-    local sub, tre, col, icon
+    local sub, sub2, icon
     local rollNum= #RollTab
     local saveNum= #Save.save
 
     root:SetScrollMode(20*44)
 
-    root:CreateButton('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL)..' |cnGREEN_FONT_COLOR:#'..rollNum..'|r', function()
+    sub=root:CreateButton('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL)..' |cnGREEN_FONT_COLOR:#'..rollNum..'|r', function()
         setRest()--重置
+        return MenuResponse.Close
     end)
-    root:CreateDivider()
 
+    sub2= sub:CreateCheckbox('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '自动清除' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SLASH_STOPWATCH_PARAM_STOP2)), function ()
+        return Save.autoClear
+    end, function ()
+        Save.autoClear= not Save.autoClear and true or false
+        setAutoClearRegisterEvent()--注册自动清除事件
+    end)
+    sub2:SetTooltip(function (tooltip)
+        GameTooltip_SetTitle(tooltip, e.onlyChinese and '进入战斗时: 清除' or (ENTERING_COMBAT..': '..SLASH_STOPWATCH_PARAM_STOP2))
+    end)
+
+    if saveNum>0 then
+        sub:CreateButton('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '清除记录' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, EVENTTRACE_LOG_HEADER))..' |cnGREEN_FONT_COLOR:#'..saveNum..'|r', function()
+            Save.save={}
+            return MenuResponse.Close
+        end)
+        sub:CreateDivider()
+        for _, tab in pairs(Save.save) do
+            sub2= sub:CreateButton('|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t|cffffffff'..tab.roll..'|r '..e.GetPlayerInfo({unit=tab.unit, guid=tab.guid, name=tab.name, reName=true, reRealm=true})..' '..tab.date, function(text)
+                e.Chat(text, nil, nil)
+                return MenuResponse.Refresh
+            end, tab.text)
+            sub2:SetTooltip(function(tooltip, data)
+                GameTooltip_SetTitle(tooltip, data.data)
+                GameTooltip_AddNormalLine(tooltip, '|A:voicechat-icon-textchat-silenced:0:0|a'..(e.onlyChinese and '发送信息' or SEND_MESSAGE))
+            end)
+        end
+    end
+
+
+
+
+    root:CreateDivider()
     local tabNew={}
     for _, tab in pairs(RollTab) do
         if not tabNew[tab.name] then
@@ -179,40 +201,9 @@ local function Init_Menu(_, root)
         end
     end
 
-    if rollNum>0 then
-        root:CreateDivider()
-    end
 
-    sub=root:CreateButton('|A:mechagon-projects:0:0|a'..(e.onlyChinese and '选项' or OPTIONS))
 
-    tre= sub:CreateCheckbox('|A:bags-icon-scrappable:0:0|a'..(e.onlyChinese and '自动清除' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SLASH_STOPWATCH_PARAM_STOP2)), function ()
-        return Save.autoClear
-    end, function ()
-        Save.autoClear= not Save.autoClear and true or false
-        setAutoClearRegisterEvent()--注册自动清除事件
-    end)
-    tre:SetTooltip(function (tooltip)
-        GameTooltip_SetTitle(tooltip, e.onlyChinese and '进入战斗时: 清除' or (ENTERING_COMBAT..': '..SLASH_STOPWATCH_PARAM_STOP2))
-    end)
 
-    tre=sub:CreateButton('|A:Bags-padlock-authenticator:0:0|a'..(e.onlyChinese and '记录' or EVENTTRACE_LOG_HEADER)..' |cnGREEN_FONT_COLOR:#'..saveNum..'|r')
-    if saveNum>0 then
-        tre:CreateButton('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL)..' |cnGREEN_FONT_COLOR:#'..saveNum..'|r', function()
-            Save.save={}
-        end)
-
-        tre:CreateDivider()
-        for _, tab in pairs(Save.save) do
-            local btn= tre:CreateButton('|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t|cffffffff'..tab.roll..'|r '..e.GetPlayerInfo({unit=tab.unit, guid=tab.guid, name=tab.name, reName=true, reRealm=true})..' '..tab.date, function(text)
-                e.Chat(text, nil, nil)
-                return MenuResponse.Refresh
-            end, tab.text)
-            btn:SetTooltip(function(tooltip, data)
-                GameTooltip_SetTitle(tooltip, data.data)
-                GameTooltip_AddNormalLine(tooltip, '|A:voicechat-icon-textchat-silenced:0:0|a'..(e.onlyChinese and '发送信息' or SEND_MESSAGE))
-            end)
-        end
-    end
 end
 
 
@@ -241,14 +232,26 @@ end
 --初始
 --####
 local function Init()
-    setAutoClearRegisterEvent()--注册自动清除事件
+
 
     RollButton.texture:SetTexture('Interface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47')
+
+    RollButton.autoClearTips= RollButton:CreateTexture(nil,'OVERLAY')
+    RollButton.autoClearTips:SetPoint('BOTTOMLEFT',4, 4)
+    RollButton.autoClearTips:SetSize(12,12)
+    RollButton.autoClearTips:SetAtlas('bags-button-autosort-up')
+
+    RollButton.rightBottomText=e.Cstr(RollButton, {color={r=0,g=1,b=0}})
+    RollButton.rightBottomText:SetPoint('BOTTOMRIGHT',-2,3)
+
+    RollButton.rightTopText=e.Cstr(RollButton, {color={r=0,g=1,b=0}})
+    RollButton.rightTopText:SetPoint('TOPLEFT',2,-3)
+
 
     function RollButton:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(addName, e.Icon.left)        
+        e.tips:AddDoubleLine(addName, e.Icon.left)
         if #RollTab>0 then
             e.tips:AddLine(' ')
             local tabNew={}
@@ -265,7 +268,7 @@ local function Init()
         e.tips:Hide()
         self:state_leave()
     end)
-    
+
     RollButton:SetScript('OnEnter', function(self)
         self:state_enter()
         self:set_tooltip()
@@ -280,6 +283,7 @@ local function Init()
         end
     end)
 
+    setAutoClearRegisterEvent()--注册自动清除事件
 end
 
 
@@ -313,7 +317,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             RollButton= WoWToolsChatButtonMixin:CreateButton('Roll', addName)
 
             if RollButton then
-                
+
 
                 Init()
                 self:RegisterEvent('CHAT_MSG_SYSTEM')
