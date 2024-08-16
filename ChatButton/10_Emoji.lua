@@ -210,7 +210,7 @@ end]]
 
 --[[local function Init_Frame_Menu(self, root)
 --缩放
-    local sub= root:CreateButton(e.onlyChinese and '缩放' or 'Scale', function()
+    local sub= root:CreateButton(e.onlyChinese and '缩放' or UI_SCALE, function()
         return MenuResponse.Open
     end)
     for index=0.4, 4, 0.05 do
@@ -417,7 +417,7 @@ local function Init_Menu(self, root)
 
 
 --缩放
-    sub2= sub:CreateButton(e.onlyChinese and '缩放' or 'Scale', function()
+    sub2= sub:CreateButton(e.onlyChinese and '缩放' or UI_SCALE, function()
         return MenuResponse.Open
     end)
     for index=0.4, 4, 0.05 do

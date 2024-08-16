@@ -760,8 +760,7 @@ local function Init_Menu(self, root)
         end
     end
     if num>30 then
-        line= math.ceil(num/30)
-        sub:SetGridMode(MenuConstants.VerticalGridDirection, line)
+        sub:SetGridMode(MenuConstants.VerticalGridDirection, math.ceil(num/30))
     end
 
 
@@ -1021,7 +1020,6 @@ local function Init()
             InvUnitFunc()--邀请，周围玩家
         else
             MenuUtil.CreateContextMenu(self, Init_Menu)
-            e.tips:Hide()
         end
     end)
 

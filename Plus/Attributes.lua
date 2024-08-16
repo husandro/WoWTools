@@ -1773,7 +1773,7 @@ local function Init_Options()--设置 panel
     sliderButtonAlpha:SetPoint("TOPLEFT", slider4, 'BOTTOMLEFT', 0,-24)
 
     local sliderButtonScale = e.CSlider(panel, {min=0.4, max=4, value=Save.buttonScale or 1, setp=0.1, color=true,
-    text=e.onlyChinese and '专精缩放' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPECIALIZATION, 'Scale'),
+    text=e.onlyChinese and '专精缩放' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPECIALIZATION, UI_SCALE),
     func=function(self, value)
         value= tonumber(format('%.01f', value))
         value= value<0.4 and 0.4 or value

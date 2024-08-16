@@ -35,7 +35,7 @@ local function Init_Menu(self, root)
 
 
     --缩放
-    local sub= root:CreateButton(e.onlyChinese and '缩放' or 'Scale', function()
+    local sub= root:CreateButton(e.onlyChinese and '缩放' or UI_SCALE, function()
         return MenuResponse.Open
     end)
     for index=0.4, 4, 0.05 do
@@ -44,7 +44,6 @@ local function Init_Menu(self, root)
         end, function(data)
             Save.scale= data
             self:set_scale()
-            return MenuResponse.Refresh
         end, index)
     end
     sub:CreateDivider()

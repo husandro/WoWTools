@@ -4755,7 +4755,8 @@
         "Boss4TargetFrame",
         "Boss5TargetFrame",
         "LIST_DELIMITER",
-        "WARWITHIN_TITLE2"
+        "WARWITHIN_TITLE2",
+        "MenuResponse"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",
@@ -4779,7 +4780,7 @@
         "utf8": "disable"
     },
     "Lua.workspace.library": [
-        "~\\.vscode\\extensions\\ketho.wow-api-0.17.3\\Annotations"
+        "~\\.vscode\\extensions\\ketho.wow-api-0.17.4\\Annotations"
     ],
     "Lua.runtime.unicodeName": true,
 }
