@@ -728,7 +728,7 @@ local function Init_tipsButton()
 
         e.tips:AddDoubleLine(
             (IsInGroup() and not UnitIsGroupLeader("player") and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:')..(e.onlyChinese and '离开所有队列' or LEAVE_ALL_QUEUES),
-            '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left
+            '|cnGREEN_FONT_COLOR:Shift+'..e.Icon.left
         )
         e.tips:AddDoubleLine(e.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON, e.Icon.right)
         e.tips:AddLine(' ')
@@ -742,19 +742,31 @@ local function Init_tipsButton()
         e.tips:Hide()
         ResetCursor()
         LFDButton:SetButtonState('NORMAL')
-        self:state_leave()
+       -- self:state_leave()
     end)
 
     tipsButton:SetScript('OnEnter', function(self)
         self:set_tooltip()
         LFDButton:SetButtonState('PUSHED')
         Set_Queue_Status()--小眼睛, 更新信息
-        self:state_leave()
+        --self:state_leave()
     end)
 
 
-    tipsButton:SetScript('OnDoubleClick', function()--离开所有队列
-        if IsInGroup() and not UnitIsGroupLeader("player") then
+    
+    --[[tipsButton:SetScript('OnClick', function(_, d)
+        if d=='RightButton' and not IsModifierKeyDown() then
+            PVEFrame_ToggleFrame()
+        end
+    end)]]
+
+    tipsButton:SetScript('OnClick', function(self, d)--离开所有队列
+        if d=='RightButton' and not IsModifierKeyDown() then
+            PVEFrame_ToggleFrame()
+            return
+        end
+
+        if (IsInGroup() and not UnitIsGroupLeader("player")) or not IsShiftKeyDown() or d~='LeftButton' then
             return
         end
 
@@ -789,12 +801,6 @@ local function Init_tipsButton()
         C_LFGList.RemoveListing()
         C_LFGList.ClearSearchResults()
     end)
-    tipsButton:SetScript('OnClick', function(_, d)
-        if d=='RightButton' and not IsModifierKeyDown() then
-            PVEFrame_ToggleFrame()
-        end
-    end)
-
 
     --[[tipsButton:SetScript('OnUpdate', function(self, elapsed)
         if UnitAffectingCombat('player') then

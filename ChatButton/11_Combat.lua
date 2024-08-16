@@ -521,15 +521,6 @@ local function Init_Menu(self, root)
 
 --缩放
     root:CreateDivider()
-    --[[sub= root:CreateCheckbox((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..Save.inCombatScale, function()
-        return Save.combatScale
-    end, function()
-        Save.combatScale= not Save.combatScale and true or nil
-    end)
-    sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
-    end)]]
-
     sub2, sub= WoWToolsScaleMenuMixin:Setup(root, function()
         return Save.inCombatScale
     end, function(value)
@@ -551,22 +542,8 @@ local function Init_Menu(self, root)
     sub2:SetTooltip(function(tooltip)
         tooltip:AddLine(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
     end)
-    --[[for index=0.4, 4, 0.05 do
-        sub:CreateCheckbox(index, function(data)
-            return Save.inCombatScale==data
-        end, function(data)
-            Save.inCombatScale= data
-            CombatButton:set_Sacle_InCombat(true)
-            C_Timer.After(3, function()
-                CombatButton:set_Sacle_InCombat(UnitAffectingCombat('player'))
-            end)
-        end, index)
-    end
-    sub:CreateDivider()
-    sub:CreateTitle(Save.scale or 1)
-    sub:SetGridMode(MenuConstants.VerticalGridDirection, 5)]]
 
-
+--总游戏时间
     local tab=e.WoWDate[e.Player.guid].Time
     sub=root:CreateCheckbox(e.onlyChinese and '总游戏时间'..((tab and tab.totalTime) and ': '..SecondsToTime(tab.totalTime) or '') or TIME_PLAYED_TOTAL:format((tab and tab.totalTime) and SecondsToTime(tab.totalTime) or ''), function()
         return Save.AllOnlineTime
@@ -673,17 +650,15 @@ end
 local function Init()
     OnLineTime=GetTime()
 
-    CombatButton.texture:SetAtlas(get_faction_texture())
-
     CombatButton.texture2=CombatButton:CreateTexture(nil, 'OVERLAY')
     CombatButton.texture2:SetAllPoints(CombatButton)
     CombatButton.texture2:AddMaskTexture(CombatButton.mask)
     CombatButton.texture2:SetColorTexture(1,0,0)
     CombatButton.texture2:SetShown(false)
 
-
-    function CombatButton:set_texture_Desaturated()--禁用/启用 TrackButton, 提示
-        self.texture:SetDesaturated(Save.disabledText and true or false)
+    function CombatButton:set_texture()
+        self.texture:SetAtlas(get_faction_texture())
+        self.texture:SetDesaturated(Save.disabledText and true or false)--禁用/启用 TrackButton, 提示
     end
 
     function CombatButton:Is_In_Arena()--是否在战场
@@ -699,7 +674,7 @@ local function Init()
 
     function CombatButton:set_Click()
         Save.disabledText = not Save.disabledText and true or nil
-        self:set_texture_Desaturated()
+        self:set_texture()
         Init_TrackButton()
     end
     CombatButton:SetScript('OnMouseDown', function(self, d)
@@ -727,6 +702,8 @@ local function Init()
     CombatButton:RegisterEvent('PLAYER_REGEN_DISABLED')
     CombatButton:RegisterEvent('PLAYER_REGEN_ENABLED')
     CombatButton:RegisterEvent('PLAYER_ENTERING_WORLD')
+    CombatButton:RegisterEvent('NEUTRAL_FACTION_SELECT_RESULT')
+
     CombatButton:SetScript("OnEvent", function(self, event)--提示，战斗中, 是否在战场
         if event=='PLAYER_REGEN_ENABLED' then
             self:set_Sacle_InCombat(false)--提示，战斗中
@@ -734,13 +711,14 @@ local function Init()
             self:set_Sacle_InCombat(true)
         elseif event=='PLAYER_ENTERING_WORLD' then
             self:Is_In_Arena()
+        elseif event=='NEUTRAL_FACTION_SELECT_RESULT' then
+            self:set_texture()
         end
     end)
 
     CombatButton:set_Sacle_InCombat(UnitAffectingCombat('player'))--提示，战斗中
-    CombatButton:Is_In_Arena()--是否在战场
-    CombatButton:set_texture_Desaturated()--禁用/启用 TrackButton, 提示
-
+    CombatButton:Is_In_Arena()--是否在战场    
+    CombatButton:set_texture()
 
     if Save.AllOnlineTime or not e.WoWDate[e.Player.guid].Time.totalTime then--总游戏时间
         RequestTimePlayed()
