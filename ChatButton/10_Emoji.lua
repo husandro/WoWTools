@@ -1,7 +1,7 @@
 local id, e = ...
 local addName= 'Emoji'
 local Save={
-    showEnter=true,
+    showEnter=nil,
     On_Click_Show=true,
     Channels={},
     --Point={}

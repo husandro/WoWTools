@@ -7,7 +7,7 @@ local Save={
     useColor=1,
     useCustomColorTab= {r=1, g=0.82, b=0, a=1, hex='|cffffd100'},--自定义, 颜色, 表
 }
-local panel = CreateFrame("Frame", 'WoWTools')--Panel
+
 
 
 --[[
@@ -226,7 +226,7 @@ end
 --创建, 添加控制面板
 --##############
 local variableIndex=0
-local function Set_VariableIndex(name)
+local function Set_VariableIndex()
     variableIndex= variableIndex+1
     return 'WoWToolsPanelVariable'..variableIndex
 end
@@ -240,10 +240,9 @@ Settings.RegisterAddOnCategory(Category)
 --打开，选项
 --Settings.OpenToCategory(categoryID, scrollToElementName)
 function e.OpenPanelOpting(category, name)
-    category= category or Category
+    category= (category and category.GetID) and category or Category
     Category.expanded=true
     Settings.OpenToCategory(category:GetID(), name)
-
 end
 
 
@@ -268,12 +267,11 @@ end
 
 
 
-
+--Settings.RegisterProxySetting(categoryTbl, variable, variableType, name, defaultValue, getValue, setValue)
 
 
 
 --添加，Check
---Settings.RegisterProxySetting(categoryTbl, variable, variableType, name, defaultValue, getValue, setValue)
 function e.AddPanel_Check(tab)
     local setting=Settings.RegisterProxySetting(
         tab.category or Category,
@@ -327,33 +325,27 @@ end
 
 
 --添加，Check 和 按钮
-
-    function e.AddPanel_Check_Button(tab)
-        local layout= tab.layout or Layout
-
-        local checkSetting=Settings.RegisterProxySetting(
-            tab.category or Category,
-            Set_VariableIndex(),
-            Settings.VarType.Boolean,
-            tab.checkName,
-            tab.GetValue(),
-            tab.GetValue,
-            tab.SetValue)
-
-        -- CreateSettingsCheckboxWithButtonInitializer(setting, buttonText, buttonClick, clickRequiresSet, tooltip)
-        local initializer= CreateSettingsCheckboxWithButtonInitializer(
-            checkSetting,
-            tab.buttonText,
-            tab.buttonFunc,
-            true,
-            tab.tooltip
-        )
-
-       
-        layout:AddInitializer(initializer)
-
-        return initializer
-    end
+function e.AddPanel_Check_Button(tab)
+    local layout= tab.layout or Layout
+    local checkSetting=Settings.RegisterProxySetting(
+        tab.category or Category,
+        Set_VariableIndex(),
+        Settings.VarType.Boolean,
+        tab.checkName,
+        tab.GetValue(),
+        tab.GetValue,
+        tab.SetValue
+    )
+    local initializer= CreateSettingsCheckboxWithButtonInitializer(
+        checkSetting,
+        tab.buttonText,
+        tab.buttonFunc,
+        true,
+        tab.tooltip
+    )
+    layout:AddInitializer(initializer)
+    return initializer
+end
 
 
 
@@ -372,48 +364,48 @@ end]]
 
 
 
-    function e.AddPanel_Check_Sider(tab)
-        local layout= tab.layout or Layout
-        local checkSetting=Settings.RegisterProxySetting(
-            tab.category or Category,
-            Set_VariableIndex(),
-            Settings.VarType.Boolean,
-            tab.checkName,
-            tab.checkGetValue(),
-            tab.checkGetValue,
-            tab.checkSetValue
-        )
+function e.AddPanel_Check_Sider(tab)
+    local layout= tab.layout or Layout
+    local checkSetting=Settings.RegisterProxySetting(
+        tab.category or Category,
+        Set_VariableIndex(),
+        Settings.VarType.Boolean,
+        tab.checkName,
+        tab.checkGetValue(),
+        tab.checkGetValue,
+        tab.checkSetValue
+    )
 
-        local sliderSetting = Settings.RegisterProxySetting(
-            tab.category or Category,
-            Set_VariableIndex(),
-            Settings.VarType.Number,
-            tab.sliderName or tab.checkName,
-            tab.sliderGetValue(),
-            tab.sliderGetValue,
-            tab.sliderSetValue
-        )
+    local sliderSetting = Settings.RegisterProxySetting(
+        tab.category or Category,
+        Set_VariableIndex(),
+        Settings.VarType.Number,
+        tab.sliderName or tab.checkName,
+        tab.sliderGetValue(),
+        tab.sliderGetValue,
+        tab.sliderSetValue
+    )
 
-        local options = Settings.CreateSliderOptions(tab.minValue, tab.maxValue, tab.step);
-        options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right, function(value)
-            return e.GetFormatter1to10(value, 0, 1)
-        end)
+    local options = Settings.CreateSliderOptions(tab.minValue, tab.maxValue, tab.step);
+    options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right, function(value)
+        return e.GetFormatter1to10(value, 0, 1)
+    end)
 
-        local initializer = CreateSettingsCheckboxSliderInitializer(
-            checkSetting,
-            tab.checkName,
-            tab.checkTooltip,
+    local initializer = CreateSettingsCheckboxSliderInitializer(
+        checkSetting,
+        tab.checkName,
+        tab.checkTooltip,
 
-            sliderSetting,
-            options,
-            tab.sliderName or tab.checkName,
-            tab.siderTooltip or tab.checkTooltip
-        )
+        sliderSetting,
+        options,
+        tab.sliderName or tab.checkName,
+        tab.siderTooltip or tab.checkTooltip
+    )
 
-        Settings.SetOnValueChangedCallback(sliderSetting:GetVariable(), tab.sliderSetValue)
-        layout:AddInitializer(initializer)
-        return initializer
-    end
+    Settings.SetOnValueChangedCallback(sliderSetting:GetVariable(), tab.sliderSetValue)
+    layout:AddInitializer(initializer)
+    return initializer
+end
 
 
 
@@ -674,53 +666,16 @@ local function Init()
         --[ITEM_MOD_EXTRA_ARMOR_SHORT]= e.onlyChinese and '护' or e.WA_Utf8Sub(ARMOR, 1,2,true)
     }
 end
---[[
-["ITEM_MOD_HASTE_RATING_SHORT"] = "急速",
-["ITEM_MOD_CRIT_RATING_SHORT"] = "爆击",
-["ITEM_MOD_MASTERY_RATING_SHORT"] = "精通",
-["ITEM_MOD_VERSATILITY"] = "全能",
-["ITEM_MOD_CR_LIFESTEAL_SHORT"] = "吸血",
-["ITEM_MOD_CR_SPEED_SHORT"] = "加速",
-
-["ITEM_MOD_PVP_POWER_SHORT"] = "PvP强度",
-["ITEM_MOD_RESILIENCE_RATING_SHORT"] = "PvP韧性",
-["ITEM_MOD_SPELL_POWER_SHORT"] = "法术强度",    
-["ITEM_MOD_SPIRIT_SHORT"] = "精神",
-["ITEM_MOD_STAMINA_SHORT"] = "耐力",
-["ITEM_MOD_SPELL_DAMAGE_DONE_SHORT"] = "伤害加成",
-["ITEM_MOD_SPELL_HEALING_DONE_SHORT"] = "治疗加成",
-["ITEM_MOD_MULTICRAFT_SHORT"] = "产能",
-["ITEM_MOD_DEFTNESS_SHORT"] = "熟练",
-["ITEM_MOD_ARMOR_PENETRATION_RATING_SHORT"] = "护甲穿透",
-["ITEM_MOD_ATTACK_POWER_SHORT"] = "攻击强度",
-["ITEM_MOD_CORRUPTION"] = "腐蚀",
-["ITEM_MOD_CRAFTING_SPEED_SHORT"] = "制作速度",  
-["ITEM_MOD_CR_STURDINESS_SHORT"] = "永不磨损",
-["ITEM_MOD_EXPERTISE_RATING_SHORT"] = "精准",
-["ITEM_MOD_EXTRA_ARMOR_SHORT"] = "护甲加成",
-["ITEM_MOD_FINESSE_SHORT"] = "精细",
-["ITEM_MOD_HIT_RATING_SHORT"] = "命中",
-["ITEM_MOD_INSPIRATION_SHORT"] = "灵感",
-["ITEM_MOD_RESOURCEFULNESS_SHORT"] = "充裕",
-["ITEM_MOD_SPELL_PENETRATION_SHORT"] = "法术穿透",
-["ITEM_MOD_PERCEPTION_SHORT"] = "感知",
-["ITEM_MOD_DEFENSE_SKILL_RATING_SHORT"] = "防御",
-
-["ITEM_MOD_CR_MULTISTRIKE_SHORT"] = "溅射",
-["ITEM_MOD_BLOCK_RATING_SHORT"] = "格挡",
-["ITEM_MOD_CR_AVOIDANCE_SHORT"] = "闪避",
-["ITEM_MOD_DODGE_RATING_SHORT"] = "躲闪"
-["ITEM_MOD_PARRY_RATING_SHORT"] = "招架",
-
-["ITEM_MOD_AGILITY_SHORT"] = "敏捷",
-["ITEM_MOD_STRENGTH_SHORT"] = "力量",
-["ITEM_MOD_INTELLECT_SHORT"] = "智力",]]
 
 
 
 
 
 
+
+
+
+local panel = CreateFrame("Frame")
 panel:RegisterEvent('ADDON_LOADED')
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)

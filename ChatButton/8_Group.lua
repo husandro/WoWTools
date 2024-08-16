@@ -310,7 +310,7 @@ local function Init_Menu(_, root)
     end)
 
     sub:SetTooltip(function (tooltip)
-        tooltip:AddDoubleLine('CVar.chatBubblesParty', e.GetEnabeleDisable(C_CVar.GetCVarBool("chatBubblesParty")))
+        tooltip:AddLine('C_CVar.SetCVar(\"chatBubblesParty\")')
     end)
 
 

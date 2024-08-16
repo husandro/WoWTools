@@ -586,10 +586,7 @@ end
 
 local function set_SummonTips()--召唤，提示
     if Save.Summon and not InviteButton.summonTips then
-        InviteButton.summonTips= InviteButton:CreateTexture(nil,'OVERLAY')
-        InviteButton.summonTips:SetPoint('BOTTOMLEFT',2, 2)
-        InviteButton.summonTips:SetSize(15,16)
-        InviteButton.summonTips:SetAtlas('Raid-Icon-SummonPending')
+        
     end
     if InviteButton.summonTips then
         InviteButton.summonTips:SetShown(Save.Summon)
@@ -736,7 +733,7 @@ end
 
 
 
-local function Init_Menu(_, root)
+local function Init_Menu(self, root)
     local sub, sub2, sub3, col, num, line
 
     sub=root:CreateButton((getLeader() and '' or '|cff9e9e9e')..(e.onlyChinese and '邀请成员' or GUILDCONTROL_OPTION7), InvUnitFunc)
@@ -852,7 +849,7 @@ local function Init_Menu(_, root)
         return Save.Summon
     end, function()
         Save.Summon= not Save.Summon and true or nil
-        set_SummonTips()--召唤，提示
+        self:settings()--召唤，提示
     end)
     sub:SetTooltip(function(tooltip)
         if e.onlyChinese then
@@ -1006,7 +1003,14 @@ end
 local function Init()
     InviteButton.texture:SetAtlas('communities-icon-addgroupplus')
 
-    set_SummonTips()--召唤，提示
+    InviteButton.summonTips= InviteButton:CreateTexture(nil,'OVERLAY')--召唤，提示
+    InviteButton.summonTips:SetPoint('BOTTOMLEFT', 0, 3)
+    InviteButton.summonTips:SetSize(15,16)
+    InviteButton.summonTips:SetAtlas('Raid-Icon-SummonPending')
+
+    function InviteButton:settings()
+        self.summonTips:SetShown(Save.Summon)--召唤，提示
+    end
 
     InviteButton:SetScript('OnClick', function(self, d)
         if d=='LeftButton' then
@@ -1029,6 +1033,7 @@ local function Init()
         self:state_enter()
     end)
 
+    InviteButton:settings()
 
     set_event_PLAYER_TARGET_CHANGED()--设置, 邀请目标事件
     set_event_PLAYER_UPDATE_RESTING()--设置, 休息区提示事件

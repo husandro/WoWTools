@@ -4755,7 +4755,6 @@
         "Boss4TargetFrame",
         "Boss5TargetFrame",
         "LIST_DELIMITER",
-        "GetText",
         "WARWITHIN_TITLE2"
     ],
     "Lua.diagnostics.disable": [

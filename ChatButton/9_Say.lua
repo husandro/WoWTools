@@ -761,6 +761,9 @@ local function Init_Menu(self, root)
             print(id, addName, e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
         end
     end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine('C_CVar.SetCVar(\"chatBubbles\")')
+    end)
 
     sub3=sub2:CreateCheckbox(e.onlyChinese and '自动' or SELF_CAST_AUTO, function()
         return Save.inInstanceBubblesDisabled
