@@ -162,27 +162,30 @@ local function Init_Menu(_, root)
         GameTooltip_SetTitle(tooltip, e.onlyChinese and '进入战斗时: 清除' or (ENTERING_COMBAT..': '..SLASH_STOPWATCH_PARAM_STOP2))
     end)
 
-    if saveNum>0 then
-        sub:CreateButton('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '清除记录' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, EVENTTRACE_LOG_HEADER))..' |cnGREEN_FONT_COLOR:#'..saveNum..'|r', function()
-            Save.save={}
-            return MenuResponse.Close
+if saveNum>0 then
+    sub:CreateButton('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '清除记录' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, EVENTTRACE_LOG_HEADER))..' |cnGREEN_FONT_COLOR:#'..saveNum..'|r', function()
+        Save.save={}
+        return MenuResponse.Close
+    end)
+    sub:CreateDivider()
+    for _, tab in pairs(Save.save) do
+        sub2= sub:CreateButton('|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t|cffffffff'..tab.roll..'|r '..e.GetPlayerInfo({unit=tab.unit, guid=tab.guid, name=tab.name, reName=true, reRealm=true})..' '..tab.date, function(text)
+            e.Chat(text, nil, nil)
+            return MenuResponse.Refresh
+        end, tab.text)
+        sub2:SetTooltip(function(tooltip, data)
+            GameTooltip_SetTitle(tooltip, data.data)
+            GameTooltip_AddNormalLine(tooltip, '|A:voicechat-icon-textchat-silenced:0:0|a'..(e.onlyChinese and '发送信息' or SEND_MESSAGE))
         end)
-        sub:CreateDivider()
-        for _, tab in pairs(Save.save) do
-            sub2= sub:CreateButton('|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t|cffffffff'..tab.roll..'|r '..e.GetPlayerInfo({unit=tab.unit, guid=tab.guid, name=tab.name, reName=true, reRealm=true})..' '..tab.date, function(text)
-                e.Chat(text, nil, nil)
-                return MenuResponse.Refresh
-            end, tab.text)
-            sub2:SetTooltip(function(tooltip, data)
-                GameTooltip_SetTitle(tooltip, data.data)
-                GameTooltip_AddNormalLine(tooltip, '|A:voicechat-icon-textchat-silenced:0:0|a'..(e.onlyChinese and '发送信息' or SEND_MESSAGE))
-            end)
-        end
     end
+    if saveNum>35 then
+        sub:SetGridMode(MenuConstants.VerticalGridDirection, math.ceil(saveNum/35))
+    end
+end
 
 
 
-
+if rollNum>0 then
     root:CreateDivider()
     local tabNew={}
     for _, tab in pairs(RollTab) do
@@ -200,7 +203,10 @@ local function Init_Menu(_, root)
             tabNew[tab.name]=true
         end
     end
-
+    if rollNum>35 then
+        root:SetGridMode(MenuConstants.VerticalGridDirection, math.ceil(rollNum/35))
+    end
+end
 
 
 
