@@ -734,40 +734,63 @@ end
 
 
 local function Init_Menu(self, root)
-    local sub, sub2, sub3, col, num, line
+    local sub, sub2, col, num, line
 
-    sub=root:CreateButton((getLeader() and '' or '|cff9e9e9e')..(e.onlyChinese and '邀请成员' or GUILDCONTROL_OPTION7), InvUnitFunc)
+    sub=root:CreateButton(e.Icon.left..(getLeader() and '' or '|cff9e9e9e')..(e.onlyChinese and '邀请成员' or GUILDCONTROL_OPTION7), InvUnitFunc)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(e.onlyChinese and '周围玩家' or 'Players around')
     end)
 
-    sub2=sub:CreateCheckbox((IsInInstance() and '|cff9e9e9e' or '')..(e.onlyChinese and '邀请目标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INVITE, TARGET)), function()
+       sub:CreateButton(e.onlyChinese and '再次邀请' or INVITE, InvPlateGuidFunc)
+    sub:CreateButton(e.onlyChinese and '全部清除' or CLEAR_ALL, function()
+        InvPlateGuid={}
+    end)
+    sub:CreateDivider()
+
+    num=0
+    for guid, name in pairs(InvPlateGuid) do
+        if not e.GroupGuid[guid] then
+            sub2= sub:CreateButton(e.GetPlayerInfo({unit=nil, guid=guid, name=name,  reName=true, reRealm=true}), function(data)
+                C_PartyInfo.InviteUnit(name)
+            end, name)
+            sub2:SetTooltip(function(tooltip)
+                tooltip:AddLine(e.onlyChinese and '再次邀请' or INVITE)
+            end)
+            num= num+1
+        end
+    end
+    if num>30 then
+        line= math.ceil(num/30)
+        sub:SetGridMode(MenuConstants.VerticalGridDirection, line)
+    end
+
+
+    sub=root:CreateCheckbox((IsInInstance() and '|cff9e9e9e' or '')..(e.onlyChinese and '邀请目标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INVITE, TARGET))..'|A:poi-traveldirections-arrow2:0:0|a', function()
         return Save.InvTar
     end, function()
-        if IsInInstance() then
-            return
-        end
         Save.InvTar= not Save.InvTar and true or nil
+        self:settings()
         set_event_PLAYER_TARGET_CHANGED()--设置, 邀请目标事件
-        set_PLAYER_TARGET_CHANGED()--设置, 邀请目标事件
+        set_PLAYER_TARGET_CHANGED()--设置, 邀请目标事件        
     end)
-    sub2:SetTooltip(function(tooltip)
+    sub:SetTooltip(function(tooltip)
         tooltip:AddLine(e.onlyChinese and '仅限队长' or format(LFG_LIST_CROSS_FACTION, LEADER))
         tooltip:AddLine(e.onlyChinese and '不在副本中' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NO, INSTANCE))
     end)
 
-    sub2=sub:CreateCheckbox((e.onlyChinese and '频道' or CHANNEL)..(Save.ChannelText and '|cnGREEN_FONT_COLOR: '..Save.ChannelText..'|r' or ''), function()
+    sub=root:CreateCheckbox((e.onlyChinese and '频道' or CHANNEL)..'|A:poi-traveldirections-arrow2:0:0|a'..(Save.ChannelText and '|cnGREEN_FONT_COLOR: '..Save.ChannelText..'|r' or ''), function()
         return Save.Channel
     end, function()
         Save.Channel = not Save.Channel and true or nil
         set_Chanell_Event()--设置,频道,事件
+        self:settings()
     end)
-    sub2:SetTooltip(function (tooltip)
+    sub:SetTooltip(function (tooltip)
         tooltip:AddLine(Save.ChannelText or (e.onlyChinese and '无' or NONE))
         tooltip:AddLine(e.onlyChinese and '说, 喊, 密语' or (SAY..', '..YELL..', '..WHISPER))
     end)
 
-    sub2:CreateButton(e.onlyChinese and '关键词' or KBASE_DEFAULT_SEARCH_TEXT, function()
+    sub:CreateButton(e.onlyChinese and '关键词' or KBASE_DEFAULT_SEARCH_TEXT, function()
         StaticPopupDialogs[id..'ChatButton_CHANNEL']= {--设置,内容,频道, 邀请,事件
             text=id..' '..addName..' '..(e.onlyChinese and '频道' or CHANNEL)..'|n|n'..(e.onlyChinese and '关键词' or KBASE_DEFAULT_SEARCH_TEXT),
             whileDead=true, hideOnEscape=true, exclusive=true,
@@ -796,34 +819,9 @@ local function Init_Menu(self, root)
         StaticPopup_Show(id..'ChatButton_CHANNEL')
     end)
 
-    sub2=sub:CreateButton(e.onlyChinese and '已邀请' or LFG_LIST_APP_INVITED, InvPlateGuidFunc)
-    sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine(e.onlyChinese and '再次邀请' or CALENDAR_INVITE_ALL)
-    end)
 
-    num=0
-    for guid, name in pairs(InvPlateGuid) do
-        if not e.GroupGuid[guid] then
-            sub3= sub2:CreateButton(e.GetPlayerInfo({unit=nil, guid=guid, name=name,  reName=true, reRealm=true}), function(data)
-                C_PartyInfo.InviteUnit(name)
-            end, name)
-            sub3:SetTooltip(function(tooltip)
-                tooltip:AddLine(e.onlyChinese and '再次邀请' or INVITE)
-            end)
-            num= num+1
-        end
-    end
 
-    sub2:CreateDivider()
-    sub2:CreateButton(e.onlyChinese and '再次邀请' or INVITE, InvPlateGuidFunc)
-    sub2:CreateButton(e.onlyChinese and '全部清除' or CLEAR_ALL, function()
-        InvPlateGuid={}
-    end)
 
-    if num>30 then
-        line= math.ceil(num/30)
-        sub2:SetGridMode(MenuConstants.VerticalGridDirection, line)
-    end
 
 
 
@@ -1005,11 +1003,17 @@ local function Init()
 
     InviteButton.summonTips= InviteButton:CreateTexture(nil,'OVERLAY')--召唤，提示
     InviteButton.summonTips:SetPoint('BOTTOMLEFT', 0, 3)
-    InviteButton.summonTips:SetSize(15,16)
+    InviteButton.summonTips:SetSize(16,16)
     InviteButton.summonTips:SetAtlas('Raid-Icon-SummonPending')
+
+    InviteButton.invTips= InviteButton:CreateTexture(nil,'OVERLAY')--召唤，提示
+    InviteButton.invTips:SetPoint('BOTTOMRIGHT', -2, 0)
+    InviteButton.invTips:SetSize(16,16)
+    InviteButton.invTips:SetAtlas('poi-traveldirections-arrow2')
 
     function InviteButton:settings()
         self.summonTips:SetShown(Save.Summon)--召唤，提示
+        self.invTips:SetShown(Save.Channel and Save.ChannelText or Save.InvTar)
     end
 
     InviteButton:SetScript('OnClick', function(self, d)
@@ -1029,6 +1033,12 @@ local function Init()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(addName, e.Icon.left)
+        if Save.InvTar then
+            e.tips:AddLine(e.onlyChinese and '邀请目标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INVITE, TARGET))
+        end
+        if Save.Channel and Save.ChannelText then
+            e.tips:AddLine((e.onlyChinese and '频道' or CHANNEL)..'|cnGREEN_FONT_COLOR: '..Save.ChannelText)
+        end
         e.tips:Show()
         self:state_enter()
     end)
