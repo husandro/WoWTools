@@ -3845,7 +3845,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     self:UnregisterEvent('ADDON_LOADED')
                 end
 
-                
+                if Save.gossip then
+                    C_Timer.After(2, function()
+                        if SubscriptionInterstitialFrame and SubscriptionInterstitialFrame:IsShown() then
+                            SubscriptionInterstitialFrame:Hide()
+                        end
+                    end)
+                end
+
             else
                 self:UnregisterEvent('ADDON_LOADED')
             end
@@ -3853,10 +3860,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         elseif arg1=='Blizzard_PlayerChoice' then
             Init_Blizzard_PlayerChoice()
 
-        elseif arg1=='Blizzard_SubscriptionInterstitialUI' then
+        --[[elseif arg1=='Blizzard_SubscriptionInterstitialUI' then
             if Save.gossip and SubscriptionInterstitialFrame:IsShown() then
                 SubscriptionInterstitialFrame:Hide()
-            end
+            end]]
         end
 
     elseif event == "PLAYER_LOGOUT" then
