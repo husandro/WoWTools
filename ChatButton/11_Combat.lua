@@ -678,7 +678,7 @@ local function Init()
         Init_TrackButton()
     end
     CombatButton:SetScript('OnMouseDown', function(self, d)
-        MenuUtil.CreateContextMenu(self, Init_Menu)        
+        MenuUtil.CreateContextMenu(self, Init_Menu)
     end)
 
     CombatButton:SetScript('OnEnter', function(self)
@@ -687,11 +687,11 @@ local function Init()
         set_Tooltips_Info()
         e.tips:Show()
         Set_TrackButton_Pushed(true)--TrackButton，提示
-        WoWToolsChatButtonFrame:SetButtonState('PUSHED')
+        self:state_enter(Init_Menu)
     end)
-    CombatButton:SetScript('OnLeave', function()
+    CombatButton:SetScript('OnLeave', function(self)
         Set_TrackButton_Pushed(false)--TrackButton，提示
-        WoWToolsChatButtonFrame:SetButtonState('NORMAL')
+        self:state_enter(Init_Menu)
         e.tips:Hide()
     end)
 

@@ -119,6 +119,10 @@ MenuTemplates.xml 中提供了我们整个 UI 中使用的最常见下拉样式�
 和 WowStyle1FilterDropdownTemplate 在代码中使用最频繁。WowStyle1DropdownTemplate 用于至少有一个
 可选元素的下拉列表，而 WowStyle1FilterDropdownTemplate 用于可能有许多可选元素的分类过滤器。
 
+WowStyle2DropdownTemplate
+WowStyle2IconButtonTemplate
+WowMenuAutoHideButtonTemplate
+
 上下文菜单不依赖于任何模板。
 
 *** 选择状态 ***

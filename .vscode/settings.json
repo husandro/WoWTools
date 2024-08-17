@@ -4756,7 +4756,8 @@
         "Boss5TargetFrame",
         "LIST_DELIMITER",
         "WARWITHIN_TITLE2",
-        "MenuResponse"
+        "MenuResponse",
+        "Background"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

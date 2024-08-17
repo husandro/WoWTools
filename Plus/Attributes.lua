@@ -2178,6 +2178,9 @@ local function Init()
                         icon='mechagon-projects',
                         notCheckable=true,
                         func= function()
+                            if not Category then
+                                e.OpenPanelOpting()
+                            end
                             e.OpenPanelOpting(Category)--nil, '|A:charactercreate-icon-customize-body-selected:0:0|a'..(e.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES))
                         end
                     }

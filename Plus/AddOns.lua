@@ -479,6 +479,9 @@ local function Init_Add_Save_Button()
                 )
             )
         elseif d=='RightButton' then
+            if not Initializer then
+                e.OpenPanelOpting()
+            end
             e.OpenPanelOpting(Initializer, addName)
         end
     end)

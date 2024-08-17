@@ -469,7 +469,7 @@ local function Init()
         e.tips:Hide()
     end)
     SayButton:SetScript('OnEnter', function(self)
-        self:state_enter()
+        self:state_enter(Init_Menu)
         self:set_tooltip()
     end)
 

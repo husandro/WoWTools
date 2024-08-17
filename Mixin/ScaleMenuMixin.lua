@@ -1,6 +1,6 @@
 local e= select(2, ...)
 --[[
-e.Set_Frame_Scale(self, delta, value, func)--设置Frame缩放
+WoWToolsScaleMenuMixin:SetupFrame(self, delta, value, func)--设置Frame缩放
 
 WoWToolsScaleMenuMixin:Setup(root, function()
     return Save.markersScale
@@ -11,8 +11,8 @@ end)
 
 
 
---设置Frame缩放
-function e.Set_Frame_Scale(self, delta, value, func)
+--[[设置Frame缩放
+function WoWToolsScaleMenuMixin:SetupFrame(self, delta, value, func)
     local n= value
     if self:CanChangeAttribute() and not UnitAffectingCombat('player') and IsAltKeyDown() then
         n= n or 1
@@ -32,10 +32,33 @@ function e.Set_Frame_Scale(self, delta, value, func)
         end
     end
     return n
-end
+end]]
 
 
 WoWToolsScaleMenuMixin={}
+
+function WoWToolsScaleMenuMixin:SetupFrame(frame, delta, value, func)
+    local n= value
+    if frame:CanChangeAttribute() and not UnitAffectingCombat('player') and IsAltKeyDown() then
+        n= n or 1
+        n= delta==1 and n-0.05 or n
+        n= delta==-1 and n+0.05 or n
+        n= n>4 and 4 or n
+        n= n<0.4 and 0.4 or n
+        frame:SetScale(n)
+        if func then
+            func()
+        end
+        if frame.set_scale then
+            frame:set_scale()
+        end
+        if frame.set_tooltip then
+            frame:set_tooltip()
+        end
+    end
+    return n
+end
+
 function WoWToolsScaleMenuMixin:Setup(root, GetValue, SetValue, checkGetValue, checkSetValue)
     local sub, sub2
     if checkGetValue and checkSetValue then

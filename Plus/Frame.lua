@@ -338,6 +338,9 @@ local function set_Scale_Size(frame, tab)
         end
         if IsShiftKeyDown() then
             if d=='RightButton' then
+                if not Category then
+                    e.OpenPanelOpting()    
+                end
                 e.OpenPanelOpting(Category)--打开，选项
 
             elseif d=='LeftButton' then

@@ -332,7 +332,7 @@ local function Init_EmojiFrame()
         EmojiButton:SetButtonState('PUSHED')
     end)
     Frame:SetScript('OnMouseWheel', function(self, d)--缩放
-        Save.scale=e.Set_Frame_Scale(self, d, Save.scale, nil)
+        Save.scale=WoWToolsScaleMenuMixin:SetupFrame(self, d, Save.scale, nil)
     end)
 
 
@@ -384,7 +384,7 @@ local function Init_Menu(self, root)
     --sub2=sub:CreateButton(e.onlyChinese and '显示/隐藏' or format('%s/%s', SHOW, HIDE), function() return MenuResponse.Open end)
 --显示
     root:CreateTitle(e.onlyChinese and '显示' or SHOW)
-    root:CreateCheckbox('|A:newplayertutorial-drag-cursor:0:0|a'..(e.onlyChinese and '过移图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ENTER_LFG,EMBLEM_SYMBOL)), function()
+    root:CreateCheckbox('|A:newplayertutorial-drag-cursor:0:0|a'..(e.onlyChinese and '移过图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ENTER_LFG,EMBLEM_SYMBOL)), function()
         return Save.showEnter
     end, function()
         Save.showEnter = not Save.showEnter and true or nil
@@ -580,7 +580,7 @@ local function Init()
         end
         self:set_frame_state(true)
         self:set_tooltip()
-        self:state_enter()
+        self:state_enter(Init_Menu)
         self.chatFrameEditBox= ChatEdit_GetActiveWindow() and true or false
     end)
     EmojiButton:SetScript('OnLeave', function(self)

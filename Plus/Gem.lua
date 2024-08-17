@@ -963,6 +963,9 @@ local function Init_Button_All()
                         keepShownOnClick=true,
                         notCheckable=true,
                         func=function()
+                            if not Initializer then
+                                e.OpenPanelOpting()
+                            end
                             e.OpenPanelOpting(Initializer)
                         end
                     }, level)

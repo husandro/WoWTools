@@ -2598,6 +2598,9 @@ local function Init_Menu(_, level, menuList)
         menuList='OPTIONS',
         hasArrow=true,
         func= function()
+            if not Initializer then
+                e.OpenPanelOpting()    
+            end
             e.OpenPanelOpting(Initializer)
         end
     }
@@ -2657,6 +2660,9 @@ local function click_Func(self, d)
             if expButton and expButton.ToggleLandingPage and expButton.title then
                 expButton:ToggleLandingPage()--Minimap.lua
             else
+                if not Initializer then
+                    e.OpenPanelOpting()    
+                end
                 e.OpenPanelOpting(Initializer)
                 --Settings.OpenToCategory(id)
                 --e.call(InterfaceOptionsFrame_OpenToCategory, id)
@@ -2664,6 +2670,9 @@ local function click_Func(self, d)
 
     elseif d=='RightButton' and not key then
         if SettingsPanel:IsShown() then
+            if not Initializer then
+                e.OpenPanelOpting()    
+            end
             e.OpenPanelOpting(Initializer)
         else
             e.OpenPanelOpting()

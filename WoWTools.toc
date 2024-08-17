@@ -19,7 +19,7 @@
 Libs\Libs.xml
 
 ##主要function，不能删除
-Mixin\ChatButton_Mixin.lua
+Mixin\ChatButtonMixin.lua
 Mixin\FrameMixin.lua
 Mixin\ScaleMenuMixin.lua
 

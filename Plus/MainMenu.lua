@@ -641,6 +641,9 @@ local function Init_Help()
     end)
     MainMenuMicroButton:EnableMouseWheel(true)--主菜单, 打开插件选项
     MainMenuMicroButton:HookScript('OnMouseWheel', function()
+        if not Category then
+            e.OpenPanelOpting()
+        end
         e.OpenPanelOpting(Category, '|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..(e.onlyChinese and '小地图' or addName))
     end)
 end

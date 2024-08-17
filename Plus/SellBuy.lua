@@ -704,7 +704,7 @@ local function Init_Auto_Repair()
                 end
             end
         end
-        
+
     end
     AutoRepairCheck:RegisterEvent('MERCHANT_SHOW')
     AutoRepairCheck.events={
@@ -1359,6 +1359,9 @@ local function Init_Menu(_, level, type)
         text= '    |A:SpellIcon-256x256-SellJunk:0:0|a'..(e.onlyChinese and '选项' or OPTIONS),
         notCheckable=true,
         func= function()
+            if not Initializer then
+                e.OpenPanelOpting()
+            end
             e.OpenPanelOpting(Initializer)
         end
     }
@@ -1895,7 +1898,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, _, arg5)
                     print(id, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
                 end
             })
-            
+
             if Save.disabled then
                 e.CheckItemSell=nil
                 self:UnregisterAllEvents()
@@ -1904,7 +1907,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, _, arg5)
                     buySave=WoWToolsSave.BuyItems and WoWToolsSave.BuyItems[e.Player.name_realm] or buySave--购买物品
                     RepairSave=WoWToolsSave.Repair and WoWToolsSave.Repair[e.Player.name_realm] or RepairSave--修理
                 end
-                                
+
                 Init()
 
                 C_Timer.After(2.2, function()

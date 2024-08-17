@@ -1631,6 +1631,9 @@ local function Init_Show_Hide_Button(frame)
 
     btn:SetScript('OnClick', function(_, d)
         if d=='RightButton' then
+            if not Initializer then
+                e.OpenPanelOpting()    
+            end
             e.OpenPanelOpting(Initializer)
             return
         end

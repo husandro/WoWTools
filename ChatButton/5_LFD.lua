@@ -710,7 +710,7 @@ local function Init_tipsButton()
     end
 
     tipsButton:SetScript('OnMouseWheel', function(self, delta)
-        Save.tipsScale= e.Set_Frame_Scale(self, delta, Save.tipsScale, nil)
+        Save.tipsScale= WoWToolsScaleMenuMixin:SetupFrame(self, delta, Save.tipsScale, nil)
     end)
 
     tipsButton:SetScript("OnMouseDown", function(_, d)
@@ -3077,8 +3077,8 @@ local function Init()
         if tipsButton and tipsButton:IsShown() then
             tipsButton:SetButtonState('PUSHED')
         end
-         e.tips:Show()
-         self:state_enter()
+        e.tips:Show()
+        self:state_enter(Init_Menu)
     end)
     LFDButton:SetScript('OnLeave', function(self)
         e.tips:Hide()

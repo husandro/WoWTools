@@ -7,8 +7,9 @@ local Save={
     scale= 1,
     --isVertical=nil,--方向, 竖
     --isShowBackground=nil,--是否显示背景 bool
+    --isEnterShowMenu 移过图标，显示菜单
 }
-
+local panel= CreateFrame("Frame")
 local addName
 local ChatButton
 local Initializer, Layout
@@ -61,24 +62,38 @@ local function Init_Menu(self, root)
         return Save.isVertical
     end, function()
         Save.isVertical= not Save.isVertical and true or nil
-        WoWToolsChatButtonMixin:RestHV(Save.isVertical)--方向, 竖
+        self:save_data()
+        WoWToolsChatButtonMixin:RestHV()--方向, 竖
     end)
-    root:CreateCheckbox(e.onlyChinese and '背景' or 'Background', function()
+    root:CreateCheckbox('|A:UI-Frame-DialogBox-BackgroundTile:0:0|a'..(e.onlyChinese and '背景' or 'Background'), function()
         return Save.isShowBackground
     end, function()
         Save.isShowBackground= not Save.isShowBackground and true or nil
-        WoWToolsChatButtonMixin.isShowBackground= Save.isShowBackground
+        self:save_data()
         WoWToolsChatButtonMixin:ShowBackgroud()
+    end)
+
+    sub=root:CreateCheckbox('|A:newplayertutorial-drag-cursor:0:0|a'..(e.onlyChinese and '移过图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ENTER_LFG,EMBLEM_SYMBOL)), function()
+        return Save.isEnterShowMenu
+    end, function()
+        Save.isEnterShowMenu = not Save.isEnterShowMenu and true or nil
+        self:save_data()
+    end)
+    sub:SetTooltip(function (tooltip)
+        tooltip:AddLine(e.onlyChinese and '显示菜单' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, HUD_EDIT_MODE_MICRO_MENU_LABEL))
     end)
 
     root:CreateDivider()
     root:CreateButton((Save.Point and '' or '|cff9e9e9e')..(e.onlyChinese and '重置位置' or RESET_POSITION), function()
         Save.Point=nil
-        self:set_point()
+        self:set_point()        
     end)
 
     root:CreateDivider()
     sub=root:CreateButton(addName, function()
+        if not Initializer then
+            e.OpenPanelOpting()
+        end
         e.OpenPanelOpting(Initializer, addName)
     end)
     sub:SetTooltip(function(tooltip)
@@ -108,6 +123,10 @@ end
 --####
 local function Init()
     SELECTED_DOCK_FRAME.editBox:SetAltArrowKeyMode(false)
+    
+    function ChatButton:save_data()
+        WoWToolsChatButtonMixin:SetSaveData(Save)
+    end
 
     function ChatButton:set_strata()
         self:SetFrameStrata(Save.strata or 'MEDIUM')
@@ -166,7 +185,7 @@ local function Init()
     end)
 
     ChatButton:SetScript('OnMouseWheel', function(self, d)--缩放
-        Save.scale=e.Set_Frame_Scale(self, d, Save.scale, nil)
+        Save.scale=WoWToolsScaleMenuMixin:SetupFrame(self, d, Save.scale, nil)
     end)
 
 
@@ -174,7 +193,7 @@ local function Init()
         ResetCursor()
         e.tips:Hide()
     end)
-    ChatButton:SetScript('OnEnter',ChatButton.set_tooltip)
+    ChatButton:SetScript('OnEnter', ChatButton.set_tooltip)
 
     ChatButton:set_strata()
     ChatButton:set_point()
@@ -204,6 +223,7 @@ end
 
 
 local function Init_Panel()
+
     Initializer, Layout= e.AddPanel_Sub_Category({name=addName})
 
     e.AddPanel_Check_Button({
@@ -267,7 +287,7 @@ end
 --###########
 --加载保存数据
 --###########
-local panel= CreateFrame("Frame")
+
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(_, event, arg1)

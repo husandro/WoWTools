@@ -295,7 +295,7 @@ local function Init()
         end
         e.Get_Guild_Enter_Info()--公会， 社区，信息
         e.tips:Show()
-        self:state_enter()
+        self:state_enter(Init_Menu)
         if IsInGuild() then
             C_GuildInfo.GuildRoster()
         end

@@ -441,7 +441,7 @@ local function Init_Ready_Tips_Button()
     ReadyTipsButton:SetScript('OnDoubleClick', ReadyTipsButton.set_Hide)--隐藏
 
     ReadyTipsButton:SetScript('OnMouseWheel', function(self, delta)--缩放
-        Save.tipsTextSacle= e.Set_Frame_Scale(self, delta, Save.tipsTextSacle)--设置Frame缩放
+        Save.tipsTextSacle= WoWToolsScaleMenuMixin:SetupFrame(self, delta, Save.tipsTextSacle)--设置Frame缩放
     end)
 
 
@@ -462,7 +462,7 @@ local function Init_Ready_Tips_Button()
     end)
     ReadyTipsButton:SetScript('OnEnter', function(self)
         self:set_tooltip()
-        MarkerButton:state_enter(true)
+        MarkerButton:state_enter(nil, true)
     end)
 
     ReadyTipsButton:SetScript('OnHide', function(self)
@@ -647,10 +647,10 @@ local function Init_Markers_Frame()--设置标记, 框架
     btn:SetScript('OnEnter', function(self)
         self:set_tooltip()
         self:set_Alpha(true)
-        MarkerButton:state_enter(true)
+        MarkerButton:state_enter(nil, true)
     end)
     btn:SetScript('OnMouseWheel', function(self, delta)--缩放
-        Save.markersScale= e.Set_Frame_Scale(self, delta, Save.markersScale)
+        Save.markersScale= WoWToolsScaleMenuMixin:SetupFrame(self, delta, Save.markersScale)
     end)
 
 
@@ -1662,7 +1662,7 @@ local function Init()
             self.groupReadyTips:SetButtonState('PUSHED')
         end
         self:set_tooltip()
-        self:state_enter()
+        self:state_enter(Init_Menu)
         local btn= _G['WoWTools_MarkerFrame_Move_Button']
         if btn then
             btn:set_Alpha(true)

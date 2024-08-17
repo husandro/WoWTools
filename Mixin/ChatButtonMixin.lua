@@ -3,27 +3,20 @@ local e= select(2, ...)
 WoWToolsChatButtonMixin= {
     AddList={},--所有, 按钮 {name}=true
     DisabledAdd={},--禁用, 按钮 {name}=true
-    isShowBackground=nil,--是否显示背景 bool
-
+    Save={},
     Buttons={},--存放所有, 按钮 {btn1, btn2,}
     LastButton=nil,--最后, 按钮 btn
     numButton=0,--总数, 按钮 numberi
 
-    isVertical=nil,--方向, 竖
-    
 }
-
 
 
 
 function WoWToolsChatButtonMixin:Init(disableTab, save)
     self.ChatButton= e.Cbtn(nil, {name='WoWToolsChatButtonFrame', icon='hide'})
-    
-    self.isShowBackground= save.isShowBackground--是否显示背景 bool
-    self.isVertical= save.isVertical--方向, 竖
+    self:SetSaveData(save)
     self.DisabledAdd= disableTab or {}--禁用, 按钮 {name}=true
     self.LastButton= self.ChatButton
-     
     self.numButton=0--总数, 按钮 numberi
     self:SetChatButtonSize()
 
@@ -70,9 +63,12 @@ function WoWToolsChatButtonMixin:CreateButton(name, tooltip)
 
     e.Set_Label_Texture_Color(btn.border, {type='Texture', alpha= 0.3})
 
-    function btn:state_enter(isSelf)
+    function btn:state_enter(func, isSelf)
         local frame= isSelf and self or self:GetParent()
         frame:SetButtonState('PUSHED')
+        if func and WoWToolsChatButtonMixin:GetSaveData().isEnterShowMenu then--显示菜单
+            MenuUtil.CreateContextMenu(self, func)
+        end
     end
     function btn:state_leave(isSelf)
         local frame= isSelf and self or self:GetParent()
@@ -90,8 +86,8 @@ end
 
 function WoWToolsChatButtonMixin:SetPoint(btn)
     local id= btn:GetID()
-    if self.isVertical then
-        btn:SetPoint('BOTTOM', id==1 and self.ChatButton or self.Buttons[id-1], 'TOP')        
+    if self.Save.isVertical then--方向, 竖
+        btn:SetPoint('BOTTOM', id==1 and self.ChatButton or self.Buttons[id-1], 'TOP')
     else
         btn:SetPoint('LEFT', id==1 and self.ChatButton or self.Buttons[id-1], 'RIGHT')
     end
@@ -101,7 +97,7 @@ end
 
 
 function WoWToolsChatButtonMixin:SetChatButtonSize()
-    if self.isVertical then
+    if self.Save.isVertical then--方向, 竖
         self.ChatButton:SetSize(30,10)
     else
         self.ChatButton:SetSize(10,30)
@@ -109,8 +105,7 @@ function WoWToolsChatButtonMixin:SetChatButtonSize()
 end
 
 
-function WoWToolsChatButtonMixin:RestHV(isVertical)--Horizontal and vertical
-    self.isVertical=isVertical--方向, 竖
+function WoWToolsChatButtonMixin:RestHV()--Horizontal and vertical
     self:SetChatButtonSize()
     for _, btn in pairs(self.Buttons) do
         btn:ClearAllPoints()
@@ -118,8 +113,8 @@ function WoWToolsChatButtonMixin:RestHV(isVertical)--Horizontal and vertical
     end
 end
 
-function WoWToolsChatButtonMixin:GetHV()
-    return self.isVertical
+function WoWToolsChatButtonMixin:GetHV()--方向, 竖
+    return self.Save.isVertical
 end
 
 function WoWToolsChatButtonMixin:GetAllAddList()
@@ -132,22 +127,25 @@ function WoWToolsChatButtonMixin:ShowBackgroud()
     if not btn then
         return
     end
-    if self.isShowBackground then
+    if self.Save.isShowBackground then--是否显示背景 bool
         if not btn.Background then
             btn.Background= btn:CreateTexture(nil, 'BACKGROUND')
-            btn.Background:SetPoint('BOTTOMLEFT', self.Buttons[1])            
+            btn.Background:SetPoint('BOTTOMLEFT', self.Buttons[1])
             btn.Background:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
             btn.Background:SetAlpha(0.5)
         end
         btn.Background:SetPoint('TOPRIGHT', self.LastButton)
     end
     if btn.Background then
-        btn.Background:SetShown(self.isShowBackground)
+        btn.Background:SetShown(self.Save.isShowBackground)
     end
 end
 
 
 
-
-
-
+function WoWToolsChatButtonMixin:GetSaveData()
+    return self.Save
+end
+function WoWToolsChatButtonMixin:SetSaveData(save)
+    self.Save= save or {}
+end

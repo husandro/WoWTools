@@ -242,6 +242,7 @@ Settings.RegisterAddOnCategory(Category)
 function e.OpenPanelOpting(category, name)
     category= (category and category.GetID) and category or Category
     Category.expanded=true
+    name= name and (category and category.GetName and category:GetName())
     Settings.OpenToCategory(category:GetID(), name)
 end
 

@@ -616,7 +616,7 @@ local function Init()
 
         end
         e.tips:Show()
-        self:state_enter()
+        self:state_enter(Init_Menu)
     end)
 
     C_Timer.After(0.3, Settings)--队伍信息提示

@@ -34,7 +34,7 @@ DEFAULT_CHAT_FRAME.ADD= DEFAULT_CHAT_FRAME.AddMessage
 --local not_Colleced_Icon='|A:questlegendary:0:0|a'
 
 local LOOT_ITEM= e.Magic(LOOT_ITEM)--:gsub('%%s', '(.+)')--%s获得了战利品：%s。
-
+local Category
 
 
 
@@ -680,7 +680,7 @@ end
 --local Category, Layout
 local function Init_Panel()
     --Category, Layout= e.AddPanel_Sub_Category({name= addName, frame= panel})
-    e.AddPanel_Sub_Category({name=addName, frame=panel})
+    Category= e.AddPanel_Sub_Category({name=addName, frame=panel})
 
     local function Cedit(self)
         local frame= CreateFrame('Frame',nil, self, 'ScrollingEditBoxTemplate')--ScrollTemplates.lua
@@ -1067,7 +1067,10 @@ local function Init_Menu(_, root)
     end)
 
     sub:CreateButton('|A:mechagon-projects:0:0|a'..(e.onlyChinese and '设置关键词' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, e.Player.L.key)), function()
-        e.OpenPanelOpting(nil, addName)
+        if not Category then
+            e.OpenPanelOpting()
+        end
+        e.OpenPanelOpting(Category, addName)
     end)
 
 
@@ -1360,14 +1363,15 @@ local function Init()
 
     LinkButton:SetScript('OnLeave', function(self)
         e.tips:Hide()
-        self:state_leave()
+        self:state_enter(Init_Menu)
     end)
     LinkButton:SetScript('OnEnter', function(self)
         --[[e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.onlyChinese and '超链接图标'or addName, e.GetEnabeleDisable(Save.disabed))
         e.tips:Show()]]
-        self:state_enter()
+        self:state_enter(Init_Menu)
+        
     end)
 
     LinkButton:SetScript('OnClick', function(self, d)
