@@ -201,7 +201,7 @@ end
 --#######
 --屏蔽内容
 --#######
-local function Set_myChat_Filter(_, _, msg, name, _, _, _, _, _, _, _, _, _, guid)
+local function WoWTools_Word_Filter(_, _, msg, name, _, _, _, _, _, _, _, _, _, guid)
     if Save.userChatFilter and Save.userChatFilterTab[name] then
         Save.userChatFilterTab[name]= {
                 num= Save.userChatFilterTab[name].num +1,
@@ -247,9 +247,9 @@ end
 
 local function Set_Filter()
     if Save.myChatFilter or Save.userChatFilter then
-        ChatFrame_AddMessageEventFilter("CHAT_MSG_CHANNEL", Set_myChat_Filter)
+        ChatFrame_AddMessageEventFilter("CHAT_MSG_CHANNEL", WoWTools_Word_Filter)
     else
-        ChatFrame_RemoveMessageEventFilter("CHAT_MSG_CHANNEL", Set_myChat_Filter)
+        ChatFrame_RemoveMessageEventFilter("CHAT_MSG_CHANNEL", WoWTools_Word_Filter)
     end
 end
 

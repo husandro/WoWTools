@@ -779,7 +779,7 @@ end
 local factionStr= FACTION_STANDING_INCREASED:gsub("%%s", "(.-)")--你在%s中的声望值提高了%d点。
 factionStr = factionStr:gsub("%%d", ".-")
 
-local function Set_Faction_Update(_, _, text, ...)
+local function WoWTools_Faction_Updata_Filter(_, _, text, ...)
 	local name=text and text:match(factionStr)
 	if not name then
 		return
@@ -1101,7 +1101,7 @@ local function Init()
 	Button:set_Shown()
 
 	if Save.factionUpdateTips then--声望更新, 提示
-		ChatFrame_AddMessageEventFilter('CHAT_MSG_COMBAT_FACTION_CHANGE', Set_Faction_Update)
+		ChatFrame_AddMessageEventFilter('CHAT_MSG_COMBAT_FACTION_CHANGE', WoWTools_Faction_Updata_Filter)
 
 		C_Timer.After(2, function()
 			local text

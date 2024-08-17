@@ -41,7 +41,7 @@ local Channels={
 
 
 --过滤，事件
-local function Init_Chat_Filter(_, _, msg, ...)
+local function WoWTools_Emoji_Filter(_, _, msg, ...)
     local str=msg
     for text, icon in pairs(TextToTexture) do
         str= str:gsub(text, icon)
@@ -609,10 +609,10 @@ local function Init()
         local find=0
         for _, channel in pairs(Channels) do
             if not Save.Channels[channel] then
-                ChatFrame_AddMessageEventFilter(channel, Init_Chat_Filter)
+                ChatFrame_AddMessageEventFilter(channel, WoWTools_Emoji_Filter)
                 find= find+1
             else
-                ChatFrame_RemoveMessageEventFilter(channel, Init_Chat_Filter)
+                ChatFrame_RemoveMessageEventFilter(channel, WoWTools_Emoji_Filter)
             end
         end
         self.texture:SetDesaturated(find==0)
