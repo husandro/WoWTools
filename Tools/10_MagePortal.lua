@@ -171,7 +171,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave[addName..'Tools'] or Save
 
             if WoWTools_ToolsButtonMixin:GetButton() then                
-                Init()--初始
+                C_Timer.After(4, Init)
                 panel:UnregisterEvent('ADDON_LOADED')
             else
                 panel:UnregisterAllEvents()

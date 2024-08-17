@@ -109,7 +109,11 @@ end
 function WoWTools_ToolsButtonMixin:SetPoint(btn, line, unoLine)
     if (not unoLine and self.index>0 and select(2, math.modf(self.index / 10))==0) or line then
         local x= - (self.line * 30)
-        btn:SetPoint('BOTTOMRIGHT', self.Button , 'TOPRIGHT', x, 0)
+        if self.line>0 then
+            btn:SetPoint('BOTTOMRIGHT', self.Button , 'TOPRIGHT', x, 30)
+        else
+            btn:SetPoint('BOTTOMRIGHT', self.Button , 'TOPRIGHT', x, 0)
+        end
         self.line=self.line + 1
         if line then
             self.index=0
