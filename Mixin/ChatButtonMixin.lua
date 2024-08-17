@@ -1,6 +1,6 @@
 local e= select(2, ...)
 
-WoWToolsChatButtonMixin= {
+WoWTools_ChatButtonMixin= {
     AddList={},--所有, 按钮 {name}=true
     DisabledAdd={},--禁用, 按钮 {name}=true
     Save={},
@@ -12,7 +12,7 @@ WoWToolsChatButtonMixin= {
 
 
 
-function WoWToolsChatButtonMixin:Init(disableTab, save)
+function WoWTools_ChatButtonMixin:Init(disableTab, save)
     self.ChatButton= e.Cbtn(nil, {name='WoWToolsChatButtonFrame', icon='hide'})
     self:SetSaveData(save)
     self.DisabledAdd= disableTab or {}--禁用, 按钮 {name}=true
@@ -25,7 +25,7 @@ end
 
 
 
-function WoWToolsChatButtonMixin:CreateButton(name, tooltip)
+function WoWTools_ChatButtonMixin:CreateButton(name, tooltip)
     table.insert(self.AddList, {name=name, tooltip=tooltip})
 
     if not self.ChatButton or self.DisabledAdd[name] then
@@ -66,7 +66,7 @@ function WoWToolsChatButtonMixin:CreateButton(name, tooltip)
     function btn:state_enter(func, isSelf)
         local frame= isSelf and self or self:GetParent()
         frame:SetButtonState('PUSHED')
-        if func and WoWToolsChatButtonMixin:GetSaveData().isEnterShowMenu then--显示菜单
+        if func and WoWTools_ChatButtonMixin:GetSaveData().isEnterShowMenu then--显示菜单
             MenuUtil.CreateContextMenu(self, func)
         end
     end
@@ -84,7 +84,7 @@ function WoWToolsChatButtonMixin:CreateButton(name, tooltip)
 end
 
 
-function WoWToolsChatButtonMixin:SetPoint(btn)
+function WoWTools_ChatButtonMixin:SetPoint(btn)
     local id= btn:GetID()
     if self.Save.isVertical then--方向, 竖
         btn:SetPoint('BOTTOM', id==1 and self.ChatButton or self.Buttons[id-1], 'TOP')
@@ -96,7 +96,7 @@ end
 
 
 
-function WoWToolsChatButtonMixin:SetChatButtonSize()
+function WoWTools_ChatButtonMixin:SetChatButtonSize()
     if self.Save.isVertical then--方向, 竖
         self.ChatButton:SetSize(30,10)
     else
@@ -105,7 +105,7 @@ function WoWToolsChatButtonMixin:SetChatButtonSize()
 end
 
 
-function WoWToolsChatButtonMixin:RestHV()--Horizontal and vertical
+function WoWTools_ChatButtonMixin:RestHV()--Horizontal and vertical
     self:SetChatButtonSize()
     for _, btn in pairs(self.Buttons) do
         btn:ClearAllPoints()
@@ -113,16 +113,16 @@ function WoWToolsChatButtonMixin:RestHV()--Horizontal and vertical
     end
 end
 
-function WoWToolsChatButtonMixin:GetHV()--方向, 竖
+function WoWTools_ChatButtonMixin:GetHV()--方向, 竖
     return self.Save.isVertical
 end
 
-function WoWToolsChatButtonMixin:GetAllAddList()
+function WoWTools_ChatButtonMixin:GetAllAddList()
     return self.AddList
 end
 
 
-function WoWToolsChatButtonMixin:ShowBackgroud()
+function WoWTools_ChatButtonMixin:ShowBackgroud()
     local btn= self.ChatButton
     if not btn then
         return
@@ -143,9 +143,9 @@ end
 
 
 
-function WoWToolsChatButtonMixin:GetSaveData()
+function WoWTools_ChatButtonMixin:GetSaveData()
     return self.Save
 end
-function WoWToolsChatButtonMixin:SetSaveData(save)
+function WoWTools_ChatButtonMixin:SetSaveData(save)
     self.Save= save or {}
 end

@@ -141,7 +141,7 @@ local Save={
     mago=true,
     ski=true,
     alt=true,
-    noItemHide= true,--not e.Player.husandro,
+    --noItemHide= true,--not e.Player.husandro,
     KEY=e.Player.husandro and 'F',
     --disabledCheckReagentBag= true,--禁用，检查，材料包
 }
@@ -758,18 +758,8 @@ end
 --初始化
 --######
 local function Init()
-    button= e.Cbtn2({
-        name= 'WoWToolsOpenItemsButton',
-        parent=_G['WoWToolsMountButton'],
-        click=true,-- right left
-        notSecureActionButton=nil,
-        notTexture=nil,
-        showTexture=true,
-        sizi=nil,
-    })
 
-    button:SetPoint('RIGHT', _G['HearthstoneToolsButton'], 'LEFT')
-    --button:SetAttribute("type1", "macro")
+  
     
     button.count=e.Cstr(button, {size=10, color=true})--10, nil, nil, true)
     button.count:SetPoint('BOTTOM',0,2)
@@ -1064,7 +1054,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave[addName..'Tools'] or Save
-            if not e.toolsFrame.disabled then
+
+            button= WoWTools_ToolsButtonMixin:CreateButton('OpenItems', '|A:Cursor_OpenHand_32:0:0|a'..(e.onlyChinese and '打开物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, ITEMS)), false, true)
+            if button then
                 Init()
                 self:RegisterEvent('CHALLENGE_MODE_START')
                 self:RegisterEvent('PLAYER_ENTERING_WORLD')

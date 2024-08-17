@@ -320,7 +320,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1==id then
             Save= WoWToolsSave['ChatButton_Rool'] or Save
             addName= '|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t'..(e.onlyChinese and '掷骰' or ROLL)
-            RollButton= WoWToolsChatButtonMixin:CreateButton('Roll', addName)
+            RollButton= WoWTools_ChatButtonMixin:CreateButton('Roll', addName)
 
             if RollButton then
 

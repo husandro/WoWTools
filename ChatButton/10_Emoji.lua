@@ -332,7 +332,7 @@ local function Init_EmojiFrame()
         EmojiButton:SetButtonState('PUSHED')
     end)
     Frame:SetScript('OnMouseWheel', function(self, d)--缩放
-        Save.scale=WoWToolsScaleMenuMixin:SetupFrame(self, d, Save.scale, nil)
+        Save.scale=WoWTools_MenuMixin:ScaleFrame(self, d, Save.scale, nil)
     end)
 
 
@@ -421,7 +421,7 @@ local function Init_Menu(self, root)
 
 
     --缩放
-    WoWToolsScaleMenuMixin:Setup(sub, function()
+    WoWTools_MenuMixin:ScaleMenu(sub, function()
         return Save.scale
     end, function(value)
         Save.scale= value        
@@ -678,7 +678,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1==id then
             Save= WoWToolsSave['ChatButton_Emoji'] or Save
             addName= '|TInterface\\Addons\\WoWTools\\Sesource\\Emojis\\Embarrass:0|tEmoji'
-            EmojiButton= WoWToolsChatButtonMixin:CreateButton('Emoji', addName)
+            EmojiButton= WoWTools_ChatButtonMixin:CreateButton('Emoji', addName)
 
             if EmojiButton then--禁用Chat Button
                 Init()

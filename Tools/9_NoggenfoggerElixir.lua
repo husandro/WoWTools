@@ -160,7 +160,6 @@ end
 --初始
 --####
 local function Init()
-    e.ToolsSetButtonPoint(button)--设置位置
     
     button:SetAttribute('type','item')
     button:SetAttribute('item', C_Item.GetItemInfo(button.itemID) or button.itemID)
@@ -208,16 +207,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 return
             end
             Save= WoWToolsSave[addName..'Tools'] or Save
-            if not e.toolsFrame.disabled then
-                button= e.Cbtn2({
-                    name= id..e.cn(addName),
-                    parent= e.toolsFrame,
-                    click=true,-- right left
-                    notSecureActionButton=nil,
-                    notTexture=nil,
-                    showTexture=true,
-                    sizi=nil,
-                })
+            button= WoWTools_ToolsButtonMixin:CreateButton('UseToy', '|A:collections-icon-favorites:0:0|a'..(e.onlyChinese and '使用玩具' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_RANDOM3:gsub('/',''), TOY)), true)
+
+            if button then
 
                 button.itemID=8529
 
@@ -228,13 +220,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 panel:RegisterEvent('BAG_UPDATE_COOLDOWN')
                 panel:RegisterEvent('PLAYER_LOGOUT')
 
-                C_Timer.After(2.5, function()
-                    if UnitAffectingCombat('player') then
-                        panel.combat= true
-                    else
-                        Init()--初始
-                    end
-                end)
+            
+                Init()--初始
             end
             panel:UnregisterEvent('ADDON_LOADED')
         end
@@ -246,10 +233,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='PLAYER_REGEN_ENABLED' then
         panel:RegisterUnitEvent("UNIT_AURA", 'player')
-        if panel.combat then
-            Init()
-            panel.combat=nil
-        end
+       
 
     elseif event=='PLAYER_REGEN_DISABLED' then
         panel:UnregisterEvent('UNIT_AURA')

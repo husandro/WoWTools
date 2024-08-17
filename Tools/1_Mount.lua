@@ -138,20 +138,7 @@ end
 
 
 
-local function set_Button_Postion()--设置按钮位置
-    if not button then
-        return
-    end
-    button:ClearAllPoints()
-    if Save.Point and Save.Point[1] and Save.Point[3] and Save.Point[4] and Save.Point[5] then
-        button:SetPoint(Save.Point[1], UIParent, Save.Point[3], Save.Point[4], Save.Point[5])
-    elseif e.Player.husandro then
-        button:SetPoint('BOTTOMRIGHT', -360, 15)
-        --button:SetPoint('RIGHT', QueueStatusButton, 'LEFT')
-    else
-        button:SetPoint('CENTER', 300, 100)
-    end
-end
+
 
 local function setKEY()--设置捷键
     if Save.KEY then
@@ -868,23 +855,7 @@ local function InitMenu(_, level, type)--主菜单
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-        e.LibDD:UIDropDownMenu_AddSeparator(level)
-        info={
-            text= e.onlyChinese and '重置位置' or RESET_POSITION,
-            disabled=UnitAffectingCombat('player'),
-            colorCode=not Save.Point and '|cff9e9e9e',
-            keepShownOnClick=true,
-            func=function()
-                Save.Point=nil
-                set_Button_Postion()--设置按钮位置
-                print(id, e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
-                e.LibDD:CloseDropDownMenus()
-            end,
-            tooltipOnButton=true,
-            tooltipTitle=e.Icon.right..(e.onlyChinese and '移动' or NPE_MOVE),
-            notCheckable=true,
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
+       
         return
 
     elseif type==ITEMS then--物品, 二级菜单
@@ -1173,15 +1144,6 @@ local function InitMenu(_, level, type)--主菜单
     }
     e.LibDD:UIDropDownMenu_AddButton(info)
 
-    info={
-        text=e.toolsFrame.addName,
-        notCheckable=true,
-        colorCode='|cffffd100',
-        func= function()
-            e.OpenPanelOpting(nil, e.toolsFrame.addName)
-        end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info,level)
 end
 
 
@@ -1418,7 +1380,7 @@ local function Init_MountJournal()
                                     MountJournal_UpdateMountDisplay()
                                 end
                             end
-                           
+
                             MountJournal.FilterDropdown:Reset()
 
                             e.call('MountJournal_SetUnusableFilter',true)
@@ -1445,7 +1407,7 @@ local function Init_MountJournal()
 
     MountJournal.MountCount:ClearAllPoints()
     --MountJournal.MountCount:SetPoint('BOTTOMLEFT', MountJournalSearchBox, 'TOPLEFT',-3, 0)
-    
+
 
         MountJournal.MountCount:SetPoint('BOTTOMRIGHT', MountJournalSearchBox, 'TOPRIGHT', 0, 4)
         MountJournal.FilterDropdown.ResetButton:HookScript('OnClick', function()
@@ -1480,15 +1442,8 @@ end
 --初始化
 --######
 local function Init()
-    button= e.Cbtn2({
-        name= 'WoWToolsMountButton',
-        parent=nil,
-        click=true,-- right left
-        notSecureActionButton=nil,
-        notTexture=nil,
-        showTexture=true,
-        sizi=nil,
-    })
+
+
     button:SetAttribute("type1", "spell")
     button:SetAttribute("alt-type1", "spell")
     button:SetAttribute("shift-type1", "spell")
@@ -1520,7 +1475,7 @@ local function Init()
             e.LoadDate({id=ID, type= type==ITEMS and 'item' or 'spell'})
         end
     end
-    set_Button_Postion()--设置按钮位置
+ 
 
     --setButtonSize()--设置按钮大小
     XDInt()--德鲁伊设置
@@ -1538,22 +1493,9 @@ local function Init()
 
 
 
-    button:RegisterForDrag("RightButton")
-    button:SetMovable(true)
-    button:SetClampedToScreen(true)
 
-    button:SetScript("OnDragStart", function(self,d)
-        if d=='RightButton' and IsAltKeyDown() then
-            self:StartMoving()
-        end
-    end)
-    button:SetScript("OnDragStop", function(self)
-        ResetCursor()
-        self:StopMovingOrSizing()
-        Save.Point={self:GetPoint(1)}
-        Save.Point[2]=nil
-        e.LibDD:CloseDropDownMenus()
-    end)
+
+
 
     button:SetScript("OnMouseDown", function(self,d)
         local infoType, itemID, itemLink ,spellID= GetCursorInfo()
@@ -1612,27 +1554,13 @@ local function Init()
         ResetCursor()
     end)
 
-    button:SetScript('OnMouseWheel',function(self,d)
-        if IsAltKeyDown() then
-            local n= Save.scale or 1
-            if d==1 then
-                n= n+0.05
-            else
-                n= n-0.05
-            end
-            n= n>3 and 3 or n
-            n= n<0.5 and 0.5 or n
-            self:SetScale(n)
-            print(id, e.cn(addName), e.onlyChinese and '缩放' or UI_SCALE, n)
-            Save.scale= n
-        else
-            if d==1 then--坐骑展示
-                specialEffects=nil
-                setMountShow()
-            elseif d==-1 then--坐骑特效
-                specialEffects=true
-                setMountShow()
-            end
+    button:SetScript('OnMouseWheel',function(self, d)
+        if d==1 then--坐骑展示
+            specialEffects=nil
+            setMountShow()
+        elseif d==-1 then--坐骑特效
+            specialEffects=true
+            setMountShow()
         end
     end)
 
@@ -1665,8 +1593,6 @@ local function Init()
         end
 
         e.tips:AddLine('')
-        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE), '|cnGREEN_FONT_COLOR:'..(Save.scale or 1)..'|r Alt+'..e.Icon.mid)
-        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE or SLASH_TEXTTOSPEECH_MENU, 'Alt+'..e.Icon.right)
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
         e.tips:Show()
     end
@@ -1681,9 +1607,8 @@ local function Init()
     end)
 
     button:SetScript('OnEnter', function(self)
-        if not UnitAffectingCombat('player') then
-            e.toolsFrame:SetShown(true)--设置, TOOLS 框架, 显示
-        end
+        WoWTools_ToolsButtonMixin:EnterShowFrame()
+
         self:set_tooltips()
         self:SetScript('OnUpdate', function (s, elapsed)
             s.elapsed = (s.elapsed or 0.3) + elapsed
@@ -1700,9 +1625,7 @@ local function Init()
     end)
 
 
-    if Save.scale and Save.scale~=1 then
-        button:SetScale(Save.scale)
-    end
+
 
     C_Timer.After(2, function()
         setShiftCtrlAltAtt()--设置Shift Ctrl Alt 属性
@@ -1735,62 +1658,69 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-panel:SetScript("OnEvent", function(frame, event, arg1, arg2)
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            Save= WoWToolsSave[addName] or Save
+            --addName= '|A:hud-microbutton-Mounts-Down:0:0|a'..(e.onlyChinese and '坐骑' or MOUNT)
 
-            if not e.toolsFrame.disabled then
-                CollectionsJournal_LoadUI()
-
+            --旧数据
+            --[[if WoWToolsSave[MOUNT] then
+                Save= WoWToolsSave[MOUNT]
+                Save.Point=nil
+                WoWToolsSave[MOUNT]=nil
                 for spellID, tab in pairs(Save.Mounts[FLOOR]) do
                     if type(tab)~='table' then
                         Save.Mounts[FLOOR][spellID]=nil
                     end
                 end
+            else
+                Save= WoWToolsSave['Tools_Mount'] or Save
+            end]]
+            Save= WoWToolsSave[MOUNT] or Save
+            button= WoWTools_ToolsButtonMixin:CreateButton('Mount', '|A:hud-microbutton-Mounts-Down:0:0|a'..(e.onlyChinese and '坐骑' or MOUNT), false, false)
+
+            if button then
+                CollectionsJournal_LoadUI()
 
                 Init()--初始
 
-                frame:RegisterEvent('PLAYER_REGEN_DISABLED')
-                frame:RegisterEvent('PLAYER_REGEN_ENABLED')
-                frame:RegisterEvent('SPELLS_CHANGED')
-                frame:RegisterEvent('SPELL_DATA_LOAD_RESULT')
-                frame:RegisterEvent('BAG_UPDATE_DELAYED')
-                frame:RegisterEvent('MOUNT_JOURNAL_USABILITY_CHANGED')
-                frame:RegisterEvent('PLAYER_MOUNT_DISPLAY_CHANGED')
-                frame:RegisterEvent('NEW_MOUNT_ADDED')
-                frame:RegisterEvent('MODIFIER_STATE_CHANGED')
-                frame:RegisterEvent('ZONE_CHANGED')
-                frame:RegisterEvent('ZONE_CHANGED_INDOORS')
-                frame:RegisterEvent('ZONE_CHANGED_NEW_AREA')
-                frame:RegisterEvent('SPELL_UPDATE_COOLDOWN')
-                frame:RegisterEvent('SPELL_UPDATE_USABLE')
-                frame:RegisterEvent('PET_BATTLE_CLOSE')
-                frame:RegisterUnitEvent('UNIT_EXITED_VEHICLE', "player")
+                self:RegisterEvent('PLAYER_REGEN_DISABLED')
+                self:RegisterEvent('PLAYER_REGEN_ENABLED')
+                self:RegisterEvent('SPELLS_CHANGED')
+                self:RegisterEvent('SPELL_DATA_LOAD_RESULT')
+                self:RegisterEvent('BAG_UPDATE_DELAYED')
+                self:RegisterEvent('MOUNT_JOURNAL_USABILITY_CHANGED')
+                self:RegisterEvent('PLAYER_MOUNT_DISPLAY_CHANGED')
+                self:RegisterEvent('NEW_MOUNT_ADDED')
+                self:RegisterEvent('MODIFIER_STATE_CHANGED')
+                self:RegisterEvent('ZONE_CHANGED')
+                self:RegisterEvent('ZONE_CHANGED_INDOORS')
+                self:RegisterEvent('ZONE_CHANGED_NEW_AREA')
+                self:RegisterEvent('SPELL_UPDATE_COOLDOWN')
+                self:RegisterEvent('SPELL_UPDATE_USABLE')
+                self:RegisterEvent('PET_BATTLE_CLOSE')
+                self:RegisterUnitEvent('UNIT_EXITED_VEHICLE', "player")
 
-                frame:RegisterEvent('PLAYER_STOPPED_MOVING')
-                frame:RegisterEvent('PLAYER_STARTED_MOVING')--设置, TOOLS 框架,隐藏
+                self:RegisterEvent('PLAYER_STOPPED_MOVING')
+                self:RegisterEvent('PLAYER_STARTED_MOVING')--设置, TOOLS 框架,隐藏
 
-                frame:RegisterEvent('NEUTRAL_FACTION_SELECT_RESULT')--ShiJI
-                frame:RegisterEvent('LEARNED_SPELL_IN_TAB')--OkMount
+                self:RegisterEvent('NEUTRAL_FACTION_SELECT_RESULT')--ShiJI
+                self:RegisterEvent('LEARNED_SPELL_IN_TAB')--OkMount
 
                 if Save.AFKRandom then
-                    frame:RegisterUnitEvent('PLAYER_FLAGS_CHANGED', 'player')--AFK
+                    self:RegisterUnitEvent('PLAYER_FLAGS_CHANGED', 'player')--AFK
                     if not UnitAffectingCombat('player') and UnitIsAFK('player') and IsOutdoors() then
                         setMountShow()--坐骑展示
                     end
                 end
-
             else
-                e.toolsFrame.disabled=true
-                frame:UnregisterAllEvents()
+                self:UnregisterEvent('ADDON_LOADED')
             end
-            frame:RegisterEvent("PLAYER_LOGOUT")
 
         elseif arg1=='Blizzard_Collections' then
             Init_MountJournal()
 
-            --hooksecurefunc('MountJournal_ShowMountDropdown',setMountJournal_ShowMountDropdown)
         end
 
     elseif event=='PLAYER_REGEN_DISABLED' then
@@ -1807,7 +1737,8 @@ panel:SetScript("OnEvent", function(frame, event, arg1, arg2)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            WoWToolsSave[addName]=Save
+            --WoWToolsSave['Tools_Mount']= Save
+            WoWToolsSave[MOUNT]=Save
         end
 
     elseif event=='SPELLS_CHANGED' or event=='SPELL_DATA_LOAD_RESULT' then

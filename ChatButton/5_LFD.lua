@@ -710,7 +710,7 @@ local function Init_tipsButton()
     end
 
     tipsButton:SetScript('OnMouseWheel', function(self, delta)
-        Save.tipsScale= WoWToolsScaleMenuMixin:SetupFrame(self, delta, Save.tipsScale, nil)
+        Save.tipsScale= WoWTools_MenuMixin:ScaleFrame(self, delta, Save.tipsScale, nil)
     end)
 
     tipsButton:SetScript("OnMouseDown", function(_, d)
@@ -3170,7 +3170,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
         if arg1==id then
             Save= WoWToolsSave['ChatButton_LFD'] or Save
             addName= '|A:groupfinder-eye-frame:0:0|a'..(e.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON)
-            LFDButton= WoWToolsChatButtonMixin:CreateButton('LFD', addName)
+            LFDButton= WoWTools_ChatButtonMixin:CreateButton('LFD', addName)
 
             if LFDButton then--禁用Chat Button
                 

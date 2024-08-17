@@ -399,7 +399,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1==id then
             Save= WoWToolsSave['ChatButtonGuild'] or Save
             addName= '|A:UI-HUD-MicroMenu-GuildCommunities-Up:0:0|a'..(e.onlyChinese and '公会' or GUILD)
-            GuildButton= WoWToolsChatButtonMixin:CreateButton('Guild', addName)
+            GuildButton= WoWTools_ChatButtonMixin:CreateButton('Guild', addName)
 
             if GuildButton then--禁用Chat Button
                 Init()

@@ -21,7 +21,8 @@ Libs\Libs.xml
 ##主要function，不能删除
 Mixin\ChatButtonMixin.lua
 Mixin\FrameMixin.lua
-Mixin\ScaleMenuMixin.lua
+Mixin\MenuMixin.lua
+Mixin\ToolsButtonMixin.lua
 
 API_WoWTools.lua
 API_Create.lua
@@ -113,7 +114,7 @@ Tools\3_OpenItems.lua
 ##食物
 Tools\4_Food.lua
 ##侦察地图, 玩具, 没有小号，可以禁用
-Tools\5_ScoutingMapToy.lua
+##Tools\5_ScoutingMapToy.lua
 ##随机玩具
 Tools\6_UseToy.lua
 

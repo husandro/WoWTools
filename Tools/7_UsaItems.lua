@@ -325,22 +325,15 @@ local function Init_All_Buttons()
             name = C_Item.GetItemNameByID(itemID)
             icon = C_Item.GetItemIconByID(itemID)
             if name and icon then
-                local btn= e.Cbtn2({
-                    name=id..addName..name,
-                    parent= e.toolsFrame,
-                    click=true,-- right left
-                    notSecureActionButton=nil,
-                    notTexture=nil,
-                    showTexture=true,
-                    sizi=nil,
-                })
-
-                btn.itemID=itemID
-                init_Item_Button(btn)
-                e.ToolsSetButtonPoint(btn)--设置位置
-                btn:SetAttribute('type', 'item')
-                btn:SetAttribute('item', name)
-                btn.texture:SetTexture(icon)
+                local btn= WoWTools_ToolsButtonMixin:CreateButton('UsaItems'..itemID, '|T'..icon..':0|t'..e.cn(name, {itemID=itemID, isName=true}), true)
+                if btn then
+                    btn.itemID=itemID
+                    init_Item_Button(btn)
+                    
+                    btn:SetAttribute('type', 'item')
+                    btn:SetAttribute('item', name)
+                    btn.texture:SetTexture(icon)
+                end
             end
         end
    end
@@ -354,23 +347,16 @@ local function Init_All_Buttons()
             local slot= e.GetItemSlotID(itemEquipLoc)
 
             if name and icon and slot then
-                local btn= e.Cbtn2({
-                    name=nil,
-                    parent= e.toolsFrame,
-                    click=true,-- right left
-                    notSecureActionButton=nil,
-                    notTexture=nil,
-                    showTexture=true,
-                    sizi=nil,
-                })
-                btn.itemID=itemID
-                btn.slot=slot
-                init_Item_Button(btn, true)
-                e.ToolsSetButtonPoint(btn)--设置位置
-                btn:SetAttribute('type', 'item')
-                btn:SetAttribute('item', name)
-                btn:SetAttribute('type2', 'item')
-                btn.texture:SetTexture(icon)
+                local btn= WoWTools_ToolsButtonMixin:CreateButton('UsaItems'..itemID, '|T'..icon..':0|t'..e.cn(name, {itemID=itemID, isName=true}), true)
+                if btn then
+                    btn.itemID=itemID
+                    btn.slot=slot
+                    init_Item_Button(btn, true)
+                    btn:SetAttribute('type', 'item')
+                    btn:SetAttribute('item', name)
+                    btn:SetAttribute('type2', 'item')
+                    btn.texture:SetTexture(icon)
+                end
             end
         end
     end
@@ -380,19 +366,10 @@ local function Init_All_Buttons()
             local name= C_Spell.GetSpellName(spellID)
             local icon= C_Spell.GetSpellTexture(spellID)
             if name and icon then
-                if name and icon then
-                    local btn= e.Cbtn2({
-                        name=nil,
-                        parent= e.toolsFrame,
-                        click=true,-- right left
-                        notSecureActionButton=nil,
-                        notTexture=nil,
-                        showTexture=true,
-                        sizi=nil,
-                    })
+                local btn= WoWTools_ToolsButtonMixin:CreateButton('UsaItems_Spell'..spellID, '|T'..icon..':0|t'..e.cn(name, {spellID=spellID, isName=true}), true)
+                if btn then
                     btn.spellID=spellID
                     init_Spell_Button(btn)
-                    e.ToolsSetButtonPoint(btn)--设置位置
                     btn:SetAttribute('type', 'spell')
                     btn:SetAttribute('spell', name)
                     btn.texture:SetTexture(icon)
@@ -927,25 +904,22 @@ panel:RegisterEvent("PLAYER_REGEN_ENABLED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
-            button=e.Cbtn(e.toolsFrame, {atlas='Soulbinds_Tree_Conduit_Icon_Utility', size={20,20}})
-            button:SetPoint('BOTTOMLEFT', e.toolsFrame, 'TOPRIGHT',-2,5)
+            local btn= WoWTools_ToolsButtonMixin:GetButton()
+            if btn then
+                button=e.Cbtn(btn.Frame, {atlas='Soulbinds_Tree_Conduit_Icon_Utility', size={20,20}})
+                button:SetPoint('BOTTOMLEFT', btn, 'TOPRIGHT', 2,0)
 
-            if not WoWToolsSave[addName..'Tools'] then
-                button:SetAlpha(1)
-            else
-                button:SetAlpha(0.1)
-            end
+       
+                if (not WoWToolsSave or not WoWToolsSave[addName..'Tools']) and PlayerHasToy(156833) and Save.item[1]==194885 then
+                    Save.item[1] = 156833
+                end
 
-            if (not WoWToolsSave or not WoWToolsSave[addName..'Tools']) and PlayerHasToy(156833) and Save.item[1]==194885 then
-                Save.item[1] = 156833
-            end
+                Save= WoWToolsSave[addName..'Tools'] or Save
+                Save.flyout= Save.flyout or {}
 
-            Save= WoWToolsSave[addName..'Tools'] or Save
-            Save.flyout= Save.flyout or {}
+                addName2= '|A:soulbinds_tree_conduit_icon_utility:0:0|a'..(e.onlyChinese and '使用物品' or addName)
 
-            addName2= '|A:soulbinds_tree_conduit_icon_utility:0:0|a'..(e.onlyChinese and '使用物品' or addName)
-
-            if not e.toolsFrame.disabled then
+            
                 for _, ID in pairs(Save.item) do
                     e.LoadDate({id=ID, type='item'})
                 end

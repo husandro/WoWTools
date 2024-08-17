@@ -1113,7 +1113,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, ...)
         if arg1==id then
             Save= WoWToolsSave['ChatButton_Invite'] or Save
             addName= '|A:communities-icon-addgroupplus:0:0|a'..(e.onlyChinese and '邀请' or INVITE)
-            InviteButton= WoWToolsChatButtonMixin:CreateButton('Invite', addName)
+            InviteButton= WoWTools_ChatButtonMixin:CreateButton('Invite', addName)
 
             if InviteButton then
                 Init()

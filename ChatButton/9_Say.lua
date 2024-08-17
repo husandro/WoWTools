@@ -535,7 +535,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
             Save= WoWToolsSave['ChatButton_Say'] or Save
             Save.text= Save.text or (e.onlyChinese and '说' or SAY)
             addName= '|A:transmog-icon-chat:0:0|a'..(e.onlyChinese and '说' or SAY)
-            SayButton= WoWToolsChatButtonMixin:CreateButton('Say', addName)
+            SayButton= WoWTools_ChatButtonMixin:CreateButton('Say', addName)
 
             if SayButton then--禁用Chat Button
                 if #Save.WhisperTab>120 then

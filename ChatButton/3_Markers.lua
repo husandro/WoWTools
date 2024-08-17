@@ -129,7 +129,7 @@ local function Init_MarkerTools_Menu(root)
         end)
     end
 
-    WoWToolsScaleMenuMixin:Setup(root, function()
+    WoWTools_MenuMixin:ScaleMenu(root, function()
         return Save.markersScale
     end, function(value)
         Save.markersScale= value
@@ -441,7 +441,7 @@ local function Init_Ready_Tips_Button()
     ReadyTipsButton:SetScript('OnDoubleClick', ReadyTipsButton.set_Hide)--隐藏
 
     ReadyTipsButton:SetScript('OnMouseWheel', function(self, delta)--缩放
-        Save.tipsTextSacle= WoWToolsScaleMenuMixin:SetupFrame(self, delta, Save.tipsTextSacle)--设置Frame缩放
+        Save.tipsTextSacle= WoWTools_MenuMixin:ScaleFrame(self, delta, Save.tipsTextSacle)--设置Frame缩放
     end)
 
 
@@ -650,7 +650,7 @@ local function Init_Markers_Frame()--设置标记, 框架
         MarkerButton:state_enter(nil, true)
     end)
     btn:SetScript('OnMouseWheel', function(self, delta)--缩放
-        Save.markersScale= WoWToolsScaleMenuMixin:SetupFrame(self, delta, Save.markersScale)
+        Save.markersScale= WoWTools_MenuMixin:ScaleFrame(self, delta, Save.markersScale)
     end)
 
 
@@ -1734,7 +1734,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         if arg1==id then
             Save= WoWToolsSave['ChatButton_Markers'] or Save
             addName= '|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:0|t|cffffff00'..(e.onlyChinese and '队伍标记' or BINDING_HEADER_RAID_TARGET)..'|r'
-            MarkerButton= WoWToolsChatButtonMixin:CreateButton('Markers', addName)
+            MarkerButton= WoWTools_ChatButtonMixin:CreateButton('Markers', addName)
 
             if MarkerButton then
                 Init()

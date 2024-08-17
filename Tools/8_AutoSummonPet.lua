@@ -98,15 +98,7 @@ end
 --初始
 --####
 local function Init()
-    button= e.Cbtn2({
-        name=nil,
-        parent= e.toolsFrame,
-        click=true,-- right left
-        notSecureActionButton=true,
-        notTexture=nil,
-        showTexture=true,
-        size=nil,
-    })
+ 
     button.Text=e.Cstr(button, {size=10, color=true})-- size,nil,nil, true)
     button.Text:SetPoint('BOTTOM',0 , -2)
 
@@ -372,24 +364,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             --Save.Pets= Save.Pets or {}
             Save.speciesID= Save.speciesID or 2780
 
-            if not e.toolsFrame.disabled then
+            button= WoWTools_ToolsButtonMixin:CreateButton('SummonPet', '|T3150958:0|t'..(e.onlyChinese and '黛西' or 'Daisy'), true)
+            if button then
                 --[[for _, info in pairs(Save.Pets) do
                     e.LoadDate({id=info.auraID, type='spell'})
                 end]]
-
-                Init()
-
                 CollectionsJournal_LoadUI()
 
-                C_Timer.After(2.4, function()
-                    if UnitAffectingCombat('player')  then
-                        self:RegisterEvent("PLAYER_REGEN_ENABLED")
-                    else
-                        e.ToolsSetButtonPoint(button)--设置位置--初始
-                    end
-                end)
-
-
+                Init()
             else
                 self:UnregisterAllEvents()
             end
@@ -404,8 +386,5 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave[addName..'Tools']=Save
         end
 
-    elseif event=='PLAYER_REGEN_ENABLED' then
-        e.ToolsSetButtonPoint(button)--设置位置
-        self:UnregisterEvent('PLAYER_REGEN_ENABLED')
     end
 end)

@@ -14,12 +14,13 @@ local itemClass={}--物品列表
 local button
 
 local function setPanelPostion()--设置按钮位置
+    button:ClearAllPoints()
     if Save.point then
         button:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
-    elseif e.Player.husandro then
-        button:SetPoint('BOTTOMRIGHT', PetActionButton10, 'TOPRIGHT', 0, 30)
+    --elseif e.Player.husandro then
+      --  button:SetPoint('BOTTOMRIGHT', PetActionButton10, 'TOPRIGHT', 0, 30)
     else
-        button:SetPoint('RIGHT', _G['WoWToolsOpenItemsButton'], 'LEFT')
+        WoWTools_ToolsButtonMixin:SetLeftPoint(button)
     end
 end
 
@@ -421,7 +422,6 @@ end
         keepShownOnClick=true,
         func=function()
             Save.point=nil
-            button:ClearAllPoints()
             setPanelPostion()--设置按钮位置
         end,
     }
@@ -458,7 +458,10 @@ local function Init()
         e.LoadDate({id=itemID, type='item'})
     end
 
-    setPanelPostion()--设置按钮位置
+    if Save.point then
+        setPanelPostion()--设置按钮位置
+    end
+
     button:SetSize(30, 30)
 
     set_Button_Init(button)--提示, 事件
@@ -549,17 +552,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
 
             Save= WoWToolsSave[addName..'Tools'] or Save
+            button= WoWTools_ToolsButtonMixin:CreateButton('Food', '|A:Food:0:0|a'..(e.onlyChinese and '食物' or POWER_TYPE_FOOD), false, true)
 
-            if not e.toolsFrame.disabled then
-                button= e.Cbtn2({
-                    name=nil,
-                    parent=_G['WoWToolsMountButton'],
-                    click=true,-- right left
-                    notSecureActionButton=nil,
-                    notTexture=nil,
-                    showTexture=true,
-                    sizi=nil,
-                })
+            if button then
                 button:SetFrameStrata('HIGH')
                 
                 button.itemID= 5512--治疗石

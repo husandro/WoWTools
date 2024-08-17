@@ -564,7 +564,7 @@ local function Init_ObjectiveTrackerFrame()
 
     --缩放
     btn:HookScript('OnMouseWheel', function(self, d)
-        Save.scale= WoWToolsScaleMenuMixin:SetupFrame(ObjectiveTrackerFrame, d, Save.scale, function()
+        Save.scale= WoWTools_MenuMixin:ScaleFrame(ObjectiveTrackerFrame, d, Save.scale, function()
             print(id, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             print('|cnRED_FONT_COLOR:', e.onlyChinese and '友情提示: 可能会出现错误' or 'note: errors may occur')
         end)

@@ -521,7 +521,7 @@ local function Init_Menu(self, root)
 
 --缩放
     root:CreateDivider()
-    sub2, sub= WoWToolsScaleMenuMixin:Setup(root, function()
+    sub2, sub= WoWTools_MenuMixin:ScaleMenu(root, function()
         return Save.inCombatScale
     end, function(value)
         Save.inCombatScale= value
@@ -765,7 +765,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1==id then
             addName= '|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'..(e.onlyChinese and '战斗信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMBAT, INFO))
             Save= WoWToolsSave['ChatButton_Combat'] or Save
-            CombatButton= WoWToolsChatButtonMixin:CreateButton('Combat', addName)
+            CombatButton= WoWTools_ChatButtonMixin:CreateButton('Combat', addName)
 
             if Save.SayTime==0 then
                 Save.disabledSayTime= true

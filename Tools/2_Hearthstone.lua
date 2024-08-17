@@ -488,24 +488,25 @@ panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
+
+            --[[if WoWToolsSave[addName..'Tools'] then
+                Save= WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_RANDOM3:gsub('/',''), TUTORIAL_TITLE31)..'Tools']
+                WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_RANDOM3:gsub('/',''), TUTORIAL_TITLE31)..'Tools']=nil
+            else
+                Save= WoWToolsSave['Tools_Hearthstone'] or Save
+            end]]
+            
+            --addName= '|T6948:0|t'..(e.onlyChinese and '炉石' or TUTORIAL_TITLE31)
+
             Save= WoWToolsSave[addName..'Tools'] or Save
-            if not e.toolsFrame.disabled then
+            button= WoWTools_ToolsButtonMixin:CreateButton('Hearthstone', '|T134414:0|t'..(e.onlyChinese and '炉石' or TUTORIAL_TITLE31), false, true)
 
-                button= e.Cbtn2({
-                    name= 'HearthstoneToolsButton',
-                    parent=_G['WoWToolsMountButton'],
-                    click=true,-- right left
-                    notSecureActionButton=nil,
-                    notTexture=nil,
-                    showTexture=true,
-                    sizi=nil,
-                })
-
+            if button then
                 button:SetAttribute("type1", "item")
                 button:SetAttribute("alt-type1", "item")
                 button:SetAttribute("shift-type1", "item")
                 button:SetAttribute("ctrl-type1", "item")
-                button:SetPoint('RIGHT', _G['WoWToolsMountButton'], 'LEFT')
+                
                 button.items={}--存放有效
 
                 CollectionsJournal_LoadUI()

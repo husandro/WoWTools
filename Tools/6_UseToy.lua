@@ -579,7 +579,6 @@ end
 
 
 local function Init()
-    e.ToolsSetButtonPoint(button)--设置位置
 
     StaticPopupDialogs[id..addName..'RESETALL']={--重置所有,清除全部玩具
         text=id..' '..addName..'|n'..(e.onlyChinese and '清除全部' or CLEAR_ALL)..'|n|n'..(e.onlyChinese and '重新加载UI' or RELOADUI),
@@ -705,17 +704,9 @@ panel:SetScript("OnEvent", function(_, event, arg1)
         if arg1== id then
             Save= WoWToolsSave[addName..'Tools'] or Save
 
-            if not e.toolsFrame.disabled then
-                button= e.Cbtn2({
-                    name=id..'RandomToyButton',
-                    parent= e.toolsFrame,
-                    click=true,-- right left
-                    notSecureActionButton=nil,
-                    notTexture=nil,
-                    showTexture=true,
-                    sizi=nil,
-                })
-
+            button= WoWTools_ToolsButtonMixin:CreateButton('UseToy', '|A:collections-icon-favorites:0:0|a'..(e.onlyChinese and '使用玩具' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_RANDOM3:gsub('/',''), TOY)), true)
+            if button then
+                
                 button:SetAttribute("type1", "item")
                 button:SetAttribute("alt-type1", "item")
                 button:SetAttribute("shift-type1", "item")

@@ -5,6 +5,7 @@ local Save={
         ['ChatButton_Emoji']= not e.Player.cn and not e.Player.husandro,
     },
     scale= 1,
+    strata='HIGH'
     --isVertical=nil,--方向, 竖
     --isShowBackground=nil,--是否显示背景 bool
     --isEnterShowMenu 移过图标，显示菜单
@@ -35,7 +36,7 @@ local Initializer, Layout
 local function Init_Menu(self, root)
     local sub
 
-    WoWToolsScaleMenuMixin:Setup(root, function()
+    WoWTools_MenuMixin:ScaleMenu(root, function()
         return Save.scale
     end, function(value)
         Save.scale= value
@@ -63,14 +64,14 @@ local function Init_Menu(self, root)
     end, function()
         Save.isVertical= not Save.isVertical and true or nil
         self:save_data()
-        WoWToolsChatButtonMixin:RestHV()--方向, 竖
+        WoWTools_ChatButtonMixin:RestHV()--方向, 竖
     end)
     root:CreateCheckbox('|A:UI-Frame-DialogBox-BackgroundTile:0:0|a'..(e.onlyChinese and '背景' or 'Background'), function()
         return Save.isShowBackground
     end, function()
         Save.isShowBackground= not Save.isShowBackground and true or nil
         self:save_data()
-        WoWToolsChatButtonMixin:ShowBackgroud()
+        WoWTools_ChatButtonMixin:ShowBackgroud()
     end)
 
     sub=root:CreateCheckbox('|A:newplayertutorial-drag-cursor:0:0|a'..(e.onlyChinese and '移过图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ENTER_LFG,EMBLEM_SYMBOL)), function()
@@ -86,7 +87,7 @@ local function Init_Menu(self, root)
     root:CreateDivider()
     root:CreateButton((Save.Point and '' or '|cff9e9e9e')..(e.onlyChinese and '重置位置' or RESET_POSITION), function()
         Save.Point=nil
-        self:set_point()        
+        self:set_point()
     end)
 
     root:CreateDivider()
@@ -123,13 +124,13 @@ end
 --####
 local function Init()
     SELECTED_DOCK_FRAME.editBox:SetAltArrowKeyMode(false)
-    
+
     function ChatButton:save_data()
-        WoWToolsChatButtonMixin:SetSaveData(Save)
+        WoWTools_ChatButtonMixin:SetSaveData(Save)
     end
 
     function ChatButton:set_strata()
-        self:SetFrameStrata(Save.strata or 'MEDIUM')
+        self:SetFrameStrata(Save.strata or 'HIGH')
     end
 
     function ChatButton:set_scale()
@@ -185,7 +186,7 @@ local function Init()
     end)
 
     ChatButton:SetScript('OnMouseWheel', function(self, d)--缩放
-        Save.scale=WoWToolsScaleMenuMixin:SetupFrame(self, d, Save.scale, nil)
+        Save.scale=WoWTools_MenuMixin:ScaleFrame(self, d, Save.scale, nil)
     end)
 
 
@@ -248,7 +249,7 @@ local function Init_Panel()
 
     e.AddPanel_Header(Layout, e.onlyChinese and '选项' or OPTIONS)
 
-    for _, data in pairs (WoWToolsChatButtonMixin:GetAllAddList()) do
+    for _, data in pairs (WoWTools_ChatButtonMixin:GetAllAddList()) do
         e.AddPanel_Check({
             category= Initializer,
             name= data.tooltip,
@@ -298,7 +299,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             addName='|A:voicechat-icon-textchat-silenced:0:0|a'..(e.onlyChinese and '聊天工具' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHAT, AUCTION_SUBCATEGORY_PROFESSION_TOOLS))
 
             if not Save.disabled then
-                ChatButton= WoWToolsChatButtonMixin:Init(Save.disabledADD, Save)
+                ChatButton= WoWTools_ChatButtonMixin:Init(Save.disabledADD, Save)
 
                 Init()
             end
