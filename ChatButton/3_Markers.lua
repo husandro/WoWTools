@@ -12,7 +12,7 @@ local Save={
 
         markersScale=1,
         markersFrame= e.Player.husandro,
-        FrameStrata='MEDIUM',
+        FrameStrata='HIGH',
         pingTime= e.Player.husandro,--显示ping冷却时间
         autoReady=0,
       }
