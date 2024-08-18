@@ -281,7 +281,7 @@ local function Init_Menu(self, root)
                 for player in pairs(playerList) do
                     text=text..'|n|cff9e9e9e'..player..'|r <-> '..(e.GetUnitRaceInfo({guid=data.guid}) or '')..col..data.name..'|r|n'
                 end
-                e.ShowTextFrame(text, e.GetPlayerInfo({name=data.name, guid=data.guid, reName=true, reRealm=true}))
+                WoWTools_FrameMixin:ShowText(text, e.GetPlayerInfo({name=data.name, guid=data.guid, reName=true, reRealm=true}))
                 return MenuResponse.Open
             end, tab)
 

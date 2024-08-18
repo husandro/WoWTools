@@ -603,7 +603,7 @@ end
             end
             str=str..'|n'..data.text
 
-            e.ShowTextFrame(str, player2 or data.playerName)
+            WoWTools_FrameMixin:ShowText(str, player2 or data.playerName)
             return MenuResponse.Open
         end, {text=text, guid=tab.guid, playerName=playerName})
 

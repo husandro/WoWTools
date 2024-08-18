@@ -4757,7 +4757,8 @@
         "LIST_DELIMITER",
         "WARWITHIN_TITLE2",
         "MenuResponse",
-        "Background"
+        "Background",
+        "GetMouseFocus"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field",

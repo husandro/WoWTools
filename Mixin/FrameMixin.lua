@@ -1,7 +1,7 @@
 local e= select(2, ...)
 
 --[[
-WoWToolsFrameMixin:CreateFrame(name, {
+WoWTools_FrameMixin:CreateFrame(name, {
     size={w, h} or numeri,
     parentFrame= frame or UIParent,
     setID=numeri, --SetID(1)
@@ -18,11 +18,58 @@ frame.Header:Setup(text)
 --]]
 
 
-WoWToolsFrameMixin= {}
-local index= 0
-function WoWToolsFrameMixin:CreateFrame(name, tab)
+WoWTools_FrameMixin= {
+    index=0,
+}
+
+function WoWTools_FrameMixin:ShowText(data, headerText)
+    if not data then
+        return
+    end
+
+    local frame= _G['WoWTools_EditBoxFrame']
+    if not frame then
+        frame= self:CreateFrame('WoWTools_EditBoxFrame')
+        frame.ScrollBox= e.Cedit(frame, {font='GameFontNormal'})
+        frame.ScrollBox:SetPoint('TOPLEFT', 11, -32)
+        frame.ScrollBox:SetPoint('BOTTOMRIGHT', -6, 12)
+
+        frame.ScrollBox.EditBox:SetHyperlinksEnabled(true)
+        frame.ScrollBox.EditBox:SetScript('OnHyperlinkLeave', GameTooltip_Hide)
+        frame.ScrollBox.EditBox:SetScript('OnHyperlinkEnter', function(self, link)
+            if link then
+                e.tips:SetOwner(self, "ANCHOR_LEFT")
+                e.tips:ClearLines()
+                e.tips:SetHyperlink(link)
+                e.tips:Show()
+            end
+        end)
+        frame.ScrollBox.EditBox:SetScript('OnHyperlinkClick', function(self, link, text2)--, region)
+            SetItemRef(link, text2, self, nil)
+        end)
+    end
+
+    local text
+    if type(data)=='table' then
+        for _, str in pairs(data) do
+            text= text and text..'\n' or ''
+            text= text.. str
+        end
+    else
+        text= data
+    end
+
+    frame.ScrollBox:SetText(text or '')
+
+    frame.Header:Setup(headerText or '' )
+    frame:SetShown(true)
+end
+
+
+
+function WoWTools_FrameMixin:CreateFrame(name, tab)
     if not name then
-        name= 'WoWTools_EditBoxFrame'..index
+        name= 'WoWTools_EditBoxFrame'..self.index
     end
 
     tab= tab or {}
@@ -73,6 +120,6 @@ function WoWToolsFrameMixin:CreateFrame(name, tab)
     end)
 
 
-    index= index+1
+    self.index= self.index+1
     return frame
 end

@@ -12,7 +12,6 @@ e.GetSpellItemCooldown(spellID, itemID)--法术,物品,冷却
 e.Cbtn2(tab)
 e.ToolsSetButtonPoint(self, line, unoLine)--设置位置
 
-e.ShowTextFrame(内容, {})--显示带text内容
 ]]
 
 function e.Cstr(self, tab)
@@ -208,50 +207,6 @@ end
 
 
 
-
-
-function e.ShowTextFrame(data, headerText)
-    if not data then
-        return
-    end
-
-    local frame= _G['WoWTools_EditBoxFrame']
-    if not frame then
-        frame= WoWToolsFrameMixin:CreateFrame('WoWTools_EditBoxFrame')
-        frame.ScrollBox= e.Cedit(frame, {font='GameFontNormal'})
-        frame.ScrollBox:SetPoint('TOPLEFT', 11, -32)
-        frame.ScrollBox:SetPoint('BOTTOMRIGHT', -6, 12)
-
-        frame.ScrollBox.EditBox:SetHyperlinksEnabled(true)
-        frame.ScrollBox.EditBox:SetScript('OnHyperlinkLeave', GameTooltip_Hide)
-        frame.ScrollBox.EditBox:SetScript('OnHyperlinkEnter', function(self, link)
-            if link then
-                e.tips:SetOwner(self, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:SetHyperlink(link)
-                e.tips:Show()
-            end
-        end)
-        frame.ScrollBox.EditBox:SetScript('OnHyperlinkClick', function(self, link, text2)--, region)
-            SetItemRef(link, text2, self, nil)
-        end)
-    end
-
-    local text
-    if type(data)=='table' then
-        for _, str in pairs(data) do
-            text= text and text..'\n' or ''
-            text= text.. str
-        end
-    else
-        text= data
-    end
-
-    frame.ScrollBox:SetText(text or '')
-
-    frame.Header:Setup(headerText or '' )
-    frame:SetShown(true)
-end
 
 
 
