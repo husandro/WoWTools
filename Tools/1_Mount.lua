@@ -124,6 +124,8 @@ local function set_ShiJI()--召唤司机 代驾型机械路霸
         end
     end]]
 end
+
+
 local function set_OkMout()--是否已学, 骑术
     OkMount= IsSpellKnownOrOverridesKnown(90265)
             or IsSpellKnownOrOverridesKnown(33391)
@@ -131,6 +133,11 @@ local function set_OkMout()--是否已学, 骑术
             or IsSpellKnownOrOverridesKnown(33388)
 end
 
+local function LoadUI()
+    if not CollectionsJournal then
+        CollectionsJournal_LoadUI();
+    end
+end
 
 
 
@@ -705,14 +712,13 @@ end
 
 
 
+
 --##################
 --打开界面, 收藏, 坐骑
 --##################
 local function set_ToggleCollectionsJournal(mountID, type, showNotCollected)
-    --CollectionsJournal_LoadUI()
-    --[[if not C_AddOns.IsAddOnLoaded("Blizzard_Collections") then
-        C_AddOns.LoadAddOn('Blizzard_Collections')
-    end]]
+    LoadUI()
+
     if MountJournal and not MountJournal:IsVisible() then
         ToggleCollectionsJournal(1)
     end
@@ -766,9 +772,389 @@ end
 
 
 
+
+
+
+
+
+
+local function Init_Menu_Spell(sub)
+    local sub2
+    local index=0
+    for spellID, _ in pairs(Save.Mounts[SPELLS]) do
+        index= index+1
+        e.LoadDate({id=spellID, type='spell'})
+
+        sub2=sub:CreateCheckbox(
+            index..') '..(IsSpellKnownOrOverridesKnown(spellID) and '' or '|cff9e9e9e')
+            ..'|T'..(C_Spell.GetSpellTexture(spellID) or 0)..':0|t'
+            ..(e.cn(C_Spell.GetSpellName(spellID), {spellID=spellID, isName=true}) or ('spellID: '..spellID)),
+        function(data)
+            return button.spellID==data
+        end, function()
+            return MenuResponse.Open
+        end, spellID)
+
+        sub2:SetTooltip(function(tooltip, description)
+            tooltip:SetSpellByID(description.data)
+        end)
+
+        sub2:CreateButton(e.onlyChinese and '移除' or REMOVE, function(data)
+            if Save.Mounts[SPELLS][data] then
+                print(id, addName, e.onlyChinese and '移除' or REMOVE, C_Spell.GetSpellLink(data) or data)
+            end
+        end, spellID)
+    end
+
+    sub:CreateDivider()
+    if index>0 then
+        sub2=sub:CreateButton(e.onlyChinese and '全部清除' or CLEAR_ALL, function()
+            if IsControlKeyDown() then
+                Save.Mounts[SPELLS]={}
+                print(id, addName, e.onlyChinese and '全部清除' or CLEAR_ALL)
+                checkSpell()--检测法术
+                setClickAtt()--设置
+            end
+        end)
+        sub2:SetTooltip(function(tooltip)
+            tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..e.Icon.left)
+        end)
+    end
+
+    sub2=sub:CreateButton(e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT, function()
+        if IsControlKeyDown() then
+            Save.Mounts[SPELLS]=P_Spells_Tab
+            print(id, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)
+            checkSpell()--检测法术
+            setClickAtt()--设置
+        end
+    end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..e.Icon.left)
+    end)
+
+    if index>35 then
+        sub:SetGridMode(MenuConstants.VerticalGridDirection, math.ceil(index/35))
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
+local function Init_Menu_Item(sub)
+    local sub2, num
+    local index= 0
+    for itemID, _ in pairs(Save.Mounts[ITEMS]) do
+        e.LoadDate({id=itemID, type='item'})
+        index= index+1
+        num= C_Item.GetItemCount(itemID, false, true, true) or 0
+
+        sub2=sub:CreateButton(
+            index..') '
+            ..(num==0 and '|cff9e9e9e' or '')
+            ..'|T'..(C_Item.GetItemIconByID(itemID) or 0)..':0|t'
+            ..(e.cn(C_Item.GetItemNameByID(itemID), {itemID=itemID, isName=true}) or ('itemID: '..itemID))
+            ..' x'..num,
+        function(data)
+            StaticPopup_Show(
+                'WoWTools_Tools_Mount_ITEMS',
+                data,
+                Save.Mounts[ITEMS][data] and (e.onlyChinese and '物品已存在' or ERR_ZONE_EXPLORED:format(PROFESSIONS_CURRENT_LISTINGS)) or (e.onlyChinese and '新建' or NEW),
+                {itemID=data}
+            )
+        end, itemID)
+        sub2:SetTooltip(function(tooltip)
+            tooltip:AddLine(e.onlyChinese and '修改' or EDIT)
+        end)
+    end
+
+    if index>0 then
+        sub2=sub:CreateButton(e.onlyChinese and '全部清除' or CLEAR_ALL, function()
+            if IsControlKeyDown() then
+                Save.Mounts[ITEMS]={}
+                print(id, addName, e.onlyChinese and '全部清除' or CLEAR_ALL)
+                checkSpell()--检测法术
+                setClickAtt()--设置
+            end
+        end)
+        sub2:SetTooltip(function(tooltip)
+            tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..e.Icon.left)
+        end)
+    end
+
+    if index>35 then
+        sub:SetGridMode(MenuConstants.VerticalGridDirection, math.ceil(index/35))
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Init_Menu_ShiftAltCtrl(sub, indexType)
+    local sub2, sub3, name, icon
+    local tab2=MountTab[indexType] or {}
+    local spellID=tab2[1]
+    local mountID= spellID and C_MountJournal.GetMountFromSpell(spellID)
+    local useError = mountID and select(2, C_MountJournal.GetMountUsabilityByID(mountID, true))
+    e.LoadDate({id=spellID, type='spell'})
+
+    sub2=sub:CreateButton(
+        '|T'..(spellID and C_Spell.GetSpellTexture(spellID) or 0)..':0|t'..indexType,
+    function(data)
+        if data.mountID then
+            C_MountJournal.SummonByID(data.mountID)
+            return MenuResponse.Open
+        else
+            set_ToggleCollectionsJournal(nil, nil, true)--打开界面, 收藏, 坐骑
+        end
+    end, {mountID=mountID, useError=useError})
+    sub2:SetTooltip(function(tooltip, description)
+        if description.data.mountID then
+            tooltip:AddLine(e.onlyChinese and '召唤' or SUMMON)
+        else
+            tooltip:AddLine(e.onlyChinese and '设置' or SETTINGS)
+        end
+        if description.data.useError then
+            tooltip:AddLine(' ')
+            GameTooltip_AddErrorLine(tooltip, e.cn(useError))
+        end
+    end)
+
+    sub2:CreateTitle(e.onlyChinese and '仅限第1个' or
+        format(LFG_LIST_CROSS_FACTION, format(JAILERS_TOWER_SCENARIO_FLOOR, 1))
+    )
+
+    local index=0
+    for spellID2, _ in pairs(Save.Mounts[indexType]) do
+        index= index+1
+        e.LoadDate({id=spellID2, type='spell'})
+        mountID = C_MountJournal.GetMountFromSpell(spellID2)
+        if mountID then
+            name, _, icon = C_MountJournal.GetMountInfoByID(mountID)
+        end
+        sub3=sub2:CreateButton(
+            index..') '
+            ..(spellID2~=MountTab[indexType][1] and '|cff9e9e9e' or '')
+           ..'|T'..(icon or 0)..':0|t'
+           ..(e.cn(name, {spellID=spellID2, isName=true}) or ('spellID '..spellID2)),
+        function(data)
+            set_ToggleCollectionsJournal(data.mountID, data.type, true)
+        end, {mountID=mountID, type=indexType, spellID=spellID2})
+        sub3:SetTooltip(function(tooltip)
+            tooltip:AddLine(e.onlyChinese and '添加/移除' or (ADD..'/'..REMOVE))
+        end)
+
+        sub3:CreateButton(e.onlyChinese and '移除' or REMOVE, function(data)
+            Save.Mounts[data.type][spellID]=nil
+            print(id, addName, e.onlyChinese and '移除' or REMOVE, C_Spell.GetSpellLink(data.spellID) or data.spellID)
+            checkSpell()--检测法术
+            setClickAtt()--设置
+        end, {type=indexType, spellID= spellID2})
+    end
+
+    if index>1 then
+        sub2:CreateDivider()
+        sub3=sub2:CreateButton(e.onlyChinese and '全部清除' or CLEAR_ALL, function(data)
+            if IsControlKeyDown() then
+                Save.Mounts[data]={}
+                print(id, addName, e.onlyChinese and '全部清除' or CLEAR_ALL)
+                checkSpell()--检测法术
+                setClickAtt()--设置
+            end
+        end, indexType)
+        sub3:SetTooltip(function(tooltip)
+            tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..e.Icon.left)
+        end)
+    end
+
+    if index>35 then
+        sub2:SetGridMode(MenuConstants.VerticalGridDirection, math.ceil(index/35))
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function Init_Menu_Mount(sub, indexType, name)
+    local sub2, sub3, icon, mountID, _, isXDSpell, spellID, useError
+    local tab2=MountTab[indexType] or {}
+    spellID= tab2[1]
+    isXDSpell= XD and XD[indexType]
+    mountID= not isXDSpell and spellID and C_MountJournal.GetMountFromSpell(spellID)
+    useError = mountID and select(2, C_MountJournal.GetMountUsabilityByID(mountID, true))
+    e.LoadDate({id=spellID, type='spell'})
+
+    sub2=sub:CreateButton(
+         '|T'..(spellID and C_Spell.GetSpellTexture(spellID) or 0)..':0|t'
+         ..(e.onlyChinese and name or e.cn(indexType)),
+    function(data)
+        if data.mountID then
+            C_MountJournal.SummonByID(data.mountID)
+        else
+            set_ToggleCollectionsJournal(nil, data.type)--打开界面, 收藏, 坐骑
+        end
+    end, {type=indexType, mountID=mountID, useError=useError})
+    sub2:SetTooltip(function(tooltip, description)
+        if description.data.mountID then
+            tooltip:AddLine(e.onlyChinese and '召唤' or SUMMON)
+        else
+            tooltip:AddLine(e.onlyChinese and '设置' or SETTINGS)
+        end
+        if description.data.useError then
+            tooltip:AddLine(' ')
+            GameTooltip_AddErrorLine(tooltip, e.cn(useError))
+        end
+    end)
+
+    local index=0
+    for num, spellID2 in pairs(MountTab[indexType] or {}) do
+        index= num
+
+        isXDSpell= XD and XD[indexType]
+        if isXDSpell then
+            name= C_Spell.GetSpellName(spellID2)
+            icon= C_Spell.GetSpellTexture(spellID2)
+        else
+            mountID = C_MountJournal.GetMountFromSpell(spellID2)
+            if mountID then
+                name, _, icon = C_MountJournal.GetMountInfoByID(mountID)
+                useError = select(2, C_MountJournal.GetMountUsabilityByID(mountID, true))
+            end
+        end
+
+        sub3=sub2:CreateButton(
+            '|T'..(icon or 0)..':0|t'
+            ..(e.cn(name, {spellID=spellID2, isName=true}) or ('spellID '..spellID)),
+        function(data)
+            if not data.isXDSpell then
+                set_ToggleCollectionsJournal(data.mountID, data.type)--打开界面, 收藏, 坐骑, 不过滤类型
+            end
+        end, {isXDSpell=isXDSpell, mountID=mountID, spellID=spellID2, useError=useError, type=indexType})
+
+        sub3:SetTooltip(function(tooltip, description)
+            if description.data.type==FLOOR and Save.Mounts[FLOOR][description.data.spellID] then
+                for uiMapID, _ in pairs(Save.Mounts[FLOOR][spellID]) do
+                    local mapInfo = C_Map.GetMapInfo(uiMapID)
+                    tooltip:AddDoubleLine('uiMapID '..uiMapID, mapInfo and e.cn(mapInfo.name))
+                end
+            end
+            if description.data.useError then
+                tooltip:AddLine(' ')
+                GameTooltip_AddErrorLine(tooltip, e.cn(useError))
+            end
+        end)
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local MainMenuTable={
+    {type=MOUNT_JOURNAL_FILTER_GROUND, name='地面'},
+    {type=MOUNT_JOURNAL_FILTER_AQUATIC, name='水栖'},
+    {type=MOUNT_JOURNAL_FILTER_FLYING, name='飞行'},
+    {type=MOUNT_JOURNAL_FILTER_DRAGONRIDING, name='驭空术'},
+    {type='-', name=''},
+    {type='Shift', name=''}, {type='Alt', name=''}, {type='Ctrl', name=''},
+    {type='-', name=''},
+    {type=SPELLS, name='法术'},
+    {type=ITEMS, name='物品'},
+    {type=FLOOR, name='区域'},
+}
+
+
+
+
+
 --#####
 --主菜单
 --#####
+local function Init_Menu(_, root)
+    local num, icon, col, sub, sub2
+    for _, tab in pairs(MainMenuTable) do
+        local indexType= tab.type
+        if indexType=='-' then
+            root:CreateDivider()
+
+        elseif indexType==SPELLS or indexType==ITEMS then
+            num=getTableNum(indexType)--检测,表里的数量
+            icon= (indexType==SPELLS and button.spellID) and C_Spell.GetSpellTexture(button.spellID) or (button.itemID and C_Item.GetItemIconByID(button.itemID)) or 0
+            col= num==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:'
+            sub=root:CreateButton('|T'..icon..':0|t'..(e.onlyChinese and tab.name or indexType).. col..' '.. num..'|r', function()
+                return MenuResponse.Open
+            end)
+
+            if indexType==SPELLS then
+                Init_Menu_Spell(sub)
+            else
+                Init_Menu_Item(sub)
+            end
+
+        elseif indexType=='Shift' or indexType=='Alt' or indexType=='Ctrl' then
+            Init_Menu_ShiftAltCtrl(sub, indexType)
+
+        else
+            Init_Menu_Mount(sub, indexType, tab.name)
+        end
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function InitMenu(_, level, type)--主菜单
     local info
     if type=='RANDOM' then--三级, 离开时, 随机坐骑
@@ -862,7 +1248,7 @@ local function InitMenu(_, level, type)--主菜单
             if icon then
                 text= '|T'..icon..':0|t'..text
             end
-            local num=C_Item.GetItemCount(itemID , false, true, true)
+            local num= C_Item.GetItemCount(itemID, false, true, true)
             text= text..(num==0 and ' #|cnRED_FONT_COLOR:' or  ' #|cnGREEN_FONT_COLOR:')..num..'|r'
             local col= '|cffff8200'
             local itemQuality= select(3, C_Item.GetItemInfo(itemID))
@@ -942,8 +1328,9 @@ local function InitMenu(_, level, type)--主菜单
             tooltipOnButton=true,
             tooltipTitle='|cnGREEN_FONT_COLOR:Ctrl+'..e.Icon.left,
             func= function()
-                Save.Mounts[SPELLS]=P_Spells_Tab
+
                 if IsControlKeyDown() then
+                    Save.Mounts[SPELLS]=P_Spells_Tab
                     print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:', e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT, '|r', e.onlyChinese and '完成' or DONE)
                     checkSpell()--检测法术
                     setClickAtt()--设置
@@ -1351,7 +1738,7 @@ local function Init_UI_List_Menu(self, root)
             [FLOOR]=true,
         }
         Updata_MountJournal_FullUpdate(self)
-        
+
         return MenuResponse.Refresh
     end)
 
@@ -1436,7 +1823,7 @@ local function Init_MountJournal()
     --local btn= CreateFrame('DropDownToggleButton', 'MountJournalFilterButtonWoWTools', MountJournal, 'UIResettableDropdownButtonTemplate')--SharedUIPanelTemplates.lua
     local btn= CreateFrame('DropdownButton', 'MountJournalFilterButtonWoWTools', MountJournal, 'WowStyle1FilterDropdownTemplate')
     btn:SetPoint('BOTTOM', MountJournal.FilterDropdown, 'TOP', 0, 6)
-    
+
 
     MountJournal.FilterDropdown.ResetButton:HookScript('OnClick', function()
         local btn2= _G['MountJournalFilterButtonWoWTools']
@@ -1474,73 +1861,10 @@ local function Init_MountJournal()
     MountJournal.MountCount:ClearAllPoints()
     MountJournal.MountCount:SetPoint('BOTTOMRIGHT', MountJournalSearchBox, 'TOPRIGHT', 0, 4)
 
-    
+
     btn:rest_type()
     btn:set_text()
-    btn:SetupMenu(Init_UI_List_Menu)--过滤，列表，菜单
-
-    --[[btn:SetScript('OnMouseDown', function(frame)
-        if not frame.Menu then
-            frame.Menu= CreateFrame('Frame', nil, frame, 'UIDropDownMenuTemplate')
-            e.LibDD:UIDropDownMenu_Initialize(frame.Menu, function(self, level)
-                local parent= self:GetParent()
-                for _, t in pairs(MountType) do
-                    local name= e.cn(t)
-                    local info={
-                        text= name,
-                        --checked= parent:GetText()==name,
-                        notCheckable=true,
-                        tooltipOnButton=true,
-                        keepShownOnClick=true,
-                        tooltipTitle=id..' Tools',
-                        arg1= t,
-                        func= function(_, arg1)
-                            MountJournal_FullUpdate= function()
-                                if (MountJournal:IsVisible()) then
-                                    local newDataProvider = CreateDataProvider();
-                                    for index = 1, C_MountJournal.GetNumDisplayedMounts()  do
-                                        local _, spellID, _, _, _, _, _, _, _, _, _, mountID   = C_MountJournal.GetDisplayedMountInfo(index)
-                                        if mountID and spellID and Save.Mounts[arg1][spellID] then
-                                            newDataProvider:Insert({index = index, mountID = mountID})
-                                        end
-                                    end
-                                    MountJournal.ScrollBox:SetDataProvider(newDataProvider, ScrollBoxConstants.RetainScrollPosition);
-                                    if (not MountJournal.selectedSpellID) then
-                                        MountJournal_Select(self.dragonridingHelpTipMountIndex or 1);
-                                    end
-                                    MountJournal_UpdateMountDisplay()
-                                end
-                            end
-
-                            MountJournal.FilterDropdown:Reset()
-
-                            e.call('MountJournal_SetUnusableFilter',true)
-                            e.call('MountJournal_FullUpdate', MountJournal)
-                            C_MountJournal.SetCollectedFilterSetting(LE_MOUNT_JOURNAL_FILTER_UNUSABLE or 3, true);
-
-                            parent.ResetButton:SetShown(true)
-                            parent:SetText(e.cn(arg1))
-                        end
-                    }
-                    e.LibDD:UIDropDownMenu_AddButton(info, level)
-                end
-                e.LibDD:UIDropDownMenu_AddSeparator(level)
-                e.LibDD:UIDropDownMenu_AddButton({
-                    text= 'Tools '..e.cn(addName),
-                    notCheckable=true,
-                    isTitle=true,
-                }, level)
-            end, 'MENU')
-        end
-        e.LibDD:CloseDropDownMenus()
-        e.LibDD:ToggleDropDownMenu(1, nil, frame.Menu, frame, 74, 15)
-    end)]]
-
-
-    --MountJournal.MountCount:SetPoint('BOTTOMLEFT', MountJournalSearchBox, 'TOPLEFT',-3, 0)
-
-
-    
+    btn:SetupMenu(Init_UI_List_Menu)--过滤，列表，菜单    
 end
 
 
@@ -1587,8 +1911,7 @@ local function Init()
     button.Up:SetAtlas('NPE_ArrowUp')
     button.Up:SetSize(20,20)
 
-    button.Menu= CreateFrame("Frame", nil, button, "UIDropDownMenuTemplate")
-    e.LibDD:UIDropDownMenu_Initialize(button.Menu, InitMenu, 'MENU')
+
 
     Init_Dialogs()--初始化，对话框
     set_ShiJI()--召唤司机
@@ -1641,7 +1964,7 @@ local function Init()
             SetCursor('UI_MOVE_CURSOR')
 
         elseif d=='RightButton' and not IsModifierKeyDown() then
-           e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
+            MenuUtil.CreateContextMenu(self, Init_Menu)
 
         elseif d=='LeftButton' then
             if IsMounted() then
@@ -1810,7 +2133,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
             })
 
             if button then
-                CollectionsJournal_LoadUI()
+                LoadUI()
 
                 Init()--初始
 
