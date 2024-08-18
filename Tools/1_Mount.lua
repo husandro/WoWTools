@@ -1,5 +1,5 @@
 local id, e = ...
-local addName= MOUNT
+local addName
 
 --IsAdvancedFlyableArea()
 --IsFlyableArea()
