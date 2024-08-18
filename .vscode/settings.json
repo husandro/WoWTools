@@ -4758,8 +4758,7 @@
         "WARWITHIN_TITLE2",
         "MenuResponse",
         "Background",
-        "GetMouseFocus",
-        "GetText"
+        "GetMouseFocus"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
