@@ -18,16 +18,6 @@ local Save={
 }
 
 
-
-
-
-
-
-
-
-
-
-
 local Button
 local addName= WoWTools_ToolsButtonMixin:GetName()
 local Category, Layout

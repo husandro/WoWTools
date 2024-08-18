@@ -771,6 +771,26 @@ end
 
 
 
+local function Set_Menu_Tooltip(tooltip, root)
+    local mountID= root.data.mountID
+    local spellID= root.data.spellID
+    local itemID= root.data.itemID
+    if mountID then
+        local  isUsable, useError = C_MountJournal.GetMountUsabilityByID(mountID, true)
+        if useError then
+            GameTooltip_AddErrorLine(tooltip, e.cn(useError))
+        elseif isUsable then
+            tooltip:AddLine(e.onlyChinese and '召唤' or SUMMON)
+        end
+    elseif spellID then
+        tooltip:SetSpellByID(spellID)
+    elseif itemID then
+        tooltip:SetItemByID(itemID)
+    end
+end
+
+
+
 
 
 
@@ -911,7 +931,7 @@ local function Init_Menu_ShiftAltCtrl(sub, indexType)
     local tab2=MountTab[indexType] or {}
     local spellID=tab2[1]
     local mountID= spellID and C_MountJournal.GetMountFromSpell(spellID)
-    local useError = mountID and select(2, C_MountJournal.GetMountUsabilityByID(mountID, true))
+
     e.LoadDate({id=spellID, type='spell'})
 
     sub2=sub:CreateButton(
@@ -923,17 +943,14 @@ local function Init_Menu_ShiftAltCtrl(sub, indexType)
         else
             set_ToggleCollectionsJournal(nil, nil, true)--打开界面, 收藏, 坐骑
         end
-    end, {mountID=mountID, useError=useError})
+    end, {mountID=mountID})
     sub2:SetTooltip(function(tooltip, description)
         if description.data.mountID then
             tooltip:AddLine(e.onlyChinese and '召唤' or SUMMON)
         else
             tooltip:AddLine(e.onlyChinese and '设置' or SETTINGS)
         end
-        if description.data.useError then
-            tooltip:AddLine(' ')
-            GameTooltip_AddErrorLine(tooltip, e.cn(useError))
-        end
+
     end)
 
     sub2:CreateTitle(e.onlyChinese and '仅限第1个' or
@@ -1009,7 +1026,6 @@ function Init_Menu_Mount(sub, indexType, name)
     spellID= tab2[1]
     isXDSpell= XD and XD[indexType]
     mountID= not isXDSpell and spellID and C_MountJournal.GetMountFromSpell(spellID)
-    useError = mountID and select(2, C_MountJournal.GetMountUsabilityByID(mountID, true))
     e.LoadDate({id=spellID, type='spell'})
 
     sub2=sub:CreateButton(
@@ -1021,18 +1037,8 @@ function Init_Menu_Mount(sub, indexType, name)
         else
             set_ToggleCollectionsJournal(nil, data.type)--打开界面, 收藏, 坐骑
         end
-    end, {type=indexType, mountID=mountID, useError=useError})
-    sub2:SetTooltip(function(tooltip, description)
-        if description.data.mountID then
-            tooltip:AddLine(e.onlyChinese and '召唤' or SUMMON)
-        else
-            tooltip:AddLine(e.onlyChinese and '设置' or SETTINGS)
-        end
-        if description.data.useError then
-            tooltip:AddLine(' ')
-            GameTooltip_AddErrorLine(tooltip, e.cn(useError))
-        end
-    end)
+    end, {mountID=mountID, spellID=spellID})
+    sub2:SetTooltip(Set_Menu_Tooltip)
 
     local index=0
     for num, spellID2 in pairs(MountTab[indexType] or {}) do
@@ -1051,7 +1057,7 @@ function Init_Menu_Mount(sub, indexType, name)
         end
 
         sub3=sub2:CreateButton(
-            '|T'..(icon or 0)..':0|t'
+            index..') |T'..(icon or 0)..':0|t'
             ..(e.cn(name, {spellID=spellID2, isName=true}) or ('spellID '..spellID)),
         function(data)
             if not data.isXDSpell then
@@ -1071,6 +1077,10 @@ function Init_Menu_Mount(sub, indexType, name)
                 GameTooltip_AddErrorLine(tooltip, e.cn(useError))
             end
         end)
+    end
+
+    if index>5 then
+        sub2:SetGridMode(MenuConstants.VerticalGridDirection, math.ceil(index/5))
     end
 end
 
@@ -1155,7 +1165,7 @@ end
 
 
 
-local function InitMenu(_, level, type)--主菜单
+--[[local function InitMenu(_, level, type)--主菜单
     local info
     if type=='RANDOM' then--三级, 离开时, 随机坐骑
         info={
@@ -1529,7 +1539,7 @@ local function InitMenu(_, level, type)--主菜单
     e.LibDD:UIDropDownMenu_AddButton(info)
 
 end
-
+]]
 
 
 
@@ -2133,6 +2143,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
             })
 
             if button then
+
                 LoadUI()
 
                 Init()--初始
