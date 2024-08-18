@@ -19,6 +19,7 @@ local P_Item_Tabs={
     167075,--[超级安全传送器：麦卡贡]
     168222,--[加密的黑市电台]
     184504, 184501, 184503, 184502, 184500, 64457,--[侍神者的袖珍传送门：奥利波斯]
+    221966,--虫洞发生器：卡兹阿加
     198156,--龙洞发生器-巨龙群岛
     172924,--[虫洞发生器：暗影界]
     168807,--[虫洞发生器：库尔提拉斯]
@@ -318,19 +319,27 @@ end
 
 
 
+
+
+
+
+
+
+
+
 local function Init_All_Buttons()
     for _, itemID in pairs(Save.item) do
         local name ,icon
-        if get_Find(itemID) then
+        --if get_Find(itemID) then
             name = C_Item.GetItemNameByID(itemID)
             icon = C_Item.GetItemIconByID(itemID)
             if name and icon then
-                local btn= WoWTools_ToolsButtonMixin:CreateButton(
-                    'UsaItems'..itemID,
-                    '|T'..icon..':0|t'..e.cn(name, {itemID=itemID, isName=true}),
-                    true,
-                    'LEFT'
-                )
+                local btn= WoWTools_ToolsButtonMixin:CreateButton({
+                    name='UsaItems_ItemID_'..itemID,
+                    tooltip='|T'..icon..':0|t'..e.cn(name, {itemID=itemID, isName=true}),
+                    setParent=true,
+                    point='LEFT'
+                })
                 if btn then
                     btn.itemID=itemID
                     init_Item_Button(btn)
@@ -340,24 +349,24 @@ local function Init_All_Buttons()
                     btn.texture:SetTexture(icon)
                 end
             end
-        end
+        --end
    end
 
     for _, itemID in pairs(Save.equip) do
         local name ,icon
-        if C_Item.GetItemCount(itemID)>0 then
+        --if C_Item.GetItemCount(itemID)>0 then
             name = C_Item.GetItemNameByID(itemID)
             local itemEquipLoc, icon2 = select(4, C_Item.GetItemInfoInstant(itemID))
             icon =icon2 or C_Item.GetItemIconByID(itemID)
             local slot= e.GetItemSlotID(itemEquipLoc)
 
             if name and icon and slot then
-                local btn= WoWTools_ToolsButtonMixin:CreateButton(
-                    'UsaItems_Equip'..itemID,
-                    '|T'..icon..':0|t'..e.cn(name, {itemID=itemID, isName=true}),
-                    true,
-                    'LEFT'
-                )
+                local btn= WoWTools_ToolsButtonMixin:CreateButton({
+                    name='UsaItems_Equip_ItemID_'..itemID,
+                    tooltip='|T'..icon..':0|t'..e.cn(name, {itemID=itemID, isName=true}),
+                    setParent=true,
+                    point='LEFT'
+                })
                 if btn then
                     btn.itemID=itemID
                     btn.slot=slot
@@ -368,20 +377,20 @@ local function Init_All_Buttons()
                     btn.texture:SetTexture(icon)
                 end
             end
-        end
+        --end
     end
 
     for _, spellID in pairs(Save.spell) do
-        if IsSpellKnownOrOverridesKnown(spellID) then
+        --if IsSpellKnownOrOverridesKnown(spellID) then
             local name= C_Spell.GetSpellName(spellID)
             local icon= C_Spell.GetSpellTexture(spellID)
             if name and icon then
-                local btn= WoWTools_ToolsButtonMixin:CreateButton(
-                    'UsaItems_Spell'..spellID,
-                    '|T'..icon..':0|t'..e.cn(name, {spellID=spellID, isName=true}),
-                    true,
-                    'LEFT'
-                )
+                local btn= WoWTools_ToolsButtonMixin:CreateButton({
+                    name='UsaItems_SpellID_'..spellID,
+                    tooltip='|T'..icon..':0|t'..e.cn(name, {spellID=spellID, isName=true}),
+                    setParent=true,
+                    point='LEFT'
+                })
                 if btn then
                     btn.spellID=spellID
                     init_Spell_Button(btn)
@@ -390,7 +399,7 @@ local function Init_All_Buttons()
                     btn.texture:SetTexture(icon)
                 end
             end
-        end
+        --end
     end
 end
 --[[f not e.Player.husandro then
@@ -904,6 +913,19 @@ local function Init()
         end
     end)
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

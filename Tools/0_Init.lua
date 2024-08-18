@@ -13,6 +13,7 @@ local Save={
     isCombatHide=true,
     isMovingHide=true,
     showIcon=true,
+    --show=false,
     --point
 }
 
@@ -62,7 +63,6 @@ local Category, Layout
 
 
 local function Init_Panel()
-
     Category, Layout= e.AddPanel_Sub_Category({name=addName})
 
     e.AddPanel_Check_Button({
@@ -85,21 +85,40 @@ local function Init_Panel()
         category= Category,
     })
 
-    e.AddPanel_Header(Layout, e.onlyChinese and '选项' or OPTIONS)
+    e.AddPanel_Header(Layout, e.onlyChinese and '选项: 需要重新加载' or (OPTIONS..': '..REQUIRES_RELOAD))
 
-    for _, data in pairs (WoWTools_ToolsButtonMixin:GetAllAddList()) do
-        e.AddPanel_Check({
-            category= Category,
-            name= data.tooltip,
-            tooltip= data.name,
-            GetValue= function() return not Save.disabledADD[data.name] end,
-            SetValue= function()
-                Save.disabledADD[data.name]= not Save.disabledADD[data.name] and true or nil
-            end
-        })
+    for _, data in pairs (WoWTools_ToolsButtonMixin:GetAllAddList()) do        
+        if data.option then
+            data.option(Category, Layout)
+        end
+        if not data.isOnlyOptions then
+            e.AddPanel_Check({
+                category= Category,
+                name= data.tooltip,
+                tooltip= data.name,
+                GetValue= function() return not Save.disabledADD[data.name] end,
+                SetValue= function()
+                    Save.disabledADD[data.name]= not Save.disabledADD[data.name] and true or nil
+                end
+            })
+        end
     end
 
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 local function Init_Menu(self, root)
     local sub, sub2
@@ -138,7 +157,17 @@ local function Init_Menu(self, root)
     end)
 
 
-    sub=root:CreateButton('     '..(e.onlyChinese and '选项' or OPTIONS), function() return MenuResponse.Open end)
+    sub=root:CreateButton('     '..(e.onlyChinese and '选项' or OPTIONS), function()
+        if not Category then
+            e.OpenPanelOpting()
+        end
+        e.OpenPanelOpting(Category, addName)
+        return MenuResponse.Open
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(addName)
+        tooltip:AddLine(e.onlyChinese and '打开选项界面' or OPTIONS)
+    end)
 
     sub2=sub:CreateCheckbox('30x30', function()
         return Save.height==30
@@ -160,8 +189,8 @@ local function Init_Menu(self, root)
         tooltip:AddLine(e.GetShowHide(nil, true))
     end)
 
-    WoWTools_MenuMixin:ScaleMenu(sub, function(data)
-        return Save.scale== data
+    WoWTools_MenuMixin:ScaleMenu(sub, function()
+        return Save.scale
     end, function(data)
         Save.scale=data
         self:set_scale()
@@ -175,21 +204,20 @@ local function Init_Menu(self, root)
     end)
 
 
-    WoWTools_MenuMixin:RestPointMenu(sub, Save.Point, function()
+    WoWTools_MenuMixin:RestPointMenu(sub, Save.point, function()
         Save.point=nil
         self:set_point()
     end)
 
-    sub2=sub:CreateButton(addName, function()
-        if not Category then
-            e.OpenPanelOpting()
-        end
-        e.OpenPanelOpting(Category, addName)
-    end)
-    sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine(e.onlyChinese and '打开选项界面' or OPTIONS)
-    end)
+
 end
+
+
+
+
+
+
+
 
 
 
@@ -269,6 +297,13 @@ local function Init()
         self:set_tooltip()
     end)
 
+    Button:SetScript("OnMouseUp", ResetCursor)
+    Button:SetScript("OnMouseDown", function(_, d)
+        if IsAltKeyDown() and d=='RightButton' then--移动光标
+            SetCursor('UI_MOVE_CURSOR')
+        end
+    end)
+
     Button:SetScript('OnMouseWheel', function(self, d)
         Save.scale=WoWTools_MenuMixin:ScaleFrame(self, d, Save.scale, nil)
     end)
@@ -325,17 +360,25 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
-            Save= WoWToolsSave['WoWTools_ToolsButton'] or Save
-
+            Save= WoWToolsSave['WoWTools_ToolsButton'] or Save            
             Button= WoWTools_ToolsButtonMixin:Init(Save)
 
-            if Button then
+            if Button  then
                 Init()
             end
 
@@ -348,6 +391,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
+            Save.show= Button and Button.Frame:IsShown()
             WoWToolsSave['WoWTools_ToolsButton']=Save
         end
     end

@@ -48,10 +48,19 @@ else
     return
 end
 
-local addName= format(UNITNAME_SUMMON_TITLE14, UnitClass('player'))
 
-local Save={}
-local panel=CreateFrame("Frame")
+
+
+
+
+
+
+local addName
+
+local Save={
+    isLeft=true
+}
+
 
 
 for _, tab in pairs(Tab) do
@@ -62,7 +71,28 @@ end
 
 
 
+local function Init_Options(category, layout)
+    e.AddPanel_Header(layout, addName)
+    e.AddPanel_Check({
+        category= category,
+        name= '|cff28a3ff'..(e.onlyChinese and '启用' or ENABLE)..'|r',
+        tooltip= addName,
+        GetValue= function() return not Save.disabled end,
+        SetValue= function()
+            Save.disabled= not Save.disabled and true or nil
+        end
+    })
+    e.AddPanel_Check({
+        category= category,
+        name= '|cff28a3ff'..(e.onlyChinese and '位置: 放左边' or (CHOOSE_LOCATION..': '..HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT ))..'|r',
+        --tooltip= e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD,
+        GetValue= function() return Save.isLeft end,
+        SetValue= function()
+            Save.isLeft= not Save.isLeft and true or nil
+        end
+    })
 
+end
 
 
 
@@ -72,17 +102,22 @@ end
 --初始
 --####
 local function Init()
+    
 
-    for _, tab in pairs(Tab) do
-        local name= C_Spell.GetSpellName(tab.spell)
-        local icon= C_Spell.GetSpellTexture(tab.spell)
+    local name, icon, btn
+    for index, tab in pairs(Tab) do
+        name= C_Spell.GetSpellName(tab.spell)
+        icon= C_Spell.GetSpellTexture(tab.spell)
 
-        local btn=WoWTools_ToolsButtonMixin:CreateButton(
-            'MagePortal'..tab.spell,
-            ('|T'..(icon or 0)..':0|t')..(e.cn(name, {spellID= tab.spell, isName=true}) or tab.spell),
-            true,
-            'RIGHT'
-        )
+        btn=WoWTools_ToolsButtonMixin:CreateButton({
+            name='MagePortal_Spell_'..tab.spell,
+            tooltip='|T626001:0|t'..('|T'..(icon or 0)..':0|t')..(e.cn(name, {spellID=tab.spell, isName=true}) or tab.spell),
+            setParent=true,
+            point=Save.isLeft and 'LEFT' or 'RIGHT',
+            isNewLine= index==1 and Save.isLeft,
+            isOnlyLine= index~=1 and Save.isLeft,
+            disabledOptions=true,
+        })
 
         if btn then
 
@@ -91,7 +126,11 @@ local function Init()
             btn.name= e.onlyChinese and tab.name
 
             btn.text=e.Cstr(btn, {color= not tab.luce})
-            btn.text:SetPoint('LEFT', btn, 'RIGHT')
+            if Save.isLeft then
+                btn.text:SetPoint('RIGHT', btn, 'LEFT')
+            else
+                btn.text:SetPoint('LEFT', btn, 'RIGHT')
+            end
             if tab.luce then
                 btn.border:SetAtlas('bag-border')--设置高亮
             end
@@ -171,7 +210,7 @@ local function Init()
             end
 
             function btn:set_sepll_known()
-               --self:SetAlpha((GameTooltip:IsOwned(self) or IsSpellKnownOrOverridesKnown(self.spellID)) and 1 or 0.1)
+               self:SetAlpha((GameTooltip:IsOwned(self) or IsSpellKnownOrOverridesKnown(self.spellID)) and 1 or 0.1)
             end
             btn:SetScript('OnLeave', function(self)
                 e.tips:Hide()
@@ -218,35 +257,48 @@ end
 --###########
 --加载保存数据
 --###########
-
+local panel=CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
-panel:RegisterEvent('PLAYER_REGEN_ENABLED')
-
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
-            Save= WoWToolsSave[addName..'Tools'] or Save
+            addName= '|T626001:0|t|cff28a3ff'..(e.onlyChinese and '法师传送门' or format(UNITNAME_SUMMON_TITLE14, UnitClass('player'))..'|r')
+            Save= WoWToolsSave['Tools_MagePortal'] or Save
+            
+            if not Save.disabled and  WoWTools_ToolsButtonMixin:GetButton() then
+                if Save.isLeft then
+                    C_Timer.After(4, function()
+                        if UnitAffectingCombat('player') then
+                            self:RegisterEvent('PLAYER_REGEN_ENABLED')
+                        else
+                            Init()
+                        end
+                    end)
+                else
+                    Init()
+                end
 
-            if WoWTools_ToolsButtonMixin:GetButton() then
-                Init()
-                panel:UnregisterEvent('ADDON_LOADED')
             else
-                panel:UnregisterAllEvents()
                 Tab=nil
             end
+            self:UnregisterEvent('ADDON_LOADED')
+
+            C_Timer.After(4, function()
+                WoWTools_ToolsButtonMixin:AddOptions(Init_Options)
+            end)
         end
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            WoWToolsSave[addName..'Tools']=Save
+            WoWToolsSave['Tools_MagePortal']=Save
         end
 
     elseif event=='PLAYER_REGEN_ENABLED' then
-        if panel.combat then
-            panel.combat=nil
+        if self.combat then
+            self.combat=nil
             Init()
         end
-        panel:UnregisterEvent('PLAYER_REGEN_ENABLED')
+        self:UnregisterEvent('PLAYER_REGEN_ENABLED')
     end
 end)

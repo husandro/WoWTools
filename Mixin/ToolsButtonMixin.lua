@@ -31,7 +31,7 @@ function WoWTools_ToolsButtonMixin:Init(save)
 
     self.Button.Frame= CreateFrame('Frame', nil, self.Button)
     self.Button.Frame:SetAllPoints(self.Button)
-    self.Button.Frame:Hide()
+    self.Button.Frame:SetShown(save.show)
 
     self.last= self.Button
     return self.Button
@@ -47,14 +47,25 @@ end
 
 
 
-function WoWTools_ToolsButtonMixin:CreateButton(name, tooltip, setParent, point)
-    table.insert(self.AddList, {name=name, tooltip=tooltip})
+function WoWTools_ToolsButtonMixin:CreateButton(tab)
+    local name= tab.name
+    local tooltip= tab.tooltip
+    local setParent= tab.setParent
+    local point= tab.point
+    local isNewLine= tab.isNewLine
+    local isOnlyLine= tab.isOnlyLine
+    local option= tab.option
+    local disabledOptions= tab.disabledOptions
+
+    if not disabledOptions then
+        table.insert(self.AddList, {name=name, tooltip=tooltip, option=option})
+    end
 
     if not self.Button or self.Save.DisabledAdd[name] then
         return
     end
 
-    local btn= CreateFrame("Button", name, setParent and self.Button.Frame or UIParent, "SecureActionButtonTemplate")
+    local btn= CreateFrame("Button", 'WoWTools_Tools_'..name, setParent and self.Button.Frame or self.Button, "SecureActionButtonTemplate")
     btn:SetSize(30, 30)
     btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
     btn:EnableMouseWheel(true)
@@ -86,7 +97,7 @@ function WoWTools_ToolsButtonMixin:CreateButton(name, tooltip, setParent, point)
     e.Set_Label_Texture_Color(btn.border, {type='Texture', 0.5})
 
     if point=='LEFT' then
-        WoWTools_ToolsButtonMixin:SetLeftPoint(btn)
+        WoWTools_ToolsButtonMixin:SetLeftPoint(btn, isNewLine, isOnlyLine)
 
     elseif point=='BOTTOM' then
         btn.leftIndex= self.leftIndex
@@ -114,8 +125,11 @@ end
 
 
 
-function WoWTools_ToolsButtonMixin:SetLeftPoint(btn)
-    if (self.index>0 and select(2, math.modf(self.index / 10))==0) then
+function WoWTools_ToolsButtonMixin:SetLeftPoint(btn, isNewLine, isOnlyLine)
+    if (not isOnlyLine and (self.index>0 and select(2, math.modf(self.index / 10))==0)) or isNewLine then
+        if isNewLine then--换行
+            self.index=0
+        end
         local x= - (self.line * 30)
         if self.line>0 then
             btn:SetPoint('BOTTOMRIGHT', self.Button , 'TOPRIGHT', x, 30)
@@ -138,6 +152,10 @@ function WoWTools_ToolsButtonMixin:SetRightPoint(btn)
     btn:SetPoint('BOTTOMLEFT', self.Button, 'TOPRIGHT', 0, (btn.rightIndex*30))
 end
 
+function WoWTools_ToolsButtonMixin:AddOptions(option)
+    table.insert(self.AddList, {isOnlyOptions=true, option=option})
+end
+
 function WoWTools_ToolsButtonMixin:GetAllAddList()
     return self.AddList
 end
@@ -151,12 +169,13 @@ function WoWTools_ToolsButtonMixin:SetSaveData(save)
     self.Save.DisabledAdd= self.Save.DisabledAdd or {}
 end
 
---[[function WoWTools_ChatButtonMixin:SetCategory(category)
+--[[function WoWTools_ChatButtonMixin:SetCategory(category, layout)
     self.Category= category
+    self.Layout= layout
 end
 
 function WoWTools_ChatButtonMixin:GetCategory()
-    return self.Category
+    return self.Category, self.Layout
 end]]
 
 function WoWTools_ToolsButtonMixin:EnterShowFrame()

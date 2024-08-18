@@ -552,12 +552,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
 
             Save= WoWToolsSave[addName..'Tools'] or Save
-            button= WoWTools_ToolsButtonMixin:CreateButton(
-                'Food',
-                '|A:Food:0:0|a'..(e.onlyChinese and '食物' or POWER_TYPE_FOOD),
-                false,
-                'BOTTOM'
-            )
+            button= WoWTools_ToolsButtonMixin:CreateButton({
+                name='Food',
+                tooltip='|A:Food:0:0|a'..(e.onlyChinese and '食物' or POWER_TYPE_FOOD),
+                setParent=false,
+                point='BOTTOM',
+            })
 
             if button then
                 button:SetFrameStrata('HIGH')

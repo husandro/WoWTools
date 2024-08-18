@@ -230,7 +230,17 @@ local function Set_VariableIndex()
     variableIndex= variableIndex+1
     return 'WoWToolsPanelVariable'..variableIndex
 end
-
+local function Set_SearchTags_Text(tags)
+    if tags then
+        tags= tags:gsub('|A.-|a', '')
+        tags= tags:gsub('|T.-|t', '')
+        tags= tags:gsub('|c........', '')
+        tags= tags:gsub('|r', '')
+    else
+         tags=''
+    end
+    return tags
+end
 
 --插件名称
 local Category, Layout = Settings.RegisterVerticalLayoutCategory('|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r')
@@ -295,8 +305,8 @@ function e.AddPanel_Button(tab)
     local buttonClick= tab.func
     local tooltip= tab.tooltip or tab.buttonText or tab.title or nil
     local layout= tab.layout or Layout
-    local addSearchTags= tab.addSearchTags or tab.title or tab.buttonText or ''
-
+    local addSearchTags= Set_SearchTags_Text(tab.addSearchTags or tab.title or tab.buttonText)
+    
     local initializer= CreateSettingsButtonInitializer(title, buttonText, buttonClick, tooltip, addSearchTags)--Blizzard_SettingControls.lua
 	layout:AddInitializer(initializer)
     return initializer

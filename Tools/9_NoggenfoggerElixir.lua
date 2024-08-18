@@ -207,12 +207,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 return
             end
             Save= WoWToolsSave[addName..'Tools'] or Save
-            button= WoWTools_ToolsButtonMixin:CreateButton(
-                'UseToy',
-                '|A:collections-icon-favorites:0:0|a'..(e.onlyChinese and '使用玩具' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_RANDOM3:gsub('/',''), TOY)),
-                true,
-                'LEFT'
-            )
+            button= WoWTools_ToolsButtonMixin:CreateButton({
+                name='UseToy',
+                tooltip='|A:collections-icon-favorites:0:0|a'..(e.onlyChinese and '使用玩具' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_RANDOM3:gsub('/',''), TOY)),
+                setParent=true,
+                point='LEFT'
+            })
 
             if button then
 
