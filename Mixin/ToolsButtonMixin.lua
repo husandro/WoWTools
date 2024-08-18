@@ -147,6 +147,10 @@ function WoWTools_ToolsButtonMixin:SetRightPoint(btn)
     btn:SetPoint('BOTTOMLEFT', self.Button, 'TOPRIGHT', 0, (btn.rightIndex*30))
 end
 
+
+
+
+
 function WoWTools_ToolsButtonMixin:AddOptions(option)
     table.insert(self.AddList, {isOnlyOptions=true, option=option})
 end
@@ -164,15 +168,6 @@ function WoWTools_ToolsButtonMixin:SetSaveData(save)
     self.Save.DisabledAdd= self.Save.DisabledAdd or {}
 end
 
---[[function WoWTools_ChatButtonMixin:SetCategory(category, layout)
-    self.Category= category
-    self.Layout= layout
-end
-
-function WoWTools_ChatButtonMixin:GetCategory()
-    return self.Category, self.Layout
-end]]
-
 function WoWTools_ToolsButtonMixin:EnterShowFrame()
     if self.Button and self.Save.isEnterShow and not self.Button.Frame:IsShown() then
         self.Button:set_shown()
@@ -184,6 +179,34 @@ function WoWTools_ToolsButtonMixin:GetButton()
 end
 
 
+function WoWTools_ToolsButtonMixin:SetCategory(category, layout)
+    self.Category= category
+    self.Layout= layout
+end
+
+function WoWTools_ToolsButtonMixin:GetCategory()
+    return self.Category, self.Layout
+end
+
+function WoWTools_ToolsButtonMixin:OpenOptions(name)
+    if not self.Category then
+        e.OpenPanelOpting()
+    end
+    e.OpenPanelOpting(self.Category, name)
+end
+
+function WoWTools_ToolsButtonMixin:OpenMenu(root, name)
+    local sub=root:CreateButton('     '..(e.onlyChinese and '选项' or OPTIONS),
+        function(data)
+            self:OpenOptions(data)
+            return MenuResponse.Open
+        end, name)
+
+    sub:SetTooltip(function(tooltip, description)
+        tooltip:AddLine(description.data or self:GetName())
+        tooltip:AddLine(e.onlyChinese and '打开选项界面' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, OPTIONS), 'UI'))
+    end)
+end
 
 
 

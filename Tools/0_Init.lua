@@ -39,6 +39,7 @@ local Category, Layout
 
 local function Init_Panel()
     Category, Layout= e.AddPanel_Sub_Category({name=addName})
+    WoWTools_ToolsButtonMixin:SetCategory(Category, Layout)
 
     e.AddPanel_Check_Button({
         checkName= e.onlyChinese and '启用' or ENABLE,
@@ -62,7 +63,7 @@ local function Init_Panel()
 
     e.AddPanel_Header(Layout, e.onlyChinese and '选项: 需要重新加载' or (OPTIONS..': '..REQUIRES_RELOAD))
 
-    for _, data in pairs (WoWTools_ToolsButtonMixin:GetAllAddList()) do        
+    for _, data in pairs (WoWTools_ToolsButtonMixin:GetAllAddList()) do
         if data.option then
             data.option(Category, Layout)
         end
@@ -132,7 +133,9 @@ local function Init_Menu(self, root)
     end)
 
 
-    sub=root:CreateButton('     '..(e.onlyChinese and '选项' or OPTIONS), function()
+    WoWTools_ToolsButtonMixin:OpenMenu(root)
+
+    --[[sub=root:CreateButton('     '..(e.onlyChinese and '选项' or OPTIONS), function()
         if not Category then
             e.OpenPanelOpting()
         end
@@ -142,7 +145,7 @@ local function Init_Menu(self, root)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(addName)
         tooltip:AddLine(e.onlyChinese and '打开选项界面' or OPTIONS)
-    end)
+    end)]]
 
     sub2=sub:CreateCheckbox('30x30', function()
         return Save.height==30
@@ -350,7 +353,7 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
-            Save= WoWToolsSave['WoWTools_ToolsButton'] or Save            
+            Save= WoWToolsSave['WoWTools_ToolsButton'] or Save
             Button= WoWTools_ToolsButtonMixin:Init(Save)
 
             if Button  then

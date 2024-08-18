@@ -537,7 +537,7 @@ end
 --初始化，对话框
 --#############
 local function Init_Dialogs()
-    StaticPopupDialogs[id..addName..'ITEMS']={--物品, 设置对话框
+    StaticPopupDialogs['WoWTools_Tools_Mount_ITEMS']={--物品, 设置对话框
         text=id..' '..addName..' '..(e.onlyChinese and '物品' or ITEMS)..'|n|n%s|n%s',
         whileDead=true, hideOnEscape=true, exclusive=true,
         button1= e.onlyChinese and '添加' or ADD,
@@ -557,14 +557,9 @@ local function Init_Dialogs()
             checkItem()--检测物品
             setClickAtt()--设置 Click属性
         end,
-        EditBoxOnEscapePressed = function(s)
-            s:SetAutoFocus(false)
-            s:ClearFocus()
-            s:GetParent():Hide()
-        end,
     }
 
-    StaticPopupDialogs[id..addName..'SPELLS']={--法术, 设置对话框
+    StaticPopupDialogs['WoWTools_Tools_Mount_SPELLS']={--法术, 设置对话框
         text=id..' '..addName..' '..(e.onlyChinese and '法术' or SPELLS)..'|n|n%s|n%s',
         whileDead=true, hideOnEscape=true, exclusive=true,
         button1= e.onlyChinese and '添加' or ADD,
@@ -580,10 +575,9 @@ local function Init_Dialogs()
         end,
     }
 
-    StaticPopupDialogs[id..addName..'KEY']={--快捷键,设置对话框
+    StaticPopupDialogs['WoWTools_Tools_Mount_Key']={--快捷键,设置对话框
         text=id..' '..addName..'|n'..(e.onlyChinese and '快捷键"' or SETTINGS_KEYBINDINGS_LABEL)..'|n|nQ, BUTTON5',
-        whileDead=true, hideOnEscape=true, exclusive=true,
-        hasEditBox=true,
+        whileDead=true, hideOnEscape=true, exclusive=true, hasEditBox=true,
         button1= e.onlyChinese and '设置' or SETTINGS,
         button2= e.onlyChinese and '取消' or CANCEL,
         button3= e.onlyChinese and '移除' or REMOVE,
@@ -594,9 +588,8 @@ local function Init_Dialogs()
             end
             self2.button3:SetEnabled(Save.KEY)
         end,
-        OnHide= function(self2)
-            self2.editBox:SetText("")
-            e.call('ChatEdit_FocusActiveWindow')
+        OnHide= function(s)
+            s.editBox:ClearFocus()
         end,
         OnAccept = function(self2)
             local text= self2.editBox:GetText()
@@ -617,37 +610,33 @@ local function Init_Dialogs()
             self2:GetParent().button1:SetEnabled(text~='')
         end,
         EditBoxOnEscapePressed = function(s)
-            s:SetAutoFocus(false)
-            s:ClearFocus()
-            s:GetParent():Hide()
+           s:ClearFocus()
         end,
     }
 
-    local function get_UIMapIDs(text)--从text取得uiMapID表
+    local function Get_UIMapIDs_Name(text)--从text取得uiMapID表
         local tab, reText={}, nil
         text:gsub('%d+', function(self)
             local uiMapID= tonumber(self)
             local info= uiMapID and C_Map.GetMapInfo(uiMapID)
-            if uiMapID and info and info.name then--uiMapID<2147483647
+            if uiMapID and info and info.name and not tab[uiMapID] then--uiMapID<2147483647
                 tab[uiMapID]=true
                 reText= reText and reText..'|n' or ''
-                reText= reText..uiMapID..info.name
+                reText= reText..uiMapID..' '..e.cn(info.name)
             end
         end)
         return tab, reText
     end
 
-    StaticPopupDialogs[id..addName..'FLOOR'] = {--区域,设置对话框
-        text=id..' '..addName..' '..(e.onlyChinese and '区域' or FLOOR)..'|n|n%s|n%s',
-        whileDead=true, hideOnEscape=true, exclusive=true,
-        timeout= 0,
-        hasEditBox= true,
+    StaticPopupDialogs['WoWTools_Tools_Mount_FLOOR'] = {--区域,设置对话框
+        text=id..' '..addName..' '..(e.onlyChinese and '区域' or FLOOR)..'|n|n%s|n|n|cnGREEN_FONT_COLOR:%s|r',
+        whileDead=true, hideOnEscape=true, exclusive=true, hasEditBox= true,
         button1=e.onlyChinese and '区域' or FLOOR,
         button2=e.onlyChinese and '取消' or CANCEL,
         button3=e.onlyChinese and '移除' or REMOVE,
-        OnShow = function(self4, data)
-            self4.editBox:SetAutoFocus(false)
-            self4.editBox:ClearFocus()
+        OnShow = function(s, data)
+            s.editBox:SetAutoFocus(false)
+            s.editBox:ClearFocus()
             local text
             text= ''
             local tab= Save.Mounts[FLOOR][data.spellID] or {}
@@ -658,21 +647,24 @@ local function Init_Dialogs()
                 text= C_Map.GetBestMapForUnit("player") or text
                 text= text..', '
             end
-            self4.editBox:SetText(text)
-            self4.button3:SetEnabled(Save.Mounts[FLOOR][data.spellID] and true or false)
+            s.editBox:SetText(text)
+            s.button3:SetEnabled(Save.Mounts[FLOOR][data.spellID] and true or false)
         end,
-        OnAccept = function(self4, data)
-            local tab, text= get_UIMapIDs(self4.editBox:GetText())
-            print('|cnGREEN_FONT_COLOR:', data.name, data.spellID, data.mountID, ':|r|n|cffff00ff', text, '|n|r'..id, e.cn(addName), 'Tools','...')
+        OnAccept = function(s, data)
+            local tab, text= Get_UIMapIDs_Name(s.editBox:GetText())
+            print(
+                '|cnGREEN_FONT_COLOR:', e.cn(data.name, {spellID=data.spellID, isName=true}), 'spellID:', data.spellID, 'mountID:', data.mountID,
+                ':|r|n|cffff00ff', text, '|r|n',
+                id, WoWTools_ToolsButtonMixin:GetName(), addName
+            )
 
             Save.Mounts[FLOOR][data.spellID]= tab
             checkMount()--检测坐骑
             setClickAtt()--设置 Click属性
             if MountJournal_UpdateMountList then e.call('MountJournal_UpdateMountList') end
         end,
-        OnHide= function(self2)
-            self2.editBox:SetText("")
-            e.call('ChatEdit_FocusActiveWindow')
+        OnHide= function(s)
+            s.editBox:ClearFocus()
         end,
         OnAlt = function(_, data)
             Save.Mounts[FLOOR][data.spellID]=nil
@@ -680,19 +672,24 @@ local function Init_Dialogs()
             setClickAtt()--设置 Click属性
             if MountJournal_UpdateMountList then e.call('MountJournal_UpdateMountList') end
         end,
-        EditBoxOnTextChanged=function(self4)
-            local _, text= get_UIMapIDs(self4:GetText())
-            local btn=self4:GetParent().button1
+        EditBoxOnTextChanged=function(s)
+            local _, text= Get_UIMapIDs_Name(s:GetText())
+            local btn=s:GetParent().button1
             btn:SetEnabled(text and true or false)
             btn:SetText(text or (e.onlyChinese and '无' or NONE))
         end,
-        EditBoxOnEscapePressed = function(self2)
-            self2:SetAutoFocus(false)
-            self2:ClearFocus()
-            self2:GetParent():Hide()
+        EditBoxOnEscapePressed = function(s)
+            s:ClearFocus()
         end,
     }
 end
+
+
+
+
+
+
+
 
 
 
@@ -800,7 +797,7 @@ local function InitMenu(_, level, type)--主菜单
             checked=Save.KEY and true or nil,
             keepShownOnClick=true,
             func=function()
-                StaticPopup_Show(id..addName..'KEY')
+                StaticPopup_Show('WoWTools_Tools_Mount_Key')
             end,
         }
         info.disabled=UnitAffectingCombat('player')
@@ -855,7 +852,7 @@ local function InitMenu(_, level, type)--主菜单
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-       
+
         return
 
     elseif type==ITEMS then--物品, 二级菜单
@@ -883,7 +880,7 @@ local function InitMenu(_, level, type)--主菜单
                 arg1= itemID,
                 arg2= text,
                 func=function(_, arg1, arg2)
-                    StaticPopup_Show(id..addName..'ITEMS',
+                    StaticPopup_Show('WoWTools_Tools_Mount_ITEMS',
                                     arg2,
                                     Save.Mounts[ITEMS][arg1] and (e.onlyChinese and '物品已存在' or ERR_ZONE_EXPLORED:format(PROFESSIONS_CURRENT_LISTINGS)) or (e.onlyChinese and '新建' or NEW),
                                     {itemID=itemID})
@@ -1161,67 +1158,71 @@ end
 
 
 
---#############################
---坐骑界面, 添加菜单, 设置提示内容
---#############################
-local function Init_Menu_Set_UI(self, level)--坐骑界面, 菜单
-    local info
+
+
+
+
+
+
+
+
+
+
+
+
+
+--界面，菜单
+local function Init_UI_Menu(self, root)
     if UnitAffectingCombat('player') then
-        info={
-            text= e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT,
-            notCheckable=true,
-            isTitle=true,
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
+        root:CreateTitle(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
         return
     end
 
     local frame= self:GetParent()
-    local spellID= frame.spellID
     local mountID = frame.mountID
+
     if not mountID then
+        root:CreateTitle((e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE)..' mountID')
         return
     end
-    local name, _, icon, _, _, _, _, isFactionSpecific, faction, shouldHideOnChar, isCollected, _, isForDragonriding = C_MountJournal.GetMountInfoByID(mountID)
+
+    local name, spellID, icon, _, _, _, _, isFactionSpecific, faction, shouldHideOnChar, isCollected, _, isForDragonriding = C_MountJournal.GetMountInfoByID(mountID)
+    spellID= spellID or self.spellID
+
+    local col, sub
     for _, type in pairs(MountType) do
         if type=='Shift' or type==FLOOR then
-            e.LibDD:UIDropDownMenu_AddSeparator(level)
+            root:CreateDivider()
         end
-        info={
-            text= (e.onlyChinese and '设置' or SETTINGS)..' '..e.cn(type)..' #'..getTableNum(type),
-            checked= Save.Mounts[type][spellID] and true or nil,
-            arg1={type= type, spellID= spellID, name= name, mountID= mountID},
-            colorCode= (
-                    (type==MOUNT_JOURNAL_FILTER_DRAGONRIDING and not isForDragonriding)
-                    or (type~=MOUNT_JOURNAL_FILTER_DRAGONRIDING and isForDragonriding)
-                    or not isCollected
-                    or shouldHideOnChar
-                    or (isFactionSpecific and faction~=Faction)
-                ) and '|cff9e9e9e'
-        }
+
+        col= (
+            (type==MOUNT_JOURNAL_FILTER_DRAGONRIDING and not isForDragonriding)
+            or (type~=MOUNT_JOURNAL_FILTER_DRAGONRIDING and isForDragonriding)
+            or not isCollected
+            or shouldHideOnChar
+            or (isFactionSpecific and faction~=Faction)
+        ) and '|cff9e9e9e' or ''
+
+        function GetValue(data)
+            return Save.Mounts[data.type][data.spellID]
+        end
+
+        local SetValue
         if type==FLOOR then
-            info.func= function(_, tab)
-                StaticPopup_Show(
-                    id..addName..'FLOOR',
-                    (tab.icon and '|T'..tab.icon..':0|t' or '').. (e.cn(tab.name) or ('spellID: '..tab.spellID)),
-                    (Save.Mounts[FLOOR][tab.spellID] and (e.onlyChinese and '已存在' or format(ERR_ZONE_EXPLORED, PROFESSIONS_CURRENT_LISTINGS)) or (e.onlyChinese and '新建' or NEW))..'|n|n uiMapID: '..(C_Map.GetBestMapForUnit("player") or ''),
-                    tab
+            function SetValue(data)
+                StaticPopup_Show('WoWTools_Tools_Mount_FLOOR',
+                    '|T'..(data.icon or 0)..':0|t'.. (e.cn(data.name, {spellID=data.spellID, isName=true}) or ('spellID: '..data.spellID)),
+
+                    (Save.Mounts[FLOOR][data.spellID] and
+                        (e.onlyChinese and '已存在' or format(ERR_ZONE_EXPLORED, PROFESSIONS_CURRENT_LISTINGS))
+                        or (e.onlyChinese and '新建' or NEW)
+                    )..'|n|n uiMapID: '..(C_Map.GetBestMapForUnit("player") or ''),
+
+                    data
                 )
             end
-            if info.checked then
-                local text
-                for uiMapID,_ in pairs(Save.Mounts[type][spellID]) do
-                    local mapInfo= uiMapID and C_Map.GetMapInfo(uiMapID)
-                    text= text and text..'|n' or ''
-                    text= text..'uiMapID '..uiMapID..' '..(mapInfo and e.cn(mapInfo.name) or (e.onlyChinese and '无' or NONE))
-                end
-                if text then
-                    info.tooltipOnButton=true
-                    info.tooltipTitle= text
-                end
-            end
         else
-            info.func= function(_, tab)
+            function SetValue(tab)
                 if Save.Mounts[tab.type][tab.spellID] then
                     Save.Mounts[tab.type][tab.spellID]=nil
                 else
@@ -1238,28 +1239,131 @@ local function Init_Menu_Set_UI(self, level)--坐骑界面, 菜单
                 e.call('MountJournal_UpdateMountList')
             end
         end
-        e.LibDD:UIDropDownMenu_AddButton(info, level);
+
+        sub=root:CreateCheckbox(col..(e.onlyChinese and '设置' or SETTINGS)..' '..e.cn(type)..' #|cnGREEN_FONT_COLOR:'..getTableNum(type),
+            GetValue,
+            SetValue,
+            {type=type, spellID=spellID, mountID=mountID, name=name, icon=icon, GetValue=GetValue}
+        )
+
+        if type==FLOOR then
+            sub:SetTooltip(function(tooltip, description)
+                for uiMapID,_ in pairs(Save.Mounts[FLOOR][description.data.spellID] or {}) do
+                    local mapInfo= C_Map.GetMapInfo(uiMapID)
+                    tooltip:AddDoubleLine('uiMapID '..uiMapID, mapInfo and e.cn(mapInfo.name))
+                end
+            end)
+        end
     end
 
-    e.LibDD:UIDropDownMenu_AddSeparator(level)
-    info={
-        text=e.cn(name),
-        icon=icon,
-        isTitle=true,
-        notCheckable=true,
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level);
-
-    info={
-        text=id..' '..e.cn(addName),
-        isTitle=true,
-        notCheckable=true,
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level);
+    root:CreateDivider()
+    root:CreateTitle('|T'..(icon or 0)..':0|t'..e.cn(name, {spellID=spellID, isName=true}))
+    WoWTools_ToolsButtonMixin:OpenMenu(root, addName)
 end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--过滤，列表，Func
+local function New_MountJournal_FullUpdate()
+    if not MountJournal:IsVisible() then
+        return
+    end
+
+    local btn= _G['MountJournalFilterButtonWoWTools']
+    local spellIDs={}
+    for type in pairs(btn.Type or {}) do
+        for spellID in pairs(Save.Mounts[type]) do
+            spellIDs[spellID]=true
+        end
+    end
+    local newDataProvider = CreateDataProvider();
+    for index = 1, C_MountJournal.GetNumDisplayedMounts()  do
+        local _, spellID, _, _, _, _, _, _, _, _, _, mountID   = C_MountJournal.GetDisplayedMountInfo(index)
+        if mountID and spellID and spellIDs[spellID] then
+            newDataProvider:Insert({index = index, mountID = mountID})
+        end
+    end
+    MountJournal.ScrollBox:SetDataProvider(newDataProvider, ScrollBoxConstants.RetainScrollPosition);
+    if (not MountJournal.selectedSpellID) then
+        MountJournal_Select(1);
+    end
+    MountJournal_UpdateMountDisplay()
+end
+
+
+
+
+
+local function Updata_MountJournal_FullUpdate(self)
+    MountJournal_FullUpdate=New_MountJournal_FullUpdate--过滤，列表，Func
+
+    MountJournal.FilterDropdown:Reset()
+    e.call('MountJournal_SetUnusableFilter',true)
+    e.call('MountJournal_FullUpdate', MountJournal)
+    C_MountJournal.SetCollectedFilterSetting(LE_MOUNT_JOURNAL_FILTER_UNUSABLE or 3, true);
+
+    self.ResetButton:SetShown(true)
+    self:set_text()
+end
+
+
+
+
+
+
+
+--过滤，列表，菜单
+local function Init_UI_List_Menu(self, root)
+    for _, type in pairs(MountType) do
+        root:CreateCheckbox(e.cn(type)..' #|cnGREEN_FONT_COLOR:'..getTableNum(type), function(data)
+            return self.Type[data]
+        end, function(data)
+            self.Type[data]= not self.Type[data] and true or nil
+            Updata_MountJournal_FullUpdate(self)
+        end, type)
+    end
+
+    root:CreateDivider()
+    root:CreateButton('     '..(e.onlyChinese and '勾选所有' or CHECK_ALL), function()
+        self.Type={
+            [MOUNT_JOURNAL_FILTER_GROUND]=true,
+            [MOUNT_JOURNAL_FILTER_AQUATIC]=true,
+            [MOUNT_JOURNAL_FILTER_FLYING]=true,
+            [MOUNT_JOURNAL_FILTER_DRAGONRIDING]=true,
+            ['Shift']=true, ['Alt']=true, ['Ctrl']=true,
+            [FLOOR]=true,
+        }
+        Updata_MountJournal_FullUpdate(self)
+        
+        return MenuResponse.Refresh
+    end)
+
+    root:CreateButton('     '..(e.onlyChinese and '撤选所有' or UNCHECK_ALL), function()
+        self:rest_type()
+        self.ResetButton:Click()
+        return MenuResponse.Refresh
+    end)
+
+    root:CreateDivider()
+    WoWTools_ToolsButtonMixin:OpenMenu(root, addName)
+end
 
 
 
@@ -1303,11 +1407,7 @@ local function Init_MountJournal()
             end)
             frame.WoWToolsButton:SetScript('OnLeave', function(self) self:SetAlpha(0) end)
             frame.WoWToolsButton:SetScript('OnClick', function(self)
-                if not self.Menu then
-                    self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
-                    e.LibDD:UIDropDownMenu_Initialize(self.Menu, Init_Menu_Set_UI, 'MENU')
-                end
-                e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 10, 0)
+                MenuUtil.CreateContextMenu(self, Init_UI_Menu)--界面，菜单
             end)
             frame:HookScript('OnLeave', function(self) self.WoWToolsButton:SetAlpha(0) end)
             frame:HookScript('OnEnter', function(self) self.WoWToolsButton:SetAlpha(1) end)
@@ -1333,22 +1433,53 @@ local function Init_MountJournal()
         MountJournal.MountDisplay.tipsMenu:SetScript('OnLeave', function(self) self:SetAlpha(0.3) end)
     end
 
-    local btn= CreateFrame('DropDownToggleButton', 'MountJournalFilterButtonWoWTools', MountJournal, 'UIResettableDropdownButtonTemplate')--SharedUIPanelTemplates.lua
+    --local btn= CreateFrame('DropDownToggleButton', 'MountJournalFilterButtonWoWTools', MountJournal, 'UIResettableDropdownButtonTemplate')--SharedUIPanelTemplates.lua
+    local btn= CreateFrame('DropdownButton', 'MountJournalFilterButtonWoWTools', MountJournal, 'WowStyle1FilterDropdownTemplate')
+    btn:SetPoint('BOTTOM', MountJournal.FilterDropdown, 'TOP', 0, 6)
+    
 
-    btn:SetPoint('BOTTOM', MountJournal.FilterDropdown, 'TOP')
+    MountJournal.FilterDropdown.ResetButton:HookScript('OnClick', function()
+        local btn2= _G['MountJournalFilterButtonWoWTools']
+        if btn2.ResetButton:IsShown() then
+            btn2.ResetButton:Click()
+        end
+    end)
+
     btn.MountJournal_FullUpdate= MountJournal_FullUpdate
+
+    function btn:rest_type()
+        self.Type={}
+    end
+    function btn:set_text()
+        for type in pairs(self.Type or {}) do
+            self:SetText(e.cn(type))
+            return
+        end
+        self:SetText('Tools')
+    end
+
+    --重置
     btn.ResetButton:SetScript('OnClick', function(self)
-        MountJournal_FullUpdate= _G['MountJournalFilterButtonWoWTools'].MountJournal_FullUpdate
-        _G['MountJournalFilterButtonWoWTools']:SetText(id)
+        local frame= self:GetParent()
+        MountJournal_FullUpdate= frame.MountJournal_FullUpdate
+        frame:set_text()
         MountJournal.FilterDropdown:Reset()
         C_MountJournal.SetCollectedFilterSetting(LE_MOUNT_JOURNAL_FILTER_UNUSABLE or 3, true);
         e.call('MountJournal_SetUnusableFilter',true)
         e.call('MountJournal_FullUpdate', MountJournal)
         self:Hide()
+        self:GetParent():rest_type()
     end)
 
+    MountJournal.MountCount:ClearAllPoints()
+    MountJournal.MountCount:SetPoint('BOTTOMRIGHT', MountJournalSearchBox, 'TOPRIGHT', 0, 4)
 
-    btn:SetScript('OnMouseDown', function(frame)
+    
+    btn:rest_type()
+    btn:set_text()
+    btn:SetupMenu(Init_UI_List_Menu)--过滤，列表，菜单
+
+    --[[btn:SetScript('OnMouseDown', function(frame)
         if not frame.Menu then
             frame.Menu= CreateFrame('Frame', nil, frame, 'UIDropDownMenuTemplate')
             e.LibDD:UIDropDownMenu_Initialize(frame.Menu, function(self, level)
@@ -1403,18 +1534,13 @@ local function Init_MountJournal()
         end
         e.LibDD:CloseDropDownMenus()
         e.LibDD:ToggleDropDownMenu(1, nil, frame.Menu, frame, 74, 15)
-    end)
+    end)]]
 
-    MountJournal.MountCount:ClearAllPoints()
+
     --MountJournal.MountCount:SetPoint('BOTTOMLEFT', MountJournalSearchBox, 'TOPLEFT',-3, 0)
 
 
-        MountJournal.MountCount:SetPoint('BOTTOMRIGHT', MountJournalSearchBox, 'TOPRIGHT', 0, 4)
-        MountJournal.FilterDropdown.ResetButton:HookScript('OnClick', function()
-            if _G['MountJournalFilterButtonWoWTools'].ResetButton:IsShown() then
-                _G['MountJournalFilterButtonWoWTools'].ResetButton:Click()
-            end
-        end)
+    
 end
 
 
@@ -1473,7 +1599,7 @@ local function Init()
             e.LoadDate({id=ID, type= type==ITEMS and 'item' or 'spell'})
         end
     end
- 
+
 
     --setButtonSize()--设置按钮大小
     XDInt()--德鲁伊设置
@@ -1501,14 +1627,14 @@ local function Init()
             local exits=Save.Mounts[ITEMS][itemID] and ERR_ZONE_EXPLORED:format(PROFESSIONS_CURRENT_LISTINGS) or NEW
             local icon = C_Item.GetItemIconByID(itemID)
             local text= (icon and '|T'..icon..':0|t' or '').. (itemLink or ('itemID: '..itemID))
-            StaticPopup_Show(id..addName..'ITEMS',text, exits , {itemID=itemID})
+            StaticPopup_Show('WoWTools_Tools_Mount_ITEMS',text, exits , {itemID=itemID})
             ClearCursor()
 
         elseif infoType =='spell' and spellID then
             local exits=Save.Mounts[SPELLS][spellID] and ERR_ZONE_EXPLORED:format(PROFESSIONS_CURRENT_LISTINGS) or NEW
             local icon = C_Spell.GetSpellTexture(spellID)
             local text= (icon and '|T'..icon..':0|t' or '').. (C_Spell.GetSpellLink(spellID) or ('spellID: '..spellID))
-            StaticPopup_Show(id..addName..'SPELLS',text, exits , {spellID=spellID})
+            StaticPopup_Show('WoWTools_Tools_Mount_SPELLS',text, exits , {spellID=spellID})
             ClearCursor()
 
         elseif d=='RightButton' and IsAltKeyDown() then
