@@ -10,7 +10,7 @@ e.SetItemSpellCool(frame, {item=, spell=, type=, isUnit=true} type=true圆形，
 e.GetSpellItemCooldown(spellID, itemID)--法术,物品,冷却
 
 e.Cbtn2(tab)
-e.ToolsSetButtonPoint(self, line, unoLine)--设置位置
+
 
 ]]
 

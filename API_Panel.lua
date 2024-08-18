@@ -283,7 +283,7 @@ end
 
 
 --添加，Check
-function e.AddPanel_Check(tab)
+function e.AddPanel_Check(tab, parentInitializer)
     local setting=Settings.RegisterProxySetting(
         tab.category or Category,
         Set_VariableIndex(),
@@ -293,7 +293,11 @@ function e.AddPanel_Check(tab)
         tab.GetValue,
         tab.SetValue or tab.func
     )
-    return Settings.CreateCheckbox(tab.category or Category, setting, tab.tooltip)
+    local initializer= Settings.CreateCheckbox(tab.category or Category, setting, tab.tooltip)
+    if parentInitializer then
+        initializer:SetParentInitializer(parentInitializer)
+    end
+    return initializer
 end
 
 

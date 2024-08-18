@@ -47,7 +47,7 @@ local UNLEARN_SKILL_CONFIRMATION= UNLEARN_SKILL_CONFIRMATION
                 sizi=nil,
             })
 
-            e.ToolsSetButtonPoint(btn)--设置位置
+         
 
             btn.spellID = spellID
             btn.name = name
@@ -473,7 +473,7 @@ local function Init_ProfessionsFrame()
     btn2:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, e.toolsFrame.addName)
+        e.tips:AddDoubleLine(id, WoWTools_ToolsButtonMixin:GetName())
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled)..e.Icon.left)
         e.tips:Show()
@@ -544,7 +544,7 @@ local function Init_ProfessionsFrame()
         if info.itemLevel or info.skillLineAbilityID then
             e.tips:AddDoubleLine(info.skillLineAbilityID and 'skillLineAbilityID '..info.skillLineAbilityID,  info.itemLevel and info.itemLevel>1 and format(e.onlyChinese and '物品等级%d' or ITEM_LEVEL, info.itemLevel))
         end
-        e.tips:AddDoubleLine(e.toolsFrame.addName, Initializer:GetName())
+        e.tips:AddDoubleLine(WoWTools_ToolsButtonMixin:GetName(), Initializer:GetName())
         e.tips:Show()
     end)
 

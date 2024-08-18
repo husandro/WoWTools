@@ -1456,8 +1456,6 @@ local function Init()
 
     button.textureModifier:SetShown(false)
 
-    e.toolsFrame:SetParent(button)--设置, TOOLS 位置
-    e.toolsFrame:SetPoint('BOTTOMRIGHT', button, 'TOPRIGHT',-1,0)
     button.Up=button:CreateTexture(nil,'OVERLAY')
     button.Up:SetPoint('TOP',-1, 9)
     button.Up:SetAtlas('NPE_ArrowUp')

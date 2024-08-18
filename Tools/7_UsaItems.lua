@@ -402,41 +402,6 @@ local function Init_All_Buttons()
         --end
     end
 end
---[[f not e.Player.husandro then
-    return
-end
-local tab= {103}
-    for _, flyoutID in pairs(tab) do --Save.flyout) do
-        local name, description, numSlots, isKnown = GetFlyoutInfo(flyoutID)
-        
-        if isKnown then
-            local btn= CreateFrame('CheckButton', id..'ToolsFlyout'..name, e.toolsFrame, 'SpellFlyoutButtonTemplate')--SmallActionButtonTemplate SpellFlyoutButtonTemplate
-            
-            local btn= e.Cbtn2({
-                name=nil,
-                parent= e.toolsFrame,
-                click=true,-- right left
-                notSecureActionButton=nil,
-                notTexture=nil,
-                showTexture=true,
-                sizi=nil,
-            })
-            --btn.flyoutId=flyoutID
-            --btn.spellID= flyoutID
-
-           
-
-            e.ToolsSetButtonPoint(btn)--设置位置
-            btn:SetAttribute("type", "flyout")
---btn:SetAttribute("spell", flyoutID)
-            btn:SetAttribute("flyout", flyoutID)
-            btn:SetAttribute("flyoutDirection", 'RIGHT')
-            --btn:SetAttribute('spellID', flyoutID)
-            --btn:SetAttribute("flyoutDirection", "LEFT")
-            --btn.texture:SetTexture(519384)
-        end
-    end
-    ]]
 
 
 
@@ -494,7 +459,7 @@ local function Init_Opetions_ToyBox(btn)--标记, 是否已选取
             end
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(e.toolsFrame.addName, addName2)
+            e.tips:AddDoubleLine(WoWTools_ToolsButtonMixin:GetName(), addName)
             e.tips:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             e.tips:AddLine(' ')
             
@@ -555,7 +520,7 @@ local function set_Use_Spell_Button(btn, spellID)
         function btn.useSpell:set_tooltips()
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(e.toolsFrame.addName, addName2)
+            e.tips:AddDoubleLine(WoWTools_ToolsButtonMixin:GetName(), addName)
             e.tips:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             e.tips:AddLine(' ')
             if self.spellID then
@@ -773,9 +738,9 @@ local function Init_Options_Button()
             else
                 if Save[data.type][data.index] and Save[data.type][data.index]==data.ID then
                     table.remove(Save[data.type], data.index)
-                    print(e.toolsFrame.addName, addName2, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r'..(e.onlyChinese and '完成' or COMPLETE), data.name, '|cnRED_FONT_COLOR:'..REQUIRES_RELOAD..'|r')
+                    print(WoWTools_ToolsButtonMixin:GetName(), addName2, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r'..(e.onlyChinese and '完成' or COMPLETE), data.name, '|cnRED_FONT_COLOR:'..REQUIRES_RELOAD..'|r')
                 else
-                    print(e.toolsFrame.addName, addName2,'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '错误' or ERROR_CAPS)..'|r', e.onlyChinese and '未发现物品' or	BROWSE_NO_RESULTS, data.name)
+                    print(WoWTools_ToolsButtonMixin:GetName(), addName2,'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '错误' or ERROR_CAPS)..'|r', e.onlyChinese and '未发现物品' or	BROWSE_NO_RESULTS, data.name)
                 end
             end
         end,
@@ -806,11 +771,11 @@ local function Init_Options_Button()
         end,
         OnAccept = function(_, data)
             table.insert(Save[data.type], data.ID)
-            print(e.toolsFrame.addName, addName2, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r', e.onlyChinese and '完成' or COMPLETE, data.name, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(WoWTools_ToolsButtonMixin:GetName(), addName2, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r', e.onlyChinese and '完成' or COMPLETE, data.name, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
         OnAlt = function(_, data)
             table.remove(Save[data.type], data.index)
-            print(e.toolsFrame.addName, addName2, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', e.onlyChinese and '完成' or COMPLETE, data.name, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(WoWTools_ToolsButtonMixin:GetName(), addName2, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', e.onlyChinese and '完成' or COMPLETE, data.name, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
     }
 
@@ -843,7 +808,7 @@ local function Init_Options_Button()
     button:SetScript('OnEnter',function (self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.toolsFrame.addName, addName2)
+        e.tips:AddDoubleLine(WoWTools_ToolsButtonMixin:GetName(), addName2)
         e.tips:AddDoubleLine(e.onlyChinese and '拖曳' or DRAG_MODEL, e.onlyChinese and '添加' or ADD)
         e.tips:AddDoubleLine(e.onlyChinese and '法术' or SPELLS, e.onlyChinese and '物品，装备' or (ITEMS..', '..EQUIPSET_EQUIP), 0,1,0, 0,1,0)
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.left)

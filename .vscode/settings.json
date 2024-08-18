@@ -4758,7 +4758,8 @@
         "WARWITHIN_TITLE2",
         "MenuResponse",
         "Background",
-        "GetMouseFocus"
+        "GetMouseFocus",
+        "GetText"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
@@ -4776,4 +4777,11 @@
         "~\\.vscode\\extensions\\ketho.wow-api-0.17.4\\Annotations"
     ],
     "Lua.runtime.unicodeName": true,
+    "Lua.diagnostics.disable": [
+        "missing-parameter",
+        "param-type-mismatch",
+        "undefined-field",
+        "redundant-parameter",
+        "assign-type-mismatch"
+    ],
 }

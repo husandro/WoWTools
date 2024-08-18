@@ -111,6 +111,7 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
+            
             if not e.toolsFrame.disabled then
                 if not AchievementFrame then
                     AchievementFrame_LoadUI();

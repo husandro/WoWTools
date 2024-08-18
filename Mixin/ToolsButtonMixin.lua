@@ -38,14 +38,9 @@ function WoWTools_ToolsButtonMixin:Init(save)
 end
 
 
-
-
-
-
-
-
-
-
+function WoWTools_ToolsButtonMixin:GetName()
+    return '|A:bag-border:0:0|aTools'
+end
 
 function WoWTools_ToolsButtonMixin:CreateButton(tab)
     local name= tab.name

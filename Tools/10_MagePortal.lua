@@ -58,7 +58,9 @@ end
 local addName
 
 local Save={
-    isLeft=true
+    isLeft=true,
+    showText=true,
+    --disabled
 }
 
 
@@ -73,7 +75,7 @@ end
 
 local function Init_Options(category, layout)
     e.AddPanel_Header(layout, addName)
-    e.AddPanel_Check({
+    local initializer=e.AddPanel_Check({
         category= category,
         name= '|cff28a3ff'..(e.onlyChinese and '启用' or ENABLE)..'|r',
         tooltip= addName,
@@ -82,15 +84,26 @@ local function Init_Options(category, layout)
             Save.disabled= not Save.disabled and true or nil
         end
     })
+
     e.AddPanel_Check({
         category= category,
         name= '|cff28a3ff'..(e.onlyChinese and '位置: 放左边' or (CHOOSE_LOCATION..': '..HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT ))..'|r',
-        --tooltip= e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD,
+        tooltip= addName,
         GetValue= function() return Save.isLeft end,
         SetValue= function()
             Save.isLeft= not Save.isLeft and true or nil
         end
-    })
+    }, initializer)
+
+    e.AddPanel_Check({
+        category= category,
+        name= '|cff28a3ff'..(e.onlyChinese and '显示名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, NAME))..'|r',
+        tooltip= addName,
+        GetValue= function() return Save.showText end,
+        SetValue= function()
+            Save.showText= not Save.showText and true or nil
+        end
+    }, initializer)
 
 end
 
@@ -102,7 +115,7 @@ end
 --初始
 --####
 local function Init()
-    
+
 
     local name, icon, btn
     for index, tab in pairs(Tab) do
@@ -120,17 +133,21 @@ local function Init()
         })
 
         if btn then
-
             btn.spellID= tab.spell
             btn.spellID2= tab.spell2
-            btn.name= e.onlyChinese and tab.name
 
-            btn.text=e.Cstr(btn, {color= not tab.luce})
-            if Save.isLeft then
-                btn.text:SetPoint('RIGHT', btn, 'LEFT')
-            else
-                btn.text:SetPoint('LEFT', btn, 'RIGHT')
+            if Save.showText then
+                btn.text=e.Cstr(btn, {color= not tab.luce})
+                if Save.isLeft then
+                    btn.text:SetPoint('RIGHT', btn, 'LEFT')
+                else
+                    btn.text:SetPoint('LEFT', btn, 'RIGHT')
+                end
+                if e.onlyChinese then
+                    btn.text:SetText(tab.name)
+                end
             end
+
             if tab.luce then
                 btn.border:SetAtlas('bag-border')--设置高亮
             end
@@ -178,9 +195,8 @@ local function Init()
                     if icon1 then
                         self.texture:SetTexture(icon1)
                     end
-                    if self.name then
-                        self.text:SetText(self.name)
-                    else
+
+                    if not e.onlyChinese and self.text then
                         name1= e.cn(name1, {spellID=self.spellID, isName=true})
                         name1=name1:gsub('(.+):','')
                         name1=name1:gsub('(.+)：','');
@@ -263,10 +279,12 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
-            addName= '|T626001:0|t|cff28a3ff'..(e.onlyChinese and '法师传送门' or format(UNITNAME_SUMMON_TITLE14, UnitClass('player'))..'|r')
+
             Save= WoWToolsSave['Tools_MagePortal'] or Save
-            
+
             if not Save.disabled and  WoWTools_ToolsButtonMixin:GetButton() then
+                addName= '|T626001:0|t|cff28a3ff'..(e.onlyChinese and '法师传送门' or format(UNITNAME_SUMMON_TITLE14, UnitClass('player'))..'|r')
+
                 if Save.isLeft then
                     C_Timer.After(4, function()
                         if UnitAffectingCombat('player') then
