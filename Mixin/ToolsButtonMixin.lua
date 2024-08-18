@@ -9,7 +9,9 @@ WoWTools_ToolsButtonMixin={
     index=0,
     line=1,
 
-    leftIndex=0
+    leftIndex=0,
+    rightIndex=0,
+
 }
 
 function WoWTools_ToolsButtonMixin:Init(save)
@@ -31,8 +33,6 @@ function WoWTools_ToolsButtonMixin:Init(save)
     self.Button.Frame:SetAllPoints(self.Button)
     self.Button.Frame:Hide()
 
-    
-
     self.last= self.Button
     return self.Button
 end
@@ -47,7 +47,7 @@ end
 
 
 
-function WoWTools_ToolsButtonMixin:CreateButton(name, tooltip, setParent, isLeftButton, line, unoLine)
+function WoWTools_ToolsButtonMixin:CreateButton(name, tooltip, setParent, point)
     table.insert(self.AddList, {name=name, tooltip=tooltip})
 
     if not self.Button or self.Save.DisabledAdd[name] then
@@ -85,14 +85,22 @@ function WoWTools_ToolsButtonMixin:CreateButton(name, tooltip, setParent, isLeft
 
     e.Set_Label_Texture_Color(btn.border, {type='Texture', 0.5})
 
-    if not isLeftButton then
-        WoWTools_ToolsButtonMixin:SetPoint(btn, line, unoLine)
-    else
+    if point=='LEFT' then
+        WoWTools_ToolsButtonMixin:SetLeftPoint(btn)
+
+    elseif point=='BOTTOM' then
         btn.leftIndex= self.leftIndex
         do
-            WoWTools_ToolsButtonMixin:SetLeftPoint(btn)
+            WoWTools_ToolsButtonMixin:SetBottomPoint(btn)
         end
         self.leftIndex= self.leftIndex+1
+
+    elseif point=='RIGHT' then
+        btn.rightIndex= self.rightIndex
+        do
+            WoWTools_ToolsButtonMixin:SetRightPoint(btn)
+        end
+        self.rightIndex= self.rightIndex+1
     end
 
     return btn
@@ -106,8 +114,8 @@ end
 
 
 
-function WoWTools_ToolsButtonMixin:SetPoint(btn, line, unoLine)
-    if (not unoLine and self.index>0 and select(2, math.modf(self.index / 10))==0) or line then
+function WoWTools_ToolsButtonMixin:SetLeftPoint(btn)
+    if (self.index>0 and select(2, math.modf(self.index / 10))==0) then
         local x= - (self.line * 30)
         if self.line>0 then
             btn:SetPoint('BOTTOMRIGHT', self.Button , 'TOPRIGHT', x, 30)
@@ -115,9 +123,6 @@ function WoWTools_ToolsButtonMixin:SetPoint(btn, line, unoLine)
             btn:SetPoint('BOTTOMRIGHT', self.Button , 'TOPRIGHT', x, 0)
         end
         self.line=self.line + 1
-        if line then
-            self.index=0
-        end
     else
         btn:SetPoint('BOTTOMRIGHT', self.last , 'TOPRIGHT')
     end
@@ -125,17 +130,21 @@ function WoWTools_ToolsButtonMixin:SetPoint(btn, line, unoLine)
     self.index=self.index+1
 end
 
-function WoWTools_ToolsButtonMixin:SetLeftPoint(btn)
+function WoWTools_ToolsButtonMixin:SetBottomPoint(btn)
     btn:SetPoint('BOTTOMRIGHT', self.Button, 'TOPLEFT', -(btn.leftIndex*30), 0)
+end
+
+function WoWTools_ToolsButtonMixin:SetRightPoint(btn)
+    btn:SetPoint('BOTTOMLEFT', self.Button, 'TOPRIGHT', 0, (btn.rightIndex*30))
 end
 
 function WoWTools_ToolsButtonMixin:GetAllAddList()
     return self.AddList
 end
 
-function WoWTools_ToolsButtonMixin:GetSaveData()
+--[[function WoWTools_ToolsButtonMixin:GetSaveData()
     return self.Save
-end
+end]]
 
 function WoWTools_ToolsButtonMixin:SetSaveData(save)
     self.Save= save or {}
@@ -159,3 +168,15 @@ end
 function WoWTools_ToolsButtonMixin:GetButton()
     return self.Button
 end
+
+
+
+
+
+
+
+
+--[[function WoWTools_ToolsButtonMixin:GetData(btn)
+    GET_ITEM_INFO_RECEIVED: itemID, success
+    SPELL_DATA_LOAD_RESULT: spellID, success
+end]]

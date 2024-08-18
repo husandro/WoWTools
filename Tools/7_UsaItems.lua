@@ -325,7 +325,12 @@ local function Init_All_Buttons()
             name = C_Item.GetItemNameByID(itemID)
             icon = C_Item.GetItemIconByID(itemID)
             if name and icon then
-                local btn= WoWTools_ToolsButtonMixin:CreateButton('UsaItems'..itemID, '|T'..icon..':0|t'..e.cn(name, {itemID=itemID, isName=true}), true)
+                local btn= WoWTools_ToolsButtonMixin:CreateButton(
+                    'UsaItems'..itemID,
+                    '|T'..icon..':0|t'..e.cn(name, {itemID=itemID, isName=true}),
+                    true,
+                    'LEFT'
+                )
                 if btn then
                     btn.itemID=itemID
                     init_Item_Button(btn)
@@ -347,7 +352,12 @@ local function Init_All_Buttons()
             local slot= e.GetItemSlotID(itemEquipLoc)
 
             if name and icon and slot then
-                local btn= WoWTools_ToolsButtonMixin:CreateButton('UsaItems'..itemID, '|T'..icon..':0|t'..e.cn(name, {itemID=itemID, isName=true}), true)
+                local btn= WoWTools_ToolsButtonMixin:CreateButton(
+                    'UsaItems_Equip'..itemID,
+                    '|T'..icon..':0|t'..e.cn(name, {itemID=itemID, isName=true}),
+                    true,
+                    'LEFT'
+                )
                 if btn then
                     btn.itemID=itemID
                     btn.slot=slot
@@ -366,7 +376,12 @@ local function Init_All_Buttons()
             local name= C_Spell.GetSpellName(spellID)
             local icon= C_Spell.GetSpellTexture(spellID)
             if name and icon then
-                local btn= WoWTools_ToolsButtonMixin:CreateButton('UsaItems_Spell'..spellID, '|T'..icon..':0|t'..e.cn(name, {spellID=spellID, isName=true}), true)
+                local btn= WoWTools_ToolsButtonMixin:CreateButton(
+                    'UsaItems_Spell'..spellID,
+                    '|T'..icon..':0|t'..e.cn(name, {spellID=spellID, isName=true}),
+                    true,
+                    'LEFT'
+                )
                 if btn then
                     btn.spellID=spellID
                     init_Spell_Button(btn)
@@ -907,7 +922,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             local btn= WoWTools_ToolsButtonMixin:GetButton()
             if btn then
                 button=e.Cbtn(btn.Frame, {atlas='Soulbinds_Tree_Conduit_Icon_Utility', size={20,20}})
-                button:SetPoint('BOTTOMLEFT', btn, 'TOPRIGHT', 2,0)
+                button:SetPoint('TOPLEFT', btn, 'TOPRIGHT')
 
        
                 if (not WoWToolsSave or not WoWToolsSave[addName..'Tools']) and PlayerHasToy(156833) and Save.item[1]==194885 then

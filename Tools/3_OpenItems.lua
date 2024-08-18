@@ -1055,7 +1055,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1==id then
             Save= WoWToolsSave[addName..'Tools'] or Save
 
-            button= WoWTools_ToolsButtonMixin:CreateButton('OpenItems', '|A:Cursor_OpenHand_32:0:0|a'..(e.onlyChinese and '打开物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, ITEMS)), false, true)
+            button= WoWTools_ToolsButtonMixin:CreateButton(
+                'OpenItems',
+                '|A:Cursor_OpenHand_32:0:0|a'..(e.onlyChinese and '打开物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, ITEMS)),
+                false,
+                'BOTTOM'
+            )
             if button then
                 Init()
                 self:RegisterEvent('CHALLENGE_MODE_START')

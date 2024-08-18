@@ -1678,7 +1678,12 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 Save= WoWToolsSave['Tools_Mount'] or Save
             end]]
             Save= WoWToolsSave[MOUNT] or Save
-            button= WoWTools_ToolsButtonMixin:CreateButton('Mount', '|A:hud-microbutton-Mounts-Down:0:0|a'..(e.onlyChinese and '坐骑' or MOUNT), false, false)
+            button= WoWTools_ToolsButtonMixin:CreateButton(
+                'Mount',
+                '|A:hud-microbutton-Mounts-Down:0:0|a'..(e.onlyChinese and '坐骑' or MOUNT),
+                false,
+                'LEFT'
+            )
 
             if button then
                 CollectionsJournal_LoadUI()

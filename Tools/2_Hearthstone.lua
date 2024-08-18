@@ -499,7 +499,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             --addName= '|T6948:0|t'..(e.onlyChinese and '炉石' or TUTORIAL_TITLE31)
 
             Save= WoWToolsSave[addName..'Tools'] or Save
-            button= WoWTools_ToolsButtonMixin:CreateButton('Hearthstone', '|T134414:0|t'..(e.onlyChinese and '炉石' or TUTORIAL_TITLE31), false, true)
+            button= WoWTools_ToolsButtonMixin:CreateButton(
+                'Hearthstone',
+                '|T134414:0|t'..(e.onlyChinese and '炉石' or TUTORIAL_TITLE31),
+                false,
+                'BOTTOM'
+            )
 
             if button then
                 button:SetAttribute("type1", "item")

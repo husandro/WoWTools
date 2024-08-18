@@ -20,7 +20,7 @@ local function setPanelPostion()--设置按钮位置
     --elseif e.Player.husandro then
       --  button:SetPoint('BOTTOMRIGHT', PetActionButton10, 'TOPRIGHT', 0, 30)
     else
-        WoWTools_ToolsButtonMixin:SetLeftPoint(button)
+        WoWTools_ToolsButtonMixin:SetBottomPoint(button)
     end
 end
 
@@ -552,7 +552,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
 
             Save= WoWToolsSave[addName..'Tools'] or Save
-            button= WoWTools_ToolsButtonMixin:CreateButton('Food', '|A:Food:0:0|a'..(e.onlyChinese and '食物' or POWER_TYPE_FOOD), false, true)
+            button= WoWTools_ToolsButtonMixin:CreateButton(
+                'Food',
+                '|A:Food:0:0|a'..(e.onlyChinese and '食物' or POWER_TYPE_FOOD),
+                false,
+                'BOTTOM'
+            )
 
             if button then
                 button:SetFrameStrata('HIGH')

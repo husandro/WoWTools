@@ -364,7 +364,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             --Save.Pets= Save.Pets or {}
             Save.speciesID= Save.speciesID or 2780
 
-            button= WoWTools_ToolsButtonMixin:CreateButton('SummonPet', '|T3150958:0|t'..(e.onlyChinese and '黛西' or 'Daisy'), true)
+            button= WoWTools_ToolsButtonMixin:CreateButton(
+                'SummonPet',
+                '|T3150958:0|t'..(e.onlyChinese and '黛西' or 'Daisy'),
+                true,
+                'LEFT'
+            )
             if button then
                 --[[for _, info in pairs(Save.Pets) do
                     e.LoadDate({id=info.auraID, type='spell'})

@@ -2,6 +2,7 @@ local id, e= ...
 if e.Player.class~='MAGE' then
     return
 end
+
 local Tab
 if e.Player.faction=='Horde' then--部落
     Tab={
@@ -18,7 +19,8 @@ if e.Player.faction=='Horde' then--部落
         {spell=224869, spell2=224871, name='破碎群岛'},
         {spell=281404, spell2=281402, name='达萨罗'},
         {spell=344587, spell2=344597, name='奥利波斯'},
-        {spell=395277, spell2=395289,  name='瓦德拉肯', luce=true},
+        {spell=395277, spell2=395289,  name='瓦德拉肯'},
+        {spell=446540, spell2=446534, name='多恩诺嘉尔', luce=true},
         {spell=120145, name='远古传送'},
         {spell=193759, name='守护者圣殿'},
     }
@@ -37,7 +39,8 @@ elseif e.Player.faction=='Alliance' then
         {spell=224869, spell2=224871, name='破碎群岛'},
         {spell=281403, spell2=281400, name='伯拉勒斯'},
         {spell=344587, spell2=344597, name='奥利波斯'},
-        {spell=395277, spell2=395289,  name='瓦德拉肯', luce=true},
+        {spell=395277, spell2=395289,  name='瓦德拉肯'},
+        {spell=446540, spell2=446534, name='多恩诺嘉尔', luce=true},
         {spell=120145, name='远古传送'},
         {spell=193759, name='守护者圣殿'},
     }
@@ -46,8 +49,10 @@ else
 end
 
 local addName= format(UNITNAME_SUMMON_TITLE14, UnitClass('player'))
+
 local Save={}
 local panel=CreateFrame("Frame")
+
 
 for _, tab in pairs(Tab) do
     e.LoadDate({id=tab.spell, type='spell'})
@@ -55,94 +60,138 @@ for _, tab in pairs(Tab) do
 end
 
 
+
+
+
+
+
+
+
+
 --####
 --初始
 --####
 local function Init()
-    local find
+
     for _, tab in pairs(Tab) do
         local name= C_Spell.GetSpellName(tab.spell)
         local icon= C_Spell.GetSpellTexture(tab.spell)
 
         local btn=WoWTools_ToolsButtonMixin:CreateButton(
             'MagePortal'..tab.spell,
-            ('|T'..(icon or 0)..':0|t')..(name or tab.spell),
-             true, false, not find, true
+            ('|T'..(icon or 0)..':0|t')..(e.cn(name, {spellID= tab.spell, isName=true}) or tab.spell),
+            true,
+            'RIGHT'
         )
-        if btn then
-            find=true
 
-            btn.spell= tab.spell
-            btn.spell2= tab.spell2
-            
-            btn:SetAttribute('type', 'spell')--设置属性
-            btn:SetAttribute('spell', name or tab.spell)
-            btn.texture:SetTexture(icon)
+        if btn then
+
+            btn.spellID= tab.spell
+            btn.spellID2= tab.spell2
+            btn.name= e.onlyChinese and tab.name
 
             btn.text=e.Cstr(btn, {color= not tab.luce})
-            btn.text:SetPoint('RIGHT', btn, 'LEFT')
-
-            if e.onlyChinese then
-                btn.text:SetText(tab.name)
-            else
-                local text=name:gsub('(.+):','')
-                text=text:gsub('(.+)：','');
-                text=text:gsub('(.+)-','');
-                btn.text:SetText(text)
-            end
-
+            btn.text:SetPoint('LEFT', btn, 'RIGHT')
             if tab.luce then
                 btn.border:SetAtlas('bag-border')--设置高亮
             end
 
-            if tab.spell2 then--and IsSpellKnownOrOverridesKnown(tab.spell2) then--右击
-                local name2= C_Spell.GetSpellName(tab.spell2)
-                local icon2= C_Spell.GetSpellTexture(tab.spell2)
-
-                btn:SetAttribute('type2', 'spell')
-                btn:SetAttribute('spell2', name2 or tab.spell2)
-
+            if btn.spellID2 then
                 btn.texture2= btn:CreateTexture(nil,'OVERLAY')
                 btn.texture2:SetPoint('TOPRIGHT',-6,-6)
                 btn.texture2:SetSize(10, 10)
-                btn.texture2:SetTexture(icon2)
                 btn.texture2:AddMaskTexture(btn.mask)
-                btn:SetScript('OnShow', function(self2)
-                    self2:RegisterEvent('SPELL_UPDATE_COOLDOWN')
-                    e.SetItemSpellCool(btn, {spell=self2.spell2})--设置冷却
+                btn:SetScript('OnShow', function(self)
+                    self:RegisterEvent('SPELL_UPDATE_COOLDOWN')
+                    e.SetItemSpellCool(btn, {spell=self.spellID2})--设置冷却
                 end)
-                btn:SetScript('OnHide', function(self2)
-                    self2:UnregisterEvent('SPELL_UPDATE_COOLDOWN')
-                end)
-                btn:SetScript("OnEvent", function(self, event)
-                    if event=='SPELL_UPDATE_COOLDOWN' then
-                        e.SetItemSpellCool(self, {spell=self.spell2})--设置冷却
-                    end
+                btn:SetScript('OnHide', function(self)
+                    self:UnregisterEvent('SPELL_UPDATE_COOLDOWN')
                 end)
             end
 
+            btn:SetScript("OnEvent", function(self, event, arg1)
+                if event=='SPELL_UPDATE_COOLDOWN' then
+                    e.SetItemSpellCool(self, {spell=self.spellID2})--设置冷却
+                elseif event=='SPELL_DATA_LOAD_RESULT' and (arg1==self.spellID or arg1==self.spellID2) then
+                    if self:CanChangeAttribute() then
+                        if self:settings() then
+                            self:UnregisterEvent('SPELL_DATA_LOAD_RESULT')
+                        end
+                    else
+                        self:RegisterEvent('PLAYER_REGEN_ENABLED')
+                    end
+                elseif event=='PLAYER_REGEN_ENABLED' then
+                    if self:settings() then
+                        self:UnregisterEvent('PLAYER_REGEN_ENABLED')
+                    end
+                end
+            end)
+
+
+            function btn:settings()
+                local name1= C_Spell.GetSpellName(self.spellID)
+                local icon1= C_Spell.GetSpellTexture(self.spellID)
+                local done=false
+                if name1 and icon1 then
+                    self:SetAttribute('type', 'spell')--设置属性
+                    self:SetAttribute('spell', name1)
+                    if icon1 then
+                        self.texture:SetTexture(icon1)
+                    end
+                    if self.name then
+                        self.text:SetText(self.name)
+                    else
+                        name1= e.cn(name1, {spellID=self.spellID, isName=true})
+                        name1=name1:gsub('(.+):','')
+                        name1=name1:gsub('(.+)：','');
+                        name1=name1:gsub('(.+)-','');
+                        self.text:SetText(name1)
+                    end
+                    done=true
+                end
+
+                if self.spellID2 then
+                    local name2= C_Spell.GetSpellName(self.spellID2)
+                    local icon2= C_Spell.GetSpellTexture(self.spellID2)
+                    if name2 and icon2 then
+                        self:SetAttribute('type2', 'spell')
+                        self:SetAttribute('spell2', name2)
+                        self.texture2:SetTexture(icon2)
+                        done=true
+                    else
+                        done=false
+                    end
+                end
+                return done
+            end
+
+            if not btn:settings() then
+                btn:RegisterEvent('SPELL_DATA_LOAD_RESULT')
+            end
+
             function btn:set_sepll_known()
-                self:SetAlpha((GameTooltip:IsOwned(self) or IsSpellKnownOrOverridesKnown(self.spell)) and 1 or 0.1)
+               --self:SetAlpha((GameTooltip:IsOwned(self) or IsSpellKnownOrOverridesKnown(self.spellID)) and 1 or 0.1)
             end
             btn:SetScript('OnLeave', function(self)
-                GameTooltip_Hide()
+                e.tips:Hide()
                 self:set_sepll_known()
             end)
             btn:SetScript('OnEnter', function(self)
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                e.tips:SetSpellByID(self.spell)
-                if not IsSpellKnownOrOverridesKnown(self.spell) then
+                e.tips:SetSpellByID(self.spellID)
+                if not IsSpellKnownOrOverridesKnown(self.spellID) then
                     e.tips:AddLine(format('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '未学习' or TRADE_SKILLS_UNLEARNED_TAB))
                 end
-                if self.spell2 then
+                if self.spellID2 then
                     e.tips:AddLine(' ')
-                    local link= icon and '|T'..icon..':0|t' or ''
-                    link= link.. (C_Spell.GetSpellLink(self.spell2) or C_Spell.GetSpellName(self.spell2) or ('spellID'..self.spell2))
-                    link= link .. (e.GetSpellItemCooldown(self.spell2, nil) or '')
+                    local link= '|T'..(C_Spell.GetSpellTexture(self.spellID2) or 0)..':0|t'
+                    link= link.. (C_Spell.GetSpellLink(self.spellID2) or C_Spell.GetSpellName(self.spellID2) or ('spellID'..self.spellID2))
+                    link= link .. (e.GetSpellItemCooldown(self.spellID2, nil) or '')
                     e.tips:AddDoubleLine(link,
                         format('%s%s',
-                            IsSpellKnownOrOverridesKnown(self.spell2) and '' or format('|cnRED_FONT_COLOR:%s|r',e.onlyChinese and '未学习' or TRADE_SKILLS_UNLEARNED_TAB),
+                            IsSpellKnownOrOverridesKnown(self.spellID2) and '' or format('|cnRED_FONT_COLOR:%s|r',e.onlyChinese and '未学习' or TRADE_SKILLS_UNLEARNED_TAB),
                             e.Icon.right)
                         )
                 end
@@ -157,6 +206,15 @@ local function Init()
     Tab=nil
 end
 
+
+
+
+
+
+
+
+
+
 --###########
 --加载保存数据
 --###########
@@ -170,8 +228,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== id then
             Save= WoWToolsSave[addName..'Tools'] or Save
 
-            if WoWTools_ToolsButtonMixin:GetButton() then                
-                C_Timer.After(4, Init)
+            if WoWTools_ToolsButtonMixin:GetButton() then
+                Init()
                 panel:UnregisterEvent('ADDON_LOADED')
             else
                 panel:UnregisterAllEvents()
