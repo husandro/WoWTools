@@ -1660,10 +1660,10 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            --addName= '|A:hud-microbutton-Mounts-Down:0:0|a'..(e.onlyChinese and '坐骑' or MOUNT)
+            addName= '|A:hud-microbutton-Mounts-Down:0:0|a'..(e.onlyChinese and '坐骑' or MOUNT)
 
             --旧数据
-            --[[if WoWToolsSave[MOUNT] then
+            if WoWToolsSave[MOUNT] then
                 Save= WoWToolsSave[MOUNT]
                 Save.Point=nil
                 WoWToolsSave[MOUNT]=nil
@@ -1674,8 +1674,8 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 end
             else
                 Save= WoWToolsSave['Tools_Mount'] or Save
-            end]]
-            Save= WoWToolsSave[MOUNT] or Save
+            end
+
             button= WoWTools_ToolsButtonMixin:CreateButton({
                 name='Mount',
                 tooltip='|A:hud-microbutton-Mounts-Down:0:0|a'..(e.onlyChinese and '坐骑' or MOUNT),
@@ -1740,8 +1740,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            --WoWToolsSave['Tools_Mount']= Save
-            WoWToolsSave[MOUNT]=Save
+            WoWToolsSave['Tools_Mount']= Save
         end
 
     elseif event=='SPELLS_CHANGED' or event=='SPELL_DATA_LOAD_RESULT' then
