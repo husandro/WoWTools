@@ -1134,10 +1134,10 @@ local function Init_Menu(_, root)
             end
 
         elseif indexType=='Shift' or indexType=='Alt' or indexType=='Ctrl' then
-            Init_Menu_ShiftAltCtrl(sub, indexType)
+            Init_Menu_ShiftAltCtrl(root, indexType)
 
         else
-            Init_Menu_Mount(sub, indexType, tab.name)
+            Init_Menu_Mount(root, indexType, tab.name)
         end
     end
 end
