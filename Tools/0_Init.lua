@@ -138,7 +138,13 @@ local function Init_Menu(self, root)
         self:set_event()
     end)
 
+
+
+
+--选项
     sub:CreateDivider()
+    sub=WoWTools_ToolsButtonMixin:OpenMenu(root)
+
     sub2=sub:CreateCheckbox('30x30', function()
         return Save.height==30
     end, function()
@@ -178,9 +184,6 @@ local function Init_Menu(self, root)
         Save.point=nil
         self:set_point()
     end)
-
-
-    WoWTools_ToolsButtonMixin:OpenMenu(root)
 end
 
 

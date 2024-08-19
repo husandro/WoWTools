@@ -42,6 +42,7 @@ e.WA_GetUnitDebuff(unit, spell, filter, spellTab)
  e.WA_GetUnitBuff(unit, spell, filter)--HELPFUL HARMFUL
 
 e.Chat(text, name, printText)
+e.SendText(text)
 e.Say(type, name, wow, text)
 e.Reload()
 e.Magic(text)
@@ -523,6 +524,16 @@ function e.Chat(text, name, printText)
                 print(text)
             end
         end
+    end
+end
+
+function e.SendText(text)
+    local msg= DEFAULT_CHAT_FRAME:IsShown() and DEFAULT_CHAT_FRAME.editBox:GetText() or ''
+    DEFAULT_CHAT_FRAME.editBox:SetText(text)
+    ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+    if msg~='' then
+        ChatFrame_OpenChat(msg, DEFAULT_CHAT_FRAME)
+        DEFAULT_CHAT_FRAME.editbox:ClearFocus()
     end
 end
 
