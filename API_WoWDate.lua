@@ -72,7 +72,9 @@ local spellLoadTab={
     34091,--专家级骑术
     90265,--大师级骑术
     783,--旅行形态
+    436854,--切换飞行模式 C_MountJournal.GetDynamicFlightModeSpellID()
 }
+
 
 for _, itemID in pairs(itemLoadTab) do
     e.LoadDate({id=itemID, type='item'})

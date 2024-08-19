@@ -92,6 +92,7 @@ local Save={
     KEY= e.Player.husandro and 'BUTTON5', --为我自定义, 按键
     AFKRandom=e.Player.husandro,--离开时, 随机坐骑
     mountShowTime=3,--坐骑秀，时间
+    showFlightModeButton=true, --切换飞行模式
 }
 
 
@@ -1868,8 +1869,6 @@ end
 
 
 
-
-
 --过滤，列表，Func
 local function New_MountJournal_FullUpdate()
     if not MountJournal:IsVisible() then
@@ -2083,6 +2082,10 @@ end
 
 
 
+--436854 C_MountJournal.GetDynamicFlightModeSpellID() 切换飞行模式
+
+
+
 
 
 
@@ -2095,6 +2098,8 @@ end
 --初始化
 --######
 local function Init()
+    
+
     for type, tab in pairs(Save.Mounts) do
         for ID, _ in pairs(tab) do
             e.LoadDate({id=ID, type= type==ITEMS and 'item' or 'spell'})
@@ -2323,11 +2328,26 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 Save= WoWToolsSave['Tools_Mount'] or Save
             end
 
+            --[[local spellID= C_MountJournal.GetDynamicFlightModeSpellID() or 436854
+            local icon= '|T'..(C_Spell.GetSpellTexture(spellID) or 436854)..':0|t'
+            local name= e.cn(C_Spell.GetSpellName(spellID), {spellID=spellID, isName=true}) or 'Switch Flight Style']]
+
             MountButton= WoWTools_ToolsButtonMixin:CreateButton({
                 name='Mount',
                 tooltip=addName,
                 setParent=false,
-                point='LEFT'
+                point='LEFT',
+                --[[option=function(category, cayout, initializer)
+                    e.AddPanel_Check({
+                        category= category,
+                        name= icon..name,
+                        tooltip= e.cn(C_Spell.GetSpellDescription(spellID), {spellID=spellID, isDesc=true}),
+                        GetValue= function() return Save.showFlightModeButton end,
+                        SetValue= function()
+                            Save.showFlightModeButton= not Save.showFlightModeButton and true or nil
+                        end
+                    }, initializer)
+                end]]
             })
 
             if MountButton then

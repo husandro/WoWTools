@@ -32,6 +32,8 @@ local function Init_Panel()
     Category, Layout= e.AddPanel_Sub_Category({name=addName})
     WoWTools_ToolsButtonMixin:SetCategory(Category, Layout)
 
+
+
     local initializer=e.AddPanel_Check_Button({
         checkName= e.onlyChinese and '启用' or ENABLE,
         GetValue= function() return not Save.disabled end,
@@ -70,11 +72,9 @@ local function Init_Panel()
     e.AddPanel_Header(Layout, e.onlyChinese and '选项: 需要重新加载' or (OPTIONS..': '..REQUIRES_RELOAD))
 
     for _, data in pairs (WoWTools_ToolsButtonMixin:GetAllAddList()) do
-        if data.option then
-            data.option(Category, Layout)
-        end
+        initializer= nil
         if not data.isOnlyOptions then
-            e.AddPanel_Check({
+            initializer= e.AddPanel_Check({
                 category= Category,
                 name= data.tooltip,
                 tooltip= data.name,
@@ -83,6 +83,9 @@ local function Init_Panel()
                     Save.disabledADD[data.name]= not Save.disabledADD[data.name] and true or nil
                 end
             })
+        end
+        if data.option then
+            data.option(Category, Layout, initializer)
         end
     end
 
