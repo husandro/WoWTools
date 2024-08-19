@@ -187,10 +187,15 @@ local function set_WorldQuestPinMixin_RefreshVisuals(self)--WorldQuestDataProvid
         self.Text:SetText(text or '')
     end
 
-    local isNormalQuest= self.worldQuestType == Enum.QuestTagType.Normal--任务，类型
-    if not isNormalQuest then
+    --local isNormalQuest= self.worldQuestType == Enum.QuestTagType.Normal--任务，类型
+    local tagInfo
+    if self.worldQuestType and self.worldQuestType ~= Enum.QuestTagType.Normal  then
+        tagInfo= self.tagInfo or C_QuestLog.GetQuestTagInfo(self.questID)
+    end
+    if tagInfo then
         local inProgress = self.dataProvider:IsMarkingActiveQuests() and C_QuestLog.IsOnQuest(self.questID)
-        local atlas= QuestUtil.GetWorldQuestAtlasInfo(self.worldQuestType, inProgress, self.tagInfo.tradeskillLineID, self.questID)
+        
+        local atlas= QuestUtil.GetWorldQuestAtlasInfo(self.questID, tagInfo, inProgress)--QuestUtils.lua (questID, tagInfo, inProgress)
         if not self.worldQuestTypeTips and atlas then
             self.worldQuestTypeTips=self:CreateTexture(nil, 'OVERLAY')
             self.worldQuestTypeTips:SetPoint('TOPRIGHT', self.Texture, 'TOPRIGHT', 5, 5)
@@ -201,7 +206,7 @@ local function set_WorldQuestPinMixin_RefreshVisuals(self)--WorldQuestDataProvid
         end
     end
     if self.worldQuestTypeTips then
-        self.worldQuestTypeTips:SetShown(not isNormalQuest)
+        self.worldQuestTypeTips:SetShown(tagInfo)
     end
 end
 
@@ -585,7 +590,7 @@ local function Init_set_Map_ID()--显示地图ID
         end)
 
         PlayerButton.edit= CreateFrame("EditBox", nil, PlayerButton, 'InputBoxTemplate')
-        PlayerButton.edit:SetSize(73,20)
+        PlayerButton.edit:SetSize(90,20)
         e.Set_Label_Texture_Color(PlayerButton.edit, {type='EditBox'})
         --PlayerButton.edit:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
         PlayerButton.edit:SetAutoFocus(false)
