@@ -4762,7 +4762,6 @@
         "HELPFRAME_SUGGESTION_BUTTON_TEXT",
         "SLASH_CHAT_AFK1",
         "KeybindingsOverrides",
-        "GetText",
         "CreateKeybindingSectionInitializer",
         "CreateKeybindingEntryInitializer",
         "GetConvertedKeyOrButton",
