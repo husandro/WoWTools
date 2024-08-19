@@ -216,7 +216,7 @@ end
 local function checkItem()--检测物品
     MountButton.itemID=nil
     for itemID, _ in pairs(Save.Mounts[ITEMS]) do
-        if C_Item.GetItemCount(itemID , false, true, true)>0 then
+        if C_Item.GetItemCount(itemID , false, true, true, false)>0 then
             MountButton.itemID=itemID
             break
         end
@@ -663,6 +663,7 @@ function Init_Mount_Show()
     MountShowFrame:Hide()
 
     function MountShowFrame:get_mounts()--得到，有效坐骑，表
+        WoWTools_ToolsButtonMixin:LoadedCollectionsJournal()
         self.tabs={}
         C_MountJournal.SetDefaultFilters()
         C_MountJournal.SetCollectedFilterSetting(LE_MOUNT_JOURNAL_FILTER_NOT_COLLECTED, false)
@@ -672,9 +673,11 @@ function Init_Mount_Show()
                 table.insert(self.tabs, mountID)
             end
         end
-        if #self.tabs==0 then
+        local num= #self.tabs
+        if num==0 then
             self:Hide()
         end
+        return num
     end
 
     function MountShowFrame:initSpecial()--启用，坐骑特效
@@ -703,6 +706,7 @@ function Init_Mount_Show()
         self.elapsed=Save.mountShowTime
         self.specialEffects=nil
         self.tabs={}
+        e.Ccool(self)
         self:SetShown(false)
     end
 
@@ -740,6 +744,8 @@ function Init_Mount_Show()
 
         elseif self.elapsed> Save.mountShowTime then
             self.elapsed=0
+
+            e.Ccool(self, nil, Save.mountShowTime)--冷却条
             if self.specialEffects then
                 DEFAULT_CHAT_FRAME.editBox:SetText(EMOTE171_CMD2)
                 ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
@@ -747,7 +753,10 @@ function Init_Mount_Show()
             else
                 do
                     if #self.tabs==0 then
-                        self:get_mounts()
+                        if self:get_mounts()==0 then
+                            self:Hide()
+                            return
+                        end
                     end
                 end
                 local index= math.random(1, #self.tabs)
@@ -1140,6 +1149,11 @@ local function Init_Menu_Spell(sub)
     sub2:SetTooltip(function(tooltip)
         tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..e.Icon.left)
     end)
+
+    sub2=sub:CreateTitle(e.onlyChinese and '拖曳法术' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DRAG_MODEL, SPELLS))
+    sub2:SetTooltip(function (tooltip)
+        tooltip:AddDoubleLine(e.onlyChinese and '添加' or ADD)
+    end)
 end
 
 
@@ -1189,11 +1203,16 @@ local function Init_Menu_Item(sub)
 
     ClearAll_Menu(sub, ITEMS, index)
 
+    sub2=sub:CreateTitle(e.onlyChinese and '拖曳物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DRAG_MODEL, ITEMS))
+    sub2:SetTooltip(function (tooltip)
+        tooltip:AddDoubleLine(e.onlyChinese and '添加' or ADD)
+    end)
+--[[
     if index==1 then
         sub:CreateDivider()
     end
 
-    --[[sub2=sub:CreateButton(e.onlyChinese and '添加' or ADD, function()
+    sub2=sub:CreateButton(e.onlyChinese and '添加' or ADD, function()
         return MenuResponse.Open
     end)]]
 
@@ -1307,8 +1326,8 @@ local function Init_Menu(_, root)
             Save.mountShowTime=value
         end,
         name=e.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS ,
-        minValue=3,
-        maxValue=30,
+        minValue=1,
+        maxValue=10,
         step=1,
         bit=nil,
         tooltip=function(tooltip)
@@ -2119,7 +2138,7 @@ local function Init()
             local exits=Save.Mounts[ITEMS][itemID] and ERR_ZONE_EXPLORED:format(PROFESSIONS_CURRENT_LISTINGS) or NEW
             local icon = C_Item.GetItemIconByID(itemID)
             local text= (icon and '|T'..icon..':0|t' or '').. (itemLink or ('itemID: '..itemID))
-            StaticPopup_Show('WoWTools_Tools_Mount_ITEMS',text, exits , {itemID=itemID})
+            StaticPopup_Show('WoWTools_Tools_Mount_ITEMS',text, exits, itemID)
             ClearCursor()
             return
         elseif infoType =='spell' and spellID then
@@ -2196,7 +2215,11 @@ local function Init()
         end
 
         e.tips:AddLine('')
+        e.tips:AddDoubleLine(e.onlyChinese and '坐骑秀' or 'Mount show', '|A:bags-greenarrow:0:0|a')
+        e.tips:AddDoubleLine(e.onlyChinese and '坐骑特效' or EMOTE171_CMD2:gsub('/',''), '|A:UI-HUD-MicroMenu-StreamDLYellow-Up:0:0|a')
+
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+
         e.tips:Show()
     end
 
