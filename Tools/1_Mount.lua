@@ -1036,6 +1036,8 @@ local function Init_Menu_Spell(sub)
             print(id, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)
             checkSpell()--检测法术
             setClickAtt()--设置
+        else
+            return MenuResponse.Open
         end
     end)
     sub2:SetTooltip(function(tooltip)
