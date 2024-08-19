@@ -1672,7 +1672,7 @@ function lib:ToggleDropDownMenu(level, value, dropDownFrame, anchorName, xOffset
 	
 	local tempFrame;
 	local point, relativePoint, relativeTo;
-	if ( not dropDownFrame ) then
+	if ( not dropDownFrame  and button) then
 		tempFrame = button:GetParent();
 	else
 		tempFrame = dropDownFrame;

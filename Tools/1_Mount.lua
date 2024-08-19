@@ -875,12 +875,33 @@ local function Set_Mount_Menu(root, type, spellID, name, index)
             tooltip:SetSpellByID(desc.data.spellID)
         end)
 
+        sub:CreateDivider()
+        if type==FLOOR then
+            sub2=sub:CreateButton(icon..(e.onlyChinese and '修改' or EDIT), function(data)
+                StaticPopup_Show('WoWTools_Tools_Mount_FLOOR',
+                    '|T'..(data.icon or 0)..':0|t'.. (e.cn(data.name, {spellID=data.spellID, isName=true}) or ('spellID: '..data.spellID)),
+
+                    (Save.Mounts[FLOOR][data.spellID] and
+                        (e.onlyChinese and '已存在' or format(ERR_ZONE_EXPLORED, PROFESSIONS_CURRENT_LISTINGS))
+                        or (e.onlyChinese and '新建' or NEW)
+                    )..'|n|n uiMapID: '..(C_Map.GetBestMapForUnit("player") or ''),
+
+                    data
+                )
+            end, {spellID=spellID, icon=icon, name=name})
+            sub2:SetTooltip(function(tooltip, desc)
+                tooltip:SetSpellByID(desc.data.spellID)
+            end)
+        end
+
         sub2=sub:CreateButton('|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '设置' or SETTINGS), function(data)
             set_ToggleCollectionsJournal(data.mountID, data.type)--打开界面, 收藏, 坐骑, 不过滤类型
         end, {mountID=mountID, type=type})
         sub2:SetTooltip(function(tooltip)
             tooltip:AddLine(MicroButtonTooltipText(e.onlyChinese and '战团藏品' or COLLECTIONS, "TOGGLECOLLECTIONS"))
         end)
+
+        
     end
     return sub
 end
@@ -997,7 +1018,6 @@ local function Init_Menu_Spell(sub)
         function()
             return MenuResponse.Open
         end, spellID)
-
         sub2:SetTooltip(Set_Spell_Tooltip)
 
         sub3=sub2:CreateButton(icon..(e.onlyChinese and '移除' or REMOVE), function(data)
@@ -1069,6 +1089,7 @@ local function Init_Menu_Item(sub)
         sub3=sub2:CreateButton(icon..(e.onlyChinese and '修改' or EDIT), Set_Item_Edit, itemID)
         sub3:SetTooltip(Set_Item_Tooltip)
 
+        sub2:CreateDivider()
         sub3=sub2:CreateButton(icon..(e.onlyChinese and '移除' or REMOVE), function(data)
             Save.Mounts[ITEMS][data]=nil
             print(id, addName, select(2, C_Item.GetItemInfo(data)) or data, e.onlyChinese and '移除' or REMOVE)
@@ -1094,12 +1115,16 @@ local MainMenuTable={
     {type=MOUNT_JOURNAL_FILTER_AQUATIC, name='水栖'},
     {type=MOUNT_JOURNAL_FILTER_FLYING, name='飞行'},
     {type=MOUNT_JOURNAL_FILTER_DRAGONRIDING, name='驭空术'},
-    {type='-', name=''},
-    {type='Shift', name=''}, {type='Alt', name=''}, {type='Ctrl', name=''},
-    {type='-', name=''},
+    {type='-'},
+    {type='Shift'},
+    {type='Alt'},
+    {type='Ctrl'},
+    {type='-'},
+    {type=FLOOR, name='区域'},
+    {type='-'},
     {type=SPELLS, name='法术'},
     {type=ITEMS, name='物品'},
-    {type=FLOOR, name='区域'},
+    
 }
 
 
