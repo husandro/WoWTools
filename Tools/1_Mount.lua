@@ -1286,7 +1286,7 @@ local function Init_Menu(_, root)
 
 --选项
     root:CreateDivider()
-    sub=WoWTools_ToolsButtonMixin:OpenMenu(root, addName)
+    sub=WoWTools_ToolsButtonMixin:OpenMenu(root, addName, Save.KEY)
 
     sub2=sub:CreateButton('|A:bags-greenarrow:0:0|a'..(e.onlyChinese and '坐骑秀' or 'Mount show'), function()
         MountShowFrame:initMountShow()
@@ -1319,6 +1319,14 @@ local function Init_Menu(_, root)
         tooltip:AddDoubleLine(e.onlyChinese and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN, e.Icon.mid)
     end)
 
+    sub2=sub:CreateButton('|T'..FRIENDS_TEXTURE_AFK..':0|t'..(UnitIsAFK('player') and '|cff9e9e9e' or '')..(e.onlyChinese and '暂离' or 'AFK'), function()
+        e.SendText(SLASH_CHAT_AFK1)
+        return MenuResponse.Open
+    end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddDoubleLine(SLASH_CHAT_AFK1)
+    end)
+
     sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
         getValue=function()
@@ -1337,12 +1345,11 @@ local function Init_Menu(_, root)
     })
 
     sub:CreateSpacer()
-    sub2=sub:CreateButton('|T'..FRIENDS_TEXTURE_AFK..':0|t'..(UnitIsAFK('player') and '|cff9e9e9e' or '')..(e.onlyChinese and '暂离' or 'AFK'), function()
-        e.SendText(SLASH_CHAT_AFK1)
-        return MenuResponse.Open
-    end)
-    sub2:SetTooltip(function(tooltip)
-        tooltip:AddDoubleLine(SLASH_CHAT_AFK1)
+    sub:CreateDivider()
+    sub:CreateCheckbox('|A:NPE_ArrowDown:0:0|a'..(Save.KEY or (e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)), function()
+        return Save.KEY
+    end, function()
+        StaticPopup_Show('WoWTools_Tools_Mount_Key')
     end)
 end
 

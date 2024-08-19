@@ -195,8 +195,8 @@ function WoWTools_ToolsButtonMixin:OpenOptions(name)
 end
 
 --'|A:mechagon-projects:0:0|a'..(e.onlyChinese and '选项' or OPTIONS),
-function WoWTools_ToolsButtonMixin:OpenMenu(root, name)
-    local sub=root:CreateButton(name or self:GetName(),
+function WoWTools_ToolsButtonMixin:OpenMenu(root, name, name2)
+    local sub=root:CreateButton(name2 or name or self:GetName(),
         function(data)
             self:OpenOptions(data)
             return MenuResponse.Open
