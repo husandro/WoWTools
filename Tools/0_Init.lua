@@ -222,7 +222,7 @@ local function Init()
         if Save.point then
             self:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
         elseif e.Player.husandro then
-            self:SetPoint('BOTTOMRIGHT', -420, 15)
+            self:SetPoint('BOTTOMRIGHT', -420, 10)
         else
             self:SetPoint('CENTER', 300, 100)
         end

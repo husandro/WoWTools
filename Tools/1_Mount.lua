@@ -91,7 +91,9 @@ local Save={
     --XD= true,
     KEY= e.Player.husandro and 'BUTTON5', --为我自定义, 按键
     AFKRandom=e.Player.husandro,--离开时, 随机坐骑
+    mountShowTime=3,--坐骑秀，时间
 }
+
 
 local panel= CreateFrame("Frame")
 local button
@@ -463,6 +465,7 @@ end
 --坐骑展示
 --#######
 local function getMountShow()
+
     C_MountJournal.SetDefaultFilters()
     C_MountJournal.SetCollectedFilterSetting(LE_MOUNT_JOURNAL_FILTER_NOT_COLLECTED,false)
     --C_MountJournal.SetCollectedFilterSetting(LE_MOUNT_JOURNAL_FILTER_COLLECTED, true)
@@ -903,6 +906,17 @@ end
 
 
 
+local function Set_Item_Edit(data)
+    StaticPopup_Show(
+        'WoWTools_Tools_Mount_ITEMS',
+        data,
+        Save.Mounts[ITEMS][data.itemID] and (e.onlyChinese and '物品已存在' or ERR_ZONE_EXPLORED:format(PROFESSIONS_CURRENT_LISTINGS)) or (e.onlyChinese and '新建' or NEW),
+        {itemID=data}
+    )
+end
+
+
+
 
 
 
@@ -921,6 +935,7 @@ function Init_Menu_Mount(root, type, name)
 
     local sub= Set_Mount_Menu(root, type, tab2[1], (e.onlyChinese and name or e.cn(type))..' '..col..num, nil)
 
+
     local index=0
     for spellID, _ in pairs(Save.Mounts[type] or {}) do
         e.LoadDate({id=spellID, type='spell'})
@@ -930,9 +945,6 @@ function Init_Menu_Mount(root, type, name)
 
     ClearAll_Menu(sub, type, index)
 end
-
-
-
 
 
 
@@ -966,14 +978,6 @@ local function Init_Menu_ShiftAltCtrl(root, type)
 
     ClearAll_Menu(sub, type, index)
 end
-
-
-
-
-
-
-
-
 
 
 
@@ -1044,14 +1048,6 @@ end
 
 
 
-local function Set_Item_Edit(data)
-    StaticPopup_Show(
-        'WoWTools_Tools_Mount_ITEMS',
-        data,
-        Save.Mounts[ITEMS][data.itemID] and (e.onlyChinese and '物品已存在' or ERR_ZONE_EXPLORED:format(PROFESSIONS_CURRENT_LISTINGS)) or (e.onlyChinese and '新建' or NEW),
-        {itemID=data}
-    )
-end
 
 
 
@@ -1088,7 +1084,19 @@ local function Init_Menu_Item(sub)
     end
 
     ClearAll_Menu(sub, ITEMS, index)
+
+    if index==1 then
+        sub:CreateDivider()
+    end
+
+    sub2=sub:CreateButton(e.onlyChinese and '添加' or ADD, function()
+        return MenuResponse.Open
+    end)
+
 end
+
+
+
 
 
 
@@ -1113,7 +1121,7 @@ local MainMenuTable={
     {type='-'},
     {type=SPELLS, name='法术'},
     {type=ITEMS, name='物品'},
-    
+
 }
 
 
@@ -1124,7 +1132,7 @@ local MainMenuTable={
 --主菜单
 --#####
 local function Init_Menu(_, root)
-    local num, icon, col, sub
+    local sub, sub2, num, icon, col
     for _, tab in pairs(MainMenuTable) do
         local indexType= tab.type
         if indexType=='-' then
@@ -1152,6 +1160,39 @@ local function Init_Menu(_, root)
         end
     end
 
+    sub=WoWTools_ToolsButtonMixin:OpenMenu(root, addName)
+
+
+    sub2=sub:CreateCheckbox(e.Icon.mid..(e.onlyChinese and '坐骑秀' or 'Mount show'), function()
+        specialEffects=nil
+        setMountShow()
+        return MenuResponse.Open
+    end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine(e.onlyChinese and
+            ('每隔: '..Save.mountShowTime..' 秒')
+            or (MOUNT..': '..Save.mountShowTime..' '..SECONDS)
+        )
+        tooltip:AddLine((e.onlyChinese and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN)..e.Icon.mid)
+    end)
+
+    WoWTools_MenuMixin:CreateSlider(sub, {
+        getValue=function()
+            return Save.mountShowTime
+        end, setValue=function(value)
+            Save.mountShowTime=value
+            print('m', value)
+        end,
+        name=nil,
+        minValue=3,
+        maxValue=30,
+        step=1,
+        bit=nil,
+        tooltip=function(tooltip)
+            tooltip:AddLine(e.onlyChinese and '坐骑秀' or 'Mount show')
+        end
+        
+    })
 
 end
 
@@ -2136,13 +2177,14 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                         Save.Mounts[FLOOR][spellID]=nil
                     end
                 end
+                Save.mountShowTime=3
             else
                 Save= WoWToolsSave['Tools_Mount'] or Save
             end
 
             button= WoWTools_ToolsButtonMixin:CreateButton({
                 name='Mount',
-                tooltip='|A:hud-microbutton-Mounts-Down:0:0|a'..(e.onlyChinese and '坐骑' or MOUNT),
+                tooltip=addName,
                 setParent=false,
                 point='LEFT'
             })

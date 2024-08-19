@@ -60,6 +60,7 @@ function WoWTools_ToolsButtonMixin:CreateButton(tab)
         return
     end
 
+
     local btn= CreateFrame("Button", 'WoWTools_Tools_'..name, setParent and self.Button.Frame or self.Button, "SecureActionButtonTemplate")
     btn:SetSize(30, 30)
     btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
@@ -111,7 +112,6 @@ function WoWTools_ToolsButtonMixin:CreateButton(tab)
 
     return btn
 end
-
 
 
 
@@ -195,7 +195,7 @@ function WoWTools_ToolsButtonMixin:OpenOptions(name)
 end
 
 function WoWTools_ToolsButtonMixin:OpenMenu(root, name)
-    local sub=root:CreateButton('     '..(e.onlyChinese and '选项' or OPTIONS),
+    local sub=root:CreateButton('|A:mechagon-projects:0:0|a'..(e.onlyChinese and '选项' or OPTIONS),
         function(data)
             self:OpenOptions(data)
             return MenuResponse.Open
@@ -205,6 +205,7 @@ function WoWTools_ToolsButtonMixin:OpenMenu(root, name)
         tooltip:AddLine(description.data or self:GetName())
         tooltip:AddLine(e.onlyChinese and '打开选项界面' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, OPTIONS), 'UI'))
     end)
+    return sub
 end
 
 function WoWTools_ToolsButtonMixin:LoadedCollectionsJournal()

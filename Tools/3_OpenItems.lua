@@ -297,6 +297,8 @@ local function get_Items()--取得背包物品信息
 
     equipItem=nil
     Bag={}
+
+    
     local itemMinLevel, classID, subclassID, _, info
     local bagMax= Save.disabledCheckReagentBag and NUM_BAG_FRAMES or (NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES )
     for bag= Enum.BagIndex.Backpack, bagMax do--Constants.InventoryConstants.NumBagSlots
