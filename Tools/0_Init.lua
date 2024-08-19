@@ -65,7 +65,7 @@ local function Init_Panel()
             Button:save_data()
         end
     }, initializer)
-    
+
 
     e.AddPanel_Header(Layout, e.onlyChinese and '选项: 需要重新加载' or (OPTIONS..': '..REQUIRES_RELOAD))
 
@@ -204,7 +204,7 @@ local function Init()
             WoWTools_ToolsButtonMixin:LoadedCollectionsJournal()
         end
     end
-    
+
     function Button:set_size()
         self:SetHeight(Save.height)
     end
