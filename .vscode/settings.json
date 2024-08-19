@@ -4762,7 +4762,14 @@
         "HELPFRAME_SUGGESTION_BUTTON_TEXT",
         "SLASH_CHAT_AFK1",
         "KeybindingsOverrides",
-        "GetText"
+        "GetText",
+        "CreateKeybindingSectionInitializer",
+        "CreateKeybindingEntryInitializer",
+        "GetConvertedKeyOrButton",
+        "GetBindingFromClick",
+        "IsKeyPressIgnoredForBinding",
+        "CreateKeyChordStringUsingMetaKeyState",
+        "CreateKeyChordString"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

@@ -24,6 +24,14 @@ e.GetFormatter1to10(value, minValue, maxValue)
 e.AddPanel_Check_Sider(tab)
 e.AddPanelSider(tab)
 e.StausText={}--属性，截取表 API_Panel.lua
+
+initializer:AddSearchTags(bindingName)
+
+local action = "INTERACTTARGET";
+local bindingIndex = C_KeyBindings.GetBindingIndex(action);
+local initializer = CreateKeybindingEntryInitializer(bindingIndex, true);
+initializer:AddSearchTags(GetBindingName(action));
+layout:AddInitializer(initializer);
 ]]
 
 

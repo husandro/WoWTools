@@ -2305,6 +2305,103 @@ end
 
 
 
+--[[
+
+local KeybindingSpacer = {};
+local function GetBindingCategoryName(cat)
+	local loc = _G[cat];
+	if type(loc) == "string" then
+		return loc;
+	end
+
+	return cat;
+end
+
+
+local function CreateSearchableSettings(redirectCategory)
+	local fakeCategory, layout = Settings.RegisterVerticalLayoutCategory("NoDisplayKB");
+
+	local bindingsCategories = {
+		[BINDING_HEADER_OTHER] = {},
+	};
+
+	for bindingIndex = 1, GetNumBindings() do
+		local action, cat, binding1, binding2 = GetBinding(bindingIndex);
+		
+		if not cat then
+			tinsert(bindingsCategories[BINDING_HEADER_OTHER], {bindingIndex, action});
+		else
+			if not bindingsCategories[cat] then
+				bindingsCategories[cat] = {};
+			end
+
+			if strsub(action, 1, 6) ~= "HEADER" then
+				tinsert(bindingsCategories[cat], {bindingIndex, action});
+			end
+		end
+	end
+
+	for categoryName, bindingCategory in pairs(bindingsCategories) do
+		for _, bindingData in ipairs(bindingCategory) do
+			local bindingIndex, action = unpack(bindingData);
+			local initializer = CreateKeybindingEntryInitializer(bindingIndex, true);
+			local bindingName = securecallfunction(GetBindingName, action);
+			initializer:AddSearchTags(bindingName);
+			layout:AddInitializer(initializer);
+		end
+	end
+
+	fakeCategory.redirectCategory = redirectCategory;
+	Settings.RegisterCategory(fakeCategory, SETTING_GROUP_GAMEPLAY);
+end
+local function CreateKeybindingInitializers(category, layout)
+	-- Keybinding sections
+	local bindingsCategories = {};
+	local nextOrder = 1;
+	local function AddBindingCategory(key, requiredSettingName, expanded)
+		if not bindingsCategories[key] then
+			bindingsCategories[key] = {order = nextOrder, bindings = {}, requiredSettingName = requiredSettingName, expanded = expanded};
+			nextOrder = nextOrder + 1;
+		end
+	end
+
+	KeybindingsOverrides.AddBindingCategories(AddBindingCategory);
+
+	for bindingIndex = 1, GetNumBindings() do
+		local action, cat, binding1, binding2 = GetBinding(bindingIndex);
+		if not cat then
+			tinsert(bindingsCategories[BINDING_HEADER_OTHER].bindings, {bindingIndex, action});
+		else
+			cat = securecallfunction(GetBindingCategoryName, cat);
+			AddBindingCategory(cat);
+
+			if strsub(action, 1, 6) == "HEADER" then
+				tinsert(bindingsCategories[cat].bindings, KeybindingSpacer);
+			else
+				tinsert(bindingsCategories[cat].bindings, {bindingIndex, action});
+			end
+		end
+	end
+
+	local sortedCategories = {};
+
+	for cat, bindingCategory in pairs(bindingsCategories) do
+		sortedCategories[bindingCategory.order] = {cat = cat, bindings = bindingCategory.bindings, requiredSettingName = bindingCategory.requiredSettingName, expanded = bindingCategory.expanded};
+	end
+
+	for _, categoryInfo in ipairs(sortedCategories) do
+		if #(categoryInfo.bindings) > 0 then
+			layout:AddInitializer(CreateKeybindingSectionInitializer(categoryInfo.cat, categoryInfo.bindings, categoryInfo.requiredSettingName, categoryInfo.expanded));
+            
+		end
+	end
+    
+    --layout:AddInitializer(CreateKeybindingSectionInitializer('bbb', {{ GetNumBindings()+1, 'WOWTOOLS'}}, 'wowtoolMount', false));
+	
+	-- Keybindings (search + redirectCategory)
+	CreateSearchableSettings(category);
+end
+]]
 
 
 
@@ -2313,6 +2410,9 @@ end
 
 
 
+--[[
+
+]]
 
 --###########
 --加载保存数据
@@ -2349,8 +2449,14 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 name='Mount',
                 tooltip=addName,
                 setParent=false,
-                point='LEFT',
-                --[[option=function(category, cayout, initializer)
+                point='LEFT'
+            })
+               --[[ option=function(category, layout)--initializer)
+ 
+                    
+                   -- KeybindingsOverrides.CreateBindingButtonSettings(layout)
+    --Blizzard_SettingsDefinitions_Frame/Keybindings.lua
+
                     e.AddPanel_Check({
                         category= category,
                         name= icon..name,
@@ -2360,8 +2466,9 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                             Save.showFlightModeButton= not Save.showFlightModeButton and true or nil
                         end
                     }, initializer)
+                    CreateKeybindingInitializers(category, layout)
                 end]]
-            })
+            
 
             if MountButton then
 
