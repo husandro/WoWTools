@@ -146,7 +146,7 @@ local function Init_Menu(self, root)
 
 
 --选项
-    sub:CreateDivider()
+    root:CreateDivider()
     sub=WoWTools_ToolsButtonMixin:OpenMenu(root)
 
     sub2=sub:CreateCheckbox('30x30', function()

@@ -4761,7 +4761,8 @@
         "GetMouseFocus",
         "HELPFRAME_SUGGESTION_BUTTON_TEXT",
         "SLASH_CHAT_AFK1",
-        "KeybindingsOverrides"
+        "KeybindingsOverrides",
+        "GetText"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

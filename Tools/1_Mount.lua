@@ -2330,13 +2330,13 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                         Save.Mounts[FLOOR][spellID]=nil
                     end
                 end
-                
+                Save.mountShowTime= 3
+                WoWToolsSave['Tools_Mount']=nil
             else
-                Save= WoWToolsSave['Tools_Mount'] or Save
+                Save= WoWToolsSave['Tools_Mounts'] or Save
             end
 
-            Save.mountShowTime= Save.mountShowTime or 3
-
+            
             --[[local spellID= C_MountJournal.GetDynamicFlightModeSpellID() or 436854
             local icon= '|T'..(C_Spell.GetSpellTexture(spellID) or 436854)..':0|t'
             local name= e.cn(C_Spell.GetSpellName(spellID), {spellID=spellID, isName=true}) or 'Switch Flight Style']]
@@ -2410,7 +2410,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            WoWToolsSave['Tools_Mount']= Save
+            WoWToolsSave['Tools_Mounts']= Save
         end
 
     elseif event=='SPELLS_CHANGED' or event=='SPELL_DATA_LOAD_RESULT' then
