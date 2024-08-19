@@ -16,7 +16,7 @@
 ## AddonCompartmentFuncOnEnter: WowTools_OnAddonCompartmentFuncOnEnter
 
 ##调用库，不能删除
-Libs\Libs.xml
+Libs\Init.xml
 
 ##主要function，不能删除
 Mixin\ChatButtonMixin.lua
