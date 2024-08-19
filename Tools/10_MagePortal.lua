@@ -77,7 +77,7 @@ local function Init_Options(category, layout)
     e.AddPanel_Header(layout, addName)
     local initializer=e.AddPanel_Check({
         category= category,
-        name= '|cff28a3ff'..(e.onlyChinese and '启用' or ENABLE)..'|r',
+        name= '|cff3fc6ea'..(e.onlyChinese and '启用' or ENABLE)..'|r',
         tooltip= addName,
         GetValue= function() return not Save.disabled end,
         SetValue= function()
@@ -87,7 +87,7 @@ local function Init_Options(category, layout)
 
     e.AddPanel_Check({
         category= category,
-        name= '|cff28a3ff'..(e.onlyChinese and '位置: 放左边' or (CHOOSE_LOCATION..': '..HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT ))..'|r',
+        name= '|cff3fc6ea'..(e.onlyChinese and '位置: 放左边' or (CHOOSE_LOCATION..': '..HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT ))..'|r',
         tooltip= addName,
         GetValue= function() return Save.isLeft end,
         SetValue= function()
@@ -97,7 +97,7 @@ local function Init_Options(category, layout)
 
     e.AddPanel_Check({
         category= category,
-        name= '|cff28a3ff'..(e.onlyChinese and '显示名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, NAME))..'|r',
+        name= '|cff3fc6ea'..(e.onlyChinese and '显示名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, NAME))..'|r',
         tooltip= addName,
         GetValue= function() return Save.showText end,
         SetValue= function()
@@ -283,7 +283,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave['Tools_MagePortal'] or Save
 
             if not Save.disabled and  WoWTools_ToolsButtonMixin:GetButton() then
-                addName= '|T626001:0|t|cff28a3ff'..(e.onlyChinese and '法师传送门' or format(UNITNAME_SUMMON_TITLE14, UnitClass('player'))..'|r')
+                addName= '|T626001:0|t|cff3fc6ea'..(e.onlyChinese and '法师传送门' or format(UNITNAME_SUMMON_TITLE14, UnitClass('player'))..'|r')
 
                 if Save.isLeft then
                     C_Timer.After(4, function()

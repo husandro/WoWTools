@@ -39,7 +39,7 @@ end
 
 
 function WoWTools_ToolsButtonMixin:GetName()
-    return '|A:bag-border:0:0|aTools'
+    return '|A:Professions-Crafting-Orders-Icon:0:0|aTools'
 end
 
 function WoWTools_ToolsButtonMixin:CreateButton(tab)
