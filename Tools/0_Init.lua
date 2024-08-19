@@ -13,6 +13,7 @@ local Save={
     isCombatHide=true,
     isMovingHide=true,
     showIcon=true,
+    loadCollectionUI=true,
     --show=false,
     --point
 }
@@ -31,7 +32,7 @@ local function Init_Panel()
     Category, Layout= e.AddPanel_Sub_Category({name=addName})
     WoWTools_ToolsButtonMixin:SetCategory(Category, Layout)
 
-    e.AddPanel_Check_Button({
+    local initializer=e.AddPanel_Check_Button({
         checkName= e.onlyChinese and '启用' or ENABLE,
         GetValue= function() return not Save.disabled end,
         SetValue= function()
@@ -50,6 +51,21 @@ local function Init_Panel()
         layout= Layout,
         category= Category,
     })
+
+    e.AddPanel_Check({
+        category= Category,
+        name= e.onlyChinese and '加载战团藏品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, 'Load', COLLECTIONS),
+        tooltip= '|nCollectionsJournal_LoadUI()|n'
+                ..e.onlyChinese and '登入游戏时|n建议：开启' or (format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LOG_IN, GAME)
+                ..'|n'..HELPFRAME_SUGGESTION_BUTTON_TEXT..ENABLE),
+        GetValue= function() return Save.loadCollectionUI end,
+        SetValue= function()
+            Save.loadCollectionUI= not Save.loadCollectionUI and true or nil
+            Button:load_wow_ui()
+            Button:save_data()
+        end
+    }, initializer)
+    
 
     e.AddPanel_Header(Layout, e.onlyChinese and '选项: 需要重新加载' or (OPTIONS..': '..REQUIRES_RELOAD))
 
@@ -122,21 +138,7 @@ local function Init_Menu(self, root)
         self:set_event()
     end)
 
-
-    WoWTools_ToolsButtonMixin:OpenMenu(root)
-
-    --[[sub=root:CreateButton('     '..(e.onlyChinese and '选项' or OPTIONS), function()
-        if not Category then
-            e.OpenPanelOpting()
-        end
-        e.OpenPanelOpting(Category, addName)
-        return MenuResponse.Open
-    end)
-    sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(addName)
-        tooltip:AddLine(e.onlyChinese and '打开选项界面' or OPTIONS)
-    end)]]
-
+    sub:CreateDivider()
     sub2=sub:CreateCheckbox('30x30', function()
         return Save.height==30
     end, function()
@@ -178,6 +180,7 @@ local function Init_Menu(self, root)
     end)
 
 
+    WoWTools_ToolsButtonMixin:OpenMenu(root)
 end
 
 
@@ -196,6 +199,12 @@ end
 
 
 local function Init()
+    function Button:load_wow_ui()
+        if Save.loadCollectionUI then
+            WoWTools_ToolsButtonMixin:LoadedCollectionsJournal()
+        end
+    end
+    
     function Button:set_size()
         self:SetHeight(Save.height)
     end
@@ -288,6 +297,7 @@ local function Init()
         end
     end)
 
+    Button:load_wow_ui()
     Button:set_scale()
     Button:set_point()
     Button:set_strata()

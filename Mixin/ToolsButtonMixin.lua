@@ -208,9 +208,11 @@ function WoWTools_ToolsButtonMixin:OpenMenu(root, name)
     end)
 end
 
-
-
-
+function WoWTools_ToolsButtonMixin:LoadedCollectionsJournal()
+    if not CollectionsJournal then
+        CollectionsJournal_LoadUI();
+    end
+end
 
 
 --[[function WoWTools_ToolsButtonMixin:GetData(btn)

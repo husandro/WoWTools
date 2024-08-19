@@ -1261,9 +1261,8 @@ local function Init_DressUpFrames()
                 --[[if not C_AddOns.IsAddOnLoaded("Blizzard_Collections") then
                     C_AddOns.LoadAddOn('Blizzard_Collections')
                 end]]
-                if not CollectionsJournal then
-                    CollectionsJournal_LoadUI()
-                end
+                WoWTools_ToolsButtonMixin:LoadedCollectionsJournal()
+                
                 local wcFrame= WardrobeCollectionFrame
                 if not CollectionsJournal:IsVisible() or not wcFrame:IsVisible() then
                     ToggleCollectionsJournal(5)

@@ -149,3 +149,4 @@ end
 function WoWTools_ChatButtonMixin:SetSaveData(save)
     self.Save= save or {}
 end
+

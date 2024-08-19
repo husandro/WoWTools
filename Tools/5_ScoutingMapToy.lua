@@ -116,9 +116,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 if not AchievementFrame then
                     AchievementFrame_LoadUI();
                 end
-                if not CollectionsJournal then
-                    CollectionsJournal_LoadUI()
-                end
+
                 --[[if not C_AddOns.IsAddOnLoaded('Blizzard_AchievementUI') then
                     C_AddOns.LoadAddOn("Blizzard_AchievementUI")
                 end

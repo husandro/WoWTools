@@ -726,7 +726,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 --[[if not C_AddOns.IsAddOnLoaded("Blizzard_Collections") then
                     C_AddOns.LoadAddOn('Blizzard_Collections')
                 end]]
-                CollectionsJournal_LoadUI()
+
                 C_Timer.After(2.1, function()
                     if UnitAffectingCombat('player') then
                         panel.combat= true

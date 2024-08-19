@@ -722,8 +722,10 @@ local function Init_TrackButton()
             if IsAltKeyDown() then
                 SetCursor('UI_MOVE_CURSOR')
             elseif not IsModifierKeyDown() then--打开，宠物手册
-                if not PetJournal or not PetJournal:IsVisible() then
-                    CollectionsJournal_LoadUI()
+
+                WoWTools_ToolsButtonMixin:LoadedCollectionsJournal()
+                
+                if not PetJournal:IsVisible() then
                     ToggleCollectionsJournal(2)
                 end
             end

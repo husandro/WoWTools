@@ -514,7 +514,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 
                 button.items={}--存放有效
 
-                CollectionsJournal_LoadUI()
                 --[[if not C_AddOns.IsAddOnLoaded("Blizzard_Collections") then
                     C_AddOns.LoadAddOn('Blizzard_Collections')
                 end

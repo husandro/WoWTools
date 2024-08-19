@@ -374,7 +374,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 --[[for _, info in pairs(Save.Pets) do
                     e.LoadDate({id=info.auraID, type='spell'})
                 end]]
-                CollectionsJournal_LoadUI()
+
 
                 Init()
             else
