@@ -234,7 +234,7 @@ local function set_PARTY_INVITE_REQUEST(name, isTank, isHealer, isDamage, isNati
     local function setPrint(sec, text)
         e.PlaySound(SOUNDKIT.IG_PLAYER_INVITE)--播放, 声音
         print(id, 'ChatButton', addName, text,
-            '|cnGREEN_FONT_COLOR:'..sec.. ' |r'..(e.onlyChinese and '秒' or SECONDS),
+            '|cnGREEN_FONT_COLOR:'..sec.. ' |r'..(e.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS),
             (isTank and e.Icon.TANK or '')..(isHealer and e.Icon.HEALER or '')..(isDamage and e.Icon.DAMAGER or ''),
             questSessionActive and (e.onlyChinese and '场景战役' or SCENARIOS) or '',--场景战役
             isNativeRealm and '|cnGREEN_FONT_COLOR:'..format(e.onlyChinese and '%s其它服务器' or INVITATION_XREALM,

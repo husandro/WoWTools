@@ -3,20 +3,20 @@ local e= select(2, ...)
 WoWTools_MenuMixin={}
 
 function WoWTools_MenuMixin:CreateSlider(root, tab)
-    local sub=root:CreateTemplate("OptionsSliderTemplate")    
+    local sub=root:CreateTemplate("OptionsSliderTemplate")
     sub:SetTooltip(tab.tooltip)
-    tab.tooltip=nil
     sub:SetData(tab)
 
     sub:AddInitializer(function(f, desc)--, description, menu)
-        f.setValue=desc.data.setValue or 1
+        f.getValue=desc.data.getValue
+        f.setValue=desc.data.setValue
         f.minValue=desc.data.minValue or 0
         f.maxValue=desc.data.maxValue or 100
         f.step=desc.data.step or 1
         f.bit=desc.data.bit
 
         local va= desc.data.getValue() or 1
-        f:SetValueStep(f.step)
+        f:SetValueStep(f.step or 1)
         f:SetMinMaxValues(f.minValue, f.maxValue)
         f:SetValue(va)
 
@@ -39,7 +39,7 @@ function WoWTools_MenuMixin:CreateSlider(root, tab)
 
         f:EnableMouseWheel(true)
         f:SetScript('OnMouseWheel', function(s, d)
-            local value= s:GetValue()
+            local value= s.getValue()
             if d== 1 then
                 value= value- s.step
             elseif d==-1 then
@@ -47,7 +47,7 @@ function WoWTools_MenuMixin:CreateSlider(root, tab)
             end
             value= value> s.maxValue and s.maxValue or value
             value= value< s.minValue and s.minValue or value
-            s:setValue(value)
+            s:SetValue(value)
         end)
         f:SetScript('OnHide', function(s)
             s.SetValue=nil
@@ -57,11 +57,8 @@ function WoWTools_MenuMixin:CreateSlider(root, tab)
             s.bit=nil
             f:SetScript('OnMouseWheel', nil)
             f:SetScript('OnValueChanged', nil)
-            --f:SetScript('OnHide', nil)
         end)
-
     end)
-
     return sub
 end
 
@@ -104,12 +101,14 @@ function WoWTools_MenuMixin:ScaleMenu(root, GetValue, SetValue, checkGetValue, c
     local sub2=self:CreateSlider(sub, {
         getValue=GetValue,
         setValue=SetValue,
-        name=e.onlyChinese and '缩放' or UI_SCALE,
+        name=nil,
         minValue=0.4,
         maxValue=4,
-        step=0.01,
+        step=0.05,
         bit='%0.2f',
-        tooltip=nil
+        tooltip=function(tooltip)
+            tooltip:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE)
+        end
     })
 
     return sub2, sub

@@ -498,7 +498,7 @@ local function setMountShow()--坐骑展示
     end
 
 
-    print(id, e.cn(addName), specialEffects and (e.onlyChinese and '/坐骑特效' or EMOTE171_CMD2) or (e.onlyChinese and '坐骑' or MOUNT), '3 '..(e.onlyChinese and '秒' or SECONDS))
+    print(id, e.cn(addName), specialEffects and (e.onlyChinese and '/坐骑特效' or EMOTE171_CMD2) or (e.onlyChinese and '坐骑' or MOUNT), '3 '..(e.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS))
     if not button.showFrame then
         button.showFrame=CreateFrame('Frame')
         button.showFrame:HookScript('OnUpdate',function(self, elapsed)
@@ -1171,7 +1171,7 @@ local function Init_Menu(_, root)
     sub2:SetTooltip(function(tooltip)
         tooltip:AddLine(e.onlyChinese and
             ('每隔: '..Save.mountShowTime..' 秒')
-            or (MOUNT..': '..Save.mountShowTime..' '..SECONDS)
+            or (MOUNT..': '..Save.mountShowTime..' '..LOSS_OF_CONTROL_SECONDS)
         )
         tooltip:AddLine((e.onlyChinese and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN)..e.Icon.mid)
     end)
@@ -1181,15 +1181,15 @@ local function Init_Menu(_, root)
             return Save.mountShowTime
         end, setValue=function(value)
             Save.mountShowTime=value
-            print('m', value)
         end,
-        name=nil,
+        name=e.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS ,
         minValue=3,
         maxValue=30,
         step=1,
         bit=nil,
         tooltip=function(tooltip)
             tooltip:AddLine(e.onlyChinese and '坐骑秀' or 'Mount show')
+            tooltip:AddLine()
         end
         
     })
@@ -1269,7 +1269,7 @@ end
             hasArrow=true,
             menuList='RANDOM',
             keepShownOnClick=true,
-            tooltipTitle= e.onlyChinese and '每隔 3 秒, 召唤' or ('3 '..SECONDS..MOUNT),
+            tooltipTitle= e.onlyChinese and '每隔 3 秒, 召唤' or ('3 '..LOSS_OF_CONTROL_SECONDS..MOUNT),
             tooltipText= (e.onlyChinese and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP)..e.Icon.mid,
             func=function()
                 specialEffects=nil
@@ -1283,7 +1283,7 @@ end
             notCheckable=true,
             keepShownOnClick=true,
             tooltipOnButton=true,
-            tooltipTitle= e.onlyChinese and '每隔 3 秒' or ('3 '..SECONDS..EMOTE171_CMD2:gsub('/','')),
+            tooltipTitle= e.onlyChinese and '每隔 3 秒' or ('3 '..LOSS_OF_CONTROL_SECONDS..EMOTE171_CMD2:gsub('/','')),
             tooltipText= (e.onlyChinese and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN)..e.Icon.mid,
             func=function()
                 specialEffects=true

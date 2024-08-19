@@ -4758,12 +4758,8 @@
         "WARWITHIN_TITLE2",
         "MenuResponse",
         "Background",
-<<<<<<< Updated upstream
         "GetMouseFocus",
         "HELPFRAME_SUGGESTION_BUTTON_TEXT"
-=======
-        "GetMouseFocus"
->>>>>>> Stashed changes
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
