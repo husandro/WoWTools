@@ -4760,7 +4760,8 @@
         "Background",
         "GetMouseFocus",
         "HELPFRAME_SUGGESTION_BUTTON_TEXT",
-        "SLASH_CHAT_AFK1"
+        "SLASH_CHAT_AFK1",
+        "KeybindingsOverrides"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

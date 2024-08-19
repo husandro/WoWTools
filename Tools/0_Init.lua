@@ -31,7 +31,8 @@ local Category, Layout
 local function Init_Panel()
     Category, Layout= e.AddPanel_Sub_Category({name=addName})
     WoWTools_ToolsButtonMixin:SetCategory(Category, Layout)
-
+    --KeybindingsOverrides.CreateBindingButtonSettings(Layout)
+    --Blizzard_SettingsDefinitions_Frame/Keybindings.lua
 
 
     local initializer=e.AddPanel_Check_Button({
