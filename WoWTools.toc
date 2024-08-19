@@ -132,7 +132,7 @@ Tools\10_MagePortal.lua
 
 ##Chat Button
 ##这是Chat主要，如果需要其中一个功能，这个不能关
-ChatButton\0_ChatButton.lua
+ChatButton\0_Init.lua
 ##超链接， 欢迎, 一些其他功能
 ChatButton\1_HyperLink.lua
 ##ROLL

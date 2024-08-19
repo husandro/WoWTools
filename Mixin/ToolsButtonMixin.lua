@@ -165,8 +165,6 @@ end]]
 
 function WoWTools_ToolsButtonMixin:SetSaveData(save)
     self.Save= save or {}
-    self.Save.disabledADD= self.Save.disabledADD or {}
-    
 end
 
 function WoWTools_ToolsButtonMixin:EnterShowFrame()

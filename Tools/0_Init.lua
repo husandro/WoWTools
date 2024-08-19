@@ -81,7 +81,6 @@ local function Init_Panel()
                 GetValue= function() return not Save.disabledADD[data.name] end,
                 SetValue= function()
                     Save.disabledADD[data.name]= not Save.disabledADD[data.name] and true or nil
-                    print(data.name, Save.disabledADD[data.name])
                 end
             })
         end
