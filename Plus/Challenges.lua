@@ -1714,11 +1714,11 @@ local function Init_WeeklyRewardsFrame()
     end)
 
     --移动，图片
-    hooksecurefunc(WeeklyRewardsFrame,'UpdateOverlay', function(self)--Blizzard_WeeklyRewards.lua
+    hooksecurefunc(WeeklyRewardsFrame, 'UpdateOverlay', function(self)--Blizzard_WeeklyRewards.lua
         if self.Overlay and self.Overlay:IsShown() then--未提取,提示
-            self.Overlay:SetScale(0.4)
+            --self.Overlay:SetScale(0.61)
             self.Overlay:ClearAllPoints()
-            self.Overlay:SetPoint('TOPLEFT', 80,-60)
+            self.Overlay:SetPoint('TOPLEFT', 2,-2)
         end
     end)
 

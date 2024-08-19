@@ -2323,10 +2323,12 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                         Save.Mounts[FLOOR][spellID]=nil
                     end
                 end
-                Save.mountShowTime=3
+                
             else
                 Save= WoWToolsSave['Tools_Mount'] or Save
             end
+
+            Save.mountShowTime= Save.mountShowTime or 3
 
             --[[local spellID= C_MountJournal.GetDynamicFlightModeSpellID() or 436854
             local icon= '|T'..(C_Spell.GetSpellTexture(spellID) or 436854)..':0|t'

@@ -245,18 +245,21 @@ local function set_Menu(self, tab)
     end
 
     if self.Background then
+      
         set_Alpha_Color(self.Background, nil, nil, min03)
         set_Alpha_Color(self.Arrow, nil, nil, min05)
     else
         tab = tab or {}
-        e.Set_Alpha_Frame_Texture(self, {notAlpha=true})
+        --e.Set_Alpha_Frame_Texture(self, {notAlpha=true})     
         local btn= self.Button or tab.button
         if btn then
             e.Set_Label_Texture_Color(btn:GetNormalTexture(), {type='Texture', alpha=min05 or Save.alpha})
+            e.Set_Label_Texture_Color(btn.Background, {type='Texture', alpha=min05 or Save.alpha})
+            e.Set_Label_Texture_Color(btn.Arrow, {type='Texture', alpha=min05 or Save.alpha})
         end
         --e.Set_Alpha_Frame_Texture(self.Button, {notAlpha=true})
         e.Set_Alpha_Frame_Texture(self.DecrementButton, {notAlpha=true})
-        e.Set_Alpha_Frame_Texture(self.IncrementButton, {notAlpha=true})
+        e.Set_Alpha_Frame_Texture(self.IncrementButton, {notAlpha=true})        
         e.Set_Label_Texture_Color(self.Text, {type='FontString'})
     end
 end
