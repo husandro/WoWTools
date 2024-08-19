@@ -55,8 +55,8 @@ local function Init_Panel()
     e.AddPanel_Check({
         category= Category,
         name= e.onlyChinese and '加载战团藏品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, 'Load', COLLECTIONS),
-        tooltip= '|nCollectionsJournal_LoadUI()|n'
-                ..e.onlyChinese and '登入游戏时|n建议：开启' or (format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LOG_IN, GAME)
+        tooltip= '|nCollectionsJournal_LoadUI()|n|n'
+                ..(e.onlyChinese and '登入游戏时|n建议：开启' or (format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LOG_IN, GAME))
                 ..'|n'..HELPFRAME_SUGGESTION_BUTTON_TEXT..ENABLE),
         GetValue= function() return Save.loadCollectionUI end,
         SetValue= function()
@@ -81,6 +81,7 @@ local function Init_Panel()
                 GetValue= function() return not Save.disabledADD[data.name] end,
                 SetValue= function()
                     Save.disabledADD[data.name]= not Save.disabledADD[data.name] and true or nil
+                    print(data.name, Save.disabledADD[data.name])
                 end
             })
         end

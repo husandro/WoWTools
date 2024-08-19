@@ -948,7 +948,7 @@ local function Init_Menu_ShiftAltCtrl(root, type)
     local num=getTableNum(type)--检测,表里的数量
     local col= num==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:'
 
-    local sub= Set_Mount_Menu(root, type, tab2[1], '|A:NPE_Icon:0:0|a'..type..' '..col..num, nil)
+    local sub= Set_Mount_Menu(root, type, tab2[1], type..' '..col..num, nil)
 
     if num>1 then
         sub:CreateTitle(
@@ -1151,6 +1151,8 @@ local function Init_Menu(_, root)
             Init_Menu_Mount(root, indexType, tab.name)
         end
     end
+
+
 end
 
 

@@ -2,7 +2,7 @@ local e= select(2, ...)
 
 WoWTools_ToolsButtonMixin={
     AddList={},--所有, 按钮 {name}=true
-    Save={DisabledAdd={}},
+    Save={disabledADD={}},
     Buttons={},--存放所有, 按钮 {btn1, btn2,}
     last=nil,--最后, 按钮 btn
 
@@ -56,7 +56,7 @@ function WoWTools_ToolsButtonMixin:CreateButton(tab)
         table.insert(self.AddList, {name=name, tooltip=tooltip, option=option})
     end
 
-    if not self.Button or self.Save.DisabledAdd[name] then
+    if not self.Button or self.Save.disabledADD[name] then
         return
     end
 
@@ -165,7 +165,8 @@ end]]
 
 function WoWTools_ToolsButtonMixin:SetSaveData(save)
     self.Save= save or {}
-    self.Save.DisabledAdd= self.Save.DisabledAdd or {}
+    self.Save.disabledADD= self.Save.disabledADD or {}
+    
 end
 
 function WoWTools_ToolsButtonMixin:EnterShowFrame()
