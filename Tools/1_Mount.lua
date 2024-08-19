@@ -523,7 +523,7 @@ local function Init_Dialogs()
     }
 
     StaticPopupDialogs['WoWTools_Tools_Mount_Key']={--快捷键,设置对话框
-        text=id..' '..addName..'|n'..(e.onlyChinese and '快捷键"' or SETTINGS_KEYBINDINGS_LABEL)..'|n|nQ, BUTTON5',
+        text=id..' '..addName..'|n'..(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)..'|n|nQ, BUTTON5',
         whileDead=true, hideOnEscape=true, exclusive=true, hasEditBox=true,
         button1= e.onlyChinese and '设置' or SETTINGS,
         button2= e.onlyChinese and '取消' or CANCEL,
@@ -1345,11 +1345,15 @@ local function Init_Menu(_, root)
     })
 
     sub:CreateSpacer()
-    sub:CreateDivider()
-    sub:CreateCheckbox('|A:NPE_ArrowDown:0:0|a'..(Save.KEY or (e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)), function()
+    --sub:CreateDivider()
+    sub2=sub:CreateCheckbox('|A:NPE_ArrowDown:0:0|a'..(Save.KEY or (e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)), function()
         return Save.KEY
     end, function()
         StaticPopup_Show('WoWTools_Tools_Mount_Key')
+    end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine(e.onlyChinese and '设置' or SETTINGS)
+        tooltip:AddDoubleLine(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL, Save.KEY)
     end)
 end
 
