@@ -18,17 +18,20 @@
 ##调用库，不能删除
 Libs\Init.xml
 
-##主要function，不能删除
-Mixin\ChatButtonMixin.lua
-Mixin\FrameMixin.lua
-Mixin\MenuMixin.lua
-Mixin\ToolsButtonMixin.lua
 
 API_WoWTools.lua
 API_Create.lua
 API_Func.lua
 API_Panel.lua
 API_WoWDate.lua
+
+##主要function，不能删除
+Mixin\ChatButtonMixin.lua
+Mixin\FrameMixin.lua
+Mixin\MenuMixin.lua
+Mixin\ToolsButtonMixin.lua
+Mixin\StaticPopupDialogs.lua
+
 
 
 ##WoWPlus

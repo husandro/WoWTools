@@ -27,6 +27,8 @@ e.RightButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'RightButton
 e.ExpansionLevel= GetExpansionLevel()--版本数据
 e.onlyChinese= LOCALE_zhCN and true or false
 e.Is_Timerunning= PlayerGetTimerunningSeasonID()-- 1=幻境新生：潘达利亚
+e.addName= '|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r'
+
 --e.Is_PTR= IsPublicBuild() or IsTestBuild()
 
 --[[

@@ -985,7 +985,7 @@ local function Set_Mount_Menu(root, type, spellID, name, index)
     sub:SetTooltip(Set_Menu_Tooltip)
 
     if index and mountID then
-        local sub2=sub:CreateButton(icon..col..(e.onlyChinese and '移除' or REMOVE), function(data)
+        local sub2=sub:CreateButton('|A:common-icon-redx:0:0|a'..(e.onlyChinese and '移除' or REMOVE), function(data)
             Save.Mounts[data.type][data.spellID]=nil
             print(id, addName, e.onlyChinese and '移除' or REMOVE, C_Spell.GetSpellLink(data.spellID) or data.spellID)
 
@@ -1127,7 +1127,7 @@ local function Init_Menu_Spell(sub)
         end, {spellID=spellID})
         sub2:SetTooltip(Set_Menu_Tooltip)
 
-        sub3=sub2:CreateButton(icon..(e.onlyChinese and '移除' or REMOVE), function(data)
+        sub3=sub2:CreateButton('|A:common-icon-redx:0:0|a'..(e.onlyChinese and '移除' or REMOVE), function(data)
             Save.Mounts[SPELLS][data.spellID]=nil
             print(id, addName, e.onlyChinese and '移除' or REMOVE, C_Spell.GetSpellLink(data.spellID) or data.spellID)
             return MenuResponse.Close
@@ -1178,8 +1178,8 @@ local function Init_Menu_Item(sub)
 
         icon='|T'..(C_Item.GetItemIconByID(itemID) or 0)..':0|t'
         num= C_Item.GetItemCount(itemID, false, true, true) or 0
-        
-        local name= '|T'..(C_Item.GetItemIconByID(itemID) or 0)..':0|t'        
+
+        local name= '|T'..(C_Item.GetItemIconByID(itemID) or 0)..':0|t'
                     ..(e.cn(C_Item.GetItemNameByID(itemID), {itemID=itemID, isName=true}) or ('itemID: '..itemID))
                     ..(num==0 and '|cff9e9e9e' or '|cffffffff')..' x'..num..'|r'
 
@@ -1194,7 +1194,7 @@ local function Init_Menu_Item(sub)
         sub3:SetTooltip(Set_Menu_Tooltip)
 
         sub2:CreateDivider()
-        sub3=sub2:CreateButton(icon..(e.onlyChinese and '移除' or REMOVE), function(data)
+        sub3=sub2:CreateButton('|A:common-icon-redx:0:0|a'..(e.onlyChinese and '移除' or REMOVE), function(data)
             Save.Mounts[ITEMS][data.itemID]=nil
             print(id, addName, select(2, C_Item.GetItemInfo(data.itemID)) or data.itemID, e.onlyChinese and '移除' or REMOVE)
             return MenuResponse.Close
@@ -1256,19 +1256,34 @@ local MainMenuTable={
 --主菜单
 --#####
 local function Init_Menu(_, root)
-    local sub, sub2, sub3, num, icon, col
+    local sub, sub2, sub3, num, col
     for _, tab in pairs(MainMenuTable) do
         local indexType= tab.type
         if indexType=='-' then
             root:CreateDivider()
 
         elseif indexType==SPELLS or indexType==ITEMS then
+            local data={}
+            local icon
+            if indexType==SPELLS then
+                if MountButton.spellID then
+                    data.spellID=MountButton.spellID
+                    icon= C_Spell.GetSpellTexture(MountButton.spellID)
+                end
+            elseif indexType==ITEMS then
+                if MountButton.itemID then
+                    data.itemID=MountButton.itemID
+                    icon=C_Item.GetItemIconByID(MountButton.itemID)
+                end
+            end
+            icon= icon or 0
             num=getTableNum(indexType)--检测,表里的数量
-            icon= (indexType==SPELLS and MountButton.spellID) and C_Spell.GetSpellTexture(MountButton.spellID) or (MountButton.itemID and C_Item.GetItemIconByID(MountButton.itemID)) or 0
             col= num==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:'
+
             sub=root:CreateButton('|T'..icon..':0|t'..(e.onlyChinese and tab.name or indexType).. col..' '.. num..'|r', function()
                 return MenuResponse.Open
-            end)
+            end, data)
+            sub:SetTooltip(Set_Menu_Tooltip)
 
             if indexType==SPELLS then
                 Init_Menu_Spell(sub)
@@ -1355,6 +1370,14 @@ local function Init_Menu(_, root)
         tooltip:AddLine(e.onlyChinese and '设置' or SETTINGS)
         tooltip:AddDoubleLine(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL, Save.KEY)
     end)
+
+    WoWTools_MenuMixin:RestDataMenu(sub,
+        addName..'|n|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
+        function()
+            Save=nil
+            e.Reload()
+        end
+    )
 end
 
 
@@ -1733,7 +1756,7 @@ end
 --初始化
 --######
 local function Init()
-    
+
 
     for type, tab in pairs(Save.Mounts) do
         for ID, _ in pairs(tab) do
@@ -2064,7 +2087,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 Save= WoWToolsSave['Tools_Mounts'] or Save
             end
 
-            
+
             MountButton= WoWTools_ToolsButtonMixin:CreateButton({
                 name='Mount',
                 tooltip=addName,
@@ -2073,7 +2096,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 --option=function(category, layout)--initializer
             })
 
-            
+
 
             if MountButton then
 

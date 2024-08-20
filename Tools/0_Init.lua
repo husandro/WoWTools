@@ -75,7 +75,7 @@ local function Init_Panel()
         if not data.isOnlyOptions then
             if data.RestValue then
 
-
+                
             else
                 initializer= e.AddPanel_Check({
                     category= Category,

@@ -1162,12 +1162,14 @@ local function Init_Menu(_, root)
     tre= sub:CreateButton(e.onlyChinese and '修改' or EDIT, function ()
         StaticPopupDialogs[id..addName..'modifyGuildWelcome']={--区域,设置对话框
             text=id..' '..addName..'|n|n'..(e.onlyChinese and '欢迎加入' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,  EMOTE103_CMD1:gsub('/',''), JOIN))..'|n'..(e.onlyChinese and '公会新成员' or LFG_LIST_GUILD_MEMBER),
-            whileDead=true, hideOnEscape=true, exclusive=true,
-            hasEditBox=true,
+            whileDead=true, hideOnEscape=true, exclusive=true, hasEditBox=true,
             button1= e.onlyChinese and '修改' or EDIT,
             button2= e.onlyChinese and '取消' or CANCEL,
             OnShow = function(s)
                 s.editBox:SetText(Save.guildWelcomeText)
+            end,
+            OnHide=function(s)
+                s.editBox:ClearFocus()
             end,
             OnAccept = function(s)
                 local text= s.editBox:GetText()
@@ -1179,9 +1181,7 @@ local function Init_Menu(_, root)
                 s:GetParent().button1:SetEnabled(text:gsub(' ', '')~='')
             end,
             EditBoxOnEscapePressed = function(s)
-                s:SetAutoFocus(false)
                 s:ClearFocus()
-                s:GetParent():Hide()
             end,
         }
         StaticPopup_Show(id..addName..'modifyGuildWelcome')

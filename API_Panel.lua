@@ -43,7 +43,6 @@ layout:AddInitializer(initializer);
 
 
 
-
 --#####################
 --重新加载UI, 重置, 按钮
 --#####################
@@ -55,25 +54,10 @@ function e.ReloadPanel(tab)
     rest.addName=tab.addName
     rest.func=tab.clearfunc
     rest.clearTips=tab.clearTips
-    rest.clearWoWData= tab.clearWoWData
     rest:SetScript('OnClick', function(self)
-        StaticPopupDialogs[id..'restAllSetup']={
-            text =id..'  '..self.addName..'|n|n|cnRED_FONT_COLOR:'..(self.clearTips or (e.onlyChinese and '当前保存' or (ITEM_UPGRADE_CURRENT..SAVE)))..'|r '..(e.onlyChinese and '保存' or SAVE)..'|n|n'..(e.onlyChinese and '重新加载UI' or RELOADUI)..' /reload',
-            button1= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '重置' or RESET),
-            button2= e.onlyChinese and '取消' or CANCEL,
-            whileDead=true, hideOnEscape=true, exclusive=true,
-            OnAccept=self.func,
-        }
-
-        if self.clearWoWData then
-            StaticPopupDialogs[id..'restAllSetup'].button3= '|cffff00ff'..(e.onlyChinese and '清除WoW数据' or 'Clear WoW data')..'|r'
-            StaticPopupDialogs[id..'restAllSetup'].OnAlt= function()
-                e.WoWDate=nil
-                e.Reload()
-                print(id, e.cn(addName), (e.onlyChinese and '缩放' or UI_SCALE)..': 1', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
-            end
-        end
-        StaticPopup_Show(id..'restAllSetup')
+        StaticPopup_Show('WoWTools_RestData',
+        (self.addName or '')..'|n|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
+        nil, self.func)
     end)
     rest:SetScript('OnLeave', GameTooltip_Hide)
     rest:SetScript('OnEnter', function(self)
@@ -321,7 +305,7 @@ function e.AddPanel_Button(tab)
     local tooltip= tab.tooltip or tab.buttonText or tab.title or nil
     local layout= tab.layout or Layout
     local addSearchTags= Set_SearchTags_Text(tab.addSearchTags or tab.title or tab.buttonText)
-    
+
     local initializer= CreateSettingsButtonInitializer(title, buttonText, buttonClick, tooltip, addSearchTags)--Blizzard_SettingControls.lua
 	layout:AddInitializer(initializer)
     return initializer
@@ -548,19 +532,14 @@ local function Init_Options()
         buttonText= '|A:QuestArtifact:0:0|a'..(e.onlyChinese and '清除全部' or REMOVE_WORLD_MARKERS ),
         addSearchTags= e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT,
         func= function()
-            StaticPopupDialogs[id..'RestAllSetup']={
-                text = '|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r|n|n'..(e.onlyChinese and "你想要将所有选项重置为默认状态吗？|n将会立即对所有设置生效。" or CONFIRM_RESET_SETTINGS)
-                    ..'|n|n|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重新加载UI' or RELOADUI)..'|n|n'
-                ,
-                button1= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT),
-                button2= e.onlyChinese and '取消' or CANCEL,
-                whileDead=true, hideOnEscape=true, exclusive=true,
-                OnAccept=function ()
+            StaticPopup_Show('WoWTools_RestData',
+                (e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT)..'|n|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
+                nil,
+                function()
                     e.ClearAllSave=true
                     e.Reload()
-                end,
-            }
-            StaticPopup_Show(id..'RestAllSetup')
+                end
+            )
         end
     })
 
@@ -569,20 +548,14 @@ local function Init_Options()
         buttonText= '|A:QuestArtifact:0:0|a'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
         addSearchTags= e.onlyChinese and '清除WoW数据' or 'Clear WoW data',
         func= function()
-            StaticPopupDialogs[id..'RestWoWSetup']={
-                text = '|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r'
-                    ..'|n|n'..(format('|T%d:0|t', e.Icon.wow)..(e.onlyChinese and '清除WoW数据' or 'Clear WoW data'))
-                    ..'|n|n|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重新加载UI' or RELOADUI)..'|n|n'
-                ,
-                button1= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
-                button2= e.onlyChinese and '取消' or CANCEL,
-                whileDead=true, hideOnEscape=true, exclusive=true,
-                OnAccept=function ()
+            StaticPopup_Show('WoWTools_RestData',
+                (format('|T%d:0|t', e.Icon.wow)..(e.onlyChinese and '清除WoW数据' or 'Clear WoW data'))..'|n|n|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
+                nil,
+                function()
                     e.WoWDate={}
                     e.Reload()
-                end,
-            }
-            StaticPopup_Show(id..'RestWoWSetup')
+                end
+            )
         end
     })
 
@@ -751,7 +724,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Set_Color()--自定义，颜色
 
             e.onlyChinese= LOCALE_zhCN or Save.onlyChinese
-            Save.onlyChinese= LOCALE_zhCN or Save.onlyChinese
 
             if e.onlyChinese then
                 e.Player.L= {
