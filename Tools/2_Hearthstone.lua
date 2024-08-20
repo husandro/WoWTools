@@ -112,10 +112,12 @@ local function Init_Menu_Toy(self, root)
             name='itemID '.. itemID
         end
 
+        local has= PlayerHasToy(itemID)
         sub=root:CreateCheckbox(
-            (PlayerHasToy(itemID) and '' or '|cff9e9e9e')
+            (has and '' or '|cff9e9e9e')
             ..index..') |T'..(icon or 0)..':0|t'
-            ..name,
+            ..name
+            ..(has and e.GetSpellItemCooldown(nil, itemID) or ''),
             function(data) return PlayerHasToy(data.itemID) end,
             set_ToggleCollectionsJournal,
             {itemID=itemID, name=toyName}
@@ -421,6 +423,7 @@ local function Init()
         self.itemID=itemID
         self:SetAttribute('item1', name)
         self.texture:SetTexture(C_Item.GetItemIconByID(itemID) or 134414)
+        self:set_cool()
     end
 
     function ToyButton:set_only_item()
@@ -487,12 +490,16 @@ local function Init()
         self.text:SetText(text or '')
     end
 
+    function ToyButton:set_cool()
+        e.SetItemSpellCool(self, {item=self.itemID})--主图标冷却
+    end
 
     ToyButton:RegisterEvent('HEARTHSTONE_BOUND')
-    ToyButton:RegisterEvent('BAG_UPDATE_COOLDOWN')
+    --ToyButton:RegisterEvent('BAG_UPDATE_COOLDOWN')
     ToyButton:RegisterEvent('TOYS_UPDATED')
     ToyButton:RegisterEvent('NEW_TOY_ADDED')
-
+    ToyButton:RegisterEvent('UI_MODEL_SCENE_INFO_UPDATED')
+    
     ToyButton:SetScript('OnEvent', function(self, event, itemID, success)
         if event=='ITEM_DATA_LOAD_RESULT' then
             if success then
@@ -531,8 +538,8 @@ local function Init()
         elseif event=='HEARTHSTONE_BOUND' then
             self:set_location()
 
-        elseif event=='BAG_UPDATE_COOLDOWN' then
-            e.SetItemSpellCool(self, {item=self.itemID})--主图标冷却
+        elseif event=='UI_MODEL_SCENE_INFO_UPDATED' then
+            self:set_cool()
         end
     end)
 
@@ -577,7 +584,7 @@ local function Init()
     end
 
 
-    ToyButton:SetScript("OnEnter",function(self)
+    ToyButton:SetScript("OnEnter",function(self)        
         self:set_tooltips()
         self:SetScript('OnUpdate', function (s, elapsed)
             s.elapsed = (s.elapsed or 0.3) + elapsed
@@ -608,14 +615,12 @@ local function Init()
     end)
     ToyButton:SetScript('OnMouseWheel', ToyButton.set_run)--设置属性
 
-
-
     ToyButton:init_toy()
     ToyButton:set_alt()
 
     C_Timer.After(2, function()
         ToyButton:set_location()
-        e.SetItemSpellCool(ToyButton, {item=ToyButton.itemID})--主图标冷却
+        ToyButton:set_cool()
     end)
 end
 
