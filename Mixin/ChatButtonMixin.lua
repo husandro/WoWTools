@@ -37,7 +37,7 @@ function WoWTools_ChatButtonMixin:CreateButton(name, tooltip)
     self:SetPoint(btn)
 
     btn:SetSize(30, 30)
-    btn:RegisterForClicks('AnyDown')
+    btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
     btn:SetPushedAtlas('bag-border-highlight')
     btn:SetHighlightAtlas('bag-border')
 

@@ -25,12 +25,12 @@ local P_Items={
     [208704]=true,--幽邃住民的土灵炉石
 }
 local ModifiedTab={
-    alt=140192,--达拉然炉石
-    shift=6948,--炉石
-    ctrl=110560,--要塞炉石
+    [6948]='Shift',--炉石
+    [110560]='Ctrl',--要塞炉石
+    [140192]='Alt',--达拉然炉石
 }
 
-for _, itemID in pairs(ModifiedTab) do
+for itemID in pairs(ModifiedTab) do
     e.LoadDate({id=itemID, type='item'})
 end
 
@@ -63,7 +63,7 @@ local panel= CreateFrame("Frame")
 
 
 
-
+--[[
 local function getToy()--生成, 有效表格
     ToyButton.items={}
     local find
@@ -79,24 +79,27 @@ local function getToy()--生成, 有效表格
 end
 
 
+
+
+
+
+
 local function setAtt()--设置属性
     --if UnitAffectingCombat('player') then
     if not ToyButton:CanChangeAttribute()  then
         panel:RegisterEvent('PLAYER_REGEN_ENABLED')
         return
     end
+
+
     local icon
     local num=#ToyButton.items
     if num>0 then
         local index=math.random(1, num)
         local itemID=ToyButton.items[index]
         if itemID then
-            icon = C_Item.GetItemIconByID(itemID)
-            if icon then
-                ToyButton.texture:SetTexture(icon)
-            end
+            ToyButton.texture:SetTexture(C_Item.GetItemIconByID(itemID) or 134414)
             ToyButton:SetAttribute('item1', C_Item.GetItemNameByID(itemID) or itemID)
-
             ToyButton.itemID=itemID
         end
     else
@@ -107,7 +110,7 @@ local function setAtt()--设置属性
 end
 
 
-
+]]
 
 
 
@@ -137,7 +140,7 @@ end
 local function set_BindLocation()--显示, 炉石, 绑定位置
     local text
     if Save.showBindName then
-        text= GetBindLocation()
+        text= e.cn(GetBindLocation())
         if text and Save.showBindNameShort then
             text= e.WA_Utf8Sub(text, 2, 5)
         end
@@ -165,93 +168,25 @@ end
 
 
 
---#####
---主菜单
---#####
-local function InitMenu(_, level, menuList)--主菜单
-    local info
-    if menuList=='TOY' then
-        for itemID, _ in pairs(Save.items) do
-            local _, toyName, icon = C_ToyBox.GetToyInfo(itemID)
-            info={
-                text= toyName or itemID,
-                icon= icon or C_Item.GetItemIconByID(itemID),
-                colorCode=not PlayerHasToy(itemID) and '|cff9e9e9e',
-                notCheckable=true,
-                keepShownOnClick=true,
-                tooltipOnButton=true,
-                tooltipTitle= e.onlyChinese and '添加/移除' or (ADD..'/'..REMOVE),
-                tooltipText= (e.onlyChinese and '藏品->玩具箱' or (COLLECTIONS..'->'..TOY_BOX))..e.Icon.left,
-                arg1= itemID,
-                func=function(_, arg1)
-                    if ToyBox and not ToyBox:IsVisible() then
-                        ToggleCollectionsJournal(3)
-                    end
-                    local name= arg1 and select(2, C_ToyBox.GetToyInfo(arg1))
-                    if name then
-                        C_ToyBoxInfo.SetDefaultFilters()
-                        if ToyBox.searchBox then
-                            ToyBox.searchBox:SetText(name)
-                        end
-                    end
-                end,
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
-        end
-
-    elseif menuList=='BIND' then--炉石, 绑定位置, 截取名称SHORT
-        info={
-            text=e.onlyChinese and '截取名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHORT, NAME),
-            checked=Save.showBindNameShort,
-            func=function()
-                Save.showBindNameShort= not Save.showBindNameShort and true or nil
-                set_BindLocation()--显示, 炉石, 绑定位置
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-    else
-       info={
-            text='|cnGREEN_FONT_COLOR:'..#ToyButton.items..'|r'.. (e.onlyChinese and '随机炉石' or addName),
-            notCheckable=true,
-            menuList='TOY',
-            hasArrow=true,
-            keepShownOnClick=true,
-       }
-       e.LibDD:UIDropDownMenu_AddButton(info, level)
-       info={
-            text= e.onlyChinese and '绑定位置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, TUTORIAL_TITLE31, NAME),
-            checked=Save.showBindName,
-            menuList='BIND',
-            hasArrow=true,
-            keepShownOnClick=true,
-            func=function()
-                Save.showBindName = not Save.showBindName and true or nil
-                set_BindLocation()--显示, 炉石, 绑定位置
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-    end
-end
-
 
 
 
 
 local function Set_Menu_Tooltip(tooltip, desc)
-    if desc.data and desc.data.itemID then
-        tooltip:SetToyByItemID(desc.data.itemID)
-    end
+    WoWTools_ToolsButtonMixin:SetToyTooltip(tooltip, desc.data and desc.data.itemID)
 end
 
 
 
 local function set_ToggleCollectionsJournal(data)
     WoWTools_ToolsButtonMixin:LoadedCollectionsJournal(3)
-    local name= data.name or select(2, C_ToyBox.GetToyInfo(data.itemID)) or C_Item.GetItemNameByID(data.itemID)
-    if name then
-        C_ToyBoxInfo.SetDefaultFilters()
-        if ToyBox.searchBox then
-            ToyBox.searchBox:SetText(name)
+    if data.name or data.itemID then
+        local name= data.name or select(2, C_ToyBox.GetToyInfo(data.itemID)) or C_Item.GetItemNameByID(data.itemID)
+        if name then
+            C_ToyBoxInfo.SetDefaultFilters()
+            if ToyBox.searchBox then
+                ToyBox.searchBox:SetText(name)
+            end
         end
     end
     return MenuResponse.Open
@@ -263,8 +198,8 @@ end
 
 
 
-local function Init_Menu_Toy(_, root)
-    local sub, sub2, sub3, name
+local function Init_Menu_Toy(self, root)
+    local sub, sub2, name
     local index=0
     for itemID, _ in pairs(Save.items) do
         e.LoadDate({id=itemID, type='item'})
@@ -278,7 +213,7 @@ local function Init_Menu_Toy(_, root)
         else
             name='itemID '.. itemID
         end
-        
+
         sub=root:CreateCheckbox(
             (PlayerHasToy(itemID) and '' or '|cff9e9e9e')
             ..index..') |T'..(icon or 0)..':0|t'
@@ -298,13 +233,14 @@ local function Init_Menu_Toy(_, root)
         sub2:SetTooltip(function(tooltip)
             tooltip:AddLine(MicroButtonTooltipText(e.onlyChinese and '战团藏品' or COLLECTIONS, "TOGGLECOLLECTIONS"))
         end)
-        
+
         sub:CreateDivider()
         sub2=sub:CreateButton(
             '|A:common-icon-redx:0:0|a'..(e.onlyChinese and '移除' or REMOVE),
             function(data)
                 Save.items[data.itemID]=nil
-                print(id, addName, e.onlyChinese and '移除' or REMOVE, C_Spell.GetSpellLink(data.spellID) or data.spellID)
+                print(id, addName, select(2, C_Item.GetItemInfo(data.itemID)) or data.itemID, e.onlyChinese and '移除' or REMOVE)
+                ToyButton:init_toy()
                 return MenuResponse.Open
             end,
             {itemID=itemID, name=toyName}
@@ -319,10 +255,11 @@ local function Init_Menu_Toy(_, root)
 --全部清除
     if index>1 then
         root:CreateDivider()
-        sub=root:CreateButton(e.onlyChinese and '全部清除' or CLEAR_ALL, function(data)
+        sub=root:CreateButton(e.onlyChinese and '全部清除' or CLEAR_ALL, function()
             if IsControlKeyDown() then
                 Save.items={}
                 print(id, addName, e.onlyChinese and '全部清除' or CLEAR_ALL)
+                ToyButton:init_toy()
             else
                 return MenuResponse.Open
             end
@@ -340,7 +277,7 @@ local function Init_Menu_Toy(_, root)
     sub=root:CreateButton((e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)..' '..all, function()
         if IsControlKeyDown() then
             Save.items= P_Items
-            ToyButton:settings()
+            ToyButton:init_toy()
             print(id, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)
         else
             return MenuResponse.Open
@@ -349,8 +286,13 @@ local function Init_Menu_Toy(_, root)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..e.Icon.left)
     end)
-
 end
+
+
+
+
+
+
 
 
 
@@ -358,13 +300,41 @@ end
 --#####
 --主菜单
 --#####
-local function Init_Menu(_, root)
+local function Init_Menu(self, root)
     local sub
     sub= root:CreateButton(addName..' '..#ToyButton.items, function()
         return MenuResponse.Open
     end)
 
-    Init_Menu_Toy(_, sub)
+    Init_Menu_Toy(self, sub)
+
+    --选项
+    root:CreateDivider()
+    sub=WoWTools_ToolsButtonMixin:OpenMenu(root)
+
+    sub:CreateCheckbox(e.onlyChinese and '绑定位置' or SPELL_TARGET_CENTER_LOC, function()
+        return Save.showBindName
+    end, function()
+        Save.showBindName= not Save.showBindName and true or nil
+        self:set_location()--显示, 炉石, 绑定位置
+    end)
+
+    sub:CreateCheckbox(e.onlyChinese and '截取名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHORT, NAME), function()
+        return Save.showBindNameShort
+    end, function()
+        Save.showBindNameShort= not Save.showBindNameShort and true or nil
+        self:set_location()--显示, 炉石, 绑定位置
+    end)
+
+    sub=root:CreateButton(
+        '|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '设置' or SETTINGS),
+        set_ToggleCollectionsJournal,
+        {}
+    )
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(MicroButtonTooltipText(e.onlyChinese and '战团藏品' or COLLECTIONS, "TOGGLECOLLECTIONS"))
+    end)
+
 end
 
 
@@ -381,38 +351,7 @@ end
 
 
 
---########################
---设置Shift, Ctrl, Alt 提示
---########################
-local function setBagHearthstone()
-    for type, itemID in pairs(ModifiedTab) do
-        local find
-        if PlayerHasToy(itemID) or C_Item.GetItemCount(itemID)>=0 then
-            local _, duration, enable = C_Container.GetItemCooldown(itemID)
-            find= (duration and duration<2 or enable)
-        end
-        if find then
-            if not ToyButton['texture'..type] then
-                ToyButton['texture'..type]=ToyButton:CreateTexture(nil,'OVERLAY')
-                local size=10
-                ToyButton['texture'..type]:SetSize(size, size)
-                if type=='alt' then
-                    ToyButton['texture'..type]:SetPoint('BOTTOMRIGHT',-3,3)
-                elseif type=='shift' then
-                    ToyButton['texture'..type]:SetPoint('TOPLEFT',2,-2)
-                else
-                    ToyButton['texture'..type]:SetPoint('BOTTOMLEFT',2,2)
-                end
-                ToyButton['texture'..type]:SetDrawLayer('OVERLAY',2)
-                ToyButton['texture'..type]:AddMaskTexture(ToyButton.mask)
-                ToyButton['texture'..type]:SetTexture(C_Item.GetItemIconByID(itemID))
-            end
-        end
-        if ToyButton['texture'..type] then
-            ToyButton['texture'..type]:SetShown(find)
-        end
-    end
-end
+
 
 
 
@@ -471,7 +410,7 @@ local function setToySpellButton_UpdateButton(btn)--标记, 是否已选取
             if d=='LeftButton' then
                 local itemID=self:get_itemID()
                 Save.items[itemID]= not Save.items[itemID] and true or nil
-                self:settings()
+                ToyButton:set_run()
                 self:set_tooltips()
                 self:set_alpha()
             else
@@ -509,54 +448,233 @@ end
 --初始
 --###
 local function Init()
+    for itemID, _ in pairs(Save.items) do
+        e.LoadDate({id=itemID, type='item'})
+    end
+
     ToyButton:SetAttribute("type1", "item")
     ToyButton:SetAttribute("alt-type1", "item")
     ToyButton:SetAttribute("shift-type1", "item")
     ToyButton:SetAttribute("ctrl-type1", "item")
 
-    for type, itemID in pairs(ModifiedTab) do
-        ToyButton:SetAttribute(type.."-item1",  C_Item.GetItemNameByID(itemID) or select(2,  C_ToyBox.GetToyInfo(itemID)))
+    ToyButton.alt= ToyButton:CreateTexture(nil,'OVERLAY')--达拉然炉石
+    ToyButton.alt:SetSize(10, 10)
+    ToyButton.alt:SetPoint('BOTTOMRIGHT',-3,3)
+    ToyButton.alt:SetDrawLayer('OVERLAY',2)
+    ToyButton.alt:AddMaskTexture(ToyButton.mask)
+    ToyButton.alt:SetTexture(1444943)
+
+    ToyButton.ctrl= ToyButton:CreateTexture(nil,'OVERLAY')--要塞炉石
+    ToyButton.ctrl:SetSize(10, 10)
+    ToyButton.ctrl:SetPoint('BOTTOMLEFT',2,2)
+    ToyButton.ctrl:SetDrawLayer('OVERLAY',2)
+    ToyButton.ctrl:AddMaskTexture(ToyButton.mask)
+    ToyButton.ctrl:SetTexture(1041860)
+
+    ToyButton.shift= ToyButton:CreateTexture(nil,'OVERLAY')--炉石
+    ToyButton.shift:SetSize(10, 10)
+    ToyButton.shift:SetPoint('TOPLEFT',2,-2)
+    ToyButton.shift:SetDrawLayer('OVERLAY',2)
+    ToyButton.shift:AddMaskTexture(ToyButton.mask)
+    ToyButton.shift:SetTexture(134414)
+
+    ToyButton.text=e.Cstr(ToyButton, {size=10, color=true, justifyH='CENTER'})--10, nil, nil, true, nil, 'CENTER')
+    ToyButton.text:SetPoint('TOP', ToyButton, 'BOTTOM',0,5)
+
+
+    function ToyButton:set_alt()
+        self.isAltEvent=nil
+        if not self:CanChangeAttribute() then
+            self.isAltEvent=true
+            self:RegisterEvent('PLAYER_REGEN_ENABLED')
+            return
+        end
+        for itemID, type in pairs(ModifiedTab) do
+            local name= C_Item.GetItemNameByID(itemID) or select(2,  C_ToyBox.GetToyInfo(itemID))
+            if name then
+                self:SetAttribute(type.."-item1",  name)
+            else
+                self.isAltEvent=true
+            end
+        end
+        if self.isAltEvent then
+            self:RegisterEvent('ITEM_DATA_LOAD_RESULT')
+        end
     end
 
-    for itemID, _ in pairs(Save.items) do
-        e.LoadDate({id=itemID, type='item'})
+
+
+    function ToyButton:set_attribute(itemID)
+        if not itemID then
+            return
+        end
+        self.isRunEvent=nil
+        if not self:CanChangeAttribute() then
+            self.isRunEvent=true
+            self:RegisterEvent('PLAYER_REGEN_ENABLED')
+            return
+        end
+        local name=C_Item.GetItemNameByID(itemID) or select(2,  C_ToyBox.GetToyInfo(itemID))
+        if not name then
+            self.isRunEvent=true
+            self:RegisterEvent('ITEM_DATA_LOAD_RESULT')
+            return
+        end
+        self.itemID=itemID
+        self:SetAttribute('item1', name)
+        self.texture:SetTexture(C_Item.GetItemIconByID(itemID) or 134414)
     end
 
-    ToyButton.items={}--存放有效
-
-    function ToyButton:settings()
-        getToy()--生成, 有效表格
-        setAtt()--设置属性
+    function ToyButton:set_only_item()
+        self:set_attribute(self.items[1] or 6948)
+        self.items={}
     end
-    ToyButton:settings()
+
+    function ToyButton:get_toys()
+        self.items={}
+        self.onlyItem=nil
+        for itemID ,_ in pairs(Save.items) do
+            if PlayerHasToy(itemID) then
+                table.insert(self.items, itemID)
+            end
+        end
+        local num= #self.items
+        if num<=1 then
+            self:set_only_item()
+            self.onlyItem=true
+        end
+        return num
+    end
+
+    function ToyButton:set_run()
+        if self.onlyItem then
+            return
+        end
+        self.isRunEvent=nil
+        if not self:CanChangeAttribute()  then
+            self.isRunEvent=true
+            self:RegisterEvent('PLAYER_REGEN_ENABLED')
+            return
+        end
+        local num= #self.items
+        do
+            if num==0 then
+                num=self:get_toys()
+            end
+        end
+        if num>0 then
+            local index=math.random(1, num)
+            self:set_attribute(self.items[index])
+            table.remove(self.items, index)
+        end
+    end
+
+    function ToyButton:init_toy()
+        self:get_toys()
+        self:set_run()
+    end
+
+    function ToyButton:get_location()
+        return e.cn(GetBindLocation())
+    end
+
+    function ToyButton:set_location()--显示, 炉石, 绑定位置
+        local text
+        if Save.showBindName then
+            text= self:get_location()
+            if text and Save.showBindNameShort then
+                text= e.WA_Utf8Sub(text, 2, 5)
+            end
+        end
+        self.text:SetText(text or '')
+    end
+
+
+    ToyButton:RegisterEvent('HEARTHSTONE_BOUND')
+    ToyButton:RegisterEvent('BAG_UPDATE_COOLDOWN')
+    ToyButton:RegisterEvent('TOYS_UPDATED')
+    ToyButton:RegisterEvent('NEW_TOY_ADDED')
+
+    ToyButton:SetScript('OnEvent', function(self, event, itemID, success)
+        if event=='ITEM_DATA_LOAD_RESULT' then
+            if success then
+                if ModifiedTab[itemID] then
+                    self:set_alt()
+                elseif Save.items[itemID] then
+                    if self.onlyItem then
+                        self:set_only_item()
+                    else
+                        self:set_run()
+                    end
+                end
+                if not self.isAltEvent and not self.isRunEvent then
+                    self:UnregisterEvent('ITEM_DATA_LOAD_RESULT')
+                end
+            end
+
+        elseif event=='PLAYER_REGEN_ENABLED' then
+            if self.isAltEvent then
+                self:set_alt()
+            end
+            if self.isRunEvent then
+                if self.onlyItem then
+                    self:set_only_item()
+                else
+                    self:set_run()
+                end
+            end
+            if not self.isAltEvent and not self.isRunEvent then
+                self:UnregisterEvent('PLAYER_REGEN_ENABLED')
+            end
+
+        elseif event=='TOYS_UPDATED' or event=='NEW_TOY_ADDED' then
+            self:init_toy()
+
+        elseif event=='HEARTHSTONE_BOUND' then
+            self:set_location()
+
+        elseif event=='BAG_UPDATE_COOLDOWN' then
+            e.SetItemSpellCool(self, {item=self.itemID})--主图标冷却
+        end
+    end)
+
+
+
 
     function ToyButton:set_tooltips()
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
         if self.itemID then
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            --e.tips:SetItemByID(self.itemID)
-            e.tips:SetToyByItemID(self.itemID)
-            e.tips:AddLine(' ')
-            for type, itemID in pairs(ModifiedTab) do
-                if PlayerHasToy(itemID) or C_Item.GetItemCount(itemID)>0 then
-                    local name = C_Item.GetItemNameByID(itemID..'') or ('itemID: '..itemID)
-                    local icon = C_Item.GetItemIconByID(itemID..'')
-                    name= (icon and '|T'..icon..':0|t' or '')..name
-                    local cd= e.GetSpellItemCooldown(nil, itemID)--冷却
-                    e.tips:AddDoubleLine(name..(cd or ''), type..'+'..e.Icon.left)
-                end
-            end
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
-            e.tips:Show()
-            if e.tips.textLeft then
-                local text=GetBindLocation()--显示,绑定位置
-                if text then
-                    e.tips.textLeft:SetText(e.Player.col..text)
-                end
-            end
+            WoWTools_ToolsButtonMixin:SetToyTooltip(e.tips, self.itemID)
         else
-            e.tips:Hide()
+            e.tips:AddLine(id, addName)
+            e.tips:AddLine(' ')
+        end
+
+        local name, col
+        for itemID, type in pairs(ModifiedTab) do
+            name= e.cn(C_Item.GetItemNameByID(itemID), {itemID=itemID, isName=true})
+            if name then
+                name= name:match('|c........(.-)|r') or name
+            else
+                name='itemID: '..itemID
+            end
+            col=(PlayerHasToy(itemID) or C_Item.GetItemCount(itemID)>0) and '' or '|cff9e9e9e'
+
+            e.tips:AddDoubleLine(
+                col
+                ..'|T'..(C_Item.GetItemIconByID(itemID) or 0)..':0|t'
+                ..name
+                ..(e.GetSpellItemCooldown(nil, itemID) or ''),
+                col..type..'+'..e.Icon.left
+            )
+        end
+
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+        e.tips:Show()
+        if e.tips.textLeft then
+            e.tips.textLeft:SetText(self:get_location() or '')
         end
     end
 
@@ -575,10 +693,10 @@ local function Init()
     end)
 
     ToyButton:SetScript("OnLeave",function(self)
-        GameTooltip_Hide()
+        e.tips:Hide()
         self:SetScript('OnUpdate',nil)
         self.elapsed=nil
-        setAtt()
+        self:set_run()
     end)
 
     ToyButton:SetScript("OnMouseDown", function(self,d)
@@ -588,21 +706,19 @@ local function Init()
     end)
 
     ToyButton:SetScript("OnMouseUp", function(self, d)
-        if d=='LeftButton' and not IsModifierKeyDown() then
-            self.elapsed=nil
-        end
-        ResetCursor()
+        self:set_run()
     end)
+    ToyButton:SetScript('OnMouseWheel', ToyButton.set_run)--设置属性
 
-    ToyButton:SetScript('OnMouseWheel', setAtt)--设置属性
 
 
-    setBagHearthstone()--设置Shift, Ctrl, Alt 提示
+    ToyButton:init_toy()
+    ToyButton:set_alt()
+    ToyButton:set_location()
 
     C_Timer.After(2, function()
         --getToy()--生成, 有效表格
         --setAtt()--设置属性
-        set_BindLocation()--显示, 炉石, 绑定位置
         e.SetItemSpellCool(ToyButton, {item=ToyButton.itemID})--主图标冷却
     end)
 end
@@ -635,13 +751,11 @@ end
 --###########
 --加载保存数据
 --###########
-
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
-
             --旧版本
             if WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_RANDOM3:gsub('/',''), TUTORIAL_TITLE31)] then
                 Save= WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_RANDOM3:gsub('/',''), TUTORIAL_TITLE31)]
@@ -659,20 +773,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             if ToyButton then
-                
-                
-
                 Init()--初始
-
-                self:RegisterEvent('NEW_TOY_ADDED')
-                self:RegisterEvent('TOYS_UPDATED')
-                self:RegisterEvent('BAG_UPDATE_DELAYED')
-                self:RegisterEvent('BAG_UPDATE_COOLDOWN')
-                self:RegisterEvent('HEARTHSTONE_BOUND')
-                self:RegisterEvent('PLAYER_ENTERING_WORLD')
-
             else
-                self:UnregisterEvent('PLAYER_LOGOUT')
+                self:UnregisterEvent('ADDON_LOADED')
             end
 
         elseif arg1=='Blizzard_Collections' then
@@ -683,26 +786,5 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if not e.ClearAllSave then
             WoWToolsSave['Tools_Hearthstone']=Save
         end
-
-    elseif event=='TOYS_UPDATED' or event=='NEW_TOY_ADDED' or 'PLAYER_ENTERING_WORLD' then
-        getToy()--生成, 有效表格
-        setAtt()--设置属性
-
-    elseif event=='BAG_UPDATE_COOLDOWN' then
-        e.SetItemSpellCool(ToyButton, {item=ToyButton.itemID})--主图标冷却
-        setBagHearthstone()--设置Shift, Ctrl, Alt 提示
-
-    elseif event=='BAG_UPDATE_DELAYED' then
-        if IsResting()  then
-            setBagHearthstone()--设置Shift, Ctrl, Alt 提示
-        end
-
-    elseif event=='HEARTHSTONE_BOUND' then
-        set_BindLocation()--显示, 炉石, 绑定位置
-
-    elseif event=='PLAYER_REGEN_ENABLED' then
-        setAtt()
-        self:UnregisterEvent('PLAYER_REGEN_ENABLED')
-
     end
 end)

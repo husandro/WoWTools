@@ -209,6 +209,19 @@ function WoWTools_ToolsButtonMixin:OpenMenu(root, name, name2)
     return sub
 end
 
+
+
+function WoWTools_ToolsButtonMixin:SetToyTooltip(tooltip, itemID)
+    if itemID and tooltip then
+        if C_ToyBox.GetToyInfo(itemID) then
+            tooltip:SetToyByItemID(itemID)
+        else
+            tooltip:SetItemByID(itemID)
+        end
+    end
+end
+
+
 function WoWTools_ToolsButtonMixin:LoadedCollectionsJournal(index)
     if not CollectionsJournal then
         do
