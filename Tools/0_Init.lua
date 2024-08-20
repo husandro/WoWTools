@@ -31,7 +31,7 @@ local Category, Layout
 local function Init_Panel()
     Category, Layout= e.AddPanel_Sub_Category({name=addName})
     WoWTools_ToolsButtonMixin:SetCategory(Category, Layout)
-    
+
 
     local initializer=e.AddPanel_Check_Button({
         checkName= e.onlyChinese and '启用' or ENABLE,
@@ -73,15 +73,20 @@ local function Init_Panel()
     for _, data in pairs (WoWTools_ToolsButtonMixin:GetAllAddList()) do
         initializer= nil
         if not data.isOnlyOptions then
-            initializer= e.AddPanel_Check({
-                category= Category,
-                name= data.tooltip,
-                tooltip= data.name,
-                GetValue= function() return not Save.disabledADD[data.name] end,
-                SetValue= function()
-                    Save.disabledADD[data.name]= not Save.disabledADD[data.name] and true or nil
-                end
-            })
+            if data.RestValue then
+
+
+            else
+                initializer= e.AddPanel_Check({
+                    category= Category,
+                    name= data.tooltip,
+                    tooltip= data.name,
+                    GetValue= function() return not Save.disabledADD[data.name] end,
+                    SetValue= function()
+                        Save.disabledADD[data.name]= not Save.disabledADD[data.name] and true or nil
+                    end
+                })
+            end
         end
         if data.option then
             data.option(Category, Layout, initializer)
