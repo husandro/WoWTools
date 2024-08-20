@@ -46,113 +46,11 @@ local Save={
 }
 
 local ToyButton--ToyButton.items={}--存放有效
-local panel= CreateFrame("Frame")
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
---[[
-local function getToy()--生成, 有效表格
-    ToyButton.items={}
-    local find
-    for itemID ,_ in pairs(Save.items) do
-        if PlayerHasToy(itemID) then
-            find=true
-            table.insert(ToyButton.items, itemID)
-        end
-    end
-    if not find and C_Item.GetItemCount(6948)~=0 then
-        ToyButton.items={6948}
-    end
-end
-
-
-
-
-
-
-
-local function setAtt()--设置属性
-    --if UnitAffectingCombat('player') then
-    if not ToyButton:CanChangeAttribute()  then
-        panel:RegisterEvent('PLAYER_REGEN_ENABLED')
-        return
-    end
-
-
-    local icon
-    local num=#ToyButton.items
-    if num>0 then
-        local index=math.random(1, num)
-        local itemID=ToyButton.items[index]
-        if itemID then
-            ToyButton.texture:SetTexture(C_Item.GetItemIconByID(itemID) or 134414)
-            ToyButton:SetAttribute('item1', C_Item.GetItemNameByID(itemID) or itemID)
-            ToyButton.itemID=itemID
-        end
-    else
-        ToyButton:SetAttribute('item1', nil)
-        ToyButton.itemID=nil
-    end
-    ToyButton.texture:SetShown(icon)
-end
-
-
-]]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-local function set_BindLocation()--显示, 炉石, 绑定位置
-    local text
-    if Save.showBindName then
-        text= e.cn(GetBindLocation())
-        if text and Save.showBindNameShort then
-            text= e.WA_Utf8Sub(text, 2, 5)
-        end
-    end
-    if not ToyButton.showBindNameText and text then
-        ToyButton.showBindNameText=e.Cstr(ToyButton, {size=10, color=true, justifyH='CENTER'})--10, nil, nil, true, nil, 'CENTER')
-        ToyButton.showBindNameText:SetPoint('TOP', ToyButton, 'BOTTOM',0,5)
-    end
-    if ToyButton.showBindNameText then
-        ToyButton.showBindNameText:SetText(text or '')
-    end
-end
 
 
 
@@ -714,11 +612,9 @@ local function Init()
 
     ToyButton:init_toy()
     ToyButton:set_alt()
-    ToyButton:set_location()
 
     C_Timer.After(2, function()
-        --getToy()--生成, 有效表格
-        --setAtt()--设置属性
+        ToyButton:set_location()
         e.SetItemSpellCool(ToyButton, {item=ToyButton.itemID})--主图标冷却
     end)
 end
@@ -751,6 +647,7 @@ end
 --###########
 --加载保存数据
 --###########
+local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)

@@ -831,6 +831,7 @@ local function set_ToggleCollectionsJournal(mountID, type, showNotCollected)
             C_MountJournal.SetTypeFilter(i, i==tab[type]+1)
         end
     end
+    return MenuResponse.Open
 end
 
 
@@ -1379,6 +1380,18 @@ local function Init_Menu(_, root)
             e.Reload()
         end
     )
+
+    sub:CreateDivider()
+    sub2=sub:CreateButton(
+        '|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '设置' or SETTINGS),
+        function ()
+            WoWTools_ToolsButtonMixin:LoadedCollectionsJournal(1)
+            return MenuResponse.Open
+        end
+    )
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine(MicroButtonTooltipText(e.onlyChinese and '战团藏品' or COLLECTIONS, "TOGGLECOLLECTIONS"))
+    end)
 end
 
 

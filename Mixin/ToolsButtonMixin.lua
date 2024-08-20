@@ -232,11 +232,11 @@ function WoWTools_ToolsButtonMixin:LoadedCollectionsJournal(index)
         return
     end
     if
-           (index==1 and not MountJournal:IsShown())
-        or (index==2 and not PetJournal:IsShown())
-        or (index==3 and not ToyBox:IsShown())
-        or (index==4 and not HeirloomsJournal:IsShown())
-        or (index==5 and not WardrobeCollectionFrame:IsShown())
+           (index==1 and not MountJournal:IsVisible())
+        or (index==2 and not PetJournal:IsVisible())
+        or (index==3 and not ToyBox:IsVisible())
+        or (index==4 and not HeirloomsJournal:IsVisible())
+        or (index==5 and not WardrobeCollectionFrame:IsVisible())
     then
         ToggleCollectionsJournal(index)
     end
