@@ -224,8 +224,13 @@ end
 --#####
 local function Init_Menu(self, root)
     local sub
-    sub= root:CreateButton(addName..' '..#ToyButton.items, function()
-        return MenuResponse.Open
+    sub= root:CreateButton(
+        addName..' '..#ToyButton.items, 
+        set_ToggleCollectionsJournal,
+        {}
+    )
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(MicroButtonTooltipText(e.onlyChinese and '战团藏品' or COLLECTIONS, "TOGGLECOLLECTIONS"))
     end)
 
     Init_Menu_Toy(self, sub)
@@ -248,14 +253,14 @@ local function Init_Menu(self, root)
         self:set_location()--显示, 炉石, 绑定位置
     end)
 
-    sub=root:CreateButton(
+    --[[sub=root:CreateButton(
         '|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '设置' or SETTINGS),
         set_ToggleCollectionsJournal,
         {}
     )
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(MicroButtonTooltipText(e.onlyChinese and '战团藏品' or COLLECTIONS, "TOGGLECOLLECTIONS"))
-    end)
+    end)]]
 
 end
 
@@ -399,6 +404,8 @@ local function Init()
     ToyButton.shift:SetDrawLayer('OVERLAY',2)
     ToyButton.shift:AddMaskTexture(ToyButton.mask)
     ToyButton.shift:SetTexture(134414)
+    
+
 
     ToyButton.text=e.Cstr(ToyButton, {size=10, color=true, justifyH='CENTER'})--10, nil, nil, true, nil, 'CENTER')
     ToyButton.text:SetPoint('TOP', ToyButton, 'BOTTOM',0,5)
