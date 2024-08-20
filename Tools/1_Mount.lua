@@ -496,13 +496,11 @@ local function Init_Dialogs()
         end,
         OnAccept = function(self, itemID)
             Save.Mounts[ITEMS][itemID]=true
-            checkItem()--检测物品
-            setClickAtt()--设置 Click属性
+            MountButton:settings()
         end,
         OnAlt = function(self, itemID)
             Save.Mounts[ITEMS][itemID]=nil
-            checkItem()--检测物品
-            setClickAtt()--设置 Click属性
+            MountButton:settings()
         end,
     }
 
@@ -809,9 +807,6 @@ end
 local function set_ToggleCollectionsJournal(mountID, type, showNotCollected)
     WoWTools_ToolsButtonMixin:LoadedCollectionsJournal(1)
 
-    if MountJournal and not MountJournal:IsVisible() then
-        ToggleCollectionsJournal(1)
-    end
     C_MountJournal.SetDefaultFilters()
     if not showNotCollected then
         C_MountJournal.SetCollectedFilterSetting(LE_MOUNT_JOURNAL_FILTER_NOT_COLLECTED, false)
@@ -927,9 +922,8 @@ local function ClearAll_Menu(root, type, index)
             if IsControlKeyDown() then
                 Save.Mounts[data]={}
                 print(id, addName, e.onlyChinese and '全部清除' or CLEAR_ALL, e.cn(type))
-                if not UnitAffectingCombat('player') then
-                    MountButton:settings()
-                end
+                MountButton:settings()
+
             else
                 return MenuResponse.Open
             end
@@ -1008,16 +1002,12 @@ local function Set_Mount_Menu(root, type, spellID, name, index)
         sub2:SetTooltip(function(tooltip)
             tooltip:AddLine(MicroButtonTooltipText(e.onlyChinese and '战团藏品' or COLLECTIONS, "TOGGLECOLLECTIONS"))
         end)
-        
+
         sub:CreateDivider()
         sub2=sub:CreateButton('|A:common-icon-redx:0:0|a'..(e.onlyChinese and '移除' or REMOVE), function(data)
             Save.Mounts[data.type][data.spellID]=nil
             print(id, addName, e.onlyChinese and '移除' or REMOVE, C_Spell.GetSpellLink(data.spellID) or data.spellID)
-
-            if not UnitAffectingCombat('player') then
-                MountButton:settings()
-            end
-
+            MountButton:settings()
             return MenuResponse.Refresh
         end, {type=type, spellID=spellID})
         sub2:SetTooltip(Set_Menu_Tooltip)
@@ -1139,6 +1129,7 @@ local function Init_Menu_Spell(sub)
         sub3=sub2:CreateButton('|A:common-icon-redx:0:0|a'..(e.onlyChinese and '移除' or REMOVE), function(data)
             Save.Mounts[SPELLS][data.spellID]=nil
             print(id, addName, e.onlyChinese and '移除' or REMOVE, C_Spell.GetSpellLink(data.spellID) or data.spellID)
+            MountButton:settings()
             return MenuResponse.Close
         end, {spellID=spellID})
         sub3:SetTooltip(Set_Menu_Tooltip)
@@ -1150,8 +1141,7 @@ local function Init_Menu_Spell(sub)
         if IsControlKeyDown() then
             Save.Mounts[SPELLS]=P_Spells_Tab
             print(id, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)
-            checkSpell()--检测法术
-            setClickAtt()--设置
+            MountButton:settings()
         else
             return MenuResponse.Open
         end
@@ -1160,10 +1150,10 @@ local function Init_Menu_Spell(sub)
         tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..e.Icon.left)
     end)
 
-    sub2=sub:CreateTitle(e.onlyChinese and '拖曳法术' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DRAG_MODEL, SPELLS))
+    --[[sub2=sub:CreateTitle(e.onlyChinese and '拖曳法术' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DRAG_MODEL, SPELLS))
     sub2:SetTooltip(function (tooltip)
         tooltip:AddDoubleLine(e.onlyChinese and '添加' or ADD)
-    end)
+    end)]]
 end
 
 
@@ -1206,6 +1196,7 @@ local function Init_Menu_Item(sub)
         sub3=sub2:CreateButton('|A:common-icon-redx:0:0|a'..(e.onlyChinese and '移除' or REMOVE), function(data)
             Save.Mounts[ITEMS][data.itemID]=nil
             print(id, addName, select(2, C_Item.GetItemInfo(data.itemID)) or data.itemID, e.onlyChinese and '移除' or REMOVE)
+            MountButton:settings()
             return MenuResponse.Close
         end, {itemID=itemID})
         sub3:SetTooltip(Set_Menu_Tooltip)
@@ -1810,6 +1801,7 @@ local function set_Use_Spell_Button(btn, spellID)
                     self:set_tooltips()
                     self:set_alpha()
                     MountButton:settings()
+                    print(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             else
                 MenuUtil.CreateContextMenu(self, function(_, root)
@@ -2257,7 +2249,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
         checkSpell()--检测法术
         XDInt()--德鲁伊设置
         checkMount()--检测坐骑
-        setClickAtt()--设置属性
+        setClickAtt()--设置属性   
 
     elseif event=='BAG_UPDATE_DELAYED' then
         checkItem()--检测物品
