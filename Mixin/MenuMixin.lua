@@ -167,3 +167,21 @@ function WoWTools_MenuMixin:RestPointMenu(root, point, SetValue)
 end
 
 
+--[[
+function WoWTools_MenuMixin:RestDataMenu(root, name, SetValue)
+    if not StaticPopupDialogs['WoWTools_Tools_RestData'] then
+        StaticPopupDialogs['WoWTools_Tools_RestData']= {
+            text='%s|n|n'..(e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT)..'|n|n'..(e.onlyChinese and '重新加载UI' or RELOADUI),
+            button1 = e.onlyChinese and '重置' or RESET,
+            button2 = e.onlyChinese and '取消' or CANCEL,
+            whileDead=true, hideOnEscape=true, exclusive=true,
+            OnAccept=function(_, data)
+                data.SetValue()
+                print(data.name, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            end,
+        }
+    end
+    return root:CreateButton(e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT, function(data)
+        StaticPopup_Show('WoWTools_Tools_RestData', self:GetName(), data.name, data.SetValue)
+    end, {name=name, SetValue=SetValue})
+end]]

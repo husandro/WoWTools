@@ -2449,7 +2449,10 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 name='Mount',
                 tooltip=addName,
                 setParent=false,
-                point='LEFT'
+                point='LEFT',
+                option=function(category, layout)--initializer
+                
+                end
             })
                --[[ option=function(category, layout)--initializer)
  

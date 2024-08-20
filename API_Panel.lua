@@ -230,6 +230,9 @@ end
 
 
 
+
+
+
 --##############
 --创建, 添加控制面板
 --##############
@@ -348,7 +351,7 @@ end
 
 
 --添加，Check 和 按钮
-function e.AddPanel_Check_Button(tab)
+function e.AddPanel_Check_Button(tab, parentInitializer)
     local layout= tab.layout or Layout
     local checkSetting=Settings.RegisterProxySetting(
         tab.category or Category,
@@ -367,6 +370,9 @@ function e.AddPanel_Check_Button(tab)
         tab.tooltip
     )
     layout:AddInitializer(initializer)
+    if parentInitializer then
+        initializer:SetParentInitializer(parentInitializer)
+    end
     return initializer
 end
 
@@ -459,6 +465,35 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+--[[
+function  e.Add_Panel_RestData_Button(root, SetValue)
+    if not StaticPopupDialogs['WoWTools_Rest_DaTa'] then
+        StaticPopupDialogs['WoWTools_Rest_DaTa']={--重置所有,清除全部玩具
+            text=id..' '..addName..'|n'..(e.onlyChinese and '清除全部' or CLEAR_ALL)..'|n|n'..(e.onlyChinese and '重新加载UI' or RELOADUI),
+            whileDead=true, hideOnEscape=true, exclusive=true,
+            button1='|cnRED_FONT_COLOR:'..(e.onlyChinese and '重置' or RESET)..'|r',
+            button2= e.onlyChinese and '取消' or CANCEL,
+            OnAccept = function(_, setValue)
+                setValue()
+                e.Reload()
+            end,
+        }
+    end
+end
+
+]]
 
 
 

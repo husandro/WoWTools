@@ -2831,8 +2831,8 @@ local function Init_Options()
         end,
         layout= Layout,
         category=Category,
-    })
-    initializer:SetParentInitializer(initializer2, function() return not Save.disabledMove end)
+    }, initializer2)
+    --initializer:SetParentInitializer(initializer2, function() return not Save.disabledMove end)
 
         initializer= e.AddPanel_Check({
             name= e.onlyChinese and '可以移到屏幕外' or 'Can be moved off screen',
