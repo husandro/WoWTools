@@ -171,5 +171,6 @@ end
 function WoWTools_MenuMixin:RestDataMenu(root, name, SetValue)
     return root:CreateButton('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT), function(data)
         StaticPopup_Show('WoWTools_RestData',data.name, nil, data.SetValue)
+        return MenuResponse.Open
     end, {name=name, SetValue=SetValue})
 end
