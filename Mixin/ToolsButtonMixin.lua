@@ -209,12 +209,28 @@ function WoWTools_ToolsButtonMixin:OpenMenu(root, name, name2)
     return sub
 end
 
-function WoWTools_ToolsButtonMixin:LoadedCollectionsJournal()
+function WoWTools_ToolsButtonMixin:LoadedCollectionsJournal(index)
     if not CollectionsJournal then
-        CollectionsJournal_LoadUI();
+        do
+            CollectionsJournal_LoadUI();
+        end
+    end
+    if index then
+        ToggleCollectionsJournal(index)
     end
 end
 
+--[[
+--PlayerSpellsUtil.lua
+--PlayerSpellsUtil.OpenToSpellBookTabAtSpell(data.spellID)--查询，法术书，法术
+function WoWTools_ToolsButtonMixin:LoadedPlayerSpells(index)
+    if not PlayerSpellsFrame then
+        PlayerSpellsFrame_LoadUI()
+    end
+    if index then
+        PlayerSpellsUtil.TogglePlayerSpellsFrame(index, true)
+    end
+end]]
 
 --[[function WoWTools_ToolsButtonMixin:GetData(btn)
     GET_ITEM_INFO_RECEIVED: itemID, success

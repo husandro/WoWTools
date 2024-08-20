@@ -722,12 +722,8 @@ local function Init_TrackButton()
             if IsAltKeyDown() then
                 SetCursor('UI_MOVE_CURSOR')
             elseif not IsModifierKeyDown() then--打开，宠物手册
-
-                WoWTools_ToolsButtonMixin:LoadedCollectionsJournal()
+                WoWTools_ToolsButtonMixin:LoadedCollectionsJournal(2)
                 
-                if not PetJournal:IsVisible() then
-                    ToggleCollectionsJournal(2)
-                end
             end
         elseif d=='LeftButton' then--显示，隐藏
             Save.setFrameHide= not Save.setFrameHide and true or nil

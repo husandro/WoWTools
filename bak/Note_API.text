@@ -1,4 +1,0 @@
-C_SpellBook
-Enum.SpellBookSpellBank.Player Enum.SpellBookSpellBank.Pet
-local data= C_SpellBook.GetSpellBookItemInfo(index, Enum.SpellBookSpellBank.Player) or {}
-skillLineIndex itemType isOffSpec subName actionID name iconID isPassive spellID

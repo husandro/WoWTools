@@ -1258,15 +1258,12 @@ local function Init_DressUpFrames()
             if d=='LeftButton' then
                 e.Chat(link, nil, true)
             elseif d=='RightButton' then
-                --[[if not C_AddOns.IsAddOnLoaded("Blizzard_Collections") then
-                    C_AddOns.LoadAddOn('Blizzard_Collections')
-                end]]
-                WoWTools_ToolsButtonMixin:LoadedCollectionsJournal()
+                WoWTools_ToolsButtonMixin:LoadedCollectionsJournal(5)
                 
                 local wcFrame= WardrobeCollectionFrame
-                if not CollectionsJournal:IsVisible() or not wcFrame:IsVisible() then
+                --[[if not CollectionsJournal:IsVisible() or not wcFrame:IsVisible() then
                     ToggleCollectionsJournal(5)
-                end
+                end]]
                 if wcFrame.activeFrame ~= wcFrame.ItemsCollectionFrame then
                     wcFrame:ClickTab(wcFrame.ItemsTab)
                 end

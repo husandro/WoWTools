@@ -807,7 +807,7 @@ end
 --打开界面, 收藏, 坐骑
 --##################
 local function set_ToggleCollectionsJournal(mountID, type, showNotCollected)
-    WoWTools_ToolsButtonMixin:LoadedCollectionsJournal()
+    WoWTools_ToolsButtonMixin:LoadedCollectionsJournal(1)
 
     if MountJournal and not MountJournal:IsVisible() then
         ToggleCollectionsJournal(1)
@@ -952,7 +952,7 @@ end
 local function Set_Mount_Menu(root, type, spellID, name, index)
     local mountID= spellID and C_MountJournal.GetMountFromSpell(spellID)
 
-    local creatureName, isUsable, _, isCollected, col
+    local sub, sub2, icon, creatureName, isUsable, _, isCollected, col
     if mountID then
         creatureName, _, _, _, isUsable, _, _, _, _, _, isCollected =C_MountJournal.GetMountInfoByID(mountID)
         if not isCollected then--没收集
@@ -967,9 +967,9 @@ local function Set_Mount_Menu(root, type, spellID, name, index)
         name= e.cn(creatureName or C_Spell.GetSpellName(spellID), {spellID=spellID, isName=true}) or ('spellID '..spellID)
     end
 
-    local icon= '|T'..(spellID and C_Spell.GetSpellTexture(spellID) or 0)..':0|t'
+    icon= '|T'..(spellID and C_Spell.GetSpellTexture(spellID) or 0)..':0|t'
 
-    local sub=root:CreateButton(
+    sub=root:CreateButton(
         (index and index..') ' or '')
         ..icon
         ..col
@@ -985,19 +985,6 @@ local function Set_Mount_Menu(root, type, spellID, name, index)
     sub:SetTooltip(Set_Menu_Tooltip)
 
     if index and mountID then
-        local sub2=sub:CreateButton('|A:common-icon-redx:0:0|a'..(e.onlyChinese and '移除' or REMOVE), function(data)
-            Save.Mounts[data.type][data.spellID]=nil
-            print(id, addName, e.onlyChinese and '移除' or REMOVE, C_Spell.GetSpellLink(data.spellID) or data.spellID)
-
-            if not UnitAffectingCombat('player') then
-                MountButton:settings()
-            end
-
-            return MenuResponse.Refresh
-        end, {type=type, spellID=spellID})
-        sub2:SetTooltip(Set_Menu_Tooltip)
-
-        sub:CreateDivider()
         if type==FLOOR then
             sub2=sub:CreateButton(icon..(e.onlyChinese and '修改' or EDIT), function(data)
                 StaticPopup_Show('WoWTools_Tools_Mount_FLOOR',
@@ -1021,6 +1008,19 @@ local function Set_Mount_Menu(root, type, spellID, name, index)
         sub2:SetTooltip(function(tooltip)
             tooltip:AddLine(MicroButtonTooltipText(e.onlyChinese and '战团藏品' or COLLECTIONS, "TOGGLECOLLECTIONS"))
         end)
+        
+        sub:CreateDivider()
+        sub2=sub:CreateButton('|A:common-icon-redx:0:0|a'..(e.onlyChinese and '移除' or REMOVE), function(data)
+            Save.Mounts[data.type][data.spellID]=nil
+            print(id, addName, e.onlyChinese and '移除' or REMOVE, C_Spell.GetSpellLink(data.spellID) or data.spellID)
+
+            if not UnitAffectingCombat('player') then
+                MountButton:settings()
+            end
+
+            return MenuResponse.Refresh
+        end, {type=type, spellID=spellID})
+        sub2:SetTooltip(Set_Menu_Tooltip)
     end
     return sub
 end
@@ -1127,6 +1127,15 @@ local function Init_Menu_Spell(sub)
         end, {spellID=spellID})
         sub2:SetTooltip(Set_Menu_Tooltip)
 
+        sub3=sub2:CreateButton('|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '设置' or SETTINGS), function(data)
+            PlayerSpellsUtil.OpenToSpellBookTabAtSpell(data.spellID)--查询，法术书，法术
+            return MenuResponse.Open
+        end, {spellID=spellID})
+        sub3:SetTooltip(function(tooltip)
+            tooltip:AddLine(MicroButtonTooltipText('天赋和法术书', "TOGGLETALENTS"))
+        end)
+
+        sub2:CreateDivider()
         sub3=sub2:CreateButton('|A:common-icon-redx:0:0|a'..(e.onlyChinese and '移除' or REMOVE), function(data)
             Save.Mounts[SPELLS][data.spellID]=nil
             print(id, addName, e.onlyChinese and '移除' or REMOVE, C_Spell.GetSpellLink(data.spellID) or data.spellID)
@@ -1322,7 +1331,8 @@ local function Init_Menu(_, root)
         end
     end)
     sub3:SetTooltip(function(tooltip)
-        tooltip:AddDoubleLine(SLASH_CHAT_AFK1)
+        tooltip:AddLine(SLASH_CHAT_AFK1)
+        tooltip:AddLine(e.onlyChinese and '注意: 掉落' or ('note: '..STRING_ENVIRONMENTAL_DAMAGE_FALLING))
     end)
 
     sub2=sub:CreateButton('|A:UI-HUD-MicroMenu-StreamDLYellow-Up:0:0|a'..(e.onlyChinese and '坐骑特效' or EMOTE171_CMD2:gsub('/','')), function()
@@ -1621,6 +1631,27 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --初始，坐骑界面
 local function Init_MountJournal()
     hooksecurefunc('MountJournal_InitMountButton',function(frame)--Blizzard_MountCollection.lua
@@ -1740,23 +1771,82 @@ end
 
 
 
+
+
+local function set_Use_Spell_Button(btn, spellID)
+    if not btn.mountSpell then
+        btn.mountSpell= e.Cbtn(btn, {size={16,16}, atlas='hud-microbutton-Mounts-Down'})
+        btn.mountSpell:SetPoint('TOP', btn, 'BOTTOM', -8, 0)
+        function btn.mountSpell:set_alpha()
+            if self.spellID then
+                self:SetAlpha(Save.Mounts[SPELLS][self.spellID] and 1 or 0.2)
+            end
+        end
+        function btn.mountSpell:set_tooltips()
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddLine(e.addName)
+            e.tips:AddDoubleLine(WoWTools_ToolsButtonMixin:GetName(), addName)
+            e.tips:AddLine(' ')
+            if self.spellID then
+                e.tips:AddDoubleLine(
+                    '|T'..(C_Spell.GetSpellTexture(self.spellID) or 0)..':0|t'
+                    ..(C_Spell.GetSpellLink(self.spellID) or self.spellID)
+                    ..' '..e.GetEnabeleDisable(Save.Mounts[SPELLS][self.spellID]),
+
+                    e.Icon.left
+                )
+            end
+            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+            e.tips:Show()
+            self:SetAlpha(1)
+        end
+        btn.mountSpell:SetScript('OnLeave', function(self) e.tips:Hide() self:set_alpha()  end)
+        btn.mountSpell:SetScript('OnEnter', btn.mountSpell.set_tooltips)
+        btn.mountSpell:SetScript('OnMouseDown', function(self, d)
+            if d=='LeftButton' then
+                if self.spellID then
+                    Save.Mounts[SPELLS][self.spellID]= not Save.Mounts[SPELLS][self.spellID] and true or nil
+                    self:set_tooltips()
+                    self:set_alpha()
+                    MountButton:settings()
+                end
+            else
+                MenuUtil.CreateContextMenu(self, function(_, root)
+                    Init_Menu_Spell(root)
+                end)
+            end
+        end)
+    end
+
+    btn.mountSpell.spellID= spellID
+    btn.mountSpell:set_alpha()
+    btn.mountSpell:SetShown(spellID and true or false)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --436854 C_MountJournal.GetDynamicFlightModeSpellID() 切换飞行模式
-
-
-
-
-
-
-
-
-
-
-
 --######
 --初始化
 --######
 local function Init()
-
+    if Save.KEY then
+        setKEY()--设置捷键
+    end
 
     for type, tab in pairs(Save.Mounts) do
         for ID, _ in pairs(tab) do
@@ -1783,11 +1873,6 @@ local function Init()
 
 
 
-
-
-    if Save.KEY then
-        setKEY()--设置捷键
-    end
 
 
 
@@ -1936,6 +2021,17 @@ local function Init()
             setShiftCtrlAltAtt()--设置Shift Ctrl Alt 属性
             setClickAtt()--设置
             e.SetItemSpellCool(MountButton, {item=MountButton.itemID, spell=MountButton.spellAtt})--设置冷却
+        end
+    end)
+
+    hooksecurefunc('SpellFlyoutButton_UpdateGlyphState', function(self)--法术书，界面, Flyout, 菜单
+        local frame= self:GetParent():GetParent()
+        if not frame or not frame.mountSpell or not self.spellID or C_Spell.IsSpellPassive(self.spellID) then
+            if self.mountSpell then
+                self.mountSpell:SetShown(false)
+            end
+        else
+            set_Use_Spell_Button(self, self.spellID)
         end
     end)
 end
@@ -2132,6 +2228,11 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
 
         elseif arg1=='Blizzard_Collections' then
             Init_MountJournal()
+
+        elseif arg1=='Blizzard_PlayerSpells' then--法术书
+            hooksecurefunc(SpellBookItemMixin, 'UpdateVisuals', function(frame)
+                set_Use_Spell_Button(frame.Button, frame.spellBookItemInfo.spellID)
+            end)
 
         end
 

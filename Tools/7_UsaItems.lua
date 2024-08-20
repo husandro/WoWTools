@@ -511,7 +511,7 @@ end
 local function set_Use_Spell_Button(btn, spellID)
     if not btn.useSpell then
         btn.useSpell= e.Cbtn(btn, {size={16,16}, atlas='soulbinds_tree_conduit_icon_utility'})
-        btn.useSpell:SetPoint('TOP', btn, 'BOTTOM')
+        btn.useSpell:SetPoint('TOP', btn, 'BOTTOM', 8,0)
         function btn.useSpell:set_alpha()
             if self.spellID then
                 self:SetAlpha(find_Type('spell', self.spellID) and 1 or 0.2)
@@ -520,15 +520,18 @@ local function set_Use_Spell_Button(btn, spellID)
         function btn.useSpell:set_tooltips()
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
+            e.tips:AddLine(e.addName)
             e.tips:AddDoubleLine(WoWTools_ToolsButtonMixin:GetName(), addName)
             e.tips:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             e.tips:AddLine(' ')
             if self.spellID then
-                local text
-                local icon= C_Spell.GetSpellTexture(self.spellID)
-                text= icon and '|T'..icon..':0|t' or ''
-                text= text..(C_Spell.GetSpellLink(self.spellID) or self.spellID)
-                e.tips:AddDoubleLine(text..' '..e.GetEnabeleDisable(find_Type('spell', self.spellID)), e.Icon.left)
+                e.tips:AddDoubleLine(
+                    '|T'..(C_Spell.GetSpellTexture(self.spellID) or 0)..':0|t'
+                    ..(C_Spell.GetSpellLink(self.spellID) or self.spellID)
+                    ..' '..e.GetEnabeleDisable(find_Type('spell', self.spellID)),
+
+                    e.Icon.left
+                )
             end
             e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
             e.tips:Show()
