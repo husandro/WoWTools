@@ -744,7 +744,7 @@ function Init_Mount_Show()
         elseif self.elapsed> Save.mountShowTime then
             self.elapsed=0
 
-            e.Ccool(self, nil, Save.mountShowTime)--冷却条
+            e.Ccool(self, nil, Save.mountShowTime, 0, true,false, true )--冷却条
             if self.specialEffects then
                 DEFAULT_CHAT_FRAME.editBox:SetText(EMOTE171_CMD2)
                 ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)

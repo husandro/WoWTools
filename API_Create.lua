@@ -214,7 +214,7 @@ end
 
 
 
-function e.Ccool(self, start, duration, modRate, HideCountdownNumbers, Reverse, SwipeTexture, hideDrawBling)--冷却条
+function e.Ccool(self, start, duration, modRate, HideCountdownNumbers, Reverse, setSwipeTexture, hideDrawBling)--冷却条
     if not self then
         return
     elseif not duration or duration<=0 then
@@ -232,7 +232,7 @@ function e.Ccool(self, start, duration, modRate, HideCountdownNumbers, Reverse, 
         self.cooldown:SetHideCountdownNumbers(HideCountdownNumbers)--隐藏数字
         self.cooldown:SetReverse(Reverse)--控制冷却动画的方向
         self.cooldown:SetEdgeTexture("Interface\\Cooldown\\edge")
-        if SwipeTexture then
+        if setSwipeTexture then
             self.cooldown:SetSwipeTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')--圆框架
         end
         self:HookScript('OnHide', function(self2)
@@ -286,31 +286,44 @@ function e.SetItemSpellCool(frame, tab)--{item=, spell=, type=, isUnit=true} typ
     end
 end
 
+--[[
+Cooldown.lua
+CooldownFrame_Set(self.SpellButton.Cooldown, cooldownInfo.startTime, cooldownInfo.duration, cooldownInfo.isEnabled)
+CooldownFrame_Clear(self.SpellButton.Cooldown);
+CooldownFrame_SetDisplayAsPercentage(self, percentage)
+]]
 function e.GetSpellItemCooldown(spellID, itemID)--法术,物品,冷却
-    local startTime, duration, enable
     if spellID then
-        ---startTime, duration, enable = C_Spell.GetSpellCooldown(spellID)
-        local data= C_Spell.GetSpellCooldown(spellID) or {}
-        startTime, duration, enable= data.startTime, data.duration, data.modRate
-        if enable==0 then
-            return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '即时冷却' or SPELL_RECAST_TIME_INSTANT)..'|r'
-        elseif startTime and duration and startTime>0 and duration>0 then
-            local t=GetTime()
-            if startTime>t then t=t+86400 end
-            t=t-startTime
-            t=duration-t
-            return '|cnRED_FONT_COLOR:'..SecondsToTime(t)..'|r'
+        local data= C_Spell.GetSpellCooldown(spellID)
+        if data then
+            if data.duration>0 then
+                local t= GetTime()
+                while t<data.startTime do
+                    t= t+86400
+                end
+                t= t-data.startTime
+                t= data.duration-t
+                t= t<0 and 0 or t
+                return '|cnRED_FONT_COLOR:'..SecondsToTime(t)..'|r'
+
+            elseif not data.isEnabled then
+                return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '即时冷却' or SPELL_RECAST_TIME_INSTANT)..'|r'
+            end
         end
     elseif itemID then
-        startTime, duration, enable = C_Container.GetItemCooldown(itemID)
-        if enable==0 then
-            return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '即时冷却' or SPELL_RECAST_TIME_INSTANT)..'|r'
-        elseif duration and duration>0 then
-            local t=GetTime()
-            if startTime>t then t=t+86400 end
-            t=t-startTime
-            t=duration-t
+        local startTime, duration, enable = C_Item.GetItemCooldown(itemID)
+        if duration>0 then
+            local t= GetTime()
+            while t<startTime do
+                t= t+86400
+            end
+            t= t-startTime
+            t= duration-t
+            t= t<0 and 0 or t
             return '|cnRED_FONT_COLOR:'..SecondsToTime(t)..'|r'
+
+        elseif not enable then
+            return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '即时冷却' or SPELL_RECAST_TIME_INSTANT)..'|r'
         end
     end
 end

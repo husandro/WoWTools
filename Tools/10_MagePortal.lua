@@ -136,54 +136,17 @@ local function Init()
             btn.spellID= tab.spell
             btn.spellID2= tab.spell2
 
-            if Save.showText then
-                btn.text=e.Cstr(btn, {color= not tab.luce})
-                if Save.isLeft then
-                    btn.text:SetPoint('RIGHT', btn, 'LEFT')
-                else
-                    btn.text:SetPoint('LEFT', btn, 'RIGHT')
-                end
-                if e.onlyChinese then
-                    btn.text:SetText(tab.name)
-                end
-            end
-
-            if tab.luce then
-                btn.border:SetAtlas('bag-border')--设置高亮
-            end
-
-            if btn.spellID2 then
-                btn.texture2= btn:CreateTexture(nil,'OVERLAY')
-                btn.texture2:SetPoint('TOPRIGHT',-6,-6)
-                btn.texture2:SetSize(10, 10)
-                btn.texture2:AddMaskTexture(btn.mask)
-                btn:SetScript('OnShow', function(self)
-                    self:RegisterEvent('SPELL_UPDATE_COOLDOWN')
-                    e.SetItemSpellCool(btn, {spell=self.spellID2})--设置冷却
-                end)
-                btn:SetScript('OnHide', function(self)
-                    self:UnregisterEvent('SPELL_UPDATE_COOLDOWN')
-                end)
-            end
-
-            btn:SetScript("OnEvent", function(self, event, arg1)
-                if event=='SPELL_UPDATE_COOLDOWN' then
+            function btn:set_cool()
+                if self:IsVisible() then
                     e.SetItemSpellCool(self, {spell=self.spellID2})--设置冷却
-                elseif event=='SPELL_DATA_LOAD_RESULT' and (arg1==self.spellID or arg1==self.spellID2) then
-                    if self:CanChangeAttribute() then
-                        if self:settings() then
-                            self:UnregisterEvent('SPELL_DATA_LOAD_RESULT')
-                        end
-                    else
-                        self:RegisterEvent('PLAYER_REGEN_ENABLED')
-                    end
-                elseif event=='PLAYER_REGEN_ENABLED' then
-                    if self:settings() then
-                        self:UnregisterEvent('PLAYER_REGEN_ENABLED')
-                    end
+                else
+                    e.SetItemSpellCool(self)
                 end
-            end)
+            end
 
+            function btn:set_alpha()
+                self:SetAlpha((GameTooltip:IsOwned(self) or IsSpellKnownOrOverridesKnown(self.spellID)) and 1 or 0.1)
+            end
 
             function btn:settings()
                 local name1= C_Spell.GetSpellName(self.spellID)
@@ -221,16 +184,73 @@ local function Init()
                 return done
             end
 
-            if not btn:settings() then
-                btn:RegisterEvent('SPELL_DATA_LOAD_RESULT')
+            if Save.showText then
+                btn.text=e.Cstr(btn, {color= not tab.luce})
+                if Save.isLeft then
+                    btn.text:SetPoint('RIGHT', btn, 'LEFT')
+                else
+                    btn.text:SetPoint('LEFT', btn, 'RIGHT')
+                end
+                if e.onlyChinese then
+                    btn.text:SetText(tab.name)
+                end
             end
 
-            function btn:set_sepll_known()
-               self:SetAlpha((GameTooltip:IsOwned(self) or IsSpellKnownOrOverridesKnown(self.spellID)) and 1 or 0.1)
+            if tab.luce then
+                btn.border:SetAtlas('bag-border')--设置高亮
             end
+
+          
+            if btn.spellID2 then                
+                btn.texture2= btn:CreateTexture(nil,'OVERLAY')
+                btn.texture2:SetPoint('TOPRIGHT',-6,-6)
+                btn.texture2:SetSize(10, 10)
+                btn.texture2:AddMaskTexture(btn.mask)
+                btn:SetScript('OnShow', function(self)
+                    self:RegisterEvent('SPELL_UPDATE_COOLDOWN')
+                    self:set_cool()
+                end)
+                btn:SetScript('OnHide', function(self)
+                    self:UnregisterEvent('SPELL_UPDATE_COOLDOWN')
+                    self:set_cool()
+                end)
+                btn:set_cool()
+                if btn:IsVisible() then
+                    btn:RegisterEvent('SPELL_UPDATE_COOLDOWN')
+                end
+            end
+
+            btn:SetScript("OnEvent", function(self, event, arg1)
+                if event=='SPELL_UPDATE_COOLDOWN' then
+                    e.SetItemSpellCool(self, {spell=self.spellID2})--设置冷却
+
+                elseif event=='SPELL_DATA_LOAD_RESULT' then
+                    if (arg1==self.spellID or arg1==self.spellID2) then
+                        if self:CanChangeAttribute() then
+                            if self:settings() then
+                                self:UnregisterEvent('SPELL_DATA_LOAD_RESULT')
+                            end
+                        else
+                            self:RegisterEvent('PLAYER_REGEN_ENABLED')
+                        end
+                    end
+
+                elseif event=='PLAYER_REGEN_ENABLED' then
+                    if self:settings() then
+                        self:UnregisterEvent('PLAYER_REGEN_ENABLED')
+                    end
+                end
+            end)
+
+
+            
+
+            
+
+            
             btn:SetScript('OnLeave', function(self)
                 e.tips:Hide()
-                self:set_sepll_known()
+                self:set_alpha()
             end)
             btn:SetScript('OnEnter', function(self)
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -241,20 +261,24 @@ local function Init()
                 end
                 if self.spellID2 then
                     e.tips:AddLine(' ')
-                    local link= '|T'..(C_Spell.GetSpellTexture(self.spellID2) or 0)..':0|t'
-                    link= link.. (C_Spell.GetSpellLink(self.spellID2) or C_Spell.GetSpellName(self.spellID2) or ('spellID'..self.spellID2))
-                    link= link .. (e.GetSpellItemCooldown(self.spellID2, nil) or '')
-                    e.tips:AddDoubleLine(link,
+                    e.tips:AddDoubleLine(
+                        '|T'..(C_Spell.GetSpellTexture(self.spellID2) or 0)..':0|t'
+                        ..(e.cn(C_Spell.GetSpellLink(self.spellID2), {spellID=self.spellID2, isName=true}) or ('spellID'..self.spellID2))
+                        ..(e.GetSpellItemCooldown(self.spellID2, nil) or ''),
                         format('%s%s',
                             IsSpellKnownOrOverridesKnown(self.spellID2) and '' or format('|cnRED_FONT_COLOR:%s|r',e.onlyChinese and '未学习' or TRADE_SKILLS_UNLEARNED_TAB),
                             e.Icon.right)
                         )
                 end
                 e.tips:Show()
-                self:set_sepll_known()
+                self:set_alpha()
+                self:set_cool()
             end)
 
-            btn:set_sepll_known()
+            if not btn:settings() then
+                btn:RegisterEvent('SPELL_DATA_LOAD_RESULT')
+            end
+            btn:set_alpha()
         end
     end
 

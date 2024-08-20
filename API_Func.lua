@@ -2429,8 +2429,11 @@ end
 function e.GetTimeInfo(value, chat, time, expirationTime)
     if value and value>0 then
         time= time or GetTime()
-        time= time < value and time + 86400 or time
+        while time<value do
+            time= time+86400
+        end
         time= time - value
+        time= time<0 and 0 or time
         if chat then
             return e.SecondsToClock(time), time
         else
@@ -2438,8 +2441,11 @@ function e.GetTimeInfo(value, chat, time, expirationTime)
         end
     elseif expirationTime and expirationTime>0 then
         time= time or GetTime()
-        expirationTime= time > expirationTime and expirationTime + 86400 or expirationTime
+        while time< expirationTime do
+            time= time+ 86400
+        end
         time= expirationTime- time
+        time= time<0 and 0 or time
         if chat then
             return e.SecondsToClock(time), time
         else

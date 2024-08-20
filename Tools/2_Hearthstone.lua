@@ -72,6 +72,7 @@ local ToyButton--ToyButton.items={}--存放有效
 
 local function Set_Menu_Tooltip(tooltip, desc)
     WoWTools_ToolsButtonMixin:SetToyTooltip(tooltip, desc.data and desc.data.itemID)
+    ToyButton:set_tooltip_location(tooltip)
 end
 
 
@@ -96,15 +97,16 @@ end
 
 
 
-local function Init_Menu_Toy(self, root)
-    local sub, sub2, name
+local function Init_Menu_Toy(_, root)
+    local sub, sub2, name, toyName, icon
     local index=0
     for itemID, _ in pairs(Save.items) do
         e.LoadDate({id=itemID, type='item'})
 
-        local _, toyName, icon = C_ToyBox.GetToyInfo(itemID)
+        toyName, icon = select(2, C_ToyBox.GetToyInfo(itemID))
         index= index+ 1
 
+        icon= '|T'..(icon or 0)..':0|t'
         name=e.cn(toyName, {itemID=itemID, isName=true})
         if name then
             name=name:match('|c........(.-)|r') or name
@@ -113,18 +115,38 @@ local function Init_Menu_Toy(self, root)
         end
 
         local has= PlayerHasToy(itemID)
+        local cd= has and e.GetSpellItemCooldown(nil, itemID)
         sub=root:CreateCheckbox(
             (has and '' or '|cff9e9e9e')
-            ..index..') |T'..(icon or 0)..':0|t'
+            ..index..') '..icon
             ..name
-            ..(has and e.GetSpellItemCooldown(nil, itemID) or ''),
-            function(data) return PlayerHasToy(data.itemID) end,
-            set_ToggleCollectionsJournal,
-            {itemID=itemID, name=toyName}
+            ..(cd or ''),
+            function(data)
+                return ToyButton.itemID==data.itemID
+            end, function(data)
+                if data.has then
+                    ToyButton:set_selected(data.itemID)
+                end
+            end,
+            {itemID=itemID, name=toyName, has=has}
         )
         sub:SetTooltip(Set_Menu_Tooltip)
 
+        sub2=sub:CreateCheckbox((
+            (not has or cd) and '|cff9e9e9e' or '')
+            ..icon
+            ..(e.onlyChinese and '激活' or SPEC_ACTIVE)
+            ..e.Icon.left,
+        function(data)
+            return ToyButton.itemID==data.itemID and ToyButton.isSelected
+        end, function(data)
+            if data.has then
+                ToyButton:set_selected(data.itemID)
+            end
+        end, {itemID=itemID, name=toyName, has=has})
+        sub2:SetTooltip(Set_Menu_Tooltip)
 
+        
         sub2=sub:CreateButton(
             '|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '设置' or SETTINGS),
             set_ToggleCollectionsJournal,
@@ -382,6 +404,7 @@ local function Init()
     ToyButton.text:SetPoint('TOP', ToyButton, 'BOTTOM',0,5)
 
 
+    --设置 Alt Shift Ctrl
     function ToyButton:set_alt()
         self.isAltEvent=nil
         if not self:CanChangeAttribute() then
@@ -403,7 +426,7 @@ local function Init()
     end
 
 
-
+    --设置 属性
     function ToyButton:set_attribute(itemID)
         if not itemID then
             return
@@ -426,11 +449,13 @@ local function Init()
         self:set_cool()
     end
 
+    --当唯一时，设置
     function ToyButton:set_only_item()
         self:set_attribute(self.items[1] or 6948)
         self.items={}
     end
 
+    --取得，可用
     function ToyButton:get_toys()
         self.items={}
         self.onlyItem=nil
@@ -447,8 +472,9 @@ local function Init()
         return num
     end
 
+    --取得，itemID
     function ToyButton:set_run()
-        if self.onlyItem then
+        if self.onlyItem or self.isSelected then
             return
         end
         self.isRunEvent=nil
@@ -470,16 +496,19 @@ local function Init()
         end
     end
 
+    --初始
     function ToyButton:init_toy()
         self:get_toys()
         self:set_run()
     end
 
+    --取得，炉石, 绑定位置
     function ToyButton:get_location()
         return e.cn(GetBindLocation())
     end
 
-    function ToyButton:set_location()--显示, 炉石, 绑定位置
+    --显示, 炉石, 绑定位置
+    function ToyButton:set_location()
         local text
         if Save.showBindName then
             text= self:get_location()
@@ -490,16 +519,35 @@ local function Init()
         self.text:SetText(text or '')
     end
 
+    --提示, 炉石, 绑定位置，文本
+    function ToyButton:set_tooltip_location(tooltip)
+        if tooltip.textLeft then
+            tooltip.textLeft:SetText(self:get_location() or '')
+        end
+    end
+
+    --CD
     function ToyButton:set_cool()
         e.SetItemSpellCool(self, {item=self.itemID})--主图标冷却
     end
 
+    --设置，选取
+    function ToyButton:set_selected(itemID)
+        if itemID then
+            if self.isSelected and self.itemID==itemID then
+                self.isSelected=nil
+            else
+                self.isSelected=true
+                self:set_attribute(itemID)
+            end
+        end
+    end
+
     ToyButton:RegisterEvent('HEARTHSTONE_BOUND')
-    --ToyButton:RegisterEvent('BAG_UPDATE_COOLDOWN')
     ToyButton:RegisterEvent('TOYS_UPDATED')
     ToyButton:RegisterEvent('NEW_TOY_ADDED')
     ToyButton:RegisterEvent('UI_MODEL_SCENE_INFO_UPDATED')
-    
+
     ToyButton:SetScript('OnEvent', function(self, event, itemID, success)
         if event=='ITEM_DATA_LOAD_RESULT' then
             if success then
@@ -539,13 +587,16 @@ local function Init()
             self:set_location()
 
         elseif event=='UI_MODEL_SCENE_INFO_UPDATED' then
-            self:set_cool()
+            self.isSelected=nil
+            self:set_run()
         end
     end)
 
 
 
+    
 
+    --Tooltip
     function ToyButton:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
@@ -578,13 +629,11 @@ local function Init()
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
         e.tips:Show()
-        if e.tips.textLeft then
-            e.tips.textLeft:SetText(self:get_location() or '')
-        end
+        self:set_tooltip_location(e.tips)
     end
 
 
-    ToyButton:SetScript("OnEnter",function(self)        
+    ToyButton:SetScript("OnEnter",function(self)
         self:set_tooltips()
         self:SetScript('OnUpdate', function (s, elapsed)
             s.elapsed = (s.elapsed or 0.3) + elapsed
@@ -613,7 +662,10 @@ local function Init()
     ToyButton:SetScript("OnMouseUp", function(self, d)
         self:set_run()
     end)
-    ToyButton:SetScript('OnMouseWheel', ToyButton.set_run)--设置属性
+    ToyButton:SetScript('OnMouseWheel', function(self)
+        self.isSelected=nil
+        self:set_run()
+    end)
 
     ToyButton:init_toy()
     ToyButton:set_alt()

@@ -4770,7 +4770,8 @@
         "CreateKeyChordStringUsingMetaKeyState",
         "CreateKeyChordString",
         "PlayerSpellsFrame_LoadUI",
-        "PlayerSpellsUtil"
+        "PlayerSpellsUtil",
+        "CooldownFrame_Set"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
