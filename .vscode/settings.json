@@ -4771,7 +4771,8 @@
         "CreateKeyChordString",
         "PlayerSpellsFrame_LoadUI",
         "PlayerSpellsUtil",
-        "CooldownFrame_Set"
+        "CooldownFrame_Set",
+        "SLASH_RANDOM4"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

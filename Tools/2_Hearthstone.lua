@@ -1,5 +1,5 @@
 local id, e = ...
-local addName= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_RANDOM3:gsub('/',''), TUTORIAL_TITLE31)
+local addName
 
 local P_Items={
     [142542]=true,--城镇传送之书
@@ -146,7 +146,7 @@ local function Init_Menu_Toy(_, root)
         end, {itemID=itemID, name=toyName, has=has})
         sub2:SetTooltip(Set_Menu_Tooltip)
 
-        
+
         sub2=sub:CreateButton(
             '|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '设置' or SETTINGS),
             set_ToggleCollectionsJournal,
@@ -175,8 +175,34 @@ local function Init_Menu_Toy(_, root)
     end
 
 --全部清除
-    if index>1 then
-        root:CreateDivider()
+if index>1 then
+    root:CreateDivider()
+end
+
+sub=root:CreateButton(e.onlyChinese and '移除未收集' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REMOVE, NOT_COLLECTED), function()
+    if IsControlKeyDown() then
+        local n=0
+        for itemID in pairs(Save.items) do
+            if not PlayerHasToy(itemID) then
+                Save.items[itemID]=nil
+                n=n+1
+                print(n, select(2, C_Item.GetItemInfo(itemID) or ('itemID '..itemID), e.onlyChinese and '移除' or REMOVE))
+            end
+        end
+        if n>0 then
+            ToyButton:init_toy()
+        else
+            return MenuResponse.Open
+        end
+    else
+        return MenuResponse.Open
+    end
+end)
+
+sub:SetTooltip(function(tooltip)
+    tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..e.Icon.left)
+end)
+
         sub=root:CreateButton(e.onlyChinese and '全部清除' or CLEAR_ALL, function()
             if IsControlKeyDown() then
                 Save.items={}
@@ -189,7 +215,7 @@ local function Init_Menu_Toy(_, root)
         sub:SetTooltip(function(tooltip)
             tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..e.Icon.left)
         end)
-    end
+
 
 --还原
     local all= 0
@@ -225,13 +251,13 @@ end
 local function Init_Menu(self, root)
     local sub
     sub= root:CreateButton(
-        addName..' '..#ToyButton.items, 
+        addName..' '..#ToyButton.items,
         set_ToggleCollectionsJournal,
         {}
     )
-    sub:SetTooltip(function(tooltip)
+    --[[sub:SetTooltip(function(tooltip)
         tooltip:AddLine(MicroButtonTooltipText(e.onlyChinese and '战团藏品' or COLLECTIONS, "TOGGLECOLLECTIONS"))
-    end)
+    end)]]
 
     Init_Menu_Toy(self, sub)
 
@@ -253,14 +279,14 @@ local function Init_Menu(self, root)
         self:set_location()--显示, 炉石, 绑定位置
     end)
 
-    --[[sub=root:CreateButton(
+    sub=root:CreateButton(
         '|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '设置' or SETTINGS),
         set_ToggleCollectionsJournal,
         {}
     )
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(MicroButtonTooltipText(e.onlyChinese and '战团藏品' or COLLECTIONS, "TOGGLECOLLECTIONS"))
-    end)]]
+    end)
 
 end
 
@@ -404,7 +430,7 @@ local function Init()
     ToyButton.shift:SetDrawLayer('OVERLAY',2)
     ToyButton.shift:AddMaskTexture(ToyButton.mask)
     ToyButton.shift:SetTexture(134414)
-    
+
 
 
     ToyButton.text=e.Cstr(ToyButton, {size=10, color=true, justifyH='CENTER'})--10, nil, nil, true, nil, 'CENTER')
@@ -601,18 +627,16 @@ local function Init()
 
 
 
-    
+
 
     --Tooltip
     function ToyButton:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        if self.itemID then
-            WoWTools_ToolsButtonMixin:SetToyTooltip(e.tips, self.itemID)
-        else
-            e.tips:AddLine(id, addName)
-            e.tips:AddLine(' ')
-        end
+        --WoWTools_ToolsButtonMixin:SetToyTooltip(e.tips, self.itemID)
+
+        e.tips:AddDoubleLine(WoWTools_ToolsButtonMixin:GetName(), addName)
+        e.tips:AddLine(' ')
 
         local name, col
         for itemID, type in pairs(ModifiedTab) do
@@ -632,9 +656,9 @@ local function Init()
                 col..type..'+'..e.Icon.left
             )
         end
-
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+        e.tips:AddDoubleLine(e.onlyChinese and '随机' or 'Random', '|cnGREEN_FONT_COLOR:#'..#self.items..'|r'..e.Icon.mid)
         e.tips:Show()
         self:set_tooltip_location(e.tips)
     end
