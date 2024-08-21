@@ -160,8 +160,8 @@ local function Init_Menu_Toy(_, root)
         sub2=sub:CreateButton(
             '|A:common-icon-redx:0:0|a'..(e.onlyChinese and '移除' or REMOVE),
             function(data)
-                Save.items[data.itemID]=nil
                 print(id, addName, select(2, C_Item.GetItemInfo(data.itemID)) or data.itemID, e.onlyChinese and '移除' or REMOVE)
+                Save.items[data.itemID]=nil
                 ToyButton:init_toy()
                 return MenuResponse.Open
             end,
@@ -174,47 +174,47 @@ local function Init_Menu_Toy(_, root)
         root:SetGridMode(MenuConstants.VerticalGridDirection, math.ceil(index/35))
     end
 
---全部清除
+
 if index>1 then
     root:CreateDivider()
 end
 
-sub=root:CreateButton(e.onlyChinese and '移除未收集' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REMOVE, NOT_COLLECTED), function()
-    if IsControlKeyDown() then
-        local n=0
-        for itemID in pairs(Save.items) do
-            if not PlayerHasToy(itemID) then
-                Save.items[itemID]=nil
-                n=n+1
-                print(n, select(2, C_Item.GetItemInfo(itemID) or ('itemID '..itemID), e.onlyChinese and '移除' or REMOVE))
+    sub=root:CreateButton('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '移除未收集' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REMOVE, NOT_COLLECTED)), function()
+        if IsControlKeyDown() then
+            local n=0
+            for itemID in pairs(Save.items) do
+                if not PlayerHasToy(itemID) then
+                    Save.items[itemID]=nil
+                    n=n+1
+                    print(n, select(2, C_Item.GetItemInfo(itemID)) or ('itemID '..itemID), e.onlyChinese and '移除' or REMOVE)
+                end
             end
-        end
-        if n>0 then
-            ToyButton:init_toy()
-        else
-            return MenuResponse.Open
-        end
-    else
-        return MenuResponse.Open
-    end
-end)
-
-sub:SetTooltip(function(tooltip)
-    tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..e.Icon.left)
-end)
-
-        sub=root:CreateButton(e.onlyChinese and '全部清除' or CLEAR_ALL, function()
-            if IsControlKeyDown() then
-                Save.items={}
-                print(id, addName, e.onlyChinese and '全部清除' or CLEAR_ALL)
+            if n>0 then
                 ToyButton:init_toy()
             else
                 return MenuResponse.Open
             end
-        end)
-        sub:SetTooltip(function(tooltip)
-            tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..e.Icon.left)
-        end)
+        else
+            return MenuResponse.Open
+        end
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..e.Icon.left)
+    end)
+
+--全部清除
+    sub=root:CreateButton('|A:common-icon-redx:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL), function()
+        if IsControlKeyDown() then
+            Save.items={}
+            print(id, addName, e.onlyChinese and '全部清除' or CLEAR_ALL)
+            ToyButton:init_toy()
+        else
+            return MenuResponse.Open
+        end
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..e.Icon.left)
+    end)
 
 
 --还原
@@ -222,7 +222,7 @@ end)
     for _ in pairs(P_Items) do
         all=all+1
     end
-    sub=root:CreateButton((e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)..' '..all, function()
+    sub=root:CreateButton('|A:common-icon-undo:0:0|a'..(e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)..' '..all, function()
         if IsControlKeyDown() then
             Save.items= P_Items
             ToyButton:init_toy()
