@@ -82,7 +82,7 @@ local function Init_Bank_Plus()--增强，原生
             Save.pointReagentBank= nil
             self:show_hide()
             self:set_tooltips()
-            print(id, addName, e.onlyChinese and '还原位置' or RESET_POSITION)
+            print(e.addName, addName, e.onlyChinese and '还原位置' or RESET_POSITION)
         else
             Save.hideReagentBankFrame= not Save.hideReagentBankFrame and true or nil
             self:show_hide(Save.hideReagentBankFrame)
@@ -211,7 +211,7 @@ local function Init_Bank_Plus()--增强，原生
 
     --[[ReagentBankFrame.DespositButton:SetScript('OnClick', function()
         PlaySound(SOUNDKIT.IG_MAINMENU_OPTION);
-        print(id,addName)
+        print(e.addName,addName)
 		DepositReagentBank();
     end)]]
     ReagentBankFrame:HookScript('OnShow', function(self)
@@ -1173,7 +1173,7 @@ local function Init_Menu(_, root)
     end, function()
         Save.allBank= not Save.allBank and true or nil
         BankFrame.optionButton:set_atlas()
-        print(id, addName, e.GetEnabeleDisable(Save.allBank),  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(e.addName, addName, e.GetEnabeleDisable(Save.allBank),  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
     btn:SetTooltip(function(tooltip, elementDescription)
         GameTooltip_SetTitle(tooltip, MenuUtil.GetElementText(elementDescription));
@@ -1326,7 +1326,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue=function() return not Save.disabled end,
                 SetValue= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+                    print(e.addName, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
                 end
             })
 

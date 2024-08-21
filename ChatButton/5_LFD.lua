@@ -210,7 +210,7 @@ local function printListInfo()--输出当前列表
         for i=1, NUM_LE_LFG_CATEGORYS  do--列表信息
             local n, text =get_Queued_List(i, true)--排5人本
             if n and n>0 and text then
-                print(id, addName, date('%X'))
+                print(e.addName, addName, date('%X'))
                 print(text)
             end
         end
@@ -1351,8 +1351,8 @@ local function set_Raid_Menu_List(root)
                 if GetLFGQueueStats(LE_LFG_CATEGORY_RF, data.dungeonID) then
                     LeaveSingleLFG(LE_LFG_CATEGORY_RF, data.dungeonID)
                 else
-                    e.call('RaidFinderQueueFrame_SetRaid', data.dungeonID)
-                    e.call('RaidFinderQueueFrame_Join')
+                    e.call(RaidFinderQueueFrame_SetRaid, data.dungeonID)
+                    e.call(RaidFinderQueueFrame_Join)
                     --printListInfo()--输出当前列表
                     Set_LFDButton_Data(data.dungeonID, LE_LFG_CATEGORY_RF, e.cn(data.dungeonName), nil)--设置图标, 点击,提示
                 end
@@ -1712,7 +1712,7 @@ local function set_LFDButton_LFGPlus_Texture()--预创建队伍增强
         LFDButton.LFGPlus:SetScript('OnClick', function(self)
             Save.LFGPlus= not Save.LFGPlus and true or nil
             self:set_texture()
-            print(id,addName, e.GetEnabeleDisable(Save.LFGPlus), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+            print(e.addName,addName, e.GetEnabeleDisable(Save.LFGPlus), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
         end)
         LFDButton.LFGPlus:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(0.5) end)
         LFDButton.LFGPlus:SetScript('OnEnter', function(self2)
@@ -1791,7 +1791,7 @@ local function exit_Instance()
     end
 
 
-    print(id, addName,
+    print(e.addName, addName,
         e.onlyChinese and '离开' or LEAVE,
         e.cn(name) or e.onlyChinese and '副本' or INSTANCE,
         num
@@ -1970,7 +1970,7 @@ local function Roll_Plus()
         RollOnLoot(rollID, rollType)
         link= link or GetLootRollItemLink(rollID)
         C_Timer.After(2, function()
-            print(id, addName, '|cnGREEN_FONT_COLOR:',
+            print(e.addName, addName, '|cnGREEN_FONT_COLOR:',
                 rollType==1 and (e.onlyChinese and '需求' or NEED)..'|A:lootroll-toast-icon-need-up:0:0|a'
                 or ((e.onlyChinese and '贪婪' or GREED)..'|A:lootroll-toast-icon-transmog-up:0:0|a'),
                 link)
@@ -2346,7 +2346,7 @@ local function get_Role_Info(env, Name, isT, isH, isD)
                 end
             end
             if find then
-                print(id, addName)
+                print(e.addName, addName)
             end
         end
         return
@@ -2563,7 +2563,7 @@ local function Init_RolePollPopup_Plus()
         if not LFDRoleCheckPopupAcceptButton:IsEnabled() then
             LFDRoleCheckPopup_UpdateAcceptButton()
         end
-        print(id, addName,
+        print(e.addName, addName,
                 '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '职责确认' or ROLE_POLL)..': |cfff00fff'.. SecondsToTime(sec).. '|r '..(e.onlyChinese and '接受' or ACCEPT)..'|r',
                 '|cnRED_FONT_COLOR:'..'Alt '..(e.onlyChinese and '取消' or CANCEL)
             )
@@ -2571,7 +2571,7 @@ local function Init_RolePollPopup_Plus()
         self.acceptTime= C_Timer.NewTimer(sec, function()
             if LFDRoleCheckPopupAcceptButton:IsEnabled() and not IsModifierKeyDown() then
                 local t=LFDRoleCheckPopupDescriptionText:GetText()
-                print(id, addName, '|cffff00ff', t)
+                print(e.addName, addName, '|cffff00ff', t)
                 LFDRoleCheckPopupAcceptButton:Click()--LFDRoleCheckPopupAccept_OnClick
             end
         end)
@@ -2656,13 +2656,13 @@ local function Init_RolePollPopup_Plus()
         end
         if btn2 then
             btn2.checkButton:SetChecked(true)
-            e.call('RolePollPopupRoleButtonCheckButton_OnClick', btn2.checkButton, btn2)
+            e.call(RolePollPopupRoleButtonCheckButton_OnClick, btn2.checkButton, btn2)
             if Save.autoSetPvPRole then
                 e.Ccool(self, nil, sec, nil, true)--冷却条
                 self.aceTime=C_Timer.NewTimer(sec, function()
                     if self.acceptButton:IsEnabled() then
                         self.acceptButton:Click()
-                        print(id, addName, e.onlyChinese and '职责确认' or ROLE_POLL, icon or '')
+                        print(e.addName, addName, e.onlyChinese and '职责确认' or ROLE_POLL, icon or '')
                     end
                 end)
             end
@@ -2728,7 +2728,7 @@ local function Init_Dialogs()
         OnCancel=function(_, _, d)
             if d=='clicked' then
                 ExitIns=nil
-                print(id,addName,'|cff00ff00'..(e.onlyChinese and '取消' or CANCEL)..'|r', e.onlyChinese and '离开' or LEAVE)
+                print(e.addName,addName,'|cff00ff00'..(e.onlyChinese and '取消' or CANCEL)..'|r', e.onlyChinese and '离开' or LEAVE)
             end
         end,
         OnUpdate= function(self)
@@ -2741,7 +2741,7 @@ local function Init_Dialogs()
             s:SetAutoFocus(false)
             s:ClearFocus()
             ExitIns=nil
-            print(id,addName,'|cff00ff00'..(e.onlyChinese and '取消' or CANCEL)..'|r', e.onlyChinese and '离开' or LEAVE)
+            print(e.addName,addName,'|cff00ff00'..(e.onlyChinese and '取消' or CANCEL)..'|r', e.onlyChinese and '离开' or LEAVE)
             s:GetParent():Hide()
         end,
         whileDead=true, hideOnEscape=true, exclusive=true,
@@ -2835,7 +2835,7 @@ local function Init_Menu(_, root)
         if tipsButton then
             tipsButton:ClearAllPoints()
             tipsButton:set_Point()
-            print(id, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+            print(e.addName, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
         end
     end)
 
@@ -3051,12 +3051,12 @@ local function Init()
     LFDButton:SetScript('OnClick', function(self, d)
         if d=='LeftButton' and self.dungeonID then
             if self.type==LE_LFG_CATEGORY_LFD then
-                e.call('LFDQueueFrame_SetType', self.dungeonID)
-                e.call('LFDQueueFrame_Join')
+                e.call(LFDQueueFrame_SetType, self.dungeonID)
+                e.call(LFDQueueFrame_Join)
                -- printListInfo()--输出当前列表
             elseif self.type==LE_LFG_CATEGORY_RF then
-                e.call('RaidFinderQueueFrame_SetRaid', self.dungeonID)
-                e.call('RaidFinderQueueFrame_Join')
+                e.call(RaidFinderQueueFrame_SetRaid, self.dungeonID)
+                e.call(RaidFinderQueueFrame_Join)
             elseif self.type==LE_LFG_CATEGORY_SCENARIO then
             end
         else
@@ -3249,7 +3249,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
         e.PlaySound()--播放, 声音
         C_PartyInfo.LeaveParty(LE_PARTY_CATEGORY_INSTANCE)
         LFGTeleport(true)
-        print(id, addName,
+        print(e.addName, addName,
             e.onlyChinese and '海岛探险' or ISLANDS_HEADER,
             e.Get_Instance_Num('island')
         )
@@ -3263,7 +3263,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
     elseif event=='CORPSE_IN_RANGE' or event=='PLAYER_DEAD' or event=='AREA_SPIRIT_HEALER_IN_RANGE' then--仅限战场，释放, 复活
         if Save.ReMe and e.Is_In_PvP_Area() then
             if event=='PLAYER_DEAD' then
-                print(id, addName,'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '释放, 复活' or (BATTLE_PET_RELEASE..', '..RESURRECT)))
+                print(e.addName, addName,'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '释放, 复活' or (BATTLE_PET_RELEASE..', '..RESURRECT)))
             end
             RepopMe()--死后将你的幽灵释放到墓地。
             RetrieveCorpse()--当玩家站在它的尸体附近时复活。
@@ -3276,7 +3276,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
             if PVPMatchResults and PVPMatchResults.buttonContainer and PVPMatchResults.buttonContainer.leaveButton then
                 e.Ccool(PVPMatchResults.buttonContainer.leaveButton, nil, sec, nil, true, true)
             end
-            print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '离开战场' or LEAVE_BATTLEGROUND), SecondsToTime(sec))
+            print(e.addName, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '离开战场' or LEAVE_BATTLEGROUND), SecondsToTime(sec))
             C_Timer.After(sec, function()
                 if not IsModifierKeyDown() then
                     if IsInLFDBattlefield() then

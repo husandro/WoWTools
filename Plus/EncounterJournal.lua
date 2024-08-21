@@ -338,7 +338,7 @@ local function MoveFrame(self, savePointName)
         size= size>72 and 72 or size
         Save.EncounterJournalFontSize=size
         e.Cstr(nil, {size=size, changeFont=self2.Text})--size, nil, self2.Text)
-        print(id, Initializer:GetName(), e.onlyChinese and '字体大小' or FONT_SIZE, size)
+        print(e.addName, Initializer:GetName(), e.onlyChinese and '字体大小' or FONT_SIZE, size)
     end)
 end
 
@@ -600,7 +600,7 @@ local function Init_EncounterJournal()--冒险指南界面
             self:set_Shown()
             self:SetNormalAtlas(Save.hideEncounterJournal and e.Icon.disabled or e.Icon.icon )
             set_Loot_Spec_Event()--BOSS战时, 指定拾取, 专精, 事件
-            e.call('EncounterJournal_ListInstances')
+            e.call(EncounterJournal_ListInstances)
 
         elseif d=='RightButton' then
             Save.hideEncounterJournal_All_Info_Text= not Save.hideEncounterJournal_All_Info_Text and true or nil
@@ -1098,7 +1098,7 @@ local function Init_EncounterJournal()--冒险指南界面
                         menuList= classInfo.classFile,
                         func= function(_, arg1, arg2)
                             Save.loot[arg1]={}
-                            print(id, Initializer:GetName(), e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, e.Class(nil, arg1), arg2, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH)))
+                            print(e.addName, Initializer:GetName(), e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, e.Class(nil, arg1), arg2, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH)))
                         end
                     }
                     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1111,7 +1111,7 @@ local function Init_EncounterJournal()--冒险指南界面
                 notCheckable=true,
                 func= function()
                     Save.loot={[e.Player.class]={}}
-                    print(id, Initializer:GetName(), e.onlyChinese and '全部清除' or CLEAR_ALL, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH)))
+                    print(e.addName, Initializer:GetName(), e.onlyChinese and '全部清除' or CLEAR_ALL, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH)))
                 end
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1129,7 +1129,7 @@ local function Init_EncounterJournal()--冒险指南界面
                     arg2=dungeonEncounterID,
                     func= function(_, arg1, arg2)
                         Save.loot[arg1][arg2]=nil
-                        print(id, Initializer:GetName(), e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, e.Class(nil, arg1), arg2, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH)))
+                        print(e.addName, Initializer:GetName(), e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, e.Class(nil, arg1), arg2, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH)))
                     end
                 }
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1721,7 +1721,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 lootSpceLog= loot
                 SetLootSpecialization(indicatoSpec)
                 local _, name, _, icon, role = GetSpecializationInfoByID(indicatoSpec)
-                print(id, Initializer:GetName(), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)..'|r', e.Icon[role], icon and '|T'..icon..':0|t', name and '|cffff00ff'..name)
+                print(e.addName, Initializer:GetName(), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)..'|r', e.Icon[role], icon and '|T'..icon..':0|t', name and '|cffff00ff'..name)
             end
         end
 
@@ -1733,7 +1733,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 lootSpceLog= spec and GetSpecializationInfo(spec) or lootSpceLog
             end
             local _, name, _, icon, role = GetSpecializationInfoByID(lootSpceLog)
-            print(id, Initializer:GetName(), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)..'|r', e.Icon[role], icon and '|T'..icon..':0|t', name and '|cffff00ff'..name)
+            print(e.addName, Initializer:GetName(), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)..'|r', e.Icon[role], icon and '|T'..icon..':0|t', name and '|cffff00ff'..name)
             lootSpceLog=nil
         end
     end

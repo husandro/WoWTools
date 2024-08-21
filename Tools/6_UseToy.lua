@@ -413,7 +413,7 @@ local function InitMenu(_, level, menuList)--主菜单
                         num2= num2+1
                     end
                 end
-                print(id, e.cn(addName), e.onlyChinese and '未收集' or NOT_COLLECTED, '|cnRED_FONT_COLOR:#'..num2..'|r', e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
+                print(e.addName, e.cn(addName), e.onlyChinese and '未收集' or NOT_COLLECTED, '|cnRED_FONT_COLOR:#'..num2..'|r', e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -442,7 +442,7 @@ local function InitMenu(_, level, menuList)--主菜单
                     end,
                     OnHide= function(self2)
                         self2.editBox:SetText("")
-                        e.call('ChatEdit_FocusActiveWindow')
+                        e.call(ChatEdit_FocusActiveWindow)
                     end,
                     OnAccept = function(self2, data)
                         local text= self2.editBox:GetText()

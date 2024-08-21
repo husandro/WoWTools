@@ -192,7 +192,7 @@ local function creatd_button(index, parent)
                         func= function()
                             Save.favorites[self.itemID]= not Save.favorites[self.itemID] and true or nil
                             self:set_favorite()
-                            print(id, Initializer:GetName(), Save.favorites[self.itemID] and self.itemID or '', e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
+                            print(e.addName, Initializer:GetName(), Save.favorites[self.itemID] and self.itemID or '', e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
                             panel:set_Gem()
                         end
                     }, level)
@@ -873,7 +873,7 @@ local function Init_Button_All()
                         keepShownOnClick=true,
                         func= function()
                             Save.disableSpell= not Save.disableSpell and true or nil
-                            print(id, Initializer:GetName(), e.GetEnabeleDisable(not Save.disableSpell), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                            print(e.addName, Initializer:GetName(), e.GetEnabeleDisable(not Save.disableSpell), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                         end
                     }, level)
 
@@ -892,7 +892,7 @@ local function Init_Button_All()
                             for _, frame in pairs(Frame.buttons) do
                                 frame:set_favorite()
                             end
-                            print(id, Initializer:GetName(), e.onlyChinese and '完成' or COMPLETE)
+                            print(e.addName, Initializer:GetName(), e.onlyChinese and '完成' or COMPLETE)
                         end
                     }, level)
 
@@ -951,8 +951,8 @@ local function Init_Button_All()
                             Save.gemLoc={
                                 [e.Player.class]={}
                             }
-                            e.call('ItemSocketingFrame_Update')
-                            print(id, Initializer:GetName(), '|cnGREEN_FONT_COLOR:', e.onlyChinese and '完成' or COMPLETE)
+                            e.call(ItemSocketingFrame_Update)
+                            print(e.addName, Initializer:GetName(), '|cnGREEN_FONT_COLOR:', e.onlyChinese and '完成' or COMPLETE)
                         end
                     }, level)
 
@@ -1120,7 +1120,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue= function() return not Save.disabled end,
                 SetValue= function()
                     Save.disabled = not Save.disabled and true or nil
-                    print(id, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+                    print(e.addName, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
                 end
             })
 

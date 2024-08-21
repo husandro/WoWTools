@@ -109,14 +109,14 @@ local UNLEARN_SKILL_CONFIRMATION= UNLEARN_SKILL_CONFIRMATION
                         e.SetButtonKey(self, true,'F', 'RightButton')
                         self:RegisterEvent('PLAYER_REGEN_ENABLED')
                         self:RegisterEvent('PLAYER_REGEN_DISABLED')
-                        print(id, Initializer:GetName(),'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '设置' or SETTINGS), self.name, e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL, '|cffff00ffF')
+                        print(e.addName, Initializer:GetName(),'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '设置' or SETTINGS), self.name, e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL, '|cffff00ffF')
 
                     elseif d==-1 then
                         e.SetButtonKey(self)
                         self:UnregisterEvent('PLAYER_REGEN_DISABLED')
                         self:UnregisterEvent('PLAYER_REGEN_ENABLED')
 
-                        print(id, Initializer:GetName(),'|cnRED_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2), self.name, e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)
+                        print(e.addName, Initializer:GetName(),'|cnRED_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2), self.name, e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)
                     end
                     self:set_tooltip()
                     self:set_key_text(d==1 and 'F' or '')
@@ -125,10 +125,10 @@ local UNLEARN_SKILL_CONFIRMATION= UNLEARN_SKILL_CONFIRMATION
                 btn:SetScript("OnEvent", function(self, event)
                     if event=='PLAYER_REGEN_ENABLED' then
                         e.SetButtonKey(self, true,'F', 'RightButton')
-                        print(id, Initializer:GetName(),'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '设置' or SETTINGS), self.name, e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL, '|cffff00ffF|r')
+                        print(e.addName, Initializer:GetName(),'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '设置' or SETTINGS), self.name, e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL, '|cffff00ffF|r')
                     elseif event=='PLAYER_REGEN_DISABLED' then
                         e.SetButtonKey(self)
-                        print(id, Initializer:GetName(),'|cnRED_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2), self.name, e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)
+                        print(e.addName, Initializer:GetName(),'|cnRED_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2), self.name, e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)
                     end
                     self:set_key_text(event=='PLAYER_REGEN_ENABLED' and 'F' or '')
                 end)
@@ -352,7 +352,7 @@ local function Init_Blizzard_TrainerUI()
                         table.insert(tab, link)
                     end
                 else
-                    print(id, Initializer:GetName(), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '金币不足' or NOT_ENOUGH_GOLD), C_CurrencyInfo.GetCoinTextureString(money))
+                    print(e.addName, Initializer:GetName(), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '金币不足' or NOT_ENOUGH_GOLD), C_CurrencyInfo.GetCoinTextureString(money))
                     break
                 end
             end
@@ -361,7 +361,7 @@ local function Init_Blizzard_TrainerUI()
             for i, link in pairs(tab) do
                 print('|cffff00ff'..i..'|r)', link)
             end
-            print(id, 'Tools', Initializer:GetName(), '|cffff00ff'..num..'|r '..(e.onlyChinese and '学习' or LEARN), (cost>0 and '|cnGREEN_FONT_COLOR:' or '')..C_CurrencyInfo.GetCoinTextureString(cost))
+            print(e.addName, 'Tools', Initializer:GetName(), '|cffff00ff'..num..'|r '..(e.onlyChinese and '学习' or LEARN), (cost>0 and '|cnGREEN_FONT_COLOR:' or '')..C_CurrencyInfo.GetCoinTextureString(cost))
         end)
 	end)
 
@@ -468,7 +468,7 @@ local function Init_ProfessionsFrame()
     btn2:SetScript('OnMouseDown', function(self2)
         Save.disabled= not Save.disabled and true or nil
         self2:SetNormalAtlas(Save.disabled and e.Icon.disabled or e.Icon.icon)
-        print(id, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled),  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(e.addName, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled),  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
     btn2:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
@@ -1065,7 +1065,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue= function() return not Save.disabled end,
                 SetValue= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(id, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(e.addName, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 

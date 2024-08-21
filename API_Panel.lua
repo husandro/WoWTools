@@ -590,7 +590,7 @@ local function Init_Options()
                     ColorPickerFrame.Footer.OkayButton:Click()
                 end
                 Set_Color()--自定义，颜色
-                print(id, e.Player.useColor and e.Player.useColor.hex or '', (e.onlyChinese and '颜色' or COLOR)..'|r',   e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                print(e.addName, e.Player.useColor and e.Player.useColor.hex or '', (e.onlyChinese and '颜色' or COLOR)..'|r',   e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
             Save.useColor= value
 
@@ -620,7 +620,7 @@ local function Init_Options()
             SetValue= function()
                 e.onlyChinese= not e.onlyChinese and true or nil
                 Save.onlyChinese = e.onlyChinese
-                print(id,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                print(e.addName,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
         })
     end
@@ -662,7 +662,7 @@ local function Init_Options()
             GetValue= function() return not Save.disabledRealm end,
             SetValue= function()
                 Save.disabledRealm= not Save.disabledRealm and true or nil
-                print(id,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                print(e.addName,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
         })
 

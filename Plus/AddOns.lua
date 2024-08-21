@@ -185,7 +185,7 @@ local function Create_Button(indexAdd)
                         arg1= self.name,
                         func= function(_, arg1)
                             Save.buttons[arg1]= select(4, Get_AddList_Info())
-                            e.call('AddonList_Update')
+                            e.call(AddonList_Update)
                         end
                     }, level)
 
@@ -207,7 +207,7 @@ local function Create_Button(indexAdd)
                         arg1= self.name,
                         func= function(_, arg1)
                             Save.buttons[arg1]=nil
-                            e.call('AddonList_Update')
+                            e.call(AddonList_Update)
                         end
                     }, level)
                     e.LibDD:UIDropDownMenu_AddSeparator(level)
@@ -455,7 +455,7 @@ local function Init_Add_Save_Button()
                 OnAccept=function(self)
                     local text = self.editBox:GetText()
                     Save.buttons[text]= select(4 ,Get_AddList_Info())
-                    e.call('AddonList_Update')
+                    e.call(AddonList_Update)
                 end,
                 OnShow=function(self)
                     self.editBox:SetText(e.onlyChinese and '一般' or RESISTANCE_FAIR)
@@ -626,7 +626,7 @@ local function Init_Add_Save_Button()
                 end
             end
         end
-        e.call('AddonList_Update')
+        e.call(AddonList_Update)
     end)
 end
 
@@ -750,7 +750,7 @@ local function Create_Fast_Button(indexAdd)
         else
             C_AddOns.EnableAddOn(self.name)
         end
-        e.call('AddonList_Update')
+        e.call(AddonList_Update)
         self:set_tooltips()
     end)
     if indexAdd==1 then
@@ -1316,12 +1316,12 @@ local function Init()
                     if name==n then
                         Save.buttons[n]= nil
                         Save.buttons[text]= tab
-                        e.call('AddonList_Update')
+                        e.call(AddonList_Update)
                         return
                     end
                 end
             end
-            print(id, Initializer:GetName(), format('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE), name)
+            print(e.addName, Initializer:GetName(), format('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE), name)
         end,
         OnShow=function(self, name)
             self.editBox:SetText(name)
@@ -1421,7 +1421,7 @@ local function Init()
     AddonListDisableAllButton:HookScript('OnClick', function()
         if Save.enableAllButtn then
             C_AddOns.EnableAddOn(id)
-            e.call('AddonList_Update')
+            e.call(AddonList_Update)
         end
     end)
 
@@ -1480,7 +1480,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue=function () return not Save.disabled end,
                 SetValue= function()
                     Save.disabled = not Save.disabled and true or nil
-                    print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                    print(e.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
                 end
             })
 

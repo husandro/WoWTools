@@ -176,7 +176,7 @@ local function TrackButton_Frame_Init_Date()--初始, 数据
         LastText= '|A:socialqueuing-icon-clock:0:0|a|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '离开' or AFK)..text..'|r'
         Save.afk.num= Save.afk.num + 1
         Save.afk.time= Save.afk.time + sec
-        print(id, e.cn(addName), LastText)
+        print(e.addName, e.cn(addName), LastText)
         OnAFKTime=nil
     end
 
@@ -215,7 +215,7 @@ local function TrackButton_Frame_Init_Date()--初始, 数据
         else
             LastText='|cnRED_FONT_COLOR:'..LastText..'|r'
         end
-        print(id, e.cn( addName), e.onlyChinese and '宠物对战' or PET_BATTLE_PVP_QUEUE, LastText, Save.pet.win..'/'..Save.pet.num, (Save.pet.capture>0 and Save.pet.capture..' |T646379:0|t' or ''));
+        print(e.addName, e.cn( addName), e.onlyChinese and '宠物对战' or PET_BATTLE_PVP_QUEUE, LastText, Save.pet.win..'/'..Save.pet.num, (Save.pet.capture>0 and Save.pet.capture..' |T646379:0|t' or ''));
 
         PetRound={}
         OnPetTime=nil
@@ -233,7 +233,7 @@ local function TrackButton_Frame_Init_Date()--初始, 数据
             Save.ins.time= Save.ins.time +sec
         end
         LastText='|cnGREEN_FONT_COLOR:|A:CrossedFlagsWithTimer:0:0|a'..text..' |A:BuildanAbomination-32x32:0:0|a'..InstanceDate.kill..' |A:poi-soulspiritghost:0:0|a'..InstanceDate.dead..'|r'
-        print(id, InstanceDate.map or e.onlyChinese and '副本' or INSTANCE, text)
+        print(e.addName, InstanceDate.map or e.onlyChinese and '副本' or INSTANCE, text)
 
         InstanceDate={time= 0, kill=0, dead=0}--副本数据{dead死亡,kill杀怪, map地图}
         OnInstanceTime=nil
@@ -372,7 +372,7 @@ local function Init_TrackButton()--设置显示内容, 父框架TrackButton, 内
             sacle=sacle<0.4 and 0.4 or sacle
             Save.textScale=sacle
             self:set_text_scale()
-            print(id, e.cn( addName), e.onlyChinese and '缩放' or UI_SCALE,"|cnGREEN_FONT_COLOR:", sacle)
+            print(e.addName, e.cn( addName), e.onlyChinese and '缩放' or UI_SCALE,"|cnGREEN_FONT_COLOR:", sacle)
         end
     end)
 
@@ -500,7 +500,7 @@ local function Init_Menu(self, root)
         if TrackButton then
             TrackButton:set_Point()
         end
-        print(id, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+        print(e.addName, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
         return MenuResponse.Open
     end)
 

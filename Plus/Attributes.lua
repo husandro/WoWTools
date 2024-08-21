@@ -1349,7 +1349,7 @@ local function Init_Options()--设置 panel
             dragonriding.text:SetFormattedText('|A:dragonriding_vigor_decor:0:0|a%s', e.onlyChinese and '驭空术' or GENERIC_TRAIT_FRAME_DRAGONRIDING_TITLE)
             dragonriding:SetScript('OnClick',function()
                 Save.disabledDragonridingSpeed= not Save.disabledDragonridingSpeed and true or nil
-                print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabledDragonridingSpeed), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                print(e.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabledDragonridingSpeed), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
             end)
 
             --载具，速度
@@ -1359,7 +1359,7 @@ local function Init_Options()--设置 panel
             vehicleSpeedCheck.text:SetFormattedText(e.onlyChinese and '%s载具' or UNITNAME_SUMMON_TITLE9, '|TInterface\\Vehicles\\UI-Vehicles-Button-Exit-Up:0|t')
             vehicleSpeedCheck:SetScript('OnClick',function()
                 Save.disabledVehicleSpeed= not Save.disabledVehicleSpeed and true or nil
-                print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabledVehicleSpeed), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                print(e.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabledVehicleSpeed), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
             end)
 
 
@@ -1712,7 +1712,7 @@ local function Init_Options()--设置 panel
             self.Text:SetText(value)
             Save.gsubText= value>0 and value or nil
             frame_Init(true)--初始，设置
-            print(id,e.cn(addName), '|cnGREEN_FONT_COLOR:'..value..'|r', e.onlyChinese and '文本 0=否' or (LOCALE_TEXT_LABEL..' 0='..NO))
+            print(e.addName,e.cn(addName), '|cnGREEN_FONT_COLOR:'..value..'|r', e.onlyChinese and '文本 0=否' or (LOCALE_TEXT_LABEL..' 0='..NO))
         end,
         tips=nil
     })
@@ -2123,7 +2123,7 @@ local function Init()
 
         elseif d=='LeftButton' and not IsModifierKeyDown() then
             frame_Init(true)--初始， 或设置
-            print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重置' or RESET)..'|r', e.onlyChinese and '数值' or STATUS_TEXT_VALUE)
+            print(e.addName, e.cn(addName), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重置' or RESET)..'|r', e.onlyChinese and '数值' or STATUS_TEXT_VALUE)
 
         elseif d=='RightButton' and IsShiftKeyDown() then
             self:send_Att_Chat()--发送信息
@@ -2140,7 +2140,7 @@ local function Init()
                         keepShownOnClick=true,
                         func= function()
                             frame_Init(true)--初始， 或设置
-                            print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重置' or RESET)..'|r', e.onlyChinese and '数值' or STATUS_TEXT_VALUE)
+                            print(e.addName, e.cn(addName), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重置' or RESET)..'|r', e.onlyChinese and '数值' or STATUS_TEXT_VALUE)
                         end
                     }
                     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -2323,7 +2323,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         set_ShowHide_Event()--显示，隐藏，事件
                         Init_Options()
                     else
-                        print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                        print(e.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
                         frame_Init(true)--初始， 或设置
                     end
                 end,

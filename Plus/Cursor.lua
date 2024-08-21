@@ -253,7 +253,7 @@ local function Init_Cursor_Options()
         self:SetValue(value)
         self.Text:SetText(value)
         Save.maxParticles= value
-        print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(e.addName, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end})
     panel.sliderMaxParticles:SetPoint("TOPLEFT", panel.cursorCheck, 'BOTTOMLEFT', 0, -20)
 
@@ -412,7 +412,7 @@ local function Init_Cursor_Options()
         local icon = select(2, get_Texture_type(texture))
         table.remove(Save.Atlas, Save.atlasIndex)
         Save.atlasIndex=1
-        print(id, e.cn(addName), e.onlyChinese and '移除' or REMOVE, icon, texture)
+        print(e.addName, e.cn(addName), e.onlyChinese and '移除' or REMOVE, icon, texture)
         set_panel_Texture()
         cursor_Init_And_Set()
         addColorEdit:SetText(texture or defaultTexture)
@@ -655,7 +655,7 @@ local function Init_GCD_Options()
         local icon = texture and '|T'..texture..':0|t'
         table.remove(Save.GCDTexture, Save.gcdTextureIndex)
         Save.gcdTextureIndex=1
-        print(id, e.cn(addName), e.onlyChinese and '移除' or REMOVE, icon, texture)
+        print(e.addName, e.cn(addName), e.onlyChinese and '移除' or REMOVE, icon, texture)
         set_panel_Texture()
         show_GCD_Frame_Tips()--显示GCD图片
         addColorEdit:SetText(texture or defaultGCDTexture)
@@ -843,7 +843,7 @@ local function Init_Options()
         Save.notUseColor= not Save.notUseColor and true or nil
         Save.useClassColorCheck=nil
         useClassColorCheck:SetChecked(false)
-        print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(e.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
     --随机, 图片

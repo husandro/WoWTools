@@ -1300,7 +1300,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         Save.disabled=true
                         panel:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
                     end
-                    print(id, addName, e.GetEnabeleDisable(Save.disabled))
+                    print(e.addName, addName, e.GetEnabeleDisable(Save.disabled))
                 end
             })
 

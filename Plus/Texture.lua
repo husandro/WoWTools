@@ -2714,7 +2714,7 @@ local function Init_HelpTip()
         if ID then
             C_Timer.After(2, function()
                 TutorialPointerFrame:Hide(ID-1)
-                print(id, e.cn(addName), '|cffff00ff'..content)
+                print(e.addName, e.cn(addName), '|cffff00ff'..content)
             end)
         end
     end)
@@ -2724,7 +2724,7 @@ local function Init_HelpTip()
             C_Timer.After(1, function()
                 if self:IsShown() then
                     self:Hide()
-                    print(id, e.cn(addName), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '感谢您的举报！' or ERR_REPORT_SUBMITTED_SUCCESSFULLY)..'|r', e.onlyChinese and '关闭' or CLOSE)
+                    print(e.addName, e.cn(addName), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '感谢您的举报！' or ERR_REPORT_SUBMITTED_SUCCESSFULLY)..'|r', e.onlyChinese and '关闭' or CLOSE)
                 end
             end)
         end
@@ -2733,18 +2733,18 @@ local function Init_HelpTip()
     C_Timer.After(2, function()
         if SplashFrame and SplashFrame:IsShown() then
             SplashFrame:Close();
-            print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '隐藏' or HIDE)..'|r|n|cff00ff00', SplashFrame.Label and SplashFrame.Label:GetText() or '')
+            print(e.addName, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '隐藏' or HIDE)..'|r|n|cff00ff00', SplashFrame.Label and SplashFrame.Label:GetText() or '')
         end
 
         if not Save.disabledHelpTip then--错误，提示
             if ScriptErrorsFrame then
                 if ScriptErrorsFrame:IsShown() then
-                    print(id, Category:GetName())
+                    print(e.addName, Category:GetName())
                     print(ScriptErrorsFrame.ScrollFrame.Text:GetText())
                     ScriptErrorsFrame.Close:Click()
                 end
                 ScriptErrorsFrame:HookScript('OnShow', function(self)
-                    print(id, Category:GetName())
+                    print(e.addName, Category:GetName())
                     print(self.ScrollFrame.Text:GetText())
                     ScriptErrorsFrame.Close:Click()
                 end)
@@ -2782,7 +2782,7 @@ local function Init_Options()
         GetValue= function() return not Save.disabled end,
         SetValue= function()
             Save.disabled= not Save.disabled and true or nil
-            print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(e.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
         buttonText= e.onlyChinese and '设置颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS ,COLOR),
         buttonFunc= function()
@@ -2804,7 +2804,7 @@ local function Init_Options()
         SetValue= function(_, _, value2)
             Save.alpha= e.GetFormatter1to10(value2, 0, 1)
             --Init()
-            print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(e.addName, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     })
     initializer:SetParentInitializer(initializer2, function() if Save.disabled then return false else return true end end)
@@ -2822,7 +2822,7 @@ local function Init_Options()
             Save.disabledChatBubble= not Save.disabledChatBubble and true or nil
             Init_Chat_Bubbles()
             if Save.disabledChatBubble and BubblesFrame then
-                print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                print(e.addName, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
         end
     })
@@ -2862,7 +2862,7 @@ local function Init_Options()
         checkTooltip= e.cn(addName),
         checkSetValue= function()
             Save.classPowerNum= not Save.classPowerNum and true or false
-            print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(e.addName, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
         sliderGetValue= function() return Save.classPowerNumSize end,
         minValue= 6,
@@ -2872,7 +2872,7 @@ local function Init_Options()
             local value3= e.GetFormatter1to10(value2, 6, 64)
             Save.classPowerNumSize= value3
             Init_Class_Power()--职业
-            print(id, e.cn(addName),'|cnGREEN_FONT_COLOR:'.. value3..'|r', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(e.addName, e.cn(addName),'|cnGREEN_FONT_COLOR:'.. value3..'|r', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
         layout= Layout,
         category= Category,
@@ -2885,7 +2885,7 @@ local function Init_Options()
         GetValue= function() return not Save.disabledHelpTip end,
         SetValue= function()
             Save.disabledHelpTip= not Save.disabledHelpTip and true or nil
-            print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(e.addName, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     })
 end
@@ -2936,7 +2936,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 GetValue= function() return not Save.disabled end,
                 SetValue= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(e.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 

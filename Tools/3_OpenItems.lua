@@ -298,7 +298,7 @@ local function get_Items()--取得背包物品信息
     equipItem=nil
     Bag={}
 
-    
+
     local itemMinLevel, classID, subclassID, _, info
     local bagMax= Save.disabledCheckReagentBag and NUM_BAG_FRAMES or (NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES )
     for bag= Enum.BagIndex.Backpack, bagMax do--Constants.InventoryConstants.NumBagSlots
@@ -761,8 +761,8 @@ end
 --######
 local function Init()
 
-  
-    
+
+
     button.count=e.Cstr(button, {size=10, color=true})--10, nil, nil, true)
     button.count:SetPoint('BOTTOM',0,2)
 
@@ -853,7 +853,7 @@ local function Init()
                 end,
                 OnHide= function(self2)
                     self2.editBox:SetText("")
-                    e.call('ChatEdit_FocusActiveWindow')
+                    e.call(ChatEdit_FocusActiveWindow)
                 end,
                 OnAccept = function(self2, data)
                     local num= self2.editBox:GetNumber()
@@ -861,13 +861,13 @@ local function Init()
                     Save.use[data.itemID]=num
                     Save.no[data.itemID]=nil
                     get_Items()--取得背包物品信息
-                    print(id, '|cnGREEN_FONT_COLOR:'..e.cn(addName)..'|r', num>1 and (e.onlyChinese and '合成物品' or COMBINED_BAG_TITLE:gsub(INVTYPE_BAG,ITEMS))..': '..'|cnGREEN_FONT_COLOR:'..num..'|r' or '', data.itemLink)
+                    print(e.addName, '|cnGREEN_FONT_COLOR:'..e.cn(addName)..'|r', num>1 and (e.onlyChinese and '合成物品' or COMBINED_BAG_TITLE:gsub(INVTYPE_BAG,ITEMS))..': '..'|cnGREEN_FONT_COLOR:'..num..'|r' or '', data.itemLink)
                 end,
                 OnAlt = function(self2, data)
                     Save.no[data.itemID]=true
                     Save.use[data.itemID]=nil
                     get_Items()--取得背包物品信息
-                    print(id, e.cn(addName), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE)..'|r', data.itemLink)
+                    print(e.addName, e.cn(addName), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE)..'|r', data.itemLink)
                 end,
                 EditBoxOnTextChanged=function(self2)
                    local num= self2:GetNumber()
@@ -954,7 +954,7 @@ local function Init()
         end,
         OnHide= function(self2)
             self2.editBox:SetText("")
-            e.call('ChatEdit_FocusActiveWindow')
+            e.call(ChatEdit_FocusActiveWindow)
         end,
         OnAccept = function(self2)
             local text= self2.editBox:GetText()

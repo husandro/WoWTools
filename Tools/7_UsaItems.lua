@@ -550,7 +550,7 @@ local function set_Use_Spell_Button(btn, spellID)
                     end
                     self:set_tooltips()
                     self:set_alpha()
-                    print(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(e.addName, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD, C_Spell.GetSpellLink(self.spellID))
                 end
             else
                 e.LibDD:ToggleDropDownMenu(1, nil, button.Menu, self, 15, 0)

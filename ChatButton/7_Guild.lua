@@ -122,7 +122,7 @@ local function set_RequestToJoinFrame(frame)
         and not IsModifierKeyDown()
         and not Save.notAutoRequestToJoinClub
     then
-        print(id, addName, frame.ClubName:GetText(), e.cn(frame.Apply:GetText()), '|n', text, '|n|cffff00ff',text2)
+        print(e.addName, addName, frame.ClubName:GetText(), e.cn(frame.Apply:GetText()), '|n', text, '|n|cffff00ff',text2)
         frame.Apply:Click()
     end
 end

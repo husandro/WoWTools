@@ -291,9 +291,9 @@ local function Init_Menu(self, root)
                 local findIndex= findWhisper(data)
                 if findIndex then
                     Save.WhisperTab[findIndex]=nil
-                    print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', e.PlayerLink(data))
+                    print(e.addName, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', e.PlayerLink(data))
                 else
-                    print(id, addName, '|cff9e9e9e'..(e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE)..'|r', e.PlayerLink(data))
+                    print(e.addName, addName, '|cff9e9e9e'..(e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE)..'|r', e.PlayerLink(data))
                 end
                 return MenuResponse.Open
             end, tab.name)
@@ -380,7 +380,7 @@ local function Init_Menu(self, root)
         if not UnitAffectingCombat('player') then
             C_CVar.SetCVar("chatBubbles", not C_CVar.GetCVarBool("chatBubbles") and '1' or '0')
         else
-            print(id, addName, e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
+            print(e.addName, addName, e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
         end
     end)
     sub2:SetTooltip(function(tooltip)

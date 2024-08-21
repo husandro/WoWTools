@@ -19,7 +19,7 @@ local function setAura()--光环取消
         if data then
             if Save.aura[data.spellId] then
                 CancelUnitBuff("player", i, nil)-- 'CANCELABLE')
-                print(id, e.onlyChinese '取消光环' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CANCEL, AURAS), C_Spell.GetSpellLink(data.spellId) or data.spellId)
+                print(e.addName, e.onlyChinese '取消光环' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CANCEL, AURAS), C_Spell.GetSpellLink(data.spellId) or data.spellId)
                 break
             end
         else
@@ -123,7 +123,7 @@ local function InitMenu(self, level)--主菜单
                 end,
                 OnHide= function(self2)
                     self2.editBox:SetText("")
-                    e.call('ChatEdit_FocusActiveWindow')
+                    e.call(ChatEdit_FocusActiveWindow)
                 end,
                 OnAccept = function(self2, data)
                     local text= self2.editBox:GetText()

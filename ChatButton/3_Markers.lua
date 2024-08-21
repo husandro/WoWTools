@@ -113,7 +113,7 @@ local function Init_MarkerTools_Menu(root)
             Save.FrameStrata= data
             if MakerFrame then
                 MakerFrame:set_frame_strata()
-                print(id, addName, MakerFrame:GetFrameStrata())
+                print(e.addName, addName, MakerFrame:GetFrameStrata())
             end
 
         end, name)
@@ -148,7 +148,7 @@ local function Init_MarkerTools_Menu(root)
             MakerFrame:ClearAllPoints()
             Save.markersFramePoint=nil
             MakerFrame:Init_Set_Frame()--位置
-            print(id,addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+            print(e.addName,addName, e.onlyChinese and '重置位置' or RESET_POSITION)
         end
     end)
 end
@@ -284,9 +284,9 @@ local function Init_set_Tank_Healer()
 
     function SetTankHealerFrame:on_click()
         if SetTankHealerFrame:set_TankHealer(true) then--设置队伍标记
-            print(id, addName, e.onlyChinese and '设置' or SETTINGS, e.onlyChinese and '坦克' or TANK, e.onlyChinese and '治疗' or HEALER)
+            print(e.addName, addName, e.onlyChinese and '设置' or SETTINGS, e.onlyChinese and '坦克' or TANK, e.onlyChinese and '治疗' or HEALER)
         else
-            print(id, addName, e.onlyChinese and '设置' or SETTINGS, e.onlyChinese and '坦克' or TANK, e.onlyChinese and '治疗' or HEALER, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE))
+            print(e.addName, addName, e.onlyChinese and '设置' or SETTINGS, e.onlyChinese and '坦克' or TANK, e.onlyChinese and '治疗' or HEALER, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE))
         end
     end
 end
@@ -1501,7 +1501,7 @@ local function Init_Menu(_, root)
         if ReadyTipsButton then
             ReadyTipsButton:ClearAllPoints()
             ReadyTipsButton:set_Point()--位置
-            print(id, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+            print(e.addName, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
         end
     end)
 

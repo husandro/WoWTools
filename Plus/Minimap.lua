@@ -948,7 +948,7 @@ local function Init_Button_Menu(_, level, menuList)--菜单
                 arg1= questID,
                 func= function(_, arg1)
                     Save.questIDs[arg1]=nil
-                    print(id, Initializer:GetName(), e.cn(addName2), GetQuestLink(questID) or questID,
+                    print(e.addName, Initializer:GetName(), e.cn(addName2), GetQuestLink(questID) or questID,
                     '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a'
                 )
                 end
@@ -981,7 +981,7 @@ local function Init_Button_Menu(_, level, menuList)--菜单
                 arg2= uiMapID,
                 func= function(_, arg1,arg2)
                     Save.areaPoiIDs[arg1]=nil
-                    print(id,Initializer:GetName(), e.cn(addName2),
+                    print(e.addName,Initializer:GetName(), e.cn(addName2),
                         get_AreaPOIInfo_Name(C_AreaPoiInfo.GetAreaPOIInfo(arg2, arg1) or {}),
                         arg1 and 'areaPoiID '..arg1 or '',
                         ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
@@ -1013,7 +1013,7 @@ local function Init_Button_Menu(_, level, menuList)--菜单
                 arg1= uiMapID,
                 func= function(_, arg1)
                     Save.uiMapIDs[arg1]=nil
-                    print(id,Initializer:GetName(), e.cn(addName2),
+                    print(e.addName,Initializer:GetName(), e.cn(addName2),
                     (C_Map.GetMapInfo(uiMapID) or {}).name,
                     arg1 and 'uiMapID '..arg1 or '',
                     ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
@@ -1058,7 +1058,7 @@ local function Init_Button_Menu(_, level, menuList)--菜单
                 arg2= uiMapID,
                 func= function(_, arg1,arg2)
                     Save.areaPoiIDs[arg1]=nil
-                    print(id,Initializer:GetName(), e.cn(addName2),
+                    print(e.addName,Initializer:GetName(), e.cn(addName2),
                         get_AreaPOIInfo_Name(C_AreaPoiInfo.GetAreaPOIInfo(arg2, arg1) or {})
                         'areaPoiID '..arg1,
                         ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
@@ -1102,7 +1102,7 @@ local function Init_Button_Menu(_, level, menuList)--菜单
                 Save.pointVigentteButton=nil
                 Button:ClearAllPoints()
                 Button:Set_Point()
-                print(id, Initializer:GetName(), e.onlyChinese and '重置位置' or RESET_POSITION)
+                print(e.addName, Initializer:GetName(), e.onlyChinese and '重置位置' or RESET_POSITION)
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1233,7 +1233,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
         local destination= ttsVoices.voiceID and Enum.VoiceTtsDestination.QueuedLocalPlayback or Enum.VoiceTtsDestination.LocalPlayback
         --C_VoiceChat.SpeakText(voiceID, text, destination, rate, volume)
         C_VoiceChat.SpeakText(voiceID, text, destination, 0, 100)
-        print(id, e.cn(addName2),'|cffff00ff', text)
+        print(e.addName, e.cn(addName2),'|cffff00ff', text)
     end
     function Button:set_VIGNETTES_UPDATED(init)
         if UnitOnTaxi('player') or not Save.vigentteSound then
@@ -1356,7 +1356,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
             end
             scale= scale>2.5 and 2.5  or scale
             scale= scale<0.4 and 0.4 or scale
-            print(id, Initializer:GetName(), e.onlyChinese and '缩放' or UI_SCALE, scale)
+            print(e.addName, Initializer:GetName(), e.onlyChinese and '缩放' or UI_SCALE, scale)
             Save.vigentteButtonTextScale= scale
             self:set_Frame_Scale()--设置，Button的 Frame Text 属性
             self:set_Tootips()
@@ -1438,7 +1438,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
         hooksecurefunc(self, 'OnMouseClickAction', function(self, d)
             if self.questID and d=='LeftButton' and IsAltKeyDown() then
                 Save.questIDs[self.questID]= not Save.questIDs[self.questID] and true or nil
-                print(id,Initializer:GetName(), e.cn(addName2),
+                print(e.addName,Initializer:GetName(), e.cn(addName2),
                     GetQuestLink(self.questID) or self.questID,
                     Save.questIDs[self.questID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', e.Icon.select) or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
                 )
@@ -1465,7 +1465,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
                     local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, self.areaPoiID) or {}
                     local name= get_AreaPOIInfo_Name(poiInfo)--取得 areaPoiID 名称
                     name= name=='' and 'areaPoiID '..self.areaPoiID or name
-                    print(id,Initializer:GetName(), e.cn(addName2),
+                    print(e.addName,Initializer:GetName(), e.cn(addName2),
                         (C_Map.GetMapInfo(uiMapID) or {}).name or ('uiMapID '..uiMapID),
                         name,
                         Save.areaPoiIDs[self.areaPoiID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', e.Icon.select) or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
@@ -1491,7 +1491,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
         if uiMapID then
             Save.uiMapIDs[uiMapID]= not Save.uiMapIDs[uiMapID] and true or nil
             local name= (C_Map.GetMapInfo(uiMapID) or {}).name or ('uiMapID '..uiMapID)
-            print(id,Initializer:GetName(), e.cn(addName2),
+            print(e.addName,Initializer:GetName(), e.cn(addName2),
                 name,
                 Save.uiMapIDs[uiMapID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', e.Icon.select) or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
             )
@@ -2294,7 +2294,7 @@ local function Init_Menu(_, level, menuList)
                 Save.pointVigentteButton=nil
                 Button:ClearAllPoints()
                 Button:Set_Point()
-                print(id, Initializer:GetName(), e.onlyChinese and '重置位置' or RESET_POSITION)
+                print(e.addName, Initializer:GetName(), e.onlyChinese and '重置位置' or RESET_POSITION)
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -2316,7 +2316,7 @@ local function Init_Menu(_, level, menuList)
                 TimeManagerClockButton:SetParent(MinimapCluster)
                 TimeManagerClockButton:SetPoint('TOPRIGHT', MinimapCluster.BorderTop,-4,0)--Blizzard_TimeManager.xml
                 --<Anchor point="TOPRIGHT" relativeKey="$parent.BorderTop" x="-4" y="0"/>
-                print(id, Initializer:GetName(), e.onlyChinese and '重置位置' or RESET_POSITION)
+                print(e.addName, Initializer:GetName(), e.onlyChinese and '重置位置' or RESET_POSITION)
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -2397,7 +2397,7 @@ local function Init_Menu(_, level, menuList)
             keepShownOnClick=true,
             func= function()
                 Save.disabledInstanceDifficulty= not Save.disabledInstanceDifficulty and true or nil
-                print(id, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabledInstanceDifficulty), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                print(e.addName, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabledInstanceDifficulty), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -2424,7 +2424,7 @@ local function Init_Menu(_, level, menuList)
             menuList='ResetTimeManagerClockButton',
             func= function()
                 Save.disabledClockPlus= not Save.disabledClockPlus and true or nil
-                print(id, Initializer:GetName(), '|cnGREEN_FONT_COLOR:' , e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                print(e.addName, Initializer:GetName(), '|cnGREEN_FONT_COLOR:' , e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -2438,7 +2438,7 @@ local function Init_Menu(_, level, menuList)
             --keepShownOnClick=true,
             func= function()
                 Save.hideExpansionLandingPageMinimapButton= not Save.hideExpansionLandingPageMinimapButton and true or nil
-                print(id, Initializer:GetName(), '|cnGREEN_FONT_COLOR:' , e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                print(e.addName, Initializer:GetName(), '|cnGREEN_FONT_COLOR:' , e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -2451,7 +2451,7 @@ local function Init_Menu(_, level, menuList)
             keepShownOnClick=true,
             func= function()
                 Save.moveExpansionLandingPageMinimapButton= not Save.moveExpansionLandingPageMinimapButton and true or nil
-                print(id, Initializer:GetName(), '|cnGREEN_FONT_COLOR:' , e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                print(e.addName, Initializer:GetName(), '|cnGREEN_FONT_COLOR:' , e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -2890,7 +2890,7 @@ local function Blizzard_TimeManager()
         n= n<0.4 and 0.4 or n
         Save.TimeManagerClockButtonScale= n
         self:set_scale()
-        print(id, Initializer:GetName(), '|cnGREEN_FONT_COLOR:', n)
+        print(e.addName, Initializer:GetName(), '|cnGREEN_FONT_COLOR:', n)
     end)
     --时钟，移动
     TimeManagerClockButton:SetMovable(true)
@@ -2912,7 +2912,7 @@ local function Blizzard_TimeManager()
     TimeManagerClockButton:HookScript('OnLeave', function(self) self:SetAlpha(1) end)
     TimeManagerClockButton:HookScript('OnEnter', function(self)
         self:SetAlpha(0.5)
-        e.call('TimeManagerClockButton_UpdateTooltip')
+        e.call(TimeManagerClockButton_UpdateTooltip)
     end)
 
     --设置，时间，颜色
@@ -3017,7 +3017,7 @@ local function Blizzard_TimeManager()
         Save.StopwatchFrameScale= n
         self:set_scale()
         self:set_tooltips()
-        print(id, Initializer:GetName(), '|cnGREEN_FONT_COLOR:', n)
+        print(e.addName, Initializer:GetName(), '|cnGREEN_FONT_COLOR:', n)
     end)
     StopwatchFrame:set_scale()
 

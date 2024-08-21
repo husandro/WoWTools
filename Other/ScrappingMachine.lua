@@ -114,7 +114,7 @@ function Init_Menu(self, level, menuList)
                 keepShownOnClick=true,
                 func= function(_, arg1)
                     Save.items[arg1]=nil
-                    print(id, Initializer:GetName(), e.onlyChinese and '移除' or REMOVE, select(2, C_Item.GetItemInfo(itemID)) or itemID)
+                    print(e.addName, Initializer:GetName(), e.onlyChinese and '移除' or REMOVE, select(2, C_Item.GetItemInfo(itemID)) or itemID)
                 end
             }, level)
             n=n+1
@@ -266,7 +266,7 @@ local function Init_Disabled_Button()
         local infoType, itemID, itemLink = GetCursorInfo()
         if infoType == "item" and itemID then
             Save.items[itemID]= not Save.items[itemID] and true or nil
-            print(id, Initializer:GetName(),
+            print(e.addName, Initializer:GetName(),
                 Save.items[itemID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r'
                     or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r'),
                 itemLink or itemID
@@ -480,7 +480,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue=function() return not Save.disabled end,
                 SetValue= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(id, Initializer:GetName(), e.GetEnabeleDisable(Save.disabled), ScrappingMachineFrame and (e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD) or '')
+                    print(e.addName, Initializer:GetName(), e.GetEnabeleDisable(Save.disabled), ScrappingMachineFrame and (e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD) or '')
                 end
             })
 

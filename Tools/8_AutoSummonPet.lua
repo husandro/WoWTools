@@ -65,7 +65,7 @@ local function Init_PetJournal_InitPetButton(frame, elementData)
                 if button then
                     button:init_pets_data()
                 end
-                e.call('PetJournal_UpdatePetList')
+                e.call(PetJournal_UpdatePetList)
             end)
             frame:SetScript('OnLeave', function(self) self.sumButton:set_alpha() end)
             frame:SetScript('OnEnter', function(self) self.sumButton:SetAlpha(1) end)

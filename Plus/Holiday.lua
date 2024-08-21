@@ -1027,7 +1027,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue= function() return not Save.disabled end,
                 SetValue= function()
                     Save.disabled = not Save.disabled and true or nil
-                    print(id, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+                    print(e.addName, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
                 end,
                 buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
                 buttonFunc= function()
@@ -1036,7 +1036,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         TrackButton:ClearAllPoints()
                         TrackButton:set_Point()
                     end
-                    print(id, Initializer:GetName(), e.onlyChinese and '重置位置' or RESET_POSITION)
+                    print(e.addName, Initializer:GetName(), e.onlyChinese and '重置位置' or RESET_POSITION)
                 end,
                 tooltip= e.cn(addName),
                 layout= nil,

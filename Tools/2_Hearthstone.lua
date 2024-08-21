@@ -160,7 +160,7 @@ local function Init_Menu_Toy(_, root)
         sub2=sub:CreateButton(
             '|A:common-icon-redx:0:0|a'..(e.onlyChinese and '移除' or REMOVE),
             function(data)
-                print(id, addName, select(2, C_Item.GetItemInfo(data.itemID)) or data.itemID, e.onlyChinese and '移除' or REMOVE)
+                print(e.addName, addName, select(2, C_Item.GetItemInfo(data.itemID)) or data.itemID, e.onlyChinese and '移除' or REMOVE)
                 Save.items[data.itemID]=nil
                 ToyButton:init_toy()
                 return MenuResponse.Open
@@ -206,7 +206,7 @@ end
     sub=root:CreateButton('|A:common-icon-redx:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL), function()
         if IsControlKeyDown() then
             Save.items={}
-            print(id, addName, e.onlyChinese and '全部清除' or CLEAR_ALL)
+            print(e.addName, addName, e.onlyChinese and '全部清除' or CLEAR_ALL)
             ToyButton:init_toy()
         else
             return MenuResponse.Open
@@ -226,7 +226,7 @@ end
         if IsControlKeyDown() then
             Save.items= P_Items
             ToyButton:init_toy()
-            print(id, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)
+            print(e.addName, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)
         else
             return MenuResponse.Open
         end
@@ -633,27 +633,12 @@ local function Init()
     function ToyButton:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        --WoWTools_ToolsButtonMixin:SetToyTooltip(e.tips, self.itemID)
-
-        e.tips:AddDoubleLine(WoWTools_ToolsButtonMixin:GetName(), addName)
+        e.tips:AddDoubleLine(WoWTools_ToolsButtonMixin:GetSpellItemText(nil, self.itemID), e.Icon.left)
         e.tips:AddLine(' ')
-
         local name, col
         for itemID, type in pairs(ModifiedTab) do
-            name= e.cn(C_Item.GetItemNameByID(itemID), {itemID=itemID, isName=true})
-            if name then
-                name= name:match('|c........(.-)|r') or name
-            else
-                name='itemID: '..itemID
-            end
-            col=(PlayerHasToy(itemID) or C_Item.GetItemCount(itemID)>0) and '' or '|cff9e9e9e'
-
-            e.tips:AddDoubleLine(
-                col
-                ..'|T'..(C_Item.GetItemIconByID(itemID) or 0)..':0|t'
-                ..name
-                ..(e.GetSpellItemCooldown(nil, itemID) or ''),
-                col..type..'+'..e.Icon.left
+            name, col=WoWTools_ToolsButtonMixin:GetSpellItemText(nil, itemID)
+            e.tips:AddDoubleLine(name, (col or '')..type..'+'..e.Icon.left
             )
         end
         e.tips:AddLine(' ')
@@ -701,9 +686,10 @@ local function Init()
     ToyButton:init_toy()
     ToyButton:set_alt()
 
-    C_Timer.After(2, function()
+    C_Timer.After(4, function()
         ToyButton:set_location()
         ToyButton:set_cool()
+        ToyButton:set_run()
     end)
 end
 

@@ -65,7 +65,7 @@ local function Add_ClearAll_Button(frame, tooltip, func)
         end
     end)]]
     function btn:print_text(num)
-        print(id, addName, e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, '|A:bags-button-autosort-up:0:0|a', '|cffff00ff'..(num or 0)..'|r', btn.tooltip)
+        print(e.addName, addName, e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, '|A:bags-button-autosort-up:0:0|a', '|cffff00ff'..(num or 0)..'|r', btn.tooltip)
     end
     btn.tooltip= tooltip
 end
@@ -347,7 +347,7 @@ local function Init_Achievement()
             num= num +1
         end
         if num>0 and AchievementFrame and AchievementFrame:IsVisible() and AchievementFrameAchievements_ForceUpdate then
-            e.call('AchievementFrameAchievements_ForceUpdate')--Blizzard_ObjectiveTracker
+            e.call(AchievementFrameAchievements_ForceUpdate)--Blizzard_ObjectiveTracker
         end
         self:print_text(num)
     end)
@@ -565,7 +565,7 @@ local function Init_ObjectiveTrackerFrame()
     --缩放
     btn:HookScript('OnMouseWheel', function(self, d)
         Save.scale= WoWTools_MenuMixin:ScaleFrame(ObjectiveTrackerFrame, d, Save.scale, function()
-            print(id, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(e.addName, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             print('|cnRED_FONT_COLOR:', e.onlyChinese and '友情提示: 可能会出现错误' or 'note: errors may occur')
         end)
         self:set_tooltip()
@@ -785,7 +785,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue= function() return not Save.disabled end,
                 SetValue= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(id, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(e.addName, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 

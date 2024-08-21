@@ -171,7 +171,7 @@ local function set_QuinkJoin_Init()--快速加入, 初始化 QuickJoin.lua
         if self.AcceptButton:IsEnabled() and not IsModifierKeyDown() then
             local tank2, healer2, dps2= self:GetSelectedRoles()
             self.AcceptButton:Click()
-            print(id, addName,
+            print(e.addName, addName,
                     tank2 and INLINE_TANK_ICON, healer2 and INLINE_HEALER_ICON, dps2 and INLINE_DAMAGER_ICON,
                     e.GetEnabeleDisable(false)..'Alt',
                     link
@@ -261,7 +261,7 @@ local function Init_Friends_Menu(self, root)
     local sub= root:CreateButton(e.onlyChinese and '其他玩家' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTINGS_CATEGORY_TITLE_MISC, PLAYER))
     sub:CreateButton('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL), function()
         Save.Friends= {}
-        print(id, addName, e.onlyChinese and '全部清除' or CLEAR_ALL)
+        print(e.addName, addName, e.onlyChinese and '全部清除' or CLEAR_ALL)
     end)
     sub:CreateDivider()
 
@@ -303,7 +303,7 @@ local function Init_Friends_Menu(self, root)
         return not Save.disabledFriendPlus
     end, function()
         Save.disabledFriendPlus= not Save.disabledFriendPlus and true or nil
-        e.call('FriendsList_Update', true)
+        e.call(FriendsList_Update, true)
     end)
 
     root:CreateDivider()
@@ -514,7 +514,7 @@ local function Init_FriendsList()--好友列表, 初始化
         end
         if text then
             if showPrint then
-                print(id, addName, text)
+                print(e.addName, addName, text)
             else
                 e.call(FriendsFrame_CheckBattlenetStatus)
             end
@@ -545,7 +545,7 @@ end)
     
 end
         --[[if not BNConnected() then
-            print(id, addName, e.Icon.net2, e.onlyChinese and '断开战网' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SOCIAL_TWITTER_DISCONNECT, COMMUNITY_COMMAND_BATTLENET))
+            print(e.addName, addName, e.Icon.net2, e.onlyChinese and '断开战网' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SOCIAL_TWITTER_DISCONNECT, COMMUNITY_COMMAND_BATTLENET))
             return
         end
         if not self.menu then
@@ -580,7 +580,7 @@ end
                     keepShownOnClick=true,
                     func= function()
                         Save.disabledFriendPlus= not Save.disabledFriendPlus and true or nil
-                        print(id, addName, e.GetEnabeleDisable(not Save.disabledFriendPlus), e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
+                        print(e.addName, addName, e.GetEnabeleDisable(not Save.disabledFriendPlus), e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
                     end
                 }
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -837,7 +837,7 @@ local function set_WhoList_Update()--查询, 名单列表
             btn:HookScript('OnClick', function()
                 if WhoFrameAddFriendButton:IsEnabled() and IsAltKeyDown() then
                     WhoFrameAddFriendButton:Click()
-                    C_Timer.After(1, function() e.call('WhoList_Update') end)
+                    C_Timer.After(1, function() e.call(WhoList_Update) end)
                 end
             end)
             btn:HookScript('OnEnter', function(self)--FriendsFrame.lua
@@ -1038,7 +1038,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue= function() return not Save.disabled end,
                 SetValue= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(id , addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(e.addName , addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 
@@ -1064,7 +1064,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 if frame.elapsed>1 then
                     frame.elapsed=0
                     if not UnitAffectingCombat('player') then
-                        e.call('RaidGroupFrame_Update')
+                        e.call(RaidGroupFrame_Update)
                     end
                 end
             end)

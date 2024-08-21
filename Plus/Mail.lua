@@ -99,12 +99,12 @@ end
 
 local function Refresh_All()
     if InboxFrame:IsShown() then
-        e.call('InboxFrame_Update')
+        e.call(InboxFrame_Update)
     elseif SendMailFrame:IsShown() then
-        e.call('SendMailFrame_Update')
+        e.call(SendMailFrame_Update)
     end
     if OpenMailFrame:IsShown() then
-        e.call('OpenMail_Update')
+        e.call(OpenMail_Update)
     end
 end
 
@@ -775,7 +775,7 @@ local function Init_Fast_Button_Menu(frame, level, menuList)
                     func= function(_, arg1, arg2)
                         if arg2 then
                             Save.fast[arg1]= arg2
-                            print(id, Initializer:GetName(), arg1, arg2)
+                            print(e.addName, Initializer:GetName(), arg1, arg2)
                             self:set_Player_Lable()
                         end
                     end,
@@ -817,7 +817,7 @@ local function Init_Fast_Button_Menu(frame, level, menuList)
         func= function(_, arg1, arg2)
             if arg2 then
                 Save.fast[arg1]= arg2
-                print(id, Initializer:GetName(), arg1, arg2)
+                print(e.addName, Initializer:GetName(), arg1, arg2)
                 self:set_Player_Lable()
             end
         end
@@ -830,7 +830,7 @@ local function Init_Fast_Button_Menu(frame, level, menuList)
         arg1=self.name,
         func=function(_, arg1)
             Save.fast[arg1]=nil
-            print(id, Initializer:GetName(), arg1, e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
+            print(e.addName, Initializer:GetName(), arg1, e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
             self:set_Player_Lable()
         end
     }, level)
@@ -1176,7 +1176,7 @@ local function return_delete_InBox(openMailID)--删除，或退信
         InboxFrame.openMailID= openMailID
         OpenMailFrame.itemName= (itemCount and itemCount>0) and itemName or nil
         OpenMailFrame.money= money
-        e.call('OpenMail_Delete')--删除，或退信 MailFrame.lua
+        e.call(OpenMail_Delete)--删除，或退信 MailFrame.lua
     end
 
     print('|cFFFF00FF'..openMailID..')|r',
@@ -1367,7 +1367,7 @@ local function Init_InBox()
                                     OpenMailSender.Name:SetText(self.playerName or self.sender)
                                     OpenMailSubject:SetText(self.subject)
                                     InboxFrame.openMailID= self.openMailID
-                                    e.call('OpenMail_Reply')--回复
+                                    e.call(OpenMail_Reply)--回复
                                 end
                                 self:SetAlpha(1)
                             end)
@@ -1494,7 +1494,7 @@ local function Init_InBox()
                     btn.outItemOrMoney= e.Cbtn(btn, {size={22, 20}, atlas='talents-search-notonactionbarhidden'})
                     btn.outItemOrMoney:SetPoint('RIGHT', btn.DeleteButton, 'LEFT', -22, 0)
                     btn.outItemOrMoney:SetScript('OnClick', function(self)
-                        e.call('InboxFrame_OnModifiedClick', self:GetParent(), self.openMailID)
+                        e.call(InboxFrame_OnModifiedClick, self:GetParent(), self.openMailID)
                     end)
                     btn.outItemOrMoney:SetScript('OnLeave' ,function(self)
                         local frame=self:GetParent()
@@ -2286,7 +2286,7 @@ local function Init_Send_History_Name()--收件人，历史记录
                                 local name2= Save.lastSendPlayerList[arg1]
                                 table.remove(Save.lastSendPlayerList, arg1)
                                 self:set_list()
-                                print(id, Initializer:GetName(), format('|cnGREEN_FONT_COLOR:%s|r', e.onlyChinese and '移除' or REMOVE), name2)
+                                print(e.addName, Initializer:GetName(), format('|cnGREEN_FONT_COLOR:%s|r', e.onlyChinese and '移除' or REMOVE), name2)
                             end
                         }, level)
                     end
@@ -2298,7 +2298,7 @@ local function Init_Send_History_Name()--收件人，历史记录
                         func= function()
                             Save.lastSendPlayerList={}
                             self:set_list()
-                            print(id, Initializer:GetName(), format('|cnGREEN_FONT_COLOR:%s|r',e.onlyChinese and '全部清除' or CLEAR_ALL))
+                            print(e.addName, Initializer:GetName(), format('|cnGREEN_FONT_COLOR:%s|r',e.onlyChinese and '全部清除' or CLEAR_ALL))
                         end
                     }, level)
                     return
@@ -2570,7 +2570,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue= function() return not Save.disabled end,
                 SetValue= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(id, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(e.addName, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 

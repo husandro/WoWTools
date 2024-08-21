@@ -18,7 +18,7 @@ e.StausText={}--属性，截取表 API_Panel.lua
 e.ChallengesSpellTabs={}--Challenges.lua
 
 e.tips=GameTooltip
-e.call=securecall
+e.call= securecallfunction--securecall
 e.LibDD=LibStub:GetLibrary("LibUIDropDownMenu-4.0", true)--菜单
 
 e.LeftButtonDown = C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'LeftButtonDown' or 'LeftButtonUp'

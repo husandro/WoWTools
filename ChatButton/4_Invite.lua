@@ -68,14 +68,14 @@ end
 local InvPlateTimer
 local InvUnitFunc=function()--邀请，周围玩家
     if not getLeader() then--取得权限
-        print(id, addName, '|cnRED_FONT_COLOR:', e.onlyChinese and '你没有权利这样做' or ERR_GUILD_PERMISSIONS)
+        print(e.addName, addName, '|cnRED_FONT_COLOR:', e.onlyChinese and '你没有权利这样做' or ERR_GUILD_PERMISSIONS)
         return
     end
 
     local p=C_CVar.GetCVarBool('nameplateShowFriends')
     if not p then
         if UnitAffectingCombat('player') then
-            print(id, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or COMBAT))
+            print(e.addName, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or COMBAT))
             return
         else
             C_CVar.SetCVar('nameplateShowFriends', '1')
@@ -104,9 +104,9 @@ local InvUnitFunc=function()--邀请，周围玩家
                         if not InvPlateGuid[guid] then
                             C_PartyInfo.InviteUnit(name)
                             InvPlateGuid[guid]=name
-                            print(id, '|cnGREEN_FONT_COLOR:'..n..'|r)', e.onlyChinese and '邀请' or INVITE ,e.PlayerLink(name, guid))
+                            print(e.addName, '|cnGREEN_FONT_COLOR:'..n..'|r)', e.onlyChinese and '邀请' or INVITE ,e.PlayerLink(name, guid))
                             if not raid and n +co>=5  then
-                                print(id, addName, format(PETITION_TITLE, '|cff00ff00'..(e.onlyChinese and '转团' or CONVERT_TO_RAID)..'|r'))
+                                print(e.addName, addName, format(PETITION_TITLE, '|cff00ff00'..(e.onlyChinese and '转团' or CONVERT_TO_RAID)..'|r'))
                                 break
                             end
                             n=n+1
@@ -119,7 +119,7 @@ local InvUnitFunc=function()--邀请，周围玩家
             C_CVar.SetCVar('nameplateShowFriends', '0')
         end
         if n==1 then
-            print(id, addName, e.onlyChinese and '邀请成员' or GUILDCONTROL_OPTION7, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE))
+            print(e.addName, addName, e.onlyChinese and '邀请成员' or GUILDCONTROL_OPTION7, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE))
         end
     end)
 end
@@ -165,12 +165,12 @@ local function set_PLAYER_TARGET_CHANGED()--设置, 邀请目标
     if guid then
         InvPlateGuid[guid]=name--保存到已邀请列表
     end
-    print(id, addName, e.onlyChinese and '目标' or TARGET, e.GetPlayerInfo({guid=guid, name=name, reLink=true}))
+    print(e.addName, addName, e.onlyChinese and '目标' or TARGET, e.GetPlayerInfo({guid=guid, name=name, reLink=true}))
 end
 
 local function InvPlateGuidFunc()--从已邀请过列表里, 再次邀请 
     if not getLeader() then--取得权限
-        print(id, addName, e.onlyChinese and '你没有权利这样做' or ERR_GUILD_PERMISSIONS)
+        print(e.addName, addName, e.onlyChinese and '你没有权利这样做' or ERR_GUILD_PERMISSIONS)
         return
     end
     local n=0
@@ -180,7 +180,7 @@ local function InvPlateGuidFunc()--从已邀请过列表里, 再次邀请
         if num==40 then
             return
         elseif not IsInRaid() and num==5 and not Save.PartyToRaid then
-            print(id, addName, e.onlyChinese and '请求：转化为团队' or  PETITION_TITLE:format('|cff00ff00'..CONVERT_TO_RAID..'|r'))
+            print(e.addName, addName, e.onlyChinese and '请求：转化为团队' or  PETITION_TITLE:format('|cff00ff00'..CONVERT_TO_RAID..'|r'))
             return
         end
 
@@ -233,7 +233,7 @@ local function set_PARTY_INVITE_REQUEST(name, isTank, isHealer, isDamage, isNati
 
     local function setPrint(sec, text)
         e.PlaySound(SOUNDKIT.IG_PLAYER_INVITE)--播放, 声音
-        print(id, 'ChatButton', addName, text,
+        print(e.addName, 'ChatButton', addName, text,
             '|cnGREEN_FONT_COLOR:'..sec.. ' |r'..(e.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS),
             (isTank and e.Icon.TANK or '')..(isHealer and e.Icon.HEALER or '')..(isDamage and e.Icon.DAMAGER or ''),
             questSessionActive and (e.onlyChinese and '场景战役' or SCENARIOS) or '',--场景战役
@@ -324,9 +324,9 @@ local function set_event_PLAYER_UPDATE_RESTING()--设置, 休息区提示事件
 end
 local function set_PLAYER_UPDATE_RESTING()--设置, 休息区提示
     if IsResting() then
-        print(id, addName, e.onlyChinese and '进入' or  ENTER_LFG, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '休息' or CALENDAR_STATUS_OUT)..'|r',  e.onlyChinese and '区域' or ZONE)
+        print(e.addName, addName, e.onlyChinese and '进入' or  ENTER_LFG, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '休息' or CALENDAR_STATUS_OUT)..'|r',  e.onlyChinese and '区域' or ZONE)
     else
-        print(id, addName, e.onlyChinese and '离开' or LEAVE, '|cnRED_FONT_COLOR:'..( e.onlyChinese and '休息' or CALENDAR_STATUS_OUT)..'|r', e.onlyChinese and '区域' or ZONE)
+        print(e.addName, addName, e.onlyChinese and '离开' or LEAVE, '|cnRED_FONT_COLOR:'..( e.onlyChinese and '休息' or CALENDAR_STATUS_OUT)..'|r', e.onlyChinese and '区域' or ZONE)
     end
 end
 
@@ -698,7 +698,7 @@ local function Init_CONFIRM_SUMMON()
             local playerInfo=e.GetPlayerInfo({guid=info.guid, reLink=true})
             name= playerInfo~='' and playerInfo or name
         end
-        print(id, addName, e.onlyChinese and '召唤' or SUMMON, name, '|A:poi-islands-table:0:0|a|cnGREEN_FONT_COLOR:', C_SummonInfo.GetSummonConfirmAreaName())
+        print(e.addName, addName, e.onlyChinese and '召唤' or SUMMON, name, '|A:poi-islands-table:0:0|a|cnGREEN_FONT_COLOR:', C_SummonInfo.GetSummonConfirmAreaName())
     end)
 end
 
@@ -804,7 +804,7 @@ local function Init_Menu(self, root)
             end,
             OnAccept = function(frame)
                 Save.ChannelText = string.upper(frame.editBox:GetText())
-                print(id, addName, e.onlyChinese and '频道' or CHANNEL,'|cnGREEN_FONT_COLOR:'..Save.ChannelText..'|r')
+                print(e.addName, addName, e.onlyChinese and '频道' or CHANNEL,'|cnGREEN_FONT_COLOR:'..Save.ChannelText..'|r')
             end,
             EditBoxOnTextChanged=function(frame)
                 local text= frame:GetText()
@@ -952,7 +952,7 @@ local function Init_Menu(self, root)
         sub2=sub:CreateButton(nu..' '..e.GetPlayerInfo({unit=nil, guid=guid, name=nil,  reName=true, reRealm=true}),
         function(data)
             Save.InvNoFriend[data]=nil
-            print(id, addName, e.GetPlayerInfo({unit=nil, guid=guid, reLink=true}))
+            print(e.addName, addName, e.GetPlayerInfo({unit=nil, guid=guid, reLink=true}))
         end, guid)
         sub2:SetTooltip(function(tooltip)
             tooltip:AddLine(e.onlyChinese and '移除' or REMOVE)
@@ -1056,7 +1056,7 @@ local function Init()
         if notInviterGUID then
             if Save.InvNoFriend[notInviterGUID] then
                 Save.InvNoFriend[notInviterGUID] =nil
-                print(id, 'ChatButton', addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', e.PlayerLink(nil, notInviterGUID) or '', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '拒绝' or DECLINE)..'|r'..(e.onlyChinese and '邀请' or INVITE))
+                print(e.addName, 'ChatButton', addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', e.PlayerLink(nil, notInviterGUID) or '', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '拒绝' or DECLINE)..'|r'..(e.onlyChinese and '邀请' or INVITE))
                 AcceptGroup()
                 StaticPopup_Hide("PARTY_INVITE")
             else
@@ -1064,7 +1064,7 @@ local function Init()
                 Save.InvNoFriendNum=Save.InvNoFriendNum+1
                 DeclineGroup()
                 StaticPopup_Hide("PARTY_INVITE")
-                print(id, 'ChatButton', addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r', e.PlayerLink(nil, notInviterGUID) or '', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '拒绝' or DECLINE)..'|r'..(e.onlyChinese and '邀请' or INVITE))
+                print(e.addName, 'ChatButton', addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r', e.PlayerLink(nil, notInviterGUID) or '', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '拒绝' or DECLINE)..'|r'..(e.onlyChinese and '邀请' or INVITE))
             end
         end
         notInviterGUID=nil
@@ -1168,7 +1168,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, ...)
 
                     InvPlateGuid[guid]=name--保存到已邀请列表
 
-                    print(id, addName, e.onlyChinese and '频道' or CHANNEL, e.PlayerLink(name, guid))
+                    print(e.addName, addName, e.onlyChinese and '频道' or CHANNEL, e.PlayerLink(name, guid))
                 end
             end
         end

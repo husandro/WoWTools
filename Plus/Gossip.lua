@@ -408,7 +408,7 @@ local function select_Reward(questID)--自动:选择奖励
     if bestItem and not IsModifierKeyDown() then
         _G['QuestInfoRewardsFrameQuestInfoItem'..bestItem]:Click()--QuestFrame.lua
         if selectItemLink then
-            print(id, Initializer:GetName(), '|cffff00ff'..(e.onlyChinese and '选择' or CHOOSE)..'|r', selectItemLink)
+            print(e.addName, Initializer:GetName(), '|cffff00ff'..(e.onlyChinese and '选择' or CHOOSE)..'|r', selectItemLink)
         end
     end
 end
@@ -668,7 +668,7 @@ local function Init_Gossip_Text_Icon_Options()
         if info then
             if info.icon==icon and info.name==name and (info.hex==hex or (not info.hex and hex=='ff000000')) then--一样，数据
                 self.Add:SetNormalAtlas('VignetteEvent')
-                self.Add.tooltip=e.onlyChinese and '已存在' or 'Existed'
+                self.Add.tooltip=e.onlyChinese and '已存在' or UPDATE
             else--需要，更新，数据
                 self.Add:SetNormalAtlas(e.Icon.select)
                 self.Add.tooltip=e.onlyChinese and '需要更新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, UPDATE)
@@ -761,14 +761,14 @@ local function Init_Gossip_Text_Icon_Options()
                 icon= '|T'..texture2..':0|t'
             end
         end
-        print(id, Initializer:GetName(), '|cnGREEN_FONT_COLOR:'..num..'|r', icon or '', '|c'..(hex or 'ff000000'), name)
+        print(e.addName, Initializer:GetName(), '|cnGREEN_FONT_COLOR:'..num..'|r', icon or '', '|c'..(hex or 'ff000000'), name)
     end
 
     function menu:delete_gossip(gossipID)
         if gossipID and Save.Gossip_Text_Icon_Player[gossipID] then
             local info=Save.Gossip_Text_Icon_Player[gossipID]
             Save.Gossip_Text_Icon_Player[gossipID]=nil
-            print(id, Initializer:GetName(), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '删除' or DELETE)..'|r|n', gossipID, info.icon, info.hex, info.name)
+            print(e.addName, Initializer:GetName(), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '删除' or DELETE)..'|r|n', gossipID, info.icon, info.hex, info.name)
             self:set_list()
             GossipButton:update_gossip_frame()
         end
@@ -1053,7 +1053,7 @@ local function Init_Gossip_Text_Icon_Options()
                 button2= e.onlyChinese and '取消' or CANCEL,
                 OnAccept = function()
                     Save.Gossip_Text_Icon_Player={}
-                    print(id, Initializer:GetName(), e.onlyChinese and '全部清除' or CLEAR_ALL, format('|cnGREEN_FONT_COLOR:%s|r', e.onlyChinese and '完成' or DONE))
+                    print(e.addName, Initializer:GetName(), e.onlyChinese and '全部清除' or CLEAR_ALL, format('|cnGREEN_FONT_COLOR:%s|r', e.onlyChinese and '完成' or DONE))
                     Gossip_Text_Icon_Frame.menu:set_list()
                 end,
             }
@@ -1112,7 +1112,7 @@ local function Init_Gossip_Text_Icon_Options()
             GossipButton:update_gossip_frame()
             Gossip_Text_Icon_Frame.menu:set_list()
             if not Save.Gossip_Text_Icon_cnFont then
-                print(id, Initializer:GetName(), '|cnGREEN_FONT_COLOR:', e.onlyChinese and '需要重新加载UI' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, RELOADUI))
+                print(e.addName, Initializer:GetName(), '|cnGREEN_FONT_COLOR:', e.onlyChinese and '需要重新加载UI' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, RELOADUI))
             end
         end)
     end
@@ -1173,7 +1173,7 @@ local function Init_Gossip_Text_Icon_Options()
                             for _, info in pairs(arg1) do
                                 if not Save.Gossip_Text_Icon_Player[info.gossipID] then
                                     Save.Gossip_Text_Icon_Player[info.gossipID]= {name=info.name}
-                                    print(id, Initializer:GetName(), format('|cnGREEN_FONT_COLOR:%s|r', e.onlyChinese and '添加' or ADD), info.gossipID, info.name)
+                                    print(e.addName, Initializer:GetName(), format('|cnGREEN_FONT_COLOR:%s|r', e.onlyChinese and '添加' or ADD), info.gossipID, info.name)
                                 end
                             end
                             Gossip_Text_Icon_Frame.menu:set_list()
@@ -1295,7 +1295,7 @@ local function Init_Gossip_Text_Icon_Options()
 
         local addText= format('|cnGREEN_FONT_COLOR:%s %d|r', e.onlyChinese and '添加' or ADD, #add)
         local delText= format('|cffffffff%s %d|r', e.onlyChinese and '无效的组合' or SPELL_FAILED_CUSTOM_ERROR_455, del)
-        local existText= format('|cnRED_FONT_COLOR:%s %d|r', e.onlyChinese and '已存在' or 'Existed', exist)
+        local existText= format('|cnRED_FONT_COLOR:%s %d|r', e.onlyChinese and '已存在' or format(ERR_ZONE_EXPLORED, PROFESSIONS_CURRENT_LISTINGS), exist)
         if not tooltips then
             for _, info in pairs(add) do
                 Save.Gossip_Text_Icon_Player[info.gossipID]= info.tab
@@ -1306,7 +1306,7 @@ local function Init_Gossip_Text_Icon_Options()
                     info.tab.hex and format('|c%s%s', info.tab.hex, info.tab.hex) or '')
             end
             Gossip_Text_Icon_Frame.menu:set_list()
-            print(id, Initializer:GetName(), '|n', format('%s|n%s|n%s', addText, delText, existText))
+            print(e.addName, Initializer:GetName(), '|n', format('%s|n%s|n%s', addText, delText, existText))
             frame:SetText(text)
         else
             e.tips:AddLine(addText)
@@ -1472,7 +1472,7 @@ local function Init_Menu_Gossip(_, level, type)
                 Save.point=nil
                 GossipButton:ClearAllPoints()
                 GossipButton:set_Point()
-                print(id, Initializer:GetName(), e.onlyChinese and '重置位置' or RESET_POSITION)
+                print(e.addName, Initializer:GetName(), e.onlyChinese and '重置位置' or RESET_POSITION)
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1509,7 +1509,7 @@ local function Init_Menu_Gossip(_, level, type)
                 arg1= gossipOptionID,
                 func=function(_, arg1)
                     Save.gossipOption[arg1]=nil
-                    print(id, Initializer:GetName(), e.onlyChinese and '移除' or REMOVE, text, 'gossipOptionID:', arg1)
+                    print(e.addName, Initializer:GetName(), e.onlyChinese and '移除' or REMOVE, text, 'gossipOptionID:', arg1)
                 end
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1524,7 +1524,7 @@ local function Init_Menu_Gossip(_, level, type)
             func= function()
                 if IsShiftKeyDown() then
                     Save.gossipOption={}
-                    print(id, Initializer:GetName(), e.onlyChinese and '自定义' or CUSTOM, e.onlyChinese and '清除全部' or CLEAR_ALL)
+                    print(e.addName, Initializer:GetName(), e.onlyChinese and '自定义' or CUSTOM, e.onlyChinese and '清除全部' or CLEAR_ALL)
                 end
             end
         }
@@ -1541,7 +1541,7 @@ local function Init_Menu_Gossip(_, level, type)
                 arg1= npcID,
                 func= function(_, arg1)
                     Save.NPC[arg1]=nil
-                    print(id, Initializer:GetName(), e.onlyChinese and '移除' or REMOVE, 'NPC', arg1)
+                    print(e.addName, Initializer:GetName(), e.onlyChinese and '移除' or REMOVE, 'NPC', arg1)
                 end
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1555,7 +1555,7 @@ local function Init_Menu_Gossip(_, level, type)
             func= function()
                 if IsShiftKeyDown() then
                     Save.NPC={}
-                    print(id, Initializer:GetName(), e.onlyChinese and '自定义' or CUSTOM, e.onlyChinese and '清除全部' or CLEAR_ALL)
+                    print(e.addName, Initializer:GetName(), e.onlyChinese and '自定义' or CUSTOM, e.onlyChinese and '清除全部' or CLEAR_ALL)
                 end
             end
         }
@@ -1580,7 +1580,7 @@ local function Init_Menu_Gossip(_, level, type)
                 arg1=spellID,
                 func= function(_, arg1)
                     Save.choice[arg1]=nil
-                    print(id, Initializer:GetName(), e.onlyChinese and '选择' or CHOOSE, e.onlyChinese and '移除' or REMOVE, C_Spell.GetSpellLink(arg1) or ('spellID '..arg1))
+                    print(e.addName, Initializer:GetName(), e.onlyChinese and '选择' or CHOOSE, e.onlyChinese and '移除' or REMOVE, C_Spell.GetSpellLink(arg1) or ('spellID '..arg1))
                 end
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1594,7 +1594,7 @@ local function Init_Menu_Gossip(_, level, type)
             func= function()
                 if IsShiftKeyDown() then
                     Save.choice={}
-                    print(id, Initializer:GetName(), e.onlyChinese and '选择' or CHOOSE, e.onlyChinese and '清除全部' or CLEAR_ALL)
+                    print(e.addName, Initializer:GetName(), e.onlyChinese and '选择' or CHOOSE, e.onlyChinese and '清除全部' or CLEAR_ALL)
                 end
             end
         }
@@ -1620,11 +1620,11 @@ local function Init_Menu_Gossip(_, level, type)
                     func= function(_, arg1)
                         if IsControlKeyDown() then
                             if IsMovieLocal(arg1) then
-                                print(id, Initializer:GetName(), arg1, e.onlyChinese and '存在' or 'Exist')
+                                print(e.addName, Initializer:GetName(), arg1, e.onlyChinese and '存在' or 'Exist')
                             else
                                 PreloadMovie(arg1)
                                 local inProgress2, downloaded2, total2 = GetMovieDownloadProgress(arg1)
-                                print(id, Initializer:GetName(), inProgress2 and downloaded2 and total2 and format('%i%%', downloaded/total*100) or total2)
+                                print(e.addName, Initializer:GetName(), inProgress2 and downloaded2 and total2 and format('%i%%', downloaded/total*100) or total2)
                             end
                         elseif not IsModifierKeyDown() then
                             e.LibDD:CloseDropDownMenus()
@@ -1660,15 +1660,15 @@ local function Init_Menu_Gossip(_, level, type)
                         MovieFrame_PlayMovie(MovieFrame, arg1)
                     elseif IsControlKeyDown() then
                         if IsMovieLocal(movieID) then
-                            print(id, Initializer:GetName(), arg1, e.onlyChinese and '存在' or 'Exist')
+                            print(e.addName, Initializer:GetName(), arg1, e.onlyChinese and '存在' or 'Exist')
                         else
                             PreloadMovie(arg1)
                             local inProgress2, downloaded2, total2 = GetMovieDownloadProgress(arg1)
-                            print(id, Initializer:GetName(), inProgress2 and downloaded2 and total2 and format('%i%%', downloaded/total*100) or total2)
+                            print(e.addName, Initializer:GetName(), inProgress2 and downloaded2 and total2 and format('%i%%', downloaded/total*100) or total2)
                         end
                     elseif IsShiftKeyDown() then
                         Save.movie[arg1]=nil
-                        print(id, Initializer:GetName(), e.onlyChinese and '移除' or REMOVE, 'movieID', arg1)
+                        print(e.addName, Initializer:GetName(), e.onlyChinese and '移除' or REMOVE, 'movieID', arg1)
                     end
                 end
             }
@@ -1683,7 +1683,7 @@ local function Init_Menu_Gossip(_, level, type)
             func= function()
                 if IsShiftKeyDown() then
                     Save.movie={}
-                    print(id, Initializer:GetName(), e.onlyChinese and '清除全部' or CLEAR_ALL)
+                    print(e.addName, Initializer:GetName(), e.onlyChinese and '清除全部' or CLEAR_ALL)
                 end
             end
         }
@@ -1698,7 +1698,7 @@ local function Init_Menu_Gossip(_, level, type)
             keepShownOnClick=true,
             func= function ()
                 Save.stopMovie= not Save.stopMovie and true or nil
-                print(id, Initializer:GetName(), e.GetEnabeleDisable(Save.stopMovie))
+                print(e.addName, Initializer:GetName(), e.GetEnabeleDisable(Save.stopMovie))
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1947,7 +1947,7 @@ local function Create_CheckButton(frame, info)
             check:SetScript("OnMouseDown", function(self)
                 Save.gossipOption[self.id]= not Save.gossipOption[self.id] and (self.name or '') or nil
                 if Save.gossipOption[self.id] and not IsModifierKeyDown() and Save.gossip then
-                    print(id, Initializer:GetName(), format('|cnGREEN_FONT_COLOR:%s|r %d', self.name or '', self.id))
+                    print(e.addName, Initializer:GetName(), format('|cnGREEN_FONT_COLOR:%s|r %d', self.name or '', self.id))
                     C_GossipInfo.SelectOption(self.id)
                 end
             end)
@@ -2154,7 +2154,7 @@ local function Init_Gossip()
                 if Save.movie[arg1] then
                     if Save.stopMovie then
                         MovieFrame:StopMovie()
-                        print(id, Initializer:GetName(), e.onlyChinese and '对话' or ENABLE_DIALOG,
+                        print(e.addName, Initializer:GetName(), e.onlyChinese and '对话' or ENABLE_DIALOG,
                             '|cnRED_FONT_COLOR:'..(e.onlyChinese and '跳过' or RENOWN_LEVEL_UP_SKIP_BUTTON)..'|r',
                             'movieID|cnGREEN_FONT_COLOR:',
                             arg1
@@ -2164,7 +2164,7 @@ local function Init_Gossip()
                 else
                     Save.movie[arg1]= date("%d/%m/%y %H:%M:%S")
                 end
-                print(id, Initializer:GetName(), '|cnGREEN_FONT_COLOR:movieID', arg1)
+                print(e.addName, Initializer:GetName(), '|cnGREEN_FONT_COLOR:movieID', arg1)
             end
 
         elseif event=='ADDON_ACTION_FORBIDDEN'  then
@@ -2172,7 +2172,7 @@ local function Init_Gossip()
                 if StaticPopup1:IsShown() then
                     StaticPopup1:Hide()
                 end
-                print(id, Initializer:GetName(), '|n|cnRED_FONT_COLOR:',  format(e.onlyChinese and '|cffff00ff%s|r已被禁用，因为该功能只对暴雪的UI开放。\n你可以禁用这个插件并重新装载UI。' or ADDON_ACTION_FORBIDDEN, arg1 or '', ...))
+                print(e.addName, Initializer:GetName(), '|n|cnRED_FONT_COLOR:',  format(e.onlyChinese and '|cffff00ff%s|r已被禁用，因为该功能只对暴雪的UI开放。\n你可以禁用这个插件并重新装载UI。' or ADDON_ACTION_FORBIDDEN, arg1 or '', ...))
             end
         end
     end)
@@ -2185,7 +2185,7 @@ local function Init_Gossip()
     --[[hooksecurefunc(StaticPopupDialogs["ADDON_ACTION_FORBIDDEN"], "OnShow",function(s)
         if Save.gossip then
             local text= StaticPopup1Text and StaticPopup1Text:GetText() or (e.onlyChinese and '%s已被禁用，因为该功能只对暴雪的UI开放。\n你可以禁用这个插件并重新装载UI。' or ADDON_ACTION_FORBIDDEN)
-            print(id, Initializer:GetName(), '|n|cnRED_FONT_COLOR:', text)
+            print(e.addName, Initializer:GetName(), '|n|cnRED_FONT_COLOR:', text)
             s:Hide()
         end
     end)]]
@@ -2203,7 +2203,7 @@ local function Init_Gossip()
             return
         end
         Save.NPC[self.npc]= not Save.NPC[self.npc] and self.name or nil
-        print(id, Initializer:GetName(), self.name, self.npc, e.GetEnabeleDisable(Save.NPC[self.npc]))
+        print(e.addName, Initializer:GetName(), self.name, self.npc, e.GetEnabeleDisable(Save.NPC[self.npc]))
     end)
     GossipFrame.WoWToolsSelectNPC:SetScript('OnEnter',function (self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
@@ -2344,7 +2344,7 @@ local function Init_Gossip()
 
         if find then
             GossipButton.selectGissipIDTab[index]=true
-            print(id, Initializer:GetName(), '|T'..(info.overrideIconID or info.icon or 0)..':0|t', '|cffff00ff'..name..'|r', index)
+            print(e.addName, Initializer:GetName(), '|T'..(info.overrideIconID or info.icon or 0)..':0|t', '|cffff00ff'..name..'|r', index)
         end
     end)
 
@@ -2401,7 +2401,7 @@ local function Init_Gossip()
                         C_GossipInfo.SelectAvailableQuest(frame.id)
                     end
                 else
-                    print(id, Initializer:GetName(), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE)..'|r', e.onlyChinese and '任务' or QUESTS_LABEL,'ID')
+                    print(e.addName, Initializer:GetName(), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE)..'|r', e.onlyChinese and '任务' or QUESTS_LABEL,'ID')
                 end
             end)
         end
@@ -2553,7 +2553,7 @@ local function InitMenu_Quest(_, level, type)
                 arg1= questID,
                 func= function(_, arg1)
                     Save.questRewardCheck[arg1]=nil
-                    print(id, Initializer:GetName(), GetQuestLink(arg1) or C_QuestLog.GetTitleForQuestID(arg1) or arg1)
+                    print(e.addName, Initializer:GetName(), GetQuestLink(arg1) or C_QuestLog.GetTitleForQuestID(arg1) or arg1)
                 end,
             }
             num=num+1
@@ -2569,7 +2569,7 @@ local function InitMenu_Quest(_, level, type)
             func= function()
                 if IsShiftKeyDown() then
                     Save.questRewardCheck={}
-                    print(id, Initializer:GetName(), e.onlyChinese and '清除全部' or CLEAR_ALL)
+                    print(e.addName, Initializer:GetName(), e.onlyChinese and '清除全部' or CLEAR_ALL)
                 end
             end
         }
@@ -2585,7 +2585,7 @@ local function InitMenu_Quest(_, level, type)
                 tooltipText='|n'..e.Icon.left..(e.onlyChinese and '移除' or REMOVE),
                 func=function()
                     Save.questOption[questID]=nil
-                    print(id, Initializer:GetName(), e.onlyChinese and '移除' or REMOVE, text, 'ID', questID)
+                    print(e.addName, Initializer:GetName(), e.onlyChinese and '移除' or REMOVE, text, 'ID', questID)
                 end
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -2600,7 +2600,7 @@ local function InitMenu_Quest(_, level, type)
             func= function()
                 if IsShiftKeyDown() then
                     Save.questOption={}
-                    print(id, Initializer:GetName(), e.onlyChinese and '自定义' or CUSTOM, e.onlyChinese and '清除全部' or CLEAR_ALL)
+                    print(e.addName, Initializer:GetName(), e.onlyChinese and '自定义' or CUSTOM, e.onlyChinese and '清除全部' or CLEAR_ALL)
                 end
             end
         }
@@ -3048,7 +3048,7 @@ local function Init_Quest()
             return
         end
         Save.NPC[self.npc]= not Save.NPC[self.npc] and self.name or nil
-        print(id, Initializer:GetName(), self.name, self.npc, e.GetEnabeleDisable(Save.NPC[self.npc]))
+        print(e.addName, Initializer:GetName(), self.name, self.npc, e.GetEnabeleDisable(Save.NPC[self.npc]))
     end)
 
     QuestFrame.sel.questIDLabel:SetScript("OnLeave", function(self) self:SetAlpha(1) GameTooltip_Hide() end)
@@ -3165,18 +3165,18 @@ local function Init_Quest()
                         end
                         questLink=questLink or ('|cnGREEN_FONT_COLOR:'..questID..'|r')
                     end
-                    print(id, Initializer:GetName(), questLink, text and '|cffff00ff'..text..'|r', link, QuestFrameGoodbyeButton and '|cnRED_FONT_COLOR:'..QuestFrameGoodbyeButton:GetText())
+                    print(e.addName, Initializer:GetName(), questLink, text and '|cffff00ff'..text..'|r', link, QuestFrameGoodbyeButton and '|cnRED_FONT_COLOR:'..QuestFrameGoodbyeButton:GetText())
                 end)
             end
-            e.call('QuestGoodbyeButton_OnClick')
+            e.call(QuestGoodbyeButton_OnClick)
         else
             if not QuestButton.questSelect[questID] then--已选任务, 提示用
                 C_Timer.After(0.5, function()
-                    print(id, Initializer:GetName(), GetQuestLink(questID) or questID)
+                    print(e.addName, Initializer:GetName(), GetQuestLink(questID) or questID)
                 end)
                 QuestButton.questSelect[questID]=true
             end
-            e.call('QuestProgressCompleteButton_OnClick')
+            e.call(QuestProgressCompleteButton_OnClick)
         end
     end)
 
@@ -3256,7 +3256,7 @@ local function Init_Quest()
 
         if not QuestButton.questSelect[questID] then--已选任务, 提示用
             C_Timer.After(0.5, function()
-                print(id, Initializer:GetName(),
+                print(e.addName, Initializer:GetName(),
                     GetQuestLink(questID) or questID,
                     (complete and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..acceptButton:GetText()..'|r',
                     itemLink)
@@ -3265,7 +3265,7 @@ local function Init_Quest()
         end
 
         if acceptButton==QuestFrameCompleteQuestButton then
-            e.call('QuestRewardCompleteButton_OnClick')
+            e.call(QuestRewardCompleteButton_OnClick)
         elseif acceptButton:IsEnabled() and acceptButton:IsVisible() then
             acceptButton:Click()
         end
@@ -3433,7 +3433,7 @@ local function Init_Blizzard_PlayerChoice()
     local function Send_Player_Choice_Response(optionInfo)
         if optionInfo then
             C_PlayerChoice.SendPlayerChoiceResponse(optionInfo.buttons[1].id)
-            print(id, Initializer:GetName(), (optionInfo.spellID and C_Spell.GetSpellLink(optionInfo.spellID) or ''),
+            print(e.addName, Initializer:GetName(), (optionInfo.spellID and C_Spell.GetSpellLink(optionInfo.spellID) or ''),
                 '|n',
                 '|T'..(optionInfo.choiceArtID or 0)..':0|t'..optionInfo.rarityColor:WrapTextInColorCode(optionInfo.description or '')
             )
@@ -3465,7 +3465,7 @@ local function Init_Blizzard_PlayerChoice()
                                 Send_Player_Choice_Response(optionInfo)
                             end
                         else
-                            print(id, Initializer:GetName(),'|cnRED_FONT_COLOR:', not e.onlyChinese and ERRORS..' ('..UNKNOWN..')' or '未知错误')
+                            print(e.addName, Initializer:GetName(),'|cnRED_FONT_COLOR:', not e.onlyChinese and ERRORS..' ('..UNKNOWN..')' or '未知错误')
                         end
                     end)
                     optionFrame.check:SetScript('OnLeave', GameTooltip_Hide)
@@ -3567,7 +3567,7 @@ local function Init_Blizzard_PlayerChoice()
                     if s.time and not s.time:IsCancelled() then
                         s.time:Cancel()
                         s:set_text()
-                        print(id,Initializer:GetName(),'|cnRED_FONT_COLOR:', e.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1)
+                        print(e.addName,Initializer:GetName(),'|cnRED_FONT_COLOR:', e.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1)
                         return
                     else
                         s:set_text()
@@ -3594,11 +3594,11 @@ local function Init_Blizzard_PlayerChoice()
                         then
                             C_PlayerChoice.SendPlayerChoiceResponse(info.buttons[2].id)--Blizzard_PlayerChoiceOptionBase.lua
                             n=n+1
-                            print(id, Initializer:GetName(), '|cnGREEN_FONT_COLOR:'..n..'|r', '('..all-n..')', '|cnRED_FONT_COLOR:Alt' )
+                            print(e.addName, Initializer:GetName(), '|cnGREEN_FONT_COLOR:'..n..'|r', '('..all-n..')', '|cnRED_FONT_COLOR:Alt' )
                             --self.parentOption:OnSelected()
                         elseif s.time then
                         s.time:Cancel()
-                        print(id,Initializer:GetName(),'|cnRED_FONT_COLOR:', e.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1, '|r'..n)
+                        print(e.addName,Initializer:GetName(),'|cnRED_FONT_COLOR:', e.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1, '|r'..n)
                         end
                         s:set_text()
                     end, all)
@@ -3818,7 +3818,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                  GetValue= function() return not Save.disabled end,
                  SetValue= function()
                      Save.disabled = not Save.disabled and true or nil
-                     print(id, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+                     print(e.addName, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
                  end,
                  buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
                  buttonFunc= function()
@@ -3827,7 +3827,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                          GossipButton:ClearAllPoints()
                          GossipButton:set_Point()
                      end
-                     print(id, Initializer:GetName(), e.onlyChinese and '重置位置' or RESET_POSITION)
+                     print(e.addName, Initializer:GetName(), e.onlyChinese and '重置位置' or RESET_POSITION)
                  end,
                  tooltip= e.cn(addName),
                  layout= nil,

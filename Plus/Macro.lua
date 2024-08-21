@@ -268,11 +268,11 @@ local function Set_Action_Focus(spellID)
         return
     end
     if spellID then
-        e.call('UpdateOnBarHighlightMarksBySpell', spellID)
+        e.call(UpdateOnBarHighlightMarksBySpell, spellID)
     else
-        e.call('ClearOnBarHighlightMarks')
+        e.call(ClearOnBarHighlightMarks)
     end
-    e.call('ActionBarController_UpdateAllSpellHighlights')
+    e.call(ActionBarController_UpdateAllSpellHighlights)
 end
 ]]
 
@@ -420,8 +420,8 @@ local function Create_Spell_Menu(spellID, icon, name, texture)--创建，法术�
                 --end
 
            -- elseif IsControlKeyDown() then
-                --e.call('SpellBookFrame_OpenToSpell', tab.spellID)
-                --print(id, e.cn(addName), '|cnRED_FONT_COLOR:BUG|r', 'Ctrl+'..e.Icon.left..(e.onlyChinese and '查询' or WHO))
+                --e.call(SpellBookFrame_OpenToSpell, tab.spellID)
+                --print(e.addName, e.cn(addName), '|cnRED_FONT_COLOR:BUG|r', 'Ctrl+'..e.Icon.left..(e.onlyChinese and '查询' or WHO))
 
             elseif IsAltKeyDown() then
                 Set_Texture_Macro(tab.icon)--修改，当前图标
@@ -588,7 +588,7 @@ local function Init_Create_Button()
                             button2= e.onlyChinese and '取消' or CANCEL,
                             OnAccept = function()
                                 Save.mcaro={}
-                                print(id,e.cn(addName), e.onlyChinese and '全部清除' or CLEAR_ALL)
+                                print(e.addName,e.cn(addName), e.onlyChinese and '全部清除' or CLEAR_ALL)
                             end,
                             EditBoxOnEscapePressed= function(s)
                                 s:ClearFocus()
@@ -1737,7 +1737,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue= function() return not Save.disabled end,
                 SetValue= function()
                     Save.disabled = not Save.disabled and true or nil
-                    print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                    print(e.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
                 end
             })
 
@@ -1749,7 +1749,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:UnregisterEvent('ADDON_LOADED')
 
             elseif C_AddOns.IsAddOnLoaded("MacroToolkit") then
-                print(id, e.cn(addName),
+                print(e.addName, e.cn(addName),
                     e.GetEnabeleDisable(false), 'MacroToolkit',
                     e.onlyChinese and '插件' or ADDONS
                 )

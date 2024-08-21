@@ -322,7 +322,7 @@ local function CursorPositionInt()
         end
         Save.PlayerXYSize=size
         e.Cstr(nil, {size=size, changeFont=self.Text, color=true})
-        print(id,e.cn(addName), e.Player.L.size, size)
+        print(e.addName,e.cn(addName), e.Player.L.size, size)
     end)
 
     PostionButton.Text=e.Cstr(PostionButton, {size=Save.PlayerXYSize, color=true})
@@ -539,20 +539,20 @@ local function Init_set_Map_ID()--显示地图ID
                     PostionButton:ClearAllPoints()
                     PostionButton:set_Point()
                 end
-                print(id, e.cn(addName), addName2, e.onlyChinese and '重置位置' or RESET_POSITION)
+                print(e.addName, e.cn(addName), addName2, e.onlyChinese and '重置位置' or RESET_POSITION)
 
             elseif d=="LeftButton" and not IsModifierKeyDown() then
                 Save.hide= not Save.hide and true or nil
                 self:set_Map_ID_Text()
-                print(id, e.cn(addName), e.GetShowHide(not Save.hide), e.onlyChinese and ' 刷新' or REFRESH)
+                print(e.addName, e.cn(addName), e.GetShowHide(not Save.hide), e.onlyChinese and ' 刷新' or REFRESH)
                 self:SetNormalAtlas(Save.hide and e.Icon.disabled or 'poi-islands-table')
             elseif d=='RightButton' and not IsModifierKeyDown() then--实时玩家当前坐标
                 if Save.PlayerXY then
                     Save.PlayerXY=nil
-                    print(id, e.cn(addName), addName2..":", e.GetEnabeleDisable(Save.PlayerXY), '|cnGREEN_FONT_COLOR:'..NEED..'/reload|r')
+                    print(e.addName, e.cn(addName), addName2..":", e.GetEnabeleDisable(Save.PlayerXY), '|cnGREEN_FONT_COLOR:'..NEED..'/reload|r')
                 else
                     Save.PlayerXY=true
-                    print(id, e.cn(addName), addName2..":", e.GetEnabeleDisable(Save.PlayerXY))
+                    print(e.addName, e.cn(addName), addName2..":", e.GetEnabeleDisable(Save.PlayerXY))
                 end
                 CursorPositionInt()
             end
@@ -607,7 +607,7 @@ local function Init_set_Map_ID()--显示地图ID
         PlayerButton.edit:SetScript("OnKeyUp", function(s, key)
             if IsControlKeyDown() and key == "C" then
                 s:ClearFocus()
-                print(id,e.cn(addName), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r', s:GetText())
+                print(e.addName,e.cn(addName), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r', s:GetText())
             end
         end)
         PlayerButton.edit.Left:SetAlpha(0.5)
@@ -772,7 +772,7 @@ local function Init_Menu()
                 button2 = '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '取消' or CANCEL),
                 OnAccept = function()
                     local n=0
-                    print(id, e.cn(addName),  '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '放弃' or ABANDON_QUEST_ABBREV))
+                    print(e.addName, e.cn(addName),  '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '放弃' or ABANDON_QUEST_ABBREV))
                     for index=1 , C_QuestLog.GetNumQuestLogEntries() do
                         do
                             local questInfo=C_QuestLog.GetInfo(index)
@@ -905,7 +905,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 GetValue= function() return not Save.disabled end,
                 func= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(e.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 

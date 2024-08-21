@@ -63,7 +63,7 @@ local function LvTo()--总装等
             PaperDollSidebarTab1.itemLevelText:EnableMouse(true)
             PaperDollSidebarTab1.itemLevelText:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
             PaperDollSidebarTab1.itemLevelText:SetScript('OnMouseDown', function()
-                e.call('PaperDollFrame_SetSidebar', PaperDollSidebarTab1, 1)--PaperDollFrame.lua
+                e.call(PaperDollFrame_SetSidebar, PaperDollSidebarTab1, 1)--PaperDollFrame.lua
             end)
             PaperDollSidebarTab1.itemLevelText:SetScript('OnEnter', function(self)
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -830,7 +830,7 @@ local function Init_Title()--头衔数量
         btn.titleNumeri:SetPoint('BOTTOM')
         btn.titleNumeri:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
         btn.titleNumeri:SetScript('OnMouseDown', function()
-            e.call('PaperDollFrame_SetSidebar', _G['PaperDollSidebarTab2'], 2)--PaperDollFrame.lua
+            e.call(PaperDollFrame_SetSidebar, _G['PaperDollSidebarTab2'], 2)--PaperDollFrame.lua
         end)
         btn.titleNumeri:SetScript('OnEnter', function(self)
             e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -1073,7 +1073,7 @@ local function Init_TrackButton()--添加装备管理框
             n= n<0.4 and 0.4 or n
             Save.equipmentFrameScale=n
             self:set_scale()--缩放
-            print(id, Initializer:GetName(), e.onlyChinese and '缩放' or UI_SCALE, GREEN_FONT_COLOR_CODE..n)
+            print(e.addName, Initializer:GetName(), e.onlyChinese and '缩放' or UI_SCALE, GREEN_FONT_COLOR_CODE..n)
         end
     end)
     TrackButton:SetScript("OnEnter", function (self)
@@ -1183,7 +1183,7 @@ local function Init_TrackButton()--添加装备管理框
                     LvTo()--修改总装等
                 end)
             else
-                print(id, Initializer:GetName(), RED_FONT_COLOR_CODE, e.onlyChinese and '你无法在战斗中实施那个动作' or ERR_NOT_IN_COMBAT)
+                print(e.addName, Initializer:GetName(), RED_FONT_COLOR_CODE, e.onlyChinese and '你无法在战斗中实施那个动作' or ERR_NOT_IN_COMBAT)
             end
         end)
         btn:SetScript("OnEnter", function(frame)
@@ -1332,14 +1332,14 @@ function Init_TrackButton_ShowHide_Button()
             Save.equipment= not Save.equipment and true or nil
             self:SetNormalAtlas(Save.equipment and 'auctionhouse-icon-favorite' or e.Icon.disabled)
             Init_TrackButton()--添加装备管理框
-            print(id, Initializer:GetName(), e.GetShowHide(Save.equipment))
+            print(e.addName, Initializer:GetName(), e.GetShowHide(Save.equipment))
         elseif d=='RightButton' and IsControlKeyDown() then
             Save.Equipment=nil
             if TrackButton then
                 TrackButton:ClearAllPoints()
                 TrackButton:set_point()
             end
-            print(id, Initializer:GetName(), e.onlyChinese and '重置位置' or RESET_POSITION)
+            print(e.addName, Initializer:GetName(), e.onlyChinese and '重置位置' or RESET_POSITION)
         end
     end)
     panel.equipmentButton:SetScript("OnEnter", function (self)
@@ -1652,8 +1652,8 @@ local function Init_Show_Hide_Button(frame)
 
         panel:Init_Status_Plus()
 
-        e.call('PaperDollFrame_SetLevel')
-        e.call('PaperDollFrame_UpdateStats')
+        e.call(PaperDollFrame_SetLevel)
+        e.call(PaperDollFrame_UpdateStats)
 
         local Slot = {
             [1]	 = "CharacterHeadSlot",
@@ -1677,14 +1677,14 @@ local function Init_Show_Hide_Button(frame)
         for _, slot in pairs(Slot) do
             local btn2= _G[slot]
             if btn2 then
-                e.call('PaperDollItemSlotButton_Update', btn2)
+                e.call(PaperDollItemSlotButton_Update, btn2)
             end
         end
 
         if InspectFrame then
             if InspectFrame:IsShown() then
-                e.call('InspectPaperDollFrame_UpdateButtons')--InspectPaperDollFrame.lua
-                e.call('InspectPaperDollFrame_SetLevel')--目标,天赋 装等
+                e.call(InspectPaperDollFrame_UpdateButtons)--InspectPaperDollFrame.lua
+                e.call(InspectPaperDollFrame_SetLevel)--目标,天赋 装等
                 panel:Init_Target_InspectUI()
             end
             if InspectLevelText then
@@ -2148,7 +2148,7 @@ local function Init_Status_Func()
         n= n>4 and 4 or n
         n= n<0 and 0 or n
         Save.itemLevelBit=n
-        e.call('PaperDollFrame_UpdateStats')
+        e.call(PaperDollFrame_UpdateStats)
         self:set_tooltips()
         self:SetAlpha(0.3)
     end)
@@ -2425,7 +2425,7 @@ local P_PAPERDOLL_STATCATEGORIES= PAPERDOLL_STATCATEGORIES
 local function Init_Status_Menu()
 
     function StatusPlusButton.Menu:save()
-        e.call('PaperDollFrame_UpdateStats')
+        e.call(PaperDollFrame_UpdateStats)
         Save.PAPERDOLL_STATCATEGORIES= PAPERDOLL_STATCATEGORIES
     end
 
@@ -2498,7 +2498,7 @@ local function Init_Status_Menu()
                 --showFunc= tab.showFunc,
             })
         end
-        print(id, Initializer:GetName(), format('|cnGREEN_FONT_COLOR:%s|r', stat), e.onlyChinese and '添加' or ADD)
+        print(e.addName, Initializer:GetName(), format('|cnGREEN_FONT_COLOR:%s|r', stat), e.onlyChinese and '添加' or ADD)
     end
 
     function StatusPlusButton.Menu:remove_stat(tab)--移除        
@@ -2509,12 +2509,12 @@ local function Init_Status_Menu()
             for i, info in pairs(PAPERDOLL_STATCATEGORIES[index].stats or {}) do
                 if info.stat==stat then
                     table.remove(PAPERDOLL_STATCATEGORIES[index].stats, i)
-                    print(id, Initializer:GetName(), format('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '移除' or REMOVE), stat, name)
+                    print(e.addName, Initializer:GetName(), format('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '移除' or REMOVE), stat, name)
                     return
                 end
             end
         end
-        print(id, Initializer:GetName(), format('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE), stat, name)
+        print(e.addName, Initializer:GetName(), format('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE), stat, name)
     end
 
     function StatusPlusButton.Menu:get_primary_text(primary)--主属性, 文本
@@ -2538,7 +2538,7 @@ local function Init_Status_Menu()
                     arg1=i,
                     func= function(_, arg1)
                         Save.itemLevelBit= arg1
-                        e.call('PaperDollFrame_UpdateStats')
+                        e.call(PaperDollFrame_UpdateStats)
                     end
                 }
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -2552,7 +2552,7 @@ local function Init_Status_Menu()
                     PAPERDOLL_STATCATEGORIES= {}
                     e.LibDD:CloseDropDownMenus(1)
                     self:save()
-                    print(id, Initializer:GetName(), format('|cnGREEN_FONT_COLOR:%s|r', e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT), e.onlyChinese and '完成' or DONE)
+                    print(e.addName, Initializer:GetName(), format('|cnGREEN_FONT_COLOR:%s|r', e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT), e.onlyChinese and '完成' or DONE)
                 end
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -2564,7 +2564,7 @@ local function Init_Status_Menu()
                 func= function()
                     PAPERDOLL_STATCATEGORIES= P_PAPERDOLL_STATCATEGORIES
                     Save.PAPERDOLL_STATCATEGORIES=nil
-                    e.call('PaperDollFrame_UpdateStats')
+                    e.call(PaperDollFrame_UpdateStats)
                     e.LibDD:CloseDropDownMenus(1)
                 end
             }
@@ -2592,7 +2592,7 @@ local function Init_Status_Menu()
                 hasArrow=true,
                 func= function()
                     Save.notStatusPlusFunc= not Save.notStatusPlusFunc and true or nil
-                    print(id, Initializer:GetName(), e.GetEnabeleDisable(not Save.notStatusPlusFunc), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(e.addName, Initializer:GetName(), e.GetEnabeleDisable(not Save.notStatusPlusFunc), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -2624,11 +2624,11 @@ local function Init_Status_Menu()
                                     end
                                     PAPERDOLL_STATCATEGORIES[arg1.index].stats[i].hideAt= value
                                     self:save()
-                                    print(id, Initializer:GetName(), format('|cnGREEN_FONT_COLOR:%s|r', arg1.stat), value)
+                                    print(e.addName, Initializer:GetName(), format('|cnGREEN_FONT_COLOR:%s|r', arg1.stat), value)
                                     return
                                 end
                             end
-                            print(id, Initializer:GetName(), format('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE), arg1.stat)
+                            print(e.addName, Initializer:GetName(), format('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE), arg1.stat)
                         end
                     }
                     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -2670,11 +2670,11 @@ local function Init_Status_Menu()
                                         end
                                     end
                                     self:save()
-                                    print(id, Initializer:GetName(), format('|cnGREEN_FONT_COLOR:%s|r', stats.stat) , findTank and e.Icon.TANK or '', findN and e.Icon.HEALER or '', findDps and e.Icon.DAMAGER or '')
+                                    print(e.addName, Initializer:GetName(), format('|cnGREEN_FONT_COLOR:%s|r', stats.stat) , findTank and e.Icon.TANK or '', findN and e.Icon.HEALER or '', findDps and e.Icon.DAMAGER or '')
                                     return
                                 end
                             end
-                            print(id, Initializer:GetName(), format('|cnRED_FONT_COLOR:%s|r %s', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE, arg1.stat))
+                            print(e.addName, Initializer:GetName(), format('|cnRED_FONT_COLOR:%s|r %s', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE, arg1.stat))
                         end
                     }
                     if i==Enum.LFGRole.Tank then
@@ -2704,11 +2704,11 @@ local function Init_Status_Menu()
                                         tab.primary=nil
                                     end
                                     self:save()
-                                    print(id, Initializer:GetName(), format('|cnGREEN_FONT_COLOR:%s|r', stats.stat) , format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, self:get_primary_text(tab.primary) or format('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '无' or NONE)))
+                                    print(e.addName, Initializer:GetName(), format('|cnGREEN_FONT_COLOR:%s|r', stats.stat) , format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, self:get_primary_text(tab.primary) or format('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '无' or NONE)))
                                     return
                                 end
                             end
-                            print(id, Initializer:GetName(), format('|cnRED_FONT_COLOR:%s|r %s', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE, arg1.stat))
+                            print(e.addName, Initializer:GetName(), format('|cnRED_FONT_COLOR:%s|r %s', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE, arg1.stat))
                         end
                     }
                     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -2869,7 +2869,7 @@ function panel:Init_Status_Plus()
     function StatusPlusButton:set_enabel_disable()
         Save.notStatusPlus= not Save.notStatusPlus and true or nil
         self:set_texture()
-        print(id, Initializer:GetName(), e.GetEnabeleDisable(not Save.notStatusPlus), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(e.addName, Initializer:GetName(), e.GetEnabeleDisable(not Save.notStatusPlus), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end
     function StatusPlusButton:show_menu()
         e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 40, 0)--主菜单
@@ -3176,9 +3176,9 @@ local function Init()
                 end
                 C_EquipmentSet.CreateEquipmentSet(self.str)
                 if setID then
-                    print(id,Initializer:GetName(), '|cffff00ff'..(e.onlyChinese and '修改' or EDIT)..'|r', self.str)
+                    print(e.addName,Initializer:GetName(), '|cffff00ff'..(e.onlyChinese and '修改' or EDIT)..'|r', self.str)
                 else
-                    print(id,Initializer:GetName(), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '新建' or NEW)..'|r', self.str)
+                    print(e.addName,Initializer:GetName(), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '新建' or NEW)..'|r', self.str)
                 end
             end)
         end
@@ -3193,7 +3193,7 @@ local function Init()
                 end
                 C_EquipmentSet.UseEquipmentSet(self.setID)
                 local name, iconFileID = C_EquipmentSet.GetEquipmentSetInfo(self.setID)
-                print(id, Initializer:GetName(), iconFileID and '|T'..iconFileID..':0|t|cnGREEN_FONT_COLOR:' or '', name)
+                print(e.addName, Initializer:GetName(), iconFileID and '|T'..iconFileID..':0|t|cnGREEN_FONT_COLOR:' or '', name)
             end)
             btn.setScripOK=true
         end
@@ -3255,7 +3255,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue= function() return not Save.disabled end,
                 SetValue= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(id, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(e.addName, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end,
             })
 
@@ -3263,7 +3263,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             local sel=e.AddPanel_Check((e.Player.sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a')..(e.onlyChinese and '角色' or addName), not Save.disabled)
             sel:SetScript('OnMouseDown', function()
                 Save.disabled = not Save.disabled and true or nil
-                print(id, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                print(e.addName, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
             end)]]
 
 
@@ -3299,7 +3299,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='SOCKET_INFO_UPDATE' then--宝石，更新
         if PaperDollItemsFrame:IsShown() then
-            e.call('PaperDollFrame_UpdateStats')
+            e.call(PaperDollFrame_UpdateStats)
         end
     end
 end)

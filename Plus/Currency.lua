@@ -485,7 +485,7 @@ local function MenuList_Item(level)
 			func= function(_, arg1)
 				Save.item[arg1]= nil
 				Set_TrackButton_Text()
-				print(id, Initializer:GetName(), e.onlyChinese and '移除' or REMOVE, select(2, C_Item.GetItemInfo(itemID)) or ('itemID '..itemID))
+				print(e.addName, Initializer:GetName(), e.onlyChinese and '移除' or REMOVE, select(2, C_Item.GetItemInfo(itemID)) or ('itemID '..itemID))
 			end
 		}
 		e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -501,7 +501,7 @@ local function MenuList_Item(level)
 			if IsShiftKeyDown() then
 				Save.item= {}
 				Set_TrackButton_Text()
-				print(id, Initializer:GetName(), e.onlyChinese and '全部清除' or CLEAR_ALL)
+				print(e.addName, Initializer:GetName(), e.onlyChinese and '全部清除' or CLEAR_ALL)
 			end
 		end
 	}
@@ -657,7 +657,7 @@ local function Init_TrackButton()
 			Save.scaleTrackButton=n
 			self:set_Scale()
 			self:set_Tooltips()
-			print(id, Initializer:GetName(), e.onlyChinese and '缩放' or UI_SCALE, n)
+			print(e.addName, Initializer:GetName(), e.onlyChinese and '缩放' or UI_SCALE, n)
 		end
 	end)
 	TrackButton:SetScript("OnMouseDown", function(self, d)
@@ -669,7 +669,7 @@ local function Init_TrackButton()
 		local infoType, itemID, itemLink = GetCursorInfo()
         if infoType == "item" and itemID then
 			Save.item[itemID]= not Save.item[itemID] and true or nil
-			print(id, Initializer:GetName(), e.onlyChinese and '追踪' or TRACKING,
+			print(e.addName, Initializer:GetName(), e.onlyChinese and '追踪' or TRACKING,
 					Save.item[itemID] and
 					('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', e.Icon.select))
 					or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a'),
@@ -699,7 +699,7 @@ local function Init_TrackButton()
 							Save.str= not Save.str and true or nil
 							TrackButton:set_Texture()
 							TrackButton.Frame:set_shown()
-							print(id, Initializer:GetName(), e.GetShowHide(Save.str))
+							print(e.addName, Initializer:GetName(), e.GetShowHide(Save.str))
 						end
 					}
 					e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1100,7 +1100,7 @@ local function InitMenu(_, level, menuList)--主菜单
 				func= function(_, arg1)
 					Save.tokens[arg1]=nil
 					TokenFrame:Update()
-					print(id, Initializer:GetName(), e.onlyChinese and '移除' or REMOVE, C_CurrencyInfo.GetCurrencyLink(arg1) or arg1)
+					print(e.addName, Initializer:GetName(), e.onlyChinese and '移除' or REMOVE, C_CurrencyInfo.GetCurrencyLink(arg1) or arg1)
 				end
 			}
 			e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1125,13 +1125,13 @@ local function InitMenu(_, level, menuList)--主菜单
 						s.editBox:SetFocus()
                     end,
 					OnHide= function()
-						e.call('ChatEdit_FocusActiveWindow')
+						e.call(ChatEdit_FocusActiveWindow)
 					end,
 					OnAccept = function(s)
 						local n= s.editBox:GetNumber()
 						if n then
 							Save.tokens[n]=0
-							print(id, Initializer:GetName(), e.onlyChinese and '添加' or ADD,  C_CurrencyInfo.GetCurrencyLink(n))
+							print(e.addName, Initializer:GetName(), e.onlyChinese and '添加' or ADD,  C_CurrencyInfo.GetCurrencyLink(n))
 							TokenFrame:Update()
 						end
 					end,
@@ -1143,9 +1143,9 @@ local function InitMenu(_, level, menuList)--主菜单
 						if curInfo then
 							icon= curInfo.iconFileID
 							text= C_CurrencyInfo.GetCurrencyLink(n) or curInfo.name or text
-							print(Save.tokens[n])
+							
 							if Save.tokens[n] then
-								text= text..'|n'..(e.onlyChinese and '已存在|r' or ' Existed')
+								text= text..'|n'..(e.onlyChinese and '更新' or UPDATE)
 							end
 						end
 						local p= s:GetParent()
@@ -1173,7 +1173,7 @@ local function InitMenu(_, level, menuList)--主菜单
 				if IsShiftKeyDown() then
 					Save.tokens= {}
 					TokenFrame:Update()
-					print(id, Initializer:GetName(), e.onlyChinese and '全部清除' or CLEAR_ALL)
+					print(e.addName, Initializer:GetName(), e.onlyChinese and '全部清除' or CLEAR_ALL)
 				end
 			end
 		}
@@ -1208,7 +1208,7 @@ local function InitMenu(_, level, menuList)--主菜单
 					TrackButton:ClearAllPoints()
 					TrackButton:set_Point()
 				end
-				print(id, Initializer:GetName(), e.onlyChinese and '重置位置' or RESET_POSITION)
+				print(e.addName, Initializer:GetName(), e.onlyChinese and '重置位置' or RESET_POSITION)
 			end
 		}
 		e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1227,7 +1227,7 @@ local function InitMenu(_, level, menuList)--主菜单
 		func= function()
 			Save.Hide= not Save.Hide and true or nil
 			Init_TrackButton()
-			print(id, Initializer:GetName(), e.onlyChinese and '追踪' or TRACKING, e.GetEnabeleDisable(not Save.Hide))
+			print(e.addName, Initializer:GetName(), e.onlyChinese and '追踪' or TRACKING, e.GetEnabeleDisable(not Save.Hide))
 		end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1275,7 +1275,7 @@ local function InitMenu(_, level, menuList)--主菜单
 			if not Save.hideCurrencyMax then
 				Button.currencyMax={}--已达到资源上限
 				Button:currency_Max()
-				print(id, Initializer:GetName(), 'Test', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已达到资源上限' or SPELL_FAILED_CUSTOM_ERROR_248))
+				print(e.addName, Initializer:GetName(), 'Test', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已达到资源上限' or SPELL_FAILED_CUSTOM_ERROR_248))
 			end
 		end
     }
@@ -1398,7 +1398,7 @@ local function Init()
 		local infoType, itemID, itemLink = GetCursorInfo()
         if infoType == "item" and itemID then
 			Save.item[itemID]= not Save.item[itemID] and true or nil
-			print(id, Initializer:GetName(), e.onlyChinese and '追踪' or TRACKING,
+			print(e.addName, Initializer:GetName(), e.onlyChinese and '追踪' or TRACKING,
 					Save.item[itemID] and
 					('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', e.Icon.select))
 					or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a'),
@@ -1563,7 +1563,7 @@ local function Init()
 			self.currencyMax[currencyID]=true
 		end
 		if text then
-			print(id, Initializer:GetName(), text, '|r|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已达到资源上限' or SPELL_FAILED_CUSTOM_ERROR_248))
+			print(e.addName, Initializer:GetName(), text, '|r|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已达到资源上限' or SPELL_FAILED_CUSTOM_ERROR_248))
 		end
 	end
 
@@ -1646,7 +1646,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 				GetValue= function() return not Save.disabled end,
 				SetValue= function()
 					Save.disabled= not Save.disabled and true or nil
-					print(id, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+					print(e.addName, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
 				end
 			})
 

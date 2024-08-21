@@ -860,7 +860,7 @@ local function InitMenu(_, level, type)
 					func= function(_,arg1, arg2)
 						Save.factions[arg2]=nil
 						ReputationFrame:Update()
-						print(id, Initializer:GetName(), e.onlyChinese and '移除' or REMOVE, arg1, arg2)
+						print(e.addName, Initializer:GetName(), e.onlyChinese and '移除' or REMOVE, arg1, arg2)
 					end
 				}
 				find=true
@@ -915,7 +915,7 @@ local function InitMenu(_, level, type)
 					TrackButton:ClearAllPoints()
 					TrackButton:set_Point()
 				end
-				print(id, Initializer:GetName(), e.onlyChinese and '重置位置' or RESET_POSITION)
+				print(e.addName, Initializer:GetName(), e.onlyChinese and '重置位置' or RESET_POSITION)
 			end
 		}
 		e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -937,7 +937,7 @@ local function InitMenu(_, level, type)
 			else
 				Init_TrackButton()--监视, 文本
 			end
-			print(id, Initializer:GetName(),e.onlyChinese and '追踪' or TRACKING, e.GetShowHide(Save.btn))
+			print(e.addName, Initializer:GetName(),e.onlyChinese and '追踪' or TRACKING, e.GetShowHide(Save.btn))
 		end
 	}
 	e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -966,7 +966,7 @@ local function InitMenu(_, level, type)
 		func= function()
 			Save.factionUpdateTips= not Save.factionUpdateTips and true or nil
 			--set_RegisterEvent_CHAT_MSG_COMBAT_FACTION_CHANGE()--更新, 提示, 事件
-			print(id, Initializer:GetName(), e.onlyChinese and '声望变化' or COMBAT_TEXT_SHOW_REPUTATION_TEXT,'|A:voicechat-icon-textchat-silenced:0:0|a', e.GetEnabeleDisable(Save.factionUpdateTips), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+			print(e.addName, Initializer:GetName(), e.onlyChinese and '声望变化' or COMBAT_TEXT_SHOW_REPUTATION_TEXT,'|A:voicechat-icon-textchat-silenced:0:0|a', e.GetEnabeleDisable(Save.factionUpdateTips), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
 		end
 	}
 	e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -979,7 +979,7 @@ local function InitMenu(_, level, type)
 			Button:set_Shown()
 
 			ReputationFrame:Update()
-			--print(id, Initializer:GetName(), 'UI Plus', e.GetEnabeleDisable(not Save.notPlus), e.onlyChinese and '需要刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
+			--print(e.addName, Initializer:GetName(), 'UI Plus', e.GetEnabeleDisable(not Save.notPlus), e.onlyChinese and '需要刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
 		end
 	}
 	e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1125,7 +1125,7 @@ local function Init()
 				end
 			end
 			if text then
-				print(id, Initializer:GetName(), '|cffff00ff'..text..'|r', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '你有未领取的奖励' or WEEKLY_REWARDS_UNCLAIMED_TITLE))
+				print(e.addName, Initializer:GetName(), '|cffff00ff'..text..'|r', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '你有未领取的奖励' or WEEKLY_REWARDS_UNCLAIMED_TITLE))
 			end
 		end)
 	end
@@ -1175,7 +1175,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue= function() return not Save.disabled end,
                 SetValue= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(id, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(e.addName, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 

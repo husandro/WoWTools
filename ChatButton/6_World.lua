@@ -340,7 +340,7 @@ local function Set_Add_All_Player_Filter()
             if not Save.myChatFilterPlayers[guid] then
                 Save.myChatFilterPlayers[guid]= 1
                 index= index+1
-                print(id, addName, e.onlyChinese and '屏蔽' or IGNORE, '|cff9e9e9e'..index..'|r', e.GetPlayerInfo({guid=guid, name=name, reLink=true, reName=true, reRealm=true}))
+                print(e.addName, addName, e.onlyChinese and '屏蔽' or IGNORE, '|cff9e9e9e'..index..'|r', e.GetPlayerInfo({guid=guid, name=name, reLink=true, reName=true, reRealm=true}))
             end
         end
     end
@@ -420,7 +420,7 @@ end
             OnAccept = function(self)
                 local num= self.editBox:GetNumber()
                 Save.myChatFilterNum= num
-                print(id, e.cn(addName), get_myChatFilter_Text())
+                print(e.addName, e.cn(addName), get_myChatFilter_Text())
             end,
             EditBoxOnTextChanged=function(self)
                 local num= self:GetNumber() or 0
@@ -469,9 +469,9 @@ end
             sub3=sub2:CreateButton('|cff9e9e9e'..index..')|r '..name..' |cff9e9e9e#'.. e.MK(num, 3)..'|r', function(data)
                 local player= e.GetPlayerInfo({guid=data.guid, reName=true, reRealm=true, reLink=true})                
                 if Save.myChatFilterPlayers[data.guid] then
-                    print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', player)
+                    print(e.addName, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', player)
                 else
-                    print(id, addName, '|cff9e9e9e'..(e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE)..'|r', player)
+                    print(e.addName, addName, '|cff9e9e9e'..(e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE)..'|r', player)
                 end
                 Save.myChatFilterPlayers[data.guid]=nil
                 return MenuResponse.Open
@@ -620,10 +620,10 @@ end
             for guid, name in pairs(data.guid or {}) do
                 local player= e.GetPlayerInfo({guid=guid, name=name, reLink=true, reName=true, reRealm=true})
                 if Save.myChatFilterPlayers[guid] then
-                    print(id, addName, '|cff9e9e9e'..(e.onlyChinese and '已存在|r' or 'Existed|r'), player)
+                    print(e.addName, addName, player)
                 else
                     Save.myChatFilterPlayers[guid]= 1
-                    print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '屏蔽' or IGNORE)..'|r', player)
+                    print(e.addName, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '屏蔽' or IGNORE)..'|r', player)
                 end
             end
             FilterTextTab[data.text]= nil
@@ -700,7 +700,7 @@ end
                     text= text..'-'..e.Player.realm
                 end
                 Save.userChatFilterTab[text]={num=0, guid=nil}
-                print(id, addName, e.onlyChinese and '添加' or ADD, text, e.GetPlayerInfo({name=text, reName=true, reRealm=true, reLink=true}))
+                print(e.addName, addName, e.onlyChinese and '添加' or ADD, text, e.GetPlayerInfo({name=text, reName=true, reRealm=true, reLink=true}))
             end,
             EditBoxOnTextChanged=function(self)
                 local text= self:GetText() or ''
@@ -747,7 +747,7 @@ end
 
             sub2=sub:CreateButton(player..' '..tab.num, function(data)
                 if Save.userChatFilterTab[data.name] then
-                    print(id, addName, e.onlyChinese and '移除' or REMOVE, e.GetPlayerInfo({name=data.name, guid=data.tab.guid, reName=true, reRealm=true, reLink=true}))
+                    print(e.addName, addName, e.onlyChinese and '移除' or REMOVE, e.GetPlayerInfo({name=data.name, guid=data.tab.guid, reName=true, reRealm=true, reLink=true}))
                     Save.userChatFilterTab[data.name]=nil
                 end
                 return MenuResponse.Refresh
@@ -841,12 +841,14 @@ if name== Save.world then
             button1= e.onlyChinese and '确定' or OKAY,
             button2= e.onlyChinese and '取消' or CANCEL,
             OnShow= function(s)
+                s.editBox:SetAutoFocus(false)
                 s.editBox:SetText(e.Player.region==5 and '大脚世界频道' and Save.world or 'World')
                 s.button1:SetEnabled(false)
+                s.editBox:SetFoucus()
             end,
             OnHide= function(s)
                 s.editBox:SetText("")
-                e.call('ChatEdit_FocusActiveWindow')
+                s.editBox:ClearFocus()
             end,
             OnAccept= function(s)
                 Save.world= s.editBox:GetText()

@@ -37,7 +37,7 @@ local function set_COMBAT_LOG_EVENT_UNFILTERED()--https://wowpedia.fandom.com/wi
     end
     local text=(UMark[sourceRaidFlags] or '')..C_Spell.GetSpellLink(spellID)..de..C_Spell.GetSpellLink(extraSpellID)..(UMark[destRaidFlags] or '')
     if UnitIsUnit(target, 'player') then
-        print(id, e.Icon.player..e.Player.col..(e.onlyChinese and '断驱散' or addName), text)
+        print(e.addName, e.Icon.player..e.Player.col..(e.onlyChinese and '断驱散' or addName), text)
     else
         e.Chat(text, nil, nil)
     end
@@ -76,7 +76,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                         Save.disabled=true
                         panel:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
                     end
-                    print(id, e.cn(addName), e.GetEnabeleDisable(Save.disabled))
+                    print(e.addName, e.cn(addName), e.GetEnabeleDisable(Save.disabled))
                 end
             })
 
@@ -90,7 +90,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     Save.disabled=true
                     panel:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
                 end
-                print(id, e.cn(addName), e.GetEnabeleDisable(Save.disabled))
+                print(e.addName, e.cn(addName), e.GetEnabeleDisable(Save.disabled))
             end)
             sel:SetScript('OnEnter', function(self2)
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")

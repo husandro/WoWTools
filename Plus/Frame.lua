@@ -349,7 +349,7 @@ local function set_Scale_Size(frame, tab)
                     if self.restPointFunc then
                         self.restPointFunc(self)
                     elseif not self.notUpdatePositon then
-                        e.call('UpdateUIPanelPositions', self.target)
+                        e.call(UpdateUIPanelPositions, self.target)
                     end
                 end
             end
@@ -357,7 +357,7 @@ local function set_Scale_Size(frame, tab)
         elseif IsControlKeyDown() then
             if (self.setSize or self.disabledSize) and d=='RightButton' then--禁用，启用，大小，功能
                 Save.disabledSize[self.name]= not Save.disabledSize[self.name] and true or nil
-                print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabledSize[self.name]), self.name, e.onlyChinese and '大小' or 'Size', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
+                print(e.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabledSize[self.name]), self.name, e.onlyChinese and '大小' or 'Size', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
             end
 
         elseif d=='LeftButton' then
@@ -368,7 +368,7 @@ local function set_Scale_Size(frame, tab)
                     self.scaleRestFunc(self)
                 end
                 if not self.notUpdatePositon then
-                    e.call('UpdateUIPanelPositions', self.target)
+                    e.call(UpdateUIPanelPositions, self.target)
                 end
 
             elseif not IsModifierKeyDown() then--开始，设置，缩放
@@ -414,7 +414,7 @@ local function set_Scale_Size(frame, tab)
                     self.sizeRestFunc(self)
                 end
                 if not self.notUpdatePositon then
-                    e.call('UpdateUIPanelPositions', self.target)
+                    e.call(UpdateUIPanelPositions, self.target)
                 end
 
             elseif not IsModifierKeyDown() then--开始，设置，大小
@@ -480,7 +480,7 @@ local function set_Scale_Size(frame, tab)
                     Save.disabledAlpha[self.name]= nil
                     col= '|cnGREEN_FONT_COLOR:'
                 end
-                print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabledAlpha[self.name]),
+                print(e.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabledAlpha[self.name]),
                     '|cffff00ff'..self.name..'|r|n',
                     col..(e.onlyChinese and '当你开始移动时，Frame变为透明状态。' or OPTION_TOOLTIP_MAP_FADE:gsub(string.lower(WORLD_MAP), 'Frame')),
                     Save.alpha
@@ -2314,10 +2314,10 @@ local function Init_Move()
 
     end, sizeUpdateFunc=function()
         if PaperDollFrame.EquipmentManagerPane:IsVisible() then
-            e.call('PaperDollEquipmentManagerPane_Update')
+            e.call(PaperDollEquipmentManagerPane_Update)
         end
         if PaperDollFrame.TitleManagerPane:IsVisible() then
-            e.call('PaperDollTitlesPane_Update')
+            e.call(PaperDollTitlesPane_Update)
         end
     end, sizeStopFunc=function(btn)
         local self= btn.target
@@ -2422,13 +2422,13 @@ local function Init_Move()
         end, sizeUpdateFunc=function(btn)
             if RaidFrame:IsShown() and not UnitAffectingCombat('player') then
                 btn:set_RaidFrame_Button_size()
-                if RaidGroupFrame_Update then e.call('RaidGroupFrame_Update') end
+                if RaidGroupFrame_Update then e.call(RaidGroupFrame_Update) end
             end
         end, sizeRestFunc=function(btn)
             btn.target:SetSize(338, 424)
             if RaidFrame:IsShown() and not UnitAffectingCombat('player') then
                 btn:set_RaidFrame_Button_size()
-                if RaidGroupFrame_Update then e.call('RaidGroupFrame_Update') end
+                if RaidGroupFrame_Update then e.call(RaidGroupFrame_Update) end
             end
         end
     })
@@ -2803,7 +2803,7 @@ local function Init_Options()
         category= Category,
         SetValue= function()
             Save.disabledMove= not Save.disabledMove and true or nil
-            print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabledMove), e.onlyChinese and '重新加载UI' or RELOADUI)
+            print(e.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabledMove), e.onlyChinese and '重新加载UI' or RELOADUI)
         end
     })
 
@@ -2824,7 +2824,7 @@ local function Init_Options()
                 whileDead=true, hideOnEscape=true, exclusive=true,
                 OnAccept=function()
                     Save.point={}
-                    print(id, e.cn(addName), e.onlyChinese and '重设到默认位置' or HUD_EDIT_MODE_RESET_POSITION, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
+                    print(e.addName, e.cn(addName), e.onlyChinese and '重设到默认位置' or HUD_EDIT_MODE_RESET_POSITION, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
                 end,
             }
             StaticPopup_Show(id..addName..'MoveZoomClearPoint')
@@ -2851,7 +2851,7 @@ local function Init_Options()
         GetValue= function() return not Save.disabledZoom end,
         SetValue= function()
             Save.disabledZoom= not Save.disabledZoom and true or nil
-            print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabledZoom), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(e.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabledZoom), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
 
         buttonText= (e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
@@ -2865,12 +2865,12 @@ local function Init_Options()
                 whileDead=true, hideOnEscape=true, exclusive=true,
                 OnAccept=function()
                     Save.scale={}
-                    print(id, e.cn(addName), (e.onlyChinese and '缩放' or UI_SCALE)..': 1', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
+                    print(e.addName, e.cn(addName), (e.onlyChinese and '缩放' or UI_SCALE)..': 1', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
                 end,
                 OnAlt=function()
                     Save.size={}
                     Save.disabledSize={}
-                    print(id, e.cn(addName), e.onlyChinese and '大小' or 'Size', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
+                    print(e.addName, e.cn(addName), e.onlyChinese and '大小' or 'Size', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
                 end,
             }
             StaticPopup_Show(id..addName..'MoveZoomClearZoom')
@@ -2887,7 +2887,7 @@ local function Init_Options()
         checkTooltip= e.onlyChinese and '当你开始移动时，Frame变为透明状态。' or OPTION_TOOLTIP_MAP_FADE:gsub(string.lower(WORLD_MAP), 'Frame'),
         checkSetValue= function()
             Save.notMoveAlpha= not Save.notMoveAlpha and true or nil
-            print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(e.addName, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
 
         sliderGetValue= function() return Save.alpha or 0.5 end,
@@ -2909,7 +2909,7 @@ local function Init_Options()
         category= Category,
         func= function()
             Save.disabledResizable= not Save.disabledResizable and true or nil
-            print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabledResizable), e.onlyChinese and '重新加载UI' or RELOADUI)
+            print(e.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabledResizable), e.onlyChinese and '重新加载UI' or RELOADUI)
         end
     })]]
 
@@ -2958,7 +2958,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 category= Category,
                 SetValue= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(e.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 

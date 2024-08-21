@@ -643,7 +643,7 @@ end
 
 local function setFunc()--使用，禁用
     Save.disabed= not Save.disabed and true or nil
-    print(id, addName, e.GetEnabeleDisable(not Save.disabed))
+    print(e.addName, addName, e.GetEnabeleDisable(not Save.disabed))
     setUseDisabled()
 end
 
@@ -729,7 +729,7 @@ local function Init_Panel()
                 end
             end)
         end
-        print(id, addName, e.onlyChinese and '颜色' or COLOR, '|cnGREEN_FONT_COLOR:#'..n..(e.onlyChinese and '完成' or COMPLETE)..'|r', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(e.addName, addName, e.onlyChinese and '颜色' or COLOR, '|cnGREEN_FONT_COLOR:#'..n..(e.onlyChinese and '完成' or COMPLETE)..'|r', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
     local str2=e.Cstr(panel)--频道名称替换
@@ -766,7 +766,7 @@ local function Init_Panel()
                 end
             end)
         end
-        print(id, addName, e.onlyChinese and '频道名称替换' or (CHANNEL_CHANNEL_NAME..COMMUNITIES_SETTINGS_SHORT_NAME_LABEL), '|cnGREEN_FONT_COLOR:#'..n..(e.onlyChinese and '完成' or COMPLETE)..'|r',  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(e.addName, addName, e.onlyChinese and '频道名称替换' or (CHANNEL_CHANNEL_NAME..COMMUNITIES_SETTINGS_SHORT_NAME_LABEL), '|cnGREEN_FONT_COLOR:#'..n..(e.onlyChinese and '完成' or COMPLETE)..'|r',  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 end
 
@@ -991,20 +991,20 @@ local function set_START_TIMER_Event()--事件, 声音
         if not UnitAffectingCombat('player') then
             if not C_CVar.GetCVarBool('Sound_EnableAllSound') then
                 C_CVar.SetCVar('Sound_EnableAllSound', '1')
-                print(id, addName, '|cnGREEN_FONT_COLOR:CVar Sound_EnableAllSound|r', e.onlyChinese and '开启声效' or ENABLE_SOUND)
+                print(e.addName, addName, '|cnGREEN_FONT_COLOR:CVar Sound_EnableAllSound|r', e.onlyChinese and '开启声效' or ENABLE_SOUND)
             end
             if C_CVar.GetCVar('Sound_MasterVolume')=='0' then
                 C_CVar.SetCVar('Sound_MasterVolume', '1.0')
-                print(id, addName, '|cnGREEN_FONT_COLOR:CVar Sound_MasterVolume|r', e.onlyChinese and '主音量' or MASTER_VOLUME, '1')
+                print(e.addName, addName, '|cnGREEN_FONT_COLOR:CVar Sound_MasterVolume|r', e.onlyChinese and '主音量' or MASTER_VOLUME, '1')
             end
 
             if C_CVar.GetCVar('Sound_DialogVolume')=='0' then
                 C_CVar.SetCVar('Sound_DialogVolume', '1.0')
-                print(id, addName, '|cnGREEN_FONT_COLOR:CVar Sound_DialogVolume|r',e.onlyChinese and '对话' or DIALOG_VOLUME, '1')
+                print(e.addName, addName, '|cnGREEN_FONT_COLOR:CVar Sound_DialogVolume|r',e.onlyChinese and '对话' or DIALOG_VOLUME, '1')
             end
             if not C_CVar.GetCVarBool('Sound_EnableDialog') then
                 C_CVar.SetCVar('Sound_EnableDialog', '1')
-                print(id, addName, '|cnGREEN_FONT_COLOR:CVar Sound_EnableDialog|r', e.onlyChinese and '启用对话' or ENABLE_DIALOG)
+                print(e.addName, addName, '|cnGREEN_FONT_COLOR:CVar Sound_EnableDialog|r', e.onlyChinese and '启用对话' or ENABLE_DIALOG)
             end
         end
 
@@ -1106,7 +1106,7 @@ local function Init_Menu(_, root)
         end
         set_START_TIMER_Event()--事件, 声音
         set_Talking()--隐藏NPC发言
-        print(id, addName, e.onlyChinese and "播放" or SLASH_STOPWATCH_PARAM_PLAY1, e.onlyChinese and '事件声音' or EVENTS_LABEL..SOUND)
+        print(e.addName, addName, e.onlyChinese and "播放" or SLASH_STOPWATCH_PARAM_PLAY1, e.onlyChinese and '事件声音' or EVENTS_LABEL..SOUND)
     end)
     sub:SetTooltip(function(tooltip)
         GameTooltip_AddNormalLine(tooltip, e.Get_CVar_Tooltips({name='Sound_EnableAllSound', msg=e.onlyChinese and '开启声效' or ENABLE_SOUND}))
@@ -1159,32 +1159,19 @@ local function Init_Menu(_, root)
         GameTooltip_AddNormalLine(tooltip, Save.guildWelcomeText)
     end)
 
-    tre= sub:CreateButton(e.onlyChinese and '修改' or EDIT, function ()
-        StaticPopupDialogs[id..addName..'modifyGuildWelcome']={--区域,设置对话框
-            text=id..' '..addName..'|n|n'..(e.onlyChinese and '欢迎加入' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,  EMOTE103_CMD1:gsub('/',''), JOIN))..'|n'..(e.onlyChinese and '公会新成员' or LFG_LIST_GUILD_MEMBER),
-            whileDead=true, hideOnEscape=true, exclusive=true, hasEditBox=true,
-            button1= e.onlyChinese and '修改' or EDIT,
-            button2= e.onlyChinese and '取消' or CANCEL,
-            OnShow = function(s)
-                s.editBox:SetText(Save.guildWelcomeText)
-            end,
-            OnHide=function(s)
-                s.editBox:ClearFocus()
-            end,
-            OnAccept = function(s)
-                local text= s.editBox:GetText()
-                Save.guildWelcomeText= text
-                print(id, addName, text)
-            end,
-            EditBoxOnTextChanged=function(s)
-                local text= s:GetText() or ''
-                s:GetParent().button1:SetEnabled(text:gsub(' ', '')~='')
-            end,
-            EditBoxOnEscapePressed = function(s)
-                s:ClearFocus()
-            end,
-        }
-        StaticPopup_Show(id..addName..'modifyGuildWelcome')
+    tre= sub:CreateButton('|A:communities-guildbanner-background:0:0|a'..(e.onlyChinese and '修改' or EDIT), function ()
+        StaticPopup_Show('WoWTools_EditText',
+            (e.onlyChinese and '欢迎加入' or 'Welcome to join')..'|n|A:communities-guildbanner-background:0:0|a'..(e.onlyChinese and '公会新成员' or LFG_LIST_GUILD_MEMBER),
+            nil,
+            {
+                text=Save.guildWelcomeText,
+                SetValue= function(self)
+                    local text= self.editBox:GetText()
+                    Save.guildWelcomeText= text
+                    print(e.addName, addName, text)
+                end
+            }
+        )
     end)
     tre:SetTooltip(function(tooltip)
         GameTooltip_AddNormalLine(tooltip, Save.guildWelcomeText)
@@ -1215,32 +1202,19 @@ local function Init_Menu(_, root)
         GameTooltip_AddErrorLine(tooltip, e.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON)        
     end)
 
-    tre= sub:CreateButton(e.onlyChinese and '修改' or EDIT, function ()
-        StaticPopupDialogs[id..addName..'modifyGroupWelcome']={--区域,设置对话框
-            text=id..' '..addName..'|n|n'..(e.onlyChinese and '欢迎加入' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,  EMOTE103_CMD1:gsub('/',''), JOIN))..'|n'..(e.onlyChinese and '公会新成员' or LFG_LIST_GUILD_MEMBER),
-            whileDead=true, hideOnEscape=true, exclusive=true,
-            hasEditBox=true,
-            button1= e.onlyChinese and '修改' or EDIT,
-            button2= e.onlyChinese and '取消' or CANCEL,
-            OnShow = function(s)
-                s.editBox:SetText(Save.groupWelcomeText)
-            end,
-            OnAccept = function(s)
-                local text= s.editBox:GetText()
-                Save.groupWelcomeText= text
-                e.Chat(text, e.Player.name, nil)
-            end,
-            EditBoxOnTextChanged=function(s)
-                local text= s:GetText() or ''
-                s:GetParent().button1:SetEnabled(text:gsub(' ', '')~='')
-            end,
-            EditBoxOnEscapePressed = function(s)
-                s:SetAutoFocus(false)
-                s:ClearFocus()
-                s:GetParent():Hide()
-            end,
-        }
-        StaticPopup_Show(id..addName..'modifyGroupWelcome')
+    tre= sub:CreateButton('|A:socialqueuing-icon-group:0:0|a'..(e.onlyChinese and '修改' or EDIT), function ()
+        StaticPopup_Show('WoWTools_EditText',
+            (e.onlyChinese and '欢迎加入' or 'Welcome to join')..'|n|A:socialqueuing-icon-group:0:0|a'..(e.onlyChinese and '队伍新成员' or SPELL_TARGET_TYPE14_DESC),
+            nil,
+            {
+                text=Save.groupWelcomeText,
+                SetValue= function(self)
+                    local text= self.editBox:GetText()
+                    Save.groupWelcomeText=text
+                    print(e.addName, addName, text)
+                end
+            }
+        )
     end)
     tre:SetTooltip(function(tooltip)
         GameTooltip_AddNormalLine(tooltip, Save.groupWelcomeText)
@@ -1409,7 +1383,7 @@ local function Init()
                 end
             end]]
             if self.AcceptButton and self.AcceptButton:IsEnabled() and info then
-                print(id, addName,
+                print(e.addName, addName,
                     info.leaderOverallDungeonScore and info.leaderOverallDungeonScore>0 and '|T4352494:0|t'..e.GetKeystoneScorsoColor(info.leaderOverallDungeonScore) or '',--地下城史诗,分数
                     info.leaderPvpRatingInfo and  info.leaderPvpRatingInfo.rating and info.leaderPvpRatingInfo.rating>0 and '|A:pvptalents-warmode-swords:0:0|a|cnRED_FONT_COLOR:'..info.leaderPvpRatingInfo.rating..'|r' or '',--PVP 分数
                     info.leaderName and (e.onlyChinese and '%s邀请你加入' or COMMUNITY_INVITATION_FRAME_INVITATION_TEXT):format(e.PlayerLink(info.leaderName)..' ') or '',--	%s邀请你加入
@@ -1514,7 +1488,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
             end)
             edit:SetScript("OnKeyUp", function(s, key)
                 if IsControlKeyDown() and key == "C" then
-                    print(id, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r', s:GetText())
+                    print(e.addName, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r', s:GetText())
                 end
             end)
         end

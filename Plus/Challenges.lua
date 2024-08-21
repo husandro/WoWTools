@@ -455,7 +455,7 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     self.ins:SetText(e.onlyChinese and '插入' or  COMMUNITIES_ADD_DIALOG_INVITE_LINK_JOIN)
     self.ins:SetScript("OnMouseDown",function()
             if UnitAffectingCombat('player') then
-                print(id, Initializer:GetName(),'|cnRED_FONT_COLOR:', e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
+                print(e.addName, Initializer:GetName(),'|cnRED_FONT_COLOR:', e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
                 return
             end
             ItemButtonUtil.OpenAndFilterBags(ChallengesKeystoneFrame)
@@ -470,7 +470,7 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
                     end
                 end
             end
-            print(id, CHALLENGE_MODE_KEYSTONE_NAME:format('|cnRED_FONT_COLOR:'..(e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE)..'|r'))
+            print(e.addName, CHALLENGE_MODE_KEYSTONE_NAME:format('|cnRED_FONT_COLOR:'..(e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE)..'|r'))
     end)
 
     self:HookScript('OnShow', function(self2)
@@ -1339,7 +1339,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                 --[[if e.Player.husandro then
                     frame:EnableMouse(true)
                     frame:SetScript('OnMouseDown', function(self2)
-                        e.call('EncounterJournal_LoadUI')
+                        e.call(EncounterJournal_LoadUI)
                         
                         if self2.journalInstanceID and EncounterJournal then
                             ToggleEncounterJournal()
@@ -1736,7 +1736,7 @@ local function Init_WeeklyRewardsFrame()
                         text= format(e.onlyChinese and '本周后就不能获得新的奖励了。|n%s上线后，所有未领取的奖励都会丢失。' or GREAT_VAULT_RETIRE_WARNING, title);
                     end
                     if text then
-                        print(id, Initializer:GetName(),'|n|cffff00ff',text)
+                        print(e.addName, Initializer:GetName(),'|n|cffff00ff',text)
                     end
                 end
             end
@@ -1776,7 +1776,7 @@ local function set_Week_Reward_Look_Specialization()
     if not C_WeeklyRewards.HasAvailableRewards() or WeekRewardLookFrame or not e.Player.levelMax then
         return
     elseif C_WeeklyRewards.HasAvailableRewards() then
-        print(id, Initializer:GetName(),'|cffff00ff'..(e.onlyChinese and "返回宏伟宝库，获取你的奖励" or WEEKLY_REWARDS_RETURN_TO_CLAIM))
+        print(e.addName, Initializer:GetName(),'|cffff00ff'..(e.onlyChinese and "返回宏伟宝库，获取你的奖励" or WEEKLY_REWARDS_RETURN_TO_CLAIM))
     end
 
     WeekRewardLookFrame= CreateFrame("Frame")
@@ -1810,7 +1810,7 @@ local function set_Week_Reward_Look_Specialization()
             self.texture:SetAllPoints(self)
             self:SetScript('OnEnter', function(frame)
                 frame:set_Show(false)
-                print(id, Initializer:GetName(), '|cffff00ff', e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)
+                print(e.addName, Initializer:GetName(), '|cffff00ff', e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)
             end)
             local texture= self:CreateTexture(nil,'BORDER')
             texture:SetSize(60,60)
@@ -1915,7 +1915,7 @@ local function Init()
         end
         scale= scale>2.5 and 2.5 or scale
         scale= scale<0.4 and 0.4 or scale
-        print(id, Initializer:GetName(), e.onlyChinese and '副本' or INSTANCE, e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..scale)
+        print(e.addName, Initializer:GetName(), e.onlyChinese and '副本' or INSTANCE, e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..scale)
         Save.insScale= scale==1 and nil or scale
         set_Update()
         self:set_Tooltips()
@@ -1960,7 +1960,7 @@ local function Init()
         end
         scale= scale>2.5 and 2.5 or scale
         scale= scale<0.4 and 0.4 or scale
-        print(id, Initializer:GetName(), e.onlyChinese and '信息' or INFO,  e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..scale)
+        print(e.addName, Initializer:GetName(), e.onlyChinese and '信息' or INFO,  e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..scale)
         Save.tipsScale= scale==1 and nil or scale
         TipsFrame:SetScale(scale)
         self:set_Tooltips()
@@ -2002,7 +2002,7 @@ local function Init()
         end
         scale= scale>2.5 and 2.5 or scale
         scale= scale<0.4 and 0.4 or scale
-        print(id, Initializer:GetName(), format(e.onlyChinese and "%s的传送门" or UNITNAME_SUMMON_TITLE14, e.onlyChinese and '缩放' or UI_SCALE), '|cnGREEN_FONT_COLOR:'..scale)
+        print(e.addName, Initializer:GetName(), format(e.onlyChinese and "%s的传送门" or UNITNAME_SUMMON_TITLE14, e.onlyChinese and '缩放' or UI_SCALE), '|cnGREEN_FONT_COLOR:'..scale)
         Save.portScale= scale==1 and nil or scale
         set_Update()
         self:set_Tooltips()
@@ -2073,7 +2073,7 @@ local function Init()
             local text= ChallengesFrame.WeeklyInfo.Child.Description:GetText()
             if text==MYTHIC_PLUS_MISSING_KEYSTONE_MESSAGE then
                 ChallengesFrame.WeeklyInfo.Child.Description:SetText()
-                print(id, Initializer:GetName())
+                print(e.addName, Initializer:GetName())
                 print('|cffff00ff',text)
             end
         end
@@ -2181,7 +2181,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue= function() return not Save.disabled end,
                 SetValue= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(id, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(e.addName, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 

@@ -498,13 +498,14 @@ function e.Chat(text, name, printText)
         if name then
             SendChatMessage(text, 'WHISPER', nil, name)
         elseif printText then
-            if not e.call('ChatEdit_InsertLink', text) then
-                e.call('ChatFrame_OpenChat', text)
+            if not e.call(ChatEdit_InsertLink, text) then
+                e.call(ChatFrame_OpenChat, text)
             end
+            securecallfunction(ChatFrame_OpenChat, 'a')
             --[[if ChatEdit_GetActiveWindow() then
-                e.call('ChatEdit_InsertLink', text)
+                e.call(ChatEdit_InsertLink, text)
             else
-                e.call('ChatFrame_OpenChat', text)
+                e.call(ChatFrame_OpenChat, text)
             end]]
         else
             local isNotDead= not UnitIsDeadOrGhost('player')
@@ -566,7 +567,7 @@ function e.Reload()
     if not bat or not IsInInstance() then
         C_UI.Reload()
     else
-        print(id, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+        print(e.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
     end
 end
 

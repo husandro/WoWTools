@@ -158,6 +158,7 @@ function e.Cedit(self)--frame, name, size={} SecureScrollTemplates.xml
     e.Set_NineSlice_Color_Alpha(frame.bg, true, nil, nil, true)
     frame.EditBox= CreateFrame('EditBox', nil, frame)
     frame.EditBox:SetAutoFocus(false)
+    frame.EditBox:ClearFocus()
     frame.EditBox:SetMultiLine(true)
     frame.EditBox:SetFrameLevel(level+2)
     frame.EditBox:SetFontObject('GameFontHighlightSmall')-- or "ChatFontNormal")
@@ -307,7 +308,7 @@ function e.GetSpellItemCooldown(spellID, itemID)--法术,物品,冷却
                 return '|cnRED_FONT_COLOR:'..SecondsToTime(t)..'|r'
 
             elseif not data.isEnabled then
-                return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '即时冷却' or SPELL_RECAST_TIME_INSTANT)..'|r'
+                return '|cff9e9e9e'..(e.onlyChinese and '即时冷却' or SPELL_RECAST_TIME_INSTANT)..'|r'
             end
         end
     elseif itemID then

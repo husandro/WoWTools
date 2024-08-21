@@ -237,7 +237,7 @@ local function Init_StaticPopupDialogs()
         OnShow = function(self, web)
             self.editBox:SetScript("OnKeyUp", function(s, key)
                 if IsControlKeyDown() and key == "C" then
-                    print(id, Initializer:GetName(),
+                    print(e.addName, Initializer:GetName(),
                             '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r',
                             s:GetText()
                         )
@@ -487,7 +487,7 @@ function func:Set_Mount(tooltip, mountID, type)--坐骑
     local can= isCollected and isUsable and not isActive and not UnitCastingInfo('player')
     if can and IsAltKeyDown() then
         C_MountJournal.SummonByID(mountID)
-        print(id, Initializer:GetName(), spellID and C_Spell.GetSpellLink(spellID), '|cnGREEN_FONT_COLOR:Alt+'..(e.onlyChinese and '召唤坐骑' or MOUNT))
+        print(e.addName, Initializer:GetName(), spellID and C_Spell.GetSpellLink(spellID), '|cnGREEN_FONT_COLOR:Alt+'..(e.onlyChinese and '召唤坐骑' or MOUNT))
     end
     local col= can and '|cnGREEN_FONT_COLOR:' or '|cff9e9e9e'
     tooltip:AddDoubleLine(col..(e.onlyChinese and '召唤坐骑' or MOUNT), col..'Alt+')
@@ -1708,7 +1708,7 @@ local function set_CVar(reset, tips, notPrint)
                 if defaultValue~=value then
                     C_CVar.SetCVar(info.name, defaultValue)
                     if not notPrint then
-                        print(id, Initializer:GetName(), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '恢复默认设置' or RESET_TO_DEFAULT)..'|r', info.name, defaultValue, info.msg)
+                        print(e.addName, Initializer:GetName(), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '恢复默认设置' or RESET_TO_DEFAULT)..'|r', info.name, defaultValue, info.msg)
                     end
                 end
             else
@@ -1716,7 +1716,7 @@ local function set_CVar(reset, tips, notPrint)
                 if value~=info.value then
                     C_CVar.SetCVar(info.name, info.value)
                     if not notPrint then
-                        print(id,Initializer:GetName(), info.name, info.value..'('..value..')', info.msg)
+                        print(e.addName,Initializer:GetName(), info.name, info.value..'('..value..')', info.msg)
                     end
                 end
             end
@@ -2811,7 +2811,7 @@ local function Init_Panel()
         category= Initializer,
         SetValue= function()
             Save.hideHealth= not Save.hideHealth and true or nil
-            print(id, Initializer:GetName(),  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(e.addName, Initializer:GetName(),  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     })
     e.AddPanel_Check({
@@ -2890,7 +2890,7 @@ local function Init_Panel()
         category= Initializer,
         SetValue= function()
             Save.ShowOptionsCVarTips= not Save.ShowOptionsCVarTips and true or nil
-            print(id, Initializer:GetName(), e.GetEnabeleDisable(not Save.ShowOptionsCVarTips), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(e.addName, Initializer:GetName(), e.GetEnabeleDisable(not Save.ShowOptionsCVarTips), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     })
 end
@@ -2924,7 +2924,7 @@ end
             Save.WidgetSetID= num
             self2:ClearFocus()
             set_Cursor_Tips(self2)
-            print(id, Category:GetName(), 'PlayerFrame WidgetSetID',
+            print(e.addName, Category:GetName(), 'PlayerFrame WidgetSetID',
                 num==0 and e.GetEnabeleDisable(false) or num,
                 '|n|cnRED_FONT_COLOR:',
                 e.onlyChinese and '备注：如果出现错误，请关闭此功能（0）' or 'note: If you get error, please disable this (0)'
@@ -3451,7 +3451,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 category= Initializer,
                 func= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(id, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(e.addName, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 

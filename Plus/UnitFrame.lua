@@ -63,7 +63,7 @@ local function Init_PlayerFrame()--PlayerFrame.lua
         SetEveryoneIsAssistant(not IsEveryoneAssistant())
         C_Timer.After(0.7, function()
             self:set_tooltips()
-            print(id, e.cn(addName), e.onlyChinese and '所有团队成员都获得团队助理权限' or ALL_ASSIST_DESCRIPTION, e.GetEnabeleDisable(IsEveryoneAssistant()))
+            print(e.addName, e.cn(addName), e.onlyChinese and '所有团队成员都获得团队助理权限' or ALL_ASSIST_DESCRIPTION, e.GetEnabeleDisable(IsEveryoneAssistant()))
         end)
     end)
     playerFrameTargetContextual.assisterIcon= playerFrameTargetContextual:CreateTexture(nil, 'OVERLAY', nil, 1)--助手，提示 PlayerFrame.xml
@@ -101,7 +101,7 @@ local function Init_PlayerFrame()--PlayerFrame.lua
         end
     end)
     if IsInRaid() then
-        e.call('PlayerFrame_UpdateGroupIndicator')
+        e.call(PlayerFrame_UpdateGroupIndicator)
     end
     PlayerFrameGroupIndicatorLeft:SetTexture(0)
     PlayerFrameGroupIndicatorLeft:SetShown(false)
@@ -225,7 +225,7 @@ end)
         local currentSpec = GetSpecialization()
         local specID= currentSpec and GetSpecializationInfo(currentSpec)
         local name, _, texture= select(2, GetSpecializationInfoByID(specID or 0))
-        print(id, e.cn(addName),  e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION, texture and '|T'..texture..':0|t' or '', name)
+        print(e.addName, e.cn(addName),  e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION, texture and '|T'..texture..':0|t' or '', name)
     end)
 
 
@@ -1315,14 +1315,14 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
         if d=='RightButton' and not IsModifierKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
         elseif d=="LeftButton" then
-            print(id, e.cn(addName), (e.onlyChinese and '移动' or NPE_MOVE)..e.Icon.right, 'Alt+'..e.Icon.mid..(e.onlyChinese and '缩放' or UI_SCALE), Save.compactPartyFrameScale or 1)
+            print(e.addName, e.cn(addName), (e.onlyChinese and '移动' or NPE_MOVE)..e.Icon.right, 'Alt+'..e.Icon.mid..(e.onlyChinese and '缩放' or UI_SCALE), Save.compactPartyFrameScale or 1)
         end
     end)
     CompactPartyFrame.moveFrame:SetScript("OnLeave", ResetCursor)
     CompactPartyFrame.moveFrame:SetScript('OnMouseWheel', function(self, d)--缩放
         if IsAltKeyDown() then
             if UnitAffectingCombat('player') then
-                print(id, e.cn(addName), e.onlyChinese and '缩放' or UI_SCALE, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or COMBAT))
+                print(e.addName, e.cn(addName), e.onlyChinese and '缩放' or UI_SCALE, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or COMBAT))
             else
                 local sacle= Save.compactPartyFrameScale or 1
                 if d==1 then
@@ -1335,7 +1335,7 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
                 elseif sacle<0.5 then
                     sacle=0.5
                 end
-                print(id, e.cn(addName), (e.onlyChinese and '缩放' or UI_SCALE), sacle)
+                print(e.addName, e.cn(addName), (e.onlyChinese and '缩放' or UI_SCALE), sacle)
                 CompactPartyFrame:SetScale(sacle)
                 Save.compactPartyFrameScale=sacle
             end
@@ -1828,7 +1828,7 @@ local function Init_RaidFrame()--设置,团队
             Save.raidFrameScale= num
             self:set_Scale()
             self:set_Tooltips()
-            print(id, e.cn(addName), e.onlyChinese and '缩放' or UI_SCALE, num)
+            print(e.addName, e.cn(addName), e.onlyChinese and '缩放' or UI_SCALE, num)
         end
     end)
     CompactRaidFrameContainer.moveFrame:SetScript("OnLeave", function(self)
@@ -1847,12 +1847,12 @@ local function Init_RaidFrame()--设置,团队
     CompactRaidFrameManager.sacleFrame:SetPoint('RIGHT', CompactRaidFrameManagerDisplayFrameRaidMemberCountLabel, 'LEFT')
     CompactRaidFrameManager.sacleFrame:SetAlpha(0.5)
     CompactRaidFrameManager.sacleFrame:SetScript("OnMouseDown", function(self, d)
-        print(id, e.cn(addName), 'Alt+'..e.Icon.mid..(e.onlyChinese and '缩放' or UI_SCALE), Save.managerScale or 1)
+        print(e.addName, e.cn(addName), 'Alt+'..e.Icon.mid..(e.onlyChinese and '缩放' or UI_SCALE), Save.managerScale or 1)
     end)
     CompactRaidFrameManager.sacleFrame:SetScript('OnMouseWheel', function(self, d)--缩放
         if IsAltKeyDown() then
             if UnitAffectingCombat('player') then
-                print(id, e.cn(addName), e.onlyChinese and '缩放' or UI_SCALE, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or COMBAT))
+                print(e.addName, e.cn(addName), e.onlyChinese and '缩放' or UI_SCALE, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or COMBAT))
             else
                 local sacle= Save.managerScale or 1
                 if d==1 then
@@ -1865,7 +1865,7 @@ local function Init_RaidFrame()--设置,团队
                 elseif sacle<0.5 then
                     sacle=0.5
                 end
-                print(id, e.cn(addName), (e.onlyChinese and '缩放' or UI_SCALE), sacle)
+                print(e.addName, e.cn(addName), (e.onlyChinese and '缩放' or UI_SCALE), sacle)
                 CompactRaidFrameManager:SetScale(sacle)
                 Save.managerScale=sacle
             end
@@ -2167,7 +2167,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 GetValue= function() return not Save.disabled end,
                 func= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(e.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 

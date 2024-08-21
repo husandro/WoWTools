@@ -1139,7 +1139,7 @@ local function Init_Options()--初始, 选项
             if Save.plus and not Frames then
                 Init_Plus()
             else
-                print(id, e.cn(addName), e.GetEnabeleDisable(Save.plus), e.onlyChinese and '重新加载UI' or RELOADUI)
+                print(e.addName, e.cn(addName), e.GetEnabeleDisable(Save.plus), e.onlyChinese and '重新加载UI' or RELOADUI)
             end
         end
     })
@@ -1164,7 +1164,7 @@ local function Init_Options()--初始, 选项
         checkTooltip= e.cn(addName),
         checkSetValue= function()
             Save.enabledMainMenuAlpha= not Save.enabledMainMenuAlpha and true or nil
-            print(id, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(e.addName, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
         sliderGetValue= function() return Save.mainMenuAlphaValue end,
         minValue= 0,
@@ -1188,7 +1188,7 @@ local function Init_Options()--初始, 选项
         SetValue= function()
             Save.frameratePlus= not Save.frameratePlus and true or nil
             if FramerateButton then
-                print(id, e.cn(addName), e.GetEnabeleDisable(Save.frameratePlus), e.onlyChinese and '重新加载UI' or RELOADUI)
+                print(e.addName, e.cn(addName), e.GetEnabeleDisable(Save.frameratePlus), e.onlyChinese and '重新加载UI' or RELOADUI)
             end
             Init_Framerate_Plus()
         end

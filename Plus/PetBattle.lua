@@ -272,7 +272,7 @@ local function set_PetBattleFrame_UpdateAllActionButtons(self)--Blizzard_PetBatt
             self2:StopMovingOrSizing();
             Save.EnemyFramePoint={self2:GetPoint(1)}
             Save.EnemyFramePoint[2]=nil
-            print(id, e.cn(addName),'Alt+' ..e.Icon.right,e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)
+            print(e.addName, e.cn(addName),'Alt+' ..e.Icon.right,e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)
         end)
         EnemyFrame:SetScript('OnMouseDown', function(self2, d)
             if d=='RightButton' and IsAltKeyDown() then
@@ -597,12 +597,12 @@ local function set_Click_To_Move()
     if e.Player.levelMax then
         if not value then
             C_CVar.SetCVar("autoInteract", '1')
-            print(id, e.cn(addName), e.onlyChinese and '点击移动' or CLICK_TO_MOVE, e.GetEnabeleDisable(C_CVar.GetCVarBool("autoInteract")))
+            print(e.addName, e.cn(addName), e.onlyChinese and '点击移动' or CLICK_TO_MOVE, e.GetEnabeleDisable(C_CVar.GetCVarBool("autoInteract")))
         end
     else
         if value then
             C_CVar.SetCVar("autoInteract", '0')
-            print(id, e.cn(addName), e.onlyChinese and '点击移动' or CLICK_TO_MOVE, e.GetEnabeleDisable(C_CVar.GetCVarBool("autoInteract")))
+            print(e.addName, e.cn(addName), e.onlyChinese and '点击移动' or CLICK_TO_MOVE, e.GetEnabeleDisable(C_CVar.GetCVarBool("autoInteract")))
         end
         TrackButton:RegisterEvent('PLAYER_LEVEL_UP')
     end
@@ -913,7 +913,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 value= not Save.disabled,
                 func= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+                    print(e.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
                 end
             })]]
 
@@ -923,7 +923,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 GetValue= function() return not Save.disabled end,
                 SetValue= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(id, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+                    print(e.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
                 end,
                 buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
                 buttonFunc= function()
@@ -936,7 +936,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     if EnemyFrame then
                         EnemyFrame:set_point()
                     end
-                    print(id, e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
+                    print(e.addName, e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
                 end,
                 tooltip= e.cn(addName),
                 layout= nil,
