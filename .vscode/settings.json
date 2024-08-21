@@ -4816,7 +4816,8 @@
         "MerchantFrame_UpdateMerchantInfo",
         "MerchantFrame_Update",
         "PlayerFrame_UpdateGroupIndicator",
-        "MountJournal_SetUnusableFilter"
+        "MountJournal_SetUnusableFilter",
+        "PetJournal_UpdatePetList"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
