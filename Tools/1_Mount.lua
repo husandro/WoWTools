@@ -1531,7 +1531,7 @@ local function Init_UI_Menu(self, root)
 
     local name, spellID, icon, _, _, _, _, isFactionSpecific, faction, shouldHideOnChar, isCollected, _, isForDragonriding = C_MountJournal.GetMountInfoByID(mountID)
     spellID= spellID or self.spellID
-
+    
     local col, sub
     for _, type in pairs(MountType) do
         if type=='Shift' or type==FLOOR then
@@ -1577,7 +1577,7 @@ local function Init_UI_Menu(self, root)
                 e.call(MountJournal_UpdateMountList)
             end
         end
-        local setData= {type=type, spellID=spellID, mountID=mountID, name=name, icon=icon}
+        local setData= {type=type, spellID=spellID, mountID=mountID, name=name, icon='|T'..(icon or 0)..':0|t'}
         sub=root:CreateCheckbox(col..(e.onlyChinese and '设置' or SETTINGS)..' '..e.cn(type)..' #|cnGREEN_FONT_COLOR:'..getTableNum(type),
             function(data)
                 return Save.Mounts[data.type][data.spellID]
