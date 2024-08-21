@@ -16,9 +16,15 @@ e.Get_Region=function()end--Realm.lua
 e.WoWDate={}--战网，数据
 e.StausText={}--属性，截取表 API_Panel.lua
 e.ChallengesSpellTabs={}--Challenges.lua
-
 e.tips=GameTooltip
-e.call= securecallfunction--securecall
+
+local securecallfunction= securecallfunction
+function e.call(func,...)
+    if func then
+        securecallfunction(func, ...)
+    end
+end
+
 e.LibDD=LibStub:GetLibrary("LibUIDropDownMenu-4.0", true)--菜单
 
 e.LeftButtonDown = C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'LeftButtonDown' or 'LeftButtonUp'
