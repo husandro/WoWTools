@@ -43,6 +43,7 @@ local Save={
     items=P_Items,
     showBindNameShort=true,
     showBindName=true,
+    lockedToy=nil,
 }
 
 local ToyButton--ToyButton.items={}--存放有效
@@ -117,7 +118,12 @@ local function Init_Menu_Toy(_, root)
         local has= PlayerHasToy(itemID)
         local cd= has and e.GetSpellItemCooldown(nil, itemID)
         sub=root:CreateCheckbox(
-            (has and '' or '|cff9e9e9e')
+            (
+                (Save.lockedToy==itemID and
+                    '|cnGREEN_FONT_COLOR:'..(has and '' or '|A:Islands-QuestBangDisable:0:0|a')
+                )
+                or (has and '' or '|cff9e9e9e')
+            )
             ..index..') '..icon
             ..name
             ..(cd or ''),
@@ -125,7 +131,9 @@ local function Init_Menu_Toy(_, root)
                 return ToyButton.itemID==data.itemID
             end, function(data)
                 if data.has then
-                    ToyButton:set_selected(data.itemID)
+                    local toy= ToyButton.itemID~=data.itemID and data.itemID or nil
+                    Save.lockedToy=nil
+                    ToyButton:Set_SelectValue_Random(toy)
                 end
             end,
             {itemID=itemID, name=toyName, has=has}
@@ -138,10 +146,12 @@ local function Init_Menu_Toy(_, root)
             ..(e.onlyChinese and '激活' or SPEC_ACTIVE)
             ..e.Icon.left,
         function(data)
-            return ToyButton.itemID==data.itemID and ToyButton.isSelected
+            return Save.lockedToy==data.itemID
         end, function(data)
             if data.has then
-                ToyButton:set_selected(data.itemID)
+                local toy= Save.lockedToy~=data.itemID and itemID or nil
+                Save.lockedToy= toy
+                ToyButton:Set_LockedValue_Random(toy)
             end
         end, {itemID=itemID, name=toyName, has=has})
         sub2:SetTooltip(Set_Menu_Tooltip)
@@ -162,7 +172,7 @@ local function Init_Menu_Toy(_, root)
             function(data)
                 print(e.addName, addName, select(2, C_Item.GetItemInfo(data.itemID)) or data.itemID, e.onlyChinese and '移除' or REMOVE)
                 Save.items[data.itemID]=nil
-                ToyButton:init_toy()
+                ToyButton:Init_Random(Save.lockedToy)
                 return MenuResponse.Open
             end,
             {itemID=itemID, name=toyName}
@@ -190,7 +200,7 @@ end
                 end
             end
             if n>0 then
-                ToyButton:init_toy()
+                ToyButton:Init_Random()
             else
                 return MenuResponse.Open
             end
@@ -207,7 +217,7 @@ end
         if IsControlKeyDown() then
             Save.items={}
             print(e.addName, addName, e.onlyChinese and '全部清除' or CLEAR_ALL)
-            ToyButton:init_toy()
+            ToyButton:Init_Random()
         else
             return MenuResponse.Open
         end
@@ -225,7 +235,7 @@ end
     sub=root:CreateButton('|A:common-icon-undo:0:0|a'..(e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)..' '..all, function()
         if IsControlKeyDown() then
             Save.items= P_Items
-            ToyButton:init_toy()
+            ToyButton:Init_Random()
             print(e.addName, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)
         else
             return MenuResponse.Open
@@ -251,7 +261,7 @@ end
 local function Init_Menu(self, root)
     local sub
     sub= root:CreateButton(
-        addName..' '..#ToyButton.items,
+        addName..' '..ToyButton.Random_Numeri,
         set_ToggleCollectionsJournal,
         {}
     )
@@ -363,7 +373,7 @@ local function setToySpellButton_UpdateButton(btn)--标记, 是否已选取
             if d=='LeftButton' then
                 local itemID=self:get_itemID()
                 Save.items[itemID]= not Save.items[itemID] and true or nil
-                ToyButton:set_run()
+                ToyButton:Init_Random()--初始
                 self:set_tooltips()
                 self:set_alpha()
             else
@@ -459,81 +469,8 @@ local function Init()
     end
 
 
-    --设置 属性
-    function ToyButton:set_attribute(itemID)
-        if not itemID then
-            return
-        end
-        self.isRunEvent=nil
-        if not self:CanChangeAttribute() then
-            self.isRunEvent=true
-            self:RegisterEvent('PLAYER_REGEN_ENABLED')
-            return
-        end
-        local name=C_Item.GetItemNameByID(itemID) or select(2,  C_ToyBox.GetToyInfo(itemID))
-        if not name then
-            self.isRunEvent=true
-            self:RegisterEvent('ITEM_DATA_LOAD_RESULT')
-            return
-        end
-        self.itemID=itemID
-        self:SetAttribute('item1', name)
-        self.texture:SetTexture(C_Item.GetItemIconByID(itemID) or 134414)
-        self:set_cool()
-    end
 
-    --当唯一时，设置
-    function ToyButton:set_only_item()
-        self:set_attribute(self.items[1] or 6948)
-        self.items={}
-    end
 
-    --取得，可用
-    function ToyButton:get_toys()
-        self.items={}
-        self.onlyItem=nil
-        for itemID ,_ in pairs(Save.items) do
-            if PlayerHasToy(itemID) then
-                table.insert(self.items, itemID)
-            end
-        end
-        local num= #self.items
-        if num<=1 then
-            self:set_only_item()
-            self.onlyItem=true
-        end
-        return num
-    end
-
-    --取得，itemID
-    function ToyButton:set_run()
-        if self.onlyItem or self.isSelected then
-            return
-        end
-        self.isRunEvent=nil
-        if not self:CanChangeAttribute()  then
-            self.isRunEvent=true
-            self:RegisterEvent('PLAYER_REGEN_ENABLED')
-            return
-        end
-        local num= #self.items
-        do
-            if num==0 then
-                num=self:get_toys()
-            end
-        end
-        if num>0 then
-            local index=math.random(1, num)
-            self:set_attribute(self.items[index])
-            table.remove(self.items, index)
-        end
-    end
-
-    --初始
-    function ToyButton:init_toy()
-        self:get_toys()
-        self:set_run()
-    end
 
     --取得，炉石, 绑定位置
     function ToyButton:get_location()
@@ -564,17 +501,6 @@ local function Init()
         e.SetItemSpellCool(self, {item=self.itemID})--主图标冷却
     end
 
-    --设置，选取
-    function ToyButton:set_selected(itemID)
-        if itemID then
-            if self.isSelected and self.itemID==itemID then
-                self.isSelected=nil
-            else
-                self.isSelected=true
-                self:set_attribute(itemID)
-            end
-        end
-    end
 
     ToyButton:RegisterEvent('HEARTHSTONE_BOUND')
     ToyButton:RegisterEvent('TOYS_UPDATED')
@@ -587,13 +513,9 @@ local function Init()
                 if ModifiedTab[itemID] then
                     self:set_alt()
                 elseif Save.items[itemID] then
-                    if self.onlyItem then
-                        self:set_only_item()
-                    else
-                        self:set_run()
-                    end
+                    self:Set_Random_Event()--is_Random_Eevent
                 end
-                if not self.isAltEvent and not self.isRunEvent then
+                if not self.isAltEvent and not self.is_Random_Eevent then
                     self:UnregisterEvent('ITEM_DATA_LOAD_RESULT')
                 end
             end
@@ -602,31 +524,24 @@ local function Init()
             if self.isAltEvent then
                 self:set_alt()
             end
-            if self.isRunEvent then
-                if self.onlyItem then
-                    self:set_only_item()
-                else
-                    self:set_run()
-                end
+            if self.is_Random_Eevent then
+                self:Set_Random_Event()--is_Random_Eevent
             end
-            if not self.isAltEvent and not self.isRunEvent then
+            if not self.isAltEvent and not self.is_Random_Eevent then
                 self:UnregisterEvent('PLAYER_REGEN_ENABLED')
             end
 
         elseif event=='TOYS_UPDATED' or event=='NEW_TOY_ADDED' then
-            self:init_toy()
+            self:Init_Random(Save.lockedToy)
 
         elseif event=='HEARTHSTONE_BOUND' then
             self:set_location()
 
         elseif event=='UI_MODEL_SCENE_INFO_UPDATED' then
             self.isSelected=nil
-            self:set_run()
+            self:Get_Random_Value()
         end
     end)
-
-
-
 
 
     --Tooltip
@@ -643,7 +558,10 @@ local function Init()
         end
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
-        e.tips:AddDoubleLine(e.onlyChinese and '随机' or 'Random', '|cnGREEN_FONT_COLOR:#'..#self.items..'|r'..e.Icon.mid)
+        e.tips:AddDoubleLine(
+            e.onlyChinese and '随机' or 'Random',
+            Save.lockedToy and '|A:AdventureMapIcon-Lock:0:0|a'
+            or ((self.Selected_Value and '|A:transmog-icon-checkmark:0:0|a' or '')..('|cnGREEN_FONT_COLOR:#'..#self.Random_List..'|r'..e.Icon.mid)))
         e.tips:Show()
         self:set_tooltip_location(e.tips)
     end
@@ -666,7 +584,7 @@ local function Init()
         e.tips:Hide()
         self:SetScript('OnUpdate',nil)
         self.elapsed=nil
-        self:set_run()
+        self:Get_Random_Value()
     end)
 
     ToyButton:SetScript("OnMouseDown", function(self,d)
@@ -676,20 +594,64 @@ local function Init()
     end)
 
     ToyButton:SetScript("OnMouseUp", function(self, d)
-        self:set_run()
+        self:Get_Random_Value()
     end)
     ToyButton:SetScript('OnMouseWheel', function(self)
-        self.isSelected=nil
-        self:set_run()
+        self.Selected_Value=nil
+        self:Get_Random_Value()
     end)
 
-    ToyButton:init_toy()
-    ToyButton:set_alt()
 
+
+
+
+    Mixin(ToyButton, WoWTools_RandomMixin)
+    function ToyButton:Get_Random_Data()--取得数据库, {数据1, 数据2, 数据3, ...}
+        local tab={}
+        for itemID in pairs(Save.items) do
+            if PlayerHasToy(itemID) then
+                table.insert(tab, itemID)
+            end
+        end
+        return tab
+    end
+
+    function ToyButton:Set_Random_Value(itemID)--设置，随机值
+        self.is_Random_Eevent=nil
+        if not self:CanChangeAttribute() then
+            self.is_Random_Eevent=true
+            self:RegisterEvent('PLAYER_REGEN_ENABLED')
+            return
+        end
+        local name=C_Item.GetItemNameByID(itemID) or select(2,  C_ToyBox.GetToyInfo(itemID))
+        if not name then
+            self.is_Random_Eevent=true
+            self:RegisterEvent('ITEM_DATA_LOAD_RESULT')
+            return
+        end
+        self.itemID=itemID
+        self:SetAttribute('item1', name)
+        self.texture:SetTexture(C_Item.GetItemIconByID(itemID) or 134414)
+        self:set_cool()
+    end
+    function ToyButton:Set_OnlyOneValue_Random()--当数据 <=1 时，设置值
+        self:Set_Random_Value(self.Player_Locked_Value or self.Selected_Value or self.Random_List[1] or 6948)
+        self.Random_List={}
+    end
+
+
+    ToyButton:Init_Random(Save.lockedToy)--初始
+
+
+
+
+
+
+    ToyButton:set_alt()
     C_Timer.After(4, function()
         ToyButton:set_location()
         ToyButton:set_cool()
-        ToyButton:set_run()
+        ToyButton:Get_Random_Value()
     end)
 end
 

@@ -484,7 +484,7 @@ end
 --#############
 local function Init_Dialogs()
 
-    
+
 
     StaticPopupDialogs['WoWTools_Tools_Mount_Key']={--快捷键,设置对话框
         text=id..' '..addName..'|n'..(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)..'|n|nQ, BUTTON5',
@@ -1205,7 +1205,7 @@ local function Init_Menu_Spell(sub)
             spellID=spellID,
             itemID=nil,
         })
-        
+
     end
 
     ClearAll_Menu(sub, SPELLS, index)
@@ -1371,7 +1371,7 @@ local function Init_Menu(_, root)
 
 --选项
     root:CreateDivider()
-    sub=WoWTools_ToolsButtonMixin:OpenMenu(root, addName, Save.KEY)
+    sub=WoWTools_ToolsButtonMixin:OpenMenu(root, Save.KEY or addName)
 
     sub2=sub:CreateButton('|A:bags-greenarrow:0:0|a'..(e.onlyChinese and '坐骑秀' or 'Mount show'), function()
         MountShowFrame:initMountShow()
@@ -1505,11 +1505,6 @@ end
 
 --界面，菜单
 local function Init_UI_Menu(self, root)
-    if UnitAffectingCombat('player') then
-        root:CreateTitle(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
-        return
-    end
-
     local frame= self:GetParent()
     local mountID = frame.mountID
 
@@ -1520,7 +1515,11 @@ local function Init_UI_Menu(self, root)
 
     local name, spellID, icon, _, _, _, _, isFactionSpecific, faction, shouldHideOnChar, isCollected, _, isForDragonriding = C_MountJournal.GetMountInfoByID(mountID)
     spellID= spellID or self.spellID
-    
+
+    if not name then
+        return
+    end
+
     local col, sub
     for _, type in pairs(MountType) do
         if type=='Shift' or type==FLOOR then
@@ -1539,21 +1538,17 @@ local function Init_UI_Menu(self, root)
             return Save.Mounts[data.type][data.spellID]
         end
 
-        local SetValue
-        if type==FLOOR then
-            function SetValue(data)
+        local setData= {type=type, spellID=spellID, mountID=mountID, name=name, icon='|T'..(icon or 0)..':0|t'}
+        sub=root:CreateCheckbox(col..(e.onlyChinese and '设置' or SETTINGS)..' '..e.cn(type)..' #|cnGREEN_FONT_COLOR:'..getTableNum(type),
+            function(data)
+                return Save.Mounts[data.type][data.spellID]
+                
+            end, function(data)
                 if Save.Mounts[data.type][data.spellID] then
                     Save.Mounts[data.type][data.spellID]=nil
-                else
+
+                elseif data.type==FLOOR then
                     Set_Item_Spell_Edit(data)
-                end
-                MountButton:settings()
-                e.call(MountJournal_UpdateMountList)
-            end
-        else
-            function SetValue(data)
-                if Save.Mounts[data.type][data.spellID] then
-                    Save.Mounts[data.type][data.spellID]=nil
                 else
                     if data.type=='Shift' or data.type=='Alt' or data.type=='Ctrl' then--唯一
                         Save.Mounts[data.type]={[data.spellID]=true}
@@ -1564,31 +1559,13 @@ local function Init_UI_Menu(self, root)
                 end
                 MountButton:settings()
                 e.call(MountJournal_UpdateMountList)
-            end
-        end
-        local setData= {type=type, spellID=spellID, mountID=mountID, name=name, icon='|T'..(icon or 0)..':0|t'}
-        sub=root:CreateCheckbox(col..(e.onlyChinese and '设置' or SETTINGS)..' '..e.cn(type)..' #|cnGREEN_FONT_COLOR:'..getTableNum(type),
-            function(data)
-                return Save.Mounts[data.type][data.spellID]
-            end,
-            SetValue,
-            setData
+            end, setData
         )
         Set_Mount_Sub_Options(sub, setData)
-
-        --[[if type==FLOOR then
-            sub:SetTooltip(function(tooltip, description)
-                for uiMapID,_ in pairs(Save.Mounts[FLOOR][description.data.spellID] or {}) do
-                    local mapInfo= C_Map.GetMapInfo(uiMapID)
-                    tooltip:AddDoubleLine('uiMapID '..uiMapID, mapInfo and e.cn(mapInfo.name))
-                end
-            end)
-        end]]
     end
 
     root:CreateDivider()
-    root:CreateTitle('|T'..(icon or 0)..':0|t'..e.cn(name, {spellID=spellID, isName=true}))
-    WoWTools_ToolsButtonMixin:OpenMenu(root, addName)
+    WoWTools_ToolsButtonMixin:OpenMenu(root, WoWTools_ToolsButtonMixin:GetSpellItemText(spellID, nil) or ('|T'..(icon or 0)..':0|t'..name))
 end
 
 

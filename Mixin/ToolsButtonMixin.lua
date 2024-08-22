@@ -118,9 +118,15 @@ end
 
 
 
+function WoWTools_ToolsButtonMixin:SetBottomPoint(btn)---按钮，放在下面一行
+    btn:SetPoint('BOTTOMRIGHT', self.Button, 'TOPLEFT', -(btn.leftIndex*30), 0)
+end
 
+function WoWTools_ToolsButtonMixin:SetRightPoint(btn)--按钮，放在右边
+    btn:SetPoint('BOTTOMLEFT', self.Button, 'TOPRIGHT', 0, (btn.rightIndex*30))
+end
 
-function WoWTools_ToolsButtonMixin:SetLeftPoint(btn, isNewLine, isOnlyLine)
+function WoWTools_ToolsButtonMixin:SetLeftPoint(btn, isNewLine, isOnlyLine)--按钮，放在左边
     if (not isOnlyLine and (self.index>0 and select(2, math.modf(self.index / 10))==0)) or isNewLine then
         if isNewLine then--换行
             self.index=0
@@ -139,17 +145,6 @@ function WoWTools_ToolsButtonMixin:SetLeftPoint(btn, isNewLine, isOnlyLine)
     self.index=self.index+1
 end
 
-function WoWTools_ToolsButtonMixin:SetBottomPoint(btn)
-    btn:SetPoint('BOTTOMRIGHT', self.Button, 'TOPLEFT', -(btn.leftIndex*30), 0)
-end
-
-function WoWTools_ToolsButtonMixin:SetRightPoint(btn)
-    btn:SetPoint('BOTTOMLEFT', self.Button, 'TOPRIGHT', 0, (btn.rightIndex*30))
-end
-
-
-
-
 
 function WoWTools_ToolsButtonMixin:AddOptions(option)
     table.insert(self.AddList, {isOnlyOptions=true, option=option})
@@ -167,16 +162,9 @@ function WoWTools_ToolsButtonMixin:SetSaveData(save)
     self.Save= save or {}
 end
 
-function WoWTools_ToolsButtonMixin:EnterShowFrame()
-    if self.Button and self.Save.isEnterShow and not self.Button.Frame:IsShown() then
-        self.Button:set_shown()
-    end
-end
-
 function WoWTools_ToolsButtonMixin:GetButton()
     return self.Button
 end
-
 
 function WoWTools_ToolsButtonMixin:SetCategory(category, layout)
     self.Category= category
@@ -187,7 +175,16 @@ function WoWTools_ToolsButtonMixin:GetCategory()
     return self.Category, self.Layout
 end
 
-function WoWTools_ToolsButtonMixin:OpenOptions(name)
+
+
+function WoWTools_ToolsButtonMixin:EnterShowFrame()--当Enter图标是，显示Tools Frame
+    if self.Button and self.Save.isEnterShow and not self.Button.Frame:IsShown() then
+        self.Button:set_shown()
+    end
+end
+
+
+function WoWTools_ToolsButtonMixin:OpenOptions(name)--打开,Tools选项界面，选项
     if not self.Category then
         e.OpenPanelOpting()
     end
@@ -195,8 +192,8 @@ function WoWTools_ToolsButtonMixin:OpenOptions(name)
 end
 
 
-function WoWTools_ToolsButtonMixin:OpenMenu(root, name, name2)
-    local sub=root:CreateButton(name2 or name or self:GetName(),
+function WoWTools_ToolsButtonMixin:OpenMenu(root, name)--打开, 选项界面，菜单
+    local sub=root:CreateButton(name or self:GetName(),
         function(data)
             self:OpenOptions(data)
             return MenuResponse.Open
@@ -211,7 +208,7 @@ end
 
 
 
-function WoWTools_ToolsButtonMixin:SetToyTooltip(tooltip, itemID)
+function WoWTools_ToolsButtonMixin:SetToyTooltip(tooltip, itemID)--设置，物品，提示
     if itemID and tooltip then
         if C_ToyBox.GetToyInfo(itemID) then
             tooltip:SetToyByItemID(itemID)
@@ -222,7 +219,7 @@ function WoWTools_ToolsButtonMixin:SetToyTooltip(tooltip, itemID)
 end
 
 
-function WoWTools_ToolsButtonMixin:LoadedCollectionsJournal(index)
+function WoWTools_ToolsButtonMixin:LoadedCollectionsJournal(index)--加载，收藏，UI
     if not CollectionsJournal then
         do
             CollectionsJournal_LoadUI();
@@ -243,7 +240,7 @@ function WoWTools_ToolsButtonMixin:LoadedCollectionsJournal(index)
 end
 
 
-function WoWTools_ToolsButtonMixin:GetSpellItemText(spellID, itemID)
+function WoWTools_ToolsButtonMixin:GetSpellItemText(spellID, itemID)--取得，法术，物品，名称
     local cool= e.GetSpellItemCooldown(spellID, itemID) or ''
     local col
     if spellID then
@@ -303,17 +300,15 @@ function WoWTools_ToolsButtonMixin:GetSpellItemText(spellID, itemID)
     end
 end
 
---[[
---PlayerSpellsUtil.lua
---PlayerSpellsUtil.OpenToSpellBookTabAtSpell(data.spellID)--查询，法术书，法术
-function WoWTools_ToolsButtonMixin:LoadedPlayerSpells(index)
-    if not PlayerSpellsFrame then
-        PlayerSpellsFrame_LoadUI()
-    end
-    if index then
-        PlayerSpellsUtil.TogglePlayerSpellsFrame(index, true)
-    end
-end]]
+
+
+
+
+
+
+
+
+
 
 --[[function WoWTools_ToolsButtonMixin:GetData(btn)
     GET_ITEM_INFO_RECEIVED: itemID, success
