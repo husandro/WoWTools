@@ -4820,7 +4820,8 @@
         "PetJournal_UpdatePetList",
         "CollectionsSpellButton_UpdateCooldown",
         "GetText",
-        "BATTLE_PET_SOURCE_11"
+        "BATTLE_PET_SOURCE_11",
+        "QUESTLINE_LOCATED_ABOVE"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

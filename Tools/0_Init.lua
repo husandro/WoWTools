@@ -5,6 +5,7 @@ local Save={
     --disabled=true,
 
     disabledADD={},
+    point={},--LEFT, RIGHT, BOTTOM
     scale=1,
     strata='HIGH',
     height=10,
@@ -364,6 +365,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
             Save= WoWToolsSave['WoWTools_ToolsButton'] or Save
+
             Button= WoWTools_ToolsButtonMixin:Init(Save)
 
             if Button  then

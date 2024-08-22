@@ -174,3 +174,17 @@ function WoWTools_MenuMixin:RestDataMenu(root, name, SetValue)
         return MenuResponse.Open
     end, {name=name, SetValue=SetValue})
 end
+
+--重新加载UI
+function WoWTools_MenuMixin:ReloadMenu(root, isControlKeyDown)
+    local sub=root:CreateButton('|TInterface\\Vehicles\\UI-Vehicles-Button-Exit-Up:0|t'..(e.onlyChinese and '重新加载UI' or RELOADUI),
+    function(data)
+        if data and IsControlKeyDown() or not data then
+            e.Reload()
+        end
+    end, isControlKeyDown)
+    sub:SetTooltip(function(tooltip, desc)
+        tooltip:AddDoubleLine(SLASH_RELOAD1, desc.data and '|cnGREEN_FONT_COLOR:Ctrl+|r'..e.Icon.left)
+    end)
+    return sub
+end

@@ -562,10 +562,11 @@ function e.Say(type, name, wow, text)
     end
 end
 
-function e.Reload()
-    local bat= UnitAffectingCombat('player') and e.IsEncouter_Start
-    if not bat or not IsInInstance() then
-        C_UI.Reload()
+function e.Reload(isControlKeyDown)
+    if not (UnitAffectingCombat('player') and e.IsEncouter_Start) or not IsInInstance() then
+        if isControlKeyDown and IsControlKeyDown() or not isControlKeyDown then
+            C_UI.Reload()
+        end
     else
         print(e.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
     end

@@ -127,10 +127,13 @@ end
 
 
 
-local function get_not_cooldown_toy()
-    for itemID in pairs(P_Items) do
-        if select(2, C_Item.GetItemCooldown(itemID))<3 then
-            return itemID
+local function get_not_cooldown_toy()--发现就绪
+    local cd = select(2, C_Item.GetItemCooldown(ToyButton.itemID)) or 0
+    if cd>3 then
+        for itemID in pairs(P_Items) do
+            if PlayerHasToy(itemID) and select(2, C_Item.GetItemCooldown(itemID))<3 then
+                return itemID
+            end
         end
     end
 end
@@ -266,24 +269,36 @@ local function Init_Menu(self, root)
 
     Init_Menu_Toy(self, root)
 
-    --选项
+--选项
     root:CreateDivider()
     sub=WoWTools_ToolsButtonMixin:OpenMenu(root)
 
-    sub:CreateCheckbox(e.onlyChinese and '绑定位置' or SPELL_TARGET_CENTER_LOC, function()
+    sub2=sub:CreateCheckbox(e.onlyChinese and '绑定位置' or SPELL_TARGET_CENTER_LOC, function()
         return Save.showBindName
     end, function()
         Save.showBindName= not Save.showBindName and true or nil
         self:set_location()--显示, 炉石, 绑定位置
     end)
 
-    sub:CreateCheckbox(e.onlyChinese and '截取名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHORT, NAME), function()
+    sub2:CreateCheckbox(e.onlyChinese and '截取名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHORT, NAME), function()
         return Save.showBindNameShort
     end, function()
         Save.showBindNameShort= not Save.showBindNameShort and true or nil
         self:set_location()--显示, 炉石, 绑定位置
     end)
 
+    sub2=sub:CreateCheckbox(e.onlyChinese and '位于上方' or QUESTLINE_LOCATED_ABOVE, function()
+        return Save.toFrame
+    end, function()
+        Save.toFrame = not Save.toFrame and true or nil
+    end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine(e.onlyChinese and '收起选项 |A:editmode-up-arrow:16:11:0:3|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS)
+        tooltip:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+    end)
+
+--重新加载UI
+    WoWTools_MenuMixin:ReloadMenu(sub2)--重新加载UI
 
 
 --移除未收集
@@ -601,7 +616,7 @@ local function Init()
     end)
 
 
-    --Tooltip
+--Tooltip
     function ToyButton:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
@@ -622,14 +637,17 @@ local function Init()
             ..(ToyButton.Locked_Value and '|A:AdventureMapIcon-Lock:0:0|a' or '')
             ..e.Icon.mid
         )
-        
+
 
 --发现就绪
-        if select(2, C_Item.GetItemCooldown(self.itemID))>2 then
+        if select(2, C_Item.GetItemCooldown(self.itemID))>3 then
             local itemID= get_not_cooldown_toy()
             if itemID then
-                e.tips:AddLine(' ')
-                e.tips:AddDoubleLine('|T'..(C_Item.GetItemIconByID(itemID) or 0)..':0:0|t|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '发现就绪' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, BATTLE_PET_SOURCE_11, READY)))
+                e.tips:AddDoubleLine(
+                    '|T'..(C_Item.GetItemIconByID(itemID) or 0)..':32|t|cnGREEN_FONT_COLOR:'
+                    ..(e.onlyChinese and '发现就绪' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, BATTLE_PET_SOURCE_11, READY)),
+                    e.Icon.right
+                )
             end
         end
         e.tips:Show()
@@ -648,6 +666,13 @@ local function Init()
                 end
             end
         end)
+        if self:CanChangeAttribute() then
+            local itemID= get_not_cooldown_toy()--发现就绪
+            if itemID then
+                self.Selected_Value=itemID
+                self:Set_Random_Value(itemID)
+            end
+        end
     end)
 
     ToyButton:SetScript("OnLeave",function(self)
@@ -673,7 +698,7 @@ local function Init()
 
 
 
-    
+
 
 
 
@@ -700,7 +725,7 @@ local function Init()
             self:RegisterEvent('PLAYER_REGEN_ENABLED')
             return
         end
-        local name=C_Item.GetItemNameByID(itemID) or select(2,  C_ToyBox.GetToyInfo(itemID))
+        local name=C_Item.GetItemNameByID(itemID) or select(2, C_ToyBox.GetToyInfo(itemID))
         if not name then
             self.is_Random_Eevent=true
             self:RegisterEvent('ITEM_DATA_LOAD_RESULT')
