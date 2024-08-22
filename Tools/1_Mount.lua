@@ -2228,7 +2228,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
             MountButton= WoWTools_ToolsButtonMixin:CreateButton({
                 name='Mount',
                 tooltip=addName,
-                --setParent=false,
+                setParent=false,
                 point='LEFT',
                 --option=function(category, layout)--initializer
             })

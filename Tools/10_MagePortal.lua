@@ -125,7 +125,7 @@ local function Init()
         btn=WoWTools_ToolsButtonMixin:CreateButton({
             name='MagePortal_Spell_'..tab.spell,
             tooltip='|T626001:0|t'..('|T'..(icon or 0)..':0|t')..(e.cn(name, {spellID=tab.spell, isName=true}) or tab.spell),
-            --setParent=true,
+            setParent=true,
             point=Save.isLeft and 'LEFT' or 'RIGHT',
             isNewLine= index==1 and Save.isLeft,
             isOnlyLine= index~=1 and Save.isLeft,
