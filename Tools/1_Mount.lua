@@ -1374,7 +1374,7 @@ local function Init_Menu(_, root)
 
 --选项
     root:CreateDivider()
-    sub=WoWTools_ToolsButtonMixin:OpenMenu(root, Save.KEY or addName)
+    sub=WoWTools_ToolsButtonMixin:OpenMenu(root, Save.KEY and '|A:mountequipment-slot-background:0:0|a'..Save.KEY or addName)
 
     sub2=sub:CreateButton('|A:bags-greenarrow:0:0|a'..(e.onlyChinese and '坐骑秀' or 'Mount show'), function()
         MountShowFrame:initMountShow()
