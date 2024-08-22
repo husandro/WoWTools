@@ -303,12 +303,12 @@ local function setShiftCtrlAltAtt()--设置Shift Ctrl Alt 属性
         MountButton.textureModifier[type]=nil
         local spellID= MountTab[type] and MountTab[type][1]
         if spellID then
-                local name= C_Spell.GetSpellName(spellID)
-                local icon= C_Spell.GetSpellTexture(spellID)
-                MountButton:SetAttribute(type.."-spell1", name or spellID)
-                MountButton.textureModifier[type]=icon
-                MountButton.typeSpell=true--提示用
-                MountButton.typeID=MountTab[type][1]
+            local name= C_Spell.GetSpellName(spellID)
+            local icon= C_Spell.GetSpellTexture(spellID)
+            MountButton:SetAttribute(type.."-spell1", name or spellID)
+            MountButton.textureModifier[type]=icon
+            MountButton.typeSpell=true--提示用
+            MountButton.typeID=MountTab[type][1]
             --end
         end
     end
@@ -481,7 +481,7 @@ end
 
 --#############
 --初始化，对话框
---#############
+--[[#############
 local function Init_Dialogs()
 
 
@@ -593,7 +593,7 @@ local function Init_Dialogs()
             s:ClearFocus()
         end,
     }
-end
+end]]
 
 
 
@@ -1333,16 +1333,19 @@ local function Init_Menu(_, root)
             root:CreateDivider()
 
         elseif indexType==SPELLS or indexType==ITEMS then
-            local data={}
+            --local data={}
             local icon
+            local itemID, spellID
             if indexType==SPELLS then
                 if MountButton.spellID then
-                    data.spellID=MountButton.spellID
+                    spellID= MountButton.spellID
+                    --data.spellID=MountButton.spellID
                     icon= C_Spell.GetSpellTexture(MountButton.spellID)
                 end
             elseif indexType==ITEMS then
                 if MountButton.itemID then
-                    data.itemID=MountButton.itemID
+                    itemID=MountButton.itemID
+                    --data.itemID=MountButton.itemID
                     icon=C_Item.GetItemIconByID(MountButton.itemID)
                 end
             end
@@ -1352,7 +1355,7 @@ local function Init_Menu(_, root)
 
             sub=root:CreateButton('|T'..icon..':0|t'..(e.onlyChinese and tab.name or indexType).. col..' '.. num..'|r', function()
                 return MenuResponse.Open
-            end, data)
+            end, {itemID=itemID, spellID=spellID, type=indexType})
             sub:SetTooltip(Set_Menu_Tooltip)
 
             if indexType==SPELLS then
@@ -1431,16 +1434,66 @@ local function Init_Menu(_, root)
     })
 
     sub:CreateSpacer()
+
+    WoWTools_MenuMixin:SetKeyMenu(sub, {
+        icon='|A:NPE_ArrowDown:0:0|a',
+        name=addName,
+        key=Save.KEY,
+        SetValue=function(s)
+            local text= s.editBox:GetText()
+            text=text:gsub(' ','')
+            text=text:gsub('%[','')
+            text=text:gsub(']','')
+            text=text:upper()
+            Save.KEY=text
+            setKEY()--设置捷键
+            print(e.addName, addName, text)
+        end,
+        OnAlt=function(s)
+            Save.KEY=nil
+            setKEY()--设置捷键
+        end,
+    })
     --sub:CreateDivider()
-    sub2=sub:CreateCheckbox('|A:NPE_ArrowDown:0:0|a'..(Save.KEY or (e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)), function()
+    --[[sub2=sub:CreateCheckbox(
+        '|A:NPE_ArrowDown:0:0|a'
+        ..(UnitAffectingCombat('player') and '|cff9e9e9e' or '')
+        ..(Save.KEY or (e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)),
+    function()
         return Save.KEY
     end, function()
-        StaticPopup_Show('WoWTools_Tools_Mount_Key')
+        StaticPopup_Show('WoWTools_EditText',
+            ((e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)..'|n|n"Q", "ALT-Q","BUTTON5"|n"ALT-CTRL-SHIFT-Q"'),
+            nil,
+            {
+                text=Save.KEY,
+                OnShow=function(s, data)
+                    if not Save.KEY then
+                        s.editBox:SetText('BUTTON5')
+                    end
+                end,
+                SetValue= function(s)
+                    local text= s.editBox:GetText()
+                    text=text:gsub(' ','')
+                    text=text:gsub('%[','')
+                    text=text:gsub(']','')
+                    text=text:upper()
+                    Save.KEY=text
+                    setKEY()--设置捷键
+                    print(e.addName, addName, text)
+                end,
+                OnAlt=function()
+                    Save.KEY=nil
+                    setKEY()--设置捷键
+                end
+            }
+        )
+        --StaticPopup_Show('WoWTools_Tools_Mount_Key')
     end)
     sub2:SetTooltip(function(tooltip)
         tooltip:AddLine(e.onlyChinese and '设置' or SETTINGS)
         tooltip:AddDoubleLine(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL, Save.KEY)
-    end)
+    end)]]
 
     WoWTools_MenuMixin:RestDataMenu(sub,
         addName..'|n|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
@@ -2000,7 +2053,7 @@ local function Init()
                 ))
         else
             if self.typeID then
-                e.tips:AddDoubleLine(WoWTools_ToolsButtonMixin:GetSpellItemText(self.typeSpell and self.typeID, not self.typeSpell and self.typeID), e.Icon.left)
+                e.tips:AddDoubleLine(WoWTools_ToolsButtonMixin:GetSpellItemText(self.typeSpell and self.typeID, not self.typeSpell and self.typeID), (Save.KEY and '|cnGREEN_FONT_COLOR:'..Save.KEY or '')..e.Icon.left)
                 e.tips:AddLine(' ')
             end
             e.tips:AddDoubleLine(e.onlyChinese and '坐骑秀' or 'Mount show', '|A:bags-greenarrow:0:0|a')
@@ -2054,7 +2107,7 @@ local function Init()
     end
 
     MountButton:settings()
-    Init_Dialogs()--初始化，对话框
+   -- Init_Dialogs()--初始化，对话框
     Init_Mount_Show()--坐骑秀
 
     C_Timer.After(4, function()

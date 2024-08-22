@@ -48,35 +48,38 @@ StaticPopupDialogs['WoWTools_RestData']= {
 
 
 
---dialog
+
 StaticPopupDialogs['WoWTools_EditText']={
     text=e.addName..'|n|n%s|n',
     button1= e.onlyChinese and '修改' or EDIT,
     button2= e.onlyChinese and '取消' or CANCEL,
     button3= e.onlyChinese and '移除' or REMOVE,
-    OnShow = function(self, data)
+    OnShow=function(self, data)
         self.editBox:SetAutoFocus(false)
         self.editBox:SetText(data.text or '')
         self.button3:SetShown(data.OnAlt and true or false)
-        self.editBox:SetFocus()
+        self.editBox:SetFocus(true)
         if data.OnShow then
-            self.OnShow(self, data)
+            data.OnShow(self, data)
         end
     end,
     OnHide=function(self)
         self.editBox:SetText("")
         self.editBox:ClearFocus()
     end,
-    OnAccept = function(self, data)
+    OnAccept=function(self, data)
         data.SetValue(self, data)
     end,
-    OnAlt = function(self, data)
+    OnAlt=function(self, data)
         if data.OnAlt then
             data.OnAlt(self, data)
         end
     end,
     EditBoxOnTextChanged=function(self, data)
         local text= self:GetText() or ''
+        if data.EditBoxOnTextChanged then
+            data.EditBoxOnTextChanged(self, data, text)
+        end
         self:GetParent().button1:SetEnabled(text:gsub(' ', '')~='' and text~=data.text)
     end,
     EditBoxOnEscapePressed = function(self, data)
@@ -104,10 +107,14 @@ StaticPopup_Show('WoWTools_EditText',
     nil,
     {
         text=,
-        SetValue= function(editBox)
-            local text= editBox:GetText()
-            print(e.addName, addName, text)
-        end
+        OnShow=function(s, data)
+        end,
+        SetValue= function(s)
+        end,
+        OnAlt=function(self, data)
+        end,
+        EditBoxOnTextChanged=function(self, data)
+        end,
     }
 )
 ]]

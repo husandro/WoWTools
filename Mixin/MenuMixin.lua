@@ -188,3 +188,48 @@ function WoWTools_MenuMixin:ReloadMenu(root, isControlKeyDown)
     end)
     return sub
 end
+
+--快捷键
+function WoWTools_MenuMixin:SetKeyMenu(root, tab)
+    local sub=root:CreateCheckbox(
+        (tab.icon or '')
+        ..(UnitAffectingCombat('player') and '|cff9e9e9e' or '')
+        ..(tab.key or (e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)),
+    function(data)
+        return data.key
+    end, function(data)
+        StaticPopup_Show('WoWTools_EditText',
+            (data.name and data.name..' ' or '')..(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)
+            ..'|n|n"|cnGREEN_FONT_COLOR:Q|r", "|cnGREEN_FONT_COLOR:ALT-Q|r","|cnGREEN_FONT_COLOR:BUTTON5|r"|n"|cnGREEN_FONT_COLOR:ALT-CTRL-SHIFT-Q|r"',
+            nil,
+            {
+                text=data.key,
+                key=data.key,
+                OnShow=function(s, tab2)
+                    if not tab2.key then
+                        s.editBox:SetText('BUTTON5')
+                    end
+                end,
+                SetValue=data.SetValue,
+                OnAlt=data.OnAlt,
+            }
+        )
+    end, tab)
+    sub:SetTooltip(function(tooltip, data)
+        tooltip:AddLine(e.onlyChinese and '设置' or SETTINGS)
+        tooltip:AddDoubleLine(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL, data.key)
+    end)
+    return sub
+end
+--[[
+WoWTools_MenuMixin:SetKeyMenu(sub, {
+    icon='',
+    name=addName,
+    text=,
+    key=,
+    SetValue=function(s, data)
+    end,
+    OnAlt=function(s, data)
+    end,
+})
+]]
