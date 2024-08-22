@@ -127,6 +127,13 @@ end
 
 
 
+local function get_not_cooldown_toy()
+    for itemID in pairs(P_Items) do
+        if select(2, C_Item.GetItemCooldown(itemID))<3 then
+            return itemID
+        end
+    end
+end
 
 
 
@@ -232,66 +239,6 @@ local function Init_Menu_Toy(_, root)
     end
 
 
-    if index>1 then
-        root:CreateDivider()
-    end
-
---移除未收集
-    sub=root:CreateButton('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '移除未收集' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REMOVE, NOT_COLLECTED)), function()
-        if IsControlKeyDown() then
-            local n=0
-            for itemID in pairs(Save.items) do
-                if not PlayerHasToy(itemID) then
-                    Save.items[itemID]=nil
-                    n=n+1
-                    print(n, ItemUtil.GetItemHyperlink(itemID) or ('itemID '..itemID), e.onlyChinese and '移除' or REMOVE)
-                end
-            end
-            if n>0 then
-                ToyButton:Init_Random(Save.lockedToy)
-            else
-                return MenuResponse.Open
-            end
-        else
-            return MenuResponse.Open
-        end
-    end)
-    sub:SetTooltip(function(tooltip)
-        tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..e.Icon.left)
-    end)
-
---全部清除
-    sub=root:CreateButton('|A:common-icon-redx:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL), function()
-        if IsControlKeyDown() then
-            Save.items={}
-            print(e.addName, addName, e.onlyChinese and '全部清除' or CLEAR_ALL)
-            ToyButton:Rest_Random()
-        else
-            return MenuResponse.Open
-        end
-    end)
-    sub:SetTooltip(function(tooltip)
-        tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..e.Icon.left)
-    end)
-
-
---还原
-    local all= 0
-    for _ in pairs(P_Items) do
-        all=all+1
-    end
-    sub=root:CreateButton('|A:common-icon-undo:0:0|a'..(e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)..' '..all, function()
-        if IsControlKeyDown() then
-            Save.items= P_Items
-            ToyButton:Rest_Random()
-            print(e.addName, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)
-        else
-            return MenuResponse.Open
-        end
-    end)
-    sub:SetTooltip(function(tooltip)
-        tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..e.Icon.left)
-    end)
 end
 
 
@@ -307,17 +254,17 @@ end
 --主菜单
 --#####
 local function Init_Menu(self, root)
-    local sub
-    sub= root:CreateButton(
+    local sub, sub2
+    --[[sub= root:CreateButton(
         addName..' '..ToyButton.Random_Numeri,
         set_ToggleCollectionsJournal,
         {}
     )
-    --[[sub:SetTooltip(function(tooltip)
+    sub:SetTooltip(function(tooltip)
         tooltip:AddLine(MicroButtonTooltipText(e.onlyChinese and '战团藏品' or COLLECTIONS, "TOGGLECOLLECTIONS"))
     end)]]
 
-    Init_Menu_Toy(self, sub)
+    Init_Menu_Toy(self, root)
 
     --选项
     root:CreateDivider()
@@ -337,15 +284,76 @@ local function Init_Menu(self, root)
         self:set_location()--显示, 炉石, 绑定位置
     end)
 
-    sub=root:CreateButton(
+
+
+--移除未收集
+    sub:CreateDivider()
+    sub2=sub:CreateButton('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '移除未收集' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REMOVE, NOT_COLLECTED)), function()
+        if IsControlKeyDown() then
+            local n=0
+            for itemID in pairs(Save.items) do
+                if not PlayerHasToy(itemID) then
+                    Save.items[itemID]=nil
+                    n=n+1
+                    print(n, ItemUtil.GetItemHyperlink(itemID) or ('itemID '..itemID), e.onlyChinese and '移除' or REMOVE)
+                end
+            end
+            if n>0 then
+                ToyButton:Init_Random(Save.lockedToy)
+            else
+                return MenuResponse.Open
+            end
+        else
+            return MenuResponse.Open
+        end
+    end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..e.Icon.left)
+    end)
+
+--全部清除
+    sub2=sub:CreateButton('|A:common-icon-redx:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL), function()
+        if IsControlKeyDown() then
+            Save.items={}
+            print(e.addName, addName, e.onlyChinese and '全部清除' or CLEAR_ALL)
+            ToyButton:Rest_Random()
+        else
+            return MenuResponse.Open
+        end
+    end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..e.Icon.left)
+    end)
+
+
+--还原
+    local all= 0
+    for _ in pairs(P_Items) do
+        all=all+1
+    end
+    sub2=sub:CreateButton('|A:common-icon-undo:0:0|a'..(e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)..' '..all, function()
+        if IsControlKeyDown() then
+            Save.items= P_Items
+            ToyButton:Rest_Random()
+            print(e.addName, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)
+        else
+            return MenuResponse.Open
+        end
+    end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..e.Icon.left)
+    end)
+
+--设置
+    sub:CreateDivider()
+    sub2=sub:CreateButton(
         '|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '设置' or SETTINGS),
         set_ToggleCollectionsJournal,
         {}
     )
-    sub:SetTooltip(function(tooltip)
+    sub2:SetTooltip(function(tooltip)
         tooltip:AddLine(MicroButtonTooltipText(e.onlyChinese and '战团藏品' or COLLECTIONS, "TOGGLECOLLECTIONS"))
     end)
-
 end
 
 
@@ -614,6 +622,16 @@ local function Init()
             ..(ToyButton.Locked_Value and '|A:AdventureMapIcon-Lock:0:0|a' or '')
             ..e.Icon.mid
         )
+        
+
+--发现就绪
+        if select(2, C_Item.GetItemCooldown(self.itemID))>2 then
+            local itemID= get_not_cooldown_toy()
+            if itemID then
+                e.tips:AddLine(' ')
+                e.tips:AddDoubleLine('|T'..(C_Item.GetItemIconByID(itemID) or 0)..':0:0|t|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '发现就绪' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, BATTLE_PET_SOURCE_11, READY)))
+            end
+        end
         e.tips:Show()
         self:set_tooltip_location(e.tips)
     end

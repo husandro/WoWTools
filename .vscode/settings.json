@@ -4818,7 +4818,9 @@
         "PlayerFrame_UpdateGroupIndicator",
         "MountJournal_SetUnusableFilter",
         "PetJournal_UpdatePetList",
-        "CollectionsSpellButton_UpdateCooldown"
+        "CollectionsSpellButton_UpdateCooldown",
+        "GetText",
+        "BATTLE_PET_SOURCE_11"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
