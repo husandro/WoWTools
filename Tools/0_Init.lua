@@ -5,7 +5,6 @@ local Save={
     --disabled=true,
 
     disabledADD={},
-    point={},--LEFT, RIGHT, BOTTOM
     scale=1,
     strata='HIGH',
     height=10,

@@ -30,6 +30,12 @@ local ModifiedTab={
     [140192]='Alt',--达拉然炉石
 }
 
+local ModifiedMenuTab={
+    {type='Alt', itemID=140192, col=function() return (PlayerHasToy(140192) and C_ToyBox.IsToyUsable(140192)) and '' or '|cff9e9e9e' end},
+    {type='Ctrl', itemID=110560, col=function() return (PlayerHasToy(110560) and C_ToyBox.IsToyUsable(110560)) and '' or '|cff9e9e9e' end},
+    {type='Shift', itemID=6948, col=function() return C_Item.GetItemCount(6948)==0 and '|cff9e9e9e' or '' end},
+}
+
 for itemID in pairs(ModifiedTab) do
     e.LoadDate({id=itemID, type='item'})
 end
@@ -271,7 +277,7 @@ local function Init_Menu(self, root)
 
 --选项
     root:CreateDivider()
-    sub=WoWTools_ToolsButtonMixin:OpenMenu(root)
+    sub=WoWTools_ToolsButtonMixin:OpenMenu(root, addName)
 
     sub2=sub:CreateCheckbox(e.onlyChinese and '绑定位置' or SPELL_TARGET_CENTER_LOC, function()
         return Save.showBindName
@@ -570,11 +576,10 @@ local function Init()
     end
 
 
-    ToyButton:RegisterEvent('HEARTHSTONE_BOUND')
-    ToyButton:RegisterEvent('TOYS_UPDATED')
-    ToyButton:RegisterEvent('NEW_TOY_ADDED')
-    ToyButton:RegisterEvent('UI_MODEL_SCENE_INFO_UPDATED')
-    ToyButton:RegisterEvent('BAG_UPDATE_COOLDOWN')
+
+
+ 
+    
 
     ToyButton:SetScript('OnEvent', function(self, event, itemID, success)
         if event=='ITEM_DATA_LOAD_RESULT' then
@@ -623,10 +628,9 @@ local function Init()
         e.tips:AddDoubleLine(WoWTools_ToolsButtonMixin:GetSpellItemText(nil, self.itemID), e.Icon.left)
         e.tips:AddLine(' ')
         local name, col
-        for itemID, type in pairs(ModifiedTab) do
-            name, col=WoWTools_ToolsButtonMixin:GetSpellItemText(nil, itemID)
-            e.tips:AddDoubleLine(name, (col or '')..type..'+'..e.Icon.left
-            )
+        for _, data in pairs(ModifiedMenuTab) do
+            name, col=WoWTools_ToolsButtonMixin:GetSpellItemText(nil, data.itemID)
+            e.tips:AddDoubleLine(data.col()..name, (col or '')..data.type..'+'..e.Icon.left)
         end
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
@@ -749,6 +753,24 @@ local function Init()
 
 
 
+    function ToyButton:set_event()
+        if self:IsVisible() then
+            self:RegisterEvent('HEARTHSTONE_BOUND')
+            self:RegisterEvent('TOYS_UPDATED')
+            self:RegisterEvent('NEW_TOY_ADDED')
+            self:RegisterEvent('UI_MODEL_SCENE_INFO_UPDATED')
+            self:RegisterEvent('BAG_UPDATE_COOLDOWN')
+            self:Get_Random_Value()
+        else
+            self:UnregisterAllEvents()
+            e.SetItemSpellCool(self)--主图标冷却
+        end
+    end
+
+    ToyButton:SetScript('OnShow', ToyButton.set_event)
+    ToyButton:SetScript('OnHide', ToyButton.set_event)
+    ToyButton:set_event()
+
 
 
 
@@ -806,13 +828,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             else
                 Save= WoWToolsSave['Tools_Hearthstone'] or Save
             end
-            addName='|T134414:0|t'..(e.onlyChinese and '炉石' or TUTORIAL_TITLE31)
+            addName='|A:delves-bountiful:0:0|a'..(e.onlyChinese and '炉石' or TUTORIAL_TITLE31)
 
             ToyButton= WoWTools_ToolsButtonMixin:CreateButton({
                 name='Hearthstone',
                 tooltip=addName,
-                setParent=false,
-                point='BOTTOM'
+                setParent=Save.toFrame and true or false,
+                point=Save.toFrame and 'LEFT' or 'BOTTOM'
             })
 
             if ToyButton then
