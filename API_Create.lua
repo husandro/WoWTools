@@ -3,7 +3,6 @@ local e = select(2, ...)
 --[[
 e.Cstr(self, tab)
 e.Cbtn(self, tab)--type, icon(atlas, texture), name, size, pushe, button='ItemButton', notWheel, setID, text
-e.Cedit(self)--frame, name, size={}
 
 e.Ccool(self, start, duration, modRate, HideCountdownNumbers, Reverse, SwipeTexture, hideDrawBling)--冷却条
 e.SetItemSpellCool(frame, {item=, spell=, type=, isUnit=true} type=true圆形，false方形
@@ -139,69 +138,6 @@ function e.Cbtn(self, tab)--type, icon(atlas, texture), name, size, pushe, butto
 end
 
 
-
-function e.Cedit(self)--frame, name, size={} SecureScrollTemplates.xml
-    local frame= CreateFrame('ScrollFrame', nil, self, 'ScrollFrameTemplate')
-    local level= frame:GetFrameLevel()
-    if frame.ScrollBar then
-        frame.ScrollBar:ClearAllPoints()
-        frame.ScrollBar:SetPoint('TOPRIGHT', -10, -10)
-        frame.ScrollBar:SetPoint('BOTTOMRIGHT', -10, 10)
-    end
-
-
-    e.Set_ScrollBar_Color_Alpha(frame)
-    frame.bg= CreateFrame('Frame', nil, frame, 'TooltipBackdropTemplate')
-    frame.bg:SetPoint('TOPLEFT', -5, 5)
-    frame.bg:SetPoint('BOTTOMRIGHT', 0, -5)
-    frame.bg:SetFrameLevel(level+1)
-    e.Set_NineSlice_Color_Alpha(frame.bg, true, nil, nil, true)
-    frame.EditBox= CreateFrame('EditBox', nil, frame)
-    frame.EditBox:SetAutoFocus(false)
-    frame.EditBox:ClearFocus()
-    frame.EditBox:SetMultiLine(true)
-    frame.EditBox:SetFrameLevel(level+2)
-    frame.EditBox:SetFontObject('GameFontHighlightSmall')-- or "ChatFontNormal")
-    frame.EditBox:SetScript('OnEscapePressed', EditBox_ClearFocus)
-    frame.EditBox:SetScript('OnCursorChanged', ScrollingEdit_OnCursorChanged)
-    frame.EditBox:SetScript('OnUpdate', function(s, elapsed)
-	    ScrollingEdit_OnUpdate(s, elapsed, s:GetParent())
-    end)
-    frame.bg:SetScript('OnMouseDown', function(self, d)
-        if d=='LeftButton' then
-            local edit= self:GetParent().edit
-            if not edit:HasFocus() then
-                edit:SetFocus()
-            end
-        end
-    end)
-    frame:SetScrollChild(frame.EditBox)
-    frame:HookScript('OnSizeChanged', function(f)
-       f.EditBox:SetWidth(f:GetWidth()-25)
-    end)
-
---[[
-    local anchorsWithScrollBar = {
-        CreateAnchor("TOPLEFT", 4, -4);
-        CreateAnchor("BOTTOMRIGHT", frame.ScrollBar, -13, 4),
-    };
-    
-    local anchorsWithoutScrollBar = {
-        CreateAnchor("TOPLEFT", 4, -4),
-        CreateAnchor("BOTTOMRIGHT", -4, 4);
-    };
-   -- ScrollUtil.AddManagedScrollBarVisibilityBehavior(frame.EditBox, frame.ScrollBar, anchorsWithScrollBar, anchorsWithoutScrollBar);
-   ]]
-
-
-    function frame:SetText(...)
-        self.EditBox:SetText(...)
-    end
-    function frame:GetText()
-        return self.EditBox:GetText()
-    end
-    return frame
-end
 
 
 

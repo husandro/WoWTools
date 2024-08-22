@@ -31,7 +31,7 @@ Mixin\FrameMixin.lua
 Mixin\MenuMixin.lua
 Mixin\ToolsButtonMixin.lua
 Mixin\StaticPopupDialogs.lua
-
+Mixin\EditBoxMixin.lua
 
 
 ##WoWPlus

@@ -1251,7 +1251,9 @@ local function Init_Gossip_Text_Icon_Options()
 
 
     --导入数据
-    menu.DataFrame= e.Cedit(Gossip_Text_Icon_Frame)
+    menu.DataFrame=WoWTools_EditBoxMixn:CreateMultiLineFrame(Gossip_Text_Icon_Frame,{
+        instructions= 'text'
+    })
     menu.DataFrame:Hide()
     menu.DataFrame:SetPoint('TOPLEFT', Gossip_Text_Icon_Frame, 'TOPRIGHT', 0, -10)
     menu.DataFrame:SetPoint('BOTTOMRIGHT', 310, 8)
@@ -1308,6 +1310,7 @@ local function Init_Gossip_Text_Icon_Options()
             Gossip_Text_Icon_Frame.menu:set_list()
             print(e.addName, Initializer:GetName(), '|n', format('%s|n%s|n%s', addText, delText, existText))
             frame:SetText(text)
+            self:GetParent():SetInstructions(e.onlyChinese and '导入' or HUD_CLASS_TALENTS_IMPORT_LOADOUT_ACCEPT_BUTTON)
         else
             e.tips:AddLine(addText)
             e.tips:AddLine(delText)
@@ -1326,6 +1329,7 @@ local function Init_Gossip_Text_Icon_Options()
     end)
     menu.DataFrame.enter:SetScript('OnClick', function(self)--导入
        self:set_date()
+
     end)
 
     menu.DataUscita= e.Cbtn(Gossip_Text_Icon_Frame, {size={22, 22}, atlas='bags-greenarrow'})
@@ -1360,6 +1364,7 @@ local function Init_Gossip_Text_Icon_Options()
                         )
         end
         frame:SetText(text)
+        frame:SetInstructions(e.onlyChinese and '导出' or SOCIAL_SHARE_TEXT or  HUD_EDIT_MODE_SHARE_LAYOUT)
     end)
 
     menu.DataEnter= e.Cbtn(Gossip_Text_Icon_Frame, {size={22, 22}, atlas='Professions_Specialization_arrowhead'})

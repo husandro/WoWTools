@@ -850,6 +850,7 @@ local function Init_Markers_Frame()--设置标记, 框架
                     self2.editBox:SetNumeric(true)
                     self2.editBox:SetNumber(Save.countdown or 7)
                 end,
+                OnHide=EditBox_ClearFocus,
                 OnAccept = function(self2)
                     local num= self2.editBox:GetNumber()
                     Save.countdown=num

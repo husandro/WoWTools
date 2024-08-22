@@ -583,7 +583,7 @@ local function Init_Create_Button()
                         StaticPopupDialogs[id..addName..'DeleteAllSaveMacro']={
                             text=((e.onlyChinese and '全部清除' or CLEAR_ALL)..' |cnGREEN_FONT_COLOR:#'..num)
                             ..('|n|n|cnRED_FONT_COLOR:'..(e.onlyChinese and '危险！危险！危险！' or (VOICEMACRO_1_Sc_0..VOICEMACRO_1_Sc_0..VOICEMACRO_1_Sc_0))),
-                            whileDead=true, hideOnEscape=true, exclusive=true,
+                            whileDead=true, hideOnEscape=true, exclusive=true,acceptDelay=3,
                             button1= e.onlyChinese and '确认' or RPE_CONFIRM,
                             button2= e.onlyChinese and '取消' or CANCEL,
                             OnAccept = function()
@@ -684,7 +684,7 @@ local function Init_Create_Button()
                             or (e.Player.col..format(e.onlyChinese and '%s专用宏' or CHARACTER_SPECIFIC_MACROS,  UnitName('player'))..'|r #'..perChar)
                         )
                         ..('|n|n|cnRED_FONT_COLOR:'..(e.onlyChinese and '危险！危险！危险！' or (VOICEMACRO_1_Sc_0..VOICEMACRO_1_Sc_0..VOICEMACRO_1_Sc_0))),
-                        whileDead=true, hideOnEscape=true, exclusive=true,
+                        whileDead=true, hideOnEscape=true, exclusive=true, acceptDelay=3,
                         button1= e.onlyChinese and '删除全部' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DELETE, ALL),
                         button2= e.onlyChinese and '取消' or CANCEL,
                         OnShow = function(s)
@@ -1508,18 +1508,28 @@ local function Init_Macro_List()
         --self:Update()
         --备注
         if not MacroFrame.NoteEditBox and Save.toRightLeft and MacroFrame.macroBase==0 then
-            MacroFrame.NoteEditBox= e.Cedit(MacroFrame, {font='GameFontHighlightSmall'})
+            MacroFrame.NoteEditBox=WoWTools_EditBoxMixn:CreateMultiLineFrame(MacroFrame, {
+                font='GameFontHighlightSmall',
+                instructions= e.onlyChinese and '备注' or LABEL_NOTE
+            })
             MacroFrame.NoteEditBox:SetPoint('TOPLEFT', 8, -65)
             MacroFrame.NoteEditBox:SetPoint('BOTTOMRIGHT', MacroFrame, 'RIGHT', -6, 0)
-            MacroFrame.NoteEditBox.edit:SetText(Save.noteText or (e.onlyChinese and '备注' or LABEL_NOTE))
-            function MacroFrame.NoteEditBox:set_save_text()--保存备注
-                local text= self.edit:GetText()
-                if text and text~= (e.onlyChinese and '备注' or LABEL_NOTE) and text:gsub(' ','')~='' then
-                    Save.noteText= text
-                end
+
+            function MacroFrame.NoteEditBox:set_text()
+                self:SetText(Save.noteText or '')
             end
-            Save.noteText=nil
+            
+            
+            MacroFrame.NoteEditBox.editBox:SetScript('OnHide', function(s)--保存备注
+                Save.noteText= s:GetText()
+                s:ClearFocus()
+            end)
+            MacroFrame.NoteEditBox.editBox:SetScript('OnShow', MacroFrame.NoteEditBox.set_text)
+            if MacroFrame.NoteEditBox:IsShown() then
+                MacroFrame.NoteEditBox:set_text()
+            end
         end
+
         if self.NoteEditBox then
             self.NoteEditBox:SetShown((Save.toRightLeft and MacroFrame.macroBase==0) and true or false)
         end
@@ -1761,9 +1771,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             --保存备注
-            if MacroFrame and MacroFrame.NoteEditBox then
-                MacroFrame.NoteEditBox:set_save_text()
-            end
             WoWToolsSave[addName]=Save
         end
     end

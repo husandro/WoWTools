@@ -23,31 +23,6 @@ WoWTools_FrameMixin= {
 }
 
 function WoWTools_FrameMixin:ShowText(data, headerText)
-    if not data then
-        return
-    end
-
-    local frame= _G['WoWTools_EditBoxFrame']
-    if not frame then
-        frame= self:CreateFrame('WoWTools_EditBoxFrame')
-        frame.ScrollBox= e.Cedit(frame, {font='GameFontNormal'})
-        frame.ScrollBox:SetPoint('TOPLEFT', 11, -32)
-        frame.ScrollBox:SetPoint('BOTTOMRIGHT', -6, 12)
-
-        frame.ScrollBox.EditBox:SetHyperlinksEnabled(true)
-        frame.ScrollBox.EditBox:SetScript('OnHyperlinkLeave', GameTooltip_Hide)
-        frame.ScrollBox.EditBox:SetScript('OnHyperlinkEnter', function(self, link)
-            if link then
-                e.tips:SetOwner(self, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:SetHyperlink(link)
-                e.tips:Show()
-            end
-        end)
-        frame.ScrollBox.EditBox:SetScript('OnHyperlinkClick', function(self, link, text2)--, region)
-            SetItemRef(link, text2, self, nil)
-        end)
-    end
 
     local text
     if type(data)=='table' then
@@ -59,8 +34,15 @@ function WoWTools_FrameMixin:ShowText(data, headerText)
         text= data
     end
 
-    frame.ScrollBox:SetText(text or '')
+    local frame= _G['WoWTools_EditBoxFrame']
+    if not frame then
+        frame= self:CreateFrame('WoWTools_EditBoxFrame')
+        frame.ScrollBox=WoWTools_EditBoxMixn:CreateMultiLineFrame(frame, {font='GameFontNormal', isShowLinkTooltip=true})
+        frame.ScrollBox:SetPoint('TOPLEFT', 11, -32)
+        frame.ScrollBox:SetPoint('BOTTOMRIGHT', -6, 12)
+    end
 
+    frame.ScrollBox:SetText(text or '')
     frame.Header:Setup(headerText or '' )
     frame:SetShown(true)
 end
