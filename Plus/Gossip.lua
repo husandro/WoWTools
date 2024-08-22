@@ -3853,7 +3853,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 if Save.gossip then
                     C_Timer.After(2, function()
                         if SubscriptionInterstitialFrame and SubscriptionInterstitialFrame:IsShown() then
-                            SubscriptionInterstitialFrame:Hide()
+                            SubscriptionInterstitialFrame.ClosePanelButton:Click()
                         end
                     end)
                 end
