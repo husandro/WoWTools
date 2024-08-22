@@ -1059,7 +1059,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             button= WoWTools_ToolsButtonMixin:CreateButton({
                 name='OpenItems',
-                tooltip='|A:Cursor_OpenHand_32:0:0|a'..(e.onlyChinese and '打开物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, ITEMS)),
+                tooltip='|A:BonusLoot-Chest2:0:0|a'..(e.onlyChinese and '打开物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, ITEMS)),
                 setParent=false,
                 point='BOTTOM'
             })
