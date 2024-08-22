@@ -4819,7 +4819,6 @@
         "MountJournal_SetUnusableFilter",
         "PetJournal_UpdatePetList",
         "CollectionsSpellButton_UpdateCooldown",
-        "GetText",
         "BATTLE_PET_SOURCE_11",
         "QUESTLINE_LOCATED_ABOVE"
     ],
