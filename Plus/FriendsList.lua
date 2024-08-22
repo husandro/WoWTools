@@ -74,7 +74,7 @@ local function set_QuinkJoin_Init()--快速加入, 初始化 QuickJoin.lua
                         e.tips:ClearLines()
                         e.tips:AddDoubleLine(e.onlyChinese and '/密语' or SLASH_SMART_WHISPER2, self2.col..self2.name)
                         e.tips:AddLine(' ')
-                        e.tips:AddDoubleLine(id, addName)
+                        e.tips:AddDoubleLine(e.addName, addName)
                         e.tips:Show()
                     end)
                     nameObj:SetScript('OnMouseDown',function(self2)
@@ -863,7 +863,7 @@ local function set_WhoList_Update()--查询, 名单列表
                 e.tips:AddDoubleLine(self.col..(e.onlyChinese and '组队邀请' or GROUP_INVITE), (e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left)
                 e.tips:AddDoubleLine(self.col..(e.onlyChinese and '添加好友' or ADD_FRIEND), 'Alt+'..e.Icon.left)
                 e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(id, addName)
+                e.tips:AddDoubleLine(e.addName, addName)
                 e.tips:Show()
             end)
             btn.setOnDoubleClick= true

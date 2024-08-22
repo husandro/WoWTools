@@ -353,7 +353,7 @@ local function Init_TrackButton()--设置显示内容, 父框架TrackButton, 内
         e.tips:AddLine(' ')
         set_Tooltips_Info()
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddDoubleLine(e.addName, e.cn(addName))
         e.tips:Show()
         CombatButton:SetButtonState('PUSHED')
     end)

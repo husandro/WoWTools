@@ -20,7 +20,7 @@ function WoWTools_RandomMixin:Set_OnlyOneValue_Random()--当数据 <=1 时，设
 end
 
 function WoWTools_RandomMixin:Get_Random_List()--得到，数据列表
-    if self:Check_Random() or self.Locked_Value or self.Selected_Value then
+    if self.Locked_Value or self.Selected_Value or self:Check_Random() then
         self:Set_OnlyOneValue_Random()
     else
         self.Random_List= self:Get_Random_Data() or {}
@@ -33,7 +33,7 @@ function WoWTools_RandomMixin:Get_Random_List()--得到，数据列表
 end
 
 function WoWTools_RandomMixin:Get_Random_Value()
-    if self:Check_Random() or self.Locked_Value or self.Selected_Value then
+    if self.Locked_Value or self.Selected_Value or self:Check_Random() then
         return
     end
 
@@ -56,15 +56,13 @@ function WoWTools_RandomMixin:Get_Random_Value()
 end
 
 function WoWTools_RandomMixin:Set_SelectValue_Random(value)--is_Random_Eevent
-    self.Selected_Value=value
-    self.Locked_Value=nil
+    self.Selected_Value= value
     self:Init_Random(self.Locked_Value)
 end
 
 function WoWTools_RandomMixin:Set_LockedValue_Random(value)--设置，锁定
-    self.Selected_Value=nil
-    self.Locked_Value=value
-    self:Init_Random(self.Locked_Value)
+    self.Locked_Value= value
+    self:Init_Random(value)
 end
 
 function WoWTools_RandomMixin:Set_Random_Event()--is_Random_Eevent
@@ -75,9 +73,18 @@ function WoWTools_RandomMixin:Set_Random_Event()--is_Random_Eevent
     end
 end
 
+function WoWTools_RandomMixin:Check_Random_Value(value)
+    return self.Selected_Value==value, self.Locked_Value==value, self:Check_Random()==value
+end
+
+function WoWTools_RandomMixin:Rest_Random()
+    self.Selected_Value=nil
+    self.Locked_Value=nil
+    self:Init_Random()
+end
+
 function WoWTools_RandomMixin:Init_Random(lockValue)
     self.Locked_Value= lockValue
-    self.Selected_Value=nil
     do
         self:Get_Random_List()
     end

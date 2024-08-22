@@ -428,7 +428,7 @@ local function Set_TrackButton_Text(monthOffset, day)
                     end
                 end
                 e.tips:AddDoubleLine('eventID', self.eventID)
-                e.tips:AddDoubleLine(id, Initializer:GetName())
+                e.tips:AddDoubleLine(e.addName, Initializer:GetName())
                 e.tips:Show()
 				Set_TrackButton_Pushed(true, self.text)--TrackButton，提示
 			end)
@@ -575,7 +575,7 @@ local function Init_TrackButton()
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.scale or 1), 'Alt+'..e.Icon.mid)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, Initializer:GetName())
+        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
         e.tips:Show()
     end
     TrackButton:SetScript('OnMouseUp', ResetCursor)
@@ -787,7 +787,7 @@ local function calendar_Uptate()
             if not self.eventID then return end
             e.tips:SetOwner(self:GetParent(), "ANCHOR_BOTTOMRIGHT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(id, Initializer:GetName())
+            e.tips:AddDoubleLine(e.addName, Initializer:GetName())
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine('https://www.wowhead.com/event='..self.eventID, e.Icon.left)
             e.tips:Show()

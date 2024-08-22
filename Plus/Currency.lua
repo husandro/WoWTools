@@ -342,7 +342,7 @@ local function Set_TrackButton_Text()
 				elseif self.index then
 					e.tips:SetCurrencyToken(self.index)
 				end
-				--e.tips:AddDoubleLine(id, Initializer:GetName())
+				--e.tips:AddDoubleLine(e.addName, Initializer:GetName())
 				e.tips:Show()
 				Set_TrackButton_Pushed(true, self.text)--提示
 			end)
@@ -476,7 +476,7 @@ local function MenuList_Item(level)
 	local info
 	for itemID, _ in pairs(Save.item) do
 		info={
-			text= select(2, C_Item.GetItemInfo(itemID)) or ('itemID '..itemID),
+			text= ItemUtil.GetItemHyperlink(itemID) or ('itemID '..itemID),
 			icon= C_Item.GetItemIconByID(itemID),
 			notCheckable=true,
 			tooltipOnButton=true,
@@ -485,7 +485,7 @@ local function MenuList_Item(level)
 			func= function(_, arg1)
 				Save.item[arg1]= nil
 				Set_TrackButton_Text()
-				print(e.addName, Initializer:GetName(), e.onlyChinese and '移除' or REMOVE, select(2, C_Item.GetItemInfo(itemID)) or ('itemID '..itemID))
+				print(e.addName, Initializer:GetName(), e.onlyChinese and '移除' or REMOVE, ItemUtil.GetItemHyperlink(itemID) or ('itemID '..itemID))
 			end
 		}
 		e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -604,7 +604,7 @@ local function Init_TrackButton()
 			self:set_Texture(C_Item.GetItemIconByID(itemID))
 		else
 			local canFrame= self.Frame:CanChangeAttribute() and '|cnGREEN_FONT_COLOR:' or ''
-			e.tips:AddDoubleLine(id, Initializer:GetName())
+			e.tips:AddDoubleLine(e.addName, Initializer:GetName())
 			e.tips:AddLine(' ')
 			e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭货币页面' or BINDING_NAME_TOGGLECURRENCY, e.Icon.left)
 			e.tips:AddDoubleLine((e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU)..' '..e.GetShowHide(Save.str), e.Icon.right)
@@ -912,7 +912,7 @@ local function set_ItemInteractionFrame_Currency(self)
 					e.tips:ClearLines()
 					e.tips:SetCurrencyByID(self2.chargeCurrencyTypeId)
 					e.tips:AddLine(' ')
-					e.tips:AddDoubleLine(id, Initializer:GetName())
+					e.tips:AddDoubleLine(e.addName, Initializer:GetName())
 					e.tips:Show()
 				end
 			end)
@@ -990,7 +990,7 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 				e.tips:AddLine(" ")
 			end
 			e.tips:AddDoubleLine(e.onlyChinese and '追踪' or TRACKING, e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
-			e.tips:AddDoubleLine(id, Initializer:GetName())
+			e.tips:AddDoubleLine(e.addName, Initializer:GetName())
 			e.tips:Show()
 		end)
 		frame.check:SetScript('OnLeave', GameTooltip_Hide)
@@ -1433,7 +1433,7 @@ local function Init()
 		end
 		e.tips:AddLine(' ')
 
-		e.tips:AddDoubleLine(id, Initializer:GetName())
+		e.tips:AddDoubleLine(e.addName, Initializer:GetName())
 		e.tips:Show()
 		self.texture:SetAlpha(1)
 		Set_TrackButton_Pushed(true)--提示
@@ -1476,7 +1476,7 @@ local function Init()
 		e.tips:SetOwner(self, "ANCHOR_LEFT")
 		e.tips:ClearLines()
 		e.tips:AddDoubleLine(' ', e.onlyChinese and '展开选项|A:editmode-down-arrow:16:11:0:-7|a' or HUD_EDIT_MODE_EXPAND_OPTIONS)
-		e.tips:AddDoubleLine(id, Initializer:GetName())
+		e.tips:AddDoubleLine(e.addName, Initializer:GetName())
 		e.tips:Show()
 	end)
 
@@ -1496,7 +1496,7 @@ local function Init()
 		e.tips:SetOwner(self, "ANCHOR_LEFT")
 		e.tips:ClearLines()
 		e.tips:AddDoubleLine(' ',e.onlyChinese and '收起选项|A:editmode-up-arrow:16:11:0:3|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS)
-		e.tips:AddDoubleLine(id, Initializer:GetName())
+		e.tips:AddDoubleLine(e.addName, Initializer:GetName())
 		e.tips:Show()
 	end)
 

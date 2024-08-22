@@ -33,10 +33,10 @@ local function Init()
     function Button:set_Tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddDoubleLine(e.addName, e.cn(addName))
         e.tips:AddLine(' ')
         for _, itemID in pairs(ItemTab) do
-            local link= select(2, C_Item.GetItemInfo(itemID)) or itemID
+            local link= ItemUtil.GetItemHyperlink(itemID) or itemID
             local icon
             icon= C_Item.GetItemIconByID(itemID)
             icon= icon and '|T'..icon..':0|t' or ''

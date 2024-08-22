@@ -98,7 +98,7 @@ local function setAtt(set)--设置属性
     local tab={}
 
     for _, itemID in pairs(ItemsTab) do
-        local duration = select(2 ,C_Container.GetItemCooldown(itemID))
+        local duration = select(2 ,C_Item.GetItemCooldown(itemID))
         if (duration and duration<2) and C_ToyBox.IsToyUsable(itemID) then
             table.insert(tab, itemID)
         end
@@ -181,7 +181,7 @@ function Init_SetButtonOption()
         function btn.toy:set_tooltips()
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(id, 'Tools |T133567:0|t'..(e.onlyChinese and '随机玩具' or addName))
+            e.tips:AddDoubleLine(e.addName, 'Tools |T133567:0|t'..(e.onlyChinese and '随机玩具' or addName))
             e.tips:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             e.tips:AddLine(' ')
             local itemID=self:get_itemID()

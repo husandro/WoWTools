@@ -37,7 +37,7 @@ local function Get_ItemLink_For_rowData(rowData)
         itemLink= priceInfo.itemLink or priceInfo.battlePetLink
     end
     if not itemLink and itemID then
-        itemLink= select(2, C_Item.GetItemInfo(itemID))
+        itemLink= ItemUtil.GetItemHyperlink(itemID)
     end
     isPet= rowData and rowData.itemKey and rowData.itemKey.battlePetSpeciesID and rowData.itemKey.battlePetSpeciesID>0
     return itemLink, itemID, isPet
@@ -71,7 +71,7 @@ local function Init_Sell()
     function AuctionHouseButton:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddDoubleLine(e.addName, e.cn(addName))
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.GetShowHide(nil, true), e.GetShowHide(not Save.hideSellItemList)..e.Icon.left)
         e.tips:AddLine(' ')
@@ -342,7 +342,7 @@ local function Init_Sell()
     AuctionHouseFrame.maxSellItemCheck:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddDoubleLine(e.addName, e.cn(addName))
         e.tips:AddDoubleLine(' ', e.onlyChinese and '最大数量' or AUCTION_HOUSE_MAX_QUANTITY_BUTTON)
         e.tips:Show()
     end)
@@ -360,7 +360,7 @@ local function Init_Sell()
     AuctionHouseFrame.maxSellItemCheck2:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddDoubleLine(e.addName, e.cn(addName))
         e.tips:AddDoubleLine(' ', e.onlyChinese and '最大数量' or AUCTION_HOUSE_MAX_QUANTITY_BUTTON)
         e.tips:Show()
     end)
@@ -532,7 +532,7 @@ local function Init_Sell()
     showSellItemCheck:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddDoubleLine(e.addName, e.cn(addName))
         e.tips:AddDoubleLine(e.onlyChinese and '显示拍卖行时' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, BUTTON_LAG_AUCTIONHOUSE),
             e.onlyChinese and '转到出售' or ('=> '..AUCTION_HOUSE_SELL_TAB))
         e.tips:Show()
@@ -836,7 +836,7 @@ local function Init_Sell()
     showCommoditiesButton:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT");
         e.tips:ClearLines();
-        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddDoubleLine(e.addName, e.cn(addName))
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '显示模式' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, MODE), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '转到' or CONVERT)..'|r '..(e.onlyChinese and '材料' or PROFESSIONS_COLUMN_HEADER_REAGENTS))
         e.tips:Show();
@@ -859,7 +859,7 @@ local function Init_Sell()
     showSellButton:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT");
         e.tips:ClearLines();
-        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddDoubleLine(e.addName, e.cn(addName))
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '显示' or SHOW, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '转到' or CONVERT)..'|r '..(e.onlyChinese and '物品' or ITEMS))
         e.tips:Show();
@@ -880,7 +880,7 @@ local function Init_Sell()
     cancelButton2:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT");
         e.tips:ClearLines();
-        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddDoubleLine(e.addName, e.cn(addName))
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(' ', e.onlyChinese and '取消拍卖' or AUCTION_HOUSE_CANCEL_AUCTION_BUTTON)
         e.tips:Show();
@@ -1065,7 +1065,7 @@ local function Init_AllAuctions()
         end
         e.tips:AddDoubleLine(' ', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '取消拍卖将使你失去保证金。' or CANCEL_AUCTION_CONFIRMATION))
         e.tips:AddDoubleLine(e.onlyChinese and '备注' or 'Note', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '请不要太快' or ERR_GENERIC_THROTTLE))
-        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddDoubleLine(e.addName, e.cn(addName))
         e.tips:Show()
     end
     cancelButton:SetScript('OnLeave', GameTooltip_Hide)

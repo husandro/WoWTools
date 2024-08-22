@@ -364,7 +364,7 @@ local function Init_Set_Worldboss_Text()--显示世界BOSS击杀数据Text
         panel.WorldBoss:SetScript('OnEnter', function(self2)
             e.tips:SetOwner(self2, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(id, Initializer:GetName())
+            e.tips:AddDoubleLine(e.addName, Initializer:GetName())
             e.tips:AddDoubleLine(e.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL, e.onlyChinese and '世界BOSS和稀有怪'
                 or format(COVENANT_RENOWN_TOAST_REWARD_COMBINER,
                         format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WORLD, 'BOSS')
@@ -455,7 +455,7 @@ local function Init_Set_InstanceBoss_Text()--显示副本击杀数据
         panel.instanceBoss:SetScript('OnEnter', function(self2)
             e.tips:SetOwner(self2, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(id, Initializer:GetName())
+            e.tips:AddDoubleLine(e.addName, Initializer:GetName())
             e.tips:AddDoubleLine(e.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL, e.onlyChinese and '副本' or INSTANCE)
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(e.GetShowHide(not Save.hideInstanceBossText), e.Icon.left)
@@ -588,7 +588,7 @@ local function Init_EncounterJournal()--冒险指南界面
     function Button:set_Tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, Initializer:GetName())
+        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
         e.tips:AddDoubleLine(e.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL, e.GetEnabeleDisable(not Save.hideEncounterJournal).. e.Icon.left)
         e.tips:AddDoubleLine(e.onlyChinese and '奖励' or QUEST_REWARDS, e.GetShowHide(not Save.hideEncounterJournal_All_Info_Text)..e.Icon.right)
         e.tips:Show()
@@ -826,7 +826,7 @@ local function Init_EncounterJournal()--冒险指南界面
                         if encounterJournal_ListInstances_set_Instance(self, true) then--界面,击杀,数据
                             e.tips:AddLine(' ')
                         end                        
-                        e.tips:AddDoubleLine(id, Initializer:GetName())
+                        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
                         e.tips:Show()
                     end)
                     button:SetScript('OnLeave', GameTooltip_Hide)
@@ -852,7 +852,7 @@ local function Init_EncounterJournal()--冒险指南界面
                             if link then
                                 e.tips:SetHyperlink(link)
                             else
-                                e.tips:AddDoubleLine(id, Initializer:GetName())
+                                e.tips:AddDoubleLine(e.addName, Initializer:GetName())
                                 e.tips:AddLine(e.onlyChinese and '挑战' or PLAYER_DIFFICULTY5)
                             end
                             e.tips:Show()
@@ -981,7 +981,7 @@ local function Init_EncounterJournal()--冒险指南界面
                     e.tips:ClearLines()
                     e.tips:AddLine(self.tips)
                     e.tips:AddLine(' ')
-                    e.tips:AddDoubleLine(id, Initializer:GetName())
+                    e.tips:AddDoubleLine(e.addName, Initializer:GetName())
                     e.tips:Show()
                 end
                 self:SetAlpha(0.3)
@@ -1255,7 +1255,7 @@ local function Init_EncounterJournal()--冒险指南界面
         e.tips:AddDoubleLine(bgImage and '|T'..bgImage..':26|t'..bgImage, loreImage and '|T'..loreImage..':26|t'..loreImage)
         e.tips:AddDoubleLine(buttonImage1 and '|T'..buttonImage1..':26|t'..buttonImage1, buttonImage2 and '|T'..buttonImage2..':26|t'..buttonImage2)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, Initializer:GetName())
+        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
         e.tips:Show()
     end)
     EncounterJournal.encounter.instance.mapButton:SetScript('OnLeave', GameTooltip_Hide)
@@ -1283,7 +1283,7 @@ local function Init_EncounterJournal()--冒险指南界面
                             end
                         end
                         e.tips:AddLine(' ')
-                        e.tips:AddDoubleLine(id, Initializer:GetName())
+                        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
                         e.tips:Show()
                     end
                 end)
@@ -1443,7 +1443,7 @@ local function Init_EncounterJournal()--冒险指南界面
                 e.tips:SetSpellByID(spellID)
                 e.tips:AddLine(' ')
                 e.tips:AddDoubleLine((IsInGroup() and '|A:communities-icon-chat:0:0|a' or '')..(e.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT), e.Icon.right)
-                e.tips:AddDoubleLine(id, Initializer:GetName())
+                e.tips:AddDoubleLine(e.addName, Initializer:GetName())
                 e.tips:Show()
             end
         end)
@@ -1518,7 +1518,7 @@ local function Init_EncounterJournal()--冒险指南界面
                         e.tips:AddDoubleLine('perksActivityID', self3.id)
                         e.tips:AddDoubleLine((self3.completed and '|cff9e9e9e' or '|cff00ff00')..(e.onlyChinese and '追踪' or TRACKING), e.Icon.left)
                         e.tips:AddDoubleLine((not C_PerksActivities.GetPerksActivityChatLink(self3.id) and '|cff9e9e9e' or '|cff00ff00')..(e.onlyChinese and '超链接' or COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK), e.Icon.right)
-                        e.tips:AddDoubleLine(id, Initializer:GetName())
+                        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
                         e.tips:Show()
                     end
                 end)
@@ -1614,7 +1614,7 @@ local function Init()
             if encounterJournal_ListInstances_set_Instance(self, true) then
                 e.tips:AddLine(' ')
             end
-            e.tips:AddDoubleLine(id, Initializer:GetName())
+            e.tips:AddDoubleLine(e.addName, Initializer:GetName())
             e.tips:Show()
         end)
         frame:SetScript('OnLeave', GameTooltip_Hide)

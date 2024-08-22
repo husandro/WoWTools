@@ -166,7 +166,7 @@ local function Set_Merchant_Info()--设置, 提示, 信息
                     if not self.itemID then return end
                     e.tips:SetOwner(self, "ANCHOR_LEFT")
 					e.tips:ClearLines()
-                    e.tips:AddDoubleLine(id, Initializer:GetName())
+                    e.tips:AddDoubleLine(e.addName, Initializer:GetName())
                     e.tips:AddLine(' ')
                     e.tips:AddDoubleLine('|T236994:0|t'..(e.onlyChinese and '自动购买物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, PURCHASE)), not Save.notAutoBuy and buySave[self.itemID] or (e.onlyChinese and '无' or NONE))
                     local all= C_Item.GetItemCount(self.itemID, true, false, true)
@@ -197,7 +197,7 @@ local function Set_Merchant_Info()--设置, 提示, 信息
                             e.tips:ClearLines()
                             e.tips:SetSpellByID(self.spellID)
                             e.tips:AddLine(' ')
-                            e.tips:AddDoubleLine(id, Initializer:GetName())
+                            e.tips:AddDoubleLine(e.addName, Initializer:GetName())
                             e.tips:Show()
                         end
                         self:SetAlpha(0.5)
@@ -521,7 +521,7 @@ local function Init_StackSplitFrame()
     frame.restButton:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, 'ANCHOR_LEFT')
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, Initializer:GetName())
+        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
         e.tips:AddLine(e.onlyChinese and '重置' or RESET)
         e.tips:Show()
     end)
@@ -642,7 +642,7 @@ local function Init_Auto_Repair()
     function AutoRepairCheck:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, Initializer:GetName())
+        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
         e.tips:AddDoubleLine(e.onlyChinese and '自动修理所有物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, REPAIR_ALL_ITEMS), e.GetEnabeleDisable(not Save.notAutoRepairAll))
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine('|cffff00ff'..(e.onlyChinese and '记录' or EVENTTRACE_LOG_HEADER), RepairSave.date)
@@ -840,7 +840,7 @@ local function Init_Auto_Sell_Junk()
     function AutoSellJunkCheck:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, Initializer:GetName())
+        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
         e.tips:AddLine('|A:Cursor_lootall_128:0:0|a'..(e.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT)..' Plus')
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '自动出售垃圾' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SELL_ALL_JUNK_ITEMS_EXCLUDE_HEADER), e.GetEnabeleDisable(not Save.notSellJunk))
@@ -980,7 +980,7 @@ local function Init_Loot_Plus()
     check:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, Initializer:GetName())
+        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
         e.tips:AddLine('|cffff00ff|A:Cursor_lootall_128:0:0|a'..(e.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT)..' Plus|r')
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '自动拾取' or AUTO_LOOT_DEFAULT_TEXT, (e.onlyChinese and '当前' or REFORGE_CURRENT)..': '..e.GetEnabeleDisable(C_CVar.GetCVarBool("autoLootDefault")))
@@ -1053,7 +1053,7 @@ local function Init_Menu(_, level, type)
         for itemID, _ in pairs(Save.Sell) do
             if itemID  then
                 e.LoadDate({id=itemID, type='item'})
-                local itemLink= select(2, C_Item.GetItemInfo(itemID))
+                local itemLink= ItemUtil.GetItemHyperlink(itemID)
                 itemLink= itemLink or C_Item.GetItemNameByID(itemID) or ('itemID: ' .. itemID)
                 info= {
                     text= itemLink,
@@ -1086,7 +1086,7 @@ local function Init_Menu(_, level, type)
     elseif type=='BOSS' then--二级菜单, BOSS
         for itemID, itemLevel in pairs(bossSave) do
             e.LoadDate({itemID=itemID, type='item'})
-            local itemLink= select(2, C_Item.GetItemInfo(itemID)) or itemID
+            local itemLink= ItemUtil.GetItemHyperlink(itemID) or itemID
             info= {
                 text= itemLink..'('..itemLevel..')',
                 notCheckable=true,
@@ -1130,7 +1130,7 @@ local function Init_Menu(_, level, type)
                 e.LoadDate({id=itemID, type='item'})
                 local bag=C_Item.GetItemCount(itemID)
                 local bank=C_Item.GetItemCount(itemID, true, false, true)-bag
-                local itemLink= select(2, C_Item.GetItemInfo(itemID))
+                local itemLink= ItemUtil.GetItemHyperlink(itemID)
                 itemLink= itemLink or C_Item.GetItemNameByID(itemID) or ('itemID: ' .. itemID)
                 info= {
                     text='|cnGREEN_FONT_COLOR:'..num..'|r '..itemLink..' '..'|cnYELLOW_FONT_COLOR:'..bag..'|A:bag-main:0:0|a'..bank..'|A:Banker:0:0|a'..'|r',
@@ -1169,7 +1169,7 @@ local function Init_Menu(_, level, type)
                 e.LoadDate({id=itemID, type='item'})
                 local bag=C_Item.GetItemCount(itemID)
                 local bank=C_Item.GetItemCount(itemID, true, false, true)-bag
-                local itemLink= select(2, C_Item.GetItemInfo(itemID))
+                local itemLink= ItemUtil.GetItemHyperlink(itemID)
                 itemLink= itemLink or C_Item.GetItemNameByID(itemID) or ('itemID: ' .. itemID)
                 info= {
                     text=itemLink..' '..'|cnYELLOW_FONT_COLOR:'..bag..'|A:bag-main:0:0|a'..bank..'|A:Banker:0:0|a'..'|r',
@@ -1399,7 +1399,7 @@ local function Init_Buy_Items_Button()
     function BuyItemButton:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, Initializer:GetName())
+        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
 
         local num= self:set_text()--回购，数量，提示
 
@@ -1643,7 +1643,7 @@ local function Init_Buyback_Button()
     function BuybackButton:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, Initializer:GetName())
+        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
         local num= self:set_text()
         e.tips:AddDoubleLine('|cffff00ff'..(e.onlyChinese and '回购' or BUYBACK), '|cnGREEN_FONT_COLOR: #'..num)
         e.tips:AddLine(' ')

@@ -219,7 +219,7 @@ local function setCooldown()--冷却条
             local itemID = C_Container.GetContainerItemID(Bag.bag, Bag.slot)
             if itemID then
                 start, duration, enable = C_Container.GetItemCooldown(itemID)
-                button.texture:SetDesaturated(duration and duration>2 or not enable)
+                button.texture:SetDesaturated(not enable)
             end
         end
         e.Ccool(button, start, duration, nil, true,nil, true)
@@ -487,7 +487,7 @@ local function setMenuList(_, level, menuList)--主菜单
         for itemID, num in pairs(Save.use) do--二级, 使用
             e.LoadDate({id=itemID, type='item'})
             info={
-                text= (select(2, C_Item.GetItemInfo(itemID)) or  ('itemID: '..itemID)).. (num>1 and ' |cnGREEN_FONT_COLOR:x'..num..'|r' or ''),
+                text= (ItemUtil.GetItemHyperlink(itemID) or  ('itemID: '..itemID)).. (num>1 and ' |cnGREEN_FONT_COLOR:x'..num..'|r' or ''),
                 icon= C_Item.GetItemIconByID(itemID),
                 checked=true,
                 keepShownOnClick=true,
@@ -529,7 +529,7 @@ local function setMenuList(_, level, menuList)--主菜单
         for itemID, _ in pairs(Save.no) do
             e.LoadDate({id=itemID, type='item'})
             info={
-                text=select(2, C_Item.GetItemInfo(itemID)) or  ('itemID: '..itemID),
+                text=ItemUtil.GetItemHyperlink(itemID) or  ('itemID: '..itemID),
                 icon=C_Item.GetItemIconByID(itemID),
                 checked=true,
                 keepShownOnClick=true,
@@ -790,7 +790,7 @@ local function Init()
             end
             e.FindBagItem(true, {itemLink= itemLink})--查询，背包里物品
         else
-            e.tips:AddDoubleLine(id, e.cn(addName))
+            e.tips:AddDoubleLine(e.addName, e.cn(addName))
             e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
             e.tips:Show()
             if (BattlePetTooltip) then

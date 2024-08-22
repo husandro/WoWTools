@@ -182,7 +182,7 @@ function e.Set_Item_Info(self, tab)
         local itemKeyInfo = C_AuctionHouse.GetItemKeyInfo(tab.itemKey) or {}
         itemID= tab.itemKey.itemID or itemKeyInfo.itemID
         itemLevel= tab.itemKey.itemLevel
-        itemLink= itemKeyInfo.battlePetLink or (itemID and select(2, C_Item.GetItemInfo(itemID)))
+        itemLink= itemKeyInfo.battlePetLink or (itemID and ItemUtil.GetItemHyperlink(itemID))
         itemQuality= itemKeyInfo.quality
         battlePetSpeciesID= tab.itemKey.battlePetSpeciesID
     end
@@ -703,7 +703,7 @@ local function Create_Lable_Currency_Item_Numri_Info(btn, item, currencyIDorLink
             if self.itemLink and e.tips:IsShown() then
                 e.tips:AddLine(' ')
                 e.tips:AddDoubleLine(e.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, e.Icon.left)
-                e.tips:AddDoubleLine(id, addName)
+                e.tips:AddDoubleLine(e.addName, addName)
                 e.tips:Show()
             end
         end)
@@ -1141,7 +1141,7 @@ local function Init()
                                 if self.itemLink and e.tips:IsShown() then
                                     e.tips:AddLine(' ')
                                     e.tips:AddDoubleLine(e.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, e.Icon.left)
-                                    e.tips:AddDoubleLine(id, addName)
+                                    e.tips:AddDoubleLine(e.addName, addName)
                                     e.tips:Show()
                                 end
                             end)
@@ -1228,7 +1228,7 @@ local function add_Button_OpenOption(frame)
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭角色界面' or BINDING_NAME_TOGGLECHARACTER0, e.Icon.left)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(e.addName, addName)
         e.tips:Show()
     end)
     btn:SetScript('OnLeave', GameTooltip_Hide)
@@ -1335,7 +1335,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 if PerksProgramFrame.GetFrozenItemFrame then
                     local frame= PerksProgramFrame:GetFrozenItemFrame()
                     if frame then
-                        local itemLink= frame.FrozenButton.itemID and select(2, C_Item.GetItemInfo(frame.FrozenButton.itemID))
+                        local itemLink= frame.FrozenButton.itemID and ItemUtil.GetItemHyperlink(frame.FrozenButton.itemID)
                         e.Set_Item_Info(frame.FrozenButton, {itemLink=itemLink, size=12})
                     end
                 end
@@ -1346,12 +1346,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
                 for _, btn in pairs(self2:GetFrames()) do
                     if btn.itemID then
-                        local itemLink= btn.itemID and select(2, C_Item.GetItemInfo(btn.itemID))
+                        local itemLink= btn.itemID and ItemUtil.GetItemHyperlink(btn.itemID)
                         e.Set_Item_Info(btn.ContentsContainer, {itemLink=itemLink, point=btn.ContentsContainer.Icon, size=12})
                     elseif btn.GetItemInfo then--10.2
                         local itemInfo=btn:GetItemInfo()
                         if itemInfo then
-                            local itemLink= itemInfo.itemID and select(2, C_Item.GetItemInfo(itemInfo.itemID))
+                            local itemLink= itemInfo.itemID and ItemUtil.GetItemHyperlink(itemInfo.itemID)
                             e.Set_Item_Info(btn.ContentsContainer, {itemLink=itemLink, point=btn.ContentsContainer.Icon, size=12})
                         end
                     end

@@ -46,7 +46,7 @@ local Save={
     lockedToy=nil,
 }
 
-local ToyButton--ToyButton.items={}--存放有效
+local ToyButton
 
 
 
@@ -66,8 +66,41 @@ local ToyButton--ToyButton.items={}--存放有效
 
 
 
+local function Remove_Toy(itemID)--移除
+    Save.items[itemID]=nil
+    local isSelect, isLock= ToyButton:Check_Random_Value(itemID)
+    if isLock or isSelect then
+        if isSelect then
+            ToyButton:Set_SelectValue_Random(nil)
+        end
+        if isLock then
+            Save.lockedToy=nil
+            ToyButton:Set_LockedValue_Random(nil)
+        end
+    elseif ToyButton.itemID==itemID then
+        ToyButton:Init_Random(Save.lockedToy)
+    end
+    print(e.addName, addName, e.onlyChinese and '移除' or REMOVE, ItemUtil.GetItemHyperlink(itemID) or itemID)
+end
 
 
+
+local function Add_Toy(itemID)--添加
+    Save.items[itemID]= true
+    ToyButton:Init_Random(Save.lockedToy)--初始
+end
+
+
+
+local function Add_Remove_Toy(itemID)--移除/添加
+    if itemID then
+        if Save.items[itemID] then
+            Remove_Toy(itemID)--移除
+        else
+            Add_Toy(itemID)--添加
+        end
+    end
+end
 
 
 
@@ -98,6 +131,27 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function Init_Menu_Toy(_, root)
     local sub, sub2, name, toyName, icon
     local index=0
@@ -115,24 +169,20 @@ local function Init_Menu_Toy(_, root)
             name='itemID '.. itemID
         end
 
+--名称
         local has= PlayerHasToy(itemID)
-        local cd= has and e.GetSpellItemCooldown(nil, itemID)
+        local isLoked= Save.lockedToy==itemID
         sub=root:CreateCheckbox(
-            (
-                (Save.lockedToy==itemID and
-                    '|cnGREEN_FONT_COLOR:'..(has and '' or '|A:Islands-QuestBangDisable:0:0|a')
-                )
-                or (has and '' or '|cff9e9e9e')
-            )
+            (isLoked and '|cnGREEN_FONT_COLOR:' or (has and '' or '|cff9e9e9e'))
             ..index..') '..icon
             ..name
-            ..(cd or ''),
+            ..(isLoked and '|A:AdventureMapIcon-Lock:0:0|a' or '')--锁定
+            ..(has and e.GetSpellItemCooldown(nil, itemID) or ''),--CD
             function(data)
                 return ToyButton.itemID==data.itemID
             end, function(data)
                 if data.has then
-                    local toy= ToyButton.itemID~=data.itemID and data.itemID or nil
-                    Save.lockedToy=nil
+                    local toy= ToyButton.Selected_Value~=data.itemID and data.itemID or nil
                     ToyButton:Set_SelectValue_Random(toy)
                 end
             end,
@@ -140,11 +190,10 @@ local function Init_Menu_Toy(_, root)
         )
         sub:SetTooltip(Set_Menu_Tooltip)
 
-        sub2=sub:CreateCheckbox((
-            (not has or cd) and '|cff9e9e9e' or '')
+        sub2=sub:CreateCheckbox(
+            (has and '' or '|cff9e9e9e')
             ..icon
-            ..(e.onlyChinese and '激活' or SPEC_ACTIVE)
-            ..e.Icon.left,
+            ..(e.onlyChinese and '锁定' or LOCK)..'|A:AdventureMapIcon-Lock:0:0|a',
         function(data)
             return Save.lockedToy==data.itemID
         end, function(data)
@@ -170,9 +219,7 @@ local function Init_Menu_Toy(_, root)
         sub2=sub:CreateButton(
             '|A:common-icon-redx:0:0|a'..(e.onlyChinese and '移除' or REMOVE),
             function(data)
-                print(e.addName, addName, select(2, C_Item.GetItemInfo(data.itemID)) or data.itemID, e.onlyChinese and '移除' or REMOVE)
-                Save.items[data.itemID]=nil
-                ToyButton:Init_Random(Save.lockedToy)
+                Remove_Toy(data.itemID)--移除
                 return MenuResponse.Open
             end,
             {itemID=itemID, name=toyName}
@@ -185,10 +232,11 @@ local function Init_Menu_Toy(_, root)
     end
 
 
-if index>1 then
-    root:CreateDivider()
-end
+    if index>1 then
+        root:CreateDivider()
+    end
 
+--移除未收集
     sub=root:CreateButton('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '移除未收集' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REMOVE, NOT_COLLECTED)), function()
         if IsControlKeyDown() then
             local n=0
@@ -196,11 +244,11 @@ end
                 if not PlayerHasToy(itemID) then
                     Save.items[itemID]=nil
                     n=n+1
-                    print(n, select(2, C_Item.GetItemInfo(itemID)) or ('itemID '..itemID), e.onlyChinese and '移除' or REMOVE)
+                    print(n, ItemUtil.GetItemHyperlink(itemID) or ('itemID '..itemID), e.onlyChinese and '移除' or REMOVE)
                 end
             end
             if n>0 then
-                ToyButton:Init_Random()
+                ToyButton:Init_Random(Save.lockedToy)
             else
                 return MenuResponse.Open
             end
@@ -217,7 +265,7 @@ end
         if IsControlKeyDown() then
             Save.items={}
             print(e.addName, addName, e.onlyChinese and '全部清除' or CLEAR_ALL)
-            ToyButton:Init_Random()
+            ToyButton:Rest_Random()
         else
             return MenuResponse.Open
         end
@@ -235,7 +283,7 @@ end
     sub=root:CreateButton('|A:common-icon-undo:0:0|a'..(e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)..' '..all, function()
         if IsControlKeyDown() then
             Save.items= P_Items
-            ToyButton:Init_Random()
+            ToyButton:Rest_Random()
             print(e.addName, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)
         else
             return MenuResponse.Open
@@ -356,8 +404,7 @@ local function setToySpellButton_UpdateButton(btn)--标记, 是否已选取
         function btn.hearthstone:set_tooltips()
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(id, addName)
-            --e.tips:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            e.tips:AddDoubleLine(e.addName, addName)
             e.tips:AddLine(' ')
             local itemID=self:get_itemID()
             local icon= C_Item.GetItemIconByID(itemID)
@@ -371,9 +418,7 @@ local function setToySpellButton_UpdateButton(btn)--标记, 是否已选取
         end
         btn.hearthstone:SetScript('OnMouseDown', function(self, d)
             if d=='LeftButton' then
-                local itemID=self:get_itemID()
-                Save.items[itemID]= not Save.items[itemID] and true or nil
-                ToyButton:Init_Random()--初始
+                Add_Remove_Toy(self:get_itemID())--移除/添加
                 self:set_tooltips()
                 self:set_alpha()
             else
@@ -506,6 +551,7 @@ local function Init()
     ToyButton:RegisterEvent('TOYS_UPDATED')
     ToyButton:RegisterEvent('NEW_TOY_ADDED')
     ToyButton:RegisterEvent('UI_MODEL_SCENE_INFO_UPDATED')
+    ToyButton:RegisterEvent('BAG_UPDATE_COOLDOWN')
 
     ToyButton:SetScript('OnEvent', function(self, event, itemID, success)
         if event=='ITEM_DATA_LOAD_RESULT' then
@@ -540,6 +586,9 @@ local function Init()
         elseif event=='UI_MODEL_SCENE_INFO_UPDATED' then
             self.isSelected=nil
             self:Get_Random_Value()
+
+        elseif event=='BAG_UPDATE_COOLDOWN' then
+            self:set_cool()
         end
     end)
 
@@ -560,8 +609,11 @@ local function Init()
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
         e.tips:AddDoubleLine(
             e.onlyChinese and '随机' or 'Random',
-            Save.lockedToy and '|A:AdventureMapIcon-Lock:0:0|a'
-            or ((self.Selected_Value and '|A:transmog-icon-checkmark:0:0|a' or '')..('|cnGREEN_FONT_COLOR:#'..#self.Random_List..'|r'..e.Icon.mid)))
+            (ToyButton.Locked_Value and '' or '|cnGREEN_FONT_COLOR:#'..#self.Random_List..'|r')
+            ..(ToyButton.Selected_Value and '|A:transmog-icon-checkmark:0:0|a' or '')
+            ..(ToyButton.Locked_Value and '|A:AdventureMapIcon-Lock:0:0|a' or '')
+            ..e.Icon.mid
+        )
         e.tips:Show()
         self:set_tooltip_location(e.tips)
     end
@@ -603,9 +655,16 @@ local function Init()
 
 
 
+    
+
+
+
+
+
 
 
     Mixin(ToyButton, WoWTools_RandomMixin)
+
     function ToyButton:Get_Random_Data()--取得数据库, {数据1, 数据2, 数据3, ...}
         local tab={}
         for itemID in pairs(Save.items) do
@@ -635,12 +694,21 @@ local function Init()
         self:set_cool()
     end
     function ToyButton:Set_OnlyOneValue_Random()--当数据 <=1 时，设置值
-        self:Set_Random_Value(self.Player_Locked_Value or self.Selected_Value or self.Random_List[1] or 6948)
-        self.Random_List={}
+        self:Set_Random_Value(self.Selected_Value or self.Locked_Value or self.Random_List[1] or 6948)
     end
 
-
     ToyButton:Init_Random(Save.lockedToy)--初始
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -650,7 +718,6 @@ local function Init()
     ToyButton:set_alt()
     C_Timer.After(4, function()
         ToyButton:set_location()
-        ToyButton:set_cool()
         ToyButton:Get_Random_Value()
     end)
 end

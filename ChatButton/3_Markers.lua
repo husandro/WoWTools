@@ -631,7 +631,7 @@ local function Init_Markers_Frame()--设置标记, 框架
     function btn:set_tooltip()
         self:GetParent():set_Tooltips_Point()
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, e.onlyChinese and '队伍标记工具' or format(PROFESSION_TOOL_TOOLTIP_LINE, BINDING_HEADER_RAID_TARGET))
+        e.tips:AddDoubleLine(e.addName, e.onlyChinese and '队伍标记工具' or format(PROFESSION_TOOL_TOOLTIP_LINE, BINDING_HEADER_RAID_TARGET))
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
         e.tips:AddDoubleLine((UnitAffectingCombat('player') and '|cff9e9e9e' or '')..(e.onlyChinese and '缩放' or  UI_SCALE), '|cnGREEN_FONT_COLOR:'..(Save.markersScale or 1)..'|r Alt+'..e.Icon.mid)

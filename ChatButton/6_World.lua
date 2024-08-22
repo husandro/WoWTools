@@ -295,7 +295,7 @@ local function Init_User_Chat_Filter()
         end, data.chatTarget)
 
         sub:SetTooltip(function(tooltip, description)
-            tooltip:AddDoubleLine(id, addName)
+            tooltip:AddDoubleLine(e.addName, addName)
             tooltip:AddDoubleLine()
             tooltip:AddDoubleLine(e.onlyChinese and '自定义屏蔽' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CUSTOM, IGNORE), e.GetEnabeleDisable(Save.userChatFilter))
             tooltip:AddLine(' ')

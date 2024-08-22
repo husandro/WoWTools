@@ -104,7 +104,7 @@ function Init_Menu(self, level, menuList)
         for itemID in pairs(Save.items) do
             e.LoadDate({id=itemID, type='item'})
             e.LibDD:UIDropDownMenu_AddButton({
-                text= select(2, C_Item.GetItemInfo(itemID)) or itemID,
+                text= ItemUtil.GetItemHyperlink(itemID) or itemID,
                 icon= C_Item.GetItemIconByID(itemID),
                 tooltipOnButton=true,
                 tooltipTitle= itemID,
@@ -114,7 +114,7 @@ function Init_Menu(self, level, menuList)
                 keepShownOnClick=true,
                 func= function(_, arg1)
                     Save.items[arg1]=nil
-                    print(e.addName, Initializer:GetName(), e.onlyChinese and '移除' or REMOVE, select(2, C_Item.GetItemInfo(itemID)) or itemID)
+                    print(e.addName, Initializer:GetName(), e.onlyChinese and '移除' or REMOVE, ItemUtil.GetItemHyperlink(itemID) or itemID)
                 end
             }, level)
             n=n+1
@@ -237,7 +237,7 @@ local function Init_Disabled_Button()
             end
         end
 
-        e.tips:AddDoubleLine(id, Initializer:GetName())
+        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(
             (e.onlyChinese and '禁用物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISABLE, ITEMS))..' |cnGREEN_FONT_COLOR:#'..self.Text:GetText(),
@@ -339,7 +339,7 @@ local function Init()
     ScrappingMachineFrame.celarAllItem:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, Initializer:GetName())
+        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(' ', '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL))
         e.tips:Show()
@@ -354,7 +354,7 @@ local function Init()
     ScrappingMachineFrame.addAllItem:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, Initializer:GetName())
+        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
         e.tips:AddLine(' ')
         e.tips:AddLine((e.onlyChinese and '添加' or ADD)..'|A:communities-chat-icon-plus:0:0|a'..(e.onlyChinese and '所有' or ALL))
         e.tips:Show()
@@ -384,7 +384,7 @@ local function Init()
     ScrappingMachineFrame.addAllGem:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, Initializer:GetName())
+        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
         e.tips:AddLine(' ')
         e.tips:AddLine((e.onlyChinese and '添加' or ADD)..'|T135998:0|t'..(e.onlyChinese and '宝石' or AUCTION_CATEGORY_GEMS))
         e.tips:Show()
@@ -415,7 +415,7 @@ local function Init()
     ScrappingMachineFrame.addAllEquip:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, Initializer:GetName())
+        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
         e.tips:AddLine(' ')
         e.tips:AddLine((e.onlyChinese and '添加' or ADD)..'|T135995:0|t'..(e.onlyChinese and '装备' or BAG_FILTER_EQUIPMENT))
         e.tips:Show()

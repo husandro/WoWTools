@@ -51,7 +51,7 @@ local function Add_ClearAll_Button(frame, tooltip, func)
     btn:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(e.addName, addName)
         e.tips:AddLine(' ')
         --e.tips:AddDoubleLine(e.Icon.right, e.onlyChinese and '选项' or SETTINGS_TITLE)
         e.tips:AddDoubleLine((e.onlyChinese and '双击' or 'Double-Click')..e.Icon.left, (e.onlyChinese and '全部清除' or CLEAR_ALL)..'|A:bags-button-autosort-up:0:0|a|cffff00ff'..(self.tooltip or ''))
@@ -536,7 +536,7 @@ local function Init_ObjectiveTrackerFrame()
         local col= self:CanChangeAttribute() and '' or '|cff9e9e9e'
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, addName)
+        e.tips:AddDoubleLine(e.addName, addName)
         e.tips:AddLine(' ')
         
         local text

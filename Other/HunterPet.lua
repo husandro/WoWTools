@@ -74,7 +74,7 @@ end
 local function set_pet_tooltips(frame, pet)
     e.tips:SetOwner(frame, "ANCHOR_LEFT", -12, 0)
     e.tips:ClearLines()
-    e.tips:AddDoubleLine(id, Initializer:GetName())
+    e.tips:AddDoubleLine(e.addName, Initializer:GetName())
     e.tips:AddLine(' ')
     local i=1
     for indexType, name in pairs(pet) do
@@ -750,7 +750,7 @@ function Init_StableFrame_List()
     function btn:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, Initializer:GetName())
+        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
         e.tips:AddLine(' ')
         --e.tips:AddDoubleLine(format('%s %s', e.onlyChinese and '所有宠物' or BATTLE_PETS_TOTAL_PETS, e.GetEnabeleDisable(Save.show_All_List)), e.Icon.left)
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)

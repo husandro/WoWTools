@@ -28,12 +28,11 @@ local function set_Item_Cooldown_Count(self)--图标冷却
     if self.itemID then
         local start, duration, enable = C_Container.GetItemCooldown(self.itemID)
         local num= C_Item.GetItemCount(self.itemID, false, true, true)
-        local notFind= (not enable or num==0) and true or false
-        if not notFind then
+        if enable then
             e.Ccool(self, start, duration, nil, true, nil, true)--冷却条
         end
         self.count:SetText(num>1 and num or (num==1 and Save.autoWho) and num or '')
-        self.texture:SetDesaturated(notFind)
+        self.texture:SetDesaturated(not enable or num==0)
     end
 end
 
@@ -84,7 +83,7 @@ local function set_Button_Init(self)
         self:SetScript('OnMouseDown',function(self2, d)
             if d=='RightButton' and IsShiftKeyDown() then
                 Save.noUseItems[self2.itemID]=true
-                local link= select(2, C_Item.GetItemInfo(self2.itemID))
+                local link= ItemUtil.GetItemHyperlink(self2.itemID)
                 print(e.addName, e.cn(addName), e.onlyChinese and '禁用' or DISABLE, link or self2.itemID, '|cnRED_FONT_COLOR:', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
         end)
@@ -254,7 +253,8 @@ local function InitMenu(self, level, type)--主菜单
     local info
     if type=='DISABLE' then
         for itemID, _ in pairs(Save.noUseItems) do
-            local itemLink, _, _, _, _, _,_, _, itemTexture = select(2, C_Item.GetItemInfo(itemID))
+            local itemLink= ItemUtil.GetItemHyperlink(itemID)
+            local itemTexture= C_Item.GetItemIconByID(itemID)
             info={
                 text= itemLink or ('itemID '..itemID),
                 notCheckable=true,

@@ -212,7 +212,8 @@ function e.SetItemSpellCool(frame, tab)--{item=, spell=, type=, isUnit=true} typ
         end
 
     elseif item then
-        local startTime, duration = C_Container.GetItemCooldown(item)
+        local startTime, duration = C_Item.GetItemCooldown(item)
+
         e.Ccool(frame, startTime, duration, nil, true, nil, not type)
     elseif spell then
         local data= C_Spell.GetSpellCooldown(spell) or {}

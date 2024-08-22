@@ -179,7 +179,7 @@ local function set_Scale_Size(frame, tab)
     function btn:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddDoubleLine(e.addName, e.cn(addName))
 
         if not self:CanChangeAttribute() then
             e.tips:AddLine(format('|cnRED_FONT_COLOR:%s', e.onlyChinese and '当前不可更改' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, DISABLE)))
@@ -718,7 +718,7 @@ local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name, point=left)
     function frame.ResizeButton:set_Tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddDoubleLine(e.addName, e.cn(addName))
         e.tips:AddLine(self.name)
         e.tips:AddLine(' ')
         local col= UnitAffectingCombat('player') and '|cff9e9e9e' or ''
@@ -790,7 +790,7 @@ local function created_Move_Button(frame, tab)--created_Move_Button(frame, {fram
             self:SetAlpha(1)
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(id, e.cn(addName))
+            e.tips:AddDoubleLine(e.addName, e.cn(addName))
             e.tips:AddLine(format('|cffff00ff%s|r', self:GetParent():GetName() or ''))
             e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, tab.click=='RightButton' and e.Icon.right or e.Icon.left)
 

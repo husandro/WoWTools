@@ -467,7 +467,7 @@ end
             end
             e.tips:AddDoubleLine((cur==max and '|cnGREEN_FONT_COLOR:' or '|cffff00ff')..cur..'|r/'..max..format(' %i%%', cur/max*100), e.onlyChinese and '旅行者日志进度' or MONTHLY_ACTIVITIES_PROGRESSED)
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(id, e.cn(addName))
+            e.tips:AddDoubleLine(e.addName, e.cn(addName))
         end
         e.tips:Show()
     end)
@@ -636,7 +636,7 @@ local function Init_Help()
         end
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine((e.onlyChinese and '选项' or SETTINGS_TITLE), e.Icon.mid)
-        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddDoubleLine(e.addName, e.cn(addName))
         e.tips:Show()
     end)
     MainMenuMicroButton:EnableMouseWheel(true)--主菜单, 打开插件选项
@@ -1058,7 +1058,7 @@ local function Init_Framerate_Plus()
         e.tips:AddLine(MicroButtonTooltipText(FRAMERATE_LABEL, "TOGGLEFPS"))
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
         e.tips:AddDoubleLine(e.onlyChinese and '字体大小' or FONT_SIZE, (Save.framerateSize or 12)..e.Icon.mid)
-        e.tips:AddDoubleLine(id, e.cn(addName))
+        e.tips:AddDoubleLine(e.addName, e.cn(addName))
         e.tips:Show()
     end
     FramerateButton:SetScript('OnLeave', GameTooltip_Hide)
