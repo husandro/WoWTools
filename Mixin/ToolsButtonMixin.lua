@@ -45,7 +45,7 @@ end
 function WoWTools_ToolsButtonMixin:CreateButton(tab)
     local name= tab.name
     local tooltip= tab.tooltip
-    local setParent= tab.setParent
+    --local setParent= tab.setParent
     local point= tab.point
     local isNewLine= tab.isNewLine
     local isOnlyLine= tab.isOnlyLine
@@ -61,7 +61,7 @@ function WoWTools_ToolsButtonMixin:CreateButton(tab)
     end
 
 
-    local btn= CreateFrame("Button", 'WoWTools_Tools_'..name, setParent and self.Button.Frame or self.Button, "SecureActionButtonTemplate")
+    local btn= CreateFrame("Button", 'WoWTools_Tools_'..name, point~='BOTTOM' and self.Button.Frame or self.Button, "SecureActionButtonTemplate")
     btn:SetSize(30, 30)
     btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
     btn:EnableMouseWheel(true)
