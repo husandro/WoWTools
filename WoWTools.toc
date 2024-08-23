@@ -33,8 +33,8 @@ Mixin\Tools_Button_Mixin.lua
 Mixin\StaticPopupDialogs.lua
 Mixin\EditBox_Mixin.lua
 Mixin\Random_Mixin.lua
-Mixin\LoadUI_Mixin.lua
-Mixin\SpellItem_Mixin.lua
+Mixin\Load_UI_Mixin.lua
+Mixin\Spell_Item_Mixin.lua
 
 ##WoWPlus
 ##移动框架, 缩放--放在第一个，有些，需要放置点，到移动按钮上
