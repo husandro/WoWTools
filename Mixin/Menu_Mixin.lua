@@ -343,30 +343,43 @@ end
 
 
 
-
-
-
-function WoWTools_MenuMixin:OpenDragonriding(root)--驭空术
-    local numDragonriding=''
+function WoWTools_MenuMixin:GetDragonriding()--驭空术，return 名称，点数
     local dragonridingConfigID = C_Traits.GetConfigIDBySystemID(1);
     if dragonridingConfigID then
         local treeCurrencies = C_Traits.GetTreeCurrencyInfo(dragonridingConfigID, 672, false) or {}
         local num= treeCurrencies[1] and treeCurrencies[1].quantity
         if num and num>=0 then
-            numDragonriding= format(' %s%d|r |T%d:0|t', num==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:', num, select(4, C_Traits.GetTraitCurrencyInfo(2563)) )
+            return '|T'..(select(4, C_Traits.GetTraitCurrencyInfo(2563)) or 4728198)..':0|t'
+                ..(num==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:')..num..'|r',
+                
+                num
         end
     end
-    root:CreateButton(
-        format('|A:dragonriding-barbershop-icon-protodrake:0:0|a%s%s%s',
-        UnitAffectingCombat('player') and '|cff9e9e9e' or '', e.onlyChinese and '驭空术' or GENERIC_TRAIT_FRAME_DRAGONRIDING_TITLE, numDragonriding),
-    function()
-        if not UnitAffectingCombat('player') then
-            GenericTraitUI_LoadUI()
-            local DRAGONRIDING_TRAIT_SYSTEM_ID = 1
-            GenericTraitFrame:SetSystemID(DRAGONRIDING_TRAIT_SYSTEM_ID)
-            ToggleFrame(GenericTraitFrame)
-        end
-    end)
+
+end
+
+
+function WoWTools_MenuMixin:OpenDragonriding(root)--驭空术
+    local configID = C_Traits.GetConfigIDByTreeID(Constants.MountDynamicFlightConsts.TREE_ID);
+    local uiWidgetSetID = configID and C_Traits.GetTraitSystemWidgetSetID(configID) or nil
+
+    local sub= root:CreateButton(
+            '|A:dragonriding-barbershop-icon-protodrake:0:0|a'
+            ..(UnitAffectingCombat('player') and '|cff9e9e9e' or '')
+            ..(e.onlyChinese and '驭空术' or GENERIC_TRAIT_FRAME_DRAGONRIDING_TITLE)
+            ..(self:GetDragonriding() or ''),
+        function()
+            WoWTools_LoadUIMixin:GenericTraitUI(--加载，Trait，UI
+                Constants.MountDynamicFlightConsts.TRAIT_SYSTEM_ID,
+                Constants.MountDynamicFlightConsts.TREE_ID
+            )
+            return MenuResponse.Open
+        end,
+        {widgetSetID=uiWidgetSetID, tooltip=e.onlyChinese and '巨龙群岛概要' or DRAGONFLIGHT_LANDING_PAGE_TITLE}
+    )
+    WoWTools_SpellItemMixin:SetTooltip(nil, nil, sub)--设置，物品，提示
+    
+    return sub
 end
 
 

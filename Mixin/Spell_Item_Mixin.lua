@@ -3,17 +3,70 @@ WoWTools_SpellItemMixin={}
 
 
 
-function WoWTools_SpellItemMixin:SetTooltip(tooltip, data)--设置，物品，提示
-    if data.itemID then
+
+local function set_tooltip(tooltip, data)
+    if type(data)~='table' then
+        return
+    end
+    if data.link or data.itemLink or data.spellLink then
+        tooltip:SetHyperlink(data.link or data.itemLink or data.spellLink)
+
+    elseif data.itemID then
         if C_ToyBox.GetToyInfo(data.itemID) then
             tooltip:SetToyByItemID(data.itemID)
         else
             tooltip:SetItemByID(data.itemID)
         end
+
     elseif data.spellID then
         tooltip:SetSpellByID(data.spellID)
+
+    elseif data.currencyID then
+        tooltip:SetCurrencyByID(data.currencyID)
+
+    elseif data.widgetSetID then
+        GameTooltip_AddWidgetSet(tooltip, data.widgetSetID);
+    end 
+    if data.tooltip then
+        GameTooltip_AddNormalLine(tooltip, type(data.tooltip)=='function' and data.tooltip() or data.tooltip, true)
     end
 end
+
+
+
+
+
+
+C_Traits.GetTraitSystemWidgetSetID(1)
+
+
+function WoWTools_SpellItemMixin:SetTooltip(tooltip, data, root, frame)    
+    if root then
+        root:SetTooltip(function(tip, description)
+            set_tooltip(tip, description.data)
+        end)
+    elseif frame then
+        tooltip= tooltip or GameTooltip
+        tooltip:SetOwner(frame, "ANCHOR_LEFT");
+        set_tooltip(tooltip, data)
+        tooltip:Show();
+    else
+        set_tooltip(tooltip, data)
+    end
+end
+
+
+
+--[[function WoWTools_SpellItemMixin:SetGameTooltip(frame, isShow)
+    
+end]]
+
+
+
+
+
+
+
 
 
 

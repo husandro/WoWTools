@@ -216,7 +216,28 @@ end
 
 
 
---[[function WoWTools_ToolsButtonMixin:GetData(btn)
+--[[
+EventRegistry:TriggerEvent("GenericTraitFrame.SetSystemID", systemID, configID);
+
+function DragonflightLandingOverlayMixin.HandleUnlockEvent(event, ...)
+end
+
+function DragonflightLandingOverlayMixin.HandleMinimapAnimationEvent(event, ...)
+	if event == "QUEST_TURNED_IN" then
+		local questID, xpReward, moneyReward = ...;
+		if questID == DRAGONRIDING_INTRO_QUEST_ID then
+			EventRegistry:TriggerEvent("ExpansionLandingPage.TriggerAlert", DRAGONFLIGHT_LANDING_PAGE_ALERT_DRAGONRIDING_UNLOCKED);
+			EventRegistry:TriggerEvent("ExpansionLandingPage.TriggerPulseLock", minimapPulseLocks.DragonridingUnlocked);
+		end
+	elseif event == "MAJOR_FACTION_UNLOCKED" then
+		EventRegistry:TriggerEvent("ExpansionLandingPage.TriggerAlert", DRAGONFLIGHT_LANDING_PAGE_ALERT_MAJOR_FACTION_UNLOCKED);
+		EventRegistry:TriggerEvent("ExpansionLandingPage.TriggerPulseLock", minimapPulseLocks.MajorFactionUnlocked);
+	end
+end
+
+
+
+function WoWTools_ToolsButtonMixin:GetData(btn)
     GET_ITEM_INFO_RECEIVED: itemID, success
     SPELL_DATA_LOAD_RESULT: spellID, success
 end]]

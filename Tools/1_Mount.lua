@@ -1313,9 +1313,10 @@ local function Init_Menu(_, root)
 
     sub:CreateSpacer()
 
+    local text2, num2= WoWTools_MenuMixin:GetDragonriding()--驭空术
     WoWTools_MenuMixin:SetKey(sub, {
         icon='|A:NPE_ArrowDown:0:0|a',
-        name=addName,
+        name=addName..(num2 and num2>0 and text2 or ''),
         key=Save.KEY,
         SetValue=function(s)
             local text= s.editBox:GetText()

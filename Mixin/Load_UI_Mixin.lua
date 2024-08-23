@@ -20,3 +20,18 @@ function WoWTools_LoadUIMixin:Journal(index)--加载，收藏，UI
         ToggleCollectionsJournal(index)
     end
 end
+
+
+
+
+function WoWTools_LoadUIMixin:GenericTraitUI(systemID, treeID)--加载，Trait，UI
+    GenericTraitUI_LoadUI()
+    securecallfunction(GenericTraitFrame.SetSystemID, GenericTraitFrame, systemID)
+    securecallfunction(GenericTraitFrame.SetTreeID, GenericTraitFrame, treeID)
+    ToggleFrame(GenericTraitFrame)
+end
+
+WoWTools_LoadUIMixin:GenericTraitUI(--加载，Trait，UI
+    Constants.MountDynamicFlightConsts.TRAIT_SYSTEM_ID,
+    Constants.MountDynamicFlightConsts.TREE_ID
+)

@@ -109,10 +109,10 @@ local function Add_Remove_Toy(itemID)--移除/添加
 end
 
 
-
+--设置，物品，提示
 local function Set_Menu_Tooltip(tooltip, desc)
     if desc.data then
-        WoWTools_SpellItemMixin:SetTooltip(tooltip, {itemID=desc.data.itemID})
+        WoWTools_SpellItemMixin:SetTooltip(tooltip, {itemID=desc.data.itemID})--设置，物品，提示
     end
     ToyButton:set_tooltip_location(tooltip)
 end
