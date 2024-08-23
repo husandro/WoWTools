@@ -476,151 +476,6 @@ end
 
 
 
-
-
-
---#############
---初始化，对话框
---[[#############
-local function Init_Dialogs()
-
-
-
-    StaticPopupDialogs['WoWTools_Tools_Mount_Key']={--快捷键,设置对话框
-        text=id..' '..addName..'|n'..(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)..'|n|nQ, BUTTON5',
-        whileDead=true, hideOnEscape=true, exclusive=true, hasEditBox=true,
-        button1= e.onlyChinese and '设置' or SETTINGS,
-        button2= e.onlyChinese and '取消' or CANCEL,
-        button3= e.onlyChinese and '移除' or REMOVE,
-        OnShow = function(self2)
-            self2.editBox:SetText(Save.KEY or 'BUTTON5')
-            if Save.KEY then
-                self2.button1:SetText(e.onlyChinese and '修改' or EDIT)
-            end
-            self2.button3:SetEnabled(Save.KEY)
-        end,
-        OnHide= function(s)
-            s.editBox:ClearFocus()
-        end,
-        OnAccept = function(self2)
-            local text= self2.editBox:GetText()
-            text=text:gsub(' ','')
-            text=text:gsub('%[','')
-            text=text:gsub(']','')
-            text=text:upper()
-            Save.KEY=text
-            setKEY()--设置捷键
-        end,
-        OnAlt = function()
-            Save.KEY=nil
-            setKEY()--设置捷键
-        end,
-        EditBoxOnTextChanged=function(self2)
-            local text= self2:GetText()
-            text=text:gsub(' ','')
-            self2:GetParent().button1:SetEnabled(text~='')
-        end,
-        EditBoxOnEscapePressed = function(s)
-           s:ClearFocus()
-        end,
-    }
-
-    local function Get_UIMapIDs_Name(text)--从text取得uiMapID表
-        local tab, reText={}, nil
-        text:gsub('%d+', function(self)
-            local uiMapID= tonumber(self)
-            local info= uiMapID and C_Map.GetMapInfo(uiMapID)
-            if uiMapID and info and info.name and not tab[uiMapID] then--uiMapID<2147483647
-                tab[uiMapID]=true
-                reText= reText and reText..'|n' or ''
-                reText= reText..uiMapID..' '..e.cn(info.name)
-            end
-        end)
-        return tab, reText
-    end
-
-    StaticPopupDialogs['WoWTools_Tools_Mount_FLOOR'] = {--区域,设置对话框
-        text=id..' '..addName..' '..(e.onlyChinese and '区域' or FLOOR)..'|n|n%s|n|n|cnGREEN_FONT_COLOR:%s|r',
-        whileDead=true, hideOnEscape=true, exclusive=true, hasEditBox= true,
-        button1=e.onlyChinese and '区域' or FLOOR,
-        button2=e.onlyChinese and '取消' or CANCEL,
-        button3=e.onlyChinese and '移除' or REMOVE,
-        OnShow = function(s, data)
-            s.editBox:SetAutoFocus(false)
-            s.editBox:ClearFocus()
-            local text
-            text= ''
-            local tab= Save.Mounts[FLOOR][data.spellID] or {}
-            for uiMapID, _ in pairs(tab) do
-                text= text..uiMapID..', '
-            end
-            if text=='' then
-                text= C_Map.GetBestMapForUnit("player") or text
-                text= text..', '
-            end
-            s.editBox:SetText(text)
-            s.button3:SetEnabled(Save.Mounts[FLOOR][data.spellID] and true or false)
-        end,
-        OnAccept = function(s, data)
-            local tab, text= Get_UIMapIDs_Name(s.editBox:GetText())
-            print(
-                '|cnGREEN_FONT_COLOR:', e.cn(data.name, {spellID=data.spellID, isName=true}), 'spellID:', data.spellID, 'mountID:', data.mountID,
-                ':|r|n|cffff00ff', text, '|r|n',
-                id, WoWTools_ToolsButtonMixin:GetName(), addName
-            )
-
-            Save.Mounts[FLOOR][data.spellID]= tab
-            checkMount()--检测坐骑
-            setClickAtt()--设置 Click属性
-            if MountJournal_UpdateMountList then e.call(MountJournal_UpdateMountList) end
-        end,
-        OnHide= function(s)
-            s.editBox:ClearFocus()
-        end,
-        OnAlt = function(_, data)
-            Save.Mounts[FLOOR][data.spellID]=nil
-            checkMount()--检测坐骑
-            setClickAtt()--设置 Click属性
-            if MountJournal_UpdateMountList then e.call(MountJournal_UpdateMountList) end
-        end,
-        EditBoxOnTextChanged=function(s)
-            local _, text= Get_UIMapIDs_Name(s:GetText())
-            local btn=s:GetParent().button1
-            btn:SetEnabled(text and true or false)
-            btn:SetText(text or (e.onlyChinese and '无' or NONE))
-        end,
-        EditBoxOnEscapePressed = function(s)
-            s:ClearFocus()
-        end,
-    }
-end]]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
---C_MountJournal.SetCollectedFilterSetting(LE_MOUNT_JOURNAL_FILTER_COLLECTED, true)
---C_MountJournal.SetCollectedFilterSetting(LE_MOUNT_JOURNAL_FILTER_NOT_COLLECTED,false)
---C_MountJournal.SetCollectedFilterSetting(LE_MOUNT_JOURNAL_FILTER_UNUSABLE,false)
-
-
 --坐骑秀
 function Init_Mount_Show()
     MountShowFrame=CreateFrame('Frame', nil, MountButton)
@@ -628,7 +483,7 @@ function Init_Mount_Show()
     MountShowFrame:Hide()
 
     function MountShowFrame:get_mounts()--得到，有效坐骑，表
-        WoWTools_ToolsButtonMixin:LoadedCollectionsJournal()
+        WoWTools_ToolsButtonMixin:LoadJournal()
         self.tabs={}
         C_MountJournal.SetDefaultFilters()
         C_MountJournal.SetCollectedFilterSetting(LE_MOUNT_JOURNAL_FILTER_NOT_COLLECTED, false)
@@ -767,11 +622,16 @@ end
 
 
 
+--C_MountJournal.SetCollectedFilterSetting(LE_MOUNT_JOURNAL_FILTER_COLLECTED, true)
+--C_MountJournal.SetCollectedFilterSetting(LE_MOUNT_JOURNAL_FILTER_NOT_COLLECTED,false)
+--C_MountJournal.SetCollectedFilterSetting(LE_MOUNT_JOURNAL_FILTER_UNUSABLE,false)
+
+
 --##################
 --打开界面, 收藏, 坐骑
 --##################
 local function set_ToggleCollectionsJournal(mountID, type, showNotCollected)
-    WoWTools_ToolsButtonMixin:LoadedCollectionsJournal(1)
+    WoWTools_ToolsButtonMixin:LoadJournal(1)
 
     C_MountJournal.SetDefaultFilters()
     if not showNotCollected then
@@ -828,9 +688,7 @@ end
 
 
 local function Set_Mount_Summon(data)
-    if data.mountID then
-        C_MountJournal.SummonByID(data.mountID)
-    end
+    C_MountJournal.SummonByID(data.mountID or 0)
     return MenuResponse.Open
 end
 
@@ -1009,12 +867,28 @@ local function Set_Mount_Sub_Options(root, data)--icon,col,mountID,spellID,itemI
         data
     )
 
-    if data.spellID or data.mountID then
+    if data.mountID then
+        WoWTools_MenuMixin:OpenJournal(root, {--战团藏品
+            name='|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '设置' or SETTINGS),
+            index=1,
+            moutID=data.mountID,
+        })
+    else
+        WoWTools_MenuMixin:OpenSpellBook(root, {--天赋和法术书
+            name='|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '设置' or SETTINGS),
+            index=PlayerSpellsUtil.FrameTabs.SpellBook,
+            spellID=data.spellID,
+        })
+    end
+    
+
+    --[[if data.spellID or data.mountID then
         local sub=root:CreateButton(
             '|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '设置' or SETTINGS),
             function(info)
                 if info.mountID then
-                    set_ToggleCollectionsJournal(info.mountID, info.type)--打开界面, 收藏, 坐骑, 不过滤类型
+                   
+                    --set_ToggleCollectionsJournal(info.mountID, info.type)--打开界面, 收藏, 坐骑, 不过滤类型
                 elseif info.spellID then
                     PlayerSpellsUtil.OpenToSpellBookTabAtSpell(info.spellID)--查询，法术书，法术
                 end
@@ -1029,7 +903,7 @@ local function Set_Mount_Sub_Options(root, data)--icon,col,mountID,spellID,itemI
                 tooltip:AddLine(MicroButtonTooltipText('天赋和法术书', "TOGGLETALENTS"))
             end
         end)
-    end
+    end]]
 
     root:CreateButton(
         '|A:common-icon-redx:0:0|a'..(e.onlyChinese and '移除' or REMOVE),
@@ -1374,7 +1248,11 @@ local function Init_Menu(_, root)
 
 --选项
     root:CreateDivider()
-    sub=WoWTools_ToolsButtonMixin:OpenMenu(root, Save.KEY and '|A:mountequipment-slot-background:0:0|a'..Save.KEY or addName)
+    sub=root:CreateButton('|T413588:0|t'..(Save.KEY and (e.onlyChinese and '坐骑' or MOUNT)),
+    function()
+        C_MountJournal.SummonByID(0)
+    end, {spellID=150544})
+    sub:SetTooltip(Set_Menu_Tooltip)
 
     sub2=sub:CreateButton('|A:bags-greenarrow:0:0|a'..(e.onlyChinese and '坐骑秀' or 'Mount show'), function()
         MountShowFrame:initMountShow()
@@ -1435,7 +1313,7 @@ local function Init_Menu(_, root)
 
     sub:CreateSpacer()
 
-    WoWTools_MenuMixin:SetKeyMenu(sub, {
+    WoWTools_MenuMixin:SetKey(sub, {
         icon='|A:NPE_ArrowDown:0:0|a',
         name=addName,
         key=Save.KEY,
@@ -1454,48 +1332,8 @@ local function Init_Menu(_, root)
             setKEY()--设置捷键
         end,
     })
-    --sub:CreateDivider()
-    --[[sub2=sub:CreateCheckbox(
-        '|A:NPE_ArrowDown:0:0|a'
-        ..(UnitAffectingCombat('player') and '|cff9e9e9e' or '')
-        ..(Save.KEY or (e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)),
-    function()
-        return Save.KEY
-    end, function()
-        StaticPopup_Show('WoWTools_EditText',
-            ((e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)..'|n|n"Q", "ALT-Q","BUTTON5"|n"ALT-CTRL-SHIFT-Q"'),
-            nil,
-            {
-                text=Save.KEY,
-                OnShow=function(s, data)
-                    if not Save.KEY then
-                        s.editBox:SetText('BUTTON5')
-                    end
-                end,
-                SetValue= function(s)
-                    local text= s.editBox:GetText()
-                    text=text:gsub(' ','')
-                    text=text:gsub('%[','')
-                    text=text:gsub(']','')
-                    text=text:upper()
-                    Save.KEY=text
-                    setKEY()--设置捷键
-                    print(e.addName, addName, text)
-                end,
-                OnAlt=function()
-                    Save.KEY=nil
-                    setKEY()--设置捷键
-                end
-            }
-        )
-        --StaticPopup_Show('WoWTools_Tools_Mount_Key')
-    end)
-    sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine(e.onlyChinese and '设置' or SETTINGS)
-        tooltip:AddDoubleLine(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL, Save.KEY)
-    end)]]
 
-    WoWTools_MenuMixin:RestDataMenu(sub,
+    WoWTools_MenuMixin:RestData(sub,
         addName..'|n|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
         function()
             Save=nil
@@ -1504,16 +1342,17 @@ local function Init_Menu(_, root)
     )
 
     sub:CreateDivider()
-    sub2=sub:CreateButton(
-        '|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '设置' or SETTINGS),
-        function ()
-            WoWTools_ToolsButtonMixin:LoadedCollectionsJournal(1)
-            return MenuResponse.Open
-        end
+    
+    WoWTools_MenuMixin:OpenDragonriding(sub)--驭空术
+
+    WoWTools_MenuMixin:OpenJournal(sub, {--战团藏品
+        index=1,
+        icon='|A:hud-microbutton-Mounts-Down:0:0|a'}
     )
-    sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine(MicroButtonTooltipText(e.onlyChinese and '战团藏品' or COLLECTIONS, "TOGGLECOLLECTIONS"))
-    end)
+
+    sub2=WoWTools_ToolsButtonMixin:OpenMenu(sub, '|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '选项' or OPTIONS))
+    
+   
 end
 
 
@@ -1960,7 +1799,7 @@ local function Init()
     MountButton:SetAttribute("alt-type1", "spell")
     MountButton:SetAttribute("shift-type1", "spell")
     MountButton:SetAttribute("ctrl-type1", "spell")
-    MountButton:SetFrameStrata('HIGH')
+    --MountButton:SetFrameStrata('HIGH')
 
     MountButton.textureModifier=MountButton:CreateTexture(nil,'OVERLAY')--提示 Shift, Ctrl, Alt
     MountButton.textureModifier:SetAllPoints(MountButton.texture)
@@ -2259,7 +2098,7 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            addName= '|A:mountequipment-slot-background:0:0|a'..(e.onlyChinese and '坐骑' or MOUNT)--hud-microbutton-Mounts-Down
+            addName= '|A:hud-microbutton-Mounts-Down:0:0|a'..(e.onlyChinese and '坐骑' or MOUNT)
             --旧数据
             if WoWToolsSave[MOUNT] then
                 Save= WoWToolsSave[MOUNT]

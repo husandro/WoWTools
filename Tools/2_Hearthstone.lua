@@ -40,7 +40,7 @@ for itemID in pairs(ModifiedTab) do
     e.LoadDate({id=itemID, type='item'})
 end
 
-for itemID, _ in pairs(P_Items) do
+for itemID in pairs(P_Items) do
     e.LoadDate({id=itemID, type='item'})
 end
 
@@ -118,7 +118,7 @@ end
 
 
 local function set_ToggleCollectionsJournal(data)
-    WoWTools_ToolsButtonMixin:LoadedCollectionsJournal(3)
+    WoWTools_ToolsButtonMixin:LoadJournal(3)
     if data.name or data.itemID then
         local name= data.name or select(2, C_ToyBox.GetToyInfo(data.itemID)) or C_Item.GetItemNameByID(data.itemID)
         if name then
@@ -171,7 +171,7 @@ end
 local function Init_Menu_Toy(_, root)
     local sub, sub2, name, toyName, icon
     local index=0
-    for itemID, _ in pairs(Save.items) do
+    for itemID in pairs(Save.items) do
         e.LoadDate({id=itemID, type='item'})
 
         toyName, icon = select(2, C_ToyBox.GetToyInfo(itemID))
@@ -304,7 +304,7 @@ local function Init_Menu(self, root)
     end)
 
 --重新加载UI
-    WoWTools_MenuMixin:ReloadMenu(sub2)--重新加载UI
+    WoWTools_MenuMixin:Reload(sub2)--重新加载UI
 
 
 --移除未收集

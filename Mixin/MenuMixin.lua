@@ -63,32 +63,9 @@ function WoWTools_MenuMixin:CreateSlider(root, tab)
 end
 
 
---缩放，Frame
-function WoWTools_MenuMixin:ScaleFrame(frame, delta, value, func)
-    local n= value
-    if frame:CanChangeAttribute() and not UnitAffectingCombat('player') and IsAltKeyDown() then
-        n= n or 1
-        n= delta==1 and n-0.05 or n
-        n= delta==-1 and n+0.05 or n
-        n= n>4 and 4 or n
-        n= n<0.4 and 0.4 or n
-        frame:SetScale(n)
-        if func then
-            func()
-        end
-        if frame.set_scale then
-            frame:set_scale()
-        end
-        if frame.set_tooltip then
-            frame:set_tooltip()
-        end
-    end
-    return n
-end
-
 
 --缩放
-function WoWTools_MenuMixin:ScaleMenu(root, GetValue, SetValue, checkGetValue, checkSetValue)
+function WoWTools_MenuMixin:Scale(root, GetValue, SetValue, checkGetValue, checkSetValue)
     local sub
     if checkGetValue and checkSetValue then
         sub= root:CreateCheckbox(e.onlyChinese and '缩放' or UI_SCALE, checkGetValue, checkSetValue)
@@ -152,7 +129,7 @@ end
 
 
 --FrameStrata
-function WoWTools_MenuMixin:StrataMenu(root, GetValue, SetValue)
+function WoWTools_MenuMixin:FrameStrata(root, GetValue, SetValue)
     local sub=root:CreateButton('FrameStrata', function() return MenuResponse.Open end)
 
     for _, strata in pairs({'BACKGROUND','LOW','MEDIUM','HIGH','DIALOG','FULLSCREEN','FULLSCREEN_DIALOG'}) do
@@ -162,13 +139,13 @@ function WoWTools_MenuMixin:StrataMenu(root, GetValue, SetValue)
 end
 
 --重置位置
-function WoWTools_MenuMixin:RestPointMenu(root, point, SetValue)
+function WoWTools_MenuMixin:RestPoint(root, point, SetValue)
     return root:CreateButton((point and '' or '|cff9e9e9e')..(e.onlyChinese and '重置位置' or RESET_POSITION), SetValue)
 end
 
 
 --重置数据
-function WoWTools_MenuMixin:RestDataMenu(root, name, SetValue)
+function WoWTools_MenuMixin:RestData(root, name, SetValue)
     return root:CreateButton('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT), function(data)
         StaticPopup_Show('WoWTools_RestData',data.name, nil, data.SetValue)
         return MenuResponse.Open
@@ -176,7 +153,7 @@ function WoWTools_MenuMixin:RestDataMenu(root, name, SetValue)
 end
 
 --重新加载UI
-function WoWTools_MenuMixin:ReloadMenu(root, isControlKeyDown)
+function WoWTools_MenuMixin:Reload(root, isControlKeyDown)
     local sub=root:CreateButton('|TInterface\\Vehicles\\UI-Vehicles-Button-Exit-Up:0|t'..(UnitAffectingCombat('player') and '|cff9e9e9e' or '')..(e.onlyChinese and '重新加载UI' or RELOADUI),
     function(data)
         if data and IsControlKeyDown() or not data then
@@ -190,7 +167,7 @@ function WoWTools_MenuMixin:ReloadMenu(root, isControlKeyDown)
 end
 
 --快捷键
-function WoWTools_MenuMixin:SetKeyMenu(root, tab)
+function WoWTools_MenuMixin:SetKey(root, tab)
     local sub=root:CreateCheckbox(
         (tab.icon or '')
         ..(UnitAffectingCombat('player') and '|cff9e9e9e' or '')
@@ -222,7 +199,7 @@ function WoWTools_MenuMixin:SetKeyMenu(root, tab)
     return sub
 end
 --[[
-WoWTools_MenuMixin:SetKeyMenu(sub, {
+WoWTools_MenuMixin:SetKey(sub, {
     icon='',
     name=addName,
     text=,
@@ -233,3 +210,163 @@ WoWTools_MenuMixin:SetKeyMenu(sub, {
     end,
 })
 ]]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--[[打开界面, 收藏, 坐骑
+local function set_ToggleCollectionsJournal(mountID, type, showNotCollected)
+    WoWTools_ToolsButtonMixin:LoadJournal(1)
+
+    C_MountJournal.SetDefaultFilters()
+    if not showNotCollected then
+        C_MountJournal.SetCollectedFilterSetting(LE_MOUNT_JOURNAL_FILTER_NOT_COLLECTED, false)
+    end
+    if mountID then
+        local name= C_MountJournal.GetMountInfoByID(mountID)
+        if name then
+            MountJournalSearchBox:SetText(name)
+            --C_MountJournal.SetSearch(name)
+            return --不, 过滤, 类型
+        end
+    end
+    local tab={--过滤, 类型, Blizzard_MountCollection.lua
+        [MOUNT_JOURNAL_FILTER_GROUND]= Enum.MountType.Ground,
+        [MOUNT_JOURNAL_FILTER_AQUATIC]= Enum.MountType.Aquatic,
+        [MOUNT_JOURNAL_FILTER_FLYING]=Enum.MountType.Flying,
+        [MOUNT_JOURNAL_FILTER_DRAGONRIDING]= Enum.MountType.Dragonriding,
+    }
+    MountJournalSearchBox:SetText('')
+    if type and tab[type] then
+        for i=0, Enum.MountTypeMeta.NumValues do
+            C_MountJournal.SetTypeFilter(i, i==tab[type]+1)
+        end
+    end
+    return MenuResponse.Open
+end
+
+local Mount_Journal_Filter={--过滤, 类型, Blizzard_MountCollection.lua
+    [MOUNT_JOURNAL_FILTER_GROUND]= Enum.MountType.Ground,
+    [MOUNT_JOURNAL_FILTER_AQUATIC]= Enum.MountType.Aquatic,
+    [MOUNT_JOURNAL_FILTER_FLYING]=Enum.MountType.Flying,
+    [MOUNT_JOURNAL_FILTER_DRAGONRIDING]= Enum.MountType.Dragonriding,
+}
+]]
+
+
+
+function WoWTools_MenuMixin:OpenJournal(root, tab)--战团藏品
+    local sub=root:CreateButton(
+        tab.name or ('|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '战团藏品' or COLLECTIONS)),
+    function(data)
+        if SettingsPanel:IsShown() then--ToggleGameMenu()
+            SettingsPanel:Close()
+        end
+        WoWTools_ToolsButtonMixin:LoadJournal(data.index)
+
+        if data.moutID then
+            local name= C_MountJournal.GetMountInfoByID(data.moutID)
+            if name then
+                MountJournalSearchBox:SetText(name)
+            end
+        end
+
+        return MenuResponse.Open
+    end, tab)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(MicroButtonTooltipText(e.onlyChinese and '战团藏品' or COLLECTIONS, "TOGGLECOLLECTIONS"))
+    end)
+end
+--[[
+WoWTools_MenuMixin:OpenJournal(root, {--战团藏品
+    name=,
+    index=1,
+    moutID=mountID,
+})
+]]
+
+
+
+--PlayerSpellsUtil.lua
+function WoWTools_MenuMixin:OpenSpellBook(root, tab)--天赋和法术书
+    local sub=root:CreateButton(
+        tab.name or ('|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '天赋和法术书' or PLAYERSPELLS_BUTTON)),
+    function(data)
+        if SettingsPanel:IsShown() then--ToggleGameMenu()
+            SettingsPanel:Close()
+        end
+        if tab.index== PlayerSpellsUtil.FrameTabs.ClassSpecializations then--1
+            PlayerSpellsUtil.OpenToClassSpecializationsTab()
+            
+        elseif tab.index== PlayerSpellsUtil.FrameTabs.ClassTalents then--2
+            PlayerSpellsUtil.OpenToClassTalentsTab()
+
+        elseif tab.index== PlayerSpellsUtil.FrameTabs.SpellBook then--3
+            if data.spellBookCategory then
+                PlayerSpellsUtil:OpenToSpellBookTabAtCategory(data.spellBookCategory)
+            end
+
+            if tab.spellID then
+                PlayerSpellsUtil.OpenToSpellBookTabAtSpell(data.spellID)-- PlayerSpellsUtil.OpenToSpellBookTabAtSpell(spellID, knownSpellsOnly, toggleFlyout, flyoutReason)
+            else
+                PlayerSpellsUtil.OpenToSpellBookTab()
+            end
+        end
+
+        return MenuResponse.Open
+    end, tab)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(MicroButtonTooltipText(e.onlyChinese and '天赋和法术书' or PLAYERSPELLS_BUTTON, "TOGGLETALENTS"))
+    end)
+end
+
+
+
+
+
+
+
+function WoWTools_MenuMixin:OpenDragonriding(root)--驭空术
+    local numDragonriding=''
+    local dragonridingConfigID = C_Traits.GetConfigIDBySystemID(1);
+    if dragonridingConfigID then
+        local treeCurrencies = C_Traits.GetTreeCurrencyInfo(dragonridingConfigID, 672, false) or {}
+        local num= treeCurrencies[1] and treeCurrencies[1].quantity
+        if num and num>=0 then
+            numDragonriding= format(' %s%d|r |T%d:0|t', num==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:', num, select(4, C_Traits.GetTraitCurrencyInfo(2563)) )
+        end
+    end
+    root:CreateButton(
+        format('|A:dragonriding-barbershop-icon-protodrake:0:0|a%s%s%s',
+        UnitAffectingCombat('player') and '|cff9e9e9e' or '', e.onlyChinese and '驭空术' or GENERIC_TRAIT_FRAME_DRAGONRIDING_TITLE, numDragonriding),
+    function()
+        if not UnitAffectingCombat('player') then
+            GenericTraitUI_LoadUI()
+            local DRAGONRIDING_TRAIT_SYSTEM_ID = 1
+            GenericTraitFrame:SetSystemID(DRAGONRIDING_TRAIT_SYSTEM_ID)
+            ToggleFrame(GenericTraitFrame)
+        end
+    end)
+end
+
+

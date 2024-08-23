@@ -129,7 +129,7 @@ local function Init_MarkerTools_Menu(root)
         end)
     end
 
-    WoWTools_MenuMixin:ScaleMenu(root, function()
+    WoWTools_MenuMixin:Scale(root, function()
         return Save.markersScale
     end, function(value)
         Save.markersScale= value
@@ -441,7 +441,7 @@ local function Init_Ready_Tips_Button()
     ReadyTipsButton:SetScript('OnDoubleClick', ReadyTipsButton.set_Hide)--隐藏
 
     ReadyTipsButton:SetScript('OnMouseWheel', function(self, delta)--缩放
-        Save.tipsTextSacle= WoWTools_MenuMixin:ScaleFrame(self, delta, Save.tipsTextSacle)--设置Frame缩放
+        Save.tipsTextSacle= WoWTools_FrameMixin:ScaleFrame(self, delta, Save.tipsTextSacle)--设置Frame缩放
     end)
 
 
@@ -650,7 +650,7 @@ local function Init_Markers_Frame()--设置标记, 框架
         MarkerButton:state_enter(nil, true)
     end)
     btn:SetScript('OnMouseWheel', function(self, delta)--缩放
-        Save.markersScale= WoWTools_MenuMixin:ScaleFrame(self, delta, Save.markersScale)
+        Save.markersScale= WoWTools_FrameMixin:ScaleFrame(self, delta, Save.markersScale)
     end)
 
 

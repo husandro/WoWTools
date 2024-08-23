@@ -172,14 +172,14 @@ local function Init_Menu(self, root)
         tooltip:AddLine(e.GetShowHide(nil, true))
     end)
 
-    WoWTools_MenuMixin:ScaleMenu(sub, function()
+    WoWTools_MenuMixin:Scale(sub, function()
         return Save.scale
     end, function(data)
         Save.scale=data
         self:set_scale()
     end)
 
-    WoWTools_MenuMixin:StrataMenu(sub, function(data)
+    WoWTools_MenuMixin:FrameStrata(sub, function(data)
         return self:GetFrameStrata()==data
     end, function(data)
         Save.strata= data
@@ -187,7 +187,7 @@ local function Init_Menu(self, root)
     end)
 
 
-    WoWTools_MenuMixin:RestPointMenu(sub, Save.point, function()
+    WoWTools_MenuMixin:RestPoint(sub, Save.point, function()
         Save.point=nil
         self:set_point()
     end)
@@ -211,7 +211,7 @@ end
 local function Init()
     function Button:load_wow_ui()
         if Save.loadCollectionUI then
-            WoWTools_ToolsButtonMixin:LoadedCollectionsJournal()
+            WoWTools_ToolsButtonMixin:LoadJournal()
         end
     end
 
@@ -292,7 +292,7 @@ local function Init()
     end)
 
     Button:SetScript('OnMouseWheel', function(self, d)
-        Save.scale=WoWTools_MenuMixin:ScaleFrame(self, d, Save.scale, nil)
+        Save.scale=WoWTools_FrameMixin:ScaleFrame(self, d, Save.scale, nil)
     end)
 
     Button:SetScript("OnClick", function(self, d)

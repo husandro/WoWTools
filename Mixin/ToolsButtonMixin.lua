@@ -195,7 +195,11 @@ end
 function WoWTools_ToolsButtonMixin:OpenMenu(root, name)--打开, 选项界面，菜单
     local sub=root:CreateButton(name or self:GetName(),
         function(data)
-            self:OpenOptions(data)
+            if SettingsPanel:IsShown() then--ToggleGameMenu()
+                SettingsPanel:Close()
+            else
+                self:OpenOptions(data)
+            end
             return MenuResponse.Open
         end, name)
 
@@ -219,7 +223,7 @@ function WoWTools_ToolsButtonMixin:SetToyTooltip(tooltip, itemID)--设置，物�
 end
 
 
-function WoWTools_ToolsButtonMixin:LoadedCollectionsJournal(index)--加载，收藏，UI
+function WoWTools_ToolsButtonMixin:LoadJournal(index)--加载，收藏，UI
     if not CollectionsJournal then
         do
             CollectionsJournal_LoadUI();
@@ -299,11 +303,6 @@ function WoWTools_ToolsButtonMixin:GetSpellItemText(spellID, itemID)--取得，�
             col
     end
 end
-
-
-
-
-
 
 
 

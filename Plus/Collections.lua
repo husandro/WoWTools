@@ -1258,7 +1258,7 @@ local function Init_DressUpFrames()
             if d=='LeftButton' then
                 e.Chat(link, nil, true)
             elseif d=='RightButton' then
-                WoWTools_ToolsButtonMixin:LoadedCollectionsJournal(5)
+                WoWTools_ToolsButtonMixin:LoadJournal(5)
                 
                 local wcFrame= WardrobeCollectionFrame
                 --[[if not CollectionsJournal:IsVisible() or not wcFrame:IsVisible() then

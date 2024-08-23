@@ -4820,7 +4820,10 @@
         "PetJournal_UpdatePetList",
         "CollectionsSpellButton_UpdateCooldown",
         "BATTLE_PET_SOURCE_11",
-        "QUESTLINE_LOCATED_ABOVE"
+        "QUESTLINE_LOCATED_ABOVE",
+        "ToggleGameMenu",
+        "LE_MOUNT_JOURNAL_FILTER_COLLECTED",
+        "PLAYERSPELLS_BUTTON"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

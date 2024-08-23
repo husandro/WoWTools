@@ -332,7 +332,7 @@ local function Init_EmojiFrame()
         EmojiButton:SetButtonState('PUSHED')
     end)
     Frame:SetScript('OnMouseWheel', function(self, d)--缩放
-        Save.scale=WoWTools_MenuMixin:ScaleFrame(self, d, Save.scale, nil)
+        Save.scale=WoWTools_FrameMixin:ScaleFrame(self, d, Save.scale, nil)
     end)
 
 
@@ -421,7 +421,7 @@ local function Init_Menu(self, root)
 
 
     --缩放
-    WoWTools_MenuMixin:ScaleMenu(sub, function()
+    WoWTools_MenuMixin:Scale(sub, function()
         return Save.scale
     end, function(value)
         Save.scale= value        

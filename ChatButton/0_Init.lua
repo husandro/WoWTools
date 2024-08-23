@@ -36,7 +36,7 @@ local Initializer, Layout
 local function Init_Menu(self, root)
     local sub
 
-    WoWTools_MenuMixin:ScaleMenu(root, function()
+    WoWTools_MenuMixin:Scale(root, function()
         return Save.scale
     end, function(value)
         Save.scale= value
@@ -186,7 +186,7 @@ local function Init()
     end)
 
     ChatButton:SetScript('OnMouseWheel', function(self, d)--缩放
-        Save.scale=WoWTools_MenuMixin:ScaleFrame(self, d, Save.scale, nil)
+        Save.scale=WoWTools_FrameMixin:ScaleFrame(self, d, Save.scale, nil)
     end)
 
 

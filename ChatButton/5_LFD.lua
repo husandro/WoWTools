@@ -710,7 +710,7 @@ local function Init_tipsButton()
     end
 
     tipsButton:SetScript('OnMouseWheel', function(self, delta)
-        Save.tipsScale= WoWTools_MenuMixin:ScaleFrame(self, delta, Save.tipsScale, nil)
+        Save.tipsScale= WoWTools_FrameMixin:ScaleFrame(self, delta, Save.tipsScale, nil)
     end)
 
     tipsButton:SetScript("OnMouseDown", function(_, d)
