@@ -15,7 +15,7 @@ local button
 
 local function setPanelPostion(isInit)--设置按钮位置
     if isInit then
-        button.Point={button:GetPoint()}
+        button.Point={button:GetPoint(1)}
         if Save.point and Save.point[1] then
             button:ClearAllPoints()
             button:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
