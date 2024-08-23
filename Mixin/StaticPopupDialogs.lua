@@ -23,6 +23,10 @@ end
 
 
 local function Init()
+
+
+
+    
 --重置, 数据
 StaticPopupDialogs['WoWTools_RestData']= {
     text=e.addName..'|n|n%s|n|n'

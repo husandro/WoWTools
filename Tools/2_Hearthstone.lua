@@ -111,14 +111,16 @@ end
 
 
 local function Set_Menu_Tooltip(tooltip, desc)
-    WoWTools_ToolsButtonMixin:SetToyTooltip(tooltip, desc.data and desc.data.itemID)
+    if desc.data then
+        WoWTools_SpellItemMixin:SetTooltip(tooltip, {itemID=desc.data.itemID})
+    end
     ToyButton:set_tooltip_location(tooltip)
 end
 
 
 
 local function set_ToggleCollectionsJournal(data)
-    WoWTools_ToolsButtonMixin:LoadJournal(3)
+    WoWTools_LoadUIMixin:Journal(3)
     if data.name or data.itemID then
         local name= data.name or select(2, C_ToyBox.GetToyInfo(data.itemID)) or C_Item.GetItemNameByID(data.itemID)
         if name then
@@ -625,11 +627,11 @@ local function Init()
     function ToyButton:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_ToolsButtonMixin:GetSpellItemText(nil, self.itemID), e.Icon.left)
+        e.tips:AddDoubleLine(WoWTools_SpellItemMixin:GetSpellItemText(nil, self.itemID), e.Icon.left)
         e.tips:AddLine(' ')
         local name, col
         for _, data in pairs(ModifiedMenuTab) do
-            name, col=WoWTools_ToolsButtonMixin:GetSpellItemText(nil, data.itemID)
+            name, col=WoWTools_SpellItemMixin:GetSpellItemText(nil, data.itemID)
             e.tips:AddDoubleLine(data.col()..name, (col or '')..data.type..'+'..e.Icon.left)
         end
         e.tips:AddLine(' ')

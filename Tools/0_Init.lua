@@ -211,7 +211,7 @@ end
 local function Init()
     function Button:load_wow_ui()
         if Save.loadCollectionUI then
-            WoWTools_ToolsButtonMixin:LoadJournal()
+            WoWTools_LoadUIMixin:Journal()
         end
     end
 

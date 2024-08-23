@@ -483,7 +483,7 @@ function Init_Mount_Show()
     MountShowFrame:Hide()
 
     function MountShowFrame:get_mounts()--得到，有效坐骑，表
-        WoWTools_ToolsButtonMixin:LoadJournal()
+        WoWTools_LoadUIMixin:Journal()
         self.tabs={}
         C_MountJournal.SetDefaultFilters()
         C_MountJournal.SetCollectedFilterSetting(LE_MOUNT_JOURNAL_FILTER_NOT_COLLECTED, false)
@@ -631,7 +631,7 @@ end
 --打开界面, 收藏, 坐骑
 --##################
 local function set_ToggleCollectionsJournal(mountID, type, showNotCollected)
-    WoWTools_ToolsButtonMixin:LoadJournal(1)
+    WoWTools_LoadUIMixin:Journal(1)
 
     C_MountJournal.SetDefaultFilters()
     if not showNotCollected then
@@ -1457,7 +1457,7 @@ local function Init_UI_Menu(self, root)
     end
 
     root:CreateDivider()
-    WoWTools_ToolsButtonMixin:OpenMenu(root, WoWTools_ToolsButtonMixin:GetSpellItemText(spellID, nil) or ('|T'..(icon or 0)..':0|t'..name))
+    WoWTools_ToolsButtonMixin:OpenMenu(root, WoWTools_ToolsButtonMixin:GetSpellItemText(spellID) or ('|T'..(icon or 0)..':0|t'..name))
 end
 
 

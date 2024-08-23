@@ -722,7 +722,7 @@ local function Init_TrackButton()
             if IsAltKeyDown() then
                 SetCursor('UI_MOVE_CURSOR')
             elseif not IsModifierKeyDown() then--打开，宠物手册
-                WoWTools_ToolsButtonMixin:LoadJournal(2)
+                WoWTools_LoadUIMixin:Journal(2)
                 
             end
         elseif d=='LeftButton' then--显示，隐藏

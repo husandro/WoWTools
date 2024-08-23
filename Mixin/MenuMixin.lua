@@ -236,7 +236,7 @@ WoWTools_MenuMixin:SetKey(sub, {
 
 --[[打开界面, 收藏, 坐骑
 local function set_ToggleCollectionsJournal(mountID, type, showNotCollected)
-    WoWTools_ToolsButtonMixin:LoadJournal(1)
+    WoWTools_LoadUIMixin:Journal(1)
 
     C_MountJournal.SetDefaultFilters()
     if not showNotCollected then
@@ -282,7 +282,7 @@ function WoWTools_MenuMixin:OpenJournal(root, tab)--战团藏品
         if SettingsPanel:IsShown() then--ToggleGameMenu()
             SettingsPanel:Close()
         end
-        WoWTools_ToolsButtonMixin:LoadJournal(data.index)
+        WoWTools_LoadUIMixin:Journal(data.index)
 
         if data.moutID then
             local name= C_MountJournal.GetMountInfoByID(data.moutID)
@@ -317,7 +317,7 @@ function WoWTools_MenuMixin:OpenSpellBook(root, tab)--天赋和法术书
         end
         if tab.index== PlayerSpellsUtil.FrameTabs.ClassSpecializations then--1
             PlayerSpellsUtil.OpenToClassSpecializationsTab()
-            
+
         elseif tab.index== PlayerSpellsUtil.FrameTabs.ClassTalents then--2
             PlayerSpellsUtil.OpenToClassTalentsTab()
 
