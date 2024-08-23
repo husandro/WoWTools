@@ -2,17 +2,26 @@ local e= select(2, ...)
 
 WoWTools_ToolsButtonMixin={
     AddList={},--所有, 按钮 {name}=true
-    Save={disabledADD={}},
-    Buttons={},--存放所有, 按钮 {btn1, btn2,}
-    last=nil,--最后, 按钮 btn
+    Save={disabledADD={}, lineNum=10, isHideBackground=nil},
 
-    index=0,
-    line=1,
-
-    leftIndex=0,
-    rightIndex=0,
-
+    LeftButtons={},--按钮 {btn1, btn2,}
+    BottomButtons={},
+    OnlyLineButtons={},
+    leftNewLineButton=nil,
 }
+
+function WoWTools_ToolsButtonMixin:SetBackground(frame, texture, isClear)
+    if not texture then
+        texture=frame:CreateTexture(nil, 'BACKGROUND')
+        texture:SetAlpha(0.5)
+    end
+    if isClear then
+        texture:SetTexture(0)
+    else
+        texture:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
+    end
+    return texture
+end
 
 function WoWTools_ToolsButtonMixin:Init(save)
     if save.disabled then
@@ -22,46 +31,67 @@ function WoWTools_ToolsButtonMixin:Init(save)
     self:SetSaveData(save)
 
     self.Button= e.Cbtn(nil, {name='WoWTools_ToolsButton', icon='hide', size={30, save.height or 10}})
-    self.Button.texture=self.Button:CreateTexture(nil, 'BORDER')
-    self.Button.texture:SetPoint('CENTER')
-    self.Button.texture:SetSize(10,10)
-    self.Button.texture:SetShown(save.showIcon)
-
-    self.Button.texture:SetAtlas(e.Icon.icon)
 
     self.Button.Frame= CreateFrame('Frame', nil, self.Button)
     self.Button.Frame:SetAllPoints(self.Button)
     self.Button.Frame:SetShown(save.show)
 
+    self.Button.texture=self.Button:CreateTexture(nil, 'BORDER')
+    self.Button.texture:SetPoint('CENTER')
+    self.Button.texture:SetSize(10,10)
+    self.Button.texture:SetShown(save.showIcon)
+    self.Button.texture:SetAtlas(e.Icon.icon)
+
+    --需要，设置高 宽， TOP LEFT
+    self.Button.LeftBG=self:SetBackground(self.Button.Frame, nil, self.Save.isHideBackground)
+    self.Button.LeftBG:SetPoint('BOTTOMRIGHT', self.Button, 'TOPRIGHT', 0, 30)
+    self.Button.LeftBG:SetPoint('TOPRIGHT', self.Button, 0, 60)
+    self.Button.LeftBG:SetPoint('LEFT', self.Button, -30, 0)
+
+    
+    --需要，设置高 TOP
+    self.Button.OnlyBG=self:SetBackground(self.Button, nil, self.Save.isHideBackground)
+    self.Button.OnlyBG:SetPoint('BOTTOMRIGHT', self.Button.BG2, 'BOTTOMLEFT')
+    self.Button.OnlyBG:SetWidth(30)
+
+    --需要，设置宽 LEFT
+    self.Button.BottomBG=self:SetBackground(self.Button, nil, self.Save.isHideBackground)
+    self.Button.BottomBG:SetPoint('BOTTOMRIGHT', self.Button, 'TOPRIGHT')
+    self.Button.BottomBG:SetHeight(30)
+
+
+
+
     self.last= self.Button
     return self.Button
 end
+
+--function WoWTools_ToolsButtonMixin:SetPoint_BG1(btn)
+
 
 
 function WoWTools_ToolsButtonMixin:GetName()
     return '|A:Professions-Crafting-Orders-Icon:0:0|aTools'
 end
 
-function WoWTools_ToolsButtonMixin:CreateButton(tab)
-    local name= tab.name
-    local tooltip= tab.tooltip
-    local setParent= tab.setParent
-    local point= tab.point
-    local isNewLine= tab.isNewLine
-    local isOnlyLine= tab.isOnlyLine
-    local option= tab.option
-    local disabledOptions= tab.disabledOptions
+--[[
+WoWTools_ToolsButtonMixin:CreateButton({
+    name=,
+    point='LEFT',
+    isOnlyLine=false,
 
-    if not disabledOptions then
-        table.insert(self.AddList, {name=name, tooltip=tooltip, option=option})
-    end
+    option=funciton()end,
+    disabledOptions=false,
+    tooltip=nil,
 
-    if not self.Button or self.Save.disabledADD[name] then
-        return
-    end
+}
+]]
 
 
-    local btn= CreateFrame("Button", 'WoWTools_Tools_'..name, setParent and self.Button.Frame or self.Button, "SecureActionButtonTemplate")
+
+
+function WoWTools_ToolsButtonMixin:Create(tab)
+    local btn= CreateFrame("Button", 'WoWTools_Tools_'..tab.name, tab.parent or (tab.point=='LEFT' and self.Button.Frame) or self.Button, "SecureActionButtonTemplate")
     btn:SetSize(30, 30)
     btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
     btn:EnableMouseWheel(true)
@@ -91,8 +121,38 @@ function WoWTools_ToolsButtonMixin:CreateButton(tab)
     btn.border:SetAtlas('bag-reagent-border')
 
     e.Set_Label_Texture_Color(btn.border, {type='Texture', 0.5})
+    return btn
+end
+--[[
+WoWTools_ToolsButtonMixin:Create({
+name='',
+parent=nil,--Frame or UIPrent
+point=nil,--LEFT BOTTOM
+})
+]]
 
-    if point=='LEFT' then
+
+function WoWTools_ToolsButtonMixin:CreateButton(tab)
+    --local name= tab.name
+    --local tooltip= tab.tooltip
+    --local setParent= tab.setParent
+    --local point= tab.point
+    --local isNewLine= tab.isNewLine
+    --local isOnlyLine= tab.isOnlyLine
+    --local option= tab.option
+    --local disabledOptions= tab.disabledOptions
+
+    if not tab.disabledOptions then
+        table.insert(self.AddList, tab)
+    end
+    if not self.Button or self.Save.disabledADD[tab.name] then
+        return
+    end   
+    local btn= self:Create(tab)
+    WoWTools_ToolsButtonMixin:SetPoint(btn, tab)
+    return btn
+end
+    --[[if point=='LEFT' then
         WoWTools_ToolsButtonMixin:SetLeftPoint(btn, isNewLine, isOnlyLine)
 
     elseif point=='BOTTOM' then
@@ -108,16 +168,58 @@ function WoWTools_ToolsButtonMixin:CreateButton(tab)
             WoWTools_ToolsButtonMixin:SetRightPoint(btn)
         end
         self.rightIndex= self.rightIndex+1
-    end
+    end]]
 
-    return btn
+
+function WoWTools_ToolsButtonMixin:SetPoint(btn, tab)
+    if tab.point=='BOTTOM' then
+        local num=#self.BottomButtons
+        if num==0 then
+            btn:SetPoint('BOTTOM', self.Button, 'TOP')
+        else
+            btn:SetPoint('RIGHT', self.BottomButtons[num], 'LEFT')
+        end
+        self.Button.BottomBG:SetPoint('LEFT', btn)--需要，设置宽 LEFT
+        table.insert(self.BottomButtons, btn)
+
+    else
+        if tab.isOnlyLine then
+            local num= #self.OnlyLineButtons
+            if num==0 then
+                btn:SetPoint('BOTTOMRIGHT', self.Button.LeftBG, 'BOTTOMLEFT')
+            else
+                btn:SetPoint('BOTTOM', self.BottomButtons[num], 'TOP')
+            end
+            self.Button.OnlyBG:SetPoint('TOP', btn)
+            table.insert(self.OnlyLineButtons, btn)
+
+        else
+            local num=#self.LeftButtons
+            if num==0 then
+                btn:SetPoint('BOTTOM', self.Button, 'TOP', 0, 30)
+                self.leftNewLineButton=btn
+                self.Button.LeftBG:SetPoint('TOP', btn)
+                self.Button.LeftBG:SetPoint('LEFT', btn)
+            else
+                local numLine= self.Save.lineNum or 10
+                if select(2, math.modf(num / numLine))==0 then
+                    btn:SetPoint('LEFT', self.leftNewLineButton, 'RIGHT')
+                    self.Button.LeftBG:SetPoint('LEFT', btn)
+                    self.leftNewLineButton=btn
+                else
+                    btn:SetPoint('BOTTOM', self.LeftButtons[num], 'TOP')
+                    self.Button.LeftBG:SetPoint('TOP', btn)
+                end
+            end
+            table.insert(self.LeftButtons, btn)
+        end
+        
+    end
 end
 
 
 
-
-
-
+--[[
 function WoWTools_ToolsButtonMixin:SetBottomPoint(btn)---按钮，放在下面一行
     btn:SetPoint('BOTTOMRIGHT', self.Button, 'TOPLEFT', -(btn.leftIndex*30), 0)
 end
@@ -143,7 +245,7 @@ function WoWTools_ToolsButtonMixin:SetLeftPoint(btn, isNewLine, isOnlyLine)--按
     end
     self.last=btn
     self.index=self.index+1
-end
+end]]
 
 
 function WoWTools_ToolsButtonMixin:AddOptions(option)

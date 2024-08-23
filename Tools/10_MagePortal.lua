@@ -128,7 +128,7 @@ local function Init()
             setParent=true,
             point=Save.isLeft and 'LEFT' or 'RIGHT',
             isNewLine= index==1 and Save.isLeft,
-            isOnlyLine= index~=1 and Save.isLeft,
+            isOnlyLine= true,
             disabledOptions=true,
         })
 

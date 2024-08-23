@@ -295,6 +295,18 @@ local function Init_Menu(self, root)
         self:set_location()--显示, 炉石, 绑定位置
     end)
 
+    WoWTools_MenuMixin:ToTop(root, {--位于上方
+        name=nil,
+        GetValue=function()
+            return Save.toFrame
+        end,
+        SetValue=function()
+            Save.toFrame = not Save.toFrame and true or nil
+        end,
+        tooltip=nil,
+        isReload=true,--重新加载UI
+    })
+--[[
     sub2=sub:CreateCheckbox(e.onlyChinese and '位于上方' or QUESTLINE_LOCATED_ABOVE, function()
         return Save.toFrame
     end, function()
@@ -307,7 +319,7 @@ local function Init_Menu(self, root)
 
 --重新加载UI
     WoWTools_MenuMixin:Reload(sub2)--重新加载UI
-
+]]
 
 --移除未收集
     sub:CreateDivider()

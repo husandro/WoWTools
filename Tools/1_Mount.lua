@@ -93,6 +93,7 @@ local Save={
     AFKRandom=e.Player.husandro,--离开时, 随机坐骑
     mountShowTime=3,--坐骑秀，时间
     showFlightModeButton=true, --切换飞行模式
+    toFrame=nil,
 }
 
 
@@ -2123,8 +2124,8 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
             MountButton= WoWTools_ToolsButtonMixin:CreateButton({
                 name='Mount',
                 tooltip=addName,
-                setParent=false,
-                point='LEFT',
+                setParent=Save.toFrame and true or false,
+                point=Save.toFrame and 'LEFT' or 'BOTTOM'
                 --option=function(category, layout)--initializer
             })
 

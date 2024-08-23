@@ -220,9 +220,40 @@ WoWTools_MenuMixin:SetKey(sub, {
 
 
 
-
-
-
+function WoWTools_MenuMixin:ToTop(root, tab)--Tools, 位于上方
+    local sub=root:CreateCheckbox(
+        (tab.name or (
+            '|A:editmode-up-arrow:16:11:0:3|a'..(e.onlyChinese and '位于上方' or QUESTLINE_LOCATED_ABOVE))), 
+        tab.GetValue,
+        tab.SetValue,
+        tab
+    )
+    sub:SetTooltip(function(tooltip, data)
+        tooltip:AddLine(
+            data.tooltip or 
+            (e.onlyChinese and '收起选项 |A:editmode-up-arrow:16:11:0:3|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS)
+        )
+        if data.isReload then
+            tooltip:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end
+    end)
+    if tab.isReload then--重新加载UI
+        WoWTools_MenuMixin:Reload(sub)--重新加载UI
+    end
+end
+--[[
+WoWTools_MenuMixin:ToTop(root, {--位于上方
+    name=nil,
+    GetValue=function()
+        return Save.toFrame
+    end,
+    SetValue=function()
+        Save.toFrame = not Save.toFrame and true or nil
+    end,
+    tooltip=nil,
+    isReload=true,--重新加载UI
+})
+]]
 
 
 
@@ -382,5 +413,7 @@ function WoWTools_MenuMixin:OpenDragonriding(root)--驭空术
     
     return sub
 end
+
+
 
 

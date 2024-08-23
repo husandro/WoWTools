@@ -1070,7 +1070,12 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            Save= WoWToolsSave[addName..'Tools'] or Save
+            if WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, ITEMS)..'Tools'] then
+                Save= WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, ITEMS)..'Tools']
+                WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, ITEMS)..'Tools']=nil
+            else
+                Save= WoWToolsSave['Tools_OpenItems'] or Save
+            end
 
             button= WoWTools_ToolsButtonMixin:CreateButton({
                 name='OpenItems',
@@ -1089,7 +1094,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            WoWToolsSave[addName..'Tools']=Save
+            WoWToolsSave['Tools_OpenItems'] = Save
         end
 
     elseif event=='PLAYER_ENTERING_WORLD' or event=='CHALLENGE_MODE_START' then
