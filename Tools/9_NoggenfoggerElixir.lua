@@ -202,7 +202,7 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
-            if e.Is_Timerunning or C_Item.GetItemCount(8529)==0 then--没有时,不加载
+            if not e.Player.husandro and (e.Is_Timerunning or C_Item.GetItemCount(8529)==0) then--没有时,不加载
                 self:UnregisterAllEvents()
                 return
             end

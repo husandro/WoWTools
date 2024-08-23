@@ -330,7 +330,7 @@ end
 local function Init_All_Buttons()
     for _, itemID in pairs(Save.item) do
         local name ,icon
-        if get_Find(itemID) then
+        if not e.Player.husandr and get_Find(itemID) then
             name = C_Item.GetItemNameByID(itemID)
             icon = C_Item.GetItemIconByID(itemID)
             if name and icon then

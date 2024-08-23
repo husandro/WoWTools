@@ -83,7 +83,7 @@ local function getToy()--生成, 有效表格
     ItemsTab={}
     for itemID ,_ in pairs(Save.items) do
         e.LoadDate({id=itemID, type='item'})
-        if PlayerHasToy(itemID) then
+        if not e.Player.husandr and PlayerHasToy(itemID) then
             table.insert(ItemsTab, itemID)
         end
     end

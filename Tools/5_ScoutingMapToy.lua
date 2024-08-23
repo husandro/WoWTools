@@ -43,7 +43,7 @@ function panel:get_Use_Toy()
 
     local notFindName
     for itemID, tab in pairs(ToyTab) do
-        if PlayerHasToy(itemID) and C_ToyBox.IsToyUsable(itemID) then
+        if not e.Player.husandro and PlayerHasToy(itemID) and C_ToyBox.IsToyUsable(itemID) then
             for _, achievementID  in pairs(tab) do
                 local _, name, _, _, _, _, _, _, _, _, _, _, wasEarnedByMe= GetAchievementInfo(achievementID)
                 if name and not wasEarnedByMe then

@@ -13,14 +13,16 @@ local Buttons={}
 local itemClass={}--物品列表
 local button
 
-local function setPanelPostion()--设置按钮位置
-    button:ClearAllPoints()
-    if Save.point then
-        button:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
-    --elseif e.Player.husandro then
-      --  button:SetPoint('BOTTOMRIGHT', PetActionButton10, 'TOPRIGHT', 0, 30)
+local function setPanelPostion(isInit)--设置按钮位置
+    if isInit then
+        button.Point={button:GetPoint()}
+        if Save.point and Save.point[1] then
+            button:ClearAllPoints()
+            button:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
+        end
     else
-        WoWTools_ToolsButtonMixin:SetBottomPoint(button)
+        button:ClearAllPoints()
+        button:SetPoint(button.Point[1], button.Point[2], button.Point[3], button.Point[4], button.Point[5])
     end
 end
 
@@ -458,9 +460,9 @@ local function Init()
         e.LoadDate({id=itemID, type='item'})
     end
 
-    if Save.point then
-        setPanelPostion()--设置按钮位置
-    end
+    
+    setPanelPostion(true)--设置按钮位置
+    
 
     button:SetSize(30, 30)
 

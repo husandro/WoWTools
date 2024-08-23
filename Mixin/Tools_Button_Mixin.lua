@@ -180,6 +180,9 @@ function WoWTools_ToolsButtonMixin:SetPoint(btn, tab)
             btn:SetPoint('RIGHT', self.BottomButtons[num], 'LEFT')
         end
         self.Button.BottomBG:SetPoint('LEFT', btn)--需要，设置宽 LEFT
+
+        
+
         table.insert(self.BottomButtons, btn)
 
     else
@@ -213,8 +216,8 @@ function WoWTools_ToolsButtonMixin:SetPoint(btn, tab)
             end
             table.insert(self.LeftButtons, btn)
         end
-        
     end
+
 end
 
 
