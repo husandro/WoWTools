@@ -4823,7 +4823,8 @@
         "QUESTLINE_LOCATED_ABOVE",
         "ToggleGameMenu",
         "LE_MOUNT_JOURNAL_FILTER_COLLECTED",
-        "PLAYERSPELLS_BUTTON"
+        "PLAYERSPELLS_BUTTON",
+        "MOUNT_JOURNAL_SUMMON_RANDOM_FAVORITE_MOUNT"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

@@ -869,7 +869,7 @@ local function Set_Mount_Sub_Options(root, data)--icon,col,mountID,spellID,itemI
 
     if data.mountID then
         WoWTools_MenuMixin:OpenJournal(root, {--战团藏品
-            name='|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '设置' or SETTINGS),
+            name=e.onlyChinese and '设置' or SETTINGS,
             index=1,
             moutID=data.mountID,
         })
@@ -1252,7 +1252,10 @@ local function Init_Menu(_, root)
     function()
         C_MountJournal.SummonByID(0)
     end, {spellID=150544})
-    sub:SetTooltip(Set_Menu_Tooltip)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(e.onlyChinese and '随机召唤偏好坐骑' or MOUNT_JOURNAL_SUMMON_RANDOM_FAVORITE_MOUNT:gsub('\n', ' '), nil,nil,nil)
+    end)
+        --Set_Menu_Tooltip)
 
     sub2=sub:CreateButton('|A:bags-greenarrow:0:0|a'..(e.onlyChinese and '坐骑秀' or 'Mount show'), function()
         MountShowFrame:initMountShow()

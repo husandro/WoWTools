@@ -147,6 +147,7 @@ end
 --重置数据
 function WoWTools_MenuMixin:RestData(root, name, SetValue)
     return root:CreateButton('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT), function(data)
+        
         StaticPopup_Show('WoWTools_RestData',data.name, nil, data.SetValue)
         return MenuResponse.Open
     end, {name=name, SetValue=SetValue})
@@ -192,9 +193,9 @@ function WoWTools_MenuMixin:SetKey(root, tab)
             }
         )
     end, tab)
-    sub:SetTooltip(function(tooltip, data)
+    sub:SetTooltip(function(tooltip, description)
         tooltip:AddLine(e.onlyChinese and '设置' or SETTINGS)
-        tooltip:AddDoubleLine(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL, data.key)
+        tooltip:AddDoubleLine(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL, description.data.key)
     end)
     return sub
 end

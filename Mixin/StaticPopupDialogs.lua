@@ -29,8 +29,8 @@ local function Init()
     
 --重置, 数据
 StaticPopupDialogs['WoWTools_RestData']= {
-    text=e.addName..'|n|n%s|n|n'
-        ..(e.onlyChinese and "你想要将所有选项重置为默认状态吗？|n将会立即对所有设置生效。" or CONFIRM_RESET_SETTINGS)..'|n|n',    
+    text=e.addName..'|n|n%s|n|n|cnRED_FONT_COLOR:'
+        ..(e.onlyChinese and "你想要将所有选项重置为默认状态吗？|n将会立即对所有设置生效。" or CONFIRM_RESET_SETTINGS)..'|r|n|n',    
     button1= e.onlyChinese and '重置' or RESET,
     button2= e.onlyChinese and '取消' or CANCEL,
     OnAccept=function(_, SetValue)
@@ -214,11 +214,11 @@ StaticPopupDialogs['WoWTools_GetMapID'] = {--区域,设置对话框
             end
         end,
         EditBoxOnEnterPressed = function(self, data)
-            local parent = self:GetParent();
-            if parent.button1:IsEnabled() then
+            local p = self:GetParent();
+            if p.button1:IsEnabled() then
                 local tab, text= Get_UIMapIDs_Name(self.editBox:GetText())
-                parent.data.SetValue(self, data, tab, text)
-                parent:Hide();
+                p.data.SetValue(self, data, tab, text)
+                p:Hide();
             else
                 self:ClearFocus()
             end
@@ -260,11 +260,8 @@ StaticPopup_Show("PERKS_PROGRAM_CONFIRM_PURCHASE", product.price, markup, data);
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" then
-        if arg1== id then
-            Init()
-
-        end
+    if event == "ADDON_LOADED" and arg1== id then
+        Init()
         self:UnregisterEvent('ADDON_LOADED')
     end
 end)

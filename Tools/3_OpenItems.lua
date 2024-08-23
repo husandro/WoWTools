@@ -480,6 +480,19 @@ end
 --####
 --菜单
 --####
+local function Init_Menu()
+    if Bag.bag and Bag.slot then
+        
+    end
+end
+
+
+
+
+
+
+
+
 local function setMenuList(_, level, menuList)--主菜单
     local info={}
     if menuList=='USE' then
@@ -896,11 +909,13 @@ local function Init()
 
         local key= IsModifierKeyDown()
         if (d=='RightButton' and not key) then
-            if not self.Menu then
+            MenuUtil.CreateContextMenu(self, Init_Menu)
+            
+            --[[if not self.Menu then
                 button.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")--菜单列表
                 e.LibDD:UIDropDownMenu_Initialize(self.Menu, setMenuList, 'MENU')
             end
-            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
+            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)]]
         else
             if d=='LeftButton' and not key and equipItem and not PaperDollFrame:IsVisible() then
                 ToggleCharacter("PaperDollFrame")
