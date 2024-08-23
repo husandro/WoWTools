@@ -277,7 +277,7 @@ local Mount_Journal_Filter={--过滤, 类型, Blizzard_MountCollection.lua
 
 function WoWTools_MenuMixin:OpenJournal(root, tab)--战团藏品
     local sub=root:CreateButton(
-        tab.name or ('|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '战团藏品' or COLLECTIONS)),
+        (tab.icon or '|A:common-icon-zoomin:0:0|a')..(tab.name or (e.onlyChinese and '战团藏品' or COLLECTIONS)),
     function(data)
         if SettingsPanel:IsShown() then--ToggleGameMenu()
             SettingsPanel:Close()
