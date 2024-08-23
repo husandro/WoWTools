@@ -1457,7 +1457,7 @@ local function Init_UI_Menu(self, root)
     end
 
     root:CreateDivider()
-    WoWTools_ToolsButtonMixin:OpenMenu(root, WoWTools_ToolsButtonMixin:GetSpellItemText(spellID) or ('|T'..(icon or 0)..':0|t'..name))
+    WoWTools_ToolsButtonMixin:OpenMenu(root, WoWTools_SpellItemMixin:GetSpellItemText(spellID) or ('|T'..(icon or 0)..':0|t'..name))
 end
 
 
@@ -1875,11 +1875,11 @@ local function Init()
         local infoType, itemID, _, spellID= GetCursorInfo()
         local name, col, exits
         if infoType == "item" and itemID then
-            name, col= WoWTools_ToolsButtonMixin:GetSpellItemText(nil, itemID)
+            name, col= WoWTools_SpellItemMixin:GetSpellItemText(nil, itemID)
             exits= Save.Mounts[ITEMS][itemID] and true or false
 
         elseif infoType =='spell' and spellID then
-            name, col= WoWTools_ToolsButtonMixin:GetSpellItemText(spellID, nil)
+            name, col= WoWTools_SpellItemMixin:GetSpellItemText(spellID, nil)
             exits=Save.Mounts[SPELLS][spellID] and true or false
         end
 
@@ -1892,7 +1892,7 @@ local function Init()
                 ))
         else
             if self.typeID then
-                e.tips:AddDoubleLine(WoWTools_ToolsButtonMixin:GetSpellItemText(self.typeSpell and self.typeID, not self.typeSpell and self.typeID), (Save.KEY and '|cnGREEN_FONT_COLOR:'..Save.KEY or '')..e.Icon.left)
+                e.tips:AddDoubleLine(WoWTools_SpellItemMixin:GetSpellItemText(self.typeSpell and self.typeID, not self.typeSpell and self.typeID), (Save.KEY and '|cnGREEN_FONT_COLOR:'..Save.KEY or '')..e.Icon.left)
                 e.tips:AddLine(' ')
             end
             e.tips:AddDoubleLine(e.onlyChinese and '坐骑秀' or 'Mount show', '|A:bags-greenarrow:0:0|a')
