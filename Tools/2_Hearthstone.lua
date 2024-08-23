@@ -287,6 +287,9 @@ local function Init_Menu(self, root)
         Save.showBindName= not Save.showBindName and true or nil
         self:set_location()--显示, 炉石, 绑定位置
     end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine(ToyButton:get_location())
+    end)
 
     sub2:CreateCheckbox(e.onlyChinese and '截取名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHORT, NAME), function()
         return Save.showBindNameShort
@@ -295,7 +298,8 @@ local function Init_Menu(self, root)
         self:set_location()--显示, 炉石, 绑定位置
     end)
 
-    WoWTools_MenuMixin:ToTop(root, {--位于上方
+--位于上方
+    WoWTools_MenuMixin:ToTop(sub, {
         name=nil,
         GetValue=function()
             return Save.toFrame
@@ -847,7 +851,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             ToyButton= WoWTools_ToolsButtonMixin:CreateButton({
                 name='Hearthstone',
                 tooltip=addName,
-                setParent=Save.toFrame and true or false,
                 point=Save.toFrame and 'LEFT' or 'BOTTOM'
             })
 

@@ -115,10 +115,8 @@ end
 --初始
 --####
 local function Init()
-
-
     local name, icon, btn
-    for index, tab in pairs(Tab) do
+    for _, tab in pairs(Tab) do
         name= C_Spell.GetSpellName(tab.spell)
         icon= C_Spell.GetSpellTexture(tab.spell)
 
@@ -126,9 +124,9 @@ local function Init()
             name='MagePortal_Spell_'..tab.spell,
             tooltip='|T626001:0|t'..('|T'..(icon or 0)..':0|t')..(e.cn(name, {spellID=tab.spell, isName=true}) or tab.spell),
             setParent=true,
-            point=Save.isLeft and 'LEFT' or 'RIGHT',
-            isNewLine= index==1 and Save.isLeft,
-            isOnlyLine= true,
+            isLeftOnlyLine=function()
+                return Save.isLeftOnlyLine
+            end,
             disabledOptions=true,
         })
 
@@ -145,7 +143,7 @@ local function Init()
             end
 
             function btn:set_alpha()
-                self:SetAlpha((GameTooltip:IsOwned(self) or IsSpellKnownOrOverridesKnown(self.spellID)) and 1 or 0.1)
+                self:SetAlpha((e.Player.husandro or GameTooltip:IsOwned(self) or IsSpellKnownOrOverridesKnown(self.spellID)) and 1 or 0.1)
             end
 
             function btn:settings()
@@ -326,9 +324,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
             self:UnregisterEvent('ADDON_LOADED')
 
-            C_Timer.After(4, function()
-                WoWTools_ToolsButtonMixin:AddOptions(Init_Options)
-            end)
+            WoWTools_ToolsButtonMixin:AddOptions(Init_Options)
+            
         end
 
     elseif event == "PLAYER_LOGOUT" then

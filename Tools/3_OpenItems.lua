@@ -909,13 +909,13 @@ local function Init()
 
         local key= IsModifierKeyDown()
         if (d=='RightButton' and not key) then
-            MenuUtil.CreateContextMenu(self, Init_Menu)
+            --MenuUtil.CreateContextMenu(self, Init_Menu)
             
-            --[[if not self.Menu then
+            if not self.Menu then
                 button.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")--菜单列表
                 e.LibDD:UIDropDownMenu_Initialize(self.Menu, setMenuList, 'MENU')
             end
-            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)]]
+            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
         else
             if d=='LeftButton' and not key and equipItem and not PaperDollFrame:IsVisible() then
                 ToggleCharacter("PaperDollFrame")
@@ -1080,8 +1080,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             button= WoWTools_ToolsButtonMixin:CreateButton({
                 name='OpenItems',
                 tooltip='|A:BonusLoot-Chest2:0:0|a'..(e.onlyChinese and '打开物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, ITEMS)),
-                setParent=false,
-                point='BOTTOM'
+                point=Save.toFrame and 'LEFT' or 'BOTTOM'
             })
             if button then
                 Init()

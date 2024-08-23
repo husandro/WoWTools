@@ -220,6 +220,12 @@ local function set_Bling_Quest(self)--布林顿任务
     end
     self.quest:SetText(complete and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '完成' or COMPLETE)..'|r' or '|A:questlegendary:0:0|a')
 end
+
+
+
+
+
+
 local function init_Item_Button(self, equip)--设置按钮
     self:SetScript('OnEnter', function()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -330,14 +336,13 @@ end
 local function Init_All_Buttons()
     for _, itemID in pairs(Save.item) do
         local name ,icon
-        if not e.Player.husandr and get_Find(itemID) then
+        if e.Player.husandro or get_Find(itemID) then
             name = C_Item.GetItemNameByID(itemID)
             icon = C_Item.GetItemIconByID(itemID)
             if name and icon then
                 local btn= WoWTools_ToolsButtonMixin:CreateButton({
                     name='UsaItems_ItemID_'..itemID,
                     tooltip='|T'..icon..':0|t'..e.cn(name, {itemID=itemID, isName=true}),
-                    setParent=true,
                     point='LEFT'
                 })
                 if btn then
@@ -354,7 +359,7 @@ local function Init_All_Buttons()
 
     for _, itemID in pairs(Save.equip) do
         local name ,icon
-        if C_Item.GetItemCount(itemID)>0 then
+        if e.Player.husandro or C_Item.GetItemCount(itemID)>0 then
             name = C_Item.GetItemNameByID(itemID)
             local itemEquipLoc, icon2 = select(4, C_Item.GetItemInfoInstant(itemID))
             icon =icon2 or C_Item.GetItemIconByID(itemID)
@@ -381,7 +386,7 @@ local function Init_All_Buttons()
     end
 
     for _, spellID in pairs(Save.spell) do
-        if IsSpellKnownOrOverridesKnown(spellID) then
+        if e.Player.husandro or IsSpellKnownOrOverridesKnown(spellID) then
             local name= C_Spell.GetSpellName(spellID)
             local icon= C_Spell.GetSpellTexture(spellID)
             if name and icon then

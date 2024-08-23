@@ -13,17 +13,12 @@ local Buttons={}
 local itemClass={}--物品列表
 local button
 
-local function setPanelPostion(isInit)--设置按钮位置
-    if isInit then
-        button.Point={button:GetPoint(1)}
+local function setPanelPostion()--设置按钮位置
         if Save.point and Save.point[1] then
-            button:ClearAllPoints()
             button:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
+        else
+            button:SetPoint(button.RePoint[1], button.RePoint[2], button.RePoint[3], button.RePoint[4], button.RePoint[5])
         end
-    else
-        button:ClearAllPoints()
-        button:SetPoint(button.Point[1], button.Point[2], button.Point[3], button.Point[4], button.Point[5])
-    end
 end
 
 local function set_Item_Cooldown_Count(self)--图标冷却
@@ -424,6 +419,7 @@ end
         keepShownOnClick=true,
         func=function()
             Save.point=nil
+            button:ClearAllPoints()
             setPanelPostion()--设置按钮位置
         end,
     }
@@ -461,7 +457,7 @@ local function Init()
     end
 
     
-    setPanelPostion(true)--设置按钮位置
+    setPanelPostion()--设置按钮位置
     
 
     button:SetSize(30, 30)
@@ -486,7 +482,6 @@ local function Init()
         self:StopMovingOrSizing()
         Save.point={self:GetPoint(1)}
         Save.point[2]=nil
-        e.LibDD:CloseDropDownMenus()
     end)
     button:SetScript("OnMouseDown", function(self,d)
         if d=='RightButton' then
@@ -557,13 +552,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             button= WoWTools_ToolsButtonMixin:CreateButton({
                 name='Food',
                 tooltip='|A:Food:0:0|a'..(e.onlyChinese and '食物' or POWER_TYPE_FOOD),
-                setParent=false,
-                point='BOTTOM',
+                point='BOTTOM'
             })
 
             if button then
-                button:SetFrameStrata('HIGH')
-                
+                button.RePoint={button:GetPoint(1)}
                 button.itemID= 5512--治疗石
                 set_Button_Init(button)--提示, 事件
 

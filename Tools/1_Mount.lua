@@ -1897,7 +1897,9 @@ local function Init()
                 ))
         else
             if self.typeID then
+                --C_MountJournal.GetMountUsabilityByID(.data.mountID, true)
                 e.tips:AddDoubleLine(WoWTools_SpellItemMixin:GetSpellItemText(self.typeSpell and self.typeID, not self.typeSpell and self.typeID), (Save.KEY and '|cnGREEN_FONT_COLOR:'..Save.KEY or '')..e.Icon.left)
+               
                 e.tips:AddLine(' ')
             end
             e.tips:AddDoubleLine(e.onlyChinese and '坐骑秀' or 'Mount show', '|A:bags-greenarrow:0:0|a')
@@ -1918,9 +1920,7 @@ local function Init()
         self.elapsed=nil
     end)
 
-    MountButton:SetScript('OnEnter', function(self)
-        WoWTools_ToolsButtonMixin:EnterShowFrame()
-
+    MountButton:SetScript('OnEnter', function(self)       
         self:set_tooltips()
         self:SetScript('OnUpdate', function (s, elapsed)
             s.elapsed = (s.elapsed or 0.3) + elapsed
@@ -2124,7 +2124,6 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
             MountButton= WoWTools_ToolsButtonMixin:CreateButton({
                 name='Mount',
                 tooltip=addName,
-                setParent=Save.toFrame and true or false,
                 point=Save.toFrame and 'LEFT' or 'BOTTOM'
                 --option=function(category, layout)--initializer
             })

@@ -43,7 +43,7 @@ function panel:get_Use_Toy()
 
     local notFindName
     for itemID, tab in pairs(ToyTab) do
-        if not e.Player.husandro and PlayerHasToy(itemID) and C_ToyBox.IsToyUsable(itemID) then
+        if PlayerHasToy(itemID) and C_ToyBox.IsToyUsable(itemID) or e.Player.husandro then
             for _, achievementID  in pairs(tab) do
                 local _, name, _, _, _, _, _, _, _, _, _, _, wasEarnedByMe= GetAchievementInfo(achievementID)
                 if name and not wasEarnedByMe then
@@ -112,7 +112,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
             
-            if not e.toolsFrame.disabled then
+            --if not e.toolsFrame.disabled then
                 if not AchievementFrame then
                     AchievementFrame_LoadUI();
                 end
@@ -138,9 +138,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 panel:RegisterEvent('RECEIVED_ACHIEVEMENT_LIST')
 
                 C_Timer.After(4, self.get_Use_Toy)
-            else
-                Toy=nil
-            end
+            --else
+              --  Toy=nil
+            --end
             panel:UnregisterEvent('ADDON_LOADED')
         end
 
