@@ -1347,7 +1347,7 @@ local function Init_Menu(_, root)
 
     WoWTools_MenuMixin:OpenJournal(sub, {--战团藏品
         index=1,
-        icon='|A:hud-microbutton-Mounts-Down:0:0|a'}
+        icon='|A:hud-microbutton-Mounts-Up:0:0|a'}
     )
 
     sub2=WoWTools_ToolsButtonMixin:OpenMenu(sub, '|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '选项' or OPTIONS))
