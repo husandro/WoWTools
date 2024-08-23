@@ -64,7 +64,7 @@ function WoWTools_SpellItemMixin:GetSpellItemText(spellID, itemID)--取得，法
             if num==0 then
                 col='|cff9e9e9e'
             end
-            desc= ' x'..num
+            desc= ' x'..num..' '
         end
 
         return
