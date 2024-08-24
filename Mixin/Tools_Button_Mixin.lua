@@ -33,10 +33,14 @@ end
 
 
 function WoWTools_ToolsButtonMixin:GetParent(tab)--取得 Parent
-    if tab.parent then
+    if tab.parent then--指定
         return tab.parent
-    elseif tab.point then
-        local point= type(tab.parent)=='function' and tab.parent() or tab.parent
+
+    elseif tab.isLeftOnlyLine then--法师，左（右）
+        return self.Button.Frame
+
+    elseif tab.point then--function, Save.toFrame
+        local point= type(tab.point)=='function' and tab.parent() or tab.point
         return point=='BOTTOM' and self.Button or self.Button.Frame
     end
 end
