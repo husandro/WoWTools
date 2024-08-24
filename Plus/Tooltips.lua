@@ -2842,7 +2842,7 @@ local function Init_Panel()
     initializer= e.AddPanel_Button({
         buttonText= e.onlyChinese and '设置' or SETTINGS,
         layout= Layout,
-        func= function()
+        SetValue= function()
             set_CVar()
             print(e.onlyChinese and '设置完成' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, COMPLETE))
         end
@@ -2852,7 +2852,7 @@ local function Init_Panel()
     initializer= e.AddPanel_Button({
         buttonText= e.onlyChinese and '默认' or DEFAULT,
         layout= Layout,
-        func= function()
+        SetValue= function()
             set_CVar(true, nil, nil)
             print(e.onlyChinese and '默认完成' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DEFAULT, COMPLETE))
         end

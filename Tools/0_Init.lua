@@ -5,8 +5,10 @@ local Save={
     --disabled=true,
 
     disabledADD={},
-    AddPoint={
-
+    BottomPoint={
+        Mount=true,
+        Hearthstone=true,
+        OpenItems=true,
     },
     scale=1,
     strata='HIGH',
@@ -77,41 +79,45 @@ local function Init_Panel()
 
     for _, data in pairs (WoWTools_ToolsButtonMixin:GetAllAddList()) do
         --initializer= nil
-        if not data.isOnlyOptions then
-            print(data.name, data.tooltip)
-            e.AddPanel_Check_DropDown({
-                category=Category,
-                name=data.tooltip,
-                tooltip=data.name,
-                GetValue= function() return not Save.disabledADD[data.name] end,
-                SetValue= function()
-                    Save.disabledADD[data.name]= not Save.disabledADD[data.name] and true or nil
-                end,
+        if not data.isPlayerSetupOptions then--用户，自定义设置，选项
+            if data.isOnlyCheckBox then
+                initializer= e.AddPanel_Check({
+                    category= Category,
+                    name= data.tooltip,
+                    tooltip= data.name,
+                    GetValue= function() return not Save.disabledADD[data.name] end,
+                    SetValue= function()
+                        Save.disabledADD[data.name]= not Save.disabledADD[data.name] and true or nil
+                    end
+                })
                 
-                DropDownGetValue=function()
-                end,
-                DropDownSetValue=function(value)
-
-                end,
-                GetOptions=function()
-                    local container = Settings.CreateControlTextContainer()
-                    container:Add(1, e.onlyChinese and '位于上方' or QUESTLINE_LOCATED_ABOVE)
-                    container:Add(2, e.onlyChinese and '位于下方' or QUESTLINE_LOCATED_BELOW)
-                    return container:GetData()
-                end
-            })
-            
-            --[[
-            initializer= e.AddPanel_Check({
-                category= Category,
-                name= data.tooltip,
-                tooltip= data.name,
-                GetValue= function() return not Save.disabledADD[data.name] end,
-                SetValue= function()
-                    Save.disabledADD[data.name]= not Save.disabledADD[data.name] and true or nil
-                end
-            })
-]]
+            else
+                e.AddPanel_Check_DropDown({
+                    category=Category,
+                    layout=Layout,
+                    name=data.tooltip,
+                    tooltip=data.name,
+                    GetValue= function() return not Save.disabledADD[data.name] end,
+                    SetValue= function()
+                        Save.disabledADD[data.name]= not Save.disabledADD[data.name] and true or nil
+                    end,
+                    
+                    DropDownGetValue=function(...)
+                        return Save.BottomPoint[data.name] and 2 or 1
+                    end,
+                    DropDownSetValue=function(value)                    
+                        Save.BottomPoint[data.name]= value==2 and true or nil
+                        WoWTools_ToolsButtonMixin:SetSaveData(Save)
+                        WoWTools_ToolsButtonMixin:RestAllPoint()--重置所有按钮位置
+                    end,
+                    GetOptions=function()
+                        local container = Settings.CreateControlTextContainer()
+                        container:Add(1, '|A:bags-greenarrow:0:0|a'..(e.onlyChinese and '位于上方' or QUESTLINE_LOCATED_ABOVE))
+                        container:Add(2, '|A:Bags-padlock-authenticator:0:0|a'..(e.onlyChinese and '位于下方' or QUESTLINE_LOCATED_BELOW))
+                        return container:GetData()
+                    end
+                })
+            end
         end
         if data.option then
             data.option(Category, Layout, initializer)
@@ -403,8 +409,10 @@ panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
             Save= WoWToolsSave['WoWTools_ToolsButton'] or Save
-            Save.AddPoint= Save.AddPoint or {
-
+            Save.BottomPoint= Save.BottomPoint or {
+                Mount=true,
+                Hearthstone=true,
+                OpenItems=true,
             }
             Button= WoWTools_ToolsButtonMixin:Init(Save)
             

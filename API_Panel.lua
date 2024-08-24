@@ -303,7 +303,7 @@ function e.AddPanel_Button(tab)
     local initializer= CreateSettingsButtonInitializer(--Blizzard_SettingControls.lua
         tab.title or '',
         tab.buttonText or '',
-        tab.buttonClick,
+        tab.SetValue,
         tab.tooltip or tab.buttonText or tab.title or nil,
         Set_SearchTags_Text(tab.addSearchTags or tab.title or tab.buttonText)
     )
@@ -333,7 +333,8 @@ end
 
 --Blizzard_SettingControls.lua
 --CreateSettingsCheckboxDropdownInitializer(cbSetting, cbLabel, cbTooltip, dropdownSetting, dropdownOptions, dropDownLabel, dropDownTooltip)
-function e.AddPanel_Check_DropDown(tab)
+function e.AddPanel_Check_DropDown(tab, parentInitializer)
+    local layout= tab.layout or Layout
     local cbSetting=Settings.RegisterProxySetting(
         tab.category or Category,--categoryTbl
         Set_VariableIndex(),--variable
@@ -366,7 +367,13 @@ function e.AddPanel_Check_DropDown(tab)
 		dropDownLabel = tab.DropDownName or tab.name,
 		dropDownTooltip = tab.DropDownTooltip or tab.tooltip,
 	};
-	return Settings.CreateSettingInitializer("SettingsCheckboxDropdownControlTemplate", data);
+	local initializer= Settings.CreateSettingInitializer("SettingsCheckboxDropdownControlTemplate", data)
+    layout:AddInitializer(initializer)
+    if parentInitializer then
+        initializer:SetParentInitializer(parentInitializer)
+    end
+
+    return initializer
 end
 --[[
 e.AddPanel_Check_DropDown({
@@ -593,7 +600,7 @@ local function Init_Options()
         title= '|A:talents-button-undo:0:0|a'..(e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT),
         buttonText= '|A:QuestArtifact:0:0|a'..(e.onlyChinese and '清除全部' or REMOVE_WORLD_MARKERS ),
         addSearchTags= e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT,
-        func= function()
+        SetValue= function()
             StaticPopup_Show('WoWTools_RestData',
                 (e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT)..'|n|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
                 nil,
@@ -609,7 +616,7 @@ local function Init_Options()
         title= format('|T%d:0|t', e.Icon.wow)..(e.onlyChinese and '清除WoW数据' or 'Clear WoW data'),
         buttonText= '|A:QuestArtifact:0:0|a'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
         addSearchTags= e.onlyChinese and '清除WoW数据' or 'Clear WoW data',
-        func= function()
+        SetValue= function()
             StaticPopup_Show('WoWTools_RestData',
                 (format('|T%d:0|t', e.Icon.wow)..(e.onlyChinese and '清除WoW数据' or 'Clear WoW data'))..'|n|n|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
                 nil,

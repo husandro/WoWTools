@@ -298,7 +298,7 @@ local function Init_Menu(self, root)
         self:set_location()--显示, 炉石, 绑定位置
     end)
 
---位于上方
+--[[位于上方
     WoWTools_MenuMixin:ToTop(sub, {
         name=nil,
         GetValue=function()
@@ -311,7 +311,7 @@ local function Init_Menu(self, root)
         tooltip=nil,
         isReload=false,--重新加载UI
     })
-
+]]
 --移除未收集
     sub:CreateDivider()
     sub2=sub:CreateButton('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '移除未收集' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REMOVE, NOT_COLLECTED)), function()
@@ -839,9 +839,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             ToyButton= WoWTools_ToolsButtonMixin:CreateButton({
                 name='Hearthstone',
                 tooltip=addName,
-                point=function()
+                --[[point=function()
                     return Save.toFrame and 'LEFT' or 'BOTTOM'
-                end,
+                end,]]
             })
 
             if ToyButton then

@@ -36,12 +36,13 @@ function WoWTools_ToolsButtonMixin:GetParent(tab)--取得 Parent
     if tab.parent then--指定
         return tab.parent
 
-    elseif tab.isLeftOnlyLine then--法师，左（右）
+    elseif tab.isLeftOnlyLine--法师，左（右）
+        or not self.Save.BottomPoint[tab.name]--选项，自定义，
+    then
         return self.Button.Frame
 
-    elseif tab.point then--function, Save.toFrame
-        local point= type(tab.point)=='function' and tab.point() or tab.point
-        return point=='BOTTOM' and self.Button or self.Button.Frame
+    else
+        return self.Button
     end
 end
 
@@ -342,9 +343,9 @@ function WoWTools_ToolsButtonMixin:RestAllPoint()
 end
 
 
-
+--用户，自定义设置，选项
 function WoWTools_ToolsButtonMixin:AddOptions(option)
-    table.insert(self.AddList, {isOnlyOptions=true, option=option})
+    table.insert(self.AddList, {isPlayerSetupOptions=true, option=option})
 end
 
 function WoWTools_ToolsButtonMixin:GetAllAddList()

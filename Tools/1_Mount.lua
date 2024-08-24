@@ -1339,7 +1339,7 @@ local function Init_Menu(_, root)
         end,
     })
 
---位于上方
+--[[位于上方
     WoWTools_MenuMixin:ToTop(sub, {
         name=nil,
         GetValue=function()
@@ -1352,7 +1352,7 @@ local function Init_Menu(_, root)
         tooltip=nil,
         isReload=false,--重新加载UI
     })
-    
+    ]]
 --全部重置
     WoWTools_MenuMixin:RestData(sub,
         addName..'|n|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
@@ -2141,9 +2141,9 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
             MountButton= WoWTools_ToolsButtonMixin:CreateButton({
                 name='Mount',
                 tooltip=addName,
-                point=function()
+                --[[point=function()
                     return Save.toFrame and 'LEFT' or 'BOTTOM'
-                end,
+                end,]]
                 --option=function(category, layout)--initializer
             })
 
