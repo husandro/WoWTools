@@ -1298,6 +1298,7 @@ local function Init_Menu(_, root)
         tooltip:AddDoubleLine(SLASH_CHAT_AFK1)
     end)
 
+--间隔
     sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
         getValue=function()
@@ -1315,8 +1316,8 @@ local function Init_Menu(_, root)
         end
     })
 
+--设置捷键
     sub:CreateSpacer()
-
     local text2, num2= WoWTools_MenuMixin:GetDragonriding()--驭空术
     WoWTools_MenuMixin:SetKey(sub, {
         icon='|A:NPE_ArrowDown:0:0|a',
@@ -1338,6 +1339,20 @@ local function Init_Menu(_, root)
         end,
     })
 
+--位于上方
+    WoWTools_MenuMixin:ToTop(sub, {
+        name=nil,
+        GetValue=function()
+            return Save.toFrame
+        end,
+        SetValue=function()
+            Save.toFrame = not Save.toFrame and true or nil
+        end,
+        tooltip=nil,
+        isReload=false,--重新加载UI
+    })
+    
+--全部重置
     WoWTools_MenuMixin:RestData(sub,
         addName..'|n|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
         function()
@@ -1346,18 +1361,18 @@ local function Init_Menu(_, root)
         end
     )
 
+--驭空术
     sub:CreateDivider()
-    
-    WoWTools_MenuMixin:OpenDragonriding(sub)--驭空术
+    WoWTools_MenuMixin:OpenDragonriding(sub)
 
-    WoWTools_MenuMixin:OpenJournal(sub, {--战团藏品
+--战团藏品
+    WoWTools_MenuMixin:OpenJournal(sub, {
         index=1,
         icon='|A:hud-microbutton-Mounts-Up:0:0|a'}
     )
 
+--选项
     sub2=WoWTools_ToolsButtonMixin:OpenMenu(sub, '|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '选项' or OPTIONS))
-    
-   
 end
 
 
@@ -1920,7 +1935,8 @@ local function Init()
         self.elapsed=nil
     end)
 
-    MountButton:SetScript('OnEnter', function(self)       
+    MountButton:SetScript('OnEnter', function(self)
+        WoWTools_ToolsButtonMixin:EnterShowFrame(self)
         self:set_tooltips()
         self:SetScript('OnUpdate', function (s, elapsed)
             s.elapsed = (s.elapsed or 0.3) + elapsed

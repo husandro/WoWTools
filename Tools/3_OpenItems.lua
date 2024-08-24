@@ -814,15 +814,16 @@ local function Init()
 
 
     button:SetScript("OnEnter",  function(self)
+        WoWTools_ToolsButtonMixin:EnterShowFrame(self)
         self:set_tooltips()
-        self:SetScript('OnUpdate', function (self, elapsed)
-            self.elapsed = (self.elapsed or 0.3) + elapsed
-            if self.elapsed > 0.3 then
-                self.elapsed = 0
-                if Bag.bag and Bag.slot and GameTooltip:IsOwned(self) then
+        self:SetScript('OnUpdate', function (s, elapsed)
+            s.elapsed = (s.elapsed or 0.3) + elapsed
+            if s.elapsed > 0.3 then
+                s.elapsed = 0
+                if Bag.bag and Bag.slot and GameTooltip:IsOwned(s) then
                     local itemID= C_Container.GetContainerItemID(Bag.bag, Bag.slot)
                     if itemID~=select(3, GameTooltip:GetItem()) then
-                        self:set_tooltips()
+                        s:set_tooltips()
                     end
                 end
             end

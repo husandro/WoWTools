@@ -13,13 +13,6 @@ local Buttons={}
 local itemClass={}--物品列表
 local button
 
-local function setPanelPostion()--设置按钮位置
-        if Save.point and Save.point[1] then
-            button:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
-        else
-            button:SetPoint(button.RePoint[1], button.RePoint[2], button.RePoint[3], button.RePoint[4], button.RePoint[5])
-        end
-end
 
 local function set_Item_Cooldown_Count(self)--图标冷却
     if self.itemID then
@@ -419,8 +412,7 @@ end
         keepShownOnClick=true,
         func=function()
             Save.point=nil
-            button:ClearAllPoints()
-            setPanelPostion()--设置按钮位置
+            button:set_point()
         end,
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -456,11 +448,24 @@ local function Init()
         e.LoadDate({id=itemID, type='item'})
     end
 
-    
-    setPanelPostion()--设置按钮位置
+    button.RePoint={button:GetPoint(1)}
+
+    function button:set_point()
+        self:ClearAllPoints()
+        if Save.point then
+            self:SetParent(UIParent)
+            self:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
+        else
+            self:SetParent(WoWTools_ToolsButtonMixin:GetButton())
+            self:setPoint(self.RePoint[1], self.RePoint[2], self.RePoint[3], self.RePoint[4], self.RePoint[5])
+        end
+    end
+    if Save.point then
+        button:set_point()
+    end
     
 
-    button:SetSize(30, 30)
+    
 
     set_Button_Init(button)--提示, 事件
 
@@ -552,11 +557,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             button= WoWTools_ToolsButtonMixin:CreateButton({
                 name='Food',
                 tooltip='|A:Food:0:0|a'..(e.onlyChinese and '食物' or POWER_TYPE_FOOD),
-                point='BOTTOM'
+                point='BOTTOM',
+                isMoveButton=true,
+                SavePoint=Save.point,
             })
 
             if button then
-                button.RePoint={button:GetPoint(1)}
+                
+
                 button.itemID= 5512--治疗石
                 set_Button_Init(button)--提示, 事件
 

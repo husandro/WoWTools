@@ -6,6 +6,7 @@ end
 local Tab
 if e.Player.faction=='Horde' then--部落
     Tab={
+        {spell=446540, spell2=446534, name='多恩诺嘉尔', luce=true},
         {spell=3567, spell2=11417, name='奥格瑞玛', luce=true,},
         {spell=3563, spell2=11418, name='幽暗城'},
         {spell=3566, spell2=11420, name='雷霆崖'},
@@ -19,13 +20,13 @@ if e.Player.faction=='Horde' then--部落
         {spell=224869, spell2=224871, name='破碎群岛'},
         {spell=281404, spell2=281402, name='达萨罗'},
         {spell=344587, spell2=344597, name='奥利波斯'},
-        {spell=395277, spell2=395289,  name='瓦德拉肯'},
-        {spell=446540, spell2=446534, name='多恩诺嘉尔', luce=true},
+        {spell=395277, spell2=395289,  name='瓦德拉肯'},        
         {spell=120145, name='远古传送'},
         {spell=193759, name='守护者圣殿'},
     }
 elseif e.Player.faction=='Alliance' then
     Tab={
+        {spell=446540, spell2=446534, name='多恩诺嘉尔', luce=true},
         {spell=3561, spell2=10059,  name='暴风城', luce=true,},
         {spell=3562, spell2=11416, name='铁炉堡'},
         {spell=3565, spell2=11419, name='达纳苏斯'},
@@ -39,8 +40,7 @@ elseif e.Player.faction=='Alliance' then
         {spell=224869, spell2=224871, name='破碎群岛'},
         {spell=281403, spell2=281400, name='伯拉勒斯'},
         {spell=344587, spell2=344597, name='奥利波斯'},
-        {spell=395277, spell2=395289,  name='瓦德拉肯'},
-        {spell=446540, spell2=446534, name='多恩诺嘉尔', luce=true},
+        {spell=395277, spell2=395289,  name='瓦德拉肯'},        
         {spell=120145, name='远古传送'},
         {spell=193759, name='守护者圣殿'},
     }
@@ -123,9 +123,8 @@ local function Init()
         btn=WoWTools_ToolsButtonMixin:CreateButton({
             name='MagePortal_Spell_'..tab.spell,
             tooltip='|T626001:0|t'..('|T'..(icon or 0)..':0|t')..(e.cn(name, {spellID=tab.spell, isName=true}) or tab.spell),
-            setParent=true,
             isLeftOnlyLine=function()
-                return Save.isLeftOnlyLine
+                return Save.isLeft
             end,
             disabledOptions=true,
         })
@@ -306,19 +305,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if not Save.disabled and  WoWTools_ToolsButtonMixin:GetButton() then
                 addName= '|T626001:0|t|cff3fc6ea'..(e.onlyChinese and '法师传送门' or format(UNITNAME_SUMMON_TITLE14, UnitClass('player'))..'|r')
-
-                if Save.isLeft then
-                    C_Timer.After(4, function()
-                        if UnitAffectingCombat('player') then
-                            self:RegisterEvent('PLAYER_REGEN_ENABLED')
-                        else
-                            Init()
-                        end
-                    end)
-                else
-                    Init()
-                end
-
+                Init()
             else
                 Tab=nil
             end

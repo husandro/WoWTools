@@ -634,13 +634,14 @@ local function Init()
         self.elapsed=nil
     end)
     button:SetScript("OnEnter", function(self)
+        WoWTools_ToolsButtonMixin:EnterShowFrame(self)
         self:set_tooltips()
-        self:SetScript('OnUpdate', function (self, elapsed)
-            self.elapsed = (self.elapsed or 0.3) + elapsed
-            if self.elapsed > 0.3 and self.itemID then
-                self.elapsed = 0
-                if GameTooltip:IsOwned(self) and select(3, GameTooltip:GetItem())~=self.itemID then
-                    self:set_tooltips()
+        self:SetScript('OnUpdate', function (s, elapsed)
+            s.elapsed = (s.elapsed or 0.3) + elapsed
+            if s.elapsed > 0.3 and s.itemID then
+                s.elapsed = 0
+                if GameTooltip:IsOwned(s) and select(3, GameTooltip:GetItem())~=s.itemID then
+                    s:set_tooltips()
                 end
             end
         end)

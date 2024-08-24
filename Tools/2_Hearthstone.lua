@@ -308,22 +308,8 @@ local function Init_Menu(self, root)
             Save.toFrame = not Save.toFrame and true or nil
         end,
         tooltip=nil,
-        isReload=true,--重新加载UI
+        isReload=false,--重新加载UI
     })
---[[
-    sub2=sub:CreateCheckbox(e.onlyChinese and '位于上方' or QUESTLINE_LOCATED_ABOVE, function()
-        return Save.toFrame
-    end, function()
-        Save.toFrame = not Save.toFrame and true or nil
-    end)
-    sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine(e.onlyChinese and '收起选项 |A:editmode-up-arrow:16:11:0:3|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS)
-        tooltip:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-    end)
-
---重新加载UI
-    WoWTools_MenuMixin:Reload(sub2)--重新加载UI
-]]
 
 --移除未收集
     sub:CreateDivider()
@@ -678,6 +664,7 @@ local function Init()
 
 
     ToyButton:SetScript("OnEnter",function(self)
+        WoWTools_ToolsButtonMixin:EnterShowFrame(self)
         self:set_tooltips()
         self:SetScript('OnUpdate', function (s, elapsed)
             s.elapsed = (s.elapsed or 0.3) + elapsed

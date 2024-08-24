@@ -191,6 +191,9 @@ local function Init_Menu(self, root)
         Save.point=nil
         self:set_point()
     end)
+
+--重新加载UI
+    WoWTools_MenuMixin:Reload(root, false)
 end
 
 
@@ -280,7 +283,7 @@ local function Init()
     end)
 
     Button:SetScript('OnEnter', function(self)
-        WoWTools_ToolsButtonMixin:EnterShowFrame()
+        WoWTools_ToolsButtonMixin:EnterShowFrame(self)
         self:set_tooltip()
     end)
 
