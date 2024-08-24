@@ -33,9 +33,13 @@ end
 
 
 function WoWTools_ToolsButtonMixin:GetParent(tab)--取得 Parent
-    return tab.parent or (tab.point=='BOTTOM' and self.Button) or self.Button.Frame
+    if tab.parent then
+        return tab.parent
+    elseif tab.point then
+        local point= type(tab.parent)=='function' and tab.parent() or tab.parent
+        return point=='BOTTOM' and self.Button or self.Button.Frame
+    end
 end
-
 
 
 
@@ -287,6 +291,7 @@ function WoWTools_ToolsButtonMixin:RestAllPoint()
     if UnitAffectingCombat('player') then
         return
     end
+    self.leftNewLineButton=nil
     local buttons={}
     do
         for _, btn in pairs(self.LeftButtons) do
@@ -297,11 +302,11 @@ function WoWTools_ToolsButtonMixin:RestAllPoint()
             btn:ClearAllPoints()
             table.insert(buttons, btn)
         end
-        for _, btn in pairs(self.LeftButtons) do
+        for _, btn in pairs(self.RightButtons) do
             btn:ClearAllPoints()
             table.insert(buttons, btn)
         end
-        for _, btn in pairs(self.LeftButtons) do
+        for _, btn in pairs(self.BottomButtons) do
             btn:ClearAllPoints()
             table.insert(buttons, btn)
         end
@@ -323,8 +328,9 @@ function WoWTools_ToolsButtonMixin:RestAllPoint()
         self:SetBottomPoint(self.Button.BottomFrame)
     end
 
-    self.leftNewLineButton=nil
+    
     table.sort(buttons, function(a, b) return a:GetID()< b:GetID() end)
+
     for _, btn in pairs(buttons) do
         btn:SetParent(self:GetParent(btn:GetData()))
         self:SetPoint(btn, btn:GetData())        
