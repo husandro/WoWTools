@@ -155,7 +155,10 @@ end
 
 --重新加载UI
 function WoWTools_MenuMixin:Reload(root, isControlKeyDown)
-    local sub=root:CreateButton('|TInterface\\Vehicles\\UI-Vehicles-Button-Exit-Up:0|t'..(UnitAffectingCombat('player') and '|cff9e9e9e' or '')..(e.onlyChinese and '重新加载UI' or RELOADUI),
+    local sub=root:CreateButton(
+        '|TInterface\\Vehicles\\UI-Vehicles-Button-Exit-Up:0|t'
+        ..((UnitAffectingCombat('player') or e.IsEncouter_Start) and IsInInstance() and '|cff9e9e9e' or '')
+        ..(e.onlyChinese and '重新加载UI' or RELOADUI),
     function(data)
         if data and IsControlKeyDown() or not data then
             e.Reload()

@@ -889,7 +889,7 @@ local function Init_Add_Reload_Button()
                 e.tips:AddDoubleLine(e.onlyChinese and '重新加载UI' or RELOADUI, '|cnGREEN_FONT_COLOR:'..SLASH_RELOAD1)
                 e.tips:Show()
             end)
-            frame.reload:SetScript('OnClick', e.Reload)
+            frame.reload:SetScript('OnClick', function() e.Reload() end)
             Create_Texture_Tips(frame.reload, 'BattleBar-SwapPetIcon')
         end
     --end
@@ -922,7 +922,9 @@ local function Init_Add_Reload_Button()
 
             self:AddSection()
 
-            local btn = self:AddButton(e.onlyChinese and '重新加载UI' or RELOADUI, e.Reload)
+            local btn = self:AddButton(e.onlyChinese and '重新加载UI' or RELOADUI, function()
+                e.Reload()
+            end)
             Create_Texture_Tips(btn, {'BattleBar-SwapPetIcon', false, {1,1,1}})
         end)
     end
@@ -1262,10 +1264,7 @@ local function Init_Menu(_, root)
     end)
 
     root:CreateDivider()
-    sub=root:CreateButton('|TInterface\\Vehicles\\UI-Vehicles-Button-Exit-Up:0|t'..(e.onlyChinese and '重新加载UI' or RELOADUI), e.Reload)
-    sub:SetTooltip(function(tooltip)
-        GameTooltip_AddNormalLine(tooltip, SLASH_RELOAD1)
-    end)
+    sub=WoWTools_MenuMixin:Reload(root, false)
 
     tre=sub:CreateCheckbox(e.onlyChinese and '添加按钮' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, 'Button'), function ()
         return not Save.not_Add_Reload_Button

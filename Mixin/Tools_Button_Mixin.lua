@@ -42,7 +42,7 @@ function WoWTools_ToolsButtonMixin:SetOnlyLeftPoint(objective)
     objective:SetPoint('BOTTOMRIGHT', self.Button.BG2, 'BOTTOMLEFT')
 end
 function WoWTools_ToolsButtonMixin:SetOnlyRightPoint(objective)
-    objective:SetPoint('BOTTOMLEFT', self.Button, 'TOPRIGHT', 0, 30 )
+    objective:SetPoint('BOTTOMLEFT', self.Button, 'TOPRIGHT')
 end
 
 function WoWTools_ToolsButtonMixin:Init(save)
@@ -120,6 +120,7 @@ WoWTools_ToolsButtonMixin:CreateButton({
 function WoWTools_ToolsButtonMixin:Create(tab)
 
     local btn= CreateFrame("Button",
+--设置 名称
         'WoWTools_Tools_'..tab.name,
 --设置 Parent,
         tab.parent or (tab.point=='BOTTOM' and self.Button) or self.Button.Frame,
@@ -156,11 +157,12 @@ function WoWTools_ToolsButtonMixin:Create(tab)
     e.Set_Label_Texture_Color(btn.border, {type='Texture', 0.5})
     return btn
 end
+
+
 --[[
 WoWTools_ToolsButtonMixin:Create({
 name='',
 parent=nil,--Frame or UIPrent
-point=nil,--LEFT BOTTOM
 })
 ]]
 
@@ -217,6 +219,12 @@ function WoWTools_ToolsButtonMixin:SetPoint(btn, tab)
             local num=#self.BottomButtons
             if num==0 then
                 self:SetBottomPoint(btn)
+--为显示/隐藏Frame用
+                self.IsShownFrameEnter=true
+                
+                    
+                    WoWTools_ToolsButtonMixin:EnterShowFrame()
+                
             else
                 btn:SetPoint('RIGHT', self.BottomButtons[num], 'LEFT')
             end
@@ -231,9 +239,7 @@ function WoWTools_ToolsButtonMixin:SetPoint(btn, tab)
                 self.leftNewLineButton=btn
                 self.Button.LeftBG:SetPoint('TOP', btn)
                 self.Button.LeftBG:SetPoint('LEFT', btn)
-                btn:HookScript('OnEnter', function()
-                    WoWTools_ToolsButtonMixin:EnterShowFrame()
-                end)
+
                 
             else
                 local numLine= self.Save.lineNum or 10

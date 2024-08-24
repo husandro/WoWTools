@@ -75,7 +75,7 @@ function e.ReloadPanel(tab)
         reload:SetNormalTexture('Interface\\Vehicles\\UI-Vehicles-Button-Exit-Up')
         reload:SetPushedTexture('Interface\\Vehicles\\UI-Vehicles-Button-Exit-Down')
         reload:SetPoint('TOPLEFT',-12, 8)
-        reload:SetScript('OnClick', e.Reload)
+        reload:SetScript('OnClick', function() e.Reload() end)
         reload.addName=tab.addName
         reload:SetScript('OnLeave', GameTooltip_Hide)
         reload:SetScript('OnEnter', function(self)
