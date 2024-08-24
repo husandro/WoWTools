@@ -48,27 +48,60 @@ else
     return
 end
 
-
-
-
-
-
-
-
 local addName
-
 local Save={
     isLeft=true,
     showText=true,
     --disabled
 }
 
+local Buttons
 
 
 for _, tab in pairs(Tab) do
     e.LoadDate({id=tab.spell, type='spell'})
     e.LoadDate({id=tab.spell2, type='spell'})
 end
+
+
+local function Get_Spell_Label(spellID, text)
+    if text then
+        text= e.cn(text, {spellID=spellID, isName=true})
+        text=text:gsub('(.+):','')
+        text=text:gsub('(.+)：','');
+        text=text:gsub('(.+)-','');
+        return text
+    end
+end
+
+
+
+
+
+local function Set_Button_Label(btn) 
+    if Save.showText then
+        if not btn.text then
+            btn.text=e.Cstr(btn, {color= not btn.luce})
+        end
+        btn.text:ClearAllPoints(0)
+        if Save.isLeft then
+            btn.text:SetPoint('RIGHT', btn, 'LEFT')
+        else
+            btn.text:SetPoint('LEFT', btn, 'RIGHT')
+        end
+        btn.text:SetText(btn.name1 or '')
+    elseif btn.text then
+        btn.text:SetText('')
+    end
+end
+
+function Set_Button_All_Label()
+    for _, btn in pairs( Buttons) do
+        Set_Button_Label(btn)
+    end
+end
+
+
 
 
 
@@ -92,6 +125,8 @@ local function Init_Options(category, layout)
         GetValue= function() return Save.isLeft end,
         SetValue= function()
             Save.isLeft= not Save.isLeft and true or nil
+            WoWTools_ToolsButtonMixin:RestAllPoint()--重置所有按钮位置
+            Set_Button_All_Label()
         end
     }, initializer)
 
@@ -102,6 +137,7 @@ local function Init_Options(category, layout)
         GetValue= function() return Save.showText end,
         SetValue= function()
             Save.showText= not Save.showText and true or nil
+            Set_Button_All_Label()
         end
     }, initializer)
 
@@ -115,6 +151,8 @@ end
 --初始
 --####
 local function Init()
+    Buttons={}
+
     local name, icon, btn
     for _, tab in pairs(Tab) do
         name= C_Spell.GetSpellName(tab.spell)
@@ -132,6 +170,8 @@ local function Init()
         if btn then
             btn.spellID= tab.spell
             btn.spellID2= tab.spell2
+            btn.luce= tab.luce
+            btn.name1= e.onlyChinese and tab.name
 
             function btn:set_cool()
                 if self:IsVisible() then
@@ -155,14 +195,7 @@ local function Init()
                     if icon1 then
                         self.texture:SetTexture(icon1)
                     end
-
-                    if not e.onlyChinese and self.text then
-                        name1= e.cn(name1, {spellID=self.spellID, isName=true})
-                        name1=name1:gsub('(.+):','')
-                        name1=name1:gsub('(.+)：','');
-                        name1=name1:gsub('(.+)-','');
-                        self.text:SetText(name1)
-                    end
+                    self.name1= self.name1 or Get_Spell_Label(self.spellID, name1)
                     done=true
                 end
 
@@ -173,15 +206,17 @@ local function Init()
                         self:SetAttribute('type2', 'spell')
                         self:SetAttribute('spell2', name2)
                         self.texture2:SetTexture(icon2)
+                        self.name2= self.name2 or name2
                         done=true
                     else
                         done=false
                     end
                 end
+                Set_Button_Label(self)
                 return done
             end
 
-            if Save.showText then
+            --[[if Save.showText then
                 btn.text=e.Cstr(btn, {color= not tab.luce})
                 if Save.isLeft then
                     btn.text:SetPoint('RIGHT', btn, 'LEFT')
@@ -191,12 +226,13 @@ local function Init()
                 if e.onlyChinese then
                     btn.text:SetText(tab.name)
                 end
-            end
+            end]]
 
             if tab.luce then
                 btn.border:SetAtlas('bag-border')--设置高亮
             end
-
+            btn.luce= tab.luce
+           
           
             if btn.spellID2 then                
                 btn.texture2= btn:CreateTexture(nil,'OVERLAY')
@@ -276,6 +312,7 @@ local function Init()
                 btn:RegisterEvent('SPELL_DATA_LOAD_RESULT')
             end
             btn:set_alpha()
+            table.insert(Buttons, btn)
         end
     end
 

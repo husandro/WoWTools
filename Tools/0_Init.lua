@@ -5,6 +5,9 @@ local Save={
     --disabled=true,
 
     disabledADD={},
+    AddPoint={
+
+    },
     scale=1,
     strata='HIGH',
     height=10,
@@ -17,6 +20,7 @@ local Save={
     --show=false,
     --point
     --showBackgroud
+   
 }
 
 
@@ -72,22 +76,42 @@ local function Init_Panel()
     e.AddPanel_Header(Layout, e.onlyChinese and '选项: 需要重新加载' or (OPTIONS..': '..REQUIRES_RELOAD))
 
     for _, data in pairs (WoWTools_ToolsButtonMixin:GetAllAddList()) do
-        initializer= nil
+        --initializer= nil
         if not data.isOnlyOptions then
-            if data.RestValue then
-
+            print(data.name, data.tooltip)
+            e.AddPanel_Check_DropDown({
+                category=Category,
+                name=data.tooltip,
+                tooltip=data.name,
+                GetValue= function() return not Save.disabledADD[data.name] end,
+                SetValue= function()
+                    Save.disabledADD[data.name]= not Save.disabledADD[data.name] and true or nil
+                end,
                 
-            else
-                initializer= e.AddPanel_Check({
-                    category= Category,
-                    name= data.tooltip,
-                    tooltip= data.name,
-                    GetValue= function() return not Save.disabledADD[data.name] end,
-                    SetValue= function()
-                        Save.disabledADD[data.name]= not Save.disabledADD[data.name] and true or nil
-                    end
-                })
-            end
+                DropDownGetValue=function()
+                end,
+                DropDownSetValue=function(value)
+
+                end,
+                GetOptions=function()
+                    local container = Settings.CreateControlTextContainer()
+                    container:Add(1, e.onlyChinese and '位于上方' or QUESTLINE_LOCATED_ABOVE)
+                    container:Add(2, e.onlyChinese and '位于下方' or QUESTLINE_LOCATED_BELOW)
+                    return container:GetData()
+                end
+            })
+            
+            --[[
+            initializer= e.AddPanel_Check({
+                category= Category,
+                name= data.tooltip,
+                tooltip= data.name,
+                GetValue= function() return not Save.disabledADD[data.name] end,
+                SetValue= function()
+                    Save.disabledADD[data.name]= not Save.disabledADD[data.name] and true or nil
+                end
+            })
+]]
         end
         if data.option then
             data.option(Category, Layout, initializer)
@@ -379,9 +403,11 @@ panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
             Save= WoWToolsSave['WoWTools_ToolsButton'] or Save
+            Save.AddPoint= Save.AddPoint or {
 
+            }
             Button= WoWTools_ToolsButtonMixin:Init(Save)
-
+            
             if Button  then
                 Init()
             end

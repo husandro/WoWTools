@@ -4824,7 +4824,9 @@
         "ToggleGameMenu",
         "LE_MOUNT_JOURNAL_FILTER_COLLECTED",
         "PLAYERSPELLS_BUTTON",
-        "MOUNT_JOURNAL_SUMMON_RANDOM_FAVORITE_MOUNT"
+        "MOUNT_JOURNAL_SUMMON_RANDOM_FAVORITE_MOUNT",
+        "CreateSettingsCheckboxDropdownInitializer",
+        "QUESTLINE_LOCATED_BELOW"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

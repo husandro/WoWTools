@@ -35,6 +35,7 @@ Mixin\EditBox_Mixin.lua
 Mixin\Random_Mixin.lua
 Mixin\Load_UI_Mixin.lua
 Mixin\Spell_Item_Mixin.lua
+
 ##Mixin\ItemLocation_Mixin.lua
 
 ##WoWPlus

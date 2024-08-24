@@ -299,14 +299,14 @@ end
 --添加，按钮
 --CreateSettingsButtonInitializer(name, buttonText, buttonClick, tooltip, addSearchTags)
 function e.AddPanel_Button(tab)
-    local title= tab.title or ''
-    local buttonText= tab.buttonText or ''
-    local buttonClick= tab.func
-    local tooltip= tab.tooltip or tab.buttonText or tab.title or nil
     local layout= tab.layout or Layout
-    local addSearchTags= Set_SearchTags_Text(tab.addSearchTags or tab.title or tab.buttonText)
-
-    local initializer= CreateSettingsButtonInitializer(title, buttonText, buttonClick, tooltip, addSearchTags)--Blizzard_SettingControls.lua
+    local initializer= CreateSettingsButtonInitializer(--Blizzard_SettingControls.lua
+        tab.title or '',
+        tab.buttonText or '',
+        tab.buttonClick,
+        tab.tooltip or tab.buttonText or tab.title or nil,
+        Set_SearchTags_Text(tab.addSearchTags or tab.title or tab.buttonText)
+    )
 	layout:AddInitializer(initializer)
     return initializer
 end
@@ -314,7 +314,7 @@ end
 
 --添加，下拉菜单
 function e.AddPanel_DropDown(tab)
-    local setting= Settings.RegisterProxySetting(
+    local setting= Settings.RegisterProxySetting(--categoryTbl, variable, variableType, name, defaultValue, getValue, setValue
         tab.category or Category,
         Set_VariableIndex(),
         Settings.VarType.Number,
@@ -323,13 +323,75 @@ function e.AddPanel_DropDown(tab)
         tab.GetValue,
         tab.SetValue or tab.func
     )
-    return Settings.CreateDropdown(
+    return Settings.CreateDropdown(--setting, options, tooltip
             tab.category or Category,
             setting,
             tab.GetOptions,
             tab.tooltip
         )
 end
+
+--Blizzard_SettingControls.lua
+--CreateSettingsCheckboxDropdownInitializer(cbSetting, cbLabel, cbTooltip, dropdownSetting, dropdownOptions, dropDownLabel, dropDownTooltip)
+function e.AddPanel_Check_DropDown(tab)
+    local cbSetting=Settings.RegisterProxySetting(
+        tab.category or Category,--categoryTbl
+        Set_VariableIndex(),--variable
+        Settings.VarType.Boolean,--variableType
+        tab.name,--name
+        tab.GetValue(),--defaultValue
+        tab.GetValue,--getValue
+        tab.SetValue or tab.func--setValue
+    )
+
+    local dropdownSetting= Settings.RegisterProxySetting(--categoryTbl, variable, variableType, name, defaultValue, getValue, setValue
+        tab.category or Category,
+        Set_VariableIndex(),
+        Settings.VarType.Number,
+        tab.name,
+        tab.DropDownGetValue(),
+        tab.DropDownGetValue,
+        tab.DropDownSetValue
+    )
+
+	local data =
+	{
+		name = tab.name,
+		tooltip = tab.tooltip,
+		cbSetting = cbSetting,
+		cbLabel = tab.CheckBoxName or tab.name,
+		cbTooltip = tab.CheckBoxTooltip or tab.tooltip,
+		dropdownSetting = dropdownSetting,
+		dropdownOptions = tab.GetOptions,
+		dropDownLabel = tab.DropDownName or tab.name,
+		dropDownTooltip = tab.DropDownTooltip or tab.tooltip,
+	};
+	return Settings.CreateSettingInitializer("SettingsCheckboxDropdownControlTemplate", data);
+end
+--[[
+e.AddPanel_Check_DropDown({
+category=,
+name=,
+tooltip=,
+GetValue=function()
+end,
+SetValue=function(value)
+end,
+
+DropDownGetValue=function()
+end,
+DropDownSetValue=function(value)
+end,
+GetOptions=function()
+    local container = Settings.CreateControlTextContainer()
+    container:Add(1, e.onlyChinese and '位于上方' or QUESTLINE_LOCATED_ABOVE)
+    container:Add(2, e.onlyChinese and '位于下方' or QUESTLINE_LOCATED_BELOW)
+    return container:GetData()
+end
+})
+]]
+
+
 
 
 
