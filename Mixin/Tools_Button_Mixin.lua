@@ -40,7 +40,7 @@ function WoWTools_ToolsButtonMixin:GetParent(tab)--取得 Parent
         return self.Button.Frame
 
     elseif tab.point then--function, Save.toFrame
-        local point= type(tab.point)=='function' and tab.parent() or tab.point
+        local point= type(tab.point)=='function' and tab.point() or tab.point
         return point=='BOTTOM' and self.Button or self.Button.Frame
     end
 end

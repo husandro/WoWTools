@@ -306,6 +306,7 @@ local function Init_Menu(self, root)
         end,
         SetValue=function()
             Save.toFrame = not Save.toFrame and true or nil
+            WoWTools_ToolsButtonMixin:RestAllPoint()--重置所有按钮位置
         end,
         tooltip=nil,
         isReload=false,--重新加载UI
@@ -838,7 +839,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             ToyButton= WoWTools_ToolsButtonMixin:CreateButton({
                 name='Hearthstone',
                 tooltip=addName,
-                point=Save.toFrame and 'LEFT' or 'BOTTOM'
+                point=function()
+                    return Save.toFrame and 'LEFT' or 'BOTTOM'
+                end,
             })
 
             if ToyButton then
