@@ -172,6 +172,9 @@ local function Init_Menu(self, root)
         tooltip:AddLine(e.GetShowHide(nil, true))
     end)
 
+
+
+
     WoWTools_MenuMixin:Scale(sub, function()
         return Save.scale
     end, function(data)

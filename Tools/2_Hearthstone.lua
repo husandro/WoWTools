@@ -299,7 +299,7 @@ local function Init_Menu(self, root)
     end)
 
 --位于上方
-    WoWTools_MenuMixin:ToTop(sub, {
+    --[[WoWTools_MenuMixin:ToTop(root, {
         name=nil,
         GetValue=function()
             return Save.toFrame
@@ -309,7 +309,7 @@ local function Init_Menu(self, root)
         end,
         tooltip=nil,
         isReload=false,--重新加载UI
-    })
+    })]]
 
 --移除未收集
     sub:CreateDivider()

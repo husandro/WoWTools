@@ -56,31 +56,6 @@ function WoWTools_ToolsButtonMixin:Init(save)
     self.Button.BottomFrame= self:CreateBackgroundFrame(self.Button, 'WoWTools_ButtomFrame')
     self.Button.BottomFrame:SetPoint('BOTTOMRIGHT', self.Button, 'TOPRIGHT')
 
-    --[[self:SetLeftPoint(self.Button.LeftFrame)
-    self.Button.LeftBG=self:SetBackground(self.Button.LeftFrame, nil, true)
-    self.Button.LeftBG:SetAllPoints()
-    --self:SetLeftPoint(self.Button.LeftBG)
-    
-    --self.Button.LeftBG:SetSize(1,1)
-
-    --需要，设置宽 LEFT
-    self.Button.BottomBG=self:SetBackground(self.Button, nil, true)
-    self:SetBottomPoint(self.Button.BottomBG)
-    --self.Button.BottomBG:SetHeight(30)
-    --self.Button.BottomBG:SetSize(1,1)
-
-    --需要，设置高 TOP
-    self.Button.OnlyLeftBG=self:SetBackground(self.Button.Frame, nil, true)
-    self:SetOnlyLeftPoint(self.Button.OnlyLeftBG)
-
-    --self.Button.OnlyLeftBG:SetWidth(30)
-    
-    --需要，设置宽 LEFT
-    self.Button.OnlyRightBG=self:SetBackground(self.Button.Frame, nil, true)
-    self:SetRightPoint(self.Button.OnlyRightBG)
-    --self.Button.OnlyRightBG:SetWidth(30)
-    --self.Button.OnlyRightBG:SetSize(1,1)]]
-
     self.last= self.Button
     return self.Button
 end
@@ -146,6 +121,7 @@ function WoWTools_ToolsButtonMixin:SetPoint(btn, tab)
             if num==0 then
                 self:SetLeftFrame2Point(btn)
                 self.Button.LeftFrame2:SetWidth(30)
+                self:SetBackground(self.Button.LeftFrame2)
             else
                 btn:SetPoint('BOTTOM', self.LeftButtons2[num], 'TOP')
             end            
@@ -157,6 +133,7 @@ function WoWTools_ToolsButtonMixin:SetPoint(btn, tab)
             if num==0 then
                 self:SetRightPoint(btn)
                 self.Button.RightFrame:SetWidth(30)
+                self:SetBackground(self.Button.RightFrame)
             else
                 btn:SetPoint('BOTTOM', self.RightButtons[num], 'TOP')
             end
@@ -173,6 +150,7 @@ function WoWTools_ToolsButtonMixin:SetPoint(btn, tab)
                 self.Button.BottomFrame:SetHeight(30)
 --为显示/隐藏Frame用
                 btn.IsShownFrameEnterButton=true
+                self:SetBackground(self.Button.BottomFrame)
             else
                 btn:SetPoint('RIGHT', self.BottomButtons[num], 'LEFT')
             end
@@ -187,8 +165,7 @@ function WoWTools_ToolsButtonMixin:SetPoint(btn, tab)
                 self.leftNewLineButton=btn
                 self.Button.LeftFrame:SetPoint('TOP', btn)
                 self.Button.LeftFrame:SetPoint('LEFT', btn)
-                --self.Button.LeftBG:SetPoint('TOP', btn)
-                --self.Button.LeftBG:SetPoint('LEFT', btn)
+                self:SetBackground(self.Button.LeftFrame)
 
                 
             else
@@ -289,11 +266,11 @@ function WoWTools_ToolsButtonMixin:CreateBackgroundFrame(parent, name)
     frame.texture=frame:CreateTexture(nil, 'BACKGROUND')
     frame.texture:SetAllPoints()
     frame.texture:SetAlpha(0.5)
-    frame.texture:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
+    --frame.texture:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
     return frame
 end
-function WoWTools_ToolsButtonMixin:SetBackground(frame, isClear)
-    if not e.Player.husandro and (isClear or self.Save.isHideBackground) then
+function WoWTools_ToolsButtonMixin:SetBackground(frame)
+    if self.Save and self.Save.isHideBackground then
         frame.texture:SetTexture(0)
     else
         frame.texture:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
