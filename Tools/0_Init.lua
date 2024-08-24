@@ -16,6 +16,7 @@ local Save={
     loadCollectionUI=true,
     --show=false,
     --point
+    --showBackgroud
 }
 
 
@@ -172,7 +173,15 @@ local function Init_Menu(self, root)
         tooltip:AddLine(e.GetShowHide(nil, true))
     end)
 
-
+--显示背景
+    WoWTools_MenuMixin:ShowBackground(sub,
+    function()
+        return Save.isShowBackground
+    end, function()
+        Save.isShowBackground= not Save.isShowBackground and true or nil
+        self:save_data()
+        WoWTools_ToolsButtonMixin:ShowBackground()--显示背景
+    end)
 
 
     WoWTools_MenuMixin:Scale(sub, function()

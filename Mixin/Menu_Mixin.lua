@@ -90,42 +90,23 @@ function WoWTools_MenuMixin:Scale(root, GetValue, SetValue, checkGetValue, check
 
     return sub2, sub
 end
-    --[[sub2 = sub:CreateTemplate("OptionsSliderTemplate");
 
-    sub2:AddInitializer(function(f)--, description, menu)
-        f.func= SetValue
+--显示背景
+function WoWTools_MenuMixin:ShowBackground(root, GetValue, SetValue)
+    return root:CreateCheckbox(
+        '|A:MonkUI-LightOrb:0:0|a'
+        ..(e.onlyChinese and '显示背景' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SHOW_PARTY_FRAME_BACKGROUND),
+        GetValue,
+        SetValue)
+end
+--[[
+--显示背景
+WoWTools_MenuMixin:ShowBackground(sub,
+function()
+end, function()
+end)
+]]
 
-        local va= GetValue()
-        f:SetValueStep(0.01)
-        f:SetMinMaxValues(0.4, 4)
-        f:SetValue(va or 1)
-
-        f.Text:ClearAllPoints()
-        f.Text:SetPoint('TOPRIGHT',0,6)
-        f.Text:SetText(va or 1)
-
-        f.High:SetText(e.onlyChinese and '缩放' or UI_SCALE)
-        f.Low:SetText('')
-
-        f:SetScript('OnValueChanged', function(frame, value)
-            value= tonumber(format('%0.2f', value))
-            frame.func(value)
-            frame.Text:SetText(value)
-        end)
-
-        f:EnableMouseWheel(true)
-        f:SetScript('OnMouseWheel', function(s, d)
-            local value= s:GetValue()
-            if d== 1 then
-                value= value- 0.01
-            elseif d==-1 then
-                value= value+ 0.01
-            end
-            value= value> 4 and 4 or value
-            value= value< 0.4 and 0.4 or value
-            s:SetValue(value)
-        end)
-    end)]]
 
 
 --FrameStrata
@@ -222,8 +203,8 @@ WoWTools_MenuMixin:SetKey(sub, {
 
 
 
-
-function WoWTools_MenuMixin:ToTop(root, tab)--Tools, 位于上方
+--位于上方
+function WoWTools_MenuMixin:ToTop(root, tab)
     local sub=root:CreateCheckbox(
         (tab.name or (
             '|A:editmode-up-arrow:16:11:0:3|a'..(e.onlyChinese and '位于上方' or QUESTLINE_LOCATED_ABOVE))), 
@@ -269,44 +250,6 @@ WoWTools_MenuMixin:ToTop(root, {--位于上方
 
 
 
---[[打开界面, 收藏, 坐骑
-local function set_ToggleCollectionsJournal(mountID, type, showNotCollected)
-    WoWTools_LoadUIMixin:Journal(1)
-
-    C_MountJournal.SetDefaultFilters()
-    if not showNotCollected then
-        C_MountJournal.SetCollectedFilterSetting(LE_MOUNT_JOURNAL_FILTER_NOT_COLLECTED, false)
-    end
-    if mountID then
-        local name= C_MountJournal.GetMountInfoByID(mountID)
-        if name then
-            MountJournalSearchBox:SetText(name)
-            --C_MountJournal.SetSearch(name)
-            return --不, 过滤, 类型
-        end
-    end
-    local tab={--过滤, 类型, Blizzard_MountCollection.lua
-        [MOUNT_JOURNAL_FILTER_GROUND]= Enum.MountType.Ground,
-        [MOUNT_JOURNAL_FILTER_AQUATIC]= Enum.MountType.Aquatic,
-        [MOUNT_JOURNAL_FILTER_FLYING]=Enum.MountType.Flying,
-        [MOUNT_JOURNAL_FILTER_DRAGONRIDING]= Enum.MountType.Dragonriding,
-    }
-    MountJournalSearchBox:SetText('')
-    if type and tab[type] then
-        for i=0, Enum.MountTypeMeta.NumValues do
-            C_MountJournal.SetTypeFilter(i, i==tab[type]+1)
-        end
-    end
-    return MenuResponse.Open
-end
-
-local Mount_Journal_Filter={--过滤, 类型, Blizzard_MountCollection.lua
-    [MOUNT_JOURNAL_FILTER_GROUND]= Enum.MountType.Ground,
-    [MOUNT_JOURNAL_FILTER_AQUATIC]= Enum.MountType.Aquatic,
-    [MOUNT_JOURNAL_FILTER_FLYING]=Enum.MountType.Flying,
-    [MOUNT_JOURNAL_FILTER_DRAGONRIDING]= Enum.MountType.Dragonriding,
-}
-]]
 
 
 

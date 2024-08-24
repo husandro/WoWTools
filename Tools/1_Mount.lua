@@ -1347,6 +1347,7 @@ local function Init_Menu(_, root)
         end,
         SetValue=function()
             Save.toFrame = not Save.toFrame and true or nil
+            WoWTools_ToolsButtonMixin:RestAllPoint()--重置所有按钮位置
         end,
         tooltip=nil,
         isReload=false,--重新加载UI
