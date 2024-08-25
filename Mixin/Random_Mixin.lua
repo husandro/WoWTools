@@ -44,7 +44,7 @@ function WoWTools_RandomMixin:Get_Random_Value()
         return
     end
 
-    if not self.isOneValue_Random then
+    if not self.isOneValue_Random and self.Random_Numeri>0 then
         local index= math.random(1, self.Random_Numeri)
         self:Set_Random_Value(self.Random_List[index])
         table.remove(self.Random_List, index)

@@ -140,9 +140,6 @@ end
 
 
 
-local function setKEY()--设置捷键
-    WoWTools_Key_Button:Setup(MountButton)
-end
 local function XDInt()--德鲁伊设置
     XD=nil
     if e.Player.class=='DRUID' then
@@ -1294,11 +1291,11 @@ local function Init_Menu(_, root)
         key=Save.KEY,
         GetKey=function(key)
             Save.KEY=key
-            setKEY()--设置捷键
+            WoWTools_Key_Button:Setup(MountButton)--设置捷键
         end,
         OnAlt=function(s)
             Save.KEY=nil
-            setKEY()--设置捷键
+            WoWTools_Key_Button:Setup(MountButton)--设置捷键
         end,
     })
 

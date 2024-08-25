@@ -30,10 +30,11 @@ local ModifiedTab={
     [140192]='Alt',--达拉然炉石
 }
 
+
 local ModifiedMenuTab={
-    {type='Alt', itemID=140192, col=function() return (PlayerHasToy(140192) and C_ToyBox.IsToyUsable(140192)) and '' or '|cff9e9e9e' end},
-    {type='Ctrl', itemID=110560, col=function() return (PlayerHasToy(110560) and C_ToyBox.IsToyUsable(110560)) and '' or '|cff9e9e9e' end},
-    {type='Shift', itemID=6948, col=function() return C_Item.GetItemCount(6948)==0 and '|cff9e9e9e' or '' end},
+    {type='Alt', itemID=140192},
+    {type='Ctrl', itemID=110560},
+    {type='Shift', itemID=6948},
 }
 
 for itemID in pairs(ModifiedTab) do
@@ -261,15 +262,6 @@ end
 --#####
 local function Init_Menu(self, root)
     local sub, sub2
-    --[[sub= root:CreateButton(
-        addName..' '..ToyButton.Random_Numeri,
-        set_ToggleCollectionsJournal,
-        {}
-    )
-    sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(MicroButtonTooltipText(e.onlyChinese and '战团藏品' or COLLECTIONS, "TOGGLECOLLECTIONS"))
-    end)]]
-
     Init_Menu_Toy(self, root)
 
 --选项
@@ -293,20 +285,6 @@ local function Init_Menu(self, root)
         self:set_location()--显示, 炉石, 绑定位置
     end)
 
---[[位于上方
-    WoWTools_MenuMixin:ToTop(sub, {
-        name=nil,
-        GetValue=function()
-            return Save.toFrame
-        end,
-        SetValue=function()
-            Save.toFrame = not Save.toFrame and true or nil
-            WoWTools_ToolsButtonMixin:RestAllPoint()--重置所有按钮位置
-        end,
-        tooltip=nil,
-        isReload=false,--重新加载UI
-    })
-]]
 --移除未收集
     sub:CreateDivider()
     sub2=sub:CreateButton('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '移除未收集' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REMOVE, NOT_COLLECTED)), function()
@@ -517,7 +495,7 @@ local function Init()
 
 
 
-    ToyButton.text=e.Cstr(ToyButton, {size=10, color=true, justifyH='CENTER'})--10, nil, nil, true, nil, 'CENTER')
+    ToyButton.text=e.Cstr(ToyButton, {size=10, color=true, justifyH='CENTER'})
     ToyButton.text:SetPoint('TOP', ToyButton, 'BOTTOM',0,5)
 
 
@@ -630,7 +608,8 @@ local function Init()
         local name, col
         for _, data in pairs(ModifiedMenuTab) do
             name, col=WoWTools_SpellItemMixin:GetName(nil, data.itemID)
-            e.tips:AddDoubleLine(data.col()..name, (col or '')..data.type..'+'..e.Icon.left)
+            col= col or ''
+            e.tips:AddDoubleLine(col..name, col..data.type..'+'..e.Icon.left)
         end
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)

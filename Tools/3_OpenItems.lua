@@ -753,7 +753,7 @@ end
 --初始化
 --######
 local function Init()
-    OpenButton.count=e.Cstr(OpenButton, {size=12, color={r=1,g=1,b=1}})--10, nil, nil, true)
+    OpenButton.count=e.Cstr(OpenButton, {size=10, color={r=1,g=1,b=1}})--10, nil, nil, true)
     OpenButton.count:SetPoint('BOTTOMRIGHT')
 
     WoWTools_Key_Button:Init(OpenButton, function() return Save.KEY end)

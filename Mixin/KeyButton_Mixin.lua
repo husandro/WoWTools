@@ -17,6 +17,7 @@ function WoWTools_Key_Button:Init(btn, GetValue)
     btn.KEYtexture:SetVertexColor(0,1,0)
     btn.KEYtexture:SetDesaturated(true)
     btn.KEYtexture:SetSize(30, 15)
+    btn.KEYtexture:Hide()
 
     self:Setup(btn)
 end
@@ -51,7 +52,7 @@ function WoWTools_Key_Button:Setup(btn, isHide)
         end
     else
         btn.KEYstring:SetText('')
-        btn.KEYtexture:SetShown(true)
+        btn.KEYtexture:SetShown(false)
     end
 end
 
