@@ -67,7 +67,10 @@ StaticPopupDialogs['WoWTools_EditText']={
             data.OnShow(self, data)
         end
     end,
-    OnHide=function(self)
+    OnHide=function(self, data)
+        if data.OnHide then
+            data.OnHide(self, data)
+        end
         self.editBox:SetText("")
         self.editBox:ClearFocus()
     end,
@@ -115,9 +118,9 @@ StaticPopup_Show('WoWTools_EditText',
         end,
         SetValue= function(s)
         end,
-        OnAlt=function(self, data)
+        OnAlt=function(s, data)
         end,
-        EditBoxOnTextChanged=function(self, data)
+        EditBoxOnTextChanged=function(s, data)
         end,
     }
 )

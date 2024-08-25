@@ -488,11 +488,58 @@ local function Init_Menu(self, root)
     sub2:SetTooltip(function(tooltip)
         tooltip:AddLine(e.onlyChinese and '说' or SAY)
     end)
-
+    
     sub2:CreateButton(e.onlyChinese and '设置' or SETTINGS, function()
-        StaticPopup_Show('WoWToolsChatButtonCombatSayTime')
+        StaticPopup_Show('WoWTools_EditText',
+        addName
+        ..'|n|n'.. (e.onlyChinese and '时间戳' or EVENTTRACE_TIMESTAMP)..' '..(e.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS)
+        ..'|n|n>= 60 '..e.GetEnabeleDisable(true),
+        nil,
+        {
+            OnShow=function(s)
+                s.editBox:SetNumeric(true)
+                s.editBox:SetNumber(Save.SayTime or 120)
+            end,
+            OnHide=function(s)
+                s.editBox:SetNumeric(false)
+            end,
+            SetValue= function(s)
+                local num=s.editBox:GetNumber()
+                e.Chat(e.SecondsToClock(num), nil, nil)
+                Save.SayTime= num
+            end,
+            EditBoxOnTextChanged=function(s)
+                local num= s:GetNumber() or 0
+                s:GetParent().button1:SetEnabled(num>=60)
+            end,
+        }
+    )
         return MenuResponse.Open
     end)
+
+    sub2:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub2, {
+        getValue=function()
+            return Save.SayTime
+        end, setValue=function(value)
+            Save.SayTime= math.floor(value)
+            e.Chat(e.SecondsToClock(Save.SayTime), nil, nil)
+        end,
+        name=e.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS ,
+        minValue=60,
+        maxValue=600,
+        step=1,
+        bit=nil,
+        tooltip=function(tooltip)
+            tooltip:AddLine(e.onlyChinese and '时间戳' or EVENTTRACE_TIMESTAMP)
+        end,
+    })
+    sub2:CreateSpacer()
+
+    --[[sub2:CreateButton(e.onlyChinese and '设置' or SETTINGS, function()
+        StaticPopup_Show('WoWToolsChatButtonCombatSayTime')
+        return MenuResponse.Open
+    end)]]
 
     sub:CreateDivider()
     sub:CreateButton(e.onlyChinese and '重置位置' or RESET_POSITION, function()
@@ -597,37 +644,6 @@ end
 
 
 
-local function Init_Dialogs()
-    StaticPopupDialogs['WoWToolsChatButtonCombatSayTime']= {
-        text= id..' '..addName
-            ..'|n|n'.. (e.onlyChinese and '时间戳' or EVENTTRACE_TIMESTAMP)..' '..(e.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS)
-            ..'|n|n>= 60 '..e.GetEnabeleDisable(true),
-        whileDead=true, hideOnEscape=true, exclusive=true,
-        hasEditBox=true,
-        button1= e.onlyChinese and '设置' or SETTINGS,
-        button2= e.onlyChinese and '取消' or CANCEL,
-        OnShow = function(s)
-            s.editBox:SetNumeric(true)
-            s.editBox:SetNumber(Save.SayTime or 120)
-        end,
-        OnHide= function(s)
-            s.editBox:ClearFocus()
-        end,
-        OnAccept = function(s)
-            local num=s.editBox:GetNumber()
-            e.Chat(e.SecondsToClock(num), nil, nil)
-            Save.SayTime= num
-        end,
-        EditBoxOnTextChanged=function(s)
-            local num= s:GetNumber() or 0
-            s:GetParent().button1:SetEnabled(num>=60)
-        end,
-        EditBoxOnEscapePressed = function(s)
-            s:ClearFocus()
-        end,
-    }
-
-end
 
 
 
@@ -729,8 +745,6 @@ local function Init()
     end
 
     Init_TrackButton()
-
-    Init_Dialogs()
 end
 
 

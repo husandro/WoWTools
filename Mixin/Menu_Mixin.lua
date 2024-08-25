@@ -61,7 +61,25 @@ function WoWTools_MenuMixin:CreateSlider(root, tab)
     end)
     return sub
 end
-
+--[[
+sub2:CreateSpacer()
+WoWTools_MenuMixin:CreateSlider(sub, {
+    getValue=function()
+        return Save.mountShowTime
+    end, setValue=function(value)
+        Save.mountShowTime=value
+    end,
+    name=e.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS ,
+    minValue=1,
+    maxValue=10,
+    step=1,
+    bit=nil,
+    tooltip=function(tooltip)
+        tooltip:AddLine(e.onlyChinese and '间隔' or 'Interval')
+    end
+})
+sub2:CreateSpacer()
+]]
 
 
 --缩放
