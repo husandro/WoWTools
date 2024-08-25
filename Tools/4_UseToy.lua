@@ -289,7 +289,7 @@ local function Init_Menu_Toy(_, root)
         sub2:SetTooltip(Set_Menu_Tooltip)
     end
     --WoWTools_MenuMixin:SetNumButton(root, index)
-
+    WoWTools_MenuMixin:SetScrollButton(root, Save.numButton or 35)
 end
 
 
@@ -416,7 +416,7 @@ local function Init_Menu(self, root)
     root:CreateDivider()
     Init_Menu_Toy(self, root)
 
-    WoWTools_MenuMixin:SetScrollButton(root, Save.numButton or 35)
+   
 end
 
 
