@@ -687,7 +687,7 @@ local function Init()
         self:Get_Random_Value()
     end)
 
-    ToyButton:SetScript("OnClick", function(self,d)
+    ToyButton:SetScript("OnMouseDown", function(self,d)
         if d=='RightButton' and not IsModifierKeyDown() then
             MenuUtil.CreateContextMenu(self, Init_Menu)
         end

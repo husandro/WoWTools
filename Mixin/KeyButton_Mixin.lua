@@ -6,7 +6,8 @@ WoWTools_Key_Button={
 
 
 
-function WoWTools_Key_Button:Init(btn, key)
+function WoWTools_Key_Button:Init(btn, GetValue)
+    btn.GetKEY= GetValue
     btn.KEYstring=e.Cstr(btn,{size=12, color={r=1,g=1,b=1}})
     btn.KEYstring:SetPoint('TOPRIGHT')
 
@@ -17,24 +18,30 @@ function WoWTools_Key_Button:Init(btn, key)
     btn.KEYtexture:SetDesaturated(true)
     btn.KEYtexture:SetSize(30, 15)
 
-    self:Setup(btn, key)
+    self:Setup(btn)
 end
 
 
 
+function WoWTools_Key_Button:IsKeyValid(btn)
+    local key=btn:GetKEY()
+    local action= key and GetBindingAction(key, true)
+    if action and action==('CLICK '..btn:GetName()..':LeftButton') then
+        return key
+    end
+end
 
-
-function WoWTools_Key_Button:Setup(btn, key)
-    if UnitAffectingCombat('player') then
-        if key then
+function WoWTools_Key_Button:Setup(btn, isHide)
+    
+    local key=btn:GetKEY()
+    if not UnitAffectingCombat('player') then
+        if key and not isHide then
             SetOverrideBindingClick(btn, true, key, btn:GetName(), 'LeftButton')
         else
             ClearOverrideBindings(btn)
         end
     end
-
-    local action= key and GetBindingAction(key, true)
-    if action and action==(btn:GetName()..':LeftButton') then
+    if self:IsKeyValid(btn) then
         if #key==1 then
             btn.KEYstring:SetText(key)
             btn.KEYtexture:SetShown(false)

@@ -390,20 +390,23 @@ function WoWTools_ToolsButtonMixin:OpenOptions(name)--打开,Tools选项界面�
 end
 
 
-function WoWTools_ToolsButtonMixin:OpenMenu(root, name)--打开, 选项界面，菜单
-    local sub=root:CreateButton(name or self:GetName(),
+function WoWTools_ToolsButtonMixin:OpenMenu(root, name, name2)--打开, 选项界面，菜单
+    local sub=root:CreateButton(name2 or name or self:GetName(),
         function(data)
             if SettingsPanel:IsShown() then--ToggleGameMenu()
                 SettingsPanel:Close()
             else
-                self:OpenOptions(data)
+                self:OpenOptions(data.name)
             end
             return MenuResponse.Open
-        end, name)
+        end, {name=name, name2=name2})
 
     sub:SetTooltip(function(tooltip, description)
-        tooltip:AddLine(description.data or self:GetName())
-        tooltip:AddLine(e.onlyChinese and '打开选项界面' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, OPTIONS), 'UI'))
+        tooltip:AddDoubleLine(self:GetName(), description.name)
+        tooltip:AddDoubleLine(
+            e.onlyChinese and '打开选项界面' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, OPTIONS), 'UI'),
+            description.data.name2
+        )
     end)
     return sub
 end

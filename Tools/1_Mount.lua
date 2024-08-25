@@ -141,7 +141,7 @@ end
 
 
 local function setKEY()--设置捷键
-    WoWTools_Key_Button:Setup(MountButton, Save.KEY)
+    WoWTools_Key_Button:Setup(MountButton)
 end
 local function XDInt()--德鲁伊设置
     XD=nil
@@ -1336,7 +1336,7 @@ local function Init_Menu(_, root)
     )
 
 --选项
-    sub2=WoWTools_ToolsButtonMixin:OpenMenu(sub, '|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '选项' or OPTIONS))
+    sub2=WoWTools_ToolsButtonMixin:OpenMenu(sub, '|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '选项' or OPTIONS), Save.KEY)
 end
 
 
@@ -1770,7 +1770,7 @@ end
 --######
 local function Init()
 
-    WoWTools_Key_Button:Init(MountButton, Save.KEY)
+    WoWTools_Key_Button:Init(MountButton, function() return Save.KEY end)
     
 
     for type, tab in pairs(Save.Mounts) do
@@ -1877,12 +1877,14 @@ local function Init()
         else
             if self.typeID then
                 --C_MountJournal.GetMountUsabilityByID(.data.mountID, true)
-                e.tips:AddDoubleLine(WoWTools_SpellItemMixin:GetName(self.typeSpell and self.typeID, not self.typeSpell and self.typeID), (Save.KEY and '|cnGREEN_FONT_COLOR:'..Save.KEY or '')..e.Icon.left)
+                local key= WoWTools_Key_Button:IsKeyValid(self)
+                e.tips:AddDoubleLine(WoWTools_SpellItemMixin:GetName(self.typeSpell and self.typeID, not self.typeSpell and self.typeID), (key and '|cnGREEN_FONT_COLOR:'..key or '')..e.Icon.left)
                
                 e.tips:AddLine(' ')
             end
             e.tips:AddDoubleLine(e.onlyChinese and '坐骑秀' or 'Mount show', '|A:bags-greenarrow:0:0|a')
             e.tips:AddDoubleLine(e.onlyChinese and '坐骑特效' or EMOTE171_CMD2:gsub('/',''), '|A:UI-HUD-MicroMenu-StreamDLYellow-Up:0:0|a')
+            
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
             e.tips:Show()

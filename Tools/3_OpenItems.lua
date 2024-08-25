@@ -178,7 +178,11 @@ end
 
 
 local function setKEY(hide)--设置捷键
-    WoWTools_Key_Button:Setup(OpenButton, Save.KEY)
+    if Save.KEY and not hide and OpenButton:IsShown() and OpenButton:IsValid() then
+        WoWTools_Key_Button:Setup(OpenButton)
+    else
+        WoWTools_Key_Button:Setup(OpenButton, true)
+    end
 end
 
 
@@ -683,7 +687,7 @@ local OptionsList={{
     root:CreateDivider()
 
 --打开, 选项界面，菜单
-    sub= WoWTools_ToolsButtonMixin:OpenMenu(root, Save.KEY or addName)
+    sub= WoWTools_ToolsButtonMixin:OpenMenu(root, addName, Save.KEY)
 
 --自动隐藏
     sub2= sub:CreateCheckbox(e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE),
@@ -752,7 +756,7 @@ local function Init()
     OpenButton.count=e.Cstr(OpenButton, {size=12, color={r=1,g=1,b=1}})--10, nil, nil, true)
     OpenButton.count:SetPoint('BOTTOMRIGHT')
 
-    WoWTools_Key_Button:Init(OpenButton, Save.KEY)
+    WoWTools_Key_Button:Init(OpenButton, function() return Save.KEY end)
     
 
     Mixin(OpenButton, WoWTools_ItemLocationMixin)
@@ -780,12 +784,12 @@ local function Init()
     function OpenButton:set_event()
         if IsInInstance() and C_ChallengeMode.IsChallengeModeActive() then
             -- self:UnregisterEvent('BAG_UPDATE')
-            self:UnregisterEvent('BAG_UPDATE')
+            self:UnregisterEvent('BAG_UPDATE_DELAYED')
             self:UnregisterEvent('PLAYER_REGEN_DISABLED')
             self:UnregisterEvent('PLAYER_REGEN_ENABLED')
             self:set_shown(false)
          else
-            self:RegisterEvent('BAG_UPDATE')             
+            self:RegisterEvent('BAG_UPDATE_DELAYED')             
             self:RegisterEvent('PLAYER_REGEN_DISABLED')
             self:RegisterEvent('PLAYER_REGEN_ENABLED')
             get_Items()
@@ -864,7 +868,7 @@ local function Init()
                 if not UnitAffectingCombat('player') then
                     e.tips:AddLine(' ')
                     e.tips:AddDoubleLine(e.Icon.mid..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP), noText)
-                    e.tips:AddLine(e.Icon.right..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL))
+                    e.tips:AddDoubleLine(e.Icon.right..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), (WoWTools_Key_Button:IsKeyValid(self) or '')..e.Icon.left)
                 end
                 e.tips:Show()
                 if (BattlePetTooltip) then
@@ -874,7 +878,7 @@ local function Init()
             e.FindBagItem(true, {itemLink= itemLink})--查询，背包里物品
         else
             e.tips:AddDoubleLine(e.addName, e.cn(addName))
-            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
+            e.tips:AddDoubleLine(e.Icon.right..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), WoWTools_Key_Button:IsKeyValid(self))
             e.tips:Show()
             if (BattlePetTooltip) then
                 BattlePetTooltip:Hide()
