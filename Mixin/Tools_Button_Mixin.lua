@@ -36,13 +36,13 @@ function WoWTools_ToolsButtonMixin:GetParent(tab)--取得 Parent
     if tab.parent then--指定
         return tab.parent
 
-    elseif tab.isLeftOnlyLine--法师，左（右）
-        or not self.Save.BottomPoint[tab.name]--选项，自定义，
+    elseif self.Save.BottomPoint[tab.name]--选项，自定义，
+        or self.Save.isMoveButton
     then
-        return self.Button.Frame
-
-    else
         return self.Button
+    else
+        return self.Button.Frame
+        
     end
 end
 
@@ -162,7 +162,7 @@ function WoWTools_ToolsButtonMixin:SetPoint(btn, tab)
     else
         local point= type(tab.point)=='function' and tab.point() or tab.point
 --BOOTOM
-        if point=='BOTTOM' then
+        if self.Save.BottomPoint[tab.name] then
             local num=#self.BottomButtons
             if num==0 then
 --为显示/隐藏Frame用

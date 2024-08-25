@@ -28,7 +28,7 @@ local Save={
 
 local Button
 local addName= WoWTools_ToolsButtonMixin:GetName()
-local Category, Layout
+
 
 
 
@@ -36,7 +36,7 @@ local Category, Layout
 
 
 local function Init_Panel()
-    Category, Layout= e.AddPanel_Sub_Category({name=addName})
+    local Category, Layout= e.AddPanel_Sub_Category({name=addName})
     WoWTools_ToolsButtonMixin:SetCategory(Category, Layout)
 
 
@@ -74,13 +74,31 @@ local function Init_Panel()
         end
     }, initializer)
 
+    
+    e.AddPanel_Button({
+        category= Category,
+        layout=Layout,
+        title= WoWTools_ToolsButtonMixin:GetName(),
+        buttonText= '|A:QuestArtifact:0:0|a'..(e.onlyChinese and '重置' or RESET),
+        addSearchTags= e.onlyChinese and '重置' or RESET,
+        SetValue= function()
+            StaticPopup_Show('WoWTools_RestData',
+                WoWTools_ToolsButtonMixin:GetName()
+                ..'|n|n|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
+                nil,
+                function()
+                    Save=nil
+                    e.Reload()
+                end
+            )
+        end
+    })
 
     e.AddPanel_Header(Layout, e.onlyChinese and '选项: 需要重新加载' or (OPTIONS..': '..REQUIRES_RELOAD))
 
     for _, data in pairs (WoWTools_ToolsButtonMixin:GetAllAddList()) do
-        --initializer= nil
-        if not data.isPlayerSetupOptions then--用户，自定义设置，选项
-            if data.isOnlyCheckBox then
+        if not data.isPlayerSetupOptions then--用户，自定义设置，选项，法师
+            if data.isMoveButton then--食物
                 initializer= e.AddPanel_Check({
                     category= Category,
                     name= data.tooltip,
