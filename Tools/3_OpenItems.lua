@@ -143,7 +143,7 @@ local Save={
     alt=true,
     --noItemHide= true,--not e.Player.husandro,
     KEY=e.Player.husandro and 'F',
-    --disabledCheckReagentBag= true,--禁用，检查，材料包
+    --reagent= true,--禁用，检查，材料包
 }
 
 
@@ -151,8 +151,7 @@ local Save={
 
 
 
-local button
-local Bag= {}
+local OpenButton
 local Combat
 
 
@@ -167,37 +166,37 @@ end
 
 
 local function setKEY(hide)--设置捷键
-    if not button:CanChangeAttribute() then
+    if not OpenButton:CanChangeAttribute() then
         return
     end
-    if Save.KEY and not hide and button:IsShown() and Bag.bag then
-        e.SetButtonKey(button, true, Save.KEY)
+    if Save.KEY and not hide and OpenButton:IsShown() and OpenButton:IsValid() then
+        e.SetButtonKey(OpenButton, true, Save.KEY)
         if #Save.KEY==1 then
-            if not button.KEY then
-                button.KEYstring=e.Cstr(button,{size=10, color=true})--10, nil, nil, true, 'OVERLAY')
-                button.KEYstring:SetPoint('BOTTOMRIGHT', button.border, 'BOTTOMRIGHT',-4,4)
+            if not OpenButton.KEY then
+                OpenButton.KEYstring=e.Cstr(OpenButton,{size=10, color=true})--10, nil, nil, true, 'OVERLAY')
+                OpenButton.KEYstring:SetPoint('BOTTOMRIGHT', OpenButton.border, 'BOTTOMRIGHT',-4,4)
             end
-            button.KEYstring:SetText(Save.KEY)
-            if button.KEYtexture then
-                button.KEYtexture:SetShown(false)
+            OpenButton.KEYstring:SetText(Save.KEY)
+            if OpenButton.KEYtexture then
+                OpenButton.KEYtexture:SetShown(false)
             end
         else
-            if not button.KEYtexture then
-                button.KEYtexture=button:CreateTexture(nil,'OVERLAY')
-                button.KEYtexture:SetPoint('BOTTOM', button.border,'BOTTOM',-1,-5)
-                button.KEYtexture:SetAtlas('NPE_ArrowDown')
-                button.KEYtexture:SetDesaturated(true)
-                button.KEYtexture:SetSize(20,15)
+            if not OpenButton.KEYtexture then
+                OpenButton.KEYtexture=OpenButton:CreateTexture(nil,'OVERLAY')
+                OpenButton.KEYtexture:SetPoint('BOTTOM', OpenButton.border,'BOTTOM',-1,-5)
+                OpenButton.KEYtexture:SetAtlas('NPE_ArrowDown')
+                OpenButton.KEYtexture:SetDesaturated(true)
+                OpenButton.KEYtexture:SetSize(20,15)
             end
-            button.KEYtexture:SetShown(true)
+            OpenButton.KEYtexture:SetShown(true)
         end
     else
-        e.SetButtonKey(button)
-        if button.KEYstring then
-            button.KEYstring:SetText('')
+        e.SetButtonKey(OpenButton)
+        if OpenButton.KEYstring then
+            OpenButton.KEYstring:SetText('')
         end
-        if button.KEYtexture then
-            button.KEYtexture:SetShown(false)
+        if OpenButton.KEYtexture then
+            OpenButton.KEYtexture:SetShown(false)
         end
     end
 end
@@ -212,19 +211,7 @@ end
 
 
 --QUEST_REPUTATION_REWARD_TOOLTIP = "在%2$s中的声望提高%1$d点";
-local function setCooldown()--冷却条
-    if button:IsShown() then
-        local start, duration, enable
-        if Bag.bag and Bag.slot then
-            local itemID = C_Container.GetContainerItemID(Bag.bag, Bag.slot)
-            if itemID then
-                start, duration, enable = C_Container.GetItemCooldown(itemID)
-                button.texture:SetDesaturated(not enable)
-            end
-        end
-        e.Ccool(button, start, duration, nil, true,nil, true)
-    end
-end
+
 
 
 
@@ -238,44 +225,49 @@ end
 
 local function setAtt(bag, slot, icon, itemID, spellID)--设置属性
     --if UnitAffectingCombat('player') or not UnitIsConnected('player') or UnitInVehicle('player') then
-    if not button:CanChangeAttribute()  then
+    if not OpenButton:CanChangeAttribute()  then
         Combat= true
         return
     end
     local num
     if bag and slot then
-        Bag={bag=bag, slot=slot}
         if spellID then
-            button:SetAttribute('type1', 'spell')
+            OpenButton:SetAttribute('type1', 'spell')
             local name= C_Spell.GetSpellName(spellID)
-            button:SetAttribute('spell1', name or spellID)
-            button:SetAttribute('target-item', bag..' '..slot)
+            OpenButton:SetAttribute('spell1', name or spellID)
+            OpenButton:SetAttribute('target-item', bag..' '..slot)
 
-            --button:SetAttribute("macrotext1",'/cast '..(GetSpellInfo(spellID) or spellID)..'\n/use '..bag ..' '..slot)
+            --OpenButton:SetAttribute("macrotext1",'/cast '..(GetSpellInfo(spellID) or spellID)..'\n/use '..bag ..' '..slot)
         else
-            button:SetAttribute('type1', 'item')
-            button:SetAttribute('item1', bag..' '..slot)
-            button:SetAttribute('spell1', nil)
-            --button:SetAttribute("macrotext1", '/use '..bag..' '..slot)
+            OpenButton:SetAttribute('type1', 'item')
+            OpenButton:SetAttribute('item1', bag..' '..slot)
+            OpenButton:SetAttribute('spell1', nil)
+            --OpenButton:SetAttribute("macrotext1", '/use '..bag..' '..slot)
         end
 
-        button.texture:SetTexture(icon)
+        OpenButton.texture:SetTexture(icon)
         num = C_Item.GetItemCount(itemID)
         num= num~=1 and num or ''
-        button:SetShown(true)
+        OpenButton:SetShown(true)
+        OpenButton:SetBagAndSlot(bag, slot)
     else
-        button:SetAttribute('type1', nil)
-        button:SetAttribute('item1', nil)
-        button:SetAttribute('spell1', nil)
-        button:SetShown(not Save.noItemHide)
+        OpenButton:SetAttribute('type1', nil)
+        OpenButton:SetAttribute('item1', nil)
+        OpenButton:SetAttribute('spell1', nil)
+        OpenButton:SetShown(not Save.noItemHide)
+        OpenButton:Clear()
     end
-    setCooldown()--冷却条
-    button.count:SetText(num or '')
-    button.texture:SetShown(bag and slot)
+
+
+
+
+    OpenButton.count:SetText(num or '')
+    OpenButton.texture:SetShown(bag and slot)
     Combat=nil
     if Save.KEY then
         setKEY()
     end
+
 end
 
 
@@ -290,17 +282,17 @@ end
 
 local equipItem--是装备时, 打开角色界面
 local function get_Items()--取得背包物品信息
-    if UnitAffectingCombat('player') or not button:CanChangeAttribute() then
+    if UnitAffectingCombat('player') then
         Combat=true
         return
     end
 
     equipItem=nil
-    Bag={}
+    OpenButton:Clear()
 
 
     local itemMinLevel, classID, subclassID, _, info
-    local bagMax= Save.disabledCheckReagentBag and NUM_BAG_FRAMES or (NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES )
+    local bagMax= Save.reagent and (NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES ) or NUM_BAG_FRAMES
     for bag= Enum.BagIndex.Backpack, bagMax do--Constants.InventoryConstants.NumBagSlots
         for slot=1, C_Container.GetContainerNumSlots(bag) do
             info = C_Container.GetContainerItemInfo(bag, slot)
@@ -441,49 +433,214 @@ end
 
 
 
-local function setDisableCursorItem()--禁用当物品
-    if UnitAffectingCombat('player') then
-        return
-    end
-    if Bag.bag and Bag.slot then
-        local itemID=C_Container.GetContainerItemID(Bag.bag, Bag.slot)
-        if itemID then
-            Save.no[itemID]=true
-            Save.use[itemID]=nil
-        end
-    end
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Remove_NoUse_Menu_SetValue(data)
+    
+    print(e.addName, addName,
+        Save[data.type][data.itemID]
+        and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r'
+        or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '物品不存在' or SPELL_FAILED_ITEM_GONE)),
+        
+        ItemUtil.GetItemHyperlink(data.itemID),
+        '|A:common-icon-redx:0:0|a',
+        data.type=='no' and (e.onlyChinese and '禁用' or DISABLE) or (e.onlyChinese and '使用' or USE)
+    )
+    Save[data.type][data.itemID]=nil
     get_Items()
+    return MenuResponse.Open
+end
+
+
+
+local function Remove_NoUse_Menu(root, itemID, type, index)
+    e.LoadDate({type='item', id=itemID})
+    local tab=  {itemID=itemID, type=type}
+    local sub=root:CreateButton(
+        index..') '
+        ..WoWTools_SpellItemMixin:GetName(nil, itemID),
+        Remove_NoUse_Menu_SetValue,
+        tab
+    )
+--移除
+    sub:CreateButton(
+        '|A:common-icon-redx:0:0|a'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.left,
+        Remove_NoUse_Menu_SetValue,
+        tab
+    )
 end
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+local function Remove_All_Menu(root, type, num)
+    root:CreateButton(
+        (type=='use' and '|A:jailerstower-wayfinder-rewardcheckmark:0:0|a' or '|A:talents-button-reset:0:0|a')
+        ..(e.onlyChinese and '全部清除' or CLEAR_ALL)..' #'..num,
+    function(data)
+        local index=0
+        local type2= data.type=='no' and (e.onlyChinese and '禁用' or DISABLE) or (e.onlyChinese and '使用' or USE)
+        print(e.addName, addName)
+        for itemID in pairs(Save[data.type]) do
+            index= index+1
+            print(
+                index..')',
+                e.onlyChinese and '移除' or REMOVE,
+                ItemUtil.GetItemHyperlink(itemID),
+                '|A:common-icon-redx:0:0|a'..type2
+            )
+        end
+        print(e.onlyChinese and '全部清除' or CLEAR_ALL, '|A:common-icon-redx:0:0|a|cnGREEN_FONT_COLOR:#',  index)
+        Save[data.type]={}
+        get_Items()
+    end, {type=type})
+    root:CreateDivider()
+end
 
 
 
 --####
 --菜单
 --####
-local function Init_Menu()
-    if Bag.bag and Bag.slot then
-        
+local function Init_Menu(self, root)
+    local sub, sub2
+    
+    if self:IsValid() then
+        sub= root:CreateButton(
+            select(2, self:GetItemName(true)),
+            self.set_disabled_current_item,
+            {itemLink=self:GetItemLink()}
+        )
+        sub:SetTooltip(function(tooltip)
+            tooltip:AddDoubleLine(e.onlyChinese and '禁用' or DISABLE)
+            tooltip:AddDoubleLine(e.Icon.mid..(e.onlyChinese and '向上滚动' or COMBAT_TEXT_SCROLL_UP))
+            
+        end)
+    else
+        sub=root:CreateButton(e.onlyChinese and '无' or  NONE)
+        sub:SetTooltip(function(tooltip)
+            tooltip:AddLine(e.onlyChinese and '使用/禁用' or (USE..'/'..DISABLE))
+            tooltip:AddLine(e.onlyChinese and '拖曳物品到这里' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DRAG_MODEL, ITEMS))
+        end)
     end
+    root:CreateDivider()
+    
+    local no, use= 0, 0
+    for _ in pairs(Save.no) do
+        no=no+1
+    end
+    for _ in pairs(Save.use) do
+        use=use+1
+    end
+
+--自定义禁用列表
+    sub= root:CreateButton(
+        '|A:talents-button-reset:0:0|a'
+        ..(e.onlyChinese and '禁用' or DISABLE)
+        ..' #'..no,
+    function() return MenuResponse.Open end)
+    
+    if no>2 then
+        Remove_All_Menu(sub, 'no', no)
+    end
+    local index=0
+    for itemID in pairs(Save.no) do
+        index= index+1
+        Remove_NoUse_Menu(sub, itemID, 'no', index)
+    end
+    WoWTools_MenuMixin:SetNumButton(sub, no)
+
+
+--自定义使用列表
+    sub=root:CreateButton(
+        '|A:jailerstower-wayfinder-rewardcheckmark:0:0|a'
+        ..(e.onlyChinese and '使用' or USE)
+        ..' #'..use,
+    function() return MenuResponse.Open end)
+
+    if use>2 then
+        Remove_All_Menu(sub, 'use', use)
+    end
+    index=0
+    for itemID in pairs(Save.use) do
+        index= index+1
+        Remove_NoUse_Menu(sub, itemID, 'use', index)
+    end
+    WoWTools_MenuMixin:SetNumButton(sub, use)
+
+
+local OptionsList={{
+    name=e.onlyChinese and '<右键点击打开>' or ITEM_OPENABLE,
+    type='open'
+},{
+    name=e.onlyChinese and '坐骑' or MOUNTS or ITEM_OPENABLE,
+    type='mount'
+},{
+    name=e.onlyChinese and '幻化' or TRANSMOGRIFY,
+    type='mago'
+}, {
+    name=e.onlyChinese and '配方' or TRADESKILL_SERVICE_LEARN,
+    type='ski'
+}, {
+    name=e.onlyChinese and '其它' or BINDING_HEADER_OTHER,
+    type='alt'
+}, {
+    name=e.onlyChinese and '材料' or BAG_FILTER_REAGENTS,
+    type='reagent',
+    tooltip=e.onlyChinese and '检查' or WHO,
+}, 
+}
+    for _, info in pairs(OptionsList) do
+        sub= root:CreateCheckbox(
+            info.name,
+        function(data)
+            return Save[data.type]
+        end, function(data)
+            Save[data.type]= not Save[data.type] and true
+            get_Items()
+        end, {type=info.type, tooltip=info.tooltip})
+        if info.tooltip then
+            sub:SetTooltip(function(tooltip, description)
+                tooltip:AddLine(description.data.tooltip)
+            end)
+        end
+    end
+
+    root:CreateDivider()
+    sub= WoWTools_MenuMixin:SetKey(root, {
+        name=addName,
+        key=Save.KEY,
+        GetKey=function(key)
+            Save.KEY=key
+            setKEY()--设置捷键
+        end,
+        OnAlt=function(s)
+            Save.KEY=nil
+            setKEY()--设置捷键
+        end,
+    })
+
+    sub2= sub:CreateCheckbox(e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE),
+    function()
+        return Save.noItemHide
+    end, function()
+        Save.noItemHide= not Save.noItemHide and true or nil
+        get_Items()
+    end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine(e.onlyChinese and '未发现物品' or BROWSE_NO_RESULTS)
+    end)
 end
 
 
@@ -590,9 +747,8 @@ local function setMenuList(_, level, menuList)--主菜单
         info.text=C_Container.GetContainerItemLink(Bag.bag, Bag.slot) or ('bag: '..Bag.bag ..' slot: '..Bag.slot)
         local bagInfo=C_Container.GetContainerItemInfo(Bag.bag, Bag.slot)
         info.icon= bagInfo and bagInfo.iconFileID
-        info.func=function()
-            setDisableCursorItem()--禁用当物品
-        end
+        info.func= self.set_disabled_current_item--禁用当物品
+            
         if not UnitAffectingCombat('player') then
             info.tooltipTitle='|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE)..'|r'..e.Icon.mid..(e.onlyChinese and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP)
         end
@@ -715,11 +871,11 @@ local function setMenuList(_, level, menuList)--主菜单
     e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
         text= e.onlyChinese and '材料包' or EQUIP_CONTAINER_REAGENT:gsub(EQUIPSET_EQUIP,''),
-        checked= not Save.disabledCheckReagentBag,
+        checked= Save.reagent,
         tooltipOnButton=true,
         tooltipTitle= e.onlyChinese and '检查' or WHO,
         func= function()
-            Save.disabledCheckReagentBag= not Save.disabledCheckReagentBag and true or nil
+            Save.reagent= not Save.reagent and true or nil
             get_Items()
         end
     }
@@ -733,7 +889,7 @@ local function setMenuList(_, level, menuList)--主菜单
         tooltipTitle= e.onlyChinese and '未发现物品' or BROWSE_NO_RESULTS,
         func=function()
             Save.noItemHide= not Save.noItemHide and true or nil
-            button:set_shown((Bag.bag or not Save.noItemHide))
+            OpenButton:set_shown((Bag.bag or not Save.noItemHide))
         end,
         checked= Save.noItemHide
     }
@@ -773,24 +929,115 @@ end
 --初始化
 --######
 local function Init()
+    OpenButton.count=e.Cstr(OpenButton, {size=10, color={r=1,g=1,b=1}})--10, nil, nil, true)
+    OpenButton.count:SetPoint('BOTTOM',0,2)
+
+    Mixin(OpenButton, WoWTools_ItemLocationMixin)
+    
+    function OpenButton:set_shown(bool)
+        if not self:CanChangeAttribute() then
+            return
+        end
+        if bool~=nil then
+            self:SetShown(bool)
+        else
+            self:SetShown(not Save.noItemHide or self:IsValid())
+        end
+    end
+
+    function OpenButton:set_cooldown()--冷却条
+        local start, duration, enable
+        if OpenButton:IsValid() then
+            start, duration, enable = OpenButton:GetItemCooldown()
+            OpenButton.texture:SetDesaturated(not enable)
+        end
+        e.Ccool(OpenButton, start, duration, nil, true,nil, true)
+    end
+    
+    function OpenButton:set_event()
+        if IsInInstance() and C_ChallengeMode.IsChallengeModeActive() then
+            -- self:UnregisterEvent('BAG_UPDATE')
+            self:UnregisterEvent('BAG_UPDATE')
+            self:UnregisterEvent('PLAYER_REGEN_DISABLED')
+            self:UnregisterEvent('PLAYER_REGEN_ENABLED')
+            self:set_shown(false)
+         else
+            self:RegisterEvent('BAG_UPDATE')             
+            self:RegisterEvent('PLAYER_REGEN_DISABLED')
+            self:RegisterEvent('PLAYER_REGEN_ENABLED')
+            get_Items()
+         end
+
+        if self:IsShown() then
+            self:RegisterEvent('BAG_UPDATE_COOLDOWN')
+        else
+            self:UnregisterEvents('BAG_UPDATE_COOLDOWN')
+        end
+    end
+
+    OpenButton:RegisterEvent('CHALLENGE_MODE_START')
+    OpenButton:RegisterEvent('PLAYER_ENTERING_WORLD')   
+    OpenButton:SetScript('OnEvent', function(self, event)
+        if event=='PLAYER_ENTERING_WORLD' or event=='CHALLENGE_MODE_START' then
+            self:set_event()--注册， 事件
+
+        elseif event=='BAG_UPDATE_DELAYED' then-- or event=='BAG_UPDATE' then
+                get_Items()
+
+        elseif event=='PLAYER_REGEN_DISABLED' then
+            if Save.noItemHide then
+                self:SetShown(false)
+            end
+            if Save.KEY then
+                setKEY(true)
+            end
+
+        elseif event=='PLAYER_REGEN_ENABLED' then
+            if Combat then
+                get_Items()
+            else
+                self:SetShown(self:IsValid() or not Save.noItemHide)
+            end
+            if Save.KEY then
+                setKEY()
+            end
+        elseif event=='BAG_UPDATE_COOLDOWN' then
+            self:set_cooldown()--冷却条
+        end
+    end)
+
+    function OpenButton:set_disabled_current_item()--禁用当物品
+        if self:IsValid() and UnitAffectingCombat('player') then
+            local itemID= self:GetItemID()
+            if itemID then
+                Save.no[itemID]=true
+                Save.use[itemID]=nil
+            end
+            get_Items()
+        end
+        return MenuResponse.Open
+    end
+
+    
+    OpenButton:set_event()
+    OpenButton:set_cooldown()--冷却条
 
 
 
-    button.count=e.Cstr(button, {size=10, color=true})--10, nil, nil, true)
-    button.count:SetPoint('BOTTOM',0,2)
 
     get_Items()--设置属性
 
-    function button:set_tooltips()
+    function OpenButton:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        if Bag.bag and Bag.slot then
-            local itemLink= C_Container.GetContainerItemLink(Bag.bag, Bag.slot)
+        local bagID, slotIndex= self:GetBagAndSlot()
+        if self:IsBagAndSlot() then
+            local itemLink= C_Container.GetContainerItemLink(bagID, slotIndex)
             if itemLink and itemLink:find('Hbattlepet:%d+') then
                 BattlePetToolTip_Show(BattlePetToolTip_UnpackBattlePetLink(itemLink))
                 e.tips:Hide()
             else
-                e.tips:SetBagItem(Bag.bag, Bag.slot)
+                e.tips:SetBagItem(bagID, slotIndex)
                 if not UnitAffectingCombat('player') then
                     e.tips:AddLine(' ')
                     e.tips:AddDoubleLine(e.Icon.mid..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE))
@@ -813,23 +1060,23 @@ local function Init()
     end
 
 
-    button:SetScript("OnEnter",  function(self)
+    OpenButton:SetScript("OnEnter",  function(self)
         WoWTools_ToolsButtonMixin:EnterShowFrame(self)
         self:set_tooltips()
         self:SetScript('OnUpdate', function (s, elapsed)
             s.elapsed = (s.elapsed or 0.3) + elapsed
             if s.elapsed > 0.3 then
                 s.elapsed = 0
-                if Bag.bag and Bag.slot and GameTooltip:IsOwned(s) then
-                    local itemID= C_Container.GetContainerItemID(Bag.bag, Bag.slot)
-                    if itemID~=select(3, GameTooltip:GetItem()) then
+                if GameTooltip:IsOwned(s) then
+                    local itemID= self:GetItemID()
+                    if itemID and itemID~=select(3, GameTooltip:GetItem()) then
                         s:set_tooltips()
                     end
                 end
             end
         end)
     end)
-    button:SetScript("OnLeave",function(self)
+    OpenButton:SetScript("OnLeave",function(self)
         GameTooltip_Hide()
         ResetCursor()
         get_Items()
@@ -837,12 +1084,13 @@ local function Init()
         self:SetScript('OnUpdate',nil)
         self.elapsed=nil
     end)
-    button:SetScript("OnMouseDown", function(self,d)
+    OpenButton:SetScript("OnMouseDown", function(self,d)
         local infoType, itemID, itemLink = GetCursorInfo()
         if infoType == "item" and itemID and itemLink then
-            if Bag.bag and Bag.slot and itemLink== C_Container.GetContainerItemLink(Bag.bag, Bag.slot) then
+            if self:IsValid() and self:GetItemID()==itemID then
                 return
             end
+
             --添加，移除
             StaticPopupDialogs['OpenItmesUseOrDisableItem']={
                 text=id..' '..addName..'|n|n%s|n%s|n|n'..(e.onlyChinese and '合成物品' or COMBINED_BAG_TITLE:gsub(INVTYPE_BAG,ITEMS))..' >1: ',
@@ -910,13 +1158,16 @@ local function Init()
 
         local key= IsModifierKeyDown()
         if (d=='RightButton' and not key) then
+            
+                MenuUtil.CreateContextMenu(self, Init_Menu)
+            
             --MenuUtil.CreateContextMenu(self, Init_Menu)
             
-            if not self.Menu then
-                button.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")--菜单列表
+            --[[if not self.Menu then
+                OpenButton.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")--菜单列表
                 e.LibDD:UIDropDownMenu_Initialize(self.Menu, setMenuList, 'MENU')
             end
-            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
+            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)]]
         else
             if d=='LeftButton' and not key and equipItem and not PaperDollFrame:IsVisible() then
                 ToggleCharacter("PaperDollFrame")
@@ -933,13 +1184,10 @@ local function Init()
         end
     end)
 
-    button:SetScript('OnMouseWheel',function(self, d)
+    OpenButton:SetScript('OnMouseWheel',function(self, d)
         if d == 1 and not IsModifierKeyDown() then
-            if Bag.slot and Bag.bag then
-                setDisableCursorItem()--禁用当物品
-                e.LibDD:CloseDropDownMenus()
-                self:set_tooltips()
-            end
+            self:set_disabled_current_item()--禁用当物品
+            self:set_tooltips()
         end
     end)
 
@@ -1019,36 +1267,6 @@ end
 
 
 
-local panel= CreateFrame("Frame")
---##########
---注册， 事件
---##########
-function panel:set_Events()--注册， 事件
-    if IsInInstance() and C_ChallengeMode.IsChallengeModeActive() then
-       -- self:UnregisterEvent('BAG_UPDATE')
-        self:UnregisterEvent('BAG_UPDATE_DELAYED')
-        self:UnregisterEvent('PLAYER_REGEN_DISABLED')
-        self:UnregisterEvent('PLAYER_REGEN_ENABLED')
-        if button:CanChangeAttribute() then
-            button:SetShown(false)
-        end
-    else
-       -- self:RegisterEvent('BAG_UPDATE')
-        self:RegisterEvent('BAG_UPDATE_DELAYED')
-        self:RegisterEvent('BAG_UPDATE_COOLDOWN')
-        self:RegisterEvent('PLAYER_REGEN_DISABLED')
-        self:RegisterEvent('PLAYER_REGEN_ENABLED')
-        get_Items()
-    end
-    if button:IsShown() then
-        self:RegisterEvent('BAG_UPDATE_COOLDOWN')
-    else
-        self:UnregisterEvent('BAG_UPDATE_COOLDOWN')
-    end
-end
-
-
-
 
 
 
@@ -1067,6 +1285,7 @@ end
 --###########
 --加载保存数据
 --###########
+local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
@@ -1074,15 +1293,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1==id then
             Save= WoWToolsSave['Tools_OpenItems'] or Save
 
-            button= WoWTools_ToolsButtonMixin:CreateButton({
+            OpenButton= WoWTools_ToolsButtonMixin:CreateButton({
                 name='OpenItems',
                 tooltip='|A:BonusLoot-Chest2:0:0|a'..(e.onlyChinese and '打开物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, ITEMS)),
             })
 
-            if button then
+            if OpenButton then
                 Init()
-                self:RegisterEvent('CHALLENGE_MODE_START')
-                self:RegisterEvent('PLAYER_ENTERING_WORLD')                
+                             
             end
             self:UnregisterEvent("ADDON_LOADED")
         end
@@ -1091,32 +1309,5 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if not e.ClearAllSave then
             WoWToolsSave['Tools_OpenItems'] = Save
         end
-
-    elseif event=='PLAYER_ENTERING_WORLD' or event=='CHALLENGE_MODE_START' then
-        self:set_Events()--注册， 事件
-
-    elseif event=='BAG_UPDATE_DELAYED' then-- or event=='BAG_UPDATE' then
-            get_Items()
-
-    elseif event=='PLAYER_REGEN_DISABLED' then
-        if Save.noItemHide then
-            button:SetShown(false)
-        end
-        if Save.KEY then
-            setKEY(true)
-        end
-
-    elseif event=='PLAYER_REGEN_ENABLED' then
-        if Combat then
-            get_Items()
-        else
-            button:SetShown(Bag.bag or not Save.noItemHide)
-        end
-        if Save.KEY then
-            setKEY()
-        end
-    elseif event=='BAG_UPDATE_COOLDOWN' then
-        setCooldown()--冷却条
-
     end
 end)

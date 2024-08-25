@@ -1025,10 +1025,7 @@ local function Set_LFGFollower_Dungeon_List(root)--追随者，副本
 
         end
     end
-    if dungeoNum>35 then
-        local line= math.ceil(dungeoNum/35)
-        sub:SetGridMode(MenuConstants.VerticalGridDirection, line)
-    end
+    WoWTools_MenuMixin:SetNumButton(sub, dungeoNum)
 end
 
 
@@ -2980,10 +2977,7 @@ local function Init_Menu(_, root)
     for i=1, NUM_LE_LFG_CATEGORYS do--列表信息
         num= (get_Queued_List(i) or 0)+ num
     end
-
-    if num>35 then
-        root:SetGridMode(MenuConstants.VerticalGridDirection, math.ceil(num/35))
-    end
+    WoWTools_MenuMixin:SetNumButton(root, num)
 
     sub=root:CreateButton((e.onlyChinese and '离开列队' or LEAVE_QUEUE)..' |cnGREEN_FONT_COLOR:#'..num..'|r', function()
         for i=1, NUM_LE_LFG_CATEGORYS do--列表信息

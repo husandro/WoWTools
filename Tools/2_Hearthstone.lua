@@ -244,12 +244,7 @@ local function Init_Menu_Toy(_, root)
         )
         sub2:SetTooltip(Set_Menu_Tooltip)
     end
-
-    if index>35 then
-        root:SetGridMode(MenuConstants.VerticalGridDirection, math.ceil(index/35))
-    end
-
-
+    WoWTools_MenuMixin:SetNumButton(root, index)
 end
 
 
@@ -630,11 +625,11 @@ local function Init()
     function ToyButton:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_SpellItemMixin:GetSpellItemText(nil, self.itemID), e.Icon.left)
+        e.tips:AddDoubleLine(WoWTools_SpellItemMixin:GetName(nil, self.itemID), e.Icon.left)
         e.tips:AddLine(' ')
         local name, col
         for _, data in pairs(ModifiedMenuTab) do
-            name, col=WoWTools_SpellItemMixin:GetSpellItemText(nil, data.itemID)
+            name, col=WoWTools_SpellItemMixin:GetName(nil, data.itemID)
             e.tips:AddDoubleLine(data.col()..name, (col or '')..data.type..'+'..e.Icon.left)
         end
         e.tips:AddLine(' ')
@@ -692,7 +687,7 @@ local function Init()
         self:Get_Random_Value()
     end)
 
-    ToyButton:SetScript("OnMouseDown", function(self,d)
+    ToyButton:SetScript("OnClick", function(self,d)
         if d=='RightButton' and not IsModifierKeyDown() then
             MenuUtil.CreateContextMenu(self, Init_Menu)
         end

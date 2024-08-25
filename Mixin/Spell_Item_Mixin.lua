@@ -37,8 +37,6 @@ end
 
 
 
-C_Traits.GetTraitSystemWidgetSetID(1)
-
 
 function WoWTools_SpellItemMixin:SetTooltip(tooltip, data, root, frame)    
     if root then
@@ -57,9 +55,6 @@ end
 
 
 
---[[function WoWTools_SpellItemMixin:SetGameTooltip(frame, isShow)
-    
-end]]
 
 
 
@@ -69,9 +64,7 @@ end]]
 
 
 
-
-
-function WoWTools_SpellItemMixin:GetSpellItemText(spellID, itemID)--取得，法术，物品，名称
+function WoWTools_SpellItemMixin:GetName(spellID, itemID)--取得，法术，物品，名称
     local cool= e.GetSpellItemCooldown(spellID, itemID) or ''
     local col
     if spellID then
@@ -97,10 +90,11 @@ function WoWTools_SpellItemMixin:GetSpellItemText(spellID, itemID)--取得，法
             end
         end
 
+
+
         return '|T'..(C_Spell.GetSpellTexture(spellID) or 0)..':0|t'
             ..'|cff00ccff['..(e.cn(C_Spell.GetSpellName(spellID), {spellID=spellID, isName=true}) or ('spellID '..spellID))..']|r'
-            ..desc
-            ..cool,
+            ..desc,
 
             col
 

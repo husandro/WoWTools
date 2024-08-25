@@ -4826,7 +4826,11 @@
         "PLAYERSPELLS_BUTTON",
         "MOUNT_JOURNAL_SUMMON_RANDOM_FAVORITE_MOUNT",
         "CreateSettingsCheckboxDropdownInitializer",
-        "QUESTLINE_LOCATED_BELOW"
+        "QUESTLINE_LOCATED_BELOW",
+        "nop",
+        "SPELL_FAILED_ITEM_GONE",
+        "BAG_FILTER_REAGENTS",
+        "COMBAT_TEXT_SCROLL_UP"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

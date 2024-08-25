@@ -616,9 +616,7 @@ local function Init_Menu(self, root)
             end)
         end
     end
-    if numPlayer>30 then
-        sub:SetGridMode(MenuConstants.VerticalGridDirection, math.ceil(numPlayer/30))
-    end
+    WoWTools_MenuMixin:SetNumButton(sub, numPlayer)
 
     if timeAll>0 then
         sub:CreateDivider()

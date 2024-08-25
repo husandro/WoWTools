@@ -232,6 +232,9 @@ CooldownFrame_SetDisplayAsPercentage(self, percentage)
 ]]
 function e.GetSpellItemCooldown(spellID, itemID)--法术,物品,冷却
     if spellID then
+        if not C_Spell.GetOverrideSpell(spellID) then
+            return
+        end
         local data= C_Spell.GetSpellCooldown(spellID)
         if data then
             if data.duration>0 then
@@ -260,7 +263,7 @@ function e.GetSpellItemCooldown(spellID, itemID)--法术,物品,冷却
             t= t<0 and 0 or t
             return '|cnRED_FONT_COLOR:'..SecondsToTime(t)..'|r'
 
-        elseif not enable then
+        elseif C_Item.GetItemCount(itemID, true, false, true, true)>0 and not enable then
             return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '即时冷却' or SPELL_RECAST_TIME_INSTANT)..'|r'
         end
     end

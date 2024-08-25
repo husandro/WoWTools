@@ -170,13 +170,15 @@ function WoWTools_MenuMixin:Reload(root, isControlKeyDown)
 end
 
 --快捷键
+
 function WoWTools_MenuMixin:SetKey(root, tab)
     local sub=root:CreateCheckbox(
-        (tab.icon or '')
+        '|A:NPE_Icon:0:0|a'
         ..(UnitAffectingCombat('player') and '|cff9e9e9e' or '')
-        ..(tab.key or (e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)),
+        ..(tab.key or (e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL))
+        ..(tab.icon or ''),
     function(data)
-        return data.key
+        return data.key~=nil
     end, function(data)
         StaticPopup_Show('WoWTools_EditText',
             (data.name and data.name..' ' or '')..(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)
@@ -190,7 +192,15 @@ function WoWTools_MenuMixin:SetKey(root, tab)
                         s.editBox:SetText('BUTTON5')
                     end
                 end,
-                SetValue=data.SetValue,
+                SetValue=function(s, tab2)
+                    local text= s.editBox:GetText()
+                    text=text:gsub(' ','')
+                    text=text:gsub('%[','')
+                    text=text:gsub(']','')
+                    text=text:upper()
+                    tab2.GetKey(text)
+                    print(e.addName, data.name, text)
+                end,
                 OnAlt=data.OnAlt,
             }
         )
@@ -379,5 +389,12 @@ function WoWTools_MenuMixin:OpenDragonriding(root)--驭空术
 end
 
 
+
+--SetGridMode
+function WoWTools_MenuMixin:SetNumButton(sub, num)
+    if num and num>35 then
+        sub:SetGridMode(MenuConstants.VerticalGridDirection, math.ceil(num/35))
+    end
+end
 
 

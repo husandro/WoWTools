@@ -759,9 +759,7 @@ local function Init_Menu(self, root)
             num= num+1
         end
     end
-    if num>30 then
-        sub:SetGridMode(MenuConstants.VerticalGridDirection, math.ceil(num/30))
-    end
+    WoWTools_MenuMixin:SetNumButton(sub, num)
 
 
     sub=root:CreateCheckbox((IsInInstance() and '|cff9e9e9e' or '')..(e.onlyChinese and '邀请目标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INVITE, TARGET))..'|A:poi-traveldirections-arrow2:0:0|a', function()
@@ -958,17 +956,7 @@ local function Init_Menu(self, root)
             tooltip:AddLine(e.onlyChinese and '移除' or REMOVE)
         end)
     end
-    
-    if num>30 then
-        sub2:SetGridMode(MenuConstants.VerticalGridDirection, math.ceil(num/30))
-    end
-
-
-
-
-
-
-
+    WoWTools_MenuMixin:SetNumButton(sub2, num)
 end
 
 

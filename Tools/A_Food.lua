@@ -460,6 +460,7 @@ local function Init()
             self:setPoint(self.RePoint[1], self.RePoint[2], self.RePoint[3], self.RePoint[4], self.RePoint[5])
         end
     end
+
     if Save.point then
         button:set_point()
     end
@@ -554,6 +555,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
 
             Save= WoWToolsSave[addName..'Tools'] or Save
+
             button= WoWTools_ToolsButtonMixin:CreateButton({
                 name='Food',
                 tooltip='|A:Food:0:0|a'..(e.onlyChinese and '食物' or POWER_TYPE_FOOD),

@@ -178,9 +178,7 @@ if saveNum>0 then
             GameTooltip_AddNormalLine(tooltip, '|A:voicechat-icon-textchat-silenced:0:0|a'..(e.onlyChinese and '发送信息' or SEND_MESSAGE))
         end)
     end
-    if saveNum>35 then
-        sub:SetGridMode(MenuConstants.VerticalGridDirection, math.ceil(saveNum/35))
-    end
+    WoWTools_MenuMixin:SetNumButton(sub, saveNum)
 end
 
 
@@ -203,9 +201,7 @@ if rollNum>0 then
             tabNew[tab.name]=true
         end
     end
-    if rollNum>35 then
-        root:SetGridMode(MenuConstants.VerticalGridDirection, math.ceil(rollNum/35))
-    end
+    WoWTools_MenuMixin:SetNumButton(root, rollNum)
 end
 
 

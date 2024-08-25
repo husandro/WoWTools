@@ -297,12 +297,8 @@ local function Init_Menu(self, root)
                 end
                 return MenuResponse.Open
             end, tab.name)
-
-
         end
-        if num>30 then
-            sub:SetGridMode(MenuConstants.VerticalGridDirection, math.ceil(num/30))
-        end
+        WoWTools_MenuMixin:SetNumButton(sub, num)
     end
 
 
@@ -364,10 +360,7 @@ local function Init_Menu(self, root)
             tooltip:AddLine(e.cn(description.data.zone))
         end)
     end
-
-    if numOline>30 then
-        sub:SetGridMode(MenuConstants.VerticalGridDirection, math.ceil(numOline/30))
-    end
+    WoWTools_MenuMixin:SetNumButton(sub, numOline)
 
 
 

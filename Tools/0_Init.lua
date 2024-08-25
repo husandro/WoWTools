@@ -447,7 +447,9 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            Save.show= Button and Button.Frame:IsShown()
+            if Save then
+                Save.show= Button and Button.Frame:IsShown()
+            end
             WoWToolsSave['WoWTools_ToolsButton']=Save
         end
     end

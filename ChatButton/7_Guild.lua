@@ -209,10 +209,7 @@ local function Init_Menu(_, root)
             end
         end
         root:CreateDivider()
-
-        if online>35 then
-            root:SetGridMode(MenuConstants.VerticalGridDirection, math.ceil(online/35))
-        end
+        WoWTools_MenuMixin:SetNumButton(root, online)
     end
 
     if CanReplaceGuildMaster() then--弹劾

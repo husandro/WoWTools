@@ -831,9 +831,7 @@ local function ClearAll_Menu(root, type, index)
             tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..e.Icon.left)
         end)
     end
-    if index>35 then
-        root:SetGridMode(MenuConstants.VerticalGridDirection, math.ceil(index/35))
-    end
+    WoWTools_MenuMixin:SetNumButton(root, index)
 end
 
 
@@ -1323,15 +1321,9 @@ local function Init_Menu(_, root)
         icon='|A:NPE_ArrowDown:0:0|a',
         name=addName..(num2 and num2>0 and text2 or ''),
         key=Save.KEY,
-        SetValue=function(s)
-            local text= s.editBox:GetText()
-            text=text:gsub(' ','')
-            text=text:gsub('%[','')
-            text=text:gsub(']','')
-            text=text:upper()
-            Save.KEY=text
+        SetValue=function(key)
+            Save.KEY=key
             setKEY()--设置捷键
-            print(e.addName, addName, text)
         end,
         OnAlt=function(s)
             Save.KEY=nil
@@ -1478,7 +1470,7 @@ local function Init_UI_Menu(self, root)
     end
 
     root:CreateDivider()
-    WoWTools_ToolsButtonMixin:OpenMenu(root, WoWTools_SpellItemMixin:GetSpellItemText(spellID) or ('|T'..(icon or 0)..':0|t'..name))
+    WoWTools_ToolsButtonMixin:OpenMenu(root, WoWTools_SpellItemMixin:GetName(spellID) or ('|T'..(icon or 0)..':0|t'..name))
 end
 
 
@@ -1896,11 +1888,11 @@ local function Init()
         local infoType, itemID, _, spellID= GetCursorInfo()
         local name, col, exits
         if infoType == "item" and itemID then
-            name, col= WoWTools_SpellItemMixin:GetSpellItemText(nil, itemID)
+            name, col= WoWTools_SpellItemMixin:GetName(nil, itemID)
             exits= Save.Mounts[ITEMS][itemID] and true or false
 
         elseif infoType =='spell' and spellID then
-            name, col= WoWTools_SpellItemMixin:GetSpellItemText(spellID, nil)
+            name, col= WoWTools_SpellItemMixin:GetName(spellID, nil)
             exits=Save.Mounts[SPELLS][spellID] and true or false
         end
 
@@ -1914,7 +1906,7 @@ local function Init()
         else
             if self.typeID then
                 --C_MountJournal.GetMountUsabilityByID(.data.mountID, true)
-                e.tips:AddDoubleLine(WoWTools_SpellItemMixin:GetSpellItemText(self.typeSpell and self.typeID, not self.typeSpell and self.typeID), (Save.KEY and '|cnGREEN_FONT_COLOR:'..Save.KEY or '')..e.Icon.left)
+                e.tips:AddDoubleLine(WoWTools_SpellItemMixin:GetName(self.typeSpell and self.typeID, not self.typeSpell and self.typeID), (Save.KEY and '|cnGREEN_FONT_COLOR:'..Save.KEY or '')..e.Icon.left)
                
                 e.tips:AddLine(' ')
             end

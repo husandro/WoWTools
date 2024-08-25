@@ -160,7 +160,7 @@ function WoWTools_ToolsButtonMixin:SetPoint(btn, tab)
             table.insert(self.RightButtons, btn)
         end
     else
-        local point= type(tab.point)=='function' and tab.point() or tab.point
+        --local point= type(tab.point)=='function' and tab.point() or tab.point
 --BOOTOM
         if self.Save.BottomPoint[tab.name] then
             local num=#self.BottomButtons

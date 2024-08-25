@@ -497,10 +497,7 @@ end
             end
         end
 
-
-        if filterPlayer>35 then
-            sub2:SetGridMode(MenuConstants.VerticalGridDirection, math.ceil(filterPlayer/35))
-        end
+        WoWTools_MenuMixin:SetNumButton(sub2, filterPlayer)
     end
 
 
@@ -631,9 +628,7 @@ end
         end, {text=text, guid=tab.guid})
     end
 
-    if filterNum>35 then
-        sub:SetGridMode(MenuConstants.VerticalGridDirection, math.ceil(filterNum/35))
-    end
+    WoWTools_MenuMixin:SetNumButton(sub, filterNum)
 end
 
 end
@@ -757,10 +752,7 @@ end
                 tooltip:AddLine(e.onlyChinese and '移除' or REMOVE)
             end)
         end
-
-        if useNum>35 then
-            sub:SetGridMode(MenuConstants.VerticalGridDirection, math.ceil(useNum/35))
-        end
+        WoWTools_MenuMixin:SetNumButton(sub, useNum)
     end
 end
 
