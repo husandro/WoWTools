@@ -1068,25 +1068,21 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            if WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, ITEMS)..'Tools'] then
-                Save= WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, ITEMS)..'Tools']
-                WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, ITEMS)..'Tools']=nil
-            else
-                Save= WoWToolsSave['Tools_OpenItems'] or Save
-            end
+            Save= WoWToolsSave['Tools_OpenItems'] or Save
 
             button= WoWTools_ToolsButtonMixin:CreateButton({
                 name='OpenItems',
                 tooltip='|A:BonusLoot-Chest2:0:0|a'..(e.onlyChinese and '打开物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, ITEMS)),
             })
+
             if button then
                 Init()
                 self:RegisterEvent('CHALLENGE_MODE_START')
-                self:RegisterEvent('PLAYER_ENTERING_WORLD')
-                self:RegisterEvent("PLAYER_LOGOUT")
+                self:RegisterEvent('PLAYER_ENTERING_WORLD')                
             end
             self:UnregisterEvent("ADDON_LOADED")
         end
