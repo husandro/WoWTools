@@ -1,5 +1,5 @@
 local id, e = ...
-local addName=format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, ITEMS)
+local addName
 local Save={
     use={--定义,使用物品, [ID]=数量(或组合数量)
         [190198]=5,
