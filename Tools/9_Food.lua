@@ -577,14 +577,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
                 self:RegisterEvent("PLAYER_LOGOUT")
 
-                C_Timer.After(2.3, function()
-                    if UnitAffectingCombat('player') then
-                        self.setInitBat=true
-                        self:RegisterEvent('PLAYER_REGEN_ENABLED')
-                    else
-                        Init()--初始
-                    end
-                end)
+                    
+                Init()--初始
             end
             self:UnregisterEvent('ADDON_LOADED')
         end
