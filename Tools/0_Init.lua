@@ -96,7 +96,9 @@ local function Init_Panel()
 
     e.AddPanel_Header(Layout, e.onlyChinese and '选项: 需要重新加载' or (OPTIONS..': '..REQUIRES_RELOAD))
 
+    
     for _, data in pairs (WoWTools_ToolsButtonMixin:GetAllAddList()) do
+        initializer=nil
         if not data.isPlayerSetupOptions then--用户，自定义设置，选项，法师
             if data.isMoveButton then--食物
                 initializer= e.AddPanel_Check({
@@ -110,7 +112,7 @@ local function Init_Panel()
                 })
                 
             else
-                e.AddPanel_Check_DropDown({
+                initializer= e.AddPanel_Check_DropDown({
                     category=Category,
                     layout=Layout,
                     name=data.tooltip,

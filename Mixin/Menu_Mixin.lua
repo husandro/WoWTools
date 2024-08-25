@@ -169,60 +169,6 @@ function WoWTools_MenuMixin:Reload(root, isControlKeyDown)
     return sub
 end
 
---快捷键
-
-function WoWTools_MenuMixin:SetKey(root, tab)
-    local sub=root:CreateCheckbox(
-        '|A:NPE_Icon:0:0|a'
-        ..(UnitAffectingCombat('player') and '|cff9e9e9e' or '')
-        ..(tab.key or (e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL))
-        ..(tab.icon or ''),
-    function(data)
-        return data.key~=nil
-    end, function(data)
-        StaticPopup_Show('WoWTools_EditText',
-            (data.name and data.name..' ' or '')..(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)
-            ..'|n|n"|cnGREEN_FONT_COLOR:Q|r", "|cnGREEN_FONT_COLOR:ALT-Q|r","|cnGREEN_FONT_COLOR:BUTTON5|r"|n"|cnGREEN_FONT_COLOR:ALT-CTRL-SHIFT-Q|r"',
-            nil,
-            {
-                text=data.key,
-                key=data.key,
-                OnShow=function(s, tab2)
-                    if not tab2.key then
-                        s.editBox:SetText('BUTTON5')
-                    end
-                end,
-                SetValue=function(s, tab2)
-                    local text= s.editBox:GetText()
-                    text=text:gsub(' ','')
-                    text=text:gsub('%[','')
-                    text=text:gsub(']','')
-                    text=text:upper()
-                    tab2.GetKey(text)
-                    print(e.addName, data.name, text)
-                end,
-                OnAlt=data.OnAlt,
-            }
-        )
-    end, tab)
-    sub:SetTooltip(function(tooltip, description)
-        tooltip:AddLine(e.onlyChinese and '设置' or SETTINGS)
-        tooltip:AddDoubleLine(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL, description.data.key)
-    end)
-    return sub
-end
---[[
-WoWTools_MenuMixin:SetKey(sub, {
-    icon='',
-    name=addName,
-    text=,
-    key=,
-    SetValue=function(s, data)
-    end,
-    OnAlt=function(s, data)
-    end,
-})
-]]
 
 
 

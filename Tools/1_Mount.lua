@@ -141,36 +141,7 @@ end
 
 
 local function setKEY()--设置捷键
-    if Save.KEY then
-        e.SetButtonKey(MountButton, true, Save.KEY)
-        if #Save.KEY==1 then
-            if not MountButton.KEY then
-                MountButton.KEYstring=e.Cstr(MountButton,{size=10, color=true})--10, nil, nil, true, 'OVERLAY')
-                MountButton.KEYstring:SetPoint('BOTTOMRIGHT', MountButton.border, 'BOTTOMRIGHT',-4,4)
-            end
-            MountButton.KEYstring:SetText(Save.KEY)
-            if MountButton.KEYtexture then
-                MountButton.KEYtexture:SetShown(false)
-            end
-        else
-            if not MountButton.KEYtexture then
-                MountButton.KEYtexture=MountButton:CreateTexture(nil,'OVERLAY')
-                MountButton.KEYtexture:SetPoint('BOTTOM', MountButton.border,'BOTTOM',-1,-5)
-                MountButton.KEYtexture:SetAtlas('NPE_ArrowDown')
-                MountButton.KEYtexture:SetDesaturated(true)
-                MountButton.KEYtexture:SetSize(20,15)
-            end
-            MountButton.KEYtexture:SetShown(true)
-        end
-    else
-        e.SetButtonKey(MountButton)
-        if MountButton.KEYstring then
-            MountButton.KEYstring:SetText('')
-        end
-        if MountButton.KEYtexture then
-            MountButton.KEYtexture:SetShown(false)
-        end
-    end
+    WoWTools_Key_Button:Setup(MountButton, Save.KEY)
 end
 local function XDInt()--德鲁伊设置
     XD=nil
@@ -1317,11 +1288,11 @@ local function Init_Menu(_, root)
 --设置捷键
     sub:CreateSpacer()
     local text2, num2= WoWTools_MenuMixin:GetDragonriding()--驭空术
-    WoWTools_MenuMixin:SetKey(sub, {
+    WoWTools_Key_Button:SetMenu(sub, {
         icon='|A:NPE_ArrowDown:0:0|a',
         name=addName..(num2 and num2>0 and text2 or ''),
         key=Save.KEY,
-        SetValue=function(key)
+        GetKey=function(key)
             Save.KEY=key
             setKEY()--设置捷键
         end,
@@ -1798,9 +1769,9 @@ end
 --初始化
 --######
 local function Init()
-    if Save.KEY then
-        setKEY()--设置捷键
-    end
+
+    WoWTools_Key_Button:Init(MountButton, Save.KEY)
+    
 
     for type, tab in pairs(Save.Mounts) do
         for ID, _ in pairs(tab) do

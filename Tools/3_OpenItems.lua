@@ -153,7 +153,7 @@ local Save={
 
 local OpenButton
 local Combat
-
+local useText, noText
 
 
 
@@ -165,40 +165,20 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 local function setKEY(hide)--设置捷键
-    if not OpenButton:CanChangeAttribute() then
-        return
-    end
-    if Save.KEY and not hide and OpenButton:IsShown() and OpenButton:IsValid() then
-        e.SetButtonKey(OpenButton, true, Save.KEY)
-        if #Save.KEY==1 then
-            if not OpenButton.KEY then
-                OpenButton.KEYstring=e.Cstr(OpenButton,{size=10, color=true})--10, nil, nil, true, 'OVERLAY')
-                OpenButton.KEYstring:SetPoint('BOTTOMRIGHT', OpenButton.border, 'BOTTOMRIGHT',-4,4)
-            end
-            OpenButton.KEYstring:SetText(Save.KEY)
-            if OpenButton.KEYtexture then
-                OpenButton.KEYtexture:SetShown(false)
-            end
-        else
-            if not OpenButton.KEYtexture then
-                OpenButton.KEYtexture=OpenButton:CreateTexture(nil,'OVERLAY')
-                OpenButton.KEYtexture:SetPoint('BOTTOM', OpenButton.border,'BOTTOM',-1,-5)
-                OpenButton.KEYtexture:SetAtlas('NPE_ArrowDown')
-                OpenButton.KEYtexture:SetDesaturated(true)
-                OpenButton.KEYtexture:SetSize(20,15)
-            end
-            OpenButton.KEYtexture:SetShown(true)
-        end
-    else
-        e.SetButtonKey(OpenButton)
-        if OpenButton.KEYstring then
-            OpenButton.KEYstring:SetText('')
-        end
-        if OpenButton.KEYtexture then
-            OpenButton.KEYtexture:SetShown(false)
-        end
-    end
+    WoWTools_Key_Button:Setup(OpenButton, Save.KEY)
 end
 
 
@@ -264,6 +244,7 @@ local function setAtt(bag, slot, icon, itemID, spellID)--设置属性
     OpenButton.count:SetText(num or '')
     OpenButton.texture:SetShown(bag and slot)
     Combat=nil
+
     if Save.KEY then
         setKEY()
     end
@@ -439,6 +420,73 @@ end
 
 
 
+local function Edit_Item(info)
+    StaticPopup_Show('WoWTools_EditText',
+        addName..'|n|n'
+        ..WoWTools_SpellItemMixin:GetName(nil, info.itemID)..'|n|n'
+        ..format(e.onlyChinese and '发现：%s' or ERR_ZONE_EXPLORED,
+        Save.no[info.itemID] and noText
+        or (Save.use[info.itemID] and useText)
+        or (e.onlyChinese and '新' or NEW)
+    ),
+    nil,
+    {
+        itemID=info.itemID,
+        itemLink=info.itemLink,
+
+        text=Save.use[info.itemID],
+        OnShow=function(s, data)
+            s.editBox:SetNumeric(true)
+            local useStr=ITEM_SPELL_TRIGGER_ONUSE..'(.+)'--使用：
+            local dateInfo= e.GetTooltipData({bag=nil, guidBank=nil, merchant=nil, inventory=nil, hyperLink=data.itemLink, itemID=data.itemID, text={useStr}, onlyText=true, wow=nil, onlyWoW=nil, red=nil, onlyRed=nil})--物品提示，信息 使用：
+            local num= dateInfo.text[useStr] and dateInfo.text[useStr]:match('%d+')
+            num= num and tonumber(num)
+            s.editBox:SetNumber(num or Save.use[data.itemID] or 1)
+            s.button3:SetText(noText)
+        end,
+        OnHide=function(s)
+            s.editBox:SetNumeric(false)
+        end,
+        SetValue= function(s, data)
+            local num= s.editBox:GetNumber()
+            num = num<1 and 1 or num
+            Save.use[data.itemID]=num
+            Save.no[data.itemID]=nil
+            get_Items()--取得背包物品信息                        
+            print(e.addName, addName,
+                ItemUtil.GetItemHyperlink(data.itemID),
+                num>1 and
+                    (e.onlyChinese and '合成物品' or COMBINED_BAG_TITLE:gsub(INVTYPE_BAG,ITEMS))..': '..'|cnGREEN_FONT_COLOR:'..num..'|r'
+                    or useText
+            )
+        end,
+        OnAlt=function(_, data)
+            Save.no[data.itemID]=true
+            Save.use[data.itemID]=nil
+            get_Items()--取得背包物品信息
+            print(e.addName, e.cn(addName),
+                ItemUtil.GetItemHyperlink(info.itemID),
+                noText
+            )
+        end,
+        EditBoxOnTextChanged=function(s)
+            local num= s:GetNumber()
+            if num>1 then
+                s:GetParent().button1:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '合成' or AUCTION_STACK_SIZE)..' '..num..'|r')
+            else
+                s:GetParent().button1:SetText('|cnGREEN_FONT_COLOR:'..useText..'|r');
+            end
+        end,
+    }
+    )
+    return MenuResponse.Open
+end
+
+
+
+
+
+
 
 
 
@@ -447,15 +495,13 @@ end
 
 
 local function Remove_NoUse_Menu_SetValue(data)
-    
     print(e.addName, addName,
         Save[data.type][data.itemID]
         and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r'
         or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '物品不存在' or SPELL_FAILED_ITEM_GONE)),
         
         ItemUtil.GetItemHyperlink(data.itemID),
-        '|A:common-icon-redx:0:0|a',
-        data.type=='no' and (e.onlyChinese and '禁用' or DISABLE) or (e.onlyChinese and '使用' or USE)
+        data.type=='no' and noText or useText
     )
     Save[data.type][data.itemID]=nil
     get_Items()
@@ -464,18 +510,28 @@ end
 
 
 
-local function Remove_NoUse_Menu(root, itemID, type, index)
+local function Remove_NoUse_Menu(root, itemID, type, numUse)
     e.LoadDate({type='item', id=itemID})
     local tab=  {itemID=itemID, type=type}
     local sub=root:CreateButton(
-        index..') '
+        (numUse and numUse..'= ' or '')
         ..WoWTools_SpellItemMixin:GetName(nil, itemID),
-        Remove_NoUse_Menu_SetValue,
+        Edit_Item,
         tab
     )
---移除
+    WoWTools_SpellItemMixin:SetTooltip(nil, nil, sub)--设置，物品，提示
+
+    if type=='use' then
+        sub:CreateButton(
+            e.Icon.left..(e.onlyChinese and '修改' or EDIT),
+            Edit_Item,
+            {itemID=itemID}
+        )
+        sub:CreateDivider()
+    end
+    --移除
     sub:CreateButton(
-        '|A:common-icon-redx:0:0|a'..(e.onlyChinese and '移除' or REMOVE)..e.Icon.left,
+        '|A:common-icon-redx:0:0|a'..(e.onlyChinese and '移除' or REMOVE),
         Remove_NoUse_Menu_SetValue,
         tab
     )
@@ -490,7 +546,7 @@ local function Remove_All_Menu(root, type, num)
         ..(e.onlyChinese and '全部清除' or CLEAR_ALL)..' #'..num,
     function(data)
         local index=0
-        local type2= data.type=='no' and (e.onlyChinese and '禁用' or DISABLE) or (e.onlyChinese and '使用' or USE)
+        local type2= data.type=='no' and noText or useText
         print(e.addName, addName)
         for itemID in pairs(Save[data.type]) do
             index= index+1
@@ -510,6 +566,17 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 --####
 --菜单
 --####
@@ -519,11 +586,11 @@ local function Init_Menu(self, root)
     if self:IsValid() then
         sub= root:CreateButton(
             select(2, self:GetItemName(true)),
-            self.set_disabled_current_item,
+            function() self:set_disabled_current_item() end,
             {itemLink=self:GetItemLink()}
         )
         sub:SetTooltip(function(tooltip)
-            tooltip:AddDoubleLine(e.onlyChinese and '禁用' or DISABLE)
+            tooltip:AddDoubleLine(noText)
             tooltip:AddDoubleLine(e.Icon.mid..(e.onlyChinese and '向上滚动' or COMBAT_TEXT_SCROLL_UP))
             
         end)
@@ -546,9 +613,7 @@ local function Init_Menu(self, root)
 
 --自定义禁用列表
     sub= root:CreateButton(
-        '|A:talents-button-reset:0:0|a'
-        ..(e.onlyChinese and '禁用' or DISABLE)
-        ..' #'..no,
+        noText..' #'..no,
     function() return MenuResponse.Open end)
     
     if no>2 then
@@ -557,25 +622,23 @@ local function Init_Menu(self, root)
     local index=0
     for itemID in pairs(Save.no) do
         index= index+1
-        Remove_NoUse_Menu(sub, itemID, 'no', index)
+        Remove_NoUse_Menu(sub, itemID, 'no', nil)
     end
     WoWTools_MenuMixin:SetNumButton(sub, no)
 
 
 --自定义使用列表
     sub=root:CreateButton(
-        '|A:jailerstower-wayfinder-rewardcheckmark:0:0|a'
-        ..(e.onlyChinese and '使用' or USE)
-        ..' #'..use,
+        useText..' #'..use,
     function() return MenuResponse.Open end)
 
     if use>2 then
         Remove_All_Menu(sub, 'use', use)
     end
     index=0
-    for itemID in pairs(Save.use) do
+    for itemID, numUse in pairs(Save.use) do
         index= index+1
-        Remove_NoUse_Menu(sub, itemID, 'use', index)
+        Remove_NoUse_Menu(sub, itemID, 'use', numUse)
     end
     WoWTools_MenuMixin:SetNumButton(sub, use)
 
@@ -618,19 +681,11 @@ local OptionsList={{
     end
 
     root:CreateDivider()
-    sub= WoWTools_MenuMixin:SetKey(root, {
-        name=addName,
-        key=Save.KEY,
-        GetKey=function(key)
-            Save.KEY=key
-            setKEY()--设置捷键
-        end,
-        OnAlt=function(s)
-            Save.KEY=nil
-            setKEY()--设置捷键
-        end,
-    })
 
+--打开, 选项界面，菜单
+    sub= WoWTools_ToolsButtonMixin:OpenMenu(root, Save.KEY or addName)
+
+--自动隐藏
     sub2= sub:CreateCheckbox(e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE),
     function()
         return Save.noItemHide
@@ -641,6 +696,30 @@ local OptionsList={{
     sub2:SetTooltip(function(tooltip)
         tooltip:AddLine(e.onlyChinese and '未发现物品' or BROWSE_NO_RESULTS)
     end)
+
+--设置捷键
+    WoWTools_Key_Button:SetMenu(sub, {
+        name=addName,
+        key=Save.KEY,
+        GetKey=function(key)
+            Save.KEY=key
+            setKEY()--设置捷键
+        end,
+        OnAlt=function(s)
+            Save.KEY=nil
+            setKEY(true)--设置捷键
+        end,
+    })
+
+    sub:CreateDivider()
+    sub2=sub:CreateTitle(
+        e.onlyChinese and '拖曳物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DRAG_MODEL, ITEMS),
+    function()
+        return MenuResponse.Open
+    end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddDoubleLine(useText, noText)
+    end)
 end
 
 
@@ -649,265 +728,6 @@ end
 
 
 
-
-local function setMenuList(_, level, menuList)--主菜单
-    local info={}
-    if menuList=='USE' then
-        local find
-        for itemID, num in pairs(Save.use) do--二级, 使用
-            e.LoadDate({id=itemID, type='item'})
-            info={
-                text= (ItemUtil.GetItemHyperlink(itemID) or  ('itemID: '..itemID)).. (num>1 and ' |cnGREEN_FONT_COLOR:x'..num..'|r' or ''),
-                icon= C_Item.GetItemIconByID(itemID),
-                checked=true,
-                keepShownOnClick=true,
-                tooltipOnButton=true,
-                tooltipTitle= e.onlyChinese and '移除' or REMOVE,
-                tooltipText=num>1 and '|n'..(e.onlyChinese and '组合物品' or COMBINED_BAG_TITLE:gsub(INVTYPE_BAG,ITEMS))..'|n'..(e.onlyChinese and '数量' or AUCTION_STACK_SIZE)..': '..num..'|nitemID: '..itemID,
-                func=function()
-                    Save.use[itemID]=nil
-                    get_Items()
-                end,
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info,level)
-            find= true
-        end
-        if find then
-            e.LibDD:UIDropDownMenu_AddSeparator(level)
-            info={
-                text= e.onlyChinese and '全部清除' or CLEAR_ALL,
-                notCheckable=true,
-                keepShownOnClick=true,
-                func=function()
-                    Save.use={}
-                    get_Items()
-                    e.LibDD:CloseDropDownMenus()
-                end
-            }
-        else
-            info={
-                text=e.onlyChinese and '无' or NONE,
-                isTitle=true,
-                notCheckable=true,
-            }
-        end
-        e.LibDD:UIDropDownMenu_AddButton(info,level)
-        return
-
-    elseif menuList=='NO' then
-        local find
-        for itemID, _ in pairs(Save.no) do
-            e.LoadDate({id=itemID, type='item'})
-            info={
-                text=ItemUtil.GetItemHyperlink(itemID) or  ('itemID: '..itemID),
-                icon=C_Item.GetItemIconByID(itemID),
-                checked=true,
-                keepShownOnClick=true,
-                tooltipOnButton=true,
-                tooltipTitle=REMOVE,
-                tooltipText= 'itemID: '..itemID,
-                func=function()
-                    Save.no[itemID]=nil
-                    get_Items()
-                end,
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
-            find=true
-        end
-        if find then
-            e.LibDD:UIDropDownMenu_AddSeparator(level)
-            info={
-                text= e.onlyChinese and '全部清除' or CLEAR_ALL,
-                notCheckable=true,
-                keepShownOnClick=true,
-                func=function()
-                    Save.no={}
-                    get_Items()
-                    e.LibDD:CloseDropDownMenus()
-                end,
-            }
-        else
-            info={
-                text=e.onlyChinese and '无' or NONE,
-                isTitle=true,
-                notCheckable=true,
-            }
-        end
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-        return
-    end
-
-
-    info={
-        keepShownOnClick=true,
-        notCheckable=true,
-        tooltipOnButton=true,
-    }
-    if Bag.bag and Bag.slot then
-        info.text=C_Container.GetContainerItemLink(Bag.bag, Bag.slot) or ('bag: '..Bag.bag ..' slot: '..Bag.slot)
-        local bagInfo=C_Container.GetContainerItemInfo(Bag.bag, Bag.slot)
-        info.icon= bagInfo and bagInfo.iconFileID
-        info.func= self.set_disabled_current_item--禁用当物品
-            
-        if not UnitAffectingCombat('player') then
-            info.tooltipTitle='|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE)..'|r'..e.Icon.mid..(e.onlyChinese and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP)
-        end
-    else
-        info.text=addName..': '..(e.onlyChinese and '无' or  NONE)
-        info.isTitle=true
-        info.tooltipTitle= e.onlyChinese and '使用/禁用' or (USE..'/'..DISABLE)
-        info.tooltipText= e.onlyChinese and '拖曳物品到这里' or (DRAG_MODEL..ITEMS)
-    end
-
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-    e.LibDD:UIDropDownMenu_AddSeparator(level)
-
-    local no,use= 0, 0
-    for _ in pairs(Save.no) do
-        no=no+1
-    end
-    for _ in pairs(Save.use) do
-        use=use+1
-    end
-
-    info={--自定义禁用列表
-        text= (e.onlyChinese and '禁用' or DISABLE)..' #'..no,
-        notCheckable=1,
-        menuList='NO',
-        hasArrow=true,
-        keepShownOnClick=true,
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    info={--自定义使用列表
-        text= (e.onlyChinese and '使用' or USE)..' #'..use,
-        notCheckable=1,
-        menuList='USE',
-        hasArrow=true,
-        keepShownOnClick=true,
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    info={
-        text= e.onlyChinese and '<右键点击打开>' or ITEM_OPENABLE,
-        checked=Save.open,
-        keepShownOnClick=true,
-        func=function()
-            Save.open= not Save.open and true or nil
-            get_Items()
-        end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    info={
-        text= e.onlyChinese and '宠物' or PET,
-        tooltipOnButton=true,
-        tooltipTitle= '<3',
-        checked=Save.pet,
-        keepShownOnClick=true,
-        func=function()
-            Save.pet= not Save.pet and true or nil
-            get_Items()
-        end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    info={
-        text= e.onlyChinese and '玩具' or TOY,
-        checked=Save.toy,
-        keepShownOnClick=true,
-        func=function()
-            Save.toy= not Save.toy and true or nil
-            get_Items()
-        end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    info={
-        text= e.onlyChinese and '坐骑' or MOUNTS,
-        checked=Save.mount,
-        keepShownOnClick=true,
-        func=function()
-            Save.mount= not Save.mount and true or nil
-            get_Items()
-        end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    info={
-        text= e.onlyChinese and '幻化' or TRANSMOGRIFY,
-        checked=Save.mago,
-        keepShownOnClick=true,
-        func=function()
-            Save.mago= not Save.mago and true or nil
-            get_Items()
-        end,
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    info={
-        text= e.onlyChinese and '配方' or TRADESKILL_SERVICE_LEARN,
-        checked=Save.ski,
-        keepShownOnClick=true,
-        func=function()
-            Save.ski= not Save.ski and true or nil
-            get_Items()
-        end,
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    info={
-        text= e.onlyChinese and '其它' or BINDING_HEADER_OTHER,
-        checked=Save.alt,
-        keepShownOnClick=true,
-        func=function()
-            Save.alt= not Save.alt and true or nil
-            get_Items()
-        end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-
-    e.LibDD:UIDropDownMenu_AddSeparator(level)
-    info={
-        text= e.onlyChinese and '材料包' or EQUIP_CONTAINER_REAGENT:gsub(EQUIPSET_EQUIP,''),
-        checked= Save.reagent,
-        tooltipOnButton=true,
-        tooltipTitle= e.onlyChinese and '检查' or WHO,
-        func= function()
-            Save.reagent= not Save.reagent and true or nil
-            get_Items()
-        end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    info={
-        text= e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE),
-        keepShownOnClick=true,
-        tooltipOnButton=true,
-        disabled=UnitAffectingCombat('player'),
-        tooltipTitle= e.onlyChinese and '未发现物品' or BROWSE_NO_RESULTS,
-        func=function()
-            Save.noItemHide= not Save.noItemHide and true or nil
-            OpenButton:set_shown((Bag.bag or not Save.noItemHide))
-        end,
-        checked= Save.noItemHide
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    e.LibDD:UIDropDownMenu_AddButton({--快捷键,设置对话框
-        text= e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL,--..(Save.KEY and ' |cnGREEN_FONT_COLOR:'..Save.KEY..'|r' or ''),
-        icon= 'NPE_ArrowDown',
-        checked=Save.KEY and true or nil,
-        keepShownOnClick=true,
-        disabled=UnitAffectingCombat('player'),
-        func=function()
-            StaticPopup_Show(id..addName..'KEY')
-        end,
-    }, level)
-
-    e.LibDD:UIDropDownMenu_AddButton({text= e.onlyChinese and '拖曳物品: 使用/禁用' or (DRAG_MODEL..ITEMS..'('..USE..'/'..DISABLE..')'), isTitle=true, notCheckable=true})
-end
 
 
 
@@ -929,8 +749,11 @@ end
 --初始化
 --######
 local function Init()
-    OpenButton.count=e.Cstr(OpenButton, {size=10, color={r=1,g=1,b=1}})--10, nil, nil, true)
-    OpenButton.count:SetPoint('BOTTOM',0,2)
+    OpenButton.count=e.Cstr(OpenButton, {size=12, color={r=1,g=1,b=1}})--10, nil, nil, true)
+    OpenButton.count:SetPoint('BOTTOMRIGHT')
+
+    WoWTools_Key_Button:Init(OpenButton, Save.KEY)
+    
 
     Mixin(OpenButton, WoWTools_ItemLocationMixin)
     
@@ -971,7 +794,7 @@ local function Init()
         if self:IsShown() then
             self:RegisterEvent('BAG_UPDATE_COOLDOWN')
         else
-            self:UnregisterEvents('BAG_UPDATE_COOLDOWN')
+            self:UnregisterEvent('BAG_UPDATE_COOLDOWN')
         end
     end
 
@@ -984,12 +807,12 @@ local function Init()
         elseif event=='BAG_UPDATE_DELAYED' then-- or event=='BAG_UPDATE' then
                 get_Items()
 
-        elseif event=='PLAYER_REGEN_DISABLED' then
-            if Save.noItemHide then
-                self:SetShown(false)
-            end
+        elseif event=='PLAYER_REGEN_DISABLED' then            
             if Save.KEY then
                 setKEY(true)
+            end
+            if Save.noItemHide then
+                self:SetShown(false)
             end
 
         elseif event=='PLAYER_REGEN_ENABLED' then
@@ -1007,7 +830,7 @@ local function Init()
     end)
 
     function OpenButton:set_disabled_current_item()--禁用当物品
-        if self:IsValid() and UnitAffectingCombat('player') then
+        if self:IsValid() and not UnitAffectingCombat('player') then
             local itemID= self:GetItemID()
             if itemID then
                 Save.no[itemID]=true
@@ -1040,7 +863,7 @@ local function Init()
                 e.tips:SetBagItem(bagID, slotIndex)
                 if not UnitAffectingCombat('player') then
                     e.tips:AddLine(' ')
-                    e.tips:AddDoubleLine(e.Icon.mid..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE))
+                    e.tips:AddDoubleLine(e.Icon.mid..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP), noText)
                     e.tips:AddLine(e.Icon.right..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL))
                 end
                 e.tips:Show()
@@ -1090,67 +913,7 @@ local function Init()
             if self:IsValid() and self:GetItemID()==itemID then
                 return
             end
-
-            --添加，移除
-            StaticPopupDialogs['OpenItmesUseOrDisableItem']={
-                text=id..' '..addName..'|n|n%s|n%s|n|n'..(e.onlyChinese and '合成物品' or COMBINED_BAG_TITLE:gsub(INVTYPE_BAG,ITEMS))..' >1: ',
-                whileDead=true, hideOnEscape=true, exclusive=true,
-                hasEditBox=true,
-                button1='|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '使用' or USE)..'|r',
-                button2= e.onlyChinese and '取消' or CANCEL,
-                button3='|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE)..'|r',
-                OnShow = function(self2, data)
-                    self2.editBox:SetNumeric(true)
-                    local num=Save.use[data.itemID]
-                    if not num then
-                        local useStr=ITEM_SPELL_TRIGGER_ONUSE..'(.+)'--使用：
-                        local dateInfo= e.GetTooltipData({bag=nil, guidBank=nil, merchant=nil, inventory=nil, hyperLink=data.itemLink, itemID=nil, text={useStr}, onlyText=true, wow=nil, onlyWoW=nil, red=nil, onlyRed=nil})--物品提示，信息 使用：
-                        num= dateInfo.text[useStr] and dateInfo.text[useStr]:match('%d+')
-                        num= num and tonumber(num)
-                    end
-                    num=num or 1
-                    self2.editBox:SetNumber(num)
-                    self2.editBox:SetAutoFocus(false)
-                    self2.editBox:ClearFocus()
-                end,
-                OnHide= function(self2)
-                    self2.editBox:SetText("")
-                    e.call(ChatEdit_FocusActiveWindow)
-                end,
-                OnAccept = function(self2, data)
-                    local num= self2.editBox:GetNumber()
-                    num = num<1 and 1 or num
-                    Save.use[data.itemID]=num
-                    Save.no[data.itemID]=nil
-                    get_Items()--取得背包物品信息
-                    print(e.addName, '|cnGREEN_FONT_COLOR:'..e.cn(addName)..'|r', num>1 and (e.onlyChinese and '合成物品' or COMBINED_BAG_TITLE:gsub(INVTYPE_BAG,ITEMS))..': '..'|cnGREEN_FONT_COLOR:'..num..'|r' or '', data.itemLink)
-                end,
-                OnAlt = function(self2, data)
-                    Save.no[data.itemID]=true
-                    Save.use[data.itemID]=nil
-                    get_Items()--取得背包物品信息
-                    print(e.addName, e.cn(addName), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE)..'|r', data.itemLink)
-                end,
-                EditBoxOnTextChanged=function(self2)
-                   local num= self2:GetNumber()
-                    if num>1 then
-                       self2:GetParent().button1:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '合成' or AUCTION_STACK_SIZE)..' '..num..'|r')
-                    else
-                        self2:GetParent().button1:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '使用' or USE)..'|r');
-                    end
-                end,
-                EditBoxOnEscapePressed = function(s)
-                    s:SetAutoFocus(false)
-                    s:ClearFocus()
-                    s:GetParent():Hide()
-                end,
-            }
-
-            local icon
-            icon= C_Item.GetItemIconByID(itemID)
-            icon = icon and '|T'..icon..':0|t'..itemLink or ''
-            local list=Save.use[itemID] and (e.onlyChinese and '当前列表' or PROFESSIONS_CURRENT_LISTINGS)..': |cff00ff00'..(e.onlyChinese and '使用' or USE)..'|r' or Save.no[itemID] and (e.onlyChinese and '当前列表' or PROFESSIONS_CURRENT_LISTINGS)..': |cffff0000'..(e.onlyChinese and '禁用' or DISABLE)..'|r' or ''
-            StaticPopup_Show('OpenItmesUseOrDisableItem', icon, list, {itemID=itemID, itemLink=itemLink})
+            Edit_Item({itemID=itemID, itemLink=itemLink})
             ClearCursor()
             return
         end
@@ -1158,16 +921,8 @@ local function Init()
 
         local key= IsModifierKeyDown()
         if (d=='RightButton' and not key) then
-            
-                MenuUtil.CreateContextMenu(self, Init_Menu)
-            
-            --MenuUtil.CreateContextMenu(self, Init_Menu)
-            
-            --[[if not self.Menu then
-                OpenButton.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")--菜单列表
-                e.LibDD:UIDropDownMenu_Initialize(self.Menu, setMenuList, 'MENU')
-            end
-            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)]]
+            MenuUtil.CreateContextMenu(self, Init_Menu)
+
         else
             if d=='LeftButton' and not key and equipItem and not PaperDollFrame:IsVisible() then
                 ToggleCharacter("PaperDollFrame")
@@ -1191,62 +946,7 @@ local function Init()
         end
     end)
 
-    C_Timer.After(2, get_Items)
-
-
-
-
-
-
-
-
-
-
-    StaticPopupDialogs[id..addName..'KEY']={--快捷键,设置对话框
-        text=id..' '..addName..'|n'..(e.onlyChinese and '快捷键"' or SETTINGS_KEYBINDINGS_LABEL)..'|n|nQ, BUTTON5',
-        whileDead=true, hideOnEscape=true, exclusive=true,
-        hasEditBox=true,
-        button1= e.onlyChinese and '设置' or SETTINGS,
-        button2= e.onlyChinese and '取消' or CANCEL,
-        button3= e.onlyChinese and '移除' or REMOVE,
-        OnShow = function(self2)
-            self2.editBox:SetText(Save.KEY or 'BUTTON5')
-            if Save.KEY then
-                self2.button1:SetText(e.onlyChinese and '修改' or EDIT)
-            end
-            self2.button3:SetEnabled(Save.KEY)
-        end,
-        OnHide= function(self2)
-            self2.editBox:SetText("")
-            e.call(ChatEdit_FocusActiveWindow)
-        end,
-        OnAccept = function(self2)
-            local text= self2.editBox:GetText()
-            text=text:gsub(' ','')
-            text=text:gsub('%[','')
-            text=text:gsub(']','')
-            text=text:upper()
-            Save.KEY=text
-            setKEY()--设置捷键
-        end,
-        OnAlt = function()
-            Save.KEY=nil
-            setKEY()--设置捷键
-        end,
-        EditBoxOnTextChanged=function(self2)
-            local text= self2:GetText()
-            text=text:gsub(' ','')
-            self2:GetParent().button1:SetEnabled(text~='')
-        end,
-        EditBoxOnEscapePressed = function(s)
-            s:SetAutoFocus(false)
-            s:ClearFocus()
-            s:GetParent():Hide()
-        end,
-    }
-    if Save.KEY then
-        setKEY()
-    end
+    C_Timer.After(4, get_Items)
 end
 
 
@@ -1292,13 +992,28 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave['Tools_OpenItems'] or Save
-
+            addName= '|A:BonusLoot-Chest:0:0|a'..(e.onlyChinese and '打开物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, ITEMS))
             OpenButton= WoWTools_ToolsButtonMixin:CreateButton({
                 name='OpenItems',
-                tooltip='|A:BonusLoot-Chest2:0:0|a'..(e.onlyChinese and '打开物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, ITEMS)),
+                tooltip=addName,
+                option=function(Category, _, initializer)
+                    e.AddPanel_Check({
+                        category= Category,
+                        name= e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE),
+                        tooltip= addName,
+                        GetValue= function() return Save.noItemHide end,
+                        SetValue= function()
+                            Save.noItemHide= not Save.noItemHide and true or nil
+                            get_Items()
+                        end
+                    }, initializer)
+                end,
             })
 
             if OpenButton then
+                noText= '|A:talents-button-reset:0:0|a'..(e.onlyChinese and '禁用' or DISABLE)
+                useText= '|A:jailerstower-wayfinder-rewardcheckmark:0:0|a'..(e.onlyChinese and '使用' or USE)
+        
                 Init()
                              
             end
