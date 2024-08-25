@@ -2415,11 +2415,15 @@ end
 
 
 
-function e.SecondsToClock(seconds, displayZeroHours)--TimeUtil.lua
+function e.SecondsToClock(seconds, displayZeroHours, notDisplaySeconds)--TimeUtil.lua
     if seconds and seconds>=0 then
         local units = ConvertSecondsToUnits(seconds)
         if units.hours > 0 or displayZeroHours then
-            return format('%.2d:%.2d:%.2d', units.hours, units.minutes, units.seconds)
+            if not notDisplaySeconds then
+                return format('%.2d:%.2d:%.2d', units.hours, units.minutes, units.seconds)
+            else
+                return format('%.2d:%.2d', units.hours, units.minutes)
+            end
         else
             return format('%.2d:%.2d', units.minutes, units.seconds)
         end

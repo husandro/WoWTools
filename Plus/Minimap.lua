@@ -2859,6 +2859,8 @@ end
 
 --时间 Pluse
 --Blizzard_TimeManager.lua
+local TimeManagerClockButton_Update_R= TimeManagerClockButton_Update
+
 local function Blizzard_TimeManager()
     if Save.disabledClockPlus then
         return
@@ -2923,11 +2925,11 @@ local function Blizzard_TimeManager()
     TimeManagerClockButton:set_point()
 
     --小时图，使用服务器, 时间
-    local TimeManagerClockButton_Update_R= TimeManagerClockButton_Update
+   
     local function set_Server_Timer()--小时图，使用服务器, 时间
         if Save.useServerTimer then
             TimeManagerClockButton_Update=function()
-                TimeManagerClockTicker:SetText(e.SecondsToClock(GetServerTime(), true) or '')
+                TimeManagerClockTicker:SetText(e.SecondsToClock(C_DateAndTime.GetServerTimeLocal(), true, true) or '')
             end
         else
             TimeManagerClockButton_Update= TimeManagerClockButton_Update_R
@@ -2960,7 +2962,9 @@ local function Blizzard_TimeManager()
     --提示
     hooksecurefunc('TimeManagerClockButton_UpdateTooltip', function()
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine('|cffffffff'..(e.onlyChinese and '服务器时间' or TIMEMANAGER_TOOLTIP_REALMTIME), '|cnGREEN_FONT_COLOR:'..e.SecondsToClock(GetServerTime())..e.Icon.left)
+        
+        e.tips:AddDoubleLine('|cffffffff'..('ServerTime'), '|cnGREEN_FONT_COLOR:'..e.SecondsToClock(GetServerTime())..e.Icon.left)
+        e.tips:AddDoubleLine('|cffffffff'..(e.onlyChinese and '服务器时间' or TIMEMANAGER_TOOLTIP_REALMTIME), '|cnGREEN_FONT_COLOR:'..e.SecondsToClock(C_DateAndTime.GetServerTimeLocal())..e.Icon.left)
         e.tips:AddDoubleLine('|cffffffff'..(e.onlyChinese and '移动' or NPE_MOVE), e.Icon.right)
         e.tips:AddDoubleLine('|cffffffff'..((e.onlyChinese and '缩放' or UI_SCALE)), '|cnGREEN_FONT_COLOR:'..(Save.TimeManagerClockButtonScale or 1)..e.Icon.mid)
         e.tips:AddDoubleLine(e.addName, Initializer:GetName())
