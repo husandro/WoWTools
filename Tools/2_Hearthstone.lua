@@ -839,9 +839,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             ToyButton= WoWTools_ToolsButtonMixin:CreateButton({
                 name='Hearthstone',
                 tooltip=addName,
-                --[[point=function()
-                    return Save.toFrame and 'LEFT' or 'BOTTOM'
-                end,]]
             })
 
             if ToyButton then

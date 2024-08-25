@@ -1081,7 +1081,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             button= WoWTools_ToolsButtonMixin:CreateButton({
                 name='OpenItems',
                 tooltip='|A:BonusLoot-Chest2:0:0|a'..(e.onlyChinese and '打开物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, ITEMS)),
-                point=Save.toFrame and 'LEFT' or 'BOTTOM'
             })
             if button then
                 Init()

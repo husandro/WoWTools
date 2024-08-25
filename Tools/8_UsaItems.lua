@@ -343,7 +343,6 @@ local function Init_All_Buttons()
                 local btn= WoWTools_ToolsButtonMixin:CreateButton({
                     name='UsaItems_ItemID_'..itemID,
                     tooltip='|T'..icon..':0|t'..e.cn(name, {itemID=itemID, isName=true}),
-                    point='LEFT'
                 })
                 if btn then
                     btn.itemID=itemID
@@ -369,8 +368,6 @@ local function Init_All_Buttons()
                 local btn= WoWTools_ToolsButtonMixin:CreateButton({
                     name='UsaItems_Equip_ItemID_'..itemID,
                     tooltip='|T'..icon..':0|t'..e.cn(name, {itemID=itemID, isName=true}),
-                    setParent=true,
-                    point='LEFT'
                 })
                 if btn then
                     btn.itemID=itemID
@@ -393,8 +390,6 @@ local function Init_All_Buttons()
                 local btn= WoWTools_ToolsButtonMixin:CreateButton({
                     name='UsaItems_SpellID_'..spellID,
                     tooltip='|T'..icon..':0|t'..e.cn(name, {spellID=spellID, isName=true}),
-                    setParent=true,
-                    point='LEFT'
                 })
                 if btn then
                     btn.spellID=spellID

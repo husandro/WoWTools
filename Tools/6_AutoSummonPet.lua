@@ -367,8 +367,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             button= WoWTools_ToolsButtonMixin:CreateButton({
                 name='SummonPet',
                 tooltip='|T3150958:0|t'..(e.onlyChinese and '黛西' or 'Daisy'),
-                setParent=true,
-                point='LEFT'
             })
             if button then
                 --[[for _, info in pairs(Save.Pets) do

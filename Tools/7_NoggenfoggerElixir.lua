@@ -210,8 +210,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             button= WoWTools_ToolsButtonMixin:CreateButton({
                 name='UseToy',
                 tooltip='|A:collections-icon-favorites:0:0|a'..(e.onlyChinese and '使用玩具' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, 'Random', TOY)),
-                setParent=true,
-                point='LEFT'
             })
 
             if button then
