@@ -131,9 +131,9 @@ Tools\3_OpenItems.lua
 Tools\8_UsaItems.lua
 
 ##食物
-Tools\A_Food.lua
+Tools\9_Food.lua
 ##法师传送门
-Tools\B_MagePortal.lua
+Tools\10_MagePortal.lua
 
 
 

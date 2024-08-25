@@ -298,7 +298,7 @@ end
 
 --添加，按钮
 --CreateSettingsButtonInitializer(name, buttonText, buttonClick, tooltip, addSearchTags)
-function e.AddPanel_Button(tab)
+function e.AddPanel_Button(tab, parentInitializer)
     local layout= tab.layout or Layout
     local initializer= CreateSettingsButtonInitializer(--Blizzard_SettingControls.lua
         tab.title or '',
@@ -307,7 +307,10 @@ function e.AddPanel_Button(tab)
         tab.tooltip or tab.buttonText or tab.title or nil,
         Set_SearchTags_Text(tab.addSearchTags or tab.title or tab.buttonText)
     )
-	layout:AddInitializer(initializer)
+    layout:AddInitializer(initializer)
+    if parentInitializer then
+        initializer:SetParentInitializer(parentInitializer)
+    end
     return initializer
 end
 

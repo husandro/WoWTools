@@ -444,20 +444,14 @@ end
 --初始
 --####
 local function Init()
-    for itemID, _ in pairs(Save.noUseItems) do
-        e.LoadDate({id=itemID, type='item'})
-    end
-
     button.RePoint={button:GetPoint(1)}
 
     function button:set_point()
         self:ClearAllPoints()
-        if Save.point then
-            self:SetParent(UIParent)
+        if Save.point and Save.point[1] then
             self:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
         else
-            self:SetParent(WoWTools_ToolsButtonMixin:GetButton())
-            self:setPoint(self.RePoint[1], self.RePoint[2], self.RePoint[3], self.RePoint[4], self.RePoint[5])
+            self:SetPoint(self.RePoint[1], self.RePoint[2], self.RePoint[3], self.RePoint[4], self.RePoint[5])
         end
     end
 
@@ -489,8 +483,9 @@ local function Init()
         Save.point={self:GetPoint(1)}
         Save.point[2]=nil
     end)
-    button:SetScript("OnMouseDown", function(self,d)
+    button:SetScript("OnMouseDown", function(self, d)
         if d=='RightButton' then
+             --MenuUtil.CreateContextMenu(self, Init_Menu)
             if not self.Menu then
                 self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
                 e.LibDD:UIDropDownMenu_Initialize(self.Menu, InitMenu, 'MENU')
@@ -560,6 +555,18 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 name='Food',
                 tooltip='|A:Food:0:0|a'..(e.onlyChinese and '食物' or POWER_TYPE_FOOD),
                 isMoveButton=true,
+                option=function(Category, layout, initializer)
+                    e.AddPanel_Button({
+                        category=Category,
+                        layout=layout,
+                        tooltip=addName,
+                        buttonText= e.onlyChinese and '还原位置' or RESET_POSITION,
+                        SetValue= function()
+                            Save.point=nil
+                            button:set_point()
+                        end
+                    }, initializer)
+                end
             })
 
             if button then
