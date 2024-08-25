@@ -289,7 +289,7 @@ local function Init_Menu_Toy(_, root)
         sub2:SetTooltip(Set_Menu_Tooltip)
     end
     --WoWTools_MenuMixin:SetNumButton(root, index)
-    WoWTools_MenuMixin:SetScrollButton(root, 30)
+
 end
 
 
@@ -380,22 +380,43 @@ local function Init_Menu(self, root)
     end)
 
 --设置捷键
+    WoWTools_Key_Button:SetMenu(sub, {
+        name=addName,
+        key=Save.KEY,
+        GetKey=function(key)
+            Save.KEY=key
+            WoWTools_Key_Button:Setup(ToyButton)--设置捷键
+        end,
+        OnAlt=function(s)
+            Save.KEY=nil
+            WoWTools_Key_Button:Setup(ToyButton)--设置捷键
+        end,
+    })
+   
     sub:CreateSpacer()
-WoWTools_Key_Button:SetMenu(sub, {
-    name=addName,
-    key=Save.KEY,
-    GetKey=function(key)
-        Save.KEY=key
-        WoWTools_Key_Button:Setup(ToyButton)--设置捷键
-    end,
-    OnAlt=function(s)
-        Save.KEY=nil
-        WoWTools_Key_Button:Setup(ToyButton)--设置捷键
-    end,
-})
+    WoWTools_MenuMixin:CreateSlider(sub, {
+        getValue=function()
+            return Save.numButton or 35
+        end, setValue=function(value)
+            Save.numButton= math.floor(value)
+            WoWTools_MenuMixin:SetScrollButton(root, Save.numButton)
+        end,
+        name= e.onlyChinese and '按钮' or 'Button',
+        minValue=5,
+        maxValue=50,
+        step=1,
+        bit=nil,
+        tooltip=function(tooltip)
+            tooltip:AddLine(e.onlyChinese and '按钮数量' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, 'Button', AUCTION_HOUSE_QUANTITY_LABEL))
+        end,
+    })
+    sub:CreateSpacer()
+
 
     root:CreateDivider()
     Init_Menu_Toy(self, root)
+
+    WoWTools_MenuMixin:SetScrollButton(root, Save.numButton or 35)
 end
 
 

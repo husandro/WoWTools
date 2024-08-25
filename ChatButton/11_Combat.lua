@@ -525,7 +525,7 @@ local function Init_Menu(self, root)
             Save.SayTime= math.floor(value)
             e.Chat(e.SecondsToClock(Save.SayTime), nil, nil)
         end,
-        name=e.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS ,
+        name= e.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS,
         minValue=60,
         maxValue=600,
         step=1,

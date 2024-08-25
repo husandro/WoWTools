@@ -1293,7 +1293,7 @@ local function Init_Menu(_, root)
             Save.KEY=key
             WoWTools_Key_Button:Setup(MountButton)--设置捷键
         end,
-        OnAlt=function(s)
+        OnAlt=function()
             Save.KEY=nil
             WoWTools_Key_Button:Setup(MountButton)--设置捷键
         end,

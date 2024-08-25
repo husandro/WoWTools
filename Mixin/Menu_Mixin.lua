@@ -346,3 +346,4 @@ end
 function WoWTools_MenuMixin:SetScrollButton(root, maxCharacters)
    root:SetScrollMode(20 * (maxCharacters or 35))
 end
+
