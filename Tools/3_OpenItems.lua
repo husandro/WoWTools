@@ -852,6 +852,8 @@ local function Init()
 
 
 
+    get_Items()--设置属性
+
     function OpenButton:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
@@ -886,7 +888,7 @@ local function Init()
 
 
     OpenButton:SetScript("OnEnter",  function(self)
-        --get_Items()
+        get_Items()
         WoWTools_ToolsButtonMixin:EnterShowFrame(self)
         self:set_tooltips()
         self:SetScript('OnUpdate', function (s, elapsed)

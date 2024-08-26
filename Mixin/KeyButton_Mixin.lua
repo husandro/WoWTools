@@ -1,20 +1,18 @@
 local e= select(2, ...)
 WoWTools_Key_Button={}
     
-
-
 local Frame=CreateFrame('Frame')
 Frame.buttons={}
 
 function Frame:set_event(enable)
     if enable then
-        self:RegisterEvent('PLAYER_REGEN_DISABLED')
+        self:RegisterEvent('PLAYER_REGEN_ENABLED')
     else
-        self:UnregisterEvent('PLAYER_REGEN_DISABLED')
+        self:UnregisterEvent('PLAYER_REGEN_ENABLED')
     end
 end
 
-Frame:SetScript("OnEnter", function(self)
+Frame:SetScript("OnEvent", function(self)
     do
         for btn, info in pairs(self.buttons) do
             WoWTools_Key_Button:Setup(btn, info.isHide)
