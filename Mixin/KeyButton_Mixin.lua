@@ -1,7 +1,30 @@
 local e= select(2, ...)
-WoWTools_Key_Button={
-    Buttons={}
-}
+WoWTools_Key_Button={}
+    
+
+
+local Frame=CreateFrame('Frame')
+Frame.buttons={}
+
+function Frame:set_event(enable)
+    if enable then
+        self:RegisterEvent('PLAYER_REGEN_DISABLED')
+    else
+        self:UnregisterEvent('PLAYER_REGEN_DISABLED')
+    end
+end
+
+Frame:SetScript("OnEnter", function(self)
+    do
+        for btn, info in pairs(self.buttons) do
+            WoWTools_Key_Button:Setup(btn, info.isHide)
+        end
+    end
+    self.buttons={}
+    self:set_event(false)
+end)
+
+
 
 
 
@@ -33,15 +56,19 @@ function WoWTools_Key_Button:IsKeyValid(btn)
 end
 
 function WoWTools_Key_Button:Setup(btn, isHide)
-    
-    local key=btn:GetKEY()
-    if not UnitAffectingCombat('player') then
-        if key and not isHide then
-            SetOverrideBindingClick(btn, true, key, btn:GetName(), 'LeftButton')
-        else
-            ClearOverrideBindings(btn)
-        end
+    if UnitAffectingCombat('player') then
+        Frame.buttons[btn]={isHide=isHide}
+        Frame:set_event(true)
+        return
     end
+
+    local key=btn:GetKEY()
+    if key and not isHide then
+        SetOverrideBindingClick(btn, true, key, btn:GetName(), 'LeftButton')
+    else
+        ClearOverrideBindings(btn)
+    end
+
     if self:IsKeyValid(btn) then
         if #key==1 then
             btn.KEYstring:SetText(key)

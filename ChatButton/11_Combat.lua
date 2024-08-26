@@ -343,18 +343,22 @@ local function Init_TrackButton()--设置显示内容, 父框架TrackButton, 内
         end
     end)
 
-    TrackButton:SetScript('OnEnter', function(self)
+    function TrackButton:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, e.Icon.left)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-        e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE,'Alt+'..e.Icon.mid)
+        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.textScale or 1),'Alt+'..e.Icon.mid)
         e.tips:AddLine(' ')
         set_Tooltips_Info()
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.addName, e.cn(addName))
         e.tips:Show()
+    end
+
+    TrackButton:SetScript('OnEnter', function(self)
+        self:set_tooltip()
         CombatButton:SetButtonState('PUSHED')
     end)
     TrackButton:SetScript("OnLeave", function()
@@ -372,6 +376,7 @@ local function Init_TrackButton()--设置显示内容, 父框架TrackButton, 内
             sacle=sacle<0.4 and 0.4 or sacle
             Save.textScale=sacle
             self:set_text_scale()
+            self:set_tooltip()
             print(e.addName, e.cn( addName), e.onlyChinese and '缩放' or UI_SCALE,"|cnGREEN_FONT_COLOR:", sacle)
         end
     end)

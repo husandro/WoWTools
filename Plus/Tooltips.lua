@@ -1983,7 +1983,7 @@ local function Init_Hook()
         ReputationFrame.ReputationDetailFrame:HookScript('OnShow', function(self)
             local selectedFactionIndex = C_Reputation.GetSelectedFaction();
             local factionData = C_Reputation.GetFactionDataByIndex(selectedFactionIndex);
-            if factionData or factionData.factionID> 0 then
+            if factionData and factionData.factionID> 0 then
                 if not self.factionIDText then
                     self.factionIDText=e.Cstr(self)
                     self.factionIDText:SetPoint('BOTTOM', self, 'TOP', 0,-4)

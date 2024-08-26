@@ -63,7 +63,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 
 
             --添加控制面板
-            e.AddPanel_Check({
+            local initializer= e.AddPanel_Check({
                 name= '|A:nameplates-holypower2-on:0:0|a'..(e.onlyChinese and '断驱散' or addName),
                 tooltip= e.onlyChinese and '说|n仅限：我, 小队'
                     or (SAY..'|n'..format(LFG_LIST_CROSS_FACTION, COMBATLOG_FILTER_STRING_ME)..'|n'..format(LFG_LIST_CROSS_FACTION, SLASH_TEXTTOSPEECH_PARTY)),
@@ -80,28 +80,23 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 end
             })
 
-            --[[添加控制面板        
-            local sel=e.AddPanel_Check('|A:nameplates-holypower2-on:0:0|a'..(e.onlyChinese and '断驱散' or addName), not Save.disabled, true)
-            sel:SetScript('OnMouseDown', function()
-                if Save.disabled then
-                    Save.disabled=nil
-                    panel:UnregisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
-                else
-                    Save.disabled=true
-                    panel:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
+            e.AddPanel_Check({
+                name= '|A:nameplates-holypower2-on:0:0|a'..(e.onlyChinese and '断驱散' or addName),
+                tooltip= e.onlyChinese and '说|n仅限：我, 小队'
+                    or (SAY..'|n'..format(LFG_LIST_CROSS_FACTION, COMBATLOG_FILTER_STRING_ME)..'|n'..format(LFG_LIST_CROSS_FACTION, SLASH_TEXTTOSPEECH_PARTY)),
+                GetValue= function() return not Save.disabled end,
+                SetValue= function()
+                    if Save.disabled then
+                        Save.disabled=nil
+                        panel:UnregisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
+                    else
+                        Save.disabled=true
+                        panel:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
+                    end
+                    print(e.addName, e.cn(addName), e.GetEnabeleDisable(Save.disabled))
                 end
-                print(e.addName, e.cn(addName), e.GetEnabeleDisable(Save.disabled))
-            end)
-            sel:SetScript('OnEnter', function(self2)
-                e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:AddDoubleLine(e.cn(addName), e.onlyChinese and '说' or SAY, nil,nil,nil, 0,1,0)
-                e.tips:AddDoubleLine(e.onlyChinese and '仅限我' or LFG_LIST_CROSS_FACTION:format(COMBATLOG_FILTER_STRING_ME), e.onlyChinese and '仅限队伍' or LFG_LIST_CROSS_FACTION:format(HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS))--仅限我, 仅限队伍
-                e.tips:Show()
-            end)
-            sel:SetScript('OnLeave', function()
-                e.tips:Hide()
-            end)]]
+            }, initializer)
+          
 
             if Save.disabled then
                 panel:UnregisterAllEvents()

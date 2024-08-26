@@ -202,7 +202,8 @@ local function Item(link)--物品超链接
 end
 
 local function Spell(link)--法术图标
-    local spellID= (C_Spell.GetSpellInfo(link) or {}).spellID
+    local spellID
+    spellID= (C_Spell.GetSpellInfo(link) or {}).spellID
     if not spellID then
         spellID= link:match('Hspell:(%d+)')
         if spellID  then
@@ -964,7 +965,7 @@ local function set_Talking()
                     self.voHandle = voHandle;
                 end
                 if not Save.disabledTalkingPringText and text then
-                    print('|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cff00ff00'..(name or '')..'|r','|cffff00ff',text)--,id, addName, 'soundKitID', vo)
+                    print('|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cff00ff00'..(name or '')..'|r|A:voicechat-icon-textchat-silenced:0:0|a|cffff00ff'..(text or ''))--,id, addName, 'soundKitID', vo)
                 end
             end
         end)
