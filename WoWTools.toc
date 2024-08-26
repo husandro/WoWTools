@@ -114,26 +114,29 @@ Plus\Professions.lua
 ##如果要使用Tools中的一个模块，必须开启坐骑模块
 Tools\0_Init.lua
 ##坐骑
-Tools\1_Mount.lua
+Tools\B1_Mount.lua
 ##随机炉石
-Tools\2_Hearthstone.lua
-##随机，玩具
-Tools\4_UseToy.lua
-##侦察地图, 玩具, 没有小号，可以禁用
-Tools\5_ScoutingMapToy.lua
-##自动召唤，宠物
-Tools\6_AutoSummonPet.lua
-##诺格弗格药剂 Noggenfogger Elixir
-Tools\7_NoggenfoggerElixir.lua
+Tools\B2_Hearthstone.lua
 ##打开物品，各种物品
-Tools\3_OpenItems.lua
-##各种专送门,物品，玩具
-Tools\8_UsaItems.lua
-
+Tools\B3_OpenItems.lua
+##侦察地图, 玩具, 没有小号，可以禁用
+Tools\B4_MapToy.lua
 ##食物
-Tools\9_Food.lua
+Tools\B5_Food.lua
+
+##随机，玩具
+Tools\L1_UseToy.lua
+##自动召唤，宠物
+Tools\L2_Pet.lua
+##诺格弗格药剂 Noggenfogger Elixir
+Tools\L3_NoggenfoggerElixir.lua
+##各种专送门,物品，玩具
+Tools\L4_UsaItems.lua
+
 ##法师传送门
-Tools\10_MagePortal.lua
+Tools\LL_MagePortal.lua
+
+
 
 
 

@@ -9,6 +9,7 @@ local Save={
         Mount=true,
         Hearthstone=true,
         OpenItems=true,
+        MapToy=true,
     },
     scale=1,
     strata='HIGH',
