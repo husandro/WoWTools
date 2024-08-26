@@ -17,6 +17,10 @@ function WoWTools_EditBoxMixn:Create(frame, tab)
     editBox:SetAutoFocus(false)
     editBox:ClearFocus()
     editBox:SetFontObject(font)
+    
+    editBox:SetScript('OnEscapePressed', EditBox_ClearFocus)
+    editBox:SetScript('OnHide', function(s) s:SetText('') s:ClearFocus() end)
+
     return editBox
 end
 
@@ -31,7 +35,7 @@ function WoWTools_EditBoxMixn:CreateMultiLineFrame(frame, tab)
     tab= tab or {}
     
     local name= tab.name or format('%s%d', 'WoWTools_EditScrollFrame', self.index)--名称
-    local font= tab.font or 'GameFontHighlightSmall'--字体 ChatFontNormal
+    --local font= tab.font or 'GameFontHighlightSmall'--字体 ChatFontNormal
     local isShowLinkTooltip= tab.isShowLinkTooltip--超链接
     local instructions= tab.instructions--使用说明
 
@@ -52,17 +56,18 @@ function WoWTools_EditBoxMixn:CreateMultiLineFrame(frame, tab)
     scrollFrame.bg:SetFrameLevel(level+1)
     e.Set_NineSlice_Color_Alpha(scrollFrame.bg, true, nil, nil, true)
 
-    scrollFrame.editBox= CreateFrame('EditBox', name..'Edit', scrollFrame)
+    --[[scrollFrame.editBox= CreateFrame('EditBox', name..'Edit', scrollFrame)
     scrollFrame.editBox:SetAutoFocus(false)
     scrollFrame.editBox:ClearFocus()
+    
+    
+    scrollFrame.editBox:SetFontObject(font)]]
+
+    scrollFrame.editBox= self:Create(scrollFrame, tab)
     scrollFrame.editBox:SetMultiLine(true)
     scrollFrame.editBox:SetFrameLevel(level+2)
-    scrollFrame.editBox:SetFontObject(font)
-
-    scrollFrame.editBox:SetScript('OnEscapePressed', EditBox_ClearFocus)
-    scrollFrame.editBox:SetScript('OnCursorChanged', ScrollingEdit_OnCursorChanged)
-    scrollFrame.editBox:SetScript('OnHide', function(s) s:SetText('') s:ClearFocus() end)
     scrollFrame.editBox:SetScript('OnUpdate', function(s, elapsed) ScrollingEdit_OnUpdate(s, elapsed, s:GetParent()) end)
+    scrollFrame.editBox:SetScript('OnCursorChanged', ScrollingEdit_OnCursorChanged)
 
     scrollFrame:SetScrollChild(scrollFrame.editBox)
     scrollFrame:HookScript('OnSizeChanged', function(f)

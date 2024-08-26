@@ -3108,7 +3108,8 @@ local function Init()
         hooksecurefunc('LFGListSearchEntry_Update', Init_LFGListSearchEntry_Update)
         hooksecurefunc('LFGListUtil_SetSearchEntryTooltip', Init_LFGListUtil_SetSearchEntryTooltip)
 
-        --LFGListFrame.EntryCreation.Name
+        
+        --WoWTools_EditBoxMixn:Create(LFGListFrame.EntryCreation)
     end
 
     Loot_Plus()--历史, 拾取框
