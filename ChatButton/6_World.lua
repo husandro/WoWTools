@@ -487,13 +487,13 @@ end
                 end
             end)
 
-            local name, realmName = select(6, GetPlayerInfoByGUID(guid))
-            if name and realmName then
+            local name2, realmName = select(6, GetPlayerInfoByGUID(guid))
+            if name2 and realmName then
                 realmName= realmName =='' and e.Player.realm or realmName
                 sub3:CreateButton(e.onlyChinese and '密语' or SLASH_TEXTTOSPEECH_WHISPER, function(data)
                     e.Say(nil, data)
                     return MenuResponse.Open
-                end, name..'-'..realmName)
+                end, name2..'-'..realmName)
             end
         end
 
@@ -1114,7 +1114,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             self:UnregisterEvent('ADDON_LOADED')
 
         end
-        
+
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             WoWToolsSave['ChatButtonWorldChannel']=Save
