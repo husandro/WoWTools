@@ -852,8 +852,6 @@ local function Init()
 
 
 
-    get_Items()--设置属性
-
     function OpenButton:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
