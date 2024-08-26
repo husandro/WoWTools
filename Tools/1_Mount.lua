@@ -1215,7 +1215,7 @@ local function Init_Menu(_, root)
 
 --选项
     root:CreateDivider()
-    sub=root:CreateButton('|T413588:0|t'..(Save.KEY and (e.onlyChinese and '坐骑' or MOUNT)),
+    sub=root:CreateButton('|T413588:0|t'..(Save.KEY or (e.onlyChinese and '坐骑' or MOUNT)),
     function()
         C_MountJournal.SummonByID(0)
     end, {spellID=150544})
