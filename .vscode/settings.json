@@ -4830,7 +4830,12 @@
         "nop",
         "SPELL_FAILED_ITEM_GONE",
         "BAG_FILTER_REAGENTS",
-        "COMBAT_TEXT_SCROLL_UP"
+        "COMBAT_TEXT_SCROLL_UP",
+        "VOICEMACRO_LABEL_WAITHERE1",
+        "COMPACT_UNIT_FRAME_PROFILE_SORTBY",
+        "COMPACT_UNIT_FRAME_PROFILE_SORTBY_GROUP",
+        "BLIZZARD_COMBAT_LOG_MENU_RESET",
+        "ReloadUI"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
