@@ -294,13 +294,13 @@ local function Init_Friends_Menu(self, root)
         Save.allFriendInfo= not Save.allFriendInfo and true or nil
     end)
 
-    sub:CreateCheckbox(e.onlyChinese and '仅限' or format(LFG_LIST_CROSS_FACTION, BATTLE_PET_FAVORITE)..'|A:friendslist-favorite:0:0|a', function()
+    sub:CreateCheckbox((e.onlyChinese and '仅限偏好好友' or format(LFG_LIST_CROSS_FACTION, BATTLE_PET_FAVORITE))..'|A:friendslist-favorite:0:0|a', function()
         return Save.showFriendInfoOnlyFavorite
     end, function()
         Save.showFriendInfoOnlyFavorite= not Save.showFriendInfoOnlyFavorite and true or nil
     end)
 
-    sub:CreateCheckbox(format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, (e.onlyChinese and '不在战斗中' or LEAVE..'('..COMBAT..')')), function()
+    sub:CreateCheckbox((e.onlyChinese and '仅限脱离战斗' or format(LFG_LIST_CROSS_FACTION, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_OUT_OF_COMBAT )..'|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a', function()
         return not Save.showInCombatFriendInfo
     end, function()
         Save.showInCombatFriendInfo= not Save.showInCombatFriendInfo and true or nil
@@ -466,9 +466,13 @@ local function Init_FriendsList()--好友列表, 初始化
         end
     end)
 
-    C_Timer.After(2, function()
+    if Save.showFriendInfoOnlyFavorite then
         FriendsButton:RegisterEvent('BN_FRIEND_INFO_CHANGED')
-    end)
+    else
+        C_Timer.After(2, function()
+            FriendsButton:RegisterEvent('BN_FRIEND_INFO_CHANGED')
+        end)
+    end
 
 
 
