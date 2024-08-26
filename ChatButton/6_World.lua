@@ -1114,6 +1114,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             self:UnregisterEvent('ADDON_LOADED')
 
         end
+        
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             WoWToolsSave['ChatButtonWorldChannel']=Save
