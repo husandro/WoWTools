@@ -20,6 +20,12 @@ function WoWTools_EditBoxMixn:Create(frame, tab)
     return editBox
 end
 
+
+
+
+
+
+
 function WoWTools_EditBoxMixn:CreateMultiLineFrame(frame, tab)
     self.index= self.index+1
     tab= tab or {}
