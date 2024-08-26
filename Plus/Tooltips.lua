@@ -1815,6 +1815,8 @@ local function Set_Battle_Pet(self, speciesID, level, breedQuality, maxHealth, p
     if not speciesID or speciesID < 1 then
         return
     end
+    func:Set_Init_Item(self)
+
     local speciesName, speciesIcon, _, companionID, tooltipSource, tooltipDescription, _, _, _, _, obtainable, creatureDisplayID = C_PetJournal.GetPetInfoBySpeciesID(speciesID)
     func:Set_Item_Model(self, {creatureDisplayID=creatureDisplayID})--设置, 3D模型
     --self.itemModel:SetDisplayInfo(creatureDisplayID)
