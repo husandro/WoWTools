@@ -4836,7 +4836,8 @@
         "COMPACT_UNIT_FRAME_PROFILE_SORTBY_GROUP",
         "BLIZZARD_COMBAT_LOG_MENU_RESET",
         "ReloadUI",
-        "aura_env"
+        "aura_env",
+        "PROFESSIONS_FAVORITE"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

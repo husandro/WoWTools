@@ -3,8 +3,9 @@ local addName
 local Save={
         Friends={},
         disabledBNFriendInfo=not e.Player.husandro and true or nil,--禁用战网，好友信息，提示
-        --allFriendInfo= true,--所有，提示，WoW，好友，提示
-        --showInCombatFriendInfo,--仅限，不在战斗中，好友，提示
+        --allFriendInfo= true,--仅限，WoW，好友
+        --showInCombatFriendInfo=true,--仅限，不在战斗中，好友，提示
+        --showFriendInfoOnlyFavorite=true,--仅限收藏好友
     }
 local panel=CreateFrame("Frame")
 local FriendsButton
@@ -293,6 +294,12 @@ local function Init_Friends_Menu(self, root)
         Save.allFriendInfo= not Save.allFriendInfo and true or nil
     end)
 
+    sub:CreateCheckbox(e.onlyChinese and '仅限' or format(LFG_LIST_CROSS_FACTION, BATTLE_PET_FAVORITE)..'|A:friendslist-favorite:0:0|a', function()
+        return Save.showFriendInfoOnlyFavorite
+    end, function()
+        Save.showFriendInfoOnlyFavorite= not Save.showFriendInfoOnlyFavorite and true or nil
+    end)
+
     sub:CreateCheckbox(format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, (e.onlyChinese and '不在战斗中' or LEAVE..'('..COMBAT..')')), function()
         return not Save.showInCombatFriendInfo
     end, function()
@@ -356,7 +363,7 @@ local function Init_FriendsList()--好友列表, 初始化
         local accountInfo= friendIndex and C_BattleNet.GetFriendAccountInfo(friendIndex) --FriendsFrame_UpdateFriendButton FriendsFrame.lua
         if not accountInfo
             or (
-                not Save.allFriendInfo
+                not Save.allFriendInfo--仅限，WoW，好友
                 and accountInfo.gameAccountInfo.isOnline
                 and (
                         accountInfo.gameAccountInfo.clientProgram ~= BNET_CLIENT_WOW
@@ -364,6 +371,7 @@ local function Init_FriendsList()--好友列表, 初始化
                         or not accountInfo.gameAccountInfo.isInCurrentRegion
                     )
                 )
+            or (not accountInfo.isFavorite and Save.showFriendInfoOnlyFavorite)--仅限收藏好友
         then
             return
         end
