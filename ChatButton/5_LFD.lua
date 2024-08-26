@@ -245,31 +245,21 @@ end
 local function get_InviteButton_Frame(index)
     local frame= tipsButton.lfgTextTab[index]
     if not frame then
-        local size=14
+        local size=16
         frame= CreateFrame("Frame", nil, tipsButton)
-        frame:SetSize(1,1)
+        frame:SetSize(20,20)
         if index==1 then
             frame:SetPoint('TOPLEFT', tipsButton.text, 'BOTTOMLEFT')
         else
             frame:SetPoint('TOPLEFT', tipsButton.lfgTextTab[index-1], 'BOTTOMLEFT')
         end
 
-        frame.ChatButton= e.Cbtn(frame, {size={size,size}, atlas= 'transmog-icon-chat'})
-        frame.ChatButton:SetPoint('TOPLEFT')
-        frame.ChatButton:SetScript('OnClick', function(self2)
-            e.Say(nil, self2:GetParent().name)
-        end)
-        frame.ChatButton:SetScript('OnLeave', GameTooltip_Hide)
-        frame.ChatButton:SetScript('OnEnter', function(self2)
-            e.tips:SetOwner(self2, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:AddDoubleLine( self2:GetParent().name, e.onlyChinese and '/密语' or SLASH_SMART_WHISPER2)
-            e.tips:AddLine(self2:GetParent().tooltip)
-            e.tips:Show()
-        end)
-
-        frame.InviteButton= e.Cbtn(frame, {size={size,size}, atlas= e.Icon.select})
-        frame.InviteButton:SetPoint('LEFT', frame.ChatButton, 'RIGHT')
+        
+        frame.InviteButton= e.Cbtn(frame, {size={20, 20}, atlas= e.Icon.select})
+        frame.InviteButton:SetAllPoints()
+        --frame.InviteButton:SetPoint('TOPLEFT')
+        frame.InviteButton.Size=20
+        
         frame.InviteButton:SetScript('OnClick', function(self2)
             if ( not IsInRaid(LE_PARTY_CATEGORY_HOME)
                 and (GetNumGroupMembers(LE_PARTY_CATEGORY_HOME) + self2:GetParent().numMembers + C_LFGList.GetNumInvitedApplicantMembers()) > (MAX_PARTY_MEMBERS + 1) )
@@ -291,8 +281,24 @@ local function get_InviteButton_Frame(index)
             e.tips:Show()
         end)
 
-        frame.DeclineButton= e.Cbtn(frame, {size={size,size}, atlas= 'communities-icon-redx'})
-        frame.DeclineButton:SetPoint('LEFT', frame.InviteButton, 'RIGHT')
+        frame.ChatButton= e.Cbtn(frame, {size={size,size}, atlas= 'transmog-icon-chat'})
+        frame.ChatButton:SetPoint('BOTTOMLEFT', frame.InviteButton, 'BOTTOMRIGHT')
+        frame.ChatButton:SetScript('OnClick', function(self2)
+            e.Say(nil, self2:GetParent().name)
+        end)
+        frame.ChatButton:SetScript('OnLeave', GameTooltip_Hide)
+        frame.ChatButton:SetScript('OnEnter', function(self2)
+            e.tips:SetOwner(self2, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine( self2:GetParent().name, e.onlyChinese and '/密语' or SLASH_SMART_WHISPER2)
+            e.tips:AddLine(self2:GetParent().tooltip)
+            e.tips:Show()
+        end)
+
+        
+
+        frame.DeclineButton= e.Cbtn(frame, {size={size, size}, atlas= 'communities-icon-redx'})
+        frame.DeclineButton:SetPoint('BOTTOMLEFT', frame.ChatButton, 'BOTTOMRIGHT')
         frame.DeclineButton:SetScript('OnClick', function(self2)
             --C_LFGList.RemoveApplicant(self2:GetParent().applicantID)
             C_LFGList.DeclineApplicant(self2:GetParent().applicantID)
@@ -307,7 +313,7 @@ local function get_InviteButton_Frame(index)
         end)
 
         frame.text= e.Cstr(frame, {size=Save.tipsFrameTextSize, color=true})
-        frame.text:SetPoint('TOPLEFT', frame.DeclineButton, 'TOPRIGHT')
+        frame.text:SetPoint('BOTTOMLEFT', frame.DeclineButton, 'BOTTOMRIGHT')
 
         tipsButton.lfgTextTab[index]= frame
     end
@@ -329,7 +335,7 @@ local function set_tipsFrame_Tips(text, LFGListTab)
     for index, tab in pairs(LFGListTab) do
         local frame= get_InviteButton_Frame(index)
         frame.text:SetText((index<10 and ' ' or '')..index..') '..tab.text)
-        frame:SetHeight(frame.text:GetHeight())
+        frame:SetHeight(frame.text:GetHeight()+6)
         frame.applicantID= tab.applicantID
         frame.numMembers= tab.numMembers
         frame.tooltip= tab.text
@@ -588,17 +594,22 @@ local function Set_Queue_Status()--小眼睛, 信息
                                 if honorLevel and honorLevel>1 then
                                     scorsoText= scorsoText~='' and scorsoText..' ' or scorsoText
                                     scorsoText= scorsoText..'|A:pvptalents-warmode-swords:0:0|a'..honorLevel
+                                    scorsoText=' ['..scorsoText..']'
                                 end
 
                                 memberText= memberText and memberText..(isLeader and '|n     ' or '|n          ') or ''
                                 memberText= memberText..col
+
+                                    ..(itemLevelText or '')
+                                    ..scorsoText
+
                                     ..(e.GetFriend(name) or '')
                                     ..icon
                                     ..(tank and INLINE_TANK_ICON or '')
                                     ..(healer and INLINE_HEALER_ICON or '')
                                     ..(dps and INLINE_DAMAGER_ICON or '')
-                                    ..(itemLevelText or '')
-                                    ..scorsoText
+                                    
+                                    
                                     ..(levelText or '')
                                     ..(realmText or '')
                                     ..'|r '
@@ -3096,6 +3107,8 @@ local function Init()
         --预创建队伍增强
         hooksecurefunc('LFGListSearchEntry_Update', Init_LFGListSearchEntry_Update)
         hooksecurefunc('LFGListUtil_SetSearchEntryTooltip', Init_LFGListUtil_SetSearchEntryTooltip)
+
+        --LFGListFrame.EntryCreation.Name
     end
 
     Loot_Plus()--历史, 拾取框

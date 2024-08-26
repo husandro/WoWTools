@@ -6,6 +6,17 @@ WoWTools_EditBoxMixn={
     index=1
 }
 
+function WoWTools_EditBoxMixn:Create(frame, tab)
+    self.index= self.index+1
+    local name= tab.name or format('%s%d', 'WoWTools_Edit', self.index)
+    local font= tab.font or 'ChatFontNormal'
+    
+    scrollFrame.editBox= CreateFrame('EditBox', (name..'Edit', scrollFrame)
+end
+
+
+
+
 
 function WoWTools_EditBoxMixn:CreateMultiLineFrame(frame, tab)
     self.index= self.index+1
@@ -13,7 +24,6 @@ function WoWTools_EditBoxMixn:CreateMultiLineFrame(frame, tab)
     
     local name= tab.name or format('%s%d', 'WoWTools_ScrollFrame', self.index)    
     local font= tab.font or 'GameFontHighlightSmall'--ChatFontNormal
-
     local isShowLinkTooltip= tab.isShowLinkTooltip
     local instructions= tab.instructions
 
@@ -68,22 +78,7 @@ function WoWTools_EditBoxMixn:CreateMultiLineFrame(frame, tab)
     end
     
 --使用说明
-    if instructions then
-        scrollFrame.editBox.Instructions=e.Cstr(scrollFrame.editBox, {layer='BORDER', color={r=0.35,g=0.35,b=0.35}})
-        scrollFrame.editBox.Instructions:SetPoint('TOPLEFT')
-        scrollFrame.editBox.Instructions:SetText(instructions)
-        scrollFrame.editBox:HookScript('OnTextChanged', function(s)
-            s.Instructions:SetShown(s:GetText() == "")
-        end)
-
-        function scrollFrame:SetInstructions(text)
-            if text then
-                self.editBox.Instructions:SetText()
-            end
-        end
-    end
-
-
+    self:SetInstructions(scrollFrame.editBox, instructions, scrollFrame)
 
     
     function scrollFrame:SetText(...)
@@ -105,6 +100,36 @@ function WoWTools_EditBoxMixn:CreateMultiLineFrame(frame, tab)
 end
 
 
+
+function WoWTools_EditBoxMixn:HookInstructions(editBox)
+    editBox:HookScript('OnTextChanged', function(s)
+        s.Instructions:SetShown(s:GetText() == "")
+    end)
+end
+
+function WoWTools_EditBoxMixn:SetInstructions(editBox, instructions, frame)
+    if not instructions then
+        return
+    end
+    editBox= frame and frame.editBox or editBox
+    if not editBox then
+        return
+    end
+
+    editBox.Instructions=e.Cstr(editBox, {layer='BORDER', color={r=0.35,g=0.35,b=0.35}})
+    editBox.Instructions:SetPoint('TOPLEFT')
+    editBox.Instructions:SetText(instructions)
+    
+    if frame then
+        function frame:SetInstructions(text)
+            if text then
+                self.editBox.Instructions:SetText(text or '')
+            end
+        end
+        self:HookInstructions(frame.editBox)       
+    end
+    
+end
 --[[scrollFrame.bg:SetScript('OnMouseDown', function(s, d)
         if d=='LeftButton' then
             local edit= s:GetParent().edit
