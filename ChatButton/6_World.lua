@@ -1100,6 +1100,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave['ChatButtonWorldChannel'] or Save
+            Save.myChatFilterPlayers= Save.myChatFilterPlayers or {}
+            
             addName= '|A:tokens-WoW-generic-regular:0:0|a'..(e.onlyChinese and '频道' or CHANNEL)
             WorldButton= WoWTools_ChatButtonMixin:CreateButton('World', addName)
 
