@@ -964,7 +964,7 @@ local function set_Talking()
                     self.voHandle = voHandle;
                 end
                 if not Save.disabledTalkingPringText and text then
-                    print('|cff00ff00'..name..'|r','|cffff00ff'..text..'|r',id, addName, 'soundKitID', vo)
+                    print('|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cff00ff00'..(name or '')..'|r','|cffff00ff',text)--,id, addName, 'soundKitID', vo)
                 end
             end
         end)
