@@ -300,7 +300,7 @@ local function Init_Friends_Menu(self, root)
         Save.showFriendInfoOnlyFavorite= not Save.showFriendInfoOnlyFavorite and true or nil
     end)
 
-    sub:CreateCheckbox((e.onlyChinese and '仅限脱离战斗' or format(LFG_LIST_CROSS_FACTION, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_OUT_OF_COMBAT )..'|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a', function()
+    sub:CreateCheckbox((e.onlyChinese and '仅限脱离战斗' or format(LFG_LIST_CROSS_FACTION, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_OUT_OF_COMBAT))..'|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a', function()
         return not Save.showInCombatFriendInfo
     end, function()
         Save.showInCombatFriendInfo= not Save.showInCombatFriendInfo and true or nil
