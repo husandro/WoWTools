@@ -36,7 +36,7 @@ end
 local addName
 local ToyButton
 local Save={
-    disablePlayer={
+    noPlayer={
         --[guid]=true
     }
 }
@@ -148,7 +148,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWTools_ToolsButtonMixin:AddOptions(Init_Options)
 
             if not Save.disabled
-                and not Save.disablePlayer[e.Player.guid]
+                and not Save.noPlayer[e.Player.guid]
                 and  WoWTools_ToolsButtonMixin:GetButton()
             then
                 addName= '|A:Taxi_Frame_Yellow:0:0|a'..(e.onlyChinese and '侦察地图' or ADVENTURE_MAP_TITLE)
