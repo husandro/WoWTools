@@ -888,6 +888,7 @@ local function Init()
 
 
     OpenButton:SetScript("OnEnter",  function(self)
+        --get_Items()
         WoWTools_ToolsButtonMixin:EnterShowFrame(self)
         self:set_tooltips()
         self:SetScript('OnUpdate', function (s, elapsed)
@@ -896,8 +897,12 @@ local function Init()
                 s.elapsed = 0
                 if GameTooltip:IsOwned(s) then
                     local itemID= self:GetItemID()
-                    if itemID and itemID~=select(3, GameTooltip:GetItem()) then
-                        s:set_tooltips()
+                    if itemID then
+                        if itemID~=select(3, GameTooltip:GetItem()) then
+                            s:set_tooltips()
+                        end
+                    else
+                        get_Items()
                     end
                 end
             end
