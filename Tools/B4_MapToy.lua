@@ -270,6 +270,7 @@ end
 --###########
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent('PLAYER_LOGOUT')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
@@ -279,9 +280,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWTools_ToolsButtonMixin:AddOptions(Init_Options)
 
-            
             if not Save.disabled
-               and not Save.no[e.Player.guid]
+                and not Save.no[e.Player.guid]
                 and WoWTools_ToolsButtonMixin:GetButton()
             then
                 
