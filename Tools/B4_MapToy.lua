@@ -112,7 +112,7 @@ local function Init_Menu(self, root)
         for _, tab in pairs(new.achievements) do
             sub2=sub:CreateButton(
                 (tab.find and '|cff9e9e9e' or '')
-                '|T'..(tab.icon or 0)..':0|t'
+                ..'|T'..(tab.icon or 0)..':0|t'
                 ..tab.name,
             function(data)
                 self:Set_Random_Value(data.itemID)
