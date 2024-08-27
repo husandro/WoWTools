@@ -2,7 +2,7 @@ local e= select(2, ...)
 
 WoWTools_UnitMixin={}
 
-function WoWTools_UnitMixin:GetPlayerNameRemoveRealm(name, realm)--玩家名称, 去服务器为*
+function WoWTools_UnitMixin:NameRemoveRealm(name, realm)--玩家名称, 去服务器为*
     if not name then
         return
     end

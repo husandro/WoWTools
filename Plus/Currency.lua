@@ -1639,7 +1639,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 			if WoWToolsSave[TOKENS] then
 				WoWToolsSave[TOKENS]=nil
 			else
-				Save= WoWToolsSave['Currency2']
+				Save= WoWToolsSave['Currency2'] or Save
 			end
             
 			addName = '|A:bags-junkcoin:0:0|a'..(e.onlyChinese and '货币' or TOKENS)

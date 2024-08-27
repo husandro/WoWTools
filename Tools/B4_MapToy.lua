@@ -48,6 +48,74 @@ local Save={
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+local function Is_Completed(tab)
+    e.LoadDate({type='item', id=tab.itemID})
+
+    local num= 0
+    local isNotChecked
+    local new={}
+    for _, achievementID in pairs(tab.achievements) do
+        local _, name, _, _, _, _, _, _, _, icon, _, _, wasEarnedByMe= GetAchievementInfo(achievementID)
+        if name then
+            if not wasEarnedByMe then
+                num= num+1--没完成
+            end
+        else
+            isNotChecked=true--没发现，数据
+        end
+        table.insert(new, {
+            achievementID= achievementID,
+            name=name,
+            icon=icon,
+            wasEarnedByMe=wasEarnedByMe
+        })
+    end
+
+    return {
+        itemID= tab.itemID,
+        hasToy= PlayerHasToy(tab.itemID),--没收集 ==false
+        num=num,--没完成，数量
+        isNotChecked=isNotChecked,--没数据 ==nil
+
+        data=new,
+    }
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function Init_Options(category, layout)
     e.AddPanel_Header(layout, addName)
 
@@ -65,38 +133,19 @@ end
 
 
 
-local function Get_Valid(data)
-    local num=0
-    
-    local name= WoWTools_SpellItemMixin:GetName(nil, data.itemID) or ''
-    
-    
-    local new={}
-    for _, achievementID  in pairs(data.achievements) do
-        local _, name2, _, _, _, _, _, _, _, icon, _, _, wasEarnedByMe= GetAchievementInfo(achievementID)
-        if name2 then
-            if not wasEarnedByMe then
-                num= num+1
-            end
-            table.insert(new, {
-                achievementID=achievementID,
-                icon=icon,
-                name=name2,
-                find= not wasEarnedByMe
-                --col= wasEarnedByMe and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:'
-            })
-           
-        end
-    end
 
-    return {
-        itemID= data.itemID,
-        name= name,
-       -- notHas= not PlayerHasToy(data.itemID) or C_ToyBox.IsToyUsable(data.itemID),
-        num= num,
-        achievements=new,
-    }
-end
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -104,48 +153,65 @@ end
 local function Init_Menu(self, root)
     local sub, sub2
     for _, info in pairs(Tab) do
-        e.LoadDate({id=info.itemID, type='item'})
+        local new= Is_Completed(info)
 
-        local new= Get_Valid(info)
+        local col=  new.isNotChecked==nil and new.num==0 and '|cff9e9e9e'
+                    or (new.hasToy==false and '|cnRED_FONT_COLOR:')
+                    or ''
 
-        sub= root:CreateCheckbox(
-            (new.num==0 and '|cff9e9e9e' or (new.notHas and '|cnRED_FONT_COLOR:') or '')
-            ..new.name
-            .. '|r'
-            ..(new.num>0 and '|cnGREEN_FONT_COLOR: ' or ' |cff9e9e9e').. new.num,
-        function(data)
-            return data.itemID==self.itemID
-        end, function(data)
-            self:Set_Random_Value(data.itemID)
-        end, {itemID=info.itemID})
+        local name= e.cn(new.name, {itemID=new.itemID, isName=true})
+        if name then
+            name= name:match('|c........(.+)|r') or name
+        else
+            name= 'itemID '..new.itemID
+        end
+        
+        local num=(new.isNotChecked==nil and 
+                    (new.num>0 and '|cnGREEN_FONT_COLOR:')
+                    or (new.name==0 and '|cff9e9e9e')
+                    or ''
+                )
+                ..(new.isNotChecked==nil and new.num or '')
+        
+
+        sub= root:CreateCheckbox(col..name.. '|r '..num,
+            function(data)
+                return data.itemID==self.itemID
+            end, function(data)
+                self:Set_Random_Value(data.itemID, data.achievements, true)
+            end, {itemID=info.itemID, achievements=info.achievements}
+        )
 
         WoWTools_SpellItemMixin:SetTooltip(nil, nil, sub, nil)
       
 
-        for index, tab in pairs(new.achievements) do
+        for index, tab in pairs(new.data) do            
             sub2=sub:CreateButton(
                 index..') '
-                ..(tab.find and '' or '|cff9e9e9e')
+                ..(tab.wasEarnedByMe==true and '|cff9e9e9e' or '')
                 ..'|T'..(tab.icon or 0)..':0|t'
-                ..e.cn(tab.name),
+                ..(e.cn(tab.name) or tab.achievementID)
+                ..(tab.wasEarnedByMe==true and '|A:common-icon-checkmark:0:0|a' or ''),
             function(data)
-                self:Set_Random_Value(data.itemID)
+                self:Set_Random_Value(data.itemID, data.achievements, true)
                 return MenuResponse.Open
             end,
-            {itemID=tab.itemID, achievementID=tab.achievementID})
+            {itemID=tab.itemID, achievementID=tab.achievementID, achievements=info.achievements})
             sub2:SetTooltip(function(tooltip, description)
                 tooltip:SetAchievementByID(description.data.achievementID)
             end)
         end
     end
 
+   
     local tab={}
     local num=0
-    for _, guid in pairs(Save.no) do
+    for guid in pairs(Save.no) do
         num=num+1
         tab[guid]=true
     end
 
+    root:CreateDivider()
     sub= root:CreateButton((e.onlyChinese and '已完成' or CRITERIA_COMPLETED)..(num>0 and ' '..num or ''), function() return MenuResponse.Open end)
 
     sub2= sub:CreateCheckbox(e.onlyChinese and '添加' or ADD, function()
@@ -156,27 +222,31 @@ local function Init_Menu(self, root)
     end)
     sub2:SetTooltip(function(tooltip)
         tooltip:AddLine(e.onlyChinese and '如果已完成|n可以 “添加” 禁用本模块' or ('If you are complete|nyou can \"'..ADD..'\" this module disabled'))
-        tooltip:AddLine(e.GetEnabeleDisable(not Save.no[e.Player.guid]))
+        tooltip:AddDoubleLine(e.onlyChinese and '当前' or REFORGE_CURRENT, e.GetEnabeleDisable(not Save.no[e.Player.guid]))
     end)
     
 
     if num>0 then
         sub:CreateDivider()
     end
-    for index, guid in pairs(tab) do
-        local player= WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {reLink=true, reName=true, reRealm=true})
-        sub:CreateCheckbox(index..')'..player,
+    for guid in pairs(tab) do
+        local player= WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {reName=true, reRealm=true})
+        sub2=sub:CreateCheckbox(player,
             function(data)
                 return Save.no[data.guid]
             end, function(data)
-                Save.no[data.guid]=nil
-                print(e.addName, addName, e.onlyChinese and '移除' or REMOVE, data.player)
+                Save.no[data.guid]= not Save.no[data.guid] and true or nil
+                    print(e.addName, addName,
+                        e.GetEnabeleDisable(not Save.no[data.guid]),
+                        WoWTools_UnitMixin:GetPlayerInfo(nil, data.guid, nil, {reLink=true, reName=true, reRealm=true})
+                    )   
+                
             end,
             {guid=guid, player=player}
         )
-        sub:SetTooltip(function(tooltip, description)
+        sub2:SetTooltip(function(tooltip, description)
             tooltip:AddLine(e.onlyChinese and '移除' or REMOVE)
-            tooltip:AddLine(e.GetEnabeleDisable(not Save.no[description.data.guid]))
+            tooltip:AddDoubleLine(e.onlyChinese and '当前' or REFORGE_CURRENT, e.GetEnabeleDisable(not Save.no[description.data.guid]))
         end)
     end
 
@@ -185,8 +255,25 @@ local function Init_Menu(self, root)
             Save.no={}
         end)
     end
+    
     WoWTools_MenuMixin:SetNumButton(sub, num)
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -226,29 +313,62 @@ local function Init()
         end
     end
 
-    function ToyButton:Set_Random_Value(itemID)--设置，随机值
+    function ToyButton:Set_Random_Value(itemID, achievements, isLocked)--设置，随机值
         local name=C_Item.GetItemNameByID(itemID) or select(2, C_ToyBox.GetToyInfo(itemID))
         if not name or not self:CanChangeAttribute() then
             return
         end
         
         self.itemID=itemID
+        self.achievements= achievements
+        self.isLocked= isLocked
         self:SetAttribute('item1', name)
         self:set_texture()
         self:set_cool()
     end
 
+    function ToyButton:Cerca_Toy()
+        if self.isLocked or UnitAffectingCombat('player') then
+            return
+        end
+
+        for _, info in pairs(Tab) do
+            local new= Is_Completed(info)
+            if new.isNotChecked==nil and new.num>0 then
+                self:Set_Random_Value(info.itemID, info.achievements, nil)
+                return
+            end
+        end
+        
+    end
+
     ToyButton:SetAttribute("type1", "item")
 
-    ToyButton:SetScript('OnLeave', GameTooltip_Hide)
+    ToyButton:SetScript('OnLeave', function(self)
+        e.tips:Hide()
+        self:SetScript('OnUpdate',nil)
+        self.elapsed=nil
+    end)
     ToyButton:SetScript('OnEnter', function(self)
         self:set_cool()
         self:set_tooltips()
+        self:SetScript('OnUpdate', function (s, elapsed)
+            s.elapsed = (s.elapsed or 2) + elapsed
+            if s.elapsed > 2 then
+                s.elapsed = 0
+                self:Cerca_Toy()
+                if GameTooltip:IsOwned(s) then
+                    s:set_tooltips()
+                end
+            end
+        end)
     end)
 
     ToyButton:SetScript('OnMouseDown', function(self, d)
         if d=='RightButton' and not IsModifierKeyDown() then
             MenuUtil.CreateContextMenu(self, Init_Menu)
+        elseif d=='LeftButton' then
+            self.isLocked=nil
         end
     end)
 
@@ -284,6 +404,23 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 and not Save.no[e.Player.guid]
                 and WoWTools_ToolsButtonMixin:GetButton()
             then
+
+                local find
+                for _, info in pairs(Tab) do
+                    local new= Is_Completed(info)
+                    info= new
+                    for k, v in pairs(info) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
+                    if new.hasToy~=false--没收集
+                        and new.num>0--没完成，数量
+                        or new.isNotChecked--没数据
+                    then
+                        find=true
+                    end
+                end
+
+                if find==nil then
+                  --  return
+                end
                 
                 ToyButton= WoWTools_ToolsButtonMixin:CreateButton({
                     name='MapToy',
