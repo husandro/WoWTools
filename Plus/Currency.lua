@@ -1593,7 +1593,7 @@ local function Init()
 				Set_TrackButton_Text()
 			end)
 			hooksecurefunc(TokenFrame.ScrollBox, 'Update', function(f)
-				if f:GetView() then
+				if not f:GetView() then
 					return
 				end
 				for _, frame in pairs(f:GetFrames() or {}) do
@@ -1632,17 +1632,21 @@ end
 --###########
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:SetScript("OnEvent", function(_, event, arg1)
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
 		if arg1==id then
-            Save= WoWToolsSave[addName] or Save
-			Save.tokens= Save.tokens or {}
-			Save.item= Save.item or {}
-
+			if WoWToolsSave[TOKENS] then
+				WoWToolsSave[TOKENS]=nil
+			else
+				Save= WoWToolsSave['Currency2']
+			end
+            
+			addName = '|A:bags-junkcoin:0:0|a'..(e.onlyChinese and '货币' or TOKENS)
+			
 			--添加控制面板
 			Initializer= e.AddPanel_Check({
-				name= '|A:bags-junkcoin:0:0|a'..(e.onlyChinese and '货币' or addName),
-				tooltip= addName,
+				name= addName,				
 				GetValue= function() return not Save.disabled end,
 				SetValue= function()
 					Save.disabled= not Save.disabled and true or nil
@@ -1652,17 +1656,18 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 
 
             if Save.disabled then
-                panel:UnregisterAllEvents()
-            else
+				self:UnregisterEvent('ADDON_LOADED')
+			else
 				Init()
             end
-            panel:RegisterEvent("PLAYER_LOGOUT")
+            
 
 		elseif arg1=='Blizzard_ItemInteractionUI' then
             hooksecurefunc(ItemInteractionFrame, 'SetupChargeCurrency', set_ItemInteractionFrame_Currency)
 
 		--[[elseif arg1=='Blizzard_TokenUI' then
 			hooksecurefunc(TokenEntryMixin, 'OnEnter', function(frame)--角色栏,声望
+			print('aaaaa')
 				for _, btn in pairs(TrackButton and TrackButton.btn or {}) do
 					if frame.check and frame.check.currencyID and frame.check.currencyID== btn.currencyID then
 						btn:SetScale(2)
@@ -1671,7 +1676,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 					end
 				end
 			end)
-			hooksecurefunc(TokenEntryMixin, 'OnLeave', function(frame)--角色栏,声望
+			hooksecurefunc(TokenEntryMixin, 'OnLeave', function()--角色栏,声望
 				for _, btn in pairs(TrackButton and TrackButton.btn or {}) do
 					btn:SetScale(1)
 				end
@@ -1680,7 +1685,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            WoWToolsSave[addName]=Save
+            WoWToolsSave['Currency2']=Save
         end
 	end
 end)
