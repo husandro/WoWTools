@@ -271,12 +271,21 @@ local function Init_All_Bank()
         self:SetAlpha(1)
     end
     --设置，背景
+    
     function SetAllBank:set_background()
         if Save.showBackground~=nil then
             if Save.showBackground then
                 BankFrame:DisableDrawLayer('BACKGROUND')
+                
+                BankFrame.Background:ClearAllPoints()
+                BankFrame.Background:SetAllPoints()
+                BankFrame.Background:SetAtlas('bank-frame-background')
             else
                 BankFrame:EnableDrawLayer('BACKGROUND')
+                BankFrame.Background:ClearAllPoints()
+                BankFrame.Background:SetPoint('TOPLEFT', BankFrame)
+                BankFrame.Background:SetPoint('BOTTOMRIGHT', BankFrame)
+                BankFrame.Background:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
             end
         end
     end
