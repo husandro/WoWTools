@@ -121,13 +121,24 @@ local function Init_Options(category, layout)
 
     local initializer=e.AddPanel_Check({
         category= category,
-        name= '|cff3fc6ea'..(e.onlyChinese and '启用' or ENABLE)..'|r',
+        name= (e.onlyChinese and '启用' or ENABLE),
         tooltip= addName,
         GetValue= function() return not Save.disabled end,
         SetValue= function()
             Save.disabled= not Save.disabled and true or nil
         end
     })
+
+    e.AddPanel_Button({
+        category=category,
+        layout=layout,
+        tooltip=addName..'|n'..(e.onlyChinese and '重新加载UI' or RELOADUI ),
+        buttonText= e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
+        SetValue= function()
+           Save=nil
+           e.LoadDate()
+        end
+    }, initializer)
 end
 
 
@@ -405,6 +416,25 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWTools_ToolsButtonMixin:AddOptions(Init_Options)
 
+
+            --[[ToyButton= WoWTools_ToolsButtonMixin:CreateButton({
+                name='Food',
+                tooltip=A,
+                isMoveButton=true,
+                option=function(Category, layout, initializer)
+                    e.AddPanel_Button({
+                        category=Category,
+                        layout=layout,
+                        tooltip=addName..'|n'..(e.onlyChinese and '重新加载UI' or RELOADUI ),
+                        buttonText= e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
+                        SetValue= function()
+                           Save=nil
+                           e.LoadDate()
+                        end
+                    }, initializer)
+                end
+            })]]
+
             if not Save.disabled
                 and not Save.no[e.Player.guid]
                 and WoWTools_ToolsButtonMixin:GetButton()
@@ -414,8 +444,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 local notHasToy
                 for _, info in pairs(Tab) do
                     local new= Is_Completed(info)
-                    info= new
-                    for k, v in pairs(info) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
+                    
                     if new.hasToy~=false--没收集
                         and new.num>0--没完成，数量
                         or new.isNotChecked--没数据
@@ -431,7 +460,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     if not notHasToy and Save.autoAddDisabled then
                         Save.no[e.Player.guid]=true
                     end
-                    return
+                   -- return
                 end
                 
                 ToyButton= WoWTools_ToolsButtonMixin:CreateButton({
