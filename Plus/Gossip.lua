@@ -408,7 +408,7 @@ local function select_Reward(questID)--自动:选择奖励
     if bestItem and not IsModifierKeyDown() then
         _G['QuestInfoRewardsFrameQuestInfoItem'..bestItem]:Click()--QuestFrame.lua
         if selectItemLink then
-            print(e.addName, Initializer:GetName(), '|cffff00ff'..(e.onlyChinese and '选择' or CHOOSE)..'|r', selectItemLink)
+            print(e.Icon.icon2..'|cffff00ff'..(e.onlyChinese and '选择' or CHOOSE)..'|r', selectItemLink)
         end
     end
 end
@@ -2349,7 +2349,7 @@ local function Init_Gossip()
 
         if find then
             GossipButton.selectGissipIDTab[index]=true
-            print(e.addName, Initializer:GetName(), '|T'..(info.overrideIconID or info.icon or 0)..':0|t', '|cffff00ff'..name..'|r', index)
+            print(e.Icon.icon2..'|T'..(info.overrideIconID or info.icon or 0)..':0|t|cffff00ff'..name..'|r', index)
         end
     end)
 
@@ -3170,14 +3170,14 @@ local function Init_Quest()
                         end
                         questLink=questLink or ('|cnGREEN_FONT_COLOR:'..questID..'|r')
                     end
-                    print(e.addName, Initializer:GetName(), questLink, text and '|cffff00ff'..text..'|r', link, QuestFrameGoodbyeButton and '|cnRED_FONT_COLOR:'..QuestFrameGoodbyeButton:GetText())
+                    print(e.Icon.icon2, questLink, text and '|cffff00ff'..text..'|r', link, QuestFrameGoodbyeButton and '|cnRED_FONT_COLOR:'..QuestFrameGoodbyeButton:GetText())
                 end)
             end
             e.call(QuestGoodbyeButton_OnClick)
         else
             if not QuestButton.questSelect[questID] then--已选任务, 提示用
                 C_Timer.After(0.5, function()
-                    print(e.addName, Initializer:GetName(), GetQuestLink(questID) or questID)
+                    print(e.Icon.icon2, GetQuestLink(questID) or questID)
                 end)
                 QuestButton.questSelect[questID]=true
             end
@@ -3261,8 +3261,7 @@ local function Init_Quest()
 
         if not QuestButton.questSelect[questID] then--已选任务, 提示用
             C_Timer.After(0.5, function()
-                print(e.addName, Initializer:GetName(),
-                    GetQuestLink(questID) or questID,
+                print(e.Icon.icon2..(GetQuestLink(questID) or questID),
                     (complete and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..acceptButton:GetText()..'|r',
                     itemLink)
             end)
@@ -3438,7 +3437,7 @@ local function Init_Blizzard_PlayerChoice()
     local function Send_Player_Choice_Response(optionInfo)
         if optionInfo then
             C_PlayerChoice.SendPlayerChoiceResponse(optionInfo.buttons[1].id)
-            print(e.addName, Initializer:GetName(), (optionInfo.spellID and C_Spell.GetSpellLink(optionInfo.spellID) or ''),
+            print(e.Icon.icon2..(optionInfo.spellID and C_Spell.GetSpellLink(optionInfo.spellID) or ''),
                 '|n',
                 '|T'..(optionInfo.choiceArtID or 0)..':0|t'..optionInfo.rarityColor:WrapTextInColorCode(optionInfo.description or '')
             )

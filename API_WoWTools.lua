@@ -101,8 +101,10 @@ end
 
 
 e.Icon={
+    
     --player= e.GetUnitRaceInfo({unit='player', guid=nil , race=nil , sex=nil , reAtlas=false}),
     icon= 'orderhalltalents-done-glow',
+    icon2='|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t',
     disabled='talents-button-reset',
     select='common-icon-checkmark',--'GarrMission_EncounterBar-CheckMark',--绿色√   
     right='|A:newplayertutorial-icon-mouse-rightbutton:0:0|a',
