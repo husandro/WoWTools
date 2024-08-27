@@ -8,6 +8,7 @@ local function set_tooltip(tooltip, data)
     if type(data)~='table' then
         return
     end
+
     if data.link or data.itemLink or data.spellLink then
         tooltip:SetHyperlink(data.link or data.itemLink or data.spellLink)
 
@@ -25,10 +26,17 @@ local function set_tooltip(tooltip, data)
         tooltip:SetCurrencyByID(data.currencyID)
 
     elseif data.widgetSetID then
-        GameTooltip_AddWidgetSet(tooltip, data.widgetSetID);
+        GameTooltip_AddWidgetSet(tooltip, data.widgetSetID)
+    
+    elseif data.achievementID then
+        tooltip:SetAchievementByID(data.achievementID)
+        
     end 
+
     if data.tooltip then
         GameTooltip_AddNormalLine(tooltip, type(data.tooltip)=='function' and data.tooltip() or data.tooltip, true)
+    
+    
     end
 end
 
@@ -70,7 +78,7 @@ function WoWTools_SpellItemMixin:GetName(spellID, itemID)--取得，法术，物
     if spellID then
         e.LoadDate({id=spellID, type='spell'})
         local desc=''
-        local mountID =C_MountJournal.GetMountFromSpell(spellID)
+        local mountID = C_MountJournal.GetMountFromSpell(spellID)
         if mountID then--坐骑
             if not select(11, C_MountJournal.GetMountInfoByID(mountID)) then
                 desc='|A:Islands-QuestBangDisable:0:0|a|cff9e9e9e'..(e.onlyChinese and '未收集' or NOT_COLLECTED )..'|r'

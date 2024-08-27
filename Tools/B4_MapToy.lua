@@ -35,8 +35,9 @@ end
 
 local addName
 local ToyButton
+
 local Save={
-    noPlayer={
+    no={
         --[guid]=true
     }
 }
@@ -53,9 +54,76 @@ end
 
 
 
+
+local function Get_Valid(data)
+    local num=0
+
+    local name= WoWTools_SpellItemMixin:GetName(nil, data.itemID) or ''
+    name=name:match('|cff......(.-)|r') or name
+    
+    local find= false
+    
+    local new={}
+    for _, achievementID  in pairs(data.achievements) do
+        local _, name2, _, _, _, _, _, _, _, icon, _, _, wasEarnedByMe= GetAchievementInfo(achievementID)
+        if name2 then
+            num= num+1
+            table.insert(new, {
+                achievementID=achievementID,
+                icon=icon,
+                name=name2,
+                find= wasEarnedByMe
+                --col= wasEarnedByMe and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:'
+            })
+            
+            find= not wasEarnedByMe
+        end
+    end
+
+    data.has= PlayerHasToy(data.itemID) and C_ToyBox.IsToyUsable(data.itemID)
+    data.name= name
+    data.find= find
+    data.num= num
+    data.achievements=new
+
+    return data
+end
+
+
+
+
 local function Init_Menu(self, root)
+    local sub, sub2
     for _, info in pairs(Tab) do
-        
+        local new= Get_Valid(info)
+
+        sub= root:CreateCheckbox(
+            (not new.find or not new.has) and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:',
+            new.name,
+        function(data)
+            return data.itemID==self.itemID
+        end, function(data)
+            self:Set_Random_Value(data.itemID)
+        end, {itemID=info.itemID})
+
+        WoWTools_SpellItemMixin:SetTooltip(nil, nil, sub, nil)
+        --sub:SetEnabled(false)
+
+        for _, tab in pairs(new.achievements) do
+            sub2=sub:CreateButton(
+                (tab.find and '|cff9e9e9e' or '')
+                '|T'..(tab.icon or 0)..':0|t'
+                ..tab.name,
+            function(data)
+                self:Set_Random_Value(data.itemID)
+                return MenuResponse.Open
+            end,
+            {itemID=tab.itemID, achievementID=tab.achievementID})
+            sub2:SetTooltip(function(tooltip, description)
+                tooltip:SetAchievementByID(description.data.achievementID)
+            end)
+        end
+
     end
 end
 
@@ -64,22 +132,23 @@ end
 
 
 local function Init()
-    for itemID, achievementIDs in pairs(ToyTab) do
-        e.LoadDate({id=itemID, type='item'})
-        for _, achievementID in pairs(achievementIDs) do
+    for _, info in pairs(Tab) do
+        e.LoadDate({id=info.itemID, type='item'})
+        for _, achievementID in pairs(info.achievements) do
             GetAchievementCategory(achievementID)
         end
     end
-
     
-    
-    function ToyButton:set_tooltips()
+    function ToyButton:set_tooltips()        
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
         if self.itemID then
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
-            e.tips:ClearLines()
             e.tips:SetItemByID(self.itemID)
-            e.tips:Show()
+        else
+            e.tips:AddDoubleLine(' ', addName)
+            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)
         end
+        e.tips:Show()
     end
 
     --CD
@@ -147,16 +216,17 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWTools_ToolsButtonMixin:AddOptions(Init_Options)
 
-            if not Save.disabled
-                and not Save.noPlayer[e.Player.guid]
-                and  WoWTools_ToolsButtonMixin:GetButton()
+            Save.no= Save.no or {}
+            
+            if Save.disabled
+               or Save.no[e.Player.guid]
+                or not WoWTools_ToolsButtonMixin:GetButton()
             then
-                addName= '|A:Taxi_Frame_Yellow:0:0|a'..(e.onlyChinese and '侦察地图' or ADVENTURE_MAP_TITLE)
-            else
                 Tab=nil
                 return
             end
 
+            addName= '|A:Taxi_Frame_Yellow:0:0|a'..(e.onlyChinese and '侦察地图' or ADVENTURE_MAP_TITLE)
             ToyButton= WoWTools_ToolsButtonMixin:CreateButton({
                 name='MapToy',
                 tooltip=addName,
