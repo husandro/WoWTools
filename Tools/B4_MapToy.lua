@@ -460,7 +460,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     if not notHasToy and Save.autoAddDisabled then
                         Save.no[e.Player.guid]=true
                     end
-                   -- return
+                    return
                 end
                 
                 ToyButton= WoWTools_ToolsButtonMixin:CreateButton({
