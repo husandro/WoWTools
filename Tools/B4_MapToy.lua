@@ -151,7 +151,7 @@ end
 
 
 local function Init_Menu(self, root)
-    local sub, sub2
+    local sub, sub2, sub3
     for _, info in pairs(Tab) do
         local new= Is_Completed(info)
 
@@ -225,6 +225,11 @@ local function Init_Menu(self, root)
         tooltip:AddDoubleLine(e.onlyChinese and '当前' or REFORGE_CURRENT, e.GetEnabeleDisable(not Save.no[e.Player.guid]))
     end)
     
+    sub2:CreateCheckbox(e.onlyChinese and '自动' or SELF_CAST_AUTO, function()
+        return Save.autoAddDisabled
+    end, function()
+        Save.autoAddDisabled= not Save.autoAddDisabled and true or nil
+    end)
 
     if num>0 then
         sub:CreateDivider()
@@ -406,6 +411,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             then
 
                 local find
+                local notHasToy
                 for _, info in pairs(Tab) do
                     local new= Is_Completed(info)
                     info= new
@@ -416,10 +422,16 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     then
                         find=true
                     end
+                    if new.hasToy~=true then
+                        notHasToy=true
+                    end
                 end
 
                 if find==nil then
-                  --  return
+                    if not notHasToy and Save.autoAddDisabled then
+                        Save.no[e.Player.guid]=true
+                    end
+                    return
                 end
                 
                 ToyButton= WoWTools_ToolsButtonMixin:CreateButton({
