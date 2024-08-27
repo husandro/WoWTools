@@ -382,17 +382,19 @@ local function Init_All_Bank()
                 end
 
                for _, btn in bagFrame:EnumerateValidItems()  do
-                    if bagFrame:IsShown() then
-                        num=num+1
-                        btn:SetParent(BankSlotsFrame)
-                        btn:ClearAllPoints()
-                        btn:SetPoint('TOP', last, 'BOTTOM', 0, -Save.line)
-                        last=btn
-                        table.insert(tab, btn)
-                        btn:SetShown(true)
-                        self:set_index_label(btn, num+NUM_BANKGENERIC_SLOTS)--索引，提示
-                    else
-                        btn:SetShown(false)
+                    if btn then
+                        if bagFrame:IsShown() then
+                            num=num+1
+                            btn:SetParent(BankSlotsFrame)
+                            btn:ClearAllPoints()
+                            btn:SetPoint('TOP', last, 'BOTTOM', 0, -Save.line)
+                            last=btn
+                            table.insert(tab, btn)
+                            btn:SetShown(true)
+                            self:set_index_label(btn, num+NUM_BANKGENERIC_SLOTS)--索引，提示
+                        else
+                            btn:SetShown(false)
+                        end
                     end
                end
             end
