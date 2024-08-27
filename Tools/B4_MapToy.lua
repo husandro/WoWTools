@@ -59,7 +59,7 @@ local function Get_Valid(data)
     local num=0
 
     local name= WoWTools_SpellItemMixin:GetName(nil, data.itemID) or ''
-    name=name:match('|cff......(.-)|r') or name
+    name=name:match('|c........(.+)|r') or name
     
     local find= false
     
@@ -98,8 +98,9 @@ local function Init_Menu(self, root)
         local new= Get_Valid(info)
 
         sub= root:CreateCheckbox(
-            (not new.find or not new.has) and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:',
-            new.name,
+            ((not new.find or not new.has) and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:')
+            ..'|T'..(C_Item.GetItemIconByID(info.itemID) or 0)..':0|t'
+            ..new.name,
         function(data)
             return data.itemID==self.itemID
         end, function(data)
@@ -113,7 +114,7 @@ local function Init_Menu(self, root)
             sub2=sub:CreateButton(
                 (tab.find and '|cff9e9e9e' or '')
                 ..'|T'..(tab.icon or 0)..':0|t'
-                ..tab.name,
+                ..e.cn(tab.name),
             function(data)
                 self:Set_Random_Value(data.itemID)
                 return MenuResponse.Open
