@@ -728,7 +728,12 @@ local function Init_Wardrober()
 
     --套装，列表
     Init_Wardrober_ListContainer()
+    --WardrobeCollectionFrameSearchBox:SetPoint('RIGHT', WardrobeCollectionFrame.SetsCollectionFrame.ListContainer, -(WardrobeCollectionFrame.FilterButton:GetWidth()), 0)
 
+    --[[WardrobeCollectionFrameSearchBox:ClearAllPoints()
+    WardrobeCollectionFrameSearchBox:SetPoint('LEFT',WardrobeCollectionFrame.progressBar ,'RIGHT', 12, 0)
+    WardrobeCollectionFrameSearchBox:SetPoint('LEFT', WardrobeCollectionFrame.progressBar, 'RIGHT')
+    --WardrobeCollectionFrameSearchBox:SetPoint('LEFT', WardrobeCollectionFrame.progressBar, 'RIGHT', 12,0)]]
 end
 
 
@@ -1057,6 +1062,9 @@ local function Init_Heirloom()
     check:set_texture()
     check:set_filter_shown()
     check:set_frame_scale()
+
+
+    HeirloomsJournalSearchBox:SetPoint('LEFT', HeirloomsJournal.progressBar, 'RIGHT', 12,0)
 end
 
 
@@ -1322,6 +1330,8 @@ local function Init_ToyBox()
             end
         end
     end)
+    ToyBox.searchBox:SetPoint('LEFT', ToyBox.progressBar, 'RIGHT', 12,0)
+    
 end
 
 

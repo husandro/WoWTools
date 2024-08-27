@@ -26,6 +26,8 @@ API_Panel.lua
 API_WoWDate.lua
 
 ##主要function，不能删除
+Function_Mixin\Unit_Mixin.lua
+
 Mixin\StaticPopupDialogs.lua
 Mixin\ChatButton_Mixin.lua
 Mixin\Frame_Mixin.lua

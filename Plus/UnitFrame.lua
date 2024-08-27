@@ -118,7 +118,7 @@ local function Init_PlayerFrame()--PlayerFrame.lua
                 PlayerLevelText:SetText('')
             --[[else
                 --PlayerLevelText:SetText(effectiveLevel)
-                local r,g,b= e.GetUnitColor(unit)
+                local r,g,b= select(2, WoWTools_UnitMixin:Get_Unit_Color(unit))
                 PlayerLevelText:SetTextColor(r,g,b)--设置颜色]]
             end
         end
@@ -546,7 +546,7 @@ end
 local function Init_TargetFrame()
     --目标，生命条，颜色，材质
     hooksecurefunc(TargetFrame, 'CheckClassification', function(frame)--外框，颜色
-        local r,g,b= e.GetUnitColor(frame.unit)
+        local r,g,b= select(2, WoWTools_UnitMixin:Get_Unit_Color(frame.unit))
         frame.TargetFrameContainer.FrameTexture:SetVertexColor(r, g, b)
         frame.TargetFrameContainer.BossPortraitFrameTexture:SetVertexColor(r, g, b)
         frame.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')--生命条，材质
@@ -556,7 +556,7 @@ local function Init_TargetFrame()
     hooksecurefunc(TargetFrame,'CheckLevel', function(self)--目标, 等级, 颜色
         local levelText = self.TargetFrameContent.TargetFrameContentMain.LevelText
         if levelText then
-            local r,g,b= e.GetUnitColor(self.unit)
+            local r,g,b= select(2, WoWTools_UnitMixin:Get_Unit_Color(self.unit))
             levelText:SetTextColor(r,g,b)
         end
     end)
@@ -632,8 +632,7 @@ local function set_memberFrame(memberFrame)
     local isPlayer= unit=='player'
     local exists= UnitExists(unit)
 
-
-    local r, g, b= e.GetUnitColor(unit)
+    local r,g,b= select(2, WoWTools_UnitMixin:Get_Unit_Color(unit))
 
     --外框
     memberFrame.Texture:SetVertexColor(r, g, b)
@@ -711,7 +710,7 @@ local function set_memberFrame(memberFrame)
                     self.class:SetTexture(0)
                 end
 
-                local r2, g2, b2= e.GetUnitColor(self.unit)
+                local r2,g2,b2= select(2, WoWTools_UnitMixin:Get_Unit_Color(self.unit))
                 self.healthLable:SetTextColor(r2, g2, b2)
             end
             self.isPlayerTargetTexture:SetShown(exists2 and UnitIsUnit(self.unit, 'target'))
@@ -1132,7 +1131,7 @@ local function Init_UnitFrame_Update(frame, isParty)--UnitFrame.lua--职业, 图
     if not UnitExists(unit) or unit:find('nameplate') then
         return
     end
-    local r,g,b= e.GetUnitColor(unit)
+    local r,g,b= select(2, WoWTools_UnitMixin:Get_Unit_Color(unit))
 
     local guid
     local unitIsPlayer=  UnitIsPlayer(unit)
@@ -1417,7 +1416,7 @@ local function Init_BossFrame()
             self.Portrait:SetShown(exists)
             self.targetTexture:SetShown(exists and UnitIsUnit('target', unit))
             --颜色
-            local r,g,b= e.GetUnitColor(unit)
+            local r,g,b= select(2, WoWTools_UnitMixin:Get_Unit_Color(unit))
             self:GetParent().healthbar:SetStatusBarColor(r,g,b)--颜色
         end
 
@@ -1588,7 +1587,7 @@ local function Init_BossFrame()
                 end
 
                 --颜色
-                local r,g,b= e.GetUnitColor(unit)
+                local r,g,b= select(2, WoWTools_UnitMixin:Get_Unit_Color(unit))
                 --self.healthBar:SetStatusBarColor(r,g,b)
                 --self.IsTargetTexture:SetShown(UnitIsUnit(self.targetUnit, 'target'))
                 self.Border:SetVertexColor(r,g,b)

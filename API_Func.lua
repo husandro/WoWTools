@@ -66,7 +66,6 @@ e.GetFactionInfo(factionID, index, toRight)--声望
 
 e.GetGroupMembers(inclusoMe)--取得，队员, unit
 
-e.GetUnitColor(unit)--职业颜色
 e.GetUnitName(name, unit, guid)--取得全名
 e.GetUnitRaceInfo(tab)--玩家种族图标 {unit=nil, guid=nil, race=nil, sex=nil, reAtlas=false}
 e.Class(unit, class, reAltlas)--职业图标 groupfinder-icon-emptyslot'
@@ -1500,35 +1499,6 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-function e.GetUnitColor(unit, guid)--职业颜色
-    local r, g, b, hex, classFilename
-    if UnitExists(unit) then
-        if UnitIsUnit('player', unit) then
-            r,g,b,hex= e.Player.r, e.Player.g, e.Player.b, e.Player.col
-        else
-            classFilename= UnitClassBase(unit)
-        end
-    elseif guid then
-        classFilename = select(2, GetPlayerInfoByGUID(guid))
-    end
-    if classFilename then
-        r, g, b, hex= GetClassColor(classFilename)
-        hex= hex and '|c'..hex
-    end
-    return r or 1, g or 1, b or 1, hex or '|cffffffff'
-end
 
 
 local function GetPlayerNameRemoveRealm(name, realm)--玩家名称, 去服务器为*

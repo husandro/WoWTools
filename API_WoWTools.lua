@@ -88,7 +88,6 @@ e.Player={
     --useColor= nil,--使用颜色
     L={},--多语言，文本
 }
---e.Player.r, e.Player.g, e.Player.b, e.Player.col= e.GetUnitColor('player')--职业颜色
 e.Player.useColor= {r=e.Player.r, g=e.Player.g, b=e.Player.b, a=1, hex= e.Player.col}--使用颜色
 
  --zh= LOCALE_zhCN or LOCALE_zhTW,--GetLocale()== ("zhCN" or 'zhTW'),

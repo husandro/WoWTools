@@ -12,7 +12,7 @@ local Save={
         MapToy=true,
     },
     scale=1,
-    strata='HIGH',
+    strata='MEDIUM',
     height=10,
 
     isEnterShow=true,

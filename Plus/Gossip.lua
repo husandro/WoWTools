@@ -1,5 +1,5 @@
 local id, e = ...
-local addName=format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ENABLE_DIALOG, QUESTS_LABEL)
+local addName, addName2
 local Save={
         NPC={},
         gossip= true,
@@ -30,6 +30,8 @@ local Save={
         Gossip_Text_Icon_Size=18,
 
         Gossip_Text_Icon_cnFont=true,--仅限，外文, 修该字体
+
+        delvesDifficultyMaxLevel=true,--地下堡指定难度
 }
 
 
@@ -40,15 +42,45 @@ local Initializer
 
 
 
-local AutoGossipTab={--自动，对话 [gossipID]=总数
-    [56363]=3,--奥达曼， 传送门
-    [56364]=2,
-    [56365]=1,
 
-    [107451]=1,--魔馆，传送门
-    [107092]=2,
-    [107093]=3,
+local AutoGossipTab={--自动，对话 [gossipID]=总数
+[56363]=3,--奥达曼， 传送门
+[56364]=2,
+[56365]=1,
+
+[107451]=1,--魔馆，传送门
+[107092]=2,
+[107093]=3,
 }
+
+local AutoRepairTab={--修理
+    [107572]=true,--挑战，模式, 修理
+    [122661]=true,--地下堡
+}
+
+--自动对话
+local function Get_Auto_Instance_Gossip(gossipID, numGossip)
+    if gossipID==107571 then--挑战，模式，去 SX buff
+        if e.WA_GetUnitDebuff('player', nil, 'HARMFUL', {
+            [57723]= true,
+            [57724]= true,
+            [264689]= true,
+            [80354]= true,
+            [390435]= true,
+         }) then
+            return true
+        end
+    elseif AutoRepairTab[gossipID] then
+        local value= select(2, e.GetDurabiliy()) or 100
+        if value<95 then
+            return true
+        end
+
+    elseif AutoGossipTab[gossipID]==numGossip then--自动，对话 [gossipID]=总数
+        return true
+    end
+end
+
 
 
 
@@ -344,7 +376,7 @@ local function select_Reward(questID)--自动:选择奖励
                         e.tips:SetOwner(self, "ANCHOR_LEFT")
                         e.tips:ClearLines()
                         e.tips:AddDoubleLine('questID: |cnGREEN_FONT_COLOR:'..self.questID..'|r', self.index)
-                        e.tips:AddDoubleLine(e.addName, e.onlyChinese and '任务' or QUESTS_LABEL)
+                        e.tips:AddDoubleLine(e.addName, addName2)
                         e.tips:Show()
                     end
                 end)
@@ -761,14 +793,14 @@ local function Init_Gossip_Text_Icon_Options()
                 icon= '|T'..texture2..':0|t'
             end
         end
-        print(e.addName, Initializer:GetName(), '|cnGREEN_FONT_COLOR:'..num..'|r', icon or '', '|c'..(hex or 'ff000000'), name)
+        print(e.addName, addName, '|cnGREEN_FONT_COLOR:'..num..'|r', icon or '', '|c'..(hex or 'ff000000'), name)
     end
 
     function menu:delete_gossip(gossipID)
         if gossipID and Save.Gossip_Text_Icon_Player[gossipID] then
             local info=Save.Gossip_Text_Icon_Player[gossipID]
             Save.Gossip_Text_Icon_Player[gossipID]=nil
-            print(e.addName, Initializer:GetName(), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '删除' or DELETE)..'|r|n', gossipID, info.icon, info.hex, info.name)
+            print(e.addName, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '删除' or DELETE)..'|r|n', gossipID, info.icon, info.hex, info.name)
             self:set_list()
             GossipButton:update_gossip_frame()
         end
@@ -855,7 +887,7 @@ local function Init_Gossip_Text_Icon_Options()
     menu.FindIcon:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+        e.tips:AddDoubleLine(e.addName, addName)
         e.tips:AddLine(e.onlyChinese and '选择图标' or COMMUNITIES_CREATE_DIALOG_AVATAR_PICKER_INSTRUCTIONS)
         if not _G['TAV_CoreFrame'] then
             e.tips:AddLine(' ')
@@ -947,7 +979,7 @@ local function Init_Gossip_Text_Icon_Options()
         menu.tav:SetScript('OnEnter', function(self)
             e.tips:SetOwner(self, "ANCHOR_RIGHT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+            e.tips:AddDoubleLine(e.addName, addName)
             e.tips:AddLine(' ')
             e.tips:AddLine('|cffff00ffTexture Atlas Viewer|r')
             e.tips:Show()
@@ -962,7 +994,7 @@ local function Init_Gossip_Text_Icon_Options()
     function menu.Color:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName , Initializer:GetName())
+        e.tips:AddDoubleLine(e.addName , addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine((self.hex and format('|c%s|r', self.hex) or '')..(e.onlyChinese and '设置颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, COLOR)), e.Icon.left)
         local col= (not self.hex or self.hex=='ff000000') and '|cff9e9e9e' or ''
@@ -1001,7 +1033,7 @@ local function Init_Gossip_Text_Icon_Options()
         local name= frame:get_name()
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName , Initializer:GetName())
+        e.tips:AddDoubleLine(e.addName , addName)
         e.tips:AddLine(' ')
         e.tips:AddLine(self.tooltip)
         e.tips:AddLine(' ')
@@ -1023,7 +1055,7 @@ local function Init_Gossip_Text_Icon_Options()
     menu.Delete:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+        e.tips:AddDoubleLine(e.addName, addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '删除' or DELETE, Gossip_Text_Icon_Frame.menu.gossipID)
         e.tips:Show()
@@ -1039,7 +1071,7 @@ local function Init_Gossip_Text_Icon_Options()
     menu.DeleteAllPlayerData:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+        e.tips:AddDoubleLine(e.addName, addName)
         e.tips:AddLine(' ')
         e.tips:AddLine(e.onlyChinese and '全部清除' or CLEAR_ALL)
         e.tips:Show()
@@ -1047,13 +1079,13 @@ local function Init_Gossip_Text_Icon_Options()
     menu.DeleteAllPlayerData:SetScript('OnClick', function()
         if not StaticPopupDialogs[id..addName..'Delete_All_Player_Data'] then
             StaticPopupDialogs[id..addName..'Delete_All_Player_Data']={
-                text=id..' '..Initializer:GetName()..'|n|n|cnRED_FONT_COLOR:'..(e.onlyChinese and '全部清除' or CLEAR_ALL),
+                text=id..' '..addName..'|n|n|cnRED_FONT_COLOR:'..(e.onlyChinese and '全部清除' or CLEAR_ALL),
                 whileDead=true, hideOnEscape=true, exclusive=true,
                 button1= e.onlyChinese and '全部清除' or CLEAR_ALL,
                 button2= e.onlyChinese and '取消' or CANCEL,
                 OnAccept = function()
                     Save.Gossip_Text_Icon_Player={}
-                    print(e.addName, Initializer:GetName(), e.onlyChinese and '全部清除' or CLEAR_ALL, format('|cnGREEN_FONT_COLOR:%s|r', e.onlyChinese and '完成' or DONE))
+                    print(e.addName, addName, e.onlyChinese and '全部清除' or CLEAR_ALL, format('|cnGREEN_FONT_COLOR:%s|r', e.onlyChinese and '完成' or DONE))
                     Gossip_Text_Icon_Frame.menu:set_list()
                 end,
             }
@@ -1102,7 +1134,7 @@ local function Init_Gossip_Text_Icon_Options()
         menu.font:SetScript('OnEnter', function(self)
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(e.addName , Initializer:GetName())
+            e.tips:AddDoubleLine(e.addName , addName)
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine('ARHei.ttf', '黑体字')
             e.tips:Show()
@@ -1112,7 +1144,7 @@ local function Init_Gossip_Text_Icon_Options()
             GossipButton:update_gossip_frame()
             Gossip_Text_Icon_Frame.menu:set_list()
             if not Save.Gossip_Text_Icon_cnFont then
-                print(e.addName, Initializer:GetName(), '|cnGREEN_FONT_COLOR:', e.onlyChinese and '需要重新加载UI' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, RELOADUI))
+                print(e.addName, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '需要重新加载UI' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, RELOADUI))
             end
         end)
     end
@@ -1124,7 +1156,7 @@ local function Init_Gossip_Text_Icon_Options()
     menu.chat:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName , Initializer:GetName())
+        e.tips:AddDoubleLine(e.addName , addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '当前对话' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, ENABLE_DIALOG), e.onlyChinese and '添加' or ADD)
         e.tips:Show()
@@ -1173,7 +1205,7 @@ local function Init_Gossip_Text_Icon_Options()
                             for _, info in pairs(arg1) do
                                 if not Save.Gossip_Text_Icon_Player[info.gossipID] then
                                     Save.Gossip_Text_Icon_Player[info.gossipID]= {name=info.name}
-                                    print(e.addName, Initializer:GetName(), format('|cnGREEN_FONT_COLOR:%s|r', e.onlyChinese and '添加' or ADD), info.gossipID, info.name)
+                                    print(e.addName, addName, format('|cnGREEN_FONT_COLOR:%s|r', e.onlyChinese and '添加' or ADD), info.gossipID, info.name)
                                 end
                             end
                             Gossip_Text_Icon_Frame.menu:set_list()
@@ -1210,7 +1242,7 @@ local function Init_Gossip_Text_Icon_Options()
     menu.System:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName , Initializer:GetName())
+        e.tips:AddDoubleLine(e.addName , addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine( e.onlyChinese and '对话' or ENABLE_DIALOG, e.GetEnabeleDisable(Save.gossip))
         e.tips:AddDoubleLine(e.onlyChinese and '对话替换' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DIALOG_VOLUME, REPLACE), e.GetEnabeleDisable(not Save.not_Gossip_Text_Icon))
@@ -1308,7 +1340,7 @@ local function Init_Gossip_Text_Icon_Options()
                     info.tab.hex and format('|c%s%s', info.tab.hex, info.tab.hex) or '')
             end
             Gossip_Text_Icon_Frame.menu:set_list()
-            print(e.addName, Initializer:GetName(), '|n', format('%s|n%s|n%s', addText, delText, existText))
+            print(e.addName, addName, '|n', format('%s|n%s|n%s', addText, delText, existText))
             frame:SetText(text)
             self:GetParent():SetInstructions(e.onlyChinese and '导入' or HUD_CLASS_TALENTS_IMPORT_LOADOUT_ACCEPT_BUTTON)
         else
@@ -1321,7 +1353,7 @@ local function Init_Gossip_Text_Icon_Options()
     menu.DataFrame.enter:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+        e.tips:AddDoubleLine(e.addName, addName)
         e.tips:AddDoubleLine(e.onlyChinese and '格式' or FORMATTING, '|cffff00ff[gossipOptionID]={icon=, name=, hex=}')
         e.tips:AddLine(' ')
         self:set_date(true)
@@ -1338,7 +1370,7 @@ local function Init_Gossip_Text_Icon_Options()
     menu.DataUscita:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+        e.tips:AddDoubleLine(e.addName, addName)
         e.tips:AddLine(' ')
         e.tips:AddLine(e.onlyChinese and '导出' or SOCIAL_SHARE_TEXT or  HUD_EDIT_MODE_SHARE_LAYOUT)
         e.tips:Show()
@@ -1373,7 +1405,7 @@ local function Init_Gossip_Text_Icon_Options()
     menu.DataEnter:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+        e.tips:AddDoubleLine(e.addName, addName)
         e.tips:AddLine(' ')
         e.tips:AddLine(e.onlyChinese and '导入' or HUD_CLASS_TALENTS_IMPORT_LOADOUT_ACCEPT_BUTTON)
         e.tips:Show()
@@ -1477,7 +1509,7 @@ local function Init_Menu_Gossip(_, level, type)
                 Save.point=nil
                 GossipButton:ClearAllPoints()
                 GossipButton:set_Point()
-                print(e.addName, Initializer:GetName(), e.onlyChinese and '重置位置' or RESET_POSITION)
+                print(e.addName, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1488,7 +1520,7 @@ local function Init_Menu_Gossip(_, level, type)
             keepShownOnClick=true,
             func= function()
                 StaticPopupDialogs[id..addName..'RESET_TO_DEFAULT']={
-                    text=id..' '..Initializer:GetName()..'|n|n|cnRED_FONT_COLOR:'..(e.onlyChinese and '恢复默认设置' or RESET_TO_DEFAULT)..'|r|n|n|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重新加载UI' or RELOADUI),
+                    text=id..' '..addName..'|n|n|cnRED_FONT_COLOR:'..(e.onlyChinese and '恢复默认设置' or RESET_TO_DEFAULT)..'|r|n|n|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重新加载UI' or RELOADUI),
                     whileDead=true, hideOnEscape=true, exclusive=true,
                     button1= e.onlyChinese and '重置' or RESET,
                     button2= e.onlyChinese and '取消' or CANCEL,
@@ -1514,7 +1546,7 @@ local function Init_Menu_Gossip(_, level, type)
                 arg1= gossipOptionID,
                 func=function(_, arg1)
                     Save.gossipOption[arg1]=nil
-                    print(e.addName, Initializer:GetName(), e.onlyChinese and '移除' or REMOVE, text, 'gossipOptionID:', arg1)
+                    print(e.addName, addName, e.onlyChinese and '移除' or REMOVE, text, 'gossipOptionID:', arg1)
                 end
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1529,7 +1561,7 @@ local function Init_Menu_Gossip(_, level, type)
             func= function()
                 if IsShiftKeyDown() then
                     Save.gossipOption={}
-                    print(e.addName, Initializer:GetName(), e.onlyChinese and '自定义' or CUSTOM, e.onlyChinese and '清除全部' or CLEAR_ALL)
+                    print(e.addName, addName, e.onlyChinese and '自定义' or CUSTOM, e.onlyChinese and '清除全部' or CLEAR_ALL)
                 end
             end
         }
@@ -1546,7 +1578,7 @@ local function Init_Menu_Gossip(_, level, type)
                 arg1= npcID,
                 func= function(_, arg1)
                     Save.NPC[arg1]=nil
-                    print(e.addName, Initializer:GetName(), e.onlyChinese and '移除' or REMOVE, 'NPC', arg1)
+                    print(e.addName, addName, e.onlyChinese and '移除' or REMOVE, 'NPC', arg1)
                 end
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1560,7 +1592,7 @@ local function Init_Menu_Gossip(_, level, type)
             func= function()
                 if IsShiftKeyDown() then
                     Save.NPC={}
-                    print(e.addName, Initializer:GetName(), e.onlyChinese and '自定义' or CUSTOM, e.onlyChinese and '清除全部' or CLEAR_ALL)
+                    print(e.addName, addName, e.onlyChinese and '自定义' or CUSTOM, e.onlyChinese and '清除全部' or CLEAR_ALL)
                 end
             end
         }
@@ -1585,7 +1617,7 @@ local function Init_Menu_Gossip(_, level, type)
                 arg1=spellID,
                 func= function(_, arg1)
                     Save.choice[arg1]=nil
-                    print(e.addName, Initializer:GetName(), e.onlyChinese and '选择' or CHOOSE, e.onlyChinese and '移除' or REMOVE, C_Spell.GetSpellLink(arg1) or ('spellID '..arg1))
+                    print(e.addName, addName, e.onlyChinese and '选择' or CHOOSE, e.onlyChinese and '移除' or REMOVE, C_Spell.GetSpellLink(arg1) or ('spellID '..arg1))
                 end
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1599,7 +1631,7 @@ local function Init_Menu_Gossip(_, level, type)
             func= function()
                 if IsShiftKeyDown() then
                     Save.choice={}
-                    print(e.addName, Initializer:GetName(), e.onlyChinese and '选择' or CHOOSE, e.onlyChinese and '清除全部' or CLEAR_ALL)
+                    print(e.addName, addName, e.onlyChinese and '选择' or CHOOSE, e.onlyChinese and '清除全部' or CLEAR_ALL)
                 end
             end
         }
@@ -1625,11 +1657,11 @@ local function Init_Menu_Gossip(_, level, type)
                     func= function(_, arg1)
                         if IsControlKeyDown() then
                             if IsMovieLocal(arg1) then
-                                print(e.addName, Initializer:GetName(), arg1, e.onlyChinese and '存在' or 'Exist')
+                                print(e.addName, addName, arg1, e.onlyChinese and '存在' or 'Exist')
                             else
                                 PreloadMovie(arg1)
                                 local inProgress2, downloaded2, total2 = GetMovieDownloadProgress(arg1)
-                                print(e.addName, Initializer:GetName(), inProgress2 and downloaded2 and total2 and format('%i%%', downloaded/total*100) or total2)
+                                print(e.addName, addName, inProgress2 and downloaded2 and total2 and format('%i%%', downloaded/total*100) or total2)
                             end
                         elseif not IsModifierKeyDown() then
                             e.LibDD:CloseDropDownMenus()
@@ -1665,15 +1697,15 @@ local function Init_Menu_Gossip(_, level, type)
                         MovieFrame_PlayMovie(MovieFrame, arg1)
                     elseif IsControlKeyDown() then
                         if IsMovieLocal(movieID) then
-                            print(e.addName, Initializer:GetName(), arg1, e.onlyChinese and '存在' or 'Exist')
+                            print(e.addName, addName, arg1, e.onlyChinese and '存在' or 'Exist')
                         else
                             PreloadMovie(arg1)
                             local inProgress2, downloaded2, total2 = GetMovieDownloadProgress(arg1)
-                            print(e.addName, Initializer:GetName(), inProgress2 and downloaded2 and total2 and format('%i%%', downloaded/total*100) or total2)
+                            print(e.addName, addName, inProgress2 and downloaded2 and total2 and format('%i%%', downloaded/total*100) or total2)
                         end
                     elseif IsShiftKeyDown() then
                         Save.movie[arg1]=nil
-                        print(e.addName, Initializer:GetName(), e.onlyChinese and '移除' or REMOVE, 'movieID', arg1)
+                        print(e.addName, addName, e.onlyChinese and '移除' or REMOVE, 'movieID', arg1)
                     end
                 end
             }
@@ -1688,7 +1720,7 @@ local function Init_Menu_Gossip(_, level, type)
             func= function()
                 if IsShiftKeyDown() then
                     Save.movie={}
-                    print(e.addName, Initializer:GetName(), e.onlyChinese and '清除全部' or CLEAR_ALL)
+                    print(e.addName, addName, e.onlyChinese and '清除全部' or CLEAR_ALL)
                 end
             end
         }
@@ -1703,7 +1735,7 @@ local function Init_Menu_Gossip(_, level, type)
             keepShownOnClick=true,
             func= function ()
                 Save.stopMovie= not Save.stopMovie and true or nil
-                print(e.addName, Initializer:GetName(), e.GetEnabeleDisable(Save.stopMovie))
+                print(e.addName, addName, e.GetEnabeleDisable(Save.stopMovie))
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1809,8 +1841,8 @@ local function Init_Menu_Gossip(_, level, type)
         text=format('%s NPC |cnGREEN_FONT_COLOR:%d|r', e.onlyChinese and '禁用' or DISABLE, n),
         menuList='DISABLE',
         tooltipOnButton=true,
-        tooltipTitle= e.onlyChinese and '对话' or ENABLE_DIALOG,
-        tooltipText= e.onlyChinese and '任务' or QUESTS_LABEL,
+        tooltipTitle= addName,
+        tooltipText= addName2,
         notCheckable=true,
         hasArrow=true,
         keepShownOnClick=true,
@@ -1931,7 +1963,7 @@ local function Create_CheckButton(frame, info)
                 local f= GossipButton:isShow_Gossip_Text_Icon_Frame()
                 e.tips:SetOwner(f or self, f and "ANCHOR_BOTTOM" or "ANCHOR_RIGHT")
                 e.tips:ClearLines()
-                e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+                e.tips:AddDoubleLine(e.addName, addName)
                 e.tips:AddDoubleLine(e.onlyChinese and '自动对话' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, ENABLE_DIALOG), e.GetEnabeleDisable(Save.gossip))
                 e.tips:AddDoubleLine(' ')
                 e.tips:AddDoubleLine('|T'..(self.icon or 0)..':0|t'..(self.name or ''), 'gossipOption: |cnGREEN_FONT_COLOR:'..self.id..'|r')
@@ -1952,7 +1984,7 @@ local function Create_CheckButton(frame, info)
             check:SetScript("OnMouseDown", function(self)
                 Save.gossipOption[self.id]= not Save.gossipOption[self.id] and (self.name or '') or nil
                 if Save.gossipOption[self.id] and not IsModifierKeyDown() and Save.gossip then
-                    print(e.addName, Initializer:GetName(), format('|cnGREEN_FONT_COLOR:%s|r %d', self.name or '', self.id))
+                    print(e.addName, addName, format('|cnGREEN_FONT_COLOR:%s|r %d', self.name or '', self.id))
                     C_GossipInfo.SelectOption(self.id)
                 end
             end)
@@ -2028,7 +2060,7 @@ local function Init_Gossip()
     GossipButton.gossipFrane_Button:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+        e.tips:AddDoubleLine(e.addName, addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '对话替换' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DIALOG_VOLUME, REPLACE), e.Icon.left)
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
@@ -2159,7 +2191,7 @@ local function Init_Gossip()
                 if Save.movie[arg1] then
                     if Save.stopMovie then
                         MovieFrame:StopMovie()
-                        print(e.addName, Initializer:GetName(), e.onlyChinese and '对话' or ENABLE_DIALOG,
+                        print(e.addName, addName, e.onlyChinese and '对话' or ENABLE_DIALOG,
                             '|cnRED_FONT_COLOR:'..(e.onlyChinese and '跳过' or RENOWN_LEVEL_UP_SKIP_BUTTON)..'|r',
                             'movieID|cnGREEN_FONT_COLOR:',
                             arg1
@@ -2169,7 +2201,7 @@ local function Init_Gossip()
                 else
                     Save.movie[arg1]= date("%d/%m/%y %H:%M:%S")
                 end
-                print(e.addName, Initializer:GetName(), '|cnGREEN_FONT_COLOR:movieID', arg1)
+                print(e.addName, addName, '|cnGREEN_FONT_COLOR:movieID', arg1)
             end
 
         elseif event=='ADDON_ACTION_FORBIDDEN'  then
@@ -2177,7 +2209,7 @@ local function Init_Gossip()
                 if StaticPopup1:IsShown() then
                     StaticPopup1:Hide()
                 end
-                print(e.addName, Initializer:GetName(), '|n|cnRED_FONT_COLOR:',  format(e.onlyChinese and '|cffff00ff%s|r已被禁用，因为该功能只对暴雪的UI开放。\n你可以禁用这个插件并重新装载UI。' or ADDON_ACTION_FORBIDDEN, arg1 or '', ...))
+                print(e.addName, addName, '|n|cnRED_FONT_COLOR:',  format(e.onlyChinese and '|cffff00ff%s|r已被禁用，因为该功能只对暴雪的UI开放。\n你可以禁用这个插件并重新装载UI。' or ADDON_ACTION_FORBIDDEN, arg1 or '', ...))
             end
         end
     end)
@@ -2190,7 +2222,7 @@ local function Init_Gossip()
     --[[hooksecurefunc(StaticPopupDialogs["ADDON_ACTION_FORBIDDEN"], "OnShow",function(s)
         if Save.gossip then
             local text= StaticPopup1Text and StaticPopup1Text:GetText() or (e.onlyChinese and '%s已被禁用，因为该功能只对暴雪的UI开放。\n你可以禁用这个插件并重新装载UI。' or ADDON_ACTION_FORBIDDEN)
-            print(e.addName, Initializer:GetName(), '|n|cnRED_FONT_COLOR:', text)
+            print(e.addName, addName, '|n|cnRED_FONT_COLOR:', text)
             s:Hide()
         end
     end)]]
@@ -2208,12 +2240,12 @@ local function Init_Gossip()
             return
         end
         Save.NPC[self.npc]= not Save.NPC[self.npc] and self.name or nil
-        print(e.addName, Initializer:GetName(), self.name, self.npc, e.GetEnabeleDisable(Save.NPC[self.npc]))
+        print(e.addName, addName, self.name, self.npc, e.GetEnabeleDisable(Save.NPC[self.npc]))
     end)
     GossipFrame.WoWToolsSelectNPC:SetScript('OnEnter',function (self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+        e.tips:AddDoubleLine(e.addName, addName)
         if self.npc and self.name then
             e.tips:AddDoubleLine(self.name, 'NPC |cnGREEN_FONT_COLOR:'..self.npc..'|r')
         else
@@ -2287,7 +2319,7 @@ local function Init_Gossip()
 
         elseif Save.quest and  (quest or name:find('0000FF') or  name:find(QUESTS_LABEL) or name:find(LOOT_JOURNAL_LEGENDARIES_SOURCE_QUEST)) then--任务
             if quest then
-                name= format(e.onlyChinese and '|cnPURE_BLUE_COLOR:（任务）|r%s' or GOSSIP_QUEST_OPTION_PREPEND, info.name)
+                name= e.cn(info.name)..(e.onlyChinese and '|cnGREEN_FONT_COLOR:[任务]|r%s' or ('|cnGREEN_FONT_COLOR:['..QUESTS_LABEL..']|r'))
             end
             C_GossipInfo.SelectOption(index)
             find=true
@@ -2312,44 +2344,20 @@ local function Init_Gossip()
             C_GossipInfo.SelectOption(index)
             find=true
 
-        elseif IsInInstance() then
-            if index==107571--挑战，模式，去 SX buff
-                --and C_ChallengeMode.IsChallengeModeActive()
-                and e.WA_GetUnitDebuff('player', nil, 'HARMFUL', {
-                           [57723]= true,
-                           [57724]= true,
-                           [264689]= true,
-                           [80354]= true,
-                           [390435]= true,
-                        })
-            then
+        elseif IsInInstance() then--自动对话
+            if Get_Auto_Instance_Gossip(index, allGossip, true) then
                 C_GossipInfo.SelectOption(index)
                 find=true
-
-            elseif index==107572 then--挑战，模式, 修理
-                local value= select(2, e.GetDurabiliy())
-                if value<95 then
-                    C_GossipInfo.SelectOption(index)
-                    find=true
-                end
-            elseif AutoGossipTab[index]==allGossip then--自动，对话 [gossipID]=总数
-                C_GossipInfo.SelectOption(index)
-                find=true
-            end
+            end            
         end
-            --[[elseif index==56363 then--奥达曼， 传送门3
-                C_GossipInfo.SelectOption(index)
-                find=true
-            elseif index==56364 and allGossip==2 then--奥达曼， 传送门2
-                C_GossipInfo.SelectOption(index)
-                find=true
-            elseif index==56365 and allGossip==1 then--奥达曼， 传送门1
-                C_GossipInfo.SelectOption(index)
-                find=true]]
 
         if find then
             GossipButton.selectGissipIDTab[index]=true
-            print(e.Icon.icon2..'|T'..(info.overrideIconID or info.icon or 0)..':0|t|cffff00ff'..name..'|r', index)
+            print(
+                e.Icon.icon2..WoWTools_UnitMixin:Get_NPC_Name('npc', nil)
+                ..'|T'..(info.overrideIconID or info.icon or 0)..':0|t|cffff00ff'..(name or '')
+                --, index
+            )
         end
     end)
 
@@ -2387,12 +2395,12 @@ local function Init_Gossip()
             self.sel:SetScript("OnEnter", function(frame)
                 e.tips:SetOwner(frame, "ANCHOR_RIGHT")
                 e.tips:ClearLines()
-                e.tips:AddDoubleLine(e.addName, e.onlyChinese and '任务' or QUESTS_LABEL)
+                e.tips:AddDoubleLine(e.addName, addName2)
                 e.tips:AddDoubleLine(' ')
                 if frame.id and frame.text then
                     e.tips:AddDoubleLine(frame.text, 'ID |cnGREEN_FONT_COLOR:'..frame.id..'|r')
                 else
-                    e.tips:AddDoubleLine(NONE, QUESTS_LABEL..' ID',1,0,0)
+                    e.tips:AddDoubleLine(e.onlyChinese and '无' or NONE, (e.onlyChinese and '任务' or  QUESTS_LABEL)..' ID',1,0,0)
                 end
                 e.tips:Show()
             end)
@@ -2406,7 +2414,7 @@ local function Init_Gossip()
                         C_GossipInfo.SelectAvailableQuest(frame.id)
                     end
                 else
-                    print(e.addName, Initializer:GetName(), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE)..'|r', e.onlyChinese and '任务' or QUESTS_LABEL,'ID')
+                    print(e.addName, addName2, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE)..'|r', e.onlyChinese and '任务' or QUESTS_LABEL,'ID')
                 end
             end)
         end
@@ -2558,7 +2566,7 @@ local function InitMenu_Quest(_, level, type)
                 arg1= questID,
                 func= function(_, arg1)
                     Save.questRewardCheck[arg1]=nil
-                    print(e.addName, Initializer:GetName(), GetQuestLink(arg1) or C_QuestLog.GetTitleForQuestID(arg1) or arg1)
+                    print(e.addName, addName2, GetQuestLink(arg1) or C_QuestLog.GetTitleForQuestID(arg1) or arg1)
                 end,
             }
             num=num+1
@@ -2574,7 +2582,7 @@ local function InitMenu_Quest(_, level, type)
             func= function()
                 if IsShiftKeyDown() then
                     Save.questRewardCheck={}
-                    print(e.addName, Initializer:GetName(), e.onlyChinese and '清除全部' or CLEAR_ALL)
+                    print(e.addName, addName2, e.onlyChinese and '清除全部' or CLEAR_ALL)
                 end
             end
         }
@@ -2590,7 +2598,7 @@ local function InitMenu_Quest(_, level, type)
                 tooltipText='|n'..e.Icon.left..(e.onlyChinese and '移除' or REMOVE),
                 func=function()
                     Save.questOption[questID]=nil
-                    print(e.addName, Initializer:GetName(), e.onlyChinese and '移除' or REMOVE, text, 'ID', questID)
+                    print(e.addName, addName2, e.onlyChinese and '移除' or REMOVE, text, 'ID', questID)
                 end
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -2605,7 +2613,7 @@ local function InitMenu_Quest(_, level, type)
             func= function()
                 if IsShiftKeyDown() then
                     Save.questOption={}
-                    print(e.addName, Initializer:GetName(), e.onlyChinese and '自定义' or CUSTOM, e.onlyChinese and '清除全部' or CLEAR_ALL)
+                    print(e.addName, addName2, e.onlyChinese and '自定义' or CUSTOM, e.onlyChinese and '清除全部' or CLEAR_ALL)
                 end
             end
         }
@@ -2638,7 +2646,7 @@ local function InitMenu_Quest(_, level, type)
         checked= QuestButton.isQuestTrivialTracking,
         tooltipOnButton= true,
         tooltipTitle= e.onlyChinese and '追踪' or TRACKING,
-        tooltipText= e.onlyChinese and '低等任务' or (LOW..LEVEL..QUESTS_LABEL),
+        tooltipText= e.onlyChinese and '低等任务' or (format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LOW, LEVEL), QUESTS_LABEL)),
         keepShownOnClick=true,
         func= function ()
             QuestButton:get_set_IsQuestTrivialTracking(true)--其它任务,低等任务,追踪
@@ -2715,7 +2723,7 @@ local function InitMenu_Quest(_, level, type)
         text= e.onlyChinese and '当前地图' or (REFORGE_CURRENT..WORLD_MAP),
         checked= Save.autoSortQuest,
         tooltipOnButton=true,
-        tooltipTitle= e.onlyChinese and '仅显示当前地图任务' or format(GROUP_FINDER_CROSS_FACTION_LISTING_WITH_PLAYSTLE, SHOW,FLOOR..QUESTS_LABEL),--仅限-本区域任务
+        tooltipTitle= e.onlyChinese and '仅显示当前地图任务' or format(GROUP_FINDER_CROSS_FACTION_LISTING_WITH_PLAYSTLE, SHOW, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, FLOOR, QUESTS_LABEL)),--仅限-本区域任务
         tooltipText= e.onlyChinese and '触发事件: 更新区域' or (EVENTS_LABEL..':' ..UPDATE..FLOOR),
         keepShownOnClick=true,
         func=function()
@@ -2913,7 +2921,7 @@ local function Init_Quest()
     function QuestButton:tooltip_Show()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, e.onlyChinese and '任务' or QUESTS_LABEL)
+        e.tips:AddDoubleLine(e.addName, addName2)
         e.tips:AddLine(' ')
         e.GetQuestAllTooltip()--所有，任务，提示
         e.tips:AddLine(' ')
@@ -3036,7 +3044,7 @@ local function Init_Quest()
     QuestFrame.sel:SetScript('OnEnter',function (self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+        e.tips:AddDoubleLine(e.addName, addName2)
         if self.npc and self.name then
             e.tips:AddDoubleLine(self.name, 'NPC '..self.npc)
         else
@@ -3053,7 +3061,7 @@ local function Init_Quest()
             return
         end
         Save.NPC[self.npc]= not Save.NPC[self.npc] and self.name or nil
-        print(e.addName, Initializer:GetName(), self.name, self.npc, e.GetEnabeleDisable(Save.NPC[self.npc]))
+        print(e.addName, addName2, self.name, self.npc, e.GetEnabeleDisable(Save.NPC[self.npc]))
     end)
 
     QuestFrame.sel.questIDLabel:SetScript("OnLeave", function(self) self:SetAlpha(1) GameTooltip_Hide() end)
@@ -3161,23 +3169,27 @@ local function Init_Quest()
                 end
                 local text=GetProgressText()
                 C_Timer.After(0.5, function()
-                    local questLink=GetQuestLink(questID)
+                    local questLink= e.cn(nil, {questID=questID, isName=true}) or GetQuestLink(questID)
                     if not questLink then
                         local index= C_QuestLog.GetLogIndexForQuestID(questID)
                         local info2= index and C_QuestLog.GetInfo(index)
                         if info2 and info2.title and info2.level then
-                            questLink= '|Hquest:'..questID..':'..info2.level..'|h['..info2.title..']|h'
+                            questLink= '|Hquest:'..questID..':'..info2.level..'|h['..e.cn(info2.title)..']|h|cnGREEN_FONT_COLOR:'..questID..'|r'
                         end
-                        questLink=questLink or ('|cnGREEN_FONT_COLOR:'..questID..'|r')
+                        
                     end
-                    print(e.Icon.icon2, questLink, text and '|cffff00ff'..text..'|r', link, QuestFrameGoodbyeButton and '|cnRED_FONT_COLOR:'..QuestFrameGoodbyeButton:GetText())
+                    print(e.Icon.icon2,
+                        questLink,
+                        text and '|cffff00ff'..text..'|r', link,
+                        QuestFrameGoodbyeButton and '|cnRED_FONT_COLOR:'..e.cn(QuestFrameGoodbyeButton:GetText())
+                    )
                 end)
             end
             e.call(QuestGoodbyeButton_OnClick)
         else
             if not QuestButton.questSelect[questID] then--已选任务, 提示用
                 C_Timer.After(0.5, function()
-                    print(e.Icon.icon2, GetQuestLink(questID) or questID)
+                    print(e.Icon.icon2, e.cn(nil, {questID=questID, isName=true}), GetQuestLink(questID) or '')
                 end)
                 QuestButton.questSelect[questID]=true
             end
@@ -3262,7 +3274,7 @@ local function Init_Quest()
         if not QuestButton.questSelect[questID] then--已选任务, 提示用
             C_Timer.After(0.5, function()
                 print(e.Icon.icon2..(GetQuestLink(questID) or questID),
-                    (complete and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..acceptButton:GetText()..'|r',
+                    e.Icon.left..(complete and '|cffffffff' or '|cnGREEN_FONT_COLOR:')..acceptButton:GetText()..'|r',
                     itemLink)
             end)
             QuestButton.questSelect[questID]=true
@@ -3381,7 +3393,7 @@ local function set_ClubFinderRequestToJoin(self)
     if self.Apply:IsEnabled() then
         self.Apply:Click()
         print(
-            id, Initializer:GetName(),'|cnGREEN_FONT_COLOR:', self.Apply:GetText(),'|n|cffff00ff',
+            id, addName2,'|cnGREEN_FONT_COLOR:', self.Apply:GetText(),'|n|cffff00ff',
             (self.info.emblemInfo and '|T'..self.info.emblemInfo..':0|t' or '')..(self.info.name or '')..(self.info.numActiveMembers and  '|cff00ccff (|A:groupfinder-waitdot:0:0|a'..self.info.numActiveMembers..')|r' or ''), '|n',
             '|cnGREEN_FONT_COLOR:'..text, specName,'|n', '|cffff7f00', self.info.comment)
     end
@@ -3469,7 +3481,7 @@ local function Init_Blizzard_PlayerChoice()
                                 Send_Player_Choice_Response(optionInfo)
                             end
                         else
-                            print(e.addName, Initializer:GetName(),'|cnRED_FONT_COLOR:', not e.onlyChinese and ERRORS..' ('..UNKNOWN..')' or '未知错误')
+                            print(e.addName, addName,'|cnRED_FONT_COLOR:', not e.onlyChinese and ERRORS..' ('..UNKNOWN..')' or '未知错误')
                         end
                     end)
                     optionFrame.check:SetScript('OnLeave', GameTooltip_Hide)
@@ -3481,7 +3493,7 @@ local function Init_Blizzard_PlayerChoice()
                             e.tips:SetSpellByID(optionInfo.spellID)
                         end
                         e.tips:AddLine(' ')
-                        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+                        e.tips:AddDoubleLine(e.addName, addName)
                         e.tips:Show()
                     end)
                     --[[optionFrame.check.Text2=e.Cstr(optionFrame.check)
@@ -3548,7 +3560,7 @@ local function Init_Blizzard_PlayerChoice()
                 PlayerChoiceFrame.allButton:SetScript('OnEnter', function(s)
                     e.tips:SetOwner(s, "ANCHOR_LEFT")
                     e.tips:ClearLines()
-                    e.tips:AddDoubleLine(e.addName , Initializer:GetName())
+                    e.tips:AddDoubleLine(e.addName , addName)
                     e.tips:AddLine(' ')
                     e.tips:AddLine(s.tips or (e.onlyChinese and '使用' or USE))
                     e.tips:AddDoubleLine(' ', format(e.onlyChinese and '%d次' or ITEM_SPELL_CHARGES, 44)..e.Icon.left)
@@ -3571,7 +3583,7 @@ local function Init_Blizzard_PlayerChoice()
                     if s.time and not s.time:IsCancelled() then
                         s.time:Cancel()
                         s:set_text()
-                        print(e.addName,Initializer:GetName(),'|cnRED_FONT_COLOR:', e.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1)
+                        print(e.addName,addName,'|cnRED_FONT_COLOR:', e.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1)
                         return
                     else
                         s:set_text()
@@ -3598,11 +3610,11 @@ local function Init_Blizzard_PlayerChoice()
                         then
                             C_PlayerChoice.SendPlayerChoiceResponse(info.buttons[2].id)--Blizzard_PlayerChoiceOptionBase.lua
                             n=n+1
-                            print(e.addName, Initializer:GetName(), '|cnGREEN_FONT_COLOR:'..n..'|r', '('..all-n..')', '|cnRED_FONT_COLOR:Alt' )
+                            print(e.addName, addName, '|cnGREEN_FONT_COLOR:'..n..'|r', '('..all-n..')', '|cnRED_FONT_COLOR:Alt' )
                             --self.parentOption:OnSelected()
                         elseif s.time then
                         s.time:Cancel()
-                        print(e.addName,Initializer:GetName(),'|cnRED_FONT_COLOR:', e.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1, '|r'..n)
+                        print(e.addName,addName,'|cnRED_FONT_COLOR:', e.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1, '|r'..n)
                         end
                         s:set_text()
                     end, all)
@@ -3690,6 +3702,122 @@ local function Init_Blizzard_PlayerChoice()
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--地下堡
+
+local function Init_Blizzard_DelvesDifficultyPicker()
+    --[[local LAST_TIER_SELECTED_CVAR = "lastSelectedDelvesTier";
+
+    DelvesDifficultyPickerFrame.MaxLevelCheckButton= CreateFrame("CheckButton", nil, DelvesDifficultyPickerFrame, "InterfaceOptionsCheckButtonTemplate")
+    DelvesDifficultyPickerFrame.MaxLevelCheckButton:SetPoint("TOPRIGHT")
+    DelvesDifficultyPickerFrame.MaxLevelCheckButton:SetText(e.onlyChinese and '最高等级' or BEST)
+    DelvesDifficultyPickerFrame.MaxLevelCheckButton:SetScript('OnClick', function()
+        Save.delvesDifficultyMaxLevel= not Save.delvesDifficultyMaxLevel and true or nil
+    end)
+    DelvesDifficultyPickerFrame.MaxLevelCheckButton:SetScript('OnLeave', GameTooltip_Hide)
+    DelvesDifficultyPickerFrame.MaxLevelCheckButton:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_Left")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(e.addName, addName)
+        e.tips:Show()
+    end)]]
+
+    DelvesDifficultyPickerFrame:HookScript('OnShow', function(self)
+        if not Save.gossip or IsModifierKeyDown() or not self.gossipOptions then
+            return
+        end
+        local num= #self.gossipOptions
+        if num==0 then
+            return
+        end        
+        
+        do
+            if Save.delvesDifficultyMaxLevel then
+                C_DelvesUI.RequestPartyEligibilityForDelveTiers(self.gossipOptions[num].gossipOptionID)                
+            end
+        end
+
+        
+        local btn= self.EnterDelveButton
+        if btn and btn:IsEnabled() then
+            local name,itemLink
+            local option= self:GetSelectedOption()
+            if option and option.name then
+                local spellLink
+                if option.spellID then
+                    local link= C_Spell.GetSpellLink(option.spellID)
+                    spellLink= e.cn(link, {spellID=option.spellID, spellLink=link, isName=true})
+                end
+                name=spellLink or e.cn(option.name)
+
+                
+                for _, reward in ipairs(option.rewards or {}) do
+                    if reward.rewardType == Enum.GossipOptionRewardType.Item and reward.id then 
+                        e.LoadDate({type='item', id=reward.id})
+                        local item= C_Item.GetItemNameByID(reward.id)
+                        local link= ItemUtil.GetItemHyperlink(reward.id)                    
+                        itemLink= (itemLink or '    ')
+                            ..(
+                                e.cn(link or item, {itemID=reward.id, itemLink=link, isName=true})
+                                or ('|T'..(C_Item.GetItemIconByID(reward.id) or 0)..':0|t')
+                            )
+                            ..'x'..(reward.quantity or 1)..' '
+                    end
+                end
+                print(e.addName, addName, '|T'..(option.icon or 0)..':0|t', name)
+                if itemLink then
+                    print(itemLink)
+                end
+            end
+            btn:Click()
+            print('    |cff9e9e9e|A:NPE_Icon:0:0|aAlt', e.onlyChinese and '取消' or CANCEL)
+        end
+        
+    end)
+
+    
+    
+    
+    Menu.ModifyMenu("MENU_DELVES_DIFFICULTY", function(_, root)
+		local options = DelvesDifficultyPickerFrame:GetOptions();
+		if not options then
+			return;
+		end
+        root:CreateDivider()
+        local sub= root:CreateCheckbox(e.onlyChinese and '最高等级' or BEST, function()
+            return Save.gossip
+        end, function()
+            Save.delvesDifficultyMaxLevel= not Save.delvesDifficultyMaxLevel and true or nil
+        end)
+        sub:SetTooltip(function(tooltip)
+            tooltip:AddLine(e.addName)
+            tooltip:AddDoubleLine(addName, e.GetEnabeleDisable(Save.gossip))
+        end)
+        sub:SetEnabled(Save.gossip and true or false)
+    end)
+
+end
 
 
 
@@ -3804,25 +3932,25 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED"  then
         if arg1 == id then
-            Save= WoWToolsSave[addName] or Save
-            Save.questOption = Save.questOption or {}
-            Save.gossipOption= Save.gossipOption or {}
-            Save.questRewardCheck= Save.questRewardCheck or {}
-            Save.choice= Save.choice or {}
-            Save.NPC= Save.NPC or {}
-            Save.movie= Save.movie or {}
+            
 
-            Save.Gossip_Text_Icon_Player= Save.Gossip_Text_Icon_Player or {}
-            Save.Gossip_Text_Icon_Size= Save.Gossip_Text_Icon_Size or 18
-
+            if WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ENABLE_DIALOG, QUESTS_LABEL)] then
+                Save= WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ENABLE_DIALOG, QUESTS_LABEL)]
+                WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ENABLE_DIALOG, QUESTS_LABEL)]=nil
+            else
+                Save= WoWToolsSave['Plus_Gossip'] or Save    
+            end
+            
+            addName= '|A:SpecDial_LastPip_BorderGlow:0:0|a'..(e.onlyChinese and '闲谈选项' or GOSSIP_OPTIONS)
+            addName2= '|A:UI-HUD-UnitFrame-Target-PortraitOn-Boss-Quest:0:0|a'..(e.onlyChinese and '任务选项' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, QUESTS_LABEL, SETTINGS_TITLE))
              --添加控制面板
              --e.AddPanel_Header(nil, 'Plus')
             Initializer= e.AddPanel_Check_Button({
-                 checkName= '|A:SpecDial_LastPip_BorderGlow:0:0|a'..(e.onlyChinese and '对话和任务' or addName),
+                 checkName= addName,
                  GetValue= function() return not Save.disabled end,
                  SetValue= function()
                      Save.disabled = not Save.disabled and true or nil
-                     print(e.addName, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+                     print(e.addName, addName, addName2, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
                  end,
                  buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
                  buttonFunc= function()
@@ -3831,7 +3959,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                          GossipButton:ClearAllPoints()
                          GossipButton:set_Point()
                      end
-                     print(e.addName, Initializer:GetName(), e.onlyChinese and '重置位置' or RESET_POSITION)
+                     print(e.addName, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
                  end,
                  tooltip= e.cn(addName),
                  layout= nil,
@@ -3846,7 +3974,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
                 if C_AddOns.IsAddOnLoaded('Blizzard_PlayerChoice') then
                     Init_Blizzard_PlayerChoice()
-                    self:UnregisterEvent('ADDON_LOADED')
+                end
+                if C_AddOns.IsAddOnLoaded('Blizzard_DelvesDifficultyPicker') then
+                    Init_Blizzard_DelvesDifficultyPicker()
                 end
 
                 if Save.gossip then
@@ -3864,6 +3994,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         elseif arg1=='Blizzard_PlayerChoice' then
             Init_Blizzard_PlayerChoice()
 
+        elseif arg1=='Blizzard_DelvesDifficultyPicker' then--地下堡
+            Init_Blizzard_DelvesDifficultyPicker()
         --[[elseif arg1=='Blizzard_SubscriptionInterstitialUI' then
             if Save.gossip and SubscriptionInterstitialFrame:IsShown() then
                 SubscriptionInterstitialFrame:Hide()
@@ -3872,7 +4004,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            WoWToolsSave[addName]=Save
+            WoWToolsSave['Plus_Gossip']= Save
         end
 
 

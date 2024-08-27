@@ -457,5 +457,10 @@ end)
 
 
 
+Menu.ModifyMenu("MENU_MINIMAP_TRACKING", function(owner, rootDescription, contextData)
+	rootDescription:CreateDivider();
+	rootDescription:CreateTitle("My Addon");
+	rootDescription:CreateButton("Button", function() print("Text here!") end);
+end);
 
 MenuTemplates.SetHierarchyEnabled(button, enabled);

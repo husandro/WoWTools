@@ -1053,7 +1053,7 @@ function func:Set_Buff(_, tooltip, ...)
     local source= data and data.sourceUnit
     if source then--来源
         if source then
-            local r, g ,b , col= e.GetUnitColor(source)-- GetClassColor(UnitClassBase(source))
+            local r, g ,b , col= select(2, WoWTools_UnitMixin:Get_Unit_Color(source, nil))
             if r and g and b and tooltip.backgroundColor then
                 tooltip.backgroundColor:SetColorTexture(r, g, b, 0.3)
                 tooltip.backgroundColor:SetShown(true)
@@ -1217,7 +1217,7 @@ function func:Set_Unit_Player(tooltip, name, unit, guid)
     local isPlayer = UnitIsPlayer(unit)
     local isSelf= UnitIsUnit('player', unit)--我
     local isGroupPlayer= (not isSelf and e.GroupGuid[guid]) and true or nil--队友
-    local r, g, b, col = e.GetUnitColor(unit)--颜色
+    local r, g, b, col = select(2, WoWTools_UnitMixin:Get_Unit_Color(unit, nil))--颜色
     local isInCombat= UnitAffectingCombat('player')
     local englishFaction = isPlayer and UnitFactionGroup(unit)
     local textLeft, text2Left, textRight, text2Right='', '', '', ''
@@ -1557,7 +1557,7 @@ function func:Set_Unit_NPC(tooltip, name, unit, guid)
     tooltip.text2Right:SetText(text2Right)
 
     if not Save.disabledNPCcolor then
-        local r, g, b = e.GetUnitColor(unit)--颜色
+        local r, g, b = select(2, WoWTools_UnitMixin:Get_Unit_Color(unit, nil))--颜色
         local tooltipName=tooltip:GetName() or 'GameTooltip'
         for i=1, tooltip:NumLines() do
             local lineLeft=_G[tooltipName.."TextLeft"..i]

@@ -143,7 +143,7 @@ local function Get_Player_Info(guid)--取得玩家信息
     if not unit then
         return
     end
-    local r, g, b, hex= e.GetUnitColor(unit)
+    local r, g, b, hex= select(2, WoWTools_UnitMixin:Get_Unit_Color(unit, nil))
     e.UnitItemLevel[guid] = {--玩家装等
         itemLevel= C_PaperDollInfo.GetInspectItemLevel(unit) or (e.UnitItemLevel[guid] and e.UnitItemLevel[guid].itemLevel),
         specID= GetInspectSpecialization(unit),

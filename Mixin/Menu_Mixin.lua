@@ -132,7 +132,7 @@ function WoWTools_MenuMixin:FrameStrata(root, GetValue, SetValue)
     local sub=root:CreateButton('FrameStrata', function() return MenuResponse.Open end)
 
     for _, strata in pairs({'BACKGROUND','LOW','MEDIUM','HIGH','DIALOG','FULLSCREEN','FULLSCREEN_DIALOG'}) do
-        sub:CreateCheckbox((strata=='HIGH' and '|cnGREEN_FONT_COLOR:' or '')..strata, GetValue, SetValue, strata)
+        sub:CreateCheckbox((strata=='MEDIUM' and '|cnGREEN_FONT_COLOR:' or '')..strata, GetValue, SetValue, strata)
     end
     return sub
 end

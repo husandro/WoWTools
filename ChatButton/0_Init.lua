@@ -5,7 +5,7 @@ local Save={
         ['ChatButton_Emoji']= not e.Player.cn and not e.Player.husandro,
     },
     scale= 1,
-    strata='HIGH'
+    strata='MEDIUM'
     --isVertical=nil,--方向, 竖
     --isShowBackground=nil,--是否显示背景 bool
     --isEnterShowMenu 移过图标，显示菜单
@@ -48,7 +48,7 @@ local function Init_Menu(self, root)
 
 
     for _, strata in pairs({'BACKGROUND','LOW','MEDIUM','HIGH','DIALOG','FULLSCREEN','FULLSCREEN_DIALOG'}) do
-        sub:CreateRadio((strata=='HIGH' and '|cnGREEN_FONT_COLOR:' or '')..strata, function(data)
+        sub:CreateRadio((strata=='MEDIUM' and '|cnGREEN_FONT_COLOR:' or '')..strata, function(data)
             return self:GetFrameStrata()== data
         end, function(data)
             Save.strata= data

@@ -57,7 +57,7 @@ end
 
 local function Get_Valid(data)
     local num=0
-
+    
     local name= WoWTools_SpellItemMixin:GetName(nil, data.itemID) or ''
     name=name:match('|c........(.+)|r') or name
     
@@ -72,7 +72,7 @@ local function Get_Valid(data)
                 achievementID=achievementID,
                 icon=icon,
                 name=name2,
-                find= wasEarnedByMe
+                find= not wasEarnedByMe
                 --col= wasEarnedByMe and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:'
             })
             
@@ -80,13 +80,14 @@ local function Get_Valid(data)
         end
     end
 
-    data.has= PlayerHasToy(data.itemID) and C_ToyBox.IsToyUsable(data.itemID)
-    data.name= name
-    data.find= find
-    data.num= num
-    data.achievements=new
-
-    return data
+    return {
+        itemID= data.itemID,
+        name= name,
+        has= PlayerHasToy(data.itemID) and C_ToyBox.IsToyUsable(data.itemID),
+        find= find,
+        findNum= num,
+        achievements=new,
+    }
 end
 
 
@@ -98,9 +99,9 @@ local function Init_Menu(self, root)
         local new= Get_Valid(info)
 
         sub= root:CreateCheckbox(
-            ((not new.find or not new.has) and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:')
-            ..'|T'..(C_Item.GetItemIconByID(info.itemID) or 0)..':0|t'
-            ..new.name,
+            (not new.has and '|cnRED_FONT_COLOR:' or (new.find and '|cnGREEN_FONT_COLOR:') or '|cff9e9e9e')
+            ..new.name
+            .. '|r#'..new.findNum,
         function(data)
             return data.itemID==self.itemID
         end, function(data)
@@ -108,11 +109,11 @@ local function Init_Menu(self, root)
         end, {itemID=info.itemID})
 
         WoWTools_SpellItemMixin:SetTooltip(nil, nil, sub, nil)
-        --sub:SetEnabled(false)
+      
 
         for _, tab in pairs(new.achievements) do
             sub2=sub:CreateButton(
-                (tab.find and '|cff9e9e9e' or '')
+                (tab.find and '' or '|cff9e9e9e')
                 ..'|T'..(tab.icon or 0)..':0|t'
                 ..e.cn(tab.name),
             function(data)

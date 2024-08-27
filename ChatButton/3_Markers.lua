@@ -12,7 +12,7 @@ local Save={
 
         markersScale=1,
         markersFrame= e.Player.husandro,
-        FrameStrata='HIGH',
+        FrameStrata='MEDIUM',
         pingTime= e.Player.husandro,--显示ping冷却时间
         autoReady=0,
       }
@@ -107,7 +107,7 @@ local function Init_MarkerTools_Menu(root)
         'TOOLTIP',
     }
     for _, name in pairs(tab) do
-        sub2=sub:CreateCheckbox((name=='HIGH' and '|cnGREEN_FONT_COLOR:' or '')..name, function(data)
+        sub2=sub:CreateCheckbox((name=='MEDIUM' and '|cnGREEN_FONT_COLOR:' or '')..name, function(data)
             return Save.FrameStrata==data
         end, function(data)
             Save.FrameStrata= data
