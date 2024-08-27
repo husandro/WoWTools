@@ -2216,7 +2216,7 @@ local function Loot_Plus()
             if winInfo.isSelf then
                 btn.WinningRollInfo.WinningRoll:SetText(e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r')
             elseif winInfo.playerGUID then
-                local name= e.GetPlayerInfo({guid=winInfo.playerGUID, reName=true})
+                local name= WoWTools_UnitMixin:GetPlayerInfo(nil, winInfo.playerGUID, nil, {reName=true})
                 if name and name~='' then
                     btn.WinningRollInfo.WinningRoll:SetText(name)
                 end
@@ -2345,7 +2345,7 @@ local function get_Role_Info(env, Name, isT, isH, isD)
                     if line and guid then
                         print(i..')',
                                 line,
-                                e.GetPlayerInfo({guid=guid, faction=UnitFactionGroup(unit), reLink=true}),
+                                WoWTools_UnitMixin:GetPlayerInfo(unit, guid, nil, {faction=UnitFactionGroup(unit), reLink=true}),
                                 '|A:poi-islands-table:0:0|a',
                                 e.GetUnitMapName(unit)
                             )
@@ -2394,8 +2394,10 @@ local function get_Role_Info(env, Name, isT, isH, isD)
                 end
                 local guid= UnitExists(u2) and UnitGUID(u2)
                 if guid then
-                    local info=(e.PlayerOnlineInfo(u2) or '')
-                                ..e.GetPlayerInfo({guid=guid, unit=u2, reName=true, reRealm=true})
+                    local info=(
+                                e.PlayerOnlineInfo(u2) or '')
+                                ..WoWTools_UnitMixin:GetPlayerInfo(u2, guid, nil, {reName=true, reRealm=true}
+                            )
                     local name=GetUnitName(u2,true)
                     local player=UnitIsUnit('player', u2)
                     RoleC[name]={
@@ -2936,7 +2938,7 @@ local function Init_Menu(_, root)
     local shouldtext
     local cooldowntext
     if ( deserterExpiration ) then
-		shouldtext = format("|cnRED_FONT_COLOR:%s|r "..e.GetPlayerInfo({guid=e.Player.guid}), e.onlyChinese and '逃亡者' or DESERTER)
+		shouldtext = format("|cnRED_FONT_COLOR:%s|r "..WoWTools_UnitMixin:GetPlayerInfo(nil, e.Player.guid, nil), e.onlyChinese and '逃亡者' or DESERTER)
         local timeRemaining = deserterExpiration - GetTime()
         if timeRemaining>0 then
             shouldtext= shouldtext..' '..SecondsToTime(ceil(timeRemaining))
@@ -2944,7 +2946,7 @@ local function Init_Menu(_, root)
 	else
 		local myExpireTime = GetLFGRandomCooldownExpiration()
         if myExpireTime then
-            cooldowntext= format("|cnRED_FONT_COLOR:%s|r "..e.GetPlayerInfo({guid=e.Player.guid}), e.onlyChinese and '冷却中' or ON_COOLDOWN)
+            cooldowntext= format("|cnRED_FONT_COLOR:%s|r "..WoWTools_UnitMixin:GetPlayerInfo(nil, e.Player.guid, nil), e.onlyChinese and '冷却中' or ON_COOLDOWN)
             local timeRemaining = myExpireTime - GetTime()
             if timeRemaining>0 then
                 cooldowntext= cooldowntext..' '..SecondsToTime(ceil(timeRemaining))
@@ -2954,9 +2956,9 @@ local function Init_Menu(_, root)
     for i = 1, GetNumSubgroupMembers() do
         local unit= 'party'..i
 		if ( UnitHasLFGDeserter(unit) ) then
-			shouldtext= (shouldtext and shouldtext..'|n' or '')..e.GetPlayerInfo({unit=unit})..' '..(e.onlyChinese and '逃亡者' or DESERTER)
+			shouldtext= (shouldtext and shouldtext..'|n' or '')..WoWTools_UnitMixin:GetPlayerInfo(unit, nil, nil)..' '..(e.onlyChinese and '逃亡者' or DESERTER)
 		elseif ( UnitHasLFGRandomCooldown(unit) ) then
-			cooldowntext= (cooldowntext and cooldowntext..'|n' or '')..e.GetPlayerInfo({unit=unit})..' '..(e.onlyChinese and '冷却中' or ON_COOLDOWN)
+			cooldowntext= (cooldowntext and cooldowntext..'|n' or '')..WoWTools_UnitMixin:GetPlayerInfo(unit, nil, nil)..' '..(e.onlyChinese and '冷却中' or ON_COOLDOWN)
 		end
     end
     if shouldtext then

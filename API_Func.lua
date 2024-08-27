@@ -73,7 +73,7 @@ e.GetGUID(unit, name)--从名字,名unit, 获取GUID
 e.GetFriend(name, guid, unit)--检测, 是否好友
 e.GetUnitFaction(unit, faction, all)--检查, 是否同一阵营
 e.PlayerLink(name, guid, onlyLink) --玩家超链接
-e.GetPlayerInfo(tab)--玩家信息 {unit=nil, guid=nil, name=nil, faction=nil, reName=true, reLink=false, reRealm=false, reNotRegion=false}
+
 e.PlayerOnlineInfo(unit)--单位，状态信息
 e.GetNpcID(unit)--NPC ID
 e.GetUnitMapName(unit)--单位, 地图名称
@@ -1501,7 +1501,7 @@ end
 
 
 
-local function GetPlayerNameRemoveRealm(name, realm)--玩家名称, 去服务器为*
+--[[local function GetPlayerNameRemoveRealm(name, realm)--玩家名称, 去服务器为*
     if not name then
         return
     end
@@ -1515,7 +1515,7 @@ local function GetPlayerNameRemoveRealm(name, realm)--玩家名称, 去服务器
         return reName..'*'
     end
     return reName
-end
+end]]
 
 function e.GetUnitName(name, unit, guid)--取得全名
     if name and name:gsub(' ','')~='' then
@@ -1655,81 +1655,20 @@ function e.PlayerLink(name, guid, onlyLink) --玩家超链接
     if guid then
         local _, class, _, race, sex, name2, realm = GetPlayerInfoByGUID(guid)
         if name2 then
-            local showName= GetPlayerNameRemoveRealm(name2, realm)
+            local showName= WoWTools_UnitMixin:NameRemoveRealm(name2, realm)
             if class then
                 showName= '|c'..select(4,GetClassColor(class))..showName..'|r'
             end
             return (not onlyLink and e.GetUnitRaceInfo({unit=nil, guid=guid , race=race , sex=sex , reAtlas=false}) or '')..'|Hplayer:'..name2..((realm and realm~='') and '-'..realm or '')..'|h['..showName..']|h'
         end
     elseif name then
-        return '|Hplayer:'..name..'|h['..GetPlayerNameRemoveRealm(name)..']|h'
+        return '|Hplayer:'..name..'|h['..WoWTools_UnitMixin:NameRemoveRealm(name)..']|h'
     end
     return ''
 end
 
 function e.GetPlayerInfo(tab)--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, faction=nil, reName=true, reLink=false, reRealm=false, reNotRegion=false})
-    local guid= tab.guid or e.GetGUID(tab.unit, tab.name)
-    if guid==e.Player.guid then
-        return e.Icon.player..((tab.reName or tab.reLink) and e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r' or '')..'|A:auctionhouse-icon-favorite:0:0|a'
-    end
-
-    if tab.reLink then
-        return e.PlayerLink(tab.name, guid, true) --玩家超链接
-    end
-
-    local text
-    if guid and C_PlayerInfo.GUIDIsPlayer(guid) then
-        local _, englishClass, _, englishRace, sex, name, realm = GetPlayerInfoByGUID(guid)
-        local unit= tab.unit
-        if guid and (not tab.faction or unit) then
-            if e.GroupGuid[guid] then
-                unit = unit or e.GroupGuid[guid].unit
-                tab.faction= tab.faction or e.GroupGuid[guid].faction
-            end
-        end
-
-        local friend= e.GetFriend(nil, guid, nil)--检测, 是否好友
-        local groupInfo= e.GroupGuid[guid] or {}--队伍成员
-        local server= not tab.reNotRegion and e.Get_Region(realm)--服务器，EU， US {col=, text=, realm=}
-
-        text= (server and server.col or '')
-                    ..(friend or '')
-                    ..(e.GetUnitFaction(unit, tab.faction) or '')--检查, 是否同一阵营
-                    ..(e.GetUnitRaceInfo({unit=unit, guid=guid , race=englishRace, sex=sex, reAtlas=false}) or '')
-                    ..(e.Class(unit, englishClass) or '')
-
-        if groupInfo.combatRole=='HEALER' or groupInfo.combatRole=='TANK' then--职业图标
-            text= text..e.Icon[groupInfo.combatRole]..(groupInfo.subgroup or '')
-        end
-        if tab.reName and name then
-            if tab.reRealm then
-                if not realm or realm=='' or realm==e.Player.realm then
-                    text= text..name
-                else
-                    text= text..name..'-'..realm
-                end
-            else
-                text= text..GetPlayerNameRemoveRealm(name, realm)
-            end
-            text= '|c'..select(4,GetClassColor(englishClass))..text..'|r'
-        end
-    end
-
-
-    if (not text or text=='') and tab.name then
-        if tab.reLink then
-            return e.PlayerLink(tab.name, nil, true) --玩家超链接
-
-        elseif tab.reName then
-            local name=tab.name
-            if not tab.reRealm then
-                name= GetPlayerNameRemoveRealm(name)
-            end
-            text= name
-        end
-    end
-
-    return text or ''
+    return WoWTools_UnitMixin:GetPlayerInfo(nil, nil, nil, tab)
 end
 
 

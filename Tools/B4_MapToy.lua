@@ -48,8 +48,18 @@ local Save={
 
 
 
-local function Init_Options()
+local function Init_Options(category, layout)
+    e.AddPanel_Header(layout, addName)
 
+    local initializer=e.AddPanel_Check({
+        category= category,
+        name= '|cff3fc6ea'..(e.onlyChinese and '启用' or ENABLE)..'|r',
+        tooltip= addName,
+        GetValue= function() return not Save.disabled end,
+        SetValue= function()
+            Save.disabled= not Save.disabled and true or nil
+        end
+    })
 end
 
 
@@ -102,7 +112,7 @@ local function Init_Menu(self, root)
             (new.num==0 and '|cff9e9e9e' or (new.notHas and '|cnRED_FONT_COLOR:') or '')
             ..new.name
             .. '|r'
-            ..(new.num>0 and '|cnGREEN_FONT_COLOR:' or '').. new.num,
+            ..(new.num>0 and '|cnGREEN_FONT_COLOR: ' or ' |cff9e9e9e').. new.num,
         function(data)
             return data.itemID==self.itemID
         end, function(data)
@@ -112,9 +122,10 @@ local function Init_Menu(self, root)
         WoWTools_SpellItemMixin:SetTooltip(nil, nil, sub, nil)
       
 
-        for _, tab in pairs(new.achievements) do
+        for index, tab in pairs(new.achievements) do
             sub2=sub:CreateButton(
-                (tab.find and '' or '|cff9e9e9e')
+                index..') '
+                ..(tab.find and '' or '|cff9e9e9e')
                 ..'|T'..(tab.icon or 0)..':0|t'
                 ..e.cn(tab.name),
             function(data)
@@ -126,8 +137,55 @@ local function Init_Menu(self, root)
                 tooltip:SetAchievementByID(description.data.achievementID)
             end)
         end
-
     end
+
+    local tab={}
+    local num=0
+    for _, guid in pairs(Save.no) do
+        num=num+1
+        tab[guid]=true
+    end
+
+    sub= root:CreateButton((e.onlyChinese and '已完成' or CRITERIA_COMPLETED)..(num>0 and ' '..num or ''), function() return MenuResponse.Open end)
+
+    sub2= sub:CreateCheckbox(e.onlyChinese and '添加' or ADD, function()
+        return Save.no[e.Player.guid]
+    end, function()
+        Save.no[e.Player.guid]= not Save.no[e.Player.guid] and true or nil
+        print(e.addName, addName, e.GetEnabeleDisable(not Save.no[e.Player.guid]), WoWTools_UnitMixin:GetPlayerInfo(nil, e.Player.guid, nil, {reLink=true, reName=true, reRealm=true}))
+    end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine(e.onlyChinese and '如果已完成|n可以 “添加” 禁用本模块' or ('If you are complete|nyou can \"'..ADD..'\" this module disabled'))
+        tooltip:AddLine(e.GetEnabeleDisable(not Save.no[e.Player.guid]))
+    end)
+    
+
+    if num>0 then
+        sub:CreateDivider()
+    end
+    for index, guid in pairs(tab) do
+        local player= WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {reLink=true, reName=true, reRealm=true})
+        sub:CreateCheckbox(index..')'..player,
+            function(data)
+                return Save.no[data.guid]
+            end, function(data)
+                Save.no[data.guid]=nil
+                print(e.addName, addName, e.onlyChinese and '移除' or REMOVE, data.player)
+            end,
+            {guid=guid, player=player}
+        )
+        sub:SetTooltip(function(tooltip, description)
+            tooltip:AddLine(e.onlyChinese and '移除' or REMOVE)
+            tooltip:AddLine(e.GetEnabeleDisable(not Save.no[description.data.guid]))
+        end)
+    end
+
+    if num>2 then
+        sub:CreateButton(e.onlyChinese and '全部清除' or CLEAR_ALL, function()
+            Save.no={}
+        end)
+    end
+    WoWTools_MenuMixin:SetNumButton(sub, num)
 end
 
 
@@ -215,32 +273,26 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
-            Save= WoWToolsSave['Tools_MapToy'] or {}
+            Save= WoWToolsSave['Tools_MapToy'] or Save
+            
+            addName= '|A:Taxi_Frame_Yellow:0:0|a'..(e.onlyChinese and '侦察地图' or ADVENTURE_MAP_TITLE)
 
             WoWTools_ToolsButtonMixin:AddOptions(Init_Options)
 
-            Save.no= Save.no or {}
             
-            if Save.disabled
-               or Save.no[e.Player.guid]
-                or not WoWTools_ToolsButtonMixin:GetButton()
+            if not Save.disabled
+               and not Save.no[e.Player.guid]
+                and WoWTools_ToolsButtonMixin:GetButton()
             then
-                Tab=nil
-                return
+                
+                ToyButton= WoWTools_ToolsButtonMixin:CreateButton({
+                    name='MapToy',
+                    tooltip=addName,
+                    disabledOptions=true
+                })
+
+                Init()
             end
-
-            addName= '|A:Taxi_Frame_Yellow:0:0|a'..(e.onlyChinese and '侦察地图' or ADVENTURE_MAP_TITLE)
-            ToyButton= WoWTools_ToolsButtonMixin:CreateButton({
-                name='MapToy',
-                tooltip=addName,
-            })
-
-            if not ToyButton then
-                Tab=nil
-                return
-            end
-
-            Init()
 
             self:UnregisterEvent('ADDON_LOADED')
         end

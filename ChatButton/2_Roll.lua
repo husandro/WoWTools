@@ -169,7 +169,10 @@ if saveNum>0 then
     end)
     sub:CreateDivider()
     for _, tab in pairs(Save.save) do
-        sub2= sub:CreateButton('|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t|cffffffff'..tab.roll..'|r '..e.GetPlayerInfo({unit=tab.unit, guid=tab.guid, name=tab.name, reName=true, reRealm=true})..' '..tab.date, function(text)
+        sub2= sub:CreateButton(
+            '|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t|cffffffff'..tab.roll..'|r '
+            ..WoWTools_UnitMixin:GetPlayerInfo(tab.unit, tab.guid, tab.name, {reName=true, reRealm=true})..' '..tab.date,
+        function(text)
             e.Chat(text, nil, nil)
             return MenuResponse.Refresh
         end, tab.text)
@@ -190,7 +193,11 @@ if rollNum>0 then
         if not tabNew[tab.name] then
             --col=tabNew[tab.name] and '|cff9e9e9e' or ''
             icon=tab.roll==Max and '|A:auctionhouse-icon-checkmark:0:0|a' or (tab.roll==Min and '|T450905:0|a') or ''
-            sub=root:CreateButton('|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t|cffffffff'..tab.roll..'|r '..e.GetPlayerInfo({unit=tab.unit, guid=tab.guid, name=tab.name, reName=true, reRealm=true}) ..' '..tab.date..icon, function(text)
+            sub=root:CreateButton(
+                '|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t|cffffffff'..tab.roll..'|r '
+                ..WoWTools_UnitMixin:GetPlayerInfo(tab.unit, tab.guid, tab.name, {reName=true, reRealm=true})
+                ..' '..tab.date..icon,
+            function(text)
                 e.Chat(text, nil, nil)
                 return MenuResponse.Refresh
             end, tab.text)
@@ -260,7 +267,11 @@ local function Init()
             for _, tab in pairs(RollTab) do
                 local col=tabNew[tab.name] and '|cff9e9e9e' or ''
                 local icon=tab.roll==Max and '|A:auctionhouse-icon-checkmark:0:0|a' or (tab.roll==Min and '|T450905:0|a') or ''
-                e.tips:AddLine(col..'|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t|cffffffff'..tab.roll..'|r '..e.GetPlayerInfo({unit=tab.unit, guid=tab.guid, name=tab.name, reName=true, reRealm=true}) ..' '..tab.date..icon)
+                e.tips:AddLine(
+                    col
+                    ..'|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t|cffffffff'..tab.roll..'|r '
+                    ..WoWTools_UnitMixin:GetPlayerInfo(tab.unit, tab.guid, tab.name, {reName=true, reRealm=true})
+                    ..' '..tab.date..icon)
                 tabNew[tab.name]=true
             end
         end

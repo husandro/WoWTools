@@ -165,7 +165,7 @@ local function set_PLAYER_TARGET_CHANGED()--设置, 邀请目标
     if guid then
         InvPlateGuid[guid]=name--保存到已邀请列表
     end
-    print(e.addName, addName, e.onlyChinese and '目标' or TARGET, e.GetPlayerInfo({guid=guid, name=name, reLink=true}))
+    print(e.addName, addName, e.onlyChinese and '目标' or TARGET, WoWTools_UnitMixin:GetPlayerInfo(nil, guid, name, {reLink=true}))
 end
 
 local function InvPlateGuidFunc()--从已邀请过列表里, 再次邀请 
@@ -695,7 +695,7 @@ local function Init_CONFIRM_SUMMON()
         local name= C_SummonInfo.GetSummonConfirmSummoner()
         local info= e.GroupGuid[name]
         if info and info.guid then
-            local playerInfo=e.GetPlayerInfo({guid=info.guid, reLink=true})
+            local playerInfo= WoWTools_UnitMixin:GetPlayerInfo(nil, info.guid, nil, {reLink=true})
             name= playerInfo~='' and playerInfo or name
         end
         print(e.addName, addName, e.onlyChinese and '召唤' or SUMMON, name, '|A:poi-islands-table:0:0|a|cnGREEN_FONT_COLOR:', C_SummonInfo.GetSummonConfirmAreaName())
@@ -750,7 +750,7 @@ local function Init_Menu(self, root)
     num=0
     for guid, name in pairs(InvPlateGuid) do
         if not e.GroupGuid[guid] then
-            sub2= sub:CreateButton(e.GetPlayerInfo({unit=nil, guid=guid, name=name,  reName=true, reRealm=true}), function(data)
+            sub2= sub:CreateButton(WoWTools_UnitMixin:GetPlayerInfo(nil, guid, name, {reName=true, reRealm=true}), function(data)
                 C_PartyInfo.InviteUnit(name)
             end, name)
             sub2:SetTooltip(function(tooltip)
@@ -947,10 +947,10 @@ local function Init_Menu(self, root)
 
     num=0
     for guid, nu in pairs(Save.InvNoFriend) do
-        sub2=sub:CreateButton(nu..' '..e.GetPlayerInfo({unit=nil, guid=guid, name=nil,  reName=true, reRealm=true}),
+        sub2=sub:CreateButton(nu..' '..WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {reName=true, reRealm=true}),
         function(data)
             Save.InvNoFriend[data]=nil
-            print(e.addName, addName, e.GetPlayerInfo({unit=nil, guid=guid, reLink=true}))
+            print(e.addName, addName, WoWTools_UnitMixin:GetPlayerInfo(nil, data, nil,{reLink=true}))
         end, guid)
         sub2:SetTooltip(function(tooltip)
             tooltip:AddLine(e.onlyChinese and '移除' or REMOVE)

@@ -103,7 +103,7 @@ local function Set_Realm(link)--去服务器为*, 加队友种族图标,和N,T
             e.Icon.toLeft
         )
     else
-        local text= e.GetPlayerInfo({name=name})
+        local text= WoWTools_UnitMixin:GetPlayerInfo(nil, nil, name)
         if server then
             if server== e.Player.realm then
                 return (text or '')..link:gsub('%-'..server..'|r]|h', '|r]|h')
@@ -415,7 +415,7 @@ end
 
 local function DungeonScore(link)--史诗钥石评分
     local score, guid, itemLv=link:match('|HdungeonScore:(%d+):(.-):.-:%d+:(%d+):')
-    local t=e.GetPlayerInfo({guid=guid})..e.GetKeystoneScorsoColor(score)
+    local t=WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil)..e.GetKeystoneScorsoColor(score)
     t=t..cn_Link_Text(link)
     if itemLv and itemLv~='0' then
         t=t..'|A:charactercreate-icon-customize-body-selected:0:0|a'..itemLv
@@ -457,7 +457,7 @@ end
 
 local function Instancelock(link)
     local guid, InstanceID, DifficultyID=link:match('Hinstancelock:(.-):(%d+):(%d+):')
-    local t=e.GetPlayerInfo({guid=guid})..cn_Link_Text(link)
+    local t=WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil)..cn_Link_Text(link)
     if DifficultyID and InstanceID then
         local name= e.GetDifficultyColor(nil, tonumber(DifficultyID)) or GetDifficultyInfo(DifficultyID)
         if name then--[[|Hjournal:0:320:5|h[Terrazza dell'Eterna Primavera]|h]]
@@ -1085,7 +1085,7 @@ local function Init_Menu(_, root)
         Save.notShowPlayerInfo= not Save.notShowPlayerInfo and true or nil
     end)
     tre:SetTooltip(function(tooltip)
-        GameTooltip_AddNormalLine(tooltip, e.GetPlayerInfo({unit='player', reLink=true}))
+        GameTooltip_AddNormalLine(tooltip, WoWTools_UnitMixin:GetPlayerInfo('player', nil, nil, {reLink=true}))
     end)
 
 

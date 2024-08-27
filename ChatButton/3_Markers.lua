@@ -384,7 +384,7 @@ local function Init_Ready_Tips_Button()
                 )
                 ..(index<10 and ' ' or '')..index..')'--编号号
                 ..(e.PlayerOnlineInfo(unit) or '')
-                ..e.GetPlayerInfo({guid=UnitGUID(unit), unit=unit, reName=true, reRealm=true})
+                ..WoWTools_UnitMixin:GetPlayerInfo(unit, UnitGUID(unit), nil, {reName=true, reRealm=true})
                 ..(UnitHasLFGRandomCooldown(unit) and '|cnRED_FONT_COLOR:<'..(e.onlyChinese and '逃亡者' or DESERTER)..'>|r' or '')
                 ..(uiMapID~=mapID and mapText or '')--地图名称
                 ..' '
@@ -489,7 +489,7 @@ local function Init_Ready_Tips_Button()
             end
         end
         local difficultyName, _, _, _, _, _, toggleDifficultyID = GetDifficultyInfo(difficultyID)
-        local name= e.GetPlayerInfo({name= initiator, reName=true})
+        local name= WoWTools_UnitMixin:GetPlayerInfo(nil, nil, initiator, {reName=true})
         name= name~='' and name or initiator
         if ( toggleDifficultyID and toggleDifficultyID > 0 ) then
             -- the current difficulty might change while inside an instance so show the difficulty on the ready check

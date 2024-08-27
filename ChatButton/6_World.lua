@@ -340,7 +340,11 @@ local function Set_Add_All_Player_Filter()
             if not Save.myChatFilterPlayers[guid] then
                 Save.myChatFilterPlayers[guid]= 1
                 index= index+1
-                print(e.addName, addName, e.onlyChinese and '屏蔽' or IGNORE, '|cff9e9e9e'..index..'|r', e.GetPlayerInfo({guid=guid, name=name, reLink=true, reName=true, reRealm=true}))
+                print(e.addName, addName,
+                    e.onlyChinese and '屏蔽' or IGNORE,
+                    '|cff9e9e9e'..index..'|r',
+                    WoWTools_UnitMixin:GetPlayerInfo(nil, guid, name, {reLink=true, reName=true, reRealm=true})
+                )
             end
         end
     end
@@ -463,11 +467,11 @@ end
         local index=0
         for guid, num in pairs(Save.myChatFilterPlayers) do
             index= index+1
-            local name= e.GetPlayerInfo({guid=guid, reName=true, reRealm=true})
+            local name= WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil,{reName=true, reRealm=true})
             name= name=='' and guid or name
             
             sub3=sub2:CreateButton('|cff9e9e9e'..index..')|r '..name..' |cff9e9e9e#'.. e.MK(num, 3)..'|r', function(data)
-                local player= e.GetPlayerInfo({guid=data.guid, reName=true, reRealm=true, reLink=true})                
+                local player= WoWTools_UnitMixin:GetPlayerInfo(nil, data.guid, nil, {reName=true, reRealm=true, reLink=true})                
                 if Save.myChatFilterPlayers[data.guid] then
                     print(e.addName, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', player)
                 else
@@ -542,7 +546,7 @@ end
         local playerName
         local playerName2
         for guid, name in pairs(tab.guid) do
-            playerName=e.GetPlayerInfo({guid=guid, name=name, reName=true, reRealm=true})
+            playerName=WoWTools_UnitMixin:GetPlayerInfo(nil, guid, name, {reName=true, reRealm=true})
             playerName2= name
             if playerName~='' then
                 break
@@ -555,7 +559,7 @@ end
         end, {data=tab, text=text, name=playerName2})
         sub2:SetTooltip(function(tooltip, description)
             for guid in pairs(description.data.data.guid or {}) do
-                tooltip:AddDoubleLine(e.GetPlayerInfo({guid=guid, reName=true, reRealm=true}), ' ')
+                tooltip:AddDoubleLine(WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {reName=true, reRealm=true}), ' ')
             end
             --tooltip:AddDoubleLine(e.onlyChinese and '屏蔽玩家' or IGNORE_PLAYER, e.Icon.left)                
             tooltip:AddDoubleLine(
@@ -594,7 +598,7 @@ end
             local str=''
             local player2
             for guid, name in pairs(data.guid or {}) do
-                local player= e.GetPlayerInfo({guid=guid, name=name, reName=true, reRealm=true})
+                local player= WoWTools_UnitMixin:GetPlayerInfo(nil, guid, name, {reName=true, reRealm=true})
                 str= str..player..'|n'
                 player2= player2 or player
             end
@@ -615,7 +619,7 @@ end
         sub2:CreateDivider()
         sub2:CreateButton(e.onlyChinese and '屏蔽' or IGNORE, function(data)
             for guid, name in pairs(data.guid or {}) do
-                local player= e.GetPlayerInfo({guid=guid, name=name, reLink=true, reName=true, reRealm=true})
+                local player= WoWTools_UnitMixin:GetPlayerInfo(nil, guid, name, {reLink=true, reName=true, reRealm=true})
                 if Save.myChatFilterPlayers[guid] then
                     print(e.addName, addName, player)
                 else
@@ -695,7 +699,7 @@ end
                     text= text..'-'..e.Player.realm
                 end
                 Save.userChatFilterTab[text]={num=0, guid=nil}
-                print(e.addName, addName, e.onlyChinese and '添加' or ADD, text, e.GetPlayerInfo({name=text, reName=true, reRealm=true, reLink=true}))
+                print(e.addName, addName, e.onlyChinese and '添加' or ADD, text, WoWTools_UnitMixin:GetPlayerInfo(nil, nil, text, {reName=true, reRealm=true, reLink=true}))
             end,
             EditBoxOnTextChanged=function(self)
                 local text= self:GetText() or ''

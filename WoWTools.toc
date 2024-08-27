@@ -122,7 +122,7 @@ Tools\B2_Hearthstone.lua
 ##打开物品，各种物品
 Tools\B3_OpenItems.lua
 ##侦察地图, 玩具, 没有小号，可以禁用
-Tools\B4_MapToy.lua
+##Tools\B4_MapToy.lua
 ##食物
 Tools\B5_Food.lua
 
