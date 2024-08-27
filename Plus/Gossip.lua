@@ -3206,7 +3206,7 @@ local function Init_Quest()
 
 
     --自动接取任务, 仅一个任务
-    hooksecurefunc('QuestInfo_Display', function(template, parentFrame, acceptButton, material, mapView)--QuestInfo.lua
+    hooksecurefunc('QuestInfo_Display', function(template, parentFrame, acceptButton)--, material, mapView)--QuestInfo.lua
         local npc=e.GetNpcID('npc')
         QuestFrame.sel.npc=npc
         QuestFrame.sel.name=UnitName("npc")
@@ -3272,8 +3272,10 @@ local function Init_Quest()
         end
 
         if not QuestButton.questSelect[questID] then--已选任务, 提示用
+            
             C_Timer.After(0.5, function()
-                print(e.Icon.icon2..(GetQuestLink(questID) or questID),
+                print(e.Icon.icon2
+                    ..(GetQuestLink(questID) or C_QuestLog.GetTitleForQuestID(C_QuestLog.GetSelectedQuest()) or questID),
                     e.Icon.left..(complete and '|cffffffff' or '|cnGREEN_FONT_COLOR:')..acceptButton:GetText()..'|r',
                     itemLink)
             end)

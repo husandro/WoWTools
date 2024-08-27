@@ -1,7 +1,7 @@
 local id, e = ...
 
 local Tab={
-    {itemID=228412, achievements={16334, 19309, 17766, 16761, 17739, 16363, 16336, 15394}},--巨龙群岛探路者 侦察地图：巨龙群岛的天空
+   -- {itemID=228412, achievements={16334, 19309, 17766, 16761, 17739, 16363, 16336, 15394}},--巨龙群岛探路者 侦察地图：巨龙群岛的天空
 
     {itemID=187869, achievements={14663, 14303, 14304, 14305, 14306}},--暗影界
 
@@ -59,15 +59,15 @@ local function Get_Valid(data)
     local num=0
     
     local name= WoWTools_SpellItemMixin:GetName(nil, data.itemID) or ''
-    name=name:match('|c........(.+)|r') or name
     
-    local find= false
     
     local new={}
     for _, achievementID  in pairs(data.achievements) do
         local _, name2, _, _, _, _, _, _, _, icon, _, _, wasEarnedByMe= GetAchievementInfo(achievementID)
         if name2 then
-            num= num+1
+            if not wasEarnedByMe then
+                num= num+1
+            end
             table.insert(new, {
                 achievementID=achievementID,
                 icon=icon,
@@ -75,17 +75,15 @@ local function Get_Valid(data)
                 find= not wasEarnedByMe
                 --col= wasEarnedByMe and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:'
             })
-            
-            find= not wasEarnedByMe
+           
         end
     end
 
     return {
         itemID= data.itemID,
         name= name,
-        has= PlayerHasToy(data.itemID) and C_ToyBox.IsToyUsable(data.itemID),
-        find= find,
-        findNum= num,
+       -- notHas= not PlayerHasToy(data.itemID) or C_ToyBox.IsToyUsable(data.itemID),
+        num= num,
         achievements=new,
     }
 end
@@ -96,12 +94,15 @@ end
 local function Init_Menu(self, root)
     local sub, sub2
     for _, info in pairs(Tab) do
+        e.LoadDate({id=info.itemID, type='item'})
+
         local new= Get_Valid(info)
 
         sub= root:CreateCheckbox(
-            (not new.has and '|cnRED_FONT_COLOR:' or (new.find and '|cnGREEN_FONT_COLOR:') or '|cff9e9e9e')
+            (new.num==0 and '|cff9e9e9e' or (new.notHas and '|cnRED_FONT_COLOR:') or '')
             ..new.name
-            .. '|r#'..new.findNum,
+            .. '|r'
+            ..(new.num>0 and '|cnGREEN_FONT_COLOR:' or '').. new.num,
         function(data)
             return data.itemID==self.itemID
         end, function(data)
