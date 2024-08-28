@@ -3169,19 +3169,13 @@ local function Init_Quest()
                 end
                 local text=GetProgressText()
                 C_Timer.After(0.5, function()
-                    local questLink= e.cn(nil, {questID=questID, isName=true}) or GetQuestLink(questID)
-                    if not questLink then
-                        local index= C_QuestLog.GetLogIndexForQuestID(questID)
-                        local info2= index and C_QuestLog.GetInfo(index)
-                        if info2 and info2.title and info2.level then
-                            questLink= '|Hquest:'..questID..':'..info2.level..'|h['..e.cn(info2.title)..']|h|cnGREEN_FONT_COLOR:'..questID..'|r'
-                        end
-                        
-                    end
+                    local buttonText= QuestFrameGoodbyeButton and QuestFrameGoodbyeButton:IsVisible() and QuestFrameGoodbyeButton:GetText()
+                    buttonText= buttonText and e.Icon.left..'|cnRED_FONT_COLOR:'..e.cn(buttonText)..'|r'
                     print(e.Icon.icon2,
-                        questLink,
-                        text and '|cffff00ff'..text..'|r', link,
-                        QuestFrameGoodbyeButton and '|cnRED_FONT_COLOR:'..e.cn(QuestFrameGoodbyeButton:GetText())
+                        WoWTools_QuestMixin:GetLink(questID) or '',
+                        text and '|cffff00ff'..text..'|r',
+                        link or '',
+                        buttonText or ''
                     )
                 end)
             end
@@ -3275,9 +3269,9 @@ local function Init_Quest()
             
             C_Timer.After(0.5, function()
                 print(e.Icon.icon2
-                    ..(GetQuestLink(questID) or C_QuestLog.GetTitleForQuestID(C_QuestLog.GetSelectedQuest()) or questID),
-                    e.Icon.left..(complete and '|cffffffff' or '|cnGREEN_FONT_COLOR:')..acceptButton:GetText()..'|r',
-                    itemLink)
+                    ..WoWTools_QuestMixin:GetLink(questID),
+                    e.Icon.left..(complete and '|cffffffff' or '|cnGREEN_FONT_COLOR:')..e.cn(acceptButton:GetText() or '')..'|r',
+                    itemLink or '')
             end)
             QuestButton.questSelect[questID]=true
         end
