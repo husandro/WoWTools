@@ -20,9 +20,9 @@ function WoWTools_QuestMixin:GetLink(questID)
         local leavel= info.level
         local name= e.cn(info.title or self:GetName(questID) or questID, {questID=questID, isName=true})
 
-        link= '|Hquest:'..questID
+        link= '|cffedd100|Hquest:'..questID
             ..(leavel and ':'..info.level or '')
-            ..'|h['..name..']|h'
+            ..'|h['..name..']|h|r'
     end
-    return link
+    return link or ''
 end

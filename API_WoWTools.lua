@@ -109,8 +109,8 @@ e.Icon={
     right='|A:newplayertutorial-icon-mouse-rightbutton:0:0|a',
     left='|A:newplayertutorial-icon-mouse-leftbutton:0:0|a',
     mid='|A:newplayertutorial-icon-mouse-middlebutton:0:0|a',
-    wow=136235,
-    net2= '|A:questlog-questtypeicon-account:0:0|a',-- '|A:gmchat-icon-blizz:0:0|a',-- BNet_GetClientEmbeddedTexture(-2, 32, 32), questlog-questtypeicon-account
+    wow2='|A:tokens-WoW-generic-regular:0:0|a',
+    net2= '|A:Battlenet-ClientIcon-App:0:0|a',--'|A:questlog-questtypeicon-account:0:0|a',-- '|A:gmchat-icon-blizz:0:0|a',-- BNet_GetClientEmbeddedTexture(-2, 32, 32), questlog-questtypeicon-account
     toLeft='common-icon-rotateleft',--向左
     toRight='common-icon-rotateright',--向右
     TANK='|A:UI-LFG-RoleIcon-Tank:0:0|a',--INLINE_TANK_ICON
@@ -129,6 +129,7 @@ e.Icon={
 	[Enum.ItemQuality.Artifact] = "dressingroom-itemborder-artifact",
 	[Enum.ItemQuality.Heirloom] = "dressingroom-itemborder-account",
 	[Enum.ItemQuality.WoWToken] = "dressingroom-itemborder-account",--8
+
 }
 --leader='|A:UI-HUD-UnitFrame-Player-Group-GuideIcon:0:0|a',--队长
 --toLeft2='|A:common-icon-rotateleft:0:0|a',
@@ -155,7 +156,7 @@ e.Icon={
 --up2='|A:bags-greenarrow:0:0|a',--绿色向上, 红色向上 UI-HUD-Minimap-Arrow-Corpse， 金色 UI-HUD-Minimap-Arrow-Guard
 --down2='|A:UI-HUD-MicroMenu-StreamDLRed-Up:0:0|a',--红色向下
 
-
+--[[
 C_Texture.GetTitleIconTexture(BNET_CLIENT_WOW, Enum.TitleIconVersion.Medium, function(success, texture)--FriendsFrame.lua BnetShared.lua    
     if success and texture then
         e.Icon.wow=texture
@@ -165,7 +166,7 @@ C_Texture.GetTitleIconTexture('BSAp', Enum.TitleIconVersion.Small, function(succ
     if success and texture then
         e.Icon.net2= '|T'..texture..':0|t'
     end
-end)
+end)]]
 
 
 

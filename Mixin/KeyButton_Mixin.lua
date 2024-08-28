@@ -15,7 +15,7 @@ end
 Frame:SetScript("OnEvent", function(self)
     do
         for btn, info in pairs(self.buttons) do
-            WoWTools_Key_Button:Setup(btn, info.isHide)
+            WoWTools_Key_Button:Setup(btn, info.isDisabled)
         end
     end
     self.buttons={}
@@ -53,15 +53,31 @@ function WoWTools_Key_Button:IsKeyValid(btn)
     end
 end
 
-function WoWTools_Key_Button:Setup(btn, isHide)
+function WoWTools_Key_Button:SetTexture(btn, key)
+    key=key or btn:GetKEY()
+    if self:IsKeyValid(btn) then
+        if #key==1 then
+            btn.KEYstring:SetText(key)
+            btn.KEYtexture:SetShown(false)
+        else
+            btn.KEYstring:SetText('')
+            btn.KEYtexture:SetShown(true)
+        end
+    else
+        btn.KEYstring:SetText('')
+        btn.KEYtexture:SetShown(false)
+    end
+end
+
+function WoWTools_Key_Button:Setup(btn, isDisabled)
     if UnitAffectingCombat('player') then
-        Frame.buttons[btn]={isHide=isHide}
+        Frame.buttons[btn]={isDisabled=isDisabled}
         Frame:set_event(true)
         return
     end
 
     local key=btn:GetKEY()
-    if key and not isHide then
+    if key and not isDisabled then
         SetOverrideBindingClick(btn, true, key, btn:GetName(), 'LeftButton')
     else
         ClearOverrideBindings(btn)
@@ -127,6 +143,7 @@ function WoWTools_Key_Button:SetMenu(root, tab)
         tooltip:AddLine(e.onlyChinese and '设置' or SETTINGS)
         tooltip:AddDoubleLine(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL, description.data.key)
     end)
+    sub:SetEnabled(not UnitAffectingCombat('player') and true or false)
     return sub
 end
 

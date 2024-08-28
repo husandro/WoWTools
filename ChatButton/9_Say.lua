@@ -225,7 +225,7 @@ local function Init_Menu(self, root)
         for index, tab in pairs(Save.WhisperTab) do
             local playerName= e.GetPlayerInfo({unit=tab.unit, guid=tab.guid, name=tab.name, faction=tab.faction, reName=true, reRealm=true})
             playerName= playerName=='' and tab.name or playerName
-            sub2=sub:CreateButton('|cff9e9e9e'..index..')|r '..(tab.wow and format('|T%d:0|t', e.Icon.wow) or '')..(playerName or ' '), function(data)
+            sub2=sub:CreateButton('|cff9e9e9e'..index..')|r '..(tab.wow and e.Icon.wow2 or '')..(playerName or ' '), function(data)
                 e.Say(nil, data.name, data.wow)
                 self:settings(SLASH_WHISPER1, e.onlyChinese and '密语' or SLASH_TEXTTOSPEECH_WHISPER, data.name, data.wow)
                 return MenuResponse.Open

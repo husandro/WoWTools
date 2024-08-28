@@ -200,7 +200,9 @@ function e.Set_Item_Info(self, tab)
         local itemName, _, itemQuality2, itemLevel2, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, _, _, classID, subclassID, bindType, expacID, setID, isCraftingReagent = C_Item.GetItemInfo(itemLink)
         itemMinLevel= itemMinLevel or 1
 
-        itemLevel= itemLevel or C_Item.GetDetailedItemLevelInfo(itemLink) or itemLevel2
+        --print(C_Item.GetDetailedItemLevelInfo(itemLink))
+
+        itemLevel= C_Item.GetDetailedItemLevelInfo(itemLink) or itemLevel or itemLevel2
         itemQuality= itemQuality or itemQuality2
         expacID= expacID or 0
 
@@ -293,7 +295,7 @@ function e.Set_Item_Info(self, tab)
             elseif dateInfo.red then--红色
                 bottomRightText= format('|A:%s:0:0|a', e.Icon.disabled)
             elseif dateInfo.wow then
-                bottomRightText= format('|T%d:0|t', e.Icon.wow)
+                bottomRightText= e.Icon.wow2
             end
 
             if expacID== e.ExpansionLevel and classID==8 and dateInfo.text[useStr] then--附魔
@@ -350,7 +352,7 @@ function e.Set_Item_Info(self, tab)
                         bottomLeftText= '|cff00ccff'..(e.WA_Utf8Sub(text,3,4, true) or '')..'|r'
 
                     elseif dateInfo.wow then--战网
-                        bottomLeftText= format('|T%d:0|t', e.Icon.wow)
+                        bottomLeftText= e.Icon.wow2
                         if subclassID==0 then
                             if itemLevel and itemLevel>1 then
                                 bottomLeftText= bottomLeftText.. itemLevel
@@ -484,7 +486,7 @@ function e.Set_Item_Info(self, tab)
             bottomRightText= get_has_text(PlayerHasToy(itemID))--已收集, 未收集
 
         elseif itemQuality==7 or itemQuality==8 then--7传家宝，8 WoWToken
-            topRightText=format('|T%d:0|t', e.Icon.wow)
+            topRightText=e.Icon.wow2
 
             if classID==0 and subclassID==8 and C_Item.GetItemSpell(itemLink) then--传家宝，升级，物品
                 local dateInfo= WoWTools_ItemMixin:GetTooltip({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={useStr}, wow=true, red=true})--物品提示，信息
@@ -530,7 +532,7 @@ function e.Set_Item_Info(self, tab)
             elseif text then
                 bottomLeftText= Get_Class_Icon_da_Text(text)
             elseif dateInfo.wow then
-                topRightText= format('|T%d:0|t', e.Icon.wow)
+                topRightText= e.Icon.wow2
             elseif dateInfo.red then
                 topRightText= format('|A:%s:0:0|a', e.Icon.disabled)
             end
@@ -539,7 +541,7 @@ function e.Set_Item_Info(self, tab)
             local dateInfo= WoWTools_ItemMixin:GetTooltip({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={chargesStr}, wow=true, red=true})--物品提示，信息
             bottomLeftText=dateInfo.text[chargesStr]
             if dateInfo.wow then
-                topRightText= format('|T%d:0|t', e.Icon.wow)
+                topRightText= e.Icon.wow2
             elseif dateInfo.red then
                 topRightText= format('|A:%s:0:0|a', e.Icon.disabled)
             end

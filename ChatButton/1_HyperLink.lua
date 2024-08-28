@@ -296,7 +296,7 @@ end
 local function Quest(link)--任务
     local id2=link:match('Hquest:(%d+)')
     if id2 then
-        local wow= C_QuestLog.IsAccountQuest(id2) and format('|T%d:0|t', e.Icon.wow) or ''--帐号通用        
+        local wow= C_QuestLog.IsAccountQuest(id2) and e.Icon.wow2 or ''--帐号通用        
         if C_QuestLog.IsQuestFlaggedCompleted(id2) then
             return wow..cn_Link_Text(link)..format('|A:%s:0:0|a', e.Icon.select)
         else

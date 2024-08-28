@@ -616,12 +616,12 @@ local function Init_Options()
     })
 
     e.AddPanel_Button({
-        title= format('|T%d:0|t', e.Icon.wow)..(e.onlyChinese and '清除WoW数据' or 'Clear WoW data'),
+        title= e.Icon.wow2..(e.onlyChinese and '清除WoW数据' or 'Clear WoW data'),
         buttonText= '|A:QuestArtifact:0:0|a'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
         addSearchTags= e.onlyChinese and '清除WoW数据' or 'Clear WoW data',
         SetValue= function()
             StaticPopup_Show('WoWTools_RestData',
-                (format('|T%d:0|t', e.Icon.wow)..(e.onlyChinese and '清除WoW数据' or 'Clear WoW data'))..'|n|n|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
+                (e.Icon.wow2..(e.onlyChinese and '清除WoW数据' or 'Clear WoW data'))..'|n|n|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
                 nil,
                 function()
                     e.WoWDate={}

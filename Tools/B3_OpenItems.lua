@@ -177,15 +177,6 @@ end
 
 
 
-local function setKEY(hide)--设置捷键
-    if Save.KEY and not hide and OpenButton:IsShown() and OpenButton:IsValid() and not UnitAffectingCombat('player') then
-        WoWTools_Key_Button:Setup(OpenButton)
-    else
-        WoWTools_Key_Button:Setup(OpenButton, true)
-    end
-end
-
-
 
 
 
@@ -210,7 +201,7 @@ end
 local function setAtt(bag, slot, icon, itemID, spellID)--设置属性
     --if UnitAffectingCombat('player') or not UnitIsConnected('player') or UnitInVehicle('player') then
     if not OpenButton:CanChangeAttribute()  then
-        Combat= true
+        OpenButton.isInCombat=true
         return
     end
     local num
@@ -238,7 +229,6 @@ local function setAtt(bag, slot, icon, itemID, spellID)--设置属性
         OpenButton:SetAttribute('type1', nil)
         OpenButton:SetAttribute('item1', nil)
         OpenButton:SetAttribute('spell1', nil)
-        OpenButton:SetShown(not Save.noItemHide)
         OpenButton:Clear()
     end
 
@@ -247,12 +237,7 @@ local function setAtt(bag, slot, icon, itemID, spellID)--设置属性
 
     OpenButton.count:SetText(num or '')
     OpenButton.texture:SetShown(bag and slot)
-    Combat=nil
-
-    if Save.KEY then
-        setKEY()
-    end
-
+    OpenButton:set_key(not bag or not slot)
 end
 
 
@@ -267,8 +252,8 @@ end
 
 local equipItem--是装备时, 打开角色界面
 local function get_Items()--取得背包物品信息
-    if UnitAffectingCombat('player') then
-        Combat=true
+    if not OpenButton:CanChangeAttribute() then
+        OpenButton.isInCombat=true
         return
     end
 
@@ -401,9 +386,7 @@ local function get_Items()--取得背包物品信息
         end
     end
     setAtt()
-    if Save.KEY then
-        setKEY(true)
-    end
+    OpenButton:set_key(true)
 end
 
 
@@ -444,7 +427,7 @@ local function Edit_Item(info)
         OnShow=function(s, data)
             s.editBox:SetNumeric(true)
             local useStr=ITEM_SPELL_TRIGGER_ONUSE..'(.+)'--使用：
-            local dateInfo= WoWTools_ItemMixin:GetTooltip({bag=nil, guidBank=nil, merchant=nil, inventory=nil, hyperLink=data.itemLink, itemID=data.itemID, text={useStr}, onlyText=true, wow=nil, onlyWoW=nil, red=nil, onlyRed=nil})--物品提示，信息 使用：
+            local dateInfo= e.GetTooltipData({bag=nil, guidBank=nil, merchant=nil, inventory=nil, hyperLink=data.itemLink, itemID=data.itemID, text={useStr}, onlyText=true, wow=nil, onlyWoW=nil, red=nil, onlyRed=nil})--物品提示，信息 使用：
             local num= dateInfo.text[useStr] and dateInfo.text[useStr]:match('%d+')
             num= num and tonumber(num)
             s.editBox:SetNumber(num or Save.use[data.itemID] or 1)
@@ -691,7 +674,7 @@ local OptionsList={{
 --打开, 选项界面，菜单
     sub= WoWTools_ToolsButtonMixin:OpenMenu(root, addName, Save.KEY)
 
---自动隐藏
+--[[自动隐藏
     sub2= sub:CreateCheckbox(e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE),
     function()
         return Save.noItemHide
@@ -701,7 +684,7 @@ local OptionsList={{
     end)
     sub2:SetTooltip(function(tooltip)
         tooltip:AddLine(e.onlyChinese and '未发现物品' or BROWSE_NO_RESULTS)
-    end)
+    end)]]
 
 --设置捷键
     WoWTools_Key_Button:SetMenu(sub, {
@@ -709,11 +692,11 @@ local OptionsList={{
         key=Save.KEY,
         GetKey=function(key)
             Save.KEY=key
-            setKEY()--设置捷键
+            OpenButton:settings()
         end,
         OnAlt=function(s)
             Save.KEY=nil
-            setKEY(true)--设置捷键
+            OpenButton:settings()
         end,
     })
 
@@ -759,102 +742,7 @@ local function Init()
     OpenButton.count:SetPoint('BOTTOMRIGHT')
 
     WoWTools_Key_Button:Init(OpenButton, function() return Save.KEY end)
-    
-
     Mixin(OpenButton, WoWTools_ItemLocationMixin)
-    
-    function OpenButton:set_shown(bool)
-        if not self:CanChangeAttribute() then
-            return
-        end
-        if bool~=nil then
-            self:SetShown(bool)
-        else
-            self:SetShown(not Save.noItemHide or self:IsValid())
-        end
-    end
-
-    function OpenButton:set_cooldown()--冷却条
-        local start, duration, enable
-        if OpenButton:IsValid() then
-            start, duration, enable = OpenButton:GetItemCooldown()
-            OpenButton.texture:SetDesaturated(not enable)
-        end
-        e.Ccool(OpenButton, start, duration, nil, true,nil, true)
-    end
-    
-    function OpenButton:set_event()
-        if IsInInstance() and C_ChallengeMode.IsChallengeModeActive() then
-            -- self:UnregisterEvent('BAG_UPDATE')
-            self:UnregisterEvent('BAG_UPDATE_DELAYED')
-            self:UnregisterEvent('PLAYER_REGEN_DISABLED')
-            self:UnregisterEvent('PLAYER_REGEN_ENABLED')
-            self:set_shown(false)
-         else
-            self:RegisterEvent('BAG_UPDATE_DELAYED')             
-            self:RegisterEvent('PLAYER_REGEN_DISABLED')
-            self:RegisterEvent('PLAYER_REGEN_ENABLED')
-            get_Items()
-         end
-
-        if self:IsShown() then
-            self:RegisterEvent('BAG_UPDATE_COOLDOWN')
-        else
-            self:UnregisterEvent('BAG_UPDATE_COOLDOWN')
-        end
-    end
-
-    OpenButton:RegisterEvent('CHALLENGE_MODE_START')
-    OpenButton:RegisterEvent('PLAYER_ENTERING_WORLD')   
-    OpenButton:SetScript('OnEvent', function(self, event)
-        if event=='PLAYER_ENTERING_WORLD' or event=='CHALLENGE_MODE_START' then
-            self:set_event()--注册， 事件
-
-        elseif event=='BAG_UPDATE_DELAYED' then-- or event=='BAG_UPDATE' then
-                get_Items()
-
-        elseif event=='PLAYER_REGEN_DISABLED' then            
-            if Save.KEY then
-                setKEY(true)
-            end
-            if Save.noItemHide then
-                self:SetShown(false)
-            end
-
-        elseif event=='PLAYER_REGEN_ENABLED' then
-            if Combat then
-                get_Items()
-            else
-                self:SetShown(self:IsValid() or not Save.noItemHide)
-            end
-            if Save.KEY then
-                setKEY()
-            end
-        elseif event=='BAG_UPDATE_COOLDOWN' then
-            self:set_cooldown()--冷却条
-        end
-    end)
-
-    function OpenButton:set_disabled_current_item()--禁用当物品
-        if self:IsValid() and not UnitAffectingCombat('player') then
-            local itemID= self:GetItemID()
-            if itemID then
-                Save.no[itemID]=true
-                Save.use[itemID]=nil
-            end
-            get_Items()
-        end
-        return MenuResponse.Open
-    end
-
-    
-    OpenButton:set_event()
-    OpenButton:set_cooldown()--冷却条
-
-
-
-
-    get_Items()--设置属性
 
     function OpenButton:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -956,7 +844,167 @@ local function Init()
             self:set_tooltips()
         end
     end)
+    OpenButton:SetScript('OnShow', function()
+        get_Items()
+    end)
 
+
+  
+
+
+    OpenButton:SetScript('OnEvent', function(self, event)
+        if event=='PLAYER_ENTERING_WORLD' then
+            self:settings()
+
+        elseif event=='BAG_UPDATE_COOLDOWN' then
+            self:set_cooldown()
+            
+        elseif event=='PLAYER_REGEN_DISABLED' then
+            ClearOverrideBindings(self)
+            WoWTools_Key_Button:SetTexture(self)
+
+        elseif event=='PLAYER_REGEN_ENABLED' then
+            self:set_key(false)
+            if self.isInBat then
+                get_Items()
+            end
+
+        elseif event=='BAG_UPDATE_DELAYED' then
+            get_Items()
+        end
+    end)
+
+
+
+
+
+
+
+
+    
+    function OpenButton:settings()
+        self:UnregisterAllEvents()
+        local isInstance= IsInInstance()
+        if not isInstance then            
+            self:RegisterEvent('BAG_UPDATE_COOLDOWN')
+            self:RegisterEvent('BAG_UPDATE_DELAYED')
+            self:RegisterEvent('PLAYER_REGEN_DISABLED')
+            self:RegisterEvent('PLAYER_REGEN_ENABLED')
+        end
+        self:RegisterEvent('PLAYER_ENTERING_WORLD')
+        self:set_key(isInstance)
+        self:SetShown(not isInstance)
+        
+    end
+
+    function OpenButton:set_key(isDisabled)
+        if Save.KEY then
+            WoWTools_Key_Button:Setup(OpenButton, isDisabled and not self:IsValid())
+        end
+    end
+
+    function OpenButton:set_cooldown()--冷却条
+        local start, duration, enable
+        if self:IsValid() then
+            start, duration, enable = OpenButton:GetItemCooldown()
+            self.texture:SetDesaturated(not enable)
+        end
+        e.Ccool(OpenButton, start, duration, nil, true,nil, true)
+    end
+
+    --[[    
+    function OpenButton:set_shown(bool)
+        if not self:CanChangeAttribute() then
+            return
+        end
+        if bool~=nil then
+            self:SetShown(bool)
+        else
+            self:SetShown(self:IsValid())
+        end
+    end
+
+   
+    
+OpenButton:RegisterEvent('CHALLENGE_MODE_START')
+    OpenButton:RegisterEvent('PLAYER_ENTERING_WORLD')   
+
+    function OpenButton:set_event()
+        if IsInInstance() then
+            -- self:UnregisterEvent('BAG_UPDATE')
+            self:UnregisterEvent('BAG_UPDATE_DELAYED')
+            self:UnregisterEvent('PLAYER_REGEN_DISABLED')
+            self:UnregisterEvent('PLAYER_REGEN_ENABLED')
+            self:set_shown(false)
+            self:RegisterEvent('BAG_UPDATE_COOLDOWN')
+            setKEY(true)
+         else
+            self:RegisterEvent('BAG_UPDATE_DELAYED')
+            if Save.KEY then
+                self:RegisterEvent('PLAYER_REGEN_DISABLED')
+                self:RegisterEvent('PLAYER_REGEN_ENABLED')
+            else
+                self:UnregisterEvent('PLAYER_REGEN_DISABLED')
+                self:UnregisterEvent('PLAYER_REGEN_ENABLED')
+            end
+            self:RegisterEvent('BAG_UPDATE_COOLDOWN')
+            get_Items()
+            setKEY()
+         end
+
+        if self:IsVisible() then
+            self:RegisterEvent('BAG_UPDATE_COOLDOWN')
+        else
+            self:UnregisterEvent('BAG_UPDATE_COOLDOWN')
+        end
+
+        
+    end
+
+
+    OpenButton:SetScript('OnEvent', function(self, event)
+        if event=='PLAYER_ENTERING_WORLD' or event=='CHALLENGE_MODE_START' then
+            self:set_event()--注册， 事件
+
+        elseif event=='BAG_UPDATE_DELAYED' then-- or event=='BAG_UPDATE' then
+                get_Items()
+
+        elseif event=='PLAYER_REGEN_DISABLED' then            
+            if Save.KEY then
+                ClearOverrideBindings(self)
+            end
+            if Save.noItemHide then
+                self:SetShown(false)
+            end
+
+        elseif event=='PLAYER_REGEN_ENABLED' then
+            if Combat then
+                get_Items()
+            else
+                self:SetShown(self:IsValid() or not Save.noItemHide)
+            end
+            if Save.KEY then
+                setKEY()
+            end
+        elseif event=='BAG_UPDATE_COOLDOWN' then
+            self:set_cooldown()--冷却条
+        end
+    end)]]
+
+    function OpenButton:set_disabled_current_item()--禁用当物品
+        if self:IsValid() and not UnitAffectingCombat('player') then
+            local itemID= self:GetItemID()
+            if itemID then
+                Save.no[itemID]=true
+                Save.use[itemID]=nil
+            end
+            get_Items()
+        end
+        return MenuResponse.Open
+    end
+
+    
+    OpenButton:settings()
     C_Timer.After(4, get_Items)
 end
 

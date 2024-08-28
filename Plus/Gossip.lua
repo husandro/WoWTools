@@ -38,7 +38,7 @@ local Save={
 local GossipButton
 local QuestButton
 local Gossip_Text_Icon_Frame--自定义，对话
-local Initializer
+
 
 
 
@@ -981,7 +981,7 @@ local function Init_Gossip_Text_Icon_Options()
             e.tips:ClearLines()
             e.tips:AddDoubleLine(e.addName, addName)
             e.tips:AddLine(' ')
-            e.tips:AddLine('|cffff00ffTexture Atlas Viewer|r')
+            e.tips:AddLine('Texture Atlas Viewer')
             e.tips:Show()
         end)
     end
@@ -3169,13 +3169,11 @@ local function Init_Quest()
                 end
                 local text=GetProgressText()
                 C_Timer.After(0.5, function()
-                    local buttonText= QuestFrameGoodbyeButton and QuestFrameGoodbyeButton:IsVisible() and QuestFrameGoodbyeButton:GetText()
-                    buttonText= buttonText and e.Icon.left..'|cnRED_FONT_COLOR:'..e.cn(buttonText)..'|r'
                     print(e.Icon.icon2,
-                        WoWTools_QuestMixin:GetLink(questID) or '',
-                        text and '|cffff00ff'..text..'|r',
+                        WoWTools_QuestMixin:GetLink(questID),
+                        text and '|cnGREEN_FONT_COLOR:'..text..'|r',
                         link or '',
-                        buttonText or ''
+                        e.Icon.left..'|cffff00ff'..e.cn(QuestFrameGoodbyeButton and QuestFrameGoodbyeButton:GetText() or '')
                     )
                 end)
             end
@@ -3183,7 +3181,7 @@ local function Init_Quest()
         else
             if not QuestButton.questSelect[questID] then--已选任务, 提示用
                 C_Timer.After(0.5, function()
-                    print(e.Icon.icon2, e.cn(nil, {questID=questID, isName=true}), GetQuestLink(questID) or '')
+                    print(e.Icon.icon2, WoWTools_QuestMixin:GetLink(questID))
                 end)
                 QuestButton.questSelect[questID]=true
             end
@@ -3268,9 +3266,8 @@ local function Init_Quest()
         if not QuestButton.questSelect[questID] then--已选任务, 提示用
             
             C_Timer.After(0.5, function()
-                print(e.Icon.icon2
-                    ..WoWTools_QuestMixin:GetLink(questID),
-                    e.Icon.left..(complete and '|cffffffff' or '|cnGREEN_FONT_COLOR:')..e.cn(acceptButton:GetText() or '')..'|r',
+                print(e.Icon.icon2..WoWTools_QuestMixin:GetLink(questID),
+                    e.Icon.left..(complete and '|cffff00ff' or '|cnRED_FONT_COLOR:')..e.cn(acceptButton:GetText() or '')..'|r',
                     itemLink or '')
             end)
             QuestButton.questSelect[questID]=true
@@ -3941,7 +3938,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             addName2= '|A:UI-HUD-UnitFrame-Target-PortraitOn-Boss-Quest:0:0|a'..(e.onlyChinese and '任务选项' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, QUESTS_LABEL, SETTINGS_TITLE))
              --添加控制面板
              --e.AddPanel_Header(nil, 'Plus')
-            Initializer= e.AddPanel_Check_Button({
+            e.AddPanel_Check_Button({
                  checkName= addName,
                  GetValue= function() return not Save.disabled end,
                  SetValue= function()

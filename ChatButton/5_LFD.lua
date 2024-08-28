@@ -492,7 +492,7 @@ local function Set_Queue_Status()--小眼睛, 信息
                     numMembers= ' |A:socialqueuing-icon-group:0:0|a'..info.numMembers--..(e.onlyChinese and '队员' or PLAYERS_IN_GROUP)
                     local friendly
                     if info.numBNetFriends and info.numBNetFriends>0 then
-                        friendly = (friendly and friendly..' ' or '')..info.numBNetFriends..format('|T%d:0|t', e.Icon.wow)
+                        friendly = (friendly and friendly..' ' or '')..info.numBNetFriends..e.Icon.wow2
                     end
                     if info.numCharFriends and info.numCharFriends>0 then
                         friendly = (friendly and friendly..' ' or '')..info.numCharFriends..'|A:recruitafriend_V2_tab_icon:0:0|a'
@@ -1492,7 +1492,7 @@ local function Init_LFGListSearchEntry_Update(self)
         end
         color= color or {r=1,g=1,b=1}
         if info.numBNetFriends and info.numBNetFriends>0 then--好友, 数量
-            text= text..' '..format('|T%d:0|t', e.Icon.wow)..info.numBNetFriends
+            text= text..' '..e.Icon.wow2..info.numBNetFriends
         end
         if info.numCharFriends and info.numCharFriends>0 then--好友, 数量
             text= text..' |A:socialqueuing-icon-group:0:0|a'..info.numCharFriends

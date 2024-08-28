@@ -806,11 +806,11 @@ function func:Set_Item(tooltip, itemLink, itemID)
 
         if numPlayer>0 then
             wowNum= bagAll+ bankAll
-            tooltip:AddDoubleLine(numPlayer..' '..(e.onlyChinese and '角色' or CHARACTER)..' '..e.MK(wowNum+bag+bank, 3), format('|T%d:0|t', e.Icon.wow)..e.MK(bagAll+bankAll, 3)..' = '..'|A:Banker:0:0|a'..(bankAll==0 and '|cff9e9e9e'..bankAll..'|r' or e.MK(bankAll,3))..' '..'|A:bag-main:0:0|a'..(bagAll==0 and '|cff9e9e9e'..bagAll..'|r' or e.MK(bagAll, 3)))
+            tooltip:AddDoubleLine(numPlayer..' '..(e.onlyChinese and '角色' or CHARACTER)..' '..e.MK(wowNum+bag+bank, 3), e.Icon.wow2..e.MK(bagAll+bankAll, 3)..' = '..'|A:Banker:0:0|a'..(bankAll==0 and '|cff9e9e9e'..bankAll..'|r' or e.MK(bankAll,3))..' '..'|A:bag-main:0:0|a'..(bagAll==0 and '|cff9e9e9e'..bagAll..'|r' or e.MK(bagAll, 3)))
         end
     end
 
-    tooltip.textRight:SetText(col..e.MK(wowNum, 3)..format('|T%d:0|t', e.Icon.wow)..' '..e.MK(bank, 3)..'|A:Banker:0:0|a'..' '..e.MK(bag, 3)..'|A:bag-main:0:0|a'..'|r')
+    tooltip.textRight:SetText(col..e.MK(wowNum, 3)..e.Icon.wow2..' '..e.MK(bank, 3)..'|A:Banker:0:0|a'..' '..e.MK(bag, 3)..'|A:bag-main:0:0|a'..'|r')
 
     --setItemCooldown(tooltip, itemID)--物品冷却
 
@@ -900,7 +900,7 @@ function func:Set_Currency(tooltip, currencyID)--货币
         end
     end
     if numPlayer>1 then
-        tooltip:AddDoubleLine(format('|T%d:0|t', e.Icon.wow)..numPlayer..(e.onlyChinese and '角色' or CHARACTER), e.MK(all,3))
+        tooltip:AddDoubleLine(e.Icon.wow2..numPlayer..(e.onlyChinese and '角色' or CHARACTER), e.MK(all,3))
     end
 
     func:Set_Web_Link(tooltip, {type='currency', id=currencyID, name=info2.name, col=nil, isPetUI=false})--取得网页，数据链接 npc item spell currency
@@ -934,7 +934,7 @@ function func:Set_Achievement(tooltip, achievementID)--成就
     tooltip.text2Left:SetText(completed and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已完成' or CRITERIA_COMPLETED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未完成' or ACHIEVEMENTFRAME_FILTER_INCOMPLETE)..'|r')--否是完成
     tooltip.textRight:SetText(isGuild and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '公会' or GUILD) or flags==0x4000 and ('|cffff00ff'..e.Icon.net2..(e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET))  or '')
 
-    tooltip:AddDoubleLine((e.onlyChinese and '成就' or ACHIEVEMENTS)..' '..(flags==0x20000 and '|cffff00ff'..format('|T%d:0|t', e.Icon.wow)..achievementID..'|r' or achievementID), icon and '|T'..icon..':0|t'..icon)
+    tooltip:AddDoubleLine((e.onlyChinese and '成就' or ACHIEVEMENTS)..' '..(flags==0x20000 and '|cffff00ff'..e.Icon.wow2..achievementID..'|r' or achievementID), icon and '|T'..icon..':0|t'..icon)
     if flags==0x20000 then
         tooltip.textRight:SetText(e.Icon.net2..'|cffff00ff'..(e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET))
     end
