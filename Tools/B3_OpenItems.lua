@@ -152,7 +152,6 @@ local Save={
 
 
 local OpenButton
-local Combat
 local useText, noText
 
 
@@ -860,6 +859,7 @@ local function Init()
             self:set_cooldown()
             
         elseif event=='PLAYER_REGEN_DISABLED' then
+            print('aaaaa')
             ClearOverrideBindings(self)
             WoWTools_Key_Button:SetTexture(self)
 
@@ -885,6 +885,7 @@ local function Init()
     function OpenButton:settings()
         self:UnregisterAllEvents()
         local isInstance= IsInInstance()
+        print('a', isInstance)
         if not isInstance then            
             self:RegisterEvent('BAG_UPDATE_COOLDOWN')
             self:RegisterEvent('BAG_UPDATE_DELAYED')
@@ -911,6 +912,78 @@ local function Init()
         end
         e.Ccool(OpenButton, start, duration, nil, true,nil, true)
     end
+
+    function OpenButton:set_disabled_current_item()--禁用当物品
+        if self:IsValid() then
+            local itemID= self:GetItemID()
+            if itemID then
+                Save.no[itemID]=true
+                Save.use[itemID]=nil
+            end
+            get_Items()
+        end
+        return MenuResponse.Open
+    end
+
+    print('aaaa')
+    OpenButton:settings()
+    C_Timer.After(4, get_Items)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+print('bcd')
+
+
+--###########
+--加载保存数据
+--###########
+local panel= CreateFrame("Frame")
+panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" then
+        if arg1==id then
+            Save= WoWToolsSave['Tools_OpenItems'] or Save
+            addName= '|A:BonusLoot-Chest:0:0|a'..(e.onlyChinese and '打开物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, ITEMS))
+            OpenButton= WoWTools_ToolsButtonMixin:CreateButton({
+                name='OpenItems',
+                tooltip=addName,
+               
+            })
+            print('ac')
+
+            if OpenButton then
+                noText= '|A:talents-button-reset:0:0|a'..(e.onlyChinese and '禁用' or DISABLE)
+                useText= '|A:jailerstower-wayfinder-rewardcheckmark:0:0|a'..(e.onlyChinese and '使用' or USE)
+                
+                print(11)
+                Init()
+                             
+            end
+            self:UnregisterEvent("ADDON_LOADED")
+        end
+
+    elseif event == "PLAYER_LOGOUT" then
+        if not e.ClearAllSave then
+            WoWToolsSave['Tools_OpenItems'] = Save
+        end
+    end
+end)
+
+
 
     --[[    
     function OpenButton:set_shown(bool)
@@ -991,22 +1064,6 @@ OpenButton:RegisterEvent('CHALLENGE_MODE_START')
         end
     end)]]
 
-    function OpenButton:set_disabled_current_item()--禁用当物品
-        if self:IsValid() and not UnitAffectingCombat('player') then
-            local itemID= self:GetItemID()
-            if itemID then
-                Save.no[itemID]=true
-                Save.use[itemID]=nil
-            end
-            get_Items()
-        end
-        return MenuResponse.Open
-    end
-
-    
-    OpenButton:settings()
-    C_Timer.After(4, get_Items)
-end
 
 
 
@@ -1037,25 +1094,7 @@ end
 
 
 
-
-
-
-
---###########
---加载保存数据
---###########
-local panel= CreateFrame("Frame")
-panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
-panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" then
-        if arg1==id then
-            Save= WoWToolsSave['Tools_OpenItems'] or Save
-            addName= '|A:BonusLoot-Chest:0:0|a'..(e.onlyChinese and '打开物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, ITEMS))
-            OpenButton= WoWTools_ToolsButtonMixin:CreateButton({
-                name='OpenItems',
-                tooltip=addName,
-                option=function(Category, _, initializer)
+ --[[option=function(Category, _, initializer)
                     e.AddPanel_Check({
                         category= Category,
                         name= e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE),
@@ -1066,22 +1105,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                             get_Items()
                         end
                     }, initializer)
-                end,
-            })
+                end,]]
 
-            if OpenButton then
-                noText= '|A:talents-button-reset:0:0|a'..(e.onlyChinese and '禁用' or DISABLE)
-                useText= '|A:jailerstower-wayfinder-rewardcheckmark:0:0|a'..(e.onlyChinese and '使用' or USE)
-        
-                Init()
-                             
-            end
-            self:UnregisterEvent("ADDON_LOADED")
-        end
 
-    elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
-            WoWToolsSave['Tools_OpenItems'] = Save
-        end
-    end
-end)

@@ -2098,7 +2098,22 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
             else
                 Save= WoWToolsSave['Tools_Mounts'] or Save
             end
+            
 
+            if not Save.Mounts[SPELLS] then--为不同语言，
+                Save.Mounts={
+                    [ITEMS]={[174464]=true, [168035]=true},--幽魂缰绳 噬渊鼠缰绳
+                    [SPELLS]=P_Spells_Tab,
+                    [FLOOR]={},--{[spellID]=uiMapID}
+                    [MOUNT_JOURNAL_FILTER_GROUND]={[256123]=true,},
+                    [MOUNT_JOURNAL_FILTER_FLYING]={[419345]=true},
+                    [MOUNT_JOURNAL_FILTER_AQUATIC]={[98718]=true},
+                    [MOUNT_JOURNAL_FILTER_DRAGONRIDING]={[368896]=true},
+                    ['Shift']={[64731]=true},
+                    ['Alt']={[264058]=true,},
+                    ['Ctrl']={[107203]=true,},
+                }
+            end
 
             MountButton= WoWTools_ToolsButtonMixin:CreateButton({
                 name='Mount',
