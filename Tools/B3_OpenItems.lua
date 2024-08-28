@@ -426,7 +426,7 @@ local function Edit_Item(info)
         OnShow=function(s, data)
             s.editBox:SetNumeric(true)
             local useStr=ITEM_SPELL_TRIGGER_ONUSE..'(.+)'--使用：
-            local dateInfo= e.GetTooltipData({bag=nil, guidBank=nil, merchant=nil, inventory=nil, hyperLink=data.itemLink, itemID=data.itemID, text={useStr}, onlyText=true, wow=nil, onlyWoW=nil, red=nil, onlyRed=nil})--物品提示，信息 使用：
+            local dateInfo= WoWTools_ItemMixin:GetTooltip({bag=nil, guidBank=nil, merchant=nil, inventory=nil, hyperLink=data.itemLink, itemID=data.itemID, text={useStr}, onlyText=true, wow=nil, onlyWoW=nil, red=nil, onlyRed=nil})--物品提示，信息 使用：
             local num= dateInfo.text[useStr] and dateInfo.text[useStr]:match('%d+')
             num= num and tonumber(num)
             s.editBox:SetNumber(num or Save.use[data.itemID] or 1)
@@ -947,7 +947,7 @@ end
 
 
 
-print('bcd')
+
 
 
 --###########
