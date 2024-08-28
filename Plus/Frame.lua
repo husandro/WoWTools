@@ -157,7 +157,20 @@ local function set_Scale_Size(frame, tab)
         end
         local size= Save.size[name]
         if size then
-            frame:SetSize(size[1], size[2])
+            if btn.notInCombat and UnitAffectingCombat('player') then--战斗中不加载
+                btn.notInCombatFrame= CreateFrame("Frame", nil, btn)
+                btn.notInCombatFrame.size=size
+                btn.notInCombatFrame.target=frame
+                btn:SetScript("OnEvent", function(self)
+                    self.target:SetSize(self.size[1], self.size[2])
+                    self.size=nil
+                    self.frame=nil
+                    self:UnregisterEvent('PLAYER_REGEN_ENABLED')
+                end)
+                btn:RegisterEvent('PLAYER_REGEN_ENABLED')
+            else
+                frame:SetSize(size[1], size[2])
+            end
         end
     end
     --[[btn= CreateFrame('Button', nil, frame)
@@ -2121,7 +2134,6 @@ local function Init_Move()
     if Save.disabled then
         return
     end
-    --set_Move_Alpha(MicroMenu)--主菜单
     set_Move_Alpha(BagsBar)--背包
 
 
@@ -2710,17 +2722,8 @@ local function Init_Move()
     e.Set_Move_Frame(ChatConfigFrame.Header, {frame=ChatConfigFrame})
     e.Set_Move_Frame(ChatConfigFrame.Border, {frame=ChatConfigFrame})
 
-    --################################
-    --场景 self==ObjectiveTrackerFrame
-    --Blizzard_ObjectiveTracker.lua ObjectiveTracker_GetVisibleHeaders()
-    --set_Move_Alpha(ObjectiveTrackerFrame)
+
     ObjectiveTrackerFrame:SetClampedToScreen(false)
-    --[[hooksecurefunc('ObjectiveTracker_Initialize', function(self)
-        for _, module in ipairs(self.MODULES) do
-            e.Set_Move_Frame(module.Header, {frame=self, notZoom=true, notSave=true})
-        end
-        --self:SetClampedToScreen(false)
-    end)]]
 
 
     hooksecurefunc('UpdateUIPanelPositions',function(currentFrame)
@@ -2736,8 +2739,7 @@ local function Init_Move()
     e.Set_Move_Frame(GameMenuFrame, {notSave=true})--菜单
     e.Set_Move_Frame(ExtraActionButton1, {click='RightButton', notSave=true, notMoveAlpha=true, notFuori=true})--额外技能
     e.Set_Move_Frame(ContainerFrameCombinedBags)
-    e.Set_Move_Frame(ContainerFrameCombinedBags.TitleContainer, {frame=ContainerFrameCombinedBags})
-    --e.Set_Move_Frame(MirrorTimer1, {notSave=true})
+
     e.Set_Move_Frame(ColorPickerFrame, {click='RightButton'})--颜色选择器
     e.Set_Move_Frame(PartyFrame.Background, {frame=PartyFrame, notZoom=true, notSave=true})
     e.Set_Move_Frame(OpacityFrame)

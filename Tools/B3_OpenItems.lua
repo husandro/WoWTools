@@ -847,7 +847,9 @@ local function Init()
         get_Items()
     end)
 
-
+    OpenButton:SetScript('OnHide', function(self)
+        self:settings()
+    end)
   
 
 
@@ -859,7 +861,6 @@ local function Init()
             self:set_cooldown()
             
         elseif event=='PLAYER_REGEN_DISABLED' then
-            print('aaaaa')
             ClearOverrideBindings(self)
             WoWTools_Key_Button:SetTexture(self)
 
@@ -882,20 +883,23 @@ local function Init()
 
 
     
+
+
+
     function OpenButton:settings()
         self:UnregisterAllEvents()
-        local isInstance= IsInInstance()
-        print('a', isInstance)
-        if not isInstance then            
+        local show= not IsInInstance() and self:IsVisible()
+        if show then            
             self:RegisterEvent('BAG_UPDATE_COOLDOWN')
             self:RegisterEvent('BAG_UPDATE_DELAYED')
             self:RegisterEvent('PLAYER_REGEN_DISABLED')
             self:RegisterEvent('PLAYER_REGEN_ENABLED')
         end
         self:RegisterEvent('PLAYER_ENTERING_WORLD')
-        self:set_key(isInstance)
-        self:SetShown(not isInstance)
-        
+        if self:CanChangeAttribute() then
+            self:set_key(not show)
+            self:SetShown(show)
+        end
     end
 
     function OpenButton:set_key(isDisabled)
@@ -925,7 +929,6 @@ local function Init()
         return MenuResponse.Open
     end
 
-    print('aaaa')
     OpenButton:settings()
     C_Timer.After(4, get_Items)
 end
@@ -961,15 +964,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             OpenButton= WoWTools_ToolsButtonMixin:CreateButton({
                 name='OpenItems',
                 tooltip=addName,
-               
             })
-            print('ac')
 
             if OpenButton then
                 noText= '|A:talents-button-reset:0:0|a'..(e.onlyChinese and '禁用' or DISABLE)
                 useText= '|A:jailerstower-wayfinder-rewardcheckmark:0:0|a'..(e.onlyChinese and '使用' or USE)
                 
-                print(11)
                 Init()
                              
             end
