@@ -1951,7 +1951,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, _, arg5)
             and not Save.noSell[itemID]
             then
                 if other then
-                    local dateInfo= e.GetTooltipData({hyperLink=itemLink, red=true, onlyRed=true})--物品提示，信息
+                    local dateInfo= WoWTools_ItemMixin:GetTooltip({hyperLink=itemLink, red=true, onlyRed=true})--物品提示，信息
                     if not dateInfo.red then
                         return
                     end

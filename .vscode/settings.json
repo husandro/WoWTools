@@ -4858,7 +4858,9 @@
         "TokenEntryMixin",
         "DelvesCompanionConfigurationFrame",
         "PVEFrameTab4",
-        "DelvesDashboardFrame"
+        "DelvesDashboardFrame",
+        "ITEM_BIND_TO_ACCOUNT_UNTIL_EQUIP",
+        "ITEM_ACCOUNTBOUND_UNTIL_EQUIP"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

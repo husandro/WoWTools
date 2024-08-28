@@ -178,7 +178,7 @@ end
 
 
 local function setKEY(hide)--设置捷键
-    if Save.KEY and not hide and OpenButton:IsShown() and OpenButton:IsValid() then
+    if Save.KEY and not hide and OpenButton:IsShown() and OpenButton:IsValid() and not UnitAffectingCombat('player') then
         WoWTools_Key_Button:Setup(OpenButton)
     else
         WoWTools_Key_Button:Setup(OpenButton, true)
@@ -294,7 +294,7 @@ local function get_Items()--取得背包物品信息
                 and not info.isLocked
                 and info.iconFileID
                 and (not Save.no[info.itemID] or Save.use[info.itemID])--禁用使用
-                and C_PlayerInfo.CanUseItem(info.itemID)--是否可使用
+                --and C_PlayerInfo.CanUseItem(info.itemID)--是否可使用
                 and not (duration and duration>2 or enable==0) and classID~=8--冷却
                 and ((itemMinLevel and itemMinLevel<=e.Player.level) or not itemMinLevel)--使用等级
                 and classID~=13
@@ -306,9 +306,19 @@ local function get_Items()--取得背包物品信息
                         return
                     end
 
+                elseif classID==4 or classID==2 then-- itemEquipLoc and _G[itemEquipLoc] then--幻化
+                    if Save.mago then --and info.quality then
+                        local  isCollected, isSelf= select(2, e.GetItemCollected(info.hyperlink, nil, nil, true))
+                        if not isCollected and isSelf then
+                            setAtt(bag, slot, info.iconFileID, info.itemID)
+                            equipItem=true
+                            return
+                        end
+                    end
+
                 else
-                    local dateInfo= e.GetTooltipData({hyperLink=info.hyperlink, red=true, onlyRed=true, text={LOCKED}})
-                    if not dateInfo.red then--不出售, 可以使用                        
+                    local dateInfo= WoWTools_ItemMixin:GetTooltip({hyperLink=info.hyperlink, red=true, onlyRed=true, text={LOCKED}})
+                    if not dateInfo.red and C_PlayerInfo.CanUseItem(info.itemID) then--是否可使用 then--不出售, 可以使用                        
 
                         if info.hasLoot then--可打开
                             if Save.open then
@@ -362,15 +372,7 @@ local function get_Items()--取得背包物品信息
                                 end
                             end
 
-                        elseif classID==4 or classID==2 then-- itemEquipLoc and _G[itemEquipLoc] then--幻化
-                            if Save.mago then --and info.quality then
-                                local  isCollected, isSelf= select(2, e.GetItemCollected(info.hyperlink, nil, nil, true))
-                                if not isCollected and isSelf then
-                                    setAtt(bag, slot, info.iconFileID, info.itemID)
-                                    equipItem=true
-                                    return
-                                end
-                            end
+                        
 
                         elseif Save.alt and ((classID~=12 and (classID==0 and subclassID==8 or classID~=0))
                            or (classID==15 and subclassID==4)
@@ -442,7 +444,7 @@ local function Edit_Item(info)
         OnShow=function(s, data)
             s.editBox:SetNumeric(true)
             local useStr=ITEM_SPELL_TRIGGER_ONUSE..'(.+)'--使用：
-            local dateInfo= e.GetTooltipData({bag=nil, guidBank=nil, merchant=nil, inventory=nil, hyperLink=data.itemLink, itemID=data.itemID, text={useStr}, onlyText=true, wow=nil, onlyWoW=nil, red=nil, onlyRed=nil})--物品提示，信息 使用：
+            local dateInfo= WoWTools_ItemMixin:GetTooltip({bag=nil, guidBank=nil, merchant=nil, inventory=nil, hyperLink=data.itemLink, itemID=data.itemID, text={useStr}, onlyText=true, wow=nil, onlyWoW=nil, red=nil, onlyRed=nil})--物品提示，信息 使用：
             local num= dateInfo.text[useStr] and dateInfo.text[useStr]:match('%d+')
             num= num and tonumber(num)
             s.editBox:SetNumber(num or Save.use[data.itemID] or 1)

@@ -351,7 +351,7 @@ function panel:set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
                     else
                         local type
                         if e.Is_Timerunning then
-                            local date= e.GetTooltipData({hyperLink=info.hyperlink, index=2})
+                            local date= WoWTools_ItemMixin:GetTooltip({hyperLink=info.hyperlink, index=2})
                             type= date.indexText and date.indexText:match('|c........(.-)|r') or date.indexText
                         else
                             type=e.cn(C_Item.GetItemSubClassInfo(classID, subclassID))

@@ -1156,7 +1156,7 @@ local function Set_BrowseResultsFrame(frame)
                 if classID==9 then--配方
                     local dataTooltipsInfo = C_TooltipInfo.GetItemKey(btn.rowData.itemKey.itemID, btn.rowData.itemKey.itemLevel, btn.rowData.itemKey.itemSuffix, btn.rowData.itemKey.itemLevel)
 
-                    local dateInfo= e.GetTooltipData({itemID=itemKeyInfo.itemID, text={ITEM_SPELL_KNOWN}, onlyText=true})--物品提示，信息
+                    local dateInfo= WoWTools_ItemMixin:GetTooltip({itemID=itemKeyInfo.itemID, text={ITEM_SPELL_KNOWN}, onlyText=true})--物品提示，信息
                     local isLearned= dateInfo.text[ITEM_SPELL_KNOWN]
                     
                     if dataTooltipsInfo then

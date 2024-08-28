@@ -293,7 +293,7 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
     local isLeftSlot= is_Left_Slot(slot)
 
     if link and not C_Item.IsCorruptedItem(link) then
-        local dateInfo= e.GetTooltipData({hyperLink=link, text={enchantStr, pvpItemStr, upgradeStr,ITEM_CREATED_BY_Str}, onlyText=true})--物品提示，信息
+        local dateInfo= WoWTools_ItemMixin:GetTooltip({hyperLink=link, text={enchantStr, pvpItemStr, upgradeStr,ITEM_CREATED_BY_Str}, onlyText=true})--物品提示，信息
         enchant, use, pvpItem, upgradeItem, createItem= dateInfo.text[enchantStr], dateInfo.red, dateInfo.text[pvpItemStr], dateInfo.text[upgradeStr], dateInfo.text[ITEM_CREATED_BY_Str]
     end
 
@@ -1446,7 +1446,7 @@ local function setFlyout(button, itemLink, slot)
             button.level= e.Cstr(button)
             button.level:SetPoint('BOTTOM')
         end
-        dateInfo= e.GetTooltipData({hyperLink=itemLink, itemID=itemLink and C_Item.GetItemInfoInstant(itemLink) , text={upgradeStr, pvpItemStr, itemLevelStr}, onlyText=true})--物品提示，信息
+        dateInfo= WoWTools_ItemMixin:GetTooltip({hyperLink=itemLink, itemID=itemLink and C_Item.GetItemInfoInstant(itemLink) , text={upgradeStr, pvpItemStr, itemLevelStr}, onlyText=true})--物品提示，信息
 
         if dateInfo and dateInfo.text[itemLevelStr] then
             level= tonumber(dateInfo.text[itemLevelStr])

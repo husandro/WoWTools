@@ -99,7 +99,7 @@ e.GetPet9Item(itemID, find)--宠物兑换, wow9.0
 e.GetMountCollected(mountID, itemID)--坐骑, 收集数量
 e.GetToyCollected(itemID)--玩具,是否收集
 
-e.GetTooltipData(tab)--物品提示，信息 {bag={bag=nil, slot=nil}, guidBank={tab=nil, slot=nil}, merchant={slot, buyBack=true}, inventory=nil, hyperLink=nil, itemID=nil, text={}, onlyText=nil, wow=nil, onlyWoW=nil, red=nil, onlyRed=nil, index=2}
+
 
 e.RGB_to_HEX(setR, setG, setB, setA, self)--RGB转HEX
 e.HEX_to_RGB(hexColor, self)--HEX转RGB
@@ -1280,9 +1280,9 @@ function e.Get_Gem_Stats(self, itemLink)--显示, 宝石, 属性
     if itemLink then
         local dateInfo
         if e.Is_Timerunning then
-            dateInfo= e.GetTooltipData({hyperLink=itemLink, index=3})--物品提示，信息
+            dateInfo= WoWTools_ItemMixin:GetTooltip({hyperLink=itemLink, index=3})--物品提示，信息
         else
-            dateInfo= e.GetTooltipData({hyperLink=itemLink, text={'(%+.+)', }})--物品提示，信息
+            dateInfo= WoWTools_ItemMixin:GetTooltip({hyperLink=itemLink, text={'(%+.+)', }})--物品提示，信息
         end
         local text= dateInfo.text['(%+.+)'] or dateInfo.indexText
 
@@ -1434,7 +1434,7 @@ function e.Set_Item_Stats(self, link, setting) --设置，物品，次属性，�
             else
                 --local quality = C_Item.GetItemQualityByID(link)--颜色
                 --if quality==7 then
-                local dataInfo= e.GetTooltipData({hyperLink=link, itemID= itemID or C_Item.GetItemInfoInstant(link), text={itemLevelStr}, onlyText=true})--物品提示，信息
+                local dataInfo= WoWTools_ItemMixin:GetTooltip({hyperLink=link, itemID= itemID or C_Item.GetItemInfoInstant(link), text={itemLevelStr}, onlyText=true})--物品提示，信息
                 if dataInfo.text[itemLevelStr] then
                     itemLevel= tonumber(dataInfo.text[itemLevelStr])
                 end
@@ -2601,7 +2601,7 @@ end
 
 
 --物品提示，信息
---[[e.GetTooltipData(
+--[[e.GetTooltipData(:GetTooltip(
     {bag={bag=nil, slot=nil}, 
     guidBank={tab=nil, slot=nil},
     merchant={slot, buyBack=true},
@@ -2613,9 +2613,7 @@ end
     wow=nil, onlyWoW=nil,
     red=nil, onlyRed=nil
     index=
-})
-]]
-function e.GetTooltipData(tab)
+})function e.GetTooltipData(:GetTooltip(tab)
     local tooltipData
     if tab.bag then
         tooltipData= C_TooltipInfo.GetBagItem(tab.bag.bag, tab.bag.slot)
@@ -2693,7 +2691,7 @@ function e.GetTooltipData(tab)
         end
     end
     return data
-end
+end]]
 
 
 
