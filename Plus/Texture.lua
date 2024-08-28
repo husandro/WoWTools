@@ -796,6 +796,7 @@ CompactRaidFrameManager.DisplayFrame.Header.Delineator
      e.Set_Alpha_Frame_Texture(PVEFrameTab1, {alpha=min05})
      e.Set_Alpha_Frame_Texture(PVEFrameTab2, {alpha=min05})
      e.Set_Alpha_Frame_Texture(PVEFrameTab3, {alpha=min05})
+     e.Set_Alpha_Frame_Texture(PVEFrameTab4, {alpha=min05})
      --print(PetStableFrame, NUM_PET_STABLE_PAGES)
      if e.Player.class=='HUNTER' then--猎人，宠物
         if StableFrame then--10.2.7
@@ -2253,6 +2254,13 @@ local function Init_Event(arg1)
         hide_Texture(ScrappingMachineFrame.Background)
         hide_Texture(ScrappingMachineFrameInset.Bg)
         e.Set_NineSlice_Color_Alpha(ScrappingMachineFrameInset, true)
+
+    elseif arg1=='Blizzard_DelvesDashboardUI' then--地下保
+        
+        set_Alpha_Color(DelvesDashboardFrame.DashboardBackground, nil, nil, min03)
+        set_Alpha_Color(DelvesCompanionConfigurationFrame.Background, nil, nil, min03)
+        hide_Texture(DelvesCompanionConfigurationFrame.Bg)
+        e.Set_Alpha_Frame_Texture(DelvesCompanionConfigurationFrame.Border)
     end
 end
 
@@ -2458,6 +2466,8 @@ local function Init_Class_Power(init)--职业
                 set_Alpha_Color(btn.Border, true)
             end
         end)
+
+        
     end
 end
 

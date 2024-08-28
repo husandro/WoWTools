@@ -4855,7 +4855,10 @@
         "DELVES_PARTY_MEMBER_INELIGIBLE_FOR_TIER_TOOLTIP",
         "GetCVarNumberOrDefault",
         "GOSSIP_OPTIONS",
-        "TokenEntryMixin"
+        "TokenEntryMixin",
+        "DelvesCompanionConfigurationFrame",
+        "PVEFrameTab4",
+        "DelvesDashboardFrame"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

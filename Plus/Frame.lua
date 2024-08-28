@@ -1969,6 +1969,9 @@ local function setAddLoad(arg1)
 
     elseif arg1=='Blizzard_ArtifactUI' then
         e.Set_Move_Frame(ArtifactFrame)
+
+    elseif arg1=='Blizzard_DelvesDashboardUI' then
+        e.Set_Move_Frame(DelvesCompanionConfigurationFrame)
     end
 end
 
