@@ -13,7 +13,6 @@ local Save={
         --['island']=0,
         --[副本名称]=0,
     }
-    --lastDungeonID=number
 }
 
 
@@ -2627,6 +2626,7 @@ local function Init_RolePollPopup_Plus()
         end
     end)
 
+    C_Timer.After(2, setHoliday)--节日, 提示, button.texture
 
 
 
@@ -3120,19 +3120,6 @@ local function Init()
 
     Init_Dialogs()
     Init_RolePollPopup_Plus()
-
-    
-    C_Timer.After(2, function()
-        do
-            setHoliday()--节日, 提示, button.texture
-        end
-        if not LFDButton.dungeonID and Save.lastDungeonID then
-            local name, typeID, _, _, _, _, _, _, _, _, textureFilename, _, _, _, _, _, _, _, name2= GetLFGDungeonInfo(Save.lastDungeonID)
-            if name then
-                Set_LFDButton_Data(Save.lastDungeonID, typeID, name or name2, textureFilename, nil)
-            end
-        end
-    end)
 end
 
 
@@ -3224,7 +3211,6 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            Save.lastDungeonID= LFDButton.dungeonID
             WoWToolsSave['ChatButton_LFD']= Save
         end
 
