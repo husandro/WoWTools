@@ -828,8 +828,13 @@ local function Init()
 
 
 
-    OpenButton:SetScript('OnEvent', function(self, event)
-        if event=='PLAYER_ENTERING_WORLD' or event=='PLAYER_MOUNT_DISPLAY_CHANGED' then--出进副本，上下坐骑
+    OpenButton:SetScript('OnEvent', function(self, event, arg1)
+        if event=='PLAYER_ENTERING_WORLD'--出进副本
+            or event=='PLAYER_MOUNT_DISPLAY_CHANGED'--上下坐骑
+            or event=='UNIT_ENTERED_VEHICLE'--车辆
+            or event=='UNIT_EXITED_VEHICLE'
+
+        then
             self:settings()
 
         elseif event=='BAG_UPDATE_COOLDOWN' then--冷却
@@ -864,14 +869,20 @@ local function Init()
         'PLAYER_REGEN_DISABLED',
         'PLAYER_REGEN_ENABLED',
     }
+    OpenButton.eventUnit={
+        'UNIT_ENTERED_VEHICLE',--车辆
+        'UNIT_EXITED_VEHICLE',
+    }
 
     function OpenButton:settings()
         local isDisabled= IsInInstance() or not self:IsVisible()
 
         if isDisabled then
             FrameUtil.UnregisterFrameForEvents(self, self.events)
+            FrameUtil.UnregisterFrameForEvents(self, self.eventUnit)
         else
             FrameUtil.RegisterFrameForEvents(self, self.events)
+            FrameUtil.RegisterFrameForUnitEvents(self, self.eventUnit, 'player')
         end
 
         if Save.KEY and not isDisabled then
@@ -886,9 +897,15 @@ local function Init()
         end
     end
 
+--设置捷键
     function OpenButton:set_key(isDisabled)
         if Save.KEY then
-            WoWTools_Key_Button:Setup(OpenButton, isDisabled or not self:IsValid() or IsMounted())
+            WoWTools_Key_Button:Setup(OpenButton,
+                isDisabled
+                or not self:IsValid()
+                or IsMounted()
+                or UnitInVehicle('player')
+            )
         end
     end
 

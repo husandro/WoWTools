@@ -3173,7 +3173,7 @@ local function Init_Quest()
                         WoWTools_QuestMixin:GetLink(questID),
                         text and '|cnGREEN_FONT_COLOR:'..text..'|r',
                         link or '',
-                        e.Icon.left..'|cffff00ff'..e.cn(QuestFrameGoodbyeButton and QuestFrameGoodbyeButton:GetText() or '')
+                        '|cffff00ff'..e.cn(QuestFrameGoodbyeButton and QuestFrameGoodbyeButton:GetText() or '')..e.Icon.left
                     )
                 end)
             end
@@ -3267,7 +3267,7 @@ local function Init_Quest()
             
             C_Timer.After(0.5, function()
                 print(e.Icon.icon2..WoWTools_QuestMixin:GetLink(questID),
-                    e.Icon.left..(complete and '|cffff00ff' or '|cnRED_FONT_COLOR:')..e.cn(acceptButton:GetText() or '')..'|r',
+                    (complete and '|cffff00ff' or '|cff00ffff')..e.cn(acceptButton:GetText() or '')..'|r'..e.Icon.left,
                     itemLink or '')
             end)
             QuestButton.questSelect[questID]=true

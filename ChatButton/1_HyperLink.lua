@@ -567,7 +567,6 @@ local function setAddMessageFunc(self, s, ...)
 
         if not showTimestamps and s:find(LOOT_ITEM) then--	%s获得了战利品：%s。
             local unitName= s:match(LOOT_ITEM)
-            --print(unitName, item)
             if unitName then
                 if unitName==e.Player.name then
                     s=s:gsub(unitName..'['..e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r]')
@@ -726,7 +725,7 @@ local function Init_Panel()
                     t=e.Magic(t)
                     Save.text[t]=true
                     n=n+1
-                    print(n..')'..COLOR, t)
+                    print(n..')'..(e.onlyChinese and '颜色' or COLOR), t)
                 end
             end)
         end
@@ -965,7 +964,11 @@ local function set_Talking()
                     self.voHandle = voHandle;
                 end
                 if not Save.disabledTalkingPringText and text then
-                    print(e.Icon.icon2..'|cff00ff00'..(name or '')..'|r|A:voicechat-icon-textchat-silenced:0:0|a|cffff00ff'..(text or ''))--,id, addName, 'soundKitID', vo)
+                    print(e.Icon.icon2
+                        ..'|cffff00ff'..(name or '')
+                        ..'|r|A:voicechat-icon-textchat-silenced:0:0|a|cff00ff00'
+                        ..(text or '')
+                    )
                 end
             end
         end)
