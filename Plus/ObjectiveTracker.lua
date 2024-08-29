@@ -494,7 +494,7 @@ local function Init_ScenarioObjective()
     function ScenarioObjectiveTracker.StageBlock.numStagesLabel:settings()
         local text
         local currentStage, numStages = select(2, C_Scenario.GetInfo())
-        if numStages and numStages>0 and currentStage then
+        if numStages and numStages>1 and currentStage then
             text= (numStages==currentStage and '|cnGREEN_FONT_COLOR:' or '')..currentStage..'/'..numStages
         end
         self:SetText(text or '')
