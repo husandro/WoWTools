@@ -3998,11 +3998,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             WoWToolsSave['Plus_Gossip']= Save
-        else
-            --不清除，内容
-            Save_P.movie= Save.movie
-            Save_P.Gossip_Text_Icon_Player= Save.Gossip_Text_Icon_Player
-            WoWToolsSave['Plus_Gossip']=Save.P.movie
         end
 
 

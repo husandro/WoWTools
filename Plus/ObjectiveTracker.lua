@@ -489,18 +489,32 @@ end
 
 
 local function Init_ScenarioObjective()
-    ScenarioObjectiveTracker.StageBlock.numStagesLabel= e.Cstr(ScenarioObjectiveTracker.StageBlock, {copyFont=ScenarioObjectiveTracker.StageBlock.Name, justifyH='RIGHT'})
-    ScenarioObjectiveTracker.StageBlock.numStagesLabel:SetPoint('TOPRIGHT', -20,-8)
-    function ScenarioObjectiveTracker.StageBlock.numStagesLabel:settings()
+    ScenarioObjectiveTracker.Header.numStagesLabel= e.Cstr(ScenarioObjectiveTracker.Header, {copyFont=ScenarioObjectiveTracker.StageBlock.Name, justifyH='RIGHT'})
+    ScenarioObjectiveTracker.Header.numStagesLabel:SetPoint('LEFT', ScenarioObjectiveTracker.Header.Text, 'RIGHT')
+    --[[ScenarioObjectiveTracker.Header.numStagesLabel:SetScript('OnLeave', GameTooltip_Hide)
+    ScenarioObjectiveTracker.Header.numStagesLabel:SetScript('OnEnter', function(self)
+        local currentStage, numStages = select(2, C_Scenario.GetInfo())
+        if not currentStage or not numStages then
+            return
+        end
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(e.addName, addName)
+        for i=1, numStages do
+            local criteriaString, criteriaType, completed, quantity, totalQuantity, flags, assetID, quantityString, criteriaID, duration, elapsed, criteriaFailed, isWeightedProgress= C_Scenario.GetCriteriaInfo(i)
+            print(C_Scenario.GetCriteriaInfo(i))
+        end
+        e.tips:Show()
+    end)]]
+    
+
+    hooksecurefunc(ScenarioObjectiveTracker, 'LayoutContents', function(self)
         local text
         local currentStage, numStages = select(2, C_Scenario.GetInfo())
         if numStages and numStages>1 and currentStage then
             text= (numStages==currentStage and '|cnGREEN_FONT_COLOR:' or '')..currentStage..'/'..numStages
         end
-        self:SetText(text or '')
-    end
-    hooksecurefunc(ScenarioObjectiveTracker, 'LayoutContents', function(self)
-        self.StageBlock.numStagesLabel:settings()
+        self.Header.numStagesLabel:SetText(text or '')
     end)
 end
 
@@ -538,13 +552,13 @@ local function Init_ObjectiveTrackerFrame()
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.addName, addName)
         e.tips:AddLine(' ')
-        
+
         local text
         text= Save.scale
         if not Save.scale or Save.scale==1 then
             text=e.onlyChinese and '禁用' or DISABLE
         end
-        
+
         e.tips:AddDoubleLine(col..(e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..text, col..'Alt+'..e.Icon.mid)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or MAINMENU, e.Icon.right)
@@ -588,9 +602,9 @@ local function Init_ObjectiveTrackerFrame()
                     if isFind then
                         return true
                     else
-                        local find= false                        
+                        local find= false
                         for _, block in pairs(frame.usedBlocks and frame.usedBlocks[frame.blockTemplate] or {}) do
-                            
+
                             if block.ItemButton then
                                 find=true
                                 break
@@ -612,7 +626,7 @@ local function Init_ObjectiveTrackerFrame()
         end
         MenuUtil.CreateContextMenu(frame, function(owner, root)
             local sub, col
-           
+
             col= owner:set_frames_show(true, true) and '' or '|cff9e9e9e'
             root:CreateButton(col..(e.onlyChinese and '收起选项 |A:NPE_ArrowUp:0:0|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS), function()
                 owner:set_frames_show(true, false)

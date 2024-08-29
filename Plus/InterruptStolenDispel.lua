@@ -1,7 +1,8 @@
 local id, e = ...
-local addName= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INTERRUPTS, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISPELS, ACTION_SPELL_STOLEN))
 
-local Save={}
+local Save={
+    --enabledInRaid=true--在团队中启用会掉帧
+}
 local panel=CreateFrame("Frame")
 
 local de=' > '--分隔符
@@ -23,100 +24,96 @@ local UMark={--'|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_'..t..':0|t'
 
 
 
-local function set_COMBAT_LOG_EVENT_UNFILTERED()--https://wowpedia.fandom.com/wiki/COMBAT_LOG_EVENT
-    --timestamp, subevent, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, [spellID, spellName, spellSchool], casterGUID, casterName, casterFlags, casterRaidFlags, absorbSpellId, absorbSpellName, absorbSpellSchool, amount, critical
+
+
+
+
+
+--[[
+timestamp, subevent, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, [spellID, spellName, spellSchool], casterGUID, casterName, casterFlags, casterRaidFlags, absorbSpellId, absorbSpellName, absorbSpellSchool, amount, critical
+local target = destGUID and UnitTokenFromGUID(destGUID)
+https://wowpedia.fandom.com/wiki/COMBAT_LOG_EVENT
+]]
+function panel:settings()
     local _, eventType, _, sourceGUID, _, _, sourceRaidFlags, destGUID, _, _, destRaidFlags ,spellID, _,_, extraSpellID= CombatLogGetCurrentEventInfo()
-    local target = destGUID and UnitTokenFromGUID(destGUID)
-    if not target
+    if sourceGUID~=e.Player.guid--不是自已
+    or not C_PlayerInfo.GUIDIsPlayer(sourceGUID)--PET
+        or not destGUID--目标
         or not spellID
         or not extraSpellID
-        or sourceGUID~=e.Player.guid
-        or not (eventType=="SPELL_INTERRUPT" or eventType=="SPELL_DISPEL" or eventType=="SPELL_STOLEN")
-        or UnitIsUnit(target, 'pet')
+        or not (eventType=="SPELL_INTERRUPT" or eventType=="SPELL_DISPEL" or eventType=="SPELL_STOLEN")--事件
     then
         return
     end
-    local text=(UMark[sourceRaidFlags] or '')..C_Spell.GetSpellLink(spellID)..de..C_Spell.GetSpellLink(extraSpellID)..(UMark[destRaidFlags] or '')
-    if UnitIsUnit(target, 'player') then
-        print('|A:nameplates-holypower2-on:0:0|a', e.Icon.player, text)
+    local text=(UMark[sourceRaidFlags] or '')..WoWTools_SpellMixin:GetLink(spellID)..de..WoWTools_SpellMixin:GetLink(extraSpellID)..(UMark[destRaidFlags] or '')
+    if destGUID==e.Player.guid then
+        print('|A:nameplates-holypower2-on:0:0|a', e.Icon.player..e.Player.col, text)
     else
         e.Chat(text, nil, nil)
     end
-    
 end
 
-local function set_Events()--注册，事件
-    if IsInGroup() and not IsInRaid() then
-        panel:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
+
+
+function panel:set_event()
+    if not Save.disabled and (IsInRaid() and not Save.disabledInRaid or not Save.disabledInRaid) then
+        self:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
     else
-        panel:UnregisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
+        self:UnregisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
+    end
+    if Save.disabledInRaid then
+        self:RegisterEvent('GROUP_ROSTER_UPDATE') 
+        self:RegisterEvent('GROUP_LEFT')
+    else
+        self:UnregisterEvent('GROUP_ROSTER_UPDATE') 
+        self:UnregisterEvent('GROUP_LEFT')
     end
 end
 
-panel:RegisterEvent('ADDON_LOADED')
-panel:RegisterEvent('GROUP_ROSTER_UPDATE')
-panel:RegisterEvent('GROUP_LEFT')
 
-panel:SetScript("OnEvent", function(_, event, arg1)
+
+
+panel:RegisterEvent('ADDON_LOADED')
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            Save= WoWToolsSave[addName] or Save
+            Save= WoWToolsSave['Interrupts_Tolen'] or Save
 
-
-            --添加控制面板
-            local initializer= e.AddPanel_Check({
-                name= '|A:nameplates-holypower2-on:0:0|a'..(e.onlyChinese and '断驱散' or addName),
-                tooltip= e.onlyChinese and '说|n仅限：我, 小队'
-                    or (SAY..'|n'..format(LFG_LIST_CROSS_FACTION, COMBATLOG_FILTER_STRING_ME)..'|n'..format(LFG_LIST_CROSS_FACTION, SLASH_TEXTTOSPEECH_PARTY)),
+            --添加控制面板 format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INTERRUPTS, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISPELS, ACTION_SPELL_STOLEN))
+            local root= e.AddPanel_Check({
+                name= '|A:nameplates-holypower2-on:0:0|a'..(e.onlyChinese and '断驱散' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INTERRUPTS, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISPELS, ACTION_SPELL_STOLEN))),
                 GetValue= function() return not Save.disabled end,
                 SetValue= function()
-                    if Save.disabled then
-                        Save.disabled=nil
-                        panel:UnregisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
-                    else
-                        Save.disabled=true
-                        panel:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
-                    end
-                    print(e.addName, e.cn(addName), e.GetEnabeleDisable(Save.disabled))
+                    Save.disabled = not Save.disabled and true or nil
+                    self:set_event()
                 end
             })
 
             e.AddPanel_Check({
-                name= '|A:nameplates-holypower2-on:0:0|a'..(e.onlyChinese and '断驱散' or addName),
-                tooltip= e.onlyChinese and '说|n仅限：我, 小队'
-                    or (SAY..'|n'..format(LFG_LIST_CROSS_FACTION, COMBATLOG_FILTER_STRING_ME)..'|n'..format(LFG_LIST_CROSS_FACTION, SLASH_TEXTTOSPEECH_PARTY)),
-                GetValue= function() return not Save.disabled end,
+                name= '|A:nameplates-holypower2-on:0:0|a'..(e.onlyChinese and '断驱散' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INTERRUPTS, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISPELS, ACTION_SPELL_STOLEN))),
+                GetValue= function() return not Save.disabledInRaid end,
                 SetValue= function()
-                    if Save.disabled then
-                        Save.disabled=nil
-                        panel:UnregisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
-                    else
-                        Save.disabled=true
-                        panel:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
-                    end
-                    print(e.addName, e.cn(addName), e.GetEnabeleDisable(Save.disabled))
+                    Save.disabledInRaid = not Save.disabledInRaid and true or nil
+                    self:set_event()
                 end
-            }, initializer)
-          
+            }, root)
 
-            if Save.disabled then
-                panel:UnregisterAllEvents()
-            else
-                set_Events()--注册，事件
-                panel:UnregisterEvent('ADDON_LOADED')
+            if not Save.disabled then
+                self:set_event()
             end
-            panel:RegisterEvent("PLAYER_LOGOUT")
+            self:UnregisterEvent('ADDON_LOADED')
         end
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            WoWToolsSave[addName]=Save
+            WoWToolsSave['Interrupts_Tolen']=Save
         end
 
-    elseif event=='COMBAT_LOG_EVENT_UNFILTERED' then-- and IsInGroup() then
-        set_COMBAT_LOG_EVENT_UNFILTERED()
-
     elseif event=='GROUP_ROSTER_UPDATE' or event=='GROUP_LEFT' then
-        set_Events()--注册，事件
+        self:settings()
+
+    elseif event=='COMBAT_LOG_EVENT_UNFILTERED' then
+        self:settings()
     end
 end)

@@ -846,7 +846,7 @@ local function Init()
 
         elseif event=='PLAYER_REGEN_ENABLED' then
             self:set_key(false)
-            if self.isInBat then
+            if self.isInCombat then
                 get_Items()
             end
 
@@ -894,6 +894,8 @@ local function Init()
         if self:CanChangeAttribute() then
             self:set_key(isDisabled)
             self:SetShown(not isDisabled)
+        else
+            self.isInCombat=true
         end
     end
 

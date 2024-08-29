@@ -1160,7 +1160,7 @@ local function Init_TrackButton()--添加装备管理框
                 end
             end
         end
-        e.Set_HelpTips({frame=self, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, show= not equipped and num>0})
+        e.Set_HelpTips({frame=self, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, show= not equipped and num>0, hideTime=20})
     end
 
     --建立，按钮

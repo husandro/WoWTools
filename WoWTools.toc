@@ -26,8 +26,12 @@ API_Panel.lua
 API_WoWDate.lua
 
 ##主要function，不能删除
-Utils_Mixin\Unit_Mixin.lua
-Utils_Mixin\Qust_Mixin.lua
+Mixin\Unit_Mixin.lua
+Mixin\Quest_Mixin.lua
+
+Mixin\Spell_Item_Mixin.lua
+Mixin\Item_Mixin.lua
+Mixin\Spell_Mixin.lua
 
 Mixin\StaticPopupDialogs.lua
 Mixin\ChatButton_Mixin.lua
@@ -37,9 +41,12 @@ Mixin\Tools_Button_Mixin.lua
 Mixin\EditBox_Mixin.lua
 Mixin\Random_Mixin.lua
 Mixin\Load_UI_Mixin.lua
-Mixin\Spell_Item_Mixin.lua
+
 Mixin\ItemLocation_Mixin.lua
 Mixin\KeyButton_Mixin.lua
+
+##颜色选择器，增强
+Plus\Color.lua
 
 ##WoWPlus
 ##移动框架, 缩放--放在第一个，有些，需要放置点，到移动按钮上
@@ -102,8 +109,7 @@ Plus\Holiday.lua
 Plus\Gem.lua
 ##目标指示
 Plus\Target.lua
-##颜色选择器，增强
-Plus\Color.lua
+
 ##主菜单，增强
 Plus\MainMenu.lua
 ##鼠标 Mouse https://wago.io/CVmKEpl6E
