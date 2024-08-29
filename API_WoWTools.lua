@@ -42,8 +42,14 @@ local isRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
 local isEra = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 local isCata = WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC
 ]]
+
+local battleTag= select(2, BNGetInfo())
+local baseClass= UnitClassBase('player')
+local playerRealm= GetRealmName():gsub(' ', '')
+local currentRegion= GetCurrentRegion()
+
 local function GetWeek()--周数
-    local region= GetCurrentRegion()
+    local region= currentRegion
     local d = date("*t")
     local cd= region==1 and 2 or region==3 and 3 or 4--1US(includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
     for d3=1,15 do
@@ -61,9 +67,7 @@ end
 
 
 
-local battleTag= select(2, BNGetInfo())
-local baseClass= UnitClassBase('player')
-local playerRealm= GetRealmName():gsub(' ', '')
+
 e.Player={
     realm= playerRealm,
     Realms= {},--多服务器
@@ -75,8 +79,8 @@ e.Player={
     g= select(2,GetClassColor(baseClass)),
     b= select(3, GetClassColor(baseClass)),
     col= '|c'..select(4, GetClassColor(baseClass)),
-    cn= GetCurrentRegion()==5,
-    region= GetCurrentRegion(),--1US (includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
+    cn= currentRegion==5 or currentRegion==4,
+    region= currentRegion,--1US (includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
     --Lo= GetLocale(),
     week= GetWeek(),--周数
     guid= UnitGUID('player'),

@@ -22,6 +22,7 @@ local UMark={--'|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_'..t..':0|t'
 }
 
 
+
 local function set_COMBAT_LOG_EVENT_UNFILTERED()--https://wowpedia.fandom.com/wiki/COMBAT_LOG_EVENT
     --timestamp, subevent, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, [spellID, spellName, spellSchool], casterGUID, casterName, casterFlags, casterRaidFlags, absorbSpellId, absorbSpellName, absorbSpellSchool, amount, critical
     local _, eventType, _, sourceGUID, _, _, sourceRaidFlags, destGUID, _, _, destRaidFlags ,spellID, _,_, extraSpellID= CombatLogGetCurrentEventInfo()
@@ -37,7 +38,7 @@ local function set_COMBAT_LOG_EVENT_UNFILTERED()--https://wowpedia.fandom.com/wi
     end
     local text=(UMark[sourceRaidFlags] or '')..C_Spell.GetSpellLink(spellID)..de..C_Spell.GetSpellLink(extraSpellID)..(UMark[destRaidFlags] or '')
     if UnitIsUnit(target, 'player') then
-        print(e.addName, e.Icon.player..e.Player.col..(e.onlyChinese and '断驱散' or addName), text)
+        print('|A:nameplates-holypower2-on:0:0|a', e.Icon.player, text)
     else
         e.Chat(text, nil, nil)
     end
