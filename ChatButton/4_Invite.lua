@@ -324,9 +324,16 @@ local function set_event_PLAYER_UPDATE_RESTING()--设置, 休息区提示事件
 end
 local function set_PLAYER_UPDATE_RESTING()--设置, 休息区提示
     if IsResting() then
-        print(e.addName, addName, e.onlyChinese and '进入' or  ENTER_LFG, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '休息' or CALENDAR_STATUS_OUT)..'|r',  e.onlyChinese and '区域' or ZONE)
+        print(
+            '|A:communities-icon-addgroupplus:0:0|a|cff00ff00'
+            ..(e.onlyChinese and '进入休息区域' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ENTER_LFG, CALENDAR_STATUS_OUT), ZONE))
+        )
+        
     else
-        print(e.addName, addName, e.onlyChinese and '离开' or LEAVE, '|cnRED_FONT_COLOR:'..( e.onlyChinese and '休息' or CALENDAR_STATUS_OUT)..'|r', e.onlyChinese and '区域' or ZONE)
+        print(
+            '|A:communities-icon-addgroupplus:0:0|a|cffff00ff'
+            ..(e.onlyChinese and '离开休息区域' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LEAVE, CALENDAR_STATUS_OUT), ZONE))
+        )
     end
 end
 
