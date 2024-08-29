@@ -8,9 +8,14 @@ local function set_tooltip(tooltip, data)
     if type(data)~='table' then
         return
     end
-
-    if data.link or data.itemLink or data.spellLink then
-        tooltip:SetHyperlink(data.link or data.itemLink or data.spellLink)
+    local link= data.link or data.itemLink or data.spellLink
+    if link then
+        if link:find('Hbattlepet:%d+') then
+            BattlePetToolTip_Show(BattlePetToolTip_UnpackBattlePetLink(link))
+            return
+        else
+            tooltip:SetHyperlink(link)
+        end
 
     elseif data.itemID then
         if C_ToyBox.GetToyInfo(data.itemID) then
@@ -27,16 +32,13 @@ local function set_tooltip(tooltip, data)
 
     elseif data.widgetSetID then
         GameTooltip_AddWidgetSet(tooltip, data.widgetSetID)
-    
+
     elseif data.achievementID then
         tooltip:SetAchievementByID(data.achievementID)
-        
-    end 
+    end
 
     if data.tooltip then
         GameTooltip_AddNormalLine(tooltip, type(data.tooltip)=='function' and data.tooltip() or data.tooltip, true)
-    
-    
     end
 end
 
@@ -46,7 +48,7 @@ end
 
 
 
-function WoWTools_SpellItemMixin:SetTooltip(tooltip, data, root, frame)    
+function WoWTools_SpellItemMixin:SetTooltip(tooltip, data, root, frame)
     if root then
         root:SetTooltip(function(tip, description)
             set_tooltip(tip, description.data)
@@ -76,7 +78,7 @@ function WoWTools_SpellItemMixin:GetName(spellID, itemID)--取得，法术，物
     local col, name, desc, cool
     if spellID then
         e.LoadDate({id=spellID, type='spell'})
-        
+
         local mountID = C_MountJournal.GetMountFromSpell(spellID)
         if mountID then--坐骑
             if not select(11, C_MountJournal.GetMountInfoByID(mountID)) then
@@ -107,7 +109,7 @@ function WoWTools_SpellItemMixin:GetName(spellID, itemID)--取得，法术，物
 
     elseif itemID then
         e.LoadDate({id=itemID, type='item'})
-        
+
         if C_ToyBox.GetToyInfo(itemID) then
             if not PlayerHasToy(itemID) then
                 col='|cnRED_FONT_COLOR:'
@@ -128,7 +130,7 @@ function WoWTools_SpellItemMixin:GetName(spellID, itemID)--取得，法术，物
         if name then
             name= '|T'..(C_Item.GetItemIconByID(itemID) or 0)..':0|t'..(name:match('|c........(.+)|r') or name)
         end
-            
+
     end
 
     if name then
@@ -159,7 +161,7 @@ function WoWTools_ItemMixin:GetTooltip(tab)
     local quality= tab.quality
 
     local index= tab.index--取得，指定行，内容 leftText
-    
+
     local text= tab.text--{内容1, 内容2}，取得指定内容，行
     local onlyText= tab.onlyText--仅查指定内容
 

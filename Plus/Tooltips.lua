@@ -751,8 +751,10 @@ function func:Set_Item(tooltip, itemLink, itemID)
     end
 
     local wowNum= 0--WoW 数量    
-    local bag= C_Item.GetItemCount(itemID, false, false, false)--物品数量
-    local bank= C_Item.GetItemCount(itemID, true, false, true) - bag
+    local bag= C_Item.GetItemCount(itemID, false, false, false, false)--物品数量
+    local bank= C_Item.GetItemCount(itemID, true, false, true, false) --bank
+    local net= C_Item.GetItemCount(itemID, false, false, false, true)--战团
+    
 
     if C_Item.IsItemKeystoneByID(itemID) then--挑战
         for guid, info in pairs(e.WoWDate or {}) do
@@ -810,7 +812,7 @@ function func:Set_Item(tooltip, itemLink, itemID)
         end
     end
 
-    tooltip.textRight:SetText(col..e.MK(wowNum, 3)..e.Icon.wow2..' '..e.MK(bank, 3)..'|A:Banker:0:0|a'..' '..e.MK(bag, 3)..'|A:bag-main:0:0|a'..'|r')
+    tooltip.textRight:SetText('|cffffffff'..e.MK(net-bag, 3)..'|A:questlog-questtypeicon-account:0:0|a'..e.MK(wowNum, 3)..e.Icon.wow2..' '..e.MK(bank, 3)..'|A:Banker:0:0|a'..' '..e.MK(bag, 3)..'|A:bag-main:0:0|a')
 
     --setItemCooldown(tooltip, itemID)--物品冷却
 

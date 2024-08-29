@@ -226,8 +226,8 @@ WoWTools_MenuMixin:ToTop(root, {--位于上方
 
 
 
-
-function WoWTools_MenuMixin:OpenJournal(root, tab)--战团藏品
+--战团藏品
+function WoWTools_MenuMixin:OpenJournal(root, tab)
     local sub=root:CreateButton(
         (tab.icon or '|A:common-icon-zoomin:0:0|a')..(tab.name or (e.onlyChinese and '战团藏品' or COLLECTIONS)),
     function(data)
@@ -294,8 +294,8 @@ end
 
 
 
-
-function WoWTools_MenuMixin:GetDragonriding()--驭空术，return 名称，点数
+--驭空术，return 名称，点数
+function WoWTools_MenuMixin:GetDragonriding()
     local dragonridingConfigID = C_Traits.GetConfigIDBySystemID(1);
     if dragonridingConfigID then
         local treeCurrencies = C_Traits.GetTreeCurrencyInfo(dragonridingConfigID, 672, false) or {}
@@ -310,8 +310,8 @@ function WoWTools_MenuMixin:GetDragonriding()--驭空术，return 名称，点�
 
 end
 
-
-function WoWTools_MenuMixin:OpenDragonriding(root)--驭空术
+--驭空术
+function WoWTools_MenuMixin:OpenDragonriding(root)
     local configID = C_Traits.GetConfigIDByTreeID(Constants.MountDynamicFlightConsts.TREE_ID);
     local uiWidgetSetID = configID and C_Traits.GetTraitSystemWidgetSetID(configID) or nil
 

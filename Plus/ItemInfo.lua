@@ -1180,6 +1180,11 @@ local function Init()
     Init_Bag()
 
 
+
+    hooksecurefunc( BankPanelItemButtonMixin, 'Refresh', function (self)
+        e.Set_Item_Info(self, {itemLink=self.itemInfo and self.itemInfo.hyperlink})
+    end)
+
 end
 
 
@@ -1443,10 +1448,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif event=='BANKFRAME_OPENED' then--打开所有银行，背包
-        for i=NUM_TOTAL_EQUIPPED_BAG_SLOTS+1, (NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS), 1 do
-            if not  IsBagOpen(i) then
+        ToggleAllBags()
+        --[[for i=NUM_TOTAL_EQUIPPED_BAG_SLOTS+1, (NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS), 1 do
+            local open= IsBagOpen(i)
+            if open~=nil and not open then
                 OpenBag(i)
             end
-        end
+        end]]
     end
 end)

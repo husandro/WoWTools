@@ -285,7 +285,7 @@ local function set_BagTexture(self)
 end
 
 
-local function set_TabSystem_Button(self)--TabSystemOwner.lua
+function e.set_TabSystem_Button(self)--TabSystemOwner.lua
     for _, tabID in pairs(self:GetTabSet() or {}) do
         local btn= self:GetTabButton(tabID)
         e.Set_Alpha_Frame_Texture(btn, {alpha=min05})
@@ -839,38 +839,6 @@ CompactRaidFrameManager.DisplayFrame.Header.Delineator
 
 
 
-
-     --银行
-     --[[e.Set_NineSlice_Color_Alpha(BankFrame,true)
-
-     
-     hide_Texture(BankFrameMoneyFrameBorderMiddle)
-     hide_Texture(BankFrameMoneyFrameBorderRight)
-     hide_Texture(BankFrameMoneyFrameBorderLeft)
-
-     set_SearchBox(BankItemSearchBox)
-
-     BankFrame:DisableDrawLayer('BACKGROUND')
-     local texture= BankFrame:CreateTexture(nil,'BORDER',nil, 1)
-     texture:SetAtlas('auctionhouse-background-buy-noncommodities-market')
-     texture:SetAllPoints(BankFrame)
-     set_Alpha_Color(texture)
-     hide_Texture(BankFrameBg)
-
-     hooksecurefunc('BankFrameItemButton_Update',function(button)--银行
-         if button.NormalTexture and button.NormalTexture:IsShown() then
-             hide_Texture(button.NormalTexture)
-         end
-         if ReagentBankFrame.numColumn and not ReagentBankFrame.hidexBG then
-             ReagentBankFrame.hidexBG=true
-             for column = 1, 7 do
-                 hide_Texture(ReagentBankFrame["BG"..column])
-             end
-         end
-     end)
-     e.Set_Alpha_Frame_Texture(BankFrameTab1, {isMinAlpha=true})
-     e.Set_Alpha_Frame_Texture(BankFrameTab2, {isMinAlpha=true})
-     e.Set_Alpha_Frame_Texture(BankFrameTab2, {isMinAlpha=true})]]
 
      --背包
      if ContainerFrameCombinedBags and ContainerFrameCombinedBags.NineSlice then
@@ -1503,7 +1471,7 @@ local function Init_Event(arg1)
     elseif arg1=='Blizzard_PlayerSpells' then--天赋和法术书
         set_Alpha_Color(PlayerSpellsFrameBg, min03)
         e.Set_NineSlice_Color_Alpha(PlayerSpellsFrame, min03)
-        set_TabSystem_Button(PlayerSpellsFrame)
+        e.set_TabSystem_Button(PlayerSpellsFrame)
 
         set_Alpha_Color(PlayerSpellsFrame.SpecFrame.Background)--专精
         hide_Texture(PlayerSpellsFrame.SpecFrame.BlackBG)
@@ -1515,7 +1483,7 @@ local function Init_Event(arg1)
 
         set_Alpha_Color(PlayerSpellsFrame.SpellBookFrame.TopBar)--法术书
         set_SearchBox(PlayerSpellsFrame.SpellBookFrame.SearchBox)
-        set_TabSystem_Button(PlayerSpellsFrame.SpellBookFrame)
+        e.set_TabSystem_Button(PlayerSpellsFrame.SpellBookFrame)
 
     
     elseif arg1=='Blizzard_AchievementUI' then--成就
@@ -2191,7 +2159,7 @@ local function Init_Event(arg1)
         e.Set_NineSlice_Color_Alpha(InspectRecipeFrame, true)
         set_Alpha_Color(InspectRecipeFrameBg)
         set_Alpha_Color(InspectRecipeFrame.SchematicForm.MinimalBackground)
-        set_TabSystem_Button(ProfessionsFrame)
+        e.set_TabSystem_Button(ProfessionsFrame)
 
         if ProfessionsFrame.SpecPage then
             hooksecurefunc(ProfessionsFrame.SpecPage, 'UpdateTabs', function(self)

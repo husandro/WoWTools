@@ -1213,6 +1213,7 @@ local function Init_Menu(_, root)
     root:CreateButton(e.onlyChinese and '选项' or OPTIONS, function()
         e.OpenPanelOpting(nil, addName)
     end)
+
     root:CreateButton(e.onlyChinese and '重新加载UI' or RELOADUI, e.Reload)
 end
 
@@ -1273,6 +1274,8 @@ local function Init_Bank_Frame()
     e.Set_Alpha_Frame_Texture(BankFrameTab3, {notAlpha=true})
     BankFrameBg:SetTexture(0)
 
+    e.Set_Alpha_Frame_Texture(ReagentBankFrame.EdgeShadows, {})
+
     --整理材料银行
     ReagentBankFrame.autoSortButton= CreateFrame("Button", nil, ReagentBankFrame, 'BankAutoSortButtonTemplate')
     ReagentBankFrame.autoSortButton:SetScript('OnEnter', function(self)
@@ -1285,6 +1288,52 @@ local function Init_Bank_Frame()
     ReagentBankFrame.autoSortButton:SetScript('OnClick', function()
         C_Container.SortReagentBankBags()
     end)
+
+
+
+
+
+    ReagentBankFrame.EdgeShadows:Hide()
+    BankSlotsFrame.EdgeShadows:Hide()
+    AccountBankPanel.Header.Text:ClearAllPoints()
+    AccountBankPanel.Header.Text:SetPoint('RIGHT', BankItemSearchBox, 'LEFT', -12, 0)
+    e.Set_Alpha_Frame_Texture(BankFrameTab1, {isMinAlpha=true})
+    e.Set_Alpha_Frame_Texture(BankFrameTab2, {isMinAlpha=true})
+    e.Set_Alpha_Frame_Texture(BankFrameTab3, {isMinAlpha=true})
+
+    
+
+     --银行
+     --[[e.Set_NineSlice_Color_Alpha(BankFrame,true)
+
+     
+     hide_Texture(BankFrameMoneyFrameBorderMiddle)
+     hide_Texture(BankFrameMoneyFrameBorderRight)
+     hide_Texture(BankFrameMoneyFrameBorderLeft)
+
+     set_SearchBox(BankItemSearchBox)
+
+     BankFrame:DisableDrawLayer('BACKGROUND')
+     local texture= BankFrame:CreateTexture(nil,'BORDER',nil, 1)
+     texture:SetAtlas('auctionhouse-background-buy-noncommodities-market')
+     texture:SetAllPoints(BankFrame)
+     set_Alpha_Color(texture)
+     hide_Texture(BankFrameBg)
+
+     hooksecurefunc('BankFrameItemButton_Update',function(button)--银行
+         if button.NormalTexture and button.NormalTexture:IsShown() then
+             hide_Texture(button.NormalTexture)
+         end
+         if ReagentBankFrame.numColumn and not ReagentBankFrame.hidexBG then
+             ReagentBankFrame.hidexBG=true
+             for column = 1, 7 do
+                 hide_Texture(ReagentBankFrame["BG"..column])
+             end
+         end
+     end)
+     e.Set_Alpha_Frame_Texture(BankFrameTab1, {isMinAlpha=true})
+     e.Set_Alpha_Frame_Texture(BankFrameTab2, {isMinAlpha=true})
+     e.Set_Alpha_Frame_Texture(BankFrameTab2, {isMinAlpha=true})]]
 
     do
         if Save.allBank then

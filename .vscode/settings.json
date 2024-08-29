@@ -4895,7 +4895,9 @@
         "QUEST_CLASSIFICATION_QUESTLINE_WITH_NAME",
         "QUEST_CLASSIFICATION_RECURRING_WITH_TIME",
         "BONUS_OBJECTIVE_REWARD_FORMAT",
-        "GetColorForCurrencyReward"
+        "GetColorForCurrencyReward",
+        "ContainerFrameUtil_GetShownFrameForID",
+        "BankPanelItemButtonMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
@@ -4919,6 +4921,5 @@
         "undefined-field",
         "redundant-parameter",
         "assign-type-mismatch",
-        "trailing-space"
     ],
 }

@@ -404,10 +404,10 @@ function WoWTools_ToolsButtonMixin:OpenMenu(root, name, name2)--打开, 选项�
         end, {name=name, name2=name2})
 
     sub:SetTooltip(function(tooltip, description)
-        tooltip:AddDoubleLine(self:GetName(), description.name)
+        tooltip:AddDoubleLine(self:GetName(), description.data.name)
         tooltip:AddDoubleLine(
-            e.onlyChinese and '打开选项界面' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, OPTIONS), 'UI'),
-            description.data.name2
+            description.data.name2 or ' ',
+            e.onlyChinese and '打开选项界面' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, OPTIONS), 'UI')
         )
     end)
     return sub
