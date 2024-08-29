@@ -173,7 +173,9 @@ end
 
 local function setAtt(bag, slot, icon, itemID, spellID)--设置属性
     --if UnitAffectingCombat('player') or not UnitIsConnected('player') or UnitInVehicle('player') then
-    if not OpenButton:CanChangeAttribute()  then
+    if OpenButton.isDisabled then
+        return
+    elseif not OpenButton:CanChangeAttribute()  then
         OpenButton.isInCombat=true
         return
     end
@@ -699,6 +701,7 @@ end
 --初始化
 --######
 local function Init()
+
     OpenButton.count=e.Cstr(OpenButton, {size=10, color={r=1,g=1,b=1}})--10, nil, nil, true)
     OpenButton.count:SetPoint('BOTTOMRIGHT')
 
@@ -828,9 +831,13 @@ local function Init()
 
 
 
-    OpenButton:SetScript('OnEvent', function(self, event, arg1)
-        if event=='PLAYER_ENTERING_WORLD'--出进副本
-            or event=='PLAYER_MOUNT_DISPLAY_CHANGED'--上下坐骑
+    OpenButton:SetScript('OnEvent', function(self, event)
+        
+        if event=='PLAYER_ENTERING_WORLD' then--出进副本
+            self:SetShown(not IsInInstance())
+            self:settings()
+
+        elseif event=='PLAYER_MOUNT_DISPLAY_CHANGED'--上下坐骑
             or event=='UNIT_ENTERED_VEHICLE'--车辆
             or event=='UNIT_EXITED_VEHICLE'
 
@@ -875,9 +882,9 @@ local function Init()
     }
 
     function OpenButton:settings()
-        local isDisabled= IsInInstance() or not self:IsVisible()
+        self.isDisabled= IsInInstance() or not self:IsVisible()
 
-        if isDisabled then
+        if self.isDisabled then
             FrameUtil.UnregisterFrameForEvents(self, self.events)
             FrameUtil.UnregisterFrameForEvents(self, self.eventUnit)
         else
@@ -885,28 +892,29 @@ local function Init()
             FrameUtil.RegisterFrameForUnitEvents(self, self.eventUnit, 'player')
         end
 
-        if Save.KEY and not isDisabled then
+        if Save.KEY and not self.isDisabled then
             self:RegisterEvent('PLAYER_MOUNT_DISPLAY_CHANGED')--上下坐骑
         else
             self:UnregisterEvent('PLAYER_MOUNT_DISPLAY_CHANGED')
         end
 
         if self:CanChangeAttribute() then
-            self:set_key(isDisabled)
-            self:SetShown(not isDisabled)
+            self:set_key(self.isDisabled)
+            self:SetShown(not self.isDisabled)
         else
             self.isInCombat=true
         end
     end
 
 --设置捷键
-    function OpenButton:set_key(isDisabled)
+    function OpenButton:set_key()
         if Save.KEY then
             WoWTools_Key_Button:Setup(OpenButton,
-                isDisabled
+                self.isDisabled
                 or not self:IsValid()
                 or IsMounted()
                 or UnitInVehicle('player')
+                or IsInInstance()
             )
         end
     end

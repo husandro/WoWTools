@@ -1,40 +1,40 @@
 local id, e = ...
 local addName, addName2
-local Save_P={
-        NPC={},
-        gossip= true,
 
-        unique= true,--唯一对话
-        gossipOption={},--gossipID= text
-        choice={},--PlayerChoiceFrame
-        movie={},--电影
-        stopMovie=true,--如果已播放，停止播放
+local Save={
+    NPC={},
+    gossip= true,
 
-        quest= true,
-        questOption={},
-        questRewardCheck={},--{任务ID= index}
-        --autoSortQuest=  e.Player.husandro,--仅显示当前地图任务
-        autoSelectReward= e.Player.husandro,--自动选择奖励
-        showAllQuestNum= e.Player.husandro,--显示所有任务数量
+    unique= true,--唯一对话
+    gossipOption={},--gossipID= text
+    choice={},--PlayerChoiceFrame
+    movie={},--电影
+    stopMovie=true,--如果已播放，停止播放
 
-        --scale=1,
-        --point=nil,
+    quest= true,
+    questOption={},
+    questRewardCheck={},--{任务ID= index}
+    --autoSortQuest=  e.Player.husandro,--仅显示当前地图任务
+    autoSelectReward= e.Player.husandro,--自动选择奖励
+    showAllQuestNum= e.Player.husandro,--显示所有任务数量
 
-        --not_Gossip_Text_Icon=true,--自定义，对话，文本
-        Gossip_Text_Icon_Player={--玩家，自定义，对话，文本
-            [55193]={
-                icon='communities-icon-invitemail',
-                name=(e.Player.husandro and '打开邮件' or OPENMAIL),
-                hex='ffff00ff'}
-        },
-        Gossip_Text_Icon_Size=18,
+    --scale=1,
+    --point=nil,
 
-        Gossip_Text_Icon_cnFont=true,--仅限，外文, 修该字体
+    --not_Gossip_Text_Icon=true,--自定义，对话，文本
+    Gossip_Text_Icon_Player={--玩家，自定义，对话，文本
+        [55193]={
+            icon='communities-icon-invitemail',
+            name=(e.Player.husandro and '打开邮件' or OPENMAIL),
+            hex='ffff00ff'}
+    },
+    Gossip_Text_Icon_Size=18,
 
-        delvesDifficultyMaxLevel=true,--地下堡指定难度
+    Gossip_Text_Icon_cnFont=true,--仅限，外文, 修该字体
+
+    delvesDifficultyMaxLevel=true,--地下堡指定难度
 }
 
-local Save=Save_P
 local GossipButton
 local QuestButton
 local Gossip_Text_Icon_Frame--自定义，对话
