@@ -1145,7 +1145,7 @@ local function Init_TrackButton()--添加装备管理框
 
     --提示，没有装上
     function TrackButton:tips_not_equipment()
-        if not IsInInstance() or not self:IsShown() or not IsInGroup() then
+        if not IsInInstance() or not self:IsShown() then-- or not IsInGroup() then
             return
         end
         local equipped
@@ -1160,7 +1160,7 @@ local function Init_TrackButton()--添加装备管理框
                 end
             end
         end
-        e.Set_HelpTips({frame=self, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, show= not equipped and num>0, hideTime=20})
+        e.Set_HelpTips({frame=self, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, show= not equipped and num>0, hideTime=10})
     end
 
     --建立，按钮
