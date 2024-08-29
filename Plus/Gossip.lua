@@ -1,6 +1,6 @@
 local id, e = ...
 local addName, addName2
-local Save={
+local Save_P={
         NPC={},
         gossip= true,
 
@@ -34,7 +34,7 @@ local Save={
         delvesDifficultyMaxLevel=true,--地下堡指定难度
 }
 
-
+local Save=Save_P
 local GossipButton
 local QuestButton
 local Gossip_Text_Icon_Frame--自定义，对话
@@ -159,7 +159,7 @@ local MovieList= {--CinematicsMenu.lua
 	},
 
 	-- Movie sequence 12 = WarWithin
-	
+
 }
 
 
@@ -2209,7 +2209,7 @@ local function Init_Gossip()
                 if StaticPopup1:IsShown() then
                     StaticPopup1:Hide()
                 end
-                print(e.addName, addName, '|n|cnRED_FONT_COLOR:',  format(e.onlyChinese and '|cffff00ff%s|r已被禁用，因为该功能只对暴雪的UI开放。\n你可以禁用这个插件并重新装载UI。' or ADDON_ACTION_FORBIDDEN, arg1 or '', ...))
+                print(e.addName, addName, '|n|cnRED_FONT_COLOR:',  format(e.onlyChinese and '%s|r已被禁用，因为该功能只对暴雪的UI开放。\n你可以禁用这个插件并重新装载UI。' or ADDON_ACTION_FORBIDDEN, arg1 or '', ...))
             end
         end
     end)
@@ -2348,14 +2348,14 @@ local function Init_Gossip()
             if Get_Auto_Instance_Gossip(index, allGossip, true) then
                 C_GossipInfo.SelectOption(index)
                 find=true
-            end            
+            end
         end
 
         if find then
             GossipButton.selectGissipIDTab[index]=true
             print(
                 e.Icon.icon2..WoWTools_UnitMixin:Get_NPC_Name('npc', nil)
-                ..'|T'..(info.overrideIconID or info.icon or 0)..':0|t|cffff00ff'..(name or '')
+                ..'|T'..(info.overrideIconID or info.icon or 0)..':0|t|cff00ff00'..(name or '')
                 --, index
             )
         end
@@ -3264,7 +3264,7 @@ local function Init_Quest()
         end
 
         if not QuestButton.questSelect[questID] then--已选任务, 提示用
-            
+
             C_Timer.After(0.5, function()
                 print(e.Icon.icon2..WoWTools_QuestMixin:GetLink(questID),
                     (complete and '|cffff00ff' or '|cff00ffff')..e.cn(acceptButton:GetText() or '')..'|r'..e.Icon.left,
@@ -3459,7 +3459,7 @@ local function Init_Blizzard_PlayerChoice()
         end
 
         local tab={}
-        local soloOption = (#frame.choiceInfo.options == 1)        
+        local soloOption = (#frame.choiceInfo.options == 1)
         for optionFrame in frame.optionPools:EnumerateActiveByTemplate(frame.optionFrameTemplate) do
             if optionFrame.optionInfo then
                 local enabled= not optionFrame.optionInfo.disabledOption and optionFrame.optionInfo.spellID and optionFrame.optionInfo.spellID>0
@@ -3743,15 +3743,15 @@ local function Init_Blizzard_DelvesDifficultyPicker()
         local num= #self.gossipOptions
         if num==0 then
             return
-        end        
-        
+        end
+
         do
             if Save.delvesDifficultyMaxLevel then
-                C_DelvesUI.RequestPartyEligibilityForDelveTiers(self.gossipOptions[num].gossipOptionID)                
+                C_DelvesUI.RequestPartyEligibilityForDelveTiers(self.gossipOptions[num].gossipOptionID)
             end
         end
 
-        
+
         local btn= self.EnterDelveButton
         if btn and btn:IsEnabled() then
             local name,itemLink
@@ -3764,12 +3764,12 @@ local function Init_Blizzard_DelvesDifficultyPicker()
                 end
                 name=spellLink or e.cn(option.name)
 
-                
+
                 for _, reward in ipairs(option.rewards or {}) do
-                    if reward.rewardType == Enum.GossipOptionRewardType.Item and reward.id then 
+                    if reward.rewardType == Enum.GossipOptionRewardType.Item and reward.id then
                         e.LoadDate({type='item', id=reward.id})
                         local item= C_Item.GetItemNameByID(reward.id)
-                        local link= ItemUtil.GetItemHyperlink(reward.id)                    
+                        local link= ItemUtil.GetItemHyperlink(reward.id)
                         itemLink= (itemLink or '    ')
                             ..(
                                 e.cn(link or item, {itemID=reward.id, itemLink=link, isName=true})
@@ -3786,12 +3786,12 @@ local function Init_Blizzard_DelvesDifficultyPicker()
             btn:Click()
             print('    |cff9e9e9e|A:NPE_Icon:0:0|aAlt', e.onlyChinese and '取消' or CANCEL)
         end
-        
+
     end)
 
-    
-    
-    
+
+
+
     Menu.ModifyMenu("MENU_DELVES_DIFFICULTY", function(_, root)
 		local options = DelvesDifficultyPickerFrame:GetOptions();
 		if not options then
@@ -3925,15 +3925,15 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED"  then
         if arg1 == id then
-            
+
 
             if WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ENABLE_DIALOG, QUESTS_LABEL)] then
                 Save= WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ENABLE_DIALOG, QUESTS_LABEL)]
                 WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ENABLE_DIALOG, QUESTS_LABEL)]=nil
             else
-                Save= WoWToolsSave['Plus_Gossip'] or Save    
+                Save= WoWToolsSave['Plus_Gossip'] or Save
             end
-            
+
             addName= '|A:SpecDial_LastPip_BorderGlow:0:0|a'..(e.onlyChinese and '闲谈选项' or GOSSIP_OPTIONS)
             addName2= '|A:UI-HUD-UnitFrame-Target-PortraitOn-Boss-Quest:0:0|a'..(e.onlyChinese and '任务选项' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, QUESTS_LABEL, SETTINGS_TITLE))
              --添加控制面板
@@ -3998,6 +3998,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             WoWToolsSave['Plus_Gossip']= Save
+        else
+            --不清除，内容
+            Save_P.movie= Save.movie
+            Save_P.Gossip_Text_Icon_Player= Save.Gossip_Text_Icon_Player
+            WoWToolsSave['Plus_Gossip']=Save.P.movie
         end
 
 
