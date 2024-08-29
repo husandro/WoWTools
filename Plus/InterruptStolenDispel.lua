@@ -91,12 +91,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             e.AddPanel_Check({
-                name= '|A:nameplates-holypower2-on:0:0|a'..(e.onlyChinese and '断驱散' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INTERRUPTS, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISPELS, ACTION_SPELL_STOLEN))),
+                name= e.onlyChinese and '团队' or RAID,
                 GetValue= function() return not Save.disabledInRaid end,
                 SetValue= function()
                     Save.disabledInRaid = not Save.disabledInRaid and true or nil
                     self:set_event()
-                end
+                end,
+                tooltip=e.onlyChinese and '掉帧' or 'Dropped Frames'
             }, root)
 
             if not Save.disabled then
