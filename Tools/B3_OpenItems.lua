@@ -171,32 +171,6 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
---QUEST_REPUTATION_REWARD_TOOLTIP = "在%2$s中的声望提高%1$d点";
-
-
-
-
-
-
-
-
-
-
-
-
 local function setAtt(bag, slot, icon, itemID, spellID)--设置属性
     --if UnitAffectingCombat('player') or not UnitIsConnected('player') or UnitInVehicle('player') then
     if not OpenButton:CanChangeAttribute()  then
@@ -673,18 +647,6 @@ local OptionsList={{
 --打开, 选项界面，菜单
     sub= WoWTools_ToolsButtonMixin:OpenMenu(root, addName, Save.KEY)
 
---[[自动隐藏
-    sub2= sub:CreateCheckbox(e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE),
-    function()
-        return Save.noItemHide
-    end, function()
-        Save.noItemHide= not Save.noItemHide and true or nil
-        get_Items()
-    end)
-    sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine(e.onlyChinese and '未发现物品' or BROWSE_NO_RESULTS)
-    end)]]
-
 --设置捷键
     WoWTools_Key_Button:SetMenu(sub, {
         name=addName,
@@ -895,13 +857,6 @@ local function Init()
 
 
 
-    --[[
-    FrameUtil.RegisterFrameForEvents(self, table)
-FrameUtil.RegisterFrameForUnitEvents(frame, events, ...)
-FrameUtil.UnregisterFrameForEvents(self, table)
-]]
-
-
     OpenButton:RegisterEvent('PLAYER_ENTERING_WORLD')
     OpenButton.events={
         'BAG_UPDATE_COOLDOWN',
@@ -1011,129 +966,3 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
     end
 end)
-
-
-
-    --[[    
-    function OpenButton:set_shown(bool)
-        if not self:CanChangeAttribute() then
-            return
-        end
-        if bool~=nil then
-            self:SetShown(bool)
-        else
-            self:SetShown(self:IsValid())
-        end
-    end
-
-   
-    
-OpenButton:RegisterEvent('CHALLENGE_MODE_START')
-    OpenButton:RegisterEvent('PLAYER_ENTERING_WORLD')   
-
-    function OpenButton:set_event()
-        if IsInInstance() then
-            -- self:UnregisterEvent('BAG_UPDATE')
-            self:UnregisterEvent('BAG_UPDATE_DELAYED')
-            self:UnregisterEvent('PLAYER_REGEN_DISABLED')
-            self:UnregisterEvent('PLAYER_REGEN_ENABLED')
-            self:set_shown(false)
-            self:RegisterEvent('BAG_UPDATE_COOLDOWN')
-            setKEY(true)
-         else
-            self:RegisterEvent('BAG_UPDATE_DELAYED')
-            if Save.KEY then
-                self:RegisterEvent('PLAYER_REGEN_DISABLED')
-                self:RegisterEvent('PLAYER_REGEN_ENABLED')
-            else
-                self:UnregisterEvent('PLAYER_REGEN_DISABLED')
-                self:UnregisterEvent('PLAYER_REGEN_ENABLED')
-            end
-            self:RegisterEvent('BAG_UPDATE_COOLDOWN')
-            get_Items()
-            setKEY()
-         end
-
-        if self:IsVisible() then
-            self:RegisterEvent('BAG_UPDATE_COOLDOWN')
-        else
-            self:UnregisterEvent('BAG_UPDATE_COOLDOWN')
-        end
-
-        
-    end
-
-
-    OpenButton:SetScript('OnEvent', function(self, event)
-        if event=='PLAYER_ENTERING_WORLD' or event=='CHALLENGE_MODE_START' then
-            self:set_event()--注册， 事件
-
-        elseif event=='BAG_UPDATE_DELAYED' then-- or event=='BAG_UPDATE' then
-                get_Items()
-
-        elseif event=='PLAYER_REGEN_DISABLED' then            
-            if Save.KEY then
-                ClearOverrideBindings(self)
-            end
-            if Save.noItemHide then
-                self:SetShown(false)
-            end
-
-        elseif event=='PLAYER_REGEN_ENABLED' then
-            if Combat then
-                get_Items()
-            else
-                self:SetShown(self:IsValid() or not Save.noItemHide)
-            end
-            if Save.KEY then
-                setKEY()
-            end
-        elseif event=='BAG_UPDATE_COOLDOWN' then
-            self:set_cooldown()--冷却条
-        end
-    end)]]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- --[[option=function(Category, _, initializer)
-                    e.AddPanel_Check({
-                        category= Category,
-                        name= e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE),
-                        tooltip= addName,
-                        GetValue= function() return Save.noItemHide end,
-                        SetValue= function()
-                            Save.noItemHide= not Save.noItemHide and true or nil
-                            get_Items()
-                        end
-                    }, initializer)
-                end,]]
-
-
