@@ -347,7 +347,7 @@ local function Set_TrackButton_Text()
 				Set_TrackButton_Pushed(true, self.text)--提示
 			end)
 			btn:SetScript("OnMouseDown", function(self)
-				if self.currencyID then					
+				if self.currencyID then
 					e.Chat(C_CurrencyInfo.GetCurrencyLink(self.currencyID), nil, true)
 					return
 				end
@@ -969,7 +969,7 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 		return
 	end
 
-	
+
 
 	local currencyID= info.currencyID
 	if not frame.check then
@@ -1025,7 +1025,7 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 		frame.check:SetAlpha(Save.tokens[currencyID] and 1 or 0.5)
 	end
 
-	
+
 	if isMax then
 		frame.Content.Count:SetTextColor(1,0,0)
 	elseif canWeek or canEarned or canQuantity then
@@ -1046,12 +1046,14 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 	if frame.Content.Name then
 		if info.isAccountTransferable then
 			frame.Content.Name:SetTextColor(0, 0.8, 1)
+		elseif isMax then
+			frame.Content.Name:SetTextColor(1, 0, 0)
 		else
 			local r, g, b= C_Item.GetItemQualityColor(info and info.quality or 1)
-			frame.Content.Name:SetTextColor(r or 1, g or 1, b or 1)	
+			frame.Content.Name:SetTextColor(r or 1, g or 1, b or 1)
 		end
 	end
-	
+
 	--[[if frame.Name then
 		local r, g, b= C_Item.GetItemQualityColor(info and info.quality or 1)
 		frame.Content.Name:SetTextColor(r or 1, g or 1, b or 1)
@@ -1153,7 +1155,7 @@ local function InitMenu(_, level, menuList)--主菜单
 						if curInfo then
 							icon= curInfo.iconFileID
 							text= C_CurrencyInfo.GetCurrencyLink(n) or curInfo.name or text
-							
+
 							if Save.tokens[n] then
 								text= text..'|n'..(e.onlyChinese and '更新' or UPDATE)
 							end
@@ -1594,10 +1596,10 @@ local function Init()
 
 	Init_Currency_Transfer()--货币，转移
 
-	
+
 	C_Timer.After(4, function()
 		Init_TrackButton()
-		
+
 			hooksecurefunc(TokenFrame, 'Update', function(self)
 				set_ItemInteractionFrame_Currency(self)--套装,转换,货币
 				Set_TrackButton_Text()
@@ -1611,12 +1613,12 @@ local function Init()
 				end
 			end)
 
-		
+
 
 		if not Save.hideCurrencyMax then
 			Button:currency_Max()--已达到资源上限
 			Button:set_Event()--已达到资源上限
-		end		
+		end
 	end)
 end
 
@@ -1651,12 +1653,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 			else
 				Save= WoWToolsSave['Currency2'] or Save
 			end
-            
+
 			addName = '|A:bags-junkcoin:0:0|a'..(e.onlyChinese and '货币' or TOKENS)
-			
+
 			--添加控制面板
 			Initializer= e.AddPanel_Check({
-				name= addName,				
+				name= addName,
 				GetValue= function() return not Save.disabled end,
 				SetValue= function()
 					Save.disabled= not Save.disabled and true or nil
@@ -1670,7 +1672,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 			else
 				Init()
             end
-            
+
 
 		elseif arg1=='Blizzard_ItemInteractionUI' then
             hooksecurefunc(ItemInteractionFrame, 'SetupChargeCurrency', set_ItemInteractionFrame_Currency)
