@@ -3,7 +3,7 @@ local addName= ADVENTURE_JOURNAL
 local Save={
     wowBossKill={},
     loot= {[e.Player.class]= {}},
-    favorites={},
+    favorites={},--副本收藏
 }
 local panel=CreateFrame("Frame")
 local Button
@@ -874,6 +874,7 @@ local function Init_EncounterJournal()--冒险指南界面
 
 
                 if not button.Favorites2 then--收藏
+                    button.Favorites2= button:CreateTexture(nil, 'OVERLAY')
                     
                 end
             end
