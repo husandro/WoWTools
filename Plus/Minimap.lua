@@ -2763,6 +2763,7 @@ local function Init_InstanceDifficulty()--副本，难图，指示
     if Save.disabledInstanceDifficulty or not btn.Instance then
         return
     end
+    
     e.Set_Label_Texture_Color(btn.Instance.Border, {type='Texture'})
     e.Set_Label_Texture_Color(btn.Guild.Border, {type='Texture'})
     e.Set_Label_Texture_Color(btn.ChallengeMode.Border, {type='Texture'})
@@ -2802,8 +2803,9 @@ local function Init_InstanceDifficulty()--副本，难图，指示
         self.labelType:SetText(name and e.WA_Utf8Sub(name, 2, 6) or '')
         self.tips= tips
     end)
-
+print('bb')
     btn:HookScript('OnEnter', function(self)
+        print('aaa')
         if not IsInInstance() then
             return
         end

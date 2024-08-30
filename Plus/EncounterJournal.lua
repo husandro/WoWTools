@@ -3,6 +3,7 @@ local addName= ADVENTURE_JOURNAL
 local Save={
     wowBossKill={},
     loot= {[e.Player.class]= {}},
+    favorites={},
 }
 local panel=CreateFrame("Frame")
 local Button
@@ -868,6 +869,13 @@ local function Init_EncounterJournal()--冒险指南界面
                     button.KeyTexture:SetShown(false)
                     button.KeyTexture.label:SetText('')
                 end
+
+
+
+
+                if not button.Favorites2 then--收藏
+                    
+                end
             end
        end
     end)
@@ -1656,7 +1664,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave[addName] or Save
             Save.loot= Save.loot or {}
             Save.loot[e.Player.class]= Save.loot[e.Player.class] or {}
-
+            Save.favorites=Save.favorites or {}
+            
             --添加控制面板
             Initializer= e.AddPanel_Check({
                 name= '|A:UI-HUD-MicroMenu-AdventureGuide-Mouseover:0:0|a'..(e.onlyChinese and '冒险指南' or addName),
