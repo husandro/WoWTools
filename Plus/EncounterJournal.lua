@@ -1,5 +1,5 @@
 local id, e = ...
-local addName= ADVENTURE_JOURNAL
+local addName= e.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL
 local Save={
     wowBossKill={},
     loot= {[e.Player.class]= {}},
@@ -874,9 +874,6 @@ local function Init_EncounterJournal()--冒险指南界面
 
 
                 if not button.Favorites2 then--收藏
-                    --button.Favorites2= button:CreateTexture(nil, 'OVERLAY', nil, 7)
-                    --button.Favorites2:SetSize(25,25)
-                    --button.Favorites2:SetAtlas('PetJournal-FavoritesIcon')
                     button.Favorites2=e.Cbtn(button, {atlas='PetJournal-FavoritesIcon', size=25, pushe=true})
                     button.Favorites2:SetPoint('TOPLEFT', -8, 8)
                     button.Favorites2:EnableMouse(true)
@@ -888,24 +885,44 @@ local function Init_EncounterJournal()--冒险指南界面
                         e.tips:SetOwner(self, "ANCHOR_LEFT")
                         e.tips:ClearLines()
                         e.tips:AddDoubleLine(e.addName, addName)
-                        e.tips:AddDoubleLine(' ', '|A:PetJournal-FavoritesIcon:0:0|a'..(e.onlyChinese and '收藏' or FAVORITES))
+                        e.tips:AddLine(' ')
+                        e.tips:AddDoubleLine((e.onlyChinese and '收藏' or FAVORITES)..'|A:PetJournal-FavoritesIcon:0:0|a', e.Icon.left)
+                        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
                         e.tips:Show()
                         self:settings(true)
                     end)
-                    button.Favorites2:SetScript('OnClick', function(self)
-                        if IsControlKeyDown() then
-                            Save.favorites={}
-                            print(e.addName, addName, e.onlyChinese and '全部清除' or CLEAR_ALL)
-                        else
-                            local insID= self:GetParent().instanceID
-                            if insID then
-                                local isSaved= self:get_save()
-                                Save.favorites[e.Player.guid][insID]= not isSaved and true or nil
-                            end
+                    button.Favorites2:SetScript('OnClick', function(self, d)
+                        if d=='RightButton' then
+                            MenuUtil.CreateContextMenu(self, function(f, root)
+                                local sub=root:CreateCheckbox(e.onlyChinese and '收藏' or FAVORITES, function()
+                                    return f:get_save()
+                                end, function()
+                                    self:setup()
+                                end)
+                                sub:SetTooltip(function(tooltip)
+                                    tooltip:AddLine(e.addName)
+                                    tooltip:AddLine(addName)
+                                end)
+                                root:CreateDivider()
+                                root:CreateButton(e.onlyChinese and '全部清除' or CLEAR_ALL, function()
+                                    Save.favorites={}
+                                    e.call(EncounterJournal_ListInstances)
+                                end)
+                                root:CreateTitle(addName)
+                            end)
+                        elseif d=='LeftButton' then
+                            self:setup()
                         end
-                        self:settings()
                     end)
 
+                    function button.Favorites2:setup()
+                        local isSaved= self:get_save()
+                        local insID= self:GetParent().instanceID
+                        if insID then
+                            Save.favorites[e.Player.guid][insID]= not isSaved and true or nil
+                            self:settings()
+                        end
+                    end
                     function button.Favorites2:settings(isEnter)
                         local isSaved= self:get_save()
                         self:SetAlpha((isEnter or isSaved) and 1 or 0)
@@ -965,10 +982,9 @@ local function Init_EncounterJournal()--冒险指南界面
                     for _,  specID in pairs(specTable) do
                         local _, name,_, icon2, _, classFile= GetSpecializationInfoByID(specID)
                         if icon2 and classFile then
-                            icon2='|T'..icon2..':0|t'
-                            specA = specA..((class and class~=classFile) and '  ' or '')..icon2
+                            specA = specA..((class and class~=classFile) and '  ' or '')..'|T'..icon2..':0|t'
                             class=classFile
-                            tips= tips..'|n'..icon2..e.cn(name)
+                            tips= tips..'|n|T'..icon2..':0|t'..e.cn(name)
                         end
                     end
                     if specA~='' then
@@ -1704,15 +1720,21 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            Save= WoWToolsSave[addName] or Save
-            Save.loot= Save.loot or {}
-            Save.loot[e.Player.class]= Save.loot[e.Player.class] or {}
-            Save.favorites=Save.favorites or {}
+            if WoWToolsSave[ADVENTURE_JOURNAL] then
+                Save= WoWToolsSave[ADVENTURE_JOURNAL]
+                WoWToolsSave[ADVENTURE_JOURNAL]= nil
+                Save.loot= Save.loot or {}
+                Save.loot[e.Player.class]= Save.loot[e.Player.class] or {}
+                Save.favorites=Save.favorites or {}
+            else
+                Save= WoWToolsSave['Adventure_Journal']
+            end
+
+            addName= '|A:UI-HUD-MicroMenu-AdventureGuide-Mouseover:0:0|a'..(e.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL)
 
             --添加控制面板
             Initializer= e.AddPanel_Check({
-                name= '|A:UI-HUD-MicroMenu-AdventureGuide-Mouseover:0:0|a'..(e.onlyChinese and '冒险指南' or addName),
-                --ooltip= Initializer:GetName(),
+                name= addName,
                 GetValue= function() return not Save.disabled end,
                 SetValue= function()
                     Save.disabled= not Save.disabled and true or nil
@@ -1744,7 +1766,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            WoWToolsSave[addName]=Save
+            WoWToolsSave['Adventure_Journal']=Save
         end
 
     elseif event=='UPDATE_INSTANCE_INFO' then
