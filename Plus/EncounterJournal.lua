@@ -893,15 +893,26 @@ local function Init_EncounterJournal()--冒险指南界面
                         self:settings(true)
                     end)
                     button.Favorites2:SetScript('OnClick', function(self)
-                        local insID= self:GetParent().instanceID
-                        if insID then
-                            Save.favorites[insID]= not Save.favorites[insID] and true or nil
-                            self:settings()
+                        if IsControlKeyDown() then
+                            Save.favorites={}
+                            print(e.addName, addName, e.onlyChinese and '全部清除' or CLEAR_ALL)
+                        else
+                            local insID= self:GetParent().instanceID
+                            if insID then
+                                local isSaved= self:get_save()
+                                Save.favorites[e.Player.guid][insID]= not isSaved and true or nil
+                            end
                         end
+                        self:settings()
                     end)
 
                     function button.Favorites2:settings(isEnter)
-                        self:SetAlpha((isEnter or Save.favorites[self:GetParent().instanceID]) and 1 or 0)
+                        local isSaved= self:get_save()
+                        self:SetAlpha((isEnter or isSaved) and 1 or 0)
+                    end
+                    function button.Favorites2:get_save()
+                        Save.favorites[e.Player.guid]= Save.favorites[e.Player.guid] or {}
+                        return Save.favorites[e.Player.guid][self:GetParent().instanceID]
                     end
                 end
             end
