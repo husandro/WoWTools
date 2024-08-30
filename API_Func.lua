@@ -127,7 +127,8 @@ e.ShowColorPicker(valueR, valueG, valueB, valueA, swatchFunc, cancelFunc)
 
 --取得中文 
 function e.cn(text, tab)--{gossipOptionID=, questID=}
-    return e.onlyChinese and WoW_Tools_Chinese_CN and WoW_Tools_Chinese_CN(text, tab) or text
+    return WoWTools_Chinese_Mixin and WoWTools_Chinese_Mixin(text, tab) or text
+    
 end
 
 

@@ -4897,7 +4897,8 @@
         "BONUS_OBJECTIVE_REWARD_FORMAT",
         "GetColorForCurrencyReward",
         "ContainerFrameUtil_GetShownFrameForID",
-        "BankPanelItemButtonMixin"
+        "BankPanelItemButtonMixin",
+        "WoWTools_Chinese_Mixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
