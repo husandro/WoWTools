@@ -814,7 +814,7 @@ local function Init_EncounterJournal()--冒险指南界面
                             local cnName=e.cn(name, true)
                             e.tips:AddDoubleLine(cnName or name, cnName and name..' ')
                         end
-                        
+
                         e.tips:AddDoubleLine('journalInstanceID: |cnGREEN_FONT_COLOR:'..self.instanceID, loreImage and '|T'..loreImage..':0|t'..loreImage)
                         e.tips:AddDoubleLine(
                             dungeonAreaMapID and dungeonAreaMapID>0 and 'dungeonAreaMapID |cnGREEN_FONT_COLOR:'..dungeonAreaMapID or ' ',
@@ -826,7 +826,7 @@ local function Init_EncounterJournal()--冒险指南界面
                         e.tips:AddLine(' ')
                         if encounterJournal_ListInstances_set_Instance(self, true) then--界面,击杀,数据
                             e.tips:AddLine(' ')
-                        end                        
+                        end
                         e.tips:AddDoubleLine(e.addName, Initializer:GetName())
                         e.tips:Show()
                     end)
@@ -839,10 +839,10 @@ local function Init_EncounterJournal()--冒险指南界面
                 --当前, KEY地图,ID
                 local currentChallengeMapID= C_MythicPlus.GetOwnedKeystoneChallengeMapID()
                 local keyStoneLevel = C_MythicPlus.GetOwnedKeystoneLevel()--当前KEY，等级
-                if currentChallengeMapID and button.mapChallengeModeID==currentChallengeMapID then
+                --if currentChallengeMapID and button.mapChallengeModeID==currentChallengeMapID then
                     if not button.KeyTexture then
                         button.KeyTexture= button:CreateTexture(nil, 'OVERLAY')
-                        button.KeyTexture:SetPoint('TOPLEFT', 2,0)
+                        button.KeyTexture:SetPoint('TOPLEFT', -4, 0)
                         button.KeyTexture:SetSize(26,26)
                         button.KeyTexture:SetAtlas('common-icon-checkmark')
                         button.KeyTexture:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) self.label:SetAlpha(1) end)
@@ -861,22 +861,53 @@ local function Init_EncounterJournal()--冒险指南界面
                             self.label:SetAlpha(0.3)
                         end)
                         button.KeyTexture.label=e.Cstr(button)
-                        button.KeyTexture.label:SetPoint('TOP', button.KeyTexture, -2, 0)
+                        button.KeyTexture.label:SetPoint('TOP', button.KeyTexture, -2, -8)
                     end
                     button.KeyTexture:SetShown(true)
-                    button.KeyTexture.label:SetText(keyStoneLevel or '')
-                elseif button.KeyTexture then
+                    button.KeyTexture.label:SetText(keyStoneLevel or '12')
+               --[[ elseif button.KeyTexture then
                     button.KeyTexture:SetShown(false)
                     button.KeyTexture.label:SetText('')
-                end
+                end]]
 
 
 
 
                 if not button.Favorites2 then--收藏
-                    button.Favorites2= button:CreateTexture(nil, 'OVERLAY')
-                    
+                    --button.Favorites2= button:CreateTexture(nil, 'OVERLAY', nil, 7)
+                    --button.Favorites2:SetSize(25,25)
+                    --button.Favorites2:SetAtlas('PetJournal-FavoritesIcon')
+                    button.Favorites2=e.Cbtn(button, {atlas='PetJournal-FavoritesIcon', size=25, pushe=true})
+                    button.Favorites2:SetPoint('TOPLEFT', -8, 8)
+                    button.Favorites2:EnableMouse(true)
+                    button.Favorites2:SetScript('OnLeave', function(self)
+                        self:settings(false)
+                        e.tips:Hide()
+                    end)
+                    button.Favorites2:SetScript('OnEnter', function(self)
+                        e.tips:SetOwner(self, "ANCHOR_LEFT")
+                        e.tips:ClearLines()
+                        e.tips:AddDoubleLine(e.addName, addName)
+                        e.tips:AddDoubleLine(' ', '|A:PetJournal-FavoritesIcon:0:0|a'..(e.onlyChinese and '收藏' or FAVORITES))
+                        e.tips:Show()
+                        self:settings(true)
+                    end)
+                    button.Favorites2:SetScript('OnClick', function(self)
+                        local insID= self:GetParent().instanceID
+                        if insID then
+                            Save.favorites[insID]= not Save.favorites[insID] and true or nil
+                            self:settings()
+                        end
+                    end)
+
+                    function button.Favorites2:settings(isEnter)
+                        self:SetAlpha((isEnter or Save.favorites[self:GetParent().instanceID]) and 1 or 0)
+                    end
                 end
+            end
+            if button.Favorites2 then
+                button.Favorites2:settings()
+                button.Favorites2:SetShown(button.instanceID)
             end
        end
     end)
@@ -962,7 +993,7 @@ local function Init_EncounterJournal()--冒险指南界面
             upText= dateInfo.text[ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT]
             if classText then
                 if WoW_Tools_Chinese_CN then--汉化
-                    
+
                     classText= string.gsub(classText..', ', '(.-), ', function(a)
                         local b= e.cn(a)
                         if b then
@@ -972,7 +1003,7 @@ local function Init_EncounterJournal()--冒险指南界面
                 end
                 local className= UnitClass('player')
                 local locaClass= className and not classText:find(className) or dateInfo.red
-                
+
                 if locaClass then
                     classText =  '|cff9e9e9e'..classText..'|r'
                 end
@@ -1666,7 +1697,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save.loot= Save.loot or {}
             Save.loot[e.Player.class]= Save.loot[e.Player.class] or {}
             Save.favorites=Save.favorites or {}
-            
+
             --添加控制面板
             Initializer= e.AddPanel_Check({
                 name= '|A:UI-HUD-MicroMenu-AdventureGuide-Mouseover:0:0|a'..(e.onlyChinese and '冒险指南' or addName),
