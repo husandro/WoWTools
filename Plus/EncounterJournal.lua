@@ -839,7 +839,7 @@ local function Init_EncounterJournal()--冒险指南界面
                 --当前, KEY地图,ID
                 local currentChallengeMapID= C_MythicPlus.GetOwnedKeystoneChallengeMapID()
                 local keyStoneLevel = C_MythicPlus.GetOwnedKeystoneLevel()--当前KEY，等级
-                --if currentChallengeMapID and button.mapChallengeModeID==currentChallengeMapID then
+                if currentChallengeMapID and button.mapChallengeModeID==currentChallengeMapID then
                     if not button.KeyTexture then
                         button.KeyTexture= button:CreateTexture(nil, 'OVERLAY')
                         button.KeyTexture:SetPoint('TOPLEFT', -4, 0)
@@ -860,15 +860,15 @@ local function Init_EncounterJournal()--冒险指南界面
                             self:SetAlpha(0.3)
                             self.label:SetAlpha(0.3)
                         end)
-                        button.KeyTexture.label=e.Cstr(button)
+                        button.KeyTexture.label=e.Cstr(button, {r=1, g=1, b=1})
                         button.KeyTexture.label:SetPoint('TOP', button.KeyTexture, -2, -8)
                     end
                     button.KeyTexture:SetShown(true)
-                    button.KeyTexture.label:SetText(keyStoneLevel or '12')
-               --[[ elseif button.KeyTexture then
+                    button.KeyTexture.label:SetText(keyStoneLevel or '')
+                elseif button.KeyTexture then
                     button.KeyTexture:SetShown(false)
                     button.KeyTexture.label:SetText('')
-                end]]
+                end
 
 
 
@@ -886,8 +886,8 @@ local function Init_EncounterJournal()--冒险指南界面
                         e.tips:ClearLines()
                         e.tips:AddDoubleLine(e.addName, addName)
                         e.tips:AddLine(' ')
-                        e.tips:AddDoubleLine((e.onlyChinese and '收藏' or FAVORITES)..'|A:PetJournal-FavoritesIcon:0:0|a', e.Icon.left)
-                        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
+                        e.tips:AddDoubleLine('|A:PetJournal-FavoritesIcon:0:0|a'..(e.onlyChinese and '收藏' or FAVORITES), e.Icon.left)
+                        e.tips:AddDoubleLine('|A:dressingroom-button-appearancelist-up:0:0|a'..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), e.Icon.right)
                         e.tips:Show()
                         self:settings(true)
                     end)
