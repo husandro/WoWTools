@@ -352,7 +352,7 @@ local function set_Scale_Size(frame, tab)
         if IsShiftKeyDown() then
             if d=='RightButton' then
                 if not Category then
-                    e.OpenPanelOpting()    
+                    e.OpenPanelOpting()
                 end
                 e.OpenPanelOpting(Category)--打开，选项
 
@@ -2308,8 +2308,8 @@ local function Init_Move()
         ReputationFrame.ScrollBox:SetPoint('BOTTOMRIGHT', -22, 2)
 
         TokenFrame.ScrollBox:ClearAllPoints()
-        TokenFrame.ScrollBox:SetPoint('TOPLEFT', 4, -58)
-        TokenFrame.ScrollBox:SetPoint('BOTTOMRIGHT', -22, 2)
+        TokenFrame.ScrollBox:SetPoint('TOPLEFT', TokenFrame, 4, -58)
+        TokenFrame.ScrollBox:SetPoint('BOTTOMRIGHT', TokenFrame , -22, 2)
 
         hooksecurefunc(CharacterFrame, 'UpdateSize', function(self)
             local size
@@ -2346,7 +2346,7 @@ local function Init_Move()
         Save.size['CharacterFrameExpanded']=nil
         Save.size['CharacterFrameCollapse']=nil
         if find then
-            CharacterFrame:SetHeight(424)  
+            CharacterFrame:SetHeight(424)
         end
         CharacterFrame:UpdateSize()
     end, sizeRestTooltipColorFunc=function(self)
@@ -2955,7 +2955,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save.alpha= Save.alpha or 0.5
 
             Category, Layout= e.AddPanel_Sub_Category({name= '|TInterface\\Cursor\\UI-Cursor-Move:0|t'..addName})
-            
+
             e.AddPanel_Check({
                 name= e.onlyChinese and '启用' or ENABLE,
                 tooltip= e.cn(addName),

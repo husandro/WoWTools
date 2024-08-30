@@ -1043,12 +1043,22 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 		frame.percentText:SetText(percent and format('%d%%', percent) or '')
 	end
 
-	if frame.Name then
+	if frame.Content.Name then
+		if info.isAccountTransferable then
+			frame.Content.Name:SetTextColor(0, 0.8, 1)
+		else
+			local r, g, b= C_Item.GetItemQualityColor(info and info.quality or 1)
+			frame.Content.Name:SetTextColor(r or 1, g or 1, b or 1)	
+		end
+	end
+	
+	--[[if frame.Name then
 		local r, g, b= C_Item.GetItemQualityColor(info and info.quality or 1)
 		frame.Content.Name:SetTextColor(r or 1, g or 1, b or 1)
-	end
+	end]]
 
-	frame.Content.AccountWideIcon:SetShown(info.isAccountTransferable)
+
+	--frame.Content.AccountWideIcon:SetShown(info.isAccountTransferable)
 end
 
 
