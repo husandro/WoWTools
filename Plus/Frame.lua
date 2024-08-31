@@ -1503,9 +1503,9 @@ local function setAddLoad(arg1)
     elseif arg1=='Blizzard_OrderHallUI' then
         e.Set_Move_Frame(OrderHallTalentFrame)
 
-    elseif arg1=='Blizzard_GenericTraitUI' then--欲龙术
+    --[[elseif arg1=='Blizzard_GenericTraitUI' then
         e.Set_Move_Frame(GenericTraitFrame)
-        e.Set_Move_Frame(GenericTraitFrame.ButtonsParent, {frame=GenericTraitFrame})
+        e.Set_Move_Frame(GenericTraitFrame.ButtonsParent, {frame=GenericTraitFrame})]]
 
     elseif arg1=='Blizzard_WeeklyRewards' then--'Blizzard_EventTrace' then--周奖励面板
         e.Set_Move_Frame(WeeklyRewardsFrame)
@@ -2767,7 +2767,9 @@ local function Init_Move()
        end)
     end)
 
-
+    e.Set_Move_Frame(GenericTraitFrame)
+    e.Set_Move_Frame(GenericTraitFrame.ButtonsParent, {frame=GenericTraitFrame})
+    
     --[[C_Timer.After(4, function()
         for text, _ in pairs(UIPanelWindows) do
             local frame=_G[text]

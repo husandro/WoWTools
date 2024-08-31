@@ -128,7 +128,6 @@ e.ShowColorPicker(valueR, valueG, valueB, valueA, swatchFunc, cancelFunc)
 --取得中文 
 function e.cn(text, tab)--{gossipOptionID=, questID=}
     return WoWTools_Chinese_Mixin and WoWTools_Chinese_Mixin(text, tab) or text
-    
 end
 
 
@@ -2236,13 +2235,14 @@ function e.GetDurabiliy_OnEnter()--耐久度, 提示
     }
 
     local num, cur2, max2= 0, 0, 0
-    local isRepair, cur, max, text, _, icon
+    local isRepair, cur, max, text, _, icon, a, b
 
+    
     for index, tab in pairs(tabSlot) do
 
-        local a = GetInventoryItemTexture('player', tab[1])
+        a = GetInventoryItemTexture('player', tab[1])
         a = a and '|T'..a..':0|t'
-        local b = GetInventoryItemTexture('player', tab[2])
+        b = GetInventoryItemTexture('player', tab[2])
         b = b and '|T'..b..':0|t'
 
         if not a or tab[1]==4 or tab[1]==19 then
