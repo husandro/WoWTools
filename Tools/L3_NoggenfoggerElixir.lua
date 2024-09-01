@@ -8,7 +8,7 @@ local Save={
     }
 }
 local button--button.itemID=8529
-local panel= CreateFrame("Frame")
+
 
 local function setAura()--光环取消
     if UnitAffectingCombat('player') then
@@ -195,15 +195,44 @@ local function Init()
    if Save.KEY then set_KEY() end--设置捷键
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --###########
 --加载保存数据
 --###########
+local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
             if not e.Player.husandro and (e.Is_Timerunning or C_Item.GetItemCount(8529)==0) then--没有时,不加载
-                self:UnregisterAllEvents()
+                self:UnregisterEvent('ADDON_LOADED')
                 return
             end
             
@@ -217,17 +246,17 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
                 button.itemID=8529
 
-                panel:RegisterEvent("PLAYER_REGEN_ENABLED")
-                panel:RegisterEvent("PLAYER_REGEN_DISABLED")
-                panel:RegisterEvent('BAG_UPDATE_DELAYED')
-                panel:RegisterUnitEvent("UNIT_AURA", 'player')
-                panel:RegisterEvent('BAG_UPDATE_COOLDOWN')
-                panel:RegisterEvent('PLAYER_LOGOUT')
+                self:RegisterEvent("PLAYER_REGEN_ENABLED")
+                self:RegisterEvent("PLAYER_REGEN_DISABLED")
+                self:RegisterEvent('BAG_UPDATE_DELAYED')
+                self:RegisterUnitEvent("UNIT_AURA", 'player')
+                self:RegisterEvent('BAG_UPDATE_COOLDOWN')
+                self:RegisterEvent('PLAYER_LOGOUT')
 
             
                 Init()--初始
             end
-            panel:UnregisterEvent('ADDON_LOADED')
+            self:UnregisterEvent('ADDON_LOADED')
         end
 
     elseif event == "PLAYER_LOGOUT" then
@@ -236,11 +265,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif event=='PLAYER_REGEN_ENABLED' then
-        panel:RegisterUnitEvent("UNIT_AURA", 'player')
+        self:RegisterUnitEvent("UNIT_AURA", 'player')
        
 
     elseif event=='PLAYER_REGEN_DISABLED' then
-        panel:UnregisterEvent('UNIT_AURA')
+        self:UnregisterEvent('UNIT_AURA')
 
     elseif event=='BAG_UPDATE_DELAYED' then
         setCount()--设置数量

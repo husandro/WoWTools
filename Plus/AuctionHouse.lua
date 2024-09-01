@@ -37,7 +37,7 @@ local function Get_ItemLink_For_rowData(rowData)
         itemLink= priceInfo.itemLink or priceInfo.battlePetLink
     end
     if not itemLink and itemID then
-        itemLink= ItemUtil.GetItemHyperlink(itemID)
+        itemLink= WoWTools_ItemMixin:GetLink(itemID)
     end
     isPet= rowData and rowData.itemKey and rowData.itemKey.battlePetSpeciesID and rowData.itemKey.battlePetSpeciesID>0
     return itemLink, itemID, isPet

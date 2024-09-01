@@ -316,7 +316,7 @@ local function Set_TrackButton_Text()
 				e.tips:Hide()
 				Set_TrackButton_Pushed(false, self.text)--提示
 				if self.itemID then
-					e.FindBagItem(false)--查询，背包里物品
+					WoWTools_BagMixin:Find(false)--查询，背包里物品
 				end
 			end)
 			btn:SetScript('OnEnter', function(self)
@@ -334,7 +334,7 @@ local function Set_TrackButton_Text()
 						e.tips:AddDoubleLine(col..(e.onlyChinese and '使用物品' or USE_ITEM), e.Icon.left)
 					end
 					e.tips:AddDoubleLine(col..(e.onlyChinese and '拿取' or 'Pickup'), col..('Alt+'..e.Icon.left))
-					e.FindBagItem(true, {itemID=self.itemID})--查询，背包里物品
+					WoWTools_BagMixin:Find(true, {itemID=self.itemID})--查询，背包里物品
 				elseif self.currencyID then
 					e.tips:SetCurrencyByID(self.currencyID)
 					local link= C_CurrencyInfo.GetCurrencyLink(self.currencyID) or (e.onlyChinese and '超链接' or COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK)
@@ -476,7 +476,7 @@ local function MenuList_Item(level)
 	local info
 	for itemID, _ in pairs(Save.item) do
 		info={
-			text= ItemUtil.GetItemHyperlink(itemID) or ('itemID '..itemID),
+			text= WoWTools_ItemMixin:GetLink(itemID),
 			icon= C_Item.GetItemIconByID(itemID),
 			notCheckable=true,
 			tooltipOnButton=true,
@@ -485,7 +485,7 @@ local function MenuList_Item(level)
 			func= function(_, arg1)
 				Save.item[arg1]= nil
 				Set_TrackButton_Text()
-				print(e.addName, Initializer:GetName(), e.onlyChinese and '移除' or REMOVE, ItemUtil.GetItemHyperlink(itemID) or ('itemID '..itemID))
+				print(e.addName, Initializer:GetName(), e.onlyChinese and '移除' or REMOVE, WoWTools_ItemMixin:GetLink(arg1))
 			end
 		}
 		e.LibDD:UIDropDownMenu_AddButton(info, level)

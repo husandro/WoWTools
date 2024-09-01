@@ -32,7 +32,7 @@ e.GetExpansionText(expacID, questID)--版本数据
 e.Is_In_PvP_Area()--是否在，PVP区域中
 e.IsAtlas(texture)--Atlas or Texture
 e.LoadDate(tab)--e.LoadDate({id=, type=''})--加载 item quest spell, uiMapID
-e.FindBagItem(find, tab)--查询，背包里物品，itemName，itemLink，itemID，itemLocation，merchantIndex，BuybackIndex，itemKey，bag，guidBank，lootIndex
+
 e.MK(number, bit)
 e.GetShowHide(sh, all) 显示/隐藏
 e.Set_Label_Texture_Color(self, tab)--设置颜色{type='FontString','Texture','String', 'EditBox', 'Button', alpha=, color={r=,g=b=,a=}}
@@ -127,7 +127,7 @@ e.ShowColorPicker(valueR, valueG, valueB, valueA, swatchFunc, cancelFunc)
 
 --取得中文 
 function e.cn(text, tab)--{gossipOptionID=, questID=}
-    return WoWTools_Chinese_Mixin and WoWTools_Chinese_Mixin(text, tab) or text
+    return WoWTools_Chinese_Mixin and WoWTools_Chinese_Mixin:Setup(text, tab) or text
 end
 
 
@@ -186,7 +186,7 @@ function e.IsAtlas(texture)--Atlas or Texture
 end
 
 function e.LoadDate(tab)--e.LoadDate({id=, type=''})--加载 item quest spell, uiMapID
-    if not tab.id then
+    if not tab or not tab.id then
         return
     end
     if tab.type=='quest' then
@@ -223,58 +223,6 @@ end
 
 
 
-function e.FindBagItem(find, tab)--查询，背包里物品，itemName，itemLink，itemID，itemLocation，merchantIndex，BuybackIndex，itemKey，bag，guidBank，lootIndex
-    --itemName, itemLocation, itemName, itemLink, itemID, merchantIndex，BuybackIndex, guidBank, bag
-    --if not ContainerFrameCombinedBags:IsShown() then
-        --return
-    --end    
-    if not IsBagOpen(Enum.BagIndex.Backpack) and not IsBagOpen(NUM_TOTAL_EQUIPPED_BAG_SLOTS) then
-        return
-    end
-    if not find then
-        C_Container.SetItemSearch('')
-    else
-        local itemName, itemLink
-        if tab.itemName then--名称
-            itemName= tab.itemName
-
-        elseif tab.itemLink then--itemLink
-            itemLink= tab.itemLink
-
-        elseif tab.itemID then--itemID
-            itemName= C_Item.GetItemNameByID(tab.itemLink or tab.itemID)
-
-        elseif tab.itemLocation and tab.itemLocation:IsValid() then--itemLocation
-            itemName= C_Item.GetItemName(tab.itemLocation)
-
-        elseif tab.merchantIndex then--商人
-            itemName=  GetMerchantItemInfo(tab.merchantIndex)
-
-        elseif tab.BuybackIndex then--商人，回购
-            itemName= GetBuybackItemInfo(tab.BuybackIndex)
-
-        elseif tab.itemKey then--itemKey
-            local itemKeyInfo = C_AuctionHouse.GetItemKeyInfo(tab.itemKey) or {}
-            itemName= itemKeyInfo.itemName
-
-        elseif tab.bag then--背包 {}
-            itemLink= C_Container.GetContainerItemLink(tab.bag.bag, tab.bag.slot)
-
-        elseif tab.guidBank then--公会银行 {}
-            itemLink= GetGuildBankItemLink(tab.guidBank.tab, tab.guidBank.slot)
-        elseif tab.lootIndex then
-            local _, lootName, _, currencyID= GetLootSlotInfo(tab.lootIndex)
-            itemName= not currencyID and lootName
-        end
-
-        if itemLink then
-            itemName= C_Item.GetItemNameByID(itemLink) or itemLink:match('|H.-%[(.-)]|h')
-        end
-        if itemName then
-            C_Container.SetItemSearch(itemName)
-        end
-    end
-end
 
 
 

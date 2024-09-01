@@ -36,7 +36,7 @@ local function Init()
         e.tips:AddDoubleLine(e.addName, e.cn(addName))
         e.tips:AddLine(' ')
         for _, itemID in pairs(ItemTab) do
-            local link= ItemUtil.GetItemHyperlink(itemID) or itemID
+            local link= WoWTools_ItemMixin:GetLink(itemID)
             local icon
             icon= C_Item.GetItemIconByID(itemID)
             icon= icon and '|T'..icon..':0|t' or ''

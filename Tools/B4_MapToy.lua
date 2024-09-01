@@ -18,7 +18,7 @@ local Tab={
     {itemID=187898, achievements={1267, 1264, 1268, 1269, 1265, 1266, 1263, 1457, 1270}},--诺森德
 
     {itemID=187899, achievements={865, 862, 866, 843, 864, 867, 863}},--外域
-    
+
 }
 
 if e.Player.faction=='Alliance' then
@@ -39,7 +39,8 @@ local ToyButton
 local Save={
     no={
         --[guid]=true
-    }
+    },
+    --autoAddDisabled= e.Player.husandro,
 }
 
 
@@ -136,7 +137,7 @@ local function Init_Options(category, layout)
         buttonText= e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
         SetValue= function()
            Save=nil
-           e.LoadDate()
+           print(e.addName, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     }, initializer)
 end
@@ -170,22 +171,17 @@ local function Init_Menu(self, root)
                     or (new.hasToy==false and '|cnRED_FONT_COLOR:')
                     or ''
 
-        local name= e.cn(new.name, {itemID=new.itemID, isName=true})
-        if name then
-            name= name:match('|c........(.+)|r') or name
-        else
-            name= 'itemID '..new.itemID
-        end
-        
-        local num=(new.isNotChecked==nil and 
-                    (new.num>0 and '|cnGREEN_FONT_COLOR:')
-                    or (new.name==0 and '|cff9e9e9e')
-                    or ''
+        local name= WoWTools_SpellItemMixin:GetName(nil, new.itemID)
+
+        local num=(new.isNotChecked==nil and
+                    (new.num>0 and ' |cnGREEN_FONT_COLOR:')
+                    or (new.name==0 and ' |cff9e9e9e')
+                    or ' '
                 )
                 ..(new.isNotChecked==nil and new.num or '')
-        
 
-        sub= root:CreateCheckbox(col..name.. '|r '..num,
+
+        sub= root:CreateCheckbox(col..name..num,
             function(data)
                 return data.itemID==self.itemID
             end, function(data)
@@ -194,9 +190,9 @@ local function Init_Menu(self, root)
         )
 
         WoWTools_SpellItemMixin:SetTooltip(nil, nil, sub, nil)
-      
 
-        for index, tab in pairs(new.data) do            
+
+        for index, tab in pairs(new.data) do
             sub2=sub:CreateButton(
                 index..') '
                 ..(tab.wasEarnedByMe==true and '|cff9e9e9e' or '')
@@ -214,7 +210,7 @@ local function Init_Menu(self, root)
         end
     end
 
-   
+
     local tab={}
     local num=0
     for guid in pairs(Save.no) do
@@ -223,23 +219,26 @@ local function Init_Menu(self, root)
     end
 
     root:CreateDivider()
-    sub= root:CreateButton((e.onlyChinese and '已完成' or CRITERIA_COMPLETED)..(num>0 and ' '..num or ''), function() return MenuResponse.Open end)
+    sub= root:CreateButton((e.onlyChinese and '已完成' or CRITERIA_COMPLETED)..(num>0 and ' #'..num or ''), function() return MenuResponse.Open end)
 
-    sub2= sub:CreateCheckbox(e.onlyChinese and '添加' or ADD, function()
+    sub2= sub:CreateCheckbox(WoWTools_UnitMixin:GetPlayerInfo(nil, e.Player.guid, nil)..(e.onlyChinese and '禁用' or DISABLE), function()
         return Save.no[e.Player.guid]
     end, function()
         Save.no[e.Player.guid]= not Save.no[e.Player.guid] and true or nil
         print(e.addName, addName, e.GetEnabeleDisable(not Save.no[e.Player.guid]), WoWTools_UnitMixin:GetPlayerInfo(nil, e.Player.guid, nil, {reLink=true, reName=true, reRealm=true}))
     end)
     sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine(e.onlyChinese and '如果已完成|n可以 “添加” 禁用本模块' or ('If you are complete|nyou can \"'..ADD..'\" this module disabled'))
+        tooltip:AddLine(e.onlyChinese and '如果已完成|n可以 “禁用” 禁用本模块' or ('If you are complete|nyou can \"'..DISABLE..'\" this module disabled'))
         tooltip:AddDoubleLine(e.onlyChinese and '当前' or REFORGE_CURRENT, e.GetEnabeleDisable(not Save.no[e.Player.guid]))
     end)
-    
-    sub2:CreateCheckbox(e.onlyChinese and '自动' or SELF_CAST_AUTO, function()
+
+    sub3= sub2:CreateCheckbox(e.onlyChinese and '自动' or SELF_CAST_AUTO, function()
         return Save.autoAddDisabled
     end, function()
         Save.autoAddDisabled= not Save.autoAddDisabled and true or nil
+    end)
+    sub3:SetTooltip(function(tooltip)
+        tooltip:AddLine(e.onlyChinese and '自动禁用' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, DISABLE))
     end)
 
     if num>0 then
@@ -255,8 +254,8 @@ local function Init_Menu(self, root)
                     print(e.addName, addName,
                         e.GetEnabeleDisable(not Save.no[data.guid]),
                         WoWTools_UnitMixin:GetPlayerInfo(nil, data.guid, nil, {reLink=true, reName=true, reRealm=true})
-                    )   
-                
+                    )
+
             end,
             {guid=guid, player=player}
         )
@@ -271,7 +270,7 @@ local function Init_Menu(self, root)
             Save.no={}
         end)
     end
-    
+
     WoWTools_MenuMixin:SetNumButton(sub, num)
 end
 
@@ -302,8 +301,8 @@ local function Init()
             GetAchievementCategory(achievementID)
         end
     end
-    
-    function ToyButton:set_tooltips()        
+
+    function ToyButton:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         if self.itemID then
@@ -334,7 +333,7 @@ local function Init()
         if not name or not self:CanChangeAttribute() then
             return
         end
-        
+
         self.itemID=itemID
         self.achievements= achievements
         self.isLocked= isLocked
@@ -355,7 +354,7 @@ local function Init()
                 return
             end
         end
-        
+
     end
 
     ToyButton:SetAttribute("type1", "item")
@@ -411,29 +410,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
             Save= WoWToolsSave['Tools_MapToy'] or Save
-            
+
             addName= '|A:Taxi_Frame_Yellow:0:0|a'..(e.onlyChinese and '侦察地图' or ADVENTURE_MAP_TITLE)
 
             WoWTools_ToolsButtonMixin:AddOptions(Init_Options)
-
-
-            --[[ToyButton= WoWTools_ToolsButtonMixin:CreateButton({
-                name='Food',
-                tooltip=A,
-                isMoveButton=true,
-                option=function(Category, layout, initializer)
-                    e.AddPanel_Button({
-                        category=Category,
-                        layout=layout,
-                        tooltip=addName..'|n'..(e.onlyChinese and '重新加载UI' or RELOADUI ),
-                        buttonText= e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
-                        SetValue= function()
-                           Save=nil
-                           e.LoadDate()
-                        end
-                    }, initializer)
-                end
-            })]]
 
             if not Save.disabled
                 and not Save.no[e.Player.guid]
@@ -444,7 +424,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 local notHasToy
                 for _, info in pairs(Tab) do
                     local new= Is_Completed(info)
-                    
+
                     if new.hasToy~=false--没收集
                         and new.num>0--没完成，数量
                         or new.isNotChecked--没数据
@@ -459,10 +439,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 if find==nil then
                     if not notHasToy and Save.autoAddDisabled then
                         Save.no[e.Player.guid]=true
+                        self:UnregisterEvent('ADDON_LOADED')
+                        return
                     end
-                    return
                 end
-                
+
                 ToyButton= WoWTools_ToolsButtonMixin:CreateButton({
                     name='MapToy',
                     tooltip=addName,
@@ -481,123 +462,3 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
     end
 end)
-            --[[
-            --if not e.toolsFrame.disabled then
-                if not AchievementFrame then
-                    AchievementFrame_LoadUI();
-                end
-
-                if not C_AddOns.IsAddOnLoaded('Blizzard_AchievementUI') then
-                    C_AddOns.LoadAddOn("Blizzard_AchievementUI")
-                end
-                if not C_AddOns.IsAddOnLoaded('Blizzard_ToyBox') then
-                    C_AddOns.LoadAddOn("Blizzard_ToyBox")
-                end
-
-                C_Timer.After(2, function()
-                    ToggleAchievementFrame()
-                    if AchievementFrame and AchievementFrame:IsVisible() then
-                        ToggleAchievementFrame()
-                    end
-                end)
-
-                panel:RegisterEvent('PLAYER_REGEN_DISABLED')
-                panel:RegisterEvent("PLAYER_REGEN_ENABLED")
-                panel:RegisterEvent('UI_ERROR_MESSAGE')
-                panel:RegisterEvent('CRITERIA_UPDATE')
-                panel:RegisterEvent('RECEIVED_ACHIEVEMENT_LIST')
-
-                C_Timer.After(4, self.get_Use_Toy)
-            --else
-              --  Toy=nil
-            --end]]
-            
-
---[[
-function panel:Requested_Achievement()
-    for itemID, achievementIDs in pairs(ToyTab) do
-        e.LoadDate({id=itemID, type='item'})
-        for _, achievementID in pairs(achievementIDs) do
-            GetAchievementCategory(achievementID)
-        end
-    end
-end
-
-
-
-function panel:get_Use_Toy()
-    local bat= UnitAffectingCombat('player')
-    if bat or e.Player.faction=='Neutral' then
-        if not bat and button then
-            button:SetShown(false)
-        end
-        return
-    end
-    panel:Requested_Achievement()
-
-    local notFindName
-    for itemID, tab in pairs(ToyTab) do
-        if PlayerHasToy(itemID) and C_ToyBox.IsToyUsable(itemID) or e.Player.husandro then
-            for _, achievementID  in pairs(tab) do
-                local _, name, _, _, _, _, _, _, _, _, _, _, wasEarnedByMe= GetAchievementInfo(achievementID)
-                if name and not wasEarnedByMe then
-                    if not button then
-
-                        button= e.Cbtn2({
-                            name=nil,
-                            parent=_G['WoWToolsMountButton'],
-                            click=true,-- right left
-                            notSecureActionButton=nil,
-                            notTexture=nil,
-                            showTexture=true,
-                            sizi=nil,
-                        })
-
-                        button:SetAttribute("type*", "item")
-                        button:SetPoint('BOTTOM', _G['WoWToolsOpenItemsButton'], 'TOP')--自定义位置
-                        button:SetScript('OnLeave', GameTooltip_Hide)
-                        button:SetScript('OnEnter', function(self2)
-                            if self2.itemID then
-                                e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                                e.tips:ClearLines()
-                                e.tips:SetItemByID(self2.itemID)
-                                --e.tips:SetToyByItemID(self2.itemID)
-                                e.tips:AddLine(' ')
-                                if e.onlyChinese then
-                                    e.tips:AddLine('|cnRED_FONT_COLOR:使用, 请勿太快')
-                                else
-                                    e.tips:AddLine('|cnRED_FONT_COLOR:note: '..ERR_GENERIC_THROTTLE)
-                                end
-                                e.tips:Show()
-                            end
-                        end)
-                    end
-                    local itemName, _, _, _, _, _, _, _, _, itemTexture= C_Item.GetItemInfo(itemID)
-                    itemName=itemName or  C_Item.GetItemNameByID(itemID) or itemID
-                    itemTexture= itemTexture or C_Item.GetItemIconByID(itemID) or 0
-                    button:SetAttribute("item*", itemName)
-                    button.texture:SetTexture(itemTexture)
-                    button:SetShown(true)
-                    button.itemID=itemID
-                    return
-
-                elseif not name then
-                    notFindName=true
-                end
-            end
-        end
-    end
-
-    if button then
-        button:SetShown(false)
-    end
-    if not notFindName then
-        panel:UnregisterAllEvents()
-        Toy=nil
-    end
-end
-
-
-
-
-]]            

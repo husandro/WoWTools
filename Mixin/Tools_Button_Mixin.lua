@@ -10,7 +10,7 @@ WoWTools_ToolsButtonMixin={
     BottomButtons={},
 
     leftNewLineButton=nil,
-    setID=1
+    setID=0
 }
 
 
@@ -42,7 +42,7 @@ function WoWTools_ToolsButtonMixin:GetParent(tab)--取得 Parent
         return self.Button
     else
         return self.Button.Frame
-        
+
     end
 end
 
@@ -75,7 +75,7 @@ function WoWTools_ToolsButtonMixin:Init(save)
     self.Button.RightFrame=self:CreateBackgroundFrame(self.Button.Frame, 'WoWTools_RightFrame')
     --需要，设置 LEFT
     self.Button.BottomFrame= self:CreateBackgroundFrame(self.Button, 'WoWTools_ButtomFrame')
-    
+
     self:SetLeftPoint(self.Button.LeftFrame)
     self:SetLeft2Point(self.Button.LeftFrame2)
     self:SetRightPoint(self.Button.RightFrame)
@@ -84,37 +84,28 @@ function WoWTools_ToolsButtonMixin:Init(save)
     self.last= self.Button
     return self.Button
 end
---[[
-WoWTools_ToolsButtonMixin:CreateButton({
-    name=,
-    tooltip=nil,
-    point='LEFT',
-
-    isLeftOnlyLine=function()--左（右）边，法师传送门
-        return Save.isLeft
-    end,
-
-    isMoveButton=true,--可移动，按钮，仅BOTTOM
-    SavePoint=Save.point,--保存点
-
-    option=funciton()end,--添加选项
-    disabledOptions=false,--自定义，选项
-}
-]]
 
 
 function WoWTools_ToolsButtonMixin:CreateButton(tab)
+    tab= tab or {}
+
     if not tab.disabledOptions then
         table.insert(self.AddList, tab)
     end
     if not self.Button or self.Save.disabledADD[tab.name] then
         return
-    end   
+    end
 
-    local btn= self:Create(tab)
+    self.setID= self.setID+1
+
+    local btn= Button_Mixin:CreateSecure({
+        name='WoWTools_Tools_'..(tab.name or self.setID),
+        parent= self:GetParent(tab),
+        setID= self.setID,
+    })
 
     function btn:GetData()
-        return self.ToolsData       
+        return self.ToolsData
     end
     function btn:SetData(data)
         self.ToolsData=data
@@ -143,7 +134,7 @@ function WoWTools_ToolsButtonMixin:SetPoint(btn, tab)
                 self:SetBackground(self.Button.LeftFrame2)
             else
                 btn:SetPoint('BOTTOM', self.LeftButtons2[num], 'TOP')
-            end            
+            end
             self.Button.LeftFrame2:SetPoint('TOP', btn)
             table.insert(self.LeftButtons2, btn)
         else
@@ -188,7 +179,7 @@ function WoWTools_ToolsButtonMixin:SetPoint(btn, tab)
                 self.Button.LeftFrame:SetPoint('LEFT', btn)
                 self:SetBackground(self.Button.LeftFrame)
 
-                
+
             else
                 local numLine= self.Save.lineNum or 10
                 if select(2, math.modf(num / numLine))==0 then
@@ -200,7 +191,7 @@ function WoWTools_ToolsButtonMixin:SetPoint(btn, tab)
                     if num== (numLine-1) then
                         self.Button.LeftFrame:SetPoint('TOP', btn)
                     end
-                    
+
                 end
             end
             table.insert(self.LeftButtons, btn)
@@ -224,50 +215,15 @@ button= WoWTools_ToolsButtonMixin:CreateButton({
 })
 ]]
 
-function WoWTools_ToolsButtonMixin:Create(tab)
-
-    local btn= CreateFrame("Button",
---设置 名称
-        'WoWTools_Tools_'..tab.name,
---设置 Parent,
-        self:GetParent(tab),
-        "SecureActionButtonTemplate",
-        tab.setID or self.setID
-    )
-
+--[[function WoWTools_ToolsButtonMixin:Create(tab)
+    tab= tab or {}
     self.setID= self.setID+1
-
-    btn:SetSize(30, 30)
-    btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
-    btn:EnableMouseWheel(true)
-
-    btn:SetPushedAtlas('bag-border-highlight')
-    btn:SetHighlightAtlas('bag-border')
-
-    btn.mask= btn:CreateMaskTexture()
-    btn.mask:SetTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')
-    btn.mask:SetPoint("TOPLEFT", btn, "TOPLEFT", 4, -4)
-    btn.mask:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -6, 6)
-
-    btn.background= btn:CreateTexture(nil, 'BACKGROUND')
-    btn.background:SetAllPoints(btn)
-    btn.background:SetAtlas('bag-reagent-border-empty')
-    btn.background:SetAlpha(0.5)
-    btn.background:AddMaskTexture(btn.mask)
-
-    btn.texture=btn:CreateTexture(nil, 'BORDER')
-    btn.texture:SetPoint("TOPLEFT", btn, "TOPLEFT", 4, -4)
-    btn.texture:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -6, 6)
-    btn.texture:AddMaskTexture(btn.mask)
-
-    btn.border=btn:CreateTexture(nil, 'ARTWORK')
-    btn.border:SetAllPoints(btn)
-
-    btn.border:SetAtlas('bag-reagent-border')
-
-    e.Set_Label_Texture_Color(btn.border, {type='Texture', 0.5})
-    return btn
-end
+    return Button_Mixin:CreateSecure({
+        name='WoWTools_Tools_'..(tab.name or self.setID),
+        parent= self:GetParent(tab),
+        setID= self.setID,
+    })
+end]]
 
 function WoWTools_ToolsButtonMixin:CreateBackgroundFrame(parent, name)
     local frame= CreateFrame('Frame', name, parent or UIParent)
@@ -335,12 +291,12 @@ function WoWTools_ToolsButtonMixin:RestAllPoint()
         self:SetBottomPoint(self.Button.BottomFrame)
     end
 
-    
+
     table.sort(buttons, function(a, b) return a:GetID()< b:GetID() end)
 
     for _, btn in pairs(buttons) do
         btn:SetParent(self:GetParent(btn:GetData()))
-        self:SetPoint(btn, btn:GetData())        
+        self:SetPoint(btn, btn:GetData())
     end
 end
 

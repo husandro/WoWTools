@@ -3798,7 +3798,7 @@ local function Init_Blizzard_DelvesDifficultyPicker()
                     if reward.rewardType == Enum.GossipOptionRewardType.Item and reward.id then
                         e.LoadDate({type='item', id=reward.id})
                         local item= C_Item.GetItemNameByID(reward.id)
-                        local link= ItemUtil.GetItemHyperlink(reward.id)
+                        local link= WoWTools_ItemMixin:GetLink(reward.id)
                         itemLink= (itemLink or '    ')
                             ..(
                                 e.cn(link or item, {itemID=reward.id, itemLink=link, isName=true})

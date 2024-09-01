@@ -2401,10 +2401,10 @@ function Init_Clear_All_Send_Items()--清除所有，要发送物品
     end)
 
     for _, btn in pairs(SendMailFrame.SendMailAttachments or {}) do
-        btn:HookScript('OnLeave', function(self) e.FindBagItem(false, nil) end)
+        btn:HookScript('OnLeave', function(self) WoWTools_BagMixin:Find(false, nil) end)
         btn:HookScript('OnEnter', function(self) 
             
-            e.FindBagItem(true, {itemLink=GetSendMailItemLink(self:GetID())})
+            WoWTools_BagMixin:Find(true, {itemLink=GetSendMailItemLink(self:GetID())})
         end)
     end
 

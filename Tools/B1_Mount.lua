@@ -878,7 +878,7 @@ local function Set_Mount_Sub_Options(root, data)--icon,col,mountID,spellID,itemI
             Save.Mounts[info.type][info.itemID or info.spellID]=nil
 
             print(e.addName, addName, e.onlyChinese and '移除' or REMOVE,
-                    info.itemID and ItemUtil.GetItemHyperlink(info.itemID)
+                    WoWTools_ItemMixin:GetLink(info.itemID)
                     or (info.spellID and C_Spell.GetSpellLink(info.spellID)
                     or info.itemID or info.spellID
             ))

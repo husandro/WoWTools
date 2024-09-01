@@ -264,21 +264,21 @@ local function Create_ItemButton()
             btn.ItemButton:HookScript('OnEnter', function(self)
                 if MerchantFrame.selectedTab == 1 then
                     if self.hasItem then
-                        e.FindBagItem(true, {itemName=self.name})
+                        WoWTools_BagMixin:Find(true, {itemName=self.name})
                     end
                 elseif MerchantFrame.selectedTab == 2 then
-                    e.FindBagItem(true, {BuybackIndex=self:GetID()})
+                    WoWTools_BagMixin:Find(true, {BuybackIndex=self:GetID()})
                 end
             end)
             btn.ItemButton:HookScript('OnLeave', function(self)
                 if MerchantFrame.selectedTab == 1 then
                     if self.hasItem then
-                        e.FindBagItem(false)
+                        WoWTools_BagMixin:Find(false)
                     end
                 elseif MerchantFrame.selectedTab == 2 then
                     local name= GetBuybackItemInfo(self:GetID())
                     if name then
-                        e.FindBagItem(false)
+                        WoWTools_BagMixin:Find(false)
                     end
                 end
             end)
@@ -1053,7 +1053,7 @@ local function Init_Menu(_, level, type)
         for itemID, _ in pairs(Save.Sell) do
             if itemID  then
                 e.LoadDate({id=itemID, type='item'})
-                local itemLink= ItemUtil.GetItemHyperlink(itemID)
+                local itemLink= WoWTools_ItemMixin:GetLink(itemID)
                 itemLink= itemLink or C_Item.GetItemNameByID(itemID) or ('itemID: ' .. itemID)
                 info= {
                     text= itemLink,
@@ -1086,7 +1086,7 @@ local function Init_Menu(_, level, type)
     elseif type=='BOSS' then--二级菜单, BOSS
         for itemID, itemLevel in pairs(bossSave) do
             e.LoadDate({itemID=itemID, type='item'})
-            local itemLink= ItemUtil.GetItemHyperlink(itemID) or itemID
+            local itemLink= WoWTools_ItemMixin:GetLink(itemID)
             info= {
                 text= itemLink..'('..itemLevel..')',
                 notCheckable=true,
@@ -1130,7 +1130,7 @@ local function Init_Menu(_, level, type)
                 e.LoadDate({id=itemID, type='item'})
                 local bag=C_Item.GetItemCount(itemID)
                 local bank=C_Item.GetItemCount(itemID, true, false, true)-bag
-                local itemLink= ItemUtil.GetItemHyperlink(itemID)
+                local itemLink= WoWTools_ItemMixin:GetLink(itemID)
                 itemLink= itemLink or C_Item.GetItemNameByID(itemID) or ('itemID: ' .. itemID)
                 info= {
                     text='|cnGREEN_FONT_COLOR:'..num..'|r '..itemLink..' '..'|cnYELLOW_FONT_COLOR:'..bag..'|A:bag-main:0:0|a'..bank..'|A:Banker:0:0|a'..'|r',
@@ -1169,7 +1169,7 @@ local function Init_Menu(_, level, type)
                 e.LoadDate({id=itemID, type='item'})
                 local bag=C_Item.GetItemCount(itemID)
                 local bank=C_Item.GetItemCount(itemID, true, false, true)-bag
-                local itemLink= ItemUtil.GetItemHyperlink(itemID)
+                local itemLink= WoWTools_ItemMixin:GetLink(itemID)
                 itemLink= itemLink or C_Item.GetItemNameByID(itemID) or ('itemID: ' .. itemID)
                 info= {
                     text=itemLink..' '..'|cnYELLOW_FONT_COLOR:'..bag..'|A:bag-main:0:0|a'..bank..'|A:Banker:0:0|a'..'|r',

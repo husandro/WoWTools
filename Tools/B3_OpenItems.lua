@@ -420,7 +420,7 @@ local function Edit_Item(info)
             Save.no[data.itemID]=nil
             get_Items()--取得背包物品信息                        
             print(e.addName, addName,
-                ItemUtil.GetItemHyperlink(data.itemID),
+                WoWTools_ItemMixin:GetLink(data.itemID),
                 num>1 and
                     (e.onlyChinese and '合成物品' or COMBINED_BAG_TITLE:gsub(INVTYPE_BAG,ITEMS))..': '..'|cnGREEN_FONT_COLOR:'..num..'|r'
                     or useText
@@ -431,7 +431,7 @@ local function Edit_Item(info)
             Save.use[data.itemID]=nil
             get_Items()--取得背包物品信息
             print(e.addName, e.cn(addName),
-                ItemUtil.GetItemHyperlink(info.itemID),
+                WoWTools_ItemMixin:GetLink(info.itemID),
                 noText
             )
         end,
@@ -466,7 +466,7 @@ local function Remove_NoUse_Menu_SetValue(data)
         and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r'
         or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '物品不存在' or SPELL_FAILED_ITEM_GONE)),
 
-        ItemUtil.GetItemHyperlink(data.itemID),
+        WoWTools_ItemMixin:GetLink(data.itemID),
         data.type=='no' and noText or useText
     )
     Save[data.type][data.itemID]=nil
@@ -519,7 +519,7 @@ local function Remove_All_Menu(root, type, num)
             print(
                 index..')',
                 e.onlyChinese and '移除' or REMOVE,
-                ItemUtil.GetItemHyperlink(itemID),
+                WoWTools_ItemMixin:GetLink(itemID),
                 '|A:common-icon-redx:0:0|a'..type2
             )
         end
@@ -734,7 +734,7 @@ local function Init()
                     BattlePetTooltip:Hide()
                 end
             end
-            e.FindBagItem(true, {itemLink= itemLink})--查询，背包里物品
+            WoWTools_BagMixin:Find(true, {itemLink= itemLink})--查询，背包里物品
         else
             e.tips:AddDoubleLine(e.addName, e.cn(addName))
             e.tips:AddLine(' ')
@@ -775,7 +775,7 @@ local function Init()
         GameTooltip_Hide()
         ResetCursor()
         get_Items()
-        e.FindBagItem(false)--查询，背包里物品
+        WoWTools_BagMixin:Find(false)--查询，背包里物品
         self:SetScript('OnUpdate',nil)
         self.elapsed=nil
     end)

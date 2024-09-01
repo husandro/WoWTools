@@ -163,6 +163,7 @@ end
 
 local function Init_Menu(self, root)
     local sub, sub2
+    local isInCombat=UnitAffectingCombat('player')
     sub=root:CreateCheckbox(e.onlyChinese and '显示' or SHOW, function()
         return self.Frame:IsShown()
     end, function()
@@ -235,19 +236,25 @@ local function Init_Menu(self, root)
     end)
 
 
-    WoWTools_MenuMixin:Scale(sub, function()
+    sub2= select(2, WoWTools_MenuMixin:Scale(sub, function()
         return Save.scale
     end, function(data)
         Save.scale=data
         self:set_scale()
-    end)
+    end))
+    if isInCombat then
+        sub2:SetEnabled(false)
+    end
 
-    WoWTools_MenuMixin:FrameStrata(sub, function(data)
+   sub2= select(2, WoWTools_MenuMixin:FrameStrata(sub, function(data)
         return self:GetFrameStrata()==data
     end, function(data)
         Save.strata= data
         self:set_strata()
-    end)
+    end))
+    if isInCombat then
+        sub2:SetEnabled(false)
+    end
 
 
     WoWTools_MenuMixin:RestPoint(sub, Save.point, function()
@@ -309,7 +316,7 @@ local function Init()
     end
 
     function Button:set_strata()
-        self:SetFrameStrata(Save.strata or 'HIGH')
+        self:SetFrameStrata(Save.strata or 'MEDIUM')
     end
 
     function Button:set_tooltip()

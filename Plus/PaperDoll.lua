@@ -154,7 +154,7 @@ local function set_Engineering(self, slot, link, use, isPaperDollItemSlot)--增�
             if d=='LeftButton' then
                 local n=C_Item.GetItemCount(90146, true)
                 if n==0 then
-                    print(ItemUtil.GetItemHyperlink(90146) or (e.onlyChinese and '附加材料' or OPTIONAL_REAGENT_TUTORIAL_TOOLTIP_TITLE), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE))
+                    print(WoWTools_ItemMixin:GetLink(90146) or (e.onlyChinese and '附加材料' or OPTIONAL_REAGENT_TUTORIAL_TOOLTIP_TITLE), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE))
                     return
                 end
                 --OpenProfessionUIToSkillLine(202)
@@ -1537,11 +1537,11 @@ local function setFlyout(button, itemLink, slot)
 
         button:HookScript('OnEnter', function(self)--查询
             if self.itemLink then
-                e.FindBagItem(true, {itemLink=self.itemLink})
+                WoWTools_BagMixin:Find(true, {itemLink=self.itemLink})
             end
         end)
         button:HookScript('OnLeave', function()
-           e.FindBagItem(false)
+           WoWTools_BagMixin:Find(false)
         end)
     end
     local show=false

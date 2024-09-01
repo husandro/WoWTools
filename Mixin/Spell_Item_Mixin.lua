@@ -1,41 +1,52 @@
 local e= select(2, ...)
-WoWTools_SpellItemMixin={}
+WoWTools_SpellItemMixin={
+    --set_tooltip
+    --SetTooltip
+    --GetName
+}
 
-local function set_tooltip(tooltip, data)
+function WoWTools_SpellItemMixin:set_tooltip(tooltip, data)
     if type(data)~='table' then
         return
     end
-    local link= data.link or data.itemLink or data.spellLink
-    if link then
-        if link:find('Hbattlepet:%d+') then
-            BattlePetToolTip_Show(BattlePetToolTip_UnpackBattlePetLink(link))
+    local itemLink= data.link or data.itemLink or data.spellLink
+    local itemID= data.itemID
+    local spellID= data.spellID
+    local currencyID= data.currencyID
+    local widgetSetID= data.widgetSetID
+    local achievementID= data.achievementID
+    local tip= data.tooltip
+
+    if itemLink then
+        if itemLink:find('Hbattlepet:%d+') then
+            BattlePetToolTip_Show(BattlePetToolTip_UnpackBattlePetLink(itemLink))
             return
         else
-            tooltip:SetHyperlink(link)
+            tooltip:SetHyperlink(itemLink)
         end
 
-    elseif data.itemID then
-        if C_ToyBox.GetToyInfo(data.itemID) then
-            tooltip:SetToyByItemID(data.itemID)
+    elseif itemID then
+        if C_ToyBox.GetToyInfo(itemID) then
+            tooltip:SetToyByItemID(itemID)
         else
-            tooltip:SetItemByID(data.itemID)
+            tooltip:SetItemByID(itemID)
         end
 
-    elseif data.spellID then
-        tooltip:SetSpellByID(data.spellID)
+    elseif spellID then
+        tooltip:SetSpellByID(spellID)
 
-    elseif data.currencyID then
-        tooltip:SetCurrencyByID(data.currencyID)
+    elseif currencyID then
+        tooltip:SetCurrencyByID(currencyID)
 
-    elseif data.widgetSetID then
-        GameTooltip_AddWidgetSet(tooltip, data.widgetSetID)
+    elseif widgetSetID then
+        GameTooltip_AddWidgetSet(tooltip, widgetSetID)
 
-    elseif data.achievementID then
-        tooltip:SetAchievementByID(data.achievementID)
+    elseif achievementID then
+        tooltip:SetAchievementByID(achievementID)
     end
 
-    if data.tooltip then
-        GameTooltip_AddNormalLine(tooltip, type(data.tooltip)=='function' and data.tooltip() or data.tooltip, true)
+    if tip then
+        GameTooltip_AddNormalLine(tooltip, type(tip)=='function' and tip() or tip, true)
     end
 end
 
@@ -44,15 +55,16 @@ end
 function WoWTools_SpellItemMixin:SetTooltip(tooltip, data, root, frame)
     if root then
         root:SetTooltip(function(tip, description)
-            set_tooltip(tip, description.data)
+            self:set_tooltip(tip, description.data)
         end)
     elseif frame then
         tooltip= tooltip or GameTooltip
         tooltip:SetOwner(frame, "ANCHOR_LEFT");
-        set_tooltip(tooltip, data)
+        tooltip:ClearLines()
+        self:set_tooltip(tooltip, data)
         tooltip:Show();
     else
-        set_tooltip(tooltip, data)
+        self:set_tooltip(tooltip, data)
     end
 end
 

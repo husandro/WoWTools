@@ -1,4 +1,10 @@
-WoWTools_ItemMixin={}
+local e= select(2, ...)
+
+WoWTools_ItemMixin={
+    --GetTooltip
+    --GetLink
+    --GetColor return color.r, color.g, color.b, color.hex, color
+}
 
 function WoWTools_ItemMixin:GetTooltip(tab)
     local tooltipData
@@ -118,4 +124,43 @@ function WoWTools_ItemMixin:GetTooltip(tab)
         end
     end
     return data
+end
+
+
+
+
+
+
+
+
+
+
+function WoWTools_ItemMixin:GetColor(itemID, quality)
+    local color= ITEM_QUALITY_COLORS[quality or (itemID and C_Item.GetItemQualityByID(itemID))]
+    if color then
+        return color.r, color.g, color.b, color.hex, color
+    end
+end
+
+
+
+
+
+function WoWTools_ItemMixin:GetLink(itemID)
+    local link
+    if itemID then
+        link= select(2, C_Item.GetItemInfo(itemID))
+        if not link then
+            e.LoadDate({id=itemID, type='item'})
+            local name= e.cn(nil, {itemID=itemID, isName=true})
+            link= '|Hitem:'..itemID..'::::::::::::::::::|h['..(name or itemID)..']|h'
+            if not name then
+                local hex= select(4, self:GetColor(itemID, nil))
+                if hex then
+                    link= hex..link..'|r'
+                end
+            end
+        end
+    end
+    return link
 end

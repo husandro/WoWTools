@@ -1727,7 +1727,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Save.loot[e.Player.class]= Save.loot[e.Player.class] or {}
                 Save.favorites=Save.favorites or {}
             else
-                Save= WoWToolsSave['Adventure_Journal']
+                Save= WoWToolsSave['Adventure_Journal'] or Save
             end
 
             addName= '|A:UI-HUD-MicroMenu-AdventureGuide-Mouseover:0:0|a'..(e.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL)

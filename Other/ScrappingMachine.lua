@@ -104,7 +104,7 @@ function Init_Menu(self, level, menuList)
         for itemID in pairs(Save.items) do
             e.LoadDate({id=itemID, type='item'})
             e.LibDD:UIDropDownMenu_AddButton({
-                text= ItemUtil.GetItemHyperlink(itemID) or itemID,
+                text= WoWTools_ItemMixin:GetLink(itemID),
                 icon= C_Item.GetItemIconByID(itemID),
                 tooltipOnButton=true,
                 tooltipTitle= itemID,
@@ -114,7 +114,7 @@ function Init_Menu(self, level, menuList)
                 keepShownOnClick=true,
                 func= function(_, arg1)
                     Save.items[arg1]=nil
-                    print(e.addName, Initializer:GetName(), e.onlyChinese and '移除' or REMOVE, ItemUtil.GetItemHyperlink(itemID) or itemID)
+                    print(e.addName, Initializer:GetName(), e.onlyChinese and '移除' or REMOVE, WoWTools_ItemMixin:GetLink(itemID))
                 end
             }, level)
             n=n+1

@@ -242,12 +242,12 @@ local function creatd_button(index, parent)
     btn:SetScript('OnEnter', function(self)
         self:set_tooltips()
         if self.bagID then
-            e.FindBagItem(true, {bag={bag=self.bagID, slot=self.slotID}})
+            WoWTools_BagMixin:Find(true, {bag={bag=self.bagID, slot=self.slotID}})
         end
     end)
     btn:SetScript('OnLeave', function(self)
         GameTooltip_Hide()
-        e.FindBagItem()
+        WoWTools_BagMixin:Find()
     end)
     if index then
         Frame.buttons[index]= btn
@@ -692,10 +692,10 @@ local function Init_ItemSocketingFrame_Update()
                 btn.gemButton:SetScript('OnShow',  btn.gemButton.set_event)
                 btn.gemButton:SetScript('OnHide',  btn.gemButton.set_event)
                 btn.gemButton:SetScript('OnLeave', function(self)
-                    e.FindBagItem(false)
+                    WoWTools_BagMixin:Find(false)
                 end)
                 btn.gemButton:SetScript('OnEnter', function(self)
-                    e.FindBagItem(true, {itemID=self.gemID})
+                    WoWTools_BagMixin:Find(true, {itemID=self.gemID})
                 end)
                 btn.gemButton:SetScript('OnClick', function(self)
                     for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES do

@@ -102,7 +102,7 @@ function WoWTools_MenuMixin:Scale(root, GetValue, SetValue, checkGetValue, check
         step=0.05,
         bit='%0.2f',
         tooltip=function(tooltip)
-            tooltip:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE)
+            tooltip:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE, UnitAffectingCombat('player') and ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)))
         end
     })
 

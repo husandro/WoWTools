@@ -232,9 +232,9 @@ local function init_Item_Button(self, equip)--设置按钮
         e.tips:ClearLines()
         e.tips:SetItemByID(self.itemID)
         e.tips:Show()
-        e.FindBagItem(true, {itemID= self.itemID})--查询，背包里物品
+        WoWTools_BagMixin:Find(true, {itemID= self.itemID})--查询，背包里物品
     end)
-    self:SetScript('OnLeave', function() e.FindBagItem(false) GameTooltip_Hide() end)
+    self:SetScript('OnLeave', function() WoWTools_BagMixin:Find(false) GameTooltip_Hide() end)
     self:SetScript("OnEvent", function(self2, event, arg1)
         if event=='BAG_UPDATE_DELAYED' then
             set_Item_Count(self2)

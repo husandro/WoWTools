@@ -182,7 +182,7 @@ function e.Set_Item_Info(self, tab)
         local itemKeyInfo = C_AuctionHouse.GetItemKeyInfo(tab.itemKey) or {}
         itemID= tab.itemKey.itemID or itemKeyInfo.itemID
         itemLevel= tab.itemKey.itemLevel
-        itemLink= itemKeyInfo.battlePetLink or (itemID and ItemUtil.GetItemHyperlink(itemID))
+        itemLink= itemKeyInfo.battlePetLink or WoWTools_ItemMixin:GetLink(itemID)
         itemQuality= itemKeyInfo.quality
         battlePetSpeciesID= tab.itemKey.battlePetSpeciesID
     end
@@ -1342,7 +1342,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 if PerksProgramFrame.GetFrozenItemFrame then
                     local frame= PerksProgramFrame:GetFrozenItemFrame()
                     if frame then
-                        local itemLink= frame.FrozenButton.itemID and ItemUtil.GetItemHyperlink(frame.FrozenButton.itemID)
+                        local itemLink= frame.FrozenButton.itemID and WoWTools_ItemMixin:GetLink(frame.FrozenButton.itemID)
                         e.Set_Item_Info(frame.FrozenButton, {itemLink=itemLink, size=12})
                     end
                 end
@@ -1353,12 +1353,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
                 for _, btn in pairs(self2:GetFrames()) do
                     if btn.itemID then
-                        local itemLink= btn.itemID and ItemUtil.GetItemHyperlink(btn.itemID)
+                        local itemLink= WoWTools_ItemMixin:GetLink(btn.itemID)
                         e.Set_Item_Info(btn.ContentsContainer, {itemLink=itemLink, point=btn.ContentsContainer.Icon, size=12})
                     elseif btn.GetItemInfo then--10.2
                         local itemInfo=btn:GetItemInfo()
                         if itemInfo then
-                            local itemLink= itemInfo.itemID and ItemUtil.GetItemHyperlink(itemInfo.itemID)
+                            local itemLink= WoWTools_ItemMixin:GetLink(itemInfo.itemID)
                             e.Set_Item_Info(btn.ContentsContainer, {itemLink=itemLink, point=btn.ContentsContainer.Icon, size=12})
                         end
                     end

@@ -124,7 +124,7 @@ local function Remove_Toy(itemID)--移除
     elseif ToyButton.itemID==itemID then
         ToyButton:Init_Random(Save.lockedToy)
     end
-    print(e.addName, addName, e.onlyChinese and '移除' or REMOVE, ItemUtil.GetItemHyperlink(itemID) or itemID)
+    print(e.addName, addName, e.onlyChinese and '移除' or REMOVE, WoWTools_ItemMixin:GetLink(itemID))
 end
 
 
@@ -319,7 +319,7 @@ local function Init_Menu(self, root)
                 if not PlayerHasToy(itemID) then
                     Save.items[itemID]=nil
                     n=n+1
-                    print(n, ItemUtil.GetItemHyperlink(itemID) or ('itemID '..itemID), e.onlyChinese and '移除' or REMOVE)
+                    print(n, e.onlyChinese and '移除' or REMOVE, WoWTools_ItemMixin:GetLink(itemID))
                 end
             end
             if n>0 then
