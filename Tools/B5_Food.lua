@@ -63,11 +63,6 @@ local function Set_Button_Function(btn)
     btn.numCount=0
     btn.enableCooldown=true
 
-    btn:SetScript("OnLeave", function()
-        GameTooltip_Hide()
-        WoWTools_BagMixin:Find(false)
-    end)
-
     function btn:set_attribute()
         local icon= C_Item.GetItemIconByID(self.itemID) or 0
         self.texture:SetTexture(icon)
@@ -83,6 +78,7 @@ local function Set_Button_Function(btn)
                 self:SetAttribute("item1", name)
             end
         else
+            self.isSetAttributeInCombat=true
             self:RegisterEvent('PLAYER_REGEN_ENABLED')
         end
     end
@@ -95,11 +91,7 @@ local function Set_Button_Function(btn)
 
     function btn:set_count()
         local num= C_Item.GetItemCount(self.itemID, false, true, true, false)--  false, true, true)
-        self.count:SetText(
-            num>1 and num
-            or ((num==1 and Save.autoWho) and num)
-            or ''
-        )
+        self.count:SetText(num~=1 and num or '')
         self.numCount=num
     end
 
@@ -150,6 +142,7 @@ local function Create_Button(index)
         if event=='BAG_UPDATE_DELAYED' then
             self:set_count()
             self:set_desaturated()
+
         elseif event=='BAG_UPDATE_COOLDOWN' then
             self:set_cool()
             self:set_desaturated()
@@ -159,25 +152,32 @@ local function Create_Button(index)
                 self:set_attribute()
                 self:UnregisterEvent('GET_ITEM_INFO_RECEIVED')
             end
+
         elseif event=='PLAYER_REGEN_ENABLED' then
             self:set_attribute()
+            self.isSetAttributeInCombat=nil
             self:UnregisterEvent('PLAYER_REGEN_ENABLED')
         end
     end)
 
 
-    btn:SetScript('OnLeave', GameTooltip_Hide)
+    btn:SetScript("OnLeave", function()
+        GameTooltip_Hide()
+        WoWTools_BagMixin:Find()
+    end)
+
     btn:SetScript('OnEnter', function(self)
         if UnitAffectingCombat('player') then
             return
         end
         WoWTools_SpellItemMixin:SetTooltip(e.tips, {
             itemID=self.itemID,
-            tooltip='|A:dressingroom-button-appearancelist-up:0:0|a'
+            tooltip='|n|A:dressingroom-button-appearancelist-up:0:0|a'
                 ..(UnitAffectingCombat('player') and '|cff9e9e9e' or '')
                 ..(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU)..e.Icon.right,
         }, nil, self)
         self:settings()
+        WoWTools_BagMixin:Find(true, {itemID= self.itemID})--查询，背包里物品
     end)
 
     btn:SetScript('OnMouseDown',function(self, d)
@@ -186,7 +186,7 @@ local function Create_Button(index)
         end
         if d=='RightButton' then
             MenuUtil.CreateContextMenu(self, function(f, root)
-                root:CreateButton(e.onlyChinese and '禁用' or DISABLE, function()
+                root:CreateButton('|T'..(C_Item.GetItemIconByID(f.itemID) or 0)..':0|t'..(e.onlyChinese and '禁用' or DISABLE), function()
                     Save.noUseItems[self.itemID]=true
                     print(e.addName, addName, e.onlyChinese and '禁用' or DISABLE, WoWTools_ItemMixin:GetLink(self.itemID))
                     UseButton:Check_Items()
@@ -230,18 +230,66 @@ end
 
 
 
+local function Check_All_SubClass(setClassID)
+    Save.class[setClassID]= Save.class[setClassID] or {}
+    for subClassID= 0, 20 do
+        local subClass=C_Item.GetItemSubClassInfo(setClassID, subClassID)
+        if subClass then
+            Save.class[setClassID][subClassID]=true
+        else
+            break
+        end
+    end
+end
 
 
 
 
 
+local function Check_All_Menu(self, root, setClassID)
+    root:CreateDivider()
+    local sub=root:CreateButton(e.onlyChinese and '勾选所有' or CHECK_ALL, function(data)
+        if not IsControlKeyDown() then
+            return MenuResponse.Open
+        end
 
+        do
+            if data.classID then
+                Check_All_SubClass(data.classID)
+            else
+                Save.class={}
+                for classID=0, 20 do
+                    if not DisableClassID[classID] then
+                        class= C_Item.GetItemClassInfo(classID)
+                        if class then
+                            Save.class[classID]= {}
+                            Check_All_SubClass(classID)
+                        else
+                            break
+                        end
+                    end
+                end
+            end
+        end
+        self:Check_Items()
+        return MenuResponse.Refresh
+    end, {classID=setClassID})
+    sub:SetTooltip(function(tooltip) tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..e.Icon.left) end)
 
-
-
-
-
-
+    --撤选所有
+    sub=root:CreateButton(e.onlyChinese and '撤选所有' or UNCHECK_ALL, function(data)
+        if IsControlKeyDown() then
+            if data.classID then
+                Save.class[data.classID]= nil
+            else
+                Save.class={}
+            end
+            self:Check_Items()
+        end
+        return MenuResponse.Refresh
+    end, {classID=setClassID})
+    sub:SetTooltip(function(tooltip) tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..e.Icon.left) end)
+end
 
 
 
@@ -291,47 +339,6 @@ local function Init_Menu(self, root)
         self:Check_Items(true)
     end)
 
---勾选所有
-    sub2=sub:CreateButton(e.onlyChinese and '勾选所有' or CHECK_ALL, function()
-        if not IsControlKeyDown() then
-            return
-        end
-        do
-            Save.class={}
-            for classID=0, 20 do
-                if not DisableClassID[classID] then
-                    class= C_Item.GetItemClassInfo(classID)
-                    if class then
-                        Save.class[classID]= {}
-                        for subClassID= 0, 20 do
-                            subClass=C_Item.GetItemSubClassInfo(classID, subClassID)
-                            if subClass then
-                                Save.class[classID][subClassID]=true
-                            end
-                        end
-                    else
-                        break
-                    end
-                end
-            end
-        end
-        self:Check_Items()
-        return MenuResponse.Open
-    end)
-    sub2:SetTooltip(function(tooltip) tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..e.Icon.left) end)
-
---撤选所有
-    sub2=sub:CreateButton(e.onlyChinese and '撤选所有' or UNCHECK_ALL, function()
-        if IsControlKeyDown() then
-            Save.class={}
-            self:Check_Items()   
-        end
-        return MenuResponse.Open
-    end)
-    sub2:SetTooltip(function(tooltip) tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..e.Icon.left) end)
-
-
-    sub:CreateDivider()
 --登录游戏时: 查找
     sub2=sub:CreateCheckbox(e.onlyChinese and '登录游戏时: 查找' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SOCIAL_TWITTER_SIGN_IN, GAME)..': '..WHO, function()
         return Save.autoLogin
@@ -450,6 +457,7 @@ local function Init_Menu(self, root)
                     )
                 end)
 
+                
 
                 for subClassID= 0, 20 do
                     subClass=C_Item.GetItemSubClassInfo(classID, subClassID)
@@ -472,12 +480,15 @@ local function Init_Menu(self, root)
                         break
                     end
                 end
+
+                Check_All_Menu(self, sub, classID)
             else
                 break
             end
         end
     end
 
+    Check_All_Menu(self, root, nil)
 end
 
 
@@ -691,12 +702,13 @@ end]]
 --####
 local function Init()
     UseButton.RePoint={UseButton:GetPoint(1)}
+    UseButton.texture:SetTexture(538745)
 
     function UseButton:Check_Items(isPrint)--检查,物品
         if self.isChecking then--正在查询
             return
         elseif not self:CanChangeAttribute() then
-            self.bat=true
+            self.isCheckInCombat=true
             self:RegisterEvent('PLAYER_REGEN_ENABLED')
             return
         end
@@ -757,7 +769,7 @@ local function Init()
 
 
 
-  
+
     function UseButton:set_strata()
         self:SetFrameStrata(Save.strata or 'MEDIUM')
     end
@@ -818,18 +830,32 @@ local function Init()
 
 
 
-    UseButton:SetScript('OnEvent', function(self, event)
+    UseButton:SetScript('OnEvent', function(self, event, arg1, arg2)
         if event=='BAG_UPDATE_DELAYED' then
-            self:Check_Items()--检查,物品
+            if Save.autoWho then
+                self:Check_Items()--检查,物品
+            end
+            self:set_count()
+            self:set_desaturated()
+
+        elseif event=='BAG_UPDATE_COOLDOWN' then
+            self:set_cool()
+            self:set_desaturated()
+
+        elseif event=='GET_ITEM_INFO_RECEIVED' then
+            if arg1==self.itemID and arg2 then
+                self:set_attribute()
+                self:UnregisterEvent('GET_ITEM_INFO_RECEIVED')
+            end
 
         elseif event=='PLAYER_REGEN_ENABLED' then
-            if self.bat then
+            if self.isCheckInCombat then
                 self:Check_Items()--检查,物品
-                self.bat=nil
-
-            elseif self.setInitBat then
-                Init()--初始
-                self.setInitBat=nil
+                self.isCheckInCombat=nil
+            end
+            if self.isSetAttributeInCombat then
+                self:set_attribute()
+                self.isSetAttributeInCombat=nil
             end
             self:UnregisterEvent('PLAYER_REGEN_ENABLED')
         end
@@ -844,7 +870,10 @@ local function Init()
         e.tips:AddDoubleLine((UnitAffectingCombat('player') and '|cff9e9e9e' or '')..(e.onlyChinese and '查询' or WHO), e.Icon.mid)
         e.tips:Show()
     end
-    UseButton:SetScript('OnLeave', GameTooltip_Hide)
+    UseButton:SetScript('OnLeave', function()
+        GameTooltip_Hide()
+        WoWTools_BagMixin:Find()--查询，背包里物品
+    end)
     UseButton:SetScript("OnEnter",function(self)
         self:set_tooltip()
         WoWTools_BagMixin:Find(true, {itemID= self.itemID})--查询，背包里物品
@@ -859,15 +888,15 @@ local function Init()
 
 
 
-
-
+    UseButton:RegisterEvent('BAG_UPDATE_DELAYED')
+    UseButton:RegisterEvent('BAG_UPDATE_COOLDOWN')
+    UseButton.itemID= 5512--治疗石 538745
+    Set_Button_Function(UseButton)
+    UseButton:settings()
 
     if Save.autoLogin or Save.autoWho then
         UseButton:Check_Items()
     end
-
-    UseButton.itemID= 5512--治疗石 538745
-    Set_Button_Function(UseButton)
 
 
     UseButton:set_strata()
@@ -875,9 +904,6 @@ local function Init()
     if Save.point then
         UseButton:set_point()
     end
-
-
-
 end
 
 

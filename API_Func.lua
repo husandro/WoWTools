@@ -31,7 +31,6 @@ e.IS_Chinese_Text(str)--字符中，是否有汉字
 e.GetExpansionText(expacID, questID)--版本数据
 e.Is_In_PvP_Area()--是否在，PVP区域中
 e.IsAtlas(texture)--Atlas or Texture
-e.LoadDate(tab)--e.LoadDate({id=, type=''})--加载 item quest spell, uiMapID
 
 e.MK(number, bit)
 e.GetShowHide(sh, all) 显示/隐藏
@@ -185,39 +184,6 @@ function e.IsAtlas(texture)--Atlas or Texture
     return isAtlas, textureID, icon
 end
 
-function e.LoadDate(tab)--e.LoadDate({id=, type=''})--加载 item quest spell, uiMapID
-    if not tab or not tab.id then
-        return
-    end
-    if tab.type=='quest' then
-        C_QuestLog.RequestLoadQuestByID(tab.id)
-        if not HaveQuestRewardData(tab.id) then
-            C_TaskQuest.RequestPreloadRewardData(tab.id)
-        end
-
-    elseif tab.type=='spell' then
-        local spellID= tab.id
-        if type(tab.id)=='string' then
-            spellID= (C_Spell.GetSpellInfo(tab.id) or {}).spellID
-        end
-        if spellID and not C_Spell.IsSpellDataCached(spellID) then
-            C_Spell.RequestLoadSpellData(spellID)
-        end
-
-    elseif tab.type=='item' then
-        local itemID= tab.id
-        itemID= itemID or (tab.itemLink and tab.itemLink:match('|Hitem:(%d+):'))
-        if itemID and not C_Item.IsItemDataCachedByID(itemID) then
-            C_Item.RequestLoadItemDataByID(itemID)
-        end
-
-    elseif tab.type=='mapChallengeModeID' then
-        C_ChallengeMode.RequestLeaders(tab.id)
-
-    elseif tab.typ=='club' then
-        C_Club.RequestTickets(tab.id)
-    end
-end
 
 
 

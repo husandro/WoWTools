@@ -53,39 +53,6 @@ e.GetGroupGuidDate()--队伍数据收集
 
 
 
-local itemLoadTab={--加载法术,或物品数据
-        134020,--玩具,大厨的帽子
-        6948,--炉石
-        140192,--达拉然炉石
-        110560,--要塞炉石
-        5512,--治疗石
-        8529,--诺格弗格药剂
-        38682,--附魔纸
-    }
-local spellLoadTab={
-    818,--火    
-    179244,--[召唤司机]
-    179245,--[召唤司机]
-    33388,--初级骑术
-    33391,--中级骑术
-    34090,--高级骑术
-    34091,--专家级骑术
-    90265,--大师级骑术
-    783,--旅行形态
-    436854,--切换飞行模式 C_MountJournal.GetDynamicFlightModeSpellID()
-}
-
-
-for _, itemID in pairs(itemLoadTab) do
-    e.LoadDate({id=itemID, type='item'})
-end
-for _, spellID in pairs(spellLoadTab) do
-    e.LoadDate({id=spellID, type='spell'})
-end
-
-
-
-
 
 
 

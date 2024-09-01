@@ -1,0 +1,70 @@
+local e= select(2, ...)
+
+function e.LoadDate(tab)--e.LoadDate({id=, type=''})--加载 item quest spell, uiMapID
+    if not tab or not tab.id then
+        return
+    end
+    if tab.type=='quest' then
+        C_QuestLog.RequestLoadQuestByID(tab.id)
+        if not HaveQuestRewardData(tab.id) then
+            C_TaskQuest.RequestPreloadRewardData(tab.id)
+        end
+
+    elseif tab.type=='spell' then
+        local spellID= tab.id
+        if type(tab.id)=='string' then
+            spellID= (C_Spell.GetSpellInfo(tab.id) or {}).spellID
+        end
+        if spellID and not C_Spell.IsSpellDataCached(spellID) then
+            C_Spell.RequestLoadSpellData(spellID)
+        end
+
+    elseif tab.type=='item' then
+        local itemID= tab.id
+        itemID= itemID or (tab.itemLink and tab.itemLink:match('|Hitem:(%d+):'))
+        if itemID and not C_Item.IsItemDataCachedByID(itemID) then
+            C_Item.RequestLoadItemDataByID(itemID)
+        end
+
+    elseif tab.type=='mapChallengeModeID' then
+        C_ChallengeMode.RequestLeaders(tab.id)
+
+    elseif tab.typ=='club' then
+        C_Club.RequestTickets(tab.id)
+    end
+end
+
+
+
+local itemLoadTab={--加载法术,或物品数据
+        134020,--玩具,大厨的帽子
+        6948,--炉石
+        140192,--达拉然炉石
+        110560,--要塞炉石
+        5512,--治疗石
+        8529,--诺格弗格药剂
+        38682,--附魔纸
+        5512--治疗石
+    }
+local spellLoadTab={
+    818,--火    
+    179244,--[召唤司机]
+    179245,--[召唤司机]
+    33388,--初级骑术
+    33391,--中级骑术
+    34090,--高级骑术
+    34091,--专家级骑术
+    90265,--大师级骑术
+    783,--旅行形态
+    436854,--切换飞行模式 C_MountJournal.GetDynamicFlightModeSpellID()
+}
+
+
+for _, itemID in pairs(itemLoadTab) do
+    e.LoadDate({id=itemID, type='item'})
+end
+for _, spellID in pairs(spellLoadTab) do
+    e.LoadDate({id=spellID, type='spell'})
+end
+
+
