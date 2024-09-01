@@ -180,26 +180,18 @@ local function Create_Button(index)
         self:settings()
     end)
 
-    function btn:disabled_item()
-        Save.noUseItems[self.itemID]=true
-        print(e.addName, addName, e.onlyChinese and '禁用' or DISABLE, WoWTools_ItemMixin:GetLink(self.itemID))
-    end
-
     btn:SetScript('OnMouseDown',function(self, d)
         if UnitAffectingCombat('player') then
             return
         end
-
         if d=='RightButton' then
-            if IsShiftKeyDown() then
-                self:disabled_item()
-            else
-                MenuUtil.CreateContextMenu(self, function(f, root)
-                    root:CreateButton(e.onlyChinese and '禁用' or DISABLE, function()
-                        self:disabled_item()
-                    end)
+            MenuUtil.CreateContextMenu(self, function(f, root)
+                root:CreateButton(e.onlyChinese and '禁用' or DISABLE, function()
+                    Save.noUseItems[self.itemID]=true
+                    print(e.addName, addName, e.onlyChinese and '禁用' or DISABLE, WoWTools_ItemMixin:GetLink(self.itemID))
+                    UseButton:Check_Items()
                 end)
-            end
+            end)
         end
     end)
 
@@ -236,70 +228,6 @@ end
 
 
 
-local function Check_Items(isPrint)--检查,物品
-    local self=UseButton
-
-    if self.isChecking then--正在查询
-        return
-    elseif not self:CanChangeAttribute() then
-        self.bat=true
-        self:RegisterEvent('PLAYER_REGEN_ENABLED')
-        return
-    end
-    self.isChecking=true
-
-    local items={}
-    for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES do-- + NUM_REAGENTBAG_FRAMES
-        for slot=1, C_Container.GetContainerNumSlots(bag) do
-            local itemID= C_Container.GetContainerItemID(bag, slot)
-            if Get_Item_Valid(itemID) then
-                local classID, subClassID, _, expacID = select(12, C_Item.GetItemInfo(itemID))
-                if subClassID and Save.class[classID] and Save.class[classID][subClassID]
-                    and (e.Is_Timerunning
-                            or (Save.onlyMaxExpansion and (itemID==113509 or e.ExpansionLevel==expacID) or not Save.onlyMaxExpansion)
-                        )
-                then
-                    items[itemID]=true
-                end
-            end
-        end
-    end
-
-    local new={}
-    for itemID in pairs(items) do
-        table.insert(new, itemID)
-    end
-    table.sort(new)
-
-
-    local index=1
-    for _, itemID in pairs(new) do
-        local btn= Buttons[index] or Create_Button(index)--创建
-        btn.itemID= itemID
-        btn:settings()
-        if not btn:IsShown() then
-            btn:set_event()
-            btn:Show()
-        end
-        index= index +1
-    end
-
-    for i= index , #Buttons do
-        local btn= Buttons[i]
-        btn.itemID=nil
-        btn:SetAttribute("type1", nil)
-        btn:SetAttribute("item1", nil)
-        btn.texture:SetTexture(0)
-        btn:SetShown(false)
-        e.Ccool(btn)
-        btn:UnregisterAllEvents()
-    end
-
-    if isPrint then
-        print(e.addName, addName, e.onlyChinese and '查询完成' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WHO, COMPLETE) )
-    end
-    self.isChecking=nil
-end
 
 
 
@@ -360,7 +288,7 @@ local function Init_Menu(self, root)
 
 --查找
     sub=root:CreateButton('|cnGREEN_FONT_COLOR:|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '查找' or WHO).. e.Icon.mid, function()
-        Check_Items(true)
+        self:Check_Items(true)
     end)
 
 --勾选所有
@@ -387,7 +315,7 @@ local function Init_Menu(self, root)
                 end
             end
         end
-        Check_Items()
+        self:Check_Items()
         return MenuResponse.Open
     end)
     sub2:SetTooltip(function(tooltip) tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..e.Icon.left) end)
@@ -396,7 +324,7 @@ local function Init_Menu(self, root)
     sub2=sub:CreateButton(e.onlyChinese and '撤选所有' or UNCHECK_ALL, function()
         if IsControlKeyDown() then
             Save.class={}
-            Check_Items()   
+            self:Check_Items()   
         end
         return MenuResponse.Open
     end)
@@ -420,7 +348,7 @@ local function Init_Menu(self, root)
     end, function()
         Save.autoWho= not Save.autoWho and true or nil
         if Save.autoWho then
-            Check_Items()
+            self:Check_Items()
         end
     end)
     sub2:SetTooltip(function(tooltip)
@@ -436,7 +364,7 @@ local function Init_Menu(self, root)
             return Save.onlyMaxExpansion
         end, function()
             Save.onlyMaxExpansion= not Save.onlyMaxExpansion and true or nil
-            Check_Items()
+            self:Check_Items()
         end)
     end
 
@@ -512,7 +440,7 @@ local function Init_Menu(self, root)
                             end
                         end
                     end
-                    Check_Items()
+                    self:Check_Items()
                 end, {classID=classID})
                 sub:SetTooltip(function(tooltip, description)
                     tooltip:AddLine(
@@ -538,7 +466,7 @@ local function Init_Menu(self, root)
                                 Save.class[data.classID]= Save.class[data.classID] or {}
                                 Save.class[data.classID][data.subClassID]= true
                             end
-                            Check_Items()
+                            self:Check_Items()
                         end, {classID=classID, subClassID=subClassID})
                     else
                         break
@@ -572,7 +500,7 @@ end
                 tooltipTitle=e.Icon.left..(e.onlyChinese and '移除' or REMOVE),
                 func=function()
                     Save.noUseItems[itemID]=nil
-                    Check_Items()
+                    self:Check_Items()
                 end
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -585,7 +513,7 @@ end
             keepShownOnClick=true,
             func= function()
                 Save.noUseItems={}
-                Check_Items()
+                self:Check_Items()
                 print(e.addName, addName, CLEAR_ALL, DISABLE, ITEMS, DONE)
             end
         }
@@ -615,7 +543,7 @@ end
             func= function()
                 Save.autoWho= not Save.autoWho and true or nil
                 if Save.autoWho then
-                    Check_Items()
+                    self:Check_Items()
                 end
                 set_autowho_event()--设置事件,自动更新
             end
@@ -631,7 +559,7 @@ if not e.Is_Timerunning then
             tooltipTitle= e.ExpansionLevel,
             func= function()
                 Save.onlyMaxExpansion= not Save.onlyMaxExpansion and true or nil
-                Check_Items()
+                self:Check_Items()
             end,
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -650,7 +578,7 @@ end
                     tooltipText= tab.subclassName..' subClassID |cnGREEN_FONT_COLOR:'..tab.subClassID..'|r',
                     func=function()
                         Save.itemClass[tab.className..tab.subclassName]= not Save.itemClass[tab.className..tab.subclassName] and true or nil
-                        Check_Items()
+                        self:Check_Items()
                     end
                 }
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -671,7 +599,7 @@ end
         tooltipOnButton=true,
         tooltipTitle= e.onlyChinese and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN,
         func= function()
-            Check_Items()
+            self:Check_Items()
         end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -699,7 +627,7 @@ end
         keepShownOnClick=true,
         func= function()
             Save.itemClass={}
-            Check_Items()
+            self:Check_Items()
             print(e.addName, addName, CALENDAR_EVENT_REMOVED_MAIL_SUBJECT:format(ALL), DONE)
         end
     }
@@ -764,34 +692,72 @@ end]]
 local function Init()
     UseButton.RePoint={UseButton:GetPoint(1)}
 
-    --[[UseButton.numItemClass=0
+    function UseButton:Check_Items(isPrint)--检查,物品
+        if self.isChecking then--正在查询
+            return
+        elseif not self:CanChangeAttribute() then
+            self.bat=true
+            self:RegisterEvent('PLAYER_REGEN_ENABLED')
+            return
+        end
+        self.isChecking=true
 
-    for classID=0, 20 do
-        if not DisableClassID[classID] then
-        local className= C_Item.GetItemClassInfo(classID)--生成,物品列表
-        if className then
-            for subClassID= 0, 20 do
-                local subclassName=C_Item.GetItemSubClassInfo(classID, subClassID)
-                if subclassName and subclassName~='' then
-                    local tab={
-                        className=className,
-                        subclassName=subclassName,
-                        classID=classID,
-                        subClassID=subClassID
-                    }
-                    table.insert(UseButton.itemClass, tab)
-                else
-                    break
+        local items={}
+        for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES do-- + NUM_REAGENTBAG_FRAMES
+            for slot=1, C_Container.GetContainerNumSlots(bag) do
+                local itemID= C_Container.GetContainerItemID(bag, slot)
+                if Get_Item_Valid(itemID) then
+                    local classID, subClassID, _, expacID = select(12, C_Item.GetItemInfo(itemID))
+                    if subClassID and Save.class[classID] and Save.class[classID][subClassID]
+                        and (e.Is_Timerunning
+                                or (Save.onlyMaxExpansion and (itemID==113509 or e.ExpansionLevel==expacID) or not Save.onlyMaxExpansion)
+                            )
+                    then
+                        items[itemID]=true
+                    end
                 end
             end
-        else
-            break
         end
 
-    end]]
+        local new={}
+        for itemID in pairs(items) do
+            table.insert(new, itemID)
+        end
+        table.sort(new)
+
+
+        local index=1
+        for _, itemID in pairs(new) do
+            local btn= Buttons[index] or Create_Button(index)--创建
+            btn.itemID= itemID
+            btn:settings()
+            if not btn:IsShown() then
+                btn:set_event()
+                btn:Show()
+            end
+            index= index +1
+        end
+
+        for i= index , #Buttons do
+            local btn= Buttons[i]
+            btn.itemID=nil
+            btn:SetAttribute("type1", nil)
+            btn:SetAttribute("item1", nil)
+            btn.texture:SetTexture(0)
+            btn:SetShown(false)
+            e.Ccool(btn)
+            btn:UnregisterAllEvents()
+        end
+
+        if isPrint then
+            print(e.addName, addName, e.onlyChinese and '查询完成' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WHO, COMPLETE) )
+        end
+        self.isChecking=nil
+    end
 
 
 
+  
     function UseButton:set_strata()
         self:SetFrameStrata(Save.strata or 'MEDIUM')
     end
@@ -840,12 +806,12 @@ local function Init()
 
 
     UseButton:SetScript("OnMouseUp", ResetCursor)
-    UseButton:SetScript('OnMouseWheel',function(_,d)
+    UseButton:SetScript('OnMouseWheel',function(self, d)
         if not IsModifierKeyDown() then
             if UnitAffectingCombat('player') then
                 print(addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
             else
-                Check_Items(true)
+                self:Check_Items(true)
             end
         end
     end)
@@ -854,11 +820,11 @@ local function Init()
 
     UseButton:SetScript('OnEvent', function(self, event)
         if event=='BAG_UPDATE_DELAYED' then
-            Check_Items()--检查,物品
+            self:Check_Items()--检查,物品
 
         elseif event=='PLAYER_REGEN_ENABLED' then
             if self.bat then
-                Check_Items()--检查,物品
+                self:Check_Items()--检查,物品
                 self.bat=nil
 
             elseif self.setInitBat then
@@ -884,8 +850,20 @@ local function Init()
         WoWTools_BagMixin:Find(true, {itemID= self.itemID})--查询，背包里物品
     end)
 
+
+
+
+
+
+
+
+
+
+
+
+
     if Save.autoLogin or Save.autoWho then
-        Check_Items()
+        UseButton:Check_Items()
     end
 
     UseButton.itemID= 5512--治疗石 538745
