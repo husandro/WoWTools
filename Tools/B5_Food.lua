@@ -167,16 +167,16 @@ local function Create_Button(index)
     end)
 
     btn:SetScript('OnEnter', function(self)
-        if UnitAffectingCombat('player') then
-            return
-        end
+        local isInCombat= UnitAffectingCombat('player')
         WoWTools_SpellItemMixin:SetTooltip(e.tips, {
             itemID=self.itemID,
             tooltip='|n|A:dressingroom-button-appearancelist-up:0:0|a'
-                ..(UnitAffectingCombat('player') and '|cff9e9e9e' or '')
+                ..(isInCombat and '|cff9e9e9e' or '')
                 ..(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU)..e.Icon.right,
         }, nil, self)
-        self:settings()
+        if not isInCombat then
+            self:settings()
+        end
         WoWTools_BagMixin:Find(true, {itemID= self.itemID})--查询，背包里物品
     end)
 
