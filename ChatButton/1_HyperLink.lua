@@ -93,13 +93,7 @@ local function Set_Realm(link)--去服务器为*, 加队友种族图标,和N,T
     local name= split and split:match('player:(.-):') or link:match('|Hplayer:.-|h%[|cff......(.-)|r]') or link:match('|Hplayer:.-|h%[(.-)]|h')
     local server= name and name:match('%-(.+)')
     if name==e.Player.name_realm or name==e.Player.name then
-        return format(
-            '|A:%s:0:0|a%s%s|r|A:%s:0:0|a',
-            e.Icon.toRight,
-            e.Player.col,
-            e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME,
-            e.Icon.toLeft
-        )
+        return '[|A:auctionhouse-icon-favorite:0:0|a'..e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r]'
     else
         local text= WoWTools_UnitMixin:GetPlayerInfo(nil, nil, name)
         if server then
