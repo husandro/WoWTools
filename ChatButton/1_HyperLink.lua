@@ -33,10 +33,8 @@ local panel= CreateFrame("Frame")
 DEFAULT_CHAT_FRAME.ADD= DEFAULT_CHAT_FRAME.AddMessage
 --local not_Colleced_Icon='|A:questlegendary:0:0|a'
 
-local LOOT_ITEM= e.Magic(LOOT_ITEM)--:gsub('%%s', '(.+)')--%s获得了战利品：%s。
+local LOOT_ITEM= LOOT_ITEM--= e.Magic(LOOT_ITEM)--:gsub('%%s', '(.+)')--%s获得了战利品：%s。
 local Category
-
-
 
 
 
@@ -564,12 +562,11 @@ local function setAddMessageFunc(self, s, ...)
 
     if not Save.notShowPlayerInfo then--不处理，玩家信息
         s=s:gsub('|Hplayer:.-]|h', Set_Realm)
-
-        if not showTimestamps and s:find(LOOT_ITEM) then--	%s获得了战利品：%s。
-            local unitName= s:match(LOOT_ITEM)
+        if not showTimestamps then
+            local unitName= s:match(LOOT_ITEM)--	%s获得了战利品：%s。
             if unitName then
-                if unitName==e.Player.name then
-                    s=s:gsub(unitName..'['..e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r]')
+                if unitName==e.Player.name or unitName==YOU then
+                    s=s:gsub(unitName, '[|A:auctionhouse-icon-favorite:0:0|a'..e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r]')
                 else
                     s=s:gsub(e.Magic(unitName), e.PlayerLink(unitName))
                 end
@@ -1444,6 +1441,8 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
 
             if LinkButton then
                 e.setPlayerSound= Save.setPlayerSound--播放, 声音
+
+                LOOT_ITEM= LOCALE_zhCN and '(.-)获得了战利品' or e.Magic(LOOT_ITEM)
 
                 Init()
 

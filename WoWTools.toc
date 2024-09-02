@@ -183,13 +183,13 @@ ChatButton\11_Combat.lua
 ##其它
 ##美酒节 Brewfest
 Other\Brewfest.lua
-##10.1 梦境之种
-Other\DormantSeeds.lua
 ##仅限猎人加载，专门，宠物管理，增强
-##Other\HunterPet10_26.lua
 Other\HunterPet.lua
 ##法术弹出框，加名称, 和颜色
 Other\SpellFrame.lua
 Other\ScrappingMachine.lua
 ##美服，欧服，服器语言，提示
 Other\Realm.lua
+
+##10.1 梦境之种
+##Other\DormantSeeds.lua

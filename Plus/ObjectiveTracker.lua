@@ -1,5 +1,6 @@
 local id, e = ...
 local Save={
+    disabled=not e.Player.husandro,
     scale= e.Player.husandro and 0.85 or 1,
     autoHide= e.Player.husandro and true or nil
 }

@@ -19,7 +19,7 @@ local TrackButton
 local Initializer
 
 local onlyIcon
-
+local FACTION_STANDING_INCREASED= FACTION_STANDING_INCREASED
 
 
 
@@ -776,11 +776,9 @@ end
 --#############
 --声望更新, 提示
 --#############
-local factionStr= FACTION_STANDING_INCREASED:gsub("%%s", "(.-)")--你在%s中的声望值提高了%d点。
-factionStr = factionStr:gsub("%%d", ".-")
-
 local function WoWTools_Faction_Updata_Filter(_, _, text, ...)
-	local name=text and text:match(factionStr)
+	local name=text and text:match(FACTION_STANDING_INCREASED)
+	
 	if not name then
 		return
 	end
@@ -1184,6 +1182,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if Save.disabled then
                 self:UnregisterAllEvents()
             else
+				FACTION_STANDING_INCREASED= LOCALE_zhCN and '你在(.+)中的声望值提高了.+点。' or e.Magic(FACTION_STANDING_INCREASED)
+
                 Init()
 				self:UnregisterEvent('ADDON_LOADED')
             end
