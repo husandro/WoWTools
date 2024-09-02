@@ -131,10 +131,17 @@ local function Set_Button_Function(btn)
         btn.enableCooldown= enable
     end
 
+    function btn:set_alpha(alpha)
+        alpha= alpha or (self.numCount>0 and 1) or 0.3
+        self.border:SetAlpha(alpha)
+        self.texture:SetAlpha(alpha)
+    end
+
     function btn:set_count()
         local num= C_Item.GetItemCount(self.itemID, false, true, true, false)--  false, true, true)
         self.count:SetText(num==0 and '|cff9e9e9e0|r' or (num~=1 and num) or '')
         self.numCount=num
+        self:set_alpha()
     end
 
 
@@ -203,9 +210,10 @@ local function Create_Button(index)
     end)
 
 
-    btn:SetScript("OnLeave", function()
+    btn:SetScript("OnLeave", function(self)
         GameTooltip_Hide()
         WoWTools_BagMixin:Find()
+        self:set_alpha()
     end)
 
     btn:SetScript('OnEnter', function(self)
@@ -219,6 +227,7 @@ local function Create_Button(index)
         if not isInCombat then
             self:settings()
         end
+        self:set_alpha(1)
         WoWTools_BagMixin:Find(true, {itemID= self.itemID})--查询，背包里物品
     end)
 
@@ -562,6 +571,12 @@ local function Init_Menu(self, root)
         WoWTools_MenuMixin:SetNumButton(sub, find)
     end
 
+--总是显示
+    sub:CreateCheckbox(e.onlyChinese and '总是显示' or BATTLEFIELD_MINIMAP_SHOW_ALWAYS, function()
+        return Save.addItemsShowAll
+    end, function()
+        Save.addItemsShowAll= not Save.addItemsShowAll and true or nil
+    end)
 
 
     find=nil
@@ -731,7 +746,7 @@ local function Init()
 
         items={}
         for itemID in pairs(Save.addItems) do
-            if C_Item.GetItemCount(itemID, false, true, false, false)>0 then
+            if Save.addItemsShowAll or C_Item.GetItemCount(itemID, false, true, true, false)>0 then
                 table.insert(items, itemID)
             end
         end
@@ -924,13 +939,15 @@ local function Init()
 
         e.tips:Show()
     end
-    UseButton:SetScript('OnLeave', function()
+    UseButton:SetScript('OnLeave', function(self)
         GameTooltip_Hide()
         WoWTools_BagMixin:Find()--查询，背包里物品
+        self:set_alpha()
     end)
     UseButton:SetScript("OnEnter",function(self)
         self:set_tooltip()
         WoWTools_BagMixin:Find(true, {itemID= self.itemID})--查询，背包里物品
+        self:set_alpha(1)
     end)
 
 

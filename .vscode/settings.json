@@ -4899,7 +4899,8 @@
         "ContainerFrameUtil_GetShownFrameForID",
         "BankPanelItemButtonMixin",
         "WoWTools_Chinese_Mixin",
-        "HIGH"
+        "HIGH",
+        "BATTLEFIELD_MINIMAP_SHOW_ALWAYS"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
