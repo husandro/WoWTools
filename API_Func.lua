@@ -291,7 +291,7 @@ local function UnitAura(unit, i, filter)
     local data= C_UnitAuras.GetAuraDataByIndex(unit, i ,filter)
     if data then
         return AuraUtil.UnpackAuraData(data)
-    end 
+    end
 end
 
 
@@ -1936,7 +1936,7 @@ function e.GetDifficultyColor(string, difficultyID)--DifficultyUtil.lua
             ['pvp']= {name= 'PvP', hex='|cffff0000', r=1, g=0, b=0},
             ['追随']= {name= e.onlyChinese and '追随' or LFG_TYPE_FOLLOWER_DUNGEON, hex='|cffb1ff00', r=0.69, g=1, b=0, a=1},
             ['地下堡']= {name= e.onlyChinese and '地下堡' or DELVES_LABEL, hex='|cffedd100', r=0.93, g=0.82, b=0, a=1},
-            
+
 
         } or {}
         local type={
@@ -2154,7 +2154,7 @@ function e.GetDurabiliy_OnEnter()--耐久度, 提示
     local num, cur2, max2= 0, 0, 0
     local isRepair, cur, max, text, _, icon, a, b
 
-    
+
     for index, tab in pairs(tabSlot) do
 
         a = GetInventoryItemTexture('player', tab[1])
