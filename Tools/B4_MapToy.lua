@@ -40,7 +40,7 @@ local Save={
     no={
         --[guid]=true
     },
-    --autoAddDisabled= e.Player.husandro,
+    autoAddDisabled= e.Player.husandro,
 }
 
 

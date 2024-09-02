@@ -4905,7 +4905,8 @@
         "UIParent",
         "SecondsToTime",
         "SOUNDKIT",
-        "FACTION_STANDING_INCREASED_ACCOUNT_WIDE"
+        "FACTION_STANDING_INCREASED_ACCOUNT_WIDE",
+        "GetText"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

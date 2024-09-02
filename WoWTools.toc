@@ -27,6 +27,7 @@ API_WoWDate.lua
 
 
 ##主要function，不能删除
+Mixin\Faction_Mixin.lua
 Mixin\Bag_Mixin.lua
 Mixin\Button_Mixin.lua
 Mixin\Unit_Mixin.lua

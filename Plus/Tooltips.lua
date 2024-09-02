@@ -1096,7 +1096,7 @@ end
 --声望
 --####
 function func:Set_Faction(tooltip, factionID)--, frame)
-    local info= factionID and e.GetFactionInfo(factionID, nil, true)
+    local info= factionID and WoWTools_FactionMinxin:GetInfo(factionID, nil, true)
     if not info.factionID then
         return
     end
