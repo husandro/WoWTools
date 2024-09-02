@@ -1568,7 +1568,7 @@ end
 
 
 
---挑战专送门标签
+--[[挑战专送门标签
 --10.2 第三赛季
 local MRoomFrame
 local function Init_M_Portal_Room_Labels()
@@ -1667,7 +1667,7 @@ local function Init_M_Portal_Room_Labels()
         ..(EJ_GetInstanceInfo(1021) or '')
         ..(mapInfo.name and '|n'..mapInfo.name or '')
     )
-end
+end]]
 
 
 
@@ -2320,7 +2320,7 @@ local function Init_Menu(_, level, menuList)
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-        if C_MythicPlus.GetCurrentSeason()==11 then
+        --[[if C_MythicPlus.GetCurrentSeason()==11 then
             info={
                 text= '|A:WarlockPortalAlliance:0:0|a'..(e.onlyChinese and '挑战传送门标签' or 'M+ Portal Room Labels'),
                 tooltipOnButton=true,
@@ -2332,7 +2332,7 @@ local function Init_Menu(_, level, menuList)
                 end
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
-        end
+        end]]
 
         info={
             text= '|A:characterupdate_clock-icon:0:0|a'..(e.onlyChinese and '时钟' or TIMEMANAGER_TITLE)..' Plus',
@@ -3026,7 +3026,7 @@ end
 local function Init()
     Init_InstanceDifficulty()--副本，难图，指示
     C_Timer.After(2, Init_Set_Button)--小地图, 标记, 文本
-    Init_M_Portal_Room_Labels()--挑战专送门标签
+    --Init_M_Portal_Room_Labels()--挑战专送门标签
 
 
 

@@ -2506,8 +2506,18 @@ local function Init_Gossip()
     end)
 
 
-
-
+    
+    
+    --[[if not StaticPopupDialogs['SPELL_CONFIRMATION_PROMPT'].OnShow then
+        StaticPopupDialogs['SPELL_CONFIRMATION_PROMPT'].OnShow=function(self, data)
+            if not self.button1:IsEnabled() or not Save.gossip or IsModifierKeyDown() then
+                return
+            end
+            if data==424700 then--离开地下堡
+               self.button1:Click() 
+            end
+        end
+    end]]
 end
 
 
@@ -3770,7 +3780,21 @@ local function Init_Blizzard_DelvesDifficultyPicker()
 
         do
             if Save.delvesDifficultyMaxLevel then
-                C_DelvesUI.RequestPartyEligibilityForDelveTiers(self.gossipOptions[num].gossipOptionID)
+                for i=num, 1, -1 do
+                    local option= self.gossipOptions[i] or {}
+                    if option.status == Enum.GossipOptionStatus.Available or option.status == Enum.GossipOptionStatus.AlreadyComplete then
+                        DelvesDifficultyPickerFrame.DelveRewardsContainerFrame:Hide();
+                        DelvesDifficultyPickerFrame:SetSelectedLevel(option.orderIndex);
+                        DelvesDifficultyPickerFrame:UpdateWidgets(option.gossipOptionID);
+                        DelvesDifficultyPickerFrame:SetSelectedOption(option);
+                        DelvesDifficultyPickerFrame.DelveRewardsContainerFrame:SetRewards();
+                        DelvesDifficultyPickerFrame:UpdatePortalButtonState();
+                        --if not UnitAffectingCombat('player') then
+                        -- SetCVar('lastSelectedDelvesTier', option.orderIndex + 1)
+                        --C_DelvesUI.RequestPartyEligibilityForDelveTiers(self.gossipOptions[num].gossipOptionID)
+                        break
+                    end
+                end
             end
         end
 
