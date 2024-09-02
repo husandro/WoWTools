@@ -133,7 +133,7 @@ local function Set_Button_Function(btn)
 
     function btn:set_count()
         local num= C_Item.GetItemCount(self.itemID, false, true, true, false)--  false, true, true)
-        self.count:SetText(num~=1 and num or '')
+        self.count:SetText(num==0 and '|cff9e9e9e0|r' or (num~=1 and num) or '')
         self.numCount=num
     end
 
