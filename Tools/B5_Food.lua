@@ -103,7 +103,7 @@ end
 
 local function Set_Button_Function(btn)
     btn:SetAttribute("type1", "item")
-    btn.count= e.Cstr(btn, {size=12, color=true})--10, nil,nil, true)
+    btn.count= e.Cstr(btn, {size=12, color={r=1,g=1,b=1}})--10, nil,nil, true)
     btn.count:SetPoint('BOTTOMRIGHT', -4,4)
     btn.numCount=0
     btn.enableCooldown=true
@@ -238,22 +238,20 @@ local function Create_Button(index)
         end
     end)
 
-    function btn:set_point(index2)
+    function btn:set_point()
         self:ClearAllPoints()
-        index2=index2 or self:GetID()
-        self:SetPoint('RIGHT', Buttons[index-1] or UseButton, 'LEFT')--位置
-
-        index2= index2 or self:GetID()
+        self:SetPoint('RIGHT', Buttons[self:GetID()-1] or UseButton, 'LEFT')
+        --[[local index2= self:GetID()
         local  num= Save.numLine
 
         if index2==1 then
             self:SetPoint('RIGHT', UseButton, 'LEFT')--位置
 
         elseif index2<=num and select(2, math.modf(index2/num))==0 then
-            self:SetPoint('RIGHT', Buttons[index2-1], 'LEFT')
+            self:SetPoint('RIGHT', Buttons[index2-1] or UseButton, 'LEFT')
         else
             self:SetPoint('BOTTOM', Buttons[index2- num-1] or UseButton, 'TOP')
-        end
+        end]]
     end
     table.insert(Buttons, btn)--添加
 
@@ -523,12 +521,8 @@ local function Init_Menu(self, root)
         getValue=function()
             return Save.numLine
         end, setValue=function(value)
-            print(value)
             Save.numLine=value
-            for _, btn in pairs(Buttons) do
-                btn:set_point()
-            end
-            
+            UseButton:Check_Items()
         end,
         --name=,
         minValue=1,
@@ -746,17 +740,25 @@ local function Init()
             table.insert(new, 1, itemID)
         end
 
-        local index=1
+        local index=0
         for _, itemID in pairs(new) do
-            local btn= Buttons[index] or Create_Button(index)--创建
-            btn:set_point(index)
+            index= index +1
+            local btn= Buttons[index] or Create_Button(index)--创建            
             btn.itemID= itemID
             btn:settings()
+            btn:set_point()
             if not btn:IsShown() then
                 btn:set_event()
                 btn:Show()
             end
-            index= index +1
+        end
+
+        for i=Save.numLine, index, Save.numLine do
+            local btn= Buttons[i]
+            if btn then
+                btn:ClearAllPoints()
+                btn:SetPoint('BOTTOM', Buttons[i-Save.numLine] or UseButton, 'TOP')
+            end
         end
 
 
