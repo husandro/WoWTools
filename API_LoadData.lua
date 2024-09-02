@@ -4,13 +4,13 @@ function e.LoadDate(tab)--e.LoadDate({id=, type=''})--加载 item quest spell, u
     if not tab or not tab.id then
         return
     end
-    if tab.type=='quest' then
+    if tab.type=='quest' then --e.LoadDate({id=, type='quest'})
         C_QuestLog.RequestLoadQuestByID(tab.id)
         if not HaveQuestRewardData(tab.id) then
             C_TaskQuest.RequestPreloadRewardData(tab.id)
         end
 
-    elseif tab.type=='spell' then
+    elseif tab.type=='spell' then--e.LoadDate({id=, type='spell'})
         local spellID= tab.id
         if type(tab.id)=='string' then
             spellID= (C_Spell.GetSpellInfo(tab.id) or {}).spellID
@@ -19,17 +19,17 @@ function e.LoadDate(tab)--e.LoadDate({id=, type=''})--加载 item quest spell, u
             C_Spell.RequestLoadSpellData(spellID)
         end
 
-    elseif tab.type=='item' then
+    elseif tab.type=='item' then--e.LoadDate({id=, type='item'})
         local itemID= tab.id
         itemID= itemID or (tab.itemLink and tab.itemLink:match('|Hitem:(%d+):'))
         if itemID and not C_Item.IsItemDataCachedByID(itemID) then
             C_Item.RequestLoadItemDataByID(itemID)
         end
 
-    elseif tab.type=='mapChallengeModeID' then
+    elseif tab.type=='mapChallengeModeID' then--e.LoadDate({id=, type='mapChallengeModeID'})
         C_ChallengeMode.RequestLeaders(tab.id)
 
-    elseif tab.typ=='club' then
+    elseif tab.typ=='club' then--e.LoadDate({id=, type='club'})
         C_Club.RequestTickets(tab.id)
     end
 end

@@ -97,13 +97,112 @@ end
 --世界地图任务
 --###########
 local function set_WorldQuestPinMixin_RefreshVisuals(self)--WorldQuestDataProvider.lua self.tagInfo
-    if Save.hide or not self.questID then
+    if UnitAffectingCombat('player') then
+        return
+    elseif Save.hide or not self.questID then
         if self.Text then self.Text:SetText('') end
         if self.worldQuestTypeTips then self.worldQuestTypeTips:SetShown(false) end
         return
     end
-    local itemName, texture, numItems, quality, _, itemID, itemLevel
-    itemName, texture, numItems, quality, _, itemID, itemLevel = GetQuestLogRewardInfo(1, self.questID)--物品
+    local data= WoWTools_QuestMixin:GetRewardInfo(self.questID) or {}
+    local text, texture
+
+    if data.itemID then
+        texture= data.texture
+
+        if data.itemLevel and data.itemLevel>1 then
+            text= data.itemLevel
+        end
+
+        local itemEquipLoc, _, classID = select(4, C_Item.GetItemInfoInstant(data.itemID))
+        if classID==2 or classID==4 then
+            local hex= select(4, WoWTools_ItemMixin:GetColor(data.itemID, data.quality))
+
+            if hex and text then--物品，颜色
+                text=hex..text..'|r'
+            end
+
+            local setLevelUp
+            local invSlot = e.GetItemSlotID(itemEquipLoc)
+            if invSlot and data.name and data.itemLevel and data.itemLevel>1 then--装等
+                local itemLinkPlayer =  GetInventoryItemLink('player', invSlot)
+                if itemLinkPlayer then
+                    local lv= C_Item.GetDetailedItemLevelInfo(itemLinkPlayer)
+                    if lv and data.itemLevel-lv>0 then
+                        text= (text or '')..'|A:bags-greenarrow:0:0|a'
+                        setLevelUp=true
+                    end
+                end
+            end
+            if not setLevelUp then
+                local sourceID = select(2, C_TransmogCollection.GetItemInfo(data.itemID))--幻化
+                if sourceID then
+                    local collectedText, isCollected= e.GetItemCollected(nil, sourceID, true)--物品是否收集 
+                    if collectedText and not isCollected then
+                        text= (text or '')..collectedText
+                    end
+                end
+            end
+        end
+
+    elseif data.currencyID and data.totalRewardAmount and data.totalRewardAmount>0 then
+        texture=data.texture
+
+        local info, _, _, _, isMax, canWeek, canEarned, canQuantity= e.GetCurrencyMaxInfo(data.currencyID, nil)
+        if info and data.totalRewardAmount>1 then
+            if isMax then
+                text= format('|cnRED_FONT_COLOR:%d|r', data.totalRewardAmount)
+            elseif canWeek or canEarned or canQuantity then
+                text= format('|cnGREEN_FONT_COLOR:%d|r', data.totalRewardAmount)
+            else
+                text= data.totalRewardAmount
+            end
+        end
+
+    else
+        texture= data.texture
+    end
+
+
+    if self.Display and texture then
+        SetPortraitToTexture(self.Display.Icon, texture)
+        self.Display.Icon:SetSize(16, 16)
+    end
+
+
+    if not self.Text and text then
+        self.Text= create_Wolor_Font(self, 12)
+        self.Text:SetPoint('TOP', self, 'BOTTOM',0, 2)
+    end
+    if self.Text then
+        self.Text:SetText(text or '')
+    end
+
+    local tagInfo
+    if self.worldQuestType and self.worldQuestType ~= Enum.QuestTagType.Normal  then
+        tagInfo= self.tagInfo or C_QuestLog.GetQuestTagInfo(self.questID)
+    end
+    if tagInfo then
+        local inProgress = self.dataProvider:IsMarkingActiveQuests() and C_QuestLog.IsOnQuest(self.questID)
+
+        local atlas= QuestUtil.GetWorldQuestAtlasInfo(self.questID, tagInfo, inProgress)--QuestUtils.lua (questID, tagInfo, inProgress)
+        if not self.worldQuestTypeTips and atlas then
+            self.worldQuestTypeTips=self:CreateTexture(nil, 'OVERLAY')
+            self.worldQuestTypeTips:SetPoint('TOPRIGHT', self.Texture, 'TOPRIGHT', 5, 5)
+            self.worldQuestTypeTips:SetSize(30, 30)
+        end
+        if atlas then
+            self.worldQuestTypeTips:SetAtlas(atlas)
+        end
+    end
+    if self.worldQuestTypeTips then
+        self.worldQuestTypeTips:SetShown(tagInfo)
+    end
+end
+    --local itemName, texture, numItems, quality, _, itemID, itemLevel
+    --for i=1, GetNumQuestLogRewards(self.questID) do
+    --[[local itemName, texture, numItems, quality, _, itemID, itemLevel = GetQuestLogRewardInfo(1, self.questID)--物品
+
 
     local text
     if itemName then
@@ -143,13 +242,15 @@ local function set_WorldQuestPinMixin_RefreshVisuals(self)--WorldQuestDataProvid
         --itemName, texture, numItems, currencyID, quality =  GetQuestLogRewardCurrencyInfo(1, self.questID)--货币
         local data= C_QuestLog.GetQuestRewardCurrencyInfo(self.questID, 1, false)
         local currencyID= data and data.currencyID
-        if currencyID and data and data.quantity and data.quantity>0 then
+        if currencyID and data and data.totalRewardAmount and data.totalRewardAmount>0 then
             local info, _, _, _, isMax, canWeek, canEarned, canQuantity= e.GetCurrencyMaxInfo(currencyID, nil)
-            if info and data.quantity>1 then
+            if info and data.totalRewardAmount>1 then
                 if isMax then
-                    text= format('|cnRED_FONT_COLOR:%d|r', data.quantity)
+                    text= format('|cnRED_FONT_COLOR:%d|r', data.totalRewardAmount)
                 elseif canWeek or canEarned or canQuantity then
-                    text= format('|cnGREEN_FONT_COLOR:%d|r', data.quantity)
+                    text= format('|cnGREEN_FONT_COLOR:%d|r', data.totalRewardAmount)
+                else
+                    text= data.totalRewardAmount
                 end
                 texture=info.iconFileID
             end
@@ -162,53 +263,9 @@ local function set_WorldQuestPinMixin_RefreshVisuals(self)--WorldQuestDataProvid
                 texture='interface\\moneyframe\\ui-goldicon'
             end
         end
-    end
+    end]]
 
 
-        --[[if self.Texture then
-            self.Texture:SetTexture(texture)
-            self.Texture:SetSize(40, 40)
-        else]]
-    if self.Display and texture then
-        if type(texture)=='number' then
-            SetPortraitToTexture(self.Display.Icon, texture)
-        else
-            self.Display.Icon:SetTexture(texture)
-        end
-        self.Display.Icon:SetSize(20, 20)
-    end
-
-
-    if not self.Text and text then
-        self.Text= create_Wolor_Font(self, 12)
-        self.Text:SetPoint('TOP', self, 'BOTTOM',0, 2)
-    end
-    if self.Text then
-        self.Text:SetText(text or '')
-    end
-
-    --local isNormalQuest= self.worldQuestType == Enum.QuestTagType.Normal--任务，类型
-    local tagInfo
-    if self.worldQuestType and self.worldQuestType ~= Enum.QuestTagType.Normal  then
-        tagInfo= self.tagInfo or C_QuestLog.GetQuestTagInfo(self.questID)
-    end
-    if tagInfo then
-        local inProgress = self.dataProvider:IsMarkingActiveQuests() and C_QuestLog.IsOnQuest(self.questID)
-        
-        local atlas= QuestUtil.GetWorldQuestAtlasInfo(self.questID, tagInfo, inProgress)--QuestUtils.lua (questID, tagInfo, inProgress)
-        if not self.worldQuestTypeTips and atlas then
-            self.worldQuestTypeTips=self:CreateTexture(nil, 'OVERLAY')
-            self.worldQuestTypeTips:SetPoint('TOPRIGHT', self.Texture, 'TOPRIGHT', 5, 5)
-            self.worldQuestTypeTips:SetSize(30, 30)
-        end
-        if atlas then
-            self.worldQuestTypeTips:SetAtlas(atlas)
-        end
-    end
-    if self.worldQuestTypeTips then
-        self.worldQuestTypeTips:SetShown(tagInfo)
-    end
-end
 
 
 

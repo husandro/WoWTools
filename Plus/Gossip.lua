@@ -2885,13 +2885,7 @@ local function Init_Quest()
         return C_QuestLog.IsQuestTrivial(questID) and not self.isQuestTrivialTracking
     end
 
-    function QuestButton:questInfo_GetQuestID()--取得， 任务ID, QuestInfo.lua
-        if QuestInfoFrame.questLog then
-            return C_QuestLog.GetSelectedQuest()
-        else
-            return GetQuestID()
-        end
-    end
+ 
 
     function QuestButton:set_Event()--设置事件
         self:UnregisterAllEvents()
@@ -3079,7 +3073,7 @@ local function Init_Quest()
         else
             e.tips:AddDoubleLine(NONE, 'NPC ID')
         end
-        local questID=QuestButton:questInfo_GetQuestID()
+        local questID= WoWTools_QuestMixin:GetID()
         if questID then
             e.tips:AddDoubleLine('questID', questID)
         end
@@ -3096,7 +3090,7 @@ local function Init_Quest()
     QuestFrame.sel.questIDLabel:SetScript("OnLeave", function(self) self:SetAlpha(1) GameTooltip_Hide() end)
     QuestFrame.sel.questIDLabel:SetScript('OnEnter',function (self)
         self:SetAlpha(0.5)
-        local questID= QuestButton:questInfo_GetQuestID()
+        local questID= WoWTools_QuestMixin:GetID()
         if not questID then
             return
         end
@@ -3108,7 +3102,7 @@ local function Init_Quest()
         e.tips:Show()
     end)
     QuestFrame.sel.questIDLabel:SetScript('OnMouseDown',function(self)
-        local questID= QuestButton:questInfo_GetQuestID()
+        local questID= WoWTools_QuestMixin:GetID()
         if questID then
             ChatEdit_TryInsertQuestLinkForQuestID(questID)
             --e.Chat(GetQuestLink(questID), nil, true)
@@ -3129,7 +3123,7 @@ local function Init_Quest()
         QuestFrame.sel.npc=npc
         QuestFrame.sel.name=UnitName("npc")
         QuestFrame.sel:SetChecked(Save.NPC[npc])
-        QuestFrame.sel.questIDLabel:SetText(QuestButton:questInfo_GetQuestID() or '')
+        QuestFrame.sel.questIDLabel:SetText(WoWTools_QuestMixin:GetID() or '')
         if not npc or not Save.quest or IsModifierKeyDown() or Save.NPC[npc] then
             return
         end
@@ -3167,13 +3161,13 @@ local function Init_Quest()
 
     --任务进度, 继续, 完成 QuestFrame.lua
     hooksecurefunc('QuestFrameProgressItems_Update', function()
+        local questID= WoWTools_QuestMixin:GetID()
         local npc=e.GetNpcID('npc')
         QuestFrame.sel.npc=npc
         QuestFrame.sel.name=UnitName("npc")
         QuestFrame.sel:SetChecked(Save.NPC[npc])
-        QuestFrame.sel.questIDLabel:SetText(QuestButton:questInfo_GetQuestID() or '')
+        QuestFrame.sel.questIDLabel:SetText(questID or '')
 
-        local questID= QuestButton:questInfo_GetQuestID()
         if not questID or not Save.quest or IsModifierKeyDown() or (Save.NPC[npc] and not Save.questOption[questID]) then
             return
         end
@@ -3228,13 +3222,13 @@ local function Init_Quest()
 
     --自动接取任务, 仅一个任务
     hooksecurefunc('QuestInfo_Display', function(template, parentFrame, acceptButton)--, material, mapView)--QuestInfo.lua
+        local questID= WoWTools_QuestMixin:GetID()
         local npc=e.GetNpcID('npc')
         QuestFrame.sel.npc=npc
         QuestFrame.sel.name=UnitName("npc")
         QuestFrame.sel:SetChecked(Save.NPC[npc])
-        QuestFrame.sel.questIDLabel:SetText(QuestButton:questInfo_GetQuestID() or '')
+        QuestFrame.sel.questIDLabel:SetText(questID or '')
 
-        local questID= QuestButton:questInfo_GetQuestID()
         if not questID and template.canHaveSealMaterial and not QuestUtil.QuestTextContrastEnabled() and template.questLog then
             local frame = parentFrame:GetParent():GetParent()
             questID = frame.questID

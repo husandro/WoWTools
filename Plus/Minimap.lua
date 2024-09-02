@@ -163,7 +163,7 @@ local function Get_QuestReward_Texture(questID)
         for i=1, numQuestCurrencies do
             --local _, texture, _, _, quality = GetQuestLogRewardCurrencyInfo(i, questID)
             --if quality > bestQuality then
-            local data= C_QuestLog.GetQuestRewardCurrencyInfo(questID, i, true)
+            local data= C_QuestLog.GetQuestRewardCurrencyInfo(questID, i, false)
             if data and data.quality and data.quality>bestQuality then
                 itemTexture= data.texture
             end

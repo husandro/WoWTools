@@ -136,9 +136,14 @@ end
 
 
 function WoWTools_ItemMixin:GetColor(itemID, quality)
-    local color= ITEM_QUALITY_COLORS[quality or (itemID and C_Item.GetItemQualityByID(itemID))]
-    if color then
-        return color.r, color.g, color.b, color.hex, color
+    if itemID then
+        quality= quality or C_Item.GetItemQualityByID(itemID)
+        if quality and quality>=0 then
+            local color= ITEM_QUALITY_COLORS[quality]
+            if color then
+                return color.r, color.g, color.b, color.hex, color
+            end
+        end
     end
 end
 

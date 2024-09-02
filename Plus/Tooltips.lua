@@ -2106,7 +2106,7 @@ local function Init_Hook()
         label:SetPoint('TOPRIGHT', -30, -35)
     end
     QuestFrame:HookScript('OnShow', function(self)
-        local questID= QuestInfoFrame.questLog and  C_QuestLog.GetSelectedQuest() or GetQuestID()
+        local questID= WoWTools_QuestMixin:GetID()
         self.questIDLabel:settings(questID)
     end)
 
