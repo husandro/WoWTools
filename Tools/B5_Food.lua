@@ -1,10 +1,11 @@
 local id, e = ...
 local addName
 local Save={
-    itemClass={},--物品类型
     noUseItems={},--禁用物品
     --autoLogin= e.Player.husandro,--启动,查询
     onlyMaxExpansion=true,--仅本版本物品
+    olnyUsaItem=true,
+    numLine=2,
     autoWho=e.Player.husandro,
     class={
         [0]={
@@ -15,31 +16,75 @@ local Save={
             [7]=e.Is_Timerunning,
             [8]=e.Is_Timerunning,--其它
         }
+    },
+    addItems={
+        [113509]=true,--魔法汉堡
+        [80610]=true,--魔法布丁
+        [65499]=true,--魔法蛋糕
+        [43523]=true,--魔法酪饼
+        [43518]=true,--魔法馅饼
+    },
+    DisableClassID={
+        [1]=true,
+        [3]=true,
+        [5]=true,
+        [6]=true,
+        [7]=true,
+        [8]=true,
+        [9]=true,
+        [10]=true,
+        [11]=true,
+        [12]=true,
+        [13]=true,
+        [14]=true,
+        [16]=true,
+        [18]=true,
+        [17]=true,
+        [19]=true,
     }
 }
 
 local panel= CreateFrame("Frame")
 local Buttons={}
 local UseButton
-local DisableClassID={
-    [6]=true,
-    [10]=true,
-    [11]=true,
-    [13]=true,
-    [14]=true,
-    [16]=true,
-    [18]=true,
+
+local PaneIDs={
+    [113509]=true,--魔法汉堡
+    [80610]=true,--魔法布丁
+    [65499]=true,--魔法蛋糕
+    [43523]=true,--魔法酪饼
+    [43518]=true,--魔法馅饼
 }
 
 
 
 
 
+
+
+
+
+
 local function Get_Item_Valid(itemID)
-    return itemID
-        and itemID~=5512--治疗石
+    if itemID
+        and itemID~=UseButton.itemID
         and not Save.noUseItems[itemID]
-        and C_Item.GetItemSpell(itemID)
+        and not Save.addItems[itemID]
+        and (Save.olnyUsaItem and C_Item.GetItemSpell(itemID) or not Save.olnyUsaItem)
+    then
+        local classID, subClassID, _, expacID = select(12, C_Item.GetItemInfo(itemID))
+        if Save.class[classID]
+            and Save.class[classID][subClassID]
+            and (e.Is_Timerunning
+                    or (Save.onlyMaxExpansion
+                        and (PaneIDs[itemID] or e.ExpansionLevel==expacID)
+                        or not Save.onlyMaxExpansion
+                    )
+                )
+        then
+            return classID, subClassID
+        end
+    end
 end
 
 
@@ -64,19 +109,16 @@ local function Set_Button_Function(btn)
     btn.enableCooldown=true
 
     function btn:set_attribute()
-        local icon= C_Item.GetItemIconByID(self.itemID) or 0
-        self.texture:SetTexture(icon)
-
+        local icon= C_Item.GetItemIconByID(self.itemID)
         local name=  C_Item.GetItemNameByID(self.itemID)
+        self.texture:SetTexture(icon or 0)
 
         if not icon or not name then
             self:RegisterEvent('GET_ITEM_INFO_RECEIVED')
         end
 
         if self:CanChangeAttribute() then
-            if name then
-                self:SetAttribute("item1", name)
-            end
+            self:SetAttribute("item1", name)
         else
             self.isSetAttributeInCombat=true
             self:RegisterEvent('PLAYER_REGEN_ENABLED')
@@ -129,7 +171,7 @@ end
 
 
 local function Create_Button(index)
-    local btn= Button_Mixin:CreateSecure({parent=UseButton})
+    local btn= Button_Mixin:CreateSecure({parent=UseButton, setID=index})
 
     Set_Button_Function(btn)
 
@@ -188,6 +230,7 @@ local function Create_Button(index)
             MenuUtil.CreateContextMenu(self, function(f, root)
                 root:CreateButton('|T'..(C_Item.GetItemIconByID(f.itemID) or 0)..':0|t'..(e.onlyChinese and '禁用' or DISABLE), function()
                     Save.noUseItems[self.itemID]=true
+                    Save.addItems[self.itemID]=nil
                     print(e.addName, addName, e.onlyChinese and '禁用' or DISABLE, WoWTools_ItemMixin:GetLink(self.itemID))
                     UseButton:Check_Items()
                 end)
@@ -195,7 +238,23 @@ local function Create_Button(index)
         end
     end)
 
-    btn:SetPoint('RIGHT', index==1 and UseButton or Buttons[index-1], 'LEFT')--位置
+    function btn:set_point(index2)
+        self:ClearAllPoints()
+        index2=index2 or self:GetID()
+        self:SetPoint('RIGHT', Buttons[index-1] or UseButton, 'LEFT')--位置
+
+        index2= index2 or self:GetID()
+        local  num= Save.numLine
+
+        if index2==1 then
+            self:SetPoint('RIGHT', UseButton, 'LEFT')--位置
+
+        elseif index2<=num and select(2, math.modf(index2/num))==0 then
+            self:SetPoint('RIGHT', Buttons[index2-1], 'LEFT')
+        else
+            self:SetPoint('BOTTOM', Buttons[index2- num-1] or UseButton, 'TOP')
+        end
+    end
     table.insert(Buttons, btn)--添加
 
     btn:set_event()
@@ -246,39 +305,42 @@ end
 
 
 
+
+
+
 local function Check_All_Menu(self, root, setClassID)
     root:CreateDivider()
     local sub=root:CreateButton(e.onlyChinese and '勾选所有' or CHECK_ALL, function(data)
-        if not IsControlKeyDown() then
-            return MenuResponse.Open
-        end
-
-        do
-            if data.classID then
-                Check_All_SubClass(data.classID)
-            else
-                Save.class={}
-                for classID=0, 20 do
-                    if not DisableClassID[classID] then
-                        class= C_Item.GetItemClassInfo(classID)
-                        if class then
-                            Save.class[classID]= {}
-                            Check_All_SubClass(classID)
-                        else
-                            break
+        if IsControlKeyDown() or data.classID then
+            do
+                if data.classID then
+                    Check_All_SubClass(data.classID)
+                else
+                    Save.class={}
+                    for classID=0, 20 do
+                        if not Save.DisableClassID[classID] then
+                            class= C_Item.GetItemClassInfo(classID)
+                            if class then
+                                Save.class[classID]= {}
+                                Check_All_SubClass(classID)
+                            else
+                                break
+                            end
                         end
                     end
                 end
             end
+            self:Check_Items()
         end
-        self:Check_Items()
         return MenuResponse.Refresh
     end, {classID=setClassID})
-    sub:SetTooltip(function(tooltip) tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..e.Icon.left) end)
+    if not setClassID then
+        sub:SetTooltip(function(tooltip) tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..e.Icon.left) end)
+    end
 
     --撤选所有
     sub=root:CreateButton(e.onlyChinese and '撤选所有' or UNCHECK_ALL, function(data)
-        if IsControlKeyDown() then
+        if IsControlKeyDown() or data.classID then
             if data.classID then
                 Save.class[data.classID]= nil
             else
@@ -288,23 +350,10 @@ local function Check_All_Menu(self, root, setClassID)
         end
         return MenuResponse.Refresh
     end, {classID=setClassID})
-    sub:SetTooltip(function(tooltip) tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..e.Icon.left) end)
+    if not setClassID then
+        sub:SetTooltip(function(tooltip) tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..e.Icon.left) end)
+    end
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -332,18 +381,75 @@ local function Init_Menu(self, root)
         return
     end
 
-    local sub, sub2, class, subClass
+    local sub, sub2, sub3, class, subClass, find
+    local items={
+        --[classID]={num=0,[subClassID]=0}
+    }
+    for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES do-- + NUM_REAGENTBAG_FRAMES
+        for slot=1, C_Container.GetContainerNumSlots(bag) do
+            local info= C_Container.GetContainerItemInfo(bag, slot) or {}
+            local classID, subClassID= Get_Item_Valid(info.itemID)
+            if classID and subClassID then
+                local num= info.stackCount or 1
+                items[classID]= items[classID] or {num=0}--class
+                items[classID].num= items[classID].num+ num
+                items[classID][subClassID]= (items[classID][subClassID] or 0)+ num--subClass
+            end
+        end
+    end
 
 --查找
     sub=root:CreateButton('|cnGREEN_FONT_COLOR:|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '查找' or WHO).. e.Icon.mid, function()
         self:Check_Items(true)
     end)
 
+--隐藏
+    sub2=sub:CreateButton(e.onlyChinese and '隐藏' or HIDE, function() return MenuResponse.Open end)
+    for classID=0, 20 do
+        class= C_Item.GetItemClassInfo(classID)
+        if class then
+            sub2:CreateCheckbox(classID..' '..e.cn(class)..' '..(items[classID] and items[classID].num or ''), function(data)
+                return Save.DisableClassID[data.classID]
+            end, function(data)
+                Save.DisableClassID[data.classID]= not Save.DisableClassID[data.classID] and true or nil
+                self:Check_Items()
+                return MenuResponse.Refresh
+            end, {classID=classID})
+        end
+    end
+
+--禁用
+    sub2=sub:CreateButton(e.onlyChinese and '禁用' or DISABLE, function() return MenuResponse.Open end)
+    find=0
+    for itemID in pairs(Save.noUseItems) do
+        find=find+1
+        sub3=sub2:CreateCheckbox(find..') '..WoWTools_SpellItemMixin:GetName(nil, itemID), function(data)
+            return Save.noUseItems[data.itemID]
+        end, function(data)
+            Save.noUseItems[data.itemID]= not Save.noUseItems[data.itemID] and true or nil
+            self:Check_Items()
+        end, {itemID=itemID})
+        WoWTools_SpellItemMixin:SetTooltip(nil, nil, sub3, nil)
+    end
+    if find>1 then
+        sub2:CreateDivider()
+        sub2:CreateButton(e.onlyChinese and '全部清除' or CLEAR_ALL, function()
+            Save.noUseItems={}
+            self:Check_Items()
+        end)
+        WoWTools_MenuMixin:SetNumButton(sub2, find)
+    end
+
+
 --登录游戏时: 查找
+    sub:CreateDivider()
     sub2=sub:CreateCheckbox(e.onlyChinese and '登录游戏时: 查找' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SOCIAL_TWITTER_SIGN_IN, GAME)..': '..WHO, function()
         return Save.autoLogin
     end, function()
         Save.autoLogin= not Save.autoLogin and true or nil
+        if Save.autoLogin then
+            self:Check_Items()
+        end
     end)
     sub2:SetTooltip(function(tooltip)
         tooltip:AddLine(e.onlyChinese and '自动查找' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, WHO))
@@ -362,7 +468,7 @@ local function Init_Menu(self, root)
         tooltip:AddLine(e.onlyChinese and '事件' or EVENTS_LABEL)
         tooltip:AddLine('BAG_UPDATE_DELAYED')
         tooltip:AddLine(' ')
-        GameTooltip_AddErrorLine(tooltip, e.onlyChinese and '高CPU' or 'High CPU')
+        GameTooltip_AddErrorLine(tooltip, e.onlyChinese and '高CPU' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIGH, 'CPU'))
     end)
 
 --仅当前版本物品
@@ -375,6 +481,16 @@ local function Init_Menu(self, root)
         end)
     end
 
+--仅限 C_Item.GetItemSpell(itemID)
+    sub2=sub:CreateCheckbox(e.onlyChinese and '可使用' or format(LFG_LIST_CROSS_FACTION, USE), function()
+        return Save.olnyUsaItem
+    end, function()
+        Save.olnyUsaItem= not Save.olnyUsaItem and true or nil
+        self:Check_Items()
+    end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine('C_Item.GetItemSpell(itemID)')
+    end)
 --缩放
     sub:CreateDivider()
     sub2=select(2, WoWTools_MenuMixin:Scale(sub, function()
@@ -401,38 +517,69 @@ local function Init_Menu(self, root)
         self:set_strata()
     end))
 
-
-    root:CreateDivider()
-    local items={
-        --[classID]={num=0,[subClassID]=0}
-    }
-    for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES do-- + NUM_REAGENTBAG_FRAMES
-        for slot=1, C_Container.GetContainerNumSlots(bag) do
-            local info= C_Container.GetContainerItemInfo(bag, slot)
-            local itemID= info and info.itemID
-            if Get_Item_Valid(itemID) then
-                local classID, subClassID, _, expacID = select(12, C_Item.GetItemInfo(itemID))
-                if subClassID and classID
-                    and (e.Is_Timerunning
-                            or (Save.onlyMaxExpansion and (itemID==113509 or e.ExpansionLevel==expacID) or not Save.onlyMaxExpansion)
-                        )
-                then
-                    local num= info.stackCount or 1
-                    items[classID]= items[classID] or {num=0}--class
-                    items[classID].num= items[classID].num+ num
-                    items[classID][subClassID]= (items[classID][subClassID] or 0)+ num--subClass
-
-                end
+    sub2=sub:CreateButton(e.onlyChinese and '行数' or HUD_EDIT_MODE_SETTING_ACTION_BAR_NUM_ROWS, function()return MenuResponse.Open end)
+    sub2:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub2, {
+        getValue=function()
+            return Save.numLine
+        end, setValue=function(value)
+            print(value)
+            Save.numLine=value
+            for _, btn in pairs(Buttons) do
+                btn:set_point()
             end
-        end
+            
+        end,
+        --name=,
+        minValue=1,
+        maxValue=60,
+        step=1,
+        bit=nil,
+    })
+    sub2:CreateSpacer()
+
+
+
+
+
+--自定义
+    sub=root:CreateButton(e.onlyChinese and '自定义' or CUSTOM, function() return MenuResponse.Open end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(e.onlyChinese and '拖曳物品添加' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DRAG_MODEL, ITEMS, ADD)))
+    end)
+
+    find=0
+    for itemID in pairs(Save.addItems) do
+        find=find+1
+        sub2=sub:CreateCheckbox(find..') '..WoWTools_SpellItemMixin:GetName(nil, itemID), function(data)
+            return Save.addItems[data.itemID]
+        end, function(data)
+            Save.addItems[data.itemID]= not Save.addItems[data.itemID] and true or nil
+            self:Check_Items()
+        end, {itemID=itemID})
+        WoWTools_SpellItemMixin:SetTooltip(nil, nil, sub2, nil)
+    end
+    if find>1 then
+        sub:CreateDivider()
+        sub:CreateButton(e.onlyChinese and '全部清除' or CLEAR_ALL, function()
+            Save.addItems={}
+            self:Check_Items()
+        end)
+        WoWTools_MenuMixin:SetNumButton(sub, find)
     end
 
 
 
+    find=nil
     for classID=0, 20 do
-        if not DisableClassID[classID] then
+        if not Save.DisableClassID[classID] then
             class= C_Item.GetItemClassInfo(classID)
             if class then
+                if not find then
+                    root:CreateDivider()
+                    find=true
+                end
+
                 sub=root:CreateCheckbox(classID..' '..e.cn(class)..' '..(items[classID] and items[classID].num or ''), function(data)
                     return Save.class[data.classID]
                 end, function(data)
@@ -457,7 +604,7 @@ local function Init_Menu(self, root)
                     )
                 end)
 
-                
+
 
                 for subClassID= 0, 20 do
                     subClass=C_Item.GetItemSubClassInfo(classID, subClassID)
@@ -493,194 +640,51 @@ end
 
 
 
---[[local function InitMenu(self, level, type)--主菜单
-    if UnitAffectingCombat('player') then
-        return
-    end
-    local info
-    if type=='DISABLE' then
-        for itemID, _ in pairs(Save.noUseItems) do
-            local itemLink= WoWTools_ItemMixin:GetLink(itemID)
-            local itemTexture= C_Item.GetItemIconByID(itemID)
-            info={
-                text= itemLink or ('itemID '..itemID),
-                notCheckable=true,
-                keepShownOnClick=true,
-                icon=itemTexture,
-                tooltipOnButton=true,
-                tooltipTitle=e.Icon.left..(e.onlyChinese and '移除' or REMOVE),
-                func=function()
-                    Save.noUseItems[itemID]=nil
-                    self:Check_Items()
-                end
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
-        end
 
-        e.LibDD:UIDropDownMenu_AddSeparator(level)
-        info={
-            text= e.onlyChinese and '清除全部' or CLEAR_ALL,
-            notCheckable=true,
-            keepShownOnClick=true,
-            func= function()
-                Save.noUseItems={}
-                self:Check_Items()
-                print(e.addName, addName, CLEAR_ALL, DISABLE, ITEMS, DONE)
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-        return
 
-    elseif type=='WHO' then
-        info= {
-            text= e.onlyChinese and '登录游戏时: 查找' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SOCIAL_TWITTER_SIGN_IN, GAME),
-            keepShownOnClick=true,
-            tooltipOnButton=true,
-            tooltipTitle=AUTO_JOIN:gsub(JOIN,WHO),
-            tooltipText='1 '..VOICEMACRO_LABEL_CHARGE1,
-            checked=Save.autoLogin,
-            func= function()
-                Save.autoLogin= not Save.autoLogin and true or nil
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-        info= {--自动, 更新物品, 查询
-            text= e.onlyChinese and '自动查找' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, UPDATE),
-            tooltipOnButton=true,
-            tooltipTitle=(e.onlyChinese and '事件' or EVENTS_LABEL)..': BAG_UPDATE_DELAYED',
-            checked=Save.autoWho,
-            keepShownOnClick=true,
-            func= function()
-                Save.autoWho= not Save.autoWho and true or nil
-                if Save.autoWho then
-                    self:Check_Items()
-                end
-                set_autowho_event()--设置事件,自动更新
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-if not e.Is_Timerunning then
-        info={
-            text= e.onlyChinese and '仅当前版本物品' or format(LFG_LIST_CROSS_FACTION, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, GAME_VERSION_LABEL)),
-            checked= Save.onlyMaxExpansion,
-            keepShownOnClick=true,
-            tooltipOnButton=true,
-            tooltipTitle= e.ExpansionLevel,
-            func= function()
-                Save.onlyMaxExpansion= not Save.onlyMaxExpansion and true or nil
-                self:Check_Items()
-            end,
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-end
-        return
 
-    elseif type then
-        for _, tab in pairs(ItemClass) do
-            if type==tab.className then
-                info={
-                    text=tab.subClassID..' '..e.cn(tab.subclassName),
-                    keepShownOnClick=true,
-                    checked= Save.itemClass[tab.className..tab.subclassName],
-                    tooltipOnButton=true,
-                    tooltipTitle= tab.className.. ' classID |cnGREEN_FONT_COLOR:'..tab.classID..'|r',
-                    tooltipText= tab.subclassName..' subClassID |cnGREEN_FONT_COLOR:'..tab.subClassID..'|r',
-                    func=function()
-                        Save.itemClass[tab.className..tab.subclassName]= not Save.itemClass[tab.className..tab.subclassName] and true or nil
-                        self:Check_Items()
-                    end
-                }
-                e.LibDD:UIDropDownMenu_AddButton(info, level)
-            end
-        end
-        return
-    end
 
-    local classNum=get_Save_itemClass_Select()
-    info={
-        text='|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '查找' or WHO).. e.Icon.mid..' '..classNum,
-        colorCode='|cff00ff00',
-        notCheckable=true,
-        disabled=classNum==0,
-        menuList='WHO',
-        hasArrow=true,
-        keepShownOnClick=true,
-        tooltipOnButton=true,
-        tooltipTitle= e.onlyChinese and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN,
-        func= function()
-            self:Check_Items()
-        end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-    e.LibDD:UIDropDownMenu_AddSeparator(level)
-    local find={}
-    for index, tab in pairs(ItemClass) do
-        if not find[tab.className] then
-            info={
-                text= tab.classID.. ' '..e.cn(tab.className)..' '..get_Save_Numer_SubClass(tab.className),
-                notCheckable=true,
-                keepShownOnClick=true,
-                menuList=tab.className,
-                hasArrow=true,
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
-            find[tab.className]=true
-        end
-    end
 
-    info={
-        text='|A:bags-greenarrow:0:0|a'.. (e.onlyChinese and '全部取消' or CALENDAR_EVENT_REMOVED_MAIL_SUBJECT:format(ALL)),
-        colorCode= '|cffff0000',
-        notCheckable=true,
-        keepShownOnClick=true,
-        func= function()
-            Save.itemClass={}
-            self:Check_Items()
-            print(e.addName, addName, CALENDAR_EVENT_REMOVED_MAIL_SUBJECT:format(ALL), DONE)
-        end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-    e.LibDD:UIDropDownMenu_AddSeparator(level)
-    info= {
-        text= e.onlyChinese and '禁用' or DISABLE,
-        notCheckable=true,
-        keepShownOnClick=true,
-        menuList='DISABLE',
-        hasArrow=true,
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-    e.LibDD:UIDropDownMenu_AddSeparator(level)
-    info= {
-        text= e.Icon.right.. (e.onlyChinese and '移动' or NPE_MOVE),
-        isTitle= true,
-        notCheckable= true,
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-    info={
-        text= e.onlyChinese and '还原位置' or RESET_POSITION,
-        notCheckable=true,
-        colorCode= not Save.point and'|cff9e9e9e',
-        keepShownOnClick=true,
-        func=function()
-            Save.point=nil
-            UseButton:set_point()
+
+
+
+
+
+
+
+
+
+
+
+local function Add_Item(info)
+    local itemName, itemLink, itemRarity, _, _, _, _, _, _, itemTexture = C_Item.GetItemInfo(info.itemLink or info.itemID)
+    StaticPopup_Show('WoWTools_Item', addName, nil, {
+        link= info.itemLink or itemLink,
+        itemID=info.itemID,
+        name= e.cn(itemName, {itemID=info.itemID, isName=true}),
+        color= {ITEM_QUALITY_COLORS[itemRarity].color:GetRGBA()},
+        texture= itemTexture,
+        count=C_Item.GetItemCount(info.itemID, true, true, true, true),
+        OnShow=function(self, data)
+           self.button1:SetEnabled(not Save.addItems[data.itemID])
+           self.button3:SetEnabled(Save.addItems[data.itemID])
         end,
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-end]]
-
-
-
-
-
-
-
+        SetValue = function(_, data)
+            Save.addItems[data.itemID]= true
+            UseButton:Check_Items()
+        end,
+        OnAlt = function(_, data)
+            Save.addItems[data.itemID]= nil
+            UseButton:Check_Items()
+        end
+    })
+end
 
 
 
@@ -714,33 +718,38 @@ local function Init()
         end
         self.isChecking=true
 
+
+
+        local new={}
         local items={}
         for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES do-- + NUM_REAGENTBAG_FRAMES
             for slot=1, C_Container.GetContainerNumSlots(bag) do
                 local itemID= C_Container.GetContainerItemID(bag, slot)
                 if Get_Item_Valid(itemID) then
-                    local classID, subClassID, _, expacID = select(12, C_Item.GetItemInfo(itemID))
-                    if subClassID and Save.class[classID] and Save.class[classID][subClassID]
-                        and (e.Is_Timerunning
-                                or (Save.onlyMaxExpansion and (itemID==113509 or e.ExpansionLevel==expacID) or not Save.onlyMaxExpansion)
-                            )
-                    then
-                        items[itemID]=true
-                    end
+                    items[itemID]=true
                 end
             end
         end
-
-        local new={}
         for itemID in pairs(items) do
             table.insert(new, itemID)
         end
         table.sort(new)
 
+        items={}
+        for itemID in pairs(Save.addItems) do
+            if C_Item.GetItemCount(itemID, false, true, false, false)>0 then
+                table.insert(items, itemID)
+            end
+        end
+        table.sort(items)
+        for _, itemID in pairs(items) do
+            table.insert(new, 1, itemID)
+        end
 
         local index=1
         for _, itemID in pairs(new) do
             local btn= Buttons[index] or Create_Button(index)--创建
+            btn:set_point(index)
             btn.itemID= itemID
             btn:settings()
             if not btn:IsShown() then
@@ -750,15 +759,18 @@ local function Init()
             index= index +1
         end
 
+
         for i= index , #Buttons do
             local btn= Buttons[i]
-            btn.itemID=nil
-            btn:SetAttribute("type1", nil)
-            btn:SetAttribute("item1", nil)
-            btn.texture:SetTexture(0)
-            btn:SetShown(false)
-            e.Ccool(btn)
-            btn:UnregisterAllEvents()
+            if btn and btn:IsShown() then
+                btn.itemID=nil
+                btn:SetAttribute("type1", nil)
+                btn:SetAttribute("item1", nil)
+                btn.texture:SetTexture(0)
+                btn:Hide()
+                e.Ccool(btn)
+                btn:UnregisterAllEvents()
+            end
         end
 
         if isPrint then
@@ -766,6 +778,16 @@ local function Init()
         end
         self.isChecking=nil
     end
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -790,6 +812,12 @@ local function Init()
     end
 
 
+    function UseButton:get_tooltip_item()
+        local infoType, itemID, itemLink = GetCursorInfo()
+        if infoType == "item" and itemID and itemLink and self.itemID~=itemID then
+            return itemID, itemLink
+        end
+    end
 
 
     UseButton:RegisterForDrag("RightButton")
@@ -807,6 +835,13 @@ local function Init()
         Save.point[2]=nil
     end)
     UseButton:SetScript("OnMouseDown", function(self, d)
+        local itemID, itemLink = self:get_tooltip_item()
+        if itemID and itemLink then
+            Add_Item({itemID=itemID, itemLink=itemLink})
+            ClearCursor()
+            return
+        end
+
         if d=='RightButton' then
             if not IsModifierKeyDown() then--菜单
                 MenuUtil.CreateContextMenu(self, Init_Menu)
@@ -863,11 +898,28 @@ local function Init()
 
 
     function UseButton:set_tooltip()
-        e.tips:AddDoubleLine(e.addName, addName)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
-        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-        e.tips:AddDoubleLine((UnitAffectingCombat('player') and '|cff9e9e9e' or '')..(e.onlyChinese and '查询' or WHO), e.Icon.mid)
+        e.tips:SetOwner(self, "ANCHOR_LEFT");
+        e.tips:ClearLines()
+        local itemID, itemLink = self:get_tooltip_item()
+        if itemID and itemLink then
+            e.tips:AddDoubleLine(WoWTools_SpellItemMixin:GetName(nil, itemID), e.onlyChinese and '添加自定义' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, CUSTOM))
+        else
+            e.tips:AddDoubleLine(e.addName, addName)
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+            e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+            e.tips:AddDoubleLine((UnitAffectingCombat('player') and '|cff9e9e9e' or '')..(e.onlyChinese and '查询' or WHO), e.Icon.mid)
+
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(
+                (Save.onlyMaxExpansion and '|cnGREEN_FONT_COLOR:' or '|cff9e9e9e')
+                ..(e.onlyChinese and '仅当前版本物品'
+                    or format(LFG_LIST_CROSS_FACTION, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, GAME_VERSION_LABEL))
+                ),
+                e.GetEnabeleDisable(Save.onlyMaxExpansion)
+            )
+        end
+
         e.tips:Show()
     end
     UseButton:SetScript('OnLeave', function()
@@ -938,13 +990,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== id then
 
             if WoWToolsSave[POWER_TYPE_FOOD..'Tools'] then
-                Save= WoWToolsSave[POWER_TYPE_FOOD..'Tools']
                 WoWToolsSave[POWER_TYPE_FOOD..'Tools']= nil
-                Save.itemClass=nil
-                Save.class=class
-            else
-                Save= WoWToolsSave['Tools_Food'] or Save
             end
+
+            Save= WoWToolsSave['Tools_Foods'] or Save
+
             addName= '|A:Food:0:0|a'..(e.onlyChinese and '食物' or POWER_TYPE_FOOD)
 
             UseButton= WoWTools_ToolsButtonMixin:CreateButton({
@@ -978,7 +1028,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            WoWToolsSave['Tools_Food']=Save
+            WoWToolsSave['Tools_Foods']=Save
         end
     end
 end)

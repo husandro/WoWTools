@@ -158,7 +158,7 @@ StaticPopupDialogs['WoWTools_Item'] = {
 };
 --[[
 local itemName, itemLink, itemRarity, _, _, _, _, _, _, itemTexture = C_Item.GetItemInfo(info.itemLink or info.itemID)
-StaticPopup_Show('WoWTools_Item_Add',addName, nil, {
+StaticPopup_Show('WoWTools_Item',addName, nil, {
     link= itemLink,
     itemID=info.itemID,
     name= itemName,

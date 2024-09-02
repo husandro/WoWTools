@@ -847,7 +847,7 @@ local function Set_Mount_Sub_Options(root, data)--icon,col,mountID,spellID,itemI
             spellID=data.spellID,
         })
     end
-    
+
 
     --[[if data.spellID or data.mountID then
         local sub=root:CreateButton(
@@ -1415,7 +1415,7 @@ local function Init_UI_Menu(self, root)
         sub=root:CreateCheckbox(col..(e.onlyChinese and '设置' or SETTINGS)..' '..e.cn(type)..' #|cnGREEN_FONT_COLOR:'..getTableNum(type),
             function(data)
                 return Save.Mounts[data.type][data.spellID]
-                
+
             end, function(data)
                 if Save.Mounts[data.type][data.spellID] then
                     Save.Mounts[data.type][data.spellID]=nil
@@ -1768,7 +1768,7 @@ end
 local function Init()
 
     WoWTools_Key_Button:Init(MountButton, function() return Save.KEY end)
-    
+
 
     for type, tab in pairs(Save.Mounts) do
         for ID, _ in pairs(tab) do
@@ -1813,9 +1813,6 @@ local function Init()
             ClearCursor()
             return
 
-        elseif d=='RightButton' and IsAltKeyDown() then
-            SetCursor('UI_MOVE_CURSOR')
-
         elseif d=='RightButton' and not IsModifierKeyDown() then
             MenuUtil.CreateContextMenu(self, Init_Menu)
 
@@ -1839,7 +1836,6 @@ local function Init()
         if d=='LeftButton' then
             self.border:SetAtlas('bag-reagent-border')
         end
-        ResetCursor()
     end)
 
     MountButton:SetScript('OnMouseWheel',function(_, d)
@@ -1873,15 +1869,13 @@ local function Init()
                 ))
         else
             if self.typeID then
-                --C_MountJournal.GetMountUsabilityByID(.data.mountID, true)
                 local key= WoWTools_Key_Button:IsKeyValid(self)
                 e.tips:AddDoubleLine(WoWTools_SpellItemMixin:GetName(self.typeSpell and self.typeID, not self.typeSpell and self.typeID), (key and '|cnGREEN_FONT_COLOR:'..key or '')..e.Icon.left)
-               
                 e.tips:AddLine(' ')
             end
             e.tips:AddDoubleLine(e.onlyChinese and '坐骑秀' or 'Mount show', '|A:bags-greenarrow:0:0|a')
             e.tips:AddDoubleLine(e.onlyChinese and '坐骑特效' or EMOTE171_CMD2:gsub('/',''), '|A:UI-HUD-MicroMenu-StreamDLYellow-Up:0:0|a')
-            
+
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
             e.tips:Show()
@@ -2098,7 +2092,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
             else
                 Save= WoWToolsSave['Tools_Mounts'] or Save
             end
-            
+
 
             if not Save.Mounts[SPELLS] then--为不同语言，
                 Save.Mounts={

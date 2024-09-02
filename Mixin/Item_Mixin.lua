@@ -145,7 +145,7 @@ end
 
 
 
-
+--ITEM_QUALITY_COLORS[itemRarity].color:GetRGBA()
 function WoWTools_ItemMixin:GetLink(itemID)
     local link
     if itemID then

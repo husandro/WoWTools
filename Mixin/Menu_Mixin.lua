@@ -1,6 +1,8 @@
 local e= select(2, ...)
 
-WoWTools_MenuMixin={}
+WoWTools_MenuMixin={
+    maxMenuButton=35,
+}
 
 function WoWTools_MenuMixin:CreateSlider(root, tab)
     local sub=root:CreateTemplate("OptionsSliderTemplate")
@@ -338,12 +340,12 @@ end
 
 --SetGridMode
 function WoWTools_MenuMixin:SetNumButton(sub, num)
-    if num and num>35 then
-        sub:SetGridMode(MenuConstants.VerticalGridDirection, math.ceil(num/35))
+    if num and num>self.maxMenuButton then
+        sub:SetGridMode(MenuConstants.VerticalGridDirection, math.ceil(num/self.maxMenuButton))
     end
 end
 
 function WoWTools_MenuMixin:SetScrollButton(root, maxCharacters)
-   root:SetScrollMode(20 * (maxCharacters or 35))
+   root:SetScrollMode(20 * (maxCharacters or self.maxMenuButton))
 end
 
