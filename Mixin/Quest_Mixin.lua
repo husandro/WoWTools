@@ -130,7 +130,7 @@ questRewardContextFlags	Enum.QuestRewardContextFlags?
     end
     if data then return data end
 
-    
+
 --神器XP
     if GetQuestLogRewardArtifactXP(questID) > 0 then
         local artifactCategory= select(2, GetRewardArtifactXP()) or select(2, GetQuestLogRewardArtifactXP())
@@ -155,7 +155,7 @@ questRewardContextFlags	Enum.QuestRewardContextFlags?
         }
 --钱
     elseif GetQuestLogRewardMoney(questID)>0 then
-        
+
         return {
             texture='Interface\\Icons\\inv_misc_coin_01',--'interface\\moneyframe\\ui-goldicon'
         }

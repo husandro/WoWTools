@@ -166,7 +166,7 @@ local function set_WorldQuestPinMixin_RefreshVisuals(self)--WorldQuestDataProvid
 
     if self.Display and texture then
         SetPortraitToTexture(self.Display.Icon, texture)
-        self.Display.Icon:SetSize(16, 16)
+        self.Display.Icon:SetSize(18, 18)
     end
 
 
