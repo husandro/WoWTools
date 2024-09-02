@@ -4904,7 +4904,8 @@
         "DELVES_LABEL",
         "UIParent",
         "SecondsToTime",
-        "SOUNDKIT"
+        "SOUNDKIT",
+        "FACTION_STANDING_INCREASED_ACCOUNT_WIDE"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

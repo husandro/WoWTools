@@ -19,8 +19,8 @@ local TrackButton
 local Initializer
 
 local onlyIcon
-local FACTION_STANDING_INCREASED= FACTION_STANDING_INCREASED
-
+local FACTION_STANDING_INCREASED= FACTION_STANDING_INCREASED--"你在%s中的声望值提高了%d点。";
+local FACTION_STANDING_INCREASED_ACCOUNT_WIDE = FACTION_STANDING_INCREASED_ACCOUNT_WIDE--"你的战团在%s中的声望值提高了%d点。";
 
 
 
@@ -777,8 +777,8 @@ end
 --声望更新, 提示
 --#############
 local function WoWTools_Faction_Updata_Filter(_, _, text, ...)
-	local name=text and text:match(FACTION_STANDING_INCREASED)
-	
+	local name=text and text:match(FACTION_STANDING_INCREASED) or text:match(FACTION_STANDING_INCREASED_ACCOUNT_WIDE)
+
 	if not name then
 		return
 	end
@@ -1154,6 +1154,7 @@ end
 --###########
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
 		if arg1==id then
@@ -1179,15 +1180,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
 
 
-            if Save.disabled then
-                self:UnregisterAllEvents()
-            else
+            if not Save.disabled then
 				FACTION_STANDING_INCREASED= LOCALE_zhCN and '你在(.+)中的声望值提高了.+点。' or e.Magic(FACTION_STANDING_INCREASED)
+				FACTION_STANDING_INCREASED_ACCOUNT_WIDE= LOCALE_zhCN and '你的战团在(.+)中的声望值提高了.+点。' or e.Magic(FACTION_STANDING_INCREASED_ACCOUNT_WIDE)
 
                 Init()
-				self:UnregisterEvent('ADDON_LOADED')
             end
-            self:RegisterEvent("PLAYER_LOGOUT")
+            self:UnregisterEvent('ADDON_LOADED')
 		end
 
     elseif event == "PLAYER_LOGOUT" then

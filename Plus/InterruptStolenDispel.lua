@@ -5,7 +5,7 @@ local Save={
 }
 local panel=CreateFrame("Frame")
 
-local de=' > '--分隔符
+local de='>'--分隔符
 --if e.Player.Lo== "zhCN" or e.Player.Lo == "zhTW" or e.Player.Lo=='koKR' then
 if e.Player.region==4 or e.Player.region==5 then
     de='→'
