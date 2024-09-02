@@ -1404,8 +1404,8 @@ CompactRaidFrameManager.DisplayFrame.Header.Delineator
     set_Alpha_Color(DressUpFrame.OutfitDetailsPanel.BlackBackground)
 
 
-    set_Alpha_Color(GenericTraitFrame.Background)
-    e.Set_NineSlice_Color_Alpha(GenericTraitFrame, true)
+    --set_Alpha_Color(GenericTraitFrame.Background)
+    --e.Set_NineSlice_Color_Alpha(GenericTraitFrame, true)
 
     
 
@@ -2123,9 +2123,9 @@ local function Init_Event(arg1)
             hide_Texture(GarrisonCapacitiveDisplayFrameInset.Bg)
         end
 
-    --[[elseif arg1=='Blizzard_GenericTraitUI' then--欲龙术
+    elseif arg1=='Blizzard_GenericTraitUI' then--欲龙术
         set_Alpha_Color(GenericTraitFrame.Background)
-        e.Set_NineSlice_Color_Alpha(GenericTraitFrame, true)]]
+        e.Set_NineSlice_Color_Alpha(GenericTraitFrame, true)
 
     elseif arg1=='Blizzard_PlayerChoice' then----任务选择
         hooksecurefunc(PlayerChoiceFrame, 'SetupFrame', function(self)

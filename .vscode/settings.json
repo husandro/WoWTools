@@ -4906,7 +4906,9 @@
         "SecondsToTime",
         "SOUNDKIT",
         "FACTION_STANDING_INCREASED_ACCOUNT_WIDE",
-        "GetText"
+        "GetText",
+        "CHAT_SAY_SEND",
+        "ProfessionsFrame_LoadUI"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

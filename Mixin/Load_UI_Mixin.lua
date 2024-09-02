@@ -1,3 +1,8 @@
+--[[
+Journal(index)--加载，收藏，UI
+GenericTraitUI(systemID, treeID)--加载，Trait，UI
+]]
+
 WoWTools_LoadUIMixin= {}
 
 
@@ -31,7 +36,31 @@ function WoWTools_LoadUIMixin:GenericTraitUI(systemID, treeID)--加载，Trait�
     ToggleFrame(GenericTraitFrame)
 end
 
-WoWTools_LoadUIMixin:GenericTraitUI(--加载，Trait，UI
+
+
+
+function WoWTools_LoadUIMixin:Professions(recipeID)
+    if not ProfessionsFrame then
+        ProfessionsFrame_LoadUI()
+    end
+    if recipeID then
+        if C_TradeSkillUI.IsRecipeProfessionLearned(recipeID) then
+            C_TradeSkillUI.OpenRecipe(recipeID)
+        else
+            Professions.InspectRecipe(recipeID);
+        end
+    end
+end
+
+
+
+
+
+
+
+
+
+--[[WoWTools_LoadUIMixin:GenericTraitUI(--加载，Trait，UI
     Constants.MountDynamicFlightConsts.TRAIT_SYSTEM_ID,
     Constants.MountDynamicFlightConsts.TREE_ID
-)
+)]]

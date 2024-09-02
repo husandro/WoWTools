@@ -820,4 +820,3 @@ end
 :SetAttribute("_onclick", [=[self:Hide(); self:GetFrameRef("RaidUtilityPanel"):Show();]=])
 
 
-]]

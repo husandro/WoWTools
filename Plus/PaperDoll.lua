@@ -109,8 +109,9 @@ local function LvTo()--总装等
 end
 
 local function recipeLearned(recipeSpellID)--是否已学配方
-    local info= C_TradeSkillUI.GetRecipeInfo(recipeSpellID)
-    return info and info.learned
+    return C_TradeSkillUI.IsRecipeProfessionLearned(recipeSpellID)
+    --local info= C_TradeSkillUI.GetRecipeInfo(recipeSpellID)
+    --return info and info.learned
 end
 
 
@@ -124,14 +125,12 @@ end
 
 
 
-
-local function set_Engineering(self, slot, link, use, isPaperDollItemSlot)--增加 [潘达利亚工程学: 地精滑翔器][诺森德工程学: 氮气推进器]
-   -- print(recipeLearned(126392), recipeLearned(55016))
-   --local tradeSkillID, skillLineName, parentTradeSkillID = C_TradeSkillUI.GetTradeSkillLineForRecipe(recipeID);
-   --print(C_TradeSkillUI.GetTradeSkillLineForRecipe(126392))
-   --Professions.InspectRecipe(recipeID)
+--增加 [潘达利亚工程学: 地精滑翔器] recipeID 126392
+--[诺森德工程学: 氮气推进器] ricipeID 109099
+local function set_Engineering(self, slot, link, use, isPaperDollItemSlot)
     if not ((slot==15 and recipeLearned(126392)) or (slot==6 and recipeLearned(55016))) or use or Save.hide or not link or not isPaperDollItemSlot then
-    --if not (slot==15 or slot==6 ) or use or Save.hide or not link or not isPaperDollItemSlot then
+        
+
         if self.engineering  then
             self.engineering:SetShown(false)
         end
@@ -139,6 +138,7 @@ local function set_Engineering(self, slot, link, use, isPaperDollItemSlot)--增�
     end
 
     if not self.engineering then
+        
         local h=self:GetHeight()/3
         self.engineering=e.Cbtn(self, {icon='hide',size={h,h}})
         self.engineering:SetNormalTexture(136243)
@@ -148,24 +148,28 @@ local function set_Engineering(self, slot, link, use, isPaperDollItemSlot)--增�
             self.engineering:SetPoint('TOPRIGHT', self, 'TOPLEFT', -8, 0)
         end
         self.engineering.spell= slot==15 and 126392 or 55016
-        self.engineering:SetScript('OnMouseDown' ,function(frame,d)
-            local parentTradeSkillID= select(3, C_TradeSkillUI.GetTradeSkillLineForRecipe(frame.spell)) or 202
 
+        self.engineering:SetScript('OnMouseDown' ,function(frame,d)
+            
             if d=='LeftButton' then
-                local n=C_Item.GetItemCount(90146, true)
+                local n=C_Item.GetItemCount(90146, true, false, true, false)
                 if n==0 then
                     print(WoWTools_ItemMixin:GetLink(90146) or (e.onlyChinese and '附加材料' or OPTIONAL_REAGENT_TUTORIAL_TOOLTIP_TITLE), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE))
                     return
                 end
-                --OpenProfessionUIToSkillLine(202)
-                OpenProfessionUIToSkillLine(parentTradeSkillID)
-                --C_TradeSkillUI.OpenTradeSkill(202)
-                C_TradeSkillUI.CraftRecipe(frame.spell)
+                do
+                    WoWTools_LoadUIMixin:Professions(frame.spell)
+                
+                    --local parentTradeSkillID= select(3, C_TradeSkillUI.GetTradeSkillLineForRecipe(frame.spell)) or 202
+                    --OpenProfessionUIToSkillLine(parentTradeSkillID)
+                    C_TradeSkillUI.CraftRecipe(frame.spell)
+                end
                 C_TradeSkillUI.CloseTradeSkill()
                 ToggleCharacter("PaperDollFrame", true)
+
             elseif d=='RightButton' then
-                OpenProfessionUIToSkillLine(parentTradeSkillID)
-                --C_TradeSkillUI.OpenTradeSkill(202)
+                WoWTools_LoadUIMixin:Professions(frame.spell)
+                --OpenProfessionUIToSkillLine(parentTradeSkillID)
             end
         end)
         self.engineering:SetScript('OnEnter' ,function(frame)
@@ -338,6 +342,12 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
         end
         self.use:SetAtlas('soulbinds_tree_conduit_icon_utility')
         self.use:EnableMouse(true)
+        --[[self.use:SetScript('OnMouseDown', function(f)
+            local info=C_TradeSkillUI.GetRecipeInfo(f.spellID)
+            if info and info.recipeID then
+                WoWTools_LoadUIMixin:Professions(f.spellID)
+            end
+        end)]]
         self.use:SetScript('OnLeave',function(self2) e.tips:Hide() self2:SetAlpha(1) end)
         self.use:SetScript('OnEnter' ,function(self2)
             if self2.spellID then

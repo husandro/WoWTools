@@ -34,6 +34,8 @@ DEFAULT_CHAT_FRAME.ADD= DEFAULT_CHAT_FRAME.AddMessage
 --local not_Colleced_Icon='|A:questlegendary:0:0|a'
 
 local LOOT_ITEM= LOOT_ITEM--= e.Magic(LOOT_ITEM)--:gsub('%%s', '(.+)')--%s获得了战利品：%s。
+local CHAT_SAY_SEND= CHAT_SAY_SEND
+
 local Category
 
 
@@ -573,6 +575,8 @@ local function setAddMessageFunc(self, s, ...)
             s=s:gsub(k, '|cnGREEN_FONT_COLOR:'..k..'|r')
         end
     end
+
+    s= s:gsub(CHAT_SAY_SEND, '|A:transmog-icon-chat:0:0|a')
 
     return self.ADD(self, s, ...)
 end
