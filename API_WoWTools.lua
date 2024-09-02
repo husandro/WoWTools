@@ -104,7 +104,6 @@ end
 
 
 e.Icon={
-    
     --player= e.GetUnitRaceInfo({unit='player', guid=nil , race=nil , sex=nil , reAtlas=false}),
     icon= 'orderhalltalents-done-glow',
     icon2='|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t',
