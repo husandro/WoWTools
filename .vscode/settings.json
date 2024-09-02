@@ -4900,7 +4900,8 @@
         "BankPanelItemButtonMixin",
         "WoWTools_Chinese_Mixin",
         "HIGH",
-        "BATTLEFIELD_MINIMAP_SHOW_ALWAYS"
+        "BATTLEFIELD_MINIMAP_SHOW_ALWAYS",
+        "DELVES_LABEL"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
@@ -4924,5 +4925,6 @@
         "undefined-field",
         "redundant-parameter",
         "assign-type-mismatch",
+        "inject-field"
     ],
 }

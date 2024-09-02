@@ -1925,16 +1925,18 @@ function e.GetDifficultyColor(string, difficultyID)--DifficultyUtil.lua
     local colorRe, name
     if difficultyID and difficultyID>0 then
         local color= {
-            ['经典']= {name= e.onlyChinese and '经典' or LEGACY_RAID_DIFFICULTY, hex='|cff9d9d9d', r=0.62, g=0.62, b=0.62},
-            ['场景']= {name= e.onlyChinese and '场景' or PLAYER_DIFFICULTY3, hex='|cffc6ffc9', r=0.78, g=1, b=0.79},
-            ['随机']= {name= e.onlyChinese and '随机' or PLAYER_DIFFICULTY3, hex='|cff1eff00', r=0.12, g=1, b=0},
+            ['经典']= {name= e.onlyChinese and '经典' or LAYOUT_STYLE_CLASSIC, hex='|cff9d9d9d', r=0.62, g=0.62, b=0.62},
+            ['场景']= {name= e.onlyChinese and '场景' or SCENARIOS , hex='|cffc6ffc9', r=0.78, g=1, b=0.79},
+            ['随机']= {name= e.onlyChinese and '随机' or LFG_TYPE_RANDOM_DUNGEON, hex='|cff1eff00', r=0.12, g=1, b=0},
             ['普通']= {name= e.onlyChinese and '普通' or PLAYER_DIFFICULTY1, hex='|cffffffff', r=1, g=1, b=1},
             ['英雄']= {name= e.onlyChinese and '英雄' or PLAYER_DIFFICULTY2, hex='|cff0070dd', r=0, g=0.44, b=0.87},
             ['史诗']= {name= e.onlyChinese and '史诗' or PLAYER_DIFFICULTY6, hex='|cffff00ff', r=1, g=0, b=1},
             ['挑战']= {name= e.onlyChinese and '挑战' or PLAYER_DIFFICULTY5,  hex='|cffff8200', r=1, g=0.51, b=0},
             ['漫游']= {name= e.onlyChinese and '漫游' or PLAYER_DIFFICULTY_TIMEWALKER, hex='|cff00ffff', r=0, g=1, b=1},
             ['pvp']= {name= 'PvP', hex='|cffff0000', r=1, g=0, b=0},
-            ['追随']= {name= e.onlyChinese and '追随' or _G['LFG_TYPE_FOLLOWER_DUNGEON'], hex='|cffb1ff00', r=0.69, g=1, b=0, a=1},
+            ['追随']= {name= e.onlyChinese and '追随' or LFG_TYPE_FOLLOWER_DUNGEON, hex='|cffb1ff00', r=0.69, g=1, b=0, a=1},
+            ['地下堡']= {name= e.onlyChinese and '地下堡' or DELVES_LABEL, hex='|cffedd100', r=0.93, g=0.82, b=0, a=1},
+            
 
         } or {}
         local type={
@@ -1982,6 +1984,7 @@ function e.GetDifficultyColor(string, difficultyID)--DifficultyUtil.lua
             [170]='普通',--Path of Ascension: Wisdom	scenario	
             [171]='普通',--Path of Ascension: Humility	scenario
             [205]='追随',--Seguace (5) LFG_TYPE_FOLLOWER_DUNGEON = "追随者地下城"
+            [208]='地下堡',
         }
         name= type[difficultyID]
         if name then

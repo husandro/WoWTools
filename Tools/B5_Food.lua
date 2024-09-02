@@ -406,7 +406,7 @@ local function Init_Menu(self, root)
     end
 
 --查找
-    sub=root:CreateButton('|cnGREEN_FONT_COLOR:|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '查找' or WHO).. e.Icon.mid, function()
+    sub=root:CreateButton((Save.autoWho and '|cnGREEN_FONT_COLOR:' or '')..'|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '查找' or WHO).. e.Icon.mid, function()
         self:Check_Items(true)
     end)
 
@@ -562,7 +562,9 @@ local function Init_Menu(self, root)
         end, {itemID=itemID})
         WoWTools_SpellItemMixin:SetTooltip(nil, nil, sub2, nil)
     end
-    if find>1 then
+
+--全部清除
+    if find>0 then
         sub:CreateDivider()
         sub:CreateButton(e.onlyChinese and '全部清除' or CLEAR_ALL, function()
             Save.addItems={}

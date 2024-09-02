@@ -75,7 +75,6 @@ local function sendPlayerPoint()--发送玩家位置
         end
         name =name or name2
         e.Chat(name, nil, true)
-        --ChatFrame_OpenChat(SELECTED_DOCK_FRAME.editBox:GetText()..name)
     else
         print("Cannot set waypoints on this map")
     end
@@ -199,81 +198,6 @@ local function set_WorldQuestPinMixin_RefreshVisuals(self)--WorldQuestDataProvid
         self.worldQuestTypeTips:SetShown(tagInfo)
     end
 end
-    --local itemName, texture, numItems, quality, _, itemID, itemLevel
-    --for i=1, GetNumQuestLogRewards(self.questID) do
-    --[[local itemName, texture, numItems, quality, _, itemID, itemLevel = GetQuestLogRewardInfo(1, self.questID)--物品
-
-
-    local text
-    if itemName then
-        if itemLevel and itemLevel>1 then
-            text= itemLevel
-        end
-
-        local itemEquipLoc, _, classID = select(4, C_Item.GetItemInfoInstant(itemID))
-        if classID==2 or classID==4 then
-            if quality and text then--物品，颜色
-                text='|c'..select(4, C_Item.GetItemQualityColor(quality))..itemLevel..'|r'
-            end
-
-            local setLevelUp
-            local invSlot = e.GetItemSlotID(itemEquipLoc)
-            if invSlot and itemName and itemLevel and itemLevel>1 then--装等
-                local itemLinkPlayer =  GetInventoryItemLink('player', invSlot)
-                if itemLinkPlayer then
-                    local lv= C_Item.GetDetailedItemLevelInfo(itemLinkPlayer)
-                    if lv and itemLevel-lv>0 then
-                        text= (text or '')..'|A:bags-greenarrow:0:0|a'
-                        setLevelUp=true
-                    end
-                end
-            end
-            if not setLevelUp then
-                local sourceID =itemID and select(2, C_TransmogCollection.GetItemInfo(itemID))--幻化
-                if sourceID then
-                    local collectedText, isCollected=e.GetItemCollected(nil, sourceID, true)--物品是否收集 
-                    if collectedText and not isCollected then
-                        text= (text or '')..collectedText
-                    end
-                end
-            end
-        end
-    else 
-        --itemName, texture, numItems, currencyID, quality =  GetQuestLogRewardCurrencyInfo(1, self.questID)--货币
-        local data= C_QuestLog.GetQuestRewardCurrencyInfo(self.questID, 1, false)
-        local currencyID= data and data.currencyID
-        if currencyID and data and data.totalRewardAmount and data.totalRewardAmount>0 then
-            local info, _, _, _, isMax, canWeek, canEarned, canQuantity= e.GetCurrencyMaxInfo(currencyID, nil)
-            if info and data.totalRewardAmount>1 then
-                if isMax then
-                    text= format('|cnRED_FONT_COLOR:%d|r', data.totalRewardAmount)
-                elseif canWeek or canEarned or canQuantity then
-                    text= format('|cnGREEN_FONT_COLOR:%d|r', data.totalRewardAmount)
-                else
-                    text= data.totalRewardAmount
-                end
-                texture=info.iconFileID
-            end
-        end
-
-        if not text then
-            local gold= GetQuestLogRewardMoney(self.questID)
-            if gold and gold>0 then
-                text= e.MK(gold/10000, 0)
-                texture='interface\\moneyframe\\ui-goldicon'
-            end
-        end
-    end]]
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -749,16 +673,19 @@ end
 
 local INSTANCE_DIFFICULTY_FORMAT='('..e.Magic(INSTANCE_DIFFICULTY_FORMAT)..')'-- "（%s）";
 local function set_AreaPOIPinMixin_OnAcquired(frame)
+
     frame.updateWidgetID=nil
     frame.updateAreaPoiID=nil
     frame:SetScript('OnUpdate', nil)
+
+
 
     if not frame.Text and not Save.hide and (frame.name or frame.widgetSetID or frame.areaPoiID) then
         frame.Text= create_Wolor_Font(frame, 10)
         frame.Text:SetPoint('TOP', frame, 'BOTTOM', 0, 3)
     end
 
-    if not frame or Save.hide or not(frame.widgetSetID and frame.areaPoiID) then
+    if Save.hide or (not frame.widgetSetID and not frame.areaPoiID) then
         if frame and frame.Text then
             local text--地图，地名，名称
             if not Save.hide and frame.name then
@@ -769,6 +696,7 @@ local function set_AreaPOIPinMixin_OnAcquired(frame)
         end
         return
     end
+
 
     local text
 
