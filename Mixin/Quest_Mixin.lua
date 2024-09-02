@@ -3,6 +3,7 @@ GetRewardInfo(questID)
 GetName(questID)
 GetID()
 GetLink(questID)
+GetRewardInfo(questID)
 ]]
 local e= select(2, ...)
 WoWTools_QuestMixin={}
@@ -40,6 +41,14 @@ end
 
 
 
+
+
+
+
+
+
+
+--QuestUtils_AddQuestRewardsToTooltip(tooltip, questID, style)
 function WoWTools_QuestMixin:GetRewardInfo(questID)
     if not questID then
         return
@@ -160,6 +169,7 @@ questRewardContextFlags	Enum.QuestRewardContextFlags?
             texture='Interface\\Icons\\inv_misc_coin_01',--'interface\\moneyframe\\ui-goldicon'
         }
     end
+    return {}
 end
 
 --[[

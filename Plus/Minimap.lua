@@ -227,7 +227,7 @@ local function get_Quest_Text(questID)
         else
             local questName= C_TaskQuest.GetQuestInfoByQuestID(questID)
             if questName then
-                itemTexture= Get_QuestReward_Texture(questID)
+                itemTexture= WoWTools_QuestMixin:GetRewardInfo(questID).texture
                 if not itemTexture then
                     atlas= 'worldquest-tracker-questmarker'
                 end
@@ -465,7 +465,7 @@ local function get_vignette_Text()
                 end
                 if info.rewardQuestID then--任务，奖励
 
-                    local itemTexture= Get_QuestReward_Texture(info.rewardQuestID)
+                    local itemTexture= WoWTools_QuestMixin:GetRewardInfo(info.rewardQuestID).texture
 
                     if itemTexture then
                         name= name..'|T'..itemTexture..':0|t'
