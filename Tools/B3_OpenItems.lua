@@ -220,6 +220,7 @@ local function setAtt(bag, slot, icon, itemID, spellID, isUseMacro)--设置属�
     OpenButton.count:SetText(num or '')
     OpenButton.texture:SetShown(bag and slot)
     OpenButton:set_key(not bag or not slot)
+    OpenButton.IsInCheck=nil
 end
 
 
@@ -232,14 +233,16 @@ end
 
 
 
-local equipItem--是装备时, 打开角色界面
 local function get_Items()--取得背包物品信息
-    if not OpenButton:CanChangeAttribute() then
+    if OpenButton.IsInCheck then
+        return
+    elseif not OpenButton:CanChangeAttribute() then
         OpenButton.isInCombat=true
         return
     end
-
-    equipItem=nil
+    
+    OpenButton.IsEquipItem=nil--是装备时, 打开角色界面
+    OpenButton.IsInCheck=nil
     OpenButton:Clear()
 
 
@@ -287,7 +290,7 @@ local function get_Items()--取得背包物品信息
                         local  isCollected, isSelf= select(2, e.GetItemCollected(info.hyperlink, nil, nil, true))
                         if not isCollected and isSelf then
                             setAtt(bag, slot, info.iconFileID, info.itemID)
-                            equipItem= true
+                            OpenButton.IsEquipItem= true
                             return
                         end
                     end
@@ -812,7 +815,7 @@ local function Init()
             MenuUtil.CreateContextMenu(self, Init_Menu)
 
         else
-            if d=='LeftButton' and not key and equipItem and not PaperDollFrame:IsVisible() then
+            if d=='LeftButton' and not key and OpenButton.IsEquipItem and not PaperDollFrame:IsVisible() then
                 ToggleCharacter("PaperDollFrame")
             end
             if MerchantFrame:IsShown() and MerchantFrame:CanChangeAttribute() then
