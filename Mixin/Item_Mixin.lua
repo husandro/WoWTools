@@ -130,21 +130,11 @@ end
 
 
 
-
-
-
-
-
+--GetButtonOverlayQualityColor
 function WoWTools_ItemMixin:GetColor(itemID, quality)
-    if itemID then
-        quality= quality or C_Item.GetItemQualityByID(itemID)
-        if quality and quality>=0 then
-            local color= ITEM_QUALITY_COLORS[quality]
-            if color then
-                return color.r, color.g, color.b, color.hex, color
-            end
-        end
-    end
+    quality= quality or (itemID and C_Item.GetItemQualityByID(itemID))
+    local color= ITEM_QUALITY_COLORS[quality] or ITEM_QUALITY_COLORS[Enum.ItemQuality.Common]
+    return color.r, color.g, color.b, color.hex, color, quality
 end
 
 
@@ -169,3 +159,25 @@ function WoWTools_ItemMixin:GetLink(itemID)
     end
     return link
 end
+
+
+--[[
+	if C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(itemIDOrLink) then
+		button.IconOverlay:SetAtlas("AzeriteIconFrame");
+
+	elseif C_Item.IsCorruptedItem(itemIDOrLink) then
+		button.IconOverlay:SetAtlas("Nzoth-inventory-icon");
+
+	elseif C_Item.IsCosmeticItem(itemIDOrLink) then
+		button.IconOverlay:SetAtlas("CosmeticIconFrame");
+
+	elseif C_Soulbinds.IsItemConduitByItemInfo(itemIDOrLink) then
+		button.IconOverlay:SetAtlas("ConduitIconFrame");
+
+		if button.IconOverlay2 then
+			button.IconOverlay2:SetAtlas("ConduitIconFrame-Corners");
+			button.IconOverlay2:Show();
+		end
+	elseif C_Item.IsCurioItem(itemIDOrLink) then
+		button.IconOverlay:SetAtlas("delves-curios-icon-border");
+]]

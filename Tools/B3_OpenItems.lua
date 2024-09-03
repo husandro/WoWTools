@@ -57,6 +57,7 @@ local Save={
 
         --11
         [229899]=100,--宝匣钥匙碎片
+        [224025]=10,--爆裂碎片
 
     },
     no={--禁用使用
@@ -173,7 +174,7 @@ end
 
 
 
-local function setAtt(bag, slot, icon, itemID, spellID)--设置属性
+local function setAtt(bag, slot, icon, itemID, spellID, isUseMacro)--设置属性
     --if UnitAffectingCombat('player') or not UnitIsConnected('player') or UnitInVehicle('player') then
     if OpenButton.isDisabled then
         return
@@ -185,22 +186,18 @@ local function setAtt(bag, slot, icon, itemID, spellID)--设置属性
     if bag and slot then
         if spellID then
             OpenButton:SetAttribute('type1', 'spell')
-            local name= C_Spell.GetSpellName(spellID)
-            OpenButton:SetAttribute('spell1', name or spellID)
+            OpenButton:SetAttribute('spell1', C_Spell.GetSpellName(spellID) or spellID)
             OpenButton:SetAttribute('target-item', bag..' '..slot)
 
-            --OpenButton:SetAttribute("macrotext1",'/cast '..(GetSpellInfo(spellID) or spellID)..'\n/use '..bag ..' '..slot)
+        elseif isUseMacro then
+            OpenButton:SetAttribute('type1', 'macro')
+            OpenButton:SetAttribute("macrotext1", '/use '..bag..' '..slot)
+            OpenButton:SetAttribute('target-item', nil)
+
         else
             OpenButton:SetAttribute('type1', 'item')
-            --[[local name= info
-                    and C_Item.IsCosmeticItem(itemID)
-                    and C_Item.GetItemNameByID(itemID)
-                    or (bag..' '..slot)]]
-                
             OpenButton:SetAttribute('item1', (bag..' '..slot))
-            
-            OpenButton:SetAttribute('spell1', nil)
-            --OpenButton:SetAttribute("macrotext1", '/use '..bag..' '..slot)
+            OpenButton:SetAttribute('target-item', nil)
         end
 
         OpenButton.texture:SetTexture(icon)
@@ -212,6 +209,8 @@ local function setAtt(bag, slot, icon, itemID, spellID)--设置属性
         OpenButton:SetAttribute('type1', nil)
         OpenButton:SetAttribute('item1', nil)
         OpenButton:SetAttribute('spell1', nil)
+        OpenButton:SetAttribute('macrotext1', nil)
+        OpenButton:SetAttribute('target-item', nil)
         OpenButton:Clear()
     end
 
@@ -274,13 +273,21 @@ local function get_Items()--取得背包物品信息
                         return
                     end
 
+                elseif C_Item.IsCosmeticItem(info.hyperlink) then--装饰品
+                    if Save.mago then--and not C_Item.IsCosmeticItem(info.itemID) then --and info.quality then
+                        local  isCollected, isSelf= select(2, e.GetItemCollected(info.hyperlink, nil, nil, true))
+                        if not isCollected and isSelf then
+                            setAtt(bag, slot, info.iconFileID, info.itemID, nil, true)
+                            return
+                        end
+                    end
+
                 elseif classID==4 or classID==2 then-- itemEquipLoc and _G[itemEquipLoc] then--幻化
-                    if Save.mago and not C_Item.IsCosmeticItem(info.itemID) then --and info.quality then
+                    if Save.mago then--and not C_Item.IsCosmeticItem(info.itemID) then --and info.quality then
                         local  isCollected, isSelf= select(2, e.GetItemCollected(info.hyperlink, nil, nil, true))
                         if not isCollected and isSelf then
                             setAtt(bag, slot, info.iconFileID, info.itemID)
-
-                            equipItem=true-- not C_Item.IsCosmeticItem(info.hyperlink)
+                            equipItem= true
                             return
                         end
                     end
@@ -288,7 +295,7 @@ local function get_Items()--取得背包物品信息
                 else
                     local dateInfo= WoWTools_ItemMixin:GetTooltip({hyperLink=info.hyperlink, red=true, onlyRed=true, text={LOCKED}})
                     if not dateInfo.red and C_PlayerInfo.CanUseItem(info.itemID) then--是否可使用 then--不出售, 可以使用
-                    
+
                         if classID==0 and subclassID==11 then--珍玩
                             setAtt(bag, slot, info.iconFileID, info.itemID)
                             return
@@ -843,7 +850,7 @@ local function Init()
 
 
     OpenButton:SetScript('OnEvent', function(self, event)
-        
+
         if event=='PLAYER_ENTERING_WORLD' then--出进副本
             self:SetShown(not IsInInstance())
             self:settings()
