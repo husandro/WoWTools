@@ -775,13 +775,22 @@ local function Init_Menu(self, root)--菜单
         return Save().textToDown
     end, function()
         Save().textToDown= not Save().textToDown and true or nil
-        for _, btn in pairs(TrackButton.btn) do
+        for _, btn in pairs(self.btn) do
             btn:ClearAllPoints()
             btn.text:ClearAllPoints()
             btn:set_btn_point()
         end
     end)
 
+    sub:CreateButton(
+        (Save().pointVigentteButton and '' or '|cff9e9e9e')
+        ..(e.onlyChinese and '重置位置' or RESET_POSITION),
+    function()
+        Save().pointVigentteButton=nil
+        self:ClearAllPoints()
+        self:Set_Point()
+        print(e.addName, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+    end)
 end
 
 
