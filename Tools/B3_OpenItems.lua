@@ -854,7 +854,7 @@ local function Init()
 
     OpenButton:SetScript('OnEvent', function(self, event)
 
-        if event=='PLAYER_ENTERING_WORLD' then--出进副本
+        if event=='PLAYER_ENTERING_WORLD' or event=='PLAYER_MAP_CHANGED' then--出进副本
             self:SetShown(not IsInInstance())
             self:settings()
 
@@ -889,7 +889,7 @@ local function Init()
 
 
 
-
+    OpenButton:RegisterEvent('PLAYER_MAP_CHANGED')
     OpenButton:RegisterEvent('PLAYER_ENTERING_WORLD')
     OpenButton.events={
         'BAG_UPDATE_COOLDOWN',

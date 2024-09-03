@@ -544,7 +544,7 @@ local function set_Button_Text()
                     vignetteGUID= self.vignetteGUID,
                     uiMapID= self.uiMapID,
                     areaPoiID= self.areaPoiID,
-                    
+
                     frame=self,
                 })
                 
@@ -596,7 +596,7 @@ end
 
 
 local function Init_Menu(self, root)--菜单
-    local sub, sub2, sub3
+    local sub, sub2, sub3, col
 --显示
     root:CreateCheckbox(
         e.onlyChinese and '显示' or SHOW,
@@ -620,7 +620,7 @@ local function Init_Menu(self, root)--菜单
 
 --小地图
     sub:CreateCheckbox(
-        e.onlyChinese and '小地图' or HUD_EDIT_MODE_MINIMAP_LABEL,
+        (e.onlyChinese and '小地图' or HUD_EDIT_MODE_MINIMAP_LABEL),
     function()
         return not Save().hideVigentteCurrentOnMinimap
     end, function()
@@ -630,7 +630,7 @@ local function Init_Menu(self, root)--菜单
    
 --世界地图
     sub:CreateCheckbox(
-        e.onlyChinese and '世界地图' or WORLDMAP_BUTTON,
+        (e.onlyChinese and '世界地图' or WORLDMAP_BUTTON),
     function()
         return not Save().hideVigentteCurrentOnWorldMap
     end, function()
@@ -661,7 +661,7 @@ local function Init_Menu(self, root)--菜单
         num= num+1
         e.LoadDate({id=questID, type=='quest'})
     end
-    sub2=sub:CreateButton(
+    sub=root:CreateButton(
         (e.onlyChinese and '世界任务' or TRACKER_HEADER_WORLD_QUESTS)
         ..' |cnGREEN_FONT_COLOR:#'..num,
     function()
@@ -669,16 +669,118 @@ local function Init_Menu(self, root)--菜单
     end)
 
     for questID in pairs(Save().questIDs) do
-        sub3=sub2:CreateButton(
+        sub2=sub:CreateCheckbox(
             '|T'..(WoWTools_QuestMixin:GetRewardInfo(questID).texture or 0)..':0|t'
             ..WoWTools_QuestMixin:GetName(questID),
-        function()
-
+        function(data)
+            return Save().questIDs[data.questID]
+        end, function(data)
+            Save().questIDs[data.questID]= not Save().questIDs[data.questID] and true or nil
+            print(e.addName, addName, addName2, WoWTools_QuestMixin:GetLink(data.questID))
         end, {questID=questID})
-        sub3:SetTooltip(function()
-            
+        sub2:SetTooltip(function(tooltip)
+            tooltip:AddLine(e.onlyChinese and '移除' or REMOVE)
         end)
     end
+
+    WoWTools_MenuMixin:SetNumButton(sub, num)
+    if num>1 then
+        sub:CreateDivider()
+        sub:CreateButton(
+            e.onlyChinese and '全部清除' or CLEAR_ALL,
+        function()
+            Save().questIDs={}
+        end)
+    end
+
+--areaPoiIDs
+    num=0
+    for _ in pairs(Save().areaPoiIDs) do
+        num= num+1
+    end
+    sub=root:CreateButton(
+        'AreaPoiID |cnGREEN_FONT_COLOR:#'..num,
+    function()
+        return MenuResponse.Open
+    end)
+
+    for areaPoiID, uiMapID in pairs(Save().areaPoiIDs) do
+        local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, areaPoiID) or {}
+        sub2=sub:CreateCheckbox(get_AreaPOIInfo_Name(poiInfo) or areaPoiID, function(data)
+            return Save().areaPoiIDs[data.areaPoiID]
+        end, function(data)
+            Save().areaPoiIDs[data.areaPoiID]= not Save().areaPoiIDs[data.areaPoiID] and data.uiMapID or nil
+        end, {areaPoiID=areaPoiID, uiMapID=uiMapID})
+        sub2:SetTooltip(function(tooltip)
+            tooltip:AddLine(e.onlyChinese and '移除' or REMOVE)
+        end)
+    end
+  
+    WoWTools_MenuMixin:SetNumButton(sub, num)
+    if num>1 then
+        sub:CreateDivider()
+        sub:CreateButton(
+            e.onlyChinese and '全部清除' or CLEAR_ALL,
+        function()
+            Save().questIDs={}
+        end)
+    end
+
+--地图
+    num=0
+    for _ in pairs(Save().uiMapIDs) do
+        num= num+1
+    end
+    sub=root:CreateButton(
+        (e.onlyChinese and '地图' or WORLD_MAP)..'|cnGREEN_FONT_COLOR:#'..num,
+    function()
+        return MenuResponse.Open
+    end)
+
+    for uiMapID in pairs(Save().uiMapIDs) do
+        sub2=sub:CreateCheckbox(
+            (C_Map.GetMapInfo(uiMapID) or {}).name or uiMapID,
+        function(data)
+            return Save().uiMapIDs[data.uiMapID]
+        end, function(data)
+            Save().uiMapIDs[data.uiMapID]= not Save().uiMapIDs[data.uiMapID] and true or nil
+        end, {uiMapID=uiMapID})
+        sub2:SetTooltip(function(tooltip)
+            tooltip:AddLine(e.onlyChinese and '移除' or REMOVE)
+        end)
+    end
+  
+    WoWTools_MenuMixin:SetNumButton(sub, num)
+    if num>1 then
+        sub:CreateDivider()
+        sub:CreateButton(
+            e.onlyChinese and '全部清除' or CLEAR_ALL,
+        function()
+            Save().uiMapIDs={}
+        end)
+    end
+
+
+--设置
+    root:CreateDivider()
+    sub=root:CreateButton(
+        e.onlyChinese and '设置' or SETTINGS,
+    function()
+        return MenuResponse.Open
+    end)
+
+    sub:CreateCheckbox(
+        e.onlyChinese and '向下滚动' or COMBAT_TEXT_SCROLL_DOWN,
+    function()
+        return Save().textToDown
+    end, function()
+        Save().textToDown= not Save().textToDown and true or nil
+        for _, btn in pairs(TrackButton.btn) do
+            btn:ClearAllPoints()
+            btn.text:ClearAllPoints()
+            btn:set_btn_point()
+        end
+    end)
 
 end
 
