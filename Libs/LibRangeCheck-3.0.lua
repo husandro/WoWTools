@@ -56,7 +56,6 @@ local InCombatLockdownRestriction = function(unit) return InCombatLockdown() and
 
 local _G = _G
 local next = next
-local sort = sort
 local type = type
 local wipe = wipe
 local print = print
@@ -67,7 +66,7 @@ local tremove = tremove
 local tostring = tostring
 local setmetatable = setmetatable
 local BOOKTYPE_SPELL = BOOKTYPE_SPELL or Enum.SpellBookSpellBank.Player
-local GetSpellBookItemName = GetSpellBookItemName or C_SpellBook.GetSpellBookItemName
+local GetSpellBookItemName = C_SpellBook.GetSpellBookItemName
 local C_Item = C_Item
 local UnitCanAttack = UnitCanAttack
 local UnitCanAssist = UnitCanAssist
@@ -115,8 +114,8 @@ local GetSpellInfo = GetSpellInfo or function(spellID)
   end
 end
 
-local GetNumSpellTabs = GetNumSpellTabs or C_SpellBook.GetNumSpellBookSkillLines
-local GetSpellTabInfo = GetSpellTabInfo or function(index)
+local GetNumSpellTabs =  C_SpellBook.GetNumSpellBookSkillLines
+local GetSpellTabInfo =  function(index)
   local skillLineInfo = C_SpellBook.GetSpellBookSkillLineInfo(index);
   if skillLineInfo then
     return skillLineInfo.name,

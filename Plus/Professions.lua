@@ -564,7 +564,7 @@ local function Init_ProfessionsFrame()
             self.Count:SetPoint('RIGHT', self.texture, 'LEFT')
         end
         if self.texture then
-            self.texture:SetTexture(recipeInfo.icon or 0)
+            self.texture:SetTexture(recipeInfo.icon and recipeInfo.icon>0 and recipeInfo.icon or 0)
         end
 
         local r,g,b--颜色        

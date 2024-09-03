@@ -108,6 +108,14 @@ local function LvTo()--总装等
     end
 end
 
+
+
+
+
+
+
+
+
 local function recipeLearned(recipeSpellID)--是否已学配方
     return C_TradeSkillUI.IsRecipeProfessionLearned(recipeSpellID)
     --local info= C_TradeSkillUI.GetRecipeInfo(recipeSpellID)
@@ -138,7 +146,6 @@ local function set_Engineering(self, slot, link, use, isPaperDollItemSlot)
     end
 
     if not self.engineering then
-        
         local h=self:GetHeight()/3
         self.engineering=e.Cbtn(self, {icon='hide',size={h,h}})
         self.engineering:SetNormalTexture(136243)
@@ -149,22 +156,23 @@ local function set_Engineering(self, slot, link, use, isPaperDollItemSlot)
         end
         self.engineering.spell= slot==15 and 126392 or 55016
 
-        self.engineering:SetScript('OnMouseDown' ,function(frame,d)
-            
+        self.engineering:SetScript('OnMouseDown' ,function(frame, d)
             if d=='LeftButton' then
                 local n=C_Item.GetItemCount(90146, true, false, true, false)
                 if n==0 then
                     print(WoWTools_ItemMixin:GetLink(90146) or (e.onlyChinese and '附加材料' or OPTIONAL_REAGENT_TUTORIAL_TOOLTIP_TITLE), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE))
                     return
                 end
+                local isShow= ProfessionsFrame and ProfessionsFrame:IsShown()
                 do
                     WoWTools_LoadUIMixin:Professions(frame.spell)
-                
-                    --local parentTradeSkillID= select(3, C_TradeSkillUI.GetTradeSkillLineForRecipe(frame.spell)) or 202
-                    --OpenProfessionUIToSkillLine(parentTradeSkillID)
-                    C_TradeSkillUI.CraftRecipe(frame.spell)
                 end
-                C_TradeSkillUI.CloseTradeSkill()
+                do
+                    C_TradeSkillUI.CraftRecipe(frame.spell)
+                    if not isShow then
+                        C_TradeSkillUI.CloseTradeSkill()
+                    end
+                end
                 ToggleCharacter("PaperDollFrame", true)
 
             elseif d=='RightButton' then
@@ -345,7 +353,7 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
         --[[self.use:SetScript('OnMouseDown', function(f)
             local info=C_TradeSkillUI.GetRecipeInfo(f.spellID)
             if info and info.recipeID then
-                WoWTools_LoadUIMixin:Professions(f.spellID)
+                WoWTools_LoadUIMixin:Professions(info.recipeID)
             end
         end)]]
         self.use:SetScript('OnLeave',function(self2) e.tips:Hide() self2:SetAlpha(1) end)

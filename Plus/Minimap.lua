@@ -1182,15 +1182,56 @@ local function Init_Set_Button()--小地图, 标记, 文本
         end
     end
 
+
     function Button:set_Shown()
         local hide= not Save.vigentteButton
             or IsInInstance()
+            or C_PetBattles.IsInBattle()
+            or UnitInVehicle('player')
             or UnitAffectingCombat('player')
+
             or WorldMapFrame:IsShown()
 
         Button:SetShown(not hide)
         Button.Frame:SetShown(Save.vigentteButtonShowText and not hide)
     end
+
+
+    function Button:set_Event()
+        self:UnregisterAllEvents()
+
+        self:RegisterEvent('ZONE_CHANGED_NEW_AREA')
+        self:RegisterEvent('PLAYER_ENTERING_WORLD')
+
+        if Save.vigentteButton and not IsInInstance() then
+            self:RegisterEvent('PET_BATTLE_OPENING_DONE')
+            self:RegisterEvent('PET_BATTLE_CLOSE')
+
+            self:RegisterUnitEvent('UNIT_EXITED_VEHICLE', 'player')
+            self:RegisterUnitEvent('UNIT_ENTERED_VEHICLE', 'player')
+
+            self:RegisterEvent('PLAYER_REGEN_DISABLED')
+            self:RegisterEvent('PLAYER_REGEN_ENABLED')
+
+            if Save.vigentteSound then
+                self:RegisterEvent('VIGNETTES_UPDATED')
+            end
+        end
+    end
+
+    Button:SetScript('OnEvent', function(self, event)
+        if event=='PLAYER_ENTERING_WORLD' or event=='ZONE_CHANGED_NEW_AREA' then
+            self.SpeakTextTab=nil
+            self:set_Event()
+            self:set_Shown()
+        elseif event=='VIGNETTES_UPDATED' then
+            self:set_VIGNETTES_UPDATED()
+        else--PLAYER_REGEN_DISABLED PLAYER_REGEN_ENABLED
+            self:set_Shown()
+        end
+    end)
+
+
 
     function Button:set_Texture()
         if Save.vigentteButtonShowText then
@@ -1291,30 +1332,7 @@ local function Init_Set_Button()--小地图, 标记, 文本
         self.texture:SetAlpha(0.5)
     end)
 
-    function Button:set_Event()
-        self:UnregisterAllEvents()
 
-        self:RegisterEvent('PLAYER_ENTERING_WORLD')--设置，事件
-        if Save.vigentteButton and not IsInInstance() then
-            self:RegisterEvent('PLAYER_REGEN_DISABLED')
-            self:RegisterEvent('PLAYER_REGEN_ENABLED')
-            if Save.vigentteSound then
-                self:RegisterEvent('VIGNETTES_UPDATED')
-            end
-        end
-    end
-
-    Button:SetScript('OnEvent', function(self, event)
-        if event=='PLAYER_ENTERING_WORLD' then
-            self.SpeakTextTab=nil
-            self:set_Event()
-            self:set_Shown()
-        elseif event=='VIGNETTES_UPDATED' then
-            self:set_VIGNETTES_UPDATED()
-        else--PLAYER_REGEN_DISABLED PLAYER_REGEN_ENABLED
-            self:set_Shown()
-        end
-    end)
 
     function Button:set_Frame_Scale()--设置，Button的 Frame Text 属性
         self.Frame:SetScale(Save.vigentteButtonTextScale or 1)
@@ -2517,7 +2535,7 @@ local function Init_Menu(_, level, menuList)
         hasArrow=true,
         func= function()
             if not Initializer then
-                e.OpenPanelOpting()    
+                e.OpenPanelOpting()
             end
             e.OpenPanelOpting(Initializer)
         end
@@ -2579,7 +2597,7 @@ local function click_Func(self, d)
                 expButton:ToggleLandingPage()--Minimap.lua
             else
                 if not Initializer then
-                    e.OpenPanelOpting()    
+                    e.OpenPanelOpting()
                 end
                 e.OpenPanelOpting(Initializer)
                 --Settings.OpenToCategory(id)
@@ -2589,7 +2607,7 @@ local function click_Func(self, d)
     elseif d=='RightButton' and not key then
         if SettingsPanel:IsShown() then
             if not Initializer then
-                e.OpenPanelOpting()    
+                e.OpenPanelOpting()
             end
             e.OpenPanelOpting(Initializer)
         else
@@ -2685,14 +2703,14 @@ local function Init_InstanceDifficulty()--副本，难图，指示
     if Save.disabledInstanceDifficulty or not btn.Default then
         return
     end
-    
+
     e.Set_Label_Texture_Color(btn.Default.Border, {type='Texture'})
     e.Set_Label_Texture_Color(btn.Guild.Border, {type='Texture'})
     e.Set_Label_Texture_Color(btn.ChallengeMode.Border, {type='Texture'})
 
     e.Cstr(nil,{size=14, copyFont=btn.Text, changeFont= btn.Default.Text})--字体，大小
     btn.Default.Text:SetShadowOffset(1,-1)
-    
+
     --e.Cstr(nil,{size=14, copyFont=btn.Guild.Text, changeFont= btn.Default.Text})--字体，大小
     --btn.Guild.Text:SetShadowOffset(1,-1)
 
@@ -2734,7 +2752,7 @@ local function Init_InstanceDifficulty()--副本，难图，指示
         if not IsInInstance() then
             return
         end
-        
+
         e.tips:SetOwner(MinimapCluster, "ANCHOR_LEFT")
         e.tips:ClearLines()
         --name, instanceType, difficultyID, difficultyName, maxPlayers, dynamicDifficulty, isDynamic, instanceID, instanceGroupSize, LfgDungeonID
@@ -2743,7 +2761,7 @@ local function Init_InstanceDifficulty()--副本，难图，指示
         if difficultyName and maxPlayers then
             difficultyName= difficultyName..(maxPlayers and ' ('..maxPlayers..')' or '')..' '..(difficultyID or '')
         end
-         
+
         e.tips:AddDoubleLine(e.cn(instanceName), difficultyName)
         e.tips:AddLine(self.tooltip)
         e.tips:AddLine(' ')
@@ -2867,7 +2885,7 @@ local function Blizzard_TimeManager()
     TimeManagerClockButton:set_point()
 
     --小时图，使用服务器, 时间
-   
+
     local function set_Server_Timer()--小时图，使用服务器, 时间
         if Save.useServerTimer then
             TimeManagerClockButton_Update=function()
@@ -2904,7 +2922,7 @@ local function Blizzard_TimeManager()
     --提示
     hooksecurefunc('TimeManagerClockButton_UpdateTooltip', function()
         e.tips:AddLine(' ')
-        
+
         e.tips:AddDoubleLine('|cffffffff'..('ServerTime'), '|cnGREEN_FONT_COLOR:'..e.SecondsToClock(GetServerTime())..e.Icon.left)
         e.tips:AddDoubleLine('|cffffffff'..(e.onlyChinese and '服务器时间' or TIMEMANAGER_TOOLTIP_REALMTIME), '|cnGREEN_FONT_COLOR:'..e.SecondsToClock(C_DateAndTime.GetServerTimeLocal())..e.Icon.left)
         e.tips:AddDoubleLine('|cffffffff'..(e.onlyChinese and '移动' or NPE_MOVE), e.Icon.right)

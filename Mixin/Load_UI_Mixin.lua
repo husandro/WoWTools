@@ -40,14 +40,20 @@ end
 
 
 function WoWTools_LoadUIMixin:Professions(recipeID)
-    if not ProfessionsFrame then
-        ProfessionsFrame_LoadUI()
+    do
+        if not ProfessionsFrame then
+            ProfessionsFrame_LoadUI()
+        end
     end
     if recipeID then
         if C_TradeSkillUI.IsRecipeProfessionLearned(recipeID) then
+            local parentTradeSkillID= select(3, C_TradeSkillUI.GetTradeSkillLineForRecipe(recipeID))            
+            if parentTradeSkillID then
+                OpenProfessionUIToSkillLine(parentTradeSkillID)
+            end
             C_TradeSkillUI.OpenRecipe(recipeID)
-        else
-            Professions.InspectRecipe(recipeID);
+        --else
+            --Professions.InspectRecipe(recipeID)
         end
     end
 end

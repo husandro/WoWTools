@@ -569,12 +569,35 @@ local function Init_TrackButton()
 	function TrackButton:set_Shown()--显示,隐藏
 		local hide= Save.Hide
 		 	or (
-				not Save.notAutoHideTrack and (IsInInstance() or C_PetBattles.IsInBattle() or UnitAffectingCombat('player'))
+				not Save.notAutoHideTrack and (
+					IsInInstance()
+					or C_PetBattles.IsInBattle()					
+					or UnitInVehicle('player')
+					or UnitAffectingCombat('player')
+				)
 			)
 		if self:CanChangeAttribute() then
 			self:SetShown(not hide)
 		end
 	end
+
+	function TrackButton:set_Event()
+		if Save.Hide then
+			self:UnregisterAllEvents()
+		else
+			self:RegisterEvent('ZONE_CHANGED_NEW_AREA')
+			self:RegisterEvent('PLAYER_ENTERING_WORLD')
+			self:RegisterEvent('PET_BATTLE_OPENING_DONE')
+			self:RegisterEvent('PET_BATTLE_CLOSE')
+			self:RegisterUnitEvent('UNIT_EXITED_VEHICLE', 'player')
+			self:RegisterUnitEvent('UNIT_ENTERED_VEHICLE', 'player')
+			self:RegisterEvent('PLAYER_REGEN_DISABLED')
+			self:RegisterEvent('PLAYER_REGEN_ENABLED')
+		end
+	end
+
+	TrackButton:SetScript('OnEvent', TrackButton.set_Shown)
+
 
 	function TrackButton:set_Scale()
 		if self.Frame:CanChangeAttribute() then
@@ -617,17 +640,7 @@ local function Init_TrackButton()
 		e.tips:Show()
 	end
 
-	function TrackButton:set_Event()
-		if Save.Hide then
-			self:UnregisterAllEvents()
-		else
-			self:RegisterEvent('PLAYER_ENTERING_WORLD')
-			self:RegisterEvent('PET_BATTLE_OPENING_DONE')
-			self:RegisterEvent('PET_BATTLE_CLOSE')
-			self:RegisterEvent('PLAYER_REGEN_DISABLED')
-			self:RegisterEvent('PLAYER_REGEN_ENABLED')
-		end
-	end
+	
 
 	TrackButton:RegisterForDrag("RightButton")
 	TrackButton:SetClampedToScreen(true)
@@ -792,7 +805,7 @@ local function Init_TrackButton()
 		self:set_Texture()
 		self.texture:SetAlpha(0.5)
 	end)
-	TrackButton:SetScript('OnEvent', TrackButton.set_Shown)
+
 
 
 
@@ -1060,7 +1073,7 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 	end]]
 
 
-	--frame.Content.AccountWideIcon:SetShown(info.isAccountTransferable)
+	frame.Content.AccountWideIcon:SetShown(info.isAccountTransferable)
 end
 
 

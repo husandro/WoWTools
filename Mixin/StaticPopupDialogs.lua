@@ -26,11 +26,11 @@ local function Init()
 
 
 
-    
+
 --重置, 数据
 StaticPopupDialogs['WoWTools_RestData']= {
     text=e.addName..'|n|n%s|n|n|cnRED_FONT_COLOR:'
-        ..(e.onlyChinese and "你想要将所有选项重置为默认状态吗？|n将会立即对所有设置生效。" or CONFIRM_RESET_SETTINGS)..'|r|n|n',    
+        ..(e.onlyChinese and "你想要将所有选项重置为默认状态吗？|n将会立即对所有设置生效。" or CONFIRM_RESET_SETTINGS)..'|r|n|n',
     button1= e.onlyChinese and '重置' or RESET,
     button2= e.onlyChinese and '取消' or CANCEL,
     OnAccept=function(_, SetValue)
@@ -231,6 +231,22 @@ StaticPopupDialogs['WoWTools_GetMapID'] = {--区域,设置对话框
         editBoxWidth=360,
        --hasItemFrame = true,
        -- showAlert=true,
+    }
+
+
+
+
+
+    StaticPopupDialogs['WoWTools_OK']={
+        text =e.addName..'|n|n%s',
+        button1 = e.onlyChinese and '确定' or OKAY,
+        button2 = e.onlyChinese and '取消' or CANCEL,
+        OnAccept=function(self, data)
+            data.SetValue(self, data)
+        end,
+        whileDead=true,
+        hideOnEscape=true,
+        exclusive=true
     }
 end
 

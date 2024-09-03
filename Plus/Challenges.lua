@@ -189,21 +189,18 @@ local function Get_Week_Item_Level(level)
     level= min(LimitMaxKeyLevel, level)
     level= max(2, level)
     local tab={
-        [2]='496'..Level_Text('Champion')..'2/8  509'..Level_Text('Hero')..'2/6',
-        [3]='499'..Level_Text('Champion')..'3/8  509'..Level_Text('Hero')..'2/6',
-        [4]='499'..Level_Text('Champion')..'3/8  512'..Level_Text('Hero')..'3/6',
-        [5]='502'..Level_Text('Champion')..'4/8  512'..Level_Text('Hero')..'3/6',
-        [6]='502'..Level_Text('Champion')..'4/8  515'..Level_Text('Hero')..'4/6',
-        [7]='506'..Level_Text('Hero')..'1/6  515'..Level_Text('Hero')..'4/6',
-        [8]='506'..Level_Text('Hero')..'1/6  519'..Level_Text('Myth')..'1/4',
-        [9]='509'..Level_Text('Hero')..'2/6  519'..Level_Text('Myth')..'1/4',
-        [10]='509'..Level_Text('Hero')..'2/6  522'..Level_Text('Myth')..'2/4',
+        [2]='597'..Level_Text('Champion')..'2/8  606'..Level_Text('Hero')..'2/6',
+        [3]='597'..Level_Text('Champion')..'3/8  610'..Level_Text('Hero')..'2/6',
+        [4]='600'..Level_Text('Champion')..'3/8  610'..Level_Text('Hero')..'3/6',
+        [5]='603'..Level_Text('Champion')..'4/8  613'..Level_Text('Hero')..'3/6',
+        [6]='606'..Level_Text('Champion')..'4/8  613'..Level_Text('Hero')..'4/6',
+        [7]='610'..Level_Text('Hero')..'1/6  616'..Level_Text('Hero')..'4/6',
+        [8]='610'..Level_Text('Hero')..'1/6  619'..Level_Text('Myth')..'1/4',
+        [9]='613'..Level_Text('Hero')..'2/6  619'..Level_Text('Myth')..'1/4',
+        [10]='613'..Level_Text('Hero')..'2/6  623'..Level_Text('Myth')..'2/4',
     }
     return tab[level] or tab[10]
 end
-
-
-
 
 
 

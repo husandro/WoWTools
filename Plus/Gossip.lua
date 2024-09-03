@@ -255,7 +255,7 @@ local function Init_Gossip_Text()
     if Save.not_Gossip_Text_Icon or not Save.gossip then
         return
     end
-    
+
     for gossipID, tab in pairs(PlayerGossipTab) do
         local name
         if e.onlyChinese then
@@ -2506,8 +2506,8 @@ local function Init_Gossip()
     end)
 
 
-    
-    
+
+
     --[[if not StaticPopupDialogs['SPELL_CONFIRMATION_PROMPT'].OnShow then
         StaticPopupDialogs['SPELL_CONFIRMATION_PROMPT'].OnShow=function(self, data)
             if not self.button1:IsEnabled() or not Save.gossip or IsModifierKeyDown() then
@@ -2895,7 +2895,7 @@ local function Init_Quest()
         return C_QuestLog.IsQuestTrivial(questID) and not self.isQuestTrivialTracking
     end
 
- 
+
 
     function QuestButton:set_Event()--设置事件
         self:UnregisterAllEvents()
@@ -3777,11 +3777,15 @@ local function Init_Blizzard_DelvesDifficultyPicker()
         if num==0 then
             return
         end
-
+        local Option
         do
             if Save.delvesDifficultyMaxLevel then
                 for i=num, 1, -1 do
                     local option= self.gossipOptions[i] or {}
+                    if IsInGroup() then
+                        C_DelvesUI.RequestPartyEligibilityForDelveTiers(self.gossipOptions[num].gossipOptionID)
+                    end
+
                     if option.status == Enum.GossipOptionStatus.Available or option.status == Enum.GossipOptionStatus.AlreadyComplete then
                         DelvesDifficultyPickerFrame.DelveRewardsContainerFrame:Hide();
                         DelvesDifficultyPickerFrame:SetSelectedLevel(option.orderIndex);
@@ -3789,9 +3793,12 @@ local function Init_Blizzard_DelvesDifficultyPicker()
                         DelvesDifficultyPickerFrame:SetSelectedOption(option);
                         DelvesDifficultyPickerFrame.DelveRewardsContainerFrame:SetRewards();
                         DelvesDifficultyPickerFrame:UpdatePortalButtonState();
-                        --if not UnitAffectingCombat('player') then
-                        -- SetCVar('lastSelectedDelvesTier', option.orderIndex + 1)
-                        --C_DelvesUI.RequestPartyEligibilityForDelveTiers(self.gossipOptions[num].gossipOptionID)
+
+                        if not UnitAffectingCombat('player') then
+                            SetCVar('lastSelectedDelvesTier', option.orderIndex + 1)
+                        end
+
+                        Option=option
                         break
                     end
                 end
@@ -3802,7 +3809,7 @@ local function Init_Blizzard_DelvesDifficultyPicker()
         local btn= self.EnterDelveButton
         if btn and btn:IsEnabled() then
             local name,itemLink
-            local option= self:GetSelectedOption()
+            local option= Option or self:GetSelectedOption()
             if option and option.name then
                 local spellLink
                 if option.spellID then

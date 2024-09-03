@@ -326,13 +326,44 @@ local function Init_TrackButton()
 	function TrackButton:set_Shown()
 		local hide= not Save.btn
 		or (
-		   not Save.notAutoHideTrack and (IsInInstance() or C_PetBattles.IsInBattle() or UnitAffectingCombat('player'))
+		   not Save.notAutoHideTrack and (
+				IsInInstance()
+				or C_PetBattles.IsInBattle()
+				or UnitInVehicle('player')
+				or UnitAffectingCombat('player')
+			)
 	   )
 	   	self:SetShown(not hide)
 		self.Frame:SetShown(not hide and Save.btnstr)
 		Set_TrackButton_Text()
 		self:set_Texture()
 	end
+
+
+	function TrackButton:set_Event()
+		if not Save.btn then
+			self:UnregisterAllEvents()
+		else
+			self:RegisterEvent('UPDATE_FACTION')
+			self:RegisterEvent('ZONE_CHANGED_NEW_AREA')
+			self:RegisterEvent('PLAYER_ENTERING_WORLD')
+			self:RegisterEvent('PET_BATTLE_OPENING_DONE')
+			self:RegisterEvent('PET_BATTLE_CLOSE')
+			self:RegisterEvent('PLAYER_REGEN_DISABLED')
+			self:RegisterEvent('PLAYER_REGEN_ENABLED')
+			self:RegisterUnitEvent('UNIT_EXITED_VEHICLE', 'player')
+			self:RegisterUnitEvent('UNIT_ENTERED_VEHICLE', 'player')
+		end
+	end
+
+	TrackButton:SetScript('OnEvent', function(self, event)
+		if event=='UPDATE_FACTION' then
+			Set_TrackButton_Text()
+		else
+			self:set_Shown()
+		end
+	end)
+
 
 	function TrackButton:set_Tooltips()
 		e.tips:SetOwner(self, "ANCHOR_RIGHT")
@@ -497,27 +528,7 @@ local function Init_TrackButton()
 		end
 	end)
 
-	function TrackButton:set_Event()
-		if not Save.btn then
-			self:UnregisterAllEvents()
-		else
-			self:RegisterEvent('PLAYER_ENTERING_WORLD')
-			self:RegisterEvent('PET_BATTLE_OPENING_DONE')
-			self:RegisterEvent('PET_BATTLE_CLOSE')
-			self:RegisterEvent('UPDATE_FACTION')
-			self:RegisterEvent('PLAYER_REGEN_DISABLED')
-			self:RegisterEvent('PLAYER_REGEN_ENABLED')
-		end
-	end
-
-	TrackButton:SetScript('OnEvent', function(self, event)
-		if event=='UPDATE_FACTION' then
-			Set_TrackButton_Text()
-		else
-			self:set_Shown()
-		end
-	end)
-
+	
 
 	hooksecurefunc(ReputationFrame, 'Update', Set_TrackButton_Text)	--更新, 监视, 文本
 
@@ -659,7 +670,11 @@ local function set_ReputationFrame_InitReputationRow(btn)--factionRow, elementDa
 	end
 
 	if barColor then--标题, 颜色
-		frame.Name:SetTextColor(barColor.r, barColor.g, barColor.b)
+		if isCapped and C_Reputation.IsAccountWideReputation(factionID) then
+			frame.Name:SetTextColor(0, 0.8, 1)
+		else
+			frame.Name:SetTextColor(barColor.r, barColor.g, barColor.b)
+		end
 	end
 
 	--[[if data.isWatched and not bar.watchedIcon then--显示为经验条

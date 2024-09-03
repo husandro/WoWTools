@@ -531,10 +531,16 @@ local function Init_TrackButton()
             self:UnregisterAllEvents()
         else
             self:RegisterEvent('PLAYER_ENTERING_WORLD')
+            self:RegisterEvent('ZONE_CHANGED_NEW_AREA')
+
             self:RegisterEvent('PLAYER_REGEN_DISABLED')
             self:RegisterEvent('PLAYER_REGEN_ENABLED')
+
             self:RegisterEvent('PET_BATTLE_OPENING_DONE')
 			self:RegisterEvent('PET_BATTLE_CLOSE')
+    
+            self:RegisterUnitEvent('UNIT_EXITED_VEHICLE', 'player')
+            self:RegisterUnitEvent('UNIT_ENTERED_VEHICLE', 'player')
 
             self:RegisterEvent('CALENDAR_UPDATE_EVENT_LIST')
             self:RegisterEvent('CALENDAR_UPDATE_EVENT')
@@ -544,9 +550,30 @@ local function Init_TrackButton()
         end
     end
 
+    TrackButton:SetScript('OnEvent', function(self, event)
+        if event=='PLAYER_ENTERING_WORLD'
+            or event=='ZONE_CHANGED_NEW_AREA'
+            or event=='PLAYER_REGEN_DISABLED'
+            or event=='PLAYER_REGEN_ENABLED'
+            or event=='PET_BATTLE_OPENING_DONE'
+            or event=='PET_BATTLE_CLOSE'
+            or event=='UNIT_ENTERED_VEHICLE'
+            or event=='UNIT_EXITED_VEHICLE'
+        then
+            self:set_Shown()
+        else
+            Set_TrackButton_Text()
+        end
+    end)
+
+
 
     function TrackButton:set_Shown()
-        local hide= IsInInstance() or C_PetBattles.IsInBattle() or UnitAffectingCombat('player')
+        local hide= IsInInstance()
+            or C_PetBattles.IsInBattle()
+            or UnitInVehicle('player')
+            or UnitAffectingCombat('player')
+
         self:SetShown(not hide)
         self.texture:SetShown(Save.hide and true or false)
         self.Frame:SetShown(not hide and not Save.hide)
@@ -703,20 +730,7 @@ local function Init_TrackButton()
         end
     end
 
-    TrackButton:SetScript('OnEvent', function(self, event)
-        if event=='PLAYER_ENTERING_WORLD'
-        or event=='PLAYER_REGEN_DISABLED'
-        or event=='PLAYER_REGEN_ENABLED'
-        or event=='PET_BATTLE_OPENING_DONE'
-        or event=='PET_BATTLE_CLOSE'
-        then
-            self:set_Shown()
-        else
-            Set_TrackButton_Text()
-        end
-    end)
-
-
+   
 
     TrackButton:set_Point()
     TrackButton:set_Scale()

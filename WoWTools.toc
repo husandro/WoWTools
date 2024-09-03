@@ -27,6 +27,7 @@ API_WoWDate.lua
 
 
 ##主要function，不能删除
+Mixin\Map_Mixin.lua
 Mixin\Faction_Mixin.lua
 Mixin\Bag_Mixin.lua
 Mixin\Button_Mixin.lua
@@ -183,7 +184,7 @@ ChatButton\11_Combat.lua
 
 ##其它
 ##美酒节 Brewfest
-Other\Brewfest.lua
+##Other\Brewfest.lua
 ##仅限猎人加载，专门，宠物管理，增强
 Other\HunterPet.lua
 ##法术弹出框，加名称, 和颜色

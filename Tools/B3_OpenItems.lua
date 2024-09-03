@@ -192,7 +192,13 @@ local function setAtt(bag, slot, icon, itemID, spellID)--设置属性
             --OpenButton:SetAttribute("macrotext1",'/cast '..(GetSpellInfo(spellID) or spellID)..'\n/use '..bag ..' '..slot)
         else
             OpenButton:SetAttribute('type1', 'item')
-            OpenButton:SetAttribute('item1', bag..' '..slot)
+            --[[local name= info
+                    and C_Item.IsCosmeticItem(itemID)
+                    and C_Item.GetItemNameByID(itemID)
+                    or (bag..' '..slot)]]
+                
+            OpenButton:SetAttribute('item1', (bag..' '..slot))
+            
             OpenButton:SetAttribute('spell1', nil)
             --OpenButton:SetAttribute("macrotext1", '/use '..bag..' '..slot)
         end
@@ -269,20 +275,25 @@ local function get_Items()--取得背包物品信息
                     end
 
                 elseif classID==4 or classID==2 then-- itemEquipLoc and _G[itemEquipLoc] then--幻化
-                    if Save.mago then --and info.quality then
+                    if Save.mago and not C_Item.IsCosmeticItem(info.itemID) then --and info.quality then
                         local  isCollected, isSelf= select(2, e.GetItemCollected(info.hyperlink, nil, nil, true))
                         if not isCollected and isSelf then
                             setAtt(bag, slot, info.iconFileID, info.itemID)
-                            equipItem=true
+
+                            equipItem=true-- not C_Item.IsCosmeticItem(info.hyperlink)
                             return
                         end
                     end
 
                 else
                     local dateInfo= WoWTools_ItemMixin:GetTooltip({hyperLink=info.hyperlink, red=true, onlyRed=true, text={LOCKED}})
-                    if not dateInfo.red and C_PlayerInfo.CanUseItem(info.itemID) then--是否可使用 then--不出售, 可以使用                        
+                    if not dateInfo.red and C_PlayerInfo.CanUseItem(info.itemID) then--是否可使用 then--不出售, 可以使用
+                    
+                        if classID==0 and subclassID==11 then--珍玩
+                            setAtt(bag, slot, info.iconFileID, info.itemID)
+                            return
 
-                        if info.hasLoot then--可打开
+                        elseif info.hasLoot then--可打开
                             if Save.open then
                                 if dateInfo.text[LOCKED] and e.Player.class=='ROGUE' then--DZ
                                     setAtt(bag, slot, info.iconFileID, info.itemID, 1804)--开锁 Pick Lock
@@ -333,8 +344,6 @@ local function get_Items()--取得背包物品信息
                                     end
                                 end
                             end
-
-
 
                         elseif Save.alt and ((classID~=12 and (classID==0 and subclassID==8 or classID~=0))
                            or (classID==15 and subclassID==4)

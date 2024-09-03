@@ -576,7 +576,7 @@ local function setAddMessageFunc(self, s, ...)
         end
     end
 
-    s= s:gsub(CHAT_SAY_SEND, '|A:transmog-icon-chat:0:0|a')
+    s= s:gsub(CHAT_SAY_SEND, '|A:transmog-icon-chat:0:0|a ')
 
     return self.ADD(self, s, ...)
 end

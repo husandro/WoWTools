@@ -3027,6 +3027,19 @@ local function Init_Menu(_, root)
         end)
     end)
 
+--离开地下堡
+    sub=root:CreateButton(e.onlyChinese and '离开地下堡' or INSTANCE_WALK_IN_LEAVE, function()
+        if not IsInGroup(LE_PARTY_CATEGORY_HOME) then
+            StaticPopup_Show('WoWTools_OK',
+                e.onlyChinese and '离开地下堡' or INSTANCE_WALK_IN_LEAVE,
+                nil,
+                {SetValue=C_PartyInfo.DelveTeleportOut}
+            )
+        else
+            C_PartyInfo.DelveTeleportOut()
+        end
+    end)
+    sub:SetEnabled(WoWTools_MapMixin:IsInDelve())
 end
 
 
@@ -3120,10 +3133,10 @@ local function Init()
 
     Init_Dialogs()
     Init_RolePollPopup_Plus()
+
+   
+    
 end
-
-
-
 
 
 
