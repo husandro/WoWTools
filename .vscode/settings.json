@@ -4909,7 +4909,9 @@
         "CHAT_SAY_SEND",
         "ProfessionsFrame_LoadUI",
         "INSTANCE_WALK_IN_LEAVE",
-        "GetText"
+        "GetText",
+        "ORIBOS_GREAT_VAULT_POI_TOOLTIP_INSTRUCTIONS",
+        "GameTooltip_AddQuestTimeToTooltip"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

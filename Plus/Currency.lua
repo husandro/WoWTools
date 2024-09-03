@@ -276,7 +276,7 @@ local function Set_TrackButton_Text()
 		local btn= TrackButton.btn[index]
 		local itemButtonUse=(Save.itemButtonUse and tables.itemID) and true or nil--使用物品
 		if not btn then
-			btn= e.Cbtn(TrackButton.Frame, {size={14,14}, icon='hide', type=itemButtonUse, pushe=itemButtonUse})
+			btn= WoWTools_ButtonMixin:Cbtn(TrackButton.Frame, {size={14,14}, icon='hide', type=itemButtonUse, pushe=itemButtonUse})
 			btn.itemButtonUse= itemButtonUse
 			if itemButtonUse then
 				btn.texture= btn:CreateTexture(nil,'BORDER')
@@ -540,7 +540,7 @@ local function Init_TrackButton()
 	end
 
 
-	TrackButton= e.Cbtn(nil, {atlas='hide', size={18,18}, pushe=true})
+	TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {atlas='hide', size={18,18}, isType2=true})
 
 	TrackButton.texture= TrackButton:CreateTexture()
 	TrackButton.texture:SetAllPoints(TrackButton)
@@ -1388,13 +1388,13 @@ end
 --初始化
 --######
 local function Init()
-	Button= e.Cbtn(TokenFrame, {icon='hide', size={22,22}})
+	Button= WoWTools_ButtonMixin:Cbtn(TokenFrame, {icon='hide', size={22,22}})
 	Button:SetPoint("RIGHT", TokenFrame.CurrencyTransferLogToggleButton, 'LEFT',-2,0)
 	Button.texture= Button:CreateTexture()
 	Button.texture:SetAllPoints()
 	Button.texture:SetAlpha(0.5)
 
-	Button.bagButton= e.Cbtn(ContainerFrameCombinedBags, {icon='hide', size={18,18, name='WoWToolsTokensTrackItemBagButton'}})--背包中, 增加一个图标, 用来添加或移除
+	Button.bagButton= WoWTools_ButtonMixin:Cbtn(ContainerFrameCombinedBags, {icon='hide', size={18,18, name='WoWToolsTokensTrackItemBagButton'}})--背包中, 增加一个图标, 用来添加或移除
 	if _G['MoveZoomInButtonPerContainerFrameCombinedBags'] then
         Button.bagButton:SetPoint('LEFT', _G['MoveZoomInButtonPerContainerFrameCombinedBags'], 'RIGHT')
     else
@@ -1485,7 +1485,7 @@ local function Init()
 
 
 	--展开,合起
-	Button.down= e.Cbtn(Button, {size={22,22}, atlas='NPE_ArrowDown'})--texture='Interface\\Buttons\\UI-MinusButton-Up'})--展开所有
+	Button.down= WoWTools_ButtonMixin:Cbtn(Button, {size={22,22}, atlas='NPE_ArrowDown'})--texture='Interface\\Buttons\\UI-MinusButton-Up'})--展开所有
 	Button.down:SetPoint('RIGHT', Button, 'LEFT', -2, 0)
 	Button.down:SetScript("OnClick", function()
 		for i=1, C_CurrencyInfo.GetCurrencyListSize() do--展开所有
@@ -1505,7 +1505,7 @@ local function Init()
 		e.tips:Show()
 	end)
 
-	Button.up= e.Cbtn(Button, {size={22,22}, atlas='NPE_ArrowUp'})--texture='Interface\\Buttons\\UI-PlusButton-Up'})--收起所有
+	Button.up= WoWTools_ButtonMixin:Cbtn(Button, {size={22,22}, atlas='NPE_ArrowUp'})--texture='Interface\\Buttons\\UI-PlusButton-Up'})--收起所有
 	Button.up:SetPoint('RIGHT', Button.down, 'LEFT', -2, 0)
 	Button.up:SetScript("OnClick", function()
 		for i=1, C_CurrencyInfo.GetCurrencyListSize() do--展开所有
@@ -1525,7 +1525,7 @@ local function Init()
 		e.tips:Show()
 	end)
 
-	Button.bag=e.Cbtn(Button, {icon='hide', size={18,18}})
+	Button.bag=WoWTools_ButtonMixin:Cbtn(Button, {icon='hide', size={18,18}})
 	Button.bag:SetPoint('RIGHT', Button.up, 'LEFT',-4,0)
 	Button.bag:SetNormalAtlas('bag-main')
 	Button.bag:SetScript("OnClick", function(self)

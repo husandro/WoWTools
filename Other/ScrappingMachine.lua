@@ -207,7 +207,7 @@ end
 
 
 local function Init_Disabled_Button()
-    local btn= e.Cbtn(ScrappingMachineFrame, {size=28, icon='hide'})
+    local btn= WoWTools_ButtonMixin:Cbtn(ScrappingMachineFrame, {size=28, icon='hide'})
     btn.Text= e.Cstr(btn)
     btn.Text:SetPoint('CENTER')
     btn:SetPoint('RIGHT', -10,0)
@@ -332,7 +332,7 @@ local function Init()
     end
 
     --清除，所有，物品
-    ScrappingMachineFrame.celarAllItem= e.Cbtn(ScrappingMachineFrame, {size=28, atlas='bags-button-autosort-up'})
+    ScrappingMachineFrame.celarAllItem= WoWTools_ButtonMixin:Cbtn(ScrappingMachineFrame, {size=28, atlas='bags-button-autosort-up'})
     ScrappingMachineFrame.celarAllItem:SetPoint('BOTTOMRIGHT', -8, 28)
     ScrappingMachineFrame.celarAllItem:SetScript('OnClick', C_ScrappingMachineUI.RemoveAllScrapItems)
     ScrappingMachineFrame.celarAllItem:SetScript('OnLeave', GameTooltip_Hide)
@@ -348,7 +348,7 @@ local function Init()
 
 
     --添加，所有，物品
-    ScrappingMachineFrame.addAllItem= e.Cbtn(ScrappingMachineFrame, {size={23,23}, atlas='communities-chat-icon-plus'})
+    ScrappingMachineFrame.addAllItem= WoWTools_ButtonMixin:Cbtn(ScrappingMachineFrame, {size={23,23}, atlas='communities-chat-icon-plus'})
     ScrappingMachineFrame.addAllItem:SetPoint('LEFT', ScrappingMachineFrame.ScrapButton, 'RIGHT', 2,0)
     ScrappingMachineFrame.addAllItem:SetScript('OnLeave', GameTooltip_Hide)
     ScrappingMachineFrame.addAllItem:SetScript('OnEnter', function(self)
@@ -378,7 +378,7 @@ local function Init()
     end)
 
     --添加，所有，宝石
-    ScrappingMachineFrame.addAllGem= e.Cbtn(ScrappingMachineFrame.addAllItem, {size=23, texture=135998})
+    ScrappingMachineFrame.addAllGem= WoWTools_ButtonMixin:Cbtn(ScrappingMachineFrame.addAllItem, {size=23, texture=135998})
     ScrappingMachineFrame.addAllGem:SetPoint('LEFT', ScrappingMachineFrame.addAllItem, 'RIGHT', 4,0)
     ScrappingMachineFrame.addAllGem:SetScript('OnLeave', GameTooltip_Hide)
     ScrappingMachineFrame.addAllGem:SetScript('OnEnter', function(self)
@@ -409,7 +409,7 @@ local function Init()
 
 
     --添加，所有，装备
-    ScrappingMachineFrame.addAllEquip= e.Cbtn(ScrappingMachineFrame.addAllItem, {size={23,23}, texture=135995})
+    ScrappingMachineFrame.addAllEquip= WoWTools_ButtonMixin:Cbtn(ScrappingMachineFrame.addAllItem, {size={23,23}, texture=135995})
     ScrappingMachineFrame.addAllEquip:SetPoint('LEFT', ScrappingMachineFrame.addAllGem, 'RIGHT', 4, 0)
     ScrappingMachineFrame.addAllEquip:SetScript('OnLeave', GameTooltip_Hide)
     ScrappingMachineFrame.addAllEquip:SetScript('OnEnter', function(self)

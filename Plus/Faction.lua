@@ -226,7 +226,7 @@ local function Set_TrackButton_Text()
 	for index, tab in pairs(faction) do
 		local btn= TrackButton.btn[index]
 		if not btn then
-			btn= e.Cbtn(TrackButton.Frame, {size={14,14}, icon='hide'})
+			btn= WoWTools_ButtonMixin:Cbtn(TrackButton.Frame, {size={14,14}, icon='hide'})
 			if Save.toTopTrack then
 				btn:SetPoint('BOTTOM', last or TrackButton, 'TOP')
 			else
@@ -311,7 +311,7 @@ local function Init_TrackButton()
 	if not Save.btn or TrackButton then
 		return
 	end
-	TrackButton= e.Cbtn(nil, {icon='hide', size={18,18}, pushe=true})
+	TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {icon='hide', size={18,18}, isType2=true})
 	--TrackButton.text= e.Cstr(TrackButton, {color=true})
 
 	TrackButton.texture= TrackButton:CreateTexture()
@@ -1026,7 +1026,7 @@ end
 --初始化
 --######
 local function Init()
-	Button= e.Cbtn(ReputationFrame, {atlas='auctionhouse-icon-favorite',size={22, 22}})
+	Button= WoWTools_ButtonMixin:Cbtn(ReputationFrame, {atlas='auctionhouse-icon-favorite',size={22, 22}})
 	Button:SetPoint("RIGHT", ReputationFrame.filterDropdown, 'LEFT',-5,0)
 	Button:SetScript("OnMouseDown", function(self)
 		if not self.Menu then
@@ -1070,7 +1070,7 @@ local function Init()
 		self.isGo=nil
 	end
 
-	Button.up= e.Cbtn(Button, {size={22,22}, atlas='NPE_ArrowUp'})--texture='Interface\\Buttons\\UI-PlusButton-Up'})--收起所有
+	Button.up= WoWTools_ButtonMixin:Cbtn(Button, {size={22,22}, atlas='NPE_ArrowUp'})--texture='Interface\\Buttons\\UI-PlusButton-Up'})--收起所有
 	Button.up:SetPoint("RIGHT", Button, 'LEFT',-2,0)
 	Button.up:SetScript("OnClick", function(self)
 		self:GetParent():set_expand_collapse(false)
@@ -1084,7 +1084,7 @@ local function Init()
 		e.tips:Show()
 	end)
 
-	Button.down= e.Cbtn(Button, {size={22,22}, atlas='NPE_ArrowDown'})--texture='Interface\\Buttons\\UI-MinusButton-Up'})--展开所有
+	Button.down= WoWTools_ButtonMixin:Cbtn(Button, {size={22,22}, atlas='NPE_ArrowDown'})--texture='Interface\\Buttons\\UI-MinusButton-Up'})--展开所有
 	Button.down:SetPoint("RIGHT", Button.up, 'LEFT',-2,0)
 	Button.down:SetScript("OnClick", function(self)
 		self:GetParent():set_expand_collapse(true)

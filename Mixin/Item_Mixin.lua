@@ -1,9 +1,15 @@
+--[[
+GetTooltip
+GetLink
+GetColor return color.r, color.g, color.b, color.hex, color
+GetName(itemID)--取得物品，名称
+]]
+
+
 local e= select(2, ...)
 
+
 WoWTools_ItemMixin={
-    --GetTooltip
-    --GetLink
-    --GetColor return color.r, color.g, color.b, color.hex, color
 }
 
 function WoWTools_ItemMixin:GetTooltip(tab)
@@ -159,6 +165,56 @@ function WoWTools_ItemMixin:GetLink(itemID)
     end
     return link
 end
+
+
+
+
+
+
+
+
+
+function WoWTools_ItemMixin:GetName(itemID)--取得物品，名称
+    if not itemID then
+        return
+    end
+
+    local col, name, desc, cool
+    e.LoadDate({id=itemID, type='item'})
+
+    if C_ToyBox.GetToyInfo(itemID) then
+        if not PlayerHasToy(itemID) then
+            col='|cnRED_FONT_COLOR:'
+            desc= '|A:Islands-QuestBangDisable:0:0|a'..(e.onlyChinese and '未收集' or NOT_COLLECTED)
+        else
+            cool= e.GetSpellItemCooldown(nil, itemID)
+        end
+    else
+        local num= C_Item.GetItemCount(itemID, true, false, true, true) or 0
+        if num==0 then
+            col='|cff9e9e9e'
+        else
+            cool= e.GetSpellItemCooldown(nil, itemID)
+        end
+        desc= ' x'..num..' '
+    end
+    name= e.cn(C_Item.GetItemNameByID(itemID), {itemID=itemID, isName=true}) or ('itemID '..itemID)
+    if name then
+        name= '|T'..(C_Item.GetItemIconByID(itemID) or 0)..':0|t'..(name:match('|c........(.+)|r') or name)
+    end
+
+
+    if desc and col then
+        desc= col..desc..'|r'
+    end
+
+    return name..(desc or '')..(cool or ''), col
+end
+
+
+
+
+
 
 
 --[[

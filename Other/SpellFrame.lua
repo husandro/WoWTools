@@ -261,7 +261,7 @@ function Init_All_Flyout()
     local y= -145
     for _, flyoutID in pairs(tab) do--1024 MAX_SPELLS
         local numSlots, isKnown= select(3, GetFlyoutInfo(flyoutID))
-        local btn= e.Cbtn(PlayerSpellsFrame.SpellBookFrame.PagedSpellsFrame, {texture=519384, size=32, alpha=isKnown and 0.1 or 0.5})
+        local btn= WoWTools_ButtonMixin:Cbtn(PlayerSpellsFrame.SpellBookFrame.PagedSpellsFrame, {texture=519384, size=32, alpha=isKnown and 0.1 or 0.5})
 
         btn:SetPoint('TOPLEFT', 22, y)
         btn:SetScript('OnLeave', function(self) self:SetAlpha(isKnown and 0.1 or 0.5) e.tips:Hide() end)

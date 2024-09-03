@@ -17,7 +17,7 @@ local ItemTab={
 local CurrencyID= 2650
 
 local function Init()
-    Button= e.Cbtn(nil, {size={22,22}, icon='hide'})
+    Button= WoWTools_ButtonMixin:Cbtn(nil, {size={22,22}, icon='hide'})
     function Button:set_Point()
         if Save.point then
             self:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
@@ -193,7 +193,7 @@ local function Init()
             if num>0 then
                 local btn= self.btn[index]
                 if not btn then
-                    btn= e.Cbtn(self, {type=true, button='ItemButton', icon='hide'})
+                    btn= WoWTools_ButtonMixin:Cbtn(self, {type=true, button='ItemButton', icon='hide'})
                     btn:SetAttribute('type*', 'item')
                     btn:SetPoint('TOP', index==1 and Button or self.btn[index-1], 'BOTTOM', 0, -6)
                     btn:SetScript('OnEnter', function(self2)

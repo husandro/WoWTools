@@ -235,7 +235,7 @@ local function CursorPositionInt()
         end
         return
     end
-    PostionButton= e.Cbtn(nil, {icon='hide', size={18,18}})-- CreateFrame('Button', nil, UIParent)
+    PostionButton= WoWTools_ButtonMixin:Cbtn(nil, {icon='hide', size={18,18}})-- CreateFrame('Button', nil, UIParent)
 
     function PostionButton:set_Point()
         if not Save.PlayerXYPoint then
@@ -350,7 +350,7 @@ end
 --#########
 local function Init_set_Map_ID()--显示地图ID
     if not Button then
-        Button=e.Cbtn(WorldMapFrame.BorderFrame.TitleContainer, {icon='hide', size={22,22}})
+        Button=WoWTools_ButtonMixin:Cbtn(WorldMapFrame.BorderFrame.TitleContainer, {icon='hide', size={22,22}})
         if C_AddOns.IsAddOnLoaded('Mapster') then
             Button:SetPoint('RIGHT', WorldMapFrame.BorderFrame.TitleContainer, 'RIGHT', -140,0)
         else
@@ -541,7 +541,7 @@ local function Init_set_Map_ID()--显示地图ID
     end
 
     if not PlayerButton then--玩家坐标
-        PlayerButton=e.Cbtn(WorldMapFrame.BorderFrame.TitleContainer, {icon='hide', size={22,22}})
+        PlayerButton=WoWTools_ButtonMixin:Cbtn(WorldMapFrame.BorderFrame.TitleContainer, {icon='hide', size={22,22}})
         if _G['MoveZoomInButtonPerWorldMapFrame'] then
             PlayerButton:SetPoint('LEFT', _G['MoveZoomInButtonPerWorldMapFrame'], 'RIGHT')
         else
@@ -788,7 +788,7 @@ local function Init_Menu()
 
     QuestScrollFrame.SearchBox:SetWidth(301- 20*2)
 
-    local btnCollapse= e.Cbtn(QuestScrollFrame.SearchBox, {size={20,20}, atlas='NPE_ArrowUp'})--campaign_headericon_closed
+    local btnCollapse= WoWTools_ButtonMixin:Cbtn(QuestScrollFrame.SearchBox, {size={20,20}, atlas='NPE_ArrowUp'})--campaign_headericon_closed
     btnCollapse:SetPoint('LEFT', QuestScrollFrame.SearchBox, 'RIGHT')
     btnCollapse:SetScript('OnLeave', GameTooltip_Hide)
     btnCollapse:SetScript('OnEnter', function(self)
@@ -803,7 +803,7 @@ local function Init_Menu()
         end
     end)
 
-    local btnExpand= e.Cbtn(QuestScrollFrame.SearchBox, {size={20,20}, atlas='NPE_ArrowDown'})
+    local btnExpand= WoWTools_ButtonMixin:Cbtn(QuestScrollFrame.SearchBox, {size={20,20}, atlas='NPE_ArrowDown'})
     btnExpand:SetPoint('LEFT', btnCollapse, 'RIGHT')
     btnExpand:SetScript('OnLeave', GameTooltip_Hide)
     btnExpand:SetScript('OnEnter', function(self)
@@ -907,7 +907,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 
 
         elseif arg1=='Blizzard_FlightMap' then--飞行点，加名称
-            local btn= e.Cbtn(FlightMapFrame.BorderFrame.TitleContainer, {size={20,20}, icon=Save.showFlightMapPinName})
+            local btn= WoWTools_ButtonMixin:Cbtn(FlightMapFrame.BorderFrame.TitleContainer, {size={20,20}, icon=Save.showFlightMapPinName})
             if _G['MoveZoomInButtonPerFlightMapFrame'] then
                 btn:SetPoint('RIGHT', _G['MoveZoomInButtonPerFlightMapFrame'], 'LEFT')
             else

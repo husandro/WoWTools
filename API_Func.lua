@@ -531,7 +531,7 @@ end
 --设置，提示
 function e.Set_HelpTips(tab)--e.Set_HelpTips({frame=, topoint=, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, onlyOne=nil, show=, y=-10, hideTime=3})
     if tab.show and not tab.frame.HelpTips then
-        tab.frame.HelpTips= e.Cbtn(tab.frame, {icon='hide', layer='OVERLAY',size=tab.size and {tab.size[1], tab.size[2]} or {40,40}})-- button:CreateTexture(nil, 'OVERLAY')
+        tab.frame.HelpTips= WoWTools_ButtonMixin:Cbtn(tab.frame, {icon='hide', layer='OVERLAY',size=tab.size and {tab.size[1], tab.size[2]} or {40,40}})-- button:CreateTexture(nil, 'OVERLAY')
         if tab.point=='right' then
             tab.frame.HelpTips:SetPoint('BOTTOMLEFT', tab.topoint or tab.frame, 'BOTTOMRIGHT',0, tab.y or -10)
             tab.frame.HelpTips:SetNormalAtlas(tab.atlas or e.Icon.toLeft)

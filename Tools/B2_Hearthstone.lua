@@ -113,7 +113,7 @@ end
 --设置，物品，提示
 local function Set_Menu_Tooltip(tooltip, desc)
     if desc.data then
-        WoWTools_SpellItemMixin:SetTooltip(tooltip, {itemID=desc.data.itemID})--设置，物品，提示
+        WoWTools_TooltipMixin:SetTooltip(tooltip, {itemID=desc.data.itemID})--设置，物品，提示
     end
     ToyButton:set_tooltip_location(tooltip)
 end
@@ -399,7 +399,7 @@ end
 --#############
 local function setToySpellButton_UpdateButton(btn)--标记, 是否已选取
     if not btn.hearthstone then
-        btn.hearthstone= e.Cbtn(btn,{size={16,16}, texture=134414})
+        btn.hearthstone= WoWTools_ButtonMixin:Cbtn(btn,{size={16,16}, texture=134414})
         btn.hearthstone:SetPoint('TOPLEFT',btn.name,'BOTTOMLEFT')
 
         function btn.hearthstone:get_itemID()
@@ -603,11 +603,11 @@ local function Init()
     function ToyButton:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_SpellItemMixin:GetName(nil, self.itemID), e.Icon.left)
+        e.tips:AddDoubleLine(WoWTools_ItemMixin:GetName(self.itemID), e.Icon.left)
         e.tips:AddLine(' ')
         local name, col
         for _, data in pairs(ModifiedMenuTab) do
-            name, col=WoWTools_SpellItemMixin:GetName(nil, data.itemID)
+            name, col=WoWTools_ItemMixin:GetName(data.itemID)
             col= col or ''
             e.tips:AddDoubleLine(col..name, col..data.type..'+'..e.Icon.left)
         end

@@ -47,7 +47,7 @@ layout:AddInitializer(initializer);
 --重新加载UI, 重置, 按钮
 --#####################
 function e.ReloadPanel(tab)
-    local rest= e.Cbtn(tab.panel, {type=false, size={25,25}})
+    local rest= WoWTools_ButtonMixin:Cbtn(tab.panel, {type=false, size={25,25}})
     rest:SetNormalAtlas('bags-button-autosort-up')
     rest:SetPushedAtlas('bags-button-autosort-down')
     rest:SetPoint('TOPRIGHT',0,8)
@@ -71,7 +71,7 @@ function e.ReloadPanel(tab)
 
     local reload
     if reload then
-        reload= e.Cbtn(tab.panel, {type=false, size={25,25}})
+        reload= WoWTools_ButtonMixin:Cbtn(tab.panel, {type=false, size={25,25}})
         reload:SetNormalTexture('Interface\\Vehicles\\UI-Vehicles-Button-Exit-Up')
         reload:SetPushedTexture('Interface\\Vehicles\\UI-Vehicles-Button-Exit-Down')
         reload:SetPoint('TOPLEFT',-12, 8)

@@ -2,7 +2,7 @@ local e = select(2, ...)
 
 --[[
 e.Cstr(self, tab)
-e.Cbtn(self, tab)--type, icon(atlas, texture), name, size, pushe, button='ItemButton', notWheel, setID, text
+WoWTools_ButtonMixin:Cbtn(self, tab)--type, icon(atlas, texture), name, size, pushe, button='ItemButton', notWheel, setID, text
 
 e.Ccool(self, start, duration, modRate, HideCountdownNumbers, Reverse, SwipeTexture, hideDrawBling)--冷却条
 e.SetItemSpellCool(frame, {item=, spell=, type=, isUnit=true} type=true圆形，false方形
@@ -75,11 +75,11 @@ function e.Cstr(self, tab)
     end
     return font
 end
-
-function e.Cbtn(self, tab)--type, icon(atlas, texture), name, size, pushe, button='ItemButton', notWheel, setID, text
+--[[
+function WoWTools_ButtonMixin:Cbtn(self, tab)--type, icon(atlas, texture), name, size, pushe, button='ItemButton', notWheel, setID, text
     tab=tab or {}
     local template= tab.type==false and 'UIPanelButtonTemplate' or (tab.type==true and 'SecureActionButtonTemplate') or tab.type
-    --[[SharedUIPanelTemplates.xml
+    SharedUIPanelTemplates.xml
     SecureTemplates
     SecureActionButtonTemplate	Button	Perform protected actions.
     SecureUnitButtonTemplate	Button	Unit frames.
@@ -91,7 +91,7 @@ function e.Cbtn(self, tab)--type, icon(atlas, texture), name, size, pushe, butto
     SecurePartyPetHeaderTemplate	Frame	Managing party pets.
     SecureRaidPetHeaderTemplate
     btn:RegisterForClicks("AnyDown", "AnyUp")
-]]
+
     local btn= CreateFrame(tab.button or 'Button', tab.name, self or UIParent, template, tab.setID)
     btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
     if not tab.notWheel then
@@ -138,7 +138,7 @@ function e.Cbtn(self, tab)--type, icon(atlas, texture), name, size, pushe, butto
 end
 
 
-
+]]
 
 
 
@@ -168,6 +168,7 @@ function e.Ccool(self, start, duration, modRate, HideCountdownNumbers, Reverse, 
         self.cooldown:SetDrawEdge(true)--冷却动画的移动边缘绘制亮线
         self.cooldown:SetHideCountdownNumbers(HideCountdownNumbers)--隐藏数字
         self.cooldown:SetReverse(Reverse)--控制冷却动画的方向
+        self.cooldown:SetAlpha(0.7)
         self.cooldown:SetEdgeTexture("Interface\\Cooldown\\edge")
         if setSwipeTexture then
             self.cooldown:SetSwipeTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')--圆框架

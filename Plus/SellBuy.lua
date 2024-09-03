@@ -507,7 +507,7 @@ end
 --堆叠,数量,框架 StackSplitFrame.lua
 local function Init_StackSplitFrame()
     local frame= StackSplitFrame
-    frame.restButton=e.Cbtn(frame, {size={22,22}})--重置
+    frame.restButton=WoWTools_ButtonMixin:Cbtn(frame, {size={22,22}})--重置
     frame.restButton:SetPoint('TOP')
     frame.restButton:SetNormalAtlas('characterundelete-RestoreButton')
     frame.restButton:SetScript('OnMouseDown', function(self)
@@ -527,7 +527,7 @@ local function Init_StackSplitFrame()
     end)
     frame.restButton:SetScript('OnLeave', GameTooltip_Hide)
 
-    frame.MaxButton=e.Cbtn(frame, {icon='hide', size={40,20}})
+    frame.MaxButton=WoWTools_ButtonMixin:Cbtn(frame, {icon='hide', size={40,20}})
     frame.MaxButton:SetNormalFontObject('NumberFontNormalYellow')
     frame.MaxButton:SetPoint('LEFT', frame.restButton, 'RIGHT')
     frame.MaxButton:SetScript('OnMouseDown', function(self)
@@ -537,7 +537,7 @@ local function Init_StackSplitFrame()
         f:UpdateStackSplitFrame(f.maxStack)
     end)
 
-    frame.MetaButton=e.Cbtn(frame, {icon='hide', size={40,20}})
+    frame.MetaButton=WoWTools_ButtonMixin:Cbtn(frame, {icon='hide', size={40,20}})
     frame.MetaButton:SetNormalFontObject('NumberFontNormalYellow')
     frame.MetaButton:SetPoint('RIGHT', frame.restButton, 'LEFT')
     frame.MetaButton:SetScript('OnMouseDown', function(self)
@@ -1390,7 +1390,7 @@ end
 
 --购买物品
 local function Init_Buy_Items_Button()
-    BuyItemButton=e.Cbtn(MerchantBuyBackItem, {size={22,22}, icon='hide'})
+    BuyItemButton=WoWTools_ButtonMixin:Cbtn(MerchantBuyBackItem, {size={22,22}, icon='hide'})
     BuyItemButton:SetPoint('BOTTOMRIGHT', MerchantBuyBackItem, 6,-4)
     function BuyItemButton:set_texture()
         self:SetNormalTexture(236994)
@@ -1634,7 +1634,7 @@ end
 
 --回购物品
 local function Init_Buyback_Button()
-    BuybackButton= e.Cbtn(MerchantBuyBackItem, {size={22,22}, icon='hide'})--nil, false)--购回
+    BuybackButton= WoWTools_ButtonMixin:Cbtn(MerchantBuyBackItem, {size={22,22}, icon='hide'})--nil, false)--购回
     function BuybackButton:set_texture()
         self:SetNormalAtlas('common-icon-undo')
     end

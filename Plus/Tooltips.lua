@@ -350,7 +350,7 @@ function func:Set_Web_Link(tooltip, tab)
     if tooltip==ItemRefTooltip or tooltip==FloatingBattlePetTooltip then
         if tab.type and tab.id then
             if not tooltip.WoWHeadButton then
-                tooltip.WoWHeadButton=e.Cbtn(tooltip, {size={20,20}, type=false})--取得网页，数据链接
+                tooltip.WoWHeadButton=WoWTools_ButtonMixin:Cbtn(tooltip, {size={20,20}, type=false})--取得网页，数据链接
                 tooltip.WoWHeadButton:SetPoint('RIGHT',tooltip.CloseButton, 'LEFT',0,2)
                 tooltip.WoWHeadButton:SetNormalAtlas('questlegendary')
                 tooltip.WoWHeadButton:SetScript('OnClick', function(f)

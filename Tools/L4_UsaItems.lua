@@ -443,7 +443,7 @@ end
 --#############
 local function Init_Opetions_ToyBox(btn)--标记, 是否已选取
     if not btn.useItem then
-        btn.useItem= e.Cbtn(btn,{size={16,16}, atlas='soulbinds_tree_conduit_icon_utility'})
+        btn.useItem= WoWTools_ButtonMixin:Cbtn(btn,{size={16,16}, atlas='soulbinds_tree_conduit_icon_utility'})
         btn.useItem:SetPoint('TOPLEFT',btn.name,'BOTTOMLEFT', 32, 0)
         function btn.useItem:get_itemID()
             return self:GetParent().itemID
@@ -510,7 +510,7 @@ end
 
 local function set_Use_Spell_Button(btn, spellID)
     if not btn.useSpell then
-        btn.useSpell= e.Cbtn(btn, {size={16,16}, atlas='soulbinds_tree_conduit_icon_utility'})
+        btn.useSpell= WoWTools_ButtonMixin:Cbtn(btn, {size={16,16}, atlas='soulbinds_tree_conduit_icon_utility'})
         btn.useSpell:SetPoint('TOP', btn, 'BOTTOM', 8,0)
         function btn.useSpell:set_alpha()
             if self.spellID then
@@ -912,7 +912,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== id then
             local btn= WoWTools_ToolsButtonMixin:GetButton()
             if btn then
-                button=e.Cbtn(btn.Frame, {atlas='Soulbinds_Tree_Conduit_Icon_Utility', size={20,20}})
+                button=WoWTools_ButtonMixin:Cbtn(btn.Frame, {atlas='Soulbinds_Tree_Conduit_Icon_Utility', size={20,20}})
                 button:SetPoint('TOPLEFT', btn, 'TOPRIGHT')
 
        

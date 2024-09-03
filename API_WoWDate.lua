@@ -601,7 +601,8 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
     if event == "ADDON_LOADED" then
         if arg1==id then
             WoWToolsSave= WoWToolsSave or {}
-            e.WoWDate= WoWDate or {}
+            WoWTools_WoWDate= WoWTools_WoWDate or {}
+            e.WoWDate= WoWTools_WoWDate or {}
 
 
             local day= date('%x')--日期
@@ -806,13 +807,13 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
         if e.ClearAllSave then
             WoWToolsSave=nil
             if not e.Player.husandro then
-                WoWDate=nil
+                WoWTools_WoWDate=nil
             end
         else
 
 
 
-            WoWDate= e.WoWDate or {}
+            WoWTools_WoWDate= e.WoWDate or {}
         end
     end
 end)

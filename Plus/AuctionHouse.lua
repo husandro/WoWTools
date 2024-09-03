@@ -56,7 +56,7 @@ local AuctionHouseButton
 local function Init_Sell()
     local levelFrame= AuctionHouseFrame.CommoditiesSellFrame.QuantityInput.MaxButton:GetFrameLevel()
 
-    AuctionHouseButton= e.Cbtn(AuctionHouseFrame, {size={34, 34}, icon='hide'})
+    AuctionHouseButton= WoWTools_ButtonMixin:Cbtn(AuctionHouseFrame, {size={34, 34}, icon='hide'})
     AuctionHouseButton:SetPoint('TOPLEFT', AuctionHouseFrame, 'TOPRIGHT',4,10)
     AuctionHouseButton.frame= CreateFrame('Frame', nil, AuctionHouseButton)
     AuctionHouseButton.frame:SetAllPoints(AuctionHouseButton)
@@ -192,7 +192,7 @@ local function Init_Sell()
                     if info and info.hyperlink and info.itemID and itemLocation and itemCommodityStatus>0 then
                         local btn= self.buttons[index]
                         if not btn then
-                            btn= e.Cbtn(self.frame, {button='ItemButton', icon='hide'})
+                            btn= WoWTools_ButtonMixin:Cbtn(self.frame, {button='ItemButton', icon='hide'})
                             btn.selectTexture= btn:CreateTexture(nil, 'OVERLAY')
                             btn.selectTexture:SetAtlas('Forge-ColorSwatchSelection')
                             btn.selectTexture:SetPoint('CENTER')
@@ -829,7 +829,7 @@ local function Init_Sell()
 
 
     --转到，商品，模式，按钮
-    local showCommoditiesButton=e.Cbtn(AuctionHouseFrame.ItemSellFrame, {type=false, size={100,22}, text=e.onlyChinese and '物品' or ITEMS})
+    local showCommoditiesButton=WoWTools_ButtonMixin:Cbtn(AuctionHouseFrame.ItemSellFrame, {type=false, size={100,22}, text=e.onlyChinese and '物品' or ITEMS})
     showCommoditiesButton:SetPoint('BOTTOMRIGHT', -15,15)
     showCommoditiesButton:SetFrameLevel(levelFrame)
     showCommoditiesButton:SetScript('OnLeave', GameTooltip_Hide)
@@ -852,7 +852,7 @@ local function Init_Sell()
 
 
     --转到，出售商品，按钮
-    local showSellButton=e.Cbtn(AuctionHouseFrame.CommoditiesSellFrame, {type=false, size={100,22}, text=e.onlyChinese and '材料' or PROFESSIONS_COLUMN_HEADER_REAGENTS})
+    local showSellButton=WoWTools_ButtonMixin:Cbtn(AuctionHouseFrame.CommoditiesSellFrame, {type=false, size={100,22}, text=e.onlyChinese and '材料' or PROFESSIONS_COLUMN_HEADER_REAGENTS})
     showSellButton:SetPoint('BOTTOMRIGHT',  -15,15)
     showSellButton:SetFrameLevel(levelFrame)
     showSellButton:SetScript('OnLeave', GameTooltip_Hide)
@@ -871,7 +871,7 @@ local function Init_Sell()
     end)
 
     --取消拍卖
-    local cancelButton2= e.Cbtn(AuctionHouseFrame.ItemSellFrame.PostButton, {size={32,32}, texture='Interface\\Buttons\\CancelButton-Up'})
+    local cancelButton2= WoWTools_ButtonMixin:Cbtn(AuctionHouseFrame.ItemSellFrame.PostButton, {size={32,32}, texture='Interface\\Buttons\\CancelButton-Up'})
     cancelButton2:SetHighlightTexture('Interface\\Buttons\\CancelButton-Highlight')
     cancelButton2:SetPushedTexture('Interface\\Buttons\\CancelButton-Down')
     cancelButton2:SetFrameLevel(1501)
@@ -1028,7 +1028,7 @@ local function Init_AllAuctions()
     AuctionHouseFrameAuctionsFrame.AllAuctionsList.RefreshFrame.RefreshButton:SetPoint('RIGHT', AuctionHouseFrameAuctionsFrame.CancelAuctionButton, 'LEFT', -4, 0)
 
     --取消
-    local cancelButton= e.Cbtn(AuctionHouseFrameAuctionsFrame.CancelAuctionButton, {type=false, size={100,22}, text= e.onlyChinese and '取消' or CANCEL})
+    local cancelButton= WoWTools_ButtonMixin:Cbtn(AuctionHouseFrameAuctionsFrame.CancelAuctionButton, {type=false, size={100,22}, text= e.onlyChinese and '取消' or CANCEL})
     cancelButton:SetPoint('RIGHT', AuctionHouseFrameAuctionsFrame.AllAuctionsList.RefreshFrame.RefreshButton, 'LEFT', -4, 0)
     function cancelButton:get_auctionID()
         local tab={}

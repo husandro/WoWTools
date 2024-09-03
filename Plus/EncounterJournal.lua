@@ -352,7 +352,7 @@ local function Init_Set_Worldboss_Text()--显示世界BOSS击杀数据Text
         return
     end
     if not panel.WorldBoss then
-        panel.WorldBoss=e.Cbtn(nil, {icon='hide', size={14,14}})
+        panel.WorldBoss=WoWTools_ButtonMixin:Cbtn(nil, {icon='hide', size={14,14}})
         if Save.WorldBossPoint then
             panel.WorldBoss:SetPoint(Save.WorldBossPoint[1], UIParent, Save.WorldBossPoint[3], Save.WorldBossPoint[4], Save.WorldBossPoint[5])
         else
@@ -443,7 +443,7 @@ local function Init_Set_InstanceBoss_Text()--显示副本击杀数据
         return
     end
     if not panel.instanceBoss then
-        panel.instanceBoss=e.Cbtn(nil, {icon='hide', size={14,14}})
+        panel.instanceBoss=WoWTools_ButtonMixin:Cbtn(nil, {icon='hide', size={14,14}})
         if Save.instanceBossPoint then
             panel.instanceBoss:SetPoint(Save.instanceBossPoint[1], UIParent, Save.instanceBossPoint[3], Save.instanceBossPoint[4], Save.instanceBossPoint[5])
         else
@@ -584,7 +584,7 @@ end
 --冒险指南界面初始化
 --################
 local function Init_EncounterJournal()--冒险指南界面
-    Button= e.Cbtn(EncounterJournal.TitleContainer, {icon=not Save.hideEncounterJournal, size={22,22}})--按钮, 总开关
+    Button= WoWTools_ButtonMixin:Cbtn(EncounterJournal.TitleContainer, {icon=not Save.hideEncounterJournal, size={22,22}})--按钮, 总开关
     Button:SetPoint('RIGHT',-22, -2)
     function Button:set_Tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -612,7 +612,7 @@ local function Init_EncounterJournal()--冒险指南界面
     Button:SetScript("OnLeave",GameTooltip_Hide)
     Button.btn={}
 
-    Button.btn.instance =e.Cbtn(EncounterJournal.TitleContainer, {icon='hide', size={22,22}})--所有角色副本
+    Button.btn.instance =WoWTools_ButtonMixin:Cbtn(EncounterJournal.TitleContainer, {icon='hide', size={22,22}})--所有角色副本
     Button.btn.instance:SetPoint('RIGHT', Button, 'LEFT')
     Button.btn.instance:SetNormalAtlas('animachannel-icon-kyrian-map')
     Button.btn.instance:SetScript('OnEnter',function(self2)
@@ -653,7 +653,7 @@ local function Init_EncounterJournal()--冒险指南界面
     end)
 
 
-    Button.btn.Worldboss =e.Cbtn(EncounterJournal.TitleContainer, {icon='hide', size={22,22}})--所有角色已击杀世界BOSS
+    Button.btn.Worldboss =WoWTools_ButtonMixin:Cbtn(EncounterJournal.TitleContainer, {icon='hide', size={22,22}})--所有角色已击杀世界BOSS
     Button.btn.Worldboss:SetPoint('RIGHT', Button.btn.instance, 'LEFT')
     Button.btn.Worldboss:SetNormalAtlas('poi-soulspiritghost')
     Button.btn.Worldboss:SetScript('OnEnter',set_EncounterJournal_World_Tips)--提示
@@ -672,7 +672,7 @@ local function Init_EncounterJournal()--冒险指南界面
     Button.btn.Worldboss:SetScript("OnLeave",GameTooltip_Hide)
 
     if e.Player.levelMax then
-        Button.btn.keystones =e.Cbtn(EncounterJournal.TitleContainer, {icon='hide', size={22,22}})--所有角色,挑战
+        Button.btn.keystones =WoWTools_ButtonMixin:Cbtn(EncounterJournal.TitleContainer, {icon='hide', size={22,22}})--所有角色,挑战
         Button.btn.keystones:SetPoint('RIGHT', Button.btn.Worldboss, 'LEFT')
         Button.btn.keystones:SetNormalTexture(4352494)
         Button.btn.keystones:SetScript('OnEnter',set_EncounterJournal_Keystones_Tips)
@@ -681,7 +681,7 @@ local function Init_EncounterJournal()--冒险指南界面
             PVEFrame_ToggleFrame('ChallengesFrame', 3)
         end)
     end
-    Button.btn.money =e.Cbtn(EncounterJournal.TitleContainer, {icon='hide', size={22,22}})--钱
+    Button.btn.money =WoWTools_ButtonMixin:Cbtn(EncounterJournal.TitleContainer, {icon='hide', size={22,22}})--钱
     Button.btn.money:SetPoint('RIGHT', Button.btn.keystones or Button.btn.Worldboss, 'LEFT')
     Button.btn.money:SetNormalAtlas('Front-Gold-Icon')
     Button.btn.money:SetScript('OnEnter',set_EncounterJournal_Money_Tips)
@@ -874,7 +874,7 @@ local function Init_EncounterJournal()--冒险指南界面
 
 
                 if not button.Favorites2 then--收藏
-                    button.Favorites2=e.Cbtn(button, {atlas='PetJournal-FavoritesIcon', size=25, pushe=true})
+                    button.Favorites2=WoWTools_ButtonMixin:Cbtn(button, {atlas='PetJournal-FavoritesIcon', size=25, isType2=true})
                     button.Favorites2:SetPoint('TOPLEFT', -8, 8)
                     button.Favorites2:EnableMouse(true)
                     button.Favorites2:SetScript('OnLeave', function(self)
@@ -1285,7 +1285,7 @@ local function Init_EncounterJournal()--冒险指南界面
 
     local function set_Loot_Spec(button)
         if not button.LootButton then
-            button.LootButton= e.Cbtn(button, {size={20,20}, icon='hide'})
+            button.LootButton= WoWTools_ButtonMixin:Cbtn(button, {size={20,20}, icon='hide'})
             button.LootButton:SetPoint('LEFT', button, 'RIGHT')
             button.LootButton:SetNormalAtlas(e.Icon.icon)
             button.LootButton:SetScript('OnMouseDown', function(self)

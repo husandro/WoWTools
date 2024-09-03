@@ -358,9 +358,9 @@ local function Init_Cursor_Options()
     alphaSlider:SetPoint("TOPLEFT", sliderGravity, 'BOTTOMLEFT', 0, -20)
 
     local dropDown = CreateFrame("FRAME", nil, panel, "UIDropDownMenuTemplate")--下拉，菜单
-    local delColorButton= e.Cbtn(panel, {icon='hide', size={20,20}})--删除, 按钮
+    local delColorButton= WoWTools_ButtonMixin:Cbtn(panel, {icon='hide', size={20,20}})--删除, 按钮
     local addColorEdit= CreateFrame("EditBox", nil, panel, 'InputBoxTemplate')--EditBox
-    local addColorButton= e.Cbtn(panel, {icon='hide', size={20,20}})--添加, 按钮
+    local addColorButton= WoWTools_ButtonMixin:Cbtn(panel, {icon='hide', size={20,20}})--添加, 按钮
     local numColorText= e.Cstr(panel, {justifyH='RIGHT'})--nil, nil, nil, nil, nil, 'RIGHT')--颜色，数量
     numColorText:SetPoint('RIGHT', dropDown, 'LEFT', 18,5)
 
@@ -605,9 +605,9 @@ local function Init_GCD_Options()
     checkDrawBling:SetPoint("LEFT", checkReverse.text, 'RIGHT', 2, 00)
 
     local dropDown = CreateFrame("FRAME", nil, panel, "UIDropDownMenuTemplate")--下拉，菜单
-    local delColorButton= e.Cbtn(panel, {icon='hide', size={20,20}})--删除, 按钮
+    local delColorButton= WoWTools_ButtonMixin:Cbtn(panel, {icon='hide', size={20,20}})--删除, 按钮
     local addColorEdit= CreateFrame("EditBox", nil, panel, 'InputBoxTemplate')--EditBox
-    local addColorButton= e.Cbtn(panel, {icon='hide', size={20,20}})--添加, 按钮
+    local addColorButton= WoWTools_ButtonMixin:Cbtn(panel, {icon='hide', size={20,20}})--添加, 按钮
     local numColorText= e.Cstr(panel, {justifyH='RIGHT'})--nil, nil, nil, nil, nil, 'RIGHT')--颜色，数量
     numColorText:SetPoint('RIGHT', dropDown, 'LEFT', 18,5)
     numColorText:SetText(#Save.GCDTexture)

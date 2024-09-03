@@ -14,7 +14,10 @@ end
 
 function WoWTools_QuestMixin:GetName(questID)
     if questID then
-        return C_TaskQuest.GetQuestInfoByQuestID(questID) or C_QuestLog.GetTitleForQuestID(questID)
+        return e.cn(nil, {questID=questID, isName=true})
+            or C_TaskQuest.GetQuestInfoByQuestID(questID)
+            or C_QuestLog.GetTitleForQuestID(questID)
+            or questID
     end
 end
 

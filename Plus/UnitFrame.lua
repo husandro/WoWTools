@@ -43,7 +43,7 @@ local function Init_PlayerFrame()--PlayerFrame.lua
 
     --全部有权限，助手，提示
     --####################
-    playerFrameTargetContextual.assisterButton= e.Cbtn(playerFrameTargetContextual,{size={16,16}, icon='hide'})--点击，设置全员，权限
+    playerFrameTargetContextual.assisterButton= WoWTools_ButtonMixin:Cbtn(playerFrameTargetContextual,{size={16,16}, icon='hide'})--点击，设置全员，权限
     playerFrameTargetContextual.assisterButton:SetFrameLevel(5)
     playerFrameTargetContextual.assisterButton:SetPoint(playerFrameTargetContextual.LeaderIcon:GetPoint())
     playerFrameTargetContextual.assisterButton:Hide()
@@ -159,7 +159,7 @@ end)
 
     --拾取专精
     --#######
-    PlayerFrame.lootButton= e.Cbtn(PlayerFrame, {size={14,14}, icon='hide', pushe=true})
+    PlayerFrame.lootButton= WoWTools_ButtonMixin:Cbtn(PlayerFrame, {size={14,14}, icon='hide', isType2=true})
     PlayerFrame.lootButton:SetPoint('TOPLEFT', PlayerFrame.portrait, 'TOPRIGHT',-32,16)
     PlayerFrame.lootButton:SetFrameLevel(frameLevel)
 
@@ -466,7 +466,7 @@ end)
     end)
 
     --设置, 战争模式
-    PlayerFrame.warModeButton= e.Cbtn(PlayerFrame, {size={20,20}, icon='hide', pushe=true})
+    PlayerFrame.warModeButton= WoWTools_ButtonMixin:Cbtn(PlayerFrame, {size={20,20}, icon='hide', isType2=true})
     PlayerFrame.warModeButton:SetPoint('LEFT', PlayerFrame, 5, 12)
     PlayerFrame.warModeButton:SetScript('OnClick',  function(self)
         C_PvP.ToggleWarMode()
@@ -640,7 +640,7 @@ local function set_memberFrame(memberFrame)
     --目标的目标
     local btn= memberFrame.potFrame
     if not btn then
-        btn= e.Cbtn(memberFrame, {type=true, size={35,35}, icon='hide', pushe=true})
+        btn= WoWTools_ButtonMixin:Cbtn(memberFrame, {type=true, size={35,35}, icon='hide', isType2=true})
         btn:SetPoint('LEFT', memberFrame, 'RIGHT', -3, 4)
         btn:SetAttribute('type', 'target')
         btn:SetAttribute('unit', unit..'target')
@@ -1291,7 +1291,7 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
     CompactPartyFrame.title:SetText('')
     CompactPartyFrame.title:Hide()
     --新建, 移动, 按钮
-    CompactPartyFrame.moveFrame= e.Cbtn(CompactPartyFrame, {icon=true, size={20,20}})
+    CompactPartyFrame.moveFrame= WoWTools_ButtonMixin:Cbtn(CompactPartyFrame, {icon=true, size={20,20}})
     CompactPartyFrame.moveFrame:SetAlpha(0.3)
     CompactPartyFrame.moveFrame:SetPoint('TOP', CompactPartyFrame, 'TOP',0, 10)
     CompactPartyFrame.moveFrame:SetClampedToScreen(true)
@@ -1383,7 +1383,7 @@ local function Init_BossFrame()
         local frame= _G['Boss'..i..'TargetFrame']
         frame.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')--生命条，颜色，材质
 
-        frame.BossButton= e.Cbtn(frame, {size={38,38}, type=true, icon='hide', pushe=true})--CreateFrame('Frame', nil, frame, 'SecureActionButtonTemplate')
+        frame.BossButton= WoWTools_ButtonMixin:Cbtn(frame, {size=38, type=true, icon='hide', isType2=true})--CreateFrame('Frame', nil, frame, 'SecureActionButtonTemplate')
 
         frame.BossButton:SetPoint('LEFT', frame.TargetFrameContent.TargetFrameContentMain.HealthBar, 'RIGHT')
 
@@ -1498,7 +1498,7 @@ local function Init_BossFrame()
 
         --目标的目标，点击
         --##############
-        frame.TotButton=e.Cbtn(frame, {size={38,38}, type=true, icon='hide', pushe=true})
+        frame.TotButton=WoWTools_ButtonMixin:Cbtn(frame, {size=38, type=true, icon='hide', isType2=true})
         function frame.TotButton:set_point()
             if Boss1TargetFrameSpellBar.castBarOnSide then
                 self:SetPoint('TOPLEFT', frame.TargetFrameContent.TargetFrameContentMain.ManaBar, 'BOTTOMLEFT')
@@ -1775,7 +1775,7 @@ local function Init_RaidFrame()--设置,团队
     CompactRaidFrameContainer:SetClampedToScreen(true)
     CompactRaidFrameContainer:SetMovable(true)
 
-    CompactRaidFrameContainer.moveFrame= e.Cbtn(CompactRaidFrameContainer, {icon= true, size={22,22}})--IsEveryoneAssistant() hooksecurefunc('RaidFrameAllqbCheckButton_UpdateAvailable', function()
+    CompactRaidFrameContainer.moveFrame= WoWTools_ButtonMixin:Cbtn(CompactRaidFrameContainer, {icon= true, size={22,22}})--IsEveryoneAssistant() hooksecurefunc('RaidFrameAllqbCheckButton_UpdateAvailable', function()
     CompactRaidFrameContainer.moveFrame:SetPoint('TOPRIGHT', CompactRaidFrameContainer, 'TOPLEFT',-2, -13)
 
     CompactRaidFrameContainer.moveFrame:SetClampedToScreen(true)
@@ -1842,7 +1842,7 @@ local function Init_RaidFrame()--设置,团队
 
 
     --团体, 管理, 缩放
-    CompactRaidFrameManager.sacleFrame= e.Cbtn(CompactRaidFrameManager, {icon=true, size={15,15}})
+    CompactRaidFrameManager.sacleFrame= WoWTools_ButtonMixin:Cbtn(CompactRaidFrameManager, {icon=true, size={15,15}})
     CompactRaidFrameManager.sacleFrame:SetPoint('RIGHT', CompactRaidFrameManagerDisplayFrameRaidMemberCountLabel, 'LEFT')
     CompactRaidFrameManager.sacleFrame:SetAlpha(0.5)
     CompactRaidFrameManager.sacleFrame:SetScript("OnMouseDown", function(self, d)

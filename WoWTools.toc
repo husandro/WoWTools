@@ -3,7 +3,7 @@
 ## Author: husandro
 ## Version: @project-version@
 ## Notes: |A:Icon-WoW:0:0|aWoW |cffff0000Plus|r|n|cffffd100|A:communities-icon-invitemail:0:0|ahusandro@qq.com|r|n|A:WoWShare-TwitterLogo:0:0|a|cff00ccffhttps://www.curseforge.com/wow/addons/wowtools|r
-## SavedVariables: WoWToolsSave, WoWDate
+## SavedVariables: WoWToolsSave, WoWTools_WoWDate
 ## DefaultState: Enabled
 ## X-Wago-ID: baND1J6o
 ## X-Curse-Project-ID: 715192
@@ -34,9 +34,9 @@ Mixin\Button_Mixin.lua
 Mixin\Unit_Mixin.lua
 Mixin\Quest_Mixin.lua
 
-Mixin\Spell_Item_Mixin.lua
 Mixin\Item_Mixin.lua
 Mixin\Spell_Mixin.lua
+Mixin\Tooltip_Mixin.lua
 
 Mixin\StaticPopupDialogs.lua
 Mixin\ChatButton_Mixin.lua
@@ -84,8 +84,16 @@ Plus\WorldMap.lua
 Plus\UnitFrame.lua
 ##好友，面板
 Plus\FriendsList.lua
+
+
+
 ##小地图，增强缩放
-Plus\Minimap.lua
+##Plus\Minimap.lua
+Plus_Minimap\Init.lua
+Plus_Minimap\InstanceDifficulty.lua
+Plus_Minimap\TrackButton.lua
+
+
 ##冒险指南, 增强
 Plus\EncounterJournal.lua
 ##史诗钥石地下城, 挑战增强

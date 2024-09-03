@@ -302,7 +302,7 @@ end
 --创建，目标，功击，按钮
 --####################
 local function Create_Button(name)
-    local btn= e.Cbtn(MacroEditButton, {size={60,22}, type=false})
+    local btn= WoWTools_ButtonMixin:Cbtn(MacroEditButton, {size={60,22}, type=false})
     function btn:find_text(right)
         return (MacroFrameText:GetText() or ''):find(e.Magic(right and self.text2 or self.text))
     end
@@ -500,7 +500,7 @@ end
 --创建，空，按钮
 --#############
 local function Init_Create_Button()
-    MacroFrame.newButton= e.Cbtn(MacroFrame, {size={22,22}, name='MacroNewEmptyButton', atlas='communities-chat-icon-plus'})
+    MacroFrame.newButton= WoWTools_ButtonMixin:Cbtn(MacroFrame, {size={22,22}, name='MacroNewEmptyButton', atlas='communities-chat-icon-plus'})
     function MacroFrame.newButton:set_atlas()
         self:SetNormalAtlas(MacroNewButton:IsEnabled() and 'communities-chat-icon-plus' or 'communities-chat-icon-minus')
     end
@@ -770,7 +770,7 @@ local size= 24
     for i=1, 12 do
         local data= C_SpellBook.GetSpellBookSkillLineInfo(i)--shouIdHide name numSpellBookItems iconID isGuild itemIndexOffset
         if data and data.name and not data.shouIdHide then
-            local btn= e.Cbtn(MacroEditButton, {size=size, texture=data.iconID})
+            local btn= WoWTools_ButtonMixin:Cbtn(MacroEditButton, {size=size, texture=data.iconID})
             btn.name= data.name
             btn.index= i
             btn:SetScript('OnLeave', GameTooltip_Hide)
@@ -874,7 +874,7 @@ local size= 24
 
 
     --PVP， 天赋，法术
-    local pvpButton= e.Cbtn(last, {size=size, atlas='pvptalents-warmode-swords'})--pvptalents-warmode-swords-disabled
+    local pvpButton= WoWTools_ButtonMixin:Cbtn(last, {size=size, atlas='pvptalents-warmode-swords'})--pvptalents-warmode-swords-disabled
     pvpButton:SetPoint('LEFT', last, 'RIGHT')
     pvpButton:SetScript('OnMouseDown', function(self)
         e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function()
@@ -921,7 +921,7 @@ local size= 24
 
 
     --角色，装备
-    local equipButton= e.Cbtn(last, {size=size, atlas=e.GetUnitRaceInfo({unit='player', reAtlas=true})})--atlas=e.Player.sex==2 and 'charactercreate-gendericon-male-selected' or 'charactercreate-gendericon-female-selected'})--pvptalents-warmode-swords-disabled
+    local equipButton= WoWTools_ButtonMixin:Cbtn(last, {size=size, atlas=e.GetUnitRaceInfo({unit='player', reAtlas=true})})--atlas=e.Player.sex==2 and 'charactercreate-gendericon-male-selected' or 'charactercreate-gendericon-female-selected'})--pvptalents-warmode-swords-disabled
     equipButton:SetPoint('LEFT', last, 'RIGHT')
     equipButton:SetScript('OnMouseDown', function(self)
         e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function()
@@ -978,7 +978,7 @@ local size= 24
     
     
     --谈话
-    local spellchButton= e.Cbtn(last, {size=size, atlas='communities-icon-chat'})
+    local spellchButton= WoWTools_ButtonMixin:Cbtn(last, {size=size, atlas='communities-icon-chat'})
     function spellchButton:Chat_Init_menu(list, level)--表情，列表 
         for _, value in pairs(list or {}) do
             local i = 1;
@@ -1017,7 +1017,7 @@ local size= 24
     last= spellchButton
 
     --表情
-    local emoteButton= e.Cbtn(last, {size=size, texture='Interface\\Addons\\WoWTools\\Sesource\\Emojis\\greet'})
+    local emoteButton= WoWTools_ButtonMixin:Cbtn(last, {size=size, texture='Interface\\Addons\\WoWTools\\Sesource\\Emojis\\greet'})
     emoteButton:SetPoint('LEFT', last, 'RIGHT')
     emoteButton:SetScript('OnMouseDown', function(self)
         e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function(_, level)
@@ -1030,7 +1030,7 @@ local size= 24
 
 
     --常用，宏
-    local starButton= e.Cbtn(last, {size=size, atlas='PetJournal-FavoritesIcon'})
+    local starButton= WoWTools_ButtonMixin:Cbtn(last, {size=size, atlas='PetJournal-FavoritesIcon'})
     starButton:SetPoint('LEFT', last, 'RIGHT')
     starButton:SetScript('OnMouseDown', function(self)
         e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function(_, level, menuList)
@@ -1430,7 +1430,7 @@ end
 --宏列表，位置
 --###########
 local function Init_Macro_List()
-    local toRightButton= e.Cbtn(MacroFrame.TitleContainer, {size={20,20}, icon='hide'})
+    local toRightButton= WoWTools_ButtonMixin:Cbtn(MacroFrame.TitleContainer, {size={20,20}, icon='hide'})
     toRightButton:SetAlpha(0.5)
     if _G['MoveZoomInButtonPerMacroFrame'] then
         toRightButton:SetPoint('RIGHT', _G['MoveZoomInButtonPerMacroFrame'], 'LEFT')

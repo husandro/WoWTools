@@ -44,7 +44,7 @@ local Save={
 --增强，原生
 local function Init_Bank_Plus()--增强，原生
     --选项
-    ReagentBankFrame.ShowHideButton= e.Cbtn(BankFrame, {size={18,18}, atlas='hide'})
+    ReagentBankFrame.ShowHideButton= WoWTools_ButtonMixin:Cbtn(BankFrame, {size={18,18}, atlas='hide'})
     ReagentBankFrame.ShowHideButton:SetPoint('BOTTOMRIGHT', _G['BankFrameTab1'], 'BOTTOMLEFT')
     function ReagentBankFrame.ShowHideButton:set_atlas()
         self:SetNormalAtlas(Save.hideReagentBankFrame and 'editmode-up-arrow' or 'editmode-down-arrow')
@@ -250,7 +250,7 @@ end
 --#########
 local SetAllBank
 local function Init_All_Bank()
-    SetAllBank= e.Cbtn(BankFrame.TitleContainer, {size={22,22}, icon=true})
+    SetAllBank= WoWTools_ButtonMixin:Cbtn(BankFrame.TitleContainer, {size={22,22}, icon=true})
     SetAllBank:SetAlpha(0.5)
     if _G['MoveZoomInButtonPerBankFrame'] then
         SetAllBank:SetPoint('RIGHT', _G['MoveZoomInButtonPerBankFrame'], 'LEFT')
@@ -634,7 +634,7 @@ local function Init_Save_BankItem()
     if not e.Player.husandro then
         return
     end
-    AllPlayerBankItem= e.Cbtn(BankFrame.TitleContainer, {size={22,22}, atlas='Banker'})
+    AllPlayerBankItem= WoWTools_ButtonMixin:Cbtn(BankFrame.TitleContainer, {size={22,22}, atlas='Banker'})
     AllPlayerBankItem:SetPoint('LEFT', BankFrame.optionButton , 'RIGHT')
     AllPlayerBankItem:SetAlpha(0.5)
     function AllPlayerBankItem:get_item_text(itemID, quality)
@@ -773,7 +773,7 @@ end
 
 --大包时，显示，存取，分类，按钮
 local function Init_Desposit_TakeOut_Button()
-    local btn= e.Cbtn(BankSlotsFrame, {size=23, icon='hide'})
+    local btn= WoWTools_ButtonMixin:Cbtn(BankSlotsFrame, {size=23, icon='hide'})
     btn:SetPoint('TOPRIGHT', BankFrame, 'TOPLEFT', -2, -32)
     btn.frame=CreateFrame('Frame', nil, btn)
     btn.frame:SetPoint('BOTTOMRIGHT')
@@ -869,7 +869,7 @@ local function Init_Desposit_TakeOut_Button()
         if classID~=6 and classID~=10 and classID~=14 and classID~=11 and classID~=7 then
             local className=C_Item.GetItemClassInfo(classID)--生成,物品列表
             if className then
-                local frame= e.Cbtn(btn.frame, {icon='hide'})
+                local frame= WoWTools_ButtonMixin:Cbtn(btn.frame, {icon='hide'})
                 frame.Text= e.Cstr(frame, {justifyH='RIGHT'})
                 frame.Text:SetPoint('RIGHT', -2,0)
                 frame.Text:SetText(e.cn(className)..' '..classID)
@@ -978,7 +978,7 @@ end
 --存放，取出，所有
 local function Init_Desposit_TakeOut_All_Items()
     --取出，所有, 物品
-    local btn= e.Cbtn(BankSlotsFrame, {size=23, icon='hide'})
+    local btn= WoWTools_ButtonMixin:Cbtn(BankSlotsFrame, {size=23, icon='hide'})
     btn:SetNormalAtlas('poi-traveldirections-arrow')
     btn:GetNormalTexture():SetTexCoord(1,0,1,0)
     if Save.allBank then
@@ -1041,7 +1041,7 @@ local function Init_Desposit_TakeOut_All_Items()
     ReagentBankFrame.TakeOutAllItemButton= btn
 
     --存放，所有，物品
-    local btnOut= e.Cbtn(ReagentBankFrame.TakeOutAllItemButton, {size=23, icon='hide'})
+    local btnOut= WoWTools_ButtonMixin:Cbtn(ReagentBankFrame.TakeOutAllItemButton, {size=23, icon='hide'})
     btnOut:SetNormalAtlas('poi-traveldirections-arrow')
     btnOut:GetNormalTexture():SetTexCoord(0,1,1,0)
     btnOut:SetPoint('RIGHT', ReagentBankFrame.TakeOutAllItemButton, 'LEFT', -2, 0)
@@ -1085,7 +1085,7 @@ local function Init_Desposit_TakeOut_All_Items()
 
 
     --取出，所有，材料
-    local btnR= e.Cbtn(ReagentBankFrame.DespositButton, {size=23, icon='hide'})
+    local btnR= WoWTools_ButtonMixin:Cbtn(ReagentBankFrame.DespositButton, {size=23, icon='hide'})
     btnR:SetNormalAtlas('poi-traveldirections-arrow')
     btnR:GetNormalTexture():SetTexCoord(1,0,1,0)
     btnR:SetPoint('LEFT', ReagentBankFrame.DespositButton, 'RIGHT', 2, 0)
@@ -1231,7 +1231,7 @@ end
 --银行
 --BankFrame.lua
 local function Init_Bank_Frame()
-    BankFrame.optionButton= e.Cbtn(BankFrame.TitleContainer, {size={22,22}, atlas='hide'})
+    BankFrame.optionButton= WoWTools_ButtonMixin:Cbtn(BankFrame.TitleContainer, {size={22,22}, atlas='hide'})
     if _G['MoveZoomInButtonPerBankFrame'] then
         BankFrame.optionButton:SetPoint('LEFT', _G['MoveZoomInButtonPerBankFrame'], 'RIGHT')
     else

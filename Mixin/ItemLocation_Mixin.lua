@@ -187,7 +187,7 @@ function WoWTools_ItemLocationMixin:GetItemName(isText)
 		local itemID= self:GetItemID()
 		local itemName= itemID and C_Item.GetItemNameByID(itemID)
 		if itemName then
-			return itemName, isText and WoWTools_SpellItemMixin:GetName(nil, itemID)
+			return itemName, isText and WoWTools_ItemMixin:GetName(itemID)
 		end
 	end
 end

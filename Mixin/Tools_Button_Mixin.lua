@@ -55,7 +55,7 @@ function WoWTools_ToolsButtonMixin:Init(save)
 
     self:SetSaveData(save)
 
-    self.Button= e.Cbtn(nil, {name='WoWTools_ToolsButton', icon='hide', size={30, save.height or 10}})
+    self.Button= WoWTools_ButtonMixin:Cbtn(nil, {name='WoWTools_ToolsButton', icon='hide', size={30, save.height or 10}})
 
     self.Button.Frame= CreateFrame('Frame', nil, self.Button)
     self.Button.Frame:SetAllPoints()
@@ -98,9 +98,8 @@ function WoWTools_ToolsButtonMixin:CreateButton(tab)
 
     self.setID= self.setID+1
 
-    local btn= Button_Mixin:CreateSecure({
+    local btn= WoWTools_ButtonMixin:CreateSecureButton(self:GetParent(tab), {
         name='WoWTools_Tools_'..(tab.name or self.setID),
-        parent= self:GetParent(tab),
         setID= self.setID,
     })
 
@@ -218,9 +217,8 @@ button= WoWTools_ToolsButtonMixin:CreateButton({
 --[[function WoWTools_ToolsButtonMixin:Create(tab)
     tab= tab or {}
     self.setID= self.setID+1
-    return Button_Mixin:CreateSecure({
+    return WoWTools_ButtonMixin:CreateSecureButton(parent, {
         name='WoWTools_Tools_'..(tab.name or self.setID),
-        parent= self:GetParent(tab),
         setID= self.setID,
     })
 end]]

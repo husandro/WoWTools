@@ -1022,7 +1022,7 @@ local function Init_Framerate_Plus()
     if not Save.frameratePlus or FramerateButton then
         return
     end
-    FramerateButton= e.Cbtn(FramerateFrame, {size={14,14}, icon='hide'})
+    FramerateButton= WoWTools_ButtonMixin:Cbtn(FramerateFrame, {size={14,14}, icon='hide'})
     FramerateButton:SetPoint('RIGHT',FramerateFrame.FramerateText)
 
     FramerateButton:SetMovable(true)

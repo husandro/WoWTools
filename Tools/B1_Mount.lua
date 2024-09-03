@@ -1439,7 +1439,7 @@ local function Init_UI_Menu(self, root)
     end
 
     root:CreateDivider()
-    WoWTools_ToolsButtonMixin:OpenMenu(root, WoWTools_SpellItemMixin:GetName(spellID) or ('|T'..(icon or 0)..':0|t'..name))
+    WoWTools_ToolsButtonMixin:OpenMenu(root, WoWTools_SpellMixin:GetName(spellID) or ('|T'..(icon or 0)..':0|t'..name))
 end
 
 
@@ -1599,7 +1599,7 @@ local function Init_MountJournal()
             end
         end
          if not frame.WoWToolsButton then--建立，图标，菜单
-            frame.WoWToolsButton=e.Cbtn(frame, {icon=true, size={22,22}})
+            frame.WoWToolsButton=WoWTools_ButtonMixin:Cbtn(frame, {icon=true, size={22,22}})
             frame.WoWToolsButton:SetPoint('BOTTOMRIGHT')
             frame.WoWToolsButton:SetAlpha(0)
             frame.WoWToolsButton:SetScript('OnEnter', function(self)
@@ -1623,7 +1623,7 @@ local function Init_MountJournal()
     end)
 
     if not MountJournal.MountDisplay.tipsMenu then
-        MountJournal.MountDisplay.tipsMenu= e.Cbtn(MountJournal.MountDisplay, {icon=true, size={22,22}})
+        MountJournal.MountDisplay.tipsMenu= WoWTools_ButtonMixin:Cbtn(MountJournal.MountDisplay, {icon=true, size={22,22}})
         MountJournal.MountDisplay.tipsMenu:SetPoint('LEFT')
         MountJournal.MountDisplay.tipsMenu:SetAlpha(0.3)
         MountJournal.MountDisplay.tipsMenu:SetScript('OnMouseDown', function(self)
@@ -1697,7 +1697,7 @@ end
 
 local function set_Use_Spell_Button(btn, spellID)
     if not btn.mountSpell then
-        btn.mountSpell= e.Cbtn(btn, {size={16,16}, atlas='hud-microbutton-Mounts-Down'})
+        btn.mountSpell= WoWTools_ButtonMixin:Cbtn(btn, {size={16,16}, atlas='hud-microbutton-Mounts-Down'})
         btn.mountSpell:SetPoint('TOP', btn, 'BOTTOM', -8, 0)
         function btn.mountSpell:set_alpha()
             if self.spellID then
@@ -1853,11 +1853,11 @@ local function Init()
         local infoType, itemID, _, spellID= GetCursorInfo()
         local name, col, exits
         if infoType == "item" and itemID then
-            name, col= WoWTools_SpellItemMixin:GetName(nil, itemID)
+            name, col= WoWTools_ItemMixin:GetName(itemID)
             exits= Save.Mounts[ITEMS][itemID] and true or false
 
         elseif infoType =='spell' and spellID then
-            name, col= WoWTools_SpellItemMixin:GetName(spellID, nil)
+            name, col= WoWTools_SpellMixin:GetName(spellID)
             exits=Save.Mounts[SPELLS][spellID] and true or false
         end
 
@@ -1871,7 +1871,10 @@ local function Init()
         else
             if self.typeID then
                 local key= WoWTools_Key_Button:IsKeyValid(self)
-                e.tips:AddDoubleLine(WoWTools_SpellItemMixin:GetName(self.typeSpell and self.typeID, not self.typeSpell and self.typeID), (key and '|cnGREEN_FONT_COLOR:'..key or '')..e.Icon.left)
+                e.tips:AddDoubleLine(
+                    self.typeSpell and WoWTools_SpellMixin:GetName(self.typeID) or WoWTools_ItemMixin:GetName(self.typeID),
+                    (key and '|cnGREEN_FONT_COLOR:'..key or '')..e.Icon.left
+                )
                 e.tips:AddLine(' ')
             end
             e.tips:AddDoubleLine(e.onlyChinese and '坐骑秀' or 'Mount show', '|A:bags-greenarrow:0:0|a')

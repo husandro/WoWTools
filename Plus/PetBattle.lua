@@ -315,7 +315,7 @@ local function set_PetBattleFrame_UpdateAllActionButtons(self)--Blizzard_PetBatt
             end
             for i = 1, NUM_BATTLE_PET_ABILITIES do
                 if frame and not frame[i] then
-                    frame[i]=e.Cbtn(frame, {icon='hide', size={40,40}})--nil, true)
+                    frame[i]=WoWTools_ButtonMixin:Cbtn(frame, {icon='hide', size={40,40}})--nil, true)
                     frame[i]:SetSize(40,40)
                     if i==1 then
                         if index==1 then
@@ -697,7 +697,7 @@ end
 --####
 local function Init_TrackButton()
     --提示,类型, Tooltips.lua 联动 WoWTools_PetBattle_Type_TrackButton
-    TrackButton= e.Cbtn(nil, {name='WoWTools_PetBattle_Type_TrackButton',icon='hide', size={20,20}, pushe=true})
+    TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {name='WoWTools_PetBattle_Type_TrackButton',icon='hide', size={20,20}, isType2=true})
     TrackButton.setFrame= CreateFrame("Frame", nil, TrackButton)
     TrackButton.setFrame:SetSize(1,1)
     TrackButton.setFrame:SetPoint('RIGHT')
@@ -823,7 +823,7 @@ local function Init_TrackButton()
     --提示,类型, Tooltips.lua 联动
     TrackButton.setFrame.Buttons={}
     for i=1, C_PetJournal.GetNumPetTypes() do
-        local btn= e.Cbtn(TrackButton.setFrame, {size={32,32}, texture='Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[i], pushe=true})
+        local btn= WoWTools_ButtonMixin:Cbtn(TrackButton.setFrame, {size={32,32}, texture='Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[i], isType2=true})
 
         btn:SetPoint('LEFT', i==1 and TrackButton.setFrame or TrackButton.setFrame.Buttons[i-1], 'RIGHT')
         btn.abilityID= PetTypeAbility[i]
@@ -839,7 +839,7 @@ local function Init_TrackButton()
             btn.indicatoUp:SetSize(10,10)
             btn.indicatoUp:SetPoint('BOTTOM', btn,'TOP')
 
-            btn.strong= e.Cbtn(TrackButton.setFrame, {texture=strong,size={25,25}, pushe=true})
+            btn.strong= WoWTools_ButtonMixin:Cbtn(TrackButton.setFrame, {texture=strong,size={25,25}, isType2=true})
             btn.strong:SetPoint('BOTTOM', btn.indicatoUp, 'TOP')
             btn.strong.abilityID= PetTypeAbility[index]
             btn.strong.typeID=index
@@ -853,7 +853,7 @@ local function Init_TrackButton()
             btn.indicatoDown:SetSize(10,10)
             btn.indicatoDown:SetPoint('TOP', btn,'BOTTOM')
 
-            btn.weakHints= e.Cbtn(TrackButton.setFrame, {texture=weakHints, size={25,25}, pushe=true})
+            btn.weakHints= WoWTools_ButtonMixin:Cbtn(TrackButton.setFrame, {texture=weakHints, size={25,25}, isType2=true})
             btn.weakHints:SetPoint('TOP', btn.indicatoDown, 'BOTTOM')
             btn.weakHints.abilityID= PetTypeAbility[index2]
             btn.weakHints.typeID=index2

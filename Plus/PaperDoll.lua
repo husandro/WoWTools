@@ -147,7 +147,7 @@ local function set_Engineering(self, slot, link, use, isPaperDollItemSlot)
 
     if not self.engineering then
         local h=self:GetHeight()/3
-        self.engineering=e.Cbtn(self, {icon='hide',size={h,h}})
+        self.engineering=WoWTools_ButtonMixin:Cbtn(self, {icon='hide',size={h,h}})
         self.engineering:SetNormalTexture(136243)
         if is_Left_Slot(slot) then
             self.engineering:SetPoint('TOPLEFT', self, 'TOPRIGHT', 8, 0)
@@ -233,7 +233,7 @@ local function set_no_Enchant(self, slot, find, isPaperDollItemSlot)--附魔，�
         tab=get_no_Enchant_Bag(slot)--取得，物品，bag, slot
         if tab and not self.noEnchant then
             local h=self:GetHeight()/3
-            self.noEnchant= e.Cbtn(self, {size={h, h}, type=true, icon='hide'})
+            self.noEnchant= WoWTools_ButtonMixin:Cbtn(self, {size={h, h}, type=true, icon='hide'})
             self.noEnchant:SetAttribute("type", "item")
             self.noEnchant.slot= slot
             if is_Left_Slot(slot) then
@@ -758,7 +758,7 @@ local function Init_Title()--头衔数量
     end
 
     if not btn then
-        btn= e.Cbtn(PaperDollFrame.TitleManagerPane, {size={28, 28}, icon='hide'})--, atlas=e.Icon.icon})
+        btn= WoWTools_ButtonMixin:Cbtn(PaperDollFrame.TitleManagerPane, {size={28, 28}, icon='hide'})--, atlas=e.Icon.icon})
         btn.Text= e.Cstr(btn)
         btn.Text:SetPoint('CENTER')
         btn:SetFrameLevel(PaperDollFrame.TitleManagerPane.ScrollBox:GetFrameLevel()+1)
@@ -1038,7 +1038,7 @@ local function Init_TrackButton()--添加装备管理框
         return
     end
 
-    TrackButton=e.Cbtn(UIParent, {icon='hide'})--添加移动按钮
+    TrackButton=WoWTools_ButtonMixin:Cbtn(UIParent, {icon='hide'})--添加移动按钮
     TrackButton.buttons={}--添加装备管理按钮
 
     TrackButton:SetSize(20,20)
@@ -1183,7 +1183,7 @@ local function Init_TrackButton()--添加装备管理框
 
     --建立，按钮
     function TrackButton:create_button(index)
-        local btn=e.Cbtn(self, {icon='hide',size={20,20}})
+        local btn=WoWTools_ButtonMixin:Cbtn(self, {icon='hide',size={20,20}})
         btn.texture= btn:CreateTexture(nil, 'OVERLAY')
         btn.texture:SetSize(26,26)
         btn.texture:SetPoint('CENTER')
@@ -1340,7 +1340,7 @@ function Init_TrackButton_ShowHide_Button()
         panel.equipmentButton:SetShown(true)
         return
     end
-    panel.equipmentButton = e.Cbtn(PaperDollFrame.EquipmentManagerPane, {size={20,20}, atlas= Save.equipment and 'auctionhouse-icon-favorite' or e.Icon.disabled})--显示/隐藏装备管理框选项
+    panel.equipmentButton = WoWTools_ButtonMixin:Cbtn(PaperDollFrame.EquipmentManagerPane, {size={20,20}, atlas= Save.equipment and 'auctionhouse-icon-favorite' or e.Icon.disabled})--显示/隐藏装备管理框选项
     panel.equipmentButton:SetPoint('RIGHT', CharacterFrameCloseButton, 'LEFT')
     panel.equipmentButton:SetFrameStrata(CharacterFrameCloseButton:GetFrameStrata())
     panel.equipmentButton:SetFrameLevel(CharacterFrameCloseButton:GetFrameLevel()+1)
@@ -1642,7 +1642,7 @@ local function Init_Show_Hide_Button(frame)
 
     local title= frame==PaperDollItemsFrame and CharacterFrame.TitleContainer or frame.TitleContainer
 
-    local btn= e.Cbtn(frame, {size={20,20}, atlas= not Save.hide and e.Icon.icon or e.Icon.disabled})
+    local btn= WoWTools_ButtonMixin:Cbtn(frame, {size={20,20}, atlas= not Save.hide and e.Icon.icon or e.Icon.disabled})
     btn:SetFrameStrata(title:GetFrameStrata())
     btn:SetPoint('LEFT', title)
     btn:SetFrameLevel(title:GetFrameLevel()+1)
@@ -2008,7 +2008,7 @@ end
 local function Init_ChromieTime()--时空漫游战役, 提示
     local canEnter = C_PlayerInfo.CanPlayerEnterChromieTime()
     if canEnter and not Save.hide and not panel.ChromieTime then
-        panel.ChromieTime= e.Cbtn(PaperDollItemsFrame, {size={18,18}, atlas='ChromieTime-32x32'})
+        panel.ChromieTime= WoWTools_ButtonMixin:Cbtn(PaperDollItemsFrame, {size={18,18}, atlas='ChromieTime-32x32'})
         panel.ChromieTime:SetAlpha(0.5)
         if PaperDollItemsFrame.ShowHideButton then
             panel.ChromieTime:SetPoint('LEFT', PaperDollItemsFrame.ShowHideButton, 'RIGHT')
@@ -2874,7 +2874,7 @@ function panel:Init_Status_Plus()
         end
         return
     end
-    StatusPlusButton= e.Cbtn(CharacterStatsPane, {size={20,20}, icon='hide'})--显示/隐藏装备管理框选项
+    StatusPlusButton= WoWTools_ButtonMixin:Cbtn(CharacterStatsPane, {size={20,20}, icon='hide'})--显示/隐藏装备管理框选项
     StatusPlusButton:SetPoint('RIGHT', CharacterFrameCloseButton, 'LEFT')
     StatusPlusButton:SetFrameStrata(CharacterFrameCloseButton:GetFrameStrata())
     StatusPlusButton:SetFrameLevel(CharacterFrameCloseButton:GetFrameLevel()+1)
@@ -3167,7 +3167,7 @@ local function Init()
             return
         end
         if not btn.setID and not btn.createButton  then
-            btn.createButton= e.Cbtn(btn, {size={30,30}, atlas='groupfinder-eye-highlight'})
+            btn.createButton= WoWTools_ButtonMixin:Cbtn(btn, {size={30,30}, atlas='groupfinder-eye-highlight'})
             btn.createButton.str= e.onlyChinese and '空' or EMPTY
             btn.createButton:SetPoint('RIGHT', 0,-4)
             btn.createButton:SetScript('OnLeave', GameTooltip_Hide)

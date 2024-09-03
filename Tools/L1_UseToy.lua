@@ -91,7 +91,7 @@ local function Set_Alt_Menu(root, itemID)
             end,
             {type=info.type, itemID=info.itemID, itemID2=itemID}
         )
-        WoWTools_SpellItemMixin:SetTooltip(nil, nil, sub, nil)
+        WoWTools_TooltipMixin:SetTooltip(nil, nil, sub, nil)
     end
 end
 
@@ -150,7 +150,7 @@ end
 --设置，物品，提示
 local function Set_Menu_Tooltip(tooltip, desc)
     if desc.data then
-        WoWTools_SpellItemMixin:SetTooltip(tooltip, {itemID=desc.data.itemID})--设置，物品，提示
+        WoWTools_TooltipMixin:SetTooltip(tooltip, {itemID=desc.data.itemID})--设置，物品，提示
     end
 end
 
@@ -463,7 +463,7 @@ end
 --#############
 local function setToySpellButton_UpdateButton(btn)--标记, 是否已选取
     if not btn.useToy then
-        btn.useToy= e.Cbtn(btn,{size={16,16}, texture=133567})
+        btn.useToy= WoWTools_ButtonMixin:Cbtn(btn,{size={16,16}, texture=133567})
         btn.useToy:SetPoint('TOPLEFT',btn.name,'BOTTOMLEFT', 16, 0)
 
         function btn.useToy:get_itemID()
@@ -615,11 +615,11 @@ local function Init()
     function ToyButton:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_SpellItemMixin:GetName(nil, self.itemID), (WoWTools_Key_Button:IsKeyValid(self) or '').. e.Icon.left)
+        e.tips:AddDoubleLine(WoWTools_ItemMixin:GetName(self.itemID), (WoWTools_Key_Button:IsKeyValid(self) or '').. e.Icon.left)
         e.tips:AddLine(' ')
         local name, col
         for _, data in pairs(ModifiedMenuTab) do
-            name, col=WoWTools_SpellItemMixin:GetName(nil, data.itemID)
+            name, col=WoWTools_ItemMixin:GetName(data.itemID)
             col= col or ''
             e.tips:AddDoubleLine(col..name, col..data.type..'+'..e.Icon.left)
         end

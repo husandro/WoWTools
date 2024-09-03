@@ -659,7 +659,7 @@ local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name, point=left)
         return
     end
 
-    frame.ResizeButton= e.Cbtn(frame, {atlas='UI-HUD-Minimap-Zoom-In', size={18,18}, name='MoveZoomInButtonPer'..tab.name})
+    frame.ResizeButton= WoWTools_ButtonMixin:Cbtn(frame, {atlas='UI-HUD-Minimap-Zoom-In', size={18,18}, name='MoveZoomInButtonPer'..tab.name})
     e.Set_Label_Texture_Color(frame.ResizeButton, {type='Button'})
 
     frame.ResizeButton.name= tab.name
@@ -794,7 +794,7 @@ local function created_Move_Button(frame, tab)--created_Move_Button(frame, {fram
         return
     end
     if not Save.disabledMove and not frame.moveButton then
-        frame.moveButton= e.Cbtn(frame, {texture='Interface\\Cursor\\UI-Cursor-Move', size={22,22}})
+        frame.moveButton= WoWTools_ButtonMixin:Cbtn(frame, {texture='Interface\\Cursor\\UI-Cursor-Move', size={22,22}})
         frame.moveButton:SetPoint('BOTTOM', frame, 'TOP')
         frame.moveButton:SetFrameLevel(frame:GetFrameLevel()+5)
         frame.moveButton.alpha= tab.zeroAlpha and 0 or 0.2

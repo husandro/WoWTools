@@ -334,7 +334,7 @@ local function Init_Num()
     --怪物数量
     if not NumFrame then
         if Save.creatureUIParent or not TargetFrame then
-            NumFrame= e.Cbtn(nil, {size={18, 18}, icon='hide'})
+            NumFrame= WoWTools_ButtonMixin:Cbtn(nil, {size={18, 18}, icon='hide'})
 
             NumFrame.Text= e.Cstr(NumFrame, {size=Save.creatureFontSize, color={r=1,g=1,b=1}})
             NumFrame.Text:SetScript('OnLeave', function(self) self:GetParent():SetButtonState('NORMAL') end)
@@ -1156,7 +1156,7 @@ local function set_Option()
     end)
 
     --删除，图片
-    menu.edit.del= e.Cbtn(menu.edit, {atlas='xmarksthespot', size={20,20}})
+    menu.edit.del= WoWTools_ButtonMixin:Cbtn(menu.edit, {atlas='xmarksthespot', size={20,20}})
     menu.edit.del:SetPoint('LEFT', menu, 'RIGHT',-10,0)
     menu.edit.del:SetScript('OnClick', function(self)
         local parent= self:GetParent()
@@ -1174,7 +1174,7 @@ local function set_Option()
     end)
 
     --添加按钮
-    menu.edit.add= e.Cbtn(menu.edit, {atlas=e.Icon.select, size={20,20}})--添加, 按钮
+    menu.edit.add= WoWTools_ButtonMixin:Cbtn(menu.edit, {atlas=e.Icon.select, size={20,20}})--添加, 按钮
     menu.edit.add:SetPoint('LEFT', menu.edit, 'RIGHT', 5,0)
     menu.edit.add:SetScript('OnClick', function(self)
         local parent= self:GetParent()

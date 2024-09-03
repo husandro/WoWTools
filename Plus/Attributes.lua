@@ -1786,7 +1786,7 @@ local function Init_Options()--设置 panel
     sliderButtonScale:SetPoint("TOPLEFT", sliderButtonAlpha, 'BOTTOMLEFT', 0,-24)
 
 
-    local restPosti= e.Cbtn(panel, {size={20,20}, atlas='characterundelete-RestoreButton'})--重置
+    local restPosti= WoWTools_ButtonMixin:Cbtn(panel, {size={20,20}, atlas='characterundelete-RestoreButton'})--重置
     restPosti:SetPoint('BOTTOMRIGHT')
     --restPosti:SetPoint("TOPLEFT", sliderButtonAlpha, 'BOTTOMLEFT', 0, -24)
     restPosti:SetScript('OnClick', function()
@@ -2011,7 +2011,7 @@ local function Init()
     Init_Dragonriding_Speed()--驭空术UI，速度
     Init_Vehicle_Speed()--载具，移动，速度
 
-    button= e.Cbtn(nil, {icon='hide', size={22,22}, pushe=true})
+    button= WoWTools_ButtonMixin:Cbtn(nil, {icon='hide', size={22,22}, isType2=true})
 
     button.texture= button:CreateTexture(nil, 'BORDER')
     button.texture:SetSize(18,18)

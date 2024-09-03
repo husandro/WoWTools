@@ -12,7 +12,7 @@ local button
 --初始
 --####
 local function Init()
-    button= e.Cbtn(UIParent, {size={48, 48}, texture=132248})
+    button= WoWTools_ButtonMixin:Cbtn(UIParent, {size={48, 48}, texture=132248})
     button:SetShown(false)
 
     button.topText= e.Cstr(button, {size=22})--debuff

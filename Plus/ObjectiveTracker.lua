@@ -46,7 +46,7 @@ local Frames={
 
 --清除，全部，按钮
 local function Add_ClearAll_Button(frame, tooltip, func)
-    local btn= e.Cbtn(frame, {size=22, atlas='bags-button-autosort-up', alpha=0.3})
+    local btn= WoWTools_ButtonMixin:Cbtn(frame, {size=22, atlas='bags-button-autosort-up', alpha=0.3})
     btn:SetPoint('RIGHT', frame.Header.MinimizeButton, 'LEFT', -2, 0)
     btn:SetScript('OnLeave', function(self) self:SetAlpha(0.3) e.tips:Hide() end)
     btn:SetScript('OnEnter', function(self)

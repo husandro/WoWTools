@@ -255,7 +255,7 @@ local function get_InviteButton_Frame(index)
         end
 
         
-        frame.InviteButton= e.Cbtn(frame, {size={20, 20}, atlas= e.Icon.select})
+        frame.InviteButton= WoWTools_ButtonMixin:Cbtn(frame, {size={20, 20}, atlas= e.Icon.select})
         frame.InviteButton:SetAllPoints()
         --frame.InviteButton:SetPoint('TOPLEFT')
         frame.InviteButton.Size=20
@@ -281,7 +281,7 @@ local function get_InviteButton_Frame(index)
             e.tips:Show()
         end)
 
-        frame.ChatButton= e.Cbtn(frame, {size={size,size}, atlas= 'transmog-icon-chat'})
+        frame.ChatButton= WoWTools_ButtonMixin:Cbtn(frame, {size={size,size}, atlas= 'transmog-icon-chat'})
         frame.ChatButton:SetPoint('BOTTOMLEFT', frame.InviteButton, 'BOTTOMRIGHT')
         frame.ChatButton:SetScript('OnClick', function(self2)
             e.Say(nil, self2:GetParent().name)
@@ -297,7 +297,7 @@ local function get_InviteButton_Frame(index)
 
         
 
-        frame.DeclineButton= e.Cbtn(frame, {size={size, size}, atlas= 'communities-icon-redx'})
+        frame.DeclineButton= WoWTools_ButtonMixin:Cbtn(frame, {size={size, size}, atlas= 'communities-icon-redx'})
         frame.DeclineButton:SetPoint('BOTTOMLEFT', frame.ChatButton, 'BOTTOMRIGHT')
         frame.DeclineButton:SetScript('OnClick', function(self2)
             --C_LFGList.RemoveApplicant(self2:GetParent().applicantID)
@@ -694,7 +694,7 @@ end
 
 
 local function Init_tipsButton()
-    tipsButton= e.Cbtn(nil, {size={22,22}, atlas= 'UI-HUD-MicroMenu-Groupfinder-Mouseover'})
+    tipsButton= WoWTools_ButtonMixin:Cbtn(nil, {size={22,22}, atlas= 'UI-HUD-MicroMenu-Groupfinder-Mouseover'})
 
     function tipsButton:set_Point()
         if Save.tipsFramePoint then
@@ -1706,7 +1706,7 @@ end
 
 local function set_LFDButton_LFGPlus_Texture()--预创建队伍增强
     if not LFDButton.LFGPlus then
-        LFDButton.LFGPlus= e.Cbtn(LFGListFrame, {size={20, 20}, atlas= Save.LFGPlus and e.Icon.icon or e.Icon.disabled})
+        LFDButton.LFGPlus= WoWTools_ButtonMixin:Cbtn(LFGListFrame, {size={20, 20}, atlas= Save.LFGPlus and e.Icon.icon or e.Icon.disabled})
         if _G['MoveZoomInButtonPerPVEFrame'] then
             LFDButton.LFGPlus:SetPoint('RIGHT', _G['MoveZoomInButtonPerPVEFrame'], 'LEFT')
         else
@@ -1817,7 +1817,7 @@ local function setIslandButton(self)--离开海岛按钮
     end
     if find then
         if not self.island then
-            self.island = e.Cbtn(nil, {type=false, size={50,25}})
+            self.island = WoWTools_ButtonMixin:Cbtn(nil, {type=false, size={50,25}})
             self.island:SetText(e.onlyChinese and '离开' or LEAVE)
             if Save.islandPoint then
                 self.island:SetPoint(Save.islandPoint[1], UIParent, Save.islandPoint[3], Save.islandPoint[4], Save.islandPoint[5])
@@ -2135,7 +2135,7 @@ local function Loot_Plus()
 
 
         if not btn.chatTexure then
-            btn.chatTexure= e.Cbtn(btn, {size={18,18}, atlas='transmog-icon-chat'})
+            btn.chatTexure= WoWTools_ButtonMixin:Cbtn(btn, {size={18,18}, atlas='transmog-icon-chat'})
             btn.chatTexure:SetPoint('BOTTOMRIGHT', btn, 6, 4)
             btn.chatTexure:SetScript('OnLeave', GameTooltip_Hide)
             function btn.chatTexure:get_playerinfo()
@@ -2257,7 +2257,7 @@ local function Loot_Plus()
     end)
 
 
-    local btn= e.Cbtn(GroupLootHistoryFrame.TitleContainer, {size={18,18}, icon='hide'})
+    local btn= WoWTools_ButtonMixin:Cbtn(GroupLootHistoryFrame.TitleContainer, {size={18,18}, icon='hide'})
     if _G['MoveZoomInButtonPerGroupLootHistoryFrame'] then
         btn:SetPoint('RIGHT', _G['MoveZoomInButtonPerGroupLootHistoryFrame'], 'LEFT')
     else
@@ -2438,7 +2438,7 @@ local function get_Role_Info(env, Name, isT, isH, isD)
         end
 
         if m~='' and not LFDButton.RoleInfo then
-            LFDButton.RoleInfo=e.Cbtn(nil, {icon='hide', size={20,20}})
+            LFDButton.RoleInfo=WoWTools_ButtonMixin:Cbtn(nil, {icon='hide', size={20,20}})
             if Save.RoleInfoPoint then
                 LFDButton.RoleInfo:SetPoint(Save.RoleInfoPoint[1], UIParent, Save.RoleInfoPoint[3], Save.RoleInfoPoint[4], Save.RoleInfoPoint[5])
             else

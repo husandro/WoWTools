@@ -855,7 +855,7 @@ end
 --快速，加载，物品，按钮
 --####################
 local function Init_Fast_Button()
-    fastButton= e.Cbtn(SendMailFrame, {size={22, 22}, icon='hide'})
+    fastButton= WoWTools_ButtonMixin:Cbtn(SendMailFrame, {size={22, 22}, icon='hide'})
     fastButton:SetPoint('BOTTOMLEFT', MailFrameCloseButton, 'BOTTOMRIGHT',0, -2)
     fastButton.buttons={}
     fastButton.frame= CreateFrame('Frame', nil, fastButton)
@@ -989,7 +989,7 @@ local function Init_Fast_Button()
     local x, y=0, 0
     for _, tab in pairs(fast) do
         if tab~='-' then
-            local btn= e.Cbtn(fastButton.frame, {size=22, texture=tab[1]})
+            local btn= WoWTools_ButtonMixin:Cbtn(fastButton.frame, {size=22, texture=tab[1]})
             btn:SetPoint('TOPLEFT', fastButton.frame,'BOTTOMLEFT', x, y)
 
             btn.classID= tab[2]
@@ -1308,7 +1308,7 @@ end
 
 --收信箱，物品，提示
 local function Init_InBox()
-    local showButton= e.Cbtn(InboxFrame, {size=22, icon='hide'})
+    local showButton= WoWTools_ButtonMixin:Cbtn(InboxFrame, {size=22, icon='hide'})
     showButton:SetFrameStrata(MailFrame.TitleContainer:GetFrameStrata())
     showButton:SetFrameLevel(MailFrame.TitleContainer:GetFrameLevel()+1)
     showButton:SetPoint('LEFT', MailFrame.TitleContainer, -5, 0)
@@ -1454,7 +1454,7 @@ local function Init_InBox()
 
                 --删除，或退信，按钮
                 if not btn.DeleteButton and not Save.hide then
-                    btn.DeleteButton= e.Cbtn(btn, {size=18})
+                    btn.DeleteButton= WoWTools_ButtonMixin:Cbtn(btn, {size=18})
                     if _G['MailItem'..i..'ExpireTime'] and _G['MailItem'..i..'ExpireTime'].returnicon then
                         btn.DeleteButton:SetPoint('RIGHT', _G['MailItem'..i..'ExpireTime'].returnicon, 'LEFT')
                     else
@@ -1491,7 +1491,7 @@ local function Init_InBox()
                     btn.enterTipTexture:Hide()
 
                     --提取，物品，和钱
-                    btn.outItemOrMoney= e.Cbtn(btn, {size={22, 20}, atlas='talents-search-notonactionbarhidden'})
+                    btn.outItemOrMoney= WoWTools_ButtonMixin:Cbtn(btn, {size={22, 20}, atlas='talents-search-notonactionbarhidden'})
                     btn.outItemOrMoney:SetPoint('RIGHT', btn.DeleteButton, 'LEFT', -22, 0)
                     btn.outItemOrMoney:SetScript('OnClick', function(self)
                         e.call(InboxFrame_OnModifiedClick, self:GetParent(), self.openMailID)
@@ -1567,7 +1567,7 @@ local function Init_InBox()
 
         --删除所有信，按钮
         if numCanDelete>0 and not InboxFrame.DeleteAllButton then
-            InboxFrame.DeleteAllButton= e.Cbtn(InboxFrame, {size={25,25}, atlas='xmarksthespot'})
+            InboxFrame.DeleteAllButton= WoWTools_ButtonMixin:Cbtn(InboxFrame, {size={25,25}, atlas='xmarksthespot'})
             if _G['PostalSelectReturnButton'] then
                 InboxFrame.DeleteAllButton:SetPoint('LEFT', _G['PostalSelectReturnButton'], 'RIGHT')
             else
@@ -1611,7 +1611,7 @@ local function Init_InBox()
 
         --退回，所有信，按钮
         if numCanRe>1 and not InboxFrame.ReAllButton then
-            InboxFrame.ReAllButton= e.Cbtn(InboxFrame, {size={25,25}, atlas='common-icon-undo'})
+            InboxFrame.ReAllButton= WoWTools_ButtonMixin:Cbtn(InboxFrame, {size={25,25}, atlas='common-icon-undo'})
             if _G['PostalSelectReturnButton'] then
                 InboxFrame.ReAllButton:SetPoint('RIGHT', _G['PostalSelectOpenButton'], 'LEFT')
             else
@@ -2023,7 +2023,7 @@ end
 --收件人，列表
 function Init_Send_Name_List()
     --下拉，菜单
-    local listButton= e.Cbtn(SendMailNameEditBox, {size=22, atlas='common-icon-rotateleft'})
+    local listButton= WoWTools_ButtonMixin:Cbtn(SendMailNameEditBox, {size=22, atlas='common-icon-rotateleft'})
     listButton:SetPoint('LEFT', SendMailNameEditBox, 'RIGHT')
     listButton:SetScript('OnMouseDown', function(self)
         if not self.Menu then
@@ -2036,7 +2036,7 @@ function Init_Send_Name_List()
 
 
     --目标，名称
-    listButton.btn= e.Cbtn(SendMailNameEditBox, {size=22, icon='hide'})
+    listButton.btn= WoWTools_ButtonMixin:Cbtn(SendMailNameEditBox, {size=22, icon='hide'})
     listButton.btn:SetPoint('LEFT', listButton, 'RIGHT', 2, 0)
     listButton.btn:SetScript('OnClick', function(self)
         set_Text_SendMailNameEditBox(nil, self.name)
@@ -2099,7 +2099,7 @@ function Init_Send_Name_List()
     end)
 
     --清除，收件人
-    local clearButton= e.Cbtn(SendMailNameEditBox, {size=22, atlas='bags-button-autosort-up'})
+    local clearButton= WoWTools_ButtonMixin:Cbtn(SendMailNameEditBox, {size=22, atlas='bags-button-autosort-up'})
     clearButton:SetPoint('RIGHT', SendMailNameEditBox, 'LEFT', -4, 0)
     clearButton:SetScript('OnLeave', GameTooltip_Hide)
     clearButton:SetScript('OnEnter', function(self)
@@ -2141,7 +2141,7 @@ end
 
 
 local function Init_Send_History_Name()--收件人，历史记录
-    local historyButton= e.Cbtn(SendMailFrame, {size=22, icon='hide'})
+    local historyButton= WoWTools_ButtonMixin:Cbtn(SendMailFrame, {size=22, icon='hide'})
     SendMailMailButton.historyButton= historyButton
 
     historyButton:SetPoint('TOPRIGHT', SendMailFrame, 'TOPLEFT', 0, -22)
@@ -2153,7 +2153,7 @@ local function Init_Send_History_Name()--收件人，历史记录
 
     historyButton.buttons={}
     function historyButton:created_button(index)
-        local btn= e.Cbtn(self.frame, {size={22, 14}, icon='hide'})
+        local btn= WoWTools_ButtonMixin:Cbtn(self.frame, {size={22, 14}, icon='hide'})
         btn:SetPoint('TOPRIGHT', self.frame, 'BOTTOMRIGHT', 0, -(index-1)*14)
         btn.Text= e.Cstr(btn, {justifyH='RIGHT'})
         btn.Text:SetPoint('RIGHT', -2, 0)
@@ -2362,7 +2362,7 @@ end
 
 
 function Init_Clear_All_Send_Items()--清除所有，要发送物品
-    local clearSendItem=e.Cbtn(SendMailAttachment7, {size=22, atlas='bags-button-autosort-up'})
+    local clearSendItem=WoWTools_ButtonMixin:Cbtn(SendMailAttachment7, {size=22, atlas='bags-button-autosort-up'})
     clearSendItem:SetPoint('BOTTOMRIGHT', SendMailAttachment7, 'TOPRIGHT')--,0, -4)
     clearSendItem.Text= e.Cstr(clearSendItem)
     clearSendItem.Text:SetPoint('BOTTOMRIGHT', clearSendItem, 'BOTTOMLEFT',0, 4)

@@ -13,7 +13,7 @@ WoWTools_ChatButtonMixin= {
 
 
 function WoWTools_ChatButtonMixin:Init(disableTab, save)
-    self.ChatButton= e.Cbtn(nil, {name='WoWToolsChatButtonFrame', icon='hide'})
+    self.ChatButton= WoWTools_ButtonMixin:Cbtn(nil, {name='WoWToolsChatButtonFrame', icon='hide'})
     self:SetSaveData(save)
     self.DisabledAdd= disableTab or {}--禁用, 按钮 {name}=true
     self.LastButton= self.ChatButton

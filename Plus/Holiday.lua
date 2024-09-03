@@ -374,7 +374,7 @@ local function Set_TrackButton_Text(monthOffset, day)
 	for index, event in ipairs(events) do
         local btn= TrackButton.btn[index]
         if not btn then
-            btn= e.Cbtn(TrackButton.Frame, {size={14,14}, icon='hide'})
+            btn= WoWTools_ButtonMixin:Cbtn(TrackButton.Frame, {size={14,14}, icon='hide'})
             if Save.toTopTrack then
                 btn:SetPoint('BOTTOM', last or TrackButton, 'TOP')
             else
@@ -499,7 +499,7 @@ end
 
 
 local function Init_TrackButton()
-    TrackButton= e.Cbtn(nil, {icon='hide', size={18,18}, pushe=true})
+    TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {icon='hide', size={18,18}, isType2=true})
 
     TrackButton.texture=TrackButton:CreateTexture()
     TrackButton.texture:SetAllPoints(TrackButton)

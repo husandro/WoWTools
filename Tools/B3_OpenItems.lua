@@ -408,7 +408,7 @@ end
 local function Edit_Item(info)
     StaticPopup_Show('WoWTools_EditText',
         addName..'|n|n'
-        ..WoWTools_SpellItemMixin:GetName(nil, info.itemID)..'|n|n'
+        ..WoWTools_ItemMixin:GetName(info.itemID)..'|n|n'
         ..format(e.onlyChinese and '发现：%s' or ERR_ZONE_EXPLORED,
         Save.no[info.itemID] and noText
         or (Save.use[info.itemID] and useText)
@@ -500,11 +500,11 @@ local function Remove_NoUse_Menu(root, itemID, type, numUse)
     local tab=  {itemID=itemID, type=type}
     local sub=root:CreateButton(
         (numUse and numUse..'= ' or '')
-        ..WoWTools_SpellItemMixin:GetName(nil, itemID),
+        ..WoWTools_ItemMixin:GetName(itemID),
         Edit_Item,
         tab
     )
-    WoWTools_SpellItemMixin:SetTooltip(nil, nil, sub)--设置，物品，提示
+    WoWTools_TooltipMixin:SetTooltip(nil, nil, sub)--设置，物品，提示
 
     if type=='use' then
         sub:CreateButton(

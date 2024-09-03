@@ -132,9 +132,7 @@ local function Set_Button_Function(btn)
     end
 
     function btn:set_alpha(alpha)
-        alpha= alpha or (self.numCount>0 and 1) or 0.3
-        self.border:SetAlpha(alpha)
-        self.texture:SetAlpha(alpha)
+        self.texture:SetAlpha( alpha or (self.numCount>0 and 1) or 0.3)
     end
 
     function btn:set_count()
@@ -178,7 +176,7 @@ end
 
 
 local function Create_Button(index)
-    local btn= Button_Mixin:CreateSecure({parent=UseButton, setID=index})
+    local btn= WoWTools_ButtonMixin:CreateSecureButton(UseButton, {setID=index})
 
     Set_Button_Function(btn)
 
@@ -218,7 +216,7 @@ local function Create_Button(index)
 
     btn:SetScript('OnEnter', function(self)
         local isInCombat= UnitAffectingCombat('player')
-        WoWTools_SpellItemMixin:SetTooltip(e.tips, {
+        WoWTools_TooltipMixin:SetTooltip(e.tips, {
             itemID=self.itemID,
             tooltip='|n|A:dressingroom-button-appearancelist-up:0:0|a'
                 ..(isInCombat and '|cff9e9e9e' or '')
@@ -430,13 +428,13 @@ local function Init_Menu(self, root)
     find=0
     for itemID in pairs(Save.noUseItems) do
         find=find+1
-        sub3=sub2:CreateCheckbox(find..') '..WoWTools_SpellItemMixin:GetName(nil, itemID), function(data)
+        sub3=sub2:CreateCheckbox(find..') '..WoWTools_ItemMixin:GetName(itemID), function(data)
             return Save.noUseItems[data.itemID]
         end, function(data)
             Save.noUseItems[data.itemID]= not Save.noUseItems[data.itemID] and true or nil
             self:Check_Items()
         end, {itemID=itemID})
-        WoWTools_SpellItemMixin:SetTooltip(nil, nil, sub3, nil)
+        WoWTools_TooltipMixin:SetTooltip(nil, nil, sub3, nil)
     end
     if find>1 then
         sub2:CreateDivider()
@@ -554,13 +552,13 @@ local function Init_Menu(self, root)
     find=0
     for itemID in pairs(Save.addItems) do
         find=find+1
-        sub2=sub:CreateCheckbox(find..') '..WoWTools_SpellItemMixin:GetName(nil, itemID), function(data)
+        sub2=sub:CreateCheckbox(find..') '..WoWTools_ItemMixin:GetName(itemID), function(data)
             return Save.addItems[data.itemID]
         end, function(data)
             Save.addItems[data.itemID]= not Save.addItems[data.itemID] and true or nil
             self:Check_Items()
         end, {itemID=itemID})
-        WoWTools_SpellItemMixin:SetTooltip(nil, nil, sub2, nil)
+        WoWTools_TooltipMixin:SetTooltip(nil, nil, sub2, nil)
     end
 
 --全部清除
@@ -921,7 +919,7 @@ local function Init()
         e.tips:ClearLines()
         local itemID, itemLink = self:get_tooltip_item()
         if itemID and itemLink then
-            e.tips:AddDoubleLine(WoWTools_SpellItemMixin:GetName(nil, itemID), e.onlyChinese and '添加自定义' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, CUSTOM))
+            e.tips:AddDoubleLine(WoWTools_ItemMixin:GetName(itemID), e.onlyChinese and '添加自定义' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, CUSTOM))
         else
             e.tips:AddDoubleLine(e.addName, addName)
             e.tips:AddLine(' ')

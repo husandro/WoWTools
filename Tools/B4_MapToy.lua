@@ -171,7 +171,7 @@ local function Init_Menu(self, root)
                     or (new.hasToy==false and '|cnRED_FONT_COLOR:')
                     or ''
 
-        local name= WoWTools_SpellItemMixin:GetName(nil, new.itemID)
+        local name= WoWTools_ItemMixin:GetName(new.itemID)
 
         local num=(new.isNotChecked==nil and
                     (new.num>0 and ' |cnGREEN_FONT_COLOR:')
@@ -189,7 +189,7 @@ local function Init_Menu(self, root)
             end, {itemID=info.itemID, achievements=info.achievements}
         )
 
-        WoWTools_SpellItemMixin:SetTooltip(nil, nil, sub, nil)
+        WoWTools_TooltipMixin:SetTooltip(nil, nil, sub, nil)
 
 
         for index, tab in pairs(new.data) do

@@ -575,7 +575,7 @@ local function Init_Gossip_Text_Icon_Options()
             btn:SetScript('OnLeave', function(self) self.delete:SetAlpha(0) end)
             btn:SetScript('OnEnter', function(self) self.delete:SetAlpha(1) end)
 
-            btn.delete= e.Cbtn(btn, {size={18,18}, atlas='common-icon-redx'})
+            btn.delete= WoWTools_ButtonMixin:Cbtn(btn, {size={18,18}, atlas='common-icon-redx'})
             btn.delete:SetPoint('RIGHT')
             btn.delete:SetScript('OnLeave', function(self) self:SetAlpha(0) end)
             btn.delete:SetScript('OnEnter', function(self) self:SetAlpha(1) end)
@@ -910,7 +910,7 @@ local function Init_Gossip_Text_Icon_Options()
 
 
     --查找，图标，按钮
-    menu.FindIcon= e.Cbtn(Gossip_Text_Icon_Frame, {size={22,22}, atlas='mechagon-projects'})
+    menu.FindIcon= WoWTools_ButtonMixin:Cbtn(Gossip_Text_Icon_Frame, {size={22,22}, atlas='mechagon-projects'})
     menu.FindIcon:SetPoint('LEFT', menu.Icon, 'RIGHT', 2,0)
     menu.FindIcon:SetScript('OnLeave', GameTooltip_Hide)
     menu.FindIcon:SetScript('OnEnter', function(self)
@@ -1001,7 +1001,7 @@ local function Init_Gossip_Text_Icon_Options()
         frame:Show()
     end)
     if _G['TAV_CoreFrame'] then--查找，图标，按钮， Texture Atlas Viewer， 插件
-        menu.tav= e.Cbtn(Gossip_Text_Icon_Frame, {size={22,22}, atlas='communities-icon-searchmagnifyingglass'})
+        menu.tav= WoWTools_ButtonMixin:Cbtn(Gossip_Text_Icon_Frame, {size={22,22}, atlas='communities-icon-searchmagnifyingglass'})
         menu.tav:SetPoint('TOP', menu.FindIcon, 'BOTTOM', 0, -2)
         menu.tav:SetScript('OnClick', function() _G['TAV_CoreFrame']:SetShown(not _G['TAV_CoreFrame']:IsShown()) end)
         menu.tav:SetScript('OnLeave', GameTooltip_Hide)
@@ -1052,7 +1052,7 @@ local function Init_Gossip_Text_Icon_Options()
     end)
 
     --添加
-    menu.Add= e.Cbtn(Gossip_Text_Icon_Frame, {size={22,22}, icon='hide'})
+    menu.Add= WoWTools_ButtonMixin:Cbtn(Gossip_Text_Icon_Frame, {size={22,22}, icon='hide'})
     menu.Add:SetPoint('LEFT', menu.Color, 'RIGHT', 2, 0)
     menu.Add:SetScript('OnLeave', GameTooltip_Hide)
     menu.Add:SetScript('OnEnter', function(self)
@@ -1077,7 +1077,7 @@ local function Init_Gossip_Text_Icon_Options()
     end)
 
     --删除，内容
-    menu.Delete= e.Cbtn(Gossip_Text_Icon_Frame, {size={22,22}, atlas='common-icon-redx'})
+    menu.Delete= WoWTools_ButtonMixin:Cbtn(Gossip_Text_Icon_Frame, {size={22,22}, atlas='common-icon-redx'})
     menu.Delete:SetPoint('BOTTOM', menu.Add, 'TOP', 0,2)
     menu.Delete:Hide()
     menu.Delete:SetScript('OnLeave', GameTooltip_Hide)
@@ -1094,7 +1094,7 @@ local function Init_Gossip_Text_Icon_Options()
     end)
 
     --删除，玩家数据
-    menu.DeleteAllPlayerData=e.Cbtn(Gossip_Text_Icon_Frame, {size={22,22}, atlas='bags-button-autosort-up'})
+    menu.DeleteAllPlayerData=WoWTools_ButtonMixin:Cbtn(Gossip_Text_Icon_Frame, {size={22,22}, atlas='bags-button-autosort-up'})
     menu.DeleteAllPlayerData:SetPoint('BOTTOMLEFT', menu, 'TOPLEFT', -3, 2)
     menu.DeleteAllPlayerData:SetScript('OnLeave', GameTooltip_Hide)
     menu.DeleteAllPlayerData:SetScript('OnEnter', function(self)
@@ -1179,7 +1179,7 @@ local function Init_Gossip_Text_Icon_Options()
     end
 
     --已打开，对话，列表
-    menu.chat= e.Cbtn(Gossip_Text_Icon_Frame, {size={22, 22}, atlas='transmog-icon-chat'})
+    menu.chat= WoWTools_ButtonMixin:Cbtn(Gossip_Text_Icon_Frame, {size={22, 22}, atlas='transmog-icon-chat'})
     menu.chat:SetPoint('LEFT', menu.Name, 'RIGHT', 2, 0)
     menu.chat:SetScript('OnLeave', GameTooltip_Hide)
     menu.chat:SetScript('OnEnter', function(self)
@@ -1252,7 +1252,7 @@ local function Init_Gossip_Text_Icon_Options()
     menu.chat.Text:SetPoint('CENTER', 1, 4.2)
 
     --默认，自定义，列表
-    menu.System= e.Cbtn(Gossip_Text_Icon_Frame, {size={22, 22}, icon='hide'})
+    menu.System= WoWTools_ButtonMixin:Cbtn(Gossip_Text_Icon_Frame, {size={22, 22}, icon='hide'})
     menu.System:SetPoint('BOTTOMRIGHT', menu.ID, 'TOPRIGHT', 0, 2)
     menu.System.Text= e.Cstr(menu.System)
     menu.System.Text:SetPoint('CENTER')
@@ -1327,7 +1327,7 @@ local function Init_Gossip_Text_Icon_Options()
         frame:SetText("")
     end)
 
-    menu.DataFrame.enter= e.Cbtn(menu.DataFrame, {size={100, 23}, type=false})
+    menu.DataFrame.enter= WoWTools_ButtonMixin:Cbtn(menu.DataFrame, {size={100, 23}, type=false})
     menu.DataFrame.enter:SetPoint('BOTTOM', menu.DataFrame, 'TOP', 0, 5)
     menu.DataFrame.enter:SetFormattedText('|A:Professions_Specialization_arrowhead:0:0|a%s', e.onlyChinese and '导入' or HUD_CLASS_TALENTS_IMPORT_LOADOUT_ACCEPT_BUTTON)
     menu.DataFrame.enter:Hide()
@@ -1393,7 +1393,7 @@ local function Init_Gossip_Text_Icon_Options()
 
     end)
 
-    menu.DataUscita= e.Cbtn(Gossip_Text_Icon_Frame, {size={22, 22}, atlas='bags-greenarrow'})
+    menu.DataUscita= WoWTools_ButtonMixin:Cbtn(Gossip_Text_Icon_Frame, {size={22, 22}, atlas='bags-greenarrow'})
     menu.DataUscita:SetPoint('LEFT', menu.DeleteAllPlayerData, 'RIGHT', 22, 0)
     menu.DataUscita:SetScript('OnLeave', GameTooltip_Hide)
     menu.DataUscita:SetScript('OnEnter', function(self)
@@ -1428,7 +1428,7 @@ local function Init_Gossip_Text_Icon_Options()
         frame:SetInstructions(e.onlyChinese and '导出' or SOCIAL_SHARE_TEXT or  HUD_EDIT_MODE_SHARE_LAYOUT)
     end)
 
-    menu.DataEnter= e.Cbtn(Gossip_Text_Icon_Frame, {size={22, 22}, atlas='Professions_Specialization_arrowhead'})
+    menu.DataEnter= WoWTools_ButtonMixin:Cbtn(Gossip_Text_Icon_Frame, {size={22, 22}, atlas='Professions_Specialization_arrowhead'})
     menu.DataEnter:SetPoint('LEFT', menu.DataUscita, 'RIGHT')
     menu.DataEnter:SetScript('OnLeave', GameTooltip_Hide)
     menu.DataEnter:SetScript('OnEnter', function(self)
@@ -2063,7 +2063,7 @@ end
 --对话，初始化
 --###########
 local function Init_Gossip()
-    GossipButton= e.Cbtn(nil, {icon='hide', size={16,16}})--闲话图标
+    GossipButton= WoWTools_ButtonMixin:Cbtn(nil, {icon='hide', size={16,16}})--闲话图标
     GossipButton.texture= GossipButton:CreateTexture()
     GossipButton.texture:SetAllPoints(GossipButton)
 
@@ -2071,7 +2071,7 @@ local function Init_Gossip()
     e.LibDD:UIDropDownMenu_Initialize(GossipButton.Menu, Init_Menu_Gossip, 'MENU')
 
     --打开，自定义，对话，文本，按钮
-    GossipButton.gossipFrane_Button= e.Cbtn(GossipFrame, {size={20,20}, icon='hide'})
+    GossipButton.gossipFrane_Button= WoWTools_ButtonMixin:Cbtn(GossipFrame, {size={20,20}, icon='hide'})
     GossipButton.gossipFrane_Button:SetPoint('TOP', GossipFrameCloseButton, 'BOTTOM', -2, -4)
     GossipButton.gossipFrane_Button:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
@@ -2804,7 +2804,7 @@ end
 --###########
 local function Init_Quest()
     local size= GossipButton:GetWidth()
-    QuestButton=e.Cbtn(GossipButton, {icon='hide', size={size, size}})--任务图标
+    QuestButton=WoWTools_ButtonMixin:Cbtn(GossipButton, {icon='hide', size={size, size}})--任务图标
     QuestButton:SetPoint('RIGHT', GossipButton, 'LEFT')
 
     function QuestButton:set_Only_Show_Zone_Quest()--显示本区域任务
@@ -3579,7 +3579,7 @@ local function Init_Blizzard_PlayerChoice()
             and info2.buttons[2] and info2.buttons[2].id
         then
             if not PlayerChoiceFrame.allButton then
-                PlayerChoiceFrame.allButton= e.Cbtn(PlayerChoiceFrame, {size={60,22}, type=false, icon='hide'})
+                PlayerChoiceFrame.allButton= WoWTools_ButtonMixin:Cbtn(PlayerChoiceFrame, {size={60,22}, type=false, icon='hide'})
                 PlayerChoiceFrame.allButton:SetPoint('BOTTOMRIGHT')
                 PlayerChoiceFrame.allButton:SetFrameStrata('DIALOG')
                 PlayerChoiceFrame.allButton:SetScript('OnLeave', GameTooltip_Hide)

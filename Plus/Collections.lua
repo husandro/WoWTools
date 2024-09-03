@@ -138,7 +138,7 @@ local function Init_Wardrobe_DetailsFrame(_, itemFrame)
         local link = select(6, C_TransmogCollection.GetAppearanceSourceInfo(sources[index].sourceID))
         local btn=itemFrame['btn'..i]
         if not btn then
-            btn=e.Cbtn(itemFrame, {icon=true, size={26,10}})
+            btn=WoWTools_ButtonMixin:Cbtn(itemFrame, {icon=true, size={26,10}})
             btn:SetNormalAtlas('adventure-missionend-line')
             itemFrame['btn'..i]=btn
             if i==1 then
@@ -440,7 +440,7 @@ local function set_Items_Tooltips(self)--UpdateItems
                 for index, tab in pairs(itemLinks) do
                     local btn= model.itemButton[index]
                     if not btn then
-                        btn=e.Cbtn(model, {icon='hide', size=index==1 and {14.4, 14.4} or {h,h}})
+                        btn=WoWTools_ButtonMixin:Cbtn(model, {icon='hide', size=index==1 and {14.4, 14.4} or {h,h}})
                         if index==1 then
                             btn:SetPoint('BOTTOMLEFT', -4, -4)
                         else
@@ -885,7 +885,7 @@ local function Init_Heirloom()
 
 
 
-    local check= e.Cbtn(HeirloomsJournal, {size={22,22}, icon='hide'})
+    local check= WoWTools_ButtonMixin:Cbtn(HeirloomsJournal, {size={22,22}, icon='hide'})
     function check:set_alpha()
         self:SetAlpha(Save.hideHeirloom and 0.3 or 1)
     end
@@ -1131,7 +1131,7 @@ end
 local function Init_Mount()
     hooksecurefunc('MountJournal_UpdateMountDisplay', function()--坐骑
         if not MountJournal.MountDisplay.tipButton then
-            MountJournal.MountDisplay.tipButton= e.Cbtn(MountJournal.MountDisplay, {size={22,22}, atlas='QuestNormal'})
+            MountJournal.MountDisplay.tipButton= WoWTools_ButtonMixin:Cbtn(MountJournal.MountDisplay, {size={22,22}, atlas='QuestNormal'})
             MountJournal.MountDisplay.tipButton:SetPoint('BOTTOMRIGHT', MountJournal.MountDisplay.ModelScene.TogglePlayer, 'TOPRIGHT',0, 2)
             MountJournal.MountDisplay.tipButton.text= e.Cstr(MountJournal.MountDisplay, {copyFont= MountJournal.MountCount.Label, color=false, justifyH='LEFT'})
             MountJournal.MountDisplay.tipButton.text:SetPoint('BOTTOMLEFT', 2, 2)

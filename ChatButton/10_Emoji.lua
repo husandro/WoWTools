@@ -97,7 +97,7 @@ local function Init_Buttons()--设置按钮
     Frame.Buttons={}
 
     for index=1, EmojiButton.numFile+8 do
-        local btn= e.Cbtn(Frame, {icon='hide',size=30, setID=index})
+        local btn= WoWTools_ButtonMixin:Cbtn(Frame, {icon='hide',size=30, setID=index})
         btn:SetScript('OnLeave', GameTooltip_Hide)
         btn:SetScript('OnEnter', function(self)
             e.tips:SetOwner(Frame.Buttons[#Frame.Buttons], "ANCHOR_TOP")
@@ -177,7 +177,7 @@ end
     end
 
     for i, texture in pairs(EmojiText) do
-        local btn=e.Cbtn(Frame, {icon='hide',size=30, setID=i})
+        local btn=WoWTools_ButtonMixin:Cbtn(Frame, {icon='hide',size=30, setID=i})
         setPoint(btn, EmojiText[i])
         btn:SetNormalTexture('Interface\\Addons\\WoWTools\\Sesource\\Emojis\\'..texture)
         last=btn
@@ -186,7 +186,7 @@ end
 
     local numFile= #EmojiText
     for i= 1, 8 do
-        local btn=e.Cbtn(Frame, {icon='hide',size=30, setID= i+numFile})
+        local btn=WoWTools_ButtonMixin:Cbtn(Frame, {icon='hide',size=30, setID= i+numFile})
         setPoint(btn, 'rt'..i)
         btn:SetNormalTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..i)
         last=btn
@@ -272,7 +272,7 @@ end]]
 
 
 local function Init_EmojiFrame()
-    Frame=e.Cbtn(UIParent, {icon='hide', size={10, 30}, name='WoWToolsChatButtonEmojiFrame'})--控制图标,显示,隐藏
+    Frame=WoWTools_ButtonMixin:Cbtn(UIParent, {icon='hide', size={10, 30}, name='WoWToolsChatButtonEmojiFrame'})--控制图标,显示,隐藏
     Frame:SetFrameStrata('HIGH')
 
     function Frame:set_point()

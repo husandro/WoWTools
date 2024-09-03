@@ -120,7 +120,7 @@ end
 
 
 local function Create_Button(indexAdd)
-    local btn=e.Cbtn(AddonList, {icon='hide', size={88,22}})
+    local btn=WoWTools_ButtonMixin:Cbtn(AddonList, {icon='hide', size={88,22}})
     btn:SetHighlightAtlas('auctionhouse-nav-button-secondary-select')
     btn.Text= e.Cstr(btn)
     btn.Text:SetPoint('LEFT', 2, 0)
@@ -354,7 +354,7 @@ end
 
 --新建按钮
 local function Init_Add_Save_Button()
-    NewButton= e.Cbtn(AddonList, {size={26,26}, atlas='communities-chat-icon-plus'})
+    NewButton= WoWTools_ButtonMixin:Cbtn(AddonList, {size={26,26}, atlas='communities-chat-icon-plus'})
 
     NewButton.Text= e.Cstr(AddonList)--已选中，数量
     NewButton.Text:SetPoint('BOTTOMRIGHT', NewButton, 'LEFT',0, 1)
@@ -595,7 +595,7 @@ local function Init_Add_Save_Button()
     label:SetText(C_AddOns.GetNumAddOns())
 
 
-    local btn= e.Cbtn(AddonList, {atlas='talents-button-undo', size=18})
+    local btn= WoWTools_ButtonMixin:Cbtn(AddonList, {atlas='talents-button-undo', size=18})
     btn:SetAlpha(0.5)
     btn:SetPoint('TOPLEFT', 160, -33)
     btn:SetScript('OnLeave', function(self) self:SetAlpha(0.5) GameTooltip_Hide() end)
@@ -653,7 +653,7 @@ end
 
 
 local function Create_Fast_Button(indexAdd)
-    local btn= e.Cbtn(AddonList, {size={18,18}})
+    local btn= WoWTools_ButtonMixin:Cbtn(AddonList, {size={18,18}})
     btn.Text= e.Cstr(btn)
     btn.Text:SetPoint('RIGHT', btn, 'LEFT')
     btn.checkTexture= btn:CreateTexture()
@@ -850,7 +850,7 @@ local function Set_Load_Button()--LoadButtons
     for i, info in pairs(newTab) do
        local btn= LoadFrame.buttons[i]
        if not btn then
-            btn= e.Cbtn(LoadFrame, {icon='hide'})
+            btn= WoWTools_ButtonMixin:Cbtn(LoadFrame, {icon='hide'})
             btn.texture= btn:CreateTexture(nil, 'BORDER')
             btn.texture:SetAllPoints(btn)
             btn.texture2= btn:CreateTexture(nil, 'OVERLAY')
@@ -999,7 +999,7 @@ local function Init_Load_Button()
     LoadFrame:set_frame_point()
 
 
-    local btn= e.Cbtn(AddonList.TitleContainer, {size=22, icon='hide'})
+    local btn= WoWTools_ButtonMixin:Cbtn(AddonList.TitleContainer, {size=22, icon='hide'})
     btn:SetPoint('RIGHT', AddonListCloseButton, 'LEFT', -2, 0)
     btn:SetAlpha(0.5)
     function btn:set_tooltips()
@@ -1367,7 +1367,7 @@ local function Init()
     --#############
     --不禁用，本插件
     --#############
-    local btn= e.Cbtn(AddonList, {size={18,18}, icon= Save.enableAllButtn})
+    local btn= WoWTools_ButtonMixin:Cbtn(AddonList, {size={18,18}, icon= Save.enableAllButtn})
     btn:SetPoint('LEFT', AddonListDisableAllButton, 'RIGHT', 2,0)
     btn:SetAlpha(0.3)
     function btn:set_tooltips()

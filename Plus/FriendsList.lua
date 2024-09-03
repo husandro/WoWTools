@@ -343,7 +343,7 @@ end
 --#############
 local function Init_FriendsList()--好友列表, 初始化
 
-    FriendsButton= e.Cbtn(FriendsListFrame, {size={20,20}, icon='hide'})--button='DropdownButton', 
+    FriendsButton= WoWTools_ButtonMixin:Cbtn(FriendsListFrame, {size={20,20}, icon='hide'})--button='DropdownButton', 
     --FriendsButton:SetupMenu(Init_Friends_Menu)
     FriendsButton:SetScript('OnMouseDown', function(self)
         MenuUtil.CreateContextMenu(self, Init_Friends_Menu)

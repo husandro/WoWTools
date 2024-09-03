@@ -1456,7 +1456,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
             if not LinkButton then
                 return
             end
-            local btn= e.Cbtn(TableAttributeDisplay, {icon='hide', size={28,28}})
+            local btn= WoWTools_ButtonMixin:Cbtn(TableAttributeDisplay, {icon='hide', size={28,28}})
             btn:SetPoint('BOTTOM', TableAttributeDisplay.CloseButton, 'TOP')
             btn:SetNormalAtlas(e.Icon.icon)
             btn:SetScript('OnClick', FrameStackTooltip_ToggleDefaults)

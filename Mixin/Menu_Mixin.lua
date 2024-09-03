@@ -1,5 +1,22 @@
-local e= select(2, ...)
+--[[
+CreateSlider(root, tab)
+Scale(root, GetValue, SetValue, checkGetValue, checkSetValue)
+ShowBackground(root, GetValue, SetValue)
+FrameStrata(root, GetValue, SetValue)
+RestPoint(root, point, SetValue)
+RestData(root, name, SetValue)
+Reload(root, isControlKeyDown)
+ToTop(root, tab)
+OpenJournal(root, tab)
+OpenSpellBook(root, tab)--天赋和法术书
+OpenDragonriding(root)
+SetNumButton(sub, num)
+SetScrollButton(root, maxCharacters)
 
+GetDragonriding()
+]]
+
+local e= select(2, ...)
 WoWTools_MenuMixin={
     maxMenuButton=35,
 }
@@ -331,7 +348,7 @@ function WoWTools_MenuMixin:OpenDragonriding(root)
         end,
         {widgetSetID=uiWidgetSetID, tooltip=e.onlyChinese and '巨龙群岛概要' or DRAGONFLIGHT_LANDING_PAGE_TITLE}
     )
-    WoWTools_SpellItemMixin:SetTooltip(nil, nil, sub)--设置，物品，提示
+    WoWTools_TooltipMixin:SetTooltip(nil, nil, sub)--设置，物品，提示
     
     return sub
 end

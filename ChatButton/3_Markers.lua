@@ -316,7 +316,7 @@ local function Init_Ready_Tips_Button()
         return
     end
 
-    ReadyTipsButton= e.Cbtn(nil, {size={22,22}, atlas=e.Icon.select})
+    ReadyTipsButton= WoWTools_ButtonMixin:Cbtn(nil, {size={22,22}, atlas=e.Icon.select})
     ReadyTipsButton.text=e.Cstr(ReadyTipsButton)
     ReadyTipsButton.text:SetPoint('BOTTOMLEFT', ReadyTipsButton, 'TOPLEFT')
 
@@ -586,7 +586,7 @@ local function Init_Markers_Frame()--设置标记, 框架
 
 
     --移动按钮
-    btn= e.Cbtn(MakerFrame, {name= 'WoWTools_MarkerFrame_Move_Button', size={size,size}, texture='Interface\\Cursor\\UI-Cursor-Move'})
+    btn= WoWTools_ButtonMixin:Cbtn(MakerFrame, {name= 'WoWTools_MarkerFrame_Move_Button', size={size,size}, texture='Interface\\Cursor\\UI-Cursor-Move'})
     btn:SetAllPoints(MakerFrame)
     btn:RegisterForDrag("RightButton")
     btn:SetMovable(true)
@@ -692,7 +692,7 @@ local function Init_Markers_Frame()--设置标记, 框架
     MakerFrame.ping.Button={}
 
     for setIndex, index in pairs({8, 0, 1, 3, 2}) do
-        btn= e.Cbtn(MakerFrame.ping, {
+        btn= WoWTools_ButtonMixin:Cbtn(MakerFrame.ping, {
             size={size,size},
             atlas= MakerFrame.ping.tab[index].atlas,
             type=true,
@@ -814,7 +814,7 @@ local function Init_Markers_Frame()--设置标记, 框架
 
 
 --倒计时10秒
-    MakerFrame.countdown= e.Cbtn(MakerFrame, {size={size,size}, atlas='countdown-swords'})
+    MakerFrame.countdown= WoWTools_ButtonMixin:Cbtn(MakerFrame, {size={size,size}, atlas='countdown-swords'})
 
     table.insert(MakerFrame.Buttons, MakerFrame.countdown)
     function MakerFrame.countdown:set_point()
@@ -920,7 +920,7 @@ local function Init_Markers_Frame()--设置标记, 框架
 
 
 --检查，按钮
-    MakerFrame.check=e.Cbtn(MakerFrame, {size={size,size}, atlas=e.Icon.select})
+    MakerFrame.check=WoWTools_ButtonMixin:Cbtn(MakerFrame, {size={size,size}, atlas=e.Icon.select})
 
     table.insert(MakerFrame.Buttons, MakerFrame.check)
     --MakerFrame.check:SetNormalAtlas(e.Icon.select)
@@ -1029,7 +1029,7 @@ local function Init_Markers_Frame()--设置标记, 框架
 --目标，标记
     MakerFrame.target.Button={}
     for index = 0, NUM_RAID_ICONS do
-        btn= e.Cbtn(MakerFrame.target, {
+        btn= WoWTools_ButtonMixin:Cbtn(MakerFrame.target, {
             size={size,size},
             atlas= index==0 and 'auctionhouse-itemicon-border-orange' or nil,
             texture= index>0 and 'Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index or nil,
@@ -1170,7 +1170,7 @@ local function Init_Markers_Frame()--设置标记, 框架
     MakerFrame.marker.Button={}
     local markerTab={5,6,3,2,7,1,4,8}
     for index=0,  NUM_WORLD_RAID_MARKERS do
-        btn= e.Cbtn(MakerFrame.marker, {
+        btn= WoWTools_ButtonMixin:Cbtn(MakerFrame.marker, {
             type=true,
             size={size,size},
             atlas= index==0 and 'auctionhouse-itemicon-border-orange',

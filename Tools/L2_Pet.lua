@@ -43,7 +43,7 @@ local function Init_PetJournal_InitPetButton(frame, elementData)
     local show= isOwned and speciesID
     if show then
         if not frame.sumButton then
-            frame.sumButton=  CreateFrame("CheckButton", nil, frame, "ChatConfigCheckButtonTemplate")--e.Cbtn(frame, {size={20,20}, icon=true})
+            frame.sumButton=  CreateFrame("CheckButton", nil, frame, "ChatConfigCheckButtonTemplate")--WoWTools_ButtonMixin:Cbtn(frame, {size={20,20}, icon=true})
             frame.sumButton:SetPoint('BOTTOMRIGHT')
             function frame.sumButton:set_alpha()
                 self:SetAlpha(Save.speciesID==self.speciesID and 1 or 0)

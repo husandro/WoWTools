@@ -160,7 +160,7 @@ local function created_model(btn, setBg)
         btn.model.shadow:SetAlpha(0.4)
 
         local slotID= btn:GetID()
-        btn.callSpellButton= e.Cbtn(btn, {size={18,18},icon='hide'})--召唤，法术，提示
+        btn.callSpellButton= WoWTools_ButtonMixin:Cbtn(btn, {size={18,18},icon='hide'})--召唤，法术，提示
         btn.callSpellButton.Texture=btn.callSpellButton:CreateTexture(nil, 'OVERLAY')
         btn.callSpellButton.Texture:SetAllPoints(btn.callSpellButton)
         SetPortraitToTexture(btn.callSpellButton.Texture, 132161)
@@ -743,7 +743,7 @@ end
 
 --宠物列表
 function Init_StableFrame_List()
-    local btn= e.Cbtn(StableFrame, {size={20,20}, atlas='dressingroom-button-appearancelist-up'})
+    local btn= WoWTools_ButtonMixin:Cbtn(StableFrame, {size={20,20}, atlas='dressingroom-button-appearancelist-up'})
     btn:SetPoint('RIGHT', StableFrameCloseButton, 'LEFT', -2, 0)
     btn:SetFrameLevel(StableFrameCloseButton:GetFrameLevel()+1)
 

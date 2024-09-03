@@ -216,7 +216,7 @@ local function Init_ProfessionsFrame_Button()
     for k , index in pairs(tab) do
         local name, icon, _, _, _, _, skillLine = GetProfessionInfo(index)
         if icon and skillLine then
-            local button= e.Cbtn(ProfessionsFrame, {icon='hide',size={32, 32}})
+            local button= WoWTools_ButtonMixin:Cbtn(ProfessionsFrame, {icon='hide',size={32, 32}})
             button:SetNormalTexture(icon)
             if not last then
                 button:SetPoint('BOTTOMLEFT', ProfessionsFrame, 'BOTTOMRIGHT',0, 35)
@@ -247,7 +247,7 @@ local function Init_ProfessionsFrame_Button()
             if skillLine==185 then--烹饪用火
                 local name2= C_Spell.GetSpellName(818)
                 if name2 then
-                    local btn= e.Cbtn(button, {type= true, texture=135805 ,size={32, 32}})
+                    local btn= WoWTools_ButtonMixin:Cbtn(button, {type= true, texture=135805 ,size={32, 32}})
                     btn:SetPoint('LEFT', button, 'RIGHT',2,0)
 
                     function btn:set_event()
@@ -313,7 +313,7 @@ end
 
 --添一个,全学,专业, 按钮, 插件 TrainAll 
 local function Init_Blizzard_TrainerUI()
-    ClassTrainerFrame.BuyAll= e.Cbtn(ClassTrainerFrame, {type=false, size={ClassTrainerTrainButton:GetSize()}})
+    ClassTrainerFrame.BuyAll= WoWTools_ButtonMixin:Cbtn(ClassTrainerFrame, {type=false, size={ClassTrainerTrainButton:GetSize()}})
     ClassTrainerFrame.BuyAll:SetPoint('RIGHT', ClassTrainerTrainButton, 'LEFT',-2,0)
     ClassTrainerFrame.BuyAll.name=e.onlyChinese and '全部' or ALL
     ClassTrainerFrame.BuyAll.all= 0
@@ -389,7 +389,7 @@ local function Init_Blizzard_TrainerUI()
         ClassTrainerFrame.BuyAll:SetShown(not Save.disabledClassTrainer)
 	end)
 
-    local btn2= e.Cbtn(ClassTrainerFrame.TitleContainer, {icon= not Save.disabledClassTrainer})
+    local btn2= WoWTools_ButtonMixin:Cbtn(ClassTrainerFrame.TitleContainer, {icon= not Save.disabledClassTrainer})
     if _G['MoveZoomInButtonPerClassTrainerFrame'] then
         btn2:SetPoint('RIGHT', _G['MoveZoomInButtonPerClassTrainerFrame'], 'LEFT')
     else
@@ -459,7 +459,7 @@ end
 local function Init_ProfessionsFrame()
     Init_ProfessionsFrame_Button()--专业界面, 按钮
 
-    --[[local btn2= e.Cbtn(ProfessionsFrame.TitleContainer, {icon=not Save.disabled, size={20, 20}})
+    --[[local btn2= WoWTools_ButtonMixin:Cbtn(ProfessionsFrame.TitleContainer, {icon=not Save.disabled, size={20, 20}})
     if _G['MoveZoomInButtonPerProfessionsFrame'] then
         btn2:SetPoint('LEFT', _G['MoveZoomInButtonPerProfessionsFrame'], 'RIGHT')
     else
@@ -602,7 +602,7 @@ local function Init_ProfessionsFrame()
 
         local btn= self.enchantSlot.btn
         if not btn then
-            btn= e.Cbtn(self.enchantSlot, {size={16,16}, icon= not Save.disabledEnchant})
+            btn= WoWTools_ButtonMixin:Cbtn(self.enchantSlot, {size={16,16}, icon= not Save.disabledEnchant})
             btn:SetPoint('TOPLEFT', self.enchantSlot, 'BOTTOMLEFT')
             btn:SetAlpha(0.3)
             btn:SetScript('OnClick', function(self2)
@@ -649,7 +649,7 @@ local function Init_ProfessionsFrame()
     hooksecurefunc(ProfessionsFrame.SpecPage, 'UpdateDetailedPanel', function(self, setLocked)
         local button=self.DetailedView.SpendAllPointsButton
         if not button then
-            button= e.Cbtn(self.DetailedView.SpendPointsButton, {type=false, size={80, 22}})
+            button= WoWTools_ButtonMixin:Cbtn(self.DetailedView.SpendPointsButton, {type=false, size={80, 22}})
             button:SetPoint('LEFT', self.DetailedView.SpendPointsButton, 'RIGHT',40,0)
             button:SetText(e.onlyChinese and '全部' or ALL)
             button:SetScript('OnClick', function(self2)
@@ -758,7 +758,7 @@ local function Init_Archaeology()
         local btn= ArchaeologyFrame.artifactPage.tipsButton
         if itemID then
             if not btn then
-                btn= e.Cbtn(ArchaeologyFrame.artifactPage, {button='ItemButton', icon='hide'})
+                btn= WoWTools_ButtonMixin:Cbtn(ArchaeologyFrame.artifactPage, {button='ItemButton', icon='hide'})
                 btn:SetPoint('RIGHT', ArchaeologyFrameArtifactPageSolveFrameStatusBar, 'LEFT', -39, 0)
                 btn:SetScript('OnLeave', function() e.tips:Hide() end)
                 btn:SetScript('OnEnter', function(frame)
@@ -771,7 +771,7 @@ local function Init_Archaeology()
                     e.tips:Show()
                 end)
 
-                btn.btn2= e.Cbtn(ArchaeologyFrame.artifactPage, {button='ItemButton', icon='hide'})
+                btn.btn2= WoWTools_ButtonMixin:Cbtn(ArchaeologyFrame.artifactPage, {button='ItemButton', icon='hide'})
                 btn.btn2:SetPoint('BOTTOM', btn, 'TOP', 0, 7)
                 btn.btn2:SetScript('OnLeave', function() e.tips:Hide() end)
                 btn.btn2:SetScript('OnEnter', function(frame)
@@ -836,7 +836,7 @@ end
 
 local function Init_ArcheologyDigsiteProgressBar_OnShow(frame)
     if not frame.tipsButton then
-        frame.tipsButton= e.Cbtn(frame, {size={20,20}, icon='hide'})
+        frame.tipsButton= WoWTools_ButtonMixin:Cbtn(frame, {size={20,20}, icon='hide'})
         frame.tipsButton:SetPoint('RIGHT', frame, 'LEFT', 0, -4)
         function frame.tipsButton:set_atlas()
             self:SetNormalAtlas(Save.ArcheologySound and 'chatframe-button-icon-voicechat' or 'chatframe-button-icon-speaker-off')
@@ -899,7 +899,7 @@ local function Init_ArcheologyDigsiteProgressBar_OnShow(frame)
     end
 
     if ArcheologyButton and not ArcheologyButton.keyButton then
-        ArcheologyButton.keyButton= e.Cbtn(frame, {size={20,20}, icon='hide'})
+        ArcheologyButton.keyButton= WoWTools_ButtonMixin:Cbtn(frame, {size={20,20}, icon='hide'})
         ArcheologyButton.keyButton:SetPoint('LEFT', frame, 'RIGHT', 0, -4)
         ArcheologyButton.keyButton.text=e.Cstr(ArcheologyButton.keyButton, {color={r=0, g=1, b=0}, size=14})
         ArcheologyButton.keyButton.text:SetPoint('CENTER')
@@ -949,7 +949,7 @@ local function Init_ProfessionsBook()
         return
     end
 
-    local btn2= e.Cbtn(ProfessionsBookFrame, {size={22,22}, icon='hide'})
+    local btn2= WoWTools_ButtonMixin:Cbtn(ProfessionsBookFrame, {size={22,22}, icon='hide'})
     btn2:SetPoint('TOP', ProfessionsBookFramePortrait, 'BOTTOM')
     function btn2:set_alpha()
         self:SetAlpha(Save.wangquePrefessionText and 1 or 0.3)
