@@ -1128,6 +1128,7 @@ local function Set_BrowseResultsFrame(frame)
         local itemKey= btn.rowData and btn.rowData.itemKey
         local itemKeyInfo = itemKey and C_AuctionHouse.GetItemKeyInfo(itemKey)--itemID battlePetSpeciesID itemName battlePetLink appearanceLink quality iconFileID isPet isCommodity isEquipment
         if itemKeyInfo then
+
             local isCollectedAll--宠物
             text, isCollectedAll= select(3, e.GetPetCollectedNum(itemKeyInfo.battlePetSpeciesID, itemKeyInfo.itemID, true))
             if isCollectedAll then
@@ -1138,16 +1139,30 @@ local function Set_BrowseResultsFrame(frame)
 
             if not text then--坐骑
                 local isMountCollected= select(2, e.GetMountCollected(nil, itemKeyInfo.itemID))
-                if isMountCollected then
+                if isMountCollected==true then
                     text= '|A:common-icon-checkmark-yellow:0:0|a'
+                elseif isMountCollected==false then
+                    text= '|A:QuestNormal:0:0|a'
                 end
             end
-            if not text then
-                local t1, t2= e.Get_Gem_Stats(nil, Get_ItemLink_For_rowData(btn.rowData))--显示, 宝石, 属性
+            if not text then--玩具,是否收集
+                local isToy= select(2, e.GetToyCollected(itemKeyInfo.itemID))
+                if isToy==true then
+                    text= '|A:common-icon-checkmark-yellow:0:0|a'
+                elseif isToy==false then
+                    text= '|A:QuestNormal:0:0|a'
+                end
+            end
+            if not text then--显示, 宝石, 属性
+                local t1, t2= e.Get_Gem_Stats(nil, Get_ItemLink_For_rowData(btn.rowData))
                 if t1 then
                     text= t1..(t2 and ' '..t2 or '')
                 end
             end
+          if not text then
+                info= itemKeyInfo
+                for k, v in pairs(info) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
+          end
             --[[if not text then
                 --local itmeLink= Get_ItemLink_For_rowData(btn.rowData)
                 local itemLink= Get_ItemLink_For_rowData(btn.rowData)
@@ -1184,7 +1199,7 @@ end
 --Blizzard_AuctionHouseUI.lua
 --local ITEM_SPELL_KNOWN = ITEM_SPELL_KNOWN--"已学习
 local function Init_BrowseResultsFrame()
-    --hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame.ItemList.ScrollBox, 'SetScrollTargetOffset', Set_BrowseResultsFrame)
+    hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame.ItemList.ScrollBox, 'FullUpdateInternal', Set_BrowseResultsFrame)
     hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame.ItemList.ScrollBox, 'Update', Set_BrowseResultsFrame)
 
     --双击，一口价

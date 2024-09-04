@@ -1539,7 +1539,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         elseif arg1=='Blizzard_TimeManager' then
             
-            Blizzard_TimeManager()--秒表
         --elseif arg1=='Blizzard_ExpansionLandingPage' then
 
         elseif arg1=='Blizzard_MajorFactions' then

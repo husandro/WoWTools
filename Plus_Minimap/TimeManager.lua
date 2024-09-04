@@ -87,7 +87,7 @@ end
 
 
 
-local function Init_Menu(self, root)
+local function Init_Menu(_, root)
     local sub
 
 
@@ -168,7 +168,7 @@ local function Init_TimeManager()
 
     btn:SetScript('OnMouseUp', ResetCursor)
 
-   
+
 
     --透明度
     btn:HookScript('OnLeave', function(self) self:SetAlpha(1) ResetCursor() end)
@@ -252,17 +252,21 @@ local function Init_StopwatchFrame()
         if Save().StopwatchOnClickPause then
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(
-                e.GetEnabeleDisable(Save().StopwatchOnClickPause),
-                (e.onlyChinese and '开始/暂停' or NEWBIE_TOOLTIP_STOPWATCH_PLAYPAUSEBUTTON)..e.Icon.left
+                (e.onlyChinese and '开始/暂停' or NEWBIE_TOOLTIP_STOPWATCH_PLAYPAUSEBUTTON),
+                e.Icon.left
             )
         end
         e.tips:Show()
     end
     StopwatchFrame:HookScript('OnLeave', function()
         e.tips:Hide()
+        StopwatchResetButton:SetAlpha(StopwatchResetButton.alpha or 1)
         ResetCursor()
     end)
-    StopwatchFrame:HookScript('OnEnter', StopwatchFrame.set_tooltip)
+    StopwatchFrame:HookScript('OnEnter', function(self)
+        StopwatchResetButton:SetAlpha(1)
+        self:set_tooltip()
+    end)
 
 --缩放
     function StopwatchFrame:set_scale()
@@ -320,12 +324,12 @@ local function Init_StopwatchFrame()
             MenuUtil.CreateContextMenu(self, Init_Stopwatch_Menu)
         end
     end)
- 
+
 
 
     StopwatchCloseButton:ClearAllPoints()
     StopwatchCloseButton:SetPoint('TOPLEFT')
-    
+
     StopwatchTitle:SetPoint('LEFT', StopwatchCloseButton, 'RIGHT')
     StopwatchTickerHour:SetTextColor(0,1,0,1)
     StopwatchTickerMinute:SetTextColor(0,1,0,1)
@@ -348,24 +352,28 @@ local function Init_StopwatchFrame()
         e.Set_Label_Texture_Color(StopwatchTickerMinute, {type='FontString'})
         e.Set_Label_Texture_Color(StopwatchTickerSecond, {type='FontString'})
     end)
-  
 
-    --设置，重置，按钮
-    StopwatchResetButton:SetScript('OnLeave', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
+
+--设置，提示
+    StopwatchPlayPauseButton:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(self.alpha or 1) end)
+    StopwatchPlayPauseButton:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
         if Stopwatch_IsPlaying() then
             e.tips:AddLine(e.onlyChinese and '暂停' or EVENTTRACE_BUTTON_PAUSE)
         else
             e.tips:AddLine(e.onlyChinese and '开始' or START)
         end
-         self:SetAlpha(self.alpha or 1)
+        e.tips:Show()
+        self:SetAlpha(1)
     end)
 
+    StopwatchResetButton:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(self.alpha or 1) end)
     StopwatchResetButton:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:SetOwner(self, Save().StopwatchOnClickPause and "ANCHOR_LEFT" or "ANCHOR_RIGHT")
         e.tips:ClearLines()
         e.tips:AddLine(e.onlyChinese and '重置' or RESET)
+        e.tips:Show()
         self:SetAlpha(1)
     end)
 
@@ -374,17 +382,22 @@ local function Init_StopwatchFrame()
         StopwatchResetButton:ClearAllPoints()
         if not show then
             StopwatchResetButton:SetPoint('RIGHT', StopwatchTickerHour, 'LEFT', -2,0)
-        else            
+            StopwatchTicker:SetPoint('BOTTOMRIGHT', 0,0)
+            StopwatchCloseButton:SetPoint('TOPLEFT', 18,1)
+        else
             StopwatchResetButton:SetPoint('BOTTOMRIGHT', -2, 3)
+            StopwatchTicker:SetPoint('BOTTOMRIGHT', -49, 3)
+            StopwatchCloseButton:SetPoint('TOPLEFT', -10, 1)
         end
-        --StopwatchResetButton:SetShown(show)
-        StopwatchResetButton.alpha= show and 1 or 0.3
+        StopwatchResetButton.alpha= show and 1 or 0
         StopwatchResetButton:SetAlpha(StopwatchResetButton.alpha)
         StopwatchPlayPauseButton:SetShown(show)
     end
     if Save().StopwatchOnClickPause then
         StopwatchFrame:set_onclick_pause()
     end
+
+    StopwatchFrame:SetWidth(100)
 end
 
 
@@ -427,11 +440,11 @@ function WoWTools_MinimapMixin:Init_TimeManager()
         e.tips:Show()
     end)
 
-    
+
     if not self.Save.disabledClockPlus then
         Init_TimeManager()
     end
-    
+
     if not self.Save.disabledStopwatchPlus then
         Init_StopwatchFrame()
     end
