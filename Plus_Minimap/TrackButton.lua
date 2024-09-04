@@ -979,13 +979,9 @@ local function Init_Menu(self, root)--菜单
     if UnitAffectingCombat('player') then
         sub2:SetEnabled(false)
     end
-    
+
 --重置位置
-    WoWTools_MenuMixin:RestPoint(sub, Save().pointVigentteButton, function()
-        Save().pointVigentteButton=nil
-        self:ClearAllPoints()
-        self:set_point()
-    end)
+    WoWTools_MenuMixin:RestPoint(sub, Save().pointVigentteButton, WoWTools_MinimapMixin.Rest_TrackButton_Point)
 end
 
 
@@ -1404,9 +1400,8 @@ end
 
 
 
-
-function WoWTools_MinimapMixin:Init_TrackButton()--小地图, 标记, 文本
-
+--小地图, 标记, 文本
+function WoWTools_MinimapMixin:Init_TrackButton()
     if not Save().vigentteButton or TrackButton then
         if TrackButton then
             TrackButton:set_shown()
@@ -1421,3 +1416,12 @@ function WoWTools_MinimapMixin:Init_TrackButton()--小地图, 标记, 文本
     Init_WorldFrame_Event()--世界地图，事件
 end
 
+
+--重置位置
+function WoWTools_MinimapMixin:Rest_TrackButton_Point()
+    if TrackButton then
+        Save().pointVigentteButton=nil
+        TrackButton:ClearAllPoints()
+        TrackButton:set_point()
+    end
+end

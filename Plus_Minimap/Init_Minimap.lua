@@ -75,14 +75,32 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 WoWTools_MinimapMixin.Save= WoWToolsSave['Minimap_Plus'] or WoWTools_MinimapMixin.Save
             end
 --添加控制面板
-            WoWTools_MinimapMixin.Initializer= e.AddPanel_Check({
+            --[[WoWTools_MinimapMixin.Initializer= e.AddPanel_Check({
                 name= WoWTools_MinimapMixin.addName,
                 GetValue= function() return WoWTools_MinimapMixin.Save.disabled end,
                 SetValue= function()
                     WoWTools_MinimapMixin.Save.disabled= not WoWTools_MinimapMixin.Save.disabled and true or nil
                     print(WoWTools_MinimapMixin.addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
+            })]]
+            
+            e.AddPanel_Check_Button({
+                checkName= WoWTools_MinimapMixin.addName,
+                GetValue= function() return WoWTools_MinimapMixin.Save.disabled end,
+                SetValue= function()
+                    WoWTools_MinimapMixin.Save.disabled= not WoWTools_MinimapMixin.Save.disabled and true or nil
+                    print(WoWTools_MinimapMixin.addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                end,
+                buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
+                buttonFunc= function()
+                    if StopwatchFrame.rest_point then
+                        StopwatchFrame:rest_point()
+                    end
+                    WoWTools_MinimapMixin:Rest_TimeManager_Point()--重置，TimeManager位置
+                    WoWTools_MinimapMixin:Rest_TrackButton_Point()--重置，TrackButton位置
+                end
             })
+
 
             if WoWTools_MinimapMixin.Save.disabled then
                 self:UnregisterEvent('ADDON_LOADED')
