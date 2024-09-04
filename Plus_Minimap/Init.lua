@@ -10,10 +10,9 @@ WoWTools_MinimapMixin={
         vigentteButton=e.Player.husandro,
         vigentteButtonShowText=true,
         vigentteSound= e.Player.husandro,--播放声音
-
         vigentteButtonTextScale=1,
-        --hideVigentteCurrentOnMinimap=true,--当前，小地图，标记
-        --hideVigentteCurrentOnWorldMap=true,--当前，世界地图，标记
+        hideVigentteCurrentOnMinimap=nil,--当前，小地图，标记
+        hideVigentteCurrentOnWorldMap=nil,--当前，世界地图，标记
         questIDs={},--世界任务, 监视, ID {[任务ID]=true}
         areaPoiIDs={[7492]= 2025},--{[areaPoiID]= 地图ID}
         uiMapIDs= {},--地图ID 监视, areaPoiIDs，
@@ -84,7 +83,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if not WoWTools_MinimapMixin.Save.disabled then
                 for questID in pairs(WoWTools_MinimapMixin.Save.questIDs or {}) do
-                    e.LoadDate({id= questID, type=='quest'})
+                    e.LoadData({id= questID, type=='quest'})
                 end
                 WoWTools_MinimapMixin:Init()
             end
@@ -138,7 +137,7 @@ function WoWTools_MinimapMixin:OnEvent(frame, event, arg1)
 
             if not self.Save.disabled then
                 for questID in pairs(self.Save.questIDs or {}) do
-                    e.LoadDate({id= questID, type=='quest'})
+                    e.LoadData({id= questID, type=='quest'})
                 end
                 self:Init()
             end

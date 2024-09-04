@@ -102,7 +102,7 @@ function Init_Menu(self, level, menuList)
     if menuList=='DISABLE' then
         local n=0
         for itemID in pairs(Save.items) do
-            e.LoadDate({id=itemID, type='item'})
+            e.LoadData({id=itemID, type='item'})
             e.LibDD:UIDropDownMenu_AddButton({
                 text= WoWTools_ItemMixin:GetLink(itemID),
                 icon= C_Item.GetItemIconByID(itemID),

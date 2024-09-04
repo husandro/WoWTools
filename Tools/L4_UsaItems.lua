@@ -927,13 +927,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             
                 for _, ID in pairs(Save.item) do
-                    e.LoadDate({id=ID, type='item'})
+                    e.LoadData({id=ID, type='item'})
                 end
                 for _, ID in pairs(Save.spell) do
-                    e.LoadDate({id=ID, type='spell'})
+                    e.LoadData({id=ID, type='spell'})
                 end
                 for _, ID in pairs(Save.equip) do
-                    e.LoadDate({id=ID, type='item'})
+                    e.LoadData({id=ID, type='item'})
                 end
 
                 C_Timer.After(2.3, function()

@@ -65,7 +65,7 @@ end)]]
 
 
 for questID, _ in pairs(Save.questIDs or {}) do
-    e.LoadDate({id= questID, type=='quest'})
+    e.LoadData({id= questID, type=='quest'})
 end
 
 local panel= CreateFrame("Frame")
@@ -854,7 +854,7 @@ local function Init_Button_Menu(_, level, menuList)--菜单
 
     elseif menuList=='WorldQuest' then--世界任务
         for questID, _ in pairs(Save.questIDs) do
-            e.LoadDate({id= questID, type=='quest'})
+            e.LoadData({id= questID, type=='quest'})
             info={
                 text= GetQuestLink(questID) or questID,
                 icon= select(2, GetQuestLogRewardInfo(1, questID))

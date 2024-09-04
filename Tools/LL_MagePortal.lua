@@ -59,8 +59,8 @@ local Buttons
 
 
 for _, tab in pairs(Tab) do
-    e.LoadDate({id=tab.spell, type='spell'})
-    e.LoadDate({id=tab.spell2, type='spell'})
+    e.LoadData({id=tab.spell, type='spell'})
+    e.LoadData({id=tab.spell2, type='spell'})
 end
 
 

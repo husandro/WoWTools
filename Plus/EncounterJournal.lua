@@ -745,7 +745,7 @@ local function Init_EncounterJournal()--冒险指南界面
                 local challengeText, challengeText2
 
                 for _, mapChallengeModeID in pairs(C_ChallengeMode.GetMapTable() or {}) do--挑战地图 mapChallengeModeID
-                    e.LoadDate({type='mapChallengeModeID',mapChallengeModeID })
+                    e.LoadData({type='mapChallengeModeID',mapChallengeModeID })
                     local name= C_ChallengeMode.GetMapUIInfo(mapChallengeModeID)
                     if name==instanceName or name:find(instanceName) then
                         button.mapChallengeModeID= mapChallengeModeID--挑战,地图ID
@@ -1107,7 +1107,7 @@ local function Init_EncounterJournal()--冒险指南界面
             btn.spellTexture.spellID= spellID
             btn.spellTexture:SetShown(spellID and true or false)
             if spellID then
-                e.LoadDate({id=spellID, type='spell'})
+                e.LoadData({id=spellID, type='spell'})
                 SetPortraitToTexture(btn.spellTexture, C_Spell.GetSpellTexture(spellID) or 'soulbinds_tree_conduit_icon_utility')
             end
         end
@@ -1503,7 +1503,7 @@ local function Init_EncounterJournal()--冒险指南界面
 
         frame:HookScript("OnEnter", function(self)
             local spellID= self:GetParent().spellID--self3.link
-            e.LoadDate({id=spellID, type='spell'})
+            e.LoadData({id=spellID, type='spell'})
             if not Save.hideEncounterJournal and spellID and spellID>0 then
                 e.tips:SetOwner(self, "ANCHOR_RIGHT")
                 e.tips:ClearLines()

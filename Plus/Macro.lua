@@ -373,7 +373,7 @@ end
 --创建，法术，列表
 --##############
 local function Create_Spell_Menu(spellID, icon, name, texture)--创建，法术，列表
-    e.LoadDate({id=spellID, type='spell'})
+    e.LoadData({id=spellID, type='spell'})
     local isKnown= IsSpellKnownOrOverridesKnown(spellID)
     --local isPassive= C_Spell.IsSpellPassive(spellID)
     local spellIcon= icon
@@ -468,7 +468,7 @@ local function set_btn_tooltips(self, index)
             )
             local spellID= GetMacroSpell(index)
             if spellID then
-                e.LoadDate({id=spellID, type='spell'})
+                e.LoadData({id=spellID, type='spell'})
                 local spellName= C_Spell.GetSpellName(spellID)
                 local spellIcon= C_Spell.GetSpellTexture(spellID)
                 if spellName and spellIcon then
@@ -935,7 +935,7 @@ local size= 24
                         local spellTexture
 
                         if spellID then
-                            e.LoadDate({id=spellID, type='spell'})
+                            e.LoadData({id=spellID, type='spell'})
                             spellTexture= C_Spell.GetSpellTexture(spellID)
 
                         end

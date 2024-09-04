@@ -752,7 +752,7 @@ local function Init_Archaeology()
     end)
 
     --增加一个按钮， 提示物品
-    e.LoadDate({id=87399, type='item'})
+    e.LoadData({id=87399, type='item'})
     hooksecurefunc('ArchaeologyFrame_CurrentArtifactUpdate', function()
         local itemID= select(3, GetArchaeologyRaceInfo(ArchaeologyFrame.artifactPage.raceID))
         local btn= ArchaeologyFrame.artifactPage.tipsButton

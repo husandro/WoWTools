@@ -505,7 +505,7 @@ if not e.Is_Timerunning then
         local numSockets= C_Item.GetItemNumSockets(link) or 0--MAX_NUM_SOCKETS
         for n=1, numSockets do
             local gemLink= select(2, C_Item.GetItemGem(link, n))
-            e.LoadDate({id=gemLink, type='item'})
+            e.LoadData({id=gemLink, type='item'})
 
             local gem= self['gem'..n]
             if not gem then
@@ -1787,7 +1787,7 @@ end
 local function set_InspectPaperDollItemSlotButton_Update(self)
     local slot= self:GetID()
 	local link= not Save.hide and GetInventoryItemLink(InspectFrame.unit, slot) or nil
-	e.LoadDate({id=link, type='item'})--加载 item quest spell
+	e.LoadData({id=link, type='item'})--加载 item quest spell
     --set_Gem(self, slot, link)
     set_Item_Tips(self, slot, link, false)
     set_Slot_Num_Label(self, slot, link and true or false)--栏位, 帐号最到物品等级

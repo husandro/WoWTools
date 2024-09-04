@@ -542,7 +542,7 @@ local function Get_Info_Challenge()--挑战
     C_MythicPlus.RequestMapInfo()
     C_MythicPlus.RequestRewards()
     for _, mapChallengeModeID in pairs(C_ChallengeMode.GetMapTable() or {}) do
-        e.LoadDate({type='mapChallengeModeID',mapChallengeModeID })
+        e.LoadData({type='mapChallengeModeID',mapChallengeModeID })
     end
 --[[
     C_MythicPlus.GetRunHistory(false, true)--本周记录      

@@ -14,7 +14,7 @@ function WoWTools_RandomMixin:Get_Random_Data()--取得数据库, {数据1, 数�
 end
 function WoWTools_RandomMixin:Check_Random()--当真时Check_Random() 或 isOneValue_Random 真时 退出取得，随机值
 end
-function WoWTools_RandomMixin:Set_Random_Value(value)--设置，随机值
+function WoWTools_RandomMixin:Set_Random_Value()--设置，随机值
 end
 function WoWTools_RandomMixin:Set_OnlyOneValue_Random()--当数据 <=1 时，设置值
 end

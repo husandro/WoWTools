@@ -895,7 +895,7 @@ local function Add_Menu(root, name, channelNumber)
     local text=name
     local clubId=name:match('Community:(%d+)');
     if clubId then
-        e.LoadDate({id=clubId, type='club'})
+        e.LoadData({id=clubId, type='club'})
     end
     local communityName, communityTexture
     local clubInfo= clubId and C_Club.GetClubInfo(clubId)--社区名称

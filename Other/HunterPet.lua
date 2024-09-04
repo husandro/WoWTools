@@ -42,7 +42,7 @@ local CALL_PET_SPELL_IDS = {
 	83244,
 	83245,
 }
-e.LoadDate({id=267116, type='spell'})--动物伙伴
+e.LoadData({id=267116, type='spell'})--动物伙伴
 
 
 --[[local function Is_Selected_Pet(slotID)--是否，选中
@@ -58,7 +58,7 @@ local function get_abilities_icons(pet, line)--取得，宠物，技能，图标
     local text=''
     if pet and pet.abilities then
         for _, spellID in pairs(pet.abilities) do
-            e.LoadDate({id=spellID, type='spell'})
+            e.LoadData({id=spellID, type='spell'})
             local texture= C_Spell.GetSpellTexture(spellID)
             if texture and texture>0 then
                 text= format('%s%s|T%d:14|t', text, line and text~='' and '|n' or '', texture)

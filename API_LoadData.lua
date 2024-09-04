@@ -1,16 +1,16 @@
 local e= select(2, ...)
 
-function e.LoadDate(tab)--e.LoadDate({id=, type=''})--加载 item quest spell, uiMapID
+function e.LoadData(tab)--e.LoadData({id=, type=''})--加载 item quest spell, uiMapID
     if not tab or not tab.id then
         return
     end
-    if tab.type=='quest' then --e.LoadDate({id=, type='quest'})
+    if tab.type=='quest' then --e.LoadData({id=, type='quest'})
         C_QuestLog.RequestLoadQuestByID(tab.id)
         if not HaveQuestRewardData(tab.id) then
             C_TaskQuest.RequestPreloadRewardData(tab.id)
         end
 
-    elseif tab.type=='spell' then--e.LoadDate({id=, type='spell'})
+    elseif tab.type=='spell' then--e.LoadData({id=, type='spell'})
         local spellID= tab.id
         if type(tab.id)=='string' then
             spellID= (C_Spell.GetSpellInfo(tab.id) or {}).spellID
@@ -19,17 +19,20 @@ function e.LoadDate(tab)--e.LoadDate({id=, type=''})--加载 item quest spell, u
             C_Spell.RequestLoadSpellData(spellID)
         end
 
-    elseif tab.type=='item' then--e.LoadDate({id=, type='item'})
-        local itemID= tab.id
-        itemID= itemID or (tab.itemLink and tab.itemLink:match('|Hitem:(%d+):'))
+    elseif tab.type=='item' then--e.LoadData({id=, type='item'})
+        local itemID= tab.id or (tab.itemLink and tab.itemLink:match('|Hitem:(%d+):'))
         if itemID and not C_Item.IsItemDataCachedByID(itemID) then
             C_Item.RequestLoadItemDataByID(itemID)
         end
+    elseif tab.type=='itemLocation' then
+        if not C_Item.IsItemDataCached(tab.id) then
+            C_Item.RequestLoadItemData(tab.id)
+        end
 
-    elseif tab.type=='mapChallengeModeID' then--e.LoadDate({id=, type='mapChallengeModeID'})
+    elseif tab.type=='mapChallengeModeID' then--e.LoadData({id=, type='mapChallengeModeID'})
         C_ChallengeMode.RequestLeaders(tab.id)
 
-    elseif tab.typ=='club' then--e.LoadDate({id=, type='club'})
+    elseif tab.typ=='club' then--e.LoadData({id=, type='club'})
         C_Club.RequestTickets(tab.id)
     end
 end
@@ -62,10 +65,10 @@ local spellLoadTab={
 
 
 for _, itemID in pairs(itemLoadTab) do
-    e.LoadDate({id=itemID, type='item'})
+    e.LoadData({id=itemID, type='item'})
 end
 for _, spellID in pairs(spellLoadTab) do
-    e.LoadDate({id=spellID, type='spell'})
+    e.LoadData({id=spellID, type='spell'})
 end
 
 

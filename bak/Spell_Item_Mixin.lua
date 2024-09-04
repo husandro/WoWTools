@@ -20,7 +20,7 @@ WoWTools_SpellItemMixin={
 function WoWTools_SpellItemMixin:GetName(spellID, itemID)--取得，法术，物品，名称
     local col, name, desc, cool
     if spellID then
-        e.LoadDate({id=spellID, type='spell'})
+        e.LoadData({id=spellID, type='spell'})
 
         local mountID = C_MountJournal.GetMountFromSpell(spellID)
         if mountID then--坐骑
@@ -51,7 +51,7 @@ function WoWTools_SpellItemMixin:GetName(spellID, itemID)--取得，法术，物
         name= '|T'..(C_Spell.GetSpellTexture(spellID) or 0)..':0|t'..(name or ('spellID '..spellID))
 
     elseif itemID then
-        e.LoadDate({id=itemID, type='item'})
+        e.LoadData({id=itemID, type='item'})
 
         if C_ToyBox.GetToyInfo(itemID) then
             if not PlayerHasToy(itemID) then

@@ -422,11 +422,11 @@ local function select_Reward(questID)--自动:选择奖励
     if Save.questRewardCheck[questID] and Save.questRewardCheck[questID]<=numQuests then
         bestItem= Save.questRewardCheck[questID]
         selectItemLink= GetQuestItemLink('choice', Save.questRewardCheck[questID])
-        e.LoadDate({id=selectItemLink, type='item'})
+        e.LoadData({id=selectItemLink, type='item'})
     else
         for i = 1, numQuests do
             local  itemLink = GetQuestItemLink('choice', i)
-            e.LoadDate({id=itemLink, type='item'})
+            e.LoadData({id=itemLink, type='item'})
             if itemLink then
                 local amount = select(3, GetQuestItemInfo('choice', i))--钱
                 local _, _, itemQuality, itemLevel, _, _,_,_, itemEquipLoc, _, sellPrice,classID, subclassID = C_Item.GetItemInfo(itemLink)
@@ -1630,7 +1630,7 @@ local function Init_Menu_Gossip(_, level, type)
 
     elseif type=='PlayerChoiceFrame' then
         for spellID, rarity in pairs(Save.choice) do
-            e.LoadDate({id=spellID, type='spell'})
+            e.LoadData({id=spellID, type='spell'})
             local icon= C_Spell.GetSpellTexture(spellID)
             local name= C_Spell.GetSpellLink(spellID) or ('spellID '..spellID)
             rarity= rarity+1
@@ -2596,7 +2596,7 @@ local function InitMenu_Quest(_, level, type)
     if type=='REWARDSCHECK' then--三级菜单 ->自动:选择奖励
         local num=0
         for questID, index in pairs(Save.questRewardCheck) do
-            e.LoadDate({id=questID, type='quest'})
+            e.LoadData({id=questID, type='quest'})
             info={
                 text= (C_QuestLog.GetTitleForQuestID(questID) or ('questID: '..questID))..': |cnGREEN_FONT_COLOR:'..index,
                 notCheckable=true,
@@ -3274,7 +3274,7 @@ local function Init_Quest()
 
         local spellRewards = C_QuestInfoSystem.GetQuestRewardSpells(questID) or {}--QuestInfo.lua QuestInfo_ShowRewards()
         for _, spellID in pairs(spellRewards) do
-            e.LoadDate({id=spellID, type='spell'})
+            e.LoadData({id=spellID, type='spell'})
             local spellLink= C_Spell.GetSpellLink(spellID)
             itemLink= itemLink.. (spellLink or (' spellID'..spellID))
         end
@@ -3821,7 +3821,7 @@ local function Init_Blizzard_DelvesDifficultyPicker()
 
                 for _, reward in ipairs(option.rewards or {}) do
                     if reward.rewardType == Enum.GossipOptionRewardType.Item and reward.id then
-                        e.LoadDate({type='item', id=reward.id})
+                        e.LoadData({type='item', id=reward.id})
                         local item= C_Item.GetItemNameByID(reward.id)
                         local link= WoWTools_ItemMixin:GetLink(reward.id)
                         itemLink= (itemLink or '    ')

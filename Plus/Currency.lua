@@ -22,7 +22,7 @@ local TrackButton
 local Initializer
 
 for itemID, _ in pairs(Save.item) do
-	e.LoadDate({id=itemID, type='item'})--加载 item quest spell
+	e.LoadData({id=itemID, type='item'})--加载 item quest spell
 end
 
 local qualityToIconBorderAtlas ={

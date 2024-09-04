@@ -638,7 +638,7 @@ local function Init_Save_BankItem()
     AllPlayerBankItem:SetPoint('LEFT', BankFrame.optionButton , 'RIGHT')
     AllPlayerBankItem:SetAlpha(0.5)
     function AllPlayerBankItem:get_item_text(itemID, quality)
-        e.LoadDate({id=itemID, type='item'})
+        e.LoadData({id=itemID, type='item'})
         local name= GetItemInfo(itemID) or itemID
         local hex= select(4, C_Item.GetItemQualityColor(quality or 1))
         local icon= C_Item.GetItemIconByID(itemID)

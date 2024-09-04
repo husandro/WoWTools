@@ -505,15 +505,7 @@ local function Init_Menu(self, root)
         self:set_scale()
     end))
 
-    sub:CreateButton(
-        (not Save.point and '|cff9e9e9e' or '')
-        ..(e.onlyChinese and '还原位置' or RESET_POSITION),
-    function()
-        if not UnitAffectingCombat('player') then
-            Save.point=nil
-            self:set_point()
-        end
-    end )
+    
 
     sub2= select(2, WoWTools_MenuMixin:FrameStrata(sub, function(data)
         return self:GetFrameStrata()==data
@@ -539,7 +531,15 @@ local function Init_Menu(self, root)
     })
     sub2:CreateSpacer()
 
-
+    sub:CreateButton(
+        (not Save.point and '|cff9e9e9e' or '')
+        ..(e.onlyChinese and '还原位置' or RESET_POSITION),
+    function()
+        if not UnitAffectingCombat('player') then
+            Save.point=nil
+            self:set_point()
+        end
+    end )
 
 
 

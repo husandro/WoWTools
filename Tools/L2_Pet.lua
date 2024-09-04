@@ -26,7 +26,7 @@ local PetsList={
 }
 ]]
 for _, info in pairs(PetsList) do
-    e.LoadDate({id=info.auraID, type='spell'})
+    e.LoadData({id=info.auraID, type='spell'})
 end
 
 
@@ -370,7 +370,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
             if button then
                 --[[for _, info in pairs(Save.Pets) do
-                    e.LoadDate({id=info.auraID, type='spell'})
+                    e.LoadData({id=info.auraID, type='spell'})
                 end]]
 
 

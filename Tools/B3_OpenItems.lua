@@ -161,7 +161,7 @@ local useText, noText
 
 
 if e.Player.class=='ROGUE' then
-    e.LoadDate({id=1804, type='spell'})--开锁 Pick Lock
+    e.LoadData({id=1804, type='spell'})--开锁 Pick Lock
 end
 
 
@@ -269,7 +269,7 @@ local function get_Items()--取得背包物品信息
                 and ((itemMinLevel and itemMinLevel<=e.Player.level) or not itemMinLevel)--使用等级
                 and classID~=13
             then
-                --e.LoadDate({id=info.itemID, type='item'})
+                --e.LoadData({id=info.itemID, type='item'})
                 if Save.use[info.itemID] then--自定义
                     if Save.use[info.itemID]<=info.stackCount then
                         setAtt(bag, slot, info.iconFileID, info.itemID)
@@ -496,7 +496,7 @@ end
 
 
 local function Remove_NoUse_Menu(root, itemID, type, numUse)
-    e.LoadDate({type='item', id=itemID})
+    e.LoadData({type='item', id=itemID})
     local tab=  {itemID=itemID, type=type}
     local sub=root:CreateButton(
         (numUse and numUse..'= ' or '')

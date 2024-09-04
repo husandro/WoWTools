@@ -38,11 +38,11 @@ local ModifiedMenuTab={
 }
 
 for itemID in pairs(ModifiedTab) do
-    e.LoadDate({id=itemID, type='item'})
+    e.LoadData({id=itemID, type='item'})
 end
 
 for itemID in pairs(P_Items) do
-    e.LoadDate({id=itemID, type='item'})
+    e.LoadData({id=itemID, type='item'})
 end
 
 
@@ -175,7 +175,7 @@ local function Init_Menu_Toy(_, root)
     local sub, sub2, name, toyName, icon
     local index=0
     for itemID in pairs(Save.items) do
-        e.LoadDate({id=itemID, type='item'})
+        e.LoadData({id=itemID, type='item'})
 
         toyName, icon = select(2, C_ToyBox.GetToyInfo(itemID))
         index= index+ 1
@@ -464,7 +464,7 @@ end
 --###
 local function Init()
     for itemID, _ in pairs(Save.items) do
-        e.LoadDate({id=itemID, type='item'})
+        e.LoadData({id=itemID, type='item'})
     end
 
     ToyButton:SetAttribute("type1", "item")

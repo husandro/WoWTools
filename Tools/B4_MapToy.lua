@@ -62,7 +62,7 @@ local Save={
 
 
 local function Is_Completed(tab)
-    e.LoadDate({type='item', id=tab.itemID})
+    e.LoadData({type='item', id=tab.itemID})
 
     local num= 0
     local isNotChecked
@@ -296,7 +296,7 @@ end
 
 local function Init()
     for _, info in pairs(Tab) do
-        e.LoadDate({id=info.itemID, type='item'})
+        e.LoadData({id=info.itemID, type='item'})
         for _, achievementID in pairs(info.achievements) do
             GetAchievementCategory(achievementID)
         end

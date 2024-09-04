@@ -284,7 +284,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if not Save.disabled then
                 for _, itemID in pairs(ItemTab) do
-                    e.LoadDate({id=itemID, type='item'})
+                    e.LoadData({id=itemID, type='item'})
                 end
                 C_Timer.After(2, Init)
             end

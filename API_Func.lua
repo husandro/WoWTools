@@ -824,7 +824,7 @@ function e.Get_Weekly_Rewards_Activities(settings)--周奖励，提示
                         link= C_WeeklyRewards.GetExampleRewardItemHyperlinks(self.id)
                     end
                     if link and link~='' then
-                        e.LoadDate({id=link, type='item'})
+                        e.LoadData({id=link, type='item'})
                         return link
                     end
                 end
@@ -972,11 +972,11 @@ function e.ItemCurrencyLabel(settings)--物品升级界面，挑战界面，物�
                 text= format('|T%d:0|t%s%s', info.iconFileID or 0, showName and info.name or '', text)
             end
         elseif tab.type=='item' and tab.id then
-            e.LoadDate({id=tab.id, type='item'})
+            e.LoadData({id=tab.id, type='item'})
             local num= C_Item.GetItemCount(tab.id, true, false, true)
             local itemQuality= C_Item.GetItemQualityByID(tab.id)
             if (showAll or tab.show or num>0) and itemQuality>=1 then
-                e.LoadDate({id=tab.id, type='item'})
+                e.LoadData({id=tab.id, type='item'})
                 local icon= C_Item.GetItemIconByID(tab.id)
                 local name=showName and C_Item.GetItemNameByID(tab.id)
                 text= ((icon and icon>0) and '|T'..icon..':0|t' or id '')

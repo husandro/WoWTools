@@ -91,7 +91,7 @@ e.ChallengesSpellTabs={
 
 --if C_MythicPlus.GetCurrentSeason()==12 then
 for _, tab in pairs(e.ChallengesSpellTabs) do
-    e.LoadDate({id=tab.spell, type='spell'})
+    e.LoadData({id=tab.spell, type='spell'})
 end
 
 

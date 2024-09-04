@@ -860,7 +860,7 @@ function func:Set_Spell(tooltip, spellID)--法术
     else
         --[[local overrideSpellID = FindSpellOverrideByID(spellID)
         if overrideSpellID and overrideSpellID~=spellID then
-            e.LoadDate({id=overrideSpellID, type='spell'})--加载 item quest spell
+            e.LoadData({id=overrideSpellID, type='spell'})--加载 item quest spell
             local link= C_Spell.GetSpellLink(overrideSpellID)
             if link then
 
@@ -1761,7 +1761,7 @@ function func:Set_Flyout(tooltip, flyoutID)--法术, 弹出框
         local flyoutSpellID, overrideSpellID, isKnown2, spellName = GetFlyoutSlotInfo(flyoutID, slot)
         local spellID= overrideSpellID or flyoutSpellID
         if spellID then
-            e.LoadDate({id=spellID, type='spell'})
+            e.LoadData({id=spellID, type='spell'})
             local name2= e.cn(C_Spell.GetSpellName(spellID), {spellID=spellID, isName=true})
             local icon= C_Spell.GetSpellTexture(spellID)
             if name2 and icon then

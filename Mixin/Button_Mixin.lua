@@ -35,7 +35,7 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
     if template=='UIPanelButtonTemplate' then
         if text then btn:SetText(text) end
     else
-        self:SetTexture(btn, isType2)
+        self:SetPushedTexture(btn, isType2)
         if icon~='hide' then
             if texture then
                 btn:SetNormalTexture(texture)
@@ -69,6 +69,7 @@ function WoWTools_ButtonMixin:Ctype2(frame, tab)
     local btn= CreateFrame('Button', name or ('WoWToolsToolsButton'..self:GetIndex()), frame or UIParent, template, setID)
     btn:SetSize(self:GetSize(size))
     self:Settings(btn, true)
+    return btn
 end
 
 
@@ -123,7 +124,7 @@ end
 
 
 function WoWTools_ButtonMixin:Settings(btn, isType2)
-    self:SetTexture(btn, isType2)
+    self:SetPushedTexture(btn, isType2)
     if isType2 then--圆形按钮
         self:SetType2Texture(btn)
     end
@@ -131,7 +132,7 @@ function WoWTools_ButtonMixin:Settings(btn, isType2)
     btn:EnableMouseWheel(true)
 end
 
-function WoWTools_ButtonMixin:SetTexture(btn, isType2)
+function WoWTools_ButtonMixin:SetPushedTexture(btn, isType2)
     if isType2 then
         btn:SetPushedAtlas('bag-border-highlight')
         btn:SetHighlightAtlas('bag-border')

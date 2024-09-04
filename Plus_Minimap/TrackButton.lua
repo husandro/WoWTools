@@ -3,7 +3,19 @@ local e= select(2, ...)
 local TrackButton
 local WorldMapButton--世界地图，添加一个按钮
 local addName, addName2
-
+--[[
+vigentteButton=e.Player.husandro,
+vigentteButtonShowText=true,
+vigentteSound= e.Player.husandro,--播放声音
+vigentteButtonTextScale=1,
+hideVigentteCurrentOnMinimap=true,--当前，小地图，标记
+hideVigentteCurrentOnWorldMap=true,--当前，世界地图，标记
+questIDs={},--世界任务, 监视, ID {[任务ID]=true}
+areaPoiIDs={[7492]= 2025},--{[areaPoiID]= 地图ID}
+uiMapIDs= {},--地图ID 监视, areaPoiIDs，
+currentMapAreaPoiIDs=true,--当前地图，监视, areaPoiIDs，
+textToDown= e.Player.husandro,--文本，向下
+]]
 
 local function Save()
     return WoWTools_MinimapMixin.Save
@@ -99,6 +111,7 @@ local function Get_widgetSetID_Text(widgetSetID, all)
     for _, widget in ipairs(C_UIWidgetManager.GetAllWidgetsBySetID(widgetSetID) or {}) do
         local info
         if widget.widgetID then
+            print(widget.widgetID)
             if widget.widgetType ==Enum.UIWidgetVisualizationType.IconAndText then info= C_UIWidgetManager.GetIconAndTextWidgetVisualizationInfo(widget.widgetID)
             elseif widget.widgetType ==Enum.UIWidgetVisualizationType.CaptureBar then info= C_UIWidgetManager.GetCaptureBarWidgetVisualizationInfo(widget.widgetID)
             elseif widget.widgetType ==Enum.UIWidgetVisualizationType.StatusBar then info= C_UIWidgetManager.GetStatusBarWidgetVisualizationInfo(widget.widgetID)
@@ -469,7 +482,7 @@ local function set_Button_Text()
     end
 
     for index, info in pairs(allTable) do
-        local btn = TrackButton.btn[index]
+        local btn = TrackButton.buttons[index]
         if not btn then
             btn= WoWTools_ButtonMixin:Cbtn(TrackButton.Frame, {size={12,12}, icon='hdie'})
             btn.nameText= e.Cstr(btn,{color=true})
@@ -508,14 +521,14 @@ local function set_Button_Text()
                     if self.index==1 then
                         self:SetPoint('TOP', TrackButton, 'BOTTOM')
                     else
-                        self:SetPoint('TOPRIGHT', TrackButton.btn[index-1].text, 'BOTTOMLEFT')
+                        self:SetPoint('TOPRIGHT', TrackButton.buttons[index-1].text, 'BOTTOMLEFT')
                     end
                     self.text:SetPoint('TOPLEFT', self.nameText, 'BOTTOMLEFT')
                 else
                     if index==1 then
                         self:SetPoint('BOTTOM', TrackButton, 'TOP')
                     else
-                        self:SetPoint('BOTTOMRIGHT', TrackButton.btn[index-1].text, 'TOPLEFT')
+                        self:SetPoint('BOTTOMRIGHT', TrackButton.buttons[index-1].text, 'TOPLEFT')
                     end
                     self.text:SetPoint('BOTTOMLEFT', self.nameText, 'TOPLEFT')
                 end
@@ -547,7 +560,7 @@ local function set_Button_Text()
 
                     frame=self,
                 })
-                
+
                 e.tips:AddLine(' ')
                 e.tips:AddDoubleLine(self.name and self.name~='' and '|A:communities-icon-chat:0:0|a'..(e.onlyChinese and '信息' or INFO) or ' ', e.Icon.left)
                 e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU , e.Icon.right)
@@ -561,14 +574,14 @@ local function set_Button_Text()
 
             btn:set_btn_point()
 
-            TrackButton.btn[index]=btn
+            TrackButton.buttons[index]=btn
         end
 
         btn:set_rest(info)
     end
 
-    for i= #allTable+1, #TrackButton.btn do
-        TrackButton.btn[i]:set_rest({})
+    for i= #allTable+1, #TrackButton.buttons do
+        TrackButton.buttons[i]:set_rest({})
     end
 end
 
@@ -596,7 +609,7 @@ end
 
 
 local function Init_Menu(self, root)--菜单
-    local sub, sub2, sub3, col
+    local sub, sub2
 --显示
     root:CreateCheckbox(
         e.onlyChinese and '显示' or SHOW,
@@ -604,8 +617,8 @@ local function Init_Menu(self, root)--菜单
         return Save().vigentteButtonShowText
     end, function()
         Save().vigentteButtonShowText= not Save().vigentteButtonShowText and true or nil
-        self:set_Shown()
-        self:set_Texture()
+        self:set_shown()
+        self:set_texture()
     end)
 
 --当前
@@ -627,7 +640,7 @@ local function Init_Menu(self, root)--菜单
         Save().hideVigentteCurrentOnMinimap= not Save().hideVigentteCurrentOnMinimap and true or nil
     end)
 
-   
+
 --世界地图
     sub:CreateCheckbox(
         (e.onlyChinese and '世界地图' or WORLDMAP_BUTTON),
@@ -648,7 +661,7 @@ local function Init_Menu(self, root)--菜单
         Save().vigentteSound= not Save().vigentteSound and true or nil
         if not Save().hideVigentteCurrentOnWorldMap then
             self:set_VIGNETTES_UPDATED(true)
-            self:set_Event()
+            self:set_event()
             if Save().vigentteSound then
                 self:speak_Text(e.onlyChinese and '播放声音' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, EVENTTRACE_BUTTON_PLAY, SOUND))
             end
@@ -659,7 +672,7 @@ local function Init_Menu(self, root)--菜单
     local num=0
     for questID in pairs(Save().questIDs) do
         num= num+1
-        e.LoadDate({id=questID, type=='quest'})
+        e.LoadData({id=questID, type=='quest'})
     end
     sub=root:CreateButton(
         (e.onlyChinese and '世界任务' or TRACKER_HEADER_WORLD_QUESTS)
@@ -683,7 +696,6 @@ local function Init_Menu(self, root)--菜单
         end)
     end
 
-    WoWTools_MenuMixin:SetNumButton(sub, num)
     if num>1 then
         sub:CreateDivider()
         sub:CreateButton(
@@ -691,6 +703,7 @@ local function Init_Menu(self, root)--菜单
         function()
             Save().questIDs={}
         end)
+        WoWTools_MenuMixin:SetNumButton(sub, num)
     end
 
 --areaPoiIDs
@@ -715,8 +728,7 @@ local function Init_Menu(self, root)--菜单
             tooltip:AddLine(e.onlyChinese and '移除' or REMOVE)
         end)
     end
-  
-    WoWTools_MenuMixin:SetNumButton(sub, num)
+
     if num>1 then
         sub:CreateDivider()
         sub:CreateButton(
@@ -724,6 +736,7 @@ local function Init_Menu(self, root)--菜单
         function()
             Save().questIDs={}
         end)
+        WoWTools_MenuMixin:SetNumButton(sub, num)
     end
 
 --地图
@@ -739,7 +752,7 @@ local function Init_Menu(self, root)--菜单
 
     for uiMapID in pairs(Save().uiMapIDs) do
         sub2=sub:CreateCheckbox(
-            (C_Map.GetMapInfo(uiMapID) or {}).name or uiMapID,
+            e.cn((C_Map.GetMapInfo(uiMapID) or {}).name) or uiMapID,
         function(data)
             return Save().uiMapIDs[data.uiMapID]
         end, function(data)
@@ -749,8 +762,7 @@ local function Init_Menu(self, root)--菜单
             tooltip:AddLine(e.onlyChinese and '移除' or REMOVE)
         end)
     end
-  
-    WoWTools_MenuMixin:SetNumButton(sub, num)
+
     if num>1 then
         sub:CreateDivider()
         sub:CreateButton(
@@ -758,6 +770,7 @@ local function Init_Menu(self, root)--菜单
         function()
             Save().uiMapIDs={}
         end)
+        WoWTools_MenuMixin:SetNumButton(sub, num)
     end
 
 
@@ -775,20 +788,40 @@ local function Init_Menu(self, root)--菜单
         return Save().textToDown
     end, function()
         Save().textToDown= not Save().textToDown and true or nil
-        for _, btn in pairs(self.btn) do
+        for _, btn in pairs(self.buttons) do
             btn:ClearAllPoints()
             btn.text:ClearAllPoints()
             btn:set_btn_point()
         end
     end)
 
+--缩放
+    WoWTools_MenuMixin:Scale(sub, function()
+        return Save().vigentteButtonTextScale
+    end, function(value)
+        Save().vigentteButtonTextScale= value
+        self:set_scale()
+    end)
+
+--FrameStrata    
+    sub2= select(2, WoWTools_MenuMixin:FrameStrata(sub, function(data)
+        return self:GetFrameStrata()==data
+    end, function(data)
+        Save().trackButtonStrata= data
+        self:set_strata()
+    end))
+    if UnitAffectingCombat('player') then
+        sub2:SetEnabled(false)
+    end
+
+    sub:CreateDivider()
     sub:CreateButton(
         (Save().pointVigentteButton and '' or '|cff9e9e9e')
         ..(e.onlyChinese and '重置位置' or RESET_POSITION),
     function()
         Save().pointVigentteButton=nil
         self:ClearAllPoints()
-        self:Set_Point()
+        self:set_point()
         print(e.addName, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
     end)
 end
@@ -796,302 +829,6 @@ end
 
 
 
-
-
-
-
---[[
-local function Init_Button_Menu(_, level, menuList)--菜单
-    local info
-    if menuList=='CurrentVignette' then--当前 Vingnette
-        info={
-            text=e.onlyChinese and '小地图' or HUD_EDIT_MODE_MINIMAP_LABEL,
-            checked= not Save().hideVigentteCurrentOnMinimap,
-            func= function()
-                Save().hideVigentteCurrentOnMinimap= not Save().hideVigentteCurrentOnMinimap and true or nil
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-        info={
-            text=e.onlyChinese and '世界地图' or WORLDMAP_BUTTON,
-            checked= not Save().hideVigentteCurrentOnWorldMap,
-            func= function()
-                Save().hideVigentteCurrentOnWorldMap= not Save().hideVigentteCurrentOnWorldMap and true or nil
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-        e.LibDD:UIDropDownMenu_AddSeparator(level)
-        info={
-            text= e.onlyChinese and '播放声音' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, EVENTTRACE_BUTTON_PLAY, SOUND),
-            icon= 'chatframe-button-icon-voicechat',
-            checked= Save().vigentteSound,
-            disabled= Save().hideVigentteCurrentOnWorldMap,
-            func= function()
-                Save().vigentteSound= not Save().vigentteSound and true or nil
-                TrackButton:set_VIGNETTES_UPDATED(true)
-                TrackButton:set_Event()
-                if Save().vigentteSound then
-                    TrackButton:speak_Text(e.onlyChinese and '播放声音' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, EVENTTRACE_BUTTON_PLAY, SOUND))
-                end
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-
-    elseif menuList=='WorldQuest' then--世界任务
-        for questID, _ in pairs(Save().questIDs) do
-            e.LoadDate({id= questID, type=='quest'})
-            info={
-                text= GetQuestLink(questID) or questID,
-                icon= select(2, GetQuestLogRewardInfo(1, questID))
-                     or (C_QuestLog.GetQuestRewardCurrencyInfo(questID, 1, false) or {}).texture--select(2, GetQuestLogRewardCurrencyInfo(1, questID))
-                     or 'AutoQuest-Badge-Campaign',
-                notCheckable=true,
-                tooltipOnButton=true,
-                tooltipTitle= (e.onlyChinese and '移除' or REMOVE)..' '..questID,
-                arg1= questID,
-                func= function(_, arg1)
-                    Save().questIDs[arg1]=nil
-                    print(e.addName, addName, addName2, GetQuestLink(questID) or questID,
-                    '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a'
-                )
-                end
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
-        end
-        e.LibDD:UIDropDownMenu_AddSeparator(level)
-        info={
-            text= e.onlyChinese and '全部清除' or CLEAR_ALL,
-            notCheckable=true,
-            func= function()
-                Save().questIDs={}
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    elseif menuList=='AreaPoiID' then--AreaPoiID
-        for areaPoiID, uiMapID in pairs(Save().areaPoiIDs) do
-            local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, areaPoiID) or {}
-            local name
-            name= get_AreaPOIInfo_Name(poiInfo)
-            name= name=='' and areaPoiID or name
-            info={
-                text= name,
-                notCheckable=true,
-                tooltipOnButton=true,
-                tooltipTitle= (e.onlyChinese and '移除' or REMOVE)..' '..areaPoiID,
-                tooltipText= (C_Map.GetMapInfo(uiMapID) or {}).name,
-                arg1= areaPoiID,
-                arg2= uiMapID,
-                func= function(_, arg1,arg2)
-                    Save().areaPoiIDs[arg1]=nil
-                    print(e.addName,addName, addName2,
-                        get_AreaPOIInfo_Name(C_AreaPoiInfo.GetAreaPOIInfo(arg2, arg1) or {}),
-                        arg1 and 'areaPoiID '..arg1 or '',
-                        ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
-                )
-                end
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
-        end
-        e.LibDD:UIDropDownMenu_AddSeparator(level)
-        info={
-            text= e.onlyChinese and '全部清除' or CLEAR_ALL,
-            notCheckable=true,
-            func= function()
-                Save().areaPoiIDs={}
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    elseif menuList=='uiMapIDs' then--地图
-        for uiMapID, _ in pairs(Save().uiMapIDs) do
-            local name=  (C_Map.GetMapInfo(uiMapID) or {}).name
-            name= name or uiMapID
-            info={
-                text= name,
-                icon= 'poi-islands-table',
-                notCheckable=true,
-                tooltipOnButton=true,
-                tooltipTitle= (e.onlyChinese and '移除' or REMOVE)..' '..uiMapID,
-                arg1= uiMapID,
-                func= function(_, arg1)
-                    Save().uiMapIDs[arg1]=nil
-                    print(e.addName,addName, addName2,
-                    (C_Map.GetMapInfo(uiMapID) or {}).name,
-                    arg1 and 'uiMapID '..arg1 or '',
-                    ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
-                )
-                end
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
-        end
-        e.LibDD:UIDropDownMenu_AddSeparator(level)
-        info={
-            text= e.onlyChinese and '当前地图' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, WORLD_MAP),
-            checked= Save().currentMapAreaPoiIDs,
-            tooltipOnButton= true,
-            tooltipTitle= C_Map.GetBestMapForUnit("player"),
-            func= function()
-                Save().currentMapAreaPoiIDs= not Save().currentMapAreaPoiIDs and true or nil
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-        info={
-            text= e.onlyChinese and '全部清除' or CLEAR_ALL,
-            notCheckable=true,
-            func= function()
-                Save().uiMapIDs={}
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    elseif menuList=='AreaPoiID' then--AreaPoiID
-        for areaPoiID, uiMapID in pairs(Save().areaPoiIDs) do
-            local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, areaPoiID) or {}
-            local name
-            name= get_AreaPOIInfo_Name(poiInfo)
-            name= name=='' and areaPoiID or name
-            info={
-                text= name,
-                notCheckable=true,
-                tooltipOnButton=true,
-                tooltipTitle= (e.onlyChinese and '移除' or REMOVE)..' '..areaPoiID,
-                tooltipText= (C_Map.GetMapInfo(uiMapID) or {}).name,
-                arg1= areaPoiID,
-                arg2= uiMapID,
-                func= function(_, arg1,arg2)
-                    Save().areaPoiIDs[arg1]=nil
-                    print(e.addName,addName, addName2,
-                        get_AreaPOIInfo_Name(C_AreaPoiInfo.GetAreaPOIInfo(arg2, arg1) or {})
-                        'areaPoiID '..arg1,
-                        ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
-                )
-                end
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
-        end
-        e.LibDD:UIDropDownMenu_AddSeparator(level)
-        info={
-            text= e.onlyChinese and '全部清除' or CLEAR_ALL,
-            notCheckable=true,
-            func= function()
-                Save().areaPoiIDs={}
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    elseif menuList=='SETTINGS' then
-        info={
-            text= e.onlyChinese and '向下滚动' or COMBAT_TEXT_SCROLL_DOWN,
-            checked= Save().textToDown,
-            func= function()
-                Save().textToDown= not Save().textToDown and true or nil
-                for _, btn in pairs(TrackButton.btn) do
-                    btn:ClearAllPoints()
-                    btn.text:ClearAllPoints()
-                    btn:set_btn_point()
-                end
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-        e.LibDD:UIDropDownMenu_AddSeparator(level)
-        info={
-            text= e.onlyChinese and '重置位置' or RESET_POSITION,
-            notCheckable=true,
-            disabled= not TrackButton,
-            colorCode= not Save().pointVigentteButton and '|cff9e9e9e' or '',
-            func= function()
-                Save().pointVigentteButton=nil
-                TrackButton:ClearAllPoints()
-                TrackButton:Set_Point()
-                print(e.addName, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-    end
-
-    if menuList then
-        return
-    end
-
-
-    info={
-        text= e.onlyChinese and '显示' or SHOW,
-        checked= Save().vigentteButtonShowText,
-        keepShownOnClick=true,
-        func= function()
-            Save().vigentteButtonShowText= not Save().vigentteButtonShowText and true or nil
-            TrackButton:set_Shown()
-            TrackButton:set_Texture()
-        end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-
-    e.LibDD:UIDropDownMenu_AddSeparator(level)
-    info={
-        text= (e.onlyChinese and '当前' or REFORGE_CURRENT)..(Save().vigentteSound and '|A:chatframe-button-icon-voicechat:0:0|a' or ' ')..'Vignette',
-        menuList='CurrentVignette',
-        hasArrow=true,
-        notCheckable=true,
-        func= function()
-            Save().hideVigentteCurrent= not Save().hideVigentteCurrent and true or nil
-        end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    local num=0
-    for _ in pairs(Save().questIDs) do
-        num= num+1
-    end
-    info={
-        text= (e.onlyChinese and '世界任务' or TRACKER_HEADER_WORLD_QUESTS)..' |cnGREEN_FONT_COLOR:#'..num,
-        notCheckable=true,
-        menuList= 'WorldQuest',
-        hasArrow=true,
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    num=0
-    for _ in pairs(Save().areaPoiIDs) do
-        num= num+1
-    end
-    info={
-        text= 'AreaPoiID |cnGREEN_FONT_COLOR:#'..num,
-        notCheckable=true,
-        menuList= 'AreaPoiID',
-        hasArrow=true,
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    num=0
-    for _, _ in pairs(Save().uiMapIDs) do--地图
-        num= num+1
-    end
-    info={
-        text= (e.onlyChinese and '地图' or WORLD_MAP)..'|cnGREEN_FONT_COLOR:#'..num,
-        notCheckable=true,
-        menuList= 'uiMapIDs',
-        hasArrow=true,
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-
-    e.LibDD:UIDropDownMenu_AddSeparator(level)
-    info={
-        text= e.onlyChinese and '设置' or SETTINGS,
-        notCheckable=true,
-        keepShownOnClick=true,
-        menuList='SETTINGS',
-        hasArrow=true,
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-end
-
-]]
 
 
 
@@ -1112,22 +849,26 @@ end
 
 --小地图, 标记, 文本
 local function Init_Button()
-    --TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {icon=true, size={18,18}, isType2=true, name='WoWTools_Minimap_TrackButton'})
-    TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {icon='hide', isType2=true, name='WoWTools_Minimap_TrackButton'})
-    TrackButton.btn={}
+    --TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {icon='hide', isType2=true, name='WoWTools_Minimap_TrackButton'})
+    TrackButton= WoWTools_ButtonMixin:Ctype2(nil, {name='WoWTools_Minimap_TrackButton', size=22})
+    TrackButton.buttons={}
 
     TrackButton.Frame= CreateFrame('Frame', nil, TrackButton)
     TrackButton.Frame:SetAllPoints(TrackButton)
 
-    TrackButton.texture= TrackButton:CreateTexture(nil, 'BORDER')
+
+    --[[TrackButton.texture= TrackButton:CreateTexture(nil, 'BORDER')
     TrackButton.texture:SetAllPoints(TrackButton)
-    TrackButton.texture:SetAlpha(0.5)
+    TrackButton.texture:SetAlpha(0.5)]]
 
 
 
+    function TrackButton:set_strata()
+        self:SetFrameStrata(Save().trackButtonStrata or 'MEDIUM')
+    end
 
 
-    function TrackButton:set_Texture()
+    function TrackButton:set_texture()
         if Save().vigentteButtonShowText then
             self.texture:SetTexture(0)
         else
@@ -1135,7 +876,7 @@ local function Init_Button()
         end
     end
 
-    function TrackButton:Set_Point()--设置，位置
+    function TrackButton:set_point()--设置，位置
         if Save().pointVigentteButton then
             self:SetPoint(Save().pointVigentteButton[1], UIParent, Save().pointVigentteButton[3], Save().pointVigentteButton[4], Save().pointVigentteButton[5])
         elseif e.Player.husandro then
@@ -1167,8 +908,8 @@ local function Init_Button()
             local key= IsModifierKeyDown()
             if d=='LeftButton' and not key then
                 Save().vigentteButtonShowText= not Save().vigentteButtonShowText and true or nil
-                self:set_Shown()
-                self:set_Texture()
+                self:set_shown()
+                self:set_texture()
 
             elseif d=='RightButton' and not key then
                 MenuUtil.CreateContextMenu(self, Init_Menu)
@@ -1178,9 +919,9 @@ local function Init_Button()
 
 
 
-    
 
-    function TrackButton:set_Tootips()
+
+    function TrackButton:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(addName, addName2)
@@ -1194,24 +935,11 @@ local function Init_Button()
     end
 
     TrackButton:SetScript('OnMouseWheel', function(self, d)--缩放
-        if IsAltKeyDown() then
-            local scale= Save().vigentteButtonTextScale or 1
-            if d==1 then
-                scale= scale- 0.05
-            elseif d==-1 then
-                scale= scale+ 0.05
-            end
-            scale= scale>2.5 and 2.5  or scale
-            scale= scale<0.4 and 0.4 or scale
-            print(e.addName, addName, e.onlyChinese and '缩放' or UI_SCALE, scale)
-            Save().vigentteButtonTextScale= scale
-            self:set_Frame_Scale()--设置，Button的 Frame Text 属性
-            self:set_Tootips()
-        end
+        Save().vigentteButtonTextScale= WoWTools_FrameMixin:ScaleFrame(self, d, Save().vigentteButtonTextScale, nil)
     end)
 
     TrackButton:SetScript('OnEnter',function(self)
-        self:set_Tootips()
+        self:set_tooltip()
         self.texture:SetAlpha(1)
     end)
     TrackButton:SetScript('OnLeave',function(self)
@@ -1219,6 +947,96 @@ local function Init_Button()
         ResetCursor()
         self.texture:SetAlpha(0.5)
     end)
+
+
+
+
+
+
+
+
+
+
+
+
+    function TrackButton:set_shown()
+        local hide= not Save().vigentteButton
+            or IsInInstance()
+            or C_PetBattles.IsInBattle()
+            or UnitInVehicle('player')
+            or UnitAffectingCombat('player')
+            or WorldMapFrame:IsShown()
+
+        self:SetShown(not hide)
+        self.Frame:SetShown(Save().vigentteButtonShowText and not hide)
+        self.elapsed=nil
+    end
+
+
+    function TrackButton:set_event()
+        self:UnregisterAllEvents()
+
+        self:RegisterEvent('ZONE_CHANGED_NEW_AREA')
+        self:RegisterEvent('PLAYER_ENTERING_WORLD')
+
+        if Save().vigentteButton and not IsInInstance() then
+            self:RegisterEvent('PET_BATTLE_OPENING_DONE')
+            self:RegisterEvent('PET_BATTLE_CLOSE')
+
+            self:RegisterUnitEvent('UNIT_EXITED_VEHICLE', 'player')
+            self:RegisterUnitEvent('UNIT_ENTERED_VEHICLE', 'player')
+
+            self:RegisterEvent('PLAYER_REGEN_DISABLED')
+            self:RegisterEvent('PLAYER_REGEN_ENABLED')
+
+            if Save().vigentteSound then
+                self:RegisterEvent('VIGNETTES_UPDATED')
+            end
+        end
+    end
+
+    TrackButton:SetScript('OnEvent', function(self, event)
+        if event=='PLAYER_ENTERING_WORLD' or event=='ZONE_CHANGED_NEW_AREA' then
+            self.SpeakTextTab=nil
+            self:set_event()
+            self:set_shown()
+        elseif event=='VIGNETTES_UPDATED' then
+            self:set_VIGNETTES_UPDATED()
+        else--PLAYER_REGEN_DISABLED PLAYER_REGEN_ENABLED
+            self:set_shown()
+        end
+    end)
+
+
+
+
+
+
+
+
+
+
+    function TrackButton:set_scale()--设置，Button的 Frame Text 属性
+        self.Frame:SetScale(Save().vigentteButtonTextScale or 1)
+    end
+
+    WorldMapFrame:HookScript('OnHide', function() TrackButton:set_shown() end)
+    WorldMapFrame:HookScript('OnShow', function() TrackButton:set_shown() end)
+
+    TrackButton.Frame:SetScript('OnUpdate', function(self, elapsed)
+        self.elapsed= (self.elapsed or 1) + elapsed
+        if self.elapsed>=1 then
+            self.elapsed=0
+            set_Button_Text()
+        end
+    end)
+
+
+
+
+
+
+
 
 
 
@@ -1267,84 +1085,14 @@ local function Init_Button()
     end
 
 
-    function TrackButton:set_Shown()
-        local hide= not Save().vigentteButton
-            or IsInInstance()
-            or C_PetBattles.IsInBattle()
-            or UnitInVehicle('player')
-            or UnitAffectingCombat('player')
-
-            or WorldMapFrame:IsShown()
-
-        TrackButton:SetShown(not hide)
-        TrackButton.Frame:SetShown(Save().vigentteButtonShowText and not hide)
-    end
-
-
-    function TrackButton:set_Event()
-        self:UnregisterAllEvents()
-
-        self:RegisterEvent('ZONE_CHANGED_NEW_AREA')
-        self:RegisterEvent('PLAYER_ENTERING_WORLD')
-
-        if Save().vigentteButton and not IsInInstance() then
-            self:RegisterEvent('PET_BATTLE_OPENING_DONE')
-            self:RegisterEvent('PET_BATTLE_CLOSE')
-
-            self:RegisterUnitEvent('UNIT_EXITED_VEHICLE', 'player')
-            self:RegisterUnitEvent('UNIT_ENTERED_VEHICLE', 'player')
-
-            self:RegisterEvent('PLAYER_REGEN_DISABLED')
-            self:RegisterEvent('PLAYER_REGEN_ENABLED')
-
-            if Save().vigentteSound then
-                self:RegisterEvent('VIGNETTES_UPDATED')
-            end
-        end
-    end
-
-    TrackButton:SetScript('OnEvent', function(self, event)
-        if event=='PLAYER_ENTERING_WORLD' or event=='ZONE_CHANGED_NEW_AREA' then
-            self.SpeakTextTab=nil
-            self:set_Event()
-            self:set_Shown()
-        elseif event=='VIGNETTES_UPDATED' then
-            self:set_VIGNETTES_UPDATED()
-        else--PLAYER_REGEN_DISABLED PLAYER_REGEN_ENABLED
-            self:set_Shown()
-        end
-    end)
-
-
-
-    
-
-
-
-
-
-
-    function TrackButton:set_Frame_Scale()--设置，Button的 Frame Text 属性
-        self.Frame:SetScale(Save().vigentteButtonTextScale or 1)
-    end
-
-    WorldMapFrame:HookScript('OnHide', function() TrackButton:set_Shown() end)
-    WorldMapFrame:HookScript('OnShow', function() TrackButton:set_Shown() end)
-
-    TrackButton.Frame:SetScript('OnUpdate', function(self, elapsed)
-        self.elapsed= (self.elapsed or 1) + elapsed
-        if self.elapsed>=1 then
-            self.elapsed=0
-            set_Button_Text()
-        end
-    end)
 
     TrackButton:set_VIGNETTES_UPDATED(true)
-    TrackButton:Set_Point()
-    TrackButton:set_Texture()
-    TrackButton:set_Frame_Scale()
-    TrackButton:set_Event()
-    TrackButton:set_Shown()
+    TrackButton:set_point()
+    TrackButton:set_texture()
+    TrackButton:set_scale()
+    TrackButton:set_event()
+    TrackButton:set_shown()
+    TrackButton:set_strata()
 
 end
 
@@ -1499,7 +1247,7 @@ function WoWTools_MinimapMixin:Init_TrackButton()--小地图, 标记, 文本
 
     if not Save().vigentteButton or TrackButton then
         if TrackButton then
-            TrackButton:set_Shown()
+            TrackButton:set_shown()
         end
         return
     end

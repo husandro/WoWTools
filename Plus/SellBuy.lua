@@ -1052,7 +1052,7 @@ local function Init_Menu(_, level, type)
     elseif type=='CUSTOM' then--二级菜单, 自定义出售
         for itemID, _ in pairs(Save.Sell) do
             if itemID  then
-                e.LoadDate({id=itemID, type='item'})
+                e.LoadData({id=itemID, type='item'})
                 local itemLink= WoWTools_ItemMixin:GetLink(itemID)
                 itemLink= itemLink or C_Item.GetItemNameByID(itemID) or ('itemID: ' .. itemID)
                 info= {
@@ -1085,7 +1085,7 @@ local function Init_Menu(_, level, type)
 
     elseif type=='BOSS' then--二级菜单, BOSS
         for itemID, itemLevel in pairs(bossSave) do
-            e.LoadDate({itemID=itemID, type='item'})
+            e.LoadData({itemID=itemID, type='item'})
             local itemLink= WoWTools_ItemMixin:GetLink(itemID)
             info= {
                 text= itemLink..'('..itemLevel..')',
@@ -1127,7 +1127,7 @@ local function Init_Menu(_, level, type)
     elseif type=='BUY' then--二级菜单, 购买物品
         for itemID, num in pairs(buySave) do
             if itemID and num then
-                e.LoadDate({id=itemID, type='item'})
+                e.LoadData({id=itemID, type='item'})
                 local bag=C_Item.GetItemCount(itemID)
                 local bank=C_Item.GetItemCount(itemID, true, false, true)-bag
                 local itemLink= WoWTools_ItemMixin:GetLink(itemID)
@@ -1166,7 +1166,7 @@ local function Init_Menu(_, level, type)
     elseif type=='BUYBACK' then--二级菜单, 购回物品
         for itemID, _ in pairs(Save.noSell) do
             if itemID then
-                e.LoadDate({id=itemID, type='item'})
+                e.LoadData({id=itemID, type='item'})
                 local bag=C_Item.GetItemCount(itemID)
                 local bank=C_Item.GetItemCount(itemID, true, false, true)-bag
                 local itemLink= WoWTools_ItemMixin:GetLink(itemID)

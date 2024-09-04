@@ -127,6 +127,41 @@ function WoWTools_MenuMixin:Scale(root, GetValue, SetValue, checkGetValue, check
 
     return sub2, sub
 end
+--[[
+WoWTools_MenuMixin:Scale(root, function()
+    return Save.scale
+end, function(value)
+    Save.scale= value
+    self:set_scale()
+end)
+]]
+
+
+
+
+
+--FrameStrata
+function WoWTools_MenuMixin:FrameStrata(root, GetValue, SetValue)
+    local sub=root:CreateButton('FrameStrata', function() return MenuResponse.Open end)
+
+    for _, strata in pairs({'BACKGROUND','LOW','MEDIUM','HIGH','DIALOG','FULLSCREEN','FULLSCREEN_DIALOG'}) do
+        sub:CreateCheckbox((strata=='MEDIUM' and '|cnGREEN_FONT_COLOR:' or '')..strata, GetValue, SetValue, strata)
+    end
+    return sub
+end
+--[[
+sub2=select(2, WoWTools_MenuMixin:FrameStrata(sub, function(data)
+    return self:GetFrameStrata()==data
+end, function(data)
+    Save.strata= data
+    self:set_strata()
+end))
+if isInCombat then
+    sub2:SetEnabled(false)
+end
+]]
+
+
 
 --显示背景
 function WoWTools_MenuMixin:ShowBackground(root, GetValue, SetValue)
@@ -146,15 +181,6 @@ end)
 
 
 
---FrameStrata
-function WoWTools_MenuMixin:FrameStrata(root, GetValue, SetValue)
-    local sub=root:CreateButton('FrameStrata', function() return MenuResponse.Open end)
-
-    for _, strata in pairs({'BACKGROUND','LOW','MEDIUM','HIGH','DIALOG','FULLSCREEN','FULLSCREEN_DIALOG'}) do
-        sub:CreateCheckbox((strata=='MEDIUM' and '|cnGREEN_FONT_COLOR:' or '')..strata, GetValue, SetValue, strata)
-    end
-    return sub
-end
 
 --重置位置
 function WoWTools_MenuMixin:RestPoint(root, point, SetValue)
@@ -165,7 +191,7 @@ end
 --重置数据
 function WoWTools_MenuMixin:RestData(root, name, SetValue)
     return root:CreateButton('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT), function(data)
-        
+
         StaticPopup_Show('WoWTools_RestData',data.name, nil, data.SetValue)
         return MenuResponse.Open
     end, {name=name, SetValue=SetValue})
@@ -200,14 +226,14 @@ end
 function WoWTools_MenuMixin:ToTop(root, tab)
     local sub=root:CreateCheckbox(
         (tab.name or (
-            '|A:editmode-up-arrow:16:11:0:3|a'..(e.onlyChinese and '位于上方' or QUESTLINE_LOCATED_ABOVE))), 
+            '|A:editmode-up-arrow:16:11:0:3|a'..(e.onlyChinese and '位于上方' or QUESTLINE_LOCATED_ABOVE))),
         tab.GetValue,
         tab.SetValue,
         tab
     )
     sub:SetTooltip(function(tooltip, data)
         tooltip:AddLine(
-            data.tooltip or 
+            data.tooltip or
             (e.onlyChinese and '收起选项 |A:editmode-up-arrow:16:11:0:3|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS)
         )
         if data.isReload then
@@ -322,7 +348,7 @@ function WoWTools_MenuMixin:GetDragonriding()
         if num and num>=0 then
             return '|T'..(select(4, C_Traits.GetTraitCurrencyInfo(2563)) or 4728198)..':0|t'
                 ..(num==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:')..num..'|r',
-                
+
                 num
         end
     end
@@ -349,7 +375,7 @@ function WoWTools_MenuMixin:OpenDragonriding(root)
         {widgetSetID=uiWidgetSetID, tooltip=e.onlyChinese and '巨龙群岛概要' or DRAGONFLIGHT_LANDING_PAGE_TITLE}
     )
     WoWTools_TooltipMixin:SetTooltip(nil, nil, sub)--设置，物品，提示
-    
+
     return sub
 end
 
