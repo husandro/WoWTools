@@ -137,7 +137,7 @@ end
 --[诺森德工程学: 氮气推进器] ricipeID 109099
 local function set_Engineering(self, slot, link, use, isPaperDollItemSlot)
     if not ((slot==15 and recipeLearned(126392)) or (slot==6 and recipeLearned(55016))) or use or Save.hide or not link or not isPaperDollItemSlot then
-        
+
 
         if self.engineering  then
             self.engineering:SetShown(false)
@@ -788,7 +788,7 @@ local function Init_Title()--头衔数量
                         for i= menuList, menuList+n-1 do
                             if tab[i] then
                                 local index= tab[i].index
-                                
+
                                 local name= tab[i].name
                                 local cnName=tab[i].cnName
                                 info= {
@@ -1650,7 +1650,7 @@ local function Init_Show_Hide_Button(frame)
     btn:SetScript('OnClick', function(_, d)
         if d=='RightButton' then
             if not Initializer then
-                e.OpenPanelOpting()    
+                e.OpenPanelOpting()
             end
             e.OpenPanelOpting(Initializer)
             return
@@ -1726,7 +1726,7 @@ local function Init_Show_Hide_Button(frame)
         end
     end
     btn:set_alpha(false)
-    
+
     btn:SetScript('OnLeave', function(self) GameTooltip_Hide() self:set_alpha(false) end)
     btn:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")

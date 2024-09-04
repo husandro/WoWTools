@@ -3134,7 +3134,7 @@ local function Init_Quest()
         QuestFrame.sel.name=UnitName("npc")
         QuestFrame.sel:SetChecked(Save.NPC[npc])
         QuestFrame.sel.questIDLabel:SetText(WoWTools_QuestMixin:GetID() or '')
-        if not npc or not Save.quest or IsModifierKeyDown() or Save.NPC[npc] then
+        if npc and Save.NPC[npc] or not Save.quest or IsModifierKeyDown() then
             return
         end
 

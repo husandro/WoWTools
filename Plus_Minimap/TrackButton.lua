@@ -69,8 +69,8 @@ local function get_Quest_Text(questID)
                 if not itemTexture then
                     atlas= 'worldquest-tracker-questmarker'
                 end
-                local secondsLeft = C_TaskQuest.GetQuestTimeLeftSeconds(questID)
-                local secText= e.SecondsToClock(secondsLeft, true)
+                local secondsLeft = C_TaskQuest.GetQuestTimeLeftSeconds(questID, true)
+                local secText= secondsLeft and SecondsToTime(secondsLeft)--e.SecondsToClock(secondsLeft, true)
                 text= text and text..'|n' or ''
                 text= e.cn(questName)
                     ..(secText and ' |cffffffff'..secText..'|r' or '')
@@ -97,21 +97,16 @@ end
 
 
 
-
-
-
-
-
-
-
-
 local function Get_widgetSetID_Text(widgetSetID, all)
+    if not widgetSetID then
+        return
+    end
+
     local text
 
     for _, widget in ipairs(C_UIWidgetManager.GetAllWidgetsBySetID(widgetSetID) or {}) do
         local info
         if widget.widgetID then
-            print(widget.widgetID)
             if widget.widgetType ==Enum.UIWidgetVisualizationType.IconAndText then info= C_UIWidgetManager.GetIconAndTextWidgetVisualizationInfo(widget.widgetID)
             elseif widget.widgetType ==Enum.UIWidgetVisualizationType.CaptureBar then info= C_UIWidgetManager.GetCaptureBarWidgetVisualizationInfo(widget.widgetID)
             elseif widget.widgetType ==Enum.UIWidgetVisualizationType.StatusBar then info= C_UIWidgetManager.GetStatusBarWidgetVisualizationInfo(widget.widgetID)
@@ -197,6 +192,7 @@ end
 
 
 
+
 --##############
 --areaPoiID 文本
 --##############
@@ -205,7 +201,8 @@ local function Get_areaPoiID_Text(uiMapID, areaPoiID, all)
     if not poiInfo.name  then
         return
     end
-    local text= poiInfo.widgetSetID and Get_widgetSetID_Text(poiInfo.widgetSetID, all)
+    local widgetSetID= poiInfo.tooltipWidgetSet or poiInfo.iconWidgetSet
+    local text=  Get_widgetSetID_Text(widgetSetID, all)
     if text then
 
         local time
@@ -246,7 +243,6 @@ local function Get_areaPoiID_Text(uiMapID, areaPoiID, all)
         end
     end
 end
-
 
 
 
@@ -329,6 +325,165 @@ local function get_vignette_Text()
     end
     return onMinimap, onWorldMap
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--##########
+--小按钮，提示
+--VignetteDataProvider.lua VignettePinMixin:OnMouseEnte
+local function set_OnEnter_btn_tips(self)
+    local widgetSetID, vignetteID
+    if self.questID then--任务
+        GameTooltip_AddQuest(self, self.questID)
+
+    elseif self.vignetteGUID then--vigentte
+        local vignetteInfo = C_VignetteInfo.GetVignetteInfo(self.vignetteGUID)
+        if vignetteInfo then
+            local verticalPadding = nil
+            local waitingForData, titleAdded = false, false
+
+            if vignetteInfo.type == Enum.VignetteType.Normal or vignetteInfo.type == Enum.VignetteType.Treasure then
+                GameTooltip_SetTitle(GameTooltip, e.cn(vignetteInfo.name))
+                titleAdded = true
+
+            elseif vignetteInfo.type == Enum.VignetteType.PvPBounty then
+                local player = PlayerLocation:CreateFromGUID(vignetteInfo.objectGUID)
+                local class = select(3, C_PlayerInfo.GetClass(player))
+                local race = C_PlayerInfo.GetRace(player)
+                local name = C_PlayerInfo.GetName(player)
+                if race and class and name then
+                    local classInfo = C_CreatureInfo.GetClassInfo(class) or {}
+                    local factionInfo = C_CreatureInfo.GetFactionInfo(race) or {}
+                    GameTooltip_SetTitle(GameTooltip, e.cn(name), GetClassColorObj(classInfo.classFile))
+                    GameTooltip_AddColoredLine(GameTooltip, e.cn(factionInfo.name), GetFactionColor(factionInfo.groupTag))
+                    if vignetteInfo.rewardQuestID then
+                        GameTooltip_AddQuestRewardsToTooltip(GameTooltip, vignetteInfo.rewardQuestID, TOOLTIP_QUEST_REWARDS_STYLE_PVP_BOUNTY)
+                    end
+                    titleAdded=true
+                end
+                waitingForData = not titleAdded
+
+            elseif vignetteInfo.type == Enum.VignetteType.Torghast then
+                SharedTooltip_SetBackdropStyle(GameTooltip, GAME_TOOLTIP_BACKDROP_STYLE_RUNEFORGE_LEGENDARY)
+                GameTooltip_SetTitle(GameTooltip, e.cn(vignetteInfo.name))
+                titleAdded = true
+            end
+
+            if not waitingForData and vignetteInfo.widgetSetID then
+                local overflow = GameTooltip_AddWidgetSet(GameTooltip, vignetteInfo.widgetSetID, titleAdded and vignetteInfo.addPaddingAboveWidgets and 10)
+                if overflow then
+                    verticalPadding = -overflow
+                end
+            elseif waitingForData then
+                GameTooltip_SetTitle(GameTooltip, e.onlyChinese and '获取数据' or RETRIEVING_DATA)
+            end
+            if verticalPadding then
+                GameTooltip:SetPadding(0, verticalPadding)
+            end
+            widgetSetID= vignetteInfo.widgetSetID
+            vignetteID= vignetteInfo.vignetteID
+        end
+
+    elseif self.uiMapID and self.areaPoiID then--areaPoi AreaPOIPinMixin:TryShowTooltip()
+        local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(self.uiMapID, self.areaPoiID) or {}
+        local hasName = poiInfo.name ~= ""
+        local hasDescription = poiInfo.description and poiInfo.description ~= ""
+        local isTimed, hideTimer = C_AreaPoiInfo.IsAreaPOITimed(self.areaPoiID)
+        local showTimer = isTimed and not hideTimer
+        local hasWidgetSet = poiInfo.widgetSetID ~= nil
+
+        local hasTooltip = hasDescription or showTimer or hasWidgetSet
+	    local addedTooltipLine = false
+
+        if hasTooltip then
+            local verticalPadding = nil
+
+            if hasName then
+                GameTooltip_SetTitle(GameTooltip, e.cn(poiInfo.name), HIGHLIGHT_FONT_COLOR)
+                addedTooltipLine = true
+            end
+
+            if hasDescription then
+                GameTooltip_AddNormalLine(GameTooltip, e.cn(poiInfo.description))
+                addedTooltipLine = true
+            end
+
+            if showTimer then
+                local secondsLeft = C_AreaPoiInfo.GetAreaPOISecondsLeft(self.areaPoiID)
+                if secondsLeft and secondsLeft > 0 then
+                    local timeString = SecondsToTime(secondsLeft)
+                    GameTooltip_AddNormalLine(GameTooltip, format(e.onlyChinese and '剩余时间：%s' or BONUS_OBJECTIVE_TIME_LEFT, timeString))
+                    addedTooltipLine = true
+                end
+            end
+
+            --[[if poiInfo.textureKit == "OribosGreatVault" then
+                GameTooltip_AddBlankLineToTooltip(GameTooltip)
+                GameTooltip_AddInstructionLine(GameTooltip, ORIBOS_GREAT_VAULT_POI_TOOLTIP_INSTRUCTIONS)
+                addedTooltipLine = true
+            end]]
+
+            if hasWidgetSet then
+                local overflow = GameTooltip_AddWidgetSet(GameTooltip, poiInfo.widgetSetID, addedTooltipLine and poiInfo.addPaddingAboveWidgets and 10)
+                if overflow then
+                    verticalPadding = -overflow
+                end
+            end
+
+            if poiInfo.uiTextureKit then
+                local backdropStyle = GAME_TOOLTIP_TEXTUREKIT_BACKDROP_STYLES[poiInfo.uiTextureKit]
+                if (backdropStyle) then
+                    SharedTooltip_SetBackdropStyle(GameTooltip, backdropStyle)
+                end
+            end
+            -- need to set padding after Show or else there will be a flicker
+            if verticalPadding then
+                GameTooltip:SetPadding(0, verticalPadding)
+            end
+            widgetSetID= poiInfo.widgetSetID
+        end
+    end
+    if self.areaPoiID and self.uiMapID then
+        e.tips:AddDoubleLine('areaPoiID |cnGREEN_FONT_COLOR:'..self.areaPoiID, 'uiMapID |cnGREEN_FONT_COLOR:'..self.uiMapID..'|r')
+    elseif vignetteID then
+        e.tips:AddLine('vignetteID |cnGREEN_FONT_COLOR:'..vignetteID)
+    elseif self.questID then
+        e.tips:AddLine('questID |cnGREEN_FONT_COLOR:'..self.questID)
+    end
+    if widgetSetID then
+        local info= self.uiMapID and C_Map.GetMapInfo(self.uiMapID) or {}
+        e.tips:AddDoubleLine('widgetSetID |cnGREEN_FONT_COLOR:'..widgetSetID, e.cn(info.name))
+    end
+    if self.rewardQuestID then
+        e.tips:AddLine('rewardQuestID |cnGREEN_FONT_COLOR:'..self.rewardQuestID)
+    end
+end
+
+
+
+
+
+
 
 
 
@@ -551,7 +706,7 @@ local function set_Button_Text()
                 e.tips:SetOwner(self.nameText or self.text or self, "ANCHOR_RIGHT")
                 e.tips:ClearLines()
 
-                WoWTools_TooltipMixin:set_tooltip(e.tips, {
+                --[[WoWTools_TooltipMixin:set_tooltip(e.tips, {
                     questID= self.questID,
                     rewardQuestID=self.rewardQuestID,
                     vignetteGUID= self.vignetteGUID,
@@ -560,6 +715,8 @@ local function set_Button_Text()
 
                     frame=self,
                 })
+                ]]
+                set_OnEnter_btn_tips(self)
 
                 e.tips:AddLine(' ')
                 e.tips:AddDoubleLine(self.name and self.name~='' and '|A:communities-icon-chat:0:0|a'..(e.onlyChinese and '信息' or INFO) or ' ', e.Icon.left)
@@ -691,8 +848,9 @@ local function Init_Menu(self, root)--菜单
             Save().questIDs[data.questID]= not Save().questIDs[data.questID] and true or nil
             print(e.addName, addName, addName2, WoWTools_QuestMixin:GetLink(data.questID))
         end, {questID=questID})
-        sub2:SetTooltip(function(tooltip)
+        sub2:SetTooltip(function(tooltip, description)
             tooltip:AddLine(e.onlyChinese and '移除' or REMOVE)
+            tooltip:AddLine('questID '..description.data.questID)
         end)
     end
 
@@ -724,8 +882,10 @@ local function Init_Menu(self, root)--菜单
         end, function(data)
             Save().areaPoiIDs[data.areaPoiID]= not Save().areaPoiIDs[data.areaPoiID] and data.uiMapID or nil
         end, {areaPoiID=areaPoiID, uiMapID=uiMapID})
-        sub2:SetTooltip(function(tooltip)
+        sub2:SetTooltip(function(tooltip, description)
             tooltip:AddLine(e.onlyChinese and '移除' or REMOVE)
+            tooltip:AddLine('uiMapID '..description.data.uiMapID)
+            tooltip:AddLine('areaPoiID '..description.data.areaPoiID)
         end)
     end
 
@@ -734,7 +894,7 @@ local function Init_Menu(self, root)--菜单
         sub:CreateButton(
             e.onlyChinese and '全部清除' or CLEAR_ALL,
         function()
-            Save().questIDs={}
+            Save().areaPoiIDs={}
         end)
         WoWTools_MenuMixin:SetNumButton(sub, num)
     end
@@ -760,6 +920,7 @@ local function Init_Menu(self, root)--菜单
         end, {uiMapID=uiMapID})
         sub2:SetTooltip(function(tooltip)
             tooltip:AddLine(e.onlyChinese and '移除' or REMOVE)
+            tooltip:AddLine('uiMapID '..uiMapID)
         end)
     end
 
@@ -774,12 +935,17 @@ local function Init_Menu(self, root)--菜单
     end
 
 
---设置
+--打开选项
     root:CreateDivider()
     sub=root:CreateButton(
-        e.onlyChinese and '设置' or SETTINGS,
+        addName2,
     function()
+        e.OpenPanelOpting(nil, addName)
         return MenuResponse.Open
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(addName)
+        tooltip:AddLine(e.onlyChinese and '打开选项' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, OPTIONS))
     end)
 
     sub:CreateCheckbox(
@@ -813,16 +979,12 @@ local function Init_Menu(self, root)--菜单
     if UnitAffectingCombat('player') then
         sub2:SetEnabled(false)
     end
-
-    sub:CreateDivider()
-    sub:CreateButton(
-        (Save().pointVigentteButton and '' or '|cff9e9e9e')
-        ..(e.onlyChinese and '重置位置' or RESET_POSITION),
-    function()
+    
+--重置位置
+    WoWTools_MenuMixin:RestPoint(sub, Save().pointVigentteButton, function()
         Save().pointVigentteButton=nil
         self:ClearAllPoints()
         self:set_point()
-        print(e.addName, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
     end)
 end
 

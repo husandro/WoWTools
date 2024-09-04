@@ -2750,7 +2750,7 @@ local function Init_Move()
     e.Set_Move_Frame(CreateChannelPopup)
     e.Set_Move_Frame(BattleTagInviteFrame)
     e.Set_Move_Frame(OverrideActionBarExpBar, {notZoom=true})
-
+    e.Set_Move_Frame(ReportFrame)
 
      C_Timer.After(4, function()
             e.Set_Move_Frame(BankFrame)

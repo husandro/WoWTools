@@ -373,7 +373,7 @@ local function Init_set_Map_ID()--显示地图ID
                     if areaPoiIDs then
                         for _,areaPoiID in pairs(areaPoiIDs) do
                             local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, areaPoiID)
-                            if poiInfo and (poiInfo.areaPoiID or poiInfo.widgetSetID) and poiInfo.atlasName then
+                            if poiInfo and (poiInfo.areaPoiID or poiInfo.tooltipWidgetSet) and poiInfo.atlasName then
                                 m='|A:'..poiInfo.atlasName..':0:0|a'..m
                             end
                         end
@@ -462,10 +462,10 @@ local function Init_set_Map_ID()--显示地图ID
                 if areaPoiIDs then
                     for _,areaPoiID in pairs(areaPoiIDs) do
                         local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, areaPoiID)
-                        if poiInfo and (poiInfo.areaPoiID or poiInfo.widgetSetID) then
+                        if poiInfo and (poiInfo.areaPoiID or poiInfo.tooltipWidgetSet) then
                             e.tips:AddDoubleLine((poiInfo.atlasName and '|A:'..poiInfo.atlasName..':0:0|a' or '')
                             .. poiInfo.name
-                            ..(poiInfo.widgetSetID and ' widgetSetID '..poiInfo.widgetSetID or ''),
+                            ..(poiInfo.tooltipWidgetSet and ' widgetSetID '..poiInfo.tooltipWidgetSet or ''),
                             'areaPoiID '..(poiInfo.areaPoiID or NONE))
                         end
                     end

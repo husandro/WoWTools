@@ -102,12 +102,7 @@ local function Init_Menu(self, root)
     end)
 
     root:CreateDivider()
-    sub=root:CreateButton(addName, function()
-        if not Initializer then
-            e.OpenPanelOpting()
-        end
-        e.OpenPanelOpting(Initializer, addName)
-    end)
+    sub=root:CreateButton(addName, WoWTools_MinimapMixin.OpenPanel)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(e.onlyChinese and '打开选项界面' or OPTIONS)
     end)

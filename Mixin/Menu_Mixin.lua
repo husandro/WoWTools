@@ -69,11 +69,12 @@ function WoWTools_MenuMixin:CreateSlider(root, tab)
             s:SetValue(value)
         end)
         f:SetScript('OnHide', function(s)
-            s.SetValue=nil
-            s.minValue=nil
-            s.maxValue=nil
-            s.step=nil
-            s.bit=nil
+            f.getValue=nil
+            f.setValue=nil
+            f.minValue=nil
+            f.maxValue=nil
+            f.step=nil
+            f.bit=nil
             f:SetScript('OnMouseWheel', nil)
             f:SetScript('OnValueChanged', nil)
         end)
@@ -112,6 +113,7 @@ function WoWTools_MenuMixin:Scale(root, GetValue, SetValue, checkGetValue, check
         end)
     end
 
+    sub:CreateSpacer()
     local sub2=self:CreateSlider(sub, {
         getValue=GetValue,
         setValue=SetValue,
@@ -124,6 +126,15 @@ function WoWTools_MenuMixin:Scale(root, GetValue, SetValue, checkGetValue, check
             tooltip:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE, UnitAffectingCombat('player') and ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)))
         end
     })
+    sub:CreateSpacer()
+
+    sub:CreateButton((e.onlyChinese and '重置' or RESET),
+    function(data)
+        if data.data.setValue then
+            data.data.setValue(1)
+        end
+        return MenuResponse.Open
+    end, sub2)
 
     return sub2, sub
 end
@@ -184,8 +195,22 @@ end)
 
 --重置位置
 function WoWTools_MenuMixin:RestPoint(root, point, SetValue)
-    return root:CreateButton((point and '' or '|cff9e9e9e')..(e.onlyChinese and '重置位置' or RESET_POSITION), SetValue)
+    root:CreateDivider()
+    return root:CreateButton(
+        '|A:characterundelete-RestoreButton:0:0|a'
+        ..(point and '' or '|cff9e9e9e')
+        ..(e.onlyChinese and '重置位置' or RESET_POSITION),
+        SetValue
+    )
 end
+--[[
+--重置位置
+WoWTools_MenuMixin:RestPoint(sub, Save().pointVigentteButton, function()
+    Save().pointVigentteButton=nil
+    self:ClearAllPoints()
+    self:set_point()
+end)
+]]
 
 
 --重置数据

@@ -1,3 +1,5 @@
+## SavedVariablesPerCharacter: BlizzardStopwatchOptions
+
 
 hooksecurefunc(GroupLootHistoryFrame.ScrollBox, 'SetScrollTargetOffset', function(self)
 if not frame:GetView() then
