@@ -248,6 +248,7 @@ local function Init_StopwatchFrame()
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE or SLASH_TEXTTOSPEECH_MENU, 'Alt+'..e.Icon.right)
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().StopwatchFrameScale or 1), 'Alt+'..e.Icon.mid)
+        e.tips:AddDoubleLine('|A:dressingroom-button-appearancelist-up:0:0|a'..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), e.Icon.right)
         if Save().StopwatchOnClickPause then
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(
