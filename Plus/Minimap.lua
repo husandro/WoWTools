@@ -33,7 +33,7 @@ local Save={
        --TimeManagerClockButtonPoint={}--位置
 
        --秒表
-       --disabledStopwatchPlus=true,--禁用plus
+       --disabledClockPlus=true,--禁用plus
        --showStopwatchFrame=true,--加载游戏时，显示秒表
        --StopwatchFrameScale=1,--缩放
 
@@ -877,42 +877,7 @@ end
 local function Init_Menu(_, level, menuList)
     local info
     if menuList=='panelButtonRestPoint' then
-        info={
-            text= e.onlyChinese and '重置位置' or RESET_POSITION,
-            notCheckable=true,
-            disabled= not Button,
-            keepShownOnClick=true,
-            colorCode= not Save.pointVigentteButton and '|cff9e9e9e' or '',
-            func= function()
-                Save.pointVigentteButton=nil
-                Button:ClearAllPoints()
-                Button:Set_Point()
-                print(e.addName, Initializer:GetName(), e.onlyChinese and '重置位置' or RESET_POSITION)
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    elseif menuList=='ResetTimeManagerClockButton' then
-        info={
-            text= e.onlyChinese and '重置位置' or RESET_POSITION,
-            notCheckable=true,
-            keepShownOnClick=true,
-            tooltipOnButton=true,
-            tooltipTitle= e.onlyChinese and '时钟' or TIMEMANAGER_TITLE,
-            disabled= not Save.TimeManagerClockButtonScale and not Save.TimeManagerClockButtonPoint,
-            colorCode= Save.disabledClockPlus and '|cff9e9e9e',
-            func= function()
-                Save.TimeManagerClockButtonScale=nil
-                Save.TimeManagerClockButtonPoint=nil
-                TimeManagerClockButton:SetScale(1)
-                TimeManagerClockButton:ClearAllPoints()
-                TimeManagerClockButton:SetParent(MinimapCluster)
-                TimeManagerClockButton:SetPoint('TOPRIGHT', MinimapCluster.BorderTop,-4,0)--Blizzard_TimeManager.xml
-                --<Anchor point="TOPRIGHT" relativeKey="$parent.BorderTop" x="-4" y="0"/>
-                print(e.addName, Initializer:GetName(), e.onlyChinese and '重置位置' or RESET_POSITION)
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
+   
     --[[end
 
     if menuList then
@@ -995,32 +960,7 @@ local function Init_Menu(_, level, menuList)
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-        --[[if C_MythicPlus.GetCurrentSeason()==11 then
-            info={
-                text= '|A:WarlockPortalAlliance:0:0|a'..(e.onlyChinese and '挑战传送门标签' or 'M+ Portal Room Labels'),
-                tooltipOnButton=true,
-                checked= not Save.hideMPortalRoomLabels,
-                keepShownOnClick=true,
-                func= function()
-                    Save.hideMPortalRoomLabels= not Save.hideMPortalRoomLabels and true or nil
-                    Init_M_Portal_Room_Labels()
-                end
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
-        end]]
 
-        info={
-            text= '|A:characterupdate_clock-icon:0:0|a'..(e.onlyChinese and '时钟' or TIMEMANAGER_TITLE)..' Plus',
-            checked= not Save.disabledClockPlus,
-            keepShownOnClick=true,
-            hasArrow=true,
-            menuList='ResetTimeManagerClockButton',
-            func= function()
-                Save.disabledClockPlus= not Save.disabledClockPlus and true or nil
-                print(e.addName, Initializer:GetName(), '|cnGREEN_FONT_COLOR:' , e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
 
         e.LibDD:UIDropDownMenu_AddSeparator(level)
         info={

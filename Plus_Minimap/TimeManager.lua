@@ -6,14 +6,15 @@ Blizzard_TimeManager.lua
 TimeManagerClockButtonScale=1缩放
 TimeManagerClockButtonPoint={}位置
 
-disabledClockPlus=true,时钟，秒表
 时钟
 useServerTimer=true,小时图，使用服务器, 时间
 TimeManagerClockButtonScale=1缩放
 TimeManagerClockButtonPoint={}位置
 
 秒表
-disabledStopwatchPlus=true,禁用plus
+
+disabledClockPlus=true,时钟，秒表
+disabledClockPlus=true,禁用plus
 showStopwatchFrame=true,加载游戏时，显示秒表
 StopwatchFrameScale=1,缩放
 StopwatchOnClickPause=true,--移过暂停
@@ -26,60 +27,69 @@ local Save= function()
 end
 
 
---秒表
-local function Init_Stopwatch_Menu(_, sub)
+
+
+
+
+
+
+
+
+
+
+
+
+--时间信息
+local function Init_TimeManager_Menu(_, root)
 --plus
-    local sub2
-    sub2=sub:CreateCheckbox('Plus', function()
-        return not Save().disabledStopwatchPlus
+    local sub=root:CreateCheckbox('|A:auctionhouse-icon-clock:0:0:|a Plus', function()
+        return not Save().disabledClockPlus
     end, function()
-        Save().disabledStopwatchPlus= not Save().disabledStopwatchPlus and true or nil
+        Save().disabledClockPlus= not Save().disabledClockPlus and true or nil
         print(e.addName, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
 --重新加载
-    WoWTools_MenuMixin:Reload(sub2, nil)
+    WoWTools_MenuMixin:Reload(sub, nil)
 
-    if not Save().disabledStopwatchPlus then
-        sub:CreateDivider()
-        sub:CreateCheckbox(
-            e.Icon.left..(e.onlyChinese and '开始/暂停' or NEWBIE_TOOLTIP_STOPWATCH_PLAYPAUSEBUTTON),
-        function()
-            return Save().StopwatchOnClickPause
-        end, function()
-            Save().StopwatchOnClickPause= not Save().StopwatchOnClickPause and true or nil
-            if StopwatchFrame.set_onclick_pause then
-                StopwatchFrame:set_onclick_pause()
-            else
-                StopwatchTitle:SetText(e.onlyChinese and '秒表' or STOPWATCH_TITLE)
-            end
-        end)
+    if Save().disabledClockPlus then
+        return
+    end
+
+--显示背景
+    WoWTools_MenuMixin:ShowBackground(root,
+    function()
+        return Save().isShowTimeManagerBackground
+    end, function()
+        Save().isShowTimeManagerBackground= not Save().isShowTimeManagerBackground and true or nil
+        if TimeManagerClockButton.set_background then
+            TimeManagerClockButton:set_background()
+        end
+    end)
 
 --缩放
-        WoWTools_MenuMixin:Scale(sub, function()
-            return Save().StopwatchFrameScale
-        end, function(value)
-            Save().StopwatchFrameScale= value
-            if StopwatchFrame.set_scale then
-                StopwatchFrame:set_scale()
-            end
-        end)
+    WoWTools_MenuMixin:Scale(root, function()
+        return Save().TimeManagerClockButtonScale
+    end, function(value)
+        Save().TimeManagerClockButtonScale= value
+        if TimeManagerClockButton.set_scale then
+            TimeManagerClockButton:set_scale()
+        end
+    end)
 
 --FrameStrata
-        WoWTools_MenuMixin:FrameStrata(sub, function(data)
-            return StopwatchFrame:GetFrameStrata()==data
-        end, function(data)
-            Save().stopwatchFrameStrata= data
-            if StopwatchFrame.set_strata then
-                StopwatchFrame:set_strata()
-            end
-        end)
+    WoWTools_MenuMixin:FrameStrata(root, function(data)
+        return TimeManagerClockButton:GetFrameStrata()==data
+    end, function(data)
+        Save().TimeManagerClockButtonStrata= data
+        if TimeManagerClockButton.set_strata then
+            TimeManagerClockButton:set_strata()
+        end
+    end)
 
-        WoWTools_MenuMixin:RestPoint(sub, Save().TimeManagerClockButtonPoint, function()
-            StopwatchFrame:ClearAllPoints()
-            StopwatchFrame:SetPoint("TOPRIGHT", "UIParent", "TOPRIGHT", -250, -300);
-        end)
-    end
+
+--重置位置
+    WoWTools_MenuMixin:RestPoint(root, Save().TimeManagerClockButtonPoint,  WoWTools_MinimapMixin.Rest_TimeManager_Point)
 end
 
 
@@ -87,13 +97,118 @@ end
 
 
 
-local function Init_Menu(_, root)
-    local sub
+
+
+
+
+
+
+
 
 
 --秒表
+local function Init_Stopwatch_Menu(_, root)
+--plus
+    local sub=root:CreateCheckbox('|TInterface\\Icons\\INV_Misc_PocketWatch_01:0:|t Plus', function()
+        return not Save().disabledClockPlus
+    end, function()
+        Save().disabledClockPlus= not Save().disabledClockPlus and true or nil
+        print(e.addName, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+    end)
+
+--重新加载
+    WoWTools_MenuMixin:Reload(sub, nil)
+
+    if Save().disabledClockPlus then
+        return
+    end
+
+    root:CreateDivider()
+    root:CreateCheckbox(
+        e.Icon.left..(e.onlyChinese and '开始/暂停' or NEWBIE_TOOLTIP_STOPWATCH_PLAYPAUSEBUTTON),
+    function()
+        return Save().StopwatchOnClickPause
+    end, function()
+        Save().StopwatchOnClickPause= not Save().StopwatchOnClickPause and true or nil
+        if StopwatchFrame.set_onclick_pause then
+            StopwatchFrame:set_onclick_pause()
+        else
+            StopwatchTitle:SetText(e.onlyChinese and '秒表' or STOPWATCH_TITLE)
+        end
+    end)
+
+--显示背景
+    WoWTools_MenuMixin:ShowBackground(root,
+    function()
+        return Save().isShowStopwatchBackground
+    end, function()
+        Save().isShowStopwatchBackground= not Save().isShowStopwatchBackground and true or nil
+        if StopwatchFrame.set_background then
+            StopwatchFrame:set_background()
+        end
+    end)
+    
+
+--缩放
+    WoWTools_MenuMixin:Scale(root, function()
+        return Save().StopwatchFrameScale
+    end, function(value)
+        Save().StopwatchFrameScale= value
+        if StopwatchFrame.set_scale then
+            StopwatchFrame:set_scale()
+        end
+    end)
+
+--FrameStrata
+    WoWTools_MenuMixin:FrameStrata(root, function(data)
+        return StopwatchFrame:GetFrameStrata()==data
+    end, function(data)
+        Save().stopwatchFrameStrata= data
+        if StopwatchFrame.set_strata then
+            StopwatchFrame:set_strata()
+        end
+    end)
+
+
+--重置位置
+    WoWTools_MenuMixin:RestPoint(root, Save().TimeManagerClockButtonPoint, function()
+        if StopwatchFrame.rest_point then
+            StopwatchFrame:rest_point()
+        end
+    end)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Init_Menu(self, root)
+    local sub
+
+--时间信息  
+    sub=root:CreateButton(
+        '|A:auctionhouse-icon-clock:0:0:|a'
+        ..(self==TimeManagerClockButton and '|cnRED_FONT_COLOR:' )
+        ..(e.onlyChinese and '时间信息' or TIMEMANAGER_TOOLTIP_TITLE),
+    function()
+        return MenuResponse.Open
+    end)
+    Init_TimeManager_Menu(_, sub)
+
+--秒表
+    root:CreateDivider()
     sub=root:CreateCheckbox(
-        '|A:auctionhouse-icon-clock:0:0:|a'..(e.onlyChinese and '秒表' or STOPWATCH_TITLE),
+        '|TInterface\\Icons\\INV_Misc_PocketWatch_01:0:|t'
+        ..(self==StopwatchFrame and '|cnRED_FONT_COLOR:' )
+        ..(e.onlyChinese and '秒表' or STOPWATCH_TITLE),
     function()
         return StopwatchFrame:IsShown()
     end, function()
@@ -114,32 +229,50 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function Init_TimeManager()
     local btn= TimeManagerClockButton
+
+
 
     btn.width= btn:GetWidth()
     btn.TimeManagerClockButton_Update_R= TimeManagerClockButton_Update
     btn.TimeManagerClockButton_OnUpdate_R= TimeManagerClockButton_OnUpdate
     --btn.TimeManagerStopwatchCheck_OnClick_R= TimeManagerStopwatchCheck_OnClick
 
-    --时钟，设置位置    
-    function btn:set_point()
-        local point= Save().TimeManagerClockButtonPoint
-        if point then
-            TimeManagerClockTicker:SetPoint('CENTER')
-            self:SetWidth(self.width+5)
-            self:SetParent(UIParent)
-            self:ClearAllPoints()
-            self:SetPoint(point[1], UIParent, point[3], point[4], point[5])
+
+--FrameStrata
+    function btn:set_strata()
+        local strata= Save().TimeManagerClockButtonStrata
+        if strata and Save().TimeManagerClockButtonPoint then
+            self:SetFrameStrata(strata)
         end
     end
-
-    function btn:set_scale()
-        self:SetScale(Save().TimeManagerClockButtonScale or 1)
-    end
+    btn:set_strata()
 
 
-    --时钟，移动
+--时钟，设置位置
+    btn.rePoint={btn:GetPoint(1)}
     btn:SetMovable(true)
     btn:SetClampedToScreen(true)
     btn:RegisterForDrag('RightButton')
@@ -152,37 +285,57 @@ local function Init_TimeManager()
         self:StopMovingOrSizing()
         Save().TimeManagerClockButtonPoint={self:GetPoint(1)}
         Save().TimeManagerClockButtonPoint[2]=nil
+        self:set_strata()
     end)
+    btn:SetScript('OnMouseUp', ResetCursor)
     btn:HookScript('OnMouseDown', function(_, d)
         if d=='RightButton' and IsAltKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
         end
     end)
 
+     
+    function btn:rest_point()
+        TimeManagerClockButton:ClearAllPoints()
+        TimeManagerClockButton:SetParent(MinimapCluster)
+        TimeManagerClockButton:SetFrameStrata('MEDIUM')
+        TimeManagerClockButton:SetPoint(self.rePoint[1], self.rePoint[2], self.rePoint[3], self.rePoint[4], self.rePoint[5])
+        --TimeManagerClockButton:SetPoint('TOPRIGHT', MinimapCluster.BorderTop ,-4, 0)
+    end
+    function btn:set_point()
+        local point= Save().TimeManagerClockButtonPoint
+        if point then
+            TimeManagerClockTicker:SetPoint('CENTER')
+            self:SetWidth(self.width+5)
+            self:SetParent(UIParent)
+            self:ClearAllPoints()
+            self:SetPoint(point[1], UIParent, point[3], point[4], point[5])
+        end
+    end
+    btn:set_point()
 
-    --时钟，缩放
+
+--时钟，缩放
     btn:EnableMouseWheel(true)
     btn:HookScript('OnMouseWheel', function(self, d)
         Save().TimeManagerClockButtonScale=WoWTools_FrameMixin:ScaleFrame(self, d, Save().TimeManagerClockButtonScale, nil)
     end)
-
-    btn:SetScript('OnMouseUp', ResetCursor)
-
+    function btn:set_scale()
+        self:SetScale(Save().TimeManagerClockButtonScale or 1)
+    end
+    btn:set_scale()
 
 
     --透明度
-    btn:HookScript('OnLeave', function(self) self:SetAlpha(1) ResetCursor() end)
-    btn:HookScript('OnEnter', function(self)
-        self:SetAlpha(0.5)
-        e.call(TimeManagerClockButton_UpdateTooltip)
-    end)
+    WoWTools_ButtonMixin:SetPushedTexture(btn, false)
+    btn:HookScript('OnLeave', ResetCursor)
+    btn:HookScript('OnEnter', TimeManagerClockButton_UpdateTooltip)
+
 
     --设置，时间，颜色
     TimeManagerClockTicker:SetShadowOffset(1, -1)
     e.Set_Label_Texture_Color(TimeManagerClockTicker, {type='FontString', alpha=1})--设置颜色
 
-    btn:set_scale()
-    btn:set_point()
 
     --小时图，使用服务器, 时间
     function btn:set_Server_Timer()--小时图，使用服务器, 时间
@@ -194,38 +347,35 @@ local function Init_TimeManager()
             TimeManagerClockButton_Update= self.TimeManagerClockButton_Update_R
         end
     end
-
     if Save().useServerTimer then
         btn:set_Server_Timer()
     end
 
-    --[[local check= CreateFrame("CheckButton", nil, TimeManagerFrame, "UICheckButtonTemplate")
-    check:SetSize(24,24)
-    check:SetPoint('BOTTOMRIGHT', TimeManagerMilitaryTimeCheck, 'TOPRIGHT',0,-4)
-    check.Text:ClearAllPoints()
-    check.Text:SetPoint('RIGHT', check, 'LEFT', -2, 0)
-    check.Text:SetFontObject(GameFontHighlightSmall)
 
-    check.Text:SetText(e.onlyChinese and '服务器时间' or TIMEMANAGER_TOOLTIP_REALMTIME)
-    check:SetChecked(Save().useServerTimer)
-    check:SetScript('OnClick', function()
-        Save().useServerTimer= not Save().useServerTimer and true or nil
-        set_Server_Timer()
-    end)
-    check:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, addName)
-        e.tips:AddLine((e.onlyChinese and '时钟' or TIMEMANAGER_TITLE)..' Plus')
-        e.tips:Show()
-    end)
-    check:SetScript('OnLeave', GameTooltip_Hide)]]
-
-
-
-    --提示
-
+--显示背景
+    function btn:set_background()
+        local show= Save().isShowTimeManagerBackground
+        if show and not self.Background then
+            self.Background= self:CreateTexture(nil, 'BACKGROUND')
+            self.Background:SetPoint('TOPLEFT', TimeManagerClockTicker)
+            self.Background:SetPoint('BOTTOMRIGHT', TimeManagerClockTicker, 2, 0)
+            self.Background:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
+            self.Background:SetAlpha(0.5)
+        end
+        if self.Background then
+            self.Background:SetShown(show)
+        end
+    end
+    btn:set_background()
 end
+
+
+
+
+
+
+
+
 
 
 
@@ -240,7 +390,7 @@ end
 
 --秒表
 local function Init_StopwatchFrame()
-
+--Tooltip
     function StopwatchFrame:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
@@ -262,11 +412,13 @@ local function Init_StopwatchFrame()
         e.tips:Hide()
         StopwatchResetButton:SetAlpha(StopwatchResetButton.alpha or 1)
         ResetCursor()
+        
     end)
     StopwatchFrame:HookScript('OnEnter', function(self)
         StopwatchResetButton:SetAlpha(1)
         self:set_tooltip()
     end)
+
 
 --缩放
     function StopwatchFrame:set_scale()
@@ -278,6 +430,7 @@ local function Init_StopwatchFrame()
     end)
     StopwatchFrame:set_scale()
 
+
 --FrameStrata
     function StopwatchFrame:set_strata()
         local strata= Save().stopwatchFrameStrata
@@ -286,7 +439,6 @@ local function Init_StopwatchFrame()
         end
     end
     StopwatchFrame:set_strata()
-
 
 
 --加载游戏时，显示秒表
@@ -302,8 +454,11 @@ local function Init_StopwatchFrame()
     end
 
 
-
 --移动
+    function StopwatchFrame:rest_point()
+        StopwatchFrame:ClearAllPoints()
+        StopwatchFrame:SetPoint("TOPRIGHT", UIParent, -250, -300);
+    end
     StopwatchFrame:RegisterForDrag('RightButton')
     StopwatchFrame:SetScript("OnDragStart", function(self)
         if IsAltKeyDown() then
@@ -326,7 +481,7 @@ local function Init_StopwatchFrame()
     end)
 
 
-
+--开始/暂停，颜色, 提示
     StopwatchCloseButton:ClearAllPoints()
     StopwatchCloseButton:SetPoint('TOPLEFT')
 
@@ -338,8 +493,6 @@ local function Init_StopwatchFrame()
     StopwatchTickerMinute:SetShadowOffset(1, -1)
     StopwatchTickerSecond:SetShadowOffset(1, -1)
 
-
---开始/暂停，颜色, 提示
     hooksecurefunc('Stopwatch_Pause', function()
         StopwatchTitle:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '暂停' or EVENTTRACE_BUTTON_PAUSE))
         StopwatchTickerHour:SetTextColor(0,1,0,1)
@@ -351,6 +504,12 @@ local function Init_StopwatchFrame()
         e.Set_Label_Texture_Color(StopwatchTickerHour, {type='FontString'})
         e.Set_Label_Texture_Color(StopwatchTickerMinute, {type='FontString'})
         e.Set_Label_Texture_Color(StopwatchTickerSecond, {type='FontString'})
+    end)
+    hooksecurefunc('Stopwatch_Clear', function()
+        StopwatchTitle:SetText((e.onlyChinese and '重置' or RESET))
+        StopwatchTickerHour:SetTextColor(1,1,1,1)
+        StopwatchTickerMinute:SetTextColor(1,1,1,1)
+        StopwatchTickerSecond:SetTextColor(1,1,1,1)
     end)
 
 
@@ -381,9 +540,9 @@ local function Init_StopwatchFrame()
         local show= not Save().StopwatchOnClickPause and true or false
         StopwatchResetButton:ClearAllPoints()
         if not show then
-            StopwatchResetButton:SetPoint('RIGHT', StopwatchTickerHour, 'LEFT', -2,0)
-            StopwatchTicker:SetPoint('BOTTOMRIGHT', 0,0)
-            StopwatchCloseButton:SetPoint('TOPLEFT', 18,1)
+            StopwatchResetButton:SetPoint('RIGHT', StopwatchTickerHour, 'LEFT', -2, 3)
+            StopwatchTicker:SetPoint('BOTTOMRIGHT')
+            StopwatchCloseButton:SetPoint('TOPLEFT', 12,1)
         else
             StopwatchResetButton:SetPoint('BOTTOMRIGHT', -2, 3)
             StopwatchTicker:SetPoint('BOTTOMRIGHT', -49, 3)
@@ -397,8 +556,41 @@ local function Init_StopwatchFrame()
         StopwatchFrame:set_onclick_pause()
     end
 
+
+--显示背景
+    function StopwatchFrame:set_background()
+        local show= Save().isShowStopwatchBackground
+        if show and not self.Background then
+            self.Background= self:CreateTexture(nil, 'BACKGROUND')
+            self.Background:SetPoint('TOPLEFT', StopwatchTickerHour, -1, 0)
+            self.Background:SetPoint('BOTTOMRIGHT', StopwatchTickerSecond, 2, 0)
+            self.Background:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
+            self.Background:SetAlpha(0.5)
+        end
+        if self.Background then
+            self.Background:SetShown(show)
+        end
+    end
+    StopwatchFrame:set_background()
+
+
     StopwatchFrame:SetWidth(100)
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -440,14 +632,38 @@ function WoWTools_MinimapMixin:Init_TimeManager()
         e.tips:Show()
     end)
 
-
+    
     if not self.Save.disabledClockPlus then
         Init_TimeManager()
     end
 
-    if not self.Save.disabledStopwatchPlus then
+    if not self.Save.disabledClockPlus then
         Init_StopwatchFrame()
     end
+
+
+  
 end
 
 
+
+
+
+
+
+
+function WoWTools_MinimapMixin:Show_TimeManager_Menu(_, root)
+    Init_Menu(_, root)
+end
+
+--重置，TimeManager位置
+function WoWTools_MinimapMixin:Rest_TimeManager_Point()
+    Save().TimeManagerClockButtonPoint=nil
+    Save().TimeManagerClockButtonScale=nil
+    Save().isShowTimeManagerBackground=nil
+    if TimeManagerClockButton.rest_point then
+        TimeManagerClockButton:rest_point()
+        TimeManagerClockButton:set_scale()
+        StopwatchFrame:set_background()
+    end
+end

@@ -4921,7 +4921,8 @@
         "EVENTTRACE_BUTTON_PAUSE",
         "Stopwatch_Pause",
         "Stopwatch_IsPlaying",
-        "StopwatchTabFrame"
+        "StopwatchTabFrame",
+        "Stopwatch_Clear"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
