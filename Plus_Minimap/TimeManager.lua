@@ -373,18 +373,12 @@ local function Init_StopwatchFrame()
         StopwatchResetButton:ClearAllPoints()
         if not show then
             StopwatchResetButton:SetPoint('RIGHT', StopwatchTickerHour, 'LEFT', -2,0)
-            StopwatchResetButton:SetAlpha(0.2)
-            StopwatchResetButton:SetScript('OnLeave', function(f)  f:SetAlpha(0.2) end)
-            StopwatchResetButton:SetScript('OnEnter', function(f) f:SetAlpha(1) end)
         else            
             StopwatchResetButton:SetPoint('BOTTOMRIGHT', -2, 3)
-            StopwatchResetButton:SetAlpha(1)
-            StopwatchResetButton:SetScript('OnLeave', nil)
-            StopwatchResetButton:SetScript('OnEnter', nil)
         end
         --StopwatchResetButton:SetShown(show)
         StopwatchResetButton.alpha= show and 1 or 0.3
-        StopwatchResetButton.SetAlpha(StopwatchResetButton.alpha)
+        StopwatchResetButton:SetAlpha(StopwatchResetButton.alpha)
         StopwatchPlayPauseButton:SetShown(show)
     end
     if Save().StopwatchOnClickPause then
