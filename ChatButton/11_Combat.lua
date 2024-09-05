@@ -18,7 +18,7 @@ local CombatButton
 local TrackButton
 
 
-local OnLineTime--在线时间
+--local OnLineTime--在线时间
 
 local OnCombatTime--战斗时间
 local OnAFKTime--AFK时间
@@ -70,12 +70,12 @@ local function set_Tooltips_Info()
         Save.ins.num..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)..' |A:CrossedFlagsWithTimer:0:0|a'..e.GetTimeInfo(Save.ins.time)
     )
     e.tips:AddLine(' ')
-    local time=e.GetTimeInfo(OnLineTime)
-    e.tips:AddDoubleLine((e.onlyChinese and '在线' or GUILD_ONLINE_LABEL)..'|A:socialqueuing-icon-clock:0:0|a', time)---在线时间
+    --local time=e.GetTimeInfo(OnLineTime)
+    e.tips:AddDoubleLine((e.onlyChinese and '在线' or GUILD_ONLINE_LABEL)..'|A:socialqueuing-icon-clock:0:0|a', SecondsToTime(GetSessionTime()))--time)---在线时间
     local tab=e.WoWDate[e.Player.guid].Time
-    e.tips:AddDoubleLine((e.onlyChinese and '总计' or TOTAL)..'|A:socialqueuing-icon-clock:0:0|a', tab.totalTime and SecondsToTime(tab.totalTime))
+    e.tips:AddDoubleLine((e.onlyChinese and '总计' or TOTAL)..'|A:socialqueuing-icon-clock:0:0|a',  tab.totalTime and SecondsToTime(tab.totalTime))
     e.tips:AddDoubleLine(
-        (e.onlyChinese and '本周%s' or CURRENCY_THIS_WEEK):format('CD'),
+        (e.onlyChinese and '本周%s' or CURRENCY_THIS_WEEK):format('CD')..' ('..e.Player.week..')',
         SecondsToTime(C_DateAndTime.GetSecondsUntilWeeklyReset())
     )
 end
@@ -667,7 +667,7 @@ end
 --初始
 --####
 local function Init()
-    OnLineTime=GetTime()
+    --OnLineTime=GetTime()
 
     CombatButton.texture2=CombatButton:CreateTexture(nil, 'OVERLAY')
     CombatButton.texture2:SetAllPoints(CombatButton)

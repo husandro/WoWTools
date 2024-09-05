@@ -67,7 +67,7 @@ Rest_TrackButton_Point=function()end,
 
 
 function WoWTools_MinimapMixin:OpenPanel(root)
-    local sub=root:CreateButton(self.addName, function()
+    --[[local sub=root:CreateButton(self.addName, function()
         e.OpenPanelOpting(nil, self.addName)
         return MenuResponse.Openend
     end)
@@ -75,8 +75,15 @@ function WoWTools_MinimapMixin:OpenPanel(root)
         tooltip:AddDoubleLine(e.addName, self.addName)
         tooltip:AddLine(' ')
         tooltip:AddLine(e.onlyChinese and '打开选项' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, OPTIONS))
-    end)
-    return sub
+    end)]]
+    --打开选项界面
+    return WoWTools_MenuMixin:OpenOptions(root, {
+        name=self.addName,
+        --name2=,
+        --GetCategory=function()
+    })
+
+    --return sub
 end
 
 

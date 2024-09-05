@@ -4922,7 +4922,8 @@
         "Stopwatch_Pause",
         "Stopwatch_IsPlaying",
         "StopwatchTabFrame",
-        "Stopwatch_Clear"
+        "Stopwatch_Clear",
+        "GameTime_GetTime"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

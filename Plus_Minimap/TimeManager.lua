@@ -51,11 +51,32 @@ local function Init_TimeManager_Menu(_, root)
 
 --重新加载
     WoWTools_MenuMixin:Reload(sub, nil)
+    sub:CreateDivider()
     WoWTools_MinimapMixin:OpenPanel(sub)
 
     if Save().disabledClockPlus then
         return
     end
+
+--服务器时间
+    root:CreateCheckbox(
+        e.onlyChinese and '服务器时间' or TIMEMANAGER_TOOLTIP_REALMTIME,
+    function()
+        return Save().useServerTimer
+    end, function()
+        Save().useServerTimer= not Save().useServerTimer and true or nil
+        if TimeManagerClockButton.set_Server_Timer then
+            TimeManagerClockButton:set_Server_Timer()
+        end
+    end)
+
+    --[[root:CreateCheckbox(
+        e.onlyChinese and '显示秒' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, LOSS_OF_CONTROL_SECONDS),
+    function()
+        return Save().isTimeManagerShowSeconds
+    end, function()
+        Save().isTimeManagerShowSeconds= not Save().isTimeManagerShowSeconds and true or nil
+    end)]]
 
 --显示背景
     root:CreateDivider()
@@ -122,6 +143,7 @@ local function Init_Stopwatch_Menu(_, root)
 
 --重新加载
     WoWTools_MenuMixin:Reload(sub, nil)
+    sub:CreateDivider()
     WoWTools_MinimapMixin:OpenPanel(sub)
 
     if Save().disabledClockPlus then
@@ -257,14 +279,8 @@ end
 
 local function Init_TimeManager()
     local btn= TimeManagerClockButton
-
-
-
-    btn.width= btn:GetWidth()
-    btn.TimeManagerClockButton_Update_R= TimeManagerClockButton_Update
-    btn.TimeManagerClockButton_OnUpdate_R= TimeManagerClockButton_OnUpdate
-    --btn.TimeManagerStopwatchCheck_OnClick_R= TimeManagerStopwatchCheck_OnClick
-
+    
+  
 
 --FrameStrata
     function btn:set_strata()
@@ -299,7 +315,6 @@ local function Init_TimeManager()
         end
     end)
 
-     
     function btn:rest_point()
         TimeManagerClockButton:ClearAllPoints()
         TimeManagerClockButton:SetParent(MinimapCluster)
@@ -307,6 +322,7 @@ local function Init_TimeManager()
         TimeManagerClockButton:SetPoint(self.rePoint[1], self.rePoint[2], self.rePoint[3], self.rePoint[4], self.rePoint[5])
         --TimeManagerClockButton:SetPoint('TOPRIGHT', MinimapCluster.BorderTop ,-4, 0)
     end
+    btn.width= btn:GetWidth()
     function btn:set_point()
         local point= Save().TimeManagerClockButtonPoint
         if point then
@@ -331,7 +347,7 @@ local function Init_TimeManager()
     btn:set_scale()
 
 
-    --透明度
+--PushedTexture
     WoWTools_ButtonMixin:SetPushedTexture(btn, false)
     btn:HookScript('OnLeave', ResetCursor)
     btn:HookScript('OnEnter', TimeManagerClockButton_UpdateTooltip)
@@ -343,18 +359,35 @@ local function Init_TimeManager()
 
 
     --小时图，使用服务器, 时间
+    btn.TimeManagerClockButton_Update_R= TimeManagerClockButton_Update
     function btn:set_Server_Timer()--小时图，使用服务器, 时间
-        if Save().useServerTimer then
+        local save= Save()
+        if save.useServerTimer then
             TimeManagerClockButton_Update=function()
-                TimeManagerClockTicker:SetText(e.SecondsToClock(C_DateAndTime.GetServerTimeLocal(), true, true) or '')
+                TimeManagerClockTicker:SetText(e.SecondsToClock(C_DateAndTime.GetServerTimeLocal(), true, true))
             end
         else
             TimeManagerClockButton_Update= self.TimeManagerClockButton_Update_R
         end
+        e.call(TimeManagerClockButton_Update)
     end
     if Save().useServerTimer then
         btn:set_Server_Timer()
     end
+
+    
+--[[显示秒
+    if Save().isTimeManagerShowSeconds then
+        btn.elapsed=1
+        btn:HookScript('OnUpdate', function(self, elapsed)
+            self.elapsed= self.elapsed+elapsed
+            if self.elapsed>1 then
+                self.elapsed=0
+                TimeManagerClockButton_Update()
+            end
+        end)
+    end]]
+
 
 
 --显示背景
@@ -617,7 +650,7 @@ function WoWTools_MinimapMixin:Init_TimeManager()
         else
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine('|cffffffff'..('ServerTime'), '|cnGREEN_FONT_COLOR:'..e.SecondsToClock(GetServerTime())..e.Icon.left)
-            e.tips:AddDoubleLine('|cffffffff'..(e.onlyChinese and '服务器时间' or TIMEMANAGER_TOOLTIP_REALMTIME), '|cnGREEN_FONT_COLOR:'..e.SecondsToClock(C_DateAndTime.GetServerTimeLocal())..e.Icon.left)
+            e.tips:AddDoubleLine('|cffffffff'..(e.onlyChinese and '服务器时间' or TIMEMANAGER_TOOLTIP_REALMTIME), '|cnGREEN_FONT_COLOR:'..e.SecondsToClock(C_DateAndTime.GetServerTimeLocal(), true, true)..e.Icon.left)
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine('|A:dressingroom-button-appearancelist-up:0:0|a'..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), e.Icon.right)
             e.tips:AddDoubleLine('|cffffffff'..(e.onlyChinese and '移动' or NPE_MOVE), 'Alt+'..e.Icon.right)
