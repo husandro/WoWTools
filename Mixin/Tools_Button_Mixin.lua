@@ -225,7 +225,7 @@ end]]
 
 function WoWTools_ToolsButtonMixin:CreateBackgroundFrame(parent, name)
     local frame= CreateFrame('Frame', name, parent or UIParent)
-    WoWTools_FrameMixin:CreateBackground(frame, nil)
+    WoWTools_FrameMixin:CreateBackground(frame, true)
     --[[frame.texture=frame:CreateTexture(nil, 'BACKGROUND')
     frame.texture:SetAllPoints()
     frame.texture:SetAlpha(0.5)]]

@@ -498,6 +498,16 @@ local function Init_Menu(self, root)
     end)
 --缩放
     sub:CreateDivider()
+
+    --显示背景
+    WoWTools_MenuMixin:ShowBackground(sub,
+    function()
+        return Save.isShowBackground
+    end, function()
+        Save.isShowBackground= not Save.isShowBackground and true or nil
+        self:set_background()
+    end)
+
     sub2=select(2, WoWTools_MenuMixin:Scale(sub, function()
         return Save.scale or 1
     end, function(value)
@@ -505,7 +515,7 @@ local function Init_Menu(self, root)
         self:set_scale()
     end))
 
-    
+
 
     sub2= select(2, WoWTools_MenuMixin:FrameStrata(sub, function(data)
         return self:GetFrameStrata()==data
@@ -726,7 +736,19 @@ local function Init()
     UseButton.RePoint={UseButton:GetPoint(1)}
     UseButton.texture:SetTexture(538745)
 
-    function UseButton:Check_Items(isPrint)--检查,物品
+--显示背景 Background
+    WoWTools_FrameMixin:CreateBackground(UseButton, function(texture)
+        texture:SetPoint('BOTTOMRIGHT', 1 , 1)
+        texture:SetPoint('TOP', UseButton, 1 , 1)
+        texture:SetPoint('LEFT', UseButton, -1 , -1)
+    end)
+    function UseButton:set_background()
+        self.Background:SetShown(Save.isShowBackground)
+    end
+    UseButton:set_background()
+
+--检查,物品
+    function UseButton:Check_Items(isPrint)
         if self.isChecking then--正在查询
             return
         elseif not self:CanChangeAttribute() then
@@ -777,13 +799,16 @@ local function Init()
             end
         end
 
+
         for i=Save.numLine, index, Save.numLine do
             local btn= Buttons[i]
             if btn then
                 btn:ClearAllPoints()
                 btn:SetPoint('BOTTOM', Buttons[i-Save.numLine] or UseButton, 'TOP')
+                self.Background:SetPoint('TOP', btn, 1, 1)
             end
         end
+        self.Background:SetPoint('LEFT', Buttons[Save.numLine-1] or Buttons[index-1] or self, -1, -1)
 
 
         for i= index , #Buttons do
@@ -871,6 +896,7 @@ local function Init()
         if d=='RightButton' then
             if not IsModifierKeyDown() then--菜单
                 MenuUtil.CreateContextMenu(self, Init_Menu)
+                self:set_tooltip()
             elseif IsAltKeyDown() then--移动
                 SetCursor('UI_MOVE_CURSOR')
             end

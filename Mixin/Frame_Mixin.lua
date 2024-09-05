@@ -154,20 +154,18 @@ frame.Header:Setup(text)
 
 
 
---显示背景
-
 function WoWTools_FrameMixin:CreateBackground(frame, setPoint)
     frame.Background= frame:CreateTexture(nil, 'BACKGROUND')
-    if setPoint then
-        setPoint(frame.Background)
-    else
+    if setPoint==true then
         frame.Background:SetAllPoints()
+    elseif type(setPoint)=='function' then
+        setPoint(frame.Background)
     end
     frame.Background:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
     frame.Background:SetAlpha(0.5)
 end
 --[[
---显示背景
+--显示背景 Background
 WoWTools_FrameMixin:CreateBackground(frame, function(texture)
     texture:SetPoint()
 end)
