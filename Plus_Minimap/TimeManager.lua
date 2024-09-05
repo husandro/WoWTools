@@ -630,7 +630,7 @@ function WoWTools_MinimapMixin:Init_TimeManager()
             e.tips:AddDoubleLine('|A:dressingroom-button-appearancelist-up:0:0|a'..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), e.Icon.right)
             e.tips:AddDoubleLine('|cffffffff'..(e.onlyChinese and '移动' or NPE_MOVE), 'Alt+'..e.Icon.right)
             e.tips:AddDoubleLine('|cffffffff'..((e.onlyChinese and '缩放' or UI_SCALE))..' |cnGREEN_FONT_COLOR:'..(Save().TimeManagerClockButtonScale or 1), 'Alt+'..e.Icon.mid)
-            e.tips:AddDoubleLine(e.addName, addName)
+            --e.tips:AddDoubleLine(e.addName, addName)
         end
         e.tips:Show()
     end)
