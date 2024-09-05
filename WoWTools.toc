@@ -93,7 +93,7 @@ Plus\FriendsList.lua
 
 ##小地图，增强缩放
 ##Plus\Minimap.lua
-Plus_Minimap\Init.lua
+Plus_Minimap\Init_Minimap.lua
 Plus_Minimap\InstanceDifficulty.lua
 Plus_Minimap\TrackButton.lua
 Plus_Minimap\TimeManager.lua

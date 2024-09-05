@@ -51,6 +51,7 @@ local function Init_TimeManager_Menu(_, root)
 
 --重新加载
     WoWTools_MenuMixin:Reload(sub, nil)
+    WoWTools_MinimapMixin:OpenPanel(sub)
 
     if Save().disabledClockPlus then
         return
@@ -115,9 +116,11 @@ local function Init_Stopwatch_Menu(_, root)
         Save().disabledClockPlus= not Save().disabledClockPlus and true or nil
         print(e.addName, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
+    
 
 --重新加载
     WoWTools_MenuMixin:Reload(sub, nil)
+    WoWTools_MinimapMixin:OpenPanel(sub)
 
     if Save().disabledClockPlus then
         return
@@ -196,7 +199,7 @@ local function Init_Menu(self, root)
 --时间信息  
     sub=root:CreateButton(
         '|A:auctionhouse-icon-clock:0:0:|a'
-        ..(self==TimeManagerClockButton and '|cnRED_FONT_COLOR:' )
+        ..(self==TimeManagerClockButton and '|cnGREEN_FONT_COLOR:' or '')
         ..(e.onlyChinese and '时间信息' or TIMEMANAGER_TOOLTIP_TITLE),
     function()
         return MenuResponse.Open
@@ -207,7 +210,7 @@ local function Init_Menu(self, root)
     root:CreateDivider()
     sub=root:CreateCheckbox(
         '|TInterface\\Icons\\INV_Misc_PocketWatch_01:0:|t'
-        ..(self==StopwatchFrame and '|cnRED_FONT_COLOR:' )
+        --..(self==StopwatchFrame and '|cnGREEN_FONT_COLOR:' )
         ..(e.onlyChinese and '秒表' or STOPWATCH_TITLE),
     function()
         return StopwatchFrame:IsShown()
@@ -624,7 +627,6 @@ function WoWTools_MinimapMixin:Init_TimeManager()
             e.tips:AddDoubleLine('|cffffffff'..('ServerTime'), '|cnGREEN_FONT_COLOR:'..e.SecondsToClock(GetServerTime())..e.Icon.left)
             e.tips:AddDoubleLine('|cffffffff'..(e.onlyChinese and '服务器时间' or TIMEMANAGER_TOOLTIP_REALMTIME), '|cnGREEN_FONT_COLOR:'..e.SecondsToClock(C_DateAndTime.GetServerTimeLocal())..e.Icon.left)
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine('|A:dressingroom-button-appearancelist-up:0:0|a'..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), e.Icon.right)
             e.tips:AddDoubleLine('|cffffffff'..(e.onlyChinese and '移动' or NPE_MOVE), 'Alt+'..e.Icon.right)
             e.tips:AddDoubleLine('|cffffffff'..((e.onlyChinese and '缩放' or UI_SCALE))..' |cnGREEN_FONT_COLOR:'..(Save().TimeManagerClockButtonScale or 1), 'Alt+'..e.Icon.mid)
             e.tips:AddDoubleLine(e.addName, addName)

@@ -2,6 +2,8 @@
 local id, e = ...
 
 WoWTools_MinimapMixin={
+    addName= '|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..HUD_EDIT_MODE_MINIMAP_LABEL,
+    addName2= '|A:VignetteKillElite:0:0|a'..TRACKING,
 Save={
     scale=e.Player.husandro and 1 or 0.85,
     ZoomOut=true,--更新地区时,缩小化地图
@@ -42,18 +44,63 @@ Save={
 }
 }
 
-function WoWTools_MinimapMixin:OpenPanel()
-    if not self.Initializer then
-        e.OpenPanelOpting()
-    end
-    e.OpenPanelOpting(self.Initializer, self.addName)
+
+
+
+
+
+
+
+
+
+
+
+
+
+function WoWTools_MinimapMixin:OpenPanel(root)
+    local sub=root:CreateButton(self.addName, function()
+        do
+            if not self.Initializer then
+                e.OpenPanelOpting()
+            end
+        end
+        e.OpenPanelOpting(nil, self.addName)
+        return MenuResponse.Openend
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddDoubleLine(e.addName, self.addName)
+        tooltip:AddLine(' ')
+        tooltip:AddLine(e.onlyChinese and '打开选项' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, OPTIONS))
+    end)
 end
+
+
+
+
+
+
 
 
 function WoWTools_MinimapMixin:Init()
     self:Init_InstanceDifficulty()--副本，难度，指示
     self:Init_TrackButton()--小地图, 标记, 文本
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -84,9 +131,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
             })]]
             
-            e.AddPanel_Check_Button({
+           e.AddPanel_Check_Button({
                 checkName= WoWTools_MinimapMixin.addName,
-                GetValue= function() return WoWTools_MinimapMixin.Save.disabled end,
+                GetValue= function() return not WoWTools_MinimapMixin.Save.disabled end,
                 SetValue= function()
                     WoWTools_MinimapMixin.Save.disabled= not WoWTools_MinimapMixin.Save.disabled and true or nil
                     print(WoWTools_MinimapMixin.addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
@@ -98,6 +145,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     end
                     WoWTools_MinimapMixin:Rest_TimeManager_Point()--重置，TimeManager位置
                     WoWTools_MinimapMixin:Rest_TrackButton_Point()--重置，TrackButton位置
+                    print(e.addName, self.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
                 end
             })
 
@@ -129,6 +177,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     end
 end)
+
+
+
+
+
 
 
 

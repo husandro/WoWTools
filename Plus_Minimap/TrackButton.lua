@@ -1007,8 +1007,11 @@ end
 
 --小地图, 标记, 文本
 local function Init_Button()
-    --TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {icon='hide', isType2=true, name='WoWTools_Minimap_TrackButton'})
-    TrackButton= WoWTools_ButtonMixin:Ctype2(nil, {name='WoWTools_Minimap_TrackButton', size=22})
+    TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {icon='hide', size=22, isType2=true, name='WoWTools_Minimap_TrackButton'})
+    TrackButton.texture=TrackButton:CreateTexture(nil, 'BORDER')
+    TrackButton.texture:SetAllPoints()
+    --TrackButton= WoWTools_ButtonMixin:Ctype2(nil, {name='WoWTools_Minimap_TrackButton', size=22})
+    
     TrackButton.buttons={}
 
     TrackButton.Frame= CreateFrame('Frame', nil, TrackButton)
