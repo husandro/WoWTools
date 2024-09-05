@@ -165,3 +165,6 @@ end
 function WoWTools_MinimapMixin:Init_MajorFactionRenownFrame()
     Init_MajorFactionRenownFrame()
 end
+
+
+

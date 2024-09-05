@@ -984,6 +984,7 @@ local function Init_Menu(self, root)--菜单
     end
 
 --重置位置
+    sub:CreateDivider()
     WoWTools_MenuMixin:RestPoint(sub, Save().pointVigentteButton, WoWTools_MinimapMixin.Rest_TrackButton_Point)
 end
 

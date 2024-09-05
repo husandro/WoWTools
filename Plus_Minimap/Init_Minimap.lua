@@ -60,9 +60,10 @@ Init_CovenantRenown=function()end,
 
 
 
-
+--主菜单
 local function Init_Menu(self, root)
     WoWTools_MinimapMixin:Garrison_Menu(self, root)
+    WoWTools_MinimapMixin:Faction_Menu(self, root)
 end
 
 

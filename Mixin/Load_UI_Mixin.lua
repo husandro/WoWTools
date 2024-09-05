@@ -1,6 +1,7 @@
 --[[
 Journal(index)--加载，收藏，UI
 GenericTraitUI(systemID, treeID)--加载，Trait，UI
+Professions(recipeID)
 ]]
 
 WoWTools_LoadUIMixin= {}
@@ -28,13 +29,22 @@ end
 
 
 
-
-function WoWTools_LoadUIMixin:GenericTraitUI(systemID, treeID)--加载，Trait，UI
+--加载，Trait，UI
+function WoWTools_LoadUIMixin:GenericTraitUI(systemID, treeID)
     GenericTraitUI_LoadUI()
     securecallfunction(GenericTraitFrame.SetSystemID, GenericTraitFrame, systemID)
     securecallfunction(GenericTraitFrame.SetTreeID, GenericTraitFrame, treeID)
     ToggleFrame(GenericTraitFrame)
 end
+
+
+--Blizzard_DragonflightLandingPage.lua
+--驭空术
+function WoWTools_LoadUIMixin:Dragonriding()
+    self:GenericTraitUI(Enum.ExpansionLandingPageType.Dragonflight, Constants.MountDynamicFlightConsts.TREE_ID)
+end
+
+
 
 
 
@@ -63,10 +73,17 @@ end
 
 
 
+--宏伟宝库
+function WoWTools_LoadUIMixin:WeeklyRewards()
+    if not UnitAffectingCombat('player') then
+        if not WeeklyRewardsFrame then
+            WeeklyRewards_LoadUI()
+        elseif WeeklyRewardsFrame:IsShown() then
+            WeeklyRewardsFrame:Hide()
+        else
+            WeeklyRewards_ShowUI()--WeeklyReward.lua
+        end
+    end
+end
 
 
-
---[[WoWTools_LoadUIMixin:GenericTraitUI(--加载，Trait，UI
-    Constants.MountDynamicFlightConsts.TRAIT_SYSTEM_ID,
-    Constants.MountDynamicFlightConsts.TREE_ID
-)]]

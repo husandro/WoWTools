@@ -256,7 +256,7 @@ local function Init_Menu(self, root)
         sub2:SetEnabled(false)
     end
 
-
+    sub:CreateDivider()
     WoWTools_MenuMixin:RestPoint(sub, Save.point, function()
         Save.point=nil
         self:set_point()

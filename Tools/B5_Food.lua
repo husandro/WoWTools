@@ -552,6 +552,7 @@ local function Init_Menu(self, root)
     end )]]
 
 --重置位置
+    sub:CreateDivider()
     WoWTools_MenuMixin:RestPoint(sub, Save.point and not UnitAffectingCombat('player'), function()
         if not UnitAffectingCombat('player') then
             Save.point=nil

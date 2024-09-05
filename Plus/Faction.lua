@@ -33,7 +33,8 @@ local FACTION_STANDING_INCREASED_ACCOUNT_WIDE = FACTION_STANDING_INCREASED_ACCOU
 local function get_Faction_Info(index, factionID)
 	local data= WoWTools_FactionMinxin:GetInfo(factionID, index, Save.toRightTrackText)
 	factionID= data.factionID
-	local name= data.name
+	local name
+	name= data.name
 
 	if not factionID or not name or name==HIDE or (not data.isHeaderWithRep and data.isHeader) then
 		return

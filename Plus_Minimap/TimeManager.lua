@@ -39,91 +39,6 @@ end
 
 
 
---时间信息
-local function Init_TimeManager_Menu(_, root)
---plus
-    local sub=root:CreateCheckbox('|A:auctionhouse-icon-clock:0:0:|a Plus', function()
-        return not Save().disabledClockPlus
-    end, function()
-        Save().disabledClockPlus= not Save().disabledClockPlus and true or nil
-        print(e.addName, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-    end)
-
---重新加载
-    WoWTools_MenuMixin:Reload(sub, nil)
-    sub:CreateDivider()
-    WoWTools_MinimapMixin:OpenPanel(sub)
-
-    if Save().disabledClockPlus then
-        return
-    end
-
---服务器时间
-    root:CreateCheckbox(
-        e.onlyChinese and '服务器时间' or TIMEMANAGER_TOOLTIP_REALMTIME,
-    function()
-        return Save().useServerTimer
-    end, function()
-        Save().useServerTimer= not Save().useServerTimer and true or nil
-        if TimeManagerClockButton.set_Server_Timer then
-            TimeManagerClockButton:set_Server_Timer()
-        end
-    end)
-
-    --[[root:CreateCheckbox(
-        e.onlyChinese and '显示秒' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, LOSS_OF_CONTROL_SECONDS),
-    function()
-        return Save().isTimeManagerShowSeconds
-    end, function()
-        Save().isTimeManagerShowSeconds= not Save().isTimeManagerShowSeconds and true or nil
-    end)]]
-
---显示背景
-    root:CreateDivider()
-    WoWTools_MenuMixin:ShowBackground(
-        root,
-    function()
-        return Save().isShowTimeManagerBackground
-    end, function()
-        Save().isShowTimeManagerBackground= not Save().isShowTimeManagerBackground and true or nil
-        if TimeManagerClockButton.set_background then
-            TimeManagerClockButton:set_background()
-        end
-    end)
-
---缩放
-    WoWTools_MenuMixin:Scale(root, function()
-        return Save().TimeManagerClockButtonScale
-    end, function(value)
-        Save().TimeManagerClockButtonScale= value
-        if TimeManagerClockButton.set_scale then
-            TimeManagerClockButton:set_scale()
-        end
-    end)
-
---FrameStrata
-    WoWTools_MenuMixin:FrameStrata(root, function(data)
-        return TimeManagerClockButton:GetFrameStrata()==data
-    end, function(data)
-        Save().TimeManagerClockButtonStrata= data
-        if TimeManagerClockButton.set_strata then
-            TimeManagerClockButton:set_strata()
-        end
-    end)
-
-
---重置位置
-    WoWTools_MenuMixin:RestPoint(root, Save().TimeManagerClockButtonPoint,  WoWTools_MinimapMixin.Rest_TimeManager_Point)
-end
-
-
-
-
-
-
-
-
-
 
 
 
@@ -139,7 +54,7 @@ local function Init_Stopwatch_Menu(_, root)
         Save().disabledClockPlus= not Save().disabledClockPlus and true or nil
         print(e.addName, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
-    
+
 
 --重新加载
     WoWTools_MenuMixin:Reload(sub, nil)
@@ -174,7 +89,7 @@ local function Init_Stopwatch_Menu(_, root)
             StopwatchFrame:set_background()
         end
     end)
-    
+
 
 --缩放
     WoWTools_MenuMixin:Scale(root, function()
@@ -198,6 +113,7 @@ local function Init_Stopwatch_Menu(_, root)
 
 
 --重置位置
+    root:CreateDivider()
     WoWTools_MenuMixin:RestPoint(root, Save().TimeManagerClockButtonPoint, function()
         if StopwatchFrame.rest_point then
             StopwatchFrame:rest_point()
@@ -217,18 +133,68 @@ end
 
 
 
-local function Init_Menu(self, root)
-    local sub
 
---时间信息  
-    sub=root:CreateButton(
-        '|A:auctionhouse-icon-clock:0:0:|a'
-        ..(self==TimeManagerClockButton and '|cnGREEN_FONT_COLOR:' or '')
-        ..(e.onlyChinese and '时间信息' or TIMEMANAGER_TOOLTIP_TITLE),
-    function()
-        return MenuResponse.Open
+
+
+
+
+
+
+
+
+--时间信息
+local function Init_TimeManager_Menu(self, root)
+--plus
+    local sub=root:CreateCheckbox('|A:auctionhouse-icon-clock:0:0:|a Plus', function()
+        return not Save().disabledClockPlus
+    end, function()
+        Save().disabledClockPlus= not Save().disabledClockPlus and true or nil
+        print(e.addName, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
-    Init_TimeManager_Menu(self, sub)
+
+--重新加载
+    WoWTools_MenuMixin:Reload(sub, nil)
+    sub:CreateDivider()
+    WoWTools_MinimapMixin:OpenPanel(sub)
+
+    if not Save().disabledClockPlus then
+    --显示背景
+        root:CreateDivider()
+        WoWTools_MenuMixin:ShowBackground(
+            root,
+        function()
+            return Save().isShowTimeManagerBackground
+        end, function()
+            Save().isShowTimeManagerBackground= not Save().isShowTimeManagerBackground and true or nil
+            if TimeManagerClockButton.set_background then
+                TimeManagerClockButton:set_background()
+            end
+        end)
+
+    --缩放
+        WoWTools_MenuMixin:Scale(root, function()
+            return Save().TimeManagerClockButtonScale
+        end, function(value)
+            Save().TimeManagerClockButtonScale= value
+            if TimeManagerClockButton.set_scale then
+                TimeManagerClockButton:set_scale()
+            end
+        end)
+
+    --FrameStrata
+        WoWTools_MenuMixin:FrameStrata(root, function(data)
+            return TimeManagerClockButton:GetFrameStrata()==data
+        end, function(data)
+            Save().TimeManagerClockButtonStrata= data
+            if TimeManagerClockButton.set_strata then
+                TimeManagerClockButton:set_strata()
+            end
+        end)
+
+
+    --重置位置
+        WoWTools_MenuMixin:RestPoint(root, Save().TimeManagerClockButtonPoint,  WoWTools_MinimapMixin.Rest_TimeManager_Point)
+    end
 
 --秒表
     root:CreateDivider()
@@ -273,14 +239,71 @@ end
 
 
 
+--[[
+local function Init_Menu(self, root)
+    local sub
+
+--时间信息  
+    sub=root:CreateButton(
+        '|A:auctionhouse-icon-clock:0:0:|a'
+        ..(self==TimeManagerClockButton and '|cnGREEN_FONT_COLOR:' or '')
+        ..(e.onlyChinese and '时间信息' or TIMEMANAGER_TOOLTIP_TITLE),
+    function()
+        return MenuResponse.Open
+    end)
+    Init_TimeManager_Menu(self, sub)
+
+--秒表
+    root:CreateDivider()
+    sub=root:CreateCheckbox(
+        '|TInterface\\Icons\\INV_Misc_PocketWatch_01:0:|t'
+        --..(self==StopwatchFrame and '|cnGREEN_FONT_COLOR:' )
+        ..(e.onlyChinese and '秒表' or STOPWATCH_TITLE),
+    function()
+        return StopwatchFrame:IsShown()
+    end, function()
+        e.call(Stopwatch_Toggle)
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(e.onlyChinese and '显示/隐藏' or (SHOW..'/'..HIDE))
+    end)
+    Init_Stopwatch_Menu(self, sub)
+end
+]]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 
 local function Init_TimeManager()
     local btn= TimeManagerClockButton
-    
-  
+
+
 
 --FrameStrata
     function btn:set_strata()
@@ -340,6 +363,7 @@ local function Init_TimeManager()
     btn:EnableMouseWheel(true)
     btn:HookScript('OnMouseWheel', function(self, d)
         Save().TimeManagerClockButtonScale=WoWTools_FrameMixin:ScaleFrame(self, d, Save().TimeManagerClockButtonScale, nil)
+        e.call(TimeManagerClockButton_UpdateTooltip)
     end)
     function btn:set_scale()
         self:SetScale(Save().TimeManagerClockButtonScale or 1)
@@ -358,11 +382,10 @@ local function Init_TimeManager()
     e.Set_Label_Texture_Color(TimeManagerClockTicker, {type='FontString', alpha=1})--设置颜色
 
 
-    --小时图，使用服务器, 时间
+    --[[小时图，使用服务器, ServerTime
     btn.TimeManagerClockButton_Update_R= TimeManagerClockButton_Update
     function btn:set_Server_Timer()--小时图，使用服务器, 时间
-        local save= Save()
-        if save.useServerTimer then
+        if Save().useServerTimer then
             TimeManagerClockButton_Update=function()
                 TimeManagerClockTicker:SetText(e.SecondsToClock(C_DateAndTime.GetServerTimeLocal(), true, true))
             end
@@ -373,9 +396,9 @@ local function Init_TimeManager()
     end
     if Save().useServerTimer then
         btn:set_Server_Timer()
-    end
+    end]]
 
-    
+
 --[[显示秒
     if Save().isTimeManagerShowSeconds then
         btn.elapsed=1
@@ -392,10 +415,8 @@ local function Init_TimeManager()
 
 --显示背景
     WoWTools_FrameMixin:CreateBackground(btn, function(texture)
-        texture:SetPoint('TOPLEFT', StopwatchTickerHour, -1, 0)
-        texture:SetPoint('BOTTOMRIGHT', StopwatchTickerSecond, 2, 0)
-        texture:SetPoint('TOPLEFT', TimeManagerClockTicker)
-        texture:SetPoint('BOTTOMRIGHT', TimeManagerClockTicker, 2, 0)
+        texture:SetPoint('TOPLEFT', TimeManagerClockTicker, -1, -1)
+        texture:SetPoint('BOTTOMRIGHT', TimeManagerClockTicker, 1, 0)
     end)
     function btn:set_background()
         self.Background:SetShown(Save().isShowTimeManagerBackground)
@@ -446,7 +467,7 @@ local function Init_StopwatchFrame()
         e.tips:Hide()
         StopwatchResetButton:SetAlpha(StopwatchResetButton.alpha or 1)
         ResetCursor()
-        
+
     end)
     StopwatchFrame:HookScript('OnEnter', function(self)
         StopwatchResetButton:SetAlpha(1)
@@ -593,7 +614,7 @@ local function Init_StopwatchFrame()
 
 --显示背景
     WoWTools_FrameMixin:CreateBackground(StopwatchFrame, function(texture)
-        texture:SetPoint('TOPLEFT', StopwatchTickerHour, -1, 0)
+        texture:SetPoint('TOPLEFT', StopwatchTickerHour, -1, -1.5)
         texture:SetPoint('BOTTOMRIGHT', StopwatchTickerSecond, 2, 0)
     end)
     function StopwatchFrame:set_background()
@@ -637,7 +658,7 @@ function WoWTools_MinimapMixin:Init_TimeManager()
 
     TimeManagerClockButton:SetScript('OnClick', function(frame, d)
         if d=='RightButton' and not IsAltKeyDown() then
-            MenuUtil.CreateContextMenu(frame, Init_Menu)
+            MenuUtil.CreateContextMenu(frame, Init_TimeManager_Menu)
 
         elseif d=='LeftButton' then
             e.call(TimeManager_Toggle)
@@ -650,9 +671,11 @@ function WoWTools_MinimapMixin:Init_TimeManager()
         else
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine('|cffffffff'..('ServerTime'), '|cnGREEN_FONT_COLOR:'..e.SecondsToClock(GetServerTime())..e.Icon.left)
-            e.tips:AddDoubleLine('|cffffffff'..(e.onlyChinese and '服务器时间' or TIMEMANAGER_TOOLTIP_REALMTIME), '|cnGREEN_FONT_COLOR:'..e.SecondsToClock(C_DateAndTime.GetServerTimeLocal(), true, true)..e.Icon.left)
-            e.tips:AddLine(' ')
             e.tips:AddDoubleLine('|A:dressingroom-button-appearancelist-up:0:0|a'..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), e.Icon.right)
+
+            --e.tips:AddDoubleLine('|cffffffff'..(e.onlyChinese and '服务器时间' or TIMEMANAGER_TOOLTIP_REALMTIME), '|cnGREEN_FONT_COLOR:'..e.SecondsToClock(C_DateAndTime.GetServerTimeLocal(), true, true)..e.Icon.left)
+            --e.tips:AddLine(' ')
+
             e.tips:AddDoubleLine('|cffffffff'..(e.onlyChinese and '移动' or NPE_MOVE), 'Alt+'..e.Icon.right)
             e.tips:AddDoubleLine('|cffffffff'..((e.onlyChinese and '缩放' or UI_SCALE))..' |cnGREEN_FONT_COLOR:'..(Save().TimeManagerClockButtonScale or 1), 'Alt+'..e.Icon.mid)
             --e.tips:AddDoubleLine(e.addName, addName)
@@ -660,7 +683,7 @@ function WoWTools_MinimapMixin:Init_TimeManager()
         e.tips:Show()
     end)
 
-    
+
     if not self.Save.disabledClockPlus then
         Init_TimeManager()
     end
@@ -670,7 +693,7 @@ function WoWTools_MinimapMixin:Init_TimeManager()
     end
 
 
-  
+
 end
 
 
@@ -680,9 +703,9 @@ end
 
 
 
-function WoWTools_MinimapMixin:Show_TimeManager_Menu(_, root)
+--[[function WoWTools_MinimapMixin:Show_TimeManager_Menu(_, root)
     Init_Menu(_, root)
-end
+end]]
 
 --重置，TimeManager位置
 function WoWTools_MinimapMixin:Rest_TimeManager_Point()

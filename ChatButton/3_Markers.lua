@@ -154,6 +154,7 @@ local function Init_MarkerTools_Menu(root)
     end)]]
 
     --重置位置
+    root:CreateDivider()
     WoWTools_MenuMixin:RestPoint(root, Save.markersFramePoint and MakerFrame and MakerFrame:CanChangeAttribute(), function()
         Save.markersFramePoint=nil
         if MakerFrame and MakerFrame:CanChangeAttribute() then
