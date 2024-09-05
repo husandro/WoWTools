@@ -225,18 +225,20 @@ end]]
 
 function WoWTools_ToolsButtonMixin:CreateBackgroundFrame(parent, name)
     local frame= CreateFrame('Frame', name, parent or UIParent)
-    frame.texture=frame:CreateTexture(nil, 'BACKGROUND')
+    WoWTools_FrameMixin:CreateBackground(frame, nil)
+    --[[frame.texture=frame:CreateTexture(nil, 'BACKGROUND')
     frame.texture:SetAllPoints()
-    frame.texture:SetAlpha(0.5)
+    frame.texture:SetAlpha(0.5)]]
     return frame
 end
 
 function WoWTools_ToolsButtonMixin:SetBackground(frame)
-    if self.Save.isShowBackground then
+    frame.Background:SetShown(self.Save.isShowBackground)
+    --[[if self.Save.isShowBackground then
         frame.texture:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
     else
         frame.texture:SetTexture(0)
-    end
+    end]]
 end
 
 --显示背景
@@ -338,16 +340,33 @@ function WoWTools_ToolsButtonMixin:EnterShowFrame(btn)
 end
 
 
-function WoWTools_ToolsButtonMixin:OpenOptions(name)--打开,Tools选项界面，选项
-    if not self.Category then
-        e.OpenPanelOpting()
+--[[function WoWTools_ToolsButtonMixin:OpenOptions(name)--打开,Tools选项界面，选项
+    do
+        if not self.Category then
+            e.OpenPanelOpting()
+        end
     end
     e.OpenPanelOpting(self.Category, name)
+end]]
+
+--打开选项界面
+function WoWTools_ToolsButtonMixin:OpenMenu(root, name, showText)--打开, 选项界面，菜单
+    return WoWTools_MenuMixin:OpenOptions(root, {
+        name=name or self:GetName(),
+        name2=showText,
+        GetCategory=function()
+            local category= WoWTools_ToolsButtonMixin:GetCategory()
+            do
+                if not category then
+                    e.OpenPanelOpting()
+                    category= WoWTools_ToolsButtonMixin:GetCategory()
+                end
+            end
+            return WoWTools_ToolsButtonMixin:GetCategory()
+        end
+    })
 end
-
-
-function WoWTools_ToolsButtonMixin:OpenMenu(root, name, name2)--打开, 选项界面，菜单
-    local sub=root:CreateButton(name2 or name or self:GetName(),
+    --[[local sub=root:CreateButton(name2 or name or self:GetName(),
         function(data)
             if SettingsPanel:IsShown() then--ToggleGameMenu()
                 SettingsPanel:Close()
@@ -364,8 +383,8 @@ function WoWTools_ToolsButtonMixin:OpenMenu(root, name, name2)--打开, 选项�
             e.onlyChinese and '打开选项界面' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, OPTIONS), 'UI')
         )
     end)
-    return sub
-end
+    return sub]]
+
 
 
 

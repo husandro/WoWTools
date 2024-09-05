@@ -949,7 +949,7 @@ local function Init_Menu(self, root)--菜单
         tooltip:AddLine(' ')
         tooltip:AddLine(e.onlyChinese and '打开选项' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, OPTIONS))
     end)]]
-    WoWTools_MinimapMixin:OpenPanel(root)
+    sub=WoWTools_MinimapMixin:OpenPanel(root)
 
     sub:CreateCheckbox(
         e.onlyChinese and '向下滚动' or COMBAT_TEXT_SCROLL_DOWN,
@@ -1092,7 +1092,6 @@ local function Init_Button()
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.GetShowHide(nil, true), e.Icon.left)
         e.tips:AddDoubleLine(e.onlyChinese and '主菜单' or MAINMENU_BUTTON, e.Icon.right)
-        e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save().vigentteButtonTextScale), 'Alt+'..e.Icon.mid)
         e.tips:Show()
@@ -1414,7 +1413,7 @@ function WoWTools_MinimapMixin:Init_TrackButton()
         end
         return
     end
-    addName= self.adddName
+    addName= self.addName
     addName2= self.addName2
 
     Init_Button()--小地图, 标记, 文本

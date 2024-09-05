@@ -1334,7 +1334,7 @@ local function Init_Menu(_, root)
     )
 
 --选项
-    sub2=WoWTools_ToolsButtonMixin:OpenMenu(sub, '|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '选项' or OPTIONS), Save.KEY)
+    sub2=WoWTools_ToolsButtonMixin:OpenMenu(sub, addName)
 end
 
 

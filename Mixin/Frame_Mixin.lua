@@ -2,9 +2,7 @@
 ScaleFrame(frame, delta, value, func)
 ShowText(data, headerText)
 CreateFrame(parent, tab)
-
-GetSize(value)
-GetIndex()
+CreateBackground(frame, setPoint)
 ]]
 
 local e= select(2, ...)
@@ -12,6 +10,21 @@ local Index=0
 WoWTools_FrameMixin= {}
 
 
+local function getSize(value)
+    local w, h
+    local t= type(value)
+    if t=='table' then
+        w, h=value[1], value[2]
+    elseif t=='number' then
+        w, h= value, value
+    end
+    return w or 580, h or 370
+end
+
+local function getIndex()
+    Index= Index+1
+    return Index
+end
 
 
 
@@ -80,8 +93,8 @@ function WoWTools_FrameMixin:CreateFrame(parent, tab)
     local minH= tab.minH
     local sizeRestFunc= tab.sizeRestFunc
 
-    local w, h= self:GetSize(size)
-    local frame= CreateFrame('Frame', name or ('WoWTools_EditBoxFrame'..self:GetIndex()), parent or UIParent, template, setID)
+    local w, h= getSize(size)
+    local frame= CreateFrame('Frame', name or ('WoWTools_EditBoxFrame'..getIndex()), parent or UIParent, template, setID)
     frame:SetSize(w, h)
     frame:SetFrameStrata(strata or 'MEDIUM')
     if type(point)=='table' and point[1] then
@@ -141,30 +154,26 @@ frame.Header:Setup(text)
 
 
 
+--显示背景
 
-
-
-
-
-
-
-
-
-
-
-
-function WoWTools_FrameMixin:GetSize(value)
-    local w, h
-    local t= type(value)
-    if t=='table' then
-        w, h=value[1], value[2]
-    elseif t=='number' then
-        w, h= value, value
+function WoWTools_FrameMixin:CreateBackground(frame, setPoint)
+    frame.Background= frame:CreateTexture(nil, 'BACKGROUND')
+    if setPoint then
+        setPoint(frame.Background)
+    else
+        frame.Background:SetAllPoints()
     end
-    return w or 580, h or 370
+    frame.Background:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
+    frame.Background:SetAlpha(0.5)
 end
+--[[
+--显示背景
+WoWTools_FrameMixin:CreateBackground(frame, function(texture)
+    texture:SetPoint()
+end)
+]]
 
-function WoWTools_FrameMixin:GetIndex()
-    Index= Index+1
-    return Index
-end
+
+
+
+

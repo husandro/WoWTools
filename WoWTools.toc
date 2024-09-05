@@ -98,6 +98,12 @@ Plus_Minimap\InstanceDifficulty.lua
 Plus_Minimap\TrackButton.lua
 Plus_Minimap\TimeManager.lua
 
+
+
+
+
+
+
 ##冒险指南, 增强
 Plus\EncounterJournal.lua
 ##史诗钥石地下城, 挑战增强
@@ -138,7 +144,7 @@ Plus\Professions.lua
 
 ##坐骑， Tools 主要的，
 ##如果要使用Tools中的一个模块，必须开启坐骑模块
-Tools\0_Init.lua
+Tools\0_Init_Tools.lua
 ##坐骑
 Tools\B1_Mount.lua
 ##随机炉石
@@ -169,7 +175,7 @@ Tools\LL_MagePortal.lua
 
 ##Chat Button
 ##这是Chat主要，如果需要其中一个功能，这个不能关
-ChatButton\0_Init.lua
+ChatButton\0_Init_ChatButton.lua
 ##超链接， 欢迎, 一些其他功能
 ChatButton\1_HyperLink.lua
 ##ROLL

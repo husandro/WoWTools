@@ -83,51 +83,52 @@ end
 
 --队伍标记工具, 选项，菜单
 local function Init_MarkerTools_Menu(root)
-    local sub, sub2
-    root:CreateCheckbox((UnitAffectingCombat('player') and '|cff9e9e9e' or '')..'|A:bags-greenarrow:0:0|a'..(e.onlyChinese and '图标方向' or  HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION), function()
+--战斗中
+    if WoWTools_MenuMixin:CheckInCombat(root) then
+        return
+    end
+
+    --[[root:CreateCheckbox('|A:bags-greenarrow:0:0|a'..(e.onlyChinese and '图标方向' or  HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION), function()
         return Save.H
     end, function()
         Save.H = not Save.H and true or nil
         if MakerFrame then
             MakerFrame:set_button_point()
         end
-    end)
+    end)]]
 
-    sub=root:CreateButton('FrameStrata', function()
-        return MenuResponse.Open
-    end)
-    local tab={
-        'BACKGROUND',
-        'LOW',
-        'MEDIUM',
-        'HIGH',
-        'DIALOG',
-        'FULLSCREEN',
-        'FULLSCREEN_DIALOG',
-        'TOOLTIP',
-    }
-    for _, name in pairs(tab) do
-        sub2=sub:CreateCheckbox((name=='MEDIUM' and '|cnGREEN_FONT_COLOR:' or '')..name, function(data)
-            return Save.FrameStrata==data
-        end, function(data)
-            Save.FrameStrata= data
+    --位于上方
+    WoWTools_MenuMixin:ToTop(root, {
+        name=nil,
+        GetValue=function()
+            return Save.H
+        end,
+        SetValue=function()
+            Save.H = not Save.H and true or nil
             if MakerFrame then
-                MakerFrame:set_frame_strata()
-                print(e.addName, addName, MakerFrame:GetFrameStrata())
+                MakerFrame:set_button_point()
             end
+        end,
+        tooltip=false,
+    })
 
-        end, name)
-        sub2:SetTooltip(function(tooltip, data)
-            GameTooltip_AddNormalLine(tooltip, 'Frame:SetFrameStrata('..data.data..')')
-            if MakerFrame then
-                tooltip:AddLine((e.onlyChinese and '当前' or REFORGE_CURRENT)..': '..MakerFrame:GetFrameStrata())
-            end
-            if MakerFrame and not MakerFrame:CanChangeAttribute() then
-                GameTooltip_AddBlankLineToTooltip(tooltip);
-                GameTooltip_AddErrorLine(tooltip, e.onlyChinese and "当前禁用操作" or (REFORGE_CURRENT..': '..DISABLE))
-            end
-        end)
-    end
+
+--FrameStrata
+    WoWTools_MenuMixin:FrameStrata(root, function(data)
+        if MakerFrame then
+            return MakerFrame:GetFrameStrata()==data
+        else
+            return Save.FrameStrata== data
+        end
+    end, function(data)
+        Save.FrameStrata= data
+        if MakerFrame then
+            MakerFrame:set_frame_strata()
+            print(e.addName, addName, MakerFrame:GetFrameStrata())
+        end
+    end)
+    
+
 
     WoWTools_MenuMixin:Scale(root, function()
         return Save.markersScale
@@ -139,7 +140,7 @@ local function Init_MarkerTools_Menu(root)
         end
     end)
 
-    root:CreateDivider()
+    --[[root:CreateDivider()
     local col= not Save.markersFramePoint and '|cff9e9e9e'
         and (MakerFrame and not MakerFrame:CanChangeAttribute() and '|cnGREEN_FONT_COLOR:')
         or ''
@@ -150,6 +151,16 @@ local function Init_MarkerTools_Menu(root)
             MakerFrame:Init_Set_Frame()--位置
             print(e.addName,addName, e.onlyChinese and '重置位置' or RESET_POSITION)
         end
+    end)]]
+
+    --重置位置
+    WoWTools_MenuMixin:RestPoint(root, Save.markersFramePoint and MakerFrame and MakerFrame:CanChangeAttribute(), function()
+        Save.markersFramePoint=nil
+        if MakerFrame and MakerFrame:CanChangeAttribute() then
+            MakerFrame:ClearAllPoints()
+            MakerFrame:Init_Set_Frame()
+        end
+        print(e.addName,addName, e.onlyChinese and '重置位置' or RESET_POSITION)
     end)
 end
 

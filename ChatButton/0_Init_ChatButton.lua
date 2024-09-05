@@ -68,16 +68,8 @@ local function Init_Menu(self, root)
     end)
 
 --显示背景
-    WoWTools_MenuMixin:ShowBackground(sub,
+    WoWTools_MenuMixin:ShowBackground(root,
     function()
-        return Save.isShowBackground
-    end, function()
-        Save.isShowBackground= not Save.isShowBackground and true or nil
-        self:save_data()
-        WoWTools_ChatButtonMixin:ShowBackgroud()
-    end)
-
-    root:CreateCheckbox('|A:UI-Frame-DialogBox-BackgroundTile:0:0|a'..(e.onlyChinese and '背景' or 'Background'), function()
         return Save.isShowBackground
     end, function()
         Save.isShowBackground= not Save.isShowBackground and true or nil

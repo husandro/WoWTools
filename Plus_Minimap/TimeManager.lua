@@ -58,7 +58,9 @@ local function Init_TimeManager_Menu(_, root)
     end
 
 --显示背景
-    WoWTools_MenuMixin:ShowBackground(root,
+    root:CreateDivider()
+    WoWTools_MenuMixin:ShowBackground(
+        root,
     function()
         return Save().isShowTimeManagerBackground
     end, function()
@@ -356,18 +358,14 @@ local function Init_TimeManager()
 
 
 --显示背景
+    WoWTools_FrameMixin:CreateBackground(btn, function(texture)
+        texture:SetPoint('TOPLEFT', StopwatchTickerHour, -1, 0)
+        texture:SetPoint('BOTTOMRIGHT', StopwatchTickerSecond, 2, 0)
+        texture:SetPoint('TOPLEFT', TimeManagerClockTicker)
+        texture:SetPoint('BOTTOMRIGHT', TimeManagerClockTicker, 2, 0)
+    end)
     function btn:set_background()
-        local show= Save().isShowTimeManagerBackground
-        if show and not self.Background then
-            self.Background= self:CreateTexture(nil, 'BACKGROUND')
-            self.Background:SetPoint('TOPLEFT', TimeManagerClockTicker)
-            self.Background:SetPoint('BOTTOMRIGHT', TimeManagerClockTicker, 2, 0)
-            self.Background:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
-            self.Background:SetAlpha(0.5)
-        end
-        if self.Background then
-            self.Background:SetShown(show)
-        end
+        self.Background:SetShown(Save().isShowTimeManagerBackground)
     end
     btn:set_background()
 end
@@ -561,18 +559,12 @@ local function Init_StopwatchFrame()
 
 
 --显示背景
+    WoWTools_FrameMixin:CreateBackground(StopwatchFrame, function(texture)
+        texture:SetPoint('TOPLEFT', StopwatchTickerHour, -1, 0)
+        texture:SetPoint('BOTTOMRIGHT', StopwatchTickerSecond, 2, 0)
+    end)
     function StopwatchFrame:set_background()
-        local show= Save().isShowStopwatchBackground
-        if show and not self.Background then
-            self.Background= self:CreateTexture(nil, 'BACKGROUND')
-            self.Background:SetPoint('TOPLEFT', StopwatchTickerHour, -1, 0)
-            self.Background:SetPoint('BOTTOMRIGHT', StopwatchTickerSecond, 2, 0)
-            self.Background:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
-            self.Background:SetAlpha(0.5)
-        end
-        if self.Background then
-            self.Background:SetShown(show)
-        end
+        self.Background:SetShown(Save().isShowStopwatchBackground)
     end
     StopwatchFrame:set_background()
 

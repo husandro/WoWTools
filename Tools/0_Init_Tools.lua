@@ -215,7 +215,7 @@ local function Init_Menu(self, root)
         tooltip:AddLine(e.onlyChinese and '大小' or 'Size')
     end)
 
-    sub2=sub:CreateCheckbox(e.onlyChinese and '图标' or EMBLEM_SYMBOL, function()
+    sub2=sub:CreateCheckbox('|A:'..e.Icon.icon..':0:0|a'..(e.onlyChinese and '图标' or EMBLEM_SYMBOL), function()
         return Save.showIcon
     end, function()
         Save.showIcon= not Save.showIcon and true or nil

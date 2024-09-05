@@ -531,7 +531,7 @@ local function Init_Menu(self, root)
     })
     sub2:CreateSpacer()
 
-    sub:CreateButton(
+    --[[sub:CreateButton(
         (not Save.point and '|cff9e9e9e' or '')
         ..(e.onlyChinese and '还原位置' or RESET_POSITION),
     function()
@@ -539,9 +539,18 @@ local function Init_Menu(self, root)
             Save.point=nil
             self:set_point()
         end
-    end )
+    end )]]
 
+--重置位置
+    WoWTools_MenuMixin:RestPoint(sub, Save.point and not UnitAffectingCombat('player'), function()
+        if not UnitAffectingCombat('player') then
+            Save.point=nil
+            self:set_point()
+        end
+    end)
 
+--打开选项界面
+    WoWTools_ToolsButtonMixin:OpenMenu(sub, addName)--打开, 选项界面，菜单
 
 --自定义
     sub=root:CreateButton(e.onlyChinese and '自定义' or CUSTOM, function() return MenuResponse.Open end)

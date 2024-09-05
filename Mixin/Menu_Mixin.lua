@@ -1,17 +1,25 @@
 --[[
 CreateSlider(root, tab)
 Scale(root, GetValue, SetValue, checkGetValue, checkSetValue)
+
 ShowBackground(root, GetValue, SetValue)
 FrameStrata(root, GetValue, SetValue)
 RestPoint(root, point, SetValue)
 RestData(root, name, SetValue)
 Reload(root, isControlKeyDown)
 ToTop(root, tab)
+
+CheckInCombat()
+
 OpenJournal(root, tab)
 OpenSpellBook(root, tab)--天赋和法术书
 OpenDragonriding(root)
+OpenOptions(root, tab)
+
 SetNumButton(sub, num)
 SetScrollButton(root, maxCharacters)
+
+
 
 GetDragonriding()
 ]]
@@ -20,6 +28,17 @@ local e= select(2, ...)
 WoWTools_MenuMixin={
     maxMenuButton=35,
 }
+
+function WoWTools_MenuMixin:CloseSettingsPanel()
+    if SettingsPanel and SettingsPanel:IsShown() then
+        SettingsPanel:Close()
+    end
+end
+
+
+
+
+
 
 function WoWTools_MenuMixin:CreateSlider(root, tab)
     local sub=root:CreateTemplate("OptionsSliderTemplate")
@@ -105,10 +124,12 @@ sub2:CreateSpacer()
 --缩放
 function WoWTools_MenuMixin:Scale(root, GetValue, SetValue, checkGetValue, checkSetValue)
     local sub
+    local text= '|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '缩放' or UI_SCALE)
+
     if checkGetValue and checkSetValue then
-        sub= root:CreateCheckbox(e.onlyChinese and '缩放' or UI_SCALE, checkGetValue, checkSetValue)
+        sub= root:CreateCheckbox(text, checkGetValue, checkSetValue)
     else
-        sub= root:CreateButton(e.onlyChinese and '缩放' or UI_SCALE, function()
+        sub= root:CreateButton(text, function()
             return MenuResponse.Open
         end)
     end
@@ -128,7 +149,7 @@ function WoWTools_MenuMixin:Scale(root, GetValue, SetValue, checkGetValue, check
     })
     sub:CreateSpacer()
 
-    sub:CreateButton((e.onlyChinese and '重置' or RESET),
+    sub:CreateButton('|A:characterundelete-RestoreButton:0:0|a'..(e.onlyChinese and '重置' or RESET),
     function(data)
         if data.data.setValue then
             data.data.setValue(1)
@@ -153,7 +174,9 @@ end)
 
 --FrameStrata
 function WoWTools_MenuMixin:FrameStrata(root, GetValue, SetValue)
-    local sub=root:CreateButton('FrameStrata', function() return MenuResponse.Open end)
+    local sub=root:CreateButton('|A:uitools-icon-chevron-right:0:0:|aFrameStrata|A:uitools-icon-chevron-left:0:0|a', function()
+        return MenuResponse.Open
+    end)
 
     for _, strata in pairs({'BACKGROUND','LOW','MEDIUM','HIGH','DIALOG','FULLSCREEN','FULLSCREEN_DIALOG'}) do
         sub:CreateCheckbox((strata=='MEDIUM' and '|cnGREEN_FONT_COLOR:' or '')..strata, GetValue, SetValue, strata)
@@ -161,15 +184,13 @@ function WoWTools_MenuMixin:FrameStrata(root, GetValue, SetValue)
     return sub
 end
 --[[
-sub2=select(2, WoWTools_MenuMixin:FrameStrata(sub, function(data)
+sub2=WoWTools_MenuMixin:FrameStrata(sub, function(data)
     return self:GetFrameStrata()==data
 end, function(data)
     Save.strata= data
     self:set_strata()
-end))
-if isInCombat then
-    sub2:SetEnabled(false)
-end
+end)
+sub2:SetEnabled(not isInCombat)
 ]]
 
 
@@ -247,21 +268,22 @@ end
 
 
 
---位于上方
 function WoWTools_MenuMixin:ToTop(root, tab)
     local sub=root:CreateCheckbox(
         (tab.name or (
             '|A:editmode-up-arrow:16:11:0:3|a'..(e.onlyChinese and '位于上方' or QUESTLINE_LOCATED_ABOVE))),
         tab.GetValue,
         tab.SetValue,
-        tab
+        {isReload=tab.isReload, tooltip=tab.tooltip}
     )
-    sub:SetTooltip(function(tooltip, data)
-        tooltip:AddLine(
-            data.tooltip or
-            (e.onlyChinese and '收起选项 |A:editmode-up-arrow:16:11:0:3|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS)
-        )
-        if data.isReload then
+    sub:SetTooltip(function(tooltip, description)
+        if description.data.tooltip~=false then
+            tooltip:AddLine(
+                description.data.tooltip or
+                (e.onlyChinese and '收起选项 |A:editmode-up-arrow:16:11:0:3|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS)
+            )
+        end
+        if description.data.isReload then
             tooltip:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     end)
@@ -270,7 +292,8 @@ function WoWTools_MenuMixin:ToTop(root, tab)
     end
 end
 --[[
-WoWTools_MenuMixin:ToTop(root, {--位于上方
+--位于上方
+WoWTools_MenuMixin:ToTop(root, {
     name=nil,
     GetValue=function()
         return Save.toFrame
@@ -278,7 +301,7 @@ WoWTools_MenuMixin:ToTop(root, {--位于上方
     SetValue=function()
         Save.toFrame = not Save.toFrame and true or nil
     end,
-    tooltip=nil,
+    tooltip=false,
     isReload=true,--重新加载UI
 })
 ]]
@@ -289,9 +312,20 @@ WoWTools_MenuMixin:ToTop(root, {--位于上方
 
 
 
-
-
-
+function WoWTools_MenuMixin:CheckInCombat(root)
+    if UnitAffectingCombat('player') then
+        return root:CreateTitle(
+            '|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'
+            ..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
+        )
+    end
+end
+--[[
+--战斗中
+    if WoWTools_MenuMixin:CheckInCombat() then
+        return
+    end
+]]
 
 
 
@@ -299,11 +333,9 @@ WoWTools_MenuMixin:ToTop(root, {--位于上方
 --战团藏品
 function WoWTools_MenuMixin:OpenJournal(root, tab)
     local sub=root:CreateButton(
-        (tab.icon or '|A:common-icon-zoomin:0:0|a')..(tab.name or (e.onlyChinese and '战团藏品' or COLLECTIONS)),
+        (tab.icon or '|A:OptionsIcon-Brown:0:0|a')..(tab.name or (e.onlyChinese and '战团藏品' or COLLECTIONS)),
     function(data)
-        if SettingsPanel:IsShown() then--ToggleGameMenu()
-            SettingsPanel:Close()
-        end
+        self:CloseSettingsPanel()
         WoWTools_LoadUIMixin:Journal(data.index)
 
         if data.moutID then
@@ -316,7 +348,7 @@ function WoWTools_MenuMixin:OpenJournal(root, tab)
         return MenuResponse.Open
     end, tab)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(MicroButtonTooltipText(e.onlyChinese and '战团藏品' or COLLECTIONS, "TOGGLECOLLECTIONS"))
+        tooltip:AddLine(MicroButtonTooltipText(e.onlyChinese and '打开战团藏品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, COLLECTIONS), "TOGGLECOLLECTIONS"))
     end)
 end
 --[[
@@ -405,6 +437,51 @@ function WoWTools_MenuMixin:OpenDragonriding(root)
 end
 
 
+function WoWTools_MenuMixin:OpenOptions(root, tab)
+    tab= tab or {}
+
+    local name= tab.name
+    local name2= tab.name2
+    local GetCategory= tab.GetCategory
+    
+    local showText= name2 or name
+    showText= showText and showText..'|A:OptionsIcon-Brown:0:0|a' or ('|A:OptionsIcon-Brown:0:0|a'..(e.onlyChinese and '选项' or OPTIONS))
+
+    local sub=root:CreateButton(showText, function(data)
+        if SettingsPanel:IsShown() then--ToggleGameMenu()
+            SettingsPanel:Close()
+        else
+            local category
+            do
+                if data.GetCategory then
+                    category= data.GetCategory()
+                end
+            end
+            e.OpenPanelOpting(category, name)
+        end
+        return MenuResponse.Open
+    end, {name=name, name2=name2, GetCategory=GetCategory})
+
+    sub:SetTooltip(function(tooltip, description)
+        tooltip:AddDoubleLine(description.data.name or e.addName, description.data.name2)
+        tooltip:AddDoubleLine(
+            e.onlyChinese and '打开选项界面' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, OPTIONS), 'UI')
+        )
+    end)
+    return sub
+end
+--[[
+--打开选项界面
+WoWTools_MenuMixin:OpenOptions(root, {
+name=,
+name2=,
+GetCategory=function()
+end
+})
+]]
+
+
+
 
 --SetGridMode
 function WoWTools_MenuMixin:SetNumButton(sub, num)
@@ -413,6 +490,7 @@ function WoWTools_MenuMixin:SetNumButton(sub, num)
     end
 end
 
+--SetScrollMode
 function WoWTools_MenuMixin:SetScrollButton(root, maxCharacters)
    root:SetScrollMode(20 * (maxCharacters or self.maxMenuButton))
 end

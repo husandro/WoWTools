@@ -114,6 +114,12 @@ end
 
 
 
+
+
+
+
+
+
 function WoWTools_MinimapMixin:Init_InstanceDifficulty()
     local btn= MinimapCluster.InstanceDifficulty
 

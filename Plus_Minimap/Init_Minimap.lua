@@ -41,7 +41,16 @@ Save={
     --MajorFactionRenownFrame_Button_Scale=1,--缩放
 
     --Initializer
-}
+},
+
+Init_InstanceDifficulty=function()end,
+
+Init_TimeManager=function()end,
+Show_TimeManager_Menu=function()end,
+Rest_TimeManager_Point=function()end,
+
+Init_TrackButton=function()end,
+Rest_TrackButton_Point=function()end,
 }
 
 
@@ -59,11 +68,6 @@ Save={
 
 function WoWTools_MinimapMixin:OpenPanel(root)
     local sub=root:CreateButton(self.addName, function()
-        do
-            if not self.Initializer then
-                e.OpenPanelOpting()
-            end
-        end
         e.OpenPanelOpting(nil, self.addName)
         return MenuResponse.Openend
     end)
@@ -72,6 +76,7 @@ function WoWTools_MinimapMixin:OpenPanel(root)
         tooltip:AddLine(' ')
         tooltip:AddLine(e.onlyChinese and '打开选项' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, OPTIONS))
     end)
+    return sub
 end
 
 
