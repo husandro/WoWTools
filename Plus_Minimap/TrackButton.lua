@@ -937,6 +937,7 @@ local function Init_Menu(self, root)--菜单
 
 --打开选项
     root:CreateDivider()
+    --[[
     sub=root:CreateButton(
         addName2,
     function()
@@ -944,9 +945,11 @@ local function Init_Menu(self, root)--菜单
         return MenuResponse.Open
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(addName)
+        tooltip:AddDoubleLine(addName, addName2)
+        tooltip:AddLine(' ')
         tooltip:AddLine(e.onlyChinese and '打开选项' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, OPTIONS))
-    end)
+    end)]]
+    WoWTools_MinimapMixin:OpenPanel(root)
 
     sub:CreateCheckbox(
         e.onlyChinese and '向下滚动' or COMBAT_TEXT_SCROLL_DOWN,
