@@ -97,7 +97,8 @@ Plus_Minimap\Init_Minimap.lua
 Plus_Minimap\InstanceDifficulty.lua
 Plus_Minimap\TrackButton.lua
 Plus_Minimap\TimeManager.lua
-
+Plus_Minimap\Icon_Minimap.lua
+Plus_Minimap\Garrison_Menu.lua
 
 
 

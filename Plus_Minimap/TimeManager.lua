@@ -228,7 +228,7 @@ local function Init_Menu(self, root)
     function()
         return MenuResponse.Open
     end)
-    Init_TimeManager_Menu(_, sub)
+    Init_TimeManager_Menu(self, sub)
 
 --秒表
     root:CreateDivider()
@@ -244,7 +244,7 @@ local function Init_Menu(self, root)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(e.onlyChinese and '显示/隐藏' or (SHOW..'/'..HIDE))
     end)
-    Init_Stopwatch_Menu(_, sub)
+    Init_Stopwatch_Menu(self, sub)
 end
 
 

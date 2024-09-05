@@ -51,6 +51,9 @@ Rest_TimeManager_Point=function()end,
 
 Init_TrackButton=function()end,
 Rest_TrackButton_Point=function()end,
+Init_Icon=function()end,
+
+Init_CovenantRenown=function()end,
 }
 
 
@@ -58,44 +61,26 @@ Rest_TrackButton_Point=function()end,
 
 
 
-
-
-
-
-
-
-
-
-function WoWTools_MinimapMixin:OpenPanel(root)
-    --[[local sub=root:CreateButton(self.addName, function()
-        e.OpenPanelOpting(nil, self.addName)
-        return MenuResponse.Openend
-    end)
-    sub:SetTooltip(function(tooltip)
-        tooltip:AddDoubleLine(e.addName, self.addName)
-        tooltip:AddLine(' ')
-        tooltip:AddLine(e.onlyChinese and '打开选项' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, OPTIONS))
-    end)]]
-    --打开选项界面
-    return WoWTools_MenuMixin:OpenOptions(root, {
-        name=self.addName,
-        --name2=,
-        --GetCategory=function()
-    })
-
-    --return sub
+local function Init_Menu(self, root)
+    WoWTools_MinimapMixin:Garrison_Menu(self, root)
 end
 
 
+function WoWTools_MinimapMixin:Open_Menu(frame)
+    MenuUtil.CreateContextMenu(frame, Init_Menu)
+end
 
 
-
-
+--打开选项界面
+function WoWTools_MinimapMixin:OpenPanel(root)
+    return WoWTools_MenuMixin:OpenOptions(root, {name=self.addName})
+end
 
 
 function WoWTools_MinimapMixin:Init()
     self:Init_InstanceDifficulty()--副本，难度，指示
     self:Init_TrackButton()--小地图, 标记, 文本
+    self:Init_Icon()
 end
 
 
@@ -142,7 +127,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     print(WoWTools_MinimapMixin.addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })]]
-            
+
            e.AddPanel_Check_Button({
                 checkName= WoWTools_MinimapMixin.addName,
                 GetValue= function() return not WoWTools_MinimapMixin.Save.disabled end,
@@ -180,6 +165,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         elseif arg1=='Blizzard_TimeManager' then
             WoWTools_MinimapMixin:Init_TimeManager()--秒表
+
+        elseif arg1=='Blizzard_MajorFactions' then
+           -- WoWTools_MinimapMixin:Init_MajorFactionRenownFrame()
+
+        elseif arg1=='Blizzard_CovenantRenown' then
+            WoWTools_MinimapMixin:Init_CovenantRenown()
+
         end
 
     elseif event == "PLAYER_LOGOUT" then

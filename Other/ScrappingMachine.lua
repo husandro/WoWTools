@@ -40,9 +40,11 @@ local MaxNumeri= 9
 
 local function get_num_items()
     local n= 0
-    for btn in ScrappingMachineFrame.ItemSlots.scrapButtons:EnumerateActive() do
-        if btn and btn.itemLink then
-            n=n +1
+    if ScrappingMachineFrame then
+        for btn in ScrappingMachineFrame.ItemSlots.scrapButtons:EnumerateActive() do
+            if btn and btn.itemLink then
+                n=n +1
+            end
         end
     end
     return n
@@ -98,7 +100,7 @@ end]]
 
 
 
-function Init_Menu(self, level, menuList)
+local function Init_Menu(self, level, menuList)
     if menuList=='DISABLE' then
         local n=0
         for itemID in pairs(Save.items) do

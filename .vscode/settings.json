@@ -4923,7 +4923,10 @@
         "Stopwatch_IsPlaying",
         "StopwatchTabFrame",
         "Stopwatch_Clear",
-        "GameTime_GetTime"
+        "GameTime_GetTime",
+        "GARRISON_TYPE_8_0_LANDING_PAGE_TITLE",
+        "GARRISON_TYPE_8_0_LANDING_PAGE_TOOLTIP",
+        "WAR_WITHIN_LANDING_PAGE_TITLE"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
