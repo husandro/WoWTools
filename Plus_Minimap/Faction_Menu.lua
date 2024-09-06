@@ -192,8 +192,9 @@ local function Set_Faction_Menu(root, factionID)
     local sub=root:CreateCheckbox(
         (info.atlas and '|A:'..info.atlas..':0:0|a' or (info.texture and '|T'..info.texture..':0|t') or '')
         ..e.cn(info.name)
-        ..(info.color and '|c'..info.color:GenerateHexColor() or '')
+        ..(info.color and '|c'..info.color:GenerateHexColor() or '|cffffffff')
         ..(info.factionStandingtext and ' '..info.factionStandingtext..' ' or '')
+        ..'|r'
         ..(info.valueText or '')
         ..(info.hasRewardPending and '|A:BonusLoot-Chest:0:0|a' or ''),
     function(data)
@@ -206,6 +207,8 @@ local function Set_Faction_Menu(root, factionID)
         end
     end, {factionID=factionID})
 
+    return sub
+end
     --[[sub:SetTooltip(function(tooltip, description)
 
     end)]]
@@ -237,8 +240,6 @@ local function Set_Faction_Menu(root, factionID)
             end
         }
     end]]
-end
-
 
 
 
