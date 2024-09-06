@@ -143,25 +143,6 @@ local Button
 
 
 
---###################
---更新地区时,缩小化地图
---###################
-local function set_ZoomOut()
-    if Save.ZoomOut then
-        local value= Minimap:GetZoomLevels()
-        if value~=0 then
-            Minimap:SetZoom(0)
-        end
-    end
-end
-
-
-
-
-
-
-
-
 
 
 
