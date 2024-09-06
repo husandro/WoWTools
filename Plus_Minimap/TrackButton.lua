@@ -1248,7 +1248,18 @@ local function Init_Button()
         end
     end
 
-
+    
+    function TrackButton:set_state()
+        self:SetButtonState('PUSHED')
+        C_Timer.After(5, function()
+            if not GameTooltip:IsOwned(self) then
+                self:SetButtonState('NORMAL')
+            end
+        end)
+    end
+    TrackButton:SetScript('OnShow', TrackButton.set_state)
+    TrackButton:set_state()
+    
 
     TrackButton:set_VIGNETTES_UPDATED(true)
     TrackButton:set_point()
@@ -1430,4 +1441,8 @@ function WoWTools_MinimapMixin:Rest_TrackButton_Point()
         TrackButton:ClearAllPoints()
         TrackButton:set_point()
     end
+end
+
+function WoWTools_MinimapMixin:Init_TrackButton_Menu(...)
+    Init_Menu(...)
 end

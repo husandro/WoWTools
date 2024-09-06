@@ -39,48 +39,7 @@ end
 
 --LuaEnum.lua
 local GarrisonList={
-
-    {name=  e.onlyChinese and '盟约圣所' or GARRISON_TYPE_9_0_LANDING_PAGE_TITLE,
-    garrisonType= Enum.GarrisonType.Type_9_0_Garrison,
-    garrFollowerTypeID= Enum.GarrisonFollowerType.FollowerType_9_0_GarrisonFollower,
-    disabled= C_Covenants.GetActiveCovenantID()==0,
-    atlas= function()
-        local info= C_Covenants.GetCovenantData(C_Covenants.GetActiveCovenantID() or 0) or {}
-        local icon=''
-        if info.textureKit then
-            icon= format('CovenantChoice-Celebration-%sSigil', info.textureKit or '')
-        end
-        return icon
-    end,
-    tooltip= e.onlyChinese and '点击显示圣所报告' or GARRISON_TYPE_9_0_LANDING_PAGE_TOOLTIP,
-    },
-
-    --[[{name=  e.onlyChinese and '任务' or GARRISON_TYPE_8_0_LANDING_PAGE_TITLE,
-    garrisonType= Enum.GarrisonType.Type_8_0_Garrison,
-    garrFollowerTypeID= Enum.GarrisonFollowerType.FollowerType_8_0_GarrisonFollower,
-    atlas= string.format("bfa-landingbutton-%s-up", e.Player.faction),
-    tooltip= e.onlyChinese and '点击显示任务报告' or GARRISON_TYPE_8_0_LANDING_PAGE_TOOLTIP,
-    },]]
-
-    {name=  e.onlyChinese and '职业大厅' or ORDERHALL_MISSION_REPORT:match('(.-)%\n') or ORDER_HALL_LANDING_PAGE_TITLE,
-    garrisonType= Enum.GarrisonType.Type_7_0_Garrison,
-    garrFollowerTypeID= Enum.GarrisonFollowerType.FollowerType_7_0_GarrisonFollower,
-    frame='OrderHallMissionFrame',
-    atlas= e.Class('player', nil, true),--职业图标 -- e.Player.class == "EVOKER" and "UF-Essence-Icon-Active" or string.format("legionmission-landingbutton-%s-up", e.Player.class),
-    tooltip= e.onlyChinese and '点击显示职业大厅报告' or MINIMAP_ORDER_HALL_LANDING_PAGE_TOOLTIP,
-    },
-
-    {name= e.onlyChinese and '要塞' or GARRISON_LOCATION_TOOLTIP,
-    garrisonType= Enum.GarrisonType.Type_6_0_Garrison,
-    garrFollowerTypeID= Enum.GarrisonFollowerType.FollowerType_6_0_GarrisonFollower,
-    garrFollowerTypeID2=Enum.GarrisonFollowerType.FollowerType_6_0_Boat,
-    atlas= format("GarrLanding-MinimapIcon-%s-Up", e.Player.faction),
-    atlas2= format('Islands-%sBoat', e.Player.faction),
-    tooltip= e.onlyChinese and '点击显示要塞报告' or MINIMAP_GARRISON_LANDING_PAGE_TOOLTIP,
-    },
-
-    {name='-'},
-
+    
     --[[{name=e.onlyChinese and '巨龙群岛概要' or DRAGONFLIGHT_LANDING_PAGE_TITLE,
     garrisonType= Enum.GarrisonType.Type_9_0_Garrison,
     garrFollowerTypeID= Enum.GarrisonFollowerType.FollowerType_9_0_GarrisonFollower,
@@ -97,11 +56,55 @@ local GarrisonList={
     disabled= not C_PlayerInfo.IsExpansionLandingPageUnlockedForPlayer(LE_EXPANSION_WAR_WITHIN),
     check= function() return ExpansionLandingPage and ExpansionLandingPage:IsShown() end,
     atlas= 'warwithin-landingbutton-up',
-    tooltip= e.onlyChinese and '点击这里显示卡兹阿加概要' or DRAGONFLIGHT_LANDING_PAGE_TOOLTIP,
+    --tooltip= e.onlyChinese and '点击这里显示卡兹阿加概要' or DRAGONFLIGHT_LANDING_PAGE_TOOLTIP,
     func= function()
         ToggleExpansionLandingPage()
     end,
     },
+
+    {name='-'},
+
+    {name=  e.onlyChinese and '盟约圣所' or GARRISON_TYPE_9_0_LANDING_PAGE_TITLE,
+    garrisonType= Enum.GarrisonType.Type_9_0_Garrison,
+    garrFollowerTypeID= Enum.GarrisonFollowerType.FollowerType_9_0_GarrisonFollower,
+    disabled= C_Covenants.GetActiveCovenantID()==0,
+    atlas= function()
+        local info= C_Covenants.GetCovenantData(C_Covenants.GetActiveCovenantID() or 0) or {}
+        local icon=''
+        if info.textureKit then
+            icon= format('CovenantChoice-Celebration-%sSigil', info.textureKit or '')
+        end
+        return icon
+    end,
+    --tooltip= e.onlyChinese and '点击显示圣所报告' or GARRISON_TYPE_9_0_LANDING_PAGE_TOOLTIP,
+    },
+
+    --[[{name=  e.onlyChinese and '任务' or GARRISON_TYPE_8_0_LANDING_PAGE_TITLE,
+    garrisonType= Enum.GarrisonType.Type_8_0_Garrison,
+    garrFollowerTypeID= Enum.GarrisonFollowerType.FollowerType_8_0_GarrisonFollower,
+    atlas= string.format("bfa-landingbutton-%s-up", e.Player.faction),
+    tooltip= e.onlyChinese and '点击显示任务报告' or GARRISON_TYPE_8_0_LANDING_PAGE_TOOLTIP,
+    },]]
+
+    {name=  e.onlyChinese and '职业大厅' or ORDERHALL_MISSION_REPORT:match('(.-)%\n') or ORDER_HALL_LANDING_PAGE_TITLE,
+    garrisonType= Enum.GarrisonType.Type_7_0_Garrison,
+    garrFollowerTypeID= Enum.GarrisonFollowerType.FollowerType_7_0_GarrisonFollower,
+    frame='OrderHallMissionFrame',
+    atlas= e.Class('player', nil, true),--职业图标 -- e.Player.class == "EVOKER" and "UF-Essence-Icon-Active" or string.format("legionmission-landingbutton-%s-up", e.Player.class),
+    --tooltip= e.onlyChinese and '点击显示职业大厅报告' or MINIMAP_ORDER_HALL_LANDING_PAGE_TOOLTIP,
+    },
+
+    {name= e.onlyChinese and '要塞' or GARRISON_LOCATION_TOOLTIP,
+    garrisonType= Enum.GarrisonType.Type_6_0_Garrison,
+    garrFollowerTypeID= Enum.GarrisonFollowerType.FollowerType_6_0_GarrisonFollower,
+    garrFollowerTypeID2=Enum.GarrisonFollowerType.FollowerType_6_0_Boat,
+    atlas= format("GarrLanding-MinimapIcon-%s-Up", e.Player.faction),
+    atlas2= format('Islands-%sBoat', e.Player.faction),
+    --tooltip= e.onlyChinese and '点击显示要塞报告' or MINIMAP_GARRISON_LANDING_PAGE_TOOLTIP,
+    },
+
+    
+
 }
 
 
@@ -109,10 +112,58 @@ local GarrisonList={
 
 
 
+
+
+
+
+
+
+
+
+
+
 --要塞报告 GarrisonBaseUtils.lua
-local function Init_Garrison_Menu(_, root)
+function WoWTools_MinimapMixin:Garrison_Menu(_, root)
     local sub
-    local bat= UnitAffectingCombat('player')
+
+
+--宏伟宝库
+    local hasRewar= C_WeeklyRewards.HasAvailableRewards()
+    sub=root:CreateCheckbox(
+        (hasRewar and '|cnGREEN_FONT_COLOR:' or '')
+        ..'|A:gficon-chest-evergreen-greatvault-collect:0:0|a'..(e.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT)
+        ..(hasRewar and '|A:BonusLoot-Chest:0:0|a' or ''),
+    function()
+        return WeeklyRewardsFrame and WeeklyRewardsFrame:IsShown()
+    end, WoWTools_LoadUIMixin.WeeklyRewards)
+    sub:SetTooltip(function(tooltip)
+        e.Get_Weekly_Rewards_Activities({showTooltip=true, tooltip=tooltip})--周奖励，提示
+    end)
+
+
+
+--驭空术
+    --[[local DRAGONRIDING_INTRO_QUEST_ID = 68798;
+    local DRAGONRIDING_ACCOUNT_ACHIEVEMENT_ID = 15794;
+    local DRAGONRIDING_TRAIT_SYSTEM_ID = 1;
+    local DRAGONRIDING_TREE_ID = 672;]]
+
+    local numDragonriding=''
+    local dragonridingConfigID = C_Traits.GetConfigIDBySystemID(1);
+    if dragonridingConfigID then
+        local treeCurrencies = C_Traits.GetTreeCurrencyInfo(dragonridingConfigID, 672, false) or {}
+        local num= treeCurrencies[1] and treeCurrencies[1].quantity
+        if num and num>0 then
+            numDragonriding= format(' %s%d|r |T%d:0|t', num==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:', num, select(4, C_Traits.GetTraitCurrencyInfo(2563)) )
+        end
+    end
+    root:CreateCheckbox(
+        format('|A:dragonriding-barbershop-icon-protodrake:0:0|a%s%s', e.onlyChinese and '驭空术' or GENERIC_TRAIT_FRAME_DRAGONRIDING_TITLE, numDragonriding),
+    function()
+        return GenericTraitFrame and GenericTraitFrame:IsShown() and GenericTraitFrame:GetConfigID() == C_Traits.GetConfigIDBySystemID(Enum.ExpansionLandingPageType.Dragonflight)
+    end, function()
+        WoWTools_LoadUIMixin:Dragonriding()
+    end)
 
     for _, info in pairs(GarrisonList) do
         if info.name=='-' then
@@ -149,91 +200,18 @@ local function Init_Garrison_Menu(_, root)
                 tooltip= info.tooltip,
                 func=info.func
             })
-            sub:SetTooltip(function(tooltip, description)
+            --[[sub:SetTooltip(function(tooltip, description)
                 tooltip:AddLine(description.data.tooltip)
-                if UnitAffectingCombat('player')then
-                    tooltip:AddLine(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
-                end
-            end)
+            end)]]
 
 
             local disabled
-            if not bat then
-                if info.disabled~=nil then
-                    disabled= info.disabled
-                else
-                    disabled= not has
-                end
+            if info.disabled~=nil then
+                disabled= info.disabled
             else
-                disabled=true
+                disabled= not has
             end
             sub:SetEnabled(not disabled and true or false)
         end
     end
-
---宏伟宝库
-    local hasRewar= C_WeeklyRewards.HasAvailableRewards()
-    sub=root:CreateCheckbox(
-        (hasRewar and '|cnGREEN_FONT_COLOR:' or '')
-        ..'|A:gficon-chest-evergreen-greatvault-collect:0:0|a'..(e.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT)
-        ..(hasRewar and '|A:BonusLoot-Chest:0:0|a' or ''),
-    function()
-        return WeeklyRewardsFrame and WeeklyRewardsFrame:IsShown()
-    end, WoWTools_LoadUIMixin.WeeklyRewards)
-    sub:SetTooltip(function(tooltip)
-        e.Get_Weekly_Rewards_Activities({showTooltip=true, tooltip=tooltip})--周奖励，提示
-    end)
-    sub:SetEnabled(not bat)
-
-
---驭空术
-    --[[local DRAGONRIDING_INTRO_QUEST_ID = 68798;
-    local DRAGONRIDING_ACCOUNT_ACHIEVEMENT_ID = 15794;
-    local DRAGONRIDING_TRAIT_SYSTEM_ID = 1;
-    local DRAGONRIDING_TREE_ID = 672;]]
-
-    local numDragonriding=''
-    local dragonridingConfigID = C_Traits.GetConfigIDBySystemID(1);
-    if dragonridingConfigID then
-        local treeCurrencies = C_Traits.GetTreeCurrencyInfo(dragonridingConfigID, 672, false) or {}
-        local num= treeCurrencies[1] and treeCurrencies[1].quantity
-        if num and num>0 then
-            numDragonriding= format(' %s%d|r |T%d:0|t', num==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:', num, select(4, C_Traits.GetTraitCurrencyInfo(2563)) )
-        end
-    end
-    root:CreateCheckbox(
-        format('|A:dragonriding-barbershop-icon-protodrake:0:0|a%s%s', e.onlyChinese and '驭空术' or GENERIC_TRAIT_FRAME_DRAGONRIDING_TITLE, numDragonriding),
-    function()
-        return GenericTraitFrame and GenericTraitFrame:IsShown() and GenericTraitFrame:GetConfigID() == C_Traits.GetConfigIDBySystemID(Enum.ExpansionLandingPageType.Dragonflight)
-    end, function()
-        WoWTools_LoadUIMixin:Dragonriding()
-    end)
-    
-
-
-end
---[[
- info={
-            text= '|A:dragonflight-landingbutton-up:0:0|a'..(e.onlyChinese and '移动要塞图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NPE_MOVE, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, GARRISON_LOCATION_TOOLTIP, EMBLEM_SYMBOL))),
-            checked= Save.moveExpansionLandingPageMinimapButton,
-            colorCode= not ExpansionLandingPageMinimapButton and '|cff9e9e9e' or nil,
-            disabled= Save.hideExpansionLandingPageMinimapButton,
-            keepShownOnClick=true,
-            func= function()
-                Save.moveExpansionLandingPageMinimapButton= not Save.moveExpansionLandingPageMinimapButton and true or nil
-                print(e.addName, Initializer:GetName(), '|cnGREEN_FONT_COLOR:' , e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-]]
-
-
-
-
-
-
-
-
-function WoWTools_MinimapMixin:Garrison_Menu(frame, root)
-    Init_Garrison_Menu(frame, root)
 end

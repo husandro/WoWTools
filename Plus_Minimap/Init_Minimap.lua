@@ -16,11 +16,11 @@ Save={
     hideVigentteCurrentOnMinimap=nil,--当前，小地图，标记
     hideVigentteCurrentOnWorldMap=nil,--当前，世界地图，标记
     questIDs={},--世界任务, 监视, ID {[任务ID]=true}
-    areaPoiIDs={[7492]= 2025},--{[areaPoiID]= 地图ID}
+    areaPoiIDs={[7943]= 2248},--{[areaPoiID]= 地图ID}
     uiMapIDs= {},--地图ID 监视, areaPoiIDs，
     currentMapAreaPoiIDs=true,--当前地图，监视, areaPoiIDs，
     textToDown= e.Player.husandro,--文本，向下
-
+     
     miniMapPoint={},--保存小图地, 按钮位置
 
     --disabledInstanceDifficulty=true,--副本，难图，指示
@@ -43,18 +43,38 @@ Save={
     --Initializer
 },
 
-Init_InstanceDifficulty=function()end,
-
-Init_TimeManager=function()end,
-Show_TimeManager_Menu=function()end,
-Rest_TimeManager_Point=function()end,
-
 Init_TrackButton=function()end,
 Rest_TrackButton_Point=function()end,
-Init_Icon=function()end,
+Init_TrackButton_Menu=function()end,
 
-Init_CovenantRenown=function()end,
+ExpansionLanding_Menu=function()end,
+Init_ExpansionLanding=function()end,
+
+Faction_Menu=function()end,
+Garrison_Menu=function()end,
+Init_InstanceDifficulty=function()end,
+Init_MajorFactionRenownFrame=function()end,
+
+Rest_TimeManager_Point=function()end,
+Init_TimeManager=function()end,
+
 }
+
+
+
+
+
+
+
+
+
+
+
+local Save= function()
+    return  WoWTools_MinimapMixin.Save
+end
+
+
 
 
 
@@ -62,23 +82,48 @@ Init_CovenantRenown=function()end,
 
 --主菜单
 local function Init_Menu(self, root)
-    local sub
+--战斗中，不显示
+    if WoWTools_MenuMixin:CheckInCombat(root) then
+        return
+    end
 
+    local sub, sub2
+
+    --要塞，菜单
     WoWTools_MinimapMixin:Garrison_Menu(self, root)
-    WoWTools_MinimapMixin:Faction_Menu(self, root)
 
+    --派系，菜单
+    WoWTools_MinimapMixin:Faction_Menu(self, root)
 
     root:CreateDivider()
 
+--选项
     sub=WoWTools_MenuMixin:OpenOptions(root, {
         name=self.addName,
         --GetCategory=function()
     })
+
+--要塞，图标，移动/隐藏，选项
     WoWTools_MinimapMixin:ExpansionLanding_Menu(self, sub)
 
-    
+    sub:CreateDivider()
 
+--追踪 AreaPoiID
+    sub2= sub:CreateCheckbox(
+        '|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING),
+    function()
+        return Save().vigentteButton
+    end, function()
+        Save().vigentteButton= not Save().vigentteButton and true or nil
+        WoWTools_MinimapMixin:Init_TrackButton()
+    end)
+    WoWTools_MinimapMixin:Init_TrackButton_Menu(self, sub2)
+    sub2:SetEnabled(not IsInInstance())
 end
+
+
+
+
 
 
 
@@ -98,7 +143,6 @@ function WoWTools_MinimapMixin:Open_Menu(frame)
     MenuUtil.CreateContextMenu(frame, Init_Menu)
 end
 
-
 --打开选项界面
 function WoWTools_MinimapMixin:OpenPanel(root)
     return WoWTools_MenuMixin:OpenOptions(root, {name=self.addName})
@@ -108,9 +152,8 @@ end
 function WoWTools_MinimapMixin:Init()
     self:Init_InstanceDifficulty()--副本，难度，指示
     self:Init_TrackButton()--小地图, 标记, 文本
-    self:Init_Icon()
+    self:Init_Icon()--添加，图标
     self:Init_ExpansionLanding()
-    
 end
 
 

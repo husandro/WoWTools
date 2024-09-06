@@ -1,10 +1,13 @@
 --[[
-Journal(index)--加载，收藏，UI
-GenericTraitUI(systemID, treeID)--加载，Trait，UI
-Professions(recipeID)
-MajorFaction(factionID)
+Journal(index)加载，收藏，UI
+GenericTraitUI(systemID, treeID)加载，Trait，UI
+Dragonriding()驭空术
+ToggleLandingPage()概要
+Professions(recipeID)专业
+WeeklyRewards()宏伟宝库
+MajorFaction(factionID)派系声望
 ]]
-
+local e= select(2, ...)
 WoWTools_LoadUIMixin= {}
 
 
@@ -30,6 +33,11 @@ end
 
 
 
+
+
+
+
+
 --加载，Trait，UI
 function WoWTools_LoadUIMixin:GenericTraitUI(systemID, treeID)
     GenericTraitUI_LoadUI()
@@ -37,6 +45,15 @@ function WoWTools_LoadUIMixin:GenericTraitUI(systemID, treeID)
     securecallfunction(GenericTraitFrame.SetTreeID, GenericTraitFrame, treeID)
     ToggleFrame(GenericTraitFrame)
 end
+
+
+
+
+
+
+
+
+
 
 
 --Blizzard_DragonflightLandingPage.lua
@@ -50,6 +67,35 @@ end
 
 
 
+
+
+
+
+
+--概要 ExpansionLandingPage Minimap.lua
+function WoWTools_LoadUIMixin:ToggleLandingPage()
+    if UnitAffectingCombat('player') then
+        return
+    end
+    local frame= ExpansionLandingPageMinimapButton
+    if frame then
+        if frame:IsInMajorFactionRenownMode() then
+            ToggleMajorFactionRenown(Constants.MajorFactionsConsts.PLUNDERSTORM_MAJOR_FACTION_ID)
+            return
+        elseif frame:IsInGarrisonMode() then
+            e.call(GarrisonLandingPage_Toggle)
+            e.call(GarrisonMinimap_HideHelpTip, frame)
+            return
+        end
+    end
+    ToggleExpansionLandingPage()--frame:IsExpansionOverlayMode()
+end
+
+
+
+
+
+--专业
 function WoWTools_LoadUIMixin:Professions(recipeID)
     do
         if not ProfessionsFrame then
@@ -74,6 +120,9 @@ end
 
 
 
+
+
+
 --宏伟宝库
 function WoWTools_LoadUIMixin:WeeklyRewards()
     if not UnitAffectingCombat('player') then
@@ -86,6 +135,10 @@ function WoWTools_LoadUIMixin:WeeklyRewards()
         end
     end
 end
+
+
+
+
 
 
 

@@ -4927,7 +4927,14 @@
         "GARRISON_TYPE_8_0_LANDING_PAGE_TITLE",
         "GARRISON_TYPE_8_0_LANDING_PAGE_TOOLTIP",
         "WAR_WITHIN_LANDING_PAGE_TITLE",
-        "LANDING_PAGE_RENOWN_LABEL"
+        "LANDING_PAGE_RENOWN_LABEL",
+        "GarrisonLandingPage_Toggle",
+        "GarrisonMinimap_HideHelpTip",
+        "MAJOR_FACTION_MAX_RENOWN_REACHED",
+        "PARAGON_REPUTATION_TOOLTIP_TEXT_LOW_LEVEL",
+        "PARAGON_REPUTATION_TOOLTIP_TEXT",
+        "GameTooltip_SetBottomText",
+        "REPUTATION_BUTTON_TOOLTIP_CLICK_INSTRUCTION"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

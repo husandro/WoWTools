@@ -691,9 +691,6 @@ function WoWTools_MinimapMixin:Init_TimeManager()
     if not self.Save.disabledClockPlus then
         Init_StopwatchFrame()
     end
-
-
-
 end
 
 
@@ -701,11 +698,6 @@ end
 
 
 
-
-
---[[function WoWTools_MinimapMixin:Show_TimeManager_Menu(_, root)
-    Init_Menu(_, root)
-end]]
 
 --重置，TimeManager位置
 function WoWTools_MinimapMixin:Rest_TimeManager_Point()

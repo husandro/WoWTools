@@ -224,7 +224,7 @@ local function Set_Faction_Menu(root, factionID)
     if not info.name then
         return
     end
-    
+
     local sub=root:CreateCheckbox(
         (info.atlas and '|A:'..info.atlas..':0:0|a' or (info.texture and '|T'..info.texture..':0|t') or '')
         ..e.cn(info.name)
@@ -233,52 +233,18 @@ local function Set_Faction_Menu(root, factionID)
         ..'|r'
         ..(info.valueText or '')
         ..(info.hasRewardPending and '|A:BonusLoot-Chest:0:0|a' or ''),
+
     function(data)
+
         return MajorFactionRenownFrame and MajorFactionRenownFrame.majorFactionID==data.factionID
     end, function(data)
+
         WoWTools_LoadUIMixin:MajorFaction(data.factionID)
     end, {factionID=factionID})
 
-    
+
     return sub
 end
-
-
-
-local function Init_Menu(_, root)
---名望
-
-    local sub=root:CreateCheckbox(
-        '|A:VignetteEvent-SuperTracked:0:0|a'..(e.onlyChinese and '名望' or LANDING_PAGE_RENOWN_LABEL),
-    function()
-        return MajorFactionRenownFrame and MajorFactionRenownFrame:IsShown()
-    end, function()
-        WoWTools_LoadUIMixin:MajorFaction(2593)
-        return MenuResponse.Open
-    end)
-    
-    local tab=C_MajorFactions.GetMajorFactionIDs(e.ExpansionLevel) or {}
-    for _, factionID in pairs(Constants.MajorFactionsConsts or {}) do--MajorFactionsConstantsDocumentation.lu
-        table.insert(tab, factionID)
-    end
-    table.sort(tab, function(a, b) return a>b end)
-
-
-    for _, factionID in pairs(tab) do
-        Set_Faction_Menu(sub, factionID)
-    end
-
-end
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -290,6 +256,54 @@ end
 
 
 --派系声望
-function WoWTools_MinimapMixin:Faction_Menu(frame, root)
-    Init_Menu(frame, root)
+function WoWTools_MinimapMixin:Faction_Menu(_, root)
+    local sub
+
+--打开选项
+    sub=root:CreateCheckbox(
+        '|A:VignetteEvent-SuperTracked:0:0|a'
+        ..(e.onlyChinese and '名望' or LANDING_PAGE_RENOWN_LABEL),
+    function()
+        return MajorFactionRenownFrame and MajorFactionRenownFrame:IsShown()
+    end, function()
+        WoWTools_LoadUIMixin:MajorFaction(2593)
+        return MenuResponse.Open
+    end, {factionID=2593})
+
+    local index=0
+--当前版本
+    local tab=C_MajorFactions.GetMajorFactionIDs(e.ExpansionLevel) or {}
+
+--MajorFactionsConstantsDocumentation.lua
+    for _, factionID in pairs(Constants.MajorFactionsConsts or {}) do
+        table.insert(tab, factionID)
+    end
+    table.sort(tab, function(a, b) return a>b end)
+    
+    for _, factionID in pairs(tab) do
+        if Set_Faction_Menu(sub, factionID) then
+            index=index+1
+        end
+    end
+
+
+--旧数据
+    for expacID= e.ExpansionLevel-1, 9, -1 do
+        tab=C_MajorFactions.GetMajorFactionIDs(expacID)
+        if tab then
+            table.sort(tab, function(a, b) return a>b end)
+        --[[    sub2= sub:CreateButton(
+                e.GetExpansionText(expacID, nil)..' '..#tab,
+            function()
+                return MenuResponse.Open
+            end)]]
+            sub:CreateDivider()
+            for _, factionID in pairs(tab) do
+                if Set_Faction_Menu(sub, factionID) then
+                    index= index+1
+                end
+            end
+        end
+    end
+    WoWTools_MenuMixin:SetNumButton(sub, index)
 end
