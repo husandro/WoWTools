@@ -111,6 +111,9 @@ local function Get_Bar_Value(info)
             barText = SecondsToTime(info.barValue, false, true, nil, true)
         end
     end
+    if barText then
+        barText= '|cffff00ff'..barText..'|r'
+    end
     return barText
 end
 
@@ -219,6 +222,7 @@ scriptedAnimationEffectID	number
 ]]
 
             elseif widget.widgetType ==Enum.UIWidgetVisualizationType.StatusBar then
+                info= C_UIWidgetManager.GetStatusBarWidgetVisualizationInfo(widget.widgetID)
 --[[
 shownState	Enum.WidgetShownState	
 leftBarMin	number	
@@ -249,6 +253,7 @@ scriptedAnimationEffectID	number
 ]]
 
             elseif widget.widgetType ==Enum.UIWidgetVisualizationType.DoubleStatusBar then
+                info= C_UIWidgetManager.GetDoubleStatusBarWidgetVisualizationInfo(widget.widgetID)
 --[[
 shownState	Enum.WidgetShownState	
 leftBarMin	number	
@@ -316,6 +321,7 @@ scriptedAnimationEffectID	number
 ]]
 
             elseif widget.widgetType ==Enum.UIWidgetVisualizationType.StackedResourceTracker then
+                info= C_UIWidgetManager.GetIconTextAndBackgroundWidgetVisualizationInfo(widget.widgetID)
 --[[
 shownState	Enum.WidgetShownState	
 resources	UIWidgetCurrencyInfo[]	
@@ -336,6 +342,7 @@ scriptedAnimationEffectID	number
 
 
             elseif widget.widgetType ==Enum.UIWidgetVisualizationType.IconTextAndCurrencies then
+                info= C_UIWidgetManager.GetIconTextAndCurrenciesWidgetVisualizationInfo(widget.widgetID)
 --[[
 shownState	Enum.WidgetShownState	
 barValue	number	
@@ -865,7 +872,7 @@ local function Get_areaPoiID_Text(uiMapID, areaPoiID, all)
         else
             time= '|cffffffff'..SecondsToTime(time)..'|r'
         end
-        
+
     end
 
     return name..(time or ''), atlas, widgetSetData
@@ -1297,10 +1304,13 @@ local function set_Button_Text()
                 local text
                 if tables.widgetSetData then
                     text= tables.widgetSetData.text or tables.widgetSetData.tooltip
+
+                    local barValueText= Get_Bar_Value(tables.widgetSetData)
+                    if barValueText then
+                        text= (text or '')..barValueText
+                    end
                 end
                 self.text:SetText(text or '')
-               
-               
 
                 if tables.atlas then
                     self:SetNormalAtlas(tables.atlas)
