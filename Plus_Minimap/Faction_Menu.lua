@@ -235,13 +235,12 @@ local function Set_Faction_Menu(root, factionID)
         ..(info.hasRewardPending and '|A:BonusLoot-Chest:0:0|a' or ''),
 
     function(data)
-
         return MajorFactionRenownFrame and MajorFactionRenownFrame.majorFactionID==data.factionID
+
     end, function(data)
-
         WoWTools_LoadUIMixin:MajorFaction(data.factionID)
-    end, {factionID=factionID})
 
+    end, {factionID=factionID})
 
     return sub
 end
