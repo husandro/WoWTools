@@ -199,6 +199,20 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --设置 Text
 local function Set_TrackButton_Text()
 	if not TrackButton or not TrackButton:IsShown() then

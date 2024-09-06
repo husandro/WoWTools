@@ -185,17 +185,31 @@ hasRep= data.hasBonusRepGain,--额外，声望
 --菜单, 派系声望
 local function Set_Faction_Menu(root, factionID)
     local info= WoWTools_FactionMinxin:GetInfo(factionID, nil, false)
-    print(info.name, factionID)
     if not info.name then
         return
     end
-    return root:CreateCheckbox(
-        (info.atlas and '|A:'..info.atlas..':0:0|a' or '')
-        ..e.cn(info.name)..(info.valueText and ' '..info.valueText or '')
+    
+    local sub=root:CreateCheckbox(
+        (info.atlas and '|A:'..info.atlas..':0:0|a' or (info.texture and '|T'..info.texture..':0|t') or '')
+        ..e.cn(info.name)
+        ..(info.color and '|c'..info.color:GenerateHexColor() or '')
+        ..(info.factionStandingtext and ' '..info.factionStandingtext..' ' or '')
+        ..(info.valueText or '')
         ..(info.hasRewardPending and '|A:BonusLoot-Chest:0:0|a' or ''),
-    function()
-    end, function()
+    function(data)
+        return MajorFactionRenownFrame and MajorFactionRenownFrame.majorFactionID==data.factionID
+    end, function(data)
+        if MajorFactionRenownFrame and MajorFactionRenownFrame.majorFactionID==data.factionID then
+            MajorFactionRenownFrame:Hide()
+        else
+            ToggleMajorFactionRenown(data.factionID)
+        end
     end, {factionID=factionID})
+
+    --[[sub:SetTooltip(function(tooltip, description)
+
+    end)]]
+
     --[[local data = C_MajorFactions.GetMajorFactionData(factionID or 0)
     if data and data.name then
         local name, hasRewardPending= Get_Major_Faction_Level(factionID, data.renownLevel)
@@ -238,6 +252,7 @@ local function Get_Major_Faction_List()
     for _, factionID in pairs(Constants.MajorFactionsConsts or {}) do--MajorFactionsConstantsDocumentation.lu
         table.insert(tab, factionID)
     end
+
     table.sort(tab, function(a, b) return a>b end)
     return tab
 end
@@ -247,12 +262,19 @@ end
 
 local function Init_Menu(_, root)
     local tabs= Get_Major_Faction_List()
-    local sub= Set_Faction_Menu(root, tabs[1])
+    local sub
+    for index, factionID in pairs(tabs) do
+        sub= Set_Faction_Menu(root, factionID)
+        table.remove(tabs, index)
+        if sub then
+            break
+        end
+    end
     if not sub then
         return
     end
-    for i=2, #tabs, 1 do
-        Set_Faction_Menu(sub, tabs[i])
+    for _, factionID in pairs(tabs) do
+        Set_Faction_Menu(sub, factionID)
     end
 end
 
