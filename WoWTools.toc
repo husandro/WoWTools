@@ -100,7 +100,7 @@ Plus_Minimap\TimeManager.lua
 Plus_Minimap\Icon_Minimap.lua
 Plus_Minimap\Garrison_Menu.lua
 Plus_Minimap\Faction_Menu.lua
-
+Plus_Minimap\ExpansionLandingPageMinimapButton.lua
 
 
 
