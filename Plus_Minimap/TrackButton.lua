@@ -776,6 +776,7 @@ local function Init_Menu(self, root)--菜单
         Save().vigentteButtonShowText= not Save().vigentteButtonShowText and true or nil
         self:set_shown()
         self:set_texture()
+        self:set_state()
     end)
 
 --当前
@@ -1259,7 +1260,7 @@ local function Init_Button()
     end
     TrackButton:SetScript('OnShow', TrackButton.set_state)
     TrackButton:set_state()
-    
+
 
     TrackButton:set_VIGNETTES_UPDATED(true)
     TrackButton:set_point()
@@ -1443,6 +1444,8 @@ function WoWTools_MinimapMixin:Rest_TrackButton_Point()
     end
 end
 
-function WoWTools_MinimapMixin:Init_TrackButton_Menu(...)
-    Init_Menu(...)
+function WoWTools_MinimapMixin:Init_TrackButton_Menu(_, root)
+    if TrackButton then
+        Init_Menu(TrackButton, root)
+    end
 end
