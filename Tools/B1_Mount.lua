@@ -61,11 +61,12 @@ local Save={
             --[64731]=true,--[海龟]
         },
         [MOUNT_JOURNAL_FILTER_DRAGONRIDING]={
-            --[368896]=true,--[复苏始祖幼龙]
+            [368896]=true,--[复苏始祖幼龙]
             --[368901]=true,--[崖际荒狂幼龙]
             --[368899]=true,--[载风迅疾幼龙]
             --[360954]=true,--[高地幼龙]
-            [339588]=true,--[罪奔者布兰契]
+            --[339588]=true,--[罪奔者布兰契]
+            --[134359]=true,--飞天魔像
         },
         ['Shift']={
             --[[[75973]=true,--X-53型观光火箭
@@ -599,7 +600,7 @@ end
 
 --##################
 --打开界面, 收藏, 坐骑
---##################
+--[[##################
 local function set_ToggleCollectionsJournal(mountID, type, showNotCollected)
     WoWTools_LoadUIMixin:Journal(1)
 
@@ -628,7 +629,7 @@ local function set_ToggleCollectionsJournal(mountID, type, showNotCollected)
         end
     end
     return MenuResponse.Open
-end
+end]]
 
 
 

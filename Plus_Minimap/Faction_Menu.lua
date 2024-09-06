@@ -267,7 +267,7 @@ function WoWTools_MinimapMixin:Faction_Menu(_, root)
     end, function()
         WoWTools_LoadUIMixin:MajorFaction(2593)
         return MenuResponse.Open
-    end, {factionID=2593})
+    end)
 
     local index=0
 --当前版本
@@ -278,7 +278,7 @@ function WoWTools_MinimapMixin:Faction_Menu(_, root)
         table.insert(tab, factionID)
     end
     table.sort(tab, function(a, b) return a>b end)
-    
+
     for _, factionID in pairs(tab) do
         if Set_Faction_Menu(sub, factionID) then
             index=index+1
@@ -291,7 +291,7 @@ function WoWTools_MinimapMixin:Faction_Menu(_, root)
         tab=C_MajorFactions.GetMajorFactionIDs(expacID)
         if tab then
             table.sort(tab, function(a, b) return a>b end)
-        --[[    sub2= sub:CreateButton(
+        --[[sub2= sub:CreateButton(
                 e.GetExpansionText(expacID, nil)..' '..#tab,
             function()
                 return MenuResponse.Open

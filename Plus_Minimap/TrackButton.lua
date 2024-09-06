@@ -89,94 +89,721 @@ end
 
 
 
+local function Get_Bar_Value(info)
+    local barValue= info.barValue or info.leftBarMin
+    local barMax= info.barMax or info.leftBarMin
+    local barText
+    if barMax and barMax>0 and barValue then
+        if info.barValueTextType == Enum.StatusBarValueTextType.Value then--Blizzard_UIWidgetTemplateBase.lua
+            barText= info.barValue--2
+
+        elseif info.barValueTextType == Enum.StatusBarValueTextType.ValueOverMax then
+            barText= FormatFraction(info.barValue, info.barMax)--5
+
+        elseif info.barValueTextType == Enum.StatusBarValueTextType.ValueOverMaxNormalized then
+            barText= FormatFraction(info.barValue - info.barMin, info.barMax - info.barMin)
+
+        elseif info.barValueTextType == Enum.StatusBarValueTextType.Percentage then--1
+            local barPercent = PercentageBetween(info.barValue, info.barMin, info.barMax)
+            barText= FormatPercentage(barPercent, true)
+
+        elseif info.barValueTextType == Enum.StatusBarValueTextType.Time then
+            barText = SecondsToTime(info.barValue, false, true, nil, true)
+        end
+    end
+    return barText
+end
+
+
+
+--[[
+UIWidgetManagerSharedDocumentation.lua
+{
+Name = "UIWidgetVisualizationType",
+Type = "Enumeration",
+NumValues = 30,
+MinValue = 0,
+MaxValue = 29,
+Fields =
+{ Name = "IconAndText", Type = "UIWidgetVisualizationType", EnumValue = 0 },
+{ Name = "CaptureBar", Type = "UIWidgetVisualizationType", EnumValue = 1 },
+{ Name = "StatusBar", Type = "UIWidgetVisualizationType", EnumValue = 2 },
+{ Name = "DoubleStatusBar", Type = "UIWidgetVisualizationType", EnumValue = 3 },
+{ Name = "IconTextAndBackground", Type = "UIWidgetVisualizationType", EnumValue = 4 },
+{ Name = "DoubleIconAndText", Type = "UIWidgetVisualizationType", EnumValue = 5 },
+{ Name = "StackedResourceTracker", Type = "UIWidgetVisualizationType", EnumValue = 6 },
+{ Name = "IconTextAndCurrencies", Type = "UIWidgetVisualizationType", EnumValue = 7 },
+{ Name = "TextWithState", Type = "UIWidgetVisualizationType", EnumValue = 8 },
+{ Name = "HorizontalCurrencies", Type = "UIWidgetVisualizationType", EnumValue = 9 },
+{ Name = "BulletTextList", Type = "UIWidgetVisualizationType", EnumValue = 10 },
+{ Name = "ScenarioHeaderCurrenciesAndBackground", Type = "UIWidgetVisualizationType", EnumValue = 11 },
+{ Name = "TextureAndText", Type = "UIWidgetVisualizationType", EnumValue = 12 },
+{ Name = "SpellDisplay", Type = "UIWidgetVisualizationType", EnumValue = 13 },
+{ Name = "DoubleStateIconRow", Type = "UIWidgetVisualizationType", EnumValue = 14 },
+{ Name = "TextureAndTextRow", Type = "UIWidgetVisualizationType", EnumValue = 15 },
+{ Name = "ZoneControl", Type = "UIWidgetVisualizationType", EnumValue = 16 },
+{ Name = "CaptureZone", Type = "UIWidgetVisualizationType", EnumValue = 17 },
+{ Name = "TextureWithAnimation", Type = "UIWidgetVisualizationType", EnumValue = 18 },
+{ Name = "DiscreteProgressSteps", Type = "UIWidgetVisualizationType", EnumValue = 19 },
+{ Name = "ScenarioHeaderTimer", Type = "UIWidgetVisualizationType", EnumValue = 20 },
+{ Name = "TextColumnRow", Type = "UIWidgetVisualizationType", EnumValue = 21 },
+{ Name = "Spacer", Type = "UIWidgetVisualizationType", EnumValue = 22 },
+{ Name = "UnitPowerBar", Type = "UIWidgetVisualizationType", EnumValue = 23 },
+{ Name = "FillUpFrames", Type = "UIWidgetVisualizationType", EnumValue = 24 },
+{ Name = "TextWithSubtext", Type = "UIWidgetVisualizationType", EnumValue = 25 },
+{ Name = "MapPinAnimation", Type = "UIWidgetVisualizationType", EnumValue = 26 },
+{ Name = "ItemDisplay", Type = "UIWidgetVisualizationType", EnumValue = 27 },
+{ Name = "TugOfWar", Type = "UIWidgetVisualizationType", EnumValue = 28 },
+{ Name = "ScenarioHeaderDelves", Type = "UIWidgetVisualizationType", EnumValue = 29 },
+]]
 
 
 
 
-
-
-
-
-local function Get_widgetSetID_Text(widgetSetID, all)
+local function Get_widgetSetID_Info(widgetSetID)
     if not widgetSetID then
         return
     end
 
-    local text
-
     for _, widget in ipairs(C_UIWidgetManager.GetAllWidgetsBySetID(widgetSetID) or {}) do
         local info
         if widget.widgetID then
-            if widget.widgetType ==Enum.UIWidgetVisualizationType.IconAndText then info= C_UIWidgetManager.GetIconAndTextWidgetVisualizationInfo(widget.widgetID)
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.CaptureBar then info= C_UIWidgetManager.GetCaptureBarWidgetVisualizationInfo(widget.widgetID)
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.StatusBar then info= C_UIWidgetManager.GetStatusBarWidgetVisualizationInfo(widget.widgetID)
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.DoubleStatusBar then info= C_UIWidgetManager.GetDoubleStatusBarWidgetVisualizationInfo(widget.widgetID)
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.IconTextAndBackground then info= C_UIWidgetManager.GetIconTextAndBackgroundWidgetVisualizationInfo(widget.widgetID)
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.DoubleIconAndText then info= C_UIWidgetManager.GetDoubleIconAndTextWidgetVisualizationInfo(widget.widgetID)
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.StackedResourceTracker then info= C_UIWidgetManager.GetStackedResourceTrackerWidgetVisualizationInfo(widget.widgetID)
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.IconTextAndCurrencies then info= C_UIWidgetManager.GetIconTextAndCurrenciesWidgetVisualizationInfo(widget.widgetID)
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.TextWithState then info= C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo(widget.widgetID)
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.HorizontalCurrencies then info= C_UIWidgetManager.GetHorizontalCurrenciesWidgetVisualizationInfo(widget.widgetID)
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.BulletTextList then info= C_UIWidgetManager.GetBulletTextListWidgetVisualizationInfo(widget.widgetID)
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.ScenarioHeaderCurrenciesAndBackground then info= C_UIWidgetManager.GetScenarioHeaderCurrenciesAndBackgroundWidgetVisualizationInfo(widget.widgetID)
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.TextureAndText then info= C_UIWidgetManager.GetTextureAndTextVisualizationInfo(widget.widgetID)
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.SpellDisplay then info= C_UIWidgetManager.GetSpellDisplayVisualizationInfo(widget.widgetID)
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.DoubleStateIconRow then info= C_UIWidgetManager.GetDoubleStateIconRowVisualizationInfo(widget.widgetID)
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.TextureAndTextRow then info= C_UIWidgetManager.GetTextureAndTextRowVisualizationInfo(widget.widgetID)
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.ZoneControl then info= C_UIWidgetManager.GetZoneControlVisualizationInfo(widget.widgetID)
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.CaptureZone then info= C_UIWidgetManager.GetCaptureZoneVisualizationInfo(widget.widgetID)
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.TextureWithAnimation then info= C_UIWidgetManager.GetTextureWithAnimationVisualizationInfo(widget.widgetID)
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.DiscreteProgressSteps then info= C_UIWidgetManager.GetDiscreteProgressStepsVisualizationInfo(widget.widgetID)
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.ScenarioHeaderTimer then info= C_UIWidgetManager.GetScenarioHeaderTimerWidgetVisualizationInfo(widget.widgetID)
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.TextColumnRow then info= C_UIWidgetManager.GetTextColumnRowVisualizationInfo(widget.widgetID)
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.Spacer then info= C_UIWidgetManager.GetSpacerVisualizationInfo(widget.widgetID)
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.UnitPowerBar then info= C_UIWidgetManager.GetUnitPowerBarWidgetVisualizationInfo(widget.widgetID)
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.FillUpFrames then info= C_UIWidgetManager.GetFillUpFramesWidgetVisualizationInfo(widget.widgetID)
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.TextWithSubtext then info= C_UIWidgetManager.GetTextWithSubtextWidgetVisualizationInfo(widget.widgetID)
+            if widget.widgetType ==Enum.UIWidgetVisualizationType.IconAndText then
+                info= C_UIWidgetManager.GetIconAndTextWidgetVisualizationInfo(widget.widgetID)
+--[[
+state	Enum.IconAndTextWidgetState	
+text	string	
+tooltip	string	
+dynamicTooltip	string	
+tooltipLoc	Enum.UIWidgetTooltipLocation	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number	
+
+]]
+
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.CaptureBar then
+                info= C_UIWidgetManager.GetCaptureBarWidgetVisualizationInfo(widget.widgetID)
+--[[
+shownState	Enum.WidgetShownState	
+barValue	number	
+barMinValue	number	
+barMaxValue	number	
+neutralZoneSize	number	
+neutralZoneCenter	number	
+tooltip	string	
+glowAnimType	Enum.CaptureBarWidgetGlowAnimType	
+fillDirectionType	Enum.CaptureBarWidgetFillDirectionType	
+tooltipLoc	Enum.UIWidgetTooltipLocation	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number	
+]]
+
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.StatusBar then
+--[[
+shownState	Enum.WidgetShownState	
+leftBarMin	number	
+leftBarMax	number	
+leftBarValue	number	
+leftBarTooltip	string	
+rightBarMin	number	
+rightBarMax	number	
+rightBarValue	number	
+rightBarTooltip	string	
+barValueTextType	Enum.StatusBarValueTextType	
+text	string	
+leftBarTooltipLoc	Enum.UIWidgetTooltipLocation	
+rightBarTooltipLoc	Enum.UIWidgetTooltipLocation	
+fillMotionType	Enum.UIWidgetMotionType	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number	
+]]
+
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.DoubleStatusBar then
+--[[
+shownState	Enum.WidgetShownState	
+leftBarMin	number	
+leftBarMax	number	
+leftBarValue	number	
+leftBarTooltip	string	
+rightBarMin	number	
+rightBarMax	number	
+rightBarValue	number	
+rightBarTooltip	string	
+barValueTextType	Enum.StatusBarValueTextType	
+text	string	
+leftBarTooltipLoc	Enum.UIWidgetTooltipLocation	
+rightBarTooltipLoc	Enum.UIWidgetTooltipLocation	
+fillMotionType	Enum.UIWidgetMotionType	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number	
+]]
+
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.IconTextAndBackground then
+--[[
+shownState	Enum.WidgetShownState	
+text	string	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number	
+]]
+
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.DoubleIconAndText then
+--[[
+shownState	Enum.WidgetShownState	
+resources	UIWidgetCurrencyInfo[]	
+tooltipLoc	Enum.UIWidgetTooltipLocation	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number	
+]]
+
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.StackedResourceTracker then
+--[[
+shownState	Enum.WidgetShownState	
+resources	UIWidgetCurrencyInfo[]	
+tooltipLoc	Enum.UIWidgetTooltipLocation	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number	
+]]
+
+
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.IconTextAndCurrencies then
+--[[
+shownState	Enum.WidgetShownState	
+barValue	number	
+barMinValue	number	
+barMaxValue	number	
+neutralZoneSize	number	
+neutralZoneCenter	number	
+tooltip	string	
+glowAnimType	Enum.CaptureBarWidgetGlowAnimType	
+fillDirectionType	Enum.CaptureBarWidgetFillDirectionType	
+tooltipLoc	Enum.UIWidgetTooltipLocation	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number	
+]]
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.TextWithState then
+                info= C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo(widget.widgetID)
+--[[
+shownState	Enum.WidgetShownState	
+enabledState	Enum.WidgetEnabledState	
+text	string	
+tooltip	string	
+textSizeType	Enum.UIWidgetTextSizeType	
+fontType	Enum.UIWidgetFontType	
+bottomPadding	number	
+tooltipLoc	Enum.UIWidgetTooltipLocation	
+hAlign	Enum.WidgetTextHorizontalAlignmentType	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number
+]]
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.HorizontalCurrencies then
+                info= C_UIWidgetManager.GetHorizontalCurrenciesWidgetVisualizationInfo(widget.widgetID)
+--[[
+shownState	Enum.WidgetShownState	
+enabledState	Enum.WidgetEnabledState	
+text	string	
+tooltip	string	
+textSizeType	Enum.UIWidgetTextSizeType	
+fontType	Enum.UIWidgetFontType	
+bottomPadding	number	
+tooltipLoc	Enum.UIWidgetTooltipLocation	
+hAlign	Enum.WidgetTextHorizontalAlignmentType	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number
+]]
+
+
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.BulletTextList then
+                info= C_UIWidgetManager.GetBulletTextListWidgetVisualizationInfo(widget.widgetID)
+--[[
+shownState	Enum.WidgetShownState	
+enabledState	Enum.WidgetEnabledState	
+lines	string[]	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number	
+]]
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.ScenarioHeaderCurrenciesAndBackground then
+                info= C_UIWidgetManager.GetScenarioHeaderCurrenciesAndBackgroundWidgetVisualizationInfo(widget.widgetID)
+--[[
+shownState	Enum.WidgetShownState	
+currencies	UIWidgetCurrencyInfo[]	
+headerText	string	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number	
+]]
+
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.TextureAndText then
+                info= C_UIWidgetManager.GetTextureAndTextVisualizationInfo(widget.widgetID)
+--[[
+shownState	Enum.WidgetShownState	
+currencies	UIWidgetCurrencyInfo[]	
+headerText	string	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number	
+]]
+
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.SpellDisplay then
+                info= C_UIWidgetManager.GetSpellDisplayVisualizationInfo(widget.widgetID)
+--[[
+shownState	Enum.WidgetShownState	
+enabledState	Enum.WidgetEnabledState	
+spellInfo	UIWidgetSpellInfo	
+tooltipLoc	Enum.UIWidgetTooltipLocation	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number	
+
+]]
+
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.DoubleStateIconRow then
+                info= C_UIWidgetManager.GetDoubleStateIconRowVisualizationInfo(widget.widgetID)
+--[[
+shownState	Enum.WidgetShownState	
+leftIcons	UIWidgetStateIconInfo[]	
+rightIcons	UIWidgetStateIconInfo[]	
+tooltipLoc	Enum.UIWidgetTooltipLocation	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number
+]]
+
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.TextureAndTextRow then
+                info= C_UIWidgetManager.GetTextureAndTextRowVisualizationInfo(widget.widgetID)
+--[[
+shownState	Enum.WidgetShownState	
+entries	TextureAndTextEntryInfo[]	
+textSizeType	Enum.UIWidgetTextureAndTextSizeType	
+fixedWidth	number?	
+tooltipLoc	Enum.UIWidgetTooltipLocation	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number	
+]]
+
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.ZoneControl then
+                info= C_UIWidgetManager.GetZoneControlVisualizationInfo(widget.widgetID)
+--[[
+shownState	Enum.WidgetShownState	
+mode	Enum.ZoneControlMode	
+leadingEdgeType	Enum.ZoneControlLeadingEdgeType	
+dangerFlashType	Enum.ZoneControlDangerFlashType	
+zoneEntries	ZoneEntry[]	
+tooltipLoc	Enum.UIWidgetTooltipLocation	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number
+]]
+
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.CaptureZone then
+                info= C_UIWidgetManager.GetCaptureZoneVisualizationInfo(widget.widgetID)
+--[[
+shownState	Enum.WidgetShownState	
+mode	Enum.ZoneControlMode	
+leadingEdgeType	Enum.ZoneControlLeadingEdgeType	
+dangerFlashType	Enum.ZoneControlDangerFlashType	
+zoneInfo	ZoneEntry	
+tooltipLoc	Enum.UIWidgetTooltipLocation	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number
+]]
+
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.TextureWithAnimation then
+                info= C_UIWidgetManager.GetTextureWithAnimationVisualizationInfo(widget.widgetID)
+--[[
+shownState	Enum.WidgetShownState	
+tooltip	string	
+tooltipLoc	Enum.UIWidgetTooltipLocation	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number
+]]
+
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.DiscreteProgressSteps then
+                info= C_UIWidgetManager.GetDiscreteProgressStepsVisualizationInfo(widget.widgetID)
+--[[
+shownState	Enum.WidgetShownState	
+tooltip	string	
+tooltipLoc	Enum.UIWidgetTooltipLocation	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number
+]]
+
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.ScenarioHeaderTimer then
+                info= C_UIWidgetManager.GetScenarioHeaderTimerWidgetVisualizationInfo(widget.widgetID)
+--[[
+shownState	Enum.WidgetShownState	
+tooltip	string	
+tooltipLoc	Enum.UIWidgetTooltipLocation	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number
+]]
+
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.TextColumnRow then
+                info= C_UIWidgetManager.GetTextColumnRowVisualizationInfo(widget.widgetID)
+--[[
+shownState	Enum.WidgetShownState	
+entries	TextColumnRowEntryInfo[]	
+textSizeType	Enum.UIWidgetTextSizeType	
+fontType	Enum.UIWidgetFontType	
+tooltip	string	
+tooltipLoc	Enum.UIWidgetTooltipLocation	
+bottomPadding	number	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number
+]]
+
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.Spacer then
+                info= C_UIWidgetManager.GetSpacerVisualizationInfo(widget.widgetID)
+--[[
+shownState	Enum.WidgetShownState	
+widgetWidth	number	
+widgetHeight	number	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number
+]]
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.UnitPowerBar then
+                info= C_UIWidgetManager.GetUnitPowerBarWidgetVisualizationInfo(widget.widgetID)
+--[[
+shownState	Enum.WidgetShownState	
+barMin	number	
+barMax	number	
+barValue	number	
+tooltip	string	
+barValueTextType	Enum.StatusBarValueTextType	
+overrideBarText	string	
+overrideBarTextShownType	Enum.StatusBarOverrideBarTextShownType	
+tooltipLoc	Enum.UIWidgetTooltipLocation	
+fillMotionType	Enum.UIWidgetMotionType	
+flashBlendModeType	Enum.UIWidgetBlendModeType	
+sparkBlendModeType	Enum.UIWidgetBlendModeType	
+flashMomentType	Enum.WidgetUnitPowerBarFlashMomentType	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number
+]]
+
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.FillUpFrames then
+                info= C_UIWidgetManager.GetFillUpFramesWidgetVisualizationInfo(widget.widgetID)
+--[[
+shownState	Enum.WidgetShownState	
+barMin	number	
+barMax	number	
+barValue	number	
+tooltip	string	
+barValueTextType	Enum.StatusBarValueTextType	
+overrideBarText	string	
+overrideBarTextShownType	Enum.StatusBarOverrideBarTextShownType	
+tooltipLoc	Enum.UIWidgetTooltipLocation	
+fillMotionType	Enum.UIWidgetMotionType	
+flashBlendModeType	Enum.UIWidgetBlendModeType	
+sparkBlendModeType	Enum.UIWidgetBlendModeType	
+flashMomentType	Enum.WidgetUnitPowerBarFlashMomentType	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number
+]]
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.TextWithSubtext then
+                info= C_UIWidgetManager.GetTextWithSubtextWidgetVisualizationInfo(widget.widgetID)
+--[[
+shownState	Enum.WidgetShownState	
+barMin	number	
+barMax	number	
+barValue	number	
+tooltip	string	
+barValueTextType	Enum.StatusBarValueTextType	
+overrideBarText	string	
+overrideBarTextShownType	Enum.StatusBarOverrideBarTextShownType	
+tooltipLoc	Enum.UIWidgetTooltipLocation	
+fillMotionType	Enum.UIWidgetMotionType	
+flashBlendModeType	Enum.UIWidgetBlendModeType	
+sparkBlendModeType	Enum.UIWidgetBlendModeType	
+flashMomentType	Enum.WidgetUnitPowerBarFlashMomentType	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number
+]]
             --elseif widget.widgetType ==Enum.UIWidgetVisualizationType.WorldLootObject		Added in 10.1.0
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.ItemDisplay then info= C_UIWidgetManager.GetItemDisplayVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.ItemDisplay then
+                info= C_UIWidgetManager.GetItemDisplayVisualizationInfo(widget.widgetID)
+--[[
+shownState	Enum.WidgetShownState	
+tooltipLoc	Enum.UIWidgetTooltipLocation	
+itemInfo	UIWidgetItemInfo	
+widgetSizeSetting	number	
+textureKit	string : textureKit	
+frameTextureKit	string : textureKit	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number
+]]
             end
         end
-
-        if info and info.shownState == Enum.WidgetShownState.Shown and info.text and info.text~='' then
-           if info.hasTimer or all then
-                local barText
-                if info.barMax and info.barMax>0 and info.barValue then
-                    if info.barValueTextType == Enum.StatusBarValueTextType.Value then--Blizzard_UIWidgetTemplateBase.lua
-                        barText= info.barValue--2
-
-                    elseif info.barValueTextType == Enum.StatusBarValueTextType.ValueOverMax then
-                        barText= FormatFraction(info.barValue, info.barMax)--5
-
-                    elseif info.barValueTextType == Enum.StatusBarValueTextType.ValueOverMaxNormalized then
-                        barText= FormatFraction(info.barValue - info.barMin, info.barMax - info.barMin)
-
-                    elseif info.barValueTextType == Enum.StatusBarValueTextType.Percentage then--1
-                        local barPercent = PercentageBetween(info.barValue, info.barMin, info.barMax)
-                        barText= FormatPercentage(barPercent, true)
-
-                    elseif info.barValueTextType == Enum.StatusBarValueTextType.Time then
-                        barText = SecondsToTime(info.barValue, false, true, nil, true)
-                    end
-                end
-                barText= barText and '|cffffffff'..barText..'|r ' or ''
-                info.text= e.cn(info.text)
-                local text3= info.text:gsub('^|n', '')
-                text3= text3:gsub('|n', '|n       ')
-                text3= text3:gsub(':%d+|t', ':0|t')
-                local col = barColor[info.enabledState]
-                if col then
-                    text3= col:WrapTextInColorCode(text3)
-                end
-
-                text=(text and text..'|n' or '').. '   '..barText..text3
-               --if widgetSetID==1001 then
-            end
+        if info
+            and (
+                (info.shownState and info.shownState~=Enum.WidgetShownState.Hidden)
+                or (info.state and info.state~=Enum.IconAndTextWidgetState.Hidden)
+            )
+        then
+            return info
         end
     end
-
-
-    return text
 end
 
 
@@ -201,47 +828,47 @@ local function Get_areaPoiID_Text(uiMapID, areaPoiID, all)
     if not poiInfo.name  then
         return
     end
-    local widgetSetID= poiInfo.tooltipWidgetSet or poiInfo.iconWidgetSet
-    local text=  Get_widgetSetID_Text(widgetSetID, all)
-    if text then
 
-        local time
-        if C_AreaPoiInfo.IsAreaPOITimed(areaPoiID) then
-            time=  C_AreaPoiInfo.GetAreaPOISecondsLeft(areaPoiID)
-            time= (time and time>0) and time or nil
-        end
+    local widgetSetData = Get_widgetSetID_Info(poiInfo.tooltipWidgetSet or poiInfo.iconWidgetSet)
 
-        if text and (time or all) then
-            local name= e.cn(poiInfo.name)
-            local atlas=  poiInfo.atlasName
-            if poiInfo.factionID and C_Reputation.IsMajorFaction(poiInfo.factionID) then
-                local info = C_MajorFactions.GetMajorFactionData(poiInfo.factionID)
-                if info and info.textureKit then
-                    if not atlas then
-                        atlas= 'MajorFactions_Icons_'..info.textureKit..'512'
-                    else
-                        name= name..'|A:MajorFactions_Icons_'..info.textureKit..'512:0:0|a'
-                    end
-                end
+    local time
+    if C_AreaPoiInfo.IsAreaPOITimed(areaPoiID) then
+        time=  C_AreaPoiInfo.GetAreaPOISecondsLeft(areaPoiID)
+        time= (time and time>0) and time or nil
+    end
+
+    if (not widgetSetData or not widgetSetData.hasTimer) and not time then
+        return
+    end
+
+    local name= e.cn(poiInfo.name)
+    local atlas=  poiInfo.atlasName
+
+    if poiInfo.factionID and C_Reputation.IsMajorFaction(poiInfo.factionID) then
+        local info = C_MajorFactions.GetMajorFactionData(poiInfo.factionID)
+        if info and info.textureKit then
+            if not atlas then
+                atlas= 'MajorFactions_Icons_'..info.textureKit..'512'
+            else
+                name= name..'|A:MajorFactions_Icons_'..info.textureKit..'512:0:0|a'
             end
-            if time then
-                if poiInfo.name~='' then
-                    if time<86400 then
-                        text= text..' |cffffffff'..e.SecondsToClock(time)..'|r'
-                    else
-                        text= text..' |cffffffff'..SecondsToTime(time)..'|r'
-                    end
-                else
-                    if time<86400 then
-                        text= text..' '..e.SecondsToClock(time)
-                    else
-                        text= text..' '..SecondsToTime(time)
-                    end
-                end
-            end
-            return name, atlas, text
         end
     end
+
+    if time then
+        if time<86400 then
+            if time<300 then
+                time= '|cnGREEN_FONT_COLOR:'..e.SecondsToClock(time)..'|r'
+            else
+                time= '|cffffffff'..e.SecondsToClock(time)..'|r'
+            end
+        else
+            time= '|cffffffff'..SecondsToTime(time)..'|r'
+        end
+        
+    end
+
+    return name..(time or ''), atlas, widgetSetData
 end
 
 
@@ -261,10 +888,12 @@ end
 --#########
 --Vignettes
 --#########
-local function get_vignette_Text()
+local function Get_Current_Vignettes()
     local onMinimap={}
     local onWorldMap={}
-    if not (Save().hideVigentteCurrentOnMinimap and Save().hideVigentteCurrentOnWorldMap) then
+    local save=Save()
+
+    if not (save.hideVigentteCurrentOnMinimap and Save().hideVigentteCurrentOnWorldMap) then
         local vignetteGUIDs= C_VignetteInfo.GetVignettes() or {}
         local bestUniqueVignetteIndex = C_VignetteInfo.FindBestUniqueVignette(vignetteGUIDs)
         local tab={}
@@ -277,19 +906,15 @@ local function get_vignette_Text()
                 and (info.name or info.atlasName)
                 and not info.isDead
                 and (
-                    (info.onMinimap and not Save().hideVigentteCurrentOnMinimap)--当前，小地图，标记
-                    or (info.onWorldMap and not Save().hideVigentteCurrentOnWorldMap)--当前，世界地图，标记
+                    (info.onMinimap and not save.hideVigentteCurrentOnMinimap)--当前，小地图，标记
+                    or (info.onWorldMap and not save.hideVigentteCurrentOnWorldMap)--当前，世界地图，标记
                 )
             then
 
                 if info.rewardQuestID==0 then
                     info.rewardQuestID=nil
                 end
-                local text
                 local name= e.cn(info.name, {vignetteID= info.vignetteID})
-                if info.widgetSetID then
-                    text= Get_widgetSetID_Text(info.widgetSetID, true)
-                end
 
                 if info.vignetteID == 5715 or info.vignetteID==5466 then--翻动的泥土堆
                     name= name..'|T1059121:0|t'
@@ -298,31 +923,36 @@ local function get_vignette_Text()
                 elseif info.vignetteID==5468 then
                     name= name..'|A:MajorFactions_Icons_Expedition512:0:0|a'
                 end
+
                 if info.rewardQuestID then--任务，奖励
-
                     local itemTexture= WoWTools_QuestMixin:GetRewardInfo(info.rewardQuestID).texture
-
                     if itemTexture then
                         name= name..'|T'..itemTexture..':0|t'
                     end
                 end
+
                 if index==bestUniqueVignetteIndex then--唯一
                     name= '|cnGREEN_FONT_COLOR:'..name..'|r'..'|A:auctionhouse-icon-favorite:0:0|a'
                 end
 
-                --local point= C_VignetteInfo.GetVignettePosition(guid, uiMapID)
-                table.insert(info.onMinimap and onMinimap or onWorldMap, {
+                local data= {
                     name=name,
-                    text=text,
+                    widgetSetData= Get_widgetSetID_Info(info.widgetSetID),
                     atlas=info.atlasName,
                     vignetteGUID=guid,
                     onMinimap=info.onMinimap,
                     rewardQuestID= info.rewardQuestID
-                })
+                }
+                if info.onMinimap then
+                    table.insert(onMinimap, data)
+                else
+                    table.insert(onWorldMap, data)
+                end
                 tab[info.vignetteID]=true
             end
         end
     end
+
     return onMinimap, onWorldMap
 end
 
@@ -581,7 +1211,7 @@ end
 local function set_Button_Text()
     local allTable={}
 
-    local onMinimap, onWorldMap= get_vignette_Text()--{vignetteID=info.vignetteID, text=text, atlas= info.atlasName}
+    local onMinimap, onWorldMap= Get_Current_Vignettes()--{vignetteID=info.vignetteID, text=text, atlas= info.atlasName}
     for _, vigenttes in pairs(onMinimap) do
         table.insert(allTable, vigenttes)
     end
@@ -599,9 +1229,9 @@ local function set_Button_Text()
 
 
     for areaPoiID, uiMapID in pairs(Save().areaPoiIDs) do--自定义 areaPoiID
-        local name, atlas, text= Get_areaPoiID_Text(uiMapID, areaPoiID, true)
+        local name, atlas, widgetSetData= Get_areaPoiID_Text(uiMapID, areaPoiID, true)
         if name then
-            table.insert(allTable, {name=name, areaPoiID=areaPoiID, uiMapID=uiMapID, text=text, atlas=atlas})
+            table.insert(allTable, {name=name, areaPoiID=areaPoiID, uiMapID=uiMapID, widgetSetData=widgetSetData, atlas=atlas})
         end
     end
 
@@ -611,9 +1241,9 @@ local function set_Button_Text()
         local tab={}
         for _, areaPoiID in pairs(C_AreaPoiInfo.GetAreaPOIForMap(uiMapID) or {}) do
             if not Save().areaPoiIDs[areaPoiID] and not tab[areaPoiID] then
-                local name, atlas, text= Get_areaPoiID_Text(uiMapID, areaPoiID)
+                local name, atlas, widgetSetData= Get_areaPoiID_Text(uiMapID, areaPoiID)
                 if name then
-                    table.insert(allTable, {name=name, areaPoiID=areaPoiID, uiMapID=uiMapID, text=text, atlas=atlas})
+                    table.insert(allTable, {name=name, areaPoiID=areaPoiID, uiMapID=uiMapID, widgetSetData=widgetSetData, atlas=atlas})
                     tab[areaPoiID]=true
                 end
             end
@@ -626,9 +1256,9 @@ local function set_Button_Text()
             local nameTab={}
             for _, areaPoiID in pairs(C_AreaPoiInfo.GetAreaPOIForMap(uiMapID) or {}) do
                 if not Save().areaPoiIDs[areaPoiID] then
-                    local name, atlas, text= Get_areaPoiID_Text(uiMapID, areaPoiID)
+                    local name, atlas, widgetSetData= Get_areaPoiID_Text(uiMapID, areaPoiID)
                     if name and not nameTab[name] then
-                        table.insert(allTable, {name=name, areaPoiID=areaPoiID, uiMapID=uiMapID, text=text, atlas=atlas})
+                        table.insert(allTable, {name=name, areaPoiID=areaPoiID, uiMapID=uiMapID, widgetSetData=widgetSetData, atlas=atlas})
                         nameTab[name]=true
                     end
                 end
@@ -651,7 +1281,7 @@ local function set_Button_Text()
 
             btn.index= index
 
-            function btn:set_rest(tables)
+            function btn:settings(tables)
                 self.questID= tables.questID--任务
 
                 self.vignetteGUID= tables.vignetteGUID--vigentte
@@ -662,16 +1292,26 @@ local function set_Button_Text()
 
                 self.name= tables.name
                 self.nameText:SetText(tables.name=='' and ' ' or tables.name or '')
-                self.text:SetText(tables.text or '')
+
+
+                local text
+                if tables.widgetSetData then
+                    text= tables.widgetSetData.text or tables.widgetSetData.tooltip
+                end
+                self.text:SetText(text or '')
+               
+               
+
                 if tables.atlas then
                     self:SetNormalAtlas(tables.atlas)
                 else
                     self:SetNormalTexture(tables.texture or 0)
                 end
-                self:SetShown((tables.text or tables.texture or tables.atlas) and true or false)
+                self:SetShown(tables.name)
                 self.onMinimap:SetShown(tables.vignetteGUID and tables.onMinimap)--提示， 在小地图
             end
-            function btn:set_btn_point()
+
+            function btn:set_point()
                 if Save().textToDown then
                     if self.index==1 then
                         self:SetPoint('TOP', TrackButton, 'BOTTOM')
@@ -706,16 +1346,6 @@ local function set_Button_Text()
                 e.tips:SetOwner(self.nameText or self.text or self, "ANCHOR_RIGHT")
                 e.tips:ClearLines()
 
-                --[[WoWTools_TooltipMixin:set_tooltip(e.tips, {
-                    questID= self.questID,
-                    rewardQuestID=self.rewardQuestID,
-                    vignetteGUID= self.vignetteGUID,
-                    uiMapID= self.uiMapID,
-                    areaPoiID= self.areaPoiID,
-
-                    frame=self,
-                })
-                ]]
                 set_OnEnter_btn_tips(self)
 
                 e.tips:AddLine(' ')
@@ -729,16 +1359,16 @@ local function set_Button_Text()
             end)
 
 
-            btn:set_btn_point()
+            btn:set_point()
 
             TrackButton.buttons[index]=btn
         end
 
-        btn:set_rest(info)
+        btn:settings(info)
     end
 
     for i= #allTable+1, #TrackButton.buttons do
-        TrackButton.buttons[i]:set_rest({})
+        TrackButton.buttons[i]:settings({})
     end
 end
 
@@ -961,7 +1591,7 @@ local function Init_Menu(self, root)--菜单
         for _, btn in pairs(self.buttons) do
             btn:ClearAllPoints()
             btn.text:ClearAllPoints()
-            btn:set_btn_point()
+            btn:set_point()
         end
     end)
 
@@ -1016,7 +1646,7 @@ local function Init_Button()
     TrackButton.texture=TrackButton:CreateTexture(nil, 'BORDER')
     TrackButton.texture:SetAllPoints()
     --TrackButton= WoWTools_ButtonMixin:Ctype2(nil, {name='WoWTools_Minimap_TrackButton', size=22})
-    
+
     TrackButton.buttons={}
 
     TrackButton.Frame= CreateFrame('Frame', nil, TrackButton)
@@ -1249,7 +1879,7 @@ local function Init_Button()
         end
     end
 
-    
+
     function TrackButton:set_state()
         self:SetButtonState('PUSHED')
         C_Timer.After(5, function()
