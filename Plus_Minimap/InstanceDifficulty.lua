@@ -103,7 +103,7 @@ local function InstanceDifficulty_OnEnter(self)
     end
 
     e.tips:AddLine(' ')
-    e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+    e.tips:AddDoubleLine(e.addName, WoWTools_MinimapMixin.addName)
     e.tips:Show()
     if self.labelType then
         self.labelType:SetAlpha(1)

@@ -118,28 +118,52 @@ local function Init_Menu(self, root)
         Save().vigentteButton= not Save().vigentteButton and true or nil
         WoWTools_MinimapMixin:Init_TrackButton()
     end)
+
 --追踪 AreaPoiID 菜单
-    WoWTools_MinimapMixin:Init_TrackButton_Menu(self, sub2)
+    --WoWTools_MinimapMixin:Init_TrackButton_Menu(self, sub2)
     sub2:SetEnabled(not IsInInstance())
 
+--镜头视野范围
     sub2=sub:CreateCheckbox(
         '|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '镜头视野范围' or CAMERA_FOV),
     function()
-        return Save.ZoomOutInfo
+        return Save().ZoomOutInfo
     end, function()
         Save().ZoomOutInfo= not Save().ZoomOutInfo and true or nil
         WoWTools_MinimapMixin:Init_Minimap_Zoom()
     end)
     sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine(
-            (e.onlyChinese and '镜头视野范围' or CAMERA_FOV)
-            ..': '
-            ..format(e.onlyChinese and '%s码' or IN_GAME_NAVIGATION_RANGE, format('%i', C_Minimap.GetViewRadius() or 100))
+        tooltip:AddDoubleLine(
+            (e.onlyChinese and '镜头视野范围' or CAMERA_FOV),
+            format(e.onlyChinese and '%s码' or IN_GAME_NAVIGATION_RANGE, format('%i', C_Minimap.GetViewRadius() or 100))
         )
     end)
 
+--缩小地图
+    sub2=sub:CreateCheckbox(
+        '|A:UI-HUD-Minimap-Zoom-Out:0:0|a'..(e.onlyChinese and '缩小地图' or BINDING_NAME_MINIMAPZOOMOUT),
+    function()
+        return Save().ZoomOut
+    end, function()
+        Save().ZoomOut= not Save().ZoomOut and true or nil
+        WoWTools_MinimapMixin:Init_Minimap_Zoom()
+    end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine(e.onlyChinese and '更新地区时' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UPDATE, ZONE))
+    end)
 
-
+    sub2=sub:CreateCheckbox(
+        '|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..(e.onlyChinese and '镇民' or TOWNSFOLK_TRACKING_TEXT),
+    function()
+        return C_CVar.GetCVarBool("minimapTrackingShowAll")
+    end, function()
+        C_CVar.SetCVar('minimapTrackingShowAll', not C_CVar.GetCVarBool("minimapTrackingShowAll") and '1' or '0' )
+    end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddDoubleLine(e.onlyChinese and '追踪' or TRACKING)
+        tooltip:AddLine(
+        [[SetCVar("minimapTrackingShowAll", "1")]])
+    end)
 end
 
 
@@ -216,18 +240,18 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 --添加控制面板
             --[[WoWTools_MinimapMixin.Initializer= e.AddPanel_Check({
                 name= WoWTools_MinimapMixin.addName,
-                GetValue= function() return WoWTools_MinimapMixin.Save.disabled end,
+                GetValue= function() return Save().disabled end,
                 SetValue= function()
-                    WoWTools_MinimapMixin.Save.disabled= not WoWTools_MinimapMixin.Save.disabled and true or nil
+                    Save().disabled= not Save().disabled and true or nil
                     print(WoWTools_MinimapMixin.addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })]]
 
            e.AddPanel_Check_Button({
                 checkName= WoWTools_MinimapMixin.addName,
-                GetValue= function() return not WoWTools_MinimapMixin.Save.disabled end,
+                GetValue= function() return not Save().disabled end,
                 SetValue= function()
-                    WoWTools_MinimapMixin.Save.disabled= not WoWTools_MinimapMixin.Save.disabled and true or nil
+                    Save().disabled= not Save().disabled and true or nil
                     print(WoWTools_MinimapMixin.addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end,
                 buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
@@ -242,11 +266,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
 
-            if WoWTools_MinimapMixin.Save.disabled then
+            if Save().disabled then
                 self:UnregisterEvent('ADDON_LOADED')
 
             else
-                for questID in pairs(WoWTools_MinimapMixin.Save.questIDs or {}) do
+                for questID in pairs(Save().questIDs or {}) do
                     e.LoadData({id= questID, type=='quest'})
                 end
                 WoWTools_MinimapMixin:Init()
