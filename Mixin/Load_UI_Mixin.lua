@@ -2,6 +2,7 @@
 Journal(index)--加载，收藏，UI
 GenericTraitUI(systemID, treeID)--加载，Trait，UI
 Professions(recipeID)
+MajorFaction(factionID)
 ]]
 
 WoWTools_LoadUIMixin= {}
@@ -87,3 +88,12 @@ function WoWTools_LoadUIMixin:WeeklyRewards()
 end
 
 
+
+--派系声望
+function WoWTools_LoadUIMixin:MajorFaction(factionID)
+    if factionID and MajorFactionRenownFrame and MajorFactionRenownFrame.majorFactionID==factionID then
+        MajorFactionRenownFrame:Hide()
+    else
+        ToggleMajorFactionRenown(factionID)
+    end
+end

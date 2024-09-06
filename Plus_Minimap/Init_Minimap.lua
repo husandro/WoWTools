@@ -62,9 +62,52 @@ Init_CovenantRenown=function()end,
 
 --主菜单
 local function Init_Menu(self, root)
+    local sub
+
     WoWTools_MinimapMixin:Garrison_Menu(self, root)
     WoWTools_MinimapMixin:Faction_Menu(self, root)
+
+
+    root:CreateDivider()
+
+    sub=WoWTools_MenuMixin:OpenOptions(root, {
+        name=self.addName,
+        --GetCategory=function()
+    })
+
+    sub:CreateCheckbox(
+        (ExpansionLandingPageMinimapButton and '' or '|cff9e9e9e')
+        ..'|A:dragonflight-landingbutton-up:0:0|a'..(e.onlyChinese and '隐藏要塞图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, GARRISON_LOCATION_TOOLTIP, EMBLEM_SYMBOL))),
+    function()
+        return WoWTools_MinimapMixin.Save.hideExpansionLandingPageMinimapButton
+    end, function()
+        WoWTools_MinimapMixin.Save.hideExpansionLandingPageMinimapButton= not WoWTools_MinimapMixin.Save.hideExpansionLandingPageMinimapButton and true or nil
+        print(e.addName, WoWTools_MinimapMixin.addName, '|cnGREEN_FONT_COLOR:' , e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+    end)
+
+    sub:CreateCheckbox(
+        '|A:dragonflight-landingbutton-up:0:0|a'..(e.onlyChinese and '移动要塞图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NPE_MOVE, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, GARRISON_LOCATION_TOOLTIP, EMBLEM_SYMBOL))),
+    function()
+        return WoWTools_MinimapMixin.Save.hideExpansionLandingPageMinimapButton
+    end, function()
+        WoWTools_MinimapMixin.Save.moveExpansionLandingPageMinimapButton= not WoWTools_MinimapMixin.Save.moveExpansionLandingPageMinimapButton and true or nil
+        print(e.addName, WoWTools_MinimapMixin.addName, '|cnGREEN_FONT_COLOR:' , e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+    end)
+
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 function WoWTools_MinimapMixin:Open_Menu(frame)
@@ -82,6 +125,26 @@ function WoWTools_MinimapMixin:Init()
     self:Init_InstanceDifficulty()--副本，难度，指示
     self:Init_TrackButton()--小地图, 标记, 文本
     self:Init_Icon()
+
+    --要塞，图标
+    if ExpansionLandingPageMinimapButton then
+        if self.Save.hideExpansionLandingPageMinimapButton then
+            ExpansionLandingPageMinimapButton:SetShown(false)
+            ExpansionLandingPageMinimapButton:HookScript('OnShow', function(frame)
+                frame:SetShown(false)
+            end)
+        elseif self.Save.moveExpansionLandingPageMinimapButton then
+            ExpansionLandingPageMinimapButton:SetFrameStrata('TOOLTIP')
+            C_Timer.After(2, function()
+                e.Set_Move_Frame(ExpansionLandingPageMinimapButton, {hideButton=true, needMove=true, click='RightButton', setResizeButtonPoint={
+                    nil, nil, nil, -2, 2
+                }})
+                C_Timer.After(8, function()--盟约图标停止闪烁
+                    ExpansionLandingPageMinimapButton.MinimapLoopPulseAnim:Stop()
+                end)
+            end)
+        end
+    end
 end
 
 

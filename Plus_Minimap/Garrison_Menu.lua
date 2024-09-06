@@ -212,7 +212,20 @@ local function Init_Garrison_Menu(_, root)
 
 
 end
-
+--[[
+ info={
+            text= '|A:dragonflight-landingbutton-up:0:0|a'..(e.onlyChinese and '移动要塞图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NPE_MOVE, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, GARRISON_LOCATION_TOOLTIP, EMBLEM_SYMBOL))),
+            checked= Save.moveExpansionLandingPageMinimapButton,
+            colorCode= not ExpansionLandingPageMinimapButton and '|cff9e9e9e' or nil,
+            disabled= Save.hideExpansionLandingPageMinimapButton,
+            keepShownOnClick=true,
+            func= function()
+                Save.moveExpansionLandingPageMinimapButton= not Save.moveExpansionLandingPageMinimapButton and true or nil
+                print(e.addName, Initializer:GetName(), '|cnGREEN_FONT_COLOR:' , e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            end
+        }
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
+]]
 
 
 

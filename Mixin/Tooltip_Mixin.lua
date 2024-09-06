@@ -18,115 +18,6 @@ local e= select(2, ...)
 
 
 
-local function ShowParagonRewardsTooltip(self)
-	Set_SetOwner(self, EmbeddedItemTooltip);
-	ReputationParagonFrame_SetupParagonTooltip(self);
-	EmbeddedItemTooltip:Show()
-end
-local function TryAppendAccountReputationLineToTooltip(tooltip, factionID)
-	if not tooltip or not factionID or not C_Reputation.IsAccountWideReputation(factionID) then
-		return;
-	end
-	GameTooltip_AddColoredLine(tooltip, e.onlyChinese and '战团声望' or REPUTATION_TOOLTIP_ACCOUNT_WIDE_LABEL, ACCOUNT_WIDE_FONT_COLOR, false);
-end
-
-
-
-local function AddRenownRewardsToTooltip(self, renownRewards)
-	GameTooltip_AddHighlightLine(tooltip, '接下来的奖励：');
-
-	for i, rewardInfo in ipairs(renownRewards) do
-		local renownRewardString;
-		local icon, name = RenownRewardUtil.GetRenownRewardInfo(rewardInfo, GenerateClosure(self.ShowMajorFactionRenownTooltip, self));
-		if icon then
-			local file, width, height = icon, 16, 16;
-			local rewardTexture = CreateSimpleTextureMarkup(file, width, height);
-			renownRewardString = rewardTexture .. " " .. e.cn(name)
-		end
-		local wrapText = false;
-		GameTooltip_AddNormalLine(tooltip, renownRewardString, wrapText);
-	end
-end
-
-
-
-
-local function ShowMajorFactionRenownTooltip(tooltip, data)
-	local majorFactionData = C_MajorFactions.GetMajorFactionData(data.factionID) or {}
-	GameTooltip_SetTitle(tooltip, e.cn(majorFactionData.name), HIGHLIGHT_FONT_COLOR);
-	TryAppendAccountReputationLineToTooltip(tooltip, data.factionID);
-	GameTooltip_AddHighlightLine(tooltip, (e.onlyChinese and '名望' or RENOWN_LEVEL_LABEL).. majorFactionData.renownLevel);
-	GameTooltip_AddBlankLineToTooltip(tooltip);
-	GameTooltip_AddNormalLine(tooltip, format(e.onlyChinese and '继续获取%s的声望以提升名望并解锁奖励。' or MAJOR_FACTION_RENOWN_TOOLTIP_PROGRESS, e.cn(majorFactionData.name)))
-	GameTooltip_AddBlankLineToTooltip(tooltip);
-	local nextRenownRewards = C_MajorFactions.GetRenownRewardsForLevel(data.factionID, C_MajorFactions.GetCurrentRenownLevel(self.factionID) + 1);
-	if #nextRenownRewards > 0 then
-		AddRenownRewardsToTooltip(nextRenownRewards);
-	end
-	return tooltip
-end
-
-
-local function ShowFriendshipReputationTooltip(tooltip, data)
-	local friendshipData = C_GossipInfo.GetFriendshipReputation(data.factionID);
-	if not friendshipData or friendshipData.friendshipFactionID < 0 then
-		return;
-	end
-	local rankInfo = C_GossipInfo.GetFriendshipReputationRanks(friendshipData.friendshipFactionID);
-	if rankInfo.maxLevel > 0 then
-		GameTooltip_SetTitle(tooltip, friendshipData.name.." ("..rankInfo.currentLevel.." / "..rankInfo.maxLevel..")", HIGHLIGHT_FONT_COLOR);
-	else
-		GameTooltip_SetTitle(tooltip, friendshipData.name, HIGHLIGHT_FONT_COLOR);
-	end
-	TryAppendAccountReputationLineToTooltip(tooltip, data.factionID);
-	GameTooltip_AddBlankLineToTooltip(tooltip);
-	tooltip:AddLine(friendshipData.text, nil, nil, nil, true);
-	if friendshipData.nextThreshold then
-		local current = friendshipData.standing - friendshipData.reactionThreshold;
-		local max = friendshipData.nextThreshold - friendshipData.reactionThreshold;
-		local wrapText = true;
-		GameTooltip_AddHighlightLine(tooltip, friendshipData.reaction.." ("..current.." / "..max..")", wrapText);
-	else
-		local wrapText = true;
-		GameTooltip_AddHighlightLine(tooltip, friendshipData.reaction, wrapText);
-	end
-	return tooltip
-end
-
-
-local function ShowStandardTooltip(tooltip, data)
-	GameTooltip_SetTitle(tooltip, e.cn(data.name))
-	TryAppendAccountReputationLineToTooltip(tooltip, data.factionID);
-	return tooltip
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 local function set_vignetteGUID(tooltip, vignetteGUID)
     local vignetteInfo = C_VignetteInfo.GetVignetteInfo(vignetteGUID)
     if not vignetteInfo then
@@ -278,7 +169,6 @@ function WoWTools_TooltipMixin:set_tooltip(tooltip, data)
     local areaPoiID= data.uiMapID
 
     local tip= data.tooltip
-    local factionID= data.factionID
 
     if itemLink then
         if itemLink:find('Hbattlepet:%d+') then

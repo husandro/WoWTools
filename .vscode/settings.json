@@ -4926,7 +4926,8 @@
         "GameTime_GetTime",
         "GARRISON_TYPE_8_0_LANDING_PAGE_TITLE",
         "GARRISON_TYPE_8_0_LANDING_PAGE_TOOLTIP",
-        "WAR_WITHIN_LANDING_PAGE_TITLE"
+        "WAR_WITHIN_LANDING_PAGE_TITLE",
+        "LANDING_PAGE_RENOWN_LABEL"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

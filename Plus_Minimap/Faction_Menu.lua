@@ -6,7 +6,7 @@ local e= select(2, ...)
 
 
 
- --盟约 9.0
+ --[[盟约 9.0
  local mainTextureKitRegions = {
 	["Background"] = "CovenantSanctum-Renown-Background-%s",
 	["TitleDivider"] = "CovenantSanctum-Renown-Title-Divider-%s",
@@ -153,7 +153,7 @@ local function Get_Major_Faction_Level(factionID, level)
         end
     end
     return text, hasRewardPending
-end
+end]]
 
 
 
@@ -182,33 +182,7 @@ isHeaderWithRep= isHeaderWithRep,
 hasRep= data.hasBonusRepGain,--额外，声望
 ]]
 
---菜单, 派系声望
-local function Set_Faction_Menu(root, factionID)
-    local info= WoWTools_FactionMinxin:GetInfo(factionID, nil, false)
-    if not info.name then
-        return
-    end
-    
-    local sub=root:CreateCheckbox(
-        (info.atlas and '|A:'..info.atlas..':0:0|a' or (info.texture and '|T'..info.texture..':0|t') or '')
-        ..e.cn(info.name)
-        ..(info.color and '|c'..info.color:GenerateHexColor() or '|cffffffff')
-        ..(info.factionStandingtext and ' '..info.factionStandingtext..' ' or '')
-        ..'|r'
-        ..(info.valueText or '')
-        ..(info.hasRewardPending and '|A:BonusLoot-Chest:0:0|a' or ''),
-    function(data)
-        return MajorFactionRenownFrame and MajorFactionRenownFrame.majorFactionID==data.factionID
-    end, function(data)
-        if MajorFactionRenownFrame and MajorFactionRenownFrame.majorFactionID==data.factionID then
-            MajorFactionRenownFrame:Hide()
-        else
-            ToggleMajorFactionRenown(data.factionID)
-        end
-    end, {factionID=factionID})
 
-    return sub
-end
     --[[sub:SetTooltip(function(tooltip, description)
 
     end)]]
@@ -244,42 +218,78 @@ end
 
 
 
-
-
-
---取得，所有，派系声望
-local function Get_Major_Faction_List()
-    local tab=C_MajorFactions.GetMajorFactionIDs(e.ExpansionLevel) or {}
-    for _, factionID in pairs(Constants.MajorFactionsConsts or {}) do--MajorFactionsConstantsDocumentation.lu
-        table.insert(tab, factionID)
+--菜单, 派系声望
+local function Set_Faction_Menu(root, factionID)
+    local info= WoWTools_FactionMinxin:GetInfo(factionID, nil, false)
+    if not info.name then
+        return
     end
+    
+    local sub=root:CreateCheckbox(
+        (info.atlas and '|A:'..info.atlas..':0:0|a' or (info.texture and '|T'..info.texture..':0|t') or '')
+        ..e.cn(info.name)
+        ..(info.color and '|c'..info.color:GenerateHexColor() or '|cffffffff')
+        ..(info.factionStandingtext and ' '..info.factionStandingtext..' ' or '')
+        ..'|r'
+        ..(info.valueText or '')
+        ..(info.hasRewardPending and '|A:BonusLoot-Chest:0:0|a' or ''),
+    function(data)
+        return MajorFactionRenownFrame and MajorFactionRenownFrame.majorFactionID==data.factionID
+    end, function(data)
+        WoWTools_LoadUIMixin:MajorFaction(data.factionID)
+    end, {factionID=factionID})
 
-    table.sort(tab, function(a, b) return a>b end)
-    return tab
+    for k, v in pairs(info) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
+    return sub
 end
-
 
 
 
 local function Init_Menu(_, root)
-    local tabs= Get_Major_Faction_List()
-    local sub
-    for index, factionID in pairs(tabs) do
-        sub= Set_Faction_Menu(root, factionID)
-        table.remove(tabs, index)
-        if sub then
-            break
-        end
+--名望
+
+    local sub=root:CreateCheckbox(
+        '|A:VignetteEvent-SuperTracked:0:0|a'..(e.onlyChinese and '名望' or LANDING_PAGE_RENOWN_LABEL),
+    function()
+        return MajorFactionRenownFrame and MajorFactionRenownFrame:IsShown()
+    end, function()
+        WoWTools_LoadUIMixin:MajorFaction(2593)
+        return MenuResponse.Open
+    end)
+    
+    local tab=C_MajorFactions.GetMajorFactionIDs(e.ExpansionLevel) or {}
+    for _, factionID in pairs(Constants.MajorFactionsConsts or {}) do--MajorFactionsConstantsDocumentation.lu
+        table.insert(tab, factionID)
     end
-    if not sub then
-        return
-    end
-    for _, factionID in pairs(tabs) do
+    table.sort(tab, function(a, b) return a>b end)
+
+
+    for _, factionID in pairs(tab) do
         Set_Faction_Menu(sub, factionID)
     end
+
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--派系声望
 function WoWTools_MinimapMixin:Faction_Menu(frame, root)
     Init_Menu(frame, root)
 end
