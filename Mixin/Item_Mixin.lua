@@ -9,8 +9,7 @@ GetName(itemID)--取得物品，名称
 local e= select(2, ...)
 
 
-WoWTools_ItemMixin={
-}
+WoWTools_ItemMixin={}
 
 function WoWTools_ItemMixin:GetTooltip(tab)
     local tooltipData

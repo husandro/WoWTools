@@ -58,6 +58,7 @@ Init_MajorFactionRenownFrame=function()end,
 Rest_TimeManager_Point=function()end,
 Init_TimeManager=function()end,
 
+Init_Minimap_Zoom=function()end,
 }
 
 
@@ -117,8 +118,28 @@ local function Init_Menu(self, root)
         Save().vigentteButton= not Save().vigentteButton and true or nil
         WoWTools_MinimapMixin:Init_TrackButton()
     end)
+--追踪 AreaPoiID 菜单
     WoWTools_MinimapMixin:Init_TrackButton_Menu(self, sub2)
     sub2:SetEnabled(not IsInInstance())
+
+    sub2=sub:CreateCheckbox(
+        '|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '镜头视野范围' or CAMERA_FOV),
+    function()
+        return Save.ZoomOutInfo
+    end, function()
+        Save().ZoomOutInfo= not Save().ZoomOutInfo and true or nil
+        WoWTools_MinimapMixin:Init_Minimap_Zoom()
+    end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine(
+            (e.onlyChinese and '镜头视野范围' or CAMERA_FOV)
+            ..': '
+            ..format(e.onlyChinese and '%s码' or IN_GAME_NAVIGATION_RANGE, format('%i', C_Minimap.GetViewRadius() or 100))
+        )
+    end)
+
+
+
 end
 
 
@@ -154,6 +175,7 @@ function WoWTools_MinimapMixin:Init()
     self:Init_TrackButton()--小地图, 标记, 文本
     self:Init_Icon()--添加，图标
     self:Init_ExpansionLanding()
+    self:Init_Minimap_Zoom()--缩放数值, 缩小化地图
 end
 
 

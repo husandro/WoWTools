@@ -1159,10 +1159,18 @@ local function Set_BrowseResultsFrame(frame)
                     text= t1..(t2 and ' '..t2 or '')
                 end
             end
-          if not text then
-                info= itemKeyInfo
-                for k, v in pairs(info) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
-          end
+            if not text then
+                local isRed= WoWTools_ItemMixin:GetTooltip({
+                    itemKey=itemKey,
+                    red=true,
+                    onlyRed=true,
+                })
+                if isRed==true then
+                    text='|A:talents-button-reset:0:0|a'
+                elseif isRed==false then
+                    text='|A:Recurringavailablequesticon:0:0|a'
+                end
+            end
             --[[if not text then
                 --local itmeLink= Get_ItemLink_For_rowData(btn.rowData)
                 local itemLink= Get_ItemLink_For_rowData(btn.rowData)

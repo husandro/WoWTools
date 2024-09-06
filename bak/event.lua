@@ -1,3 +1,4 @@
+--[[
 self:RegisterEvent('UPDATE_FACTION')
 
 self:RegisterEvent('PLAYER_MAP_CHANGED')
@@ -14,9 +15,13 @@ self:RegisterEvent('PLAYER_REGEN_ENABLED')
 
 
 
+FrameUtil.RegisterFrameForEvents(self, table)
+FrameUtil.RegisterFrameForUnitEvents(frame, events, ...)
+FrameUtil.UnregisterFrameForEvents(self, table)
 
 
 IsInInstance()
 C_PetBattles.IsInBattle()
 UnitInVehicle('player')
 UnitAffectingCombat('player')
+]]

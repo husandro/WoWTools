@@ -27,7 +27,7 @@ end
 
 
 --取得 areaPoiID 名称
-local barColor = {
+--[[local barColor = {
 	--[Enum.StatusBarColorTintValue.Black] = BLACK_FONT_COLOR,
 	[3] = WHITE_FONT_COLOR,
 	[2] = RED_FONT_COLOR,
@@ -36,11 +36,12 @@ local barColor = {
 	[5] = EPIC_PURPLE_COLOR,
 	[4] = GREEN_FONT_COLOR,
 	[6] = RARE_BLUE_COLOR,
-}
+}]]
 
 local function get_AreaPOIInfo_Name(poiInfo)
     return (poiInfo.atlasName and '|A:'..poiInfo.atlasName..':0:0|a' or '')..(poiInfo.name or '')
 end
+
 
 
 
@@ -89,6 +90,14 @@ end
 
 
 
+
+
+
+
+
+
+
+
 local function Get_Bar_Value(info)
     local barValue= info.barValue or info.leftBarMin
     local barMax= info.barMax or info.leftBarMin
@@ -119,50 +128,6 @@ end
 
 
 
---[[
-UIWidgetManagerSharedDocumentation.lua
-{
-Name = "UIWidgetVisualizationType",
-Type = "Enumeration",
-NumValues = 30,
-MinValue = 0,
-MaxValue = 29,
-Fields =
-{ Name = "IconAndText", Type = "UIWidgetVisualizationType", EnumValue = 0 },
-{ Name = "CaptureBar", Type = "UIWidgetVisualizationType", EnumValue = 1 },
-{ Name = "StatusBar", Type = "UIWidgetVisualizationType", EnumValue = 2 },
-{ Name = "DoubleStatusBar", Type = "UIWidgetVisualizationType", EnumValue = 3 },
-{ Name = "IconTextAndBackground", Type = "UIWidgetVisualizationType", EnumValue = 4 },
-{ Name = "DoubleIconAndText", Type = "UIWidgetVisualizationType", EnumValue = 5 },
-{ Name = "StackedResourceTracker", Type = "UIWidgetVisualizationType", EnumValue = 6 },
-{ Name = "IconTextAndCurrencies", Type = "UIWidgetVisualizationType", EnumValue = 7 },
-{ Name = "TextWithState", Type = "UIWidgetVisualizationType", EnumValue = 8 },
-{ Name = "HorizontalCurrencies", Type = "UIWidgetVisualizationType", EnumValue = 9 },
-{ Name = "BulletTextList", Type = "UIWidgetVisualizationType", EnumValue = 10 },
-{ Name = "ScenarioHeaderCurrenciesAndBackground", Type = "UIWidgetVisualizationType", EnumValue = 11 },
-{ Name = "TextureAndText", Type = "UIWidgetVisualizationType", EnumValue = 12 },
-{ Name = "SpellDisplay", Type = "UIWidgetVisualizationType", EnumValue = 13 },
-{ Name = "DoubleStateIconRow", Type = "UIWidgetVisualizationType", EnumValue = 14 },
-{ Name = "TextureAndTextRow", Type = "UIWidgetVisualizationType", EnumValue = 15 },
-{ Name = "ZoneControl", Type = "UIWidgetVisualizationType", EnumValue = 16 },
-{ Name = "CaptureZone", Type = "UIWidgetVisualizationType", EnumValue = 17 },
-{ Name = "TextureWithAnimation", Type = "UIWidgetVisualizationType", EnumValue = 18 },
-{ Name = "DiscreteProgressSteps", Type = "UIWidgetVisualizationType", EnumValue = 19 },
-{ Name = "ScenarioHeaderTimer", Type = "UIWidgetVisualizationType", EnumValue = 20 },
-{ Name = "TextColumnRow", Type = "UIWidgetVisualizationType", EnumValue = 21 },
-{ Name = "Spacer", Type = "UIWidgetVisualizationType", EnumValue = 22 },
-{ Name = "UnitPowerBar", Type = "UIWidgetVisualizationType", EnumValue = 23 },
-{ Name = "FillUpFrames", Type = "UIWidgetVisualizationType", EnumValue = 24 },
-{ Name = "TextWithSubtext", Type = "UIWidgetVisualizationType", EnumValue = 25 },
-{ Name = "MapPinAnimation", Type = "UIWidgetVisualizationType", EnumValue = 26 },
-{ Name = "ItemDisplay", Type = "UIWidgetVisualizationType", EnumValue = 27 },
-{ Name = "TugOfWar", Type = "UIWidgetVisualizationType", EnumValue = 28 },
-{ Name = "ScenarioHeaderDelves", Type = "UIWidgetVisualizationType", EnumValue = 29 },
-]]
-
-
-
-
 local function Get_widgetSetID_Info(widgetSetID)
     if not widgetSetID then
         return
@@ -171,649 +136,47 @@ local function Get_widgetSetID_Info(widgetSetID)
     for _, widget in ipairs(C_UIWidgetManager.GetAllWidgetsBySetID(widgetSetID) or {}) do
         local info
         if widget.widgetID then
-            if widget.widgetType ==Enum.UIWidgetVisualizationType.IconAndText then
-                info= C_UIWidgetManager.GetIconAndTextWidgetVisualizationInfo(widget.widgetID)
---[[
-state	Enum.IconAndTextWidgetState	
-text	string	
-tooltip	string	
-dynamicTooltip	string	
-tooltipLoc	Enum.UIWidgetTooltipLocation	
-widgetSizeSetting	number	
-textureKit	string	
-frameTextureKit	string	
-hasTimer	boolean	
-orderIndex	number	
-widgetTag	string	
-inAnimType	Enum.WidgetAnimationType	
-outAnimType	Enum.WidgetAnimationType	
-widgetScale	Enum.UIWidgetScale	
-layoutDirection	Enum.UIWidgetLayoutDirection	
-modelSceneLayer	Enum.UIWidgetModelSceneLayer	
-scriptedAnimationEffectID	number	
-
-]]
-
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.CaptureBar then
-                info= C_UIWidgetManager.GetCaptureBarWidgetVisualizationInfo(widget.widgetID)
---[[
-shownState	Enum.WidgetShownState	
-barValue	number	
-barMinValue	number	
-barMaxValue	number	
-neutralZoneSize	number	
-neutralZoneCenter	number	
-tooltip	string	
-glowAnimType	Enum.CaptureBarWidgetGlowAnimType	
-fillDirectionType	Enum.CaptureBarWidgetFillDirectionType	
-tooltipLoc	Enum.UIWidgetTooltipLocation	
-widgetSizeSetting	number	
-textureKit	string	
-frameTextureKit	string	
-hasTimer	boolean	
-orderIndex	number	
-widgetTag	string	
-inAnimType	Enum.WidgetAnimationType	
-outAnimType	Enum.WidgetAnimationType	
-widgetScale	Enum.UIWidgetScale	
-layoutDirection	Enum.UIWidgetLayoutDirection	
-modelSceneLayer	Enum.UIWidgetModelSceneLayer	
-scriptedAnimationEffectID	number	
-]]
-
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.StatusBar then
-                info= C_UIWidgetManager.GetStatusBarWidgetVisualizationInfo(widget.widgetID)
---[[
-shownState	Enum.WidgetShownState	
-leftBarMin	number	
-leftBarMax	number	
-leftBarValue	number	
-leftBarTooltip	string	
-rightBarMin	number	
-rightBarMax	number	
-rightBarValue	number	
-rightBarTooltip	string	
-barValueTextType	Enum.StatusBarValueTextType	
-text	string	
-leftBarTooltipLoc	Enum.UIWidgetTooltipLocation	
-rightBarTooltipLoc	Enum.UIWidgetTooltipLocation	
-fillMotionType	Enum.UIWidgetMotionType	
-widgetSizeSetting	number	
-textureKit	string	
-frameTextureKit	string	
-hasTimer	boolean	
-orderIndex	number	
-widgetTag	string	
-inAnimType	Enum.WidgetAnimationType	
-outAnimType	Enum.WidgetAnimationType	
-widgetScale	Enum.UIWidgetScale	
-layoutDirection	Enum.UIWidgetLayoutDirection	
-modelSceneLayer	Enum.UIWidgetModelSceneLayer	
-scriptedAnimationEffectID	number	
-]]
-
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.DoubleStatusBar then
-                info= C_UIWidgetManager.GetDoubleStatusBarWidgetVisualizationInfo(widget.widgetID)
---[[
-shownState	Enum.WidgetShownState	
-leftBarMin	number	
-leftBarMax	number	
-leftBarValue	number	
-leftBarTooltip	string	
-rightBarMin	number	
-rightBarMax	number	
-rightBarValue	number	
-rightBarTooltip	string	
-barValueTextType	Enum.StatusBarValueTextType	
-text	string	
-leftBarTooltipLoc	Enum.UIWidgetTooltipLocation	
-rightBarTooltipLoc	Enum.UIWidgetTooltipLocation	
-fillMotionType	Enum.UIWidgetMotionType	
-widgetSizeSetting	number	
-textureKit	string	
-frameTextureKit	string	
-hasTimer	boolean	
-orderIndex	number	
-widgetTag	string	
-inAnimType	Enum.WidgetAnimationType	
-outAnimType	Enum.WidgetAnimationType	
-widgetScale	Enum.UIWidgetScale	
-layoutDirection	Enum.UIWidgetLayoutDirection	
-modelSceneLayer	Enum.UIWidgetModelSceneLayer	
-scriptedAnimationEffectID	number	
-]]
-
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.IconTextAndBackground then
---[[
-shownState	Enum.WidgetShownState	
-text	string	
-widgetSizeSetting	number	
-textureKit	string	
-frameTextureKit	string	
-hasTimer	boolean	
-orderIndex	number	
-widgetTag	string	
-inAnimType	Enum.WidgetAnimationType	
-outAnimType	Enum.WidgetAnimationType	
-widgetScale	Enum.UIWidgetScale	
-layoutDirection	Enum.UIWidgetLayoutDirection	
-modelSceneLayer	Enum.UIWidgetModelSceneLayer	
-scriptedAnimationEffectID	number	
-]]
-
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.DoubleIconAndText then
---[[
-shownState	Enum.WidgetShownState	
-resources	UIWidgetCurrencyInfo[]	
-tooltipLoc	Enum.UIWidgetTooltipLocation	
-widgetSizeSetting	number	
-textureKit	string	
-frameTextureKit	string	
-hasTimer	boolean	
-orderIndex	number	
-widgetTag	string	
-inAnimType	Enum.WidgetAnimationType	
-outAnimType	Enum.WidgetAnimationType	
-widgetScale	Enum.UIWidgetScale	
-layoutDirection	Enum.UIWidgetLayoutDirection	
-modelSceneLayer	Enum.UIWidgetModelSceneLayer	
-scriptedAnimationEffectID	number	
-]]
-
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.StackedResourceTracker then
-                info= C_UIWidgetManager.GetIconTextAndBackgroundWidgetVisualizationInfo(widget.widgetID)
---[[
-shownState	Enum.WidgetShownState	
-resources	UIWidgetCurrencyInfo[]	
-tooltipLoc	Enum.UIWidgetTooltipLocation	
-widgetSizeSetting	number	
-textureKit	string	
-frameTextureKit	string	
-hasTimer	boolean	
-orderIndex	number	
-widgetTag	string	
-inAnimType	Enum.WidgetAnimationType	
-outAnimType	Enum.WidgetAnimationType	
-widgetScale	Enum.UIWidgetScale	
-layoutDirection	Enum.UIWidgetLayoutDirection	
-modelSceneLayer	Enum.UIWidgetModelSceneLayer	
-scriptedAnimationEffectID	number	
-]]
-
-
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.IconTextAndCurrencies then
-                info= C_UIWidgetManager.GetIconTextAndCurrenciesWidgetVisualizationInfo(widget.widgetID)
---[[
-shownState	Enum.WidgetShownState	
-barValue	number	
-barMinValue	number	
-barMaxValue	number	
-neutralZoneSize	number	
-neutralZoneCenter	number	
-tooltip	string	
-glowAnimType	Enum.CaptureBarWidgetGlowAnimType	
-fillDirectionType	Enum.CaptureBarWidgetFillDirectionType	
-tooltipLoc	Enum.UIWidgetTooltipLocation	
-widgetSizeSetting	number	
-textureKit	string	
-frameTextureKit	string	
-hasTimer	boolean	
-orderIndex	number	
-widgetTag	string	
-inAnimType	Enum.WidgetAnimationType	
-outAnimType	Enum.WidgetAnimationType	
-widgetScale	Enum.UIWidgetScale	
-layoutDirection	Enum.UIWidgetLayoutDirection	
-modelSceneLayer	Enum.UIWidgetModelSceneLayer	
-scriptedAnimationEffectID	number	
-]]
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.TextWithState then
-                info= C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo(widget.widgetID)
---[[
-shownState	Enum.WidgetShownState	
-enabledState	Enum.WidgetEnabledState	
-text	string	
-tooltip	string	
-textSizeType	Enum.UIWidgetTextSizeType	
-fontType	Enum.UIWidgetFontType	
-bottomPadding	number	
-tooltipLoc	Enum.UIWidgetTooltipLocation	
-hAlign	Enum.WidgetTextHorizontalAlignmentType	
-widgetSizeSetting	number	
-textureKit	string	
-frameTextureKit	string	
-hasTimer	boolean	
-orderIndex	number	
-widgetTag	string	
-inAnimType	Enum.WidgetAnimationType	
-outAnimType	Enum.WidgetAnimationType	
-widgetScale	Enum.UIWidgetScale	
-layoutDirection	Enum.UIWidgetLayoutDirection	
-modelSceneLayer	Enum.UIWidgetModelSceneLayer	
-scriptedAnimationEffectID	number
-]]
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.HorizontalCurrencies then
-                info= C_UIWidgetManager.GetHorizontalCurrenciesWidgetVisualizationInfo(widget.widgetID)
---[[
-shownState	Enum.WidgetShownState	
-enabledState	Enum.WidgetEnabledState	
-text	string	
-tooltip	string	
-textSizeType	Enum.UIWidgetTextSizeType	
-fontType	Enum.UIWidgetFontType	
-bottomPadding	number	
-tooltipLoc	Enum.UIWidgetTooltipLocation	
-hAlign	Enum.WidgetTextHorizontalAlignmentType	
-widgetSizeSetting	number	
-textureKit	string	
-frameTextureKit	string	
-hasTimer	boolean	
-orderIndex	number	
-widgetTag	string	
-inAnimType	Enum.WidgetAnimationType	
-outAnimType	Enum.WidgetAnimationType	
-widgetScale	Enum.UIWidgetScale	
-layoutDirection	Enum.UIWidgetLayoutDirection	
-modelSceneLayer	Enum.UIWidgetModelSceneLayer	
-scriptedAnimationEffectID	number
-]]
-
-
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.BulletTextList then
-                info= C_UIWidgetManager.GetBulletTextListWidgetVisualizationInfo(widget.widgetID)
---[[
-shownState	Enum.WidgetShownState	
-enabledState	Enum.WidgetEnabledState	
-lines	string[]	
-widgetSizeSetting	number	
-textureKit	string	
-frameTextureKit	string	
-hasTimer	boolean	
-orderIndex	number	
-widgetTag	string	
-inAnimType	Enum.WidgetAnimationType	
-outAnimType	Enum.WidgetAnimationType	
-widgetScale	Enum.UIWidgetScale	
-layoutDirection	Enum.UIWidgetLayoutDirection	
-modelSceneLayer	Enum.UIWidgetModelSceneLayer	
-scriptedAnimationEffectID	number	
-]]
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.ScenarioHeaderCurrenciesAndBackground then
-                info= C_UIWidgetManager.GetScenarioHeaderCurrenciesAndBackgroundWidgetVisualizationInfo(widget.widgetID)
---[[
-shownState	Enum.WidgetShownState	
-currencies	UIWidgetCurrencyInfo[]	
-headerText	string	
-widgetSizeSetting	number	
-textureKit	string	
-frameTextureKit	string	
-hasTimer	boolean	
-orderIndex	number	
-widgetTag	string	
-inAnimType	Enum.WidgetAnimationType	
-outAnimType	Enum.WidgetAnimationType	
-widgetScale	Enum.UIWidgetScale	
-layoutDirection	Enum.UIWidgetLayoutDirection	
-modelSceneLayer	Enum.UIWidgetModelSceneLayer	
-scriptedAnimationEffectID	number	
-]]
-
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.TextureAndText then
-                info= C_UIWidgetManager.GetTextureAndTextVisualizationInfo(widget.widgetID)
---[[
-shownState	Enum.WidgetShownState	
-currencies	UIWidgetCurrencyInfo[]	
-headerText	string	
-widgetSizeSetting	number	
-textureKit	string	
-frameTextureKit	string	
-hasTimer	boolean	
-orderIndex	number	
-widgetTag	string	
-inAnimType	Enum.WidgetAnimationType	
-outAnimType	Enum.WidgetAnimationType	
-widgetScale	Enum.UIWidgetScale	
-layoutDirection	Enum.UIWidgetLayoutDirection	
-modelSceneLayer	Enum.UIWidgetModelSceneLayer	
-scriptedAnimationEffectID	number	
-]]
-
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.SpellDisplay then
-                info= C_UIWidgetManager.GetSpellDisplayVisualizationInfo(widget.widgetID)
---[[
-shownState	Enum.WidgetShownState	
-enabledState	Enum.WidgetEnabledState	
-spellInfo	UIWidgetSpellInfo	
-tooltipLoc	Enum.UIWidgetTooltipLocation	
-widgetSizeSetting	number	
-textureKit	string	
-frameTextureKit	string	
-hasTimer	boolean	
-orderIndex	number	
-widgetTag	string	
-inAnimType	Enum.WidgetAnimationType	
-outAnimType	Enum.WidgetAnimationType	
-widgetScale	Enum.UIWidgetScale	
-layoutDirection	Enum.UIWidgetLayoutDirection	
-modelSceneLayer	Enum.UIWidgetModelSceneLayer	
-scriptedAnimationEffectID	number	
-
-]]
-
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.DoubleStateIconRow then
-                info= C_UIWidgetManager.GetDoubleStateIconRowVisualizationInfo(widget.widgetID)
---[[
-shownState	Enum.WidgetShownState	
-leftIcons	UIWidgetStateIconInfo[]	
-rightIcons	UIWidgetStateIconInfo[]	
-tooltipLoc	Enum.UIWidgetTooltipLocation	
-widgetSizeSetting	number	
-textureKit	string	
-frameTextureKit	string	
-hasTimer	boolean	
-orderIndex	number	
-widgetTag	string	
-inAnimType	Enum.WidgetAnimationType	
-outAnimType	Enum.WidgetAnimationType	
-widgetScale	Enum.UIWidgetScale	
-layoutDirection	Enum.UIWidgetLayoutDirection	
-modelSceneLayer	Enum.UIWidgetModelSceneLayer	
-scriptedAnimationEffectID	number
-]]
-
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.TextureAndTextRow then
-                info= C_UIWidgetManager.GetTextureAndTextRowVisualizationInfo(widget.widgetID)
---[[
-shownState	Enum.WidgetShownState	
-entries	TextureAndTextEntryInfo[]	
-textSizeType	Enum.UIWidgetTextureAndTextSizeType	
-fixedWidth	number?	
-tooltipLoc	Enum.UIWidgetTooltipLocation	
-widgetSizeSetting	number	
-textureKit	string	
-frameTextureKit	string	
-hasTimer	boolean	
-orderIndex	number	
-widgetTag	string	
-inAnimType	Enum.WidgetAnimationType	
-outAnimType	Enum.WidgetAnimationType	
-widgetScale	Enum.UIWidgetScale	
-layoutDirection	Enum.UIWidgetLayoutDirection	
-modelSceneLayer	Enum.UIWidgetModelSceneLayer	
-scriptedAnimationEffectID	number	
-]]
-
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.ZoneControl then
-                info= C_UIWidgetManager.GetZoneControlVisualizationInfo(widget.widgetID)
---[[
-shownState	Enum.WidgetShownState	
-mode	Enum.ZoneControlMode	
-leadingEdgeType	Enum.ZoneControlLeadingEdgeType	
-dangerFlashType	Enum.ZoneControlDangerFlashType	
-zoneEntries	ZoneEntry[]	
-tooltipLoc	Enum.UIWidgetTooltipLocation	
-widgetSizeSetting	number	
-textureKit	string	
-frameTextureKit	string	
-hasTimer	boolean	
-orderIndex	number	
-widgetTag	string	
-inAnimType	Enum.WidgetAnimationType	
-outAnimType	Enum.WidgetAnimationType	
-widgetScale	Enum.UIWidgetScale	
-layoutDirection	Enum.UIWidgetLayoutDirection	
-modelSceneLayer	Enum.UIWidgetModelSceneLayer	
-scriptedAnimationEffectID	number
-]]
-
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.CaptureZone then
-                info= C_UIWidgetManager.GetCaptureZoneVisualizationInfo(widget.widgetID)
---[[
-shownState	Enum.WidgetShownState	
-mode	Enum.ZoneControlMode	
-leadingEdgeType	Enum.ZoneControlLeadingEdgeType	
-dangerFlashType	Enum.ZoneControlDangerFlashType	
-zoneInfo	ZoneEntry	
-tooltipLoc	Enum.UIWidgetTooltipLocation	
-widgetSizeSetting	number	
-textureKit	string	
-frameTextureKit	string	
-hasTimer	boolean	
-orderIndex	number	
-widgetTag	string	
-inAnimType	Enum.WidgetAnimationType	
-outAnimType	Enum.WidgetAnimationType	
-widgetScale	Enum.UIWidgetScale	
-layoutDirection	Enum.UIWidgetLayoutDirection	
-modelSceneLayer	Enum.UIWidgetModelSceneLayer	
-scriptedAnimationEffectID	number
-]]
-
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.TextureWithAnimation then
-                info= C_UIWidgetManager.GetTextureWithAnimationVisualizationInfo(widget.widgetID)
---[[
-shownState	Enum.WidgetShownState	
-tooltip	string	
-tooltipLoc	Enum.UIWidgetTooltipLocation	
-widgetSizeSetting	number	
-textureKit	string	
-frameTextureKit	string	
-hasTimer	boolean	
-orderIndex	number	
-widgetTag	string	
-inAnimType	Enum.WidgetAnimationType	
-outAnimType	Enum.WidgetAnimationType	
-widgetScale	Enum.UIWidgetScale	
-layoutDirection	Enum.UIWidgetLayoutDirection	
-modelSceneLayer	Enum.UIWidgetModelSceneLayer	
-scriptedAnimationEffectID	number
-]]
-
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.DiscreteProgressSteps then
-                info= C_UIWidgetManager.GetDiscreteProgressStepsVisualizationInfo(widget.widgetID)
---[[
-shownState	Enum.WidgetShownState	
-tooltip	string	
-tooltipLoc	Enum.UIWidgetTooltipLocation	
-widgetSizeSetting	number	
-textureKit	string	
-frameTextureKit	string	
-hasTimer	boolean	
-orderIndex	number	
-widgetTag	string	
-inAnimType	Enum.WidgetAnimationType	
-outAnimType	Enum.WidgetAnimationType	
-widgetScale	Enum.UIWidgetScale	
-layoutDirection	Enum.UIWidgetLayoutDirection	
-modelSceneLayer	Enum.UIWidgetModelSceneLayer	
-scriptedAnimationEffectID	number
-]]
-
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.ScenarioHeaderTimer then
-                info= C_UIWidgetManager.GetScenarioHeaderTimerWidgetVisualizationInfo(widget.widgetID)
---[[
-shownState	Enum.WidgetShownState	
-tooltip	string	
-tooltipLoc	Enum.UIWidgetTooltipLocation	
-widgetSizeSetting	number	
-textureKit	string	
-frameTextureKit	string	
-hasTimer	boolean	
-orderIndex	number	
-widgetTag	string	
-inAnimType	Enum.WidgetAnimationType	
-outAnimType	Enum.WidgetAnimationType	
-widgetScale	Enum.UIWidgetScale	
-layoutDirection	Enum.UIWidgetLayoutDirection	
-modelSceneLayer	Enum.UIWidgetModelSceneLayer	
-scriptedAnimationEffectID	number
-]]
-
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.TextColumnRow then
-                info= C_UIWidgetManager.GetTextColumnRowVisualizationInfo(widget.widgetID)
---[[
-shownState	Enum.WidgetShownState	
-entries	TextColumnRowEntryInfo[]	
-textSizeType	Enum.UIWidgetTextSizeType	
-fontType	Enum.UIWidgetFontType	
-tooltip	string	
-tooltipLoc	Enum.UIWidgetTooltipLocation	
-bottomPadding	number	
-widgetSizeSetting	number	
-textureKit	string	
-frameTextureKit	string	
-hasTimer	boolean	
-orderIndex	number	
-widgetTag	string	
-inAnimType	Enum.WidgetAnimationType	
-outAnimType	Enum.WidgetAnimationType	
-widgetScale	Enum.UIWidgetScale	
-layoutDirection	Enum.UIWidgetLayoutDirection	
-modelSceneLayer	Enum.UIWidgetModelSceneLayer	
-scriptedAnimationEffectID	number
-]]
-
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.Spacer then
-                info= C_UIWidgetManager.GetSpacerVisualizationInfo(widget.widgetID)
---[[
-shownState	Enum.WidgetShownState	
-widgetWidth	number	
-widgetHeight	number	
-widgetSizeSetting	number	
-textureKit	string	
-frameTextureKit	string	
-hasTimer	boolean	
-orderIndex	number	
-widgetTag	string	
-inAnimType	Enum.WidgetAnimationType	
-outAnimType	Enum.WidgetAnimationType	
-widgetScale	Enum.UIWidgetScale	
-layoutDirection	Enum.UIWidgetLayoutDirection	
-modelSceneLayer	Enum.UIWidgetModelSceneLayer	
-scriptedAnimationEffectID	number
-]]
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.UnitPowerBar then
-                info= C_UIWidgetManager.GetUnitPowerBarWidgetVisualizationInfo(widget.widgetID)
---[[
-shownState	Enum.WidgetShownState	
-barMin	number	
-barMax	number	
-barValue	number	
-tooltip	string	
-barValueTextType	Enum.StatusBarValueTextType	
-overrideBarText	string	
-overrideBarTextShownType	Enum.StatusBarOverrideBarTextShownType	
-tooltipLoc	Enum.UIWidgetTooltipLocation	
-fillMotionType	Enum.UIWidgetMotionType	
-flashBlendModeType	Enum.UIWidgetBlendModeType	
-sparkBlendModeType	Enum.UIWidgetBlendModeType	
-flashMomentType	Enum.WidgetUnitPowerBarFlashMomentType	
-widgetSizeSetting	number	
-textureKit	string	
-frameTextureKit	string	
-hasTimer	boolean	
-orderIndex	number	
-widgetTag	string	
-inAnimType	Enum.WidgetAnimationType	
-outAnimType	Enum.WidgetAnimationType	
-widgetScale	Enum.UIWidgetScale	
-layoutDirection	Enum.UIWidgetLayoutDirection	
-modelSceneLayer	Enum.UIWidgetModelSceneLayer	
-scriptedAnimationEffectID	number
-]]
-
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.FillUpFrames then
-                info= C_UIWidgetManager.GetFillUpFramesWidgetVisualizationInfo(widget.widgetID)
---[[
-shownState	Enum.WidgetShownState	
-barMin	number	
-barMax	number	
-barValue	number	
-tooltip	string	
-barValueTextType	Enum.StatusBarValueTextType	
-overrideBarText	string	
-overrideBarTextShownType	Enum.StatusBarOverrideBarTextShownType	
-tooltipLoc	Enum.UIWidgetTooltipLocation	
-fillMotionType	Enum.UIWidgetMotionType	
-flashBlendModeType	Enum.UIWidgetBlendModeType	
-sparkBlendModeType	Enum.UIWidgetBlendModeType	
-flashMomentType	Enum.WidgetUnitPowerBarFlashMomentType	
-widgetSizeSetting	number	
-textureKit	string	
-frameTextureKit	string	
-hasTimer	boolean	
-orderIndex	number	
-widgetTag	string	
-inAnimType	Enum.WidgetAnimationType	
-outAnimType	Enum.WidgetAnimationType	
-widgetScale	Enum.UIWidgetScale	
-layoutDirection	Enum.UIWidgetLayoutDirection	
-modelSceneLayer	Enum.UIWidgetModelSceneLayer	
-scriptedAnimationEffectID	number
-]]
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.TextWithSubtext then
-                info= C_UIWidgetManager.GetTextWithSubtextWidgetVisualizationInfo(widget.widgetID)
---[[
-shownState	Enum.WidgetShownState	
-barMin	number	
-barMax	number	
-barValue	number	
-tooltip	string	
-barValueTextType	Enum.StatusBarValueTextType	
-overrideBarText	string	
-overrideBarTextShownType	Enum.StatusBarOverrideBarTextShownType	
-tooltipLoc	Enum.UIWidgetTooltipLocation	
-fillMotionType	Enum.UIWidgetMotionType	
-flashBlendModeType	Enum.UIWidgetBlendModeType	
-sparkBlendModeType	Enum.UIWidgetBlendModeType	
-flashMomentType	Enum.WidgetUnitPowerBarFlashMomentType	
-widgetSizeSetting	number	
-textureKit	string	
-frameTextureKit	string	
-hasTimer	boolean	
-orderIndex	number	
-widgetTag	string	
-inAnimType	Enum.WidgetAnimationType	
-outAnimType	Enum.WidgetAnimationType	
-widgetScale	Enum.UIWidgetScale	
-layoutDirection	Enum.UIWidgetLayoutDirection	
-modelSceneLayer	Enum.UIWidgetModelSceneLayer	
-scriptedAnimationEffectID	number
-]]
+            if widget.widgetType ==Enum.UIWidgetVisualizationType.IconAndText then info= C_UIWidgetManager.GetIconAndTextWidgetVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.CaptureBar then info= C_UIWidgetManager.GetCaptureBarWidgetVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.StatusBar then info= C_UIWidgetManager.GetStatusBarWidgetVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.DoubleStatusBar then info= C_UIWidgetManager.GetDoubleStatusBarWidgetVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.IconTextAndBackground then info= C_UIWidgetManager.GetIconTextAndBackgroundWidgetVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.DoubleIconAndText then info= C_UIWidgetManager.GetDoubleIconAndTextWidgetVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.StackedResourceTracker then info= C_UIWidgetManager.GetStackedResourceTrackerWidgetVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.IconTextAndCurrencies then info= C_UIWidgetManager.GetIconTextAndCurrenciesWidgetVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.TextWithState then info= C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.HorizontalCurrencies then info= C_UIWidgetManager.GetHorizontalCurrenciesWidgetVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.BulletTextList then info= C_UIWidgetManager.GetBulletTextListWidgetVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.ScenarioHeaderCurrenciesAndBackground then info= C_UIWidgetManager.GetScenarioHeaderCurrenciesAndBackgroundWidgetVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.TextureAndText then info= C_UIWidgetManager.GetTextureAndTextVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.SpellDisplay then info= C_UIWidgetManager.GetSpellDisplayVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.DoubleStateIconRow then info= C_UIWidgetManager.GetDoubleStateIconRowVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.TextureAndTextRow then info= C_UIWidgetManager.GetTextureAndTextRowVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.ZoneControl then info= C_UIWidgetManager.GetZoneControlVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.CaptureZone then info= C_UIWidgetManager.GetCaptureZoneVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.TextureWithAnimation then info= C_UIWidgetManager.GetTextureWithAnimationVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.DiscreteProgressSteps then info= C_UIWidgetManager.GetDiscreteProgressStepsVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.ScenarioHeaderTimer then info= C_UIWidgetManager.GetScenarioHeaderTimerWidgetVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.TextColumnRow then info= C_UIWidgetManager.GetTextColumnRowVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.Spacer then info= C_UIWidgetManager.GetSpacerVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.UnitPowerBar then info= C_UIWidgetManager.GetUnitPowerBarWidgetVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.FillUpFrames then info= C_UIWidgetManager.GetFillUpFramesWidgetVisualizationInfo(widget.widgetID)
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.TextWithSubtext then info= C_UIWidgetManager.GetTextWithSubtextWidgetVisualizationInfo(widget.widgetID)
             --elseif widget.widgetType ==Enum.UIWidgetVisualizationType.WorldLootObject		Added in 10.1.0
-            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.ItemDisplay then
-                info= C_UIWidgetManager.GetItemDisplayVisualizationInfo(widget.widgetID)
---[[
-shownState	Enum.WidgetShownState	
-tooltipLoc	Enum.UIWidgetTooltipLocation	
-itemInfo	UIWidgetItemInfo	
-widgetSizeSetting	number	
-textureKit	string : textureKit	
-frameTextureKit	string : textureKit	
-hasTimer	boolean	
-orderIndex	number	
-widgetTag	string	
-inAnimType	Enum.WidgetAnimationType	
-outAnimType	Enum.WidgetAnimationType	
-widgetScale	Enum.UIWidgetScale	
-layoutDirection	Enum.UIWidgetLayoutDirection	
-modelSceneLayer	Enum.UIWidgetModelSceneLayer	
-scriptedAnimationEffectID	number
-]]
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.ItemDisplay then info= C_UIWidgetManager.GetItemDisplayVisualizationInfo(widget.widgetID)
             end
-        end
-        if info
-            and (
-                (info.shownState and info.shownState~=Enum.WidgetShownState.Hidden)
-                or (info.state and info.state~=Enum.IconAndTextWidgetState.Hidden)
-            )
-        then
-            return info
+
+            if info
+                and (
+                    (info.shownState and info.shownState~=Enum.WidgetShownState.Hidden)
+                    or (info.state and info.state~=Enum.IconAndTextWidgetState.Hidden)
+                )
+            then
+                return info
+            end
         end
     end
 end
-
-
 
 
 
@@ -1891,12 +1254,14 @@ local function Init_Button()
 
 
     function TrackButton:set_state()
-        self:SetButtonState('PUSHED')
-        C_Timer.After(5, function()
-            if not GameTooltip:IsOwned(self) then
-                self:SetButtonState('NORMAL')
-            end
-        end)
+        if self:GetButtonState()~='PUSHED' then
+            self:SetButtonState('PUSHED')
+            C_Timer.After(5, function()
+                if not GameTooltip:IsOwned(self) then
+                    self:SetButtonState('NORMAL')
+                end
+            end)
+        end
     end
     TrackButton:SetScript('OnShow', TrackButton.set_state)
     TrackButton:set_state()
@@ -2089,3 +1454,710 @@ function WoWTools_MinimapMixin:Init_TrackButton_Menu(_, root)
         Init_Menu(TrackButton, root)
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+--[[
+UIWidgetManagerSharedDocumentation.lua
+{
+Name = "UIWidgetVisualizationType",
+Type = "Enumeration",
+NumValues = 30,
+MinValue = 0,
+MaxValue = 29,
+Fields =
+{ Name = "IconAndText", Type = "UIWidgetVisualizationType", EnumValue = 0 },
+{ Name = "CaptureBar", Type = "UIWidgetVisualizationType", EnumValue = 1 },
+{ Name = "StatusBar", Type = "UIWidgetVisualizationType", EnumValue = 2 },
+{ Name = "DoubleStatusBar", Type = "UIWidgetVisualizationType", EnumValue = 3 },
+{ Name = "IconTextAndBackground", Type = "UIWidgetVisualizationType", EnumValue = 4 },
+{ Name = "DoubleIconAndText", Type = "UIWidgetVisualizationType", EnumValue = 5 },
+{ Name = "StackedResourceTracker", Type = "UIWidgetVisualizationType", EnumValue = 6 },
+{ Name = "IconTextAndCurrencies", Type = "UIWidgetVisualizationType", EnumValue = 7 },
+{ Name = "TextWithState", Type = "UIWidgetVisualizationType", EnumValue = 8 },
+{ Name = "HorizontalCurrencies", Type = "UIWidgetVisualizationType", EnumValue = 9 },
+{ Name = "BulletTextList", Type = "UIWidgetVisualizationType", EnumValue = 10 },
+{ Name = "ScenarioHeaderCurrenciesAndBackground", Type = "UIWidgetVisualizationType", EnumValue = 11 },
+{ Name = "TextureAndText", Type = "UIWidgetVisualizationType", EnumValue = 12 },
+{ Name = "SpellDisplay", Type = "UIWidgetVisualizationType", EnumValue = 13 },
+{ Name = "DoubleStateIconRow", Type = "UIWidgetVisualizationType", EnumValue = 14 },
+{ Name = "TextureAndTextRow", Type = "UIWidgetVisualizationType", EnumValue = 15 },
+{ Name = "ZoneControl", Type = "UIWidgetVisualizationType", EnumValue = 16 },
+{ Name = "CaptureZone", Type = "UIWidgetVisualizationType", EnumValue = 17 },
+{ Name = "TextureWithAnimation", Type = "UIWidgetVisualizationType", EnumValue = 18 },
+{ Name = "DiscreteProgressSteps", Type = "UIWidgetVisualizationType", EnumValue = 19 },
+{ Name = "ScenarioHeaderTimer", Type = "UIWidgetVisualizationType", EnumValue = 20 },
+{ Name = "TextColumnRow", Type = "UIWidgetVisualizationType", EnumValue = 21 },
+{ Name = "Spacer", Type = "UIWidgetVisualizationType", EnumValue = 22 },
+{ Name = "UnitPowerBar", Type = "UIWidgetVisualizationType", EnumValue = 23 },
+{ Name = "FillUpFrames", Type = "UIWidgetVisualizationType", EnumValue = 24 },
+{ Name = "TextWithSubtext", Type = "UIWidgetVisualizationType", EnumValue = 25 },
+{ Name = "MapPinAnimation", Type = "UIWidgetVisualizationType", EnumValue = 26 },
+{ Name = "ItemDisplay", Type = "UIWidgetVisualizationType", EnumValue = 27 },
+{ Name = "TugOfWar", Type = "UIWidgetVisualizationType", EnumValue = 28 },
+{ Name = "ScenarioHeaderDelves", Type = "UIWidgetVisualizationType", EnumValue = 29 },
+
+
+
+
+
+local function Get_widgetSetID_Info(widgetSetID)
+    if not widgetSetID then
+        return
+    end
+
+    for _, widget in ipairs(C_UIWidgetManager.GetAllWidgetsBySetID(widgetSetID) or {}) do
+        local info
+        if widget.widgetID then
+            if widget.widgetType ==Enum.UIWidgetVisualizationType.IconAndText then
+                info= C_UIWidgetManager.GetIconAndTextWidgetVisualizationInfo(widget.widgetID)
+
+state	Enum.IconAndTextWidgetState	
+text	string	
+tooltip	string	
+dynamicTooltip	string	
+tooltipLoc	Enum.UIWidgetTooltipLocation	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number	
+
+
+
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.CaptureBar then
+                info= C_UIWidgetManager.GetCaptureBarWidgetVisualizationInfo(widget.widgetID)
+
+shownState	Enum.WidgetShownState	
+barValue	number	
+barMinValue	number	
+barMaxValue	number	
+neutralZoneSize	number	
+neutralZoneCenter	number	
+tooltip	string	
+glowAnimType	Enum.CaptureBarWidgetGlowAnimType	
+fillDirectionType	Enum.CaptureBarWidgetFillDirectionType	
+tooltipLoc	Enum.UIWidgetTooltipLocation	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number	
+
+
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.StatusBar then
+                info= C_UIWidgetManager.GetStatusBarWidgetVisualizationInfo(widget.widgetID)
+
+shownState	Enum.WidgetShownState	
+leftBarMin	number	
+leftBarMax	number	
+leftBarValue	number	
+leftBarTooltip	string	
+rightBarMin	number	
+rightBarMax	number	
+rightBarValue	number	
+rightBarTooltip	string	
+barValueTextType	Enum.StatusBarValueTextType	
+text	string	
+leftBarTooltipLoc	Enum.UIWidgetTooltipLocation	
+rightBarTooltipLoc	Enum.UIWidgetTooltipLocation	
+fillMotionType	Enum.UIWidgetMotionType	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number	
+
+
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.DoubleStatusBar then
+                info= C_UIWidgetManager.GetDoubleStatusBarWidgetVisualizationInfo(widget.widgetID)
+
+shownState	Enum.WidgetShownState	
+leftBarMin	number	
+leftBarMax	number	
+leftBarValue	number	
+leftBarTooltip	string	
+rightBarMin	number	
+rightBarMax	number	
+rightBarValue	number	
+rightBarTooltip	string	
+barValueTextType	Enum.StatusBarValueTextType	
+text	string	
+leftBarTooltipLoc	Enum.UIWidgetTooltipLocation	
+rightBarTooltipLoc	Enum.UIWidgetTooltipLocation	
+fillMotionType	Enum.UIWidgetMotionType	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number	
+
+
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.IconTextAndBackground then
+
+shownState	Enum.WidgetShownState	
+text	string	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number	
+
+
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.DoubleIconAndText then
+
+shownState	Enum.WidgetShownState	
+resources	UIWidgetCurrencyInfo[]	
+tooltipLoc	Enum.UIWidgetTooltipLocation	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number	
+
+
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.StackedResourceTracker then
+                info= C_UIWidgetManager.GetIconTextAndBackgroundWidgetVisualizationInfo(widget.widgetID)
+
+shownState	Enum.WidgetShownState	
+resources	UIWidgetCurrencyInfo[]	
+tooltipLoc	Enum.UIWidgetTooltipLocation	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number	
+
+
+
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.IconTextAndCurrencies then
+                info= C_UIWidgetManager.GetIconTextAndCurrenciesWidgetVisualizationInfo(widget.widgetID)
+
+shownState	Enum.WidgetShownState	
+barValue	number	
+barMinValue	number	
+barMaxValue	number	
+neutralZoneSize	number	
+neutralZoneCenter	number	
+tooltip	string	
+glowAnimType	Enum.CaptureBarWidgetGlowAnimType	
+fillDirectionType	Enum.CaptureBarWidgetFillDirectionType	
+tooltipLoc	Enum.UIWidgetTooltipLocation	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number	
+
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.TextWithState then
+                info= C_UIWidgetManager.GetTextWithStateWidgetVisualizationInfo(widget.widgetID)
+
+shownState	Enum.WidgetShownState	
+enabledState	Enum.WidgetEnabledState	
+text	string	
+tooltip	string	
+textSizeType	Enum.UIWidgetTextSizeType	
+fontType	Enum.UIWidgetFontType	
+bottomPadding	number	
+tooltipLoc	Enum.UIWidgetTooltipLocation	
+hAlign	Enum.WidgetTextHorizontalAlignmentType	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number
+
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.HorizontalCurrencies then
+                info= C_UIWidgetManager.GetHorizontalCurrenciesWidgetVisualizationInfo(widget.widgetID)
+
+shownState	Enum.WidgetShownState	
+enabledState	Enum.WidgetEnabledState	
+text	string	
+tooltip	string	
+textSizeType	Enum.UIWidgetTextSizeType	
+fontType	Enum.UIWidgetFontType	
+bottomPadding	number	
+tooltipLoc	Enum.UIWidgetTooltipLocation	
+hAlign	Enum.WidgetTextHorizontalAlignmentType	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number
+
+
+
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.BulletTextList then
+                info= C_UIWidgetManager.GetBulletTextListWidgetVisualizationInfo(widget.widgetID)
+
+shownState	Enum.WidgetShownState	
+enabledState	Enum.WidgetEnabledState	
+lines	string[]	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number	
+
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.ScenarioHeaderCurrenciesAndBackground then
+                info= C_UIWidgetManager.GetScenarioHeaderCurrenciesAndBackgroundWidgetVisualizationInfo(widget.widgetID)
+
+shownState	Enum.WidgetShownState	
+currencies	UIWidgetCurrencyInfo[]	
+headerText	string	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number	
+
+
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.TextureAndText then
+                info= C_UIWidgetManager.GetTextureAndTextVisualizationInfo(widget.widgetID)
+
+shownState	Enum.WidgetShownState	
+currencies	UIWidgetCurrencyInfo[]	
+headerText	string	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number	
+
+
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.SpellDisplay then
+                info= C_UIWidgetManager.GetSpellDisplayVisualizationInfo(widget.widgetID)
+
+shownState	Enum.WidgetShownState	
+enabledState	Enum.WidgetEnabledState	
+spellInfo	UIWidgetSpellInfo	
+tooltipLoc	Enum.UIWidgetTooltipLocation	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number	
+
+
+
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.DoubleStateIconRow then
+                info= C_UIWidgetManager.GetDoubleStateIconRowVisualizationInfo(widget.widgetID)
+
+shownState	Enum.WidgetShownState	
+leftIcons	UIWidgetStateIconInfo[]	
+rightIcons	UIWidgetStateIconInfo[]	
+tooltipLoc	Enum.UIWidgetTooltipLocation	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number
+
+
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.TextureAndTextRow then
+                info= C_UIWidgetManager.GetTextureAndTextRowVisualizationInfo(widget.widgetID)
+
+shownState	Enum.WidgetShownState	
+entries	TextureAndTextEntryInfo[]	
+textSizeType	Enum.UIWidgetTextureAndTextSizeType	
+fixedWidth	number?	
+tooltipLoc	Enum.UIWidgetTooltipLocation	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number	
+
+
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.ZoneControl then
+                info= C_UIWidgetManager.GetZoneControlVisualizationInfo(widget.widgetID)
+
+shownState	Enum.WidgetShownState	
+mode	Enum.ZoneControlMode	
+leadingEdgeType	Enum.ZoneControlLeadingEdgeType	
+dangerFlashType	Enum.ZoneControlDangerFlashType	
+zoneEntries	ZoneEntry[]	
+tooltipLoc	Enum.UIWidgetTooltipLocation	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number
+
+
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.CaptureZone then
+                info= C_UIWidgetManager.GetCaptureZoneVisualizationInfo(widget.widgetID)
+
+shownState	Enum.WidgetShownState	
+mode	Enum.ZoneControlMode	
+leadingEdgeType	Enum.ZoneControlLeadingEdgeType	
+dangerFlashType	Enum.ZoneControlDangerFlashType	
+zoneInfo	ZoneEntry	
+tooltipLoc	Enum.UIWidgetTooltipLocation	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number
+
+
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.TextureWithAnimation then
+                info= C_UIWidgetManager.GetTextureWithAnimationVisualizationInfo(widget.widgetID)
+
+shownState	Enum.WidgetShownState	
+tooltip	string	
+tooltipLoc	Enum.UIWidgetTooltipLocation	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number
+
+
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.DiscreteProgressSteps then
+                info= C_UIWidgetManager.GetDiscreteProgressStepsVisualizationInfo(widget.widgetID)
+
+shownState	Enum.WidgetShownState	
+tooltip	string	
+tooltipLoc	Enum.UIWidgetTooltipLocation	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number
+
+
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.ScenarioHeaderTimer then
+                info= C_UIWidgetManager.GetScenarioHeaderTimerWidgetVisualizationInfo(widget.widgetID)
+
+shownState	Enum.WidgetShownState	
+tooltip	string	
+tooltipLoc	Enum.UIWidgetTooltipLocation	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number
+
+
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.TextColumnRow then
+                info= C_UIWidgetManager.GetTextColumnRowVisualizationInfo(widget.widgetID)
+
+shownState	Enum.WidgetShownState	
+entries	TextColumnRowEntryInfo[]	
+textSizeType	Enum.UIWidgetTextSizeType	
+fontType	Enum.UIWidgetFontType	
+tooltip	string	
+tooltipLoc	Enum.UIWidgetTooltipLocation	
+bottomPadding	number	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number
+
+
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.Spacer then
+                info= C_UIWidgetManager.GetSpacerVisualizationInfo(widget.widgetID)
+
+shownState	Enum.WidgetShownState	
+widgetWidth	number	
+widgetHeight	number	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number
+
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.UnitPowerBar then
+                info= C_UIWidgetManager.GetUnitPowerBarWidgetVisualizationInfo(widget.widgetID)
+
+shownState	Enum.WidgetShownState	
+barMin	number	
+barMax	number	
+barValue	number	
+tooltip	string	
+barValueTextType	Enum.StatusBarValueTextType	
+overrideBarText	string	
+overrideBarTextShownType	Enum.StatusBarOverrideBarTextShownType	
+tooltipLoc	Enum.UIWidgetTooltipLocation	
+fillMotionType	Enum.UIWidgetMotionType	
+flashBlendModeType	Enum.UIWidgetBlendModeType	
+sparkBlendModeType	Enum.UIWidgetBlendModeType	
+flashMomentType	Enum.WidgetUnitPowerBarFlashMomentType	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number
+
+
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.FillUpFrames then
+                info= C_UIWidgetManager.GetFillUpFramesWidgetVisualizationInfo(widget.widgetID)
+
+shownState	Enum.WidgetShownState	
+barMin	number	
+barMax	number	
+barValue	number	
+tooltip	string	
+barValueTextType	Enum.StatusBarValueTextType	
+overrideBarText	string	
+overrideBarTextShownType	Enum.StatusBarOverrideBarTextShownType	
+tooltipLoc	Enum.UIWidgetTooltipLocation	
+fillMotionType	Enum.UIWidgetMotionType	
+flashBlendModeType	Enum.UIWidgetBlendModeType	
+sparkBlendModeType	Enum.UIWidgetBlendModeType	
+flashMomentType	Enum.WidgetUnitPowerBarFlashMomentType	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number
+
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.TextWithSubtext then
+                info= C_UIWidgetManager.GetTextWithSubtextWidgetVisualizationInfo(widget.widgetID)
+
+shownState	Enum.WidgetShownState	
+barMin	number	
+barMax	number	
+barValue	number	
+tooltip	string	
+barValueTextType	Enum.StatusBarValueTextType	
+overrideBarText	string	
+overrideBarTextShownType	Enum.StatusBarOverrideBarTextShownType	
+tooltipLoc	Enum.UIWidgetTooltipLocation	
+fillMotionType	Enum.UIWidgetMotionType	
+flashBlendModeType	Enum.UIWidgetBlendModeType	
+sparkBlendModeType	Enum.UIWidgetBlendModeType	
+flashMomentType	Enum.WidgetUnitPowerBarFlashMomentType	
+widgetSizeSetting	number	
+textureKit	string	
+frameTextureKit	string	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number
+
+            --elseif widget.widgetType ==Enum.UIWidgetVisualizationType.WorldLootObject		Added in 10.1.0
+            elseif widget.widgetType ==Enum.UIWidgetVisualizationType.ItemDisplay then
+                info= C_UIWidgetManager.GetItemDisplayVisualizationInfo(widget.widgetID)
+
+shownState	Enum.WidgetShownState	
+tooltipLoc	Enum.UIWidgetTooltipLocation	
+itemInfo	UIWidgetItemInfo	
+widgetSizeSetting	number	
+textureKit	string : textureKit	
+frameTextureKit	string : textureKit	
+hasTimer	boolean	
+orderIndex	number	
+widgetTag	string	
+inAnimType	Enum.WidgetAnimationType	
+outAnimType	Enum.WidgetAnimationType	
+widgetScale	Enum.UIWidgetScale	
+layoutDirection	Enum.UIWidgetLayoutDirection	
+modelSceneLayer	Enum.UIWidgetModelSceneLayer	
+scriptedAnimationEffectID	number
+
+            end
+        end
+        if info
+            and (
+                (info.shownState and info.shownState~=Enum.WidgetShownState.Hidden)
+                or (info.state and info.state~=Enum.IconAndTextWidgetState.Hidden)
+            )
+        then
+            return info
+        end
+    end
+end
+]]

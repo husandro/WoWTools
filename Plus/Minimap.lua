@@ -402,7 +402,7 @@ local function Init_Menu(_, level, menuList)
             text= '|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '信息' or INFO),--当前缩放，显示数值
             checked= Save.ZoomOutInfo,
             tooltipOnButton=true,
-            tooltipTitle=(e.onlyChinese and '镜头视野范围' or CAMERA_FOV)..': '..format(e.onlyChinese and '%s码' or IN_GAME_NAVIGATION_RANGE, format('%i', C_Minimap.GetViewRadius() or 100)),
+            tooltipTitle=(e.onlyChinese and '镜头视野范围' or )..': '..format(e.onlyChinese and '%s码' or IN_GAME_NAVIGATION_RANGE, format('%i', C_Minimap.GetViewRadius() or 100)),
             keepShownOnClick=true,
             func= function()
                 Save.ZoomOutInfo= not Save.ZoomOutInfo and true or nil
@@ -518,120 +518,6 @@ local function Init_Menu(_, level, menuList)
     if menuList then
         return
     end
-
-    Init_Garrison_Menu(level)--要塞报告
-
-    --驭空术
-    --[[local DRAGONRIDING_INTRO_QUEST_ID = 68798;
-    local DRAGONRIDING_ACCOUNT_ACHIEVEMENT_ID = 15794;
-    local DRAGONRIDING_TRAIT_SYSTEM_ID = 1;
-    local DRAGONRIDING_TREE_ID = 672;]]
-
-    local numDragonriding=''
-    local dragonridingConfigID = C_Traits.GetConfigIDBySystemID(1);
-    if dragonridingConfigID then
-        local treeCurrencies = C_Traits.GetTreeCurrencyInfo(dragonridingConfigID, 672, false) or {}
-        local num= treeCurrencies[1] and treeCurrencies[1].quantity
-        if num and num>=0 then
-            numDragonriding= format(' %s%d|r |T%d:0|t', num==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:', num, select(4, C_Traits.GetTraitCurrencyInfo(2563)) )
-        end
-    end
-
-    e.LibDD:UIDropDownMenu_AddButton({--Blizzard_DragonflightLandingPage.lua
-        text= format('|A:dragonriding-barbershop-icon-protodrake:0:0|a%s%s', e.onlyChinese and '驭空术' or GENERIC_TRAIT_FRAME_DRAGONRIDING_TITLE, numDragonriding),
-        checked= GenericTraitFrame and GenericTraitFrame:IsShown() and GenericTraitFrame:GetConfigID() == C_Traits.GetConfigIDBySystemID(1),
-        keepShownOnClick=true,
-        disabled= UnitAffectingCombat('player'),
-        colorCode= (select(4, GetAchievementInfo(15794)) or C_QuestLog.IsQuestFlaggedCompleted(68798)) and '' or '|cff9e9e9e',
-        func= function()
-            GenericTraitUI_LoadUI()
-            local DRAGONRIDING_TRAIT_SYSTEM_ID = 1
-            GenericTraitFrame:SetSystemID(DRAGONRIDING_TRAIT_SYSTEM_ID)
-            ToggleFrame(GenericTraitFrame)
-        end
-    }, level)
-
-    local has= C_WeeklyRewards.HasAvailableRewards()
-    local icon= format('|A:GarrMission-%sChest:0:0|a', e.Player.faction=='Alliance' and 'Alliance' or 'Horde')
-    e.LibDD:UIDropDownMenu_AddButton({
-        text= format('%s|A:oribos-weeklyrewards-orb-dialog:0:0|a%s%s',
-            has and '|cnGREEN_FONT_COLOR:' or '',
-            e.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT,
-            has and icon or ''),
-        tooltipOnButton=has,
-        tooltipTitle= has and format('%s|cffff00ff%s|r%s',icon, e.onlyChinese and '你有未领取的奖励' or WEEKLY_REWARDS_UNCLAIMED_TITLE, icon),
-        checked= WeeklyRewardsFrame and WeeklyRewardsFrame:IsShown(),
-        colorCode= (UnitAffectingCombat('player') or not e.Player.levelMax) and '|cff9e9e9e',
-        keepShownOnClick=true,
-        func=function()
-            if WeeklyRewardsFrame and WeeklyRewardsFrame:IsShown() then
-                WeeklyRewardsFrame:Hide()
-            else
-                WeeklyRewards_LoadUI()--宏伟宝库
-                WeeklyRewards_ShowUI()--WeeklyReward.lua
-            end
-        end
-    }, level)
-
-    --派系声望
-    local major= Get_Major_Faction_List()
-    for _, factionID in pairs(major) do
-        info= Set_Faction_Menu(factionID)
-        if info then
-            --e.LibDD:UIDropDownMenu_AddSeparator(level)
-            info.hasArrow= true
-            info.keepShownOnClick=true
-            info.menuList='FACTION'
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
-            break
-        end
-    end
-
-
-    e.LibDD:UIDropDownMenu_AddSeparator(level)
-    info={
-        text= '|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING),
-        tooltipOnButton=true,
-        tooltipTitle=e.onlyChinese and '地图' or WORLD_MAP,
-        tooltipText='|nAreaPoiID|nWorldQuest|nVignette',
-        checked= Save.vigentteButton,
-        disabled= IsInInstance() or UnitAffectingCombat('player'),
-        menuList= 'panelButtonRestPoint',
-        hasArrow= true,
-        keepShownOnClick=true,
-        func= function ()
-            Save.vigentteButton= not Save.vigentteButton and true or nil
-            Init_TrackButton()--小地图, 标记, 文本
-        end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    info= {
-        text= Initializer:GetName(),--'    |A:mechagon-projects:0:0|a'..(e.onlyChinese and '选项' or OPTIONS),
-        --notCheckable=true,
-        checked= SettingsPanel:IsShown(),
-        tooltipOnButton=true,
-        tooltipTitle= e.onlyChinese and '选项' or OPTIONS,
-        keepShownOnClick=true,
-        menuList='OPTIONS',
-        hasArrow=true,
-        func= function()
-            if not Initializer then
-                e.OpenPanelOpting()
-            end
-            e.OpenPanelOpting(Initializer)
-        end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-    --[[e.LibDD:UIDropDownMenu_AddSeparator(level)
-    e.LibDD:UIDropDownMenu_AddButton({
-        text= '    '..Initializer:GetName(),
-        notCheckable=true,
-        func= function()
-            e.OpenPanelOpting(Initializer)
-        end
-    }, level)]]
 end
 
 

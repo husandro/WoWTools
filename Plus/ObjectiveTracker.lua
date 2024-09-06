@@ -794,7 +794,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             addName= '|A:Objective-Nub:0:0|a'..(e.onlyChinese and '目标追踪栏' or HUD_EDIT_MODE_OBJECTIVE_TRACKER_LABEL)
 
             --添加控制面板
-            Initializer= e.AddPanel_Check({
+            e.AddPanel_Check({
                 name= addName,
                 tooltip= addName,
                 GetValue= function() return not Save.disabled end,
