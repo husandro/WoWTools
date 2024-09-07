@@ -39,7 +39,7 @@ end
 
 --LuaEnum.lua
 local GarrisonList={
-    
+
     --[[{name=e.onlyChinese and '巨龙群岛概要' or DRAGONFLIGHT_LANDING_PAGE_TITLE,
     garrisonType= Enum.GarrisonType.Type_9_0_Garrison,
     garrFollowerTypeID= Enum.GarrisonFollowerType.FollowerType_9_0_GarrisonFollower,
@@ -103,7 +103,7 @@ local GarrisonList={
     --tooltip= e.onlyChinese and '点击显示要塞报告' or MINIMAP_GARRISON_LANDING_PAGE_TOOLTIP,
     },
 
-    
+
 
 }
 
@@ -226,7 +226,7 @@ function WoWTools_MinimapMixin:Garrison_Menu(_, root)
                                 break
                             end
                         end
-            
+
                         sub:CreateButton(
                             (info2.textureKit and format('|A:SanctumUpgrades-%s-32x32:0:0|a', info2.textureKit) or '')
                             ..e.cn(info2.name)..' '..level,
@@ -234,7 +234,7 @@ function WoWTools_MinimapMixin:Garrison_Menu(_, root)
                             WoWTools_LoadUIMixin:CovenantRenown(nil, data.covenantID)
                             return MenuResponse.Open
                         end, {covenantID=covenantID})
-            
+
                     end
                 end
             end

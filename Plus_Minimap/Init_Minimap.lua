@@ -53,7 +53,6 @@ Init_ExpansionLanding=function()end,
 Faction_Menu=function()end,
 Garrison_Menu=function()end,
 
-Init_MajorFactionRenownFrame=function()end,
 
 Rest_TimeManager_Point=function()end,
 Init_TimeManager=function()end,
@@ -62,6 +61,9 @@ Init_Minimap_Zoom=function()end,
 
 Init_InstanceDifficulty=function()end,
 InstanceDifficulty_Tooltip=function()end,
+
+Init_MajorFactionRenownFrame=function()end,
+Init_CovenantRenown=function()end,
 }
 
 
