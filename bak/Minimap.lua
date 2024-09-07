@@ -1737,7 +1737,9 @@ local function Set_Covenant_Button(self, covenantID, activityID)
             btn:SetPoint('LEFT', self['covenant'..(covenantID-1)], 'RIGHT')
         end
         btn:SetScript('OnClick', function(frame)
-            if not CovenantRenownFrame or not CovenantRenownFrame:IsShown() then
+            WoWTools_LoadUIMixin:CovenantRenown(frame.covenantID)
+            
+            --[[if not CovenantRenownFrame or not CovenantRenownFrame:IsShown() then
                 do
                     ToggleCovenantRenown()
                 end
@@ -1772,7 +1774,7 @@ local function Set_Covenant_Button(self, covenantID, activityID)
 
             CovenantRenownFrame:Refresh(true)
 
-            C_CovenantSanctumUI.RequestCatchUpState()
+            C_CovenantSanctumUI.RequestCatchUpState()]]
         end)
         btn.covenantID= covenantID
         self['covenant'..covenantID]=btn

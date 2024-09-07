@@ -150,3 +150,75 @@ function WoWTools_LoadUIMixin:MajorFaction(factionID)
         ToggleMajorFactionRenown(factionID)
     end
 end
+
+
+
+
+
+
+
+
+
+
+local mainTextureKitRegions = {
+	["Background"] = "CovenantSanctum-Renown-Background-%s",
+	["TitleDivider"] = "CovenantSanctum-Renown-Title-Divider-%s",
+	["Divider"] = "CovenantSanctum-Renown-Divider-%s",
+	["Anima"] = "CovenantSanctum-Renown-Anima-%s",
+	["FinalToastSlabTexture"] = "CovenantSanctum-Renown-FinalToast-%s",
+	["SelectedLevelGlow"] = "CovenantSanctum-Renown-Next-Glow-%s",
+}
+local function SetupTextureKit(frame, regions, covenantData)
+	SetupTextureKitOnRegions(covenantData.textureKit, frame, regions, TextureKitConstants.SetVisibility, TextureKitConstants.UseAtlasSize)
+end
+
+
+--盟约 9.0
+function WoWTools_LoadUIMixin:CovenantRenown(frame, covenantID)
+    do
+        if not CovenantRenownFrame or not CovenantRenownFrame:IsShown() then
+            ToggleCovenantRenown()
+        end
+    end
+
+    covenantID= covenantID or (frame and frame.covenantID)
+    if not covenantID then
+        return
+    end
+
+    --CovenantRenownMixin:SetUpCovenantData()
+    local covenantData = C_Covenants.GetCovenantData(covenantID)
+    if not covenantData then
+        return
+    end
+
+    local textureKit = covenantData.textureKit
+
+    NineSliceUtil.ApplyUniqueCornersLayout(CovenantRenownFrame.NineSlice, textureKit)
+    NineSliceUtil.DisableSharpening(CovenantRenownFrame.NineSlice)
+
+    local atlas = "CovenantSanctum-RenownLevel-Border-%s"
+    CovenantRenownFrame.HeaderFrame.Background:SetAtlas(atlas:format(textureKit), TextureKitConstants.UseAtlasSize)
+    UIPanelCloseButton_SetBorderAtlas(CovenantRenownFrame.CloseButton, "UI-Frame-%s-ExitButtonBorder", -1, 1, textureKit)
+    SetupTextureKit(CovenantRenownFrame, mainTextureKitRegions, covenantData)
+
+    local renownLevelsInfo = C_CovenantSanctumUI.GetRenownLevels(covenantID) or {}
+    local unlocked=0
+    for i, levelInfo in ipairs(renownLevelsInfo) do
+        levelInfo.textureKit = textureKit
+        if not levelInfo.locked then
+            unlocked=i
+        end
+        levelInfo.rewardInfo = C_CovenantSanctumUI.GetRenownRewardsForLevel(covenantID, i)
+    end
+    CovenantRenownFrame.TrackFrame:Init(renownLevelsInfo)
+    CovenantRenownFrame.maxLevel = renownLevelsInfo[#renownLevelsInfo].level
+
+
+    CovenantRenownFrame.actualLevel = C_CovenantSanctumUI.GetRenownLevel()
+    CovenantRenownFrame.displayLevel = unlocked
+
+    CovenantRenownFrame:Refresh(true)
+
+    C_CovenantSanctumUI.RequestCatchUpState()
+end

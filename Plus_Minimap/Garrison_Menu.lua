@@ -212,6 +212,32 @@ function WoWTools_MinimapMixin:Garrison_Menu(_, root)
                 disabled= not has
             end
             sub:SetEnabled(not disabled and true or false)
+
+--盟约 9.0
+            if info.garrisonType== Enum.GarrisonType.Type_9_0_Garrison then
+                for covenantID=1, 4 do
+                    local info2 = C_Covenants.GetCovenantData(covenantID)
+                    local tab = C_CovenantSanctumUI.GetRenownLevels(covenantID)
+                    if info2 and info2.name and tab then
+                        local level= 0
+                        for i=#tab, 1, -1 do
+                            if not tab[i].locked then
+                                level= tab[i].level
+                                break
+                            end
+                        end
+            
+                        sub:CreateButton(
+                            (info2.textureKit and format('|A:SanctumUpgrades-%s-32x32:0:0|a', info2.textureKit) or '')
+                            ..e.cn(info2.name)..' '..level,
+                        function(data)
+                            WoWTools_LoadUIMixin:CovenantRenown(nil, data.covenantID)
+                            return MenuResponse.Open
+                        end, {covenantID=covenantID})
+            
+                    end
+                end
+            end
         end
     end
 end

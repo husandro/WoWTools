@@ -1,7 +1,5 @@
 
 local e= select(2, ...)
-local addName
-
 local Save= function()
     return  WoWTools_MinimapMixin.Save
 end
@@ -9,6 +7,128 @@ end
 
 
 
+
+
+
+
+
+
+--盟约 9.0
+local function Set_Covenant_Button(self, covenantID, activityID)
+    local btn= self['covenant'..covenantID]
+    if not btn then
+        local info = C_Covenants.GetCovenantData(covenantID) or {}
+        btn=WoWTools_ButtonMixin:Cbtn(self.frame or self, {size={32,32}, atlas=format('SanctumUpgrades-%s-32x32', info.textureKit)})
+        btn:SetHighlightAtlas('ChromieTime-Button-HighlightForge-ColorSwatchHighlight')
+        if covenantID==1 then
+            btn:SetPoint('BOTTOMLEFT', self.frame and self:GetParent() or self, 'TOPLEFT', 0, 5)
+        else
+            btn:SetPoint('LEFT', self['covenant'..(covenantID-1)], 'RIGHT')
+        end
+        btn:SetScript('OnClick', function(frame)
+            WoWTools_LoadUIMixin:CovenantRenown(frame)
+        end)
+
+        btn.covenantID= covenantID
+        self['covenant'..covenantID]=btn
+        btn.Text=e.Cstr(btn, {color={r=1,g=1,b=1}})
+        btn.Text:SetPoint('CENTER')
+    end
+
+    local level=0
+    local isMaxLevel
+    if covenantID==activityID then
+        btn:LockHighlight()
+        level= C_CovenantSanctumUI.GetRenownLevel()
+        isMaxLevel= C_CovenantSanctumUI.HasMaximumRenown()
+    else
+        btn:UnlockHighlight()
+        local tab = C_CovenantSanctumUI.GetRenownLevels(covenantID) or {}
+        local num= #tab
+        for i=num, 1, -1 do
+            if not tab[i].locked then
+                level= tab[i].level
+                isMaxLevel= i==num
+                break
+            end
+        end
+    end
+    btn.Text:SetText(isMaxLevel and format('|cnGREEN_FONT_COLOR:%d|r', level) or level)
+    btn.renownLevel= level
+    return btn
+ end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--取得，等级，派系声望
+local function Get_Major_Faction_Level(factionID, level)
+    --WoWTools_FactionMinxin:GetInfo(factionID, nil, nil)
+    local text,hasRewardPending ='', false
+    level= level or 0
+    if C_MajorFactions.HasMaximumRenown(factionID) then
+        if C_Reputation.IsFactionParagon(factionID) then--奖励
+            local currentValue, threshold, _, hasRewardPending2, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(factionID)
+            if not tooLowLevelForParagon and currentValue and threshold and threshold>0 then
+                hasRewardPending= hasRewardPending2
+                local completed= math.modf(currentValue/threshold)--完成次数
+                currentValue= completed>0 and currentValue - threshold * completed or currentValue
+                if hasRewardPending2 then
+                    text= format('|cnGREEN_FONT_COLOR:%i%%|A:GarrMission-%sChest:0:0|a%s%d|r', currentValue/threshold*100, e.Player.faction, hasRewardPending and format('|A:%s:0:0|a', e.Icon.select) or '', completed)
+                else
+                    text= format('%i%%|A:Banker:0:0|a%s%d', currentValue/threshold*100, hasRewardPending and format('|A:%s:0:0|a', e.Icon.select) or '', completed)
+                end
+            end
+        end
+        text= text or format('|cnGREEN_FONT_COLOR:%d|r|A:common-icon-checkmark:0:0|a', level)
+    else
+        local levels = C_MajorFactions.GetRenownLevels(factionID)
+        if levels then
+            text= format('%d/%d', level, #levels)
+        else
+            text= format('%d', level)
+        end
+        local info = C_MajorFactions.GetMajorFactionData(factionID)
+        if info then
+            text= format('%s %i%%', text, info.renownReputationEarned/info.renownLevelThreshold*100)
+        end
+    end
+    return text, hasRewardPending
+end
+
+
+--取得，所有，派系声望
+local function Get_Major_Faction_List()
+    local tab={}
+    for i= LE_EXPANSION_DRAGONFLIGHT, e.ExpansionLevel, 1 do
+        for _, factionID in pairs(C_MajorFactions.GetMajorFactionIDs(i) or {}) do--if C_PlayerInfo.IsExpansionLandingPageUnlockedForPlayer(i) then
+            table.insert(tab, factionID)
+        end
+    end
+    for _, factionID in pairs(Constants.MajorFactionsConsts or {}) do--MajorFactionsConstantsDocumentation.lu
+        table.insert(tab, factionID)
+    end
+    table.sort(tab, function(a,b) return a>b end)
+    return tab
+end
 
 
 
@@ -24,7 +144,7 @@ local function Init_MajorFactionRenownFrame()
     function MajorFactionRenownFrame.WoWToolsFaction:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+        e.tips:AddDoubleLine(e.addName, WoWTools_MinimapMixin.addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.GetShowHide(not Save().hide_MajorFactionRenownFrame_Button), e.Icon.left)
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().MajorFactionRenownFrame_Button_Scale or 1), e.Icon.mid)
@@ -134,25 +254,15 @@ end
 
 
 
---盟约 9.0
-function WoWTools_MinimapMixin:Init_CovenantRenown()
-    CovenantRenownFrame:HookScript('OnShow', function(self)
-        local activityID = C_Covenants.GetActiveCovenantID() or 0
-        if activityID>0 then
-            for i=1, 4 do
-                if Save().hide_MajorFactionRenownFrame_Button then
-                    local btn= self['covenant'..i]
-                    if btn then
-                        btn:SetShown(false)
-                    end
-                else
-                    local btn=Set_Covenant_Button(CovenantRenownFrame, i, activityID)
-                    btn:SetShown(true)
-                end
-            end
-        end
-    end)
-end
+
+
+
+
+
+
+
+
+
 
 
 
@@ -167,4 +277,22 @@ function WoWTools_MinimapMixin:Init_MajorFactionRenownFrame()
 end
 
 
-
+--盟约 9.0
+function WoWTools_MinimapMixin:Init_CovenantRenown()
+    CovenantRenownFrame:HookScript('OnShow', function(frame)
+        local activityID = C_Covenants.GetActiveCovenantID() or 0
+        if activityID>0 then
+            for i=1, 4 do
+                if Save().hide_MajorFactionRenownFrame_Button then
+                    local btn= frame['covenant'..i]
+                    if btn then
+                        btn:SetShown(false)
+                    end
+                else
+                    local btn=Set_Covenant_Button(CovenantRenownFrame, i, activityID)
+                    btn:SetShown(true)
+                end
+            end
+        end
+    end)
+end
