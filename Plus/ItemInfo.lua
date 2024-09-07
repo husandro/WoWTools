@@ -914,7 +914,7 @@ local function Init_Bag()
             end
         end)
 
-        if not C_AddOns.IsAddOnLoaded('Inventorian') then
+        if not C_AddOns.IsAddOnLoaded('NDui') then
             panel:RegisterEvent('BANKFRAME_OPENED')--打开所有银行，背包
             panel:RegisterEvent("GUILDBANKBAGSLOTS_CHANGED")--打开公会银行时, 打开背包
             panel:RegisterEvent("GUILDBANK_ITEM_LOCK_CHANGED")
