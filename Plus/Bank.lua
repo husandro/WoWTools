@@ -1399,7 +1399,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             if not Save.disabled then
-                print('aaaaaaaaddddd')
                 Init_Bank_Frame()--银行
             end
             self:UnregisterEvent('ADDON_LOADED')

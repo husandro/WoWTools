@@ -310,7 +310,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWTools_MinimapMixin:Init_TimeManager()--秒表
 
         elseif arg1=='Blizzard_MajorFactions' then
-           -- WoWTools_MinimapMixin:Init_MajorFactionRenownFrame()
+            WoWTools_MinimapMixin:Init_MajorFactionRenownFrame()
 
         elseif arg1=='Blizzard_CovenantRenown' then
             WoWTools_MinimapMixin:Init_CovenantRenown()
