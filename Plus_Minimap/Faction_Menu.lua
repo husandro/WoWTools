@@ -266,7 +266,6 @@ function WoWTools_MinimapMixin:Faction_Menu(_, root)
         return MajorFactionRenownFrame and MajorFactionRenownFrame:IsShown()
     end, function()
         WoWTools_LoadUIMixin:MajorFaction(2593)
-        return MenuResponse.Open
     end)
 
     local index=0

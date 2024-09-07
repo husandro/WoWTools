@@ -51,34 +51,8 @@ end
 
 
 
-
-local function InstanceDifficulty_OnLeave(self)
-    if self.labelType then
-        self.labelType:SetAlpha(0.5)
-    end
-    e.tips:Hide()
-end
-
-
-
-
-local function InstanceDifficulty_OnEnter(self)
-    if not IsInInstance() then
-        return
-    end
-
-    e.tips:SetOwner(MinimapCluster, "ANCHOR_LEFT")
-    e.tips:ClearLines()
-    --name, instanceType, difficultyID, difficultyName, maxPlayers, dynamicDifficulty, isDynamic, instanceID, instanceGroupSize, LfgDungeonID
-    local instanceName, instanceType, difficultyID, difficultyName, maxPlayers= GetInstanceInfo()
-    difficultyName= e.cn(difficultyName)
-    if difficultyName and maxPlayers then
-        difficultyName= difficultyName..(maxPlayers and ' ('..maxPlayers..')' or '')..' '..(difficultyID or '')
-    end
-
-    e.tips:AddDoubleLine(e.cn(instanceName), difficultyName)
-    e.tips:AddLine(self.tooltip)
-    e.tips:AddLine(' ')
+local function InstanceDifficulty_Tooltip(tooltip, difficultyID)
+    difficultyID = difficultyID or select(3,  GetInstanceInfo())
     local tab={
         DifficultyUtil.ID.Raid40,
         DifficultyUtil.ID.RaidLFR,
@@ -93,7 +67,7 @@ local function InstanceDifficulty_OnEnter(self)
     }
     for _, ID in pairs(tab) do
         local text, color= e.GetDifficultyColor(nil, ID)
-        e.tips:AddDoubleLine(
+        tooltip:AddDoubleLine(
             (ID==difficultyID and format('|A:%s:0:0|a', e.Icon.toRight) or '')
             ..text
             ..(ID==difficultyID and format('|A:%s:0:0|a', e.Icon.toLeft) or ''),
@@ -101,6 +75,30 @@ local function InstanceDifficulty_OnEnter(self)
             (color and color.hex or '')..ID
         )
     end
+end
+
+
+
+
+local function InstanceDifficulty_OnEnter(self)
+    if not IsInInstance() then
+        return
+    end
+
+    e.tips:SetOwner(MinimapCluster, "ANCHOR_LEFT")
+    e.tips:ClearLines()
+    --name, instanceType, difficultyID, difficultyName, maxPlayers, dynamicDifficulty, isDynamic, instanceID, instanceGroupSize, LfgDungeonID
+    local instanceName, _, difficultyID, difficultyName, maxPlayers= GetInstanceInfo()
+    difficultyName= e.cn(difficultyName)
+    if difficultyName and maxPlayers then
+        difficultyName= difficultyName..(maxPlayers and ' ('..maxPlayers..')' or '')..' '..(difficultyID or '')
+    end
+
+    e.tips:AddDoubleLine(e.cn(instanceName), difficultyName)
+    e.tips:AddLine(self.tooltip)
+    e.tips:AddLine(' ')
+   
+    InstanceDifficulty_Tooltip(e.tips, difficultyID)
 
     e.tips:AddLine(' ')
     e.tips:AddDoubleLine(e.addName, WoWTools_MinimapMixin.addName)
@@ -115,15 +113,9 @@ end
 
 
 
-
-
-
-
-
-function WoWTools_MinimapMixin:Init_InstanceDifficulty()
+local function Init()
     local btn= MinimapCluster.InstanceDifficulty
-
-    if self.Save.disabledInstanceDifficulty or not btn.Default then
+    if not btn then
         return
     end
 
@@ -144,5 +136,28 @@ function WoWTools_MinimapMixin:Init_InstanceDifficulty()
     hooksecurefunc(btn, 'Update', InstanceDifficulty_Update)
 
     btn:HookScript('OnEnter', InstanceDifficulty_OnEnter)
-    btn:HookScript('OnLeave', InstanceDifficulty_OnLeave)
+    btn:HookScript('OnLeave', function(self)
+        if self.labelType then
+            self.labelType:SetAlpha(0.5)
+        end
+        e.tips:Hide()
+    end)
+end
+
+
+
+
+
+
+
+
+function WoWTools_MinimapMixin:InstanceDifficulty_Tooltip(_, tooltip)
+    InstanceDifficulty_Tooltip(tooltip, nil)
+end
+
+
+function WoWTools_MinimapMixin:Init_InstanceDifficulty()
+    if not self.Save.disabledInstanceDifficulty then
+        Init()
+    end
 end

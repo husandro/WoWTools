@@ -20,7 +20,7 @@ Save={
     uiMapIDs= {},--地图ID 监视, areaPoiIDs，
     currentMapAreaPoiIDs=true,--当前地图，监视, areaPoiIDs，
     textToDown= e.Player.husandro,--文本，向下
-     
+
     miniMapPoint={},--保存小图地, 按钮位置
 
     --disabledInstanceDifficulty=true,--副本，难图，指示
@@ -52,13 +52,16 @@ Init_ExpansionLanding=function()end,
 
 Faction_Menu=function()end,
 Garrison_Menu=function()end,
-Init_InstanceDifficulty=function()end,
+
 Init_MajorFactionRenownFrame=function()end,
 
 Rest_TimeManager_Point=function()end,
 Init_TimeManager=function()end,
 
 Init_Minimap_Zoom=function()end,
+
+Init_InstanceDifficulty=function()end,
+InstanceDifficulty_Tooltip=function()end,
 }
 
 
@@ -111,12 +114,17 @@ local function Init_Menu(self, root)
 
 --追踪 AreaPoiID
     sub2= sub:CreateCheckbox(
-        '|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING),
+        '|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING)..' AreaPoi',
     function()
         return Save().vigentteButton
     end, function()
         Save().vigentteButton= not Save().vigentteButton and true or nil
         WoWTools_MinimapMixin:Init_TrackButton()
+    end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine('AreaPoiID')
+        tooltip:AddLine('WorldQuest')
+        tooltip:AddLine('Vignette')
     end)
 
 --追踪 AreaPoiID 菜单
@@ -139,6 +147,7 @@ local function Init_Menu(self, root)
         )
     end)
 
+
 --缩小地图
     sub2=sub:CreateCheckbox(
         '|A:UI-HUD-Minimap-Zoom-Out:0:0|a'..(e.onlyChinese and '缩小地图' or BINDING_NAME_MINIMAPZOOMOUT),
@@ -151,7 +160,22 @@ local function Init_Menu(self, root)
     sub2:SetTooltip(function(tooltip)
         tooltip:AddLine(e.onlyChinese and '更新地区时' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UPDATE, ZONE))
     end)
+--地下城难度
+    sub2=sub:CreateCheckbox(
+        '|A:DungeonSkull:0:0|a'..(e.onlyChinese and '地下城难度' or DUNGEON_DIFFICULTY),
+    function()
+        return not Save().disabledInstanceDifficulty
+    end, function()
+        Save().disabledInstanceDifficulty= not Save().disabledInstanceDifficulty and true or nil
+            print(e.addName, WoWTools_MinimapMixin.addName, e.GetEnabeleDisable(not Save().disabledInstanceDifficulty), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end
+    )
+    sub2:SetTooltip(function(tooltip)
+        WoWTools_MinimapMixin:InstanceDifficulty_Tooltip(nil, tooltip)
+    end)
 
+--CVar 镇民
+    sub:CreateDivider()
     sub2=sub:CreateCheckbox(
         '|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..(e.onlyChinese and '镇民' or TOWNSFOLK_TRACKING_TEXT),
     function()
