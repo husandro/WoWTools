@@ -1032,7 +1032,7 @@ local function Init_AllAuctions()
     cancelButton:SetPoint('RIGHT', AuctionHouseFrameAuctionsFrame.AllAuctionsList.RefreshFrame.RefreshButton, 'LEFT', -4, 0)
     function cancelButton:get_auctionID()
         local tab={}
-        if AuctionHouseFrameAuctionsFrame.AllAuctionsList.ScrollBox:GetView() then           
+        if AuctionHouseFrameAuctionsFrame.AllAuctionsList.ScrollBox:GetView() then
             for _, info in pairs(AuctionHouseFrameAuctionsFrame.AllAuctionsList.ScrollBox:GetFrames() or {}) do
                 if info.rowData and info.rowData.auctionID and info.rowData.timeLeftSeconds and C_AuctionHouse.CanCancelAuction(info.rowData.auctionID) then
                     table.insert(tab, info.rowData)
@@ -1278,11 +1278,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
 
             Save= WoWToolsSave[addName] or Save
-           
+
             --添加控制面板
             e.AddPanel_Check({
                 name= '|A:Auctioneer:0:0|a'..(e.onlyChinese and '拍卖行' or addName),
-                
+
                 tooltip= e.cn(addName),
                 Value= not Save.disabled,
                 GetValue= function() return not Save.disabled end,
@@ -1293,9 +1293,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             if Save.disabled then
-                self:UnregisterEvent('ADDON_LOADED')               
+                self:UnregisterEvent('ADDON_LOADED')
             end
-            
+
 
 
         elseif arg1=='Blizzard_AuctionHouseUI' then
