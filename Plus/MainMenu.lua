@@ -32,8 +32,10 @@ local function Init_Character()
 
     frame.Text= e.Cstr(CharacterMicroButton,  {size=Save.size, color=true})
     frame.Text:SetPoint('TOP', CharacterMicroButton, 0,  -3)
+    --frame.Text:SetPoint('BOTTOM', CharacterMicroButton, 'CENTER', 0, 1)
     frame.Text2= e.Cstr(CharacterMicroButton,  {size=Save.size, color=true})
     frame.Text2:SetPoint('BOTTOM', CharacterMicroButton, 0, 3)
+    --frame.Text2:SetPoint('TOP', CharacterMicroButton, 'CENTER', 0, -1)
 
     function frame:settings()
         local to, cu= GetAverageItemLevel()--装等

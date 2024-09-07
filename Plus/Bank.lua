@@ -1378,7 +1378,15 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             addName= '|A:Banker:0:0|a'..(e.onlyChinese and '银行' or BANK)
-            Save= WoWToolsSave[BANK] or WoWToolsSave['Bank_Lua'] or Save
+            if WoWToolsSave[BANK] or WoWToolsSave['Bank_Lua'] then
+                Save= WoWToolsSave[BANK] or WoWToolsSave['Bank_Lua']
+                WoWToolsSave[BANK]=nil
+                WoWToolsSave['Bank_Lua']=nil
+            else
+                Save= WoWToolsSave['Plus_Bank'] or Save
+            end
+            
+
 
             --添加控制面板
             e.AddPanel_Check({
@@ -1391,6 +1399,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             if not Save.disabled then
+                print('aaaaaaaaddddd')
                 Init_Bank_Frame()--银行
             end
             self:UnregisterEvent('ADDON_LOADED')
@@ -1398,7 +1407,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            WoWToolsSave['Bank_Lua']= Save
+            WoWToolsSave['Plus_Bank']= Save
         end
     end
 end)

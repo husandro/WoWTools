@@ -914,9 +914,11 @@ local function Init_Bag()
             end
         end)
 
-        panel:RegisterEvent('BANKFRAME_OPENED')--打开所有银行，背包
-        panel:RegisterEvent("GUILDBANKBAGSLOTS_CHANGED")--打开公会银行时, 打开背包
-        panel:RegisterEvent("GUILDBANK_ITEM_LOCK_CHANGED")
+        if not C_AddOns.IsAddOnLoaded('Inventorian') then
+            panel:RegisterEvent('BANKFRAME_OPENED')--打开所有银行，背包
+            panel:RegisterEvent("GUILDBANKBAGSLOTS_CHANGED")--打开公会银行时, 打开背包
+            panel:RegisterEvent("GUILDBANK_ITEM_LOCK_CHANGED")
+        end
     end
 
     hooksecurefunc('BankFrameItemButton_Update', set_BankFrameItemButton_Update)--银行
