@@ -58,6 +58,7 @@ Rest_TimeManager_Point=function()end,
 Init_TimeManager=function()end,
 
 Init_Minimap_Zoom=function()end,
+Zoom_Menu=function()end,
 
 Init_InstanceDifficulty=function()end,
 InstanceDifficulty_Tooltip=function()end,
