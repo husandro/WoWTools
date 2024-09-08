@@ -122,9 +122,9 @@ Plus_Minimap\Major_Plus.lua
 
 ##卖买
 Plus_SellBuy\SellBuy.lua
-Plus_SellBuy\AutoLoot.lua
-
-
+Plus_SellBuy\Auto_Loot.lua
+Plus_SellBuy\DELETE.lua
+Plus_SellBuy\Auto_Repair.lua
 
 
 

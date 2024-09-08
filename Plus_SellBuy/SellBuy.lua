@@ -20,21 +20,23 @@ Save={
     --notPlus=true,--商人 Plus,加宽
 
     --notSellBoss=true,--出售，BOSS，掉落
-    bossSave={},
+    bossItems={},
     saveBossLootList= e.Player.husandro,--保存，BOSS，列表
 
     --notAutoRepairAll=true,--自动修理
 
     MERCHANT_ITEMS_PER_PAGE= 24,--页，物品数量
     numLine=6,--行数
+    buyItems={},
+    repairItems={date=date('%x'), player=0, guild=0, num=0}
 },
 addName=nil,
 
 Init_AutoLoot=function()end,
-
+Init_Delete=function()end,
 }
 
-local addName
+
 local function Save()
     return WoWTools_SellBuyMixin.Save
 end
@@ -50,13 +52,10 @@ end
 
 
 local panel= CreateFrame("Frame")
-local RepairSave={date=date('%x'), player=0, guild=0, num=0}
+
 
 
 --MerchantFrame.lua
-local bossSave={}
-local buySave={}--购买物品
-
 
 
 local AutoRepairCheck--自动修理
@@ -95,7 +94,7 @@ function e.CheckItemSell(itemID, itemLink, quality, isBound)
         return e.onlyChinese and '自定义' or CUSTOM
     end
     if not e.Is_Timerunning and not Save().notSellBoss and itemLink then
-        local level= bossSave[itemID]
+        local level= Save().bossItems[itemID]
         if level then
             local itemLevel= C_Item.GetDetailedItemLevelInfo(itemLink) or select(4, C_Item.GetItemInfo(itemLink))
             if level== itemLevel  then
@@ -170,7 +169,7 @@ local function Set_Merchant_Info()--设置, 提示, 信息
                 itemLink= GetBuybackItemLink(index)
             end
 
-            num=(not Save().notAutoBuy and itemID) and buySave[itemID]--自动购买， 数量
+            num=(not Save().notAutoBuy and itemID) and Save().buyItems[itemID]--自动购买， 数量
             num= num and num..'|T236994:0|t'
             --包里，银行，总数
             local bag=itemID and C_Item.GetItemCount(itemID, true, false, true)
@@ -188,7 +187,7 @@ local function Set_Merchant_Info()--设置, 提示, 信息
 					e.tips:ClearLines()
                     e.tips:AddDoubleLine(e.addName, WoWTools_SellBuyMixin.addName)
                     e.tips:AddLine(' ')
-                    e.tips:AddDoubleLine('|T236994:0|t'..(e.onlyChinese and '自动购买物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, PURCHASE)), not Save().notAutoBuy and buySave[self.itemID] or (e.onlyChinese and '无' or NONE))
+                    e.tips:AddDoubleLine('|T236994:0|t'..(e.onlyChinese and '自动购买物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, PURCHASE)), not Save().notAutoBuy and Save().buyItems[self.itemID] or (e.onlyChinese and '无' or NONE))
                     local all= C_Item.GetItemCount(self.itemID, true, false, true)
                     local bag2= C_Item.GetItemCount(self.itemID)
                     e.tips:AddDoubleLine('|A:Banker:0:0|a'..(e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL), all..'= '.. '|A:bag-main:0:0|a'.. bag2..'+ '..'|A:Banker:0:0|a'..(all-bag))
@@ -652,171 +651,6 @@ end
 
 
 
---自动修理
-local function Init_Auto_Repair()
-    AutoRepairCheck= CreateFrame("CheckButton", nil, MerchantRepairAllButton, "InterfaceOptionsCheckButtonTemplate")
-    AutoRepairCheck:SetSize(18,18)
-    AutoRepairCheck:SetChecked(not Save().notAutoRepairAll)
-    AutoRepairCheck:SetPoint('BOTTOMLEFT', -4,-5)
-
-    function AutoRepairCheck:set_tooltip()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, WoWTools_SellBuyMixin.addName)
-        e.tips:AddDoubleLine(e.onlyChinese and '自动修理所有物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, REPAIR_ALL_ITEMS), e.GetEnabeleDisable(not Save().notAutoRepairAll))
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine('|cffff00ff'..(e.onlyChinese and '记录' or EVENTTRACE_LOG_HEADER), RepairSave.date)
-        e.tips:AddDoubleLine(e.onlyChinese and '修理' or MINIMAP_TRACKING_REPAIR, (RepairSave.num or 0)..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1))
-        local guild= RepairSave.guild or 0
-        local player= RepairSave.player or 0
-        e.tips:AddDoubleLine(e.onlyChinese and '公会' or GUILD, C_CurrencyInfo.GetCoinTextureString(guild))
-        e.tips:AddDoubleLine(e.onlyChinese and '玩家' or PLAYER, C_CurrencyInfo.GetCoinTextureString(player))
-        if guild>0 and player>0 then
-            e.tips:AddDoubleLine(e.onlyChinese and '合计' or TOTAL, C_CurrencyInfo.GetCoinTextureString(guild+player))
-        end
-        e.tips:AddLine(' ')
-        if CanGuildBankRepair() then
-            local m= GetGuildBankMoney() or 0
-            local col= m==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:'
-            e.tips:AddDoubleLine(col..(e.onlyChinese and '使用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP), col..C_CurrencyInfo.GetCoinTextureString(m))
-        else
-            e.tips:AddDoubleLine('|cff9e9e9e'..(e.onlyChinese and '使用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP), '|cff9e9e9e'..(e.onlyChinese and '禁用' or DISABLE))
-        end
-        e.tips:Show()
-    end
-    AutoRepairCheck:SetScript('OnClick', function(self)
-        Save().notAutoRepairAll= not Save().notAutoRepairAll and true or nil
-        self:set_repair_all()
-        self:set_tooltip()
-    end)
-    AutoRepairCheck:SetScript('OnLeave', GameTooltip_Hide)
-    AutoRepairCheck:SetScript('OnEnter', AutoRepairCheck.set_tooltip)
-
-
-
-
-
-
-
-
-    --修理
-    function AutoRepairCheck:set_repair_all()
-        if Save().notAutoRepairAll or not CanMerchantRepair() or IsModifierKeyDown() then
-            return
-        end
-        local Co, Can= GetRepairAllCost()
-        if Can and Co and Co>0 then
-            if CanGuildBankRepair() and GetGuildBankMoney()>=Co  then
-                RepairAllItems(true)
-                RepairSave.guild=RepairSave.guild+Co
-                RepairSave.num=RepairSave.num+1
-                print(e.addName, WoWTools_SellBuyMixin.addName, '|cffff00ff'..(e.onlyChinese and '使用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP)..'|r', C_CurrencyInfo.GetCoinTextureString(Co))
-                e.call(MerchantFrame_Update)
-            else
-                if GetMoney()>=Co then
-                    RepairAllItems()
-                    RepairSave.player=RepairSave.player+Co
-                    RepairSave.num=RepairSave.num+1
-                    print(e.addName, WoWTools_SellBuyMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '修理花费：' or REPAIR_COST)..'|r', C_CurrencyInfo.GetCoinTextureString(Co))
-                    e.call(MerchantFrame_Update)
-                else
-                    print(e.addName, WoWTools_SellBuyMixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '失败' or FAILED)..'|r', e.onlyChinese and '修理花费：' or REPAIR_COST, C_CurrencyInfo.GetCoinTextureString(Co))
-                end
-            end
-        end
-
-    end
-    AutoRepairCheck:RegisterEvent('MERCHANT_SHOW')
-    AutoRepairCheck.events={
-        'EQUIPMENT_SWAP_FINISHED',
-        'PLAYER_EQUIPMENT_CHANGED',
-        'UPDATE_INVENTORY_DURABILITY',
-    }
-    MerchantFrame:HookScript('OnShow', function()
-        FrameUtil.RegisterFrameForEvents(AutoRepairCheck, AutoRepairCheck.events)
-    end)
-    MerchantFrame:HookScript('OnHide', function()
-        FrameUtil.UnregisterFrameForEvents(AutoRepairCheck, AutoRepairCheck.events)
-    end)
-    AutoRepairCheck:SetScript('OnEvent', function(self, event)
-        if event=='MERCHANT_SHOW' then
-            self:set_repair_all()
-        end
-    end)
-
-    --显示，公会修理，信息
-    MerchantGuildBankRepairButton.Text= e.Cstr(MerchantGuildBankRepairButton, {justifyH='RIGHT'})
-    MerchantGuildBankRepairButton.Text:SetPoint('TOPLEFT', 1, -1)
-    hooksecurefunc('MerchantFrame_UpdateGuildBankRepair', function()
-        local repairAllCost = GetRepairAllCost()
-        if not CanGuildBankRepair() then
-            MerchantGuildBankRepairButton.Text:SetFormattedText('|A:%s:0:0|a', e.Icon.disabled)
-        else
-            local co = GetGuildBankMoney() or 0
-            local col= co==0 and '|cff9e9e9e' or (repairAllCost> co and '|cnRED_FONT_COLOR:') or '|cnGREEN_FONT_COLOR:'
-            MerchantGuildBankRepairButton.Text:SetText(col..(e.MK(co/10000, 0)))
-        end
-    end)
-
-    --提示，可修理，件数
-    MerchantRepairItemButton.Text=e.Cstr(MerchantRepairItemButton)
-    MerchantRepairItemButton.Text:SetPoint('TOPLEFT', 1, -1)
-    MerchantRepairItemButton:SetScript('OnEnter', function(self)--替换，源FUNC
-        GameTooltip:SetOwner(self, "ANCHOR_BOTTOM")
-		GameTooltip:SetText(e.onlyChinese and '修理一件物品' or REPAIR_AN_ITEM)
-        GameTooltip:AddLine(' ')
-        e.GetDurabiliy_OnEnter()
-        GameTooltip:Show()
-    end)
-    MerchantRepairItemButton:HookScript('OnClick', function()
-        if not PaperDollFrame:IsVisible() then
-            ToggleCharacter("PaperDollFrame")
-        end
-    end)
-
-    --显示耐久度
-    AutoRepairCheck.Text:ClearAllPoints()
-    AutoRepairCheck.Text:SetPoint('BOTTOM', MerchantRepairAllButton, 'TOP', 0, 0)
-    AutoRepairCheck.Text:SetShadowOffset(1, -1)
-
-    --显示，修理，金钱
-    MerchantRepairAllButton.Text2=e.Cstr(MerchantRepairAllButton)
-    MerchantRepairAllButton.Text2:SetPoint('TOPLEFT', MerchantRepairAllButton, 1, -1)
-    hooksecurefunc('MerchantFrame_UpdateRepairButtons', function()
-        if MerchantRepairAllButton:IsShown() then
-            local co = GetRepairAllCost()--显示，修理所有，金钱
-            local col= co==0 and '|cff9e9e9e' or (co<= GetMoney() and '|cnGREEN_FONT_COLOR:') or '|cnRED_FONT_COLOR:'
-            MerchantRepairAllButton.Text2:SetText(col..e.MK(co/10000, 0))
-
-            local num=0--提示，可修理，件数
-            for i= 1, 18 do
-                local cur2, max2 = GetInventoryItemDurability(i)
-                if cur2 and max2 and max2>cur2 and max2>0 then
-                    num= num+1
-                end
-            end
-            MerchantRepairItemButton.Text:SetText((num==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:')..num)
-
-            AutoRepairCheck.Text:SetText(e.GetDurabiliy(true))--显示耐久度
-        end
-    end)
-
-    MerchantRepairAllButton:SetScript('OnEnter', function(self)--替换，源FUNC
-        GameTooltip:SetOwner(self, "ANCHOR_BOTTOM")
-        local repairAllCost, canRepair = GetRepairAllCost()
-        if ( canRepair and (repairAllCost > 0) ) then
-            GameTooltip:SetText(e.onlyChinese and '修理所有物品' or REPAIR_ALL_ITEMS)
-            SetTooltipMoney(GameTooltip, repairAllCost)
-            local personalMoney = GetMoney()
-            if(repairAllCost > personalMoney) then
-                GameTooltip:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '没有足够的资金来修理所有物品' or GUILDBANK_REPAIR_INSUFFICIENT_FUNDS))
-            end
-        end
-        GameTooltip:AddLine(' ')
-        e.GetDurabiliy_OnEnter()
-        GameTooltip:Show()
-    end)
-end
 
 
 
@@ -924,7 +758,7 @@ local function Init_Auto_Sell_Junk()
         end
         if num > 0 then
             print(
-                id, WoWTools_SellBuyMixin.addName,
+                e.addName, WoWTools_SellBuyMixin.addName,
                 (e.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB)..' |cnGREEN_FONT_COLOR:'..gruop..'|r'..(e.onlyChinese and '组' or AUCTION_PRICE_PER_STACK),
                 '|cnGREEN_FONT_COLOR:'..num..'|r'..(e.onlyChinese and '件' or AUCTION_HOUSE_QUANTITY_LABEL),
                 C_CurrencyInfo.GetCoinTextureString(preceTotale)
@@ -1053,7 +887,7 @@ local function Init_Menu(_, level, type)
         return
 
     elseif type=='BOSS' then--二级菜单, BOSS
-        for itemID, itemLevel in pairs(bossSave) do
+        for itemID, itemLevel in pairs(Save().bossItems) do
             e.LoadData({itemID=itemID, type='item'})
             local itemLink= WoWTools_ItemMixin:GetLink(itemID)
             info= {
@@ -1065,7 +899,7 @@ local function Init_Menu(_, level, type)
                 arg1= itemID,
                 arg2= itemLink,
                 func=function(_, arg1, arg2)
-                    Save().bossSave[arg1]=nil
+                    Save().Save().bossItems[arg1]=nil
                     print(e.addName, WoWTools_SellBuyMixin.addName, arg2, arg1)
                 end,
             }
@@ -1076,7 +910,7 @@ local function Init_Menu(_, level, type)
             text=e.onlyChinese and '清除全部' or CLEAR_ALL,
             notCheckable=true,
             func=function ()
-                bossSave={}
+                Save().bossItems={}
             end
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1094,7 +928,7 @@ local function Init_Menu(_, level, type)
         return
 
     elseif type=='BUY' then--二级菜单, 购买物品
-        for itemID, num in pairs(buySave) do
+        for itemID, num in pairs(Save().buyItems) do
             if itemID and num then
                 e.LoadData({id=itemID, type='item'})
                 local bag=C_Item.GetItemCount(itemID)
@@ -1110,7 +944,7 @@ local function Init_Menu(_, level, type)
                     arg1= itemID,
                     arg2= itemLink,
                     func=function(_, arg1, arg2)
-                        buySave[arg1]=nil
+                        Save().buyItems[arg1]=nil
                         Set_Merchant_Info()--设置, 提示, 信息
                         print(e.addName, WoWTools_SellBuyMixin.addName, arg2, arg1)
                     end,
@@ -1124,7 +958,7 @@ local function Init_Menu(_, level, type)
             text=e.onlyChinese and '清除全部' or CLEAR_ALL,
             notCheckable=true,
             func=function ()
-                buySave={}
+                Save().buyItems={}
                 Set_Merchant_Info()--设置, 提示, 信息
                 e.LibDD:CloseDropDownMenus()
            end
@@ -1208,7 +1042,7 @@ local function Init_Menu(_, level, type)
     e.LibDD:UIDropDownMenu_AddButton(info)
 
     num=0
-    for itemID, _ in pairs(bossSave) do
+    for itemID, _ in pairs(Save().bossItems) do
         if itemID then
             num=num+1
         end
@@ -1263,11 +1097,11 @@ local function Init_Menu(_, level, type)
     e.LibDD:UIDropDownMenu_AddButton(info)
 
     e.LibDD:UIDropDownMenu_AddSeparator(level)
-    local text=	(e.onlyChinese and '修理' or MINIMAP_TRACKING_REPAIR)..': '..RepairSave.num..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
-                ..'|n'..(e.onlyChinese and '公会' or GUILD)..': '..C_CurrencyInfo.GetCoinTextureString(RepairSave.guild)
-                ..'|n'..(e.onlyChinese and '玩家' or PLAYER)..': '..C_CurrencyInfo.GetCoinTextureString(RepairSave.player)
-    if RepairSave.guild>0 and RepairSave.player>0 then
-        text=text..'|n|n'..(e.onlyChinese and '合计' or TOTAL)..': '..C_CurrencyInfo.GetCoinTextureString(RepairSave.guild+RepairSave.player)
+    local text=	(e.onlyChinese and '修理' or MINIMAP_TRACKING_REPAIR)..': '..Save().repairItems.num..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
+                ..'|n'..(e.onlyChinese and '公会' or GUILD)..': '..C_CurrencyInfo.GetCoinTextureString(Save().repairItems.guild)
+                ..'|n'..(e.onlyChinese and '玩家' or PLAYER)..': '..C_CurrencyInfo.GetCoinTextureString(Save().repairItems.player)
+    if Save().repairItems.guild>0 and Save().repairItems.player>0 then
+        text=text..'|n|n'..(e.onlyChinese and '合计' or TOTAL)..': '..C_CurrencyInfo.GetCoinTextureString(Save().repairItems.guild+Save().repairItems.player)
     end
     text=text..'|n|n'..(e.onlyChinese and '使用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP)..'|n'..C_CurrencyInfo.GetCoinTextureString(CanGuildBankRepair() and GetGuildBankMoney() or 0)
 
@@ -1281,7 +1115,7 @@ local function Init_Menu(_, level, type)
             AutoRepairCheck:SetChecked(not Save().notAutoRepairAll)
         end,
         tooltipOnButton=true,
-        tooltipTitle= '|cffff00ff'..(e.onlyChinese and '记录' or EVENTTRACE_LOG_HEADER).. '|r '..RepairSave.date,
+        tooltipTitle= '|cffff00ff'..(e.onlyChinese and '记录' or EVENTTRACE_LOG_HEADER).. '|r '..Save().repairItems.date,
         tooltipText=text,
     }
     e.LibDD:UIDropDownMenu_AddButton(info)
@@ -1328,7 +1162,7 @@ local function Init_Menu(_, level, type)
         text= '    |A:SpellIcon-256x256-SellJunk:0:0|a'..(e.onlyChinese and '选项' or OPTIONS),
         notCheckable=true,
         func= function()
-            e.OpenPanelOpting(nil, addName)
+            e.OpenPanelOpting(nil, WoWTools_SellBuyMixin.addName)
         end
     }
     e.LibDD:UIDropDownMenu_AddButton(info)
@@ -1391,8 +1225,8 @@ local function Init_Buy_Items_Button()
             itemLink= GetMerchantItemLink(itemIDorIndex)
             if itemID and itemLink then
                 local name = '|T'..(icon or 0)..':0|t'..itemLink
-                if buySave[itemID] then
-                    e.tips:AddDoubleLine(name..' x|cnGREEN_FONT_COLOR:'..buySave[itemID], '|cffff00ff'..(e.onlyChinese and '修改' or EDIT)..e.Icon.left)
+                if Save().buyItems[itemID] then
+                    e.tips:AddDoubleLine(name..' x|cnGREEN_FONT_COLOR:'..Save().buyItems[itemID], '|cffff00ff'..(e.onlyChinese and '修改' or EDIT)..e.Icon.left)
                 else
                     e.tips:AddDoubleLine(name, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '购买' or PURCHASE)..e.Icon.left)
                 end
@@ -1419,8 +1253,8 @@ local function Init_Buy_Items_Button()
             else
                 Save().Sell[itemID]=true
                 Save().noSell[itemID]=nil
-                buySave[itemID]=nil
-                print(e.addName,WoWTools_SellBuyMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r'..(e.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB), itemLink )
+                Save().buyItems[itemID]=nil
+                print(e.addName, WoWTools_SellBuyMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r'..(e.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB), itemLink )
                 AutoSellJunkCheck:set_sell_junk()--出售物品
             end
             ClearCursor()
@@ -1433,8 +1267,8 @@ local function Init_Buy_Items_Button()
                 local icon
                 icon= C_Item.GetItemIconByID(itemLink)
                 icon= icon and '|T'..icon..':0|t' or ''
-                StaticPopupDialogs[id..addName..'Buy']= {
-                    text =id..' '..addName
+                StaticPopupDialogs['WoWTools_AutoBuy']= {
+                    text =e.addName..' '..WoWTools_SellBuyMixin.addName
                     ..'|n|n'.. (e.onlyChinese and '自动购买' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, PURCHASE))..': '..icon ..itemLink
                     ..'|n|n'..e.Icon.player..e.Player.name_realm..': ' ..(e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)
                     ..'|n|n0: '..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
@@ -1445,10 +1279,10 @@ local function Init_Buy_Items_Button()
                     OnAccept=function(s)
                         local num= s.editBox:GetNumber()
                         if num==0 then
-                            buySave[itemID]=nil
+                            Save().buyItems[itemID]=nil
                             print(e.addName, WoWTools_SellBuyMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..'|r', itemLink)
                         else
-                            buySave[itemID]=num
+                            Save().buyItems[itemID]=num
                             Save().Sell[itemID]=nil
                             print(e.addName, WoWTools_SellBuyMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '购买' or PURCHASE)..'|rx|cffff00ff'..num..'|r', itemLink)
                             BuyItemButton:set_buy_item()--购买物品
@@ -1459,8 +1293,8 @@ local function Init_Buy_Items_Button()
                     OnShow=function(s)
                         s.editBox:SetNumeric(true)
 
-                        if buySave[itemID] then
-                            s.editBox:SetText(buySave[itemID])
+                        if Save().buyItems[itemID] then
+                            s.editBox:SetText(Save().buyItems[itemID])
                         end
                     end,
                     OnHide= function(self3)
@@ -1473,7 +1307,7 @@ local function Init_Buy_Items_Button()
                         s:GetParent():Hide()
                     end,
                 }
-                StaticPopup_Show(id..addName..'Buy')
+                StaticPopup_Show('WoWTools_AutoBuy')
                 ClearCursor()
             end
         else
@@ -1493,7 +1327,7 @@ local function Init_Buy_Items_Button()
         local Tab={}
         for index=1, numAllItems do
             local itemID=GetMerchantItemID(index)
-            local num= itemID and buySave[itemID]
+            local num= itemID and Save().buyItems[itemID]
             if itemID and num then
                 local buyNum=num-C_Item.GetItemCount(itemID, true, false, true)
                 if buyNum>0 then
@@ -1563,7 +1397,7 @@ local function Init_Buy_Items_Button()
     BuyItemButton.Text:SetPoint('CENTER', 2, 0)
     function BuyItemButton:set_text()--回购，数量，提示
         local num= 0
-        for _ in pairs(buySave) do
+        for _ in pairs(Save().buyItems) do
             num= num +1
         end
         self.Text:SetText(not Save().notAutoBuy and num or '')
@@ -1778,36 +1612,18 @@ end
 --####
 --初始
 --####
-local DELETE_ITEM_CONFIRM_STRING= DELETE_ITEM_CONFIRM_STRING
-local COMMUNITIES_DELETE_CONFIRM_STRING= COMMUNITIES_DELETE_CONFIRM_STRING
 
 local function Init()
 
     WoWTools_SellBuyMixin:Init_AutoLoot()
+    WoWTools_SellBuyMixin:Init_Delete()
 
-    Init_Auto_Repair()--自动修理
+    WoWTools_SellBuyMixin:Init_Auto_Repair()--自动修理
     Init_Auto_Sell_Junk()--自动出售
     Init_Plus()--商人 Plus
     Init_Buy_Items_Button()--购买物品
     Init_Buyback_Button()--回购物品
-    --######
-    --DELETE
-    --######
-    hooksecurefunc(StaticPopupDialogs["DELETE_GOOD_ITEM"],"OnShow",function(self)
-        if not Save().notDELETE then
-            self.editBox:SetText(DELETE_ITEM_CONFIRM_STRING)
-        end
-    end)
-    hooksecurefunc(StaticPopupDialogs["DELETE_GOOD_QUEST_ITEM"], "OnShow",function(self)
-        if not Save().notDELETE and self.editBox then
-            self.editBox:SetText(DELETE_ITEM_CONFIRM_STRING)
-        end
-    end)
-    hooksecurefunc(StaticPopupDialogs["CONFIRM_DESTROY_COMMUNITY"],"OnShow",function(self)
-        if not Save().notDELETE and self.editBox then
-            self.editBox:SetText(COMMUNITIES_DELETE_CONFIRM_STRING)
-        end
-    end)
+   
 end
 
 
@@ -1850,11 +1666,16 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, _, arg5)
         if arg1==id then
             if WoWToolsSave[MERCHANT] then
                 WoWTools_SellBuyMixin.Save= WoWToolsSave[MERCHANT]
+                Save().bossItems={}
+                Save().buyItems= WoWToolsSave.BuyItems and WoWToolsSave.BuyItems[e.Player.name_realm] or {}--购买物品
+                Save().repairItems=WoWToolsSave.Repair and WoWToolsSave.Repair[e.Player.name_realm] or {}--修理
+                WoWToolsSave.BuyItems=nil
+                WoWToolsSave.Repair=nil
                 WoWToolsSave[MERCHANT]=nil
             else
                 WoWTools_SellBuyMixin.Save= WoWToolsSave['Plus_SellBuy'] or WoWTools_SellBuyMixin.Save
             end
-            bossSave= Save().bossSave or {}
+            
 
             WoWTools_SellBuyMixin.addName= '|A:SpellIcon-256x256-SellJunk:0:0|a'..(e.onlyChinese and '商人' or MERCHANT)
 
@@ -1872,11 +1693,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, _, arg5)
                 e.CheckItemSell=nil
                 self:UnregisterAllEvents()
             else
-                if WoWToolsSave then
-                    buySave=WoWToolsSave.BuyItems and WoWToolsSave.BuyItems[e.Player.name_realm] or buySave--购买物品
-                    RepairSave=WoWToolsSave.Repair and WoWToolsSave.Repair[e.Player.name_realm] or RepairSave--修理
-                end
-
+                
                 Init()
 
                 C_Timer.After(2.2, function()
@@ -1890,17 +1707,10 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, _, arg5)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            if Save().saveBossLootList then
-                Save().bossSave= bossSave
-            else
-                Save().bossSave=nil
+            if not Save().saveBossLootList then
+                Save().bossItems={}
             end
             WoWToolsSave['Plus_SellBuy']=Save()
-            WoWToolsSave.BuyItems=WoWToolsSave.BuyItems or {}--购买物品
-            WoWToolsSave.BuyItems[e.Player.name_realm]=buySave
-            WoWToolsSave.Repair=WoWToolsSave.Repair or {}--修理
-            WoWToolsSave.Repair[e.Player.name_realm] = RepairSave
-
         end
 
 
@@ -1925,7 +1735,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, _, arg5)
                         return
                     end
                 end
-                bossSave[itemID]= itemLevel
+                Save().bossItems[itemID]= itemLevel
                 if not Save().notSellBoss then
                     print(e.addName, WoWTools_SellBuyMixin.addName, '|cnGREEN_FONT_COLOR:'.. (e.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB) , itemLink)
                 end
