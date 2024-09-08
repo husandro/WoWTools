@@ -69,7 +69,7 @@ panel:SetScript("OnEvent", function(self, event)
                 print(e.addName, WoWTools_SellBuyMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
             end
         })
-        
+
         if Save.disabled then
             e.CheckItemSell=nil
         else

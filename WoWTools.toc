@@ -116,9 +116,7 @@ Plus_Minimap\Major_Plus.lua
 
 
 ##卖买
-##Plus_SellBuy\Init_SellBuy.lua
-Plus_SellBuy\SellBuy.lua
-##Plus_SellBuy\Loot_Plus.lua
+Plus\SellBuy.lua
 
 
 ##冒险指南, 增强
