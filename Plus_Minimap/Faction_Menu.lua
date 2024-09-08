@@ -76,11 +76,6 @@ function WoWTools_MinimapMixin:Faction_Menu(_, root)
         tab=C_MajorFactions.GetMajorFactionIDs(expacID)
         if tab then
             table.sort(tab, function(a, b) return a>b end)
-        --[[sub2= sub:CreateButton(
-                e.GetExpansionText(expacID, nil)..' '..#tab,
-            function()
-                return MenuResponse.Open
-            end)]]
             sub:CreateDivider()
             for _, factionID in pairs(tab) do
                 if Set_Faction_Menu(sub, factionID) then
@@ -93,29 +88,3 @@ function WoWTools_MinimapMixin:Faction_Menu(_, root)
 end
 
 
-
-
---盟约 9.0
---[[function WoWTools_MinimapMixin:Init_Covenant_Menu(_, root)
-    for covenantID=1, 4 do
-        local info = C_Covenants.GetCovenantData(covenantID)
-        local tab = C_CovenantSanctumUI.GetRenownLevels(covenantID)
-        if info and info.name and tab then
-            local level= 0
-            for i=#tab, 1, -1 do
-                if not tab[i].locked then
-                    level= tab[i].level
-                    break
-                end
-            end
-
-            root:CreateButton(
-                (info.textureKit and format('|ASanctumUpgrades-%s-32x32:0:0|a', info.textureKit) or '')
-                ..e.cn(info.name)..' '..level,
-            function(data)
-                WoWTools_LoadUIMixin:CovenantRenown(nil, data.covenantID)
-            end, {covenantID=covenantID})
-
-        end
-    end
-end]]

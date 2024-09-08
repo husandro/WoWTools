@@ -28,7 +28,8 @@ local P_Items={
     [217724]=true,
     [217723]=true,
     [217725]=true,
-    [220777]=true,--樱花之路
+    [220777]=true,--
+    [224552]=true,--洞穴探索者的火炬
 }
 local ModifiedTab={
     --[[[69775]='Alt',--维库饮水角

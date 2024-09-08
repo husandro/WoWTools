@@ -59,7 +59,7 @@ local Save={
         [229899]=100,--宝匣钥匙碎片
         [224025]=10,--爆裂碎片
         [219191]=15,--草草写下的纸条
-        
+
 
     },
     no={--禁用使用
@@ -242,7 +242,7 @@ local function get_Items()--取得背包物品信息
         OpenButton.isInCombat=true
         return
     end
-    
+
     OpenButton.IsEquipItem=nil--是装备时, 打开角色界面
     OpenButton.IsInCheck=nil
     OpenButton:Clear()
@@ -300,8 +300,8 @@ local function get_Items()--取得背包物品信息
                 else
                     local dateInfo= WoWTools_ItemMixin:GetTooltip({hyperLink=info.hyperlink, red=true, onlyRed=true, text={LOCKED}})
                     if not dateInfo.red and C_PlayerInfo.CanUseItem(info.itemID) then--是否可使用 then--不出售, 可以使用
-
-                        if classID==0 and subclassID==11 then--珍玩
+                        
+                        if classID==0 and subclassID==10 then--珍玩
                             setAtt(bag, slot, info.iconFileID, info.itemID)
                             return
 

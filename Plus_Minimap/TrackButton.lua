@@ -1147,7 +1147,7 @@ local function Init_Button()
         self:RegisterEvent('ZONE_CHANGED_NEW_AREA')
         self:RegisterEvent('PLAYER_ENTERING_WORLD')
 
-        if Save().vigentteButton and not IsInInstance() then
+        if Save().vigentteButton and (not IsInInstance() or WoWTools_MapMixin:IsInDelve()) then
             self:RegisterEvent('PET_BATTLE_OPENING_DONE')
             self:RegisterEvent('PET_BATTLE_CLOSE')
 

@@ -91,20 +91,34 @@ Plus\FriendsList.lua
 
 
 
-##小地图，增强缩放
-##Plus\Minimap.lua
+##小地图，增强
+##主要
 Plus_Minimap\Init_Minimap.lua
-Plus_Minimap\InstanceDifficulty.lua
-Plus_Minimap\TrackButton.lua
-Plus_Minimap\TimeManager.lua
+##添加，图标，主要内容开关
 Plus_Minimap\Icon_Minimap.lua
+##副本，难度，提示
+Plus_Minimap\InstanceDifficulty.lua
+##追踪
+Plus_Minimap\TrackButton.lua
+##时间PLUS
+Plus_Minimap\TimeManager.lua
+##打开菜单，要塞，概要，盟约，职业，宏伟宝库，驭空术
 Plus_Minimap\Garrison_Menu.lua
+##打开菜单，派系声望
 Plus_Minimap\Faction_Menu.lua
+##移动/隐藏，ExpansionLanding图标
 Plus_Minimap\ExpansionLanding.lua
+##放大/缩小，数值提示，更新地图时最小化
 Plus_Minimap\Zoom.lua
+##盟约，派系，界面增加图标
 Plus_Minimap\Major_Plus.lua
 
 
+
+##卖买
+##Plus_SellBuy\Init_SellBuy.lua
+Plus_SellBuy\SellBuy.lua
+##Plus_SellBuy\Loot_Plus.lua
 
 
 ##冒险指南, 增强
@@ -117,8 +131,7 @@ Plus\mail.lua
 Plus\Bank.lua
 ##自动对话，任务
 Plus\Gossip.lua
-##卖买
-Plus\SellBuy.lua
+
 ##拍卖行
 Plus\AuctionHouse.lua
 ##宠物对战

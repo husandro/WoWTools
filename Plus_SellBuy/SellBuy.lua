@@ -1,4 +1,5 @@
 local id, e = ...
+
 local Save={
     noSell={
         [144341]=true,--[可充电的里弗斯电池]
@@ -960,6 +961,7 @@ local function Init_Loot_Plus()
     if Save.notAutoLootPlus then
         return
     end
+    
     local check=CreateFrame("CheckButton", nil, LootFrame.TitleContainer, "InterfaceOptionsCheckButtonTemplate")
     check:SetPoint('TOPLEFT',-27,2)
 
@@ -995,6 +997,10 @@ local function Init_Loot_Plus()
     end)
 
     check:RegisterEvent('LOOT_READY')
+    
+    function check:settings()
+    end
+
     check:SetScript('OnEvent', function()
         if IsShiftKeyDown() and not UnitAffectingCombat('player') then
             C_CVar.SetCVar("autoLootDefault", '0')
@@ -1815,7 +1821,7 @@ end
 local DELETE_ITEM_CONFIRM_STRING= DELETE_ITEM_CONFIRM_STRING
 local COMMUNITIES_DELETE_CONFIRM_STRING= COMMUNITIES_DELETE_CONFIRM_STRING
 local function Init()
-    Init_Loot_Plus()--自动拾取 Plus
+    
     Init_Auto_Repair()--自动修理
     Init_Auto_Sell_Junk()--自动出售
     Init_Plus()--商人 Plus
@@ -1839,11 +1845,6 @@ local function Init()
             self.editBox:SetText(COMMUNITIES_DELETE_CONFIRM_STRING)
         end
     end)
-
-
-
-
-
 end
 
 

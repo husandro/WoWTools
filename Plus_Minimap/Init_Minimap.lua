@@ -156,12 +156,14 @@ local function Init_Menu(self, root)
     function()
         return Save().ZoomOut
     end, function()
-        Save().ZoomOut= not Save().ZoomOut and true or nil
+        Save().ZoomOut= not Save().ZoomOut and 'min' or nil
         WoWTools_MinimapMixin:Init_Minimap_Zoom()
     end)
     sub2:SetTooltip(function(tooltip)
         tooltip:AddLine(e.onlyChinese and '更新地区时' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UPDATE, ZONE))
     end)
+    WoWTools_MinimapMixin:Zoom_Menu(self, sub2)
+
 --地下城难度
     sub2=sub:CreateCheckbox(
         '|A:DungeonSkull:0:0|a'..(e.onlyChinese and '地下城难度' or DUNGEON_DIFFICULTY),
