@@ -39,8 +39,6 @@ Save={
     moving_over_Icon_show_menu=e.Player.husandro,--移过图标时，显示菜单
     --hide_MajorFactionRenownFrame_Button=true,--隐藏，派系声望，列表，图标
     --MajorFactionRenownFrame_Button_Scale=1,--缩放
-
-    --Initializer
 },
 
 Init_TrackButton=function()end,
@@ -68,15 +66,7 @@ Init_CovenantRenown=function()end,
 }
 
 
-
-
-
-
-
-
-
-
-
+local addName
 local Save= function()
     return  WoWTools_MinimapMixin.Save
 end
@@ -172,7 +162,7 @@ local function Init_Menu(self, root)
         return not Save().disabledInstanceDifficulty
     end, function()
         Save().disabledInstanceDifficulty= not Save().disabledInstanceDifficulty and true or nil
-            print(e.addName, WoWTools_MinimapMixin.addName, e.GetEnabeleDisable(not Save().disabledInstanceDifficulty), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(e.addName, addName, e.GetEnabeleDisable(not Save().disabledInstanceDifficulty), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     )
     sub2:SetTooltip(function(tooltip)
@@ -257,7 +247,8 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            WoWTools_MinimapMixin.addName= '|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..(e.onlyChinese and '小地图' or HUD_EDIT_MODE_MINIMAP_LABEL)
+            addName='|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..(e.onlyChinese and '小地图' or HUD_EDIT_MODE_MINIMAP_LABEL)
+            WoWTools_MinimapMixin.addName= addName
             WoWTools_MinimapMixin.addName2= '|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING)
 --清除，旧版本，数据
             if WoWToolsSave[HUD_EDIT_MODE_MINIMAP_LABEL]  then
@@ -266,22 +257,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             else
                 WoWTools_MinimapMixin.Save= WoWToolsSave['Minimap_Plus'] or WoWTools_MinimapMixin.Save
             end
---添加控制面板
-            --[[WoWTools_MinimapMixin.Initializer= e.AddPanel_Check({
-                name= WoWTools_MinimapMixin.addName,
-                GetValue= function() return Save().disabled end,
-                SetValue= function()
-                    Save().disabled= not Save().disabled and true or nil
-                    print(WoWTools_MinimapMixin.addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                end
-            })]]
+
 
            e.AddPanel_Check_Button({
-                checkName= WoWTools_MinimapMixin.addName,
+                checkName= addName,
                 GetValue= function() return not Save().disabled end,
                 SetValue= function()
                     Save().disabled= not Save().disabled and true or nil
-                    print(WoWTools_MinimapMixin.addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(e.addName, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end,
                 buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
                 buttonFunc= function()
@@ -290,7 +273,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     end
                     WoWTools_MinimapMixin:Rest_TimeManager_Point()--重置，TimeManager位置
                     WoWTools_MinimapMixin:Rest_TrackButton_Point()--重置，TrackButton位置
-                    print(e.addName, self.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+                    print(e.addName, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
                 end
             })
 
@@ -307,6 +290,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
                 if C_AddOns.IsAddOnLoaded('Blizzard_TimeManager') then--秒表
                     WoWTools_MinimapMixin:Init_TimeManager()
+                end
+                if C_AddOns.IsAddOnLoaded('Blizzard_MajorFactions') then
+                    WoWTools_MinimapMixin:Init_MajorFactionRenownFrame()
+                end
+                if C_AddOns.IsAddOnLoaded('Blizzard_CovenantRenown') then
+                    WoWTools_MinimapMixin:Init_CovenantRenown()
                 end
             end
 

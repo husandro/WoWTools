@@ -115,8 +115,20 @@ Plus_Minimap\Major_Plus.lua
 
 
 
+
+
+
+
+
 ##卖买
-Plus\SellBuy.lua
+Plus_SellBuy\SellBuy.lua
+Plus_SellBuy\AutoLoot.lua
+
+
+
+
+
+
 
 
 ##冒险指南, 增强
