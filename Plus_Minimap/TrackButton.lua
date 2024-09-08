@@ -1129,7 +1129,7 @@ local function Init_Button()
 
     function TrackButton:set_shown()
         local hide= not Save().vigentteButton
-            or IsInInstance()
+            or (IsInInstance() and not WoWTools_MapMixin:IsInDelve())
             or C_PetBattles.IsInBattle()
             or UnitInVehicle('player')
             or UnitAffectingCombat('player')
