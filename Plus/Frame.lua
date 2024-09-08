@@ -1985,6 +1985,10 @@ local function setAddLoad(arg1)
 
     elseif arg1=='Blizzard_DelvesDashboardUI' then
         e.Set_Move_Frame(DelvesCompanionConfigurationFrame)
+
+    elseif arg1=='Blizzard_HelpFrame' then
+        e.Set_Move_Frame(HelpFrame)
+        e.Set_Move_Frame(HelpFrame.TitleContainer, {frame=HelpFrame})
     end
 end
 
