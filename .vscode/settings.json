@@ -4935,7 +4935,8 @@
         "PARAGON_REPUTATION_TOOLTIP_TEXT",
         "GameTooltip_SetBottomText",
         "REPUTATION_BUTTON_TOOLTIP_CLICK_INSTRUCTION",
-        "HelpFrame"
+        "HelpFrame",
+        "NOTE_COLON"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

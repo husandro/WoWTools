@@ -2889,7 +2889,7 @@ local function Init_Panel()
 
     initializer2= e.AddPanel_Check({
         name= (e.onlyChinese and '提示选项CVar名称' or 'Show Option CVar Name'),
-        tooltip= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '友情提示: 可能会出现错误' or ('note: '..ENABLE_ERROR_SPEECH)..'|r'),
+        tooltip= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '友情提示: 可能会出现错误' or (LABEL_NOTE..': '..ENABLE_ERROR_SPEECH)..'|r'),
         GetValue= function() return Save.ShowOptionsCVarTips end,
         category= Initializer,
         SetValue= function()

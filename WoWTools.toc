@@ -122,10 +122,19 @@ Plus_Minimap\Major_Plus.lua
 
 ##卖买
 Plus_SellBuy\SellBuy.lua
-Plus_SellBuy\Auto_Loot.lua
+Plus_SellBuy\Menu.lua
 Plus_SellBuy\DELETE.lua
-Plus_SellBuy\Auto_Repair.lua
 
+Plus_SellBuy\Auto_Loot.lua
+Plus_SellBuy\Auto_Repair.lua
+Plus_SellBuy\Auto_SellJunk.lua
+Plus_SellBuy\Auto_BuyItems.lua
+Plus_SellBuy\Auto_Buyback.lua
+
+Plus_SellBuy\Plus_Init.lua
+Plus_SellBuy\Plus_Merchant_Info.lua
+Plus_SellBuy\Plus_WidthX2.lua
+Plus_SellBuy\Plus_StackSplitFrame.lua
 
 
 

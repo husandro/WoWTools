@@ -167,7 +167,19 @@ end
 
 
 
-
+function WoWTools_ItemMixin:GetItemID(itemLink)
+    local itemID
+    if itemLink then
+        itemID= C_Item.GetItemInfoInstant(itemLink)
+        if not itemID then
+            itemID = itemLink and itemLink:match("|H.-:(%d+).-|h")
+            if itemID then
+                itemID= tonumber(itemID)
+            end
+        end
+    end
+    return itemID
+end
 
 
 

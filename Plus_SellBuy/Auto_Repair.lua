@@ -12,7 +12,7 @@ end
 
 --自动修理
 local function Init()
-    AutoRepairCheck= CreateFrame("CheckButton", nil, MerchantRepairAllButton, "InterfaceOptionsCheckButtonTemplate")
+    local AutoRepairCheck= CreateFrame("CheckButton", 'WoWTools_AutoRepairCheck', MerchantRepairAllButton, "InterfaceOptionsCheckButtonTemplate")
     AutoRepairCheck:SetSize(18,18)
     AutoRepairCheck:SetChecked(not Save().notAutoRepairAll)
     AutoRepairCheck:SetPoint('BOTTOMLEFT', -4,-5)

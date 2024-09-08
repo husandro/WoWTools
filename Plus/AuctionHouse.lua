@@ -1064,7 +1064,7 @@ local function Init_AllAuctions()
             e.tips:AddDoubleLine(' ')
         end
         e.tips:AddDoubleLine(' ', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '取消拍卖将使你失去保证金。' or CANCEL_AUCTION_CONFIRMATION))
-        e.tips:AddDoubleLine(e.onlyChinese and '备注' or 'Note', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '请不要太快' or ERR_GENERIC_THROTTLE))
+        e.tips:AddDoubleLine(e.onlyChinese and '备注' or LABEL_NOTE, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '请不要太快' or ERR_GENERIC_THROTTLE))
         e.tips:AddDoubleLine(e.addName, e.cn(addName))
         e.tips:Show()
     end

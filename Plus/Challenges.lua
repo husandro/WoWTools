@@ -2011,7 +2011,7 @@ local function Init()
             e.tips:AddDoubleLine('提示：', '如果出现错误，请禁用此功能')
         else
             e.tips:AddLine(format(UNITNAME_SUMMON_TITLE14, CHALLENGE_MODE..' (20) '))
-            e.tips:AddDoubleLine('note:','If you get error, please disable this')
+            e.tips:AddDoubleLine(LABEL_NOTE, 'If you get error, please disable this')
         end
         e.tips:AddLine(' ')
         for _, tab in pairs(e.ChallengesSpellTabs) do

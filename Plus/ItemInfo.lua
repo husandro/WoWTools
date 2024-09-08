@@ -215,8 +215,8 @@ function e.Set_Item_Info(self, tab)
         end]]
 
         local sellItem
-        if tab.bag and containerInfo and not containerInfo.isLocked and e.CheckItemSell then
-            sellItem= e.CheckItemSell(itemID, itemLink, itemQuality, isBound)--检测是否是出售物品
+        if tab.bag and containerInfo and not containerInfo.isLocked and WoWTools_SellBuyMixin then
+            sellItem= WoWTools_SellBuyMixin:CheckSellItem(itemID, itemLink, itemQuality, isBound)--检测是否是出售物品
         end
 
         if sellItem then--检测是否是出售物品
@@ -1442,7 +1442,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event == "GUILDBANKBAGSLOTS_CHANGED" or event =="GUILDBANK_ITEM_LOCK_CHANGED" then
         setGuildBank()--公会银行,设置
-        if event=='GUILDBANKBAGSLOTS_CHANGED' then--打开公会银行时, 打开背包 GUILDBANKFRAME_OPENED
+        if e.Player.husandro and event=='GUILDBANKBAGSLOTS_CHANGED' then--打开公会银行时, 打开背包 GUILDBANKFRAME_OPENED
+
             local rankOrder= C_GuildInfo.GetGuildRankOrder(e.Player.guid)
             if rankOrder and rankOrder <=2 then
                 OpenAllBags()
@@ -1450,7 +1451,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif event=='BANKFRAME_OPENED' then--打开所有银行，背包
-        ToggleAllBags()
+        if e.Player.husandro then
+            ToggleAllBags()
+        end
+
         --[[for i=NUM_TOTAL_EQUIPPED_BAG_SLOTS+1, (NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS), 1 do
             local open= IsBagOpen(i)
             if open~=nil and not open then

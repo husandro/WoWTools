@@ -20,9 +20,9 @@ function e.LoadData(tab)--e.LoadData({id=, type=''})--加载 item quest spell, u
         end
 
     elseif tab.type=='item' then--e.LoadData({id=, type='item'})
-        local itemID= tab.id or (tab.itemLink and tab.itemLink:match('|Hitem:(%d+):'))
-        if itemID and not C_Item.IsItemDataCachedByID(itemID) then
-            C_Item.RequestLoadItemDataByID(itemID)
+        local item= tab.itemLink or tab.id-- tab.id or (tab.itemLink and tab.itemLink:match('|Hitem:(%d+):'))
+        if item and not C_Item.IsItemDataCachedByID(item) then
+            C_Item.RequestLoadItemDataByID(item)
         end
     elseif tab.type=='itemLocation' then
         if not C_Item.IsItemDataCached(tab.id) then

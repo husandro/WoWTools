@@ -1246,7 +1246,7 @@ local function Init_Menu(_, root)
     end)
     sub3:SetTooltip(function(tooltip)
         tooltip:AddLine(SLASH_CHAT_AFK1)
-        tooltip:AddLine(e.onlyChinese and '注意: 掉落' or ('note: '..STRING_ENVIRONMENTAL_DAMAGE_FALLING))
+        tooltip:AddLine(e.onlyChinese and '注意: 掉落' or (LABEL_NOTE..': '..STRING_ENVIRONMENTAL_DAMAGE_FALLING))
     end)
 
     sub2=sub:CreateButton('|A:UI-HUD-MicroMenu-StreamDLYellow-Up:0:0|a'..(e.onlyChinese and '坐骑特效' or EMOTE171_CMD2:gsub('/','')), function()
