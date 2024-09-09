@@ -54,3 +54,23 @@ function WoWTools_BagMixin:Find(find, tab)
         C_Container.SetItemSearch(itemName)
     end
 end
+
+
+
+
+
+
+
+
+--背包，空位
+function WoWTools_BagMixin:GetFree(all)
+    local free= 0--CalculateTotalNumberOfFreeBagSlots() MainMenuBarBagButtons.lua
+    local num= NUM_BAG_FRAMES+(all and NUM_REAGENTBAG_FRAMES or 0)
+    for i = BACKPACK_CONTAINER, num do
+        free= free+ (C_Container.GetContainerNumFreeSlots(i) or 0)
+    end
+    return free
+end
+
+
+

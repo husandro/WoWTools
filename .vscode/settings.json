@@ -4938,7 +4938,11 @@
         "HelpFrame",
         "NOTE_COLON",
         "INSTANCE_LEAVE",
-        "CinematicFrame_CancelCinematic"
+        "CinematicFrame_CancelCinematic",
+        "SPELL_FAILED_CUSTOM_ERROR_1042",
+        "ToggleBag",
+        "BAGSLOTTEXT",
+        "RATED_BG_BLITZ_SIZE"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

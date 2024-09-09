@@ -71,15 +71,12 @@ function WoWTools_MinimapMixin:Init_Icon()
         if btn then
             btn:EnableMouseWheel(true)
             btn:SetScript('OnMouseWheel', function(_, d)
-                --if d==-1 then
-                  --  WoWTools_LoadUIMixin:WeeklyRewards()
-                --else
-                    if not SettingsPanel or not SettingsPanel:IsShown() then
-                        e.OpenPanelOpting()
-                    else
-                        e.OpenPanelOpting(nil, WoWTools_MinimapMixin.addName)
-                    end
-                --end
+                if d==1 then
+                    e.OpenPanelOpting(nil, '|A:talents-button-undo:0:0|a'..(e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT))
+                else
+                    e.OpenPanelOpting(nil, WoWTools_MinimapMixin.addName)
+
+                end
             end)
         end
     end

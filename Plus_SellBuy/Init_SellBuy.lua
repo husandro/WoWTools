@@ -28,7 +28,7 @@ Save={
     MERCHANT_ITEMS_PER_PAGE= 24,--页，物品数量
     numLine=6,--行数
     buyItems={
-        --[guid]={[itemID]=true,}
+        --[guid]={[itemID]=numbre,}
     },
     repairItems={date=date('%x'), player=0, guild=0, num=0}
 },

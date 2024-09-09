@@ -140,14 +140,20 @@ Plus_SellBuy\Plus_StackSplitFrame.lua
 
 
 
+##银行
+Plus_Bank\Init_Bank.lua
+Plus_Bank\Plus_Bank.lua
+Plus_Bank\All_Bank.lua
+Plus_Bank\Desposit_TakeOut.lua
+
+
 ##冒险指南, 增强
 Plus\EncounterJournal.lua
 ##史诗钥石地下城, 挑战增强
 Plus\Challenges.lua
 ##邮件，增加
 Plus\mail.lua
-##银行
-Plus\Bank.lua
+
 ##自动对话，任务
 Plus\Gossip.lua
 

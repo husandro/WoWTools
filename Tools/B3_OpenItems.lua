@@ -120,7 +120,7 @@ local Save={
         [210014]=true,--神秘的恒久之种
         [190324]=true,--觉醒秩序
 
-        --12.2.7
+        --10.2.7
         [217956]=true,
         [217608]=true,
         [217607]=true,
@@ -137,6 +137,9 @@ local Save={
         [89770]=true,--一簇牦牛毛
         [219940]=true,--流星残片
         [95350]=true,---乌古的咒语
+        
+        --11
+        [224185]=true--导蟹树枝
 
     },
     pet=true,
@@ -287,6 +290,14 @@ local function get_Items()--取得背包物品信息
                         end
                     end
 
+                elseif C_Item.IsCurioItem(info.hyperlink) then--珍玩 SPELL_FAILED_CUSTOM_ERROR_1042 = "你的收藏中已经有了这个珍玩。";
+                    local dateInfo= WoWTools_ItemMixin:GetTooltip({hyperLink=info.hyperlink, text={SPELL_FAILED_CUSTOM_ERROR_1042}, onlyText=true})
+                    if not dateInfo.text[SPELL_FAILED_CUSTOM_ERROR_1042] then
+                        setAtt(bag, slot, info.iconFileID, info.itemID)
+                        return
+                    end
+
+
                 elseif classID==4 or classID==2 then-- itemEquipLoc and _G[itemEquipLoc] then--幻化
                     if Save.mago then--and not C_Item.IsCosmeticItem(info.itemID) then --and info.quality then
                         local  isCollected, isSelf= select(2, e.GetItemCollected(info.hyperlink, nil, nil, true))
@@ -298,14 +309,10 @@ local function get_Items()--取得背包物品信息
                     end
 
                 else
-                    local dateInfo= WoWTools_ItemMixin:GetTooltip({hyperLink=info.hyperlink, red=true, onlyRed=true, text={LOCKED}})
+                    local dateInfo= WoWTools_ItemMixin:GetTooltip({hyperLink=info.hyperlink, red=true, text={LOCKED}})
                     if not dateInfo.red and C_PlayerInfo.CanUseItem(info.itemID) then--是否可使用 then--不出售, 可以使用
                         
-                        if classID==0 and subclassID==10 then--珍玩
-                            setAtt(bag, slot, info.iconFileID, info.itemID)
-                            return
-
-                        elseif info.hasLoot then--可打开
+                       if info.hasLoot then--可打开
                             if Save.open then
                                 if dateInfo.text[LOCKED] and e.Player.class=='ROGUE' then--DZ
                                     setAtt(bag, slot, info.iconFileID, info.itemID, 1804)--开锁 Pick Lock
@@ -357,12 +364,14 @@ local function get_Items()--取得背包物品信息
                                 end
                             end
 
-                        elseif Save.alt and ((classID~=12 and (classID==0 and subclassID==8 or classID~=0))
+                        elseif Save.alt
+                            and C_Item.IsUsableItem(info.hyperlink)
+                            and ((classID~=12 and (classID==0 and subclassID==8 or classID~=0))
                            or (classID==15 and subclassID==4)
                         )
                         then-- 8 使用: 在龙鳞探险队中的声望提高1000点
                             local spell= select(2, C_Item.GetItemSpell(info.hyperlink))
-                            if spell  and not C_Item.IsAnimaItemByID(info.hyperlink) and C_Item.IsUsableItem(info.hyperlink) then
+                            if spell  and not C_Item.IsAnimaItemByID(info.hyperlink) then
                                 --and C_Spell.IsSpellUsable(spell)
                                 if info.itemID==207002 then--封装命运
                                     if not e.WA_GetUnitBuff('player', 415603, 'HELPFUL') then
@@ -374,7 +383,7 @@ local function get_Items()--取得背包物品信息
                                     return
                                 end
                             end
-                        elseif e.Is_Timerunning and (info.itemID>=219256 and info.itemID<=219282) and C_Item.IsUsableItem(info.hyperlink) then--将帛线织入你的永恒潜能披风，使你获得的经验值永久提高12%。
+                        elseif e.Is_Timerunning and (info.itemID>=219256 and info.itemID<=219282) then--将帛线织入你的永恒潜能披风，使你获得的经验值永久提高12%。
                             setAtt(bag, slot, info.iconFileID, info.itemID)
                             return
                         end
@@ -857,7 +866,7 @@ local function Init()
     OpenButton:SetScript('OnEvent', function(self, event)
 
         if event=='PLAYER_ENTERING_WORLD' or event=='PLAYER_MAP_CHANGED' then--出进副本
-            self:SetShown(not IsInInstance())
+            self:SetShown(not IsInInstance() or WoWTools_MapMixin:IsInDelve())
             self:settings()
 
         elseif event=='PLAYER_MOUNT_DISPLAY_CHANGED'--上下坐骑
@@ -905,7 +914,8 @@ local function Init()
     }
 
     function OpenButton:settings()
-        self.isDisabled= IsInInstance() or not self:IsVisible()
+        self.isDisabled= (IsInInstance() and not WoWTools_MapMixin:IsInDelve())
+                        or not self:IsVisible()
 
         if self.isDisabled then
             FrameUtil.UnregisterFrameForEvents(self, self.events)
@@ -937,7 +947,7 @@ local function Init()
                 or not self:IsValid()
                 or IsMounted()
                 or UnitInVehicle('player')
-                or IsInInstance()
+                or (IsInInstance() and not WoWTools_MapMixin:IsInDelve())
             )
         end
     end
