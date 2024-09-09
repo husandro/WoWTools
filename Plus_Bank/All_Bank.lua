@@ -120,6 +120,7 @@ local function Init()
         local num=0
         local bagindex
         local numBag= NUM_TOTAL_EQUIPPED_BAG_SLOTS+ NUM_REAGENTBAG_FRAMES
+
         for i=1, NUM_BANKBAGSLOTS do
             local bag= i+ numBag
             bagindex= bagindex and bagindex+1 or bag
@@ -135,13 +136,11 @@ local function Init()
                         f:Hide()
                     end)
                 end
+                bagFrame:SetShown(true)
                 
-                for _, btn in bagFrame:EnumerateValidItems()  do
-                    bagFrame:SetShown(true)
-                    
-                        
+                for _, btn in bagFrame:EnumerateValidItems()  do                        
                         num=num+1
-                        btn:SetParent(BankSlotsFrame)
+                        --btn:SetParent(BankSlotsFrame)
                         btn:ClearAllPoints()
                         btn:SetPoint('TOP', last, 'BOTTOM', 0, -Save().line)
                         last=btn
