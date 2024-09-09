@@ -4942,7 +4942,8 @@
         "SPELL_FAILED_CUSTOM_ERROR_1042",
         "ToggleBag",
         "BAGSLOTTEXT",
-        "RATED_BG_BLITZ_SIZE"
+        "RATED_BG_BLITZ_SIZE",
+        "DEPOSIT"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

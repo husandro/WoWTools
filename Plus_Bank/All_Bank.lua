@@ -2,7 +2,7 @@
 local e= select(2, ...)
 
 local function Save()
-    return WoWTools_ButtonMixin.Save
+    return WoWTools_BankFrame.Save
 end
 
 
@@ -17,7 +17,7 @@ local function Init()
     function SetAllBank:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, WoWTools_ButtonMixin.addName)
+        e.tips:AddDoubleLine(e.addName, WoWTools_BankFrame.addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine((e.onlyChinese and '行数' or HUD_EDIT_MODE_SETTING_ACTION_BAR_NUM_ROWS)..' |cnGREEN_FONT_COLOR:'..Save().num, e.Icon.mid)
         e.tips:AddDoubleLine((e.onlyChinese and '间隔' or 'Interval')..' |cnGREEN_FONT_COLOR:'..Save().line, 'Alt+'..e.Icon.mid)
@@ -26,7 +26,7 @@ local function Init()
     end
     --设置，背景
 
-    function SetAllBank:set_background()
+    --[[function SetAllBank:set_background()
         if Save().showBackground~=nil then
             if Save().showBackground then
                 BankFrame:DisableDrawLayer('BACKGROUND')
@@ -42,7 +42,7 @@ local function Init()
                 BankFrame.Background:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
             end
         end
-    end
+    end]]
 
     SetAllBank:SetScript('OnMouseWheel', function(self, d)
         if not IsModifierKeyDown() then
@@ -90,6 +90,9 @@ local function Init()
     end
 
     --设置，银行，按钮
+    function BankSlotsFrame:IsCombinedBagContainer()
+        return false
+    end
     function SetAllBank:set_bank()
         self.last=nil
         self.num=0
@@ -132,22 +135,20 @@ local function Init()
                         f:Hide()
                     end)
                 end
-
-               for _, btn in bagFrame:EnumerateValidItems()  do
-                    if btn then
-                        if bagFrame:IsShown() then
-                            num=num+1
-                            btn:SetParent(BankSlotsFrame)
-                            btn:ClearAllPoints()
-                            btn:SetPoint('TOP', last, 'BOTTOM', 0, -Save().line)
-                            last=btn
-                            table.insert(tab, btn)
-                            btn:SetShown(true)
-                            self:set_index_label(btn, num+NUM_BANKGENERIC_SLOTS)--索引，提示
-                        else
-                            btn:SetShown(false)
-                        end
-                    end
+                
+                for _, btn in bagFrame:EnumerateValidItems()  do
+                    bagFrame:SetShown(true)
+                    
+                        
+                        num=num+1
+                        btn:SetParent(BankSlotsFrame)
+                        btn:ClearAllPoints()
+                        btn:SetPoint('TOP', last, 'BOTTOM', 0, -Save().line)
+                        last=btn
+                        table.insert(tab, btn)
+                        btn:SetShown(true)
+                        self:set_index_label(btn, num+NUM_BANKGENERIC_SLOTS)--索引，提示
+                    
                end
             end
         end
@@ -261,6 +262,7 @@ local function Init()
 
 
     BankFramePurchaseButton:SetWidth(BankFramePurchaseButton:GetFontString():GetWidth()+12)
+
     hooksecurefunc('UpdateBagSlotStatus', function()
         if BankFramePurchaseInfo then
             BankFramePurchaseInfo:ClearAllPoints()
@@ -274,7 +276,7 @@ local function Init()
         end
     end)
     SetAllBank:set_bank()--设置，银行，按钮
-    SetAllBank:set_background()--设置，背景
+    --SetAllBank:set_background()--设置，背景
 
 
 
@@ -360,7 +362,7 @@ end
 
 
 
-function WoWTools_ButtonMixin:Init_All_Bank()
+function WoWTools_BankFrame:Init_All_Bank()
     Init()
-    C_Timer.After(4, self.Init_DespositTakeOut_List)--分类，存取, 2秒为翻译加载时间
+    
 end

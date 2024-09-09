@@ -13,11 +13,20 @@ Save={
     --showIndex=true,--显示，索引
     --showBackground= true,--设置，背景
 
-    allBank=true,--转化为联合的大包
+    allBank=e.Player.husandro,--转化为联合的大包
     show_AllBank_Type=e.Player.husandro,--大包时，显示，存取，分类，按钮
+    
+    left_List= true,
+    
     --show_AllBank_Type_Scale=1,
 },
-addName=nil
+addName=nil,
+
+Init_All_Bank=function()end,
+Init_Left_List=function()end,
+Init_Desposit_TakeOut=function()end,
+Init_Bank_Plus=function()end,
+
 }
 
 
@@ -147,20 +156,25 @@ local function Init_Menu(self, root)
         end)
 
 
-        root:CreateCheckbox(e.onlyChinese and '显示背景' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SHOW_PARTY_FRAME_BACKGROUND, function()
+        --[[root:CreateCheckbox(e.onlyChinese and '显示背景' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SHOW_PARTY_FRAME_BACKGROUND, function()
             return Save().showBackground or Save().showBackground==nil
         end, function()
             Save().showBackground= not Save().showBackground and true or false
             if _G['WoWTools_SetAllBankButton'] then
                 _G['WoWTools_SetAllBankButton']:set_background()--设置，背景
             end
-        end)
+        end)]]
     end
 
-    root:CreateDivider()
-    sub=WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_BankFrame.addName})
-
-    sub:CreateCheckbox(
+    
+    root:CreateCheckbox(e.onlyChinese and '左边列表' or 'Left List', function()
+        return Save().left_List
+    end, function()
+        Save().left_List= not Save().left_List and true or nil
+        WoWTools_BankFrame:Init_Left_List()--分类，存取,
+    end)
+    
+    root:CreateCheckbox(
         e.onlyChinese and '自动打开背包栏位' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, BAGSLOTTEXT)),
     function()
         return Save().openBagInBank
@@ -168,7 +182,19 @@ local function Init_Menu(self, root)
         Save().openBagInBank= not Save().openBagInBank and true or nil
         self:set_event()
     end)
+
+    root:CreateDivider()
+    WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_BankFrame.addName})
 end
+
+
+
+
+
+
+
+
+
 
 
 
@@ -214,6 +240,12 @@ local function Set_Texture()
     e.Set_Alpha_Frame_Texture(BankFrameTab1, {isMinAlpha=true})
     e.Set_Alpha_Frame_Texture(BankFrameTab2, {isMinAlpha=true})
     e.Set_Alpha_Frame_Texture(BankFrameTab3, {isMinAlpha=true})
+
+    BankFrame:EnableDrawLayer('BACKGROUND')
+    BankFrame.Background:ClearAllPoints()
+    BankFrame.Background:SetPoint('TOPLEFT', BankFrame)
+    BankFrame.Background:SetPoint('BOTTOMRIGHT', BankFrame)
+    BankFrame.Background:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
 end
 
 
@@ -263,9 +295,7 @@ local function Init()
         end
     end
     OptionButton:SetScript('OnEvent', function()
-        for i=1, 7 do
-            ToggleBag(i+NUM_TOTAL_EQUIPPED_BAG_SLOTS);
-        end
+        WoWTools_BankMixin:OpenBag()
     end)
     OptionButton:set_event()
 
@@ -292,6 +322,11 @@ local function Init()
     end
 
     WoWTools_BankFrame:Init_Desposit_TakeOut()--存放，取出，所有
+
+    C_Timer.After(4, function()--分类，存取, 2秒为翻译加载时间
+        WoWTools_BankFrame:Init_Left_List()
+    end)
+
     Set_Texture()
 end
 

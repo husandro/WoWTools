@@ -49,3 +49,14 @@ function WoWTools_BankMixin:GetBagAndSlot(button)
 
         button:GetID()
 end
+
+
+function WoWTools_BankMixin:OpenBag(bagID)
+    if bagID then
+        ToggleBag(bagID)
+    else
+        for i=1, 7 do
+            ToggleBag(i+NUM_TOTAL_EQUIPPED_BAG_SLOTS);
+        end
+    end
+end
