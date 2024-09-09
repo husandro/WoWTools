@@ -355,9 +355,14 @@ local function setClickAtt()--设置 Click属性
         end
         spellID= spellID or (IsIndoors() and 768 or 783)
     else
+        
         spellID= (IsIndoors() or isMoving or isBat) and MountButton.spellID--进入战斗, 室内
             or getRandomRoll(FLOOR)--区域
-            or ((isAdvancedFlyableArea or C_Spell.IsSpellUsable(368896)) and getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING))-- [368896]=true,--[复苏始祖幼龙]
+            or ((isAdvancedFlyableArea or C_Spell.IsSpellUsable(368896)) and-- [368896]=true,--[复苏始祖幼龙] 
+                C_UnitAuras.GetAuraDataBySpellName('player', C_Spell.GetSpellName(404468), 'HELPFUL')--404468/飞行模式：稳定
+                    and getRandomRoll(MOUNT_JOURNAL_FILTER_FLYING)
+                    or getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING)
+                )
             or (IsSubmerged() and getRandomRoll(MOUNT_JOURNAL_FILTER_AQUATIC))--水平中
             or (isFlyableArea and getRandomRoll(MOUNT_JOURNAL_FILTER_FLYING))--飞行区域
             or (IsOutdoors() and getRandomRoll(MOUNT_JOURNAL_FILTER_GROUND))--室内

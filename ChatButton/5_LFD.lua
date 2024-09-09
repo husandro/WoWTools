@@ -1807,6 +1807,10 @@ local function exit_Instance()
     ExitIns=nil
 end
 
+
+
+
+--[[
 local function setIslandButton(self)--离开海岛按钮
     local find
     if IsInInstance() then
@@ -1862,7 +1866,7 @@ local function setIslandButton(self)--离开海岛按钮
         self.island:SetShown(find)
     end
 end
-
+]]
 
 
 
@@ -3027,8 +3031,11 @@ local function Init_Menu(_, root)
     end)
 
 --离开地下堡
-    sub=root:CreateButton(e.onlyChinese and '离开地下堡' or INSTANCE_WALK_IN_LEAVE, function()
-        if IsInGroup(LE_PARTY_CATEGORY_HOME) then
+    sub:CreateButton(
+        (WoWTools_MapMixin:IsInDelve() and '' or '|cff9e9e9e')
+        ..(e.onlyChinese and '离开地下堡' or INSTANCE_WALK_IN_LEAVE),
+    function()
+        if IsInGroup(LE_PARTY_CATEGORY_HOME) and not C_PartyInfo.IsDelveComplete() then
             StaticPopup_Show('WoWTools_OK',
                 e.onlyChinese and '离开地下堡' or INSTANCE_WALK_IN_LEAVE,
                 nil,
@@ -3037,10 +3044,50 @@ local function Init_Menu(_, root)
         else
             C_PartyInfo.DelveTeleportOut()
         end
+        return MenuResponse.Open
     end)
-    sub:SetEnabled(WoWTools_MapMixin:IsInDelve())
-end
 
+--离开副本
+    sub:CreateButton(
+        (select(10, GetInstanceInfo()) and '' or '|cff9e9e9e')
+        ..(e.onlyChinese and '离开副本' or INSTANCE_LEAVE),
+    function()
+        if IsInGroup(LE_PARTY_CATEGORY_HOME) then
+            StaticPopup_Show('WoWTools_OK',
+                e.onlyChinese and '离开副本' or INSTANCE_LEAVE,
+                nil,
+                {SetValue=function()
+                    C_PartyInfo.LeaveParty(LE_PARTY_CATEGORY_INSTANCE)
+                    LFGTeleport(true)
+                end}
+            )
+        else
+            C_PartyInfo.LeaveParty(LE_PARTY_CATEGORY_INSTANCE)
+            LFGTeleport(true)
+        end
+        return MenuResponse.Open
+    end)
+
+--离开载具
+    sub:CreateButton(
+        ((UnitControllingVehicle("player") and CanExitVehicle()) and '' or '|cff9e9e9e')
+        ..(e.onlyChinese and '离开载具' or BINDING_NAME_VEHICLEEXIT),
+    function()
+        CinematicFrame_CancelCinematic()
+        return MenuResponse.Open
+    end)
+end
+--[[
+function CinematicFrame_CancelCinematic()
+	if ( CinematicFrame.isRealCinematic ) then
+		StopCinematic();
+	elseif ( CanCancelScene() ) then
+		CancelScene();
+	else
+		VehicleExit();
+	end
+end
+]]
 
 
 
@@ -3256,9 +3303,9 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
         else
             self:UnregisterEvent('LOOT_CLOSED')
         end
-        C_Timer.After(sec, function()
+        --[[C_Timer.After(sec, function()
             setIslandButton(self)--离开海岛按钮
-        end)
+        end)]]
         ExitIns=nil
 
     elseif event=='ISLAND_COMPLETED' then--离开海岛

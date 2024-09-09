@@ -4936,7 +4936,9 @@
         "GameTooltip_SetBottomText",
         "REPUTATION_BUTTON_TOOLTIP_CLICK_INSTRUCTION",
         "HelpFrame",
-        "NOTE_COLON"
+        "NOTE_COLON",
+        "INSTANCE_LEAVE",
+        "CinematicFrame_CancelCinematic"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

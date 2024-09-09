@@ -102,7 +102,7 @@ local InvUnitFunc=function()--邀请，周围玩家
                     local guid= UnitGUID(u)
                     if name and name~=UNKNOWNOBJECT and guid and not UnitInAnyGroup(u) and not UnitIsAFK(u) and UnitIsConnected(u) and UnitIsPlayer(u) and UnitIsFriend(u, 'player') and not UnitIsUnit('player',u) then
                         if not InvPlateGuid[guid] then
-                            C_PartyInfo.InviteUnit(name)
+                            --C_PartyInfo.InviteUnit(name)
                             InvPlateGuid[guid]=name
                             print(e.addName, '|cnGREEN_FONT_COLOR:'..n..'|r)', e.onlyChinese and '邀请' or INVITE ,e.PlayerLink(name, guid))
                             if not raid and n +co>=5  then
