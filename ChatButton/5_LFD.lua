@@ -3073,7 +3073,7 @@ local function Init_Menu(_, root)
         ((UnitControllingVehicle("player") and CanExitVehicle()) and '' or '|cff9e9e9e')
         ..(e.onlyChinese and '离开载具' or BINDING_NAME_VEHICLEEXIT),
     function()
-        CinematicFrame_CancelCinematic()
+        VehicleExit()
         return MenuResponse.Open
     end)
 end
