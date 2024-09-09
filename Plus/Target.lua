@@ -542,13 +542,13 @@ local function Init_Quest()
                     if min and max and max> min then
                         return max- min
                     end
-                    return true
+                    --return true
                 elseif text:find('[%d%.]+%%') then
                     local value= text:match('([%d%.]+%%)')
                     if value and value~='100%' then
                         return value
                     end
-                    return true
+                    --return true
                 end
             end
         end
@@ -565,7 +565,7 @@ local function Init_Quest()
                         --TooltipUtil.SurfaceArgs(line) 10.2.7没有FUNC
                         local text= self:find_text(line.leftText)
                         if text then
-                            return text~=true and text
+                            return text
                         end
                     end
                 end

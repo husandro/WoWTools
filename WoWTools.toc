@@ -121,8 +121,8 @@ Plus_Minimap\Major_Plus.lua
 
 
 ##卖买
-Plus_SellBuy\SellBuy.lua
-Plus_SellBuy\Menu.lua
+Plus_SellBuy\Init_SellBuy.lua
+Plus_SellBuy\Menu_SellBuy.lua
 Plus_SellBuy\DELETE.lua
 
 Plus_SellBuy\Auto_Loot.lua

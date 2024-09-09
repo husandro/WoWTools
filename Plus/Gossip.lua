@@ -2346,9 +2346,9 @@ local function Init_Gossip()
         elseif (npc and Save.NPC[npc]) then--禁用NPC
             return
 
-        elseif Save.quest and  (quest or name:find('0000FF') or  name:find(QUESTS_LABEL) or name:find(LOOT_JOURNAL_LEGENDARIES_SOURCE_QUEST)) then--任务
+        elseif Save.quest and (quest or name:find('0000FF') or  name:find(QUESTS_LABEL) or name:find(LOOT_JOURNAL_LEGENDARIES_SOURCE_QUEST)) then--任务
             if quest then
-                name= e.cn(info.name)..(e.onlyChinese and '|cnGREEN_FONT_COLOR:<任务>|r' or ('|cnGREEN_FONT_COLOR:<'..QUESTS_LABEL..'>|r'))
+                name= e.cn(info.name)..'<|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '任务' or QUESTS_LABEL)..'|r>'
             end
             C_GossipInfo.SelectOption(index)
             find=true
@@ -2379,6 +2379,7 @@ local function Init_Gossip()
                 find=true
             end
         end
+
 
         if find then
             GossipButton.selectGissipIDTab[index]=true

@@ -164,7 +164,7 @@ end
 --###########
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
-panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, _, arg5)
+panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             if WoWToolsSave[MERCHANT] then
@@ -176,7 +176,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, _, arg5)
                 WoWToolsSave.Repair=nil
                 WoWToolsSave[MERCHANT]=nil
             end
-            
+
                 WoWTools_SellBuyMixin.Save= WoWToolsSave['Plus_SellBuy'] or WoWTools_SellBuyMixin.Save
                 WoWTools_SellBuyMixin.Save.buyItems[e.Player.guid]= WoWTools_SellBuyMixin.Save.buyItems[e.Player.guid] or {}
             --end

@@ -1118,7 +1118,6 @@ end
 
 
 
-
 local function Set_BrowseResultsFrame(frame)
     if not frame:GetView() then
         return
@@ -1128,49 +1127,57 @@ local function Set_BrowseResultsFrame(frame)
         local itemKey= btn.rowData and btn.rowData.itemKey
         local itemKeyInfo = itemKey and C_AuctionHouse.GetItemKeyInfo(itemKey)--itemID battlePetSpeciesID itemName battlePetLink appearanceLink quality iconFileID isPet isCommodity isEquipment
         if itemKeyInfo then
-
-            local isCollectedAll--宠物
-            text, isCollectedAll= select(3, e.GetPetCollectedNum(itemKeyInfo.battlePetSpeciesID, itemKeyInfo.itemID, true))
-            if isCollectedAll then
-                text= '|A:common-icon-checkmark-yellow:0:0|a'
-            end
-
-            text= text or e.GetItemCollected(itemKeyInfo.itemID, nil, true)--物品是否收集
-
-            if not text then--坐骑
-                local isMountCollected= select(2, e.GetMountCollected(nil, itemKeyInfo.itemID))
-                if isMountCollected==true then
+           
+            --if itemKeyInfo.isPet then
+                local isCollectedAll--宠物
+                text, isCollectedAll= select(3, e.GetPetCollectedNum(itemKeyInfo.battlePetSpeciesID, itemKeyInfo.itemID, true))
+                if isCollectedAll then
                     text= '|A:common-icon-checkmark-yellow:0:0|a'
-                elseif isMountCollected==false then
-                    text= '|A:QuestNormal:0:0|a'
                 end
-            end
-            if not text then--玩具,是否收集
-                local isToy= select(2, e.GetToyCollected(itemKeyInfo.itemID))
-                if isToy==true then
-                    text= '|A:common-icon-checkmark-yellow:0:0|a'
-                elseif isToy==false then
-                    text= '|A:QuestNormal:0:0|a'
-                end
-            end
-            if not text then--显示, 宝石, 属性
-                local t1, t2= e.Get_Gem_Stats(nil, Get_ItemLink_For_rowData(btn.rowData))
-                if t1 then
-                    text= t1..(t2 and ' '..t2 or '')
-                end
-            end
+
+            --elseif itemKeyInfo.isEquipment then
             if not text then
-                local isRed= WoWTools_ItemMixin:GetTooltip({
-                    itemKey=itemKey,
-                    red=true,
-                    onlyRed=true,
-                })
-                if isRed==true then
-                    text='|A:talents-button-reset:0:0|a'
-                elseif isRed==false then
-                    text='|A:Recurringavailablequesticon:0:0|a'
-                end
+                text= e.GetItemCollected(itemKeyInfo.itemID, nil, true)--物品是否收集
             end
+            --else
+
+                if not text then--坐骑
+                    local isMountCollected= select(2, e.GetMountCollected(nil, itemKeyInfo.itemID))
+                    if isMountCollected==true then
+                        text= '|A:common-icon-checkmark-yellow:0:0|a'
+                    elseif isMountCollected==false then
+                        text= '|A:QuestNormal:0:0|a'
+                    end
+                end
+                if not text then--玩具,是否收集
+                    local isToy= select(2, e.GetToyCollected(itemKeyInfo.itemID))
+                    if isToy==true then
+                        text= '|A:common-icon-checkmark-yellow:0:0|a'
+                    elseif isToy==false then
+                        text= '|A:QuestNormal:0:0|a'
+                    end
+                end
+                if not text and select(6, C_Item.GetItemInfoInstant(itemKeyInfo.itemID))==3 then--显示, 宝石, 属性
+                    local t1, t2= e.Get_Gem_Stats(nil, Get_ItemLink_For_rowData(btn.rowData))
+                    if t1 then
+                        text= t1..(t2 and ' '..t2 or '')
+                    end
+                end
+                if not text then
+                    local redInfo= WoWTools_ItemMixin:GetTooltip({
+                        itemKey=itemKey,
+                        red=true,
+                        text={ITEM_SPELL_KNOWN},
+                    })
+                    if redInfo.text[ITEM_SPELL_KNOWN] then
+                        text= '|A:common-icon-checkmark:0:0|a'
+                    elseif redInfo.red then
+                        text= '|A:worldquest-icon-firstaid:0:0|a'
+                    else
+                        text= '|A:Recurringavailablequesticon:0:0|a'
+                    end
+                end
+           -- end
             --[[if not text then
                 --local itmeLink= Get_ItemLink_For_rowData(btn.rowData)
                 local itemLink= Get_ItemLink_For_rowData(btn.rowData)
@@ -1207,8 +1214,9 @@ end
 --Blizzard_AuctionHouseUI.lua
 --local ITEM_SPELL_KNOWN = ITEM_SPELL_KNOWN--"已学习
 local function Init_BrowseResultsFrame()
-    hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame.ItemList.ScrollBox, 'FullUpdateInternal', Set_BrowseResultsFrame)
     hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame.ItemList.ScrollBox, 'Update', Set_BrowseResultsFrame)
+    --hooksecurefunc(AuctionHouseFrame.BrowseResultsFrame.ItemList.ScrollBox, 'SetDataProvider', Set_BrowseResultsFrame)
+    
 
     --双击，一口价
     hooksecurefunc(AuctionHouseFrame.ItemBuyFrame.ItemList.ScrollBox, 'Update', function(frame)
