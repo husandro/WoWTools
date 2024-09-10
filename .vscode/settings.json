@@ -4944,7 +4944,12 @@
         "BAGSLOTTEXT",
         "RATED_BG_BLITZ_SIZE",
         "DEPOSIT",
-        "BankFrameItemButtonGeneric_OnClick"
+        "BankFrameItemButtonGeneric_OnClick",
+        "StaticPopupSpecial_Show",
+        "BankCleanUpConfirmationPopup",
+        "BAG_CLEANUP_ACCOUNT_BANK",
+        "BankFrameTitleText",
+        "BankPanelMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
@@ -4968,6 +4973,7 @@
         "undefined-field",
         "redundant-parameter",
         "assign-type-mismatch",
-        "inject-field"
+        "inject-field",
+        "trailing-space"
     ],
 }

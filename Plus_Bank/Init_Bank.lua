@@ -174,8 +174,8 @@ local function Init_Texture()
 
     ReagentBankFrame.EdgeShadows:Hide()
     BankSlotsFrame.EdgeShadows:Hide()
-    AccountBankPanel.Header.Text:ClearAllPoints()
-    AccountBankPanel.Header.Text:SetPoint('RIGHT', BankItemSearchBox, 'LEFT', -12, 0)
+    --AccountBankPanel.Header.Text:ClearAllPoints()
+    --AccountBankPanel.Header.Text:SetPoint('RIGHT', BankItemSearchBox, 'LEFT', -12, 0)
     e.Set_Alpha_Frame_Texture(BankFrameTab1, {isMinAlpha=true})
     e.Set_Alpha_Frame_Texture(BankFrameTab2, {isMinAlpha=true})
     e.Set_Alpha_Frame_Texture(BankFrameTab3, {isMinAlpha=true})
@@ -209,7 +209,7 @@ local function Init_OpenAllBag_Button()
     end
 
     local up=  WoWTools_ButtonMixin:CreateUpButton(parent, nil, nil)
-    up:SetPoint('BOTTOMLEFT', parent, 'RIGHT', 2, -3)
+    up:SetPoint('BOTTOMLEFT', parent, 'RIGHT', 4, -3)
     up:SetScript('OnLeave', GameTooltip_Hide)
     up:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
@@ -225,7 +225,7 @@ local function Init_OpenAllBag_Button()
     end)
 
     local down=  WoWTools_ButtonMixin:CreateDownButton(parent, nil, nil)
-    down:SetPoint('TOPLEFT', parent, 'RIGHT', 2, -3)
+    down:SetPoint('TOPLEFT', parent, 'RIGHT', 4, -3)
     down:SetScript('OnLeave', GameTooltip_Hide)
     down:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
@@ -274,7 +274,7 @@ local function Init()
         e.tips:Show()
         self:SetAlpha(1)
     end)
-    
+
     OptionButton:SetScript('OnMouseDown', function(self)
         MenuUtil.CreateContextMenu(self, Init_Menu)
     end)
@@ -303,14 +303,11 @@ local function Init()
 
 
 
-
-
-
-
-
     
+
     --整理材料银行
     ReagentBankFrame.autoSortButton= CreateFrame("Button", nil, ReagentBankFrame, 'BankAutoSortButtonTemplate')
+    ReagentBankFrame.autoSortButton:SetPoint('LEFT', ReagentBankFrame.DespositButton, 'RIGHT', 25, 0)--整理材料银行
     ReagentBankFrame.autoSortButton:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
@@ -320,6 +317,29 @@ local function Init()
     ReagentBankFrame.autoSortButton:SetScript('OnClick', function()
         C_Container.SortReagentBankBags()
     end)
+
+    --整理材料银行
+    AccountBankPanel.autoSortButton= CreateFrame("Button", nil, AccountBankPanel.ItemDepositFrame.DepositButton, 'BankAutoSortButtonTemplate')
+    AccountBankPanel.autoSortButton:SetPoint('RIGHT', AccountBankPanel.ItemDepositFrame.DepositButton, 'LEFT', -5, 0)--整理材料银行
+    AccountBankPanel.autoSortButton:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddLine(e.onlyChinese and '清理战团银行' or BAG_CLEANUP_ACCOUNT_BANK)
+        e.tips:Show()
+    end)
+    AccountBankPanel.autoSortButton:SetScript('OnClick', function()
+        if GetCVarBool("bankConfirmTabCleanUp") then
+        	StaticPopupSpecial_Show(BankCleanUpConfirmationPopup);
+        else
+            C_Container.SortAccountBankBags();
+        end
+    end)
+
+
+
+
+
+
 
     Init_Texture()
     Init_OpenAllBag_Button()

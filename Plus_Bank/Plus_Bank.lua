@@ -198,12 +198,16 @@ local function Init()--增强，原生
     ReagentBankFrame.DespositButton:ClearAllPoints()
     ReagentBankFrame.DespositButton:SetPoint('BOTTOM',0 ,18)
 
-    ReagentBankFrame.autoSortButton:SetPoint('LEFT', ReagentBankFrame.DespositButton, 'RIGHT', 25, 0)--整理材料银行
+    
     ReagentBankFrame.DespositButton.texture2= ReagentBankFrame.DespositButton:CreateTexture(nil, 'OVERLAY')--增加，提示图标
     ReagentBankFrame.DespositButton.texture2:SetSize(23,23)
     ReagentBankFrame.DespositButton.texture2:SetPoint('RIGHT', -4, 0)
     ReagentBankFrame.DespositButton.texture2:SetAtlas('poi-traveldirections-arrow')
     ReagentBankFrame.DespositButton.texture2:SetTexCoord(0,1,1,0)
+
+
+      
+
 end
 
 

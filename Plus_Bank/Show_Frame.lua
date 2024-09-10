@@ -106,6 +106,30 @@ local function CreateButton(tabIndex)
     end
 
 
+--移动
+    frame:SetClampedToScreen(false)
+    frame:SetMovable(true)
+    frame:HookScript("OnDragStart", frame.StartMoving)
+    frame:HookScript("OnDragStop", function(self)
+        self:StopMovingOrSizing()
+        Save()['point'..ShowButton.name]= {self:GetPoint(1)}
+        Save()['point'..ShowButton.name]= nil
+        ResetCursor()
+    end)
+    frame:HookScript("OnMouseUp", ResetCursor)--停止移动
+    frame:HookScript("OnMouseDown", function(_, d)--设置, 光标
+        SetCursor('UI_MOVE_CURSOR')
+    end)
+    frame:RegisterForDrag("RightButton", "LeftButton")
+
+    if tabIndex==3 then
+        frame:ClearAllPoints()
+        frame:SetSize(738, 460)
+        frame:SetPoint('TOPLEFT')
+    end
+
+
+
     local btn= WoWTools_ButtonMixin:Cbtn(BankFrame, {size={18,18}, atlas='hide'})
     btn.name= name
     btn.tabIndex= tabIndex
@@ -156,32 +180,12 @@ local function CreateButton(tabIndex)
     btn:set_atlas()
 
 
-    --移动
-    frame:SetClampedToScreen(false)
-    frame:SetMovable(true)
-    frame:HookScript("OnDragStart", frame.StartMoving)
-    frame:HookScript("OnDragStop", function(self)
-        self:StopMovingOrSizing()
-        Save()['point'..ShowButton.name]= {self:GetPoint(1)}
-        Save()['point'..ShowButton.name]= nil
-        ResetCursor()
-    end)
-    frame:HookScript("OnMouseUp", ResetCursor)--停止移动
-    frame:HookScript("OnMouseDown", function(_, d)--设置, 光标
-        SetCursor('UI_MOVE_CURSOR')
-    end)
-    frame:RegisterForDrag("RightButton", "LeftButton")
-
-    if tabIndex==3 then
-        frame:ClearAllPoints()
-        frame:SetSize(738, 460)
-        frame:SetPoint('TOPLEFT')
-    end
 
     --设置，显示材料银行
     function btn:show_hide(hide)
         --local unlocked= IsReagentBankUnlocked()
-        if (not Save()['hide'..self.name] or hide) and BankFrame.activeTabIndex then
+        local show= not Save()['hide'..self.name]
+        if show and BankFrame.activeTabIndex then
             local f= _G[self.name]
             if BankFrame.activeTabIndex==1 and not hide then
                 f:ClearAllPoints()
@@ -202,14 +206,11 @@ local function CreateButton(tabIndex)
                 end
             end
         end
-        btn:SetShown(BankFrame.activeTabIndex==1)--选项
-        btn:set_scale()--缩放
-
-        if ReagentBankFrame.autoSortButton then
-            ReagentBankFrame.autoSortButton:SetShown(not Save().hideReagentBankFrame and BankFrame.activeTabIndex==1)--整理材料银行
-        end
-
+        self:SetShown(BankFrame.activeTabIndex==1)--选项
+        self:set_scale()--缩放
+        ReagentBankFrame.autoSortButton:SetShown(show and BankFrame.activeTabIndex==1)--整理材料银行
     end
+
     hooksecurefunc('BankFrame_ShowPanel', function()
         ShowButton:show_hide()
     end)
