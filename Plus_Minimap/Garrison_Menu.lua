@@ -38,7 +38,9 @@ end
 
 
 --LuaEnum.lua
-local GarrisonList={
+local GarrisonList
+local function Init_GarrisonList()
+    GarrisonList={
 
     --[[{name=e.onlyChinese and '巨龙群岛概要' or DRAGONFLIGHT_LANDING_PAGE_TITLE,
     garrisonType= Enum.GarrisonType.Type_9_0_Garrison,
@@ -107,7 +109,7 @@ local GarrisonList={
 
 }
 
-
+end
 
 
 
@@ -125,7 +127,6 @@ local GarrisonList={
 --要塞报告 GarrisonBaseUtils.lua
 function WoWTools_MinimapMixin:Garrison_Menu(_, root)
     local sub
-
 
 --宏伟宝库
     local hasRewar= C_WeeklyRewards.HasAvailableRewards()
@@ -165,6 +166,12 @@ function WoWTools_MinimapMixin:Garrison_Menu(_, root)
         WoWTools_LoadUIMixin:Dragonriding()
     end)
 
+    do
+        if not GarrisonList then
+            Init_GarrisonList()
+        end
+    end
+
     for _, info in pairs(GarrisonList) do
         if info.name=='-' then
             root:CreateDivider()
@@ -179,7 +186,6 @@ function WoWTools_MinimapMixin:Garrison_Menu(_, root)
                 end
             end
             local atlas= type(info.atlas)=='function' and info.atlas() or info.atlas or ''
-
 
             sub=root:CreateCheckbox(
                 format('|A:%s:0:0|a%s%s%s', atlas, info.name, num, num2),

@@ -23,6 +23,7 @@ local function Init_Menu(self, root)
     root:CreateDivider()
 
 --移动点
+
 if Save()['point'..self.name] then
     root:CreateButton(e.onlyChinese and '还原位置' or RESET_POSITION, function()
         Save()['point'..self.name]= nil
@@ -108,8 +109,6 @@ local function CreateButton(tabIndex)
     local btn= WoWTools_ButtonMixin:Cbtn(BankFrame, {size={18,18}, atlas='hide'})
     btn.name= name
     btn.tabIndex= tabIndex
-    frame.name= name
-    frame.tabIndex= tabIndex
 
     btn:SetPoint('BOTTOMRIGHT', _G['BankFrameTab1'], 'BOTTOMLEFT')
     function btn:set_atlas()
@@ -141,13 +140,12 @@ local function CreateButton(tabIndex)
         self:set_tooltips()
     end
 
-    btn:SetScript('OnClick', function(f, d)
-
+    btn:SetScript('OnClick', function(self, d)
         if d=='LeftButton' then
-            f:set_shown()
+            self:set_shown()
 
         elseif d=='RightButton' then
-            MenuUtil.CreateContextMenu(f, Init_Menu)
+            MenuUtil.CreateContextMenu(self, Init_Menu)
         end
     end)
 
@@ -164,8 +162,8 @@ local function CreateButton(tabIndex)
     frame:HookScript("OnDragStart", frame.StartMoving)
     frame:HookScript("OnDragStop", function(self)
         self:StopMovingOrSizing()
-        Save()['point'..self.name]= {self:GetPoint(1)}
-        Save()['point'..self.name]= nil
+        Save()['point'..ShowButton.name]= {self:GetPoint(1)}
+        Save()['point'..ShowButton.name]= nil
         ResetCursor()
     end)
     frame:HookScript("OnMouseUp", ResetCursor)--停止移动
@@ -203,7 +201,6 @@ local function CreateButton(tabIndex)
                     f:SetShown(false)
                 end
             end
-            print(f:IsShown())
         end
         btn:SetShown(BankFrame.activeTabIndex==1)--选项
         btn:set_scale()--缩放
