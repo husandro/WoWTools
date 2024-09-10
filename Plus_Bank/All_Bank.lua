@@ -7,6 +7,7 @@ end
 
 
 
+
 --设置，frame到最左边，为隐藏
 local function BagFrame_SetPoint_ToLeft(bagFrame)
     if not bagFrame.set_point_toleft then
@@ -15,11 +16,93 @@ local function BagFrame_SetPoint_ToLeft(bagFrame)
         end
         function bagFrame:set_point_toleft()
             bagFrame:ClearAllPoints()
-            bagFrame:SetPoint('RIGHT', UIParent, 'LEFT', -60, 0)
+            bagFrame:SetPoint('RIGHT', UIParent, 'LEFT', -60, 0)            
+            bagFrame:SetAlpha(0)
         end
-        bagFrame:HookScript('OnShow', bagFrame.set_point_toleft)
+        --bagFrame:HookScript('OnShow', bagFrame.set_point_toleft)
+       
     end
     bagFrame:set_point_toleft()
+end
+
+
+
+
+
+
+
+
+
+
+
+
+ --索引，提示
+ local function set_index_label(btn, index)
+    if not btn.indexLable and Save().showIndex then
+        btn.indexLable= e.Cstr(btn, {layer='BACKGROUND', color={r=1,g=1,b=1}})
+        btn.indexLable:SetPoint('CENTER')
+        btn.indexLable:SetAlpha(0.2)
+    end
+    if btn.indexLable then
+        btn.indexLable:SetText(Save().showIndex and index or '')
+    end
+end
+
+
+
+
+
+
+
+
+
+
+local function Set_AccountBankPanel()
+    if not AccountBankPanel.selectedTabID or AccountBankPanel.selectedTabID == -1 then
+        return
+    elseif BankFrame.activeTabIndex==3 then            
+        AccountBankPanel:ClearAllPoints()
+        AccountBankPanel:SetAllPoints()
+        return
+    end
+
+    AccountBankPanel:ClearAllPoints()
+    AccountBankPanel:SetPoint('TOPLEFT', BankFrame, 'TOPRIGHT')
+    local numRows = Save().num
+    local lastColumnStarterButton
+    local lastCreatedButton
+    local currentColumn = 1
+    local x= Save().line
+
+    local containerSlotID=0
+
+    local tab={}
+    for button in AccountBankPanel:EnumerateValidItems() do
+        table.insert(tab, 1, button)
+    end
+    for _, button in pairs(tab) do
+        containerSlotID= containerSlotID+1
+        local isFirstButton = containerSlotID == 1
+        local needNewColumn = (containerSlotID % numRows) == 1
+
+        if isFirstButton then
+            button:SetPoint("TOPLEFT", AccountBankPanel, "TOPLEFT", 0, -60)
+            lastColumnStarterButton = button
+
+        elseif needNewColumn then
+            currentColumn = currentColumn + 1
+            button:SetPoint("TOPLEFT", lastColumnStarterButton, "TOPRIGHT", x, 0)
+            lastColumnStarterButton = button
+        else
+            button:SetPoint("TOPLEFT", lastCreatedButton, "BOTTOMLEFT", 0, -x)
+        end
+        lastCreatedButton = button
+        set_index_label(button, button:GetContainerSlotID())--索引，提示
+    end
+    AccountBankPanel:SetSize(
+        8+(currentColumn*37)+((currentColumn-1)*x),
+        63+(numRows*(37+x))+8+63+8
+    )
 end
 
 
@@ -39,12 +122,12 @@ end
 
 
 local function Init_Button()
-    local SetAllBank= WoWTools_ButtonMixin:Cbtn(BankFrame.TitleContainer, {size={22,22}, icon=true, name='WoWTools_SetAllBankButton'})
+    --local SetAllBank= WoWTools_ButtonMixin:Cbtn(BankFrame.TitleContainer, {size={22,22}, icon=true, name='WoWTools_SetAllBankButton'})
+    local SetAllBank= CreateFrame('Frame', 'WoWTools_SetAllBankButton')
+    --SetAllBank:SetAlpha(0.5)
+    --SetAllBank:SetPoint('LEFT', 12,0)
 
-    SetAllBank:SetAlpha(0.5)
-    SetAllBank:SetPoint('LEFT', 12,0)
-
-    function SetAllBank:set_tooltips()
+    --[[function SetAllBank:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.addName, WoWTools_BankFrameMixin.addName)
@@ -82,25 +165,11 @@ local function Init_Button()
         self:set_tooltips()
     end)
 
-    
-
-
-
     SetAllBank:SetScript('OnLeave', function(self) self:SetAlpha(0.5) e.tips:Hide() end)
-    SetAllBank:SetScript('OnEnter', SetAllBank.set_tooltips)
+    SetAllBank:SetScript('OnEnter', SetAllBank.set_tooltips)]]
 
 
-    --索引，提示
-    function SetAllBank:set_index_label(btn, index)
-        if not btn.indexLable and Save().showIndex then
-            btn.indexLable= e.Cstr(btn, {layer='BACKGROUND', color={r=1,g=1,b=1}})
-            btn.indexLable:SetPoint('CENTER')
-            btn.indexLable:SetAlpha(0.2)
-        end
-        if btn.indexLable then
-            btn.indexLable:SetText(Save().showIndex and index or '')
-        end
-    end
+   
 
 
 
@@ -150,7 +219,7 @@ local function Init_Button()
                     last=btn
                 end
                 btn.index=i
-                self:set_index_label(btn, i)--索引，提示
+                set_index_label(btn, i)--索引，提示
                 table.insert(tab, btn)
             end
         end
@@ -178,7 +247,7 @@ local function Init_Button()
                         last=btn
                         table.insert(tab, btn)
                         btn:SetShown(true)
-                        self:set_index_label(btn, num+NUM_BANKGENERIC_SLOTS)--索引，提示
+                        set_index_label(btn, num+NUM_BANKGENERIC_SLOTS)--索引，提示
                     else
                         btn:SetShown(false)
                     end
@@ -189,6 +258,15 @@ local function Init_Button()
 
         
         
+        for i=Save().num+1, #tab, Save().num do--NUM_BANKGENERIC_SLOTS 28
+            local btn= tab[i]
+            if btn then
+                btn:ClearAllPoints()
+                btn:SetPoint('LEFT', self.last, 'RIGHT', Save().line, 0)
+                self.last= btn
+                self.num= self.num+1
+            end
+        end
       
 
         --材料包
@@ -201,21 +279,8 @@ local function Init_Button()
                 else
                     btn:SetPoint('LEFT', BankSlotsFrame['Bag'..(i-1)], 'RIGHT', Save().line, 0)        
                 end
-                table.insert(tab, btn)
             end
         end
-
-        for i=Save().num+1, #tab, Save().num do--NUM_BANKGENERIC_SLOTS 28
-            local btn= tab[i]
-            if btn then
-                btn:ClearAllPoints()
-                btn:SetPoint('LEFT', self.last, 'RIGHT', Save().line, 0)
-                self.last= btn
-                self.num= self.num+1
-            end
-        end
-
-
     end
 
 
@@ -251,7 +316,7 @@ local function Init_Button()
                 btn.Bg:SetAtlas('ChallengeMode-DungeonIconFrame')
                 btn.Bg:SetAlpha(0.5)
             end
-            self:set_index_label(btn, index)--索引，提示
+            set_index_label(btn, index)--索引，提示
             btnNum=index
         end
         for i=Save().num+1, btnNum, Save().num do
@@ -298,9 +363,9 @@ local function Init_Button()
 
 
 
-    function SetAllBank:settings(tabindex)
-        tabindex= tabindex or BankFrame.activeTabIndex
-        if tabindex==1 then
+    function SetAllBank:settings(tabindex)--如果没有tabIndex，为设置，全部
+        local index= tabindex or BankFrame.activeTabIndex
+        if index==1 then
             do
                 ReagentBankFrame:SetShown(true)
                 AccountBankPanel:SetShown(true)
@@ -308,10 +373,13 @@ local function Init_Button()
             do self:set_bank() end
             do self:set_reagent(1) end
 
-        elseif tabindex==2 then
+        elseif index==2 then
             do self:set_reagent(2) end
         end
-        SetAllBank:set_size(tabindex)--设置，外框，大小
+        SetAllBank:set_size(index)--设置，外框，大小
+        if not tabindex then
+            e.call(AccountBankPanel.GenerateItemSlotsForSelectedTab, AccountBankPanel)
+        end
     end
 
 
@@ -322,20 +390,31 @@ local function Init_Button()
         if index==1 then
             ReagentBankFrame:SetShown(true)
             AccountBankPanel:SetShown(true)
+            SetAllBank:settings(index)
+
         elseif index==2 then
+            SetAllBank:settings(index)
+
         elseif index==3 then
+            e.call(AccountBankPanel.GenerateItemSlotsForSelectedTab, AccountBankPanel)
         end
-        SetAllBank:settings(index)
+        
         if not IsReagentBankUnlocked() and ReagentBankFrame.UnlockInfo then
             ReagentBankFrame.UnlockInfo:SetShown(BankFrame.activeTabIndex==2)
         end
     end)
 
     hooksecurefunc('BankFrameItemButtonBag_OnClick', function()
-        SetAllBank:settings()
+        SetAllBank:settings(BankFrame.activeTabIndex)
     end)
 
     BankFramePurchaseButton:SetWidth(BankFramePurchaseButton:GetFontString():GetWidth()+12)
+
+
+
+
+
+
 
     hooksecurefunc('UpdateBagSlotStatus', function()
         if BankFramePurchaseInfo then
@@ -348,55 +427,11 @@ local function Init_Button()
                 BankFramePurchaseButton:SetPoint('BOTTOM', BankFrame)
             end
         end
-        SetAllBank:settings()
+        SetAllBank:settings(BankFrame.activeTabIndex)
     end)
 
 
-    hooksecurefunc(AccountBankPanel, 'GenerateItemSlotsForSelectedTab',function()
-        local last
-        local tab={}
-        local num=0
-        local index=0
-        for btn in AccountBankPanel:EnumerateValidItems() do
-            index= index+1
-            btn:ClearAllPoints()
-            if index==1 then
-                btn:SetPoint("TOPLEFT", AccountBankPanel, "TOPLEFT", 0, -63)
-                num= 1
-            else
-                btn:SetPoint('TOP', last, 'BOTTOM', 0, -Save().line)
-            end
-            last=btn
-            table.insert(tab, btn)
-        end
-        
-        last= tab[1]
-        for i=Save().num+1, index, Save().num do
-            num= num+1
-            local btn= tab[i]
-            btn:ClearAllPoints()
-            btn:SetPoint('LEFT', last, 'RIGHT', Save().line, 0)
-            last= btn
-        end
-
-        local tabindex= BankFrame.activeTabIndex
-        if tabindex==1 then
-            AccountBankPanel:ClearAllPoints()
-            AccountBankPanel:SetPoint('TOPLEFT', BankFrame, 'TOPRIGHT')
-                      
-            AccountBankPanel:SetSize(
-                8+(num*38)+((num-1)*Save().line),
-                64+(Save().num*37)+(Save().num*Save().line)+8+64+6
-            )
-        elseif tabindex==3 then
-            BankFrame:SetSize(
-                8+(num*37)+((num-1)*Save().line)+8+8+2,
-                (Save().num+1)*37 +((Save().num-1)*Save().line)+64+8+6+64
-            )
-            AccountBankPanel:ClearAllPoints()
-            AccountBankPanel:SetAllPoints()
-        end
-    end)
+    hooksecurefunc(AccountBankPanel, 'GenerateItemSlotsForSelectedTab', Set_AccountBankPanel)
 
 
     SetAllBank:set_bank()--设置，银行，按钮
@@ -513,10 +548,20 @@ function WoWTools_BankFrameMixin:Init_All_Bank()
     --WoWTools_ButtonMixin:CreateButton(3)
 
     --显示背景 Background
-    WoWTools_TextureMixin:CreateBackground(AccountBankPanel, {isAllPoint=true, alpha=1})
+    --WoWTools_TextureMixin:CreateBackground(AccountBankPanel, {isAllPoint=true, alpha=1})
+    
 
-    --AccountBankPanel.Header.Text:ClearAllPoints()
-    --AccountBankPanel.Header.Text:SetPoint('LEFT', AccountBankPanel.Header)
+    AccountBankPanel.Header:ClearAllPoints()
+    AccountBankPanel.Header:SetPoint('TOPLEFT', 16, -36)
 
+    AccountBankPanel.Header.Text:ClearAllPoints()
+    AccountBankPanel.Header.Text:SetPoint('LEFT')
+    
+
+    e.Set_Move_Frame(AccountBankPanel, {frame=BankFrame})
+
+    AccountBankPanel.Background=AccountBankPanel:CreateTexture(nil, 'BACKGROUND')
+    AccountBankPanel.Background:SetAllPoints()
+    self:Set_Background_Texture(AccountBankPanel.Background)
 end
 

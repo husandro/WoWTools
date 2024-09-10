@@ -11,7 +11,7 @@ Save={
     num=14,
     --notSearchItem=true,--OnEnter时，搜索物品
     --showIndex=true,--显示，索引
-    --showBackground= true,--设置，背景
+    showBackground= true,--设置，背景
 
     allBank=e.Player.husandro,--转化为联合的大包
     show_AllBank_Type=true,--大包时，显示，存取，分类，按钮
@@ -42,7 +42,15 @@ function WoWTools_BankFrameMixin:Settings_All_Bank()--设置，整合银行
 end
 
 
-
+function WoWTools_BankFrameMixin:Set_Background_Texture(texture)
+    if texture then
+        if self.Save.showBackground then
+            texture:SetAtlas('bank-frame-background')
+        else
+            texture:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
+        end
+    end
+end
 
 
 
@@ -98,11 +106,22 @@ local function Init_Menu(self, root)
     if _G['WoWTools_SetAllBankButton'] then
 --索引
 
-    sub=root:CreateCheckbox(e.onlyChinese and '索引' or 'Index', function()
+    root:CreateCheckbox(e.onlyChinese and '索引' or 'Index', function()
         return Save().showIndex
     end, function()
         Save().showIndex= not Save().showIndex and true or nil--显示，索引
         WoWTools_BankFrameMixin:Settings_All_Bank()--设置，整合银行
+    end)
+
+--显示背景
+    root:CreateCheckbox(
+        e.onlyChinese and '显示背景' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SHOW_PARTY_FRAME_BACKGROUND,
+    function()
+        return Save().showBackground
+    end, function()
+        Save().showBackground= not Save().showBackground and true or nil
+        WoWTools_BankFrameMixin:Set_Background_Texture(BankFrame.Background)
+        WoWTools_BankFrameMixin:Set_Background_Texture(AccountBankPanel.Background)
     end)
 
     root:CreateSpacer()
@@ -180,11 +199,13 @@ local function Init_Texture()
     e.Set_Alpha_Frame_Texture(BankFrameTab2, {isMinAlpha=true})
     e.Set_Alpha_Frame_Texture(BankFrameTab3, {isMinAlpha=true})
 
+
     BankFrame:EnableDrawLayer('BACKGROUND')
     BankFrame.Background:ClearAllPoints()
     BankFrame.Background:SetPoint('TOPLEFT', BankFrame)
-    BankFrame.Background:SetPoint('BOTTOMRIGHT', BankFrame)
-    BankFrame.Background:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
+    BankFrame.Background:SetPoint('BOTTOMRIGHT', BankFrame)    
+    WoWTools_BankFrameMixin:Set_Background_Texture(BankFrame.Background)
+    --BankFrame.Background:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
 end
 
 

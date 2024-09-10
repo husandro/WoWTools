@@ -13,15 +13,17 @@ end
 
 
 --存放，取出，所有
-local function Init()
+local function Init_BankSlotsFrame()
     local btn= WoWTools_ButtonMixin:Cbtn(BankSlotsFrame, {size=23, icon='hide'})
     btn:SetNormalAtlas('poi-traveldirections-arrow')
     btn:GetNormalTexture():SetTexCoord(1,0,1,0)
+
     if Save().allBank then
         btn:SetPoint('RIGHT', BankItemAutoSortButton, 'LEFT', -2, 0)
     else
         btn:SetPoint('RIGHT', BankItemSearchBox, 'LEFT', -6, 0)
     end
+
     btn:SetScript('OnClick', function(self)
         local free= WoWTools_BagMixin:GetFree()--背包，空位
         if free==0 then
@@ -101,6 +103,7 @@ local function Init()
             end
         end
     end)
+
     function btnOut:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
@@ -119,6 +122,16 @@ local function Init()
     btnOut:HookScript('OnLeave', GameTooltip_Hide)
     btnOut:HookScript('OnEnter', btnOut.set_tooltips)
     ReagentBankFrame.DespositAllItemButton= btnOut
+
+
+
+
+
+
+
+
+
+
 
 
     --取出，所有，材料
@@ -184,5 +197,5 @@ end
 
 
 function WoWTools_BankFrameMixin:Init_Desposit_TakeOut()--原生, 增强
-    Init()
+    Init_BankSlotsFrame()
 end
