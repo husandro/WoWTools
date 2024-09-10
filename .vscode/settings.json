@@ -4943,7 +4943,8 @@
         "ToggleBag",
         "BAGSLOTTEXT",
         "RATED_BG_BLITZ_SIZE",
-        "DEPOSIT"
+        "DEPOSIT",
+        "BankFrameItemButtonGeneric_OnClick"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

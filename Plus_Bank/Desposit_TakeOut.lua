@@ -1,7 +1,7 @@
 local e= select(2, ...)
 
 local function Save()
-    return WoWTools_BankFrame.Save
+    return WoWTools_BankFrameMixin.Save
 end
 
 
@@ -76,6 +76,7 @@ local function Init()
     btn:HookScript('OnEnter', btn.set_tooltips)
     ReagentBankFrame.TakeOutAllItemButton= btn
 
+    
     --存放，所有，物品
     local btnOut= WoWTools_ButtonMixin:Cbtn(ReagentBankFrame.TakeOutAllItemButton, {size=23, icon='hide'})
     btnOut:SetNormalAtlas('poi-traveldirections-arrow')
@@ -182,6 +183,6 @@ end
 
 
 
-function WoWTools_BankFrame:Init_Desposit_TakeOut()--原生, 增强
+function WoWTools_BankFrameMixin:Init_Desposit_TakeOut()--原生, 增强
     Init()
 end

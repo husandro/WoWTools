@@ -30,7 +30,7 @@ API_WoWDate.lua
 
 ##主要function，不能删除
 
-
+Mixin\Texture_Mixin.lua
 Mixin\Map_Mixin.lua
 Mixin\Faction_Mixin.lua
 Mixin\Bag_Mixin.lua
@@ -143,11 +143,14 @@ Plus_SellBuy\Plus_StackSplitFrame.lua
 
 ##银行
 Plus_Bank\Init_Bank.lua
+Plus_Bank\Show_Frame.lua
+Plus_Bank\Left_List.lua
 Plus_Bank\Desposit_TakeOut.lua
-
 Plus_Bank\Plus_Bank.lua
 Plus_Bank\All_Bank.lua
-Plus_Bank\Left_List.lua
+
+
+
 
 
 

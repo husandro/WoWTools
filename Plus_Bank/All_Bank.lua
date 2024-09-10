@@ -1,51 +1,62 @@
---整合，一起
+--整合
 local e= select(2, ...)
 
 local function Save()
-    return WoWTools_BankFrame.Save
+    return WoWTools_BankFrameMixin.Save
 end
 
 
-local function Init()
-    local SetAllBank= WoWTools_ButtonMixin:Cbtn(BankFrame.TitleContainer, {size={22,22}, icon=true, name='WoWTools_SetAllBankButton'})
-    SetAllBank:SetAlpha(0.5)
-    if _G['MoveZoomInButtonPerBankFrame'] then
-        SetAllBank:SetPoint('RIGHT', _G['MoveZoomInButtonPerBankFrame'], 'LEFT')
-    else
-        SetAllBank:SetPoint('LEFT', 12,0)
+
+--设置，frame到最左边，为隐藏
+local function BagFrame_SetPoint_ToLeft(bagFrame)
+    if not bagFrame.set_point_toleft then
+        if bagFrame.ResizeButton then
+            bagFrame.ResizeButton:SetClampedToScreen(false)
+        end
+        function bagFrame:set_point_toleft()
+            bagFrame:ClearAllPoints()
+            bagFrame:SetPoint('RIGHT', UIParent, 'LEFT', -60, 0)
+        end
+        bagFrame:HookScript('OnShow', bagFrame.set_point_toleft)
     end
+    bagFrame:set_point_toleft()
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Init_Button()
+    local SetAllBank= WoWTools_ButtonMixin:Cbtn(BankFrame.TitleContainer, {size={22,22}, icon=true, name='WoWTools_SetAllBankButton'})
+
+    SetAllBank:SetAlpha(0.5)
+    SetAllBank:SetPoint('LEFT', 12,0)
+
     function SetAllBank:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, WoWTools_BankFrame.addName)
+        e.tips:AddDoubleLine(e.addName, WoWTools_BankFrameMixin.addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine((e.onlyChinese and '行数' or HUD_EDIT_MODE_SETTING_ACTION_BAR_NUM_ROWS)..' |cnGREEN_FONT_COLOR:'..Save().num, e.Icon.mid)
         e.tips:AddDoubleLine((e.onlyChinese and '间隔' or 'Interval')..' |cnGREEN_FONT_COLOR:'..Save().line, 'Alt+'..e.Icon.mid)
         e.tips:Show()
         self:SetAlpha(1)
     end
-    --设置，背景
-
-    --[[function SetAllBank:set_background()
-        if Save().showBackground~=nil then
-            if Save().showBackground then
-                BankFrame:DisableDrawLayer('BACKGROUND')
-
-                BankFrame.Background:ClearAllPoints()
-                BankFrame.Background:SetAllPoints()
-                BankFrame.Background:SetAtlas('bank-frame-background')
-            else
-                BankFrame:EnableDrawLayer('BACKGROUND')
-                BankFrame.Background:ClearAllPoints()
-                BankFrame.Background:SetPoint('TOPLEFT', BankFrame)
-                BankFrame.Background:SetPoint('BOTTOMRIGHT', BankFrame)
-                BankFrame.Background:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
-            end
-        end
-    end]]
 
     SetAllBank:SetScript('OnMouseWheel', function(self, d)
-        if not IsModifierKeyDown() then
+        if not IsModifierKeyDown() then--行数
             local n= Save().num
             if d==1 then
                 n= n-1
@@ -53,7 +64,7 @@ local function Init()
                 n=n +1
             end
             n= n<4 and 4 or n
-            n= n>24 and 24 or n
+            n= n>32 and 32 or n
             Save().num= n
         elseif IsAltKeyDown() then
             local n= Save().line
@@ -63,15 +74,21 @@ local function Init()
                 n= n+1
             end
             n=n<0 and 0 or n
-            n=n>24 and 24 or n
+            n=n>32 and 32 or n
             Save().line= n
         end
 
+        self:settings()
+        self:set_tooltips()
+    end)
+
+    function SetAllBank:settings()
         self:set_bank()--设置，银行，按钮
         self:set_reagent()--设置，材料，按钮
         self:set_size()--设置，外框，大小
-        self:set_tooltips()
-    end)
+    end
+
+
 
     SetAllBank:SetScript('OnLeave', function(self) self:SetAlpha(0.5) e.tips:Hide() end)
     SetAllBank:SetScript('OnEnter', SetAllBank.set_tooltips)
@@ -89,9 +106,27 @@ local function Init()
         end
     end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     --设置，银行，按钮
-    function BankSlotsFrame:IsCombinedBagContainer()
-        return false
+    if not BankSlotsFrame.IsCombinedBagContainer then
+        function BankSlotsFrame:IsCombinedBagContainer()
+            return false
+        end
     end
     function SetAllBank:set_bank()
         self.last=nil
@@ -117,9 +152,10 @@ local function Init()
             end
         end
 
+
         local num=0
         local bagindex
-        local numBag= NUM_TOTAL_EQUIPPED_BAG_SLOTS+ NUM_REAGENTBAG_FRAMES
+        local numBag= NUM_TOTAL_EQUIPPED_BAG_SLOTS+ NUM_REAGENTBAG_FRAMES--5+1
 
         for i=1, NUM_BANKBAGSLOTS do
             local bag= i+ numBag
@@ -128,26 +164,23 @@ local function Init()
             local bagID= bagFrame and bagFrame:GetID() or 0
             if bagFrame and bagID>= numBag then
 
-                bagFrame:ClearAllPoints()
-                bagFrame:SetPoint('RIGHT', UIParent, 'LEFT', -40, 0)
-                if not bagFrame.isHideFrame then
-                    bagFrame.isHideFrame=true
-                    bagFrame:HookScript('OnShow', function(f)
-                        f:Hide()
-                    end)
-                end
-                bagFrame:SetShown(true)
-                
-                for _, btn in bagFrame:EnumerateValidItems()  do                        
-                        num=num+1
-                        --btn:SetParent(BankSlotsFrame)
-                        btn:ClearAllPoints()
-                        btn:SetPoint('TOP', last, 'BOTTOM', 0, -Save().line)
-                        last=btn
-                        table.insert(tab, btn)
-                        btn:SetShown(true)
-                        self:set_index_label(btn, num+NUM_BANKGENERIC_SLOTS)--索引，提示
-                    
+                BagFrame_SetPoint_ToLeft(bagFrame)--设置，frame到最左边，为隐藏
+
+                for _, btn in bagFrame:EnumerateValidItems()  do
+                    if btn then
+                        if bagFrame:IsShown() then
+                            num=num+1
+                            btn:SetParent(BankSlotsFrame)
+                            btn:ClearAllPoints()
+                            btn:SetPoint('TOP', last, 'BOTTOM', 0, -Save().line)
+                            last=btn
+                            table.insert(tab, btn)
+                            btn:SetShown(true)
+                            self:set_index_label(btn, num+NUM_BANKGENERIC_SLOTS)--索引，提示
+                        else
+                            btn:SetShown(false)
+                        end
+                    end
                end
             end
         end
@@ -172,11 +205,16 @@ local function Init()
                 else
                     btn:SetPoint('LEFT', BankSlotsFrame['Bag'..(i-1)], 'RIGHT', Save().line, 0)
                 end
-
             end
-
         end
     end
+
+
+
+
+
+
+
 
 
 
@@ -218,6 +256,19 @@ local function Init()
     end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
     function SetAllBank:set_size()--设置，外框，大小
         if BankFrame.activeTabIndex==1 then
             local num= SetAllBank.num + SetAllBank.reagentNum
@@ -227,6 +278,13 @@ local function Init()
             BankFrame:SetSize(8+(num*38)+((num-1)*Save().line), 64+(Save().num*37)+(Save().num*Save().line)+8)--设置，大小
         end
     end
+
+
+
+
+
+
+
 
 
 
@@ -252,13 +310,9 @@ local function Init()
 
     end)
 
-
     hooksecurefunc('BankFrameItemButtonBag_OnClick', function()
-        SetAllBank:set_bank()--设置，银行，按钮
-        SetAllBank:set_reagent()--设置，材料，按钮
-        SetAllBank:set_size()--设置，外框，大小
+        SetAllBank:settings()
     end)
-
 
     BankFramePurchaseButton:SetWidth(BankFramePurchaseButton:GetFontString():GetWidth()+12)
 
@@ -273,9 +327,11 @@ local function Init()
                 BankFramePurchaseButton:SetPoint('BOTTOM', BankFrame)
             end
         end
+        SetAllBank:settings()
     end)
+
     SetAllBank:set_bank()--设置，银行，按钮
-    --SetAllBank:set_background()--设置，背景
+end
 
 
 
@@ -288,12 +344,32 @@ local function Init()
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Init()
     ReagentBankFrame.NineSlice:Hide()
-    if BankFrameMoneyFrameBorder then
-        BankFrameMoneyFrameBorder:Hide()
-    end
+    BankFrameMoneyFrameBorder:Hide()
+    AccountBankPanel.MoneyFrame.Border:Hide()
 
-    --隐藏，ITEMSLOTTEXT"物品栏位" BAGSLOTTEXT"背包栏位"
+--隐藏，ITEMSLOTTEXT"物品栏位" BAGSLOTTEXT"背包栏位"
     for _, region in pairs({BankSlotsFrame:GetRegions()}) do
         if region:GetObjectType()=='FontString' then
             region:SetText('')
@@ -301,34 +377,34 @@ local function Init()
         end
     end
 
-
+--移动，搜索框
     hooksecurefunc('BankFrame_UpdateAnchoringForPanel', function()
-        BankItemSearchBox:ClearAllPoints()--移动，搜索框
+        BankItemSearchBox:ClearAllPoints()
         BankItemSearchBox:SetPoint('TOP', 0,-33)
     end)
 
 
-
+--隐藏，材料包，背景
     ReagentBankFrame:HookScript('OnShow', function(self)
         if self.isSetPoint then--or not IsReagentBankUnlocked() then
             return
         end
         self.isSetPoint=true
-
-
-        for _, region in pairs({ReagentBankFrame:GetRegions()}) do--隐藏，材料包，背景
+        for _, region in pairs({ReagentBankFrame:GetRegions()}) do
             if region:GetObjectType()=='Texture' then
                 region:SetTexture(0)
                 region:Hide()
             end
         end
 
-        BankItemAutoSortButton:ClearAllPoints()--移动，整理，按钮
+--移动，整理，按钮
+        BankItemAutoSortButton:ClearAllPoints()
         BankItemAutoSortButton:SetPoint('RIGHT', BankItemSearchBox, 'LEFT', -6, 0)
         BankItemAutoSortButton:SetParent(BankSlotsFrame)
-
         ReagentBankFrame.autoSortButton:SetPoint('LEFT', BankItemSearchBox, 'RIGHT', 2, 0)--整理材料银行
 
+
+--存放各种材料
         ReagentBankFrame.DespositButton:ClearAllPoints()
         ReagentBankFrame.DespositButton:SetSize(23, 23)
         ReagentBankFrame.DespositButton:SetPoint('LEFT', ReagentBankFrame.autoSortButton, 'RIGHT', 2, 0)
@@ -360,8 +436,13 @@ end
 
 
 
-
-function WoWTools_BankFrame:Init_All_Bank()
+--整合
+function WoWTools_BankFrameMixin:Init_All_Bank()
+    Init_Button()
     Init()
-    
+    WoWTools_ButtonMixin:CreateButton(3)
+
+    --显示背景 Background
+    WoWTools_TextureMixin:CreateBackground(AccountBankPanel, {isAllPoint=true, alpha=1})
 end
+

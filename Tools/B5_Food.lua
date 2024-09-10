@@ -738,11 +738,13 @@ local function Init()
     UseButton.texture:SetTexture(538745)
 
 --显示背景 Background
-    WoWTools_FrameMixin:CreateBackground(UseButton, function(texture)
-        texture:SetPoint('BOTTOMRIGHT', 1 , 1)
-        texture:SetPoint('TOP', UseButton, 1 , 1)
-        texture:SetPoint('LEFT', UseButton, -1 , -1)
-    end)
+    WoWTools_TextureMixin:CreateBackground(UseButton, {
+        point=function(texture)
+            texture:SetPoint('BOTTOMRIGHT', 1 , 1)
+            texture:SetPoint('TOP', UseButton, 1 , 1)
+            texture:SetPoint('LEFT', UseButton, -1 , -1)
+        end}
+    )
     function UseButton:set_background()
         self.Background:SetShown(Save.isShowBackground)
     end

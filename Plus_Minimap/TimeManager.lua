@@ -414,10 +414,12 @@ local function Init_TimeManager()
 
 
 --显示背景
-    WoWTools_FrameMixin:CreateBackground(btn, function(texture)
-        texture:SetPoint('TOPLEFT', TimeManagerClockTicker, -1, -1)
-        texture:SetPoint('BOTTOMRIGHT', TimeManagerClockTicker, 1, 0)
-    end)
+    WoWTools_TextureMixin:CreateBackground(btn, {
+        point=function(texture)
+            texture:SetPoint('TOPLEFT', TimeManagerClockTicker, -1, -1)
+            texture:SetPoint('BOTTOMRIGHT', TimeManagerClockTicker, 1, 0)
+        end
+    })
     function btn:set_background()
         self.Background:SetShown(Save().isShowTimeManagerBackground)
     end
@@ -613,10 +615,12 @@ local function Init_StopwatchFrame()
 
 
 --显示背景
-    WoWTools_FrameMixin:CreateBackground(StopwatchFrame, function(texture)
-        texture:SetPoint('TOPLEFT', StopwatchTickerHour, -1, -1.5)
-        texture:SetPoint('BOTTOMRIGHT', StopwatchTickerSecond, 2, 0)
-    end)
+    WoWTools_TextureMixin:CreateBackground(StopwatchFrame, {
+        point=function(texture)
+            texture:SetPoint('TOPLEFT', StopwatchTickerHour, -1, -1.5)
+            texture:SetPoint('BOTTOMRIGHT', StopwatchTickerSecond, 2, 0)
+        end}
+    )
     function StopwatchFrame:set_background()
         self.Background:SetShown(Save().isShowStopwatchBackground)
     end

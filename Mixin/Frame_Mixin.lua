@@ -154,23 +154,7 @@ frame.Header:Setup(text)
 
 
 
-function WoWTools_FrameMixin:CreateBackground(frame, setPoint)
-    frame.Background= frame:CreateTexture(nil, 'BACKGROUND')
-    if setPoint==true then
-        frame.Background:SetAllPoints()
-    elseif type(setPoint)=='function' then
-        setPoint(frame.Background)
-    end
-    frame.Background:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
-    frame.Background:SetAlpha(0.5)
-    frame.Background:SetVertexColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b)
-end
---[[
---显示背景 Background
-WoWTools_FrameMixin:CreateBackground(frame, function(texture)
-    texture:SetPoint()
-end)
-]]
+
 
 
 

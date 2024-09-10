@@ -369,7 +369,7 @@ local function Init_Achievement()
             local subIcon
             if type(index)=='number' then
                 --local criteriaString, criteriaType, completed, quantity, reqQuantity, charName, flags, assetID, quantityString = GetAchievementCriteriaInfo(achievementID, index);
-                local assetID= select(8, GetAchievementCriteriaInfo(achievementID, index))
+                local assetID= select(8, GetAchievementCriteriaInfoByID(achievementID, index))
                 subIcon = assetID and select(10, GetAchievementInfo(assetID))
             end
             Set_Line_Icon(line, subIcon)

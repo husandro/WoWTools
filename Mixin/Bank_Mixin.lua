@@ -60,3 +60,12 @@ function WoWTools_BankMixin:OpenBag(bagID)
         end
     end
 end
+function WoWTools_BankMixin:CloseBag(bagID)
+    if bagID then
+        CloseBag(bagID)
+    else
+        for i=1, 7 do
+            CloseBag(i+NUM_TOTAL_EQUIPPED_BAG_SLOTS);
+        end
+    end
+end
