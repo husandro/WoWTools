@@ -130,7 +130,6 @@ local function Init_Button()
 
     function SetAllBank:set_bank()
         self.last=nil--给材料包
-        self.last2=nil--给战团
         self.num=0
         local last
 
@@ -171,20 +170,19 @@ local function Init_Button()
                 BagFrame_SetPoint_ToLeft(bagFrame)--设置，frame到最左边，为隐藏
 
                 for _, btn in bagFrame:EnumerateValidItems()  do
-                    if btn then
-                        if bagFrame:IsShown() then
-                            num=num+1
-                            btn:SetParent(BankSlotsFrame)
-                            btn:ClearAllPoints()
-                            btn:SetPoint('TOP', last, 'BOTTOM', 0, -Save().line)
-                            last=btn
-                            table.insert(tab, btn)
-                            btn:SetShown(true)
-                            self:set_index_label(btn, num+NUM_BANKGENERIC_SLOTS)--索引，提示
-                        else
-                            btn:SetShown(false)
-                        end
+                    if bagFrame:IsShown() then
+                        num=num+1
+                        btn:SetParent(BankSlotsFrame)
+                        btn:ClearAllPoints()
+                        btn:SetPoint('TOP', last, 'BOTTOM', 0, -Save().line)
+                        last=btn
+                        table.insert(tab, btn)
+                        btn:SetShown(true)
+                        self:set_index_label(btn, num+NUM_BANKGENERIC_SLOTS)--索引，提示
+                    else
+                        btn:SetShown(false)
                     end
+                    
                end
             end
         end
@@ -269,47 +267,6 @@ local function Init_Button()
 
 
 
-    function SetAllBank:set_account(tabindex)
-
-        AccountBankPanel:ClearAllPoints()
-        if tabindex==1 then
-            AccountBankPanel:SetPoint('TOPLEFT', BankFrame, 'TOPRIGHT')
-        elseif tabindex==3 then
-            AccountBankPanel:SetAllPoints(BankFrame)
-        else
-            return
-        end
-
-        self.accountNum= 0
-
-
-        local last
-        local tab={}
-        self.accountNum=0
-        local index=0
-        for btn in AccountBankPanel:EnumerateValidItems() do
-            index= index+1
-           
-            btn:ClearAllPoints()
-            if index==1 then
-                btn:SetPoint("TOPLEFT", AccountBankPanel, "TOPLEFT", 0, -63)
-            else
-                btn:SetPoint('TOP', last, 'BOTTOM', 0, -Save().line)
-            end
-            last=btn
-            table.insert(tab, btn)
-        end
-        self.accountNum= index
-        
-        last= tab[1]
-        for i=Save().num+1, self.accountNum, Save().num do
-            local btn= tab[i]
-            btn:ClearAllPoints()
-            btn:SetPoint('LEFT', last, 'RIGHT', Save().line, 0)
-            last= btn
-        end
-    end
-
 
 
 
@@ -322,27 +279,15 @@ local function Init_Button()
         if tabindex==1 then
             local num= SetAllBank.num + SetAllBank.reagentNum
             BankFrame:SetSize(
-                8+num*37+((num-1)*Save().line)+8+8+2,
+                8+(num*37)+((num-1)*Save().line)+8+8+2,
                 (Save().num+1)*37 +((Save().num-1)*Save().line)+64+8+6
-            )
-            num= SetAllBank.accountNum
-            AccountBankPanel:SetSize(
-                8+(num*38)+((num-1)*Save().line),
-                64+(Save().num*37)+(Save().num*Save().line)+8
             )
 
         elseif tabindex==2 then
             local num= SetAllBank.reagentNum
             BankFrame:SetSize(
-                8+(num*38)+((num-1)*Save().line),
+                8+(num*37)+((num-1)*Save().line),
                 64+(Save().num*37)+(Save().num*Save().line)+8
-            )
-
-        elseif tabindex==3 then
-            local num= SetAllBank.accountNum
-            BankFrame:SetSize(
-                8+num*37+((num-1)*Save().line)+8+8+2,
-                (Save().num+1)*37 +((Save().num-1)*Save().line)+64+8+6
             )
         end
     end
@@ -362,20 +307,9 @@ local function Init_Button()
             end
             do self:set_bank() end
             do self:set_reagent(1) end
-            do self:set_account(1) end
 
         elseif tabindex==2 then
-            --local btn= ReagentBankFrame["Item1"]
             do self:set_reagent(2) end
-            --[[if btn then
-                btn:ClearAllPoints()
-                btn:SetPoint('TOPLEFT', 8,-60)
-            end]]
-            
-            
-
-        elseif tabindex==3 then 
-            self:set_account(3)
         end
         SetAllBank:set_size(tabindex)--设置，外框，大小
     end
@@ -388,16 +322,8 @@ local function Init_Button()
         if index==1 then
             ReagentBankFrame:SetShown(true)
             AccountBankPanel:SetShown(true)
-           
-
         elseif index==2 then
-            --[[local btn= ReagentBankFrame["Item1"]
-            if btn then
-                btn:ClearAllPoints()
-                btn:SetPoint('TOPLEFT', 8,-60)
-            end]]
-        elseif index==3 then 
-            
+        elseif index==3 then
         end
         SetAllBank:settings(index)
         if not IsReagentBankUnlocked() and ReagentBankFrame.UnlockInfo then
@@ -426,9 +352,51 @@ local function Init_Button()
     end)
 
 
-   -- hooksecurefunc(AccountBankPanel, 'GenerateItemSlotsForSelectedTab',function()
+    hooksecurefunc(AccountBankPanel, 'GenerateItemSlotsForSelectedTab',function()
+        local last
+        local tab={}
+        local num=0
+        local index=0
+        for btn in AccountBankPanel:EnumerateValidItems() do
+            index= index+1
+            btn:ClearAllPoints()
+            if index==1 then
+                btn:SetPoint("TOPLEFT", AccountBankPanel, "TOPLEFT", 0, -63)
+                num= 1
+            else
+                btn:SetPoint('TOP', last, 'BOTTOM', 0, -Save().line)
+            end
+            last=btn
+            table.insert(tab, btn)
+        end
         
-    --end)
+        last= tab[1]
+        for i=Save().num+1, index, Save().num do
+            num= num+1
+            local btn= tab[i]
+            btn:ClearAllPoints()
+            btn:SetPoint('LEFT', last, 'RIGHT', Save().line, 0)
+            last= btn
+        end
+
+        local tabindex= BankFrame.activeTabIndex
+        if tabindex==1 then
+            AccountBankPanel:ClearAllPoints()
+            AccountBankPanel:SetPoint('TOPLEFT', BankFrame, 'TOPRIGHT')
+                      
+            AccountBankPanel:SetSize(
+                8+(num*38)+((num-1)*Save().line),
+                64+(Save().num*37)+(Save().num*Save().line)+8+64+6
+            )
+        elseif tabindex==3 then
+            BankFrame:SetSize(
+                8+(num*37)+((num-1)*Save().line)+8+8+2,
+                (Save().num+1)*37 +((Save().num-1)*Save().line)+64+8+6+64
+            )
+            AccountBankPanel:ClearAllPoints()
+            AccountBankPanel:SetAllPoints()
+        end
+    end)
 
 
     SetAllBank:set_bank()--设置，银行，按钮
