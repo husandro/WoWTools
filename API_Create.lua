@@ -46,6 +46,7 @@ function e.Cstr(self, tab)
             local fontName2, size2, fontFlag2= font:GetFont()
             if e.onlyChinese then
                 fontName2= 'Fonts\\ARHei.ttf'--黑体字
+                --fontName2='Interface\\AddOns\\WoWTools\\Sesource\\Cloud24-Bold.ttf'
             end
             font:SetFont(fontName2, size or size2, notFlag and fontFlag2 or 'OUTLINE')
         end
