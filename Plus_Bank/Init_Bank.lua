@@ -13,9 +13,9 @@ Save={
     --showIndex=true,--显示，索引
     showBackground= true,--设置，背景
 
-    allBank=e.Player.husandro,--转化为联合的大包
+    --allBank=e.Player.husandro,--转化为联合的大包
     show_AllBank_Type=true,--大包时，显示，存取，分类，按钮
-
+    openBagInBank=e.Player.husandro,
     left_List= true,
 
     --show_AllBank_Type_Scale=1,
@@ -25,8 +25,8 @@ addName=nil,
 Init_All_Bank=function()end,
 Init_Left_List=function()end,
 Init_Desposit_TakeOut=function()end,
-Init_Bank_Plus=function()end,
-CreateButton=function()end,
+--Init_Bank_Plus=function()end,
+--CreateButton=function()end,
 
 }
 
@@ -69,7 +69,8 @@ end
 --设置菜单
 --#######
 local function Init_Menu(self, root)
-    local sub= root:CreateCheckbox(e.onlyChinese and '转化为联合的大包' or BAG_COMMAND_CONVERT_TO_COMBINED, function()
+    local sub
+    --[[local sub= root:CreateCheckbox(e.onlyChinese and '转化为联合的大包' or BAG_COMMAND_CONVERT_TO_COMBINED, function()
         return Save().allBank
     end, function()
         Save().allBank= not Save().allBank and true or nil
@@ -80,8 +81,8 @@ local function Init_Menu(self, root)
     root:CreateDivider()
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-    end)
-    WoWTools_MenuMixin:Reload(sub, false)
+    end)]]
+    
 
 --左边列表
     root:CreateCheckbox(e.onlyChinese and '左边列表' or 'Left List', function()
@@ -92,7 +93,7 @@ local function Init_Menu(self, root)
     end)
 
 --自动打开背包栏位
-    root:CreateCheckbox(
+    sub=root:CreateCheckbox(
         e.onlyChinese and '自动打开背包栏位' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, BAGSLOTTEXT)),
     function()
         return Save().openBagInBank
@@ -100,6 +101,12 @@ local function Init_Menu(self, root)
         Save().openBagInBank= not Save().openBagInBank and true or nil
         self:set_event()
     end)
+    if _G['NDui_BackpackBank'] then
+        sub:SetTooltip(function(tooltip)
+            GameTooltip_AddErrorLine(tooltip, 'Bub: NDui')
+        end)
+        sub:SetEnabled(false)
+    end
 
 
 --整合
@@ -158,7 +165,8 @@ local function Init_Menu(self, root)
 end
 
     root:CreateDivider()
-    WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_BankFrameMixin.addName})
+    sub=WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_BankFrameMixin.addName})
+    WoWTools_MenuMixin:Reload(sub, false)
 end
 
 
@@ -278,12 +286,12 @@ end
 --银行
 --BankFrame.lua
 local function Init()
-    local OptionButton= WoWTools_ButtonMixin:Cbtn(BankFrame.TitleContainer, {size={22,22}, atlas='hide'})
-    OptionButton:SetPoint('LEFT', 34,0)
-
-    function OptionButton:set_atlas()
-        self:SetNormalAtlas(Save().allBank and 'Warfronts-BaseMapIcons-Alliance-Workshop-Minimap' or 'Warfronts-BaseMapIcons-Empty-Workshop-Minimap')
-    end
+    --local OptionButton= WoWTools_ButtonMixin:Cbtn(BankSlotsFrame, {size={22,22}, atlas='hide'})
+    local OptionButton= WoWTools_ButtonMixin:CreateOptionButton(BankSlotsFrame, 'WoWTools_BankFrameOptionButton', nil)
+    OptionButton:SetPoint('LEFT',BankFrame.TitleContainer)
+    OptionButton:SetFrameStrata(BankFrame.TitleContainer:GetFrameStrata())
+    OptionButton:SetFrameLevel(BankFrame.TitleContainer:GetFrameLevel()+1)
+ 
 
     OptionButton:SetScript('OnLeave', function(self) self:SetAlpha(0.5) end)
     OptionButton:SetScript('OnEnter', function(self)
@@ -300,7 +308,6 @@ local function Init()
         MenuUtil.CreateContextMenu(self, Init_Menu)
     end)
     OptionButton:SetAlpha(0.5)
-    OptionButton:set_atlas()
 
     function OptionButton:set_event()
         if Save().openBagInBank then
@@ -310,7 +317,9 @@ local function Init()
         end
     end
     OptionButton:SetScript('OnEvent', function()
-        WoWTools_BankMixin:OpenBag()
+        if not _G['NDui_BackpackBank'] then
+            WoWTools_BankMixin:OpenBag()
+        end
     end)
     OptionButton:set_event()
 
@@ -369,11 +378,9 @@ local function Init()
 
 
 
-    if Save().allBank then
-        WoWTools_BankFrameMixin:Init_All_Bank()--整合，一起
-    else
-        WoWTools_BankFrameMixin:Init_Bank_Plus()--原生, 增强
-    end
+    
+    WoWTools_BankFrameMixin:Init_All_Bank()--整合，一起
+
 
     WoWTools_BankFrameMixin:Init_Desposit_TakeOut()--存放，取出，所有
 

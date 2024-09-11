@@ -187,7 +187,7 @@ end
 
 
 --打开菜单按钮
---[[function WoWTools_ButtonMixin:CreateOptionButton(frame, name, setID)
+function WoWTools_ButtonMixin:CreateOptionButton(frame, name, setID)
     local btn= CreateFrame("Button", name or ('WoWToolsToolsButton'..get_index()), frame or UIParent, nil, setID)--ObjectiveTrackerContainerFilterButtonTemplate
     btn:SetSize(23,23)
     btn:SetNormalAtlas('ui-questtrackerbutton-filter')
@@ -197,7 +197,7 @@ end
     btn:EnableMouseWheel(true)
     btn:SetAlpha(0.5)
     return btn
-end]]
+end
 
 
 

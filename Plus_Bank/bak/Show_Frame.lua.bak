@@ -11,7 +11,7 @@ end
 local function Init_Menu(self, root)
     root:CreateCheckbox(e.onlyChinese and '显示' or SHOW, function()
         return not Save()['hide'..self.name]
-    end, function()
+    end, function()        
         self:set_shown()
         return MenuResponse.Close
     end)
@@ -113,7 +113,7 @@ local function CreateButton(tabIndex)
     frame:HookScript("OnDragStop", function(self)
         self:StopMovingOrSizing()
         Save()['point'..ShowButton.name]= {self:GetPoint(1)}
-        Save()['point'..ShowButton.name]= nil
+        Save()['point'..ShowButton.name][2]= nil
         ResetCursor()
     end)
     frame:HookScript("OnMouseUp", ResetCursor)--停止移动
@@ -130,16 +130,16 @@ local function CreateButton(tabIndex)
 
 
 
-    local btn= WoWTools_ButtonMixin:Cbtn(BankFrame, {size={18,18}, atlas='hide'})
-    btn.name= name
-    btn.tabIndex= tabIndex
+    ShowButton= WoWTools_ButtonMixin:Cbtn(BankFrame, {size={18,18}, atlas='hide'})
+    ShowButton.name= name
+    ShowButton.tabIndex= tabIndex
 
-    btn:SetPoint('BOTTOMRIGHT', _G['BankFrameTab1'], 'BOTTOMLEFT')
-    function btn:set_atlas()
+    ShowButton:SetPoint('BOTTOMRIGHT', _G['BankFrameTab1'], 'BOTTOMLEFT')
+    function ShowButton:set_atlas()
         self:SetNormalAtlas(Save()['hide'..self.name] and 'editmode-up-arrow' or 'editmode-down-arrow')
     end
 
-    function btn:set_scale()
+    function ShowButton:set_scale()
         if BankFrame.activeTabIndex==self.tabIndex then
             _G[self.name]:SetScale(1)
         else
@@ -147,7 +147,7 @@ local function CreateButton(tabIndex)
         end
     end
 
-    function btn:set_tooltips()
+    function ShowButton:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.addName, WoWTools_BankFrameMixin.addName)
@@ -157,14 +157,14 @@ local function CreateButton(tabIndex)
         e.tips:Show()
     end
 
-    function btn:set_shown()
+    function ShowButton:set_shown()
         Save()['hide'..self.name]= not Save()['hide'..self.name] and true or nil
-        self:show_hide(Save()['hide'..self.name])
+        self:show_hide()
         self:set_atlas()
         self:set_tooltips()
     end
 
-    btn:SetScript('OnClick', function(self, d)
+    ShowButton:SetScript('OnClick', function(self, d)
         if d=='LeftButton' then
             self:set_shown()
 
@@ -174,48 +174,54 @@ local function CreateButton(tabIndex)
     end)
 
 
-    btn:SetScript('OnLeave', GameTooltip_Hide)
-    btn:SetScript('OnEnter', btn.set_tooltips)
-    btn:set_scale()
-    btn:set_atlas()
+    ShowButton:SetScript('OnLeave', GameTooltip_Hide)
+    ShowButton:SetScript('OnEnter', ShowButton.set_tooltips)
+    ShowButton:set_scale()
+    ShowButton:set_atlas()
 
 
 
     --设置，显示材料银行
-    function btn:show_hide(hide)
+    function ShowButton:show_hide()
         --local unlocked= IsReagentBankUnlocked()
-        local show= not Save()['hide'..self.name]
-        if show and BankFrame.activeTabIndex then
-            local f= _G[self.name]
-            if BankFrame.activeTabIndex==1 and not hide then
+        local f= _G[self.name]
+        local index= BankFrame.activeTabIndex
+
+        if index==self.tabIndex then                
+            if self.tabIndex==2 then
+                f:ClearAllPoints()    
+                f:SetPoint('TOPLEFT')
+            elseif index==3 then
                 f:ClearAllPoints()
+                f:SetAllPoints()
+            end
+            f:SetShown(true)
+        elseif index==1 then
+            local show=not Save()['hide'..self.name]
+            if show then
                 local point= Save()['point'..self.name]
                 if point then
                     f:SetPoint(point[1], UIParent, point[3], point[4],  point[5])
                 else
                     f:SetPoint('TOPLEFT', BankFrame, 'BOTTOMLEFT', Save()['x'..self.name] or -15, Save()['y'..self.name] or 10)
                 end
-                f:SetShown(true)
-            elseif BankFrame.activeTabIndex==self.tabIndex or hide then
-                f:ClearAllPoints()
-
-                    f:SetPoint('TOPLEFT')
-
-                if hide then
-                    f:SetShown(false)
-                end
+                f:SetPoint(true)
+            else
+                f:SetShown(false)
             end
+        else
+            f:Hide()
         end
-        self:SetShown(BankFrame.activeTabIndex==1)--选项
         self:set_scale()--缩放
-        ReagentBankFrame.autoSortButton:SetShown(show and BankFrame.activeTabIndex==1)--整理材料银行
+        if frame.autoSortButton then
+           frame.autoSortButton:SetShown(index==1)--整理材料银行
+        end
+    
     end
 
     hooksecurefunc('BankFrame_ShowPanel', function()
         ShowButton:show_hide()
     end)
-
-    ShowButton= btn
 end
 
 

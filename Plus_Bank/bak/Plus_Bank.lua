@@ -4,7 +4,7 @@ local function Save()
     return WoWTools_BankFrameMixin.Save
 end
 
---[[
+
 local function Init_Menu(self, root)
     root:CreateCheckbox(e.onlyChinese and '显示' or SHOW, function()
         return not Save().hideReagentBankFrame
@@ -77,7 +77,7 @@ else
     })
     root:CreateSpacer()
 end
-end]]
+end
 
 
 
@@ -86,7 +86,7 @@ end]]
 
 --原生, 增强
 local function Init()--增强，原生
-    --[[ReagentBankFrame.ShowHideButton= WoWTools_ButtonMixin:Cbtn(BankFrame, {size={18,18}, atlas='hide'})
+    ReagentBankFrame.ShowHideButton= WoWTools_ButtonMixin:Cbtn(BankFrame, {size={18,18}, atlas='hide'})
     ReagentBankFrame.ShowHideButton:SetPoint('BOTTOMRIGHT', _G['BankFrameTab1'], 'BOTTOMLEFT')
     function ReagentBankFrame.ShowHideButton:set_atlas()
         self:SetNormalAtlas(Save().hideReagentBankFrame and 'editmode-up-arrow' or 'editmode-down-arrow')
@@ -175,7 +175,7 @@ local function Init()--增强，原生
         ReagentBankFrame.autoSortButton:SetShown(not Save().hideReagentBankFrame and BankFrame.activeTabIndex==1)--整理材料银行
     end
     hooksecurefunc('BankFrame_ShowPanel', ReagentBankFrame.ShowHideButton.show_hide)
-    ]]
+
 
 
 
@@ -219,5 +219,5 @@ end
 
 function WoWTools_BankFrameMixin:Init_Bank_Plus()--原生, 增强
     Init()
-    WoWTools_ButtonMixin:CreateButton(2)
+    --WoWTools_ButtonMixin:CreateButton(2)
 end

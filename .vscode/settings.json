@@ -4949,7 +4949,8 @@
         "BankCleanUpConfirmationPopup",
         "BAG_CLEANUP_ACCOUNT_BANK",
         "BankFrameTitleText",
-        "BankPanelMixin"
+        "BankPanelMixin",
+        "BANK_DEPOSIT_INCLUDE_REAGENTS_CHECKBOX_LABEL"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

@@ -143,10 +143,8 @@ Plus_SellBuy\Plus_StackSplitFrame.lua
 
 ##银行
 Plus_Bank\Init_Bank.lua
-Plus_Bank\Show_Frame.lua
 Plus_Bank\Left_List.lua
 Plus_Bank\Desposit_TakeOut.lua
-Plus_Bank\Plus_Bank.lua
 Plus_Bank\All_Bank.lua
 
 

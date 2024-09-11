@@ -19,7 +19,7 @@ local function BagFrame_SetPoint_ToLeft(bagFrame)
             bagFrame:SetPoint('RIGHT', UIParent, 'LEFT', -60, 0)            
             bagFrame:SetAlpha(0)
         end
-        --bagFrame:HookScript('OnShow', bagFrame.set_point_toleft)
+        bagFrame:HookScript('OnEnter', bagFrame.set_point_toleft)
        
     end
     bagFrame:set_point_toleft()
@@ -528,6 +528,29 @@ local function Init()
             e.tips:Show()
         end)
     end)
+
+    AccountBankPanel.Header:ClearAllPoints()
+    AccountBankPanel.Header:SetPoint('TOPLEFT', 16, -36)
+
+    AccountBankPanel.Header.Text:ClearAllPoints()
+    AccountBankPanel.Header.Text:SetPoint('LEFT')
+    
+
+    e.Set_Move_Frame(AccountBankPanel, {frame=BankFrame})
+
+    AccountBankPanel.Background=AccountBankPanel:CreateTexture(nil, 'BACKGROUND')
+    AccountBankPanel.Background:SetAllPoints()
+    WoWTools_BankFrameMixin:Set_Background_Texture(AccountBankPanel.Background)
+
+    AccountBankPanel.ItemDepositFrame.IncludeReagentsCheckbox.Text:SetText('')
+    AccountBankPanel.ItemDepositFrame.IncludeReagentsCheckbox.Text:Hide()
+    AccountBankPanel.ItemDepositFrame.IncludeReagentsCheckbox:HookScript('OnLeave', GameTooltip_Hide)
+    AccountBankPanel.ItemDepositFrame.IncludeReagentsCheckbox:HookScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_RIGHT")
+        e.tips:ClearLines()
+        e.tips:AddLine(e.onlyChinese and '包括可交易的材料' or BANK_DEPOSIT_INCLUDE_REAGENTS_CHECKBOX_LABEL)
+        e.tips:Show()
+    end)
 end
 
 
@@ -551,17 +574,6 @@ function WoWTools_BankFrameMixin:Init_All_Bank()
     --WoWTools_TextureMixin:CreateBackground(AccountBankPanel, {isAllPoint=true, alpha=1})
     
 
-    AccountBankPanel.Header:ClearAllPoints()
-    AccountBankPanel.Header:SetPoint('TOPLEFT', 16, -36)
-
-    AccountBankPanel.Header.Text:ClearAllPoints()
-    AccountBankPanel.Header.Text:SetPoint('LEFT')
     
-
-    e.Set_Move_Frame(AccountBankPanel, {frame=BankFrame})
-
-    AccountBankPanel.Background=AccountBankPanel:CreateTexture(nil, 'BACKGROUND')
-    AccountBankPanel.Background:SetAllPoints()
-    self:Set_Background_Texture(AccountBankPanel.Background)
 end
 

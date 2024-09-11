@@ -18,11 +18,11 @@ local function Init_BankSlotsFrame()
     btn:SetNormalAtlas('poi-traveldirections-arrow')
     btn:GetNormalTexture():SetTexCoord(1,0,1,0)
 
-    if Save().allBank then
+    --if Save().allBank then
         btn:SetPoint('RIGHT', BankItemAutoSortButton, 'LEFT', -2, 0)
-    else
-        btn:SetPoint('RIGHT', BankItemSearchBox, 'LEFT', -6, 0)
-    end
+    --else
+        --btn:SetPoint('RIGHT', BankItemSearchBox, 'LEFT', -6, 0)
+    --end
 
     btn:SetScript('OnClick', function(self)
         local free= WoWTools_BagMixin:GetFree()--背包，空位
