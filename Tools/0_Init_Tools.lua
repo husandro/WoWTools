@@ -347,7 +347,7 @@ local function Init()
         Save.point[2]=nil
     end)
 
-    Button:SetScript("OnLeave",function()
+    Button:SetScript("OnLeave",function(self)
         e.tips:Hide()
         ResetCursor()
     end)

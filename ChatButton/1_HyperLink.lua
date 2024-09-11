@@ -1335,7 +1335,7 @@ local function Init()
 
     LinkButton:SetScript('OnLeave', function(self)
         e.tips:Hide()
-        self:state_enter(Init_Menu)
+        self:state_leave()
     end)
     LinkButton:SetScript('OnEnter', function(self)
         --[[e.tips:SetOwner(self, "ANCHOR_LEFT")
