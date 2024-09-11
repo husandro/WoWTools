@@ -147,11 +147,13 @@ end
 
 local function Init()
     local BuybackButton= WoWTools_ButtonMixin:Cbtn(MerchantBuyBackItem, {name='WoWTools_BuybackButton', size={22,22}, icon='hide'})--nil, false)--购回
-    
-    function BuybackButton:set_texture()
-        self:SetNormalAtlas('common-icon-undo')
-    end
     BuybackButton:SetPoint('BOTTOMRIGHT', MerchantBuyBackItem, 6,18)
+
+    BuybackButton.texture= BuybackButton:CreateTexture(nil, 'BORDER')
+    BuybackButton.texture:SetAllPoints()
+    function BuybackButton:set_texture()
+        self.texture:SetAtlas('common-icon-undo')
+    end
 
     function BuybackButton:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -169,12 +171,12 @@ local function Init()
             local name= WoWTools_ItemMixin:GetName(itemID)
             if Save().noSell[itemID] then
                 e.tips:AddDoubleLine(name, (e.onlyChinese and '移除' or REMOVE)..e.Icon.left)
-                self:SetNormalAtlas('bags-button-autosort-up')
+                self.texture:SetAtlas('bags-button-autosort-up')
             else
                 e.tips:AddDoubleLine(name, (e.onlyChinese and '添加' or ADD)..e.Icon.left)
                 local icon= C_Item.GetItemIconByID(itemID)
                 if icon then
-                    self:SetNormalTexture(icon)
+                    self.texture:SetTexture(icon)
                 end
             end
 
@@ -209,18 +211,21 @@ local function Init()
 
 
 
-    BuybackButton:SetScript('OnMouseUp', BuybackButton.set_tooltip)
-    BuybackButton:SetScript('OnLeave', GameTooltip_Hide)
+    BuybackButton:SetScript('OnLeave', function(self) e.tips:Hide() self:set_texture() end)
     BuybackButton:SetScript('OnEnter', BuybackButton.set_tooltip)
+    BuybackButton:SetScript('OnMouseUp', BuybackButton.set_texture)
 
-    BuybackButton.Text= e.Cstr(BuybackButton, {justifyH='CENTER'})
-    BuybackButton.Text:SetPoint('CENTER', 2, 0)
+
+    BuybackButton.Text= e.Cstr(BuybackButton, {justifyH='RIGHT', color={r=1,g=1,b=1}})
+    BuybackButton.Text:SetPoint('BOTTOMRIGHT')
+
     function BuybackButton:set_text()--回购，数量，提示
         local num= 0
         for _ in pairs(Save().noSell) do
             num= num +1
         end
         self.Text:SetText(num>0 and num or '')
+        self.texture:SetDesaturated(num==0)
         return num
     end
 
@@ -230,9 +235,8 @@ local function Init()
     BuybackButton:RegisterEvent('MERCHANT_SHOW')
     BuybackButton:SetScript('OnEvent', set_buyback_item)
 
-    BuybackButton:set_texture()
     BuybackButton:set_text()--回购，数量，提示
-
+    BuybackButton:set_texture()
 
     --清除，回购买，图标
     MerchantBuyBackItemItemButton.UndoFrame.Arrow:ClearAllPoints()

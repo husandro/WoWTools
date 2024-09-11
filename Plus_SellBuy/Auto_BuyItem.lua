@@ -39,10 +39,13 @@ end
 local function Init()
     local BuyItemButton=WoWTools_ButtonMixin:Cbtn(MerchantBuyBackItem, {size={22,22}, icon='hide', name='WoWTools_BuyItemButton'})
     BuyItemButton:SetPoint('BOTTOMRIGHT', MerchantBuyBackItem, 6,-4)
+
+    BuyItemButton.texture= BuyItemButton:CreateTexture(nil, 'BORDER')
+    BuyItemButton.texture:SetAllPoints()    
     function BuyItemButton:set_texture()
-        self:SetNormalTexture(236994)
+        self.texture:SetTexture(236994)
     end
-    BuyItemButton:set_texture()
+
     function BuyItemButton:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
@@ -53,11 +56,11 @@ local function Init()
             local name= '|T'..(icon or 0)..':0|t'..itemLink
             if Save().Sell[itemIDorIndex] then
                 e.tips:AddDoubleLine(name, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除出售' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REMOVE, AUCTION_HOUSE_SELL_TAB)))
-                self:SetNormalAtlas('bags-button-autosort-up')
+                self.texture:SetAtlas('bags-button-autosort-up')
             else
                 e.tips:AddDoubleLine(name, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加出售' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, AUCTION_HOUSE_SELL_TAB)))
                 if icon then
-                    self:SetNormalTexture(icon)
+                    self.texture:SetTexture(icon)
                 end
             end
         elseif infoType=='merchant' and itemIDorIndex then--购买物品
@@ -89,7 +92,7 @@ local function Init()
         e.tips:Show()
     end
 
-    BuyItemButton:SetScript('OnLeave', function(self) GameTooltip_Hide() self:set_texture() end)
+    BuyItemButton:SetScript('OnLeave', function(self) e.tips:Hide() self:set_texture() end)
     BuyItemButton:SetScript('OnEnter', BuyItemButton.set_tooltip)
     BuyItemButton:SetScript('OnMouseUp', BuyItemButton.set_texture)
 
@@ -260,17 +263,22 @@ local function Init()
     BuyItemButton:RegisterEvent('MERCHANT_SHOW')
     BuyItemButton:SetScript('OnEvent', BuyItemButton.set_buy_item)--购买物品
 
-    BuyItemButton.Text= e.Cstr(BuyItemButton, {justifyH='CENTER'})
-    BuyItemButton.Text:SetPoint('CENTER', 2, 0)
+    BuyItemButton.Text= e.Cstr(BuyItemButton, {justifyH='RIGHT', color={r=1,g=1,b=1}})
+    BuyItemButton.Text:SetPoint('BOTTOMRIGHT')
+
+
     function BuyItemButton:set_text()--回购，数量，提示
         local num= 0
         for _ in pairs(Save().buyItems[e.Player.guid]) do
             num= num +1
         end
         self.Text:SetText(not Save().notAutoBuy and num or '')
+        self.texture:SetDesaturated(Save().notAutoBuy or num==0)
         return num
     end
+
     BuyItemButton:set_text()--回购，数量，提示
+    BuyItemButton:set_texture()
 end
 
 
