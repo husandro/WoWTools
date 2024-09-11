@@ -86,7 +86,7 @@ local function Set_AccountBankPanel()
         local needNewColumn = (containerSlotID % numRows) == 1
 
         if isFirstButton then
-            button:SetPoint("TOPLEFT", AccountBankPanel, "TOPLEFT", 10, -60)
+            button:SetPoint("TOPLEFT", AccountBankPanel, "TOPLEFT", 8, -60)
             lastColumnStarterButton = button
 
         elseif needNewColumn then
@@ -100,8 +100,8 @@ local function Set_AccountBankPanel()
         set_index_label(button, button:GetContainerSlotID())--索引，提示
     end
     AccountBankPanel:SetSize(
-        8+(currentColumn*37)+((currentColumn-1)*x),
-        63+(numRows*(37+x))+8+63+8
+        8+(currentColumn*37)+((currentColumn-1)*x)+8,
+        36+(numRows*(37+x))+68
     )
 end
 
@@ -233,11 +233,7 @@ local function Init()
 
     --设置，材料，按钮
     function SetAllBank:set_reagent(tabindex)
-        local numColumn= ReagentBankFrame.numColumn or 7
-        
-
         if tabindex==2 then
-
             local slotOffsetX = 49;
             local slotOffsetY = 44;
             local index = 1;
@@ -246,25 +242,24 @@ local function Init()
                 for subColumn = 1, ReagentBankFrame.numSubColumn or 2 do
                     for row = 0, ReagentBankFrame.numRow-1 do
                         local button=ReagentBankFrame["Item"..index]
-                        
-                        button:ClearAllPoints()
-                        button:SetPoint("TOPLEFT", ReagentBankFrame["BG"..column], "TOPLEFT", leftOffset, -(3+row*slotOffsetY));
-                        index = index + 1;
+                        if button then
+                            set_index_label(button, index)--索引，提示
+                            button:ClearAllPoints()
+                            button:SetPoint("TOPLEFT", ReagentBankFrame["BG"..column], "TOPLEFT", leftOffset, -(3+row*slotOffsetY));
+                            index = index + 1;
+                        end
                     end
                     leftOffset = leftOffset + slotOffsetX;
                 end
             end
         else
+
             self.reagentNum= 0
             local btnNum=0
             for index, btn in ReagentBankFrame:EnumerateItems() do
                 btn:ClearAllPoints()
                 if index==1 then
-                    --[[if tabindex==2 then
-                        btn:ClearAllPoints()
-                        btn:SetPoint('TOPLEFT', 8,-60)
-                    else]]
-                        btn:SetPoint('LEFT', self.last, 'RIGHT', Save().line+6, 0)
+                    btn:SetPoint('LEFT', self.last, 'RIGHT', Save().line+6, 0)
                     self.last=btn
                     self.reagentNum= self.reagentNum+1
                 else
@@ -275,7 +270,6 @@ local function Init()
                     btn.Bg:SetAllPoints(btn)
                     btn.Bg:SetAtlas('ChallengeMode-DungeonIconFrame')
                     btn.Bg:SetVertexColor(0,1,0)
-                    --btn.Bg:SetAlpha(0.5)
                 end
                 set_index_label(btn, index)--索引，提示
                 btnNum=index
@@ -288,18 +282,6 @@ local function Init()
                 self.reagentNum= self.reagentNum+1
             end 
         end
-
---[[
-        for column = 2, numColumn do
-			
-			local textrue= ReagentBankFrame["BG"..(column)]
-            if textrue then
-                textrue:SetTexture(0)
-            end
-			local shadow = ReagentBankFrame:CreateTexture(nil, "BACKGROUND");
-			shadow:SetPoint("CENTER", ReagentBankFrame["BG"..(column)], "CENTER", 0, 0);
-			shadow:SetAtlas("bank-slots-shadow", true);
-		end]]
     end
 
 
@@ -318,16 +300,9 @@ local function Init()
         if tabindex==1 then
             local num= SetAllBank.num + SetAllBank.reagentNum
             BankFrame:SetSize(
-                8+(num*37)+((num-1)*Save().line)+8+8+2,
+                8+(num*37)+((num-1)*Save().line)+8+6,
                 (Save().num+1)*37 +((Save().num-1)*Save().line)+64+8+6
             )
-
-        --[[elseif tabindex==2 then
-            local num= SetAllBank.reagentNum
-            BankFrame:SetSize(
-                8+(num*37)+((num-1)*Save().line),
-                64+(Save().num*37)+(Save().num*Save().line)+8
-            )]]
         end
     end
 

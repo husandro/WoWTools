@@ -216,12 +216,14 @@ end
 --银行
 --BankFrame.lua
 local function Init()
-    --local OptionButton= WoWTools_ButtonMixin:Cbtn(BankSlotsFrame, {size={22,22}, atlas='hide'})
+    local strata= BankFrameCloseButton:GetFrameStrata()
+    local level=BankFrameCloseButton:GetFrameLevel()+1
+    
     local OptionButton= WoWTools_ButtonMixin:CreateOptionButton(BankSlotsFrame, 'WoWTools_BankFrameOptionButton', nil)
-    --OptionButton:SetPoint('LEFT',BankFrame.TitleContainer)
     OptionButton:SetPoint('RIGHT', BankFrameCloseButton, 'LEFT', -2,0)
-    OptionButton:SetFrameStrata(BankFrameCloseButton:GetFrameStrata())
-    OptionButton:SetFrameLevel(BankFrameCloseButton:GetFrameLevel()+1)
+
+    OptionButton:SetFrameStrata(strata)
+    OptionButton:SetFrameLevel(level)
  
 
     OptionButton:SetScript('OnLeave', GameTooltip_Hide)
@@ -253,8 +255,13 @@ local function Init()
 
 
 
-  
-
+    
+--钱    
+    BankFrameMoneyFrameBorder:Hide()
+    BankFrameMoneyFrame:ClearAllPoints()
+    BankFrameMoneyFrame:SetPoint('RIGHT', OptionButton, 'LEFT')
+    BankFrameMoneyFrame:SetFrameStrata(strata)
+    BankFrameMoneyFrame:SetFrameLevel(level)
 
 
     WoWTools_BankFrameMixin:Init_Plus()--整合，一起

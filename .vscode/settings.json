@@ -4952,7 +4952,8 @@
         "BankPanelMixin",
         "BANK_DEPOSIT_INCLUDE_REAGENTS_CHECKBOX_LABEL",
         "BankFrameCloseButton",
-        "ACCOUNT_BANK_DEPOSIT_BUTTON_LABEL"
+        "ACCOUNT_BANK_DEPOSIT_BUTTON_LABEL",
+        "BankFrameMoneyFrame"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

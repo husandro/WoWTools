@@ -62,7 +62,7 @@ end
 
 
 
---背包，空位
+--背包，空位, all 包含材料
 function WoWTools_BagMixin:GetFree(all)
     local free= 0--CalculateTotalNumberOfFreeBagSlots() MainMenuBarBagButtons.lua
     local num= NUM_BAG_FRAMES+(all and NUM_REAGENTBAG_FRAMES or 0)
