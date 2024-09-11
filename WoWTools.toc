@@ -129,7 +129,7 @@ Plus_SellBuy\DELETE.lua
 Plus_SellBuy\Auto_Loot.lua
 Plus_SellBuy\Auto_Repair.lua
 Plus_SellBuy\Auto_SellJunk.lua
-Plus_SellBuy\Auto_BuyItems.lua
+Plus_SellBuy\Auto_BuyItem.lua
 Plus_SellBuy\Auto_Buyback.lua
 
 Plus_SellBuy\Plus.lua

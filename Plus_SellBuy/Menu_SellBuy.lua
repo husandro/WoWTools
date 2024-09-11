@@ -17,7 +17,6 @@ end
 --回购
 local function Buyback_Menu(_, root)
     local num, sub, sub2
-    root:CreateDivider()
     num=''
     if _G['WoWTools_BuybackButton'] then
         num= _G['WoWTools_BuybackButton']:set_text()--回购，数量，提示
@@ -296,6 +295,8 @@ local function Init_Menu(self, root)
     end)
     
 --回购
+
+    root:CreateDivider()
     Buyback_Menu(self, root)
 
 --购买物品

@@ -6,13 +6,34 @@ local function Save()
 end
 
 
+
+
+
 local function GetBuyNum(itemID)
     return WoWTools_SellBuyMixin.Save.buyItems[e.Player.guid][itemID]
 end
 
+
+
+
+
+
+
 local function SaveBuyItem(itemID, num)--当num=nil时，会清除
     WoWTools_SellBuyMixin.Save.buyItems[e.Player.guid][itemID]=num
 end
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 local function Init()
