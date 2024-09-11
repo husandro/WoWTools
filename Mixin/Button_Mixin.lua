@@ -175,12 +175,19 @@ function WoWTools_ButtonMixin:CreateMenuButton(frame, tab)
 
     local name= tab.name
     local setID= tab.setID
-    local size= tab.size
+    local size= tab.size or 23
     local template= tab.template--UIPanelButtonTemplate
+    local isSetTexture= tab.isSetTexture
 
     local btn= CreateFrame('DropdownButton', name or ('WoWToolsMenuButton'..get_index()), frame or UIParent, template, setID)
     btn:SetSize(get_size(size))
     self:Settings(btn, true)
+
+    if isSetTexture then
+        btn:SetNormalAtlas('ui-questtrackerbutton-filter')
+        btn:SetPushedAtlas('ui-questtrackerbutton-filter-pressed')
+        btn:SetHighlightAtlas('ui-questtrackerbutton-red-highlight')
+    end
     return btn
 end
 
