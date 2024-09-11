@@ -37,9 +37,9 @@ local function Init()
                 self:SetNormalAtlas('bags-button-autosort-up')
             else
                 e.tips:AddDoubleLine(icon, '|A:common-icon-undo:0:0|a|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..e.Icon.left)
-                local icon= C_Item.GetItemIconByID(itemLink)
-                if icon then
-                    self:SetNormalTexture(icon)
+                local icon2= C_Item.GetItemIconByID(itemLink)
+                if icon2 then
+                    self:SetNormalTexture(icon2)
                 end
             end
         else
@@ -59,7 +59,7 @@ local function Init()
                 end
             end
             e.tips:AddDoubleLine((e.onlyChinese and '拖曳' or DRAG_MODEL)..e.Icon.left..(e.onlyChinese and '物品' or ITEMS), e.onlyChinese and '回购' or BUYBACK)
-            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+           -- e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
         end
         e.tips:Show()
     end
@@ -84,6 +84,8 @@ local function Init()
 
         elseif d=='RightButton' then
             --WoWTools_SellBuyMixin:Init_Menu(self)
+            --MenuUtil.CreateContextMenu(, Init_Menu)
+
 
         elseif d=='LeftButton' then
             local num= GetNumBuybackItems()
