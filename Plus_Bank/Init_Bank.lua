@@ -217,9 +217,11 @@ end
 --BankFrame.lua
 local function Init()
     local strata= BankFrameCloseButton:GetFrameStrata()
-    local level=BankFrameCloseButton:GetFrameLevel()+1
-    
-    local OptionButton= WoWTools_ButtonMixin:CreateOptionButton(BankSlotsFrame, 'WoWTools_BankFrameOptionButton', nil)
+    local level=BankFrameCloseButton:GetFrameLevel()
+    OptionButton= WoWTools_ButtonMixin:CreateMenuButton(BankFrameCloseButton, {name='WoWTools_BankFrameMenuButton'})
+    OptionButton:SetupMenu(Init_Menu)
+    --local OptionButton= WoWTools_ButtonMixin:CreateOptionButton(BankSlotsFrame, 'WoWTools_BankFrameOptionButton', nil)
+
     OptionButton:SetPoint('RIGHT', BankFrameCloseButton, 'LEFT', -2,0)
 
     OptionButton:SetFrameStrata(strata)
@@ -234,9 +236,9 @@ local function Init()
         e.tips:Show()
     end)
 
-    OptionButton:SetScript('OnMouseDown', function(self)
+    --[[OptionButton:SetScript('OnMouseDown', function(self)
         MenuUtil.CreateContextMenu(self, Init_Menu)
-    end)
+    end)]]
 
     function OptionButton:set_event()
         if Save().openBagInBank then
@@ -259,9 +261,16 @@ local function Init()
 --钱    
     BankFrameMoneyFrameBorder:Hide()
     BankFrameMoneyFrame:ClearAllPoints()
-    BankFrameMoneyFrame:SetPoint('RIGHT', OptionButton, 'LEFT')
-    BankFrameMoneyFrame:SetFrameStrata(strata)
-    BankFrameMoneyFrame:SetFrameLevel(level)
+    if IsReagentBankUnlocked() then
+        BankFrameMoneyFrame:SetPoint('RIGHT', OptionButton, 'LEFT')
+        BankFrameMoneyFrame:SetFrameStrata(strata)
+        BankFrameMoneyFrame:SetFrameLevel(level)
+    else
+        BankFrameMoneyFrame:SetPoint('BOTTOM', BankFrame, 'TOP')
+        WoWTools_TextureMixin:CreateBackground(BankFrameMoneyFrame, {isAllPoint=true})
+    end
+
+    
 
 
     WoWTools_BankFrameMixin:Init_Plus()--整合，一起

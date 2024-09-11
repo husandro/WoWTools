@@ -428,9 +428,11 @@ local function Init_AccountBankPanel()
     texture:SetAtlas('questlog-questtypeicon-account')
 
 --标签，战团银行
-    local label= e.Cstr(BankSlotsFrame, {size=14})
-    label:SetPoint('TOP', AccountBankPanel, 0, -6)
-    label:SetText(e.onlyChinese and '战团' or ACCOUNT_QUEST_LABEL)
+    if AccountBankPanel.selectedTabID and AccountBankPanel.selectedTabID>=0 then
+        local label= e.Cstr(BankSlotsFrame, {size=14})
+        label:SetPoint('TOP', AccountBankPanel, 0, -6)
+        label:SetText(e.onlyChinese and '战团' or ACCOUNT_QUEST_LABEL)
+    end
 
 --移动Frame    
     e.Set_Move_Frame(AccountBankPanel, {frame=BankFrame})

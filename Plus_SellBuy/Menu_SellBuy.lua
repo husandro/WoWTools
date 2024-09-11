@@ -326,7 +326,7 @@ end
 
 
 local function Init()
-    local btn= WoWTools_ButtonMixin:CreateMenuButton(MerchantFrameCloseButton, {isSetTexture=true, name='WoWTools_SellBuyMenuButton'})
+    local btn= WoWTools_ButtonMixin:CreateMenuButton(MerchantFrameCloseButton, {name='WoWTools_SellBuyMenuButton'})
     btn:SetPoint('RIGHT', MerchantFrameCloseButton, 'LEFT', -2, 0)
     btn:SetFrameStrata(MerchantFrameCloseButton:GetFrameStrata())
     btn:SetFrameLevel(MerchantFrameCloseButton:GetFrameLevel())

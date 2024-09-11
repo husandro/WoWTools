@@ -177,23 +177,23 @@ function WoWTools_ButtonMixin:CreateMenuButton(frame, tab)
     local setID= tab.setID
     local size= tab.size or 23
     local template= tab.template--UIPanelButtonTemplate
-    local isSetTexture= tab.isSetTexture
+    local hideIcon= tab.hideIcon
 
-    local btn= CreateFrame('DropdownButton', name or ('WoWToolsDropdown'..get_index()), frame or UIParent, template, setID)
+    local btn= CreateFrame('DropdownButton', name or ('WoWToolsMenu'..get_index()), frame or UIParent, template, setID)
     btn:SetSize(get_size(size))
     self:Settings(btn, true)
 
-    if isSetTexture then
+    if not hideIcon then
         btn:SetNormalAtlas('ui-questtrackerbutton-filter')
         btn:SetPushedAtlas('ui-questtrackerbutton-filter-pressed')
         btn:SetHighlightAtlas('ui-questtrackerbutton-red-highlight')
     end
     return btn
 end
+--local btn=WoWTools_ButtonMixin:CreateMenuButton(OptionButton, {name=''})
 
 
-
---打开菜单按钮
+--[[打开菜单按钮
 function WoWTools_ButtonMixin:CreateOptionButton(frame, name, setID)
     local btn= CreateFrame("Button", name or ('WoWToolsOptionButton'..get_index()), frame or UIParent, nil, setID)--ObjectiveTrackerContainerFilterButtonTemplate
     btn:SetSize(23,23)
@@ -203,7 +203,7 @@ function WoWTools_ButtonMixin:CreateOptionButton(frame, name, setID)
     btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
     btn:EnableMouseWheel(true)
     return btn
-end
+end]]
 
 
 
