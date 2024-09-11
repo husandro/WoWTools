@@ -319,7 +319,6 @@ local function Init()
     OptionButton:SetScript('OnEvent', function()
         if not _G['NDui_BackpackBank'] then
             WoWTools_BankMixin:OpenBag()
-            print('a')
         end
     end)
     OptionButton:set_event()
