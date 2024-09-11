@@ -31,11 +31,6 @@ end
 
 
 
-
-
-
-
-
  --索引，提示
  local function set_index_label(btn, index)
     if not btn.indexLable and Save().showIndex then
@@ -51,6 +46,17 @@ end
 
 
 
+local function IsValid_AccountBankPanel()
+    return AccountBankPanel.selectedTabID and AccountBankPanel.selectedTabID>=0
+end
+
+
+
+
+
+
+
+
 
 
 
@@ -60,6 +66,7 @@ end
 local function Set_AccountBankPanel()
     if not AccountBankPanel.selectedTabID or AccountBankPanel.selectedTabID == -1 then
         return
+
     elseif BankFrame.activeTabIndex==3 then            
         AccountBankPanel:ClearAllPoints()
         AccountBankPanel:SetAllPoints()
@@ -124,17 +131,12 @@ end
 local function Init()
     local SetAllBank= CreateFrame('Frame', 'WoWTools_SetAllBankButton')
 
-
-
     --设置，银行，按钮
     if not BankSlotsFrame.IsCombinedBagContainer then
         function BankSlotsFrame:IsCombinedBagContainer()
             return false
         end
     end
-
-
-
 
     function SetAllBank:set_bank()
         self.last=nil--给材料包
@@ -233,6 +235,9 @@ local function Init()
 
     --设置，材料，按钮
     function SetAllBank:set_reagent(tabindex)
+        if not IsReagentBankUnlocked() then
+            return
+        end
         if tabindex==2 then
             local slotOffsetX = 49;
             local slotOffsetY = 44;
@@ -298,7 +303,7 @@ local function Init()
 --设置，外框，大小
     function SetAllBank:set_size(tabindex)
         if tabindex==1 then
-            local num= SetAllBank.num + SetAllBank.reagentNum
+            local num= SetAllBank.num + (SetAllBank.reagentNum or 0)
             BankFrame:SetSize(
                 8+(num*37)+((num-1)*Save().line)+8+6,
                 (Save().num+1)*37 +((Save().num-1)*Save().line)+64+8+6
@@ -315,9 +320,15 @@ local function Init()
     function SetAllBank:settings(tabindex)--如果没有tabIndex，为设置，全部
         local index= tabindex or BankFrame.activeTabIndex
         if index==1 then
+            
             do
-                ReagentBankFrame:SetShown(true)
-                AccountBankPanel:SetShown(true)
+                if IsReagentBankUnlocked() then
+                    ReagentBankFrame:SetShown(true)
+                end
+
+                if IsValid_AccountBankPanel() then
+                    AccountBankPanel:SetShown(true)
+                end
             end
             do self:set_bank() end
             do self:set_reagent(1) end
@@ -337,8 +348,12 @@ local function Init()
     hooksecurefunc('BankFrame_ShowPanel', function()
         local index= BankFrame.activeTabIndex
         if index==1 then
-            ReagentBankFrame:SetShown(true)
-            AccountBankPanel:SetShown(true)
+            if IsReagentBankUnlocked() then
+                ReagentBankFrame:SetShown(true)
+            end
+            if IsValid_AccountBankPanel() then
+                AccountBankPanel:SetShown(true)
+            end
             SetAllBank:settings(index)
 
         elseif index==2 then
@@ -348,9 +363,9 @@ local function Init()
             e.call(AccountBankPanel.GenerateItemSlotsForSelectedTab, AccountBankPanel)
         end
         
-        if not IsReagentBankUnlocked() and ReagentBankFrame.UnlockInfo then
+        --[[if not IsReagentBankUnlocked() and ReagentBankFrame.UnlockInfo then
             ReagentBankFrame.UnlockInfo:SetShown(BankFrame.activeTabIndex==2)
-        end
+        end]]
     end)
 
     hooksecurefunc('BankFrameItemButtonBag_OnClick', function()
@@ -364,17 +379,12 @@ local function Init()
 
 
 
-
+--购买，背包栏
     hooksecurefunc('UpdateBagSlotStatus', function()
-        if BankFramePurchaseInfo then
+        if BankFramePurchaseInfo and BankFramePurchaseInfo:IsShown() then
             BankFramePurchaseInfo:ClearAllPoints()
-            BankFramePurchaseInfo:SetPoint('Top', BankFrame, 'BOTTOM')
-            BankFramePurchaseButton:ClearAllPoints()
-            if BankSlotsFrame['Bag'..NUM_BANKBAGSLOTS] then
-                BankFramePurchaseButton:SetPoint('LEFT', BankSlotsFrame['Bag'..NUM_BANKBAGSLOTS], 'RIGHT', 2,0)
-            else
-                BankFramePurchaseButton:SetPoint('BOTTOM', BankFrame)
-            end
+            BankFramePurchaseInfo:SetPoint('Top', BankFrame, 'BOTTOM',0, -28)
+            WoWTools_TextureMixin:CreateBackground(BankFramePurchaseInfo, {isAllPoint=true})
         end
         SetAllBank:settings(BankFrame.activeTabIndex)
     end)

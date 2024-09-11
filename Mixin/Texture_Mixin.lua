@@ -7,22 +7,24 @@ WoWTools_TextureMixin={}
 local e= select(2, ...)
 
 function WoWTools_TextureMixin:CreateBackground(frame, tab)
-    tab= tab or {}
-    
-    local point= tab.point
-    local isAllPoint= tab.isAllPoint
-    local alpha= tab.alpha or 0.5
+    if not frame.Background then
+        tab= tab or {}
+        
+        local point= tab.point
+        local isAllPoint= tab.isAllPoint
+        local alpha= tab.alpha or 0.5
 
-    frame.Background= frame:CreateTexture(nil, 'BACKGROUND')
-    if isAllPoint==true then
-        frame.Background:SetAllPoints()
-    elseif type(point)=='function' then
-        point(frame.Background)
+        frame.Background= frame:CreateTexture(nil, 'BACKGROUND')
+        if isAllPoint==true then
+            frame.Background:SetAllPoints()
+        elseif type(point)=='function' then
+            point(frame.Background)
+        end
+
+        frame.Background:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
+        frame.Background:SetAlpha(alpha or 0.5)
+        frame.Background:SetVertexColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b)
     end
-
-    frame.Background:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
-    frame.Background:SetAlpha(alpha or 0.5)
-    frame.Background:SetVertexColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b)
     return frame.Background
 end
 --[[
