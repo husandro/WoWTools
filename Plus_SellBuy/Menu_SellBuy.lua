@@ -6,7 +6,160 @@ local function Save()
 end
 
 
-local function Init_Menu(_, root)
+
+
+
+
+
+
+
+
+--回购
+local function Buyback_Menu(_, root)
+    local num, sub, sub2
+    root:CreateDivider()
+    num=''
+    if _G['WoWTools_BuybackButton'] then
+        num= _G['WoWTools_BuybackButton']:set_text()--回购，数量，提示
+    end
+    sub=root:CreateButton(
+        '    |A:common-icon-undo:0:0|a'..(e.onlyChinese and '回购' or BUYBACK)..'|cnGREEN_FONT_COLOR: #'..(num or '')..'|r',
+    function()
+       return MenuResponse.Open 
+    end)
+
+--列表，回购
+    num=0
+    for itemID in pairs(Save().noSell) do
+        num= num+1
+        e.LoadData({id=itemID, type='item'})
+        local itemName= WoWTools_ItemMixin:GetName(itemID)
+        sub2= sub:CreateCheckbox(
+            itemName,
+        function(data)
+            return Save().noSell[data.itemID]
+        end, function(data)
+            Save().noSell[data.itemID]=not Save().noSell[data.itemID] and true or nil
+            local btn= _G['WoWTools_BuybackButton']
+            if btn then
+                btn:set_text()--回购，数量，提示
+            end
+        end, {itemID=itemID})
+        sub2:SetTooltip(function(tooltip)
+            tooltip:AddLine(e.onlyChinese and '移除' or REMOVE)           
+        end)
+    end
+
+    if num>1 then
+        sub:CreateDivider()
+        sub:CreateButton(
+            '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL),
+        function()
+            Save().noSell={}
+        end)
+    end
+    WoWTools_MenuMixin:SetNumButton(sub, num)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--购买物品
+local function BuyItem_Menu(_, root)
+    local num, sub, sub2
+    num=''
+    if _G['WoWTools_BuyItemButton'] then
+        num= _G['WoWTools_BuyItemButton']:set_text()--回购，数量，提示
+    end
+    sub=root:CreateCheckbox(
+        '|T236994:0|t'..(e.onlyChinese and '自动购买物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, PURCHASE))..'|cnGREEN_FONT_COLOR: #'..(num or '')..'|r',
+    function()
+        return not Save().notAutoBuy
+    end, function()
+        Save().notAutoBuy= not Save().notAutoBuy and true or nil
+        WoWTools_SellBuyMixin:Set_Merchant_Info()--设置, 提示, 信息
+        if _G['WoWTools_BuyItemButton'] then
+            _G['WoWTools_BuyItemButton']:set_text()--回购，数量，提示
+        end
+    end)
+
+
+    --列表，购买
+    num=0
+    for itemID, numItem in pairs(Save().buyItems[e.Player.guid] or {}) do
+        num=num+1
+        local itemName= WoWTools_ItemMixin:GetName(itemID)
+        sub2=sub:CreateCheckbox(
+            '|cnGREEN_FONT_COLOR:'..numItem..'|r '..itemName,
+        function(data)
+            return Save().buyItems[e.Player.guid][data.itemID]
+        end, function(data)
+            Save().buyItems[e.Player.guid][data.itemID]=not Save().buyItems[e.Player.guid][data.itemID] and true or nil
+            WoWTools_SellBuyMixin:Set_Merchant_Info()--设置, 提示, 信息
+            local btn= _G['WoWTools_BuybackButton']
+            if btn then
+                btn:set_text()--回购，数量，提示
+            end
+        end, {itemID=itemID})
+        sub2:SetTooltip(function(tooltip)
+            tooltip:AddLine(e.onlyChinese and '移除' or REMOVE)
+        end)
+    end
+
+    if num>1 then
+        sub:CreateDivider()
+        sub:CreateButton(
+            '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL),
+        function()
+            Save().buyItems[e.Player.guid]={}
+            WoWTools_SellBuyMixin:Set_Merchant_Info()--设置, 提示, 信息
+            local btn= _G['WoWTools_BuybackButton']
+            if btn then
+                btn:set_text()--回购，数量，提示
+            end
+        end)
+    end
+    WoWTools_MenuMixin:SetNumButton(sub, num)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Init_Menu(self, root)
     local sub, sub2, num
 
 --自动出售垃圾
@@ -24,6 +177,7 @@ local function Init_Menu(_, root)
         tooltip:AddLine(e.onlyChinese and '品质：|cff9e9e9e粗糙' or format(PROFESSIONS_CRAFTING_QUALITY, '|cff9e9e9e'..ITEM_QUALITY0_DESC))
         tooltip:AddLine(e.onlyChinese and '备注：在战斗中无法出售物品' or (NOTE_COLON..': '..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, ITEM_UNSELLABLE)))
     end)
+
 
 
 
@@ -50,7 +204,7 @@ local function Init_Menu(_, root)
         tooltip:AddLine(e.onlyChinese and '备注：在战斗中无法出售物品' or (NOTE_COLON..': '..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, ITEM_UNSELLABLE)))
     end)
 
---列表
+--列表, 出售自定义
     num=0
     for itemID in pairs(Save().Sell) do
         num=num+1
@@ -72,6 +226,7 @@ local function Init_Menu(_, root)
         end)
     end
     WoWTools_MenuMixin:SetNumButton(sub, num)
+
 
 
 
@@ -140,105 +295,17 @@ local function Init_Menu(_, root)
         Save().saveBossLootList = not Save().saveBossLootList and true or nil
     end)
     
-
-    num=''
-    if _G['WoWTools_BuybackButton'] then
-        num= _G['WoWTools_BuybackButton']:set_text()--回购，数量，提示
-    end
 --回购
-    sub=root:CreateButton(
-        '    |A:common-icon-undo:0:0|a'..(e.onlyChinese and '回购' or BUYBACK)..'|cnGREEN_FONT_COLOR: #'..(num or '')..'|r',
-    function()
-       return MenuResponse.Open 
-    end)
-
---列表，回购
-    num=0
-    for itemID in pairs(Save().noSell) do
-        num= num+1
-        e.LoadData({id=itemID, type='item'})
-        local itemName= WoWTools_ItemMixin:GetName(itemID)
-        sub2= sub:CreateCheckbox(
-            itemName,
-        function(data)
-            return Save().noSell[data.itemID]
-        end, function(data)
-            Save().noSell[data.itemID]=not Save().noSell[data.itemID] and true or nil
-            local btn= _G['WoWTools_BuybackButton']
-            if btn then
-                btn:set_text()--回购，数量，提示
-            end
-        end, {itemID=itemID})
-        sub2:SetTooltip(function(tooltip)
-            tooltip:AddLine(e.onlyChinese and '移除' or REMOVE)           
-        end)
-    end
-
-    if num>1 then
-        sub:CreateDivider()
-        sub:CreateButton(
-            '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL),
-        function()
-            Save().noSell={}
-        end)
-    end
-    WoWTools_MenuMixin:SetNumButton(sub, num)
-    
+    Buyback_Menu(self, root)
 
 --购买物品
-    num=''
-    if _G['WoWTools_BuyItemButton'] then
-        num= _G['WoWTools_BuyItemButton']:set_text()--回购，数量，提示
-    end
-    sub=root:CreateCheckbox(
-        '|T236994:0|t'..(e.onlyChinese and '自动购买物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, PURCHASE))..'|cnGREEN_FONT_COLOR: #'..(num or '')..'|r',
-    function()
-        return not Save().notAutoBuy
-    end, function()
-        Save().notAutoBuy= not Save().notAutoBuy and true or nil
-        WoWTools_SellBuyMixin:Set_Merchant_Info()--设置, 提示, 信息
-        if _G['WoWTools_BuyItemButton'] then
-            _G['WoWTools_BuyItemButton']:set_text()--回购，数量，提示
-        end
-    end)
+    BuyItem_Menu(self, root)
 
 
---列表，购买
-    num=0
-    for itemID, numItem in pairs(Save().buyItems[e.Player.guid] or {}) do
-        num=num+1
-        local itemName= WoWTools_ItemMixin:GetName(itemID)
-        sub2=sub:CreateCheckbox(
-            '|cnGREEN_FONT_COLOR:'..numItem..'|r '..itemName,
-        function(data)
-            return Save().buyItems[e.Player.guid][data.itemID]
-        end, function(data)
-            Save().buyItems[e.Player.guid][data.itemID]=not Save().buyItems[e.Player.guid][data.itemID] and true or nil
-            WoWTools_SellBuyMixin:Set_Merchant_Info()--设置, 提示, 信息
-            local btn= _G['WoWTools_BuybackButton']
-            if btn then
-                btn:set_text()--回购，数量，提示
-            end
-        end, {itemID=itemID})
-        sub2:SetTooltip(function(tooltip)
-            tooltip:AddLine(e.onlyChinese and '移除' or REMOVE)
-        end)
-    end
 
-    if num>1 then
-        sub:CreateDivider()
-        sub:CreateButton(
-            '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL),
-        function()
-            Save().buyItems[e.Player.guid]={}
-            WoWTools_SellBuyMixin:Set_Merchant_Info()--设置, 提示, 信息
-            local btn= _G['WoWTools_BuybackButton']
-            if btn then
-                btn:set_text()--回购，数量，提示
-            end
-        end)
-    end
-    WoWTools_MenuMixin:SetNumButton(sub, num)
+
+
+
 
 
 --自动修理
@@ -255,6 +322,9 @@ local function Init_Menu(_, root)
             chek:SetChecked(not Save().notAutoRepairAll)
         end
     end)
+
+    sub:CreateTitle(Save().repairItems.date)
+    sub:CreateSpacer()
     sub:CreateTitle((e.onlyChinese and '修理' or MINIMAP_TRACKING_REPAIR)..': '..Save().repairItems.num..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1))
     sub:CreateTitle((e.onlyChinese and '公会' or GUILD)..': '..C_CurrencyInfo.GetCoinTextureString(Save().repairItems.guild))
     sub:CreateTitle((e.onlyChinese and '玩家' or PLAYER)..': '..C_CurrencyInfo.GetCoinTextureString(Save().repairItems.player))    
@@ -266,8 +336,12 @@ local function Init_Menu(_, root)
     sub:CreateTitle((e.onlyChinese and '使用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP)..': '..C_CurrencyInfo.GetCoinTextureString(CanGuildBankRepair() and GetGuildBankMoney() or 0))
 
 
+
+
+
+
+
 --商人 Plus
-    root:CreateDivider()
     root:CreateCheckbox(
         '|A:communities-icon-addgroupplus:0:0|a'..(e.onlyChinese and '商人 Plus' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, MERCHANT, 'Plus')),
     function()
@@ -278,8 +352,11 @@ local function Init_Menu(_, root)
     end)
 
 
+
+
+
+
 --删除字符
-    root:CreateDivider()
     sub=root:CreateCheckbox(
         '|A:common-icon-redx:0:0|a'..(e.onlyChinese and '自动输入DELETE' or (RUNECARVER_SCRAPPING_CONFIRMATION_TEXT..': '..DELETE_ITEM_CONFIRM_STRING)),
     function()
@@ -295,8 +372,11 @@ local function Init_Menu(_, root)
     end)
 
 
+
+
+
+
 --自动拾取 plus
-    root:CreateDivider()
     sub=root:CreateCheckbox(
         '|A:Cursor_lootall_128:0:0|a'..(e.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT)..' Plus',
     function()
@@ -316,9 +396,23 @@ local function Init_Menu(_, root)
     end)
 
 
+
+
+    
 --打开选项界面
+    root:CreateDivider()
     WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_SellBuyMixin.addName})
 end
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -338,7 +432,20 @@ end
 
 
 
+
+
+
+
+
 function WoWTools_SellBuyMixin:Init_Menu()
     Init()
     --MenuUtil.CreateContextMenu(frame, Init_Menu)
+end
+
+function WoWTools_SellBuyMixin:BuyItem_Menu(frame, root)
+    BuyItem_Menu(frame, root)
+end
+
+function WoWTools_SellBuyMixin:Buyback_Menu(frame, root)
+    Buyback_Menu(frame, root)
 end

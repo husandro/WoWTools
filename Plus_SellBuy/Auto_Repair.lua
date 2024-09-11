@@ -65,14 +65,18 @@ local function Init()
         local Co, Can= GetRepairAllCost()
         if Can and Co and Co>0 then
             if CanGuildBankRepair() and GetGuildBankMoney()>=Co  then
-                RepairAllItems(true)
+                do
+                    RepairAllItems(true)
+                end
                 RepairSave().guild=RepairSave().guild+Co
                 RepairSave().num=RepairSave().num+1
                 print(e.addName, WoWTools_SellBuyMixin.addName, '|cffff00ff'..(e.onlyChinese and '使用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP)..'|r', C_CurrencyInfo.GetCoinTextureString(Co))
                 e.call(MerchantFrame_Update)
             else
                 if GetMoney()>=Co then
-                    RepairAllItems()
+                    do
+                        RepairAllItems()
+                    end
                     RepairSave().player=RepairSave().player+Co
                     RepairSave().num=RepairSave().num+1
                     print(e.addName, WoWTools_SellBuyMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '修理花费：' or REPAIR_COST)..'|r', C_CurrencyInfo.GetCoinTextureString(Co))
