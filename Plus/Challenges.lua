@@ -189,14 +189,15 @@ local function Get_Week_Item_Level(level)
     level= min(LimitMaxKeyLevel, level)
     level= max(2, level)
     local tab={
-        [2]='597'..Level_Text('Champion')..'2/8  606'..Level_Text('Hero')..'2/6',
-        [3]='597'..Level_Text('Champion')..'3/8  610'..Level_Text('Hero')..'2/6',
-        [4]='600'..Level_Text('Champion')..'3/8  610'..Level_Text('Hero')..'3/6',
-        [5]='603'..Level_Text('Champion')..'4/8  613'..Level_Text('Hero')..'3/6',
-        [6]='606'..Level_Text('Champion')..'4/8  613'..Level_Text('Hero')..'4/6',
-        [7]='610'..Level_Text('Hero')..'1/6  616'..Level_Text('Hero')..'4/6',
-        [8]='610'..Level_Text('Hero')..'1/6  619'..Level_Text('Myth')..'1/4',
-        [9]='613'..Level_Text('Hero')..'2/6  619'..Level_Text('Myth')..'1/4',
+        [2]='597'..Level_Text('Champion')..'1/8  606'..Level_Text('Champion')..'4/8',
+        [3]='597'..Level_Text('Champion')..'1/8  610'..Level_Text('Hero')..'1/6',
+        [4]='600'..Level_Text('Champion')..'2/8  610'..Level_Text('Hero')..'1/6',
+        [5]='603'..Level_Text('Champion')..'3/8  613'..Level_Text('Hero')..'2/6',
+        [6]='606'..Level_Text('Champion')..'4/8  613'..Level_Text('Hero')..'2/6',
+
+        [7]='610'..Level_Text('Hero')..'1/6  616'..Level_Text('Hero')..'3/6',
+        [8]='610'..Level_Text('Hero')..'1/6  619'..Level_Text('Hero')..'3/6',
+        [9]='613'..Level_Text('Hero')..'2/6  619'..Level_Text('Hero')..'4/6',
         [10]='613'..Level_Text('Hero')..'2/6  623'..Level_Text('Myth')..'2/4',
     }
     return tab[level] or tab[10]
@@ -2040,7 +2041,7 @@ local function Init()
         self:SetAlpha(1)
     end)
 
-    Init_Affix()
+    --Init_Affix()
 
     --周奖励，提示
     e.Get_Weekly_Rewards_Activities({frame=TipsFrame, point={'TOPLEFT', ChallengesFrame, 'TOPLEFT', 10, -53}})
