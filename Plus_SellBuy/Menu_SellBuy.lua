@@ -141,11 +141,187 @@ local function Init_Menu(self, root)
     end)
     
 
+    num=''
+    if _G['WoWTools_BuybackButton'] then
+        num= _G['WoWTools_BuybackButton']:set_text()--回购，数量，提示
+    end
+--回购
+    sub=root:CreateButton(
+        '    |A:common-icon-undo:0:0|a'..(e.onlyChinese and '回购' or BUYBACK)..'|cnGREEN_FONT_COLOR: #'..(num or '')..'|r',
+    function()
+       return MenuResponse.Open 
+    end)
+
+--列表，回购
+    num=0
+    for itemID in pairs(Save().noSell) do
+        num= num+1
+        e.LoadData({id=itemID, type='item'})
+        local bag=C_Item.GetItemCount(itemID)
+        local bank=C_Item.GetItemCount(itemID, true, false, true, true)-bag
+        local itemName= WoWTools_ItemMixin:GetName(itemID)
+        sub2= sub:CreateCheckbox(
+            itemName..' '..'|cnYELLOW_FONT_COLOR:'..bag..'|A:bag-main:0:0|a'..bank..'|A:Banker:0:0|a'..'|r',
+        function(data)
+            return Save().noSell[data.itemID]
+        end, function(data)
+            Save().noSell[data.itemID]=not Save().noSell[data.itemID] and true or nil
+            local btn= _G['WoWTools_BuybackButton']
+            if btn then
+                btn:set_text()--回购，数量，提示
+            end
+        end, {itemID=itemID})
+        sub2:SetTooltip(function(tooltip)
+            tooltip:AddLine(e.onlyChinese and '移除' or REMOVE)           
+        end)
+    end
+
+    if num>1 then
+        sub:CreateDivider()
+        sub:CreateButton(
+            '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL),
+        function()
+            Save().noSell={}
+        end)
+    end
+    WoWTools_MenuMixin:SetNumButton(sub, num)
+    
+
+--购买物品
+    num=''
+    if _G['WoWTools_BuyItemButton'] then
+        num= _G['WoWTools_BuyItemButton']:set_text()--回购，数量，提示
+    end
+    sub=root:CreateCheckbox(
+        '|T236994:0|t'..(e.onlyChinese and '自动购买物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, PURCHASE))..'|cnGREEN_FONT_COLOR: #'..(num or '')..'|r',
+    function()
+        return not Save().notAutoBuy
+    end, function()
+        Save().notAutoBuy= not Save().notAutoBuy and true or nil
+        WoWTools_SellBuyMixin:Set_Merchant_Info()--设置, 提示, 信息
+        if _G['WoWTools_BuyItemButton'] then
+            _G['WoWTools_BuyItemButton']:set_text()--回购，数量，提示
+        end
+    end)
 
 
+--列表，购买
+    num=0
+    for itemID, numItem in pairs(Save().buyItems[e.Player.guid] or {}) do
+        num=num+1
+        local bag=C_Item.GetItemCount(itemID)
+        local bank=C_Item.GetItemCount(itemID, true, false, true, true)-bag
+        local itemName= WoWTools_ItemMixin:GetName(itemID)
+        sub2=sub:CreateCheckbox(
+            '|cnGREEN_FONT_COLOR:'..numItem..'|r '..itemName..' '..'|cnYELLOW_FONT_COLOR:'..bag..'|A:bag-main:0:0|a'..bank..'|A:Banker:0:0|a'..'|r',
+        function(data)
+            return Save().buyItems[e.Player.guid][data.itemID]
+        end, function(data)
+            Save().buyItems[e.Player.guid][data.itemID]=not Save().buyItems[e.Player.guid][data.itemID] and true or nil
+            WoWTools_SellBuyMixin:Set_Merchant_Info()--设置, 提示, 信息
+            local btn= _G['WoWTools_BuybackButton']
+            if btn then
+                btn:set_text()--回购，数量，提示
+            end
+        end, {itemID=itemID})
+        sub2:SetTooltip(function(tooltip)
+            tooltip:AddLine(e.onlyChinese and '移除' or REMOVE)
+        end)
+    end
+
+    if num>1 then
+        sub:CreateDivider()
+        sub:CreateButton(
+            '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL),
+        function()
+            Save().buyItems[e.Player.guid]={}
+            WoWTools_SellBuyMixin:Set_Merchant_Info()--设置, 提示, 信息
+            local btn= _G['WoWTools_BuybackButton']
+            if btn then
+                btn:set_text()--回购，数量，提示
+            end
+        end)
+    end
+    WoWTools_MenuMixin:SetNumButton(sub, num)
 
 
+--自动修理
+    root:CreateDivider()
+    sub=root:CreateCheckbox(
+        '|A:SpellIcon-256x256-RepairAll:0:0|a'..(e.onlyChinese and '自动修理所有物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, REPAIR_ALL_ITEMS)),
+    function()
+        return not Save().notAutoRepairAll
+    end, function()
+        Save().notAutoRepairAll= not Save().notAutoRepairAll and true or nil
+        local chek= _G['WoWTools_AutoRepairCheck']
+        if chek then
+            chek:set_repair_all()
+            chek:SetChecked(not Save().notAutoRepairAll)
+        end
+    end)
+    sub:CreateTitle((e.onlyChinese and '修理' or MINIMAP_TRACKING_REPAIR)..': '..Save().repairItems.num..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1))
+    sub:CreateTitle((e.onlyChinese and '公会' or GUILD)..': '..C_CurrencyInfo.GetCoinTextureString(Save().repairItems.guild))
+    sub:CreateTitle((e.onlyChinese and '玩家' or PLAYER)..': '..C_CurrencyInfo.GetCoinTextureString(Save().repairItems.player))    
+    if Save().repairItems.guild>0 and Save().repairItems.player>0 then
+        sub:CreateDivider()
+        sub:CreateTitle((e.onlyChinese and '合计' or TOTAL)..': '..C_CurrencyInfo.GetCoinTextureString(Save().repairItems.guild+Save().repairItems.player))
+    end
+    sub:CreateDivider()
+    sub:CreateTitle((e.onlyChinese and '使用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP)..': '..C_CurrencyInfo.GetCoinTextureString(CanGuildBankRepair() and GetGuildBankMoney() or 0))
 
+
+--商人 Plus
+    root:CreateDivider()
+    root:CreateCheckbox(
+        '|A:communities-icon-addgroupplus:0:0|a'..(e.onlyChinese and '商人 Plus' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, MERCHANT, 'Plus')),
+    function()
+        return not Save().notPlus
+    end, function()
+        Save().notPlus = not Save().notPlus and true or nil
+        print(e.addName, WoWTools_SellBuyMixin.addName, '|cnRED_FONT_COLOR:',e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+    end)
+
+
+--删除字符
+    root:CreateDivider()
+    sub=root:CreateCheckbox(
+        '|A:common-icon-redx:0:0|a'..(e.onlyChinese and '自动输入DELETE' or (RUNECARVER_SCRAPPING_CONFIRMATION_TEXT..': '..DELETE_ITEM_CONFIRM_STRING)),
+    function()
+        return not Save().notDELETE
+    end, function()
+        Save().notDELETE= not Save().notDELETE and true or nil
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(
+            e.onlyChinese and '你真的要摧毁%s吗？|n|n请在输入框中输入 DELETE 以确认。'
+            or DELETE_GOOD_ITEM
+        )
+    end)
+
+
+--自动拾取 plus
+    root:CreateDivider()
+    sub=root:CreateCheckbox(
+        '|A:Cursor_lootall_128:0:0|a'..(e.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT)..' Plus',
+    function()
+        return not Save().notAutoLootPlus
+    end, function()
+        Save().notAutoLootPlus= not Save().notAutoLootPlus and true or nil
+        print(e.addName, WoWTools_SellBuyMixin.addName, '|cnRED_FONT_COLOR:',e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddDoubleLine(e.onlyChinese and '自动拾取' or AUTO_LOOT_DEFAULT_TEXT, e.GetEnabeleDisable(C_CVar.GetCVarBool("autoLootDefault")))
+        tooltip:AddLine(' ')
+        tooltip:AddLine(
+            e.onlyChinese and '拾取窗口 Shift: 禁用'
+            or (format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_LOOT_FRAME_LABEL, 'Shift: ')..DISABLE)
+        )
+        tooltip:AddLine(e.onlyChinese and '不在战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_OUT_OF_COMBAT)
+    end)
+
+    
+--打开选项界面
+    WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_SellBuyMixin.addName})
 end
 
 
@@ -153,145 +329,10 @@ end
 --[[
 
 local function Ini(_, level, type)
-    local info
-   
-    elseif type=='BUY' then--二级菜单, 购买物品
-        for itemID, num in pairs(Save().buyItems[e.Player.guid]) do
-            if itemID and num then
-                e.LoadData({id=itemID, type='item'})
-                local bag=C_Item.GetItemCount(itemID)
-                local bank=C_Item.GetItemCount(itemID, true, false, true)-bag
-                local itemLink= WoWTools_ItemMixin:GetLink(itemID)
-                itemLink= itemLink or C_Item.GetItemNameByID(itemID) or ('itemID: ' .. itemID)
-                info= {
-                    text='|cnGREEN_FONT_COLOR:'..num..'|r '..itemLink..' '..'|cnYELLOW_FONT_COLOR:'..bag..'|A:bag-main:0:0|a'..bank..'|A:Banker:0:0|a'..'|r',
-                    notCheckable=true,
-                    tooltipOnButton=true,
-                    tooltipTitle=e.onlyChinese and '移除' or REMOVE,
-                    icon= C_Item.GetItemIconByID(itemID),
-                    arg1= itemID,
-                    arg2= itemLink,
-                    func=function(_, arg1, arg2)
-                        Save().buyItems[e.Player.guid][arg1]=nil
-                        WoWTools_SellBuyMixin:Set_Merchant_Info()--设置, 提示, 信息
-                        print(e.addName, WoWTools_SellBuyMixin.addName, arg2, arg1)
-                    end,
-                }
-                e.LibDD:UIDropDownMenu_AddButton(info, level)
-            end
-        end
-
-        e.LibDD:UIDropDownMenu_AddSeparator(level)
-        info= {
-            text=e.onlyChinese and '清除全部' or CLEAR_ALL,
-            notCheckable=true,
-            func=function ()
-                Save().buyItems={[e.Player.guid]={}}
-                WoWTools_SellBuyMixin:Set_Merchant_Info()--设置, 提示, 信息
-                e.LibDD:CloseDropDownMenus()
-           end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-        return
-
-    elseif type=='BUYBACK' then--二级菜单, 购回物品
-        for itemID, _ in pairs(Save().noSell) do
-            if itemID then
-                e.LoadData({id=itemID, type='item'})
-                local bag=C_Item.GetItemCount(itemID)
-                local bank=C_Item.GetItemCount(itemID, true, false, true)-bag
-                local itemLink= WoWTools_ItemMixin:GetLink(itemID)
-                itemLink= itemLink or C_Item.GetItemNameByID(itemID) or ('itemID: ' .. itemID)
-                info= {
-                    text=itemLink..' '..'|cnYELLOW_FONT_COLOR:'..bag..'|A:bag-main:0:0|a'..bank..'|A:Banker:0:0|a'..'|r',
-                    notCheckable=true,
-                    tooltipOnButton=true,
-                    tooltipTitle=e.onlyChinese and '移除' or REMOVE,
-                    icon= C_Item.GetItemIconByID(itemID),
-                    arg1= itemID,
-                    arg2= itemLink,
-                    func=function(_, arg1, arg2)
-                        Save().noSell[arg1]=nil
-                        print(e.addName, WoWTools_SellBuyMixin.addName, arg2, arg1)
-                        local btn= _G['WoWTools_BuybackButton']
-                        if btn then
-                            btn:set_text()--回购，数量，提示
-                        end
-                    end,
-                }
-                e.LibDD:UIDropDownMenu_AddButton(info, level)
-            end
-        end
-        e.LibDD:UIDropDownMenu_AddSeparator(level)
-        info ={
-            text= e.onlyChinese and '清除全部' or CLEAR_ALL,
-            notCheckable=true,
-            func=function ()
-                Save().noSell={}
-                local btn= _G['WoWTools_BuybackButton']
-                if btn then
-                    btn:set_text()--回购，数量，提示
-                end
-            end,
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-        return
-    end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                        
-    num=''
-    if _G['WoWTools_BuybackButton'] then
-        num= _G['WoWTools_BuybackButton']:set_text()--回购，数量，提示
-    end
-    info ={--购回
-        text= '    |A:common-icon-undo:0:0|a'..(e.onlyChinese and '回购' or BUYBACK)..'|cnGREEN_FONT_COLOR: #'..(num or '')..'|r',
-        notCheckable=true,
-        menuList='BUYBACK',
-        keepShownOnClick=true,
-        hasArrow=true,
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info)
-
-    num=''
-    if _G['WoWTools_BuyItemButton'] then
-        num= _G['WoWTools_BuyItemButton']:set_text()--回购，数量，提示
-    end
-    e.LibDD:UIDropDownMenu_AddSeparator(level)
-    info={--购买物品
-        text= '|T236994:0|t'..(e.onlyChinese and '自动购买物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, PURCHASE))..'|cnGREEN_FONT_COLOR: #'..(num or '')..'|r',
-        checked=not Save().notAutoBuy,
-        keepShownOnClick=true,
-        func=function ()
-            if Save().notAutoBuy then
-                Save().notAutoBuy=nil
-            else
-                Save().notAutoBuy=true
-            end
-            WoWTools_SellBuyMixin:Set_Merchant_Info()--设置, 提示, 信息
-            if _G['WoWTools_BuyItemButton'] then
-                _G['WoWTools_BuyItemButton']:set_text()--回购，数量，提示
-            end
-        end,
-        menuList='BUY',
-        hasArrow=true,
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info)
+ 
 
     e.LibDD:UIDropDownMenu_AddSeparator(level)
     local text=	(e.onlyChinese and '修理' or MINIMAP_TRACKING_REPAIR)..': '..Save().repairItems.num..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
