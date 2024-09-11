@@ -86,7 +86,7 @@ local function Set_AccountBankPanel()
         local needNewColumn = (containerSlotID % numRows) == 1
 
         if isFirstButton then
-            button:SetPoint("TOPLEFT", AccountBankPanel, "TOPLEFT", 0, -60)
+            button:SetPoint("TOPLEFT", AccountBankPanel, "TOPLEFT", 10, -60)
             lastColumnStarterButton = button
 
         elseif needNewColumn then
@@ -121,69 +121,8 @@ end
 
 
 
-local function Init_Button()
-    --local SetAllBank= WoWTools_ButtonMixin:Cbtn(BankFrame.TitleContainer, {size={22,22}, icon=true, name='WoWTools_SetAllBankButton'})
+local function Init()
     local SetAllBank= CreateFrame('Frame', 'WoWTools_SetAllBankButton')
-    --SetAllBank:SetAlpha(0.5)
-    --SetAllBank:SetPoint('LEFT', 12,0)
-
-    --[[function SetAllBank:set_tooltips()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, WoWTools_BankFrameMixin.addName)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine((e.onlyChinese and '行数' or HUD_EDIT_MODE_SETTING_ACTION_BAR_NUM_ROWS)..' |cnGREEN_FONT_COLOR:'..Save().num, e.Icon.mid)
-        e.tips:AddDoubleLine((e.onlyChinese and '间隔' or 'Interval')..' |cnGREEN_FONT_COLOR:'..Save().line, 'Alt+'..e.Icon.mid)
-        e.tips:Show()
-        self:SetAlpha(1)
-    end
-
-    SetAllBank:SetScript('OnMouseWheel', function(self, d)
-        if not IsModifierKeyDown() then--行数
-            local n= Save().num
-            if d==1 then
-                n= n-1
-            elseif d==-1 then
-                n=n +1
-            end
-            n= n<4 and 4 or n
-            n= n>32 and 32 or n
-            Save().num= n
-        elseif IsAltKeyDown() then
-            local n= Save().line
-            if d==1 then
-                n= n-1
-            elseif d==-1 then
-                n= n+1
-            end
-            n=n<0 and 0 or n
-            n=n>32 and 32 or n
-            Save().line= n
-        end
-
-        self:settings()
-        self:set_tooltips()
-    end)
-
-    SetAllBank:SetScript('OnLeave', function(self) self:SetAlpha(0.5) e.tips:Hide() end)
-    SetAllBank:SetScript('OnEnter', SetAllBank.set_tooltips)]]
-
-
-   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -294,38 +233,73 @@ local function Init_Button()
 
     --设置，材料，按钮
     function SetAllBank:set_reagent(tabindex)
-        self.reagentNum= 0
-        local btnNum=0
-        for index, btn in ReagentBankFrame:EnumerateItems() do
-            btn:ClearAllPoints()
-            if index==1 then
-                if tabindex==2 then
-                    btn:ClearAllPoints()
-                    btn:SetPoint('TOPLEFT', 8,-60)
-                else
-                    btn:SetPoint('LEFT', self.last, 'RIGHT', Save().line+6, 0)
+        local numColumn= ReagentBankFrame.numColumn or 7
+        
+
+        if tabindex==2 then
+
+            local slotOffsetX = 49;
+            local slotOffsetY = 44;
+            local index = 1;
+            for column = 1, ReagentBankFrame.numColumn or 7 do
+                local leftOffset = 6;
+                for subColumn = 1, ReagentBankFrame.numSubColumn or 2 do
+                    for row = 0, ReagentBankFrame.numRow-1 do
+                        local button=ReagentBankFrame["Item"..index]
+                        
+                        button:ClearAllPoints()
+                        button:SetPoint("TOPLEFT", ReagentBankFrame["BG"..column], "TOPLEFT", leftOffset, -(3+row*slotOffsetY));
+                        index = index + 1;
+                    end
+                    leftOffset = leftOffset + slotOffsetX;
                 end
-                self.last=btn
+            end
+        else
+            self.reagentNum= 0
+            local btnNum=0
+            for index, btn in ReagentBankFrame:EnumerateItems() do
+                btn:ClearAllPoints()
+                if index==1 then
+                    --[[if tabindex==2 then
+                        btn:ClearAllPoints()
+                        btn:SetPoint('TOPLEFT', 8,-60)
+                    else]]
+                        btn:SetPoint('LEFT', self.last, 'RIGHT', Save().line+6, 0)
+                    self.last=btn
+                    self.reagentNum= self.reagentNum+1
+                else
+                    btn:SetPoint('TOP', ReagentBankFrame["Item"..(index-1)], 'BOTTOM', 0, -Save().line)
+                end
+                if not btn.Bg then
+                    btn.Bg= btn:CreateTexture(nil, 'BACKGROUND')
+                    btn.Bg:SetAllPoints(btn)
+                    btn.Bg:SetAtlas('ChallengeMode-DungeonIconFrame')
+                    btn.Bg:SetVertexColor(0,1,0)
+                    --btn.Bg:SetAlpha(0.5)
+                end
+                set_index_label(btn, index)--索引，提示
+                btnNum=index
+            end
+            for i=Save().num+1, btnNum, Save().num do
+                local btn= ReagentBankFrame["Item"..i]
+                btn:ClearAllPoints()
+                btn:SetPoint('LEFT', self.last, 'RIGHT', Save().line, 0)
+                self.last= btn
                 self.reagentNum= self.reagentNum+1
-            else
-                btn:SetPoint('TOP', ReagentBankFrame["Item"..(index-1)], 'BOTTOM', 0, -Save().line)
-            end
-            if not btn.Bg then
-                btn.Bg= btn:CreateTexture(nil, 'BACKGROUND')
-                btn.Bg:SetAllPoints(btn)
-                btn.Bg:SetAtlas('ChallengeMode-DungeonIconFrame')
-                btn.Bg:SetAlpha(0.5)
-            end
-            set_index_label(btn, index)--索引，提示
-            btnNum=index
+            end 
         end
-        for i=Save().num+1, btnNum, Save().num do
-            local btn= ReagentBankFrame["Item"..i]
-            btn:ClearAllPoints()
-            btn:SetPoint('LEFT', self.last, 'RIGHT', Save().line, 0)
-            self.last= btn
-            self.reagentNum= self.reagentNum+1
-        end        
+
+--[[
+        for column = 2, numColumn do
+			
+			local textrue= ReagentBankFrame["BG"..(column)]
+            if textrue then
+                textrue:SetTexture(0)
+            end
+			local shadow = ReagentBankFrame:CreateTexture(nil, "BACKGROUND");
+			shadow:SetPoint("CENTER", ReagentBankFrame["BG"..(column)], "CENTER", 0, 0);
+			shadow:SetAtlas("bank-slots-shadow", true);
+		end]]
     end
 
 
@@ -348,12 +322,12 @@ local function Init_Button()
                 (Save().num+1)*37 +((Save().num-1)*Save().line)+64+8+6
             )
 
-        elseif tabindex==2 then
+        --[[elseif tabindex==2 then
             local num= SetAllBank.reagentNum
             BankFrame:SetSize(
                 8+(num*37)+((num-1)*Save().line),
                 64+(Save().num*37)+(Save().num*Save().line)+8
-            )
+            )]]
         end
     end
 
@@ -468,95 +442,6 @@ end
 
 
 
-local function Init()
-    ReagentBankFrame.NineSlice:Hide()
-    BankFrameMoneyFrameBorder:Hide()
-    AccountBankPanel.MoneyFrame.Border:Hide()
-
---隐藏，ITEMSLOTTEXT"物品栏位" BAGSLOTTEXT"背包栏位"
-    for _, region in pairs({BankSlotsFrame:GetRegions()}) do
-        if region:GetObjectType()=='FontString' then
-            region:SetText('')
-            region:Hide()
-        end
-    end
-
---移动，搜索框
-    hooksecurefunc('BankFrame_UpdateAnchoringForPanel', function()
-        BankItemSearchBox:ClearAllPoints()
-        BankItemSearchBox:SetPoint('TOP', 0,-33)
-    end)
-
-
---隐藏，材料包，背景
-    ReagentBankFrame:HookScript('OnShow', function(self)
-        if self.isSetPoint then--or not IsReagentBankUnlocked() then
-            return
-        end
-        self.isSetPoint=true
-        for _, region in pairs({ReagentBankFrame:GetRegions()}) do
-            if region:GetObjectType()=='Texture' then
-                region:SetTexture(0)
-                region:Hide()
-            end
-        end
-
---移动，整理，按钮
-        BankItemAutoSortButton:ClearAllPoints()
-        BankItemAutoSortButton:SetPoint('RIGHT', BankItemSearchBox, 'LEFT', -6, 0)
-        BankItemAutoSortButton:SetParent(BankSlotsFrame)
-        ReagentBankFrame.autoSortButton:SetPoint('LEFT', BankItemSearchBox, 'RIGHT', 2, 0)--整理材料银行
-
-
---存放各种材料
-        ReagentBankFrame.DespositButton:ClearAllPoints()
-        ReagentBankFrame.DespositButton:SetSize(23, 23)
-        ReagentBankFrame.DespositButton:SetPoint('LEFT', ReagentBankFrame.autoSortButton, 'RIGHT', 2, 0)
-        ReagentBankFrame.DespositButton:SetText('')
-        ReagentBankFrame.DespositButton.Middle:Hide()
-        ReagentBankFrame.DespositButton.Right:Hide()
-        ReagentBankFrame.DespositButton.Left:Hide()
-        ReagentBankFrame.DespositButton:SetNormalAtlas('poi-traveldirections-arrow')
-        ReagentBankFrame.DespositButton:GetNormalTexture():SetTexCoord(0,1,1,0)
-        ReagentBankFrame.DespositButton:SetHighlightAtlas('auctionhouse-nav-button-select')
-        ReagentBankFrame.DespositButton:SetPushedAtlas('auctionhouse-nav-button-select')
-        ReagentBankFrame.DespositButton:HookScript('OnLeave', GameTooltip_Hide)
-        ReagentBankFrame.DespositButton:HookScript('OnEnter', function(s)
-            e.tips:SetOwner(s, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:AddDoubleLine(e.onlyChinese and '存放各种材料' or REAGENTBANK_DEPOSIT)
-            e.tips:Show()
-        end)
-    end)
-
-    AccountBankPanel.Header:ClearAllPoints()
-    AccountBankPanel.Header:SetPoint('TOPLEFT', 16, -36)
-
-    AccountBankPanel.Header.Text:ClearAllPoints()
-    AccountBankPanel.Header.Text:SetPoint('LEFT')
-    
-
-    e.Set_Move_Frame(AccountBankPanel, {frame=BankFrame})
-
-    AccountBankPanel.Background=AccountBankPanel:CreateTexture(nil, 'BACKGROUND')
-    AccountBankPanel.Background:SetAllPoints()
-    WoWTools_BankFrameMixin:Set_Background_Texture(AccountBankPanel.Background)
-
-    AccountBankPanel.ItemDepositFrame.IncludeReagentsCheckbox.Text:SetText('')
-    AccountBankPanel.ItemDepositFrame.IncludeReagentsCheckbox.Text:Hide()
-    AccountBankPanel.ItemDepositFrame.IncludeReagentsCheckbox:HookScript('OnLeave', GameTooltip_Hide)
-    AccountBankPanel.ItemDepositFrame.IncludeReagentsCheckbox:HookScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_RIGHT")
-        e.tips:ClearLines()
-        e.tips:AddLine(e.onlyChinese and '包括可交易的材料' or BANK_DEPOSIT_INCLUDE_REAGENTS_CHECKBOX_LABEL)
-        e.tips:Show()
-    end)
-end
-
-
-
-
-
 
 
 
@@ -564,16 +449,7 @@ end
 
 
 --整合
-function WoWTools_BankFrameMixin:Init_All_Bank()
-    Init_Button()
+function WoWTools_BankFrameMixin:Init_Plus()
     Init()
-    
-    --WoWTools_ButtonMixin:CreateButton(3)
-
-    --显示背景 Background
-    --WoWTools_TextureMixin:CreateBackground(AccountBankPanel, {isAllPoint=true, alpha=1})
-    
-
-    
 end
 

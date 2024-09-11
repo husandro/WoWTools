@@ -172,7 +172,7 @@ local function Init()--增强，原生
         end
         ReagentBankFrame.ShowHideButton:SetShown(BankFrame.activeTabIndex==1)--选项
         ReagentBankFrame.ShowHideButton:set_scale()--缩放
-        ReagentBankFrame.autoSortButton:SetShown(not Save().hideReagentBankFrame and BankFrame.activeTabIndex==1)--整理材料银行
+        --ReagentBankFrame.autoSortButton:SetShown(not Save().hideReagentBankFrame and BankFrame.activeTabIndex==1)--整理材料银行
     end
     hooksecurefunc('BankFrame_ShowPanel', ReagentBankFrame.ShowHideButton.show_hide)
 

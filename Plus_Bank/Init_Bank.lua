@@ -22,12 +22,9 @@ Save={
 },
 addName=nil,
 
-Init_All_Bank=function()end,
+Init_Plus=function()end,
 Init_Left_List=function()end,
-Init_Desposit_TakeOut=function()end,
---Init_Bank_Plus=function()end,
---CreateButton=function()end,
-
+Init_Frame=function()end,
 }
 
 
@@ -106,6 +103,10 @@ local function Init_Menu(self, root)
             GameTooltip_AddErrorLine(tooltip, 'Bub: NDui')
         end)
         sub:SetEnabled(false)
+    else
+        sub:SetTooltip(function(tooltip)
+            tooltip:AddLine(e.onlyChinese and '跟背包插件冲突' or format(ALREADY_BOUND, 'Backpack Addon'))
+        end)
     end
 
 
@@ -184,37 +185,6 @@ end
 
 
 
-local function Init_Texture()
-
-
-    e.Set_NineSlice_Color_Alpha(BankFrame, true)
-    e.Set_NineSlice_Color_Alpha(AccountBankPanel, true)
-    e.Set_NineSlice_Color_Alpha(BankSlotsFrame, nil, true)
-    e.Set_Alpha_Frame_Texture(BankFrameTab1, {notAlpha=true})
-    e.Set_Alpha_Frame_Texture(BankFrameTab2, {notAlpha=true})
-    e.Set_Alpha_Frame_Texture(BankFrameTab3, {notAlpha=true})
-    BankFrameBg:SetTexture(0)
-
-    e.Set_Alpha_Frame_Texture(ReagentBankFrame.EdgeShadows, {})
-
-
-
-    ReagentBankFrame.EdgeShadows:Hide()
-    BankSlotsFrame.EdgeShadows:Hide()
-    --AccountBankPanel.Header.Text:ClearAllPoints()
-    --AccountBankPanel.Header.Text:SetPoint('RIGHT', BankItemSearchBox, 'LEFT', -12, 0)
-    e.Set_Alpha_Frame_Texture(BankFrameTab1, {isMinAlpha=true})
-    e.Set_Alpha_Frame_Texture(BankFrameTab2, {isMinAlpha=true})
-    e.Set_Alpha_Frame_Texture(BankFrameTab3, {isMinAlpha=true})
-
-
-    BankFrame:EnableDrawLayer('BACKGROUND')
-    BankFrame.Background:ClearAllPoints()
-    BankFrame.Background:SetPoint('TOPLEFT', BankFrame)
-    BankFrame.Background:SetPoint('BOTTOMRIGHT', BankFrame)    
-    WoWTools_BankFrameMixin:Set_Background_Texture(BankFrame.Background)
-    --BankFrame.Background:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
-end
 
 
 
@@ -229,46 +199,6 @@ end
 
 
 
-
-
-local function Init_OpenAllBag_Button()
-    local parent= BankSlotsFrame['Bag'..NUM_BANKBAGSLOTS]
-    if not parent then
-        return
-    end
-
-    local up=  WoWTools_ButtonMixin:CreateUpButton(parent, nil, nil)
-    up:SetPoint('BOTTOMLEFT', parent, 'RIGHT', 4, -3)
-    up:SetScript('OnLeave', GameTooltip_Hide)
-    up:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_RIGHT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinese and '打开背包' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, BAGSLOT))
-        e.tips:Show()
-    end)
-    up:SetScript('OnClick', function()
-        do
-            WoWTools_BankMixin:OpenBag()
-        end
-        WoWTools_BankFrameMixin:Settings_All_Bank()--设置，整合银行
-    end)
-
-    local down=  WoWTools_ButtonMixin:CreateDownButton(parent, nil, nil)
-    down:SetPoint('TOPLEFT', parent, 'RIGHT', 4, -3)
-    down:SetScript('OnLeave', GameTooltip_Hide)
-    down:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_RIGHT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinese and '关闭背包' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CLOSE, BAGSLOT))
-        e.tips:Show()
-    end)
-    down:SetScript('OnClick', function()
-        do
-            WoWTools_BankMixin:CloseBag()
-        end
-        WoWTools_BankFrameMixin:Settings_All_Bank()--设置，整合银行
-    end)
-end
 
 
 
@@ -288,26 +218,23 @@ end
 local function Init()
     --local OptionButton= WoWTools_ButtonMixin:Cbtn(BankSlotsFrame, {size={22,22}, atlas='hide'})
     local OptionButton= WoWTools_ButtonMixin:CreateOptionButton(BankSlotsFrame, 'WoWTools_BankFrameOptionButton', nil)
-    OptionButton:SetPoint('LEFT',BankFrame.TitleContainer)
-    OptionButton:SetFrameStrata(BankFrame.TitleContainer:GetFrameStrata())
-    OptionButton:SetFrameLevel(BankFrame.TitleContainer:GetFrameLevel()+1)
+    --OptionButton:SetPoint('LEFT',BankFrame.TitleContainer)
+    OptionButton:SetPoint('RIGHT', BankFrameCloseButton, 'LEFT', -2,0)
+    OptionButton:SetFrameStrata(BankFrameCloseButton:GetFrameStrata())
+    OptionButton:SetFrameLevel(BankFrameCloseButton:GetFrameLevel()+1)
  
 
-    OptionButton:SetScript('OnLeave', function(self) self:SetAlpha(0.5) end)
+    OptionButton:SetScript('OnLeave', GameTooltip_Hide)
     OptionButton:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, WoWTools_BankFrameMixin.addName)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(' ',(e.onlyChinese and '菜单' or MAINMENU)..e.Icon.right)
+        e.tips:AddLine(e.onlyChinese and '菜单' or MAINMENU)
         e.tips:Show()
-        self:SetAlpha(1)
     end)
 
     OptionButton:SetScript('OnMouseDown', function(self)
         MenuUtil.CreateContextMenu(self, Init_Menu)
     end)
-    OptionButton:SetAlpha(0.5)
 
     function OptionButton:set_event()
         if Save().openBagInBank then
@@ -326,63 +253,12 @@ local function Init()
 
 
 
+  
 
 
 
-
-
-
-
-    
-
-    --整理材料银行
-    ReagentBankFrame.autoSortButton= CreateFrame("Button", nil, ReagentBankFrame, 'BankAutoSortButtonTemplate')
-    ReagentBankFrame.autoSortButton:SetPoint('LEFT', ReagentBankFrame.DespositButton, 'RIGHT', 25, 0)--整理材料银行
-    ReagentBankFrame.autoSortButton:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddLine(e.onlyChinese and '整理材料银行' or BAG_CLEANUP_REAGENT_BANK)
-        e.tips:Show()
-    end)
-    ReagentBankFrame.autoSortButton:SetScript('OnClick', function()
-        C_Container.SortReagentBankBags()
-    end)
-
-    --整理材料银行
-    AccountBankPanel.autoSortButton= CreateFrame("Button", nil, AccountBankPanel.ItemDepositFrame.DepositButton, 'BankAutoSortButtonTemplate')
-    AccountBankPanel.autoSortButton:SetPoint('RIGHT', AccountBankPanel.ItemDepositFrame.DepositButton, 'LEFT', -5, 0)--整理材料银行
-    AccountBankPanel.autoSortButton:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddLine(e.onlyChinese and '清理战团银行' or BAG_CLEANUP_ACCOUNT_BANK)
-        e.tips:Show()
-    end)
-    AccountBankPanel.autoSortButton:SetScript('OnClick', function()
-        if GetCVarBool("bankConfirmTabCleanUp") then
-        	StaticPopupSpecial_Show(BankCleanUpConfirmationPopup);
-        else
-            C_Container.SortAccountBankBags();
-        end
-    end)
-
-
-
-
-
-
-
-    Init_Texture()
-    Init_OpenAllBag_Button()
-
-
-
-
-
-    
-    WoWTools_BankFrameMixin:Init_All_Bank()--整合，一起
-
-
-    WoWTools_BankFrameMixin:Init_Desposit_TakeOut()--存放，取出，所有
+    WoWTools_BankFrameMixin:Init_Plus()--整合，一起
+    WoWTools_BankFrameMixin:Init_Frame()--存放，取出，所有
 
     C_Timer.After(4, function()--分类，存取, 2秒为翻译加载时间
         WoWTools_BankFrameMixin:Init_Left_List()
