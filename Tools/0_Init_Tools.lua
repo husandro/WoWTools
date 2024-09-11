@@ -18,7 +18,7 @@ local Save={
     isEnterShow=true,
     isCombatHide=true,
     isMovingHide=true,
-    showIcon=true,
+    --showIcon=false,
     loadCollectionUI=true,
     --show=false,
     --point
