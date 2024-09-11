@@ -412,6 +412,26 @@ local function Init_AccountBankPanel()
     AccountBankPanel.ItemDepositFrame.IncludeReagentsCheckbox.Text:SetText('')
     AccountBankPanel.ItemDepositFrame.IncludeReagentsCheckbox.Text:Hide()
 
+
+
+--标签，名称
+    AccountBankPanel.Header:ClearAllPoints()
+    AccountBankPanel.Header:SetPoint('RIGHT', AccountBankPanel.ItemDepositFrame.IncludeReagentsCheckbox, 'LEFT')
+
+    AccountBankPanel.Header.Text:ClearAllPoints()
+    AccountBankPanel.Header.Text:SetPoint('RIGHT')
+    e.Cstr(nil, {changeFont=AccountBankPanel.Header.Text, size=22, color=true, justifyH='RIGHT'})
+
+    local texture= AccountBankPanel.Header:CreateTexture()
+    texture:SetSize(22,22)
+    texture:SetPoint('RIGHT', AccountBankPanel.Header.Text, 'LEFT',0,-2)
+    texture:SetAtlas('questlog-questtypeicon-account')
+
+--标签，战团银行
+    local label= e.Cstr(BankSlotsFrame, {size=14})
+    label:SetPoint('TOP', AccountBankPanel, 0, -6)
+    label:SetText(e.onlyChinese and '战团' or ACCOUNT_QUEST_LABEL)
+
 --移动Frame    
     e.Set_Move_Frame(AccountBankPanel, {frame=BankFrame})
 
@@ -430,21 +450,9 @@ local function Init_AccountBankPanel()
 --边框
     AccountBankPanel.NineSlice.LeftEdge:Hide()
     AccountBankPanel.EdgeShadows:Hide()
-
-
---标签，名称
-    AccountBankPanel.Header:ClearAllPoints()
-    AccountBankPanel.Header:SetPoint('BOTTOMRIGHT', -8, 30)
-
-    AccountBankPanel.Header.Text:ClearAllPoints()
-    AccountBankPanel.Header.Text:SetPoint('RIGHT')
-    e.Cstr(nil, {changeFont=AccountBankPanel.Header.Text, size=22, color=true, justifyH='RIGHT'})
-
-    local texture= AccountBankPanel.Header:CreateTexture()
-    texture:SetSize(22,22)
-    texture:SetPoint('RIGHT', AccountBankPanel.Header.Text, 'LEFT',0,-3)
-    texture:SetAtlas('questlog-questtypeicon-account')
-
+    
+    --[[AccountBankPanel.TitleContainer=CreateFrame('Frame', nil, AccountBankPanel, 'DefaultPanelBaseTemplate')
+    AccountBankPanel.TitleContainer:SetAllPoints()]]
 end
 
 
@@ -530,7 +538,7 @@ local function Init()
 --与，战团边框
         BankFrame.NineSlice.RightEdge:SetShown(index~=1)
         --BankFrame.NineSlice.TopRightCorner:SetShown(index~=1)
-        BankFrame.NineSlice.BottomRightCorner:SetShown(index~=1)
+        --BankFrame.NineSlice.BottomRightCorner:SetShown(index~=1)
     end)
     
 

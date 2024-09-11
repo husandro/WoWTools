@@ -14,6 +14,37 @@ end
 
 
 
+local function Init_Menu(self, root)
+    local sub=root:CreateButton('|A:Cursor_OpenHand_32:0:0|a'..(e.onlyChinese and '提取' or WITHDRAW)..' '..(self.bankNumText or ''), function(data)
+        self:GetParent():take_out_item(data.classID)
+    end, {classID=self.classID})
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(tooltip:AddLine('|A:common-icon-rotateright:0:0|a'..(e.onlyChinese and '银行' or BANK)))
+    end)
+    
+    sub=root:CreateButton('|A:Cursor_buy_32:0:0|a'..(e.onlyChinese and '存放' or DEPOSIT)..' '..(self.bagNumText or ''), function(data)
+        self:GetParent():desposit_item(data.classID)
+    end, {classID=self.classID})
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine('|A:common-icon-rotateleft:0:0|a'..(e.onlyChinese and '背包' or HUD_EDIT_MODE_BAGS_LABEL))
+    end)
+
+    root:CreateDivider()
+    root:CreateTitle(self.Text:GetText())
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --大包时，显示，存取，分类，按钮
 local ListButton
@@ -146,24 +177,7 @@ local function Init()
                 frame:SetSize(frame.Text:GetWidth()+4, 18)
                 frame:SetPoint('TOPRIGHT', last, 'BOTTOMRIGHT')
                 frame:SetScript('OnClick', function(self)
-                    MenuUtil.CreateContextMenu(self, function(f, root)
-                        local sub=root:CreateButton('|A:Cursor_OpenHand_32:0:0|a'..(e.onlyChinese and '提取' or WITHDRAW)..' '..(f.bankNumText or ''), function(data)
-                            f:GetParent():take_out_item(data.classID)
-                        end, {classID=f.classID})
-                        sub:SetTooltip(function(tooltip)
-                            tooltip:AddLine(tooltip:AddLine('|A:common-icon-rotateright:0:0|a'..(e.onlyChinese and '银行' or BANK)))
-                        end)
-                        
-                        sub=root:CreateButton('|A:Cursor_buy_32:0:0|a'..(e.onlyChinese and '存放' or DEPOSIT)..' '..(f.bagNumText or ''), function(data)
-                            f:GetParent():desposit_item(data.classID)
-                        end, {classID=f.classID})
-                        sub:SetTooltip(function(tooltip)
-                            tooltip:AddLine('|A:common-icon-rotateleft:0:0|a'..(e.onlyChinese and '背包' or HUD_EDIT_MODE_BAGS_LABEL))
-                        end)
-
-                        root:CreateDivider()
-                        root:CreateTitle(f.Label:GetText())
-                    end)
+                    MenuUtil.CreateContextMenu(self, Init_Menu)
                 end)
                 frame:SetScript('OnLeave', GameTooltip_Hide)
                 frame:SetScript('OnEnter', function(self)
