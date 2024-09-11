@@ -209,8 +209,8 @@ local function Init()
 
 
 
-    BuybackButton:SetScript('OnMouseUp', function(self) self:set_texture() self:set_tooltip() end)
-    BuybackButton:SetScript('OnLeave', function(self) self:set_texture() GameTooltip_Hide() end)
+    BuybackButton:SetScript('OnMouseUp', BuybackButton.set_tooltip)
+    BuybackButton:SetScript('OnLeave', GameTooltip_Hide)
     BuybackButton:SetScript('OnEnter', BuybackButton.set_tooltip)
 
     BuybackButton.Text= e.Cstr(BuybackButton, {justifyH='CENTER'})

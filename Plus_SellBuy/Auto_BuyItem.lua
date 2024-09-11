@@ -92,6 +92,13 @@ local function Init()
     BuyItemButton:SetScript('OnLeave', function(self) GameTooltip_Hide() self:set_texture() end)
     BuyItemButton:SetScript('OnEnter', BuyItemButton.set_tooltip)
     BuyItemButton:SetScript('OnMouseUp', BuyItemButton.set_texture)
+
+
+
+
+
+
+
 --购买
     BuyItemButton:SetScript('OnMouseDown', function(self, d)
         local infoType, itemID, itemLink = GetCursorInfo()
@@ -164,8 +171,20 @@ local function Init()
             end
         else
             --WoWTools_SellBuyMixin:Init_Menu(self)
+            MenuUtil.CreateContextMenu(self,  function(f, root)
+                root:CreateTitle(e.onlyChinese and '拖曳物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DRAG_MODEL, ITEMS))
+                root:CreateDivider()
+                WoWTools_SellBuyMixin:BuyItem_Menu(f, root)
+            end)
+
         end
     end)
+
+
+
+
+
+
 
     function BuyItemButton:set_buy_item()--购买物品
         local numAllItems= GetMerchantNumItems() or 0

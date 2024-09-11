@@ -87,7 +87,7 @@ local function BuyItem_Menu(_, root)
         num= _G['WoWTools_BuyItemButton']:set_text()--回购，数量，提示
     end
     sub=root:CreateCheckbox(
-        '|T236994:0|t'..(e.onlyChinese and '自动购买物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, PURCHASE))..'|cnGREEN_FONT_COLOR: #'..(num or '')..'|r',
+        '|T236994:0|t'..(e.onlyChinese and '自动购买' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, PURCHASE))..'|cnGREEN_FONT_COLOR: #'..(num or '')..'|r',
     function()
         return not Save().notAutoBuy
     end, function()
