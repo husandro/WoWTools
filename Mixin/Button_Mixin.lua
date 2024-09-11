@@ -4,7 +4,7 @@ Cbtn(frame, tab)
 Ctype2(frame, tab)--圆形按钮
 
 CreateSecureButton(tab)
-CreateMenuButton(tab)
+CreateMenuButton(frame, tab)
 CreateOptionButton(frame, name, setID)
 
 Settings(btn)
@@ -179,7 +179,7 @@ function WoWTools_ButtonMixin:CreateMenuButton(frame, tab)
     local template= tab.template--UIPanelButtonTemplate
     local isSetTexture= tab.isSetTexture
 
-    local btn= CreateFrame('DropdownButton', name or ('WoWToolsMenuButton'..get_index()), frame or UIParent, template, setID)
+    local btn= CreateFrame('DropdownButton', name or ('WoWToolsDropdown'..get_index()), frame or UIParent, template, setID)
     btn:SetSize(get_size(size))
     self:Settings(btn, true)
 

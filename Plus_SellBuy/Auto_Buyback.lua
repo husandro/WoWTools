@@ -83,7 +83,7 @@ local function Init()
             self:set_tooltip()
 
         elseif d=='RightButton' then
-            WoWTools_SellBuyMixin:Init_Menu(self)
+            --WoWTools_SellBuyMixin:Init_Menu(self)
 
         elseif d=='LeftButton' then
             local num= GetNumBuybackItems()

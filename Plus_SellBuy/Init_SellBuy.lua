@@ -50,6 +50,7 @@ Init_Auto_Sell_Junk=function()end,
 
 Init_Buy_Items_Button=function()end,--购买物品
 Init_Buyback_Button=function()end,--回购物品
+Init_Menu=function()end,
 }
 
 
@@ -145,6 +146,7 @@ local function Init()
 
     WoWTools_SellBuyMixin:Init_Buy_Items_Button()--购买物品
     WoWTools_SellBuyMixin:Init_Buyback_Button()--回购物品
+    WoWTools_SellBuyMixin:Init_Menu()
 end
 
 

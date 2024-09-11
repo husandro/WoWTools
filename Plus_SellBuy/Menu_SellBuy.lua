@@ -6,7 +6,7 @@ local function Save()
 end
 
 
-local function Init_Menu(self, root)
+local function Init_Menu(_, root)
     local sub, sub2, num
 
 --自动出售垃圾
@@ -157,11 +157,9 @@ local function Init_Menu(self, root)
     for itemID in pairs(Save().noSell) do
         num= num+1
         e.LoadData({id=itemID, type='item'})
-        local bag=C_Item.GetItemCount(itemID)
-        local bank=C_Item.GetItemCount(itemID, true, false, true, true)-bag
         local itemName= WoWTools_ItemMixin:GetName(itemID)
         sub2= sub:CreateCheckbox(
-            itemName..' '..'|cnYELLOW_FONT_COLOR:'..bag..'|A:bag-main:0:0|a'..bank..'|A:Banker:0:0|a'..'|r',
+            itemName,
         function(data)
             return Save().noSell[data.itemID]
         end, function(data)
@@ -209,11 +207,9 @@ local function Init_Menu(self, root)
     num=0
     for itemID, numItem in pairs(Save().buyItems[e.Player.guid] or {}) do
         num=num+1
-        local bag=C_Item.GetItemCount(itemID)
-        local bank=C_Item.GetItemCount(itemID, true, false, true, true)-bag
         local itemName= WoWTools_ItemMixin:GetName(itemID)
         sub2=sub:CreateCheckbox(
-            '|cnGREEN_FONT_COLOR:'..numItem..'|r '..itemName..' '..'|cnYELLOW_FONT_COLOR:'..bag..'|A:bag-main:0:0|a'..bank..'|A:Banker:0:0|a'..'|r',
+            '|cnGREEN_FONT_COLOR:'..numItem..'|r '..itemName,
         function(data)
             return Save().buyItems[e.Player.guid][data.itemID]
         end, function(data)
@@ -262,10 +258,10 @@ local function Init_Menu(self, root)
     sub:CreateTitle((e.onlyChinese and '修理' or MINIMAP_TRACKING_REPAIR)..': '..Save().repairItems.num..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1))
     sub:CreateTitle((e.onlyChinese and '公会' or GUILD)..': '..C_CurrencyInfo.GetCoinTextureString(Save().repairItems.guild))
     sub:CreateTitle((e.onlyChinese and '玩家' or PLAYER)..': '..C_CurrencyInfo.GetCoinTextureString(Save().repairItems.player))    
-    if Save().repairItems.guild>0 and Save().repairItems.player>0 then
-        sub:CreateDivider()
-        sub:CreateTitle((e.onlyChinese and '合计' or TOTAL)..': '..C_CurrencyInfo.GetCoinTextureString(Save().repairItems.guild+Save().repairItems.player))
-    end
+    
+    sub:CreateSpacer()
+    sub:CreateTitle((e.onlyChinese and '合计' or TOTAL)..': '..C_CurrencyInfo.GetCoinTextureString(Save().repairItems.guild+Save().repairItems.player))
+    
     sub:CreateDivider()
     sub:CreateTitle((e.onlyChinese and '使用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP)..': '..C_CurrencyInfo.GetCoinTextureString(CanGuildBankRepair() and GetGuildBankMoney() or 0))
 
@@ -319,102 +315,30 @@ local function Init_Menu(self, root)
         tooltip:AddLine(e.onlyChinese and '不在战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_OUT_OF_COMBAT)
     end)
 
-    
+
 --打开选项界面
     WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_SellBuyMixin.addName})
 end
 
 
 
---[[
-
-local function Ini(_, level, type)
 
 
 
- 
-
-    e.LibDD:UIDropDownMenu_AddSeparator(level)
-    local text=	(e.onlyChinese and '修理' or MINIMAP_TRACKING_REPAIR)..': '..Save().repairItems.num..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
-                ..'|n'..(e.onlyChinese and '公会' or GUILD)..': '..C_CurrencyInfo.GetCoinTextureString(Save().repairItems.guild)
-                ..'|n'..(e.onlyChinese and '玩家' or PLAYER)..': '..C_CurrencyInfo.GetCoinTextureString(Save().repairItems.player)
-    if Save().repairItems.guild>0 and Save().repairItems.player>0 then
-        text=text..'|n|n'..(e.onlyChinese and '合计' or TOTAL)..': '..C_CurrencyInfo.GetCoinTextureString(Save().repairItems.guild+Save().repairItems.player)
-    end
-    text=text..'|n|n'..(e.onlyChinese and '使用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP)..'|n'..C_CurrencyInfo.GetCoinTextureString(CanGuildBankRepair() and GetGuildBankMoney() or 0)
-
-    info={--自动修理
-        text= '|A:SpellIcon-256x256-RepairAll:0:0|a'..(e.onlyChinese and '自动修理所有物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, REPAIR_ALL_ITEMS)),
-        checked=not Save().notAutoRepairAll,
-        keepShownOnClick=true,
-        func=function()
-            Save().notAutoRepairAll= not Save().notAutoRepairAll and true or nil
-            local chek= _G['WoWTools_AutoRepairCheck']
-            if chek then
-                chek:set_repair_all()
-                chek:SetChecked(not Save().notAutoRepairAll)
-            end
-        end,
-        tooltipOnButton=true,
-        tooltipTitle= '|cffff00ff'..(e.onlyChinese and '记录' or EVENTTRACE_LOG_HEADER).. '|r '..Save().repairItems.date,
-        tooltipText=text,
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info)
-
-    info= {--商人 Plus
-        text= '|A:communities-icon-addgroupplus:0:0|a'..(e.onlyChinese and '商人 Plus' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, MERCHANT, 'Plus')),
-        checked= not Save().notPlus,
-        keepShownOnClick=true,
-        func=function ()
-            Save().notPlus = not Save().notPlus and true or nil
-            print(e.addName, WoWTools_SellBuyMixin.addName, '|cnRED_FONT_COLOR:',e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-        end,
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info)
-
-    e.LibDD:UIDropDownMenu_AddSeparator(level)
-    info={--删除字符
-        text= '|A:common-icon-redx:0:0|a'..(e.onlyChinese and '自动输入DELETE' or (RUNECARVER_SCRAPPING_CONFIRMATION_TEXT..': '..DELETE_ITEM_CONFIRM_STRING)),
-        checked= not Save().notDELETE,
-        keepShownOnClick=true,
-        func=function ()
-            Save().notDELETE= not Save().notDELETE and true or nil
-        end,
-        tooltipOnButton=true,
-        tooltipTitle= e.onlyChinese and '你真的要摧毁%s吗？|n|n请在输入框中输入 DELETE 以确认。' or DELETE_GOOD_ITEM,
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info)
-
-    info={
-        text= '|A:Cursor_lootall_128:0:0|a'..(e.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT)..' Plus',
-        checked= not Save().notAutoLootPlus,
-        keepShownOnClick=true,
-        tooltipOnButton=true,
-        tooltipTitle=(not e.onlyChinese and AUTO_LOOT_DEFAULT_TEXT..', '..REFORGE_CURRENT or '自动拾取, 当前: ')..e.GetEnabeleDisable(C_CVar.GetCVarBool("autoLootDefault")),
-        tooltipText= (not e.onlyChinese and HUD_EDIT_MODE_LOOT_FRAME_LABEL..'Shift: '..DISABLE or '拾取窗口 Shift: 禁用')..'|n|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '不在战斗中' or 'not in combat'),
-        func= function()
-            Save().notAutoLootPlus= not Save().notAutoLootPlus and true or nil
-            print(e.addName, WoWTools_SellBuyMixin.addName, '|cnRED_FONT_COLOR:',e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-        end
-
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info)
-    info={
-        text= '    |A:SpellIcon-256x256-SellJunk:0:0|a'..(e.onlyChinese and '选项' or OPTIONS),
-        notCheckable=true,
-        func= function()
-            e.OpenPanelOpting(nil, WoWTools_SellBuyMixin.addName)
-        end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info)
+local function Init()
+    local btn= WoWTools_ButtonMixin:CreateMenuButton(MerchantFrameCloseButton, {isSetTexture=true, name='WoWTools_SellBuyMenuButton'})
+    btn:SetPoint('RIGHT', MerchantFrameCloseButton, 'LEFT', -2, 0)
+    btn:SetFrameStrata(MerchantFrameCloseButton:GetFrameStrata())
+    btn:SetFrameLevel(MerchantFrameCloseButton:GetFrameLevel())
+    btn:SetupMenu(Init_Menu)
 end
 
 
-]]
 
 
 
 
-function WoWTools_SellBuyMixin:Init_Menu(frame)
-    MenuUtil.CreateContextMenu(frame, Init_Menu)
+function WoWTools_SellBuyMixin:Init_Menu()
+    Init()
+    --MenuUtil.CreateContextMenu(frame, Init_Menu)
 end

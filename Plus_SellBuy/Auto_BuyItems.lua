@@ -142,7 +142,7 @@ local function Init()
                 ClearCursor()
             end
         else
-            WoWTools_SellBuyMixin:Init_Menu(self)
+            --WoWTools_SellBuyMixin:Init_Menu(self)
         end
     end)
 
