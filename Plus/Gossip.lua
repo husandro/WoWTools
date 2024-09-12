@@ -765,8 +765,8 @@ local function Init_Gossip_Text_Icon_Options()
         end
         local name,icon,hex, name2, info
         for _, info2 in pairs(C_GossipInfo.GetOptions() or {}) do
-            if info2.gossipOptionID==gossipID then
-                name2= info.name
+            if info2 and info2.gossipOptionID==gossipID then
+                name2= info2.name
                 break
             end
         end
