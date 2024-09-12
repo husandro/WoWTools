@@ -736,11 +736,6 @@ function e.Get_Weekly_Rewards_Activities(settings)--周奖励，提示
                 
             end
             if head then
-                
-                if info.type==Enum.WeeklyRewardChestThresholdType.World then
-                info= info
-                    for k, v in pairs(info) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
-                end
                 R[head]= R[head] or {}
                 R[head][info.index] = {
                     level = info.level,
