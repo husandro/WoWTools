@@ -302,7 +302,7 @@ end
 --创建，目标，功击，按钮
 --####################
 local function Create_Button(name)
-    local btn= WoWTools_ButtonMixin:Cbtn(MacroEditButton, {size={60,22}, type=false})
+    local btn= WoWTools_ButtonMixin:Cbtn(MacroSaveButton, {size={60,22}, type=false})
     function btn:find_text(right)
         return (MacroFrameText:GetText() or ''):find(e.Magic(right and self.text2 or self.text))
     end
@@ -770,7 +770,7 @@ local size= 24
     for i=1, 12 do
         local data= C_SpellBook.GetSpellBookSkillLineInfo(i)--shouIdHide name numSpellBookItems iconID isGuild itemIndexOffset
         if data and data.name and not data.shouIdHide then
-            local btn= WoWTools_ButtonMixin:Cbtn(MacroEditButton, {size=size, texture=data.iconID})
+            local btn= WoWTools_ButtonMixin:Cbtn(MacroSaveButton, {size=size, texture=data.iconID})
             btn.name= data.name
             btn.index= i
             btn:SetScript('OnLeave', GameTooltip_Hide)
