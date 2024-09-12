@@ -694,14 +694,15 @@ function e.Get_Weekly_Rewards_Activities(settings)--周奖励，提示
 
     local R = {}
     for  _ , info in pairs( C_WeeklyRewards.GetActivities() or {}) do
-        if info.type and info.type>= 1 and info.type<= 3 and info.level then
+        if info.type and info.type>0 and info.level then--and info.type>= 1 and info.type<= 3
             local head
             local difficultyText
-            if info.type == 1 then--1 Enum.WeeklyRewardChestThresholdType.MythicPlus
+--史诗地下城 1
+            if info.type == Enum.WeeklyRewardChestThresholdType.Activities then
                 head= e.onlyChinese and '史诗地下城' or MYTHIC_DUNGEONS
                 difficultyText= string.format(e.onlyChinese and '史诗 %d' or WEEKLY_REWARDS_MYTHIC, info.level)
-
-            elseif info.type == 2 then--2 Enum.WeeklyRewardChestThresholdType.RankedPvP
+--PVP 2
+            elseif info.type == Enum.WeeklyRewardChestThresholdType.RankedPvP then
                 head= e.onlyChinese and 'PvP' or PVP
                 if e.onlyChinese then
                     local tab={
@@ -718,12 +719,28 @@ function e.Get_Weekly_Rewards_Activities(settings)--周奖励，提示
                     difficultyText=tab[info.level]
                 end
                 difficultyText=  difficultyText or PVPUtil.GetTierName(info.level)-- _G["PVP_RANK_"..tierEnum.."_NAME"] PVPUtil.lua
-
-            elseif info.type == 3 then--3 Enum.WeeklyRewardChestThresholdType.Raid
+--团队副本 3
+            elseif info.type == Enum.WeeklyRewardChestThresholdType.Raid then
                 head= e.onlyChinese and '团队副本' or RAIDS
                 difficultyText=  DifficultyUtil.GetDifficultyName(info.level)
+--AlsoReceive 4
+            elseif info.type== Enum.WeeklyRewardChestThresholdType.AlsoReceive then
+                head= e.onlyChinese and '你还将得到' or WEEKLY_REWARDS_ALSO_RECEIVE 
+--5 Concession
+            elseif info.type== Enum.WeeklyRewardChestThresholdType.Concession then
+                head= e.onlyChinese and '收集' or WEEKLY_REWARDS_GET_CONCESSION
+
+--世界 6
+            elseif info.type== Enum.WeeklyRewardChestThresholdType.World then
+                head= e.onlyChinese and '世界' or WORLD
+                
             end
             if head then
+                
+                if info.type==Enum.WeeklyRewardChestThresholdType.World then
+                info= info
+                    for k, v in pairs(info) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
+                end
                 R[head]= R[head] or {}
                 R[head][info.index] = {
                     level = info.level,
@@ -760,6 +777,7 @@ function e.Get_Weekly_Rewards_Activities(settings)--周奖励，提示
                 end
             end
         end
+
         local CONQUEST_SIZE_STRINGS = {'', '2v2', '3v3', '10v10'}--PVP
         for i = 2, 4 do
             local rating, seasonBest, weeklyBest, seasonPlayed, seasonWon, weeklyPlayed, weeklyWon, lastWeeksBest, hasWon, pvpTier, ranking, roundsSeasonPlayed, roundsSeasonWon, roundsWeeklyPlayed, roundsWeeklyWon = GetPersonalRatedInfo(1)

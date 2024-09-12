@@ -150,7 +150,7 @@ function WoWTools_ToolsButtonMixin:SetPoint(btn, tab)
             table.insert(self.RightButtons, btn)
         end
     else
-        --local point= type(tab.point)=='function' and tab.point() or tab.point
+
 --BOOTOM
         if self.Save.BottomPoint[tab.name] or tab.isMoveButton then
             local num=#self.BottomButtons
@@ -165,8 +165,9 @@ function WoWTools_ToolsButtonMixin:SetPoint(btn, tab)
             end
             if not tab.isMoveButton then
                 self.Button.BottomFrame:SetPoint('LEFT', btn)--需要，设置宽 LEFT
+                table.insert(self.BottomButtons, btn)
             end
-            table.insert(self.BottomButtons, btn)
+            
 
         else
 --上面，合集

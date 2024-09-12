@@ -31,6 +31,9 @@ Save={
     buyItems={
         --[guid]={[itemID]=numbre,}
     },
+    WoWBuyItems={
+        [8529]=200,--诺格弗格药剂
+    },
     repairItems={date=date('%x'), player=0, guild=0, num=0}
 },
 
@@ -180,12 +183,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 WoWToolsSave[MERCHANT]=nil
             end
 
-                WoWTools_SellBuyMixin.Save= WoWToolsSave['Plus_SellBuy'] or WoWTools_SellBuyMixin.Save
-                WoWTools_SellBuyMixin.Save.buyItems[e.Player.guid]= WoWTools_SellBuyMixin.Save.buyItems[e.Player.guid] or {}
-            --end
+            WoWTools_SellBuyMixin.Save= WoWToolsSave['Plus_SellBuy'] or WoWTools_SellBuyMixin.Save
+            WoWTools_SellBuyMixin.Save.buyItems[e.Player.guid]= WoWTools_SellBuyMixin.Save.buyItems[e.Player.guid] or {}
+            WoWTools_SellBuyMixin.Save.WoWBuyItems= WoWTools_SellBuyMixin.Save.WoWBuyItems or {}
 
 
             WoWTools_SellBuyMixin.addName= '|A:SpellIcon-256x256-SellJunk:0:0|a'..(e.onlyChinese and '商人' or MERCHANT)
+
+            
 
             --添加控制面板
             e.AddPanel_Check({

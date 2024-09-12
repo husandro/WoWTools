@@ -549,7 +549,8 @@ local function Init_All_Frame()
     if MultiBarBottomLeftButton10 then hide_Texture(MultiBarBottomLeftButton10.SlotBackground) end
 
     if CompactRaidFrameManager then--隐藏, 团队, 材质 Blizzard_CompactRaidFrameManager.lua
-        hide_Texture(_G['CompactRaidFrameManagerBG-party-leads'])
+        set_Alpha_Color(_G['CompactRaidFrameManagerBG-regulars'])
+        set_Alpha_Color(_G['CompactRaidFrameManagerBG-party-leads'])
         CompactRaidFrameManager.toggleButton:SetNormalAtlas(e.Icon.toRight,true)--展开, 图标
         CompactRaidFrameManager.toggleButton:SetAlpha(0.2)
         CompactRaidFrameManager.toggleButton:SetHeight(30)
@@ -559,34 +560,6 @@ local function Init_All_Frame()
         hooksecurefunc('CompactRaidFrameManager_Expand', function()
             CompactRaidFrameManager.toggleButton:SetNormalAtlas(e.Icon.toLeft)
         end)
-        --[[hide_Texture(CompactRaidFrameManagerBorderTop)
-        hide_Texture(CompactRaidFrameManagerBorderRight)
-        hide_Texture(CompactRaidFrameManagerBorderBottom)
-        hide_Texture(CompactRaidFrameManagerBorderTopRight)
-
-        hide_Texture(CompactRaidFrameManagerBorderTopLeft)
-        hide_Texture(CompactRaidFrameManagerBorderBottomLeft)
-        hide_Texture(CompactRaidFrameManagerBorderBottomRight)
-
-        set_Alpha_Color(CompactRaidFrameManagerDisplayFrameHeaderDelineator, nil, nil, 0)
-        hide_Texture(CompactRaidFrameManagerDisplayFrameHeaderBackground)
-        set_Alpha_Color(CompactRaidFrameManagerBg, nil, nil, min03)
-        hide_Texture(CompactRaidFrameManagerDisplayFrameFilterOptionsFooterDelineator)
-CompactRaidFrameManager.DisplayFrame.Header.Delineator
-        CompactRaidFrameManager.toggleButton:SetNormalAtlas(e.Icon.toRight,true)--展开, 图标
-        CompactRaidFrameManager.toggleButton:SetAlpha(0.3)
-        CompactRaidFrameManager.toggleButton:SetHeight(30)
-        hooksecurefunc('CompactRaidFrameManager_Collapse', function()
-            CompactRaidFrameManager.toggleButton:SetNormalAtlas(e.Icon.toRight)
-        end)
-        hooksecurefunc('CompactRaidFrameManager_Expand', function()
-            CompactRaidFrameManager.toggleButton:SetNormalAtlas(e.Icon.toLeft)
-        end)
-        if CompactRaidFrameManagerDisplayFrameLeaderOptionsCountdownText then
-            CompactRaidFrameManagerDisplayFrameLeaderOptionsCountdownText:SetText('|A:countdown-swords:22:22|a10')
-            CompactRaidFrameManagerDisplayFrameLeaderOptionsInitiateRolePollText:SetText('|A:groupfinder-icon-role-large-tank:22:22:|a|A:groupfinder-icon-role-large-heal:22:22|a')
-            CompactRaidFrameManagerDisplayFrameLeaderOptionsInitiateReadyCheckText:SetText('|A:'..e.Icon.select..':22:22|a')
-        end]]
     end
 
     --施法条

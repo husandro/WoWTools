@@ -4954,7 +4954,9 @@
         "BankFrameCloseButton",
         "ACCOUNT_BANK_DEPOSIT_BUTTON_LABEL",
         "BankFrameMoneyFrame",
-        "MerchantFrameCloseButton"
+        "MerchantFrameCloseButton",
+        "WEEKLY_REWARDS_GET_CONCESSION",
+        "WEEKLY_REWARDS_ALSO_RECEIVE"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

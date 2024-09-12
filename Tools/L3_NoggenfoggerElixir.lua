@@ -92,43 +92,6 @@ end
 
 
 
-local function set_KEY()--设置捷键
-    if Save.KEY then
-        e.SetButtonKey(button, true, Save.KEY)
-        if #Save.KEY==1 then
-            if not button.KEY then
-                button.KEYstring=e.Cstr(button, {size=10, color=true})--10, nil, nil, true, 'OVERLAY')
-                button.KEYstring:SetPoint('BOTTOMRIGHT', button.border, 'BOTTOMRIGHT',-4,4)
-            end
-            button.KEYstring:SetText(Save.KEY)
-            if button.KEYtexture then
-                button.KEYtexture:SetShown(false)
-            end
-        else
-            if not button.KEYtexture then
-                button.KEYtexture=button:CreateTexture(nil,'OVERLAY')
-                button.KEYtexture:SetPoint('BOTTOM', button.border,'BOTTOM',-1,-5)
-                button.KEYtexture:SetAtlas('NPE_ArrowDown')
-                if not e.Player.useColor then
-                    button.KEYtexture:SetDesaturated(true)
-                end
-                button.KEYtexture:SetSize(20,15)
-            end
-            button.KEYtexture:SetShown(true)
-        end
-    else
-        e.SetButtonKey(button)
-        if button.KEYstring then
-            button.KEYstring:SetText('')
-        end
-        if button.KEYtexture then
-            button.KEYtexture:SetShown(false)
-        end
-    end
-end
-
-
-
 
 
 
@@ -273,7 +236,7 @@ local function Init()
     
     button.texture:SetTexture(C_Item.GetItemIconByID(ItemID) or 134863)
     button.count=e.Cstr(button, {size=12, color={r=1,g=1,b=1}})--10,nil,nil,true)
-    button.count:SetPoint('TOPRIGHT',-2,-2)
+    button.count:SetPoint('BOTTOMRIGHT')
 
     setCount()--设置数量
     setAura()--光环取消   
@@ -305,7 +268,6 @@ local function Init()
     end)
     
 
-   if Save.KEY then set_KEY() end--设置捷键
 end
 
 

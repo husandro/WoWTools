@@ -199,8 +199,7 @@ Tools\B2_Hearthstone.lua
 Tools\B3_OpenItems.lua
 ##侦察地图, 玩具, 没有小号，可以禁用
 Tools\B4_MapToy.lua
-##食物
-Tools\B5_Food.lua
+
 
 ##随机，玩具
 Tools\L1_UseToy.lua
@@ -210,7 +209,8 @@ Tools\L2_Pet.lua
 Tools\L3_NoggenfoggerElixir.lua
 ##各种专送门,物品，玩具
 Tools\L4_UsaItems.lua
-
+##食物
+Tools\B5_Food.lua
 ##法师传送门
 Tools\LL_MagePortal.lua
 
