@@ -14,6 +14,63 @@ end
 
 
 
+    --出售自定义
+local function Player_Sell_Menu(_, root)
+    local num, sub, sub2
+    num=0
+    for _ in pairs(Save().Sell) do
+        num=num+1
+    end
+    sub=root:CreateCheckbox(
+        '|A:bags-button-autosort-up:0:0|a'
+        ..(e.onlyChinese and '出售自定义' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, AUCTION_HOUSE_SELL_TAB, CUSTOM))
+        ..(num==0 and '|cff9e9e9e' or '')
+        ..' #'..num,
+    function()
+        return not Save().notSellCustom
+    end, function()
+        Save().notSellCustom= not Save().notSellCustom and true or nil
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(e.onlyChinese and '备注：在战斗中无法出售物品' or (NOTE_COLON..': '..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, ITEM_UNSELLABLE)))
+    end)
+
+    --列表, 出售自定义
+    num=0
+    for itemID in pairs(Save().Sell) do
+        num=num+1
+        sub2=sub:CreateCheckbox(
+            num..') '..WoWTools_ItemMixin:GetName(itemID),
+        function(data)
+            return Save().Sell[data.itemID]
+        end, function(data)
+            Save().Sell[data.itemID]= not Save().Sell[data.itemID] and true or nil
+        end, {itemID=itemID})
+        WoWTools_TooltipMixin:SetTooltip(nil, nil, sub2, nil)
+    end
+    if num>1 then
+        sub:CreateDivider()
+        sub:CreateButton(
+            '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL),
+        function()
+            Save().Sell={}
+        end)
+    end
+    WoWTools_MenuMixin:SetNumButton(sub, num)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
 --回购
 local function Buyback_Menu(_, root)
     local num, sub, sub2
@@ -185,51 +242,7 @@ local function Init_Menu(self, root)
 
 
 --出售自定义
-    num=0
-    for _ in pairs(Save().Sell) do
-        num=num+1
-    end
-    sub=root:CreateCheckbox(
-        '|A:bags-button-autosort-up:0:0|a'
-        ..(e.onlyChinese and '出售自定义' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, AUCTION_HOUSE_SELL_TAB, CUSTOM))
-        ..(num==0 and '|cff9e9e9e' or '')
-        ..' #'..num,
-    function()
-        return not Save().notSellCustom
-    end, function()
-        Save().notSellCustom= not Save().notSellCustom and true or nil
-    end)
-    sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(e.onlyChinese and '备注：在战斗中无法出售物品' or (NOTE_COLON..': '..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, ITEM_UNSELLABLE)))
-    end)
-
---列表, 出售自定义
-    num=0
-    for itemID in pairs(Save().Sell) do
-        num=num+1
-        sub2=sub:CreateCheckbox(
-            num..') '..WoWTools_ItemMixin:GetName(itemID),
-        function(data)
-            return Save().Sell[data.itemID]
-        end, function(data)
-            Save().Sell[data.itemID]= not Save().Sell[data.itemID] and true or nil
-        end, {itemID=itemID})
-        WoWTools_TooltipMixin:SetTooltip(nil, nil, sub2, nil)
-    end
-    if num>1 then
-        sub:CreateDivider()
-        sub:CreateButton(
-            '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL),
-        function()
-            Save().Sell={}
-        end)
-    end
-    WoWTools_MenuMixin:SetNumButton(sub, num)
-
-
-
-
-
+    Player_Sell_Menu(self, root)
 
 
 
@@ -443,10 +456,17 @@ function WoWTools_SellBuyMixin:Init_Menu()
     --MenuUtil.CreateContextMenu(frame, Init_Menu)
 end
 
+--购买物品
 function WoWTools_SellBuyMixin:BuyItem_Menu(frame, root)
     BuyItem_Menu(frame, root)
 end
 
+--回购
 function WoWTools_SellBuyMixin:Buyback_Menu(frame, root)
     Buyback_Menu(frame, root)
+end
+
+--出售自定义
+function WoWTools_SellBuyMixin:Player_Sell_Menu(frame, root)
+    Player_Sell_Menu(frame, root)
 end

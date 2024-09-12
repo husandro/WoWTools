@@ -77,17 +77,17 @@ local function Init()
                     e.tips:AddDoubleLine(name, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '购买' or PURCHASE)..e.Icon.left)
                 end
                 if icon then
-                    self:SetNormalTexture(icon)
+                    self.texture:SetTexture(icon)
                 end
             end
         else
 
-            e.tips:AddDoubleLine(e.addName, WoWTools_SellBuyMixin.addName)
+            --e.tips:AddDoubleLine(e.addName, WoWTools_SellBuyMixin.addName)
             local num= self:set_text()--回购，数量，提示
-            e.tips:AddDoubleLine('|T236994:0|t|cffff00ff'..(e.onlyChinese and '自动购买物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, PURCHASE)), '|cnGREEN_FONT_COLOR: #'..num..'|r')
+            e.tips:AddDoubleLine('|T236994:0|t|cffff00ff'..(e.onlyChinese and '自动购买' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, PURCHASE)), '|cnGREEN_FONT_COLOR: #'..num..'|r')
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine((e.onlyChinese and '拖曳' or DRAG_MODEL)..e.Icon.left..(e.onlyChinese and '物品' or ITEMS), e.onlyChinese and '出售/购买' or (AUCTION_HOUSE_SELL_TAB..'/'..PURCHASE))
-            --e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.left)
+            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.left)
         end
         e.tips:Show()
     end
@@ -177,6 +177,8 @@ local function Init()
             MenuUtil.CreateContextMenu(self,  function(f, root)
                 root:CreateTitle(e.onlyChinese and '拖曳物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DRAG_MODEL, ITEMS))
                 root:CreateDivider()
+                WoWTools_SellBuyMixin:Player_Sell_Menu(f, root)
+                   
                 WoWTools_SellBuyMixin:BuyItem_Menu(f, root)
             end)
 
