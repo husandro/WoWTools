@@ -932,6 +932,7 @@ local function Init_Bag()
                 return not C_Container.GetSortBagsRightToLeft()
             end, function()
                 C_Container.SetSortBagsRightToLeft(not C_Container.GetSortBagsRightToLeft() and true or false)
+                return MenuResponse.Close
             end)
         check:SetTooltip(function(tooltip, elementDescription)
             GameTooltip_SetTitle(tooltip, id..' '..addName)
@@ -943,6 +944,7 @@ local function Init_Bag()
             C_Container.GetBackpackAutosortDisabled,
             function()
                 C_Container.SetBackpackAutosortDisabled(not C_Container.GetBackpackAutosortDisabled() and true or false)
+                return MenuResponse.Close
             end)
         check:SetTooltip(function(tooltip, elementDescription)
             GameTooltip_SetTitle(tooltip, id..' '..addName)

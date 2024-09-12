@@ -15,6 +15,9 @@ local Save={
             [5]=true,--食物
             [7]=e.Is_Timerunning,
             [8]=e.Is_Timerunning,--其它
+        },
+        [15]={
+            [5]=true,
         }
     },
     addItems={
