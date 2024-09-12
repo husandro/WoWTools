@@ -17,7 +17,7 @@ local Save={
             [8]=e.Is_Timerunning,--其它
         },
         [15]={
-            [5]=true,
+            [4]=true,
         }
     },
     addItems={
