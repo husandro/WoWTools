@@ -645,6 +645,7 @@ end
 
 
 --接受, 召唤
+local tips
 local function Init_CONFIRM_SUMMON()
 
     hooksecurefunc(StaticPopupDialogs["CONFIRM_SUMMON"], "OnUpdate",function(self)
@@ -1042,8 +1043,8 @@ local function Init()
     set_event_PLAYER_UPDATE_RESTING()--设置, 休息区提示事件
     set_Chanell_Event()--设置,内容,频道, 邀请,事件
     Init_Shift_Click_Focus()--Shift+点击设置焦点
-
-    hooksecurefunc(StaticPopupDialogs["CONFIRM_SUMMON"], "OnUpdate", Init_CONFIRM_SUMMON)
+    Init_CONFIRM_SUMMON()
+    --hooksecurefunc(StaticPopupDialogs["CONFIRM_SUMMON"], "OnUpdate", Init_CONFIRM_SUMMON)
 
 
     StaticPopupDialogs["PARTY_INVITE"].button3= '|cff00ff00'..(e.onlyChinese and '总是' or ALWAYS)..'|r'..(e.onlyChinese and '拒绝' or DECLINE)..'|r'--添加总是拒绝按钮
