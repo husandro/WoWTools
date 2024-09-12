@@ -35,6 +35,8 @@ e.ChallengesSpellTabs={
     [251]= {spell=410074, ins=1022, name='地渊孢林', spellName='腐败丛生之路', spellDes='传送到|cff00ccff地渊孢林|r的入口'},--地渊孢林
     [438]= {spell=410080, ins=68, name='旋云之巅', spellName='风神领域之路', spellDes='传送到|cff00ccff旋云之巅|r的入口。'},--旋云之巅
 
+    [353]= {spell=464256, ins=1023, name='围攻伯拉勒斯', spellName='困守孤港之路', spellDes='传送到|cff00ccff围攻伯拉勒斯|r的入口。'},--围攻伯拉勒斯
+
     [2]={spell=131204, ins=313, name='青龙寺', spellDes='将施法者传送到|cff00ccff青龙寺|r入口。'},
     [200]={spell=393764, ins=721, name='英灵殿', spellName='证明价值之路', spellDes='传送到|cff00ccff英灵殿|r的入口。'},
     [210]={spell=393766, ins=800, name='群星庭院', spellName='大魔导师之路', spellDes='传送到|cff00ccff群星庭院|r的入口。'},
@@ -88,6 +90,12 @@ e.ChallengesSpellTabs={
     [506]= {spell=445440, ins=1272, name='燧酿酒庄', spellName='酒庄之路', spellDes='传送至|cff00ccff燧酿酒庄|r入口处。'},
     [507]= {spell=445424, ins=71, name='格瑞姆巴托', spellName='格瑞姆巴托之路', spellDes='传送至|cff00ccff格瑞姆巴托|r入口处。'},
 }
+
+--双法术，
+if e.Player.faction=='Alliance' then
+    e.ChallengesSpellTabs[353].spell= 445418 --围攻伯拉勒斯
+
+end
 
 --if C_MythicPlus.GetCurrentSeason()==12 then
 for _, tab in pairs(e.ChallengesSpellTabs) do
