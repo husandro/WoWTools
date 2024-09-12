@@ -69,6 +69,9 @@ function WoWTools_Key_Button:SetTexture(btn, key)
     end
 end
 
+
+
+
 function WoWTools_Key_Button:Setup(btn, isDisabled)
     if UnitAffectingCombat('player') then
         Frame.buttons[btn]={isDisabled=isDisabled}
@@ -148,14 +151,39 @@ function WoWTools_Key_Button:SetMenu(root, tab)
 end
 
 --[[
-WoWTools_Key_Button:SetMenu(sub, {
-    icon='',
-    name=addName,
-    text=,
-    key=,
-    GetKey=function(key)
-    end,
-    OnAlt=function(s, data)
-    end,
-})
+
+--设置捷键
+    sub:CreateSpacer()
+    local text2, num2= WoWTools_MenuMixin:GetDragonriding()--驭空术
+    WoWTools_Key_Button:SetMenu(sub, {
+        icon='|A:NPE_ArrowDown:0:0|a',
+        name=addName..(num2 and num2>0 and text2 or ''),
+        key=Save.KEY,
+        GetKey=function(key)
+            Save.KEY=key
+            WoWTools_Key_Button:Setup(MountButton)--设置捷键
+        end,
+        OnAlt=function()
+            Save.KEY=nil
+            WoWTools_Key_Button:Setup(MountButton)--设置捷键
+        end,
+    })
+    
+    WoWTools_Key_Button:Init(MountButton, function() return Save.KEY end)
+
+
+
+
+    if self.typeID then
+        local key= WoWTools_Key_Button:IsKeyValid(self)
+        e.tips:AddDoubleLine(
+            self.typeSpell and WoWTools_SpellMixin:GetName(self.typeID) or WoWTools_ItemMixin:GetName(self.typeID),
+            (key and '|cnGREEN_FONT_COLOR:'..key or '')..e.Icon.left
+        )
+    end
+
+    local key= WoWTools_Key_Button:IsKeyValid(self)
+    if key then
+        e.tips:AddDoubleLine('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL), '|cnGREEN_FONT_COLOR:'..key)
+    end
 ]]

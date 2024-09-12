@@ -337,7 +337,7 @@ end
 local function Init_All_Buttons()
     for _, itemID in pairs(Save.item) do
         local name ,icon
-        if e.Player.husandro or get_Find(itemID) then
+        if get_Find(itemID) then
             name = C_Item.GetItemNameByID(itemID)
             icon = C_Item.GetItemIconByID(itemID)
             if name and icon then
@@ -359,7 +359,7 @@ local function Init_All_Buttons()
 
     for _, itemID in pairs(Save.equip) do
         local name ,icon
-        if e.Player.husandro or C_Item.GetItemCount(itemID)>0 then
+        if C_Item.GetItemCount(itemID)>0 then
             name = C_Item.GetItemNameByID(itemID)
             local itemEquipLoc, icon2 = select(4, C_Item.GetItemInfoInstant(itemID))
             icon =icon2 or C_Item.GetItemIconByID(itemID)
@@ -384,7 +384,7 @@ local function Init_All_Buttons()
     end
 
     for _, spellID in pairs(Save.spell) do
-        if e.Player.husandro or IsSpellKnownOrOverridesKnown(spellID) then
+        if IsSpellKnownOrOverridesKnown(spellID) then
             local name= C_Spell.GetSpellName(spellID)
             local icon= C_Spell.GetSpellTexture(spellID)
             if name and icon then

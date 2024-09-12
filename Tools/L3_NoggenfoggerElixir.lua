@@ -1,5 +1,9 @@
 local id , e = ...
-local addName='NoggenfoggerElixir'
+if e.Is_Timerunning then
+    return
+end
+
+
 local Save={
     aura={
         [16591]=false,--变骷髅
@@ -7,7 +11,39 @@ local Save={
         [16593]=true,
     }
 }
-local button--button.itemID=8529
+
+local addName
+local button
+local ItemID= 8529
+local ItemName
+if LOCALE_zhCN then
+    ItemName= '诺格弗格药剂'
+elseif LOCALE_zhTW then
+    ItemName= '諾格弗格藥劑'
+elseif LOCALE_koKR then
+    ItemName= '노겐포저의 비약'
+elseif LOCALE_frFR then
+    ItemName= 'Élixir Brouillecaboche'
+elseif LOCALE_deDE then
+    ItemName= 'Noggenfoggers Elixier'
+elseif LOCALE_esES or LOCALE_esMX then--西班牙语
+    ItemName= 'Elixir de Tragonublo'
+elseif LOCALE_ruRU then   
+    ItemName= 'Эликсир Гогельмогеля'
+elseif LOCALE_ptBR then--葡萄牙语    
+    ItemName= 'Elixir Nublacuca'
+elseif LOCALE_itIT then
+    ItemName= 'Elisir di Granstrippo'
+else
+    ItemName= 'Noggenfogger Elixir'
+end
+
+
+
+
+
+
+
 
 
 local function setAura()--光环取消
@@ -15,11 +51,14 @@ local function setAura()--光环取消
         return
     end
     for i = 1, 255 do
-        local data=C_UnitAuras.GetAuraDataByIndex('player', i, 'CANCELABLE')
+        local data=C_UnitAuras.GetAuraDataByIndex('player', i, 'HELPFUL')
         if data then
-            if Save.aura[data.spellId] then
+            if Save.aura[data.spellId] then                
                 CancelUnitBuff("player", i, nil)-- 'CANCELABLE')
-                print(e.addName, e.onlyChinese '取消光环' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CANCEL, AURAS), C_Spell.GetSpellLink(data.spellId) or data.spellId)
+                print(addName,
+                    e.onlyChinese and '取消光环' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CANCEL, AURAS),
+                    WoWTools_SpellMixin:GetLink(data.spellId, true)
+                )
                 break
             end
         else
@@ -28,21 +67,31 @@ local function setAura()--光环取消
     end
 end
 
+
+
+
+
+
 local function setCount()--设置数量
-    local num = C_Item.GetItemCount(button.itemID, false, true, true)
-    if num~=1 and not button.count then
-        button.count=e.Cstr(button, {size=10, color=true})--10,nil,nil,true)
-        button.count:SetPoint('TOPRIGHT',-2,-2)
-    end
-    if button.count then
-        button.count:SetText(num~=1 and num or '')
-    end
+    local num = C_Item.GetItemCount(ItemID, false, true, true, false) or 0
+    button.count:SetText(num~=1 and num or '')
+    button.texture:SetDesaturated(num==0)
 end
 
 
---######
---快捷键
---######
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function set_KEY()--设置捷键
     if Save.KEY then
         e.SetButtonKey(button, true, Save.KEY)
@@ -76,6 +125,51 @@ local function set_KEY()--设置捷键
             button.KEYtexture:SetShown(false)
         end
     end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Init_Menu(_, root)
+    local sub
+    for spellID in pairs(Save.aura) do
+        sub=root:CreateCheckbox(
+            WoWTools_SpellMixin:GetName(spellID),
+        function(data)
+            return Save.aura[data.spellID]
+        end, function(data)
+            Save.aura[data.spellID]= not Save.aura[data.spellID] and true or false
+        end, {spellID=spellID})
+        WoWTools_TooltipMixin:SetTooltip(nil, nil, sub, nil)
+    end
+
+    root:CreateSpacer()
+    WoWTools_Key_Button:SetMenu(root, {
+        icon='|A:NPE_ArrowDown:0:0|a',
+        name=addName,
+        key=Save.KEY,
+        GetKey=function(key)
+            Save.KEY=key
+            WoWTools_Key_Button:Setup(button)--设置捷键
+        end,
+        OnAlt=function()
+            Save.KEY=nil
+            WoWTools_Key_Button:Setup(button)--设置捷键
+        end,
+    })
+
 end
 
 --#####
@@ -156,14 +250,30 @@ local function InitMenu(self, level)--主菜单
 end
 
 
---####
---初始
---####
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function Init()
+    WoWTools_Key_Button:Init(button, function() return Save.KEY end)
+
+    button:SetAttribute('type1','item')
+    button:SetAttribute('item1', C_Item.GetItemNameByID(ItemID) or ItemName or ItemID)
     
-    button:SetAttribute('type','item')
-    button:SetAttribute('item', C_Item.GetItemInfo(button.itemID) or button.itemID)
-    button.texture:SetTexture(C_Item.GetItemIconByID(button.itemID..''))
+    button.texture:SetTexture(C_Item.GetItemIconByID(ItemID) or 134863)
+    button.count=e.Cstr(button, {size=12, color={r=1,g=1,b=1}})--10,nil,nil,true)
+    button.count:SetPoint('TOPRIGHT',-2,-2)
 
     setCount()--设置数量
     setAura()--光环取消   
@@ -171,26 +281,29 @@ local function Init()
     button:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:SetItemByID(button.itemID)
+        e.tips:SetItemByID(ItemID)
         e.tips:AddLine(' ')
         for spellID, type in pairs(Save.aura) do
-            local name= C_Spell.GetSpellName(spellID)
-            local icon= C_Spell.GetSpellTexture(spellID)
-            name= name or (AURAS..' ID'..spellID)
-            name= (icon and '|T'..icon..':0|t' or '')..name
-            e.tips:AddDoubleLine(name, type and	'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '取消' or CANCEL)..'|r' or '...')
+            e.tips:AddDoubleLine( WoWTools_SpellMixin:GetLink(spellID, true), type and	'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '取消' or CANCEL)..'|r' or '...')
         end
-        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.mid)
+        e.tips:AddLine(' ')
+        local key= WoWTools_Key_Button:IsKeyValid(self)
+        if key then
+            e.tips:AddDoubleLine('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL), '|cnGREEN_FONT_COLOR:'..key)
+        end
+
+        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
         e.tips:Show()
     end)
+
+
     button:SetScript('OnLeave', GameTooltip_Hide)
-    button:SetScript('OnMouseWheel', function(self)
-        if not self.Menu then
-            self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
-            e.LibDD:UIDropDownMenu_Initialize(self.Menu, InitMenu, 'MENU')
+    button:SetScript("OnMouseDown", function(self, d)
+        if d=='RightButton' then
+            MenuUtil.CreateContextMenu(self, Init_Menu)
         end
-        e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
-   end)
+    end)
+    
 
    if Save.KEY then set_KEY() end--设置捷键
 end
@@ -228,31 +341,31 @@ end
 --###########
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent('PLAYER_LOGOUT')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
-            if not e.Player.husandro and (e.Is_Timerunning or C_Item.GetItemCount(8529)==0) then--没有时,不加载
+            if (e.Is_Timerunning or C_Item.GetItemCount(ItemID)==0) then--没有时,不加载
                 self:UnregisterEvent('ADDON_LOADED')
                 return
             end
+
+            
+
+            addName= '|T8529:0|t'..(e.onlyChinese and '诺格弗格药剂' or ItemName)
             
             Save= WoWToolsSave['NoggenfoggerElixir'] or Save
-            button= WoWTools_ToolsButtonMixin:CreateButton({
-                name='NoggenfoggerElixir',
-                tooltip='NoggenfoggerElixir',
-            })
+            button= WoWTools_ToolsButtonMixin:CreateButton({name=addName,})
 
             if button then
-
-                button.itemID=8529
-
+                ItemName= C_Item.GetItemNameByID(ItemID) or ItemName
+                
                 self:RegisterEvent("PLAYER_REGEN_ENABLED")
                 self:RegisterEvent("PLAYER_REGEN_DISABLED")
                 self:RegisterEvent('BAG_UPDATE_DELAYED')
                 self:RegisterUnitEvent("UNIT_AURA", 'player')
                 self:RegisterEvent('BAG_UPDATE_COOLDOWN')
-                self:RegisterEvent('PLAYER_LOGOUT')
-
+                
             
                 Init()--初始
             end
@@ -278,6 +391,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         setAura()--光环取消
 
     elseif event=='BAG_UPDATE_COOLDOWN' then
-        e.SetItemSpellCool(button, {item=button.itemID})
+        e.SetItemSpellCool(button, {item=ItemID})
     end
 end)

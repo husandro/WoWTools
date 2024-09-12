@@ -101,10 +101,11 @@ local function Init_Panel()
     for _, data in pairs (WoWTools_ToolsButtonMixin:GetAllAddList()) do
         initializer=nil
         if not data.isPlayerSetupOptions then--用户，自定义设置，选项，法师
+            local name= type(data.tooltip)=='function' and data.tooltip() or data.name
             if data.isMoveButton then--食物
                 initializer= e.AddPanel_Check({
                     category= Category,
-                    name= data.tooltip,
+                    name= name,
                     tooltip= data.name,
                     GetValue= function() return not Save.disabledADD[data.name] end,
                     SetValue= function()
@@ -113,10 +114,11 @@ local function Init_Panel()
                 })
                 
             else
+                
                 initializer= e.AddPanel_Check_DropDown({
                     category=Category,
                     layout=Layout,
-                    name=data.tooltip,
+                    name=name,
                     tooltip=data.name,
                     GetValue= function() return not Save.disabledADD[data.name] end,
                     SetValue= function()

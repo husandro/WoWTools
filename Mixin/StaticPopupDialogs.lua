@@ -1,3 +1,13 @@
+--[[
+WoWTools_RestData
+WoWTools_EditText
+WoWTools_Item
+WoWTools_GetMapID
+WoWTools_OK
+]]
+
+
+
 local id, e= ...
 
 local function Get_UIMapIDs_Name(text)--从text取得uiMapID表
