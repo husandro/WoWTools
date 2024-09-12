@@ -352,10 +352,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             
 
-            addName= '|T8529:0|t'..(e.onlyChinese and '诺格弗格药剂' or ItemName)
+            addName= '|T134863:0|t'..(e.onlyChinese and '诺格弗格药剂' or ItemName)
             
             Save= WoWToolsSave['NoggenfoggerElixir'] or Save
-            button= WoWTools_ToolsButtonMixin:CreateButton({name=addName,})
+            button= WoWTools_ToolsButtonMixin:CreateButton({
+                name='NoggenfoggerElixir',
+                tooltip=addName,
+            })
 
             if button then
                 ItemName= C_Item.GetItemNameByID(ItemID) or ItemName
