@@ -101,9 +101,7 @@ local function Buyback_Menu(_, root)
                 btn:set_text()--回购，数量，提示
             end
         end, {itemID=itemID})
-        sub2:SetTooltip(function(tooltip)
-            tooltip:AddLine(e.onlyChinese and '移除' or REMOVE)           
-        end)
+        WoWTools_TooltipMixin:SetTooltip(nil, nil, sub2, nil)
     end
 
     if num>1 then
@@ -173,9 +171,7 @@ local function BuyItem_Menu(_, root)
                 btn:set_text()--回购，数量，提示
             end
         end, {itemID=itemID})
-        sub2:SetTooltip(function(tooltip)
-            tooltip:AddLine(e.onlyChinese and '移除' or REMOVE)
-        end)
+        WoWTools_TooltipMixin:SetTooltip(nil, nil, sub2, nil)
     end
 
     if num>1 then

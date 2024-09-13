@@ -361,6 +361,10 @@ local function Init()
             --e.OpenPanelOpting('|A:SpecDial_LastPip_BorderGlow:0:0|a'..(e.onlyChinese and '对话和任务' or addName))
         end
     end)
+
+    GossipButton.Menu=CreateFrame("Frame", nil, GossipButton, "UIDropDownMenuTemplate")
+    e.LibDD:UIDropDownMenu_Initialize(GossipButton.Menu, function(...) WoWTools_GossipMixin:Init_Menu_Gossip(...) end, 'MENU')
+
     GossipButton:SetScript('OnMouseDown', function(self, d)
         if d=='RightButton' and IsAltKeyDown() then--移动
             SetCursor('UI_MOVE_CURSOR')
@@ -371,8 +375,10 @@ local function Init()
                 self:set_Texture()--设置，图片
                 self:tooltip_Show()
                 
-            elseif d=='RightButton' and not key then--菜单                
-                MenuUtil.CreateContextMenu(self, function(...) WoWTools_GossipMixin:Init_Menu_Gossip(...) end)
+            elseif d=='RightButton' and not key then--菜单
+
+                e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
+                --MenuUtil.CreateContextMenu(self, function(...) WoWTools_GossipMixin:Init_Menu_Gossip(...) end)
             end
         end
     end)
