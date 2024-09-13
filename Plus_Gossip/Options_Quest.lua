@@ -403,12 +403,7 @@ local function Init_Quest()
             self:set_Texture()--设置，图片
             self:tooltip_Show()
         elseif d=='RightButton' then
-            MenuUtil.CreateContextMenu(self, Init_Menu)
-            if not self.MenuQest then
-                self.MenuQest=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
-                e.LibDD:UIDropDownMenu_Initialize(self.MenuQest, WoWTools_GossipMixin.Init_Menu_Quest, 'MENU')
-            end
-            e.LibDD:ToggleDropDownMenu(1, nil, self.MenuQest, self, 15, 0)
+            MenuUtil.CreateContextMenu(self, WoWTools_GossipMixin.Init_Menu_Quest)
         end
     end)
     QuestButton:SetScript('OnMouseWheel', function()
