@@ -806,7 +806,7 @@ local function ClearAll_Menu(root, type, index)
             tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..e.Icon.left)
         end)
     end
-    WoWTools_MenuMixin:SetNumButton(root, index)
+    WoWTools_MenuMixin:SetGridMode(root, index)
 end
 
 

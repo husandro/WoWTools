@@ -4975,7 +4975,8 @@
         "RAID_ASSISTANT",
         "LOOT_SPECIALIZATION_DEFAULT",
         "DelvesCompanionAbilityListFrame",
-        "DelvesCompanionAbilityListFrameBg"
+        "DelvesCompanionAbilityListFrameBg",
+        "REWARD"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

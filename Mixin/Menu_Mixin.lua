@@ -484,14 +484,14 @@ end
 
 
 --SetGridMode
-function WoWTools_MenuMixin:SetNumButton(sub, num)
+function WoWTools_MenuMixin:SetGridMode(sub, num)
     if num and num>self.maxMenuButton then
         sub:SetGridMode(MenuConstants.VerticalGridDirection, math.ceil(num/self.maxMenuButton))
     end
 end
 
 --SetScrollMode
-function WoWTools_MenuMixin:SetScrollButton(root, maxCharacters)
+function WoWTools_MenuMixin:SetScrollMode(root, maxCharacters)
    root:SetScrollMode(20 * (maxCharacters or self.maxMenuButton))
 end
 

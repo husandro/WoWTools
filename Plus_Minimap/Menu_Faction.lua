@@ -84,7 +84,7 @@ function WoWTools_MinimapMixin:Faction_Menu(_, root)
             end
         end
     end
-    WoWTools_MenuMixin:SetNumButton(sub, index)
+    WoWTools_MenuMixin:SetGridMode(sub, index)
 end
 
 

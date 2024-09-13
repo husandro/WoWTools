@@ -56,7 +56,7 @@ local function Player_Sell_Menu(_, root)
             Save().Sell={}
         end)
     end
-    WoWTools_MenuMixin:SetNumButton(sub, num)
+    WoWTools_MenuMixin:SetGridMode(sub, num)
 end
 
 
@@ -114,7 +114,7 @@ local function Buyback_Menu(_, root)
             Save().noSell={}
         end)
     end
-    WoWTools_MenuMixin:SetNumButton(sub, num)
+    WoWTools_MenuMixin:SetGridMode(sub, num)
 end
 
 
@@ -191,7 +191,7 @@ local function BuyItem_Menu(_, root)
             end
         end)
     end
-    WoWTools_MenuMixin:SetNumButton(sub, num)
+    WoWTools_MenuMixin:SetGridMode(sub, num)
 end
 
 
@@ -296,7 +296,7 @@ local function Init_Menu(self, root)
             Save().bossItems={}
         end)
     end
-    WoWTools_MenuMixin:SetNumButton(sub, num)
+    WoWTools_MenuMixin:SetGridMode(sub, num)
 
 --保存 BOSS列表    
     sub:CreateCheckbox(

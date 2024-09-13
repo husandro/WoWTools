@@ -865,7 +865,7 @@ local function Init_Menu(self, root)--菜单
         function()
             Save().questIDs={}
         end)
-        WoWTools_MenuMixin:SetNumButton(sub, num)
+        WoWTools_MenuMixin:SetGridMode(sub, num)
     end
 
 --areaPoiIDs
@@ -900,7 +900,7 @@ local function Init_Menu(self, root)--菜单
         function()
             Save().areaPoiIDs={}
         end)
-        WoWTools_MenuMixin:SetNumButton(sub, num)
+        WoWTools_MenuMixin:SetGridMode(sub, num)
     end
 
 --地图
@@ -935,7 +935,7 @@ local function Init_Menu(self, root)--菜单
         function()
             Save().uiMapIDs={}
         end)
-        WoWTools_MenuMixin:SetNumButton(sub, num)
+        WoWTools_MenuMixin:SetGridMode(sub, num)
     end
 
 

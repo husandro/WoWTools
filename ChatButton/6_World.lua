@@ -501,7 +501,7 @@ end
             end
         end
 
-        WoWTools_MenuMixin:SetNumButton(sub2, filterPlayer)
+        WoWTools_MenuMixin:SetGridMode(sub2, filterPlayer)
     end
 
 
@@ -632,7 +632,7 @@ end
         end, {text=text, guid=tab.guid})
     end
 
-    WoWTools_MenuMixin:SetNumButton(sub, filterNum)
+    WoWTools_MenuMixin:SetGridMode(sub, filterNum)
 end
 
 end
@@ -756,7 +756,7 @@ end
                 tooltip:AddLine(e.onlyChinese and '移除' or REMOVE)
             end)
         end
-        WoWTools_MenuMixin:SetNumButton(sub, useNum)
+        WoWTools_MenuMixin:SetGridMode(sub, useNum)
     end
 end
 

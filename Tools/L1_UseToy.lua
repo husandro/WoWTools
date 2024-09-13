@@ -30,6 +30,7 @@ local P_Items={
     [217725]=true,
     [220777]=true,--
     [224552]=true,--洞穴探索者的火炬
+    [228914]=true,--爱蛛者眼镜
 }
 local ModifiedTab={
     --[[[69775]='Alt',--维库饮水角
@@ -289,8 +290,8 @@ local function Init_Menu_Toy(_, root)
         )
         sub2:SetTooltip(Set_Menu_Tooltip)
     end
-    --WoWTools_MenuMixin:SetNumButton(root, index)
-    WoWTools_MenuMixin:SetScrollButton(root, Save.numButton or 35)
+    --WoWTools_MenuMixin:SetGridMode(root, index)
+    WoWTools_MenuMixin:SetScrollMode(root, Save.numButton or 35)
 end
 
 
@@ -400,7 +401,7 @@ local function Init_Menu(self, root)
             return Save.numButton or 35
         end, setValue=function(value)
             Save.numButton= math.floor(value)
-            WoWTools_MenuMixin:SetScrollButton(root, Save.numButton)
+            WoWTools_MenuMixin:SetScrollMode(root, Save.numButton)
         end,
         name= e.onlyChinese and '按钮' or 'Button',
         minValue=5,

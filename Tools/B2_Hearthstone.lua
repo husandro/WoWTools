@@ -245,7 +245,7 @@ local function Init_Menu_Toy(_, root)
         )
         sub2:SetTooltip(Set_Menu_Tooltip)
     end
-    WoWTools_MenuMixin:SetNumButton(root, index)
+    WoWTools_MenuMixin:SetGridMode(root, index)
 end
 
 

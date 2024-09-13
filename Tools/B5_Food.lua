@@ -445,7 +445,7 @@ local function Init_Menu(self, root)
             Save.noUseItems={}
             self:Check_Items()
         end)
-        WoWTools_MenuMixin:SetNumButton(sub2, find)
+        WoWTools_MenuMixin:SetGridMode(sub2, find)
     end
 
 
@@ -591,7 +591,7 @@ local function Init_Menu(self, root)
             Save.addItems={}
             self:Check_Items()
         end)
-        WoWTools_MenuMixin:SetNumButton(sub, find)
+        WoWTools_MenuMixin:SetGridMode(sub, find)
     end
 
 --总是显示

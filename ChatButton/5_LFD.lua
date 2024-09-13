@@ -1036,7 +1036,7 @@ local function Set_LFGFollower_Dungeon_List(root)--追随者，副本
 
         end
     end
-    WoWTools_MenuMixin:SetNumButton(sub, dungeoNum)
+    WoWTools_MenuMixin:SetGridMode(sub, dungeoNum)
 end
 
 
@@ -2993,7 +2993,7 @@ local function Init_Menu(_, root)
     for i=1, NUM_LE_LFG_CATEGORYS do--列表信息
         num= (get_Queued_List(i) or 0)+ num
     end
-    WoWTools_MenuMixin:SetNumButton(root, num)
+    WoWTools_MenuMixin:SetGridMode(root, num)
 
     sub=root:CreateButton((e.onlyChinese and '离开列队' or LEAVE_QUEUE)..' |cnGREEN_FONT_COLOR:#'..num..'|r', function()
         for i=1, NUM_LE_LFG_CATEGORYS do--列表信息
@@ -3035,9 +3035,11 @@ local function Init_Menu(_, root)
         (WoWTools_MapMixin:IsInDelve() and '' or '|cff9e9e9e')
         ..(e.onlyChinese and '离开地下堡' or INSTANCE_WALK_IN_LEAVE),
     function()
-        if IsInGroup(LE_PARTY_CATEGORY_HOME) and not C_PartyInfo.IsDelveComplete() then
+        if WoWTools_MapMixin:IsInDelve() then
             StaticPopup_Show('WoWTools_OK',
-                e.onlyChinese and '离开地下堡' or INSTANCE_WALK_IN_LEAVE,
+                (e.onlyChinese and '离开地下堡' or INSTANCE_WALK_IN_LEAVE)
+                ..'|n|n|A:BonusLoot-Chest:32:32|a|cnGREEN_FONT_COLOR:'
+                ..(e.onlyChinese and '注意：奖励' or (LABEL_NOTE..': '..REWARD)),
                 nil,
                 {SetValue=C_PartyInfo.DelveTeleportOut}
             )
@@ -3052,9 +3054,11 @@ local function Init_Menu(_, root)
         (select(10, GetInstanceInfo()) and '' or '|cff9e9e9e')
         ..(e.onlyChinese and '离开副本' or INSTANCE_LEAVE),
     function()
-        if IsInGroup(LE_PARTY_CATEGORY_HOME) then
+        if select(10, GetInstanceInfo()) then
             StaticPopup_Show('WoWTools_OK',
-                e.onlyChinese and '离开副本' or INSTANCE_LEAVE,
+                (e.onlyChinese and '离开副本' or INSTANCE_LEAVE)
+                ..'|n|n|A:BonusLoot-Chest:32:32|a|cnGREEN_FONT_COLOR:'
+                ..(e.onlyChinese and '注意：奖励' or (LABEL_NOTE..': '..REWARD)),
                 nil,
                 {SetValue=function()
                     C_PartyInfo.LeaveParty(LE_PARTY_CATEGORY_INSTANCE)

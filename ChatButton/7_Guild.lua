@@ -209,7 +209,7 @@ local function Init_Menu(_, root)
             end
         end
         root:CreateDivider()
-        WoWTools_MenuMixin:SetNumButton(root, online)
+        WoWTools_MenuMixin:SetGridMode(root, online)
     end
 
     if CanReplaceGuildMaster() then--弹劾

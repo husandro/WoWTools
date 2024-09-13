@@ -271,7 +271,7 @@ local function Init_Menu(self, root)
         end)
     end
 
-    WoWTools_MenuMixin:SetNumButton(sub, num)
+    WoWTools_MenuMixin:SetGridMode(sub, num)
 end
 
 

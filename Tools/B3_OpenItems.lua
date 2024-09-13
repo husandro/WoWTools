@@ -620,7 +620,7 @@ local function Init_Menu(self, root)
         index= index+1
         Remove_NoUse_Menu(sub, itemID, 'no', nil)
     end
-    WoWTools_MenuMixin:SetNumButton(sub, no)
+    WoWTools_MenuMixin:SetGridMode(sub, no)
 
 
 --自定义使用列表
@@ -636,7 +636,7 @@ local function Init_Menu(self, root)
         index= index+1
         Remove_NoUse_Menu(sub, itemID, 'use', numUse)
     end
-    WoWTools_MenuMixin:SetNumButton(sub, use)
+    WoWTools_MenuMixin:SetGridMode(sub, use)
 
 
 local OptionsList={{

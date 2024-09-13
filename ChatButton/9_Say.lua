@@ -298,7 +298,7 @@ local function Init_Menu(self, root)
                 return MenuResponse.Open
             end, tab.name)
         end
-        WoWTools_MenuMixin:SetNumButton(sub, num)
+        WoWTools_MenuMixin:SetGridMode(sub, num)
     end
 
 
@@ -360,7 +360,7 @@ local function Init_Menu(self, root)
             tooltip:AddLine(e.cn(description.data.zone))
         end)
     end
-    WoWTools_MenuMixin:SetNumButton(sub, numOline)
+    WoWTools_MenuMixin:SetGridMode(sub, numOline)
 
 
 
