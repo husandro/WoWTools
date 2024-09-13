@@ -249,10 +249,9 @@ local function Init(_, level, type)
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 end
-
-
+]]
 
 
 function  WoWTools_GossipMixin:Init_Menu_Quest(frame, root)
     Init_Menu(frame, root)
-end]]
+end
