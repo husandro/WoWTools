@@ -403,7 +403,7 @@ local function Init_Quest()
             self:set_Texture()--设置，图片
             self:tooltip_Show()
         elseif d=='RightButton' then
-            MenuUtil.CreateContextMenu(self, WoWTools_GossipMixin.Init_Menu_Quest)
+            MenuUtil.CreateContextMenu(self, function(...) WoWTools_GossipMixin:Init_Menu_Quest(...) end)
         end
     end)
     QuestButton:SetScript('OnMouseWheel', function()

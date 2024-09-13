@@ -22,7 +22,7 @@ local function Init_Menu(self, root)
         self:tooltip_Show()
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine('Alt+%s'..(e.onlyChinese and '暂时禁用' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, BOOSTED_CHAR_SPELL_TEMPLOCK, DISABLE)))
+        tooltip:AddLine('Alt+'..(e.onlyChinese and '暂时禁用' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, BOOSTED_CHAR_SPELL_TEMPLOCK, DISABLE)))
     end)
 
 --其他任务
@@ -132,7 +132,7 @@ local function Init_Menu(self, root)
     sub:SetTooltip(function (tooltip)
         tooltip:AddLine('CVar autoQuestWatch')
     end)
-    root:SetEnabled(not UnitAffectingCombat('player'))
+    sub:SetEnabled(not UnitAffectingCombat('player'))
 end
 
 
