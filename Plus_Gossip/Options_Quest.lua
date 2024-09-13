@@ -1,7 +1,6 @@
 local e= select(2, ...)
 local addName
 local addName2
-local GossipButton
 local function Save()
     return WoWTools_GossipMixin.Save
 end
@@ -167,9 +166,9 @@ end
 --任务，初始化
 --###########
 local function Init_Quest()
-    local size= GossipButton:GetWidth()
-    QuestButton=WoWTools_ButtonMixin:Cbtn(GossipButton, {icon='hide', size={size, size}})--任务图标
-    QuestButton:SetPoint('RIGHT', GossipButton, 'LEFT')
+    local size= WoWTools_GossipMixin.GossipButton:GetWidth()
+    QuestButton=WoWTools_ButtonMixin:Cbtn(WoWTools_GossipMixin.GossipButton, {icon='hide', size={size, size}, name='WoWTools_GossipQuestButton'})--任务图标
+    QuestButton:SetPoint('RIGHT', WoWTools_GossipMixin.GossipButton, 'LEFT')
 
     function QuestButton:set_Only_Show_Zone_Quest()--显示本区域任务
         if not Save().autoSortQuest or IsInInstance() or UnitAffectingCombat('player') then
@@ -682,7 +681,10 @@ end
 
 
 function WoWTools_GossipMixin:Init_Quest()
-    GossipButton= self.GossipButton
+    if not WoWTools_GossipMixin.GossipButton then
+        return
+    end
+
     addName= self.addName
     addName2= self.addName2
     Init_Quest()

@@ -2,6 +2,7 @@ local e= select(2, ...)
 local addName
 local addName2
 local GossipButton
+
 local function Save()
     return WoWTools_GossipMixin.Save
 end
@@ -454,7 +455,7 @@ local function Init()
 
 
     GossipFrame:SetScript('OnShow', function (self)
-        QuestButton.questSelect={}--已选任务, 提示用
+        WoWTools_GossipMixin.QuestButton.questSelect={}--已选任务, 提示用
         GossipButton.selectGissipIDTab={}
         local npc=e.GetNpcID('npc')
         self.WoWToolsSelectNPC.npc=npc
@@ -629,7 +630,7 @@ local function Init()
         elseif Save().questOption[questID] then--自定义
            C_GossipInfo.SelectAvailableQuest(questID)--or self:GetID()
 
-        elseif QuestButton:not_Ace_QuestTrivial(questID) or Save().NPC[npc] then--or getMaxQuest()
+        elseif WoWTools_GossipMixin.QuestButton:not_Ace_QuestTrivial(questID) or Save().NPC[npc] then--or getMaxQuest()
             return
 
         else
