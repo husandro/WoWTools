@@ -1148,7 +1148,12 @@ local function Init_TrackButton()--添加装备管理框
 
     --设置，显示
     function TrackButton:set_shown()
-        self:SetShown(not Save.hide and Save.equipment)
+        self:SetShown(
+            not Save.hide
+            and Save.equipment
+            and not C_PetBattles.IsInBattle()
+            and not UnitHasVehicleUI('player')
+        )
     end
 
     --设置，列表位置
@@ -1291,12 +1296,7 @@ local function Init_TrackButton()--添加装备管理框
         end
     end
 
-    TrackButton:set_point()
-    TrackButton:set_scale()
-    TrackButton:set_shown()
-    TrackButton:init_buttons()
-    TrackButton:tips_not_equipment()
-    TrackButton:set_player_itemLevel()
+
 
     --更新
     hooksecurefunc('PaperDollEquipmentManagerPane_Update',  function()
@@ -1309,19 +1309,39 @@ local function Init_TrackButton()--添加装备管理框
     TrackButton:RegisterEvent('BAG_UPDATE_DELAYED')
     TrackButton:RegisterEvent('PLAYER_ENTERING_WORLD')
     TrackButton:RegisterEvent('READY_CHECK')
+    TrackButton:RegisterEvent('PET_BATTLE_OPENING_DONE')
+    TrackButton:RegisterEvent('PET_BATTLE_CLOSE')
+    TrackButton:RegisterUnitEvent('UNIT_EXITED_VEHICLE', 'player')
+    TrackButton:RegisterUnitEvent('UNIT_ENTERED_VEHICLE', 'player')
 
     --TrackButton:RegisterEvent('BAG_UPDATE')
     TrackButton:SetScript('OnEvent', function(self, event)
         if event=='PLAYER_ENTERING_WORLD' or event=='READY_CHECK' then
             self:tips_not_equipment()
+
+        elseif event=='PET_BATTLE_CLOSE'
+            or event=='PET_BATTLE_OPENING_DONE'
+            or event=='UNIT_ENTERED_VEHICLE'
+            or event=='UNIT_EXITED_VEHICLE'
+        then
+            self:set_shown()
+
         elseif not self.time or self.time:IsCancelled() then
             self.time= C_Timer.NewTimer(0.6, function()
                 self:init_buttons()
                 self:set_player_itemLevel()
                 self.time:Cancel()
             end)
+
         end
     end)
+
+    TrackButton:set_point()
+    TrackButton:set_scale()
+    TrackButton:set_shown()
+    TrackButton:init_buttons()
+    TrackButton:tips_not_equipment()
+    TrackButton:set_player_itemLevel()
 end
 
 

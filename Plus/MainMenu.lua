@@ -252,7 +252,7 @@ local function Init_Quest()
             return
         end
         e.tips:AddLine(' ')
-        e.GetQuestAllTooltip()--所有，任务，提示
+        WoWTools_QuestMixin:GetQuestAll()--所有，任务，提示
         e.tips:Show()
     end)
 end

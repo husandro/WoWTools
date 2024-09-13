@@ -59,9 +59,9 @@ local function Init()
     end)
 
 
-    LootFrame:HookScript("OnHide", function ()
+    LootFrame:HookScript("OnShow", function ()
         if C_CVar.GetCVarBool("autoLootDefault") then
-            for i = 1, GetNumLootItems(), 1 do
+            for i= GetNumLootItems(), 1, -1 do
                 LootSlot(i)
             end
         end

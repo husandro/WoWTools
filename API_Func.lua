@@ -83,7 +83,6 @@ e.GetUnitMapName(unit)--单位, 地图名称
 
 e.GetQestColor(text, questID)--任务颜色 return {r=0.10, g=0.72, b=1, hex='|cff1ab8ff'}
 e.QuestLogQuests_GetBestTagID(questID, info, tagInfo, isComplete)--任务图标，颜色 return atlas, color
-e.GetQuestAllTooltip()--所有，任务，提示
 e.GetDifficultyColor(string, difficultyID)--副本，难道，颜色 return string, color, name
 
 e.GetItemSlotIcon(slotID) 取得装备 return icon, texture
@@ -1717,54 +1716,6 @@ function e.QuestLogQuests_GetBestTagID(questID, info, tagInfo, isComplete)--Ques
         color=e.GetQestColor('PvP')
     end
     return atlas, color
-end
-
-
-function e.GetQuestAllTooltip()--所有，任务，提示
-    local numQuest, dayNum, weekNum, campaignNum, legendaryNum, storyNum, bountyNum, inMapNum = 0, 0, 0, 0, 0, 0, 0,0
-    for index=1, C_QuestLog.GetNumQuestLogEntries() do
-        local info = C_QuestLog.GetInfo(index)
-        if info and not info.isHeader and not info.isHidden then
-            if info.frequency== 0 then
-                numQuest= numQuest+ 1
-
-            elseif info.frequency==  Enum.QuestFrequency.Daily then--日常
-                dayNum= dayNum+ 1
-
-            elseif info.frequency== Enum.QuestFrequency.Weekly then--周常
-                weekNum= weekNum+ 1
-            end
-
-            if info.campaignID then
-                campaignNum= campaignNum+1
-            elseif info.isLegendarySort then
-                legendaryNum= legendaryNum +1
-            elseif info.isStory then
-                storyNum= storyNum +1
-            elseif info.isBounty then
-                bountyNum= bountyNum+ 1
-            end
-            if info.isOnMap then
-                inMapNum= inMapNum +1
-            end
-        end
-    end
-    local num= select(2, C_QuestLog.GetNumQuestLogEntries())
-    local all=C_QuestLog.GetAllCompletedQuestIDs() or {}--完成次数
-    e.tips:AddDoubleLine((e.onlyChinese and '已完成' or  CRITERIA_COMPLETED)..' '..e.MK(#all, 3), e.GetQestColor('Day').hex..(e.onlyChinese and '日常' or DAILY)..': '..GetDailyQuestsCompleted()..format('|A:%s:0:0|a', e.Icon.select))
-    e.tips:AddLine(e.Player.col..(e.onlyChinese and '上限' or CAPPED)..': '..(numQuest+ dayNum+ weekNum)..'/'..(C_QuestLog.GetMaxNumQuestsCanAccept() or 38))
-    e.tips:AddLine(' ')
-    e.tips:AddLine('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '当前地图' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, WORLD_MAP))..': '..inMapNum)
-    e.tips:AddLine(' ')
-    e.tips:AddLine(e.GetQestColor('Day').hex..(e.onlyChinese and '日常' or DAILY)..': '..dayNum)
-    e.tips:AddLine(e.GetQestColor('Week').hex..(e.onlyChinese and '周长' or WEEKLY)..': '..weekNum)
-    e.tips:AddLine((num>=MAX_QUESTS and '|cnRED_FONT_COLOR:' or '|cffffffff')..(e.onlyChinese and '一般' or RESISTANCE_FAIR)..': '..numQuest..'/'..MAX_QUESTS)
-    e.tips:AddLine(' ')
-    e.tips:AddLine(e.GetQestColor('Legendary').hex..(e.onlyChinese and '传说' or GARRISON_FOLLOWER_QUALITY6_DESC)..': '..legendaryNum)
-    e.tips:AddLine(e.GetQestColor('Legendary').hex..(e.onlyChinese and '战役' or TRACKER_HEADER_CAMPAIGN_QUESTS)..': '..campaignNum)
-    e.tips:AddLine(e.GetQestColor('Legendary').hex..(e.onlyChinese and '悬赏' or PVP_BOUNTY_REWARD_TITLE)..': '..bountyNum)
-    e.tips:AddLine(e.GetQestColor('Legendary').hex..(e.onlyChinese and '故事' or 'Story')..': '..storyNum)
-    e.tips:AddLine((e.onlyChinese and '追踪' or TRACK_QUEST_ABBREV)..': '..C_QuestLog.GetNumQuestWatches())
 end
 
 

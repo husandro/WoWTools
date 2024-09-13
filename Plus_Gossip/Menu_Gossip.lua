@@ -21,7 +21,7 @@ end
 --###########
 --对话，主菜单
 --###########
-local function Init(self, level, type)
+local function Init_Menu(self, level, type)
     if not Save().gossip then
         e.LibDD:UIDropDownMenu_AddButton({
             text=e.GetEnabeleDisable(false),
@@ -458,5 +458,5 @@ end
 
 
 function WoWTools_GossipMixin:Init_Menu_Gossip(...)
-    Init(...)
+    Init_Menu(...)
 end

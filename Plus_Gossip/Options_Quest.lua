@@ -1,6 +1,8 @@
 local e= select(2, ...)
 local addName
 local addName2
+local IsQuestTrivialTracking
+local GossipButton
 local function Save()
     return WoWTools_GossipMixin.Save
 end
@@ -166,8 +168,20 @@ end
 --任务，初始化
 --###########
 local function Init_Quest()
-    local size= WoWTools_GossipMixin.GossipButton:GetWidth()
-    QuestButton=WoWTools_ButtonMixin:Cbtn(WoWTools_GossipMixin.GossipButton, {icon='hide', size={size, size}, name='WoWTools_GossipQuestButton'})--任务图标
+
+    QuestButton=WoWTools_ButtonMixin:Cbtn(
+        WoWTools_GossipMixin.GossipButton,
+        {
+            icon='hide',
+            size=22,
+            name='WoWTools_GossipQuestButton',
+        }
+    )
+    WoWTools_GossipMixin.QuestButton= QuestButton
+
+    QuestButton.Text=e.Cstr(QuestButton, {justifyH='RIGHT', color=true, size=14})--任务数量
+    QuestButton.Text:SetPoint('RIGHT', QuestButton, 'LEFT', 0, 1)
+
     QuestButton:SetPoint('RIGHT', WoWTools_GossipMixin.GossipButton, 'LEFT')
 
     function QuestButton:set_Only_Show_Zone_Quest()--显示本区域任务
@@ -240,22 +254,9 @@ local function Init_Quest()
         self:set_Alpha()
     end
 
-    function QuestButton:get_set_IsQuestTrivialTracking(setting)--其它任务,低等任务,追踪
-        for trackingID=1, C_Minimap.GetNumTrackingTypes() do
-            local name, _, active= C_Minimap.GetTrackingInfo(trackingID)--name, texture, active, category, nested
-            if name== MINIMAP_TRACKING_TRIVIAL_QUESTS then
-                if setting then
-                    active= not active and true or false
-                    C_Minimap.SetTracking(trackingID, active)
-                end
-                --self.isQuestTrivialTracking = active
-                return active
-            end
-        end
-    end
 
     function QuestButton:not_Ace_QuestTrivial(questID)--其它任务,低等任务
-        return C_QuestLog.IsQuestTrivial(questID) and not self:get_set_IsQuestTrivialTracking()
+        return C_QuestLog.IsQuestTrivial(questID) and not IsQuestTrivialTracking
     end
 
 
@@ -282,44 +283,14 @@ local function Init_Quest()
         self:RegisterEvent('PLAYER_ENTERING_WORLD')
 
     end
-    --[[function QuestButton:get_All_Num()
-        local numQuest, dayNum, weekNum, campaignNum, legendaryNum, storyNum, bountyNum, inMapNum = 0, 0, 0, 0, 0, 0, 0,0
-        for index=1, C_QuestLog.GetNumQuestLogEntries() do
-            local info = C_QuestLog.GetInfo(index)
-            if info and not info.isHeader and not info.isHidden then
-                if info.frequency== 0 then
-                    numQuest= numQuest+ 1
 
-                elseif info.frequency==  Enum.QuestFrequency.Daily then--日常
-                    dayNum= dayNum+ 1
-
-                elseif info.frequency== Enum.QuestFrequency.Weekly then--周常
-                    weekNum= weekNum+ 1
-                end
-
-                if info.campaignID then
-                    campaignNum= campaignNum+1
-                elseif info.isLegendarySort then
-                    legendaryNum= legendaryNum +1
-                elseif info.isStory then
-                    storyNum= storyNum +1
-                elseif info.isBounty then
-                    bountyNum= bountyNum+ 1
-                end
-                if info.isOnMap then
-                    inMapNum= inMapNum +1
-                end
-            end
-        end
-        return numQuest, dayNum, weekNum, campaignNum, legendaryNum, storyNum, bountyNum, inMapNum
-    end]]
 
     function QuestButton:tooltip_Show()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.addName, addName2)
         e.tips:AddLine(' ')
-        e.GetQuestAllTooltip()--所有，任务，提示
+        WoWTools_QuestMixin:GetQuestAll()--所有，任务，提示
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.GetEnabeleDisable(not Save().quest),e.Icon.left)
         e.tips:AddDoubleLine((e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU),e.Icon.right)
@@ -379,7 +350,7 @@ local function Init_Quest()
     end
     QuestButton:SetScript("OnEvent", function(self, event, arg1)
         if event=='MINIMAP_UPDATE_TRACKING' then
-            self:get_set_IsQuestTrivialTracking()--其它任务,低等任务,追踪
+            IsQuestTrivialTracking= WoWTools_MapMixin:Get_Minimap_Tracking(MINIMAP_TRACKING_TRIVIAL_QUESTS, false)--其它任务,低等任务,追踪
 
         elseif event=='QUEST_LOG_UPDATE' or event=='PLAYER_ENTERING_WORLD' or event=='ZONE_CHANGED_NEW_AREA' then--更新数量
             self:set_Quest_Num_Text()
@@ -396,7 +367,7 @@ local function Init_Quest()
         end
     end)
 
-    
+
     QuestButton:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
             Save().quest= not Save().quest and true or nil
@@ -415,14 +386,11 @@ local function Init_Quest()
 
     QuestButton.questSelect={}--已选任务, 提示用
     QuestButton:set_Texture()--设置，图片
-    --QuestButton:get_set_IsQuestTrivialTracking()--其它任务,低等任务,追踪
     QuestButton:set_Event()--仅显示本地图任务,事件
 
     C_Timer.After(2, function() QuestButton:set_Only_Show_Zone_Quest() end)--显示本区域任务
 
-    QuestButton.Text=e.Cstr(QuestButton, {justifyH='RIGHT', color=true, size= size-2})--任务数量
-    QuestButton.Text:SetPoint('RIGHT', QuestButton, 'LEFT', 0, 1)
-
+    
 
 
 
@@ -509,11 +477,10 @@ local function Init_Quest()
             end
         end
         if numAvailableQuests > 0 then-- and not getMaxQuest() 
-            local isQuestTrivialTracking= QuestButton:get_set_IsQuestTrivialTracking()
             for i=(numActiveQuests + 1), (numActiveQuests + numAvailableQuests) do
                 local index = i - numActiveQuests
                 local isTrivial= GetAvailableQuestInfo(index)
-                if (isTrivial and isQuestTrivialTracking) or not isTrivial then
+                if (isTrivial and IsQuestTrivialTracking) or not isTrivial then
                     SelectAvailableQuest(index)
                     return
                 end
@@ -677,11 +644,21 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
 function WoWTools_GossipMixin:Init_Quest()
-    if not WoWTools_GossipMixin.GossipButton then
+    if not self.GossipButton then
         return
     end
 
+    IsQuestTrivialTracking= WoWTools_MapMixin:Get_Minimap_Tracking(MINIMAP_TRACKING_TRIVIAL_QUESTS, false)
     addName= self.addName
     addName2= self.addName2
     Init_Quest()

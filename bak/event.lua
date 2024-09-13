@@ -23,5 +23,6 @@ FrameUtil.UnregisterFrameForEvents(self, table)
 IsInInstance()
 C_PetBattles.IsInBattle()
 UnitInVehicle('player')
+UnitHasVehicleUI('player')
 UnitAffectingCombat('player')
 ]]

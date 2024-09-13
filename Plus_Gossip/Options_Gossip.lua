@@ -231,14 +231,18 @@ end
 --对话，初始化
 --###########
 local function Init()
-    GossipButton= WoWTools_ButtonMixin:Cbtn(nil, {icon='hide', size={16,16}, name='WoWTools_GossipButton'})--闲话图标
+    GossipButton= WoWTools_ButtonMixin:Cbtn(--闲话图标
+        nil,
+        {
+            icon='hide',
+            size=22,
+            name='WoWTools_GossipButton'}
+        )
     WoWTools_GossipMixin.GossipButton= GossipButton
 
     GossipButton.texture= GossipButton:CreateTexture()
     GossipButton.texture:SetAllPoints(GossipButton)
 
-    GossipButton.Menu=CreateFrame("Frame", nil, GossipButton, "UIDropDownMenuTemplate")
-    e.LibDD:UIDropDownMenu_Initialize(GossipButton.Menu, WoWTools_GossipMixin.Init_Menu_Gossip, 'MENU')
 
     --打开，自定义，对话，文本，按钮
     GossipButton.gossipFrane_Button= WoWTools_ButtonMixin:Cbtn(GossipFrame, {size={20,20}, icon='hide'})
@@ -366,8 +370,9 @@ local function Init()
                 Save().gossip= not Save().gossip and true or nil
                 self:set_Texture()--设置，图片
                 self:tooltip_Show()
+                
             elseif d=='RightButton' and not key then--菜单                
-                e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
+                MenuUtil.CreateContextMenu(self, function(...) WoWTools_GossipMixin:Init_Menu_Gossip(...) end)
             end
         end
     end)
@@ -412,19 +417,10 @@ local function Init()
             end
         end
     end)
-  --"%s已被禁用，因为该功能只对暴雪的UI开放。\n你可以禁用这个插件并重新装载UI。"
+
     if Save().gossip then
         StaticPopupDialogs["ADDON_ACTION_FORBIDDEN"].timeout= 0.3
     end
-
-
-    --[[hooksecurefunc(StaticPopupDialogs["ADDON_ACTION_FORBIDDEN"], "OnShow",function(s)
-        if Save().gossip then
-            local text= StaticPopup1Text and StaticPopup1Text:GetText() or (e.onlyChinese and '%s已被禁用，因为该功能只对暴雪的UI开放。\n你可以禁用这个插件并重新装载UI。' or ADDON_ACTION_FORBIDDEN)
-            print(e.addName, addName, '|n|cnRED_FONT_COLOR:', text)
-            s:Hide()
-        end
-    end)]]
 
 
 
@@ -525,20 +521,20 @@ local function Init()
 
         elseif allGossip==1 and Save().unique  then--仅一个
            -- if not getMaxQuest() then
-            local isQuestTrivialTracking= self:get_set_IsQuestTrivialTracking()
-                local tab= C_GossipInfo.GetActiveQuests() or {}
-                for _, questInfo in pairs(tab) do
-                    if questInfo.questID and questInfo.isComplete and (Save().quest or Save().questOption[questInfo.questID]) then
-                        return
-                    end
+            local isQuestTrivialTracking= WoWTools_GossipMixin.isQuestTrivialTracking
+            local tab= C_GossipInfo.GetActiveQuests() or {}
+            for _, questInfo in pairs(tab) do
+                if questInfo.questID and questInfo.isComplete and (Save().quest or Save().questOption[questInfo.questID]) then
+                    return
                 end
+            end
 
-                tab= C_GossipInfo.GetAvailableQuests() or {}
-                for _, questInfo in pairs(tab) do
-                    if questInfo.questID and (Save().quest or Save().questOption[questInfo.questID]) and (isQuestTrivialTracking and questInfo.isTrivial or not questInfo.isTrivial) then
-                        return
-                    end
+            tab= C_GossipInfo.GetAvailableQuests() or {}
+            for _, questInfo in pairs(tab) do
+                if questInfo.questID and (Save().quest or Save().questOption[questInfo.questID]) and (isQuestTrivialTracking and questInfo.isTrivial or not questInfo.isTrivial) then
+                    return
                 end
+            end
            -- end
 
             C_GossipInfo.SelectOption(index)
