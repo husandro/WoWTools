@@ -674,7 +674,7 @@ local function Init_CONFIRM_SUMMON()
                             if (e.Player.region==1 or e.Player.region==3) then
                                 text = 'thx, sum me'
                             elseif e.Player.region==5 then
-                                text= '谢谢你的，召唤'
+                                text= '谢谢你的，拉我'
                             else
                                 text= VOICEMACRO_16_Dw_1 ..', '..SUMMON
                             end
