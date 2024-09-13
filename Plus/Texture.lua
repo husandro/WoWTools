@@ -2198,11 +2198,15 @@ local function Init_Event(arg1)
         e.Set_NineSlice_Color_Alpha(ScrappingMachineFrameInset, true)
 
     elseif arg1=='Blizzard_DelvesDashboardUI' then--地下保
-        
         set_Alpha_Color(DelvesDashboardFrame.DashboardBackground, nil, nil, min03)
         set_Alpha_Color(DelvesCompanionConfigurationFrame.Background, nil, nil, min03)
         hide_Texture(DelvesCompanionConfigurationFrame.Bg)
         e.Set_Alpha_Frame_Texture(DelvesCompanionConfigurationFrame.Border)
+
+        e.Set_NineSlice_Color_Alpha(DelvesCompanionAbilityListFrame, true)
+        set_Alpha_Color(DelvesCompanionAbilityListFrameBg)
+        hide_Texture(DelvesCompanionAbilityListFrame.CompanionAbilityListBackground)
+
     end
 end
 

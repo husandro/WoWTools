@@ -591,16 +591,6 @@ end
 
 
 
-local function set_SummonTips()--召唤，提示
-    if Save.Summon and not InviteButton.summonTips then
-        
-    end
-    if InviteButton.summonTips then
-        InviteButton.summonTips:SetShown(Save.Summon)
-    end
-end
-
-
 
 
 

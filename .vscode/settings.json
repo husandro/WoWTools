@@ -4956,7 +4956,26 @@
         "BankFrameMoneyFrame",
         "MerchantFrameCloseButton",
         "WEEKLY_REWARDS_GET_CONCESSION",
-        "WEEKLY_REWARDS_ALSO_RECEIVE"
+        "WEEKLY_REWARDS_ALSO_RECEIVE",
+        "VOICEMACRO_7_Sc_0",
+        "CLASS_ICON_TCOORDS",
+        "READY_FEMALE",
+        "CloseDropDownMenus",
+        "UIDropDownMenu_AddSeparator",
+        "GX_ADAPTER_AUTO_DETECT",
+        "DEATH_RELEASE",
+        "SELECT_YOUR_ROLE",
+        "USE_UBERTOOLTIPS",
+        "ToggleDropDownMenu",
+        "UIDropDownMenu_CreateInfo",
+        "TRACKER_SORT_MANUAL",
+        "SLASH_READYCHECK2",
+        "NPEV2_FINDCORPSE",
+        "SPELL_FAILED_ONLY_SHAPESHIFT",
+        "RAID_ASSISTANT",
+        "LOOT_SPECIALIZATION_DEFAULT",
+        "DelvesCompanionAbilityListFrame",
+        "DelvesCompanionAbilityListFrameBg"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
@@ -4981,6 +5000,5 @@
         "redundant-parameter",
         "assign-type-mismatch",
         "inject-field",
-        "trailing-space"
     ],
 }

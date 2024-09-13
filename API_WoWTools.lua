@@ -51,7 +51,7 @@ local currentRegion= GetCurrentRegion()
 local function GetWeek()--周数
     local region= currentRegion
     local d = date("*t")
-    local cd= region==1 and 2 or region==3 and 3 or 4--1US(includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
+    local cd= region==1 and 2 or (region==3 and 3) or 4--1US(includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
     for d3=1,15 do
         if date('*t', time({year=d.year, month=1, day=d3})).wday == cd then
             cd=d3
