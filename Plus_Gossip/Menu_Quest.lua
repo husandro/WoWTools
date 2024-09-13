@@ -146,7 +146,7 @@ end
 
 --###########
 --任务，主菜单
---###########
+--[[###########
 local function Init(_, level, type)
     local info
     --local uiMapID = (WorldMapFrame:IsShown() and (WorldMapFrame.mapID or WorldMapFrame:GetMapID("current"))) or C_Map.GetBestMapForUnit('player')
@@ -255,4 +255,4 @@ end
 
 function  WoWTools_GossipMixin:Init_Menu_Quest(frame, root)
     Init_Menu(frame, root)
-end
+end]]
