@@ -458,5 +458,7 @@ end
 
 
 function WoWTools_GossipMixin:Init_Menu_Gossip(...)
+    addName= self.addName
+    addName2= self.addName2
     Init_Menu(...)
 end
