@@ -257,7 +257,56 @@ StaticPopupDialogs['WoWTools_GetMapID'] = {--区域,设置对话框
         whileDead=true,
         hideOnEscape=true,
         exclusive=true
-        
+    }
+
+
+
+
+    StaticPopupDialogs["WoWTools_Tooltips_LinkURL"] = {
+        text= '|n|cffff00ff%s|r |cnGREEN_FONT_COLOR:Ctrl+C |r'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK),
+        button1 = e.onlyChinese and '关闭' or CLOSE,
+        OnShow = function(self, web)
+            self.editBox:SetScript("OnKeyUp", function(s, key)
+                if IsControlKeyDown() and key == "C" then
+                    print(e.addName, WoWTools_TooltipMixin.addName,
+                            '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r',
+                            s:GetText()
+                        )
+                    s:GetParent():Hide()
+                end
+            end)
+            self.editBox:SetScript('OnCursorChanged', function(s)
+                s:SetText(web)
+                s:HighlightText()
+            end)
+            self.editBox:SetMaxLetters(0)
+            self.editBox:SetWidth(self:GetWidth())
+            self.editBox:SetFocus()
+        end,
+        OnHide= function(self)
+            self.editBox:SetScript("OnKeyUp", nil)
+            self.editBox:SetScript("OnCursorChanged", nil)
+            self.editBox:SetText("")
+            self.editBox:ClearFocus()
+        end,
+        EditBoxOnTextChanged= function (self, web)
+            self:SetText(web)
+            self:HighlightText()
+        end,
+        EditBoxOnEnterPressed = function(self)
+            local parent= self:GetParent()
+            parent.button1:Click()
+            parent:Hide()
+        end,
+        EditBoxOnEscapePressed = function(self2)
+            self2:SetAutoFocus(false)
+            self2:ClearFocus()
+            self2:GetParent():Hide()
+        end,
+        hasEditBox = true,
+        editBoxWidth = 320,
+        timeout = 0,
+        whileDead=true, hideOnEscape=true, exclusive=true,
     }
 end
 

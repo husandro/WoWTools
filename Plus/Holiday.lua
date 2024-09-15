@@ -808,7 +808,7 @@ local function calendar_Uptate()
         end)
         CalendarViewHolidayFrame.Text:SetScript('OnMouseDown', function(frame)
             if not frame.eventID then return end
-            e.Show_WoWHead_URL(true, 'event', frame.eventID, nil)
+            WoWTools_TooltipMixin:Show_URL(true, 'event', frame.eventID, nil)
         end)
 
         CalendarViewHolidayFrame.Texture2=CalendarViewHolidayFrame:CreateTexture()

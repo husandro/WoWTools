@@ -799,7 +799,7 @@ local function Init_Title()--头衔数量
                                     notCheckable=true,
                                     arg1=i,
                                     func= function(_, arg1)
-                                        e.Show_WoWHead_URL(true, 'title', arg1, nil)
+                                        WoWTools_TooltipMixin:Show_URL(true, 'title', arg1, nil)
                                     end
                                 }
                                 e.LibDD:UIDropDownMenu_AddButton(info, level)

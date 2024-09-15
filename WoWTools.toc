@@ -73,9 +73,14 @@ Plus\ItemInfo.lua
 
 ##鼠标，提示
 Plus_Tooltip\Tooltips.lua
-Plus_Tooltip\func.URL.lua
-Plus_Tooltip\func.Set_Mount.lua
-Plus_Tooltip\func.Set_PlayerModel.lua
+
+Plus_Tooltip\AddOn_Settings.lua
+Plus_Tooltip\Addon_Collections.lua
+
+Plus_Tooltip\func_Set_PlayerModel.lua
+Plus_Tooltip\func_URL.lua
+Plus_Tooltip\func_Set_Mount.lua
+Plus_Tooltip\func_Set_PlayerModel.lua
 
 
 

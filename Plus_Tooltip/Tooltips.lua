@@ -22,6 +22,8 @@ Set_Unit_NPC(tooltip, name, unit, guid)
 
 local id, e = ...
 local addName= '|A:newplayertutorial-drag-cursor:0:0|aToolstip'
+local Initializer, Layout= e.AddPanel_Sub_Category({name=addName})
+
 
 WoWTools_TooltipMixin={
     Save={
@@ -46,18 +48,32 @@ WoWTools_TooltipMixin={
         --hideHealth=true,----生命条提示
     },
     addName=addName,
-    Initializer=nil,
-    Layout=nil,
+    Initializer=Initializer,
+    Layout=Layout,
+    WoWHead= 'https://www.wowhead.com/',
+    AddOn={},
+
 }
 
 local function Save()
     return WoWTools_TooltipMixin.Save
 end
 
+local function Addon(name, isLoaddedName)
+    if isLoaddedName then
+        if C_AddOns.IsAddOnLoaded(isLoaddedName) then
+            name= isLoaddedName
+        end
+    end
+    if name and WoWTools_TooltipMixin.AddOn[name] then
+        WoWTools_TooltipMixin.AddOn[name]()
+    end
+end
 
-local Initializer, Layout= e.AddPanel_Sub_Category({name=addName})
-WoWTools_TooltipMixin.Initializer= Initializer
-WoWTools_TooltipMixin.Layout= Layout
+
+
+
+
 
 
 
@@ -110,66 +126,6 @@ end
 
 
 
-
-
-function WoWTools_TooltipMixin:Set_Mount(tooltip, mountID, type)--坐骑
-    if mountID==268435455 then
-        WoWTools_TooltipMixin:Set_Spell(tooltip, 150544)--法术
-        return
-    end
-
-    tooltip:AddLine(' ')
-    --local creatureName, spellID, icon, active, isUsable, sourceType, isFavorite, isFactionSpecific, faction, isFiltered, isCollected, mountID, isForDragonriding = C_MountJournal.GetDisplayedMountInfo(elementData.index)
-    local creatureName, spellID, _,isActive, isUsable, _, _, isFactionSpecific, faction, _, isCollected, _, isForDragonriding =C_MountJournal.GetMountInfoByID(mountID)
-    local spell
-    if spellID then
-        local icon= C_Spell.GetSpellTexture(spellID) or 0
-        spell= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, (icon and '|T'..icon..':0|t' or '')..(e.onlyChinese and '法术' or SPELLS), spellID)
-    end
-    tooltip:AddDoubleLine(format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '坐骑' or MOUNTS, mountID), spell)
-
-    if isFactionSpecific then
-        if faction==0 then
-            tooltip.textRight:SetFormattedText(
-                e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION,
-                format('|A:%s:0:0|a', e.Icon.Horde, e.onlyChinese and '部落' or THE_HORDE)
-            )
-        elseif faction==1 then
-            tooltip.textRight:SetFormattedText(
-                e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION,
-                format('|A:%s:0:0|a', e.Icon.Alliance, e.onlyChinese and '联盟' or THE_ALLIANCE)
-            )
-        end
-    elseif isForDragonriding then
-        tooltip.textRight:SetFormattedText(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, e.onlyChinese and '驭空术' or MOUNT_JOURNAL_FILTER_DRAGONRIDING)
-    end
-    local creatureDisplayInfoID, _, source, isSelfMount, _, _, animID = C_MountJournal.GetMountInfoExtraByID(mountID)
-    if creatureDisplayInfoID then
-        tooltip:AddDoubleLine(format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '模型' or MODEL, creatureDisplayInfoID), isSelfMount and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '变形' or TUTORIAL_TITLE61_DRUID) or nil)
-    end
-
-    if source then--显示来源
-        tooltip:AddLine(' ')
-        tooltip:AddLine(e.cn(source), nil,nil,nil,true)
-    end
-
-    WoWTools_TooltipMixin:Set_Item_Model(tooltip, {creatureDisplayID=creatureDisplayInfoID, animID=animID})--设置, 3D模型
-
-    tooltip.text2Left:SetText(isCollected and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r')
-
-    local can= isCollected and isUsable and not isActive and not UnitCastingInfo('player')
-    if can and IsAltKeyDown() then
-        C_MountJournal.SummonByID(mountID)
-        print(e.addName, addName, spellID and C_Spell.GetSpellLink(spellID), '|cnGREEN_FONT_COLOR:Alt+'..(e.onlyChinese and '召唤坐骑' or MOUNT))
-    end
-    local col= can and '|cnGREEN_FONT_COLOR:' or '|cff9e9e9e'
-    tooltip:AddDoubleLine(col..(e.onlyChinese and '召唤坐骑' or MOUNT), col..'Alt+')
-
-    if type and MountJournal and MountJournal:IsVisible() and creatureName then
-        MountJournalSearchBox:SetText(creatureName)
-    end
-    WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='spell', id=spellID, name=creatureName, col=nil, isPetUI=false})--取得网页，数据链接    
-end
 
 
 
@@ -1305,92 +1261,6 @@ end]]
 
 
 
---########
---设置Cvar
---########
-local function set_CVar(reset, tips, notPrint)
-    local tab={
-        {   name='missingTransmogSourceInItemTooltips',
-            value='1',
-            msg=e.onlyChinese and '显示装备幻化来源' or TRANSMOGRIFY..SOURCES..': '..SHOW,
-        },
-        {   name='nameplateOccludedAlphaMult',
-            value='0.15',
-            msg=e.onlyChinese and '不在视野里, 姓名板透明度' or (SPELL_FAILED_LINE_OF_SIGHT..'('..SHOW_TARGET_CASTBAR_IN_V_KEY..')'..'Alpha'),
-        },
-        {   name='dontShowEquipmentSetsOnItems',
-            value='0',
-            msg=e.onlyChinese and '显法装备方案' or EQUIPMENT_SETS:format(SHOW),
-        },
-        {   name='UberTooltips',
-            value='1',
-            msg=e.onlyChinese and '显示法术信息' or SPELL_MESSAGES..': '..SHOW,
-        },
-        {   name="alwaysCompareItems",
-             value= "1",
-             msg= e.onlyChinese and '总是比较装备' or ALWAYS..COMPARE_ACHIEVEMENTS:gsub(ACHIEVEMENTS, ITEMS)
-        },
-        {   name="profanityFilter",
-            value= '0',
-            msg= '禁用语言过虑 /reload',
-            zh=true,
-        },
-        {   name="overrideArchive",
-            value= '0',
-            msg= '反和谐 /reload',
-            zh=true
-        },
-        {   name='cameraDistanceMaxZoomFactor',
-            value= '2.6',
-            msg= e.onlyChinese and '视野距离' or FARCLIP
-        },
-        {   name="showTargetOfTarget",
-            value= "1",
-            msg= e.onlyChinese and '总是显示目标的目标' or OPTION_TOOLTIP_TARGETOFTARGET5,
-        },
-        {   name='worldPreloadNonCritical',--https://wago.io/ZtSxpza28
-            value='0',--2
-            msg= e.onlyChinese and '世界非关键预加载' or 'World Preload Non Critical'
-        }
-    }
-
-    if tips then
-        local text
-        for _, info in pairs(tab) do
-            if info.zh and LOCALE_zhCN or not info.zh then
-                text= (text and text..'|n|n' or '')..e.Get_CVar_Tooltips(info)
-            end
-        end
-        return text
-    end
-
-    for _, info in pairs(tab) do
-        if info.zh and LOCALE_zhCN or not info.zh then
-            if reset then
-                local defaultValue = C_CVar.GetCVarDefault(info.name)
-                local value = C_CVar.GetCVar(info.name)
-                if defaultValue~=value then
-                    C_CVar.SetCVar(info.name, defaultValue)
-                    if not notPrint then
-                        print(e.addName, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '恢复默认设置' or RESET_TO_DEFAULT)..'|r', info.name, defaultValue, info.msg)
-                    end
-                end
-            else
-                local value = C_CVar.GetCVar(info.name)
-                if value~=info.value then
-                    C_CVar.SetCVar(info.name, info.value)
-                    if not notPrint then
-                        print(e.addName,addName, info.name, info.value..'('..value..')', info.msg)
-                    end
-                end
-            end
-        end
-    end
-end
-
-
-
-
 
 
 
@@ -1744,7 +1614,7 @@ local function Init_Hook()
         frame.questIDLabel:SetScript('OnMouseDown', function(self)
             if self.questID then
                 local info = C_QuestLog.GetQuestTagInfo(self.questID) or {}
-                e.Show_WoWHead_URL(true, 'quest', self.questID, info.tagName)
+                WoWTools_TooltipMixin:Show_URL(true, 'quest', self.questID, info.tagName)
             end
         end)
         function frame.questIDLabel:settings(questID)
@@ -2020,44 +1890,6 @@ end
 
 
 
-
---####
---初始
---####
-local function Init()
-    Int_Health_Bar_Unit()--生命条提示
-    Init_Hook()
-    Init_Settings()
-
-
-
-    --****
-    --位置
-    --****
-    hooksecurefunc("GameTooltip_SetDefaultAnchor", function(self, parent)
-        if Save().setDefaultAnchor and not (Save().inCombatDefaultAnchor and UnitAffectingCombat('player')) then
-            self:ClearAllPoints()
-            self:SetOwner(parent, Save().cursorRight and 'ANCHOR_CURSOR_RIGHT' or 'ANCHOR_CURSOR_LEFT', Save().cursorX or 0, Save().cursorY or 0)
-        end
-    end)
-
-
-    if Save().setCVar then
-        set_CVar(nil, nil, true)--设置CVar
-        if LOCALE_zhCN then
-            ConsoleExec("portal TW")
-            SetCVar("profanityFilter", '0')
-
-            local pre = C_BattleNet.GetFriendGameAccountInfo
----@diagnostic disable-next-line: duplicate-set-field
-            C_BattleNet.GetFriendGameAccountInfo = function(...)
-                local gameAccountInfo = pre(...)
-                gameAccountInfo.isInCurrentRegion = true
-                return gameAccountInfo
-            end
-        end
-    end
-end
     --[[追踪栏
     hooksecurefunc('BonusObjectiveTracker_OnBlockEnter', function(block)
         if block.id and not block.module.tooltipBlock and block.TrackedQuest then
@@ -2277,290 +2109,6 @@ end
 
 
 
---##############
- --添加新控制面板
---##############
-local function set_Cursor_Tips(self)
-    WoWTools_TooltipMixin:Set_Init_Item(GameTooltip, true)
-    WoWTools_TooltipMixin:Set_Init_Item(ItemRefTooltip, true)
-    WoWTools_TooltipMixin:Set_PlayerModel(GameTooltip)
-    WoWTools_TooltipMixin:Set_PlayerModel(ItemRefTooltip)
-    GameTooltip_SetDefaultAnchor(GameTooltip, self or UIParent)
-    GameTooltip:ClearLines()
-    GameTooltip:SetUnit('player')
-    GameTooltip:Show()
-end
-
-local function Init_Panel()
-    e.AddPanel_Header(Layout, e.onlyChinese and '选项' or OPTIONS)
-
-    local initializer2= e.AddPanel_Check({
-        name= e.onlyChinese and '跟随鼠标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, FOLLOW, MOUSE_LABEL),
-        tooltip= addName,
-        GetValue= function() return Save().setDefaultAnchor end,
-        category= Initializer,
-        SetValue= function()
-            Save().setDefaultAnchor= not Save().setDefaultAnchor and true or nil
-            if Save().setDefaultAnchor then
-                Save().setAnchor=nil
-            end
-            set_Cursor_Tips()
-        end
-    })
-
-        local initializer= e.AddPanelSider({
-            name= 'X',
-            GetValue= function() return Save().cursorX or 0 end,
-            minValue= -240,
-            maxValue= 240,
-            setp= 1,
-            tooltip= addName,
-            category= Initializer,
-            SetValue= function(_, _, value2)
-                Save().cursorX= e.GetFormatter1to10(value2, -200, 200)
-                set_Cursor_Tips()
-            end
-        })
-        initializer:SetParentInitializer(initializer2, function() if Save().setDefaultAnchor then return true else return false end end)
-
-        initializer= e.AddPanelSider({
-            name= 'Y',
-            GetValue= function() return Save().cursorY or 0 end,
-            minValue= -240,
-            maxValue= 240,
-            setp= 1,
-            tooltip= addName,
-            category= Initializer,
-            SetValue= function(_, _, value2)
-                Save().cursorY= e.GetFormatter1to10(value2, -200, 200)
-                set_Cursor_Tips()
-            end
-        })
-        initializer:SetParentInitializer(initializer2, function() if Save().setDefaultAnchor then return true else return false end end)
-
-        initializer= e.AddPanel_Check({
-            name= e.onlyChinese and '右边' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT,
-            tooltip= addName,
-            GetValue= function() return Save().cursorRight end,
-            category= Initializer,
-            SetValue= function()
-                Save().cursorRight= not Save().cursorRight and true or nil
-                set_Cursor_Tips()
-            end
-        })
-        initializer:SetParentInitializer(initializer2, function() if Save().setDefaultAnchor then return true else return false end end)
-
-        initializer= e.AddPanel_Check({
-            name= e.onlyChinese and '战斗中：默认' or (HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..': '..DEFAULT),
-            tooltip= addName,
-            GetValue= function() return Save().inCombatDefaultAnchor end,
-            category= Initializer,
-            SetValue= function()
-                Save().inCombatDefaultAnchor= not Save().inCombatDefaultAnchor and true or nil
-                set_Cursor_Tips()
-            end
-        })
-        initializer:SetParentInitializer(initializer2, function() if Save().setDefaultAnchor then return true else return false end end)
-
-
-    e.AddPanel_Header(Layout, e.onlyChinese and '设置' or SETTINGS)
-
-    initializer2= e.AddPanel_Check({
-        name= e.onlyChinese and '模型' or MODEL,
-        tooltip= addName,
-        GetValue= function() return not Save().hideModel end,
-        category= Initializer,
-        SetValue= function()
-            Save().hideModel= not Save().hideModel and true or nil
-            set_Cursor_Tips()
-        end
-    })
-
-    initializer= e.AddPanel_Check({
-        name= e.onlyChinese and '左' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT,
-        tooltip= addName,
-        GetValue= function() return Save().modelLeft end,
-        category= Initializer,
-        SetValue= function()
-            Save().modelLeft= not Save().modelLeft and true or nil
-            set_Cursor_Tips()
-        end
-    })
-    initializer:SetParentInitializer(initializer2, function() if Save().hideModel then return false else return true end end)
-
-    --[[initializer= e.AddPanel_Check({
-        name= (e.onlyChinese and '模型' or MODEL)..' ID',
-        tooltip= addName,
-        value= Save().showModelFileID,
-        category= Initializer,
-        func= function()
-            Save().showModelFileID= not Save().showModelFileID and true or nil
-            set_Cursor_Tips()
-        end
-    })
-    initializer:SetParentInitializer(initializer2, function() if Save().hideModel then return false else return true end end)
-]]
-    initializer= e.AddPanelSider({
-        name= e.Player.L.size,
-        GetValue= function() return Save().modelSize or 100 end,
-        minValue= 40,
-        maxValue= 300,
-        setp= 1,
-        tooltip= addName,
-        category= Initializer,
-        SetValue= function(_, _, value2)
-            Save().modelSize= e.GetFormatter1to10(value2, 40, 300)
-            set_Cursor_Tips()
-        end
-    })
-    initializer:SetParentInitializer(initializer2, function() if Save().hideModel then return false else return true end end)
-
-    initializer= e.AddPanelSider({
-        name= 'X',
-        GetValue= function() return Save().modelX or 0 end,
-        minValue= -240,
-        maxValue= 240,
-        setp= 1,
-        tooltip= addName,
-        category= Initializer,
-        SetValue= function(_, _, value2)
-            Save().modelX= e.GetFormatter1to10(value2, -200, 200)
-            set_Cursor_Tips()
-        end
-    })
-    initializer:SetParentInitializer(initializer2, function() if Save().hideModel then return false else return true end end)
-
-    initializer= e.AddPanelSider({
-        name= 'Y',
-        GetValue= function() return Save().modelY or -24 end,
-        minValue= -240,
-        maxValue= 240,
-        setp= 1,
-        tooltip= addName,
-        category= Initializer,
-        SetValue= function(_, _, value2)
-            Save().modelY= e.GetFormatter1to10(value2, -200, 200)
-            set_Cursor_Tips()
-        end
-    })
-    initializer:SetParentInitializer(initializer2, function() if Save().hideModel then return false else return true end end)
-
-    initializer= e.AddPanelSider({
-        name= e.onlyChinese and '方向' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION,
-        GetValue= function() return Save().modelFacing or -24 end,
-        minValue= -1,
-        maxValue= 1,
-        setp= 0.1,
-        tooltip= addName,
-        category= Initializer,
-        SetValue= function(_, _, value2)
-            Save().modelFacing= e.GetFormatter1to10(value2, -1, 1)
-            set_Cursor_Tips()
-        end
-    })
-    initializer:SetParentInitializer(initializer2, function() if Save().hideModel then return false else return true end end)
-
-    e.AddPanel_Check({
-        name= e.onlyChinese and 'NPC职业颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, 'NPC', CLASS_COLORS),
-        tooltip= addName,
-        GetValue= function() return not Save().disabledNPCcolor end,
-        category= Initializer,
-        SetValue= function()
-            Save().disabledNPCcolor= not Save().disabledNPCcolor and true or nil
-        end
-    })
-
-    e.AddPanel_Check({
-        name= e.onlyChinese and '生命值' or HEALTH,
-        tooltip= addName,
-        GetValue= function() return not Save().hideHealth end,
-        category= Initializer,
-        SetValue= function()
-            Save().hideHealth= not Save().hideHealth and true or nil
-            print(e.addName, addName,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-        end
-    })
-    e.AddPanel_Check({
-        name= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, 'Ctrl+Shift', e.onlyChinese and '复制链接' or BROWSER_COPY_LINK),
-        tooltip= 'wowhead.com|nraider.io',
-        GetValue= function() return Save().ctrl end,
-        category= Initializer,
-        SetValue= function()
-            Save().ctrl= not Save().ctrl and true or nil
-            set_Cursor_Tips()
-        end
-    })
-
-
-    e.AddPanel_Header(Layout, 'CVar')
-
-    initializer2= e.AddPanel_Check({
-        name= e.onlyChinese and '自动设置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SETTINGS),
-        tooltip= function() return set_CVar(nil, true, true) end,
-        GetValue= function() return Save().setCVar end,
-        category= Initializer,
-        SetValue= function()
-            Save().setCVar= not Save().setCVar and true or nil
-            Save().graphicsViewDistance=nil
-        end
-    })
-
-    initializer= e.AddPanel_Button({
-        buttonText= e.onlyChinese and '设置' or SETTINGS,
-        layout= Layout,
-        SetValue= function()
-            set_CVar()
-            print(e.onlyChinese and '设置完成' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, COMPLETE))
-        end
-    })
-    initializer:SetParentInitializer(initializer2)
-
-    initializer= e.AddPanel_Button({
-        buttonText= e.onlyChinese and '默认' or DEFAULT,
-        layout= Layout,
-        SetValue= function()
-            set_CVar(true, nil, nil)
-            print(e.onlyChinese and '默认完成' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DEFAULT, COMPLETE))
-        end
-    })
-    initializer:SetParentInitializer(initializer2)
-
-    e.AddPanel_DropDown({
-        SetValue= function(value)
-            if value==1 then
-                C_CVar.SetCVar("ActionButtonUseKeyDown", '1')
-            else
-                C_CVar.SetCVar("ActionButtonUseKeyDown", '0')
-            end
-        end,
-        GetOptions= function()
-            local container = Settings.CreateControlTextContainer()
-            container:Add(1, e.onlyChinese and '是' or YES)
-            container:Add(2, e.onlyChinese and '不' or NO)
-            return container:GetData()
-        end,
-        GetValue= function() return C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 1 or 2 end,
-        name= e.onlyChinese and '按下快捷键时施法' or ACTION_BUTTON_USE_KEY_DOWN,
-        tooltip= function()
-            return e.Get_CVar_Tooltips({
-                    name='ActionButtonUseKeyDown',
-                    msg=e.onlyChinese and '在按下快捷键时施法，而不是在松开快捷键时施法。' or OPTION_TOOLTIP_ACTION_BUTTON_USE_KEY_DOWN,
-                }) end,
-        category=Initializer
-    })
-
-    initializer2= e.AddPanel_Check({
-        name= (e.onlyChinese and '提示选项CVar名称' or 'Show Option CVar Name'),
-        tooltip= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '友情提示: 可能会出现错误' or (LABEL_NOTE..': '..ENABLE_ERROR_SPEECH)..'|r'),
-        GetValue= function() return Save().ShowOptionsCVarTips end,
-        category= Initializer,
-        SetValue= function()
-            Save().ShowOptionsCVarTips= not Save().ShowOptionsCVarTips and true or nil
-            print(e.addName, addName, e.GetEnabeleDisable(not Save().ShowOptionsCVarTips), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-        end
-    })
-end
-
 
 --[[
     --监视， WidgetSetID
@@ -2616,112 +2164,6 @@ end
 
 
 
-
-
-
-
-
-
-
-
-local function Init_Blizzard_AchievementUI()
-    hooksecurefunc(AchievementTemplateMixin, 'Init', function(frame)
-        if frame.Shield and frame.id then
-            if not frame.AchievementIDLabel  then
-                frame.AchievementIDLabel= e.Cstr(frame.Shield)
-                frame.AchievementIDLabel:SetPoint('TOP', frame.Shield.Icon)
-                frame.Shield:SetScript('OnEnter', function(self)
-                    local achievementID= self:GetParent().id
-                    if achievementID then
-                        e.tips:SetOwner(self:GetParent(), "ANCHOR_RIGHT")
-                        e.tips:ClearLines()
-                        e.tips:SetAchievementByID(achievementID)
-                        e.tips:AddLine(' ')
-                        e.tips:AddDoubleLine('|A:communities-icon-chat:0:0|a'..(e.onlyChinese and '说' or SAY), e.Icon.left)
-                        e.tips:AddDoubleLine(e.addName, addName)
-                        e.tips:Show()
-                    end
-                    self:SetAlpha(0.5)
-                end)
-                frame.Shield:SetScript('OnLeave', function(self) self:SetAlpha(1) GameTooltip_Hide() end)
-                frame.Shield:SetScript('OnMouseUp', function(self) self:SetAlpha(0.5) end)
-                frame.Shield:SetScript('OnMouseDown', function(self) self:SetAlpha(0.3) end)
-                frame.Shield:SetScript('OnClick', function(self)
-                    local achievementID= self:GetParent().id
-                    local achievementLink = achievementID and GetAchievementLink(achievementID)
-                    if achievementLink then
-                        e.Chat(achievementLink)
-                    end
-                end)
-                frame.Shield:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
-            end
-        end
-        if frame.AchievementIDLabel then
-            local text= frame.id
-            local flags= frame.id and select(9, GetAchievementInfo(frame.id))
-            if flags==0x20000 then
-                text= e.Icon.net2..'|cff00ccff'..frame.id..'|r'
-            end
-            frame.AchievementIDLabel:SetText(text or '')
-        end
-    end)
-    hooksecurefunc('AchievementFrameComparison_UpdateDataProvider', function()--比较成就, Blizzard_AchievementUI.lua
-        local frame= AchievementFrameComparison.AchievementContainer.ScrollBox
-        if not frame:GetView() then
-            return
-        end
-        for _, button in pairs(frame:GetFrames() or {}) do
-            if not button.OnEnter then
-                button:SetScript('OnLeave', GameTooltip_Hide)
-                button:SetScript('OnEnter', function(self3)
-                    if self3.id then
-                        e.tips:SetOwner(AchievementFrameComparison, "ANCHOR_RIGHT",0,-250)
-                        e.tips:ClearLines()
-                        e.tips:SetAchievementByID(self3.id)
-                        e.tips:Show()
-                    end
-                end)
-                if button.Player and button.Player.Icon and not button.Player.idText then
-                    button.Player.idText= e.Cstr(button.Player)
-                    button.Player.idText:SetPoint('LEFT', button.Player.Icon, 'RIGHT', 0, 10)
-                end
-            end
-            if button.Player and button.Player.idText then
-                local flags= button.id and select(9, GetAchievementInfo(button.id))
-                if flags==0x20000 then
-                    button.Player.idText:SetText(e.Icon.net2..'|cffff00ff'..button.id..'|r')
-                else
-                    button.Player.idText:SetText(button.id or '')
-                end
-            end
-        end
-    end)
-    hooksecurefunc('AchievementFrameComparison_SetUnit', function(unit)--比较成就
-        local text= e.GetPlayerInfo({unit=unit, reName=true, reRealm=true})--玩家信息图标
-        if text~='' then
-            AchievementFrameComparisonHeaderName:SetText(text)
-        end
-    end)
-    if AchievementFrameComparisonHeaderPortrait then
-        AchievementFrameComparisonHeader:EnableMouse(true)
-        AchievementFrameComparisonHeader:HookScript('OnLeave', GameTooltip_Hide)
-        AchievementFrameComparisonHeader:HookScript('OnEnter', function()
-            local unit= AchievementFrameComparisonHeaderPortrait.unit
-            if unit then
-                e.tips:SetOwner(AchievementFrameComparison, "ANCHOR_RIGHT",0,-250)
-                e.tips:ClearLines()
-                e.tips:SetUnit(unit)
-                e.tips:Show()
-            end
-        end)
-    end
-    if Save().AchievementFrameFilterDropDown then--保存，过滤
-        AchievementFrame_SetFilter(Save().AchievementFrameFilterDropDown)
-    end
-    hooksecurefunc('AchievementFrame_SetFilter', function(value)
-        Save().AchievementFrameFilterDropDown = value
-    end)
-end
 
 
 
@@ -2902,7 +2344,7 @@ local function Init_Blizzard_Professions()
             GameTooltip:AddLine(' ')
             GameTooltip:AddDoubleLine('nodeID '..self.nodeID, self.entryID and 'entryID '..self.entryID)
 
-            local name= WoWHead..'profession-trait/'..(self.nodeID or '')
+            local name= WoWTools_TooltipMixin.WoWHead..'profession-trait/'..(self.nodeID or '')
             WoWTools_TooltipMixin:Set_Web_Link(GameTooltip, {name=name})
             GameTooltip:Show()
         end
@@ -3042,41 +2484,49 @@ end
 
 
 
-local function Init_Event()
-    if C_AddOns.IsAddOnLoaded('Blizzard_AchievementUI') then
-        Init_Blizzard_AchievementUI()
-    end
-    if C_AddOns.IsAddOnLoaded('Blizzard_Collections') then
-        Init_Blizzard_Collections()
-    end
-    if C_AddOns.IsAddOnLoaded('Blizzard_ChallengesUI') then
-        Init_Blizzard_ChallengesUI()
-    end
-    if C_AddOns.IsAddOnLoaded('Blizzard_OrderHallUI') then
-        Init_Blizzard_OrderHallUI()
-    end
-    if C_AddOns.IsAddOnLoaded('Blizzard_FlightMap') then
-        Init_Blizzard_FlightMap()
-    end
-    if C_AddOns.IsAddOnLoaded('Blizzard_Professions') then
-        Init_Blizzard_Professions()
-    end
-    if C_AddOns.IsAddOnLoaded('Blizzard_ClassTalentUI') then
-        Init_Blizzard_ClassTalentUI()
-    end
-    if C_AddOns.IsAddOnLoaded('Blizzard_PlayerChoice') then
-        Init_Blizzard_PlayerChoice()
-    end
-    if C_AddOns.IsAddOnLoaded('Blizzard_GenericTraitUI') then
-        Init_Blizzard_GenericTraitUI()
+
+
+
+
+
+--####
+--初始
+--####
+local function Init()
+    Int_Health_Bar_Unit()--生命条提示
+    Init_Hook()
+    Init_Settings()
+
+
+
+    --****
+    --位置
+    --****
+    hooksecurefunc("GameTooltip_SetDefaultAnchor", function(self, parent)
+        if Save().setDefaultAnchor and not (Save().inCombatDefaultAnchor and UnitAffectingCombat('player')) then
+            self:ClearAllPoints()
+            self:SetOwner(parent, Save().cursorRight and 'ANCHOR_CURSOR_RIGHT' or 'ANCHOR_CURSOR_LEFT', Save().cursorX or 0, Save().cursorY or 0)
+        end
+    end)
+
+
+    if Save().setCVar then
+        WoWTools_TooltipMixin:Set_CVar(nil, nil, true)--设置CVar
+
+        if LOCALE_zhCN then
+            ConsoleExec("portal TW")
+            SetCVar("profanityFilter", '0')
+
+            local pre = C_BattleNet.GetFriendGameAccountInfo
+---@diagnostic disable-next-line: duplicate-set-field
+            C_BattleNet.GetFriendGameAccountInfo = function(...)
+                local gameAccountInfo = pre(...)
+                gameAccountInfo.isInCurrentRegion = true
+                return gameAccountInfo
+            end
+        end
     end
 end
-
-
-
-
-
-
 
 
 
@@ -3107,7 +2557,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             --Save().WidgetSetID = Save().WidgetSetID or 0
 
-            
+
 
             e.AddPanel_Check({
                 name= addName,
@@ -3120,6 +2570,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
             })
 
+            WoWTools_TooltipMixin:Init_WoWHeadText()
 
             if Save().disabled then
                 self:UnregisterAllEvents()
@@ -3127,43 +2578,30 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:RegisterEvent('PLAYER_LEAVING_WORLD')
                 self:RegisterEvent('PLAYER_ENTERING_WORLD')
                 Init()--初始
-                Init_Event()
+
+                for _, name in pairs(
+                    {
+                     'Blizzard_AchievementUI',
+                     'Blizzard_Collections',
+                     'Blizzard_ChallengesUI',
+                     'Blizzard_OrderHallUI',
+                     'Blizzard_FlightMap',
+                     'Blizzard_Professions',
+                     'Blizzard_ClassTalentUI',
+                     'Blizzard_PlayerChoice',
+                     'Blizzard_GenericTraitUI',
+                     'Blizzard_Settings',
+                    }
+                )do
+                    Addon(nil, name)
+                end
             end
 
-            if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
-                Init_Panel()
-            end
 
-        elseif arg1=='Blizzard_Settings' then
-            Init_Panel()
-
-        elseif arg1=='Blizzard_AchievementUI' then--成就ID
-            Init_Blizzard_AchievementUI()
-
-        elseif arg1=='Blizzard_Collections' then--宠物手册， 召唤随机，偏好宠物，技能ID    
-            Init_Blizzard_Collections()
-
-        elseif arg1=='Blizzard_ChallengesUI' then
-            Init_Blizzard_ChallengesUI()
-
-        elseif arg1=='Blizzard_OrderHallUI' then
-            Init_Blizzard_OrderHallUI()
-
-        elseif arg1=='Blizzard_FlightMap' then--飞行点，加名称
-            Init_Blizzard_FlightMap()
-
-        elseif arg1=='Blizzard_Professions' then
-            Init_Blizzard_Professions()
-
-        elseif arg1=='Blizzard_ClassTalentUI' then
-            Init_Blizzard_ClassTalentUI()
-
-        elseif arg1=='Blizzard_PlayerChoice' then
-            Init_Blizzard_PlayerChoice()
-
-        elseif arg1=='Blizzard_GenericTraitUI' then
-            Init_Blizzard_GenericTraitUI()
+        else
+            Addon(arg1)
         end
+
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
@@ -3181,7 +2619,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif event=='PLAYER_ENTERING_WORLD' then--https://wago.io/ZtSxpza28
-    print('a')
         if Save().setCVar and Save().graphicsViewDistance and not UnitAffectingCombat('player') then
             C_CVar.SetCVar('graphicsViewDistance', Save().graphicsViewDistance)
             Save().graphicsViewDistance=nil

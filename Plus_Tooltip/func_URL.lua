@@ -7,62 +7,20 @@ end
 
 
 
+local wowheadText= 'https://www.wowhead.com/%s=%d'
+local raiderioText= 'https://raider.io/characters/%s/%s/%s'
+
 
 
 
 --################
 --取得网页，数据链接
 --################
-local WoWHead
-local wowheadText
-local raiderioText
-local function Init_StaticPopupDialogs()
-    StaticPopupDialogs["WoWTools_Tooltips_LinkURL"] = {
-        text= '|n|cffff00ff%s|r |cnGREEN_FONT_COLOR:Ctrl+C |r'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK),
-        button1 = e.onlyChinese and '关闭' or CLOSE,
-        OnShow = function(self, web)
-            self.editBox:SetScript("OnKeyUp", function(s, key)
-                if IsControlKeyDown() and key == "C" then
-                    print(e.addName, WoWTools_TooltipMixin.addName,
-                            '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r',
-                            s:GetText()
-                        )
-                    s:GetParent():Hide()
-                end
-            end)
-            self.editBox:SetScript('OnCursorChanged', function(s)
-                s:SetText(web)
-                s:HighlightText()
-            end)
-            self.editBox:SetMaxLetters(0)
-            self.editBox:SetWidth(self:GetWidth())
-            self.editBox:SetFocus()
-        end,
-        OnHide= function(self)
-            self.editBox:SetScript("OnKeyUp", nil)
-            self.editBox:SetScript("OnCursorChanged", nil)
-            self.editBox:SetText("")
-            self.editBox:ClearFocus()
-        end,
-        EditBoxOnTextChanged= function (self, web)
-            self:SetText(web)
-            self:HighlightText()
-        end,
-        EditBoxOnEnterPressed = function(self)
-            local parent= self:GetParent()
-            parent.button1:Click()
-            parent:Hide()
-        end,
-        EditBoxOnEscapePressed = function(self2)
-            self2:SetAutoFocus(false)
-            self2:ClearFocus()
-            self2:GetParent():Hide()
-        end,
-        hasEditBox = true,
-        editBoxWidth = 320,
-        timeout = 0,
-        whileDead=true, hideOnEscape=true, exclusive=true,
-    }
+local function Init_WoWHeadText()
+    local WoWHead= 'https://www.wowhead.com/'
+    wowheadText= 'https://www.wowhead.com/%s=%d'
+    raiderioText= 'https://raider.io/characters/%s/%s/%s'
+
     if e.onlyChinese or LOCALE_zhTW then
         WoWHead= 'https://www.wowhead.com/cn/'
         if not LOCALE_zhCN then
@@ -71,43 +29,44 @@ local function Init_StaticPopupDialogs()
             wowheadText= 'https://www.wowhead.com/cn/%s=%d/%s'
         end
         raiderioText= 'https://raider.io/cn/characters/%s/%s/%s'
-    --[[if LOCALE_zhCN or LOCALE_zhTW or e.onlyChinese then--https://www.wowhead.com/cn/pet-ability=509/汹涌
-        wowheadText= 'https://www.wowhead.com/cn/%s=%d/%s'
-        raiderioText= 'https://raider.io/cn/characters/%s/%s/%s']]
+
     elseif LOCALE_deDE then
         WoWHead= 'https://www.wowhead.com/de/'
         wowheadText= 'https://www.wowhead.com/de/%s=%d/%s'
         raiderioText= 'https://raider.io/de/characters/%s/%s/%s'
+
     elseif LOCALE_esES or LOCALE_esMX then
         WoWHead= 'https://www.wowhead.com/es/'
         wowheadText= 'https://www.wowhead.com/es/%s=%d/%s'
         raiderioText= 'https://raider.io/es/characters/%s/%s/%s'
+
     elseif LOCALE_frFR then
         WoWHead= 'https://www.wowhead.com/fr/'
         wowheadText= 'https://www.wowhead.com/fr/%s=%d/%s'
         raiderioText= 'https://raider.io/fr/characters/%s/%s/%s'
+
     elseif LOCALE_itIT then
         WoWHead= 'https://www.wowhead.com/it/'
         wowheadText= 'https://www.wowhead.com/it/%s=%d/%s'
         raiderioText= 'https://raider.io/it/characters/%s/%s/%s'
+
     elseif LOCALE_ptBR then
         WoWHead= 'https://www.wowhead.com/pt/'
         wowheadText= 'https://www.wowhead.com/pt/%s=%d/%s'
         raiderioText= 'https://raider.io/br/characters/%s/%s/%s'
+
     elseif LOCALE_ruRU then
         WoWHead= 'https://www.wowhead.com/ru/'
         wowheadText= 'https://www.wowhead.com/ru/%s=%d/%s'
         raiderioText= 'https://raider.io/ru/characters/%s/%s/%s'
+
     elseif LOCALE_koKR then
         WoWHead= 'https://www.wowhead.com/ko/'
         wowheadText= 'https://www.wowhead.com/ko/%s=%d/%s'
         raiderioText= 'https://raider.io/kr/characters/%s/%s/%s'
-    else
-        WoWHead= 'https://www.wowhead.com/'
-        wowheadText= 'https://www.wowhead.com/%s=%d'
-        raiderioText= 'https://raider.io/characters/%s/%s/%s'
     end
 
+    WoWTools_TooltipMixin.WoWHead= WoWHead
 end
 
 
@@ -118,28 +77,6 @@ end
 
 
 
-
-
-function e.Show_WoWHead_URL(isWoWHead, typeOrRegion, typeIDOrRealm, name)
-   if isWoWHead==true then
-        if typeIDOrRealm and type(typeIDOrRealm)~='number' then
-            typeIDOrRealm= tonumber(typeIDOrRealm)
-        end
-        StaticPopup_Show("WoWTools_Tooltips_LinkURL",
-            'WoWHead',
-            nil,
-            format(wowheadText, typeOrRegion or '', typeIDOrRealm or 0, name or '')
-        )
-    elseif isWoWHead==false then
-        StaticPopup_Show("WoWTools_Tooltips_LinkURL",
-            'Raider.IO',
-            nil,
-            format(raiderioText, typeOrRegion or GetCurrentRegionName() or '', typeIDOrRealm or e.Player.realm, name)
-        )
-    else
-        StaticPopup_Show("WoWTools_Tooltips_LinkURL", '', nil, name or '')
-   end
-end
 
 
 
@@ -163,7 +100,7 @@ function WoWTools_TooltipMixin:Set_Web_Link(tooltip, tab)
                 tooltip.WoWHeadButton:SetNormalAtlas('questlegendary')
                 tooltip.WoWHeadButton:SetScript('OnClick', function(f)
                     if f.type and f.id then
-                        e.Show_WoWHead_URL(true, f.type, f.id, f.name)
+                        WoWTools_TooltipMixin:Show_URL(true, f.type, f.id, f.name)
                     end
                 end)
                 function tooltip.WoWHeadButton:rest()
@@ -193,7 +130,7 @@ function WoWTools_TooltipMixin:Set_Web_Link(tooltip, tab)
             end
         end
         if IsControlKeyDown() and IsShiftKeyDown() then
-            e.Show_WoWHead_URL(true, tab.type, tab.id, tab.name)
+            WoWTools_TooltipMixin:Show_URL(true, tab.type, tab.id, tab.name)
         else
             if tab.isPetUI then
                 if tooltip then
@@ -206,7 +143,7 @@ function WoWTools_TooltipMixin:Set_Web_Link(tooltip, tab)
 
     elseif tab.unitName then
         if IsControlKeyDown() and IsShiftKeyDown() then
-            e.Show_WoWHead_URL(false, nil, tab.realm or e.Player.realm, tab.unitName)
+            WoWTools_TooltipMixin:Show_URL(false, nil, tab.realm or e.Player.realm, tab.unitName)
         else
             if tooltip then
                 tooltip:SetText('|A:questlegendary:0:0|a'..(tab.col or '')..'Raider.IO Ctrl+Shift')
@@ -219,7 +156,7 @@ function WoWTools_TooltipMixin:Set_Web_Link(tooltip, tab)
 
     elseif tab.name and tooltip then
         if IsControlKeyDown() and IsShiftKeyDown() then
-            e.Show_WoWHead_URL(nil, nil, nil, tab.name)
+            WoWTools_TooltipMixin:Show_URL(nil, nil, nil, tab.name)
         else
             tooltip:AddDoubleLine((tab.col or '')..'WoWHead', (tab.col or '')..'Ctrl+Shift')
             tooltip:Show()
@@ -227,3 +164,52 @@ function WoWTools_TooltipMixin:Set_Web_Link(tooltip, tab)
     end
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function WoWTools_TooltipMixin:Init_WoWHeadText()
+    Init_WoWHeadText()
+end
+
+
+
+
+
+function WoWTools_TooltipMixin:Show_URL(isWoWHead, typeOrRegion, typeIDOrRealm, name)
+    if isWoWHead==true then
+        if typeIDOrRealm and type(typeIDOrRealm)~='number' then
+            typeIDOrRealm= tonumber(typeIDOrRealm)
+        end
+        StaticPopup_Show("WoWTools_Tooltips_LinkURL",
+            'WoWHead',
+            nil,
+            format(wowheadText, typeOrRegion or '', typeIDOrRealm or 0, name or '')
+        )
+    elseif isWoWHead==false then
+        StaticPopup_Show("WoWTools_Tooltips_LinkURL",
+            'Raider.IO',
+            nil,
+            format(raiderioText, typeOrRegion or GetCurrentRegionName() or '', typeIDOrRealm or e.Player.realm, name)
+        )
+    else
+        StaticPopup_Show("WoWTools_Tooltips_LinkURL", '', nil, name or '')
+   end
+end
