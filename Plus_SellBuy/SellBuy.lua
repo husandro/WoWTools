@@ -187,10 +187,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWTools_SellBuyMixin.Save.buyItems[e.Player.guid]= WoWTools_SellBuyMixin.Save.buyItems[e.Player.guid] or {}
             WoWTools_SellBuyMixin.Save.WoWBuyItems= WoWTools_SellBuyMixin.Save.WoWBuyItems or {}
 
-
             WoWTools_SellBuyMixin.addName= '|A:SpellIcon-256x256-SellJunk:0:0|a'..(e.onlyChinese and '商人' or MERCHANT)
-
-            
 
             --添加控制面板
             e.AddPanel_Check({

@@ -168,20 +168,24 @@ local function Init_WidthX2()
     end)
     MerchantBuyBackItem:ClearAllPoints()--回购
     MerchantBuyBackItem:SetPoint('BOTTOMRIGHT', MerchantFrame, -16, 33)--115
+
     MerchantNextPageButton:ClearAllPoints()--下一页
-    MerchantNextPageButton:SetPoint('RIGHT', MerchantFrameLootFilter, 'LEFT', 20, 2)
+    MerchantNextPageButton:SetPoint('RIGHT', MerchantFrame.FilterDropdown, 'LEFT', 4, 0)
     MerchantNextPageButton:SetFrameStrata('HIGH')
     local label, texture= MerchantNextPageButton:GetRegions()
     if texture and texture:GetObjectType()=='Texture' then texture:Hide() texture:SetTexture(0) end
     if label and label:GetObjectType()=='FontString' then label:Hide() label:SetText('') end
+
     MerchantPrevPageButton:ClearAllPoints()--上一页
-    MerchantPrevPageButton:SetPoint('RIGHT', MerchantNextPageButton, 'LEFT', 8,0)
+    MerchantPrevPageButton:SetPoint('RIGHT', MerchantNextPageButton, 'LEFT',8,0)
     label, texture= MerchantPrevPageButton:GetRegions()
     if texture and texture:GetObjectType()=='Texture' then texture:Hide() texture:SetTexture(0) end
     if label and label:GetObjectType()=='FontString' then label:Hide() label:SetText('') end
+
     MerchantPageText:ClearAllPoints()--上页数
     MerchantPageText:SetPoint('RIGHT', MerchantPrevPageButton, 'LEFT', 0, 0)
     MerchantPageText:SetJustifyH('RIGHT')
+
     MerchantFrameBottomLeftBorder:ClearAllPoints()--外框
     MerchantFrameBottomLeftBorder:SetPoint('BOTTOMRIGHT', 0, 26)
 

@@ -249,7 +249,7 @@ function e.GetSpellItemCooldown(spellID, itemID)--法术,物品,冷却
                 t= t<0 and 0 or t
                 return '|cnRED_FONT_COLOR:'..SecondsToTime(t)..'|r'
 
-            elseif not data.isEnabled then
+            elseif data.isEnabled==false then
                 return '|cff9e9e9e'..(e.onlyChinese and '即时冷却' or SPELL_RECAST_TIME_INSTANT)..'|r'
             end
         end

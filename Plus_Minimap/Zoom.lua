@@ -41,13 +41,17 @@ end
 
 function Frame:ZONE_CHANGED()--更新地区时,缩小化地图
     local value= Save().ZoomOut
-    local level = Minimap:GetZoom()
+    if value==nil then
+        return
+    end
     local max= Minimap:GetZoomLevels()
+    local select=  (type(value)=='number' and value-1)
+                    or (value=='max' and max)
+                    or 0
+    select= math.min(select, max)
+    select= math.max(select, 0)
 
-    local select= value=='min' and 0 or (value=='max' and max) or (value-1)
-    max= select>max and max or select
-
-    if select~=level then
+    if select~=Minimap:GetZoom() then
         Minimap:SetZoom(select)
     end
 end
@@ -93,8 +97,9 @@ end)
 
 
 local function Init_Menu(_, root)
+    local sub
     for _, value in pairs({'min', 2, 3, 4, 5, 'max'}) do
-        root:CreateRadio(
+        sub=root:CreateRadio(
             value=='min' and (e.onlyChinese and '缩小' or ZOOM_OUT)
             or (value=='max' and (e.onlyChinese and '放大' or ZOOM_IN))
             or value,
@@ -109,9 +114,10 @@ local function Init_Menu(_, root)
             Frame:set_event()
             return MenuResponse.Refresh
         end, {value=value})
+        sub:SetTooltip(function(tooltip)
+            tooltip:AddLine(e.onlyChinese and '锁定' or LOCK)
+        end)
     end
-    root:CreateDivider()
-    root:CreateTitle(e.onlyChinese and '锁定' or LOCK)
 end
 
 
