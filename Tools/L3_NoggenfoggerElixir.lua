@@ -115,7 +115,7 @@ local function Init_Menu(_, root)
         end, function(data)
             Save.aura[data.spellID]= not Save.aura[data.spellID] and true or false
         end, {spellID=spellID})
-        WoWTools_TooltipMixin:SetTooltip(nil, nil, sub, nil)
+        WoWTools_SetTooltipMixin:SetTooltip(nil, nil, sub, nil)
     end
 
     root:CreateSpacer()

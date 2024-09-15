@@ -46,7 +46,7 @@ local function Player_Sell_Menu(_, root)
         end, function(data)
             Save().Sell[data.itemID]= not Save().Sell[data.itemID] and true or nil
         end, {itemID=itemID})
-        WoWTools_TooltipMixin:SetTooltip(nil, nil, sub2, nil)
+        WoWTools_SetTooltipMixin:SetTooltip(nil, nil, sub2, nil)
     end
     if num>1 then
         sub:CreateDivider()
@@ -101,7 +101,7 @@ local function Buyback_Menu(_, root)
                 btn:set_text()--回购，数量，提示
             end
         end, {itemID=itemID})
-        WoWTools_TooltipMixin:SetTooltip(nil, nil, sub2, nil)
+        WoWTools_SetTooltipMixin:SetTooltip(nil, nil, sub2, nil)
     end
 
     if num>1 then
@@ -171,7 +171,7 @@ local function BuyItem_Menu(_, root)
                 btn:set_text()--回购，数量，提示
             end
         end, {itemID=itemID})
-        WoWTools_TooltipMixin:SetTooltip(nil, nil, sub2, nil)
+        WoWTools_SetTooltipMixin:SetTooltip(nil, nil, sub2, nil)
     end
 
     if num>1 then
@@ -282,7 +282,7 @@ local function Init_Menu(self, root)
         end, function(data)
             Save().bossItems[data.itemLink]= not Save().bossItems[data.itemLink] and true or nil
         end, {itemID=itemID, itemLink=itemLink})
-        WoWTools_TooltipMixin:SetTooltip(nil, nil, sub2, nil)
+        WoWTools_SetTooltipMixin:SetTooltip(nil, nil, sub2, nil)
     end
     sub:CreateDivider()
     if num>1 then

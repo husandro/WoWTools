@@ -119,6 +119,7 @@ local function Init()
     do
         WoWTools_GossipMixin:Init_Gossip()--对话，初始化
     end
+
     WoWTools_GossipMixin:Init_Quest()--任务，初始化
 
     hooksecurefunc('QuestInfo_Display', Set_QuestInfo_Display)
@@ -156,13 +157,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED"  then
         if arg1 == id then
 
-
-            if WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ENABLE_DIALOG, QUESTS_LABEL)] then
-                WoWTools_GossipMixin.Save= WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ENABLE_DIALOG, QUESTS_LABEL)]
-                WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ENABLE_DIALOG, QUESTS_LABEL)]=nil
-            else
-                WoWTools_GossipMixin.Save= WoWToolsSave['Plus_Gossip'] or WoWTools_GossipMixin.Save
-            end
+            WoWTools_GossipMixin.Save= WoWToolsSave['Plus_Gossip'] or Save()
 
             addName= '|A:SpecDial_LastPip_BorderGlow:0:0|a'..(e.onlyChinese and '闲谈选项' or GOSSIP_OPTIONS)
             WoWTools_GossipMixin.addName= addName
@@ -194,10 +189,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                  category= nil,
              })
 
-            if not Save().disabled then
-                Init()
-            else
+            if Save().disabled then
                 self:UnregisterEvent('ADDON_LOADED')
+            else
+                Init()
             end
 
         elseif arg1=='Blizzard_PlayerChoice' then
@@ -209,7 +204,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            WoWToolsSave['Plus_Gossip']= Save
+            WoWToolsSave['Plus_Gossip']= Save()
         end
     end
 end)

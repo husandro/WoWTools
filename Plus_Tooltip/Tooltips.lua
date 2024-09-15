@@ -1,194 +1,63 @@
-local id, e = ...
-local addName= 'Tooltips'
-local Save={
-    setDefaultAnchor=true,--指定点
-    --AnchorPoint={},--指定点，位置
-    --cursorRight=nil,--'ANCHOR_CURSOR_RIGHT',
-
-    setCVar=e.Player.husandro,
-    ShowOptionsCVarTips=e.Player.husandro,--显示选项中的CVar
-    inCombatDefaultAnchor=true,
-    ctrl= e.Player.husandro,--取得网页，数据链接
-
-    --模型
-    modelSize=100,--大小
-    --modelLeft=true,--左边
-    modelX= 0,
-    modelY= -15,
-    modelFacing= -0.3,--方向
-    showModelFileID=e.Player.husandro,--显示，文件ID
-    --WidgetSetID=848,--自定义，监视 WidgetSetID
-    --disabledNPCcolor=true,--禁用NPC颜色
-    --hideHealth=true,----生命条提示
-}
-
-local Initializer, Layout= e.AddPanel_Sub_Category({name=e.Icon.mid..addName})
-
---全局
---e.Show_WoWHead_URL(isWoWHead, typeOrRegion, typeIDOrRealm, name)
-
-local func={}
 --[[
-func:Set_PlayerModel(self)
-func:Set_Width(tooltip)--设置，宽度
-func:Set_Spell(self, spellID)法术
-func:Set_Mount(self, mountID)坐骑
-func:Set_Pet(self, speciesID, setSearchText)宠物
-func:Set_Item(self, itemLink, itemID)物品信息
-func:Set_Currency(self, currencyID)货币
-func:Set_Achievement(self, achievementID)成就
-func:Set_Quest(self, questID, info)任务
-func:Set_Faction(self, factionID)
-func:Set_Flyout(self, flyoutID)法术, 弹出框
+Set_PlayerModel(self)
+Set_Width(tooltip)--设置，宽度
+Set_Spell(self, spellID)法术
+Set_Mount(self, mountID)坐骑
+Set_Pet(self, speciesID, setSearchText)宠物
+Set_Item(self, itemLink, itemID)物品信息
+Set_Currency(self, currencyID)货币
+Set_Achievement(self, achievementID)成就
+Set_Quest(self, questID, info)任务
+Set_Faction(self, factionID)
+Set_Flyout(self, flyoutID)法术, 弹出框
 
-func:Set_Init_Item(self, hide)创建，设置，内容
-func:Set_Item_Model(self, tab)设置, 3D模型{unit=, guid=, creatureDisplayID=, animID=, appearanceID=, visualID=}
-func:Set_All_Aura(self, data)Aura
-func:Set_Buff(type, self, ...)
-func:Set_Unit(self, unit)设置单位提示信息
-func:Set_Unit_Player(tooltip, name, unit, guid)
-func:Set_Unit_NPC(tooltip, name, unit, guid)
-
+Set_Init_Item(self, hide)创建，设置，内容
+Set_Item_Model(self, tab)设置, 3D模型{unit=, guid=, creatureDisplayID=, animID=, appearanceID=, visualID=}
+Set_All_Aura(self, data)Aura
+Set_Buff(type, self, ...)
+Set_Unit(self, unit)设置单位提示信息
+Set_Unit_Player(tooltip, name, unit, guid)
+Set_Unit_NPC(tooltip, name, unit, guid)
 ]]
 
+local id, e = ...
+local addName= '|A:newplayertutorial-drag-cursor:0:0|aToolstip'
 
+WoWTools_TooltipMixin={
+    Save={
+        setDefaultAnchor=true,--指定点
+        --AnchorPoint={},--指定点，位置
+        --cursorRight=nil,--'ANCHOR_CURSOR_RIGHT',
 
+        setCVar=e.Player.husandro,
+        ShowOptionsCVarTips=e.Player.husandro,--显示选项中的CVar
+        inCombatDefaultAnchor=true,
+        ctrl= e.Player.husandro,--取得网页，数据链接
 
+        --模型
+        modelSize=100,--大小
+        --modelLeft=true,--左边
+        modelX= 0,
+        modelY= -15,
+        modelFacing= -0.3,--方向
+        showModelFileID=e.Player.husandro,--显示，文件ID
+        --WidgetSetID=848,--自定义，监视 WidgetSetID
+        --disabledNPCcolor=true,--禁用NPC颜色
+        --hideHealth=true,----生命条提示
+    },
+    addName=addName,
+    Initializer=nil,
+    Layout=nil,
+}
 
-function func:GetItemInfoFromHyperlink(link)--LinkUtil.lua  GetItemInfoFromHyperlink()不能正解，读取 |Hkeystone:
-	local itemID = link and link:match("|H.-:(%d+).-|h")
-	if itemID then
-		return tonumber(itemID)
-	end
+local function Save()
+    return WoWTools_TooltipMixin.Save
 end
 
 
-
-function func:Set_PlayerModel(tooltip)
-    if not tooltip.playerModel then
-        tooltip.playerModel= CreateFrame("PlayerModel", nil, tooltip)--DressUpModel PlayerModel        
-        --[[
-        tooltip.playerModel:SetFrameLevel(tooltip:GetFrameLevel()-1)
-        tooltip.itemModel= CreateFrame("DressUpModel", nil, tooltip)--DressUpModel PlayerModel
-        tooltip.itemModel:SetPoint('TOP', tooltip, 'BOTTOM')
-        tooltip.itemModel:SetUnit('player')
-        tooltip.itemModel:SetSize(Save.modelSize, Save.modelSize)
-        tooltip.itemModel:SetModelScale(2)
-        tooltip.itemModel:SetFacing(Save.modelFacing)
-        ]]
-    else
-        tooltip.playerModel:ClearAllPoints()
-    end
-    if Save.modelLeft then
-        tooltip.playerModel:SetPoint("RIGHT", tooltip, 'LEFT', Save.modelX, Save.modelY)
-    else
-        tooltip.playerModel:SetPoint("BOTTOM", tooltip, 'TOP', Save.modelX, Save.modelY)
-    end
-    tooltip.playerModel:SetSize(Save.modelSize, Save.modelSize)
-    tooltip.playerModel:SetFacing(Save.modelFacing)
-end
-
-function func:Set_Init_Item(tooltip, hide)--创建，设置，内容
-    if not tooltip then
-        return
-    end
-    if not tooltip.textLeft then--左上角字符
-        tooltip.textLeft=e.Cstr(tooltip, {size=16})
-        tooltip.textLeft:SetPoint('BOTTOMLEFT', tooltip, 'TOPLEFT')
-
-        tooltip.text2Left=e.Cstr(tooltip, {size=16})--左上角字符2
-        tooltip.text2Left:SetPoint('LEFT', tooltip.textLeft, 'RIGHT', 5, 0)
-
-        tooltip.textRight=e.Cstr(tooltip, {size=12, justifyH='RIGHT'})--右上角字符
-        tooltip.textRight:SetPoint('BOTTOMRIGHT', tooltip, 'TOPRIGHT')
-
-        tooltip.text2Right= e.Cstr(tooltip, {size=12, justifyH='RIGHT'})--右上角字符2
-        tooltip.text2Right:SetPoint('BOTTOMRIGHT', tooltip.textRight, 'TOPRIGHT', 0, 4)
-
-        tooltip.backgroundColor= tooltip:CreateTexture(nil, 'BACKGROUND',nil, 1)--背景颜色
-        tooltip.backgroundColor:SetPoint('TOPLEFT')
-        tooltip.backgroundColor:SetPoint('BOTTOMRIGHT')
-        --tooltip.backgroundColor:SetAllPoints(tooltip)
-
-        if not tooltip.Portrait then
-            tooltip.Portrait= tooltip:CreateTexture(nil, 'BACKGROUND',nil, 2)--右上角图标
-            tooltip.Portrait:SetPoint('TOPRIGHT',-2, -3)
-            tooltip.Portrait:SetSize(40,40)
-        end
-        tooltip:HookScript("OnHide", function(frame)--隐藏
-            func:Set_Init_Item(frame, true)
-        end)
-    end
-    if not tooltip.playerModel and not Save.hideModel then
-        func:Set_PlayerModel(tooltip)
-        tooltip.playerModel:SetShown(false)
-    end
-    if hide and tooltip.textLeft then
-        tooltip.textLeft:SetText('')
-        tooltip.text2Left:SetText('')
-        tooltip.textRight:SetText('')
-        tooltip.text2Right:SetText('')
-
-        tooltip.textLeft:SetTextColor(1, 0.82, 0)
-        tooltip.text2Left:SetTextColor(1, 0.82, 0)
-        tooltip.textRight:SetTextColor(1, 0.82, 0)
-        tooltip.text2Right:SetTextColor(1, 0.82, 0)
-
-        tooltip.Portrait:SetShown(false)
-        tooltip.backgroundColor:SetShown(false)
-        if tooltip.playerModel then
-            tooltip.playerModel:ClearModel()
-            tooltip.playerModel:SetShown(false)
-            tooltip.playerModel.id=nil
-        end
-        if tooltip.WoWHeadButton then
-            tooltip.WoWHeadButton:rest()
-        end
-    end
-end
-
-
-
---###########
---设置, 3D模型
---###########
-function func:Set_Item_Model(tooltip, tab)--func:Set_Item_Model(tooltip, {unit=, guid=, creatureDisplayID=, animID=, appearanceID=, visualID=})--设置, 3D模型
-    if Save.hideModel or not tooltip.playerModel then
-        return
-    end
-    if tab.unit then
-        if tooltip.playerModel.id~=tab.guid then--and tooltip.playerModel:CanSetUnit(tab.unit) then
-            tooltip.playerModel:SetUnit(tab.unit)
-            tooltip.playerModel.guid=tab.guid
-            tooltip.playerModel.id=tab.guid
-            tooltip.playerModel:SetShown(true)
-
-        end
-    elseif tab.creatureDisplayID  then
-        if tooltip.playerModel.id~= tab.creatureDisplayID then
-            tooltip.playerModel:SetDisplayInfo(tab.creatureDisplayID)
-            if tab.animID then
-                tooltip.playerModel:SetAnimation(tab.animID)
-            end
-            tooltip.playerModel.id=tab.creatureDisplayID
-            tooltip.playerModel:SetShown(true)
-        end
-    elseif tab.itemID then
-        if tooltip.playerModel.id~=tab.itemID then
-            if  tab.appearanceID and tab.visualID then
-                tooltip.playerModel:SetItemAppearance(tab.visualID, tab.appearanceID)
-            else
-                tooltip.playerModel:SetItem(tab.itemID, tab.appearanceID, tab.visualID)
-            end
-            tooltip.playerModel.id= tab.itemID
-            tooltip.playerModel:SetShown(true)
-        end
-    end
-end
-
-
-
-
+local Initializer, Layout= e.AddPanel_Sub_Category({name=addName})
+WoWTools_TooltipMixin.Initializer= Initializer
+WoWTools_TooltipMixin.Layout= Layout
 
 
 
@@ -202,7 +71,7 @@ end
 
 
 --设置，宽度
-function func:Set_Width(tooltip)
+function WoWTools_TooltipMixin:Set_Width(tooltip)
     local w= tooltip:GetWidth()
     local w2= tooltip.textLeft:GetStringWidth()+ tooltip.text2Left:GetStringWidth()+ tooltip.textRight:GetStringWidth()
     if w<w2 then
@@ -224,200 +93,6 @@ end
 
 
 
---################
---取得网页，数据链接
---################
-local WoWHead
-local wowheadText
-local raiderioText
-local function Init_StaticPopupDialogs()
-    StaticPopupDialogs["WoWTools_Tooltips_LinkURL"] = {
-        text= id..' '..Initializer:GetName()..'|n|cffff00ff%s|r |cnGREEN_FONT_COLOR:Ctrl+C |r'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK),
-        button1 = e.onlyChinese and '关闭' or CLOSE,
-        OnShow = function(self, web)
-            self.editBox:SetScript("OnKeyUp", function(s, key)
-                if IsControlKeyDown() and key == "C" then
-                    print(e.addName, Initializer:GetName(),
-                            '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r',
-                            s:GetText()
-                        )
-                    s:GetParent():Hide()
-                end
-            end)
-            self.editBox:SetScript('OnCursorChanged', function(s)
-                s:SetText(web)
-                s:HighlightText()
-            end)
-            self.editBox:SetMaxLetters(0)
-            self.editBox:SetWidth(self:GetWidth())
-            self.editBox:SetFocus()
-        end,
-        OnHide= function(self)
-            self.editBox:SetScript("OnKeyUp", nil)
-            self.editBox:SetScript("OnCursorChanged", nil)
-            self.editBox:SetText("")
-            self.editBox:ClearFocus()
-        end,
-        EditBoxOnTextChanged= function (self, web)
-            self:SetText(web)
-            self:HighlightText()
-        end,
-        EditBoxOnEnterPressed = function(self)
-            local parent= self:GetParent()
-            parent.button1:Click()
-            parent:Hide()
-        end,
-        EditBoxOnEscapePressed = function(self2)
-            self2:SetAutoFocus(false)
-            self2:ClearFocus()
-            self2:GetParent():Hide()
-        end,
-        hasEditBox = true,
-        editBoxWidth = 320,
-        timeout = 0,
-        whileDead=true, hideOnEscape=true, exclusive=true,
-    }
-    if e.onlyChinese or LOCALE_zhTW then
-        WoWHead= 'https://www.wowhead.com/cn/'
-        if not LOCALE_zhCN then
-            wowheadText= 'https://www.wowhead.com/cn/%s=%d'
-        else
-            wowheadText= 'https://www.wowhead.com/cn/%s=%d/%s'
-        end
-        raiderioText= 'https://raider.io/cn/characters/%s/%s/%s'
-    --[[if LOCALE_zhCN or LOCALE_zhTW or e.onlyChinese then--https://www.wowhead.com/cn/pet-ability=509/汹涌
-        wowheadText= 'https://www.wowhead.com/cn/%s=%d/%s'
-        raiderioText= 'https://raider.io/cn/characters/%s/%s/%s']]
-    elseif LOCALE_deDE then
-        WoWHead= 'https://www.wowhead.com/de/'
-        wowheadText= 'https://www.wowhead.com/de/%s=%d/%s'
-        raiderioText= 'https://raider.io/de/characters/%s/%s/%s'
-    elseif LOCALE_esES or LOCALE_esMX then
-        WoWHead= 'https://www.wowhead.com/es/'
-        wowheadText= 'https://www.wowhead.com/es/%s=%d/%s'
-        raiderioText= 'https://raider.io/es/characters/%s/%s/%s'
-    elseif LOCALE_frFR then
-        WoWHead= 'https://www.wowhead.com/fr/'
-        wowheadText= 'https://www.wowhead.com/fr/%s=%d/%s'
-        raiderioText= 'https://raider.io/fr/characters/%s/%s/%s'
-    elseif LOCALE_itIT then
-        WoWHead= 'https://www.wowhead.com/it/'
-        wowheadText= 'https://www.wowhead.com/it/%s=%d/%s'
-        raiderioText= 'https://raider.io/it/characters/%s/%s/%s'
-    elseif LOCALE_ptBR then
-        WoWHead= 'https://www.wowhead.com/pt/'
-        wowheadText= 'https://www.wowhead.com/pt/%s=%d/%s'
-        raiderioText= 'https://raider.io/br/characters/%s/%s/%s'
-    elseif LOCALE_ruRU then
-        WoWHead= 'https://www.wowhead.com/ru/'
-        wowheadText= 'https://www.wowhead.com/ru/%s=%d/%s'
-        raiderioText= 'https://raider.io/ru/characters/%s/%s/%s'
-    elseif LOCALE_koKR then
-        WoWHead= 'https://www.wowhead.com/ko/'
-        wowheadText= 'https://www.wowhead.com/ko/%s=%d/%s'
-        raiderioText= 'https://raider.io/kr/characters/%s/%s/%s'
-    else
-        WoWHead= 'https://www.wowhead.com/'
-        wowheadText= 'https://www.wowhead.com/%s=%d'
-        raiderioText= 'https://raider.io/characters/%s/%s/%s'
-    end
-
-end
-
-function e.Show_WoWHead_URL(isWoWHead, typeOrRegion, typeIDOrRealm, name)
-   if isWoWHead==true then
-        if typeIDOrRealm and type(typeIDOrRealm)~='number' then
-            typeIDOrRealm= tonumber(typeIDOrRealm)
-        end
-        StaticPopup_Show("WoWTools_Tooltips_LinkURL",
-            'WoWHead',
-            nil,
-            format(wowheadText, typeOrRegion or '', typeIDOrRealm or 0, name or '')
-        )
-    elseif isWoWHead==false then
-        StaticPopup_Show("WoWTools_Tooltips_LinkURL",
-            'Raider.IO',
-            nil,
-            format(raiderioText, typeOrRegion or GetCurrentRegionName() or '', typeIDOrRealm or e.Player.realm, name)
-        )
-    else
-        StaticPopup_Show("WoWTools_Tooltips_LinkURL", '', nil, name or '')
-   end
-end
-
-
-function func:Set_Web_Link(tooltip, tab)
-    if tooltip==ItemRefTooltip or tooltip==FloatingBattlePetTooltip then
-        if tab.type and tab.id then
-            if not tooltip.WoWHeadButton then
-                tooltip.WoWHeadButton=WoWTools_ButtonMixin:Cbtn(tooltip, {size={20,20}, type=false})--取得网页，数据链接
-                tooltip.WoWHeadButton:SetPoint('RIGHT',tooltip.CloseButton, 'LEFT',0,2)
-                tooltip.WoWHeadButton:SetNormalAtlas('questlegendary')
-                tooltip.WoWHeadButton:SetScript('OnClick', function(f)
-                    if f.type and f.id then
-                        e.Show_WoWHead_URL(true, f.type, f.id, f.name)
-                    end
-                end)
-                function tooltip.WoWHeadButton:rest()
-                    self.type=nil
-                    self.id=nil
-                    self.name=nil
-                    self:SetShown(false)
-                end
-            end
-            tooltip.WoWHeadButton.type= tab.type
-            tooltip.WoWHeadButton.id= tab.id
-            tooltip.WoWHeadButton.name= tab.name
-            tooltip.WoWHeadButton:SetShown(true)
-        end
-        return
-    end
-    if not Save.ctrl or UnitAffectingCombat('player')  then
-        return
-    end
-
-    if tab.id then
-        if tab.type=='quest' then
-            if not tab.name then
-                local index= C_QuestLog.GetLogIndexForQuestID(tab.id)
-                local info= index and C_QuestLog.GetInfo(index)
-                tab.name= info and info.title
-            end
-        end
-        if IsControlKeyDown() and IsShiftKeyDown() then
-            e.Show_WoWHead_URL(true, tab.type, tab.id, tab.name)
-        else
-            if tab.isPetUI then
-                if tooltip then
-                    BattlePetTooltipTemplate_AddTextLine(tooltip, 'wowhead  Ctrl+Shift')
-                end
-            elseif tooltip== e.tips then
-                tooltip:AddDoubleLine((tab.col or '')..'WoWHead', (tab.col or '')..'Ctrl+Shift')
-            end
-        end
-
-    elseif tab.unitName then
-        if IsControlKeyDown() and IsShiftKeyDown() then
-            e.Show_WoWHead_URL(false, nil, tab.realm or e.Player.realm, tab.unitName)
-        else
-            if tooltip then
-                tooltip:SetText('|A:questlegendary:0:0|a'..(tab.col or '')..'Raider.IO Ctrl+Shift')
-                tooltip:Show(true)
-            else
-                e.tips:AddDoubleLine('|A:questlegendary:0:0|a'..(tab.col or '')..'Raider.IO', (tab.col or '')..'Ctrl+Shift')
-                e.tips:Show(true)
-            end
-        end
-
-    elseif tab.name and tooltip then
-        if IsControlKeyDown() and IsShiftKeyDown() then
-            e.Show_WoWHead_URL(nil, nil, nil, tab.name)
-        else
-            tooltip:AddDoubleLine((tab.col or '')..'WoWHead', (tab.col or '')..'Ctrl+Shift')
-            tooltip:Show()
-        end
-    end
-end
 
 
 
@@ -437,11 +112,9 @@ end
 
 
 
-
-
-function func:Set_Mount(tooltip, mountID, type)--坐骑
+function WoWTools_TooltipMixin:Set_Mount(tooltip, mountID, type)--坐骑
     if mountID==268435455 then
-        func:Set_Spell(tooltip, 150544)--法术
+        WoWTools_TooltipMixin:Set_Spell(tooltip, 150544)--法术
         return
     end
 
@@ -480,14 +153,14 @@ function func:Set_Mount(tooltip, mountID, type)--坐骑
         tooltip:AddLine(e.cn(source), nil,nil,nil,true)
     end
 
-    func:Set_Item_Model(tooltip, {creatureDisplayID=creatureDisplayInfoID, animID=animID})--设置, 3D模型
+    WoWTools_TooltipMixin:Set_Item_Model(tooltip, {creatureDisplayID=creatureDisplayInfoID, animID=animID})--设置, 3D模型
 
     tooltip.text2Left:SetText(isCollected and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r')
 
     local can= isCollected and isUsable and not isActive and not UnitCastingInfo('player')
     if can and IsAltKeyDown() then
         C_MountJournal.SummonByID(mountID)
-        print(e.addName, Initializer:GetName(), spellID and C_Spell.GetSpellLink(spellID), '|cnGREEN_FONT_COLOR:Alt+'..(e.onlyChinese and '召唤坐骑' or MOUNT))
+        print(e.addName, addName, spellID and C_Spell.GetSpellLink(spellID), '|cnGREEN_FONT_COLOR:Alt+'..(e.onlyChinese and '召唤坐骑' or MOUNT))
     end
     local col= can and '|cnGREEN_FONT_COLOR:' or '|cff9e9e9e'
     tooltip:AddDoubleLine(col..(e.onlyChinese and '召唤坐骑' or MOUNT), col..'Alt+')
@@ -495,7 +168,7 @@ function func:Set_Mount(tooltip, mountID, type)--坐骑
     if type and MountJournal and MountJournal:IsVisible() and creatureName then
         MountJournalSearchBox:SetText(creatureName)
     end
-    func:Set_Web_Link(tooltip, {type='spell', id=spellID, name=creatureName, col=nil, isPetUI=false})--取得网页，数据链接    
+    WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='spell', id=spellID, name=creatureName, col=nil, isPetUI=false})--取得网页，数据链接    
 end
 
 
@@ -522,7 +195,7 @@ end
 
 
 
-function func:Set_Pet(tooltip, speciesID, setSearchText)--宠物
+function WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID, setSearchText)--宠物
     if not speciesID or speciesID< 1 then
         return
     end
@@ -578,13 +251,13 @@ function func:Set_Pet(tooltip, speciesID, setSearchText)--宠物
         tooltip.Portrait:SetTexture("Interface\\TargetingFrame\\PetBadge-"..PET_TYPE_SUFFIX[petType])
         tooltip.Portrait:SetShown(true)
     end
-    func:Set_Item_Model(tooltip, {creatureDisplayID=creatureDisplayID})--设置, 3D模型
+    WoWTools_TooltipMixin:Set_Item_Model(tooltip, {creatureDisplayID=creatureDisplayID})--设置, 3D模型
 
     if setSearchText and speciesName and PetJournalSearchBox and PetJournalSearchBox:IsVisible() then--宠物手册，设置名称
         PetJournalSearchBox:SetText(speciesName)
     end
 
-    func:Set_Web_Link(tooltip, {type='npc', id=companionID, name=speciesName, col= nil, isPetUI=false})--取得网页，数据链接
+    WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='npc', id=companionID, name=speciesName, col= nil, isPetUI=false})--取得网页，数据链接
     local btn= _G['WoWTools_PetBattle_Type_TrackButton']--PetBattle.lua 联动
     if btn then
         btn:set_type_tips(petType)
@@ -625,13 +298,13 @@ end
 --############
 --设置,物品信息
 --############
-function func:Set_Item(tooltip, itemLink, itemID)
+function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
     if not itemLink and not itemID then
         return
     end
 
     local itemName, _, itemQuality, itemLevel, _, itemType, itemSubType, _, itemEquipLoc, itemTexture, _, classID, subclassID, bindType, expacID, setID =  C_Item.GetItemInfo(itemLink or itemID)
-    itemID= itemID or C_Item.GetItemInfoInstant(itemLink or itemID) or func:GetItemInfoFromHyperlink(itemLink)
+    itemID= itemID or WoWTools_ItemMixin:GetItemID(itemLink)
     --itemName, itemLink, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, sellPrice, classID, subclassID, bindType, expansionID, setID, isCraftingReagent
     if not itemID then
         return
@@ -694,7 +367,7 @@ function func:Set_Item(tooltip, itemLink, itemID)
                 tooltip.text2Left:SetText(sourceInfo.isCollected and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r')
             end
         end
-        func:Set_Item_Model(tooltip, {itemID=itemID, sourceID=sourceID, appearanceID=appearanceID, visualID=visualID})--设置, 3D模型
+        WoWTools_TooltipMixin:Set_Item_Model(tooltip, {itemID=itemID, sourceID=sourceID, appearanceID=appearanceID, visualID=visualID})--设置, 3D模型
 
         if bindType==LE_ITEM_BIND_ON_EQUIP or bindType==LE_ITEM_BIND_ON_USE then--绑定装备,使用时绑定
             tooltip.Portrait:SetAtlas('greatVault-lock')
@@ -730,9 +403,9 @@ function func:Set_Item(tooltip, itemLink, itemID)
         local mountID = C_MountJournal.GetMountFromItem(itemID)--坐骑物品
         local speciesID = select(13, C_PetJournal.GetPetInfoByItemID(itemID))
         if mountID then
-            func:Set_Mount(tooltip, mountID, 'item')--坐骑
+            WoWTools_TooltipMixin:Set_Mount(tooltip, mountID, 'item')--坐骑
         elseif speciesID then
-            func:Set_Pet(tooltip, speciesID, true)--宠物
+            WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID, true)--宠物
         else
         end
     end
@@ -754,7 +427,7 @@ function func:Set_Item(tooltip, itemLink, itemID)
     local bag= C_Item.GetItemCount(itemID, false, false, false, false)--物品数量
     local bank= C_Item.GetItemCount(itemID, true, false, true, false) --bank
     local net= C_Item.GetItemCount(itemID, false, false, false, true)--战团
-    
+
 
     if C_Item.IsItemKeystoneByID(itemID) then--挑战
         for guid, info in pairs(e.WoWDate or {}) do
@@ -819,7 +492,7 @@ function func:Set_Item(tooltip, itemLink, itemID)
     tooltip.backgroundColor:SetColorTexture(r, g, b, 0.15)--颜色
     tooltip.backgroundColor:SetShown(true)
 
-    func:Set_Web_Link(tooltip, {type='item', id=itemID, name=itemName, col=col, isPetUI=false})--取得网页，数据链接
+    WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='item', id=itemID, name=itemName, col=col, isPetUI=false})--取得网页，数据链接
 
     tooltip:Show()
 end
@@ -838,7 +511,7 @@ end
 
 
 
-function func:Set_Spell(tooltip, spellID)--法术    
+function WoWTools_TooltipMixin:Set_Spell(tooltip, spellID)--法术    
     spellID = spellID or select(2, tooltip:GetSpell())
     local name, icon, originalIcon
     local spellInfo= spellID and C_Spell.GetSpellInfo(spellID)
@@ -856,7 +529,7 @@ function func:Set_Spell(tooltip, spellID)--法术
     tooltip:AddDoubleLine((e.onlyChinese and '法术' or SPELLS)..' '..spellID, spellTexture and '|T'..spellTexture..':0|t'..spellTexture, 1,1,1, 1,1,1)
     local mountID = spellID~=150544 and C_MountJournal.GetMountFromSpell(spellID)--坐骑
     if mountID then
-        func:Set_Mount(tooltip, mountID)
+        WoWTools_TooltipMixin:Set_Mount(tooltip, mountID)
     else
         --[[local overrideSpellID = FindSpellOverrideByID(spellID)
         if overrideSpellID and overrideSpellID~=spellID then
@@ -872,11 +545,11 @@ function func:Set_Spell(tooltip, spellID)--法术
                 e.tips:AddDoubleLine(format(e.onlyChinese and '代替%s' or REPLACES_SPELL, link), spellTexture and '|T'..spellTexture..':0|t'..spellTexture)
             end
         end]]
-        func:Set_Web_Link(tooltip, {type='spell', id=spellID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
+        WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='spell', id=spellID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
     end
 end
 
-function func:Set_Currency(tooltip, currencyID)--货币
+function WoWTools_TooltipMixin:Set_Currency(tooltip, currencyID)--货币
     local info2 = currencyID and C_CurrencyInfo.GetCurrencyInfo(currencyID)
     if not info2 then
         return
@@ -905,7 +578,7 @@ function func:Set_Currency(tooltip, currencyID)--货币
         tooltip:AddDoubleLine(e.Icon.wow2..numPlayer..(e.onlyChinese and '角色' or CHARACTER), e.MK(all,3))
     end
 
-    func:Set_Web_Link(tooltip, {type='currency', id=currencyID, name=info2.name, col=nil, isPetUI=false})--取得网页，数据链接 npc item spell currency
+    WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='currency', id=currencyID, name=info2.name, col=nil, isPetUI=false})--取得网页，数据链接 npc item spell currency
 
     tooltip:Show()
 end
@@ -925,7 +598,7 @@ end
 
 
 
-function func:Set_Achievement(tooltip, achievementID)--成就
+function WoWTools_TooltipMixin:Set_Achievement(tooltip, achievementID)--成就
     if not achievementID then
         return
     end
@@ -940,7 +613,7 @@ function func:Set_Achievement(tooltip, achievementID)--成就
     if flags==0x20000 then
         tooltip.textRight:SetText(e.Icon.net2..'|cffff00ff'..(e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET))
     end
-    func:Set_Web_Link(tooltip, {type='achievement', id=achievementID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
+    WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='achievement', id=achievementID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
 end
 
 
@@ -962,7 +635,7 @@ end
 
 
 
-function func:Set_Quest(tooltip, questID, info)----任务
+function WoWTools_TooltipMixin:Set_Quest(tooltip, questID, info)----任务
     questID= questID or (info and info.questID or nil)
     if not questID then
         return
@@ -987,17 +660,6 @@ function func:Set_Quest(tooltip, questID, info)----任务
         info = questLogIndex and C_QuestLog.GetInfo(questLogIndex)
     end
 
-
-    --[[
-    local distanceSq= C_QuestLog.GetDistanceSqToQuest(questID)--距离
-    if distanceSq and distanceSq>0 then
-        local _, x, y = QuestPOIGetIconInfo(questID)--QuestPOIGetIconInfo已弃
-        if x and y then
-            x=math.modf(x*100) y=math.modf(y*100)
-        end
-        tooltip:AddDoubleLine(x and y and 'XY '..x..', '..y or ' ',  format(e.onlyChinese and '%s码' or IN_GAME_NAVIGATION_RANGE, e.MK(distanceSq)))
-    end]]
-
     local tagInfo = C_QuestLog.GetQuestTagInfo(questID)
     local name
     if tagInfo and tagInfo.tagID then
@@ -1011,7 +673,7 @@ function func:Set_Quest(tooltip, questID, info)----任务
             tooltip:AddDoubleLine('tagID', tagID)
         end
     end
-    func:Set_Web_Link(tooltip, {type='quest', id=questID, name=name or C_QuestLog.GetTitleForQuestID(questID), col=nil, isPetUI=false})--取得网页，数据链接
+    WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='quest', id=questID, name=name or C_QuestLog.GetTitleForQuestID(questID), col=nil, isPetUI=false})--取得网页，数据链接
 end
 
 
@@ -1035,7 +697,7 @@ end
 --####
 --Buff
 --####
-function func:Set_All_Aura(tooltip, data)--Aura
+function WoWTools_TooltipMixin:Set_All_Aura(tooltip, data)--Aura
     local spellID= data.id
     local name= C_Spell.GetSpellName(spellID)
     local icon= C_Spell.GetSpellTexture(spellID)
@@ -1043,14 +705,14 @@ function func:Set_All_Aura(tooltip, data)--Aura
     tooltip:AddDoubleLine((e.onlyChinese and '光环' or AURAS)..' '..spellID, icon and '|T'..icon..':0|t'..icon)
     local mountID = C_MountJournal.GetMountFromSpell(spellID)
     if mountID then
-        func:Set_Mount(tooltip, mountID, 'aura')
+        WoWTools_TooltipMixin:Set_Mount(tooltip, mountID, 'aura')
     else
-        func:Set_Web_Link(tooltip, {type='spell', id=spellID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
+        WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='spell', id=spellID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
     end
 end
 
 
-function func:Set_Buff(_, tooltip, ...)
+function WoWTools_TooltipMixin:Set_Buff(_, tooltip, ...)
     local data=C_UnitAuras.GetAuraDataByIndex(...)
     local source= data and data.sourceUnit
     if source then--来源
@@ -1095,7 +757,7 @@ end
 --####
 --声望
 --####
-function func:Set_Faction(tooltip, factionID)--, frame)
+function WoWTools_TooltipMixin:Set_Faction(tooltip, factionID)--, frame)
     local info= factionID and WoWTools_FactionMinxin:GetInfo(factionID, nil, true)
     if not info.factionID then
         return
@@ -1115,7 +777,7 @@ function func:Set_Faction(tooltip, factionID)--, frame)
     if info.hasRewardPending then
         tooltip:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '你有未领取的奖励' or WEEKLY_REWARDS_UNCLAIMED_TITLE))
     end
-    func:Set_Web_Link(tooltip, {type='faction', id=info.friendshipID or info.factionID, name=info.name, col=nil, isPetUI=false})--取得网页，数据链接
+    WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='faction', id=info.friendshipID or info.factionID, name=info.name, col=nil, isPetUI=false})--取得网页，数据链接
     tooltip:Show()
 end
 
@@ -1134,8 +796,8 @@ end
 --#########
 --生命条提示
 --#########
-function func:Set_HealthBar_Unit(frame, unit)
-    if Save.hideHealth then
+function WoWTools_TooltipMixin:Set_HealthBar_Unit(frame, unit)
+    if Save().hideHealth then
         return
     end
     unit= unit or select(2, TooltipUtil.GetDisplayedUnit(GameTooltip))
@@ -1182,7 +844,7 @@ end
 
 
 local function Int_Health_Bar_Unit()--hooksecurefunc(GameTooltipStatusBar, 'UpdateUnitHealth', function(tooltip)
-    if Save.hideHealth then
+    if Save().hideHealth then
         return
     end
     GameTooltipStatusBar.text= e.Cstr(GameTooltipStatusBar, {justifyH='CENTER'})
@@ -1192,7 +854,7 @@ local function Int_Health_Bar_Unit()--hooksecurefunc(GameTooltipStatusBar, 'Upda
     GameTooltipStatusBar.textRight = e.Cstr(GameTooltipStatusBar, {size=18, justifyH='RIGHT'})
     GameTooltipStatusBar.textRight:SetPoint('TOPRIGHT',0, -2)--生命条
     GameTooltipStatusBar:HookScript("OnValueChanged", function(self)
-        func:Set_HealthBar_Unit(self)
+        WoWTools_TooltipMixin:Set_HealthBar_Unit(self)
     end)
 end
 
@@ -1214,7 +876,7 @@ end
 --#############
 --设置单位, 玩家
 --#############
-function func:Set_Unit_Player(tooltip, name, unit, guid)
+function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
     local realm= select(2, UnitName(unit)) or e.Player.realm--服务器
     local isPlayer = UnitIsPlayer(unit)
     local isSelf= UnitIsUnit('player', unit)--我
@@ -1453,13 +1115,13 @@ function func:Set_Unit_Player(tooltip, name, unit, guid)
             hideLine:SetShown(false)
         end
     else
-        func:Set_Web_Link(hideLine, {unitName=name, realm=realm, col=col})--取得单位, raider.io 网页，数据链接
+        WoWTools_TooltipMixin:Set_Web_Link(hideLine, {unitName=name, realm=realm, col=col})--取得单位, raider.io 网页，数据链接
     end
 
-    func:Set_HealthBar_Unit(GameTooltipStatusBar, unit)--生命条提示
-    func:Set_Item_Model(tooltip, {unit=unit, guid=guid})--设置, 3D模型
+    WoWTools_TooltipMixin:Set_HealthBar_Unit(GameTooltipStatusBar, unit)--生命条提示
+    WoWTools_TooltipMixin:Set_Item_Model(tooltip, {unit=unit, guid=guid})--设置, 3D模型
 
-    func:Set_Width(tooltip)--设置，宽度
+    WoWTools_TooltipMixin:Set_Width(tooltip)--设置，宽度
 end
 
 
@@ -1497,7 +1159,7 @@ end
 --#############
 --设置单位, NPC
 --#############
-function func:Set_Unit_NPC(tooltip, name, unit, guid)
+function WoWTools_TooltipMixin:Set_Unit_NPC(tooltip, name, unit, guid)
     local textLeft, text2Left, textRight, text2Right=' ', '', '', ''
 
     --怪物, 图标
@@ -1543,7 +1205,7 @@ function func:Set_Unit_NPC(tooltip, name, unit, guid)
             tooltip:AddDoubleLine(e.Player.L.layer..' '..zone, 'NPC '..npc)
             e.Player.Layer=zone
         end
-        func:Set_Web_Link(tooltip, {type='npc', id=npc, name=name, isPetUI=false})--取得网页，数据链接 
+        WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='npc', id=npc, name=name, isPetUI=false})--取得网页，数据链接 
     end
 
     --NPC 中文名称
@@ -1558,7 +1220,7 @@ function func:Set_Unit_NPC(tooltip, name, unit, guid)
     tooltip.textRight:SetText(textRight)
     tooltip.text2Right:SetText(text2Right)
 
-    if not Save.disabledNPCcolor then
+    if not Save().disabledNPCcolor then
         local r, g, b = select(2, WoWTools_UnitMixin:Get_Unit_Color(unit, nil))--颜色
         local tooltipName=tooltip:GetName() or 'GameTooltip'
         for i=1, tooltip:NumLines() do
@@ -1577,10 +1239,10 @@ function func:Set_Unit_NPC(tooltip, name, unit, guid)
         tooltip.text2Right:SetTextColor(r, g, b)
     end
 
-    func:Set_HealthBar_Unit(GameTooltipStatusBar, unit)--生命条提示
-    func:Set_Item_Model(tooltip, {unit=unit, guid=guid})--设置, 3D模型
+    WoWTools_TooltipMixin:Set_HealthBar_Unit(GameTooltipStatusBar, unit)--生命条提示
+    WoWTools_TooltipMixin:Set_Item_Model(tooltip, {unit=unit, guid=guid})--设置, 3D模型
 
-    func:Set_Width(tooltip)--设置，宽度
+    WoWTools_TooltipMixin:Set_Width(tooltip)--设置，宽度
 end
 
 
@@ -1601,23 +1263,23 @@ end
 --#######
 --设置单位
 --#######
-function func:Set_Unit(tooltip)--设置单位提示信息
+function WoWTools_TooltipMixin:Set_Unit(tooltip)--设置单位提示信息
     local name, unit, guid= TooltipUtil.GetDisplayedUnit(tooltip)
     if not name or not UnitExists(unit) or not guid then
         return
     end
     if UnitIsPlayer(unit) then
-        func:Set_Unit_Player(tooltip, name, unit, guid)
+        WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
 
     elseif (UnitIsWildBattlePet(unit) or UnitIsBattlePetCompanion(unit)) then--宠物TargetFrame.lua
-        func:Set_Pet(tooltip, UnitBattlePetSpeciesID(unit), true)
+        WoWTools_TooltipMixin:Set_Pet(tooltip, UnitBattlePetSpeciesID(unit), true)
 
     else
-        func:Set_Unit_NPC(tooltip, name, unit, guid)
+        WoWTools_TooltipMixin:Set_Unit_NPC(tooltip, name, unit, guid)
     end
 end
---[[if isSelf and not isInCombat and Save.WidgetSetID>0 then
-    GameTooltip_AddWidgetSet(e.tips, Save.WidgetSetID, 10)
+--[[if isSelf and not isInCombat and Save().WidgetSetID>0 then
+    GameTooltip_AddWidgetSet(e.tips, Save().WidgetSetID, 10)
 end]]
 
 
@@ -1710,7 +1372,7 @@ local function set_CVar(reset, tips, notPrint)
                 if defaultValue~=value then
                     C_CVar.SetCVar(info.name, defaultValue)
                     if not notPrint then
-                        print(e.addName, Initializer:GetName(), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '恢复默认设置' or RESET_TO_DEFAULT)..'|r', info.name, defaultValue, info.msg)
+                        print(e.addName, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '恢复默认设置' or RESET_TO_DEFAULT)..'|r', info.name, defaultValue, info.msg)
                     end
                 end
             else
@@ -1718,7 +1380,7 @@ local function set_CVar(reset, tips, notPrint)
                 if value~=info.value then
                     C_CVar.SetCVar(info.name, info.value)
                     if not notPrint then
-                        print(e.addName,Initializer:GetName(), info.name, info.value..'('..value..')', info.msg)
+                        print(e.addName,addName, info.name, info.value..'('..value..')', info.msg)
                     end
                 end
             end
@@ -1750,7 +1412,7 @@ end
 --###########
 --法术, 弹出框
 --###########
-function func:Set_Flyout(tooltip, flyoutID)--法术, 弹出框
+function WoWTools_TooltipMixin:Set_Flyout(tooltip, flyoutID)--法术, 弹出框
     local name, _, numSlots, isKnown= GetFlyoutInfo(flyoutID)
     if not name then
         return
@@ -1817,10 +1479,10 @@ local function Set_Battle_Pet(self, speciesID, level, breedQuality, maxHealth, p
     if not speciesID or speciesID < 1 then
         return
     end
-    func:Set_Init_Item(self)
+    WoWTools_TooltipMixin:Set_Init_Item(self)
 
     local speciesName, speciesIcon, _, companionID, tooltipSource, tooltipDescription, _, _, _, _, obtainable, creatureDisplayID = C_PetJournal.GetPetInfoBySpeciesID(speciesID)
-    func:Set_Item_Model(self, {creatureDisplayID=creatureDisplayID})--设置, 3D模型
+    WoWTools_TooltipMixin:Set_Item_Model(self, {creatureDisplayID=creatureDisplayID})--设置, 3D模型
     --self.itemModel:SetDisplayInfo(creatureDisplayID)
     if obtainable then
         local numCollected, limit = C_PetJournal.GetNumCollectedInfo(speciesID)
@@ -1879,17 +1541,17 @@ local function Set_Battle_Pet(self, speciesID, level, breedQuality, maxHealth, p
     self.text2Left:SetText(CollectedText or '')
     self.textRight:SetText(not CollectedNum and AllCollected or '')
 
-    func:Set_Web_Link(self, {type='npc', id=companionID, name=speciesName, col=nil, isPetUI=true})--取得网页，数据链接
+    WoWTools_TooltipMixin:Set_Web_Link(self, {type='npc', id=companionID, name=speciesName, col=nil, isPetUI=true})--取得网页，数据链接
     self:Show()
 end
 
-function func:set_Azerite(tooltip, powerID)--艾泽拉斯之心
+function WoWTools_TooltipMixin:set_Azerite(tooltip, powerID)--艾泽拉斯之心
     if powerID then
         tooltip:AddLine(' ')
         tooltip:AddDoubleLine('powerID', powerID)
         local info = C_AzeriteEmpoweredItem.GetPowerInfo(powerID)
         if info and info.spellID then
-            func:Set_Spell(tooltip, info.spellID)--法术
+            WoWTools_TooltipMixin:Set_Spell(tooltip, info.spellID)--法术
         end
     end
 end
@@ -1933,9 +1595,9 @@ local function Init_Hook()
                                     ..'|n|n|cffffffff'..(e.onlyChinese and '技能' or ABILITIES)
                                     ..' '..abilityID
                                     ..(icon and '  |T'..icon..':0|t'..icon or '')..'|r'
-                                    ..(Save.ctrl and not UnitAffectingCombat('player') and '|nWoWHead Ctrl+Shift' or '')
+                                    ..(Save().ctrl and not UnitAffectingCombat('player') and '|nWoWHead Ctrl+Shift' or '')
                                 )
-            func:Set_Web_Link(self, {type='pet-ability', id=abilityID, name=name, col=nil, isPetUI=false})--取得网页，数据链接 npc item spell currency
+            WoWTools_TooltipMixin:Set_Web_Link(self, {type='pet-ability', id=abilityID, name=name, col=nil, isPetUI=false})--取得网页，数据链接 npc item spell currency
             local btn= _G['WoWTools_PetBattle_Type_TrackButton']--PetBattle.lua 联动
             if btn then
                 btn:set_type_tips(petType)
@@ -1963,16 +1625,16 @@ local function Init_Hook()
     --声望
     --####
         hooksecurefunc(ReputationEntryMixin, 'ShowStandardTooltip', function(self)
-            func:Set_Faction(GameTooltip, self.elementData.factionID)
+            WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.elementData.factionID)
         end)
         hooksecurefunc(ReputationEntryMixin, 'ShowMajorFactionRenownTooltip', function(self)
-            func:Set_Faction(GameTooltip, self.elementData.factionID)
+            WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.elementData.factionID)
         end)
         hooksecurefunc(ReputationEntryMixin, 'ShowFriendshipReputationTooltip', function(self)
-            func:Set_Faction(GameTooltip, self.elementData.factionID)
+            WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.elementData.factionID)
         end)
         hooksecurefunc(ReputationEntryMixin, 'ShowParagonRewardsTooltip', function(self)
-            func:Set_Faction(EmbeddedItemTooltip, self.elementData.factionID)
+            WoWTools_TooltipMixin:Set_Faction(EmbeddedItemTooltip, self.elementData.factionID)
         end)
         hooksecurefunc(ReputationEntryMixin, 'OnClick', function(frame)
             local self= ReputationFrame.ReputationDetailFrame
@@ -2014,7 +1676,7 @@ local function Init_Hook()
             e.tips:AddDoubleLine('uiMapID', uiMapID)
         end
         if self.factionID then
-            func:Set_Faction(e.tips, self.factionID)
+            WoWTools_TooltipMixin:Set_Faction(e.tips, self.factionID)
         end
         if self.areaPoiID and uiMapID then
             local poiInfo= C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, self.areaPoiID)
@@ -2034,7 +1696,7 @@ local function Init_Hook()
             GameTooltip:SetText(e.cn(name), 1, 1, 1, 1, true)
             GameTooltip:AddLine(e.cn(description), nil, nil, nil, true)
             GameTooltip:AddDoubleLine('affixID '..self.affixID, filedataid and '|T'..filedataid..':0|t'..filedataid or ' ')
-            func:Set_Web_Link(GameTooltip, {type='affix', id=self.affixID, name=name, isPetUI=false})--取得网页，数据链接
+            WoWTools_TooltipMixin:Set_Web_Link(GameTooltip, {type='affix', id=self.affixID, name=name, isPetUI=false})--取得网页，数据链接
             GameTooltip:Show()
         end
     end)
@@ -2045,7 +1707,7 @@ local function Init_Hook()
                 GameTooltip:SetText(e.cn(name), 1, 1, 1, 1, true)
                 GameTooltip:AddLine(e.cn(description), nil, nil, nil, true)
                 GameTooltip:AddDoubleLine('affixID '..self.affixID, filedataid and '|T'..filedataid..':0|t'..filedataid or ' ')
-                func:Set_Web_Link(GameTooltip, {type='affix', id=self.affixID, name=name, isPetUI=false})--取得网页，数据链接
+                WoWTools_TooltipMixin:Set_Web_Link(GameTooltip, {type='affix', id=self.affixID, name=name, isPetUI=false})--取得网页，数据链接
                 GameTooltip:Show()
             end
         end)
@@ -2092,7 +1754,7 @@ local function Init_Hook()
         end
         return frame.questIDLabel
     end
-    
+
     local label= create_Quest_Label(QuestMapDetailsScrollFrame)
     label:SetPoint('BOTTOMRIGHT', QuestMapDetailsScrollFrame, 'TOPRIGHT', 0, 4)
     hooksecurefunc('QuestMapFrame_ShowQuestDetails', function(questID)
@@ -2111,7 +1773,7 @@ local function Init_Hook()
     end)
 
 
-    
+
     --任务日志 显示ID
     hooksecurefunc("QuestMapLogTitleButton_OnEnter", function(self)
         local info= self.questLogIndex and C_QuestLog.GetInfo(self.questLogIndex)
@@ -2119,7 +1781,7 @@ local function Init_Hook()
             return
         end
 
-        func:Set_Quest(e.tips, info.questID, info)--任务
+        WoWTools_TooltipMixin:Set_Quest(e.tips, info.questID, info)--任务
 
         if IsInGroup() then
             local n=GetNumGroupMembers()
@@ -2160,10 +1822,10 @@ local function Init_Hook()
                     local actionType, ID, subType = GetActionInfo(self.action)
                     if actionType and ID then
                         if actionType=='spell' or actionType =="companion" then
-                            func:Set_Spell(e.tips, ID)--法术
+                            WoWTools_TooltipMixin:Set_Spell(e.tips, ID)--法术
                             e.tips:AddDoubleLine('action '..self.action, subType and 'subType '..subType)
                         elseif actionType=='item' and ID then
-                            func:Set_Item(e.tips, nil, ID)
+                            WoWTools_TooltipMixin:Set_Item(e.tips, nil, ID)
                             e.tips:AddDoubleLine('action '..self.action, subType and 'subType '..subType)
                         else
                             e.tips:AddDoubleLine('action '..self.action, 'ID '..ID)
@@ -2247,12 +1909,12 @@ local function Init_Settings()
 
     TooltipDataProcessor.AddTooltipPostCall(TooltipDataProcessor.AllTypes, function(tooltip)
         if not tooltip.textLeft then
-            func:Set_Init_Item(tooltip)--创建，设置，内容
+            WoWTools_TooltipMixin:Set_Init_Item(tooltip)--创建，设置，内容
         end
     end)
 
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, function(tooltip)
-        func:Set_Unit(tooltip)--单位
+        WoWTools_TooltipMixin:Set_Unit(tooltip)--单位
     end)
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, function(tooltip, data)
         if tooltip==ShoppingTooltip1 or ShoppingTooltip2==tooltip then
@@ -2260,7 +1922,7 @@ local function Init_Settings()
         end
         local itemLink, itemID= select(2, TooltipUtil.GetDisplayedItem(tooltip))--物品
         itemLink= itemLink or itemID or data.id
-        func:Set_Item(tooltip, itemLink, itemID)
+        WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
     end)
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Toy, function(tooltip, data)
         if tooltip==ShoppingTooltip1 or ShoppingTooltip2==tooltip then
@@ -2268,28 +1930,28 @@ local function Init_Settings()
         end
         local itemLink, itemID= select(2, TooltipUtil.GetDisplayedItem(tooltip))--物品
         itemLink= itemLink or itemID or data.id
-        func:Set_Item(tooltip, itemLink, itemID)
+        WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
     end)
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Spell, function(tooltip, data)
-        func:Set_Spell(tooltip, data.id)--法术
+        WoWTools_TooltipMixin:Set_Spell(tooltip, data.id)--法术
     end)
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Currency, function(tooltip, data)
-        func:Set_Currency(tooltip, data.id)--货币
+        WoWTools_TooltipMixin:Set_Currency(tooltip, data.id)--货币
     end)
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.UnitAura, function(tooltip, data)
-        func:Set_All_Aura(tooltip, data)--Aura
+        WoWTools_TooltipMixin:Set_All_Aura(tooltip, data)--Aura
     end)
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.AzeriteEssence, function(tooltip, data)
-        func:set_Azerite(tooltip, data.id)--艾泽拉斯之心
+        WoWTools_TooltipMixin:set_Azerite(tooltip, data.id)--艾泽拉斯之心
     end)
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Mount, function(tooltip, data)
-        func:Set_Mount(tooltip, data.id)--坐骑
+        WoWTools_TooltipMixin:Set_Mount(tooltip, data.id)--坐骑
     end)
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Flyout, function(tooltip, data)
-        func:Set_Flyout(tooltip, data.id)--法术弹出框
+        WoWTools_TooltipMixin:Set_Flyout(tooltip, data.id)--法术弹出框
     end)
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Achievement, function(tooltip, data)
-        func:Set_Achievement(tooltip, data.id)--成就
+        WoWTools_TooltipMixin:Set_Achievement(tooltip, data.id)--成就
     end)
 
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Macro, function(tooltip)
@@ -2298,11 +1960,11 @@ local function Init_Settings()
             local type, macroID, subType= GetActionInfo(frame.action)
             if type=='macro' and macroID then
                 if subType=='spell' then--and macroID or GetMacroSpell(macroID)
-                    func:Set_Spell(tooltip, macroID)
+                    WoWTools_TooltipMixin:Set_Spell(tooltip, macroID)
                 elseif not subType or subType=='' then
                     local text=GetMacroBody(macroID)
                     if text then
-                        tooltip:AddLine(text)
+                        tooltip:AddLine(text,nil,nil,nil,true)
                     end
                 end
             end
@@ -2312,7 +1974,7 @@ local function Init_Settings()
     --###########
     --宠物面板提示
     --###########
-    --func:Set_Init_Item(BattlePetTooltip, true)--创建物品
+    --WoWTools_TooltipMixin:Set_Init_Item(BattlePetTooltip, true)--创建物品
     hooksecurefunc("BattlePetToolTip_Show", function(...)--BattlePetTooltip.lua 
         Set_Battle_Pet(BattlePetTooltip, ...)
     end)
@@ -2323,24 +1985,24 @@ local function Init_Settings()
 
     hooksecurefunc(GameTooltip, "SetCompanionPet", function(self, petGUID)--设置宠物信息
         local speciesID= petGUID and C_PetJournal.GetPetInfoByPetID(petGUID)
-        func:Set_Pet(self, speciesID)--宠物
+        WoWTools_TooltipMixin:Set_Pet(self, speciesID)--宠物
     end)
 
     hooksecurefunc('GameTooltip_AddQuestRewardsToTooltip', function(self)--世界任务ID GameTooltip_AddQuest
-        func:Set_Quest(self)
+        WoWTools_TooltipMixin:Set_Quest(self)
     end)
 
     --################
     --Buff, 来源, 数据, 不可删除，如果删除，目标buff没有数据
     --################
     hooksecurefunc(e.tips, "SetUnitBuff", function(...)
-        func:Set_Buff('Buff', ...)
+        WoWTools_TooltipMixin:Set_Buff('Buff', ...)
     end)
     hooksecurefunc(e.tips, "SetUnitDebuff", function(...)
-        func:Set_Buff('Debuff', ...)
+        WoWTools_TooltipMixin:Set_Buff('Debuff', ...)
     end)
     hooksecurefunc(e.tips, "SetUnitAura", function(...)
-        func:Set_Buff('Aura', ...)
+        WoWTools_TooltipMixin:Set_Buff('Aura', ...)
     end)
 end
 
@@ -2373,14 +2035,14 @@ local function Init()
     --位置
     --****
     hooksecurefunc("GameTooltip_SetDefaultAnchor", function(self, parent)
-        if Save.setDefaultAnchor and not (Save.inCombatDefaultAnchor and UnitAffectingCombat('player')) then
+        if Save().setDefaultAnchor and not (Save().inCombatDefaultAnchor and UnitAffectingCombat('player')) then
             self:ClearAllPoints()
-            self:SetOwner(parent, Save.cursorRight and 'ANCHOR_CURSOR_RIGHT' or 'ANCHOR_CURSOR_LEFT', Save.cursorX or 0, Save.cursorY or 0)
+            self:SetOwner(parent, Save().cursorRight and 'ANCHOR_CURSOR_RIGHT' or 'ANCHOR_CURSOR_LEFT', Save().cursorX or 0, Save().cursorY or 0)
         end
     end)
 
 
-    if Save.setCVar then
+    if Save().setCVar then
         set_CVar(nil, nil, true)--设置CVar
         if LOCALE_zhCN then
             ConsoleExec("portal TW")
@@ -2403,14 +2065,14 @@ end
             e.tips:ClearLines()
             GameTooltip_AddQuest(block.TrackedQuest or block, block.id)
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+            e.tips:AddDoubleLine(e.addName, addName)
             e.tips:Show()
         end
     end)]]
 
     --显示选项中的CVar 11版本
     --[[Blizzard_SettingControls.lua
-    if Save.ShowOptionsCVarTips then
+    if Save().ShowOptionsCVarTips then
         local function InitTooltip(name, tooltip, variable)
             GameTooltip_AddHighlightLine(SettingsTooltip, e.strText[name] or name)
             if tooltip then
@@ -2430,7 +2092,7 @@ end
                 if isSecure then
                     GameTooltip_AddNormalLine(SettingsTooltip, '|cnRED_FONT_COLOR:isSecure: true|r', true)
                 end
-                GameTooltip_AddNormalLine(SettingsTooltip, id..Initializer:GetName())
+                GameTooltip_AddNormalLine(SettingsTooltip, id..addName)
             end
         end
         local function CreateOptionsInitTooltip(setting, name, tooltip, options, variable)--Blizzard_SettingControls.lua
@@ -2500,28 +2162,28 @@ end
 
         hooksecurefunc(SettingsCheckBoxControlMixin, 'Init', function(self, initializer)
             local setting = initializer.data.setting
-            local initTooltip= GenerateClosure(InitTooltip, initializer:GetName(), initializer:GetTooltip(), setting.variable)
+            local initTooltip= GenerateClosure(InitTooltip, addName, initializer:GetTooltip(), setting.variable)
             self:SetTooltipFunc(initTooltip)
             self.CheckBox:SetTooltipFunc(initTooltip)
         end)
         hooksecurefunc(SettingsSliderControlMixin, 'Init', function(self, initializer)
             local setting = initializer.data.setting
-            local initTooltip= GenerateClosure(InitTooltip, initializer:GetName(), initializer:GetTooltip(), setting.variable)
+            local initTooltip= GenerateClosure(InitTooltip, addName, initializer:GetTooltip(), setting.variable)
             self:SetTooltipFunc(initTooltip)
             self.SliderWithSteppers.Slider:SetTooltipFunc(initTooltip)
         end)
         hooksecurefunc(SettingsDropDownControlMixin, 'Init', function(self, initializer)
             local setting = self:GetSetting()
             local options = initializer:GetOptions()
-            local initTooltip= GenerateClosure(InitTooltip, initializer:GetName(), initializer:GetTooltip(), setting.variable)
+            local initTooltip= GenerateClosure(InitTooltip, addName, initializer:GetTooltip(), setting.variable)
             self:SetTooltipFunc(initTooltip)
 
-            initTooltip = GenerateClosure(CreateOptionsInitTooltip(setting, initializer:GetName(), initializer:GetTooltip(), options, setting.variable))
+            initTooltip = GenerateClosure(CreateOptionsInitTooltip(setting, addName, initializer:GetTooltip(), options, setting.variable))
             self.DropDown.Button:SetTooltipFunc(initTooltip)
         end)
         hooksecurefunc(SettingsCheckBoxWithButtonControlMixin, 'Init', function(self, initializer)
             local setting = initializer:GetSetting()
-            local initTooltip= GenerateClosure(InitTooltip, initializer:GetName(), initializer:GetTooltip(), setting.variable)
+            local initTooltip= GenerateClosure(InitTooltip, addName, initializer:GetTooltip(), setting.variable)
 	        self:SetTooltipFunc(initTooltip)
             self.CheckBox:SetTooltipFunc(initTooltip)
         end)
@@ -2546,7 +2208,7 @@ end
 
             local setting = initializer.data.dropDownSetting
             local options = initializer.data.dropDownOptions
-            initTooltip = GenerateClosure(CreateOptionsInitTooltip(setting, initializer:GetName(), initializer:GetTooltip(), options, setting.variable))
+            initTooltip = GenerateClosure(CreateOptionsInitTooltip(setting, addName, initializer:GetTooltip(), options, setting.variable))
             self.DropDown.Button:SetTooltipFunc(initTooltip)
         end)
 
@@ -2565,7 +2227,7 @@ end
                 if category then
                     GameTooltip_AddNormalLine(SettingsTooltip, category, true)
                 end
-                GameTooltip_AddNormalLine(SettingsTooltip, id..' '..Initializer:GetName(), true)
+                GameTooltip_AddNormalLine(SettingsTooltip, id..' '..addName, true)
             end
 
             for index, button in ipairs(self.Buttons) do
@@ -2619,10 +2281,10 @@ end
  --添加新控制面板
 --##############
 local function set_Cursor_Tips(self)
-    func:Set_Init_Item(GameTooltip, true)
-    func:Set_Init_Item(ItemRefTooltip, true)
-    func:Set_PlayerModel(GameTooltip)
-    func:Set_PlayerModel(ItemRefTooltip)
+    WoWTools_TooltipMixin:Set_Init_Item(GameTooltip, true)
+    WoWTools_TooltipMixin:Set_Init_Item(ItemRefTooltip, true)
+    WoWTools_TooltipMixin:Set_PlayerModel(GameTooltip)
+    WoWTools_TooltipMixin:Set_PlayerModel(ItemRefTooltip)
     GameTooltip_SetDefaultAnchor(GameTooltip, self or UIParent)
     GameTooltip:ClearLines()
     GameTooltip:SetUnit('player')
@@ -2634,13 +2296,13 @@ local function Init_Panel()
 
     local initializer2= e.AddPanel_Check({
         name= e.onlyChinese and '跟随鼠标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, FOLLOW, MOUSE_LABEL),
-        tooltip= Initializer:GetName(),
-        GetValue= function() return Save.setDefaultAnchor end,
+        tooltip= addName,
+        GetValue= function() return Save().setDefaultAnchor end,
         category= Initializer,
         SetValue= function()
-            Save.setDefaultAnchor= not Save.setDefaultAnchor and true or nil
-            if Save.setDefaultAnchor then
-                Save.setAnchor=nil
+            Save().setDefaultAnchor= not Save().setDefaultAnchor and true or nil
+            if Save().setDefaultAnchor then
+                Save().setAnchor=nil
             end
             set_Cursor_Tips()
         end
@@ -2648,183 +2310,183 @@ local function Init_Panel()
 
         local initializer= e.AddPanelSider({
             name= 'X',
-            GetValue= function() return Save.cursorX or 0 end,
+            GetValue= function() return Save().cursorX or 0 end,
             minValue= -240,
             maxValue= 240,
             setp= 1,
-            tooltip= Initializer:GetName(),
+            tooltip= addName,
             category= Initializer,
             SetValue= function(_, _, value2)
-                Save.cursorX= e.GetFormatter1to10(value2, -200, 200)
+                Save().cursorX= e.GetFormatter1to10(value2, -200, 200)
                 set_Cursor_Tips()
             end
         })
-        initializer:SetParentInitializer(initializer2, function() if Save.setDefaultAnchor then return true else return false end end)
+        initializer:SetParentInitializer(initializer2, function() if Save().setDefaultAnchor then return true else return false end end)
 
         initializer= e.AddPanelSider({
             name= 'Y',
-            GetValue= function() return Save.cursorY or 0 end,
+            GetValue= function() return Save().cursorY or 0 end,
             minValue= -240,
             maxValue= 240,
             setp= 1,
-            tooltip= Initializer:GetName(),
+            tooltip= addName,
             category= Initializer,
             SetValue= function(_, _, value2)
-                Save.cursorY= e.GetFormatter1to10(value2, -200, 200)
+                Save().cursorY= e.GetFormatter1to10(value2, -200, 200)
                 set_Cursor_Tips()
             end
         })
-        initializer:SetParentInitializer(initializer2, function() if Save.setDefaultAnchor then return true else return false end end)
+        initializer:SetParentInitializer(initializer2, function() if Save().setDefaultAnchor then return true else return false end end)
 
         initializer= e.AddPanel_Check({
             name= e.onlyChinese and '右边' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT,
-            tooltip= Initializer:GetName(),
-            GetValue= function() return Save.cursorRight end,
+            tooltip= addName,
+            GetValue= function() return Save().cursorRight end,
             category= Initializer,
             SetValue= function()
-                Save.cursorRight= not Save.cursorRight and true or nil
+                Save().cursorRight= not Save().cursorRight and true or nil
                 set_Cursor_Tips()
             end
         })
-        initializer:SetParentInitializer(initializer2, function() if Save.setDefaultAnchor then return true else return false end end)
+        initializer:SetParentInitializer(initializer2, function() if Save().setDefaultAnchor then return true else return false end end)
 
         initializer= e.AddPanel_Check({
             name= e.onlyChinese and '战斗中：默认' or (HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..': '..DEFAULT),
-            tooltip= Initializer:GetName(),
-            GetValue= function() return Save.inCombatDefaultAnchor end,
+            tooltip= addName,
+            GetValue= function() return Save().inCombatDefaultAnchor end,
             category= Initializer,
             SetValue= function()
-                Save.inCombatDefaultAnchor= not Save.inCombatDefaultAnchor and true or nil
+                Save().inCombatDefaultAnchor= not Save().inCombatDefaultAnchor and true or nil
                 set_Cursor_Tips()
             end
         })
-        initializer:SetParentInitializer(initializer2, function() if Save.setDefaultAnchor then return true else return false end end)
+        initializer:SetParentInitializer(initializer2, function() if Save().setDefaultAnchor then return true else return false end end)
 
 
     e.AddPanel_Header(Layout, e.onlyChinese and '设置' or SETTINGS)
 
     initializer2= e.AddPanel_Check({
         name= e.onlyChinese and '模型' or MODEL,
-        tooltip= Initializer:GetName(),
-        GetValue= function() return not Save.hideModel end,
+        tooltip= addName,
+        GetValue= function() return not Save().hideModel end,
         category= Initializer,
         SetValue= function()
-            Save.hideModel= not Save.hideModel and true or nil
+            Save().hideModel= not Save().hideModel and true or nil
             set_Cursor_Tips()
         end
     })
 
     initializer= e.AddPanel_Check({
         name= e.onlyChinese and '左' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT,
-        tooltip= Initializer:GetName(),
-        GetValue= function() return Save.modelLeft end,
+        tooltip= addName,
+        GetValue= function() return Save().modelLeft end,
         category= Initializer,
         SetValue= function()
-            Save.modelLeft= not Save.modelLeft and true or nil
+            Save().modelLeft= not Save().modelLeft and true or nil
             set_Cursor_Tips()
         end
     })
-    initializer:SetParentInitializer(initializer2, function() if Save.hideModel then return false else return true end end)
+    initializer:SetParentInitializer(initializer2, function() if Save().hideModel then return false else return true end end)
 
     --[[initializer= e.AddPanel_Check({
         name= (e.onlyChinese and '模型' or MODEL)..' ID',
-        tooltip= Initializer:GetName(),
-        value= Save.showModelFileID,
+        tooltip= addName,
+        value= Save().showModelFileID,
         category= Initializer,
         func= function()
-            Save.showModelFileID= not Save.showModelFileID and true or nil
+            Save().showModelFileID= not Save().showModelFileID and true or nil
             set_Cursor_Tips()
         end
     })
-    initializer:SetParentInitializer(initializer2, function() if Save.hideModel then return false else return true end end)
+    initializer:SetParentInitializer(initializer2, function() if Save().hideModel then return false else return true end end)
 ]]
     initializer= e.AddPanelSider({
         name= e.Player.L.size,
-        GetValue= function() return Save.modelSize or 100 end,
+        GetValue= function() return Save().modelSize or 100 end,
         minValue= 40,
         maxValue= 300,
         setp= 1,
-        tooltip= Initializer:GetName(),
+        tooltip= addName,
         category= Initializer,
         SetValue= function(_, _, value2)
-            Save.modelSize= e.GetFormatter1to10(value2, 40, 300)
+            Save().modelSize= e.GetFormatter1to10(value2, 40, 300)
             set_Cursor_Tips()
         end
     })
-    initializer:SetParentInitializer(initializer2, function() if Save.hideModel then return false else return true end end)
+    initializer:SetParentInitializer(initializer2, function() if Save().hideModel then return false else return true end end)
 
     initializer= e.AddPanelSider({
         name= 'X',
-        GetValue= function() return Save.modelX or 0 end,
+        GetValue= function() return Save().modelX or 0 end,
         minValue= -240,
         maxValue= 240,
         setp= 1,
-        tooltip= Initializer:GetName(),
+        tooltip= addName,
         category= Initializer,
         SetValue= function(_, _, value2)
-            Save.modelX= e.GetFormatter1to10(value2, -200, 200)
+            Save().modelX= e.GetFormatter1to10(value2, -200, 200)
             set_Cursor_Tips()
         end
     })
-    initializer:SetParentInitializer(initializer2, function() if Save.hideModel then return false else return true end end)
+    initializer:SetParentInitializer(initializer2, function() if Save().hideModel then return false else return true end end)
 
     initializer= e.AddPanelSider({
         name= 'Y',
-        GetValue= function() return Save.modelY or -24 end,
+        GetValue= function() return Save().modelY or -24 end,
         minValue= -240,
         maxValue= 240,
         setp= 1,
-        tooltip= Initializer:GetName(),
+        tooltip= addName,
         category= Initializer,
         SetValue= function(_, _, value2)
-            Save.modelY= e.GetFormatter1to10(value2, -200, 200)
+            Save().modelY= e.GetFormatter1to10(value2, -200, 200)
             set_Cursor_Tips()
         end
     })
-    initializer:SetParentInitializer(initializer2, function() if Save.hideModel then return false else return true end end)
+    initializer:SetParentInitializer(initializer2, function() if Save().hideModel then return false else return true end end)
 
     initializer= e.AddPanelSider({
         name= e.onlyChinese and '方向' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION,
-        GetValue= function() return Save.modelFacing or -24 end,
+        GetValue= function() return Save().modelFacing or -24 end,
         minValue= -1,
         maxValue= 1,
         setp= 0.1,
-        tooltip= Initializer:GetName(),
+        tooltip= addName,
         category= Initializer,
         SetValue= function(_, _, value2)
-            Save.modelFacing= e.GetFormatter1to10(value2, -1, 1)
+            Save().modelFacing= e.GetFormatter1to10(value2, -1, 1)
             set_Cursor_Tips()
         end
     })
-    initializer:SetParentInitializer(initializer2, function() if Save.hideModel then return false else return true end end)
+    initializer:SetParentInitializer(initializer2, function() if Save().hideModel then return false else return true end end)
 
     e.AddPanel_Check({
         name= e.onlyChinese and 'NPC职业颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, 'NPC', CLASS_COLORS),
-        tooltip= Initializer:GetName(),
-        GetValue= function() return not Save.disabledNPCcolor end,
+        tooltip= addName,
+        GetValue= function() return not Save().disabledNPCcolor end,
         category= Initializer,
         SetValue= function()
-            Save.disabledNPCcolor= not Save.disabledNPCcolor and true or nil
+            Save().disabledNPCcolor= not Save().disabledNPCcolor and true or nil
         end
     })
 
     e.AddPanel_Check({
         name= e.onlyChinese and '生命值' or HEALTH,
-        tooltip= Initializer:GetName(),
-        GetValue= function() return not Save.hideHealth end,
+        tooltip= addName,
+        GetValue= function() return not Save().hideHealth end,
         category= Initializer,
         SetValue= function()
-            Save.hideHealth= not Save.hideHealth and true or nil
-            print(e.addName, Initializer:GetName(),  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            Save().hideHealth= not Save().hideHealth and true or nil
+            print(e.addName, addName,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     })
     e.AddPanel_Check({
         name= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, 'Ctrl+Shift', e.onlyChinese and '复制链接' or BROWSER_COPY_LINK),
         tooltip= 'wowhead.com|nraider.io',
-        GetValue= function() return Save.ctrl end,
+        GetValue= function() return Save().ctrl end,
         category= Initializer,
         SetValue= function()
-            Save.ctrl= not Save.ctrl and true or nil
+            Save().ctrl= not Save().ctrl and true or nil
             set_Cursor_Tips()
         end
     })
@@ -2835,11 +2497,11 @@ local function Init_Panel()
     initializer2= e.AddPanel_Check({
         name= e.onlyChinese and '自动设置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SETTINGS),
         tooltip= function() return set_CVar(nil, true, true) end,
-        GetValue= function() return Save.setCVar end,
+        GetValue= function() return Save().setCVar end,
         category= Initializer,
         SetValue= function()
-            Save.setCVar= not Save.setCVar and true or nil
-            Save.graphicsViewDistance=nil
+            Save().setCVar= not Save().setCVar and true or nil
+            Save().graphicsViewDistance=nil
         end
     })
 
@@ -2890,11 +2552,11 @@ local function Init_Panel()
     initializer2= e.AddPanel_Check({
         name= (e.onlyChinese and '提示选项CVar名称' or 'Show Option CVar Name'),
         tooltip= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '友情提示: 可能会出现错误' or (LABEL_NOTE..': '..ENABLE_ERROR_SPEECH)..'|r'),
-        GetValue= function() return Save.ShowOptionsCVarTips end,
+        GetValue= function() return Save().ShowOptionsCVarTips end,
         category= Initializer,
         SetValue= function()
-            Save.ShowOptionsCVarTips= not Save.ShowOptionsCVarTips and true or nil
-            print(e.addName, Initializer:GetName(), e.GetEnabeleDisable(not Save.ShowOptionsCVarTips), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            Save().ShowOptionsCVarTips= not Save().ShowOptionsCVarTips and true or nil
+            print(e.addName, addName, e.GetEnabeleDisable(not Save().ShowOptionsCVarTips), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     })
 end
@@ -2916,7 +2578,7 @@ end
 	widgetEdit:SetSize(100,20)
     widgetEdit:SetAutoFocus(false)
     widgetEdit:SetNumeric(true)
-    widgetEdit:SetNumber(Save.WidgetSetID)
+    widgetEdit:SetNumber(Save().WidgetSetID)
     widgetEdit:SetCursorPosition(0)
     widgetEdit:ClearFocus()
     widgetEdit:SetJustifyH('CENTER')
@@ -2925,7 +2587,7 @@ end
 	widgetEdit:SetScript('OnEnterPressed', function(self2)
         local num= math.modf(self2:GetNumber())
         if num>=0 then
-            Save.WidgetSetID= num
+            Save().WidgetSetID= num
             self2:ClearFocus()
             set_Cursor_Tips(self2)
             print(e.addName, Category:GetName(), 'PlayerFrame WidgetSetID',
@@ -2976,7 +2638,7 @@ local function Init_Blizzard_AchievementUI()
                         e.tips:SetAchievementByID(achievementID)
                         e.tips:AddLine(' ')
                         e.tips:AddDoubleLine('|A:communities-icon-chat:0:0|a'..(e.onlyChinese and '说' or SAY), e.Icon.left)
-                        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+                        e.tips:AddDoubleLine(e.addName, addName)
                         e.tips:Show()
                     end
                     self:SetAlpha(0.5)
@@ -3053,11 +2715,11 @@ local function Init_Blizzard_AchievementUI()
             end
         end)
     end
-    if Save.AchievementFrameFilterDropDown then--保存，过滤
-        AchievementFrame_SetFilter(Save.AchievementFrameFilterDropDown)
+    if Save().AchievementFrameFilterDropDown then--保存，过滤
+        AchievementFrame_SetFilter(Save().AchievementFrameFilterDropDown)
     end
     hooksecurefunc('AchievementFrame_SetFilter', function(value)
-        Save.AchievementFrameFilterDropDown = value
+        Save().AchievementFrameFilterDropDown = value
     end)
 end
 
@@ -3078,7 +2740,7 @@ end
 ---宠物手册， 召唤随机，偏好宠物，技能ID 
 local function Init_Blizzard_Collections()
     hooksecurefunc('PetJournalSummonRandomFavoritePetButton_OnEnter', function()--PetJournalSummonRandomFavoritePetButton
-        func:Set_Spell(e.tips, 243819)
+        WoWTools_TooltipMixin:Set_Spell(e.tips, 243819)
         e.tips:Show()
     end)
 end
@@ -3117,7 +2779,7 @@ local function Init_Blizzard_ChallengesUI()
                 GameTooltip:AddLine(description, nil, nil, nil, true)
             end
             GameTooltip:AddDoubleLine('affixID '..self.affixID, filedataid and '|T'..filedataid..':0|t'..filedataid or ' ')
-            func:Set_Web_Link(GameTooltip, {type='affix', id=self.affixID, name=name, isPetUI=false})--取得网页，数据链接
+            WoWTools_TooltipMixin:Set_Web_Link(GameTooltip, {type='affix', id=self.affixID, name=name, isPetUI=false})--取得网页，数据链接
             GameTooltip:Show()
         end
     end)
@@ -3228,7 +2890,7 @@ local function Init_Blizzard_Professions()
             local currencyTypesID = Professions.GetCurrencyTypesID(nodeID)
             if currencyTypesID then
                 GameTooltip_AddBlankLineToTooltip(GameTooltip)
-                func:Set_Currency(GameTooltip, currencyTypesID)--货币
+                WoWTools_TooltipMixin:Set_Currency(GameTooltip, currencyTypesID)--货币
                 GameTooltip:AddDoubleLine('nodeID', '|cffffffff'..nodeID..'|r')
             end
         end
@@ -3241,7 +2903,7 @@ local function Init_Blizzard_Professions()
             GameTooltip:AddDoubleLine('nodeID '..self.nodeID, self.entryID and 'entryID '..self.entryID)
 
             local name= WoWHead..'profession-trait/'..(self.nodeID or '')
-            func:Set_Web_Link(GameTooltip, {name=name})
+            WoWTools_TooltipMixin:Set_Web_Link(GameTooltip, {name=name})
             GameTooltip:Show()
         end
     end)
@@ -3289,7 +2951,7 @@ local function Init_Blizzard_ClassTalentUI()
                 frame.specIDLabel:SetScript('OnEnter', function(s)
                     e.tips:SetOwner(s, "ANCHOR_LEFT")
                     e.tips:ClearLines()
-                    e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+                    e.tips:AddDoubleLine(e.addName, addName)
                     local specIndex= s:GetParent().specIndex
                     if specIndex then
                         local specID, name, _, icon= GetSpecializationInfo(specIndex)
@@ -3431,45 +3093,42 @@ end
 --###########
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PLAYER_LEAVING_WORLD')
-panel:RegisterEvent('PLAYER_ENTERING_WORLD')
+
+panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             if WoWToolsSave['Tootips'] then
-                Save= WoWToolsSave['Tootips']
+                WoWTools_TooltipMixin.Save= WoWToolsSave['Tootips']
                 WoWToolsSave['Tootips']=nil
             else
-                Save= WoWToolsSave[addName] or Save
+                WoWTools_TooltipMixin.Save= WoWToolsSave['Plus_Tootips'] or WoWTools_TooltipMixin.Save
             end
-            Save.modelSize= Save.modelSize or 100
-            Save.modelX= Save.modelX or 0
-            Save.modelY= Save.modelY or -24
-            Save.modelFacing= Save.modelFacing or -0.5
 
-            --Save.WidgetSetID = Save.WidgetSetID or 0
+            --Save().WidgetSetID = Save().WidgetSetID or 0
+
+            
+
             e.AddPanel_Check({
-                name= e.onlyChinese and '启用' or ENABLE,
-                tooltip= Initializer:GetName(),
-                GetValue= function() return not Save.disabled end,
+                name= addName,
+                tooltip= addName,
+                GetValue= function() return not Save().disabled end,
                 category= Initializer,
                 func= function()
-                    Save.disabled= not Save.disabled and true or nil
-                    print(e.addName, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    Save().disabled= not Save().disabled and true or nil
+                    print(e.addName, addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 
-            Init_StaticPopupDialogs()--全局
 
-            if Save.disabled then
+            if Save().disabled then
                 self:UnregisterAllEvents()
-                func={}
             else
-
+                self:RegisterEvent('PLAYER_LEAVING_WORLD')
+                self:RegisterEvent('PLAYER_ENTERING_WORLD')
                 Init()--初始
-                Init_Event()                
+                Init_Event()
             end
-            self:RegisterEvent("PLAYER_LOGOUT")
 
             if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
                 Init_Panel()
@@ -3512,19 +3171,20 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif event=='PLAYER_LEAVING_WORLD' then
-        if Save.setCVar then
+        if Save().setCVar then
             if not UnitAffectingCombat('player') then
-                Save.graphicsViewDistance= C_CVar.GetCVar('graphicsViewDistance')
+                Save().graphicsViewDistance= C_CVar.GetCVar('graphicsViewDistance')
                 SetCVar("graphicsViewDistance", 0)
             else
-                Save.graphicsViewDistance=nil
+                Save().graphicsViewDistance=nil
             end
         end
 
     elseif event=='PLAYER_ENTERING_WORLD' then--https://wago.io/ZtSxpza28
-        if Save.setCVar and Save.graphicsViewDistance and not UnitAffectingCombat('player') then
-            C_CVar.SetCVar('graphicsViewDistance', Save.graphicsViewDistance)
-            Save.graphicsViewDistance=nil
+    print('a')
+        if Save().setCVar and Save().graphicsViewDistance and not UnitAffectingCombat('player') then
+            C_CVar.SetCVar('graphicsViewDistance', Save().graphicsViewDistance)
+            Save().graphicsViewDistance=nil
         end
     end
 end)

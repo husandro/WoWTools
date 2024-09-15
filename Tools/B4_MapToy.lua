@@ -189,7 +189,7 @@ local function Init_Menu(self, root)
             end, {itemID=info.itemID, achievements=info.achievements}
         )
 
-        WoWTools_TooltipMixin:SetTooltip(nil, nil, sub, nil)
+        WoWTools_SetTooltipMixin:SetTooltip(nil, nil, sub, nil)
 
 
         for index, tab in pairs(new.data) do

@@ -515,7 +515,7 @@ local function Remove_NoUse_Menu(root, itemID, type, numUse)
         Edit_Item,
         tab
     )
-    WoWTools_TooltipMixin:SetTooltip(nil, nil, sub)--设置，物品，提示
+    WoWTools_SetTooltipMixin:SetTooltip(nil, nil, sub)--设置，物品，提示
 
     if type=='use' then
         sub:CreateButton(

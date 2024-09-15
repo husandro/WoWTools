@@ -66,7 +66,7 @@ local function Init_Menu(self, root)
         end, function(data)
             Save().questRewardCheck[data.questID]= not Save().questRewardCheck[data.questID] and data.index or nil
         end, {questID=questID, index=index})
-        --WoWTools_TooltipMixin:SetTooltip(nil, nil, sub2, nil)
+        --WoWTools_SetTooltipMixin:SetTooltip(nil, nil, sub2, nil)
         num=num+1
     end
     if num>1 then
@@ -173,7 +173,7 @@ local function Init_Menu(self, root)
         end, function(data)
             Save().questOption[data.questID]= not Save().questOption[data.questID] and data.text or nil
         end, {questID=questID, text=text})
-        WoWTools_TooltipMixin:SetTooltip(nil, nil, sub2, nil)
+        WoWTools_SetTooltipMixin:Set_Menu_Tooltip(sub2)
     end
 
     if num>1 then

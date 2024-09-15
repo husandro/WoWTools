@@ -219,7 +219,7 @@ local function Create_Button(index)
 
     btn:SetScript('OnEnter', function(self)
         local isInCombat= UnitAffectingCombat('player')
-        WoWTools_TooltipMixin:SetTooltip(e.tips, {
+        WoWTools_SetTooltipMixin:SetTooltip(e.tips, {
             itemID=self.itemID,
             tooltip='|n|A:dressingroom-button-appearancelist-up:0:0|a'
                 ..(isInCombat and '|cff9e9e9e' or '')
@@ -437,7 +437,7 @@ local function Init_Menu(self, root)
             Save.noUseItems[data.itemID]= not Save.noUseItems[data.itemID] and true or nil
             self:Check_Items()
         end, {itemID=itemID})
-        WoWTools_TooltipMixin:SetTooltip(nil, nil, sub3, nil)
+        WoWTools_SetTooltipMixin:SetTooltip(nil, nil, sub3, nil)
     end
     if find>1 then
         sub2:CreateDivider()
@@ -581,7 +581,7 @@ local function Init_Menu(self, root)
             Save.addItems[data.itemID]= not Save.addItems[data.itemID] and true or nil
             self:Check_Items()
         end, {itemID=itemID})
-        WoWTools_TooltipMixin:SetTooltip(nil, nil, sub2, nil)
+        WoWTools_SetTooltipMixin:SetTooltip(nil, nil, sub2, nil)
     end
 
 --全部清除

@@ -1,4 +1,4 @@
-WoWTools_TooltipMixin={}
+WoWTools_SetTooltipMixin={}
 --[[
 SetTooltip(tooltip, data, root, frame)
 ]]
@@ -148,7 +148,7 @@ end
 
 
 
-function WoWTools_TooltipMixin:set_tooltip(tooltip, data)
+function WoWTools_SetTooltipMixin:set_tooltip(tooltip, data)
     if type(data)~='table' then
         return
     end
@@ -157,7 +157,7 @@ function WoWTools_TooltipMixin:set_tooltip(tooltip, data)
     local spellID= data.spellID
     local currencyID= data.currencyID
     local achievementID= data.achievementID
-    
+
     local questID= data.questID
     local frame= data.frame
     local rewardQuestID= data.rewardQuestID
@@ -198,8 +198,7 @@ function WoWTools_TooltipMixin:set_tooltip(tooltip, data)
         tooltip:SetAchievementByID(achievementID)
 
     elseif questID then
-        GameTooltip_AddQuest(frame, questID)
-        GameTooltip_AddQuestTimeToTooltip(tooltip, questID)
+        GameTooltip_AddQuest(frame or {}, questID)
 
     elseif rewardQuestID then
         GameTooltip_AddQuestRewardsToTooltip(tooltip, rewardQuestID)
@@ -235,7 +234,7 @@ end
 
 
 
-function WoWTools_TooltipMixin:SetTooltip(tooltip, data, root, frame)
+function WoWTools_SetTooltipMixin:SetTooltip(tooltip, data, root, frame)
     if root then
         root:SetTooltip(function(tip, description)
             self:set_tooltip(tip, description.data)
@@ -249,4 +248,11 @@ function WoWTools_TooltipMixin:SetTooltip(tooltip, data, root, frame)
     else
         self:set_tooltip(tooltip, data)
     end
+end
+
+
+function WoWTools_SetTooltipMixin:Set_Menu_Tooltip(root)
+    root:SetTooltip(function(tooltip, description)
+        self:set_tooltip(tooltip, description.data)
+    end)
 end

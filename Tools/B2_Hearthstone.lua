@@ -113,7 +113,7 @@ end
 --设置，物品，提示
 local function Set_Menu_Tooltip(tooltip, desc)
     if desc.data then
-        WoWTools_TooltipMixin:SetTooltip(tooltip, {itemID=desc.data.itemID})--设置，物品，提示
+        WoWTools_SetTooltipMixin:SetTooltip(tooltip, {itemID=desc.data.itemID})--设置，物品，提示
     end
     ToyButton:set_tooltip_location(tooltip)
 end
