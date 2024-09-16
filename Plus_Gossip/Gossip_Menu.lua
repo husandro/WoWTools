@@ -93,7 +93,10 @@ local function Init_Menu(self, root)
         num=num+1
     end
     sub=root:CreateButton(
-        '     '..(e.onlyChinese and '自动对话' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, ENABLE_DIALOG))..(num==0 and ' |cff9e9e9e' or ' ')..num,
+        '     '
+        ..(e.onlyChinese and '自动对话' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, ENABLE_DIALOG))
+        ..(num==0 and ' |cff9e9e9e' or ' ')
+        ..num,
     function()
         return MenuResponse.Open
     end)

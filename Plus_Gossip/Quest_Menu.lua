@@ -48,7 +48,7 @@ local function Init_Menu(self, root)
         num=num+1
     end
     sub=root:CreateCheckbox(
-        e.onlyChinese and '自动选择奖励' or format(TITLE_REWARD, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, CHOOSE))
+        (e.onlyChinese and '自动选择奖励' or format(TITLE_REWARD, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, CHOOSE)))
         ..(num==0 and ' |cff9e9e9e' or ' ')
         ..num,
     function()
@@ -58,6 +58,7 @@ local function Init_Menu(self, root)
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(e.onlyChinese and '最高品质' or format(PROFESSIONS_CRAFTING_QUALITY, VIDEO_OPTIONS_ULTRA_HIGH))
+        tooltip:AddLine(e.onlyChinese and '稀有' or GARRISON_MISSION_RARE)
         tooltip:AddLine('|cff0000ff'..(e.onlyChinese and '稀有' or GARRISON_MISSION_RARE)..'|r')
     end)
 
@@ -83,7 +84,48 @@ local function Init_Menu(self, root)
         WoWTools_MenuMixin:SetGridMode(sub, num)
     end
 
+    
+--自定义任务
+    num=0
+    for _ in pairs(Save().questOption) do
+        num=num+1
+    end
+    sub=root:CreateButton(
+        '     '..(e.onlyChinese and '自定义任务' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CUSTOM, QUESTS_LABEL))
+        ..(num==0 and ' |cff9e9e9e' or ' ')
+        ..num,
+    function()
+        return MenuResponse.Open
+    end)
+
+
+--子目录，自定义任务
+    for questID, text in pairs(Save().questOption) do
+        e.LoadData({type='quest', di=questID})
+        sub2=sub:CreateCheckbox(
+            WoWTools_QuestMixin:GetName(questID),
+        function(data)
+            return Save().questOption[data.questID]
+        end, function(data)
+            Save().questOption[data.questID]= not Save().questOption[data.questID] and data.text or nil
+        end, {questID=questID, text=text})
+        WoWTools_SetTooltipMixin:Set_Menu(sub2)
+    end
+
+    if num>1 then
+        sub:CreateDivider()
+        sub:CreateButton(
+            e.onlyChinese and '清除全部' or CLEAR_ALL,
+        function()
+            Save().questOption={}
+        end)
+        WoWTools_MenuMixin:SetGridMode(sub, num)
+    end
+
+
+
 --共享任务
+    root:CreateDivider()
     sub=root:CreateCheckbox(
         (IsInGroup() and '' or '|cff9e9e9e')
         ..(e.onlyChinese and '共享任务' or SHARE_QUEST)
@@ -156,43 +198,6 @@ local function Init_Menu(self, root)
     end)
 
 
---自定义任务
-    root:CreateDivider()
-    num=0
-    for _ in pairs(Save().questOption) do
-        num=num+1
-    end
-    sub=root:CreateButton(
-        '     '..(e.onlyChinese and '自定义任务' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CUSTOM, QUESTS_LABEL))
-        ..(num==0 and ' |cff9e9e9e' or ' ')
-        ..num,
-    function()
-        return MenuResponse.Open
-    end)
-
-
---子目录，自定义任务
-    for questID, text in pairs(Save().questOption) do
-        e.LoadData({type='quest', di=questID})
-        sub2=sub:CreateCheckbox(
-            WoWTools_QuestMixin:GetName(questID),
-        function(data)
-            return Save().questOption[data.questID]
-        end, function(data)
-            Save().questOption[data.questID]= not Save().questOption[data.questID] and data.text or nil
-        end, {questID=questID, text=text})
-        WoWTools_SetTooltipMixin:Set_Menu(sub2)
-    end
-
-    if num>1 then
-        sub:CreateDivider()
-        sub:CreateButton(
-            e.onlyChinese and '清除全部' or CLEAR_ALL,
-        function()
-            Save().questOption={}
-        end)
-        WoWTools_MenuMixin:SetGridMode(sub, num)
-    end
 end
 
 
