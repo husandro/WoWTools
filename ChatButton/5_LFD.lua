@@ -5,7 +5,7 @@ local Save={
     autoROLL= e.Player.husandro,--自动,战利品掷骰
     --disabledLootPlus=true,--禁用，战利品Plus
     ReMe=true,--仅限战场，释放，复活
-    autoSetPvPRole=true,--自动职责确认， 排副本
+    autoSetPvPRole=e.Player.husandro,--自动职责确认， 排副本
     LFGPlus= e.Player.husandro,--预创建队伍增强
     tipsScale=1,--提示内容,缩放
 
@@ -2568,7 +2568,7 @@ local function Init_RolePollPopup_Plus()
     end)
     LFDRoleCheckPopup:HookScript("OnShow",function(self)--副本职责
         e.PlaySound()--播放, 声音
-        if not Save.autoSetPvPRole then
+        if not Save.autoSetPvPRole or IsModifierKeyDown() then
             return
         end
 
@@ -3247,7 +3247,6 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
 
             if LFDButton then--禁用Chat Button
                 
-
                 Init()
                 self:RegisterEvent('LFG_COMPLETION_REWARD')
                 --self:RegisterEvent('SCENARIO_COMPLETED')
