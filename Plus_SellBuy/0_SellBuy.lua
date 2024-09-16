@@ -62,9 +62,6 @@ local function Save()
     return WoWTools_SellBuyMixin.Save
 end
 
-local panel= CreateFrame("Frame")
---MerchantFrame.lua
-
 
 
 
@@ -123,6 +120,27 @@ end
 
 
 
+--商人 Plus
+function WoWTools_SellBuyMixin:Init_Plus()
+    if self.Save.notPlus then
+        return
+    end
+
+    self:Init_StackSplitFrame()-- 堆叠,数量,框架
+
+    C_Timer.After(2, self.Init_WidthX2)--加宽，框架x2
+
+    hooksecurefunc('MerchantFrame_UpdateCurrencies', function()
+        MerchantExtraCurrencyInset:SetShown(false)
+        MerchantExtraCurrencyBg:SetShown(false)
+        MerchantMoneyInset:SetShown(false)
+    end)
+end
+
+
+
+
+
 
 
 
@@ -168,6 +186,7 @@ end
 --###########
 --加载保存数据
 --###########
+local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
@@ -214,7 +233,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if not Save().saveBossLootList then
                 Save().bossItems={}
             end
-            WoWToolsSave['Plus_SellBuy']=Save()
+            WoWToolsSave['Plus_SellBuy']= WoWTools_SellBuyMixin.Save
         end
     end
 end)

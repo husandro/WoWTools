@@ -1,8 +1,7 @@
 
 local id, e = ...
-local addName= '|A:newplayertutorial-drag-cursor:0:0|aToolstip'
+local addName= '|A:newplayertutorial-drag-cursor:0:0|aTooltips'
 local Initializer, Layout= e.AddPanel_Sub_Category({name=addName})
-
 
 WoWTools_TooltipMixin={
     Save={
@@ -31,7 +30,6 @@ WoWTools_TooltipMixin={
     Layout=Layout,
     WoWHead= 'https://www.wowhead.com/',
     AddOn={},
-
 }
 
 
@@ -195,7 +193,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            WoWToolsSave[addName]=Save
+            WoWToolsSave['Plus_Tootips']= WoWTools_TooltipMixin.Save
         end
 
     elseif event=='PLAYER_LEAVING_WORLD' then
@@ -249,11 +247,7 @@ end)
 	},
     TooltipDataProcessor.AllTypes
     Blizzard_SharedXMLGame/Tooltip/TooltipDataRules.lua
-]]
-
-
-
-    --[[追踪栏
+追踪栏
     hooksecurefunc('BonusObjectiveTracker_OnBlockEnter', function(block)
         if block.id and not block.module.tooltipBlock and block.TrackedQuest then
             e.tips:SetOwner(block, "ANCHOR_LEFT")

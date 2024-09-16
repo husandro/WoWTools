@@ -79,6 +79,11 @@ Plus\ItemInfo.lua
 
 
 
+
+
+
+
+
 ##鼠标，提示
 Plus_Tooltip\0_Tooltips.lua
 Plus_Tooltip\1_Hook.lua
@@ -143,8 +148,16 @@ Plus\FriendsList.lua
 
 
 
+
+
+
+
+
+
+
+
 ##小地图，增强
-Plus_Minimap\Minimap.lua
+Plus_Minimap\0_Minimap.lua
 Plus_Minimap\Icon.lua
 Plus_Minimap\InstanceDifficulty.lua
 Plus_Minimap\TrackButton.lua
@@ -163,7 +176,7 @@ Plus_Minimap\Major_Plus.lua
 
 
 ##卖买
-Plus_SellBuy\SellBuy.lua
+Plus_SellBuy\0_SellBuy.lua
 Plus_SellBuy\Menu.lua
 Plus_SellBuy\DELETE.lua
 Plus_SellBuy\Loot.lua
@@ -171,7 +184,6 @@ Plus_SellBuy\Repair.lua
 Plus_SellBuy\SellJunk.lua
 Plus_SellBuy\BuyItem.lua
 Plus_SellBuy\Buyback.lua
-Plus_SellBuy\Plus.lua
 Plus_SellBuy\Plus_Merchant_Info.lua
 Plus_SellBuy\Plus_WidthX2.lua
 Plus_SellBuy\Plus_StackSplitFrame.lua
@@ -181,10 +193,15 @@ Plus_SellBuy\Plus_StackSplitFrame.lua
 
 
 ##银行
-Plus_Bank\Bank.lua
+Plus_Bank\0_Bank.lua
 Plus_Bank\Left_List.lua
 Plus_Bank\Init_Frame.lua
 Plus_Bank\Plus_Bank.lua
+
+
+
+
+
 
 
 
