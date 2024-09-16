@@ -173,7 +173,7 @@ local function Init_Menu(self, root)
     end, function()
         Save().not_Gossip_Text_Player= not Save().not_Gossip_Text_Player and true or nil
         WoWTools_GossipMixin:Init_Gossip_Text()
-        return MenuResponse.Close
+        return MenuResponse.CloseAll
     end)
 
 

@@ -128,7 +128,7 @@ local function Init_Menu(self, root)
         local icon= select(3, WoWTools_TextureMixin:IsAtlas(tab.icon)) or '     '
         root:CreateCheckbox(
             icon
-            ..'|c'..(tab.hex or 'ffffffff')..(tab.name or '')..'|r '
+            ..'|c'..(tab.hex and tab.hex~='' and tab.hex or 'ffffffff')..(tab.name or '')..'|r '
             ..(Save().Gossip_Text_Icon_Player[gossipID] and '|cnGREEN_FONT_COLOR:' or '|cffffffff')
             ..gossipID,
         function(data)

@@ -24,7 +24,7 @@ local function Chat_Menu(self, root)
             local set= Menu:get_saved_all_date(info.gossipOptionID) or {}
             local name= set.name or info.name or ''
             local icon= select(3, WoWTools_TextureMixin:IsAtlas(set.icon or info.icon)) or '     '
-            local col= set.hex and set.hex~='' and '|c'..set.hex
+            local col= (set.hex and set.hex~='') and '|c'..set.hex
                 or (WoWTools_GossipMixin:Get_GossipData()[info.gossipOptionID] and '|cnGREEN_FONT_COLOR:')
                 or (Save().Gossip_Text_Icon_Player[info.gossipOptionID] and '|cffff00ff')
                 or ''
