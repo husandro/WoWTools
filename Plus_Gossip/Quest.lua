@@ -169,7 +169,7 @@ end
 --###########
 local function Init_Quest()
 
-    QuestButton=WoWTools_ButtonMixin:Cbtn(
+    QuestButton= WoWTools_ButtonMixin:Cbtn(
         WoWTools_GossipMixin.GossipButton,
         {
             icon='hide',
@@ -292,9 +292,9 @@ local function Init_Quest()
         e.tips:AddLine(' ')
         WoWTools_QuestMixin:GetQuestAll()--所有，任务，提示
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.GetEnabeleDisable(not Save().quest),e.Icon.left)
+        e.tips:AddDoubleLine(e.GetEnabeleDisable(Save().quest),e.Icon.left)
         e.tips:AddDoubleLine((e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU),e.Icon.right)
-        e.tips:AddDoubleLine(e.onlyChinese and '选项' or OPTIONS, e.Icon.mid)
+        --e.tips:AddDoubleLine(e.onlyChinese and '选项' or OPTIONS, e.Icon.mid)
         e.tips:Show()
         self.texture:SetAlpha(1)
         self:set_Only_Show_Zone_Quest()
@@ -377,9 +377,9 @@ local function Init_Quest()
             MenuUtil.CreateContextMenu(self, function(...) WoWTools_GossipMixin:Init_Menu_Quest(...) end)
         end
     end)
-    QuestButton:SetScript('OnMouseWheel', function()
+    --[[QuestButton:SetScript('OnMouseWheel', function()
         e.OpenPanelOpting(nil, '|A:SpecDial_LastPip_BorderGlow:0:0|a'..(e.onlyChinese and '对话和任务' or addName))
-    end)
+    end)]]
 
     QuestButton:SetScript('OnLeave', function(self) e.tips:Hide() self:set_Alpha() end)
     QuestButton:SetScript('OnEnter', QuestButton.tooltip_Show)

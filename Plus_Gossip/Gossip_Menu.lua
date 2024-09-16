@@ -334,6 +334,12 @@ end
 
 
 
+function WoWTools_GossipMixin:Init_Menu_Gossip(frame, root)
+    Init_Menu(frame, root)
+end
+
+
+
 --###########
 --对话，主菜单
 --[[###########
@@ -468,7 +474,3 @@ end]]
 
 
 
-
-function WoWTools_GossipMixin:Init_Menu_Gossip(frame, root)
-    Init_Menu(frame, root)
-end

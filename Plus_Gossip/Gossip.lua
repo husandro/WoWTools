@@ -163,7 +163,7 @@ local function Create_CheckButton(frame, info)
                 e.tips:AddDoubleLine(' ')
                 e.tips:AddDoubleLine('|T'..(self.icon or 0)..':0|t'..(self.name or ''), 'gossipOption: |cnGREEN_FONT_COLOR:'..self.id..'|r')
                 if f and not ColorPickerFrame:IsShown() then
-                   f.menu:set_date(self.id)--设置，数据
+                   f.Menu:set_date(self.id)--设置，数据
                 elseif not Save().not_Gossip_Text_Icon and (Save().Gossip_Text_Icon_Player[self.id] or WoWTools_GossipMixin:Get_GossipData()[self.id]) then
                     for _, info2 in pairs( C_GossipInfo.GetOptions() or {}) do
                         if info2.gossipOptionID==self.id and info.name then
@@ -256,7 +256,7 @@ local function Init()
                 frame:SetPoint('TOPLEFT', GossipFrame, 'TOPRIGHT')
             end
         else
-            e.LibDD:ToggleDropDownMenu(1, nil, GossipButton.Menu, self, 15, 0)
+            MenuUtil.CreateContextMenu(self, function(_, root) WoWTools_GossipMixin:Init_Menu_Gossip(GossipButton, root) end)
         end
     end)
     GossipButton.gossipFrane_Button:SetAlpha(0.3)
@@ -273,7 +273,8 @@ local function Init()
     end)
 
     function GossipButton:isShow_Gossip_Text_Icon_Frame()
-        return Gossip_Text_Icon_Frame and Gossip_Text_Icon_Frame:IsShown() and Gossip_Text_Icon_Frame or false
+        local frame= WoWTools_GossipMixin.Frame
+        return  frame and frame:IsShown() and frame or false
     end
 
     function GossipButton:update_gossip_frame()
@@ -309,7 +310,7 @@ local function Init()
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save().scale or 1), 'Alt+'..e.Icon.mid)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine('|A:transmog-icon-chat:0:0|a'..e.GetEnabeleDisable(not Save().gossip), e.Icon.left)
+        e.tips:AddDoubleLine('|A:transmog-icon-chat:0:0|a'..e.GetEnabeleDisable(Save().gossip), e.Icon.left)
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
         e.tips:AddDoubleLine(e.onlyChinese and '对话替换' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DIALOG_VOLUME, REPLACE), e.Icon.mid)
         --e.tips:AddDoubleLine(e.onlyChinese and '选项' or OPTIONS, e.Icon.mid)
