@@ -46,13 +46,13 @@ local function Save()
     return WoWTools_TooltipMixin.Save
 end
 
-local function Addon(name, isLoaddedName)
+local function Load_Addon(name, isLoaddedName)
     if isLoaddedName then
         if C_AddOns.IsAddOnLoaded(isLoaddedName) then
             name= isLoaddedName
         end
     end
-    if name and WoWTools_TooltipMixin.AddOn[name] then
+    if name and WoWTools_TooltipMixin.AddOn[name] and not Save().disabled then
         WoWTools_TooltipMixin.AddOn[name]()
     end
 end
@@ -135,7 +135,6 @@ end
 --加载保存数据
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -164,9 +163,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWTools_TooltipMixin:Init_WoWHeadText()
 
-            if Save().disabled then
-                self:UnregisterAllEvents()
-            else
+            if not Save().disabled then
                 self:RegisterEvent('PLAYER_LEAVING_WORLD')
                 self:RegisterEvent('PLAYER_ENTERING_WORLD')
                 Init()--初始
@@ -185,13 +182,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                      'Blizzard_Settings',
                     }
                 )do
-                    Addon(nil, name)
+                    Load_Addon(nil, name)
                 end
+            else
+                self:UnregisterEvent('ADDON_LOADED')
             end
 
-
         else
-            Addon(arg1)
+            Load_Addon(arg1)
         end
 
 

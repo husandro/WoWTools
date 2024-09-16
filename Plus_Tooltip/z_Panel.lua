@@ -322,6 +322,6 @@ end
 
 
 
-function WoWTools_TooltipMixin.AddOn:Blizzard_Settings()
+function WoWTools_TooltipMixin.AddOn.Blizzard_Settings()
     Init_Panel()
 end

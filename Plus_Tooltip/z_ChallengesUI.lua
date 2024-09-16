@@ -23,6 +23,8 @@ local function Blizzard_ChallengesUI()
             GameTooltip:Show()
         end
     end)
+
+    WoWTools_TooltipMixin.AddOn.Blizzard_ChallengesUI=nil
 end
 
 

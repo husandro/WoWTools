@@ -8,9 +8,11 @@ local function Blizzard_FlightMap()
             GameTooltip:Show()
         end
     end)
+
+    WoWTools_TooltipMixin.AddOn.Blizzard_FlightMap=nil
 end
 
 
-function WoWTools_TooltipMixin.AddOn:Blizzard_FlightMap()
+function WoWTools_TooltipMixin.AddOn.Blizzard_FlightMap()
     Blizzard_FlightMap()
 end

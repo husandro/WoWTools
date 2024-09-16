@@ -1,7 +1,7 @@
 
 
 --要塞，技能树
-local function Init_Blizzard_OrderHallUI()
+local function Blizzard_OrderHallUI()
     hooksecurefunc(GarrisonTalentButtonMixin, 'OnEnter', function(self2)--Blizzard_OrderHallTalents.lua
         local info=self2.talent--C_Garrison.GetTalentInfo(self.talent.id)
         if not info or not info.id then
@@ -43,4 +43,12 @@ local function Init_Blizzard_OrderHallUI()
             info.rankText:SetText(rank or '')
         end
     end)
+
+    WoWTools_TooltipMixin.AddOn.Blizzard_OrderHallUI=nil
+end
+
+
+
+function WoWTools_TooltipMixin.AddOn.Blizzard_OrderHallUI()
+    Blizzard_OrderHallUI()
 end

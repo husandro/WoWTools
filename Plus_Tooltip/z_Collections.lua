@@ -8,6 +8,8 @@ local function Blizzard_Collections()
         WoWTools_TooltipMixin:Set_Spell(GameTooltip, 243819)
         GameTooltip:Show()
     end)
+
+    WoWTools_TooltipMixin.AddOn.Blizzard_Collections=nil
 end
 
 
