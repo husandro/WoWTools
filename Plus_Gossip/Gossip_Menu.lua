@@ -72,6 +72,7 @@ local function Init_Menu(self, root)
         WoWTools_GossipMixin:Init_Gossip_Text()
         self:set_Texture()--设置，图片
         self:tooltip_Show()
+        return MenuResponse.Close
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine('Alt+'..(e.onlyChinese and '禁用' or DISABLE))
@@ -148,6 +149,7 @@ local function Init_Menu(self, root)
     end, function()
         Save().not_Gossip_Text_Icon= not Save().not_Gossip_Text_Icon and true or nil
         WoWTools_GossipMixin:Init_Gossip_Text()
+        return MenuResponse.Close
     end)
 
 --对话替换, 打开自定义, Frame
@@ -171,6 +173,7 @@ local function Init_Menu(self, root)
     end, function()
         Save().not_Gossip_Text_Player= not Save().not_Gossip_Text_Player and true or nil
         WoWTools_GossipMixin:Init_Gossip_Text()
+        return MenuResponse.Close
     end)
 
 
