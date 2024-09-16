@@ -218,7 +218,7 @@ end
 local function Init()
     local strata= BankFrameCloseButton:GetFrameStrata()
     local level=BankFrameCloseButton:GetFrameLevel()
-    OptionButton= WoWTools_ButtonMixin:CreateMenuButton(BankFrameCloseButton, {name='WoWTools_BankFrameMenuButton'})
+    OptionButton= WoWTools_ButtonMixin:CreateMenu(BankFrameCloseButton, {name='WoWTools_BankFrameMenuButton'})
     OptionButton:SetupMenu(Init_Menu)
     --local OptionButton= WoWTools_ButtonMixin:CreateOptionButton(BankSlotsFrame, 'WoWTools_BankFrameOptionButton', nil)
 

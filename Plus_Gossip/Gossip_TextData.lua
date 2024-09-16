@@ -132,6 +132,34 @@ end
 
 
 
+local function Init_Menu(self, root)
+    local num=0
+    for gossipID, tab in pairs(GossipTextIcon) do
+        local icon= select(3, WoWTools_TextureMixin:IsAtlas(tab.icon)) or '     '
+        root:CreateCheckbox(
+            icon
+            ..'|c'..(tab.hex or 'ffffffff')..(tab.name or '')..'|r '
+            ..(Save().Gossip_Text_Icon_Player[gossipID] and '|cnGREEN_FONT_COLOR:' or '|cffffffff')
+            ..gossipID,
+        function(data)
+            return WoWTools_GossipMixin.Frame.Menu:get_gossipID()==data.gossipID
+        end, function(data)
+            WoWTools_GossipMixin.Frame.Menu:set_date(data.gossipID)
+        end, {gossipID=gossipID, tab=tab})
+        num= num+1
+    end
+
+    if num>0 then
+        WoWTools_MenuMixin:SetScrollMode(root)
+    else
+        root:CreateTitle(e.onlyChinese and '无' or NONE)
+    end
+end
+
+
+
+
+
 
 
 
@@ -144,7 +172,9 @@ function WoWTools_GossipMixin:Init_Gossip_Text()
     Init()
 end
 
-
+function WoWTools_GossipMixin:GossipData_Menu(frame)
+    MenuUtil.CreateContextMenu(frame, Init_Menu)
+end
 
 
 

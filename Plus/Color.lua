@@ -15,7 +15,7 @@ local function set_Text(self, elapsed)
 	end
 	self.elapsed = (self.elapsed or 0.3) + elapsed
 	if self.elapsed > 0.3 then
-		local r, g, b, a= e.Get_ColorFrame_RGBA()
+		local r, g, b, a= WoWTools_ColorMixin:Get_ColorFrameRGBA()
 		r= r==0 and 0 or r
 		g= g==0 and 0 or g
 		b= b==0 and 0 or b
@@ -350,6 +350,11 @@ local function Init()
 			self:ClearFocus()
 		end
 	end)
+	Frame.rgb:SetScript('OnHide', function(self)
+		self:SetText('')
+		self:ClearFocus()
+	end)
+
 	Frame.rgb.lable=WoWTools_LabelMixin:CreateLabel(Frame.rgb, {size=10})--10)--提示，修改，颜色
 	Frame.rgb.lable:SetPoint('RIGHT', Frame.rgb,-2,0)
 	Frame.rgb:SetScript('OnTextChanged', function(self, userInput)
@@ -417,6 +422,10 @@ local function Init()
 	end)
 	Frame.rgb2.lable=WoWTools_LabelMixin:CreateLabel(Frame.rgb2, {size=10})--10)--提示，修改，颜色
 	Frame.rgb2.lable:SetPoint('RIGHT', Frame.rgb2,-2,0)
+	Frame.rgb2:SetScript('OnHide', function(self)
+		self:SetText('')
+		self:ClearFocus()
+	end)
 	Frame.rgb2:SetScript('OnTextChanged', function(self, userInput)
 		if userInput then
 			local r, g, b, a= self:get_RGB()
@@ -458,6 +467,11 @@ local function Init()
 			self:ClearFocus()
 		end
 	end)
+	Frame.hex:SetScript('OnHide', function(self)
+		self:SetText('')
+		self:ClearFocus()
+	end)
+
 	local hexText=WoWTools_LabelMixin:CreateLabel(Frame)--提示
 	hexText:SetPoint('RIGHT', Frame.hex, 'LEFT',-2,0)
 	hexText:SetText('|c')
@@ -497,12 +511,21 @@ local function Init()
 	Frame.cn:SetSize(w,20)
 	Frame.cn:SetAutoFocus(false)
 	Frame.cn:ClearFocus()
+	Frame.cn:SetScript('OnHide', function(self)
+		self:SetText('')
+		self:ClearFocus()
+	end)
 
 	Frame.cn2= CreateFrame("EditBox", nil, Frame, 'InputBoxTemplate')--格式 '|cnGREEN_FONT_COLOR:'
 	Frame.cn2:SetPoint("TOPLEFT", Frame.cn, 'BOTTOMLEFT',0,-2)
 	Frame.cn2:SetSize(w,20)
 	Frame.cn2:SetAutoFocus(false)
 	Frame.cn2:ClearFocus()
+	Frame.cn2:SetScript('OnHide', function(self)
+		self:SetText('')
+		self:ClearFocus()
+	end)
+
 	local cnText2=WoWTools_LabelMixin:CreateLabel(Frame)--提示
 	cnText2:SetPoint('LEFT', Frame.cn2, 'RIGHT', 2,0)
 	cnText2:SetText(':')
@@ -524,7 +547,7 @@ local function Init()
 		restColor:SetPoint('TOPLEFT', ColorPickerFrame.Content.ColorSwatchCurrent, 'TOPRIGHT', 2,0)
 	end
 	restColor:SetScript('OnShow', function(self)
-		local r, g, b, a= e.Get_ColorFrame_RGBA()
+		local r, g, b, a= WoWTools_ColorMixin:Get_ColorFrameRGBA()
 		self:SetColorTexture(r, g, b, a)
 		self.r, self.g, self.b, self.a= r, g, b, a
 
@@ -596,7 +619,7 @@ local function Init()
 
 	if ColorPickerOkayButton then
 		ColorPickerOkayButton:HookScript('OnMouseDown', function()--记录，历史
-			local r, g, b, a= e.Get_ColorFrame_RGBA()
+			local r, g, b, a= WoWTools_ColorMixin:Get_ColorFrameRGBA()
 			for _, col in pairs(Save.color) do
 				if col.r==r and col.g==g and col.b==b and col.a== a then
 					return
@@ -610,7 +633,7 @@ local function Init()
 		ColorPickerFrame:HookScript('OnUpdate', set_Text)
 	else
 		ColorPickerFrame.Footer.OkayButton:HookScript('OnClick', function()
-			local r, g, b, a= e.Get_ColorFrame_RGBA()
+			local r, g, b, a= WoWTools_ColorMixin:Get_ColorFrameRGBA()
 			for _, col in pairs(Save.color) do
 				if col.r==r and col.g==g and col.b==b and col.a== a then
 					return

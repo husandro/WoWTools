@@ -18,6 +18,17 @@ local function get_index()
     return buttonIndex
 end
 
+local function get_size(value)
+    local w, h
+    local t= type(value)
+    if t=='table' then
+        w, h=value[1], value[2]
+    elseif t=='number' then
+        w, h= value, value
+    end
+    return w or 30, h or 30
+end
+
 
 local function SetType2Texture(btn)
     btn.mask= btn:CreateMaskTexture()
@@ -63,18 +74,6 @@ function WoWTools_ButtonMixin:SetPushedTexture(btn, isType2)
         btn:SetHighlightAtlas('auctionhouse-nav-button-select')--Forge-ColorSwatchSelection')
         btn:SetPushedAtlas('auctionhouse-nav-button-select')--UI-HUD-MicroMenu-Highlightalert')
     end
-end
-
-
-local function get_size(value)
-    local w, h
-    local t= type(value)
-    if t=='table' then
-        w, h=value[1], value[2]
-    elseif t=='number' then
-        w, h= value, value
-    end
-    return w or 30, h or 30
 end
 
 
@@ -170,7 +169,7 @@ function WoWTools_ButtonMixin:CreateSecureButton(frame, tab)
 end
 
 --菜单按钮
-function WoWTools_ButtonMixin:CreateMenuButton(frame, tab)
+function WoWTools_ButtonMixin:CreateMenu(frame, tab)
     tab= tab or {}
 
     local name= tab.name
@@ -181,16 +180,17 @@ function WoWTools_ButtonMixin:CreateMenuButton(frame, tab)
 
     local btn= CreateFrame('DropdownButton', name or ('WoWToolsMenu'..get_index()), frame or UIParent, template, setID)
     btn:SetSize(get_size(size))
-    self:Settings(btn, true)
 
-    if not hideIcon then
+    if hideIcon then
+        self:Settings(btn, false)
+    else
         btn:SetNormalAtlas('ui-questtrackerbutton-filter')
         btn:SetPushedAtlas('ui-questtrackerbutton-filter-pressed')
         btn:SetHighlightAtlas('ui-questtrackerbutton-red-highlight')
     end
     return btn
 end
---local btn=WoWTools_ButtonMixin:CreateMenuButton(OptionButton, {name=''})
+--local btn=WoWTools_ButtonMixin:CreateMenu(OptionButton, {name=''})
 
 
 --[[打开菜单按钮

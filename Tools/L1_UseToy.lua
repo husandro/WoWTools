@@ -291,7 +291,7 @@ local function Init_Menu_Toy(_, root)
         sub2:SetTooltip(Set_Menu_Tooltip)
     end
     --WoWTools_MenuMixin:SetGridMode(root, index)
-    WoWTools_MenuMixin:SetScrollMode(root, Save.numButton or 35)
+    WoWTools_MenuMixin:SetScrollMode(root, Save.numButton)
 end
 
 
