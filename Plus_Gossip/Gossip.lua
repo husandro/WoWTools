@@ -250,9 +250,10 @@ local function Init()
     GossipButton.gossipFrane_Button:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
             WoWTools_GossipMixin:Init_Options_Frame()
-            if Gossip_Text_Icon_Frame and Gossip_Text_Icon_Frame:IsShown() then
-                Gossip_Text_Icon_Frame:ClearAllPoints()
-                Gossip_Text_Icon_Frame:SetPoint('TOPLEFT', GossipFrame, 'TOPRIGHT')
+            local frame= _G['Gossip_Text_Icon_Frame']
+            if frame and frame:IsShown() then
+                frame:ClearAllPoints()
+                frame:SetPoint('TOPLEFT', GossipFrame, 'TOPRIGHT')
             end
         else
             e.LibDD:ToggleDropDownMenu(1, nil, GossipButton.Menu, self, 15, 0)

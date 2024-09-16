@@ -25,7 +25,7 @@ local function Blizzard_OrderHallUI()
             local w,h= self2:GetSize()
             self2.researchedTexture:SetSize(w/3, h/3)
             self2.researchedTexture:SetPoint('BOTTOMRIGHT')
-            self2.researchedTexture:SetAtlas(e.Icon.select)
+            self2.researchedTexture:SetAtlas('common-icon-checkmark')
         end
         if self2.researchedTexture then
             self2.researchedTexture:SetShown(info.researched)

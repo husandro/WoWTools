@@ -28,7 +28,7 @@ elseif LOCALE_deDE then
     ItemName= 'Noggenfoggers Elixier'
 elseif LOCALE_esES or LOCALE_esMX then--西班牙语
     ItemName= 'Elixir de Tragonublo'
-elseif LOCALE_ruRU then   
+elseif LOCALE_ruRU then
     ItemName= 'Эликсир Гогельмогеля'
 elseif LOCALE_ptBR then--葡萄牙语    
     ItemName= 'Elixir Nublacuca'
@@ -46,14 +46,14 @@ end
 
 
 
-local function setAura()--光环取消
+local function Set_Aura()--光环取消
     if UnitAffectingCombat('player') then
         return
     end
     for i = 1, 255 do
         local data=C_UnitAuras.GetAuraDataByIndex('player', i, 'HELPFUL')
         if data then
-            if Save.aura[data.spellId] then                
+            if Save.aura[data.spellId] then
                 CancelUnitBuff("player", i, nil)-- 'CANCELABLE')
                 print(addName,
                     e.onlyChinese and '取消光环' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CANCEL, AURAS),
@@ -107,6 +107,10 @@ end
 
 local function Init_Menu(_, root)
     local sub
+    sub=root:CreateTitle(e.onlyChinese and '取消光环' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CANCEL, AURAS))
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(e.onlyChinese and '仅限脱战' or format(LFG_LIST_CROSS_FACTION, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_OUT_OF_COMBAT))
+    end)
     for spellID in pairs(Save.aura) do
         sub=root:CreateCheckbox(
             WoWTools_SpellMixin:GetName(spellID),
@@ -114,11 +118,12 @@ local function Init_Menu(_, root)
             return Save.aura[data.spellID]
         end, function(data)
             Save.aura[data.spellID]= not Save.aura[data.spellID] and true or false
+            Set_Aura()
         end, {spellID=spellID})
         WoWTools_SetTooltipMixin:Set_Menu(sub)
     end
 
-    root:CreateSpacer()
+    root:CreateDivider()
     WoWTools_Key_Button:SetMenu(root, {
         icon='|A:NPE_ArrowDown:0:0|a',
         name=addName,
@@ -137,7 +142,7 @@ end
 
 --#####
 --主菜单
---#####
+--[[#####
 local function InitMenu(self, level)--主菜单
     for spellID, type in pairs(Save.aura) do
         local name= C_Spell.GetSpellName(spellID)
@@ -210,7 +215,7 @@ local function InitMenu(self, level)--主菜单
         end,
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
-end
+end]]
 
 
 
@@ -233,13 +238,13 @@ local function Init()
 
     button:SetAttribute('type1','item')
     button:SetAttribute('item1', C_Item.GetItemNameByID(ItemID) or ItemName or ItemID)
-    
+
     button.texture:SetTexture(C_Item.GetItemIconByID(ItemID) or 134863)
     button.count=WoWTools_LabelMixin:CreateLabel(button, {size=12, color={r=1,g=1,b=1}})--10,nil,nil,true)
     button.count:SetPoint('BOTTOMRIGHT')
 
     setCount()--设置数量
-    setAura()--光环取消   
+    Set_Aura()--光环取消   
 
     button:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -266,7 +271,7 @@ local function Init()
             MenuUtil.CreateContextMenu(self, Init_Menu)
         end
     end)
-    
+
 
 end
 
@@ -312,10 +317,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 return
             end
 
-            
+
 
             addName= '|T134863:0|t'..(e.onlyChinese and '诺格弗格药剂' or ItemName)
-            
+
             Save= WoWToolsSave['NoggenfoggerElixir'] or Save
             button= WoWTools_ToolsButtonMixin:CreateButton({
                 name='NoggenfoggerElixir',
@@ -324,14 +329,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if button then
                 ItemName= C_Item.GetItemNameByID(ItemID) or ItemName
-                
+
                 self:RegisterEvent("PLAYER_REGEN_ENABLED")
                 self:RegisterEvent("PLAYER_REGEN_DISABLED")
                 self:RegisterEvent('BAG_UPDATE_DELAYED')
                 self:RegisterUnitEvent("UNIT_AURA", 'player')
                 self:RegisterEvent('BAG_UPDATE_COOLDOWN')
-                
-            
+
+
                 Init()--初始
             end
             self:UnregisterEvent('ADDON_LOADED')
@@ -344,7 +349,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='PLAYER_REGEN_ENABLED' then
         self:RegisterUnitEvent("UNIT_AURA", 'player')
-       
+
 
     elseif event=='PLAYER_REGEN_DISABLED' then
         self:UnregisterEvent('UNIT_AURA')
@@ -353,7 +358,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         setCount()--设置数量
 
     elseif event=='UNIT_AURA' then
-        setAura()--光环取消
+        Set_Aura()--光环取消
 
     elseif event=='BAG_UPDATE_COOLDOWN' then
         e.SetItemSpellCool(button, {item=ItemID})

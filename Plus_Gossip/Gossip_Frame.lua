@@ -605,7 +605,7 @@ local function Init()
     Menu.DeleteAllPlayerData:SetScript('OnClick', function()
         if not StaticPopupDialogs['WoWTools_Gossip_Delete_All_Player_Data'] then
             StaticPopupDialogs['WoWTools_Gossip_Delete_All_Player_Data']={
-                text=e.addName' '..addName..'|n|n|cnRED_FONT_COLOR:'..(e.onlyChinese and '全部清除' or CLEAR_ALL),
+                text=e.addName..' '..addName..'|n|n|cnRED_FONT_COLOR:'..(e.onlyChinese and '全部清除' or CLEAR_ALL),
                 whileDead=true, hideOnEscape=true, exclusive=true,
                 button1= e.onlyChinese and '全部清除' or CLEAR_ALL,
                 button2= e.onlyChinese and '取消' or CANCEL,
@@ -986,8 +986,8 @@ function WoWTools_GossipMixin:Init_Options_Frame()
         return
     end
 
-    if self.Frame then
-        self.Frame:SetShown(not self.Frame:IsShown())
+    if Frame then
+        Frame:SetShown(not Frame:IsShown())
     else
         addName= self.addName
         GossipButton= self.GossipButton

@@ -23,7 +23,7 @@ local Save={
     --show=false,
     --point
     --showBackgroud
-   
+
 }
 
 
@@ -75,7 +75,7 @@ local function Init_Panel()
         end
     }, initializer)
 
-    
+
     e.AddPanel_Button({
         category= Category,
         layout=Layout,
@@ -97,11 +97,11 @@ local function Init_Panel()
 
     e.AddPanel_Header(Layout, e.onlyChinese and '选项: 需要重新加载' or (OPTIONS..': '..REQUIRES_RELOAD))
 
-    
+
     for _, data in pairs (WoWTools_ToolsButtonMixin:GetAllAddList()) do
         initializer=nil
         if not data.isPlayerSetupOptions then--用户，自定义设置，选项，法师
-            
+
             if data.isMoveButton then--食物
                 initializer= e.AddPanel_Check({
                     category= Category,
@@ -112,9 +112,9 @@ local function Init_Panel()
                         Save.disabledADD[data.name]= not Save.disabledADD[data.name] and true or nil
                     end
                 })
-                
+
             else
-                
+
                 initializer= e.AddPanel_Check_DropDown({
                     category=Category,
                     layout=Layout,
@@ -124,11 +124,11 @@ local function Init_Panel()
                     SetValue= function()
                         Save.disabledADD[data.name]= not Save.disabledADD[data.name] and true or nil
                     end,
-                    
+
                     DropDownGetValue=function(...)
                         return Save.BottomPoint[data.name] and 2 or 1
                     end,
-                    DropDownSetValue=function(value)                    
+                    DropDownSetValue=function(value)
                         Save.BottomPoint[data.name]= value==2 and true or nil
                         WoWTools_ToolsButtonMixin:SetSaveData(Save)
                         WoWTools_ToolsButtonMixin:RestAllPoint()--重置所有按钮位置
@@ -265,7 +265,8 @@ local function Init_Menu(self, root)
     end)
 
 --重新加载UI
-    WoWTools_MenuMixin:Reload(root, false)
+    sub:CreateDivider()
+    WoWTools_MenuMixin:Reload(sub, false)
 end
 
 
@@ -445,7 +446,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 OpenItems=true,
             }
             Button= WoWTools_ToolsButtonMixin:Init(Save)
-            
+
             if Button  then
                 Init()
             end
