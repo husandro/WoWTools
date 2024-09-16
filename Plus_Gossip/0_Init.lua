@@ -1,5 +1,8 @@
 local id, e = ...
 local addName, addName2
+
+
+local Goosip
 WoWTools_GossipMixin= {
     Save={
     NPC={},

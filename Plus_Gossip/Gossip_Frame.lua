@@ -1,6 +1,8 @@
 local e= select(2, ...)
 local addName
-local GossipButton
+local GossipButton, Frame, Menu
+
+
 local function Save()
     return WoWTools_GossipMixin.Save
 end
@@ -9,8 +11,56 @@ end
 
 
 
-local function Chat_Menu()
 
+
+
+local function Chat_Menu(self, root)
+    local tab= C_GossipInfo.GetOptions() or {}
+    table.sort(tab, function(a, b) return a.orderIndex< b.orderIndex end)
+
+    local find={}
+    for _, info in pairs(tab) do
+        if info.gossipOptionID then
+            local set= Menu:get_saved_all_date(info.gossipOptionID) or {}
+            local name= set.name or info.name or ''
+            local icon= select(3, WoWTools_TextureMixin:IsAtlas(set.icon or info.icon)) or '     '
+            local col= set.hex and set.hex~='' and '|c'..set.hex
+                or (WoWTools_GossipMixin:Get_GossipData()[info.gossipOptionID] and '|cnGREEN_FONT_COLOR:')
+                or (Save().Gossip_Text_Icon_Player[info.gossipOptionID] and '|cffff00ff')
+                or ''
+
+            root:CreateCheckbox(
+                icon..col..name..info.gossipOptionID,
+            function(data)
+                return data.gossipOptionID== Menu:get_gossipID()
+            end, function(data)
+                Menu:set_date(data.gossipOptionID)
+            end, {gossipOptionID=info.gossipOptionID})
+
+            if not Save().Gossip_Text_Icon_Player[info.gossipOptionID] then
+                table.insert(find, {gossipID=info.gossipOptionID, name=info.name})
+            end
+        end
+    end
+
+    local num=#find
+    if num>1 then
+        WoWTools_MenuMixin:SetScrollMode(root)
+        root:CreateDivider()
+        root:CreateButton(
+            (e.onlyChinese and '全部添加' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, ADD))..' '..num,
+        function(data)
+            for _, info in pairs(data.find) do
+                if not Save().Gossip_Text_Icon_Player[info.gossipID] then
+                    Save().Gossip_Text_Icon_Player[info.gossipID]= {name=info.name}
+                end
+            end
+            Menu:set_list()
+        end, {find=find})
+
+    elseif #tab==0 then
+        root:CreateTitle(e.onlyChinese and '无' or NONE)
+    end
 end
 
 
@@ -28,7 +78,7 @@ end
 
 --自定义，对话，文本，放在主菜单，前
 
-local Frame, Menu
+
 local function Init()
     Frame= CreateFrame('Frame', 'Gossip_Text_Icon_Frame', UIParent)--, 'DialogBorderTemplate')--'ButtonFrameTemplate')
     WoWTools_GossipMixin.Frame= Frame
@@ -60,9 +110,9 @@ local function Init()
 
 
 
-   
+
     Menu:SetPoint("TOPLEFT", 12, -30)
-    Menu:SetPoint("BOTTOMRIGHT", -310,12)
+    Menu:SetPoint("BOTTOMRIGHT", -310, 6)
 
     Menu.bg= Menu:CreateTexture(nil, 'BACKGROUND')
     Menu.bg:SetPoint('TOPLEFT', -35, 80)
@@ -240,7 +290,7 @@ local function Init()
     end
 
     function Menu:set_color(r, g, b, hex)--设置，颜色，颜色按钮，
-        if hex then
+        if hex and hex~='' then
             r,g,b= WoWTools_ColorMixin:HEXtoRGB(hex)
         elseif r and g and b then
             hex= WoWTools_ColorMixin:RGBtoHEX(r,g,b)
@@ -676,8 +726,8 @@ local function Init()
     end
 
     --已打开，对话，列表
-    Menu.chat= WoWTools_ButtonMixin:Cbtn(Frame, {size={22, 22}, atlas='transmog-icon-chat'})
-    --Menu.chat=WoWTools_ButtonMixin:CreateMenu(Frame, {hideIcon=true, size=23})
+    --Menu.chat= WoWTools_ButtonMixin:Cbtn(Frame, {size={22, 22}, atlas='transmog-icon-chat'})
+    Menu.chat=WoWTools_ButtonMixin:CreateMenu(Frame, {hideIcon=true})
     Menu.chat:SetNormalAtlas('transmog-icon-chat')
     Menu.chat:SetPoint('LEFT', Menu.Name, 'RIGHT', 2, 0)
     Menu.chat:SetScript('OnLeave', GameTooltip_Hide)
@@ -689,70 +739,13 @@ local function Init()
         e.tips:AddDoubleLine(e.onlyChinese and '当前对话' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, ENABLE_DIALOG), e.onlyChinese and '添加' or ADD)
         e.tips:Show()
     end)
-    --Menu.chat:SetupMenu(Chat_Menu)
-
-    Menu.chat:SetScript('OnClick', function(self)
-        
-
-        if not self.Menu then
-            self.Menu= CreateFrame("Frame", nil, Frame.Menu, "UIDropDownMenuTemplate")
-            e.LibDD:UIDropDownMenu_Initialize(self.Menu, function(_, level)
-                local tab= C_GossipInfo.GetOptions() or {}
-                table.sort(tab, function(a, b) return a.orderIndex< b.orderIndex end)
-                local f= Frame.Menu
-                local find={}
-                for _, info in pairs(tab) do
-                    if info.gossipOptionID then
-                        local set= Frame.Menu:get_saved_all_date(info.gossipOptionID) or {}
-                        local name= set.name or info.name or ''
-                        local icon= set.icon or info.icon
-                        local hex= set.hex
-                        e.LibDD:UIDropDownMenu_AddButton({
-                            text= name..info.gossipOptionID,
-                            checked= info.gossipOptionID== Frame.Menu:get_gossipID(),
-                            colorCode= hex and '|c'..hex or (WoWTools_GossipMixin:Get_GossipData()[info.gossipOptionID] and '|cnGREEN_FONT_COLOR:') or (Save().Gossip_Text_Icon_Player[info.gossipOptionID] and '|cffff00ff') or nil,
-                            icon= icon,
-
-                            tooltipOnButton=true,
-                            tooltipTitle=info.gossipOptionID,
-                            tooltipText= e.onlyChinese and '选择' or LFG_LIST_SELECT,
-                            arg1=info.gossipOptionID,
-                            func= function(_, arg1)
-                                f:set_date(arg1)
-                            end
-                        }, level)
-                        if not Save().Gossip_Text_Icon_Player[info.gossipOptionID] then
-                            table.insert(find, {gossipID=info.gossipOptionID, name=info.name})
-                        end
-                    end
-                end
-                local num=#find
-                if num>0 then
-                    e.LibDD:UIDropDownMenu_AddSeparator(level)
-                    e.LibDD:UIDropDownMenu_AddButton({
-                        text=format('%s |cnGREEN_FONT_COLOR:#%d', e.onlyChinese and '全部添加' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, ADD), num),
-                        notCheckable=true,
-                        arg1=find,
-                        func= function(_, arg1)
-                            for _, info in pairs(arg1) do
-                                if not Save().Gossip_Text_Icon_Player[info.gossipID] then
-                                    Save().Gossip_Text_Icon_Player[info.gossipID]= {name=info.name}
-                                end
-                            end
-                            Frame.Menu:set_list()
-                        end
-                    }, level)
-                elseif #tab==0 then
-                    e.LibDD:UIDropDownMenu_AddButton({text=e.onlyChinese and '无' or NONE, isTitle=true, notCheckable=true}, level)
-                end
-            end, 'Menu')
-        end
-        e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
-    end)
+    Menu.chat:SetupMenu(Chat_Menu)
 
     --GossipFrame 有多少对话
     Menu.chat.Text= WoWTools_LabelMixin:CreateLabel(Menu.chat, {justifyH='CENTER'})
     Menu.chat.Text:SetPoint('CENTER', 1, 4.2)
+
+
 
     --默认，自定义，列表
     Menu.System= WoWTools_ButtonMixin:Cbtn(Frame, {size={22, 22}, icon='hide'})
@@ -815,10 +808,14 @@ local function Init()
         if not frame then
             return
         end
-        
+
         local add, del, exist= {}, 0, 0
         local text= string.gsub(frame:GetText() or '', '(%[%d+]={.-})', function(t)
-            local num, icon, name, hex= t:match('(%d+).-icon=(.-), name=(.-), hex=(.-)}')
+            --local num, icon, name, hex= t:match('(%d+).-icon=(.-), name=(.-), hex=(.-)}')
+            local num, icon, name, hex= t:match('(%d+).-icon="(.-)", name="(.-)", hex="(.-)"}')
+            if not num and not icon and not name and not hex then
+                num, icon, name, hex= t:match('(%d+).-icon=(.-), name=(.-), hex=(.-)}')
+            end
             local gossipID= num and tonumber(num)
             if gossipID then
                 icon= icon and icon:gsub(' ', '') or nil
@@ -900,12 +897,18 @@ local function Init()
         end
         table.sort(tabs, function(a, b) return a.gossipID<b.gossipID end)
         for _, info in pairs(tabs) do
-            text=text..format('[%d]={icon=%s, name=%s, hex=%s}|n',
+            --[[text=text..format('[%d]={icon=%s, name=%s, hex=%s}|n',
                             info.gossipID,
                             info.icon or '',
                             info.name or '',
                             info.hex or ''
-                        )
+                        )]]
+            text=text..format('[%d]={icon="%s", name="%s", hex="%s"},|n',
+                info.gossipID,
+                info.icon or '',
+                info.name or '',
+                info.hex or ''
+            )
         end
         frame:SetText(text)
         frame:SetInstructions(e.onlyChinese and '导出' or SOCIAL_SHARE_TEXT or  HUD_EDIT_MODE_SHARE_LAYOUT)
@@ -963,6 +966,26 @@ local function Init()
         self.Menu:set_list()
     end)
     GossipButton:update_gossip_frame()
+
+
+    
+
+
+
+
+--插件
+    local tavFrame= _G['TAV_InfoPanel']
+    if tavFrame and tavFrame.Name then
+        local btn= WoWTools_ButtonMixin:Cbtn(Frame, {atlas='SpecDial_LastPip_BorderGlow', size=23})
+        btn:SetPoint('RIGHT', tavFrame.Name, 'LEFT', -14, 0)
+        btn.edit= tavFrame.Name
+        btn:SetScript('OnClick', function(self)
+            local text= self.edit:GetText()
+            if text and text~='' then
+                Menu.Icon:SetText(text)
+            end
+        end)
+    end
 end
 
 

@@ -25,7 +25,7 @@ local function Movie_SubMenu(root, movieID, dateTime)
             Save().movie[data.movieID]= not Save().movie[data.movieID] and data.dateTime or nil
             return MenuResponse.Close
         end, {movieID=movieID, dateTime=dateTime})
-        root:CreateSpacer()
+        root:CreateDivider()
     end
 
 --下载
@@ -69,6 +69,7 @@ local function Init_Menu(self, root)
         return Save().gossip
     end, function()
         Save().gossip= not Save().gossip and true or nil
+        WoWTools_GossipMixin:Init_Gossip_Text()
         self:set_Texture()--设置，图片
         self:tooltip_Show()
     end)
@@ -162,10 +163,15 @@ local function Init_Menu(self, root)
     for _ in pairs(WoWTools_GossipMixin:Get_GossipData()) do
         num= num+1
     end
-    sub:CreateSpacer()
-    sub:CreateTitle(
-        (e.onlyChinese and '默认' or DEFAULT)..(num==0 and ' |cff9e9e9e' or ' ')..num
-    )
+    sub:CreateDivider()
+    sub:CreateCheckbox(
+        (e.onlyChinese and '默认' or DEFAULT)..(num==0 and ' |cff9e9e9e' or ' ')..num,
+    function()
+        return not Save().not_Gossip_Text_Player
+    end, function()
+        Save().not_Gossip_Text_Player= not Save().not_Gossip_Text_Player and true or nil
+        WoWTools_GossipMixin:Init_Gossip_Text()
+    end)
 
 
 

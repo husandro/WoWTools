@@ -93,12 +93,12 @@ local function Set_Gossip_Text(self, info)
                 local isAtlas, texture= WoWTools_TextureMixin:IsAtlas(zoneInfo.icon)
                 if isAtlas then
                     icon= format('|A:%s:%d:%d|a', texture, Save().Gossip_Text_Icon_Size, Save().Gossip_Text_Icon_Size)
-                else
+                elseif texture then
                     icon= format('|T%s:%d|t', texture, Save().Gossip_Text_Icon_Size)
                 end
             end
             name= zoneInfo.name
-            if zoneInfo.hex then
+            if zoneInfo.hex and zoneInfo.hex~='' then
                 name= '|c'..zoneInfo.hex..(name or info.name)..'|r'
             end
             if icon or name then

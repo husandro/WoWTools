@@ -57,26 +57,6 @@ local PlayerGossipTab = {--https://wago.io/hR_KBVGdK
 
 
 
---中文化
-if WoWTools_Chinese_Mixin or e.onlyChinese then
-    PlayerGossipTab[122782]={name='物品升级'}
-    PlayerGossipTab[122783]={name='幻化师'}
-    PlayerGossipTab[122784]={name='兽栏管理员'}
-    PlayerGossipTab[122785]={name='幻形讲坛'}
-    PlayerGossipTab[122786]={name='专业训练师'}
-    PlayerGossipTab[122787]={name='名胜地'}
-    PlayerGossipTab[122788]={name='其他大陆'}
-    PlayerGossipTab[122789]={name='邮箱'}
-    PlayerGossipTab[122790]={name='旅店'}
-    PlayerGossipTab[122791]={name='飞行管理员'}
-    PlayerGossipTab[122792]={name='制造订单'}
-    PlayerGossipTab[122793]={name='战斗宠物训练师'}
-    PlayerGossipTab[122794]={name='理发师'}
-    PlayerGossipTab[122795]={name='银行'}
-    PlayerGossipTab[122796]={name='拍卖行'}
-    PlayerGossipTab[123984]={name='商栈'}
-    PlayerGossipTab[124426]={name='宏伟宝库'}
-end
 
 
 
@@ -88,7 +68,7 @@ local GossipTextIcon={}--默认，自定义，对话，文本
 
 local function Init()
     GossipTextIcon={}
-    if Save().not_Gossip_Text_Icon or not Save().gossip then
+    if Save().not_Gossip_Text_Icon or not Save().gossip or Save().not_Gossip_Text_Player  then
         return
     end
 
@@ -116,6 +96,16 @@ local function Init()
         end
         if name then
             GossipTextIcon[gossipID]= {icon=tab.icon, name=name}
+        end
+    end
+
+
+    
+    for gossipID, tab in pairs(WoWTools_GossipMixin:Get_PlayerData()) do
+        if e.onlyChinese then
+            GossipTextIcon[gossipID]= tab
+        else
+            GossipTextIcon[gossipID]= {icon=tab.icon}
         end
     end
 end

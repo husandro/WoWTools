@@ -39,7 +39,7 @@ WoWTools_TextureMixin:CreateBackground(frame, alpha)
 
 function WoWTools_TextureMixin:IsAtlas(texture)--Atlas or Texture
     local isAtlas, textureID, icon
-    if texture then
+    if texture and texture~='' then
         local t= type(texture)
         if t=='number' then
             if texture>0 then

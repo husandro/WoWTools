@@ -56,15 +56,6 @@ local function SetType2Texture(btn)
 end
 
 
-function WoWTools_ButtonMixin:Settings(btn, isType2)
-    self:SetPushedTexture(btn, isType2)
-    if isType2 then--圆形按钮
-        SetType2Texture(btn)
-    end
-    btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
-    btn:EnableMouseWheel(true)
-end
-
 
 function WoWTools_ButtonMixin:SetPushedTexture(btn, isType2)
     if isType2 then
@@ -75,6 +66,18 @@ function WoWTools_ButtonMixin:SetPushedTexture(btn, isType2)
         btn:SetPushedAtlas('auctionhouse-nav-button-select')--UI-HUD-MicroMenu-Highlightalert')
     end
 end
+
+
+function WoWTools_ButtonMixin:Settings(btn, isType2)
+    self:SetPushedTexture(btn, isType2)
+    if isType2 then--圆形按钮
+        SetType2Texture(btn)
+    end
+    btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
+    btn:EnableMouseWheel(true)
+end
+
+
 
 
 
@@ -177,13 +180,13 @@ function WoWTools_ButtonMixin:CreateMenu(frame, tab)
     local size= tab.size or 23
     local template= tab.template--UIPanelButtonTemplate
     local hideIcon= tab.hideIcon
+    local isType2= tab.isType2--圆形按钮
 
     local btn= CreateFrame('DropdownButton', name or ('WoWToolsMenu'..get_index()), frame or UIParent, template, setID)
     btn:SetSize(get_size(size))
+    self:Settings(btn, isType2)
 
-    if hideIcon then
-        self:Settings(btn, false)
-    else
+    if not hideIcon then
         btn:SetNormalAtlas('ui-questtrackerbutton-filter')
         btn:SetPushedAtlas('ui-questtrackerbutton-filter-pressed')
         btn:SetHighlightAtlas('ui-questtrackerbutton-red-highlight')

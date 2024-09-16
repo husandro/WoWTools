@@ -17,7 +17,7 @@ function WoWTools_EditBoxMixn:Create(frame, tab)
     editBox:SetAutoFocus(false)
     editBox:ClearFocus()
     editBox:SetFontObject(font)
-    
+
     editBox:SetScript('OnEscapePressed', EditBox_ClearFocus)
     editBox:SetScript('OnHide', function(s) s:SetText('') s:ClearFocus() end)
 
@@ -33,7 +33,7 @@ end
 function WoWTools_EditBoxMixn:CreateMultiLineFrame(frame, tab)
     self.index= self.index+1
     tab= tab or {}
-    
+
     local name= tab.name or format('%s%d', 'WoWTools_EditScrollFrame', self.index)--名称
     --local font= tab.font or 'GameFontHighlightSmall'--字体 ChatFontNormal
     local isShowLinkTooltip= tab.isShowLinkTooltip--超链接
@@ -90,10 +90,10 @@ function WoWTools_EditBoxMixn:CreateMultiLineFrame(frame, tab)
             SetItemRef(link, text2, s, nil)
         end)
     end
-    
+
 --使用说明
     self:SetInstructions(scrollFrame.editBox, instructions, scrollFrame)
-    
+
     function scrollFrame:SetText(...)
         self.editBox:SetText(...)
     end
@@ -128,15 +128,15 @@ function WoWTools_EditBoxMixn:SetInstructions(editBox, instructions, frame)
     end
     editBox.Instructions=WoWTools_LabelMixin:CreateLabel(editBox, {layer='BORDER', color={r=0.35, g=0.35, b=0.35}})
     editBox.Instructions:SetPoint('TOPLEFT')
-    editBox.Instructions:SetText(instructions)    
+    editBox.Instructions:SetText(instructions)
     if frame then
         function frame:SetInstructions(text)
             if text then
                 self.editBox.Instructions:SetText(text or '')
             end
         end
-        self:HookInstructions(frame.editBox)       
-    end    
+        self:HookInstructions(frame.editBox)
+    end
 end
 
 --[[scrollFrame.bg:SetScript('OnMouseDown', function(s, d)
