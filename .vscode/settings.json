@@ -4976,7 +4976,8 @@
         "LOOT_SPECIALIZATION_DEFAULT",
         "DelvesCompanionAbilityListFrame",
         "DelvesCompanionAbilityListFrameBg",
-        "REWARD"
+        "REWARD",
+        "VIDEOOPTIONS_MENU"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

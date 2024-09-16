@@ -93,7 +93,7 @@ local function Set_Alt_Menu(root, itemID)
             end,
             {type=info.type, itemID=info.itemID, itemID2=itemID}
         )
-        WoWTools_SetTooltipMixin:SetTooltip(nil, nil, sub, nil)
+        WoWTools_SetTooltipMixin:Set_Menu(sub)
     end
 end
 

@@ -431,7 +431,7 @@ function WoWTools_MenuMixin:OpenDragonriding(root)
         end,
         {widgetSetID=uiWidgetSetID, tooltip=e.onlyChinese and '巨龙群岛概要' or DRAGONFLIGHT_LANDING_PAGE_TITLE}
     )
-    WoWTools_SetTooltipMixin:SetTooltip(nil, nil, sub)--设置，物品，提示
+    WoWTools_SetTooltipMixin:Set_Menu(sub)
 
     return sub
 end

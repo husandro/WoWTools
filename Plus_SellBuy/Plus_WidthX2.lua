@@ -6,6 +6,19 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 --商人 Plus, 加宽，物品，信息
 local function Create_ItemButton()
     for i= 1, max(BUYBACK_ITEMS_PER_PAGE, MERCHANT_ITEMS_PER_PAGE) do--建立，索引，文本
@@ -44,7 +57,9 @@ local function Create_ItemButton()
             end)
         end
     end
+
     local index= MERCHANT_ITEMS_PER_PAGE+1
+
     while _G['MerchantItem'..index] do--隐藏，多余
         _G['MerchantItem'..index]:SetShown(false)
         local itemButton = _G["MerchantItem"..index.."ItemButton"]
@@ -58,6 +73,19 @@ local function Create_ItemButton()
         index= index+1
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -92,6 +120,17 @@ local function Init_WidthX2()
         end
         self.numLable:SetText(num)
     end
+
+
+
+
+
+
+
+
+
+
+
 
     --卖
     hooksecurefunc('MerchantFrame_UpdateMerchantInfo', function()
@@ -129,6 +168,17 @@ local function Init_WidthX2()
             MerchantFrame.ResizeButton.setSize=true
         end
     end)
+
+
+
+
+
+
+
+
+
+
+
 
     --回购
     hooksecurefunc('MerchantFrame_UpdateBuybackInfo', function()
@@ -244,6 +294,17 @@ local function Init_WidthX2()
         end
     })
 end
+
+
+
+
+
+
+
+
+
+
+
 
 
 

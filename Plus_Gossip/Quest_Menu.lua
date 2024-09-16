@@ -16,7 +16,8 @@ local function Init_Menu(self, root)
 
 --启用
     sub=root:CreateCheckbox(
-        '|A:UI-HUD-UnitFrame-Target-PortraitOn-Boss-Quest:0:0|a'..(e.onlyChinese and '启用' or ENABLE),
+        (e.onlyChinese and '启用' or ENABLE)
+        ..'|A:UI-HUD-UnitFrame-Target-PortraitOn-Boss-Quest:0:0|a',
     function()
         return Save().quest
     end, function()
@@ -42,8 +43,14 @@ local function Init_Menu(self, root)
 
 --自动:选择奖励
     root:CreateDivider()
+    num=0
+    for _ in pairs(Save().questRewardCheck) do
+        num=num+1
+    end
     sub=root:CreateCheckbox(
-        e.onlyChinese and '自动选择奖励' or format(TITLE_REWARD, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, CHOOSE)),
+        e.onlyChinese and '自动选择奖励' or format(TITLE_REWARD, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, CHOOSE))
+        ..(num==0 and ' |cff9e9e9e' or ' ')
+        ..num,
     function()
         return Save().autoSelectReward
     end, function()
@@ -55,10 +62,8 @@ local function Init_Menu(self, root)
     end)
 
 --子目录，自动:选择奖励
-    num=0
     for questID, index in pairs(Save().questRewardCheck) do
         e.LoadData({id=questID, type='quest'})
-        print( WoWTools_QuestMixin:GetName(questID))
         sub2=sub:CreateCheckbox(
             WoWTools_QuestMixin:GetName(questID)..' |cnGREEN_FONT_COLOR:'..index,
         function(data)
@@ -66,8 +71,7 @@ local function Init_Menu(self, root)
         end, function(data)
             Save().questRewardCheck[data.questID]= not Save().questRewardCheck[data.questID] and data.index or nil
         end, {questID=questID, index=index})
-        --WoWTools_SetTooltipMixin:SetTooltip(nil, nil, sub2, nil)
-        num=num+1
+        WoWTools_SetTooltipMixin:Set_Menu(sub2)
     end
     if num>1 then
         sub:CreateDivider()
@@ -81,9 +85,9 @@ local function Init_Menu(self, root)
 
 --共享任务
     sub=root:CreateCheckbox(
-        '|A:plunderstorm-glues-queueselector-trio-selected:0:0|a'
-        ..(IsInGroup() and '' or '|cff9e9e9e')
-        ..(e.onlyChinese and '共享任务' or SHARE_QUEST),
+        (IsInGroup() and '' or '|cff9e9e9e')
+        ..(e.onlyChinese and '共享任务' or SHARE_QUEST)
+        ..'|A:groupfinder-waitdot:0:0|a',
     function()
         return Save().pushable
     end, function()
@@ -154,17 +158,21 @@ local function Init_Menu(self, root)
 
 --自定义任务
     root:CreateDivider()
+    num=0
+    for _ in pairs(Save().questOption) do
+        num=num+1
+    end
     sub=root:CreateButton(
-        e.onlyChinese and '自定义任务' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CUSTOM, QUESTS_LABEL),
+        '     '..(e.onlyChinese and '自定义任务' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CUSTOM, QUESTS_LABEL))
+        ..(num==0 and ' |cff9e9e9e' or ' ')
+        ..num,
     function()
         return MenuResponse.Open
     end)
 
 
 --子目录，自定义任务
-    num=0
     for questID, text in pairs(Save().questOption) do
-        num=num+1
         e.LoadData({type='quest', di=questID})
         sub2=sub:CreateCheckbox(
             WoWTools_QuestMixin:GetName(questID),
@@ -173,7 +181,7 @@ local function Init_Menu(self, root)
         end, function(data)
             Save().questOption[data.questID]= not Save().questOption[data.questID] and data.text or nil
         end, {questID=questID, text=text})
-        WoWTools_SetTooltipMixin:Set_Menu_Tooltip(sub2)
+        WoWTools_SetTooltipMixin:Set_Menu(sub2)
     end
 
     if num>1 then

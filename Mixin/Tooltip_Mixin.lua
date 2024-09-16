@@ -148,7 +148,40 @@ end
 
 
 
-function WoWTools_SetTooltipMixin:set_tooltip(tooltip, data)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function WoWTools_SetTooltipMixin:Set_Frame(frame, tooltip, data)
+    tooltip= tooltip or GameTooltip
+    tooltip:SetOwner(frame, "ANCHOR_LEFT");
+    tooltip:ClearLines()
+    self:SetTooltip(tooltip, data)
+    tooltip:Show();
+end
+
+function WoWTools_SetTooltipMixin:Set_Menu(sub)
+    sub:SetTooltip(function(tooltip, description)
+        self:SetTooltip(tooltip, description.data)
+    end)
+end
+
+function WoWTools_SetTooltipMixin:SetTooltip(tooltip, data)
     if type(data)~='table' then
         return
     end
@@ -168,7 +201,8 @@ function WoWTools_SetTooltipMixin:set_tooltip(tooltip, data)
     local uiMapID= data.uiMapID
     local areaPoiID= data.uiMapID
 
-    local tip= data.tooltip
+    local tip= data.tooltip--添加，提示
+    tooltip= tooltip or GameTooltip
 
     if itemLink then
         if itemLink:find('Hbattlepet:%d+') then
@@ -218,41 +252,3 @@ function WoWTools_SetTooltipMixin:set_tooltip(tooltip, data)
 end
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function WoWTools_SetTooltipMixin:SetTooltip(tooltip, data, root, frame)
-    if root then
-        root:SetTooltip(function(tip, description)
-            self:set_tooltip(tip, description.data)
-        end)
-    elseif frame then
-        tooltip= tooltip or GameTooltip
-        tooltip:SetOwner(frame, "ANCHOR_LEFT");
-        tooltip:ClearLines()
-        self:set_tooltip(tooltip, data)
-        tooltip:Show();
-    else
-        self:set_tooltip(tooltip, data)
-    end
-end
-
-
-function WoWTools_SetTooltipMixin:Set_Menu_Tooltip(root)
-    root:SetTooltip(function(tooltip, description)
-        self:set_tooltip(tooltip, description.data)
-    end)
-end

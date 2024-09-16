@@ -123,9 +123,33 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function WoWTools_GossipMixin:Init_Gossip_Text()
     Init()
 end
+
+
+
+
+
+
+
 function WoWTools_GossipMixin:Get_GossipData()
     return GossipTextIcon
 end
