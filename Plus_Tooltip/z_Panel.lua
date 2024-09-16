@@ -34,7 +34,11 @@ end
 
 
 
-local function Init_Panel(addName, Initializer, Layout)
+local function Init_Panel()
+    local addName= WoWTools_TooltipMixin.addName
+    local Initializer= WoWTools_TooltipMixin.Initializer
+    local Layout= WoWTools_TooltipMixin.Layout
+
     e.AddPanel_Header(Layout, e.onlyChinese and '选项' or OPTIONS)
 
     local initializer2= e.AddPanel_Check({
@@ -319,10 +323,5 @@ end
 
 
 function WoWTools_TooltipMixin.AddOn:Blizzard_Settings()
-    Init_Panel(
-        self.addName,
-        self.Initializer,
-        self.Layout
-    )
-
+    Init_Panel()
 end
