@@ -414,7 +414,7 @@ local function Create_Spell_Menu(spellID, icon, name, texture)--创建，法术�
             if IsShiftKeyDown() then
                 local link=C_Spell.GetSpellLink(tab.spellID) or C_Spell.GetSpellName(tab.spellID) or tab.spellID
                 link= 'spellID=='..tab.spellID..'--'..link
-                e.Chat(link, nil, true)
+                WoWTools_ChatMixin:Chat(link, nil, true)
                 --if not ChatEdit_InsertLink(link) then
                     --ChatFrame_OpenChat(link)
                 --end
@@ -921,7 +921,7 @@ local size= 24
 
 
     --角色，装备
-    local equipButton= WoWTools_ButtonMixin:Cbtn(last, {size=size, atlas=e.GetUnitRaceInfo({unit='player', reAtlas=true})})--atlas=e.Player.sex==2 and 'charactercreate-gendericon-male-selected' or 'charactercreate-gendericon-female-selected'})--pvptalents-warmode-swords-disabled
+    local equipButton= WoWTools_ButtonMixin:Cbtn(last, {size=size, atlas=WoWTools_UnitMixin:GetRaceIcon({unit='player', reAtlas=true})})--atlas=e.Player.sex==2 and 'charactercreate-gendericon-male-selected' or 'charactercreate-gendericon-female-selected'})--pvptalents-warmode-swords-disabled
     equipButton:SetPoint('LEFT', last, 'RIGHT')
     equipButton:SetScript('OnMouseDown', function(self)
         e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function()
@@ -1222,7 +1222,7 @@ end
 --#############################
 local function Init_Select_Macro_Button()
     --选定宏，index提示
-    MacroFrame.numSelectionLable= e.Cstr(MacroFrameSelectedMacroButton)
+    MacroFrame.numSelectionLable= WoWTools_LabelMixin:CreateLabel(MacroFrameSelectedMacroButton)
     MacroFrame.numSelectionLable:SetAlpha(0.7)
     MacroFrame.numSelectionLable:SetPoint('RIGHT', MacroFrameSelectedMacroButton, 'LEFT', -1,0)
     MacroFrame.numSelectionLable:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.7) end)
@@ -1648,7 +1648,7 @@ local function Init()
 
     local function MacroFrameInitMacroButton(macroButton, _, name)--Blizzard_MacroUI.lua
         if name ~= nil then
-            macroButton.Name:SetText(e.WA_Utf8Sub(name, 2, 4))
+            macroButton.Name:SetText(WoWTools_Mixin:sub(name, 2, 4))
         end
     end
     hooksecurefunc(MacroFrame.MacroSelector,'setupCallback', MacroFrameInitMacroButton)--MacroFrame.MacroSelector:SetSetupCallback(MacroFrameInitMacroButton)
@@ -1681,10 +1681,10 @@ local function Init()
 
     --宏数量
     --Blizzard_MacroUI.lua
-    MacroFrameTab1.label= e.Cstr(MacroFrameTab1)
+    MacroFrameTab1.label= WoWTools_LabelMixin:CreateLabel(MacroFrameTab1)
     MacroFrameTab1.label:SetPoint('BOTTOM', MacroFrameTab1, 'TOP', 0, -8)
     MacroFrameTab1.label:SetAlpha(0.7)
-    MacroFrameTab2.label= e.Cstr(MacroFrameTab2)
+    MacroFrameTab2.label= WoWTools_LabelMixin:CreateLabel(MacroFrameTab2)
     MacroFrameTab2.label:SetPoint('BOTTOM', MacroFrameTab2, 'TOP', 0, -8)
     MacroFrameTab2.label:SetAlpha(0.7)
     MacroFrameTab2.label:SetTextColor(e.Player.r, e.Player.g, e.Player.b)

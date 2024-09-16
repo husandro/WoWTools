@@ -104,7 +104,7 @@ local InvUnitFunc=function()--邀请，周围玩家
                         if not InvPlateGuid[guid] then
                             --C_PartyInfo.InviteUnit(name)
                             InvPlateGuid[guid]=name
-                            print(e.addName, '|cnGREEN_FONT_COLOR:'..n..'|r)', e.onlyChinese and '邀请' or INVITE ,e.PlayerLink(name, guid))
+                            print(e.addName, '|cnGREEN_FONT_COLOR:'..n..'|r)', e.onlyChinese and '邀请' or INVITE ,WoWTools_UnitMixin:GetLink(name, guid))
                             if not raid and n +co>=5  then
                                 print(e.addName, addName, format(PETITION_TITLE, '|cff00ff00'..(e.onlyChinese and '转团' or CONVERT_TO_RAID)..'|r'))
                                 break
@@ -189,7 +189,7 @@ local function InvPlateGuidFunc()--从已邀请过列表里, 再次邀请
             C_PartyInfo.InviteUnit(name)
             n=n+1
 
-            print(n..')'..e.PlayerLink(name, guid))
+            print(n..')'..WoWTools_UnitMixin:GetLink(name, guid))
         end
     end
 end
@@ -238,12 +238,12 @@ local function set_PARTY_INVITE_REQUEST(name, isTank, isHealer, isDamage, isNati
             (isTank and e.Icon.TANK or '')..(isHealer and e.Icon.HEALER or '')..(isDamage and e.Icon.DAMAGER or ''),
             questSessionActive and (e.onlyChinese and '场景战役' or SCENARIOS) or '',--场景战役
             isNativeRealm and '|cnGREEN_FONT_COLOR:'..format(e.onlyChinese and '%s其它服务器' or INVITATION_XREALM,
-            e.PlayerLink(nil, inviterGUID))--转服务器
+            WoWTools_UnitMixin:GetLink(nil, inviterGUID))--转服务器
         )
         e.Ccool(StaticPopup1, nil, sec, nil, true, true, nil)--冷却条    
     end
 
-    local friend=e.GetFriend(nil, inviterGUID, nil)
+    local friend=WoWTools_UnitMixin:GetIsFriendIcon(nil, inviterGUID, nil)
     if friend then--好友
         if not Save.FriendAceInvite then
             e.Ccool(StaticPopup1, nil, STATICPOPUP_TIMEOUT, nil, true, true, nil)--冷却条  
@@ -468,7 +468,7 @@ local function Init_Shift_Click_Focus()
                 and UnitIsFriend('player', unit)
             then
                 if d==1 then
-                    e.Say(nil, UnitName(unit), nil, nil)--密语
+                    WoWTools_ChatMixin:Say(nil, UnitName(unit), nil, nil)--密语
                 elseif d==-1 then
                     FollowUnit(unit)--跟随
                 end
@@ -668,7 +668,7 @@ local function Init_CONFIRM_SUMMON()
                             else
                                 text= VOICEMACRO_16_Dw_1 ..', '..SUMMON
                             end
-                            e.Chat('{rt1}'..text..'{rt1}', nil, nil)
+                            WoWTools_ChatMixin:Chat('{rt1}'..text..'{rt1}', nil, nil)
                         end
                     end
                 end)
@@ -1042,7 +1042,7 @@ local function Init()
         if notInviterGUID then
             if Save.InvNoFriend[notInviterGUID] then
                 Save.InvNoFriend[notInviterGUID] =nil
-                print(e.addName, 'ChatButton', addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', e.PlayerLink(nil, notInviterGUID) or '', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '拒绝' or DECLINE)..'|r'..(e.onlyChinese and '邀请' or INVITE))
+                print(e.addName, 'ChatButton', addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', WoWTools_UnitMixin:GetLink(nil, notInviterGUID) or '', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '拒绝' or DECLINE)..'|r'..(e.onlyChinese and '邀请' or INVITE))
                 AcceptGroup()
                 StaticPopup_Hide("PARTY_INVITE")
             else
@@ -1050,7 +1050,7 @@ local function Init()
                 Save.InvNoFriendNum=Save.InvNoFriendNum+1
                 DeclineGroup()
                 StaticPopup_Hide("PARTY_INVITE")
-                print(e.addName, 'ChatButton', addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r', e.PlayerLink(nil, notInviterGUID) or '', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '拒绝' or DECLINE)..'|r'..(e.onlyChinese and '邀请' or INVITE))
+                print(e.addName, 'ChatButton', addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r', WoWTools_UnitMixin:GetLink(nil, notInviterGUID) or '', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '拒绝' or DECLINE)..'|r'..(e.onlyChinese and '邀请' or INVITE))
             end
         end
         notInviterGUID=nil
@@ -1154,7 +1154,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, ...)
 
                     InvPlateGuid[guid]=name--保存到已邀请列表
 
-                    print(e.addName, addName, e.onlyChinese and '频道' or CHANNEL, e.PlayerLink(name, guid))
+                    print(e.addName, addName, e.onlyChinese and '频道' or CHANNEL, WoWTools_UnitMixin:GetLink(name, guid))
                 end
             end
         end

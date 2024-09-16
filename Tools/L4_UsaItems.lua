@@ -203,7 +203,7 @@ local function set_Item_Count(self)--数量
     local num = C_Item.GetItemCount(self.itemID, false, true, true)
     if not PlayerHasToy(self.itemID) then
         if num~=1 and not self.count then
-            self.count=e.Cstr(self, {size=10, color=true})--10,nil,nil,true)
+            self.count=WoWTools_LabelMixin:CreateLabel(self, {size=10, color=true})--10,nil,nil,true)
             self.count:SetPoint('BOTTOMRIGHT',-2, 9)
         end
         if self.count then
@@ -216,7 +216,7 @@ end
 local function set_Bling_Quest(self)--布林顿任务
     local complete=C_QuestLog.IsQuestFlaggedCompleted(56042)
     if not self.quest then
-        self.quest=e.Cstr(self, {size=8})
+        self.quest=WoWTools_LabelMixin:CreateLabel(self, {size=8})
         self.quest:SetPoint('BOTTOM',0,8)
     end
     self.quest:SetText(complete and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '完成' or COMPLETE)..'|r' or '|A:questlegendary:0:0|a')
@@ -285,7 +285,7 @@ local function set_Spell_Count(self)--次数
     local data= self.spellID and C_Spell.GetSpellCharges(self.spellID) or {}
     local num, max= data.currentCharges, data.maxCharges
     if max and max>1 and not self.count then
-        self.count=e.Cstr(self, {color=true})--nil,nil,nil,true)
+        self.count=WoWTools_LabelMixin:CreateLabel(self, {color=true})--nil,nil,nil,true)
         self.count:SetPoint('BOTTOMRIGHT',-2, 9)
     end
     if self.count then
@@ -363,7 +363,7 @@ local function Init_All_Buttons()
             name = C_Item.GetItemNameByID(itemID)
             local itemEquipLoc, icon2 = select(4, C_Item.GetItemInfoInstant(itemID))
             icon =icon2 or C_Item.GetItemIconByID(itemID)
-            local slot= e.GetItemSlotID(itemEquipLoc)
+            local slot= WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)
 
             if name and icon and slot then
                 local btn= WoWTools_ToolsButtonMixin:CreateButton({
@@ -672,7 +672,7 @@ function Init_Menu_List(_, level, type)
         tooltipOnButton=true,
         tooltipTitle=SLASH_RELOAD2,
         func=function()
-            e.Reload()
+            WoWTools_Mixin:Reload()
         end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level);
@@ -739,7 +739,7 @@ local function Init_Options_Button()
         OnAccept = function(_, data)
             if data.clearAll then
                 Save[data.type]={}
-                e.Reload()
+                WoWTools_Mixin:Reload()
             else
                 if Save[data.type][data.index] and Save[data.type][data.index]==data.ID then
                     table.remove(Save[data.type], data.index)
@@ -758,7 +758,7 @@ local function Init_Options_Button()
         button2= e.onlyChinese and '取消' or CANCEL,
         OnAccept = function()
             Save=nil
-            e.Reload()
+            WoWTools_Mixin:Reload()
         end,
     }
 
@@ -793,7 +793,7 @@ local function Init_Options_Button()
         local infoType, itemID, itemLink ,spellID= GetCursorInfo()
         if infoType == "item" and itemID and itemLink then
             local itemEquipLoc= select(4, C_Item.GetItemInfoInstant(itemLink))
-            local slot= e.GetItemSlotID(itemEquipLoc)
+            local slot= WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)
             local type = slot and 'equip' or 'item'
             local text = slot and (e.onlyChinese and '装备' or EQUIPSET_EQUIP) or (e.onlyChinese and '物品' or ITEMS)
             local icon = C_Item.GetItemIconByID(itemLink)

@@ -49,7 +49,7 @@ function panel:settings()
     if destGUID==e.Player.guid then
         print('|A:nameplates-holypower2-on:0:0|a', e.Icon.player..e.Player.col, text)
     else
-        e.Chat(text, nil, nil)
+        WoWTools_ChatMixin:Chat(text, nil, nil)
     end
 end
 

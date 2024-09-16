@@ -107,7 +107,7 @@ local function Init()
     end)
 
     --显示，公会修理，信息
-    MerchantGuildBankRepairButton.Text= e.Cstr(MerchantGuildBankRepairButton, {justifyH='RIGHT'})
+    MerchantGuildBankRepairButton.Text= WoWTools_LabelMixin:CreateLabel(MerchantGuildBankRepairButton, {justifyH='RIGHT'})
     MerchantGuildBankRepairButton.Text:SetPoint('TOPLEFT', 1, -1)
     hooksecurefunc('MerchantFrame_UpdateGuildBankRepair', function()
         local repairAllCost = GetRepairAllCost()
@@ -116,18 +116,18 @@ local function Init()
         else
             local co = GetGuildBankMoney() or 0
             local col= co==0 and '|cff9e9e9e' or (repairAllCost> co and '|cnRED_FONT_COLOR:') or '|cnGREEN_FONT_COLOR:'
-            MerchantGuildBankRepairButton.Text:SetText(col..(e.MK(co/10000, 0)))
+            MerchantGuildBankRepairButton.Text:SetText(col..(WoWTools_Mixin:MK(co/10000, 0)))
         end
     end)
 
     --提示，可修理，件数
-    MerchantRepairItemButton.Text=e.Cstr(MerchantRepairItemButton)
+    MerchantRepairItemButton.Text=WoWTools_LabelMixin:CreateLabel(MerchantRepairItemButton)
     MerchantRepairItemButton.Text:SetPoint('TOPLEFT', 1, -1)
     MerchantRepairItemButton:SetScript('OnEnter', function(self)--替换，源FUNC
         GameTooltip:SetOwner(self, "ANCHOR_BOTTOM")
 		GameTooltip:SetText(e.onlyChinese and '修理一件物品' or REPAIR_AN_ITEM)
         GameTooltip:AddLine(' ')
-        e.GetDurabiliy_OnEnter()
+        WoWTools_DurabiliyMixin:OnEnter()
         GameTooltip:Show()
     end)
     MerchantRepairItemButton:HookScript('OnClick', function()
@@ -142,13 +142,13 @@ local function Init()
     AutoRepairCheck.Text:SetShadowOffset(1, -1)
 
     --显示，修理，金钱
-    MerchantRepairAllButton.Text2=e.Cstr(MerchantRepairAllButton)
+    MerchantRepairAllButton.Text2=WoWTools_LabelMixin:CreateLabel(MerchantRepairAllButton)
     MerchantRepairAllButton.Text2:SetPoint('TOPLEFT', MerchantRepairAllButton, 1, -1)
     hooksecurefunc('MerchantFrame_UpdateRepairButtons', function()
         if MerchantRepairAllButton:IsShown() then
             local co = GetRepairAllCost()--显示，修理所有，金钱
             local col= co==0 and '|cff9e9e9e' or (co<= GetMoney() and '|cnGREEN_FONT_COLOR:') or '|cnRED_FONT_COLOR:'
-            MerchantRepairAllButton.Text2:SetText(col..e.MK(co/10000, 0))
+            MerchantRepairAllButton.Text2:SetText(col..WoWTools_Mixin:MK(co/10000, 0))
 
             local num=0--提示，可修理，件数
             for i= 1, 18 do
@@ -159,7 +159,7 @@ local function Init()
             end
             MerchantRepairItemButton.Text:SetText((num==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:')..num)
 
-            AutoRepairCheck.Text:SetText(e.GetDurabiliy(true))--显示耐久度
+            AutoRepairCheck.Text:SetText(WoWTools_DurabiliyMixin:Get(true))--显示耐久度
         end
     end)
 
@@ -175,7 +175,7 @@ local function Init()
             end
         end
         GameTooltip:AddLine(' ')
-        e.GetDurabiliy_OnEnter()
+        WoWTools_DurabiliyMixin:OnEnter()
         GameTooltip:Show()
     end)
 end

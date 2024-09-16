@@ -28,11 +28,11 @@ local function InstanceDifficulty_Update(self)
 
     local difficultyID
     if isChallengeMode then--挑战
-        tooltip, color, name= e.GetDifficultyColor(nil, DifficultyUtil.ID.DungeonChallenge)
+        tooltip, color, name= WoWTools_MapMixin:GetDifficultyColor(nil, DifficultyUtil.ID.DungeonChallenge)
 
     elseif IsInInstance() then
         difficultyID = select(3, GetInstanceInfo())
-        tooltip, color, name= e.GetDifficultyColor(nil, difficultyID)
+        tooltip, color, name= WoWTools_MapMixin:GetDifficultyColor(nil, difficultyID)
     end
 
     if frame and color then
@@ -40,11 +40,11 @@ local function InstanceDifficulty_Update(self)
     end
 
     if not self.labelType then
-        self.labelType= e.Cstr(self, {color=true, level=22, alpha=0.5})
+        self.labelType= WoWTools_LabelMixin:CreateLabel(self, {color=true, level=22, alpha=0.5})
         self.labelType:SetPoint('TOP', self, 'BOTTOM', 0, 4)
     end
 
-    self.labelType:SetText(name and e.WA_Utf8Sub(name, 3, 7) or '')
+    self.labelType:SetText(name and WoWTools_Mixin:sub(name, 3, 7) or '')
     self.tooltip= tooltip
 end
 
@@ -66,7 +66,7 @@ local function InstanceDifficulty_Tooltip(tooltip, difficultyID)
         208,
     }
     for _, ID in pairs(tab) do
-        local text, color= e.GetDifficultyColor(nil, ID)
+        local text, color= WoWTools_MapMixin:GetDifficultyColor(nil, ID)
         tooltip:AddDoubleLine(
             (ID==difficultyID and format('|A:%s:0:0|a', e.Icon.toRight) or '')
             ..text
@@ -119,17 +119,17 @@ local function Init()
         return
     end
 
-    e.Set_Label_Texture_Color(btn.Default.Border, {type='Texture'})
-    e.Set_Label_Texture_Color(btn.Guild.Border, {type='Texture'})
-    e.Set_Label_Texture_Color(btn.ChallengeMode.Border, {type='Texture'})
+    WoWTools_ColorMixin:SetLabelTexture(btn.Default.Border, {type='Texture'})
+    WoWTools_ColorMixin:SetLabelTexture(btn.Guild.Border, {type='Texture'})
+    WoWTools_ColorMixin:SetLabelTexture(btn.ChallengeMode.Border, {type='Texture'})
 
-    e.Cstr(nil,{size=14, copyFont=btn.Text, changeFont= btn.Default.Text})--字体，大小
+    WoWTools_LabelMixin:CreateLabel(nil,{size=14, copyFont=btn.Text, changeFont= btn.Default.Text})--字体，大小
     btn.Default.Text:SetShadowOffset(1,-1)
 
-    --e.Cstr(nil,{size=14, copyFont=btn.Guild.Text, changeFont= btn.Default.Text})--字体，大小
+    --WoWTools_LabelMixin:CreateLabel(nil,{size=14, copyFont=btn.Guild.Text, changeFont= btn.Default.Text})--字体，大小
     --btn.Guild.Text:SetShadowOffset(1,-1)
 
-    --e.Cstr(nil,{size=14, copyFont=btn.ChallengeMode.Text, changeFont= btn.Default.Text})--字体，大小
+    --WoWTools_LabelMixin:CreateLabel(nil,{size=14, copyFont=btn.ChallengeMode.Text, changeFont= btn.Default.Text})--字体，大小
     --btn.ChallengeMode.Default.Text:SetShadowOffset(1,-1)
 
     --MinimapCluster:HookScript('OnEvent', function(self)--Minimap.luab

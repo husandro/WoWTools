@@ -99,7 +99,7 @@ end
 --####
 local function Init()
  
-    button.Text=e.Cstr(button, {size=10, color=true})-- size,nil,nil, true)
+    button.Text=WoWTools_LabelMixin:CreateLabel(button, {size=10, color=true})-- size,nil,nil, true)
     button.Text:SetPoint('BOTTOM',0 , -2)
 
     function button:set_pets_date(tabs)
@@ -160,7 +160,7 @@ local function Init()
                 or IsMounted()
                 or UnitIsDeadOrGhost('player')
                 or UnitIsBattlePet('player')
-                or e.Is_In_PvP_Area()--是否在，PVP区域中                
+                or WoWTools_MapMixin:IsInPvPArea()--是否在，PVP区域中                
                 or UnitCastingInfo('player')
                 or UnitChannelInfo('player')
                 or UnitAffectingCombat('player')
@@ -194,13 +194,13 @@ local function Init()
             end
             name= name or customName or name2
         end
-        self.Text:SetText(e.WA_Utf8Sub(name, 2, 5) or "")
+        self.Text:SetText(WoWTools_Mixin:sub(name, 2, 5) or "")
     end
 
     function button:set_event()
         self:UnregisterAllEvents()
         self:RegisterEvent('PLAYER_ENTERING_WORLD')
-        if e.Is_In_PvP_Area() then
+        if WoWTools_MapMixin:IsInPvPArea() then
             return
         end
         self:RegisterEvent('NEW_PET_ADDED')
@@ -241,7 +241,7 @@ local function Init()
         tab = tab or {}
         local speciesName, speciesIcon= C_PetJournal.GetPetInfoBySpeciesID(speciesID)
         if type(speciesName)=='string' then
-            local num= select(3, e.GetPetCollectedNum(speciesID, nil, true))
+            local num= select(3, WoWTools_CollectedMixin:Pet(speciesID, nil, true))
             e.LibDD:UIDropDownMenu_AddButton({
                 text= format('%s %s', e.onlyChinese and tab.cn or speciesName, (num or '')..''),
                 icon= speciesIcon,

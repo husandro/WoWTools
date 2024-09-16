@@ -73,7 +73,7 @@ e.Player={
     Realms= {},--多服务器
     name_realm= UnitName('player')..'-'..playerRealm,
     name= UnitName('player'),
-    sex= UnitSex("player"),
+    sex= UnitSex("player"),--1	Neutrum / Unknown 2	Male 3	Female
     class= baseClass,
     r= GetClassColor(baseClass),
     g= select(2,GetClassColor(baseClass)),
@@ -104,7 +104,7 @@ end
 
 
 e.Icon={
-    --player= e.GetUnitRaceInfo({unit='player', guid=nil , race=nil , sex=nil , reAtlas=false}),
+    --player= WoWTools_UnitMixin:GetRaceIcon({unit='player', guid=nil , race=nil , sex=nil , reAtlas=false}),
     icon= 'orderhalltalents-done-glow',
     icon2='|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t',
     disabled='talents-button-reset',

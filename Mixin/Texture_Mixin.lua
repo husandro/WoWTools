@@ -31,3 +31,29 @@ end
 --显示背景 Background
 WoWTools_TextureMixin:CreateBackground(frame, alpha)
 ]]
+
+
+
+
+
+
+function WoWTools_TextureMixin:IsAtlas(texture)--Atlas or Texture
+    local isAtlas, textureID, icon
+    if texture then
+        local t= type(texture)
+        if t=='number' then
+            if texture>0 then
+                isAtlas, textureID, icon= false, texture, format('|T%d:0|t', texture)
+            end
+        elseif t=='string' then
+            texture= texture:gsub(' ', '')
+            if texture~='' then
+                local atlasInfo= C_Texture.GetAtlasInfo(texture)
+                isAtlas= atlasInfo and true or false
+                textureID= texture
+                icon= isAtlas and format('|A:%s:0:0|a', texture) or format('|T%s:0|t', texture)
+            end
+        end
+    end
+    return isAtlas, textureID, icon
+end

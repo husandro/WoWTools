@@ -283,7 +283,7 @@ local function get_Items()--取得背包物品信息
 
                 elseif C_Item.IsCosmeticItem(info.hyperlink) then--装饰品
                     if Save.mago then--and not C_Item.IsCosmeticItem(info.itemID) then --and info.quality then
-                        local  isCollected, isSelf= select(2, e.GetItemCollected(info.hyperlink, nil, nil, true))
+                        local  isCollected, isSelf= select(2, WoWTools_CollectedMixin:Item(info.hyperlink, nil, nil, true))
                         if not isCollected and isSelf then
                             setAtt(bag, slot, info.iconFileID, info.itemID, nil, true)
                             return
@@ -300,7 +300,7 @@ local function get_Items()--取得背包物品信息
 
                 elseif classID==4 or classID==2 then-- itemEquipLoc and _G[itemEquipLoc] then--幻化
                     if Save.mago then--and not C_Item.IsCosmeticItem(info.itemID) then --and info.quality then
-                        local  isCollected, isSelf= select(2, e.GetItemCollected(info.hyperlink, nil, nil, true))
+                        local  isCollected, isSelf= select(2, WoWTools_CollectedMixin:Item(info.hyperlink, nil, nil, true))
                         if not isCollected and isSelf then
                             setAtt(bag, slot, info.iconFileID, info.itemID)
                             OpenButton.IsEquipItem= true
@@ -374,7 +374,7 @@ local function get_Items()--取得背包物品信息
                             if spell  and not C_Item.IsAnimaItemByID(info.hyperlink) then
                                 --and C_Spell.IsSpellUsable(spell)
                                 if info.itemID==207002 then--封装命运
-                                    if not e.WA_GetUnitBuff('player', 415603, 'HELPFUL') then
+                                    if not WoWTools_AuraMixin:Get('player', 415603, 'HELPFUL') then
                                         setAtt(bag, slot, info.iconFileID, info.itemID)
                                         return
                                     end
@@ -734,7 +734,7 @@ end
 --######
 local function Init()
 
-    OpenButton.count=e.Cstr(OpenButton, {size=10, color={r=1,g=1,b=1}})--10, nil, nil, true)
+    OpenButton.count=WoWTools_LabelMixin:CreateLabel(OpenButton, {size=10, color={r=1,g=1,b=1}})--10, nil, nil, true)
     OpenButton.count:SetPoint('BOTTOMRIGHT')
 
     WoWTools_Key_Button:Init(OpenButton, function() return Save.KEY end)

@@ -174,7 +174,7 @@ local function Init_Menu(_, root)
     local sub, text
     local total, online = GetNumGuildMembers()
     if online>1 then
-        local map=e.GetUnitMapName('paleyr')
+        local map=WoWTools_MapMixin:GetUnit('paleyr')
         local maxLevel= GetMaxLevelForLatestExpansion()
         for index=1, total, 1 do
             local name, _, rankIndex, lv, _, zone, publicNote, officerNote, isOnline, status, _, _, _, _, _, _, guid = GetGuildRosterInfo(index)
@@ -186,7 +186,7 @@ local function Init_Menu(_, root)
                     text= text..'|TInterface\\GroupFrame\\UI-Group-AssistantIcon:0|t'
                 end
 
-                text=text..e.GetPlayerInfo({guid=guid, name=name, reName=true, reRealm=true})
+                text=text..WoWTools_UnitMixin:GetPlayerInfo({guid=guid, name=name, reName=true, reRealm=true})
                 text=(lv and lv~=maxLevel) and text..' |cnGREEN_FONT_COLOR:'..lv..'|r' or text--等级
                 if zone and zone==map then--地区
                     text= text..'|A:poi-islands-table:0:0|a'
@@ -195,7 +195,7 @@ local function Init_Menu(_, root)
 
 
                 sub=root:CreateButton(text, function(data)
-                    e.Say(nil, data.name)
+                    WoWTools_ChatMixin:Say(nil, data.name)
                     return MenuResponse.Open
                 end, {publicNote=publicNote, officerNote=officerNote, name=name, zone=zone})
                 sub:SetTooltip(function(tooltip, description)
@@ -265,7 +265,7 @@ end
 --初始
 --####
 local function Init()
-    GuildButton.membersText=e.Cstr(GuildButton)-- 10, nil, nil, true, nil, 'CENTER')
+    GuildButton.membersText=WoWTools_LabelMixin:CreateLabel(GuildButton)-- 10, nil, nil, true, nil, 'CENTER')
     GuildButton.membersText:SetPoint('TOPRIGHT', -3, 0)
 
     function GuildButton:settings()
@@ -303,7 +303,7 @@ local function Init()
             ToggleGuildFrame()
         else
             if d=='LeftButton' then
-                e.Say('/g')
+                WoWTools_ChatMixin:Say('/g')
             else
                 if IsInGuild() then
                     MenuUtil.CreateContextMenu(self, Init_Menu)
@@ -340,7 +340,7 @@ local function Init()
                 end
             end
             if not btn.onlineText then
-                btn.onlineText=e.Cstr(btn)
+                btn.onlineText=WoWTools_LabelMixin:CreateLabel(btn)
                 btn.onlineText:SetPoint('TOP', btn.Icon, 'BOTTOM')
             end
             if all>0 then
@@ -355,9 +355,9 @@ local function Init()
     C_Timer.After(2, function()
         if IsInGuild()then
             if CanReplaceGuildMaster() then--弹劾
-                local label= e.Cstr(GuildButton, {size=10, color=true, justifyH='CENTER'})
+                local label= WoWTools_LabelMixin:CreateLabel(GuildButton, {size=10, color=true, justifyH='CENTER'})
                 label:SetPoint('TOP')
-                label:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '弹劾' or  e.WA_Utf8Sub(GUILD_IMPEACH_POPUP_CONFIRM, 2, 5,true))..'|r')
+                label:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '弹劾' or  WoWTools_Mixin:sub(GUILD_IMPEACH_POPUP_CONFIRM, 2, 5,true))..'|r')
             end
         else
             GuildButton:settings()

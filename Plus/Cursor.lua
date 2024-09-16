@@ -361,7 +361,7 @@ local function Init_Cursor_Options()
     local delColorButton= WoWTools_ButtonMixin:Cbtn(panel, {icon='hide', size={20,20}})--删除, 按钮
     local addColorEdit= CreateFrame("EditBox", nil, panel, 'InputBoxTemplate')--EditBox
     local addColorButton= WoWTools_ButtonMixin:Cbtn(panel, {icon='hide', size={20,20}})--添加, 按钮
-    local numColorText= e.Cstr(panel, {justifyH='RIGHT'})--nil, nil, nil, nil, nil, 'RIGHT')--颜色，数量
+    local numColorText= WoWTools_LabelMixin:CreateLabel(panel, {justifyH='RIGHT'})--nil, nil, nil, nil, nil, 'RIGHT')--颜色，数量
     numColorText:SetPoint('RIGHT', dropDown, 'LEFT', 18,5)
 
     local function set_panel_Texture()--大图片
@@ -608,7 +608,7 @@ local function Init_GCD_Options()
     local delColorButton= WoWTools_ButtonMixin:Cbtn(panel, {icon='hide', size={20,20}})--删除, 按钮
     local addColorEdit= CreateFrame("EditBox", nil, panel, 'InputBoxTemplate')--EditBox
     local addColorButton= WoWTools_ButtonMixin:Cbtn(panel, {icon='hide', size={20,20}})--添加, 按钮
-    local numColorText= e.Cstr(panel, {justifyH='RIGHT'})--nil, nil, nil, nil, nil, 'RIGHT')--颜色，数量
+    local numColorText= WoWTools_LabelMixin:CreateLabel(panel, {justifyH='RIGHT'})--nil, nil, nil, nil, nil, 'RIGHT')--颜色，数量
     numColorText:SetPoint('RIGHT', dropDown, 'LEFT', 18,5)
     numColorText:SetText(#Save.GCDTexture)
 
@@ -770,7 +770,7 @@ local function Init_Options()
     panel.Texture:SetSize(80,80)
 
     local useClassColorCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--职业颜色
-    local colorText= e.Cstr(panel, {color={r=Save.color.r, g=Save.color.g, b=Save.color.b, a=Save.color.a}})--nil, nil, nil, {Save.color.r, Save.color.g, Save.color.b, Save.color.a})--自定义,颜色
+    local colorText= WoWTools_LabelMixin:CreateLabel(panel, {color={r=Save.color.r, g=Save.color.g, b=Save.color.b, a=Save.color.a}})--nil, nil, nil, {Save.color.r, Save.color.g, Save.color.b, Save.color.a})--自定义,颜色
     local notUseColorCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--不使用，颜色
 
     --职业颜色
@@ -811,8 +811,8 @@ local function Init_Options()
                 cursor_Init_And_Set()--初始，设置
             end
         end
-        e.ShowColorPicker(self.r, self.g, self.b,self.a, function()
-                setR, setG, setB, setA= e.Get_ColorFrame_RGBA()
+        WoWTools_ColorMixin:ShowColorFrame(self.r, self.g, self.b,self.a, function()
+                setR, setG, setB, setA= WoWTools_ColorMixin:Get_ColorFrameRGBA()
                 func()
             end, function()
                 setR, setG, setB, setA= valueR, valueG, valueB, valueA
@@ -905,7 +905,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 
             e.ReloadPanel({panel=panel, addName= e.cn(addName), restTips=true, checked=nil, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
                 disabledfunc=nil,
-                clearfunc= function() Save=nil e.Reload() end}
+                clearfunc= function() Save=nil WoWTools_Mixin:Reload() end}
             )
 
             --Cursor, 启用/禁用

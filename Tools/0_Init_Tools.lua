@@ -89,7 +89,7 @@ local function Init_Panel()
                 nil,
                 function()
                     Save=nil
-                    e.Reload()
+                    WoWTools_Mixin:Reload()
                 end
             )
         end

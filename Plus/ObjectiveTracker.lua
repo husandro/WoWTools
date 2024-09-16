@@ -179,7 +179,7 @@ local function Init_Quest()
     hooksecurefunc(QuestObjectiveTracker, 'AddBlock', function(_, block)
         local questID= block.id and tonumber(block.id)
         if questID then
-            local color = select(2, e.QuestLogQuests_GetBestTagID(questID))
+            local color = select(2, WoWTools_QuestMixin:GetAtlasColor(questID))
             if color and block.HeaderText then
                 block.HeaderText:SetTextColor(color.r, color.g, color.b)
             end
@@ -490,7 +490,7 @@ end
 
 
 local function Init_ScenarioObjective()
-    ScenarioObjectiveTracker.Header.numStagesLabel= e.Cstr(ScenarioObjectiveTracker.Header, {copyFont=ScenarioObjectiveTracker.StageBlock.Name, justifyH='RIGHT'})
+    ScenarioObjectiveTracker.Header.numStagesLabel= WoWTools_LabelMixin:CreateLabel(ScenarioObjectiveTracker.Header, {copyFont=ScenarioObjectiveTracker.StageBlock.Name, justifyH='RIGHT'})
     ScenarioObjectiveTracker.Header.numStagesLabel:SetPoint('LEFT', ScenarioObjectiveTracker.Header.Text, 'RIGHT')
     --[[ScenarioObjectiveTracker.Header.numStagesLabel:SetScript('OnLeave', GameTooltip_Hide)
     ScenarioObjectiveTracker.Header.numStagesLabel:SetScript('OnEnter', function(self)

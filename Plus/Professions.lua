@@ -132,7 +132,7 @@ local UNLEARN_SKILL_CONFIRMATION= UNLEARN_SKILL_CONFIRMATION
                     end
                     self:set_key_text(event=='PLAYER_REGEN_ENABLED' and 'F' or '')
                 end)
-                btn.text=e.Cstr(btn, {color={r=1,g=0,b=0}})--nil,nil,nil,{1,0,0})
+                btn.text=WoWTools_LabelMixin:CreateLabel(btn, {color={r=1,g=0,b=0}})--nil,nil,nil,{1,0,0})
                 btn.text:SetPoint('TOPRIGHT',-4,0)
 
                 if index==3 then
@@ -509,7 +509,7 @@ local function Init_ProfessionsFrame()
             end
         end
         if not outputIcon.countBag and num then
-            outputIcon.countBag= e.Cstr(outputIcon, {color={r=0,g=1,b=0}, justifyH='CENTER'})--nil, nil, nil, {0,1,0}, nil, 'CENTER')
+            outputIcon.countBag= WoWTools_LabelMixin:CreateLabel(outputIcon, {color={r=0,g=1,b=0}, justifyH='CENTER'})--nil, nil, nil, {0,1,0}, nil, 'CENTER')
             outputIcon.countBag:SetPoint('BOTTOM', outputIcon, 'TOP',0,5)
         end
         if outputIcon.countBag then
@@ -693,7 +693,7 @@ local function Init_ProfessionsFrame()
             end
         end
         if text and not self.SpendText2 then
-            self.SpendText2= e.Cstr(self, {color={r=1, g=0, b=1}})
+            self.SpendText2= WoWTools_LabelMixin:CreateLabel(self, {color={r=1, g=0, b=1}})
             self.SpendText2:SetPoint('LEFT', self.SpendText, 'RIGHT')
         end
         if self.SpendText2 then
@@ -857,7 +857,7 @@ local function Init_ArcheologyDigsiteProgressBar_OnShow(frame)
 
         function frame.tipsButton:play_sound()
             e.PlaySound()
-            e.Set_HelpTips({frame=ArcheologyDigsiteProgressBar, point='left', topoint=self, size={40,40}, color={r=1,g=0,b=0,a=1}, show=true, hideTime=3, y=0})--设置，提示
+            WoWTools_FrameMixin:HelpFrame({frame=ArcheologyDigsiteProgressBar, point='left', topoint=self, size={40,40}, color={r=1,g=0,b=0,a=1}, show=true, hideTime=3, y=0})--设置，提示
         end
 
         frame.tipsButton:SetScript('OnClick', function(self)
@@ -901,7 +901,7 @@ local function Init_ArcheologyDigsiteProgressBar_OnShow(frame)
     if ArcheologyButton and not ArcheologyButton.keyButton then
         ArcheologyButton.keyButton= WoWTools_ButtonMixin:Cbtn(frame, {size={20,20}, icon='hide'})
         ArcheologyButton.keyButton:SetPoint('LEFT', frame, 'RIGHT', 0, -4)
-        ArcheologyButton.keyButton.text=e.Cstr(ArcheologyButton.keyButton, {color={r=0, g=1, b=0}, size=14})
+        ArcheologyButton.keyButton.text=WoWTools_LabelMixin:CreateLabel(ArcheologyButton.keyButton, {color={r=0, g=1, b=0}, size=14})
         ArcheologyButton.keyButton.text:SetPoint('CENTER')
 
         ArcheologyButton.keyButton:SetScript('OnLeave', GameTooltip_Hide)

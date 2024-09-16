@@ -168,7 +168,7 @@ local function get_Queued_List(type, reTips, reRole)--排队情况
         m=m..((tank and tank>0) and INLINE_TANK_ICON..'|cnRED_FONT_COLOR:'..tank..'|r'  or '')
         ..((healer and healer>0) and INLINE_HEALER_ICON..'|cnRED_FONT_COLOR:'..healer..'|r'  or '')
         ..((dps and dps>0) and INLINE_DAMAGER_ICON..'|cnRED_FONT_COLOR:'..dps..'|r'  or '')
-        ..'  '..(queuedTime and e.GetTimeInfo(queuedTime, true) or '')
+        ..'  '..(queuedTime and WoWTools_TimeMixin:Info(queuedTime, true) or '')
         ..' '
     end
     return num, m
@@ -284,7 +284,7 @@ local function get_InviteButton_Frame(index)
         frame.ChatButton= WoWTools_ButtonMixin:Cbtn(frame, {size={size,size}, atlas= 'transmog-icon-chat'})
         frame.ChatButton:SetPoint('BOTTOMLEFT', frame.InviteButton, 'BOTTOMRIGHT')
         frame.ChatButton:SetScript('OnClick', function(self2)
-            e.Say(nil, self2:GetParent().name)
+            WoWTools_ChatMixin:Say(nil, self2:GetParent().name)
         end)
         frame.ChatButton:SetScript('OnLeave', GameTooltip_Hide)
         frame.ChatButton:SetScript('OnEnter', function(self2)
@@ -312,7 +312,7 @@ local function get_InviteButton_Frame(index)
             e.tips:Show()
         end)
 
-        frame.text= e.Cstr(frame, {size=Save.tipsFrameTextSize, color=true})
+        frame.text= WoWTools_LabelMixin:CreateLabel(frame, {size=Save.tipsFrameTextSize, color=true})
         frame.text:SetPoint('BOTTOMLEFT', frame.DeclineButton, 'BOTTOMRIGHT')
 
         tipsButton.lfgTextTab[index]= frame
@@ -415,7 +415,7 @@ local function Set_Queue_Status()--小眼睛, 信息
                 ..(teamSize and teamSize>0 and ' '..teamSize or '')
                 ..(suspendedQueue and ('|cnRED_FONT_COLOR: ['..(e.onlyChinese and '暂停' or QUEUED_STATUS_SUSPENDED)..']|r') or '')
                 ..(e.Icon[role] or '')
-                ..' '.. e.SecondsToClock(GetBattlefieldTimeWaited(i) / 1000)
+                ..' '.. WoWTools_TimeMixin:SecondsToClock(GetBattlefieldTimeWaited(i) / 1000)
                 ..' '
         end
     end
@@ -435,7 +435,7 @@ local function Set_Queue_Status()--小眼睛, 信息
     if queueState then
         local pet= '|A:worldquest-icon-petbattle:0:0|a|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '宠物对战' or PET_BATTLE_PVP_QUEUE)..'|r'
         if queuedTime then
-            pet= pet..' '..e.GetTimeInfo(queuedTime, true)
+            pet= pet..' '..WoWTools_TimeMixin:Info(queuedTime, true)
         end
         if queueState~='queued' then
             pet= pet..' '..get_Status_Text(queueState)
@@ -521,14 +521,14 @@ local function Set_Queue_Status()--小眼睛, 信息
                 lfg= lfg..index..') '..e.cn(info.name)
                     ..' '.. (e.cn(activityName) or '')
                     ..(numMembers or '')
-                    ..(info.leaderOverallDungeonScore and info.leaderOverallDungeonScore>0 and ' '..e.GetKeystoneScorsoColor(info.leaderOverallDungeonScore, true) or '')
+                    ..(info.leaderOverallDungeonScore and info.leaderOverallDungeonScore>0 and ' '..WoWTools_WeekMixin:KeystoneScorsoColor(info.leaderOverallDungeonScore, true) or '')
                     ..(pvpIcon or '')
                     ..(pvpRating or '')
                     ..(info.questID and '|A:AutoQuest-Badge-Campaign:0:0|a' or '')
                     ..(info.isWarMode and '|A:pvptalents-warmode-swords:0:0|a' or '')
                     ..(factionText or '')
                     ..(roleText or '')
-                    ..' '..e.SecondsToClock(appDuration)--过期，时间
+                    ..' '..WoWTools_TimeMixin:SecondsToClock(appDuration)--过期，时间
                     ..' '
             end
 
@@ -562,7 +562,7 @@ local function Set_Queue_Status()--小眼睛, 信息
                         local leaderName
                         for index=1 , applicantInfo.numMembers do
                             local name, class, _, level, itemLevel, honorLevel, tank, healer, dps, _, _, dungeonScore, pvpItemLevel= C_LFGList.GetApplicantMemberInfo(applicantID, index)
-                            local icon= e.Class(nil, class)
+                            local icon= WoWTools_UnitMixin:GetClassIcon(nil, class)
                             if icon and name and class then
                                 local col= '|c'..select(4, GetClassColor(class))--颜色
 
@@ -590,7 +590,7 @@ local function Set_Queue_Status()--小眼睛, 信息
                                     end
                                 end
 
-                                local scorsoText= e.GetKeystoneScorsoColor(dungeonScore, false) or ''--挑战分数，荣誉等级
+                                local scorsoText= WoWTools_WeekMixin:KeystoneScorsoColor(dungeonScore, false) or ''--挑战分数，荣誉等级
                                 if honorLevel and honorLevel>1 then
                                     scorsoText= scorsoText~='' and scorsoText..' ' or scorsoText
                                     scorsoText= scorsoText..'|A:pvptalents-warmode-swords:0:0|a'..honorLevel
@@ -603,7 +603,7 @@ local function Set_Queue_Status()--小眼睛, 信息
                                     ..(itemLevelText or '')
                                     ..scorsoText
 
-                                    ..(e.GetFriend(name) or '')
+                                    ..(WoWTools_UnitMixin:GetIsFriendIcon(name) or '')
                                     ..icon
                                     ..(tank and INLINE_TANK_ICON or '')
                                     ..(healer and INLINE_HEALER_ICON or '')
@@ -647,7 +647,7 @@ local function Set_Queue_Status()--小眼睛, 信息
                 ..(info.autoAccept and '|A:runecarving-icon-reagent-empty:0:0|a' or '')--自动邀请
                 ..(name2 and ' '..name2 or '')--名称
                 ..(info.privateGroup and  (e.onlyChinese and '私人' or LFG_LIST_PRIVATE) or '')--私人
-                ..(info.duration and  ' '..e.SecondsToClock(info.duration) or '')--时间
+                ..(info.duration and  ' '..WoWTools_TimeMixin:SecondsToClock(info.duration) or '')--时间
 
             if member and not isLeader then--不是队长, 显示, 内容
                 list= list..'|n'..member
@@ -826,7 +826,7 @@ local function Init_tipsButton()
         end
     end)]]
 
-    tipsButton.text= e.Cstr(tipsButton, {size=Save.tipsFrameTextSize, color=true})--Save.tipsFrameTextSize, nil, nil, true)
+    tipsButton.text= WoWTools_LabelMixin:CreateLabel(tipsButton, {size=Save.tipsFrameTextSize, color=true})--Save.tipsFrameTextSize, nil, nil, true)
     tipsButton.text:SetPoint('BOTTOMLEFT', tipsButton, 'BOTTOMRIGHT')
 
     tipsButton.lfgTextTab= {}
@@ -1478,9 +1478,9 @@ local function Init_LFGListSearchEntry_Update(self)
 
     local text, color, autoAccept = '', nil, nil
     if not isAppFinished then
-        text, color= e.GetKeystoneScorsoColor(info.leaderOverallDungeonScore, true)--地下城, 分数
+        text, color= WoWTools_WeekMixin:KeystoneScorsoColor(info.leaderOverallDungeonScore, true)--地下城, 分数
         if info.leaderPvpRatingInfo and info.leaderPvpRatingInfo.rating and info.leaderPvpRatingInfo.rating>0 then--PVP, 分数
-            local text2, color2=e.GetKeystoneScorsoColor(info.leaderPvpRatingInfo.rating)
+            local text2, color2=WoWTools_WeekMixin:KeystoneScorsoColor(info.leaderPvpRatingInfo.rating)
             local icon= info.leaderPvpRatingInfo.tier and info.leaderPvpRatingInfo.tier>0 and ('|A:honorsystem-icon-prestige-'..info.leaderPvpRatingInfo.tier..':0:0|a') or '|A:pvptalents-warmode-swords:0:0|a'
             if info.isWarMode then
                 text= icon..text2..' '..text
@@ -1503,7 +1503,7 @@ local function Init_LFGListSearchEntry_Update(self)
         autoAccept= info.autoAccept--自动, 邀请
     end
     if text~='' and not self.scorsoText then
-        self.scorsoText= e.Cstr(self, {justifyH='RIGHT'})
+        self.scorsoText= WoWTools_LabelMixin:CreateLabel(self, {justifyH='RIGHT'})
         self.scorsoText:SetPoint('TOPLEFT', self.DataDisplay.Enumerate, 0, 5)
         --self.scorsoText:SetPoint('RIGHT', self.DataDisplay.Enumerate.Icon5, 'LEFT', -2, 0)
     end
@@ -1540,7 +1540,7 @@ local function Init_LFGListSearchEntry_Update(self)
         realmText=server and server.realm
     end
     if realm and not self.realmText then
-        self.realmText= e.Cstr(self)
+        self.realmText= WoWTools_LabelMixin:CreateLabel(self)
         self.realmText:SetPoint('BOTTOMRIGHT', self.DataDisplay.Enumerate,0,-3)
         self.realmText:EnableMouse(true)
         self.realmText:SetScript('OnEnter', function(self2)
@@ -1602,7 +1602,7 @@ local function Init_LFGListSearchEntry_Update(self)
     for i = 1, 5 do
         local class, specLocalized, isLeader
         if orderIndexes[i] then
-            class= e.Class(nil, orderIndexes[i][2], true)
+            class= WoWTools_UnitMixin:GetClassIcon(nil, orderIndexes[i][2], true)
             specLocalized= orderIndexes[i][3]
             isLeader= orderIndexes[i][4]
         end
@@ -1695,7 +1695,7 @@ local function Init_LFGListUtil_SetSearchEntryTooltip(tooltip, resultID, autoAcc
                 end
                 text= text.. roleText
             end
-            tooltip:AddDoubleLine(e.Class(nil, classInfo.classFile).. (text or ''), col..i)
+            tooltip:AddDoubleLine(WoWTools_UnitMixin:GetClassIcon(nil, classInfo.classFile).. (text or ''), col..i)
         end
     end
     tooltip:AddLine(' ')
@@ -1990,10 +1990,10 @@ local function Roll_Plus()
     end
     local function set_Timer_Text(frame)--提示，剩余时间
         if frame and frame.Timer and not frame.Timer.Text and frame:IsShown() then
-            frame.Timer.Text= e.Cstr(frame.Timer)
+            frame.Timer.Text= WoWTools_LabelMixin:CreateLabel(frame.Timer)
             frame.Timer.Text:SetPoint('RIGHT')
             frame.Timer:HookScript("OnUpdate", function(self2)
-                self2.Text:SetText(e.SecondsToClock(self2:GetValue()))
+                self2.Text:SetText(WoWTools_TimeMixin:SecondsToClock(self2:GetValue()))
             end)
         end
     end
@@ -2028,7 +2028,7 @@ local function Roll_Plus()
         end
 
         local itemID, _, _, itemEquipLoc, _, classID, subclassID = C_Item.GetItemInfoInstant(link)
-        local slot=e.GetItemSlotID(itemEquipLoc)--比较装等
+        local slot=WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)--比较装等
         if slot then
             local slotLink=GetInventoryItemLink('player', slot)
             if slotLink then
@@ -2131,7 +2131,7 @@ local function Loot_Plus()
                 btn.itemSubTypeLabel:SetText("")
             end
             btn:SetAlpha(1)
-            e.Set_Item_Stats(btn.Item)
+            WoWTools_ItemStatsMixin:SetItem(btn.Item)
             return
         end
 
@@ -2181,7 +2181,7 @@ local function Loot_Plus()
                 e.tips:SetOwner(self, "ANCHOR_RIGHT")
                 e.tips:ClearLines()
                 if p.dropInfo.startTime then
-                    local startTime= '|cnRED_FONT_COLOR:'..(e.GetTimeInfo(p.dropInfo.startTime/1000, false, nil) or '')
+                    local startTime= '|cnRED_FONT_COLOR:'..(WoWTools_TimeMixin:Info(p.dropInfo.startTime/1000, false, nil) or '')
                     local duration= p.dropInfo.duration and '|cnGREEN_FONT_COLOR:'..format(e.onlyChinese and '持续时间：%s' or PROFESSIONS_CRAFTING_FORM_CRAFTER_DURATION_REMAINING, SecondsToTime(p.dropInfo.duration/100))
                     e.tips:AddDoubleLine(startTime, duration)
                     e.tips:AddLine(' ')
@@ -2196,7 +2196,7 @@ local function Loot_Plus()
             end)
             btn.chatTexure:SetScript('OnClick', function(self)
                 local p=self:GetParent().dropInfo or {}
-                e.Say(nil, self:get_playername(), nil, (p.itemHyperlink or '').. (self:get_text() or ''))
+                WoWTools_ChatMixin:Say(nil, self:get_playername(), nil, (p.itemHyperlink or '').. (self:get_text() or ''))
 
             end)
 
@@ -2226,23 +2226,23 @@ local function Loot_Plus()
             end
         end
 
-        e.Set_Item_Stats(btn.Item, notGreed and btn.dropInfo.itemHyperlink, {point= btn.Item and btn.Item.IconBorder})--设置，物品，4个次属性，套装，装等
+        WoWTools_ItemStatsMixin:SetItem(btn.Item, notGreed and btn.dropInfo.itemHyperlink, {point= btn.Item and btn.Item.IconBorder})--设置，物品，4个次属性，套装，装等
 
         local text
         if not btn.itemSubTypeLabel then
-            btn.itemSubTypeLabel= e.Cstr(btn, {color=true})
+            btn.itemSubTypeLabel= WoWTools_LabelMixin:CreateLabel(btn, {color=true})
             btn.itemSubTypeLabel:SetPoint('BOTTOMLEFT', btn.Item.IconBorder, 'BOTTOMRIGHT',4,-8)
         end
         if btn.dropInfo.itemHyperlink and notGreed then
             local _, _, itemSubType2, itemEquipLoc, _, _, subclassID = C_Item.GetItemInfoInstant(btn.dropInfo.itemHyperlink)--提示,装备,子类型
-            local collected, _, isSelfCollected= e.GetItemCollected(btn.dropInfo.itemHyperlink, nil, false)--物品是否收集
+            local collected, _, isSelfCollected= WoWTools_CollectedMixin:Item(btn.dropInfo.itemHyperlink, nil, false)--物品是否收集
             text= subclassID==0 and itemEquipLoc and e.cn(_G[itemEquipLoc]) or e.cn(itemSubType2)
             if isSelfCollected and collected then
                 text= text..' '..collected
             end
 
             if btn.dropInfo.startTime and notGreed then
-                text= text..' |cnRED_FONT_COLOR:'..e.GetTimeInfo(btn.dropInfo.startTime/1000, true, nil)..'|r'
+                text= text..' |cnRED_FONT_COLOR:'..WoWTools_TimeMixin:Info(btn.dropInfo.startTime/1000, true, nil)..'|r'
             end
         end
         if btn.itemSubTypeLabel then
@@ -2293,7 +2293,7 @@ local function Loot_Plus()
         if info then
             e.tips:AddDoubleLine('encounterName', info.encounterName)
             e.tips:AddDoubleLine('encounterID', info.encounterID)
-            e.tips:AddDoubleLine('startTime', e.SecondsToClock(info.startTime))
+            e.tips:AddDoubleLine('startTime', WoWTools_TimeMixin:SecondsToClock(info.startTime))
             e.tips:AddDoubleLine('duration', info.duration and SecondsToTime(info.duration/100))
         else
             e.tips:AddDoubleLine('encounterID', e.onlyChinese and '无' or NONE)
@@ -2344,13 +2344,13 @@ local function get_Role_Info(env, Name, isT, isH, isD)
                 local unit=u..i
                 if UnitExists(unit) and not UnitIsUnit('player', unit) then
                     local guid=UnitGUID(unit)
-                    local line= e.PlayerOnlineInfo(unit)
+                    local line= WoWTools_UnitMixin:GetOnlineInfo(unit)
                     if line and guid then
                         print(i..')',
                                 line,
                                 WoWTools_UnitMixin:GetPlayerInfo(unit, guid, nil, {faction=UnitFactionGroup(unit), reLink=true}),
                                 '|A:poi-islands-table:0:0|a',
-                                e.GetUnitMapName(unit)
+                                WoWTools_MapMixin:GetUnit(unit)
                             )
                         find=true
                     end
@@ -2398,7 +2398,7 @@ local function get_Role_Info(env, Name, isT, isH, isD)
                 local guid= UnitExists(u2) and UnitGUID(u2)
                 if guid then
                     local info=(
-                                e.PlayerOnlineInfo(u2) or '')
+                                WoWTools_UnitMixin:GetOnlineInfo(u2) or '')
                                 ..WoWTools_UnitMixin:GetPlayerInfo(u2, guid, nil, {reName=true, reRealm=true}
                             )
                     local name=GetUnitName(u2,true)
@@ -2425,7 +2425,7 @@ local function get_Role_Info(env, Name, isT, isH, isD)
         end
 
         local m=''
-        local playerMapID=select(2, e.GetUnitMapName('player'))
+        local playerMapID=select(2, WoWTools_MapMixin:GetUnit('player'))
         for k, v in pairs(RoleC) do
             if v then
                 if m~='' then m=m..'|n' end
@@ -2433,7 +2433,7 @@ local function get_Role_Info(env, Name, isT, isH, isD)
                 if v.role then
                     all=all+1
                 end
-                local text, unitMapID=e.GetUnitMapName(v.unit)
+                local text, unitMapID=WoWTools_MapMixin:GetUnit(v.unit)
                 if text and unitMapID~= playerMapID then
                     m=m..'|cnRED_FONT_COLOR:|A:poi-islands-table:0:0|a'..text..'|r'
                 end
@@ -2481,7 +2481,7 @@ local function get_Role_Info(env, Name, isT, isH, isD)
             LFDButton.RoleInfo:SetScript("OnMouseUp", function(self)
                 ResetCursor()
             end)
-            LFDButton.RoleInfo.text=e.Cstr(LFDButton.RoleInfo)
+            LFDButton.RoleInfo.text=WoWTools_LabelMixin:CreateLabel(LFDButton.RoleInfo)
             LFDButton.RoleInfo.text:SetPoint('BOTTOMLEFT')--, LFDButton.RoleInfo, 'BOTTOMRIGHT')
             LFDButton.RoleInfo:SetShown(false)
         end
@@ -2618,7 +2618,7 @@ local function Init_RolePollPopup_Plus()
             end
         end
         if not self.bossTips and text then
-            self.bossTips= e.Cstr(self)
+            self.bossTips= WoWTools_LabelMixin:CreateLabel(self)
             self.bossTips:SetPoint('BOTTOMLEFT', self, 'BOTTOMRIGHT', 4, 4)
         end
         if self.bossTips then
@@ -3138,7 +3138,7 @@ local function Init()
     LFDButton:SetScript('OnEnter',function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.Get_Weekly_Rewards_Activities({showTooltip=true})--周奖励，提示
+        WoWTools_WeekMixin:Activities({showTooltip=true})--周奖励，提示
 
         if self.name and (self.dungeonID or self.RaidID) then
             e.tips:AddLine(' ')
@@ -3334,7 +3334,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
         --set_ROLL_Check(nil, arg1)
 
     elseif event=='CORPSE_IN_RANGE' or event=='PLAYER_DEAD' or event=='AREA_SPIRIT_HEALER_IN_RANGE' then--仅限战场，释放, 复活
-        if Save.ReMe and e.Is_In_PvP_Area() then
+        if Save.ReMe and WoWTools_MapMixin:IsInPvPArea() then
             if event=='PLAYER_DEAD' then
                 print(e.addName, addName,'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '释放, 复活' or (BATTLE_PET_RELEASE..', '..RESURRECT)))
             end

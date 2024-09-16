@@ -153,7 +153,7 @@ local function Init_Menu(self, root)
                 tab.text
                 ..' '
                 ..tab.type
-                ..(tab.isWhisper and ' '..e.GetPlayerInfo({unit='target', reName=true}) or ''),
+                ..(tab.isWhisper and ' '..WoWTools_UnitMixin:GetPlayerInfo({unit='target', reName=true}) or ''),
             function(data)
                     return Save.type==data.type
 
@@ -164,7 +164,7 @@ local function Init_Menu(self, root)
                         name= GetUnitName("target", true)
                     end
                 end
-                e.Say(data.type, name, nil)
+                WoWTools_ChatMixin:Say(data.type, name, nil)
                 self:settings(data.type, data.text, name, nil)
             end, tab)
 
@@ -223,10 +223,10 @@ local function Init_Menu(self, root)
 
 
         for index, tab in pairs(Save.WhisperTab) do
-            local playerName= e.GetPlayerInfo({unit=tab.unit, guid=tab.guid, name=tab.name, faction=tab.faction, reName=true, reRealm=true})
+            local playerName= WoWTools_UnitMixin:GetPlayerInfo({unit=tab.unit, guid=tab.guid, name=tab.name, faction=tab.faction, reName=true, reRealm=true})
             playerName= playerName=='' and tab.name or playerName
             sub2=sub:CreateButton('|cff9e9e9e'..index..')|r '..(tab.wow and e.Icon.wow2 or '')..(playerName or ' '), function(data)
-                e.Say(nil, data.name, data.wow)
+                WoWTools_ChatMixin:Say(nil, data.name, data.wow)
                 self:settings(SLASH_WHISPER1, e.onlyChinese and '密语' or SLASH_TEXTTOSPEECH_WHISPER, data.name, data.wow)
                 return MenuResponse.Open
             end, tab)
@@ -243,8 +243,8 @@ local function Init_Menu(self, root)
                         tooltip:AddDoubleLine(
                             col..msg.time,
 
-                            col..(e.GetFriend(description.data.name, description.data.guid, nil) or format('|A:%s:0:0|a', e.Icon.toRight))
-                            ..(e.GetUnitRaceInfo({guid=description.data.guid}) or '')
+                            col..(WoWTools_UnitMixin:GetIsFriendIcon(description.data.name, description.data.guid, nil) or format('|A:%s:0:0|a', e.Icon.toRight))
+                            ..(WoWTools_UnitMixin:GetRaceIcon({guid=description.data.guid}) or '')
                             ..msg.text.. (player and ' |cnGREEN_FONT_COLOR:*|r' or '')
                         )
                     end
@@ -259,7 +259,7 @@ local function Init_Menu(self, root)
 
             sub2:CreateButton(e.onlyChinese and '显示' or SHOW, function(data)
                 col= select(5, WoWTools_UnitMixin:Get_Unit_Color(nil, data.guid)) or '|cffffffff'
-                local text= '|cff9e9e9e'..e.Player.name_realm..'|r'..e.Icon.player..' <-> '..(e.GetUnitRaceInfo({guid=data.guid}) or '')..col..data.name..'|r|n|n'
+                local text= '|cff9e9e9e'..e.Player.name_realm..'|r'..e.Icon.player..' <-> '..(WoWTools_UnitMixin:GetRaceIcon({guid=data.guid}) or '')..col..data.name..'|r|n|n'
                 local playerList={}
                 for _, msg in pairs(data.msg) do
                     text= text and text..'|n' or ''
@@ -279,9 +279,9 @@ local function Init_Menu(self, root)
                 end
 
                 for player in pairs(playerList) do
-                    text=text..'|n|cff9e9e9e'..player..'|r <-> '..(e.GetUnitRaceInfo({guid=data.guid}) or '')..col..data.name..'|r|n'
+                    text=text..'|n|cff9e9e9e'..player..'|r <-> '..(WoWTools_UnitMixin:GetRaceIcon({guid=data.guid}) or '')..col..data.name..'|r|n'
                 end
-                WoWTools_FrameMixin:ShowText(text, e.GetPlayerInfo({name=data.name, guid=data.guid, reName=true, reRealm=true}))
+                WoWTools_FrameMixin:ShowText(text, WoWTools_UnitMixin:GetPlayerInfo({name=data.name, guid=data.guid, reName=true, reRealm=true}))
                 return MenuResponse.Open
             end, tab)
 
@@ -291,9 +291,9 @@ local function Init_Menu(self, root)
                 local findIndex= findWhisper(data)
                 if findIndex then
                     Save.WhisperTab[findIndex]=nil
-                    print(e.addName, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', e.PlayerLink(data))
+                    print(e.addName, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', WoWTools_UnitMixin:GetLink(data))
                 else
-                    print(e.addName, addName, '|cff9e9e9e'..(e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE)..'|r', e.PlayerLink(data))
+                    print(e.addName, addName, '|cff9e9e9e'..(e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE)..'|r', WoWTools_UnitMixin:GetLink(data))
                 end
                 return MenuResponse.Open
             end, tab.name)
@@ -308,7 +308,7 @@ local function Init_Menu(self, root)
 
 --战网在线数量
     local numOline, onlineList= 0, {}
-    local playerMapNamp=e.GetUnitMapName('player')
+    local playerMapNamp=WoWTools_MapMixin:GetUnit('player')
     for i=1 ,BNGetNumFriends() do
         local wow=C_BattleNet.GetFriendAccountInfo(i)
         if wow and wow.gameAccountInfo and wow.gameAccountInfo.isOnline and wow.accountName then
@@ -335,7 +335,7 @@ local function Init_Menu(self, root)
                 end
             end
             if gameAccountInfo.playerGuid then
-                text= text..e.GetPlayerInfo({guid=gameAccountInfo.playerGuid, faction=gameAccountInfo.factionName, reName=true, reRealm=true,})
+                text= text..WoWTools_UnitMixin:GetPlayerInfo({guid=gameAccountInfo.playerGuid, faction=gameAccountInfo.factionName, reName=true, reRealm=true,})
                 if gameAccountInfo.areaName then --位置
                     if gameAccountInfo.areaName==playerMapNamp then
                         text=text..'|A:poi-islands-table:0:0|a'
@@ -350,7 +350,7 @@ local function Init_Menu(self, root)
         icon= icon and format('|T%d:0|t', icon) or ''
 
         sub2=sub:CreateButton(icon..text, function(data)
-            e.Say(nil, data.name, true)
+            WoWTools_ChatMixin:Say(nil, data.name, true)
             self:settings(nil, e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET, data.name, true)
             return MenuResponse.Open
         end, {name=wow.accountName, note=wow.note, zone=zone})
@@ -427,7 +427,7 @@ end
 --初始
 --####
 local function Init()
-    SayButton.typeText=e.Cstr(SayButton, {color=true})--10, nil, nil, true)
+    SayButton.typeText=WoWTools_LabelMixin:CreateLabel(SayButton, {color=true})--10, nil, nil, true)
     SayButton.typeText:SetPoint('BOTTOM',0,2)
 
     SayButton.tipBubbles= SayButton:CreateTexture(nil, 'OVERLAY')
@@ -435,7 +435,7 @@ local function Init()
     SayButton.tipBubbles:SetPoint('TOPLEFT', 3, -0)
     SayButton.tipBubbles:SetAtlas(e.Icon.disabled)
 
-    SayButton.numWhisper=e.Cstr(SayButton, {color={r=0,g=1,b=0}})--最后密语,数量, 提示
+    SayButton.numWhisper=WoWTools_LabelMixin:CreateLabel(SayButton, {color={r=0,g=1,b=0}})--最后密语,数量, 提示
     SayButton.numWhisper:SetPoint('TOPRIGHT',-3, 0)
 
     SayButton.texture:SetAtlas('transmog-icon-chat')
@@ -476,7 +476,7 @@ local function Init()
                 wow= false
             end
          
-            e.Say(Save.type, name, wow)
+            WoWTools_ChatMixin:Say(Save.type, name, wow)
 
         else
             MenuUtil.CreateContextMenu(self, Init_Menu)
@@ -495,7 +495,7 @@ local function Init()
         elseif type and text:find('%w') then--处理英文
             text=type:gsub('/','')
         else
-            text=e.WA_Utf8Sub(text, 1, 3)
+            text=WoWTools_Mixin:sub(text, 1, 3)
         end
 
         self.typeText:SetText(text)

@@ -93,7 +93,7 @@ function WoWTools_SellBuyMixin:CheckSellItem(itemID, itemLink, quality, isBound)
         end
     end
     if quality==0 then
-        if e.GetPet9Item(itemID, true) then--宠物兑换, wow9.0
+        if WoWTools_CollectedMixin:GetPet9Item(itemID, true) then--宠物兑换, wow9.0
             return e.onlyChinese and '宠物' or PET
 
         elseif not Save().notSellJunk then--垃圾
@@ -102,7 +102,7 @@ function WoWTools_SellBuyMixin:CheckSellItem(itemID, itemLink, quality, isBound)
             else
                 local classID, subclassID = select(6, C_Item.GetItemInfoInstant(itemID))
                 if (classID==2 or classID==4) and subclassID~=0 then
-                    local isCollected = select(2, e.GetItemCollected(itemID, nil, nil))--物品是否收集
+                    local isCollected = select(2, WoWTools_CollectedMixin:Item(itemID, nil, nil))--物品是否收集
                     if isCollected==false then
                         return
                     end

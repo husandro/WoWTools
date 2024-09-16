@@ -12,7 +12,7 @@ local PostionButton--实时玩家， 当前坐标
 local PlayerButton--世界地图， 当前坐标
 
 local function create_Wolor_Font(self, size)--AreaLabelDataProvider.xml
-    local font= e.Cstr(self, {size=size, justifyH='CENTER', color=false, fontName='WorldMapTextFont'})--WorldMapTextFont SubZoneTextFont
+    local font= WoWTools_LabelMixin:CreateLabel(self, {size=size, justifyH='CENTER', color=false, fontName='WorldMapTextFont'})--WorldMapTextFont SubZoneTextFont
     return font
 end
 
@@ -41,7 +41,7 @@ local function sendPlayerPoint()--发送玩家位置
             local pos = C_Map.GetPlayerMapPosition(mapID, "player")
             local mapPoint = UiMapPoint.CreateFromVector2D(mapID, pos)
             C_Map.SetUserWaypoint(mapPoint)
-            e.Chat(C_Map.GetUserWaypointHyperlink(), nil, true)
+            WoWTools_ChatMixin:Chat(C_Map.GetUserWaypointHyperlink(), nil, true)
             --ChatFrame_OpenChat(SELECTED_DOCK_FRAME.editBox:GetText()..C_Map.GetUserWaypointHyperlink())
             if point then
                 C_Map.SetUserWaypoint(point)
@@ -57,7 +57,7 @@ local function sendPlayerPoint()--发送玩家位置
                 if info and info.name then
                     pointText=pointText..' '..info.name
                 end
-                e.Chat(pointText, nil, true)
+                WoWTools_ChatMixin:Chat(pointText, nil, true)
                 --ChatFrame_OpenChat(SELECTED_DOCK_FRAME.editBox:GetText()..pointText)
                 return
             end
@@ -74,7 +74,7 @@ local function sendPlayerPoint()--发送玩家位置
             name=name2..'('..name..')'
         end
         name =name or name2
-        e.Chat(name, nil, true)
+        WoWTools_ChatMixin:Chat(name, nil, true)
     else
         print("Cannot set waypoints on this map")
     end
@@ -122,7 +122,7 @@ local function set_WorldQuestPinMixin_RefreshVisuals(self)--WorldQuestDataProvid
             end
 
             local setLevelUp
-            local invSlot = e.GetItemSlotID(itemEquipLoc)
+            local invSlot = WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)
             if invSlot and data.name and data.itemLevel and data.itemLevel>1 then--装等
                 local itemLinkPlayer =  GetInventoryItemLink('player', invSlot)
                 if itemLinkPlayer then
@@ -136,7 +136,7 @@ local function set_WorldQuestPinMixin_RefreshVisuals(self)--WorldQuestDataProvid
             if not setLevelUp then
                 local sourceID = select(2, C_TransmogCollection.GetItemInfo(data.itemID))--幻化
                 if sourceID then
-                    local collectedText, isCollected= e.GetItemCollected(nil, sourceID, true)--物品是否收集 
+                    local collectedText, isCollected= WoWTools_CollectedMixin:Item(nil, sourceID, true)--物品是否收集 
                     if collectedText and not isCollected then
                         text= (text or '')..collectedText
                     end
@@ -147,7 +147,7 @@ local function set_WorldQuestPinMixin_RefreshVisuals(self)--WorldQuestDataProvid
     elseif data.currencyID and data.totalRewardAmount and data.totalRewardAmount>0 then
         texture=data.texture
 
-        local info, _, _, _, isMax, canWeek, canEarned, canQuantity= e.GetCurrencyMaxInfo(data.currencyID, nil)
+        local info, _, _, _, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:Get(data.currencyID, nil)
         if info and data.totalRewardAmount>1 then
             if isMax then
                 text= format('|cnRED_FONT_COLOR:%d|r', data.totalRewardAmount)
@@ -302,11 +302,11 @@ local function CursorPositionInt()
             size= size<8 and 8 or size
         end
         Save.PlayerXYSize=size
-        e.Cstr(nil, {size=size, changeFont=self.Text, color=true})
+        WoWTools_LabelMixin:CreateLabel(nil, {size=size, changeFont=self.Text, color=true})
         print(e.addName,e.cn(addName), e.Player.L.size, size)
     end)
 
-    PostionButton.Text=e.Cstr(PostionButton, {size=Save.PlayerXYSize, color=true})
+    PostionButton.Text=WoWTools_LabelMixin:CreateLabel(PostionButton, {size=Save.PlayerXYSize, color=true})
     PostionButton.Text:SetPoint('RIGHT', PostionButton, "LEFT")
 
     PostionButton:HookScript("OnUpdate", function (self, elapsed)
@@ -388,7 +388,7 @@ local function Init_set_Map_ID()--显示地图ID
                         end
                     end
                     if not Button.mapID then--字符
-                        Button.mapID=e.Cstr(WorldMapFrame.BorderFrame.TitleContainer, {copyFont=WorldMapFrameTitleText})
+                        Button.mapID=WoWTools_LabelMixin:CreateLabel(WorldMapFrame.BorderFrame.TitleContainer, {copyFont=WorldMapFrameTitleText})
                         Button.mapID:SetPoint('RIGHT', Button, 'LEFT')
                     end
                 end
@@ -399,7 +399,7 @@ local function Init_set_Map_ID()--显示地图ID
                 achievementID = C_QuestLog.GetZoneStoryInfo(uiMapID)--当前地图，故事任务
                 if achievementID then
                     if not Button.storyText then--字符
-                        Button.storyText=e.Cstr(Button, {copyFont=WorldMapFrameTitleText})
+                        Button.storyText=WoWTools_LabelMixin:CreateLabel(Button, {copyFont=WorldMapFrameTitleText})
                         Button.storyText:SetPoint('BOTTOMRIGHT', Button, 'TOPRIGHT')
                         Button.storyText:EnableMouse(true)
                         Button.storyText:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
@@ -572,13 +572,13 @@ local function Init_set_Map_ID()--显示地图ID
 
         PlayerButton.edit= CreateFrame("EditBox", nil, PlayerButton, 'InputBoxTemplate')
         PlayerButton.edit:SetSize(90,20)
-        e.Set_Label_Texture_Color(PlayerButton.edit, {type='EditBox'})
+        WoWTools_ColorMixin:SetLabelTexture(PlayerButton.edit, {type='EditBox'})
         --PlayerButton.edit:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
         PlayerButton.edit:SetAutoFocus(false)
         PlayerButton.edit:ClearFocus()
         PlayerButton.edit:SetPoint('LEFT', PlayerButton, 'RIGHT',2,0)
         PlayerButton.edit:SetScript('OnEditFocusLost', function(self)
-            e.Set_Label_Texture_Color(self, {type='EditBox'})
+            WoWTools_ColorMixin:SetLabelTexture(self, {type='EditBox'})
             --self:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
         end)
         PlayerButton.edit:SetScript('OnEditFocusGained', function(self)
@@ -595,7 +595,7 @@ local function Init_set_Map_ID()--显示地图ID
         PlayerButton.edit.Middle:SetAlpha(0.5)
         PlayerButton.edit.Right:SetAlpha(0.5)
 
-        PlayerButton.Text=e.Cstr(PlayerButton, {copyFont=WorldMapFrameTitleText})--玩家当前坐标
+        PlayerButton.Text=WoWTools_LabelMixin:CreateLabel(PlayerButton, {copyFont=WorldMapFrameTitleText})--玩家当前坐标
         PlayerButton.Text:SetPoint('LEFT',PlayerButton.edit, 'RIGHT', 2, 0)
         PlayerButton:HookScript("OnUpdate", function (self, elapsed)
             self.elapsed = (self.elapsed or 1) + elapsed
@@ -646,7 +646,7 @@ local function set_Widget_Text_OnUpDate(self, elapsed)
             local time= C_AreaPoiInfo.GetAreaPOISecondsLeft(self.updateAreaPoiID)
             if time and time>0 then
                 if time<86400 then
-                    self.Text:SetText(e.SecondsToClock(time))
+                    self.Text:SetText(WoWTools_TimeMixin:SecondsToClock(time))
                 else
                     self.Text:SetText(SecondsToTime(time, true))
                 end

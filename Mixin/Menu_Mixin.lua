@@ -251,7 +251,7 @@ function WoWTools_MenuMixin:Reload(root, isControlKeyDown)
         ..(e.onlyChinese and '重新加载UI' or RELOADUI),
     function(data)
         if data and IsControlKeyDown() or not data then
-            e.Reload()
+            WoWTools_Mixin:Reload()
         end
     end, isControlKeyDown)
     sub:SetTooltip(function(tooltip, desc)

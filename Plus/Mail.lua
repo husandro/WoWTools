@@ -76,14 +76,14 @@ end
 local function get_Name_Info(name)--取得名称，信息
     if name then
         local reName
-        name = e.GetUnitName(name)--取得全名
+        name = WoWTools_UnitMixin:GetFullName(name)--取得全名
         for guid, tab in pairs(e.WoWDate) do
-            if name== e.GetUnitName(nil, nil, guid) then
-                reName= '|A:auctionhouse-icon-favorite:0:0|a'..e.GetPlayerInfo({guid=guid, faction=tab.faction, reName=true, realm=true})
+            if name== WoWTools_UnitMixin:GetFullName(nil, nil, guid) then
+                reName= '|A:auctionhouse-icon-favorite:0:0|a'..WoWTools_UnitMixin:GetPlayerInfo({guid=guid, faction=tab.faction, reName=true, realm=true})
                 break
             end
         end
-        reName= reName or e.GetPlayerInfo({name=name, reName=true, reRealm=true})
+        reName= reName or WoWTools_UnitMixin:GetPlayerInfo({name=name, reName=true, reRealm=true})
         return reName and reName:gsub('%-'..e.Player.realm, '') or name
     end
 end
@@ -127,7 +127,7 @@ local function check_Enabled_Item(classID, subClassID, findString, bag, slot)
             )
         then
             if class==2 or class==4 then--幻化
-                local text, isCollected =e.GetItemCollected(info.hyperlink)
+                local text, isCollected =WoWTools_CollectedMixin:Item(info.hyperlink)
                 if text and not isCollected then
                     return info
                 end
@@ -163,10 +163,10 @@ local function Init_Menu(_, level, menuList)
         local find
         for guid, _ in pairs(e.WoWDate) do
             if guid and guid~= e.Player.guid then
-                local name= e.GetUnitName(nil, nil, guid)
+                local name= WoWTools_UnitMixin:GetFullName(nil, nil, guid)
                 if not Get_Realm_Info(name) then
                     e.LibDD:UIDropDownMenu_AddButton({
-                        text= e.GetPlayerInfo({guid=guid, reName=true, reRealm=true}),
+                        text= WoWTools_UnitMixin:GetPlayerInfo({guid=guid, reName=true, reRealm=true}),
                         icon= 'auctionhouse-icon-favorite',
                         tooltipOnButton=true,
                         tooltipTitle=name,
@@ -189,9 +189,9 @@ local function Init_Menu(_, level, menuList)
         for i=1 , C_FriendList.GetNumFriends() do
             local game=C_FriendList.GetFriendInfoByIndex(i)
             if game and game.guid and (game.connected or Save.show['FRIEND']) and not e.WoWDate[game.guid] then
-                local name= e.GetUnitName(nil, nil, game.guid)
+                local name= WoWTools_UnitMixin:GetFullName(nil, nil, game.guid)
                 if not Get_Realm_Info(name) then
-                    local text= e.GetPlayerInfo({guid=game.guid, reName=true, reRealm=true})--角色信息
+                    local text= WoWTools_UnitMixin:GetPlayerInfo({guid=game.guid, reName=true, reRealm=true})--角色信息
                     text= (game.level and game.level~=maxLevel and game.level>0) and text .. ' |cff00ff00'..game.level..'|r' or text--等级
                     if game.area and game.connected then
                         text= text..' '..game.area
@@ -240,9 +240,9 @@ local function Init_Menu(_, level, menuList)
                 and wowInfo.wowProjectID==1
                 and wowInfo.isOnline
             then
-                local name= e.GetUnitName(wowInfo.characterName, nil, wowInfo.playerGuid)
+                local name= WoWTools_UnitMixin:GetFullName(wowInfo.characterName, nil, wowInfo.playerGuid)
                 if not Get_Realm_Info(name) then
-                    local text= e.GetPlayerInfo({guid=wowInfo.playerGuid, reName=true, reRealm=true, factionName=wowInfo.factionName})--角色信息
+                    local text= WoWTools_UnitMixin:GetPlayerInfo({guid=wowInfo.playerGuid, reName=true, reRealm=true, factionName=wowInfo.factionName})--角色信息
 
                     if wowInfo.characterLevel and wowInfo.characterLevel~=maxLevel and wowInfo.characterLevel>0 then--等级
                         text=text ..' |cff00ff00'..wowInfo.characterLevel..'|r'
@@ -277,7 +277,7 @@ local function Init_Menu(_, level, menuList)
             local name, rankName, rankIndex, lv, _, zone, publicNote, officerNote, isOnline, status, _, _, _, _, _, _, guid = GetGuildRosterInfo(index)
             if name and guid and (isOnline or rankIndex<2 or (Save.show['GUILD'] and num<60)) and not e.WoWDate[guid] then
 
-                local text= e.GetPlayerInfo({guid=guid, reName=true, reRealm=true,})--角色信息
+                local text= WoWTools_UnitMixin:GetPlayerInfo({guid=guid, reName=true, reRealm=true,})--角色信息
 
                 text= (lv and lv~=maxLevel and lv>0) and text .. ' |cff00ff00'..lv..'|r' or text--等级
                 if zone and isOnline then
@@ -331,7 +331,7 @@ local function Init_Menu(_, level, menuList)
             local unit= u..i
             if UnitExists(unit) and not UnitIsUnit('player', unit) then
                 local name= GetUnitName(unit, true)
-                local text=  i..')'.. (i<10 and '  ' or ' ')..e.GetPlayerInfo({unit= unit, reName=true, reRealm=true})
+                local text=  i..')'.. (i<10 and '  ' or ' ')..WoWTools_UnitMixin:GetPlayerInfo({unit= unit, reName=true, reRealm=true})
 
                 local lv= UnitLevel(unit)
                 text= (lv and lv~=GetMaxLevelForPlayerExpansion() and lv>0) and text .. ' |cff00ff00'..lv..'|r' or text--等级
@@ -365,7 +365,7 @@ local function Init_Menu(_, level, menuList)
             if tab.guid and tab.name and (tab.zone or tab.role<4 or (Save.show[menuList] and num<60)) and not e.WoWDate[tab.guid] then
                 if not Get_Realm_Info(tab.name) then
                     local faction= tab.faction==Enum.PvPFaction.Alliance and 'Alliance' or tab.faction==Enum.PvPFaction.Horde and 'Horde'
-                    local  text= e.GetPlayerInfo({guid=tab.guid,  reName=true, reRealm=true, factionName=faction})--角色信息
+                    local  text= WoWTools_UnitMixin:GetPlayerInfo({guid=tab.guid,  reName=true, reRealm=true, factionName=faction})--角色信息
 
                     text= (tab.level and tab.level~=maxLevel and tab.level>0) and text .. ' |cff00ff00'..tab.level..'|r' or text--等级
                     if tab.zone then
@@ -672,7 +672,7 @@ local function Init_Fast_Menu(frame, level, menuList)
                 if class and sub then
                     local find=true
                     if class==2 or class==4 then--幻化
-                        local text, isCollected= e.GetItemCollected(info2.hyperlink)
+                        local text, isCollected= WoWTools_CollectedMixin:Item(info2.hyperlink)
                         if not text or isCollected then
                             find= false
                         end
@@ -760,11 +760,11 @@ local function Init_Fast_Button_Menu(frame, level, menuList)
         local name= Save.fast[self.name]
         local tab= {}
         for guid, _ in pairs(e.WoWDate) do
-            local playerName= e.GetUnitName(nil, nil, guid)
+            local playerName= WoWTools_UnitMixin:GetFullName(nil, nil, guid)
             if playerName then
                 local realm= Get_Realm_Info(playerName)
                 local info= {
-                    text= e.GetPlayerInfo({guid=guid, reName=true, reRealm=true}),
+                    text= WoWTools_UnitMixin:GetPlayerInfo({guid=guid, reName=true, reRealm=true}),
                     checked= name and name==playerName,
                     icon= realm and 'quest-legendary-available',
                     tooltipOnButton=true,
@@ -798,9 +798,9 @@ local function Init_Fast_Button_Menu(frame, level, menuList)
     end
 
     local playerName= Save.fast[self.name]
-    local newName= e.GetUnitName(SendMailNameEditBox:GetText())
+    local newName= WoWTools_UnitMixin:GetFullName(SendMailNameEditBox:GetText())
     e.LibDD:UIDropDownMenu_AddButton({
-        text=icon..self.name..': '..(playerName and e.GetPlayerInfo({name=playerName, reName=true}) or format('|cff9e9e9e%s|r', e.onlyChinese and '无' or NONE)),
+        text=icon..self.name..': '..(playerName and WoWTools_UnitMixin:GetPlayerInfo({name=playerName, reName=true}) or format('|cff9e9e9e%s|r', e.onlyChinese and '无' or NONE)),
         notCheckable=true,
         colorCode= not playerName and '|cff9e9e9e',
         isTitle=true,
@@ -997,9 +997,9 @@ local function Init_Fast_Button()
             btn.name= tab[4] or not tab[3] and C_Item.GetItemClassInfo(tab[2]) or C_Item.GetItemSubClassInfo(tab[2], tab[3])
             btn.findString= tab[5]
 
-            btn.Text= e.Cstr(btn, {size=10})
+            btn.Text= WoWTools_LabelMixin:CreateLabel(btn, {size=10})
             btn.Text:SetPoint('TOPLEFT')
-            btn.Text2= e.Cstr(btn, {size=10})
+            btn.Text2= WoWTools_LabelMixin:CreateLabel(btn, {size=10})
             btn.Text2:SetPoint('BOTTOMRIGHT')
             btn.playerTexture= btn:CreateTexture(nil, 'OVERLAY')
             btn.playerTexture:SetAtlas('AnimaChannel-Bar-Necrolord-Gem')
@@ -1131,7 +1131,7 @@ local function get_Money(num)
     local text
     if num and num>0 then
         if num>=1e4 then
-            text= e.MK(num/1e4, 2)..'|TInterface/moneyframe/ui-goldicon:0|t'
+            text= WoWTools_Mixin:MK(num/1e4, 2)..'|TInterface/moneyframe/ui-goldicon:0|t'
         else
             text= GetMoneyString(num)
         end
@@ -1181,7 +1181,7 @@ local function return_delete_InBox(openMailID)--删除，或退信
 
     print('|cFFFF00FF'..openMailID..')|r',
         ((icon and not itemName) and '|T'..icon..':0|t' or '')..delOrRe,
-        e.PlayerLink(sender, nil, true),
+        WoWTools_UnitMixin:GetLink(sender, nil, true),
         subject,
         itemName or '',
         (money and money>0) and GetMoneyString(money, true) or '',
@@ -1236,7 +1236,7 @@ local function set_Tooltips_DeleteAll(self, del)--所有，删除，退信，提
                     end
                 end
                 if allCount>1 then
-                    e.tips:AddDoubleLine(' ', '#'..e.MK(allCount, 3))
+                    e.tips:AddDoubleLine(' ', '#'..WoWTools_Mixin:MK(allCount, 3))
                 end
                 e.tips:AddLine(' ')
             end
@@ -1298,7 +1298,7 @@ local function eventEnter(self, get)--enter 提示，删除，或退信，按钮
         text2= e.onlyChinese and '退信' or MAIL_RETURN
     end
     local icon= packageIcon or stationeryIcon
-    e.tips:AddLine('|cffff00ff'..self.openMailID..' |r'..(icon and '|T'..icon..':0|t')..text2..(allCount>1 and ' |cnGREEN_FONT_COLOR:'..e.MK(allCount,3)..'|r'..(e.onlyChinese and '物品' or ITEMS) or ''))
+    e.tips:AddLine('|cffff00ff'..self.openMailID..' |r'..(icon and '|T'..icon..':0|t')..text2..(allCount>1 and ' |cnGREEN_FONT_COLOR:'..WoWTools_Mixin:MK(allCount,3)..'|r'..(e.onlyChinese and '物品' or ITEMS) or ''))
     e.tips:Show()
 end
 
@@ -1403,7 +1403,7 @@ local function Init_InBox()
                 --信件，索引，提示
                 if not _G['PostalSelectReturnButton'] then
                     if not btn.indexText and not Save.hide then
-                        btn.indexText= e.Cstr(btn, {alpha= 0.5})
+                        btn.indexText= WoWTools_LabelMixin:CreateLabel(btn, {alpha= 0.5})
                         btn.indexText:SetPoint('RIGHT', btn, 'LEFT',-2,0)
                     end
                     if btn.indexText then
@@ -1418,7 +1418,7 @@ local function Init_InBox()
                     btn.CODAmountTips:SetPoint('BOTTOM', _G['MailItem'..i], 0,-4)
                     btn.CODAmountTips:SetAtlas('jailerstower-wayfinder-rewardbackground-selected')
                     btn.CODAmountTips:EnableMouse(true)
-                    btn.moneyPagaTip= e.Cstr(btn)--文本
+                    btn.moneyPagaTip= WoWTools_LabelMixin:CreateLabel(btn)--文本
                     btn.moneyPagaTip:SetPoint('CENTER', btn.CODAmountTips)
                     btn.moneyPagaTip:EnableMouse(true)
                 end
@@ -1482,7 +1482,7 @@ local function Init_InBox()
                     end)
 
                     --移过时，提示，选中，信件
-                    btn.DeleteButton.numItemLabel= e.Cstr(btn.DeleteButton)
+                    btn.DeleteButton.numItemLabel= WoWTools_LabelMixin:CreateLabel(btn.DeleteButton)
                     btn.DeleteButton.numItemLabel:SetPoint('BOTTOMRIGHT')
                     btn.enterTipTexture= btn:CreateTexture(nil, 'OVERLAY', nil, 7)
                     btn.enterTipTexture:SetAtlas('jailerstower-wayfinder-rewardbackground-selected')
@@ -1600,7 +1600,7 @@ local function Init_InBox()
                 end)
             end)
 
-            InboxFrame.DeleteAllButton.Text= e.Cstr(InboxFrame.DeleteAllButton)
+            InboxFrame.DeleteAllButton.Text= WoWTools_LabelMixin:CreateLabel(InboxFrame.DeleteAllButton)
             InboxFrame.DeleteAllButton.Text:SetPoint('BOTTOMRIGHT')
         end
         if InboxFrame.DeleteAllButton then
@@ -1639,7 +1639,7 @@ local function Init_InBox()
                 end)
             end)
 
-            InboxFrame.ReAllButton.Text= e.Cstr(InboxFrame.ReAllButton)
+            InboxFrame.ReAllButton.Text= WoWTools_LabelMixin:CreateLabel(InboxFrame.ReAllButton)
             InboxFrame.ReAllButton.Text:SetPoint('BOTTOMRIGHT')
         end
         if InboxFrame.ReAllButton then
@@ -1669,7 +1669,7 @@ local function Init_InBox()
                     ..(allCODAmount>0 and '|cnRED_FONT_COLOR:'.. get_Money(allCODAmount)..'|r'..(e.onlyChinese and '付款' or COD)..' ' or '')--总，要付款钱
             end
             if not InboxFrame.AllTipsLable then
-                InboxFrame.AllTipsLable= e.Cstr(InboxFrame)
+                InboxFrame.AllTipsLable= WoWTools_LabelMixin:CreateLabel(InboxFrame)
                 InboxFrame.AllTipsLable:SetPoint('TOP', 20, -48)
 
                 MailFrameTrialError:ClearAllPoints()--你需要升级你的账号才能开启这项功能。
@@ -1700,7 +1700,7 @@ local function Init_InBox()
         if sender then
             local newName= get_Name_Info(sender)
             if newName~=sender and not OpenMailFrame.sendTips and not Save.hide then
-                OpenMailFrame.sendTips= e.Cstr(OpenMailFrame)
+                OpenMailFrame.sendTips= WoWTools_LabelMixin:CreateLabel(OpenMailFrame)
                 OpenMailFrame.sendTips:SetPoint('BOTTOMLEFT', OpenMailSender.Name, 'TOPLEFT')
             end
             if OpenMailFrame.sendTips then
@@ -1719,7 +1719,7 @@ local function Init_InBox()
             OpenMailFrame.CODAmountTips:SetSize(150, 25)
             OpenMailFrame.CODAmountTips:SetPoint('BOTTOM',0, 68)
             OpenMailFrame.CODAmountTips:SetAtlas('jailerstower-wayfinder-rewardbackground-selected')
-            OpenMailFrame.moneyPagaTip= e.Cstr(OpenMailFrame)
+            OpenMailFrame.moneyPagaTip= WoWTools_LabelMixin:CreateLabel(OpenMailFrame)
             OpenMailFrame.moneyPagaTip:SetPoint('CENTER', OpenMailFrame.CODAmountTips)
 
         end
@@ -1937,13 +1937,13 @@ end
 
 local function Init_Edit_Letter_Num()--字数
     --收件人
-    SendMailNameEditBox.playerTipsLable= e.Cstr(SendMailNameEditBox, {justifyH='CENTER', size=10})
+    SendMailNameEditBox.playerTipsLable= WoWTools_LabelMixin:CreateLabel(SendMailNameEditBox, {justifyH='CENTER', size=10})
     SendMailNameEditBox.playerTipsLable:SetPoint('BOTTOM', SendMailNameEditBox, 'TOP',0,-3)
     function SendMailNameEditBox:save_log()--保存内容
-        Save.lastSendPlayer= Save.logSendInfo and e.GetUnitName(self:GetText()) or nil--收件人
+        Save.lastSendPlayer= Save.logSendInfo and WoWTools_UnitMixin:GetFullName(self:GetText()) or nil--收件人
     end
     SendMailNameEditBox:HookScript('OnTextChanged', function(self)
-        local name= e.GetUnitName(self:GetText())
+        local name= WoWTools_UnitMixin:GetFullName(self:GetText())
         local text= Get_Realm_Info(name) or ''
         if text=='' then
             text= get_Name_Info(name) or text
@@ -1956,7 +1956,7 @@ local function Init_Edit_Letter_Num()--字数
     end)
 
     --主题
-    SendMailSubjectEditBox.numLetters= e.Cstr(SendMailSubjectEditBox)
+    SendMailSubjectEditBox.numLetters= WoWTools_LabelMixin:CreateLabel(SendMailSubjectEditBox)
     SendMailSubjectEditBox.numLetters:SetPoint('RIGHT')
     SendMailSubjectEditBox.numLetters:SetAlpha(0)
     function SendMailSubjectEditBox:save_log()--保存内容
@@ -1979,7 +1979,7 @@ local function Init_Edit_Letter_Num()--字数
     end)
 
     --内容
-    SendMailBodyEditBox.numLetters= e.Cstr(SendMailBodyEditBox)
+    SendMailBodyEditBox.numLetters= WoWTools_LabelMixin:CreateLabel(SendMailBodyEditBox)
     SendMailBodyEditBox.numLetters:SetPoint('BOTTOMRIGHT')
     SendMailBodyEditBox.numLetters:SetAlpha(0)
     function SendMailBodyEditBox:wowtools_settings()
@@ -2048,7 +2048,7 @@ function Init_Send_Name_List()
         e.tips:AddDoubleLine(e.addName, Initializer:GetName())
         e.tips:AddLine(' ')
         e.tips:AddLine(e.onlyChinese and '目标' or TARGET)
-        e.tips:AddDoubleLine(e.onlyChinese and '收件人：' or MAIL_TO_LABEL, e.GetPlayerInfo({unit='target', reName=true, reRealm=true}))
+        e.tips:AddDoubleLine(e.onlyChinese and '收件人：' or MAIL_TO_LABEL, WoWTools_UnitMixin:GetPlayerInfo({unit='target', reName=true, reRealm=true}))
         if self.tooltip then
             e.tips:AddLine(self.tooltip)
         end
@@ -2058,14 +2058,14 @@ function Init_Send_Name_List()
     function listButton:settings()
         local name
         if UnitExists('target') and UnitIsPlayer('target') and not UnitIsUnit('player', 'target') then
-            name= e.GetUnitName(nil, 'target', nil)--取得全名
+            name= WoWTools_UnitMixin:GetFullName(nil, 'target', nil)--取得全名
             if name then
                 local atlas, texture
                 local index= GetRaidTargetIndex('target') or 0
                 if index>0 and index<9 then
                     texture= 'Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index
                 else
-                    atlas= e.GetUnitRaceInfo({unit= 'target', reAtlas=true})
+                    atlas= WoWTools_UnitMixin:GetRaceIcon({unit= 'target', reAtlas=true})
                 end
                 if texture then
                     self.btn:SetNormalTexture(texture)
@@ -2148,14 +2148,14 @@ local function Init_Send_History_Name()--收件人，历史记录
     historyButton.frame= CreateFrame('Frame', nil, historyButton)
     historyButton.frame:SetPoint('BOTTOMRIGHT')
     historyButton.frame:SetSize(1,1)
-    historyButton.Text= e.Cstr(historyButton, {justifyH='RIGHT', color={r=1,g=1,b=1}})--列表，数量
+    historyButton.Text= WoWTools_LabelMixin:CreateLabel(historyButton, {justifyH='RIGHT', color={r=1,g=1,b=1}})--列表，数量
     historyButton.Text:SetPoint('BOTTOMRIGHT', 2, -2)
 
     historyButton.buttons={}
     function historyButton:created_button(index)
         local btn= WoWTools_ButtonMixin:Cbtn(self.frame, {size={22, 14}, icon='hide'})
         btn:SetPoint('TOPRIGHT', self.frame, 'BOTTOMRIGHT', 0, -(index-1)*14)
-        btn.Text= e.Cstr(btn, {justifyH='RIGHT'})
+        btn.Text= WoWTools_LabelMixin:CreateLabel(btn, {justifyH='RIGHT'})
         btn.Text:SetPoint('RIGHT', -2, 0)
 
         btn:SetScript('OnLeave', function(frame) e.tips:Hide() frame:set_alpha() end)
@@ -2241,7 +2241,7 @@ local function Init_Send_History_Name()--收件人，历史记录
         end
     end)
     SendMailMailButton:HookScript('OnClick', function(self)
-        self.historyButton.SendName= e.GetUnitName(SendMailNameEditBox:GetText())
+        self.historyButton.SendName= WoWTools_UnitMixin:GetFullName(SendMailNameEditBox:GetText())
     end)
 
 
@@ -2364,7 +2364,7 @@ end
 function Init_Clear_All_Send_Items()--清除所有，要发送物品
     local clearSendItem=WoWTools_ButtonMixin:Cbtn(SendMailAttachment7, {size=22, atlas='bags-button-autosort-up'})
     clearSendItem:SetPoint('BOTTOMRIGHT', SendMailAttachment7, 'TOPRIGHT')--,0, -4)
-    clearSendItem.Text= e.Cstr(clearSendItem)
+    clearSendItem.Text= WoWTools_LabelMixin:CreateLabel(clearSendItem)
     clearSendItem.Text:SetPoint('BOTTOMRIGHT', clearSendItem, 'BOTTOMLEFT',0, 4)
     clearSendItem:SetScript('OnClick', function()
         for i= 1, ATTACHMENTS_MAX_SEND do
@@ -2419,7 +2419,7 @@ function Init_Clear_All_Send_Items()--清除所有，要发送物品
     for i=1, ATTACHMENTS_MAX_SEND do--索引，提示
         btn= _G['SendMailAttachment'..i]
         if btn then
-            btn.indexLable= e.Cstr(btn, {layer='BORDER'})
+            btn.indexLable= WoWTools_LabelMixin:CreateLabel(btn, {layer='BORDER'})
             btn.indexLable:SetPoint('CENTER')
             btn.indexLable:SetAlpha(0.3)
             btn.indexLable:SetText(i)

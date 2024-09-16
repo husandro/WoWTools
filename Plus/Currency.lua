@@ -95,7 +95,7 @@ local function Get_Item(itemID)
 
 		local numText
 		if bag==num then
-			numText= e.MK(num, 3)
+			numText= WoWTools_Mixin:MK(num, 3)
 		else
 			local bank= num-bag
 			if bank==0 then
@@ -133,7 +133,7 @@ end
 
 --货币
 local function Get_Currency(currencyID, index)
-	local info, num, total, percent, isMax, canWeek, canEarned, canQuantity= e.GetCurrencyMaxInfo(currencyID, index)
+	local info, num, total, percent, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:Get(currencyID, index)
 
 	local text
     if not info
@@ -158,7 +158,7 @@ local function Get_Currency(currencyID, index)
 		need= format('(%d%%)', percent)
 	end
 
-	num= e.MK(num, 3)
+	num= WoWTools_Mixin:MK(num, 3)
 
 	local max
 	if isMax then
@@ -293,7 +293,7 @@ local function Set_TrackButton_Text()
 				--btn.border:SetPoint('CENTER',-0.5,0.5)
 			end
 
-			btn.text= e.Cstr(btn, {color={r=1,g=1,b=1}})
+			btn.text= WoWTools_LabelMixin:CreateLabel(btn, {color={r=1,g=1,b=1}})
 
 
 			if Save.toTopTrack then
@@ -348,7 +348,7 @@ local function Set_TrackButton_Text()
 			end)
 			btn:SetScript("OnMouseDown", function(self)
 				if self.currencyID then
-					e.Chat(C_CurrencyInfo.GetCurrencyLink(self.currencyID), nil, true)
+					WoWTools_ChatMixin:Chat(C_CurrencyInfo.GetCurrencyLink(self.currencyID), nil, true)
 					return
 				end
 				if not self.itemID or not IsAltKeyDown() or C_Item.GetItemCount(self.itemID)==0 then return end
@@ -518,7 +518,7 @@ local function MenuList_Item(level)
 		tooltipText= (e.onlyChinese and '重新加载UI' or RELOADUI)..'|n'..SLASH_RELOAD1,
 		func= function()
 			Save.itemButtonUse= not Save.itemButtonUse and true or nil
-			e.Reload()
+			WoWTools_Mixin:Reload()
 		end
 	}
 	e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -753,7 +753,7 @@ local function Init_TrackButton()
 						disabled= UnitAffectingCombat('player'),
 						func= function()
 							Save.toTopTrack = not Save.toTopTrack and true or nil
-							e.Reload()
+							WoWTools_Mixin:Reload()
 						end
 					}
 					e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -916,7 +916,7 @@ local function set_ItemInteractionFrame_Currency(self)
         text= text.. info.quantity
         text= info.maxQuantity and text..'/'..info.maxQuantity or text
         if not self.ItemInteractionFrameCurrencyText then
-            self.ItemInteractionFrameCurrencyText= e.Cstr(self)
+            self.ItemInteractionFrameCurrencyText= WoWTools_LabelMixin:CreateLabel(self)
             self.ItemInteractionFrameCurrencyText:SetPoint('TOPLEFT', 55, -38)
 			self.ItemInteractionFrameCurrencyText:EnableMouse(true)
 			self.ItemInteractionFrameCurrencyText:SetScript('OnEnter', function(self2)
@@ -937,7 +937,7 @@ local function set_ItemInteractionFrame_Currency(self)
         local timeToNextCharge = chargeInfo.timeToNextCharge
 
         if timeToNextCharge and (self.interactionType == Enum.UIItemInteractionType.ItemConversion) then
-            text= text ..' |cnGREEN_FONT_COLOR:'..(e.SecondsToClock(timeToNextCharge, true) or '')..'|r'
+            text= text ..' |cnGREEN_FONT_COLOR:'..(WoWTools_TimeMixin:SecondsToClock(timeToNextCharge, true) or '')..'|r'
         end
 
 		if info.canEarnPerWeek and info.maxWeeklyQuantity and info.maxWeeklyQuantity>0 then
@@ -974,7 +974,7 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 		return
 	end
 
-	local info, _, _, percent, isMax, canWeek, canEarned, canQuantity= e.GetCurrencyMaxInfo(nil, data.currencyIndex)
+	local info, _, _, percent, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:Get(nil, data.currencyIndex)
 	if not info or info.isHealer then
 		if frame.check then
 			frame.check:SetShown(false)
@@ -1048,7 +1048,7 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 	end
 
 	if percent and not frame.percentText then
-		frame.percentText= e.Cstr(frame, {color={r=1,g=1,b=1}})
+		frame.percentText= WoWTools_LabelMixin:CreateLabel(frame, {color={r=1,g=1,b=1}})
 		frame.percentText:SetPoint('RIGHT', frame.Content.Count, 'LEFT')
 	end
 
@@ -1325,12 +1325,12 @@ local function Init_Currency_Transfer()
         end
 		for _, btn in pairs(self:GetFrames() or {}) do
 			local data= btn.transactionData or {}
-			local name= e.GetPlayerInfo({guid=data.sourceCharacterGUID, reName=true, reRealm=true})
+			local name= WoWTools_UnitMixin:GetPlayerInfo({guid=data.sourceCharacterGUID, reName=true, reRealm=true})
 			if name~='' then
 				btn.SourceName:SetText(name)
 			end
 
-			name= e.GetPlayerInfo({guid=data.destinationCharacterGUID, reName=true, reRealm=true})
+			name= WoWTools_UnitMixin:GetPlayerInfo({guid=data.destinationCharacterGUID, reName=true, reRealm=true})
 			if name~='' then
 				btn.DestinationName:SetText(name)
 			end
@@ -1341,7 +1341,7 @@ local function Init_Currency_Transfer()
 	CurrencyTransferMenuCloseButton:SetFrameStrata('HIGH')
 
 	hooksecurefunc(CurrencyTransferMenu.SourceSelector, 'RefreshPlayerName', function(self)--收取人，我 提示		
-		local name= e.GetPlayerInfo({guid=e.Player.guid, reName=true})
+		local name= WoWTools_UnitMixin:GetPlayerInfo({guid=e.Player.guid, reName=true})
 		if name~='' then
 			self.PlayerName:SetFormattedText(e.onlyChinese and '收取人 %s' or CURRENCY_TRANSFER_DESTINATION, name)
 		end
@@ -1349,13 +1349,13 @@ local function Init_Currency_Transfer()
 
 	hooksecurefunc(CurrencyTransferMenu.SourceBalancePreview, 'SetCharacterName', function(self)
 		local data= self:GetParent().sourceCharacterData or {}
-		local name= e.GetPlayerInfo({guid=data.characterGUID, reName=true, reRealm=true})
+		local name= WoWTools_UnitMixin:GetPlayerInfo({guid=data.characterGUID, reName=true, reRealm=true})
 		if name~='' then
 			self.Label:SetFormattedText(e.onlyChinese and '%s |cnRED_FONT_COLOR:的新余额|r' or CURRENCY_TRANSFER_NEW_BALANCE_PREVIEW, name)
 		end
     end)
     hooksecurefunc(CurrencyTransferMenu.PlayerBalancePreview, 'SetCharacterName', function(self)
-		local name= e.GetPlayerInfo({guid=e.Player.guid, reName=true, reRealm=true})
+		local name= WoWTools_UnitMixin:GetPlayerInfo({guid=e.Player.guid, reName=true, reRealm=true})
 		if name~='' then
 			self.Label:SetFormattedText(e.onlyChinese and '%s |cnGREEN_FONT_COLOR:的新余额|r' or CURRENCY_TRANSFER_NEW_BALANCE_PREVIEW, name)
 		end
@@ -1559,21 +1559,21 @@ local function Init()
 			if self.currencyMax[curID] then
 				return
 			end
-			local info, num, total, percent, isMax, canWeek, canEarned, canQuantity= e.GetCurrencyMaxInfo(curID, nil)
+			local info, num, total, percent, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:Get(curID, nil)
 			if info and isMax then
 				tab[info.currencyID]= info.link
 			end
 		else
 			for currencyID, _ in pairs(Save.tokens) do
 				if not self.currencyMax[currencyID] then
-					local info, _, total, percent, isMax, canWeek, canEarned, canQuantity= e.GetCurrencyMaxInfo(currencyID, nil)
+					local info, _, total, percent, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:Get(currencyID, nil)
 					if info and isMax then
 						tab[currencyID]= info.link
 					end
 				end
 			end
 			for i=1, C_CurrencyInfo.GetCurrencyListSize() do
-				local info, num, total, percent, isMax, canWeek, canEarned, canQuantity= e.GetCurrencyMaxInfo(nil, i)
+				local info, num, total, percent, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:Get(nil, i)
 				if info
 					and not self.currencyMax[info.currencyID]
 					and isMax

@@ -60,7 +60,7 @@ local function send(text, d)--发送信息
         ChatFrameEditBox:Insert(text)
 
     elseif d=='RightButton' then
-        e.Chat(text, nil, nil)
+        WoWTools_ChatMixin:Chat(text, nil, nil)
     end
 end
 

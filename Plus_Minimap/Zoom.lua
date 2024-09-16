@@ -135,7 +135,7 @@ local function Init()
         end
     end)
 
-    Minimap.viewRadius=e.Cstr(Minimap, {color=true, justifyH='CENTER', mouse=true})
+    Minimap.viewRadius=WoWTools_LabelMixin:CreateLabel(Minimap, {color=true, justifyH='CENTER', mouse=true})
     Minimap.viewRadius:SetPoint('BOTTOMLEFT', Minimap, 'BOTTOM', 8, -8)
     Minimap.viewRadius:SetAlpha(0.5)
     Minimap.viewRadius:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.5) end)
@@ -148,7 +148,7 @@ local function Init()
         self:SetAlpha(1)
     end)
 
-    Minimap.zoomText= e.Cstr(Minimap, {color=true, mouse=true})
+    Minimap.zoomText= WoWTools_LabelMixin:CreateLabel(Minimap, {color=true, mouse=true})
     Minimap.zoomText:SetPoint('BOTTOM', Minimap.ZoomOut, 'TOP', 3, 0)
     Minimap.zoomText:SetAlpha(0.5)
     Minimap.zoomText:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.5) end)

@@ -75,7 +75,7 @@ function e.ReloadPanel(tab)
         reload:SetNormalTexture('Interface\\Vehicles\\UI-Vehicles-Button-Exit-Up')
         reload:SetPushedTexture('Interface\\Vehicles\\UI-Vehicles-Button-Exit-Down')
         reload:SetPoint('TOPLEFT',-12, 8)
-        reload:SetScript('OnClick', function() e.Reload() end)
+        reload:SetScript('OnClick', function() WoWTools_Mixin:Reload() end)
         reload.addName=tab.addName
         reload:SetScript('OnLeave', GameTooltip_Hide)
         reload:SetScript('OnEnter', function(self)
@@ -109,7 +109,7 @@ function e.ReloadPanel(tab)
         end)
     end
     if tab.restTips then
-        local needReload= e.Cstr(tab.panel)
+        local needReload= WoWTools_LabelMixin:CreateLabel(tab.panel)
         needReload:SetText(format('|A:%s:0:0|a', e.Icon.toRight)..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)..format('|A:%s:0:0|a', e.Icon.toLeft))
         needReload:SetPoint('BOTTOMRIGHT')
         needReload:SetTextColor(0,1,0)
@@ -543,7 +543,7 @@ function  e.Add_Panel_RestData_Button(root, SetValue)
             button2= e.onlyChinese and '取消' or CANCEL,
             OnAccept = function(_, setValue)
                 setValue()
-                e.Reload()
+                WoWTools_Mixin:Reload()
             end,
         }
     end
@@ -609,7 +609,7 @@ local function Init_Options()
                 nil,
                 function()
                     e.ClearAllSave=true
-                    e.Reload()
+                    WoWTools_Mixin:Reload()
                 end
             )
         end
@@ -625,7 +625,7 @@ local function Init_Options()
                 nil,
                 function()
                     e.WoWDate={}
-                    e.Reload()
+                    WoWTools_Mixin:Reload()
                 end
             )
         end
@@ -644,13 +644,13 @@ local function Init_Options()
                 local valueR, valueG, valueB, valueA= Save.useCustomColorTab.r, Save.useCustomColorTab.g, Save.useCustomColorTab.b, Save.useCustomColorTab.a
                 local setA, setR, setG, setB
                 local function func()
-                    local hex=e.RGB_to_HEX(setR, setG, setB, setA)--RGB转HEX
+                    local hex=WoWTools_ColorMixin:RGBtoHEX(setR, setG, setB, setA)--RGB转HEX
                     Save.useCustomColorTab={r=setR, g=setG, b=setB, a=setA, hex= '|c'..hex }
                     Set_Color()--自定义，颜色
                     print(e.Player.useColor and e.Player.useColor.hex or '', id, e.cn(addName),   e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
-                e.ShowColorPicker(valueR, valueG, valueB, valueA, function()
-                        setR, setG, setB, setA= e.Get_ColorFrame_RGBA()
+                WoWTools_ColorMixin:ShowColorFrame(valueR, valueG, valueB, valueA, function()
+                        setR, setG, setB, setA= WoWTools_ColorMixin:Get_ColorFrameRGBA()
                         func()
                     end, function()
                         setR, setG, setB, setA= valueR, valueG, valueB, valueA
@@ -759,14 +759,14 @@ end
 
 local function Init()
     e.StausText={
-        [ITEM_MOD_HASTE_RATING_SHORT]= e.onlyChinese and '急' or e.WA_Utf8Sub(STAT_HASTE, 1, 2, true),
-        [ITEM_MOD_CRIT_RATING_SHORT]= e.onlyChinese and '爆' or e.WA_Utf8Sub(STAT_CRITICAL_STRIKE, 1, 2, true),
-        [ITEM_MOD_MASTERY_RATING_SHORT]= e.onlyChinese and '精' or e.WA_Utf8Sub(STAT_MASTERY, 1, 2, true),
-        [ITEM_MOD_VERSATILITY]= e.onlyChinese and '全' or e.WA_Utf8Sub(STAT_VERSATILITY, 1, 2, true),
-        [ITEM_MOD_CR_AVOIDANCE_SHORT]= e.onlyChinese and '闪' or e.WA_Utf8Sub(STAT_AVOIDANCE, 1, 2, true),
-        [ITEM_MOD_CR_LIFESTEAL_SHORT]= e.onlyChinese and '吸' or e.WA_Utf8Sub(STAT_LIFESTEAL, 1, 2, true),
-        [ITEM_MOD_CR_SPEED_SHORT]=e.onlyChinese and '速' or e.WA_Utf8Sub(SPEED, 1,2,true),
-        --[ITEM_MOD_EXTRA_ARMOR_SHORT]= e.onlyChinese and '护' or e.WA_Utf8Sub(ARMOR, 1,2,true)
+        [ITEM_MOD_HASTE_RATING_SHORT]= e.onlyChinese and '急' or WoWTools_Mixin:sub(STAT_HASTE, 1, 2, true),
+        [ITEM_MOD_CRIT_RATING_SHORT]= e.onlyChinese and '爆' or WoWTools_Mixin:sub(STAT_CRITICAL_STRIKE, 1, 2, true),
+        [ITEM_MOD_MASTERY_RATING_SHORT]= e.onlyChinese and '精' or WoWTools_Mixin:sub(STAT_MASTERY, 1, 2, true),
+        [ITEM_MOD_VERSATILITY]= e.onlyChinese and '全' or WoWTools_Mixin:sub(STAT_VERSATILITY, 1, 2, true),
+        [ITEM_MOD_CR_AVOIDANCE_SHORT]= e.onlyChinese and '闪' or WoWTools_Mixin:sub(STAT_AVOIDANCE, 1, 2, true),
+        [ITEM_MOD_CR_LIFESTEAL_SHORT]= e.onlyChinese and '吸' or WoWTools_Mixin:sub(STAT_LIFESTEAL, 1, 2, true),
+        [ITEM_MOD_CR_SPEED_SHORT]=e.onlyChinese and '速' or WoWTools_Mixin:sub(SPEED, 1,2,true),
+        --[ITEM_MOD_EXTRA_ARMOR_SHORT]= e.onlyChinese and '护' or WoWTools_Mixin:sub(ARMOR, 1,2,true)
     }
 end
 

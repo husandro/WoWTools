@@ -117,7 +117,7 @@ function WoWTools_TooltipMixin:Set_Web_Link(tooltip, tab)
         end
         return
     end
-    if not Save.ctrl or UnitAffectingCombat('player')  then
+    if not Save().ctrl or UnitAffectingCombat('player')  then
         return
     end
 

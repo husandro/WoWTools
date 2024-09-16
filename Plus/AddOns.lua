@@ -122,7 +122,7 @@ end
 local function Create_Button(indexAdd)
     local btn=WoWTools_ButtonMixin:Cbtn(AddonList, {icon='hide', size={88,22}})
     btn:SetHighlightAtlas('auctionhouse-nav-button-secondary-select')
-    btn.Text= e.Cstr(btn)
+    btn.Text= WoWTools_LabelMixin:CreateLabel(btn)
     btn.Text:SetPoint('LEFT', 2, 0)
 
     btn.loadTexture= btn:CreateTexture()
@@ -169,7 +169,7 @@ local function Create_Button(indexAdd)
                     C_AddOns.DisableAddOn(i)
                 end
             end
-            e.Reload()
+            WoWTools_Mixin:Reload()
             Save.load_Button_Name= self.name
 
         elseif d=='RightButton' then--移除
@@ -233,7 +233,7 @@ local function Create_Button(indexAdd)
             local icon= iconTexture and format('|T%s:0|t', iconTexture..'') or (iconAtlas and format('|A:%s:0:0|a', iconAtlas)) or '    '
             local isLoaded= C_AddOns.IsAddOnLoaded(name)
             local vType= type(value)
-            local text= vType=='string' and e.GetPlayerInfo({guid=value, reName=true, reRealm=true})
+            local text= vType=='string' and WoWTools_UnitMixin:GetPlayerInfo({guid=value, reName=true, reRealm=true})
             local reason= select(2, C_AddOns.IsAddOnLoadable(name))
             local col= reason=='DEMAND_LOADED' and '|cffff00ff'
             if not text and not isLoaded and reason then
@@ -356,7 +356,7 @@ end
 local function Init_Add_Save_Button()
     NewButton= WoWTools_ButtonMixin:Cbtn(AddonList, {size={26,26}, atlas='communities-chat-icon-plus'})
 
-    NewButton.Text= e.Cstr(AddonList)--已选中，数量
+    NewButton.Text= WoWTools_LabelMixin:CreateLabel(AddonList)--已选中，数量
     NewButton.Text:SetPoint('BOTTOMRIGHT', NewButton, 'LEFT',0, 1)
     NewButton.Text:SetScript('OnLeave', function(self) self:SetAlpha(1) e.tips:Hide() end)
     NewButton.Text:SetScript('OnEnter', function (self)
@@ -387,7 +387,7 @@ local function Init_Add_Save_Button()
             local icon= iconTexture and format('|T%s:0|t', iconTexture..'') or (iconAtlas and format('|A:%s:0:0|a', iconAtlas)) or '    '
             local isLoaded, reason= C_AddOns.IsAddOnLoaded(name)
             local vType= type(value)
-            local text= vType=='string' and e.GetPlayerInfo({guid=value})
+            local text= vType=='string' and WoWTools_UnitMixin:GetPlayerInfo({guid=value})
             if not text and not isLoaded and reason then
                 text= '|cff9e9e9e'..e.cn(_G['ADDON_'..reason] or reason)..' ('..index
             end
@@ -486,7 +486,7 @@ local function Init_Add_Save_Button()
         end
     end)
 
-    NewButton.Text2=e.Cstr(AddonList, {justifyH='RIGHT'})--总内存
+    NewButton.Text2=WoWTools_LabelMixin:CreateLabel(AddonList, {justifyH='RIGHT'})--总内存
     NewButton.Text2:SetPoint('TOPRIGHT', NewButton, 'LEFT', 0, -1)
     NewButton.Text2:SetScript('OnLeave', function(self) self:SetAlpha(1) e.tips:Hide() end)
     NewButton.Text2:SetScript('OnEnter', function(self)
@@ -555,7 +555,7 @@ local function Init_Add_Save_Button()
         self:SetAlpha(0.5)
     end)
 
-    NewButton.Text3=e.Cstr(AddonList, {justifyH='RIGHT'})--总已加载，数量
+    NewButton.Text3=WoWTools_LabelMixin:CreateLabel(AddonList, {justifyH='RIGHT'})--总已加载，数量
     NewButton.Text3:SetPoint('RIGHT', NewButton.Text2, 'LEFT', -8, 0)
     NewButton.Text3:SetScript('OnLeave', function(self) self:SetAlpha(1) e.tips:Hide() end)
     NewButton.Text3:SetScript('OnEnter', function (self)
@@ -590,7 +590,7 @@ local function Init_Add_Save_Button()
         end
     end)
 
-    local label= e.Cstr(AddonListEnableAllButton)--插件，总数
+    local label= WoWTools_LabelMixin:CreateLabel(AddonListEnableAllButton)--插件，总数
     label:SetPoint('LEFT',3,0)
     label:SetText(C_AddOns.GetNumAddOns())
 
@@ -654,7 +654,7 @@ end
 
 local function Create_Fast_Button(indexAdd)
     local btn= WoWTools_ButtonMixin:Cbtn(AddonList, {size={18,18}})
-    btn.Text= e.Cstr(btn)
+    btn.Text= WoWTools_LabelMixin:CreateLabel(btn)
     btn.Text:SetPoint('RIGHT', btn, 'LEFT')
     btn.checkTexture= btn:CreateTexture()
     btn.checkTexture:SetAtlas('checkmark-minimal')
@@ -856,7 +856,7 @@ local function Set_Load_Button()--LoadButtons
             btn.texture2= btn:CreateTexture(nil, 'OVERLAY')
             btn.texture2:SetAllPoints(btn)
             btn.texture2:SetAtlas('Forge-ColorSwatchSelection')
-            --btn.Text= e.Cstr(btn)
+            --btn.Text= WoWTools_LabelMixin:CreateLabel(btn)
             --btn.Text:SetPoint('CENTER')
             btn:SetScript('OnLeave', function(self)
                 if self.findFrame then
@@ -927,7 +927,7 @@ local function Set_Load_Button()--LoadButtons
             local name, title=C_AddOns.GetAddOnInfo(info.index)
             name= name or title or ''
             name= name:gsub('!', '')
-            name= e.WA_Utf8Sub(name, 2, 3)
+            name= WoWTools_Mixin:sub(name, 2, 3)
             btn.Text:SetText(name)
             btn:SetNormalTexture(0)]]
        end
@@ -1149,7 +1149,7 @@ local function Create_Check(frame)
     frame.check.Text:SetPoint('RIGHT', frame.check, 'LEFT')
 
     frame.check.memoFrame= CreateFrame("Frame", nil, frame.check)
-    frame.check.memoFrame.Text= e.Cstr(frame, {justifyH='RIGHT'})
+    frame.check.memoFrame.Text= WoWTools_LabelMixin:CreateLabel(frame, {justifyH='RIGHT'})
     frame.check.memoFrame.Text:SetPoint('RIGHT', frame.Status, 'LEFT')
     frame.check.memoFrame.Text:SetAlpha(0.5)
     frame.check.memoFrame:Hide()
@@ -1191,7 +1191,7 @@ local function Create_Check(frame)
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.addName, Initializer:GetName())
         local addonIndex= self:GetID()
-        local icon= select(3, e.IsAtlas( C_AddOns.GetAddOnMetadata(addonIndex, "IconTexture") or C_AddOns.GetAddOnMetadata(addonIndex, "IconAtlas"))) or ''--Atlas or Texture
+        local icon= select(3, WoWTools_TextureMixin:IsAtlas( C_AddOns.GetAddOnMetadata(addonIndex, "IconTexture") or C_AddOns.GetAddOnMetadata(addonIndex, "IconAtlas"))) or ''--Atlas or Texture
         e.tips:AddDoubleLine(
             format('%s%s |cnGREEN_FONT_COLOR:%d|r', icon, self.name or '', addonIndex),
             format('%s%s', e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL, e.Icon.left)

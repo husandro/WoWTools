@@ -153,7 +153,7 @@ local function set_Text_Value(frame, value, value2)
                 if frame.bit==0 then
                     text= BreakUpLargeNumbers(value)..(value2 and '/'..BreakUpLargeNumbers(value) or '')
                 else
-                    text= e.MK(value, frame.bit)..( value2 and '/'..e.MK(value2, frame.bit) or '')
+                    text= WoWTools_Mixin:MK(value, frame.bit)..( value2 and '/'..WoWTools_Mixin:MK(value2, frame.bit) or '')
                 end
 
             else
@@ -210,13 +210,13 @@ local function set_Text_Value(frame, value, value2)
             local text, icon
             if frame.value< value then--加
                 if frame.useNumber then
-                    icon, text= '|A:UI-HUD-Minimap-Zoom-In:8:8|a', e.MK(value-frame.value, frame.bit)
+                    icon, text= '|A:UI-HUD-Minimap-Zoom-In:8:8|a', WoWTools_Mixin:MK(value-frame.value, frame.bit)
                 else
                     icon, text= '|A:UI-HUD-Minimap-Zoom-In:8:8|a', format('%.'..frame.bit..'f', value-frame.value)
                 end
             else--减
                 if frame.useNumber then
-                    icon, text= '|A:UI-HUD-Minimap-Zoom-Out:6:6|a', e.MK(frame.value-value, frame.bit)
+                    icon, text= '|A:UI-HUD-Minimap-Zoom-Out:6:6|a', WoWTools_Mixin:MK(frame.value-value, frame.bit)
                 else
                     icon, text= '|A:UI-HUD-Minimap-Zoom-Out:8:8|a', format('%.'..frame.bit..'f', frame.value-value)
                 end
@@ -348,9 +348,9 @@ local function set_STATUS_Tooltip(self)
         e.tips:AddLine(' ')
         local text
         if frame.value< stat then
-            text= Save.greenColor..'+ '..format('%s', e.MK(stat- frame.value,3))
+            text= Save.greenColor..'+ '..format('%s', WoWTools_Mixin:MK(stat- frame.value,3))
         else
-            text= Save.redColor..'- '..format('%s', e.MK(3, frame.value- stat))
+            text= Save.redColor..'- '..format('%s', WoWTools_Mixin:MK(3, frame.value- stat))
         end
         e.tips:AddDoubleLine(format('%i', frame.value), text, frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
     end
@@ -811,7 +811,7 @@ local function set_Frame(frame, rest)--设置, frame
             text= strlower(text)
         end
         if Save.gsubText then--文本，截取
-            text= e.WA_Utf8Sub(text, Save.gsubText)
+            text= WoWTools_Mixin:sub(text, Save.gsubText)
         end
         frame.label:SetText(text or '')
 
@@ -948,11 +948,11 @@ local function frame_Init(rest)--初始， 或设置
             if not frame then
                 frame= CreateFrame('Frame', nil, button.frame)
 
-                frame.label= e.Cstr(frame, {color={r=info.r, g=info.g,b=info.b, a=info.a}})--nil, nil, nil, {info.r,info.g,info.b,info.a}, nil)
+                frame.label= WoWTools_LabelMixin:CreateLabel(frame, {color={r=info.r, g=info.g,b=info.b, a=info.a}})--nil, nil, nil, {info.r,info.g,info.b,info.a}, nil)
                 frame.label:EnableMouse(true)
                 frame.label:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
 
-                frame.text= e.Cstr(frame, {color={r=1,g=1,b=1}, justifyH= Save.toLeft and 'RIGHT'})--nil, nil, nil, {1,1,1}, nil, Save.toLeft and 'RIGHT' or 'LEFT')
+                frame.text= WoWTools_LabelMixin:CreateLabel(frame, {color={r=1,g=1,b=1}, justifyH= Save.toLeft and 'RIGHT'})--nil, nil, nil, {1,1,1}, nil, Save.toLeft and 'RIGHT' or 'LEFT')
                 frame.text:EnableMouse(true)
                 frame.text:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
 
@@ -1069,7 +1069,7 @@ local function frame_Init(rest)--初始， 或设置
                 end
 
                 if info.textValue and not frame.textValue then--数值 + -
-                    frame.textValue=e.Cstr(frame)
+                    frame.textValue=WoWTools_LabelMixin:CreateLabel(frame)
                 end
                 if frame.textValue then
                     frame.textValue:SetText('')
@@ -1166,11 +1166,7 @@ local function Init_Options()--设置 panel
     if Save.disabled or panel.barGreenColor then
         return
     end
-    --[[last=CreateFrame('Button', nil, panel, 'UIPanelButtonTemplate')--重新加载UI
-    last:SetPoint('TOPLEFT')
-    last:SetText(e.onlyChinese and '重新加载UI' or RELOADUI)
-    last:SetSize(120, 28)
-    last:SetScript('OnMouseUp', e.Reload)]]
+
 
     local last, check, findTank, findDps
     if not Tabs then
@@ -1194,7 +1190,7 @@ local function Init_Options()--设置 panel
             last=check
 
         elseif info.tank and not findTank then
-            local text= e.Cstr(panel)
+            local text= WoWTools_LabelMixin:CreateLabel(panel)
             text:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -16)
             if e.onlyChinese then
                 text:SetText("仅限"..INLINE_TANK_ICON)
@@ -1237,7 +1233,7 @@ local function Init_Options()--设置 panel
         end)
         check:SetScript('OnLeave', GameTooltip_Hide)
 
-        local text= e.Cstr(check, {color={r=info.r or 1, g=info.g or 0.82, b=info.b or 0, a=info.a or 1}})--nil, nil, nil, {r,g,b,a})--Text
+        local text= WoWTools_LabelMixin:CreateLabel(check, {color={r=info.r or 1, g=info.g or 0.82, b=info.b or 0, a=info.a or 1}})--nil, nil, nil, {r,g,b,a})--Text
         text:SetPoint('LEFT', check, 'RIGHT')
         text:SetText(info.text)
         if index>1 then
@@ -1262,8 +1258,8 @@ local function Init_Options()--设置 panel
                         end
                     end
                 end
-                e.ShowColorPicker(R,G,B,A, function()
-                        setR, setG, setB, setA = e.Get_ColorFrame_RGBA()
+                WoWTools_ColorMixin:ShowColorFrame(R,G,B,A, function()
+                        setR, setG, setB, setA = WoWTools_ColorMixin:Get_ColorFrameRGBA()
                         func()
                     end,function()
                          setR, setG, setB, setA= R,G,B,A
@@ -1400,7 +1396,7 @@ local function Init_Options()--设置 panel
 
 
 
-    local text= e.Cstr(panel, {size=26})--26)--Text
+    local text= WoWTools_LabelMixin:CreateLabel(panel, {size=26})--26)--Text
     text:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -16)
     text:SetText(e.onlyChinese and '阴影' or SHADOW_QUALITY:gsub(QUALITY , ''))
     text:EnableMouse(true)
@@ -1417,8 +1413,8 @@ local function Init_Options()--设置 panel
             set_Shadow(self)--设置，字体阴影
             frame_Init(true)--初始，设置
         end
-        e.ShowColorPicker(self.r, self.g, self.b, self.a, function()
-                setR, setG, setB, setA = e.Get_ColorFrame_RGBA()
+        WoWTools_ColorMixin:ShowColorFrame(self.r, self.g, self.b, self.a, function()
+                setR, setG, setB, setA = WoWTools_ColorMixin:Get_ColorFrameRGBA()
                 func()
             end, function()
                 setR, setG, setB, setA= R,G,B,A
@@ -1474,7 +1470,7 @@ local function Init_Options()--设置 panel
         frame_Init(true)--初始， 或设置
     end)
 
-    local textColor= e.Cstr(panel, {size=20})--20)--数值text, 颜色
+    local textColor= WoWTools_LabelMixin:CreateLabel(panel, {size=20})--20)--数值text, 颜色
     textColor:SetPoint('LEFT', notTextCheck.text,'RIGHT', 5, 0)
     textColor:EnableMouse(true)
     textColor:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
@@ -1486,7 +1482,7 @@ local function Init_Options()--设置 panel
         self:SetAlpha(0.3)
     end)
     textColor:SetText('23%')
-    e.RGB_to_HEX(Save.textColor.r, Save.textColor.g, Save.textColor.b, Save.textColor.a, textColor)
+    WoWTools_ColorMixin:RGBtoHEX(Save.textColor.r, Save.textColor.g, Save.textColor.b, Save.textColor.a, textColor)
     textColor:SetScript('OnMouseDown', function(self)
         local setR, setG, setB, setA
         local R,G,B,A= self.r, self.g, self.b, self.a
@@ -1495,8 +1491,8 @@ local function Init_Options()--设置 panel
             self:SetTextColor(setR, setG, setB, setA)
             frame_Init(true)--初始，设置
         end
-        e.ShowColorPicker(self.r, self.g, self.b,self.a, function()
-                setR, setG, setB, setA= e.Get_ColorFrame_RGBA()
+        WoWTools_ColorMixin:ShowColorFrame(self.r, self.g, self.b,self.a, function()
+                setR, setG, setB, setA= WoWTools_ColorMixin:Get_ColorFrameRGBA()
                 func()
             end,function()
                 setR, setG, setB, setA= R,G,B,A
@@ -1557,7 +1553,7 @@ local function Init_Options()--设置 panel
             end)
         end
     end)
-    panel.barGreenColor= e.Cstr(panel, {size=20})--20)
+    panel.barGreenColor= WoWTools_LabelMixin:CreateLabel(panel, {size=20})--20)
     panel.barGreenColor:SetPoint('LEFT', barValueText.text,'RIGHT', 2, 0)
     panel.barGreenColor:EnableMouse(true)
     panel.barGreenColor:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
@@ -1569,18 +1565,18 @@ local function Init_Options()--设置 panel
         self:SetAlpha(0.3)
     end)
     panel.barGreenColor:SetText('+12')
-    e.HEX_to_RGB(Save.greenColor, panel.barGreenColor)--设置, panel.barGreenColor. r g b hex
+    WoWTools_ColorMixin:HEXtoRGB(Save.greenColor, panel.barGreenColor)--设置, panel.barGreenColor. r g b hex
     panel.barGreenColor:SetScript('OnMouseDown', function(self)
         local setR, setG, setB, setA
         local R,G,B,A= self.r, self.g, self.b, self.a
         local function func()
-            local hex= e.RGB_to_HEX(setR, setG, setB,setA, self)--RGB转HEX
+            local hex= WoWTools_ColorMixin:RGBtoHEX(setR, setG, setB,setA, self)--RGB转HEX
             hex= hex and '|c'..hex or '|cffff8200'
             Save.greenColor= hex
             GreenColor= {r=setR or 1, g=setG or 0, b=setB or 0, a=setA or 1}
         end
-        e.ShowColorPicker(self.r, self.g, self.b,self.a, function()
-                setR, setG, setB, setA= e.Get_ColorFrame_RGBA()
+        WoWTools_ColorMixin:ShowColorFrame(self.r, self.g, self.b,self.a, function()
+                setR, setG, setB, setA= WoWTools_ColorMixin:Get_ColorFrameRGBA()
                 func()
             end, function()
                 setR, setG, setB, setA= R,G,B,A
@@ -1589,7 +1585,7 @@ local function Init_Options()--设置 panel
         )
     end)
 
-    panel.barRedColor= e.Cstr(panel, {size=20})--20)
+    panel.barRedColor= WoWTools_LabelMixin:CreateLabel(panel, {size=20})--20)
     panel.barRedColor:SetPoint('LEFT', panel.barGreenColor,'RIGHT', 2, 0)
     panel.barRedColor:EnableMouse(true)
     panel.barRedColor:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
@@ -1601,18 +1597,18 @@ local function Init_Options()--设置 panel
         self:SetAlpha(0.3)
     end)
     panel.barRedColor:SetText('-12')
-    e.HEX_to_RGB(Save.redColor, panel.barRedColor)--设置, panel.barRedColor. r g b hex
+    WoWTools_ColorMixin:HEXtoRGB(Save.redColor, panel.barRedColor)--设置, panel.barRedColor. r g b hex
     panel.barRedColor:SetScript('OnMouseDown', function(self)
         local setR, setG, setB, setA
         local R,G,B,A= self.r, self.g, self.b, self.a
         local function func()
-            local hex= e.RGB_to_HEX(setR, setG, setB,setA, self)--RGB转HEX
+            local hex= WoWTools_ColorMixin:RGBtoHEX(setR, setG, setB,setA, self)--RGB转HEX
             hex= hex and '|c'..hex or '|cffff0000'
             Save.redColor= hex
             RedColor= {r=setR or 1, g=setG or 0, b=setB or 0, a=setA or 1}
         end
-        e.ShowColorPicker(self.r, self.g, self.b,self.a, function()
-                setR, setG, setB, setA= e.Get_ColorFrame_RGBA()
+        WoWTools_ColorMixin:ShowColorFrame(self.r, self.g, self.b,self.a, function()
+                setR, setG, setB, setA= WoWTools_ColorMixin:Get_ColorFrameRGBA()
                 func()
             end, function()
                 setR, setG, setB, setA= R,G,B,A
@@ -1802,7 +1798,7 @@ local function Init_Options()--设置 panel
         e.tips:Show()
     end)
 
-    local hideText= e.Cstr(panel)--隐藏
+    local hideText= WoWTools_LabelMixin:CreateLabel(panel)--隐藏
     hideText:SetPoint('BOTTOMLEFT')
     hideText:SetText(e.onlyChinese and '隐藏' or HIDE)
     local checkHidePet= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--bar，图片，样式2
@@ -1861,7 +1857,7 @@ local function Set_Dragonriding_Speed(frame)
     texture:SetVertexColor(0.93, 0.82, 0.00)
 
 
-    frame.speedBar.Text= e.Cstr(frame.speedBar, {size=16, color= true})
+    frame.speedBar.Text= WoWTools_LabelMixin:CreateLabel(frame.speedBar, {size=16, color= true})
     frame.speedBar.Text:SetPoint('BOTTOM', frame.speedBar, 'TOP', 0,1)
 
     frame.speedBar:SetScript('OnUpdate', function(self, elapsed)
@@ -1957,7 +1953,7 @@ local function Init_Vehicle_Speed()
     for _, name in pairs(vehicleTabs) do
         local frame= _G[name]
         if frame then
-            frame.speedText= e.Cstr(frame, {mouse=true})
+            frame.speedText= WoWTools_LabelMixin:CreateLabel(frame, {mouse=true})
             frame.speedText:SetPoint('TOP')
             frame.speedText:SetScript('OnLeave', GameTooltip_Hide)
             frame.speedText:SetScript('OnEnter', function(self)
@@ -2040,7 +2036,7 @@ local function Init()
                 end
             end
         end
-        text= text..'HP'..e.MK(UnitHealthMax('player'), 0)
+        text= text..'HP'..WoWTools_Mixin:MK(UnitHealthMax('player'), 0)
 
         for _, info in pairs(Tabs) do
             local frame=button[info.name]
@@ -2081,7 +2077,7 @@ local function Init()
             if UnitExists('target') and UnitIsPlayer('target') and not UnitIsUnit('player', 'target') then
                 name= GetUnitName('target', true)
             end
-            e.Chat(text, name, nil)
+            WoWTools_ChatMixin:Chat(text, name, nil)
         end
     end
 
@@ -2327,15 +2323,15 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         frame_Init(true)--初始， 或设置
                     end
                 end,
-                clearfunc= function() Save=nil e.Reload() end}
+                clearfunc= function() Save=nil WoWTools_Mixin:Reload() end}
             )
 
             if Save.disabled then
                 self:UnregisterAllEvents()
             else
-                local r,g,b,a= e.HEX_to_RGB(Save.redColor)
+                local r,g,b,a= WoWTools_ColorMixin:HEXtoRGB(Save.redColor)
                 RedColor= {r=r or 1, g=g or 0, b=b or 0, a=a or 1}
-                r,g,b,a= e.HEX_to_RGB(Save.greenColor)
+                r,g,b,a= WoWTools_ColorMixin:HEXtoRGB(Save.greenColor)
                 GreenColor= {r=r or 0, g=g or 1, b=b or 0, a=a or 1}
                 Init()
                 set_ShowHide_Event()--显示，隐藏，事件

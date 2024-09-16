@@ -64,7 +64,7 @@ local function Init_Menu(self, level, type)
                     button2= e.onlyChinese and '取消' or CANCEL,
                     OnAccept = function()
                         WoWTools_GossipMixin.Save=nil
-                        e.Reload()
+                        WoWTools_Mixin:Reload()
                     end,
                 }
                 StaticPopup_Show('WoWTools_Gossip_RESET_TO_DEFAULT')

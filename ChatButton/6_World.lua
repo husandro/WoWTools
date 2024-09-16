@@ -110,7 +110,7 @@ local function Set_LeftClick_Tooltip(name, channelNumber, texture)--设置点击
 
     local text
     if name then
-        text= name=='大脚世界频道' and '世' or e.WA_Utf8Sub(name, 1, 3)
+        text= name=='大脚世界频道' and '世' or WoWTools_Mixin:sub(name, 1, 3)
     else
         text= e.onlyChinese and '无' or NONE
     end
@@ -142,10 +142,10 @@ local function Send_Say(name, channelNumber)--发送
         C_Timer.After(1, function()
             local channelNumber2 = GetChannelName(name)
             if channelNumber2 and channelNumber2>0 then
-                e.Say('/'..channelNumber2)
+                WoWTools_ChatMixin:Say('/'..channelNumber2)
                 Set_LeftClick_Tooltip(name, channelNumber2)--设置点击提示,频道字符
             else
-                e.Say(SLASH_JOIN4..' '..name)
+                WoWTools_ChatMixin:Say(SLASH_JOIN4..' '..name)
             end
         end)
     else
@@ -154,9 +154,9 @@ local function Send_Say(name, channelNumber)--发送
         end
         if channelNumber then
             Set_LeftClick_Tooltip(name, channelNumber)--设置点击提示,频道字符
-            e.Say('/'..channelNumber);
+            WoWTools_ChatMixin:Say('/'..channelNumber);
         else
-            e.Say(SLASH_JOIN4..' '..name)
+            WoWTools_ChatMixin:Say(SLASH_JOIN4..' '..name)
         end
     end
 end
@@ -219,7 +219,7 @@ local function WoWTools_Word_Filter(_, _, msg, name, _, _, _, _, _, _, _, _, _, 
             FilterTextTab[msg].num= FilterTextTab[msg].num +1
             return true
 
-        elseif not guid or guid== e.Player.guid or e.GetFriend(name, guid) or e.GroupGuid[guid] then--自已, 好友
+        elseif not guid or guid== e.Player.guid or WoWTools_UnitMixin:GetIsFriendIcon(name, guid) or e.GroupGuid[guid] then--自已, 好友
             return false
 
         elseif strlenutf8(msg)>Save.myChatFilterNum or msg:find('WTS') then-- msg:find('<.->') or  then
@@ -273,7 +273,7 @@ local function Init_User_Chat_Filter()
              not data.chatTarget
             or data.which~='FRIEND'
             or data.chatTarget==e.Player.name_realm
-            or e.GetFriend(data.chatTarget)
+            or WoWTools_UnitMixin:GetIsFriendIcon(data.chatTarget)
             or e.GroupGuid[data.chatTarget]
         then
             return
@@ -401,7 +401,7 @@ local function Init_Filter_Menu(root)
         for _, num in pairs(Save.myChatFilterPlayers) do
             all= all+ num
         end
-        tooltip:AddDoubleLine(e.onlyChinese and '总计' or TOTAL, e.MK(all, 3).. ' '..(e.onlyChinese and "次" or VOICEMACRO_LABEL_CHARGE1))
+        tooltip:AddDoubleLine(e.onlyChinese and '总计' or TOTAL, WoWTools_Mixin:MK(all, 3).. ' '..(e.onlyChinese and "次" or VOICEMACRO_LABEL_CHARGE1))
     end)
 
 
@@ -470,7 +470,7 @@ end
             local name= WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil,{reName=true, reRealm=true})
             name= name=='' and guid or name
             
-            sub3=sub2:CreateButton('|cff9e9e9e'..index..')|r '..name..' |cff9e9e9e#'.. e.MK(num, 3)..'|r', function(data)
+            sub3=sub2:CreateButton('|cff9e9e9e'..index..')|r '..name..' |cff9e9e9e#'.. WoWTools_Mixin:MK(num, 3)..'|r', function(data)
                 local player= WoWTools_UnitMixin:GetPlayerInfo(nil, data.guid, nil, {reName=true, reRealm=true, reLink=true})                
                 if Save.myChatFilterPlayers[data.guid] then
                     print(e.addName, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', player)
@@ -495,7 +495,7 @@ end
             if name2 and realmName then
                 realmName= realmName =='' and e.Player.realm or realmName
                 sub3:CreateButton(e.onlyChinese and '密语' or SLASH_TEXTTOSPEECH_WHISPER, function(data)
-                    e.Say(nil, data)
+                    WoWTools_ChatMixin:Say(nil, data)
                     return MenuResponse.Open
                 end, name2..'-'..realmName)
             end
@@ -554,7 +554,7 @@ end
         end
 
         sub2=sub:CreateButton('|cff9e9e9e'..index..')|r '..(playerName or text).. ' |cff9e9e9e'..strlenutf8(text)..'|r', function(data)
-            e.Say(nil, data.name)
+            WoWTools_ChatMixin:Say(nil, data.name)
             return MenuResponse.Refresh
         end, {data=tab, text=text, name=playerName2})
         sub2:SetTooltip(function(tooltip, description)
@@ -610,7 +610,7 @@ end
 
         if type(playerName2)=='string' then
             sub2:CreateButton((e.onlyChinese and '密语' or SLASH_TEXTTOSPEECH_WHISPER)..e.Icon.left, function(data)
-                e.Say(nil, data)
+                WoWTools_ChatMixin:Say(nil, data)
                 return MenuResponse.Open
             end, playerName2)
         end
@@ -672,7 +672,7 @@ local function Init_User_Filter_Menu(root)
         for _, info in pairs(Save.userChatFilterTab) do
             all= all+ info.num
         end
-        tooltip:AddDoubleLine(e.onlyChinese and '总计' or TOTAL, e.MK(all, 3).. ' '..(e.onlyChinese and "次" or VOICEMACRO_LABEL_CHARGE1))
+        tooltip:AddDoubleLine(e.onlyChinese and '总计' or TOTAL, WoWTools_Mixin:MK(all, 3).. ' '..(e.onlyChinese and "次" or VOICEMACRO_LABEL_CHARGE1))
     end)
 
 if not Save.userChatFilter then
@@ -741,12 +741,12 @@ end
         sub:CreateDivider()
 
         for name, tab in pairs(Save.userChatFilterTab) do
-            local player= e.GetPlayerInfo({name=name, guid=tab.guid, reName=true, reRealm=true})
+            local player= WoWTools_UnitMixin:GetPlayerInfo({name=name, guid=tab.guid, reName=true, reRealm=true})
             player= (not player or player=='') and name or player
 
             sub2=sub:CreateButton(player..' '..tab.num, function(data)
                 if Save.userChatFilterTab[data.name] then
-                    print(e.addName, addName, e.onlyChinese and '移除' or REMOVE, e.GetPlayerInfo({name=data.name, guid=data.tab.guid, reName=true, reRealm=true, reLink=true}))
+                    print(e.addName, addName, e.onlyChinese and '移除' or REMOVE, WoWTools_UnitMixin:GetPlayerInfo({name=data.name, guid=data.tab.guid, reName=true, reRealm=true, reLink=true}))
                     Save.userChatFilterTab[data.name]=nil
                 end
                 return MenuResponse.Refresh
@@ -848,7 +848,7 @@ if name== Save.world then
             end,
             OnAccept= function(s)
                 Save.world= s.editBox:GetText()
-                e.Reload()
+                WoWTools_Mixin:Reload()
             end,
             EditBoxOnTextChanged=function(s)
                 local t= s:GetText()
@@ -1008,7 +1008,7 @@ end
 local function Init()
     WorldButton.texture:SetAtlas('128-Store-Main')
 
-    WorldButton.leftClickTips=e.Cstr(WorldButton, {size=12, color=true, justifyH='CENTER'})--10, nil, nil, true, nil, 'CENTER')
+    WorldButton.leftClickTips=WoWTools_LabelMixin:CreateLabel(WorldButton, {size=12, color=true, justifyH='CENTER'})--10, nil, nil, true, nil, 'CENTER')
     WorldButton.leftClickTips:SetPoint('BOTTOM',0,2)
 
     function WorldButton:set_tooltip()
@@ -1039,7 +1039,7 @@ local function Init()
     WorldButton:SetScript("OnClick",function(self, d)
         if d=='LeftButton' and self.channelNumber and self.channelNumber>0 then
             Send_Say(self.channelName, self.channelNumber)
-            --e.Say('/'..self.channelNumber)
+            --WoWTools_ChatMixin:Say('/'..self.channelNumber)
             self:set_tooltip()
         else
             MenuUtil.CreateContextMenu(self, Init_Menu)

@@ -39,7 +39,7 @@ local AutoRepairTab={--修理
 --自动对话
 local function Get_Auto_Instance_Gossip(gossipID, numGossip)
     if gossipID==107571 then--挑战，模式，去 SX buff
-        if e.WA_GetUnitDebuff('player', nil, 'HARMFUL', {
+        if WoWTools_AuraMixin:Debuff('player', nil, 'HARMFUL', {
             [57723]= true,
             [57724]= true,
             [264689]= true,
@@ -49,7 +49,7 @@ local function Get_Auto_Instance_Gossip(gossipID, numGossip)
             return true
         end
     elseif AutoRepairTab[gossipID] then
-        local value= select(2, e.GetDurabiliy()) or 100
+        local value= select(2, WoWTools_DurabiliyMixin:Get()) or 100
         if value<95 then
             return true
         end
@@ -90,7 +90,7 @@ local function Set_Gossip_Text(self, info)
             local icon
             local name
             if zoneInfo.icon then
-                local isAtlas, texture= e.IsAtlas(zoneInfo.icon)
+                local isAtlas, texture= WoWTools_TextureMixin:IsAtlas(zoneInfo.icon)
                 if isAtlas then
                     icon= format('|A:%s:%d:%d|a', texture, Save().Gossip_Text_Icon_Size, Save().Gossip_Text_Icon_Size)
                 else
@@ -459,7 +459,7 @@ local function Init()
     GossipFrame:SetScript('OnShow', function (self)
         WoWTools_GossipMixin.QuestButton.questSelect={}--已选任务, 提示用
         GossipButton.selectGissipIDTab={}
-        local npc=e.GetNpcID('npc')
+        local npc=WoWTools_UnitMixin:GetNpcID('npc')
         self.WoWToolsSelectNPC.npc=npc
         self.WoWToolsSelectNPC.name=UnitName("npc")
         self.WoWToolsSelectNPC:SetChecked(Save().NPC[npc])
@@ -502,7 +502,7 @@ local function Init()
         local gossip= C_GossipInfo.GetOptions() or {}
         local allGossip= #gossip
         local name=info.name
-        local npc=e.GetNpcID('npc')
+        local npc=WoWTools_UnitMixin:GetNpcID('npc')
 
         if IsModifierKeyDown() or not index or GossipButton.selectGissipIDTab[index] then
             return
@@ -622,7 +622,7 @@ local function Init()
             end)
         end
 
-        local npc=e.GetNpcID('npc')
+        local npc=WoWTools_UnitMixin:GetNpcID('npc')
         self.sel.id= questID
         self.sel.text= info.title
 
@@ -661,7 +661,7 @@ local function Init()
         Create_CheckButton(self, info)--建立，自动选取，选项
         Set_Gossip_Text(self, info)--自定义，对话，文本
 
-        local npc=e.GetNpcID('npc')
+        local npc=WoWTools_UnitMixin:GetNpcID('npc')
 
         local questID=info.questID or self:GetID()
         if not questID or IsModifierKeyDown() then

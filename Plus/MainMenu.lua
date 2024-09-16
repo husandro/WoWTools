@@ -30,10 +30,10 @@ local function Init_Character()
     local frame= CreateFrame("Frame")
     table.insert(Frames, frame)
 
-    frame.Text= e.Cstr(CharacterMicroButton,  {size=Save.size, color=true})
+    frame.Text= WoWTools_LabelMixin:CreateLabel(CharacterMicroButton,  {size=Save.size, color=true})
     frame.Text:SetPoint('TOP', CharacterMicroButton, 0,  -3)
     --frame.Text:SetPoint('BOTTOM', CharacterMicroButton, 'CENTER', 0, 1)
-    frame.Text2= e.Cstr(CharacterMicroButton,  {size=Save.size, color=true})
+    frame.Text2= WoWTools_LabelMixin:CreateLabel(CharacterMicroButton,  {size=Save.size, color=true})
     frame.Text2:SetPoint('BOTTOM', CharacterMicroButton, 0, 3)
     --frame.Text2:SetPoint('TOP', CharacterMicroButton, 'CENTER', 0, -1)
 
@@ -44,16 +44,16 @@ local function Init_Character()
             text=math.modf(cu)
             if to-cu>10 then
                 text='|cnRED_FONT_COLOR:'..text..'|r'
-                if IsInsane() and not e.Is_In_PvP_Area() then
-                    e.Set_HelpTips({frame=self, topoint=self.Text, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, show=true})--设置，提示
+                if IsInsane() and not WoWTools_MapMixin:IsInPvPArea() then
+                    WoWTools_FrameMixin:HelpFrame({frame=self, topoint=self.Text, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, show=true})--设置，提示
                 end
             end
         end
         self.Text:SetText(text or '')
 
-        local text, value= e.GetDurabiliy(false)--耐久度
+        local text, value= WoWTools_DurabiliyMixin:Get(false)--耐久度
         self.Text2:SetText(text:gsub('%%', ''))
-        e.Set_HelpTips({frame=CharacterMicroButton, topoint=self.text2, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, onlyOne=true, show=value<30})--设置，提示
+        WoWTools_FrameMixin:HelpFrame({frame=CharacterMicroButton, topoint=self.text2, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, onlyOne=true, show=value<30})--设置，提示
     end
 
     frame:RegisterEvent('EQUIPMENT_SWAP_FINISHED')
@@ -68,7 +68,7 @@ local function Init_Character()
             return
         end
         e.tips:AddLine(' ')
-        e.GetDurabiliy_OnEnter()
+        WoWTools_DurabiliyMixin:OnEnter()
         e.tips:Show()
     end)
 end
@@ -176,13 +176,13 @@ local function Init_Achievement()
     local frame= CreateFrame('Frame')
     table.insert(Frames, frame)
 
-    frame.Text= e.Cstr(AchievementMicroButton,  {size=Save.size, color=true})
+    frame.Text= WoWTools_LabelMixin:CreateLabel(AchievementMicroButton,  {size=Save.size, color=true})
     frame.Text:SetPoint('TOP', AchievementMicroButton, 0,  -3)
 
     function frame:settings()
         local num
         num= GetTotalAchievementPoints() or 0
-        num = num==0 and '' or e.MK(num, 1)
+        num = num==0 and '' or WoWTools_Mixin:MK(num, 1)
         self.Text:SetText(num)
     end
     frame:RegisterEvent('ACHIEVEMENT_EARNED')
@@ -228,7 +228,7 @@ local function Init_Quest()
     local frame= CreateFrame('Frame')
     table.insert(Frames, frame)
 
-    frame.Text= e.Cstr(QuestLogMicroButton,  {size=Save.size, color=true})
+    frame.Text= WoWTools_LabelMixin:CreateLabel(QuestLogMicroButton,  {size=Save.size, color=true})
     frame.Text:SetPoint('TOP', QuestLogMicroButton, 0,  -3)
 
     function frame:settings()
@@ -274,9 +274,9 @@ local function Init_Guild()
     local frame= CreateFrame("Frame")
     table.insert(Frames, frame)
 
-    frame.Text= e.Cstr(GuildMicroButton,  {size=Save.size, color=true})
+    frame.Text= WoWTools_LabelMixin:CreateLabel(GuildMicroButton,  {size=Save.size, color=true})
     frame.Text:SetPoint('TOP', GuildMicroButton, 0,  -3)
-    frame.Text2= e.Cstr(GuildMicroButton,  {size=Save.size, color=true})
+    frame.Text2= WoWTools_LabelMixin:CreateLabel(GuildMicroButton,  {size=Save.size, color=true})
     frame.Text2:SetPoint('BOTTOM', GuildMicroButton, 0, 3)
 
     GuildMicroButton.Text2= frame.Text2
@@ -352,7 +352,7 @@ local function Init_LFD()
     local frame= CreateFrame('Frame')
     table.insert(Frames, frame)
 
-    frame.Text= e.Cstr(LFDMicroButton,  {size=Save.size, color=true})
+    frame.Text= WoWTools_LabelMixin:CreateLabel(LFDMicroButton,  {size=Save.size, color=true})
     frame.Text:SetPoint('TOP', LFDMicroButton, 0,  -3)
 
     function frame:settings()
@@ -370,7 +370,7 @@ local function Init_LFD()
         end
         self.setTextFrame:settings()
         e.tips:AddLine(' ')
-        e.Get_Weekly_Rewards_Activities({showTooltip=true})--周奖励，提示
+        WoWTools_WeekMixin:Activities({showTooltip=true})--周奖励，提示
         local link=  e.WoWDate[e.Player.guid].Keystone.link
         if link then
             e.tips:AddLine('|T4352494:0|t'..link)
@@ -412,7 +412,7 @@ end
     local frame= CreateFrame('Frame')
     table.insert(Frames, frame)
 
-    frame.Text= e.Cstr(EJMicroButton,  {size=Save.size, color=true})
+    frame.Text= WoWTools_LabelMixin:CreateLabel(EJMicroButton,  {size=Save.size, color=true})
     frame.Text:SetPoint('TOP', EJMicroButton, 0,  -3)
 
     local function Get_Perks_Info()
@@ -443,7 +443,7 @@ end
         if cur then
             info =info or {}
             if cur== max then
-                text= (info.quantity and e.MK(info.quantity, 1) or format('|A:%s:0:0|a', e.Icon.select))
+                text= (info.quantity and WoWTools_Mixin:MK(info.quantity, 1) or format('|A:%s:0:0|a', e.Icon.select))
             else
                 text= format('%i%%', cur/max*100)
             end
@@ -506,9 +506,9 @@ local function Init_Store()
     local frame= CreateFrame('Frame')
     table.insert(Frames, frame)
 
-    frame.Text= e.Cstr(StoreMicroButton,  {size=Save.size, color=true})
+    frame.Text= WoWTools_LabelMixin:CreateLabel(StoreMicroButton,  {size=Save.size, color=true})
     frame.Text:SetPoint('TOP', StoreMicroButton, 0,  -3)
-    frame.Text2= e.Cstr(StoreMicroButton,  {size=Save.size, color=true})
+    frame.Text2= WoWTools_LabelMixin:CreateLabel(StoreMicroButton,  {size=Save.size, color=true})
     frame.Text2:SetPoint('BOTTOM', StoreMicroButton, 0, 3)
 
     StoreMicroButton.Text2= frame.Text2
@@ -517,7 +517,7 @@ local function Init_Store()
         local text
         local price= C_WowTokenPublic.GetCurrentMarketPrice() or 0
         if price>0 then
-            text= e.MK(price/10000, 0)
+            text= WoWTools_Mixin:MK(price/10000, 0)
         end
         self.Text:SetText(text or '')
     end
@@ -534,14 +534,14 @@ local function Init_Store()
         local price= C_WowTokenPublic.GetCurrentMarketPrice()
         if price and price>0 then
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine('|A:token-choice-wow:0:0|a'..e.MK(price/10000,4), C_CurrencyInfo.GetCoinTextureString(price) )
+            e.tips:AddDoubleLine('|A:token-choice-wow:0:0|a'..WoWTools_Mixin:MK(price/10000,4), C_CurrencyInfo.GetCoinTextureString(price) )
             e.tips:AddLine(' ')
         end
         local bagAll,bankAll,numPlayer=0,0,0--帐号数据
         for guid, info in pairs(e.WoWDate or {}) do
             local tab=info.Item[122284]
             if tab and guid then
-                e.tips:AddDoubleLine(e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}), '|A:Banker:0:0|a'..(tab.bank==0 and '|cff9e9e9e'..tab.bank..'|r' or tab.bank)..' '..'|A:bag-main:0:0|a'..(tab.bag==0 and '|cff9e9e9e'..tab.bag..'|r' or tab.bag))
+                e.tips:AddDoubleLine(WoWTools_UnitMixin:GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}), '|A:Banker:0:0|a'..(tab.bank==0 and '|cff9e9e9e'..tab.bank..'|r' or tab.bank)..' '..'|A:bag-main:0:0|a'..(tab.bag==0 and '|cff9e9e9e'..tab.bag..'|r' or tab.bag))
                 bagAll=bagAll +tab.bag
                 bankAll=bankAll +tab.bank
                 numPlayer=numPlayer +1
@@ -557,7 +557,7 @@ local function Init_Store()
     for guid, info in pairs(e.WoWDate or {}) do
         local tab=info.Item[122284]
         if tab and guid then
-            e.tips:AddDoubleLine(e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}), '|A:Banker:0:0|a'..(tab.bank==0 and '|cff9e9e9e'..tab.bank..'|r' or tab.bank)..' '..'|A:bag-main:0:0|a'..(tab.bag==0 and '|cff9e9e9e'..tab.bag..'|r' or tab.bag))
+            e.tips:AddDoubleLine(WoWTools_UnitMixin:GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}), '|A:Banker:0:0|a'..(tab.bank==0 and '|cff9e9e9e'..tab.bank..'|r' or tab.bank)..' '..'|A:bag-main:0:0|a'..(tab.bag==0 and '|cff9e9e9e'..tab.bag..'|r' or tab.bag))
             all= all +tab.bag +tab.bank
         end
     end
@@ -593,9 +593,9 @@ local function Init_Help()
     frame:SetPoint('TOP')
     frame:SetSize(1,1)
 
-    frame.Text= e.Cstr(MainMenuMicroButton,  {size=Save.size, color=true})
+    frame.Text= WoWTools_LabelMixin:CreateLabel(MainMenuMicroButton,  {size=Save.size, color=true})
     frame.Text:SetPoint('TOP', MainMenuMicroButton, 0,  -3)
-    frame.Text2= e.Cstr(MainMenuMicroButton,  {size=Save.size, color=true})
+    frame.Text2= WoWTools_LabelMixin:CreateLabel(MainMenuMicroButton,  {size=Save.size, color=true})
     frame.Text2:SetPoint('BOTTOM', MainMenuMicroButton, 0, 3)
 
 
@@ -677,7 +677,7 @@ local function Init_Bag()
     local frame= CreateFrame("Frame")
     table.insert(Frames, frame)
 
-    frame.Text= e.Cstr(MainMenuBarBackpackButton,  {size=Save.size, color=true})
+    frame.Text= WoWTools_LabelMixin:CreateLabel(MainMenuBarBackpackButton,  {size=Save.size, color=true})
     frame.Text:SetPoint('TOP', MainMenuBarBackpackButton, 0, -6)
 
     function frame:settings()
@@ -692,7 +692,7 @@ local function Init_Bag()
             money= GetMoney()
         end
         if money>=10000 then
-            self.Text:SetText(e.MK(money/1e4, 0))
+            self.Text:SetText(WoWTools_Mixin:MK(money/1e4, 0))
         else
             self.Text:SetText(GetMoneyString(money,true))
         end
@@ -712,7 +712,7 @@ local function Init_Bag()
         local tab={}
         for guid, infoMoney in pairs(e.WoWDate or {}) do
             if infoMoney.Money then
-                local nameText= e.GetPlayerInfo({guid=guid, faction=infoMoney.faction, reName=true, reRealm=true})
+                local nameText= WoWTools_UnitMixin:GetPlayerInfo({guid=guid, faction=infoMoney.faction, reName=true, reRealm=true})
                 local moneyText= C_CurrencyInfo.GetCoinTextureString(infoMoney.Money)
                 local class= select(2, GetPlayerInfoByGUID(guid))
                 local col= '|c'..select(4, GetClassColor(class))
@@ -724,7 +724,7 @@ local function Init_Bag()
         table.sort(tab, function(a,b) return a.index< b.index end)
         e.tips:AddDoubleLine(
             (e.onlyChinese and '总计' or TOTAL)
-            ..' |cnGREEN_FONT_COLOR:'..(allMoney >=10000 and e.MK(allMoney/10000, 3) or C_CurrencyInfo.GetCoinTextureString(allMoney))..'|r',
+            ..' |cnGREEN_FONT_COLOR:'..(allMoney >=10000 and WoWTools_Mixin:MK(allMoney/10000, 3) or C_CurrencyInfo.GetCoinTextureString(allMoney))..'|r',
             '|cnGREEN_FONT_COLOR:'..numPlayer..'|r '..(e.onlyChinese and '角色' or CHARACTER)
         )
 
@@ -767,7 +767,7 @@ local function Init_Bag()
 
 
     MainMenuBarBackpackButtonCount:SetShadowOffset(1, -1)
-    e.Set_Label_Texture_Color(MainMenuBarBackpackButtonCount, {type='FontString'})--设置颜色
+    WoWTools_ColorMixin:SetLabelTexture(MainMenuBarBackpackButtonCount, {type='FontString'})--设置颜色
 
     hooksecurefunc(MainMenuBarBackpackButton, 'UpdateFreeSlots', function(self)
         local freeSlots=self.freeSlots
@@ -989,10 +989,10 @@ local function Init_Plus()
     else
         for _, frame in pairs(Frames) do
             if frame.Text then
-                e.Cstr(nil, {size=Save.size, changeFont=frame.Text, color=true})
+                WoWTools_LabelMixin:CreateLabel(nil, {size=Save.size, changeFont=frame.Text, color=true})
             end
             if frame.Text2 then
-                e.Cstr(nil, {size=Save.size, changeFont=frame.Text2, color=true})
+                WoWTools_LabelMixin:CreateLabel(nil, {size=Save.size, changeFont=frame.Text2, color=true})
             end
         end
     end
@@ -1084,7 +1084,7 @@ local function Init_Framerate_Plus()
     end)
 
     function FramerateButton:set_size()--修改大小
-        e.Cstr(nil, {size=Save.framerateSize or 12, changeFont=FramerateFrame.FramerateText, color=true})--Save.size, nil , Labels.fpsms, true)    
+        WoWTools_LabelMixin:CreateLabel(nil, {size=Save.framerateSize or 12, changeFont=FramerateFrame.FramerateText, color=true})--Save.size, nil , Labels.fpsms, true)    
     end
     FramerateButton:set_size()
 

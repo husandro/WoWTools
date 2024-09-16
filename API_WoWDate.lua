@@ -14,9 +14,9 @@ e.WoWDate[e.Player.guid].Keystone={
     week= e.Player.week,
     weekNum= weekNum,
     weekLevel= weekLevel,
-    weekPvE= e.Get_Week_Rewards_Text(3),--Raid
-    weekMythicPlus= e.Get_Week_Rewards_Text(1),--MythicPlus
-    weekPvP= e.Get_Week_Rewards_Text(2),--RankedPvP
+    weekPvE= WoWTools_WeekMixin:GetRewardText(3),--Raid
+    weekMythicPlus= WoWTools_WeekMixin:GetRewardText(1),--MythicPlus
+    weekPvP= WoWTools_WeekMixin:GetRewardText(2),--RankedPvP
     link= e.WoWDate[e.Player.guid].Keystone.link,
 }
 e.WoWDate[e.Player.guid].Item[itemID]={
@@ -63,7 +63,7 @@ e.GetGroupGuidDate()--队伍数据收集
 e.WoWGUID={}--e.WoWGUID[名称-服务器]=guid
 local function setwowguidTab(info)
     if info and info.characterName then
-        local name= e.GetUnitName(info.characterName)
+        local name= WoWTools_UnitMixin:GetFullName(info.characterName)
         if name then
             if info.isOnline and info.wowProjectID==1 then
                 e.WoWGUID[name]={guid=info.playerGuid, faction=info.factionName}
@@ -264,9 +264,9 @@ local function Update_Challenge_Mode()--{score=总分数,itemLink={超连接}, w
         week= e.Player.week,
         weekNum= weekNum,
         weekLevel= weekLevel,
-        weekPvE= e.Get_Week_Rewards_Text(3),--Raid
-        weekMythicPlus= e.Get_Week_Rewards_Text(1),--MythicPlus
-        weekPvP= e.Get_Week_Rewards_Text(2),--RankedPvP
+        weekPvE= WoWTools_WeekMixin:GetRewardText(3),--Raid
+        weekMythicPlus= WoWTools_WeekMixin:GetRewardText(1),--MythicPlus
+        weekPvP= WoWTools_WeekMixin:GetRewardText(2),--RankedPvP
         link= e.WoWDate[e.Player.guid].Keystone.link,
     }
 end
@@ -437,7 +437,7 @@ local function Update_Instance()--encounterID, encounterName)
         if reset and reset>0 and numEncounters and encounterProgress and numEncounters>0 and encounterProgress>0 and difficultyName then
             local killed = encounterProgress ..'/'..numEncounters;
             killed = encounterProgress ==numEncounters and '|cnGREEN_FONT_COLOR:'..killed..'|r' or killed
-            difficultyName=e.GetDifficultyColor(difficultyName, difficulty)
+            difficultyName=WoWTools_MapMixin:GetDifficultyColor(difficultyName, difficulty)
             tab[name] = tab[name] or {}
             tab[name][difficultyName]=killed
         end

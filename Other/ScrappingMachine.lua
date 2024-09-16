@@ -66,7 +66,7 @@ local function can_scrap_item(bag, slot, onlyEquip, classID)
         if itemLink then
             local itemEquipLoc, _, classID2 = select(4, C_Item.GetItemInfoInstant(itemLink))
             if onlyEquip then--装备
-                local invSlot= e.GetItemSlotID(itemEquipLoc)
+                local invSlot= WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)
                 if invSlot then
                     return itemLocation
                 end
@@ -210,7 +210,7 @@ end
 
 local function Init_Disabled_Button()
     local btn= WoWTools_ButtonMixin:Cbtn(ScrappingMachineFrame, {size=28, icon='hide'})
-    btn.Text= e.Cstr(btn)
+    btn.Text= WoWTools_LabelMixin:CreateLabel(btn)
     btn.Text:SetPoint('CENTER')
     btn:SetPoint('RIGHT', -10,0)
     function btn:get_num()

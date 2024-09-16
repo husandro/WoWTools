@@ -106,7 +106,7 @@ end
 
 local function Set_Button_Function(btn)
     btn:SetAttribute("type1", "item")
-    btn.count= e.Cstr(btn, {size=12, color={r=1,g=1,b=1}})--10, nil,nil, true)
+    btn.count= WoWTools_LabelMixin:CreateLabel(btn, {size=12, color={r=1,g=1,b=1}})--10, nil,nil, true)
     btn.count:SetPoint('BOTTOMRIGHT', -4,4)
     btn.numCount=0
     btn.enableCooldown=true

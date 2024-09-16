@@ -169,10 +169,10 @@ local function Init()
             local className=C_Item.GetItemClassInfo(classID)
             if className then
                 local frame= WoWTools_ButtonMixin:Cbtn(ListButton.frame, {icon='hide'})
-                frame.Text= e.Cstr(frame, {justifyH='RIGHT'})
+                frame.Text= WoWTools_LabelMixin:CreateLabel(frame, {justifyH='RIGHT'})
                 frame.Text:SetPoint('RIGHT', -2,0)
                 frame.Text:SetText(e.cn(className)..' '..classID)
-                frame.Label= e.Cstr(frame, {justifyH='RIGHT'})
+                frame.Label= WoWTools_LabelMixin:CreateLabel(frame, {justifyH='RIGHT'})
                 frame.Label:SetPoint('RIGHT', frame, 'LEFT', -4, 0)
                 frame:SetSize(frame.Text:GetWidth()+4, 18)
                 frame:SetPoint('TOPRIGHT', last, 'BOTTOMRIGHT')
@@ -240,8 +240,8 @@ local function Init()
             local bank= bankClass[frame.classID] or 0
             local bag= bagClass[frame.classID] or 0
 
-            frame.bankNumText= '|A:Banker:0:0|a'..(bank==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:')..e.MK(bank, 3)
-            frame.bagNumText= '|A:bag-main:0:0|a'..( bag==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:')..e.MK(bag, 3)
+            frame.bankNumText= '|A:Banker:0:0|a'..(bank==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:')..WoWTools_Mixin:MK(bank, 3)
+            frame.bagNumText= '|A:bag-main:0:0|a'..( bag==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:')..WoWTools_Mixin:MK(bag, 3)
 
             if bank==0 and bag==0 then
                 frame.Label:SetText('')

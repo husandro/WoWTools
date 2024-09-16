@@ -41,7 +41,7 @@ local function SetType2Texture(btn)
 
     btn.border:SetAtlas('bag-reagent-border')
 
-    e.Set_Label_Texture_Color(btn.border, {type='Texture', alpha=0.3})
+    WoWTools_ColorMixin:SetLabelTexture(btn.border, {type='Texture', alpha=0.3})
 end
 
 

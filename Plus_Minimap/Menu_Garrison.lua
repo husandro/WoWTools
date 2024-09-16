@@ -92,7 +92,7 @@ local function Init_GarrisonList()
     garrisonType= Enum.GarrisonType.Type_7_0_Garrison,
     garrFollowerTypeID= Enum.GarrisonFollowerType.FollowerType_7_0_GarrisonFollower,
     frame='OrderHallMissionFrame',
-    atlas= e.Class('player', nil, true),--职业图标 -- e.Player.class == "EVOKER" and "UF-Essence-Icon-Active" or string.format("legionmission-landingbutton-%s-up", e.Player.class),
+    atlas= WoWTools_UnitMixin:GetClass('player', nil, true),--职业图标 -- e.Player.class == "EVOKER" and "UF-Essence-Icon-Active" or string.format("legionmission-landingbutton-%s-up", e.Player.class),
     --tooltip= e.onlyChinese and '点击显示职业大厅报告' or MINIMAP_ORDER_HALL_LANDING_PAGE_TOOLTIP,
     },
 
@@ -138,7 +138,7 @@ function WoWTools_MinimapMixin:Garrison_Menu(_, root)
         return WeeklyRewardsFrame and WeeklyRewardsFrame:IsShown()
     end, WoWTools_LoadUIMixin.WeeklyRewards)
     sub:SetTooltip(function(tooltip)
-        e.Get_Weekly_Rewards_Activities({showTooltip=true, tooltip=tooltip})--周奖励，提示
+        WoWTools_WeekMixin:Activities({showTooltip=true, tooltip=tooltip})--周奖励，提示
     end)
 
 

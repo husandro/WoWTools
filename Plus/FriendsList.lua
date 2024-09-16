@@ -28,7 +28,7 @@ local RegionNames
 local function set_SOCIAL_QUEUE_UPDATE()--更新, 快速加入
     if QuickJoinToastButton then
         if not QuickJoinToastButton.quickJoinText then
-            QuickJoinToastButton.quickJoinText= e.Cstr(QuickJoinToastButton, {color=true})--:CreateFontString()
+            QuickJoinToastButton.quickJoinText= WoWTools_LabelMixin:CreateLabel(QuickJoinToastButton, {color=true})--:CreateFontString()
             --QuickJoinToastButton.quickJoinText:SetFontObject('NumberFontNormal')
             QuickJoinToastButton.quickJoinText:SetPoint('TOPRIGHT', -6, -3)
             --if e.Player.useColor then
@@ -58,7 +58,7 @@ local function set_QuinkJoin_Init()--快速加入, 初始化 QuickJoin.lua
             local name = nameObj and nameObj.name
             if guid and name then
                 local _, class, _, race, sex = GetPlayerInfoByGUID(guid)
-                local raceTexture=e.GetUnitRaceInfo({unit=nil, guid=guid, race=race, sex=sex , reAtlas=false})
+                local raceTexture=WoWTools_UnitMixin:GetRaceIcon({unit=nil, guid=guid, race=race, sex=sex , reAtlas=false})
                 local hex= select(4, GetClassColor(class))
                 hex= '|c'..hex
                 name= (raceTexture or '').. name
@@ -79,7 +79,7 @@ local function set_QuinkJoin_Init()--快速加入, 初始化 QuickJoin.lua
                         e.tips:Show()
                     end)
                     nameObj:SetScript('OnMouseDown',function(self2)
-                        e.Say(nil, self2.name, self2.guid2 and C_BattleNet.GetGameAccountInfoByGUID(self2.guid))
+                        WoWTools_ChatMixin:Say(nil, self2.name, self2.guid2 and C_BattleNet.GetGameAccountInfoByGUID(self2.guid))
                     end)
                 end
             end
@@ -129,7 +129,7 @@ local function set_QuinkJoin_Init()--快速加入, 初始化 QuickJoin.lua
             end
         end
         if text and not frame.roleTips then
-            frame.roleTips= e.Cstr(frame)
+            frame.roleTips= WoWTools_LabelMixin:CreateLabel(frame)
             frame.roleTips:SetPoint('BOTTOMRIGHT')
         end
         if frame.roleTips then
@@ -155,9 +155,9 @@ local function set_QuinkJoin_Init()--快速加入, 初始化 QuickJoin.lua
         end
 
         local leaderGUID = select(8, C_SocialQueue.GetGroupInfo(guid))--玩家名称
-        local link= leaderGUID and e.GetPlayerInfo({guid=leaderGUID, reName=true, reRealm=true, reLink=true,})
+        local link= leaderGUID and WoWTools_UnitMixin:GetPlayerInfo({guid=leaderGUID, reName=true, reRealm=true, reLink=true,})
         if link and not self.nameInfo then
-            self.nameInfo= e.Cstr(self)
+            self.nameInfo= WoWTools_LabelMixin:CreateLabel(self)
             self.nameInfo:SetPoint('BOTTOM', self.CancelButton, 'TOPLEFT', 2, 0)
             self:HookScript('OnHide', function(self2)
                 if self2.nameInfo then
@@ -268,7 +268,7 @@ local function Init_Friends_Menu(self, root)
 
     for guid, stat in pairs(Save.Friends) do
         if guid~=e.Player.guid then
-            local btn= sub:CreateButton(format('|A:%s:0:0|a', OptionTexture[stat] or '').. e.GetPlayerInfo({guid=guid, reName=true, reRealm=true}), function(data)
+            local btn= sub:CreateButton(format('|A:%s:0:0|a', OptionTexture[stat] or '').. WoWTools_UnitMixin:GetPlayerInfo({guid=guid, reName=true, reRealm=true}), function(data)
                 if data then
                     Save.Friends[data]= nil
                 end
@@ -396,7 +396,7 @@ local function Init_FriendsList()--好友列表, 初始化
 
         if accountInfo.gameAccountInfo.isOnline and accountInfo.gameAccountInfo.clientProgram == BNET_CLIENT_WOW then
             if accountInfo.gameAccountInfo.wowProjectID == WOW_PROJECT_ID  and accountInfo.gameAccountInfo.isInCurrentRegion then
-                text= text..e.GetPlayerInfo({
+                text= text..WoWTools_UnitMixin:GetPlayerInfo({
                             guid=accountInfo.gameAccountInfo.playerGuid,
                             reLink= accountInfo.gameAccountInfo.factionName==e.Player.faction,
                             reName=true,
@@ -625,7 +625,7 @@ local function Set_FriendsFrame_UpdateFriendButton(self)
         if not info or not info.guid then
             return
         end
-        local text=e.GetPlayerInfo({guid=info.guid})
+        local text=WoWTools_UnitMixin:GetPlayerInfo({guid=info.guid})
         if text~='' then
             text= text..(info.area and info.connected and ' '..info.area or '')
             self.info:SetText(text)
@@ -659,7 +659,7 @@ local function Set_FriendsFrame_UpdateFriendButton(self)
         if accountInfo.gameAccountInfo.characterLevel and accountInfo.gameAccountInfo.characterLevel>0 and accountInfo.gameAccountInfo.characterLevel~= GetMaxLevelForLatestExpansion() then--角色等级
             text= text..'|cnGREEN_FONT_COLOR:'..accountInfo.gameAccountInfo.characterLevel..'|r '
         end
-        text= text.. e.GetPlayerInfo({guid=accountInfo.gameAccountInfo.playerGuid, reName=true, reRealm=true, faction=accountInfo.gameAccountInfo.factionName })
+        text= text.. WoWTools_UnitMixin:GetPlayerInfo({guid=accountInfo.gameAccountInfo.playerGuid, reName=true, reRealm=true, faction=accountInfo.gameAccountInfo.factionName })
 
         if accountInfo.gameAccountInfo.isOnline and accountInfo.gameAccountInfo.areaName then--区域
             text= text..' '..accountInfo.gameAccountInfo.areaName
@@ -745,7 +745,7 @@ local function Init_RaidGroupFrame_Update()--团队, 模块
                         local distance, checkedDistance = UnitDistanceSquared(unit)
                         if checkedDistance then
                             if distance and distance > DISTANCE_THRESHOLD_SQUARED then
-                                text= e.GetUnitMapName(unit)--单位, 地图名称
+                                text= WoWTools_MapMixin:GetUnit(unit)--单位, 地图名称
                                 if text then
                                     text= '|A:poi-islands-table:0:0|a|cnGREEN_FONT_COLOR:'..text..'|r'
                                 end
@@ -753,11 +753,11 @@ local function Init_RaidGroupFrame_Update()--团队, 模块
                         end
                     end
 
-                    text= text or e.PlayerOnlineInfo(unit)--状态
+                    text= text or WoWTools_UnitMixin:GetOnlineInfo(unit)--状态
 
                     if not text and not setSize then--处理名字
                         text= name:gsub('(%-.+)','')--名称
-                        text= e.WA_Utf8Sub(text, 3, 7)
+                        text= WoWTools_Mixin:sub(text, 3, 7)
                     end
                     if text then
                         subframes.name:SetText(text)
@@ -772,7 +772,7 @@ local function Init_RaidGroupFrame_Update()--团队, 模块
                             text= "|T"..texture..':0|t'
                         end
                     end
-                    text= text or e.Class(nil, fileName)--职业图标
+                    text= text or WoWTools_UnitMixin:GetClassIcon(nil, fileName)--职业图标
 
                     if text then
                         if guid and e.UnitItemLevel[guid] and e.UnitItemLevel[guid].itemLevel then
@@ -794,13 +794,13 @@ local function Init_RaidGroupFrame_Update()--团队, 模块
                 end
 
                 if subframes.level and level==maxLevel then
-                    subframes.level:SetText(e.GetUnitRaceInfo({unit=unit, guid=guid, race=nil, sex=nil, reAtlas=false}) or '')
+                    subframes.level:SetText(WoWTools_UnitMixin:GetRaceIcon({unit=unit, guid=guid, race=nil, sex=nil, reAtlas=false}) or '')
                 end
             end
         end
     end
     if not RaidFrame.groupInfoLable then
-        RaidFrame.groupInfoLable= e.Cstr(RaidFrame, {copyFont=FriendsFrameTitleText, justifyH='CENTER'})
+        RaidFrame.groupInfoLable= WoWTools_LabelMixin:CreateLabel(RaidFrame, {copyFont=FriendsFrameTitleText, justifyH='CENTER'})
         RaidFrame.groupInfoLable:SetPoint('BOTTOM',FriendsFrame.TitleContainer, 'TOP')
     end
     local text= '|A:charactercreate-gendericon-male-selected:0:0|a'..(itemNum==0 and 0 or format('%i',itemLevel/itemNum))
@@ -859,10 +859,10 @@ local function set_WhoList_Update()--查询, 名单列表
                 local info = index and C_FriendList.GetWhoInfo(index)
                 if info and info.fullName then
                     e.tips:AddLine((info.gender==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or info.gender==3 and '|A:charactercreate-gendericon-female-selected:0:0|a' or format('|A:%s:0:0|a', e.Icon.toRight))
-                                ..(e.Class(nil, info.filename) or '')
+                                ..(WoWTools_UnitMixin:GetClassIcon(nil, info.filename) or '')
                                 ..self.col
                                 ..info.fullName
-                                ..(e.GetFriend(info.fullName) or '')
+                                ..(WoWTools_UnitMixin:GetIsFriendIcon(info.fullName) or '')
                                 ..(info.level and ' '..(info.level~=GetMaxLevelForLatestExpansion() and '|cnGREEN_FONT_COLOR:' or '')..info.level or '')
                             )
                     e.tips:AddLine('|A:UI-HUD-MicroMenu-GuildCommunities-GuildColor-Mouseover:0:0|a'..self.col..(info.fullGuildName or ''))
@@ -889,7 +889,7 @@ local function set_WhoList_Update()--查询, 名单列表
             if RAID_CLASS_COLORS[info.filename] then
                 r,g,b= RAID_CLASS_COLORS[info.filename]:GetRGB()
                 hex= RAID_CLASS_COLORS[info.filename]:GenerateHexColor()
-                local class=  e.Class(nil, info.filename)
+                local class=  WoWTools_UnitMixin:GetClassIcon(nil, info.filename)
                 if class and btn.Class then
                     btn.Class:SetText(class)
                 end
@@ -902,7 +902,7 @@ local function set_WhoList_Update()--查询, 名单列表
                 if info.fullName== e.Player.name then
                     btn.Name:SetText(format('|A:%s:0:0|a', e.Icon.toRight)..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..format('|A:%s:0:0|a', e.Icon.toLeft))
                 else
-                    local nameText= e.GetFriend(info.fullName)--检测, 是否好友
+                    local nameText= WoWTools_UnitMixin:GetIsFriendIcon(info.fullName)--检测, 是否好友
                     if nameText then
                         nameText= nameText..info.fullName
                         if info.fullName== e.Player.name then
@@ -993,7 +993,7 @@ local function Init()--FriendsFrame.lua
             end
         end
         if text and not btn.tipsLabel then
-            btn.tipsLabel= e.Cstr(btn, {justifyH='RIGHT'})
+            btn.tipsLabel= WoWTools_LabelMixin:CreateLabel(btn, {justifyH='RIGHT'})
             btn.tipsLabel:SetPoint('BOTTOMRIGHT', -52,1)
         end
         if btn.tipsLabel then

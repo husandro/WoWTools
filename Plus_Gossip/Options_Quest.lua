@@ -96,7 +96,7 @@ local function select_Reward(questID)--自动:选择奖励
                 local amount = select(3, GetQuestItemInfo('choice', i))--钱
                 local _, _, itemQuality, itemLevel, _, _,_,_, itemEquipLoc, _, sellPrice,classID, subclassID = C_Item.GetItemInfo(itemLink)
                 if Save().autoSelectReward and not(classID==19 or (classID==4 and subclassID==5) or itemLevel==1) and itemQuality and itemQuality<4 and C_Item.IsEquippableItem(itemLink) then--最高 稀有的 3                                
-                    local invSlot = e.GetItemSlotID(itemEquipLoc)
+                    local invSlot = WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)
                     if invSlot and itemLevel and itemLevel>1 then--装等
                         local itemLinkPlayer = GetInventoryItemLink('player', invSlot)
                         if itemLinkPlayer then
@@ -111,7 +111,7 @@ local function select_Reward(questID)--自动:选择奖励
                     end
 
                     if not upItem then
-                        local isCollected, isSelf= select(2, e.GetItemCollected(itemLink))--物品是否收集 
+                        local isCollected, isSelf= select(2, WoWTools_CollectedMixin:Item(itemLink))--物品是否收集 
                         if isCollected==false and isSelf then
                             bestItem = i
                             selectItemLink=itemLink
@@ -179,7 +179,7 @@ local function Init_Quest()
     )
     WoWTools_GossipMixin.QuestButton= QuestButton
 
-    QuestButton.Text=e.Cstr(QuestButton, {justifyH='RIGHT', color=true, size=14})--任务数量
+    QuestButton.Text=WoWTools_LabelMixin:CreateLabel(QuestButton, {justifyH='RIGHT', color=true, size=14})--任务数量
     QuestButton.Text:SetPoint('RIGHT', QuestButton, 'LEFT', 0, 1)
 
     QuestButton:SetPoint('RIGHT', WoWTools_GossipMixin.GossipButton, 'LEFT')
@@ -337,10 +337,10 @@ local function Init_Quest()
                 local need= campaignNum+ legendaryNum+ storyNum +bountyNum
                 self.Text:SetText(
                     (inMapNum>0 and '|cnGREEN_FONT_COLOR:'..inMapNum..format('|A:%s:0:0|a', e.Icon.toLeft)..'|r ' or '')
-                    ..(dayNum>0 and e.GetQestColor('Day').hex..dayNum..'|r ' or '')
-                    ..(weekNum>0 and e.GetQestColor('Week').hex..weekNum..'|r ' or '')
+                    ..(dayNum>0 and WoWTools_QuestMixin:GetColor('Day').hex..dayNum..'|r ' or '')
+                    ..(weekNum>0 and WoWTools_QuestMixin:GetColor('Week').hex..weekNum..'|r ' or '')
                     ..(numQuest>0 and '|cffffffff'..numQuest..'|r ' or '')
-                    ..(need>0 and e.GetQestColor('Legendary').hex..need..'|r ' or '')
+                    ..(need>0 and WoWTools_QuestMixin:GetColor('Legendary').hex..need..'|r ' or '')
                 )
             else
                 local num= select(2, C_QuestLog.GetNumQuestLogEntries())
@@ -399,7 +399,7 @@ local function Init_Quest()
     QuestFrame.sel=CreateFrame("CheckButton", nil, QuestFrame, 'InterfaceOptionsCheckButtonTemplate')--禁用此npc,任务,选项
     QuestFrame.sel:SetPoint("TOPLEFT", QuestFrame, 40, 20)
     QuestFrame.sel.Text:SetText(e.onlyChinese and '禁用' or DISABLE)
-    QuestFrame.sel.questIDLabel= e.Cstr(QuestFrame.sel, {mouse=true})--任务ID
+    QuestFrame.sel.questIDLabel= WoWTools_LabelMixin:CreateLabel(QuestFrame.sel, {mouse=true})--任务ID
     QuestFrame.sel.questIDLabel:SetPoint('LEFT', QuestFrame.sel.Text, 'RIGHT', 12, 0)
     QuestFrame.sel:SetScript("OnLeave", GameTooltip_Hide)
     QuestFrame.sel:SetScript('OnEnter',function (self)
@@ -443,7 +443,7 @@ local function Init_Quest()
         local questID= WoWTools_QuestMixin:GetID()
         if questID then
             ChatEdit_TryInsertQuestLinkForQuestID(questID)
-            --e.Chat(GetQuestLink(questID), nil, true)
+            --WoWTools_ChatMixin:Chat(GetQuestLink(questID), nil, true)
         end
     end)
 
@@ -457,7 +457,7 @@ local function Init_Quest()
 
     --任务框, 自动选任务    
     QuestFrameGreetingPanel:HookScript('OnShow', function()--QuestFrame.lua QuestFrameGreetingPanel_OnShow
-        local npc=e.GetNpcID('npc')
+        local npc=WoWTools_UnitMixin:GetNpcID('npc')
         QuestFrame.sel.npc=npc
         QuestFrame.sel.name=UnitName("npc")
         QuestFrame.sel:SetChecked(Save().NPC[npc])
@@ -500,7 +500,7 @@ local function Init_Quest()
     --任务进度, 继续, 完成 QuestFrame.lua
     hooksecurefunc('QuestFrameProgressItems_Update', function()
         local questID= WoWTools_QuestMixin:GetID()
-        local npc=e.GetNpcID('npc')
+        local npc=WoWTools_UnitMixin:GetNpcID('npc')
         QuestFrame.sel.npc=npc
         QuestFrame.sel.name=UnitName("npc")
         QuestFrame.sel:SetChecked(Save().NPC[npc])
@@ -561,7 +561,7 @@ local function Init_Quest()
     --自动接取任务, 仅一个任务
     hooksecurefunc('QuestInfo_Display', function(template, parentFrame, acceptButton)--, material, mapView)--QuestInfo.lua
         local questID= WoWTools_QuestMixin:GetID()
-        local npc=e.GetNpcID('npc')
+        local npc=WoWTools_UnitMixin:GetNpcID('npc')
         QuestFrame.sel.npc=npc
         QuestFrame.sel.name=UnitName("npc")
         QuestFrame.sel:SetChecked(Save().NPC[npc])

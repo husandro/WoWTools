@@ -178,7 +178,7 @@ local function set_Scale_Size(frame, tab)
     btn:SetHighlightAtlas('Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight')
     btn:SetPushedAtlas('Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down')]]
 
-    e.Set_Label_Texture_Color(btn, {type='Button', alpha=1})--设置颜色
+    WoWTools_ColorMixin:SetLabelTexture(btn, {type='Button', alpha=1})--设置颜色
 
 
     btn:SetSize(16, 16)
@@ -660,7 +660,7 @@ local function set_Zoom_Frame(frame, tab)--notZoom, zeroAlpha, name, point=left)
     end
 
     frame.ResizeButton= WoWTools_ButtonMixin:Cbtn(frame, {atlas='UI-HUD-Minimap-Zoom-In', size={18,18}, name='MoveZoomInButtonPer'..tab.name})
-    e.Set_Label_Texture_Color(frame.ResizeButton, {type='Button'})
+    WoWTools_ColorMixin:SetLabelTexture(frame.ResizeButton, {type='Button'})
 
     frame.ResizeButton.name= tab.name
     frame.ResizeButton.target= frame

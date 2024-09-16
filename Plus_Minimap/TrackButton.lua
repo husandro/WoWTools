@@ -71,7 +71,7 @@ local function get_Quest_Text(questID)
                     atlas= 'worldquest-tracker-questmarker'
                 end
                 local secondsLeft = C_TaskQuest.GetQuestTimeLeftSeconds(questID, true)
-                local secText= secondsLeft and SecondsToTime(secondsLeft)--e.SecondsToClock(secondsLeft, true)
+                local secText= secondsLeft and SecondsToTime(secondsLeft)--WoWTools_TimeMixin:SecondsToClock(secondsLeft, true)
                 text= text and text..'|n' or ''
                 text= e.cn(questName)
                     ..(secText and ' |cffffffff'..secText..'|r' or '')
@@ -228,9 +228,9 @@ local function Get_areaPoiID_Text(uiMapID, areaPoiID, all)
     if time then
         if time<86400 then
             if time<300 then
-                time= '|cnGREEN_FONT_COLOR:'..e.SecondsToClock(time)..'|r'
+                time= '|cnGREEN_FONT_COLOR:'..WoWTools_TimeMixin:SecondsToClock(time)..'|r'
             else
-                time= '|cffffffff'..e.SecondsToClock(time)..'|r'
+                time= '|cffffffff'..WoWTools_TimeMixin:SecondsToClock(time)..'|r'
             end
         else
             time= '|cffffffff'..SecondsToTime(time)..'|r'
@@ -533,7 +533,7 @@ local function set_OnClick_btn(self)
             text= info.name..(link or '')
             local secondsLeft = C_AreaPoiInfo.GetAreaPOISecondsLeft(self.areaPoiID)
             if secondsLeft then
-                local time= e.SecondsToClock(secondsLeft)
+                local time= WoWTools_TimeMixin:SecondsToClock(secondsLeft)
                 if time then
                     text= text..' '..time
                 end
@@ -556,7 +556,7 @@ local function set_OnClick_btn(self)
     if not text then
         text= self.name:match('(.-)|A') or self.name:match('(.-)|T')  or self.name
     end
-    e.Chat(text, nil, nil)
+    WoWTools_ChatMixin:Chat(text, nil, nil)
 end
 
 
@@ -640,14 +640,14 @@ local function set_Button_Text()
         local btn = TrackButton.buttons[index]
         if not btn then
             btn= WoWTools_ButtonMixin:Cbtn(TrackButton.Frame, {size={12,12}, icon='hdie'})
-            btn.nameText= e.Cstr(btn,{color=true})
+            btn.nameText= WoWTools_LabelMixin:CreateLabel(btn,{color=true})
             btn.nameText:SetPoint('LEFT', btn, 'RIGHT')
             btn.onMinimap= btn:CreateTexture(nil, 'ARTWORK')
             btn.onMinimap:SetAtlas('UI-HUD-MicroMenu-Highlightalert')
             btn.onMinimap:SetPoint('CENTER')
             btn.onMinimap:SetSize(16,16)
             btn.onMinimap:SetVertexColor(0,1,0)
-            btn.text= e.Cstr(btn,{color=true})
+            btn.text= WoWTools_LabelMixin:CreateLabel(btn,{color=true})
 
             btn.index= index
 

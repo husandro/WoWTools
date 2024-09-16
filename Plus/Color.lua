@@ -28,7 +28,7 @@ local function set_Text(self, elapsed)
 				Frame.rgb2:SetText(format('r=%.2f, g=%.2f, b=%.2f, a=%.2f', r,g,b,a))
 			end
 			if not Frame.hex:HasFocus() then
-				Frame.hex:SetText(e.RGB_to_HEX(r,g,b,a))
+				Frame.hex:SetText(WoWTools_ColorMixin:RGBtoHEX(r,g,b,a))
 			end
 		end
 		ColorPickerFrame.Header.Text:SetTextColor(r,g,b)
@@ -86,7 +86,7 @@ local function Init()
 		end)
 		texture:SetScript('OnMouseUp', function(self) self:SetAlpha(0.7) end)
 		texture:SetScript('OnEnter', function(self)
-			local col= '|c'..e.RGB_to_HEX(self.r, self.g, self.b, self.a)
+			local col= '|c'..WoWTools_ColorMixin:RGBtoHEX(self.r, self.g, self.b, self.a)
 			e.tips:SetOwner(ColorPickerFrame, "ANCHOR_RIGHT")
 			e.tips:ClearLines()
 			e.tips:AddDoubleLine(col..id, col..addName)
@@ -113,7 +113,7 @@ local function Init()
 		local text= col.r..col.g..col.b.. (col.a or 1)
 		if not colorTab[text] then
 			colorTab[text]= true
-			local texture= create_Texture(col.r, col.g, col.b, col.a, e.Class(nil, className, true))
+			local texture= create_Texture(col.r, col.g, col.b, col.a, WoWTools_UnitMixin:GetClassIcon(nil, className, true))
 			texture:SetPoint('TOPLEFT', ColorPickerFrame, 'TOPRIGHT', x, y)
 			local hex= col:GenerateHexColor()
 			texture.tooltip= '|c'..hex..'RAID_CLASS_COLORS["'..className..'"]'
@@ -350,7 +350,7 @@ local function Init()
 			self:ClearFocus()
 		end
 	end)
-	Frame.rgb.lable=e.Cstr(Frame.rgb, {size=10})--10)--提示，修改，颜色
+	Frame.rgb.lable=WoWTools_LabelMixin:CreateLabel(Frame.rgb, {size=10})--10)--提示，修改，颜色
 	Frame.rgb.lable:SetPoint('RIGHT', Frame.rgb,-2,0)
 	Frame.rgb:SetScript('OnTextChanged', function(self, userInput)
 		if userInput then
@@ -415,7 +415,7 @@ local function Init()
 				self:ClearFocus()
 		end
 	end)
-	Frame.rgb2.lable=e.Cstr(Frame.rgb2, {size=10})--10)--提示，修改，颜色
+	Frame.rgb2.lable=WoWTools_LabelMixin:CreateLabel(Frame.rgb2, {size=10})--10)--提示，修改，颜色
 	Frame.rgb2.lable:SetPoint('RIGHT', Frame.rgb2,-2,0)
 	Frame.rgb2:SetScript('OnTextChanged', function(self, userInput)
 		if userInput then
@@ -458,11 +458,11 @@ local function Init()
 			self:ClearFocus()
 		end
 	end)
-	local hexText=e.Cstr(Frame)--提示
+	local hexText=WoWTools_LabelMixin:CreateLabel(Frame)--提示
 	hexText:SetPoint('RIGHT', Frame.hex, 'LEFT',-2,0)
 	hexText:SetText('|c')
 
-	Frame.hex.lable=e.Cstr(Frame.hex, {size=10})--10)--提示，修改，颜色
+	Frame.hex.lable=WoWTools_LabelMixin:CreateLabel(Frame.hex, {size=10})--10)--提示，修改，颜色
 	Frame.hex.lable:SetPoint('RIGHT', Frame.hex,-2,0)
 	Frame.hex:SetScript('OnTextChanged', function(self, userInput)
 		if userInput then
@@ -503,7 +503,7 @@ local function Init()
 	Frame.cn2:SetSize(w,20)
 	Frame.cn2:SetAutoFocus(false)
 	Frame.cn2:ClearFocus()
-	local cnText2=e.Cstr(Frame)--提示
+	local cnText2=WoWTools_LabelMixin:CreateLabel(Frame)--提示
 	cnText2:SetPoint('LEFT', Frame.cn2, 'RIGHT', 2,0)
 	cnText2:SetText(':')
 
@@ -559,7 +559,7 @@ local function Init()
 
 
 	if OpacitySliderFrame then
-		Frame.alphaText=e.Cstr(OpacitySliderFrame, {mouse=true, size=14})--14)--透明值，提示
+		Frame.alphaText=WoWTools_LabelMixin:CreateLabel(OpacitySliderFrame, {mouse=true, size=14})--14)--透明值，提示
 		Frame.alphaText:SetPoint('LEFT', OpacitySliderFrame, 'RIGHT', 5,0)
 
 		OpacitySliderFrame:EnableMouseWheel(true)
@@ -575,7 +575,7 @@ local function Init()
 			self:SetValue(value)
 		end)
 	else
-		Frame.alphaText=e.Cstr(ColorPickerFrame, {mouse=true, size=14})--透明值，提示
+		Frame.alphaText=WoWTools_LabelMixin:CreateLabel(ColorPickerFrame, {mouse=true, size=14})--透明值，提示
 		Frame.alphaText:SetPoint('TOP', ColorPickerFrame.Content.ColorSwatchOriginal, 'BOTTOM')
 	end
 	Frame.alphaText:SetScript('OnLeave', function(self) self:SetAlpha(1) e.tips:Hide() end)

@@ -70,7 +70,7 @@ local function Init()
                         e.tips:AddDoubleLine(e.addName, addName)
                         e.tips:Show()
                     end)
-                    --[[optionFrame.check.Text2=e.Cstr(optionFrame.check)
+                    --[[optionFrame.check.Text2=WoWTools_LabelMixin:CreateLabel(optionFrame.check)
                     optionFrame.check.Text2:SetPoint('RIGHT', optionFrame.check, 'LEFT')
                     optionFrame.check.Text2:SetTextColor(0,1,0)
                     optionFrame.check:SetScript('OnUpdate', function(self3, elapsed)
@@ -83,8 +83,8 @@ local function Init()
                                 local time= GetTime()
                                 time= time < value and time + 86400 or time
                                 time= time - value
-                                text= e.SecondsToClock(aura.duration- time)
-                                count= select(3, e.WA_GetUnitBuff('player', self3.spellID, 'HELPFUL'))
+                                text= WoWTools_TimeMixin:SecondsToClock(aura.duration- time)
+                                count= select(3, WoWTools_AuraMixin:Get('player', self3.spellID, 'HELPFUL'))
                                 count= count and count>1 and count or nil
                             end
                             self3.Text:SetText(text or '')
@@ -223,7 +223,7 @@ local function Init()
                 if info then
                     applications= info.applications
                     if info.expirationTime then
-                        text= e.GetTimeInfo(nil, false, nil, info.expirationTime)
+                        text= WoWTools_TimeMixin:Info(nil, false, nil, info.expirationTime)
                         applications= applications==0 and 1 or applications
                     end
                     if info.charges then
@@ -246,11 +246,11 @@ local function Init()
             frame.frameTips:SetShown(data.spellID)
         end
 
-        frame.TimeText= e.Cstr(frame, {color={r=0, g=1, b=0}, size=18})
+        frame.TimeText= WoWTools_LabelMixin:CreateLabel(frame, {color={r=0, g=1, b=0}, size=18})
         frame.TimeText:SetPoint('TOP', frame.Artwork, 'BOTTOM', 0, -4)
-        frame.ChargeText= e.Cstr(frame,  {color={r=0, g=1, b=0}, size=18})
+        frame.ChargeText= WoWTools_LabelMixin:CreateLabel(frame,  {color={r=0, g=1, b=0}, size=18})
         frame.ChargeText:SetPoint('CENTER', frame.Artwork, 0, 0)
-        frame.ApplicationsText= e.Cstr(frame, {color={r=1, g=1, b=1}, size=22})
+        frame.ApplicationsText= WoWTools_LabelMixin:CreateLabel(frame, {color={r=1, g=1, b=1}, size=22})
         frame.ApplicationsText:SetPoint('BOTTOMRIGHT', frame.Artwork, -6, 6)
 
         frame.frameTips= CreateFrame('Frame', nil, frame)

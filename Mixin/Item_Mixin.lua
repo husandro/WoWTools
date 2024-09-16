@@ -3,6 +3,7 @@ GetTooltip
 GetLink
 GetColor return color.r, color.g, color.b, color.hex, color
 GetName(itemID)--取得物品，名称
+GetSlotIcon
 ]]
 
 
@@ -248,3 +249,87 @@ end
 	elseif C_Item.IsCurioItem(itemIDOrLink) then
 		button.IconOverlay:SetAtlas("delves-curios-icon-border");
 ]]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local itemSlotName={--InventorySlotId
+    [1]= 'HEADSLOT',
+    [2]= 'NECKSLOT',
+    [3]= 'SHOULDERSLOT',
+    [4]= 'SHIRTSLOT',
+    [5]= 'CHESTSLOT',
+    [6]= 'WAISTSLOT',
+    [7]= 'LEGSSLOT',
+    [8]= 'FEETSLOT',
+    [9]= 'WRISTSLOT',
+    [10]= 'HANDSSLOT',
+    [11]= 'FINGER0SLOT',
+    [12]= 'FINGER1SLOT',
+    [13]= 'TRINKET0SLOT',
+    [14]= 'TRINKET1SLOT',
+    [15]= 'BACKSLOT',
+    [16]= 'MAINHANDSLOT',
+    [17]= 'SECONDARYHANDSLOT',
+    [19]= 'TABARDSLOT',
+}
+local itemSlotTable={
+    ['INVTYPE_HEAD']=1,
+    ['INVTYPE_NECK']=2,
+    ['INVTYPE_SHOULDER']=3,
+    ['INVTYPE_BODY']=4,
+    ['INVTYPE_ROBE']=5,
+    ['INVTYPE_CHEST']=5,
+    ['INVTYPE_WAIST']=6,
+    ['INVTYPE_LEGS']=7,
+    ['INVTYPE_FEET']=8,
+    ['INVTYPE_WRIST']=9,
+    ['INVTYPE_HAND']=10,
+    ['INVTYPE_FINGER']={11,12},
+    ['INVTYPE_TRINKET']={13,14},
+    ['INVTYPE_CLOAK']=15,
+    ['INVTYPE_SHIELD']=17,
+    ['INVTYPE_RANGED']=16,
+    ['INVTYPE_2HWEAPON']=16,
+    ['INVTYPE_RANGEDRIGHT']=16,
+    ['INVTYPE_WEAPON']={16,17},
+    ['INVTYPE_WEAPONMAINHAND']=16,
+    ['INVTYPE_WEAPONOFFHAND']=16,
+    ['INVTYPE_THROWN']=16,
+    ['INVTYPE_HOLDABLE']=17,
+    ['INVTYPE_TABARD']=19,
+    ['INVTYPE_PROFESSION_TOOL']={20,23},
+    ['INVTYPE_PROFESSION_GEAR']={21, 22, 24, 25},
+}
+
+function WoWTools_ItemMixin:GetEquipSlotIcon(slotID)
+    local invSlotName= itemSlotName[slotID]
+    local texture= invSlotName and select(2, GetInventorySlotInfo(invSlotName))
+    if texture then
+        return format('|T%s:0:0|t', texture), texture
+    end
+end
+
+--local invTypeNum = C_Item.GetItemInventoryTypeByID(itemID)
+--local invType = C_Item.GetItemInventorySlotKey(invTypeNum)
+function WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)
+    local slot= itemSlotTable[itemEquipLoc]
+    if slot then
+        if type(slot)=='table' then
+            return slot[1], slot[2], slot[3], slot[4]
+        else
+            return slot
+        end
+    end
+end
+

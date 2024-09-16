@@ -60,7 +60,7 @@ local function Init_Sell()
     AuctionHouseButton:SetPoint('TOPLEFT', AuctionHouseFrame, 'TOPRIGHT',4,10)
     AuctionHouseButton.frame= CreateFrame('Frame', nil, AuctionHouseButton)
     AuctionHouseButton.frame:SetAllPoints(AuctionHouseButton)
-    AuctionHouseButton.Text= e.Cstr(AuctionHouseButton)
+    AuctionHouseButton.Text= WoWTools_LabelMixin:CreateLabel(AuctionHouseButton)
     AuctionHouseButton.Text:SetPoint('CENTER')
     AuctionHouseButton.buttons={}
 
@@ -686,16 +686,16 @@ local function Init_Sell()
 
 
     --单价，倍数
-    AuctionHouseFrame.CommoditiesSellFrame.percentLabel= e.Cstr(AuctionHouseFrame.CommoditiesSellFrame, {size=22, justifyH='RIGHT'})--单价，提示
+    AuctionHouseFrame.CommoditiesSellFrame.percentLabel= WoWTools_LabelMixin:CreateLabel(AuctionHouseFrame.CommoditiesSellFrame, {size=22, justifyH='RIGHT'})--单价，提示
     AuctionHouseFrame.CommoditiesSellFrame.percentLabel:SetPoint('BOTTOMRIGHT', AuctionHouseFrame.CommoditiesSellList, 'TOP', -50,0)
     --AuctionHouseFrame.CommoditiesSellFrame.percentLabel:SetPoint('BOTTOM', AuctionHouseFrame.CommoditiesSellFrame.PostButton, 'TOP') 
-    AuctionHouseFrame.CommoditiesSellFrame.vendorPriceLabel= e.Cstr(AuctionHouseFrame.CommoditiesSellFrame, {size=12})--单价，提示
+    AuctionHouseFrame.CommoditiesSellFrame.vendorPriceLabel= WoWTools_LabelMixin:CreateLabel(AuctionHouseFrame.CommoditiesSellFrame, {size=12})--单价，提示
     AuctionHouseFrame.CommoditiesSellFrame.vendorPriceLabel:SetPoint('TOPRIGHT', AuctionHouseFrame.CommoditiesSellFrame.PriceInput.MoneyInputFrame.GoldBox, 'BOTTOMRIGHT',0,4)
 
-    AuctionHouseFrame.ItemSellFrame.percentLabel= e.Cstr(AuctionHouseFrame.ItemSellFrame, {size=22, justifyH='RIGHT'})--单价，提示
+    AuctionHouseFrame.ItemSellFrame.percentLabel= WoWTools_LabelMixin:CreateLabel(AuctionHouseFrame.ItemSellFrame, {size=22, justifyH='RIGHT'})--单价，提示
     AuctionHouseFrame.ItemSellFrame.percentLabel:SetPoint('BOTTOMRIGHT', AuctionHouseFrame.ItemSellList, 'TOP', -50,0)
     --AuctionHouseFrame.ItemSellFrame.percentLabel:SetPoint('BOTTOM', AuctionHouseFrame.ItemSellFrame.PostButton, 'TOP')
-    AuctionHouseFrame.ItemSellFrame.vendorPriceLabel= e.Cstr(AuctionHouseFrame.ItemSellFrame, {size=12})--单价，提示
+    AuctionHouseFrame.ItemSellFrame.vendorPriceLabel= WoWTools_LabelMixin:CreateLabel(AuctionHouseFrame.ItemSellFrame, {size=12})--单价，提示
     AuctionHouseFrame.ItemSellFrame.vendorPriceLabel:SetPoint('TOPRIGHT', AuctionHouseFrame.ItemSellFrame.PriceInput.MoneyInputFrame.GoldBox, 'BOTTOMRIGHT',0,4)
 
     function AuctionHouseButton:Update_Total_Price(frame)
@@ -1130,19 +1130,19 @@ local function Set_BrowseResultsFrame(frame)
            
             --if itemKeyInfo.isPet then
                 local isCollectedAll--宠物
-                text, isCollectedAll= select(3, e.GetPetCollectedNum(itemKeyInfo.battlePetSpeciesID, itemKeyInfo.itemID, true))
+                text, isCollectedAll= select(3, WoWTools_CollectedMixin:Pet(itemKeyInfo.battlePetSpeciesID, itemKeyInfo.itemID, true))
                 if isCollectedAll then
                     text= '|A:common-icon-checkmark-yellow:0:0|a'
                 end
 
             --elseif itemKeyInfo.isEquipment then
             if not text then
-                text= e.GetItemCollected(itemKeyInfo.itemID, nil, true)--物品是否收集
+                text= WoWTools_CollectedMixin:Item(itemKeyInfo.itemID, nil, true)--物品是否收集
             end
             --else
 
                 if not text then--坐骑
-                    local isMountCollected= select(2, e.GetMountCollected(nil, itemKeyInfo.itemID))
+                    local isMountCollected= select(2, WoWTools_CollectedMixin:Mount(nil, itemKeyInfo.itemID))
                     if isMountCollected==true then
                         text= '|A:common-icon-checkmark-yellow:0:0|a'
                     elseif isMountCollected==false then
@@ -1150,7 +1150,7 @@ local function Set_BrowseResultsFrame(frame)
                     end
                 end
                 if not text then--玩具,是否收集
-                    local isToy= select(2, e.GetToyCollected(itemKeyInfo.itemID))
+                    local isToy= select(2, WoWTools_CollectedMixin:Toy(itemKeyInfo.itemID))
                     if isToy==true then
                         text= '|A:common-icon-checkmark-yellow:0:0|a'
                     elseif isToy==false then
@@ -1158,7 +1158,7 @@ local function Set_BrowseResultsFrame(frame)
                     end
                 end
                 if not text and select(6, C_Item.GetItemInfoInstant(itemKeyInfo.itemID))==3 then--显示, 宝石, 属性
-                    local t1, t2= e.Get_Gem_Stats(nil, Get_ItemLink_For_rowData(btn.rowData))
+                    local t1, t2= WoWTools_ItemStatsMixin:Gem(nil, Get_ItemLink_For_rowData(btn.rowData))
                     if t1 then
                         text= t1..(t2 and ' '..t2 or '')
                     end
@@ -1201,7 +1201,7 @@ local function Set_BrowseResultsFrame(frame)
             end]]
         end
         if text and not btn.lable then
-            btn.lable= e.Cstr(btn)
+            btn.lable= WoWTools_LabelMixin:CreateLabel(btn)
         end
         if btn.lable then
             btn.lable:SetPoint('RIGHT', btn.cells[2].Icon, 'LEFT')

@@ -97,7 +97,7 @@ local function set_EncounterJournal_World_Tips(self)
             find=true
         end
         if find then
-            e.tips:AddDoubleLine(e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}), guid==e.Player.guid and '|A:auctionhouse-icon-favorite:0:0|a')
+            e.tips:AddDoubleLine(WoWTools_UnitMixin:GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}), guid==e.Player.guid and '|A:auctionhouse-icon-favorite:0:0|a')
         end
     end
     e.tips:AddLine(' ')
@@ -141,7 +141,7 @@ local function encounterJournal_ListInstances_set_Instance(self, showTips)
         for i=1, n do
             local name, _, reset, difficultyID, _, _, _, _, _, difficultyName, numEncounters, encounterProgress = GetSavedInstanceInfo(i)
             if instancename==name and (not reset or reset>0) and numEncounters and encounterProgress and numEncounters>0 and encounterProgress>0 then
-                difficultyName= e.GetDifficultyColor(difficultyName, difficultyID) or difficultyName
+                difficultyName= WoWTools_MapMixin:GetDifficultyColor(difficultyName, difficultyID) or difficultyName
                 local num=encounterProgress..'/'..numEncounters..'|r'
                 num= encounterProgress==numEncounters and '|cnGREEN_FONT_COLOR:'..num..'|r' or num
                 if showTips then
@@ -216,9 +216,9 @@ local function EncounterJournal_Set_All_Info_Text()
         AllTipsFrame=CreateFrame("Frame", nil, EncounterJournal)
         AllTipsFrame:SetPoint('TOPLEFT', EncounterJournal, 'TOPRIGHT',40,0)
         AllTipsFrame:SetSize(1,1)
-        AllTipsFrame.label= e.Cstr(AllTipsFrame)
+        AllTipsFrame.label= WoWTools_LabelMixin:CreateLabel(AllTipsFrame)
         AllTipsFrame.label:SetPoint('TOPLEFT')
-        AllTipsFrame.weekLable= e.Cstr(AllTipsFrame, {mouse=true})
+        AllTipsFrame.weekLable= WoWTools_LabelMixin:CreateLabel(AllTipsFrame, {mouse=true})
         AllTipsFrame.weekLable:SetPoint('TOPLEFT', AllTipsFrame.label, 'BOTTOMLEFT', 0, -12)
         AllTipsFrame.weekLable:SetScript('OnMouseDown', function(self)
             WeeklyRewards_LoadUI()
@@ -282,13 +282,13 @@ local function EncounterJournal_Set_All_Info_Text()
         AllTipsFrame.weekLable:SetText('')
     end
     --周奖励，提示
-    local last= e.Get_Weekly_Rewards_Activities({frame=AllTipsFrame, point={'TOPLEFT', AllTipsFrame.weekLable, 'BOTTOMLEFT', 0, -2}, anchor='ANCHOR_RIGHT'})
+    local last= WoWTools_WeekMixin:Activities({frame=AllTipsFrame, point={'TOPLEFT', AllTipsFrame.weekLable, 'BOTTOMLEFT', 0, -2}, anchor='ANCHOR_RIGHT'})
 
 
 
 
     --物品，货币提示
-    e.ItemCurrencyLabel({frame=AllTipsFrame, point={'TOPLEFT', last or AllTipsFrame.label, 'BOTTOMLEFT', 0, -12}})--, showAll=true})
+    WoWTools_LabelMixin:ItemCurrencyTips({frame=AllTipsFrame, point={'TOPLEFT', last or AllTipsFrame.label, 'BOTTOMLEFT', 0, -12}})--, showAll=true})
     AllTipsFrame:SetShown(true)
 end
 
@@ -338,7 +338,7 @@ local function MoveFrame(self, savePointName)
         size= size<6 and 6 or size
         size= size>72 and 72 or size
         Save.EncounterJournalFontSize=size
-        e.Cstr(nil, {size=size, changeFont=self2.Text})--size, nil, self2.Text)
+        WoWTools_LabelMixin:CreateLabel(nil, {size=size, changeFont=self2.Text})--size, nil, self2.Text)
         print(e.addName, Initializer:GetName(), e.onlyChinese and '字体大小' or FONT_SIZE, size)
     end)
 end
@@ -387,7 +387,7 @@ local function Init_Set_Worldboss_Text()--显示世界BOSS击杀数据Text
         end)
         MoveFrame(panel.WorldBoss, 'WorldBossPoint')
 
-        panel.WorldBoss.Text=e.Cstr(panel.WorldBoss, {size=Save.EncounterJournalFontSize, color=true})
+        panel.WorldBoss.Text=WoWTools_LabelMixin:CreateLabel(panel.WorldBoss, {size=Save.EncounterJournalFontSize, color=true})
         panel.WorldBoss.Text:SetPoint('TOPLEFT')
 
         panel.WorldBoss.texture=panel.WorldBoss:CreateTexture()
@@ -423,7 +423,7 @@ local function Init_Set_Worldboss_Text()--显示世界BOSS击杀数据Text
                 find= true
             end
             if find then
-                msg= msg..'|n'..e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true})
+                msg= msg..'|n'..WoWTools_UnitMixin:GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true})
             end
         end
         msg= msg or '...'
@@ -472,7 +472,7 @@ local function Init_Set_InstanceBoss_Text()--显示副本击杀数据
             end
         end)
         MoveFrame(panel.instanceBoss, 'instanceBossPoint')
-        panel.instanceBoss.Text=e.Cstr(panel.instanceBoss, {size=Save.EncounterJournalFontSize, color=true})
+        panel.instanceBoss.Text=WoWTools_LabelMixin:CreateLabel(panel.instanceBoss, {size=Save.EncounterJournalFontSize, color=true})
         panel.instanceBoss.Text:SetPoint('TOPLEFT')
 
         panel.instanceBoss.texture=panel.instanceBoss:CreateTexture()
@@ -493,7 +493,7 @@ local function Init_Set_InstanceBoss_Text()--显示副本击杀数据
             end
             if text then
                 msg=msg and msg..'|n' or ''
-                msg= msg ..e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true})..'|n'
+                msg= msg ..WoWTools_UnitMixin:GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true})..'|n'
                 msg= msg.. text
             end
         end
@@ -514,8 +514,8 @@ local function set_EncounterJournal_Keystones_Tips(self)--险指南界面, 挑�
             e.tips:AddDoubleLine(
                 (info.Keystone.weekNum or 0)
                 .. (info.Keystone.weekMythicPlus and ' |cnGREEN_FONT_COLOR:('..info.Keystone.weekMythicPlus..') ' or '')
-                ..e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true})
-                ..(info.Keystone.score and ' ' or '')..(e.GetKeystoneScorsoColor(info.Keystone.score)),
+                ..WoWTools_UnitMixin:GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true})
+                ..(info.Keystone.score and ' ' or '')..(WoWTools_WeekMixin:KeystoneScorsoColor(info.Keystone.score)),
                 info.Keystone.link)
         end
     end
@@ -528,7 +528,7 @@ local function set_EncounterJournal_Money_Tips(self)--险指南界面, 钱
     local numPlayer, allMoney  = 0, 0
     for guid, info in pairs(e.WoWDate or {}) do
         if info.Money then
-            e.tips:AddDoubleLine(e.GetPlayerInfo({ guid=guid, faction=info.faction, reName=true, reRealm=true}), C_CurrencyInfo.GetCoinTextureString(info.Money))
+            e.tips:AddDoubleLine(WoWTools_UnitMixin:GetPlayerInfo({ guid=guid, faction=info.faction, reName=true, reRealm=true}), C_CurrencyInfo.GetCoinTextureString(info.Money))
             numPlayer=numPlayer+1
             allMoney= allMoney + info.Money
         end
@@ -537,7 +537,7 @@ local function set_EncounterJournal_Money_Tips(self)--险指南界面, 钱
         e.tips:AddDoubleLine(e.onlyChinese and '钱' or MONEY, e.onlyChinese and '无' or NONE)
     else
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine((e.onlyChinese and '角色' or CHARACTER)..' '..numPlayer..' '..(e.onlyChinese and '总计：' or FROM_TOTAL)..e.MK(allMoney/10000, 3), C_CurrencyInfo.GetCoinTextureString(allMoney))
+        e.tips:AddDoubleLine((e.onlyChinese and '角色' or CHARACTER)..' '..numPlayer..' '..(e.onlyChinese and '总计：' or FROM_TOTAL)..WoWTools_Mixin:MK(allMoney/10000, 3), C_CurrencyInfo.GetCoinTextureString(allMoney))
     end
     e.tips:Show()
 end
@@ -632,7 +632,7 @@ local function Init_EncounterJournal()--冒险指南界面
                     find= true
                 end
                 if find then
-                    e.tips:AddLine(e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}))
+                    e.tips:AddLine(WoWTools_UnitMixin:GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}))
                 end
             end
         end
@@ -731,7 +731,7 @@ local function Init_EncounterJournal()--冒险指南界面
             if button and button.instanceID then --and button.tooltipTitle--button.bgImage:GetTexture() button.name:GetText()
                 local textKill= encounterJournal_ListInstances_set_Instance(button)--界面,击杀,数据
                 if not button.tipsText and textKill then
-                    button.tipsText=e.Cstr(button, {size=e.onlyChinese and 12 or 10, copyFont= not e.onlyChinese and button.name or nil})--10, button.name)
+                    button.tipsText=WoWTools_LabelMixin:CreateLabel(button, {size=e.onlyChinese and 12 or 10, copyFont= not e.onlyChinese and button.name or nil})--10, button.name)
                     button.tipsText:SetPoint('BOTTOMRIGHT', -8, 8)
                     button.tipsText:SetJustifyH('RIGHT')
                 end
@@ -798,9 +798,9 @@ local function Init_EncounterJournal()--冒险指南界面
                 end
 
                 if not button.challengeText then
-                    button.challengeText= e.Cstr(button, {size=e.onlyChinese and 12 or 10})
+                    button.challengeText= WoWTools_LabelMixin:CreateLabel(button, {size=e.onlyChinese and 12 or 10})
                     button.challengeText:SetPoint('BOTTOMLEFT',4,4)
-                    button.challengeText2= e.Cstr(button, {size=e.onlyChinese and 12 or 10})
+                    button.challengeText2= WoWTools_LabelMixin:CreateLabel(button, {size=e.onlyChinese and 12 or 10})
                     button.challengeText2:SetPoint('BOTTOMLEFT', button.challengeText, 'BOTTOMRIGHT')
 
                     button:HookScript('OnEnter', function(self)
@@ -860,7 +860,7 @@ local function Init_EncounterJournal()--冒险指南界面
                             self:SetAlpha(0.3)
                             self.label:SetAlpha(0.3)
                         end)
-                        button.KeyTexture.label=e.Cstr(button, {r=1, g=1, b=1})
+                        button.KeyTexture.label=WoWTools_LabelMixin:CreateLabel(button, {r=1, g=1, b=1})
                         button.KeyTexture.label:SetPoint('TOP', button.KeyTexture, -2, -8)
                     end
                     button.KeyTexture:SetShown(true)
@@ -993,7 +993,7 @@ local function Init_EncounterJournal()--冒险指南界面
 
                 end
                 --物品是否收集, 返回图标, 幻化
-                local item, collected, isSelf = e.GetItemCollected(btn.link, nil, true)
+                local item, collected, isSelf = WoWTools_CollectedMixin:Item(btn.link, nil, true)
                 if item and not collected then
                     itemText= (itemText or '')..item
                     tips= tips and tips..'|n|n' or ''
@@ -1005,9 +1005,9 @@ local function Init_EncounterJournal()--冒险指南界面
             else
                 local itemID= btn.itemID or C_Item.GetItemInfoInstant(btn.link)
                 if itemID then
-                    itemText= e.GetMountCollected(nil, itemID)--坐骑物品
-                    itemText= itemText or select(3, e.GetPetCollectedNum(nil, itemID, true))--宠物物品
-                    itemText= itemText or e.GetToyCollected(itemID)--玩具,是否收集
+                    itemText= WoWTools_CollectedMixin:Mount(nil, itemID)--坐骑物品
+                    itemText= itemText or select(3, WoWTools_CollectedMixin:Pet(nil, itemID, true))--宠物物品
+                    itemText= itemText or WoWTools_CollectedMixin:Toy(itemID)--玩具,是否收集
                 end
             end
 
@@ -1039,7 +1039,7 @@ local function Init_EncounterJournal()--冒险指南界面
         end
 
         if itemText and not btn.itemText then
-            btn.itemText= e.Cstr(btn, {mouse=true, fontName='GameFontBlack', notFlag=true, color={r=0.25, g=0.1484375, b=0.02}, notShadow=true, layer='OVERLAY'})
+            btn.itemText= WoWTools_LabelMixin:CreateLabel(btn, {mouse=true, fontName='GameFontBlack', notFlag=true, color={r=0.25, g=0.1484375, b=0.02}, notShadow=true, layer='OVERLAY'})
             btn.itemText:SetPoint('TOPRIGHT', -10,-4)
             btn.itemText:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
             btn.itemText:SetScript('OnEnter', function(self)
@@ -1061,7 +1061,7 @@ local function Init_EncounterJournal()--冒险指南界面
 
         --拾取, 职业
         if classText and not btn.classLable then
-            btn.classLable= e.Cstr(btn, {fontName='GameFontBlack', notFlag=true, color={r=0.25, g=0.1484375, b=0.02}, notShadow=true, layer='OVERLAY'})
+            btn.classLable= WoWTools_LabelMixin:CreateLabel(btn, {fontName='GameFontBlack', notFlag=true, color={r=0.25, g=0.1484375, b=0.02}, notShadow=true, layer='OVERLAY'})
             btn.classLable:SetPoint('BOTTOM', btn.IconBorder, 'BOTTOMRIGHT', 140, 4)--<Size x="321" y="45"/>
         end
         if btn.classLable then
@@ -1069,7 +1069,7 @@ local function Init_EncounterJournal()--冒险指南界面
         end
 
         if upText and not btn.upText then
-            btn.upText= e.Cstr(btn, {fontName='GameFontBlack', notFlag=true, color={r=0.25, g=0.1484375, b=0.02}, notShadow=true, layer='OVERLAY'})
+            btn.upText= WoWTools_LabelMixin:CreateLabel(btn, {fontName='GameFontBlack', notFlag=true, color={r=0.25, g=0.1484375, b=0.02}, notShadow=true, layer='OVERLAY'})
             btn.upText:SetPoint('TOPRIGHT', -10,-16)
         end
         if btn.upText then
@@ -1077,7 +1077,7 @@ local function Init_EncounterJournal()--冒险指南界面
         end
 
         --显示, 物品, 属性
-        e.Set_Item_Stats(btn, not Save.hideEncounterJournal and btn.link, {point= btn.IconBorder})
+        WoWTools_ItemStatsMixin:SetItem(btn, not Save.hideEncounterJournal and btn.link, {point= btn.IconBorder})
 
         local spellID--物品法术，提示
         if (btn.link or btn.itemID) and not Save.hideEncounterJournal then
@@ -1088,7 +1088,7 @@ local function Init_EncounterJournal()--冒险指南界面
                 btn.spellTexture:SetPoint('LEFT', btn.IconBorder, 'RIGHT',-6,0)
                 btn.spellTexture:SetScript('OnMouseDown', function(self)
                     if self.spellID then
-                        e.Chat( C_Spell.GetSpellLink(self.spellID) or self.spellID, nil, true)
+                        WoWTools_ChatMixin:Chat( C_Spell.GetSpellLink(self.spellID) or self.spellID, nil, true)
                     end
                 end)
                 btn.spellTexture:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
@@ -1156,7 +1156,7 @@ local function Init_EncounterJournal()--冒险指南界面
                     local col= select(4, GetClassColor(classInfo.classFile))
                     col= col and '|c'..col or col
                     info={
-                        text= (e.Class(nil, classInfo.classFile) or '')..e.cn(classInfo.className)..(e.Player.class==classInfo.classFile and '|A:auctionhouse-icon-favorite:0:0|a' or '')..(n>0 and ' |cnGREEN_FONT_COLOR:#'..n..'|r' or ''),
+                        text= (WoWTools_UnitMixin:GetClassIcon(nil, classInfo.classFile) or '')..e.cn(classInfo.className)..(e.Player.class==classInfo.classFile and '|A:auctionhouse-icon-favorite:0:0|a' or '')..(n>0 and ' |cnGREEN_FONT_COLOR:#'..n..'|r' or ''),
                         colorCode= col,
                         notCheckable=true,
                         arg1= classInfo.classFile,
@@ -1165,7 +1165,7 @@ local function Init_EncounterJournal()--冒险指南界面
                         menuList= classInfo.classFile,
                         func= function(_, arg1, arg2)
                             Save.loot[arg1]={}
-                            print(e.addName, Initializer:GetName(), e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, e.Class(nil, arg1), arg2, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH)))
+                            print(e.addName, Initializer:GetName(), e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, WoWTools_UnitMixin:GetClassIcon(nil, arg1), arg2, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH)))
                         end
                     }
                     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1196,7 +1196,7 @@ local function Init_EncounterJournal()--冒险指南界面
                     arg2=dungeonEncounterID,
                     func= function(_, arg1, arg2)
                         Save.loot[arg1][arg2]=nil
-                        print(e.addName, Initializer:GetName(), e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, e.Class(nil, arg1), arg2, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH)))
+                        print(e.addName, Initializer:GetName(), e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, WoWTools_UnitMixin:GetClassIcon(nil, arg1), arg2, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH)))
                     end
                 }
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1270,7 +1270,7 @@ local function Init_EncounterJournal()--冒险指南界面
         --e.LibDD:UIDropDownMenu_AddSeparator(level)
         info={
             text= e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION,
-            icon= e.Class('player', e.Player.class, true) or  'Banker',
+            icon= WoWTools_UnitMixin:GetClassIcon('player', e.Player.class, true) or  'Banker',
             isTitle=true,
             notCheckable=true,
         }
@@ -1398,7 +1398,7 @@ local function Init_EncounterJournal()--冒险指南界面
                         all= all+1
                         coll= has and coll+1 or coll
                     end
-                    e.Set_Item_Stats(btn, itemLink, {hideLevel=true, hideSet=true})
+                    WoWTools_ItemStatsMixin:SetItem(btn, itemLink, {hideLevel=true, hideSet=true})
 
                     if has and not btn.collection then
                         btn.collection= btn:CreateTexture()
@@ -1411,7 +1411,7 @@ local function Init_EncounterJournal()--冒险指南界面
                     end
                 end
                 if not frame.setNum then
-                    frame.setNum= e.Cstr(frame)
+                    frame.setNum= WoWTools_LabelMixin:CreateLabel(frame)
                     frame.setNum:SetPoint('RIGHT', frame.SetName)
                 end
                 if all>0 then
@@ -1518,7 +1518,7 @@ local function Init_EncounterJournal()--冒险指南界面
         frame:HookScript('OnClick', function(self, d)
             local spellID= self:GetParent().spellID--self3.link
             if not Save.hideEncounterJournal and spellID and spellID>0 and d=='RightButton' then
-                e.Chat(C_Spell.GetSpellLink(spellID) or spellID, nil, not IsInGroup())
+                WoWTools_ChatMixin:Chat(C_Spell.GetSpellLink(spellID) or spellID, nil, not IsInGroup())
             end
         end)
         frame.hook=true
@@ -1529,7 +1529,7 @@ local function Init_EncounterJournal()--冒险指南界面
         local text=''
         if not Save.hideEncounterJournal and self.displayInfo and EncounterJournal.encounter and EncounterJournal.encounter.info and EncounterJournal.encounter.info.model and EncounterJournal.encounter.info.model.imageTitle then
             if not EncounterJournal.creatureDisplayIDText then
-                EncounterJournal.creatureDisplayIDText=e.Cstr(self,{size=10, fontType=EncounterJournal.encounter.info.model.imageTitle})--10, EncounterJournal.encounter.info.model.imageTitle)
+                EncounterJournal.creatureDisplayIDText=WoWTools_LabelMixin:CreateLabel(self,{size=10, fontType=EncounterJournal.encounter.info.model.imageTitle})--10, EncounterJournal.encounter.info.model.imageTitle)
                 EncounterJournal.creatureDisplayIDText:SetPoint('BOTTOM', EncounterJournal.encounter.info.model.imageTitle, 'TOP', 0 , 10)
             end
             if EncounterJournal.iconImage  then
@@ -1597,7 +1597,7 @@ local function Init_EncounterJournal()--冒险指南界面
                     end
                     if d=='RightButton' then
                         local link=C_PerksActivities.GetPerksActivityChatLink(self3.id)
-                        e.Chat(link, nil, true)
+                        WoWTools_ChatMixin:Chat(link, nil, true)
 
 
                     elseif d=='LeftButton' then

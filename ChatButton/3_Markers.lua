@@ -196,7 +196,7 @@ local function Init_set_Tank_Healer()
 
 
     function SetTankHealerFrame:check_Enable(set)
-        return (Save.autoSet or set) and in_Raid_Leader() and IsInGroup() and not e.Is_In_PvP_Area()
+        return (Save.autoSet or set) and in_Raid_Leader() and IsInGroup() and not WoWTools_MapMixin:IsInPvPArea()
     end
 
     function SetTankHealerFrame:set_TankHealer(set)--设置队伍标记
@@ -329,7 +329,7 @@ local function Init_Ready_Tips_Button()
     end
 
     ReadyTipsButton= WoWTools_ButtonMixin:Cbtn(nil, {size={22,22}, atlas=e.Icon.select})
-    ReadyTipsButton.text=e.Cstr(ReadyTipsButton)
+    ReadyTipsButton.text=WoWTools_LabelMixin:CreateLabel(ReadyTipsButton)
     ReadyTipsButton.text:SetPoint('BOTTOMLEFT', ReadyTipsButton, 'TOPLEFT')
 
     ReadyTipsButton:RegisterForDrag("RightButton")--移动
@@ -387,7 +387,7 @@ local function Init_Ready_Tips_Button()
         if stat=='ready' then
             return
         end
-        local mapText, mapID e.GetUnitMapName(unit)--单位, 地图名称
+        local mapText, mapID WoWTools_MapMixin:GetUnit(unit)--单位, 地图名称
         return (
                     stat== 'waiting' and '|A:QuestTurnin:0:0|a'
                     or (stat== 'notready' and '|A:common-icon-redx:0:0|a')
@@ -395,7 +395,7 @@ local function Init_Ready_Tips_Button()
                     or ''
                 )
                 ..(index<10 and ' ' or '')..index..')'--编号号
-                ..(e.PlayerOnlineInfo(unit) or '')
+                ..(WoWTools_UnitMixin:GetOnlineInfo(unit) or '')
                 ..WoWTools_UnitMixin:GetPlayerInfo(unit, UnitGUID(unit), nil, {reName=true, reRealm=true})
                 ..(UnitHasLFGRandomCooldown(unit) and '|cnRED_FONT_COLOR:<'..(e.onlyChinese and '逃亡者' or DESERTER)..'>|r' or '')
                 ..(uiMapID~=mapID and mapText or '')--地图名称
@@ -505,7 +505,7 @@ local function Init_Ready_Tips_Button()
         name= name~='' and name or initiator
         if ( toggleDifficultyID and toggleDifficultyID > 0 ) then
             -- the current difficulty might change while inside an instance so show the difficulty on the ready check
-            difficultyName=  e.GetDifficultyColor(nil, difficultyID) or difficultyName
+            difficultyName=  WoWTools_MapMixin:GetDifficultyColor(nil, difficultyID) or difficultyName
             ReadyCheckFrameText:SetFormattedText(
                 (e.onlyChinese and "%s正在进行就位确认。\n团队副本难度: |cnGREEN_FONT_COLOR:" or READY_CHECK_MESSAGE..'|n'..RAID_DIFFICULTY..': ')
                 ..difficultyName..'|r', name)
@@ -849,7 +849,7 @@ local function Init_Markers_Frame()--设置标记, 框架
             if self.star then
                 C_PartyInfo.DoCountdown(0)
             end
-            e.Chat(e.Player.cn and '{rt7}取消 取消 取消{rt7}' or '{rt7}STOP STOP STOP{rt7}', nil, nil)
+            WoWTools_ChatMixin:Chat(e.Player.cn and '{rt7}取消 取消 取消{rt7}' or '{rt7}STOP STOP STOP{rt7}', nil, nil)
 
         elseif d=='RightButton' and IsControlKeyDown() then--设置时间
             StaticPopupDialogs[id..'ChatButton_Maker_COUNTDOWN']={--区域,设置对话框
@@ -871,7 +871,7 @@ local function Init_Markers_Frame()--设置标记, 框架
                     local num= self2:GetNumber()
                     local parent= self2:GetParent()
                     parent.button1:SetEnabled(num>0 and num<=3600)
-                    parent.button1:SetText(e.SecondsToClock(num))
+                    parent.button1:SetText(WoWTools_TimeMixin:SecondsToClock(num))
                 end,
                 EditBoxOnEscapePressed = function(self2)
                     self2:GetParent():Hide()
@@ -1305,7 +1305,7 @@ local function Init_Markers_Frame()--设置标记, 框架
         local isRaid= (raid and isLeader) or not raid
         local isInGroup= IsInGroup()
 
-        local enabled= not e.Is_In_PvP_Area()
+        local enabled= not WoWTools_MapMixin:IsInPvPArea()
                     and Save.markersFrame
                     --and not InCinematic()
                     --and not IsInCinematicScene()
@@ -1473,7 +1473,7 @@ local function Init_Menu(_, root)
     root:CreateDivider()
 
     sub=root:CreateCheckbox(
-        (e.Is_In_PvP_Area() or (MakerFrame and not MakerFrame:CanChangeAttribute()) and '|cff9e9e9e' or '')
+        (WoWTools_MapMixin:IsInPvPArea() or (MakerFrame and not MakerFrame:CanChangeAttribute()) and '|cff9e9e9e' or '')
         ..(e.onlyChinese and '队伍标记工具' or format(PROFESSION_TOOL_TOOLTIP_LINE, BINDING_HEADER_RAID_TARGET)
     ), function()
         return MakerFrame and MakerFrame:IsShown()
@@ -1615,7 +1615,7 @@ local function Init()
 
     function MarkerButton:set_Desaturated_Textrue()--主图标,是否有权限
         local raid= IsInRaid()
-        local enabled= not e.Is_In_PvP_Area()
+        local enabled= not WoWTools_MapMixin:IsInPvPArea()
                 and (
                         (raid and Is_Leader())
                     or (GetNumGroupMembers()>1 and not raid)
@@ -1698,7 +1698,7 @@ local function Init()
         end)
         readyFrame:SetScript('OnShow',function(self)
             if Save.autoReady and not self.autoReadyText then
-                self.autoReadyText=e.Cstr(self)
+                self.autoReadyText=WoWTools_LabelMixin:CreateLabel(self)
                 self.autoReadyText:SetPoint('BOTTOM', self, 'TOP')
             end
             if self.autoReadyText then

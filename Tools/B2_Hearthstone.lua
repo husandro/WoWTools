@@ -495,7 +495,7 @@ local function Init()
 
 
 
-    ToyButton.text=e.Cstr(ToyButton, {size=10, color=true, justifyH='CENTER'})
+    ToyButton.text=WoWTools_LabelMixin:CreateLabel(ToyButton, {size=10, color=true, justifyH='CENTER'})
     ToyButton.text:SetPoint('TOP', ToyButton, 'BOTTOM',0,5)
 
 
@@ -535,7 +535,7 @@ local function Init()
         if Save.showBindName then
             text= self:get_location()
             if text and Save.showBindNameShort then
-                text= e.WA_Utf8Sub(text, 2, 5)
+                text= WoWTools_Mixin:sub(text, 2, 5)
             end
         end
         self.text:SetText(text or '')

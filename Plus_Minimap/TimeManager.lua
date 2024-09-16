@@ -379,7 +379,7 @@ local function Init_TimeManager()
 
     --设置，时间，颜色
     TimeManagerClockTicker:SetShadowOffset(1, -1)
-    e.Set_Label_Texture_Color(TimeManagerClockTicker, {type='FontString', alpha=1})--设置颜色
+    WoWTools_ColorMixin:SetLabelTexture(TimeManagerClockTicker, {type='FontString', alpha=1})--设置颜色
 
 
     --[[小时图，使用服务器, ServerTime
@@ -387,7 +387,7 @@ local function Init_TimeManager()
     function btn:set_Server_Timer()--小时图，使用服务器, 时间
         if Save().useServerTimer then
             TimeManagerClockButton_Update=function()
-                TimeManagerClockTicker:SetText(e.SecondsToClock(C_DateAndTime.GetServerTimeLocal(), true, true))
+                TimeManagerClockTicker:SetText(WoWTools_TimeMixin:SecondsToClock(C_DateAndTime.GetServerTimeLocal(), true, true))
             end
         else
             TimeManagerClockButton_Update= self.TimeManagerClockButton_Update_R
@@ -558,9 +558,9 @@ local function Init_StopwatchFrame()
     end)
     hooksecurefunc('Stopwatch_Play', function()
         StopwatchTitle:SetText(e.Player.col..(e.onlyChinese and '开始' or START))
-        e.Set_Label_Texture_Color(StopwatchTickerHour, {type='FontString'})
-        e.Set_Label_Texture_Color(StopwatchTickerMinute, {type='FontString'})
-        e.Set_Label_Texture_Color(StopwatchTickerSecond, {type='FontString'})
+        WoWTools_ColorMixin:SetLabelTexture(StopwatchTickerHour, {type='FontString'})
+        WoWTools_ColorMixin:SetLabelTexture(StopwatchTickerMinute, {type='FontString'})
+        WoWTools_ColorMixin:SetLabelTexture(StopwatchTickerSecond, {type='FontString'})
     end)
     hooksecurefunc('Stopwatch_Clear', function()
         StopwatchTitle:SetText((e.onlyChinese and '重置' or RESET))
@@ -674,10 +674,10 @@ function WoWTools_MinimapMixin:Init_TimeManager()
             e.tips:AddDoubleLine('|A:dressingroom-button-appearancelist-up:0:0|a'..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), e.Icon.right)
         else
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine('|cffffffff'..('ServerTime'), '|cnGREEN_FONT_COLOR:'..e.SecondsToClock(GetServerTime())..e.Icon.left)
+            e.tips:AddDoubleLine('|cffffffff'..('ServerTime'), '|cnGREEN_FONT_COLOR:'..WoWTools_TimeMixin:SecondsToClock(GetServerTime())..e.Icon.left)
             e.tips:AddDoubleLine('|A:dressingroom-button-appearancelist-up:0:0|a'..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), e.Icon.right)
 
-            --e.tips:AddDoubleLine('|cffffffff'..(e.onlyChinese and '服务器时间' or TIMEMANAGER_TOOLTIP_REALMTIME), '|cnGREEN_FONT_COLOR:'..e.SecondsToClock(C_DateAndTime.GetServerTimeLocal(), true, true)..e.Icon.left)
+            --e.tips:AddDoubleLine('|cffffffff'..(e.onlyChinese and '服务器时间' or TIMEMANAGER_TOOLTIP_REALMTIME), '|cnGREEN_FONT_COLOR:'..WoWTools_TimeMixin:SecondsToClock(C_DateAndTime.GetServerTimeLocal(), true, true)..e.Icon.left)
             --e.tips:AddLine(' ')
 
             e.tips:AddDoubleLine('|cffffffff'..(e.onlyChinese and '移动' or NPE_MOVE), 'Alt+'..e.Icon.right)

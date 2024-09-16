@@ -67,10 +67,10 @@ local function set_Tooltips_Info()
     )
     e.tips:AddDoubleLine(
         (e.onlyChinese and '副本' or INSTANCE)..'|A:BuildanAbomination-32x32:0:0|a'..Save.ins.kill..'|A:poi-soulspiritghost:0:0|a'..Save.ins.dead,
-        Save.ins.num..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)..' |A:CrossedFlagsWithTimer:0:0|a'..e.GetTimeInfo(Save.ins.time)
+        Save.ins.num..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)..' |A:CrossedFlagsWithTimer:0:0|a'..WoWTools_TimeMixin:Info(Save.ins.time)
     )
     e.tips:AddLine(' ')
-    --local time=e.GetTimeInfo(OnLineTime)
+    --local time=WoWTools_TimeMixin:Info(OnLineTime)
     e.tips:AddDoubleLine((e.onlyChinese and '在线' or GUILD_ONLINE_LABEL)..'|A:socialqueuing-icon-clock:0:0|a', SecondsToTime(GetSessionTime()))--time)---在线时间
     local tab=e.WoWDate[e.Player.guid].Time
     e.tips:AddDoubleLine((e.onlyChinese and '总计' or TOTAL)..'|A:socialqueuing-icon-clock:0:0|a',  tab.totalTime and SecondsToTime(tab.totalTime))
@@ -97,12 +97,12 @@ local chatStarTime
 local function set_TrackButton_Text()--设置显示内容
     local text
     if OnCombatTime then--战斗时间
-        local combat, sec = e.GetTimeInfo(OnCombatTime, not Save.timeTypeText)
+        local combat, sec = WoWTools_TimeMixin:Info(OnCombatTime, not Save.timeTypeText)
         if not Save.disabledSayTime then--喊话
             sec=math.floor(sec)
             if sec ~= chatStarTime and sec > 0 and sec%Save.SayTime==0  then--IsInInstance()
                 chatStarTime=sec
-                e.Chat(e.SecondsToClock(sec), nil, nil)
+                WoWTools_ChatMixin:Chat(WoWTools_TimeMixin:SecondsToClock(sec), nil, nil)
             end
         end
         text= '|A:warfronts-basemapicons-horde-barracks-minimap:0:0|a|cnRED_FONT_COLOR:'..combat..'|r'
@@ -110,17 +110,17 @@ local function set_TrackButton_Text()--设置显示内容
 
     if OnAFKTime then
         text= text and text..'|n' or ''
-        text= text .. (e.onlyChinese and '离开' or AFK)..'|A:socialqueuing-icon-clock:0:0|a'..e.GetTimeInfo(OnAFKTime, not Save.timeTypeText)
+        text= text .. (e.onlyChinese and '离开' or AFK)..'|A:socialqueuing-icon-clock:0:0|a'..WoWTools_TimeMixin:Info(OnAFKTime, not Save.timeTypeText)
     end
 
     if OnPetTime then
         text= text and text..'|n' or ''
-        text= text ..(PetRound.text or '|TInterface\\Icons\\PetJournalPortrait:0|t')..' '..e.GetTimeInfo(OnPetTime, not Save.timeTypeText)
+        text= text ..(PetRound.text or '|TInterface\\Icons\\PetJournalPortrait:0|t')..' '..WoWTools_TimeMixin:Info(OnPetTime, not Save.timeTypeText)
     end
 
     if OnInstanceTime then
         text= text and text..'|n' or LastText and (LastText..'|n') or ''
-        text=text..'|A:BuildanAbomination-32x32:0:0|a'..InstanceDate.kill..'|A:poi-soulspiritghost:0:0|a'..InstanceDate.dead..'|A:CrossedFlagsWithTimer:0:0|a'..e.GetTimeInfo(OnInstanceTime, not Save.timeTypeText)
+        text=text..'|A:BuildanAbomination-32x32:0:0|a'..InstanceDate.kill..'|A:poi-soulspiritghost:0:0|a'..InstanceDate.dead..'|A:CrossedFlagsWithTimer:0:0|a'..WoWTools_TimeMixin:Info(OnInstanceTime, not Save.timeTypeText)
     end
     TrackButton.text:SetText(text or LastText or '')
 end
@@ -172,7 +172,7 @@ local function TrackButton_Frame_Init_Date()--初始, 数据
         LastText=nil
 
     elseif OnAFKTime then
-        local text, sec = e.GetTimeInfo(OnAFKTime, not Save.timeTypeText)
+        local text, sec = WoWTools_TimeMixin:Info(OnAFKTime, not Save.timeTypeText)
         LastText= '|A:socialqueuing-icon-clock:0:0|a|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '离开' or AFK)..text..'|r'
         Save.afk.num= Save.afk.num + 1
         Save.afk.time= Save.afk.time + sec
@@ -184,7 +184,7 @@ local function TrackButton_Frame_Init_Date()--初始, 数据
         OnCombatTime= OnCombatTime or time
         LastText=nil
     elseif OnCombatTime then
-        local text, sec=e.GetTimeInfo(OnCombatTime, not Save.timeTypeText)
+        local text, sec=WoWTools_TimeMixin:Info(OnCombatTime, not Save.timeTypeText)
         LastText= '|A:warfronts-basemapicons-horde-barracks-minimap:0:0|a|cnGREEN_FONT_COLOR:'..text..'|r'
         if sec>10 then
             Save.bat.num= Save.bat.num + 1
@@ -209,7 +209,7 @@ local function TrackButton_Frame_Init_Date()--初始, 数据
         PetAll.num= PetAll.num +1--次数
         Save.pet.num= Save.pet.num +1
 
-        LastText=(PetRound.text or '')..(PetRound.win and '|T646379:0|t' or ' ')..e.GetTimeInfo(OnPetTime, not Save.timeTypeText)
+        LastText=(PetRound.text or '')..(PetRound.win and '|T646379:0|t' or ' ')..WoWTools_TimeMixin:Info(OnPetTime, not Save.timeTypeText)
         if PetRound.win then
             LastText='|cnGREEN_FONT_COLOR:'..LastText..'|r'
         else
@@ -223,11 +223,11 @@ local function TrackButton_Frame_Init_Date()--初始, 数据
 
     if IsInInstance() then--副本
         OnInstanceTime= OnInstanceTime or time
-        InstanceDate.map= InstanceDate.map or e.GetUnitMapName('player')
+        InstanceDate.map= InstanceDate.map or WoWTools_MapMixin:GetUnit('player')
 
 
     elseif OnInstanceTime then
-        local text, sec= e.GetTimeInfo(OnInstanceTime, not Save.timeTypeText)
+        local text, sec= WoWTools_TimeMixin:Info(OnInstanceTime, not Save.timeTypeText)
         if sec>60 or InstanceDate.dead>0 or InstanceDate.kill>0 then
             Save.ins.num= Save.ins.num +1
             Save.ins.time= Save.ins.time +sec
@@ -429,7 +429,7 @@ local function Init_TrackButton()--设置显示内容, 父框架TrackButton, 内
         end
     end)
 
-    TrackButton.text= e.Cstr(TrackButton, {color=true})
+    TrackButton.text= WoWTools_LabelMixin:CreateLabel(TrackButton, {color=true})
     TrackButton.text:SetPoint('BOTTOMLEFT')
     function TrackButton:set_text_scale()
         self.text:SetScale(Save.textScale or 1)
@@ -510,7 +510,7 @@ local function Init_Menu(self, root)
             end,
             SetValue= function(s)
                 local num=s.editBox:GetNumber()
-                e.Chat(e.SecondsToClock(num), nil, nil)
+                WoWTools_ChatMixin:Chat(WoWTools_TimeMixin:SecondsToClock(num), nil, nil)
                 Save.SayTime= num
             end,
             EditBoxOnTextChanged=function(s)
@@ -528,7 +528,7 @@ local function Init_Menu(self, root)
             return Save.SayTime
         end, setValue=function(value)
             Save.SayTime= math.floor(value)
-            e.Chat(e.SecondsToClock(Save.SayTime), nil, nil)
+            WoWTools_ChatMixin:Chat(WoWTools_TimeMixin:SecondsToClock(Save.SayTime), nil, nil)
         end,
         name= e.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS,
         minValue=60,
@@ -559,7 +559,7 @@ local function Init_Menu(self, root)
     sub2=sub:CreateButton((isInCombat and '|cff9e9e9e' or '')..(e.onlyChinese and '全部清除' or CLEAR_ALL), function()
         if IsShiftKeyDown() and not UnitAffectingCombat('player') then
             Save=nil
-            e.Reload()
+            WoWTools_Mixin:Reload()
         end
     end)
     sub2:SetTooltip(function (tooltip)
@@ -616,7 +616,7 @@ local function Init_Menu(self, root)
         if time and time>0 then
             numPlayer= numPlayer+1
             timeAll= timeAll + time
-            sub:CreateButton(e.GetPlayerInfo({guid=guid,  reName=true, reRealm=true, factionName=tab.faction})..'|A:socialqueuing-icon-clock:0:0|a  '..SecondsToTime(time), function()
+            sub:CreateButton(WoWTools_UnitMixin:GetPlayerInfo({guid=guid,  reName=true, reRealm=true, factionName=tab.faction})..'|A:socialqueuing-icon-clock:0:0|a  '..SecondsToTime(time), function()
                 return MenuResponse.Open
             end)
         end
@@ -681,7 +681,7 @@ local function Init()
     end
 
     function CombatButton:Is_In_Arena()--是否在战场
-        self.isInPvPInstance= e.Is_In_PvP_Area()--是否在，PVP区域中
+        self.isInPvPInstance= WoWTools_MapMixin:IsInPvPArea()--是否在，PVP区域中
     end
 
     function CombatButton:set_Sacle_InCombat(bat)--提示，战斗中

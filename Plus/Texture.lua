@@ -51,7 +51,7 @@ end
 local function set_Alpha_Color(self, notAlpha, notColor, alpha)
     if self then
         if not notColor and e.Player.useColor then
-            e.Set_Label_Texture_Color(self, {type=self:GetObjectType()})
+            WoWTools_ColorMixin:SetLabelTexture(self, {type=self:GetObjectType()})
         end
         if not notAlpha then
             self:SetAlpha(alpha or Save.alpha or min05)
@@ -100,7 +100,7 @@ function e.Set_Alpha_Frame_Texture(frame, tab)
             if indexTexture then
                 if indexTexture== index then
                     if not notColor then
-                        e.Set_Label_Texture_Color(icon, {type='Texture'})
+                        WoWTools_ColorMixin:SetLabelTexture(icon, {type='Texture'})
                     end
                     if alpha then
                         icon:SetAlpha(alpha)
@@ -109,7 +109,7 @@ function e.Set_Alpha_Frame_Texture(frame, tab)
                 end
             else
                 if not notColor then
-                    e.Set_Label_Texture_Color(icon, {type='Texture'})
+                    WoWTools_ColorMixin:SetLabelTexture(icon, {type='Texture'})
                 end
                 if alpha then
                     icon:SetAlpha(alpha)
@@ -194,7 +194,7 @@ local function set_Slider(frame)
     if back then
         for _, icon in pairs({back:GetRegions()}) do
             if icon:GetObjectType()=="Texture" then
-                e.Set_Label_Texture_Color(icon, {type='Texture'})
+                WoWTools_ColorMixin:SetLabelTexture(icon, {type='Texture'})
             end
         end
     end
@@ -202,7 +202,7 @@ local function set_Slider(frame)
     if forward then
         for _, icon in pairs({forward:GetRegions()}) do
             if icon:GetObjectType()=="Texture" then
-                e.Set_Label_Texture_Color(icon, {type='Texture'})
+                WoWTools_ColorMixin:SetLabelTexture(icon, {type='Texture'})
             end
         end
     end
@@ -210,15 +210,15 @@ local function set_Slider(frame)
     local middle= frame.Slider.Slider and frame.Slider.Slider.Middle or frame.Slider.Middle
     local right= frame.Slider.Slider and frame.Slider.Slider.Right or frame.Slider.Right
     local left= frame.Slider.Slider and frame.Slider.Slider.Left or frame.Slider.Left
-    e.Set_Label_Texture_Color(middle, {type='Texture'})
-    e.Set_Label_Texture_Color(right, {type='Texture'})
-    e.Set_Label_Texture_Color(left, {type='Texture'})
+    WoWTools_ColorMixin:SetLabelTexture(middle, {type='Texture'})
+    WoWTools_ColorMixin:SetLabelTexture(right, {type='Texture'})
+    WoWTools_ColorMixin:SetLabelTexture(left, {type='Texture'})
 end
 
 
 local function set_Label(self, shadowOffset)
     if self then
-        e.Set_Label_Texture_Color(self, {type='FontString', alpha=min05})--设置颜色
+        WoWTools_ColorMixin:SetLabelTexture(self, {type='FontString', alpha=min05})--设置颜色
         if shadowOffset then
             self:SetShadowOffset(shadowOffset, -shadowOffset)
         end
@@ -232,9 +232,9 @@ local function set_Button(btn, tab)
     end
     tab= tab or {}
     if tab.all then
-        e.Set_Label_Texture_Color(btn, {type='Button', alpha=tab.alpha})
+        WoWTools_ColorMixin:SetLabelTexture(btn, {type='Button', alpha=tab.alpha})
     else
-        e.Set_Label_Texture_Color(btn:GetNormalTexture(), {type='Texture', alpha=tab.alpha})
+        WoWTools_ColorMixin:SetLabelTexture(btn:GetNormalTexture(), {type='Texture', alpha=tab.alpha})
     end
 end
 
@@ -253,14 +253,14 @@ local function set_Menu(self, tab)
         --e.Set_Alpha_Frame_Texture(self, {notAlpha=true})     
         local btn= self.Button or tab.button
         if btn then
-            e.Set_Label_Texture_Color(btn:GetNormalTexture(), {type='Texture', alpha=min05 or Save.alpha})
-            e.Set_Label_Texture_Color(btn.Background, {type='Texture', alpha=min05 or Save.alpha})
-            e.Set_Label_Texture_Color(btn.Arrow, {type='Texture', alpha=min05 or Save.alpha})
+            WoWTools_ColorMixin:SetLabelTexture(btn:GetNormalTexture(), {type='Texture', alpha=min05 or Save.alpha})
+            WoWTools_ColorMixin:SetLabelTexture(btn.Background, {type='Texture', alpha=min05 or Save.alpha})
+            WoWTools_ColorMixin:SetLabelTexture(btn.Arrow, {type='Texture', alpha=min05 or Save.alpha})
         end
         --e.Set_Alpha_Frame_Texture(self.Button, {notAlpha=true})
         e.Set_Alpha_Frame_Texture(self.DecrementButton, {notAlpha=true})
         e.Set_Alpha_Frame_Texture(self.IncrementButton, {notAlpha=true})        
-        e.Set_Label_Texture_Color(self.Text, {type='FontString'})
+        WoWTools_ColorMixin:SetLabelTexture(self.Text, {type='FontString'})
     end
 end
 
@@ -1432,7 +1432,7 @@ local function Init_Event(arg1)
         set_Alpha_Color(TimeManagerFrameBg)
         hide_Texture(TimeManagerFrameInset.Bg)
         set_SearchBox(TimeManagerAlarmMessageEditBox)
-        e.Set_Label_Texture_Color(TimeManagerClockTicker, {type='FontString', alpha=1})--设置颜色
+        WoWTools_ColorMixin:SetLabelTexture(TimeManagerClockTicker, {type='FontString', alpha=1})--设置颜色
         --[[if e.Player.useColor then
             TimeManagerClockTicker:SetTextColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b)
         end]]
@@ -2599,7 +2599,7 @@ local function Init_Chat_Bubbles()
                     local tab={frame:GetRegions()}
                     for _, region in pairs(tab) do
                         if region:GetObjectType()=='Texture' then-- .String
-                            e.Set_Label_Texture_Color(region, {type='Texture', alpha=Save.chatBubbleAlpha})
+                            WoWTools_ColorMixin:SetLabelTexture(region, {type='Texture', alpha=Save.chatBubbleAlpha})
                         end
                     end
                     buble.setAlphaOK= true

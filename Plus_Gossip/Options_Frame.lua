@@ -79,7 +79,7 @@ local function Init()
 
         end
 
-        local isAtlas, texture= e.IsAtlas(info.icon)
+        local isAtlas, texture= WoWTools_TextureMixin:IsAtlas(info.icon)
         if isAtlas then
             btn.Icon:SetAtlas(texture)
         else
@@ -185,7 +185,7 @@ local function Init()
         end
     end
     function menu:get_icon()--设置，图片
-        local isAtlas, texture= e.IsAtlas(self.Icon:GetText())
+        local isAtlas, texture= WoWTools_TextureMixin:IsAtlas(self.Icon:GetText())
         return texture, isAtlas
     end
     function menu:set_texture_size()--图片，大小
@@ -208,7 +208,7 @@ local function Init()
         local info= gossipID and Save().Gossip_Text_Icon_Player[gossipID]
         if info then
             local icon=''
-            local isAtlas, texture= e.IsAtlas(info.icon)
+            local isAtlas, texture= WoWTools_TextureMixin:IsAtlas(info.icon)
             if texture then
                 icon= isAtlas and ('|A:'..texture..':0:0|a') or ('|T'..texture..':0|t')
             end
@@ -236,9 +236,9 @@ local function Init()
 
     function menu:set_color(r, g, b, hex)--设置，颜色，颜色按钮，
         if hex then
-            r,g,b= e.HEX_to_RGB(hex)
+            r,g,b= WoWTools_ColorMixin:HEXtoRGB(hex)
         elseif r and g and b then
-            hex= e.RGB_to_HEX(r,g,b)
+            hex= WoWTools_ColorMixin:RGBtoHEX(r,g,b)
         else
             r,g,b,hex= 0,0,0, 'ff000000'
         end
@@ -288,7 +288,7 @@ local function Init()
         local b= self.Color.b or 1
         local hex= self.Color.hex
         if not hex and r~=1 and g~=1 and r~=1 then
-            hex= e.RGB_to_HEX(r, g, b, 1)
+            hex= WoWTools_ColorMixin:RGBtoHEX(r, g, b, 1)
         end
         if hex=='ff000000' then
             hex=nil
@@ -306,7 +306,7 @@ local function Init()
 
         self:set_all()
         local icon
-        local isAtlas, texture2= e.IsAtlas(texture)
+        local isAtlas, texture2= WoWTools_TextureMixin:IsAtlas(texture)
         if texture2 then
             if isAtlas then
                 icon= '|A:'..texture2..':0:0|a'
@@ -397,7 +397,7 @@ local function Init()
     menu:set_texture_size()
 
     --对话，内容
-    menu.GossipText= e.Cstr(Gossip_Text_Icon_Frame)
+    menu.GossipText= WoWTools_LabelMixin:CreateLabel(Gossip_Text_Icon_Frame)
     menu.GossipText:SetPoint('TOP', menu.Icon, 'BOTTOM', 0,-2)
 
 
@@ -528,8 +528,8 @@ local function Init()
             local R=self.r or 1
             local G=self.g or 1
             local B=self.b or 1
-            e.ShowColorPicker(R, G, B, nil, function()--swatchFunc
-                local r,g,b = e.Get_ColorFrame_RGBA()
+            WoWTools_ColorMixin:ShowColorFrame(R, G, B, nil, function()--swatchFunc
+                local r,g,b = WoWTools_ColorMixin:Get_ColorFrameRGBA()
                 Gossip_Text_Icon_Frame.menu:set_color(r,g,b)
                 Gossip_Text_Icon_Frame.menu:add_gossip()
             end, function()--cancelFunc
@@ -615,7 +615,7 @@ local function Init()
     end)
 
     --自定义，对话，文本，数量
-    menu.NumLabel= e.Cstr(Gossip_Text_Icon_Frame)
+    menu.NumLabel= WoWTools_LabelMixin:CreateLabel(Gossip_Text_Icon_Frame)
     menu.NumLabel:SetPoint('LEFT', menu.DeleteAllPlayerData, 'RIGHT')
 
 
@@ -739,13 +739,13 @@ local function Init()
         e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
     end)
     --GossipFrame 有多少对话
-    menu.chat.Text= e.Cstr(menu.chat, {justifyH='CENTER'})
+    menu.chat.Text= WoWTools_LabelMixin:CreateLabel(menu.chat, {justifyH='CENTER'})
     menu.chat.Text:SetPoint('CENTER', 1, 4.2)
 
     --默认，自定义，列表
     menu.System= WoWTools_ButtonMixin:Cbtn(Gossip_Text_Icon_Frame, {size={22, 22}, icon='hide'})
     menu.System:SetPoint('BOTTOMRIGHT', menu.ID, 'TOPRIGHT', 0, 2)
-    menu.System.Text= e.Cstr(menu.System)
+    menu.System.Text= WoWTools_LabelMixin:CreateLabel(menu.System)
     menu.System.Text:SetPoint('CENTER')
     function menu.System:set_num()--默认，自定义，列表        
         local n=0
@@ -857,7 +857,7 @@ local function Init()
         if not tooltips then
             for _, info in pairs(add) do
                 Save().Gossip_Text_Icon_Player[info.gossipID]= info.tab
-                local texture, icon= select(2, e.IsAtlas(info.tab.icon))
+                local texture, icon= select(2, WoWTools_TextureMixin:IsAtlas(info.tab.icon))
                 print(format('|cnGREEN_FONT_COLOR:%s|r|n', e.onlyChinese and '添加', ADD),
                     info.gossipID, texture and format('%s%s', icon, texture) or '',
                     info.tab.name,

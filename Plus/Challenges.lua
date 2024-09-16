@@ -258,9 +258,9 @@ local function getBagKey(self, point, x, y, parent) --KEY链接
                     end
                     self['key'..i]:SetScript("OnMouseDown",function(self2, d2)--发送链接
                             if d2=='LeftButton' then
-                                e.Chat(self2.item, nil, nil)
+                                WoWTools_ChatMixin:Chat(self2.item, nil, nil)
                             else
-                                e.Chat(self2.item, nil, true)
+                                WoWTools_ChatMixin:Chat(self2.item, nil, true)
                                 --if not ChatEdit_InsertLink(self2.item) then
                                     --ChatFrame_OpenChat(self2.item)
                                 --end
@@ -277,7 +277,7 @@ local function getBagKey(self, point, x, y, parent) --KEY链接
                     self['key'..i]:SetScript("OnLeave",function()
                             e.tips:Hide()
                     end)
-                    self['key'..i].bag=e.Cstr(self['key'..i])
+                    self['key'..i].bag=WoWTools_LabelMixin:CreateLabel(self['key'..i])
                     if point:find('LEFT') then
                         self['key'..i].bag:SetPoint('LEFT', self['key'..i], 'RIGHT', 0, 0)
                     else
@@ -324,7 +324,7 @@ local function UI_Party_Info(self)--队友位置
         return
     end
     local UnitTab={}
-    local name, uiMapID=e.GetUnitMapName('player')
+    local name, uiMapID=WoWTools_MapMixin:GetUnit('player')
     local text
     local all= GetNumGroupMembers()
     for i=1, all do
@@ -356,7 +356,7 @@ local function UI_Party_Info(self)--队友位置
 
             local info= C_PlayerInfo.GetPlayerMythicPlusRatingSummary(unit)--挑战, 分数
             if info and info.currentSeasonScore and info.currentSeasonScore>0 then
-                text= text..e.GetKeystoneScorsoColor(info.currentSeasonScore, true)
+                text= text..WoWTools_WeekMixin:KeystoneScorsoColor(info.currentSeasonScore, true)
                 if info.runs and info.runs then
                     local bestRunLevel=0
                     for _, run in pairs(info.runs) do
@@ -370,9 +370,9 @@ local function UI_Party_Info(self)--队友位置
                 end
             end
 
-            text= text..e.GetPlayerInfo({guid=guid, unit=unit, name=name, reName=true, reRealm=true})--信息
+            text= text..WoWTools_UnitMixin:GetPlayerInfo({guid=guid, unit=unit, name=name, reName=true, reRealm=true})--信息
 
-            local name2, uiMapID2=e.GetUnitMapName(unit)
+            local name2, uiMapID2=WoWTools_MapMixin:GetUnit(unit)
             if (name and name==name2) or (uiMapID and uiMapID==uiMapID2) then--地图名字
                 text=text..format('|A:%s:0:0|a', e.Icon.select)
             elseif name2 then
@@ -398,7 +398,7 @@ local function UI_Party_Info(self)--队友位置
         end
     end
     if not self.partyLable then
-        self.partyLable=e.Cstr(self.keyFrame)--队伍信息
+        self.partyLable=WoWTools_LabelMixin:CreateLabel(self.keyFrame)--队伍信息
         --self.party:SetPoint('BOTTOMLEFT', _G['MoveZoomInButtonPerChallengesKeystoneFrame'] or self, 'TOPLEFT')
         self.partyLable:SetPoint('TOPLEFT', self, 'TOPRIGHT')
     end
@@ -492,16 +492,16 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
         if dungeonScore and dungeonScore>0 then
             local link = GetDungeonScoreLink(dungeonScore, UnitName("player"))
             if not self2.dungeonScoreLink then
-                self2.dungeonScoreLink= e.Cstr(self2.keyFrame, {mouse=true, size=16})
+                self2.dungeonScoreLink= WoWTools_LabelMixin:CreateLabel(self2.keyFrame, {mouse=true, size=16})
                 self2.dungeonScoreLink:SetPoint('BOTTOMRIGHT', ChallengesKeystoneFrame, -15, 145)
                 self2.dungeonScoreLink:SetScript('OnMouseDown', function(self3, d)
                     if not self3.link then
                         return
                     end
                     if d=='LeftButton' then
-                       e.Chat(self3.link, nil, nil)
+                       WoWTools_ChatMixin:Chat(self3.link, nil, nil)
                     elseif d=='RightButton' then
-                        e.Chat(self3.link, nil, true)
+                        WoWTools_ChatMixin:Chat(self3.link, nil, true)
                         --if not ChatEdit_InsertLink(self3.link) then
                         --ChatFrame_OpenChat(self3.link)
                     end
@@ -526,7 +526,7 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
                 end)
             end
             self2.dungeonScoreLink.link= link
-            self2.dungeonScoreLink:SetText(e.GetKeystoneScorsoColor(dungeonScore))
+            self2.dungeonScoreLink:SetText(WoWTools_WeekMixin:KeystoneScorsoColor(dungeonScore))
         end
     end)
 
@@ -584,8 +584,8 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
                 m=m..name2..', '
             end
         end
-        m=m..e.SecondsToClock(timeLimit)
-        e.Chat(m, nil, nil)
+        m=m..WoWTools_TimeMixin:SecondsToClock(timeLimit)
+        WoWTools_ChatMixin:Chat(m, nil, nil)
         self2.inseSayTips=nil
     end)
 
@@ -614,7 +614,7 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     self.countdown2:SetSize(100,24)
     self.countdown2:SetScript("OnMouseDown",function()
         C_PartyInfo.DoCountdown(0)
-        e.Chat(e.Player.cn and '停止! 停止! 停止!' or 'Stop! Stop! Stop!', nil, nil)
+        WoWTools_ChatMixin:Chat(e.Player.cn and '停止! 停止! 停止!' or 'Stop! Stop! Stop!', nil, nil)
     end)
     self.countdown2:SetScript('OnLeave', GameTooltip_Hide)
     self.countdown2:SetScript('OnEnter', function(frame)
@@ -713,7 +713,7 @@ local function Init_Affix()
         btn:SetPoint('TOP', ChallengesFrame.WeeklyInfo.Child.AffixesContainer, 'BOTTOM', ((i-1)*24)-24, -3)---((index-1)*24))
 
         if i==1 then
-            local label= e.Cstr(btn)
+            local label= WoWTools_LabelMixin:CreateLabel(btn)
             label:SetPoint('RIGHT', btn, 'LEFT')
             label:SetText(one)
             --if index==1 then
@@ -794,7 +794,7 @@ local function create_lable(btn, point, text, col, size)
     if not text or text=='' then
         return
     end
-    local label= e.Cstr(btn, {size=size or 10, mouse=true, color=col})
+    local label= WoWTools_LabelMixin:CreateLabel(btn, {size=size or 10, mouse=true, color=col})
     if point==1 then
         label:SetPoint('TOPRIGHT', btn, 'TOPLEFT')
     elseif point==2 then
@@ -857,7 +857,7 @@ local function All_Player_Info()--所以角色信息
                     self:set_tooltips(self)
                 end)
 
-                local score= e.GetKeystoneScorsoColor(info.Keystone.score, false, nil)
+                local score= WoWTools_WeekMixin:KeystoneScorsoColor(info.Keystone.score, false, nil)
                 local weekNum= info.Keystone.weekNum and info.Keystone.weekNum>0 and info.Keystone.weekNum
                 local weekLevel= info.Keystone.weekLevel and info.Keystone.weekLevel>0 and info.Keystone.weekLevel
                 create_lable(btn, 1, info.Keystone.weekPvE, classColor)--团队副本
@@ -874,16 +874,16 @@ local function All_Player_Info()--所以角色信息
                         link= link:gsub(name, e.ChallengesSpellTabs[mapID].name)
                     end
                 end
-                local nameLable= e.Cstr(btn, {color= classColor})--名字
+                local nameLable= WoWTools_LabelMixin:CreateLabel(btn, {color= classColor})--名字
                 nameLable:SetPoint('TOPRIGHT', btn, 'BOTTOMRIGHT')
                 nameLable:SetText(
                     (namePlayer or '')
                     ..((realm and realm~='') and '-'..realm or '')
-                    ..(e.Class(nil, englishClass) or '')
-                    ..(e.GetUnitFaction(nil, info.faction, false) or '')
+                    ..(WoWTools_UnitMixin:GetClassIcon(nil, englishClass) or '')
+                    ..(WoWTools_UnitMixin:GetFaction(nil, info.faction, false) or '')
                 )
 
-                local keyLable= e.Cstr(btn, {mouse=true})--KEY
+                local keyLable= WoWTools_LabelMixin:CreateLabel(btn, {mouse=true})--KEY
                 keyLable:SetPoint('RIGHT', nameLable, 'LEFT')
                 keyLable:SetScript('OnLeave', function(self) self:SetAlpha(1) e.tips:Hide() end)
                 keyLable:SetScript('OnEnter', function(self)
@@ -926,7 +926,7 @@ local function set_All_Text()--所有记录
     --####
     local last
     if not ChallengesFrame.runHistoryLable then
-        ChallengesFrame.runHistoryLable= e.Cstr(TipsFrame, {mouse=true, size=14})--最右边, 数据
+        ChallengesFrame.runHistoryLable= WoWTools_LabelMixin:CreateLabel(TipsFrame, {mouse=true, size=14})--最右边, 数据
         ChallengesFrame.moveRightTipsButton= WoWTools_ButtonMixin:Cbtn(TipsFrame, {size={22,22}, atlas='common-icon-rotateright'})
         ChallengesFrame.moveRightTipsButton:SetFrameLevel(PVEFrame.TitleContainer:GetFrameLevel()+1)
         ChallengesFrame.moveRightTipsButton:SetPoint('TOP', PVEFrameCloseButton, 'BOTTOM', -8, 0)
@@ -1015,7 +1015,7 @@ local function set_All_Text()--所有记录
                     local text2= tab.c..'/'..tab.t
                     if tab.isCurrent then
                         local bestOverAllScore = select(2, C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(tab.mapID)) or 0
-                        local score, col= e.GetKeystoneScorsoColor(bestOverAllScore, nil, true)
+                        local score, col= WoWTools_WeekMixin:KeystoneScorsoColor(bestOverAllScore, nil, true)
                         text= (col and col:WrapTextInColorCode(text) or text)..score
                         text2= col and col:WrapTextInColorCode(text2) or text2
                     else
@@ -1088,7 +1088,7 @@ local function set_All_Text()--所有记录
             end
             weekText= weekText and weekText..'|n' or ''
             local bestOverAllScore = select(2, C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(tab.mapID)) or 0
-            local score= e.GetKeystoneScorsoColor(bestOverAllScore, nil, true)
+            local score= WoWTools_WeekMixin:KeystoneScorsoColor(bestOverAllScore, nil, true)
 
             weekText= weekText..(texture and '|T'..texture..':0|t' or '')
                     ..(tab.c>0 and '|cff00ff00' or '|cff828282')..tab.c..'|r/'..tab.t
@@ -1100,12 +1100,12 @@ local function set_All_Text()--所有记录
         end
     end
     if not ChallengesFrame.weekCompledLabel then
-        ChallengesFrame.weekCompledLabel= e.Cstr(TipsFrame)--最右边, 数据
+        ChallengesFrame.weekCompledLabel= WoWTools_LabelMixin:CreateLabel(TipsFrame)--最右边, 数据
         ChallengesFrame.weekCompledLabel:SetPoint('TOPLEFT', last, 'BOTTOMLEFT')
     end
     ChallengesFrame.weekCompledLabel:SetText(
         (e.onlyChinese and '本周' or CHALLENGE_MODE_THIS_WEEK)
-        ..' |cff00ff00'..completed..'|r/'..all--.. ' '..(e.Get_Week_Rewards_Text(1) or '')
+        ..' |cff00ff00'..completed..'|r/'..all--.. ' '..(WoWTools_WeekMixin:GetRewardText(1) or '')
         ..(weekText and '|n'..weekText or '')
     )
     last= ChallengesFrame.weekCompledLabel
@@ -1115,7 +1115,7 @@ local function set_All_Text()--所有记录
     --难度 每周 掉落
     --#############
     if not ChallengesFrame.weekLootItemLevelLable then
-        ChallengesFrame.weekLootItemLevelLable= e.Cstr(TipsFrame, {mouse=true})--最右边, 数据
+        ChallengesFrame.weekLootItemLevelLable= WoWTools_LabelMixin:CreateLabel(TipsFrame, {mouse=true})--最右边, 数据
         ChallengesFrame.weekLootItemLevelLable:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0,-12)
         function ChallengesFrame.weekLootItemLevelLable:get_Loot_itemLevel(level)
             --local col= self.curLevel==level and '|cff00ff00' or (select(2, math.modf(level/2))==0 and '|cffff8200') or '|cffffffff'
@@ -1165,7 +1165,7 @@ local function set_All_Text()--所有记录
     end
 
     if not ChallengesFrame.weekLootItemLevelLable2 then
-        ChallengesFrame.weekLootItemLevelLable2= e.Cstr(TipsFrame)--最右边, 数据
+        ChallengesFrame.weekLootItemLevelLable2= WoWTools_LabelMixin:CreateLabel(TipsFrame)--最右边, 数据
         ChallengesFrame.weekLootItemLevelLable2:SetPoint('TOPLEFT', ChallengesFrame.weekLootItemLevelLable, 'BOTTOMLEFT')
     end
     ChallengesFrame.weekLootItemLevelLable2:SetText(lootText or '')
@@ -1193,21 +1193,21 @@ local function set_All_Text()--所有记录
             keyText= (keyText and keyText..'|n' or '')
                 .. (info.Keystone.weekNum or 0)
                 .. (info.Keystone.weekMythicPlus and ' |cnGREEN_FONT_COLOR:('..info.Keystone.weekMythicPlus..') ' or '')
-                ..e.GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true})
+                ..WoWTools_UnitMixin:GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true})
                 ..' |T'..((not icon or icon==134400) and 4352494 or icon)..':0|t'..link--info.Keystone.link
-            ..(info.Keystone.score and ' ' or '')..(e.GetKeystoneScorsoColor(info.Keystone.score))
+            ..(info.Keystone.score and ' ' or '')..(WoWTools_WeekMixin:KeystoneScorsoColor(info.Keystone.score))
        end
     end
 
     if not ChallengesFrame.playerAllKey then
-        ChallengesFrame.playerAllKey= e.Cstr(TipsFrame)--最右边, 数据
+        ChallengesFrame.playerAllKey= WoWTools_LabelMixin:CreateLabel(TipsFrame)--最右边, 数据
         ChallengesFrame.playerAllKey:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0,-12)
     end
     ChallengesFrame.playerAllKey:SetText(keyText or '')
     last=ChallengesFrame.playerAllKe]]
 
     --物品，货币提示
-    e.ItemCurrencyLabel({frame=TipsFrame, point={'TOPLEFT', last, 'BOTTOMLEFT',0, -12}})
+    WoWTools_LabelMixin:ItemCurrencyTips({frame=TipsFrame, point={'TOPLEFT', last, 'BOTTOMLEFT',0, -12}})
     last=nil
 end
 
@@ -1365,7 +1365,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
             local nameText = not Save.hideIns and C_ChallengeMode.GetMapUIInfo(frame.mapID)--名称
             if nameText then
                 if not frame.nameLable then
-                    frame.nameLable=e.Cstr(frame, {size=10, mouse= true, justifyH='CENTER'})
+                    frame.nameLable=WoWTools_LabelMixin:CreateLabel(frame, {size=10, mouse= true, justifyH='CENTER'})
                     frame.nameLable:SetPoint('BOTTOM', frame, 'TOP', 0, 3)
                     frame.nameLable:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
                     frame.nameLable:SetScript('OnEnter', function(self2)
@@ -1388,7 +1388,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                     nameText=nameText:match('%- (.+)') or nameText
                     nameText=nameText:match(HEADER_COLON..'(.+)') or nameText
                     nameText=nameText:match('·(.+)') or nameText
-                    nameText=e.WA_Utf8Sub(nameText, 5, 12)
+                    nameText=WoWTools_Mixin:sub(nameText, 5, 12)
                 end
                 frame.nameLable:SetScale(Save.insScale or 1)
             end
@@ -1405,7 +1405,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                     frame.nameFrame=CreateFrame('Frame', nil, frame)
                     frame.nameFrame:SetHyperlinksEnabled(true)
                     frame.nameFrame:SetScript("OnHyperlinkClick", ChatFrame_OnHyperlinkShow)
-                    frame.nameFrame.Text= e.Cstr(frame.nameFrame, {size=10, mouse= true, justifyH='CENTER'})
+                    frame.nameFrame.Text= WoWTools_LabelMixin:CreateLabel(frame.nameFrame, {size=10, mouse= true, justifyH='CENTER'})
                     frame.nameFrame.Text:SetPoint('BOTTOM', frame, 'TOP', 0, 3)
                     frame.nameFrame:SetAllPoints(frame.nameFrame.Text)
                     --frame.nameFrame.Text:HookScript('OnMouseDown', function(self2) self2:SetAlpha(0) end)
@@ -1436,7 +1436,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                     nameText=nameText:match('%- (.+)') or nameText
                     nameText=nameText:match(HEADER_COLON..'(.+)') or nameText
                     nameText=nameText:match('·(.+)') or nameText
-                    nameText=e.WA_Utf8Sub(nameText, 5, 12)
+                    nameText=WoWTools_Mixin:sub(nameText, 5, 12)
                 end
                 frame.nameFrame.Text:SetScale(Save.insScale or 1)
                 frame.nameFrame.link= frame.journalInstanceID and select(8, EJ_GetInstanceInfo(frame.journalInstanceID))
@@ -1457,7 +1457,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
             local affixScores, overAllScore = C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(frame.mapID)
             if (overAllScore and intimeInfo or overtimeInfo) then
                 if not frame.scoreLable then--分数
-                    frame.scoreLable=e.Cstr(frame, {size=10, mouse=true})
+                    frame.scoreLable=WoWTools_LabelMixin:CreateLabel(frame, {size=10, mouse=true})
                     frame.scoreLable:SetPoint('BOTTOMLEFT', frame, 0, 24)
                     frame.scoreLable:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
                     frame.scoreLable:SetScript('OnEnter', function(self2)
@@ -1487,7 +1487,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                         end)
                     end
                 end
-                frame.scoreLable:SetText((overAllScore and not Save.hideIns) and '|A:AdventureMapIcon-MissionCombat:16:16|a'..e.GetKeystoneScorsoColor(overAllScore,nil,true) or '')
+                frame.scoreLable:SetText((overAllScore and not Save.hideIns) and '|A:AdventureMapIcon-MissionCombat:16:16|a'..WoWTools_WeekMixin:KeystoneScorsoColor(overAllScore,nil,true) or '')
                 frame.scoreLable.score= overAllScore
                 frame.scoreLable:SetScale(Save.insScale or 1)
 
@@ -1499,7 +1499,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                         local label=frame['affixInfo'..info.name]
                         if info.level and info.level>0 and info.durationSec and (info.name == nameA or info.name==nameB) and not Save.hideIns then
                             if not label then
-                                label= e.Cstr(frame, {justifyH='RIGHT', mouse=true})
+                                label= WoWTools_LabelMixin:CreateLabel(frame, {justifyH='RIGHT', mouse=true})
                                 if info.name== nameA then
                                     label:SetPoint('BOTTOMLEFT',frame)
                                 else
@@ -1510,7 +1510,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                                     e.tips:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")
                                     e.tips:ClearLines()
                                     e.tips:AddDoubleLine(format(e.onlyChinese and '最佳%s' or DUNGEON_SCORE_BEST_AFFIX, self2.name),
-                                                            self2.overTime and '|cff828282'..format(e.onlyChinese and '%s (超时)' or DUNGEON_SCORE_OVERTIME_TIME, e.SecondsToClock(self2.durationSec)) or e.SecondsToClock(self2.durationSec)
+                                                            self2.overTime and '|cff828282'..format(e.onlyChinese and '%s (超时)' or DUNGEON_SCORE_OVERTIME_TIME, WoWTools_TimeMixin:SecondsToClock(self2.durationSec)) or WoWTools_TimeMixin:SecondsToClock(self2.durationSec)
                                                         )
                                     e.tips:Show()
                                     self2:SetAlpha(0.5)
@@ -1541,7 +1541,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                     local week= GetNum(frame.mapID)--本周
                     if all or week then
                         if not frame.completedLable then
-                            frame.completedLable=e.Cstr(frame, {mouse=true})
+                            frame.completedLable=WoWTools_LabelMixin:CreateLabel(frame, {mouse=true})
                             frame.completedLable:SetPoint('TOPLEFT', frame)
                             frame.completedLable:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
                             frame.completedLable:SetScript('OnEnter', function(self2)
@@ -1598,7 +1598,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                     self2.label:SetAlpha(0.3)
                 end)
                 --当前KEY，等级
-                frame.currentKey.label=e.Cstr(frame)
+                frame.currentKey.label=WoWTools_LabelMixin:CreateLabel(frame)
                 frame.currentKey.label:SetPoint('TOP', frame.currentKey,-2,2)
             end
             if frame.currentKey then
@@ -2052,7 +2052,7 @@ local function Init()
     --Init_Affix()
 
     --周奖励，提示
-    e.Get_Weekly_Rewards_Activities({frame=TipsFrame, point={'TOPLEFT', ChallengesFrame, 'TOPLEFT', 10, -53}})
+    WoWTools_WeekMixin:Activities({frame=TipsFrame, point={'TOPLEFT', ChallengesFrame, 'TOPLEFT', 10, -53}})
 
     All_Player_Info()--所以角色信息
     C_Timer.After(2, set_All_Text)--所有记录
@@ -2062,7 +2062,7 @@ local function Init()
     ChallengesFrame:HookScript('OnShow', function()
         --Affix()
         --周奖励，提示
-        e.Get_Weekly_Rewards_Activities({frame=TipsFrame, point={'TOPLEFT', ChallengesFrame, 'TOPLEFT', 10, -53}})
+        WoWTools_WeekMixin:Activities({frame=TipsFrame, point={'TOPLEFT', ChallengesFrame, 'TOPLEFT', 10, -53}})
         C_Timer.After(2, set_All_Text)--所有记录
         --set_Update()
     end)
@@ -2215,7 +2215,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             local itemLink= get_Bag_Key()--查找，包的key
             if itemLink then
                 C_Timer.After(2, function()
-                    e.Chat(itemLink, nil, nil)
+                    WoWTools_ChatMixin:Chat(itemLink, nil, nil)
                 end)
             end
         end
@@ -2242,7 +2242,7 @@ end)
                     if UnitExists(u) and name2 then
                         local buff
                         for _, v in pairs(IDs2) do
-                            local name=e.WA_GetUnitBuff(u, v)
+                            local name=WoWTools_AuraMixin:Get(u, v)
                             if  name then
                                 local link= C_Spell.GetSpellLink(v)
                                 if link or name then
@@ -2260,7 +2260,7 @@ end)
                     if not Save.slotKeystoneSay then
                         print(v)
                     else
-                        e.Chat(v)
+                        WoWTools_ChatMixin:Chat(v)
                     end
                 end
             end)

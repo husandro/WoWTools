@@ -12,7 +12,7 @@ local function Blizzard_AchievementUI()
     hooksecurefunc(AchievementTemplateMixin, 'Init', function(frame)
         if frame.Shield and frame.id then
             if not frame.AchievementIDLabel  then
-                frame.AchievementIDLabel= e.Cstr(frame.Shield)
+                frame.AchievementIDLabel= WoWTools_LabelMixin:CreateLabel(frame.Shield)
                 frame.AchievementIDLabel:SetPoint('TOP', frame.Shield.Icon)
                 frame.Shield:SetScript('OnEnter', function(self)
                     local achievementID= self:GetParent().id
@@ -34,7 +34,7 @@ local function Blizzard_AchievementUI()
                     local achievementID= self:GetParent().id
                     local achievementLink = achievementID and GetAchievementLink(achievementID)
                     if achievementLink then
-                        e.Chat(achievementLink)
+                        WoWTools_ChatMixin:Chat(achievementLink)
                     end
                 end)
                 frame.Shield:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
@@ -66,7 +66,7 @@ local function Blizzard_AchievementUI()
                     end
                 end)
                 if button.Player and button.Player.Icon and not button.Player.idText then
-                    button.Player.idText= e.Cstr(button.Player)
+                    button.Player.idText= WoWTools_LabelMixin:CreateLabel(button.Player)
                     button.Player.idText:SetPoint('LEFT', button.Player.Icon, 'RIGHT', 0, 10)
                 end
             end
@@ -81,7 +81,7 @@ local function Blizzard_AchievementUI()
         end
     end)
     hooksecurefunc('AchievementFrameComparison_SetUnit', function(unit)--比较成就
-        local text= e.GetPlayerInfo({unit=unit, reName=true, reRealm=true})--玩家信息图标
+        local text= WoWTools_UnitMixin:GetPlayerInfo({unit=unit, reName=true, reRealm=true})--玩家信息图标
         if text~='' then
             AchievementFrameComparisonHeaderName:SetText(text)
         end

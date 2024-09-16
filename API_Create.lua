@@ -1,7 +1,7 @@
 local e = select(2, ...)
 
 --[[
-e.Cstr(self, tab)
+WoWTools_LabelMixin:CreateLabel(self, tab)
 WoWTools_ButtonMixin:Cbtn(self, tab)--type, icon(atlas, texture), name, size, pushe, button='ItemButton', notWheel, setID, text
 
 e.Ccool(self, start, duration, modRate, HideCountdownNumbers, Reverse, SwipeTexture, hideDrawBling)--冷却条
@@ -12,137 +12,6 @@ e.Cbtn2(tab)
 
 
 ]]
-
-function e.Cstr(self, tab)
-    tab= tab or {}
-    self= self or UIParent
-    local name= tab.name
-    local alpha= tab.alpha
-    local font= tab.changeFont
-    local layer= tab.layer or 'OVERLAY'--BACKGROUND BORDER ARTWORK OVERLAY HIGHLIGHT
-    local fontName= tab.fontName or 'GameFontNormal'
-    --local level= tab.level or self:GetFrameLevel()+1
-    local copyFont= tab.copyFont
-    local size= tab.size or 12
-    local justifyH= tab.justifyH
-    local notFlag= tab.notFlag
-    local notShadow= tab.notShadow
-    local color= tab.color
-    local mouse= tab.mouse
-    local wheel= tab.wheel
-
-    font = font or self:CreateFontString(name, layer, fontName)
-    if copyFont then
-        local fontName2, size2, fontFlag2 = copyFont:GetFont()
-        font:SetFont(fontName2, size or size2, fontFlag2)
-        font:SetTextColor(copyFont:GetTextColor())
-        font:SetFontObject(copyFont:GetFontObject())
-        font:SetShadowColor(copyFont:GetShadowColor())
-        font:SetShadowOffset(copyFont:GetShadowOffset())
-        if justifyH then font:SetJustifyH(justifyH) end
-        --if alpha then font:SetAlpha(alpha) end
-    else
-        if e.onlyChinese or size then--THICKOUTLINE
-            local fontName2, size2, fontFlag2= font:GetFont()
-            if e.onlyChinese then
-                fontName2= 'Fonts\\ARHei.ttf'--黑体字
-                --fontName2='Interface\\AddOns\\WoWTools\\Sesource\\Cloud24-Bold.ttf'
-            end
-            font:SetFont(fontName2, size or size2, notFlag and fontFlag2 or 'OUTLINE')
-        end
-
-        font:SetJustifyH(justifyH or 'LEFT')
-    end
-    if not notShadow then
-        font:SetShadowOffset(1, -1)
-    end
-    if color~=false then
-        if color==true then--颜色
-            e.Set_Label_Texture_Color(font, {type='FontString'})
-        elseif type(color)=='table' then
-            font:SetTextColor(color.r, color.g, color.b, color.a or 1)
-        else
-            font:SetTextColor(1, 0.82, 0, 1)
-        end
-    end
-    if mouse then
-        font:EnableMouse(true)
-    end
-    if wheel then
-        font:EnableMouseWheel(true)
-    end
-    if alpha then
-        font:SetAlpha(alpha)
-    end
-    return font
-end
---[[
-function WoWTools_ButtonMixin:Cbtn(self, tab)--type, icon(atlas, texture), name, size, pushe, button='ItemButton', notWheel, setID, text
-    tab=tab or {}
-    local template= tab.type==false and 'UIPanelButtonTemplate' or (tab.type==true and 'SecureActionButtonTemplate') or tab.type
-    SharedUIPanelTemplates.xml
-    SecureTemplates
-    SecureActionButtonTemplate	Button	Perform protected actions.
-    SecureUnitButtonTemplate	Button	Unit frames.
-    SecureAuraHeaderTemplate	Frame	Managing buffs and debuffs.
-    SecureGroupHeaderTemplate	Frame	Managing group members.
-    SecurePartyHeaderTemplate	Frame	Managing party members.
-    SecureRaidGroupHeaderTemplate	Frame	Managing raid group members.
-    SecureGroupPetHeaderTemplate	Frame	Managing group pets.
-    SecurePartyPetHeaderTemplate	Frame	Managing party pets.
-    SecureRaidPetHeaderTemplate
-    btn:RegisterForClicks("AnyDown", "AnyUp")
-
-    local btn= CreateFrame(tab.button or 'Button', tab.name, self or UIParent, template, tab.setID)
-    btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
-    if not tab.notWheel then
-        btn:EnableMouseWheel(true)
-    end
-    if tab.size then--大小
-        if type(tab.size)=='number' then
-            btn:SetSize(tab.size, tab.size)
-        else
-            btn:SetSize(tab.size[1], tab.size[2])
-        end
-    elseif tab.button=='ItemButton' then
-        btn:SetSize(34, 34)
-    end
-    if tab.type~=false then
-        if tab.pushe then
-            btn:SetHighlightAtlas('bag-border')
-            btn:SetPushedAtlas('bag-border-highlight')
-        else --ChromieTime-Button-Selection
-            btn:SetHighlightAtlas('auctionhouse-nav-button-select')--Forge-ColorSwatchSelection')
-            btn:SetPushedAtlas('auctionhouse-nav-button-select')--UI-HUD-MicroMenu-Highlightalert')
-            --auctionhouse-nav-button-select
-            --auctionhouse-nav-button-secondary-select
-        end
-        if tab.icon~='hide' then
-            if tab.texture then
-                btn:SetNormalTexture(tab.texture)
-            elseif tab.atlas then
-                btn:SetNormalAtlas(tab.atlas)
-            elseif tab.icon==true then
-                btn:SetNormalAtlas(e.Icon.icon)
-            else
-                btn:SetNormalAtlas(e.Icon.disabled)
-            end
-        end
-    end
-    if tab.text then
-        btn:SetText(tab.text)
-    end
-    if tab.alpha then
-        btn:SetAlpha(tab.alpha)
-    end
-    return btn, template
-end
-
-
-]]
-
-
-
 
 
 
@@ -344,7 +213,7 @@ function e.Cbtn2(tab)
     if btn.color then
         btn.border:SetVertexColor(tab.color.r, tab.color.g, tab.color.b, tab.alpha)
     else
-        e.Set_Label_Texture_Color(btn.border, {type='Texture', alpha=tab.alpha or 0.5})
+        WoWTools_ColorMixin:SetLabelTexture(btn.border, {type='Texture', alpha=tab.alpha or 0.5})
     end
     return btn
 end

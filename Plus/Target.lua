@@ -187,7 +187,7 @@ function Init_Target()
         end
         function TargetFrame:set_texture()
             self:SetSize(Save.w, Save.h)--设置大小
-            local isAtlas, texture= e.IsAtlas(Save.targetTextureName)--设置，图片
+            local isAtlas, texture= WoWTools_TextureMixin:IsAtlas(Save.targetTextureName)--设置，图片
             if isAtlas then
                 self.Texture:SetAtlas(texture)
             else
@@ -336,7 +336,7 @@ local function Init_Num()
         if Save.creatureUIParent or not TargetFrame then
             NumFrame= WoWTools_ButtonMixin:Cbtn(nil, {size={18, 18}, icon='hide'})
 
-            NumFrame.Text= e.Cstr(NumFrame, {size=Save.creatureFontSize, color={r=1,g=1,b=1}})
+            NumFrame.Text= WoWTools_LabelMixin:CreateLabel(NumFrame, {size=Save.creatureFontSize, color={r=1,g=1,b=1}})
             NumFrame.Text:SetScript('OnLeave', function(self) self:GetParent():SetButtonState('NORMAL') end)
             NumFrame.Text:SetScript('OnEnter', function(self) self:GetParent():SetButtonState('PUSHED') end)
             NumFrame.Text:SetPoint('LEFT', NumFrame, 'RIGHT')
@@ -396,7 +396,7 @@ local function Init_Num()
                 n= n>72 and 72 or n
                 n= n<8 and 8 or n
                 Save.creatureFontSize=n
-                e.Cstr(nil, {changeFont=self.Text, size=n})
+                WoWTools_LabelMixin:CreateLabel(nil, {changeFont=self.Text, size=n})
                 self:set_tooltip()
                 print(e.addName, e.cn(addName), (e.onlyChinese and '字体大小' or FONT_SIZE), '|cnGREEN_FONT_COLOR:'..Save.creatureFontSize)
             end)
@@ -421,7 +421,7 @@ local function Init_Num()
             NumFrame:SetScript("OnEnter", NumFrame.set_tooltip)
         else
             NumFrame= CreateFrame('Frame')
-            NumFrame.Text= e.Cstr(TargetFrame, {size=Save.creatureFontSize, color={r=1,g=1,b=1}})--10, nil, nil, {1,1,1}, 'BORDER', 'RIGHT')
+            NumFrame.Text= WoWTools_LabelMixin:CreateLabel(TargetFrame, {size=Save.creatureFontSize, color={r=1,g=1,b=1}})--10, nil, nil, {1,1,1}, 'BORDER', 'RIGHT')
             function NumFrame:set_text_point()
                 self.Text:ClearAllPoints()
                 if Save.TargetFramePoint=='LEFT' then
@@ -434,7 +434,7 @@ local function Init_Num()
             end
         end
         function NumFrame:set_pvp()
-            self.isPvPArena= e.Is_In_PvP_Area()--是否在，PVP区域中
+            self.isPvPArena= WoWTools_MapMixin:IsInPvPArea()--是否在，PVP区域中
         end
         function NumFrame:set_text()--local distanceSquared, checkedDistance = UnitDistanceSquared(u) inRange = CheckInteractDistance(unit, distIndex)
             local k,T,F=0,0,0
@@ -475,7 +475,7 @@ local function Init_Num()
         NumFrame:set_pvp()
 
     elseif NumFrame then
-        e.Cstr(nil, {changeFont=NumFrame.Text, size= Save.creatureFontSize})
+        WoWTools_LabelMixin:CreateLabel(nil, {changeFont=NumFrame.Text, size= Save.creatureFontSize})
     end
 
     local eventTab= {
@@ -570,11 +570,11 @@ local function Init_Quest()
                     end
                 end
             elseif not (UnitInParty(unit) or UnitIsUnit('player', unit)) then
-                local wow= e.GetFriend(nil, UnitGUID(unit), nil)--检测, 是否好友
-                local faction= e.GetUnitFaction(unit, nil, Save.questShowAllFaction)--检查, 是否同一阵营
+                local wow= WoWTools_UnitMixin:GetIsFriendIcon(nil, UnitGUID(unit), nil)--检测, 是否好友
+                local faction= WoWTools_UnitMixin:GetFaction(unit, nil, Save.questShowAllFaction)--检查, 是否同一阵营
                 local text
                 if Save.questShowPlayerClass then
-                    text= e.Class(unit)
+                    text= WoWTools_UnitMixin:GetClassIcon(unit)
                 end
                 if wow or faction then
                     text= (text or '')..(wow or '')..(faction or '')
@@ -590,7 +590,7 @@ local function Init_Quest()
             end
             local text= self:get_unit_text(frame.unit or unit)
             if text and not frame.questProgress then
-                frame.questProgress= e.Cstr(frame, {size=14, color={r=0,g=1,b=0}})--14, nil, nil, {0,1,0}, nil,'LEFT')
+                frame.questProgress= WoWTools_LabelMixin:CreateLabel(frame, {size=14, color={r=0,g=1,b=0}})--14, nil, nil, {0,1,0}, nil,'LEFT')
                 frame.questProgress:SetPoint('LEFT', frame.healthBar or frame, 'RIGHT', 2,0)
             end
             if frame.questProgress then
@@ -616,7 +616,7 @@ local function Init_Quest()
             self:UnregisterAllEvents()
             self:RegisterEvent('PLAYER_ENTERING_WORLD')
 
-            local isPvPArena= e.Is_In_PvP_Area()--是否在，PVP区域中
+            local isPvPArena= WoWTools_MapMixin:IsInPvPArea()--是否在，PVP区域中
             local isIns= isPvPArena
                     or (not Save.questShowInstance and IsInInstance()
                         and (GetNumGroupMembers()>3 or C_ChallengeMode.IsChallengeModeActive())
@@ -716,7 +716,7 @@ local function Init_Unit_Is_Me()
             else--TOPLEFT
                 frame.UnitIsMe:SetPoint("BOTTOMLEFT", parent, 'TOPLEFT', Save.unitIsMeX,Save.unitIsMeY)
             end
-            local isAtlas, texture= e.IsAtlas(Save.unitIsMeTextrue)
+            local isAtlas, texture= WoWTools_TextureMixin:IsAtlas(Save.unitIsMeTextrue)
             if isAtlas or not texture then
                 frame.UnitIsMe:SetAtlas(texture or 'auctionhouse-icon-favorite')
             else
@@ -905,8 +905,8 @@ local function set_Option()
                 set_Target_Color(panel.tipTargetTexture, false)
                 set_All_Init()
             end
-            e.ShowColorPicker(Save.targetColor.r, Save.targetColor.g, Save.targetColor.b, Save.targetColor.a, function()
-                    setR, setG, setB, setA= e.Get_ColorFrame_RGBA()
+            WoWTools_ColorMixin:ShowColorFrame(Save.targetColor.r, Save.targetColor.g, Save.targetColor.b, Save.targetColor.a, function()
+                    setR, setG, setB, setA= WoWTools_ColorMixin:Get_ColorFrameRGBA()
                     func()
                 end, function()
                     setR, setG, setB, setA= R,G,B,A
@@ -959,8 +959,8 @@ local function set_Option()
                 set_Target_Color(panel.tipTargetTexture, true)
                 set_All_Init()
             end
-            e.ShowColorPicker(Save.targetInCombatColor.r, Save.targetInCombatColor.g, Save.targetInCombatColor.b, Save.targetInCombatColor.a, function()
-                    setR, setG, setB, setA= e.Get_ColorFrame_RGBA()
+            WoWTools_ColorMixin:ShowColorFrame(Save.targetInCombatColor.r, Save.targetInCombatColor.g, Save.targetInCombatColor.b, Save.targetInCombatColor.a, function()
+                    setR, setG, setB, setA= WoWTools_ColorMixin:Get_ColorFrameRGBA()
                     func()
                 end, function()
                     setR, setG, setB, setA= R,G,B,A
@@ -1094,7 +1094,7 @@ local function set_Option()
     e.LibDD:UIDropDownMenu_SetWidth(menu, 410)
     e.LibDD:UIDropDownMenu_Initialize(menu, function(self, level)
         for name, use in pairs(get_texture_tab()) do
-            local isAtlas, texture= e.IsAtlas(name)
+            local isAtlas, texture= WoWTools_TextureMixin:IsAtlas(name)
             if texture then
                 local info={
                     text= name:match('.+\\(.+)%.') or name,
@@ -1128,7 +1128,7 @@ local function set_Option()
 	menu.edit:SetSize(420,22)
 	menu.edit:SetAutoFocus(false)
     menu.edit:ClearFocus()
-    menu.edit.Label= e.Cstr(menu.edit)
+    menu.edit.Label= WoWTools_LabelMixin:CreateLabel(menu.edit)
     menu.edit.Label:SetPoint('RIGHT', menu.edit, 'LEFT', -4, 0)
     menu.edit:SetScript('OnShow', function(self)
         self:SetText(Save.targetTextureName)
@@ -1139,7 +1139,7 @@ local function set_Option()
         name= name:gsub(' ', '')
         name= name=='' and false or name
         if name then
-            isAtlas, name= e.IsAtlas(name)
+            isAtlas, name= WoWTools_TextureMixin:IsAtlas(name)
             if name then
                 if isAtlas then
                     panel.tipTargetTexture:SetAtlas(name)
@@ -1160,7 +1160,7 @@ local function set_Option()
     menu.edit.del:SetPoint('LEFT', menu, 'RIGHT',-10,0)
     menu.edit.del:SetScript('OnClick', function(self)
         local parent= self:GetParent()
-        local isAtals, name= e.IsAtlas(parent:GetText())
+        local isAtals, name= WoWTools_TextureMixin:IsAtlas(parent:GetText())
         if name and Save.targetTextureNewTab[name] then
             Save.targetTextureNewTab[name]= nil
             print(e.addName, e.cn(addName),
@@ -1178,7 +1178,7 @@ local function set_Option()
     menu.edit.add:SetPoint('LEFT', menu.edit, 'RIGHT', 5,0)
     menu.edit.add:SetScript('OnClick', function(self)
         local parent= self:GetParent()
-        local isAtlas, icon= e.IsAtlas(parent:GetText())
+        local isAtlas, icon= WoWTools_TextureMixin:IsAtlas(parent:GetText())
         if icon and not Save.targetTextureNewTab[icon] then
             Save.targetTextureNewTab[icon]= isAtlas and 'a' or 't'
             parent:SetText('')
@@ -1193,7 +1193,7 @@ local function set_Option()
     menu.edit.add:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        local atlas, icon= e.IsAtlas(menu.edit:GetText())
+        local atlas, icon= WoWTools_TextureMixin:IsAtlas(menu.edit:GetText())
         if icon then
             e.tips:AddDoubleLine(atlas and '|A:'..icon..':0:0|a' or ('|T'..icon..':0|t'), e.onlyChinese and '添加' or ADD)
             e.tips:AddDoubleLine(atlas and 'Atlas' or 'Texture', icon)
@@ -1373,7 +1373,7 @@ local function set_Option()
     e.LibDD:UIDropDownMenu_SetWidth(menuUnitIsMe, 100)
     e.LibDD:UIDropDownMenu_Initialize(menuUnitIsMe, function(self, level)
         for name, use in pairs(get_texture_tab()) do
-            local isAtlas, texture= e.IsAtlas(name)
+            local isAtlas, texture= WoWTools_TextureMixin:IsAtlas(name)
             if texture then
                 local info={
                     text= isAtlas and '|cffff00ffAtlas|r' or '',
@@ -1401,7 +1401,7 @@ local function set_Option()
     end)
 
     function menuUnitIsMe:set_icon()
-        local isAtlas, texture= e.IsAtlas(Save.unitIsMeTextrue)
+        local isAtlas, texture= WoWTools_TextureMixin:IsAtlas(Save.unitIsMeTextrue)
         if isAtlas or not texture then
             e.LibDD:UIDropDownMenu_SetText(self, texture or 'auctionhouse-icon-favorite')
             self.Icon:SetAtlas(texture or 'auctionhouse-icon-favorite')
@@ -1437,9 +1437,9 @@ local function set_Option()
             print(e.addName, e.cn(addName), e.onlyChinese and '默认' or DEFAULT)
         else
             local r,g,b,a= Save.unitIsMeColor.r, Save.unitIsMeColor.g, Save.unitIsMeColor.b, Save.unitIsMeColor.a
-            e.ShowColorPicker(r,g,b,a,
+            WoWTools_ColorMixin:ShowColorFrame(r,g,b,a,
                 function()
-                    Save.unitIsMeColor=  select(5, e.Get_ColorFrame_RGBA())--取得, ColorFrame, 颜色
+                    Save.unitIsMeColor=  select(5, WoWTools_ColorMixin:Get_ColorFrameRGBA())--取得, ColorFrame, 颜色
                     self:GetParent():set_icon()
                     set_All_Init()
                 end, function()
@@ -1618,7 +1618,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     end
                     print(e.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), Save.disabled and (e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD) or '')
                 end,
-                clearfunc= function() Save=nil e.Reload() end}
+                clearfunc= function() Save=nil WoWTools_Mixin:Reload() end}
             )
 
             if not Save.disabled then

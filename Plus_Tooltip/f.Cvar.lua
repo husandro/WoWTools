@@ -1,12 +1,11 @@
+local e= select(2, ...)
 
---########
 --设置Cvar
---########
 function WoWTools_TooltipMixin:Set_CVar(reset, tips, notPrint)
     local tab={
         {   name='missingTransmogSourceInItemTooltips',
             value='1',
-            msg=e.onlyChinese and '显示装备幻化来源' or TRANSMOGRIFY..SOURCES..': '..SHOW,
+            msg=e.onlyChinese and '显示装备幻化来源' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, TRANSMOGRIFY, SOURCES)),
         },
         {   name='nameplateOccludedAlphaMult',
             value='0.15',
@@ -18,7 +17,7 @@ function WoWTools_TooltipMixin:Set_CVar(reset, tips, notPrint)
         },
         {   name='UberTooltips',
             value='1',
-            msg=e.onlyChinese and '显示法术信息' or SPELL_MESSAGES..': '..SHOW,
+            msg=e.onlyChinese and '显示法术信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, SPELL_MESSAGES)
         },
         {   name="alwaysCompareItems",
              value= "1",
@@ -66,7 +65,7 @@ function WoWTools_TooltipMixin:Set_CVar(reset, tips, notPrint)
                 if defaultValue~=value then
                     C_CVar.SetCVar(info.name, defaultValue)
                     if not notPrint then
-                        print(e.addName, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '恢复默认设置' or RESET_TO_DEFAULT)..'|r', info.name, defaultValue, info.msg)
+                        print(e.addName, WoWTools_TooltipMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '恢复默认设置' or RESET_TO_DEFAULT)..'|r', info.name, defaultValue, info.msg)
                     end
                 end
             else
@@ -74,7 +73,7 @@ function WoWTools_TooltipMixin:Set_CVar(reset, tips, notPrint)
                 if value~=info.value then
                     C_CVar.SetCVar(info.name, info.value)
                     if not notPrint then
-                        print(e.addName,addName, info.name, info.value..'('..value..')', info.msg)
+                        print(e.addName, WoWTools_TooltipMixin.addName, info.name, info.value..'('..value..')', info.msg)
                     end
                 end
             end
@@ -86,3 +85,21 @@ end
 
 
 
+function WoWTools_TooltipMixin:Init_CVar()
+    if self.Save.setCVar then
+        WoWTools_TooltipMixin:Set_CVar(nil, nil, true)--设置CVar
+
+        if LOCALE_zhCN then
+            ConsoleExec("portal TW")
+            SetCVar("profanityFilter", '0')
+
+            local pre = C_BattleNet.GetFriendGameAccountInfo
+    ---@diagnostic disable-next-line: duplicate-set-field
+            C_BattleNet.GetFriendGameAccountInfo = function(...)
+                local gameAccountInfo = pre(...)
+                gameAccountInfo.isInCurrentRegion = true
+                return gameAccountInfo
+            end
+        end
+    end
+end

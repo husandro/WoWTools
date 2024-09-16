@@ -540,7 +540,7 @@ local function Init()
     ToyButton:SetAttribute("shift-type1", "item")
     ToyButton:SetAttribute("ctrl-type1", "item")
 
-    ToyButton.text=e.Cstr(ToyButton, {size=10, color={r=1,g=1,b=1}})
+    ToyButton.text=WoWTools_LabelMixin:CreateLabel(ToyButton, {size=10, color={r=1,g=1,b=1}})
     ToyButton.text:SetPoint('BOTTOMRIGHT', ToyButton)
 
 

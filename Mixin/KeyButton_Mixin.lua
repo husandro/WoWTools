@@ -1,6 +1,6 @@
 local e= select(2, ...)
 WoWTools_Key_Button={}
-    
+
 local Frame=CreateFrame('Frame')
 Frame.buttons={}
 
@@ -29,7 +29,7 @@ end)
 
 function WoWTools_Key_Button:Init(btn, GetValue)
     btn.GetKEY= GetValue
-    btn.KEYstring=e.Cstr(btn,{size=12, color={r=1,g=1,b=1}})
+    btn.KEYstring=WoWTools_LabelMixin:CreateLabel(btn,{size=12, color={r=1,g=1,b=1}})
     btn.KEYstring:SetPoint('TOPRIGHT')
 
     btn.KEYtexture=btn:CreateTexture(nil,'OVERLAY')
@@ -120,7 +120,6 @@ function WoWTools_Key_Button:SetMenu(root, tab)
             ..'|n|n"|cnGREEN_FONT_COLOR:Q|r", "|cnGREEN_FONT_COLOR:ALT-Q|r","|cnGREEN_FONT_COLOR:BUTTON5|r"|n"|cnGREEN_FONT_COLOR:ALT-CTRL-SHIFT-Q|r"',
             nil,
             {
-                
                 text=data.key,
                 key=data.key,
                 OnShow=function(s, tab2)

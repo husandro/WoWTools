@@ -158,7 +158,7 @@ local function Init_Wardrobe_DetailsFrame(_, itemFrame)
                     e.tips:Show()
             end)
             btn:SetScript("OnMouseDown", function(self2)
-                e.Chat(self2.link, nil, true)
+                WoWTools_ChatMixin:Chat(self2.link, nil, true)
                 --local chat=SELECTED_DOCK_FRAME
                 --ChatFrame_OpenChat((chat.editBox:GetText() or '')..self2.link, chat)
 
@@ -227,7 +227,7 @@ local function set_Sets_Tooltips(self)--UpdateSets
             if not Save.hideItems then
                 idex= i + idexOffset
                 if not model.Text then
-                    model.Text= e.Cstr(model)
+                    model.Text= WoWTools_LabelMixin:CreateLabel(model)
                     model.Text:SetPoint('TOPRIGHT',1,0)
                     model.Text:SetAlpha(0.5)
                 end
@@ -315,12 +315,12 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
                 end
             end
             if collected>0 and not btn.Text then
-                btn.Text= e.Cstr(btn, {justifyH='CENTER', mouse=true})
+                btn.Text= WoWTools_LabelMixin:CreateLabel(btn, {justifyH='CENTER', mouse=true})
                 btn.Text:SetPoint('BOTTOMRIGHT')
                 btn.Text.category= category
             end
             if btn.Text then
-                btn.Text:SetText(collected>0 and e.MK(collected, 3) or '')
+                btn.Text:SetText(collected>0 and WoWTools_Mixin:MK(collected, 3) or '')
             end
         end
     end)
@@ -357,7 +357,7 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
                         local col= collected==all and '|cnGREEN_FONT_COLOR:' or (select(2, math.modf(n/2))==0 and '|cffff7f00' or '|cffffffff')
                         local icon= SlotsIcon[category] or ''
                         local name= e.cn(C_TransmogCollection.GetCategoryInfo(category)) or ''
-                        e.tips:AddLine(format('%s%s%s %i%%  %s/%s', col, icon, name, collected/all*100, e.MK(collected, 3), e.MK(all, 3)))
+                        e.tips:AddLine(format('%s%s%s %i%%  %s/%s', col, icon, name, collected/all*100, WoWTools_Mixin:MK(collected, 3), WoWTools_Mixin:MK(all, 3)))
                         n=n+1
                     end
                 end
@@ -366,7 +366,7 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
                 local collected= C_TransmogCollection.GetCategoryCollectedCount(self.Text.category) or 0
                 local all= C_TransmogCollection.GetCategoryTotal(self.Text.category) or 0
                 local icon= SlotsIcon[self.Text.category] or ''
-                e.tips:AddLine(format('%s%i%%  %s/%s', icon, collected/all*100, e.MK(collected, 3), e.MK(all, 3)))
+                e.tips:AddLine(format('%s%i%%  %s/%s', icon, collected/all*100, WoWTools_Mixin:MK(collected, 3), WoWTools_Mixin:MK(all, 3)))
             end
             e.tips:Show()
         end)
@@ -481,7 +481,7 @@ local function set_Items_Tooltips(self)--UpdateItems
                         end)
                         btn:SetScript("OnClick", function(self2)
                             local link2= get_Link_Item_Type_Source(self2.sourceID, self2.type) or self2.link
-                            e.Chat(link2, nil, true)
+                            WoWTools_ChatMixin:Chat(link2, nil, true)
                         end)
                         btn:SetScript("OnLeave",function(self2)
                             self2:SetAlpha(0.5)
@@ -529,7 +529,7 @@ local function set_Items_Tooltips(self)--UpdateItems
             if not Save.hideItems then
                 idex= i + idexOffset
                 if not model.Text then
-                    model.Text= e.Cstr(model)
+                    model.Text= WoWTools_LabelMixin:CreateLabel(model)
                     model.Text:SetPoint('TOPRIGHT', 3, 2)
                     model.Text:SetAlpha(0.5)
                 end
@@ -592,7 +592,7 @@ local function Init_Wardrober_ListContainer()
                 e.tips:Hide()
             end)
 
-            btn.version=e.Cstr(btn)--版本
+            btn.version=WoWTools_LabelMixin:CreateLabel(btn)--版本
             btn.version:SetPoint('BOTTOMRIGHT',-5, 5)
 
             btn.limited=btn:CreateTexture(nil, 'OVERLAY')--限时
@@ -608,7 +608,7 @@ local function Init_Wardrober_ListContainer()
                 self:SetAlpha(0.3)
             end)
 
-            btn.numSetsLabel=e.Cstr(btn, {size=16, mouse=true})
+            btn.numSetsLabel=WoWTools_LabelMixin:CreateLabel(btn, {size=16, mouse=true})
             btn.numSetsLabel:SetPoint('BOTTOMLEFT', btn.Icon)
             btn.numSetsLabel:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
             btn.numSetsLabel:SetScript('OnEnter', function(self)
@@ -690,7 +690,7 @@ local function Init_Wardrober_ListContainer()
         btn.numSetsLabel:SetTextColor(r, g, b)
     end)
 
-    WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.tipsLabel= e.Cstr(WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame, {size=14})--点击，按钮信息
+    WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.tipsLabel= WoWTools_LabelMixin:CreateLabel(WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame, {size=14})--点击，按钮信息
     WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.tipsLabel:SetPoint('BOTTOMLEFT', WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame, 'BOTTOMRIGHT', 8, 8)
     hooksecurefunc(WardrobeSetsScrollFrameButtonMixin, 'OnClick', function(btn, buttonName)--点击，显示套装情况Blizzard_Wardrobe.lua
         if buttonName == "LeftButton" or not Save.hideSets then
@@ -874,7 +874,7 @@ local function Init_Heirloom()
         end
         button.levelBackground:SetShown(level>0 and has)
 
-        e.Set_Item_Stats(button, C_Heirloom.GetHeirloomLink(button.itemID), {point=button.iconTexture, itemID=button.itemID, hideSet=true, hideLevel=not has, hideStats=not has})--设置，物品，4个次属性，套装，装等，
+        WoWTools_ItemStatsMixin:SetItem(button, C_Heirloom.GetHeirloomLink(button.itemID), {point=button.iconTexture, itemID=button.itemID, hideSet=true, hideLevel=not has, hideStats=not has})--设置，物品，4个次属性，套装，装等，
     end)
 
 
@@ -1033,7 +1033,7 @@ local function Init_Heirloom()
         if classFile==e.Player.class then
             atlas= 'auctionhouse-icon-favorite'
         else
-            atlas= e.Class(nil, classFile, true)
+            atlas= WoWTools_UnitMixin:GetClassIcon(nil, classFile, true)
         end
         if atlas then
             local btn= check:cereate_button(classID, 0, nil, atlas)
@@ -1133,7 +1133,7 @@ local function Init_Mount()
         if not MountJournal.MountDisplay.tipButton then
             MountJournal.MountDisplay.tipButton= WoWTools_ButtonMixin:Cbtn(MountJournal.MountDisplay, {size={22,22}, atlas='QuestNormal'})
             MountJournal.MountDisplay.tipButton:SetPoint('BOTTOMRIGHT', MountJournal.MountDisplay.ModelScene.TogglePlayer, 'TOPRIGHT',0, 2)
-            MountJournal.MountDisplay.tipButton.text= e.Cstr(MountJournal.MountDisplay, {copyFont= MountJournal.MountCount.Label, color=false, justifyH='LEFT'})
+            MountJournal.MountDisplay.tipButton.text= WoWTools_LabelMixin:CreateLabel(MountJournal.MountDisplay, {copyFont= MountJournal.MountCount.Label, color=false, justifyH='LEFT'})
             MountJournal.MountDisplay.tipButton.text:SetPoint('BOTTOMLEFT', 2, 2)
 
             function MountJournal.MountDisplay.tipButton:set_Alpha()
@@ -1264,7 +1264,7 @@ local function Init_DressUpFrames()
             local p= self:GetParent()
             local link= p:get_item_link()
             if d=='LeftButton' then
-                e.Chat(link, nil, true)
+                WoWTools_ChatMixin:Chat(link, nil, true)
             elseif d=='RightButton' then
                 WoWTools_LoadUIMixin:Journal(5)
                 

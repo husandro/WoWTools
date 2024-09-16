@@ -265,7 +265,7 @@ local function Set_TrackButton_Text()
 				Set_TrackButton_Pushed(true, self.text)--TrackButton，提示
 			end)
 
-			btn.text= e.Cstr(btn, {color=true})
+			btn.text= WoWTools_LabelMixin:CreateLabel(btn, {color=true})
 			function btn:set_text_point()
 				if Save.toRightTrackText then
 					self.text:SetPoint('LEFT', self, 'RIGHT', -3, 0)
@@ -327,7 +327,7 @@ local function Init_TrackButton()
 		return
 	end
 	TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {icon='hide', size={18,18}, isType2=true})
-	--TrackButton.text= e.Cstr(TrackButton, {color=true})
+	--TrackButton.text= WoWTools_LabelMixin:CreateLabel(TrackButton, {color=true})
 
 	TrackButton.texture= TrackButton:CreateTexture()
 	TrackButton.texture:SetAllPoints(TrackButton)
@@ -714,7 +714,7 @@ local function set_ReputationFrame_InitReputationRow(btn)--factionRow, elementDa
 		end
 	end
 	if completedParagon and not frame.completed then
-		frame.completed= e.Cstr(bar)
+		frame.completed= WoWTools_LabelMixin:CreateLabel(bar)
 		frame.completed:SetPoint('RIGHT', frame.ParagonIcon, 'LEFT', 4,0)
 	end
 	if frame.completed then
@@ -726,7 +726,7 @@ local function set_ReputationFrame_InitReputationRow(btn)--factionRow, elementDa
 	end
 
 	if levelText and not frame.levelText then--等级
-		frame.levelText= e.Cstr(bar, {size=10})--10, nil, nil, nil, nil, 'RIGHT')
+		frame.levelText= WoWTools_LabelMixin:CreateLabel(bar, {size=10})--10, nil, nil, nil, nil, 'RIGHT')
 		frame.levelText:SetPoint('RIGHT')
 	end
 	if frame.levelText then

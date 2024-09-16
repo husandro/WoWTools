@@ -68,7 +68,7 @@ local function SetChannels(link)
     local name=link:match('%[(.-)]')
     if name then
         if name:find(WORLD) then
-            return link:gsub('%[.-]', '['..e.WA_Utf8Sub(e.cn(WORLD), 2, 6)..']')
+            return link:gsub('%[.-]', '['..WoWTools_Mixin:sub(e.cn(WORLD), 2, 6)..']')
         end
 
         if not Save.disabledKeyColor then
@@ -80,12 +80,12 @@ local function SetChannels(link)
         end
 
         if name:find(GENERAL_LABEL) then--综合
-            return link:gsub('%[.-]', '['..e.WA_Utf8Sub(e.cn(GENERAL_LABEL), 2, 6)..']')
+            return link:gsub('%[.-]', '['..WoWTools_Mixin:sub(e.cn(GENERAL_LABEL), 2, 6)..']')
         end
 
         name= name:match('%d+%. (.+)') or name:match('%d+．(.+)') or name--去数字
         name= name:match('%- (.+)') or name:match('：(.+)') or name:match(':(.+)') or name
-        name=e.WA_Utf8Sub(e.cn(name), 2, 6)
+        name=WoWTools_Mixin:sub(e.cn(name), 2, 6)
         return link:gsub('%[.-]', '['..name..']')
     end
 end
@@ -187,7 +187,7 @@ local function Item(link)--物品超链接
     end
     local bag= C_Item.GetItemCount(link, true, false, true)--数量
     if bag and bag>0 then
-        t=t..'|A:bag-main:0:0|a'..e.MK(bag, 3)
+        t=t..'|A:bag-main:0:0|a'..WoWTools_Mixin:MK(bag, 3)
     end
 
     if t~=link then
@@ -267,12 +267,12 @@ local function Enchant(link)--附魔
 end
 
 local function Currency(link)--货币 "|cffffffff|Hcurrency:1744|h[Corrupted Memento]|h|r"
-    local info, num, _, _, isMax, canWeek, canEarned, canQuantity= e.GetCurrencyMaxInfo(nil, nil, link)
+    local info, num, _, _, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:Get(nil, nil, link)
     if info and info.iconFileID  then
         local numText
         if num then
             numText=(isMax and '|cnRED_FONT_COLOR:' or ((canWeek or canEarned or canQuantity) and '|cnGREEN_FONT_COLOR:' ) or '|cffffffff')
-                ..e.MK(num,3)..'|r'
+                ..WoWTools_Mixin:MK(num,3)..'|r'
         end
         return  '|T'..info.iconFileID..':0|t'..cn_Link_Text(link)..(numText or '')
     end
@@ -409,7 +409,7 @@ end
 
 local function DungeonScore(link)--史诗钥石评分
     local score, guid, itemLv=link:match('|HdungeonScore:(%d+):(.-):.-:%d+:(%d+):')
-    local t=WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil)..e.GetKeystoneScorsoColor(score)
+    local t=WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil)..WoWTools_WeekMixin:KeystoneScorsoColor(score)
     t=t..cn_Link_Text(link)
     if itemLv and itemLv~='0' then
         t=t..'|A:charactercreate-icon-customize-body-selected:0:0|a'..itemLv
@@ -453,7 +453,7 @@ local function Instancelock(link)
     local guid, InstanceID, DifficultyID=link:match('Hinstancelock:(.-):(%d+):(%d+):')
     local t=WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil)..cn_Link_Text(link)
     if DifficultyID and InstanceID then
-        local name= e.GetDifficultyColor(nil, tonumber(DifficultyID)) or GetDifficultyInfo(DifficultyID)
+        local name= WoWTools_MapMixin:GetDifficultyColor(nil, tonumber(DifficultyID)) or GetDifficultyInfo(DifficultyID)
         if name then--[[|Hjournal:0:320:5|h[Terrazza dell'Eterna Primavera]|h]]
             t=t..'|Hjournal:0:'..InstanceID..':'..DifficultyID..'|h['..name..']|h'
         end
@@ -564,7 +564,7 @@ local function setAddMessageFunc(self, s, ...)
                 if unitName==e.Player.name or unitName==YOU then
                     s=s:gsub(unitName, '[|A:auctionhouse-icon-favorite:0:0|a'..e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r]')
                 else
-                    s=s:gsub(e.Magic(unitName), e.PlayerLink(unitName))
+                    s=s:gsub(e.Magic(unitName), WoWTools_UnitMixin:GetLink(unitName))
                 end
             end
         end
@@ -689,7 +689,7 @@ local function Init_Panel()
         return frame
     end
 
-    local str=e.Cstr(panel)--内容加颜色
+    local str=WoWTools_LabelMixin:CreateLabel(panel)--内容加颜色
     str:SetPoint('TOPLEFT')
     str:SetText(e.onlyChinese and '颜色: 关键词 (|cnGREEN_FONT_COLOR:空格|r) 分开' or (COLOR..': '..KBASE_DEFAULT_SEARCH_TEXT..'|cnGREEN_FONT_COLOR:( '..KEY_SPACE..' )|r'))
     local editBox=Cedit(panel)
@@ -727,7 +727,7 @@ local function Init_Panel()
         print(e.addName, addName, e.onlyChinese and '颜色' or COLOR, '|cnGREEN_FONT_COLOR:#'..n..(e.onlyChinese and '完成' or COMPLETE)..'|r', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
-    local str2=e.Cstr(panel)--频道名称替换
+    local str2=WoWTools_LabelMixin:CreateLabel(panel)--频道名称替换
     str2:SetPoint('TOPLEFT', editBox, 'BOTTOMLEFT', 0,-20)
     str2:SetText(e.onlyChinese and '频道名称替换: 关键词|cnGREEN_FONT_COLOR:=|r替换' or (CHANNEL_CHANNEL_NAME..': '..COMMUNITIES_SETTINGS_SHORT_NAME_LABEL..'  |cnGREEN_FONT_COLOR:= |r'))
     local editBox2=Cedit(panel)
@@ -806,7 +806,7 @@ local function setMsg_CHAT_MSG_SYSTEM(text)--欢迎加入, 信息
         if Save.groupWelcome and UnitIsGroupLeader('player') and (Save.welcomeOnlyHomeGroup and IsInGroup(LE_PARTY_CATEGORY_HOME) or not Save.welcomeOnlyHomeGroup) then
             local name=text:match(raidMS) or text:match(partyMS)
             if name then
-                e.Chat(Save.groupWelcomeText or EMOTE103_CMD1:gsub('/',''), name, nil)
+                WoWTools_ChatMixin:Chat(Save.groupWelcomeText or EMOTE103_CMD1:gsub('/',''), name, nil)
             end
         end
     elseif text:find(guildMS) then
@@ -884,14 +884,14 @@ local function Init_Add_Reload_Button()
                 e.tips:AddDoubleLine(e.onlyChinese and '重新加载UI' or RELOADUI, '|cnGREEN_FONT_COLOR:'..SLASH_RELOAD1)
                 e.tips:Show()
             end)
-            frame.reload:SetScript('OnClick', function() e.Reload() end)
+            frame.reload:SetScript('OnClick', function() WoWTools_Mixin:Reload() end)
             Create_Texture_Tips(frame.reload, 'BattleBar-SwapPetIcon')
         end
     --end
 
 
     SettingsPanel.AddOnsTab.reload:SetPoint('RIGHT', SettingsPanel.ApplyButton, 'LEFT', -15,0)
-    e.Cstr(nil, {changeFont= SettingsPanel.OutputText, size=14})
+    WoWTools_LabelMixin:CreateLabel(nil, {changeFont= SettingsPanel.OutputText, size=14})
     SettingsPanel.OutputText:ClearAllPoints()
     SettingsPanel.OutputText:SetPoint('BOTTOMLEFT', 20, 18)
 
@@ -918,7 +918,7 @@ local function Init_Add_Reload_Button()
             self:AddSection()
 
             local btn = self:AddButton(e.onlyChinese and '重新加载UI' or RELOADUI, function()
-                e.Reload()
+                WoWTools_Mixin:Reload()
             end)
             Create_Texture_Tips(btn, {'BattleBar-SwapPetIcon', false, {1,1,1}})
         end)
@@ -1382,9 +1382,9 @@ local function Init()
             end]]
             if self.AcceptButton and self.AcceptButton:IsEnabled() and info then
                 print(e.addName, addName,
-                    info.leaderOverallDungeonScore and info.leaderOverallDungeonScore>0 and '|T4352494:0|t'..e.GetKeystoneScorsoColor(info.leaderOverallDungeonScore) or '',--地下城史诗,分数
+                    info.leaderOverallDungeonScore and info.leaderOverallDungeonScore>0 and '|T4352494:0|t'..WoWTools_WeekMixin:KeystoneScorsoColor(info.leaderOverallDungeonScore) or '',--地下城史诗,分数
                     info.leaderPvpRatingInfo and  info.leaderPvpRatingInfo.rating and info.leaderPvpRatingInfo.rating>0 and '|A:pvptalents-warmode-swords:0:0|a|cnRED_FONT_COLOR:'..info.leaderPvpRatingInfo.rating..'|r' or '',--PVP 分数
-                    info.leaderName and (e.onlyChinese and '%s邀请你加入' or COMMUNITY_INVITATION_FRAME_INVITATION_TEXT):format(e.PlayerLink(info.leaderName)..' ') or '',--	%s邀请你加入
+                    info.leaderName and (e.onlyChinese and '%s邀请你加入' or COMMUNITY_INVITATION_FRAME_INVITATION_TEXT):format(WoWTools_UnitMixin:GetLink(info.leaderName)..' ') or '',--	%s邀请你加入
                     info.name,--名称
                     e.Icon[role] or '',
                     info.numMembers and (e.onlyChinese and '队员' or PLAYERS_IN_GROUP)..'|cff00ff00 '..info.numMembers..'|r' or '',--队伍成员数量

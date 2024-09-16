@@ -58,7 +58,7 @@ local function LvTo()--总装等
     if not Save.hide then
         avgItemLevel,_, avgItemLevelPvp= GetAverageItemLevel()
         if not PaperDollSidebarTab1.itemLevelText then--PVE
-            PaperDollSidebarTab1.itemLevelText=e.Cstr(PaperDollSidebarTab1, {justifyH='CENTER', mouse=true})
+            PaperDollSidebarTab1.itemLevelText=WoWTools_LabelMixin:CreateLabel(PaperDollSidebarTab1, {justifyH='CENTER', mouse=true})
             PaperDollSidebarTab1.itemLevelText:SetPoint('BOTTOM')
             PaperDollSidebarTab1.itemLevelText:EnableMouse(true)
             PaperDollSidebarTab1.itemLevelText:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
@@ -80,7 +80,7 @@ local function LvTo()--总装等
         PaperDollSidebarTab1.itemLevelText.avgItemLevel= avgItemLevel
 
         if avgItemLevel~= avgItemLevelPvp and avgItemLevelPvp and not PaperDollSidebarTab1.itemLevelPvPText then--PVP
-            PaperDollSidebarTab1.itemLevelPvPText=e.Cstr(PaperDollSidebarTab1, {justifyH='CENTER', mouse=true})
+            PaperDollSidebarTab1.itemLevelPvPText=WoWTools_LabelMixin:CreateLabel(PaperDollSidebarTab1, {justifyH='CENTER', mouse=true})
             PaperDollSidebarTab1.itemLevelPvPText:SetPoint('TOP')
             PaperDollSidebarTab1.itemLevelPvPText:SetScript('OnMouseDown', function(self)
                 e.call(PaperDollFrame_SetSidebar, PaperDollSidebarTab1, 1)--PaperDollFrame.lua
@@ -402,10 +402,10 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
 
     if upgradeItem and not self.upgradeItem then--"升级：%s/%s"
         if isLeftSlot then
-            self.upgradeItem= e.Cstr(self, {color={r=0,g=1,b=0}, mouse=true})
+            self.upgradeItem= WoWTools_LabelMixin:CreateLabel(self, {color={r=0,g=1,b=0}, mouse=true})
             self.upgradeItem:SetPoint('BOTTOMLEFT', self, 'BOTTOMRIGHT',1,0)
         else
-            self.upgradeItem= e.Cstr(self, {color={r=0,g=1,b=0}, justifyH='RIGHT', mouse=true})
+            self.upgradeItem= WoWTools_LabelMixin:CreateLabel(self, {color={r=0,g=1,b=0}, justifyH='RIGHT', mouse=true})
             self.upgradeItem:SetPoint('BOTTOMRIGHT', self, 'BOTTOMLEFT',2,0)
         end
         self.upgradeItem:SetScript('OnEnter', function(self2)
@@ -439,14 +439,14 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
     local upgradeItemText
     local upText= upgradeItem and upgradeItem:match('(.-)%d+/%d+')--"升级：%s %s/%s"
     if upText then
-        upgradeItemText= strlower(e.WA_Utf8Sub(upText,1,3, true))
+        upgradeItemText= strlower(WoWTools_Mixin:sub(upText,1,3, true))
         if not self.upgradeItemText then
             local h= self:GetHeight()/3
             if isLeftSlot then
-                self.upgradeItemText= e.Cstr(self, {color={r=0,g=1,b=0}, mouse=true})
+                self.upgradeItemText= WoWTools_LabelMixin:CreateLabel(self, {color={r=0,g=1,b=0}, mouse=true})
                 self.upgradeItemText:SetPoint('LEFT', self, 'RIGHT',h+8,0)
             else
-                self.upgradeItemText= e.Cstr(self, {color={r=0,g=1,b=0}, justifyH='RIGHT', mouse=true})
+                self.upgradeItemText= WoWTools_LabelMixin:CreateLabel(self, {color={r=0,g=1,b=0}, justifyH='RIGHT', mouse=true})
                 self.upgradeItemText:SetPoint('RIGHT', self, 'LEFT',-h-8,0)
             end
             self.upgradeItemText:SetScript('OnEnter', function(self2)
@@ -476,10 +476,10 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
 
     if createItem and not self.createItem then--"|cff00ff00<由%s制造>|r" ITEM_CREATED_BY 
         if isLeftSlot then
-            self.createItem= e.Cstr(self, {color={r=0,g=1,b=0}, mouse=true})
+            self.createItem= WoWTools_LabelMixin:CreateLabel(self, {color={r=0,g=1,b=0}, mouse=true})
             self.createItem:SetPoint('LEFT', self, 'RIGHT',1,0)
         else
-            self.createItem= e.Cstr(self, {color={r=0,g=1,b=0}, justifyH='RIGHT', mouse=true})
+            self.createItem= WoWTools_LabelMixin:CreateLabel(self, {color={r=0,g=1,b=0}, justifyH='RIGHT', mouse=true})
             self.createItem:SetPoint('RIGHT', self, 'LEFT',2,0)
         end
         self.createItem:SetScript('OnEnter', function(self2)
@@ -676,7 +676,7 @@ end
 
 local function set_Slot_Num_Label(frame, slot, isEquipped)--栏位
     if not frame.slotText and not Save.hide and not isEquipped then
-        frame.slotText=e.Cstr(frame, {color=true, justifyH='CENTER', mouse=true})
+        frame.slotText=WoWTools_LabelMixin:CreateLabel(frame, {color=true, justifyH='CENTER', mouse=true})
         frame.slotText:EnableMouse(true)
         frame.slotText:SetAlpha(0.3)
         frame.slotText:SetScript('OnEnter', function(self)
@@ -759,7 +759,7 @@ local function Init_Title()--头衔数量
 
     if not btn then
         btn= WoWTools_ButtonMixin:Cbtn(PaperDollFrame.TitleManagerPane, {size={28, 28}, icon='hide'})--, atlas=e.Icon.icon})
-        btn.Text= e.Cstr(btn)
+        btn.Text= WoWTools_LabelMixin:CreateLabel(btn)
         btn.Text:SetPoint('CENTER')
         btn:SetFrameLevel(PaperDollFrame.TitleManagerPane.ScrollBox:GetFrameLevel()+1)
         btn:SetPoint('TOPRIGHT', -6,8)
@@ -844,7 +844,7 @@ local function Init_Title()--头衔数量
     btn:SetShown(true)
 
     if not btn.titleNumeri then
-        btn.titleNumeri= e.Cstr(PaperDollSidebarTab2, {justifyH='CENTER', mouse=true})
+        btn.titleNumeri= WoWTools_LabelMixin:CreateLabel(PaperDollSidebarTab2, {justifyH='CENTER', mouse=true})
         btn.titleNumeri:SetPoint('BOTTOM')
         btn.titleNumeri:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
         btn.titleNumeri:SetScript('OnMouseDown', function()
@@ -927,7 +927,7 @@ local function set_PaperDollSidebarTab3_Text()--标签, 内容,提示
             local name2, icon2, _, isEquipped, numItems= C_EquipmentSet.GetEquipmentSetInfo(v)
             if isEquipped then
                 name=name2
-                name=e.WA_Utf8Sub(name, 2, 5)
+                name=WoWTools_Mixin:sub(name, 2, 5)
                 if icon2 and icon2~=134400 then
                     icon=icon2
                 end
@@ -947,7 +947,7 @@ local function set_PaperDollSidebarTab3_Text()--标签, 内容,提示
     end
 
     if not self.set and name then--名称
-        self.set=e.Cstr(self, {justifyH='CENTER'})
+        self.set=WoWTools_LabelMixin:CreateLabel(self, {justifyH='CENTER'})
         self.set:SetPoint('BOTTOM', 2, 0)
         set_set_PaperDollSidebarTab3_Text_Tips(self.set)
         self.set.tooltip= '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '名称' or NAME)..'|r'
@@ -986,7 +986,7 @@ local function set_PaperDollSidebarTab3_Text()--标签, 内容,提示
     end
 
     if not self.nu and nu then--套装数量
-        self.nu=e.Cstr(self, {justifyH='RIGHT'})
+        self.nu=WoWTools_LabelMixin:CreateLabel(self, {justifyH='RIGHT'})
         self.nu:SetPoint('LEFT', self, 'RIGHT',0, 4)
         self.nu.tooltip= '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '装备' or EQUIPSET_EQUIP)
         set_set_PaperDollSidebarTab3_Text_Tips(self.nu)
@@ -1045,7 +1045,7 @@ local function Init_TrackButton()--添加装备管理框
     TrackButton:RegisterForDrag("RightButton")
     TrackButton:SetClampedToScreen(true)
     TrackButton:SetMovable(true)
-    TrackButton.text= e.Cstr(TrackButton, {color=true, alpha=0.5})
+    TrackButton.text= WoWTools_LabelMixin:CreateLabel(TrackButton, {color=true, alpha=0.5})
     TrackButton.text:SetPoint('BOTTOM')
 
     TrackButton:SetScript("OnDragStart", function(self)
@@ -1183,7 +1183,7 @@ local function Init_TrackButton()--添加装备管理框
                 end
             end
         end
-        e.Set_HelpTips({frame=self, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, show= not equipped and num>0, hideTime=10})
+        WoWTools_FrameMixin:HelpFrame({frame=self, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, show= not equipped and num>0, hideTime=10})
     end
 
     --建立，按钮
@@ -1193,7 +1193,7 @@ local function Init_TrackButton()--添加装备管理框
         btn.texture:SetSize(26,26)
         btn.texture:SetPoint('CENTER')
         btn.texture:SetAtlas('AlliedRace-UnlockingFrame-GenderMouseOverGlow')
-        btn.text= e.Cstr(btn, {color=true, size=10, alpha=0.5})
+        btn.text= WoWTools_LabelMixin:CreateLabel(btn, {color=true, size=10, alpha=0.5})
         btn.text:SetPoint('BOTTOMRIGHT')
         self:set_button_point(btn, index)--设置位置
         btn:SetScript("OnClick",function(frame)
@@ -1441,7 +1441,7 @@ local function GetDurationTotale()
         return
     end
     if not panel.durabilityText then
-        panel.durabilityText= e.Cstr(PaperDollItemsFrame, {copyFont=CharacterLevelText, mouse=true})
+        panel.durabilityText= WoWTools_LabelMixin:CreateLabel(PaperDollItemsFrame, {copyFont=CharacterLevelText, mouse=true})
         panel.durabilityText:SetPoint('RIGHT', CharacterLevelText, 'LEFT', -2,0)
         panel.durabilityText:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
         panel.durabilityText:SetScript('OnEnter', function(self)
@@ -1449,12 +1449,12 @@ local function GetDurationTotale()
             e.tips:ClearLines()
             e.tips:AddDoubleLine(e.addName, Initializer:GetName())
             e.tips:AddLine(' ')
-            e.GetDurabiliy_OnEnter()
+            WoWTools_DurabiliyMixin:OnEnter()
             e.tips:Show()
             self:SetAlpha(0.3)
         end)
     end
-    panel.durabilityText:SetText(e.GetDurabiliy(true))
+    panel.durabilityText:SetText(WoWTools_DurabiliyMixin:Get(true))
 end
 
 
@@ -1481,7 +1481,7 @@ local function setFlyout(button, itemLink, slot)
     local text, level, dateInfo
     if not Save.hide then
         if not button.level then
-            button.level= e.Cstr(button)
+            button.level= WoWTools_LabelMixin:CreateLabel(button)
             button.level:SetPoint('BOTTOM')
         end
         dateInfo= WoWTools_ItemMixin:GetTooltip({hyperLink=itemLink, itemID=itemLink and C_Item.GetItemInfoInstant(itemLink) , text={upgradeStr, pvpItemStr, itemLevelStr}, onlyText=true})--物品提示，信息
@@ -1511,7 +1511,7 @@ local function setFlyout(button, itemLink, slot)
         upgrade, pvpItem=dateInfo.text[upgradeStr], dateInfo.text[pvpItemStr]
         upgrade= upgrade and upgrade:match('(%d+/%d+)')
         if upgrade and not button.upgrade then
-            button.upgrade= e.Cstr(button, {color={r=0,g=1,b=0}})
+            button.upgrade= WoWTools_LabelMixin:CreateLabel(button, {color={r=0,g=1,b=0}})
             button.upgrade:SetPoint('LEFT')
         end
         if button.upgrade then
@@ -1520,7 +1520,7 @@ local function setFlyout(button, itemLink, slot)
         if level then
             if not slot or slot==0 then
                 local itemEquipLoc= itemLink and select(4, C_Item.GetItemInfoInstant(itemLink))
-                slot= e.GetItemSlotID(itemEquipLoc)
+                slot= WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)
             end
             if slot then
                 local itemLink2 = GetInventoryItemLink('player', slot)
@@ -1545,7 +1545,7 @@ local function setFlyout(button, itemLink, slot)
         end
     end
     if updown and not button.updown then
-        button.updown=e.Cstr(button)
+        button.updown=WoWTools_LabelMixin:CreateLabel(button)
         button.updown:SetPoint('TOP')
     end
     if button.updown then
@@ -1726,7 +1726,7 @@ local function Init_Show_Hide_Button(frame)
                 panel:Init_Target_InspectUI()
             end
             if InspectLevelText then
-                e.Cstr(nil, {changeFont= InspectLevelText, size= not Save.hide and 18 or 12})
+                WoWTools_LabelMixin:CreateLabel(nil, {changeFont= InspectLevelText, size= not Save.hide and 18 or 12})
             end
             if InspectFrame.ShowHideButton then
                 InspectFrame.ShowHideButton:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
@@ -1790,15 +1790,15 @@ function panel:Init_Target_InspectUI()
 
     if not frame.initButton and not Save.hide then
         if frame.ViewButton then
-            e.Cstr(nil, {changeFont= InspectLevelText, size=18})
+            WoWTools_LabelMixin:CreateLabel(nil, {changeFont= InspectLevelText, size=18})
             frame.ViewButton:ClearAllPoints()
             frame.ViewButton:SetPoint('LEFT', InspectLevelText, 'RIGHT',20,0)
             frame.ViewButton:SetSize(25,25)
-            frame.ViewButton:SetText(e.onlyChinese and '试' or e.WA_Utf8Sub(VIEW,1))
+            frame.ViewButton:SetText(e.onlyChinese and '试' or WoWTools_Mixin:sub(VIEW,1))
         end
         if InspectPaperDollItemsFrame.InspectTalents then
             InspectPaperDollItemsFrame.InspectTalents:SetSize(25,25)
-            InspectPaperDollItemsFrame.InspectTalents:SetText(e.onlyChinese and '赋' or e.WA_Utf8Sub(TALENT,1))
+            InspectPaperDollItemsFrame.InspectTalents:SetText(e.onlyChinese and '赋' or WoWTools_Mixin:sub(TALENT,1))
         end
         frame.initButton=true
     end
@@ -1811,7 +1811,7 @@ local function set_InspectPaperDollItemSlotButton_Update(self)
     --set_Gem(self, slot, link)
     set_Item_Tips(self, slot, link, false)
     set_Slot_Num_Label(self, slot, link and true or false)--栏位, 帐号最到物品等级
-    e.Set_Item_Stats(self, link, {point=self.icon})
+    WoWTools_ItemStatsMixin:SetItem(self, link, {point=self.icon})
     if not self.OnEnter and not Save.hide then
         self:SetScript('OnEnter', function(self2)
             if self2.link then
@@ -1824,7 +1824,7 @@ local function set_InspectPaperDollItemSlotButton_Update(self)
         end)
         self:SetScript('OnLeave', GameTooltip_Hide)
         self:SetScript('OnMouseDown', function(self2)
-            e.Chat(self2.link, nil, true)
+            WoWTools_ChatMixin:Chat(self2.link, nil, true)
             --local chat=SELECTED_DOCK_FRAME
             --ChatFrame_OpenChat((chat.editBox:GetText() or '')..self2.link, chat)
 
@@ -1833,7 +1833,7 @@ local function set_InspectPaperDollItemSlotButton_Update(self)
     self.link= link
 
     if link and not self.itemLinkText then
-        self.itemLinkText= e.Cstr(self)
+        self.itemLinkText= WoWTools_LabelMixin:CreateLabel(self)
         local h=self:GetHeight()/3
         if slot==16 then
             self.itemLinkText:SetPoint('BOTTOMRIGHT', InspectPaperDollFrame, 'BOTTOMLEFT', 6,15)
@@ -1873,7 +1873,7 @@ local function set_InspectPaperDollFrame_SetLevel()--目标,天赋 装等
         local effectiveLevel= UnitEffectiveLevel(unit)
         local sex = UnitSex(unit)
 
-        local text= e.GetPlayerInfo({unit=unit, guid=guid})
+        local text= WoWTools_UnitMixin:GetPlayerInfo({unit=unit, guid=guid})
         local icon, role = select(4, GetSpecializationInfoByID(info.specID, sex))
         if icon and role then
             text=text..' |T'..icon..':0|t '..e.Icon[role]
@@ -1903,7 +1903,7 @@ local function Set_Target_Status(frame)--InspectFrame
         frame.statusLabel:settings()
         return
     end
-    frame.statusLabel= e.Cstr(InspectPaperDollFrame)
+    frame.statusLabel= WoWTools_LabelMixin:CreateLabel(InspectPaperDollFrame)
     frame.statusLabel:SetPoint('TOPLEFT', InspectFrameTab1, 'BOTTOMLEFT',0,-2)
     function frame.statusLabel:settings()
         local unit=InspectFrame.unit
@@ -1924,7 +1924,7 @@ local function Set_Target_Status(frame)--InspectFrame
             for index, info in pairs(newSta) do
                 text= text and text..'|n' or ''
                 local col= select(2, math.modf(index/2))==0 and '|cffffffff' or '|cffff7f00'
-                text= text..col..info.text..': '..e.MK(info.value, 3)..'|r'
+                text= text..col..info.text..': '..WoWTools_Mixin:MK(info.value, 3)..'|r'
             end
         end
         self:SetText(text or '')
@@ -1961,7 +1961,7 @@ function panel:Init_Server_equipmentButton_Lable()
         return
     end
    if not panel.serverText then
-        panel.serverText= e.Cstr(PaperDollItemsFrame.ShowHideButton, {color= GameLimitedMode_IsActive() and {r=0,g=1,b=0} or true, mouse=true, justifyH='RIGHT'})--显示服务器名称
+        panel.serverText= WoWTools_LabelMixin:CreateLabel(PaperDollItemsFrame.ShowHideButton, {color= GameLimitedMode_IsActive() and {r=0,g=1,b=0} or true, mouse=true, justifyH='RIGHT'})--显示服务器名称
         panel.serverText:SetPoint('LEFT', PaperDollItemsFrame.ShowHideButton, 'RIGHT',2,0)
         panel.serverText:SetScript("OnLeave",function(frame) e.tips:Hide() frame:GetParent():set_alpha(false) end)
         panel.serverText:SetScript("OnEnter",function(frame)
@@ -2214,7 +2214,7 @@ local function Init_Status_Func()
     function StatusPlusButton:create_status_label(frame, rating)
         if not Save.hide and Save.itemLevelBit>0 and frame:IsShown() then
             if not frame.numLabel then
-                frame.numLabel=e.Cstr(frame, {color={r=1,g=1,b=1}})
+                frame.numLabel=WoWTools_LabelMixin:CreateLabel(frame, {color={r=1,g=1,b=1}})
                 frame.numLabel:SetPoint('LEFT', frame.Label, 'RIGHT',2,0)
             end
             if rating then
@@ -3035,7 +3035,7 @@ local function Init()
         local nu
         if setID and not Save.hide then
             if not self.nu then
-                self.nu=e.Cstr(self)
+                self.nu=WoWTools_LabelMixin:CreateLabel(self)
                 self.nu:SetJustifyH('RIGHT')
                 self.nu:SetPoint('BOTTOMLEFT', self.text, 'BOTTOMLEFT')
             end
@@ -3064,7 +3064,7 @@ local function Init()
             local link=hasItem and GetInventoryItemLink('player', slot) or nil--装等                
             if slot~=4 and slot~=19 then
                 set_Item_Tips(self, slot, link, true)
-                e.Set_Item_Stats(self, not Save.hide and link or nil, {point=self.icon})
+                WoWTools_ItemStatsMixin:SetItem(self, not Save.hide and link or nil, {point=self.icon})
                 set_PaperDollSidebarTab3_Text()
                 LvTo()--总装等
             end
@@ -3078,7 +3078,7 @@ local function Init()
                     numFreeSlots= '|cnRED_FONT_COLOR:'..numFreeSlots..'|r'
                 end
                 if not self.numFreeSlots then
-                    self.numFreeSlots=e.Cstr(self, {color=true, justifyH='CENTER'})
+                    self.numFreeSlots=WoWTools_LabelMixin:CreateLabel(self, {color=true, justifyH='CENTER'})
                     self.numFreeSlots:SetPoint('BOTTOM',0 ,6)
                 end
             end
@@ -3117,8 +3117,8 @@ local function Init()
         if Save.hide then
             return
         end
-        local race= e.GetUnitRaceInfo({unit='player', guid=nil , race=nil , sex=nil , reAtlas=true})
-        local class= e.Class('player', nil, true)
+        local race= WoWTools_UnitMixin:GetRaceIcon({unit='player', guid=nil , race=nil , sex=nil , reAtlas=true})
+        local class= WoWTools_UnitMixin:GetClassIcon('player', nil, true)
         local level
         level= UnitLevel("player")
         local effectiveLevel = UnitEffectiveLevel("player")
@@ -3129,7 +3129,7 @@ local function Init()
         local faction= format('|A:%s:26:26|a', e.Icon[e.Player.faction] or '')
         CharacterLevelText:SetText('  '..faction..(race and '|A:'..race..':26:26|a' or '')..(class and '|A:'..class..':26:26|a  ' or '')..level)
         if not CharacterLevelText.set then
-            e.Set_Label_Texture_Color(CharacterLevelText, {type='FontString'})
+            WoWTools_ColorMixin:SetLabelTexture(CharacterLevelText, {type='FontString'})
             CharacterLevelText:SetJustifyH('LEFT')
             CharacterLevelText:EnableMouse(true)
             CharacterLevelText:HookScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)

@@ -55,7 +55,7 @@ local function Set_Type(type, text)--使用,提示
         text=type:gsub('/','')
     else
         text= text==RAID_WARNING and COMMUNITIES_NOTIFICATION_SETTINGS_DIALOG_SETTINGS_LABEL or text--团队通知->通知
-        text= e.WA_Utf8Sub(text, 1, 3)
+        text= WoWTools_Mixin:sub(text, 1, 3)
     end
 
     GroupButton.typeText:SetText(text or '')
@@ -181,7 +181,7 @@ local function Init_Menu(_, root)
             return GroupButton.type==data.type
 
         end, function(data)
-            e.Say(data.type)
+            WoWTools_ChatMixin:Say(data.type)
             Save.type=data.type
             Save.text=data.text
             Settings()
@@ -219,9 +219,9 @@ local function Init_Menu(_, root)
                     local unit='party'..i
                     if UnitExists(unit) then
                         playerName=GetUnitName(unit, true)
-                        sub2= sub:CreateButton(e.GetPlayerInfo({unit=unit, reName=true, reRealm=true}), function(data)
+                        sub2= sub:CreateButton(WoWTools_UnitMixin:GetPlayerInfo({unit=unit, reName=true, reRealm=true}), function(data)
                             if data and data~=e.Player.name then
-                                e.Say(nil, data, nil)
+                                WoWTools_ChatMixin:Say(nil, data, nil)
                             end
                             return MenuResponse.Open
                         end, playerName)
@@ -237,10 +237,10 @@ local function Init_Menu(_, root)
                    if UnitExists(unit) and not UnitIsUnit(unit, 'player') then
                     --playerName=GetUnitName(unit, true)
                     --playerName= GetRaidRosterInfo(i)
-                    --e.GetPlayerInfo({unit=unit, reName=true, reRealm=true})
-                    sub2=sub:CreateButton(e.GetPlayerInfo({unit=unit, reName=true, reRealm=true}), function(data)
+                    --WoWTools_UnitMixin:GetPlayerInfo({unit=unit, reName=true, reRealm=true})
+                    sub2=sub:CreateButton(WoWTools_UnitMixin:GetPlayerInfo({unit=unit, reName=true, reRealm=true}), function(data)
                         if data and data~=e.Player.name then
-                            e.Say(nil, data, nil)
+                            WoWTools_ChatMixin:Say(nil, data, nil)
                         end
                         return MenuResponse.Open
                     end, playerName)
@@ -263,7 +263,7 @@ local function Init_Menu(_, root)
     local crossNum=0
     local isCrossFactionParty = C_PartyInfo.IsCrossFactionParty()
     if isCrossFactionParty then
-        for _, unit in pairs(e.GetGroupMembers(false)) do--取得，队员, unit
+        for _, unit in pairs(WoWTools_UnitMixin:GetGroupMembers(false)) do--取得，队员, unit
             if UnitRealmRelationship(unit)==LE_REALM_RELATION_COALESCED then
                 crossNum= crossNum+1
             end
@@ -423,7 +423,7 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
 
     local u= raid and 'raid' or 'party'
     local tabT, tabN, tabDPS, totaleHP = {}, {}, {}, 0
-    local uiMapID= select(2, e.GetUnitMapName('player'))
+    local uiMapID= select(2, WoWTools_MapMixin:GetUnit('player'))
 
     for i=1, co do
         local unit=u..i
@@ -451,11 +451,11 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
             end
 
             if maxHP and role then
-                info.name= (e.PlayerOnlineInfo(unit) or '')..e.GetPlayerInfo({unit=unit, guid=guid, reName=true, reRealm=true})..(e.UnitItemLevel[guid] and e.UnitItemLevel[guid].itemLeve or '')
+                info.name= (WoWTools_UnitMixin:GetOnlineInfo(unit) or '')..WoWTools_UnitMixin:GetPlayerInfo({unit=unit, guid=guid, reName=true, reRealm=true})..(e.UnitItemLevel[guid] and e.UnitItemLevel[guid].itemLeve or '')
                 info.maxHP= maxHP
                 info.col= select(5, WoWTools_UnitMixin:Get_Unit_Color(unit, nil))
                 if uiMapID then--不在同地图
-                    local text, mapID=e.GetUnitMapName(unit)
+                    local text, mapID=WoWTools_MapMixin:GetUnit(unit)
                     if text and mapID and mapID~=uiMapID then
                         info.name= info.name..'|A:poi-islands-table:0:0|a|cnRED_FONT_COLOR:'..text..'|r'
                     end
@@ -484,13 +484,13 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
 
     --[[e.tips:SetOwner(GroupButton, "ANCHOR_LEFT")
     e.tips:ClearLines()]]
-    e.tips:AddDoubleLine(format(e.onlyChinese and '%s玩家' or COMMUNITIES_CROSS_FACTION_BUTTON_TOOLTIP_TITLE, playerNum), e.MK(totaleHP,3))
+    e.tips:AddDoubleLine(format(e.onlyChinese and '%s玩家' or COMMUNITIES_CROSS_FACTION_BUTTON_TOOLTIP_TITLE, playerNum), WoWTools_Mixin:MK(totaleHP,3))
     if playerNum>0 then
         e.tips:AddLine(' ')
     end
     local find
     for _, info in pairs(tabT) do
-        e.tips:AddDoubleLine(info.name, info.col..e.MK(info.maxHP, 3)..INLINE_TANK_ICON)
+        e.tips:AddDoubleLine(info.name, info.col..WoWTools_Mixin:MK(info.maxHP, 3)..INLINE_TANK_ICON)
         find=true
     end
     if find then
@@ -498,7 +498,7 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
         find=nil
     end
     for _, info in pairs(tabN) do
-        e.tips:AddDoubleLine(info.name, info.col..e.MK(info.maxHP, 3)..INLINE_HEALER_ICON)
+        e.tips:AddDoubleLine(info.name, info.col..WoWTools_Mixin:MK(info.maxHP, 3)..INLINE_HEALER_ICON)
         find=true
     end
     if find then
@@ -506,7 +506,7 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
         find=nil
     end
     for _, info in pairs(tabDPS) do
-        e.tips:AddDoubleLine(info.name, info.col..e.MK(info.maxHP, 3)..INLINE_DAMAGER_ICON)
+        e.tips:AddDoubleLine(info.name, info.col..WoWTools_Mixin:MK(info.maxHP, 3)..INLINE_DAMAGER_ICON)
         find= true
     end
     if find then
@@ -543,11 +543,11 @@ end
 --####
 local function Init()
     --使用,提示
-    GroupButton.typeText=e.Cstr(GroupButton,{color=true})
+    GroupButton.typeText=WoWTools_LabelMixin:CreateLabel(GroupButton,{color=true})
     GroupButton.typeText:SetPoint('BOTTOM',0,2)
 
     --队员，数量，提示
-    GroupButton.membersText=e.Cstr(GroupButton, {color=true})--10, nil, nil, true)
+    GroupButton.membersText=WoWTools_LabelMixin:CreateLabel(GroupButton, {color=true})--10, nil, nil, true)
     GroupButton.membersText:SetPoint('TOPRIGHT', -3, 0)
 
     GroupButton.tipBubbles= GroupButton:CreateTexture(nil, 'OVERLAY')
@@ -562,7 +562,7 @@ local function Init()
 
     GroupButton:SetScript('OnClick', function(self, d)
         if d=='LeftButton' and self.type then
-            e.Say(self.type)
+            WoWTools_ChatMixin:Say(self.type)
         else
             MenuUtil.CreateContextMenu(self, Init_Menu)
             e.tips:Hide()
@@ -583,7 +583,7 @@ local function Init()
             elseif IsInGroup() then
                 SendChatMessage(text, 'PARTY')
             else
-                e.Chat(text, nil, nil)
+                WoWTools_ChatMixin:Chat(text, nil, nil)
             end
         end
     end)

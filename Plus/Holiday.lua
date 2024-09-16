@@ -136,10 +136,10 @@ local function Get_Button_Text(event)
     if _CalendarFrame_IsPlayerCreatedEvent(event.calendarType) then--自定义,事件
         local invitInfo= C_Calendar.EventGetInvite(event.index) or {}
         if invitInfo.guid then
-            atlas= e.GetPlayerInfo({guid=invitInfo.guid, reAtlas=true})
+            atlas= WoWTools_UnitMixin:GetPlayerInfo({guid=invitInfo.guid, reAtlas=true})
         end
         if UnitIsUnit("player", event.invitedBy) then--我
-            atlas= atlas or e.GetUnitRaceInfo({unit='player',reAtlas=true})
+            atlas= atlas or WoWTools_UnitMixin:GetRaceIcon({unit='player',reAtlas=true})
         else
             if _CalendarFrame_IsSignUpEvent(event.calendarType, event.inviteType) then
                 local inviteStatusInfo = CalendarUtil.GetCalendarInviteStatusInfo(event.inviteStatus);
@@ -434,7 +434,7 @@ local function Set_TrackButton_Text(monthOffset, day)
 			end)
 
 
-            btn.text= e.Cstr(btn, {color=true})
+            btn.text= WoWTools_LabelMixin:CreateLabel(btn, {color=true})
             function btn:set_text_point()
                 if Save.left then
                     self.text:SetPoint('RIGHT', self, 'LEFT',1, 0)
@@ -793,7 +793,7 @@ local function calendar_Uptate()
     end
 
     if text and not CalendarViewHolidayFrame.Text then
-        CalendarViewHolidayFrame.Text= e.Cstr(CalendarViewHolidayFrame, {mouse=true, color={r=0, g=0.68, b=0.94, a=1}})
+        CalendarViewHolidayFrame.Text= WoWTools_LabelMixin:CreateLabel(CalendarViewHolidayFrame, {mouse=true, color={r=0, g=0.68, b=0.94, a=1}})
         CalendarViewHolidayFrame.Text:SetPoint('BOTTOMLEFT',12,12)
         CalendarViewHolidayFrame.Text:SetScript('OnLeave', function(self) self:SetAlpha(1) e.tips:Hide() end)
         CalendarViewHolidayFrame.Text:SetScript('OnEnter', function(self)
@@ -840,7 +840,7 @@ local function Init_Blizzard_Calendar()
             for index, btn in pairs(frame:GetFrames() or {}) do--ScrollBox.lua
                 local inviteInfo = C_Calendar.EventGetInvite(index)
                 if inviteInfo and inviteInfo.guid then
-                    btn.Class:SetText(e.GetPlayerInfo({guid=inviteInfo.guid, name=inviteInfo.name}))
+                    btn.Class:SetText(WoWTools_UnitMixin:GetPlayerInfo({guid=inviteInfo.guid, name=inviteInfo.name}))
                 end
             end
         end
@@ -857,7 +857,7 @@ local function Init_Blizzard_Calendar()
         e.LibDD:UIDropDownMenu_SetWidth(self.menu, 60)
         e.LibDD:UIDropDownMenu_SetText(self.menu, e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET)
         e.LibDD:UIDropDownMenu_Initialize(self.menu, function(_, level)
-            local map=e.GetUnitMapName('player');--玩家区域名称
+            local map=WoWTools_MapMixin:GetUnit('player');--玩家区域名称
             local inviteTab={}
             for index = 1, C_Calendar.GetNumInvites() do
                 local inviteInfo = C_Calendar.EventGetInvite(index);
@@ -872,7 +872,7 @@ local function Init_Blizzard_Calendar()
                 local wowInfo= wow and wow.gameAccountInfo
                 if wowInfo and wowInfo.playerGuid and wowInfo.characterName and not inviteTab[wowInfo.characterName] and wowInfo.wowProjectID==1 then
 
-                    local text= e.GetPlayerInfo({guid=wowInfo.playerGuid, faction=wowInfo.factionName, name=wowInfo.characterName, reName=true, reRealm=true})--角色信息
+                    local text= WoWTools_UnitMixin:GetPlayerInfo({guid=wowInfo.playerGuid, faction=wowInfo.factionName, name=wowInfo.characterName, reName=true, reRealm=true})--角色信息
                     if wowInfo.areaName then --位置
                         if wowInfo.areaName==map then
                             text=text..'|A:poi-islands-table:0:0|a'
@@ -914,7 +914,7 @@ local function Init_Blizzard_Calendar()
         e.LibDD:UIDropDownMenu_SetWidth(menu2, 60)
         e.LibDD:UIDropDownMenu_SetText(menu2, e.onlyChinese and '好友' or FRIEND)
         e.LibDD:UIDropDownMenu_Initialize(menu2, function(_, level)
-            local map=e.GetUnitMapName('player');--玩家区域名称
+            local map=WoWTools_MapMixin:GetUnit('player');--玩家区域名称
             local inviteTab={}
             for index = 1, C_Calendar.GetNumInvites() do
                 local inviteInfo = C_Calendar.EventGetInvite(index);
@@ -927,7 +927,7 @@ local function Init_Blizzard_Calendar()
             for i=1 , C_FriendList.GetNumFriends() do
                 local game=C_FriendList.GetFriendInfoByIndex(i)
                 if game and game.name and not inviteTab[game.name] then--and not game.afk and not game.dnd then
-                    local text=e.GetPlayerInfo({guid=game.guid, name=game.name,  reName=true, reRealm=true})--角色信息
+                    local text=WoWTools_UnitMixin:GetPlayerInfo({guid=game.guid, name=game.name,  reName=true, reRealm=true})--角色信息
                     text= (game.level and game.level~=maxLevel and game.level>0) and text .. ' |cff00ff00'..game.level..'|r' or text--等级
                     if game.area and game.connected then
                         if game.area == map then--地区
@@ -967,7 +967,7 @@ local function Init_Blizzard_Calendar()
         e.LibDD:UIDropDownMenu_SetWidth(last, 60)
         e.LibDD:UIDropDownMenu_SetText(last, e.onlyChinese and '公会' or GUILD)
         e.LibDD:UIDropDownMenu_Initialize(last, function(_, level)
-            local map=e.GetUnitMapName('player')
+            local map=WoWTools_MapMixin:GetUnit('player')
             local inviteTab={}
             for index = 1, C_Calendar.GetNumInvites() do
                 local inviteInfo = C_Calendar.EventGetInvite(index);
@@ -980,7 +980,7 @@ local function Init_Blizzard_Calendar()
             for index=1,  GetNumGuildMembers() do
                 local name, rankName, rankIndex, lv, _, zone, publicNote, officerNote, isOnline, status, _, _, _, _, _, _, guid = GetGuildRosterInfo(index)
                 if name and guid and not inviteTab[name] and isOnline and name~=e.Player.name_realm then
-                    local text=e.GetPlayerInfo({guid=guid, name=name,  reName=true, reRealm=true})--名称
+                    local text=WoWTools_UnitMixin:GetPlayerInfo({guid=guid, name=name,  reName=true, reRealm=true})--名称
                     text=(lv and lv~=maxLevel and lv>0) and text..' |cnGREEN_FONT_COLOR:'..lv..'|r' or text--等级
                     if zone then--地区
                         text= zone==map and text..'|A:poi-islands-table:0:0|a' or text..' '..zone

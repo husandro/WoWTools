@@ -20,16 +20,17 @@
 ##调用库，不能删除
 Libs\Init.xml
 
-API_LoadData.lua
-API_WoWTools.lua
-API_Create.lua
-API_Func.lua
-API_Panel.lua
-API_WoWDate.lua
-
-
 ##主要function，不能删除
+API_WoWTools.lua
 
+Mixin\0_Mixin.lua
+Mixin\Collected_Mixin.lua
+Mixin\Time_Mixin.lua
+Mixin\Chat_Mixin.lua
+Mixin\Currency_Mixin.lua
+Mixin\Aura_Mixin.lua
+Mixin\Durabiliy_Mixin.lua
+Mixin\Color_Mixin.lua
 Mixin\Texture_Mixin.lua
 Mixin\Map_Mixin.lua
 Mixin\Faction_Mixin.lua
@@ -38,11 +39,10 @@ Mixin\Bank_Mixin.lua
 Mixin\Button_Mixin.lua
 Mixin\Unit_Mixin.lua
 Mixin\Quest_Mixin.lua
-
 Mixin\Item_Mixin.lua
+Mixin\Item_StatsMixin.lua
 Mixin\Spell_Mixin.lua
 Mixin\Tooltip_Mixin.lua
-
 Mixin\StaticPopupDialogs.lua
 Mixin\ChatButton_Mixin.lua
 Mixin\Frame_Mixin.lua
@@ -51,9 +51,16 @@ Mixin\Tools_Button_Mixin.lua
 Mixin\EditBox_Mixin.lua
 Mixin\Random_Mixin.lua
 Mixin\Load_UI_Mixin.lua
-
 Mixin\ItemLocation_Mixin.lua
 Mixin\KeyButton_Mixin.lua
+Mixin\Label_Mixin.lua
+Mixin\Week_Mixin.lua
+
+API_LoadData.lua
+API_Create.lua
+API_Panel.lua
+API_WoWDate.lua
+
 
 ##颜色选择器，增强
 Plus\Color.lua
@@ -72,15 +79,40 @@ Plus\ItemInfo.lua
 
 
 ##鼠标，提示
-Plus_Tooltip\Tooltips.lua
+Plus_Tooltip\0_Tooltips.lua
+Plus_Tooltip\1_Hook.lua
+Plus_Tooltip\2_Init_Settings.lua
+Plus_Tooltip\3_Set_Point.lua
+Plus_Tooltip\f_Achievement.lua
+Plus_Tooltip\f_Aura.lua
+Plus_Tooltip\f_Azerite.lua
+Plus_Tooltip\f_BattlePet.lua
+Plus_Tooltip\f_Faction.lua
+Plus_Tooltip\f_Flyout.lua
+Plus_Tooltip\f_Item.lua
+Plus_Tooltip\f_Mount.lua
+Plus_Tooltip\f_Pet.lua
+Plus_Tooltip\f_PlayerModel.lua
+Plus_Tooltip\f_Quest.lua
+Plus_Tooltip\f_Spell.lua
+Plus_Tooltip\f_Unit_NPC.lua
+Plus_Tooltip\f_Unit_Player.lua
+Plus_Tooltip\f_URL.lua
+Plus_Tooltip\f.Currency.lua
+Plus_Tooltip\f.Cvar.lua
+Plus_Tooltip\f.StatusBar.lua
+Plus_Tooltip\z_AchievementUI.lua
+Plus_Tooltip\z_ChallengesUI.lua
+Plus_Tooltip\z_ClassTalentUI.lua
+Plus_Tooltip\z_Collections.lua
+Plus_Tooltip\z_FlightMap.lua
+Plus_Tooltip\z_GenericTraitUI.lua
+Plus_Tooltip\z_OrderHallUI.lua
+Plus_Tooltip\z_Panel.lua
+Plus_Tooltip\z_PlayerChoice.lua
+Plus_Tooltip\z_Professions.lua
 
-Plus_Tooltip\AddOn_Settings.lua
-Plus_Tooltip\Addon_Collections.lua
 
-Plus_Tooltip\func_Set_PlayerModel.lua
-Plus_Tooltip\func_URL.lua
-Plus_Tooltip\func_Set_Mount.lua
-Plus_Tooltip\func_Set_PlayerModel.lua
 
 
 

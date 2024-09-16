@@ -311,7 +311,7 @@ local function Init()
     BuyItemButton:RegisterEvent('MERCHANT_SHOW')
     BuyItemButton:SetScript('OnEvent', set_buy_item)--购买物品
 
-    BuyItemButton.Text= e.Cstr(BuyItemButton, {justifyH='RIGHT', color={r=1,g=1,b=1}})
+    BuyItemButton.Text= WoWTools_LabelMixin:CreateLabel(BuyItemButton, {justifyH='RIGHT', color={r=1,g=1,b=1}})
     BuyItemButton.Text:SetPoint('BOTTOMRIGHT')
 
 

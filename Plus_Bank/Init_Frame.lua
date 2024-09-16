@@ -118,7 +118,7 @@ local function Init_BankSlotsFrame()
     btnInAll:HookScript('OnEnter', btnInAll.set_tooltips)
 
 --提示，标签
-    local label= e.Cstr(btnInAll, {color=true, size=18})
+    local label= WoWTools_LabelMixin:CreateLabel(btnInAll, {color=true, size=18})
     label:SetPoint('RIGHT', btnInAll, 'LEFT', 4,0)
     label:SetText(e.onlyChinese and '银行' or BANK)
 
@@ -258,7 +258,7 @@ local function Init_ReagentBankFrame()
     btnAllOut:HookScript('OnEnter', btnAllOut.set_tooltips)
 
 --提示，标签
-    local label= e.Cstr(btnAllOut, {color=true, size=18})
+    local label= WoWTools_LabelMixin:CreateLabel(btnAllOut, {color=true, size=18})
     label:SetPoint('LEFT', btnAllOut, 'RIGHT')
     label:SetText(e.onlyChinese and '材料' or BAG_FILTER_REAGENTS)
 
@@ -420,7 +420,7 @@ local function Init_AccountBankPanel()
 
     AccountBankPanel.Header.Text:ClearAllPoints()
     AccountBankPanel.Header.Text:SetPoint('RIGHT')
-    e.Cstr(nil, {changeFont=AccountBankPanel.Header.Text, size=22, color=true, justifyH='RIGHT'})
+    WoWTools_LabelMixin:CreateLabel(nil, {changeFont=AccountBankPanel.Header.Text, size=22, color=true, justifyH='RIGHT'})
 
     local texture= AccountBankPanel.Header:CreateTexture()
     texture:SetSize(22,22)
@@ -429,7 +429,7 @@ local function Init_AccountBankPanel()
 
 --标签，战团银行
     if AccountBankPanel.selectedTabID and AccountBankPanel.selectedTabID>=0 then
-        local label= e.Cstr(BankSlotsFrame, {size=14})
+        local label= WoWTools_LabelMixin:CreateLabel(BankSlotsFrame, {size=14})
         label:SetPoint('TOP', AccountBankPanel, 0, -6)
         label:SetText(e.onlyChinese and '战团' or ACCOUNT_QUEST_LABEL)
     end

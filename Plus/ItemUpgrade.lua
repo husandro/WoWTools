@@ -28,13 +28,13 @@ local function add_Button_OpenOption(frame)
     btn:SetScript('OnLeave', GameTooltip_Hide)
     if frame==ItemUpgradeFrameCloseButton then--装备升级, 界面
         --物品，货币提示
-        e.ItemCurrencyLabel({frame=ItemUpgradeFrame, point={'TOPLEFT', nil, 'TOPLEFT', 2, -55}})
+        WoWTools_LabelMixin:ItemCurrencyTips({frame=ItemUpgradeFrame, point={'TOPLEFT', nil, 'TOPLEFT', 2, -55}})
         btn:SetScript("OnEvent", function()
             --物品，货币提示
-            e.ItemCurrencyLabel({frame=ItemUpgradeFrame, point={'TOPLEFT', nil, 'TOPLEFT', 2, -55}})
+            WoWTools_LabelMixin:ItemCurrencyTips({frame=ItemUpgradeFrame, point={'TOPLEFT', nil, 'TOPLEFT', 2, -55}})
         end)
         btn:SetScript('OnShow', function(self)
-            e.ItemCurrencyLabel({frame=ItemUpgradeFrame, point={'TOPLEFT', nil, 'TOPLEFT', 2, -55}})
+            WoWTools_LabelMixin:ItemCurrencyTips({frame=ItemUpgradeFrame, point={'TOPLEFT', nil, 'TOPLEFT', 2, -55}})
             self:RegisterEvent('BAG_UPDATE_DELAYED')
             self:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
         end)
@@ -82,7 +82,7 @@ local function Init_ItemInteractionFrame()
         tip:SetItemInteractionItem()
     end)
 
-    --ItemInteractionFrame.ItemConversionFrame.ItemConversionOutputSlot.Text= e.Cstr(ItemInteractionFrame.ItemConversionFrame.ItemConversionOutputSlot)
+    --ItemInteractionFrame.ItemConversionFrame.ItemConversionOutputSlot.Text= WoWTools_LabelMixin:CreateLabel(ItemInteractionFrame.ItemConversionFrame.ItemConversionOutputSlot)
     --ItemInteractionFrame.ItemConversionFrame.ItemConversionOutputSlot.Text:SetPoint('LEFT', ItemInteractionFrame.ItemConversionFrame.ItemConversionOutputSlot, 'RIGHT',12,0)
     ItemInteractionFrame.Tip= CreateFrame('GameTooltip', nil, ItemInteractionFrame, 'GameTooltipTemplate')
     hooksecurefunc(ItemInteractionFrame.ItemConversionFrame.ItemConversionOutputSlot, 'RefreshIcon', function(self)
@@ -105,7 +105,7 @@ local function Init_ItemInteractionFrame()
                 end
             end]]
         end
-        e.Set_Item_Stats(self, itemLink, {}) --设置，物品，次属性，表
+        WoWTools_ItemStatsMixin:SetItem(self, itemLink, {}) --设置，物品，次属性，表
         --self.Text:SetText(text)
         --frame:SetShown(show)
     end)

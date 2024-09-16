@@ -128,7 +128,7 @@ local function Init_PlayerFrame()--PlayerFrame.lua
     if PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HitIndicator then
         local label= PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HitIndicator.HitText
         if label then
-            e.Set_Label_Texture_Color(label, {type='FontString'})--设置颜色
+            WoWTools_ColorMixin:SetLabelTexture(label, {type='FontString'})--设置颜色
             label:ClearAllPoints()
             label:SetPoint('TOPLEFT', PlayerFrame.PlayerFrameContainer.PlayerPortrait, 'BOTTOMLEFT')
         end
@@ -168,7 +168,7 @@ end)
     portrait:SetAtlas('UI-HUD-UnitFrame-TotemFrame')
     portrait:SetPoint('CENTER',1,-1)
     portrait:SetSize(21,21)
-    e.Set_Label_Texture_Color(portrait, {type='Texture'})--设置颜色
+    WoWTools_ColorMixin:SetLabelTexture(portrait, {type='Texture'})--设置颜色
 
     local lootTipsTexture= PlayerFrame.lootButton:CreateTexture(nil, "OVERLAY")
     lootTipsTexture:SetSize(10,10)
@@ -242,7 +242,7 @@ end)
     PlayerFrame.instanceFrame.raid:SetAllPoints(PlayerFrame.instanceFrame)
     PlayerFrame.instanceFrame.raid:SetAtlas('poi-torghast')
     --10人，25人
-    PlayerFrame.instanceFrame.raid.text= e.Cstr(PlayerFrame.instanceFrame, {color=true})
+    PlayerFrame.instanceFrame.raid.text= WoWTools_LabelMixin:CreateLabel(PlayerFrame.instanceFrame, {color=true})
     PlayerFrame.instanceFrame.raid.text:SetPoint('TOP',0,8)
     --提示
     PlayerFrame.instanceFrame.raid:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) self.text:SetAlpha(1) end)
@@ -253,7 +253,7 @@ end)
             e.tips:AddDoubleLine(e.addName, e.cn(addName))
             e.tips:AddLine(' ')
             local dungeonID= GetRaidDifficultyID()
-            local text=e.GetDifficultyColor(nil, dungeonID)
+            local text=WoWTools_MapMixin:GetDifficultyColor(nil, dungeonID)
             e.tips:AddDoubleLine(self.tips, '|A:poi-torghast:0:0|a')
             e.tips:AddLine(' ')
             local tab={
@@ -262,7 +262,7 @@ end)
                 DifficultyUtil.ID.DungeonMythic
             }
             for _, ID in pairs(tab) do
-                text= e.GetDifficultyColor(nil, ID)
+                text= WoWTools_MapMixin:GetDifficultyColor(nil, ID)
                 text= ID==dungeonID and format('|A:%s:0:0|a', e.Icon.toRight)..text..format('|A:%s:0:0|a', e.Icon.toLeft) or text
                 e.tips:AddLine((text==self.name and format('|A:%s:0:0|a', e.Icon.toRight) or '')..text..(text==self.name and format('|A:%s:0:0|a', e.Icon.toLeft) or ''))
             end
@@ -282,7 +282,7 @@ end)
     portrait:SetAtlas('UI-HUD-UnitFrame-TotemFrame')
     portrait:SetPoint('CENTER', PlayerFrame.instanceFrame.dungeon,1,0)
     portrait:SetSize(20,20)
-    e.Set_Label_Texture_Color(portrait, {type='Texture'})--设置颜色
+    WoWTools_ColorMixin:SetLabelTexture(portrait, {type='Texture'})--设置颜色
     --提示
     PlayerFrame.instanceFrame.dungeon:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
     function PlayerFrame.instanceFrame.dungeon:set_tooltips()
@@ -291,7 +291,7 @@ end)
         e.tips:AddDoubleLine(e.addName, e.cn(addName))
         e.tips:AddLine(' ')
         local dungeonID= GetDungeonDifficultyID()
-        local text=e.GetDifficultyColor(nil, dungeonID)
+        local text=WoWTools_MapMixin:GetDifficultyColor(nil, dungeonID)
         e.tips:AddDoubleLine((e.onlyChinese and '地下城难度' or DUNGEON_DIFFICULTY), '|A:DungeonSkull:0:0|a'..text)
         e.tips:AddLine(' ')
         local tab={
@@ -300,7 +300,7 @@ end)
             DifficultyUtil.ID.DungeonMythic
         }
         for index, ID in pairs(tab) do
-            text= e.GetDifficultyColor(nil, ID)
+            text= WoWTools_MapMixin:GetDifficultyColor(nil, ID)
             text= ID==dungeonID and format('|A:%s:0:0|a', e.Icon.toRight)..text..format('|A:%s:0:0|a', e.Icon.toLeft) or text
             local set
             if index==3 then
@@ -333,8 +333,8 @@ end)
             local difficultyID3= GetRaidDifficultyID()
             local displayMythic3 = select(6, GetDifficultyInfo(difficultyID3))
 
-            local name2, color2= e.GetDifficultyColor(nil, difficultyID2)
-            local name3, color3= e.GetDifficultyColor(nil, difficultyID3)
+            local name2, color2= WoWTools_MapMixin:GetDifficultyColor(nil, difficultyID2)
+            local name3, color3= WoWTools_MapMixin:GetDifficultyColor(nil, difficultyID3)
             local text3= (e.onlyChinese and '团队副本难度' or RAID_DIFFICULTY)..': '..name3..'|r'
 
             local otherDifficulty = GetLegacyRaidDifficultyID()
@@ -408,7 +408,7 @@ end)
     PlayerFrame.keystoneFrame.texture=PlayerFrame.keystoneFrame:CreateTexture()
     PlayerFrame.keystoneFrame.texture:SetAllPoints(PlayerFrame.keystoneFrame)
     PlayerFrame.keystoneFrame.texture:SetTexture(4352494)
-    PlayerFrame.keystoneFrame.Text= e.Cstr(PlayerFrame.keystoneFrame, {color=true})
+    PlayerFrame.keystoneFrame.Text= WoWTools_LabelMixin:CreateLabel(PlayerFrame.keystoneFrame, {color=true})
     PlayerFrame.keystoneFrame.Text:SetPoint('LEFT', PlayerFrame.keystoneFrame, 'RIGHT')
     PlayerFrame.keystoneFrame:SetScript('OnLeave', function(self) self:SetAlpha(1) e.tips:Hide() end)
     PlayerFrame.keystoneFrame:SetScript('OnEnter', function(self)
@@ -420,9 +420,9 @@ end)
             e.tips:AddLine('|T4352494:0|t'..e.WoWDate[e.Player.guid].Keystone.link)
             e.tips:AddLine(' ')
         end
-        e.Get_Weekly_Rewards_Activities({showTooltip=true})
+        WoWTools_WeekMixin:Activities({showTooltip=true})
         e.tips:AddLine(' ')
-        e.ItemCurrencyLabel({showTooltip=true, showName=true, showAll=true})
+        WoWTools_LabelMixin:ItemCurrencyTips({showTooltip=true, showName=true, showAll=true})
         e.tips:Show()
         self:SetAlpha(0.5)
     end)
@@ -430,9 +430,9 @@ end)
         local text
         local score= C_ChallengeMode.GetOverallDungeonScore()
         if score and score>0 then
-            local activeText= e.Get_Week_Rewards_Text(1)--得到，周奖励，信息
+            local activeText= WoWTools_WeekMixin:GetRewardText(1)--得到，周奖励，信息
             activeText= activeText and ' ('..activeText..') '
-            text= e.GetKeystoneScorsoColor(score)..(activeText or '')--分数
+            text= WoWTools_WeekMixin:KeystoneScorsoColor(score)..(activeText or '')--分数
             local info = C_MythicPlus.GetRunHistory(false, true) or {}--次数
             local num= #info
             if num>0 then
@@ -561,7 +561,7 @@ local function Init_TargetFrame()
         end
     end)
 
-    TargetFrame.rangeText= e.Cstr(TargetFrame, {justifyH='RIGHT'})
+    TargetFrame.rangeText= WoWTools_LabelMixin:CreateLabel(TargetFrame, {justifyH='RIGHT'})
     TargetFrame.rangeText:SetPoint('RIGHT', TargetFrame, 'LEFT', 22,0)
     hooksecurefunc(TargetFrame, 'OnUpdate', function(self, elapsed)--距离
         self.elapsed= (self.elapsed or 0.3) + elapsed
@@ -674,7 +674,7 @@ local function set_memberFrame(memberFrame)
         btn.frame.Portrait:SetAllPoints(btn.frame)
 
 
-        btn.frame.healthLable= e.Cstr(btn.frame, {size=14})
+        btn.frame.healthLable= WoWTools_LabelMixin:CreateLabel(btn.frame, {size=14})
         btn.frame.healthLable:SetPoint('BOTTOMRIGHT')
         btn.frame.healthLable:SetTextColor(1,1,1)
 
@@ -703,7 +703,7 @@ local function set_memberFrame(memberFrame)
                 end
 
                 if UnitIsPlayer(self.unit) then
-                    self.class:SetAtlas(e.Class(self.unit, nil, true))
+                    self.class:SetAtlas(WoWTools_UnitMixin:GetClassIcon(self.unit, nil, true))
                 elseif UnitIsBossMob(self.unit) then
                     self.class:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Rare')
                 else
@@ -919,7 +919,7 @@ local function set_memberFrame(memberFrame)
         positionFrame:Hide()
         positionFrame:SetPoint('LEFT', memberFrame.PartyMemberOverlay.LeaderIcon, 'RIGHT')
         positionFrame:SetSize(1,1)
-        positionFrame.Text= e.Cstr(positionFrame)
+        positionFrame.Text= WoWTools_LabelMixin:CreateLabel(positionFrame)
         positionFrame.Text:SetPoint('LEFT')
         function positionFrame:set_shown()
             self:SetShown(not IsInInstance() and not UnitAffectingCombat('player') or self.isPlayer)
@@ -933,7 +933,7 @@ local function set_memberFrame(memberFrame)
                 local text
                 local distanceSquared, checkedDistance = UnitDistanceSquared(self.unit)
                 if distanceSquared and checkedDistance then
-                    text= e.MK(distanceSquared, 0)
+                    text= WoWTools_Mixin:MK(distanceSquared, 0)
                 end
                 if mapInfo and mapInfo.name then
                     text= (text and text..' ' or '')..e.cn(mapInfo.name)
@@ -1040,7 +1040,7 @@ local function set_memberFrame(memberFrame)
 
         --死亡，次数
         deadFrame.dead=0
-        deadFrame.Text= e.Cstr(deadFrame, {mouse=true, color={r=1,g=1,b=1}})
+        deadFrame.Text= WoWTools_LabelMixin:CreateLabel(deadFrame, {mouse=true, color={r=1,g=1,b=1}})
         deadFrame.Text:SetPoint('BOTTOMRIGHT', deadFrame, -2,0)
         deadFrame.Text:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
         deadFrame.Text:SetScript('OnEnter', function(self)
@@ -1162,7 +1162,7 @@ local function Init_UnitFrame_Update(frame, isParty)--UnitFrame.lua--职业, 图
             frame.classFrame.Texture:SetPoint('CENTER', frame.classFrame, 1,-1)
             frame.classFrame.Texture:SetSize(20,20)
 
-            frame.classFrame.itemLevel= e.Cstr(frame.classFrame, {size=12})--装等
+            frame.classFrame.itemLevel= WoWTools_LabelMixin:CreateLabel(frame.classFrame, {size=12})--装等
             if unit=='target' or unit=='focus' then
                 frame.classFrame.itemLevel:SetPoint('RIGHT', frame.classFrame, 'LEFT')
             else
@@ -1197,7 +1197,7 @@ local function Init_UnitFrame_Update(frame, isParty)--UnitFrame.lua--职业, 图
                                     find2= true
                                 end
                             else
-                                local class= e.Class(unit2, nil, true)--职业, 图标
+                                local class= WoWTools_UnitMixin:GetClassIcon(unit2, nil, true)--职业, 图标
                                 if class then
                                     self.Portrait:SetAtlas(class)
                                     find2=true
@@ -1237,10 +1237,10 @@ local function Init_UnitFrame_Update(frame, isParty)--UnitFrame.lua--职业, 图
             frame.name:SetTextColor(r,g,b)
             if isParty then
                 name= UnitName(unit)
-                name= e.WA_Utf8Sub(name, 4, 8)
+                name= WoWTools_Mixin:sub(name, 4, 8)
                 frame.name:SetText(name)
             elseif unit=='target' and guid then
-                local wow= e.GetFriend(nil, guid)
+                local wow= WoWTools_UnitMixin:GetIsFriendIcon(nil, guid)
                 if wow then
                     name= wow..GetUnitName(unit, false)
                 end
@@ -1441,7 +1441,7 @@ local function Init_BossFrame()
         --##############
         frame.numSelectFrame= CreateFrame('Frame', frame)
         frame.numSelectFrame.unit= frame.unit
-        frame.numSelectFrame.Text= e.Cstr(frame.BossButton, {color={r=1,g=1,b=1}, size=20})
+        frame.numSelectFrame.Text= WoWTools_LabelMixin:CreateLabel(frame.BossButton, {color={r=1,g=1,b=1}, size=20})
         frame.numSelectFrame.Text:SetPoint('BOTTOM', 0, -16)
         function frame.numSelectFrame:set_event(f)
             if f:IsShown() then
@@ -1546,7 +1546,7 @@ local function Init_BossFrame()
         frame.TotButton.frame.Border:SetAtlas('UI-HUD-UnitFrame-TotemFrame')
 
         --目标的目标，百份比
-        frame.TotButton.frame.healthLable= e.Cstr(frame.TotButton.frame,{color={r=1,g=1,b=1}, size=14})
+        frame.TotButton.frame.healthLable= WoWTools_LabelMixin:CreateLabel(frame.TotButton.frame,{color={r=1,g=1,b=1}, size=14})
         frame.TotButton.frame.healthLable:SetPoint('BOTTOM')--, frame.TotButton.frame, 'RIGHT')
 
         frame.TotButton.frame:SetScript('OnUpdate', function(self, elapsed)
@@ -1592,7 +1592,7 @@ local function Init_BossFrame()
                 --self.IsTargetTexture:SetShown(UnitIsUnit(self.targetUnit, 'target'))
                 self.Border:SetVertexColor(r,g,b)
                 self.healthLable:SetTextColor(r,g,b)
-                e.Set_HelpTips({frame=self, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, show=isSelf, y=-2})
+                WoWTools_FrameMixin:HelpFrame({frame=self, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, show=isSelf, y=-2})
             end
             self:SetShown(exists)
         end
@@ -1746,7 +1746,7 @@ local function Init_RaidFrame()--设置,团队
             local name= frame.name:GetText()
             if name then
                 name= name:match('(.-)%-') or name
-                name= e.WA_Utf8Sub(name, 4, 8)
+                name= WoWTools_Mixin:sub(name, 4, 8)
                 frame.name:SetText(name)
             end
         end
@@ -1896,11 +1896,11 @@ local function Init_RaidFrame()--设置,团队
         elseif dead then--死亡
             frame.statusText:SetText('|A:deathrecap-icon-tombstone:0:0|a')
         elseif ( frame.optionTable.healthText == "health" ) then
-            frame.statusText:SetText(e.MK(UnitHealth(frame.displayedUnit), 0))
+            frame.statusText:SetText(WoWTools_Mixin:MK(UnitHealth(frame.displayedUnit), 0))
         elseif ( frame.optionTable.healthText == "losthealth" ) then
             local healthLost = UnitHealthMax(frame.displayedUnit) - UnitHealth(frame.displayedUnit)
             if ( healthLost > 0 ) then
-                frame.statusText:SetText('-'..e.MK(healthLost, 0))
+                frame.statusText:SetText('-'..WoWTools_Mixin:MK(healthLost, 0))
             end
         elseif (frame.optionTable.healthText == "perc") then
             if UnitHealth(frame.displayedUnit)== UnitHealthMax(frame.displayedUnit) then
@@ -1949,11 +1949,11 @@ local function Init_CastingBar(frame)
         self.Icon:SetShown(true)
     end)
 
-    e.Set_Label_Texture_Color(frame.CastTimeText, {type='FontString'})--设置颜色
+    WoWTools_ColorMixin:SetLabelTexture(frame.CastTimeText, {type='FontString'})--设置颜色
     frame.CastTimeText:SetShadowOffset(1, -1)
     frame.CastTimeText:ClearAllPoints()
     frame.CastTimeText:SetPoint('RIGHT', frame.ChargeFlash, 'RIGHT')
-    e.Set_Label_Texture_Color(frame.Text, {type='FontString'})--设置颜色
+    WoWTools_ColorMixin:SetLabelTexture(frame.Text, {type='FontString'})--设置颜色
     frame.Text:SetShadowOffset(1, -1)
 
     if frame==PlayerCastingBarFrame then
@@ -1975,7 +1975,7 @@ local function Init_CastingBar(frame)
 
     --[[if frame.CastTimeText then
         else--旧版本
-        frame.castingText= e.Cstr(frame, {color=true, justifyH='RIGHT'})
+        frame.castingText= WoWTools_LabelMixin:CreateLabel(frame, {color=true, justifyH='RIGHT'})
         frame.castingText:SetDrawLayer('OVERLAY', 2)
         frame.castingText:SetPoint('RIGHT', frame.ChargeFlash, 'RIGHT')
         frame:HookScript('OnUpdate', function(self, elapsed)--玩家, 施法, 时间
@@ -1992,7 +1992,7 @@ local function Init_CastingBar(frame)
                 end
             end
         end)
-        e.Set_Label_Texture_Color(frame.Text, {type='FontString'})--设置颜色
+        WoWTools_ColorMixin:SetLabelTexture(frame.Text, {type='FontString'})--设置颜色
     end]]
 end
 
@@ -2033,11 +2033,11 @@ local function Init()
     hooksecurefunc(MirrorTimerContainer, 'SetupTimer', function(frame)--, value)
         for _, activeTimer in pairs(frame.activeTimers) do
             if not activeTimer.valueText then
-                activeTimer.valueText=e.Cstr(activeTimer, {justifyH='RIGHT'})
+                activeTimer.valueText=WoWTools_LabelMixin:CreateLabel(activeTimer, {justifyH='RIGHT'})
                 activeTimer.valueText:SetPoint('BOTTOMRIGHT',-7, 4)
 
-                e.Set_Label_Texture_Color(activeTimer.valueText, {type='FontString'})--设置颜色
-                e.Set_Label_Texture_Color(activeTimer.Text, {type='FontString'})--设置颜色
+                WoWTools_ColorMixin:SetLabelTexture(activeTimer.valueText, {type='FontString'})--设置颜色
+                WoWTools_ColorMixin:SetLabelTexture(activeTimer.Text, {type='FontString'})--设置颜色
 
                 hooksecurefunc(activeTimer, 'UpdateStatusBarValue', function(self)
                     self.valueText:SetText(format('%i', self.StatusBar:GetValue()))

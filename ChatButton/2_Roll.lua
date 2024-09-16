@@ -173,7 +173,7 @@ if saveNum>0 then
             '|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t|cffffffff'..tab.roll..'|r '
             ..WoWTools_UnitMixin:GetPlayerInfo(tab.unit, tab.guid, tab.name, {reName=true, reRealm=true})..' '..tab.date,
         function(text)
-            e.Chat(text, nil, nil)
+            WoWTools_ChatMixin:Chat(text, nil, nil)
             return MenuResponse.Refresh
         end, tab.text)
         sub2:SetTooltip(function(tooltip, data)
@@ -198,7 +198,7 @@ if rollNum>0 then
                 ..WoWTools_UnitMixin:GetPlayerInfo(tab.unit, tab.guid, tab.name, {reName=true, reRealm=true})
                 ..' '..tab.date..icon,
             function(text)
-                e.Chat(text, nil, nil)
+                WoWTools_ChatMixin:Chat(text, nil, nil)
                 return MenuResponse.Refresh
             end, tab.text)
             sub:SetTooltip(function(tooltip, data)
@@ -250,10 +250,10 @@ local function Init()
     RollButton.autoClearTips:SetSize(12,12)
     RollButton.autoClearTips:SetAtlas('bags-button-autosort-up')
 
-    RollButton.rightBottomText=e.Cstr(RollButton, {color={r=0,g=1,b=0}})
+    RollButton.rightBottomText=WoWTools_LabelMixin:CreateLabel(RollButton, {color={r=0,g=1,b=0}})
     RollButton.rightBottomText:SetPoint('BOTTOMRIGHT',-2,3)
 
-    RollButton.rightTopText=e.Cstr(RollButton, {color={r=0,g=1,b=0}})
+    RollButton.rightTopText=WoWTools_LabelMixin:CreateLabel(RollButton, {color={r=0,g=1,b=0}})
     RollButton.rightTopText:SetPoint('TOPLEFT',2,-3)
 
 

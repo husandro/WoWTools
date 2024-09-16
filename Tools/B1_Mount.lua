@@ -1246,7 +1246,7 @@ local function Init_Menu(_, root)
         Save.AFKRandom= not Save.AFKRandom and true or nil
         MountShowFrame:set_evnet()
         if Save.AFKRandom then
-            e.SendText(SLASH_CHAT_AFK1)
+            WoWTools_ChatMixin:SendText(SLASH_CHAT_AFK1)
         end
     end)
     sub3:SetTooltip(function(tooltip)
@@ -1264,7 +1264,7 @@ local function Init_Menu(_, root)
     end)
 
     sub2=sub:CreateButton('|T'..FRIENDS_TEXTURE_AFK..':0|t'..(UnitIsAFK('player') and '|cff9e9e9e' or '')..(e.onlyChinese and '暂离' or 'AFK'), function()
-        e.SendText(SLASH_CHAT_AFK1)
+        WoWTools_ChatMixin:SendText(SLASH_CHAT_AFK1)
         return MenuResponse.Open
     end)
     sub2:SetTooltip(function(tooltip)
@@ -1325,7 +1325,7 @@ local function Init_Menu(_, root)
         addName..'|n|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
         function()
             Save=nil
-            e.Reload()
+            WoWTools_Mixin:Reload()
         end
     )
 
@@ -1617,7 +1617,7 @@ local function Init_MountJournal()
             end)
             frame:HookScript('OnLeave', function(self) self.WoWToolsButton:SetAlpha(0) end)
             frame:HookScript('OnEnter', function(self) self.WoWToolsButton:SetAlpha(1) end)
-            frame.WoWToolsText=e.Cstr(frame, {justifyH='RIGHT'})--nil, frame.name, nil,nil,nil,'RIGHT')
+            frame.WoWToolsText=WoWTools_LabelMixin:CreateLabel(frame, {justifyH='RIGHT'})--nil, frame.name, nil,nil,nil,'RIGHT')
             frame.WoWToolsText:SetPoint('TOPRIGHT',0,-2)
             frame.WoWToolsText:SetFontObject('GameFontNormal')
             frame.WoWToolsText:SetAlpha(0.5)

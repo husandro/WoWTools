@@ -118,7 +118,7 @@ local function Init()
 
     --货币，数量
     if CurrencyID and CurrencyID>0 then
-        Button.label=e.Cstr(Button, {color=true})
+        Button.label=WoWTools_LabelMixin:CreateLabel(Button, {color=true})
         Button.label:SetPoint('BOTTOMRIGHT')
         local currencyInfo = C_CurrencyInfo.GetCurrencyInfo(CurrencyID) or {}
         if currencyInfo.iconFileID then
@@ -126,7 +126,7 @@ local function Init()
         end
         function Button:set_Currency()
             local info = C_CurrencyInfo.GetCurrencyInfo(CurrencyID) or {}
-            self.label:SetText(info.quantity and info.quantity>0 and e.MK(info.quantity, 0) or '')
+            self.label:SetText(info.quantity and info.quantity>0 and WoWTools_Mixin:MK(info.quantity, 0) or '')
         end
         Button:set_Currency()
     else

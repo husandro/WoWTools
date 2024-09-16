@@ -1,7 +1,9 @@
 local e= select(2, ...)
-
 WoWTools_FactionMinxin={}
 
+local function GetText(string)
+    return e.cn(_G[string..(e.Player.sex==3 and '_FEMALE' or '')])
+end
 
 function WoWTools_FactionMinxin:GetInfo(factionID, index, toRight)
     local data
@@ -72,7 +74,7 @@ function WoWTools_FactionMinxin:GetInfo(factionID, index, toRight)
         atlas=info.textureKit and 'MajorFactions_Icons_'..info.textureKit..'512'
     else
         if isHeaderWithRep or not isHeader then
-            factionStandingtext = e.cn(GetText("FACTION_STANDING_LABEL"..standingID, e.Player.sex))
+            factionStandingtext = GetText("FACTION_STANDING_LABEL"..standingID)
             if barValue and barMax and barMin then
                 if barMax==0 then
                     value= format('%i%%', (barMin-barValue)/barMin*100)
@@ -86,7 +88,7 @@ function WoWTools_FactionMinxin:GetInfo(factionID, index, toRight)
                 end
             end
             if not isCapped then
-                factionStandingtext = e.cn(GetText("FACTION_STANDING_LABEL"..standingID, e.Player.sex))
+                factionStandingtext = GetText("FACTION_STANDING_LABEL"..standingID)
                 if barValue and barMax and barMin then
                     if barMax==0 then
                         value= format('%i%%', (barMin-barValue)/barMin*100)
