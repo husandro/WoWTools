@@ -1,8 +1,7 @@
 local e= select(2, ...)
-local addName
-local addName2
+
 local IsQuestTrivialTracking
-local GossipButton
+
 local function Save()
     return WoWTools_GossipMixin.Save
 end
@@ -70,7 +69,7 @@ local function select_Reward(questID)--自动:选择奖励
                         e.tips:SetOwner(self, "ANCHOR_LEFT")
                         e.tips:ClearLines()
                         e.tips:AddDoubleLine('questID: |cnGREEN_FONT_COLOR:'..self.questID..'|r', self.index)
-                        e.tips:AddDoubleLine(e.addName, addName2)
+                        e.tips:AddDoubleLine(e.addName, WoWTools_GossipMixin.addName2)
                         e.tips:Show()
                     end
                 end)
@@ -288,7 +287,7 @@ local function Init_Quest()
     function QuestButton:tooltip_Show()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, addName2)
+        e.tips:AddDoubleLine(e.addName, WoWTools_GossipMixin.addName2)
         e.tips:AddLine(' ')
         WoWTools_QuestMixin:GetQuestAll()--所有，任务，提示
         e.tips:AddLine(' ')
@@ -390,7 +389,7 @@ local function Init_Quest()
 
     C_Timer.After(2, function() QuestButton:set_Only_Show_Zone_Quest() end)--显示本区域任务
 
-    
+
 
 
 
@@ -405,7 +404,7 @@ local function Init_Quest()
     QuestFrame.sel:SetScript('OnEnter',function (self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, addName2)
+        e.tips:AddDoubleLine(e.addName, WoWTools_GossipMixin.addName2)
         if self.npc and self.name then
             e.tips:AddDoubleLine(self.name, 'NPC '..self.npc)
         else
@@ -422,7 +421,7 @@ local function Init_Quest()
             return
         end
         Save().NPC[self.npc]= not Save().NPC[self.npc] and self.name or nil
-        print(e.addName, addName2, self.name, self.npc, e.GetEnabeleDisable(Save().NPC[self.npc]))
+        print(e.addName, WoWTools_GossipMixin.addName2, self.name, self.npc, e.GetEnabeleDisable(Save().NPC[self.npc]))
     end)
 
     QuestFrame.sel.questIDLabel:SetScript("OnLeave", function(self) self:SetAlpha(1) GameTooltip_Hide() end)
@@ -659,7 +658,5 @@ function WoWTools_GossipMixin:Init_Quest()
     end
 
     IsQuestTrivialTracking= WoWTools_MapMixin:Get_Minimap_Tracking(MINIMAP_TRACKING_TRIVIAL_QUESTS, false)
-    addName= self.addName
-    addName2= self.addName2
     Init_Quest()
 end

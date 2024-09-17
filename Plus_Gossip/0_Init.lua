@@ -1,8 +1,5 @@
 local id, e = ...
-local addName, addName2
 
-
-local Goosip
 WoWTools_GossipMixin= {
     Save={
     NPC={},
@@ -36,6 +33,8 @@ WoWTools_GossipMixin= {
     Gossip_Text_Icon_cnFont=true,--仅限，外文, 修该字体
 
     delvesDifficultyMaxLevel=true,--地下堡指定难度
+    addName=nil,
+    addName2=nil,
 }
 
 }
@@ -118,7 +117,7 @@ end
 
 
 local function Init()
-    WoWTools_GossipMixin:Init_Gossip_Text()--自定义，对话，文本
+    WoWTools_GossipMixin:Init_Gossip_Data()--自定义，对话，文本
     do
         WoWTools_GossipMixin:Init_Gossip()--对话，初始化
     end
@@ -150,6 +149,11 @@ end
 
 
 
+
+
+
+
+
 --###########
 --加载保存数据
 --###########
@@ -162,20 +166,20 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWTools_GossipMixin.Save= WoWToolsSave['Plus_Gossip'] or Save()
 
-            addName= '|A:SpecDial_LastPip_BorderGlow:0:0|a'..(e.onlyChinese and '闲谈选项' or GOSSIP_OPTIONS)
-            WoWTools_GossipMixin.addName= addName
+            WoWTools_GossipMixin.addName= '|A:SpecDial_LastPip_BorderGlow:0:0|a'
+                ..(e.onlyChinese and '闲谈选项' or GOSSIP_OPTIONS)
 
-            addName2= '|A:UI-HUD-UnitFrame-Target-PortraitOn-Boss-Quest:0:0|a'..(e.onlyChinese and '任务选项' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, QUESTS_LABEL, GAMEMENU_OPTIONS))
-            WoWTools_GossipMixin.addName2= addName2
+            WoWTools_GossipMixin.addName2= '|A:UI-HUD-UnitFrame-Target-PortraitOn-Boss-Quest:0:0|a'
+                ..(e.onlyChinese and '任务选项' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, QUESTS_LABEL, GAMEMENU_OPTIONS))
 
              --添加控制面板
              --e.AddPanel_Header(nil, 'Plus')
             e.AddPanel_Check_Button({
-                 checkName= addName,
+                 checkName= WoWTools_GossipMixin.addName,
                  GetValue= function() return not Save().disabled end,
                  SetValue= function()
                      Save().disabled = not Save().disabled and true or nil
-                     print(e.addName, addName, addName2, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+                     print(e.addName, WoWTools_GossipMixin.addName, WoWTools_GossipMixin.addName2, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
                  end,
                  buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
                  buttonFunc= function()
@@ -185,9 +189,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         btn:ClearAllPoints()
                         btn:set_Point()
                      end
-                     print(e.addName, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+                     print(e.addName, WoWTools_GossipMixin.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
                  end,
-                 tooltip= e.cn(addName),
+                 tooltip= WoWTools_GossipMixin.addName,
                  layout= nil,
                  category= nil,
              })

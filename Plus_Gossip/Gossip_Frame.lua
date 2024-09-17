@@ -14,7 +14,7 @@ end
 
 
 
-local function Chat_Menu(self, root)
+local function Chat_Menu(_, root)
     local tab= C_GossipInfo.GetOptions() or {}
     table.sort(tab, function(a, b) return a.orderIndex< b.orderIndex end)
 
@@ -698,9 +698,9 @@ local function Init()
 
 
     --修改，为中文，字体
-    if LOCALE_zhCN or LOCALE_zhTW then
-        Save().Gossip_Text_Icon_cnFont=nil
-    elseif e.onlyChinese then
+    --if LOCALE_zhCN or LOCALE_zhTW then
+      --  Save().Gossip_Text_Icon_cnFont=nil
+    --elseif e.onlyChinese then
         Menu.font= CreateFrame("CheckButton", nil, Frame, 'InterfaceOptionsCheckButtonTemplate')--ChatConfigCheckButtonTemplate
         Menu.font:SetPoint('TOPLEFT', Menu.Size, 'BOTTOMLEFT', 0, -12)
         Menu.font:SetChecked(Save().Gossip_Text_Icon_cnFont)
@@ -723,7 +723,7 @@ local function Init()
                 print(e.addName, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '需要重新加载UI' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, RELOADUI))
             end
         end)
-    end
+    --end
 
     --已打开，对话，列表
     --Menu.chat= WoWTools_ButtonMixin:Cbtn(Frame, {size={22, 22}, atlas='transmog-icon-chat'})
@@ -767,11 +767,6 @@ local function Init()
     Menu.System:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName , addName)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine( e.onlyChinese and '对话' or ENABLE_DIALOG, e.GetEnabeleDisable(Save().gossip))
-        e.tips:AddDoubleLine(e.onlyChinese and '对话替换' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DIALOG_VOLUME, REPLACE), e.GetEnabeleDisable(not Save().not_Gossip_Text_Icon))
-        e.tips:AddLine(' ')
         e.tips:AddLine(format('%s |cnGREEN_FONT_COLOR:%d|r', e.onlyChinese and '默认' or DEFAULT, self.num or 0))
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)
         e.tips:Show()
@@ -968,7 +963,7 @@ local function Init()
     GossipButton:update_gossip_frame()
 
 
-    
+
 
 
 

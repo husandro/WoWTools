@@ -66,9 +66,10 @@ local PlayerGossipTab = {--https://wago.io/hR_KBVGdK
 
 local GossipTextIcon={}--默认，自定义，对话，文本
 
-local function Init()
+local function Init_Data()
     GossipTextIcon={}
-    if Save().not_Gossip_Text_Icon or not Save().gossip or Save().not_Gossip_Text_Player  then
+
+    if Save().not_Gossip_Text_Icon or Save().notGossipPlayerData then
         return
     end
 
@@ -102,10 +103,15 @@ local function Init()
 
     
     for gossipID, tab in pairs(WoWTools_GossipMixin:Get_PlayerData()) do
+        local hex= tab.hex and tab.hex~='' and tab.hex or nil
+        local icon= tab.icon and tab.icon~='' and tab.icon or nil
+        local name= tab.name and tab.name~='' and tab.name or nil
+        if hex or icon or name then
         if e.onlyChinese then
-            GossipTextIcon[gossipID]= tab
-        else
-            GossipTextIcon[gossipID]= {icon=tab.icon}
+                GossipTextIcon[gossipID]= tab
+            else
+                GossipTextIcon[gossipID]= {icon=icon, hex=hex}
+            end
         end
     end
 end
@@ -122,7 +128,7 @@ end
 
 
 
-local function Init_Menu(self, root)
+local function Init_Menu(_, root)
     local num=0
     for gossipID, tab in pairs(GossipTextIcon) do
         local icon= select(3, WoWTools_TextureMixin:IsAtlas(tab.icon)) or '     '
@@ -158,15 +164,15 @@ end
 
 
 
-function WoWTools_GossipMixin:Init_Gossip_Text()
-    Init()
+function WoWTools_GossipMixin:Init_Gossip_Data()
+    Init_Data()
 end
+
+
 
 function WoWTools_GossipMixin:GossipData_Menu(frame)
     MenuUtil.CreateContextMenu(frame, Init_Menu)
 end
-
-
 
 
 

@@ -69,7 +69,7 @@ local function Init_Menu(self, root)
         return Save().gossip
     end, function()
         Save().gossip= not Save().gossip and true or nil
-        WoWTools_GossipMixin:Init_Gossip_Text()
+        WoWTools_GossipMixin:Init_Gossip_Data()
         self:set_Texture()--设置，图片
         self:tooltip_Show()
         return MenuResponse.Close
@@ -148,7 +148,7 @@ local function Init_Menu(self, root)
         return not Save().not_Gossip_Text_Icon
     end, function()
         Save().not_Gossip_Text_Icon= not Save().not_Gossip_Text_Icon and true or nil
-        WoWTools_GossipMixin:Init_Gossip_Text()
+        WoWTools_GossipMixin:Init_Gossip_Data()
         return MenuResponse.Close
     end)
 
@@ -169,10 +169,10 @@ local function Init_Menu(self, root)
     sub:CreateCheckbox(
         (e.onlyChinese and '默认' or DEFAULT)..(num==0 and ' |cff9e9e9e' or ' ')..num,
     function()
-        return not Save().not_Gossip_Text_Player
+        return not Save().notGossipPlayerData
     end, function()
-        Save().not_Gossip_Text_Player= not Save().not_Gossip_Text_Player and true or nil
-        WoWTools_GossipMixin:Init_Gossip_Text()
+        Save().notGossipPlayerData= not Save().notGossipPlayerData and true or nil
+        WoWTools_GossipMixin:Init_Gossip_Data()
         return MenuResponse.CloseAll
     end)
 

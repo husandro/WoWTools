@@ -75,51 +75,45 @@ end
 
 --自定义，对话，文本
 local function Set_Gossip_Text(self, info)
-    if not Save().gossip then
+    local save= Save()
+    if save.not_Gossip_Text_Icon then
         return
     end
+
+    local size= save.Gossip_Text_Icon_Size
+    local isChangFont= save.Gossip_Text_Icon_cnFont
+
     local text
     local gossipOptionID= info and info.gossipOptionID
-    if not Save().not_Gossip_Text_Icon and gossipOptionID and info.name then
+    if gossipOptionID and info.name then
         local zoneInfo= Save().Gossip_Text_Icon_Player[gossipOptionID] or WoWTools_GossipMixin:Get_GossipData()[gossipOptionID]
-        if not zoneInfo then
-            if not IsInInstance() then
-                text= e.cn(info.name)
+        if zoneInfo then
+            local icon= select(3, WoWTools_TextureMixin:IsAtlas(zoneInfo.icon, size))
+            local name= zoneInfo.name or e.cn(info.name, {questID=info.questID, isName=true})
+            local hex= zoneInfo.hex
+            text= (icon or '')..name
+            if hex then
+                text= '|c'..hex..text..'|r'
             end
         else
-            local icon
-            local name
-            if zoneInfo.icon then
-                local isAtlas, texture= WoWTools_TextureMixin:IsAtlas(zoneInfo.icon)
-                if isAtlas then
-                    icon= format('|A:%s:%d:%d|a', texture, Save().Gossip_Text_Icon_Size, Save().Gossip_Text_Icon_Size)
-                elseif texture then
-                    icon= format('|T%s:%d|t', texture, Save().Gossip_Text_Icon_Size)
-                end
-            end
-            name= zoneInfo.name
-            if zoneInfo.hex and zoneInfo.hex~='' then
-                name= '|c'..zoneInfo.hex..(name or info.name)..'|r'
-            end
-            if icon or name then
-                text= format('%s%s', icon or '', name or '')
-            end
-            if text=='' then
-                text= nil
-            end
+            text= e.cn(info.name, {questID=info.questID, isName=true})
         end
-    end
-    if not text and info.questID then
-        text= e.cn(nil, {questID=info.questID, isName=true})
     end
 
+    if text=='' or text==info.name then
+        text=nil
+    end
+
+
     if text then
-        if Save().Gossip_Text_Icon_cnFont then
-           self:GetFontString():SetFont('Fonts\\ARHei.ttf', 14)
+        if isChangFont then
+            self:GetFontString():SetFont('Fonts\\ARHei.ttf', size)
+        else
+            self:GetFontString():SetFontObject('QuestFontLeft')
         end
-        info.name= text
         self:SetText(text)
-    elseif Save().Gossip_Text_Icon_cnFont then
+        self:SetHeight(size+4)
+    else
         self:GetFontString():SetFontObject('QuestFontLeft')
     end
 end
@@ -364,7 +358,7 @@ local function Init()
         end
     end)
 
-    
+
     GossipButton:SetScript('OnMouseDown', function(self, d)
         if d=='RightButton' and IsAltKeyDown() then--移动
             SetCursor('UI_MOVE_CURSOR')
@@ -374,7 +368,7 @@ local function Init()
                 Save().gossip= not Save().gossip and true or nil
                 self:set_Texture()--设置，图片
                 self:tooltip_Show()
-                
+
             elseif d=='RightButton' and not key then--菜单
                 MenuUtil.CreateContextMenu(self, function(...) WoWTools_GossipMixin:Init_Menu_Gossip(...) end)
             end

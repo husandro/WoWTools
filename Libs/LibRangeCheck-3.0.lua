@@ -103,7 +103,7 @@ local HandSlotId = GetInventorySlotInfo("HANDSSLOT")
 local math_floor = math.floor
 local UnitIsVisible = UnitIsVisible
 
-local GetSpellInfo = GetSpellInfo or function(spellID)
+local GetSpellInfo = function(spellID)
   if not spellID then
     return nil;
   end
@@ -753,9 +753,10 @@ local function createCheckerList(spellList, itemList, interactList)
   end
 
   if spellList then
+    local name, minRange, range, spellIdx, sid
     for i = 1, #spellList do
-      local sid = spellList[i]
-      local name, minRange, range, spellIdx = getSpellData(sid)
+      sid = spellList[i]
+      name, minRange, range, spellIdx = getSpellData(sid)
       if spellIdx and range then
         -- print("### spell: " .. tostring(name) .. ", " .. tostring(minRange) .. " - " ..  tostring(range))
 

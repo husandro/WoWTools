@@ -1,5 +1,3 @@
-local e= select(2, ...)
-
 local player={
     [122782]={icon="Vehicle-SilvershardMines-Arrow", name="物品升级", hex=""},
     [122783]={icon="poi-transmogrifier", name="幻化师", hex=""},

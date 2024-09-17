@@ -37,13 +37,14 @@ WoWTools_TextureMixin:CreateBackground(frame, alpha)
 
 
 
-function WoWTools_TextureMixin:IsAtlas(texture)--Atlas or Texture
+function WoWTools_TextureMixin:IsAtlas(texture, size)--Atlas or Texture
     local isAtlas, textureID, icon
     if texture and texture~='' then
         local t= type(texture)
+        size= size or 0
         if t=='number' then
             if texture>0 then
-                isAtlas, textureID, icon= false, texture, format('|T%d:0|t', texture)
+                isAtlas, textureID, icon= false, texture, format('|T%d:%d|t', texture, size)
             end
         elseif t=='string' then
             texture= texture:gsub(' ', '')
@@ -51,7 +52,7 @@ function WoWTools_TextureMixin:IsAtlas(texture)--Atlas or Texture
                 local atlasInfo= C_Texture.GetAtlasInfo(texture)
                 isAtlas= atlasInfo and true or false
                 textureID= texture
-                icon= isAtlas and format('|A:%s:0:0|a', texture) or format('|T%s:0|t', texture)
+                icon= isAtlas and format('|A:%s:%d:%d|a', texture, size, size) or format('|T%s:0|t', texture, size)
             end
         end
     end
