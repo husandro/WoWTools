@@ -27,8 +27,15 @@ local Save={
         [220373]=true,--完美万能钻石
     },
 }
-local Initializer
+
 local MaxNumeri= 9
+
+
+
+
+
+
+
 
 
 
@@ -49,6 +56,20 @@ local function get_num_items()
     end
     return n
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 local function can_scrap_item(bag, slot, onlyEquip, classID)
     local itemLocation= ItemLocation:CreateFromBagAndSlot(bag, slot)
@@ -85,14 +106,27 @@ end
 
 
 
---[[local function Init_Currency()
-    if not e.Is_Timerunning then
-        return
+
+
+
+
+local function Init_SubItem_Menu(self, sub, items)
+    local sub2
+    local num=0
+    for itemID in pairs(items) do
+        sub2=sub:CreateCheckbox(
+            WoWTools_ItemMixin:GetName(itemID),
+        function(data)
+            return Save.items[data.itemID]
+        end, function(data)
+            Save.items[data.itemID]= not Save.items[data.itemID] and true or nil
+            self:settings()
+        end, {itemID=itemID})
+        WoWTools_SetTooltipMixin:Set_Menu(sub2)
+        num=num+1
     end
-
-    local frame=CreateFrame('Frame')
-end]]
-
+    WoWTools_MenuMixin:SetGridMode(sub, num)
+end
 
 
 
@@ -100,93 +134,50 @@ end]]
 
 
 
-local function Init_Menu(self, level, menuList)
-    if menuList=='DISABLE' then
-        local n=0
-        for itemID in pairs(Save.items) do
-            e.LoadData({id=itemID, type='item'})
-            e.LibDD:UIDropDownMenu_AddButton({
-                text= WoWTools_ItemMixin:GetLink(itemID),
-                icon= C_Item.GetItemIconByID(itemID),
-                tooltipOnButton=true,
-                tooltipTitle= itemID,
-                tooltipText= e.cn(C_Spell.GetSpellDescription(itemID)),
-                checked=true,
-                arg1= itemID,
-                keepShownOnClick=true,
-                func= function(_, arg1)
-                    Save.items[arg1]=nil
-                    print(e.addName, Initializer:GetName(), e.onlyChinese and '移除' or REMOVE, WoWTools_ItemMixin:GetLink(itemID))
-                end
-            }, level)
-            n=n+1
-        end
-        e.LibDD:UIDropDownMenu_AddSeparator(level)
-        e.LibDD:UIDropDownMenu_AddButton({
-            text= (e.onlyChinese and '全部清除' or CLEAR_ALL)..' #'..n,
-            colorCode= n==0 and '|cff9e9e9e',
-            notCheckable=true,
-            func=function()
-                Save.items={}
-                self:GetParent():settings()
-            end
-        }, level)
-        return
-    end
 
+
+
+
+
+
+
+
+
+local function Init_Menu(self, root)
+    local sub
     local tab={}
+
     for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES+NUM_REAGENTBAG_FRAMES do
         for slot=1, C_Container.GetContainerNumSlots(bag) do--背包数量
             local itemLocation= can_scrap_item(bag, slot, nil, nil)
             local itemLink= itemLocation and C_Item.GetItemLink(itemLocation)
             if itemLink then
-                local itemID, _, _, _, icon, classID= C_Item.GetItemInfoInstant(itemLink)
+                local itemID, _, _, _, _, classID= C_Item.GetItemInfoInstant(itemLink)
                 if itemID then
                     tab[classID]=tab[classID] or {}
-                    tab[classID][itemID]= {icon=icon, itemLink=itemLink}
+                    tab[classID][itemID]=true-- '|T'..(icon or 0)..':0|t'--{icon=icon, itemLink=itemLink}
                 end
             end
         end
     end
 
-    if menuList then
-        for itemID, info in pairs(tab[menuList] or {}) do
-            e.LibDD:UIDropDownMenu_AddButton({
-                text= info.itemLink or itemID,
-                icon= info.icon,
-                checked= Save.items[itemID],
-                arg1= itemID,
-                tooltipOnButton=true,
-                tooltipTitle=itemID,
-                tooltipText= e.cn(C_Spell.GetSpellDescription(itemID)),
-                keepShownOnClick=true,
-                func= function(_, arg1)
-                    Save.items[arg1]= not Save.items[arg1] and true or nil
-                    self:GetParent():settings()
-                end
-            }, level)
-        end
-        return
+    for classID, info in pairs(tab) do
+        sub=root:CreateButton(
+            classID..' '..(e.cn(C_Item.GetItemClassInfo(classID)) or ''),
+        function()
+            return MenuResponse.Open
+        end)
+
+        Init_SubItem_Menu(self, sub, info)
     end
 
-    for classID in pairs(tab) do
-        e.LibDD:UIDropDownMenu_AddButton({
-            text= classID..' '..(e.cn(C_Item.GetItemClassInfo(classID)) or ''),
-            menuList= classID,
-            hasArrow=true,
-            keepShownOnClick=true,
-            notCheckable=true,
-        }, level)
-    end
-    
-    e.LibDD:UIDropDownMenu_AddSeparator(level)
-    e.LibDD:UIDropDownMenu_AddButton({
-        text= (e.onlyChinese and '禁用添加' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISABLE, ADD))..' |cnGREEN_FONT_COLOR:#'..get_num_items()..'|r',
-        keepShownOnClick=true,
-        hasArrow=true,
-        menuList='DISABLE',
-        notCheckable=true,
-    }, level)
+    root:CreateDivider()
+    sub=root:CreateButton(
+        (e.onlyChinese and '禁用添加' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISABLE, ADD))..' |cnGREEN_FONT_COLOR:#'..get_num_items()..'|r',
+    function()
+        return MenuResponse.Open
+    end)
+    Init_SubItem_Menu(self, sub, Save.items)
 end
 
 
@@ -239,7 +230,7 @@ local function Init_Disabled_Button()
             end
         end
 
-        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+        e.tips:AddDoubleLine(e.addName, addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(
             (e.onlyChinese and '禁用物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISABLE, ITEMS))..' |cnGREEN_FONT_COLOR:#'..self.Text:GetText(),
@@ -248,27 +239,16 @@ local function Init_Disabled_Button()
         e.tips:AddDoubleLine(
             e.Icon.left..(e.onlyChinese and '拖曳物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DRAG_MODEL, ITEMS)),
             (e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..e.Icon.right
-        )        
+        )
         e.tips:Show()
     end
     btn:SetScript('OnLeave', function(self) e.tips:Hide() self:settings() end)
     btn:SetScript('OnEnter', btn.set_tooltips)
-    btn:SetScript('OnClick', function(self, d)
-        if d=='RightButton' then
-            if not self.Menu then
-                self.Menu= CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
-                e.LibDD:UIDropDownMenu_Initialize(self.Menu, Init_Menu, 'MENU')
-            end
-            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)--主菜单
-        
-        end
-    end)
-    btn:SetScript("OnMouseUp", function(self, d)
-        if d~='LeftButton' then return end
+    btn:SetScript('OnMouseDown', function(self)
         local infoType, itemID, itemLink = GetCursorInfo()
         if infoType == "item" and itemID then
             Save.items[itemID]= not Save.items[itemID] and true or nil
-            print(e.addName, Initializer:GetName(),
+            print(e.addName, addName,
                 Save.items[itemID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r'
                     or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r'),
                 itemLink or itemID
@@ -276,6 +256,8 @@ local function Init_Disabled_Button()
             ClearCursor()
             self:settings()
             self:set_tooltips()
+        else
+            MenuUtil.CreateContextMenu(self, Init_Menu)
         end
     end)
 
@@ -341,12 +323,12 @@ local function Init()
     ScrappingMachineFrame.celarAllItem:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+        e.tips:AddDoubleLine(e.addName, addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(' ', '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL))
         e.tips:Show()
     end)
-    
+
 
 
     --添加，所有，物品
@@ -356,7 +338,7 @@ local function Init()
     ScrappingMachineFrame.addAllItem:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+        e.tips:AddDoubleLine(e.addName, addName)
         e.tips:AddLine(' ')
         e.tips:AddLine((e.onlyChinese and '添加' or ADD)..'|A:communities-chat-icon-plus:0:0|a'..(e.onlyChinese and '所有' or ALL))
         e.tips:Show()
@@ -365,7 +347,7 @@ local function Init()
         local free= MaxNumeri-get_num_items()
         if free==0 then
             return
-        end        
+        end
         for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES+NUM_REAGENTBAG_FRAMES do
             for slot=1, C_Container.GetContainerNumSlots(bag) do--背包数量
                 if can_scrap_item(bag, slot, nil, nil) then
@@ -386,7 +368,7 @@ local function Init()
     ScrappingMachineFrame.addAllGem:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+        e.tips:AddDoubleLine(e.addName, addName)
         e.tips:AddLine(' ')
         e.tips:AddLine((e.onlyChinese and '添加' or ADD)..'|T135998:0|t'..(e.onlyChinese and '宝石' or AUCTION_CATEGORY_GEMS))
         e.tips:Show()
@@ -395,7 +377,7 @@ local function Init()
         local free= MaxNumeri- get_num_items()
         if free==0 then
             return
-        end   
+        end
         for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES+NUM_REAGENTBAG_FRAMES do
             for slot=1, C_Container.GetContainerNumSlots(bag) do--背包数量
                 if can_scrap_item(bag, slot, nil, 3) then
@@ -417,7 +399,7 @@ local function Init()
     ScrappingMachineFrame.addAllEquip:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+        e.tips:AddDoubleLine(e.addName, addName)
         e.tips:AddLine(' ')
         e.tips:AddLine((e.onlyChinese and '添加' or ADD)..'|T135995:0|t'..(e.onlyChinese and '装备' or BAG_FILTER_EQUIPMENT))
         e.tips:Show()
@@ -441,7 +423,7 @@ local function Init()
         end
     end)
 
-    
+
 
 
     hooksecurefunc(ScrappingMachineFrame, 'UpdateScrapButtonState', function(self)
@@ -463,26 +445,42 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
 --###########
 --加载保存数据
 --###########
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
-
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            Save= WoWToolsSave[addName] or Save
+            if WoWToolsSave[SCRAPPING_MACHINE_TITLE] then
+                Save= WoWToolsSave[SCRAPPING_MACHINE_TITLE]
+                WoWToolsSave[SCRAPPING_MACHINE_TITLE]=nil
+            else
+                Save= WoWToolsSave['Other_ScrappingMachine'] or Save
+            end
+
+            addName= '|TInterface\\Icons\\inv_gizmo_03:0|t'..(e.onlyChinese and '拆解大师Mk1型' or SCRAPPING_MACHINE_TITLE)
 
             --添加控制面板
-            Initializer= e.AddPanel_Check({
-                name= '|TInterface\\Icons\\inv_gizmo_03:0|t'..(e.onlyChinese and '拆解大师Mk1型' or addName),
+            e.AddPanel_Check({
+                name= addName,
                 Value= not Save.disabled,
                 GetValue=function() return not Save.disabled end,
                 SetValue= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(e.addName, Initializer:GetName(), e.GetEnabeleDisable(Save.disabled), ScrappingMachineFrame and (e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD) or '')
+                    print(e.addName, addName, e.GetEnabeleDisable(Save.disabled), ScrappingMachineFrame and (e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD) or '')
                 end
             })
 
@@ -493,13 +491,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         elseif arg1=='Blizzard_ScrappingMachineUI' then--分解 ScrappingMachineFrame
             Init()
             Init_Disabled_Button()
-            --Init_Currency()
             self:UnregisterEvent('ADDON_LOADED')
         end
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            WoWToolsSave[addName]=Save
+            WoWToolsSave['Other_ScrappingMachine']=Save
         end
     end
 end)

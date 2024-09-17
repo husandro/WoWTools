@@ -235,8 +235,26 @@ Plus\mail.lua
 Plus\AuctionHouse.lua
 ##宠物对战
 Plus\PetBattle.lua
+
+
+
+
+
 ##插件，方案
-Plus\AddOns.lua
+Plus_AddOns\0_AddOns.lua
+Plus_AddOns\MenuButton.lua
+Plus_AddOns\BottomList.lua
+Plus_AddOns\RightList.lua
+
+
+
+
+
+
+
+
+
+
 ##自动隐藏，弹出NPC说话，
 ##Plus\Talking.lua
 ##断， 驱，散

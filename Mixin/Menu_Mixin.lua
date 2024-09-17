@@ -101,7 +101,7 @@ function WoWTools_MenuMixin:CreateSlider(root, tab)
     return sub
 end
 --[[
-sub2:CreateSpacer()
+sub:CreateSpacer()
 WoWTools_MenuMixin:CreateSlider(sub, {
     getValue=function()
         return Save.mountShowTime
@@ -117,7 +117,7 @@ WoWTools_MenuMixin:CreateSlider(sub, {
         tooltip:AddLine(e.onlyChinese and '间隔' or 'Interval')
     end
 })
-sub2:CreateSpacer()
+sub:CreateSpacer()
 ]]
 
 
@@ -160,6 +160,7 @@ function WoWTools_MenuMixin:Scale(root, GetValue, SetValue, checkGetValue, check
     return sub2, sub
 end
 --[[
+--缩放
 WoWTools_MenuMixin:Scale(root, function()
     return Save.scale
 end, function(value)

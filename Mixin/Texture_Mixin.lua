@@ -58,3 +58,128 @@ function WoWTools_TextureMixin:IsAtlas(texture, size)--Atlas or Texture
     end
     return isAtlas, textureID, icon
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local IconFrame
+local function Create_IconSelectorPopupFrame()
+    IconFrame= CreateFrame('Frame', 'WoWTools_IconSelectorPopupFrame', UIParent, 'IconSelectorPopupFrameTemplate')
+    IconFrame.IconSelector:SetPoint('BOTTOMRIGHT', -10, 36)
+
+    e.Set_Move_Frame(IconFrame, {notSave=true, setSize=true, minW=524, minH=276, maxW=524, sizeRestFunc=function(btn)
+        btn.target:SetSize(524, 495)
+    end})
+
+    IconFrame:Hide()
+
+    IconFrame.BorderBox.SelectedIconArea.SelectedIconText.SelectedIconDescription:SetText(e.onlyChinese and '点击在列表中浏览' or ICON_SELECTION_CLICK)
+
+    IconFrame.BorderBox.IconSelectorEditBox:SetAutoFocus(false)
+
+    IconFrame:SetScript('OnShow', function(self)
+        IconSelectorPopupFrameTemplateMixin.OnShow(self)
+        if self.iconDataProvider==nil then
+            self.iconDataProvider= CreateAndInitFromMixin(IconDataProviderMixin, IconDataProviderExtraType.None)
+        end
+        self:SetIconFilter(self:GetIconFilter() or IconSelectorPopupFrameIconFilterTypes.All)
+        self:Update()
+        self.BorderBox.IconSelectorEditBox:OnTextChanged()
+        local function OnIconSelected(_, icon)
+            self.BorderBox.SelectedIconArea.SelectedIconButton:SetIconTexture(icon)
+        end
+        self.IconSelector:SetSelectedCallback(OnIconSelected)
+    end)
+
+    IconFrame:SetScript('OnHide', function(self)
+        self.BorderBox.IconSelectorEditBox:SetText("")
+        self.BorderBox.IconSelectorEditBox:ClearFocus()
+        IconSelectorPopupFrameTemplateMixin.OnHide(self)
+        self.iconDataProvider:Release()
+        self.iconDataProvider = nil
+
+        self.text=nil
+        self.texture=nil
+        self.SetValue=nil
+    end)
+
+    function IconFrame:Update()
+        if not self.texture or self.texture==0 then
+            self.origName = ""
+            local initialIndex = 1
+            self.IconSelector:SetSelectedIndex(initialIndex)
+            self.BorderBox.SelectedIconArea.SelectedIconButton:SetIconTexture(self:GetIconByIndex(initialIndex))
+        else
+            self.BorderBox.IconSelectorEditBox:HighlightText()
+            self.IconSelector:SetSelectedIndex(self:GetIndexOfIcon(self.texture))
+            self.BorderBox.SelectedIconArea.SelectedIconButton:SetIconTexture(self.texture)
+        end
+        local getSelection = GenerateClosure(self.GetIconByIndex, self)
+        local getNumSelections = GenerateClosure(self.GetNumIcons, self)
+        self.IconSelector:SetSelectionsDataProvider(getSelection, getNumSelections)
+        self.IconSelector:ScrollToSelectedIndex()
+        self:SetSelectedIconText()
+
+        self.BorderBox.IconSelectorEditBox:SetText(self.text or '')
+    end
+
+    function IconFrame:OkayButton_OnClick()
+        local iconTexture = self.BorderBox.SelectedIconArea.SelectedIconButton:GetIconTexture() or 0
+        local text2= self.BorderBox.IconSelectorEditBox:GetText()
+        IconSelectorPopupFrameTemplateMixin.OkayButton_OnClick(self)
+        self.setValue(iconTexture, text2)
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
+function WoWTools_TextureMixin:Edit_Text_Icon(frame, tab)
+    
+    if not IconFrame then
+        Create_IconSelectorPopupFrame()
+    else
+        IconFrame:SetShown(false)
+    end
+    --IconFrame:SetParent(frame)
+    IconFrame:ClearAllPoints()
+    IconFrame:SetPoint('TOPLEFT', frame, 'RIGHT', 2, 20)
+    
+
+    IconFrame.text= tab.text
+    IconFrame.texture= tab.texture
+    IconFrame.setValue= tab.SetValue
+    
+    IconFrame:SetShown(true)
+end

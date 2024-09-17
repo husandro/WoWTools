@@ -534,19 +534,20 @@ local function Init()
         function frame:OkayButton_OnClick()
             IconSelectorPopupFrameTemplateMixin.OkayButton_OnClick(self);
             local iconTexture = self.BorderBox.SelectedIconArea.SelectedIconButton:GetIconTexture();
-            local m= Frame.Menu
-            m.Icon:SetText(iconTexture or '')
-            local gossip= m:get_gossipID()
+            Menu.Icon:SetText(iconTexture or '')
+            local gossip= Menu:get_gossipID()
             if gossip==0 then
-                m.ID:SetFocus()
+                Menu.ID:SetFocus()
             else
-                m.Name:SetFocus()
-                Frame.Menu:add_gossip()
+                Menu.Name:SetFocus()
+                Menu:add_gossip()
             end
         end
         f.frame= frame
         frame:Show()
     end)
+
+
     if _G['TAV_CoreFrame'] then--查找，图标，按钮， Texture Atlas Viewer， 插件
         Menu.tav= WoWTools_ButtonMixin:Cbtn(Frame, {size={22,22}, atlas='communities-icon-searchmagnifyingglass'})
         Menu.tav:SetPoint('TOP', Menu.FindIcon, 'BOTTOM', 0, -2)
