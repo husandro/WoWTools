@@ -271,11 +271,7 @@ local function Init()
         return  frame and frame:IsShown() and frame or false
     end
 
-    function GossipButton:update_gossip_frame()
-        if GossipFrame:IsShown() then
-            GossipFrame:Update()
-        end
-    end
+
 
     function GossipButton:set_Point()--设置位置
         if Save().point then

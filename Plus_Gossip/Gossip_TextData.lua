@@ -101,14 +101,14 @@ local function Init_Data()
     end
 
 
-    
+
     for gossipID, tab in pairs(WoWTools_GossipMixin:Get_PlayerData()) do
         local hex= tab.hex and tab.hex~='' and tab.hex or nil
         local icon= tab.icon and tab.icon~='' and tab.icon or nil
         local name= tab.name and tab.name~='' and tab.name or nil
         if hex or icon or name then
-        if e.onlyChinese then
-                GossipTextIcon[gossipID]= tab
+            if e.onlyChinese then
+                GossipTextIcon[gossipID]= {name=name, icon=icon, hex=hex}
             else
                 GossipTextIcon[gossipID]= {icon=icon, hex=hex}
             end

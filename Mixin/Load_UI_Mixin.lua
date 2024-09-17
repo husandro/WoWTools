@@ -6,6 +6,7 @@ ToggleLandingPage()概要
 Professions(recipeID)专业
 WeeklyRewards()宏伟宝库
 MajorFaction(factionID)派系声望
+UpdateGossipFrame()更新GossipFrame
 ]]
 local e= select(2, ...)
 WoWTools_LoadUIMixin= {}
@@ -221,4 +222,16 @@ function WoWTools_LoadUIMixin:CovenantRenown(frame, covenantID)
     CovenantRenownFrame:Refresh(true)
 
     C_CovenantSanctumUI.RequestCatchUpState()
+end
+
+
+
+
+
+
+--更新GossipFrame
+function WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
+    if GossipFrame:IsShown() then
+        GossipFrame:Update()
+    end
 end

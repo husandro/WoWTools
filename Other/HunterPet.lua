@@ -2,37 +2,32 @@ local id, e= ...
 if e.Player.class~='HUNTER' or not StableFrame then --or C_AddOns.IsAddOnLoaded("ImprovedStableFrame") then
     return
 end
---PetStableFrame, C_AddOns.IsAddOnLoaded("ImprovedStableFrame")
---PetStable.lua
-local addName= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,  'HUNTER', DUNGEON_FLOOR_ORGRIMMARRAID8) --猎人兽栏
+
+local addName --猎人兽栏
 local Save={
     --hideIndex=true,--隐藏索引
     --hideTalent=true,--隐藏天赋
    -- modelScale=0.65,
-    --sortIndex=4,--1, 2,3,4,5 icon, name, level, family, talent排序
+
     --line=15,
 
     --10.2.7
     --show_All_List=true,显示，所有宠物，图标列表
     --sortDown= true,--排序, 降序
     --all_List_Size==28--图标表表，图标大小
+    sortType='specialization',
+    all_List_Size=28
 }
-local Initializer
+
+
 local AllListFrame
---[[
-    Name = "PetConsts_PostCata",
-			Type = "Constants",
-			Values =
-			{
-				{ Name = "MAX_STABLE_SLOTS", Type = "number", Value = 200 },
-				{ Name = "MAX_SUMMONABLE_PETS", Type = "number", Value = 25 },
-				{ Name = "MAX_SUMMONABLE_HUNTER_PETS", Type = "number", Value = 5 },
-				{ Name = "NUM_PET_SLOTS_THAT_NEED_LEARNED_SPELL", Type = "number", Value = 5 },
-				{ Name = "NUM_PET_SLOTS", Type = "number", Value = Constants.PetConsts.MAX_STABLE_SLOTS + Constants.PetConsts.NUM_PET_SLOTS_THAT_NEED_LEARNED_SPELL },
-				{ Name = "EXTRA_PET_STABLE_SLOT", Type = "number", Value = 5 },
-				{ Name = "STABLED_PETS_FIRST_SLOT_INDEX", Type = "number", Value = Constants.PetConsts.EXTRA_PET_STABLE_SLOT + 1 },
-			},
-]]
+--5
+local MAX_SUMMONABLE_HUNTER_PETS = Constants.PetConsts_PostCata.MAX_SUMMONABLE_HUNTER_PETS
+--6
+local EXTRA_PET_STABLE_SLOT_LUA_INDEX = Constants.PetConsts_PostCata.EXTRA_PET_STABLE_SLOT + 1;
+--205
+local NUM_PET_SLOTS_HUNTER = Constants.PetConsts_PostCata.NUM_PET_SLOTS_HUNTER;
+
 
 --召唤，法术，提示
 local CALL_PET_SPELL_IDS = {
@@ -45,13 +40,6 @@ local CALL_PET_SPELL_IDS = {
 e.LoadData({id=267116, type='spell'})--动物伙伴
 
 
---[[local function Is_Selected_Pet(slotID)--是否，选中
-    local selectedPet = StableFrame.selectedPet
-    return selectedPet and selectedPet.slotID == slotID
-end]]
-
---PetConstantsDocumentation.lua
-local PetConsts= Constants.PetConsts_PostCata or Constants.PetConsts
 
 
 local function get_abilities_icons(pet, line)--取得，宠物，技能，图标
@@ -74,7 +62,7 @@ end
 local function set_pet_tooltips(frame, pet)
     e.tips:SetOwner(frame, "ANCHOR_LEFT", -12, 0)
     e.tips:ClearLines()
-    e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+    e.tips:AddDoubleLine(e.addName, addName)
     e.tips:AddLine(' ')
     local i=1
     for indexType, name in pairs(pet) do
@@ -138,7 +126,7 @@ local function created_model(btn, setBg)
     btn.model= CreateFrame("PlayerModel", nil, btn)
     local w= btn:GetWidth()
 
-    if btn:GetID()==PetConsts.STABLED_PETS_FIRST_SLOT_INDEX then--11版本
+    if btn:GetID()==EXTRA_PET_STABLE_SLOT_LUA_INDEX then--11版本
         btn.model:SetFacing(-0.3)
         w=w+80
         btn.model:SetPoint('RIGHT', btn, 'LEFT')
@@ -227,7 +215,7 @@ local function created_model(btn, setBg)
         if self.petData and not self.locked and self:IsEnabled() then
             set_pet_tooltips(self, self.petData)
             e.tips:AddDoubleLine(e.onlyChinese and '放入兽栏' or STABLE_PET_BUTTON_LABEL, e.Icon.right)
-            if self:GetID()==PetConsts.STABLED_PETS_FIRST_SLOT_INDEX then
+            if self:GetID()==EXTRA_PET_STABLE_SLOT_LUA_INDEX then
                 e.tips:AddDoubleLine(
                     format('|cffaad372%s|r', e.onlyChinese and '天赋' or TALENT),
                     format('|T461112:0|t|cffaad372%s|r', e.onlyChinese and '动物伙伴' or C_Spell.GetSpellLink(267116) or C_Spell.GetSpellName(267116) or 'Animal Companion')
@@ -574,7 +562,7 @@ function Set_StableFrame_List()
     AllListFrame.Bg:SetTexCoord(1,0,1,0)
     AllListFrame.Bg:SetPoint('TOPLEFT')
 
-    for i=Constants.PetConsts_PostCata.STABLED_PETS_FIRST_SLOT_INDEX+ 1, Constants.PetConsts_PostCata.NUM_PET_SLOTS_HUNTER do
+    for i=EXTRA_PET_STABLE_SLOT_LUA_INDEX, NUM_PET_SLOTS_HUNTER do
         local btn= created_button(i)
         AllListFrame.Buttons[i]= btn
     end
@@ -598,13 +586,13 @@ function Set_StableFrame_List()
             end
         end
         AllListFrame.Bg:ClearAllPoints()
-        AllListFrame.Bg:SetPoint('TOPLEFT', AllListFrame.Buttons[Constants.PetConsts_PostCata.STABLED_PETS_FIRST_SLOT_INDEX+ 1])
+        AllListFrame.Bg:SetPoint('TOPLEFT', AllListFrame.Buttons[EXTRA_PET_STABLE_SLOT_LUA_INDEX])
         AllListFrame.Bg:SetPoint('BOTTOM', btnY)
-        AllListFrame.Bg:SetPoint('RIGHT', AllListFrame.Buttons[Constants.PetConsts_PostCata.NUM_PET_SLOTS_HUNTER])
+        AllListFrame.Bg:SetPoint('RIGHT', AllListFrame.Buttons[NUM_PET_SLOTS_HUNTER])
     end
-    
 
-    
+
+
     function AllListFrame:Refresh()
         local show= self:IsShown()
         for _, btn in pairs(AllListFrame.Buttons) do
@@ -631,8 +619,8 @@ function Set_StableFrame_List()
     end)
 
     --第6个，提示，如果，没有专精支持，它会禁用，所有，建立一个
-    AllListFrame.btn6= created_button(PetConsts.STABLED_PETS_FIRST_SLOT_INDEX)
-    AllListFrame.btn6:SetPoint('BOTTOM', AllListFrame.Buttons[PetConsts.STABLED_PETS_FIRST_SLOT_INDEX+ 1],'TOP')
+    AllListFrame.btn6= created_button(MAX_SUMMONABLE_HUNTER_PETS)
+    AllListFrame.btn6:SetPoint('BOTTOM', AllListFrame.Buttons[EXTRA_PET_STABLE_SLOT_LUA_INDEX],'TOP')
     function AllListFrame.btn6:settings()
         local show= self:GetParent():IsShown() and not StableFrame.ActivePetList.BeastMasterSecondaryPetButton:IsEnabled()
         self:SetPet(show and C_StableInfo.GetStablePetInfo(self:GetID()) or nil)
@@ -641,7 +629,7 @@ function Set_StableFrame_List()
 
     AllListFrame:set_shown()
 
-    
+
     StableFrame:HookScript('OnSizeChanged', function()
         AllListFrame:set_point()
     end)
@@ -679,11 +667,12 @@ end
 
 
 local Is_In_Search
-local function sort_pets_list(type, d)
+local function sort_pets_list(type)
     if Is_In_Search then
         return
     end
     Is_In_Search= true
+
     do
         local tab= {}
         for _, btn in pairs(AllListFrame.Buttons) do
@@ -701,7 +690,7 @@ local function sort_pets_list(type, d)
                     icon= get_text_byte(info.icon),
                     familyName= get_text_byte(info.familyName)
                 })
-                
+
             end
         end
         table.sort(tab, function(a, b)
@@ -711,7 +700,7 @@ local function sort_pets_list(type, d)
         if not Save.sortDown then--点击，从前，向后
             for i, newTab in pairs(tab) do
                 do
-                    local index= i+  PetConsts.STABLED_PETS_FIRST_SLOT_INDEX
+                    local index= i+  MAX_SUMMONABLE_HUNTER_PETS
                     C_StableInfo.SetPetSlot(newTab.slotID, index)
                 end
             end
@@ -741,145 +730,114 @@ end
 
 
 
+
+
+
+local function Init_Menu(_, root)
+
+--所有宠物
+    root:CreateCheckbox(
+        '|A:dressingroom-button-appearancelist-up:0:0|a'..(e.onlyChinese and '所有宠物' or BATTLE_PETS_TOTAL_PETS),
+    function()
+        return Save.show_All_List
+    end, function()
+        Save.show_All_List= not Save.show_All_List and true or nil
+        Set_StableFrame_List()--初始，宠物列表
+        return MenuResponse.Close
+
+    end)
+
+
+    if Save.show_All_List then
+--排序
+        root:CreateDivider()
+        root:CreateCheckbox(
+            e.onlyChinese and '升序' or PERKS_PROGRAM_ASCENDING,
+        function()
+            return not Save.sortDown
+        end, function()
+            Save.sortDown= not Save.sortDown and true or nil
+        end)
+
+        local tab={
+            ['petNumber']=  'petNumber',
+            [e.onlyChinese and '类型' or TYPE]= 'type',
+            ['creatureID']= 'creatureID',
+            ['uiModelSceneID']= 'uiModelSceneID',
+            ['displayID']= 'displayID',
+            [e.onlyChinese and '名称' or NAME]= 'name',
+            [e.onlyChinese and '天赋' or TALENT]= 'specialization',
+            [e.onlyChinese and '图标' or EMBLEM_SYMBOL]='icon',
+            ['familyName']= 'familyName',
+        }
+        for text, name in pairs(tab) do
+            root:CreateButton(text, function(data)
+                sort_pets_list(data.name)
+                return MenuResponse.Open
+            end, {name=name})
+        end
+
+--图标尺寸
+        root:CreateSpacer()
+        WoWTools_MenuMixin:CreateSlider(root, {
+            getValue=function()
+                return Save.all_List_Size or 28
+            end, setValue=function(value)
+                Save.all_List_Size=value
+                if AllListFrame then
+                    AllListFrame.s=value
+                    for _, btn2 in pairs(AllListFrame.Buttons) do
+                        set_button_size(btn2)
+                    end
+                    if AllListFrame:IsShown() then
+                        AllListFrame:set_point()
+                    end
+                end
+            end,
+            name=e.onlyChinese and '图标尺寸' or HUD_EDIT_MODE_SETTING_ACTION_BAR_ICON_SIZE,
+            minValue=8,
+            maxValue=72,
+            step=1,
+            bit=nil,
+        })
+        root:CreateSpacer()
+    end
+
+--选项
+    root:CreateDivider()
+    WoWTools_MenuMixin:OpenOptions(root, {name=addName})
+end
+
+
+
+
+
+
 --宠物列表
 function Init_StableFrame_List()
-    local btn= WoWTools_ButtonMixin:Cbtn(StableFrame, {size={20,20}, atlas='dressingroom-button-appearancelist-up'})
+    --local btn= WoWTools_ButtonMixin:Cbtn(StableFrame, {size={20,20}, atlas='dressingroom-button-appearancelist-up'})
+    local btn= WoWTools_ButtonMixin:CreateMenu(StableFrameCloseButton)
     btn:SetPoint('RIGHT', StableFrameCloseButton, 'LEFT', -2, 0)
-    btn:SetFrameLevel(StableFrameCloseButton:GetFrameLevel()+1)
+    btn:SetFrameStrata(StableFrameCloseButton:GetFrameStrata())
+    btn:SetFrameLevel(StableFrameCloseButton:GetFrameLevel())
 
     function btn:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+        e.tips:AddDoubleLine(e.addName, addName)
         e.tips:AddLine(' ')
-        --e.tips:AddDoubleLine(format('%s %s', e.onlyChinese and '所有宠物' or BATTLE_PETS_TOTAL_PETS, e.GetEnabeleDisable(Save.show_All_List)), e.Icon.left)
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)
-        e.tips:AddDoubleLine(format('%s |cnGREEN_FONT_COLOR:%d|r', e.onlyChinese and '图标尺寸' or HUD_EDIT_MODE_SETTING_ACTION_BAR_ICON_SIZE, Save.all_List_Size or 28), e.Icon.mid)
         e.tips:Show()
-        self:SetAlpha(1)
     end
-    btn:SetScript('OnMouseDown', function(self, d)
-        --[[if d=='LeftButton' then
-            Save.show_All_List= not Save.show_All_List and true or nil
-            Set_StableFrame_List()--初始，宠物列表
-            self:set_tooltips()
-        else]]
-
-        if not self.menu then
-            self.menu= CreateFrame('Frame', nil, btn , "UIDropDownMenuTemplate")
-            e.LibDD:UIDropDownMenu_Initialize(self.menu, function(frame, level, menuList)
-                if menuList=='SortType' then
-                    e.LibDD:UIDropDownMenu_AddButton({
-                        text= e.onlyChinese and '升序' or PERKS_PROGRAM_ASCENDING,
-                        keepShownOnClick=true,
-                        checked= not Save.sortDown,
-                        func= function()
-                            Save.sortDown= not Save.sortDown and true or nil
-                        end
-                    }, level)
-                    return
-                end
-                e.LibDD:UIDropDownMenu_AddButton({
-                    text= e.onlyChinese and '排序' or CLUB_FINDER_SORT_BY,
-                    colorCode='|cffff7f00',
-                    notCheckable=true,
-                    keepShownOnClick=true,
-                    hasArrow=true,
-                    menuList='SortType',
-                }, level)
-
-                local tab={
-                    ['petNumber']=  'petNumber',
-                    [e.onlyChinese and '类型' or TYPE]= 'type',
-                    ['creatureID']= 'creatureID',
-                    ['uiModelSceneID']= 'uiModelSceneID',
-                    ['displayID']= 'displayID',
-                    [e.onlyChinese and '名称' or NAME]= 'name',
-                    [e.onlyChinese and '天赋' or TALENT]= 'specialization',
-                    [e.onlyChinese and '图标' or EMBLEM_SYMBOL]='icon',
-                    ['familyName']= 'familyName',
-                }
-                for text, name in pairs(tab) do
-                    local info={
-                        text=text,
-                        notCheckable=true,
-                        arg1=name,
-                        keepShownOnClick=true,
-                        disabled= not AllListFrame or not AllListFrame:IsShown(),
-                        func=function(_, arg1)
-                            sort_pets_list(arg1)
-                        end
-                    }
-                    e.LibDD:UIDropDownMenu_AddButton(info, level)
-                end
-
-                e.LibDD:UIDropDownMenu_AddSeparator(level)
-
-                e.LibDD:UIDropDownMenu_AddButton({
-                    text= e.onlyChinese and '所有宠物' or BATTLE_PETS_TOTAL_PETS,
-                    checked= Save.show_All_List,
-                    keepShownOnClick=true,
-                    icon= 'dressingroom-button-appearancelist-up',
-                    func= function()
-                        Save.show_All_List= not Save.show_All_List and true or nil
-                        Set_StableFrame_List()--初始，宠物列表
-                        frame:GetParent():set_show_tips()
-                    end
-                }, level)
+    btn:SetupMenu(Init_Menu)
+    
 
 
 
-                e.LibDD:UIDropDownMenu_AddButton({
-                    text= e.onlyChinese and '选项' or OPTIONS,
-                    notCheckable=true,
-                    icon='mechagon-projects',
-                    func= function()
-                        if not Initializer then
-                            e.OpenPanelOpting()
-                        end
-                        e.OpenPanelOpting(Initializer, addName)
-                    end
-                }, level)
-            end, "MENU")
-        end
-        e.LibDD:ToggleDropDownMenu(1, nil, self.menu, self, -100, 0)
-    end)
-
-
-    btn:SetScript('OnMouseWheel', function(self, d)
-        local n= Save.all_List_Size or 28
-        n= d==1 and n-2 or n
-        n= d==-1 and n+2 or n
-        n= n>75 and 72 or n
-        n= n<8 and 8 or n
-        Save.all_List_Size= n
-        if AllListFrame then
-            AllListFrame.s=n
-            for _, btn2 in pairs(AllListFrame.Buttons) do
-                set_button_size(btn2)
-            end
-            if AllListFrame:IsShown() then
-                AllListFrame:set_point()
-            end
-        end
-        self:set_tooltips()
-    end)
-
-
-    function btn:set_show_tips()
-        if Save.show_All_List then
-            self:SetButtonState('PUSHED')
-        else
-            self:SetButtonState('NORMAL')
-        end
-        self:SetAlpha(Save.show_All_List and 0.3 or 1)
-    end
     btn:SetScript('OnLeave', function(self)
-        self:set_show_tips()
         e.tips:Hide()
     end)
     btn:SetScript('OnEnter', btn.set_tooltips)
-    btn:set_show_tips()
 
     StableFrame.AllListButton= btn
     Set_StableFrame_List()--初始，宠物列表
@@ -904,18 +862,28 @@ panel:RegisterEvent('PLAYER_LOGOUT')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            Save= WoWToolsSave[addName] or Save
-            Save.sortIndex= Save.sortIndex or 4
+
+            if WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,  'HUNTER', DUNGEON_FLOOR_ORGRIMMARRAID8)] then
+                Save=WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,  'HUNTER', DUNGEON_FLOOR_ORGRIMMARRAID8)]
+                Save.sortIndex=nil
+                Save.sortType='specialization'
+                Save.all_List_Size=28
+                WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,  'HUNTER', DUNGEON_FLOOR_ORGRIMMARRAID8)]=nil
+            else
+                Save= WoWToolsSave['Other_HunterPet'] or Save
+            end
+
+            addName= '|A:groupfinder-icon-class-hunter:0:0|a'..(e.onlyChinese and '猎人兽栏' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UnitClass('player'), STABLE_STABLED_PET_LIST_LABEL))
 
             --添加控制面板
-            Initializer= e.AddPanel_Check({
-                name= '|A:groupfinder-icon-class-hunter:0:0|a'..(e.onlyChinese and '猎人兽栏' or addName),
+             e.AddPanel_Check({
+                name= addName,
                 tooltip= nil,
                 Value= not Save.disabled,
                 GetValue=function() return not Save.disabled end,
                 SetValue= function()
                     Save.disabled = not Save.disabled and true or nil
-                    print(e.addName, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                    print(e.addName, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
                 end
             })
 
@@ -929,8 +897,31 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            WoWToolsSave[addName]=Save
+            WoWToolsSave['Other_HunterPet']= Save
         end
     end
 
 end)
+
+--[[
+    Name = "PetConsts_PostCata",
+			Type = "Constants",
+			Values =
+			{
+{ Name = "MAX_STABLE_SLOTS", Type = "number", Value = 200 },
+{ Name = "MAX_SUMMONABLE_PETS", Type = "number", Value = 25 },
+{ Name = "MAX_SUMMONABLE_HUNTER_PETS", Type = "number", Value = 5 },
+{ Name = "NUM_PET_SLOTS_THAT_NEED_LEARNED_SPELL", Type = "number", Value = 5 },
+{ Name = "NUM_PET_SLOTS", Type = "number", Value = Constants.PetConsts.MAX_STABLE_SLOTS + Constants.PetConsts.NUM_PET_SLOTS_THAT_NEED_LEARNED_SPELL },
+{ Name = "EXTRA_PET_STABLE_SLOT", Type = "number", Value = 5 },
+{ Name = "STABLED_PETS_FIRST_SLOT_INDEX", Type = "number", Value = Constants.PetConsts.EXTRA_PET_STABLE_SLOT + 1 },
+			},
+
+local function Is_Selected_Pet(slotID)--是否，选中
+    local selectedPet = StableFrame.selectedPet
+    return selectedPet and selectedPet.slotID == slotID
+end
+
+--PetConstantsDocumentation.lua
+
+]]

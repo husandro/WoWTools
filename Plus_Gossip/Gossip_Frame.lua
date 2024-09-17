@@ -121,7 +121,7 @@ local function Init()
 
     Menu.ScrollBar  = CreateFrame("EventFrame", nil, Frame, "MinimalScrollBar")
     Menu.ScrollBar:SetPoint("TOPLEFT", Menu, "TOPRIGHT", 8,0)
-    Menu.ScrollBar:SetPoint("BOTTOMLEFT", Menu, "BOTTOMRIGHT",8,0)
+    Menu.ScrollBar:SetPoint("BOTTOMLEFT", Menu, "BOTTOMRIGHT",8,12)
 
     Menu.view = CreateScrollBoxListLinearView()
     ScrollUtil.InitScrollBoxListWithScrollBar(Menu, Menu.ScrollBar, Menu.view)
@@ -355,7 +355,7 @@ local function Init()
                 hex= hex,
             }
             self.gossipID= num
-            GossipButton:update_gossip_frame()
+            WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
             self:set_list()
         end
 
@@ -378,7 +378,7 @@ local function Init()
             Save().Gossip_Text_Icon_Player[gossipID]=nil
             print(e.addName, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '删除' or DELETE)..'|r|n', gossipID, info.icon, info.hex, info.name)
             self:set_list()
-            GossipButton:update_gossip_frame()
+            WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
         end
         self:set_all()
     end
@@ -691,7 +691,7 @@ local function Init()
             if not icon or icon==0 then
                 f.Texture:SetTexture(3847780)
             end
-            GossipButton:update_gossip_frame()
+            WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
     end})
     Menu.Size:SetPoint('TOP', Menu.Icon, 'BOTTOM', 0, -36)
 
@@ -717,7 +717,7 @@ local function Init()
         end)
         Menu.font:SetScript('OnMouseDown', function()
             Save().Gossip_Text_Icon_cnFont= not Save().Gossip_Text_Icon_cnFont and true or nil
-            GossipButton:update_gossip_frame()
+            WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
             Frame.Menu:set_list()
             if not Save().Gossip_Text_Icon_cnFont then
                 print(e.addName, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '需要重新加载UI' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, RELOADUI))
@@ -767,13 +767,17 @@ local function Init()
     Menu.System:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddLine(format('%s |cnGREEN_FONT_COLOR:%d|r', e.onlyChinese and '默认' or DEFAULT, self.num or 0))
-        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)
+        e.tips:AddDoubleLine(format('%s |cnGREEN_FONT_COLOR:%d|r', e.onlyChinese and '默认' or DEFAULT, self.num or 0), e.Icon.left)
+        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
         e.tips:Show()
         self:set_num()
     end)
-    Menu.System:SetScript('OnClick', function(self)
-        WoWTools_GossipMixin:GossipData_Menu(self)
+    Menu.System:SetScript('OnClick', function(self, d)
+        if d=='LeftButton' then
+            WoWTools_GossipMixin:GossipData_Menu(self)
+        elseif d=='RightButton' then
+            MenuUtil.CreateContextMenu(self, function(_, root) WoWTools_GossipMixin:Init_Menu_Gossip(GossipButton, root) end)
+        end
     end)
 
 
@@ -947,7 +951,7 @@ local function Init()
     end)
 
     Frame:SetScript('OnHide', function(self)
-        GossipButton:update_gossip_frame()
+        WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
         self.Menu:set_list()
         if not GossipFrame.GreetingPanel.ScrollBox:GetView() then
             return
@@ -957,10 +961,10 @@ local function Init()
         end
     end)
     Frame:SetScript('OnShow', function(self)
-        GossipButton:update_gossip_frame()
+        WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
         self.Menu:set_list()
     end)
-    GossipButton:update_gossip_frame()
+    WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
 
 
 

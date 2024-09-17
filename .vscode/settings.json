@@ -4978,7 +4978,8 @@
         "DelvesCompanionAbilityListFrameBg",
         "REWARD",
         "VIDEOOPTIONS_MENU",
-        "Gossip_Text_Icon_Frame"
+        "Gossip_Text_Icon_Frame",
+        "STABLE_STABLED_PET_LIST_LABEL"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

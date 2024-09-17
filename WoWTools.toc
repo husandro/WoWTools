@@ -216,6 +216,7 @@ Plus_Gossip\Gossip_TextData.lua
 Plus_Gossip\Gossip_PlayerData.lua
 Plus_Gossip\Gossip.lua
 Plus_Gossip\Quest_Menu.lua
+Plus_Gossip\Quest_QuestInfo.lua
 Plus_Gossip\Quest.lua
 
 

@@ -59,6 +59,11 @@ end
 
 
 
+
+
+
+
+
 local function Init_Menu(self, root)
     local sub, sub2, sub3, num, num2
 
@@ -87,6 +92,7 @@ local function Init_Menu(self, root)
         return  Save().unique
     end, function ()
         Save().unique= not Save().unique and true or nil
+        WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
     end)
 
 --自定义,闲话
@@ -111,6 +117,7 @@ local function Init_Menu(self, root)
             return Save().gossipOption[data.gossipOptionID]
         end, function(data)
             Save().gossipOption[data.gossipOptionID]= not Save().gossipOption[data.gossipOptionID] and data.text or nil
+            WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
         end, {gossipOptionID=gossipOptionID, text=text})
         sub2:SetTooltip(function(tooltip, description)
             tooltip:AddLine(description.data.gossipOptionID)
@@ -130,7 +137,6 @@ local function Init_Menu(self, root)
 
 
 --对话替换
-
     root:CreateDivider()
     num, num2= 0, 0
     for _ in pairs(Save().Gossip_Text_Icon_Player) do
@@ -149,6 +155,7 @@ local function Init_Menu(self, root)
     end, function()
         Save().not_Gossip_Text_Icon= not Save().not_Gossip_Text_Icon and true or nil
         WoWTools_GossipMixin:Init_Gossip_Data()
+        WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
         return MenuResponse.Close
     end)
 
@@ -173,6 +180,7 @@ local function Init_Menu(self, root)
     end, function()
         Save().notGossipPlayerData= not Save().notGossipPlayerData and true or nil
         WoWTools_GossipMixin:Init_Gossip_Data()
+        WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
         return MenuResponse.CloseAll
     end)
 
@@ -343,143 +351,14 @@ end
 
 
 
+
+
+
+
+
+
+
+
 function WoWTools_GossipMixin:Init_Menu_Gossip(frame, root)
     Init_Menu(frame, root)
 end
-
-
-
---###########
---对话，主菜单
---[[###########
-local function Init(self, level, type)
-
-    if not Save().gossip then
-        e.LibDD:UIDropDownMenu_AddButton({
-            text=e.GetEnabeleDisable(false),
-            checked=true,
-            func=function()
-                Save().gossip= true
-                self:set_Texture()--设置，图片
-                self:tooltip_Show()
-                self:update_gossip_frame()
-            end
-        }, level)
-        return
-    end
-    local info
-    if type=='OPTIONS' then
-        info={
-            text= e.onlyChinese and '重置位置' or RESET_POSITION,
-            notCheckable=true,
-            colorCode=not Save().point and '|cff9e9e9e',
-            keepShownOnClick=true,
-            func= function()
-                Save().point=nil
-                self:ClearAllPoints()
-                self:set_Point()
-                print(e.addName, WoWTools_GossipMixin.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-        info={
-            text= e.onlyChinese and '恢复默认设置' or RESET_TO_DEFAULT,
-            notCheckable=true,
-            keepShownOnClick=true,
-            func= function()
-                StaticPopupDialogs['WoWTools_Gossip_RESET_TO_DEFAULT']={
-                    text=e.addName..' '..WoWTools_GossipMixin.addName..'|n|n|cnRED_FONT_COLOR:'..(e.onlyChinese and '恢复默认设置' or RESET_TO_DEFAULT)..'|r|n|n|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重新加载UI' or RELOADUI),
-                    whileDead=true, hideOnEscape=true, exclusive=true,
-                    button1= e.onlyChinese and '重置' or RESET,
-                    button2= e.onlyChinese and '取消' or CANCEL,
-                    OnAccept = function()
-                        WoWTools_GossipMixin.Save=nil
-                        WoWTools_Mixin:Reload()
-                    end,
-                }
-                StaticPopup_Show('WoWTools_Gossip_RESET_TO_DEFAULT')
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-
-
-
-
-    
-    elseif type=='WoWMovie' then
-        for _, movieEntry in pairs(MOVIE_LIST or WoWTools_GossipMixin:Get_MoveData()) do
-            for _, movieID in pairs(movieEntry.movieIDs) do
-                local isDownload= IsMovieLocal(movieID)-- IsMoviePlayable(movieID)
-                local inProgress, downloaded, total = GetMovieDownloadProgress(movieID)
-                info={
-                    text= (movieEntry.title or movieEntry.text or _G["EXPANSION_NAME"..movieEntry.expansion])..' '..movieID,
-                    tooltipOnButton=true,
-                    tooltipTitle= e.Icon.left..(e.onlyChinese and '播放' or EVENTTRACE_BUTTON_PLAY),
-                    tooltipText=(isDownload and '|cff9e9e9e' or '')
-                                ..'Ctrl+'..e.Icon.left..(e.onlyChinese and '下载' or 'Download')
-                                ..(inProgress and downloaded and total and format('|n%i%%', downloaded/total*100) or ''),
-                    notCheckable=true,
-                    disabled= UnitAffectingCombat('player'),
-                    colorCode= not isDownload and '|cff9e9e9e' or nil,
-                    icon= movieEntry.upAtlas,
-                    arg1= movieID,
-                    func= function(_, arg1)
-                        if IsControlKeyDown() then
-                            if IsMovieLocal(arg1) then
-                                print(e.addName, WoWTools_GossipMixin.addName, arg1, e.onlyChinese and '存在' or 'Exist')
-                            else
-                                PreloadMovie(arg1)
-                                local inProgress2, downloaded2, total2 = GetMovieDownloadProgress(arg1)
-                                print(e.addName, WoWTools_GossipMixin.addName, inProgress2 and downloaded2 and total2 and format('%i%%', downloaded/total*100) or total2)
-                            end
-                        elseif not IsModifierKeyDown() then
-                            e.LibDD:CloseDropDownMenus()
-                            MovieFrame_PlayMovie(MovieFrame, arg1)
-                        end
-                    end
-                }
-                e.LibDD:UIDropDownMenu_AddButton(info, level)
-            end
-        end
-
-    
-
-
-    if type then
-        return
-    end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    e.LibDD:UIDropDownMenu_AddSeparator(level)
-    info={
-        text= e.onlyChinese and '打开选项' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, OPTIONS),
-        notCheckable=true,
-        keepShownOnClick=true,
-        hasArrow=true,
-        menuList='OPTIONS',
-        func= function()
-            e.OpenPanelOpting(nil, '|A:SpecDial_LastPip_BorderGlow:0:0|a'..(e.onlyChinese and '对话和任务' or WoWTools_GossipMixin.addName))
-        end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-end]]
-
-
-
-
