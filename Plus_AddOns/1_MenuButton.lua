@@ -133,6 +133,7 @@ local function Init_Menu(_, root)
         WoWTools_AddOnsMixin.RightFrame:settings()
     end)
 
+    sub:CreateDivider()
     sub:CreateButton(
         (num==0 and '|cff9e9e9e' or '')
         ..(e.onlyChinese and '全部清除' or CLEAR_ALL),
