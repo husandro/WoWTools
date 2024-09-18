@@ -45,6 +45,22 @@ local function Init_Menu(_, root)
         Save().leftListScale= value
         WoWTools_AddOnsMixin.LeftFrame:settings()
     end)
+    sub:CreateDivider()
+
+    sub:CreateButton(
+        (num==0 and '|cff9e9e9e' or '')
+        ..(e.onlyChinese and '全部清除' or CLEAR_ALL),
+    function()
+        StaticPopup_Show('WoWTools_OK',
+            (e.onlyChinese and '全部清除' or CLEAR_ALL)
+            '|n'..(e.onlyChinese and '快捷键列表' or 'Solution List'),
+            nil,
+            {SetValue=function()
+                Save().fast={}
+                WoWTools_AddOnsMixin:Set_Left_Buttons()
+            end}
+        )
+    end)
 
 --加载插件
     sub=root:CreateCheckbox(
@@ -115,6 +131,21 @@ local function Init_Menu(_, root)
     end, function(value)
         Save().rightListScale= value
         WoWTools_AddOnsMixin.RightFrame:settings()
+    end)
+
+    sub:CreateButton(
+        (num==0 and '|cff9e9e9e' or '')
+        ..(e.onlyChinese and '全部清除' or CLEAR_ALL),
+    function()
+        StaticPopup_Show('WoWTools_OK',
+            (e.onlyChinese and '全部清除' or CLEAR_ALL)
+            '|n'..(e.onlyChinese and '方案列表' or 'Solution List'),
+            nil,
+            {SetValue=function()
+                Save().buttons={}
+                WoWTools_AddOnsMixin:Set_Right_Buttons()
+            end}
+        )
     end)
 
 
