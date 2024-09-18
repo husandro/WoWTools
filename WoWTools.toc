@@ -192,7 +192,7 @@ Plus_Minimap\Major_Plus.lua
 Plus_SellBuy\0_SellBuy.lua
 Plus_SellBuy\Menu.lua
 Plus_SellBuy\DELETE.lua
-Plus_SellBuy\Loot.lua
+Plus_SellBuy\Loot_Plus.lua
 Plus_SellBuy\Repair.lua
 Plus_SellBuy\SellJunk.lua
 Plus_SellBuy\BuyItem.lua
@@ -220,6 +220,7 @@ Plus_Bank\Plus_Bank.lua
 
 ##自动对话，任务
 Plus_Gossip\0_Init.lua
+Plus_Gossip\1_Gossip.lua
 Plus_Gossip\Gossip_Delves.lua
 Plus_Gossip\Gossip_Frame.lua
 Plus_Gossip\Gossip_Menu.lua
@@ -227,7 +228,6 @@ Plus_Gossip\Gossip_MoveData.lua
 Plus_Gossip\Gossip_PlayerChoice.lua
 Plus_Gossip\Gossip_TextData.lua
 Plus_Gossip\Gossip_PlayerData.lua
-Plus_Gossip\Gossip.lua
 Plus_Gossip\Quest_Menu.lua
 Plus_Gossip\Quest_QuestInfo.lua
 Plus_Gossip\Quest.lua

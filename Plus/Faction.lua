@@ -807,8 +807,15 @@ end
 --声望更新, 提示
 --#############
 local function WoWTools_Faction_Updata_Filter(_, _, text, ...)
-	local name=text and text:match(FACTION_STANDING_INCREASED) or text:match(FACTION_STANDING_INCREASED_ACCOUNT_WIDE)
+	local name
+	if text then
+		name= text:match(FACTION_STANDING_INCREASED) or text:match(FACTION_STANDING_INCREASED_ACCOUNT_WIDE)
+	end
 
+	if e.Player.husandro then
+		print(text,'|n', name, 'a')
+		print(FACTION_STANDING_INCREASED_ACCOUNT_WIDE)
+	end
 	if not name then
 		return
 	end

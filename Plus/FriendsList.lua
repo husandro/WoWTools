@@ -1000,6 +1000,8 @@ local function Init()--FriendsFrame.lua
             btn.tipsLabel:SetText(text or '')
         end
     end)
+
+    FriendsFrameStatusDropdown:SetSize(58, 25)--原生，有点问题
 end
 
 
