@@ -128,8 +128,21 @@ Plus_Tooltip\z_Professions.lua
 
 ##角色面板
 Plus\PaperDoll.lua
+
+
+
+
+
 ##角色，属性
-Plus\Attributes.lua
+Plus_Attributes\0_Attributes.lua
+Plus_Attributes\Dragonriding_Speed.lua
+Plus_Attributes\Vehicle_Speed.lua
+Plus_Attributes\Menu_Attributes.lua
+
+
+
+
+
 ##声望面板
 Plus\Faction.lua
 ##货币面板

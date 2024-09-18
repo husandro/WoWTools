@@ -447,7 +447,8 @@ function WoWTools_MenuMixin:OpenOptions(root, tab)
     local name= tab.name
     local name2= tab.name2
     local GetCategory= tab.GetCategory
-    
+    local category= tab.category
+
     local showText= name2 or name
     showText= showText and showText..'|A:OptionsIcon-Brown:0:0|a' or ('|A:OptionsIcon-Brown:0:0|a'..(e.onlyChinese and '选项' or OPTIONS))
 
@@ -455,10 +456,9 @@ function WoWTools_MenuMixin:OpenOptions(root, tab)
         if SettingsPanel:IsShown() then--ToggleGameMenu()
             SettingsPanel:Close()
         else
-            local category
             do
-                if data.GetCategory then
-                    category= data.GetCategory()
+                if not category and GetCategory then
+                    category= GetCategory()
                 end
             end
             e.OpenPanelOpting(category, name)
@@ -482,6 +482,8 @@ name2=,
 GetCategory=function()
 end
 })
+
+
 ]]
 
 

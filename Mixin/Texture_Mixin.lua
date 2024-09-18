@@ -29,7 +29,7 @@ function WoWTools_TextureMixin:CreateBackground(frame, tab)
 end
 --[[
 --显示背景 Background
-WoWTools_TextureMixin:CreateBackground(frame, alpha)
+WoWTools_TextureMixin:CreateBackground(frame, {point=function(texture)end, isAllPoint})
 ]]
 
 

@@ -28,7 +28,7 @@ WoWTools_GossipMixin= {
             name=(e.Player.husandro and '打开邮件' or OPENMAIL),
             hex='ffff00ff'}
     },
-    Gossip_Text_Icon_Size=18,
+    Gossip_Text_Icon_Size=14,
 
     Gossip_Text_Icon_cnFont=true,--仅限，外文, 修该字体
 

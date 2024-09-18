@@ -204,22 +204,6 @@ end
 
 
 
---[[
-local function printListInfo()--输出当前列表
-    C_Timer.After(1.2, function()
-        for i=1, NUM_LE_LFG_CATEGORYS  do--列表信息
-            local n, text =get_Queued_List(i, true)--排5人本
-            if n and n>0 and text then
-                print(e.addName, addName, date('%X'))
-                print(text)
-            end
-        end
-    end)
-end
-
-]]
-
-
 
 
 
@@ -1981,12 +1965,14 @@ local function Roll_Plus()
     local function set_RollOnLoot(rollID, rollType, link)
         RollOnLoot(rollID, rollType)
         link= link or GetLootRollItemLink(rollID)
-        C_Timer.After(2, function()
-            print(e.addName, addName, '|cnGREEN_FONT_COLOR:',
-                rollType==1 and (e.onlyChinese and '需求' or NEED)..'|A:lootroll-toast-icon-need-up:0:0|a'
-                or ((e.onlyChinese and '贪婪' or GREED)..'|A:lootroll-toast-icon-transmog-up:0:0|a'),
-                link)
-        end)
+        if link then
+            C_Timer.After(2, function()
+                print('|A:groupfinder-eye-frame:0:0|a|cnGREEN_FONT_COLOR:',
+                    rollType==1 and '|A:lootroll-toast-icon-need-up:0:0|a'..(e.onlyChinese and '需求' or NEED)
+                    or ('|A:lootroll-toast-icon-transmog-up:0:0|a')..(e.onlyChinese and '贪婪' or GREED),
+                    link)
+            end)
+        end
     end
     local function set_Timer_Text(frame)--提示，剩余时间
         if frame and frame.Timer and not frame.Timer.Text and frame:IsShown() then
