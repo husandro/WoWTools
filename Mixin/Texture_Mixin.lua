@@ -89,6 +89,7 @@ end
 local IconFrame
 local function Create_IconSelectorPopupFrame()
     IconFrame= CreateFrame('Frame', 'WoWTools_IconSelectorPopupFrame', UIParent, 'IconSelectorPopupFrameTemplate')
+    IconFrame:SetFrameStrata('DIALOG')
     IconFrame.IconSelector:SetPoint('BOTTOMRIGHT', -10, 36)
 
     e.Set_Move_Frame(IconFrame, {notSave=true, setSize=true, minW=524, minH=276, maxW=524, sizeRestFunc=function(btn)
@@ -165,17 +166,14 @@ end
 
 
 
-function WoWTools_TextureMixin:Edit_Text_Icon(frame, tab)
-    
+function WoWTools_TextureMixin:Edit_Text_Icon(frame, tab)    
     if not IconFrame then
         Create_IconSelectorPopupFrame()
     else
         IconFrame:SetShown(false)
     end
-    --IconFrame:SetParent(frame)
     IconFrame:ClearAllPoints()
     IconFrame:SetPoint('TOPLEFT', frame, 'RIGHT', 2, 20)
-    
 
     IconFrame.text= tab.text
     IconFrame.texture= tab.texture

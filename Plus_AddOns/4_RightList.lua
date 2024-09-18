@@ -3,8 +3,9 @@ local e= select(2, ...)
 local function Save()
     return WoWTools_AddOnsMixin.Save
 end
-local Buttons={}--方案
 
+local Buttons={}--方案
+local RightFrame
 
 
 local function Is_Load(nameORindex)
@@ -15,20 +16,77 @@ end
 
 
 
+local function Set_OnEnter_Tooltip(self, tooltip)
+    tooltip:AddLine(self.name)
+    WoWTools_AddOnsMixin:Show_Select_Tooltip(
+        tooltip,
+        Save().buttons[self.name] or {}
+    )
+end
+
+
+
+
+
+
+
+
+
+
+
+
 
 local function Init_Button_Menu(self, root)
-    local some, sel, tab= select(2, WoWTools_AddOnsMixin:Get_AddListInfo())
     local sub
 
+    sub=root:CreateCheckbox(
+        (e.onlyChinese and '加载插件' or LOAD_ADDON),
+    function(data)
+        return Save().load_Button_Name==data.name
+    end, function()
+        do
+            local tab= Save().buttons[self.name]
+            for i=1, C_AddOns.GetNumAddOns() do
+                local name= C_AddOns.GetAddOnInfo(i)
+                local value=tab[name]
+                local vType= type(value)
+                if vType=='boolean' or vType=='number' or value==e.Player.guid then
+                    C_AddOns.EnableAddOn(i)
+                else
+                    C_AddOns.DisableAddOn(i)
+                end
+            end
+        end
+        Save().load_Button_Name= self.name
+        WoWTools_Mixin:Reload()
+    end, {name=self.name})
+    sub:SetTooltip(function(tooltip)
+        Set_OnEnter_Tooltip(self, tooltip)
+        tooltip:AddLine(' ')
+        tooltip:AddDoubleLine(e.onlyChinese and '重新加载UI' or RELOADUI, '/reload')
+    end)
+
 --替换
+    root:CreateDivider()
+    local some, sel, tab= select(2, WoWTools_AddOnsMixin:Get_AddListInfo())
     sub=root:CreateButton(
         '|A:ShipMission_ShipFollower-Lock-Rare:0:0|a'
         ..(e.onlyChinese and '替换' or REPLACE)
         ..' '..(some+sel),
     function(data)
-        Save().buttons[data.name]= data.tab--select(4, WoWTools_AddOnsMixin:Get_AddListInfo())
-        e.call(AddonList_Update)
-    end, {name=self.name, tab=tab})
+
+        StaticPopup_Show('WoWTools_OK',
+            '|A:ShipMission_ShipFollower-Lock-Rare:0:0|a'..(e.onlyChinese and '替换' or REPLACE)
+            ..'|n'..data.name,
+            nil,
+            {SetValue=function()
+                Save().buttons[data.name]= select(4, WoWTools_AddOnsMixin:Get_AddListInfo())
+                e.call(AddonList_Update)
+            end}
+        )
+
+       
+    end, {name=self.name})
     sub:SetTooltip(function(tooltip, description)
         WoWTools_AddOnsMixin:Show_Select_Tooltip(tooltip, description.data.tab)
     end)
@@ -66,9 +124,24 @@ local function Init_Button_Menu(self, root)
     root:CreateButton(
         '|A:XMarksTheSpot:0:0|a'..(e.onlyChinese and '删除' or DELETE),
     function(data)
-        Save().buttons[data.name]=nil
-        e.call(AddonList_Update)
+        StaticPopup_Show('WoWTools_OK',
+            '|A:XMarksTheSpot:0:0|a'..(e.onlyChinese and '删除' or DELETE)
+            ..'|n'..data.name,
+            nil,
+            {SetValue=function()
+                Save().buttons[self.name]=nil
+                e.call(AddonList_Update)
+            end}
+        )
     end, {name=self.name})
+
+--缩放
+    sub=WoWTools_MenuMixin:Scale(root, function()
+        return Save().rightListScale or 1
+    end, function(value)
+        Save().rightListScale= value
+        RightFrame:settings()
+    end)
 
     root:CreateDivider()
     root:CreateTitle(self.name)
@@ -95,14 +168,14 @@ end
 
 
 local function Create_Button(indexAdd)
-    local btn=WoWTools_ButtonMixin:Cbtn(AddonList, {icon='hide', size=22})
+    local btn= WoWTools_ButtonMixin:CreateMenu(RightFrame, {hideIcon=true})
     btn:SetHighlightAtlas('auctionhouse-nav-button-secondary-select')
     btn.Text= WoWTools_LabelMixin:CreateLabel(btn, {size=14})
-    btn.Text:SetPoint('LEFT', 2, 0)
+    btn.Text:SetPoint('LEFT', 2, 1)
 
     btn.loadTexture= btn:CreateTexture()
     btn.loadTexture:SetPoint('LEFT', btn, 'RIGHT')
-    btn.loadTexture:SetSize(8,8)
+    btn.loadTexture:SetSize(12,12)
     btn.loadTexture:SetAtlas('AnimaChannel-Bar-Necrolord-Gem')
 
     function btn:set_settings()
@@ -127,79 +200,32 @@ local function Create_Button(indexAdd)
         )
         self.isLoadAll= self.numAllLoad==all and load==all
         self:SetWidth(btn.Text:GetWidth()+4)
-        self:SetHeight(btn.Text:GetHeight()+4)
+        self:SetHeight(btn.Text:GetHeight()+6)
         self:SetButtonState(self.isLoadAll and 'PUSHED' or 'NORMAL')
         self.loadTexture:SetShown(Save().load_Button_Name==self.name)
     end
 
-    btn:SetScript('OnClick',function(self, d)
-        if d=='LeftButton' then--加载
-            local tab= Save().buttons[self.name]
-            for i=1, C_AddOns.GetNumAddOns() do
-                local name= C_AddOns.GetAddOnInfo(i)
-                local value=tab[name]
-                local vType= type(value)
-                if vType=='boolean' or vType=='number' or value==e.Player.guid then
-                    C_AddOns.EnableAddOn(i)
-                else
-                    C_AddOns.DisableAddOn(i)
-                end
-            end
-            WoWTools_Mixin:Reload()
-            Save().load_Button_Name= self.name
-
-        elseif d=='RightButton' then--移除
-            MenuUtil.CreateContextMenu(self, Init_Button_Menu)
-        end
-    end)
-
+    btn:SetupMenu(Init_Button_Menu)
 
     btn:SetScript('OnEnter', function(self)
-        if not Save().buttons[self.name] then return end
         WoWTools_AddOnsMixin:Update_Usage()--更新，使用情况
+
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(format('|cffffd100%s|r', self.name), addName)
+        Set_OnEnter_Tooltip(self, e.tips)
         e.tips:AddLine(' ')
-        local index=1
-        for name, value in pairs(Save().buttons[self.name]) do
-            local iconTexture = C_AddOns.GetAddOnMetadata(name, "IconTexture")
-            local iconAtlas = C_AddOns.GetAddOnMetadata(name, "IconAtlas")
-            local icon= iconTexture and format('|T%s:0|t', iconTexture..'') or (iconAtlas and format('|A:%s:0:0|a', iconAtlas)) or '    '
-            local isLoaded= C_AddOns.IsAddOnLoaded(name)
-            local vType= type(value)
-            local text= vType=='string' and WoWTools_UnitMixin:GetPlayerInfo({guid=value, reName=true, reRealm=true})
-            local reason= select(2, C_AddOns.IsAddOnLoadable(name))
-            local col= reason=='DEMAND_LOADED' and '|cffff00ff'
-            if not text and not isLoaded and reason then
-                text= (col or '|cff9e9e9e')..e.cn(_G['ADDON_'..reason] or reason)..' ('..index
-            end
-            local title= C_AddOns.GetAddOnInfo(name) or name
-            local memo= Get_Memory_Value(name, false)--内存
-            e.tips:AddDoubleLine(
-                format('%s|cffffd100%d)|r%s%s%s|r |cffffffff%s|r',
-                    index<10 and ' ' or '',
-                    index,
-                    icon,
-                    isLoaded and '|cnGREEN_FONT_COLOR:' or col or '|cff9e9e9e',
-                    title,
-                    memo or ''
-                ), text or ' ')
-            index= index+1
-        end
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine((e.onlyChinese and '加载插件' or LOAD_ADDON)..e.Icon.left, (e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..e.Icon.right)
+        e.tips:AddLine((e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU)..e.Icon.left)
         e.tips:Show()
-        NewButton:SetAlpha(1)
     end)
+
     btn:SetScript('OnLeave', function(self)
         self:set_settings()
         e.tips:Hide()
-        NewButton:SetAlpha(0.5)
     end)
 
     if indexAdd==1 then
-        btn:SetPoint('TOPLEFT', AddonList, 'TOPRIGHT', 0, -22)
+        --btn:SetPoint('TOPLEFT', AddonList, 'TOPRIGHT', 2, -12)
+        btn:SetPoint('TOPLEFT', RightFrame)
     else
         btn:SetPoint('TOPLEFT', Buttons[indexAdd-1], 'BOTTOMLEFT')
     end
@@ -215,10 +241,47 @@ end
 
 
 
---####
---按钮
---####
-local function Set_Buttons()--设置按钮, 和位置
+
+
+
+local function Init()
+    RightFrame= CreateFrame("Frame", nil, AddonList)
+    RightFrame:SetSize(1,1)
+    RightFrame:SetPoint('TOPLEFT', AddonList, 'TOPRIGHT', 2, 0)
+    function RightFrame:settings()
+        self:SetScale(Save().rightListScale or 1)
+        self:SetShown(not Save().hideRightList)
+        if WoWTools_AddOnsMixin.NewButton then
+            WoWTools_AddOnsMixin.NewButton:SetShown(not Save().hideRightList)
+        end
+    end
+    RightFrame:settings()
+
+    WoWTools_AddOnsMixin.RightFrame= RightFrame
+end
+
+
+
+function WoWTools_AddOnsMixin:Init_Right_Buttons()
+    Init()
+end
+
+
+
+
+
+
+
+
+
+
+
+
+--方案，按钮
+function WoWTools_AddOnsMixin:Set_Right_Buttons()
+    if not self.RightFrame:IsShown() then
+        return
+    end
     local load, need, sel, some= 0, 0, 0, 0
     for i=1, C_AddOns.GetNumAddOns() do
         if select(2, C_AddOns.IsAddOnLoadable(i))=='DEMAND_LOADED' then--需要时加载
@@ -245,9 +308,10 @@ local function Set_Buttons()--设置按钮, 和位置
         index= index+1
     end
 
-
-    NewButton.Text:SetFormattedText('%d%s', sel, some>0 and format('%s%d', e.Icon.player, some) or '')
-    NewButton.Text3:SetFormattedText('|cnGREEN_FONT_COLOR:%d|r%s', load, need>0 and format('|cffff00ff+%d|r', need) or '')--总已加载，数量
+    if self.NewButton then
+        self.NewButton.Text:SetFormattedText('%d%s', sel, some>0 and format('%s%d', e.Icon.player, some) or '')
+        self.NewButton.Text3:SetFormattedText('|cnGREEN_FONT_COLOR:%d|r%s', load, need>0 and format('|cffff00ff+%d|r', need) or '')--总已加载，数量
+    end
 
     for i= index, #Buttons do
         local btn= Buttons[i]

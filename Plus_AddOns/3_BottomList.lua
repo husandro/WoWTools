@@ -3,15 +3,7 @@ local e= select(2, ...)
 local function Save()
     return WoWTools_AddOnsMixin.Save
 end
-
-
-
-
-
-
-
-
-local LoadFrame--已加载，插件列表
+local BottomFrame--已加载，插件列表
 
 
 
@@ -20,7 +12,7 @@ local LoadFrame--已加载，插件列表
 
 --已加载，插件列表
 local function Set_Load_Button()--LoadButtons
-    LoadFrame:SetShown(Save().load_list)
+    BottomFrame:SetShown(Save().load_list)
     if not Save().load_list then
         return
     end
@@ -43,9 +35,9 @@ local function Set_Load_Button()--LoadButtons
     end
 
     for i, info in pairs(newTab) do
-       local btn= LoadFrame.buttons[i]
+       local btn= BottomFrame.buttons[i]
        if not btn then
-            btn= WoWTools_ButtonMixin:Cbtn(LoadFrame, {icon='hide'})
+            btn= WoWTools_ButtonMixin:Cbtn(BottomFrame, {icon='hide'})
             btn.texture= btn:CreateTexture(nil, 'BORDER')
             btn.texture:SetAllPoints(btn)
             btn.texture2= btn:CreateTexture(nil, 'OVERLAY')
@@ -107,7 +99,7 @@ local function Set_Load_Button()--LoadButtons
                     end
                 end
             end)
-            LoadFrame.buttons[i]= btn
+            BottomFrame.buttons[i]= btn
        end
 
        if info.texture then
@@ -121,13 +113,13 @@ local function Set_Load_Button()--LoadButtons
        btn.texture2:SetShown(not info.disabled)
        btn:SetShown(true)
     end
-    for i=#newTab +1,  #LoadFrame.buttons do
-        local btn= LoadFrame.buttons[i]
+    for i=#newTab +1,  #BottomFrame.buttons do
+        local btn= BottomFrame.buttons[i]
         if btn then
             btn:SetShown(false)
         end
     end
-    LoadFrame:set_button_point()
+    BottomFrame:set_button_point()
 end
 
 
@@ -149,19 +141,19 @@ end
 
 
 local function Init()
-    LoadFrame= CreateFrame('Frame', 'WoWTools_AddOnsLoadFrame', WoWTools_AddOnsMixin.MenuButton)
+    BottomFrame= CreateFrame('Frame', 'WoWTools_AddOnsBottomFrame', WoWTools_AddOnsMixin.MenuButton)
 
-    LoadFrame:SetSize(1,1)
-    function LoadFrame:set_frame_point()
-        LoadFrame:ClearAllPoints()
+    BottomFrame:SetSize(1,1)
+    function BottomFrame:set_frame_point()
+        BottomFrame:ClearAllPoints()
         if Save().load_list_top then
-            LoadFrame:SetPoint('BOTTOMRIGHT', AddonList, 'TOPRIGHT', 1, 2)
+            BottomFrame:SetPoint('BOTTOMRIGHT', AddonList, 'TOPRIGHT', 1, 2)
         else
-            LoadFrame:SetPoint('TOPRIGHT', AddonList, 'BOTTOMRIGHT', 1, -2)
+            BottomFrame:SetPoint('TOPRIGHT', AddonList, 'BOTTOMRIGHT', 1, -2)
         end
     end
-    LoadFrame.buttons={}
-    function LoadFrame:set_button_point()
+    BottomFrame.buttons={}
+    function BottomFrame:set_button_point()
         local last= self
         for _, btn in pairs(self.buttons) do
             btn:SetSize(Save().load_list_size, Save().load_list_size)
@@ -186,21 +178,21 @@ local function Init()
         end
     end
     AddonList:HookScript('OnSizeChanged', function()
-        LoadFrame:set_button_point()
+        BottomFrame:set_button_point()
     end)
     AddonList:HookScript('OnShow', function()
         WoWTools_AddOnsMixin:Update_Usage()--更新，使用情况
         Set_Load_Button()
     end)
-    LoadFrame:set_frame_point()
+    BottomFrame:set_frame_point()
 
 
 
-    function LoadFrame:Set_Load_Button()
+    function BottomFrame:Set_Load_Button()
         Set_Load_Button()
     end
 
-    WoWTools_AddOnsMixin.MenuButton.LoadFrame= LoadFrame
+    WoWTools_AddOnsMixin.BottomFrame= BottomFrame
 end
 
 

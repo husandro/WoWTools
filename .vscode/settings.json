@@ -4979,7 +4979,8 @@
         "REWARD",
         "VIDEOOPTIONS_MENU",
         "Gossip_Text_Icon_Frame",
-        "STABLE_STABLED_PET_LIST_LABEL"
+        "STABLE_STABLED_PET_LIST_LABEL",
+        "ADDON_LIST"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

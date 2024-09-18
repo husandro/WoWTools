@@ -260,7 +260,10 @@ function WoWTools_MenuMixin:Reload(root, isControlKeyDown)
     end)
     return sub
 end
-
+--[[
+--重新加载UI
+    WoWTools_MenuMixin:Reload(root)
+]]
 
 
 
