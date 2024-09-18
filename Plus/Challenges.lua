@@ -794,13 +794,16 @@ local function create_lable(btn, point, text, col, size)
     if not text or text=='' then
         return
     end
-    local label= WoWTools_LabelMixin:CreateLabel(btn, {size=size or 10, mouse=true, color=col})
-    if point==1 then
-        label:SetPoint('TOPRIGHT', btn, 'TOPLEFT')
-    elseif point==2 then
-        label:SetPoint('RIGHT', btn, 'LEFT')
-    elseif point==3 then
-        label:SetPoint('BOTTOMRIGHT', btn, 'BOTTOMLEFT')
+    local label= WoWTools_LabelMixin:CreateLabel(btn, {size=size or 12, mouse=true, color=col})
+
+    if type(point)=='number' then
+        if not btn.lastLabel then
+            label:SetPoint('TOPRIGHT', btn, 'TOPLEFT')
+        else
+            label:SetPoint('TOPRIGHT', btn.lastLabel, 'BOTTOMRIGHT')
+        end
+        btn.lastLabel=label
+
     elseif point=='b' then
         label:SetPoint('BOTTOM')
     elseif point=='l' then
@@ -810,16 +813,17 @@ local function create_lable(btn, point, text, col, size)
         label:SetPoint('TOPRIGHT')
     end
 
-    label:SetText(text)
+    label:SetText(text or point)
     label.point= point
     label:SetScript('OnLeave', function(self) self:SetAlpha(1) e.tips:Hide() end)
     label:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddLine(
-            self.point==1 and (e.onlyChinese and '团队副本' or RAIDS)
-            or self.point==2 and (e.onlyChinese and '地下城' or DUNGEONS)
-            or self.point==3 and PVP
+            self.point==3 and (e.onlyChinese and '团队副本' or RAIDS)
+            or self.point==1 and (e.onlyChinese and '地下城' or DUNGEONS)
+            or self.point==2 and (e.onlyChinese and 'PvP' or PVP)
+            or self.point==6 and (e.onlyChinese and '世界' or WORLD)
             or self.point=='b' and (e.onlyChinese and '史诗钥石评分' or DUNGEON_SCORE)
             or self.point=='l' and (e.onlyChinese and '本周次数' or format(CURRENCY_THIS_WEEK, format(ARCHAEOLOGY_COMPLETION,self.num)))
             or self.point=='r' and (e.onlyChinese and '本周最高等级' or format(CURRENCY_THIS_WEEK, BEST))
@@ -829,15 +833,25 @@ local function create_lable(btn, point, text, col, size)
         self:SetAlpha(0.5)
     end)
 end
+
+
+
+
+
 local function All_Player_Info()--所以角色信息   
     local last
-    for guid, info in pairs(e.WoWDate) do--[e.Player.guid].Keystone
+    for guid, info in pairs(e.WoWDate) do
         local link= info.Keystone.link
-        if link and guid~=e.Player.guid then
+        local weekPvE= info.Keystone.weekPvE
+        local weekMythicPlus= info.Keystone.weekMythicPlus
+        local weekPvP= info.Keystone.weekPvP
+        local weekWorld= info.Keystone.weekWorld
+
+        if  info.isLevelMax and  (link or weekPvE or weekMythicPlus or weekPvP or weekWorld) then--guid~=e.Player.guid and
             local _, englishClass, _, _, _, namePlayer, realm = GetPlayerInfoByGUID(guid)
             if namePlayer and namePlayer~='' then
                 local classColor = englishClass and C_ClassColor.GetClassColor(englishClass)
-                local btn= WoWTools_ButtonMixin:Cbtn(TipsFrame, {size={30,30}, atlas=e.GetUnitRaceInfo({guid=guid, reAtlas=true})})
+                local btn= WoWTools_ButtonMixin:Cbtn(TipsFrame, {size={36,36}, atlas=WoWTools_UnitMixin:GetRaceIcon({guid=guid, reAtlas=true})})
                 if not last then
                     btn:SetPoint('TOPRIGHT', ChallengesFrame, 'TOPLEFT', -4, 0)
                 else
@@ -845,35 +859,45 @@ local function All_Player_Info()--所以角色信息
                 end
 
                 btn.link=link
-                function btn:set_tooltips(frame)
-                    e.tips:SetOwner(frame, "ANCHOR_LEFT")
-                    e.tips:ClearLines()
-                    e.tips:SetHyperlink(self.link)
-                    e.tips:Show()
-                    frame:SetAlpha(0.3)
-                end
-                btn:SetScript('OnLeave', function(self) self:SetAlpha(1) e.tips:Hide() end)
+                --[[btn.weekPvE= weekPvE
+                btn.weekMythicPlus= weekMythicPlus
+                btn.weekPvP= weekPvP
+                btn.weekWorld= weekWorld]]
+
+
+                btn:SetScript('OnLeave', GameTooltip_Hide)
                 btn:SetScript('OnEnter', function(self)
-                    self:set_tooltips(self)
+                    if self.link then
+                        e.tips:SetOwner(self, "ANCHOR_LEFT")
+                        e.tips:ClearLines()
+                        e.tips:SetHyperlink(self.link)
+                        e.tips:Show()
+                    end
                 end)
 
                 local score= WoWTools_WeekMixin:KeystoneScorsoColor(info.Keystone.score, false, nil)
                 local weekNum= info.Keystone.weekNum and info.Keystone.weekNum>0 and info.Keystone.weekNum
                 local weekLevel= info.Keystone.weekLevel and info.Keystone.weekLevel>0 and info.Keystone.weekLevel
-                create_lable(btn, 1, info.Keystone.weekPvE, classColor)--团队副本
-                create_lable(btn, 2, info.Keystone.weekMythicPlus, classColor)--挑战
-                create_lable(btn, 3, info.Keystone.weekPvP, classColor)--pvp
+--[[
+0	None	
+1	Activities	
+2	RankedPvP	
+3	Raid	
+4	AlsoReceive	
+5	Concession	
+6	World
+
+]]
+
+                create_lable(btn, 3, weekPvE, classColor)--团队副本
+                create_lable(btn, 1, weekMythicPlus, classColor)--挑战
+                create_lable(btn, 2, weekPvP, classColor)--pvp
+                create_lable(btn, 6, weekWorld, classColor)--world
                 create_lable(btn, 'b', score, {r=1,g=1,b=1}, 12)--分数
                 create_lable(btn, 'l', weekNum, {r=1,g=1,b=1})--次数
                 create_lable(btn, 'r', weekLevel, {r=1,g=1,b=1})--次数
 
-                if e.onlyChinese then--取得中文，副本名称
-                    local mapID, name= link:match('|Hkeystone:%d+:(%d+):.+%[(.+) %(%d+%)]')
-                    mapID= mapID and tonumber(mapID)
-                    if mapID and name and e.ChallengesSpellTabs[mapID] and e.ChallengesSpellTabs[mapID].name then
-                        link= link:gsub(name, e.ChallengesSpellTabs[mapID].name)
-                    end
-                end
+
                 local nameLable= WoWTools_LabelMixin:CreateLabel(btn, {color= classColor})--名字
                 nameLable:SetPoint('TOPRIGHT', btn, 'BOTTOMRIGHT')
                 nameLable:SetText(
@@ -883,13 +907,28 @@ local function All_Player_Info()--所以角色信息
                     ..(WoWTools_UnitMixin:GetFaction(nil, info.faction, false) or '')
                 )
 
-                local keyLable= WoWTools_LabelMixin:CreateLabel(btn, {mouse=true})--KEY
-                keyLable:SetPoint('RIGHT', nameLable, 'LEFT')
-                keyLable:SetScript('OnLeave', function(self) self:SetAlpha(1) e.tips:Hide() end)
-                keyLable:SetScript('OnEnter', function(self)
-                    self:GetParent():set_tooltips(self)
-                end)
-                keyLable:SetText(link)
+                if link then
+                    if e.onlyChinese and link then--取得中文，副本名称
+                        local mapID, name= link:match('|Hkeystone:%d+:(%d+):.+%[(.+) %(%d+%)]')
+                        mapID= mapID and tonumber(mapID)
+                        if mapID and name and e.ChallengesSpellTabs[mapID] and e.ChallengesSpellTabs[mapID].name then
+                            link= link:gsub(name, e.ChallengesSpellTabs[mapID].name)
+                        end
+                    end
+                    local keyLable= WoWTools_LabelMixin:CreateLabel(btn, {mouse=true})--KEY
+                    keyLable.link=link
+                    keyLable:SetPoint('RIGHT', nameLable, 'LEFT')
+                    keyLable:SetScript('OnLeave', function(self) self:SetAlpha(1) e.tips:Hide() end)
+                    keyLable:SetScript('OnEnter', function(self)
+                        if self.link then
+                            e.tips:SetOwner(self, "ANCHOR_LEFT")
+                            e.tips:ClearLines()
+                            e.tips:SetHyperlink(self.link)
+                            e.tips:Show()
+                        end
+                    end)
+                    keyLable:SetText(link)
+                end
 
                 last= nameLable
             end

@@ -4980,7 +4980,9 @@
         "VIDEOOPTIONS_MENU",
         "Gossip_Text_Icon_Frame",
         "STABLE_STABLED_PET_LIST_LABEL",
-        "ADDON_LIST"
+        "ADDON_LIST",
+        "Activities",
+        "Raid"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

@@ -13,9 +13,13 @@ WoWTools_WeekMixin={}
 
 function WoWTools_WeekMixin:GetRewardText(type)--得到，周奖励，信息
     local text
-    for _, info in pairs(C_WeeklyRewards.GetActivities(type) or {}) do--本周完成 Enum.WeeklyRewardChestThresholdType.MythicPlus 1
-        if info.level and info.level>=0 and info.type==type then--and info.threshold and info.threshold>0 and info.type==1 then
-            text= (text and text..'/' or '')..info.level
+    for _, info in pairs(C_WeeklyRewards.GetActivities(type) or {}) do
+        if info.level and info.level>=0 and info.type==type then
+            text= (text and text..'/' or '')
+            ..(info.type==Enum.WeeklyRewardChestThresholdType.Raid
+                and WoWTools_MapMixin:GetDifficultyColor(nil, info.level)
+                or info.level
+            )
         end
     end
     if text=='0/0/0' then
@@ -78,7 +82,7 @@ function WoWTools_WeekMixin:Activities(settings)--周奖励，提示
                 difficultyText=  DifficultyUtil.GetDifficultyName(info.level)
 --AlsoReceive 4
             elseif info.type== Enum.WeeklyRewardChestThresholdType.AlsoReceive then
-                head= e.onlyChinese and '你还将得到' or WEEKLY_REWARDS_ALSO_RECEIVE 
+                head= e.onlyChinese and '你还将得到' or WEEKLY_REWARDS_ALSO_RECEIVE
 --5 Concession
             elseif info.type== Enum.WeeklyRewardChestThresholdType.Concession then
                 head= e.onlyChinese and '收集' or WEEKLY_REWARDS_GET_CONCESSION
@@ -86,7 +90,7 @@ function WoWTools_WeekMixin:Activities(settings)--周奖励，提示
 --世界 6
             elseif info.type== Enum.WeeklyRewardChestThresholdType.World then
                 head= e.onlyChinese and '世界' or WORLD
-                
+
             end
             if head then
                 R[head]= R[head] or {}

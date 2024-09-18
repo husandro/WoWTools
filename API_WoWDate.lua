@@ -8,22 +8,28 @@ e.GetItemWoWNum(itemID)--取得WOW物品数量  return all, numPlayer
 
 e.WoWGUID={}--e.WoWGUID[名称-服务器]=guid
 
-e.WoWDate[e.Player.guid].Keystone={
-    score= score,
-    all= all,
-    week= e.Player.week,
-    weekNum= weekNum,
-    weekLevel= weekLevel,
-    weekPvE= WoWTools_WeekMixin:GetRewardText(3),--Raid
-    weekMythicPlus= WoWTools_WeekMixin:GetRewardText(1),--MythicPlus
-    weekPvP= WoWTools_WeekMixin:GetRewardText(2),--RankedPvP
-    link= e.WoWDate[e.Player.guid].Keystone.link,
+e.WoWDate[e.Player.guid]={
+    Keystone={
+        score= score,
+        all= all,
+        week= e.Player.week,
+        weekNum= weekNum,
+        weekLevel= weekLevel,
+        weekPvE= WoWTools_WeekMixin:GetRewardText(3),--Raid
+        weekMythicPlus= WoWTools_WeekMixin:GetRewardText(1),--MythicPlus
+        weekPvP= WoWTools_WeekMixin:GetRewardText(2),--RankedPvP
+        weekWorld= WoWTools_WeekMixin:GetRewardText(6),--世界
+        link= e.WoWDate[e.Player.guid].Keystone.link,
+    },
+    Item={
+        [itemID]={
+            bag=bag,
+            bank=C_Item.GetItemCount(itemID, true, false, true)-bag,
+        },
+    },
+    Money= GetMoney() or 0
+    Level=
 }
-e.WoWDate[e.Player.guid].Item[itemID]={
-    bag=bag,
-    bank=C_Item.GetItemCount(itemID, true, false, true)-bag,
-}
-e.WoWDate[e.Player.guid].Money= GetMoney() or 0
 
 e.UnitItemLevel=[guid] = {--玩家装等
         itemLevel= C_PaperDollInfo.GetInspectItemLevel(unit) or (e.UnitItemLevel[guid] and e.UnitItemLevel[guid].itemLevel),
@@ -237,11 +243,11 @@ local function Update_Challenge_Mode()--{score=总分数,itemLink={超连接}, w
     local all, weekNum, weekLevel
     local score=C_ChallengeMode.GetOverallDungeonScore()
     if score and score>0 then
-        all=#C_MythicPlus.GetRunHistory(true, true)--总次数
+        all= #C_MythicPlus.GetRunHistory(true, true)--总次数
         local info = C_MythicPlus.GetRunHistory(false, true)
         if info and #info>0 then
             weekNum=#info--本周次数
-            local activities=C_WeeklyRewards.GetActivities(1)
+            local activities= C_WeeklyRewards.GetActivities(Enum.WeeklyRewardChestThresholdType.Activities)
             if activities then
                 local lv=0
                 for _,v in pairs(activities) do
@@ -264,13 +270,27 @@ local function Update_Challenge_Mode()--{score=总分数,itemLink={超连接}, w
         week= e.Player.week,
         weekNum= weekNum,
         weekLevel= weekLevel,
-        weekPvE= WoWTools_WeekMixin:GetRewardText(3),--Raid
-        weekMythicPlus= WoWTools_WeekMixin:GetRewardText(1),--MythicPlus
-        weekPvP= WoWTools_WeekMixin:GetRewardText(2),--RankedPvP
+
+        weekPvE= WoWTools_WeekMixin:GetRewardText(Enum.WeeklyRewardChestThresholdType.Raid),--Raid
+        weekMythicPlus= WoWTools_WeekMixin:GetRewardText(Enum.WeeklyRewardChestThresholdType.Activities),--MythicPlus
+        weekPvP= WoWTools_WeekMixin:GetRewardText(Enum.WeeklyRewardChestThresholdType.RankedPvP),--RankedPvP
+        weekWorld=WoWTools_WeekMixin:GetRewardText(Enum.WeeklyRewardChestThresholdType.World),--world
         link= e.WoWDate[e.Player.guid].Keystone.link,
     }
+   
+    --weekMythicPlus
 end
-
+--[[
+Enum.WeeklyRewardChestThresholdType?
+Value	Field	Description
+0	None	
+1	Activities	
+2	RankedPvP	
+3	Raid	
+4	AlsoReceive	
+5	Concession	
+6	World	
+]]
 
 
 
@@ -606,13 +626,12 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
 
 
             local day= date('%x')--日期
-            e.WoWDate[e.Player.guid] = e.WoWDate[e.Player.guid] or
-                {--默认数据
+            if not e.WoWDate[e.Player.guid] then
+                e.WoWDate[e.Player.guid]= {--默认数据
                     Item={},--{itemID={bag=包, bank=银行}},
                     Currency={},--{currencyID = 数量}
 
                     Keystone={week=e.Player.week},--{score=总分数, link=超连接, weekLevel=本周最高, weekNum=本周次数, all=总次数,week=周数},
-                    --KeystoneLink=挑战，Link
 
                     Instance={ins={}, week=e.Player.week, day=day},--ins={[名字]={[难度]=已击杀数}}
                     Worldboss={boss={}, week=e.Player.week, day=day},--{week=周数, boss=table}
@@ -620,11 +639,15 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
                     Time={},--{totalTime=总游戏时间, levelTime=当前等级时间}总游戏时间
                     --Money=钱
                     --GuildInfo=公会信息,
-                    Bank={},--{[itemID]={num=数量,quality=品质}}银行，数据                    
+                    Bank={},--{[itemID]={num=数量,quality=品质}}银行，数据
                 }
+            else
+                e.WoWDate[e.Player.guid].Bank= e.WoWDate[e.Player.guid].Bank or {}--派系
+            end
+
             e.WoWDate[e.Player.guid].faction= e.Player.faction--派系
-            e.WoWDate[e.Player.guid].Bank= e.WoWDate[e.Player.guid].Bank or {}--派系
-            e.WoWDate[e.Player.guid].Keystone.itemLink=nil--清除，不用的数据
+            e.WoWDate[e.Player.guid].isLevelMax= e.Player.levelMax
+
 
 
             for guid, tab in pairs(e.WoWDate) do--清除不是本周数据
@@ -655,7 +678,7 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
             end
             --C_PerksProgram.RequestPendingChestRewards()
 
-            C_Timer.After(2, function()
+            C_Timer.After(4, function()
                 C_Calendar.OpenCalendar()
                 e.GetNotifyInspect(nil, 'player')--取得,自已, 装等
                 e.GetGroupGuidDate()--队伍数据收集
@@ -743,6 +766,7 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
         local level= arg1 or UnitLevel('player')
         e.Player.levelMax= level==GetMaxLevelForLatestExpansion()--玩家是否最高等级
         e.Player.level= level
+        e.WoWDate[e.Player.guid].isLevelMax= e.Player.levelMax
 
     elseif event=='NEUTRAL_FACTION_SELECT_RESULT' then--玩家, 派系
         if arg1 then
@@ -767,42 +791,6 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
             e.Player.sex= UnitSex("player")
         end
 
-
-
-
-
-
-
-
-
-
-
-
-    --[[elseif event=='PLAYER_CAMPING' or event=='PLAYER_QUITING' then
-        --更新物品
-        --e.WoWDate[e.Player.guid].Keystone.itemLink={}
-        e.WoWDate[e.Player.guid].Item={}--{itemID={bag=包, bank=银行}}
-        for bagID= Enum.BagIndex.Backpack,  NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do
-            for slotID=1, C_Container.GetContainerNumSlots(bagID) do
-                local itemID = C_Container.GetContainerItemID(bagID, slotID)
-                if itemID then
-                    if C_Item.IsItemKeystoneByID(itemID) then--挑战
-                        e.WoWDate[e.Player.guid].Keystone.link= C_Container.GetContainerItemLink(bagID, slotID)
-
-                    else
-                        local bag=C_Item.GetItemCount(itemID)--物品ID
-                        e.WoWDate[e.Player.guid].Item[itemID]={
-                            bag=bag,
-                            bank=C_Item.GetItemCount(itemID,true)-bag,
-                        }
-                    end
-                end
-            end
-        end
-
-        --钱
-        e.WoWDate[e.Player.guid].Money= GetMoney()]]
-
     elseif event == "PLAYER_LOGOUT" then
         if e.ClearAllSave then
             WoWToolsSave=nil
@@ -810,9 +798,6 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
                 WoWTools_WoWDate=nil
             end
         else
-
-
-
             WoWTools_WoWDate= e.WoWDate or {}
         end
     end
