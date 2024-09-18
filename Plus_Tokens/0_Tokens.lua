@@ -1,6 +1,8 @@
 local id, e = ...
-local addName= TOKENS
-local Save={
+local addName
+
+WoWTools_TokensMixin={
+Save={
 	tokens={},--{[currencyID]=true}指定显示，表
 	item={},--[202196]= true
 	--indicato=nil,--指定显示
@@ -17,13 +19,19 @@ local Save={
 	--hideCurrencyMax=true,--隐藏，已达到资源上限,提示
 	--showID=true,--显示ID
 }
+}
+
+local function Save()
+	return WoWTools_TokensMixin.Save
+end
+
+
 local Button
 local TrackButton
 local Initializer
 
-for itemID, _ in pairs(Save.item) do
-	e.LoadData({id=itemID, type='item'})--加载 item quest spell
-end
+
+
 
 local qualityToIconBorderAtlas ={
 	[Enum.ItemQuality.Poor] = "auctionhouse-itemicon-border-gray",
@@ -101,7 +109,7 @@ local function Get_Item(itemID)
 			if bank==0 then
 				numText= num
 			else
-				if Save.toRightTrackText then
+				if Save().toRightTrackText then
 					numText= (bag>0 and bag..'|A:bag-main:0:0|a' or '')..(bank>0 and bank..'|A:Levelup-Icon-Bag:0:0|a' or '')
 				else
 					numText= (bank>0 and bank..'|A:Levelup-Icon-Bag:0:0|a' or '')..(bag>0 and bag..'|A:bag-main:0:0|a' or '')
@@ -113,13 +121,13 @@ local function Get_Item(itemID)
 
 		local nameText
 		local hex= itemQuality and select(4, C_Item.GetItemQualityColor(itemQuality)) or 'ffffffff'
-		if Save.nameShow then
+		if Save().nameShow then
 			nameText= '|c'..hex..name..'|r'
 		else
 			numText= '|c'..hex..numText..'|r'
 		end
 
-		if Save.toRightTrackText then--向右平移
+		if Save().toRightTrackText then--向右平移
 			text=(nameText and nameText..' ' or '')..numText
 		else
 			text=numText..(nameText and ' '..nameText or '')
@@ -146,7 +154,7 @@ local function Get_Currency(currencyID, index)
     end
 
     local name
-	if Save.nameShow then
+	if Save().nameShow then
 		local hex= select(4, C_Item.GetItemQualityColor(info and info.quality or 1))
 		--local col= (ITEM_QUALITY_COLORS[info.quality] or {}).hex
 		name = format('|c%s%s|r', hex, e.cn(info.name))
@@ -170,7 +178,7 @@ local function Get_Currency(currencyID, index)
 
 
 
-	if Save.toRightTrackText then
+	if Save().toRightTrackText then
 		text= format('%s%s%s%s', name and name..' ' or '',  num, need and ' '..need or '', max or '')
 	else
 		text= format('%s%s%s%s', max or '', need and need..' ' or '', num, name and ' '..name or '')
@@ -214,7 +222,7 @@ end
 
 
 local function Set_TrackButton_Text()
-	if not TrackButton or not TrackButton:IsShown() or not Save.str then
+	if not TrackButton or not TrackButton:IsShown() or not Save().str then
 		if TrackButton then
 			TrackButton.Frame:set_shown()
 		end
@@ -225,8 +233,8 @@ local function Set_TrackButton_Text()
 	local endTokenIndex=1--货物，物品，分开
 	local bat= UnitAffectingCombat('player')
 
-	if Save.indicato then
-		for currencyID, _ in pairs(Save.tokens) do
+	if Save().indicato then
+		for currencyID, _ in pairs(Save().tokens) do
 			local text, icon= Get_Currency(currencyID, nil)--货币
 			if text and icon then
 				table.insert(tab, {text= text, icon=icon, currencyID=currencyID})
@@ -245,10 +253,10 @@ local function Set_TrackButton_Text()
 			end
 		end
 	end
-	if not Save.disabledItemTrack then
-		if (Save.itemButtonUse and not bat or not Save.itemButtonUse) then
+	if not Save().disabledItemTrack then
+		if (Save().itemButtonUse and not bat or not Save().itemButtonUse) then
 			local itemTab={}
-			for itemID in pairs(Save.item) do
+			for itemID in pairs(Save().item) do
 				local text, icon, itemQuality, name= Get_Item(itemID)
 				if text and icon then
 					table.insert(itemTab, {text= text, icon=icon, itemID= itemID, itemQuality=itemQuality or 0, name=name})
@@ -265,7 +273,7 @@ local function Set_TrackButton_Text()
 				table.insert(tab, tables)
 			end
 		end
-		if Save.itemButtonUse then
+		if Save().itemButtonUse then
 			TrackButton.Frame:RegisterEvent('PLAYER_REGEN_ENABLED')
 		end
 	end
@@ -274,7 +282,7 @@ local function Set_TrackButton_Text()
 
 	for index, tables in pairs(tab) do
 		local btn= TrackButton.btn[index]
-		local itemButtonUse=(Save.itemButtonUse and tables.itemID) and true or nil--使用物品
+		local itemButtonUse=(Save().itemButtonUse and tables.itemID) and true or nil--使用物品
 		if not btn then
 			btn= WoWTools_ButtonMixin:Cbtn(TrackButton.Frame, {size={14,14}, icon='hide', type=itemButtonUse, pushe=itemButtonUse})
 			btn.itemButtonUse= itemButtonUse
@@ -296,7 +304,7 @@ local function Set_TrackButton_Text()
 			btn.text= WoWTools_LabelMixin:CreateLabel(btn, {color={r=1,g=1,b=1}})
 
 
-			if Save.toTopTrack then
+			if Save().toTopTrack then
 				btn:SetPoint("BOTTOM", last or TrackButton, 'TOP', 0,  (endTokenIndex>1 and index==endTokenIndex) and 10 or 0) --货物，物品，分开
 			else
 				btn:SetPoint("TOP", last or TrackButton, 'BOTTOM', 0,  (endTokenIndex>1 and index==endTokenIndex) and -10 or 0) --货物，物品，分开
@@ -304,7 +312,7 @@ local function Set_TrackButton_Text()
 
 
 			function btn:set_Text_Point()
-				if Save.toRightTrackText then
+				if Save().toRightTrackText then
 					self.text:SetPoint('LEFT', self, 'RIGHT')
 				else
 					self.text:SetPoint('RIGHT', self, 'LEFT')
@@ -320,7 +328,7 @@ local function Set_TrackButton_Text()
 				end
 			end)
 			btn:SetScript('OnEnter', function(self)
-				if Save.toRightTrackText then
+				if Save().toRightTrackText then
 					e.tips:SetOwner(self.text, "ANCHOR_RIGHT")
 				else
 					e.tips:SetOwner(self.text, "ANCHOR_LEFT")
@@ -474,7 +482,7 @@ end
 --物品，菜单
 local function MenuList_Item(level)
 	local info
-	for itemID, _ in pairs(Save.item) do
+	for itemID, _ in pairs(Save().item) do
 		info={
 			text= WoWTools_ItemMixin:GetLink(itemID),
 			icon= C_Item.GetItemIconByID(itemID),
@@ -483,7 +491,7 @@ local function MenuList_Item(level)
 			tooltipTitle=e.onlyChinese and '移除' or REMOVE,
 			arg1= itemID,
 			func= function(_, arg1)
-				Save.item[arg1]= nil
+				Save().item[arg1]= nil
 				Set_TrackButton_Text()
 				print(e.addName, Initializer:GetName(), e.onlyChinese and '移除' or REMOVE, WoWTools_ItemMixin:GetLink(arg1))
 			end
@@ -499,7 +507,7 @@ local function MenuList_Item(level)
 		tooltipTitle='Shift+'..e.Icon.left,
 		func= function()
 			if IsShiftKeyDown() then
-				Save.item= {}
+				Save().item= {}
 				Set_TrackButton_Text()
 				print(e.addName, Initializer:GetName(), e.onlyChinese and '全部清除' or CLEAR_ALL)
 			end
@@ -510,14 +518,14 @@ local function MenuList_Item(level)
 	e.LibDD:UIDropDownMenu_AddSeparator(level)
 	info={
 		text= e.onlyChinese and '使用物品' or USE_ITEM,
-		checked= Save.itemButtonUse,
+		checked= Save().itemButtonUse,
 		keepShownOnClick= true,
 		tooltipOnButton= true,
 		disabled=UnitAffectingCombat('player'),
 		tooltipTitle= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '友情提示: 可能会出现错误' or (LABEL_NOTE..': '..ENABLE_ERROR_SPEECH)..'|r'),
 		tooltipText= (e.onlyChinese and '重新加载UI' or RELOADUI)..'|n'..SLASH_RELOAD1,
 		func= function()
-			Save.itemButtonUse= not Save.itemButtonUse and true or nil
+			Save().itemButtonUse= not Save().itemButtonUse and true or nil
 			WoWTools_Mixin:Reload()
 		end
 	}
@@ -531,7 +539,7 @@ end
 
 
 local function Init_TrackButton()
-	if Save.Hide or TrackButton then
+	if Save().Hide or TrackButton then
 		if TrackButton then
 			TrackButton:set_Event()
 			TrackButton:set_Shown()
@@ -547,8 +555,8 @@ local function Init_TrackButton()
 	TrackButton.texture:SetAlpha(0.5)
 
 	function TrackButton:set_Point()
-		if Save.point then
-			self:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
+		if Save().point then
+			self:SetPoint(Save().point[1], UIParent, Save().point[3], Save().point[4], Save().point[5])
 		elseif e.Player.husandro then
 			self:SetPoint('TOPLEFT')
 		else
@@ -559,7 +567,7 @@ local function Init_TrackButton()
 	function TrackButton:set_Texture(icon)
 		if icon and icon>0 then
 			self.texture:SetTexture(icon)
-		elseif Save.str then
+		elseif Save().str then
 			self.texture:SetTexture(0)
 		else
 			self.texture:SetAtlas(e.Icon.icon)
@@ -567,9 +575,9 @@ local function Init_TrackButton()
 	end
 
 	function TrackButton:set_Shown()--显示,隐藏
-		local hide= Save.Hide
+		local hide= Save().Hide
 		 	or (
-				not Save.notAutoHideTrack and (
+				not Save().notAutoHideTrack and (
 					IsInInstance()
 					or C_PetBattles.IsInBattle()					
 					or UnitInVehicle('player')
@@ -582,7 +590,7 @@ local function Init_TrackButton()
 	end
 
 	function TrackButton:set_Event()
-		if Save.Hide then
+		if Save().Hide then
 			self:UnregisterAllEvents()
 		else
 			self:RegisterEvent('ZONE_CHANGED_NEW_AREA')
@@ -601,14 +609,14 @@ local function Init_TrackButton()
 
 	function TrackButton:set_Scale()
 		if self.Frame:CanChangeAttribute() then
-			self.Frame:SetScale(Save.scaleTrackButton or 1)
+			self.Frame:SetScale(Save().scaleTrackButton or 1)
 		end
 	end
 
 
 
 	function TrackButton:set_Tooltips()
-		if Save.toRightTrackText then
+		if Save().toRightTrackText then
 			e.tips:SetOwner(self, "ANCHOR_RIGHT")
 		else
 			e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -620,7 +628,7 @@ local function Init_TrackButton()
 			e.tips:SetItemByID(itemID)
 			e.tips:AddLine(' ')
 			e.tips:AddDoubleLine(itemLink or ('itemID'..itemID),
-					Save.item[itemID] and
+					Save().item[itemID] and
 						('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
 					or ('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', e.Icon.select))
 			)
@@ -630,10 +638,10 @@ local function Init_TrackButton()
 			e.tips:AddDoubleLine(e.addName, Initializer:GetName())
 			e.tips:AddLine(' ')
 			e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭货币页面' or BINDING_NAME_TOGGLECURRENCY, e.Icon.left)
-			e.tips:AddDoubleLine((e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU)..' '..e.GetShowHide(Save.str), e.Icon.right)
+			e.tips:AddDoubleLine((e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU)..' '..e.GetShowHide(Save().str), e.Icon.right)
 			e.tips:AddLine(' ')
 			e.tips:AddDoubleLine(canFrame..(e.onlyChinese and '移动' or NPE_MOVE), 'Atl+'..e.Icon.right)
-			e.tips:AddDoubleLine(canFrame..(e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.scaleTrackButton or 1), 'Alt+'..e.Icon.mid)
+			e.tips:AddDoubleLine(canFrame..(e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save().scaleTrackButton or 1), 'Alt+'..e.Icon.mid)
 			e.tips:AddLine(' ')
 			e.tips:AddDoubleLine(canFrame..(e.onlyChinese and '拖曳' or DRAG_MODEL)..e.Icon.left..(e.onlyChinese and '物品' or ITEMS), e.onlyChinese and '追踪' or TRACKING)
 		end
@@ -653,13 +661,13 @@ local function Init_TrackButton()
 	TrackButton:SetScript("OnDragStop", function(self)
 		ResetCursor()
 		self:StopMovingOrSizing()
-		Save.point={self:GetPoint(1)}
-		Save.point[2]=nil
+		Save().point={self:GetPoint(1)}
+		Save().point[2]=nil
 	end)
 	TrackButton:SetScript("OnMouseUp", ResetCursor)
 	TrackButton:SetScript("OnMouseWheel", function(self, d)
 		if IsAltKeyDown() then
-			local n= Save.scaleTrackButton or 1
+			local n= Save().scaleTrackButton or 1
 			if d==1 then
 				n= n+ 0.05
 			elseif d==-1 then
@@ -667,7 +675,7 @@ local function Init_TrackButton()
 			end
 			n= n<0.4 and 0.4 or n
 			n= n>4 and 4 or n
-			Save.scaleTrackButton=n
+			Save().scaleTrackButton=n
 			self:set_Scale()
 			self:set_Tooltips()
 			print(e.addName, Initializer:GetName(), e.onlyChinese and '缩放' or UI_SCALE, n)
@@ -681,9 +689,9 @@ local function Init_TrackButton()
 
 		local infoType, itemID, itemLink = GetCursorInfo()
         if infoType == "item" and itemID then
-			Save.item[itemID]= not Save.item[itemID] and true or nil
+			Save().item[itemID]= not Save().item[itemID] and true or nil
 			print(e.addName, Initializer:GetName(), e.onlyChinese and '追踪' or TRACKING,
-					Save.item[itemID] and
+					Save().item[itemID] and
 					('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', e.Icon.select))
 					or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a'),
 					itemLink or itemID)
@@ -705,24 +713,24 @@ local function Init_TrackButton()
 						text= e.onlyChinese and '显示' or SHOW,
 						tooltipOnButton=true,
 						tooltipTitle=e.onlyChinese and '显示/隐藏' or (SHOW..'/'..HIDE),
-						checked= Save.str,
+						checked= Save().str,
 						keepShownOnClick=true,
-						disabled= Save.itemButtonUse and UnitAffectingCombat('player'),
+						disabled= Save().itemButtonUse and UnitAffectingCombat('player'),
 						func= function()
-							Save.str= not Save.str and true or nil
+							Save().str= not Save().str and true or nil
 							TrackButton:set_Texture()
 							TrackButton.Frame:set_shown()
-							print(e.addName, Initializer:GetName(), e.GetShowHide(Save.str))
+							print(e.addName, Initializer:GetName(), e.GetShowHide(Save().str))
 						end
 					}
 					e.LibDD:UIDropDownMenu_AddButton(info, level)
 					e.LibDD:UIDropDownMenu_AddSeparator(level)
 					info={
 						text=e.onlyChinese and '显示名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, NAME),
-						checked= Save.nameShow,
+						checked= Save().nameShow,
 						keepShownOnClick=true,
 						func= function()
-							Save.nameShow= not Save.nameShow and true or nil
+							Save().nameShow= not Save().nameShow and true or nil
 							Set_TrackButton_Text()
 						end
 					}
@@ -730,11 +738,11 @@ local function Init_TrackButton()
 
 					info={
 						text= e.onlyChinese and '向右平移' or BINDING_NAME_STRAFERIGHT,
-						checked= Save.toRightTrackText,
+						checked= Save().toRightTrackText,
 						keepShownOnClick=true,
 						icon= 'NPE_ArrowRight',
 						func= function()
-							Save.toRightTrackText = not Save.toRightTrackText and true or nil
+							Save().toRightTrackText = not Save().toRightTrackText and true or nil
 							for _, btn in pairs(TrackButton.btn) do
 								btn.text:ClearAllPoints()
 								btn:set_Text_Point()
@@ -747,12 +755,12 @@ local function Init_TrackButton()
 					info={
 						text=e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP,
 						icon='bags-greenarrow',
-						checked= Save.toTopTrack,
+						checked= Save().toTopTrack,
 						tooltipOnButton=true,
 						tooltipTitle= (e.onlyChinese and '重新加载UI' or RELOADUI)..'|n'..SLASH_RELOAD1,
 						disabled= UnitAffectingCombat('player'),
 						func= function()
-							Save.toTopTrack = not Save.toTopTrack and true or nil
+							Save().toTopTrack = not Save().toTopTrack and true or nil
 							WoWTools_Mixin:Reload()
 						end
 					}
@@ -760,13 +768,13 @@ local function Init_TrackButton()
 
 					info={
 						text=e.onlyChinese and '物品' or ITEMS,
-						checked= not Save.disabledItemTrack,
+						checked= not Save().disabledItemTrack,
 						menuList='ITEMS',
 						hasArrow=true,
 						keepShownOnClick=true,
 						disabled= UnitAffectingCombat('player'),
 						func= function()
-							Save.disabledItemTrack = not Save.disabledItemTrack and true or nil
+							Save().disabledItemTrack = not Save().disabledItemTrack and true or nil
 							Set_TrackButton_Text()
 						end
 					}
@@ -792,7 +800,7 @@ local function Init_TrackButton()
 
 
 	TrackButton:SetScript("OnEnter", function(self)
-		if (Save.itemButtonUse and not UnitAffectingCombat('player')) or not Save.itemButtonUse then
+		if (Save().itemButtonUse and not UnitAffectingCombat('player')) or not Save().itemButtonUse then
 			Set_TrackButton_Text()
 			self:set_Shown()
 		end
@@ -833,8 +841,8 @@ local function Init_TrackButton()
 		Set_TrackButton_Text()
 	end)
 	function TrackButton.Frame:set_shown()
-		if Save.itemButtonUse and not UnitAffectingCombat('player') or not Save.itemButtonUse then
-			self:SetShown(Save.str)
+		if Save().itemButtonUse and not UnitAffectingCombat('player') or not Save().itemButtonUse then
+			self:SetShown(Save().str)
 		end
 	end
 	TrackButton.Frame:set_shown()
@@ -990,8 +998,8 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 		frame.check:SetPoint('RIGHT', frame, 'LEFT',4,0)
 		frame.check:SetScript('OnClick', function(self)
 			if self.currencyID then
-				Save.tokens[self.currencyID]= not Save.tokens[self.currencyID] and self.index or nil
-				frame.check:SetAlpha(Save.tokens[self.currencyID] and 1 or 0.5)
+				Save().tokens[self.currencyID]= not Save().tokens[self.currencyID] and self.index or nil
+				frame.check:SetAlpha(Save().tokens[self.currencyID] and 1 or 0.5)
 				Set_TrackButton_Text()
 			end
 		end)
@@ -1034,8 +1042,8 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 		frame.check.currencyID= currencyID
 		frame.check.index= frame.index
 		frame.check:SetShown(true)
-		frame.check:SetChecked(Save.tokens[currencyID])
-		frame.check:SetAlpha(Save.tokens[currencyID] and 1 or 0.5)
+		frame.check:SetChecked(Save().tokens[currencyID])
+		frame.check:SetAlpha(Save().tokens[currencyID] and 1 or 0.5)
 	end
 
 
@@ -1111,7 +1119,7 @@ local function InitMenu(_, level, menuList)--主菜单
 		MenuList_Item(level)
 
 	elseif menuList=='TOKENS' then
-		for currencyID, _ in pairs(Save.tokens) do
+		for currencyID, _ in pairs(Save().tokens) do
 			local currencyInfo= C_CurrencyInfo.GetCurrencyInfo(currencyID) or {}
 			info={
 				text= currencyInfo.name or currencyID,
@@ -1120,10 +1128,10 @@ local function InitMenu(_, level, menuList)--主菜单
 				tooltipOnButton=true,
 				tooltipTitle=e.onlyChinese and '移除' or REMOVE,
 				tooltipText='ID '..currencyID,
-				colorCode= not Save.indicato and '|cff9e9e9e' or (currencyInfo and ITEM_QUALITY_COLORS[currencyInfo.quality]).hex or nil,
+				colorCode= not Save().indicato and '|cff9e9e9e' or (currencyInfo and ITEM_QUALITY_COLORS[currencyInfo.quality]).hex or nil,
 				arg1= currencyID,
 				func= function(_, arg1)
-					Save.tokens[arg1]=nil
+					Save().tokens[arg1]=nil
 					TokenFrame:Update()
 					print(e.addName, Initializer:GetName(), e.onlyChinese and '移除' or REMOVE, C_CurrencyInfo.GetCurrencyLink(arg1) or arg1)
 				end
@@ -1155,7 +1163,7 @@ local function InitMenu(_, level, menuList)--主菜单
 					OnAccept = function(s)
 						local n= s.editBox:GetNumber()
 						if n then
-							Save.tokens[n]=0
+							Save().tokens[n]=0
 							print(e.addName, Initializer:GetName(), e.onlyChinese and '添加' or ADD,  C_CurrencyInfo.GetCurrencyLink(n))
 							TokenFrame:Update()
 						end
@@ -1169,13 +1177,13 @@ local function InitMenu(_, level, menuList)--主菜单
 							icon= curInfo.iconFileID
 							text= C_CurrencyInfo.GetCurrencyLink(n) or curInfo.name or text
 
-							if Save.tokens[n] then
+							if Save().tokens[n] then
 								text= text..'|n'..(e.onlyChinese and '更新' or UPDATE)
 							end
 						end
 						local p= s:GetParent()
 						p.text:SetText(text)
-						p.button1:SetEnabled(curInfo and not Save.tokens[n])
+						p.button1:SetEnabled(curInfo and not Save().tokens[n])
 						p.AlertIcon:SetTexture(icon or 0)
 					end,
 					EditBoxOnEscapePressed = function(s)
@@ -1196,7 +1204,7 @@ local function InitMenu(_, level, menuList)--主菜单
 			tooltipTitle='Shift+'..e.Icon.left,
 			func= function()
 				if IsShiftKeyDown() then
-					Save.tokens= {}
+					Save().tokens= {}
 					TokenFrame:Update()
 					print(e.addName, Initializer:GetName(), e.onlyChinese and '全部清除' or CLEAR_ALL)
 				end
@@ -1207,14 +1215,14 @@ local function InitMenu(_, level, menuList)--主菜单
 	elseif menuList=='RestPoint' then
 		info={
 			text= e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE),
-			checked= not Save.notAutoHideTrack,
-			disabled= Save.itemButtonUse and UnitAffectingCombat('player'),
+			checked= not Save().notAutoHideTrack,
+			disabled= Save().itemButtonUse and UnitAffectingCombat('player'),
 			tooltipOnButton=true,
 			tooltipTitle= (e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)..'|n'
 				..(e.onlyChinese and '宠物对战' or SHOW_PET_BATTLES_ON_MAP_TEXT)..'|n'
 				..(e.onlyChinese and '在副本中' or AGGRO_WARNING_IN_INSTANCE),
 			func= function()
-				Save.notAutoHideTrack= not Save.notAutoHideTrack and true or nil
+				Save().notAutoHideTrack= not Save().notAutoHideTrack and true or nil
 				if TrackButton then
 					TrackButton:set_Shown()
 				end
@@ -1224,11 +1232,11 @@ local function InitMenu(_, level, menuList)--主菜单
 		e.LibDD:UIDropDownMenu_AddSeparator(level)
 		info={
 			text=e.onlyChinese and '重置位置' or RESET_POSITION,
-			colorCode= (not Save.point or not TrackButton) and '|cff9e9e9e' or nil,
+			colorCode= (not Save().point or not TrackButton) and '|cff9e9e9e' or nil,
 			notCheckable=true,
 			keepShownOnClick=true,
 			func= function()
-				Save.point=nil
+				Save().point=nil
 				if TrackButton then
 					TrackButton:ClearAllPoints()
 					TrackButton:set_Point()
@@ -1245,27 +1253,27 @@ local function InitMenu(_, level, menuList)--主菜单
 
     info={
 		text= (e.onlyChinese and '追踪' or TRACKING),
-		checked= not Save.Hide,
+		checked= not Save().Hide,
 		keepShownOnClick=true,
 		hasArrow=true,
 		menuList='RestPoint',
 		func= function()
-			Save.Hide= not Save.Hide and true or nil
+			Save().Hide= not Save().Hide and true or nil
 			Init_TrackButton()
-			print(e.addName, Initializer:GetName(), e.onlyChinese and '追踪' or TRACKING, e.GetEnabeleDisable(not Save.Hide))
+			print(e.addName, Initializer:GetName(), e.onlyChinese and '追踪' or TRACKING, e.GetEnabeleDisable(not Save().Hide))
 		end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
 	info={
 		text=e.onlyChinese and '指定货币' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMBAT_ALLY_START_MISSION, TOKENS),
-		checked= Save.indicato,
+		checked= Save().indicato,
 		tooltipOnButton=true,
 		menuList='TOKENS',
 		hasArrow=true,
 		keepShownOnClick=true,
 		func= function()
-			Save.indicato= not Save.indicato and true or nil
+			Save().indicato= not Save().indicato and true or nil
 			Set_TrackButton_Text()
 		end
     }
@@ -1273,14 +1281,14 @@ local function InitMenu(_, level, menuList)--主菜单
 
 	info={
 		text=e.onlyChinese and '物品' or ITEMS,
-		checked= not Save.disabledItemTrack,
+		checked= not Save().disabledItemTrack,
 		menuList='ITEMS',
 		hasArrow=true,
 		keepShownOnClick=true,
 		disabled= UnitAffectingCombat('player'),
-		colorCode=Save.Hide and '|cff9e9e9e' or nil,
+		colorCode=Save().Hide and '|cff9e9e9e' or nil,
 		func= function()
-			Save.disabledItemTrack = not Save.disabledItemTrack and true or nil
+			Save().disabledItemTrack = not Save().disabledItemTrack and true or nil
 			Set_TrackButton_Text()
 		end
 	}
@@ -1289,15 +1297,15 @@ local function InitMenu(_, level, menuList)--主菜单
 	e.LibDD:UIDropDownMenu_AddSeparator(level)
 	info={
 		text=e.onlyChinese and '达到上限' or CAPPED,
-		checked= not Save.hideCurrencyMax,
+		checked= not Save().hideCurrencyMax,
 		icon='communities-icon-chat',
 		tooltipOnButton=true,
 		tooltipTitle=e.onlyChinese and '已达到资源上限' or SPELL_FAILED_CUSTOM_ERROR_248,
 		keepShownOnClick=true,
 		func= function()
-			Save.hideCurrencyMax= not Save.hideCurrencyMax and true or nil
+			Save().hideCurrencyMax= not Save().hideCurrencyMax and true or nil
 			Button:set_Event()--已达到资源上限
-			if not Save.hideCurrencyMax then
+			if not Save().hideCurrencyMax then
 				Button.currencyMax={}--已达到资源上限
 				Button:currency_Max()
 				print(e.addName, Initializer:GetName(), 'Test', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已达到资源上限' or SPELL_FAILED_CUSTOM_ERROR_248))
@@ -1409,7 +1417,7 @@ local function Init()
 		if icon then
 			self.texture:SetTexture(icon)
 			self.bagButton.texture:SetTexture(icon)
-		elseif Save.Hide then
+		elseif Save().Hide then
 			self.texture:SetAtlas(e.Icon.icon)
 			self.bagButton.texture:SetAtlas(e.Icon.icon)
 		else
@@ -1422,9 +1430,9 @@ local function Init()
 	local function click(self)
 		local infoType, itemID, itemLink = GetCursorInfo()
         if infoType == "item" and itemID then
-			Save.item[itemID]= not Save.item[itemID] and true or nil
+			Save().item[itemID]= not Save().item[itemID] and true or nil
 			print(e.addName, Initializer:GetName(), e.onlyChinese and '追踪' or TRACKING,
-					Save.item[itemID] and
+					Save().item[itemID] and
 					('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', e.Icon.select))
 					or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a'),
 					itemLink or itemID)
@@ -1447,7 +1455,7 @@ local function Init()
 			e.tips:SetItemByID(itemID)
 			e.tips:AddLine(' ')
 			e.tips:AddDoubleLine(itemLink or ('itemID'..itemID),
-					Save.item[itemID] and
+					Save().item[itemID] and
 						('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
 					or ('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', e.Icon.select))
 			)
@@ -1564,7 +1572,7 @@ local function Init()
 				tab[info.currencyID]= info.link
 			end
 		else
-			for currencyID, _ in pairs(Save.tokens) do
+			for currencyID, _ in pairs(Save().tokens) do
 				if not self.currencyMax[currencyID] then
 					local info, _, total, percent, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:Get(currencyID, nil)
 					if info and isMax then
@@ -1593,7 +1601,7 @@ local function Init()
 	end
 
 	function Button:set_Event()
-		if Save.hideCurrencyMax then
+		if Save().hideCurrencyMax then
 			self:UnregisterAllEvents()
 		else
 			self:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
@@ -1628,7 +1636,7 @@ local function Init()
 
 
 
-		if not Save.hideCurrencyMax then
+		if not Save().hideCurrencyMax then
 			Button:currency_Max()--已达到资源上限
 			Button:set_Event()--已达到资源上限
 		end
@@ -1661,10 +1669,10 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
 		if arg1==id then
-			if WoWToolsSave[TOKENS] then
-				WoWToolsSave[TOKENS]=nil
-			else
-				Save= WoWToolsSave['Currency2'] or Save
+			WoWTools_TokensMixin.Save= WoWToolsSave['Currency2'] or WoWTools_TokensMixin.Save
+
+			for itemID, _ in pairs(Save().item) do
+				e.LoadData({id=itemID, type='item'})--加载 item quest spell
 			end
 
 			addName = '|A:bags-junkcoin:0:0|a'..(e.onlyChinese and '货币' or TOKENS)
@@ -1672,15 +1680,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 			--添加控制面板
 			Initializer= e.AddPanel_Check({
 				name= addName,
-				GetValue= function() return not Save.disabled end,
+				GetValue= function() return not Save().disabled end,
 				SetValue= function()
-					Save.disabled= not Save.disabled and true or nil
-					print(e.addName, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+					Save().disabled= not Save().disabled and true or nil
+					print(e.addName, Initializer:GetName(), e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
 				end
 			})
 
-
-            if Save.disabled then
+            if Save().disabled then
 				self:UnregisterEvent('ADDON_LOADED')
 			else
 				Init()
@@ -1689,28 +1696,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
 		elseif arg1=='Blizzard_ItemInteractionUI' then
             hooksecurefunc(ItemInteractionFrame, 'SetupChargeCurrency', set_ItemInteractionFrame_Currency)
-
-		--[[elseif arg1=='Blizzard_TokenUI' then
-			hooksecurefunc(TokenEntryMixin, 'OnEnter', function(frame)--角色栏,声望
-			print('aaaaa')
-				for _, btn in pairs(TrackButton and TrackButton.btn or {}) do
-					if frame.check and frame.check.currencyID and frame.check.currencyID== btn.currencyID then
-						btn:SetScale(2)
-					else
-						btn:SetScale(1)
-					end
-				end
-			end)
-			hooksecurefunc(TokenEntryMixin, 'OnLeave', function()--角色栏,声望
-				for _, btn in pairs(TrackButton and TrackButton.btn or {}) do
-					btn:SetScale(1)
-				end
-			end)]]
 		end
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            WoWToolsSave['Currency2']=Save
+            WoWToolsSave['Currency2']=WoWTools_TokensMixin.Save
         end
 	end
 end)

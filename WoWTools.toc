@@ -145,8 +145,27 @@ Plus_Attributes\Menu_Attributes.lua
 
 ##声望面板
 Plus\Faction.lua
+
+
+
+
+
+
+
+
+
 ##货币面板
-Plus\Currency.lua
+Plus_Tokens\0_Tokens.lua
+
+
+
+
+
+
+
+
+
+
 ##任务框，增强
 Plus\ObjectiveTracker.lua
 
