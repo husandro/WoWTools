@@ -812,10 +812,6 @@ local function WoWTools_Faction_Updata_Filter(_, _, text, ...)
 		name= text:match(FACTION_STANDING_INCREASED) or text:match(FACTION_STANDING_INCREASED_ACCOUNT_WIDE)
 	end
 
-	if e.Player.husandro then
-		print(text,'|n', name, 'a')
-		print(FACTION_STANDING_INCREASED_ACCOUNT_WIDE)
-	end
 	if not name then
 		return
 	end

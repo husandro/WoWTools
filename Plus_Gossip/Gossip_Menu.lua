@@ -265,7 +265,6 @@ local function Init_Menu(self, root)
 
 
 --视频
-    root:CreateDivider()
     num=0
     for _ in pairs(Save().movie) do
         num=num+1
@@ -340,6 +339,30 @@ local function Init_Menu(self, root)
             Movie_SubMenu(sub3, movieID, nil)
         end
     end
+
+--打开选项界面
+    root:CreateDivider()
+    sub=WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_GossipMixin.addName})
+
+
+
+    
+    --缩放
+    WoWTools_MenuMixin:Scale(sub, function()
+        return Save().scale or 1
+    end, function(value)
+        Save().scale= value
+        WoWTools_GossipMixin.GossipButton:set_Scale()
+    end)
+
+
+--重置位置
+    sub:CreateDivider()
+    WoWTools_MenuMixin:RestPoint(sub, Save().point, function()
+        Save().point=nil
+        WoWTools_GossipMixin.GossipButton:ClearAllPoints()
+        WoWTools_GossipMixin.GossipButton:set_Point()
+    end)
 end
 
 

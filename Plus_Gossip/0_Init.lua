@@ -18,7 +18,7 @@ WoWTools_GossipMixin= {
     autoSelectReward= e.Player.husandro,--自动选择奖励
     showAllQuestNum= e.Player.husandro,--显示所有任务数量
 
-    --scale=1,
+    scale=1,
     --point=nil,
 
     --not_Gossip_Text_Icon=true,--自定义，对话，文本
