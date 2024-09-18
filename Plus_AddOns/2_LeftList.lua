@@ -66,7 +66,7 @@ local function Create_Fast_Button(indexAdd)
     end
     btn:SetScript('OnEnter', function(self)
         local index= self:GetID()
-        if C_AddOns.GetAddOnInfo(index)==self.name then
+        if index and C_AddOns.GetAddOnInfo(index)==self.name then
             self:set_tooltips()
         else
            local findIndex
