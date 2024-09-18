@@ -136,6 +136,7 @@ local function Init_Button_Menu(self, root)
     end, {name=self.name})
 
 --缩放
+    root:CreateDivider()
     sub=WoWTools_MenuMixin:Scale(root, function()
         return Save().rightListScale or 1
     end, function(value)
@@ -143,7 +144,7 @@ local function Init_Button_Menu(self, root)
         RightFrame:settings()
     end)
 
-    root:CreateDivider()
+
     root:CreateTitle(self.name)
 end
 

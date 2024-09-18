@@ -176,6 +176,7 @@ local function Init_Menu(_, root)
         tooltip:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
+    root:CreateDivider()
 --重新加载UI
     WoWTools_MenuMixin:Reload(root)
 
