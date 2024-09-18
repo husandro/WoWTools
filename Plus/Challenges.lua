@@ -1,10 +1,8 @@
-if not C_MythicPlus.GetCurrentSeason() then
+--[[if not C_MythicPlus.GetCurrentSeason() then
     return
-end
+end]]
 
 local id, e = ...
-
-
 --[[
 https://wago.io/dungeonports
 https://wago.io/meD8JMW3C
@@ -847,7 +845,7 @@ local function All_Player_Info()--所以角色信息
         local weekPvP= info.Keystone.weekPvP
         local weekWorld= info.Keystone.weekWorld
 
-        if  info.isLevelMax and  (link or weekPvE or weekMythicPlus or weekPvP or weekWorld) then--guid~=e.Player.guid and
+        if guid~=e.Player.guid and (link or weekPvE or weekMythicPlus or weekPvP or weekWorld) then--guid~=e.Player.guid and and info.isLevelMax 
             local _, englishClass, _, _, _, namePlayer, realm = GetPlayerInfoByGUID(guid)
             if namePlayer and namePlayer~='' then
                 local classColor = englishClass and C_ClassColor.GetClassColor(englishClass)
