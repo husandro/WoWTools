@@ -33,9 +33,9 @@ Save={
         }
     },
     fast={
-        ['TextureAtlasViewer']=78,
-        ['WoWeuCN_Tooltips']=96,
-        [id]=99,
+        ['TextureAtlasViewer']=1,
+        ['WoWeuCN_Tooltips']=1,
+        [id]=1,
     },
     enableAllButtn= e.Player.husandro,--全部禁用时，不禁用本插件
 
@@ -295,7 +295,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
 
             WoWTools_AddOnsMixin.addName='|A:Garr_Building-AddFollowerPlus:0:0|a'..(e.onlyChinese and '插件管理' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDONS, CHAT_MODERATE))
-            
+
 
             --添加控制面板
             e.AddPanel_Check({

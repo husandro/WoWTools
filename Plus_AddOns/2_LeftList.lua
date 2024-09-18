@@ -166,9 +166,11 @@ function WoWTools_AddOnsMixin:Set_Left_Buttons()
     end
 
     local newTab={}
+    local max= C_AddOns.GetNumAddOns()
     for name, index in pairs(Save().fast) do
+        index= type(index)=='number' and index or 1
         if C_AddOns.DoesAddOnExist(name) then
-            table.insert(newTab, {name=name, index=index or 0})
+            table.insert(newTab, {name=name, index=index})
         else
             Save().fast[name]= nil
         end
@@ -178,7 +180,7 @@ function WoWTools_AddOnsMixin:Set_Left_Buttons()
     for i, info in pairs(newTab) do
         local btn= FastButtons[i] or Create_Fast_Button(i)
         btn.name= info.name
-        btn:SetID(info.index)
+        btn:SetID(math.min(i, max))
         btn:settings()
         btn:SetShown(true)
     end
