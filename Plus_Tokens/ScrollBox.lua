@@ -84,7 +84,7 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 		frame.check:SetChecked(Save().tokens[currencyID])
 		frame.check:SetAlpha(Save().tokens[currencyID] and 1 or 0.5)
 	end
-
+	
 
 	if isMax then
 		frame.Content.Count:SetTextColor(1,0,0)

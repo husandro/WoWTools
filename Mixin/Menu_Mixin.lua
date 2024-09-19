@@ -499,13 +499,15 @@ function WoWTools_MenuMixin:ClearAll(root, SetValue)
 end
 
 
-
---SetGridMode
 function WoWTools_MenuMixin:SetGridMode(sub, num)
     if num and num>self.maxMenuButton then
         sub:SetGridMode(MenuConstants.VerticalGridDirection, math.ceil(num/self.maxMenuButton))
     end
 end
+--[[
+--SetGridMode
+WoWTools_MenuMixin:SetGridMode(sub, num)
+]]
 
 --SetScrollMode
 function WoWTools_MenuMixin:SetScrollMode(root, maxCharacters)

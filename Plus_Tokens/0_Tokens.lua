@@ -299,13 +299,13 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
 		if arg1==id then
-			WoWTools_TokensMixin.Save= WoWToolsSave['Currency2'] or WoWTools_TokensMixin.Save
+			WoWTools_TokensMixin.Save= WoWToolsSave['Currency2'] or Save()
 
 			for itemID, _ in pairs(Save().item) do
 				e.LoadData({id=itemID, type='item'})--加载 item quest spell
 			end
-
-			addName = '|A:bags-junkcoin:0:0|a'..(e.onlyChinese and '货币' or TOKENS)
+			WoWTools_TokensMixin.addName= '|A:bags-junkcoin:0:0|a'..(e.onlyChinese and '货币' or TOKENS)
+			addName = WoWTools_TokensMixin.addName
 
 			--添加控制面板
 			e.AddPanel_Check({

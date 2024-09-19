@@ -1828,7 +1828,7 @@ local function set_Week_Reward_Look_Specialization()
     WeekRewardLookFrame:SetShown(false)
     WeekRewardLookFrame:RegisterEvent('PLAYER_UPDATE_RESTING')
     WeekRewardLookFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
-    
+
 
     function WeekRewardLookFrame:set_Event()
         if not C_WeeklyRewards.HasAvailableRewards() then
@@ -2210,16 +2210,17 @@ panel:RegisterEvent("CHALLENGE_MODE_COMPLETED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            if e.Is_Timerunning then
-                self:UnregisterAllEvents()
-                return
-            end
 
             Save= WoWToolsSave[addName] or Save
             Save.rightX= Save.rightX or 2--右边，提示，位置
             Save.rightY= Save.rightY or -22
 
+            --[[if e.Is_Timerunning then
+                self:UnregisterAllEvents()
+                return
+            end]]
             --添加控制面板
+
             Initializer= e.AddPanel_Check({
                 name= '|A:UI-HUD-MicroMenu-Groupfinder-Mouseover:0:0|a'..(e.onlyChinese and '史诗钥石地下城' or addName),
                 tooltip= e.cn(addName),

@@ -136,6 +136,11 @@ local function Init_Menu(_, root)
 		WoWTools_SetTooltipMixin:Set_Menu(sub2)
 	end
 
+	if num>1 then
+--SetGridMode
+		WoWTools_MenuMixin:SetGridMode(sub, num)
+		
+	end
 end
 
 
