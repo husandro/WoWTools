@@ -107,7 +107,7 @@ function WoWTools_LabelMixin:ItemCurrencyTips(settings)--物品升级界面，�
     for _, tab in pairs(ItemCurrencyTips) do
         local text=''
         if tab.type=='currency' and tab.id and tab.id>0 then
-            local info, num, totale, percent, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:Get(tab.id)
+            local info, num, totale, percent, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:GetInfo(tab.id)
             if info and num and (num>0 or showAll or tab.show) then
                 if isMax then
                     text= text..format('|cnRED_FONT_COLOR:%s|r', WoWTools_Mixin:MK(num,3))

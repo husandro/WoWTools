@@ -1828,6 +1828,8 @@ local function set_Week_Reward_Look_Specialization()
     WeekRewardLookFrame:SetShown(false)
     WeekRewardLookFrame:RegisterEvent('PLAYER_UPDATE_RESTING')
     WeekRewardLookFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
+    
+
     function WeekRewardLookFrame:set_Event()
         if not C_WeeklyRewards.HasAvailableRewards() then
             self:UnregisterAllEvents()
@@ -1877,7 +1879,7 @@ local function set_Week_Reward_Look_Specialization()
         if event=='PLAYER_UPDATE_RESTING' or event=='PLAYER_ENTERING_WORLD' then
             self:set_Event()
 
-        elseif spellID==392391 and unit=='player' and target and target:find(RATED_PVP_WEEKLY_VAULT) then
+        elseif (spellID==392391 or spellID==449976) and unit=='player' and target and target:find(RATED_PVP_WEEKLY_VAULT) then
             self:set_Texture()
         end
     end)
@@ -2231,7 +2233,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if Save.disabled then
                 self:UnregisterAllEvents()
             else
-                C_Timer.After(2, set_Week_Reward_Look_Specialization)--打开周奖励时，提示拾取专精
+                C_Timer.After(4, set_Week_Reward_Look_Specialization)--打开周奖励时，提示拾取专精
             end
             self:RegisterEvent("PLAYER_LOGOUT")
 

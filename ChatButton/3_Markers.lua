@@ -1764,7 +1764,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
 
     elseif event=='READY_CHECK' then--自动就绪事件
         e.PlaySound(SOUNDKIT.READY_CHECK)--播放, 声音
-        if Save.autoReady then
+        if Save.autoReady or Save.autoReady==0 then
             if arg1 and arg1~=UnitName('player') then
                 if self.autoReadyTime then self.autoReadyTime:Cancel() end
                 self.autoReadyTime= C_Timer.NewTimer(3, function()
@@ -1775,7 +1775,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 e.Ccool(ReadyCheckListenerFrame, nil, 3, nil, true)--冷却条
             end
         else
-            e.Ccool(ReadyCheckListenerFrame, nil, arg2 or 35, nil, true,true)--冷却条
+            e.Ccool(ReadyCheckListenerFrame, nil, arg2 or 35, nil, true, true)--冷却条
         end
     end
 end)

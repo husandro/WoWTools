@@ -7,6 +7,7 @@ FrameStrata(root, GetValue, SetValue)
 RestPoint(root, point, SetValue)
 RestData(root, name, SetValue)
 Reload(root, isControlKeyDown)
+ClearAll()
 ToTop(root, tab)
 
 CheckInCombat()
@@ -227,8 +228,8 @@ function WoWTools_MenuMixin:RestPoint(root, point, SetValue)
 end
 --[[
 --重置位置
-WoWTools_MenuMixin:RestPoint(sub, Save().pointVigentteButton, function()
-    Save().pointVigentteButton=nil
+WoWTools_MenuMixin:RestPoint(sub, Save().point, function()
+    Save().point=nil
     self:ClearAllPoints()
     self:set_point()
 end)
@@ -486,6 +487,16 @@ end
 
 ]]
 
+
+
+
+
+
+--全部清除
+--WoWTools_MenuMixin:ClearAll(root, function() end)
+function WoWTools_MenuMixin:ClearAll(root, SetValue)
+    root:CreateButton('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL), SetValue)
+end
 
 
 

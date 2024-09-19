@@ -687,8 +687,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 				end,
 				buttonText='|A:QuestArtifact:0:0|a'..(e.onlyChinese and '测试' or 'Test'),
 				buttonFunc= function()
-					e.ShowColorPicker(e.Player.r, e.Player.g, e.Player.b, 1, function()end)
+					WoWTools_ColorMixin:ShowColorFrame(e.Player.r, e.Player.g, e.Player.b, 1, function()end)
                 end,
+
 				tooltip= e.cn(addName),
 				layout= nil,
 				category= nil,

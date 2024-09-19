@@ -147,7 +147,7 @@ local function set_WorldQuestPinMixin_RefreshVisuals(self)--WorldQuestDataProvid
     elseif data.currencyID and data.totalRewardAmount and data.totalRewardAmount>0 then
         texture=data.texture
 
-        local info, _, _, _, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:Get(data.currencyID, nil)
+        local info, _, _, _, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:GetInfo(data.currencyID, nil)
         if info and data.totalRewardAmount>1 then
             if isMax then
                 text= format('|cnRED_FONT_COLOR:%d|r', data.totalRewardAmount)

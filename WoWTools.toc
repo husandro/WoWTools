@@ -156,10 +156,14 @@ Plus\Faction.lua
 
 ##货币面板
 Plus_Tokens\0_Tokens.lua
+Plus_Tokens\Init_Menu.lua
 
+Plus_Tokens\TrackButton.lua
+Plus_Tokens\TrackButton_Menu.lua
 
-
-
+Plus_Tokens\ScrollBox.lua
+Plus_Tokens\CurrencyTransferMenu.lua
+Plus_Tokens\ItemInteractionFrame.lua
 
 
 

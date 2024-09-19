@@ -1,8 +1,19 @@
+local e= select(2, ...)
 
---info, num, total, percent, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:Get(currencyID, index)
-WoWTools_CurrencyMixin={}
 
-function WoWTools_CurrencyMixin:Get(currencyID, index, link)
+--info, num, total, percent, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:GetInfo(currencyID, index)
+WoWTools_CurrencyMixin={
+--GetInfo
+--GatName
+}
+
+
+
+
+
+
+
+local function get_info(currencyID, index, link)
     local info
     if not currencyID then
         link= link or (index and C_CurrencyInfo.GetCurrencyListLink(index))
@@ -12,6 +23,16 @@ function WoWTools_CurrencyMixin:Get(currencyID, index, link)
         info=C_CurrencyInfo.GetCurrencyInfo(currencyID)
         link= link or C_CurrencyInfo.GetCurrencyLink(currencyID)
     end
+    return info, currencyID, link
+end
+
+
+
+
+
+function WoWTools_CurrencyMixin:GetInfo(currencyID, index, link)
+    local info
+    info, currencyID, link = get_info(currencyID, index, link)
 
     if not info or not info.quantity or not info.discovered then
         return
@@ -42,4 +63,29 @@ function WoWTools_CurrencyMixin:Get(currencyID, index, link)
     info.link= link or C_CurrencyInfo.GetCurrencyLink(currencyID)
     info.currencyID= currencyID
     return info, num, totale, percent, isMax, canWeek, canEarned, canQuantity
+end
+
+
+
+
+
+
+
+
+
+
+function WoWTools_CurrencyMixin:GetName(currencyID, index, link)
+    local info, num, _, _, isMax, canWeek, canEarned, canQuantity= self:GetInfo(currencyID, index, link)
+    if info and info.name then
+        return
+            '|T'..(info.iconFileID or 0)..':0|t'
+            ..(
+                isMax and '|cnRED_FONT_COLOR:'
+                or ((canWeek or canEarned or canQuantity) and '|cnGREEN_FONT_COLOR:')
+                or (C_CurrencyInfo.IsAccountTransferableCurrency(info.currencyID) and '|cff00ccff')
+                or '|cnENCHANT_COLOR'
+            )
+            ..e.cn(info.name)
+            ..'|r '..e.MK(num or 0, 3)
+    end
 end

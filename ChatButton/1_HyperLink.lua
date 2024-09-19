@@ -267,7 +267,7 @@ local function Enchant(link)--附魔
 end
 
 local function Currency(link)--货币 "|cffffffff|Hcurrency:1744|h[Corrupted Memento]|h|r"
-    local info, num, _, _, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:Get(nil, nil, link)
+    local info, num, _, _, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:GetInfo(nil, nil, link)
     if info and info.iconFileID  then
         local numText
         if num then
