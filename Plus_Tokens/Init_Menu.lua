@@ -123,10 +123,12 @@ local function Init_Menu(_, root)
 	end)
 
 	num=0
-	for currencyID in pairs(Save().tokens) do
+	for currencyID, _ in pairs(Save().tokens) do
 		num=num+1
+		print(currencyID, _)
+		print(WoWTools_CurrencyMixin:GetName(currencyID, nil, nil))
 		sub2=sub:CreateCheckbox(
-			WoWTools_CurrencyMixin:GetName(currencyID, nil, nil),
+			WoWTools_CurrencyMixin:GetName(currencyID, nil, nil)..'a',
 		function(data)
 			return Save().tokens[data.currencyID]
 		end, function(data)
@@ -139,7 +141,6 @@ local function Init_Menu(_, root)
 	if num>1 then
 --SetGridMode
 		WoWTools_MenuMixin:SetGridMode(sub, num)
-		
 	end
 end
 
@@ -147,12 +148,16 @@ end
 
 
 
+function WoWTools_TokensMixin:Init_Menu(frame)
+    MenuUtil.CreateContextMenu(frame, Init_Menu)
+end
+
 
 
 
 --#####
 --主菜单
---#####
+--[[#####
 local function InitMenu(self, level, menuList)--主菜单
 
 	local info
@@ -321,7 +326,7 @@ local function InitMenu(self, level, menuList)--主菜单
 		end
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
-end
+end]]
 
 
 
@@ -335,8 +340,3 @@ end
 
 
 
-
-
-function WoWTools_TokensMixin:Init_Menu(frame)
-    MenuUtil.CreateContextMenu(frame, Init_Menu)
-end

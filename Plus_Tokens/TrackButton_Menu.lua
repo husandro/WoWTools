@@ -25,7 +25,7 @@ local function Init_TrackButton_Menu(self)
         self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
         e.LibDD:UIDropDownMenu_Initialize(self.Menu, function(_, level, menuList)
             if menuList=='ITEMS' then
-                MenuList_Item(level)
+                WoWTools_TokensMixin:MenuList_Item(level)
                 return
             end
             local info={
@@ -123,5 +123,6 @@ end
 
 
 function WoWTools_TokensMixin:Init_TrackButton_Menu(frame)
-    MenuUtil.CreateContextMenu(frame, Init_TrackButton_Menu)
+    Init_TrackButton_Menu(frame)
+    --MenuUtil.CreateContextMenu(frame, Init_TrackButton_Menu)
 end
