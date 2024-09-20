@@ -86,7 +86,7 @@ local function Init()--设置标记, 框架
     end)
 
     function btn:set_scale()
-        if self:CanChangeAttribute() then
+        if UnitAffectingCombat('player') then
             self:GetParent():SetScale(Save().markersScale or 1)--缩放
         end
     end
@@ -106,12 +106,12 @@ local function Init()--设置标记, 框架
     btn:SetScript('OnLeave', function(self)
         e.tips:Hide()
         self:set_Alpha()
-        MarkerButton:state_leave(true)
+        WoWTools_MarkersMixin.MarkerButton:state_leave(true)
     end)
     btn:SetScript('OnEnter', function(self)
         self:set_tooltip()
         self:set_Alpha(true)
-        MarkerButton:state_enter(nil, true)
+        WoWTools_MarkersMixin.MarkerButton:state_enter(nil, true)
     end)
     btn:SetScript('OnMouseWheel', function(self, delta)--缩放
         Save().markersScale= WoWTools_FrameMixin:ScaleFrame(self, delta, Save().markersScale)

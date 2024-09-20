@@ -53,7 +53,7 @@ local function Init()
         if Save().groupReadyTipsPoint then
             self:SetPoint(Save().groupReadyTipsPoint[1], UIParent, Save().groupReadyTipsPoint[3], Save().groupReadyTipsPoint[4], Save().groupReadyTipsPoint[5])
         else
-            self:SetPoint('BOTTOMLEFT', MarkerButton, 'TOPLEFT', 0, 20)
+            self:SetPoint('BOTTOMLEFT', WoWTools_MarkersMixin.MarkerButton, 'TOPLEFT', 0, 20)
         end
     end
 
@@ -158,7 +158,7 @@ local function Init()
     function ReadyTipsButton:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(addName, e.onlyChinese and '队员就绪信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYERS_IN_GROUP, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, READY, INFO)))
+        e.tips:AddDoubleLine(WoWTools_MarkersMixin.addName, e.onlyChinese and '队员就绪信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYERS_IN_GROUP, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, READY, INFO)))
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '隐藏' or HIDE, (e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left)
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE,'Alt+'..e.Icon.right)
@@ -167,12 +167,12 @@ local function Init()
     end
     ReadyTipsButton:SetScript('OnLeave', function()
         e.tips:Hide()
-        MarkerButton:SetButtonState('NORMAL')
-        MarkerButton:state_leave(true)
+        WoWTools_MarkersMixin.MarkerButton:SetButtonState('NORMAL')
+        WoWTools_MarkersMixin.MarkerButton:state_leave(true)
     end)
     ReadyTipsButton:SetScript('OnEnter', function(self)
         self:set_tooltip()
-        MarkerButton:state_enter(nil, true)
+        WoWTools_MarkersMixin.MarkerButton:state_enter(nil, true)
     end)
 
     ReadyTipsButton:SetScript('OnHide', function(self)
