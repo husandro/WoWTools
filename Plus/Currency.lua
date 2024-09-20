@@ -133,7 +133,7 @@ end
 
 --货币
 local function Get_Currency(currencyID, index)
-	local info, num, total, percent, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:Get(currencyID, index)
+	local info, num, total, percent, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:GetInfo(currencyID, index)
 
 	local text
     if not info
@@ -974,7 +974,7 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 		return
 	end
 
-	local info, _, _, percent, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:Get(nil, data.currencyIndex)
+	local info, _, _, percent, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:GetInfo(nil, data.currencyIndex)
 	if not info or info.isHealer then
 		if frame.check then
 			frame.check:SetShown(false)
@@ -1559,21 +1559,21 @@ local function Init()
 			if self.currencyMax[curID] then
 				return
 			end
-			local info, num, total, percent, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:Get(curID, nil)
+			local info, num, total, percent, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:GetInfo(curID, nil)
 			if info and isMax then
 				tab[info.currencyID]= info.link
 			end
 		else
 			for currencyID, _ in pairs(Save.tokens) do
 				if not self.currencyMax[currencyID] then
-					local info, _, total, percent, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:Get(currencyID, nil)
+					local info, _, total, percent, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:GetInfo(currencyID, nil)
 					if info and isMax then
 						tab[currencyID]= info.link
 					end
 				end
 			end
 			for i=1, C_CurrencyInfo.GetCurrencyListSize() do
-				local info, num, total, percent, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:Get(nil, i)
+				local info, num, total, percent, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:GetInfo(nil, i)
 				if info
 					and not self.currencyMax[info.currencyID]
 					and isMax
