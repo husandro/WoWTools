@@ -21,6 +21,7 @@ Save={
 },
 
 TrackButton=nil,
+Set_TrackButton_Text=function()end,
 }
 local function Save()
 	return WoWTools_TokensMixin.Save

@@ -48,7 +48,7 @@ Mixin\StaticPopupDialogs.lua
 Mixin\ChatButton_Mixin.lua
 Mixin\Frame_Mixin.lua
 Mixin\Menu_Mixin.lua
-
+Mixin\Group_Mixin.lua
 Mixin\EditBox_Mixin.lua
 Mixin\Random_Mixin.lua
 Mixin\Load_UI_Mixin.lua
@@ -348,8 +348,15 @@ ChatButton\0_Init_ChatButton.lua
 ChatButton\1_HyperLink.lua
 ##ROLL
 ChatButton\2_Roll.lua
+
 ##标记
-ChatButton\3_Markers.lua
+ChatButton_Markers\3_Markers.lua
+ChatButton_Markers\AutoReady.lua
+ChatButton_Markers\Tank_Healer.lua
+ChatButton_Markers\Ready_Tips.lua
+ChatButton_Markers\Markers_Frame.lua
+ChatButton_Markers\MarkerTools_Menu.lua
+
 ##邀请， 自动接受， 拒绝，屏蔽
 ChatButton\4_Invite.lua
 ##查找器， 地下城和团队， 自动退出，进入，Roll装

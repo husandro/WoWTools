@@ -77,15 +77,19 @@ end
 function WoWTools_CurrencyMixin:GetName(currencyID, index, link)
     local info, num, _, _, isMax, canWeek, canEarned, canQuantity= self:GetInfo(currencyID, index, link)
     if info and info.name then
+        num= num or 0
         return
             '|T'..(info.iconFileID or 0)..':0|t'
+            ..(C_CurrencyInfo.IsAccountTransferableCurrency(info.currencyID) and '|cff00ccff' or '|cnENCHANT_COLOR:')
+            ..e.cn(info.name)
+            ..'|r'
             ..(
                 isMax and '|cnRED_FONT_COLOR:'
                 or ((canWeek or canEarned or canQuantity) and '|cnGREEN_FONT_COLOR:')
-                or (C_CurrencyInfo.IsAccountTransferableCurrency(info.currencyID) and '|cff00ccff')
-                or '|cnENCHANT_COLOR'
+                or (num==0 and '|cff00ccff')
+                or '|cffffffff'
+
             )
-            ..e.cn(info.name)
-            ..'|r '..e.MK(num or 0, 3)
+            ..' '..WoWTools_Mixin:MK(num, 3)
     end
 end

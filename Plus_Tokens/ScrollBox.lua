@@ -16,12 +16,13 @@ end
 
 
 local function set_Tokens_Button(frame)--设置, 列表, 内容
+
 	local data= frame.elementData or {}
-	if not data.currencyIndex then
+	if not data.currencyID then
 		return
 	end
 
-	local info, _, _, percent, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:GetInfo(nil, data.currencyIndex)
+	local info, _, _, percent, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:GetInfo(data.currencyID, data.currencyIndex)
 	if not info or info.isHealer then
 		if frame.check then
 			frame.check:SetShown(false)
@@ -37,7 +38,7 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 		frame.check:SetPoint('RIGHT', frame, 'LEFT',4,0)
 		frame.check:SetScript('OnClick', function(self)
 			if self.currencyID then
-				Save().tokens[self.currencyID]= not Save().tokens[self.currencyID] and self.index or nil
+				Save().tokens[self.currencyID]= not Save().tokens[self.currencyID] and true or nil
 				frame.check:SetAlpha(Save().tokens[self.currencyID] and 1 or 0.5)
 				WoWTools_TokensMixin:Set_TrackButton_Text()
 			end
@@ -79,12 +80,11 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 	if frame.check then
 		frame.check:SetCheckedTexture(info and info.iconFileID or e.Icon.icon)
 		frame.check.currencyID= currencyID
-		frame.check.index= frame.index
 		frame.check:SetShown(true)
 		frame.check:SetChecked(Save().tokens[currencyID])
 		frame.check:SetAlpha(Save().tokens[currencyID] and 1 or 0.5)
 	end
-	
+
 
 	if isMax then
 		frame.Content.Count:SetTextColor(1,0,0)

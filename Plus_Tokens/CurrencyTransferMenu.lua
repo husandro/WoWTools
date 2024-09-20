@@ -1,4 +1,4 @@
-
+local e= select(2, ...)
 --货币，转移
 local function Init()
 	hooksecurefunc(CurrencyTransferLog.ScrollBox, 'Update', function(self)

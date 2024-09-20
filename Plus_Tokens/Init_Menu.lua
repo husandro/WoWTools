@@ -108,13 +108,22 @@ local function Init_Menu(_, root)
 	sub:CreateDivider()
 	WoWTools_MenuMixin:RestPoint(sub, Save().point, function()
 		Save().point=nil
-		WoWTools_TokensMixin.TrackButton:set_point()
+		if WoWTools_TokensMixin.TrackButton then
+			WoWTools_TokensMixin.TrackButton:set_point()
+		end
 	end)
 
 
 --指定货币
+	num=0
+	local new={}
+	for currencyID, _ in pairs(Save().tokens) do
+		num=num+1
+		table.insert(new, currencyID)
+	end
+	table.sort(new)
 	sub=root:CreateCheckbox(
-		e.onlyChinese and '指定货币' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMBAT_ALLY_START_MISSION, TOKENS),
+		(e.onlyChinese and '指定货币' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMBAT_ALLY_START_MISSION, TOKENS))..(num==0 and '|cff9e9e9e ' or ' ')..num,
 	function()
 		return Save().indicato
 	end, function()
@@ -122,13 +131,12 @@ local function Init_Menu(_, root)
 		WoWTools_TokensMixin:Init_TrackButton()
 	end)
 
-	num=0
-	for currencyID, _ in pairs(Save().tokens) do
-		num=num+1
-		print(currencyID, _)
-		print(WoWTools_CurrencyMixin:GetName(currencyID, nil, nil))
+	
+
+	
+	for _, currencyID in pairs(new) do
 		sub2=sub:CreateCheckbox(
-			WoWTools_CurrencyMixin:GetName(currencyID, nil, nil)..'a',
+			WoWTools_CurrencyMixin:GetName(currencyID, nil, nil),
 		function(data)
 			return Save().tokens[data.currencyID]
 		end, function(data)
