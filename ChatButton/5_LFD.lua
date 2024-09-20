@@ -1966,12 +1966,12 @@ local function Roll_Plus()
         RollOnLoot(rollID, rollType)
         link= link or GetLootRollItemLink(rollID)
         if link then
-            C_Timer.After(2, function()
-                print('|A:groupfinder-eye-frame:0:0|a|cnGREEN_FONT_COLOR:',
-                    rollType==1 and '|A:lootroll-toast-icon-need-up:0:0|a'..(e.onlyChinese and '需求' or NEED)
-                    or ('|A:lootroll-toast-icon-transmog-up:0:0|a')..(e.onlyChinese and '贪婪' or GREED),
-                    link)
-            end)
+            --C_Timer.After(2, function()--..(e.onlyChinese and '需求' or NEED) ..(e.onlyChinese and '贪婪' or GREED),
+                print('|A:groupfinder-eye-frame:0:0|a|cnGREEN_FONT_COLOR:'
+                    ..(rollType==1 and '|A:lootroll-toast-icon-need-up:0:0|a' or '|A:lootroll-toast-icon-transmog-up:0:0|a')
+                    ..link
+                )
+            --end)
         end
     end
     local function set_Timer_Text(frame)--提示，剩余时间

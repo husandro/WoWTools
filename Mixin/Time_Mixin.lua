@@ -38,12 +38,13 @@ function WoWTools_TimeMixin:Info(value, chat, time, expirationTime)
         else
             return SecondsToTime(time), time
         end
-    elseif expirationTime and expirationTime>0 then
+    elseif expirationTime and expirationTime>0 then--到期
         time= time or GetTime()
-        while time< expirationTime do
-            time= time+ 86400
+
+        while time> expirationTime do
+            expirationTime= expirationTime+ 86400
         end
-        time= expirationTime- time
+        time= expirationTime-time
         time= time<0 and 0 or time
         if chat then
             return WoWTools_TimeMixin:SecondsToClock(time), time

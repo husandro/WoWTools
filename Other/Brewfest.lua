@@ -173,7 +173,7 @@ local function Init()
         self.elapsed= (self.elapsed or 0.3) + elapsed
         if self.elapsed > 0.3 then
             local info= C_UnitAuras.GetPlayerAuraBySpellID(43880) or C_UnitAuras.GetPlayerAuraBySpellID(43883)
-            if info and info.expirationTime and info.expirationTim>0 then
+            if info and info.expirationTime and info.expirationTime>0 then
                 self.timeText:SetText('|T'..info.icon..':0|t'..WoWTools_TimeMixin:Info(nil, true, nil, info.expirationTime))
             end
 
