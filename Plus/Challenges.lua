@@ -845,7 +845,7 @@ local function All_Player_Info()--所以角色信息
         local weekPvP= info.Keystone.weekPvP
         local weekWorld= info.Keystone.weekWorld
 
-        if guid~=e.Player.guid and (link or weekPvE or weekMythicPlus or weekPvP or weekWorld) then--guid~=e.Player.guid and and info.isLevelMax 
+        if (guid~=e.Player.guid or e.Player.husandro) and (link or weekPvE or weekMythicPlus or weekPvP or weekWorld) then--guid~=e.Player.guid and and info.isLevelMax 
             local _, englishClass, _, _, _, namePlayer, realm = GetPlayerInfoByGUID(guid)
             if namePlayer and namePlayer~='' then
                 local classColor = englishClass and C_ClassColor.GetClassColor(englishClass)
@@ -857,11 +857,6 @@ local function All_Player_Info()--所以角色信息
                 end
 
                 btn.link=link
-                --[[btn.weekPvE= weekPvE
-                btn.weekMythicPlus= weekMythicPlus
-                btn.weekPvP= weekPvP
-                btn.weekWorld= weekWorld]]
-
 
                 btn:SetScript('OnLeave', GameTooltip_Hide)
                 btn:SetScript('OnEnter', function(self)
@@ -884,7 +879,6 @@ local function All_Player_Info()--所以角色信息
 4	AlsoReceive	
 5	Concession	
 6	World
-
 ]]
 
                 create_lable(btn, 3, weekPvE, classColor)--团队副本
