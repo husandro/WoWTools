@@ -19,10 +19,11 @@ local function get_info(currencyID, index, link)
         link= link or (index and C_CurrencyInfo.GetCurrencyListLink(index))
         currencyID= link and C_CurrencyInfo.GetCurrencyIDFromLink(link)
     end
-    if currencyID then
-        info=C_CurrencyInfo.GetCurrencyInfo(currencyID)
-        link= link or C_CurrencyInfo.GetCurrencyLink(currencyID)
-    end
+   if not currencyID or currencyID<=0 then
+        return
+   end
+    info=C_CurrencyInfo.GetCurrencyInfo(currencyID)
+    link= link or C_CurrencyInfo.GetCurrencyLink(currencyID)
     return info, currencyID, link
 end
 
@@ -80,7 +81,11 @@ function WoWTools_CurrencyMixin:GetName(currencyID, index, link)
         num= num or 0
         return
             '|T'..(info.iconFileID or 0)..':0|t'
-            ..(C_CurrencyInfo.IsAccountTransferableCurrency(info.currencyID) and '|cff00ccff' or '|cnENCHANT_COLOR:')
+            ..(
+                C_CurrencyInfo.IsAccountTransferableCurrency(info.currencyID) and '|cff00ccff'
+                or ('|c'..select(4, C_Item.GetItemQualityColor(info.quality or 1)))
+                or '|cnENCHANT_COLOR:'
+            )
             ..e.cn(info.name)
             ..'|r'
             ..(
@@ -90,6 +95,6 @@ function WoWTools_CurrencyMixin:GetName(currencyID, index, link)
                 or '|cffffffff'
 
             )
-            ..' '..WoWTools_Mixin:MK(num, 3)
+            ..' '..WoWTools_Mixin:MK(num, 3), info
     end
 end

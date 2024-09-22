@@ -428,7 +428,7 @@ end
             end,
             EditBoxOnTextChanged=function(self)
                 local num= self:GetNumber() or 0
-                self:GetParent().button1:SetEnabled(num>=10)
+                self:GetParent().button1:SetEnabled(num>=10 and num<2147483647)
             end,
             EditBoxOnEscapePressed = function(self2)
                 self2:SetAutoFocus(false)

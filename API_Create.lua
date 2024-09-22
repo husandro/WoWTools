@@ -132,10 +132,11 @@ function e.GetSpellItemCooldown(spellID, itemID)--法术,物品,冷却
             t= t-startTime
             t= duration-t
             t= t<0 and 0 or t
-            return '|cnRED_FONT_COLOR:'..SecondsToTime(t)..'|r'
-
-        elseif C_Item.GetItemCount(itemID, true, false, true, true)>0 and not enable then
-            return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '即时冷却' or SPELL_RECAST_TIME_INSTANT)..'|r'
+            if enable==false then
+                return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '即时冷却' or SPELL_RECAST_TIME_INSTANT)..'|r'
+            else
+                return '|cnRED_FONT_COLOR:'..SecondsToTime(t)..'|r'
+            end
         end
     end
 end

@@ -115,8 +115,7 @@ local function Get_Currency(currencyID, index)
     local name
 
 	if Save().nameShow then
-		local hex= select(4, C_Item.GetItemQualityColor(info and info.quality or 1))
-		--local col= (ITEM_QUALITY_COLORS[info.quality] or {}).hex
+		local hex= currencyID and C_CurrencyInfo.IsAccountTransferableCurrency(currencyID) and 'ff00d1ff' or select(4, C_Item.GetItemQualityColor(info and info.quality or 1))
 		name = format('|c%s%s|r', hex, e.cn(info.name))
 	end
 
@@ -468,8 +467,8 @@ end
 local function Init_TrackButton()
 	if Save().Hide or TrackButton then
 		if TrackButton then
-			TrackButton:set_Event()
-			TrackButton:set_Shown()
+			TrackButton:set_event()
+			TrackButton:set_shown()
 		end
 		return
 	end
@@ -482,7 +481,7 @@ local function Init_TrackButton()
 	TrackButton.texture:SetAllPoints(TrackButton)
 	TrackButton.texture:SetAlpha(0.5)
 
-	function TrackButton:set_Point()
+	function TrackButton:set_point()
 		self:ClearAllPoints()
 		if Save().point then
 			self:SetPoint(Save().point[1], UIParent, Save().point[3], Save().point[4], Save().point[5])
@@ -493,7 +492,7 @@ local function Init_TrackButton()
 		end
 	end
 
-	function TrackButton:set_Texture(icon)
+	function TrackButton:set_texture(icon)
 		if icon and icon>0 then
 			self.texture:SetTexture(icon)
 		elseif Save().str then
@@ -503,7 +502,7 @@ local function Init_TrackButton()
 		end
 	end
 
-	function TrackButton:set_Shown()--显示,隐藏
+	function TrackButton:set_shown()--显示,隐藏
 		local hide= Save().Hide
 		 	or (
 				not Save().notAutoHideTrack and (
@@ -518,7 +517,7 @@ local function Init_TrackButton()
 		end
 	end
 
-	function TrackButton:set_Event()
+	function TrackButton:set_event()
 		if Save().Hide then
 			self:UnregisterAllEvents()
 		else
@@ -533,10 +532,10 @@ local function Init_TrackButton()
 		end
 	end
 
-	TrackButton:SetScript('OnEvent', TrackButton.set_Shown)
+	TrackButton:SetScript('OnEvent', TrackButton.set_shown)
 
 
-	function TrackButton:set_Scale()
+	function TrackButton:set_scale()
 		if self.Frame:CanChangeAttribute() then
 			self.Frame:SetScale(Save().scaleTrackButton or 1)
 		end
@@ -561,7 +560,7 @@ local function Init_TrackButton()
 						('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
 					or ('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', e.Icon.select))
 			)
-			self:set_Texture(C_Item.GetItemIconByID(itemID))
+			self:set_texture(C_Item.GetItemIconByID(itemID))
 		else
 			local canFrame= self.Frame:CanChangeAttribute() and '|cnGREEN_FONT_COLOR:' or ''
 			e.tips:AddDoubleLine(e.addName, addName)
@@ -570,7 +569,7 @@ local function Init_TrackButton()
 			e.tips:AddDoubleLine((e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU)..' '..e.GetShowHide(Save().str), e.Icon.right)
 			e.tips:AddLine(' ')
 			e.tips:AddDoubleLine(canFrame..(e.onlyChinese and '移动' or NPE_MOVE), 'Atl+'..e.Icon.right)
-			e.tips:AddDoubleLine(canFrame..(e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save().scaleTrackButton or 1), 'Alt+'..e.Icon.mid)
+			--e.tips:AddDoubleLine(canFrame..(e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save().scaleTrackButton or 1), 'Alt+'..e.Icon.mid)
 			e.tips:AddLine(' ')
 			e.tips:AddDoubleLine(canFrame..(e.onlyChinese and '拖曳' or DRAG_MODEL)..e.Icon.left..(e.onlyChinese and '物品' or ITEMS), e.onlyChinese and '追踪' or TRACKING)
 		end
@@ -594,7 +593,7 @@ local function Init_TrackButton()
 		Save().point[2]=nil
 	end)
 	TrackButton:SetScript("OnMouseUp", ResetCursor)
-	TrackButton:SetScript("OnMouseWheel", function(self, d)
+	--[[TrackButton:SetScript("OnMouseWheel", function(self, d)
 		if IsAltKeyDown() then
 			local n= Save().scaleTrackButton or 1
 			if d==1 then
@@ -609,7 +608,7 @@ local function Init_TrackButton()
 			self:set_Tooltips()
 			print(e.addName, addName, e.onlyChinese and '缩放' or UI_SCALE, n)
 		end
-	end)
+	end)]]
 	TrackButton:SetScript("OnMouseDown", function(self, d)
 		if d=='RightButton' and IsAltKeyDown() then--右击,移动
 			SetCursor('UI_MOVE_CURSOR')
@@ -639,7 +638,7 @@ local function Init_TrackButton()
 	TrackButton:SetScript("OnEnter", function(self)
 		if (Save().itemButtonUse and not UnitAffectingCombat('player')) or not Save().itemButtonUse then
 			Set_TrackButton_Text()
-			self:set_Shown()
+			self:set_shown()
 		end
 		self:set_Tooltips()
 		self.texture:SetAlpha(1)
@@ -647,7 +646,7 @@ local function Init_TrackButton()
 	TrackButton:SetScript('OnMouseUp', ResetCursor)
 	TrackButton:SetScript("OnLeave", function(self)
 		e.tips:Hide()
-		self:set_Texture()
+		self:set_texture()
 		self.texture:SetAlpha(0.5)
 	end)
 
@@ -683,11 +682,15 @@ local function Init_TrackButton()
 	end
 	TrackButton.Frame:set_shown()
 
-	TrackButton:set_Point()
-	TrackButton:set_Scale()
-	TrackButton:set_Event()
-	TrackButton:set_Shown()
-	TrackButton:set_Texture()
+	function TrackButton:set_strata()
+        self:SetFrameStrata(Save().strata or 'MEDIUM')
+    end
+	TrackButton:set_strata()
+	TrackButton:set_point()
+	TrackButton:set_scale()
+	TrackButton:set_event()
+	TrackButton:set_shown()
+	TrackButton:set_texture()
 
 	Set_TrackButton_Text()
 end

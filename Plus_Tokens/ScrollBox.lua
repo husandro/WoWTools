@@ -55,7 +55,7 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 			e.tips:Show()
 		end)
 		frame.check:SetScript('OnLeave', GameTooltip_Hide)
-		frame.check:SetSize(15,15)
+		frame.check:SetSize(18,18)
 
 		frame:HookScript('OnEnter', function(self)
 			for _, btn in pairs(TrackButton and TrackButton.btn or {}) do
@@ -105,9 +105,7 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 
 	if frame.Content.Name then
 		if info.isAccountTransferable then
-			frame.Content.Name:SetTextColor(0, 0.8, 1)
-		elseif isMax then
-			frame.Content.Name:SetTextColor(1, 0, 0)
+			frame.Content.Name:SetTextColor(0, 0.8, 1)		
 		else
 			local r, g, b= C_Item.GetItemQualityColor(info and info.quality or 1)
 			frame.Content.Name:SetTextColor(r or 1, g or 1, b or 1)
@@ -120,7 +118,7 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 	end]]
 
 
-	frame.Content.AccountWideIcon:SetShown(info.isAccountTransferable)
+	--frame.Content.AccountWideIcon:SetShown(info.isAccountTransferable)
 end
 
 

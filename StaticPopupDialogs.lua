@@ -315,6 +315,59 @@ StaticPopup_Show('WoWTools_OK',
         timeout = 0,
         whileDead=true, hideOnEscape=true, exclusive=true,
     }
+
+
+
+
+
+
+    StaticPopupDialogs['WoWTools_Currency']= {
+        text='|n|n|n',
+        hasEditBox=true,
+        button1= e.onlyChinese and '添加' or ADD,
+        button2= e.onlyChinese and '取消' or CANCEL,
+        OnShow=function(s, data)
+            s.editBox:SetNumeric(true)
+            s.editBox:SetNumber(data.GetValue() or 0)
+        end,
+        OnHide= function(s)
+            s.editBox:ClearFocus()
+        end,
+        OnAccept = function(s, data)
+            local currencyID= s.editBox:GetNumber()
+            if currencyID and currencyID>0 then
+                data.SetValue(currencyID)
+            end
+        end,
+        EditBoxOnTextChanged=function(s, data)
+            local currencyID= s:GetNumber()
+            local name, info, text, icon
+            local p= s:GetParent()
+            if currencyID>0 and currencyID<214748364 then
+                name, info=WoWTools_CurrencyMixin:GetName(currencyID, nil, nil)
+                text=(e.onlyChinese and '货币' or TOKENS)
+                if info and name then
+                    text= text..'|n|n'..name
+                    icon=info.iconFileID
+                end
+                data.CheckValue(p.button1, currencyID)
+            end            
+            p.text:SetText(text)
+            p.button1:SetEnabled(name and info)
+            p.AlertIcon:SetTexture(icon or 0)
+        end,
+        EditBoxOnEscapePressed = function(s)
+            s:GetParent():Hide()
+        end,
+        whileDead=true, hideOnEscape=true, exclusive=true, showAlert=true,
+    }
+    --[[
+    StaticPopup_Show('WoWTools_Currency', nil, nil, {
+    GetValue=function()
+    end, CheckValue=function(button1, currencyID)
+    end, SetValue=function(currencyID)
+    end})
+    ]]
 end
 
 

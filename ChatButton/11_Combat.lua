@@ -515,7 +515,7 @@ local function Init_Menu(self, root)
             end,
             EditBoxOnTextChanged=function(s)
                 local num= s:GetNumber() or 0
-                s:GetParent().button1:SetEnabled(num>=60)
+                s:GetParent().button1:SetEnabled(num>=60 and num<2147483647)
             end,
         }
     )
