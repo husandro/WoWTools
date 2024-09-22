@@ -1,7 +1,7 @@
 local e= select(2, ...)
 local AutoReadyFrame
 local function Save()
-    return WoWTools_MarkersMixin.Save
+    return WoWTools_MarkerMixin.Save
 end
 
 
@@ -13,8 +13,8 @@ end
 
 --自动就绪
 local function Init()
-    AutoReadyFrame= CreateFrame('Frame', nil, WoWTools_MarkersMixin.MarkerButton)
-    WoWTools_MarkersMixin.AutoReadyFrame= AutoReadyFrame
+    AutoReadyFrame= CreateFrame('Frame', nil, WoWTools_MarkerMixin.MarkerButton)
+    WoWTools_MarkerMixin.AutoReadyFrame= AutoReadyFrame
 
     AutoReadyFrame:RegisterEvent('READY_CHECK')
     AutoReadyFrame:SetScript('OnEvent', function(self, _, arg1, arg2)
@@ -64,12 +64,12 @@ local function Init()
     frame:HookScript('OnShow',function(self)
         local text=''
         if Save().autoReady==1 then
-            text=WoWTools_MarkersMixin.addName
+            text=WoWTools_MarkerMixin.addName
             ..'|n|cnGREEN_FONT_COLOR:'
             ..(e.onlyChinese and '自动就绪' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, READY))
             ..format('|A:%s:0:0|a', e.Icon.select)
         elseif Save().autoReady==2 then
-            text=WoWTools_MarkersMixin.addName..'|n|cnRED_FONT_COLOR:'
+            text=WoWTools_MarkerMixin.addName..'|n|cnRED_FONT_COLOR:'
             ..(e.onlyChinese and '自动未就绪' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, NOT_READY_FEMALE))
             ..'|r'..format('|A:%s:0:0|a', e.Icon.disabled)
         end
@@ -79,6 +79,6 @@ end
 
 
 
-function WoWTools_MarkersMixin:Init_AutoReady()
+function WoWTools_MarkerMixin:Init_AutoReady()
     Init()
 end

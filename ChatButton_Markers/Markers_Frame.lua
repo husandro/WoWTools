@@ -1,6 +1,7 @@
 local e= select(2, ...)
+local MakerFrame
 local function Save()
-    return WoWTools_MarkersMixin.Save
+    return WoWTools_MarkerMixin.Save
 end
 
 
@@ -9,35 +10,29 @@ end
 
 
 
-
-
-
-
-
-
-local MakerFrame
---设置标记, 框架
---#############
-local function Init()--设置标记, 框架
-    if not Save().markersFrame then
-        if MakerFrame then
-            MakerFrame:set_Shown()
-            MakerFrame:set_Event()
-        end
-        return
-    else
-        if MakerFrame then
-            MakerFrame:set_Shown()
-            MakerFrame:set_Event()
-            return
-        end
-
+local function Get_RaidTargetTexture(index, unit)--取得图片
+    if unit then
+        index= GetRaidTargetIndex(unit)
     end
+    if not index or index<1 or index>NUM_WORLD_RAID_MARKERS then
+        return ''
+    else
+        return '|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_'..index..':0|t'
+    end
+end
+
+
+
+
+
+
+--设置标记, 框架
+local function Init()--设置标记, 框架
 
     local size, btn= 22, nil
 
     MakerFrame=CreateFrame('Frame', 'WoWTools_ChatButton_MarkersFrame', UIParent)
-    WoWTools_MarkersMixin= MakerFrame
+    WoWTools_MarkerMixin.MakerFrame= MakerFrame
     MakerFrame.Buttons={}
 
 
@@ -74,7 +69,7 @@ local function Init()--设置标记, 框架
             SetCursor('UI_MOVE_CURSOR')
         elseif not IsModifierKeyDown() and d=='RightButton' then
             MenuUtil.CreateContextMenu(self, function(_, root)
-                WoWTools_MarkersMixin:Init_MarkerTools_Menu(root)--队伍标记工具, 选项，菜单    
+                WoWTools_MarkerMixin:Init_MarkerTools_Menu(root)--队伍标记工具, 选项，菜单    
             end)
         end
         self:SetAlpha(0.3)
@@ -106,12 +101,12 @@ local function Init()--设置标记, 框架
     btn:SetScript('OnLeave', function(self)
         e.tips:Hide()
         self:set_Alpha()
-        WoWTools_MarkersMixin.MarkerButton:state_leave(true)
+        WoWTools_MarkerMixin.MarkerButton:state_leave(true)
     end)
     btn:SetScript('OnEnter', function(self)
         self:set_tooltip()
         self:set_Alpha(true)
-        WoWTools_MarkersMixin.MarkerButton:state_enter(nil, true)
+        WoWTools_MarkerMixin.MarkerButton:state_enter(nil, true)
     end)
     btn:SetScript('OnMouseWheel', function(self, delta)--缩放
         Save().markersScale= WoWTools_FrameMixin:ScaleFrame(self, delta, Save().markersScale)
@@ -132,6 +127,7 @@ local function Init()--设置标记, 框架
     MakerFrame.ping= CreateFrame('Frame', nil, MakerFrame)
     table.insert(MakerFrame.Buttons, MakerFrame.ping)
     MakerFrame.ping:SetSize(size, size)
+
     function MakerFrame.ping:set_point()
         if Save().H then
             MakerFrame.ping:SetPoint("BOTTOM", MakerFrame, 'TOP')
@@ -304,8 +300,8 @@ local function Init()--设置标记, 框架
             WoWTools_ChatMixin:Chat(e.Player.cn and '{rt7}取消 取消 取消{rt7}' or '{rt7}STOP STOP STOP{rt7}', nil, nil)
 
         elseif d=='RightButton' and IsControlKeyDown() then--设置时间
-            StaticPopupDialogs[id..'ChatButton_Maker_COUNTDOWN']={--区域,设置对话框
-                text=id..' '..addName..'|n'..(e.onlyChinese and '就绪' or READY)..'|n|n1 - 3600',
+            StaticPopupDialogs['WoWTools_ChatButton_Maker_COUNTDOWN']={
+                text=WoWTools_MarkerMixin.addName..'|n'..(e.onlyChinese and '就绪' or READY)..'|n|n1 - 3600',
                 whileDead=true, hideOnEscape=true, exclusive=true,
                 hasEditBox=true,
                 button1= e.onlyChinese and '设置' or SETTINGS,
@@ -329,7 +325,7 @@ local function Init()--设置标记, 框架
                     self2:GetParent():Hide()
                 end,
             }
-            StaticPopup_Show(id..'ChatButton_Maker_COUNTDOWN')
+            StaticPopup_Show('WoWTools_ChatButton_Maker_COUNTDOWN')
         end
     end)
     MakerFrame.countdown:SetScript('OnEnter', function(self)
@@ -453,7 +449,7 @@ local function Init()--设置标记, 框架
     function MakerFrame.target:set_Clear_Unit(unit, index)
         local t= UnitExists(unit) and GetRaidTargetIndex(unit)
         if t and t>0 and (index==t or not index) then
-            WoWTools_MarkersMixin:Set_Taget(unit, 0)--设置,目标,标记
+            WoWTools_MarkerMixin:Set_Taget(unit, 0)--设置,目标,标记
         end
     end
     function MakerFrame.target:set_Clear(index)--取消标记标    
@@ -521,7 +517,7 @@ local function Init()--设置标记, 框架
                 if d=='LeftButton' then
                     self:GetParent():set_Clear()--取消标记标    
                 elseif d=='RightButton' then
-                    WoWTools_MarkersMixin.TankHealerFrame:on_click()
+                    WoWTools_MarkerMixin.TankHealerFrame:on_click()
                 end
             end)
             btn:SetScript('OnLeave', function(self)
@@ -554,9 +550,9 @@ local function Init()--设置标记, 框架
                 if IsAltKeyDown() then
                     self:GetParent():set_Clear(self.index)--取消标记标    
                 elseif d=='LeftButton' then
-                    WoWTools_MarkersMixin:Set_Taget('target', self.index)--设置,目标, 标记
+                    WoWTools_MarkerMixin:Set_Taget('target', self.index)--设置,目标, 标记
                 elseif d=='RightButton' then
-                    WoWTools_MarkersMixin:Set_Taget('player', self.index)--设置,目标, 标记
+                    WoWTools_MarkerMixin:Set_Taget('player', self.index)--设置,目标, 标记
                 end
             end)
             btn:SetScript('OnLeave', function(self)
@@ -567,7 +563,7 @@ local function Init()--设置标记, 框架
                 self:GetParent():GetParent():set_Tooltips_Point()
                 e.tips:ClearLines()
                 local can= CanBeRaidTarget('target')
-                e.tips:AddLine(MicroButtonTooltipText(get_RaidTargetTexture(self.index), 'RAIDTARGET'..self.index))
+                e.tips:AddLine(MicroButtonTooltipText(Get_RaidTargetTexture(self.index), 'RAIDTARGET'..self.index))
                 e.tips:AddLine(' ')
                 e.tips:AddDoubleLine(
                     e.Icon.left..(e.onlyChinese and '目标' or TARGET),
@@ -674,12 +670,12 @@ local function Init()--设置标记, 框架
                 e.tips:AddLine('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '清除全部' or CLEAR_ALL)..e.Icon.left)
             else
                 e.tips:AddLine(
-                    Color[self.index2].col
+                    WoWTools_MarkerMixin.Color[self.index2].col
                     ..e.Icon.left
                     ..(e.onlyChinese and '设置' or SETTINGS)
-                    ..get_RaidTargetTexture(self.index2))
+                    ..Get_RaidTargetTexture(self.index2))
 
-                    e.tips:AddLine(e.Icon.right..Color[self.index2].col
+                    e.tips:AddLine(e.Icon.right..WoWTools_MarkerMixin.Color[self.index2].col
                     ..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
                     ..'|A:bags-button-autosort-up:0:0|a'
                 )
@@ -694,7 +690,7 @@ local function Init()--设置标记, 框架
             btn:SetPushedAtlas('Forge-ColorSwatchHighlight')
             btn.texture=btn:CreateTexture(nil,'BACKGROUND')
             btn.texture:SetAllPoints(btn)
-            btn.texture:SetColorTexture(Color[index].r, Color[index].g, Color[index].b)
+            btn.texture:SetColorTexture(WoWTools_MarkerMixin.Color[index].r, WoWTools_MarkerMixin.Color[index].g, WoWTools_MarkerMixin.Color[index].b)
             btn.texture:SetAlpha(0.3)
 
             btn.elapsed=2
@@ -747,7 +743,7 @@ local function Init()--设置标记, 框架
     MakerFrame:Init_Set_Frame()
 
     function MakerFrame:set_Shown()
-        if not self:CanChangeAttribute() then
+        if UnitAffectingCombat('player') then
             self:RegisterEvent('PLAYER_REGEN_ENABLED')
             return
         end
@@ -837,6 +833,12 @@ end
 
 
 
-function WoWTools_MarkersMixin:Init_Markers_Frame()--设置标记, 框架
-    Init()
+function WoWTools_MarkerMixin:Init_Markers_Frame()--设置标记, 框架
+    if MakerFrame then
+        MakerFrame:set_Shown()
+        MakerFrame:set_Event()
+
+    elseif not Save().markersFrame then
+        Init()
+    end
 end

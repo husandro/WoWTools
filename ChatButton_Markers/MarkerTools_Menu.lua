@@ -1,6 +1,6 @@
 local e=select(2, ...)
 local function Save()
-    return WoWTools_MarkersMixin.Save
+    return WoWTools_MarkerMixin.Save
 end
 
 
@@ -12,7 +12,7 @@ end
 
 
 --队伍标记工具, 选项，菜单
-function WoWTools_MarkersMixin:Init_MarkerTools_Menu(root)
+function WoWTools_MarkerMixin:Init_MarkerTools_Menu(root)
     if not self.MakerFrame or WoWTools_MenuMixin:CheckInCombat(root) then
         return
     end
@@ -37,8 +37,7 @@ function WoWTools_MarkersMixin:Init_MarkerTools_Menu(root)
             return self.MakerFrame:GetFrameStrata()==data
     end, function(data)
         Save().FrameStrata= data
-        self.MakerFrame:set_frame_strata()
-        print(e.addName, self.addName, self.MakerFrame:GetFrameStrata())    
+        self.MakerFrame:set_frame_strata()  
     end)
 
     WoWTools_MenuMixin:Scale(root, function()
