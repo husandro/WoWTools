@@ -552,6 +552,7 @@ local function Init_All_Frame()
         set_Alpha_Color(_G['CompactRaidFrameManagerBG-regulars'], nil, nil, 0)
         set_Alpha_Color(_G['CompactRaidFrameManagerBG-party-leads'], nil, nil, 0)
         set_Alpha_Color(_G['CompactRaidFrameManagerBG-leads'], nil, nil, 0)
+        set_Alpha_Color(_G['CompactRaidFrameManagerBG-party-regulars'], nil,nil,0)
         
         CompactRaidFrameManager.toggleButton:SetNormalAtlas(e.Icon.toRight,true)--展开, 图标
         CompactRaidFrameManager.toggleButton:SetAlpha(0.2)
