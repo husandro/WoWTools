@@ -706,7 +706,7 @@ local function Init()
         set_Tooltips_Info()
         e.tips:Show()
         Set_TrackButton_Pushed(true)--TrackButton，提示
-        self:state_enter(Init_Menu)
+        self:state_enter()--Init_Menu)
     end)
     CombatButton:SetScript('OnLeave', function(self)
         Set_TrackButton_Pushed(false)--TrackButton，提示

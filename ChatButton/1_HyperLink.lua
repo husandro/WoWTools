@@ -1342,7 +1342,7 @@ local function Init()
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.onlyChinese and '超链接图标'or addName, e.GetEnabeleDisable(Save.disabed))
         e.tips:Show()]]
-        self:state_enter(Init_Menu)
+        self:state_enter()--Init_Menu)
         
     end)
 

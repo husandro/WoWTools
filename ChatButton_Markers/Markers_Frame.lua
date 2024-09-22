@@ -28,24 +28,14 @@ end
 
 --设置标记, 框架
 local function Init()--设置标记, 框架
-
-    local size, btn= 22, nil
-
     MakerFrame=CreateFrame('Frame', 'WoWTools_ChatButton_MarkersFrame', UIParent)
     WoWTools_MarkerMixin.MakerFrame= MakerFrame
     MakerFrame.Buttons={}
 
-
-
-
-
-
-
-
-
+    local size =22
 
     --移动按钮
-    btn= WoWTools_ButtonMixin:Cbtn(MakerFrame, {name= 'WoWTools_MarkerFrame_Move_Button', size={size,size}, texture='Interface\\Cursor\\UI-Cursor-Move'})
+    local btn= WoWTools_ButtonMixin:Cbtn(MakerFrame, {name= 'WoWTools_MarkerFrame_Move_Button', size={size,size}, texture='Interface\\Cursor\\UI-Cursor-Move'})
     btn:SetAllPoints(MakerFrame)
     btn:RegisterForDrag("RightButton")
     btn:SetMovable(true)
@@ -81,7 +71,7 @@ local function Init()--设置标记, 框架
     end)
 
     function btn:set_scale()
-        if UnitAffectingCombat('player') then
+        if not UnitAffectingCombat('player') then
             self:GetParent():SetScale(Save().markersScale or 1)--缩放
         end
     end
@@ -90,10 +80,10 @@ local function Init()--设置标记, 框架
     function btn:set_tooltip()
         self:GetParent():set_Tooltips_Point()
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, e.onlyChinese and '队伍标记工具' or format(PROFESSION_TOOL_TOOLTIP_LINE, BINDING_HEADER_RAID_TARGET))
+        e.tips:AddDoubleLine(e.addName, e.onlyChinese and '队伍标记工具' or format(PROFESSION_TOOL_TOOLTIP_LINE, EVENTTRACE_MARKER))
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-        e.tips:AddDoubleLine((UnitAffectingCombat('player') and '|cff9e9e9e' or '')..(e.onlyChinese and '缩放' or  UI_SCALE), '|cnGREEN_FONT_COLOR:'..(Save().markersScale or 1)..'|r Alt+'..e.Icon.mid)
+        --e.tips:AddDoubleLine((UnitAffectingCombat('player') and '|cff9e9e9e' or '')..(e.onlyChinese and '缩放' or  UI_SCALE), '|cnGREEN_FONT_COLOR:'..(Save().markersScale or 1)..'|r Alt+'..e.Icon.mid)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or MAINMENU, e.Icon.right)
         e.tips:Show()
@@ -108,9 +98,9 @@ local function Init()--设置标记, 框架
         self:set_Alpha(true)
         WoWTools_MarkerMixin.MarkerButton:state_enter(nil, true)
     end)
-    btn:SetScript('OnMouseWheel', function(self, delta)--缩放
+    --[[btn:SetScript('OnMouseWheel', function(self, delta)--缩放
         Save().markersScale= WoWTools_FrameMixin:ScaleFrame(self, delta, Save().markersScale)
-    end)
+    end)]]
 
 
 
@@ -838,7 +828,7 @@ function WoWTools_MarkerMixin:Init_Markers_Frame()--设置标记, 框架
         MakerFrame:set_Shown()
         MakerFrame:set_Event()
 
-    elseif not Save().markersFrame then
+    elseif Save().markersFrame then
         Init()
     end
 end

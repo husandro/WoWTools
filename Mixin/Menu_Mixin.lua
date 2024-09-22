@@ -176,7 +176,7 @@ end)
 
 --FrameStrata
 function WoWTools_MenuMixin:FrameStrata(root, GetValue, SetValue)
-    local sub=root:CreateButton('|A:uitools-icon-chevron-right:0:0:|aFrameStrata|A:uitools-icon-chevron-left:0:0|a', function()
+    local sub=root:CreateButton('|A:Garr_SwapIcon:0:0:|aFrameStrata', function()
         return MenuResponse.Open
     end)
 

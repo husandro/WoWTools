@@ -1034,7 +1034,7 @@ local function Init()
             e.tips:AddLine((e.onlyChinese and '频道' or CHANNEL)..'|cnGREEN_FONT_COLOR: '..Save.ChannelText)
         end
         e.tips:Show()
-        self:state_enter(Init_Menu)
+        self:state_enter()--Init_Menu)
     end)
 
     InviteButton:settings()

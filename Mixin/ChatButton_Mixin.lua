@@ -39,20 +39,6 @@ end
 
 
 
-
-
-local function state_enter(self, func, isSelf)
-    local frame= isSelf and self or self:GetParent()
-    frame:SetButtonState('PUSHED')
-    if func and WoWTools_ChatButtonMixin:GetSaveData().isEnterShowMenu then--显示菜单
-        MenuUtil.CreateContextMenu(self, func)
-    end
-end
-local function state_leave(self, isSelf)
-    local frame= isSelf and self or self:GetParent()
-    frame:SetButtonState('NORMAL')
-end
-
 function WoWTools_ChatButtonMixin:CreateButton(name, tooltip)
     table.insert(self.AddList, {name=name, tooltip=tooltip})
 
@@ -89,8 +75,12 @@ function WoWTools_ChatButtonMixin:CreateButton(name, tooltip)
     btn.border:SetAllPoints(btn)
     btn.border:SetAtlas('bag-reagent-border')
 
-    btn.state_enter= state_enter
-    btn.state_leave= state_leave
+    function btn:state_enter()
+        self:GetParent():SetButtonState('PUSHED')
+    end
+    function btn:state_leave()
+        self:GetParent():SetButtonState('NORMAL')
+    end
 
     WoWTools_ColorMixin:SetLabelTexture(btn.border, {type='Texture', alpha= 0.3})
 

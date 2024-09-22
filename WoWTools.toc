@@ -354,8 +354,10 @@ ChatButton_Markers\3_Markers.lua
 ChatButton_Markers\AutoReady.lua
 ChatButton_Markers\Tank_Healer.lua
 ChatButton_Markers\Ready_Tips.lua
+ChatButton_Markers\Init_Menu.lua
 ChatButton_Markers\Markers_Frame.lua
-ChatButton_Markers\MarkerTools_Menu.lua
+ChatButton_Markers\Markers_Frame_Menu.lua
+
 
 ##邀请， 自动接受， 拒绝，屏蔽
 ChatButton\4_Invite.lua

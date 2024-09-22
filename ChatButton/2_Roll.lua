@@ -283,7 +283,7 @@ local function Init()
     end)
 
     RollButton:SetScript('OnEnter', function(self)
-        self:state_enter(Init_Menu)
+        self:state_enter()--Init_Menu)
         self:set_tooltip()
     end)
 

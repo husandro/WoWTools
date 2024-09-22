@@ -3134,7 +3134,7 @@ local function Init()
             tipsButton:SetButtonState('PUSHED')
         end
         e.tips:Show()
-        self:state_enter(Init_Menu)
+        self:state_enter()--Init_Menu)
     end)
     LFDButton:SetScript('OnLeave', function(self)
         e.tips:Hide()

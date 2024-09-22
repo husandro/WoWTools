@@ -1052,7 +1052,7 @@ local function Init()
         e.tips:Hide()
     end)
     WorldButton:SetScript('OnEnter', function(self)
-        self:state_enter(Init_Menu)
+        self:state_enter()--Init_Menu)
         self:set_tooltip()
     end)
 

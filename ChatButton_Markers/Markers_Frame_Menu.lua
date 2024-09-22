@@ -37,7 +37,7 @@ function WoWTools_MarkerMixin:Init_MarkerTools_Menu(root)
             return self.MakerFrame:GetFrameStrata()==data
     end, function(data)
         Save().FrameStrata= data
-        self.MakerFrame:set_frame_strata()  
+        self.MakerFrame:set_frame_strata()
     end)
 
     WoWTools_MenuMixin:Scale(root, function()

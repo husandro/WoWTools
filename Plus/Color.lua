@@ -311,7 +311,7 @@ local function Init()
 		local r, g, b, a
 
 		if text:find('#') or text:find('|c') then
-			r, g, b, a= e.HEX_to_RGB(text)
+			r, g, b, a= WoWTools_ColorMixin:HEXtoRGB(text)
 		else
 			r, g, b, a= text:match('(.-) (.-) (.-) (.+)')
 			if not r or not g or not b then
@@ -458,7 +458,7 @@ local function Init()
 	Frame.hex:SetAutoFocus(false)
 	Frame.hex:ClearFocus()
 	function Frame.hex:get_RGB()
-		return e.HEX_to_RGB(self:GetText())
+		return WoWTools_ColorMixin:HEXtoRGB(self:GetText())
 	end
 	Frame.hex:SetScript('OnEnterPressed', function(self)
 		local r, g, b, a= self:get_RGB()
