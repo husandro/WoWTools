@@ -335,6 +335,11 @@ end)
 
             local name2, color2= WoWTools_MapMixin:GetDifficultyColor(nil, difficultyID2)
             local name3, color3= WoWTools_MapMixin:GetDifficultyColor(nil, difficultyID3)
+            if not name3 and difficultyID3 then
+                name3= GetDifficultyInfo(difficultyID3) or difficultyID3
+                color3= {r=1,g=1,b=1}
+            end
+
             local text3= (e.onlyChinese and '团队副本难度' or RAID_DIFFICULTY)..': '..name3..'|r'
 
             local otherDifficulty = GetLegacyRaidDifficultyID()
@@ -359,7 +364,7 @@ end)
                 local text2= (e.onlyChinese and '地下城难度' or DUNGEON_DIFFICULTY)..': '..color2.hex..name2..'|r'
 
                 if not findRiad then
-                    text2= text2..'|n|n'..text3
+                    text2= text2..(text3 and '|n|n'..text3 or '')
                 end
                 self.dungeon.tips=text2
                 self.dungeon.name= name2

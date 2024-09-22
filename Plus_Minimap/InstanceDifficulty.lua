@@ -64,6 +64,7 @@ local function InstanceDifficulty_Tooltip(tooltip, difficultyID)
         25,
         205,--Seguace (5)LFG_TYPE_FOLLOWER_DUNGEON = "追随者地下城"
         208,
+        220,
     }
     for _, ID in pairs(tab) do
         local text, color= WoWTools_MapMixin:GetDifficultyColor(nil, ID)

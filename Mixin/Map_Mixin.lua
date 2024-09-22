@@ -109,7 +109,7 @@ function WoWTools_MapMixin:GetDifficultyColor(string, difficultyID)--DifficultyU
             ['pvp']= {name= 'PvP', hex='|cffff0000', r=1, g=0, b=0},
             ['追随']= {name= e.onlyChinese and '追随' or LFG_TYPE_FOLLOWER_DUNGEON, hex='|cffb1ff00', r=0.69, g=1, b=0, a=1},
             ['地下堡']= {name= e.onlyChinese and '地下堡' or DELVES_LABEL, hex='|cffedd100', r=0.93, g=0.82, b=0, a=1},
-
+            ['团本剧情']={name= e.onlyChinese and '团本剧情' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, RAID, QUEST_CLASSIFICATION_QUESTLINE), hex='|cffaaffaa', r=0.67, g=1.00, b=0.67}
 
         } or {}
         local type={
@@ -158,6 +158,7 @@ function WoWTools_MapMixin:GetDifficultyColor(string, difficultyID)--DifficultyU
             [171]='普通',--Path of Ascension: Humility	scenario
             [205]='追随',--Seguace (5) LFG_TYPE_FOLLOWER_DUNGEON = "追随者地下城"
             [208]='地下堡',
+            [220]='团本剧情',--DifficultyUtil.ID.RaidStory
         }
         name= type[difficultyID]
         if name then
