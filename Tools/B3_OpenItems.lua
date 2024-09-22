@@ -872,6 +872,8 @@ local function Init()
         elseif event=='PLAYER_MOUNT_DISPLAY_CHANGED'--上下坐骑
             or event=='UNIT_ENTERED_VEHICLE'--车辆
             or event=='UNIT_EXITED_VEHICLE'
+            or event=='PET_BATTLE_CLOSE'
+            or event=='PET_BATTLE_OPENING_DONE'
 
         then
             self:settings()
@@ -907,6 +909,8 @@ local function Init()
         'BAG_UPDATE_DELAYED',
         'PLAYER_REGEN_DISABLED',
         'PLAYER_REGEN_ENABLED',
+        'PET_BATTLE_CLOSE',
+        'PET_BATTLE_OPENING_DONE'
     }
     OpenButton.eventUnit={
         'UNIT_ENTERED_VEHICLE',--车辆
@@ -916,6 +920,8 @@ local function Init()
     function OpenButton:settings()
         self.isDisabled= (IsInInstance() and not WoWTools_MapMixin:IsInDelve())
                         or not self:IsVisible()
+                        or not C_PetBattles.IsInBattle()
+                        or not UnitHasVehicleUI('player')
 
         if self.isDisabled then
             FrameUtil.UnregisterFrameForEvents(self, self.events)
@@ -948,6 +954,7 @@ local function Init()
                 or IsMounted()
                 or UnitInVehicle('player')
                 or (IsInInstance() and not WoWTools_MapMixin:IsInDelve())
+                or C_PetBattles.IsInBattle()
             )
         end
     end
