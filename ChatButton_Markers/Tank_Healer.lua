@@ -9,7 +9,11 @@ end
 local function Is_Enable(set)
     if (Save().autoSet or set) and not WoWTools_MapMixin:IsInPvPArea() then
         if IsInGroup() then
-            return WoWTools_GroupMixin:isLeader()
+            if IsInRaid() then
+                return WoWTools_GroupMixin:isLeader()
+            else
+                return true
+            end
         else
             return Save().isSelf
         end
