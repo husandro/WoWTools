@@ -682,7 +682,7 @@ local OptionsList={{
     sub= WoWTools_ToolsButtonMixin:OpenMenu(root, addName, Save.KEY)
 
 --设置捷键
-    WoWTools_Key_Button:SetMenu(sub, {
+    WoWTools_KeyMixin:SetMenu(sub, {
         name=addName,
         key=Save.KEY,
         GetKey=function(key)
@@ -737,7 +737,7 @@ local function Init()
     OpenButton.count=WoWTools_LabelMixin:CreateLabel(OpenButton, {size=10, color={r=1,g=1,b=1}})--10, nil, nil, true)
     OpenButton.count:SetPoint('BOTTOMRIGHT')
 
-    WoWTools_Key_Button:Init(OpenButton, function() return Save.KEY end)
+    WoWTools_KeyMixin:Init(OpenButton, function() return Save.KEY end)
     Mixin(OpenButton, WoWTools_ItemLocationMixin)
 
     function OpenButton:set_tooltips()
@@ -755,7 +755,7 @@ local function Init()
                     e.tips:AddLine(' ')
                     e.tips:AddLine(' ')
                     e.tips:AddDoubleLine(e.Icon.mid..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP), noText)
-                    e.tips:AddDoubleLine(e.Icon.right..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), (WoWTools_Key_Button:IsKeyValid(self) or '')..e.Icon.left)
+                    e.tips:AddDoubleLine(e.Icon.right..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), (WoWTools_KeyMixin:IsKeyValid(self) or '')..e.Icon.left)
                     e.tips:AddDoubleLine(e.Icon.mid..'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN), e.onlyChinese and '刷新' or REFRESH)
                     e.tips:Show()
                 end
@@ -768,7 +768,7 @@ local function Init()
         else
             e.tips:AddDoubleLine(e.addName, e.cn(addName))
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.Icon.right..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), WoWTools_Key_Button:IsKeyValid(self))
+            e.tips:AddDoubleLine(e.Icon.right..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), WoWTools_KeyMixin:IsKeyValid(self))
             e.tips:AddDoubleLine(e.Icon.mid..'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN), e.onlyChinese and '刷新' or REFRESH)
             e.tips:Show()
             if (BattlePetTooltip) then
@@ -883,7 +883,7 @@ local function Init()
 
         elseif event=='PLAYER_REGEN_DISABLED' then
             ClearOverrideBindings(self)--清除KEY
-            WoWTools_Key_Button:SetTexture(self)
+            WoWTools_KeyMixin:SetTexture(self)
 
         elseif event=='PLAYER_REGEN_ENABLED' then
             self:set_key(false)
@@ -948,7 +948,7 @@ local function Init()
 --设置捷键
     function OpenButton:set_key()
         if Save.KEY then
-            WoWTools_Key_Button:Setup(OpenButton,
+            WoWTools_KeyMixin:Setup(OpenButton,
                 self.isDisabled
                 or not self:IsValid()
                 or IsMounted()

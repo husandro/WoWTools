@@ -382,16 +382,16 @@ local function Init_Menu(self, root)
     end)
 
 --设置捷键
-    WoWTools_Key_Button:SetMenu(sub, {
+    WoWTools_KeyMixin:SetMenu(sub, {
         name=addName,
         key=Save.KEY,
         GetKey=function(key)
             Save.KEY=key
-            WoWTools_Key_Button:Setup(ToyButton)--设置捷键
+            WoWTools_KeyMixin:Setup(ToyButton)--设置捷键
         end,
         OnAlt=function(s)
             Save.KEY=nil
-            WoWTools_Key_Button:Setup(ToyButton)--设置捷键
+            WoWTools_KeyMixin:Setup(ToyButton)--设置捷键
         end,
     })
    
@@ -529,7 +529,7 @@ end
 --初始
 --###
 local function Init()
-    WoWTools_Key_Button:Init(ToyButton, function() return Save.KEY end)
+    WoWTools_KeyMixin:Init(ToyButton, function() return Save.KEY end)
 
     for itemID, _ in pairs(Save.items) do
         e.LoadData({id=itemID, type='item'})
@@ -617,7 +617,7 @@ local function Init()
     function ToyButton:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_ItemMixin:GetName(self.itemID), (WoWTools_Key_Button:IsKeyValid(self) or '').. e.Icon.left)
+        e.tips:AddDoubleLine(WoWTools_ItemMixin:GetName(self.itemID), (WoWTools_KeyMixin:IsKeyValid(self) or '').. e.Icon.left)
         e.tips:AddLine(' ')
         local name, col
         for _, data in pairs(ModifiedMenuTab) do

@@ -1293,17 +1293,17 @@ local function Init_Menu(_, root)
 --设置捷键
     sub:CreateSpacer()
     local text2, num2= WoWTools_MenuMixin:GetDragonriding()--驭空术
-    WoWTools_Key_Button:SetMenu(sub, {
+    WoWTools_KeyMixin:SetMenu(sub, {
         icon='|A:NPE_ArrowDown:0:0|a',
         name=addName..(num2 and num2>0 and text2 or ''),
         key=Save.KEY,
         GetKey=function(key)
             Save.KEY=key
-            WoWTools_Key_Button:Setup(MountButton)--设置捷键
+            WoWTools_KeyMixin:Setup(MountButton)--设置捷键
         end,
         OnAlt=function()
             Save.KEY=nil
-            WoWTools_Key_Button:Setup(MountButton)--设置捷键
+            WoWTools_KeyMixin:Setup(MountButton)--设置捷键
         end,
     })
 
@@ -1775,7 +1775,7 @@ end
 --######
 local function Init()
 
-    WoWTools_Key_Button:Init(MountButton, function() return Save.KEY end)
+    WoWTools_KeyMixin:Init(MountButton, function() return Save.KEY end)
 
 
     for type, tab in pairs(Save.Mounts) do
@@ -1877,7 +1877,7 @@ local function Init()
                 ))
         else
             if self.typeID then
-                local key= WoWTools_Key_Button:IsKeyValid(self)
+                local key= WoWTools_KeyMixin:IsKeyValid(self)
                 e.tips:AddDoubleLine(
                     self.typeSpell and WoWTools_SpellMixin:GetName(self.typeID) or WoWTools_ItemMixin:GetName(self.typeID),
                     (key and '|cnGREEN_FONT_COLOR:'..key or '')..e.Icon.left

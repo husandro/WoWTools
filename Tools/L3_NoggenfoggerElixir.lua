@@ -124,17 +124,17 @@ local function Init_Menu(_, root)
     end
 
     root:CreateDivider()
-    WoWTools_Key_Button:SetMenu(root, {
+    WoWTools_KeyMixin:SetMenu(root, {
         icon='|A:NPE_ArrowDown:0:0|a',
         name=addName,
         key=Save.KEY,
         GetKey=function(key)
             Save.KEY=key
-            WoWTools_Key_Button:Setup(button)--设置捷键
+            WoWTools_KeyMixin:Setup(button)--设置捷键
         end,
         OnAlt=function()
             Save.KEY=nil
-            WoWTools_Key_Button:Setup(button)--设置捷键
+            WoWTools_KeyMixin:Setup(button)--设置捷键
         end,
     })
 
@@ -234,7 +234,7 @@ end]]
 
 
 local function Init()
-    WoWTools_Key_Button:Init(button, function() return Save.KEY end)
+    WoWTools_KeyMixin:Init(button, function() return Save.KEY end)
 
     button:SetAttribute('type1','item')
     button:SetAttribute('item1', C_Item.GetItemNameByID(ItemID) or ItemName or ItemID)
@@ -255,7 +255,7 @@ local function Init()
             e.tips:AddDoubleLine( WoWTools_SpellMixin:GetLink(spellID, true), type and	'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '取消' or CANCEL)..'|r' or '...')
         end
         e.tips:AddLine(' ')
-        local key= WoWTools_Key_Button:IsKeyValid(self)
+        local key= WoWTools_KeyMixin:IsKeyValid(self)
         if key then
             e.tips:AddDoubleLine('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL), '|cnGREEN_FONT_COLOR:'..key)
         end
