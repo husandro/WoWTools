@@ -37,7 +37,7 @@ local function Init_Menu(self, root)
         return Save().nameShow
     end, function ()
         Save().nameShow= not Save().nameShow and true or nil
-        self:Set_TrackButton_Text()
+        WoWTools_TokensMixin:Set_TrackButton_Text()
     end)
 
 --向右平移
@@ -96,5 +96,6 @@ end
 
 
 function WoWTools_TokensMixin:Init_TrackButton_Menu(frame)
+    print(frame== self.TrackButton)
     MenuUtil.CreateContextMenu(frame, Init_Menu)
 end

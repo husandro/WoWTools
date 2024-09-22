@@ -920,8 +920,8 @@ local function Init()
     function OpenButton:settings()
         self.isDisabled= (IsInInstance() and not WoWTools_MapMixin:IsInDelve())
                         or not self:IsVisible()
-                        or not C_PetBattles.IsInBattle()
-                        or not UnitHasVehicleUI('player')
+                        or C_PetBattles.IsInBattle()
+                        or UnitHasVehicleUI('player')
 
         if self.isDisabled then
             FrameUtil.UnregisterFrameForEvents(self, self.events)
@@ -953,8 +953,8 @@ local function Init()
                 or not self:IsValid()
                 or IsMounted()
                 or UnitInVehicle('player')
-                or (IsInInstance() and not WoWTools_MapMixin:IsInDelve())
                 or C_PetBattles.IsInBattle()
+                or (IsInInstance() and not WoWTools_MapMixin:IsInDelve())
             )
         end
     end

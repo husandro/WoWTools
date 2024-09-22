@@ -226,6 +226,8 @@ local function Set_TrackButton_Text()
 			end
 		end
 	end
+
+
 	if not Save().disabledItemTrack then
 		if (Save().itemButtonUse and not bat or not Save().itemButtonUse) then
 			local itemTab={}
@@ -270,8 +272,6 @@ local function Set_TrackButton_Text()
 			elseif tables.itemID then
 				btn.border=btn:CreateTexture(nil, 'ARTWORK')
 				btn.border:SetAllPoints(btn)
-				--btn.border:SetSize(18,18)
-				--btn.border:SetPoint('CENTER',-0.5,0.5)
 			end
 
 			btn.text= WoWTools_LabelMixin:CreateLabel(btn, {color={r=1,g=1,b=1}})
