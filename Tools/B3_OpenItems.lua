@@ -874,6 +874,7 @@ local function Init()
             or event=='UNIT_EXITED_VEHICLE'
             or event=='PET_BATTLE_CLOSE'
             or event=='PET_BATTLE_OPENING_DONE'
+            or event=='ZONE_CHANGED_NEW_AREA'
 
         then
             self:settings()
@@ -910,7 +911,8 @@ local function Init()
         'PLAYER_REGEN_DISABLED',
         'PLAYER_REGEN_ENABLED',
         'PET_BATTLE_CLOSE',
-        'PET_BATTLE_OPENING_DONE'
+        'PET_BATTLE_OPENING_DONE',
+        'ZONE_CHANGED_NEW_AREA',
     }
     OpenButton.eventUnit={
         'UNIT_ENTERED_VEHICLE',--车辆

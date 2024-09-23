@@ -808,7 +808,9 @@ local function Init_Menu()
                 function(data)
                     return C_CVar.GetCVarBool(data.var)
                 end, function(data)
-                    C_CVar.SetCVar(data.var, C_CVar.GetCVarBool(data.var) and '0' or '1')
+                    if data then
+                        C_CVar.SetCVar(data.var, C_CVar.GetCVarBool(data.var) and '0' or '1')
+                    end
                 end, {var=var})
                 sub2:SetTooltip(function(tooltip, description)
                     tooltip:AddDoubleLine(e.onlyChinese and '默认' or DEFAULT, e.GetYesNo(C_CVar.GetCVarDefault(description.data.var)))
@@ -817,7 +819,7 @@ local function Init_Menu()
             end
         end
     end)
-
+    C_CVar.GetCVarBool('displayQuestID')
     QuestScrollFrame.SearchBox:SetWidth(301- 20*2)
 
     local btnCollapse= WoWTools_ButtonMixin:Cbtn(QuestScrollFrame.SearchBox, {size={20,20}, atlas='NPE_ArrowUp'})--campaign_headericon_closed
