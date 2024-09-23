@@ -2147,6 +2147,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if Save.disabled then
                 self:UnregisterAllEvents()
             else
+                if C_AddOns.IsAddOnLoaded('Blizzard_ChallengesUI') then
+                    Init()
+                end
+                if C_AddOns.IsAddOnLoaded('Blizzard_WeeklyRewards') then
+                    Init_WeeklyRewardsFrame()
+                end
                 C_Timer.After(4, set_Week_Reward_Look_Specialization)--打开周奖励时，提示拾取专精
             end
             self:RegisterEvent("PLAYER_LOGOUT")
