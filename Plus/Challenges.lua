@@ -1203,39 +1203,6 @@ local function set_All_Text()--所有记录
     last= ChallengesFrame.weekLootItemLevelLable2
 
 
-    --##########
-    --所有角色KEY
-    --[[##########
-    local keyText
-    for guid, info in pairs(e.WoWDate or {}) do
-        if guid~=e.Player.guid and info.Keystone.link then
-            local icon= C_Item.GetItemIconByID(info.Keystone.link)
-            --|Hkeystone:180653:244:2:10:0:0:0|h[Chiave del Potere: Atal'dazar (2)]|h
-            local link= info.Keystone.link
-            if e.onlyChinese and not LOCALE_zhCN then
-                --  ( ) . % + - * ? [ ^ $
-                local mapID, name= link:match('|Hkeystone:%d+:(%d+):.+%[(.+) %(%d+%)]')
-                mapID= mapID and tonumber(mapID)
-                if mapID and name and e.ChallengesSpellTabs[mapID] and e.ChallengesSpellTabs[mapID].name then
-                    link= link:gsub(name, e.ChallengesSpellTabs[mapID].name)
-                end
-            end
-
-            keyText= (keyText and keyText..'|n' or '')
-                .. (info.Keystone.weekNum or 0)
-                .. (info.Keystone.weekMythicPlus and ' |cnGREEN_FONT_COLOR:('..info.Keystone.weekMythicPlus..') ' or '')
-                ..WoWTools_UnitMixin:GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true})
-                ..' |T'..((not icon or icon==134400) and 4352494 or icon)..':0|t'..link--info.Keystone.link
-            ..(info.Keystone.score and ' ' or '')..(WoWTools_WeekMixin:KeystoneScorsoColor(info.Keystone.score))
-       end
-    end
-
-    if not ChallengesFrame.playerAllKey then
-        ChallengesFrame.playerAllKey= WoWTools_LabelMixin:CreateLabel(TipsFrame)--最右边, 数据
-        ChallengesFrame.playerAllKey:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0,-12)
-    end
-    ChallengesFrame.playerAllKey:SetText(keyText or '')
-    last=ChallengesFrame.playerAllKe]]
 
     --物品，货币提示
     WoWTools_LabelMixin:ItemCurrencyTips({frame=TipsFrame, point={'TOPLEFT', last, 'BOTTOMLEFT',0, -12}})
@@ -1372,20 +1339,24 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                     end
                     e.tips:Show()
                 end)
-
-                --[[if e.Player.husandro then
+--[[bug
+                if e.Player.husandro then
                     frame:EnableMouse(true)
                     frame:SetScript('OnMouseDown', function(self2)
-                        e.call(EncounterJournal_LoadUI)
-                        
+                        do
+                            if not EncounterJournal then
+                                e.call(EncounterJournal_LoadUI)
+                            end
+                        end
                         if self2.journalInstanceID and EncounterJournal then
-                            ToggleEncounterJournal()
-                            --EncounterJournal_OpenJournal([difficultyID, instanceID, encounterID, sectionID, creatureID, itemID, tierIndex])
-                            EncounterJournal_TierDropDown_Select(nil, 11)
+                            EncounterJournal_OpenJournal(difficultyID, self2.journalInstanceID, nil, nil, nil, nil,  GetEJTierDataTableID(GetExpansionForLevel(UnitLevel("player"))))
+                            --ToggleEncounterJournal()
+                            --EncounterJournal_OpenJournal([difficultyID, self2.journalInstanceID, encounterID, sectionID, creatureID, itemID, tierIndex])
+                            --EncounterJournal_TierDropDown_Select(EncounterJournal, GetEJTierDataTableID(GetExpansionForLevel(UnitLevel("player"))))
                            -- EncounterJournal_OpenJournal(DifficultyUtil.ID.DungeonChallenge, self2.journalInstanceID);
                         end
                     end)
-                end]]
+                ]]
 
                 frame.setTips=true
             end
@@ -1427,58 +1398,6 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                 frame.nameLable:SetText(nameText or '')
             end
 
-            --######### BUG
-            --名称, 缩写
-            --[[#########
-            local nameText = not Save.hideIns and C_ChallengeMode.GetMapUIInfo(frame.mapID)--名称
-            if nameText then
-                if not frame.nameFrame then
-                    frame.nameFrame=CreateFrame('Frame', nil, frame)
-                    frame.nameFrame:SetHyperlinksEnabled(true)
-                    frame.nameFrame:SetScript("OnHyperlinkClick", ChatFrame_OnHyperlinkShow)
-                    frame.nameFrame.Text= WoWTools_LabelMixin:CreateLabel(frame.nameFrame, {size=10, mouse= true, justifyH='CENTER'})
-                    frame.nameFrame.Text:SetPoint('BOTTOM', frame, 'TOP', 0, 3)
-                    frame.nameFrame:SetAllPoints(frame.nameFrame.Text)
-                    --frame.nameFrame.Text:HookScript('OnMouseDown', function(self2) self2:SetAlpha(0) end)
-                    --frame.nameFrame.Text:HookScript('OnMouseUp', function(self2) self2:SetAlpha(0.5) end)
-                    frame.nameFrame.Text:HookScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
-                    frame.nameFrame.Text:HookScript('OnEnter', function(self2)
-                        if not self2.name then
-                            return
-                        end
-                        e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                        e.tips:ClearLines()
-                        e.tips:AddLine(self2.name..(self2:GetParent().link and e.Icon.left or ' '))--加空，去掉，翻译
-                        local text= self2:GetText()
-                        if text~=self2.name then
-                            e.tips:AddLine(text)
-                        end
-                        e.tips:Show()
-                        self2:SetAlpha(0.5)
-                    end)
-                end
-                frame.nameFrame.Text.name= nameText
-
-                if (e.onlyChinese or LOCALE_zhCN) and e.ChallengesSpellTabs[frame.mapID] then
-                    nameText= e.ChallengesSpellTabs[frame.mapID].name
-                else
-                    nameText=nameText:match('%((.+)%)') or nameText
-                    nameText=nameText:match('%（(.+)%）') or nameText
-                    nameText=nameText:match('%- (.+)') or nameText
-                    nameText=nameText:match(HEADER_COLON..'(.+)') or nameText
-                    nameText=nameText:match('·(.+)') or nameText
-                    nameText=WoWTools_Mixin:sub(nameText, 5, 12)
-                end
-                frame.nameFrame.Text:SetScale(Save.insScale or 1)
-                frame.nameFrame.link= frame.journalInstanceID and select(8, EJ_GetInstanceInfo(frame.journalInstanceID))
-                if frame.nameFrame.link then
-                    nameText= frame.nameFrame.link:gsub('%[(.-)]', nameText)
-                end
-                
-            end
-            if frame.nameFrame then
-                frame.nameFrame.Text:SetText(nameText or '')
-            end]]
 
 
             --#########

@@ -4985,7 +4985,10 @@
         "Raid",
         "PARTY_LEAVE",
         "QUEST_LOG_SHOW_OBJECTIVES",
-        "RETURN_TO_DEFAULT"
+        "RETURN_TO_DEFAULT",
+        "EncounterJournal_LoadUI",
+        "GetEJTierDataTableID",
+        "EncounterJournal_OpenJournal"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
