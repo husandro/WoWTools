@@ -101,9 +101,6 @@ for _, tab in pairs(e.ChallengesSpellTabs) do
 end
 
 
-if not e.Player.levelMax or PlayerGetTimerunningSeasonID() then
-    return
-end
 
 local addName= CHALLENGES
 local Save= {
@@ -121,7 +118,7 @@ local Save= {
     --hideKeyUI=true,--挑战,钥石,插入界面
     --slotKeystoneSay=true,--插入, KEY时, 说
 }
-local panel=CreateFrame("Frame")
+
 local TipsFrame
 local Initializer
 
@@ -2116,11 +2113,13 @@ end
 --###########
 --加载保存数据
 --###########
+local panel=CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 
 
 panel:SetScript("OnEvent", function(self, event, arg1)
+    print(event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
 
@@ -2149,7 +2148,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             else
                 self:RegisterEvent("CHALLENGE_MODE_COMPLETED")
                 if C_AddOns.IsAddOnLoaded('Blizzard_ChallengesUI') then
-                    print('b')
                     Init()
                 end
                 if C_AddOns.IsAddOnLoaded('Blizzard_WeeklyRewards') then
@@ -2160,7 +2158,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             
 
         elseif arg1=='Blizzard_ChallengesUI' then--挑战,钥石,插入界面
-            print('a')
             Init()--史诗钥石地下城, 界面
 
         elseif arg1=='Blizzard_WeeklyRewards' then

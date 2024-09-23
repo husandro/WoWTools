@@ -1,8 +1,4 @@
 local id , e = ...
-if e.Is_Timerunning then
-    return
-end
-
 
 local Save={
     aura={
@@ -312,7 +308,7 @@ panel:RegisterEvent('PLAYER_LOGOUT')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
-            if (e.Is_Timerunning or C_Item.GetItemCount(ItemID)==0) then--没有时,不加载
+            if (C_Item.GetItemCount(ItemID)==0) then--没有时,不加载
                 self:UnregisterEvent('ADDON_LOADED')
                 return
             end

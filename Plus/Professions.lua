@@ -1,7 +1,3 @@
-if PlayerGetTimerunningSeasonID() then
-    return
-end
-
 local id, e = ...
 local addName= PROFESSIONS_TRACKER_HEADER_PROFESSION
 local Save={
@@ -1039,9 +1035,6 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
-            if PlayerGetTimerunningSeasonID() then
-                return
-            end
 
             Save= WoWToolsSave[addName..'Tools'] or Save
 
@@ -1069,7 +1062,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
             })
 
-            if Save.disabled or PlayerGetTimerunningSeasonID() then
+            if Save.disabled then
                 self:UnregisterEvent('ADDON_LOADED')
             else
                 Load_AddOn()

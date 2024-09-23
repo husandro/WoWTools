@@ -1460,7 +1460,8 @@ local function Init_LFGListSearchEntry_Update(self)
     local _, appStatus, pendingStatus = C_LFGList.GetApplicationInfo(resultID)
     local isAppFinished = LFGListUtil_IsStatusInactive(appStatus) or LFGListUtil_IsStatusInactive(pendingStatus) or info.isDelisted
 
-    local text, color, autoAccept = '', nil, nil
+    local text, color, autoAccept = nil, nil, nil
+    text=''
     if not isAppFinished then
         text, color= WoWTools_WeekMixin:KeystoneScorsoColor(info.leaderOverallDungeonScore, true)--地下城, 分数
         if info.leaderPvpRatingInfo and info.leaderPvpRatingInfo.rating and info.leaderPvpRatingInfo.rating>0 then--PVP, 分数
