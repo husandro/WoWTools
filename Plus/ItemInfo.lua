@@ -9,13 +9,10 @@ local keyStr= format(CHALLENGE_MODE_KEYSTONE_NAME,'(.+) ')--钥石
 local equipStr= e.Magic(EQUIPMENT_SETS)--:gsub('|cFFFFFFFF', ''):gsub('|r', ''))
 local pvpItemStr= PVP_ITEM_LEVEL_TOOLTIP:gsub('%%d', '%(%%d%+%)')--"装备：在竞技场和战场中将物品等级提高至%d。"
 local upgradeStr= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT:gsub('%%s/%%s','(.-%%d%+/%%d%+)')-- "升级：%s/%s"
---local upgradeStr2= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT_STRING:gsub('%%s %%s/%%s','(.+)' ) --"升级：%s %s/%s"
 local classStr= format(ITEM_CLASSES_ALLOWED, '(.+)') --"职业：%s"
 local itemLevelStr= ITEM_LEVEL:gsub('%%d', '%(%%d%+%)')--"物品等级：%d"
 local FMTab={}--附魔
 local useStr=ITEM_SPELL_TRIGGER_ONUSE..'(.+)'--使用：
---local andStr = COVENANT_RENOWN_TOAST_REWARD_COMBINER:format('(.-)','(.+)')--"%s 和 %s"
---local BOSS_BANNER_LOOT_SET= e.Magic(BOSS_BANNER_LOOT_SET)--套装：%s
 local ITEM_SPELL_KNOWN= ITEM_SPELL_KNOWN
 
 local size= 10--字体大小
@@ -562,10 +559,7 @@ function e.Set_Item_Info(self, tab)
         if info.quantity and info.quantity>0 then
             topLeftText= WoWTools_Mixin:MK(info.quantity, 3)
         end
-    --[[
-    elseif tab.petID then
-        local speciesID, customName, level, xp, maxXp, displayID, isFavorite, name, icon = C_PetJournal.GetPetInfoByPetID(petID)
-        ]]
+
     end
 
     if topRightText and not self.topRightText then
@@ -647,7 +641,6 @@ function e.Set_Item_Info(self, tab)
         self.Count:SetPoint('BottomRight')
         self.setCount=true
     end
---print(topLeftText, bottomRightText, leftText, rightText, bottomLeftText, topRightText, setIDItem, itemLink)
 end
 
 
@@ -661,68 +654,6 @@ end
 
 
 
-
-
-
---CurrencyHorizontalLayoutFrameMixin
---[[物品，货币，已有，提示
-local function Create_Lable_Currency_Item_Numri_Info(btn, item, currencyIDorLink, needNum)    
-    local num
-    if currencyIDorLink then
-        local info
-        if type(currencyIDorLink)=='number' then
-            info=C_CurrencyInfo.GetCurrencyInfo(currencyIDorLink)
-        else
-            info= C_CurrencyInfo.GetCurrencyInfoFromLink(currencyIDorLink)
-        end
-        num= info and info.quantity
-    else
-        num= C_Item.GetItemCount(item, true, false, true)
-    end
-    local label= btn.quantityAll
-    if not label then
-        label= WoWTools_LabelMixin:CreateLabel(btn, {size=10, justifyH='RIGHT'})--10, nil, nil, nil, nil, 'RIGHT')
-        label:SetPoint('BOTTOMRIGHT', btn, 'TOPRIGHT', 3,0)
-        label:SetAlpha(0.7)
-        btn:EnableMouse(true)
-        btn:HookScript('OnMouseDown', function(self)
-            if self.itemLink then
-                local link= self.itemLink..(
-                    self.quantityAll.needNum and ' x'..self.quantityAll.needNum or ''
-                )
-                WoWTools_ChatMixin:Chat(link, nil, true)
-            end
-            self:SetAlpha(0.3)
-        end)
-        btn:HookScript('OnEnter', function(self)
-            self:SetAlpha(0.5)
-        end)
-        btn:HookScript('OnMouseUp', function(self)
-            self:SetAlpha(0.5)
-        end)
-        btn:HookScript('OnLeave', function(self) self:SetAlpha(1) end)
-        btn:HookScript('OnEnter', function(self)
-            if self.itemLink and e.tips:IsShown() then
-                e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(e.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, e.Icon.left)
-                e.tips:AddDoubleLine(e.addName, addName)
-                e.tips:Show()
-            end
-        end)
-        btn.quantityAll= label
-    end
-    label.needNum= needNum
-    label:SetText(num and WoWTools_Mixin:MK(num,0) or '')    
-    local r,g,b=1,1,1
-    if needNum and num then
-        if num>= needNum then
-            r,g,b= 0,1,0
-        else
-            r,g,b= 1,0,0
-        end
-    end
-    label:SetTextColor(r,g,b)
-end]]
 
 
 
@@ -953,20 +884,6 @@ local function Init_Bag()
         end)
 
     end)
-
-    --[[info={
-        text= e.onlyChinese and '整理银行: 自动' or (BAG_CLEANUP_BANK..': '..CLUB_FINDER_LOOKING_FOR_CLASS_SPEC),
-        icon= 'bags-button-autosort-up',
-        checked=not C_Container.GetBankAutosortDisabled(),
-        tooltipOnButton=true,
-        tooltipTitle='C_Container.|nSetBankAutosortDisabled',
-        func= function()
-            C_Container.SetBankAutosortDisabled(not C_Container.GetBankAutosortDisabled() and true or false)
-        end,
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-    ]]
-
 end
 
 
@@ -1000,43 +917,9 @@ end
 local function Init()
     --boss掉落，物品, 可能，会留下 StaticPopup1 框架
     hooksecurefunc('BossBanner_ConfigureLootFrame', function(lootFrame, data)--LevelUpDisplay.lua
-        --local itemName, itemLink, itemRarity, _, _, _, _, _, _, itemTexture, _, _, _, _, _, setID = C_Item.GetItemInfo(data.itemLink)
-        --local itemLink= data.itemLink
-        --if not CanUsa
         WoWTools_ItemStatsMixin:SetItem(lootFrame, data.itemLink, {point=lootFrame.Icon})
     end)
 
-
-
-    --[[设置，收信箱，物品
-    hooksecurefunc('InboxFrame_Update',function()
-        for i=1, INBOXITEMS_TO_DISPLAY do
-            local btn=_G["MailItem"..i.."Button"]
-            if btn and btn:IsShown() then
-                --local packageIcon, stationeryIcon, sender, subject, money, CODAmount, daysLeft, itemCount, wasRead, x, y, z, isGM, firstItemQuantity, firstItemLink = GetInboxHeaderInfo(btn.index)
-                e.Set_Item_Info(btn, {itemLink= select(15, GetInboxHeaderInfo(btn.index))})
-            end
-        end
-    end)
-    hooksecurefunc('OpenMail_Update', function()--多物品，打开时
-        if not OpenMailFrame_IsValidMailID() then
-            return
-        end
-        for i=1, ATTACHMENTS_MAX_RECEIVE do
-            local attachmentButton = OpenMailFrame.OpenMailAttachments[i]
-            if attachmentButton and attachmentButton:IsShown() then
-                e.Set_Item_Info(attachmentButton, {itemLink= HasInboxItem(InboxFrame.openMailID, i) and GetInboxItemLink(InboxFrame.openMailID, i)})
-            end
-        end
-    end)
-    hooksecurefunc('SendMailFrame_Update', function()--发信箱，物品
-        for i=1, ATTACHMENTS_MAX_SEND do
-            local sendMailAttachmentButton = SendMailFrame.SendMailAttachments[i]
-            if sendMailAttachmentButton and sendMailAttachmentButton:IsShown() then
-                e.Set_Item_Info(sendMailAttachmentButton, {itemLink= HasSendMailItem(i) and GetSendMailItemLink(i)})
-            end
-        end
-    end)]]
 
 
 
@@ -1055,26 +938,12 @@ local function Init()
     hooksecurefunc('LegendaryItemAlertFrame_SetUp', function(frame)
         WoWTools_ItemStatsMixin:SetItem(frame, frame.hyperlink, {point= frame.Icon})
     end)
-    --[[hooksecurefunc(LootItemExtended, 'Init', function(self, itemLink2, originalQuantity, _, isCurrency)--ItemDisplay.lua
-        local _, _, _, _, itemLink = ItemUtil.GetItemDetails(itemLink2, originalQuantity, isCurrency)
-        WoWTools_ItemStatsMixin:SetItem(self, itemLink, {point= self.lootItem.Icon})
-        if e.Player.husandro then
-            print('LootItemExtended', itemLink, self.lootItem.Icon)
-        end
-    end)]]
+
 
     hooksecurefunc(LootItemExtendedMixin, 'Init', function(self, itemLink2, originalQuantity, _, isCurrency)--ItemDisplay.lua
         local _, _, _, _, itemLink = ItemUtil.GetItemDetails(itemLink2, originalQuantity, isCurrency)
         WoWTools_ItemStatsMixin:SetItem(self, itemLink, {point= self.Icon})
     end)
-
-    --hooksecurefunc('NewPetAlertFrameMixin', function(self, petID)
-    --hooksecurefunc(NewCosmeticAlertFrameMixin, 'SetUp', function(self, itemModifiedAppearanceID)
-        --local info =  C_TransmogCollection.GetSourceInfo(itemModifiedAppearanceID)
-
---[[
-    LootWonAlertFrame_SetUp
-]]
 
 
 
@@ -1293,10 +1162,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1==id then
             addName= '|A:bag-main:0:0|a'..(e.onlyChinese and '物品信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, INFO))
 
-            Save= WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, INFO)]
-                or WoWToolsSave['ItemInfo_Lua']
-                or Save
-            WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, INFO)]=nil
+            Save= WoWToolsSave['ItemInfo_Lua'] or Save
 
             --添加控制面板
             e.AddPanel_Check({
@@ -1433,8 +1299,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end)
 
         elseif arg1=='Blizzard_ItemUpgradeUI' then--装备升级, 界面
-            add_Button_OpenOption(ItemUpgradeFrameCloseButton)--添加一个按钮, 打开选项            
-            --hooksecurefunc(ItemUpgradeFrame.UpgradeCostFrame, 'AddCurrency', function(self, currencyID)            
+            add_Button_OpenOption(ItemUpgradeFrameCloseButton)--添加一个按钮, 打开选项                       
         end
 
     elseif event == "PLAYER_LOGOUT" then

@@ -752,6 +752,8 @@ end
 
 local function Init_Menu()
     Menu.ModifyMenu("MENU_QUEST_MAP_FRAME_SETTINGS", function(_, root)
+        local sub, sub2 
+--全部放弃
         root:CreateDivider()
         root:CreateButton('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部放弃' or LOOT_HISTORY_ALL_PASSED)..' #'..(select(2, C_QuestLog.GetNumQuestLogEntries()) or 0), function()
             StaticPopupDialogs[id..addName.."ABANDON_QUEST"] =  {
@@ -784,6 +786,32 @@ local function Init_Menu()
             }
             StaticPopup_Show(id..addName.."ABANDON_QUEST", '|n|cnRED_FONT_COLOR:|n|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '所有任务' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, QUESTS_LABEL))..' |r#|cnGREEN_FONT_COLOR:'..select(2, C_QuestLog.GetNumQuestLogEntries())..'|r')
         end)
+
+--CVar
+        sub= root:CreateButton('CVar', function() return MenuResponse.Open end)
+        if not WoWTools_MenuMixin:CheckInCombat(sub) then
+            local tab={
+                --'displayQuestID',
+                --'displayInternalOnlyStatus',
+                --'showReadyToRecord',
+                'questPOI',
+                'autoQuestWatch',
+                'scrollToLogQuest'
+            }
+            table.sort(tab)
+            for _, var in pairs(tab) do
+                sub2=sub:CreateCheckbox(
+                    var,
+                function(data)
+                    return C_CVar.GetCVarBool(data.var)
+                end, function(data)
+                    C_CVar.SetCVar(data.var, C_CVar.GetCVarBool(data.var) and '0' or '1')
+                end, {var=var})
+                sub2:SetTooltip(function(tooltip, description)
+                    tooltip:AddDoubleLine(e.onlyChinese and '默认' or DEFAULT, e.GetYesNo(C_CVar.GetCVarDefault(description.data.var)))
+                end)
+            end
+        end
     end)
 
     QuestScrollFrame.SearchBox:SetWidth(301- 20*2)

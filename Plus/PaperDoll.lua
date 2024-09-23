@@ -1477,6 +1477,7 @@ end
 --#######
 --装备弹出
 --EquipmentFlyout.lua
+
 local function setFlyout(button, itemLink, slot)
     local text, level, dateInfo
     if not Save.hide then
@@ -1505,17 +1506,24 @@ local function setFlyout(button, itemLink, slot)
         button.level:SetText(text or '')
     end
 
-    local upgrade, pvpItem
+    local upgrade, pvpItem, upLevel, upText
     local updown--UpgradeFrame等级，比较
     if dateInfo then
         upgrade, pvpItem=dateInfo.text[upgradeStr], dateInfo.text[pvpItemStr]
-        upgrade= upgrade and upgrade:match('(%d+/%d+)')
+        if upgrade then
+            upLevel= upgrade and upgrade:match('(%d+/%d+)')
+            upText= dateInfo.text[upgradeStr]:match('(.-)%d+/%d+')
+            upText=upText and strlower(WoWTools_Mixin:sub(upText, 1,3, true))
+        end
         if upgrade and not button.upgrade then
             button.upgrade= WoWTools_LabelMixin:CreateLabel(button, {color={r=0,g=1,b=0}})
             button.upgrade:SetPoint('LEFT')
+            button.itemType=WoWTools_LabelMixin:CreateLabel(button)
+            button.itemType:SetPoint('TOPRIGHT')
         end
         if button.upgrade then
-            button.upgrade:SetText(upgrade or '')
+            button.upgrade:SetText(upLevel or '')
+            button.itemType:SetText(upText or '')
         end
         if level then
             if not slot or slot==0 then
@@ -1546,7 +1554,7 @@ local function setFlyout(button, itemLink, slot)
     end
     if updown and not button.updown then
         button.updown=WoWTools_LabelMixin:CreateLabel(button)
-        button.updown:SetPoint('TOP')
+        button.updown:SetPoint('TOPLEFT')
     end
     if button.updown then
         button.updown:SetText(updown or '')
@@ -1571,7 +1579,7 @@ local function setFlyout(button, itemLink, slot)
         local w,h= button:GetSize()
         button.isEquippedTexture:SetSize(w+12, h+12)
         button.isEquippedTexture:SetAtlas('Forge-ColorSwatchHighlight')--'Forge-ColorSwatchSelection')
-        --button.isEquippedTexture:SetVertexColor(0,1,0)
+        button.isEquippedTexture:SetVertexColor(1,0,0)
 
         button:HookScript('OnEnter', function(self)--查询
             if self.itemLink then
@@ -1585,17 +1593,6 @@ local function setFlyout(button, itemLink, slot)
     local show=false
     if not Save.hide and button.itemLink then
         show= C_Item.IsEquippedItem(button.itemLink)
-       --[[ local itemLocation = button:GetItemLocation();
-        if itemLocation then
-            if itemLocation:IsEquipmentSlot() and itemLocation:GetEquipmentSlot() then
-                show=true
-            end
-        elseif type(button.location)=='number' then
-            local player, bank, bags, voidStorage, slot= EquipmentManager_UnpackLocation(button.location)--EquipmentManager.lua
-            if slot and player and not voidStorage and not bags and not bank then
-                show=GetInventoryItemLink('player', slot)==button.itemLink
-            end
-        end]]
     end
     button.isEquippedTexture:SetShown(show)
 end

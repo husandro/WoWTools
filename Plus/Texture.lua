@@ -684,17 +684,7 @@ local function Init_All_Frame()
         end
     end)
 
---[[
-     set_Alpha_Color(QuestMapFrame.VerticalSeparator)
-     set_Alpha_Color(QuestScrollFrame.DetailFrame.BottomDetail)
-     set_Alpha_Color(QuestScrollFrame.Edge)
-     set_Alpha_Color(QuestScrollFrame.DetailFrame.TopDetail)
-     set_Alpha_Color(QuestScrollFrame.Contents.Separator.Divider, nil, nil, min03)
-     e.Set_ScrollBar_Color_Alpha(QuestScrollFrame)
-     e.Set_ScrollBar_Color_Alpha(QuestMapFrame.DetailsFrame.RewardsFrame.RewardsScrollFrame)
-     e.Set_ScrollBar_Color_Alpha(QuestRewardScrollFrame)
-]]
-
+    hide_Texture(QuestScrollFrame.Background, true)
 
      --地下城和团队副本
      hide_Texture(PVEFrame.TopTileStreaks)--最上面

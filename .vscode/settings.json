@@ -4983,7 +4983,9 @@
         "ADDON_LIST",
         "Activities",
         "Raid",
-        "PARTY_LEAVE"
+        "PARTY_LEAVE",
+        "QUEST_LOG_SHOW_OBJECTIVES",
+        "RETURN_TO_DEFAULT"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

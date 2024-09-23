@@ -1210,6 +1210,14 @@ local function Set_BrowseResultsFrame(frame)
     end
 end
 
+
+
+
+
+
+
+
+
 --浏览拍卖行
 --Blizzard_AuctionHouseUI.lua
 --local ITEM_SPELL_KNOWN = ITEM_SPELL_KNOWN--"已学习
@@ -1236,6 +1244,13 @@ local function Init_BrowseResultsFrame()
                 end)
                 btn.setOnDoubleClick=true
             end
+        end
+    end)
+
+    --购买，数量
+    AuctionHouseFrame.CommoditiesBuyFrame.BuyDisplay.QuantityInput.InputBox:HookScript('OnShow', function(self)
+        if self:GetText()=='' then
+            self:SetText(1)
         end
     end)
 end
