@@ -2119,7 +2119,6 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 
 
 panel:SetScript("OnEvent", function(self, event, arg1)
-    print(event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
 
