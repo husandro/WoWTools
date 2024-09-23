@@ -2117,7 +2117,7 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("CHALLENGE_MODE_COMPLETED")
+panel:RegisterEvent("PLAYER_LOGOUT")
 
 
 panel:SetScript("OnEvent", function(self, event, arg1)
@@ -2145,9 +2145,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             if Save.disabled then
-                self:UnregisterAllEvents()
+                self:UnregisterEvent('ADDON_LOADED')
             else
+                self:RegisterEvent("CHALLENGE_MODE_COMPLETED")
                 if C_AddOns.IsAddOnLoaded('Blizzard_ChallengesUI') then
+                    print('b')
                     Init()
                 end
                 if C_AddOns.IsAddOnLoaded('Blizzard_WeeklyRewards') then
@@ -2155,9 +2157,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
                 C_Timer.After(4, set_Week_Reward_Look_Specialization)--打开周奖励时，提示拾取专精
             end
-            self:RegisterEvent("PLAYER_LOGOUT")
+            
 
         elseif arg1=='Blizzard_ChallengesUI' then--挑战,钥石,插入界面
+            print('a')
             Init()--史诗钥石地下城, 界面
 
         elseif arg1=='Blizzard_WeeklyRewards' then
