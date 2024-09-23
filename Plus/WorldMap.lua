@@ -755,7 +755,7 @@ local function Init_Menu()
         local sub, sub2 
 --全部放弃
         root:CreateDivider()
-        root:CreateButton('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部放弃' or LOOT_HISTORY_ALL_PASSED)..' #'..(select(2, C_QuestLog.GetNumQuestLogEntries()) or 0), function()
+        sub=root:CreateButton('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部放弃' or LOOT_HISTORY_ALL_PASSED)..' #'..(select(2, C_QuestLog.GetNumQuestLogEntries()) or 0), function()
             StaticPopupDialogs[id..addName.."ABANDON_QUEST"] =  {
                 text= (e.onlyChinese and "放弃\"%s\"？" or ABANDON_QUEST_CONFIRM)..'|n|n|cnYELLOW_FONT_COLOR:'..(not e.onlyChinese and VOICEMACRO_1_Sc_0..' ' or "危险！")..(not e.onlyChinese and VOICEMACRO_1_Sc_0..' ' or "危险！")..(not e.onlyChinese and VOICEMACRO_1_Sc_0 or "危险！"),
                 button1 = '|cnRED_FONT_COLOR:'..(not e.onlyChinese and ABANDON_QUEST_ABBREV or "放弃"),
@@ -786,6 +786,9 @@ local function Init_Menu()
             }
             StaticPopup_Show(id..addName.."ABANDON_QUEST", '|n|cnRED_FONT_COLOR:|n|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '所有任务' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, QUESTS_LABEL))..' |r#|cnGREEN_FONT_COLOR:'..select(2, C_QuestLog.GetNumQuestLogEntries())..'|r')
         end)
+        sub:SetTooltip(function(tooltip)
+            tooltip:AddDoubleLine(e.addName, addName)
+        end)
 
 --CVar
         sub= root:CreateButton('CVar', function() return MenuResponse.Open end)
@@ -809,6 +812,7 @@ local function Init_Menu()
                 end, {var=var})
                 sub2:SetTooltip(function(tooltip, description)
                     tooltip:AddDoubleLine(e.onlyChinese and '默认' or DEFAULT, e.GetYesNo(C_CVar.GetCVarDefault(description.data.var)))
+                    tooltip:AddDoubleLine(e.addName, addName)
                 end)
             end
         end
