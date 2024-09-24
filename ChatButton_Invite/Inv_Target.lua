@@ -30,7 +30,7 @@ local function Init()
 
     function frame:InviteTarget()
         if not Save().InvTar
-        --or WoWTools_InviteMixin:Get_InvPlateGuid()[guid]--已邀请
+        --or WoWTools_InviteMixin.InvPlateGuid[guid]--已邀请
         or not UnitExists('target')
         or not WoWTools_InviteMixin:Get_Leader()--取得权限
         or UnitInAnyGroup('target')
@@ -60,7 +60,7 @@ local function Init()
 
         local guid=UnitGUID('target')
         if guid then
-            WoWTools_InviteMixin:Get_InvPlateGuid()[guid]=name--保存到已邀请列表
+            WoWTools_InviteMixin.InvPlateGuid[guid]=name--保存到已邀请列表
         end
         print(e.addName, WoWTools_InviteMixin.addName, e.onlyChinese and '目标' or TARGET, WoWTools_UnitMixin:GetPlayerInfo(nil, guid, name, {reLink=true}))
     end

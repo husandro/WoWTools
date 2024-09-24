@@ -52,9 +52,9 @@ function WoWTools_InviteMixin:Inv_All_Unit()--邀请，周围玩家
                     local name= GetUnitName(u,true)
                     local guid= UnitGUID(u)
                     if name and name~=UNKNOWNOBJECT and guid and not UnitInAnyGroup(u) and not UnitIsAFK(u) and UnitIsConnected(u) and UnitIsPlayer(u) and UnitIsFriend(u, 'player') and not UnitIsUnit('player',u) then
-                        if not self:Get_InvPlateGuid()[guid] then
-                            C_PartyInfo.InviteUnit(name)
-                            self:Get_InvPlateGuid()[guid]=name
+                        if not WoWTools_InviteMixin.InvPlateGuid[guid] then
+                            --C_PartyInfo.InviteUnit(name)
+                            WoWTools_InviteMixin.InvPlateGuid[guid]=name
                             print(e.addName, '|cnGREEN_FONT_COLOR:'..n..'|r)', e.onlyChinese and '邀请' or INVITE ,WoWTools_UnitMixin:GetLink(name, guid))
                             if not raid and n +co>=5  then
                                 print(e.addName, self.addName, format(PETITION_TITLE, '|cff00ff00'..(e.onlyChinese and '转团' or CONVERT_TO_RAID)..'|r'))

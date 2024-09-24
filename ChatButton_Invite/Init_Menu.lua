@@ -14,7 +14,7 @@ local function InvPlateGuidFunc()--从已邀请过列表里, 再次邀请
     end
     local n=0
     local co=GetNumGroupMembers()
-    for guid, name in pairs(WoWTools_InviteMixin:Get_InvPlateGuid()) do
+    for guid, name in pairs(WoWTools_InviteMixin.InvPlateGuid) do
         local num=n+co
         if num==40 then
             return
@@ -54,21 +54,21 @@ local function Init_Menu(self, root)
         e.Icon.left
         ..(WoWTools_InviteMixin:Get_Leader() and '' or '|cff9e9e9e')
         ..(e.onlyChinese and '邀请成员' or GUILDCONTROL_OPTION7),
-        WoWTools_InviteMixin.Inv_All_Unit
-    )
+    function()
+        WoWTools_InviteMixin:Inv_All_Unit()
+    end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(e.onlyChinese and '周围玩家' or 'Players around')
     end)
 
     sub:CreateButton(e.onlyChinese and '再次邀请' or INVITE, InvPlateGuidFunc)
     sub:CreateButton(e.onlyChinese and '全部清除' or CLEAR_ALL, function()
-        local tab= WoWTools_InviteMixin:Get_InvPlateGuid()
-        tab={}
+        WoWTools_InviteMixin.InvPlateGuid={}
     end)
     sub:CreateDivider()
 
     num=0
-    for guid, name in pairs(WoWTools_InviteMixin:Get_InvPlateGuid()) do
+    for guid, name in pairs(WoWTools_InviteMixin.InvPlateGuid) do
         if not e.GroupGuid[guid] then
             sub2= sub:CreateButton(WoWTools_UnitMixin:GetPlayerInfo(nil, guid, name, {reName=true, reRealm=true}), function(data)
                 C_PartyInfo.InviteUnit(name)
@@ -94,14 +94,14 @@ local function Init_Menu(self, root)
         tooltip:AddLine(e.onlyChinese and '不在副本中' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NO, INSTANCE))
     end)
 
-    sub=root:CreateCheckbox((e.onlyChinese and '频道' or CHANNEL)..'|A:poi-traveldirections-arrow2:0:0|a'..(Save().ChannelText and '|cnGREEN_FONT_COLOR: '..Save().ChannelText..'|r' or ''), function()
+    sub=root:CreateCheckbox((e.onlyChinese and '频道' or CHANNEL)..'|A:poi-traveldirections-arrow2:0:0|a'..('|cnGREEN_FONT_COLOR: '..Save().ChannelText..'|r'), function()
         return Save().Channel
     end, function()
         Save().Channel = not Save().Channel and true or nil
         WoWTools_InviteMixin.InvChanellFrame:set_event()
     end)
     sub:SetTooltip(function (tooltip)
-        tooltip:AddLine(Save().ChannelText or (e.onlyChinese and '无' or NONE))
+        tooltip:AddLine(Save().ChannelText)
         tooltip:AddLine(e.onlyChinese and '说, 喊, 密语' or (SAY..', '..YELL..', '..WHISPER))
     end)
 
@@ -113,7 +113,7 @@ local function Init_Menu(self, root)
             button1= e.onlyChinese and '修改' or EDIT,
             button2= e.onlyChinese and '取消' or CANCEL,
             OnShow = function(frame)
-                frame.editBox:SetText(Save().ChannelText or e.Player.cn and '1' or 'inv')
+                frame.editBox:SetText(Save().ChannelText)
             end,
             OnHide= function(frame)
                 frame.editBox:ClearFocus()

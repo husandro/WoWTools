@@ -3,21 +3,20 @@ local function Save()
     return WoWTools_InviteMixin.Save
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 --接受, 召唤
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 local function Init()
     hooksecurefunc(StaticPopupDialogs["CONFIRM_SUMMON"], "OnUpdate",function(self)
         if IsModifierKeyDown() or self.isCancelledAuto or not Save().Summon then

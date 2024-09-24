@@ -20,32 +20,15 @@ Save={
 InviteButton=nil,
 RestingFrame=nil,
 InvTargetFrame=nil,
-InvChanellFrame=nil
+InvChanellFrame=nil,
+
+InvPlateGuid={},
 }
 
 
 local function Save()
     return WoWTools_InviteMixin.Save
 end
-
-
-local InvPlateGuid={}
-
-function WoWTools_InviteMixin:Get_InvPlateGuid()
-    return InvPlateGuid
-end
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 function WoWTools_InviteMixin:Get_Leader()--取得权限
