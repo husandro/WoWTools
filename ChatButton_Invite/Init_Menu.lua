@@ -107,43 +107,14 @@ local function Init_Menu(self, root)
 
     sub:CreateButton(e.onlyChinese and '关键词' or KBASE_DEFAULT_SEARCH_TEXT, function()
         StaticPopup_Show('WoWTools_EditText',
-    (e.onlyChinese and '关键词' or KBASE_DEFAULT_SEARCH_TEXT),
-    nil,
-    {
-        text=Save().ChannelText,
-        SetValue= function(s)
-            Save().ChannelText = string.upper(s.editBox:GetText())
-            print(e.addName, WoWTools_InviteMixin.addName, e.onlyChinese and '频道' or CHANNEL,'|cnGREEN_FONT_COLOR:'..Save().ChannelText..'|r')
-        end,
-    }
-)
-
-        --[[StaticPopupDialogs['WoWTool_ChatButton_CHANNEL']= {--设置,内容,频道, 邀请,事件
-            text=e.addName..' '..WoWTools_InviteMixin.addName..' '..(e.onlyChinese and '频道' or CHANNEL)..'|n|n'..(e.onlyChinese and '关键词' or KBASE_DEFAULT_SEARCH_TEXT),
-            whileDead=true, hideOnEscape=true, exclusive=true,
-            hasEditBox=true,
-            button1= e.onlyChinese and '修改' or EDIT,
-            button2= e.onlyChinese and '取消' or CANCEL,
-            OnShow = function(frame)
-                frame.editBox:SetText(Save().ChannelText)
-            end,
-            OnHide= function(frame)
-                frame.editBox:ClearFocus()
-            end,
-            OnAccept = function(frame)
-                Save().ChannelText = string.upper(frame.editBox:GetText())
+        (e.onlyChinese and '关键词' or KBASE_DEFAULT_SEARCH_TEXT),
+        nil, {
+            text=Save().ChannelText,
+            SetValue= function(s)
+                Save().ChannelText = string.upper(s.editBox:GetText())
                 print(e.addName, WoWTools_InviteMixin.addName, e.onlyChinese and '频道' or CHANNEL,'|cnGREEN_FONT_COLOR:'..Save().ChannelText..'|r')
             end,
-            EditBoxOnTextChanged=function(frame)
-                local text= frame:GetText()
-                text=text:gsub(' ','')
-                frame:GetParent().button1:SetEnabled(text~='')
-            end,
-            EditBoxOnEscapePressed = function(s)
-                s:GetParent():Hide()
-            end,
-        }
-        StaticPopup_Show('WoWTool_ChatButton_CHANNEL')]]
+        })
     end)
 
 
@@ -159,7 +130,7 @@ local function Init_Menu(self, root)
 
 
 
-
+--接受邀请
     root:CreateDivider()
     sub=root:CreateCheckbox((e.onlyChinese and '接受邀请' or CALENDAR_ACCEPT_INVITATION)..format('|A:%s:0:0|a', e.Icon.select), function()
         return Save().FriendAceInvite
@@ -170,6 +141,13 @@ local function Init_Menu(self, root)
         tooltip:AddLine(e.onlyChinese and '战网, 好友, 公会' or (COMMUNITY_COMMAND_BATTLENET..', '..FRIENDS..', '..GUILD))
     end)
 
+
+
+
+
+
+
+--召唤
     sub=root:CreateCheckbox((e.onlyChinese and '召唤' or SUMMON)..'|A:Raid-Icon-SummonPending:0:0|a', function()
         return Save().Summon
     end, function()
@@ -183,6 +161,48 @@ local function Init_Menu(self, root)
             tooltip:AddLine(format('%s: %s, %s, %s', CANCEL, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, AFK, ALT_KEY))
         end
     end)
+
+    sub:CreateCheckbox(
+        Save().SummonThxText or WoWTools_InviteMixin.SummonThxText,
+    function()
+        return not Save().notSummonChat
+    end, function()
+        Save().notSummonChat= not Save().notSummonChat and true or nil
+    end)
+
+--修改    
+    sub:CreateButton(e.onlyChinese and '修改' or SLASH_CHAT_MODERATE2:gsub('/', ''), function()
+        StaticPopup_Show('WoWTools_EditText',
+            (e.onlyChinese and '召唤' or SUMMON),
+            nil,
+            {
+                text= Save().SummonThxText or WoWTools_InviteMixin.SummonThxText,
+                SetValue= function(s)
+                    Save().SummonThxText=s.editBox:GetText()
+                    print(e.addName, WoWTools_InviteMixin.addName, Save().SummonThxText)
+                end,
+                OnAlt=function()
+                    Save().SummonThxText=nil
+                end,
+            }
+        )
+        return MenuResponse.Open
+    end)
+
+    sub:CreateDivider()
+    sub:CreateCheckbox(
+        e.onlyChinese and '团队' or RAID,
+    function()
+        return Save().SummonThxInRaid
+    end, function()
+        Save().SummonThxInRaid= not Save().SummonThxInRaid and true or nil
+    end)
+
+
+
+
+
+
 
     sub=root:CreateCheckbox(e.onlyChinese and '休息区信息' or
         format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, '|cnGREEN_FONT_COLOR:Rest|r', ZONE), INFO), function()
@@ -209,7 +229,7 @@ local function Init_Menu(self, root)
 
 
 
-
+--焦点
     sub=root:CreateCheckbox((e.onlyChinese and '焦点' or HUD_EDIT_MODE_FOCUS_FRAME_LABEL)..(Save().setFucus and ' |cnGREEN_FONT_COLOR:'..Save().focusKey..'|r + '..e.Icon.left or ''), function()
         return Save().setFucus
     end, function()
@@ -254,6 +274,10 @@ local function Init_Menu(self, root)
     sub:CreateTitle(format('   |A:UI-HUD-MicroMenu-StreamDLRed-Up:0:0|a%s', e.onlyChinese and'鼠标滚轮向下滚动: 跟随' or (KEY_MOUSEWHEELDOWN..': '..FOLLOW)))
     sub:CreateDivider()
     sub:CreateTitle(e.onlyChinese and'友情提示: 可能会出现错误' or 'Note: Errors may occur')
+
+--reload
+    sub:CreateDivider()
+    WoWTools_MenuMixin:Reload(sub)
 
 
 

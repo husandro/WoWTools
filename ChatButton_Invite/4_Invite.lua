@@ -9,13 +9,18 @@ Save={
     InvNoFriendNum=0,--拒绝, 次数
     restingTips=true,--休息区提示
     ChannelText=e.Player.cn and '1' or 'inv',--频道, 邀请, 事件,内容
+    
     Summon= true,--接受, 召唤
+    notSummonChat=nil,--不说
+    SummonThxText=nil,--自定义THX内容
+    SummonThxInRaid=nil,--在团里也说谢谢
 
     setFrameFun= e.Player.husandro,--跟随，密语
 
     setFucus= e.Player.husandro,--焦点
     overSetFocus= e.Player.husandro,--移过是，
     focusKey= 'Shift',
+    
 },
 InviteButton=nil,
 RestingFrame=nil,
@@ -23,6 +28,7 @@ InvTargetFrame=nil,
 InvChanellFrame=nil,
 
 InvPlateGuid={},
+SummonThxText='谢谢, 拉我'
 }
 
 
@@ -126,6 +132,15 @@ local function Init()
     --hooksecurefunc(StaticPopupDialogs["CONFIRM_SUMMON"], "OnUpdate", Init_CONFIRM_SUMMON)
 
 
+
+    
+    if (e.Player.region==1 or e.Player.region==3) then
+        WoWTools_InviteMixin.SummonThxText = '{rt1}thx{rt1}, sum me'
+    elseif e.Player.region==5 then
+        WoWTools_InviteMixin.SummonThxText= '{rt1}谢谢{rt1}, 拉我'
+    else
+        WoWTools_InviteMixin.SummonThxText= '{rt1}'..SUMMON..'{rt1} '..VOICEMACRO_16_Dw_1
+    end
 end
 
 

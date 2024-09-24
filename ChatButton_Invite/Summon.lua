@@ -39,16 +39,12 @@ local function Init()
                     if not UnitAffectingCombat("player") and PlayerCanTeleport() then
                         C_SummonInfo.ConfirmSummon()
                         StaticPopup_Hide("CONFIRM_SUMMON")
-                        if IsInGroup() and not IsInRaid() then
-                            local text
-                            if (e.Player.region==1 or e.Player.region==3) then
-                                text = 'thx, sum me'
-                            elseif e.Player.region==5 then
-                                text= '谢谢, 拉我'
-                            else
-                                text= VOICEMACRO_16_Dw_1 ..', '..SUMMON
-                            end
-                            WoWTools_ChatMixin:Chat('{rt1}'..text..'{rt1}', nil, nil)
+                        if not IsInGroup() or Save().notSummonChat then
+                            return
+                        end
+                        local isInRaid= IsInRaid()
+                        if isInRaid and Save().SummonThxInRaid or not isInRaid then
+                            WoWTools_ChatMixin:Chat(Save().SummonThxText or WoWTools_InviteMixin.SummonThxText, nil, nil)
                         end
                     end
                 end)
