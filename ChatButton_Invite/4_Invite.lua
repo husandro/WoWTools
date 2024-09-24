@@ -1,6 +1,8 @@
 local id, e = ...
 local addName
-local Save={
+
+WoWTools_InviteMixin={
+Save={
     InvNoFriend={},
     --LFGListAceInvite=true,--接受,LFD, 邀请
     FriendAceInvite=true,--接受, 好友, 邀请
@@ -14,7 +16,18 @@ local Save={
     setFucus= e.Player.husandro,--焦点
     overSetFocus= e.Player.husandro,--移过是，
     focusKey= 'Shift',
+},
+InviteButton=nil,
+RestingFrame=nil,
 }
+
+
+local function Save()
+    return WoWTools_InviteMixin.Save
+end
+
+
+
 local InvPlateGuid={}
 local InviteButton
 local panel= CreateFrame("Frame")
@@ -135,14 +148,14 @@ local InvUnitFunc=function()--邀请，周围玩家
 end
 
 local function set_event_PLAYER_TARGET_CHANGED()--设置, 邀请目标事件
-    if Save.InvTar and not IsInInstance() then
+    if Save().InvTar and not IsInInstance() then
         panel:RegisterEvent('PLAYER_TARGET_CHANGED')
     else
         panel:UnregisterEvent('PLAYER_TARGET_CHANGED')
     end
 end
 local function set_PLAYER_TARGET_CHANGED()--设置, 邀请目标
-    if not Save.InvTar
+    if not Save().InvTar
     --or InvPlateGuid[guid]--已邀请
     or not UnitExists('target')
     or not getLeader()--取得权限
@@ -158,7 +171,7 @@ local function set_PLAYER_TARGET_CHANGED()--设置, 邀请目标
 
     local raid=IsInRaid()
     local co=GetNumGroupMembers()
-    if (raid and co==40) or (not raid and co==5 and not Save.PartyToRaid) then
+    if (raid and co==40) or (not raid and co==5 and not Save().PartyToRaid) then
         return
     end
 
@@ -189,7 +202,7 @@ local function InvPlateGuidFunc()--从已邀请过列表里, 再次邀请
         local num=n+co
         if num==40 then
             return
-        elseif not IsInRaid() and num==5 and not Save.PartyToRaid then
+        elseif not IsInRaid() and num==5 and not Save().PartyToRaid then
             print(e.addName, addName, e.onlyChinese and '请求：转化为团队' or  PETITION_TITLE:format('|cff00ff00'..CONVERT_TO_RAID..'|r'))
             return
         end
@@ -255,7 +268,7 @@ local function set_PARTY_INVITE_REQUEST(name, isTank, isHealer, isDamage, isNati
 
     local friend=WoWTools_UnitMixin:GetIsFriendIcon(nil, inviterGUID, nil)
     if friend then--好友
-        if not Save.FriendAceInvite then
+        if not Save().FriendAceInvite then
             e.Ccool(StaticPopup1, nil, STATICPOPUP_TIMEOUT, nil, true, true, nil)--冷却条  
             return
         end
@@ -267,19 +280,19 @@ local function set_PARTY_INVITE_REQUEST(name, isTank, isHealer, isDamage, isNati
             StaticPopup_Hide("PARTY_INVITE")
         end)
 
-    elseif Save.InvNoFriend[inviterGUID] then--拒绝
-        setPrint(3, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '拒绝' or DECLINE)..'|r'..Save.InvNoFriend[inviterGUID]..'/'..Save.InvNoFriendNum)
+    elseif Save().InvNoFriend[inviterGUID] then--拒绝
+        setPrint(3, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '拒绝' or DECLINE)..'|r'..Save().InvNoFriend[inviterGUID]..'/'..Save().InvNoFriendNum)
         StaticPopup1.button3:SetText('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r'..(e.onlyChinese and '接受' or ACCEPT))
         notInviterGUID=inviterGUID
         if StaticPopup1.InvTimer then StaticPopup1.InvTimer:Cancel() end
         StaticPopup1.InvTimer = C_Timer.NewTimer(3, function()
             DeclineGroup()
             StaticPopup_Hide("PARTY_INVITE")
-            Save.InvNoFriendNum=Save.InvNoFriendNum+1
-            Save.InvNoFriend[inviterGUID]=Save.InvNoFriend[inviterGUID]+1
+            Save().InvNoFriendNum=Save().InvNoFriendNum+1
+            Save().InvNoFriend[inviterGUID]=Save().InvNoFriend[inviterGUID]+1
         end)
 
-    elseif IsResting() and Save.NoInvInResting and not questSessionActive then--休息区不组队
+    elseif IsResting() and Save().NoInvInResting and not questSessionActive then--休息区不组队
         setPrint(3, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '' or DECLINE)..'|r'..(e.onlyChinese and '休息区' or (CALENDAR_STATUS_OUT..ZONE)))
 
         StaticPopup1.button3:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r'..(e.onlyChinese and '拒绝' or DECLINE))
@@ -288,7 +301,7 @@ local function set_PARTY_INVITE_REQUEST(name, isTank, isHealer, isDamage, isNati
         StaticPopup1.InvTimer = C_Timer.NewTimer(3, function()
             DeclineGroup()
             StaticPopup_Hide("PARTY_INVITE")
-            Save.InvNoFriendNum=Save.InvNoFriendNum+1
+            Save().InvNoFriendNum=Save().InvNoFriendNum+1
         end)
 
     else--添加 拒绝 陌生人
@@ -326,7 +339,7 @@ end
 --休息区提示
 --#########
 local function set_event_PLAYER_UPDATE_RESTING()--设置, 休息区提示事件
-    if Save.restingTips then
+    if Save().restingTips then
         panel:RegisterEvent('PLAYER_UPDATE_RESTING')
     else
         panel:UnregisterEvent('PLAYER_UPDATE_RESTING')
@@ -381,7 +394,7 @@ end
 --设置,内容,频道, 邀请,事件
 --#######################
 local function set_Chanell_Event()--设置,内容,频道, 邀请,事件
-    if Save.Channel and Save.ChannelText and UnitIsGroupLeader('player') and not IsInInstance() then
+    if Save().Channel and Save().ChannelText and UnitIsGroupLeader('player') and not IsInInstance() then
         panel:RegisterEvent('CHAT_MSG_SAY')
         panel:RegisterEvent('CHAT_MSG_WHISPER')
         panel:RegisterEvent('CHAT_MSG_YELL')
@@ -435,11 +448,11 @@ end
 --鼠标按键 1是左键、2是右键、3是中键
 local ClearFoucsFrame
 local function Init_Shift_Click_Focus()
-    if not Save.setFucus then
+    if not Save().setFucus then
         return
     end
 
-    local key= strlower(Save.focusKey)
+    local key= strlower(Save().focusKey)
 
     ClearFoucsFrame= WoWTools_ButtonMixin:Cbtn(nil, {type=true, name='WoWToolsClearFocusButton'})--清除，焦点
     --ClearFoucsFrame:SetAttribute('type1','macro')
@@ -466,7 +479,7 @@ local function Init_Shift_Click_Focus()
 
     --跟随，密语
     function ClearFoucsFrame:set_say_follow(frame)
-        if not Save.setFrameFun or not frame or not frame:CanChangeAttribute() then--or not (frame.unit and frame:GetAttribute('unit')) then
+        if not Save().setFrameFun or not frame or not frame:CanChangeAttribute() then--or not (frame.unit and frame:GetAttribute('unit')) then
             return
         end
         frame:EnableMouseWheel(true)
@@ -644,72 +657,6 @@ end
 
 
 
---接受, 召唤
-local tips
-local function Init_CONFIRM_SUMMON()
-
-    hooksecurefunc(StaticPopupDialogs["CONFIRM_SUMMON"], "OnUpdate",function(self)
-        if IsModifierKeyDown() or self.isCancelledAuto or not Save.Summon then
-            if not self.isCancelledAuto then
-                e.Ccool(self, nil, C_SummonInfo.GetSummonConfirmTimeLeft(), nil, true, true, nil)--冷却条
-                if self.SummonTimer and not self.SummonTimer:IsCancelled() then self.SummonTimer:Cancel() end--取消，计时
-            end
-            self.isCancelledAuto=true
-            return
-        end
-
-        if not UnitAffectingCombat("player") and PlayerCanTeleport() then--启用，召唤
-            if not self.enabledAutoSummon then
-                self.enabledAutoSummon= true
-                if self.SummonTimer and not self.SummonTimer:IsCancelled() then
-                    self.SummonTimer:Cancel()
-                end
-                e.Ccool(self, nil, 3, nil, true, true, nil)--冷却条
-                self.SummonTimer= C_Timer.NewTimer(3, function()
-                    if not UnitAffectingCombat("player") and PlayerCanTeleport() then
-                        C_SummonInfo.ConfirmSummon()
-                        StaticPopup_Hide("CONFIRM_SUMMON")
-                        if IsInGroup() and not IsInRaid() then
-                            local text
-                            if (e.Player.region==1 or e.Player.region==3) then
-                                text = 'thx, sum me'
-                            elseif e.Player.region==5 then
-                                text= '谢谢, 拉我'
-                            else
-                                text= VOICEMACRO_16_Dw_1 ..', '..SUMMON
-                            end
-                            WoWTools_ChatMixin:Chat('{rt1}'..text..'{rt1}', nil, nil)
-                        end
-                    end
-                end)
-            end
-
-        elseif self.enabledAutoSummon then--取消，召唤
-            e.Ccool(self, nil, C_SummonInfo.GetSummonConfirmTimeLeft(), nil, true, true, nil)--冷却条
-            if self.SummonTimer and not self.SummonTimer:IsCancelled() then self.SummonTimer:Cancel() end--取消，计时
-            self.enabledAutoSummon=nil
-        end
-    end)
-
-    StaticPopupDialogs["CONFIRM_SUMMON"].OnHide= function(self)
-        if self.SummonTimer then self.SummonTimer:Cancel() end
-        --if self.cooldown then self.cooldown:Clear() end
-        self.enabledAutoSummon=nil
-        self.isCancelled=nil
-    end
-
-    hooksecurefunc(StaticPopupDialogs["CONFIRM_SUMMON"], "OnShow",function()--StaticPopup.lua
-        e.PlaySound(SOUNDKIT.IG_PLAYER_INVITE)--播放, 声音
-        local name= C_SummonInfo.GetSummonConfirmSummoner()
-        local info= e.GroupGuid[name]
-        if info and info.guid then
-            local playerInfo= WoWTools_UnitMixin:GetPlayerInfo(nil, info.guid, nil, {reLink=true})
-            name= playerInfo~='' and playerInfo or name
-        end
-        print(e.addName, addName, e.onlyChinese and '召唤' or SUMMON, name, '|A:poi-islands-table:0:0|a|cnGREEN_FONT_COLOR:', C_SummonInfo.GetSummonConfirmAreaName())
-    end)
-end
-
 
 
 
@@ -771,9 +718,9 @@ local function Init_Menu(self, root)
 
 
     sub=root:CreateCheckbox((IsInInstance() and '|cff9e9e9e' or '')..(e.onlyChinese and '邀请目标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INVITE, TARGET))..'|A:poi-traveldirections-arrow2:0:0|a', function()
-        return Save.InvTar
+        return Save().InvTar
     end, function()
-        Save.InvTar= not Save.InvTar and true or nil
+        Save().InvTar= not Save().InvTar and true or nil
         self:settings()
         set_event_PLAYER_TARGET_CHANGED()--设置, 邀请目标事件
         set_PLAYER_TARGET_CHANGED()--设置, 邀请目标事件        
@@ -783,15 +730,15 @@ local function Init_Menu(self, root)
         tooltip:AddLine(e.onlyChinese and '不在副本中' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NO, INSTANCE))
     end)
 
-    sub=root:CreateCheckbox((e.onlyChinese and '频道' or CHANNEL)..'|A:poi-traveldirections-arrow2:0:0|a'..(Save.ChannelText and '|cnGREEN_FONT_COLOR: '..Save.ChannelText..'|r' or ''), function()
-        return Save.Channel
+    sub=root:CreateCheckbox((e.onlyChinese and '频道' or CHANNEL)..'|A:poi-traveldirections-arrow2:0:0|a'..(Save().ChannelText and '|cnGREEN_FONT_COLOR: '..Save().ChannelText..'|r' or ''), function()
+        return Save().Channel
     end, function()
-        Save.Channel = not Save.Channel and true or nil
+        Save().Channel = not Save().Channel and true or nil
         set_Chanell_Event()--设置,频道,事件
         self:settings()
     end)
     sub:SetTooltip(function (tooltip)
-        tooltip:AddLine(Save.ChannelText or (e.onlyChinese and '无' or NONE))
+        tooltip:AddLine(Save().ChannelText or (e.onlyChinese and '无' or NONE))
         tooltip:AddLine(e.onlyChinese and '说, 喊, 密语' or (SAY..', '..YELL..', '..WHISPER))
     end)
 
@@ -803,14 +750,14 @@ local function Init_Menu(self, root)
             button1= e.onlyChinese and '修改' or EDIT,
             button2= e.onlyChinese and '取消' or CANCEL,
             OnShow = function(frame)
-                frame.editBox:SetText(Save.ChannelText or e.Player.cn and '1' or 'inv')
+                frame.editBox:SetText(Save().ChannelText or e.Player.cn and '1' or 'inv')
             end,
             OnHide= function(frame)
                 frame.editBox:ClearFocus()
             end,
             OnAccept = function(frame)
-                Save.ChannelText = string.upper(frame.editBox:GetText())
-                print(e.addName, addName, e.onlyChinese and '频道' or CHANNEL,'|cnGREEN_FONT_COLOR:'..Save.ChannelText..'|r')
+                Save().ChannelText = string.upper(frame.editBox:GetText())
+                print(e.addName, addName, e.onlyChinese and '频道' or CHANNEL,'|cnGREEN_FONT_COLOR:'..Save().ChannelText..'|r')
             end,
             EditBoxOnTextChanged=function(frame)
                 local text= frame:GetText()
@@ -840,18 +787,18 @@ local function Init_Menu(self, root)
 
     root:CreateDivider()
     sub=root:CreateCheckbox((e.onlyChinese and '接受邀请' or CALENDAR_ACCEPT_INVITATION)..format('|A:%s:0:0|a', e.Icon.select), function()
-        return Save.FriendAceInvite
+        return Save().FriendAceInvite
     end, function()
-        Save.FriendAceInvite= not Save.FriendAceInvite and true or nil
+        Save().FriendAceInvite= not Save().FriendAceInvite and true or nil
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(e.onlyChinese and '战网, 好友, 公会' or (COMMUNITY_COMMAND_BATTLENET..', '..FRIENDS..', '..GUILD))
     end)
 
     sub=root:CreateCheckbox((e.onlyChinese and '召唤' or SUMMON)..'|A:Raid-Icon-SummonPending:0:0|a', function()
-        return Save.Summon
+        return Save().Summon
     end, function()
-        Save.Summon= not Save.Summon and true or nil
+        Save().Summon= not Save().Summon and true or nil
         self:settings()--召唤，提示
     end)
     sub:SetTooltip(function(tooltip)
@@ -863,9 +810,9 @@ local function Init_Menu(self, root)
     end)
 
     sub=root:CreateCheckbox(e.onlyChinese and '休息区信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CALENDAR_STATUS_OUT, ZONE), INFO), function()
-        return Save.restingTips
+        return Save().restingTips
     end, function()
-        Save.restingTips= not Save.restingTips and true or nil
+        Save().restingTips= not Save().restingTips and true or nil
         set_PLAYER_UPDATE_RESTING()--设置, 休息区提示
     end)
     sub:SetTooltip(function(tooltip)
@@ -883,21 +830,21 @@ local function Init_Menu(self, root)
 
     
 
-    sub=root:CreateCheckbox((e.onlyChinese and '焦点' or HUD_EDIT_MODE_FOCUS_FRAME_LABEL)..(Save.setFucus and ' |cnGREEN_FONT_COLOR:'..Save.focusKey..'|r + '..e.Icon.left or ''), function()
-        return Save.setFucus
+    sub=root:CreateCheckbox((e.onlyChinese and '焦点' or HUD_EDIT_MODE_FOCUS_FRAME_LABEL)..(Save().setFucus and ' |cnGREEN_FONT_COLOR:'..Save().focusKey..'|r + '..e.Icon.left or ''), function()
+        return Save().setFucus
     end, function()
-        Save.setFucus= not Save.setFucus and true or nil
+        Save().setFucus= not Save().setFucus and true or nil
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
     for _, key in pairs({'Shift', 'Ctrl', 'Alt'}) do
-        col= (UnitAffectingCombat('player') or Save.focusKey== key) and '|cff9e9e9e' or ''
+        col= (UnitAffectingCombat('player') or Save().focusKey== key) and '|cff9e9e9e' or ''
         sub2=sub:CreateCheckbox(format('%s%s + %s', col, key, e.Icon.left), function(data)
-            return Save.focusKey== data
+            return Save().focusKey== data
         end, function(data)
-            Save.focusKey= data 
+            Save().focusKey= data 
         end, key)
         sub2:SetTooltip(function(tooltip)
             tooltip:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
@@ -906,7 +853,7 @@ local function Init_Menu(self, root)
 
     sub:CreateTitle(
         format('    %s+%s%s=%s|r',
-                Save.focusKey or '',
+                Save().focusKey or '',
                 e.Icon.right,
                 e.onlyChinese and '空' or EMPTY,
                 e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2
@@ -915,9 +862,9 @@ local function Init_Menu(self, root)
 
     sub:CreateDivider()
     sub2=sub:CreateCheckbox(e.onlyChinese and '密语/跟随' or (SLASH_TEXTTOSPEECH_WHISPER..'/'..FOLLOW),function()
-        return Save.setFrameFun
+        return Save().setFrameFun
     end, function()
-        Save.setFrameFun= not Save.setFrameFun and true or nil
+        Save().setFrameFun= not Save().setFrameFun and true or nil
     end)
     sub2:SetTooltip(function(tooltip)
         tooltip:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
@@ -937,27 +884,27 @@ local function Init_Menu(self, root)
 
 
     root:CreateDivider()
-    sub=root:CreateButton(format('|A:%s:0:0|a%s %d %s', e.Icon.disabled, e.onlyChinese and '拒绝' or DECLINE,  Save.InvNoFriendNum or 0, e.onlyChinese and '邀请' or INVITE))    
+    sub=root:CreateButton(format('|A:%s:0:0|a%s %d %s', e.Icon.disabled, e.onlyChinese and '拒绝' or DECLINE,  Save().InvNoFriendNum or 0, e.onlyChinese and '邀请' or INVITE))    
 
     sub2=sub:CreateCheckbox(e.onlyChinese and '休息区' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CALENDAR_STATUS_OUT, ZONE), function()
-        return Save.NoInvInResting
+        return Save().NoInvInResting
     end, function()
-        Save.NoInvInResting= not Save.NoInvInResting and true or nil
+        Save().NoInvInResting= not Save().NoInvInResting and true or nil
     end)
     sub2:SetTooltip(function(tooltip)
         tooltip:AddLine(e.onlyChinese and '拒绝' or DECLINE)
         tooltip:AddLine(e.onlyChinese and '好友除外' or 'Except friends')
     end)
     sub:CreateButton(e.onlyChinese and '全部清除' or CLEAR_ALL, function()
-        Save.InvNoFriend={}
+        Save().InvNoFriend={}
     end)
     sub:CreateDivider()
 
     num=0
-    for guid, nu in pairs(Save.InvNoFriend) do
+    for guid, nu in pairs(Save().InvNoFriend) do
         sub2=sub:CreateButton(nu..' '..WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {reName=true, reRealm=true}),
         function(data)
-            Save.InvNoFriend[data]=nil
+            Save().InvNoFriend[data]=nil
             print(e.addName, addName, WoWTools_UnitMixin:GetPlayerInfo(nil, data, nil,{reLink=true}))
         end, guid)
         sub2:SetTooltip(function(tooltip)
@@ -994,6 +941,8 @@ end
 --初始
 --####
 local function Init()
+    WoWTools_InviteMixin.InviteButton= InviteButton
+
     InviteButton.texture:SetAtlas('communities-icon-addgroupplus')
 
     InviteButton.summonTips= InviteButton:CreateTexture(nil,'OVERLAY')--召唤，提示
@@ -1007,8 +956,8 @@ local function Init()
     InviteButton.invTips:SetAtlas('poi-traveldirections-arrow2')
 
     function InviteButton:settings()
-        self.summonTips:SetShown(Save.Summon)--召唤，提示
-        self.invTips:SetShown(Save.Channel and Save.ChannelText or Save.InvTar)
+        self.summonTips:SetShown(Save().Summon)--召唤，提示
+        self.invTips:SetShown(Save().Channel and Save().ChannelText or Save().InvTar)
     end
 
     InviteButton:SetScript('OnClick', function(self, d)
@@ -1027,11 +976,11 @@ local function Init()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(addName, e.Icon.left)
-        if Save.InvTar then
+        if Save().InvTar then
             e.tips:AddLine(e.onlyChinese and '邀请目标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INVITE, TARGET))
         end
-        if Save.Channel and Save.ChannelText then
-            e.tips:AddLine((e.onlyChinese and '频道' or CHANNEL)..'|cnGREEN_FONT_COLOR: '..Save.ChannelText)
+        if Save().Channel and Save().ChannelText then
+            e.tips:AddLine((e.onlyChinese and '频道' or CHANNEL)..'|cnGREEN_FONT_COLOR: '..Save().ChannelText)
         end
         e.tips:Show()
         self:state_enter()--Init_Menu)
@@ -1040,24 +989,26 @@ local function Init()
     InviteButton:settings()
 
     set_event_PLAYER_TARGET_CHANGED()--设置, 邀请目标事件
-    set_event_PLAYER_UPDATE_RESTING()--设置, 休息区提示事件
+    
     set_Chanell_Event()--设置,内容,频道, 邀请,事件
     Init_Shift_Click_Focus()--Shift+点击设置焦点
-    Init_CONFIRM_SUMMON()
+    WoWTools_InviteMixin:Init_Summon()
+    WoWTools_InviteMixin:Init_Resting()--设置, 休息区提示事件
+
     --hooksecurefunc(StaticPopupDialogs["CONFIRM_SUMMON"], "OnUpdate", Init_CONFIRM_SUMMON)
 
 
     StaticPopupDialogs["PARTY_INVITE"].button3= '|cff00ff00'..(e.onlyChinese and '总是' or ALWAYS)..'|r'..(e.onlyChinese and '拒绝' or DECLINE)..'|r'--添加总是拒绝按钮
     StaticPopupDialogs["PARTY_INVITE"].OnAlt=function()
         if notInviterGUID then
-            if Save.InvNoFriend[notInviterGUID] then
-                Save.InvNoFriend[notInviterGUID] =nil
+            if Save().InvNoFriend[notInviterGUID] then
+                Save().InvNoFriend[notInviterGUID] =nil
                 print(e.addName, 'ChatButton', addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', WoWTools_UnitMixin:GetLink(nil, notInviterGUID) or '', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '拒绝' or DECLINE)..'|r'..(e.onlyChinese and '邀请' or INVITE))
                 AcceptGroup()
                 StaticPopup_Hide("PARTY_INVITE")
             else
-                Save.InvNoFriend[notInviterGUID] =Save.InvNoFriend[notInviterGUID] and Save.InvNoFriend[notInviterGUID]+1 or 1
-                Save.InvNoFriendNum=Save.InvNoFriendNum+1
+                Save().InvNoFriend[notInviterGUID] =Save().InvNoFriend[notInviterGUID] and Save().InvNoFriend[notInviterGUID]+1 or 1
+                Save().InvNoFriendNum=Save().InvNoFriendNum+1
                 DeclineGroup()
                 StaticPopup_Hide("PARTY_INVITE")
                 print(e.addName, 'ChatButton', addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r', WoWTools_UnitMixin:GetLink(nil, notInviterGUID) or '', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '拒绝' or DECLINE)..'|r'..(e.onlyChinese and '邀请' or INVITE))
@@ -1107,8 +1058,11 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1, ...)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            Save= WoWToolsSave['ChatButton_Invite'] or Save
-            addName= '|A:communities-icon-addgroupplus:0:0|a'..(e.onlyChinese and '邀请' or INVITE)
+            WoWTools_InviteMixin.Save= WoWToolsSave['ChatButton_Invite'] or WoWTools_InviteMixin.Save
+
+            WoWTools_InviteMixin.addName= '|A:communities-icon-addgroupplus:0:0|a'..(e.onlyChinese and '邀请' or INVITE)
+            addName= WoWTools_InviteMixin.addName
+
             InviteButton= WoWTools_ChatButtonMixin:CreateButton('Invite', addName)
 
             if InviteButton then
@@ -1126,15 +1080,14 @@ panel:SetScript("OnEvent", function(self, event, arg1, ...)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            WoWToolsSave['ChatButton_Invite']=Save
+            WoWToolsSave['ChatButton_Invite']= WoWTools_InviteMixin.Save
         end
 
     elseif event=='GROUP_ROSTER_UPDATE' or event=='GROUP_LEFT' then
-        --setTexture()--设置图标颜色, 是否有权限
         set_Chanell_Event()--设置,内容,频道, 邀请,事件
 
     elseif event=='PLAYER_ENTERING_WORLD' then
-        if Save.InvTar then
+        if Save().InvTar then
             set_event_PLAYER_TARGET_CHANGED()--设置, 邀请目标事件
         end
 
@@ -1153,7 +1106,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, ...)
 
     elseif event=='CHAT_MSG_SAY' or event=='CHAT_MSG_YELL' or  event=='CHAT_MSG_WHISPER' then
         local text= arg1 and string.upper(arg1)
-        if Save.Channel and text and Save.ChannelText and text:find(Save.ChannelText) then
+        if Save().Channel and text and Save().ChannelText and text:find(Save().ChannelText) then
             local co= GetNumGroupMembers()
             --toRaidOrParty(co)--自动, 转团
             if co<5 or (IsInRaid() and co<40) then

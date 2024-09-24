@@ -4988,7 +4988,8 @@
         "RETURN_TO_DEFAULT",
         "EncounterJournal_LoadUI",
         "GetEJTierDataTableID",
-        "EncounterJournal_OpenJournal"
+        "EncounterJournal_OpenJournal",
+        "CONFIRM_SUMMON"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

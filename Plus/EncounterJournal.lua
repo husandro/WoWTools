@@ -1443,10 +1443,13 @@ local function Init_EncounterJournal()--冒险指南界面
     local function EncounterJournal_SetBullets_setLink(text)--技能加图标
         local find
         text=text:gsub('|Hspell:.-]|h',function(link)
-            local icon= C_Spell.GetSpellTexture(link:match('Hspell:(%d+)'))
-            if icon then
-                find=true
-                return '|T'..icon..':0|t'..link
+            local texture= link:match('Hspell:(%d+)')
+            if texture then
+                local icon= C_Spell.GetSpellTexture(texture)
+                if icon then
+                    find=true
+                    return '|T'..icon..':0|t'..link
+                end
             end
         end)
         if find then
@@ -1518,7 +1521,8 @@ local function Init_EncounterJournal()--冒险指南界面
         frame:HookScript('OnClick', function(self, d)
             local spellID= self:GetParent().spellID--self3.link
             if not Save.hideEncounterJournal and spellID and spellID>0 and d=='RightButton' then
-                WoWTools_ChatMixin:Chat(C_Spell.GetSpellLink(spellID) or spellID, nil, not IsInGroup())
+                local link= C_Spell.GetSpellLink(spellID) or spellID
+                WoWTools_ChatMixin:Chat(link, nil, not IsInGroup())
             end
         end)
         frame.hook=true

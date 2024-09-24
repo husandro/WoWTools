@@ -360,7 +360,12 @@ ChatButton_Markers\Markers_Frame_Menu.lua
 
 
 ##邀请， 自动接受， 拒绝，屏蔽
-ChatButton\4_Invite.lua
+ChatButton_Invite\4_Invite.lua
+ChatButton_Invite\Summon.lua
+ChatButton_Invite\Resting.lua
+
+
+
 ##查找器， 地下城和团队， 自动退出，进入，Roll装
 ChatButton\5_LFD.lua
 ##世界频道

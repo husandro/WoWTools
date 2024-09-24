@@ -156,7 +156,13 @@ AngryKeystones Schedule
 135：Afflicted
 136 Incorporeal
 137 Shielding
-]]
+
+https://www.wowhead.com/cn/affix=148/萨拉塔斯的交易：扬升
+https://www.wowhead.com/cn/affix=9/残暴
+https://www.wowhead.com/cn/affix=152/挑战者的危境
+https://www.wowhead.com/cn/affix=10/强韧
+https://www.wowhead.com/cn/affix=147/萨拉塔斯的狡诈
+
 local affixSchedule = {--C_MythicPlus.GetCurrentSeason() C_MythicPlus.GetCurrentUIDisplaySeason()
     --season=12,--当前赛季
     [1]={[1]=9, [2]=124, [3]=6},	--Tyrannical Storming Raging
@@ -170,7 +176,7 @@ local affixSchedule = {--C_MythicPlus.GetCurrentSeason() C_MythicPlus.GetCurrent
     [9]={[1]=9, [2]=134, [3]=11},	--Tyrannical Entangling Bursting
     [10]={[1]=10, [2]=3, [3]=123},	--Fortified 	Volcanic 	Spiteful
 }
-
+]]
 
 
 
@@ -645,7 +651,7 @@ end
 
 --##################
 --史诗钥石地下城, 界面
---词缀日程表AngryKeystones Schedule.lua
+--[[词缀日程表AngryKeystones Schedule.lua
 local function Init_Affix()
     if --C_AddOns.IsAddOnLoaded("AngryKeystones")
         not e.Player.levelMax
@@ -683,13 +689,7 @@ local function Init_Affix()
 
     local one= currentWeek+1
     one= one>max and 1 or one
-    --[[local due= one+1
-        due= due>max and 1 or due
-    local tre= due+1
-        tre= tre>max and 1 or tre]]
 
-    --local affixs={affixSchedule[one], affixSchedule[due], affixSchedule[tre]}
-    --for index, tab in pairs(affixs) do
     for i=1, 3 do
         local btn= WoWTools_ButtonMixin:Cbtn(TipsFrame, {size={22,22}, isType2=true, icon='hide'})--建立 Affix 按钮
         local affixID= affixSchedule[one][i]
@@ -743,7 +743,22 @@ local function Init_Affix()
     --end
     --ChallengesFrame.WeeklyInfo.Child.WeeklyChest.RunStatus:ClearAllPoints()
     --ChallengesFrame.WeeklyInfo.Child.WeeklyChest.RunStatus:SetPoint('BOTTOM', 0, -12)
-end
+end]]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 local function GetNum(mapID, all)--取得完成次数,如 1/10
