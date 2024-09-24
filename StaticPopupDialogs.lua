@@ -108,7 +108,7 @@ StaticPopupDialogs['WoWTools_EditText']={
     EditBoxOnEnterPressed = function(self, data)
         local parent = self:GetParent();
         if parent.button1:IsEnabled() then
-            parent.data.SetValue(self, data)
+            parent.data.SetValue(parent, data)
             parent:Hide();
         else
             self:ClearFocus()
@@ -230,7 +230,7 @@ StaticPopupDialogs['WoWTools_GetMapID'] = {--区域,设置对话框
             local p = self:GetParent();
             if p.button1:IsEnabled() then
                 local tab, text= Get_UIMapIDs_Name(self.editBox:GetText())
-                p.data.SetValue(self, data, tab, text)
+                p.data.SetValue(p, data, tab, text)
                 p:Hide();
             else
                 self:ClearFocus()

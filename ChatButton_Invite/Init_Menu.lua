@@ -106,7 +106,19 @@ local function Init_Menu(self, root)
     end)
 
     sub:CreateButton(e.onlyChinese and '关键词' or KBASE_DEFAULT_SEARCH_TEXT, function()
-        StaticPopupDialogs['WoWTool_ChatButton_CHANNEL']= {--设置,内容,频道, 邀请,事件
+        StaticPopup_Show('WoWTools_EditText',
+    (e.onlyChinese and '关键词' or KBASE_DEFAULT_SEARCH_TEXT),
+    nil,
+    {
+        text=Save().ChannelText,
+        SetValue= function(s)
+            Save().ChannelText = string.upper(s.editBox:GetText())
+            print(e.addName, WoWTools_InviteMixin.addName, e.onlyChinese and '频道' or CHANNEL,'|cnGREEN_FONT_COLOR:'..Save().ChannelText..'|r')
+        end,
+    }
+)
+
+        --[[StaticPopupDialogs['WoWTool_ChatButton_CHANNEL']= {--设置,内容,频道, 邀请,事件
             text=e.addName..' '..WoWTools_InviteMixin.addName..' '..(e.onlyChinese and '频道' or CHANNEL)..'|n|n'..(e.onlyChinese and '关键词' or KBASE_DEFAULT_SEARCH_TEXT),
             whileDead=true, hideOnEscape=true, exclusive=true,
             hasEditBox=true,
@@ -131,7 +143,7 @@ local function Init_Menu(self, root)
                 s:GetParent():Hide()
             end,
         }
-        StaticPopup_Show('WoWTool_ChatButton_CHANNEL')
+        StaticPopup_Show('WoWTool_ChatButton_CHANNEL')]]
     end)
 
 
