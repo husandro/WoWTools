@@ -4989,7 +4989,8 @@
         "EncounterJournal_LoadUI",
         "GetEJTierDataTableID",
         "EncounterJournal_OpenJournal",
-        "CONFIRM_SUMMON"
+        "CONFIRM_SUMMON",
+        "SPELL_FAILED_CUSTOM_ERROR_464"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

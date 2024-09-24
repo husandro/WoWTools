@@ -361,9 +361,14 @@ ChatButton_Markers\Markers_Frame_Menu.lua
 
 ##邀请， 自动接受， 拒绝，屏蔽
 ChatButton_Invite\4_Invite.lua
+ChatButton_Invite\Init_Menu.lua
+ChatButton_Invite\Inv_Chanell.lua
+ChatButton_Invite\Inv_Target.lua
+ChatButton_Invite\Inv_StaticPopup.lua
+
 ChatButton_Invite\Summon.lua
 ChatButton_Invite\Resting.lua
-
+ChatButton_Invite\Foucs.lua
 
 
 ##查找器， 地下城和团队， 自动退出，进入，Roll装
