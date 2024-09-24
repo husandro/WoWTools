@@ -365,6 +365,7 @@ ChatButton_Invite\Init_Menu.lua
 ChatButton_Invite\Inv_Chanell.lua
 ChatButton_Invite\Inv_Target.lua
 ChatButton_Invite\Inv_StaticPopup.lua
+ChatButton_Invite\Inv_All_Unit.lua
 
 ChatButton_Invite\Summon.lua
 ChatButton_Invite\Resting.lua

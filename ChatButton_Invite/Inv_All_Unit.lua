@@ -1,0 +1,79 @@
+
+local e= select(2, ...)
+
+
+
+
+
+
+
+local InvPlateTimer
+function WoWTools_InviteMixin:Inv_All_Unit()--邀请，周围玩家
+    local p=C_CVar.GetCVarBool('nameplateShowFriends')
+    local all= C_CVar.GetCVarBool('nameplateShowAll')
+
+    if not self:Get_Leader() then--取得权限
+        print(e.addName, self.addName, '|cnRED_FONT_COLOR:', e.onlyChinese and '你没有权利这样做' or ERR_GUILD_PERMISSIONS)
+        return
+
+    elseif UnitAffectingCombat('player') and (not p or not all) then
+        print(e.addName, self.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or COMBAT))
+        return
+    end
+
+    do
+        if not all then
+            C_CVar.SetCVar('nameplateShowAll', '1')
+        end
+        if not p then
+            C_CVar.SetCVar('nameplateShowFriends', '1')
+        end
+    end
+
+    if InvPlateTimer then
+        InvPlateTimer:Cancel()
+    end
+
+    InvPlateTimer=C_Timer.NewTimer(0.3, function()
+        local n=1
+        local co=GetNumGroupMembers()
+        local raid=IsInRaid()
+        if (not raid and co==5)then
+            return
+
+        elseif co==40 then
+            return
+        else
+            --toRaidOrParty(co)--自动, 转团
+            local tab= C_NamePlate.GetNamePlates(issecure()) or {}
+            do for _, v in pairs(tab) do
+                local u = v.namePlateUnitToken or v.UnitFrame and v.UnitFrame.unit
+                if u then
+                    local name= GetUnitName(u,true)
+                    local guid= UnitGUID(u)
+                    if name and name~=UNKNOWNOBJECT and guid and not UnitInAnyGroup(u) and not UnitIsAFK(u) and UnitIsConnected(u) and UnitIsPlayer(u) and UnitIsFriend(u, 'player') and not UnitIsUnit('player',u) then
+                        if not self:Get_InvPlateGuid()[guid] then
+                            C_PartyInfo.InviteUnit(name)
+                            self:Get_InvPlateGuid()[guid]=name
+                            print(e.addName, '|cnGREEN_FONT_COLOR:'..n..'|r)', e.onlyChinese and '邀请' or INVITE ,WoWTools_UnitMixin:GetLink(name, guid))
+                            if not raid and n +co>=5  then
+                                print(e.addName, self.addName, format(PETITION_TITLE, '|cff00ff00'..(e.onlyChinese and '转团' or CONVERT_TO_RAID)..'|r'))
+                                break
+                            end
+                            n=n+1
+                        end
+                    end
+                end
+            end end
+        end
+
+        if not p and not UnitAffectingCombat('player') then
+            C_CVar.SetCVar('nameplateShowFriends', '0')
+        end
+        if n==1 then
+            print(e.addName, self.addName, e.onlyChinese and '邀请成员' or GUILDCONTROL_OPTION7, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE))
+        end
+    end)
+end
+
+

@@ -48,7 +48,7 @@ end
 
 
 local function Init_Menu(self, root)
-    local sub, sub2, col, num, line
+    local sub, sub2, col, num
 
     sub=root:CreateButton(
         e.Icon.left
@@ -87,7 +87,7 @@ local function Init_Menu(self, root)
     end, function()
         Save().InvTar= not Save().InvTar and true or nil
         self:settings()
-        WoWTools_InviteMixin:Inv_Target_Settings()     
+        WoWTools_InviteMixin:Inv_Target_Settings()
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(e.onlyChinese and '仅限队长' or format(LFG_LIST_CROSS_FACTION, LEADER))
@@ -171,7 +171,7 @@ local function Init_Menu(self, root)
             tooltip:AddLine(format('%s: %s, %s, %s', CANCEL, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, AFK, ALT_KEY))
         end
     end)
-  
+
     sub=root:CreateCheckbox(e.onlyChinese and '休息区信息' or
         format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, '|cnGREEN_FONT_COLOR:Rest|r', ZONE), INFO), function()
         return Save().restingTips
@@ -196,7 +196,7 @@ local function Init_Menu(self, root)
 
 
 
-    
+
 
     sub=root:CreateCheckbox((e.onlyChinese and '焦点' or HUD_EDIT_MODE_FOCUS_FRAME_LABEL)..(Save().setFucus and ' |cnGREEN_FONT_COLOR:'..Save().focusKey..'|r + '..e.Icon.left or ''), function()
         return Save().setFucus
@@ -212,7 +212,7 @@ local function Init_Menu(self, root)
         sub2=sub:CreateCheckbox(format('%s%s + %s', col, key, e.Icon.left), function(data)
             return Save().focusKey== data
         end, function(data)
-            Save().focusKey= data 
+            Save().focusKey= data
         end, key)
         sub2:SetTooltip(function(tooltip)
             tooltip:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
@@ -252,7 +252,7 @@ local function Init_Menu(self, root)
 
 
     root:CreateDivider()
-    sub=root:CreateButton(format('|A:%s:0:0|a%s %d %s', e.Icon.disabled, e.onlyChinese and '拒绝' or DECLINE,  Save().InvNoFriendNum or 0, e.onlyChinese and '邀请' or INVITE))    
+    sub=root:CreateButton(format('|A:%s:0:0|a%s %d %s', e.Icon.disabled, e.onlyChinese and '拒绝' or DECLINE,  Save().InvNoFriendNum or 0, e.onlyChinese and '邀请' or INVITE))
 
     sub2=sub:CreateCheckbox(e.onlyChinese and '休息区' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CALENDAR_STATUS_OUT, ZONE), function()
         return Save().NoInvInResting
