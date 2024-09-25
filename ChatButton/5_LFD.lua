@@ -1795,67 +1795,6 @@ end
 
 
 
---[[
-local function setIslandButton(self)--离开海岛按钮
-    local find
-    if IsInInstance() then
-        local uiMapID= C_Map.GetBestMapForUnit("player")--当前地图 
-        if uiMapID and C_FogOfWar.GetFogOfWarForMap(uiMapID) then
-            find=true
-        end
-    end
-    if find then
-        if not self.island then
-            self.island = WoWTools_ButtonMixin:Cbtn(nil, {type=false, size={50,25}})
-            self.island:SetText(e.onlyChinese and '离开' or LEAVE)
-            if Save.islandPoint then
-                self.island:SetPoint(Save.islandPoint[1], UIParent, Save.islandPoint[3], Save.islandPoint[4], Save.islandPoint[5])
-            else
-                self.island:SetPoint('BOTTOMRIGHT', -200, 200)
-            end
-            self.island:SetScript('OnMouseDown', function(self2, d)
-                if d=='LeftButton' then
-                    C_PartyInfo.LeaveParty(LE_PARTY_CATEGORY_INSTANCE)
-                    LFGTeleport(true)
-                elseif d=='RightButton' then
-                    SetCursor('UI_MOVE_CURSOR')
-                end
-            end)
-            self.island:SetClampedToScreen(true)
-            self.island:SetMovable(true)
-            self.island:RegisterForDrag("RightButton")
-            self.island:SetScript("OnDragStart", function(self2) self2:StartMoving() end)
-            self.island:SetScript("OnDragStop", function(self2)
-                    ResetCursor()
-                    self2:StopMovingOrSizing()
-                    Save.islandPoint={self2:GetPoint(1)}
-                    Save.islandPoint[2]= nil
-            end)
-            self.island:SetScript('OnEnter', function(self2)
-                e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:AddDoubleLine(e.addName, addName)
-                local num= e.Get_Instance_Num('island')
-                e.tips:AddDoubleLine(e.onlyChinese and '海岛探险' or ISLANDS_HEADER, num)
-                e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(e.onlyChinese and '离开海岛' or ISLAND_LEAVE, e.Icon.left)
-                e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
-                e.tips:Show()
-            end)
-            self.island:SetScript('OnLeave', function ()
-                e.tips:Hide()
-            end)
-        end
-    end
-    if self.island then
-        self.island:SetShown(find)
-    end
-end
-]]
-
-
-
-
 
 
 

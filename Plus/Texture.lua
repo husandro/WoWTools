@@ -1166,22 +1166,10 @@ local function Init_All_Frame()
      --小队，背景
     e.Set_Alpha_Frame_Texture(PartyFrame.Background, {alpha= min03})
 
-     --[[任务，追踪柆
-     hooksecurefunc('ObjectiveTracker_Initialize', function(self)
-         for _, module in ipairs(self.MODULES) do
-             set_Alpha_Color(module.Header.Background)
-         end
-     end)
-     场景 Blizzard_ScenarioObjectiveTracker.lua
-     hooksecurefunc('Scenario_ChallengeMode_ShowBlock', function()--Blizzard_ScenarioObjectiveTracker.lua
-        e.Set_Alpha_Frame_Texture(ScenarioChallengeModeBlock, {alpha=min05})
-     end)
-     set_Alpha_Color(ScenarioStageBlock.NormalBG, nil, nil, min05)
-]]
+     --任务，追踪柆
      set_Alpha_Color(ScenarioObjectiveTracker.StageBlock.NormalBG, nil, nil, min05)
 
-     --社交，按钮     
-
+     --社交，按钮
      set_Alpha_Color(QuickJoinToastButton.FriendsButton, nil, nil, min03)
      --set_Alpha_Color(QuickJoinToastButton.QueueButton, nil, nil, min03)
      e.Set_Alpha_Frame_Texture(ChatFrameChannelButton, {alpha= min03})

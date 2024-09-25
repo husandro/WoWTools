@@ -170,7 +170,25 @@ Plus_Tokens\ItemInteractionFrame.lua
 
 
 ##任务框，增强
-Plus\ObjectiveTracker.lua
+##Plus\ObjectiveTracker.lua
+Plus_ObjectiveTracker\0_ObjectiveTracker.lua
+Plus_ObjectiveTracker\1_ObjectiveTrackerFrame.lua
+Plus_ObjectiveTracker\2_ObjectiveTrackerShared.lua
+Plus_ObjectiveTracker\Achievement.lua
+Plus_ObjectiveTracker\Campaign_Quest.lua
+Plus_ObjectiveTracker\MonthlyActivities.lua
+Plus_ObjectiveTracker\Professions.lua
+Plus_ObjectiveTracker\Quest.lua
+Plus_ObjectiveTracker\ScenarioObjective.lua
+Plus_ObjectiveTracker\World_Quest.lua
+
+
+
+
+
+
+
+
 
 ##藏品
 Plus\Collections.lua

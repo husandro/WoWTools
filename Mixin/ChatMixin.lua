@@ -41,6 +41,14 @@ function WoWTools_ChatMixin:Chat(text, name, printText)
                     --SendChatMessage(text, 'YELL')
                 -- elseif setPrint then
             else
+                if text:find('{rt%d}') then
+                    text= text:gsub('{rt%d}', function(s)
+                        local icon= s:match('%d')
+                        if icon then
+                            return format('|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%s:0|t', icon)
+                        end
+                    end)
+                end
                 print(text)
             end
         end
