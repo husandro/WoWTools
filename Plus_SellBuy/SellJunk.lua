@@ -183,10 +183,10 @@ end)
 
 --自动出售
 function WoWTools_SellBuyMixin:Init_Auto_Sell_Junk()
-    C_Timer.After(2.2, function()
-        if not e.Is_Timerunning then
+    if not PlayerGetTimerunningSeasonID() then
+        C_Timer.After(2.2, function()
             Frame:RegisterEvent('ENCOUNTER_LOOT_RECEIVED')
-        end
-    end)
+        end)
+    end
     Init()
 end

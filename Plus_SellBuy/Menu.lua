@@ -265,7 +265,7 @@ local function Init_Menu(self, root)
         tooltip:AddLine((e.onlyChinese and '物品等级' or STAT_AVERAGE_ITEM_LEVEL)..' < ' ..math.ceil(avgItemLevel))
         tooltip:AddLine(e.onlyChinese and '备注：在战斗中无法出售物品' or (NOTE_COLON..': '..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, ITEM_UNSELLABLE)))
     end)
-    sub:SetEnabled(not e.Is_Timerunning)
+    sub:SetEnabled(not PlayerGetTimerunningSeasonID())
 
     num=0
     for itemLink, itemLevel in pairs(Save().bossItems) do

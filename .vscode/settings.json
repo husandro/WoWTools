@@ -4992,7 +4992,8 @@
         "CONFIRM_SUMMON",
         "SPELL_FAILED_CUSTOM_ERROR_464",
         "ObjectiveTrackerUIWidgetContainerMixin",
-        "UIWidgetObjectiveTrackerMixin"
+        "UIWidgetObjectiveTrackerMixin",
+        "SHOW_QUICK_BUTTON"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

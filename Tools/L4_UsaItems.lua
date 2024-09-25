@@ -348,7 +348,7 @@ local function Init_All_Buttons()
                 if btn then
                     btn.itemID=itemID
                     init_Item_Button(btn)
-                    
+
                     btn:SetAttribute('type', 'item')
                     btn:SetAttribute('item', name)
                     btn.texture:SetTexture(icon)
@@ -463,7 +463,7 @@ local function Init_Opetions_ToyBox(btn)--标记, 是否已选取
             e.tips:AddDoubleLine(WoWTools_ToolsButtonMixin:GetName(), addName)
             e.tips:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             e.tips:AddLine(' ')
-            
+
             local icon= C_Item.GetItemIconByID(itemID)
             local find=find_Type('item', itemID)
             e.tips:AddDoubleLine(
@@ -558,10 +558,10 @@ local function set_Use_Spell_Button(btn, spellID)
             end
         end)
     end
-    
+
     btn.useSpell.spellID= spellID
     btn.useSpell:set_alpha()
-    btn.useSpell:SetShown(spellID and true or false)    
+    btn.useSpell:SetShown(spellID and true or false)
 end
 
 
@@ -696,7 +696,7 @@ function Init_Menu_List(_, level, type)
         notCheckable=true
     }, level)
 end
-    
+
 
 
 
@@ -806,7 +806,7 @@ local function Init_Options_Button()
             StaticPopup_Show(id..addName..'ADD', SPELLS , (icon and '|T'..icon..':0|t' or '')..spellLink, {type='spell', name=spellLink, ID=spellID})
             ClearCursor()
 
-        else            
+        else
             e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
         end
     end)
@@ -871,7 +871,7 @@ end
 local function Init()
     Init_All_Buttons()
     Init_Options_Button()
-    
+
     hooksecurefunc('SpellFlyoutButton_UpdateGlyphState', function(self)--法术书，界面, Flyout, 菜单
         local frame= self:GetParent():GetParent()
         if not frame or not frame.useSpell or not self.spellID or C_Spell.IsSpellPassive(self.spellID) then
@@ -916,7 +916,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 button=WoWTools_ButtonMixin:Cbtn(btn.Frame, {atlas='Soulbinds_Tree_Conduit_Icon_Utility', size={20,20}})
                 button:SetPoint('TOPLEFT', btn, 'TOPRIGHT')
 
-       
+
                 if (not WoWToolsSave or not WoWToolsSave[addName..'Tools']) and PlayerHasToy(156833) and Save.item[1]==194885 then
                     Save.item[1] = 156833
                 end
@@ -926,7 +926,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
                 addName2= '|A:soulbinds_tree_conduit_icon_utility:0:0|a'..(e.onlyChinese and '使用物品' or addName)
 
-            
+
                 for _, ID in pairs(Save.item) do
                     e.LoadData({id=ID, type='item'})
                 end

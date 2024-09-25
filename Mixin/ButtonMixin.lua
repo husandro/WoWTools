@@ -4,7 +4,7 @@ Cbtn(frame, tab)
 Ctype2(frame, tab)--圆形按钮
 
 CreateSecureButton(tab)
-CreateMenuButton(frame, tab)
+CreateMenu(frame, tab)
 CreateOptionButton(frame, name, setID)
 
 Settings(btn)

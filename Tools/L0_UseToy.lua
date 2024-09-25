@@ -246,7 +246,7 @@ local function Init_Menu_Toy(_, root)
                 if data.has then
                     local toy= ToyButton.Selected_Value~=data.itemID and data.itemID or nil
                     ToyButton:Set_SelectValue_Random(toy)
-                end                
+                end
             end,
             {itemID=itemID, name=toyName, has=has}
         )
@@ -309,7 +309,7 @@ end
 local function Init_Menu(self, root)
     local sub, sub2
 --选项
-    
+
     sub=WoWTools_ToolsButtonMixin:OpenMenu(root, addName)
 
 
@@ -394,7 +394,7 @@ local function Init_Menu(self, root)
             WoWTools_KeyMixin:Setup(ToyButton)--设置捷键
         end,
     })
-   
+
     sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
         getValue=function()
@@ -418,7 +418,7 @@ local function Init_Menu(self, root)
     root:CreateDivider()
     Init_Menu_Toy(self, root)
 
-   
+
 end
 
 
@@ -577,8 +577,8 @@ local function Init()
 
 
 
- 
-    
+
+
 
     ToyButton:SetScript('OnEvent', function(self, event, itemID, success)
         if event=='ITEM_DATA_LOAD_RESULT' then
@@ -808,14 +808,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
             --旧版本
-            
-            if WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_RANDOM3:gsub('/',''), TOY)..'Tools'] then
-                Save= WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_RANDOM3:gsub('/',''), TOY)..'Tools']
-                WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_RANDOM3:gsub('/',''), TOY)..'Tools']=nil
-            else
-                Save= WoWToolsSave['Tools_UseToy'] or Save
-            end
-            
             addName='|A:collections-icon-favorites:0:0|a'..(e.onlyChinese and '使用玩具' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_RANDOM3:gsub('/',''), TOY))
 
             ToyButton= WoWTools_ToolsButtonMixin:CreateButton({
@@ -824,7 +816,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             if ToyButton then
-                Set_Alt_Table()                
+                Set_Alt_Table()
                 Init()--初始
             else
                 self:UnregisterEvent('ADDON_LOADED')

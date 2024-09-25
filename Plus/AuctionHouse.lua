@@ -1295,8 +1295,8 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            if e.Is_Timerunning then
-                self:UnregisterAllEvents()
+            if PlayerGetTimerunningSeasonID() then
+                self:UnregisterEvent('ADDON_LOADED')
                 return
             end
 

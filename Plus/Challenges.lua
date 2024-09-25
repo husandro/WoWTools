@@ -2141,10 +2141,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save.rightX= Save.rightX or 2--右边，提示，位置
             Save.rightY= Save.rightY or -22
 
-            --[[if e.Is_Timerunning then
-                self:UnregisterAllEvents()
+            if PlayerGetTimerunningSeasonID() then
+                self:UnregisterEvent('PLAYER_LOGOUT')
                 return
-            end]]
+            end
             --添加控制面板
 
             Initializer= e.AddPanel_Check({

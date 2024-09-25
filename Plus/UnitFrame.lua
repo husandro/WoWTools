@@ -1962,6 +1962,10 @@ local function Init_CastingBar(frame)
     frame.Text:SetShadowOffset(1, -1)
 
     if frame==PlayerCastingBarFrame then
+        frame:HookScript('OnShow', function(self)
+            self:SetFrameStrata('TOOLTIP')
+            self:SetFrameLevel('10000')
+        end)
         hooksecurefunc(frame, 'UpdateCastTimeText', function(self)--去掉 秒
             local text= self.CastTimeText:GetText()
             text= text:match('(%d+.%d)') or text

@@ -125,8 +125,8 @@ local function set_Scale_Size(frame, tab)
     btn.notMoveAlpha= tab.notMoveAlpha--是否设置，移动时，设置透明度
 
     if btn.setSize then
-        local minW= tab.minW or (e.Player.husandro and 115 or frame:GetWidth()/2)--最小窗口， 宽
-        local minH= tab.minH or (e.Player.husandro and 115 or frame:GetHeight()/2)--最小窗口，高
+        local minW= tab.minW or 115--(e.Player.husandro and 115 or frame:GetWidth()/2)--最小窗口， 宽
+        local minH= tab.minH or 115--(e.Player.husandro and 115 or frame:GetHeight()/2)--最小窗口，高
         local maxW= tab.maxW--最大，可无
         local maxH= tab.maxH--最大，可无
         local rotationDegrees= tab.rotationDegrees--旋转度数
@@ -152,31 +152,41 @@ local function set_Scale_Size(frame, tab)
             self.maxWidth = maxWidth
             self.maxHeight = maxHeight
         ]]
-        if initFunc then
-            initFunc(btn)
-        end
+      
         local size= Save.size[name]
-        if size then
-            if btn.notInCombat and UnitAffectingCombat('player') then--战斗中不加载
+        if size or initFunc then
+            if btn.notInCombat and UnitAffectingCombat('player') then
                 btn.notInCombatFrame= CreateFrame("Frame", nil, btn)
                 btn.notInCombatFrame.size=size
                 btn.notInCombatFrame.target=frame
+                btn.notInCombatFrame.initFunc=initFunc
                 btn:SetScript("OnEvent", function(self)
-                    self.target:SetSize(self.size[1], self.size[2])
-                    self.size=nil
-                    self.frame=nil
+                    if self.size then
+                        do
+                            self.target:SetSize(self.size[1], self.size[2])
+                        end
+                        self.size=nil
+                        self.frame=nil
+                    end
+                    if self.initFunc then
+                        do
+                            self.initFunc(self:GetParent())
+                        end
+                        self.initFunc=nil
+                    end
                     self:UnregisterEvent('PLAYER_REGEN_ENABLED')
                 end)
                 btn:RegisterEvent('PLAYER_REGEN_ENABLED')
             else
-                frame:SetSize(size[1], size[2])
+                if size then
+                    frame:SetSize(size[1], size[2])
+                end
+                if initFunc then
+                    initFunc(btn)
+                end
             end
         end
     end
-    --[[btn= CreateFrame('Button', nil, frame)
-    btn:SetNormalAtlas('Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up')
-    btn:SetHighlightAtlas('Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight')
-    btn:SetPushedAtlas('Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down')]]
 
     WoWTools_ColorMixin:SetLabelTexture(btn, {type='Button', alpha=1})--设置颜色
 
@@ -1314,7 +1324,7 @@ local function setAddLoad(arg1)
         end
 
 
-        e.Set_Move_Frame(CollectionsJournal, {setSize=true, minW=703, minH=606, notInCombat=true, initFunc=function(btn)
+        e.Set_Move_Frame(CollectionsJournal, {setSize=true, minW=703, minH=606, notInCombat=true, initFunc=function()
             MountJournal.RightInset:ClearAllPoints()
             MountJournal.RightInset:SetWidth(400)
             MountJournal.RightInset:SetPoint('TOPRIGHT', -6, -60)
@@ -1492,7 +1502,7 @@ local function setAddLoad(arg1)
         e.Set_Move_Frame(OrderHallMissionFrame)
 
     elseif arg1=='Blizzard_PlayerChoice' then
-        e.Set_Move_Frame(PlayerChoiceFrame)--任务选择
+        e.Set_Move_Frame(PlayerChoiceFrame, {notZoom=true, notSave=true})--任务选择
 
     elseif arg1=="Blizzard_GuildBankUI" then--公会银行
         e.Set_Move_Frame(GuildBankFrame)

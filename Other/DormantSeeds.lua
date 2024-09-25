@@ -256,7 +256,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1==id then
             Save= WoWToolsSave[addName] or Save
 
-            if e.Is_Timerunning then
+            if PlayerGetTimerunningSeasonID() then
                 self:UnregisterEvent('ADDON_LOADED')
                 return
             end
