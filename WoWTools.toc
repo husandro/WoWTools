@@ -363,7 +363,7 @@ Tools\B4_MapToy.lua
 ##随机，玩具
 Tools\L0_UseToy.lua
 
-Tools\L1_Professions.lua
+##Tools\L1_Professions.lua
 ##自动召唤，宠物
 Tools\L2_Pet.lua
 ##诺格弗格药剂 Noggenfogger Elixir

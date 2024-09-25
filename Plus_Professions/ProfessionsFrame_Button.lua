@@ -247,6 +247,7 @@ end
 function WoWTools_ProfessionMixin:Init_ProfessionsFrame_Button()
     local btn=WoWTools_ButtonMixin:CreateMenu(ProfessionsFrame.CloseButton, {name='WoWToolsProfessionsEnableButton'})
     btn:SetPoint('RIGHT', ProfessionsFrame.MaximizeMinimize.MinimizeButton, 'LEFT', -2, 0)
+    btn:SetScript('OnLeave', GameTooltip_Hide)
     btn:SetScript('OnEnter', function(f)
         e.tips:SetOwner(f, "ANCHOR_RIGHT")
         e.tips:ClearLines()

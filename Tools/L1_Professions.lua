@@ -1,49 +1,64 @@
 local id, e= ...
-local addName
 
 
+--[[
+6 烹饪
+7 采矿
+8 工程学
+9 钓鱼
+10 考古
+]]
 
 
 --##########
 --TOOLS，按钮
 --##########
-local function Init_Tools_Button()
+
+local function Init()
     --11版本
 
-    local tab={GetProfessions()}--local prof1, prof2, archaeology, fishing, cooking = GetProfessions()
-    for index, type in pairs(tab) do
-        if type then --and index~=4 and index~=3 then
-            local name, _, _, _, numAbilities, spelloffset = GetProfessionInfo(type)
-            local info= C_Spell.GetSpellInfo(spelloffset+ 1, 'spell') or {}
+    --local tab={GetProfessions()}--local prof1, prof2, archaeology, fishing, cooking = GetProfessions()
+    for _, index in pairs({GetProfessions()}) do
+        if index and index>0 then --and index~=4 and index~=3 then
+            local name, icon, _, _, numAbilities, spelloffset = GetProfessionInfo(index)
+            print (index, GetProfessionInfo(index))
+           --local info= C_Spell.GetSpellInfo(spelloffset+ 1, 'spell') or {}
+            
+            --local name, icon, _, _, _, _, skillLine = GetProfessionInfo(index)
+            --if icon and skillLine then
 
-            local icon= info.iconID
-            local spellID= info.spellID
-            local btn= e.Cbtn2({
-                name='WoWToolsToolsProfessions'..name,
-                parent= e.toolsFrame,
-                click=true,-- right left
-                notSecureActionButton=nil,
-                notTexture=nil,
-                showTexture=true,
-                sizi=nil,
-            })
+            --if name and icon  then
+                local btn= WoWTools_ToolsButtonMixin:CreateButton({
+                    name='WoWToolsToolsProfession'..name,
+                    tooltip='|T'..icon..':0|t'..e.cn(name),
+                })
+                if btn then
+
+                    btn:SetAttribute('type1', 'spell')
+                    btn:SetAttribute('spell1', name)
+                    btn.texture:SetTexture(icon)
+                
+
 
          
 
-            btn.spellID = spellID
+            --btn.spellID = spellID
             btn.name = name
             btn.index= index
 
 
-            btn:SetAttribute("type1", "spell")
-            btn:SetAttribute("spell", spellID)
+            --btn:SetAttribute("type1", "spell")
+            --btn:SetAttribute("spell", spellID)
             btn.texture:SetTexture(icon)
             btn.texture:SetShown(true)
 
             function btn:set_tooltip()
+                
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                e.tips:SetSpellByID(self.spellID)
+                if self.spellID then
+                    e.tips:SetSpellByID(self.spellID)
+                end
                 if self.index==5 then
                     local link= C_Spell.GetSpellLink(818)
                     local texture= C_Spell.GetSpellTexture(818)
@@ -67,7 +82,7 @@ local function Init_Tools_Button()
                     end
                 end
 
-                if (self.index==3 or self.index==4) and not UnitAffectingCombat('player') then
+                if (self.index==9 or self.index==10) and not UnitAffectingCombat('player') then
                     e.tips:AddDoubleLine(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL, 'F', 0,1,0, 0,1,0)
                     e.tips:AddDoubleLine(e.onlyChinese and '设置' or SETTINGS, e.Icon.mid..(e.onlyChinese and '滚轮向上滚动' or KEY_MOUSEWHEELUP))
                     e.tips:AddDoubleLine(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, e.Icon.mid..(e.onlyChinese and '轮向下滚动' or KEY_MOUSEWHEELDOWN))
@@ -78,7 +93,7 @@ local function Init_Tools_Button()
             btn:SetScript('OnEnter', btn.set_tooltip)
 
 
-            if index==3 or index==4 then--钓鱼，考古， 设置清除快捷键
+            if index==9 or index==10 then--钓鱼，考古， 设置清除快捷键
                 function btn:set_key_text(text)
                     self.text:SetText(text)
                     if self.keyButton then
@@ -159,6 +174,7 @@ local function Init_Tools_Button()
                 btn:SetAttribute("type2", "spell")
                 btn:SetAttribute("spell2", spellID2)
                 btn.spellID2= spellID2
+            end 
             end
         end
     end
@@ -175,23 +191,13 @@ end
 --###########
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
-            --旧版本
-            addName='|A:collections-icon-favorites:0:0|a'..(e.onlyChinese and '使用玩具' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_RANDOM3:gsub('/',''), TOY))
-
-
-            if WoWTools_ToolsButtonMixin:GetButton() then
-                
+            if WoWTools_ToolsButtonMixin:GetButton() and e.Player.husandro then
+                Init()
             end
             self:UnregisterEvent('ADDON_LOADED')
-        end
-
-    elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
-            WoWToolsSave['Tools_Profession']=Save
         end
     end
 end)
