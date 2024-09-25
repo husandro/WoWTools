@@ -53,6 +53,7 @@ local function Init_Menu(_, root)
     end)
     menu_tooltip(sub)
 
+    root:CreateDivider()
     WoWTools_MenuMixin:Scale(root, function()
         return Save().scale
     end, function(value)
@@ -60,7 +61,6 @@ local function Init_Menu(_, root)
         set_scale()
     end)
 
-    root:CreateDivider()
     WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_ObjectiveTrackerMixin.addName})
 end
 
