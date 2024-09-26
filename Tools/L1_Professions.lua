@@ -2,6 +2,8 @@ local id, e= ...
 Save={
     fishing='BUTTON1',
     archaeology='F',
+    --save_fishing=true,--启动时，设置KEY
+    --save_archaeology=true--启动时，设置KEY
 }
 
 
@@ -143,37 +145,85 @@ end
 
 
 local function Init_KeyButton_Menu(self, root)
+    local isInCombat= UnitAffectingCombat('player')
+    local sub, sub2
+
     root:CreateButton(
         WoWTools_SpellMixin:GetName(self.spellID2),
     function(data)
         C_TradeSkillUI.OpenTradeSkill(data.skillLine)
         return MenuResponse.Open
     end, {skillLine=self.skillLine})
-    
+
+    root:CreateButton(
+        '|A:UI-HUD-MicroMenu-Professions-Mouseover:24:24|a'
+        ..MicroButtonTooltipText(e.onlyChinese and '专业' or PROFESSIONS_BUTTON, "TOGGLEPROFESSIONBOOK"),
+    function()
+        ToggleProfessionsBook()
+        return MenuResponse.Open
+    end)
+
     root:CreateDivider()
-    WoWTools_KeyMixin:SetMenu(root,  {
+    sub=root:CreateCheckbox(
+        (e.onlyChinese and '设置快捷键' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, SETTINGS_KEYBINDINGS_LABEL))
+        ..'|cnGREEN_FONT_COLOR:'..(Save[self.type] or ''),
+    function()
+        return WoWTools_KeyMixin:IsKeyValid(self)
+    end, function()
+        if not UnitAffectingCombat('player') then
+            self:set_key(not WoWTools_KeyMixin:IsKeyValid(self))
+        end
+    end)
+    sub:SetEnabled(not isInCombat)
+
+--设置KEY
+    WoWTools_KeyMixin:SetMenu(sub,  {
         icon='|A:NPE_ArrowDown:0:0|a',
         name=e.cn(self.name),
         key=Save[self.type],
         GetKey=function(key)
             Save[self.type]=key
-            WoWTools_KeyMixin:Setup(self, false)--设置捷键
-        end,
-        OnAlt=function()
-            Save[self.type]=nil
-            WoWTools_KeyMixin:Setup(self, true)--设置捷键
         end,
     })
 
+--启动时，设置KEY
+    sub2=sub:CreateCheckbox(
+        e.onlyChinese and '保存' or SAVE,
+    function()
+        return Save['save_'..self.type]
+    end, function()
+        Save['save_'..self.type]= not Save['save_'..self.type] and true or nil
+    end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine(e.onlyChinese and '登入：设置' or (LOG_IN..': '..SETTINGS))
+    end)
 end
 
 
 
-local function Init_KeyButton(index, spellID, spellID2)
+
+
+
+
+
+
+
+
+local function Init_KeyButton(index, type)
+    local spellID, spellID2, icon= 131474, 271990, 4620674--131474/钓鱼 271990/钓鱼日志
+    if type=='archaeology' then
+        spellID, spellID2, icon= 80451, 278910, 134435--80451/勘测 278910/考古学
+    end
+
     local button=  Create_Button(index)
     if not button then return end
+    button.type=type--fishing archaeology
     button.spellID= spellID
     button.spellID2= spellID2
+
+    button:SetAttribute('type1', 'spell')
+    button:SetAttribute('spell1', C_Spell.GetSpellName(spellID) or spellID)--钓鱼
+    button.texture:SetTexture(C_Spell.GetSpellTexture(spellID) or icon)
 
     button:SetScript('OnMouseDown', function(self, d)
         if d=='RightButton' then
@@ -181,8 +231,7 @@ local function Init_KeyButton(index, spellID, spellID2)
         end
     end)
 
-    button:SetAttribute('type1', 'spell')
-    button:SetAttribute('spell1', C_Spell.GetSpellName(spellID) or spellID)--钓鱼
+
 
     button:SetScript('OnLeave', GameTooltip_Hide)
     function button:set_tooltip()
@@ -205,15 +254,8 @@ local function Init_KeyButton(index, spellID, spellID2)
         )
         e.tips:Show()
     end
-    button:SetScript('OnEnter', function(self)
-        WoWTools_KeyMixin:SetTexture(self)
-        self:set_tooltip()
-    end)
-    button:SetScript('OnMouseWheel', function(self, d)
-        if UnitAffectingCombat('player') then
-            return
-        end
-        if d==1 then-- 1上, -1下
+    function button:set_key(isSetup)
+        if isSetup then
             WoWTools_KeyMixin:Setup(self, false)
             self:RegisterEvent('PLAYER_REGEN_ENABLED')
             self:RegisterEvent('PLAYER_REGEN_DISABLED')
@@ -222,14 +264,23 @@ local function Init_KeyButton(index, spellID, spellID2)
             self:RegisterEvent('PET_BATTLE_CLOSE')
             self:RegisterUnitEvent('UNIT_EXITED_VEHICLE', 'player')
             self:RegisterUnitEvent('UNIT_ENTERED_VEHICLE', 'player')
-
         else
             WoWTools_KeyMixin:Setup(self, true)
             self:UnregisterAllEvents()
         end
+    end
+    button:SetScript('OnEnter', function(self)
+        WoWTools_KeyMixin:SetTexture(self)
         self:set_tooltip()
     end)
-    
+    button:SetScript('OnMouseWheel', function(self, d)
+        if UnitAffectingCombat('player') then
+            return
+        end
+        self:set_key(d==1)-- 1上, -1下
+        self:set_tooltip()
+    end)
+
 
     button:SetScript('OnEvent', function(self, event)
         if event=='PLAYER_REGEN_DISABLED' then
@@ -250,7 +301,16 @@ local function Init_KeyButton(index, spellID, spellID2)
         end
     end)
 
-    return button
+--设置KEY
+    function button:GetKey()
+        return Save[self.type] or (self.type=='fishing' and 'BUTTON1') or 'F'
+    end
+    WoWTools_KeyMixin:Init(button, nil, true)
+
+--启动时，设置KEY
+    if Save['save_'..type] then
+       button:set_key(true)
+    end
 end
 
 
@@ -278,27 +338,12 @@ local function Init()
 
 --钓鱼
     if fishing and fishing>0 then
-        local btn= Init_KeyButton(fishing, 131474, 271990)--131474/钓鱼 271990/钓鱼日志
-        if btn then
-            function btn:GetKey()
-                return Save.fishing or 'BUTTON1'
-            end
-            WoWTools_KeyMixin:Init(btn, nil, true)
-            btn.type='fishing'
-        end
+        Init_KeyButton(fishing, 'fishing')
     end
 
 --考古学
     if archaeology and archaeology>0 then
-        local btn= Init_KeyButton(archaeology, 80451,278910)--80451/勘测 278910/考古学
-        if btn then
-            btn.texture:SetTexture(C_Spell.GetSpellTexture(80451) or 134435)
-            function btn:GetKey()
-                return Save.archaeology or 'F'
-            end
-            WoWTools_KeyMixin:Init(btn, nil, true)
-            btn.type='archaeology'
-        end
+        Init_KeyButton(archaeology, 'archaeology')
     end
 end
 

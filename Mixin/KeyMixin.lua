@@ -148,7 +148,7 @@ function WoWTools_KeyMixin:SetMenu(root, tab)
         tooltip:AddLine(e.onlyChinese and '设置' or SETTINGS)
         tooltip:AddDoubleLine(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL, description.data.key)
     end)
-    sub:SetEnabled(not UnitAffectingCombat('player') and true or false)
+    sub:SetEnabled(not UnitAffectingCombat('player'))
     return sub
 end
 
