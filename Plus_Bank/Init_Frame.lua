@@ -420,7 +420,7 @@ local function Init_AccountBankPanel()
 
     AccountBankPanel.Header.Text:ClearAllPoints()
     AccountBankPanel.Header.Text:SetPoint('RIGHT')
-    WoWTools_LabelMixin:CreateLabel(nil, {changeFont=AccountBankPanel.Header.Text, size=22, color=true, justifyH='RIGHT'})
+    WoWTools_LabelMixin:CreateLabel(nil, {changeFont=AccountBankPanel.Header.Text, size=14, color=true, justifyH='RIGHT'})
 
     local texture= AccountBankPanel.Header:CreateTexture()
     texture:SetSize(22,22)
