@@ -9,16 +9,59 @@ local id, e= ...
 9 钓鱼
 10 考古
 ]]
+local function Init_Professions(index)
+    local name, icon, _, _, _, _, skillLine = GetProfessionInfo(index)
 
+    if not skillLine or not icon then return end
 
+    local button= WoWTools_ToolsButtonMixin:CreateButton({
+        name='WoWToolsToolsProfession'..index,
+        tooltip='|T'..icon..':0|t'..e.cn(name),
+    })
 
+    if not button then return end
+
+    button:SetScript('OnMouseDown', function(self, d)
+        if d=='LeftButton' then
+            C_TradeSkillUI.OpenTradeSkill(self.skillLine)
+        elseif d=='RightButton' then
+            ToggleProfessionsBook()
+        end
+    end)
+    button:SetScript('OnLeave', GameTooltip_Hide)
+    button:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(
+            '|T'..(self.icon or 0)..':0|t'..self.name..e.Icon.left,
+            e.Icon.right..MicroButtonTooltipText(e.onlyChinese and '专业' or PROFESSIONS_BUTTON, "TOGGLEPROFESSIONBOOK")..'|A:UI-HUD-MicroMenu-Professions-Mouseover:24:24|a'
+        )
+        e.tips:Show()
+    end)
+    button.name= name
+    button.icon= icon
+    button.skillLine= skillLine
+    button.texture:SetTexture(icon)
+
+end
+
+local function Init()
+    local prof1, prof2, archaeology, fishing, cooking = GetProfessions()
+    if prof1 and prof1>0 then
+        Init_Professions(prof1)
+    end
+    if prof2 and prof2>0 then
+        Init_Professions(prof2)
+    end
+    
+end
 
 
 --##########
 --TOOLS，按钮
 --##########
 
-local function Init()
+local function Init2()
     --11版本
 
     --local tab={GetProfessions()}--local prof1, prof2, archaeology, fishing, cooking = GetProfessions()

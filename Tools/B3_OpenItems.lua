@@ -510,7 +510,7 @@ local function Remove_NoUse_Menu(root, itemID, type, numUse)
     e.LoadData({type='item', id=itemID})
     local tab=  {itemID=itemID, type=type}
     local sub=root:CreateButton(
-        (numUse and numUse..'= ' or '')
+        (numUse and '|cnGREEN_FONT_COLOR:'..numUse..'=|r ' or '')
         ..WoWTools_ItemMixin:GetName(itemID),
         Edit_Item,
         tab

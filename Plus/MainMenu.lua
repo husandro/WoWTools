@@ -51,8 +51,8 @@ local function Init_Character()
         end
         self.Text:SetText(text or '')
 
-        local text, value= WoWTools_DurabiliyMixin:Get(false)--耐久度
-        self.Text2:SetText(text:gsub('%%', ''))
+        local text2, value= WoWTools_DurabiliyMixin:Get(false)--耐久度
+        self.Text2:SetText(text2:gsub('%%', ''))
         WoWTools_FrameMixin:HelpFrame({frame=CharacterMicroButton, topoint=self.text2, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, onlyOne=true, show=value<30})--设置，提示
     end
 
@@ -76,6 +76,50 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+local function Init_Professions()
+    ProfessionMicroButton:EnableMouseWheel(true)
+    ProfessionMicroButton:HookScript('OnMouseWheel', function(_, d)
+        local prof1, prof2= GetProfessions()
+        local index= d==1 and prof1 or prof2
+        local skillLine = index and index>0 and select(7, GetProfessionInfo(index))
+        if skillLine and skillLine>0 then
+            C_TradeSkillUI.OpenTradeSkill(skillLine)
+        end
+    end)
+    ProfessionMicroButton:HookScript('OnEnter', function()
+        local prof1, prof2= GetProfessions()
+        local prof1Text, prof2Text
+        if prof1 and prof1>0 then
+            local name, icon= GetProfessionInfo(prof1)
+            if name then
+                prof1Text='|T'..(icon or 0)..':0|t'..name..e.Icon.mid..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
+            end
+        end
+        if prof2 and prof2>0 then
+            local name, icon= GetProfessionInfo(prof2)
+            if name then
+                prof2Text='|T'..(icon or 0)..':0|t'..name..e.Icon.mid..(e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
+            end
+        end
+        if prof1Text or prof2Text then
+            e.tips:AddLine(' ')
+            e.tips:AddLine(prof1Text)
+            e.tips:AddLine(prof2Text)
+            e.tips:Show()
+        end
+    end)
+end
 
 
 
@@ -975,7 +1019,7 @@ local function Init_Plus()
     if not Frames then
         Frames={}
         Init_Character()--角色
-
+        Init_Professions()--专业
         Init_Talent()--天赋 
         Init_Achievement()--成就
         Init_Quest()--任务
@@ -986,6 +1030,8 @@ local function Init_Plus()
         Init_Help()--帮助
         Init_Bag()--背包
         Init_MainMenu(true)--菜单，透明度
+
+        
     else
         for _, frame in pairs(Frames) do
             if frame.Text then

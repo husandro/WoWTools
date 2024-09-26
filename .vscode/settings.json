@@ -4993,7 +4993,9 @@
         "SPELL_FAILED_CUSTOM_ERROR_464",
         "ObjectiveTrackerUIWidgetContainerMixin",
         "UIWidgetObjectiveTrackerMixin",
-        "SHOW_QUICK_BUTTON"
+        "SHOW_QUICK_BUTTON",
+        "ToggleProfessionsBook",
+        "PROFESSIONS_BUTTON"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

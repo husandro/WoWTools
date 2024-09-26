@@ -92,7 +92,7 @@ local function Init_Buttons()
                 e.tips:SetOwner(self, "ANCHOR_RIGHT")
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine(self.name, 'skillLine '..self.skillLine)
-                e.tips:AddDoubleLine(e.addName, 'Tools')
+                e.tips:AddDoubleLine(e.addName, WoWTools_ProfessionMixin.addName)
                 e.tips:Show();
             end)
             button:SetScript('OnLeave',function(self)
