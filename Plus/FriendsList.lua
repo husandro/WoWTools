@@ -545,64 +545,8 @@ end)
         end
     end
     FriendsButton:set_status(true)
-
-
-
-
-
-
-
-
-
-    
 end
-        --[[if not BNConnected() then
-            print(e.addName, addName, e.Icon.net2, e.onlyChinese and '断开战网' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SOCIAL_TWITTER_DISCONNECT, COMMUNITY_COMMAND_BATTLENET))
-            return
-        end
-        if not self.menu then
-         
-
-
-
-
-
-
-
-
-       
-
-
-                e.LibDD:UIDropDownMenu_AddSeparator(level)
-                info={
-                    text=  e.Icon.net2..(e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET)..' ('..(e.onlyChinese and '好友' or FRIEND)..') '..( e.onlyChinese and '信息' or INFO)..'|A:communities-icon-chat:0:0|a',
-                    checked= not Save.disabledBNFriendInfo,
-                    hasArrow=true,
-                    menuList= 'OnlyWOWFriendInfo',
-                    --keepShownOnClick=true,
-                    func= function()
-                        Save.disabledBNFriendInfo= not Save.disabledBNFriendInfo and true or nil
-                    end
-                }
-                e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-                info={
-                    text= '|A:Battlenet-ClientIcon-App:0:0|a'..(e.onlyChinese and '好友' or FRIEND)..' Plus',
-                    checked= not Save.disabledFriendPlus,
-                    keepShownOnClick=true,
-                    func= function()
-                        Save.disabledFriendPlus= not Save.disabledFriendPlus and true or nil
-                        print(e.addName, addName, e.GetEnabeleDisable(not Save.disabledFriendPlus), e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
-                    end
-                }
-                e.LibDD:UIDropDownMenu_AddButton(info, level)
-               
-            end
-            e.LibDD:UIDropDownMenu_Initialize(self.menu, Init_Status_Menu, 'MENU')
-        end
-        --e.LibDD:ToggleDropDownMenu(1, nil, self.menu, self, 15,0)
-    end) ]]
-
+    
 
 
 

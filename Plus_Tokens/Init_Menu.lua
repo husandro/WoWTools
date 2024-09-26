@@ -228,48 +228,6 @@ end
 
 
 
---#####
---主菜单
---[[#####
-local function InitMenu(self, level, menuList)--主菜单
-
-	local info
-	if menuList=='ITEMS' then
-		MenuList_Item(level)
-
-
-	end
-
-	if menuList then
-		return
-	end
-
-
-	e.LibDD:UIDropDownMenu_AddSeparator(level)
-	info={
-		text=e.onlyChinese and '达到上限' or CAPPED,
-		checked= not Save().hideCurrencyMax,
-		icon='communities-icon-chat',
-		tooltipOnButton=true,
-		tooltipTitle=e.onlyChinese and '已达到资源上限' or SPELL_FAILED_CUSTOM_ERROR_248,
-		keepShownOnClick=true,
-		func= function()
-			Save().hideCurrencyMax= not Save().hideCurrencyMax and true or nil
-			Button:set_Event()--已达到资源上限
-			if not Save().hideCurrencyMax then
-				Button.currencyMax={}--已达到资源上限
-				Button:currency_Max()
-				print(e.addName, WoWTools_TokensMixin.addName, 'Test', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已达到资源上限' or SPELL_FAILED_CUSTOM_ERROR_248))
-			end
-		end
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)
-end]]
-
-
-
-
-
 
 
 
