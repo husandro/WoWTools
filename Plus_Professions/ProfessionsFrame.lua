@@ -122,7 +122,7 @@ local function Init()
         if not isEnchant
             or not self.enchantSlot
             or not self.enchantSlot:IsShown()
-            --or Save.disabled--禁用，按钮
+            --or Save().disabled--禁用，按钮
             or ItemUtil.GetCraftingReagentCount(38682)==0--没有， 附魔纸
         then
             if self.enchantSlot and self.enchantSlot.btn then
@@ -133,12 +133,12 @@ local function Init()
 
         local btn= self.enchantSlot.btn
         if not btn then
-            btn= WoWTools_ButtonMixin:Cbtn(self.enchantSlot, {size={16,16}, icon= not Save.disabledEnchant})
+            btn= WoWTools_ButtonMixin:Cbtn(self.enchantSlot, {size={16,16}, icon= not Save().disabledEnchant})
             btn:SetPoint('TOPLEFT', self.enchantSlot, 'BOTTOMLEFT')
             btn:SetAlpha(0.3)
             btn:SetScript('OnClick', function(self2)
-                Save.disabledEnchant= not Save.disabledEnchant and true or nil
-                self2:SetNormalAtlas(Save.disabledEnchant and e.Icon.disabled or e.Icon.icon)
+                Save().disabledEnchant= not Save().disabledEnchant and true or nil
+                self2:SetNormalAtlas(Save().disabledEnchant and e.Icon.disabled or e.Icon.icon)
             end)
             btn:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(0.3) end)
             btn:SetScript('OnEnter', function(self2)
@@ -146,7 +146,7 @@ local function Init()
                 e.tips:ClearLines()
                 e.tips:SetItemByID(38682)
                 e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(e.onlyChinese and '自动加入' or AUTO_JOIN, e.GetEnabeleDisable(not Save.disabledEnchant))
+                e.tips:AddDoubleLine(e.onlyChinese and '自动加入' or AUTO_JOIN, e.GetEnabeleDisable(not Save().disabledEnchant))
                 e.tips:AddDoubleLine(e.addName, Initializer:GetName())
                 e.tips:Show()
                 self2:SetAlpha(1)
@@ -156,7 +156,7 @@ local function Init()
         btn:SetShown(true)
 
 
-        if Save.disabledEnchant then
+        if Save().disabledEnchant then
             return
         end
 
