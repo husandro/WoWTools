@@ -77,6 +77,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
         local lineLeft1=_G[tooltipName..'TextLeft1']--名称
         if lineLeft1 then
             text2Right= lineLeft1:GetText():gsub(name, '')
+            text2Right= text2Right:gsub('-'..realm, '')
         end
     end
 
