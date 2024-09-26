@@ -5002,7 +5002,8 @@
         "IsBoostTutorialScenario",
         "GMChatFrame_OnEvent",
         "GMChatFrame",
-        "ProfessionsBook_LoadUI"
+        "ProfessionsBook_LoadUI",
+        "ACTION_SPELL_CAST_START"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

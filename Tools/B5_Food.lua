@@ -252,17 +252,6 @@ local function Create_Button(index)
     function btn:set_point()
         self:ClearAllPoints()
         self:SetPoint('RIGHT', Buttons[self:GetID()-1] or UseButton, 'LEFT')
-        --[[local index2= self:GetID()
-        local  num= Save.numLine
-
-        if index2==1 then
-            self:SetPoint('RIGHT', UseButton, 'LEFT')--位置
-
-        elseif index2<=num and select(2, math.modf(index2/num))==0 then
-            self:SetPoint('RIGHT', Buttons[index2-1] or UseButton, 'LEFT')
-        else
-            self:SetPoint('BOTTOM', Buttons[index2- num-1] or UseButton, 'TOP')
-        end]]
     end
     table.insert(Buttons, btn)--添加
 
@@ -545,16 +534,6 @@ local function Init_Menu(self, root)
     })
     sub2:CreateSpacer()
 
-    --[[sub:CreateButton(
-        (not Save.point and '|cff9e9e9e' or '')
-        ..(e.onlyChinese and '还原位置' or RESET_POSITION),
-    function()
-        if not UnitAffectingCombat('player') then
-            Save.point=nil
-            self:set_point()
-        end
-    end )]]
-
 --重置位置
     sub:CreateDivider()
     WoWTools_MenuMixin:RestPoint(sub, Save.point and not UnitAffectingCombat('player'), function()
@@ -784,7 +763,7 @@ local function Init()
 
         items={}
         for itemID in pairs(Save.addItems) do
-            if Save.addItemsShowAll or C_Item.GetItemCount(itemID, false, true, true, false)>0 then
+            if UseButton.itemID~=itemID and (Save.addItemsShowAll or C_Item.GetItemCount(itemID, false, true, true, false)>0) then
                 table.insert(items, itemID)
             end
         end
@@ -970,6 +949,16 @@ local function Init()
             e.tips:AddDoubleLine((UnitAffectingCombat('player') and '|cff9e9e9e' or '')..(e.onlyChinese and '查询' or WHO), e.Icon.mid)
 
             e.tips:AddLine(' ')
+            if self.altSpellID then
+                e.tips:AddDoubleLine(WoWTools_SpellMixin:GetName(self.altSpellID), 'Alt+'..e.Icon.left)
+                if self.ctrlSpellID then
+                    e.tips:AddDoubleLine(WoWTools_SpellMixin:GetName(self.ctrlSpellID), 'Ctrl+'..e.Icon.left)
+                end
+                if self.shiftSpellID then
+                    e.tips:AddDoubleLine(WoWTools_SpellMixin:GetName(self.shiftSpellID), 'Shift+'..e.Icon.left)
+                end
+                e.tips:AddLine(' ')
+            end
             e.tips:AddDoubleLine(
                 (Save.onlyMaxExpansion and '|cnGREEN_FONT_COLOR:' or '|cff9e9e9e')
                 ..(e.onlyChinese and '仅当前版本物品'
@@ -985,11 +974,22 @@ local function Init()
         GameTooltip_Hide()
         WoWTools_BagMixin:Find()--查询，背包里物品
         self:set_alpha()
+        self:SetScript('OnUpdate', nil)
+        self.elapsed=nil
     end)
     UseButton:SetScript("OnEnter",function(self)
         self:set_tooltip()
+        if self.altSpellID then
+            self.elapsed=0
+            self:SetScript('OnUpdate', function(f, elapsed)
+                f.elapsed= f.elapsed +elapsed
+                if f.elapsed>=1 then
+                    f.elapsed=0
+                    f:set_tooltip()
+                end
+            end)
+        end
         WoWTools_BagMixin:Find(true, {itemID= self.itemID})--查询，背包里物品
-        self:set_alpha(1)
     end)
 
 
@@ -1003,9 +1003,45 @@ local function Init()
 
     UseButton:RegisterEvent('BAG_UPDATE_DELAYED')
     UseButton:RegisterEvent('BAG_UPDATE_COOLDOWN')
-    UseButton.itemID= 5512--治疗石 538745
+
+
+
+
+    if e.Player.class=='MAGE' then
+        UseButton.itemID= 113509--113509/魔法汉堡
+
+        UseButton:SetAttribute('alt-type1', 'spell')
+        UseButton:SetAttribute('alt-spell1', C_Spell.GetSpellName(190336) or 190336)--190336/造餐术
+        UseButton.altSpellID= 190336
+
+        UseButton:SetAttribute('shift-type1', 'spell')
+        UseButton:SetAttribute('shift-spell1', C_Spell.GetSpellName(1459) or 1459)--1459/奥术智慧
+        UseButton.shiftSpellID= 1459
+
+    else
+        UseButton.itemID= 5512--治疗石 538745
+        if e.Player.class=='WARLOCK' then
+            UseButton:SetAttribute('alt-type1', 'spell')
+            UseButton:SetAttribute('alt-spell1', C_Spell.GetSpellName(29893) or 29893)--29893/制造灵魂之井
+            UseButton.altSpellID= 29893
+
+            UseButton:SetAttribute('ctrl-type1', 'spell')
+            UseButton:SetAttribute('ctrl-spell1', C_Spell.GetSpellName(6201) or 6201)--6201/制造治疗石
+            UseButton.ctrlSpellID= 6201
+
+            UseButton:SetAttribute('shift-type1', 'spell')
+            UseButton:SetAttribute('shift-spell1', C_Spell.GetSpellName(698) or 698)--698/召唤仪式
+            UseButton.shiftSpellID= 698
+        end
+    end
+
+
     Set_Button_Function(UseButton)
     UseButton:settings()
+
+
+
+
 
     if Save.autoLogin or Save.autoWho then
         UseButton:Check_Items()
@@ -1050,10 +1086,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
 
-            if WoWToolsSave[POWER_TYPE_FOOD..'Tools'] then
-                WoWToolsSave[POWER_TYPE_FOOD..'Tools']= nil
-            end
-
             Save= WoWToolsSave['Tools_Foods'] or Save
 
             addName= '|A:Food:0:0|a'..(e.onlyChinese and '食物' or POWER_TYPE_FOOD)
@@ -1080,8 +1112,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             if UseButton then
-
-
                 Init()--初始
             end
             self:UnregisterEvent('ADDON_LOADED')

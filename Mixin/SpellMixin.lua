@@ -49,7 +49,11 @@ function WoWTools_SpellMixin:GetName(spellID)--取得法术，名称
                 col='|cnRED_FONT_COLOR:'
                 desc=(desc or '')..'|A:Islands-QuestBangDisable:0:0|a'..(e.onlyChinese and '未学习' or TRADE_SKILLS_UNLEARNED_TAB)
             else
-                cool=e.GetSpellItemCooldown(spellID, nil)
+                if select(9, UnitCastingInfo('player'))==spellID or select(8, UnitChannelInfo('player'))==spellID then
+                    cool= '|cffff00ff'..(e.onlyChinese and '正在施放' or ACTION_SPELL_CAST_START)..'|r'
+                else
+                    cool=e.GetSpellItemCooldown(spellID, nil)
+                end
             end
         else
             desc= (desc or '')..'|A:Islands-QuestBangDisable:0:0|a'
@@ -61,7 +65,7 @@ function WoWTools_SpellMixin:GetName(spellID)--取得法术，名称
         name= name:match('|c........(.+)|r') or name
     end
 
-    name= '|T'..(C_Spell.GetSpellTexture(spellID) or 0)..':0|t'..(name or ('spellID '..spellID))
+    name= '|T'..(C_Spell.GetSpellTexture(spellID) or 0)..':0|t|cff71d5ff'..(name or ('spellID '..spellID))..'|r'
 
     if desc and col then
         desc= col..desc..'|r'
