@@ -1,5 +1,5 @@
 local id, e= ...
-
+Save={}
 
 --[[
 7 采矿
@@ -28,6 +28,13 @@ local function Create_Button(index)
         return button
     end
 end
+
+
+
+
+
+
+
 
 
 --主要专业 1, 2
@@ -129,6 +136,41 @@ local function Init_Cooking(index)
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Init_Fishing(index)
+    local button=  Create_Button(index)
+    if not button then return end
+
+    button:SetScript('OnMouseDown', function(self, d)
+        if d=='RightButton' then
+            C_TradeSkillUI.OpenTradeSkill(self.skillLine)
+        end
+    end)
+end
+
+
+
+
+
+
+
+
+
+
+
+
 local function Init()
     local prof1, prof2, archaeology, fishing, cooking = GetProfessions()
     if prof1 and prof1>0 then
@@ -140,7 +182,27 @@ local function Init()
     if cooking and cooking>0 then
         Init_Cooking(cooking)
     end
+    if fishing and fishing>0 then
+        Init_Fishing(fishing)
+    end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 --##########
@@ -327,10 +389,15 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
+            Save= WoWToolsSave['Tools_Professions'] or Save
             if WoWTools_ToolsButtonMixin:GetButton() and e.Player.husandro then
                 Init()
             end
             self:UnregisterEvent('ADDON_LOADED')
+        end
+    elseif event == "PLAYER_LOGOUT" then
+        if not e.ClearAllSave then
+            WoWToolsSave['Tools_Professions']=Save
         end
     end
 end)

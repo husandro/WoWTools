@@ -30,12 +30,12 @@ local function Init_ArcheologyDigsiteProgressBar_OnShow(frame)
         frame.tipsButton= WoWTools_ButtonMixin:Cbtn(frame, {size={20,20}, icon='hide'})
         frame.tipsButton:SetPoint('RIGHT', frame, 'LEFT', 0, -4)
         function frame.tipsButton:set_atlas()
-            self:SetNormalAtlas(Save.ArcheologySound and 'chatframe-button-icon-voicechat' or 'chatframe-button-icon-speaker-off')
+            self:SetNormalAtlas(Save().ArcheologySound and 'chatframe-button-icon-voicechat' or 'chatframe-button-icon-speaker-off')
         end
         function frame.tipsButton:set_tooltips()
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(e.onlyChinese and '声音提示' or  SOUND, e.GetEnabeleDisable(Save.ArcheologySound))
+            e.tips:AddDoubleLine(e.onlyChinese and '声音提示' or  SOUND, e.GetEnabeleDisable(Save().ArcheologySound))
             e.tips:AddDoubleLine(e.addName, Initializer:GetName())
             e.tips:Show()
         end
@@ -52,17 +52,17 @@ local function Init_ArcheologyDigsiteProgressBar_OnShow(frame)
         end
 
         frame.tipsButton:SetScript('OnClick', function(self)
-            Save.ArcheologySound= not Save.ArcheologySound and true or nil
+            Save().ArcheologySound= not Save().ArcheologySound and true or nil
             self:set_atlas()
             self:set_event()
             self:set_tooltips()
-            if Save.ArcheologySound then
+            if Save().ArcheologySound then
                 self:play_sound()
             end
         end)
 
         function frame.tipsButton:set_event()
-            if self:IsVisible() and Save.ArcheologySound then
+            if self:IsVisible() and Save().ArcheologySound then
                 self:RegisterUnitEvent('UNIT_AURA', 'player')
             else
                 self:UnregisterAllEvents()

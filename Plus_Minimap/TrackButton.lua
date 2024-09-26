@@ -263,7 +263,7 @@ local function Get_Current_Vignettes()
     local onWorldMap={}
     local save=Save()
 
-    if not (save.hideVigentteCurrentOnMinimap and Save().hideVigentteCurrentOnWorldMap) then
+    if not (save.hideVigentteCurrentOnMinimap and save.hideVigentteCurrentOnWorldMap) then
         local vignetteGUIDs= C_VignetteInfo.GetVignettes() or {}
         local bestUniqueVignetteIndex = C_VignetteInfo.FindBestUniqueVignette(vignetteGUIDs)
         local tab={}
