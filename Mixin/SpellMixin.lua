@@ -6,6 +6,7 @@ GetLink(spellID, isCN)
 local e= select(2, ...)
 WoWTools_SpellMixin={}
 
+
 function WoWTools_SpellMixin:GetLink(spellID, isCN)
     if spellID then
         local link= C_Spell.GetSpellLink(spellID)
@@ -22,9 +23,6 @@ function WoWTools_SpellMixin:GetLink(spellID, isCN)
         return link
     end
 end
-
-
-
 
 
 

@@ -13,6 +13,7 @@ self:RegisterUnitEvent('UNIT_ENTERED_VEHICLE', 'player')
 self:RegisterEvent('PLAYER_REGEN_DISABLED')
 self:RegisterEvent('PLAYER_REGEN_ENABLED')
 
+self:RegisterEvent('PLAYER_MOUNT_DISPLAY_CHANGED')
 
 
 FrameUtil.RegisterFrameForEvents(self, table)
@@ -25,7 +26,7 @@ C_PetBattles.IsInBattle()
 UnitInVehicle('player')
 UnitHasVehicleUI('player')
 UnitAffectingCombat('player')
-
+IsMounted()
 
 
 

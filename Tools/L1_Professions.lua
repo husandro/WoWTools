@@ -1,5 +1,8 @@
 local id, e= ...
-Save={}
+--[[Save={
+    fishingKey='F',
+    archaeologyKey='F',
+}]]
 
 --[[
 7 采矿
@@ -86,9 +89,12 @@ local function Init_Cooking(index)
     if name then
         macro= '/cast [@player]'..name
     end
-    local toyName=C_Item.GetItemNameByID(134020)--玩具,大厨的帽子
-    if toyName then
-        macro= (macro and macro..'\n' or '')..'/use '..toyName
+
+    if PlayerHasToy(134020) then
+        local toyName=C_Item.GetItemNameByID(134020)--玩具,大厨的帽子
+        if toyName then
+            macro= (macro and macro..'\n' or '')..'/use '..toyName
+        end
     end
     if macro then
         button:SetAttribute('type2', 'macro')
@@ -149,13 +155,78 @@ end
 
 
 
-local function Init_Fishing(index)
+local function Init_Fishing(index, spellID, spellID2)
     local button=  Create_Button(index)
     if not button then return end
+    button.spellID= spellID
+    button.spellID2= spellID2
 
     button:SetScript('OnMouseDown', function(self, d)
         if d=='RightButton' then
             C_TradeSkillUI.OpenTradeSkill(self.skillLine)
+        end
+    end)
+
+    button:SetAttribute('type1', 'spell')
+    button:SetAttribute('spell1', C_Spell.GetSpellName(spellID) or spellID)--钓鱼
+
+    button:SetScript('OnLeave', GameTooltip_Hide)
+    function button:set_tooltip()
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(
+            WoWTools_SpellMixin:GetName(self.spellID)..e.Icon.left,
+            e.Icon.right..WoWTools_SpellMixin:GetName(self.spellID2)
+        )
+        e.tips:AddLine(' ')
+
+        local isKeyValid= WoWTools_KeyMixin:IsKeyValid(self)
+        local isInCombat= UnitAffectingCombat('player')
+        e.tips:AddDoubleLine(
+            (isInCombat and '|cnRED_FONT_COLOR:' or (isKeyValid and '|cff9e9e9e') or '')
+            ..(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)..'F'..e.Icon.mid..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP),
+
+            (isInCombat and '|cnRED_FONT_COLOR:' or (isKeyValid and '|cnGREEN_FONT_COLOR:') or '|cff9e9e9e')
+            ..(e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)..e.Icon.mid..(e.onlyChinese and '解除键位' or UNBIND)
+        )
+        e.tips:Show()
+    end
+    button:SetScript('OnEnter', function(self)
+        WoWTools_KeyMixin:SetTexture(self)
+        self:set_tooltip()
+    end)
+    button:SetScript('OnMouseWheel', function(self, d)
+        if UnitAffectingCombat('player') then
+            return
+        end
+        if d==1 then--1上, -1下
+            WoWTools_KeyMixin:Setup(self, false)
+            self:UnregisterAllEvents()
+
+        else
+            WoWTools_KeyMixin:Setup(self, true)
+            self:RegisterEvent('PLAYER_REGEN_ENABLED')
+            self:RegisterEvent('PLAYER_REGEN_DISABLED')
+            self:RegisterEvent('PLAYER_MOUNT_DISPLAY_CHANGED')
+            self:RegisterEvent('PET_BATTLE_OPENING_DONE')
+            self:RegisterEvent('PET_BATTLE_CLOSE')
+            self:RegisterUnitEvent('UNIT_EXITED_VEHICLE', 'player')
+            self:RegisterUnitEvent('UNIT_ENTERED_VEHICLE', 'player')            
+        end
+        self:set_tooltip()
+    end)
+    WoWTools_KeyMixin:Init(button, function() return 'F' end, true)
+
+    button:SetScript('OnEvent', function(self, event)
+        if event=='PLAYER_REGEN_DISABLED'
+            or C_PetBattles.IsInBattle()
+            or UnitInVehicle('player')
+            or IsMounted()
+        then
+            WoWTools_KeyMixin:Setup(self, true)
+
+        else
+            WoWTools_KeyMixin:Setup(self, false)
         end
     end)
 end
@@ -168,9 +239,7 @@ end
 
 
 
-
-
-
+e.call(GetProfessions)
 local function Init()
     local prof1, prof2, archaeology, fishing, cooking = GetProfessions()
     if prof1 and prof1>0 then
@@ -183,12 +252,12 @@ local function Init()
         Init_Cooking(cooking)
     end
     if fishing and fishing>0 then
-        Init_Fishing(fishing)
+        Init_Fishing(fishing, 131474, 271990)--131474/钓鱼 271990/钓鱼日志
+    end
+    if archaeology and archaeology>0 then
+        Init_Fishing(archaeology, 80451,278910)--80451/勘测 278910/考古学
     end
 end
-
-
-
 
 
 
@@ -207,7 +276,7 @@ end
 
 --##########
 --TOOLS，按钮
---##########
+--[[##########
 
 local function Init2()
     --11版本
@@ -373,7 +442,7 @@ local function Init2()
             end
         end
     end
-end
+end]]
 
 
 
@@ -389,15 +458,15 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
-            Save= WoWToolsSave['Tools_Professions'] or Save
+            --Save= WoWToolsSave['Tools_Professions'] or Save
             if WoWTools_ToolsButtonMixin:GetButton() and e.Player.husandro then
                 Init()
             end
             self:UnregisterEvent('ADDON_LOADED')
         end
-    elseif event == "PLAYER_LOGOUT" then
+    --[[elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             WoWToolsSave['Tools_Professions']=Save
-        end
+        end]]
     end
 end)

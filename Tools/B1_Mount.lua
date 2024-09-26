@@ -1904,6 +1904,7 @@ local function Init()
     end)
 
     MountButton:SetScript('OnEnter', function(self)
+        WoWTools_KeyMixin:SetTexture(self)
         WoWTools_ToolsButtonMixin:EnterShowFrame(self)
         self:set_tooltips()
         self:SetScript('OnUpdate', function (s, elapsed)

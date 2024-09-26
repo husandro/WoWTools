@@ -3,6 +3,7 @@ local addName
 local Save={
     noUseItems={},--禁用物品
     --autoLogin= e.Player.husandro,--启动,查询
+    isShowBackground=e.Player.husandro,
     onlyMaxExpansion=true,--仅本版本物品
     olnyUsaItem=true,
     numLine=12,

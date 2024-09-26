@@ -22,7 +22,7 @@ local Save={
     loadCollectionUI=true,
     --show=false,
     --point
-    --showBackgroud
+    isShowBackground=e.Player.husandro,
 
 }
 
@@ -65,8 +65,9 @@ local function Init_Panel()
         category= Category,
         name= e.onlyChinese and '加载战团藏品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, 'Load', COLLECTIONS),
         tooltip= '|nCollectionsJournal_LoadUI()|n|n'
-                ..(e.onlyChinese and '登入游戏时|n建议：开启' or (format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LOG_IN, GAME))
-                ..'|n'..HELPFRAME_SUGGESTION_BUTTON_TEXT..ENABLE),
+                ..(e.onlyChinese and '登入游戏时|n建议：开启' or
+                (format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LOG_IN, GAME)..'|n'..HELPFRAME_SUGGESTION_BUTTON_TEXT..': '..ENABLE)
+        ),
         GetValue= function() return Save.loadCollectionUI end,
         SetValue= function()
             Save.loadCollectionUI= not Save.loadCollectionUI and true or nil
@@ -74,6 +75,18 @@ local function Init_Panel()
             Button:save_data()
         end
     }, initializer)
+
+    --[[e.AddPanel_Check({
+        category= Category,
+        name= e.onlyChinese and '加载专业' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, 'Load', PROFESSIONS_BUTTON),
+        tooltip= '|nProfessionsFrame_LoadUI',
+        GetValue= function() return Save.loadProfessionsUI end,
+        SetValue= function()
+            Save.loadProfessionsUI= not Save.loadProfessionsUI and true or nil
+            Button:load_wow_ui()
+            Button:save_data()
+        end
+    }, initializer)]]
 
 
     e.AddPanel_Button({
@@ -289,12 +302,18 @@ local function Init()
         if Save.loadCollectionUI then
             WoWTools_LoadUIMixin:Journal()
         end
+        --[[if Save.loadProfessionsUI then
+            if not ProfessionsFrame then
+                ProfessionsFrame_LoadUI()
+            end
+        end]]
     end
 
     function Button:set_size()
         self:SetHeight(Save.height)
     end
 
+    Button.texture:SetAlpha(0.5)
     function Button:set_icon()
         self.texture:SetShown(Save.showIcon)
     end
@@ -454,6 +473,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
                 Init_Panel()
             end
+
         elseif arg1=='Blizzard_Settings' then
             Init_Panel()
         end

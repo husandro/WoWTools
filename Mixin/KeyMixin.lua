@@ -27,7 +27,7 @@ end)
 
 
 
-function WoWTools_KeyMixin:Init(btn, GetValue)
+function WoWTools_KeyMixin:Init(btn, GetValue, notSetup)
     btn.GetKEY= GetValue
     btn.KEYstring=WoWTools_LabelMixin:CreateLabel(btn,{size=12, color={r=1,g=1,b=1}})
     btn.KEYstring:SetPoint('TOPRIGHT')
@@ -40,7 +40,9 @@ function WoWTools_KeyMixin:Init(btn, GetValue)
     btn.KEYtexture:SetSize(30, 15)
     btn.KEYtexture:Hide()
 
-    self:Setup(btn)
+    if not notSetup then
+        self:Setup(btn)
+    end
 end
 
 
@@ -85,8 +87,9 @@ function WoWTools_KeyMixin:Setup(btn, isDisabled)
     else
         ClearOverrideBindings(btn)
     end
-
-    if self:IsKeyValid(btn) then
+    self:SetTexture(btn)
+end
+    --[[if self:IsKeyValid(btn) then
         if #key==1 then
             btn.KEYstring:SetText(key)
             btn.KEYtexture:SetShown(false)
@@ -98,7 +101,7 @@ function WoWTools_KeyMixin:Setup(btn, isDisabled)
         btn.KEYstring:SetText('')
         btn.KEYtexture:SetShown(false)
     end
-end
+end]]
 
 
 

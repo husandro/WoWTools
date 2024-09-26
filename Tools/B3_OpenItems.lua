@@ -782,6 +782,7 @@ local function Init()
 
     OpenButton:SetScript("OnEnter",  function(self)
         get_Items()
+        WoWTools_KeyMixin:SetTexture(self)
         WoWTools_ToolsButtonMixin:EnterShowFrame(self)
         self:set_tooltips()
         self:SetScript('OnUpdate', function (s, elapsed)
