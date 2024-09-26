@@ -116,6 +116,7 @@ local function Init_Buttons()
                             self:set_event()
                             self:RegisterEvent('SPELL_UPDATE_COOLDOWN')
                         else
+                            e.SetItemSpellCool(self)
                             self:UnregisterAllEvents()
                         end
                     end

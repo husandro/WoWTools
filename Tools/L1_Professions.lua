@@ -9,7 +9,8 @@ local id, e= ...
 9 钓鱼
 10 考古
 ]]
-local function Init_Professions(index)
+
+local function Create_Button(index)
     local name, icon, _, _, _, _, skillLine = GetProfessionInfo(index)
 
     if not skillLine or not icon then return end
@@ -18,7 +19,20 @@ local function Init_Professions(index)
         name='WoWToolsToolsProfession'..index,
         tooltip='|T'..icon..':0|t'..e.cn(name),
     })
+    if button then
+        button:SetScript('OnLeave', GameTooltip_Hide)
+        button.name= name
+        button.icon= icon
+        button.skillLine= skillLine
+        button.texture:SetTexture(icon)
+        return button
+    end
+end
 
+
+--主要专业 1, 2
+local function Init_Professions(index)
+    local button=  Create_Button(index)
     if not button then return end
 
     button:SetScript('OnMouseDown', function(self, d)
@@ -28,22 +42,92 @@ local function Init_Professions(index)
             ToggleProfessionsBook()
         end
     end)
-    button:SetScript('OnLeave', GameTooltip_Hide)
     button:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(
-            '|T'..(self.icon or 0)..':0|t'..self.name..e.Icon.left,
+            '|T'..(self.icon or 0)..':0|t'..e.cn(self.name)..e.Icon.left,
             e.Icon.right..MicroButtonTooltipText(e.onlyChinese and '专业' or PROFESSIONS_BUTTON, "TOGGLEPROFESSIONBOOK")..'|A:UI-HUD-MicroMenu-Professions-Mouseover:24:24|a'
         )
         e.tips:Show()
     end)
-    button.name= name
-    button.icon= icon
-    button.skillLine= skillLine
-    button.texture:SetTexture(icon)
+end
+
+
+
+
+
+
+
+
+--[[
+/cast [@player]烹饪用火
+/use 大厨的帽子
+]]
+local function Init_Cooking(index)
+    local button=  Create_Button(index)
+    if not button then return end
+
+    button:SetScript('OnMouseDown', function(self, d)
+        if d=='LeftButton' then
+            C_TradeSkillUI.OpenTradeSkill(self.skillLine)
+        end
+    end)
+
+    local macro
+    local name= C_Spell.GetSpellName(818)
+    if name then
+        macro= '/cast [@player]'..name
+    end
+    local toyName=C_Item.GetItemNameByID(134020)--玩具,大厨的帽子
+    if toyName then
+        macro= (macro and macro..'\n' or '')..'/use '..toyName
+    end
+    if macro then
+        button:SetAttribute('type2', 'macro')
+        button:SetAttribute('macrotext2', macro)
+        button.tooltip=macro
+
+        function button:set_event()
+            e.SetItemSpellCool(self, {spell=818})
+        end
+        function button:settings()
+            if self:IsVisible() then
+                self:set_event()
+                self:RegisterEvent('SPELL_UPDATE_COOLDOWN')
+            else
+                e.SetItemSpellCool(self)
+                self:UnregisterAllEvents()
+            end
+        end
+        button:SetScript('OnEvent', button.set_event)
+        button:SetScript('OnShow', button.settings)
+        button:SetScript('OnHide', button.settings)
+        button:settings()
+    end
+
+    button:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddLine('|T'..(self.icon or 0)..':0|t'..e.cn(self.name)..e.Icon.left)
+        if self.tooltip then
+            e.tips:AddLine(' ')
+            e.tips:AddLine(self.tooltip..e.Icon.right)
+
+            local data= C_Spell.GetSpellCooldown(818)
+            if data and data.duration>0 then
+                local spellName= WoWTools_SpellMixin:GetName(818)
+                if spellName then
+                    e.tips:AddLine(' ')
+                    e.tips:AddLine(spellName)
+                end
+            end
+        end
+        e.tips:Show()
+    end)
 
 end
+
 
 local function Init()
     local prof1, prof2, archaeology, fishing, cooking = GetProfessions()
@@ -53,7 +137,9 @@ local function Init()
     if prof2 and prof2>0 then
         Init_Professions(prof2)
     end
-    
+    if cooking and cooking>0 then
+        Init_Cooking(cooking)
+    end
 end
 
 
