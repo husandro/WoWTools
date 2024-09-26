@@ -56,21 +56,24 @@ local Save={
     lockedToy=nil,
     Alt=69775,--维库饮水角
     Ctrl=109183,--世界缩小器
-    Shift=134032,--精英旗帜
+    Shift=86568,--重拳先生的铜罗盘
 
 }
-local ToyButton
 
+
+
+
+local ToyButton
 local function Set_Alt_Table()
     ModifiedTab={
         [Save.Alt or 69775]='Alt',--维库饮水角
         [Save.Ctrl or 109183]='Ctrl',--世界缩小器
-        [Save.Shift or 134032]='Shift',--精英旗帜
+        [Save.Shift or 86568]='Shift',--精英旗帜
     }
     ModifiedMenuTab={
         {type='Alt', itemID=Save.Alt or 69775},
         {type='Ctrl', itemID=Save.Ctrl or 109183},
-        {type='Shift', itemID=Save.Ctrl or 134032}
+        {type='Shift', itemID=Save.Shift or 86568}
     }
 end
 
@@ -230,7 +233,7 @@ local function Init_Menu_Toy(_, root)
             ..(Save.Ctrl==itemID and 'C' or '')
             ..(Save.Shift==itemID and 'S' or '')
         alt= alt~='' and '|cnGREEN_FONT_COLOR:['..alt..']|r' or alt
---名称
+--名称，锁定
         local has= PlayerHasToy(itemID)
         local isLoked= Save.lockedToy==itemID
         sub=root:CreateCheckbox(
@@ -247,6 +250,7 @@ local function Init_Menu_Toy(_, root)
                     local toy= ToyButton.Selected_Value~=data.itemID and data.itemID or nil
                     ToyButton:Set_SelectValue_Random(toy)
                 end
+                return MenuResponse.Refresh
             end,
             {itemID=itemID, name=toyName, has=has}
         )
@@ -264,10 +268,11 @@ local function Init_Menu_Toy(_, root)
                 Save.lockedToy= toy
                 ToyButton:Set_LockedValue_Random(toy)
             end
+            return MenuResponse.Refresh
         end, {itemID=itemID, name=toyName, has=has})
         sub2:SetTooltip(Set_Menu_Tooltip)
 
-
+--设置
         sub2=sub:CreateButton(
             '|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '设置' or SETTINGS),
             set_ToggleCollectionsJournal,
@@ -279,12 +284,13 @@ local function Init_Menu_Toy(_, root)
 
         Set_Alt_Menu(sub, itemID)
 
+--移除
         sub:CreateDivider()
         sub2=sub:CreateButton(
             '|A:common-icon-redx:0:0|a'..(e.onlyChinese and '移除' or REMOVE),
             function(data)
                 Remove_Toy(data.itemID)--移除
-                return MenuResponse.Open
+                return MenuResponse.Refresh
             end,
             {itemID=itemID, name=toyName}
         )
@@ -807,8 +813,10 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
-            --旧版本
-            addName='|A:collections-icon-favorites:0:0|a'..(e.onlyChinese and '使用玩具' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_RANDOM3:gsub('/',''), TOY))
+
+            Save= WoWToolsSave['Tools_UseToy'] or Save
+
+            addName='|A:collections-icon-favorites:0:0|a'..(e.onlyChinese and '随机玩具' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, USE, TOY))
 
             ToyButton= WoWTools_ToolsButtonMixin:CreateButton({
                 name='UseToy',

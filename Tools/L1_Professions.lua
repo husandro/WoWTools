@@ -4,14 +4,6 @@ local id, e= ...
     archaeologyKey='F',
 }]]
 
---[[
-7 采矿
-8 工程学
-
-6 烹饪
-9 钓鱼
-10 考古
-]]
 
 local function Create_Button(index)
     local name, icon, _, _, _, _, skillLine = GetProfessionInfo(index)
@@ -154,8 +146,7 @@ end
 
 
 
-
-local function Init_Fishing(index, spellID, spellID2)
+local function Init_KeyButton(index, spellID, spellID2)
     local button=  Create_Button(index)
     if not button then return end
     button.spellID= spellID
@@ -199,12 +190,8 @@ local function Init_Fishing(index, spellID, spellID2)
         if UnitAffectingCombat('player') then
             return
         end
-        if d==1 then--1上, -1下
+        if d==1 then-- 1上, -1下
             WoWTools_KeyMixin:Setup(self, false)
-            self:UnregisterAllEvents()
-
-        else
-            WoWTools_KeyMixin:Setup(self, true)
             self:RegisterEvent('PLAYER_REGEN_ENABLED')
             self:RegisterEvent('PLAYER_REGEN_DISABLED')
             self:RegisterEvent('PLAYER_MOUNT_DISPLAY_CHANGED')
@@ -212,15 +199,22 @@ local function Init_Fishing(index, spellID, spellID2)
             self:RegisterEvent('PET_BATTLE_CLOSE')
             self:RegisterUnitEvent('UNIT_EXITED_VEHICLE', 'player')
             self:RegisterUnitEvent('UNIT_ENTERED_VEHICLE', 'player')
+
+        else
+            WoWTools_KeyMixin:Setup(self, true)
+            self:UnregisterAllEvents()
         end
         self:set_tooltip()
     end)
     WoWTools_KeyMixin:Init(button, function() return 'F' end, true)
 
     button:SetScript('OnEvent', function(self, event)
-        if event=='PLAYER_REGEN_DISABLED'
-            or C_PetBattles.IsInBattle()
-            or UnitInVehicle('player')
+        if event=='PLAYER_REGEN_DISABLED' then
+            ClearOverrideBindings(self)
+            WoWTools_KeyMixin:SetTexture(self)
+
+        elseif event=='PET_BATTLE_OPENING_DONE'
+            or event=='UNIT_ENTERED_VEHICLE'
             or IsMounted()
         then
             WoWTools_KeyMixin:Setup(self, true)
@@ -228,8 +222,17 @@ local function Init_Fishing(index, spellID, spellID2)
         else
             WoWTools_KeyMixin:Setup(self, false)
         end
+        if GameTooltip:IsOwned(self) then
+            self:set_tooltip()
+        end
     end)
+
+
+
+    return button
 end
+
+
 
 
 
@@ -251,18 +254,18 @@ local function Init()
     if cooking and cooking>0 then
         Init_Cooking(cooking)
     end
+
     if fishing and fishing>0 then
-        Init_Fishing(fishing, 131474, 271990)--131474/钓鱼 271990/钓鱼日志
+        Init_KeyButton(fishing, 131474, 271990)--131474/钓鱼 271990/钓鱼日志
     end
+
     if archaeology and archaeology>0 then
-        Init_Fishing(archaeology, 80451,278910)--80451/勘测 278910/考古学
+        local btn= Init_KeyButton(archaeology, 80451,278910)--80451/勘测 278910/考古学
+        if btn then
+            btn.texture:SetTexture(C_Spell.GetSpellTexture(80451) or 134435)
+        end
     end
 end
-
-
-
-
-
 
 
 
