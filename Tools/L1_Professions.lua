@@ -1,8 +1,8 @@
 local id, e= ...
---[[Save={
-    fishingKey='F',
-    archaeologyKey='F',
-}]]
+Save={
+    fishing='BUTTON1',
+    archaeology='F',
+}
 
 
 local function Create_Button(index)
@@ -142,7 +142,30 @@ end
 
 
 
+local function Init_KeyButton_Menu(self, root)
+    root:CreateButton(
+        WoWTools_SpellMixin:GetName(self.spellID2),
+    function(data)
+        C_TradeSkillUI.OpenTradeSkill(data.skillLine)
+        return MenuResponse.Open
+    end, {skillLine=self.skillLine})
+    
+    root:CreateDivider()
+    WoWTools_KeyMixin:SetMenu(root,  {
+        icon='|A:NPE_ArrowDown:0:0|a',
+        name=e.cn(self.name),
+        key=Save[self.type],
+        GetKey=function(key)
+            Save[self.type]=key
+            WoWTools_KeyMixin:Setup(self, false)--设置捷键
+        end,
+        OnAlt=function()
+            Save[self.type]=nil
+            WoWTools_KeyMixin:Setup(self, true)--设置捷键
+        end,
+    })
 
+end
 
 
 
@@ -154,7 +177,7 @@ local function Init_KeyButton(index, spellID, spellID2)
 
     button:SetScript('OnMouseDown', function(self, d)
         if d=='RightButton' then
-            C_TradeSkillUI.OpenTradeSkill(self.skillLine)
+            MenuUtil.CreateContextMenu(self, Init_KeyButton_Menu)
         end
     end)
 
@@ -167,7 +190,7 @@ local function Init_KeyButton(index, spellID, spellID2)
         e.tips:ClearLines()
         e.tips:AddDoubleLine(
             WoWTools_SpellMixin:GetName(self.spellID)..e.Icon.left,
-            e.Icon.right..WoWTools_SpellMixin:GetName(self.spellID2)
+            e.Icon.right..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
         )
         e.tips:AddLine(' ')
 
@@ -175,7 +198,7 @@ local function Init_KeyButton(index, spellID, spellID2)
         local isInCombat= UnitAffectingCombat('player')
         e.tips:AddDoubleLine(
             (isInCombat and '|cnRED_FONT_COLOR:' or (isKeyValid and '|cff9e9e9e') or '')
-            ..(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)..'F'..e.Icon.mid..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP),
+            ..(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)..' '..self:GetKey()..e.Icon.mid..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP),
 
             (isInCombat and '|cnRED_FONT_COLOR:' or (isKeyValid and '|cnGREEN_FONT_COLOR:') or '|cff9e9e9e')
             ..(e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)..e.Icon.mid..(e.onlyChinese and '解除键位' or UNBIND)
@@ -206,7 +229,7 @@ local function Init_KeyButton(index, spellID, spellID2)
         end
         self:set_tooltip()
     end)
-    WoWTools_KeyMixin:Init(button, function() return 'F' end, true)
+    
 
     button:SetScript('OnEvent', function(self, event)
         if event=='PLAYER_REGEN_DISABLED' then
@@ -226,8 +249,6 @@ local function Init_KeyButton(index, spellID, spellID2)
             self:set_tooltip()
         end
     end)
-
-
 
     return button
 end
@@ -255,18 +276,31 @@ local function Init()
         Init_Cooking(cooking)
     end
 
+--钓鱼
     if fishing and fishing>0 then
-        Init_KeyButton(fishing, 131474, 271990)--131474/钓鱼 271990/钓鱼日志
+        local btn= Init_KeyButton(fishing, 131474, 271990)--131474/钓鱼 271990/钓鱼日志
+        if btn then
+            function btn:GetKey()
+                return Save.fishing or 'BUTTON1'
+            end
+            WoWTools_KeyMixin:Init(btn, nil, true)
+            btn.type='fishing'
+        end
     end
 
+--考古学
     if archaeology and archaeology>0 then
         local btn= Init_KeyButton(archaeology, 80451,278910)--80451/勘测 278910/考古学
         if btn then
             btn.texture:SetTexture(C_Spell.GetSpellTexture(80451) or 134435)
+            function btn:GetKey()
+                return Save.archaeology or 'F'
+            end
+            WoWTools_KeyMixin:Init(btn, nil, true)
+            btn.type='archaeology'
         end
     end
 end
-
 
 
 
@@ -284,9 +318,11 @@ end
 --###########
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent('PLAYER_LOGOUT')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
+            Save= WoWToolsSave['Tools_Professions'] or Save
             if WoWTools_ToolsButtonMixin:GetButton() then
                 C_Timer.After(2, function()
                     if UnitAffectingCombat('player') then
@@ -297,9 +333,16 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end)
             end
             self:UnregisterEvent('ADDON_LOADED')
-        elseif event=='PLAYER_REGEN_ENABLED' then
-            Init()
-            self:UnregisterEvent('PLAYER_REGEN_ENABLED')
         end
+
+    elseif event=='PLAYER_REGEN_ENABLED' then
+        Init()
+        self:UnregisterEvent('PLAYER_REGEN_ENABLED')
+
+    elseif event == "PLAYER_LOGOUT" then
+        if not e.ClearAllSave then
+            WoWToolsSave['Tools_Professions']=Save
+        end
+
     end
 end)

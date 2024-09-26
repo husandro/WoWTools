@@ -28,7 +28,7 @@ end)
 
 
 function WoWTools_KeyMixin:Init(btn, GetValue, notSetup)
-    btn.GetKEY= GetValue
+    btn.GetKEY= GetValue or btn.GetKey
     btn.KEYstring=WoWTools_LabelMixin:CreateLabel(btn,{size=12, color={r=1,g=1,b=1}})
     btn.KEYstring:SetPoint('TOPRIGHT')
 
