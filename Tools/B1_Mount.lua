@@ -106,7 +106,7 @@ local MountShowFrame--坐骑秀
 
 local Faction =  e.Player.faction=='Horde' and 0 or e.Player.faction=='Alliance' and 1
 local ShiJI
-local OkMount--是否已学, 骑术
+--local OkMount--是否已学, 骑术
 local XD
 
 
@@ -125,12 +125,13 @@ local function set_ShiJI()--召唤司机 代驾型机械路霸
 end
 
 
-local function set_OkMout()--是否已学, 骑术
-    OkMount= IsSpellKnownOrOverridesKnown(90265)
+--[[local function set_OkMout()--是否已学, 骑术
+    OkMount= e.Player.level>=10
+            or IsSpellKnownOrOverridesKnown(90265)
             or IsSpellKnownOrOverridesKnown(33391)
             or IsSpellKnownOrOverridesKnown(34090)
             or IsSpellKnownOrOverridesKnown(33388)
-end
+end]]
 
 
 
@@ -201,20 +202,17 @@ MountTab={}--MountTab[MountType]={}
 
 local function checkMount()--检测坐骑
     local uiMapID= C_Map.GetBestMapForUnit("player")--当前地图
-    for index, type in pairs(MountType) do
+    for _, type in pairs(MountType) do
         if XD and XD[type] then
             MountTab[type]={XD[type]}
 
 
-        elseif index<=3 and not OkMount and ShiJI then--33388初级骑术 33391中级骑术 3409高级骑术 34091专家级骑术 90265大师级骑术 783旅行形态
-            MountTab[type]={ShiJI}
+        --[[elseif index<=3 and not OkMount and ShiJI then
+            MountTab[type]={ShiJI}]]
 
         else
-            MountTab[type]={}
-            if not Save.Mounts[type] then
-                Save.Mounts[type]= {}
-            end
-            for spellID, tab in pairs(Save.Mounts[type]) do
+            MountTab[type]= {}
+            for spellID, tab in pairs(Save.Mounts[type] or {}) do
                 spellID= (spellID==179244 or spellID==179245) and ShiJI or spellID
                 local mountID = C_MountJournal.GetMountFromSpell(spellID)
                 if mountID then
@@ -243,11 +241,14 @@ end
 
 local function getRandomRoll(type)--随机坐骑
     local tab=MountTab[type] or {}
-    if #tab>0 then
-        local index=math.random(1,#tab)
+    local num= #tab
+    if num>0 then
+        local index= math.random(1, num)
+
         if C_Spell.IsSpellUsable(tab[index]) and not select(2, C_MountJournal.GetMountUsabilityByID(tab[index], true)) then
             return tab[index]
         end
+
     end
 end
 
@@ -335,8 +336,6 @@ local mapIDs={
 
 
 local function setClickAtt()--设置 Click属性
-    --local inCombat=UnitAffectingCombat('player')
-    --if inCombat or UnitIsDeadOrGhost('player') or not MountButton:CanChangeAttribute() then
     if not MountButton:CanChangeAttribute() then
         MountButton.Combat=true
         return
@@ -356,7 +355,6 @@ local function setClickAtt()--设置 Click属性
         end
         spellID= spellID or (IsIndoors() and 768 or 783)
     else
-        
         spellID= (IsIndoors() or isMoving or isBat) and MountButton.spellID--进入战斗, 室内
             or getRandomRoll(FLOOR)--区域
             or ((isAdvancedFlyableArea or C_Spell.IsSpellUsable(368896)) and-- [368896]=true,--[复苏始祖幼龙] 
@@ -371,9 +369,9 @@ local function setClickAtt()--设置 Click属性
     end
     spellID= spellID or ShiJI
 
-    if spellID== MountButton.typeID then
+    --[[if spellID== MountButton.typeID then
         return
-    end
+    end]]
 
     local name, icon
     if spellID then
@@ -1926,7 +1924,7 @@ local function Init()
 
     function MountButton:settings()
         set_ShiJI()--召唤司机
-        set_OkMout()--是否已学, 骑术
+        --set_OkMout()--是否已学, 骑术
         XDInt()--德鲁伊设置
         checkSpell()--检测法术
         checkItem()--检测物品
@@ -2153,7 +2151,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
                 self:RegisterEvent('PLAYER_STARTED_MOVING')--设置, TOOLS 框架,隐藏
 
                 self:RegisterEvent('NEUTRAL_FACTION_SELECT_RESULT')--ShiJI
-                self:RegisterEvent('LEARNED_SPELL_IN_TAB')--OkMount
+                --self:RegisterEvent('LEARNED_SPELL_IN_TAB')--OkMount
 
 
             else
@@ -2236,7 +2234,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     elseif event=='NEUTRAL_FACTION_SELECT_RESULT' then
         MountButton:settings()
 
-    elseif event=='LEARNED_SPELL_IN_TAB' then
-        set_OkMout()
+    --elseif event=='LEARNED_SPELL_IN_TAB' then
+        --set_OkMout()
     end
 end)

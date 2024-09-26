@@ -4996,7 +4996,13 @@
         "SHOW_QUICK_BUTTON",
         "ToggleProfessionsBook",
         "PROFESSIONS_BUTTON",
-        "UNBIND"
+        "UNBIND",
+        "ExpansionTrialThanksForPlayingDialog",
+        "ExpansionTrialCheckPointDialog",
+        "IsBoostTutorialScenario",
+        "GMChatFrame_OnEvent",
+        "GMChatFrame",
+        "ProfessionsBook_LoadUI"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

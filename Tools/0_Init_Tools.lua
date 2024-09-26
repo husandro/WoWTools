@@ -34,8 +34,6 @@ local addName= WoWTools_ToolsButtonMixin:GetName()
 
 
 
-
-
 local function Init_Panel()
     local Category, Layout= e.AddPanel_Sub_Category({name=addName})
     WoWTools_ToolsButtonMixin:SetCategory(Category, Layout)
@@ -63,7 +61,7 @@ local function Init_Panel()
 
     e.AddPanel_Check({
         category= Category,
-        name= e.onlyChinese and '加载战团藏品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, 'Load', COLLECTIONS),
+        name= e.onlyChinese and '战团藏品' or COLLECTIONS,
         tooltip= '|nCollectionsJournal_LoadUI()|n|n'
                 ..(e.onlyChinese and '登入游戏时|n建议：开启' or
                 (format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LOG_IN, GAME)..'|n'..HELPFRAME_SUGGESTION_BUTTON_TEXT..': '..ENABLE)
@@ -302,11 +300,6 @@ local function Init()
         if Save.loadCollectionUI then
             WoWTools_LoadUIMixin:Journal()
         end
-        --[[if Save.loadProfessionsUI then
-            if not ProfessionsFrame then
-                ProfessionsFrame_LoadUI()
-            end
-        end]]
     end
 
     function Button:set_size()
