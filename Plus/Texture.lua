@@ -649,6 +649,7 @@ local function Init_All_Frame()
 
     --声望
     e.Set_ScrollBar_Color_Alpha(ReputationFrame)
+    set_Menu(ReputationFrame.filterDropdown)
 
 
     --货币

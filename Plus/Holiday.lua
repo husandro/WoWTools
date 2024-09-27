@@ -128,8 +128,8 @@ local function Get_Button_Text(event)
     local findQuest
     local text
     local texture
-    
-    local tab= e.cn(nil, {holydayID=event.eventID}) or {}    
+
+    local tab= e.cn(nil, {holydayID=event.eventID}) or {}
     local title=tab[1] or event.title
 
 
@@ -248,7 +248,7 @@ local function Get_Button_Text(event)
             icon=event.iconTexture
         end
     end
-    
+
     title= title:match(HEADER_COLON..'(.+)') or title
     title= not event.isValid and '|cff9e9e9e'..title..'|r' or title
     local msg
@@ -538,7 +538,7 @@ local function Init_TrackButton()
 
             self:RegisterEvent('PET_BATTLE_OPENING_DONE')
 			self:RegisterEvent('PET_BATTLE_CLOSE')
-    
+
             self:RegisterUnitEvent('UNIT_EXITED_VEHICLE', 'player')
             self:RegisterUnitEvent('UNIT_ENTERED_VEHICLE', 'player')
 
@@ -730,7 +730,7 @@ local function Init_TrackButton()
         end
     end
 
-   
+
 
     TrackButton:set_Point()
     TrackButton:set_Scale()
@@ -1060,14 +1060,43 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if  Save.disabled then
                 self:UnregisterEvent('ADDON_LOADED')
             else
-                if not CalendarFrame then
-                    Calendar_LoadUI()
+                print( C_AddOns.IsAddOnLoaded('Blizzard_Calendar'))
+                if C_AddOns.IsAddOnLoaded('Blizzard_Calendar') then
+                    Init_Blizzard_Calendar()--初始，插件
+                    --C_Timer.After(4, Init_TrackButton)
+                    Init_TrackButton()
+                    self:UnregisterEvent('ADDON_LOADED')
                 end
+
+                do
+                    ToggleCalendar()
+                end
+                C_Timer.After(2, function()
+                    if CalendarFrame then
+                        if CalendarFrame:IsShown() then
+                            ToggleCalendar()
+                        else
+                            do
+                                ToggleCalendar()
+                            end
+                            if CalendarFrame:IsShown() then
+                                ToggleCalendar()
+                            else
+                                C_Timer.After(2, function()
+                                    if CalendarFrame:IsShown() then
+                                        ToggleCalendar()
+                                    end
+                                end)
+                            end
+                        end
+                    end
+                end)
             end
 
         elseif arg1=='Blizzard_Calendar' then
             Init_Blizzard_Calendar()--初始，插件
-            C_Timer.After(4, Init_TrackButton)
+            --C_Timer.After(4, Init_TrackButton)
+            Init_TrackButton()
         end
 
     elseif event == "PLAYER_LOGOUT" then

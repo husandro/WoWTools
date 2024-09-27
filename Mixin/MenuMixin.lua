@@ -78,7 +78,7 @@ function WoWTools_MenuMixin:CreateSlider(root, tab)
 
         f:EnableMouseWheel(true)
         f:SetScript('OnMouseWheel', function(s, d)
-            local value= s.getValue()
+            local value= s.getValue() or 1
             if d== 1 then
                 value= value- s.step
             elseif d==-1 then
