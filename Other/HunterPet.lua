@@ -818,8 +818,7 @@ function Init_StableFrame_List()
     --local btn= WoWTools_ButtonMixin:Cbtn(StableFrame, {size={20,20}, atlas='dressingroom-button-appearancelist-up'})
     local btn= WoWTools_ButtonMixin:CreateMenu(StableFrameCloseButton)
     btn:SetPoint('RIGHT', StableFrameCloseButton, 'LEFT', -2, 0)
-    btn:SetFrameStrata(StableFrameCloseButton:GetFrameStrata())
-    btn:SetFrameLevel(StableFrameCloseButton:GetFrameLevel())
+   
 
     function btn:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")

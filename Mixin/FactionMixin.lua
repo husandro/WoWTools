@@ -1,20 +1,33 @@
 local e= select(2, ...)
-WoWTools_FactionMinxin={}
+WoWTools_FactionMixin={}
 
 local function GetText(string)
     return e.cn(_G[string..(e.Player.sex==3 and '_FEMALE' or '')])
 end
 
-function WoWTools_FactionMinxin:GetInfo(factionID, index, toRight)
+local function Get_Data(factionID, index)
     local data
     if factionID then
         data= C_Reputation.GetFactionDataByID(factionID)
     elseif index then
         data= C_Reputation.GetFactionDataByIndex(index)
     end
+    return data or {}
+end
 
-    if not data or not data.name then
-        return {}
+
+
+
+
+
+
+
+
+
+function WoWTools_FactionMixin:GetInfo(factionID, index, toRight)
+    local data= Get_Data(factionID, index)
+    if not data.name then
+        return data
     end
 
     factionID= factionID or data.factionID
@@ -148,4 +161,28 @@ function WoWTools_FactionMinxin:GetInfo(factionID, index, toRight)
 
         hasRep= data.hasBonusRepGain,--额外，声望
     }
+end
+
+
+
+
+function WoWTools_FactionMixin:GetName(factionID, index)
+    local data= WoWTools_FactionMixin:GetInfo(factionID, index, true)
+    if not data.name or not data.factionID then
+        return e.cn(data.name) or data.factionID or factionID or index
+    end
+    
+    local isAccount= C_Reputation.IsAccountWideReputation(factionID)
+    
+    return (isAccount and '|A:questlog-questtypeicon-account:0:0|a' or '')
+        ..(data.atlas and ('|A:'..data.atlas..':0:0|a') or (data.texture and '|T'..data.texture..':0|t') or '')
+        ..(isAccount and '|cff00ccff' or (data.isCapped and '|cffff7f00') or '|cff00ff00')
+
+        ..e.cn(data.name)
+        ..'|r |cffffffff'
+
+        ..(data.isCapped and '' or data.factionStandingtext)
+        ..' '
+        ..((not data.isCapped or data.hasRep) and data.valueText or '')
+        ..(data.hasRewardPending and (e.Player.faction=='Alliance' and '|A:GarrMission-AllianceChest:0:0|a' or '|A:GarrMission-HordeChest:0:0|a') or '')
 end

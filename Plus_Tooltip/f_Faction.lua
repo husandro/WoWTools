@@ -5,7 +5,7 @@ local e= select(2, ...)
 
 --声望
 function WoWTools_TooltipMixin:Set_Faction(tooltip, factionID)--, frame)
-    local info= factionID and WoWTools_FactionMinxin:GetInfo(factionID, nil, true)
+    local info= factionID and WoWTools_FactionMixin:GetInfo(factionID, nil, true)
     if not info.factionID then
         return
     end

@@ -165,7 +165,7 @@ function WoWTools_ButtonMixin:CreateSecureButton(frame, tab)
     local setID= tab.setID
     local size= tab.size
 
-    local btn= CreateFrame("Button", name or ('WoWToolsToolsButton'..get_index()), frame or UIParent, "SecureActionButtonTemplate", setID)
+    local btn= CreateFrame("Button", name or ('WoWToolsSecureButton'..get_index()), frame or UIParent, "SecureActionButtonTemplate", setID)
     btn:SetSize(get_size(size))
     self:Settings(btn, true)
     return btn
@@ -182,7 +182,9 @@ function WoWTools_ButtonMixin:CreateMenu(frame, tab)
     local hideIcon= tab.hideIcon
     local isType2= tab.isType2--圆形按钮
 
-    local btn= CreateFrame('DropdownButton', name or ('WoWToolsMenu'..get_index()), frame or UIParent, template, setID)
+    local btn= CreateFrame('DropdownButton', name or ('WoWToolsMenuButton'..get_index()), frame or UIParent, template, setID)
+    btn:SetFrameStrata(frame:GetFrameStrata())
+    btn:SetFrameLevel(frame:GetFrameLevel())
     btn:SetSize(get_size(size))
     self:Settings(btn, isType2)
 

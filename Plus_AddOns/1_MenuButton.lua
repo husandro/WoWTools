@@ -201,8 +201,6 @@ end
 local function Init()
     local btn= WoWTools_ButtonMixin:CreateMenu(AddonListCloseButton, {name='WoWTool_AddOnsOptionsButton'})
     btn:SetPoint('RIGHT', AddonListCloseButton, 'LEFT', -2, 0)
-    btn:SetFrameStrata(AddonListCloseButton:GetFrameStrata())
-    btn:SetFrameLevel(AddonListCloseButton:GetFrameLevel())
 
     btn:SetScript('OnLeave', GameTooltip_Hide)
     btn:SetScript('OnEnter', function(self)

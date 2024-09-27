@@ -36,7 +36,7 @@ Mixin\ColorMixin.lua
 Mixin\CurrencyMixin.lua
 Mixin\DurabiliyMixin.lua
 Mixin\EditBoxMixn.lua
-Mixin\FactionMinxin.lua
+Mixin\FactionMixin.lua
 Mixin\FrameMixin.lua
 Mixin\GroupMixin.lua
 Mixin\ItemMixin.lua
@@ -144,10 +144,12 @@ Plus_Attributes\Menu_Attributes.lua
 
 
 ##声望面板
-Plus\Faction.lua
-
-
-
+Plus_Reputation\0_Reputation.lua
+Plus_Reputation\Init_Button.lua
+Plus_Reputation\TrackButton_Init.lua
+Plus_Reputation\TrackButton_SetText.lua
+Plus_Reputation\z_ScrollBox_Plus.lua
+Plus_Reputation\z_CHAT_MSG.lua
 
 
 

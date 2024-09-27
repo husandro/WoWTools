@@ -82,7 +82,7 @@ local function Set_Covenant_Button(self, covenantID, activityID)
 
 --取得，等级，派系声望
 local function Get_Major_Faction_Level(factionID, level)
-    --WoWTools_FactionMinxin:GetInfo(factionID, nil, nil)
+    --WoWTools_FactionMixin:GetInfo(factionID, nil, nil)
     local text,hasRewardPending ='', false
     level= level or 0
     if C_MajorFactions.HasMaximumRenown(factionID) then

@@ -497,12 +497,13 @@ end
 
 
 
---全部清除
---WoWTools_MenuMixin:ClearAll(root, function() end)
 function WoWTools_MenuMixin:ClearAll(root, SetValue)
     root:CreateButton('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL), SetValue)
 end
-
+--[[
+--全部清除
+    WoWTools_MenuMixin:ClearAll(sub, function() end)
+]]
 
 function WoWTools_MenuMixin:SetGridMode(sub, num)
     if num and num>self.maxMenuButton then

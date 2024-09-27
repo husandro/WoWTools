@@ -6,7 +6,7 @@ local e= select(2, ...)
 
 --菜单, 派系声望
 local function Set_Faction_Menu(root, factionID)
-    local info= WoWTools_FactionMinxin:GetInfo(factionID, nil, false)
+    local info= WoWTools_FactionMixin:GetInfo(factionID, nil, false)
     if not info.name then
         return
     end

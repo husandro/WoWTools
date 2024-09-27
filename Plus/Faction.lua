@@ -31,7 +31,7 @@ local FACTION_STANDING_INCREASED_ACCOUNT_WIDE = FACTION_STANDING_INCREASED_ACCOU
 
 
 local function get_Faction_Info(index, factionID)
-	local data= WoWTools_FactionMinxin:GetInfo(factionID, index, Save.toRightTrackText)
+	local data= WoWTools_FactionMixin:GetInfo(factionID, index, Save.toRightTrackText)
 	factionID= data.factionID
 	local name
 	name= data.name
@@ -831,7 +831,7 @@ local function WoWTools_Faction_Updata_Filter(_, _, text, ...)
 				end
 			end
 
-			local info= WoWTools_FactionMinxin:GetInfo(factionID, nil, true)
+			local info= WoWTools_FactionMixin:GetInfo(factionID, nil, true)
 			text= text..(info.atla and '|A:'..info.atlas..':0:0|a' or (info.texture and '|T'..info.texture..':0|t') or '')
 				..(info.factionStandingtext or '')
 				..(info.hasRewardPending or '')..(info.valueText and ' '..info.valueText or '')
