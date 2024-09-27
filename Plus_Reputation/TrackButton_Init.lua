@@ -30,6 +30,7 @@ local function Init_Menu(self, root)
 	end)
 
 --向右平移
+	root:CreateDivider()
 	root:CreateCheckbox(
 		e.onlyChinese and '向右平移' or BINDING_NAME_STRAFERIGHT,
 	function()
