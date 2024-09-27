@@ -13,7 +13,79 @@ local TrackButton
 
 
 
+local function Init_Menu(self, root)
+	local sub
+--显示
+	sub=root:CreateCheckbox(
+		e.onlyChinese and '显示' or SHOW,
+	function()
+		return Save().btnstr
+	end, function()
+		Save().btnstr= not Save().btnstr and true or nil
+		self:set_Shown()
+		e.call(ReputationFrame.Update, ReputationFrame)
+	end)
+	sub:SetTooltip(function(tooltip)
+		tooltip:AddLine(e.onlyChinese and '显示/隐藏' or (SHOW..'/'..HIDE))
+	end)
 
+--向右平移
+	root:CreateCheckbox(
+		e.onlyChinese and '向右平移' or BINDING_NAME_STRAFERIGHT,
+	function()
+		return Save().toRightTrackText
+	end, function()
+		Save().toRightTrackText= not Save().toRightTrackText and true or false
+		for _, btn in pairs(self.btn) do
+			btn.text:ClearAllPoints()
+			btn:set_text_point()
+		end
+		e.call(ReputationFrame.Update, ReputationFrame)
+	end)
+
+--上
+	root:CreateCheckbox(
+		'|A:bags-greenarrow:0:0|a'
+		..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP),
+	function()
+		return Save().toTopTrack
+	end, function()
+		Save().toTopTrack= not Save().toTopTrack and true or nil
+		local last
+		for index= 1, #TrackButton.btn do
+			local btn=TrackButton.btn[index]
+			btn:ClearAllPoints()
+			if Save().toTopTrack then
+				btn:SetPoint('BOTTOM', last or TrackButton, 'TOP')
+			else
+				btn:SetPoint('TOP', last or TrackButton, 'BOTTOM')
+			end
+			last=btn
+		end
+		e.call(ReputationFrame.Update, ReputationFrame)
+	end)
+
+--隐藏名称
+	sub=root:CreateCheckbox(
+		e.onlyChinese and '隐藏名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, NAME),
+	function()
+		return Save().onlyIcon
+	end, function()
+		Save().onlyIcon= not Save().onlyIcon and true or nil
+		WoWTools_ReputationMixin.onlyIcon= Save().onlyIcon
+		e.call(ReputationFrame.Update, ReputationFrame)
+	end)
+	sub:SetTooltip(function(tooltip)
+		tooltip:AddLine(
+			e.onlyChinese and '仅显示有图标声望'
+			or format(LFG_LIST_CROSS_FACTION, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, FACTION, EMBLEM_SYMBOL))
+		)
+		e.call(ReputationFrame.Update, ReputationFrame)
+	end)
+	sub:SetEnabled(not PlayerGetTimerunningSeasonID())
+
+
+end
 
 
 
@@ -142,7 +214,7 @@ local function Init()
 
 
 		elseif d=='RightButton' and not IsModifierKeyDown() then
-			if not self.Menu then
+			--[[if not self.Menu then
 				self.Menu= CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
 				e.LibDD:UIDropDownMenu_Initialize(self.Menu, function(_, level)
 					local info={
@@ -212,7 +284,8 @@ local function Init()
 					e.LibDD:UIDropDownMenu_AddButton(info, level)
 				end, 'MENU')
 			end
-			e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
+			e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)]]
+			MenuUtil.CreateContextMenu(self, Init_Menu)
 		end
 		self:set_Tooltips()
 	end)
