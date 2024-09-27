@@ -92,7 +92,7 @@ local function Setup(btn)--factionRow, elementData)--ReputationFrame.lua
 		if C_Reputation.IsAccountWideReputation(factionID) then
 			frame.Name:SetTextColor(0, 0.8, 1)
         elseif isCapped then
-            frame.Name:SetTextColor(1, 0, 0)
+            frame.Name:SetTextColor(1, 0.62, 0)
 		else
 			frame.Name:SetTextColor(barColor.r, barColor.g, barColor.b)
 		end
