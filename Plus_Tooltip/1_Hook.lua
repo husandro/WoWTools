@@ -45,39 +45,43 @@ local function Init()
     --####
     --声望
     --####
-        hooksecurefunc(ReputationEntryMixin, 'ShowStandardTooltip', function(self)
-            WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.elementData.factionID)
-        end)
-        hooksecurefunc(ReputationEntryMixin, 'ShowMajorFactionRenownTooltip', function(self)
-            WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.elementData.factionID)
-        end)
-        hooksecurefunc(ReputationEntryMixin, 'ShowFriendshipReputationTooltip', function(self)
-            WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.elementData.factionID)
-        end)
-        hooksecurefunc(ReputationEntryMixin, 'ShowParagonRewardsTooltip', function(self)
-            WoWTools_TooltipMixin:Set_Faction(EmbeddedItemTooltip, self.elementData.factionID)
-        end)
-        hooksecurefunc(ReputationEntryMixin, 'OnClick', function(frame)
-            local self= ReputationFrame.ReputationDetailFrame
+    hooksecurefunc(ReputationEntryMixin, 'ShowStandardTooltip', function(self)
+        WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.elementData.factionID)
+    end)
+    hooksecurefunc(ReputationEntryMixin, 'ShowMajorFactionRenownTooltip', function(self)
+        WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.elementData.factionID)
+    end)
+    hooksecurefunc(ReputationEntryMixin, 'ShowFriendshipReputationTooltip', function(self)
+        WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.elementData.factionID)
+    end)
+    
+    hooksecurefunc(ReputationEntryMixin, 'ShowParagonRewardsTooltip', function(self)
+        WoWTools_TooltipMixin:Set_Faction(EmbeddedItemTooltip, self.elementData.factionID)
+    end)
+    --[[hooksecurefunc('ReputationParagonFrame_SetupParagonTooltip', function(frame)
+        WoWTools_TooltipMixin:Set_Faction(EmbeddedItemTooltip, frame.factionID)
+    end)]]
+
+    hooksecurefunc(ReputationEntryMixin, 'OnClick', function(frame)
+        local self= ReputationFrame.ReputationDetailFrame
+        if not self.factionIDText then
+            self.factionIDText=WoWTools_LabelMixin:CreateLabel(self)
+            self.factionIDText:SetPoint('BOTTOM', self, 'TOP', 0,-4)
+        end
+        self.factionIDText:SetText(frame.elementData.factionID or '')
+    end)
+    ReputationFrame.ReputationDetailFrame:HookScript('OnShow', function(self)
+        local selectedFactionIndex = C_Reputation.GetSelectedFaction();
+        local factionData = C_Reputation.GetFactionDataByIndex(selectedFactionIndex);
+        if factionData and factionData.factionID> 0 then
             if not self.factionIDText then
                 self.factionIDText=WoWTools_LabelMixin:CreateLabel(self)
                 self.factionIDText:SetPoint('BOTTOM', self, 'TOP', 0,-4)
             end
-            self.factionIDText:SetText(frame.elementData.factionID or '')
-        end)
-        ReputationFrame.ReputationDetailFrame:HookScript('OnShow', function(self)
-            local selectedFactionIndex = C_Reputation.GetSelectedFaction();
-            local factionData = C_Reputation.GetFactionDataByIndex(selectedFactionIndex);
-            if factionData and factionData.factionID> 0 then
-                if not self.factionIDText then
-                    self.factionIDText=WoWTools_LabelMixin:CreateLabel(self)
-                    self.factionIDText:SetPoint('BOTTOM', self, 'TOP', 0,-4)
-                end
-                self.factionIDText:SetText(factionData.factionID)
-            end
-        end)
-
-
+            self.factionIDText:SetText(factionData.factionID)
+        end
+    end)
+ 
 
     hooksecurefunc(AreaPOIPinMixin,'TryShowTooltip', function(self)--POI提示 AreaPOIDataProvider.lua
         e.tips:AddLine(' ')
@@ -107,6 +111,13 @@ local function Init()
         end
         e.tips:Show()
     end)
+
+
+
+
+
+
+
 
     --#############
     --挑战, AffixID

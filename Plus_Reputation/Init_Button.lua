@@ -200,7 +200,7 @@ local function Init()
 	end
 
 	btn.up= WoWTools_ButtonMixin:Cbtn(btn, {size={22,22}, atlas='NPE_ArrowUp'})--texture='Interface\\Buttons\\UI-PlusButton-Up'})--收起所有
-	btn.up:SetPoint("RIGHT", btn, 'LEFT',-2,0)
+	btn.up:SetPoint("TOPLEFT", ReputationFrame, 'TOP', -2, -30)
 	btn.up:SetScript("OnClick", function(self)
 		self:GetParent():set_expand_collapse(false)
 	end)
@@ -230,6 +230,7 @@ local function Init()
 	function btn:settings()
 		local show= not WoWTools_ReputationMixin.Save.notPlus
 		self.up:SetShown(show)
+		self.down:SetShown(show)
 	end
     btn:settings()
 end

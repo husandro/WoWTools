@@ -10,7 +10,7 @@ function WoWTools_TooltipMixin:Set_Faction(tooltip, factionID)--, frame)
         return
     end
     local icon= info.texture and ('|T'..info.texture..':0|t'..info.texture)
-                or (info.atlas and '|A:'..info.atlas..':0:0|a'..info.atlas)
+                or (info.atlas and '|A:'..info.atlas..':0:0|a')--..info.atlas)
     if info.friendshipID then
         tooltip:AddDoubleLine((e.onlyChinese and '个人' or format(QUEST_REPUTATION_REWARD_TITLE, 'NPC'))..' '..info.friendshipID, icon)
     elseif info.isMajor then
@@ -25,6 +25,9 @@ function WoWTools_TooltipMixin:Set_Faction(tooltip, factionID)--, frame)
         tooltip:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '你有未领取的奖励' or WEEKLY_REWARDS_UNCLAIMED_TITLE))
     end
     WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='faction', id=info.friendshipID or info.factionID, name=info.name, col=nil, isPetUI=false})--取得网页，数据链接
+    if tooltip==EmbeddedItemTooltip then
+        GameTooltip_AddBlankLineToTooltip(tooltip)
+    end
     tooltip:Show()
 end
 

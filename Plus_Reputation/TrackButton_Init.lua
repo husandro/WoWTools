@@ -3,8 +3,14 @@ local e= select(2, ...)
 local function Save()
     return WoWTools_ReputationMixin.Save
 end
-
 local TrackButton
+
+
+
+
+
+
+
 
 
 
@@ -85,8 +91,24 @@ local function Init_Menu(self, root)
 	end)
 	sub:SetEnabled(not PlayerGetTimerunningSeasonID())
 
-
+--缩放
+	WoWTools_MenuMixin:Scale(root, function()
+		return Save().scaleTrackButton
+	end, function(value)
+		Save().scaleTrackButton= value
+		self:set_Scale()
+	end)
 end
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -156,14 +178,14 @@ local function Init()
 
 
 	function TrackButton:set_Tooltips()
-		e.tips:SetOwner(self, "ANCHOR_RIGHT")
+		e.tips:SetOwner(self, "ANCHOR_LEFT")
 		e.tips:ClearLines()
 		e.tips:AddDoubleLine(e.addName, WoWTools_ReputationMixin.addName)
 		e.tips:AddLine(' ')
 		e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭声望界面' or BINDING_NAME_TOGGLECHARACTER2, e.Icon.left)
 		e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
 		e.tips:AddLine(' ')
-		e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save().scaleTrackButton or 1), 'Alt+'..e.Icon.mid)
+		--e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save().scaleTrackButton or 1), 'Alt+'..e.Icon.mid)
 		e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
 		e.tips:Show()
 	end
@@ -215,77 +237,6 @@ local function Init()
 
 
 		elseif d=='RightButton' and not IsModifierKeyDown() then
-			--[[if not self.Menu then
-				self.Menu= CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
-				e.LibDD:UIDropDownMenu_Initialize(self.Menu, function(_, level)
-					local info={
-						text= e.onlyChinese and '显示' or SHOW,
-						tooltipOnButton=true,
-						tooltipTitle=e.onlyChinese and '显示/隐藏' or (SHOW..'/'..HIDE),
-						checked= Save().btnstr,
-						keepShownOnClick=true,
-						func= function()
-							Save().btnstr= not Save().btnstr and true or false
-							TrackButton:set_Shown()
-							ReputationFrame:Update()
-						end
-					}
-					e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-
-					info={
-						text= e.onlyChinese and '向右平移' or BINDING_NAME_STRAFERIGHT,
-						checked= Save().toRightTrackText,
-						func= function()
-							Save().toRightTrackText= not Save().toRightTrackText and true or false
-							for _, btn in pairs(TrackButton.btn) do
-								btn.text:ClearAllPoints()
-								btn:set_text_point()
-							end
-							ReputationFrame:Update()
-						end
-					}
-					e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-					info={
-						text=e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP,
-						icon='bags-greenarrow',
-						checked= Save().toTopTrack,
-						func= function()
-							Save().toTopTrack = not Save().toTopTrack and true or nil
-							local last
-							for index= 1, #TrackButton.btn do
-								local btn=TrackButton.btn[index]
-								btn:ClearAllPoints()
-								if Save().toTopTrack then
-									btn:SetPoint('BOTTOM', last or TrackButton, 'TOP')
-								else
-									btn:SetPoint('TOP', last or TrackButton, 'BOTTOM')
-								end
-								last=btn
-							end
-							ReputationFrame:Update()
-						end
-					}
-					e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-					e.LibDD:UIDropDownMenu_AddSeparator(level)
-					info={
-						text= e.onlyChinese and '隐藏名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, NAME),
-						disabled= e.Is_Timerunning and true,
-						tooltipOnButton=true,
-						tooltipTitle= e.onlyChinese and '仅显示有图标声望' or format(LFG_LIST_CROSS_FACTION, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, FACTION, EMBLEM_SYMBOL)),
-						checked= Save().onlyIcon,
-						func= function()
-							Save().onlyIcon= not Save().onlyIcon and true or nil
-							WoWTools_ReputationMixin.onlyIcon= Save().onlyIcon
-							ReputationFrame:Update()
-						end
-					}
-					e.LibDD:UIDropDownMenu_AddButton(info, level)
-				end, 'MENU')
-			end
-			e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)]]
 			MenuUtil.CreateContextMenu(self, Init_Menu)
 		end
 		self:set_Tooltips()
@@ -302,7 +253,7 @@ local function Init()
 		WoWTools_ReputationMixin:TrackButton_Settings()
 	end)
 
-	TrackButton:SetScript("OnMouseWheel", function(self, d)--打开,关闭, 声望
+	--[[TrackButton:SetScript("OnMouseWheel", function(self, d)--打开,关闭, 声望
 		if IsAltKeyDown() then--缩放
 			local num
 			num= Save().scaleTrackButton or 1
@@ -317,7 +268,7 @@ local function Init()
 			self:set_Scale()
 			self:set_Tooltips()
 		end
-	end)
+	end)]]
 
 
 
