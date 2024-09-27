@@ -174,6 +174,9 @@ function WoWTools_CursorMixin:GetTextureType(texture)--取得格式, atlas 或 t
 
 
  function WoWTools_CursorMixin:Cursor_SetEvent()--随机, 图片，事件
+    if not self.CursorFrame then
+        return
+    end
     if Save().randomTexture and not Save().disabled then
         self.CursorFrame:RegisterEvent('PLAYER_REGEN_DISABLED')
         self.CursorFrame:RegisterEvent('PLAYER_REGEN_ENABLED')
@@ -195,6 +198,9 @@ end
 
 --初始, 设置, Cursor
 function WoWTools_CursorMixin:Cursor_Settings(onlyRandomTexture)
+    if not self.CursorFrame then
+        return
+    end
     local atlasIndex= Save().randomTexture and random(1, #(Save().Atlas)) or Save().atlasIndex
     local atlas,texture
     if WoWTools_CursorMixin:GetTextureType(Save().Atlas[atlasIndex]) then

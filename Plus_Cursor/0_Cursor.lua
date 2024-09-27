@@ -201,7 +201,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            WoWToolsSave['Plus_Cursor']=Save
+            WoWToolsSave['Plus_Cursor']=WoWTools_CursorMixin.Save
         end
     end
 end)

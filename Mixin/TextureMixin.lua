@@ -52,7 +52,7 @@ function WoWTools_TextureMixin:IsAtlas(texture, size)--Atlas or Texture
                 local atlasInfo= C_Texture.GetAtlasInfo(texture)
                 isAtlas= atlasInfo and true or false
                 textureID= texture
-                icon= isAtlas and format('|A:%s:%d:%d|a', texture, size, size) or format('|T%s:0|t', texture, size)
+                icon= isAtlas and format('|A:%s:%d:%d|a', texture, size, size) or format('|T%s:%d|t', texture, size)
             end
         end
     end

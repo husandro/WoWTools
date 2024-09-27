@@ -246,8 +246,8 @@ local function set_Menu(self, tab)
 
     if self.Background then
       
-        set_Alpha_Color(self.Background, nil, nil, min03)
-        set_Alpha_Color(self.Arrow, nil, nil, min05)
+        set_Alpha_Color(self.Background, nil, true, min03)
+        set_Alpha_Color(self.Arrow, nil, true, min05)
     else
         tab = tab or {}
         --e.Set_Alpha_Frame_Texture(self, {notAlpha=true})     

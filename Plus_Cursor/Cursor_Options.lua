@@ -127,12 +127,13 @@ local function Init(Frame)
     end})
     alphaSlider:SetPoint("TOPLEFT", sliderGravity, 'BOTTOMLEFT', 0, -20)
 
-    local dropDown = CreateFrame("FRAME", nil, Frame, "UIDropDownMenuTemplate")--下拉，菜单
+
+    local dropDown = CreateFrame("DropdownButton", nil, Frame, "WowStyle1DropdownTemplate")--下拉，菜单
     local delColorButton= WoWTools_ButtonMixin:Cbtn(Frame, {icon='hide', size={20,20}})--删除, 按钮
     local addColorEdit= CreateFrame("EditBox", nil, Frame, 'InputBoxTemplate')--EditBox
     local addColorButton= WoWTools_ButtonMixin:Cbtn(Frame, {icon='hide', size={20,20}})--添加, 按钮
     local numColorText= WoWTools_LabelMixin:CreateLabel(Frame, {justifyH='RIGHT'})--nil, nil, nil, nil, nil, 'RIGHT')--颜色，数量
-    numColorText:SetPoint('RIGHT', dropDown, 'LEFT', 18,5)
+    numColorText:SetPoint('RIGHT', dropDown, 'LEFT')
 
     local function set_panel_Texture()--大图片
         local texture= Save().Atlas[Save().atlasIndex]
@@ -147,34 +148,42 @@ local function Init(Frame)
     end
     set_panel_Texture()
 
-    --下拉，菜单
-    local function Init_Menu(self, level)
+--下拉，菜单
+    dropDown:SetPoint("TOPLEFT", alphaSlider, 'BOTTOMLEFT', 0,-32)
+    dropDown:SetWidth(195)
+    dropDown.Text:ClearAllPoints()
+    dropDown.Text:SetPoint('CENTER')
+    dropDown:SetDefaultText(Save().Atlas[Save().atlasIndex] or select(3, WoWTools_TextureMixin:IsAtlas(WoWTools_CursorMixin.DefaultTexture, 0)))
+    dropDown:SetupMenu(function(self, root)
+        local sub
+        local num=0
         for index, texture in pairs(Save().Atlas) do
-            local info={
-                text= texture,
-                icon= texture,
-                arg1= index,
-                checked= Save().atlasIndex==index,
-                func= function(_, arg1)
-                    Save().atlasIndex=arg1
-                    Save().randomTexture=nil
-                    Frame.randomTextureCheck:SetChecked(false)
-                    e.LibDD:UIDropDownMenu_SetText(self, Save().Atlas[arg1])
-                    set_panel_Texture()
-                    WoWTools_CursorMixin:Cursor_Settings()--初始，设置
-                end
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
+            local icon= select(3, WoWTools_TextureMixin:IsAtlas(texture, 0)) or texture
+            sub=root:CreateCheckbox(
+                icon,
+            function(data)
+                return Save().atlasIndex==data.index
+            end, function(data)
+                Save().atlasIndex=data.index
+                Save().randomTexture=nil
+                Frame.randomTextureCheck:SetChecked(false)
+                self:SetDefaultText(data.icon)
+                set_panel_Texture()
+                WoWTools_CursorMixin:Cursor_Settings()--初始，设置
+            end, {index=index, icon=icon, texture=texture})
+            sub:SetTooltip(function(tooltip, description)
+                tooltip:AddLine(select(3, WoWTools_TextureMixin:IsAtlas(description.data.texture, 42)))
+                tooltip:AddLine(description.data.texture)
+                tooltip:AddLine(e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
+            end)
+            num= index
         end
-    end
-    dropDown:SetPoint("TOPLEFT", alphaSlider, 'BOTTOMLEFT', -18,-32)
-    e.LibDD:UIDropDownMenu_SetWidth(dropDown, 180)
-    e.LibDD:UIDropDownMenu_Initialize(dropDown, Init_Menu)
-    e.LibDD:UIDropDownMenu_SetText(dropDown, Save().Atlas[Save().atlasIndex] or WoWTools_CursorMixin.DefaultTexture)
-    dropDown.Button:SetScript('OnMouseDown', function(self) e.LibDD:ToggleDropDownMenu(1,nil,self:GetParent(), self, 15,0) end)
+        WoWTools_MenuMixin:SetScrollMode(root, num)
+    end)
+
 
     --删除，图片
-    delColorButton:SetPoint('LEFT', dropDown, 'RIGHT',-10,0)
+    delColorButton:SetPoint('LEFT', dropDown, 'RIGHT', 2,0)
     delColorButton:SetSize(20,20)
     delColorButton:SetNormalAtlas('xmarksthespot')
     delColorButton:SetScript('OnClick', function()
@@ -186,8 +195,6 @@ local function Init(Frame)
         set_panel_Texture()
         WoWTools_CursorMixin:Cursor_Settings()
         addColorEdit:SetText(texture or WoWTools_CursorMixin.DefaultTexture)
-        e.LibDD:UIDropDownMenu_SetText(dropDown, Save().Atlas[Save().atlasIndex] or WoWTools_CursorMixin.DefaultTexture)
-        e.LibDD:UIDropDownMenu_Initialize(dropDown, Init_Menu)
     end)
 
     --添加，自定义，图片
@@ -197,10 +204,9 @@ local function Init(Frame)
             table.insert(Save().Atlas, text)
             addColorEdit:SetText('')
             numColorText:SetText(#Save().Atlas)
-            e.LibDD:UIDropDownMenu_Initialize(dropDown, Init_Menu)
         end
     end
-    addColorEdit:SetPoint("TOPLEFT", dropDown, 'BOTTOMLEFT',22,-2)
+    addColorEdit:SetPoint("TOPLEFT", dropDown, 'BOTTOMLEFT',2,-2)
 	addColorEdit:SetSize(192,20)
 	addColorEdit:SetAutoFocus(false)
     addColorEdit:ClearFocus()
@@ -217,6 +223,7 @@ local function Init(Frame)
         end
     end)
     addColorEdit:SetScript('OnEnterPressed', add_Color)
+    addColorEdit:SetScript('OnHide', addColorEdit.ClearFocus)
 
     --添加按钮
     addColorButton:SetPoint('LEFT', addColorEdit, 'RIGHT', 5,0)
