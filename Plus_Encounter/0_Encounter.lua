@@ -87,7 +87,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWTools_EncounterMixin.Save= WoWToolsSave['Adventure_Journal'] or Save()
 
-            Save().loot[e.Player.class]= Save().loot[e.Player.class] or {}
+            Save().loot[e.Player.class]= Save().loot[e.Player.class] or {}--这个不能删除，不然换职业会出错
 
             WoWTools_EncounterMixin.addName= '|A:UI-HUD-MicroMenu-AdventureGuide-Mouseover:0:0|a'..(e.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL)
 
