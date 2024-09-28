@@ -5031,6 +5031,7 @@
         "inject-field",
         "missing-parameter",
         "redundant-parameter",
-        "unused-local"
+        "unused-local",
+        "trailing-space"
     ],
 }

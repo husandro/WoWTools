@@ -29,24 +29,31 @@ local function set_EncounterJournal_Keystones_Tips(self)--险指南界面, 挑�
     e.tips:Show()
 end
 
-local function set_EncounterJournal_Money_Tips(self)--险指南界面, 钱
-    e.tips:SetOwner(self, "ANCHOR_LEFT")
-    e.tips:ClearLines()
+local function Set_Money(self, isTooltip)--险指南界面, 钱
     local numPlayer, allMoney  = 0, 0
+    if isTooltip then
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+    end
     for guid, info in pairs(e.WoWDate or {}) do
         if info.Money then
-            e.tips:AddDoubleLine(WoWTools_UnitMixin:GetPlayerInfo({ guid=guid, faction=info.faction, reName=true, reRealm=true}), C_CurrencyInfo.GetCoinTextureString(info.Money))
+            if isTooltip then
+                e.tips:AddDoubleLine(WoWTools_UnitMixin:GetPlayerInfo({ guid=guid, faction=info.faction, reName=true, reRealm=true}), C_CurrencyInfo.GetCoinTextureString(info.Money))
+            end
             numPlayer=numPlayer+1
             allMoney= allMoney + info.Money
         end
     end
-    if allMoney==0 then
-        e.tips:AddDoubleLine(e.onlyChinese and '钱' or MONEY, e.onlyChinese and '无' or NONE)
-    else
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine((e.onlyChinese and '角色' or CHARACTER)..' '..numPlayer..' '..(e.onlyChinese and '总计：' or FROM_TOTAL)..WoWTools_Mixin:MK(allMoney/10000, 3), C_CurrencyInfo.GetCoinTextureString(allMoney))
+    if isTooltip then
+        if allMoney==0 then
+            e.tips:AddDoubleLine(e.onlyChinese and '钱' or MONEY, e.onlyChinese and '无' or NONE)
+        else
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine((e.onlyChinese and '角色' or CHARACTER)..' '..numPlayer..' '..(e.onlyChinese and '总计：' or FROM_TOTAL)..WoWTools_Mixin:MK(allMoney/10000, 3), C_CurrencyInfo.GetCoinTextureString(allMoney))
+        end
+        e.tips:Show()
     end
-    e.tips:Show()
+    return numPlayer, allMoney
 end
 
 
@@ -178,12 +185,29 @@ local function Init()
             PVEFrame_ToggleFrame('ChallengesFrame', 3)
         end)
     end
+
+
     Button.btn.money =WoWTools_ButtonMixin:Cbtn(EncounterJournal.TitleContainer, {icon='hide', size={22,22}})--钱
     Button.btn.money:SetPoint('RIGHT', Button.btn.keystones or Button.btn.Worldboss, 'LEFT')
     Button.btn.money:SetNormalAtlas('Front-Gold-Icon')
-    Button.btn.money:SetScript('OnEnter', set_EncounterJournal_Money_Tips)
-    Button.btn.money:SetScript("OnLeave",GameTooltip_Hide)
-
+    Button.btn.money:SetScript('OnEnter', function(self)
+        Set_Money(self, true)
+    end)
+    Button.btn.money:SetScript("OnLeave", GameTooltip_Hide)
+        
+    Button.btn.money.label= WoWTools_LabelMixin:CreateLabel(Button.btn.money, {size=14})
+    Button.btn.money.label:SetPoint('RIGHT', Button.btn.money, 'LEFT')
+    function Button.btn.money.label:settings()
+        local numPlayer, allMoney= Set_Money(self, false)
+        local text
+        if allMoney>0 then
+            text= '#'..numPlayer..' |cffffffff'..WoWTools_Mixin:MK(allMoney/10000, 3)
+        end
+        self:SetText(text or '')
+    end
+    Button.btn.money.label:SetScript('OnShow', Button.btn.money.label.settings)
+    Button.btn.money.label:SetScript('OnHide', function(self) self:SetText('') end)
+    Button.btn.money.label:settings()
 
     function Button:set_Shown()
         for _, btn in pairs(self.btn) do

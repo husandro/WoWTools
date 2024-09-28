@@ -43,8 +43,8 @@ local function SetType2Texture(btn)
     btn.background:AddMaskTexture(btn.mask)
 
     btn.texture=btn:CreateTexture(nil, 'BORDER')
-    btn.texture:SetPoint("TOPLEFT", btn, "TOPLEFT", 4, -4)
-    btn.texture:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -6, 6)
+    btn.texture:SetPoint("TOPLEFT", btn, "TOPLEFT", 3, -3)
+    btn.texture:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -5, 5)
     btn.texture:AddMaskTexture(btn.mask)
 
     btn.border=btn:CreateTexture(nil, 'ARTWORK')
