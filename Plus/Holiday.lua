@@ -1060,7 +1060,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if  Save.disabled then
                 self:UnregisterEvent('ADDON_LOADED')
             else
-                print( C_AddOns.IsAddOnLoaded('Blizzard_Calendar'))
                 if C_AddOns.IsAddOnLoaded('Blizzard_Calendar') then
                     Init_Blizzard_Calendar()--初始，插件
                     --C_Timer.After(4, Init_TrackButton)
