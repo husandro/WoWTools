@@ -1,5 +1,5 @@
 local id, e = ...
-local addName
+
 WoWTools_EncounterMixin={
 Save={
     wowBossKill={},
@@ -155,119 +155,7 @@ end
 --冒险指南界面初始化
 --################
 local function Init_EncounterJournal()--冒险指南界面
-    Button= WoWTools_ButtonMixin:Cbtn(EncounterJournal.TitleContainer, {icon=not Save().hideEncounterJournal, size={22,22}})--按钮, 总开关
-    Button:SetPoint('RIGHT',-22, -2)
-    function Button:set_Tooltips()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, WoWTools_EncounterMixin.addName)
-        e.tips:AddDoubleLine(e.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL, e.GetEnabeleDisable(not Save().hideEncounterJournal).. e.Icon.left)
-        e.tips:AddDoubleLine(e.onlyChinese and '奖励' or QUEST_REWARDS, e.GetShowHide(not Save().hideEncounterJournal_All_Info_Text)..e.Icon.right)
-        e.tips:Show()
-    end
-    Button:SetScript('OnEnter', Button.set_Tooltips)
-    Button:SetScript('OnClick', function(self, d)
-        if d=='LeftButton' then
-            Save().hideEncounterJournal= not Save().hideEncounterJournal and true or nil
-            self:set_Shown()
-            self:SetNormalAtlas(Save().hideEncounterJournal and e.Icon.disabled or e.Icon.icon )
-            set_Loot_Spec_Event()--BOSS战时, 指定拾取, 专精, 事件
-            e.call(EncounterJournal_ListInstances)
-
-        elseif d=='RightButton' then
-            Save().hideEncounterJournal_All_Info_Text= not Save().hideEncounterJournal_All_Info_Text and true or nil
-            WoWTools_EncounterMixin:Set_RightAllInfo()--冒险指南,右边,显示所数据
-        end
-        self:set_Tooltips()
-    end)
-    Button:SetScript("OnLeave",GameTooltip_Hide)
-    Button.btn={}
-
-    Button.btn.instance =WoWTools_ButtonMixin:Cbtn(EncounterJournal.TitleContainer, {icon='hide', size={22,22}})--所有角色副本
-    Button.btn.instance:SetPoint('RIGHT', Button, 'LEFT')
-    Button.btn.instance:SetNormalAtlas('animachannel-icon-kyrian-map')
-    Button.btn.instance:SetScript('OnEnter',function(self2)
-        e.tips:SetOwner(self2, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine((e.onlyChinese and '副本' or INSTANCE)..e.Icon.left..e.GetShowHide(Save().showInstanceBoss), e.onlyChinese and '已击杀' or DUNGEON_ENCOUNTER_DEFEATED)
-        e.tips:AddLine(' ')
-        for guid, info in pairs(e.WoWDate or {}) do
-            if guid and info then
-                local find
-                for bossName, tab in pairs(info.Instance.ins) do----ins={[名字]={[难度]=已击杀数}}
-                    local text
-                    for difficultyName, killed in pairs(tab) do
-                        text= (text and text..' ' or '')..difficultyName..killed
-                    end
-                    e.tips:AddDoubleLine(bossName, text)
-                    find= true
-                end
-                if find then
-                    e.tips:AddLine(WoWTools_UnitMixin:GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}))
-                end
-            end
-        end
-        e.tips:Show()
-    end)
-    Button.btn.instance:SetScript("OnLeave",GameTooltip_Hide)
-    Button.btn.instance:SetScript('OnClick', function()
-        if  Save().showInstanceBoss then
-            Save().showInstanceBoss=nil
-        else
-            Save().showInstanceBoss=true
-            Save().hideInstanceBossText=nil
-        end
-        WoWTools_EncounterMixin:InstanceBoss_Settings()
-        if panel.instanceBoss then
-            panel.instanceBoss:SetButtonState('PUSHED')
-        end
-    end)
-
-
-    Button.btn.Worldboss =WoWTools_ButtonMixin:Cbtn(EncounterJournal.TitleContainer, {icon='hide', size={22,22}})--所有角色已击杀世界BOSS
-    Button.btn.Worldboss:SetPoint('RIGHT', Button.btn.instance, 'LEFT')
-    Button.btn.Worldboss:SetNormalAtlas('poi-soulspiritghost')
-    Button.btn.Worldboss:SetScript('OnEnter',function(self)
-        WoWTools_EncounterMixin:GetWorldData(self)
-    end)--提示
-    Button.btn.Worldboss:SetScript('OnMouseDown', function(self2, d)
-        if  Save().showWorldBoss then
-            Save().showWorldBoss=nil
-        else
-            Save().showWorldBoss=true
-            Save().hideWorldBossText=nil
-        end
-        WoWTools_EncounterMixin:WorldBoss_Settings()
-        if panel.WorldBoss then
-            panel.WorldBoss:SetButtonState('PUSHED')
-        end
-    end)
-    Button.btn.Worldboss:SetScript("OnLeave",GameTooltip_Hide)
-
-    if e.Player.levelMax then
-        Button.btn.keystones =WoWTools_ButtonMixin:Cbtn(EncounterJournal.TitleContainer, {icon='hide', size={22,22}})--所有角色,挑战
-        Button.btn.keystones:SetPoint('RIGHT', Button.btn.Worldboss, 'LEFT')
-        Button.btn.keystones:SetNormalTexture(4352494)
-        Button.btn.keystones:SetScript('OnEnter',set_EncounterJournal_Keystones_Tips)
-        Button.btn.keystones:SetScript("OnLeave",GameTooltip_Hide)
-        Button.btn.keystones:SetScript('OnMouseDown', function()
-            PVEFrame_ToggleFrame('ChallengesFrame', 3)
-        end)
-    end
-    Button.btn.money =WoWTools_ButtonMixin:Cbtn(EncounterJournal.TitleContainer, {icon='hide', size={22,22}})--钱
-    Button.btn.money:SetPoint('RIGHT', Button.btn.keystones or Button.btn.Worldboss, 'LEFT')
-    Button.btn.money:SetNormalAtlas('Front-Gold-Icon')
-    Button.btn.money:SetScript('OnEnter',set_EncounterJournal_Money_Tips)
-    Button.btn.money:SetScript("OnLeave",GameTooltip_Hide)
-
-
-    function Button:set_Shown()
-        for _, btn in pairs(self.btn) do
-            btn:SetShown(not Save().hideEncounterJournal)
-        end
-    end
-
-    Button:set_Shown()
+    WoWTools_EncounterMixin:Button_Init()
 
 
 
@@ -997,8 +885,7 @@ end
 --######
 --初始化
 --######
-local function Init()
-   
+local function Init()   
     WoWTools_EncounterMixin:Init_DungeonEntrancePin()--世界地图，副本，提示
     WoWTools_EncounterMixin:WorldBoss_Settings()
     WoWTools_EncounterMixin:InstanceBoss_Settings()

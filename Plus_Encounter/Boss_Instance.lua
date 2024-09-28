@@ -4,13 +4,26 @@ local function Save()
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function Create_WorldBoss_Button(frame)
-    frame.InstanceBossButton=WoWTools_ButtonMixin:Cbtn(nil, {name='WoWTools_EncounterInstanceBossButton', icon='hide', size={14,14}})
-    frame.InstanceBossButton:SetPoint('CENTER', -100, -100)
-    e.Set_Move_Frame(frame.InstanceBossButton, {notZoom=true})
+    local btn=WoWTools_ButtonMixin:Cbtn(nil, {name='WoWTools_EncounterInstanceBossButton', icon='hide', size={14,14}})
+    btn:SetPoint('CENTER', -100, -100)
+    e.Set_Move_Frame(btn, {notZoom=true})
 
 
-    frame.InstanceBossButton:SetScript('OnEnter', function(self2)
+    btn:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.addName, WoWTools_EncounterMixin.addName)
@@ -21,16 +34,15 @@ local function Create_WorldBoss_Button(frame)
         e.tips:AddDoubleLine(e.Player.L.size, (Save().EncounterJournalFontSize or 12)..e.Icon.mid)
         e.tips:Show()
     end)
-    frame.InstanceBossButton:SetScript('OnMouseDown', function(self2, d)
+    btn:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
             Save().hideInstanceBossText= not Save().hideInstanceBossText and true or nil
-            frame.InstanceBossButton.texture:SetShown(Save().hideInstanceBossText)
-            frame.InstanceBossButton.Text:SetShown(not Save().hideInstanceBossText)
+            self.texture:SetShown(Save().hideInstanceBossText)
+            self.Text:SetShown(not Save().hideInstanceBossText)
         end
     end)
 
-    frame:SetScript('OnMouseWheel', function(self, d)
-        
+    btn:SetScript('OnMouseWheel', function(self, d)
         local size=Save().EncounterJournalFontSize or 12
         if d==1 then
             size=size+1
@@ -44,15 +56,60 @@ local function Create_WorldBoss_Button(frame)
         print(e.addName, WoWTools_EncounterMixin.addName, e.onlyChinese and '字体大小' or FONT_SIZE, size)
     end)
 
-    frame.InstanceBossButton.Text=WoWTools_LabelMixin:CreateLabel(frame.InstanceBossButton, {size=Save().EncounterJournalFontSize, color=true})
-    frame.InstanceBossButton.Text:SetPoint('TOPLEFT')
+    btn.Text=WoWTools_LabelMixin:CreateLabel(btn, {size=Save().EncounterJournalFontSize, color=true})
+    btn.Text:SetPoint('TOPLEFT')
 
-    frame.InstanceBossButton.texture=frame.InstanceBossButton:CreateTexture()
-    frame.InstanceBossButton.texture:SetAllPoints()
-    frame.InstanceBossButton.texture:SetAtlas(e.Icon.disabled)
-    frame.InstanceBossButton.texture:SetShown(Save().hideInstanceBossText)
+    btn.texture=btn:CreateTexture()
+    btn.texture:SetAllPoints()
+    btn.texture:SetAtlas(e.Icon.disabled)
+    btn.texture:SetShown(Save().hideInstanceBossText)
 
+    return btn
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Get_Text()
+    if Save().hideInstanceBossText then
+        return
+    end
+
+    local msg
+    for guid, info in pairs(e.WoWDate or {}) do
+        local text
+        for bossName, tab in pairs(info.Instance.ins) do--ins={[名字]={[难度]=已击杀数}}
+            text= text and text..'|n   '..bossName or '   '..bossName
+            for difficultyName, killed in pairs(tab) do
+                text= text..' '..difficultyName..' '..killed
+            end
+        end
+        if text then
+            msg=msg and msg..'|n' or ''
+            msg= msg ..WoWTools_UnitMixin:GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true})..'|n'
+            msg= msg.. text
+        end
+    end
+    msg=msg or '...'
+end
+
+
+
+
+
+
+
 
 
 
@@ -66,31 +123,12 @@ function WoWTools_EncounterMixin:InstanceBoss_Settings()--显示副本击杀数�
         end
         return
     end
+
     self.InstanceBossButton= self.InstanceBossButton or Create_WorldBoss_Button()
 
-    local msg
-    if not Save().hideInstanceBossText then
-        for guid, info in pairs(e.WoWDate or {}) do
-            local text
-            for bossName, tab in pairs(info.Instance.ins) do--ins={[名字]={[难度]=已击杀数}}
-                text= text and text..'|n   '..bossName or '   '..bossName
-                for difficultyName, killed in pairs(tab) do
-                    text= text..' '..difficultyName..' '..killed
-                end
-            end
-            if text then
-                msg=msg and msg..'|n' or ''
-                msg= msg ..WoWTools_UnitMixin:GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true})..'|n'
-                msg= msg.. text
-            end
-        end
-        msg=msg or '...'
-    end
-    self.InstanceBossButton.Text:SetText(msg or '')
+    self.InstanceBossButton.Text:SetText(Get_Text() or '')
+
     self.InstanceBossButton:SetShown(true)
     self.InstanceBossButton.texture:SetShown(Save().hideInstanceBossText)
     self.InstanceBossButton.Text:SetShown(not Save().hideInstanceBossText)
 end
-
-
-

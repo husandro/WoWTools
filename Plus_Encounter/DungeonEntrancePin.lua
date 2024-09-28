@@ -1,5 +1,7 @@
 local e= select(2, ...)
-
+local function Save()
+    return WoWTools_EncounterMixin.Save
+end
 
 
 

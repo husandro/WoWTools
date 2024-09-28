@@ -1,7 +1,13 @@
 --冒险指南,右边,显示所数据
 local e= select(2, ...)
-
+local function Save()
+    return WoWTools_EncounterMixin.Save
+end
 local AllTipsFrame
+
+
+
+
 
 
 

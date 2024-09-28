@@ -1,4 +1,8 @@
 local e= select(2, ...)
+local function Save()
+    return WoWTools_EncounterMixin.Save
+end
+
 
 --所有角色已击杀世界BOSS提示
 function WoWTools_EncounterMixin:GetWorldData(frame)

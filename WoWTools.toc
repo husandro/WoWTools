@@ -282,6 +282,7 @@ Plus_Gossip\Quest.lua
 Plus_Encounter\0_Encounter.lua
 Plus_Encounter\Boss_Instance.lua
 Plus_Encounter\Boss_World.lua
+Plus_Encounter\Button_Init.lua
 Plus_Encounter\DungeonEntrancePin.lua
 Plus_Encounter\GetData_Instance.lua
 Plus_Encounter\GetData_World.lua
