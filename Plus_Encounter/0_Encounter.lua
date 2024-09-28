@@ -1,14 +1,14 @@
 local id, e = ...
 
 WoWTools_EncounterMixin={
-Save={
-    wowBossKill={},
-    loot= {[e.Player.class]= {}},
-    favorites={},--副本收藏
-},
-addName=nil,
-InstanceBossButton=nil,
-WorldBossButton=nil,
+    Save={
+        wowBossKill={},
+        loot= {[e.Player.class]= {}},
+        favorites={},--副本收藏
+    },
+    addName=nil,
+    InstanceBossButton=nil,
+    WorldBossButton=nil,
 }
 
 function WoWTools_EncounterMixin:GetBossNameSort(name)--取得怪物名称, 短名称
@@ -41,7 +41,7 @@ local function Init_EncounterJournal()--冒险指南界面
     WoWTools_EncounterMixin:Button_Init()
     WoWTools_EncounterMixin:Init_EncounterJournalItemMixin()--Boss, 战利品, 信息
     WoWTools_EncounterMixin:Init_mapButton_OnEnter()
-    WoWTools_EncounterMixin:Init_UI_ListInstances()
+    WoWTools_EncounterMixin:Init_UI_ListInstances()--界面, 副本击杀
     WoWTools_EncounterMixin:Set_RightAllInfo()--冒险指南,右边,显示所数据
     WoWTools_EncounterMixin:Init_MonthlyActivities()--贸易站
     WoWTools_EncounterMixin:Init_ItemSets() --战利品, 套装, 收集数
@@ -50,10 +50,10 @@ local function Init_EncounterJournal()--冒险指南界面
     WoWTools_EncounterMixin:Init_Specialization_Loot()--BOSS战时, 指定拾取, 专精
 
 
-    if not WoWTools_EncounterMixin.Save.hideEncounterJournal and WoWTools_EncounterMixin.Save.EncounterJournalTier then--记录上次选择TAB
+    if not Save().hideEncounterJournal and Save().EncounterJournalTier then--记录上次选择TAB
         local max= EJ_GetNumTiers()
         if max then
-            local tier= math.min(WoWTools_EncounterMixin.Save.EncounterJournalTier, max)
+            local tier= math.min(Save().EncounterJournalTier, max)
             if tier~= max then
                 EJ_SelectTier(tier)
             end
