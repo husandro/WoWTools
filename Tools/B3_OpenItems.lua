@@ -941,7 +941,7 @@ local function Init()
         end
 
         if self:CanChangeAttribute() then
-            self:set_key(self.isDisabled)
+            self:set_key()
             self:SetShown(not self.isDisabled)
         else
             self.isInCombat=true
@@ -949,7 +949,7 @@ local function Init()
     end
 
 --设置捷键
-    function OpenButton:set_key()
+    function OpenButton:set_key(isDisabled)
         if Save.KEY then
             WoWTools_KeyMixin:Setup(OpenButton,
                 self.isDisabled
@@ -958,6 +958,7 @@ local function Init()
                 or UnitInVehicle('player')
                 or C_PetBattles.IsInBattle()
                 or (IsInInstance() and not WoWTools_MapMixin:IsInDelve())
+                or isDisabled
             )
         end
     end

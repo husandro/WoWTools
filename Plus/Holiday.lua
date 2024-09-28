@@ -329,7 +329,7 @@ local function Set_TrackButton_Text(monthOffset, day)
             if event and event.title then
                 local isValid
                 if (event.sequenceType == "ONGOING") then
-                    event.eventTime = format(CALENDAR_TOOLTIP_DATE_RANGE, FormatShortDate(event.startTime.monthDay, event.startTime.month), FormatShortDate(event.endTime.monthDay, event.endTime.month));
+                    event.eventTime = format(CALENDAR_TOOLTIP_DATE_RANGE, FormatShortDate(event.startTime.monthDay, event.startTime.month, event.startTime.year), FormatShortDate(event.endTime.monthDay, event.endTime.month, event.endTime.year));
                     isValid=true
                 elseif (event.sequenceType == "END") then
                     event.eventTime, isValid = set_Time_Color(GameTime_GetFormattedTime(event.endTime.hour, event.endTime.minute, true), event.startTime.hour, event.startTime.minute)
@@ -403,9 +403,9 @@ local function Set_TrackButton_Text(monthOffset, day)
                         if (holidayInfo.startTime and holidayInfo.endTime) then
                             description=format(e.onlyChinese and '%1$s|n|n开始：%2$s %3$s|n结束：%4$s %5$s' or CALENDAR_HOLIDAYFRAME_BEGINSENDS,
                                 e.cn(description),
-                                FormatShortDate(holidayInfo.startTime.monthDay, holidayInfo.startTime.month),
+                                FormatShortDate(holidayInfo.startTime.monthDay, holidayInfo.startTime.month, holidayInfo.startTime.year),
                                 GameTime_GetFormattedTime(holidayInfo.startTime.hour, holidayInfo.startTime.minute, true),
-                                FormatShortDate(holidayInfo.endTime.monthDay, holidayInfo.endTime.month),
+                                FormatShortDate(holidayInfo.endTime.monthDay, holidayInfo.endTime.month, holidayInfo.startTime.year),
                                 GameTime_GetFormattedTime(holidayInfo.endTime.hour, holidayInfo.endTime.minute, true)
                             )
                         end
@@ -502,7 +502,7 @@ local function Init_TrackButton()
     TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {icon='hide', size={18,18}, isType2=true})
 
     TrackButton.texture=TrackButton:CreateTexture()
-    TrackButton.texture:SetAllPoints(TrackButton)
+    TrackButton.texture:SetAllPoints()
     TrackButton.texture:SetAlpha(0.5)
     TrackButton.texture:SetAtlas(e.Icon.icon)
 

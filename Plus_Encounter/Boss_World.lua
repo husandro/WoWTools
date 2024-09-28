@@ -41,7 +41,7 @@ end
 
 
 local function Create_WorldBoss_Button(frame)
-    frame.WorldBoss=WoWTools_ButtonMixin:Cbtn(nil, {icon='hide', size={14,14}})
+    frame.WorldBoss=WoWTools_ButtonMixin:Cbtn(nil, {name='WoWTools_EncounterWorldBossButton', icon='hide', size={14,14}})
     if Save().WorldBossPoint then
         frame.WorldBoss:SetPoint(Save().WorldBossPoint[1], UIParent, Save().WorldBossPoint[3], Save().WorldBossPoint[4], Save().WorldBossPoint[5])
     else
@@ -109,7 +109,7 @@ function WoWTools_EncounterMixin:WorldBoss_Settings()--显示世界BOSS击杀数
             for bossName, worldBossID in pairs(info.Worldboss.boss) do--世界BOSS
                 numAll=numAll+1
                 text= text and text ..' ' or '   '
-                text= text..'|cnGREEN_FONT_COLOR:'..numAll..')|r'.. WoWTools_EncounterMixin:GetBossNameSort(bossName, worldBossID)
+                text= text..'|cnGREEN_FONT_COLOR:'..numAll..')|r'.. WoWTools_EncounterMixin:GetBossNameSort(bossName)
             end
             if text then
                 msg= msg and msg..'|n' or ''

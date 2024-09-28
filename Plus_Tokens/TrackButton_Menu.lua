@@ -47,7 +47,7 @@ local function Init_Menu(self, root)
         return Save().toRightTrackText
     end, function ()
         Save().toRightTrackText = not Save().toRightTrackText and true or nil
-        for _, btn in pairs(TrackButton.btn) do
+        for _, btn in pairs(WoWTools_TokensMixin.TrackButton.btn) do
             btn.text:ClearAllPoints()
             btn:set_Text_Point()
         end
@@ -96,6 +96,5 @@ end
 
 
 function WoWTools_TokensMixin:Init_TrackButton_Menu(frame)
-    print(frame== self.TrackButton)
     MenuUtil.CreateContextMenu(frame, Init_Menu)
 end

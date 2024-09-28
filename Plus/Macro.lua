@@ -530,7 +530,7 @@ local function Init_Create_Button()
 
         --添加，空，按钮
         if d=='LeftButton' then
-            Create_Macro_Button(nil, nil, '',  MacroFrame.macroBase > 0)
+            Create_Macro_Button(nil, nil, '')
             self:set_Tooltips()
             return
         end
@@ -930,7 +930,7 @@ local size= 24
                 if textureName then
                     local itemLink = GetInventoryItemLink('player', slot)
                     local name = itemLink and C_Item.GetItemNameByID(itemLink)
-                    if name then
+                    if name and itemLink then
                         local spellName, spellID= C_Item.GetItemSpell(itemLink)
                         local spellTexture
 

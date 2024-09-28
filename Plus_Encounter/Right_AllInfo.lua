@@ -6,8 +6,32 @@ local AllTipsFrame
 
 
 local function Create_Frame()
-    
+    local frame=CreateFrame("Frame", nil, EncounterJournal)
+    frame:SetPoint('TOPLEFT', EncounterJournal, 'TOPRIGHT',40,0)
+    frame:SetSize(1,1)
+    frame.label= WoWTools_LabelMixin:CreateLabel(frame)
+    frame.label:SetPoint('TOPLEFT')
+    frame.weekLable= WoWTools_LabelMixin:CreateLabel(frame, {mouse=true})
+    frame.weekLable:SetPoint('TOPLEFT', frame.label, 'BOTTOMLEFT', 0, -12)
+    frame.weekLable:SetScript('OnMouseDown', function(self)
+        WeeklyRewards_LoadUI()
+        --[[if not C_AddOns.IsAddOnLoaded("Blizzard_WeeklyRewards") then
+            C_AddOns.LoadAddOn("Blizzard_WeeklyRewards")
+        end]]--周奖励面板
+        WeeklyRewards_ShowUI()--WeeklyReward.lua
+        self:SetAlpha(1)
+    end)
+    frame.weekLable:SetScript('OnLeave', function(self) self:SetAlpha(1) end)
+    frame.weekLable:SetScript('OnEnter', function(self) self:SetAlpha(0.5) end)
+    return frame
 end
+
+
+
+
+
+
+
 
 
 local function Init()
@@ -17,27 +41,8 @@ local function Init()
         end
         return
     end
+    AllTipsFrame= AllTipsFrame or Create_Frame()
 
-    if not AllTipsFrame then
-        AllTipsFrame=CreateFrame("Frame", nil, EncounterJournal)
-        AllTipsFrame:SetPoint('TOPLEFT', EncounterJournal, 'TOPRIGHT',40,0)
-        AllTipsFrame:SetSize(1,1)
-        AllTipsFrame.label= WoWTools_LabelMixin:CreateLabel(AllTipsFrame)
-        AllTipsFrame.label:SetPoint('TOPLEFT')
-        AllTipsFrame.weekLable= WoWTools_LabelMixin:CreateLabel(AllTipsFrame, {mouse=true})
-        AllTipsFrame.weekLable:SetPoint('TOPLEFT', AllTipsFrame.label, 'BOTTOMLEFT', 0, -12)
-        AllTipsFrame.weekLable:SetScript('OnMouseDown', function(self)
-            WeeklyRewards_LoadUI()
-            --[[if not C_AddOns.IsAddOnLoaded("Blizzard_WeeklyRewards") then
-                C_AddOns.LoadAddOn("Blizzard_WeeklyRewards")
-            end]]--周奖励面板
-            WeeklyRewards_ShowUI()--WeeklyReward.lua
-            self:SetAlpha(1)
-        end)
-        AllTipsFrame.weekLable:SetScript('OnLeave', function(self) self:SetAlpha(1) end)
-        AllTipsFrame.weekLable:SetScript('OnEnter', function(self) self:SetAlpha(0.5) end)
-
-    end
     local m, text, num
 
 
@@ -59,7 +64,7 @@ local function Init()
     for bossName, worldBossID in pairs(e.WoWDate[e.Player.guid].Worldboss.boss or {}) do--世界BOSS
         num=num+1
         text= text and text..', ' or ''
-        text= text..  WoWTools_EncounterMixin:GetBossNameSort(e.cn(bossName), worldBossID)
+        text= text..  WoWTools_EncounterMixin:GetBossNameSort(e.cn(bossName))
     end
     if text then
         m= m and m..'|n|n' or ''

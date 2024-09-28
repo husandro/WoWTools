@@ -1,31 +1,4 @@
 local e= select(2, ...)
-local function Save()
-    return WoWTools_EncounterMixin.Save
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -55,7 +28,7 @@ function WoWTools_EncounterMixin:GetInstanceData(frame, showTips)
                         if num>2 and  select(2, math.modf(num / 3))==0 then
                             text=text..'|n'
                         end
-                        text= text..'|cnGREEN_FONT_COLOR:'..num..')|r'.. WoWTools_EncounterMixin:GetBossNameSort(e.cn(bossName), worldBossID)
+                        text= text..'|cnGREEN_FONT_COLOR:'..num..')|r'.. WoWTools_EncounterMixin:GetBossNameSort(e.cn(bossName))
                     end
                     break
                 end

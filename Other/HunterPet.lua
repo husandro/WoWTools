@@ -150,7 +150,7 @@ local function created_model(btn, setBg)
         local slotID= btn:GetID()
         btn.callSpellButton= WoWTools_ButtonMixin:Cbtn(btn, {size={18,18},icon='hide'})--召唤，法术，提示
         btn.callSpellButton.Texture=btn.callSpellButton:CreateTexture(nil, 'OVERLAY')
-        btn.callSpellButton.Texture:SetAllPoints(btn.callSpellButton)
+        btn.callSpellButton.Texture:SetAllPoints()
         SetPortraitToTexture(btn.callSpellButton.Texture, 132161)
         btn.callSpellButton:SetPoint('BOTTOMLEFT', -8, -16)
         btn.callSpellButton.spellID=CALL_PET_SPELL_IDS[slotID]

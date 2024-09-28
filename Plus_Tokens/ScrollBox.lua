@@ -58,7 +58,7 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 		frame.check:SetSize(18,18)
 
 		frame:HookScript('OnEnter', function(self)
-			for _, btn in pairs(TrackButton and TrackButton.btn or {}) do
+			for _, btn in pairs(WoWTools_TokensMixin.TrackButton and WoWTools_TokensMixin.TrackButton.btn or {}) do
 				local show= self.check.currencyID and self.check.currencyID== btn.currencyID
 				if btn:CanChangeAttribute() then
 					btn:SetScale(show and 2 or 1)
@@ -68,7 +68,7 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 			end
 		end)
 		frame:HookScript('OnLeave', function()
-			for _, btn in pairs(TrackButton and TrackButton.btn or {}) do
+			for _, btn in pairs(WoWTools_TokensMixin.TrackButton and WoWTools_TokensMixin.TrackButton.btn or {}) do
 				if btn:CanChangeAttribute() then
 					btn:SetScale(1)
 				end

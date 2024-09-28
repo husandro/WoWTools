@@ -38,7 +38,7 @@ function WoWTools_TokensMixin:MenuList_Item(_, root)
 			return Save().item[data.itemID]
 		end, function(data)
 			Save().item[data.itemID]= not Save().item[data.itemID] and true or nil
-			self:Set_TrackButton_Text()
+			WoWTools_TokensMixin:Set_TrackButton_Text()
 		end, {itemID=itemID})
 		WoWTools_SetTooltipMixin:Set_Menu(sub2)
 	end
@@ -47,7 +47,7 @@ function WoWTools_TokensMixin:MenuList_Item(_, root)
 
 	if num>1 then
 --全部清除
-		WoWTools_MenuMixin:ClearAll(sub, function() Save().item={} self:Set_TrackButton_Text() end)
+		WoWTools_MenuMixin:ClearAll(sub, function() Save().item={} WoWTools_TokensMixin:Set_TrackButton_Text() end)
 --GridMode
 		WoWTools_MenuMixin:SetGridMode(sub, num)
 	end

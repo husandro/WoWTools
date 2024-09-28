@@ -177,7 +177,7 @@ function e.Set_ScrollBar_Color_Alpha(frame)
         if bar.Forward then
             set_Alpha_Color(bar.Forward.Texture, true)
         end
-        hide_Texture(bar.Backplate, nil, true)
+        hide_Texture(bar.Backplate, nil)
         set_Alpha_Color(bar.Background, nil, true)
     end
 end

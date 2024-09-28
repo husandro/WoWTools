@@ -1023,7 +1023,7 @@ local function Init_Button()
     TrackButton.buttons={}
 
     TrackButton.Frame= CreateFrame('Frame', nil, TrackButton)
-    TrackButton.Frame:SetAllPoints(TrackButton)
+    TrackButton.Frame:SetAllPoints()
 
 
     --[[TrackButton.texture= TrackButton:CreateTexture(nil, 'BORDER')

@@ -263,8 +263,9 @@ local function Init()
 	C_Timer.After(4, function()
 		WoWTools_TokensMixin:Init_TrackButton()
 		WoWTools_TokensMixin:Init_ScrollBox_Plus()
-		hooksecurefunc(TokenFrame, 'Update', function(self)
-			WoWTools_TokensMixin:Set_ItemInteractionFrame(self)--套装,转换,货币
+		
+		hooksecurefunc(TokenFrame, 'Update', function(frame)
+			WoWTools_TokensMixin:Set_ItemInteractionFrame(frame)--套装,转换,货币
 			WoWTools_TokensMixin:Init_TrackButton()
 		end)
 		if not Save().hideCurrencyMax then

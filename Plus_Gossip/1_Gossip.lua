@@ -235,7 +235,7 @@ local function Init()
     WoWTools_GossipMixin.GossipButton= GossipButton
 
     GossipButton.texture= GossipButton:CreateTexture()
-    GossipButton.texture:SetAllPoints(GossipButton)
+    GossipButton.texture:SetAllPoints()
 
 
     --打开，自定义，对话，文本，按钮
@@ -535,7 +535,7 @@ local function Init()
             find=true
 
         elseif IsInInstance() then--自动对话
-            if Get_Auto_Instance_Gossip(index, allGossip, true) then
+            if Get_Auto_Instance_Gossip(index, allGossip) then
                 C_GossipInfo.SelectOption(index)
                 find=true
             end
@@ -545,7 +545,7 @@ local function Init()
         if find then
             GossipButton.selectGissipIDTab[index]=true
             print(
-                e.Icon.icon2..WoWTools_UnitMixin:Get_NPC_Name('npc', nil)
+                e.Icon.icon2..WoWTools_UnitMixin:Get_NPC_Name()
                 ..'|T'..(info.overrideIconID or info.icon or 0)..':0|t|cff00ff00'..(name or '')
                 --, index
             )

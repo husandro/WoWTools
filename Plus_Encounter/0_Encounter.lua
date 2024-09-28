@@ -75,76 +75,6 @@ local ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT= ITEM_UPGRADE_FRAME_CURRENT_UPGR
 
 
 
-local function Init_Set_InstanceBoss_Text()--显示副本击杀数据
-    if not Save().showInstanceBoss then
-        if panel.instanceBoss then
-            panel.instanceBoss.Text:SetText('')
-            panel.instanceBoss:SetShown(false)
-        end
-        return
-    end
-    if not panel.instanceBoss then
-        panel.instanceBoss=WoWTools_ButtonMixin:Cbtn(nil, {icon='hide', size={14,14}})
-        if Save().instanceBossPoint then
-            panel.instanceBoss:SetPoint(Save().instanceBossPoint[1], UIParent, Save().instanceBossPoint[3], Save().instanceBossPoint[4], Save().instanceBossPoint[5])
-        else
-            if EncounterJournal then
-                panel.instanceBoss:SetPoint('BOTTOMRIGHT',EncounterJournal, 'TOPRIGHT', -45,20)
-            else
-                panel.instanceBoss:SetPoint('CENTER')
-            end
-        end
-        panel.instanceBoss:SetScript('OnEnter', function(self2)
-            e.tips:SetOwner(self2, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:AddDoubleLine(e.addName, WoWTools_EncounterMixin.addName)
-            e.tips:AddDoubleLine(e.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL, e.onlyChinese and '副本' or INSTANCE)
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.GetShowHide(not Save().hideInstanceBossText), e.Icon.left)
-            e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
-            e.tips:AddDoubleLine(e.Player.L.size, (Save().EncounterJournalFontSize or 12)..e.Icon.mid)
-            e.tips:Show()
-        end)
-        panel.instanceBoss:SetScript('OnMouseDown', function(self2, d)
-            if d=='LeftButton' then
-                Save().hideInstanceBossText= not Save().hideInstanceBossText and true or nil
-                panel.instanceBoss.texture:SetShown(Save().hideInstanceBossText)
-                panel.instanceBoss.Text:SetShown(not Save().hideInstanceBossText)
-            end
-        end)
-        MoveFrame(panel.instanceBoss, 'instanceBossPoint')
-        panel.instanceBoss.Text=WoWTools_LabelMixin:CreateLabel(panel.instanceBoss, {size=Save().EncounterJournalFontSize, color=true})
-        panel.instanceBoss.Text:SetPoint('TOPLEFT')
-
-        panel.instanceBoss.texture=panel.instanceBoss:CreateTexture()
-        panel.instanceBoss.texture:SetAllPoints(panel.instanceBoss)
-        panel.instanceBoss.texture:SetAtlas(e.Icon.disabled)
-        panel.instanceBoss.texture:SetShown(Save().hideInstanceBossText)
-    end
-
-    local msg
-    if not Save().hideInstanceBossText then
-        for guid, info in pairs(e.WoWDate or {}) do
-            local text
-            for bossName, tab in pairs(info.Instance.ins) do--ins={[名字]={[难度]=已击杀数}}
-                text= text and text..'|n   '..bossName or '   '..bossName
-                for difficultyName, killed in pairs(tab) do
-                    text= text..' '..difficultyName..' '..killed
-                end
-            end
-            if text then
-                msg=msg and msg..'|n' or ''
-                msg= msg ..WoWTools_UnitMixin:GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true})..'|n'
-                msg= msg.. text
-            end
-        end
-        msg=msg or '...'
-    end
-    panel.instanceBoss.Text:SetText(msg or '')
-    panel.instanceBoss:SetShown(true)
-    panel.instanceBoss.texture:SetShown(Save().hideInstanceBossText)
-    panel.instanceBoss.Text:SetShown(not Save().hideInstanceBossText)
-end
 
 local function set_EncounterJournal_Keystones_Tips(self)--险指南界面, 挑战
     e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -287,7 +217,7 @@ local function Init_EncounterJournal()--冒险指南界面
             Save().showInstanceBoss=true
             Save().hideInstanceBossText=nil
         end
-        Init_Set_InstanceBoss_Text()
+        WoWTools_EncounterMixin:InstanceBoss_Settings()
         if panel.instanceBoss then
             panel.instanceBoss:SetButtonState('PUSHED')
         end
@@ -1071,7 +1001,7 @@ local function Init()
    
     WoWTools_EncounterMixin:Init_DungeonEntrancePin()--世界地图，副本，提示
     WoWTools_EncounterMixin:WorldBoss_Settings()
-    Init_Set_InstanceBoss_Text()
+    WoWTools_EncounterMixin:InstanceBoss_Settings()
 end
 
 
@@ -1149,7 +1079,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='UPDATE_INSTANCE_INFO' then
         C_Timer.After(2, function()
-            Init_Set_InstanceBoss_Text()--显示副本击杀数据
+            WoWTools_EncounterMixin:InstanceBoss_Settings()--显示副本击杀数据
             WoWTools_EncounterMixin:WorldBoss_Settings()--显示世界BOSS击杀数据Text
             WoWTools_EncounterMixin:Set_RightAllInfo()--冒险指南,右边,显示所数据
         end)

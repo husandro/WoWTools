@@ -282,7 +282,7 @@ local function set_no_Enchant(self, slot, find, isPaperDollItemSlot)--附魔，�
             end)
 
             local texture= self.noEnchant:CreateTexture(nil, 'OVERLAY')
-            texture:SetAllPoints(self.noEnchant)
+            texture:SetAllPoints()
             texture:SetAtlas('bags-icon-addslots')
 
         end
@@ -2194,7 +2194,7 @@ local function Init_Status_Func()
 
     --自定，数据
     function StatusPlusButton:status_set_rating(frame, rating)
-        local num= GetCombatRating(rating)
+        local num= GetCombatRating(rating) or 0
         if num == 0 then
             frame.numLabel:SetText('')
         else
@@ -2273,7 +2273,7 @@ local function Init_Status_Func()
         statFrame.runSpeed = runSpeed
         statFrame.flightSpeed = flightSpeed
         statFrame.swimSpeed = swimSpeed
-        StatusPlusButton:create_status_label(statFrame, CR_SPEED)
+        StatusPlusButton:create_status_label(statFrame, CR_SPEED or 14)
     end
     function MovementSpeed_OnEnter(statFrame)
         GameTooltip:SetOwner(statFrame, "ANCHOR_RIGHT")
@@ -2286,7 +2286,7 @@ local function Init_Status_Func()
             GameTooltip:AddLine(format('%s: %i%%', e.onlyChinese and '驭空术' or LANDING_DRAGONRIDING_PANEL_TITLE, 100*100/BASE_MOVEMENT_SPEED))
         end
         GameTooltip:AddLine(" ")
-        GameTooltip:AddLine(format(e.onlyChinese and '提升移动速度。|n|n速度：%s [+%.2f%%]' or CR_SPEED_TOOLTIP, BreakUpLargeNumbers(GetCombatRating(CR_SPEED)), GetCombatRatingBonus(CR_SPEED)))
+        GameTooltip:AddLine(format(e.onlyChinese and '提升移动速度。|n|n速度：%s [+%.2f%%]' or CR_SPEED_TOOLTIP, BreakUpLargeNumbers(GetCombatRating(CR_SPEED or 14)), GetCombatRatingBonus(CR_SPEED or 14)))
         GameTooltip:Show()
         statFrame.UpdateTooltip = MovementSpeed_OnEnter
     end

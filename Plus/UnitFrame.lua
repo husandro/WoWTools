@@ -329,8 +329,8 @@ end)
     function PlayerFrame.instanceFrame:set_settings()
         local ins, findRiad, findDungeon=  IsInInstance(), false, false
         if not ins and UnitIsUnit(PlayerFrame.unit, 'player') then
-            local difficultyID2 = GetDungeonDifficultyID()
-            local difficultyID3= GetRaidDifficultyID()
+            local difficultyID2 = GetDungeonDifficultyID() or 0
+            local difficultyID3= GetRaidDifficultyID() or 0
             local displayMythic3 = select(6, GetDifficultyInfo(difficultyID3))
 
             local name2, color2= WoWTools_MapMixin:GetDifficultyColor(nil, difficultyID2)
@@ -445,7 +445,7 @@ end)
             end
         end
         self.Text:SetText(text or '')
-        self:SetShown(not IsInInstance() and text)
+        self:SetShown(not IsInInstance() and text~=nil)
     end
 
     PlayerFrame.keystoneFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
@@ -666,7 +666,7 @@ local function set_memberFrame(memberFrame)
 
         btn.frame=CreateFrame('Frame', nil, btn)
         btn.frame:SetFrameLevel(btn.frame:GetFrameLevel()-1)
-        btn.frame:SetAllPoints(btn)
+        btn.frame:SetAllPoints()
         btn.frame:Hide()
 
         btn.frame.isPlayerTargetTexture= btn.frame:CreateTexture(nil, 'BORDER')
@@ -1229,8 +1229,8 @@ local function Init_UnitFrame_Update(frame, isParty)--UnitFrame.lua--职业, 图
     end
     if frame.classFrame then
         frame.classFrame:set_settings(guid)
-        frame.classFrame.Texture:SetVertexColor(r, g, b)
-        frame.classFrame.itemLevel:SetTextColor(r,g,b)
+        frame.classFrame.Texture:SetVertexColor(r or 1, g or 1, b or 1)
+        frame.classFrame.itemLevel:SetTextColor(r or 1, g or 1, b or 1)
         --frame.classFrame:SetShown(unitIsPlayer)
     end
 
@@ -1403,7 +1403,7 @@ local function Init_BossFrame()
         end)
 
         frame.BossButton.Portrait= frame.BossButton:CreateTexture(nil, 'BACKGROUND')
-        frame.BossButton.Portrait:SetAllPoints(frame.BossButton)
+        frame.BossButton.Portrait:SetAllPoints()
 
         frame.BossButton.targetTexture= frame.BossButton:CreateTexture(nil, 'OVERLAY')
         frame.BossButton.targetTexture:SetSize(52,52)
@@ -1533,14 +1533,14 @@ local function Init_BossFrame()
         --目标的目标，信息
         frame.TotButton.frame= CreateFrame('Frame', nil, frame.TotButton)
         frame.TotButton.frame:SetFrameLevel(frame.TotButton:GetFrameLevel()-1)
-        frame.TotButton.frame:SetAllPoints(frame.TotButton)
+        frame.TotButton.frame:SetAllPoints()
         frame.TotButton.frame:Hide()
         frame.TotButton.frame.unit= frame.unit
         frame.TotButton.frame.targetUnit= frame.unit..'target'
 
         --目标的目标，图像
         frame.TotButton.frame.Portrait= frame.TotButton.frame:CreateTexture(nil, 'BACKGROUND')
-        frame.TotButton.frame.Portrait:SetAllPoints(frame.TotButton.frame)
+        frame.TotButton.frame.Portrait:SetAllPoints()
 
 
 
@@ -1595,8 +1595,8 @@ local function Init_BossFrame()
                 local r,g,b= select(2, WoWTools_UnitMixin:Get_Unit_Color(unit))
                 --self.healthBar:SetStatusBarColor(r,g,b)
                 --self.IsTargetTexture:SetShown(UnitIsUnit(self.targetUnit, 'target'))
-                self.Border:SetVertexColor(r,g,b)
-                self.healthLable:SetTextColor(r,g,b)
+                self.Border:SetVertexColor(r or 1, g or 1, b or 1)
+                self.healthLable:SetTextColor(r or 1, g or 1, b or 1)
                 WoWTools_FrameMixin:HelpFrame({frame=self, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, show=isSelf, y=-2})
             end
             self:SetShown(exists)

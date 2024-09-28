@@ -193,7 +193,7 @@ function e.Cbtn2(tab)
     btn.mask:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -6, 6)
 
     btn.background= btn:CreateTexture(nil, 'BACKGROUND')
-    btn.background:SetAllPoints(btn)
+    btn.background:SetAllPoints()
     btn.background:SetAtlas('bag-reagent-border-empty')
     btn.background:SetAlpha(tab.alpha or 0.5)
     btn.background:AddMaskTexture(btn.mask)
@@ -207,7 +207,7 @@ function e.Cbtn2(tab)
         btn.texture:SetShown(tab.showTexture)
     end
     btn.border=btn:CreateTexture(nil, 'ARTWORK')
-    btn.border:SetAllPoints(btn)
+    btn.border:SetAllPoints()
 
     btn.border:SetAtlas('bag-reagent-border')
 

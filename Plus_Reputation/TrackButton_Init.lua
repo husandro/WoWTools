@@ -155,7 +155,7 @@ local function Init()
 	--TrackButton.text= WoWTools_LabelMixin:CreateLabel(TrackButton, {color=true})
 
 	TrackButton.texture= TrackButton:CreateTexture()
-	TrackButton.texture:SetAllPoints(TrackButton)
+	TrackButton.texture:SetAllPoints()
 	TrackButton.texture:SetAlpha(0.5)
 
 	TrackButton.btn= {}

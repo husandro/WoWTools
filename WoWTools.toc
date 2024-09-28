@@ -160,7 +160,8 @@ Plus_Reputation\z_CHAT_MSG.lua
 ##Plus\Currency.lua
 Plus_Tokens\0_Tokens.lua
 Plus_Tokens\Init_Menu.lua
-Plus_Tokens\TrackButton.lua
+Plus_Tokens\TrackButton_Init.lua
+Plus_Tokens\TrackButton_SetText.lua
 Plus_Tokens\TrackButton_Menu.lua
 Plus_Tokens\ScrollBox.lua
 Plus_Tokens\CurrencyTransferMenu.lua
@@ -279,8 +280,13 @@ Plus_Gossip\Quest.lua
 
 ##冒险指南, 增强
 Plus_Encounter\0_Encounter.lua
+Plus_Encounter\Boss_Instance.lua
+Plus_Encounter\Boss_World.lua
 Plus_Encounter\DungeonEntrancePin.lua
-##Plus\EncounterJournal.lua
+Plus_Encounter\GetData_Instance.lua
+Plus_Encounter\GetData_World.lua
+Plus_Encounter\Right_AllInfo.lua
+Plus_Encounter\UI_ListInstances.lua
 
 
 

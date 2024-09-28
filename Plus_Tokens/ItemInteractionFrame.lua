@@ -10,7 +10,7 @@ local e= select(2, ...)
 --#############
 --套装,转换,货币
 --Blizzard_ItemInteractionUI.lua
-local function Set_ItemInteractionFrame(self)
+local function Init(self)
 	if not self then
 		return
 	end
@@ -71,6 +71,12 @@ end
 
 
 
-function WoWTools_TokensMixin:Set_ItemInteractionFrame()
-    Set_ItemInteractionFrame()
+
+
+
+
+
+
+function WoWTools_TokensMixin:Set_ItemInteractionFrame(frame)
+    Init(frame)
 end

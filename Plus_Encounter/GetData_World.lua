@@ -16,7 +16,7 @@ function WoWTools_EncounterMixin:GetWorldData(frame)
         for bossName, worldBossID in pairs(info.Worldboss.boss) do--世界BOSS
             num=num+1
             text= text and text..' ' or '   '
-            text= text..'|cnGREEN_FONT_COLOR:'..num..')|r'.. WoWTools_EncounterMixin:GetBossNameSort(e.cn(bossName), worldBossID)
+            text= text..'|cnGREEN_FONT_COLOR:'..num..')|r'.. WoWTools_EncounterMixin:GetBossNameSort(e.cn(bossName))
         end
         if text then
             e.tips:AddLine(text, nil,nil,nil, true)
