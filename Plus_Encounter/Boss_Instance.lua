@@ -2,10 +2,7 @@ local e= select(2, ...)
 local function Save()
     return WoWTools_EncounterMixin.Save
 end
-
-
-
-
+local Button
 
 
 
@@ -18,7 +15,7 @@ end
 
 
 local function Create_WorldBoss_Button(frame)
-    local btn=WoWTools_ButtonMixin:Cbtn(nil, {name='WoWTools_EncounterInstanceBossButton', icon='hide', size={14,14}})
+    local btn= WoWTools_ButtonMixin:Cbtn(nil, {name='WoWTools_EncounterInstanceBossButton', icon='hide', size={14,14}})
     btn:SetPoint('CENTER', -100, -100)
     e.Set_Move_Frame(btn, {notZoom=true})
 
@@ -63,6 +60,8 @@ local function Create_WorldBoss_Button(frame)
     btn.texture:SetAllPoints()
     btn.texture:SetAtlas(e.Icon.disabled)
     btn.texture:SetShown(Save().hideInstanceBossText)
+
+    WoWTools_EncounterMixin.InstanceBossButton= btn
 
     return btn
 end
@@ -117,18 +116,18 @@ end
 
 function WoWTools_EncounterMixin:InstanceBoss_Settings()--显示副本击杀数据
     if not Save().showInstanceBoss then
-        if self.InstanceBossButton then
-            self.InstanceBossButton.Text:SetText('')
-            self.InstanceBossButton:SetShown(false)
+        if Button then
+            Button.Text:SetText('')
+            Button:SetShown(false)
         end
         return
     end
 
-    self.InstanceBossButton= self.InstanceBossButton or Create_WorldBoss_Button()
+    Button= Button or Create_WorldBoss_Button()
 
-    self.InstanceBossButton.Text:SetText(Get_Text() or '')
+    Button.Text:SetText(Get_Text() or '')
 
-    self.InstanceBossButton:SetShown(true)
-    self.InstanceBossButton.texture:SetShown(Save().hideInstanceBossText)
-    self.InstanceBossButton.Text:SetShown(not Save().hideInstanceBossText)
+    Button:SetShown(true)
+    Button.texture:SetShown(Save().hideInstanceBossText)
+    Button.Text:SetShown(not Save().hideInstanceBossText)
 end

@@ -2,6 +2,63 @@ local e= select(2, ...)
 local function Save()
     return WoWTools_EncounterMixin.Save
 end
+local Button
+
+
+
+
+
+
+
+
+
+local function set_EncounterJournal_Keystones_Tips(self)--险指南界面, 挑战
+    e.tips:SetOwner(self, "ANCHOR_LEFT")
+    e.tips:ClearLines()
+    e.tips:AddDoubleLine(e.onlyChinese and '史诗钥石地下城' or CHALLENGES, e.Icon.left)
+    for guid, info in pairs(e.WoWDate or {}) do
+        if guid and  info.Keystone.link then
+            e.tips:AddDoubleLine(
+                (info.Keystone.weekNum or 0)
+                .. (info.Keystone.weekMythicPlus and ' |cnGREEN_FONT_COLOR:('..info.Keystone.weekMythicPlus..') ' or '')
+                ..WoWTools_UnitMixin:GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true})
+                ..(info.Keystone.score and ' ' or '')..(WoWTools_WeekMixin:KeystoneScorsoColor(info.Keystone.score)),
+                info.Keystone.link)
+        end
+    end
+    e.tips:Show()
+end
+
+local function set_EncounterJournal_Money_Tips(self)--险指南界面, 钱
+    e.tips:SetOwner(self, "ANCHOR_LEFT")
+    e.tips:ClearLines()
+    local numPlayer, allMoney  = 0, 0
+    for guid, info in pairs(e.WoWDate or {}) do
+        if info.Money then
+            e.tips:AddDoubleLine(WoWTools_UnitMixin:GetPlayerInfo({ guid=guid, faction=info.faction, reName=true, reRealm=true}), C_CurrencyInfo.GetCoinTextureString(info.Money))
+            numPlayer=numPlayer+1
+            allMoney= allMoney + info.Money
+        end
+    end
+    if allMoney==0 then
+        e.tips:AddDoubleLine(e.onlyChinese and '钱' or MONEY, e.onlyChinese and '无' or NONE)
+    else
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine((e.onlyChinese and '角色' or CHARACTER)..' '..numPlayer..' '..(e.onlyChinese and '总计：' or FROM_TOTAL)..WoWTools_Mixin:MK(allMoney/10000, 3), C_CurrencyInfo.GetCoinTextureString(allMoney))
+    end
+    e.tips:Show()
+end
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -25,7 +82,7 @@ local function Init()
             Save().hideEncounterJournal= not Save().hideEncounterJournal and true or nil
             self:set_Shown()
             self:SetNormalAtlas(Save().hideEncounterJournal and e.Icon.disabled or e.Icon.icon )
-            set_Loot_Spec_Event()--BOSS战时, 指定拾取, 专精, 事件
+            WoWTools_EncounterMixin:Specialization_Loot_SetEvent()--BOSS战时, 指定拾取, 专精, 事件
             e.call(EncounterJournal_ListInstances)
 
         elseif d=='RightButton' then
@@ -63,7 +120,12 @@ local function Init()
         end
         e.tips:Show()
     end)
-    Button.btn.instance:SetScript("OnLeave",GameTooltip_Hide)
+    Button.btn.instance:SetScript("OnLeave", function ()
+       e.tips:Hide()
+       if WoWTools_EncounterMixin.InstanceBossButton then
+            WoWTools_EncounterMixin.InstanceBossButton:SetButtonState('NORMAL')
+        end
+    end)
     Button.btn.instance:SetScript('OnClick', function()
         if  Save().showInstanceBoss then
             Save().showInstanceBoss=nil
@@ -72,8 +134,8 @@ local function Init()
             Save().hideInstanceBossText=nil
         end
         WoWTools_EncounterMixin:InstanceBoss_Settings()
-        if panel.instanceBoss then
-            panel.instanceBoss:SetButtonState('PUSHED')
+        if WoWTools_EncounterMixin.InstanceBossButton then
+            WoWTools_EncounterMixin.InstanceBossButton:SetButtonState('PUSHED')
         end
     end)
 
@@ -81,9 +143,20 @@ local function Init()
     Button.btn.Worldboss =WoWTools_ButtonMixin:Cbtn(EncounterJournal.TitleContainer, {icon='hide', size={22,22}})--所有角色已击杀世界BOSS
     Button.btn.Worldboss:SetPoint('RIGHT', Button.btn.instance, 'LEFT')
     Button.btn.Worldboss:SetNormalAtlas('poi-soulspiritghost')
-    Button.btn.Worldboss:SetScript('OnEnter',function(self)
+
+    Button.btn.Worldboss:SetScript("OnLeave", function()
+        e.tips:Hide()
+        if WoWTools_EncounterMixin.WorldBossButton then
+            WoWTools_EncounterMixin.WorldBossButton:SetButtonState('NORMAL')
+        end
+    end)
+    Button.btn.Worldboss:SetScript('OnEnter',function(self)--提示
         WoWTools_EncounterMixin:GetWorldData(self)
-    end)--提示
+        if WoWTools_EncounterMixin.WorldBossButton then
+            WoWTools_EncounterMixin.WorldBossButton:SetButtonState('PUSHED')
+        end
+    end)
+
     Button.btn.Worldboss:SetScript('OnMouseDown', function(self2, d)
         if  Save().showWorldBoss then
             Save().showWorldBoss=nil
@@ -92,11 +165,8 @@ local function Init()
             Save().hideWorldBossText=nil
         end
         WoWTools_EncounterMixin:WorldBoss_Settings()
-        if panel.WorldBoss then
-            panel.WorldBoss:SetButtonState('PUSHED')
-        end
     end)
-    Button.btn.Worldboss:SetScript("OnLeave",GameTooltip_Hide)
+
 
     if e.Player.levelMax then
         Button.btn.keystones =WoWTools_ButtonMixin:Cbtn(EncounterJournal.TitleContainer, {icon='hide', size={22,22}})--所有角色,挑战

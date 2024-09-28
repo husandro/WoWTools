@@ -2,7 +2,7 @@ local e= select(2, ...)
 local function Save()
     return WoWTools_EncounterMixin.Save
 end
-
+local Button
 
 
 
@@ -59,6 +59,8 @@ local function Create_WorldBoss_Button()
     btn.texture=btn:CreateTexture()
     btn.texture:SetAllPoints()
     btn.texture:SetAtlas(e.Icon.disabled)
+
+    WoWTools_EncounterMixin.WorldBossButton= btn
 
     return btn
 end
@@ -128,19 +130,19 @@ end
 
 function WoWTools_EncounterMixin:WorldBoss_Settings()--显示世界BOSS击杀数据Text
     if not Save().showWorldBoss then
-        if self.WorldBoss then
-            self.WorldBoss.Text:SetText('')
-            self.WorldBoss:SetShown(false)
+        if Button then
+            Button.Text:SetText('')
+            Button:SetShown(false)
         end
         return
     end
-    self.WorldBoss= self.WorldBoss or Create_WorldBoss_Button()
+    Button= Button or Create_WorldBoss_Button()
 
-    self.WorldBoss.Text:SetText(Get_Text() or '')
+    Button.Text:SetText(Get_Text() or '')
 
-    self.WorldBoss:SetShown(true)
-    self.WorldBoss.texture:SetShown(Save().hideWorldBossText)
-    self.WorldBoss.Text:SetShown(not Save().hideWorldBossText)
+    Button:SetShown(true)
+    Button.texture:SetShown(Save().hideWorldBossText)
+    Button.Text:SetShown(not Save().hideWorldBossText)
 end
 
 

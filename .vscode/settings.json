@@ -5006,7 +5006,8 @@
         "ACTION_SPELL_CAST_START",
         "ReputationHeaderMixin",
         "ToggleCalendar",
-        "OldItemUpgradeFrame"
+        "OldItemUpgradeFrame",
+        "EncounterJournal_UpdateButtonState"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
