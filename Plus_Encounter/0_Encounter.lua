@@ -13,10 +13,24 @@ local function Save()
     return WoWTools_EncounterMixin.Save
 end
 
+
+
+function WoWTools_EncounterMixin:GetBossNameSort(name)--取得怪物名称, 短名称
+    name= e.cn(name)
+    name=name:gsub('(,.+)','')
+    name=name:gsub('(，.+)','')
+    name=name:gsub('·.+','')
+    name=name:gsub('%-.+','')
+    name=name:gsub('<.+>', '')
+    return name
+end
+
+
+
 local panel=CreateFrame("Frame")
 local Button
-local AllTipsFrame--冒险指南,右边,显示所数据
-local Initializer
+
+
 
 
 
@@ -41,96 +55,6 @@ local ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT= ITEM_UPGRADE_FRAME_CURRENT_UPGR
 
 
 
---######################
---冒险指南,右边,显示所数据
---######################
-local function EncounterJournal_Set_All_Info_Text()
-    if not EncounterJournal or Save().hideEncounterJournal_All_Info_Text then
-        if AllTipsFrame then
-            AllTipsFrame:SetShown(false)
-        end
-        return
-    end
-
-    if not AllTipsFrame then
-        AllTipsFrame=CreateFrame("Frame", nil, EncounterJournal)
-        AllTipsFrame:SetPoint('TOPLEFT', EncounterJournal, 'TOPRIGHT',40,0)
-        AllTipsFrame:SetSize(1,1)
-        AllTipsFrame.label= WoWTools_LabelMixin:CreateLabel(AllTipsFrame)
-        AllTipsFrame.label:SetPoint('TOPLEFT')
-        AllTipsFrame.weekLable= WoWTools_LabelMixin:CreateLabel(AllTipsFrame, {mouse=true})
-        AllTipsFrame.weekLable:SetPoint('TOPLEFT', AllTipsFrame.label, 'BOTTOMLEFT', 0, -12)
-        AllTipsFrame.weekLable:SetScript('OnMouseDown', function(self)
-            WeeklyRewards_LoadUI()
-            --[[if not C_AddOns.IsAddOnLoaded("Blizzard_WeeklyRewards") then
-                C_AddOns.LoadAddOn("Blizzard_WeeklyRewards")
-            end]]--周奖励面板
-            WeeklyRewards_ShowUI()--WeeklyReward.lua
-            self:SetAlpha(1)
-        end)
-        AllTipsFrame.weekLable:SetScript('OnLeave', function(self) self:SetAlpha(1) end)
-        AllTipsFrame.weekLable:SetScript('OnEnter', function(self) self:SetAlpha(0.5) end)
-
-    end
-    local m, text, num
-
-
-    for insName, info in pairs(e.WoWDate[e.Player.guid].Instance.ins or {}) do
-        text= text and text..'|n' or ''
-        text= text..'|T450908:0|t'..e.cn(insName)
-        for difficultyName, index in pairs(info) do
-            text=text..'|n     '..index..' '.. difficultyName
-        end
-    end
-    if text then
-        m= m and m..'|n|n' or ''
-        m= m..text
-    end
-
-    text=nil
-    num=0
-
-    for bossName, worldBossID in pairs(e.WoWDate[e.Player.guid].Worldboss.boss or {}) do--世界BOSS
-        num=num+1
-        text= text and text..', ' or ''
-        text= text.. getBossNameSort(e.cn(bossName), worldBossID)
-    end
-    if text then
-        m= m and m..'|n|n' or ''
-        m= m..num..' |cnGREEN_FONT_COLOR:'..text..'|r'
-    end
-
-
-    text= nil
-    num=0
-    for name, _ in pairs(e.WoWDate[e.Player.guid].Rare.boss or {}) do--稀有怪
-        text= text and text..', ' or ''
-        text= text..getBossNameSort(e.cn(name))
-        num=num+1
-    end
-    if text then
-        m= m and m..'|n|n' or ''
-        m= m..num..' '..'|cnGREEN_FONT_COLOR:'..text..'|r'
-    end
-    AllTipsFrame.label:SetText(m or '')
-
-
-   --本周还可获取奖励
-   if C_WeeklyRewards.HasAvailableRewards() then--C_WeeklyRewards.CanClaimRewards() then
-        AllTipsFrame.weekLable:SetText('|A:oribos-weeklyrewards-orb-dialog:0:0|a|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '宏伟宝库里有奖励在等待着你。' or GREAT_VAULT_REWARDS_WAITING))
-    else
-        AllTipsFrame.weekLable:SetText('')
-    end
-    --周奖励，提示
-    local last= WoWTools_WeekMixin:Activities({frame=AllTipsFrame, point={'TOPLEFT', AllTipsFrame.weekLable, 'BOTTOMLEFT', 0, -2}, anchor='ANCHOR_RIGHT'})
-
-
-
-
-    --物品，货币提示
-    WoWTools_LabelMixin:ItemCurrencyTips({frame=AllTipsFrame, point={'TOPLEFT', last or AllTipsFrame.label, 'BOTTOMLEFT', 0, -12}})--, showAll=true})
-    AllTipsFrame:SetShown(true)
-end
 
 
 
@@ -150,129 +74,6 @@ end
 
 
 
-
-
-local function MoveFrame(self, savePointName)
-    self:RegisterForDrag("RightButton")
-    self:SetClampedToScreen(true)
-    self:SetMovable(true)
-    self:SetScript("OnDragStart", function(self2) self2:StartMoving() end)
-    self:SetScript("OnDragStop", function(self2)
-            ResetCursor()
-            self2:StopMovingOrSizing()
-            Save[savePointName]={self2:GetPoint(1)}
-            Save[savePointName][2]= nil
-    end)
-    self:SetScript('OnLeave', function()
-        self:SetButtonState("NORMAL")
-        e.tips:Hide()
-    end)
-    self:EnableMouseWheel(true)
-    self:SetScript('OnMouseWheel', function(self2, d)
-        local size=Save().EncounterJournalFontSize or 12
-        if d==1 then
-            size=size+1
-        else
-            size=size-1
-        end
-        size= size<6 and 6 or size
-        size= size>72 and 72 or size
-        Save().EncounterJournalFontSize=size
-        WoWTools_LabelMixin:CreateLabel(nil, {size=size, changeFont=self2.Text})--size, nil, self2.Text)
-        print(e.addName, WoWTools_EncounterMixin.addName, e.onlyChinese and '字体大小' or FONT_SIZE, size)
-    end)
-end
-
-local function Init_Set_Worldboss_Text()--显示世界BOSS击杀数据Text
-    if not Save().showWorldBoss then
-        if panel.WorldBoss then
-            panel.WorldBoss.Text:SetText('')
-            panel.WorldBoss:SetShown(false)
-        end
-        return
-    end
-    if not panel.WorldBoss then
-        panel.WorldBoss=WoWTools_ButtonMixin:Cbtn(nil, {icon='hide', size={14,14}})
-        if Save().WorldBossPoint then
-            panel.WorldBoss:SetPoint(Save().WorldBossPoint[1], UIParent, Save().WorldBossPoint[3], Save().WorldBossPoint[4], Save().WorldBossPoint[5])
-        else
-            if C_AddOns.IsAddOnLoaded('Blizzard_EncounterJournal') then
-                panel.WorldBoss:SetPoint('BOTTOMRIGHT',EncounterJournal, 'TOPRIGHT', -65,5)
-            else
-                panel.WorldBoss:SetPoint('CENTER')
-            end
-        end
-        panel.WorldBoss:SetScript('OnEnter', function(self2)
-            e.tips:SetOwner(self2, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:AddDoubleLine(e.addName, WoWTools_EncounterMixin.addName)
-            e.tips:AddDoubleLine(e.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL, e.onlyChinese and '世界BOSS和稀有怪'
-                or format(COVENANT_RENOWN_TOAST_REWARD_COMBINER,
-                        format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WORLD, 'BOSS')
-                        ,GARRISON_MISSION_RARE
-                    )
-            )
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.GetShowHide(not Save().hideWorldBossText), e.Icon.left)
-            e.tips:AddDoubleLine(e.onlyChinese and '移动' or  NPE_MOVE, e.Icon.right)
-            e.tips:AddDoubleLine(e.Player.L.size, (Save().EncounterJournalFontSize or 12)..e.Icon.mid)
-            e.tips:Show()
-        end)
-        panel.WorldBoss:SetScript('OnMouseDown', function(self2, d)
-            if d=='LeftButton' then
-                Save().hideWorldBossText= not Save().hideWorldBossText and true or nil
-                panel.WorldBoss.texture:SetShown(Save().hideWorldBossText)
-                panel.WorldBoss.Text:SetShown(not Save().hideWorldBossText)
-            end
-        end)
-        MoveFrame(panel.WorldBoss, 'WorldBossPoint')
-
-        panel.WorldBoss.Text=WoWTools_LabelMixin:CreateLabel(panel.WorldBoss, {size=Save().EncounterJournalFontSize, color=true})
-        panel.WorldBoss.Text:SetPoint('TOPLEFT')
-
-        panel.WorldBoss.texture=panel.WorldBoss:CreateTexture()
-        panel.WorldBoss.texture:SetAllPoints(panel.WorldBoss)
-        panel.WorldBoss.texture:SetAtlas(e.Icon.disabled)
-        --panel.WorldBoss.texture:SetShown(Save().hideWorldBossText)
-    end
-
-    local msg
-    if not Save().hideWorldBossText then
-        for guid, info in pairs(e.WoWDate or {}) do
-            local text, numAll, find= nil, 0, nil
-            for bossName, worldBossID in pairs(info.Worldboss.boss) do--世界BOSS
-                numAll=numAll+1
-                text= text and text ..' ' or '   '
-                text= text..'|cnGREEN_FONT_COLOR:'..numAll..')|r'..getBossNameSort(bossName, worldBossID)
-            end
-            if text then
-                msg= msg and msg..'|n' or ''
-                msg= msg..text
-                find= true
-            end
-
-            text, numAll= nil, 0
-            for bossName, _ in pairs(info.Rare.boss) do--稀有怪
-                numAll=numAll+1
-                text= text and text ..' ' or '   '
-                text= text..'|cnGREEN_FONT_COLOR:'..numAll..')|r'..getBossNameSort(bossName)
-            end
-            if text then
-                msg= msg and msg..'|n' or ''
-                msg= msg..text
-                find= true
-            end
-            if find then
-                msg= msg..'|n'..WoWTools_UnitMixin:GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true})
-            end
-        end
-        msg= msg or '...'
-    end
-    panel.WorldBoss.Text:SetText(msg or '')
-    panel.WorldBoss:SetShown(true)
-    panel.WorldBoss.texture:SetShown(Save().hideWorldBossText)
-    panel.WorldBoss.Text:SetShown(not Save().hideWorldBossText)
-end
 
 local function Init_Set_InstanceBoss_Text()--显示副本击杀数据
     if not Save().showInstanceBoss then
@@ -445,7 +246,7 @@ local function Init_EncounterJournal()--冒险指南界面
 
         elseif d=='RightButton' then
             Save().hideEncounterJournal_All_Info_Text= not Save().hideEncounterJournal_All_Info_Text and true or nil
-            EncounterJournal_Set_All_Info_Text()--冒险指南,右边,显示所数据
+            WoWTools_EncounterMixin:Set_RightAllInfo()--冒险指南,右边,显示所数据
         end
         self:set_Tooltips()
     end)
@@ -496,7 +297,9 @@ local function Init_EncounterJournal()--冒险指南界面
     Button.btn.Worldboss =WoWTools_ButtonMixin:Cbtn(EncounterJournal.TitleContainer, {icon='hide', size={22,22}})--所有角色已击杀世界BOSS
     Button.btn.Worldboss:SetPoint('RIGHT', Button.btn.instance, 'LEFT')
     Button.btn.Worldboss:SetNormalAtlas('poi-soulspiritghost')
-    Button.btn.Worldboss:SetScript('OnEnter',set_EncounterJournal_World_Tips)--提示
+    Button.btn.Worldboss:SetScript('OnEnter',function(self)
+        WoWTools_EncounterMixin:GetWorldData(self)
+    end)--提示
     Button.btn.Worldboss:SetScript('OnMouseDown', function(self2, d)
         if  Save().showWorldBoss then
             Save().showWorldBoss=nil
@@ -504,7 +307,7 @@ local function Init_EncounterJournal()--冒险指南界面
             Save().showWorldBoss=true
             Save().hideWorldBossText=nil
         end
-        Init_Set_Worldboss_Text()
+        WoWTools_EncounterMixin:WorldBoss_Settings()
         if panel.WorldBoss then
             panel.WorldBoss:SetButtonState('PUSHED')
         end
@@ -1267,7 +1070,7 @@ end
 local function Init()
    
     WoWTools_EncounterMixin:Init_DungeonEntrancePin()--世界地图，副本，提示
-    Init_Set_Worldboss_Text()
+    WoWTools_EncounterMixin:WorldBoss_Settings()
     Init_Set_InstanceBoss_Text()
 end
 
@@ -1332,7 +1135,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         elseif arg1=='Blizzard_EncounterJournal' then---冒险指南
             WoWTools_EncounterMixin:Init_UI_ListInstances()
             Init_EncounterJournal()--冒险指南界面
-            EncounterJournal_Set_All_Info_Text()--冒险指南,右边,显示所数据
+            WoWTools_EncounterMixin:Set_RightAllInfo()--冒险指南,右边,显示所数据
             self:RegisterEvent('BOSS_KILL')
             self:RegisterEvent('UPDATE_INSTANCE_INFO')
             self:RegisterEvent('PLAYER_ENTERING_WORLD')
@@ -1347,8 +1150,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='UPDATE_INSTANCE_INFO' then
         C_Timer.After(2, function()
             Init_Set_InstanceBoss_Text()--显示副本击杀数据
-            Init_Set_Worldboss_Text()--显示世界BOSS击杀数据Text
-            EncounterJournal_Set_All_Info_Text()--冒险指南,右边,显示所数据
+            WoWTools_EncounterMixin:WorldBoss_Settings()--显示世界BOSS击杀数据Text
+            WoWTools_EncounterMixin:Set_RightAllInfo()--冒险指南,右边,显示所数据
         end)
 
     elseif event=='BOSS_KILL' and arg1 then
@@ -1356,7 +1159,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='WEEKLY_REWARDS_UPDATE' then
         C_Timer.After(2, function()
-            EncounterJournal_Set_All_Info_Text()--冒险指南,右边,显示所数据
+            WoWTools_EncounterMixin:Set_RightAllInfo()--冒险指南,右边,显示所数据
         end)
 
     elseif event=='ENCOUNTER_START' and arg1 then--BOSS战时, 指定拾取, 专精

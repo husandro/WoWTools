@@ -23,7 +23,7 @@ local function Init(frame)
         GameTooltip:AddDoubleLine(name,  (cnName and name..' ' or '')..(mapID and ' mapID '..mapID or ''))
         GameTooltip:AddDoubleLine('journalInstanceID: |cnGREEN_FONT_COLOR:'..self.journalInstanceID, (dungeonAreaMapID and dungeonAreaMapID>0) and 'dungeonAreaMapID '..dungeonAreaMapID or '')
         GameTooltip:AddLine(' ')
-        if encounterJournal_ListInstances_set_Instance(self, true) then
+        if WoWTools_EncounterMixin:GetInstanceData(self, true) then
             GameTooltip:AddLine(' ')
         end
         GameTooltip:AddDoubleLine(e.addName, WoWTools_EncounterMixin.addName)

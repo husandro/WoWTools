@@ -278,9 +278,9 @@ Plus_Gossip\Quest.lua
 
 
 ##冒险指南, 增强
-##Plus_Encounter\0_Encounter.lua
-##Plus_Encounter\DungeonEntrancePin.lua
-Plus\EncounterJournal.lua
+Plus_Encounter\0_Encounter.lua
+Plus_Encounter\DungeonEntrancePin.lua
+##Plus\EncounterJournal.lua
 
 
 

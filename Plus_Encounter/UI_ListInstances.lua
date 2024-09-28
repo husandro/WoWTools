@@ -41,7 +41,7 @@ local function Init()
 
     for _, button in pairs(frame:GetFrames() or {}) do--ScrollBox.lua
         if button and button.instanceID then --and button.tooltipTitle--button.bgImage:GetTexture() button.name:GetText()
-            local textKill= encounterJournal_ListInstances_set_Instance(button)--界面,击杀,数据
+            local textKill= WoWTools_EncounterMixin:GetInstanceData(button)--界面,击杀,数据
             if not button.tipsText and textKill then
                 button.tipsText=WoWTools_LabelMixin:CreateLabel(button, {size=e.onlyChinese and 12 or 10, copyFont= not e.onlyChinese and button.name or nil})--10, button.name)
                 button.tipsText:SetPoint('BOTTOMRIGHT', -8, 8)
@@ -136,7 +136,7 @@ local function Init()
                         e.tips:AddLine( 'mapChallengeModeID: |cnGREEN_FONT_COLOR:'.. self.mapChallengeModeID)
                     end
                     e.tips:AddLine(' ')
-                    if encounterJournal_ListInstances_set_Instance(self, true) then--界面,击杀,数据
+                    if WoWTools_EncounterMixin:GetInstanceData(self, true) then--界面,击杀,数据
                         e.tips:AddLine(' ')
                     end
                     e.tips:AddDoubleLine(e.addName, WoWTools_EncounterMixin.addName)
