@@ -15,8 +15,8 @@ local function Create_WorldBoss_Button()
     btn:SetPoint('CENTER', -50, -100)
     e.Set_Move_Frame(btn, {notZoom=true})
 
-    btn:SetScript('OnEnter', function(self2)
-        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+    function btn:set_tooltip()
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.addName, WoWTools_EncounterMixin.addName)
         e.tips:AddDoubleLine(e.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL, e.onlyChinese and '世界BOSS和稀有怪'
@@ -30,12 +30,16 @@ local function Create_WorldBoss_Button()
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or  NPE_MOVE, e.Icon.right)
         e.tips:AddDoubleLine(e.Player.L.size, (Save().EncounterJournalFontSize or 12)..e.Icon.mid)
         e.tips:Show()
-    end)
-    btn:SetScript('OnMouseDown', function(self2, d)
+    end
+    btn:SetScript('OnLeave', GameTooltip_Hide)
+    btn:SetScript('OnEnter', btn.set_tooltip)
+
+    btn:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
             Save().hideWorldBossText= not Save().hideWorldBossText and true or nil
-            self2.texture:SetShown(Save().hideWorldBossText)
-            self2.Text:SetShown(not Save().hideWorldBossText)
+            self.Text:SetShown(not Save().hideWorldBossText)
+            self:set_texture()
+            self:set_tooltip()
         end
     end)
 
@@ -49,8 +53,8 @@ local function Create_WorldBoss_Button()
         size= size<6 and 6 or size
         size= size>72 and 72 or size
         Save().EncounterJournalFontSize=size
-        WoWTools_LabelMixin:CreateLabel(nil, {size=size, changeFont=self.Text})--size, nil, self2.Text)
-        print(e.addName, WoWTools_EncounterMixin.addName, e.onlyChinese and '字体大小' or FONT_SIZE, size)
+        WoWTools_LabelMixin:CreateLabel(nil, {size=size, changeFont=self.Text})--size, nil, self.Text)
+        self:set_tooltip()
     end)
 
     btn.Text=WoWTools_LabelMixin:CreateLabel(btn, {size=Save().EncounterJournalFontSize, color=true})
@@ -58,7 +62,11 @@ local function Create_WorldBoss_Button()
 
     btn.texture=btn:CreateTexture()
     btn.texture:SetAllPoints()
-    btn.texture:SetAtlas(e.Icon.disabled)
+    btn.texture:SetAlpha(0.5)
+    function btn:set_texture()
+        btn.texture:SetAtlas(Save().hideWorldBossText and e.Icon.disabled or e.Icon.icon)
+    end
+    btn:set_texture()
 
     WoWTools_EncounterMixin.WorldBossButton= btn
 
@@ -112,6 +120,7 @@ local function Get_Text()
         end
     end
     msg= msg or '...'
+    return msg
 end
 
 
@@ -141,7 +150,6 @@ function WoWTools_EncounterMixin:WorldBoss_Settings()--显示世界BOSS击杀数
     Button.Text:SetText(Get_Text() or '')
 
     Button:SetShown(true)
-    Button.texture:SetShown(Save().hideWorldBossText)
     Button.Text:SetShown(not Save().hideWorldBossText)
 end
 

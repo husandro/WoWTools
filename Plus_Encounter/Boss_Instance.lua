@@ -19,28 +19,31 @@ local function Create_WorldBoss_Button(frame)
     btn:SetPoint('CENTER', -100, -100)
     e.Set_Move_Frame(btn, {notZoom=true})
 
-
-    btn:SetScript('OnEnter', function(self2)
-        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+    function btn:set_tooltip()
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.addName, WoWTools_EncounterMixin.addName)
         e.tips:AddDoubleLine(e.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL, e.onlyChinese and '副本' or INSTANCE)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.GetShowHide(not Save().hideInstanceBossText), e.Icon.left)
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
-        e.tips:AddDoubleLine(e.Player.L.size, (Save().EncounterJournalFontSize or 12)..e.Icon.mid)
+        e.tips:AddDoubleLine(e.Player.L.size, (Save().InsFontSize or 12)..e.Icon.mid)
         e.tips:Show()
-    end)
+    end
+    btn:SetScript('OnLeave', GameTooltip_Hide)
+    btn:SetScript('OnEnter', btn.set_tooltip)
+
     btn:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
             Save().hideInstanceBossText= not Save().hideInstanceBossText and true or nil
-            self.texture:SetShown(Save().hideInstanceBossText)
             self.Text:SetShown(not Save().hideInstanceBossText)
+            self:set_texture()
+            self:set_tooltip()
         end
     end)
 
     btn:SetScript('OnMouseWheel', function(self, d)
-        local size=Save().EncounterJournalFontSize or 12
+        local size=Save().InsFontSize or 12
         if d==1 then
             size=size+1
         else
@@ -48,18 +51,21 @@ local function Create_WorldBoss_Button(frame)
         end
         size= size<6 and 6 or size
         size= size>72 and 72 or size
-        Save().EncounterJournalFontSize=size
-        WoWTools_LabelMixin:CreateLabel(nil, {size=size, changeFont=self.Text})--size, nil, self2.Text)
-        print(e.addName, WoWTools_EncounterMixin.addName, e.onlyChinese and '字体大小' or FONT_SIZE, size)
+        Save().InsFontSize=size
+        WoWTools_LabelMixin:CreateLabel(nil, {size=size, changeFont=self.Text})--size, nil, self2.Text)        
+        self:set_tooltip()
     end)
 
-    btn.Text=WoWTools_LabelMixin:CreateLabel(btn, {size=Save().EncounterJournalFontSize, color=true})
+    btn.Text=WoWTools_LabelMixin:CreateLabel(btn, {size=Save().InsFontSize, color=true})
     btn.Text:SetPoint('TOPLEFT')
 
     btn.texture=btn:CreateTexture()
     btn.texture:SetAllPoints()
-    btn.texture:SetAtlas(e.Icon.disabled)
-    btn.texture:SetShown(Save().hideInstanceBossText)
+    btn.texture:SetAlpha(0.5)
+    function btn:set_texture()
+        btn.texture:SetAtlas(Save().hideInstanceBossText and e.Icon.disabled or e.Icon.icon)
+    end
+    btn:set_texture()
 
     WoWTools_EncounterMixin.InstanceBossButton= btn
 
@@ -101,6 +107,7 @@ local function Get_Text()
         end
     end
     msg=msg or '...'
+    return msg
 end
 
 
@@ -124,10 +131,8 @@ function WoWTools_EncounterMixin:InstanceBoss_Settings()--显示副本击杀数�
     end
 
     Button= Button or Create_WorldBoss_Button()
-
     Button.Text:SetText(Get_Text() or '')
 
     Button:SetShown(true)
-    Button.texture:SetShown(Save().hideInstanceBossText)
     Button.Text:SetShown(not Save().hideInstanceBossText)
 end
