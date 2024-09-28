@@ -288,7 +288,7 @@ end
 function e.set_TabSystem_Button(self)--TabSystemOwner.lua
     for _, tabID in pairs(self:GetTabSet() or {}) do
         local btn= self:GetTabButton(tabID)
-        e.Set_Alpha_Frame_Texture(btn, {alpha=min05})
+        e.Set_Alpha_Frame_Texture(btn, {notAlpha=true})--alpha=min05})
     end
 end
 
@@ -765,10 +765,10 @@ local function Init_All_Frame()
      hide_Texture(GossipFrameInset.Bg)
      e.Set_ScrollBar_Color_Alpha(GossipFrame.GreetingPanel)
 
-     e.Set_Alpha_Frame_Texture(PVEFrameTab1, {alpha=min05})
-     e.Set_Alpha_Frame_Texture(PVEFrameTab2, {alpha=min05})
-     e.Set_Alpha_Frame_Texture(PVEFrameTab3, {alpha=min05})
-     e.Set_Alpha_Frame_Texture(PVEFrameTab4, {alpha=min05})
+     e.Set_Alpha_Frame_Texture(PVEFrameTab1, {notAlpha=true})--{alpha=min05})
+     e.Set_Alpha_Frame_Texture(PVEFrameTab2, {notAlpha=true})--{alpha=min05})
+     e.Set_Alpha_Frame_Texture(PVEFrameTab3, {notAlpha=true})--{alpha=min05})
+     e.Set_Alpha_Frame_Texture(PVEFrameTab4, {notAlpha=true})--{alpha=min05})
      --print(PetStableFrame, NUM_PET_STABLE_PAGES)
      if e.Player.class=='HUNTER' then--猎人，宠物
         if StableFrame then--10.2.7
@@ -887,9 +887,9 @@ local function Init_All_Frame()
      hide_Frame_Texture(CharacterMainHandSlot)--16
      hide_Frame_Texture(CharacterSecondaryHandSlot)--17
 
-     e.Set_Alpha_Frame_Texture(CharacterFrameTab1, {alpha=min05})
-     e.Set_Alpha_Frame_Texture(CharacterFrameTab2, {alpha=min05})
-     e.Set_Alpha_Frame_Texture(CharacterFrameTab3, {alpha=min05})
+     e.Set_Alpha_Frame_Texture(CharacterFrameTab1, {notAlpha=true})--{alpha=0.8})
+     e.Set_Alpha_Frame_Texture(CharacterFrameTab2, {notAlpha=true})--{alpha=min05})
+     e.Set_Alpha_Frame_Texture(CharacterFrameTab3, {notAlpha=true})--{alpha=min05})
 
      --好友列表
      e.Set_NineSlice_Color_Alpha(FriendsFrame, true)
@@ -939,9 +939,9 @@ local function Init_All_Frame()
      e.Set_ScrollBar_Color_Alpha(QuickJoinFrame)
 
      for i=1, 4 do
-        e.Set_Alpha_Frame_Texture(_G['FriendsFrameTab'..i], {alpha=min05})
-        e.Set_Alpha_Frame_Texture(_G['FriendsTabHeaderTab'..i], {alpha=min05})
-        e.Set_Alpha_Frame_Texture(_G['WhoFrameColumnHeader'..i], {alpha=min05})
+        e.Set_Alpha_Frame_Texture(_G['FriendsFrameTab'..i], {notAlpha=true})--{alpha=min05})
+        e.Set_Alpha_Frame_Texture(_G['FriendsTabHeaderTab'..i], {notAlpha=true})--{alpha=min05})
+        e.Set_Alpha_Frame_Texture(_G['WhoFrameColumnHeader'..i], {notAlpha=true})--{alpha=min05})
      end
 
 
@@ -999,8 +999,8 @@ local function Init_All_Frame()
      e.Set_NineSlice_Color_Alpha(OpenMailFrame, true)
      set_Alpha_Color(OpenMailFrameBg)
      set_Alpha_Color(OpenMailFrameInset.Bg)
-     e.Set_Alpha_Frame_Texture(MailFrameTab1, {alpha=min05})
-     e.Set_Alpha_Frame_Texture(MailFrameTab2, {alpha=min05})
+     e.Set_Alpha_Frame_Texture(MailFrameTab1, {notAlpha=true})--{alpha=min05})
+     e.Set_Alpha_Frame_Texture(MailFrameTab2, {notAlpha=true})--{alpha=min05})
      hide_Texture(SendMailMoneyInset.Bg)
      e.Set_NineSlice_Color_Alpha(MailFrameInset, true)
      e.Set_ScrollBar_Color_Alpha(SendMailScrollFrame)
@@ -1036,7 +1036,7 @@ local function Init_All_Frame()
 
 
      for i= 1, 5 do
-        e.Set_Alpha_Frame_Texture(_G['CombatConfigTab'..i], {alpha=min05})
+        e.Set_Alpha_Frame_Texture(_G['CombatConfigTab'..i], {notAlpha=true})--{alpha=min05})
      end
 
      hooksecurefunc('ChatConfig_CreateCheckboxes', function(frame)--ChatConfigFrame.lua
@@ -1202,8 +1202,8 @@ local function Init_All_Frame()
      set_Alpha_Color(MerchantFrameLootFilterMiddle)
      set_Alpha_Color(MerchantFrameLootFilterLeft)
      set_Alpha_Color(MerchantFrameLootFilterRight)
-     e.Set_Alpha_Frame_Texture(MerchantFrameTab1, {alpha=min05})
-     e.Set_Alpha_Frame_Texture(MerchantFrameTab2, {alpha=min05})
+     e.Set_Alpha_Frame_Texture(MerchantFrameTab1, {notAlpha=true})--{alpha=min05})
+     e.Set_Alpha_Frame_Texture(MerchantFrameTab2, {notAlpha=true})--{alpha=min05})
      e.Set_ScrollBar_Color_Alpha(MerchantFrame)
      set_Alpha_Color(MerchantFrameBg)
      e.Set_NineSlice_Color_Alpha(MerchantFrameInset, true)
@@ -1547,11 +1547,11 @@ local function Init_Event(arg1)
             end
         end)
 
-        e.Set_Alpha_Frame_Texture(EncounterJournalSuggestTab, {alpha=min05})
-        e.Set_Alpha_Frame_Texture(EncounterJournalMonthlyActivitiesTab, {alpha=min05})
-        e.Set_Alpha_Frame_Texture(EncounterJournalDungeonTab, {alpha=min05})
-        e.Set_Alpha_Frame_Texture(EncounterJournalRaidTab, {alpha=min05})
-        e.Set_Alpha_Frame_Texture(EncounterJournalLootJournalTab, {alpha=min05})
+        e.Set_Alpha_Frame_Texture(EncounterJournalSuggestTab, {notAlpha=true})--{alpha=min05})
+        e.Set_Alpha_Frame_Texture(EncounterJournalMonthlyActivitiesTab, {notAlpha=true})--{alpha=min05})
+        e.Set_Alpha_Frame_Texture(EncounterJournalDungeonTab, {notAlpha=true})--{alpha=min05})
+        e.Set_Alpha_Frame_Texture(EncounterJournalRaidTab, {notAlpha=true})--{alpha=min05})
+        e.Set_Alpha_Frame_Texture(EncounterJournalLootJournalTab, {notAlpha=true})--{alpha=min05})
 
 
 
@@ -1582,7 +1582,7 @@ local function Init_Event(arg1)
             if frame then
                 hide_Texture(frame.Background)
             end
-            e.Set_Alpha_Frame_Texture(_G['GuildBankFrameTab'..i], {alpha=min05})
+            e.Set_Alpha_Frame_Texture(_G['GuildBankFrameTab'..i], {notAlpha=true})--{alpha=min05})
         end
 
         local MAX_GUILDBANK_SLOTS_PER_TAB = 98;
@@ -1869,8 +1869,8 @@ local function Init_Event(arg1)
         set_Alpha_Color(WardrobeSetsCollectionVariantSetsButtonBottomRight)]]
         hide_Texture(WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.ModelFadeTexture)
 
-        e.Set_Alpha_Frame_Texture(WardrobeCollectionFrameTab1, {alpha=min05})
-        e.Set_Alpha_Frame_Texture(WardrobeCollectionFrameTab2, {alpha=min05})
+        e.Set_Alpha_Frame_Texture(WardrobeCollectionFrameTab1, {notAlpha=true})--{alpha=min05})
+        e.Set_Alpha_Frame_Texture(WardrobeCollectionFrameTab2, {notAlpha=true})--{alpha=min05})
         --[[hooksecurefunc(WardrobeSetsScrollFrameButtonMixin, 'Init', function(button, displayData)--外观列表
             set_Alpha_Color(button.Background)
         end)]]
@@ -1912,7 +1912,7 @@ local function Init_Event(arg1)
 
 
         for i=1, 7 do
-            e.Set_Alpha_Frame_Texture(_G['CollectionsJournalTab'..i], {alpha=min05})
+            e.Set_Alpha_Frame_Texture(_G['CollectionsJournalTab'..i], {notAlpha=true})--{alpha=min05})
         end
 
         if _G['RematchJournal'] then
@@ -2043,9 +2043,9 @@ local function Init_Event(arg1)
         hide_Texture(InspectFrameInset.Bg)
         hide_Texture(InspectPVPFrame.BG)
         hide_Texture(InspectGuildFrameBG)
-        e.Set_Alpha_Frame_Texture(InspectFrameTab1, {alpha=min05})
-        e.Set_Alpha_Frame_Texture(InspectFrameTab2, {alpha=min05})
-        e.Set_Alpha_Frame_Texture(InspectFrameTab3, {alpha=min05})
+        e.Set_Alpha_Frame_Texture(InspectFrameTab1, {notAlpha=true})--{alpha=min05})
+        e.Set_Alpha_Frame_Texture(InspectFrameTab2, {notAlpha=true})--{alpha=min05})
+        e.Set_Alpha_Frame_Texture(InspectFrameTab3, {notAlpha=true})--{alpha=min05})
         e.Set_NineSlice_Color_Alpha(InspectFrame, true)
         e.Set_NineSlice_Color_Alpha(InspectFrameInset, nil, true)
 

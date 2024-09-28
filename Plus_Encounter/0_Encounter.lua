@@ -1,10 +1,18 @@
 local id, e = ...
-local addName= e.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL
-local Save={
+local addName
+WoWTools_EncounterMixin={
+Save={
     wowBossKill={},
     loot= {[e.Player.class]= {}},
     favorites={},--副本收藏
+},
+addName=nil
 }
+
+local function Save()
+    return WoWTools_EncounterMixin.Save
+end
+
 local panel=CreateFrame("Frame")
 local Button
 local AllTipsFrame--冒险指南,右边,显示所数据
@@ -13,177 +21,9 @@ local Initializer
 
 
 
---[[
-
-local numTiers = EJ_GetNumTiers()
-local currTier = EJ_GetCurrentTier()
---for i=1,numTiers do
-    
-
-    print(EJ_GetTierInfo(numTiers))
-    --info.text = EJ_GetTierInfo(i)
-    
-    --info.func = EncounterJournal_TierDropDown_Select
-    --info.checked = i == currTier
-    --info.arg1 = i
-    --UIDropDownMenu_AddButton(info, level)
---end
-
-local dataIndex = 1
-local showRaid = false
-local instanceID, name, description, _, buttonImage, _, _, _, link, _, mapID = EJ_GetInstanceByIndex(dataIndex, showRaid)
-local dataProvider = CreateDataProvider()
-while instanceID ~= nil do
-    dataProvider:Insert({
-        instanceID = instanceID,
-        name = name,
-        description = description,
-        buttonImage = buttonImage,
-        link = link,
-        mapID = mapID,
-    })
-
-    print(name,mapID)
-    dataIndex = dataIndex + 1
-    instanceID, name, description, _, buttonImage, _, _, _, link, _, mapID = EJ_GetInstanceByIndex(dataIndex, showRaid)
-end]]
 
 local ITEM_CLASSES_ALLOWED= format(ITEM_CLASSES_ALLOWED, '(.+)')
 local ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT:gsub('%%s/%%s','(.-%%d%+/%%d%+)')-- "升级：%s/%s"
-
-
-
-local function getBossNameSort(name)--取得怪物名称, 短名称
-    name= e.cn(name)
-    name=name:gsub('(,.+)','')
-    name=name:gsub('(，.+)','')
-    name=name:gsub('·.+','')
-    name=name:gsub('%-.+','')
-    name=name:gsub('<.+>', '')
-    return name
-end
-
---所有角色已击杀世界BOSS提示
-local function set_EncounterJournal_World_Tips(self)
-    e.tips:SetOwner(self, "ANCHOR_LEFT")
-    e.tips:ClearLines()
-    e.tips:AddDoubleLine(format('%s %s',
-        e.onlyChinese and '世界BOSS/稀有 ' or format('%s/%s', format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHANNEL_CATEGORY_WORLD, BOSS), GARRISON_MISSION_RARE),
-        e.GetShowHide(Save.showWorldBoss)
-    ), e.Icon.left)
-
-    e.tips:AddLine(' ')
-    for guid, info in pairs(e.WoWDate or {}) do
-        local find
-        local text, num= nil, 0
-        for bossName, worldBossID in pairs(info.Worldboss.boss) do--世界BOSS
-            num=num+1
-            text= text and text..' ' or '   '
-            text= text..'|cnGREEN_FONT_COLOR:'..num..')|r'..getBossNameSort(e.cn(bossName), worldBossID)
-        end
-        if text then
-            e.tips:AddLine(text, nil,nil,nil, true)
-            find=true
-        end
-
-        text, num= nil, 0
-        for bossName, _ in pairs(info.Rare.boss) do--稀有怪
-            num= num+1
-            text= text and text..' ' or ''
-            text= text..'(|cnGREEN_FONT_COLOR:'..num..'|r)'..getBossNameSort(e.cn(bossName))
-        end
-        if text then
-            e.tips:AddLine(text, nil,nil,nil, true)
-            find=true
-        end
-        if find then
-            e.tips:AddDoubleLine(WoWTools_UnitMixin:GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}), guid==e.Player.guid and '|A:auctionhouse-icon-favorite:0:0|a')
-        end
-    end
-    e.tips:AddLine(' ')
-    e.tips:AddDoubleLine('instanceID', self.instanceID)
-    e.tips:Show()
-end
-
-
-
---界面,击杀,数据
-local function encounterJournal_ListInstances_set_Instance(self, showTips)
-    local text,find
-    local instanceID= self.instanceID or self.journalInstanceID
-    if not instanceID then
-        return
-    end
-
-    if instanceID==1205 or instanceID==1192 or instanceID==1028 or instanceID==822 or instanceID==557 or instanceID==322 then--世界BOSS
-        if showTips then
-            set_EncounterJournal_World_Tips(self)--角色世界BOSS提示            
-            find=true
-        else
-            for guid, info in pairs(e.WoWDate or {}) do--世界BOSS
-                if guid==e.Player.guid then
-                    local num=0
-                    for bossName, worldBossID in pairs(info.Worldboss.boss) do
-                        num= num+1
-                        text= text and text..' ' or ''
-                        if num>2 and  select(2, math.modf(num / 3))==0 then
-                            text=text..'|n'
-                        end
-                        text= text..'|cnGREEN_FONT_COLOR:'..num..')|r'..getBossNameSort(e.cn(bossName), worldBossID)
-                    end
-                    break
-                end
-            end
-        end
-    else
-        local n=GetNumSavedInstances()
-        local instancename= self.tooltipTitle or EJ_GetInstanceInfo(instanceID)
-        for i=1, n do
-            local name, _, reset, difficultyID, _, _, _, _, _, difficultyName, numEncounters, encounterProgress = GetSavedInstanceInfo(i)
-            if instancename==name and (not reset or reset>0) and numEncounters and encounterProgress and numEncounters>0 and encounterProgress>0 then
-                difficultyName= WoWTools_MapMixin:GetDifficultyColor(difficultyName, difficultyID) or difficultyName
-                local num=encounterProgress..'/'..numEncounters..'|r'
-                num= encounterProgress==numEncounters and '|cnGREEN_FONT_COLOR:'..num..'|r' or num
-                if showTips then
-                    if find then
-                        e.tips:AddLine(' ')
-                    end
-
-                    e.tips:AddDoubleLine((difficultyName or e.cn(name) or '')..' '..(num or ''))
-                    local t
-                    for j=1,numEncounters do
-                        local bossName,_,isKilled = GetSavedInstanceEncounterInfo(i,j)
-                        local t2
-                        t2= e.cn(bossName)
-                        if t then
-                            t2=t2..' ('..j else t2=j..') '..t2
-                        end
-                        if isKilled then t2='|cFFFF0000'..t2..'|r' end
-                        if j==numEncounters or t then
-                            if not t then
-                                t=t2
-                                t2=nil
-                            end
-                            e.tips:AddDoubleLine(t,t2)
-                            t=nil
-                        else
-                            t=t2
-                        end
-                    end
-                    find=true
-                else
-                    text= text and text..'|n' or ''
-                    text=text..difficultyName..' '..num
-                end
-            end
-        end
-    end
-    if not showTips then
-        return text
-    else
-        return find
-    end
-end
 
 
 
@@ -205,7 +45,7 @@ end
 --冒险指南,右边,显示所数据
 --######################
 local function EncounterJournal_Set_All_Info_Text()
-    if not EncounterJournal or Save.hideEncounterJournal_All_Info_Text then
+    if not EncounterJournal or Save().hideEncounterJournal_All_Info_Text then
         if AllTipsFrame then
             AllTipsFrame:SetShown(false)
         end
@@ -329,7 +169,7 @@ local function MoveFrame(self, savePointName)
     end)
     self:EnableMouseWheel(true)
     self:SetScript('OnMouseWheel', function(self2, d)
-        local size=Save.EncounterJournalFontSize or 12
+        local size=Save().EncounterJournalFontSize or 12
         if d==1 then
             size=size+1
         else
@@ -337,14 +177,14 @@ local function MoveFrame(self, savePointName)
         end
         size= size<6 and 6 or size
         size= size>72 and 72 or size
-        Save.EncounterJournalFontSize=size
+        Save().EncounterJournalFontSize=size
         WoWTools_LabelMixin:CreateLabel(nil, {size=size, changeFont=self2.Text})--size, nil, self2.Text)
-        print(e.addName, Initializer:GetName(), e.onlyChinese and '字体大小' or FONT_SIZE, size)
+        print(e.addName, WoWTools_EncounterMixin.addName, e.onlyChinese and '字体大小' or FONT_SIZE, size)
     end)
 end
 
 local function Init_Set_Worldboss_Text()--显示世界BOSS击杀数据Text
-    if not Save.showWorldBoss then
+    if not Save().showWorldBoss then
         if panel.WorldBoss then
             panel.WorldBoss.Text:SetText('')
             panel.WorldBoss:SetShown(false)
@@ -353,8 +193,8 @@ local function Init_Set_Worldboss_Text()--显示世界BOSS击杀数据Text
     end
     if not panel.WorldBoss then
         panel.WorldBoss=WoWTools_ButtonMixin:Cbtn(nil, {icon='hide', size={14,14}})
-        if Save.WorldBossPoint then
-            panel.WorldBoss:SetPoint(Save.WorldBossPoint[1], UIParent, Save.WorldBossPoint[3], Save.WorldBossPoint[4], Save.WorldBossPoint[5])
+        if Save().WorldBossPoint then
+            panel.WorldBoss:SetPoint(Save().WorldBossPoint[1], UIParent, Save().WorldBossPoint[3], Save().WorldBossPoint[4], Save().WorldBossPoint[5])
         else
             if C_AddOns.IsAddOnLoaded('Blizzard_EncounterJournal') then
                 panel.WorldBoss:SetPoint('BOTTOMRIGHT',EncounterJournal, 'TOPRIGHT', -65,5)
@@ -365,7 +205,7 @@ local function Init_Set_Worldboss_Text()--显示世界BOSS击杀数据Text
         panel.WorldBoss:SetScript('OnEnter', function(self2)
             e.tips:SetOwner(self2, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+            e.tips:AddDoubleLine(e.addName, WoWTools_EncounterMixin.addName)
             e.tips:AddDoubleLine(e.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL, e.onlyChinese and '世界BOSS和稀有怪'
                 or format(COVENANT_RENOWN_TOAST_REWARD_COMBINER,
                         format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WORLD, 'BOSS')
@@ -373,31 +213,31 @@ local function Init_Set_Worldboss_Text()--显示世界BOSS击杀数据Text
                     )
             )
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.GetShowHide(not Save.hideWorldBossText), e.Icon.left)
+            e.tips:AddDoubleLine(e.GetShowHide(not Save().hideWorldBossText), e.Icon.left)
             e.tips:AddDoubleLine(e.onlyChinese and '移动' or  NPE_MOVE, e.Icon.right)
-            e.tips:AddDoubleLine(e.Player.L.size, (Save.EncounterJournalFontSize or 12)..e.Icon.mid)
+            e.tips:AddDoubleLine(e.Player.L.size, (Save().EncounterJournalFontSize or 12)..e.Icon.mid)
             e.tips:Show()
         end)
         panel.WorldBoss:SetScript('OnMouseDown', function(self2, d)
             if d=='LeftButton' then
-                Save.hideWorldBossText= not Save.hideWorldBossText and true or nil
-                panel.WorldBoss.texture:SetShown(Save.hideWorldBossText)
-                panel.WorldBoss.Text:SetShown(not Save.hideWorldBossText)
+                Save().hideWorldBossText= not Save().hideWorldBossText and true or nil
+                panel.WorldBoss.texture:SetShown(Save().hideWorldBossText)
+                panel.WorldBoss.Text:SetShown(not Save().hideWorldBossText)
             end
         end)
         MoveFrame(panel.WorldBoss, 'WorldBossPoint')
 
-        panel.WorldBoss.Text=WoWTools_LabelMixin:CreateLabel(panel.WorldBoss, {size=Save.EncounterJournalFontSize, color=true})
+        panel.WorldBoss.Text=WoWTools_LabelMixin:CreateLabel(panel.WorldBoss, {size=Save().EncounterJournalFontSize, color=true})
         panel.WorldBoss.Text:SetPoint('TOPLEFT')
 
         panel.WorldBoss.texture=panel.WorldBoss:CreateTexture()
         panel.WorldBoss.texture:SetAllPoints(panel.WorldBoss)
         panel.WorldBoss.texture:SetAtlas(e.Icon.disabled)
-        --panel.WorldBoss.texture:SetShown(Save.hideWorldBossText)
+        --panel.WorldBoss.texture:SetShown(Save().hideWorldBossText)
     end
 
     local msg
-    if not Save.hideWorldBossText then
+    if not Save().hideWorldBossText then
         for guid, info in pairs(e.WoWDate or {}) do
             local text, numAll, find= nil, 0, nil
             for bossName, worldBossID in pairs(info.Worldboss.boss) do--世界BOSS
@@ -430,12 +270,12 @@ local function Init_Set_Worldboss_Text()--显示世界BOSS击杀数据Text
     end
     panel.WorldBoss.Text:SetText(msg or '')
     panel.WorldBoss:SetShown(true)
-    panel.WorldBoss.texture:SetShown(Save.hideWorldBossText)
-    panel.WorldBoss.Text:SetShown(not Save.hideWorldBossText)
+    panel.WorldBoss.texture:SetShown(Save().hideWorldBossText)
+    panel.WorldBoss.Text:SetShown(not Save().hideWorldBossText)
 end
 
 local function Init_Set_InstanceBoss_Text()--显示副本击杀数据
-    if not Save.showInstanceBoss then
+    if not Save().showInstanceBoss then
         if panel.instanceBoss then
             panel.instanceBoss.Text:SetText('')
             panel.instanceBoss:SetShown(false)
@@ -444,8 +284,8 @@ local function Init_Set_InstanceBoss_Text()--显示副本击杀数据
     end
     if not panel.instanceBoss then
         panel.instanceBoss=WoWTools_ButtonMixin:Cbtn(nil, {icon='hide', size={14,14}})
-        if Save.instanceBossPoint then
-            panel.instanceBoss:SetPoint(Save.instanceBossPoint[1], UIParent, Save.instanceBossPoint[3], Save.instanceBossPoint[4], Save.instanceBossPoint[5])
+        if Save().instanceBossPoint then
+            panel.instanceBoss:SetPoint(Save().instanceBossPoint[1], UIParent, Save().instanceBossPoint[3], Save().instanceBossPoint[4], Save().instanceBossPoint[5])
         else
             if EncounterJournal then
                 panel.instanceBoss:SetPoint('BOTTOMRIGHT',EncounterJournal, 'TOPRIGHT', -45,20)
@@ -456,33 +296,33 @@ local function Init_Set_InstanceBoss_Text()--显示副本击杀数据
         panel.instanceBoss:SetScript('OnEnter', function(self2)
             e.tips:SetOwner(self2, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+            e.tips:AddDoubleLine(e.addName, WoWTools_EncounterMixin.addName)
             e.tips:AddDoubleLine(e.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL, e.onlyChinese and '副本' or INSTANCE)
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.GetShowHide(not Save.hideInstanceBossText), e.Icon.left)
+            e.tips:AddDoubleLine(e.GetShowHide(not Save().hideInstanceBossText), e.Icon.left)
             e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
-            e.tips:AddDoubleLine(e.Player.L.size, (Save.EncounterJournalFontSize or 12)..e.Icon.mid)
+            e.tips:AddDoubleLine(e.Player.L.size, (Save().EncounterJournalFontSize or 12)..e.Icon.mid)
             e.tips:Show()
         end)
         panel.instanceBoss:SetScript('OnMouseDown', function(self2, d)
             if d=='LeftButton' then
-                Save.hideInstanceBossText= not Save.hideInstanceBossText and true or nil
-                panel.instanceBoss.texture:SetShown(Save.hideInstanceBossText)
-                panel.instanceBoss.Text:SetShown(not Save.hideInstanceBossText)
+                Save().hideInstanceBossText= not Save().hideInstanceBossText and true or nil
+                panel.instanceBoss.texture:SetShown(Save().hideInstanceBossText)
+                panel.instanceBoss.Text:SetShown(not Save().hideInstanceBossText)
             end
         end)
         MoveFrame(panel.instanceBoss, 'instanceBossPoint')
-        panel.instanceBoss.Text=WoWTools_LabelMixin:CreateLabel(panel.instanceBoss, {size=Save.EncounterJournalFontSize, color=true})
+        panel.instanceBoss.Text=WoWTools_LabelMixin:CreateLabel(panel.instanceBoss, {size=Save().EncounterJournalFontSize, color=true})
         panel.instanceBoss.Text:SetPoint('TOPLEFT')
 
         panel.instanceBoss.texture=panel.instanceBoss:CreateTexture()
         panel.instanceBoss.texture:SetAllPoints(panel.instanceBoss)
         panel.instanceBoss.texture:SetAtlas(e.Icon.disabled)
-        panel.instanceBoss.texture:SetShown(Save.hideInstanceBossText)
+        panel.instanceBoss.texture:SetShown(Save().hideInstanceBossText)
     end
 
     local msg
-    if not Save.hideInstanceBossText then
+    if not Save().hideInstanceBossText then
         for guid, info in pairs(e.WoWDate or {}) do
             local text
             for bossName, tab in pairs(info.Instance.ins) do--ins={[名字]={[难度]=已击杀数}}
@@ -501,8 +341,8 @@ local function Init_Set_InstanceBoss_Text()--显示副本击杀数据
     end
     panel.instanceBoss.Text:SetText(msg or '')
     panel.instanceBoss:SetShown(true)
-    panel.instanceBoss.texture:SetShown(Save.hideInstanceBossText)
-    panel.instanceBoss.Text:SetShown(not Save.hideInstanceBossText)
+    panel.instanceBoss.texture:SetShown(Save().hideInstanceBossText)
+    panel.instanceBoss.Text:SetShown(not Save().hideInstanceBossText)
 end
 
 local function set_EncounterJournal_Keystones_Tips(self)--险指南界面, 挑战
@@ -562,7 +402,7 @@ end
 --BOSS战时, 指定拾取, 专精, 事件
 --############################
 local function set_Loot_Spec_Event()
-    if Save.hideEncounterJournal then
+    if Save().hideEncounterJournal then
         panel:UnregisterEvent('ENCOUNTER_START')
         panel:UnregisterEvent('ENCOUNTER_END')
     else
@@ -584,27 +424,27 @@ end
 --冒险指南界面初始化
 --################
 local function Init_EncounterJournal()--冒险指南界面
-    Button= WoWTools_ButtonMixin:Cbtn(EncounterJournal.TitleContainer, {icon=not Save.hideEncounterJournal, size={22,22}})--按钮, 总开关
+    Button= WoWTools_ButtonMixin:Cbtn(EncounterJournal.TitleContainer, {icon=not Save().hideEncounterJournal, size={22,22}})--按钮, 总开关
     Button:SetPoint('RIGHT',-22, -2)
     function Button:set_Tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
-        e.tips:AddDoubleLine(e.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL, e.GetEnabeleDisable(not Save.hideEncounterJournal).. e.Icon.left)
-        e.tips:AddDoubleLine(e.onlyChinese and '奖励' or QUEST_REWARDS, e.GetShowHide(not Save.hideEncounterJournal_All_Info_Text)..e.Icon.right)
+        e.tips:AddDoubleLine(e.addName, WoWTools_EncounterMixin.addName)
+        e.tips:AddDoubleLine(e.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL, e.GetEnabeleDisable(not Save().hideEncounterJournal).. e.Icon.left)
+        e.tips:AddDoubleLine(e.onlyChinese and '奖励' or QUEST_REWARDS, e.GetShowHide(not Save().hideEncounterJournal_All_Info_Text)..e.Icon.right)
         e.tips:Show()
     end
     Button:SetScript('OnEnter', Button.set_Tooltips)
     Button:SetScript('OnClick', function(self, d)
         if d=='LeftButton' then
-            Save.hideEncounterJournal= not Save.hideEncounterJournal and true or nil
+            Save().hideEncounterJournal= not Save().hideEncounterJournal and true or nil
             self:set_Shown()
-            self:SetNormalAtlas(Save.hideEncounterJournal and e.Icon.disabled or e.Icon.icon )
+            self:SetNormalAtlas(Save().hideEncounterJournal and e.Icon.disabled or e.Icon.icon )
             set_Loot_Spec_Event()--BOSS战时, 指定拾取, 专精, 事件
             e.call(EncounterJournal_ListInstances)
 
         elseif d=='RightButton' then
-            Save.hideEncounterJournal_All_Info_Text= not Save.hideEncounterJournal_All_Info_Text and true or nil
+            Save().hideEncounterJournal_All_Info_Text= not Save().hideEncounterJournal_All_Info_Text and true or nil
             EncounterJournal_Set_All_Info_Text()--冒险指南,右边,显示所数据
         end
         self:set_Tooltips()
@@ -618,7 +458,7 @@ local function Init_EncounterJournal()--冒险指南界面
     Button.btn.instance:SetScript('OnEnter',function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine((e.onlyChinese and '副本' or INSTANCE)..e.Icon.left..e.GetShowHide(Save.showInstanceBoss), e.onlyChinese and '已击杀' or DUNGEON_ENCOUNTER_DEFEATED)
+        e.tips:AddDoubleLine((e.onlyChinese and '副本' or INSTANCE)..e.Icon.left..e.GetShowHide(Save().showInstanceBoss), e.onlyChinese and '已击杀' or DUNGEON_ENCOUNTER_DEFEATED)
         e.tips:AddLine(' ')
         for guid, info in pairs(e.WoWDate or {}) do
             if guid and info then
@@ -640,11 +480,11 @@ local function Init_EncounterJournal()--冒险指南界面
     end)
     Button.btn.instance:SetScript("OnLeave",GameTooltip_Hide)
     Button.btn.instance:SetScript('OnClick', function()
-        if  Save.showInstanceBoss then
-            Save.showInstanceBoss=nil
+        if  Save().showInstanceBoss then
+            Save().showInstanceBoss=nil
         else
-            Save.showInstanceBoss=true
-            Save.hideInstanceBossText=nil
+            Save().showInstanceBoss=true
+            Save().hideInstanceBossText=nil
         end
         Init_Set_InstanceBoss_Text()
         if panel.instanceBoss then
@@ -658,11 +498,11 @@ local function Init_EncounterJournal()--冒险指南界面
     Button.btn.Worldboss:SetNormalAtlas('poi-soulspiritghost')
     Button.btn.Worldboss:SetScript('OnEnter',set_EncounterJournal_World_Tips)--提示
     Button.btn.Worldboss:SetScript('OnMouseDown', function(self2, d)
-        if  Save.showWorldBoss then
-            Save.showWorldBoss=nil
+        if  Save().showWorldBoss then
+            Save().showWorldBoss=nil
         else
-            Save.showWorldBoss=true
-            Save.hideWorldBossText=nil
+            Save().showWorldBoss=true
+            Save().hideWorldBossText=nil
         end
         Init_Set_Worldboss_Text()
         if panel.WorldBoss then
@@ -690,7 +530,7 @@ local function Init_EncounterJournal()--冒险指南界面
 
     function Button:set_Shown()
         for _, btn in pairs(self.btn) do
-            btn:SetShown(not Save.hideEncounterJournal)
+            btn:SetShown(not Save().hideEncounterJournal)
         end
     end
 
@@ -700,245 +540,7 @@ local function Init_EncounterJournal()--冒险指南界面
 
 
 
-    --#############
-    --界面, 副本击杀
-    --Blizzard_EncounterJournal.lua
-    hooksecurefunc('EncounterJournal_ListInstances', function()
-        local frame= EncounterJournal.instanceSelect.ScrollBox
-        if not frame:GetView() then
-            return
-        end
-        if Save.hideEncounterJournal then
-            for _, button in pairs(frame:GetFrames() or {}) do
-                if button then
-                    if button.tipsText then
-                        button.tipsText:SetText('')
-                    end
-                    if button.challengeText then
-                        button.challengeText:SetText('')
-                        button.challengeText2:SetText('')
-                    end
-                    if button.KeyTexture then
-                        button.KeyTexture:SetShown(false)
-                        button.KeyTexture.label:SetText('')
-                    end
-                end
-            end
-            return
-        end
-
-        for _, button in pairs(frame:GetFrames() or {}) do--ScrollBox.lua
-            if button and button.instanceID then --and button.tooltipTitle--button.bgImage:GetTexture() button.name:GetText()
-                local textKill= encounterJournal_ListInstances_set_Instance(button)--界面,击杀,数据
-                if not button.tipsText and textKill then
-                    button.tipsText=WoWTools_LabelMixin:CreateLabel(button, {size=e.onlyChinese and 12 or 10, copyFont= not e.onlyChinese and button.name or nil})--10, button.name)
-                    button.tipsText:SetPoint('BOTTOMRIGHT', -8, 8)
-                    button.tipsText:SetJustifyH('RIGHT')
-                end
-                if button.tipsText then
-                    button.tipsText:SetText(textKill or '')
-                end
-
-
-                local instanceName= button.tooltipTitle or button.name:GetText()
-                button.mapChallengeModeID=nil
-                local challengeText, challengeText2
-
-                for _, mapChallengeModeID in pairs(C_ChallengeMode.GetMapTable() or {}) do--挑战地图 mapChallengeModeID
-                    e.LoadData({type='mapChallengeModeID',mapChallengeModeID })
-                    local name= C_ChallengeMode.GetMapUIInfo(mapChallengeModeID)
-                    if name==instanceName or name:find(instanceName) then
-                        button.mapChallengeModeID= mapChallengeModeID--挑战,地图ID
-                        local nu, all, leavel, runScore= 0, 0, 0, 0
-                        for _,v in pairs(C_MythicPlus.GetRunHistory(true, true) or {}) do--挑战,全部, 次数
-                            if v.mapChallengeModeID==mapChallengeModeID then
-                                if v.completed then
-                                    nu=nu+1
-                                end
-                                all=all+1
-                            end
-                        end
-
-                        local affix
-                        local affixScores, overAllScore= C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(mapChallengeModeID)--最佳, 词缀
-                        if(affixScores and #affixScores > 0) then
-                            local nameA, _, filedataidA = C_ChallengeMode.GetAffixInfo(10)
-                            local nameB, _, filedataidB = C_ChallengeMode.GetAffixInfo(9)
-                            for _, tab in ipairs(affixScores) do
-                                if tab.level and tab.level>0 and (tab.name == nameA or tab.name==nameB) then
-                                    local level= tab.overTime and '|cnRED_FONT_COLOR:'..tab.level..'|r' or tab.level
-                                    local icon='|T'..(tab.name == nameA and filedataidA or filedataidB)..':0|t'
-                                    affix= (affix and affix..'|n' or '').. icon..level
-                                end
-                            end
-                        end
-
-                        runScore= overAllScore or 0--最佳, 分数
-                        local intimeInfo= C_MythicPlus.GetSeasonBestForMap(mapChallengeModeID)--最佳, 等级
-                        if intimeInfo then
-                            leavel= intimeInfo.level
-                        end
-                        if all>0 then
-                            local text= '|cff00ff00'..nu..'|r/'..all
-                            ..'|n'..'|T4352494:0|t'..leavel
-                            ..'|n'..'|A:AdventureMapIcon-MissionCombat:0:0|a'..runScore
-                            ..(affix and '|n'..affix or '')
-
-                            local color= C_ChallengeMode.GetSpecificDungeonOverallScoreRarityColor(runScore)
-                            if color then
-                                text= color:WrapTextInColorCode(text)
-                            end
-                            if not challengeText then
-                                challengeText= text
-                            else
-                                challengeText2= text
-                            end
-                        end
-                    end
-                end
-
-                if not button.challengeText then
-                    button.challengeText= WoWTools_LabelMixin:CreateLabel(button, {size=e.onlyChinese and 12 or 10})
-                    button.challengeText:SetPoint('BOTTOMLEFT',4,4)
-                    button.challengeText2= WoWTools_LabelMixin:CreateLabel(button, {size=e.onlyChinese and 12 or 10})
-                    button.challengeText2:SetPoint('BOTTOMLEFT', button.challengeText, 'BOTTOMRIGHT')
-
-                    button:HookScript('OnEnter', function(self)
-                        if Save.hideEncounterJournal or not self.instanceID then
-                            return
-                        end
-                        local name, _, _, _, loreImage, _, dungeonAreaMapID, _, _, mapID = EJ_GetInstanceInfo(self.instanceID)
-                        e.tips:SetOwner(self, "ANCHOR_LEFT")
-                        e.tips:ClearLines()
-                        if name then
-                            local cnName=e.cn(name, true)
-                            e.tips:AddDoubleLine(cnName or name, cnName and name..' ')
-                        end
-
-                        e.tips:AddDoubleLine('journalInstanceID: |cnGREEN_FONT_COLOR:'..self.instanceID, loreImage and '|T'..loreImage..':0|t'..loreImage)
-                        e.tips:AddDoubleLine(
-                            dungeonAreaMapID and dungeonAreaMapID>0 and 'dungeonAreaMapID |cnGREEN_FONT_COLOR:'..dungeonAreaMapID or ' ',
-                            mapID and 'mapID |cnGREEN_FONT_COLOR:'..mapID
-                        )
-                        if self.mapChallengeModeID then
-                            e.tips:AddLine( 'mapChallengeModeID: |cnGREEN_FONT_COLOR:'.. self.mapChallengeModeID)
-                        end
-                        e.tips:AddLine(' ')
-                        if encounterJournal_ListInstances_set_Instance(self, true) then--界面,击杀,数据
-                            e.tips:AddLine(' ')
-                        end
-                        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
-                        e.tips:Show()
-                    end)
-                    button:SetScript('OnLeave', GameTooltip_Hide)
-                end
-
-                button.challengeText:SetText(challengeText or '')
-                button.challengeText2:SetText(challengeText2 or '')
-
-                --当前, KEY地图,ID
-                local currentChallengeMapID= C_MythicPlus.GetOwnedKeystoneChallengeMapID()
-                local keyStoneLevel = C_MythicPlus.GetOwnedKeystoneLevel()--当前KEY，等级
-                if currentChallengeMapID and button.mapChallengeModeID==currentChallengeMapID then
-                    if not button.KeyTexture then
-                        button.KeyTexture= button:CreateTexture(nil, 'OVERLAY')
-                        button.KeyTexture:SetPoint('TOPLEFT', -4, 0)
-                        button.KeyTexture:SetSize(26,26)
-                        button.KeyTexture:SetAtlas('common-icon-checkmark')
-                        button.KeyTexture:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) self.label:SetAlpha(1) end)
-                        button.KeyTexture:SetScript('OnEnter', function(self)
-                            e.tips:SetOwner(self, "ANCHOR_LEFT")
-                            e.tips:ClearLines()
-                            local link= e.WoWDate[e.Player.guid].Keystone.link
-                            if link then
-                                e.tips:SetHyperlink(link)
-                            else
-                                e.tips:AddDoubleLine(e.addName, Initializer:GetName())
-                                e.tips:AddLine(e.onlyChinese and '挑战' or PLAYER_DIFFICULTY5)
-                            end
-                            e.tips:Show()
-                            self:SetAlpha(0.3)
-                            self.label:SetAlpha(0.3)
-                        end)
-                        button.KeyTexture.label=WoWTools_LabelMixin:CreateLabel(button, {r=1, g=1, b=1})
-                        button.KeyTexture.label:SetPoint('TOP', button.KeyTexture, -2, -8)
-                    end
-                    button.KeyTexture:SetShown(true)
-                    button.KeyTexture.label:SetText(keyStoneLevel or '')
-                elseif button.KeyTexture then
-                    button.KeyTexture:SetShown(false)
-                    button.KeyTexture.label:SetText('')
-                end
-
-
-
-
-                if not button.Favorites2 then--收藏
-                    button.Favorites2=WoWTools_ButtonMixin:Cbtn(button, {atlas='PetJournal-FavoritesIcon', size=25, isType2=true})
-                    button.Favorites2:SetPoint('TOPLEFT', -8, 8)
-                    button.Favorites2:EnableMouse(true)
-                    button.Favorites2:SetScript('OnLeave', function(self)
-                        self:settings(false)
-                        e.tips:Hide()
-                    end)
-                    button.Favorites2:SetScript('OnEnter', function(self)
-                        e.tips:SetOwner(self, "ANCHOR_LEFT")
-                        e.tips:ClearLines()
-                        e.tips:AddDoubleLine(e.addName, addName)
-                        e.tips:AddLine(' ')
-                        e.tips:AddDoubleLine('|A:PetJournal-FavoritesIcon:0:0|a'..(e.onlyChinese and '收藏' or FAVORITES), e.Icon.left)
-                        e.tips:AddDoubleLine('|A:dressingroom-button-appearancelist-up:0:0|a'..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), e.Icon.right)
-                        e.tips:Show()
-                        self:settings(true)
-                    end)
-                    button.Favorites2:SetScript('OnClick', function(self, d)
-                        if d=='RightButton' then
-                            MenuUtil.CreateContextMenu(self, function(f, root)
-                                local sub=root:CreateCheckbox(e.onlyChinese and '收藏' or FAVORITES, function()
-                                    return f:get_save()
-                                end, function()
-                                    self:setup()
-                                end)
-                                sub:SetTooltip(function(tooltip)
-                                    tooltip:AddLine(e.addName)
-                                    tooltip:AddLine(addName)
-                                end)
-                                root:CreateDivider()
-                                root:CreateButton(e.onlyChinese and '全部清除' or CLEAR_ALL, function()
-                                    Save.favorites={}
-                                    e.call(EncounterJournal_ListInstances)
-                                end)
-                                root:CreateTitle(addName)
-                            end)
-                        elseif d=='LeftButton' then
-                            self:setup()
-                        end
-                    end)
-
-                    function button.Favorites2:setup()
-                        local isSaved= self:get_save()
-                        local insID= self:GetParent().instanceID
-                        if insID then
-                            Save.favorites[e.Player.guid][insID]= not isSaved and true or nil
-                            self:settings()
-                        end
-                    end
-                    function button.Favorites2:settings(isEnter)
-                        local isSaved= self:get_save()
-                        self:SetAlpha((isEnter or isSaved) and 1 or 0)
-                    end
-                    function button.Favorites2:get_save()
-                        Save.favorites[e.Player.guid]= Save.favorites[e.Player.guid] or {}
-                        return Save.favorites[e.Player.guid][self:GetParent().instanceID]
-                    end
-                end
-            end
-            if button.Favorites2 then
-                button.Favorites2:settings()
-                button.Favorites2:SetShown(button.instanceID)
-            end
-       end
-    end)
+    
 
 
 
@@ -969,8 +571,8 @@ local function Init_EncounterJournal()--冒险指南界面
 
 
         local slotText= btn.slot and btn.slot:GetText()
-        local isEquipItem= not Save.hideEncounterJournal and slotText and slotText~=''--是装备物品
-        if not Save.hideEncounterJournal and btn.link then
+        local isEquipItem= not Save().hideEncounterJournal and slotText and slotText~=''--是装备物品
+        if not Save().hideEncounterJournal and btn.link then
             if isEquipItem then
                 local specTable = C_Item.GetItemSpecInfo(btn.link) or {}--专精图标
                 local specTableNum=#specTable
@@ -1048,7 +650,7 @@ local function Init_EncounterJournal()--冒险指南界面
                     e.tips:ClearLines()
                     e.tips:AddLine(self.tips)
                     e.tips:AddLine(' ')
-                    e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+                    e.tips:AddDoubleLine(e.addName, WoWTools_EncounterMixin.addName)
                     e.tips:Show()
                 end
                 self:SetAlpha(0.3)
@@ -1077,10 +679,10 @@ local function Init_EncounterJournal()--冒险指南界面
         end
 
         --显示, 物品, 属性
-        WoWTools_ItemStatsMixin:SetItem(btn, not Save.hideEncounterJournal and btn.link, {point= btn.IconBorder})
+        WoWTools_ItemStatsMixin:SetItem(btn, not Save().hideEncounterJournal and btn.link, {point= btn.IconBorder})
 
         local spellID--物品法术，提示
-        if (btn.link or btn.itemID) and not Save.hideEncounterJournal then
+        if (btn.link or btn.itemID) and not Save().hideEncounterJournal then
             spellID= select(2, C_Item.GetItemSpell(btn.link or btn.itemID))
             if spellID and not btn.spellTexture then
                 btn.spellTexture= btn:CreateTexture(nil, 'OVERLAY')
@@ -1133,24 +735,30 @@ local function Init_EncounterJournal()--冒险指南界面
     --BOSS战时, 指定拾取, 专精
     --#######################
     local function set_Loot_Spec_Texture(self)
-        local specID=self.dungeonEncounterID and Save.loot[e.Player.class][self.dungeonEncounterID]
-        local icon= specID and select(4, GetSpecializationInfoByID(specID))
-        if icon then
-            self:SetNormalTexture(icon)
-        else
-            self:SetNormalAtlas(e.Icon.icon)
+        if self.dungeonEncounterID then
+        
+            local specID=Save().loot[e.Player.class][self.dungeonEncounterID]
+            local icon= specID and select(4, GetSpecializationInfoByID(specID))
+            if icon then
+                self:SetNormalTexture(icon)
+            else
+                self:SetNormalAtlas(e.Icon.icon)
+            end
+            self:SetAlpha(icon and 1 or 0.3)
         end
-        self:SetAlpha(icon and 1 or 0.3)
+        self:SetShown(self.dungeonEncounterID)
     end
+
+
     local function set_Loot_Spec_Menu_Init(self, level, type)
         local info
         if type=='CLEAR' then
             for class= 1, GetNumClasses() do
                 local classInfo = C_CreatureInfo.GetClassInfo(class)
                 if classInfo and classInfo.classFile then
-                    Save.loot[classInfo.classFile]= Save.loot[classInfo.classFile] or {}
+                    Save().loot[classInfo.classFile]= Save().loot[classInfo.classFile] or {}
                     local n=0
-                    for _, _ in pairs(Save.loot[classInfo.classFile]) do
+                    for _, _ in pairs(Save().loot[classInfo.classFile]) do
                         n= n+1
                     end
                     local col= select(4, GetClassColor(classInfo.classFile))
@@ -1164,8 +772,8 @@ local function Init_EncounterJournal()--冒险指南界面
                         hasArrow= n>0,
                         menuList= classInfo.classFile,
                         func= function(_, arg1, arg2)
-                            Save.loot[arg1]={}
-                            print(e.addName, Initializer:GetName(), e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, WoWTools_UnitMixin:GetClassIcon(nil, arg1), arg2, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH)))
+                            Save().loot[arg1]={}
+                            print(e.addName, WoWTools_EncounterMixin.addName, e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, WoWTools_UnitMixin:GetClassIcon(nil, arg1), arg2, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH)))
                         end
                     }
                     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1177,8 +785,8 @@ local function Init_EncounterJournal()--冒险指南界面
                 icon='bags-button-autosort-up',
                 notCheckable=true,
                 func= function()
-                    Save.loot={[e.Player.class]={}}
-                    print(e.addName, Initializer:GetName(), e.onlyChinese and '全部清除' or CLEAR_ALL, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH)))
+                    Save().loot={[e.Player.class]={}}
+                    print(e.addName, WoWTools_EncounterMixin.addName, e.onlyChinese and '全部清除' or CLEAR_ALL, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH)))
                 end
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1186,7 +794,7 @@ local function Init_EncounterJournal()--冒险指南界面
         elseif type then
             local col= select(4, GetClassColor(type))
             col= col and '|c'..col or col
-            for dungeonEncounterID, specID in pairs(Save.loot[type]) do
+            for dungeonEncounterID, specID in pairs(Save().loot[type]) do
                 info={
                     text='dungeonEncounterID |cnGREEN_FONT_COLOR:'..dungeonEncounterID..'|r',
                     icon= select(4,  GetSpecializationInfoByID(specID)),
@@ -1195,8 +803,8 @@ local function Init_EncounterJournal()--冒险指南界面
                     arg1=type,
                     arg2=dungeonEncounterID,
                     func= function(_, arg1, arg2)
-                        Save.loot[arg1][arg2]=nil
-                        print(e.addName, Initializer:GetName(), e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, WoWTools_UnitMixin:GetClassIcon(nil, arg1), arg2, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH)))
+                        Save().loot[arg1][arg2]=nil
+                        print(e.addName, WoWTools_EncounterMixin.addName, e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, WoWTools_UnitMixin:GetClassIcon(nil, arg1), arg2, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH)))
                     end
                 }
                 e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -1213,7 +821,7 @@ local function Init_EncounterJournal()--冒险指南界面
                     text=e.cn(name)..(curSpec==specIndex and '|A:auctionhouse-icon-favorite:0:0|a' or ''),
                     colorCode= e.Player.col,
                     icon=icon,
-                    checked= Save.loot[e.Player.class][self.dungeonEncounterID]== specID,
+                    checked= Save().loot[e.Player.class][self.dungeonEncounterID]== specID,
                     tooltipOnButton=true,
                     tooltipTitle= self.encounterID and EJ_GetEncounterInfo(self.encounterID) or '',
                     tooltipText= 'specID '..specID..'|n'..(self.dungeonEncounterID and 'dungeonEncounterID '..self.dungeonEncounterID or ''),
@@ -1222,10 +830,10 @@ local function Init_EncounterJournal()--冒险指南界面
                         specID= specID,
                         button=self.button},
                     func=function(_,arg1)
-                        if not Save.loot[e.Player.class][arg1.dungeonEncounterID] or Save.loot[e.Player.class][arg1.dungeonEncounterID]~= arg1.specID then
-                            Save.loot[e.Player.class][arg1.dungeonEncounterID]=arg1.specID
+                        if not Save().loot[e.Player.class][arg1.dungeonEncounterID] or Save().loot[e.Player.class][arg1.dungeonEncounterID]~= arg1.specID then
+                            Save().loot[e.Player.class][arg1.dungeonEncounterID]=arg1.specID
                         else
-                            Save.loot[e.Player.class][arg1.dungeonEncounterID]=nil
+                            Save().loot[e.Player.class][arg1.dungeonEncounterID]=nil
                         end
                         set_Loot_Spec_Texture(arg1.button)
                     end
@@ -1237,12 +845,12 @@ local function Init_EncounterJournal()--冒险指南界面
             info= {
                 text= e.onlyChinese and '无' or NONE,
                 icon= 'xmarksthespot',
-                checked= not Save.loot[e.Player.class][self.dungeonEncounterID],
+                checked= not Save().loot[e.Player.class][self.dungeonEncounterID],
                 arg1= self.dungeonEncounterID,
                 arg2= self.button,
                 --keepShownOnClick=true,
                 func=function(_,arg1, arg2)
-                    Save.loot[e.Player.class][arg1]=nil
+                    Save().loot[e.Player.class][arg1]=nil
                     set_Loot_Spec_Texture(arg2)
                 end
             }
@@ -1276,7 +884,7 @@ local function Init_EncounterJournal()--冒险指南界面
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
         info={
-            text=id..' '..Initializer:GetName(),
+            text=id..' '..WoWTools_EncounterMixin.addName,
             isTitle=true,
             notCheckable=true,
         }
@@ -1304,7 +912,7 @@ local function Init_EncounterJournal()--冒险指南界面
         button.LootButton.dungeonEncounterID= dungeonEncounterID
         button.LootButton.encounterID= button.encounterID
         set_Loot_Spec_Texture(button.LootButton)
-        button.LootButton:SetShown(not Save.hideEncounterJournal)
+        button.LootButton:SetShown(not Save().hideEncounterJournal)
     end
 
 
@@ -1322,7 +930,7 @@ local function Init_EncounterJournal()--冒险指南界面
         e.tips:AddDoubleLine(bgImage and '|T'..bgImage..':26|t'..bgImage, loreImage and '|T'..loreImage..':26|t'..loreImage)
         e.tips:AddDoubleLine(buttonImage1 and '|T'..buttonImage1..':26|t'..buttonImage1, buttonImage2 and '|T'..buttonImage2..':26|t'..buttonImage2)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+        e.tips:AddDoubleLine(e.addName, WoWTools_EncounterMixin.addName)
         e.tips:Show()
     end)
     EncounterJournal.encounter.instance.mapButton:SetScript('OnLeave', GameTooltip_Hide)
@@ -1335,7 +943,7 @@ local function Init_EncounterJournal()--冒险指南界面
         for _, button in pairs(frame:GetFrames()) do
             if not button.OnEnter then
                 button:SetScript('OnEnter', function(self)
-                    if not Save.hideEncounterJournal and self.encounterID then
+                    if not Save().hideEncounterJournal and self.encounterID then
                         local name2, _, journalEncounterID, rootSectionID, _, journalInstanceID, dungeonEncounterID, instanceID2= EJ_GetEncounterInfo(self.encounterID)--button.index= button.GetOrderIndex()
                         e.tips:SetOwner(self, "ANCHOR_LEFT")
                         e.tips:ClearLines()
@@ -1344,13 +952,13 @@ local function Init_EncounterJournal()--冒险指南界面
                         e.tips:AddDoubleLine(instanceID2 and 'instanceID: '..instanceID2 or ' ', (rootSectionID and rootSectionID>0) and 'JournalEncounterSectionID: '..rootSectionID or ' ')
                         if dungeonEncounterID then
                             e.tips:AddDoubleLine('dungeonEncounterID: |cffff00ff'..dungeonEncounterID, (journalInstanceID and journalInstanceID>0) and 'journalInstanceID: '..journalInstanceID or ' ' )
-                            local numKill=Save.wowBossKill[dungeonEncounterID]
+                            local numKill=Save().wowBossKill[dungeonEncounterID]
                             if numKill then
                                 e.tips:AddDoubleLine(e.onlyChinese and '击杀' or KILLS, '|cnGREEN_FONT_COLOR:'..numKill..' |r'..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1))
                             end
                         end
                         e.tips:AddLine(' ')
-                        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+                        e.tips:AddDoubleLine(e.addName, WoWTools_EncounterMixin.addName)
                         e.tips:Show()
                     end
                 end)
@@ -1392,7 +1000,7 @@ local function Init_EncounterJournal()--冒险指南界面
                 local coll, all, text= 0, 0, nil
                 for _, btn in pairs(frame.ItemButtons or {}) do
                     local has= false
-                    local itemLink= not Save.hideEncounterJournal and btn:IsShown() and btn.itemLink
+                    local itemLink= not Save().hideEncounterJournal and btn:IsShown() and btn.itemLink
                     if itemLink then--itemID
                         has = C_TransmogCollection.PlayerHasTransmogByItemInfo(itemLink)
                         all= all+1
@@ -1457,7 +1065,7 @@ local function Init_EncounterJournal()--冒险指南界面
         end
     end
     hooksecurefunc('EncounterJournal_SetBullets', function(object, description, hideBullets)
-        if Save.hideEncounterJournal then
+        if Save().hideEncounterJournal then
             return
         end
         if not string.find(description, "%$bullet") then
@@ -1507,20 +1115,20 @@ local function Init_EncounterJournal()--冒险指南界面
         frame:HookScript("OnEnter", function(self)
             local spellID= self:GetParent().spellID--self3.link
             e.LoadData({id=spellID, type='spell'})
-            if not Save.hideEncounterJournal and spellID and spellID>0 then
+            if not Save().hideEncounterJournal and spellID and spellID>0 then
                 e.tips:SetOwner(self, "ANCHOR_RIGHT")
                 e.tips:ClearLines()
                 e.tips:SetSpellByID(spellID)
                 e.tips:AddLine(' ')
                 e.tips:AddDoubleLine((IsInGroup() and '|A:communities-icon-chat:0:0|a' or '')..(e.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT), e.Icon.right)
-                e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+                e.tips:AddDoubleLine(e.addName, WoWTools_EncounterMixin.addName)
                 e.tips:Show()
             end
         end)
         frame:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
         frame:HookScript('OnClick', function(self, d)
             local spellID= self:GetParent().spellID--self3.link
-            if not Save.hideEncounterJournal and spellID and spellID>0 and d=='RightButton' then
+            if not Save().hideEncounterJournal and spellID and spellID>0 and d=='RightButton' then
                 local link= C_Spell.GetSpellLink(spellID) or spellID
                 WoWTools_ChatMixin:Chat(link, nil, not IsInGroup())
             end
@@ -1531,7 +1139,7 @@ local function Init_EncounterJournal()--冒险指南界面
     --BOSS模型 Blizzard_EncounterJournal.lua
     hooksecurefunc('EncounterJournal_DisplayCreature', function(self)
         local text=''
-        if not Save.hideEncounterJournal and self.displayInfo and EncounterJournal.encounter and EncounterJournal.encounter.info and EncounterJournal.encounter.info.model and EncounterJournal.encounter.info.model.imageTitle then
+        if not Save().hideEncounterJournal and self.displayInfo and EncounterJournal.encounter and EncounterJournal.encounter.info and EncounterJournal.encounter.info.model and EncounterJournal.encounter.info.model.imageTitle then
             if not EncounterJournal.creatureDisplayIDText then
                 EncounterJournal.creatureDisplayIDText=WoWTools_LabelMixin:CreateLabel(self,{size=10, fontType=EncounterJournal.encounter.info.model.imageTitle})--10, EncounterJournal.encounter.info.model.imageTitle)
                 EncounterJournal.creatureDisplayIDText:SetPoint('BOTTOM', EncounterJournal.encounter.info.model.imageTitle, 'TOP', 0 , 10)
@@ -1578,25 +1186,25 @@ local function Init_EncounterJournal()--冒险指南界面
     --贸易站
     --#####
     hooksecurefunc(EncounterJournalMonthlyActivitiesFrame.ScrollBox, 'SetScrollTargetOffset', function(self2)
-        if Save.hideEncounterJournal or not self2:GetView() then
+        if Save().hideEncounterJournal or not self2:GetView() then
             return
         end
         for _, btn in pairs(self2:GetFrames()) do
             if not btn.showPerksActivityID then
                 btn:HookScript('OnEnter', function(self3)
-                    if self3.id and not Save.hideEncounterJournal then
+                    if self3.id and not Save().hideEncounterJournal then
                         e.tips:AddLine(' ')
                         e.tips:AddDoubleLine('perksActivityID', self3.id)
                         e.tips:AddDoubleLine((self3.completed and '|cff9e9e9e' or '|cff00ff00')..(e.onlyChinese and '追踪' or TRACKING), e.Icon.left)
                         e.tips:AddDoubleLine((not C_PerksActivities.GetPerksActivityChatLink(self3.id) and '|cff9e9e9e' or '|cff00ff00')..(e.onlyChinese and '超链接' or COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK), e.Icon.right)
-                        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+                        e.tips:AddDoubleLine(e.addName, WoWTools_EncounterMixin.addName)
                         e.tips:Show()
                     end
                 end)
 
                 btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
                 btn:HookScript('OnClick', function(self3, d)
-                    if IsModifierKeyDown() or not self3.id or Save.hideEncounterJournal then
+                    if IsModifierKeyDown() or not self3.id or Save().hideEncounterJournal then
                         return
                     end
                     if d=='RightButton' then
@@ -1618,10 +1226,10 @@ local function Init_EncounterJournal()--冒险指南界面
         end
     end)
 
-    if not Save.hideEncounterJournal and Save.EncounterJournalTier then--记录上次选择TAB
+    if not Save().hideEncounterJournal and Save().EncounterJournalTier then--记录上次选择TAB
         local max= EJ_GetNumTiers()
         if max then
-            local tier= math.min(Save.EncounterJournalTier, max)
+            local tier= math.min(Save().EncounterJournalTier, max)
             if tier~= max then
                 EJ_SelectTier(tier)
             end
@@ -1630,14 +1238,8 @@ local function Init_EncounterJournal()--冒险指南界面
 
     --记录上次选择版本
     hooksecurefunc('EJ_SelectTier', function(tier)
-        Save.EncounterJournalTier=tier
+        Save().EncounterJournalTier=tier
     end)
-
-    --记录上次选择TAB
-    --[[hooksecurefunc('EJ_ContentTab_Select', function(id2)
-        print(id2)
-        Save.EncounterJournalSelectTabID=id2
-    end)]]
 end
 
 
@@ -1663,35 +1265,8 @@ end
 --初始化
 --######
 local function Init()
-    --##################
-    --世界地图，副本，提示
-    --##################
-    hooksecurefunc(DungeonEntrancePinMixin, 'OnAcquired', function(frame)
-        if frame.setEnter or Save.hideEncounterJournal then
-            return
-        end
-
-        frame:HookScript('OnEnter', function(self)
-            if Save.hideEncounterJournal or not self.journalInstanceID then
-                return
-            end
-            local name, _, _, _, _, _, dungeonAreaMapID, _, _, mapID = EJ_GetInstanceInfo(self.journalInstanceID)
-            e.tips:SetOwner(self, "ANCHOR_RIGHT")
-            e.tips:ClearLines()
-            local cnName=e.cn(name)
-            e.tips:AddDoubleLine(name,  (cnName and name..' ' or '')..(mapID and ' mapID '..mapID or ''))
-            e.tips:AddDoubleLine('journalInstanceID: |cnGREEN_FONT_COLOR:'..self.journalInstanceID, (dungeonAreaMapID and dungeonAreaMapID>0) and 'dungeonAreaMapID '..dungeonAreaMapID or '')
-            e.tips:AddLine(' ')
-            if encounterJournal_ListInstances_set_Instance(self, true) then
-                e.tips:AddLine(' ')
-            end
-            e.tips:AddDoubleLine(e.addName, Initializer:GetName())
-            e.tips:Show()
-        end)
-        frame:SetScript('OnLeave', GameTooltip_Hide)
-        frame.setEnter=true
-    end)
-
+   
+    WoWTools_EncounterMixin:Init_DungeonEntrancePin()--世界地图，副本，提示
     Init_Set_Worldboss_Text()
     Init_Set_InstanceBoss_Text()
 end
@@ -1724,34 +1299,28 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            if WoWToolsSave[ADVENTURE_JOURNAL] then
-                Save= WoWToolsSave[ADVENTURE_JOURNAL]
-                WoWToolsSave[ADVENTURE_JOURNAL]= nil
-                Save.loot= Save.loot or {}
-                
-                Save.favorites=Save.favorites or {}
-            else
-                Save= WoWToolsSave['Adventure_Journal'] or Save
-            end
+            
+            WoWTools_EncounterMixin.Save= WoWToolsSave['Adventure_Journal'] or Save()
 
-            Save.loot[e.Player.class]= Save.loot[e.Player.class] or {}
-            addName= '|A:UI-HUD-MicroMenu-AdventureGuide-Mouseover:0:0|a'..(e.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL)
+            Save().loot[e.Player.class]= Save().loot[e.Player.class] or {}
+
+            WoWTools_EncounterMixin.addName= '|A:UI-HUD-MicroMenu-AdventureGuide-Mouseover:0:0|a'..(e.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL)
 
             --添加控制面板
-            Initializer= e.AddPanel_Check({
-                name= addName,
-                GetValue= function() return not Save.disabled end,
+            e.AddPanel_Check({
+                name= WoWTools_EncounterMixin.addName,
+                GetValue= function() return not Save().disabled end,
                 SetValue= function()
-                    Save.disabled= not Save.disabled and true or nil
-                    print(Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    Save().disabled= not Save().disabled and true or nil
+                    print(WoWTools_EncounterMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 
 
-            if Save.disabled then
+            if Save().disabled then
                 self:UnregisterAllEvents()
             else
-                if not Save.hideEncounterJournal then
+                if not Save().hideEncounterJournal then
                     set_Loot_Spec_Event()--BOSS战时, 指定拾取, 专精, 事件
                 end
 
@@ -1761,6 +1330,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
 
         elseif arg1=='Blizzard_EncounterJournal' then---冒险指南
+            WoWTools_EncounterMixin:Init_UI_ListInstances()
             Init_EncounterJournal()--冒险指南界面
             EncounterJournal_Set_All_Info_Text()--冒险指南,右边,显示所数据
             self:RegisterEvent('BOSS_KILL')
@@ -1782,7 +1352,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end)
 
     elseif event=='BOSS_KILL' and arg1 then
-        Save.wowBossKill[arg1]= Save.wowBossKill[arg1] and Save.wowBossKill[arg1] +1 or 1--Boss击杀数量
+        Save().wowBossKill[arg1]= Save().wowBossKill[arg1] and Save().wowBossKill[arg1] +1 or 1--Boss击杀数量
 
     elseif event=='WEEKLY_REWARDS_UPDATE' then
         C_Timer.After(2, function()
@@ -1790,7 +1360,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end)
 
     elseif event=='ENCOUNTER_START' and arg1 then--BOSS战时, 指定拾取, 专精
-        local indicatoSpec=Save.loot[e.Player.class][arg1]
+        local indicatoSpec=Save().loot[e.Player.class][arg1]
         if indicatoSpec then
             local loot = GetLootSpecialization()
             local spec = GetSpecialization()
@@ -1800,7 +1370,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 lootSpceLog= loot
                 SetLootSpecialization(indicatoSpec)
                 local _, name, _, icon, role = GetSpecializationInfoByID(indicatoSpec)
-                print(e.addName, Initializer:GetName(), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)..'|r', e.Icon[role], icon and '|T'..icon..':0|t', name and '|cffff00ff'..name)
+                print(e.addName, WoWTools_EncounterMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)..'|r', e.Icon[role], icon and '|T'..icon..':0|t', name and '|cffff00ff'..name)
             end
         end
 
@@ -1812,7 +1382,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 lootSpceLog= spec and GetSpecializationInfo(spec) or lootSpceLog
             end
             local _, name, _, icon, role = GetSpecializationInfoByID(lootSpceLog)
-            print(e.addName, Initializer:GetName(), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)..'|r', e.Icon[role], icon and '|T'..icon..':0|t', name and '|cffff00ff'..name)
+            print(e.addName, WoWTools_EncounterMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)..'|r', e.Icon[role], icon and '|T'..icon..':0|t', name and '|cffff00ff'..name)
             lootSpceLog=nil
         end
     end
