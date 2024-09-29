@@ -1,3 +1,10 @@
+local e= select(2, ...)
+
+
+
+
+
+
 
 function WoWTools_LFDMixin:GetRewardInfo(dungeonID)--FB奖励
     local t=''

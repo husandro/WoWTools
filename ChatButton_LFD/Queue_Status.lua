@@ -3,7 +3,7 @@ local e= select(2, ...)
 local function Save()
     return WoWTools_LFDMixin.Save
 end
-
+local Button
 
 
 
@@ -16,15 +16,15 @@ end
 
 
 local function get_InviteButton_Frame(index)
-    local frame= tipsButton.lfgTextTab[index]
+    local frame= Button.lfgTextTab[index]
     if not frame then
         local size=16
-        frame= CreateFrame("Frame", nil, tipsButton)
+        frame= CreateFrame("Frame", nil, Button)
         frame:SetSize(20,20)
         if index==1 then
-            frame:SetPoint('TOPLEFT', tipsButton.text, 'BOTTOMLEFT')
+            frame:SetPoint('TOPLEFT', Button.text, 'BOTTOMLEFT')
         else
-            frame:SetPoint('TOPLEFT', tipsButton.lfgTextTab[index-1], 'BOTTOMLEFT')
+            frame:SetPoint('TOPLEFT', Button.lfgTextTab[index-1], 'BOTTOMLEFT')
         end
 
         
@@ -88,15 +88,15 @@ local function get_InviteButton_Frame(index)
         frame.text= WoWTools_LabelMixin:CreateLabel(frame, {size=Save().tipsFrameTextSize, color=true})
         frame.text:SetPoint('BOTTOMLEFT', frame.DeclineButton, 'BOTTOMRIGHT')
 
-        tipsButton.lfgTextTab[index]= frame
+        Button.lfgTextTab[index]= frame
     end
     return frame
 end
 
 
 local function set_tipsFrame_Tips(text, LFGListTab)
-    tipsButton.text:SetText(text or '')
-    tipsButton:SetShown(text and true or false)
+    Button.text:SetText(text or '')
+    Button:SetShown(text and true or false)
 
     table.sort(LFGListTab, function(a, b)
         if a.index== b.index then
@@ -116,9 +116,9 @@ local function set_tipsFrame_Tips(text, LFGListTab)
         frame:SetShown(true)
     end
 
-    for index= #LFGListTab+1, #tipsButton.lfgTextTab do
-        tipsButton.lfgTextTab[index].text:SetText('')
-        tipsButton.lfgTextTab[index]:SetShown(false)
+    for index= #LFGListTab+1, #Button.lfgTextTab do
+        Button.lfgTextTab[index].text:SetText('')
+        Button.lfgTextTab[index]:SetShown(false)
     end
 
     
@@ -470,44 +470,44 @@ end
 
 
 local function Init()
-    tipsButton= WoWTools_ButtonMixin:Cbtn(nil, {size={22,22}, atlas= 'UI-HUD-MicroMenu-Groupfinder-Mouseover'})
+    Button= WoWTools_ButtonMixin:Cbtn(nil, {size={22,22}, atlas= 'UI-HUD-MicroMenu-Groupfinder-Mouseover'})
 
-    function tipsButton:set_Point()
+    function Button:set_Point()
         if Save().tipsFramePoint then
-            tipsButton:SetPoint(Save().tipsFramePoint[1], UIParent, Save().tipsFramePoint[3], Save().tipsFramePoint[4], Save().tipsFramePoint[5])
+            Button:SetPoint(Save().tipsFramePoint[1], UIParent, Save().tipsFramePoint[3], Save().tipsFramePoint[4], Save().tipsFramePoint[5])
         else
-            tipsButton:SetPoint('BOTTOMLEFT', LFDButton, 'TOPLEFT',0,2)
+            Button:SetPoint('BOTTOMLEFT', WoWTools_LFDMixin.LFDButton, 'TOPLEFT',0,2)
         end
     end
 
-    tipsButton:SetScript("OnDragStart", function(self, d)
+    Button:SetScript("OnDragStart", function(self, d)
         if IsAltKeyDown() then
             self:StartMoving()
         end
     end)
-    tipsButton:SetScript("OnDragStop", function(self)
+    Button:SetScript("OnDragStop", function(self)
         ResetCursor()
         self:StopMovingOrSizing()
         Save().tipsFramePoint={self:GetPoint(1)}
         Save().tipsFramePoint[2]=nil
     end)
 
-    function tipsButton:set_scale()
+    function Button:set_scale()
         self.text:SetScale(Save().tipsScale or 1)
     end
 
-    tipsButton:SetScript('OnMouseWheel', function(self, delta)
+    Button:SetScript('OnMouseWheel', function(self, delta)
         Save().tipsScale= WoWTools_FrameMixin:ScaleFrame(self, delta, Save().tipsScale, nil)
     end)
 
-    tipsButton:SetScript("OnMouseDown", function(_, d)
+    Button:SetScript("OnMouseDown", function(_, d)
         if d=='RightButton' and IsAltKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
         end
     end)
-    tipsButton:SetScript('OnMouseUp', ResetCursor)
+    Button:SetScript('OnMouseUp', ResetCursor)
 
-    function tipsButton:set_tooltip()
+    function Button:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.onlyChinese and '列表信息' or (SOCIAL_QUEUE_TOOLTIP_HEADER..INFO), '|A:groupfinder-eye-frame:0:0|a')
@@ -525,29 +525,29 @@ local function Init()
 
         e.tips:Show()
     end
-    tipsButton:SetScript("OnLeave", function(self)
+    Button:SetScript("OnLeave", function(self)
         e.tips:Hide()
         ResetCursor()
-        LFDButton:SetButtonState('NORMAL')
+        WoWTools_LFDMixin.LFDButton:SetButtonState('NORMAL')
        -- self:state_leave()
     end)
 
-    tipsButton:SetScript('OnEnter', function(self)
+    Button:SetScript('OnEnter', function(self)
         self:set_tooltip()
-        LFDButton:SetButtonState('PUSHED')
+        WoWTools_LFDMixin.LFDButton:SetButtonState('PUSHED')
         Set_Queue_Status()--小眼睛, 更新信息
         --self:state_leave()
     end)
 
 
     
-    --[[tipsButton:SetScript('OnClick', function(_, d)
+    --[[Button:SetScript('OnClick', function(_, d)
         if d=='RightButton' and not IsModifierKeyDown() then
             PVEFrame_ToggleFrame()
         end
     end)]]
 
-    tipsButton:SetScript('OnClick', function(self, d)--离开所有队列
+    Button:SetScript('OnClick', function(self, d)--离开所有队列
         if d=='RightButton' and not IsModifierKeyDown() then
             PVEFrame_ToggleFrame()
             return
@@ -589,7 +589,7 @@ local function Init()
         C_LFGList.ClearSearchResults()
     end)
 
-    --[[tipsButton:SetScript('OnUpdate', function(self, elapsed)
+    --[[Button:SetScript('OnUpdate', function(self, elapsed)
         if UnitAffectingCombat('player') then
             return
         end
@@ -602,18 +602,20 @@ local function Init()
         end
     end)]]
 
-    tipsButton.text= WoWTools_LabelMixin:CreateLabel(tipsButton, {size=Save().tipsFrameTextSize, color=true})--Save().tipsFrameTextSize, nil, nil, true)
-    tipsButton.text:SetPoint('BOTTOMLEFT', tipsButton, 'BOTTOMRIGHT')
+    Button.text= WoWTools_LabelMixin:CreateLabel(Button, {size=Save().tipsFrameTextSize, color=true})--Save().tipsFrameTextSize, nil, nil, true)
+    Button.text:SetPoint('BOTTOMLEFT', Button, 'BOTTOMRIGHT')
 
-    tipsButton.lfgTextTab= {}
-    tipsButton.lfgTextTab[1]= get_InviteButton_Frame(1)
+    Button.lfgTextTab= {}
+    Button.lfgTextTab[1]= get_InviteButton_Frame(1)
 
 
-    tipsButton:set_Point()
-    tipsButton:set_scale()--设置, 缩放
-    tipsButton:RegisterForDrag("RightButton")
-    tipsButton:SetMovable(true)
-    tipsButton:SetClampedToScreen(true)
+    Button:set_Point()
+    Button:set_scale()--设置, 缩放
+    Button:RegisterForDrag("RightButton")
+    Button:SetMovable(true)
+    Button:SetClampedToScreen(true)
+    
+    WoWTools_LFDMixin.TipsButton= Button
 end
 
 

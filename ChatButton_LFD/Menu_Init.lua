@@ -15,70 +15,6 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 local function Add_Initializer(button, description)
     if not button.leftTexture then
         button.leftTexture = button:AttachTexture()
@@ -205,27 +141,6 @@ local function Set_LFGFollower_Dungeon_List(root)--追随者，副本
                     end)
 
                     sub2:AddInitializer(Add_Initializer)
-
-                --[[else
-
-                    sub2=sub:CreateButton('   |cff9e9e9e'..name..' |r', function()
-                        return MenuResponse.Open
-                    end, {
-                        dungeonID=dungeonID,
-                        dungeonName=name
-                    })
-
-                    sub2:SetTooltip(function(tooltip, description)
-                        tooltip:AddLine(description.data.dungeonName..' ')
-                        tooltip:AddLine(' ')
-                        tooltip:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '你不能进入此队列。' or YOU_MAY_NOT_QUEUE_FOR_THIS))
-                        local declined= LFGConstructDeclinedMessage(description.data.dungeonID)
-                        if declined and declined~='' then
-                            tooltip:AddLine('|cnRED_FONT_COLOR:'..e.cn(declined), nil,nil,nil, true)
-                        end
-                        tooltip:AddLine(' ')
-                        tooltip:AddLine('dungeonID: '..description.data.dungeonID)
-                    end)]]
                 end
             end
 
@@ -722,9 +637,9 @@ local function Init_Menu(_, root)
     end)
     sub2:CreateButton((Save().tipsFramePoint and '' or '|cff9e9e9e')..(e.onlyChinese and '重置位置' or RESET_POSITION), function()
         Save().tipsFramePoint=nil
-        if tipsButton then
-            tipsButton:ClearAllPoints()
-            tipsButton:set_Point()
+        if WoWTools_LFDMixin.TipsButton then
+            WoWTools_LFDMixin.TipsButton:ClearAllPoints()
+            WoWTools_LFDMixin.TipsButton:set_Point()
             print(e.addName, WoWTools_LFDMixin.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
         end
     end)

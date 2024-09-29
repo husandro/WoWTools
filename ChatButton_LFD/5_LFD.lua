@@ -16,6 +16,7 @@ WoWTools_LFDMixin={
         }
     },
     LFDButton=nil,
+    TipsButton=nil,--小眼睛, 更新信息
 }
 
 local LFDButton
@@ -114,8 +115,8 @@ local function Init()
             e.tips:AddLine(' ')
             e.tips:AddLine(self.name..e.Icon.left)
         end
-        if tipsButton and tipsButton:IsShown() then
-            tipsButton:SetButtonState('PUSHED')
+        if WoWTools_LFDMixin.TipsButton and WoWTools_LFDMixin.TipsButton:IsShown() then
+            WoWTools_LFDMixin.TipsButton:SetButtonState('PUSHED')
         end
         e.tips:Show()
         self:state_enter()--Init_Menu)
@@ -123,8 +124,8 @@ local function Init()
 
     LFDButton:SetScript('OnLeave', function(self)
         e.tips:Hide()
-        if tipsButton and tipsButton:IsShown() then
-            tipsButton:SetButtonState('NORMAL')
+        if WoWTools_LFDMixin.TipsButton and WoWTools_LFDMixin.TipsButton:IsShown() then
+            WoWTools_LFDMixin.TipsButton:SetButtonState('NORMAL')
         end
         self:state_leave()
     end)
