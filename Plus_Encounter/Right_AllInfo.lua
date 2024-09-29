@@ -24,9 +24,6 @@ local function Create_Frame()
 
     frame.weekLable:SetScript('OnMouseDown', function(self)
         WeeklyRewards_LoadUI()
-        --[[if not C_AddOns.IsAddOnLoaded("Blizzard_WeeklyRewards") then
-            C_AddOns.LoadAddOn("Blizzard_WeeklyRewards")
-        end]]--周奖励面板
         WeeklyRewards_ShowUI()--WeeklyReward.lua
         self:SetAlpha(1)
     end)
