@@ -27,6 +27,16 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
 function WoWTools_LFDMixin:Get_Instance_Num(name)
     name= name or GetInstanceInfo()
     local num = Save().wow[name] or 0
@@ -38,6 +48,11 @@ function WoWTools_LFDMixin:Get_Instance_Num(name)
     end
     return text , num
 end
+
+
+
+
+
 
 function WoWTools_LFDMixin:Set_LFDButton_Data(dungeonID, type, name, texture, atlas)--设置图标, 点击,提示
     LFDButton.dungeonID=dungeonID
@@ -55,19 +70,6 @@ function WoWTools_LFDMixin:Set_LFDButton_Data(dungeonID, type, name, texture, at
         end
     end
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -152,14 +154,6 @@ local function Init()
         e.Ccool(self2, nil, BATTLEFIELD_TIMER_THRESHOLDS[3] or 60, nil, true)--冷却条
     end)
 end
-
-
-
-
-
-
-
-
 
 
 
