@@ -3,7 +3,7 @@ local e= select(2, ...)
 local function Save()
     return WoWTools_LFDMixin.Save
 end
-local Button
+local Button--WoWTools_LFDMixin.TipsButton= Button
 
 
 
@@ -218,20 +218,25 @@ local function Set_Queue_Status()--小眼睛, 信息
         end
 
         pet= pet..' '
+        local abilityID
         for slotIndex= 1, 3 do
             local tab= {C_PetJournal.GetPetLoadOutInfo(slotIndex)}--petID, ability1, ability2, ability3 = C_PetJournal.GetPetLoadOutInfo(slotIndex)
-            if tab[1] then
-                local _, _, level, _, _, _, _, _, icon = C_PetJournal.GetPetInfoByPetID(tab[1])
+            local petID= tab[1]
+            if petID then
+                local _, _, level, _, _, _, _, _, icon = C_PetJournal.GetPetInfoByPetID(petID)
                 if icon then
                     level= level or 1
                     pet= pet..'|n   '..slotIndex..') '
                         ..'|T'..icon..':0|t'
                         ..' '..(level<25 and '|cnRED_FONT_COLOR:'..level..'|r' or level)
                     for index= 2, 4 do
-                        local abilityID= tab[index]
-                        local abilityIcon= abilityID and select(2, C_PetJournal.GetPetAbilityInfo(abilityID))
-                        if abilityIcon then
-                            pet= pet..(index==2 and ' ' or '')..'|T'..abilityIcon..':0|t'
+                        abilityID= tab[index]
+                        abilityID= abilityID and tonumber(abilityID)
+                        if abilityID then
+                            local abilityIcon= select(2, C_PetJournal.GetPetAbilityInfo(abilityID))
+                            if abilityIcon then
+                                pet= pet..(index==2 and ' ' or '')..'|T'..abilityIcon..':0|t'
+                            end
                         end
                     end
                     pet= pet..' '
@@ -536,16 +541,9 @@ local function Init()
         self:set_tooltip()
         WoWTools_LFDMixin.LFDButton:SetButtonState('PUSHED')
         Set_Queue_Status()--小眼睛, 更新信息
-        --self:state_leave()
     end)
 
 
-    
-    --[[Button:SetScript('OnClick', function(_, d)
-        if d=='RightButton' and not IsModifierKeyDown() then
-            PVEFrame_ToggleFrame()
-        end
-    end)]]
 
     Button:SetScript('OnClick', function(self, d)--离开所有队列
         if d=='RightButton' and not IsModifierKeyDown() then
@@ -571,10 +569,7 @@ local function Init()
 
         RejectProposal()--拒绝 LFG 邀请并离开队列
 
-        --[[PvP 不能用，保护 AcceptBattlefieldPort
-        for i=1, GetMaxBattlefieldID() do
-            local status, mapName, teamSize, registeredMatch, suspendedQueue, queueType = GetBattlefieldStatus(i)
-        end]]
+        
 
         if GetNumWorldPVPAreas then--10.2.7 移除
             for i=1,  GetNumWorldPVPAreas() do --World PvP
@@ -589,18 +584,7 @@ local function Init()
         C_LFGList.ClearSearchResults()
     end)
 
-    --[[Button:SetScript('OnUpdate', function(self, elapsed)
-        if UnitAffectingCombat('player') then
-            return
-        end
-        self.elapsed= (self.elapsed or 1) + elapsed
-        if self.elapsed>=1 and not UnitAffectingCombat('player') then
-            self.elapsed=0
-            Set_Queue_Status{}
-            --e.call(QueueStatusFrame.Update, QueueStatusFrame)--小眼睛, 更新信息, QueueStatusFrame.lua
-            --e.call(LFGListUtil_SetAutoAccept, C_LFGList.CanActiveEntryUseAutoAccept())--LFGList.lua 不可用
-        end
-    end)]]
+
 
     Button.text= WoWTools_LabelMixin:CreateLabel(Button, {size=Save().tipsFrameTextSize, color=true})--Save().tipsFrameTextSize, nil, nil, true)
     Button.text:SetPoint('BOTTOMLEFT', Button, 'BOTTOMRIGHT')
@@ -614,7 +598,7 @@ local function Init()
     Button:RegisterForDrag("RightButton")
     Button:SetMovable(true)
     Button:SetClampedToScreen(true)
-    
+
     WoWTools_LFDMixin.TipsButton= Button
 end
 
