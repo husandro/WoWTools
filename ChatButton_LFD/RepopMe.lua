@@ -8,6 +8,12 @@ local Frame
 
 
 
+
+
+
+
+
+
 local function Init()
     Frame= CreateFrame('Frame')
 
@@ -17,7 +23,7 @@ local function Init()
         if Save().ReMe then
             self:RegisterEvent('PLAYER_ENTERING_WORLD')
 
-            if WoWTools_MapMixin:IsInPvPArea() then
+            if WoWTools_MapMixin:IsInPvPArea() or WoWTools_LFDMixin.ReMe_AllZone then--WoWTools_LFDMixin.ReMe_AllZone所有地区
                 self:RegisterEvent('CORPSE_IN_RANGE')
                 self:RegisterEvent('PLAYER_DEAD')
                 self:RegisterEvent('AREA_SPIRIT_HEALER_IN_RANGE')

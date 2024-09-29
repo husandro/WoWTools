@@ -10,6 +10,9 @@ end
 
 
 local function Set_PvERoles()
+    if not Save().autoSetPvPRole then
+        return
+    end
     local _, isTank, isHealer, isDPS = GetLFGRoles()--检测是否选定角色pve
     if isTank or isHealer or isDPS then
         return
@@ -38,6 +41,10 @@ end
 
 
 local function Set_PvPRoles()--检测是否选定角色pvp
+    if not Save().autoSetPvPRole then
+        return
+    end
+
     local tank, healer, dps = GetPVPRoles()
     if  not tank and not  healer and not dps then
         tank, healer, dps=true,true,true
@@ -62,19 +69,26 @@ end
 
 
 local function Init_LFD()
-
-
     function LFDRoleCheckPopup:CancellORSetTime(seconds)
         if self.acceptTime then
             self.acceptTime:Cancel()
         end
-        e.Ccool(self, nil, seconds, nil, true, true)--设置冷却
+        if not seconds then
+            e.Ccool(self)
+        else
+            e.Ccool(self, nil, seconds, nil, true, true)--设置冷却
+        end
     end
+
+
+
     LFDRoleCheckPopup:HookScript("OnUpdate",function(self)--副本职责
         if IsModifierKeyDown() then
             self:CancellORSetTime(nil)
         end
     end)
+
+
     LFDRoleCheckPopup:HookScript("OnShow",function(self)--副本职责
         e.PlaySound()--播放, 声音
         if not Save().autoSetPvPRole or IsModifierKeyDown() then
@@ -155,6 +169,7 @@ local function Init_LFGDungeon()
             self.bossTips= WoWTools_LabelMixin:CreateLabel(self)
             self.bossTips:SetPoint('BOTTOMLEFT', self, 'BOTTOMRIGHT', 4, 4)
         end
+
         if self.bossTips then
             text= text and '|cff9e9e9e'..(e.onlyChinese and '首领：' or BOSSES)..'|r'
                 ..format(e.onlyChinese and '已消灭%d/%d个首领' or BOSSES_KILLED, dead, numBosses)
@@ -174,46 +189,41 @@ end
 
 
 
-
-local function Init()
-    Init_LFGDungeon()
-    Init_LFD()
-    Init_PvP()
-
-
-    --RolePoll.lua
-    RolePollPopup:HookScript('OnShow', function(self)
+--RolePoll.lua
+local function Init_RolePollPopup()
+     RolePollPopup:HookScript('OnShow', function(self)
         e.PlaySound()--播放, 声音
+        if not Save().autoSetPvPRole or IsModifierKeyDown() then
+            return
+        end
 
-        local canBeTank, canBeHealer, canBeDamager = UnitGetAvailableRoles("player")
-        local specID=GetSpecialization()--当前专精
         local icon
         local btn2
-        if specID then
-            local role = select(5, GetSpecializationInfo(specID))
-            if role=='DAMAGER' and canBeDamager then
-                btn2= RolePollPopupRoleButtonDPS
-                icon= e.Icon['DAMAGER']
-            elseif role=='TANK' and canBeTank then
-                btn2= RolePollPopupRoleButtonTank
-                icon= e.Icon['TANK']
-            elseif role=='HEALER' and canBeHealer then
-                btn2= RolePollPopupRoleButtonHealer
-                icon= e.Icon['HEALER']
-            end
+
+        local canBeTank, canBeHealer, canBeDamager = UnitGetAvailableRoles("player")
+        local role = select(5, GetSpecializationInfo(GetSpecialization() or 0))
+        if role=='DAMAGER' and canBeDamager then
+            btn2= RolePollPopupRoleButtonDPS
+            icon= e.Icon['DAMAGER']
+        elseif role=='TANK' and canBeTank then
+            btn2= RolePollPopupRoleButtonTank
+            icon= e.Icon['TANK']
+        elseif role=='HEALER' and canBeHealer then
+            btn2= RolePollPopupRoleButtonHealer
+            icon= e.Icon['HEALER']
         end
+        
+
         if btn2 then
             btn2.checkButton:SetChecked(true)
             e.call(RolePollPopupRoleButtonCheckButton_OnClick, btn2.checkButton, btn2)
-            if Save().autoSetPvPRole then
-                e.Ccool(self, nil, WoWTools_LFDMixin.Save.sec, nil, true)--冷却条
-                self.aceTime=C_Timer.NewTimer(WoWTools_LFDMixin.Save.sec, function()
-                    if self.acceptButton:IsEnabled() then
-                        self.acceptButton:Click()
-                        print(e.addName, WoWTools_LFDMixin.addName, e.onlyChinese and '职责确认' or ROLE_POLL, icon or '')
-                    end
-                end)
-            end
+            e.Ccool(self, nil, WoWTools_LFDMixin.Save.sec, nil, true)--冷却条
+            self.aceTime=C_Timer.NewTimer(WoWTools_LFDMixin.Save.sec, function()
+                if self.acceptButton:IsEnabled() then
+                    self.acceptButton:Click()
+                    print(e.addName, WoWTools_LFDMixin.addName, e.onlyChinese and '职责确认' or ROLE_POLL, icon or '')
+                end
+            end)
         end
     end)
 
@@ -233,7 +243,6 @@ local function Init()
         end
         e.Ccool(self)--冷却条
     end)
-
 end
 
 
@@ -252,6 +261,10 @@ end
 
 
 
+
 function WoWTools_LFDMixin:Init_RolePollPopup()
-    Init()
+    Init_LFGDungeon()
+    Init_LFD()
+    Init_PvP()
+    Init_RolePollPopup()
 end

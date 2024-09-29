@@ -455,8 +455,8 @@ ChatButton_LFD\Loot_Plus.lua
 ChatButton_LFD\Menu_Init.lua
 ChatButton_LFD\Queue_Status.lua
 ChatButton_LFD\RepopMe.lua
+ChatButton_LFD\Role_Check.lua
 ChatButton_LFD\Role_Info.lua
-ChatButton_LFD\Role_Popup.lua
 ChatButton_LFD\Roll.lua
 
 

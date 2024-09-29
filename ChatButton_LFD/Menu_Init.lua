@@ -571,8 +571,106 @@ end
 
 
 
+--职责，可选列表
+local function Init_All_Role(_, root)
+    local sub, isLeader, isTank, isHealer, isDPS, tank, healer, dps
+    local canBeTank, canBeHealer, canBeDamager = UnitGetAvailableRoles("player")
+    local cursorRole = select(5, GetSpecializationInfo(GetSpecialization() or 0))
 
+    sub=root:CreateButton('PvE', function()
+        PVEFrame_ToggleFrame("GroupFinderFrame", LFDParentFrame);
+        return MenuResponse.Open
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(MicroButtonTooltipText('队伍查找器', "TOGGLEGROUPFINDER"))
+    end)
 
+    root:CreateDivider()    
+    for _, role in pairs({'TANK', 'HEALER', 'DAMAGER'}) do
+        sub= root:CreateCheckbox(
+            e.Icon[role]
+            ..e.cn(_G[role])
+            ..(role==cursorRole and '|A:auctionhouse-icon-favorite:0:0|a' or ''),
+        function(data)
+            isLeader, isTank, isHealer, isDPS = GetLFGRoles()
+            if data.role=='TANK' then
+                return isTank
+            elseif data.role=='HEALER' then
+                return isHealer
+            elseif data.role=='DAMAGER' then
+                return isDPS
+            end
+        end, function(data)
+            isLeader, isTank, isHealer, isDPS = GetLFGRoles()
+            if data.role=='TANK' then
+                isTank= not isTank
+            elseif data.role=='HEALER' then
+                isHealer= not isHealer
+            elseif data.role=='DAMAGER' then
+                isDPS= not isDPS
+            end
+            SetLFGRoles(isLeader, isTank, isHealer, isDPS)
+        end, {role=role})
+
+        if role=='TANK' then
+            sub:SetEnabled(canBeTank)
+        elseif role=='HEALER' then
+            sub:SetEnabled(canBeHealer)
+        elseif role=='DAMAGER' then
+            sub:SetEnabled(canBeDamager)
+        end
+    end
+
+    sub=root:CreateButton('PvP', function()
+        PVEFrame_ToggleFrame("GroupFinderFrame", RaidFinderFrame)
+        return MenuResponse.Open
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(MicroButtonTooltipText('队伍查找器', "TOGGLEGROUPFINDER"))
+    end)
+
+    root:CreateDivider()
+    
+    tank, healer, dps = GetPVPRoles()--检测是否选定角色PVP
+
+    for _, role in pairs({'TANK', 'HEALER', 'DAMAGER'}) do
+        sub= root:CreateCheckbox(
+            e.Icon[role]
+            ..e.cn(_G[role])
+            ..(role==cursorRole and '|A:auctionhouse-icon-favorite:0:0|a' or ''),
+        function(data)
+            tank, healer, dps = GetPVPRoles()
+            if data.role=='TANK' then
+                return tank
+            elseif data.role=='HEALER' then
+                return healer
+            elseif data.role=='DAMAGER' then
+                return dps
+            end
+        end, function(data)
+            tank, healer, dps = GetPVPRoles()
+            if data.role=='TANK' then
+                tank= not tank
+            elseif data.role=='HEALER' then
+                healer= not healer
+            elseif data.role=='DAMAGER' then
+                dps= not dps
+            end
+            SetPVPRoles(tank, healer, dps)
+        end, {role=role})
+
+        if role=='TANK' then
+            sub:SetEnabled(canBeTank)
+        elseif role=='HEALER' then
+            sub:SetEnabled(canBeHealer)
+        elseif role=='DAMAGER' then
+            sub:SetEnabled(canBeDamager)
+        end
+    end
+
+    root:SetGridMode(MenuConstants.VerticalGridDirection, 2)
+
+end
 
 
 
@@ -585,9 +683,9 @@ end
 
 --初始菜单
 local function Init_Menu(_, root)
-    local sub, sub2, tab, line, num
+    local sub, sub2, sub3, tab, line, num
     local isLeader, isTank, isHealer, isDPS = GetLFGRoles()--角色职责
-
+    local tank, healer, dps
 
 
 --设置
@@ -676,32 +774,45 @@ local function Init_Menu(_, root)
 
 
 --职责确认
-    sub:CreateCheckbox('|A:quest-legendary-turnin:0:0|a'..(e.onlyChinese and '职责确认' or ROLE_POLL), function()
+    sub2=sub:CreateCheckbox('|A:quest-legendary-turnin:0:0|a'..(e.onlyChinese and '职责确认' or ROLE_POLL), function()
         return Save().autoSetPvPRole
     end, function()
         Save().autoSetPvPRole= not Save().autoSetPvPRole and true or nil
     end)
 
-
+--职责，可选列表
+    Init_All_Role(_, sub2)
 
 
 --设置,战场
     sub:CreateDivider()
-    isTank, isHealer, isDPS = GetPVPRoles()--检测是否选定角色pve
+    tank, healer, dps = GetPVPRoles()--检测是否选定角色PVP
     sub:CreateTitle(
         (e.onlyChinese and '战场' or BATTLEFIELDS)
-        ..(isTank and e.Icon.TANK or '')
-        ..(isHealer and e.Icon.HEALER or '')
-        ..(isDPS and e.Icon.DAMAGER or '')
+        ..(tank and e.Icon.TANK or '')
+        ..(healer and e.Icon.HEALER or '')
+        ..(dps and e.Icon.DAMAGER or '')
     )
-    sub:CreateCheckbox('|A:poi-soulspiritghost:0:0|a'..(e.onlyChinese and '释放, 复活' or (BATTLE_PET_RELEASE..', '..RESURRECT)), function()
+
+--释放, 复活    
+    sub2=sub:CreateCheckbox('|A:poi-soulspiritghost:0:0|a'..(e.onlyChinese and '释放, 复活' or (BATTLE_PET_RELEASE..', '..RESURRECT)), function()
         return Save().ReMe
     end, function()
         Save().ReMe= not Save().ReMe and true or nil
         WoWTools_LFDMixin:RepopMe_SetEvent()
     end)
 
-
+--所有地区
+    sub3=sub2:CreateCheckbox(
+        e.onlyChinese and '所有地区' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, VIDEO_OPTIONS_EVERYTHING, ZONE),
+    function()
+        return WoWTools_LFDMixin.ReMe_AllZone
+    end, function()
+        WoWTools_LFDMixin.ReMe_AllZone= not WoWTools_LFDMixin.ReMe_AllZone and true or false
+    end)
+    sub3:SetTooltip(function(tooltip)
+        tooltip:AddLine(e.onlyChinese and '不保存' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NO, SAVE))
+    end)
 
 
 
@@ -742,7 +853,6 @@ local function Init_Menu(_, root)
 
 
 --副本，逃亡者
-
     local deserterExpiration = GetLFGDeserterExpiration()
     local shouldtext
     local cooldowntext
@@ -793,17 +903,16 @@ local function Init_Menu(_, root)
     end
     set_Raid_Menu_List(root)--团本
 
---离开列队
-    num= 0
-    for i=1, NUM_LE_LFG_CATEGORYS do--列表信息
-        num= (WoWTools_LFDMixin:GetQueuedList(i) or 0)+ num
-    end
+--[[离开列队
     WoWTools_MenuMixin:SetGridMode(root, num)
 
-    sub=root:CreateButton((e.onlyChinese and '离开列队' or LEAVE_QUEUE)..' |cnGREEN_FONT_COLOR:#'..num..'|r', function()
+    sub=root:CreateButton(
+        (e.onlyChinese and '离开列队' or LEAVE_QUEUE),
+    function()
         for i=1, NUM_LE_LFG_CATEGORYS do--列表信息
             LeaveLFG(i)
         end
+        return MenuResponse.Open
     end, tab)
     sub:SetTooltip(function(tooltip, data)
         tooltip:AddLine(e.onlyChinese and '在队列中' or BATTLEFIELD_QUEUE_STATUS)
@@ -813,7 +922,7 @@ local function Init_Menu(_, root)
     end)
     sub:AddInitializer(function(btn)
         btn:SetScript("OnUpdate", function(self, elapsed)
-            self.elapsed= (self.elapsed or 0) +elapsed
+            self.elapsed= (self.elapsed or 1.2) +elapsed
             if self.elapsed>1.2 then
                 self.elapsed=0
                 local queueNum= 0
@@ -824,7 +933,30 @@ local function Init_Menu(_, root)
                         end
                     end
                 end
-                self.fontString:SetText((e.onlyChinese and '离开列队' or LEAVE_QUEUE)..' |cnGREEN_FONT_COLOR:#'..queueNum..'|r')
+                self.fontString:SetText((queueNum==0 and '|cff9e9e9e' or '')..(e.onlyChinese and '离开列队' or LEAVE_QUEUE)..' '..queueNum)
+            end
+        end)
+        btn:SetScript('OnHide', function(self)
+            self:SetScript('OnUpdate', nil)
+            self.elapsed= nil
+        end)
+    end)
+]]
+
+--离开所有队列
+    sub=root:CreateButton(
+        e.onlyChinese and '离开所有队列' or LEAVE_ALL_QUEUES,
+    function()
+        WoWTools_LFDMixin:Leave_All_LFG()
+        return MenuResponse.Open
+    end)
+    sub:AddInitializer(function(btn)
+        btn:SetScript("OnUpdate", function(self, elapsed)
+            self.elapsed= (self.elapsed or 1.2) +elapsed
+            if self.elapsed>1.2 then
+                self.elapsed=0
+                local queueNum= WoWTools_LFDMixin:Leave_All_LFG(true)
+                self.fontString:SetText((queueNum==0 and '|cff9e9e9e' or '')..(e.onlyChinese and '离开所有队列' or LEAVE_ALL_QUEUES)..' '..queueNum)
             end
         end)
         btn:SetScript('OnHide', function(self)
@@ -833,11 +965,6 @@ local function Init_Menu(_, root)
         end)
     end)
 
-    root:CreateButton(
-        e.onlyChinese and '离开所有队列' or LEAVE_ALL_QUEUES,
-    function()
-        WoWTools_LFDMixin:Leave_All_LFG()
-    end)
 
 --离开地下堡
     sub:CreateButton(
@@ -881,20 +1008,7 @@ local function Init_Menu(_, root)
         return MenuResponse.Open
     end)
 
-    sub:AddInitializer(function(btn)
-        btn:SetScript("OnUpdate", function(self, elapsed)
-            self.elapsed= (self.elapsed or 0) +elapsed
-            if self.elapsed>1.2 then
-                self.elapsed=0
-                local queueNum= WoWTools_LFDMixin:Leave_All_LFG(true)
-                self.fontString:SetText((e.onlyChinese and '离开副本' or INSTANCE_LEAVE)..' '..queueNum)
-            end
-        end)
-        btn:SetScript('OnHide', function(self)
-            self:SetScript('OnUpdate', nil)
-            self.elapsed= nil
-        end)
-    end)
+    
 
 
 --离开载具

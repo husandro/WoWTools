@@ -17,6 +17,8 @@ WoWTools_LFDMixin={
     },
     LFDButton=nil,
     TipsButton=nil,--小眼睛, 更新信息
+
+    ReMe_AllZone=false,--所有地方，释放, 复活
 }
 
 local LFDButton
@@ -45,10 +47,14 @@ function WoWTools_LFDMixin:Leave_All_LFG(isCheck)
 
     --pve
     for i=1, NUM_LE_LFG_CATEGORYS do
+        if GetLFGQueueStats(i) then
+            for _ in pairs(GetLFGQueuedList(i) or {}) do
+                num= num+1
+            end
+        end
         if isLeavel then
             LeaveLFG(i)
         end
-        num= num+1
     end
 
     if C_PetBattles.GetPVPMatchmakingInfo() then--Pet Battles
@@ -71,10 +77,13 @@ function WoWTools_LFDMixin:Leave_All_LFG(isCheck)
     end
     if C_LFGList.HasActiveEntryInfo() then
         num= num+1
+        if isLeavel then
+            C_LFGList.RemoveListing()
+            C_LFGList.ClearSearchResults()
+        end
     end
     
-    C_LFGList.RemoveListing()
-    C_LFGList.ClearSearchResults()
+    
     return num
 end
 
