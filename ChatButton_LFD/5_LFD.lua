@@ -20,6 +20,12 @@ WoWTools_LFDMixin={
 
 local LFDButton
 
+local function Save()
+    return WoWTools_LFDMixin.Save
+end
+
+
+
 function WoWTools_LFDMixin:Get_Instance_Num(name)
     name= name or GetInstanceInfo()
     local num = Save().wow[name] or 0

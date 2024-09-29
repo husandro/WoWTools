@@ -451,6 +451,7 @@ ChatButton_LFD\GetQueuedList.lua
 ChatButton_LFD\GetRewardInfo.lua
 ChatButton_LFD\Hooliday.lua
 ChatButton_LFD\LFG_Plus.lua
+ChatButton_LFD\Loot_Plus.lua
 ChatButton_LFD\Menu_Init.lua
 ChatButton_LFD\Queue_Status.lua
 ChatButton_LFD\RepopMe.lua
