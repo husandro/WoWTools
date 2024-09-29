@@ -335,8 +335,20 @@ Plus_AddOns\Info_Plus.lua
 ##Plus\Talking.lua
 ##断， 驱，散
 Plus\InterruptStolenDispel.lua
+
+
+
+
 ##日历, 显示
-Plus\Holiday.lua
+Plus_Holiday\0_Holiday.lua
+Plus_Holiday\Calendar_Uptate.lua
+Plus_Holiday\CreateEvent_Plus.lua
+Plus_Holiday\TrackButton_Init.lua
+Plus_Holiday\TrackButton_Text.lua
+
+
+
+
 ##镶嵌宝石
 Plus\Gem.lua
 ##目标指示

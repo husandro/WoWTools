@@ -5010,7 +5010,8 @@
         "EncounterJournal_UpdateButtonState",
         "VIDEO_OPTIONS_EVERYTHING",
         "PROFESSIONS_COLUMN_REAGENTS_ALL",
-        "RaidFinderFrame"
+        "RaidFinderFrame",
+        "CalendarCreateEventInviteListScrollFrame_Update"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
