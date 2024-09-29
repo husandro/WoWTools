@@ -10,6 +10,7 @@ end
 
 
 local function Set_PvERoles()
+    
     if not Save().autoSetPvPRole then
         return
     end
@@ -18,16 +19,16 @@ local function Set_PvERoles()
         return
     end
 
-    isTank, isHealer, isDPS=true, true, true
+    
     local role = select(5, GetSpecializationInfo(GetSpecialization() or 0))
-    if role then
-        if role=='TANK' then
-            isTank, isHealer, isDPS=true, false, false
-        elseif role=='HEALER' then
-            isTank, isHealer, isDPS=false, true, false
-        elseif role=='DAMAGER' then
-            isTank, isHealer, isDPS=false, false ,true
-        end
+    if role=='TANK' then
+        isTank, isHealer, isDPS=true, false, false
+    elseif role=='HEALER' then
+        isTank, isHealer, isDPS=false, true, false
+    elseif role=='DAMAGER' then
+        isTank, isHealer, isDPS=false, false ,true
+    else
+        isTank, isHealer, isDPS=true, true, true
     end
 
     SetLFGRoles(true, isTank, isHealer, isDPS)
@@ -122,7 +123,7 @@ end
 
 
 local function Init_PvP()
-    Set_PvPRoles()
+    C_Timer.After(2, Set_PvPRoles)
     PVPReadyDialog:HookScript('OnShow', function(self2)
         e.PlaySound()--播放, 声音
         e.Ccool(self2, nil, BATTLEFIELD_TIMER_THRESHOLDS[3] or 60, nil, true)--冷却条
@@ -137,7 +138,7 @@ end
 
 
 local function Init_LFGDungeon()
-    Set_PvERoles()
+    C_Timer.After(2, Set_PvERoles)
     
     LFGDungeonReadyDialog:HookScript('OnHide', function(self)
         if self.bossTips then
