@@ -699,10 +699,17 @@ local function Init_Menu(_, root)
         roleText= format('|A:QuestLegendaryTurnin:0|a'..'|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '无职责' or NO_ROLE)
     end
 
-    sub=root:CreateButton((e.onlyChinese and '设置' or SETTINGS)..roleText, nil, roleText)
+    sub=root:CreateButton(
+        (e.onlyChinese and '设置' or SETTINGS)..roleText,
+    function()
+        PVEFrame_ToggleFrame("GroupFinderFrame")
+        return MenuResponse.Open
+    end, roleText)
     sub:SetTooltip(function(tooltip, data)
         tooltip:AddLine('PVE '..( e.onlyChinese and '职责' or ROLE))
         tooltip:AddLine(data.data)
+        tooltip:AddLine(' ')
+        tooltip:AddLine(MicroButtonTooltipText('队伍查找器', "TOGGLEGROUPFINDER"))
     end)
 
 
