@@ -266,7 +266,6 @@ local function Init()
     CalendarFrame:HookScript('OnHide', function()
         WoWTools_HolidayMixin:TrackButtonSetText()
         WoWTools_HolidayMixin:SetTrackButtonState(false)--TrackButton，提示
-
     end)
     CalendarFrame:HookScript('OnShow', function()
         WoWTools_HolidayMixin:SetTrackButtonState(true)--TrackButton，提示
