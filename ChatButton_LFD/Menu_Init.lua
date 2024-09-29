@@ -794,7 +794,6 @@ local function Init_Menu(_, root)
     set_Raid_Menu_List(root)--团本
 
 --离开列队
-
     num= 0
     for i=1, NUM_LE_LFG_CATEGORYS do--列表信息
         num= (WoWTools_LFDMixin:GetQueuedList(i) or 0)+ num
@@ -806,14 +805,12 @@ local function Init_Menu(_, root)
             LeaveLFG(i)
         end
     end, tab)
-
     sub:SetTooltip(function(tooltip, data)
         tooltip:AddLine(e.onlyChinese and '在队列中' or BATTLEFIELD_QUEUE_STATUS)
         for _, text in pairs(data.data or {}) do
             tooltip:AddLine(text)
         end
     end)
-
     sub:AddInitializer(function(btn)
         btn:SetScript("OnUpdate", function(self, elapsed)
             self.elapsed= (self.elapsed or 0) +elapsed
@@ -836,6 +833,12 @@ local function Init_Menu(_, root)
         end)
     end)
 
+    root:CreateButton(
+        e.onlyChinese and '离开所有队列' or LEAVE_ALL_QUEUES,
+    function()
+        WoWTools_LFDMixin:Leave_All_LFG()
+    end)
+
 --离开地下堡
     sub:CreateButton(
         (WoWTools_MapMixin:IsInDelve() and '' or '|cff9e9e9e')
@@ -856,7 +859,7 @@ local function Init_Menu(_, root)
     end)
 
 --离开副本
-    sub:CreateButton(
+    sub2=sub:CreateButton(
         (select(10, GetInstanceInfo()) and '' or '|cff9e9e9e')
         ..(e.onlyChinese and '离开副本' or INSTANCE_LEAVE),
     function()
@@ -878,12 +881,28 @@ local function Init_Menu(_, root)
         return MenuResponse.Open
     end)
 
+    sub:AddInitializer(function(btn)
+        btn:SetScript("OnUpdate", function(self, elapsed)
+            self.elapsed= (self.elapsed or 0) +elapsed
+            if self.elapsed>1.2 then
+                self.elapsed=0
+                local queueNum= WoWTools_LFDMixin:Leave_All_LFG(true)
+                self.fontString:SetText((e.onlyChinese and '离开副本' or INSTANCE_LEAVE)..' '..queueNum)
+            end
+        end)
+        btn:SetScript('OnHide', function(self)
+            self:SetScript('OnUpdate', nil)
+            self.elapsed= nil
+        end)
+    end)
+
+
 --离开载具
     sub:CreateButton(
         ((UnitControllingVehicle("player") and CanExitVehicle()) and '' or '|cff9e9e9e')
         ..(e.onlyChinese and '离开载具' or BINDING_NAME_VEHICLEEXIT),
     function()
-        VehicleExit()
+        e.call(VehicleExit)
         return MenuResponse.Open
     end)
 end

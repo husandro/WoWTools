@@ -32,6 +32,54 @@ end
 
 
 
+--离开所有队列
+function WoWTools_LFDMixin:Leave_All_LFG(isCheck)
+    local isLeavel= not isCheck
+    local num=0
+    if GetLFGQueueStats(LE_LFG_CATEGORY_SCENARIO) then
+        if isLeavel then
+            LeaveLFG(LE_LFG_CATEGORY_SCENARIO)
+        end
+        num= num+1
+    end
+
+    --pve
+    for i=1, NUM_LE_LFG_CATEGORYS do
+        if isLeavel then
+            LeaveLFG(i)
+        end
+        num= num+1
+    end
+
+    if C_PetBattles.GetPVPMatchmakingInfo() then--Pet Battles
+        if isLeavel then
+            C_PetBattles.StopPVPMatchmaking()--PetC_PetBattles.DeclineQueuedPVPMatch()
+        end
+        num= num+1
+    end
+
+    RejectProposal()--拒绝 LFG 邀请并离开队列
+    
+    for i=1, MAX_WORLD_PVP_QUEUES or 2 do --World PvP
+        local queueID = select(3, GetWorldPVPQueueStatus(i))
+        if queueID and queueID>0 then
+            if isLeavel then
+                BattlefieldMgrExitRequest(queueID)
+            end
+            num= num+1
+        end
+    end
+    if C_LFGList.HasActiveEntryInfo() then
+        num= num+1
+    end
+    
+    C_LFGList.RemoveListing()
+    C_LFGList.ClearSearchResults()
+    return num
+end
+
+
+
 
 
 

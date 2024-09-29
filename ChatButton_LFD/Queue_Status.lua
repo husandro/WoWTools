@@ -15,6 +15,12 @@ local Button--WoWTools_LFDMixin.TipsButton= Button
 
 
 
+
+
+
+
+
+
 local function get_InviteButton_Frame(index)
     local frame= Button.lfgTextTab[index]
     if not frame then
@@ -94,6 +100,14 @@ local function get_InviteButton_Frame(index)
 end
 
 
+
+
+
+
+
+
+
+
 local function set_tipsFrame_Tips(text, LFGListTab)
     Button.text:SetText(text or '')
     Button:SetShown(text and true or false)
@@ -133,6 +147,10 @@ end
 
 
 
+
+
+
+
 local function get_Status_Text(status)--列表，状态，信息
     return status=='queued' and ('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '在队列中' or BATTLEFIELD_QUEUE_STATUS)..'|r')
         or status=='confirm' and ('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '就绪' or READY)..'|r')
@@ -143,6 +161,17 @@ local function get_Status_Text(status)--列表，状态，信息
         or status=='suspended' and ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '暂停' or QUEUED_STATUS_SUSPENDED)..'|r')
         or status or ''
 end
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -457,7 +486,21 @@ end
 
 
 
+local function Init_Menu(self, root)
+--队伍查找器
 
+    root:CreateButton(
+        MicroButtonTooltipText('队伍查找器', "TOGGLEGROUPFINDER"),
+    function ()
+        e.call(PVEFrame_ToggleFrame)
+    end)
+
+    root:CreateButton(
+        e.onlyChinese and '离开所有队列' or LEAVE_ALL_QUEUES,
+    function()
+        WoWTools_LFDMixin:Leave_All_LFG()
+    end)
+end
 
 
 
@@ -530,58 +573,29 @@ local function Init()
 
         e.tips:Show()
     end
+
     Button:SetScript("OnLeave", function(self)
         e.tips:Hide()
         ResetCursor()
         WoWTools_LFDMixin.LFDButton:SetButtonState('NORMAL')
-       -- self:state_leave()
     end)
 
     Button:SetScript('OnEnter', function(self)
         self:set_tooltip()
-        WoWTools_LFDMixin.LFDButton:SetButtonState('PUSHED')
         Set_Queue_Status()--小眼睛, 更新信息
+        WoWTools_LFDMixin.LFDButton:SetButtonState('PUSHED')
     end)
-
 
 
     Button:SetScript('OnClick', function(self, d)--离开所有队列
         if d=='RightButton' and not IsModifierKeyDown() then
-            PVEFrame_ToggleFrame()
+            e.call(PVEFrame_ToggleFrame)
             return
         end
 
-        if (IsInGroup() and not UnitIsGroupLeader("player")) or not IsShiftKeyDown() or d~='LeftButton' then
-            return
+        if IsShiftKeyDown() and d=='LeftButton' then
+            WoWTools_LFDMixin:Leave_All_LFG()
         end
-
-        if GetLFGQueueStats(LE_LFG_CATEGORY_SCENARIO) then
-            LeaveLFG(LE_LFG_CATEGORY_SCENARIO)
-        end
-        --pve
-        for i=1, NUM_LE_LFG_CATEGORYS do
-            LeaveLFG(i)
-        end
-
-        if C_PetBattles.GetPVPMatchmakingInfo() then--Pet Battles
-            C_PetBattles.StopPVPMatchmaking()--PetC_PetBattles.DeclineQueuedPVPMatch()
-        end
-
-        RejectProposal()--拒绝 LFG 邀请并离开队列
-
-        
-
-        if GetNumWorldPVPAreas then--10.2.7 移除
-            for i=1,  GetNumWorldPVPAreas() do --World PvP
-                local queueID = select(3, GetWorldPVPQueueStatus(i))
-                if queueID and queueID>0 then
-                    BattlefieldMgrExitRequest(queueID)
-                end
-            end
-        end
-
-        C_LFGList.RemoveListing()
-        C_LFGList.ClearSearchResults()
     end)
 
 
