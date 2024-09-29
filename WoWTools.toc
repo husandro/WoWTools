@@ -445,7 +445,26 @@ ChatButton_Invite\Foucs.lua
 
 
 ##查找器， 地下城和团队， 自动退出，进入，Roll装
-ChatButton\5_LFD.lua
+ChatButton_LFD\5_LFD.lua
+ChatButton_LFD\Exit_Instance.lua
+ChatButton_LFD\GetQueuedList.lua
+ChatButton_LFD\GetRewardInfo.lua
+ChatButton_LFD\Hooliday.lua
+ChatButton_LFD\LFG_Plus.lua
+ChatButton_LFD\Menu_Init.lua
+ChatButton_LFD\Queue_Status.lua
+ChatButton_LFD\RepopMe.lua
+ChatButton_LFD\Role_Info.lua
+ChatButton_LFD\Role_Popup.lua
+ChatButton_LFD\Roll.lua
+
+
+
+
+
+
+
+
 ##世界频道
 ChatButton\6_World.lua
 ##公会

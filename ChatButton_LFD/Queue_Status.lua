@@ -121,17 +121,18 @@ local function set_tipsFrame_Tips(text, LFGListTab)
         tipsButton.lfgTextTab[index]:SetShown(false)
     end
 
-    if not LFDButton.leaveInstance and Save().leaveInstance then--自动离开,指示图标
-        LFDButton.leaveInstance=LFDButton:CreateTexture(nil, 'ARTWORK')
-        LFDButton.leaveInstance:SetPoint('BOTTOMLEFT',4, 0)
-        LFDButton.leaveInstance:SetSize(12,12)
-        LFDButton.leaveInstance:SetAtlas(e.Icon.toLeft)
-        --LFDButton.leaveInstance:SetDesaturated(true)
-    end
-    if LFDButton.leaveInstance then
-        LFDButton.leaveInstance:SetShown(Save().leaveInstance)
-    end
+    
+    
+    WoWTools_ButtonMixin.LFDButton.leaveInstance:SetShown(Save().leaveInstance)--自动离开,指示图标
 end
+
+
+
+
+
+
+
+
 local function get_Status_Text(status)--列表，状态，信息
     return status=='queued' and ('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '在队列中' or BATTLEFIELD_QUEUE_STATUS)..'|r')
         or status=='confirm' and ('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '就绪' or READY)..'|r')
@@ -142,6 +143,8 @@ local function get_Status_Text(status)--列表，状态，信息
         or status=='suspended' and ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '暂停' or QUEUED_STATUS_SUSPENDED)..'|r')
         or status or ''
 end
+
+
 
 
 
@@ -157,7 +160,7 @@ local function Set_Queue_Status()--小眼睛, 信息
     local num= 0
     local pve
     for i=1, NUM_LE_LFG_CATEGORYS do--PVE
-        local listNum, listText= get_Queued_List(i, true, true)
+        local listNum, listText= WoWTools_LFDMixin:GetQueuedList(i, true, true)
         if listNum and listText then
             listText= listText:gsub('|n', '|n ')
             pve= pve and pve..'|n' or ''

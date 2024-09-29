@@ -28,13 +28,15 @@ local function exit_Instance()
 
     Save_Instance_Num(name)
 
-    local num= e.Get_Instance_Num(name)
+    local num= WoWTools_LFDMixin:Get_Instance_Num(name)
 
     if IsInLFDBattlefield() then
         local currentMapID, _, lfgID = select(8, GetInstanceInfo())
-        local _, _, subtypeID, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, lfgMapID = GetLFGDungeonInfo(lfgID)
-        if currentMapID == lfgMapID and subtypeID == LE_LFG_CATEGORY_BATTLEFIELD then
-            LFGTeleport(true)
+        if lfgID then
+            local _, _, subtypeID, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, lfgMapID = GetLFGDungeonInfo(lfgID)
+            if currentMapID == lfgMapID and subtypeID == LE_LFG_CATEGORY_BATTLEFIELD then
+                LFGTeleport(true)
+            end
         end
     else
         C_PartyInfo.LeaveParty(LE_PARTY_CATEGORY_INSTANCE)
@@ -106,7 +108,7 @@ local function Init_Frame()
             LFGTeleport(true)
             print(e.addName, WoWTools_LFDMixin.addName,
                 e.onlyChinese and '海岛探险' or ISLANDS_HEADER,
-                e.Get_Instance_Num('island')
+                WoWTools_LFDMixin:Get_Instance_Num('island')
             )
             
         elseif event=='PVP_MATCH_COMPLETE' then--离开战场

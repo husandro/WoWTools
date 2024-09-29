@@ -1,8 +1,19 @@
 
+--小眼睛, 更新信息
+local e= select(2, ...)
+local function Save()
+    return WoWTools_LFDMixin.Save
+end
 local Button
---#############
+
+
+
+
+
+
+
+
 --职责确认，信息
---#############
 local RoleC
 local function get_Role_Info(env, Name, isT, isH, isD)
     if env=='LFG_ROLE_CHECK_DECLINED' then
@@ -116,7 +127,7 @@ local function get_Role_Info(env, Name, isT, isH, isD)
             if Save().RoleInfoPoint then
                 Button:SetPoint(Save().RoleInfoPoint[1], UIParent, Save().RoleInfoPoint[3], Save().RoleInfoPoint[4], Save().RoleInfoPoint[5])
             else
-                Button:SetPoint('TOPLEFT', LFDButton, 'BOTTOMLEFT', 40, 40)
+                Button:SetPoint('TOPLEFT', WoWTools_LFDMixin.LFDButton, 'BOTTOMLEFT', 40, 40)
                 Button:SetButtonState('PUSHED')
             end
             Button:RegisterForDrag("RightButton")
