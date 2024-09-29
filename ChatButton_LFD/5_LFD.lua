@@ -83,7 +83,7 @@ end
 
 
 local function Init()
-    WoWTools_ButtonMixin.LFDButton= LFDButton
+    WoWTools_LFDMixin.LFDButton= LFDButton
     
     --自动离开,指示图标
     LFDButton.leaveInstance=LFDButton:CreateTexture(nil, 'ARTWORK')
@@ -133,12 +133,12 @@ local function Init()
     end)
 
     WoWTools_LFDMixin:Init_Queue_Status()--建立，小眼睛, 更新信息
-    WoWTools_LFDMixin:Loot_Plus()--历史, 拾取框
-    WoWTools_LFDMixin:Roll_Plus()--自动 ROLL
+    WoWTools_LFDMixin:Init_Loot_Plus()--历史, 拾取框
+    WoWTools_LFDMixin:Init_Roll_Plus()--自动 ROLL
     WoWTools_LFDMixin:Init_RolePollPopup()    
     WoWTools_LFDMixin:Init_Exit_Instance()--离开副本
     WoWTools_LFDMixin:Init_LFG_Plus()--
-    WoWTools_LFDMixin:Role_CheckInfo()--职责确认，信息    
+    WoWTools_LFDMixin:Init_Role_CheckInfo()--职责确认，信息    
     WoWTools_LFDMixin:Init_Holiday()--节日, 提示, button.texture
     WoWTools_LFDMixin:Init_RepopMe()--仅限战场，释放, 复活
 
@@ -172,7 +172,7 @@ end
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
-panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
+panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             WoWTools_LFDMixin.Save= WoWToolsSave['ChatButton_LFD'] or WoWTools_LFDMixin.Save
@@ -182,13 +182,12 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
 
             LFDButton= WoWTools_ChatButtonMixin:CreateButton('LFD', WoWTools_LFDMixin.addName)
 
-            if LFDButton then--禁用Chat Button
-                
+            if LFDButton then--禁用Chat Button                
                 Init()
         
-                self:RegisterEvent('CORPSE_IN_RANGE')--仅限战场，释放, 复活
-                self:RegisterEvent('PLAYER_DEAD')
-                self:RegisterEvent('AREA_SPIRIT_HEALER_IN_RANGE')
+                
+                
+                
                 self:RegisterEvent('UPDATE_BATTLEFIELD_STATUS')
                 self:RegisterEvent('GROUP_LEFT')
                 self:RegisterEvent('PLAYER_ROLES_ASSIGNED')--职责确认
@@ -201,10 +200,6 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3, arg4)
         if not e.ClearAllSave then
             WoWToolsSave['ChatButton_LFD']= WoWTools_LFDMixin.Save
         end
-
-
-
-
     end
 end)
 

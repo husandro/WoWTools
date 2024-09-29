@@ -123,7 +123,7 @@ local function set_tipsFrame_Tips(text, LFGListTab)
 
     
     
-    WoWTools_ButtonMixin.LFDButton.leaveInstance:SetShown(Save().leaveInstance)--自动离开,指示图标
+    WoWTools_LFDMixin.LFDButton.leaveInstance:SetShown(Save().leaveInstance)--自动离开,指示图标
 end
 
 

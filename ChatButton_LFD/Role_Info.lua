@@ -200,6 +200,9 @@ local function Init()
     frame:RegisterEvent('LFG_ROLE_CHECK_ROLE_CHOSEN')
     frame:RegisterEvent('LFG_ROLE_CHECK_DECLINED')
     frame:RegisterEvent('LFG_QUEUE_STATUS_UPDATE')
+    frame:RegisterEvent('UPDATE_BATTLEFIELD_STATUS')
+    frame:RegisterEvent('GROUP_LEFT')
+    frame:RegisterEvent('PLAYER_ROLES_ASSIGNED')
 
     frame:SetScript('OnEvent', function(self, ...)
         get_Role_Info(...)--职责确认        
@@ -210,6 +213,6 @@ end
 
 
 
-function WoWTools_LFDMixin:Role_CheckInfo()--职责确认，信息
+function WoWTools_LFDMixin:Init_Role_CheckInfo()--职责确认，信息
     Init()
 end

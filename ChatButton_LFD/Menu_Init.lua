@@ -7,6 +7,19 @@ end
 
 
 
+--RaidFinder.lua
+local function isRaidFinderDungeonDisplayable(dungeonID)
+    local _, _, _, minLevel, maxLevel, _, _, _, expansionLevel = GetLFGDungeonInfo(dungeonID)
+    local myLevel = e.Player.level
+    return myLevel >= minLevel and myLevel <= maxLevel and EXPANSION_LEVEL >= expansionLevel
+end
+
+
+
+
+
+
+
 
 
 
@@ -349,13 +362,6 @@ end
 
 
 
---RaidFinder.lua
-local function isRaidFinderDungeonDisplayable(dungeonID)
-    local _, _, _, minLevel, maxLevel, _, _, _, expansionLevel = GetLFGDungeonInfo(dungeonID)
-    local myLevel = e.Player.level
-    return myLevel >= minLevel and myLevel <= maxLevel and EXPANSION_LEVEL >= expansionLevel
-end
-
 
 
 
@@ -635,13 +641,17 @@ local function Init_Menu(_, root)
         Save().hideQueueStatus = not Save().hideQueueStatus and true or nil
         WoWTools_LFDMixin:Set_Queue_Status()
     end)
-    sub2:CreateButton((Save().tipsFramePoint and '' or '|cff9e9e9e')..(e.onlyChinese and '重置位置' or RESET_POSITION), function()
+
+    sub2:CreateButton(
+        (Save().tipsFramePoint and '' or '|cff9e9e9e')..(e.onlyChinese and '重置位置' or RESET_POSITION),
+    function()
         Save().tipsFramePoint=nil
         if WoWTools_LFDMixin.TipsButton then
             WoWTools_LFDMixin.TipsButton:ClearAllPoints()
             WoWTools_LFDMixin.TipsButton:set_Point()
             print(e.addName, WoWTools_LFDMixin.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
         end
+        return MenuResponse.Open
     end)
 
 
@@ -701,7 +711,10 @@ local function Init_Menu(_, root)
     sub=root:CreateButton(
         (Save().autoROLL and '|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t' or '|A:Levelup-Icon-Bag:0:0|a')
         ..(e.onlyChinese and '战利品掷骰' or LOOT_ROLL),
-    ToggleLootHistoryFrame)
+    function()
+        e.call(ToggleLootHistoryFrame)
+        return MenuResponse.Open
+    end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine('/loot ')
     end)

@@ -126,6 +126,6 @@ end
 
 
 
-function WoWTools_LFDMixin:Roll_Plus()
+function WoWTools_LFDMixin:Init_Roll_Plus()
     Init()
 end

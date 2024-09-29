@@ -207,6 +207,6 @@ end
 
 
 
-function WoWTools_LFDMixin:Loot_Plus()
+function WoWTools_LFDMixin:Init_Loot_Plus()
     Init()
 end
