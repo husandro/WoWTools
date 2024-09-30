@@ -2469,12 +2469,14 @@ local function Init_Move()
             btn.target.ScrollBox:SetPoint('BOTTOMRIGHT',-35, 38)
             RaidInfoDetailFooter:SetPoint('RIGHT', -12, 0)
             RaidInfoInstanceLabel:SetWidth(200)
-            hooksecurefunc('RaidInfoFrame_InitButton', function(btn2, elementData)
+            --[[hooksecurefunc('RaidInfoFrame_InitButton', function(btn2, elementData)
                 if not btn2:IsVisible() then
                     return
                 end
-                btn2.name:SetPoint('RIGHT', btn.reset, 'LEFT')
-            end)
+                --btn2.name:ClearAllPoints()
+                --btn2.name:SetPoint('RIGHT', btn.reset, 'LEFT')
+                print(btn2:GetText())
+            end)]]
             RaidInfoIDLabel:ClearAllPoints()
             RaidInfoIDLabel:SetPoint('TOPRIGHT', -13, -31)
             RaidInfoInstanceLabel:ClearAllPoints()
@@ -2754,6 +2756,7 @@ local function Init_Move()
     e.Set_Move_Frame(GameMenuFrame, {notSave=true})--菜单
     e.Set_Move_Frame(ExtraActionButton1, {click='RightButton', notSave=true, notMoveAlpha=true, notFuori=true})--额外技能
     e.Set_Move_Frame(ContainerFrameCombinedBags)
+    e.Set_Move_Frame(ContainerFrameCombinedBags.TitleContainer, {frame=ContainerFrameCombinedBags})
 
     e.Set_Move_Frame(ColorPickerFrame, {click='RightButton'})--颜色选择器
     e.Set_Move_Frame(PartyFrame.Background, {frame=PartyFrame, notZoom=true, notSave=true})

@@ -34,7 +34,7 @@ local qualityToIconBorderAtlas ={
 local function Get_Item(itemID)
 	local text, name
 	local icon= C_Item.GetItemIconByID(itemID)
-	local num= C_Item.GetItemCount(itemID , true, false, true)
+	local num= C_Item.GetItemCount(itemID , true, true, true, true)
 	local bag= C_Item.GetItemCount(itemID)
 	local itemQuality
 	if icon and num>0 then
@@ -93,7 +93,6 @@ end
 
 --货币
 local function Get_Currency(currencyID, index)
-
 	local info, num2, total, percent, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:GetInfo(currencyID, index)
 
 	local text
@@ -123,7 +122,7 @@ local function Get_Currency(currencyID, index)
 
 	local max
 	if isMax then
-		max= '|A:quest-important-available:0:0|a'--format('|A:%s:0:0|a', e.Icon.select)
+			max= WoWTools_CurrencyMixin:GetAccountIcon(currencyID or info.currencyID, index) or '|A:quest-important-available:0:0|a'
 		num= '|cnRED_FONT_COLOR:'..num..'|r'
 	elseif canWeek or canEarned or canQuantity then
 		num= '|cnGREEN_FONT_COLOR:'..num..'|r'
@@ -163,14 +162,6 @@ end
 
 
 
-
-
-
-
-
-
-
-
 function WoWTools_TokensMixin:Set_TrackButton_Pushed(show, label)--提示
     if self.TrackButton then
 		self.TrackButton:SetButtonState(show and 'PUSHED' or "NORMAL")
@@ -184,8 +175,17 @@ end
 
 
 
-local function Create_Button(last, index, endTokenIndex, itemButtonUse, tables)
-    
+
+
+
+
+
+
+
+
+
+
+local function Create_Button(last, index, endTokenIndex, itemButtonUse, tables)    
     local btn= WoWTools_ButtonMixin:Cbtn(WoWTools_TokensMixin.TrackButton.Frame, {size={14,14}, icon='hide', type=itemButtonUse, pushe=itemButtonUse})
     btn.itemButtonUse= itemButtonUse
     if itemButtonUse then
@@ -227,6 +227,7 @@ local function Create_Button(last, index, endTokenIndex, itemButtonUse, tables)
             WoWTools_BagMixin:Find(false)--查询，背包里物品
         end
     end)
+
     btn:SetScript('OnEnter', function(self)
         if Save().toRightTrackText then
             e.tips:SetOwner(self.text, "ANCHOR_RIGHT")
@@ -251,8 +252,10 @@ local function Create_Button(last, index, endTokenIndex, itemButtonUse, tables)
             e.tips:SetCurrencyToken(self.index)
         end
         e.tips:Show()
+		self:set_item_cool()
         WoWTools_TokensMixin:Set_TrackButton_Pushed(true, self.text)--提示
     end)
+
     btn:SetScript("OnMouseDown", function(self)
         if self.currencyID then
             WoWTools_ChatMixin:Chat(C_CurrencyInfo.GetCurrencyLink(self.currencyID), nil, true)
@@ -287,9 +290,9 @@ local function Create_Button(last, index, endTokenIndex, itemButtonUse, tables)
         self:set_btn_Event()
     end)
     btn:SetScript('OnHide', function(self)
+		e.SetItemSpellCool(self)
         self:UnregisterEvent('BAG_UPDATE_COOLDOWN')
     end)
-
     btn:set_btn_Event()
 
     if itemButtonUse then--使用物品

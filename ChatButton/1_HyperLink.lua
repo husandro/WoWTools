@@ -273,6 +273,7 @@ local function Currency(link)--货币 "|cffffffff|Hcurrency:1744|h[Corrupted Mem
         if num then
             numText=(isMax and '|cnRED_FONT_COLOR:' or ((canWeek or canEarned or canQuantity) and '|cnGREEN_FONT_COLOR:' ) or '|cffffffff')
                 ..WoWTools_Mixin:MK(num,3)..'|r'
+                ..(WoWTools_CurrencyMixin:GetAccountIcon(info.currencyID) or '')
         end
         return  '|T'..info.iconFileID..':0|t'..cn_Link_Text(link)..(numText or '')
     end

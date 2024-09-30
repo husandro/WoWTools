@@ -12,6 +12,7 @@ Save={
 	factionUpdateTips=true,--更新, 提示
 	--indicato=true,--指定
 	onlyIcon=e.Player.husandro,--隐藏名称， 仅显示有图标
+	--notPlus=true,
 },
 addName=nil,
 TrackButton=nil,

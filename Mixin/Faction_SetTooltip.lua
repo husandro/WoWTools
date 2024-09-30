@@ -38,6 +38,7 @@ end
 --Paragon
 local function ShowParagonRewardsTooltip(self)
     EmbeddedItemTooltip:SetOwner(self, "ANCHOR_LEFT")
+	C_Reputation.RequestFactionParagonPreloadRewardData(self.factionID)
 	ReputationParagonFrame_SetupParagonTooltip(self)
 	GameTooltip_AddBlankLineToTooltip(EmbeddedItemTooltip)
 	WoWTools_TooltipMixin:Set_Faction(EmbeddedItemTooltip, self.factionID)
@@ -47,18 +48,33 @@ end
 --Friendship
 local function ShowFriendshipReputationTooltip(self)
 	local friendshipData = C_GossipInfo.GetFriendshipReputation(self.factionID)
+	
+	
+
 	if not friendshipData or friendshipData.friendshipFactionID < 0 then
-		return
+		return false
 	end	
     GameTooltip:SetOwner(self, "ANCHOR_LEFT")
 	local rankInfo = C_GossipInfo.GetFriendshipReputationRanks(friendshipData.friendshipFactionID)
+
+	local name= e.cn(friendshipData.name or self.name)
+	if not name then
+		local data= C_Reputation.GetFactionDataByID(self.factionID)
+		name= data and e.cn(data.name) or self.factionID
+	end
+	
+
 	if rankInfo.maxLevel > 0 then
-		GameTooltip_SetTitle(GameTooltip, friendshipData.name.." ("..rankInfo.currentLevel.." / "..rankInfo.maxLevel..")", HIGHLIGHT_FONT_COLOR)
+		GameTooltip_SetTitle(GameTooltip, name.." ("..rankInfo.currentLevel.." / "..rankInfo.maxLevel..")", HIGHLIGHT_FONT_COLOR)
 	else
-		GameTooltip_SetTitle(GameTooltip, friendshipData.name, HIGHLIGHT_FONT_COLOR)
+		GameTooltip_SetTitle(GameTooltip, name, HIGHLIGHT_FONT_COLOR)
 	end
 	TryAppendAccountReputationLineToTooltip(GameTooltip, self.factionID)
-	GameTooltip_AddBlankLineToTooltip(GameTooltip)
+	
+	if friendshipData.text and friendshipData.text~='' or (friendshipData.reaction and friendshipData.reaction~='') then
+		GameTooltip_AddBlankLineToTooltip(GameTooltip)
+	end
+
 	GameTooltip:AddLine(friendshipData.text, nil, nil, nil, true)
 	if friendshipData.nextThreshold then
 		local current = friendshipData.standing - friendshipData.reactionThreshold
@@ -72,6 +88,7 @@ local function ShowFriendshipReputationTooltip(self)
 	GameTooltip_AddBlankLineToTooltip(GameTooltip)
 	WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.factionID)
 	--GameTooltip:Show()
+	return true
 end
 
 --Major
@@ -95,7 +112,13 @@ end
 --Standard
 local function ShowStandardTooltip(self)
 	GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-	GameTooltip_SetTitle(GameTooltip, e.cn(self.name))
+	local name= self.name 
+	if not name then
+		local data= C_Reputation.GetFactionDataByID(self.factionID)
+		name= data and data.name
+	end
+
+	GameTooltip_SetTitle(GameTooltip, e.cn(name))
 	TryAppendAccountReputationLineToTooltip(GameTooltip, self.factionID)
 	GameTooltip_AddBlankLineToTooltip(GameTooltip)
 	WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.factionID)
@@ -112,37 +135,27 @@ end
 
 
 
-function WoWTools_FactionMixin:SetTooltip(frame, factionID)
-    local isParagon
-    local friendshipID
-    local isMajor
+function WoWTools_FactionMixin:SetTooltip(frame)
+    if not frame.factionID then
+		return
+	end
 
-    if factionID then
-        if C_Reputation.IsFactionParagon(factionID) then
-            isParagon= true
-        elseif C_Reputation.IsMajorFaction(factionID) then
-            isMajor= true
-        else
-            local repInfo = C_GossipInfo.GetFriendshipReputation(factionID)
-            friendshipID= repInfo and repInfo.friendshipFactionID
-        end
+	if C_Reputation.IsFactionParagon(frame.factionID) then
+		ShowParagonRewardsTooltip(frame)
 
-    elseif frame then
-        factionID= factionID or frame.factionID
-        isParagon= frame.isParagon
-        friendshipID= frame.friendshipID
-        isMajor= frame.isMajor
-    end
+	elseif C_Reputation.IsMajorFaction(frame.factionID) then
+		ShowMajorFactionRenownTooltip(frame)
 
-    if factionID then
-        if isParagon then
-            ShowParagonRewardsTooltip(frame)
-        elseif friendshipID then
-            ShowFriendshipReputationTooltip(frame)
-        elseif isMajor then
-            ShowMajorFactionRenownTooltip(frame)
-        else
-            ShowStandardTooltip(frame)
-        end
-    end
+	else
+		if not ShowFriendshipReputationTooltip(frame) then
+			ShowStandardTooltip(frame)
+		end
+	end
+end
+
+
+
+function WoWTools_FactionMixin:HideTooltip()
+	EmbeddedItemTooltip:SetShown(false)
+	GameTooltip:SetShown(false)
 end

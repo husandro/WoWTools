@@ -180,12 +180,13 @@ function WoWTools_FactionMixin:GetName(factionID, index)
     return 
         (data.atlas and ('|A:'..data.atlas..':0:0|a') or (data.texture and '|T'..data.texture..':0|t') or '')
         ..(isAccount and '|cff00ccff' or (data.isCapped and '|cffff7f00') or '|cff00ff00')
-
         ..e.cn(data.name)
         ..'|r |cffffffff'
-
-        ..(data.isCapped and '' or data.factionStandingtext)
-        ..' '
+        ..(
+            data.isCapped and ''
+            or (data.factionStandingtext and data.factionStandingtext..' ')
+            or ''
+        )
         ..((not data.isCapped or data.hasRep) and data.valueText or '')
         ..(isAccount and '|A:questlog-questtypeicon-account:0:0|a' or '')
         ..(data.hasRewardPending and (e.Player.faction=='Alliance' and '|A:GarrMission-AllianceChest:0:0|a' or '|A:GarrMission-HordeChest:0:0|a') or '')     

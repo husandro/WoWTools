@@ -5011,7 +5011,8 @@
         "VIDEO_OPTIONS_EVERYTHING",
         "PROFESSIONS_COLUMN_REAGENTS_ALL",
         "RaidFinderFrame",
-        "CalendarCreateEventInviteListScrollFrame_Update"
+        "CalendarCreateEventInviteListScrollFrame_Update",
+        "GUILD_CHALLENGES_THIS_WEEK"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

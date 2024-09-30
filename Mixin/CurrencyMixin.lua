@@ -2,10 +2,7 @@ local e= select(2, ...)
 
 
 --info, num, total, percent, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:GetInfo(currencyID, index)
-WoWTools_CurrencyMixin={
---GetInfo
---GatName
-}
+WoWTools_CurrencyMixin={}
 
 
 
@@ -28,9 +25,72 @@ local function get_info(currencyID, index, link)
 end
 
 
+--Content.BackgroundHighlight
+--依赖，移过，提示
+function WoWTools_CurrencyMixin:Find(find, btn)--选中提示
+    if not TokenFrame:IsVisible() then 
+        return
+    end
+
+    local currencyID
+    for _, frame in pairs(TokenFrame.ScrollBox:GetFrames() or {}) do
+        local data= frame.elementData or {}
+        currencyID= data and data.currencyID
+        if currencyID then
+            
+        end
+    end
+end
 
 
 
+--IsMax
+function WoWTools_CurrencyMixin:IsMax(currencyID, index, link)
+    if not currencyID then
+        local info= get_info(currencyID, index, link)
+        currencyID= info and info.currencyID
+    end
+    if currencyID then
+        return
+            C_CurrencyInfo.PlayerHasMaxQuantity(currencyID),
+            C_CurrencyInfo.PlayerHasMaxWeeklyQuantity(currencyID),
+            currencyID
+    end
+end
+
+--GetAccountIcon
+function WoWTools_CurrencyMixin:GetAccountIcon(currencyID, index, link)
+    if not currencyID then
+        local info= get_info(currencyID, index, link)
+        currencyID= info and info.currencyID
+    end
+    if currencyID then
+        if C_CurrencyInfo.IsAccountTransferableCurrency(currencyID) then--可转移
+            return '|A:warbands-transferable-icon:18:0|a', 'warbands-transferable-icon'
+        elseif C_CurrencyInfo.IsAccountWideCurrency(currencyID) then--战网
+            return '|A:questlog-questtypeicon-account:0:0|a', 'questlog-questtypeicon-account'
+        end
+    end
+end
+
+--GetLink
+function WoWTools_CurrencyMixin:GetLink(currencyID, index, link, isCN)
+    local info
+    info, _, link = get_info(currencyID, index, link)
+    if link and isCN and WoWTools_Chinese_Mixin and info and info.name then
+        local cnName= e.cn(info.name)
+        if cnName and info.name~=info.name then
+            link=link:gsub(info.name, cnName)
+        end
+    end
+    return link, info
+end
+
+
+
+
+
+--GetInfo
 function WoWTools_CurrencyMixin:GetInfo(currencyID, index, link)
     local info
     info, currencyID, link = get_info(currencyID, index, link)
@@ -76,7 +136,7 @@ end
 
 
 
-
+--GetName
 function WoWTools_CurrencyMixin:GetName(currencyID, index, link)
     local info, num, _, _, isMax, canWeek, canEarned, canQuantity= self:GetInfo(currencyID, index, link)
     if info and info.name then
@@ -98,7 +158,8 @@ function WoWTools_CurrencyMixin:GetName(currencyID, index, link)
             )--数量，颜色
             ..' '..WoWTools_Mixin:MK(num, 3)--数量
             ..'|r'
-            ..(C_CurrencyInfo.IsAccountTransferableCurrency(info.currencyID) and '|A:questlog-questtypeicon-account:0:0|a' or ''),--战团
+            ..(self:GetAccountIcon(info.currencyID) or ''),
+            --..(C_CurrencyInfo.IsAccountTransferableCurrency(info.currencyID) and '|A:questlog-questtypeicon-account:0:0|a' or ''),--战团
             
             info--返回，第二参数
     else
@@ -106,11 +167,19 @@ function WoWTools_CurrencyMixin:GetName(currencyID, index, link)
             return link
 
         elseif currencyID then
-            return C_CurrencyInfo.IsAccountTransferableCurrency(currencyID)
-                and '|cff00ccff'..currencyID..'|r|A:questlog-questtypeicon-account:0:0|a'
+            local icon= self:GetAccountIcon(currencyID)
+            return icon
+                and '|cff00ccff'..currencyID..'|r'..icon
                 or currencyID
         else
             return index
         end
     end
 end
+
+
+
+
+
+
+

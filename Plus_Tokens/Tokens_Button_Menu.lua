@@ -17,8 +17,6 @@ end
 --物品，菜单
 function WoWTools_TokensMixin:MenuList_Item(_, root)
 	local sub, sub2, num
-
-	root:CreateDivider()
 	sub=root:CreateCheckbox(
 		(Save().Hide and '|cff9e9e9e' or'')..(e.onlyChinese and '物品' or ITEMS),
 	function ()
@@ -60,12 +58,147 @@ function WoWTools_TokensMixin:MenuList_Item(_, root)
 		Save().itemButtonUse= not Save().itemButtonUse and true or nil
 	end)
 	sub2:SetTooltip(function(tooltip)
+		tooltip:AddLine('SecureActionButton')
 		tooltip:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
 		tooltip:AddLine(e.onlyChinese and '提示: 可能会出现错误' or (LABEL_NOTE..': '..ENABLE_ERROR_SPEECH))
 	end)
 --重新加载UI
 	WoWTools_MenuMixin:Reload(sub2)
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--追踪
+local function Init_TrackButton_Menu(_, root)
+    if Save().itemButtonUse and WoWTools_MenuMixin:CheckInCombat(root)
+		or not WoWTools_TokensMixin.TrackButton
+	then
+        return
+    end
+
+    local sub
+
+--显示
+    root:CreateCheckbox(
+        e.onlyChinese and '显示' or SHOW,
+    function()
+        return Save().str
+    end, function ()
+        Save().str= not Save().str and true or nil
+        WoWTools_TokensMixin.TrackButton:set_texture()
+        WoWTools_TokensMixin.TrackButton.Frame:set_shown()
+    end)
+
+--显示名称
+    root:CreateDivider()
+    root:CreateCheckbox(
+        e.onlyChinese and '显示名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, NAME),
+    function ()
+        return Save().nameShow
+    end, function ()
+        Save().nameShow= not Save().nameShow and true or nil
+        WoWTools_TokensMixin:Set_TrackButton_Text()
+    end)
+
+--向右平移
+    root:CreateCheckbox(
+        (e.onlyChinese and '向右平移' or BINDING_NAME_STRAFERIGHT)..'|A:NPE_ArrowRight:0:0|a',
+    function ()
+        return Save().toRightTrackText
+    end, function ()
+        Save().toRightTrackText = not Save().toRightTrackText and true or nil
+        for _, btn in pairs(WoWTools_TokensMixin.TrackButton.btn) do
+            btn.text:ClearAllPoints()
+            btn:set_Text_Point()
+        end
+    end)
+
+--上
+    sub=root:CreateCheckbox(
+        (e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP)..'|A:bags-greenarrow:0:0|a',
+    function ()
+        return Save().toTopTrack
+    end, function ()
+        Save().toTopTrack = not Save().toTopTrack and true or nil
+    end)
+    sub:SetTooltip(function (tooltip)
+        tooltip:AddLine(e.onlyChinese and '重新加载UI' or RELOADUI)
+    end)
+--reload
+	WoWTools_MenuMixin:Reload(sub)
+
+	--自动隐藏
+	sub=root:CreateCheckbox(
+		e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE),
+	function()
+		return not Save().notAutoHideTrack
+	end, function()
+		Save().notAutoHideTrack= not Save().notAutoHideTrack and true or nil
+		if WoWTools_TokensMixin.TrackButton then
+			WoWTools_TokensMixin.TrackButton:set_shown()
+		end
+	end)
+	sub:SetTooltip(function(tooltip)
+		tooltip:AddLine(e.onlyChinese and '隐藏' or HIDE)
+		tooltip:AddLine(' ')
+		tooltip:AddLine(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
+		tooltip:AddLine(e.onlyChinese and '宠物对战' or SHOW_PET_BATTLES_ON_MAP_TEXT)
+		tooltip:AddLine(e.onlyChinese and '在副本中' or AGGRO_WARNING_IN_INSTANCE)
+		tooltip:AddLine(e.onlyChinese and '载具控制' or BINDING_HEADER_VEHICLE)
+	end)
+
+
+
+    --缩放
+    WoWTools_MenuMixin:Scale(root, function()
+        return Save().scaleTrackButton
+    end, function(value)
+        Save().scaleTrackButton= value
+        WoWTools_TokensMixin.TrackButton:set_scale()
+    end)
+
+--FrameStrata
+    WoWTools_MenuMixin:FrameStrata(root, function(data)
+        return WoWTools_TokensMixin.TrackButton:GetFrameStrata()==data
+    end, function(data)
+        Save().strata= data
+        WoWTools_TokensMixin.TrackButton:set_strata()
+    end)
+
+--重置位置
+	root:CreateDivider()
+	WoWTools_MenuMixin:RestPoint(root, Save().point, function()
+		Save().point=nil
+		if WoWTools_TokensMixin.TrackButton then
+			WoWTools_TokensMixin.TrackButton:set_point()
+		end
+	end)
+end
+
+
+
+
+
+
+
+
 
 
 
@@ -97,37 +230,8 @@ local function Init_Menu(self, root)
 		WoWTools_TokensMixin:Init_TrackButton()
 	end)
 
---自动隐藏
-	sub2=sub:CreateCheckbox(
-		e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE),
-	function()
-		return not Save().notAutoHideTrack
-	end, function()
-		Save().notAutoHideTrack= not Save().notAutoHideTrack and true or nil
-		if WoWTools_TokensMixin.TrackButton then
-			WoWTools_TokensMixin.TrackButton:set_shown()
-		end
-	end)
-	sub2:SetTooltip(function(tooltip)
-		tooltip:AddLine(e.onlyChinese and '隐藏' or HIDE)
-		tooltip:AddLine(' ')
-		tooltip:AddLine(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
-		tooltip:AddLine(e.onlyChinese and '宠物对战' or SHOW_PET_BATTLES_ON_MAP_TEXT)
-		tooltip:AddLine(e.onlyChinese and '在副本中' or AGGRO_WARNING_IN_INSTANCE)
-		tooltip:AddLine(e.onlyChinese and '载具控制' or BINDING_HEADER_VEHICLE)
-	end)
-
-
-
---重置位置
-	sub:CreateDivider()
-	WoWTools_MenuMixin:RestPoint(sub, Save().point, function()
-		Save().point=nil
-		if WoWTools_TokensMixin.TrackButton then
-			WoWTools_TokensMixin.TrackButton:set_point()
-		end
-	end)
-
+--TrackButton 选项
+	Init_TrackButton_Menu(_, sub)
 
 --指定货币
 	num=0
@@ -215,6 +319,21 @@ local function Init_Menu(self, root)
 	sub:SetTooltip(function (tooltip)
 		tooltip:AddLine(e.onlyChinese and '已达到资源上限' or SPELL_FAILED_CUSTOM_ERROR_248)
 	end)
+
+	
+--Plus
+	root:CreateCheckbox(
+		'UI Plus',
+	function()
+		return not Save().notPlus
+	end, function()
+		Save().notPlus= not Save().notPlus and true or nil
+		e.call(ReputationFrame.Update, ReputationFrame)
+		self:settings()
+	end)
+
+	root:CreateDivider()
+    WoWTools_MenuMixin:OpenOptions(root, {name= WoWTools_TokensMixin.addName})
 end
 
 

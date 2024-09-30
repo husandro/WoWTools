@@ -121,7 +121,6 @@ local function Init_TrackButton()
 			e.tips:AddDoubleLine((e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU)..' '..e.GetShowHide(Save().str), e.Icon.right)
 			e.tips:AddLine(' ')
 			e.tips:AddDoubleLine(canFrame..(e.onlyChinese and '移动' or NPE_MOVE), 'Atl+'..e.Icon.right)
-			--e.tips:AddDoubleLine(canFrame..(e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save().scaleTrackButton or 1), 'Alt+'..e.Icon.mid)
 			e.tips:AddLine(' ')
 			e.tips:AddDoubleLine(canFrame..(e.onlyChinese and '拖曳' or DRAG_MODEL)..e.Icon.left..(e.onlyChinese and '物品' or ITEMS), e.onlyChinese and '追踪' or TRACKING)
 		end
@@ -167,7 +166,8 @@ local function Init_TrackButton()
 			ToggleCharacter("TokenFrame")--打开货币
 
 		elseif d=='RightButton' and not IsModifierKeyDown() then
-			WoWTools_TokensMixin:Init_TrackButton_Menu(self)
+			WoWTools_TokensMixin:Init_Menu(self)
+			--WoWTools_TokensMixin:Init_TrackButton_Menu(self)
 		end
 	end)
 

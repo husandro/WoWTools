@@ -12,8 +12,8 @@ end
 
 
 
-local function Init_Menu(self, root)
-    if Save().itemButtonUse and WoWTools_MenuMixin:CheckInCombat(root) then
+local function Init_TrackButton_Menu(_, root)
+    if Save().itemButtonUse and WoWTools_MenuMixin:CheckInCombat(root) or not WoWTools_TokensMixin.TrackButton then
         return
     end
 
@@ -26,11 +26,12 @@ local function Init_Menu(self, root)
         return Save().str
     end, function ()
         Save().str= not Save().str and true or nil
-        self:set_Texture()
-        self.Frame:set_shown()
+        WoWTools_TokensMixin.TrackButton:set_Texture()
+        WoWTools_TokensMixin.TrackButton.Frame:set_shown()
     end)
 
 --显示名称
+    root:CreateDivider()
     root:CreateCheckbox(
         e.onlyChinese and '显示名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, NAME),
     function ()
@@ -64,29 +65,32 @@ local function Init_Menu(self, root)
     sub:SetTooltip(function (tooltip)
         tooltip:AddLine(e.onlyChinese and '重新加载UI' or RELOADUI)
     end)
+
+--reload
     WoWTools_MenuMixin:Reload(sub)
 
---物品
-    
-    WoWTools_TokensMixin:MenuList_Item(self, root)
-
-    sub=WoWTools_MenuMixin:OpenOptions(root, {name= WoWTools_TokensMixin.addName})
-
---缩放
-    WoWTools_MenuMixin:Scale(sub, function()
+    --缩放
+    WoWTools_MenuMixin:Scale(root, function()
         return Save().scaleTrackButton
     end, function(value)
         Save().scaleTrackButton= value
-        self:set_scale()
+        WoWTools_TokensMixin.TrackButton:set_scale()
     end)
 
 --FrameStrata
-    WoWTools_MenuMixin:FrameStrata(sub, function(data)
-        return self:GetFrameStrata()==data
+    WoWTools_MenuMixin:FrameStrata(root, function(data)
+        return WoWTools_TokensMixin.TrackButton:GetFrameStrata()==data
     end, function(data)
         Save().strata= data
-        self:set_strata()
+        WoWTools_TokensMixin.TrackButton:set_strata()
     end)
+
+--物品
+    --root:CreateDivider()
+    --WoWTools_TokensMixin:MenuList_Item(WoWTools_TokensMixin.TrackButton, root)
+
+    root:CreateDivider()
+    WoWTools_MenuMixin:OpenOptions(root, {name= WoWTools_TokensMixin.addName})
 end
 
 
