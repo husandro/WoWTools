@@ -298,6 +298,7 @@ local function Init()
         self:UnregisterAllEvents()
         if Save().autoWho then
             self:RegisterEvent('BAG_UPDATE_DELAYED')
+            
         end
     end
 
