@@ -21,7 +21,7 @@ local FACTION_STANDING_INCREASED_ACCOUNT_WIDE = FACTION_STANDING_INCREASED_ACCOU
 --声望更新, 提示
 --#############
 local function EventFilter(_, _, text, ...)
-	if not Save().factionUpdateTips then
+	if not WoWTools_ReputationMixin.Save.factionUpdateTips then
 		return
 	end
 
