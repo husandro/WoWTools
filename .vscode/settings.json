@@ -5037,6 +5037,5 @@
         "missing-parameter",
         "redundant-parameter",
         "unused-local",
-        "trailing-space"
     ],
 }

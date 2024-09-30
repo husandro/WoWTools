@@ -281,26 +281,6 @@ local function Init()
 		WoWTools_ReputationMixin:TrackButton_Settings()
 	end)
 
-	--[[TrackButton:SetScript("OnMouseWheel", function(self, d)--打开,关闭, 声望
-		if IsAltKeyDown() then--缩放
-			local num
-			num= Save().scaleTrackButton or 1
-			if d==1 then
-				num= num + 0.05
-			elseif d==-1 then
-				num= num - 0.05
-			end
-			num= num<0.4 and 0.4 or num
-			num= num>4 and 4 or num
-			Save().scaleTrackButton= num
-			self:set_Scale()
-			self:set_Tooltips()
-		end
-	end)]]
-
-
-
-
 
 	TrackButton:set_Scale()
 	TrackButton:set_Point()
@@ -308,9 +288,6 @@ local function Init()
 	TrackButton:set_Shown()
 	TrackButton:set_Texture()
 	WoWTools_ReputationMixin:TrackButton_Settings()
-
-
-
 
 
 
