@@ -59,7 +59,7 @@ local function Init_TrackButton()
 		 	or (
 				not Save().notAutoHideTrack and (
 					IsInInstance()
-					or C_PetBattles.IsInBattle()					
+					or C_PetBattles.IsInBattle()
 					or UnitHasVehicleUI('player')
 					or UnitAffectingCombat('player')
 				)
@@ -95,7 +95,7 @@ local function Init_TrackButton()
 
 
 
-	function TrackButton:set_Tooltips()
+	function TrackButton:set_Tooltip()
 		if Save().toRightTrackText then
 			e.tips:SetOwner(self, "ANCHOR_RIGHT")
 		else
@@ -118,16 +118,16 @@ local function Init_TrackButton()
 			e.tips:AddDoubleLine(e.addName, WoWTools_TokensMixin.addName)
 			e.tips:AddLine(' ')
 			e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭货币页面' or BINDING_NAME_TOGGLECURRENCY, e.Icon.left)
-			e.tips:AddDoubleLine((e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU)..' '..e.GetShowHide(Save().str), e.Icon.right)
-			e.tips:AddLine(' ')
+			e.tips:AddDoubleLine((e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU), e.Icon.right)
 			e.tips:AddDoubleLine(canFrame..(e.onlyChinese and '移动' or NPE_MOVE), 'Atl+'..e.Icon.right)
+			e.tips:AddDoubleLine(e.GetShowHide(Save().str, true), e.Icon.mid)
 			e.tips:AddLine(' ')
 			e.tips:AddDoubleLine(canFrame..(e.onlyChinese and '拖曳' or DRAG_MODEL)..e.Icon.left..(e.onlyChinese and '物品' or ITEMS), e.onlyChinese and '追踪' or TRACKING)
 		end
 		e.tips:Show()
 	end
 
-	
+
 
 	TrackButton:RegisterForDrag("RightButton")
 	TrackButton:SetClampedToScreen(true)
@@ -144,7 +144,7 @@ local function Init_TrackButton()
 		Save().point[2]=nil
 	end)
 	TrackButton:SetScript("OnMouseUp", ResetCursor)
-	
+
 	TrackButton:SetScript("OnMouseDown", function(self, d)
 		if d=='RightButton' and IsAltKeyDown() then--右击,移动
 			SetCursor('UI_MOVE_CURSOR')
@@ -177,7 +177,7 @@ local function Init_TrackButton()
 			WoWTools_TokensMixin:Set_TrackButton_Text()
 			self:set_shown()
 		end
-		self:set_Tooltips()
+		self:set_Tooltip()
 		self.texture:SetAlpha(1)
 	end)
 	TrackButton:SetScript('OnMouseUp', ResetCursor)
@@ -186,7 +186,14 @@ local function Init_TrackButton()
 		self:set_texture()
 		self.texture:SetAlpha(0.5)
 	end)
-
+	TrackButton:SetScript('OnMouseWheel', function(self, d)
+		if Save().itemButtonUse and not UnitAffectingCombat('player') or not Save().itemButtonUse then
+			Save().str= d==-1
+			self:set_texture()
+			self.Frame:set_shown()
+			self:set_Tooltip()
+		end
+	end)
 
 
 
@@ -231,8 +238,16 @@ local function Init_TrackButton()
 	TrackButton:set_shown()
 	TrackButton:set_texture()
 
-	
+
 	WoWTools_TokensMixin:Set_TrackButton_Text()
+
+	hooksecurefunc(TokenFrame, 'Update', function(frame)
+		if WoWTools_TokensMixin.TrackButton then
+			WoWTools_TokensMixin:Set_TrackButton_Text()
+		else
+			WoWTools_TokensMixin:Init_TrackButton()
+		end
+	end)
 end
 
 

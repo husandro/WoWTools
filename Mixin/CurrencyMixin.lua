@@ -25,19 +25,37 @@ local function get_info(currencyID, index, link)
 end
 
 
---Content.BackgroundHighlight
---依赖，移过，提示
-function WoWTools_CurrencyMixin:Find(find, btn)--选中提示
-    if not TokenFrame:IsVisible() then 
+--移过，提示
+function WoWTools_CurrencyMixin:Find(find, currencyID, name)--选中提示
+    if not TokenFrame:IsVisible() then
         return
     end
+    
 
-    local currencyID
-    for _, frame in pairs(TokenFrame.ScrollBox:GetFrames() or {}) do
-        local data= frame.elementData or {}
-        currencyID= data and data.currencyID
-        if currencyID then
-            
+    if find then
+        for index=1, C_CurrencyInfo.GetCurrencyListSize() do
+            local data= C_CurrencyInfo.GetCurrencyListInfo(index)
+            if data and data.name and data.currencyID then
+                if data.currencyID==currencyID or data.name==name then
+                    TokenFrame.ScrollBox:ScrollToElementDataIndex(index)
+                    for _, frame in pairs(TokenFrame.ScrollBox:GetFrames() or {}) do
+                        if frame.Content and frame.elementData then
+                            if frame.elementData.currencyID==currencyID or frame.elementData.name==name then
+                                frame.Content.BackgroundHighlight:SetAlpha(0.2)
+                            else
+                                frame.Content.BackgroundHighlight:SetAlpha(0)
+                            end
+                        end
+                    end
+                    break
+                end
+            end
+        end
+    else
+        for _, frame in pairs(TokenFrame.ScrollBox:GetFrames() or {}) do
+            if frame.Content then
+               frame.Content.BackgroundHighlight:SetAlpha(0)
+            end
         end
     end
 end
@@ -124,7 +142,7 @@ function WoWTools_CurrencyMixin:GetInfo(currencyID, index, link)
 
     info.link= link or C_CurrencyInfo.GetCurrencyLink(currencyID)
     info.currencyID= currencyID
-    
+
     return info, num, totale, percent, isMax, canWeek, canEarned, canQuantity
 end
 
@@ -160,7 +178,7 @@ function WoWTools_CurrencyMixin:GetName(currencyID, index, link)
             ..'|r'
             ..(self:GetAccountIcon(info.currencyID) or ''),
             --..(C_CurrencyInfo.IsAccountTransferableCurrency(info.currencyID) and '|A:questlog-questtypeicon-account:0:0|a' or ''),--战团
-            
+
             info--返回，第二参数
     else
         if link then

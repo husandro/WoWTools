@@ -3,6 +3,7 @@ local addName
 
 WoWTools_TokensMixin={
 Save={
+	--notPlus=true,
 	tokens={},--{[currencyID]=true}指定显示，表
 	item={},--[202196]= true
 	--indicato=nil,--指定显示
@@ -40,23 +41,19 @@ end
 
 
 local function Init()
-	
 	WoWTools_TokensMixin:Init_Button()
 	WoWTools_TokensMixin:Init_Currency_Transfer()--货币，转移
+	WoWTools_TokensMixin:Init_TrackButton()
+	WoWTools_TokensMixin:Init_ScrollBox_Plus()
 
-	C_Timer.After(4, function()
-		WoWTools_TokensMixin:Init_TrackButton()
-		WoWTools_TokensMixin:Init_ScrollBox_Plus()
-		
-		hooksecurefunc(TokenFrame, 'Update', function(frame)
-			WoWTools_TokensMixin:Set_ItemInteractionFrame(frame)--套装,转换,货币
-			if WoWTools_TokensMixin.TrackButton then
-				WoWTools_TokensMixin:Set_TrackButton_Text()
-			else
-				WoWTools_TokensMixin:Init_TrackButton()
-			end
-		end)
-		
+	hooksecurefunc(TokenFrame, 'Update', function(frame)
+		WoWTools_TokensMixin:Set_ItemInteractionFrame(frame)--套装,转换,货币
+
+		if WoWTools_TokensMixin.TrackButton then
+			WoWTools_TokensMixin:Set_TrackButton_Text()
+		else
+			WoWTools_TokensMixin:Init_TrackButton()
+		end
 	end)
 end
 

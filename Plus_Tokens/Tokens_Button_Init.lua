@@ -39,7 +39,7 @@ local function enter(self)
 					('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
 				or ('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', e.Icon.select))
 		)
-		Button:set_bagButtonTexture(C_Item.GetItemIconByID(itemID))
+		Button:set_texture(C_Item.GetItemIconByID(itemID))
 	else
 		e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.left)
 		e.tips:AddDoubleLine((e.onlyChinese and '拖曳' or DRAG_MODEL)..e.Icon.left..(e.onlyChinese and '物品' or ITEMS), e.onlyChinese and '追踪' or TRACKING)
@@ -48,14 +48,12 @@ local function enter(self)
 
 	e.tips:AddDoubleLine(e.addName, WoWTools_TokensMixin.addName)
 	e.tips:Show()
-	self.texture:SetAlpha(1)
 	WoWTools_TokensMixin:Set_TrackButton_Pushed(true)--提示
 end
 
 local function leave(self)
 	e.tips:Hide()
-	Button:set_bagButtonTexture()
-	self.texture:SetAlpha(0.5)
+	Button:set_texture()
 	WoWTools_TokensMixin:Set_TrackButton_Pushed(false)--提示
 end
 
@@ -74,39 +72,43 @@ end
 
 
 local function Init()
-    Button= WoWTools_ButtonMixin:Cbtn(TokenFrame, {name='WoWTools_PlusCurrencyButton', icon='hide', size={22,22}})
+    Button= WoWTools_ButtonMixin:Cbtn(TokenFrame, {name='WoWTools_PlusCurrencyButton', icon='hide', size=23})
 	WoWTools_TokensMixin.Button= Button
 	
 	Button:SetPoint('RIGHT', CharacterFrameCloseButton, 'LEFT', -2, 0)
 	Button:SetFrameStrata(CharacterFrameCloseButton:GetFrameStrata())
+	Button:SetFrameLevel(CharacterFrameCloseButton:GetFrameLevel()+1)
+	
 	Button.texture= Button:CreateTexture()
 	Button.texture:SetAllPoints()
-	Button.texture:SetAlpha(0.5)
+	--Button:SetPushedAtlas('ui-questtrackerbutton-filter-pressed')
+	--Button:SetHighlightAtlas('ui-questtrackerbutton-red-highlight')
+
 
 
 	Button.bagButton= WoWTools_ButtonMixin:Cbtn(ContainerFrameCombinedBags, {icon='hide', size={18,18, name='WoWToolsTokensTrackItemBagButton'}})--背包中, 增加一个图标, 用来添加或移除
-	Button.bagButton:SetPoint('RIGHT', ContainerFrameCombinedBags.CloseButton, 'LEFT',-4,0)
+	Button.bagButton:SetPoint('RIGHT', ContainerFrameCombinedBags.CloseButton, 'LEFT',-2,0)
 	Button.bagButton:SetFrameStrata(ContainerFrameCombinedBags.CloseButton:GetFrameStrata())
+	Button.bagButton:SetFrameLevel(ContainerFrameCombinedBags.CloseButton:GetFrameLevel()+1)
 	Button.bagButton.texture= Button.bagButton:CreateTexture()
 	Button.bagButton.texture:SetAllPoints()
 	Button.bagButton.texture:SetAlpha(0.5)
 
-	function Button:set_bagButtonTexture(icon)--设置,按钮, 图标
+	function Button:set_texture(icon)--设置,按钮, 图标
 		if icon then
 			self.texture:SetTexture(icon)
 			self.bagButton.texture:SetTexture(icon)
 		elseif Save().Hide then
 			self.texture:SetAtlas(e.Icon.icon)
+			self.texture:SetAlpha(0.5)
 			self.bagButton.texture:SetAtlas(e.Icon.icon)
 		else
-			self.texture:SetAtlas('FXAM-SmallSpikeyGlow')
+			self.texture:SetAlpha(1)
+			self.texture:SetAtlas('ui-questtrackerbutton-filter')
 			self.bagButton.texture:SetAtlas('FXAM-SmallSpikeyGlow')
 		end
 	end
-	Button:set_bagButtonTexture()--设置,按钮, 图标
-
-	
-
+	Button:set_texture()--设置,按钮, 图标
 
 	Button:SetScript('OnMouseDown', click)
 	Button:SetScript('OnEnter', enter)
@@ -116,34 +118,11 @@ local function Init()
 	Button.bagButton:SetScript('OnEnter', enter)
 	Button.bagButton:SetScript('OnLeave',leave)
 
-
-
-
-	--展开,合起
-	Button.down= WoWTools_ButtonMixin:Cbtn(Button, {size={22,22}, atlas='NPE_ArrowDown'})--texture='Interface\\Buttons\\UI-MinusButton-Up'})--展开所有
-	Button.down:SetPoint('RIGHT', Button, 'LEFT', -2, 0)
-	Button.down:SetScript("OnClick", function()
-		for i=1, C_CurrencyInfo.GetCurrencyListSize() do--展开所有
-			local info = C_CurrencyInfo.GetCurrencyListInfo(i)
-			if info  and info.isHeader and not info.isHeaderExpanded then
-				C_CurrencyInfo.ExpandCurrencyList(i,true)
-			end
-		end
-		e.call(TokenFrame.Update, TokenFrame)
-	end)
-	Button.down:SetScript("OnLeave", GameTooltip_Hide)
-	Button.down:SetScript('OnEnter', function(self)
-		e.tips:SetOwner(self, "ANCHOR_LEFT")
-		e.tips:ClearLines()
-		e.tips:AddDoubleLine(' ', e.onlyChinese and '展开选项|A:editmode-down-arrow:16:11:0:-7|a' or HUD_EDIT_MODE_EXPAND_OPTIONS)
-		e.tips:AddDoubleLine(e.addName, WoWTools_TokensMixin.addName)
-		e.tips:Show()
-	end)
-
+--展开所有
 	Button.up= WoWTools_ButtonMixin:Cbtn(Button, {size={22,22}, atlas='NPE_ArrowUp'})--texture='Interface\\Buttons\\UI-PlusButton-Up'})--收起所有
-	Button.up:SetPoint('RIGHT', Button.down, 'LEFT', -2, 0)
+	Button.up:SetPoint('RIGHT', TokenFrame.CurrencyTransferLogToggleButton, 'LEFT', -2, 0)
 	Button.up:SetScript("OnClick", function()
-		for i=1, C_CurrencyInfo.GetCurrencyListSize() do--展开所有
+		for i=1, C_CurrencyInfo.GetCurrencyListSize() do
 			local info = C_CurrencyInfo.GetCurrencyListInfo(i)
 			if info  and info.isHeader and info.isHeaderExpanded then
 				C_CurrencyInfo.ExpandCurrencyList(i, false)
@@ -160,7 +139,31 @@ local function Init()
 		e.tips:Show()
 	end)
 
-	Button.bag=WoWTools_ButtonMixin:Cbtn(Button, {icon='hide', size={18,18}})
+
+	--展开,合起
+	Button.down= WoWTools_ButtonMixin:Cbtn(Button, {size={22,22}, atlas='NPE_ArrowDown'})--texture='Interface\\Buttons\\UI-MinusButton-Up'})--展开所有
+	Button.down:SetPoint('RIGHT', Button.up, 'LEFT', -2, 0)
+	Button.down:SetScript("OnClick", function()
+		for i=1, C_CurrencyInfo.GetCurrencyListSize() do--展开所有
+			local info = C_CurrencyInfo.GetCurrencyListInfo(i)
+			if info and info.isHeader and not info.isHeaderExpanded then
+				C_CurrencyInfo.ExpandCurrencyList(i, true)
+			end
+		end
+		e.call(TokenFrame.Update, TokenFrame)
+	end)
+	Button.down:SetScript("OnLeave", GameTooltip_Hide)
+	Button.down:SetScript('OnEnter', function(self)
+		e.tips:SetOwner(self, "ANCHOR_LEFT")
+		e.tips:ClearLines()
+		e.tips:AddDoubleLine(' ', e.onlyChinese and '展开选项|A:editmode-down-arrow:16:11:0:-7|a' or HUD_EDIT_MODE_EXPAND_OPTIONS)
+		e.tips:AddDoubleLine(e.addName, WoWTools_TokensMixin.addName)
+		e.tips:Show()
+	end)
+
+	
+
+	--[[Button.bag=WoWTools_ButtonMixin:Cbtn(Button, {icon='hide', size={18,18}})
 	Button.bag:SetPoint('RIGHT', Button.up, 'LEFT',-4,0)
 	Button.bag:SetNormalAtlas('bag-main')
 	Button.bag:SetScript("OnClick", function(self)
@@ -185,7 +188,7 @@ local function Init()
 		end
 		e.tips:Show()
 	end)
-	Button.bag:SetScript('OnLeave', GameTooltip_Hide)
+	Button.bag:SetScript('OnLeave', GameTooltip_Hide)]]
 
 	Button.currencyMax={}
 	function Button:currency_Max(curID)--已达到资源上限
@@ -218,6 +221,7 @@ local function Init()
                 end
 			end
 		end
+
         if num>0 then
             print(e.addName, WoWTools_TokensMixin.addName)
             for currencyID, info in pairs(tab) do
@@ -256,8 +260,10 @@ local function Init()
         C_Timer.After(4, function()
             Button:currency_Max()--已达到资源上限
             Button:set_Event()--已达到资源上限
+			print(Button:GetAlpha())
         end)
     end
+	
 end
 
 

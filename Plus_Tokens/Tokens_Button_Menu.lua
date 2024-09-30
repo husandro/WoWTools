@@ -101,9 +101,11 @@ local function Init_TrackButton_Menu(_, root)
     function()
         return Save().str
     end, function ()
-        Save().str= not Save().str and true or nil
-        WoWTools_TokensMixin.TrackButton:set_texture()
-        WoWTools_TokensMixin.TrackButton.Frame:set_shown()
+		if Save().itemButtonUse and not UnitAffectingCombat('player') or not Save().itemButtonUse then
+			Save().str= not Save().str and true or false
+			WoWTools_TokensMixin.TrackButton:set_texture()
+			WoWTools_TokensMixin.TrackButton.Frame:set_shown()
+		end
     end)
 
 --显示名称
@@ -228,6 +230,7 @@ local function Init_Menu(self, root)
 	end, function()
 		Save().Hide= not Save().Hide and true or nil
 		WoWTools_TokensMixin:Init_TrackButton()
+		WoWTools_TokensMixin.Button:set_texture()
 	end)
 
 --TrackButton 选项
@@ -264,7 +267,15 @@ local function Init_Menu(self, root)
 			TokenFrame:Update()
 			WoWTools_TokensMixin:Set_TrackButton_Text()
 		end, {currencyID=currencyID})
-		WoWTools_SetTooltipMixin:Set_Menu(sub2)
+		sub2:SetTooltip(function(tooltip, description)
+			tooltip:SetCurrencyByID(description.data.currencyID)
+			WoWTools_CurrencyMixin:Find(true, description.data.currencyID, nil)--选中提示
+		end)
+		sub2:SetOnLeave(function()
+			WoWTools_CurrencyMixin:Find(false, nil, nil)--选中提示
+			GameTooltip:Hide()
+		end)
+		--WoWTools_SetTooltipMixin:Set_Menu(sub2)
 	end
 
 --添加
@@ -328,8 +339,7 @@ local function Init_Menu(self, root)
 		return not Save().notPlus
 	end, function()
 		Save().notPlus= not Save().notPlus and true or nil
-		e.call(ReputationFrame.Update, ReputationFrame)
-		self:settings()
+		e.call(TokenFrame.Update, TokenFrame)
 	end)
 
 	root:CreateDivider()

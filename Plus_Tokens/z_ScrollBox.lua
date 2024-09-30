@@ -16,11 +16,25 @@ end
 
 
 local function set_Tokens_Button(frame)--设置, 列表, 内容
+	if Save().notPlus then
+		if frame.check then
+			frame.check:SetShown(false)
+			if frame.Content then
+				frame.Content.Count:SetTextColor(1,1,1)
+				frame.Content.Name:SetTextColor(1,1,1)
+			end
+			if frame.percentText then
+				frame.percentText:SetText('')
+			end
+		end
+		return
+	end
 
 	local data= frame.elementData or {}
 	if not data.currencyID then
 		return
 	end
+
 
 	local info, _, _, percent, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:GetInfo(data.currencyID, data.currencyIndex)
 	if not info or info.isHealer then
@@ -58,21 +72,18 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 		frame.check:SetSize(18,18)
 
 		frame:HookScript('OnEnter', function(self)
-			for _, btn in pairs(WoWTools_TokensMixin.TrackButton and WoWTools_TokensMixin.TrackButton.btn or {}) do
-				local show= self.check.currencyID and self.check.currencyID== btn.currencyID
-				if btn:CanChangeAttribute() then
-					btn:SetScale(show and 2 or 1)
-				else
-					btn:SetAlpha(show and 0.3 or 1)
+			if WoWTools_TokensMixin.TrackButton then
+				for _, btn in pairs(WoWTools_TokensMixin.TrackButton.btn or {}) do
+					local show= self.check.currencyID and self.check.currencyID== btn.currencyID
+					btn:SetButtonState(self.check.currencyID== btn.currencyID and 'PUSHED' or 'NORMAL')
 				end
 			end
 		end)
 		frame:HookScript('OnLeave', function()
-			for _, btn in pairs(WoWTools_TokensMixin.TrackButton and WoWTools_TokensMixin.TrackButton.btn or {}) do
-				if btn:CanChangeAttribute() then
-					btn:SetScale(1)
+			if WoWTools_TokensMixin.TrackButton then
+				for _, btn in pairs(WoWTools_TokensMixin.TrackButton.btn or {}) do
+					btn:SetButtonState('NORMAL')
 				end
-				btn:SetAlpha(1)
 			end
 		end)
 	end
@@ -105,7 +116,7 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 
 	if frame.Content.Name then
 		if info.isAccountTransferable then
-			frame.Content.Name:SetTextColor(0, 0.8, 1)		
+			frame.Content.Name:SetTextColor(0, 0.8, 1)
 		else
 			local r, g, b= C_Item.GetItemQualityColor(info and info.quality or 1)
 			frame.Content.Name:SetTextColor(r or 1, g or 1, b or 1)

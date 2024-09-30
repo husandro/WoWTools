@@ -305,6 +305,10 @@ local function Init()
 			btn:SetScale(1)
 		end
     end)
+
+	hooksecurefunc(ReputationFrame, 'Update', function()
+		WoWTools_ReputationMixin:TrackButton_Settings()--更新, 监视, 文本
+	end)
 end
 
 
@@ -326,7 +330,5 @@ function WoWTools_ReputationMixin:Init_TrackButton()
 
     Init()
 
-	hooksecurefunc(ReputationFrame, 'Update', function()
-		WoWTools_ReputationMixin:TrackButton_Settings()--更新, 监视, 文本
-	end)
+	
 end

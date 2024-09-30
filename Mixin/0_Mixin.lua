@@ -121,7 +121,13 @@ end
 
 function e.GetShowHide(sh, all)
     if all then
-        return e.onlyChinese and '显示/隐藏' or (SHOW..'/'..HIDE)
+        if sh then
+            return e.onlyChinese and '|cnGREEN_FONT_COLOR:显示|r/隐藏' or ('|cnGREEN_FONT_COLOR:'..SHOW..'|r/'..HIDE)
+        elseif sh==false then
+            return e.onlyChinese and '显示/|cnRED_FONT_COLOR:隐藏|r' or (SHOW..'/|cnRED_FONT_COLOR:'..HIDE..'|r')
+        else
+            return e.onlyChinese and '显示/隐藏' or (SHOW..'/'..HIDE)
+        end
     elseif sh then
 		return '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '显示' or SHOW)..'|r'
 	else
