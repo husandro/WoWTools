@@ -419,8 +419,19 @@ Tools\L2_Pet.lua
 Tools\L3_NoggenfoggerElixir.lua
 ##各种专送门,物品，玩具
 Tools\L4_UsaItems.lua
+
+
+
 ##食物
-Tools\B5_Food.lua
+Tool_Food\5B_Food.lua
+Tool_Food\Food_Button_Init.lua
+Tool_Food\Food_Button_SetAlt.lua
+Tool_Food\Food_Create_Button.lua
+Tool_Food\Food_Menu.lua
+
+
+
+
 ##法师传送门
 Tools\LL_MagePortal.lua
 
