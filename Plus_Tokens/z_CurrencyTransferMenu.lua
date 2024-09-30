@@ -1,8 +1,16 @@
 local e= select(2, ...)
+
+
+
+
+
+
+
+
 --货币，转移
 local function Init()
 	hooksecurefunc(CurrencyTransferLog.ScrollBox, 'Update', function(self)
-		if not self:GetView() then
+		if not self:GetView() or Save().notPlus then
             return
         end
 		for _, btn in pairs(self:GetFrames() or {}) do
@@ -23,30 +31,38 @@ local function Init()
 	CurrencyTransferMenuCloseButton:SetFrameStrata('HIGH')
 
 	hooksecurefunc(CurrencyTransferMenu.SourceSelector, 'RefreshPlayerName', function(self)--收取人，我 提示		
-		local name= WoWTools_UnitMixin:GetPlayerInfo({guid=e.Player.guid, reName=true})
-		if name~='' then
-			self.PlayerName:SetFormattedText(e.onlyChinese and '收取人 %s' or CURRENCY_TRANSFER_DESTINATION, name)
+		if not Save().notPlus then
+			local name= WoWTools_UnitMixin:GetPlayerInfo({guid=e.Player.guid, reName=true})
+			if name~='' then
+				self.PlayerName:SetFormattedText(e.onlyChinese and '收取人 %s' or CURRENCY_TRANSFER_DESTINATION, name)
+			end
 		end
 	end)
 
 	hooksecurefunc(CurrencyTransferMenu.SourceBalancePreview, 'SetCharacterName', function(self)
-		local data= self:GetParent().sourceCharacterData or {}
-		local name= WoWTools_UnitMixin:GetPlayerInfo({guid=data.characterGUID, reName=true, reRealm=true})
-		if name~='' then
-			self.Label:SetFormattedText(e.onlyChinese and '%s |cnRED_FONT_COLOR:的新余额|r' or CURRENCY_TRANSFER_NEW_BALANCE_PREVIEW, name)
+		if not Save().notPlus then
+			local data= self:GetParent().sourceCharacterData or {}
+			local name= WoWTools_UnitMixin:GetPlayerInfo({guid=data.characterGUID, reName=true, reRealm=true})
+			if name~='' then
+				self.Label:SetFormattedText(e.onlyChinese and '%s |cnRED_FONT_COLOR:的新余额|r' or CURRENCY_TRANSFER_NEW_BALANCE_PREVIEW, name)
+			end
 		end
     end)
     hooksecurefunc(CurrencyTransferMenu.PlayerBalancePreview, 'SetCharacterName', function(self)
-		local name= WoWTools_UnitMixin:GetPlayerInfo({guid=e.Player.guid, reName=true, reRealm=true})
-		if name~='' then
-			self.Label:SetFormattedText(e.onlyChinese and '%s |cnGREEN_FONT_COLOR:的新余额|r' or CURRENCY_TRANSFER_NEW_BALANCE_PREVIEW, name)
+		if not Save().notPlus then
+			local name= WoWTools_UnitMixin:GetPlayerInfo({guid=e.Player.guid, reName=true, reRealm=true})
+			if name~='' then
+				self.Label:SetFormattedText(e.onlyChinese and '%s |cnGREEN_FONT_COLOR:的新余额|r' or CURRENCY_TRANSFER_NEW_BALANCE_PREVIEW, name)
+			end
 		end
     end)
 
 	--可能会出现错误
 		CurrencyTransferMenu.AmountSelector.InputBox:HookScript('OnTextChanged', function(self, userInput)
-			if userInput then
-				e.call(self.ValidateAndSetValue, self)
+			if not Save().notPlus then
+				if userInput then
+					e.call(self.ValidateAndSetValue, self)
+				end
 			end
 		end)
 

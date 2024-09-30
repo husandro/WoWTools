@@ -14,6 +14,7 @@ local function Init(self)
 	if not self then
 		return
 	end
+
     local itemInfo= C_ItemInteraction.GetItemInteractionInfo() or {}
 	local currencyID= itemInfo.currencyTypeId or self.chargeCurrencyTypeId
 	currencyID= currencyID or e.SetItemCurrencyID--套装，转换，货币
@@ -26,7 +27,7 @@ local function Init(self)
 		TokenFrame.chargeCurrencyTypeId= currencyID
 	end
 
-    local info= C_CurrencyInfo.GetCurrencyInfo(currencyID)
+    local info= (not Save().notPlus) and C_CurrencyInfo.GetCurrencyInfo(currencyID)
 	local text
     if info and info.quantity and (info.discovered or info.quantity>0) then
         text= info.iconFileID and '|T'..info.iconFileID..':0|t' or ''
