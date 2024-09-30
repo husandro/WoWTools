@@ -101,7 +101,7 @@ local function Init_Menu(self, root)
 
 
 
-	--自动隐藏
+--自动隐藏
 	sub=root:CreateCheckbox(
 		e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE),
 	function()
