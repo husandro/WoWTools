@@ -231,6 +231,7 @@ local function Init_TrackButton()
 	TrackButton:set_shown()
 	TrackButton:set_texture()
 
+	
 	WoWTools_TokensMixin:Set_TrackButton_Text()
 end
 

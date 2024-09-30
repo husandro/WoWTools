@@ -70,6 +70,7 @@ local function Init_Menu(self, root)
 		Save().indicato= not Save().indicato and true or nil
 		e.call(ReputationFrame.Update, ReputationFrame)
 	end)
+	
 
 --指定，列表
 	num=0
@@ -77,17 +78,16 @@ local function Init_Menu(self, root)
 	for factionID in pairs(Save().factions) do
 		table.insert(new, factionID)
 	end
-	table.sort(new)--, function(a, b) return a.data.factionID > b.data.factionID end)
+	table.sort(new)
 
 	for _, factionID in pairs(new) do
-		sub:CreateCheckbox(
+		sub2=sub:CreateCheckbox(
 			WoWTools_FactionMixin:GetName(factionID),
 		function(data)
 			return Save().factions[data.factionID]
 		end, function(data)
 			Save().factions[data.factionID]= not Save().factions[data.factionID] and true or nil
 			e.call(ReputationFrame.Update, ReputationFrame)
-
 		end, {factionID=factionID})
 		num= num+1
 	end

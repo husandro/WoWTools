@@ -35,16 +35,17 @@ function WoWTools_CurrencyMixin:GetInfo(currencyID, index, link)
     local info
     info, currencyID, link = get_info(currencyID, index, link)
 
-    if not info or not info.quantity or not info.discovered then
+    if not currencyID or not info or not info.quantity or not info.discovered then
         return
     end
 
     local canQuantity= info.maxQuantity and info.maxQuantity>0--最大数 quantity maxQuantity
     local canWeek= info.canEarnPerWeek and info.quantityEarnedThisWeek and info.maxWeeklyQuantity and info.maxWeeklyQuantity>0--本周 quantityEarnedThisWeek maxWeeklyQuantity
     local canEarned= info.useTotalEarnedForMaxQty and canQuantity--赛季 totalEarned已获取 maxQuantity
-    local isMax= (canWeek and info.maxWeeklyQuantity==info.quantityEarnedThisWeek)
-            or (canEarned and info.totalEarned==info.maxQuantity)
-            or (canQuantity and info.quantity==info.maxQuantity)
+    local isMax= C_CurrencyInfo.PlayerHasMaxQuantity(currencyID) or C_CurrencyInfo.PlayerHasMaxWeeklyQuantity(currencyID)
+            --(canWeek and info.maxWeeklyQuantity==info.quantityEarnedThisWeek)
+            --or (canEarned and info.totalEarned==info.maxQuantity)
+           --or (canQuantity and info.quantity==info.maxQuantity)
     local num, totale, percent
     if canWeek then
         num, totale= info.quantityEarnedThisWeek, info.maxWeeklyQuantity
@@ -63,6 +64,7 @@ function WoWTools_CurrencyMixin:GetInfo(currencyID, index, link)
 
     info.link= link or C_CurrencyInfo.GetCurrencyLink(currencyID)
     info.currencyID= currencyID
+    
     return info, num, totale, percent, isMax, canWeek, canEarned, canQuantity
 end
 
@@ -80,13 +82,12 @@ function WoWTools_CurrencyMixin:GetName(currencyID, index, link)
     if info and info.name then
         num= num or 0
         return
-            '|T'..(info.iconFileID or 0)..':0|t'
+            '|T'..(info.iconFileID or 0)..':0|t'--图标
             ..(
-                C_CurrencyInfo.IsAccountTransferableCurrency(info.currencyID) and '|cff00ccff'
-                or ('|c'..select(4, C_Item.GetItemQualityColor(info.quality or 1)))
+                ('|c'..select(4, C_Item.GetItemQualityColor(info.quality or 1)))--颜色
                 or '|cnENCHANT_COLOR:'
             )
-            ..e.cn(info.name)
+            ..e.cn(info.name)--名称
             ..'|r'
             ..(
                 isMax and '|cnRED_FONT_COLOR:'
@@ -94,7 +95,22 @@ function WoWTools_CurrencyMixin:GetName(currencyID, index, link)
                 or (num==0 and '|cff00ccff')
                 or '|cffffffff'
 
-            )
-            ..' '..WoWTools_Mixin:MK(num, 3), info
+            )--数量，颜色
+            ..' '..WoWTools_Mixin:MK(num, 3)--数量
+            ..'|r'
+            ..(C_CurrencyInfo.IsAccountTransferableCurrency(info.currencyID) and '|A:questlog-questtypeicon-account:0:0|a' or ''),--战团
+            
+            info--返回，第二参数
+    else
+        if link then
+            return link
+
+        elseif currencyID then
+            return C_CurrencyInfo.IsAccountTransferableCurrency(currencyID)
+                and '|cff00ccff'..currencyID..'|r|A:questlog-questtypeicon-account:0:0|a'
+                or currencyID
+        else
+            return index
+        end
     end
 end

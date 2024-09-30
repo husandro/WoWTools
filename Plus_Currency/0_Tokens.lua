@@ -142,7 +142,7 @@ local function Init()
 				C_CurrencyInfo.ExpandCurrencyList(i,true)
 			end
 		end
-		TokenFrame:Update()
+		e.call(TokenFrame.Update, TokenFrame)
 	end)
 	Button.down:SetScript("OnLeave", GameTooltip_Hide)
 	Button.down:SetScript('OnEnter', function(self)
@@ -162,7 +162,7 @@ local function Init()
 				C_CurrencyInfo.ExpandCurrencyList(i, false)
 			end
 		end
-		TokenFrame:Update()
+		e.call(TokenFrame.Update, TokenFrame)
 	end)
 	Button.up:SetScript("OnLeave", GameTooltip_Hide)
 	Button.up:SetScript('OnEnter', function(self)
@@ -184,7 +184,7 @@ local function Init()
 			end
 		end
 		ToggleAllBags()
-		TokenFrame:Update()
+		e.call(TokenFrame.Update, TokenFrame)
 	end)
 	Button.bag:SetScript('OnEnter', function(self2)
 		e.tips:SetOwner(self2, "ANCHOR_LEFT")
@@ -266,7 +266,11 @@ local function Init()
 		
 		hooksecurefunc(TokenFrame, 'Update', function(frame)
 			WoWTools_TokensMixin:Set_ItemInteractionFrame(frame)--套装,转换,货币
-			WoWTools_TokensMixin:Init_TrackButton()
+			if WoWTools_TokensMixin.TrackButton then
+				WoWTools_TokensMixin:Set_TrackButton_Text()
+			else
+				WoWTools_TokensMixin:Init_TrackButton()
+			end
 		end)
 		if not Save().hideCurrencyMax then
 			Button:currency_Max()--已达到资源上限

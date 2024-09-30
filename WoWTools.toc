@@ -55,6 +55,8 @@ Mixin\TimeMixin.lua
 Mixin\SetTooltipMixin.lua
 Mixin\UnitMixin.lua
 Mixin\WeekMixin.lua
+##放后面
+Mixin\Faction_SetTooltip.lua
 
 StaticPopupDialogs.lua
 API_LoadData.lua
@@ -144,12 +146,12 @@ Plus_Attributes\Menu_Attributes.lua
 
 
 ##声望面板
-Plus_Reputation\0_Reputation.lua
-Plus_Reputation\Init_Button.lua
-Plus_Reputation\TrackButton_Init.lua
-Plus_Reputation\TrackButton_SetText.lua
-Plus_Reputation\z_ScrollBox_Plus.lua
-Plus_Reputation\z_CHAT_MSG.lua
+Plus_Faction\0_Reputation.lua
+Plus_Faction\Init_Button.lua
+Plus_Faction\TrackButton_Init.lua
+Plus_Faction\TrackButton_SetText.lua
+Plus_Faction\z_ScrollBox_Plus.lua
+Plus_Faction\z_CHAT_MSG.lua
 
 
 
@@ -158,14 +160,14 @@ Plus_Reputation\z_CHAT_MSG.lua
 
 ##货币面板
 ##Plus\Currency.lua
-Plus_Tokens\0_Tokens.lua
-Plus_Tokens\Init_Menu.lua
-Plus_Tokens\TrackButton_Init.lua
-Plus_Tokens\TrackButton_SetText.lua
-Plus_Tokens\TrackButton_Menu.lua
-Plus_Tokens\ScrollBox.lua
-Plus_Tokens\CurrencyTransferMenu.lua
-Plus_Tokens\ItemInteractionFrame.lua
+Plus_Currency\0_Tokens.lua
+Plus_Currency\Init_Menu.lua
+Plus_Currency\TrackButton_Init.lua
+Plus_Currency\TrackButton_SetText.lua
+Plus_Currency\TrackButton_Menu.lua
+Plus_Currency\ScrollBox.lua
+Plus_Currency\CurrencyTransferMenu.lua
+Plus_Currency\ItemInteractionFrame.lua
 
 
 

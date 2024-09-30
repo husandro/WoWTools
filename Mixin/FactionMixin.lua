@@ -50,8 +50,6 @@ function WoWTools_FactionMixin:GetInfo(factionID, index, toRight)
     local friendshipID--个人声望
     if repInfo and repInfo.friendshipFactionID> 0 then--个人声望
         local rankInfo = C_GossipInfo.GetFriendshipReputationRanks(factionID) or {}
-        factionStandingtext = e.cn(repInfo.reaction)
-
         if rankInfo.currentLevel and rankInfo.maxLevel and rankInfo.maxLevel>0 then
             factionStandingtext= (factionStandingtext and factionStandingtext..' ' or '')..rankInfo.currentLevel..'/'..rankInfo.maxLevel
         end
@@ -61,12 +59,13 @@ function WoWTools_FactionMixin:GetInfo(factionID, index, toRight)
             end
             value= format('%i%%', repInfo.standing/repInfo.nextThreshold*100)
             isCapped= false
-            friendshipID= repInfo.friendshipFactionID
         else
             value= '|cff9e9e9e'..(e.onlyChinese and '已满' or VIDEO_OPTIONS_ULTRA_HIGH)..'|r'
             isCapped=true
         end
+        factionStandingtext = e.cn(repInfo.reaction)
         texture=repInfo.texture--图标
+        friendshipID= repInfo.friendshipFactionID
 
     elseif isMajor then--名望
         isCapped=C_MajorFactions.HasMaximumRenown(factionID)
@@ -169,13 +168,17 @@ end
 function WoWTools_FactionMixin:GetName(factionID, index)
     local data= WoWTools_FactionMixin:GetInfo(factionID, index, true)
     if not data.name or not data.factionID then
-        return e.cn(data.name) or data.factionID or factionID or index
+        if data.name then
+            return e.cn(data.name)
+        else
+            return factionID or index
+        end
     end
     
     local isAccount= C_Reputation.IsAccountWideReputation(factionID)
     
-    return (isAccount and '|A:questlog-questtypeicon-account:0:0|a' or '')
-        ..(data.atlas and ('|A:'..data.atlas..':0:0|a') or (data.texture and '|T'..data.texture..':0|t') or '')
+    return 
+        (data.atlas and ('|A:'..data.atlas..':0:0|a') or (data.texture and '|T'..data.texture..':0|t') or '')
         ..(isAccount and '|cff00ccff' or (data.isCapped and '|cffff7f00') or '|cff00ff00')
 
         ..e.cn(data.name)
@@ -184,5 +187,6 @@ function WoWTools_FactionMixin:GetName(factionID, index)
         ..(data.isCapped and '' or data.factionStandingtext)
         ..' '
         ..((not data.isCapped or data.hasRep) and data.valueText or '')
-        ..(data.hasRewardPending and (e.Player.faction=='Alliance' and '|A:GarrMission-AllianceChest:0:0|a' or '|A:GarrMission-HordeChest:0:0|a') or '')
+        ..(isAccount and '|A:questlog-questtypeicon-account:0:0|a' or '')
+        ..(data.hasRewardPending and (e.Player.faction=='Alliance' and '|A:GarrMission-AllianceChest:0:0|a' or '|A:GarrMission-HordeChest:0:0|a') or '')     
 end
