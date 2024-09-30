@@ -260,7 +260,6 @@ local function Init()
         C_Timer.After(4, function()
             Button:currency_Max()--已达到资源上限
             Button:set_Event()--已达到资源上限
-			print(Button:GetAlpha())
         end)
     end
 	
