@@ -424,10 +424,10 @@ Tools\L4_UsaItems.lua
 
 ##食物
 Tool_Food\5B_Food.lua
-Tool_Food\Food_Button_Init.lua
-Tool_Food\Food_Button_SetAlt.lua
-Tool_Food\Food_Create_Button.lua
-Tool_Food\Food_Menu.lua
+Tool_Food\Button_Init.lua
+Tool_Food\Button_SetAlt.lua
+Tool_Food\Create_Button.lua
+Tool_Food\Menu_Init.lua
 
 
 

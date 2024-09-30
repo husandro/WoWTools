@@ -320,8 +320,6 @@ function WoWTools_FoodMixin:Set_Button_Function(btn)
 end
 
 function WoWTools_FoodMixin:Init_Check()
-     if Save().autoLogin or Save().autoWho then
-        WoWTools_FoodMixin:Check_Items()
-    end
+     
     Init()
 end
