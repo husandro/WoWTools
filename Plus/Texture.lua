@@ -1615,9 +1615,9 @@ local function Init_Event(arg1)
         set_Alpha_Color(AuctionHouseFrameLeft, nil, nil, min03)
         set_Alpha_Color(AuctionHouseFrameRight, nil, nil, min03)
 
-        e.Set_Alpha_Frame_Texture(AuctionHouseFrameBuyTab, {alpha= min05})
-        e.Set_Alpha_Frame_Texture(AuctionHouseFrameSellTab, {alpha= min05})
-        e.Set_Alpha_Frame_Texture(AuctionHouseFrameAuctionsTab, {alpha= min05})
+        e.Set_Alpha_Frame_Texture(AuctionHouseFrameBuyTab, {notAlpha=true})--{alpha= min05})
+        e.Set_Alpha_Frame_Texture(AuctionHouseFrameSellTab, {notAlpha=true})--{alpha= min05})
+        e.Set_Alpha_Frame_Texture(AuctionHouseFrameAuctionsTab, {notAlpha=true})--{alpha= min05})
         e.Set_Alpha_Frame_Texture(AuctionHouseFrame.SearchBar.FilterButton, {alpha= min05})
 
         e.Set_NineSlice_Color_Alpha(AuctionHouseFrame.CategoriesList, nil, true)
