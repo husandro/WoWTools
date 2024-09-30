@@ -150,10 +150,8 @@ local function Init()
     end
     WoWTools_FoodMixin:Init_Button()
     WoWTools_FoodMixin:Init_Check()
-    
-    if Save().autoLogin or Save().autoWho then
-        WoWTools_FoodMixin:Check_Items()
-    end
+
+   
 end
 
 

@@ -298,7 +298,7 @@ local function Init()
         self:UnregisterAllEvents()
         if Save().autoWho then
             self:RegisterEvent('BAG_UPDATE_DELAYED')
-            
+
         end
     end
 
@@ -317,11 +317,11 @@ end
 
 function WoWTools_FoodMixin:Set_Button_Function(btn)
     Set_Button_Function(self.UseButton)
-    
 end
 
 function WoWTools_FoodMixin:Init_Check()
-    
-
+     if Save().autoLogin or Save().autoWho then
+        WoWTools_FoodMixin:Check_Items()
+    end
     Init()
 end
