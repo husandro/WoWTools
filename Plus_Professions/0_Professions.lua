@@ -7,6 +7,7 @@ Save={
     --disabledEnchant=true,--禁用，自动放入，附魔纸
     --disabled--禁用，按钮
     ArcheologySound=true, --考古学
+    --showFuocoButton=nil,--专业，界面上显示 烹饪用火按钮， 战斗不能隐藏
 },
 }
 

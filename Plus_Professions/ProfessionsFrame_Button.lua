@@ -18,33 +18,38 @@ local function Init_Frame()
     Frame:SetPoint('BOTTOMLEFT', ProfessionsFrame, 'BOTTOMRIGHT',0, 35)
     Frame:SetSize(1,1)
 
-    function Frame:set_event()
-        self:UnregisterAllEvents()
-        if ProfessionsFrame:IsVisible() then
-            self:RegisterEvent('PLAYER_REGEN_DISABLED')
-        else
-            self:UnregisterEvent('PLAYER_REGEN_DISABLED')
-        end
-    end
-    Frame:SetScript('OnEvent', function()
-        if ProfessionsFrame:IsVisible() then
-            --GenerateClosure(ProfessionsFrame.CheckConfirmClose, ProfessionsFrame)
-            HideUIPanel(ProfessionsFrame)
-        end
-    end)
-
-    ProfessionsFrame:HookScript('OnShow', function()
-        Frame:set_event()
-    end)
-    ProfessionsFrame:HookScript('OnHide', function()
-        Frame:set_event()
-    end)
 
     function Frame:set_scale()
         self:SetScale(Save().scaleButton or 1)
     end
     Frame:set_scale()
-    Frame:set_event()
+
+
+    if Save().showFuocoButton then
+        function Frame:set_event()
+            self:UnregisterAllEvents()
+            if ProfessionsFrame:IsVisible() then
+                self:RegisterEvent('PLAYER_REGEN_DISABLED')
+            else
+                self:UnregisterEvent('PLAYER_REGEN_DISABLED')
+            end
+        end
+        Frame:SetScript('OnEvent', function()
+            if ProfessionsFrame:IsVisible() then
+                --GenerateClosure(ProfessionsFrame.CheckConfirmClose, ProfessionsFrame)
+                e.call(HideUIPanel, ProfessionsFrame)
+            end
+        end)
+
+        ProfessionsFrame:HookScript('OnShow', function()
+            Frame:set_event()
+        end)
+        ProfessionsFrame:HookScript('OnHide', function()
+            Frame:set_event()
+        end)
+
+        Frame:set_event()
+    end
 end
 
 
@@ -102,7 +107,7 @@ local function Init_Buttons()
             button.name= name
             button.skillLine= skillLine
 
-            if skillLine==185 then--烹饪用火
+            if skillLine==185 and Save().showFuocoButton then--烹饪用火
                 local name2= C_Spell.GetSpellName(818)
                 if name2 then
                     local btn= WoWTools_ButtonMixin:Cbtn(button, {type= true, texture=135805 ,size={32, 32}})
@@ -199,7 +204,7 @@ local function Init_Menu(_, root)
     if WoWTools_MenuMixin:CheckInCombat(root) then
         return
     end
-    local sub
+    local sub, sub2
 
 --启用
     sub=root:CreateCheckbox(
@@ -213,11 +218,30 @@ local function Init_Menu(_, root)
         end
         Init()
     end)
-    sub:SetTooltip(function(tooltip)
+
+
+--专业，界面上显示 烹饪用火按钮， 战斗不能隐藏
+    sub2=sub:CreateCheckbox(
+        WoWTools_SpellMixin:GetName(818),
+    function()
+        return Save().showFuocoButton
+    end, function()
+        Save().showFuocoButton= not Save().showFuocoButton and true or nil
+    end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine('BUG')
         tooltip:AddLine((e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT )..': '..e.GetShowHide(false))
         tooltip:AddLine(' ')
         tooltip:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
+
+    sub:CreateDivider()
+    sub2=sub:CreateTitle('BUG')
+
+--重新加载UI
+    WoWTools_MenuMixin:Reload(sub)
+
+   
 
     --缩放
     WoWTools_MenuMixin:Scale(root, function()
@@ -230,8 +254,6 @@ local function Init_Menu(_, root)
     end)
 
     root:CreateDivider()
---重新加载UI
-    WoWTools_MenuMixin:Reload(root)
 --打开选项界面
     WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_ProfessionMixin.addName})
 end
