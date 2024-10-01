@@ -41,7 +41,7 @@ local function Init()
 	end)
 
 	hooksecurefunc(CurrencyTransferMenu.SourceBalancePreview, 'SetCharacterName', function(self)
-		if not黑暗之尘 then
+		if not Save().notPlus then
 			local data= self:GetParent().sourceCharacterData or {}
 			local name= WoWTools_UnitMixin:GetPlayerInfo({guid=data.characterGUID, reName=true, reRealm=true})
 			if name~='' then
