@@ -10,7 +10,7 @@ function WoWTools_EditBoxMixn:Create(frame, tab)
     self.index= self.index+1
     local name= tab.name or format('%s%d', 'WoWTools_Edit', self.index)
     local font= tab.font or 'ChatFontNormal'
-    local template= tab.Template
+    local template= tab.Template--SearchBoxTemplate
     local setID= tab.setID
 
     local editBox= CreateFrame('EditBox', name, frame, template, setID)
