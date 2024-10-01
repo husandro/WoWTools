@@ -2375,17 +2375,33 @@ local function Init_Move()
     e.Set_Move_Frame(CurrencyTransferMenu)
     e.Set_Move_Frame(CurrencyTransferMenu.TitleContainer, {frame=CurrencyTransferMenu})
 
-    set_Scale_Size(CurrencyTransferLog, {setSize=true, sizeRestFunc=function(btn)
-        btn.target:ClearAllPoints()
-        btn.target:SetPoint('TOPLEFT', TokenFrame, 'TOPRIGHT', 5,0)
-        btn.target:SetSize(340, 370)
-    end, scaleRestFunc= function(btn)
-        btn.target:ClearAllPoints()
-        btn.target:SetPoint('TOPLEFT', TokenFrame, 'TOPRIGHT', 5,0)
-    end, })
+    
+    
+    
+    
+    --set_Scale_Size(
+    e.Set_Move_Frame(CurrencyTransferLog, {
+        setSize=true,
+        sizeRestFunc=function(btn)
+            btn.target:ClearAllPoints()
+            btn.target:SetPoint('TOPLEFT', CharacterFrame, 'TOPRIGHT', 5,0)
+            btn.target:SetSize(340, 370)
+        end, scaleRestFunc= function(btn)
+            btn.target:ClearAllPoints()
+            btn.target:SetPoint('TOPLEFT', CharacterFrame, 'TOPRIGHT', 5,0)
+        end,})
+        --[[ scaleStoppedFunc=function(btn)
+            btn.target:ClearAllPoints()
+            btn.target:SetPoint('TOPLEFT', TokenFrame, 'TOPRIGHT', 5,0)
+        end, sizeStopFunc= function(btn)
+            btn.target:ClearAllPoints()
+            btn.target:SetPoint('TOPLEFT', TokenFrame, 'TOPRIGHT', 5,0)
+        end,]]
+    
 
-
-
+    --[[e.Set_Move_Frame(CurrencyTransferLog, {frame=CharacterFrame})
+    e.Set_Move_Frame(CurrencyTransferLog.TitleContainer, {frame=CharacterFrame})
+]]
 
 
 
