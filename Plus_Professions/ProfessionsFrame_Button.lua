@@ -58,8 +58,51 @@ end
 
 
 
+--烹饪用火
+local function Init_Fuoco_Button(button)
+    local btn= WoWTools_ButtonMixin:Cbtn(button, {type= true, texture=135805 ,size={32, 32}})
+    btn:SetPoint('LEFT', button, 'RIGHT',2,0)
+
+    function btn:set_event()
+        e.SetItemSpellCool(self, {spell=818})
+    end
+    function btn:settings()
+        if self:IsVisible() then
+            self:set_event()
+            self:RegisterEvent('SPELL_UPDATE_COOLDOWN')
+        else
+            e.SetItemSpellCool(self)
+            self:UnregisterAllEvents()
+        end
+    end
+    btn:SetScript('OnEvent', btn.set_event)
+    btn:SetScript('OnShow', btn.settings)
+    btn:SetScript('OnHide', btn.settings)
+    btn:settings()
 
 
+    btn:SetScript('OnLeave', GameTooltip_Hide)
+    btn:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_RIGHT")
+        e.tips:ClearLines()
+        e.tips:SetSpellByID(818)
+
+        if self.toyName then
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine('|T236571:0|t|cnGREEN_FONT_COLOR:'..self.toyName, e.Icon.right)
+        end
+        e.tips:Show()
+    end)
+
+    btn:SetAttribute('type1', 'spell')
+    btn:SetAttribute('spell1',  C_Spell.GetSpellName(818) or 818)
+    btn:SetAttribute('unit', 'player')
+
+    local toyName=C_Item.GetItemNameByID(134020)--玩具,大厨的帽子
+    btn:SetAttribute('type2', 'item')
+    btn:SetAttribute('item2', toyName or 134020)
+    btn.toyName= toyName
+end
 
 
 
@@ -107,52 +150,8 @@ local function Init_Buttons()
             button.name= name
             button.skillLine= skillLine
 
-            if skillLine==185 and Save().showFuocoButton then--烹饪用火
-                local name2= C_Spell.GetSpellName(818)
-                if name2 then
-                    local btn= WoWTools_ButtonMixin:Cbtn(button, {type= true, texture=135805 ,size={32, 32}})
-                    btn:SetPoint('LEFT', button, 'RIGHT',2,0)
-
-                    function btn:set_event()
-                        e.SetItemSpellCool(self, {spell=818})
-                    end
-                    function btn:settings()
-                        if self:IsVisible() then
-                            self:set_event()
-                            self:RegisterEvent('SPELL_UPDATE_COOLDOWN')
-                        else
-                            e.SetItemSpellCool(self)
-                            self:UnregisterAllEvents()
-                        end
-                    end
-                    btn:SetScript('OnEvent', btn.set_event)
-                    btn:SetScript('OnShow', btn.settings)
-                    btn:SetScript('OnHide', btn.settings)
-                    btn:settings()
-
-
-                    btn:SetScript('OnLeave', GameTooltip_Hide)
-                    btn:SetScript('OnEnter', function(self)
-                        e.tips:SetOwner(self, "ANCHOR_RIGHT")
-                        e.tips:ClearLines()
-                        e.tips:SetSpellByID(818)
-
-                        if self.toyName then
-                            e.tips:AddLine(' ')
-                            e.tips:AddDoubleLine('|T236571:0|t|cnGREEN_FONT_COLOR:'..self.toyName, e.Icon.right)
-                        end
-                        e.tips:Show()
-                    end)
-
-                    btn:SetAttribute('type1', 'spell')
-                    btn:SetAttribute('spell1', name2)
-                    btn:SetAttribute('unit', 'player')
-
-                    local toyName=C_Item.GetItemNameByID(134020)--玩具,大厨的帽子
-                    btn:SetAttribute('type2', 'item')
-                    btn:SetAttribute('item2', toyName)
-                    btn.toyName= toyName
-                end
+            if skillLine==185 and Save().showFuocoButton then
+                Init_Fuoco_Button(button)--烹饪用火
             end
             last= button
         end
@@ -201,7 +200,7 @@ end
 
 
 local function Init_Menu(_, root)
-    if WoWTools_MenuMixin:CheckInCombat(root) then
+    if Save().showFuocoButton and WoWTools_MenuMixin:CheckInCombat(root) then
         return
     end
     local sub, sub2
@@ -213,7 +212,7 @@ local function Init_Menu(_, root)
         return Save().setButton
     end, function()
         Save().setButton= not Save().setButton and true or nil
-        if Frame then
+        if Save().showFuocoButton  then
             print(e.addName,  WoWTools_ProfessionMixin.addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
         Init()
@@ -229,7 +228,7 @@ local function Init_Menu(_, root)
         Save().showFuocoButton= not Save().showFuocoButton and true or nil
     end)
     sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine('BUG')
+        tooltip:AddLine('|cnRED_FONT_COLOR:BUG')
         tooltip:AddLine((e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT )..': '..e.GetShowHide(false))
         tooltip:AddLine(' ')
         tooltip:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
