@@ -161,11 +161,13 @@ Plus_Faction\z_CHAT_MSG.lua
 ##货币面板
 Plus_Tokens\0_Tokens.lua
 Plus_Tokens\Tokens_Button_Init.lua
+Plus_Tokens\Tokens_Button_Other.lua
 Plus_Tokens\Tokens_Button_Menu.lua
 Plus_Tokens\TrackButton_Currency_Init.lua
 Plus_Tokens\TrackButton_Currency_SetText.lua
 Plus_Tokens\z_CurrencyTransferMenu.lua
 Plus_Tokens\z_ItemInteractionFrame.lua
+Plus_Tokens\z_Max_Tooltip.lua
 Plus_Tokens\z_ScrollBox.lua
 
 

@@ -22,6 +22,7 @@ Save={
 },
 Button=nil,
 TrackButton=nil,
+MaxFrame=nil
 }
 local function Save()
 	return WoWTools_TokensMixin.Save
@@ -42,6 +43,7 @@ end
 
 local function Init()
 	WoWTools_TokensMixin:Init_Button()
+	WoWTools_TokensMixin:Init_Other_Button()
 	WoWTools_TokensMixin:Init_Currency_Transfer()--货币，转移
 	WoWTools_TokensMixin:Init_TrackButton()
 	WoWTools_TokensMixin:Init_ScrollBox_Plus()

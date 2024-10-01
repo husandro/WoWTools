@@ -86,13 +86,7 @@ local function Init()
 
 
 
-	Button.bagButton= WoWTools_ButtonMixin:Cbtn(ContainerFrameCombinedBags, {icon='hide', size={18,18, name='WoWToolsTokensTrackItemBagButton'}})--背包中, 增加一个图标, 用来添加或移除
-	Button.bagButton:SetPoint('RIGHT', ContainerFrameCombinedBags.CloseButton, 'LEFT',-2,0)
-	Button.bagButton:SetFrameStrata(ContainerFrameCombinedBags.CloseButton:GetFrameStrata())
-	Button.bagButton:SetFrameLevel(ContainerFrameCombinedBags.CloseButton:GetFrameLevel()+1)
-	Button.bagButton.texture= Button.bagButton:CreateTexture()
-	Button.bagButton.texture:SetAllPoints()
-	Button.bagButton.texture:SetAlpha(0.5)
+
 
 	function Button:set_texture(icon)--设置,按钮, 图标
 		if icon then
@@ -108,60 +102,24 @@ local function Init()
 			self.bagButton.texture:SetAtlas('FXAM-SmallSpikeyGlow')
 		end
 	end
-	Button:set_texture()--设置,按钮, 图标
+
 
 	Button:SetScript('OnMouseDown', click)
 	Button:SetScript('OnEnter', enter)
 	Button:SetScript('OnLeave', leave)
 
+	Button.bagButton= WoWTools_ButtonMixin:Cbtn(ContainerFrameCombinedBags, {icon='hide', size={18,18, name='WoWToolsTokensTrackItemBagButton'}})--背包中, 增加一个图标, 用来添加或移除
+	Button.bagButton:SetPoint('RIGHT', ContainerFrameCombinedBags.CloseButton, 'LEFT',-2,0)
+	Button.bagButton:SetFrameStrata(ContainerFrameCombinedBags.CloseButton:GetFrameStrata())
+	Button.bagButton:SetFrameLevel(ContainerFrameCombinedBags.CloseButton:GetFrameLevel()+1)
+	Button.bagButton.texture= Button.bagButton:CreateTexture()
+	Button.bagButton.texture:SetAllPoints()
+	Button.bagButton.texture:SetAlpha(0.5)
 	Button.bagButton:SetScript('OnMouseDown', click)
 	Button.bagButton:SetScript('OnEnter', enter)
 	Button.bagButton:SetScript('OnLeave',leave)
 
-	
-	--展开,合起
-	Button.down= WoWTools_ButtonMixin:Cbtn(Button, {size={22,22}, atlas='NPE_ArrowDown'})--texture='Interface\\Buttons\\UI-MinusButton-Up'})--展开所有
-	Button.down:SetPoint('RIGHT', TokenFrame.CurrencyTransferLogToggleButton, 'LEFT', -2, 0)
-	Button.down:SetScript("OnClick", function()
-		for i=1, C_CurrencyInfo.GetCurrencyListSize() do--展开所有
-			local info = C_CurrencyInfo.GetCurrencyListInfo(i)
-			if info and info.isHeader and not info.isHeaderExpanded then
-				C_CurrencyInfo.ExpandCurrencyList(i, true)
-			end
-		end
-		e.call(TokenFrame.Update, TokenFrame)
-	end)
-	Button.down:SetScript("OnLeave", GameTooltip_Hide)
-	Button.down:SetScript('OnEnter', function(self)
-		e.tips:SetOwner(self, "ANCHOR_LEFT")
-		e.tips:ClearLines()
-		e.tips:AddDoubleLine(' ', e.onlyChinese and '展开选项|A:editmode-down-arrow:16:11:0:-7|a' or HUD_EDIT_MODE_EXPAND_OPTIONS)
-		e.tips:AddDoubleLine(e.addName, WoWTools_TokensMixin.addName)
-		e.tips:Show()
-	end)
-
-
---展开所有
-	Button.up= WoWTools_ButtonMixin:Cbtn(Button, {size={22,22}, atlas='NPE_ArrowUp'})--texture='Interface\\Buttons\\UI-PlusButton-Up'})--收起所有
-	Button.up:SetPoint('RIGHT', Button.down, 'LEFT', -2, 0)
-	Button.up:SetScript("OnClick", function()
-		for i=1, C_CurrencyInfo.GetCurrencyListSize() do
-			local info = C_CurrencyInfo.GetCurrencyListInfo(i)
-			if info  and info.isHeader and info.isHeaderExpanded then
-				C_CurrencyInfo.ExpandCurrencyList(i, false)
-			end
-		end
-		e.call(TokenFrame.Update, TokenFrame)
-	end)
-	Button.up:SetScript("OnLeave", GameTooltip_Hide)
-	Button.up:SetScript('OnEnter', function(self)
-		e.tips:SetOwner(self, "ANCHOR_LEFT")
-		e.tips:ClearLines()
-		e.tips:AddDoubleLine(' ',e.onlyChinese and '收起选项|A:editmode-up-arrow:16:11:0:3|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS)
-		e.tips:AddDoubleLine(e.addName, WoWTools_TokensMixin.addName)
-		e.tips:Show()
-	end)
-
+	Button:set_texture()--设置,按钮, 图标
 
 
 	
@@ -193,78 +151,6 @@ local function Init()
 	end)
 	Button.bag:SetScript('OnLeave', GameTooltip_Hide)]]
 
-	Button.currencyMax={}
-	function Button:currency_Max(curID)--已达到资源上限
-		local tab, num= {}, 0
-        local isMax, isMaxWeek
-		if curID then
-			if self.currencyMax[curID] then
-				return
-			end
-            isMax, isMaxWeek= WoWTools_CurrencyMixin:IsMax(curID)
-			if isMax or isMaxWeek then
-                tab[curID]={isMax=isMax, isMaxWeek=isMaxWeek}
-				num=1
-            end
-		else
-			for currencyID, _ in pairs(Save().tokens) do
-				if not self.currencyMax[currencyID] then
-                    isMax, isMaxWeek= WoWTools_CurrencyMixin:IsMax(curID)
-                    if isMax or isMaxWeek then
-                        tab[curID]={isMax=isMax, isMaxWeek=isMaxWeek}
-						num=num+1
-                    end
-				end
-			end
-			for i=1, C_CurrencyInfo.GetCurrencyListSize() do
-                isMax, isMaxWeek, curID= WoWTools_CurrencyMixin:IsMax(nil, i)
-                if isMax or isMaxWeek then
-                    tab[curID]={isMax=isMax, isMaxWeek=isMaxWeek}
-					num=num+1
-                end
-			end
-		end
-
-        if num>0 then
-            print(e.addName, WoWTools_TokensMixin.addName)
-            for currencyID, info in pairs(tab) do
-                print(
-					(WoWTools_CurrencyMixin:GetLink(currencyID) or currencyID)
-					..(info.isMaxWeek and (e.onlyChinese and '本周' or GUILD_CHALLENGES_THIS_WEEK) or '')
-				)
-                self.currencyMax[currencyID]=true
-            end
-            print(
-                '|cnGREEN_FONT_COLOR:'
-                ..(e.onlyChinese and '已达到资源上限' or SPELL_FAILED_CUSTOM_ERROR_248)
-                ..'|r'
-                ..(num>1 and num or '')
-            )
-        end
-	end
-
-	function Button:set_Event()
-		if Save().hideCurrencyMax then
-			self:UnregisterAllEvents()
-		else
-			self:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
-		end
-	end
-	Button:SetScript('OnEvent', function(self, _, arg1)
-		if arg1 then
-			self:currency_Max(nil, arg1)
-		end
-	end)
-
-
-
-
-    if not Save().hideCurrencyMax then
-        C_Timer.After(4, function()
-            Button:currency_Max()--已达到资源上限
-            Button:set_Event()--已达到资源上限
-        end)
-    end
 	
 end
 

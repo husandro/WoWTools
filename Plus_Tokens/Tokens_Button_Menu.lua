@@ -322,8 +322,7 @@ local function Init_Menu(self, root)
 		Save().hideCurrencyMax= not Save().hideCurrencyMax and true or nil
 		self:set_Event()--已达到资源上限
 		if not Save().hideCurrencyMax then
-			self.currencyMax={}--已达到资源上限
-			self:currency_Max()
+			WoWTools_TokensMixin.MaxFrame:settings()
 			print(e.addName, WoWTools_TokensMixin.addName, 'Test', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已达到资源上限' or SPELL_FAILED_CUSTOM_ERROR_248))
 		end
 	end)
