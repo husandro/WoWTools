@@ -793,7 +793,13 @@ local function Init_Bag()
 
         local account= C_Bank.FetchDepositedMoney(Enum.BankType.Account)
         if account and account>0 then
-            e.tips.textLeft:SetText('|A:questlog-questtypeicon-account:0:0|a|cff00ccff'..(account >=10000 and WoWTools_Mixin:MK(account/10000, 3)..'|A:Coin-Gold:0:0|a' or C_CurrencyInfo.GetCoinTextureString(account)))
+            e.tips.textLeft:SetText(
+                '|A:questlog-questtypeicon-account:0:0|a|cff00ccff'
+                ..(
+                    account >=10000 and WoWTools_Mixin:MK(account/10000, 3)..'|A:Coin-Gold:8:8|a'
+                    or C_CurrencyInfo.GetCoinTextureString(account)
+                )
+            )
         end
 
 --背包，数量
@@ -826,7 +832,12 @@ local function Init_Bag()
                 e.tips:AddDoubleLine(a.index..') '..a.all..a.icon..a.num, b and (b.num..b.icon..b.all..' ('..b.index))
             end
             --(e.onlyChinese and '总计' or TOTAL)
-            e.tips:AddDoubleLine(' ', '|A:bags-button-autosort-up:18:18|a'..(use>0 and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..use..'|r/'..num)
+            e.tips.textRight:SetText(
+                '|A:bags-button-autosort-up:18:18|a'
+                ..(use>0 and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')
+                ..use..'|r/'..num
+            )
+            --e.tips:AddDoubleLine(' ', '|A:bags-button-autosort-up:18:18|a'..(use>0 and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..use..'|r/'..num)
     
 
         
