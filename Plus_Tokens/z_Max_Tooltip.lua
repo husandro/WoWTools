@@ -64,11 +64,12 @@ local function Init()
 
     function Frame:settings()
         MaxTabs={}
-        Currency_Max()--已达到资源上限
+
         if Save().hideCurrencyMax then
             self:UnregisterEvent('CURRENCY_DISPLAY_UPDATE')
         else
             self:RegisterEvent('CURRENCY_DISPLAY_UPDATE')
+            Currency_Max()--已达到资源上限
         end
     end
 

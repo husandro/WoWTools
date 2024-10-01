@@ -47,7 +47,8 @@ local function Init()
 	WoWTools_TokensMixin:Init_Currency_Transfer()--货币，转移
 	WoWTools_TokensMixin:Init_TrackButton()
 	WoWTools_TokensMixin:Init_ScrollBox_Plus()
-
+	WoWTools_TokensMixin:Init_MaxTooltip()
+	
 	hooksecurefunc(TokenFrame, 'Update', function(frame)
 		WoWTools_TokensMixin:Set_ItemInteractionFrame(frame)--套装,转换,货币
 

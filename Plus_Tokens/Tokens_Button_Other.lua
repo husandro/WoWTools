@@ -47,6 +47,9 @@ local function Init(Button)
 		e.tips:AddDoubleLine(e.addName, WoWTools_TokensMixin.addName)
 		e.tips:Show()
 	end)
+
+
+	Button:settings()
 end
 
 

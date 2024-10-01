@@ -78,7 +78,6 @@ local function Init()
 	Button:SetPoint('RIGHT', CharacterFrameCloseButton, 'LEFT', -2, 0)
 	Button:SetFrameStrata(CharacterFrameCloseButton:GetFrameStrata())
 	Button:SetFrameLevel(CharacterFrameCloseButton:GetFrameLevel()+1)
-	
 	Button.texture= Button:CreateTexture()
 	Button.texture:SetAllPoints()
 	--Button:SetPushedAtlas('ui-questtrackerbutton-filter-pressed')
@@ -151,7 +150,14 @@ local function Init()
 	end)
 	Button.bag:SetScript('OnLeave', GameTooltip_Hide)]]
 
-	
+	function Button:settings()
+		if not self.up then
+			return
+		end
+		local show= not Save().notPlus
+		self.up:SetShown(show)
+		self.down:SetShown(show)
+	end
 end
 
 

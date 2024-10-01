@@ -320,9 +320,8 @@ local function Init_Menu(self, root)
 		return not Save().hideCurrencyMax
 	end, function ()
 		Save().hideCurrencyMax= not Save().hideCurrencyMax and true or nil
-		self:set_Event()--已达到资源上限
+		WoWTools_TokensMixin.MaxFrame:settings()
 		if not Save().hideCurrencyMax then
-			WoWTools_TokensMixin.MaxFrame:settings()
 			print(e.addName, WoWTools_TokensMixin.addName, 'Test', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已达到资源上限' or SPELL_FAILED_CUSTOM_ERROR_248))
 		end
 	end)
@@ -339,6 +338,7 @@ local function Init_Menu(self, root)
 	end, function()
 		Save().notPlus= not Save().notPlus and true or nil
 		e.call(TokenFrame.Update, TokenFrame)
+		WoWTools_TokensMixin.Button:settings()
 	end)
 
 	root:CreateDivider()
