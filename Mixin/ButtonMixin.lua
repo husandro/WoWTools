@@ -118,6 +118,7 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
 
     local btn= CreateFrame(frameType, name or ('WoWToolsToolsButton'..get_index()), frame or UIParent, template, setID)
     btn:SetSize(get_size(size))
+
     if template=='UIPanelButtonTemplate' then
         if text then btn:SetText(text) end
     else

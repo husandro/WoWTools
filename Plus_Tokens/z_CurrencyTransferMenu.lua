@@ -58,8 +58,8 @@ local function Init()
 		end
     end)
 
-	CurrencyTransferMenu.SourceBalancePreview.BalanceInfo.Amount:SetTextColor(1,0,0)
-	CurrencyTransferMenu.PlayerBalancePreview.BalanceInfo.Amount:SetTextColor(0,1,0)
+	CurrencyTransferMenu.SourceBalancePreview.BalanceInfo.Amount:SetTextColor(1, 0, 0)
+	CurrencyTransferMenu.PlayerBalancePreview.BalanceInfo.Amount:SetTextColor(0, 1, 0)
 end
 
 

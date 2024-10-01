@@ -5012,7 +5012,8 @@
         "PROFESSIONS_COLUMN_REAGENTS_ALL",
         "RaidFinderFrame",
         "CalendarCreateEventInviteListScrollFrame_Update",
-        "GUILD_CHALLENGES_THIS_WEEK"
+        "GUILD_CHALLENGES_THIS_WEEK",
+        "CurrencyTransferMenuMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
