@@ -30,8 +30,6 @@ function WoWTools_CurrencyMixin:Find(find, currencyID, name)--选中提示
     if not TokenFrame:IsVisible() then
         return
     end
-    
-
     if find then
         for index=1, C_CurrencyInfo.GetCurrencyListSize() do
             local data= C_CurrencyInfo.GetCurrencyListInfo(index)
@@ -84,12 +82,17 @@ function WoWTools_CurrencyMixin:GetAccountIcon(currencyID, index, link)
     end
     if currencyID then
         if C_CurrencyInfo.IsAccountTransferableCurrency(currencyID) then--可转移
-            return '|A:warbands-transferable-icon:18:0|a', 'warbands-transferable-icon'
+            local isWide, isTrans, col= false, true, '|cff00ccff'
+            return '|A:warbands-transferable-icon:18:0|a', false, isTrans, col, 'warbands-transferable-icon'
+
         elseif C_CurrencyInfo.IsAccountWideCurrency(currencyID) then--战网
-            return '|A:questlog-questtypeicon-account:0:0|a', 'questlog-questtypeicon-account'
+            local isWide, isTrans, col= true, false, '|cff00ccff'
+            return '|A:questlog-questtypeicon-account:0:0|a', isWide, false, col, 'questlog-questtypeicon-account'
         end
     end
 end
+-- local isWide, isTrans, col, atlas= WoWTools_CurrencyMixin:GetAccountIcon(currencyID, index, link)
+
 
 --GetLink
 function WoWTools_CurrencyMixin:GetLink(currencyID, index, link, isCN)
@@ -199,5 +202,30 @@ end
 
 
 
-
-
+function WoWTools_CurrencyMixin:GetAccountInfo(currencyID)
+    if currencyID and currencyID>0 then
+        if C_CurrencyInfo.IsAccountCharacterCurrencyDataReady() then
+            local new={}
+            local num=0
+            for _, tab in pairs(C_CurrencyInfo.FetchCurrencyDataFromAccountCharacters(currencyID) or {}) do
+                if e.WoWDate[tab.characterGUID] then
+                    tab.faction= e.WoWDate[tab.characterGUID].faction
+                end
+                table.insert(new, tab)
+                num= num+ tab.quantity
+            end
+            return num, new
+        else
+            C_CurrencyInfo.RequestCurrencyDataForAccountCharacters()
+        end
+    end
+    return 0, {}
+end
+--[[
+accountCurrencyData = C_CurrencyInfo.FetchCurrencyDataFromAccountCharacters(currencyID)
+characterGUID	string : WOWGUID	
+characterName	string	
+currencyID	number	
+quantity	number
+faction 
+]]

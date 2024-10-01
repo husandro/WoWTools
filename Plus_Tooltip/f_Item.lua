@@ -180,16 +180,26 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
         for guid, info in pairs(e.WoWDate or {}) do
             if guid and guid~=e.Player.guid and info.Item[itemID] then
                 local tab=info.Item[itemID]
-                tooltip:AddDoubleLine(WoWTools_UnitMixin:GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}), '|A:Banker:0:0|a'..(tab.bank==0 and '|cff9e9e9e'..tab.bank..'|r' or tab.bank)..' '..'|A:bag-main:0:0|a'..(tab.bag==0 and '|cff9e9e9e'..tab.bag..'|r' or tab.bag))
-                bagAll=bagAll +tab.bag
-                bankAll=bankAll +tab.bank
-                numPlayer=numPlayer +1
+                if tab.bag>0 or tab.bank>0 then
+                    if numPlayer==0 then
+                        tooltip:AddLine(' ')
+                    end
+                    if numPlayer<5 then
+                        tooltip:AddDoubleLine(WoWTools_UnitMixin:GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}), '|A:Banker:0:0|a'..(tab.bank==0 and '|cff9e9e9e'..tab.bank..'|r' or tab.bank)..' '..'|A:bag-main:0:0|a'..(tab.bag==0 and '|cff9e9e9e'..tab.bag..'|r' or tab.bag))
+                    end
+                    bagAll=bagAll +tab.bag
+                    bankAll=bankAll +tab.bank
+                    numPlayer=numPlayer +1
+                end
             end
         end
 
-        if numPlayer>0 then
+        if numPlayer>1 then
             wowNum= bagAll+ bankAll
-            tooltip:AddDoubleLine(numPlayer..' '..(e.onlyChinese and '角色' or CHARACTER)..' '..WoWTools_Mixin:MK(wowNum+bag+bank, 3), e.Icon.wow2..WoWTools_Mixin:MK(bagAll+bankAll, 3)..' = '..'|A:Banker:0:0|a'..(bankAll==0 and '|cff9e9e9e'..bankAll..'|r' or WoWTools_Mixin:MK(bankAll,3))..' '..'|A:bag-main:0:0|a'..(bagAll==0 and '|cff9e9e9e'..bagAll..'|r' or WoWTools_Mixin:MK(bagAll, 3)))
+            tooltip:AddDoubleLine(
+                '|cff00ccff'..numPlayer..e.Icon.wow2..(e.onlyChinese and '角色' or CHARACTER),
+                e.Icon.wow2..'|cff00ccff'..WoWTools_Mixin:MK(bagAll+bankAll, 3)..'= '..'|A:Banker:0:0|a'..(bankAll==0 and '|cff9e9e9e'..bankAll..'|r' or WoWTools_Mixin:MK(bankAll,3))..' '..'|A:bag-main:0:0|a'..(bagAll==0 and '|cff9e9e9e'..bagAll..'|r' or WoWTools_Mixin:MK(bagAll, 3))
+            )
         end
     end
 

@@ -396,7 +396,11 @@ local function Update_Currency(arg1)--{currencyID = 数量}
     if arg1 and arg1~=2032 then
         local info = C_CurrencyInfo.GetCurrencyInfo(arg1)
         if info and info.quantity then
-            e.WoWDate[e.Player.guid].Currency[arg1]=info.quantity==0 and nil or info.quantity
+            if C_CurrencyInfo.IsAccountWideCurrency(arg1) then
+                e.WoWDate[e.Player.guid].Currency[arg1]=nil
+            else
+                e.WoWDate[e.Player.guid].Currency[arg1]=info.quantity==0 and nil or info.quantity
+            end
         end
     else
         for i=1, C_CurrencyInfo.GetCurrencyListSize() do
@@ -404,7 +408,11 @@ local function Update_Currency(arg1)--{currencyID = 数量}
             local currencyID = link and C_CurrencyInfo.GetCurrencyIDFromLink(link)
             local info = C_CurrencyInfo.GetCurrencyListInfo(i)
             if currencyID and info and info.quantity and currencyID~=2032 then
-                e.WoWDate[e.Player.guid].Currency[currencyID]= info.quantity<=0 and nil or info.quantity
+                if C_CurrencyInfo.IsAccountWideCurrency(currencyID) then
+                    e.WoWDate[e.Player.guid].Currency[currencyID]=nil
+                else
+                    e.WoWDate[e.Player.guid].Currency[currencyID]= info.quantity<=0 and nil or info.quantity
+                end
             end
         end
     end
@@ -669,7 +677,8 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
             if e.Player.levelMax then
                 Get_Info_Challenge()--挑战
             end
-
+            
+            C_CurrencyInfo.RequestCurrencyDataForAccountCharacters()
             RequestRaidInfo()
             --C_MajorFactions.RequestCatchUpState()
             C_FriendList.ShowFriends()

@@ -759,58 +759,77 @@ local function Init_Bag()
 
         local numPlayer, allMoney= 0, 0
         local tab={}
-        for guid, infoMoney in pairs(e.WoWDate or {}) do
-            if infoMoney.Money then
-                local nameText= WoWTools_UnitMixin:GetPlayerInfo({guid=guid, faction=infoMoney.faction, reName=true, reRealm=true})
-                local moneyText= C_CurrencyInfo.GetCoinTextureString(infoMoney.Money)
-                local class= select(2, GetPlayerInfoByGUID(guid))
-                local col= '|c'..select(4, GetClassColor(class))
+        for guid, info in pairs(e.WoWDate or {}) do
+            if info.Money and info.Money>0 then
                 numPlayer=numPlayer+1
-                allMoney= allMoney + infoMoney.Money
-                table.insert(tab, {text=nameText, money=moneyText, col=col, index=infoMoney.Money})
+                allMoney= allMoney + info.Money
+                table.insert(tab, {
+                    guid=guid,
+                    faction=info.faction,
+                    num=info.Money,
+                })
             end
         end
-        table.sort(tab, function(a,b) return a.index< b.index end)
-        e.tips:AddDoubleLine(
-            (e.onlyChinese and '总计' or TOTAL)
-            ..' |cnGREEN_FONT_COLOR:'..(allMoney >=10000 and WoWTools_Mixin:MK(allMoney/10000, 3) or C_CurrencyInfo.GetCoinTextureString(allMoney))..'|r',
-            '|cnGREEN_FONT_COLOR:'..numPlayer..'|r '..(e.onlyChinese and '角色' or CHARACTER)
-        )
 
-        for _, tab in pairs(tab) do
-            e.tips:AddDoubleLine(tab.text, tab.col..tab.money)
-        end
+        if numPlayer>0 then
+            table.sort(tab, function(a,b) return a.num>b.num end)
 
-        e.tips:AddLine(' ')
-
-        local num, use= 0, 0
-        tab={}
-        for i = BACKPACK_CONTAINER, NUM_TOTAL_EQUIPPED_BAG_SLOTS do
-            local freeSlots, bagFamily = C_Container.GetContainerNumFreeSlots(i)
-            local numSlots= C_Container.GetContainerNumSlots(i) or 0
-            if bagFamily == 0 and numSlots>0 and freeSlots then
-                num= num + numSlots
-                use= use+ freeSlots
-                local icon
-                if i== BACKPACK_CONTAINER then
-                    icon= '|A:bag-main:0:0|a'
-                else
-                    local inventoryID = C_Container.ContainerIDToInventoryID(i)
-                    local texture = inventoryID and GetInventoryItemTexture('player', inventoryID)
-                    if texture then
-                        icon= '|T'..texture..':0|t'
-                    end
+            for index, info in pairs(tab) do
+                e.tips:AddDoubleLine(
+                    WoWTools_UnitMixin:GetPlayerInfo(nil, info.guid, nil, {faction=info.faction, reName=true, reRealm=true}),
+                    C_CurrencyInfo.GetCoinTextureString(info.num)
+                )
+                if index>4 then
+                    break
                 end
-                table.insert(tab, {index='|cffff00ff'..(i+1)..'|r', icon=icon, all=numSlots, num= freeSlots>0 and '|cnGREEN_FONT_COLOR:'..num..'|r' or '|cnRED_FONT_COLOR:'..num..'|r'})
             end
+
+            e.tips:AddDoubleLine(
+                '|cnGREEN_FONT_COLOR:'..numPlayer..e.Icon.wow2..(e.onlyChinese and '角色' or CHARACTER),
+                --(e.onlyChinese and '总计' or TOTAL)
+                e.Icon.wow2..'|cnGREEN_FONT_COLOR:'..(allMoney >=10000 and WoWTools_Mixin:MK(allMoney/10000, 3)..'|A:Coin-Gold:0:0|a' or C_CurrencyInfo.GetCoinTextureString(allMoney))
+            )
         end
 
-        e.tips:AddLine((e.onlyChinese and '总计' or TOTAL)..' '.. (use>0 and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..use..'|r/'..num)
-        for i=1, #tab, 2 do
-            local a= tab[i]
-            local b= tab[i+1]
-            e.tips:AddDoubleLine(a.index..') '..a.all..a.icon..a.num, b and (b.num..b.icon..b.all..' ('..b.index))
+        local account= C_Bank.FetchDepositedMoney(Enum.BankType.Account)
+        if account and account>0 then
+            e.tips.textLeft:SetText('|A:questlog-questtypeicon-account:0:0|a|cff00ccff'..(account >=10000 and WoWTools_Mixin:MK(account/10000, 3)..'|A:Coin-Gold:0:0|a' or C_CurrencyInfo.GetCoinTextureString(account)))
         end
+
+--背包，数量
+            local num, use= 0, 0
+            tab={}
+            for i = BACKPACK_CONTAINER, NUM_TOTAL_EQUIPPED_BAG_SLOTS do
+                local freeSlots, bagFamily = C_Container.GetContainerNumFreeSlots(i)
+                local numSlots= C_Container.GetContainerNumSlots(i) or 0
+                if bagFamily == 0 and numSlots>0 and freeSlots then
+                    num= num + numSlots
+                    use= use+ freeSlots
+                    local icon
+                    if i== BACKPACK_CONTAINER then
+                        icon= '|A:bag-main:0:0|a'
+                    else
+                        local inventoryID = C_Container.ContainerIDToInventoryID(i)
+                        local texture = inventoryID and GetInventoryItemTexture('player', inventoryID)
+                        if texture then
+                            icon= '|T'..texture..':0|t'
+                        end
+                    end
+                    table.insert(tab, {index='|cffff00ff'..(i+1)..'|r', icon=icon, all=numSlots, num= freeSlots>0 and '|cnGREEN_FONT_COLOR:'..num..'|r' or '|cnRED_FONT_COLOR:'..num..'|r'})
+                end
+            end
+
+            e.tips:AddLine(' ')
+            for i=1, #tab, 2 do
+                local a= tab[i]
+                local b= tab[i+1]
+                e.tips:AddDoubleLine(a.index..') '..a.all..a.icon..a.num, b and (b.num..b.icon..b.all..' ('..b.index))
+            end
+            --(e.onlyChinese and '总计' or TOTAL)
+            e.tips:AddDoubleLine(' ', '|A:bags-button-autosort-up:18:18|a'..(use>0 and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..use..'|r/'..num)
+    
+
+        
         e.tips:Show()
     end)
 
