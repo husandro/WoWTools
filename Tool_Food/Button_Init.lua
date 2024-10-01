@@ -179,7 +179,6 @@ local function Init()
                 e.GetEnabeleDisable(Save().onlyMaxExpansion)
             )
         end
-
         e.tips:Show()
     end
 
@@ -187,23 +186,29 @@ local function Init()
         GameTooltip_Hide()
         WoWTools_BagMixin:Find()--查询，背包里物品
         self:set_alpha()
-        self:SetScript('OnUpdate', nil)
-        self.elapsed=nil
         self:set_count()
         self:set_cool()
         self:set_desaturated()
+        self:SetScript('OnUpdate', nil)
+        self.elapsed=nil
     end)
-    UseButton:SetScript("OnEnter",function(self)
-        self:set_tooltip()
-        if self.alt then
+
+    function UseButton:set_update(elapsed)
+        self.elapsed= (self.elapsed or 1) +elapsed
+        if self.elapsed>=1 then
             self.elapsed=0
-            self:SetScript('OnUpdate', function(f, elapsed)
-                f.elapsed= f.elapsed +elapsed
-                if f.elapsed>=1 then
-                    f.elapsed=0
-                    f:set_tooltip()
-                end
-            end)
+            self:set_tooltip()
+        end
+    end
+    UseButton:SetScript("OnEnter",function(self)
+        if self.alt or self.ctrl or self.shift then
+            self:SetScript('OnUpdate', self.set_update)
+        else
+            self:set_tooltip()
+        end
+        self:settings()
+        if self:CanChangeAttribute() then
+            self:set_attribute()
         end
         WoWTools_BagMixin:Find(true, {itemID= self.itemID})--查询，背包里物品
     end)
@@ -211,8 +216,8 @@ local function Init()
 
     UseButton:SetAttribute('type1', 'item')
     UseButton:SetAttribute('alt-type1', 'spell')
-    UseButton:SetAttribute('alt-type1', 'spell')
     UseButton:SetAttribute('ctrl-type1', 'spell')
+    UseButton:SetAttribute('shift-type1', 'spell')
 
 
     if Save().point then
@@ -224,6 +229,7 @@ local function Init()
 
     WoWTools_FoodMixin:Set_Button_Function(UseButton)
     UseButton:settings()
+    UseButton:set_attribute()
 end
 
 

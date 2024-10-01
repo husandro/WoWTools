@@ -5,30 +5,19 @@ local id, e = ...
 
 --5512/治疗石 113509/魔法汉堡
 local ClassSpells={--{item=5512, alt=nil, shift=nil, ctrl=nil}
-    WARRIOR= {alt=nil, shift=6673, ctrl=nil},--zs 6673/战斗怒吼
-    PALADIN= {alt=nil, shift=nil, ctrl=nil},--qs
-
-    HUNTER= {alt=nil, shift=nil, ctrl=nil},--lr
-
-    ROGUE= {alt=nil, shift=nil, ctrl=nil},--dz
-
+    WARRIOR= {shift=6673},--zs 6673/战斗怒吼
+    PALADIN= {},--qs
+    HUNTER= {},--lr
+    ROGUE= {},--dz
     PRIEST= {shift=21562,},--ms 21562/真言术：韧
-
-    DEATHKNIGHT= {alt=nil, shift=nil, ctrl=nil},--dk
-
-    SHAMAN= {alt=nil, shift=nil, ctrl=nil},--sm
-
+    DEATHKNIGHT= {},--dk
+    SHAMAN= {},--sm
     MAGE= {item=113509, shift=1459, alt=190336},--fs 113509/魔法汉堡 190336/造餐术 190336/造餐术
-
     WARLOCK= {alt=29893, shift=698, ctrl=6201},--ss 29893/制造灵魂之井 6201/制造治疗石 698/召唤仪式
-
-    MONK= {alt=nil, shift=nil, ctrl=nil},--ws
-
-    DRUID= {alt=nil, shift=1126, ctrl=nil},--xd 1126/野性印记
-
-    DEMONHUNTER= {alt=nil, shift=nil, ctrl=nil},--dh
-
-    EVOKER= {alt=nil, shift=nil, ctrl=nil},--ev
+    MONK= {},--ws
+    DRUID= {shift=1126},--xd 1126/野性印记
+    DEMONHUNTER= {},--dh
+    EVOKER= {},--ev
 }
 
 
@@ -79,7 +68,6 @@ Save={
         [17]=true,
         [19]=true,
     },
-
     spells=ClassSpells,
 },
 addName= nil,
@@ -144,15 +132,19 @@ end
 
 local function Init()
     WoWTools_FoodMixin.UseButton= UseButton
-    do
-        WoWTools_FoodMixin:Set_AltSpell()
-    end
+
+    WoWTools_FoodMixin:Set_AltSpell()
     WoWTools_FoodMixin:Init_Button()
     WoWTools_FoodMixin:Init_Check()
-    if Save().autoLogin or Save().autoWho then
+    if Save().autoWho then
         WoWTools_FoodMixin:Check_Items()
     end
-   
+
+    if Save().autoLogin then
+        C_Timer.After(2, function()
+            WoWTools_FoodMixin:Check_Items()
+        end)
+    end
 end
 
 
@@ -174,7 +166,16 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWTools_FoodMixin.Save= WoWToolsSave['Tools_Foods'] or Save()
 
             Save().spells= Save().spells or ClassSpells
-            Save().spells[e.Player.class]= Save().spells[e.Player.class] or {}--不要删除
+
+            local class= Save().spells[e.Player.class]
+            if not class then
+                Save().spells[e.Player.class]= {}
+            else
+                e.LoadData({id=class.item, type='item'})
+                e.LoadData({id=class.alt, type='spell'})
+                e.LoadData({id=class.shift, type='spell'})
+                e.LoadData({id=class.ctrl, type='spell'})
+            end
 
             WoWTools_FoodMixin.addName= '|A:Food:0:0|a'..(e.onlyChinese and '食物' or POWER_TYPE_FOOD)
 
@@ -190,7 +191,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         buttonText= e.onlyChinese and '还原位置' or RESET_POSITION,
                         SetValue= function()
                             Save().point=nil
-                            if UseButton and not UnitAffectingCombat('player') then
+                            if UseButton and UseButton:CanChangeAttribute() then
                                 Save().point=nil
                                 UseButton:set_point()
                             end

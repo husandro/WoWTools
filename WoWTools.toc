@@ -425,7 +425,7 @@ Tools\L4_UsaItems.lua
 ##食物
 Tool_Food\5B_Food.lua
 Tool_Food\Button_Init.lua
-Tool_Food\Button_SetAlt.lua
+Tool_Food\Button_AltKey.lua
 Tool_Food\Create_Button.lua
 Tool_Food\Menu_Init.lua
 

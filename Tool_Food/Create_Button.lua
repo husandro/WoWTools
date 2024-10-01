@@ -47,7 +47,7 @@ local function Set_Button_Function(btn)
     end
 
     function btn:set_alpha(alpha)
-        self.texture:SetAlpha( alpha or (self.numCount>0 and 1) or 0.3)
+        self.texture:SetAlpha(alpha or (self.numCount>0 and 1) or 0.3)
     end
 
     function btn:set_count()
@@ -63,12 +63,10 @@ local function Set_Button_Function(btn)
     end
 
     function btn:settings()
-        self:set_attribute()
-        do
-            self:set_cool()
-            self:set_count()
-        end
+        self:set_cool()
+        self:set_count()
         self:set_desaturated()
+        self:set_alpha()
     end
 
     function btn:set_event()
@@ -133,25 +131,22 @@ local function Create_Button(index)
         self:set_desaturated()
     end)
     btn:SetScript('OnEnter', function(self)
-        local isInCombat= UnitAffectingCombat('player')
+        local can= self:CanChangeAttribute()
         WoWTools_SetTooltipMixin:Set_Frame(self, e.tips, {
             itemID=self.itemID,
             tooltip='|n|A:dressingroom-button-appearancelist-up:0:0|a'
-                ..(isInCombat and '|cff9e9e9e' or '')
+                ..(can and '' or '|cff9e9e9e')
                 ..(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU)..e.Icon.right,
         })
-        if not isInCombat then
-            self:settings()
+        self:settings()
+        if can then
+            self:set_attribute()
         end
-        self:set_alpha(1)
         WoWTools_BagMixin:Find(true, {itemID= self.itemID})--查询，背包里物品
     end)
 
     btn:SetScript('OnMouseDown',function(self, d)
-        if UnitAffectingCombat('player') then
-            return
-        end
-        if d=='RightButton' then
+        if d=='RightButton' and self:CanChangeAttribute() then
             MenuUtil.CreateContextMenu(self, function(f, root)
                 root:CreateButton('|T'..(C_Item.GetItemIconByID(f.itemID) or 0)..':0|t'..(e.onlyChinese and '禁用' or DISABLE), function()
                     Save().noUseItems[self.itemID]=true
@@ -234,6 +229,7 @@ function WoWTools_FoodMixin:Check_Items(isPrint)
         local btn= Buttons[index] or Create_Button(index)--创建
         btn.itemID= itemID
         btn:settings()
+        btn:set_attribute()
 
         btn:set_point()
         if not btn:IsShown() then
@@ -320,6 +316,5 @@ function WoWTools_FoodMixin:Set_Button_Function(btn)
 end
 
 function WoWTools_FoodMixin:Init_Check()
-     
     Init()
 end

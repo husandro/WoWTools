@@ -1,8 +1,4 @@
 local e= select(2, ...)
-local function Save()
-    return WoWTools_FoodMixin.Save
-end
-
 
 
 local function Init(UseButton)
@@ -11,7 +7,7 @@ local function Init(UseButton)
     end
 
     local item, alt, ctrl, shift
-    local tab= Save().classSpell
+    local tab= WoWTools_FoodMixin.Save.spells[e.Player.class]
     if tab then
         item, alt, ctrl, shift= tab.item, tab.alt, tab.ctrl, tab.shift
     end

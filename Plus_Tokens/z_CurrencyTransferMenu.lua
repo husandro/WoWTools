@@ -1,6 +1,7 @@
 local e= select(2, ...)
-
-
+local function Save()
+	return WoWTools_TokensMixin.Save
+end
 
 
 
@@ -58,13 +59,13 @@ local function Init()
     end)
 
 	--可能会出现错误
-		CurrencyTransferMenu.AmountSelector.InputBox:HookScript('OnTextChanged', function(self, userInput)
+		--[[CurrencyTransferMenu.AmountSelector.InputBox:HookScript('OnTextChanged', function(self, userInput)
 			if not Save().notPlus then
 				if userInput then
 					e.call(self.ValidateAndSetValue, self)
 				end
 			end
-		end)
+		end)]]
 
 	CurrencyTransferMenu.SourceBalancePreview.BalanceInfo.Amount:SetTextColor(1,0,0)
 	CurrencyTransferMenu.PlayerBalancePreview.BalanceInfo.Amount:SetTextColor(0,1,0)
