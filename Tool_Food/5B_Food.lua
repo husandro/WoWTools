@@ -5,8 +5,7 @@ local id, e = ...
 
 --5512/治疗石 113509/魔法汉堡
 local ClassSpells={--{item=5512, alt=nil, shift=nil, ctrl=nil}
-    WARRIOR= {alt=nil, shift=nil, ctrl=nil},--zs
-
+    WARRIOR= {alt=nil, shift=6673, ctrl=nil},--zs 6673/战斗怒吼
     PALADIN= {alt=nil, shift=nil, ctrl=nil},--qs
 
     HUNTER= {alt=nil, shift=nil, ctrl=nil},--lr
@@ -19,13 +18,13 @@ local ClassSpells={--{item=5512, alt=nil, shift=nil, ctrl=nil}
 
     SHAMAN= {alt=nil, shift=nil, ctrl=nil},--sm
 
-    MAGE= {item=113509, alt=190336, shift=1459},--fs 113509/魔法汉堡 190336/造餐术 190336/造餐术
+    MAGE= {item=113509, shift=1459, alt=190336},--fs 113509/魔法汉堡 190336/造餐术 190336/造餐术
 
-    WARLOCK= {alt=29893, ctrl=6201, shift=698},--ss 29893/制造灵魂之井 6201/制造治疗石 698/召唤仪式
+    WARLOCK= {alt=29893, shift=698, ctrl=6201},--ss 29893/制造灵魂之井 6201/制造治疗石 698/召唤仪式
 
     MONK= {alt=nil, shift=nil, ctrl=nil},--ws
 
-    DRUID= {alt=nil, shift=nil, ctrl=nil},--xd
+    DRUID= {alt=nil, shift=1126, ctrl=nil},--xd 1126/野性印记
 
     DEMONHUNTER= {alt=nil, shift=nil, ctrl=nil},--dh
 
