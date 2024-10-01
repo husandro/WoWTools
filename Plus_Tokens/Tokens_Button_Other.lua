@@ -28,7 +28,7 @@ local function Init(Button)
 
 
 --展开所有
-	Button.up= WoWTools_ButtonMixin:Cbtn(Button, {size={22,22}, atlas='NPE_ArrowUp'})--texture='Interface\\Buttons\\UI-PlusButton-Up'})--收起所有
+	Button.up= WoWTools_ButtonMixin:Cbtn(Button.down, {size={22,22}, atlas='NPE_ArrowUp'})--texture='Interface\\Buttons\\UI-PlusButton-Up'})--收起所有
 	Button.up:SetPoint('RIGHT', Button.down, 'LEFT', -2, 0)
 	Button.up:SetScript("OnClick", function()
 		for i=1, C_CurrencyInfo.GetCurrencyListSize() do
@@ -47,6 +47,8 @@ local function Init(Button)
 		e.tips:AddDoubleLine(e.addName, WoWTools_TokensMixin.addName)
 		e.tips:Show()
 	end)
+
+	
 
 
 	Button:settings()

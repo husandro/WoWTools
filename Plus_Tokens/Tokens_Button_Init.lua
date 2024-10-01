@@ -151,12 +151,10 @@ local function Init()
 	Button.bag:SetScript('OnLeave', GameTooltip_Hide)]]
 
 	function Button:settings()
-		if not self.up then
-			return
+		if self.down then
+			self.down:SetShown(not Save().notPlus)
 		end
-		local show= not Save().notPlus
-		self.up:SetShown(show)
-		self.down:SetShown(show)
+		
 	end
 end
 
