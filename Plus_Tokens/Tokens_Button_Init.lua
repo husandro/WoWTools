@@ -134,7 +134,7 @@ local function Init()
 			end
 		end
 		ToggleAllBags()
-		e.call(TokenFrame.Update, TokenFrame)
+		WoWTools_TokensMixin:UpdateTokenFrame()
 	end)
 	Button.bag:SetScript('OnEnter', function(self2)
 		e.tips:SetOwner(self2, "ANCHOR_LEFT")

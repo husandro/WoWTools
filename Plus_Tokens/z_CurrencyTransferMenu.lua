@@ -41,7 +41,7 @@ local function Init()
 	end)
 
 	hooksecurefunc(CurrencyTransferMenu.SourceBalancePreview, 'SetCharacterName', function(self)
-		if not Save().notPlus then
+		if not黑暗之尘 then
 			local data= self:GetParent().sourceCharacterData or {}
 			local name= WoWTools_UnitMixin:GetPlayerInfo({guid=data.characterGUID, reName=true, reRealm=true})
 			if name~='' then
@@ -60,6 +60,31 @@ local function Init()
 
 	CurrencyTransferMenu.SourceBalancePreview.BalanceInfo.Amount:SetTextColor(1, 0, 0)
 	CurrencyTransferMenu.PlayerBalancePreview.BalanceInfo.Amount:SetTextColor(0, 1, 0)
+
+--总数
+	CurrencyTransferMenu.wowNumLabel= WoWTools_LabelMixin:CreateLabel(CurrencyTransferMenu, {color={r=0,g=0.8,b=1}, size=16, mouse=true})
+	CurrencyTransferMenu.wowNumLabel:SetPoint('BOTTOM', CurrencyTransferMenu.SourceSelector.Dropdown, 'TOP', 0, 2)
+	CurrencyTransferMenu.wowNumLabel:SetScript('OnLeave', GameTooltip_Hide)
+	CurrencyTransferMenu.wowNumLabel:SetScript('OnEnter', function(self)
+		if not Save().notPlus then
+			WoWTools_SetTooltipMixin:Set_Frame(self, nil, {currencyID=self.currencyID})
+		end
+	end)
+
+	hooksecurefunc(CurrencyTransferMenu, 'FullRefresh', function(self)
+		local text
+		local currencyID= self:GetCurrencyID()
+		if not Save().notPlus then
+			if currencyID and currencyID>0 then
+				local num, tab= WoWTools_CurrencyMixin:GetAccountInfo(currencyID)
+				if num>0 then
+					text= #tab..e.Icon.wow2..WoWTools_Mixin:MK(num, 3)
+				end
+			end
+		end
+		self.wowNumLabel:SetText(text or '')
+		self.wowNumLabel.currencyID= currencyID
+	end)
 end
 
 

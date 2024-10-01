@@ -35,7 +35,9 @@ function WoWTools_CurrencyMixin:Find(find, currencyID, name)--选中提示
             local data= C_CurrencyInfo.GetCurrencyListInfo(index)
             if data and data.name and data.currencyID then
                 if data.currencyID==currencyID or data.name==name then
+                    
                     TokenFrame.ScrollBox:ScrollToElementDataIndex(index)
+
                     for _, frame in pairs(TokenFrame.ScrollBox:GetFrames() or {}) do
                         if frame.Content and frame.elementData then
                             if frame.elementData.currencyID==currencyID or frame.elementData.name==name then

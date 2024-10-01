@@ -1,3 +1,6 @@
+---@diagnostic disable: undefined-global, redefined-local, assign-type-mismatch, undefined-field, inject-field, missing-parameter, redundant-parameter, unused-local, trailing-space, param-type-mismatch, duplicate-set-field
+
+
 
 function ItemInteraction_LoadUI()
 	UIParentLoadAddOn("Blizzard_ItemInteractionUI");
@@ -227,6 +230,7 @@ function WeeklyRewards_ShowUI()
 	end
 
 	local force = true;	-- this could be called from the world map which might be in fullscreen mode
+
 	ShowUIPanel(WeeklyRewardsFrame, force);
 end
 

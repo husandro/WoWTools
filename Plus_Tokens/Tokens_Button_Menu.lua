@@ -339,7 +339,7 @@ local function Init_Menu(self, root)
 		return not Save().notPlus
 	end, function()
 		Save().notPlus= not Save().notPlus and true or nil
-		e.call(TokenFrame.Update, TokenFrame)
+		WoWTools_TokensMixin:UpdateTokenFrame()
 		WoWTools_TokensMixin.Button:settings()
 	end)
 

@@ -1,4 +1,4 @@
----@diagnostic disable: undefined-global
+---@diagnostic disable: undefined-global, redefined-local, assign-type-mismatch, undefined-field, inject-field, missing-parameter, redundant-parameter, unused-local, trailing-space, param-type-mismatch, duplicate-set-field
 --[[
 https://github.com/tomrus88/BlizzardInterfaceCode/blob/5321290b97b74177bd44a65054d34fd61ce83424/Interface/AddOns/Blizzard_Settings_Shared/Blizzard_ImplementationReadme.lua#L88
 Blizzard_Settings 实施指南

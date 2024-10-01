@@ -28,7 +28,10 @@ local function Save()
 	return WoWTools_TokensMixin.Save
 end
 
-
+function WoWTools_TokensMixin:UpdateTokenFrame()
+	e.call(TokenFrame.Update, TokenFrame)
+	e.call(TokenFramePopup.CloseIfHidden, TokenFramePopup)
+end
 
 
 

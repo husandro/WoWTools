@@ -84,7 +84,7 @@ function WoWTools_LoadUIMixin:ToggleLandingPage()
             ToggleMajorFactionRenown(Constants.MajorFactionsConsts.PLUNDERSTORM_MAJOR_FACTION_ID)
             return
         elseif frame:IsInGarrisonMode() then
-            e.call(GarrisonLandingPage_Toggle)
+            e.call(GarrisonLandingPage_Toggle, frame)
             e.call(GarrisonMinimap_HideHelpTip, frame)
             return
         end

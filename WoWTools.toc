@@ -95,6 +95,7 @@ Plus_Tooltip\f_Achievement.lua
 Plus_Tooltip\f_Aura.lua
 Plus_Tooltip\f_Azerite.lua
 Plus_Tooltip\f_BattlePet.lua
+Plus_Tooltip\f_Currency.lua
 Plus_Tooltip\f_Faction.lua
 Plus_Tooltip\f_Flyout.lua
 Plus_Tooltip\f_Item.lua
@@ -106,7 +107,6 @@ Plus_Tooltip\f_Spell.lua
 Plus_Tooltip\f_Unit_NPC.lua
 Plus_Tooltip\f_Unit_Player.lua
 Plus_Tooltip\f_URL.lua
-Plus_Tooltip\f.Currency.lua
 Plus_Tooltip\f.Cvar.lua
 Plus_Tooltip\f.StatusBar.lua
 Plus_Tooltip\z_AchievementUI.lua

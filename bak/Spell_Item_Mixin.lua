@@ -1,3 +1,4 @@
+---@diagnostic disable: undefined-global, redefined-local, assign-type-mismatch, undefined-field, inject-field, missing-parameter, redundant-parameter, unused-local, trailing-space, param-type-mismatch, duplicate-set-field
 local e= select(2, ...)
 WoWTools_SpellItemMixin={
     --set_tooltip

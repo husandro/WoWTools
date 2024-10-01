@@ -1,3 +1,4 @@
+---@diagnostic disable: undefined-global, redefined-local, assign-type-mismatch, undefined-field, inject-field, missing-parameter, redundant-parameter, unused-local, trailing-space, param-type-mismatch, duplicate-set-field
 --[[
 https://warcraft.wiki.gg/wiki/Creating_simple_pop-up_dialog_boxes
 e.onlyChinese and '重新加载UI' or RELOADUI
