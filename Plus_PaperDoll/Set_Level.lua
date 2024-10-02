@@ -2,7 +2,9 @@
 --PaperDollFrame.lua
 --Init_ChromieTime()--时空漫游战役, 提示
 local e= select(2, ...)
-
+local function Save()
+    return WoWTools_PaperDollMixin.Save
+end
 
 
 
@@ -73,7 +75,7 @@ end
 
 
 local function Settings()
-    if WoWTools_PaperDollMixin.Save.hide then
+    if Save().hide then
         return
     end
 
