@@ -1371,7 +1371,7 @@ local function Init_Show_Hide_Button(frame)
         Save().hide= not Save().hide and true or nil
 
         GetDurationTotale()--装备,总耐久度
-        panel:Init_Server_equipmentButton_Lable()--显示服务器名称
+        WoWTools_PaperDollMixin:Set_Server_Info()--显示服务器名称
 
         WoWTools_PaperDollMixin:Init_Title()--头衔数量
         LvTo()--总装等
@@ -1640,64 +1640,6 @@ end
 
 
 
-
-
-
---#############
---显示服务器名称
---#############
-function panel:Init_Server_equipmentButton_Lable()
-    if Save().hide then
-        if  panel.serverText then
-            panel.serverText:SetText('')
-        end
-        return
-    end
-   if not panel.serverText then
-        panel.serverText= WoWTools_LabelMixin:CreateLabel(PaperDollItemsFrame.ShowHideButton, {color= GameLimitedMode_IsActive() and {r=0,g=1,b=0} or true, mouse=true, justifyH='RIGHT'})--显示服务器名称
-        panel.serverText:SetPoint('LEFT', PaperDollItemsFrame.ShowHideButton, 'RIGHT',2,0)
-        panel.serverText:SetScript("OnLeave",function(frame) e.tips:Hide() frame:GetParent():set_alpha(false) end)
-        panel.serverText:SetScript("OnEnter",function(frame)
-            e.tips:SetOwner(frame, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            local server= e.Get_Region(e.Player.realm, nil, nil)--服务器，EU， US {col=, text=, realm=}
-            e.tips:AddDoubleLine(e.onlyChinese and '服务器:' or FRIENDS_LIST_REALM, server and server.col..' '..server.realm)
-            local ok2
-            for k, v in pairs(GetAutoCompleteRealms()) do
-                if v==e.Player.realm then
-                    e.tips:AddDoubleLine(v..'|A:auctionhouse-icon-favorite:0:0|a', k, 0,1,0)
-                else
-                    e.tips:AddDoubleLine(v, k)
-                end
-                ok2=true
-            end
-            if not ok2 then
-                e.tips:AddDoubleLine(e.onlyChinese and '唯一' or ITEM_UNIQUE, e.Player.realm)
-            end
-
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine('realmID', GetRealmID())
-            e.tips:AddDoubleLine('regionID: '..e.Player.region,  GetCurrentRegionName())
-
-            e.tips:AddLine(' ')
-            if GameLimitedMode_IsActive() then
-                local rLevel, rMoney, profCap = GetRestrictedAccountData()
-                e.tips:AddLine(e.onlyChinese and '受限制' or CHAT_MSG_RESTRICTED, 1,0,0)
-                e.tips:AddDoubleLine(e.onlyChinese and '等级' or LEVEL, rLevel, 1,0,0, 1,0,0)
-                e.tips:AddDoubleLine(e.onlyChinese and '钱' or MONEY, GetMoneyString(rMoney), 1,0,0, 1,0,0)
-                e.tips:AddDoubleLine(e.onlyChinese and '专业技能' or PROFESSIONS_TRACKER_HEADER_PROFESSION, profCap, 1,0,0, 1,0,0)
-                e.tips:AddLine(' ')
-            end
-            e.tips:AddDoubleLine(e.addName, WoWTools_PaperDollMixin.addName)
-            e.tips:Show()
-            frame:GetParent():set_alpha(true)
-        end)
-    end
-    local ser=GetAutoCompleteRealms() or {}
-    local server= e.Get_Region(e.Player.realm, nil, nil)
-    local text= (#ser>1 and '|cnGREEN_FONT_COLOR:'..#ser..' ' or '')..e.Player.col..e.Player.realm..'|r'..(server and ' '..server.col or '')
-    panel.serverText:SetText(text or '')
-end
 
 
 
@@ -2705,7 +2647,7 @@ local function Init()
 
     GetDurationTotale()--装备,总耐久度
 
-    panel:Init_Server_equipmentButton_Lable()--显示服务器名称，装备管理框
+   
 
 
     --Init_ChromieTime()--时空漫游战役, 提示
@@ -2854,6 +2796,7 @@ local function Init()
 
     WoWTools_PaperDollMixin:Init_EquipmentFlyout()--装备弹出
     WoWTools_PaperDollMixin:Init_SetLevel()--更改,等级文本
+    WoWTools_PaperDollMixin:Set_Server_Info()--显示服务器名称--显示服务器名称，装备管理框
 
     panel:Init_Status_Plus()--属性，增强
 

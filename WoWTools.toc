@@ -130,10 +130,10 @@ Plus_Tooltip\z_Professions.lua
 
 ##角色面板
 Plus_PaperDoll\0_PaperDoll.lua
-Plus_PaperDoll\Title_Init.lua
 Plus_PaperDoll\Flyout_Equipment.lua
+Plus_PaperDoll\Server_Info.lua
 Plus_PaperDoll\Set_Level.lua
-
+Plus_PaperDoll\Title_Init.lua
 
 
 ##角色，属性
