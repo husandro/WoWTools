@@ -1,6 +1,7 @@
 local id, e = ...
 local addName= CHARACTER
-local Save={
+WoWTools_PaperDollMixin={
+Save={
     --EquipmentH=true, --装备管理, true横, false坚
     equipment= e.Player.husandro,--装备管理, 开关,
     --Equipment=nil--装备管理, 位置保存
@@ -13,14 +14,18 @@ local Save={
     --notStatusPlusFunc=true, --属性 PLUS Func
     itemLevelBit= 1,--物品等级，位数
 
+},
+
 }
 
+local function Save()
+    return WoWTools_PaperDollMixin.Save
+end
 
 
 local panel= CreateFrame("Frame", nil, PaperDollFrame)
 local TrackButton
 local StatusPlusButton
-local Initializer
 
 --[[local function Is_Load_ElvUI(btn)
     if C_AddOns.IsAddOnLoaded('ElvUI') and not btn.icon then
@@ -35,7 +40,7 @@ end]]
 local pvpItemStr= PVP_ITEM_LEVEL_TOOLTIP:gsub('%%d', '%(%%d%+%)')--"装备：在竞技场和战场中将物品等级提高至%d。"
 local enchantStr= ENCHANTED_TOOLTIP_LINE:gsub('%%s','(.+)')--附魔
 local upgradeStr= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT:gsub('%%s/%%s','(.-%%d%+/%%d%+)')-- "升级：%s/%s"
-local itemLevelStr= ITEM_LEVEL:gsub('%%d', '%(%%d%+%)')--"物品等级：%d"
+
 local ITEM_CREATED_BY_Str= ITEM_CREATED_BY:gsub('%%s','(.+)')--"|cff00ff00<由%s制造>|r"
 
 local function is_Left_Slot(slot)--左边插曹
@@ -55,7 +60,7 @@ local function LvTo()--总装等
         return
     end
     local avgItemLevel,_, avgItemLevelPvp
-    if not Save.hide then
+    if not Save().hide then
         avgItemLevel,_, avgItemLevelPvp= GetAverageItemLevel()
         if not PaperDollSidebarTab1.itemLevelText then--PVE
             PaperDollSidebarTab1.itemLevelText=WoWTools_LabelMixin:CreateLabel(PaperDollSidebarTab1, {justifyH='CENTER', mouse=true})
@@ -72,7 +77,7 @@ local function LvTo()--总装等
                 e.tips:AddLine(CharacterStatsPane.ItemLevelFrame.tooltip2)
                 e.tips:AddLine(' ')
                 e.tips:AddLine('|cnGREEN_FONT_COLOR:'..format(e.onlyChinese and '物品等级：%d' or CHARACTER_LINK_ITEM_LEVEL_TOOLTIP, self.avgItemLevel or ''))
-                e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+                e.tips:AddDoubleLine(e.addName, WoWTools_PaperDollMixin.addName)
                 e.tips:Show()
                 self:SetAlpha(0.3)
             end)
@@ -93,7 +98,7 @@ local function LvTo()--总装等
                 e.tips:AddLine(CharacterStatsPane.ItemLevelFrame.tooltip2)
                 e.tips:AddLine(' ')
                 e.tips:AddLine('|cnGREEN_FONT_COLOR:'..format(e.onlyChinese and 'PvP物品等级 %d' or ITEM_UPGRADE_PVP_ITEM_LEVEL_STAT_FORMAT, self.avgItemLevel or '0'))
-                e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+                e.tips:AddDoubleLine(e.addName, WoWTools_PaperDollMixin.addName)
                 e.tips:Show()
                 self:SetAlpha(0.3)
             end)
@@ -136,7 +141,7 @@ end
 --增加 [潘达利亚工程学: 地精滑翔器] recipeID 126392
 --[诺森德工程学: 氮气推进器] ricipeID 109099
 local function set_Engineering(self, slot, link, use, isPaperDollItemSlot)
-    if not ((slot==15 and recipeLearned(126392)) or (slot==6 and recipeLearned(55016))) or use or Save.hide or not link or not isPaperDollItemSlot then
+    if not ((slot==15 and recipeLearned(126392)) or (slot==6 and recipeLearned(55016))) or use or Save().hide or not link or not isPaperDollItemSlot then
 
 
         if self.engineering  then
@@ -229,7 +234,7 @@ local function set_no_Enchant(self, slot, find, isPaperDollItemSlot)--附魔，�
         return
     end
     local tab
-    if not find and not Save.hide and isPaperDollItemSlot then
+    if not find and not Save().hide and isPaperDollItemSlot then
         tab=get_no_Enchant_Bag(slot)--取得，物品，bag, slot
         if tab and not self.noEnchant then
             local h=self:GetHeight()/3
@@ -297,7 +302,7 @@ local function set_no_Enchant(self, slot, find, isPaperDollItemSlot)--附魔，�
 end
 
 local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使用, 属性
-    if Save.hide then
+    if Save().hide then
         link= nil
     end
     local enchant, use, pvpItem, upgradeItem, createItem
@@ -501,7 +506,7 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
 
 
 if not PlayerGetTimerunningSeasonID() then
-    if not Save.hide and link then--宝石
+    if not Save().hide and link then--宝石
         local numSockets= C_Item.GetItemNumSockets(link) or 0--MAX_NUM_SOCKETS
         for n=1, numSockets do
             local gemLink= select(2, C_Item.GetItemGem(link, n))
@@ -568,7 +573,7 @@ if not PlayerGetTimerunningSeasonID() then
         end
     end
 
-elseif not Save.hide and self.SocketDisplay:IsShown() and link then
+elseif not Save().hide and self.SocketDisplay:IsShown() and link then
     for index, frame in pairs(self.SocketDisplay.Slots) do
         if frame and frame:IsShown() then
             local gemID = C_Item.GetItemGemID(link, index)
@@ -675,14 +680,14 @@ end
 end
 
 local function set_Slot_Num_Label(frame, slot, isEquipped)--栏位
-    if not frame.slotText and not Save.hide and not isEquipped then
+    if not frame.slotText and not Save().hide and not isEquipped then
         frame.slotText=WoWTools_LabelMixin:CreateLabel(frame, {color=true, justifyH='CENTER', mouse=true})
         frame.slotText:EnableMouse(true)
         frame.slotText:SetAlpha(0.3)
         frame.slotText:SetScript('OnEnter', function(self)
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+            e.tips:AddDoubleLine(e.addName, WoWTools_PaperDollMixin.addName)
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS, self.slot)
             local name= self:GetParent():GetName()
@@ -699,24 +704,7 @@ local function set_Slot_Num_Label(frame, slot, isEquipped)--栏位
         frame.slotText.slot= slot
         frame.slotText.name= frame:GetName()
         frame.slotText:SetText(slot)
-        frame.slotText:SetShown(not Save.hide and not isEquipped)
-    end
-end
-
-local function set_item_Set(self, link)--套装
-    local set
-    if link and not Save.hide then
-        set=select(16 , C_Item.GetItemInfo(link))
-        if set then
-            if set and not self.set then
-                self.set=self:CreateTexture()
-                self.set:SetAllPoints(self)
-                self.set:SetAtlas('UI-HUD-MicroMenu-Highlightalert')
-            end
-        end
-    end
-    if self.set then
-        self.set:SetShown(set and true or false)
+        frame.slotText:SetShown(not Save().hide and not isEquipped)
     end
 end
 
@@ -743,128 +731,6 @@ end
 
 
 
-
-
-
-
-local function Init_Title()--头衔数量
-    local btn= PaperDollFrame.TitleManagerPane.tipsButton
-    if not PAPERDOLL_SIDEBARS[2].IsActive() or Save.hide then
-        if btn then
-            btn.titleNumeri:SetText("")
-            btn:SetShown(false)
-        end
-        return
-    end
-
-    if not btn then
-        btn= WoWTools_ButtonMixin:Cbtn(PaperDollFrame.TitleManagerPane, {size={28, 28}, icon='hide'})--, atlas=e.Icon.icon})
-        btn.Text= WoWTools_LabelMixin:CreateLabel(btn)
-        btn.Text:SetPoint('CENTER')
-        btn:SetFrameLevel(PaperDollFrame.TitleManagerPane.ScrollBox:GetFrameLevel()+1)
-        btn:SetPoint('TOPRIGHT', -6,8)
-        function btn:get_tab()
-            local tab={}
-            for i = 1, GetNumTitles() do
-                if not IsTitleKnown(i) then
-                    local name, playerTitle = GetTitleName(i)
-                    if name and playerTitle then
-                        if not IsTitleKnown(i) then
-                            table.insert(tab, {index=i, name=name, cnName=e.cn(name, {titleID=i})})
-                        end
-                    end
-                end
-            end
-            return tab
-        end
-        btn:SetScript('OnMouseDown', function(self)
-            if not self.Menu then
-                self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")--菜单框架
-                e.LibDD:UIDropDownMenu_Initialize(self.Menu, function(frame, level, menuList)--主菜单
-                    local info
-                    local tab= frame:GetParent():get_tab()
-                    local n=30
-                    if menuList then
-                        for i= menuList, menuList+n-1 do
-                            if tab[i] then
-                                local index= tab[i].index
-
-                                local name= tab[i].name
-                                local cnName=tab[i].cnName
-                                info= {
-                                    text= (index<10 and ' ' or '').. index..')'..(cnName and format(cnName, '') or name),
-                                    tooltipOnButton=true,
-                                    tooltipTitle= name..' ',
-                                    tooltipText= (cnName and format(cnName, UnitName('player')..'|n') or '')..'titleID '..index..'|n'..e.Icon.left..'wowhead',
-                                    notCheckable=true,
-                                    arg1=i,
-                                    func= function(_, arg1)
-                                        WoWTools_TooltipMixin:Show_URL(true, 'title', arg1, nil)
-                                    end
-                                }
-                                e.LibDD:UIDropDownMenu_AddButton(info, level)
-                            else
-                                break
-                            end
-                        end
-                        return
-                    end
-
-                    for i=1, #tab, n do
-                        info= {
-                            text= i,
-                            notCheckable=true,
-                            menuList=i,
-                            hasArrow=true
-                        }
-                        e.LibDD:UIDropDownMenu_AddButton(info, level)
-                    end
-                    e.LibDD:UIDropDownMenu_AddSeparator(level)
-
-                    info= {
-                        text= #tab==0 and (e.onlyChinese and '全部已收集' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,  ALL, COLLECTED))
-                            or (#tab.. ' '..(e.onlyChinese and '未收集' or  NOT_COLLECTED)),
-                        isTitle=true,
-                        notCheckable=true,
-                    }
-                    e.LibDD:UIDropDownMenu_AddButton(info, level)
-                    info= {
-                        text= id..' '..Initializer:GetName(),
-                        isTitle=true,
-                        notCheckable=true,
-                    }
-                    e.LibDD:UIDropDownMenu_AddButton(info, level)
-                end, 'MENU')
-            end
-            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
-        end)
-        PaperDollFrame.TitleManagerPane.tipsButton= btn
-    end
-    btn.Text:SetText(#btn:get_tab())
-    btn:SetShown(true)
-
-    if not btn.titleNumeri then
-        btn.titleNumeri= WoWTools_LabelMixin:CreateLabel(PaperDollSidebarTab2, {justifyH='CENTER', mouse=true})
-        btn.titleNumeri:SetPoint('BOTTOM')
-        btn.titleNumeri:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
-        btn.titleNumeri:SetScript('OnMouseDown', function()
-            e.call(PaperDollFrame_SetSidebar, _G['PaperDollSidebarTab2'], 2)--PaperDollFrame.lua
-        end)
-        btn.titleNumeri:SetScript('OnEnter', function(self)
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:AddDoubleLine(format(e.onlyChinese and '头衔：%s' or RENOWN_REWARD_TITLE_NAME_FORMAT,  '|cnGREEN_FONT_COLOR:'..(#GetKnownTitles()-1)..'|r'), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '未收集' or  NOT_COLLECTED))
-            e.tips:AddDoubleLine(#PaperDollFrame.TitleManagerPane.tipsButton:get_tab(), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or  NOT_COLLECTED))
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.addName, Initializer:GetName())
-            e.tips:Show()
-            self:SetAlpha(0.3)
-        end)
-    end
-    btn.titleNumeri:SetText(#GetKnownTitles()-1)
-
-
-end
 
 
 
@@ -909,7 +775,7 @@ local function set_set_PaperDollSidebarTab3_Text_Tips(self)
             e.tips:AddLine(' ')
         end
         e.tips:AddDoubleLine(self2.tooltip, self2.tooltip2, 0,1,0,0,1,0)
-        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+        e.tips:AddDoubleLine(e.addName, WoWTools_PaperDollMixin.addName)
         e.tips:Show()
         self2:SetAlpha(0.3)
     end)
@@ -921,7 +787,7 @@ local function set_PaperDollSidebarTab3_Text()--标签, 内容,提示
     end
     local name, icon, specIcon,nu
     local specName, setID
-    if not Save.hide then
+    if not Save().hide then
         local setIDs=C_EquipmentSet.GetEquipmentSetIDs()
         for _, v in pairs(setIDs) do
             local name2, icon2, _, isEquipped, numItems= C_EquipmentSet.GetEquipmentSetInfo(v)
@@ -1030,7 +896,7 @@ end
 --装备管理
 --#######
 local function Init_TrackButton()--添加装备管理框
-    if not Save.equipment or not PAPERDOLL_SIDEBARS[3].IsActive() or Save.hide or TrackButton then
+    if not Save().equipment or not PAPERDOLL_SIDEBARS[3].IsActive() or Save().hide or TrackButton then
         if TrackButton then
             TrackButton:set_shown()
             TrackButton:init_buttons()
@@ -1055,8 +921,8 @@ local function Init_TrackButton()--添加装备管理框
     end)
     TrackButton:SetScript("OnDragStop", function(self)
         self:StopMovingOrSizing()
-        Save.Equipment={self:GetPoint(1)}
-        Save.Equipment[2]=nil
+        Save().Equipment={self:GetPoint(1)}
+        Save().Equipment[2]=nil
     end)
     TrackButton:SetScript('OnMouseDown', function(_, d)
         if d=='RightButton' and IsAltKeyDown() then--移动图标
@@ -1066,7 +932,7 @@ local function Init_TrackButton()--添加装备管理框
     TrackButton:SetScript("OnMouseUp", ResetCursor)
     TrackButton:SetScript("OnClick", function(self, d)
         if d=='RightButton' and IsControlKeyDown() then--图标横,或 竖
-            Save.EquipmentH= not Save.EquipmentH and true or nil
+            Save().EquipmentH= not Save().EquipmentH and true or nil
             for index, btn in pairs(self.buttons) do
                 btn:ClearAllPoints()
                 self:set_button_point(btn, index)--设置位置
@@ -1081,7 +947,7 @@ local function Init_TrackButton()--添加装备管理框
     end)
     TrackButton:SetScript('OnMouseWheel',function(self, d)--放大
         if IsAltKeyDown() then
-            local n=Save.equipmentFrameScale or 1
+            local n=Save().equipmentFrameScale or 1
             if d==1 then
                 n=n+0.05
             elseif d==-1 then
@@ -1089,9 +955,9 @@ local function Init_TrackButton()--添加装备管理框
             end
             n= n>4 and 4 or n
             n= n<0.4 and 0.4 or n
-            Save.equipmentFrameScale=n
+            Save().equipmentFrameScale=n
             self:set_scale()--缩放
-            print(e.addName, Initializer:GetName(), e.onlyChinese and '缩放' or UI_SCALE, GREEN_FONT_COLOR_CODE..n)
+            print(e.addName, WoWTools_PaperDollMixin.addName, e.onlyChinese and '缩放' or UI_SCALE, GREEN_FONT_COLOR_CODE..n)
         end
     end)
     TrackButton:SetScript("OnEnter", function (self)
@@ -1101,8 +967,8 @@ local function Init_TrackButton()--添加装备管理框
         e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭角色界面' or BINDING_NAME_TOGGLECHARACTER0, e.Icon.left)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.equipmentFrameScale or 1),'Alt+'..e.Icon.mid)
-        e.tips:AddDoubleLine(not Save.EquipmentH and format('|A:%s:0:0|a', e.Icon.toRight)..(e.onlyChinese and '向右' or BINDING_NAME_STRAFERIGHT) or ('|A:UI-HUD-MicroMenu-StreamDLRed-Up:0:0|a'..(e.onlyChinese and '向下' or BINDING_NAME_PITCHDOWN)),
+        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save().equipmentFrameScale or 1),'Alt+'..e.Icon.mid)
+        e.tips:AddDoubleLine(not Save().EquipmentH and format('|A:%s:0:0|a', e.Icon.toRight)..(e.onlyChinese and '向右' or BINDING_NAME_STRAFERIGHT) or ('|A:UI-HUD-MicroMenu-StreamDLRed-Up:0:0|a'..(e.onlyChinese and '向下' or BINDING_NAME_PITCHDOWN)),
                 'Ctrl+'..e.Icon.right)
 
         e.tips:AddLine(' ')
@@ -1131,8 +997,8 @@ local function Init_TrackButton()--添加装备管理框
 
     --位置保存
     function TrackButton:set_point()
-        if Save.Equipment then
-            self:SetPoint(Save.Equipment[1], UIParent, Save.Equipment[3], Save.Equipment[4], Save.Equipment[5])
+        if Save().Equipment then
+            self:SetPoint(Save().Equipment[1], UIParent, Save().Equipment[3], Save().Equipment[4], Save().Equipment[5])
         elseif e.Player.husandro then
             self:SetPoint('TOPLEFT', PlayerFrame.PlayerFrameContainer.FrameTexture, 'TOPRIGHT',-4,-3)
         else
@@ -1142,15 +1008,15 @@ local function Init_TrackButton()--添加装备管理框
 
     --缩放
     function TrackButton:set_scale()
-        self:SetScale(Save.equipmentFrameScale or 1)
+        self:SetScale(Save().equipmentFrameScale or 1)
     end
 
 
     --设置，显示
     function TrackButton:set_shown()
         self:SetShown(
-            not Save.hide
-            and Save.equipment
+            not Save().hide
+            and Save().equipment
             and not C_PetBattles.IsInBattle()
             and not UnitHasVehicleUI('player')
         )
@@ -1159,7 +1025,7 @@ local function Init_TrackButton()--添加装备管理框
     --设置，列表位置
     function TrackButton:set_button_point(button, index)
         local btn= index==1 and TrackButton or TrackButton.buttons[index-1]
-        if Save.EquipmentH then
+        if Save().EquipmentH then
             button:SetPoint('LEFT', btn, 'RIGHT')
         else
             button:SetPoint('TOP', btn, 'BOTTOM')
@@ -1206,7 +1072,7 @@ local function Init_TrackButton()--添加装备管理框
                     LvTo()--修改总装等
                 end)
             else
-                print(e.addName, Initializer:GetName(), RED_FONT_COLOR_CODE, e.onlyChinese and '你无法在战斗中实施那个动作' or ERR_NOT_IN_COMBAT)
+                print(e.addName, WoWTools_PaperDollMixin.addName, RED_FONT_COLOR_CODE, e.onlyChinese and '你无法在战斗中实施那个动作' or ERR_NOT_IN_COMBAT)
             end
         end)
         btn:SetScript("OnEnter", function(frame)
@@ -1226,7 +1092,7 @@ local function Init_TrackButton()--添加装备管理框
                     end
                 end
                 e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+                e.tips:AddDoubleLine(e.addName, WoWTools_PaperDollMixin.addName)
                 e.tips:Show()
                 --local name, iconFileID, _, isEquipped2, numItems, numEquipped, numInInventory, numLost, numIgnored = C_EquipmentSet.GetEquipmentSetInfo(self.setID)
                 if panel.equipmentButton and panel.equipmentButton:IsVisible() then
@@ -1351,7 +1217,7 @@ end
 
 --装备管理, 总开关
 function Init_TrackButton_ShowHide_Button()
-    if Save.hide or not PAPERDOLL_SIDEBARS[3].IsActive() then
+    if Save().hide or not PAPERDOLL_SIDEBARS[3].IsActive() then
         if panel.equipmentButton then
             panel.equipmentButton:SetShown(false)
         end
@@ -1360,33 +1226,33 @@ function Init_TrackButton_ShowHide_Button()
         panel.equipmentButton:SetShown(true)
         return
     end
-    panel.equipmentButton = WoWTools_ButtonMixin:Cbtn(PaperDollFrame.EquipmentManagerPane, {size={20,20}, atlas= Save.equipment and 'auctionhouse-icon-favorite' or e.Icon.disabled})--显示/隐藏装备管理框选项
+    panel.equipmentButton = WoWTools_ButtonMixin:Cbtn(PaperDollFrame.EquipmentManagerPane, {size={20,20}, atlas= Save().equipment and 'auctionhouse-icon-favorite' or e.Icon.disabled})--显示/隐藏装备管理框选项
     panel.equipmentButton:SetPoint('RIGHT', CharacterFrameCloseButton, 'LEFT')
     panel.equipmentButton:SetFrameStrata(CharacterFrameCloseButton:GetFrameStrata())
     panel.equipmentButton:SetFrameLevel(CharacterFrameCloseButton:GetFrameLevel()+1)
     panel.equipmentButton:SetAlpha(0.3)
     panel.equipmentButton:SetScript("OnClick", function(self, d)
         if d=='LeftButton' and not IsModifierKeyDown() then
-            Save.equipment= not Save.equipment and true or nil
-            self:SetNormalAtlas(Save.equipment and 'auctionhouse-icon-favorite' or e.Icon.disabled)
+            Save().equipment= not Save().equipment and true or nil
+            self:SetNormalAtlas(Save().equipment and 'auctionhouse-icon-favorite' or e.Icon.disabled)
             Init_TrackButton()--添加装备管理框
-            print(e.addName, Initializer:GetName(), e.GetShowHide(Save.equipment))
+            print(e.addName, WoWTools_PaperDollMixin.addName, e.GetShowHide(Save().equipment))
         elseif d=='RightButton' and IsControlKeyDown() then
-            Save.Equipment=nil
+            Save().Equipment=nil
             if TrackButton then
                 TrackButton:ClearAllPoints()
                 TrackButton:set_point()
             end
-            print(e.addName, Initializer:GetName(), e.onlyChinese and '重置位置' or RESET_POSITION)
+            print(e.addName, WoWTools_PaperDollMixin.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
         end
     end)
     panel.equipmentButton:SetScript("OnEnter", function (self)
         e.tips:SetOwner(self, "ANCHOR_TOPLEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+        e.tips:AddDoubleLine(e.addName, WoWTools_PaperDollMixin.addName)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '装备管理' or EQUIPMENT_MANAGER, e.Icon.left..e.GetShowHide(Save.equipment))
-        local col= not (self.btn and Save.Equipment) and '|cff9e9e9e' or ''
+        e.tips:AddDoubleLine(e.onlyChinese and '装备管理' or EQUIPMENT_MANAGER, e.Icon.left..e.GetShowHide(Save().equipment))
+        local col= not (self.btn and Save().Equipment) and '|cff9e9e9e' or ''
         e.tips:AddDoubleLine(col..(e.onlyChinese and '重置位置' or RESET_POSITION), col..'Ctrl+'..e.Icon.right)
         e.tips:Show()
         self:SetAlpha(1)
@@ -1434,7 +1300,7 @@ end
 --装备,总耐久度
 --############
 local function GetDurationTotale()
-    if Save.hide then
+    if Save().hide then
         if panel.durabilityText then
             panel.durabilityText:SetText('')
         end
@@ -1447,7 +1313,7 @@ local function GetDurationTotale()
         panel.durabilityText:SetScript('OnEnter', function(self)
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+            e.tips:AddDoubleLine(e.addName, WoWTools_PaperDollMixin.addName)
             e.tips:AddLine(' ')
             WoWTools_DurabiliyMixin:OnEnter()
             e.tips:Show()
@@ -1461,173 +1327,6 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
---#######
---装备弹出
---EquipmentFlyout.lua
-
-local function setFlyout(button, itemLink, slot)
-    local text, level, dateInfo
-    if not Save.hide then
-        if not button.level then
-            button.level= WoWTools_LabelMixin:CreateLabel(button)
-            button.level:SetPoint('BOTTOM')
-        end
-        dateInfo= WoWTools_ItemMixin:GetTooltip({hyperLink=itemLink, itemID=itemLink and C_Item.GetItemInfoInstant(itemLink) , text={upgradeStr, pvpItemStr, itemLevelStr}, onlyText=true})--物品提示，信息
-
-        if dateInfo and dateInfo.text[itemLevelStr] then
-            level= tonumber(dateInfo.text[itemLevelStr])
-        end
-        level= level or itemLink and C_Item.GetDetailedItemLevelInfo(itemLink)
-        text= level
-        if text then
-            local itemQuality = C_Item.GetItemQualityByID(itemLink)
-            if itemQuality then
-                local hex = select(4, C_Item.GetItemQualityColor(itemQuality))
-                if hex then
-                    text= '|c'..hex..text..'|r'
-                end
-            end
-        end
-    end
-    if button.level then
-        button.level:SetText(text or '')
-    end
-
-    local upgrade, pvpItem, upLevel, upText
-    local updown--UpgradeFrame等级，比较
-    if dateInfo then
-        upgrade, pvpItem=dateInfo.text[upgradeStr], dateInfo.text[pvpItemStr]
-        if upgrade then
-            upLevel= upgrade and upgrade:match('(%d+/%d+)')
-            upText= dateInfo.text[upgradeStr]:match('(.-)%d+/%d+')
-            upText=upText and strlower(WoWTools_Mixin:sub(upText, 1,3, true))
-        end
-        if upgrade and not button.upgrade then
-            button.upgrade= WoWTools_LabelMixin:CreateLabel(button, {color={r=0,g=1,b=0}})
-            button.upgrade:SetPoint('LEFT')
-            button.itemType=WoWTools_LabelMixin:CreateLabel(button)
-            button.itemType:SetPoint('TOPRIGHT')
-        end
-        if button.upgrade then
-            button.upgrade:SetText(upLevel or '')
-            button.itemType:SetText(upText or '')
-        end
-        if level then
-            if not slot or slot==0 then
-                local itemEquipLoc= itemLink and select(4, C_Item.GetItemInfoInstant(itemLink))
-                slot= WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)
-            end
-            if slot then
-                local itemLink2 = GetInventoryItemLink('player', slot)
-                if itemLink2 then
-                    updown = C_Item.GetDetailedItemLevelInfo(itemLink2)
-                    if updown then
-                        updown=level-updown
-                        if updown>0 then
-                            updown= '|cnGREEN_FONT_COLOR:+'..updown..'|r'
-                        elseif updown<0 then
-                            updown= '|cnRED_FONT_COLOR:'..updown..'|r'
-                        elseif updown==0 then
-                            updown= nil
-                        end
-                    else
-                        updown= '|A:bags-greenarrow:0:0|a'
-                    end
-                else
-                    updown= '|A:bags-greenarrow:0:0|a'
-                end
-            end
-        end
-    end
-    if updown and not button.updown then
-        button.updown=WoWTools_LabelMixin:CreateLabel(button)
-        button.updown:SetPoint('TOPLEFT')
-    end
-    if button.updown then
-        button.updown:SetText(updown or '')
-    end
-
-    set_item_Set(button, itemLink)--套装
-
-    if pvpItem and not button.pvpItem and not Save.hide then--提示PvP装备
-        local h=button:GetHeight()/3
-        button.pvpItem=button:CreateTexture(nil,'OVERLAY',nil,7)
-        button.pvpItem:SetSize(h,h)
-        button.pvpItem:SetPoint('RIGHT')
-        button.pvpItem:SetAtlas('Warfronts-BaseMapIcons-Horde-Barracks-Minimap')
-    end
-    if button.pvpItem then
-        button.pvpItem:SetShown(pvpItem and true or false)
-    end
-
-    if not button.isEquippedTexture then--提示，已装备
-        button.isEquippedTexture= button:CreateTexture(nil, 'OVERLAY')
-        button.isEquippedTexture:SetPoint('CENTER')
-        local w,h= button:GetSize()
-        button.isEquippedTexture:SetSize(w+12, h+12)
-        button.isEquippedTexture:SetAtlas('Forge-ColorSwatchHighlight')--'Forge-ColorSwatchSelection')
-        button.isEquippedTexture:SetVertexColor(1,0,0)
-
-        button:HookScript('OnEnter', function(self)--查询
-            if self.itemLink then
-                WoWTools_BagMixin:Find(true, {itemLink=self.itemLink})
-            end
-        end)
-        button:HookScript('OnLeave', function()
-           WoWTools_BagMixin:Find(false)
-        end)
-    end
-    local show=false
-    if not Save.hide and button.itemLink then
-        show= C_Item.IsEquippedItem(button.itemLink)
-    end
-    button.isEquippedTexture:SetShown(show)
-end
-
-
-
-local function set_equipment_flyout_buttons(itemButton)
-    for _, button in ipairs(EquipmentFlyoutFrame.buttons) do
-        if button and button:IsShown()  then
-            local itemLink, slot
-            if button.location and type(button.location)=='number' then--角色, 界面
-                local location = button.location
-                slot= itemButton:GetID()
-                if location < EQUIPMENTFLYOUT_FIRST_SPECIAL_LOCATION then
-                    local player, bank, bags, voidStorage, slot2, bag, tab, voidSlot = EquipmentManager_UnpackLocation(location)
-                    if ( voidStorage and voidSlot ) then
-                        itemLink = GetVoidItemHyperlinkString(voidSlot)
-                    elseif ( not bags and slot2) then
-                        itemLink =GetInventoryItemLink("player",slot2)
-                    elseif bag and slot2 then
-                        itemLink = C_Container.GetContainerItemLink(bag, slot2)
-                    end
-                end
-            else--其它
-                local location = button:GetItemLocation()
-                if location and type(location)=='table' then
-                    itemLink= C_Item.GetItemLink(location)
-                    slot=C_Item.GetItemInventoryType(location)
-                end
-            end
-            setFlyout(button, itemLink, slot)
-            button.itemLink= itemLink
-        end
-    end
-end
 
 
 
@@ -1659,25 +1358,22 @@ local function Init_Show_Hide_Button(frame)
 
     local title= frame==PaperDollItemsFrame and CharacterFrame.TitleContainer or frame.TitleContainer
 
-    local btn= WoWTools_ButtonMixin:Cbtn(frame, {size={20,20}, atlas= not Save.hide and e.Icon.icon or e.Icon.disabled})
+    local btn= WoWTools_ButtonMixin:Cbtn(frame, {size={20,20}, atlas= not Save().hide and e.Icon.icon or e.Icon.disabled})
     btn:SetFrameStrata(title:GetFrameStrata())
     btn:SetPoint('LEFT', title)
     btn:SetFrameLevel(title:GetFrameLevel()+1)
 
     btn:SetScript('OnClick', function(_, d)
         if d=='RightButton' then
-            if not Initializer then
-                e.OpenPanelOpting()
-            end
-            e.OpenPanelOpting(Initializer)
+            e.OpenPanelOpting(nil, WoWTools_PaperDollMixin.addName)
             return
         end
-        Save.hide= not Save.hide and true or nil
+        Save().hide= not Save().hide and true or nil
 
         GetDurationTotale()--装备,总耐久度
         panel:Init_Server_equipmentButton_Lable()--显示服务器名称
 
-        Init_Title()--头衔数量
+        WoWTools_PaperDollMixin:Init_Title()--头衔数量
         LvTo()--总装等
         set_PaperDollSidebarTab3_Text()--标签, 内容,提示
         --Init_ChromieTime()--时空漫游战役, 提示
@@ -1723,16 +1419,16 @@ local function Init_Show_Hide_Button(frame)
                 panel:Init_Target_InspectUI()
             end
             if InspectLevelText then
-                WoWTools_LabelMixin:CreateLabel(nil, {changeFont= InspectLevelText, size= not Save.hide and 18 or 12})
+                WoWTools_LabelMixin:CreateLabel(nil, {changeFont= InspectLevelText, size= not Save().hide and 18 or 12})
             end
             if InspectFrame.ShowHideButton then
-                InspectFrame.ShowHideButton:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
+                InspectFrame.ShowHideButton:SetNormalAtlas(Save().hide and e.Icon.disabled or e.Icon.icon)
             end
             if InspectFrame.statusLabel then--目标，属性
                 InspectFrame.statusLabel:settings()
             end
         end
-        PaperDollItemsFrame.ShowHideButton:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
+        PaperDollItemsFrame.ShowHideButton:SetNormalAtlas(Save().hide and e.Icon.disabled or e.Icon.icon)
 
     end)
     function btn:set_alpha(isEnter)
@@ -1748,11 +1444,11 @@ local function Init_Show_Hide_Button(frame)
     btn:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+        e.tips:AddDoubleLine(e.addName, WoWTools_PaperDollMixin.addName)
         e.tips:AddLine(' ')
 
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.GetShowHide(not Save.hide), e.Icon.left)
+        e.tips:AddDoubleLine(e.GetShowHide(not Save().hide), e.Icon.left)
 
         e.tips:AddDoubleLine(e.onlyChinese and '选项' or SETTINGS_TITLE, e.Icon.right)
 
@@ -1785,7 +1481,7 @@ function panel:Init_Target_InspectUI()
     local frame= InspectPaperDollFrame
     Init_Show_Hide_Button(InspectFrame)
 
-    if not frame.initButton and not Save.hide then
+    if not frame.initButton and not Save().hide then
         if frame.ViewButton then
             WoWTools_LabelMixin:CreateLabel(nil, {changeFont= InspectLevelText, size=18})
             frame.ViewButton:ClearAllPoints()
@@ -1803,13 +1499,13 @@ end
 
 local function set_InspectPaperDollItemSlotButton_Update(self)
     local slot= self:GetID()
-	local link= not Save.hide and GetInventoryItemLink(InspectFrame.unit, slot) or nil
+	local link= not Save().hide and GetInventoryItemLink(InspectFrame.unit, slot) or nil
 	e.LoadData({id=link, type='item'})--加载 item quest spell
     --set_Gem(self, slot, link)
     set_Item_Tips(self, slot, link, false)
     set_Slot_Num_Label(self, slot, link and true or false)--栏位, 帐号最到物品等级
     WoWTools_ItemStatsMixin:SetItem(self, link, {point=self.icon})
-    if not self.OnEnter and not Save.hide then
+    if not self.OnEnter and not Save().hide then
         self:SetScript('OnEnter', function(self2)
             if self2.link then
                 e.tips:ClearLines()
@@ -1859,7 +1555,7 @@ local function set_InspectPaperDollItemSlotButton_Update(self)
 end
 
 local function set_InspectPaperDollFrame_SetLevel()--目标,天赋 装等
-    if Save.hide then
+    if Save().hide then
         return
     end
     local unit= InspectFrame.unit
@@ -1905,7 +1601,7 @@ local function Set_Target_Status(frame)--InspectFrame
     function frame.statusLabel:settings()
         local unit=InspectFrame.unit
         local text
-        if not Save.hide and UnitExists(unit) then
+        if not Save().hide and UnitExists(unit) then
             local tab={ 1,2,3,15,5,9, 10,6,7,8,11,12,13,14, 16,17}
             local sta, newSta={}, {}
             for _, slotID in pairs(tab) do
@@ -1951,7 +1647,7 @@ end
 --显示服务器名称
 --#############
 function panel:Init_Server_equipmentButton_Lable()
-    if Save.hide then
+    if Save().hide then
         if  panel.serverText then
             panel.serverText:SetText('')
         end
@@ -1992,7 +1688,7 @@ function panel:Init_Server_equipmentButton_Lable()
                 e.tips:AddDoubleLine(e.onlyChinese and '专业技能' or PROFESSIONS_TRACKER_HEADER_PROFESSION, profCap, 1,0,0, 1,0,0)
                 e.tips:AddLine(' ')
             end
-            e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+            e.tips:AddDoubleLine(e.addName, WoWTools_PaperDollMixin.addName)
             e.tips:Show()
             frame:GetParent():set_alpha(true)
         end)
@@ -2024,7 +1720,7 @@ end
 --[[################
 local function Init_ChromieTime()--时空漫游战役, 提示
     local canEnter = C_PlayerInfo.CanPlayerEnterChromieTime()
-    if canEnter and not Save.hide and not panel.ChromieTime then
+    if canEnter and not Save().hide and not panel.ChromieTime then
         panel.ChromieTime= WoWTools_ButtonMixin:Cbtn(PaperDollItemsFrame, {size={18,18}, atlas='ChromieTime-32x32'})
         panel.ChromieTime:SetAlpha(0.5)
         if PaperDollItemsFrame.ShowHideButton then
@@ -2056,13 +1752,13 @@ local function Init_ChromieTime()--时空漫游战役, 提示
                 --e.tips:AddDoubleLine(' ', col..(e.onlyChinese and '完成' or COMPLETE)..': '..e.GetYesNo(info.completed))
             end
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+            e.tips:AddDoubleLine(e.addName, WoWTools_PaperDollMixin.addName)
             e.tips:Show()
             self2:SetAlpha(1)
         end)
     end
     if panel.ChromieTime then
-        panel.ChromieTime:SetShown(canEnter and not Save.hide)
+        panel.ChromieTime:SetShown(canEnter and not Save().hide)
     end
 end]]
 
@@ -2130,7 +1826,7 @@ local function Init_Status_Func()
         end
     end
 
-    if Save.notStatusPlusFunc then
+    if Save().notStatusPlusFunc then
         return
     end
 
@@ -2138,7 +1834,7 @@ local function Init_Status_Func()
 
 
     hooksecurefunc('PaperDollFrame_SetItemLevel', function(statFrame)--物品等级，小数点
-        if statFrame:IsShown() and not Save.hide and Save.itemLevelBit>0 then
+        if statFrame:IsShown() and not Save().hide and Save().itemLevelBit>0 then
             local avgItemLevel, avgItemLevelEquipped, avgItemLevelPvP = GetAverageItemLevel()
 	        local minItemLevel = C_PaperDollInfo.GetMinItemLevel()
 	        local displayItemLevel = math.max(minItemLevel or 0, avgItemLevelEquipped)
@@ -2147,21 +1843,21 @@ local function Init_Status_Func()
                 pvp= format('/|cffff7f00%i|r', avgItemLevelPvP)
             end
             if statFrame.numericValue ~= displayItemLevel then
-                statFrame.Value:SetFormattedText('%.0'..Save.itemLevelBit..'f%s', displayItemLevel, pvp)
+                statFrame.Value:SetFormattedText('%.0'..Save().itemLevelBit..'f%s', displayItemLevel, pvp)
             end
         end
     end)
     CharacterStatsPane.ItemLevelFrame.Value:EnableMouse(true)
     function CharacterStatsPane.ItemLevelFrame.Value:set_tooltips()
-        if Save.hide then
+        if Save().hide then
             return
         end
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+        e.tips:AddDoubleLine(e.addName, WoWTools_PaperDollMixin.addName)
         e.tips:AddLine(format('|A:communities-icon-addchannelplus:0:0|a%s Plus', e.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES))
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine((e.onlyChinese and '小数点 ' or 'bit ')..(Save.itemLevelBit==0 and '|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE)..'|r' or ('|cnGREEN_FONT_COLOR:'..Save.itemLevelBit)), '-1'..e.Icon.left)
+        e.tips:AddDoubleLine((e.onlyChinese and '小数点 ' or 'bit ')..(Save().itemLevelBit==0 and '|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE)..'|r' or ('|cnGREEN_FONT_COLOR:'..Save().itemLevelBit)), '-1'..e.Icon.left)
         e.tips:AddDoubleLine('0 '..(e.onlyChinese and '禁用' or DISABLE), '+1'..e.Icon.right)
         e.tips:Show()
     end
@@ -2177,12 +1873,12 @@ local function Init_Status_Func()
         self:SetAlpha(0.7)
     end)
     CharacterStatsPane.ItemLevelFrame.Value:SetScript('OnMouseDown', function(self, d)
-        local n= Save.itemLevelBit or 3
+        local n= Save().itemLevelBit or 3
         n= d=='LeftButton' and n-1 or n
         n= d=='RightButton' and n+1 or n
         n= n>4 and 4 or n
         n= n<0 and 0 or n
-        Save.itemLevelBit=n
+        Save().itemLevelBit=n
         e.call(PaperDollFrame_UpdateStats)
         self:set_tooltips()
         self:SetAlpha(0.3)
@@ -2209,7 +1905,7 @@ local function Init_Status_Func()
         end
     end
     function StatusPlusButton:create_status_label(frame, rating)
-        if not Save.hide and Save.itemLevelBit>0 and frame:IsShown() then
+        if not Save().hide and Save().itemLevelBit>0 and frame:IsShown() then
             if not frame.numLabel then
                 frame.numLabel=WoWTools_LabelMixin:CreateLabel(frame, {color={r=1,g=1,b=1}})
                 frame.numLabel:SetPoint('LEFT', frame.Label, 'RIGHT',2,0)
@@ -2443,8 +2139,8 @@ local function Init_Status_Func()
     end)
 
     hooksecurefunc('PaperDollFrame_SetLabelAndText', function(statFrame, _, text, isPercentage, numericValue)
-        if not Save.hide and Save.itemLevelBit>0 and (isPercentage or (type(text)=='string' and text:find('%%'))) then--and select(2, math.modf(numericValue))>0 then
-            statFrame.Value:SetFormattedText('%.0'..Save.itemLevelBit..'f%%', numericValue)
+        if not Save().hide and Save().itemLevelBit>0 and (isPercentage or (type(text)=='string' and text:find('%%'))) then--and select(2, math.modf(numericValue))>0 then
+            statFrame.Value:SetFormattedText('%.0'..Save().itemLevelBit..'f%%', numericValue)
         end
     end)
 end
@@ -2461,7 +2157,7 @@ local function Init_Status_Menu()
 
     function StatusPlusButton.Menu:save()
         e.call(PaperDollFrame_UpdateStats)
-        Save.PAPERDOLL_STATCATEGORIES= PAPERDOLL_STATCATEGORIES
+        Save().PAPERDOLL_STATCATEGORIES= PAPERDOLL_STATCATEGORIES
     end
 
     function StatusPlusButton.Menu:find_stats(stat, index, P)--查找
@@ -2533,7 +2229,7 @@ local function Init_Status_Menu()
                 --showFunc= tab.showFunc,
             })
         end
-        print(e.addName, Initializer:GetName(), format('|cnGREEN_FONT_COLOR:%s|r', stat), e.onlyChinese and '添加' or ADD)
+        print(e.addName, WoWTools_PaperDollMixin.addName, format('|cnGREEN_FONT_COLOR:%s|r', stat), e.onlyChinese and '添加' or ADD)
     end
 
     function StatusPlusButton.Menu:remove_stat(tab)--移除        
@@ -2544,12 +2240,12 @@ local function Init_Status_Menu()
             for i, info in pairs(PAPERDOLL_STATCATEGORIES[index].stats or {}) do
                 if info.stat==stat then
                     table.remove(PAPERDOLL_STATCATEGORIES[index].stats, i)
-                    print(e.addName, Initializer:GetName(), format('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '移除' or REMOVE), stat, name)
+                    print(e.addName, WoWTools_PaperDollMixin.addName, format('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '移除' or REMOVE), stat, name)
                     return
                 end
             end
         end
-        print(e.addName, Initializer:GetName(), format('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE), stat, name)
+        print(e.addName, WoWTools_PaperDollMixin.addName, format('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE), stat, name)
     end
 
     function StatusPlusButton.Menu:get_primary_text(primary)--主属性, 文本
@@ -2569,10 +2265,10 @@ local function Init_Status_Menu()
             for i=0, 4 do
                 info={
                     text= format('%s %d', e.onlyChinese and '小数点' or 'bit', i),
-                    checked= Save.itemLevelBit==i,
+                    checked= Save().itemLevelBit==i,
                     arg1=i,
                     func= function(_, arg1)
-                        Save.itemLevelBit= arg1
+                        Save().itemLevelBit= arg1
                         e.call(PaperDollFrame_UpdateStats)
                     end
                 }
@@ -2587,7 +2283,7 @@ local function Init_Status_Menu()
                     PAPERDOLL_STATCATEGORIES= {}
                     e.LibDD:CloseDropDownMenus(1)
                     self:save()
-                    print(e.addName, Initializer:GetName(), format('|cnGREEN_FONT_COLOR:%s|r', e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT), e.onlyChinese and '完成' or DONE)
+                    print(e.addName, WoWTools_PaperDollMixin.addName, format('|cnGREEN_FONT_COLOR:%s|r', e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT), e.onlyChinese and '完成' or DONE)
                 end
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -2595,10 +2291,10 @@ local function Init_Status_Menu()
                 text=e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT,
                 notCheckable=true,
                 icon='uitools-icon-refresh',
-                colorCode= Save.PAPERDOLL_STATCATEGORIES and '' or '|cff9e9e9e',
+                colorCode= Save().PAPERDOLL_STATCATEGORIES and '' or '|cff9e9e9e',
                 func= function()
                     PAPERDOLL_STATCATEGORIES= P_PAPERDOLL_STATCATEGORIES
-                    Save.PAPERDOLL_STATCATEGORIES=nil
+                    Save().PAPERDOLL_STATCATEGORIES=nil
                     e.call(PaperDollFrame_UpdateStats)
                     e.LibDD:CloseDropDownMenus(1)
                 end
@@ -2608,26 +2304,26 @@ local function Init_Status_Menu()
             e.LibDD:UIDropDownMenu_AddSeparator(level)
             info={
                 text=e.onlyChinese and '显示菜单' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, HUD_EDIT_MODE_MICRO_MENU_LABEL),
-                checked= Save.StatusPlus_OnEnter_show_menu,
+                checked= Save().StatusPlus_OnEnter_show_menu,
                 icon= 'newplayertutorial-drag-cursor',
                 keepShownOnClick=true,
                 tooltipOnButton=true,
                 tooltipTitle= e.onlyChinese and '移过图标时，显示菜单' or 'Show menu when moving over icon',
                 func= function()
-                    Save.StatusPlus_OnEnter_show_menu= not Save.StatusPlus_OnEnter_show_menu and true or nil
+                    Save().StatusPlus_OnEnter_show_menu= not Save().StatusPlus_OnEnter_show_menu and true or nil
                 end
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
             info={
                 text= format('%s Plus|A:communities-icon-addchannelplus:0:0|a', e.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES),
-                checked= not Save.notStatusPlusFunc,
+                checked= not Save().notStatusPlusFunc,
                 keepShownOnClick=true,
                 tooltipOnButton=true,
                 menuList='STATUS_Func_itemLevelBit',
                 hasArrow=true,
                 func= function()
-                    Save.notStatusPlusFunc= not Save.notStatusPlusFunc and true or nil
-                    print(e.addName, Initializer:GetName(), e.GetEnabeleDisable(not Save.notStatusPlusFunc), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    Save().notStatusPlusFunc= not Save().notStatusPlusFunc and true or nil
+                    print(e.addName, WoWTools_PaperDollMixin.addName, e.GetEnabeleDisable(not Save().notStatusPlusFunc), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -2659,11 +2355,11 @@ local function Init_Status_Menu()
                                     end
                                     PAPERDOLL_STATCATEGORIES[arg1.index].stats[i].hideAt= value
                                     self:save()
-                                    print(e.addName, Initializer:GetName(), format('|cnGREEN_FONT_COLOR:%s|r', arg1.stat), value)
+                                    print(e.addName, WoWTools_PaperDollMixin.addName, format('|cnGREEN_FONT_COLOR:%s|r', arg1.stat), value)
                                     return
                                 end
                             end
-                            print(e.addName, Initializer:GetName(), format('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE), arg1.stat)
+                            print(e.addName, WoWTools_PaperDollMixin.addName, format('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE), arg1.stat)
                         end
                     }
                     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -2705,11 +2401,11 @@ local function Init_Status_Menu()
                                         end
                                     end
                                     self:save()
-                                    print(e.addName, Initializer:GetName(), format('|cnGREEN_FONT_COLOR:%s|r', stats.stat) , findTank and e.Icon.TANK or '', findN and e.Icon.HEALER or '', findDps and e.Icon.DAMAGER or '')
+                                    print(e.addName, WoWTools_PaperDollMixin.addName, format('|cnGREEN_FONT_COLOR:%s|r', stats.stat) , findTank and e.Icon.TANK or '', findN and e.Icon.HEALER or '', findDps and e.Icon.DAMAGER or '')
                                     return
                                 end
                             end
-                            print(e.addName, Initializer:GetName(), format('|cnRED_FONT_COLOR:%s|r %s', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE, arg1.stat))
+                            print(e.addName, WoWTools_PaperDollMixin.addName, format('|cnRED_FONT_COLOR:%s|r %s', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE, arg1.stat))
                         end
                     }
                     if i==Enum.LFGRole.Tank then
@@ -2739,11 +2435,11 @@ local function Init_Status_Menu()
                                         tab.primary=nil
                                     end
                                     self:save()
-                                    print(e.addName, Initializer:GetName(), format('|cnGREEN_FONT_COLOR:%s|r', stats.stat) , format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, self:get_primary_text(tab.primary) or format('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '无' or NONE)))
+                                    print(e.addName, WoWTools_PaperDollMixin.addName, format('|cnGREEN_FONT_COLOR:%s|r', stats.stat) , format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, self:get_primary_text(tab.primary) or format('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '无' or NONE)))
                                     return
                                 end
                             end
-                            print(e.addName, Initializer:GetName(), format('|cnRED_FONT_COLOR:%s|r %s', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE, arg1.stat))
+                            print(e.addName, WoWTools_PaperDollMixin.addName, format('|cnRED_FONT_COLOR:%s|r %s', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE, arg1.stat))
                         end
                     }
                     e.LibDD:UIDropDownMenu_AddButton(info, level)
@@ -2862,8 +2558,8 @@ local function Init_Status_Menu()
         e.LibDD:UIDropDownMenu_AddSeparator(level)
 
         info= {
-            text=e.GetEnabeleDisable(true)..(Save.StatusPlus_OnEnter_show_menu and '|A:newplayertutorial-drag-cursor:0:0|a' or '')..(Save.notStatusPlusFunc and '' or '|A:communities-icon-addchannelplus:0:0|a'),
-            checked= not Save.notStatusPlus,
+            text=e.GetEnabeleDisable(true)..(Save().StatusPlus_OnEnter_show_menu and '|A:newplayertutorial-drag-cursor:0:0|a' or '')..(Save().notStatusPlusFunc and '' or '|A:communities-icon-addchannelplus:0:0|a'),
+            checked= not Save().notStatusPlus,
             hasArrow=true,
             menuList='ENABLE_DISABLE',
             func= function()
@@ -2885,9 +2581,9 @@ end
 
 --属性，增强 PaperDollFrame.lua
 function panel:Init_Status_Plus()
-    if StatusPlusButton or Save.hide then
+    if StatusPlusButton or Save().hide then
         if StatusPlusButton then
-            StatusPlusButton:SetShown(not Save.hide)
+            StatusPlusButton:SetShown(not Save().hide)
         end
         return
     end
@@ -2899,12 +2595,12 @@ function panel:Init_Status_Plus()
         self:SetAlpha(min and 0.3 or 1)
     end
     function StatusPlusButton:set_texture()
-        self:SetNormalAtlas(Save.notStatusPlus and e.Icon.disabled or format('charactercreate-gendericon-%s-selected', e.Player.sex==3 and 'Female' or 'male'))
+        self:SetNormalAtlas(Save().notStatusPlus and e.Icon.disabled or format('charactercreate-gendericon-%s-selected', e.Player.sex==3 and 'Female' or 'male'))
     end
     function StatusPlusButton:set_enabel_disable()
-        Save.notStatusPlus= not Save.notStatusPlus and true or nil
+        Save().notStatusPlus= not Save().notStatusPlus and true or nil
         self:set_texture()
-        print(e.addName, Initializer:GetName(), e.GetEnabeleDisable(not Save.notStatusPlus), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(e.addName, WoWTools_PaperDollMixin.addName, e.GetEnabeleDisable(not Save().notStatusPlus), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end
     function StatusPlusButton:show_menu()
         e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 40, 0)--主菜单
@@ -2912,7 +2608,7 @@ function panel:Init_Status_Plus()
     function StatusPlusButton:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_TOPLEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+        e.tips:AddDoubleLine(e.addName, WoWTools_PaperDollMixin.addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)
         e.tips:Show()
@@ -2931,11 +2627,11 @@ function panel:Init_Status_Plus()
     StatusPlusButton:set_texture()
     StatusPlusButton:set_alpha(true)
 
-    if Save.notStatusPlus then
+    if Save().notStatusPlus then
         e.LibDD:UIDropDownMenu_Initialize(StatusPlusButton.Menu, function(_, level)
             e.LibDD:UIDropDownMenu_AddButton({
                 text=e.onlyChinese and '启用' or ENABLE,
-                checked= not Save.notStatusPlus,
+                checked= not Save().notStatusPlus,
                 func= function()
                     StatusPlusButton:set_enabel_disable()
                 end,
@@ -2944,13 +2640,13 @@ function panel:Init_Status_Plus()
         return
     end
 
-    if Save.PAPERDOLL_STATCATEGORIES then--加载，数据
-        PAPERDOLL_STATCATEGORIES= Save.PAPERDOLL_STATCATEGORIES
+    if Save().PAPERDOLL_STATCATEGORIES then--加载，数据
+        PAPERDOLL_STATCATEGORIES= Save().PAPERDOLL_STATCATEGORIES
     end
 
     StatusPlusButton:SetScript('OnEnter', function(self)--重新,设置
         self:set_tooltips()
-        if Save.StatusPlus_OnEnter_show_menu then--移过图标时，显示菜单
+        if Save().StatusPlus_OnEnter_show_menu then--移过图标时，显示菜单
             e.LibDD:CloseDropDownMenus(1)
             self:show_menu()
         end
@@ -3015,7 +2711,7 @@ local function Init()
     --Init_ChromieTime()--时空漫游战役, 提示
 
     hooksecurefunc('PaperDollFrame_UpdateSidebarTabs', function()--头衔数量
-        Init_Title()--总装等
+        WoWTools_PaperDollMixin:Init_Title()--总装等
         set_PaperDollSidebarTab3_Text()
     end)
 
@@ -3030,7 +2726,7 @@ local function Init()
     hooksecurefunc('GearSetButton_UpdateSpecInfo', function(self)--套装已装备数量
         local setID=self.setID
         local nu
-        if setID and not Save.hide then
+        if setID and not Save().hide then
             if not self.nu then
                 self.nu=WoWTools_LabelMixin:CreateLabel(self)
                 self.nu:SetJustifyH('RIGHT')
@@ -3061,7 +2757,7 @@ local function Init()
             local link=hasItem and GetInventoryItemLink('player', slot) or nil--装等                
             if slot~=4 and slot~=19 then
                 set_Item_Tips(self, slot, link, true)
-                WoWTools_ItemStatsMixin:SetItem(self, not Save.hide and link or nil, {point=self.icon})
+                WoWTools_ItemStatsMixin:SetItem(self, not Save().hide and link or nil, {point=self.icon})
                 set_PaperDollSidebarTab3_Text()
                 LvTo()--总装等
             end
@@ -3087,97 +2783,17 @@ local function Init()
     end)
 
 
-    --#######
-    --装备弹出
-    --EquipmentFlyout.lua
-    hooksecurefunc('EquipmentFlyout_UpdateItems', function()
-        local itemButton = EquipmentFlyoutFrame.button;
-        set_equipment_flyout_buttons(itemButton)
-    end)
-   hooksecurefunc('EquipmentFlyout_Show', set_equipment_flyout_buttons)
 
 
 
 
 
 
-
-
-
-
-
-    --############
-    --更改,等级文本
-    --############
-    hooksecurefunc('PaperDollFrame_SetLevel', function()--PaperDollFrame.lua
-        --Init_ChromieTime()--时空漫游战役, 提示
-        if Save.hide then
-            return
-        end
-        local race= WoWTools_UnitMixin:GetRaceIcon({unit='player', guid=nil , race=nil , sex=nil , reAtlas=true})
-        local class= WoWTools_UnitMixin:GetClassIcon('player', nil, true)
-        local level
-        level= UnitLevel("player")
-        local effectiveLevel = UnitEffectiveLevel("player")
-
-        if ( effectiveLevel ~= level ) then
-            level = EFFECTIVE_LEVEL_FORMAT:format('|cnGREEN_FONT_COLOR:'..effectiveLevel..'|r', level)
-        end
-        local faction= format('|A:%s:26:26|a', e.Icon[e.Player.faction] or '')
-        CharacterLevelText:SetText('  '..faction..(race and '|A:'..race..':26:26|a' or '')..(class and '|A:'..class..':26:26|a  ' or '')..level)
-        if not CharacterLevelText.set then
-            WoWTools_ColorMixin:SetLabelTexture(CharacterLevelText, {type='FontString'})
-            CharacterLevelText:SetJustifyH('LEFT')
-            CharacterLevelText:EnableMouse(true)
-            CharacterLevelText:HookScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
-            CharacterLevelText:HookScript('OnEnter', function(self2)
-                local info = C_PlayerInfo.GetPlayerCharacterData()
-                if Save.hide or not info then
-                    return
-                end
-                e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:AddDoubleLine(e.addName, Initializer:GetName())
-                e.tips:AddLine(' ')
-                e.tips:AddLine('name |cnGREEN_FONT_COLOR:'..info.name)
-                e.tips:AddLine('fileName |cnGREEN_FONT_COLOR:'..info.fileName)
-                e.tips:AddLine('sex |cnGREEN_FONT_COLOR:'..info.sex)
-                e.tips:AddLine('displayID |cnGREEN_FONT_COLOR:'..C_PlayerInfo.GetDisplayID())
-                e.tips:AddDoubleLine((info.createScreenIconAtlas and '|A:'..info.createScreenIconAtlas..':0:0|a' or '')..'createScreenIconAtlas', info.createScreenIconAtlas)
-                e.tips:AddDoubleLine('GUID', UnitGUID('player'))
-                e.tips:AddLine(' ')
-
-                local expansionID = UnitChromieTimeID('player')--时空漫游战役 PartyUtil.lua
-                local option = C_ChromieTime.GetChromieTimeExpansionOption(expansionID)
-                local expansion = option and e.cn(option.name) or (e.onlyChinese and '无' or NONE)
-                if option and option.previewAtlas then
-                    expansion= '|A:'..option.previewAtlas..':0:0|a'..expansion
-                end
-                local text= format(e.onlyChinese and '你目前处于|cffffffff时空漫游战役：%s|r' or PARTY_PLAYER_CHROMIE_TIME_SELF_LOCATION, expansion)
-                e.tips:AddDoubleLine((e.onlyChinese and '选择时空漫游战役' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHROMIE_TIME_SELECT_EXAPANSION_BUTTON, CHROMIE_TIME_PREVIEW_CARD_DEFAULT_TITLE))..': '..e.GetEnabeleDisable(C_PlayerInfo.CanPlayerEnterChromieTime()),
-                                        text
-                                    )
-                e.tips:AddLine(' ')
-                for _, info2 in pairs(C_ChromieTime.GetChromieTimeExpansionOptions() or {}) do
-                    local col= info2.alreadyOn and '|cffff00ff' or ''-- option and option.id==info.id
-                    e.tips:AddDoubleLine((info2.alreadyOn and format('|A:%s:0:0|a', e.Icon.toRight) or '')..col..(info2.previewAtlas and '|A:'..info2.previewAtlas..':0:0|a' or '')..info2.name..(info2.alreadyOn and format('|A:%s:0:0|a', e.Icon.toLeft) or '')..col..' ID '.. info2.id, col..(e.onlyChinese and '完成' or COMPLETE)..': '..e.GetYesNo(info2.completed))
-                    --e.tips:AddDoubleLine(' ', col..(info.mapAtlas and '|A:'..info.mapAtlas..':0:0|a'.. info.mapAtlas))
-                    --e.tips:AddDoubleLine(' ', col..(info.previewAtlas and '|A:'..info.previewAtlas..':0:0|a'.. info.previewAtlas))
-                    --e.tips:AddDoubleLine(' ', col..(e.onlyChinese and '完成' or COMPLETE)..': '..e.GetYesNo(info.completed))
-                end
-
-                e.tips:Show()
-                self2:SetAlpha(0.3)
-            end)
-
-            CharacterLevelText.set=true
-        end
-    end)
 
     --添加，空装，按钮
     --PaperDollFrame.lua
     hooksecurefunc('PaperDollEquipmentManagerPane_InitButton', function(btn)
-        if Save.hide then
+        if Save().hide then
             if btn.createButton then
                 btn.createButton:SetShown(false)
             end
@@ -3191,7 +2807,7 @@ local function Init()
             btn.createButton:SetScript('OnEnter', function(self)
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+                e.tips:AddDoubleLine(e.addName, WoWTools_PaperDollMixin.addName)
                 e.tips:AddLine(' ')
                 e.tips:AddDoubleLine(self.str,
                     C_EquipmentSet.GetEquipmentSetID(self.str)
@@ -3211,9 +2827,9 @@ local function Init()
                 end
                 C_EquipmentSet.CreateEquipmentSet(self.str)
                 if setID then
-                    print(e.addName,Initializer:GetName(), '|cffff00ff'..(e.onlyChinese and '修改' or EDIT)..'|r', self.str)
+                    print(e.addName,WoWTools_PaperDollMixin.addName, '|cffff00ff'..(e.onlyChinese and '修改' or EDIT)..'|r', self.str)
                 else
-                    print(e.addName,Initializer:GetName(), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '新建' or NEW)..'|r', self.str)
+                    print(e.addName,WoWTools_PaperDollMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '新建' or NEW)..'|r', self.str)
                 end
             end)
         end
@@ -3223,12 +2839,12 @@ local function Init()
         if not btn.setScripOK then
             btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
             btn:HookScript('OnClick', function(self, d)
-                if UnitAffectingCombat('player') or not self.setID or Save.hide or d~='RightButton' then
+                if UnitAffectingCombat('player') or not self.setID or Save().hide or d~='RightButton' then
                     return
                 end
                 C_EquipmentSet.UseEquipmentSet(self.setID)
                 local name, iconFileID = C_EquipmentSet.GetEquipmentSetInfo(self.setID)
-                print(e.addName, Initializer:GetName(), iconFileID and '|T'..iconFileID..':0|t|cnGREEN_FONT_COLOR:' or '', name)
+                print(e.addName, WoWTools_PaperDollMixin.addName, iconFileID and '|T'..iconFileID..':0|t|cnGREEN_FONT_COLOR:' or '', name)
             end)
             btn.setScripOK=true
         end
@@ -3236,6 +2852,8 @@ local function Init()
 
 
 
+    WoWTools_PaperDollMixin:Init_EquipmentFlyout()--装备弹出
+    WoWTools_PaperDollMixin:Init_SetLevel()--更改,等级文本
 
     panel:Init_Status_Plus()--属性，增强
 
@@ -3280,36 +2898,36 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1 == id then
-            Save= WoWToolsSave[addName] or Save
-            Save.itemLevelBit= Save.itemLevelBit or 1
+            if WoWToolsSave[CHARACTER] then
+                WoWTools_PaperDollMixin.Save= WoWToolsSave[CHARACTER]
+                WoWToolsSave[CHARACTER]=nil
+                
+            else
+                WoWTools_PaperDollMixin.Save= WoWToolsSave['Plus_PaperDoll'] or WoWTools_PaperDollMixin.Save
+            end
 
+            WoWTools_PaperDollMixin.addName= (
+                e.Player.sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a'
+                or '|A:charactercreate-gendericon-female-selected:0:0|a'
+            )..(e.onlyChinese and '角色' or addName)
+            
             --添加控制面板
-            Initializer= e.AddPanel_Check({
-                name= (e.Player.sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a')..(e.onlyChinese and '角色' or addName),
-                --tooltip= Initializer:GetName(),
-                GetValue= function() return not Save.disabled end,
+            e.AddPanel_Check({
+                name= WoWTools_PaperDollMixin.addName,
+                --tooltip= WoWTools_PaperDollMixin.addName,
+                GetValue= function() return not Save().disabled end,
                 SetValue= function()
-                    Save.disabled= not Save.disabled and true or nil
-                    print(e.addName, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    Save().disabled= not Save().disabled and true or nil
+                    print(e.addName, WoWTools_PaperDollMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end,
             })
 
-            --[[添加控制面板
-            local sel=e.AddPanel_Check((e.Player.sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a')..(e.onlyChinese and '角色' or addName), not Save.disabled)
-            sel:SetScript('OnMouseDown', function()
-                Save.disabled = not Save.disabled and true or nil
-                print(e.addName, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
-            end)]]
 
 
-            if not Save.disabled then
+            if not WoWTools_PaperDollMixin.disabled then
                 Init()
                 self:RegisterEvent("UPDATE_INVENTORY_DURABILITY")
-                self:RegisterEvent('SOCKET_INFO_UPDATE')--宝石，更新
-
-                --[[ProfessionsFrame_LoadUI()
-                OpenProfessionUIToSkillLine(202)
-                C_TradeSkillUI.CloseTradeSkill()]]
+                self:RegisterEvent('SOCKET_INFO_UPDATE')--宝石，更新    
 
             else
                 self:UnregisterEvent('ADDON_LOADED')
@@ -3317,6 +2935,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             self:RegisterEvent("PLAYER_LOGOUT")
 
         elseif arg1=='Blizzard_InspectUI' then--目标, 装备
+        
             self:Init_Target_InspectUI()
             InspectFrame:HookScript('OnShow', Set_Target_Status)
             --hooksecurefunc('InspectFrame_UnitChanged', Set_Target_Status)

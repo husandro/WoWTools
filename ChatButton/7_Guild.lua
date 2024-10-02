@@ -172,6 +172,8 @@ end
 --主菜单
 local function Init_Menu(_, root)
     local sub, text
+
+--公会在线列表
     local total, online = GetNumGuildMembers()
     if online>1 then
         local map=WoWTools_MapMixin:GetUnit('paleyr')
@@ -205,11 +207,10 @@ local function Init_Menu(_, root)
                     tooltip:AddLine(description.data.publicNote)
                     tooltip:AddLine(description.data.officerNote)
                 end)
-
             end
         end
         root:CreateDivider()
-        WoWTools_MenuMixin:SetGridMode(root, online)
+        WoWTools_MenuMixin:SetScrollMode(root)
     end
 
     if CanReplaceGuildMaster() then--弹劾

@@ -5013,7 +5013,8 @@
         "RaidFinderFrame",
         "CalendarCreateEventInviteListScrollFrame_Update",
         "GUILD_CHALLENGES_THIS_WEEK",
-        "CurrencyTransferMenuMixin"
+        "CurrencyTransferMenuMixin",
+        "PAPERDOLL_SIDEBAR_TITLES"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
@@ -5037,7 +5038,5 @@
         "inject-field",
         "missing-parameter",
         "redundant-parameter",
-        "unused-local",
-        "trailing-space"
     ],
 }

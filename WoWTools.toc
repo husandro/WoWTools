@@ -23,40 +23,40 @@ Libs\Init.xml
 ##主要function，不能删除
 API_WoWTools.lua
 
-Mixin\0_Mixin.lua
-Mixin\AuraMixin.lua
-Mixin\BagMixin.lua
-Mixin\BankMixin.lua
-Mixin\ButtonMixin.lua
-Mixin\ToolsButtonMixin.lua
-Mixin\ChatMixin.lua
-Mixin\ChatButtonMixin.lua
-Mixin\CollectedMixin.lua
-Mixin\ColorMixin.lua
-Mixin\CurrencyMixin.lua
-Mixin\DurabiliyMixin.lua
-Mixin\EditBoxMixn.lua
-Mixin\FactionMixin.lua
-Mixin\FrameMixin.lua
-Mixin\GroupMixin.lua
-Mixin\ItemMixin.lua
-Mixin\ItemStatsMixin.lua
-Mixin\ItemLocationMixin.lua
-Mixin\KeyMixin.lua
-Mixin\LabelMixin.lua
-Mixin\LoadUIMixin.lua
-Mixin\MapMixin.lua
-Mixin\MenuMixin.lua
-Mixin\QuestMixin.lua
-Mixin\RandomMixin.lua
-Mixin\SpellMixin.lua
-Mixin\TextureMixin.lua
-Mixin\TimeMixin.lua
-Mixin\SetTooltipMixin.lua
-Mixin\UnitMixin.lua
-Mixin\WeekMixin.lua
+0_Mixin\0_Mixin.lua
+0_Mixin\AuraMixin.lua
+0_Mixin\BagMixin.lua
+0_Mixin\BankMixin.lua
+0_Mixin\ButtonMixin.lua
+0_Mixin\ToolsButtonMixin.lua
+0_Mixin\ChatMixin.lua
+0_Mixin\ChatButtonMixin.lua
+0_Mixin\CollectedMixin.lua
+0_Mixin\ColorMixin.lua
+0_Mixin\CurrencyMixin.lua
+0_Mixin\DurabiliyMixin.lua
+0_Mixin\EditBoxMixn.lua
+0_Mixin\FactionMixin.lua
+0_Mixin\FrameMixin.lua
+0_Mixin\GroupMixin.lua
+0_Mixin\ItemMixin.lua
+0_Mixin\ItemStatsMixin.lua
+0_Mixin\ItemLocationMixin.lua
+0_Mixin\KeyMixin.lua
+0_Mixin\LabelMixin.lua
+0_Mixin\LoadUIMixin.lua
+0_Mixin\MapMixin.lua
+0_Mixin\MenuMixin.lua
+0_Mixin\QuestMixin.lua
+0_Mixin\RandomMixin.lua
+0_Mixin\SpellMixin.lua
+0_Mixin\TextureMixin.lua
+0_Mixin\TimeMixin.lua
+0_Mixin\SetTooltipMixin.lua
+0_Mixin\UnitMixin.lua
+0_Mixin\WeekMixin.lua
 ##放后面
-Mixin\Faction_SetTooltip.lua
+0_Mixin\Faction_SetTooltip.lua
 
 StaticPopupDialogs.lua
 API_LoadData.lua
@@ -129,9 +129,10 @@ Plus_Tooltip\z_Professions.lua
 
 
 ##角色面板
-Plus\PaperDoll.lua
-
-
+Plus_PaperDoll\0_PaperDoll.lua
+Plus_PaperDoll\Title_Init.lua
+Plus_PaperDoll\Flyout_Equipment.lua
+Plus_PaperDoll\Set_Level.lua
 
 
 

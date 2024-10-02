@@ -900,13 +900,31 @@ local function Add_Menu(root, name, channelNumber)
     local communityName, communityTexture
     local clubInfo= clubId and C_Club.GetClubInfo(clubId)--社区名称
     if clubInfo and (clubInfo.shortName or clubInfo.name) then
-        text='|cnGREEN_FONT_COLOR:'..(clubInfo.shortName or clubInfo.name)..' |r'
+
+        local members= C_Club.GetClubMembers(clubInfo.clubId) or {}
+        local online= 0
+        for _, memberID in pairs(members) do--CommunitiesUtil.GetOnlineMembers
+            local info = C_Club.GetMemberInfo(clubInfo.clubId, memberID) or {}
+            if not info.isSelf and info.presence~=Enum.ClubMemberPresence.Offline and info.presence~=Enum.ClubMemberPresence.Unknown then--CommunitiesUtil.GetOnlineMembers()
+                online= online+1
+            end
+        end
+
+        text=('|T'..(clubInfo.avatarId or 0)..':0|t')
+            ..'|cffff7f00'
+            ..(clubInfo.shortName or clubInfo.name)
+            ..' '.. (online..'/'..#members)
+          
+            
+
         communityName=clubInfo.shortName or clubInfo.name
         communityTexture=clubInfo.avatarId
     end
     text=((channelNumber and channelNumber>0) and channelNumber..' ' or '')..text--频道数字
 
-    local sub=root:CreateCheckbox(text, function(data)
+    local sub=root:CreateCheckbox(
+        text, 
+    function(data)
         return WorldButton.channelNumber == GetChannelName(data.communityName or data.name)
 
     end, function(data)
@@ -922,6 +940,7 @@ local function Add_Menu(root, name, channelNumber)
         name=name,
         communityName=communityName,
         channelNumber= channelNumber,
+        clubId= clubId,
     })
 
 
@@ -936,6 +955,7 @@ local function Add_Menu(root, name, channelNumber)
         elseif value==2 then--屏蔽
             tooltip:AddLine(Get_Channel_Color(name, 2)..(e.onlyChinese and '已屏蔽' or IGNORED))
         end
+        tooltip:AddLine('clubId '..description.data.clubId)
     end)
 
     sub:AddInitializer(Add_Initializer)
@@ -982,6 +1002,8 @@ local function Init_Menu(_, root)
         root:CreateDivider()
     end
 
+
+    
     Init_Filter_Menu(root)--屏蔽刷屏, 菜单
 
     Init_User_Filter_Menu(root)--屏蔽刷屏, 自定义，菜单

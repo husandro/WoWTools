@@ -44,7 +44,6 @@ local function Init_Search(self)
 			--break
 
 		elseif name and data.name:find(name) then
-			print(name, data.name)
 			find2= index
 			cur2= data.currencyID
 		end

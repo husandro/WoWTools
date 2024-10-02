@@ -1,0 +1,159 @@
+--头衔数量
+local e= select(2, ...)
+local function Save()
+    return WoWTools_PaperDollMixin.Save
+end
+local Button
+
+
+
+
+
+
+local function Init_Menu(_, root)
+    local all= GetNumTitles()
+    root:CreateTitle(
+       ((#GetKnownTitles()-1)..'/'..GetNumTitles()..' ')
+       ..(e.onlyChinese and '未收集' or NOT_COLLECTED)
+    )
+
+    local sub
+    local num=0
+    for i=1, all do
+        if not IsTitleKnown(i) then
+            num= num+1
+            local name, playerTitle = GetTitleName(i)
+            if name and playerTitle then
+                local cnName
+                if WoWTools_Chinese_Mixin then
+                    cnName= e.cn(name, {titleID=i})
+                end
+
+                sub=root:CreateButton(
+                    num..') '
+                    ..(cnName and cnName:find('%%s') and format(name, '') or name),
+
+                function(data)
+                    WoWTools_TooltipMixin:Show_URL(true, 'title', data.index, nil)
+                    return MenuResponse.Open
+
+                end, {index=i, name=name, cnName=cnName})
+                sub:SetTooltip(function(tooltip, description)
+                    tooltip:AddLine(e.Icon.left..'wowhead.com')
+                    tooltip:AddLine('index '..description.data.index)
+                    tooltip:AddLine(description.data.name..' ')
+                    local cn= description.data.cnName
+                    if cn and cn:find('%%s') then
+                        local player= UnitName('player')
+                        tooltip:AddLine(format(cn, player))
+                    end
+                end)
+
+            end
+        end
+    end
+
+    WoWTools_MenuMixin:SetScrollMode(root)
+end
+
+
+
+
+
+local function Init_Button()
+--未收集
+    Button= WoWTools_ButtonMixin:CreateMenu(PaperDollFrame.TitleManagerPane, {hideIcon=true})
+    Button.Text= WoWTools_LabelMixin:CreateLabel(Button)
+    Button.Text:SetPoint('CENTER')
+    Button:SetFrameLevel(PaperDollFrame.TitleManagerPane.ScrollBox:GetFrameLevel()+1)
+    Button:SetPoint('TOPRIGHT', -16, 2)
+    Button:SetupMenu(Init_Menu)
+    Button:Hide()
+
+    function Button:settings()
+        self.Text:SetText(GetNumTitles()- #GetKnownTitles() -1)
+        local w, h= self.Text:GetSize()
+        self:SetSize(w+4, h+4)
+    end
+
+    Button:SetScript('OnShow', Button.settings)
+    Button:SetScript('OnHide', function(self)
+        self.Text:SetText("")
+    end)
+
+
+
+
+--已收集数量
+    Title= WoWTools_LabelMixin:CreateLabel(PaperDollSidebarTab2, {justifyH='CENTER', mouse=true})
+    Title:SetPoint('BOTTOM')
+
+    function Title:settings()
+        self:SetText(#GetKnownTitles()-1)
+    end
+    Title:SetScript('OnShow', Title.settings)
+    Title:SetScript('OnHide', function(self)
+        self:SetText("")
+    end)
+
+    Title:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
+    Title:SetScript('OnEnter', function(self)
+        self:settings()
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(e.onlyChinese and '头衔' or PAPERDOLL_SIDEBAR_TITLES, WoWTools_PaperDollMixin.addName)
+        local known= #GetKnownTitles()-1
+        e.tips:AddDoubleLine(
+            '|cnGREEN_FONT_COLOR:'..known,
+            '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or  COLLECTED)
+        )
+
+        e.tips:AddDoubleLine(
+            '|cnRED_FONT_COLOR:'..(GetNumTitles()-known),
+            '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)
+        )
+        e.tips:Show()
+        self:SetAlpha(0.3)
+    end)
+
+    Title:SetScript('OnMouseDown', function()
+        e.call(PaperDollFrame_SetSidebar, _G['PaperDollSidebarTab2'], 2)--PaperDollFrame.lua
+    end)
+
+end
+
+
+
+
+
+
+
+
+
+
+
+local function Settings()
+    if not PAPERDOLL_SIDEBARS[2].IsActive() or Save().hide then
+        if Button then
+            Title:SetShown(false)
+            Button:SetShown(false)
+        end
+        return
+    end
+
+    if not Button then
+        Init_Button()
+    end
+    Title:SetShown(true)
+    Button:SetShown(true)
+end
+
+
+
+
+
+function WoWTools_PaperDollMixin:Init_Title()--头衔数量
+    Settings()
+end
+
+
