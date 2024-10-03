@@ -5014,7 +5014,8 @@
         "CalendarCreateEventInviteListScrollFrame_Update",
         "GUILD_CHALLENGES_THIS_WEEK",
         "CurrencyTransferMenuMixin",
-        "PAPERDOLL_SIDEBAR_TITLES"
+        "PAPERDOLL_SIDEBAR_TITLES",
+        "QuestLogScrollFrameMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

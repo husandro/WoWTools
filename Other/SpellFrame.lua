@@ -214,7 +214,7 @@ local function set_SpellFlyoutButton_UpdateGlyphState(self)
             self.Text:SetPoint('RIGHT', self, 'LEFT',-1, 0)--, 0, 0)
         else
             self.Text:SetPoint('BOTTOM', self, 'TOP', 0,1)--, 2, 4)
-            text=Vstr(text)
+            text= WoWTools_TextMixin:Vstr(text)--垂直文字
         end
     end
     if self.Text then

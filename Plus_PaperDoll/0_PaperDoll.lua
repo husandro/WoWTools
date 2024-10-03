@@ -55,64 +55,6 @@ for i=1, NUM_TOTAL_EQUIPPED_BAG_SLOTS  do
     end
 end
 
-local function LvTo()--总装等
-    if not PaperDollSidebarTab1 then
-        return
-    end
-    local avgItemLevel,_, avgItemLevelPvp
-    if not Save().hide then
-        avgItemLevel,_, avgItemLevelPvp= GetAverageItemLevel()
-        if not PaperDollSidebarTab1.itemLevelText then--PVE
-            PaperDollSidebarTab1.itemLevelText=WoWTools_LabelMixin:CreateLabel(PaperDollSidebarTab1, {justifyH='CENTER', mouse=true})
-            PaperDollSidebarTab1.itemLevelText:SetPoint('BOTTOM')
-            PaperDollSidebarTab1.itemLevelText:EnableMouse(true)
-            PaperDollSidebarTab1.itemLevelText:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
-            PaperDollSidebarTab1.itemLevelText:SetScript('OnMouseDown', function()
-                e.call(PaperDollFrame_SetSidebar, PaperDollSidebarTab1, 1)--PaperDollFrame.lua
-            end)
-            PaperDollSidebarTab1.itemLevelText:SetScript('OnEnter', function(self)
-                e.tips:SetOwner(self, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:AddLine(CharacterStatsPane.ItemLevelFrame.tooltip)
-                e.tips:AddLine(CharacterStatsPane.ItemLevelFrame.tooltip2)
-                e.tips:AddLine(' ')
-                e.tips:AddLine('|cnGREEN_FONT_COLOR:'..format(e.onlyChinese and '物品等级：%d' or CHARACTER_LINK_ITEM_LEVEL_TOOLTIP, self.avgItemLevel or ''))
-                e.tips:AddDoubleLine(e.addName, WoWTools_PaperDollMixin.addName)
-                e.tips:Show()
-                self:SetAlpha(0.3)
-            end)
-        end
-        PaperDollSidebarTab1.itemLevelText.avgItemLevel= avgItemLevel
-
-        if avgItemLevel~= avgItemLevelPvp and avgItemLevelPvp and not PaperDollSidebarTab1.itemLevelPvPText then--PVP
-            PaperDollSidebarTab1.itemLevelPvPText=WoWTools_LabelMixin:CreateLabel(PaperDollSidebarTab1, {justifyH='CENTER', mouse=true})
-            PaperDollSidebarTab1.itemLevelPvPText:SetPoint('TOP')
-            PaperDollSidebarTab1.itemLevelPvPText:SetScript('OnMouseDown', function(self)
-                e.call(PaperDollFrame_SetSidebar, PaperDollSidebarTab1, 1)--PaperDollFrame.lua
-            end)
-            PaperDollSidebarTab1.itemLevelPvPText:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
-            PaperDollSidebarTab1.itemLevelPvPText:SetScript('OnEnter', function(self)
-                e.tips:SetOwner(self, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:AddLine(CharacterStatsPane.ItemLevelFrame.tooltip)
-                e.tips:AddLine(CharacterStatsPane.ItemLevelFrame.tooltip2)
-                e.tips:AddLine(' ')
-                e.tips:AddLine('|cnGREEN_FONT_COLOR:'..format(e.onlyChinese and 'PvP物品等级 %d' or ITEM_UPGRADE_PVP_ITEM_LEVEL_STAT_FORMAT, self.avgItemLevel or '0'))
-                e.tips:AddDoubleLine(e.addName, WoWTools_PaperDollMixin.addName)
-                e.tips:Show()
-                self:SetAlpha(0.3)
-            end)
-        end
-    end
-    if PaperDollSidebarTab1.itemLevelText then
-        PaperDollSidebarTab1.itemLevelText:SetText(avgItemLevel and avgItemLevel>0 and format('%i', avgItemLevel) or '')
-    end
-
-    if PaperDollSidebarTab1.itemLevelPvPText then
-        PaperDollSidebarTab1.itemLevelPvPText:SetText(avgItemLevelPvp and avgItemLevelPvp>0 and format('%i', avgItemLevelPvp) or '')
-    end
-end
-
 
 
 
@@ -892,383 +834,6 @@ end
 
 
 
---#######
---装备管理
---#######
-local function Init_TrackButton()--添加装备管理框
-    if not Save().equipment or not PAPERDOLL_SIDEBARS[3].IsActive() or Save().hide or TrackButton then
-        if TrackButton then
-            TrackButton:set_shown()
-            TrackButton:init_buttons()
-        end
-        return
-    end
-
-    TrackButton=WoWTools_ButtonMixin:Cbtn(UIParent, {icon='hide'})--添加移动按钮
-    TrackButton.buttons={}--添加装备管理按钮
-
-    TrackButton:SetSize(20,20)
-    TrackButton:RegisterForDrag("RightButton")
-    TrackButton:SetClampedToScreen(true)
-    TrackButton:SetMovable(true)
-    TrackButton.text= WoWTools_LabelMixin:CreateLabel(TrackButton, {color=true, alpha=0.5})
-    TrackButton.text:SetPoint('BOTTOM')
-
-    TrackButton:SetScript("OnDragStart", function(self)
-        if IsAltKeyDown() then
-            self:StartMoving()
-        end
-    end)
-    TrackButton:SetScript("OnDragStop", function(self)
-        self:StopMovingOrSizing()
-        Save().Equipment={self:GetPoint(1)}
-        Save().Equipment[2]=nil
-    end)
-    TrackButton:SetScript('OnMouseDown', function(_, d)
-        if d=='RightButton' and IsAltKeyDown() then--移动图标
-            SetCursor('UI_MOVE_CURSOR')
-        end
-    end)
-    TrackButton:SetScript("OnMouseUp", ResetCursor)
-    TrackButton:SetScript("OnClick", function(self, d)
-        if d=='RightButton' and IsControlKeyDown() then--图标横,或 竖
-            Save().EquipmentH= not Save().EquipmentH and true or nil
-            for index, btn in pairs(self.buttons) do
-                btn:ClearAllPoints()
-                self:set_button_point(btn, index)--设置位置
-            end
-
-        elseif d=='LeftButton' and not IsModifierKeyDown() then--打开/关闭角色界面
-            ToggleCharacter("PaperDollFrame")
-            if PaperDollFrame:IsShown() then
-                PaperDollFrame_SetSidebar(PaperDollFrame, 3)
-            end
-        end
-    end)
-    TrackButton:SetScript('OnMouseWheel',function(self, d)--放大
-        if IsAltKeyDown() then
-            local n=Save().equipmentFrameScale or 1
-            if d==1 then
-                n=n+0.05
-            elseif d==-1 then
-                n=n-0.05
-            end
-            n= n>4 and 4 or n
-            n= n<0.4 and 0.4 or n
-            Save().equipmentFrameScale=n
-            self:set_scale()--缩放
-            print(e.addName, WoWTools_PaperDollMixin.addName, e.onlyChinese and '缩放' or UI_SCALE, GREEN_FONT_COLOR_CODE..n)
-        end
-    end)
-    TrackButton:SetScript("OnEnter", function (self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-
-        e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭角色界面' or BINDING_NAME_TOGGLECHARACTER0, e.Icon.left)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save().equipmentFrameScale or 1),'Alt+'..e.Icon.mid)
-        e.tips:AddDoubleLine(not Save().EquipmentH and format('|A:%s:0:0|a', e.Icon.toRight)..(e.onlyChinese and '向右' or BINDING_NAME_STRAFERIGHT) or ('|A:UI-HUD-MicroMenu-StreamDLRed-Up:0:0|a'..(e.onlyChinese and '向下' or BINDING_NAME_PITCHDOWN)),
-                'Ctrl+'..e.Icon.right)
-
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.addName, e.onlyChinese and '装备管理'or EQUIPMENT_MANAGER)
-        e.tips:Show()
-        if panel.equipmentButton and panel.equipmentButton:IsVisible() then
-            panel.equipmentButton:SetButtonState('PUSHED')
-            panel.equipmentButton:SetAlpha(1)
-        end
-    end)
-    TrackButton:SetScript("OnLeave", function()
-        ResetCursor()
-        e.tips:Hide()
-        if panel.equipmentButton then
-            panel.equipmentButton:SetButtonState('NORMAL')
-            panel.equipmentButton:SetAlpha(0.5)
-        end
-    end)
-
-
-    --装等
-    function TrackButton:set_player_itemLevel()
-        self.text:SetFormattedText('%i', select(2, GetAverageItemLevel()) or 0)
-    end
-
-
-    --位置保存
-    function TrackButton:set_point()
-        if Save().Equipment then
-            self:SetPoint(Save().Equipment[1], UIParent, Save().Equipment[3], Save().Equipment[4], Save().Equipment[5])
-        elseif e.Player.husandro then
-            self:SetPoint('TOPLEFT', PlayerFrame.PlayerFrameContainer.FrameTexture, 'TOPRIGHT',-4,-3)
-        else
-            self:SetPoint('BOTTOMRIGHT', PaperDollItemsFrame, 'TOPRIGHT')
-        end
-    end
-
-    --缩放
-    function TrackButton:set_scale()
-        self:SetScale(Save().equipmentFrameScale or 1)
-    end
-
-
-    --设置，显示
-    function TrackButton:set_shown()
-        self:SetShown(
-            not Save().hide
-            and Save().equipment
-            and not C_PetBattles.IsInBattle()
-            and not UnitHasVehicleUI('player')
-        )
-    end
-
-    --设置，列表位置
-    function TrackButton:set_button_point(button, index)
-        local btn= index==1 and TrackButton or TrackButton.buttons[index-1]
-        if Save().EquipmentH then
-            button:SetPoint('LEFT', btn, 'RIGHT')
-        else
-            button:SetPoint('TOP', btn, 'BOTTOM')
-        end
-    end
-
-    --提示，没有装上
-    function TrackButton:tips_not_equipment()
-        if not IsInInstance() or not self:IsShown() then-- or not IsInGroup() then
-            return
-        end
-        local equipped
-        local num=0
-        for _, setID in pairs(C_EquipmentSet.GetEquipmentSetIDs() or {}) do
-            local isEquipped, numItems= select(4, C_EquipmentSet.GetEquipmentSetInfo(setID))
-            if numItems>0 then
-                num= num+1
-                if isEquipped then
-                    equipped=true
-                    break
-                end
-            end
-        end
-        WoWTools_FrameMixin:HelpFrame({frame=self, point='left', size={40,40}, color={r=1,g=0,b=0,a=1}, show= not equipped and num>0, hideTime=10})
-    end
-
-    --建立，按钮
-    function TrackButton:create_button(index)
-        local btn=WoWTools_ButtonMixin:Cbtn(self, {icon='hide',size={20,20}})
-        btn.texture= btn:CreateTexture(nil, 'OVERLAY')
-        btn.texture:SetSize(26,26)
-        btn.texture:SetPoint('CENTER')
-        btn.texture:SetAtlas('AlliedRace-UnlockingFrame-GenderMouseOverGlow')
-        btn.text= WoWTools_LabelMixin:CreateLabel(btn, {color=true, size=10, alpha=0.5})
-        btn.text:SetPoint('BOTTOMRIGHT')
-        self:set_button_point(btn, index)--设置位置
-        btn:SetScript("OnClick",function(frame)
-            if not UnitAffectingCombat('player') then
-                C_EquipmentSet.UseEquipmentSet(frame.setID)
-                if TrackButton.HelpTips then
-                    TrackButton.HelpTips:SetShown(false)
-                end
-                C_Timer.After(1.5, function()
-                    LvTo()--修改总装等
-                end)
-            else
-                print(e.addName, WoWTools_PaperDollMixin.addName, RED_FONT_COLOR_CODE, e.onlyChinese and '你无法在战斗中实施那个动作' or ERR_NOT_IN_COMBAT)
-            end
-        end)
-        btn:SetScript("OnEnter", function(frame)
-            if ( frame.setID ) then
-                e.tips:SetOwner(frame, "ANCHOR_LEFT")
-                e.tips:SetEquipmentSet(frame.setID)
-                if UnitAffectingCombat('player') then
-                    e.tips:AddLine(' ')
-                    e.tips:AddDoubleLine(' ', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '你无法在战斗中实施那个动作' or ERR_NOT_IN_COMBAT))
-                end
-                local specIndex=C_EquipmentSet.GetEquipmentSetAssignedSpec(frame.setID)
-                if specIndex then
-                    local _, specName2, _, icon3 = GetSpecializationInfo(specIndex)
-                    if icon3 and specName2 then
-                        e.tips:AddLine(' ')
-                        e.tips:AddLine(format(e.onlyChinese and '%s专精' or PROFESSIONS_SPECIALIZATIONS_PAGE_NAME, '|T'..icon3..':0|t|cffff00ff'..specName2..'|r'))
-                    end
-                end
-                e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(e.addName, WoWTools_PaperDollMixin.addName)
-                e.tips:Show()
-                --local name, iconFileID, _, isEquipped2, numItems, numEquipped, numInInventory, numLost, numIgnored = C_EquipmentSet.GetEquipmentSetInfo(self.setID)
-                if panel.equipmentButton and panel.equipmentButton:IsVisible() then
-                    panel.equipmentButton:SetButtonState('PUSHED')
-                    panel.equipmentButton:SetAlpha(1)
-                end
-            end
-            frame:SetAlpha(1)
-        end)
-
-        btn:SetScript("OnLeave",function(frame)
-            e.tips:Hide()
-            frame:set_alpha()
-        end)
-        btn:RegisterEvent('PLAYER_REGEN_DISABLED')
-        btn:RegisterEvent('PLAYER_REGEN_ENABLED')
-        function btn:set_shown()
-            self:SetShown(self.setID and (self.isEquipped or not UnitAffectingCombat('player')))
-        end
-        function btn:set_alpha()
-            self:SetAlpha((self.numItems==0 and not self.isEquipped) and 0.3 or 1)
-        end
-        btn:SetScript('OnEvent', btn.set_shown)
-        self.buttons[index]=btn
-        return btn
-    end
-    --设置，初始，按钮
-    function TrackButton:init_buttons()
-        if not self:IsShown() then
-            return
-        end
-        local setIDs= SortEquipmentSetIDs(C_EquipmentSet.GetEquipmentSetIDs() or {})--PaperDollFrame.lua
-        local numIndex=0
-        for index, setID in pairs(setIDs) do
-            local texture, _, isEquipped, numItems, _, _, numLost= select(2, C_EquipmentSet.GetEquipmentSetInfo(setID))
-
-            local btn=self.buttons[index] or self:create_button(index)
-            if numItems==0 then
-                btn:SetNormalAtlas('groupfinder-eye-highlight')
-            else
-                if texture==134400 then--?图标
-                    local specIndex = C_EquipmentSet.GetEquipmentSetAssignedSpec(setID)
-                    if specIndex then
-                        texture= select(4, GetSpecializationInfo(specIndex))
-                    end
-                end
-                btn:SetNormalTexture(texture or 0)
-            end
-            if numItems==0 then
-                btn.text:SetText('')
-            else
-                btn.text:SetText(numLost>0 and '|cnRED_FONT_COLOR:'..numLost or numItems)
-            end
-            btn.texture:SetShown(isEquipped)
-            btn.setID=setID
-            btn.isEquipped= isEquipped
-            btn.numItems=numItems
-            numIndex=index
-            btn:set_shown()
-            btn:set_alpha()
-        end
-        for index= numIndex+1, #self.buttons, 1 do
-            self.buttons[index].setID=nil
-            self.buttons[index].isEquipped=nil
-            self.buttons[index].numItems=0
-            self.buttons[index]:set_shown()
-        end
-    end
-
-
-
-    --更新
-    hooksecurefunc('PaperDollEquipmentManagerPane_Update',  function()
-        TrackButton:init_buttons()
-    end)
-
-    TrackButton:RegisterEvent('EQUIPMENT_SWAP_FINISHED')
-    TrackButton:RegisterEvent('EQUIPMENT_SETS_CHANGED')
-    TrackButton:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
-    TrackButton:RegisterEvent('BAG_UPDATE_DELAYED')
-    TrackButton:RegisterEvent('PLAYER_ENTERING_WORLD')
-    TrackButton:RegisterEvent('READY_CHECK')
-    TrackButton:RegisterEvent('PET_BATTLE_OPENING_DONE')
-    TrackButton:RegisterEvent('PET_BATTLE_CLOSE')
-    TrackButton:RegisterUnitEvent('UNIT_EXITED_VEHICLE', 'player')
-    TrackButton:RegisterUnitEvent('UNIT_ENTERED_VEHICLE', 'player')
-
-    --TrackButton:RegisterEvent('BAG_UPDATE')
-    TrackButton:SetScript('OnEvent', function(self, event)
-        if event=='PLAYER_ENTERING_WORLD' or event=='READY_CHECK' then
-            self:tips_not_equipment()
-
-        elseif event=='PET_BATTLE_CLOSE'
-            or event=='PET_BATTLE_OPENING_DONE'
-            or event=='UNIT_ENTERED_VEHICLE'
-            or event=='UNIT_EXITED_VEHICLE'
-        then
-            self:set_shown()
-
-        elseif not self.time or self.time:IsCancelled() then
-            self.time= C_Timer.NewTimer(0.6, function()
-                self:init_buttons()
-                self:set_player_itemLevel()
-                self.time:Cancel()
-            end)
-
-        end
-    end)
-
-    TrackButton:set_point()
-    TrackButton:set_scale()
-    TrackButton:set_shown()
-    TrackButton:init_buttons()
-    TrackButton:tips_not_equipment()
-    TrackButton:set_player_itemLevel()
-end
-
-
-
-
-
-
---装备管理, 总开关
-function Init_TrackButton_ShowHide_Button()
-    if Save().hide or not PAPERDOLL_SIDEBARS[3].IsActive() then
-        if panel.equipmentButton then
-            panel.equipmentButton:SetShown(false)
-        end
-        return
-    elseif panel.equipmentButton then
-        panel.equipmentButton:SetShown(true)
-        return
-    end
-    panel.equipmentButton = WoWTools_ButtonMixin:Cbtn(PaperDollFrame.EquipmentManagerPane, {size={20,20}, atlas= Save().equipment and 'auctionhouse-icon-favorite' or e.Icon.disabled})--显示/隐藏装备管理框选项
-    panel.equipmentButton:SetPoint('RIGHT', CharacterFrameCloseButton, 'LEFT')
-    panel.equipmentButton:SetFrameStrata(CharacterFrameCloseButton:GetFrameStrata())
-    panel.equipmentButton:SetFrameLevel(CharacterFrameCloseButton:GetFrameLevel()+1)
-    panel.equipmentButton:SetAlpha(0.3)
-    panel.equipmentButton:SetScript("OnClick", function(self, d)
-        if d=='LeftButton' and not IsModifierKeyDown() then
-            Save().equipment= not Save().equipment and true or nil
-            self:SetNormalAtlas(Save().equipment and 'auctionhouse-icon-favorite' or e.Icon.disabled)
-            Init_TrackButton()--添加装备管理框
-            print(e.addName, WoWTools_PaperDollMixin.addName, e.GetShowHide(Save().equipment))
-        elseif d=='RightButton' and IsControlKeyDown() then
-            Save().Equipment=nil
-            if TrackButton then
-                TrackButton:ClearAllPoints()
-                TrackButton:set_point()
-            end
-            print(e.addName, WoWTools_PaperDollMixin.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
-        end
-    end)
-    panel.equipmentButton:SetScript("OnEnter", function (self)
-        e.tips:SetOwner(self, "ANCHOR_TOPLEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, WoWTools_PaperDollMixin.addName)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '装备管理' or EQUIPMENT_MANAGER, e.Icon.left..e.GetShowHide(Save().equipment))
-        local col= not (self.btn and Save().Equipment) and '|cff9e9e9e' or ''
-        e.tips:AddDoubleLine(col..(e.onlyChinese and '重置位置' or RESET_POSITION), col..'Ctrl+'..e.Icon.right)
-        e.tips:Show()
-        self:SetAlpha(1)
-        if TrackButton then
-            TrackButton:SetButtonState('PUSHED')
-        end
-    end)
-    panel.equipmentButton:SetScript("OnLeave",function(self)
-        GameTooltip_Hide()
-        if TrackButton then
-            TrackButton:SetButtonState("NORMAL")
-        end
-        self:SetAlpha(0.3)
-    end)
-end
-
 
 
 
@@ -1374,12 +939,11 @@ local function Init_Show_Hide_Button(frame)
         WoWTools_PaperDollMixin:Set_Server_Info()--显示服务器名称
 
         WoWTools_PaperDollMixin:Init_Title()--头衔数量
-        LvTo()--总装等
+        WoWTools_PaperDollMixin:Init_Tab1_ItemLevel()--总装等
         set_PaperDollSidebarTab3_Text()--标签, 内容,提示
         --Init_ChromieTime()--时空漫游战役, 提示
 
-        Init_TrackButton_ShowHide_Button()--装备管理, 总开关
-        Init_TrackButton()--添加装备管理框
+        WoWTools_PaperDollMixin:Init_TrackButton()--添加装备管理框
 
         panel:Init_Status_Plus()
 
@@ -1640,69 +1204,6 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
---################
---时空漫游战役, 提示
---[[################
-local function Init_ChromieTime()--时空漫游战役, 提示
-    local canEnter = C_PlayerInfo.CanPlayerEnterChromieTime()
-    if canEnter and not Save().hide and not panel.ChromieTime then
-        panel.ChromieTime= WoWTools_ButtonMixin:Cbtn(PaperDollItemsFrame, {size={18,18}, atlas='ChromieTime-32x32'})
-        panel.ChromieTime:SetAlpha(0.5)
-        if PaperDollItemsFrame.ShowHideButton then
-            panel.ChromieTime:SetPoint('LEFT', PaperDollItemsFrame.ShowHideButton, 'RIGHT')
-            panel.ChromieTime:SetFrameLevel(CharacterFrame.TitleContainer:GetFrameLevel()+1)
-        else
-            panel.ChromieTime:SetPoint('BOTTOMLEFT', PaperDollItemsFrame, 5, 10)
-        end
-        panel.ChromieTime:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(0.5) end)
-        panel.ChromieTime:SetScript('OnEnter', function(self2)
-            e.tips:SetOwner(self2, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            local expansionID = UnitChromieTimeID('player')--时空漫游战役 PartyUtil.lua
-            local option = C_ChromieTime.GetChromieTimeExpansionOption(expansionID)
-            local expansion = option and e.cn(option.name) or (e.onlyChinese and '无' or NONE)
-            if option and option.previewAtlas then
-                expansion= '|A:'..option.previewAtlas..':0:0|a'..expansion
-            end
-            local text= format(e.onlyChinese and '你目前处于|cffffffff时空漫游战役：%s|r' or PARTY_PLAYER_CHROMIE_TIME_SELF_LOCATION, expansion)
-            e.tips:AddDoubleLine((e.onlyChinese and '选择时空漫游战役' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHROMIE_TIME_SELECT_EXAPANSION_BUTTON, CHROMIE_TIME_PREVIEW_CARD_DEFAULT_TITLE))..': '..e.GetEnabeleDisable(C_PlayerInfo.CanPlayerEnterChromieTime()),
-                                    text
-                                )
-            e.tips:AddLine(' ')
-            for _, info in pairs(C_ChromieTime.GetChromieTimeExpansionOptions() or {}) do
-                local col= info.alreadyOn and '|cffff00ff' or ''-- option and option.id==info.id
-                e.tips:AddDoubleLine((info.alreadyOn and format('|A:%s:0:0|a', e.Icon.toRight) or '')..col..(info.previewAtlas and '|A:'..info.previewAtlas..':0:0|a' or '')..info.name..(info.alreadyOn and format('|A:%s:0:0|a', e.Icon.toLeft) or '')..col..' ID '.. info.id, col..(e.onlyChinese and '完成' or COMPLETE)..': '..e.GetYesNo(info.completed))
-                --e.tips:AddDoubleLine(' ', col..(info.mapAtlas and '|A:'..info.mapAtlas..':0:0|a'.. info.mapAtlas))
-                --e.tips:AddDoubleLine(' ', col..(info.previewAtlas and '|A:'..info.previewAtlas..':0:0|a'.. info.previewAtlas))
-                --e.tips:AddDoubleLine(' ', col..(e.onlyChinese and '完成' or COMPLETE)..': '..e.GetYesNo(info.completed))
-            end
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.addName, WoWTools_PaperDollMixin.addName)
-            e.tips:Show()
-            self2:SetAlpha(1)
-        end)
-    end
-    if panel.ChromieTime then
-        panel.ChromieTime:SetShown(canEnter and not Save().hide)
-    end
-end]]
 
 
 
@@ -2647,10 +2148,7 @@ local function Init()
 
     GetDurationTotale()--装备,总耐久度
 
-   
 
-
-    --Init_ChromieTime()--时空漫游战役, 提示
 
     hooksecurefunc('PaperDollFrame_UpdateSidebarTabs', function()--头衔数量
         WoWTools_PaperDollMixin:Init_Title()--总装等
@@ -2659,11 +2157,11 @@ local function Init()
 
     hooksecurefunc('PaperDollEquipmentManagerPane_Update', function()--装备管理
         set_PaperDollSidebarTab3_Text()
-        LvTo()--总装等
+        WoWTools_PaperDollMixin:Set_Tab1_ItemLevel()--总装等
     end)
     hooksecurefunc('GearSetButton_SetSpecInfo', function()--装备管理,修该专精
         set_PaperDollSidebarTab3_Text()
-        LvTo()--总装等
+        WoWTools_PaperDollMixin:Set_Tab1_ItemLevel()--总装等
     end)
     hooksecurefunc('GearSetButton_UpdateSpecInfo', function(self)--套装已装备数量
         local setID=self.setID
@@ -2701,7 +2199,7 @@ local function Init()
                 set_Item_Tips(self, slot, link, true)
                 WoWTools_ItemStatsMixin:SetItem(self, not Save().hide and link or nil, {point=self.icon})
                 set_PaperDollSidebarTab3_Text()
-                LvTo()--总装等
+                WoWTools_PaperDollMixin:Set_Tab1_ItemLevel()--总装等
             end
             set_Slot_Num_Label(self, slot, link and true or nil)--栏位
         elseif InventSlot_To_ContainerSlot[slot] then
@@ -2797,13 +2295,13 @@ local function Init()
     WoWTools_PaperDollMixin:Init_EquipmentFlyout()--装备弹出
     WoWTools_PaperDollMixin:Init_SetLevel()--更改,等级文本
     WoWTools_PaperDollMixin:Set_Server_Info()--显示服务器名称--显示服务器名称，装备管理框
+    WoWTools_PaperDollMixin:Init_Tab1_ItemLevel()--总装等
 
     panel:Init_Status_Plus()--属性，增强
 
 
     C_Timer.After(2, function()
-        Init_TrackButton_ShowHide_Button()--装备管理, 总开关
-        Init_TrackButton()
+        WoWTools_PaperDollMixin:Init_TrackButton()
     end)--装备管理框
 end
 
@@ -2888,7 +2386,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            WoWToolsSave[addName]=Save
+            WoWToolsSave['Plus_PaperDoll']= Save()
         end
 
     elseif event=='UPDATE_INVENTORY_DURABILITY' then

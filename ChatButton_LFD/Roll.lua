@@ -1,15 +1,15 @@
 
 
 
-local function set_RollOnLoot(rollID, rollType, link)
+local function set_RollOnLoot(rollID, rollType, link, notPrint)
     RollOnLoot(rollID, rollType)
 
     link= link or GetLootRollItemLink(rollID)
 
-    if not link then
+    if not link or not notPrint then
         return
     end
-    
+
     print(
         '|A:groupfinder-eye-frame:0:0|a|cnGREEN_FONT_COLOR:'
         ..(rollType==1 and '|A:lootroll-toast-icon-need-up:0:0|a' or '|A:lootroll-toast-icon-transmog-up:0:0|a')
@@ -37,7 +37,7 @@ end
 
 
 
-local function set_ROLL_Check(frame)
+local function set_ROLL_Check(frame, notPrint)
     local rollID= frame and frame.rollID
     if not WoWTools_LFDMixin.Save.autoROLL or not rollID then
         set_Timer_Text(frame)--提示，剩余时间
@@ -49,7 +49,7 @@ local function set_ROLL_Check(frame)
     local link = GetLootRollItemLink(rollID)
 
     if not canNeed or (IsInLFGDungeon() and quality and quality>=3) or not link then
-        set_RollOnLoot(rollID, canNeed and 1 or 2, link)
+        set_RollOnLoot(rollID, canNeed and 1 or 2, link, notPrint)
         return
     end
 
@@ -60,7 +60,7 @@ local function set_ROLL_Check(frame)
             if hasItemData and canCollect then
                 local sourceInfo = C_TransmogCollection.GetSourceInfo(sourceID)
                 if sourceInfo and not sourceInfo.isCollected then
-                    set_RollOnLoot(rollID, 1, link)
+                    set_RollOnLoot(rollID, 1, link, notPrint)
                     return
                 end
             end
@@ -77,7 +77,7 @@ local function set_ROLL_Check(frame)
             if itemLevel then
                 local num=itemLevel-slotItemLevel
                 if num>0 then
-                    set_RollOnLoot(rollID, 1, link)
+                    set_RollOnLoot(rollID, 1, link, notPrint)
                     return
                 end
             end
@@ -87,7 +87,7 @@ local function set_ROLL_Check(frame)
         end
 
     elseif classID==15 and subclassID==2 then--宠物物品
-        set_RollOnLoot(rollID, 1, link)
+        set_RollOnLoot(rollID, 1, link, notPrint)
         return
 
     elseif classID==15 and  subclassID==5 then--坐骑
@@ -95,17 +95,17 @@ local function set_ROLL_Check(frame)
         if mountID then
             local isCollected =select(11, C_MountJournal.GetMountInfoByID(mountID))
             if not isCollected then
-                set_RollOnLoot(rollID, 1, link)
+                set_RollOnLoot(rollID, 1, link, notPrint)
                 return
             end
         end
 
     elseif C_ToyBox.GetToyInfo(itemID) and not PlayerHasToy(itemID) then--玩具 
-        set_RollOnLoot(rollID, 1, link)
+        set_RollOnLoot(rollID, 1, link, notPrint)
         return
 
     elseif classID==0 or subclassID==0 then
-        set_RollOnLoot(rollID, 1, link)
+        set_RollOnLoot(rollID, 1, link, notPrint)
         return
     end
 
@@ -132,7 +132,7 @@ local function Init()
         for i=1, self.maxIndex do
             local frame = self.rollFrames[i]
             if frame and frame:IsShown()  then
-                set_ROLL_Check(frame)
+                set_ROLL_Check(frame, true)
             end
         end
     end)
