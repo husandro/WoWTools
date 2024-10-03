@@ -13,10 +13,10 @@ local addName
 
 
 
-
+--EquipmentManager.lua
 local function IsCan_EquipSet(setID)
 	if not setID or C_EquipmentSet.EquipmentSetContainsLockedItems(setID) or UnitCastingInfo("player") then
-		return e.onlyChinese and '你还不能那样做。' or ERR_CLIENT_LOCKED_OUT
+		return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '你还不能那样做。' or ERR_CLIENT_LOCKED_OUT)..'|r'
 	end
 end
 
@@ -168,7 +168,7 @@ local function Create_Button(index)
                 WoWTools_PaperDollMixin:Set_Tab1_ItemLevel()--修改总装等
             end)
         else
-            print(e.addName, addName, RED_FONT_COLOR_CODE, notCan)
+            print(e.addName, addName, notCan)
         end
     end)
     btn:SetScript("OnEnter", function(self)

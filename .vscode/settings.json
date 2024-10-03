@@ -5020,7 +5020,8 @@
         "GameTooltip_SetTooltipWaitingForData",
         "ITEM_UPGRADE_STAT_AVERAGE_ITEM_LEVEL",
         "GetPaperDollSideBarFrame",
-        "ERR_CLIENT_LOCKED_OUT"
+        "ERR_CLIENT_LOCKED_OUT",
+        "EquipmentManager"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
