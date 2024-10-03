@@ -34,7 +34,7 @@ end
  --索引，提示
  local function set_index_label(btn, index)
     if not btn.indexLable and Save().showIndex then
-        btn.indexLable= WoWTools_LabelMixin:CreateLabel(btn, {layer='BACKGROUND', color={r=1,g=1,b=1}})
+        btn.indexLable= WoWTools_LabelMixin:Create(btn, {layer='BACKGROUND', color={r=1,g=1,b=1}})
         btn.indexLable:SetPoint('CENTER')
         btn.indexLable:SetAlpha(0.2)
     end

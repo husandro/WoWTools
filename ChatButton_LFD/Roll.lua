@@ -24,7 +24,7 @@ end
 --提示，剩余时间
 local function set_Timer_Text(frame)--提示，剩余时间
     if frame and frame.Timer and not frame.Timer.Text and frame:IsShown() then
-        frame.Timer.Text= WoWTools_LabelMixin:CreateLabel(frame.Timer)
+        frame.Timer.Text= WoWTools_LabelMixin:Create(frame.Timer)
         frame.Timer.Text:SetPoint('RIGHT')
         frame.Timer:HookScript("OnUpdate", function(self2)
             self2.Text:SetText(WoWTools_TimeMixin:SecondsToClock(self2:GetValue()))

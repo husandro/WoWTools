@@ -452,7 +452,7 @@ local function Init()
     Menu:set_texture_size()
 
     --对话，内容
-    Menu.GossipText= WoWTools_LabelMixin:CreateLabel(Frame)
+    Menu.GossipText= WoWTools_LabelMixin:Create(Frame)
     Menu.GossipText:SetPoint('TOP', Menu.Icon, 'BOTTOM', 0,-2)
 
 
@@ -671,7 +671,7 @@ local function Init()
     end)
 
     --自定义，对话，文本，数量
-    Menu.NumLabel= WoWTools_LabelMixin:CreateLabel(Frame)
+    Menu.NumLabel= WoWTools_LabelMixin:Create(Frame)
     Menu.NumLabel:SetPoint('LEFT', Menu.DeleteAllPlayerData, 'RIGHT')
 
 
@@ -743,7 +743,7 @@ local function Init()
     Menu.chat:SetupMenu(Chat_Menu)
 
     --GossipFrame 有多少对话
-    Menu.chat.Text= WoWTools_LabelMixin:CreateLabel(Menu.chat, {justifyH='CENTER'})
+    Menu.chat.Text= WoWTools_LabelMixin:Create(Menu.chat, {justifyH='CENTER'})
     Menu.chat.Text:SetPoint('CENTER', 1, 4.2)
 
 
@@ -751,7 +751,7 @@ local function Init()
     --默认，自定义，列表
     Menu.System= WoWTools_ButtonMixin:Cbtn(Frame, {size={22, 22}, icon='hide'})
     Menu.System:SetPoint('BOTTOMRIGHT', Menu.ID, 'TOPRIGHT', 0, 2)
-    Menu.System.Text= WoWTools_LabelMixin:CreateLabel(Menu.System)
+    Menu.System.Text= WoWTools_LabelMixin:Create(Menu.System)
     Menu.System.Text:SetPoint('CENTER')
     function Menu.System:set_num()--默认，自定义，列表        
         local n=0

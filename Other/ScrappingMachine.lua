@@ -201,7 +201,7 @@ end
 
 local function Init_Disabled_Button()
     local btn= WoWTools_ButtonMixin:Cbtn(ScrappingMachineFrame, {size=28, icon='hide'})
-    btn.Text= WoWTools_LabelMixin:CreateLabel(btn)
+    btn.Text= WoWTools_LabelMixin:Create(btn)
     btn.Text:SetPoint('CENTER')
     btn:SetPoint('RIGHT', -10,0)
     function btn:get_num()

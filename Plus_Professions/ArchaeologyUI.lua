@@ -92,7 +92,7 @@ local function Init_ArcheologyDigsiteProgressBar_OnShow(frame)
     if ArcheologyButton and not ArcheologyButton.keyButton then
         ArcheologyButton.keyButton= WoWTools_ButtonMixin:Cbtn(frame, {size={20,20}, icon='hide'})
         ArcheologyButton.keyButton:SetPoint('LEFT', frame, 'RIGHT', 0, -4)
-        ArcheologyButton.keyButton.text=WoWTools_LabelMixin:CreateLabel(ArcheologyButton.keyButton, {color={r=0, g=1, b=0}, size=14})
+        ArcheologyButton.keyButton.text=WoWTools_LabelMixin:Create(ArcheologyButton.keyButton, {color={r=0, g=1, b=0}, size=14})
         ArcheologyButton.keyButton.text:SetPoint('CENTER')
 
         ArcheologyButton.keyButton:SetScript('OnLeave', GameTooltip_Hide)

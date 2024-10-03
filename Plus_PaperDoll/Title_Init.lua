@@ -63,7 +63,7 @@ end
 local function Init_Button()
 --未收集
     Button= WoWTools_ButtonMixin:CreateMenu(PaperDollFrame.TitleManagerPane, {hideIcon=true})
-    Button.Text= WoWTools_LabelMixin:CreateLabel(Button)
+    Button.Text= WoWTools_LabelMixin:Create(Button)
     Button.Text:SetPoint('CENTER')
     Button:SetFrameLevel(PaperDollFrame.TitleManagerPane.ScrollBox:GetFrameLevel()+1)
     Button:SetPoint('TOPRIGHT', -16, 2)
@@ -85,7 +85,7 @@ local function Init_Button()
 
 
 --已收集数量
-    Title= WoWTools_LabelMixin:CreateLabel(PaperDollSidebarTab2, {justifyH='CENTER', mouse=true})
+    Title= WoWTools_LabelMixin:Create(PaperDollSidebarTab2, {justifyH='CENTER', mouse=true})
     Title:SetPoint('BOTTOM')
 
     function Title:settings()

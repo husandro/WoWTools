@@ -43,7 +43,7 @@ local function Set_Load_Button()--LoadButtons
             btn.texture2= btn:CreateTexture(nil, 'OVERLAY')
             btn.texture2:SetAllPoints(btn)
             btn.texture2:SetAtlas('Forge-ColorSwatchSelection')
-            --btn.Text= WoWTools_LabelMixin:CreateLabel(btn)
+            --btn.Text= WoWTools_LabelMixin:Create(btn)
             --btn.Text:SetPoint('CENTER')
             btn:SetScript('OnLeave', function(self)
                 if self.findFrame then

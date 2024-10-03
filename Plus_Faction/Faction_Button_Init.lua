@@ -91,11 +91,11 @@ local function Init_Menu(self, root)
 		end, {factionID=factionID})
 		sub2:SetOnEnter(function(btn, description)
 			btn.factionID= description.data.factionID
-			WoWTools_FactionMixin:SetTooltip(btn)
+			WoWTools_SetTooltipMixin:Faction(btn)
 		end)
 		sub2:SetOnLeave(function(btn)
 			btn.factionID=nil
-			WoWTools_FactionMixin:HideTooltip()
+			WoWTools_SetTooltipMixin:Hide()
 		end)
 		num= num+1
 	end

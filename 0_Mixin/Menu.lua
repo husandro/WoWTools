@@ -1,5 +1,7 @@
 --[[
 CreateSlider(root, tab)
+ScaleRoot
+ScaleCheck
 Scale(root, GetValue, SetValue, checkGetValue, checkSetValue)
 
 ShowBackground(root, GetValue, SetValue)
@@ -7,6 +9,7 @@ FrameStrata(root, GetValue, SetValue)
 RestPoint(root, point, SetValue)
 RestData(root, name, SetValue)
 Reload(root, isControlKeyDown)
+
 ClearAll()
 ToTop(root, tab)
 
@@ -122,21 +125,13 @@ sub:CreateSpacer()
 ]]
 
 
---缩放
-function WoWTools_MenuMixin:Scale(root, GetValue, SetValue, checkGetValue, checkSetValue)
-    local sub
-    local text= '|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '缩放' or UI_SCALE)
 
-    if checkGetValue and checkSetValue then
-        sub= root:CreateCheckbox(text, checkGetValue, checkSetValue)
-    else
-        sub= root:CreateButton(text, function()
-            return MenuResponse.Open
-        end)
-    end
 
-    sub:CreateSpacer()
-    local sub2=self:CreateSlider(sub, {
+
+--缩放, 单行
+function WoWTools_MenuMixin:ScaleRoot(root, GetValue, SetValue)
+    root:CreateSpacer()
+    local sub= self:CreateSlider(root, {
         getValue=GetValue,
         setValue=SetValue,
         name=nil,
@@ -145,19 +140,48 @@ function WoWTools_MenuMixin:Scale(root, GetValue, SetValue, checkGetValue, check
         step=0.05,
         bit='%0.2f',
         tooltip=function(tooltip)
-            tooltip:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE, UnitAffectingCombat('player') and ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)))
+            tooltip:AddDoubleLine(
+                e.onlyChinese and '缩放' or UI_SCALE,
+
+                UnitAffectingCombat('player')
+                and ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+            )
         end
     })
-    sub:CreateSpacer()
+    root:CreateSpacer()
 
-    sub:CreateButton('|A:characterundelete-RestoreButton:0:0|a'..(e.onlyChinese and '重置' or RESET),
+    root:CreateButton(
+        '|A:characterundelete-RestoreButton:0:0|a'..(e.onlyChinese and '重置' or RESET),
     function(data)
-        if data.data.setValue then
-            data.data.setValue(1)
+        if data.setValue then
+            data.setValue(1)
         end
         return MenuResponse.Open
-    end, sub2)
+    end, {setValue=SetValue})
 
+    return sub
+end
+
+
+
+
+--缩放, 加check
+function WoWTools_MenuMixin:ScaleCheck(root, GetValue, SetValue, checkGetValue, checkSetValue)
+    local sub= root:CreateCheckbox('|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '缩放' or UI_SCALE), checkGetValue, checkSetValue)
+
+    local sub2= self:ScaleRoot(sub, GetValue, SetValue)
+
+    return sub2, sub
+end
+
+
+--缩放
+function WoWTools_MenuMixin:Scale(root, GetValue, SetValue)
+    local sub= root:CreateButton('|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '缩放' or UI_SCALE), function()
+        return MenuResponse.Open
+    end)
+
+    local sub2= self:ScaleRoot(sub, GetValue, SetValue)
     return sub2, sub
 end
 --[[
@@ -176,7 +200,7 @@ end)
 
 --FrameStrata
 function WoWTools_MenuMixin:FrameStrata(root, GetValue, SetValue)
-    local sub=root:CreateButton('|A:Garr_SwapIcon:0:0:|aFrameStrata', function()
+    local sub=root:CreateButton('|A:Garr_SwapIcon:0:0:|a'..(e.onlyChinese and '框架层' or 'Strata'), function()
         return MenuResponse.Open
     end)
 
@@ -191,6 +215,7 @@ function WoWTools_MenuMixin:FrameStrata(root, GetValue, SetValue)
     return sub
 end
 --[[
+--FrameStrata
 sub2=WoWTools_MenuMixin:FrameStrata(sub, function(data)
     return self:GetFrameStrata()==data
 end, function(data)
@@ -198,6 +223,16 @@ end, function(data)
     self:set_strata()
 end)
 sub2:SetEnabled(not isInCombat)
+
+
+--FrameStrata
+    function TrackButton:set_strata()
+        local strata= Save().trackButtonStrata
+        if strata then
+            self:SetFrameStrata(strata)
+        end
+    end
+    TrackButton:set_strata()
 ]]
 
 

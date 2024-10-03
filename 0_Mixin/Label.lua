@@ -19,7 +19,20 @@ local ItemCurrencyTips= {---物品升级界面，挑战界面，物品，货币�
 local e= select(2, ...)
 WoWTools_LabelMixin={}
 
-function WoWTools_LabelMixin:CreateLabel(frame, tab)
+
+
+
+--[[function WoWTools_LabelMixin:Size(lable, size)
+    if not lable or not size then
+        return
+    end
+    local font, _, flag= lable:GetFont()
+    lable:SetFont(font, size, flag)
+end]]
+
+
+
+function WoWTools_LabelMixin:Create(frame, tab)
     tab= tab or {}
     frame= frame or UIParent
     local name= tab.name
@@ -150,7 +163,7 @@ function WoWTools_LabelMixin:ItemCurrencyTips(settings)--物品升级界面，�
             index= index +1
             local lable= frame.tipsLabels[index]
             if not lable then
-                lable=WoWTools_LabelMixin:CreateLabel(frame, {mouse=true})
+                lable=WoWTools_LabelMixin:Create(frame, {mouse=true})
                 if last then
                     lable:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, tab.line and -6 or -2)
                 elseif point then

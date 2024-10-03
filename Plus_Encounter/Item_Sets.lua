@@ -26,7 +26,7 @@ local function Setings(frame)
         end
     end
     if not frame.setNum then
-        frame.setNum= WoWTools_LabelMixin:CreateLabel(frame)
+        frame.setNum= WoWTools_LabelMixin:Create(frame)
         frame.setNum:SetPoint('RIGHT', frame.SetName)
     end
     if all>0 then

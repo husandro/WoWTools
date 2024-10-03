@@ -59,7 +59,7 @@ local function Init()
         end
     end)
 
-    frame.autoReadyText= WoWTools_LabelMixin:CreateLabel(frame)
+    frame.autoReadyText= WoWTools_LabelMixin:Create(frame)
     frame.autoReadyText:SetPoint('BOTTOM', frame, 'TOP')
     frame:HookScript('OnShow',function(self)
         local text=''

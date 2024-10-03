@@ -20,7 +20,7 @@ local function calendar_Uptate()
     end
 
     if text and not CalendarViewHolidayFrame.Text then
-        CalendarViewHolidayFrame.Text= WoWTools_LabelMixin:CreateLabel(CalendarViewHolidayFrame, {mouse=true, color={r=0, g=0.68, b=0.94, a=1}})
+        CalendarViewHolidayFrame.Text= WoWTools_LabelMixin:Create(CalendarViewHolidayFrame, {mouse=true, color={r=0, g=0.68, b=0.94, a=1}})
         CalendarViewHolidayFrame.Text:SetPoint('BOTTOMLEFT',12,12)
         CalendarViewHolidayFrame.Text:SetScript('OnLeave', function(self) self:SetAlpha(1) e.tips:Hide() end)
         CalendarViewHolidayFrame.Text:SetScript('OnEnter', function(self)

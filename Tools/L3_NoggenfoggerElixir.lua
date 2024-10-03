@@ -153,7 +153,7 @@ local function Init()
     button:SetAttribute('item1', C_Item.GetItemNameByID(ItemID) or ItemName or ItemID)
 
     button.texture:SetTexture(C_Item.GetItemIconByID(ItemID) or 134863)
-    button.count=WoWTools_LabelMixin:CreateLabel(button, {size=12, color={r=1,g=1,b=1}})--10,nil,nil,true)
+    button.count=WoWTools_LabelMixin:Create(button, {size=12, color={r=1,g=1,b=1}})--10,nil,nil,true)
     button.count:SetPoint('BOTTOMRIGHT')
 
     setCount()--设置数量

@@ -432,7 +432,7 @@ end)
 
     
     --监视， WidgetSetID
-    local widgetLabel= WoWTools_LabelMixin:CreateLabel(panel)
+    local widgetLabel= WoWTools_LabelMixin:Create(panel)
     widgetLabel:SetPoint('TOPLEFT', ctrlCopy, 'BOTTOMLEFT',0, -8)
     widgetLabel:SetText('WidgetSetID')
     widgetLabel:EnableMouse(true)
@@ -465,7 +465,7 @@ end)
             )
         end
 	end)
-    widgetLabel= WoWTools_LabelMixin:CreateLabel(panel)
+    widgetLabel= WoWTools_LabelMixin:Create(panel)
     widgetLabel:SetPoint('LEFT', widgetEdit, 'RIGHT',4, 0)
     widgetLabel:SetText('0 '..(e.onlyChinese and '取消' or CANCEL))
 end

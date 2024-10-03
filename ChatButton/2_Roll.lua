@@ -250,10 +250,10 @@ local function Init()
     RollButton.autoClearTips:SetSize(12,12)
     RollButton.autoClearTips:SetAtlas('bags-button-autosort-up')
 
-    RollButton.rightBottomText=WoWTools_LabelMixin:CreateLabel(RollButton, {color={r=0,g=1,b=0}})
+    RollButton.rightBottomText=WoWTools_LabelMixin:Create(RollButton, {color={r=0,g=1,b=0}})
     RollButton.rightBottomText:SetPoint('BOTTOMRIGHT',-2,3)
 
-    RollButton.rightTopText=WoWTools_LabelMixin:CreateLabel(RollButton, {color={r=0,g=1,b=0}})
+    RollButton.rightTopText=WoWTools_LabelMixin:Create(RollButton, {color={r=0,g=1,b=0}})
     RollButton.rightTopText:SetPoint('TOPLEFT',2,-3)
 
 

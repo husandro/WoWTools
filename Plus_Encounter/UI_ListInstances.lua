@@ -43,7 +43,7 @@ local function Init()
         if button and button.instanceID then --and button.tooltipTitle--button.bgImage:GetTexture() button.name:GetText()
             local textKill= WoWTools_EncounterMixin:GetInstanceData(button)--界面,击杀,数据
             if not button.tipsText and textKill then
-                button.tipsText=WoWTools_LabelMixin:CreateLabel(button, {size=e.onlyChinese and 12 or 10, copyFont= not e.onlyChinese and button.name or nil})--10, button.name)
+                button.tipsText=WoWTools_LabelMixin:Create(button, {size=e.onlyChinese and 12 or 10, copyFont= not e.onlyChinese and button.name or nil})--10, button.name)
                 button.tipsText:SetPoint('BOTTOMRIGHT', -8, 8)
                 button.tipsText:SetJustifyH('RIGHT')
             end
@@ -110,9 +110,9 @@ local function Init()
             end
 
             if not button.challengeText then
-                button.challengeText= WoWTools_LabelMixin:CreateLabel(button, {size=e.onlyChinese and 12 or 10})
+                button.challengeText= WoWTools_LabelMixin:Create(button, {size=e.onlyChinese and 12 or 10})
                 button.challengeText:SetPoint('BOTTOMLEFT',4,4)
-                button.challengeText2= WoWTools_LabelMixin:CreateLabel(button, {size=e.onlyChinese and 12 or 10})
+                button.challengeText2= WoWTools_LabelMixin:Create(button, {size=e.onlyChinese and 12 or 10})
                 button.challengeText2:SetPoint('BOTTOMLEFT', button.challengeText, 'BOTTOMRIGHT')
 
                 button:HookScript('OnEnter', function(self)
@@ -172,7 +172,7 @@ local function Init()
                         self:SetAlpha(0.3)
                         self.label:SetAlpha(0.3)
                     end)
-                    button.KeyTexture.label=WoWTools_LabelMixin:CreateLabel(button, {r=1, g=1, b=1})
+                    button.KeyTexture.label=WoWTools_LabelMixin:Create(button, {r=1, g=1, b=1})
                     button.KeyTexture.label:SetPoint('TOP', button.KeyTexture, -2, -8)
                 end
                 button.KeyTexture:SetShown(true)

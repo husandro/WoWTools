@@ -34,7 +34,7 @@ local function Blizzard_OrderHallUI()
         local rank
         if info.talentMaxRank and info.talentMaxRank>1 and info.talentRank~= info.talentMaxRank then
             if not info.rankText then
-                info.rankText= WoWTools_LabelMixin:CreateLabel(self2)
+                info.rankText= WoWTools_LabelMixin:Create(self2)
                 info.rankText:SetPoint('BOTTOMLEFT')
             end
             rank= '|cnGREEN_FONT_COLOR:'..(info.talentRank or 0)..'|r/'..info.talentMaxRank

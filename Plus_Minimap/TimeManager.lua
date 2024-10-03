@@ -22,7 +22,7 @@ StopwatchOnClickPause=true,--移过暂停
 local e= select(2, ...)
 local addName
 
-local Save= function()
+local function Save()
     return  WoWTools_MinimapMixin.Save
 end
 

@@ -1,4 +1,6 @@
 --[[
+GameTooltip_AddQuest(self, questIDArg)
+local questID = self.questID or questIDArg;
 
 GameTooltip_SetTitle(tooltip, MenuUtil.GetElementText(elementDescription));
 GameTooltip_AddInstructionLine(tooltip, "Test Tooltip Instruction");

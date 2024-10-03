@@ -135,7 +135,7 @@ end
 
 
 
-function WoWTools_FactionMixin:SetTooltip(frame)
+function WoWTools_SetTooltipMixin:Faction(frame)
     if not frame.factionID then
 		return
 	end
@@ -155,7 +155,7 @@ end
 
 
 
-function WoWTools_FactionMixin:HideTooltip()
+function WoWTools_SetTooltipMixin:Hide()
 	EmbeddedItemTooltip:SetShown(false)
-	GameTooltip:SetShown(false)
+	GameTooltip_Hide()
 end

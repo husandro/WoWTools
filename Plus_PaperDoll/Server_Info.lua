@@ -7,7 +7,7 @@ local Label
 
 
 local function Create_Label()
-    Label= WoWTools_LabelMixin:CreateLabel(PaperDollItemsFrame.ShowHideButton, {color= GameLimitedMode_IsActive() and {r=0,g=1,b=0} or true, mouse=true, justifyH='RIGHT'})--显示服务器名称
+    Label= WoWTools_LabelMixin:Create(PaperDollItemsFrame.ShowHideButton, {color= GameLimitedMode_IsActive() and {r=0,g=1,b=0} or true, mouse=true, justifyH='RIGHT'})--显示服务器名称
     Label:SetPoint('LEFT', PaperDollItemsFrame.ShowHideButton, 'RIGHT',2,0)
     Label:SetScript("OnLeave",function(self) e.tips:Hide() self:GetParent():set_alpha(false) end)
     Label:SetScript("OnEnter",function(self)

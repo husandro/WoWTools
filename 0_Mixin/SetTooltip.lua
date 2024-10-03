@@ -167,7 +167,7 @@ end
 
 
 
-function WoWTools_SetTooltipMixin:Set_Frame(frame, tooltip, data)
+function WoWTools_SetTooltipMixin:Frame(frame, tooltip, data)
     tooltip= tooltip or GameTooltip
     tooltip:SetOwner(frame, "ANCHOR_LEFT");
     tooltip:ClearLines()
@@ -181,7 +181,7 @@ function WoWTools_SetTooltipMixin:Set_Menu(sub)
     end)
 end
 
-function WoWTools_SetTooltipMixin:SetTooltip(tooltip, data)
+function WoWTools_SetTooltipMixin:Setup(tooltip, data)
     if type(data)~='table' then
         return
     end

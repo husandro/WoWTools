@@ -178,7 +178,7 @@ local function Init_Quest()
     )
     WoWTools_GossipMixin.QuestButton= QuestButton
 
-    QuestButton.Text=WoWTools_LabelMixin:CreateLabel(QuestButton, {justifyH='RIGHT', color=true, size=14})--任务数量
+    QuestButton.Text=WoWTools_LabelMixin:Create(QuestButton, {justifyH='RIGHT', color=true, size=14})--任务数量
     QuestButton.Text:SetPoint('RIGHT', QuestButton, 'LEFT', 0, 1)
 
     QuestButton:SetPoint('RIGHT', WoWTools_GossipMixin.GossipButton, 'LEFT')
@@ -398,7 +398,7 @@ local function Init_Quest()
     QuestFrame.sel=CreateFrame("CheckButton", nil, QuestFrame, 'InterfaceOptionsCheckButtonTemplate')--禁用此npc,任务,选项
     QuestFrame.sel:SetPoint("TOPLEFT", QuestFrame, 40, 20)
     QuestFrame.sel.Text:SetText(e.onlyChinese and '禁用' or DISABLE)
-    QuestFrame.sel.questIDLabel= WoWTools_LabelMixin:CreateLabel(QuestFrame.sel, {mouse=true})--任务ID
+    QuestFrame.sel.questIDLabel= WoWTools_LabelMixin:Create(QuestFrame.sel, {mouse=true})--任务ID
     QuestFrame.sel.questIDLabel:SetPoint('LEFT', QuestFrame.sel.Text, 'RIGHT', 12, 0)
     QuestFrame.sel:SetScript("OnLeave", GameTooltip_Hide)
     QuestFrame.sel:SetScript('OnEnter',function (self)

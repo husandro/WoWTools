@@ -266,7 +266,7 @@ end
 --初始
 --####
 local function Init()
-    GuildButton.membersText=WoWTools_LabelMixin:CreateLabel(GuildButton)-- 10, nil, nil, true, nil, 'CENTER')
+    GuildButton.membersText=WoWTools_LabelMixin:Create(GuildButton)-- 10, nil, nil, true, nil, 'CENTER')
     GuildButton.membersText:SetPoint('TOPRIGHT', -3, 0)
 
     function GuildButton:settings()
@@ -341,7 +341,7 @@ local function Init()
                 end
             end
             if not btn.onlineText then
-                btn.onlineText=WoWTools_LabelMixin:CreateLabel(btn)
+                btn.onlineText=WoWTools_LabelMixin:Create(btn)
                 btn.onlineText:SetPoint('TOP', btn.Icon, 'BOTTOM')
             end
             if all>0 then
@@ -356,7 +356,7 @@ local function Init()
     C_Timer.After(2, function()
         if IsInGuild()then
             if CanReplaceGuildMaster() then--弹劾
-                local label= WoWTools_LabelMixin:CreateLabel(GuildButton, {size=10, color=true, justifyH='CENTER'})
+                local label= WoWTools_LabelMixin:Create(GuildButton, {size=10, color=true, justifyH='CENTER'})
                 label:SetPoint('TOP')
                 label:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '弹劾' or  WoWTools_TextMixin:sub(GUILD_IMPEACH_POPUP_CONFIRM, 2, 5,true))..'|r')
             end

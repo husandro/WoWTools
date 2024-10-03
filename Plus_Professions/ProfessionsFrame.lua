@@ -40,7 +40,7 @@ local function Init()
             end
         end
         if not outputIcon.countBag and num then
-            outputIcon.countBag= WoWTools_LabelMixin:CreateLabel(outputIcon, {color={r=0,g=1,b=0}, justifyH='CENTER'})--nil, nil, nil, {0,1,0}, nil, 'CENTER')
+            outputIcon.countBag= WoWTools_LabelMixin:Create(outputIcon, {color={r=0,g=1,b=0}, justifyH='CENTER'})--nil, nil, nil, {0,1,0}, nil, 'CENTER')
             outputIcon.countBag:SetPoint('BOTTOM', outputIcon, 'TOP',0,5)
         end
         if outputIcon.countBag then
@@ -224,7 +224,7 @@ local function Init()
             end
         end
         if text and not self.SpendText2 then
-            self.SpendText2= WoWTools_LabelMixin:CreateLabel(self, {color={r=1, g=0, b=1}})
+            self.SpendText2= WoWTools_LabelMixin:Create(self, {color={r=1, g=0, b=1}})
             self.SpendText2:SetPoint('LEFT', self.SpendText, 'RIGHT')
         end
         if self.SpendText2 then

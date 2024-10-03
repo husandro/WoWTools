@@ -33,7 +33,24 @@ function WoWTools_LoadUIMixin:Journal(index)--加载，收藏，UI
 end
 
 
-
+--打开/关闭角色界面
+--MicroButtonTooltipText('角色信息', "TOGGLECHARACTER0")
+function WoWTools_LoadUIMixin:PaperDoll_Sidebar(index)--打开/关闭角色界面
+    if PaperDollFrame:IsShown() then
+        ToggleCharacter("PaperDollFrame")
+        PaperDollFrame_SetSidebar(PaperDollFrame, index)
+    end
+end
+--[[
+local name = self:GetName();
+if ( name == "CharacterFrameTab1" ) then
+    ToggleCharacter("PaperDollFrame");
+elseif ( name == "CharacterFrameTab2" ) then
+    ToggleCharacter("ReputationFrame");
+elseif ( name == "CharacterFrameTab3" ) then
+    CharacterFrame:ToggleTokenFrame();
+end
+]]
 
 
 

@@ -155,7 +155,7 @@ end
 --设置，物品，提示
 local function Set_Menu_Tooltip(tooltip, desc)
     if desc.data then
-        WoWTools_SetTooltipMixin:SetTooltip(tooltip, {itemID=desc.data.itemID})--设置，物品，提示
+        WoWTools_SetTooltipMixin:Setup(tooltip, {itemID=desc.data.itemID})--设置，物品，提示
     end
 end
 
@@ -546,7 +546,7 @@ local function Init()
     ToyButton:SetAttribute("shift-type1", "item")
     ToyButton:SetAttribute("ctrl-type1", "item")
 
-    ToyButton.text=WoWTools_LabelMixin:CreateLabel(ToyButton, {size=10, color={r=1,g=1,b=1}})
+    ToyButton.text=WoWTools_LabelMixin:Create(ToyButton, {size=10, color={r=1,g=1,b=1}})
     ToyButton.text:SetPoint('BOTTOMRIGHT', ToyButton)
 
 

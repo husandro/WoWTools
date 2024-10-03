@@ -163,7 +163,7 @@ local function get_Role_Info(env, Name, isT, isH, isD)
             Button:SetScript("OnMouseUp", function(self)
                 ResetCursor()
             end)
-            Button.text=WoWTools_LabelMixin:CreateLabel(Button)
+            Button.text=WoWTools_LabelMixin:Create(Button)
             Button.text:SetPoint('BOTTOMLEFT')--, Button, 'BOTTOMRIGHT')
             Button:SetShown(false)
         end

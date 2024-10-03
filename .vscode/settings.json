@@ -5015,7 +5015,12 @@
         "GUILD_CHALLENGES_THIS_WEEK",
         "CurrencyTransferMenuMixin",
         "PAPERDOLL_SIDEBAR_TITLES",
-        "QuestLogScrollFrameMixin"
+        "QuestLogScrollFrameMixin",
+        "BattlePetToolTip_ShowLink",
+        "GameTooltip_SetTooltipWaitingForData",
+        "ITEM_UPGRADE_STAT_AVERAGE_ITEM_LEVEL",
+        "GetPaperDollSideBarFrame",
+        "ERR_CLIENT_LOCKED_OUT"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

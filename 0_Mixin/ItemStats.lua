@@ -44,14 +44,14 @@ function WoWTools_ItemStatsMixin:Gem(frame, itemLink)--显示, 宝石, 属性
 
     if frame then
         if leftText and not frame.leftText then
-            frame.leftText= WoWTools_LabelMixin:CreateLabel(frame, {size=10})
+            frame.leftText= WoWTools_LabelMixin:Create(frame, {size=10})
             frame.leftText:SetPoint('LEFT')
         end
         if frame.leftText then
             frame.leftText:SetText(leftText or '')
         end
         if bottomLeftText and not frame.bottomLeftText then
-            frame.bottomLeftText= WoWTools_LabelMixin:CreateLabel(frame, {size=10})
+            frame.bottomLeftText= WoWTools_LabelMixin:Create(frame, {size=10})
             frame.bottomLeftText:SetPoint('BOTTOMLEFT')
         end
         if frame.bottomLeftText then
@@ -214,7 +214,7 @@ function WoWTools_ItemStatsMixin:SetItem(frame, link, setting) --设置，物品
                 end
             end
             if not frame.itemLevel and itemLevel then
-                frame.itemLevel= WoWTools_LabelMixin:CreateLabel(frame, {justifyH='CENTER'})
+                frame.itemLevel= WoWTools_LabelMixin:Create(frame, {justifyH='CENTER'})
                 frame.itemLevel:SetShadowOffset(2,-2)
                 frame.itemLevel:SetPoint('CENTER', point)
             end
@@ -229,7 +229,7 @@ function WoWTools_ItemStatsMixin:SetItem(frame, link, setting) --设置，物品
         local text=frame['statText'..index]
         if tab[index] then
             if not text then
-                text= WoWTools_LabelMixin:CreateLabel(frame, {justifyH= (index==2 or index==4) and 'RIGHT'})
+                text= WoWTools_LabelMixin:Create(frame, {justifyH= (index==2 or index==4) and 'RIGHT'})
                 if index==1 then
                     text:SetPoint('BOTTOMLEFT', point, 'BOTTOMLEFT')
                 elseif index==2 then

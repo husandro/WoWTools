@@ -734,7 +734,7 @@ end
 --######
 local function Init()
 
-    OpenButton.count=WoWTools_LabelMixin:CreateLabel(OpenButton, {size=10, color={r=1,g=1,b=1}})--10, nil, nil, true)
+    OpenButton.count=WoWTools_LabelMixin:Create(OpenButton, {size=10, color={r=1,g=1,b=1}})--10, nil, nil, true)
     OpenButton.count:SetPoint('BOTTOMRIGHT')
 
     WoWTools_KeyMixin:Init(OpenButton, function() return Save.KEY end)

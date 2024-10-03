@@ -171,7 +171,7 @@ end
 local function Create_Button(indexAdd)
     local btn= WoWTools_ButtonMixin:CreateMenu(RightFrame, {hideIcon=true})
     btn:SetHighlightAtlas('auctionhouse-nav-button-secondary-select')
-    btn.Text= WoWTools_LabelMixin:CreateLabel(btn, {size=14})
+    btn.Text= WoWTools_LabelMixin:Create(btn, {size=14})
     btn.Text:SetPoint('LEFT', 2, 1)
 
     btn.loadTexture= btn:CreateTexture()

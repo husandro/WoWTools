@@ -429,7 +429,7 @@ local function Init_TrackButton()--设置显示内容, 父框架TrackButton, 内
         end
     end)
 
-    TrackButton.text= WoWTools_LabelMixin:CreateLabel(TrackButton, {color=true})
+    TrackButton.text= WoWTools_LabelMixin:Create(TrackButton, {color=true})
     TrackButton.text:SetPoint('BOTTOMLEFT')
     function TrackButton:set_text_scale()
         self.text:SetScale(Save.textScale or 1)
@@ -573,7 +573,7 @@ local function Init_Menu(self, root)
 
 --缩放
     root:CreateDivider()
-    sub2, sub= WoWTools_MenuMixin:Scale(root, function()
+    sub2, sub= WoWTools_MenuMixin:ScaleCheck(root, function()
         return Save.inCombatScale
     end, function(value)
         Save.inCombatScale= value

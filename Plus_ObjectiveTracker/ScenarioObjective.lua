@@ -5,7 +5,7 @@ local e= select(2, ...)
 
 
 local function Init()
-    ScenarioObjectiveTracker.Header.numStagesLabel= WoWTools_LabelMixin:CreateLabel(ScenarioObjectiveTracker.Header, {copyFont=ScenarioObjectiveTracker.StageBlock.Name, justifyH='RIGHT'})
+    ScenarioObjectiveTracker.Header.numStagesLabel= WoWTools_LabelMixin:Create(ScenarioObjectiveTracker.Header, {copyFont=ScenarioObjectiveTracker.StageBlock.Name, justifyH='RIGHT'})
     ScenarioObjectiveTracker.Header.numStagesLabel:SetPoint('LEFT', ScenarioObjectiveTracker.Header.Text, 'RIGHT')
 
     hooksecurefunc(ScenarioObjectiveTracker, 'LayoutContents', function(self)

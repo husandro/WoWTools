@@ -336,7 +336,7 @@ local function Init_Num()
         if Save.creatureUIParent or not TargetFrame then
             NumFrame= WoWTools_ButtonMixin:Cbtn(nil, {size={18, 18}, icon='hide'})
 
-            NumFrame.Text= WoWTools_LabelMixin:CreateLabel(NumFrame, {size=Save.creatureFontSize, color={r=1,g=1,b=1}})
+            NumFrame.Text= WoWTools_LabelMixin:Create(NumFrame, {size=Save.creatureFontSize, color={r=1,g=1,b=1}})
             NumFrame.Text:SetScript('OnLeave', function(self) self:GetParent():SetButtonState('NORMAL') end)
             NumFrame.Text:SetScript('OnEnter', function(self) self:GetParent():SetButtonState('PUSHED') end)
             NumFrame.Text:SetPoint('LEFT', NumFrame, 'RIGHT')
@@ -396,7 +396,7 @@ local function Init_Num()
                 n= n>72 and 72 or n
                 n= n<8 and 8 or n
                 Save.creatureFontSize=n
-                WoWTools_LabelMixin:CreateLabel(nil, {changeFont=self.Text, size=n})
+                WoWTools_LabelMixin:Create(nil, {changeFont=self.Text, size=n})
                 self:set_tooltip()
                 print(e.addName, e.cn(addName), (e.onlyChinese and '字体大小' or FONT_SIZE), '|cnGREEN_FONT_COLOR:'..Save.creatureFontSize)
             end)
@@ -421,7 +421,7 @@ local function Init_Num()
             NumFrame:SetScript("OnEnter", NumFrame.set_tooltip)
         else
             NumFrame= CreateFrame('Frame')
-            NumFrame.Text= WoWTools_LabelMixin:CreateLabel(TargetFrame, {size=Save.creatureFontSize, color={r=1,g=1,b=1}})--10, nil, nil, {1,1,1}, 'BORDER', 'RIGHT')
+            NumFrame.Text= WoWTools_LabelMixin:Create(TargetFrame, {size=Save.creatureFontSize, color={r=1,g=1,b=1}})--10, nil, nil, {1,1,1}, 'BORDER', 'RIGHT')
             function NumFrame:set_text_point()
                 self.Text:ClearAllPoints()
                 if Save.TargetFramePoint=='LEFT' then
@@ -475,7 +475,7 @@ local function Init_Num()
         NumFrame:set_pvp()
 
     elseif NumFrame then
-        WoWTools_LabelMixin:CreateLabel(nil, {changeFont=NumFrame.Text, size= Save.creatureFontSize})
+        WoWTools_LabelMixin:Create(nil, {changeFont=NumFrame.Text, size= Save.creatureFontSize})
     end
 
     local eventTab= {
@@ -590,7 +590,7 @@ local function Init_Quest()
             end
             local text= self:get_unit_text(frame.unit or unit)
             if text and not frame.questProgress then
-                frame.questProgress= WoWTools_LabelMixin:CreateLabel(frame, {size=14, color={r=0,g=1,b=0}})--14, nil, nil, {0,1,0}, nil,'LEFT')
+                frame.questProgress= WoWTools_LabelMixin:Create(frame, {size=14, color={r=0,g=1,b=0}})--14, nil, nil, {0,1,0}, nil,'LEFT')
                 frame.questProgress:SetPoint('LEFT', frame.healthBar or frame, 'RIGHT', 2,0)
             end
             if frame.questProgress then
@@ -1128,7 +1128,7 @@ local function set_Option()
 	menu.edit:SetSize(420,22)
 	menu.edit:SetAutoFocus(false)
     menu.edit:ClearFocus()
-    menu.edit.Label= WoWTools_LabelMixin:CreateLabel(menu.edit)
+    menu.edit.Label= WoWTools_LabelMixin:Create(menu.edit)
     menu.edit.Label:SetPoint('RIGHT', menu.edit, 'LEFT', -4, 0)
     menu.edit:SetScript('OnShow', function(self)
         self:SetText(Save.targetTextureName)

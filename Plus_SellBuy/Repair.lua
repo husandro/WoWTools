@@ -107,7 +107,7 @@ local function Init()
     end)
 
     --显示，公会修理，信息
-    MerchantGuildBankRepairButton.Text= WoWTools_LabelMixin:CreateLabel(MerchantGuildBankRepairButton, {justifyH='RIGHT'})
+    MerchantGuildBankRepairButton.Text= WoWTools_LabelMixin:Create(MerchantGuildBankRepairButton, {justifyH='RIGHT'})
     MerchantGuildBankRepairButton.Text:SetPoint('TOPLEFT', 1, -1)
     hooksecurefunc('MerchantFrame_UpdateGuildBankRepair', function()
         local repairAllCost = GetRepairAllCost()
@@ -121,7 +121,7 @@ local function Init()
     end)
 
     --提示，可修理，件数
-    MerchantRepairItemButton.Text=WoWTools_LabelMixin:CreateLabel(MerchantRepairItemButton)
+    MerchantRepairItemButton.Text=WoWTools_LabelMixin:Create(MerchantRepairItemButton)
     MerchantRepairItemButton.Text:SetPoint('TOPLEFT', 1, -1)
     MerchantRepairItemButton:SetScript('OnEnter', function(self)--替换，源FUNC
         GameTooltip:SetOwner(self, "ANCHOR_BOTTOM")
@@ -142,7 +142,7 @@ local function Init()
     AutoRepairCheck.Text:SetShadowOffset(1, -1)
 
     --显示，修理，金钱
-    MerchantRepairAllButton.Text2=WoWTools_LabelMixin:CreateLabel(MerchantRepairAllButton)
+    MerchantRepairAllButton.Text2=WoWTools_LabelMixin:Create(MerchantRepairAllButton)
     MerchantRepairAllButton.Text2:SetPoint('TOPLEFT', MerchantRepairAllButton, 1, -1)
     hooksecurefunc('MerchantFrame_UpdateRepairButtons', function()
         if MerchantRepairAllButton:IsShown() then

@@ -109,7 +109,7 @@ function e.ReloadPanel(tab)
         end)
     end
     if tab.restTips then
-        local needReload= WoWTools_LabelMixin:CreateLabel(tab.panel)
+        local needReload= WoWTools_LabelMixin:Create(tab.panel)
         needReload:SetText(format('|A:%s:0:0|a', e.Icon.toRight)..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)..format('|A:%s:0:0|a', e.Icon.toLeft))
         needReload:SetPoint('BOTTOMRIGHT')
         needReload:SetTextColor(0,1,0)

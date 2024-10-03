@@ -997,9 +997,9 @@ local function Init_Fast_Button()
             btn.name= tab[4] or not tab[3] and C_Item.GetItemClassInfo(tab[2]) or C_Item.GetItemSubClassInfo(tab[2], tab[3])
             btn.findString= tab[5]
 
-            btn.Text= WoWTools_LabelMixin:CreateLabel(btn, {size=10})
+            btn.Text= WoWTools_LabelMixin:Create(btn, {size=10})
             btn.Text:SetPoint('TOPLEFT')
-            btn.Text2= WoWTools_LabelMixin:CreateLabel(btn, {size=10})
+            btn.Text2= WoWTools_LabelMixin:Create(btn, {size=10})
             btn.Text2:SetPoint('BOTTOMRIGHT')
             btn.playerTexture= btn:CreateTexture(nil, 'OVERLAY')
             btn.playerTexture:SetAtlas('AnimaChannel-Bar-Necrolord-Gem')
@@ -1403,7 +1403,7 @@ local function Init_InBox()
                 --信件，索引，提示
                 if not _G['PostalSelectReturnButton'] then
                     if not btn.indexText and not Save.hide then
-                        btn.indexText= WoWTools_LabelMixin:CreateLabel(btn, {alpha= 0.5})
+                        btn.indexText= WoWTools_LabelMixin:Create(btn, {alpha= 0.5})
                         btn.indexText:SetPoint('RIGHT', btn, 'LEFT',-2,0)
                     end
                     if btn.indexText then
@@ -1418,7 +1418,7 @@ local function Init_InBox()
                     btn.CODAmountTips:SetPoint('BOTTOM', _G['MailItem'..i], 0,-4)
                     btn.CODAmountTips:SetAtlas('jailerstower-wayfinder-rewardbackground-selected')
                     btn.CODAmountTips:EnableMouse(true)
-                    btn.moneyPagaTip= WoWTools_LabelMixin:CreateLabel(btn)--文本
+                    btn.moneyPagaTip= WoWTools_LabelMixin:Create(btn)--文本
                     btn.moneyPagaTip:SetPoint('CENTER', btn.CODAmountTips)
                     btn.moneyPagaTip:EnableMouse(true)
                 end
@@ -1482,7 +1482,7 @@ local function Init_InBox()
                     end)
 
                     --移过时，提示，选中，信件
-                    btn.DeleteButton.numItemLabel= WoWTools_LabelMixin:CreateLabel(btn.DeleteButton)
+                    btn.DeleteButton.numItemLabel= WoWTools_LabelMixin:Create(btn.DeleteButton)
                     btn.DeleteButton.numItemLabel:SetPoint('BOTTOMRIGHT')
                     btn.enterTipTexture= btn:CreateTexture(nil, 'OVERLAY', nil, 7)
                     btn.enterTipTexture:SetAtlas('jailerstower-wayfinder-rewardbackground-selected')
@@ -1600,7 +1600,7 @@ local function Init_InBox()
                 end)
             end)
 
-            InboxFrame.DeleteAllButton.Text= WoWTools_LabelMixin:CreateLabel(InboxFrame.DeleteAllButton)
+            InboxFrame.DeleteAllButton.Text= WoWTools_LabelMixin:Create(InboxFrame.DeleteAllButton)
             InboxFrame.DeleteAllButton.Text:SetPoint('BOTTOMRIGHT')
         end
         if InboxFrame.DeleteAllButton then
@@ -1639,7 +1639,7 @@ local function Init_InBox()
                 end)
             end)
 
-            InboxFrame.ReAllButton.Text= WoWTools_LabelMixin:CreateLabel(InboxFrame.ReAllButton)
+            InboxFrame.ReAllButton.Text= WoWTools_LabelMixin:Create(InboxFrame.ReAllButton)
             InboxFrame.ReAllButton.Text:SetPoint('BOTTOMRIGHT')
         end
         if InboxFrame.ReAllButton then
@@ -1669,7 +1669,7 @@ local function Init_InBox()
                     ..(allCODAmount>0 and '|cnRED_FONT_COLOR:'.. get_Money(allCODAmount)..'|r'..(e.onlyChinese and '付款' or COD)..' ' or '')--总，要付款钱
             end
             if not InboxFrame.AllTipsLable then
-                InboxFrame.AllTipsLable= WoWTools_LabelMixin:CreateLabel(InboxFrame)
+                InboxFrame.AllTipsLable= WoWTools_LabelMixin:Create(InboxFrame)
                 InboxFrame.AllTipsLable:SetPoint('TOP', 20, -48)
 
                 MailFrameTrialError:ClearAllPoints()--你需要升级你的账号才能开启这项功能。
@@ -1700,7 +1700,7 @@ local function Init_InBox()
         if sender then
             local newName= get_Name_Info(sender)
             if newName~=sender and not OpenMailFrame.sendTips and not Save.hide then
-                OpenMailFrame.sendTips= WoWTools_LabelMixin:CreateLabel(OpenMailFrame)
+                OpenMailFrame.sendTips= WoWTools_LabelMixin:Create(OpenMailFrame)
                 OpenMailFrame.sendTips:SetPoint('BOTTOMLEFT', OpenMailSender.Name, 'TOPLEFT')
             end
             if OpenMailFrame.sendTips then
@@ -1719,7 +1719,7 @@ local function Init_InBox()
             OpenMailFrame.CODAmountTips:SetSize(150, 25)
             OpenMailFrame.CODAmountTips:SetPoint('BOTTOM',0, 68)
             OpenMailFrame.CODAmountTips:SetAtlas('jailerstower-wayfinder-rewardbackground-selected')
-            OpenMailFrame.moneyPagaTip= WoWTools_LabelMixin:CreateLabel(OpenMailFrame)
+            OpenMailFrame.moneyPagaTip= WoWTools_LabelMixin:Create(OpenMailFrame)
             OpenMailFrame.moneyPagaTip:SetPoint('CENTER', OpenMailFrame.CODAmountTips)
 
         end
@@ -1937,7 +1937,7 @@ end
 
 local function Init_Edit_Letter_Num()--字数
     --收件人
-    SendMailNameEditBox.playerTipsLable= WoWTools_LabelMixin:CreateLabel(SendMailNameEditBox, {justifyH='CENTER', size=10})
+    SendMailNameEditBox.playerTipsLable= WoWTools_LabelMixin:Create(SendMailNameEditBox, {justifyH='CENTER', size=10})
     SendMailNameEditBox.playerTipsLable:SetPoint('BOTTOM', SendMailNameEditBox, 'TOP',0,-3)
     function SendMailNameEditBox:save_log()--保存内容
         Save.lastSendPlayer= Save.logSendInfo and WoWTools_UnitMixin:GetFullName(self:GetText()) or nil--收件人
@@ -1956,7 +1956,7 @@ local function Init_Edit_Letter_Num()--字数
     end)
 
     --主题
-    SendMailSubjectEditBox.numLetters= WoWTools_LabelMixin:CreateLabel(SendMailSubjectEditBox)
+    SendMailSubjectEditBox.numLetters= WoWTools_LabelMixin:Create(SendMailSubjectEditBox)
     SendMailSubjectEditBox.numLetters:SetPoint('RIGHT')
     SendMailSubjectEditBox.numLetters:SetAlpha(0)
     function SendMailSubjectEditBox:save_log()--保存内容
@@ -1979,7 +1979,7 @@ local function Init_Edit_Letter_Num()--字数
     end)
 
     --内容
-    SendMailBodyEditBox.numLetters= WoWTools_LabelMixin:CreateLabel(SendMailBodyEditBox)
+    SendMailBodyEditBox.numLetters= WoWTools_LabelMixin:Create(SendMailBodyEditBox)
     SendMailBodyEditBox.numLetters:SetPoint('BOTTOMRIGHT')
     SendMailBodyEditBox.numLetters:SetAlpha(0)
     function SendMailBodyEditBox:wowtools_settings()
@@ -2148,14 +2148,14 @@ local function Init_Send_History_Name()--收件人，历史记录
     historyButton.frame= CreateFrame('Frame', nil, historyButton)
     historyButton.frame:SetPoint('BOTTOMRIGHT')
     historyButton.frame:SetSize(1,1)
-    historyButton.Text= WoWTools_LabelMixin:CreateLabel(historyButton, {justifyH='RIGHT', color={r=1,g=1,b=1}})--列表，数量
+    historyButton.Text= WoWTools_LabelMixin:Create(historyButton, {justifyH='RIGHT', color={r=1,g=1,b=1}})--列表，数量
     historyButton.Text:SetPoint('BOTTOMRIGHT', 2, -2)
 
     historyButton.buttons={}
     function historyButton:created_button(index)
         local btn= WoWTools_ButtonMixin:Cbtn(self.frame, {size={22, 14}, icon='hide'})
         btn:SetPoint('TOPRIGHT', self.frame, 'BOTTOMRIGHT', 0, -(index-1)*14)
-        btn.Text= WoWTools_LabelMixin:CreateLabel(btn, {justifyH='RIGHT'})
+        btn.Text= WoWTools_LabelMixin:Create(btn, {justifyH='RIGHT'})
         btn.Text:SetPoint('RIGHT', -2, 0)
 
         btn:SetScript('OnLeave', function(frame) e.tips:Hide() frame:set_alpha() end)
@@ -2364,7 +2364,7 @@ end
 function Init_Clear_All_Send_Items()--清除所有，要发送物品
     local clearSendItem=WoWTools_ButtonMixin:Cbtn(SendMailAttachment7, {size=22, atlas='bags-button-autosort-up'})
     clearSendItem:SetPoint('BOTTOMRIGHT', SendMailAttachment7, 'TOPRIGHT')--,0, -4)
-    clearSendItem.Text= WoWTools_LabelMixin:CreateLabel(clearSendItem)
+    clearSendItem.Text= WoWTools_LabelMixin:Create(clearSendItem)
     clearSendItem.Text:SetPoint('BOTTOMRIGHT', clearSendItem, 'BOTTOMLEFT',0, 4)
     clearSendItem:SetScript('OnClick', function()
         for i= 1, ATTACHMENTS_MAX_SEND do
@@ -2419,7 +2419,7 @@ function Init_Clear_All_Send_Items()--清除所有，要发送物品
     for i=1, ATTACHMENTS_MAX_SEND do--索引，提示
         btn= _G['SendMailAttachment'..i]
         if btn then
-            btn.indexLable= WoWTools_LabelMixin:CreateLabel(btn, {layer='BORDER'})
+            btn.indexLable= WoWTools_LabelMixin:Create(btn, {layer='BORDER'})
             btn.indexLable:SetPoint('CENTER')
             btn.indexLable:SetAlpha(0.3)
             btn.indexLable:SetText(i)

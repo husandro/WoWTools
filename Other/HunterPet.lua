@@ -169,10 +169,10 @@ local function created_model(btn, setBg)
         btn.Portrait2:SetSize(18, 18)
 
         btn.Portrait2:SetPoint('LEFT', btn.callSpellButton, 'RIGHT')
-        btn.abilitiesText= WoWTools_LabelMixin:CreateLabel(btn, {SetJustifyH='RIGHT'})--宠物，技能，提示
+        btn.abilitiesText= WoWTools_LabelMixin:Create(btn, {SetJustifyH='RIGHT'})--宠物，技能，提示
         btn.abilitiesText:SetPoint('BOTTOMRIGHT', btn.callSpellButton, 'BOTTOMLEFT', 2, -2)
 
-        btn.indexText=WoWTools_LabelMixin:CreateLabel(btn.callSpellButton)--索引
+        btn.indexText=WoWTools_LabelMixin:Create(btn.callSpellButton)--索引
         btn.indexText:SetPoint('LEFT', btn.Portrait2, 'RIGHT', 4,0)
         btn.indexText:SetText(slotID)
     end
@@ -244,9 +244,9 @@ local function Init_StableFrame_Plus()
             btn.Portrait2:SetSize(20, 20)
             btn.Portrait2:SetPoint('RIGHT', btn.Portrait,'LEFT')
             btn.Portrait2:SetAlpha(0.5)
-            btn.abilitiesText= WoWTools_LabelMixin:CreateLabel(btn)--宠物，技能，提示
+            btn.abilitiesText= WoWTools_LabelMixin:Create(btn)--宠物，技能，提示
             btn.abilitiesText:SetPoint('BOTTOMRIGHT', btn.Background, -9, 8)
-            btn.indexText= WoWTools_LabelMixin:CreateLabel(btn)--, {color={r=1,g=0,b=1}})--SlotID
+            btn.indexText= WoWTools_LabelMixin:Create(btn)--, {color={r=1,g=0,b=1}})--SlotID
             btn.indexText:SetPoint('TOPRIGHT', -9,-6)
             btn.indexText:SetAlpha(0.5)
             function btn:set_list_button_settings()
@@ -305,7 +305,7 @@ local function Init_StableFrame_Plus()
 
 
     --食物
-    StableFrame.PetModelScene.PetInfo.Food=WoWTools_LabelMixin:CreateLabel(StableFrame.PetModelScene.PetInfo, {copyFont=not e.onlyChinese and StableFrame.PetModelScene.PetInfo.Specialization, color={r=1,g=1,b=1}, size=16})--copyFont=StableFrame.PetModelScene.PetInfo.Specialization, 
+    StableFrame.PetModelScene.PetInfo.Food=WoWTools_LabelMixin:Create(StableFrame.PetModelScene.PetInfo, {copyFont=not e.onlyChinese and StableFrame.PetModelScene.PetInfo.Specialization, color={r=1,g=1,b=1}, size=16})--copyFont=StableFrame.PetModelScene.PetInfo.Specialization, 
     StableFrame.PetModelScene.PetInfo.Food:SetPoint('TOPRIGHT', StableFrame.PetModelScene.PetInfo.Exotic, 'BOTTOMRIGHT')
     --特殊，加图标
     StableFrame.PetModelScene.PetInfo.ExoticTexture= StableFrame.PetModelScene.PetInfo:CreateTexture()
@@ -517,7 +517,7 @@ local function created_button(index)
     btn.Border:SetTexture(nil)
     btn.Border:ClearAllPoints()
     btn.Border:Hide()
-    btn.Text= WoWTools_LabelMixin:CreateLabel(btn,{size=10, color={r=1,g=1,b=1,a=0.2}, layer='BACKGROUND'})
+    btn.Text= WoWTools_LabelMixin:Create(btn,{size=10, color={r=1,g=1,b=1,a=0.2}, layer='BACKGROUND'})
     btn.Text:SetPoint('CENTER', btn.Background)
     btn.Text:SetText(index)
     btn.Icon:SetDrawLayer('BORDER')

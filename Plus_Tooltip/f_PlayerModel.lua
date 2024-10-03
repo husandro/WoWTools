@@ -38,16 +38,16 @@ function WoWTools_TooltipMixin:Set_Init_Item(tooltip, hide)--创建，设置，�
         return
     end
     if not tooltip.textLeft then--左上角字符
-        tooltip.textLeft=WoWTools_LabelMixin:CreateLabel(tooltip, {size=16})
+        tooltip.textLeft=WoWTools_LabelMixin:Create(tooltip, {size=16})
         tooltip.textLeft:SetPoint('BOTTOMLEFT', tooltip, 'TOPLEFT')
 
-        tooltip.text2Left=WoWTools_LabelMixin:CreateLabel(tooltip, {size=16})--左上角字符2
+        tooltip.text2Left=WoWTools_LabelMixin:Create(tooltip, {size=16})--左上角字符2
         tooltip.text2Left:SetPoint('LEFT', tooltip.textLeft, 'RIGHT', 5, 0)
 
-        tooltip.textRight=WoWTools_LabelMixin:CreateLabel(tooltip, {size=12, justifyH='RIGHT'})--右上角字符
+        tooltip.textRight=WoWTools_LabelMixin:Create(tooltip, {size=12, justifyH='RIGHT'})--右上角字符
         tooltip.textRight:SetPoint('BOTTOMRIGHT', tooltip, 'TOPRIGHT')
 
-        tooltip.text2Right= WoWTools_LabelMixin:CreateLabel(tooltip, {size=12, justifyH='RIGHT'})--右上角字符2
+        tooltip.text2Right= WoWTools_LabelMixin:Create(tooltip, {size=12, justifyH='RIGHT'})--右上角字符2
         tooltip.text2Right:SetPoint('BOTTOMRIGHT', tooltip.textRight, 'TOPRIGHT', 0, 4)
 
         tooltip.backgroundColor= tooltip:CreateTexture(nil, 'BACKGROUND',nil, 1)--背景颜色

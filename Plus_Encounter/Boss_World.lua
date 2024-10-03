@@ -107,11 +107,11 @@ local function Create_WorldBoss_Button()
         size= size<6 and 6 or size
         size= size>72 and 72 or size
         Save().EncounterJournalFontSize=size
-        WoWTools_LabelMixin:CreateLabel(nil, {size=size, changeFont=self.Text})--size, nil, self.Text)
+        WoWTools_LabelMixin:Create(nil, {size=size, changeFont=self.Text})--size, nil, self.Text)
         self:set_tooltip()
     end)
 
-    btn.Text=WoWTools_LabelMixin:CreateLabel(btn, {size=Save().EncounterJournalFontSize, color=true})
+    btn.Text=WoWTools_LabelMixin:Create(btn, {size=Save().EncounterJournalFontSize, color=true})
     btn.Text:SetPoint('TOPLEFT', btn, 'BOTTOMLEFT')
 
     btn.texture=btn:CreateTexture()

@@ -242,7 +242,7 @@ end)
     PlayerFrame.instanceFrame.raid:SetAllPoints(PlayerFrame.instanceFrame)
     PlayerFrame.instanceFrame.raid:SetAtlas('poi-torghast')
     --10人，25人
-    PlayerFrame.instanceFrame.raid.text= WoWTools_LabelMixin:CreateLabel(PlayerFrame.instanceFrame, {color=true})
+    PlayerFrame.instanceFrame.raid.text= WoWTools_LabelMixin:Create(PlayerFrame.instanceFrame, {color=true})
     PlayerFrame.instanceFrame.raid.text:SetPoint('TOP',0,8)
     --提示
     PlayerFrame.instanceFrame.raid:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) self.text:SetAlpha(1) end)
@@ -413,7 +413,7 @@ end)
     PlayerFrame.keystoneFrame.texture=PlayerFrame.keystoneFrame:CreateTexture()
     PlayerFrame.keystoneFrame.texture:SetAllPoints(PlayerFrame.keystoneFrame)
     PlayerFrame.keystoneFrame.texture:SetTexture(4352494)
-    PlayerFrame.keystoneFrame.Text= WoWTools_LabelMixin:CreateLabel(PlayerFrame.keystoneFrame, {color=true})
+    PlayerFrame.keystoneFrame.Text= WoWTools_LabelMixin:Create(PlayerFrame.keystoneFrame, {color=true})
     PlayerFrame.keystoneFrame.Text:SetPoint('LEFT', PlayerFrame.keystoneFrame, 'RIGHT')
     PlayerFrame.keystoneFrame:SetScript('OnLeave', function(self) self:SetAlpha(1) e.tips:Hide() end)
     PlayerFrame.keystoneFrame:SetScript('OnEnter', function(self)
@@ -566,7 +566,7 @@ local function Init_TargetFrame()
         end
     end)
 
-    TargetFrame.rangeText= WoWTools_LabelMixin:CreateLabel(TargetFrame, {justifyH='RIGHT'})
+    TargetFrame.rangeText= WoWTools_LabelMixin:Create(TargetFrame, {justifyH='RIGHT'})
     TargetFrame.rangeText:SetPoint('RIGHT', TargetFrame, 'LEFT', 22,0)
     hooksecurefunc(TargetFrame, 'OnUpdate', function(self, elapsed)--距离
         self.elapsed= (self.elapsed or 0.3) + elapsed
@@ -679,7 +679,7 @@ local function set_memberFrame(memberFrame)
         btn.frame.Portrait:SetAllPoints(btn.frame)
 
 
-        btn.frame.healthLable= WoWTools_LabelMixin:CreateLabel(btn.frame, {size=14})
+        btn.frame.healthLable= WoWTools_LabelMixin:Create(btn.frame, {size=14})
         btn.frame.healthLable:SetPoint('BOTTOMRIGHT')
         btn.frame.healthLable:SetTextColor(1,1,1)
 
@@ -924,7 +924,7 @@ local function set_memberFrame(memberFrame)
         positionFrame:Hide()
         positionFrame:SetPoint('LEFT', memberFrame.PartyMemberOverlay.LeaderIcon, 'RIGHT')
         positionFrame:SetSize(1,1)
-        positionFrame.Text= WoWTools_LabelMixin:CreateLabel(positionFrame)
+        positionFrame.Text= WoWTools_LabelMixin:Create(positionFrame)
         positionFrame.Text:SetPoint('LEFT')
         function positionFrame:set_shown()
             self:SetShown(not IsInInstance() and not UnitAffectingCombat('player') or self.isPlayer)
@@ -1045,7 +1045,7 @@ local function set_memberFrame(memberFrame)
 
         --死亡，次数
         deadFrame.dead=0
-        deadFrame.Text= WoWTools_LabelMixin:CreateLabel(deadFrame, {mouse=true, color={r=1,g=1,b=1}})
+        deadFrame.Text= WoWTools_LabelMixin:Create(deadFrame, {mouse=true, color={r=1,g=1,b=1}})
         deadFrame.Text:SetPoint('BOTTOMRIGHT', deadFrame, -2,0)
         deadFrame.Text:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
         deadFrame.Text:SetScript('OnEnter', function(self)
@@ -1167,7 +1167,7 @@ local function Init_UnitFrame_Update(frame, isParty)--UnitFrame.lua--职业, 图
             frame.classFrame.Texture:SetPoint('CENTER', frame.classFrame, 1,-1)
             frame.classFrame.Texture:SetSize(20,20)
 
-            frame.classFrame.itemLevel= WoWTools_LabelMixin:CreateLabel(frame.classFrame, {size=12})--装等
+            frame.classFrame.itemLevel= WoWTools_LabelMixin:Create(frame.classFrame, {size=12})--装等
             if unit=='target' or unit=='focus' then
                 frame.classFrame.itemLevel:SetPoint('RIGHT', frame.classFrame, 'LEFT')
             else
@@ -1446,7 +1446,7 @@ local function Init_BossFrame()
         --##############
         frame.numSelectFrame= CreateFrame('Frame', frame)
         frame.numSelectFrame.unit= frame.unit
-        frame.numSelectFrame.Text= WoWTools_LabelMixin:CreateLabel(frame.BossButton, {color={r=1,g=1,b=1}, size=20})
+        frame.numSelectFrame.Text= WoWTools_LabelMixin:Create(frame.BossButton, {color={r=1,g=1,b=1}, size=20})
         frame.numSelectFrame.Text:SetPoint('BOTTOM', 0, -16)
         function frame.numSelectFrame:set_event(f)
             if f:IsShown() then
@@ -1551,7 +1551,7 @@ local function Init_BossFrame()
         frame.TotButton.frame.Border:SetAtlas('UI-HUD-UnitFrame-TotemFrame')
 
         --目标的目标，百份比
-        frame.TotButton.frame.healthLable= WoWTools_LabelMixin:CreateLabel(frame.TotButton.frame,{color={r=1,g=1,b=1}, size=14})
+        frame.TotButton.frame.healthLable= WoWTools_LabelMixin:Create(frame.TotButton.frame,{color={r=1,g=1,b=1}, size=14})
         frame.TotButton.frame.healthLable:SetPoint('BOTTOM')--, frame.TotButton.frame, 'RIGHT')
 
         frame.TotButton.frame:SetScript('OnUpdate', function(self, elapsed)
@@ -1984,7 +1984,7 @@ local function Init_CastingBar(frame)
 
     --[[if frame.CastTimeText then
         else--旧版本
-        frame.castingText= WoWTools_LabelMixin:CreateLabel(frame, {color=true, justifyH='RIGHT'})
+        frame.castingText= WoWTools_LabelMixin:Create(frame, {color=true, justifyH='RIGHT'})
         frame.castingText:SetDrawLayer('OVERLAY', 2)
         frame.castingText:SetPoint('RIGHT', frame.ChargeFlash, 'RIGHT')
         frame:HookScript('OnUpdate', function(self, elapsed)--玩家, 施法, 时间
@@ -2042,7 +2042,7 @@ local function Init()
     hooksecurefunc(MirrorTimerContainer, 'SetupTimer', function(frame)--, value)
         for _, activeTimer in pairs(frame.activeTimers) do
             if not activeTimer.valueText then
-                activeTimer.valueText=WoWTools_LabelMixin:CreateLabel(activeTimer, {justifyH='RIGHT'})
+                activeTimer.valueText=WoWTools_LabelMixin:Create(activeTimer, {justifyH='RIGHT'})
                 activeTimer.valueText:SetPoint('BOTTOMRIGHT',-7, 4)
 
                 WoWTools_ColorMixin:SetLabelTexture(activeTimer.valueText, {type='FontString'})--设置颜色

@@ -1222,7 +1222,7 @@ end
 --#############################
 local function Init_Select_Macro_Button()
     --选定宏，index提示
-    MacroFrame.numSelectionLable= WoWTools_LabelMixin:CreateLabel(MacroFrameSelectedMacroButton)
+    MacroFrame.numSelectionLable= WoWTools_LabelMixin:Create(MacroFrameSelectedMacroButton)
     MacroFrame.numSelectionLable:SetAlpha(0.7)
     MacroFrame.numSelectionLable:SetPoint('RIGHT', MacroFrameSelectedMacroButton, 'LEFT', -1,0)
     MacroFrame.numSelectionLable:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.7) end)
@@ -1681,10 +1681,10 @@ local function Init()
 
     --宏数量
     --Blizzard_MacroUI.lua
-    MacroFrameTab1.label= WoWTools_LabelMixin:CreateLabel(MacroFrameTab1)
+    MacroFrameTab1.label= WoWTools_LabelMixin:Create(MacroFrameTab1)
     MacroFrameTab1.label:SetPoint('BOTTOM', MacroFrameTab1, 'TOP', 0, -8)
     MacroFrameTab1.label:SetAlpha(0.7)
-    MacroFrameTab2.label= WoWTools_LabelMixin:CreateLabel(MacroFrameTab2)
+    MacroFrameTab2.label= WoWTools_LabelMixin:Create(MacroFrameTab2)
     MacroFrameTab2.label:SetPoint('BOTTOM', MacroFrameTab2, 'TOP', 0, -8)
     MacroFrameTab2.label:SetAlpha(0.7)
     MacroFrameTab2.label:SetTextColor(e.Player.r, e.Player.g, e.Player.b)

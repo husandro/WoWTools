@@ -16,10 +16,10 @@ local function Create_Frame()
     frame:SetPoint('TOPLEFT', EncounterJournal, 'TOPRIGHT',40,0)
     frame:SetSize(1,1)
 
-    frame.label= WoWTools_LabelMixin:CreateLabel(frame)
+    frame.label= WoWTools_LabelMixin:Create(frame)
     frame.label:SetPoint('TOPLEFT')
 
-    frame.weekLable= WoWTools_LabelMixin:CreateLabel(frame, {mouse=true})
+    frame.weekLable= WoWTools_LabelMixin:Create(frame, {mouse=true})
     frame.weekLable:SetPoint('TOPLEFT', frame.label, 'BOTTOMLEFT', 0, -12)
 
     frame.weekLable:SetScript('OnMouseDown', function(self)

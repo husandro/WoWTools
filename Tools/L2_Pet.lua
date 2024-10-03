@@ -99,7 +99,7 @@ end
 --####
 local function Init()
  
-    button.Text=WoWTools_LabelMixin:CreateLabel(button, {size=10, color=true})-- size,nil,nil, true)
+    button.Text=WoWTools_LabelMixin:Create(button, {size=10, color=true})-- size,nil,nil, true)
     button.Text:SetPoint('BOTTOM',0 , -2)
 
     function button:set_pets_date(tabs)

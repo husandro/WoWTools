@@ -32,7 +32,7 @@ local function Set_Covenant_Button(self, covenantID, activityID)
 
         btn.covenantID= covenantID
         self['covenant'..covenantID]=btn
-        btn.Text=WoWTools_LabelMixin:CreateLabel(btn, {color={r=1,g=1,b=1}})
+        btn.Text=WoWTools_LabelMixin:Create(btn, {color={r=1,g=1,b=1}})
         btn.Text:SetPoint('CENTER')
     end
 
@@ -201,7 +201,7 @@ local function Init_MajorFactionRenownFrame()
                             ToggleMajorFactionRenown(frame.factionID)
                         end
                     end)
-                    btn.Text= WoWTools_LabelMixin:CreateLabel(btn)
+                    btn.Text= WoWTools_LabelMixin:Create(btn)
                     btn.Text:SetPoint('BOTTOMLEFT', btn, 'BOTTOM')
                     self.btn[n]= btn
                 end
@@ -231,7 +231,7 @@ local function Init_MajorFactionRenownFrame()
 
     MajorFactionRenownFrame.WoWToolsFaction:set_scale()
     MajorFactionRenownFrame.WoWToolsFaction:set_texture()
-    MajorFactionRenownFrame.WoWToolsFaction.HeaderText= WoWTools_LabelMixin:CreateLabel(MajorFactionRenownFrame.WoWToolsFaction.frame, {color={r=1, g=1, b=1}, copyFont=MajorFactionRenownFrame.HeaderFrame.Level, justifyH='LEFT', size=14})
+    MajorFactionRenownFrame.WoWToolsFaction.HeaderText= WoWTools_LabelMixin:Create(MajorFactionRenownFrame.WoWToolsFaction.frame, {color={r=1, g=1, b=1}, copyFont=MajorFactionRenownFrame.HeaderFrame.Level, justifyH='LEFT', size=14})
     MajorFactionRenownFrame.WoWToolsFaction.HeaderText:SetPoint('BOTTOMLEFT', MajorFactionRenownFrame.HeaderFrame.Level, 'BOTTOMRIGHT', 16, -4)
 
     function MajorFactionRenownFrame.WoWToolsFaction.HeaderText:set_text()

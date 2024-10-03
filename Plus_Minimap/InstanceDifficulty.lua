@@ -40,7 +40,7 @@ local function InstanceDifficulty_Update(self)
     end
 
     if not self.labelType then
-        self.labelType= WoWTools_LabelMixin:CreateLabel(self, {color=true, level=22, alpha=0.5})
+        self.labelType= WoWTools_LabelMixin:Create(self, {color=true, level=22, alpha=0.5})
         self.labelType:SetPoint('TOP', self, 'BOTTOM', 0, 4)
     end
 
@@ -124,13 +124,13 @@ local function Init()
     WoWTools_ColorMixin:SetLabelTexture(btn.Guild.Border, {type='Texture'})
     WoWTools_ColorMixin:SetLabelTexture(btn.ChallengeMode.Border, {type='Texture'})
 
-    WoWTools_LabelMixin:CreateLabel(nil,{size=14, copyFont=btn.Text, changeFont= btn.Default.Text})--字体，大小
+    WoWTools_LabelMixin:Create(nil,{size=14, copyFont=btn.Text, changeFont= btn.Default.Text})--字体，大小
     btn.Default.Text:SetShadowOffset(1,-1)
 
-    --WoWTools_LabelMixin:CreateLabel(nil,{size=14, copyFont=btn.Guild.Text, changeFont= btn.Default.Text})--字体，大小
+    --WoWTools_LabelMixin:Create(nil,{size=14, copyFont=btn.Guild.Text, changeFont= btn.Default.Text})--字体，大小
     --btn.Guild.Text:SetShadowOffset(1,-1)
 
-    --WoWTools_LabelMixin:CreateLabel(nil,{size=14, copyFont=btn.ChallengeMode.Text, changeFont= btn.Default.Text})--字体，大小
+    --WoWTools_LabelMixin:Create(nil,{size=14, copyFont=btn.ChallengeMode.Text, changeFont= btn.Default.Text})--字体，大小
     --btn.ChallengeMode.Default.Text:SetShadowOffset(1,-1)
 
     --MinimapCluster:HookScript('OnEvent', function(self)--Minimap.luab

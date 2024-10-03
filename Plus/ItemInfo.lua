@@ -563,7 +563,7 @@ function e.Set_Item_Info(self, tab)
     end
 
     if topRightText and not self.topRightText then
-        self.topRightText=WoWTools_LabelMixin:CreateLabel(self, {size=tab.size or size, color={r=1,g=1,b=1}})--size, nil, nil, nil, 'OVERLAY')
+        self.topRightText=WoWTools_LabelMixin:Create(self, {size=tab.size or size, color={r=1,g=1,b=1}})--size, nil, nil, nil, 'OVERLAY')
         self.topRightText:SetPoint('TOPRIGHT', tab.point or self, 2,0)
     end
     if self.topRightText then
@@ -573,7 +573,7 @@ function e.Set_Item_Info(self, tab)
         end]]
     end
     if topLeftText and not self.topLeftText then
-        self.topLeftText=WoWTools_LabelMixin:CreateLabel(self, {size=tab.size or size, color={r=1,g=1,b=1}})--size, nil, nil, nil, 'OVERLAY')
+        self.topLeftText=WoWTools_LabelMixin:Create(self, {size=tab.size or size, color={r=1,g=1,b=1}})--size, nil, nil, nil, 'OVERLAY')
         self.topLeftText:SetPoint('TOPLEFT', tab.point or self)
     end
     if self.topLeftText then
@@ -584,7 +584,7 @@ function e.Set_Item_Info(self, tab)
     end
     if bottomRightText then
         if not self.bottomRightText then
-            self.bottomRightText=WoWTools_LabelMixin:CreateLabel(self, {size=tab.size or size, color={r=1,g=1,b=1}})--size, nil, nil, nil, 'OVERLAY')
+            self.bottomRightText=WoWTools_LabelMixin:Create(self, {size=tab.size or size, color={r=1,g=1,b=1}})--size, nil, nil, nil, 'OVERLAY')
             self.bottomRightText:SetPoint('BOTTOMRIGHT', tab.point or self)
         end
     end
@@ -596,7 +596,7 @@ function e.Set_Item_Info(self, tab)
     end
 
     if leftText and not self.leftText then
-        self.leftText=WoWTools_LabelMixin:CreateLabel(self, {size=tab.size or size, color={r=1,g=1,b=1}})--size, nil, nil, nil, 'OVERLAY')
+        self.leftText=WoWTools_LabelMixin:Create(self, {size=tab.size or size, color={r=1,g=1,b=1}})--size, nil, nil, nil, 'OVERLAY')
         self.leftText:SetPoint('LEFT', tab.point or self)
     end
     if self.leftText then
@@ -607,7 +607,7 @@ function e.Set_Item_Info(self, tab)
     end
 
     if rightText and not self.rightText then
-        self.rightText=WoWTools_LabelMixin:CreateLabel(self, {size=tab.size or size, color={r=1,g=1,b=1}})--size, nil, nil, nil, 'OVERLAY')
+        self.rightText=WoWTools_LabelMixin:Create(self, {size=tab.size or size, color={r=1,g=1,b=1}})--size, nil, nil, nil, 'OVERLAY')
         self.rightText:SetPoint('RIGHT', tab.point or self)
     end
     if self.rightText then
@@ -618,7 +618,7 @@ function e.Set_Item_Info(self, tab)
     end
 
     if bottomLeftText and not self.bottomLeftText then
-        self.bottomLeftText=WoWTools_LabelMixin:CreateLabel(self, {size=tab.size or size, color={r=1,g=1,b=1}})--size)
+        self.bottomLeftText=WoWTools_LabelMixin:Create(self, {size=tab.size or size, color={r=1,g=1,b=1}})--size)
         self.bottomLeftText:SetPoint('BOTTOMLEFT', tab.point or self)
     end
     if self.bottomLeftText then
@@ -763,7 +763,7 @@ local function set_BankFrameItemButton_Update(self)--银行, BankFrame.lua
             numFreeSlots= nil
         end
         if numFreeSlots and not self.numFreeSlots then
-            self.numFreeSlots=WoWTools_LabelMixin:CreateLabel(self, {color=true, justifyH='CENTER'})
+            self.numFreeSlots=WoWTools_LabelMixin:Create(self, {color=true, justifyH='CENTER'})
             self.numFreeSlots:SetPoint('BOTTOM',0 ,6)
         end
         if self.numFreeSlots then
@@ -992,7 +992,7 @@ local function Init()
                             end
                         end
                         if not btn.quantityAll then
-                            btn.quantityAll= WoWTools_LabelMixin:CreateLabel(btn, {size=10, justifyH='RIGHT'})--10, nil, nil, nil, nil, 'RIGHT')
+                            btn.quantityAll= WoWTools_LabelMixin:Create(btn, {size=10, justifyH='RIGHT'})--10, nil, nil, nil, nil, 'RIGHT')
                             btn.quantityAll:SetPoint('BOTTOMRIGHT', btn, 'TOPRIGHT', 3,0)
                             btn.quantityAll:SetAlpha(0.7)
                             btn:EnableMouse(true)

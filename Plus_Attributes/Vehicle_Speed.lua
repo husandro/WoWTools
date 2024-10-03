@@ -14,7 +14,7 @@ local function Init()
     for _, name in pairs(vehicleTabs) do
         local frame= _G[name]
         if frame then
-            frame.speedText= WoWTools_LabelMixin:CreateLabel(frame, {mouse=true})
+            frame.speedText= WoWTools_LabelMixin:Create(frame, {mouse=true})
             frame.speedText:SetPoint('TOP')
             frame.speedText:SetScript('OnLeave', GameTooltip_Hide)
             frame.speedText:SetScript('OnEnter', function(self)

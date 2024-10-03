@@ -42,7 +42,7 @@ local function Set_Dragonriding_Speed(frame)
     texture:SetVertexColor(0.93, 0.82, 0.00)
 
 
-    frame.speedBar.Text= WoWTools_LabelMixin:CreateLabel(frame.speedBar, {size=16, color= true})
+    frame.speedBar.Text= WoWTools_LabelMixin:Create(frame.speedBar, {size=16, color= true})
     frame.speedBar.Text:SetPoint('BOTTOM', frame.speedBar, 'TOP', 0,1)
 
     frame.speedBar:SetScript('OnUpdate', function(self, elapsed)

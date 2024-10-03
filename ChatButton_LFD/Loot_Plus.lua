@@ -123,7 +123,7 @@ local function Init()
 
         local text
         if not btn.itemSubTypeLabel then
-            btn.itemSubTypeLabel= WoWTools_LabelMixin:CreateLabel(btn, {color=true})
+            btn.itemSubTypeLabel= WoWTools_LabelMixin:Create(btn, {color=true})
             btn.itemSubTypeLabel:SetPoint('BOTTOMLEFT', btn.Item.IconBorder, 'BOTTOMRIGHT',4,-8)
         end
         if btn.dropInfo.itemHyperlink and notGreed then

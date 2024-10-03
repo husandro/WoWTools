@@ -23,7 +23,7 @@ local function Init()
         
     
 --物品等级
-    LabelPvE=WoWTools_LabelMixin:CreateLabel(PaperDollSidebarTab1, {justifyH='CENTER', mouse=true})
+    LabelPvE=WoWTools_LabelMixin:Create(PaperDollSidebarTab1, {justifyH='CENTER', mouse=true})
     LabelPvE:SetPoint('BOTTOM')
     LabelPvE:EnableMouse(true)
     LabelPvE:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
@@ -47,7 +47,7 @@ local function Init()
 
 
 --PvP物品等级
-    LabelPvP=WoWTools_LabelMixin:CreateLabel(PaperDollSidebarTab1, {justifyH='CENTER', mouse=true})
+    LabelPvP=WoWTools_LabelMixin:Create(PaperDollSidebarTab1, {justifyH='CENTER', mouse=true})
     LabelPvP:SetPoint('TOP')
     LabelPvP:SetScript('OnMouseDown', function(self)
         e.call(PaperDollFrame_SetSidebar, PaperDollSidebarTab1, 1)

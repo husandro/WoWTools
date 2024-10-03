@@ -65,7 +65,7 @@ local function Init_LFGListSearchEntry_Update(self)
         autoAccept= info.autoAccept--自动, 邀请
     end
     if text~='' and not self.scorsoText then
-        self.scorsoText= WoWTools_LabelMixin:CreateLabel(self, {justifyH='RIGHT'})
+        self.scorsoText= WoWTools_LabelMixin:Create(self, {justifyH='RIGHT'})
         self.scorsoText:SetPoint('TOPLEFT', self.DataDisplay.Enumerate, 0, 5)
         --self.scorsoText:SetPoint('RIGHT', self.DataDisplay.Enumerate.Icon5, 'LEFT', -2, 0)
     end
@@ -102,7 +102,7 @@ local function Init_LFGListSearchEntry_Update(self)
         realmText=server and server.realm
     end
     if realm and not self.realmText then
-        self.realmText= WoWTools_LabelMixin:CreateLabel(self)
+        self.realmText= WoWTools_LabelMixin:Create(self)
         self.realmText:SetPoint('BOTTOMRIGHT', self.DataDisplay.Enumerate,0,-3)
         self.realmText:EnableMouse(true)
         self.realmText:SetScript('OnEnter', function(self2)

@@ -54,10 +54,10 @@ API_WoWTools.lua
 0_Mixin\Texture.lua
 0_Mixin\Time.lua
 0_Mixin\SetTooltip.lua
+0_Mixin\SetTooltip_Faction.lua
 0_Mixin\Unit.lua
 0_Mixin\Week.lua
-##放后面
-0_Mixin\Faction_SetTooltip.lua
+
 
 StaticPopupDialogs.lua
 API_LoadData.lua

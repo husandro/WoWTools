@@ -1011,10 +1011,10 @@ function WoWTools_AttributesMixin:Frame_Init(rest)--初始， 或设置
             if not frame then
                 frame= CreateFrame('Frame', nil, button.frame)
 
-                frame.label= WoWTools_LabelMixin:CreateLabel(frame, {mouse=true, color={r=info.r, g=info.g,b=info.b, a=info.a}})--nil, nil, nil, {info.r,info.g,info.b,info.a}, nil)
+                frame.label= WoWTools_LabelMixin:Create(frame, {mouse=true, color={r=info.r, g=info.g,b=info.b, a=info.a}})--nil, nil, nil, {info.r,info.g,info.b,info.a}, nil)
                 frame.label:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
 
-                frame.text= WoWTools_LabelMixin:CreateLabel(frame, {mouse=true, color={r=1,g=1,b=1}, justifyH= Save().toLeft and 'RIGHT'})--nil, nil, nil, {1,1,1}, nil, Save().toLeft and 'RIGHT' or 'LEFT')
+                frame.text= WoWTools_LabelMixin:Create(frame, {mouse=true, color={r=1,g=1,b=1}, justifyH= Save().toLeft and 'RIGHT'})--nil, nil, nil, {1,1,1}, nil, Save().toLeft and 'RIGHT' or 'LEFT')
                 frame.text:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
 
                 frame.bg= frame:CreateTexture(nil, 'BACKGROUND')
@@ -1109,7 +1109,7 @@ function WoWTools_AttributesMixin:Frame_Init(rest)--初始， 或设置
                 end
 
                 if info.textValue and not frame.textValue then--数值 + -
-                    frame.textValue=WoWTools_LabelMixin:CreateLabel(frame)
+                    frame.textValue=WoWTools_LabelMixin:Create(frame)
                 end
                 if frame.textValue then
                     frame.textValue:SetText('')
@@ -1214,7 +1214,7 @@ local function Init_Options()--设置 panel
             last=check
 
         elseif info.tank and not findTank then
-            local text= WoWTools_LabelMixin:CreateLabel(panel)
+            local text= WoWTools_LabelMixin:Create(panel)
             text:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -16)
             if e.onlyChinese then
                 text:SetText("仅限"..INLINE_TANK_ICON)
@@ -1257,7 +1257,7 @@ local function Init_Options()--设置 panel
         end)
         check:SetScript('OnLeave', GameTooltip_Hide)
 
-        local text= WoWTools_LabelMixin:CreateLabel(check, {color={r=info.r or 1, g=info.g or 0.82, b=info.b or 0, a=info.a or 1}})--nil, nil, nil, {r,g,b,a})--Text
+        local text= WoWTools_LabelMixin:Create(check, {color={r=info.r or 1, g=info.g or 0.82, b=info.b or 0, a=info.a or 1}})--nil, nil, nil, {r,g,b,a})--Text
         text:SetPoint('LEFT', check, 'RIGHT')
         text:SetText(info.text)
         if index>1 then
@@ -1395,7 +1395,7 @@ local function Init_Options()--设置 panel
 
 
 
-    local text= WoWTools_LabelMixin:CreateLabel(panel, {size=26})--26)--Text
+    local text= WoWTools_LabelMixin:Create(panel, {size=26})--26)--Text
     text:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -16)
     text:SetText(e.onlyChinese and '阴影' or SHADOW_QUALITY:gsub(QUALITY , ''))
     text:EnableMouse(true)
@@ -1469,7 +1469,7 @@ local function Init_Options()--设置 panel
         WoWTools_AttributesMixin:Frame_Init(true)--初始， 或设置
     end)
 
-    local textColor= WoWTools_LabelMixin:CreateLabel(panel, {size=20})--20)--数值text, 颜色
+    local textColor= WoWTools_LabelMixin:Create(panel, {size=20})--20)--数值text, 颜色
     textColor:SetPoint('LEFT', notTextCheck.text,'RIGHT', 5, 0)
     textColor:EnableMouse(true)
     textColor:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
@@ -1552,7 +1552,7 @@ local function Init_Options()--设置 panel
             end)
         end
     end)
-    panel.barGreenColor= WoWTools_LabelMixin:CreateLabel(panel, {size=20})--20)
+    panel.barGreenColor= WoWTools_LabelMixin:Create(panel, {size=20})--20)
     panel.barGreenColor:SetPoint('LEFT', barValueText.text,'RIGHT', 2, 0)
     panel.barGreenColor:EnableMouse(true)
     panel.barGreenColor:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
@@ -1584,7 +1584,7 @@ local function Init_Options()--设置 panel
         )
     end)
 
-    panel.barRedColor= WoWTools_LabelMixin:CreateLabel(panel, {size=20})--20)
+    panel.barRedColor= WoWTools_LabelMixin:Create(panel, {size=20})--20)
     panel.barRedColor:SetPoint('LEFT', panel.barGreenColor,'RIGHT', 2, 0)
     panel.barRedColor:EnableMouse(true)
     panel.barRedColor:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)

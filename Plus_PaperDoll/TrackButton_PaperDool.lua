@@ -14,6 +14,11 @@ local addName
 
 
 
+local function IsCan_EquipSet(setID)
+	if not setID or C_EquipmentSet.EquipmentSetContainsLockedItems(setID) or UnitCastingInfo("player") then
+		return e.onlyChinese and '你还不能那样做。' or ERR_CLIENT_LOCKED_OUT
+	end
+end
 
 
 
@@ -23,33 +28,77 @@ local addName
 
 
 
-local function Init_Menu(_, root)
-    root:CreateCheckbox(
-        e.onlyChinese and '显示' or SHOW,
-    function()
-        return Save().equipment
-    end, function()
-        EquipButton:set_show_hide()
-    end)
+
+local function Init_Menu(self, root)
+    local sub
+
+    if self==EquipButton then
+        root:CreateCheckbox(
+            e.onlyChinese and '显示' or SHOW,
+        function()
+            return Save().equipment
+        end, function()
+            EquipButton:set_show_hide()
+        end)
+    else
+        root:CreateCheckbox(
+            MicroButtonTooltipText('角色信息', "TOGGLECHARACTER0"),
+        function()
+            local frame = GetPaperDollSideBarFrame(3)
+            return frame and frame:IsShown()
+        end, function()
+            WoWTools_LoadUIMixin:PaperDoll_Sidebar(3)
+        end)
+    end
     root:CreateDivider()
 
-    root:CreateCheckbox(
-        e.Icon.toRight..(e.onlyChinese and '向右' or BINDING_NAME_STRAFERIGHT) or ('|A:UI-HUD-MicroMenu-StreamDLRed-Up:0:0|a'),
-    function()
 
+    
+
+    sub=root:CreateCheckbox(
+        e.onlyChinese and '装等' or ITEM_UPGRADE_STAT_AVERAGE_ITEM_LEVEL,
+    function()
+        return Save().trackButtonShowItemLeve or 10
     end, function()
-        Save().EquipmentH= not Save().EquipmentH and true or nil
-        TrackButton:set_toright_point()
+        Save().trackButtonShowItemLeve= not Save().trackButtonShowItemLeve and true or nil
+        TrackButton:set_player_itemLevel()
     end)
 
-    --缩放
+--缩放, 单行
+    WoWTools_MenuMixin:ScaleRoot(sub, function()
+        return Save().trackButtonTextScale or 1
+    end, function(value)
+        Save().trackButtonTextScale= value
+        TrackButton:set_text_scale()
+    end)
+
+
+
+--向右
+    root:CreateCheckbox(
+        '|A:common-icon-rotateright:0:0|a'..(e.onlyChinese and '向右' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT),
+    function()
+        return Save().EquipmentH
+    end, function()
+        Save().EquipmentH= not Save().EquipmentH and true or nil
+        TrackButton:set_to_right()
+    end)
+
+--缩放
     WoWTools_MenuMixin:Scale(root, function()
         return Save().equipmentFrameScale
     end, function(value)
         Save().equipmentFrameScale= value
-        TrackButton:set_scale()
+        TrackButton:settgins()
     end)
 
+--FrameStrata
+    WoWTools_MenuMixin:FrameStrata(root, function(data)
+        return TrackButton:GetFrameStrata()==data
+    end, function(data)
+        Save().trackButtonStrata= data
+        TrackButton:settgins()
+    end)
 
 --重置位置
     root:CreateDivider()
@@ -86,6 +135,14 @@ end
 
 
 
+
+
+
+
+
+
+
+
 --建立，按钮
 local function Create_Button(index)
     local btn=WoWTools_ButtonMixin:Cbtn(TrackButton, {icon='hide',size=22})
@@ -93,14 +150,17 @@ local function Create_Button(index)
     btn.texture:SetSize(28,28)
     btn.texture:SetPoint('CENTER')
     btn.texture:SetAtlas('AlliedRace-UnlockingFrame-GenderMouseOverGlow')
-    btn.text= WoWTools_LabelMixin:CreateLabel(btn, {size=10, color={r=1,g=1,b=1}})
+    btn.text= WoWTools_LabelMixin:Create(btn, {size=10, color={r=1,g=1,b=1}})
     btn.text:SetPoint('BOTTOMRIGHT')
 
     Set_Point(btn, index)--设置位置
 
     btn:SetScript("OnClick",function(self)
-        if not C_EquipmentSet.CanUseEquipmentSets() then
+        local notCan= IsCan_EquipSet(self.setID)
+        
+        if not notCan then
             C_EquipmentSet.UseEquipmentSet(self.setID)
+
             if TrackButton.HelpTips then
                 TrackButton.HelpTips:SetShown(false)
             end
@@ -108,31 +168,36 @@ local function Create_Button(index)
                 WoWTools_PaperDollMixin:Set_Tab1_ItemLevel()--修改总装等
             end)
         else
-            print(e.addName, addName, RED_FONT_COLOR_CODE, e.onlyChinese and '你无法在战斗中实施那个动作' or ERR_NOT_IN_COMBAT)
+            print(e.addName, addName, RED_FONT_COLOR_CODE, notCan)
         end
     end)
     btn:SetScript("OnEnter", function(self)
-        if ( self.setID ) then
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
-            e.tips:SetEquipmentSet(self.setID)
-            if C_EquipmentSet.CanUseEquipmentSets() then
-                e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(' ', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '你无法在战斗中实施那个动作' or ERR_NOT_IN_COMBAT))
-            end
-            local specIndex=C_EquipmentSet.GetEquipmentSetAssignedSpec(self.setID)
-            if specIndex then
-                local _, specName2, _, icon3 = GetSpecializationInfo(specIndex)
-                if icon3 and specName2 then
-                    e.tips:AddLine(' ')
-                    e.tips:AddLine(format(e.onlyChinese and '%s专精' or PROFESSIONS_SPECIALIZATIONS_PAGE_NAME, '|T'..icon3..':0|t|cffff00ff'..specName2..'|r'))
-                end
-            end
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.addName, addName)
-            e.tips:Show()
-            EquipButton:SetButtonState('PUSHED')
-            EquipButton:SetAlpha(1)
+        if not self.setID then
+            return
         end
+
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:SetEquipmentSet(self.setID)
+
+        local notCan= IsCan_EquipSet(self.setID)
+        if notCan then
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(' ', notCan)
+        end
+
+        local specIndex=C_EquipmentSet.GetEquipmentSetAssignedSpec(self.setID)
+        if specIndex then
+            local _, specName2, _, icon3 = GetSpecializationInfo(specIndex)
+            if icon3 and specName2 then
+                e.tips:AddLine(' ')
+                e.tips:AddLine(format(e.onlyChinese and '%s专精' or PROFESSIONS_SPECIALIZATIONS_PAGE_NAME, '|T'..icon3..':0|t|cffff00ff'..specName2..'|r'))
+            end
+        end
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.addName, addName)
+        e.tips:Show()
+        EquipButton:SetButtonState('PUSHED')
+        EquipButton:SetAlpha(1)
         self:SetAlpha(1)
     end)
 
@@ -234,19 +299,23 @@ end
 --#######
 local function Init_TrackButton()--添加装备管理框
     TrackButton=WoWTools_ButtonMixin:Cbtn(UIParent, {icon='hide', size={23, 16}})--添加移动按钮
-    TrackButton.text= WoWTools_LabelMixin:CreateLabel(TrackButton, {color=true, justifyH='CENTER'})
+    TrackButton.text= WoWTools_LabelMixin:Create(TrackButton, {size=Save().trackButtonFontSize or 10, color=true, justifyH='CENTER'})
     TrackButton.text:SetPoint('CENTER')
     TrackButton:Hide()
 
 --装等
     function TrackButton:set_player_itemLevel()
-        local text= format('%i', select(2, GetAverageItemLevel()) or 0)
-        if Save().EquipmentH then
-            self:SetSize(16, 23)
-            self:SetText(WoWTools_TextMixin:Vstr(text))
+        if self:IsShown() and Save().trackButtonShowItemLeve then
+            local text= format('%i', select(2, GetAverageItemLevel()) or 0)
+            if Save().EquipmentH then
+                self:SetSize(16, 23)
+                self.text:SetText(WoWTools_TextMixin:Vstr(text))
+            else
+                self:SetSize(23, 16)
+                self.text:SetText(text)
+            end
         else
-            self:SetSize(23, 16)
-            self.text:SetText(text)
+            self.text:SetText("")
         end
     end
 
@@ -264,17 +333,25 @@ local function Init_TrackButton()--添加装备管理框
     end
 
 --向右，向下
-    function TrackButton:set_toright_point()
-        for index, btn in pairs(self.buttons) do
+    function TrackButton:set_to_right()
+        for index, btn in pairs(Buttons) do
             btn:ClearAllPoints()
-            self:set_button_point(btn, index)--设置位置
+            Set_Point(btn, index)--设置位置
         end
-        TrackButton:set_player_itemLevel()
+        self:set_player_itemLevel()
     end
 
 --缩放
     function TrackButton:set_scale()
         self:SetScale(Save().equipmentFrameScale or 1)
+    end
+
+--FrameStrata
+    function TrackButton:set_strata()
+        local strata= Save().trackButtonStrata
+        if strata then
+            self:SetFrameStrata(strata)
+        end
     end
 
 
@@ -319,6 +396,11 @@ local function Init_TrackButton()--添加装备管理框
         self:RegisterUnitEvent('UNIT_EXITED_VEHICLE', 'player')
         self:RegisterUnitEvent('UNIT_ENTERED_VEHICLE', 'player')
         Init_buttons()
+        self:set_player_itemLevel()
+    end
+
+    function TrackButton:set_text_scale()
+        self.text:SetScale(Save().trackButtonTextScale or 1)
     end
 
     function TrackButton:settgins()
@@ -327,10 +409,12 @@ local function Init_TrackButton()--添加装备管理框
         self:set_scale()
         self:set_player_itemLevel()
         self:tips_not_equipment()
+        self:set_strata()
+        self:set_text_scale()
     end
 
 
-
+    
 
 
 
@@ -355,26 +439,22 @@ local function Init_TrackButton()--添加装备管理框
     end)
     TrackButton:SetScript("OnMouseUp", ResetCursor)
 
-    TrackButton:SetScript("OnClick", function(_, d)
-        if d=='RightButton' and IsControlKeyDown() then--图标横,或 竖
-            Save().EquipmentH= not Save().EquipmentH and true or nil
-            for index, btn in pairs(Buttons) do
-                btn:ClearAllPoints()
-                Set_Point(btn, index)--设置位置
-            end
+    TrackButton:SetScript("OnClick", function(self, d)
+        if IsModifierKeyDown() then
+            return
+        end
+        if d=='LeftButton' then
+            WoWTools_LoadUIMixin:PaperDoll_Sidebar(3)--打开/关闭角色界面
 
-        elseif d=='LeftButton' and not IsModifierKeyDown() then--打开/关闭角色界面
-            ToggleCharacter("PaperDollFrame")
-            if PaperDollFrame:IsShown() then
-                PaperDollFrame_SetSidebar(PaperDollFrame, 3)
-            end
+        elseif d=='RightButton' then
+            MenuUtil.CreateContextMenu(self, Init_Menu)
         end
     end)
 
     TrackButton:SetScript("OnEnter", function (self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, e.onlyChinese and '装备管理'or EQUIPMENT_MANAGER)
+        e.tips:AddDoubleLine(WoWTools_PaperDollMixin.addName, addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(MicroButtonTooltipText('角色信息', "TOGGLECHARACTER0"), e.Icon.left)
         e.tips:AddDoubleLine('|A:dressingroom-button-appearancelist-up:0:0|a'..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), e.Icon.right)
@@ -382,7 +462,6 @@ local function Init_TrackButton()--添加装备管理框
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
         e.tips:Show()
         EquipButton:SetButtonState('PUSHED')
-
     end)
 
     TrackButton:SetScript("OnLeave", function()
@@ -469,14 +548,14 @@ function Init_EquipButton()
         TrackButton:set_shown()
     end
 
-    EquipButton:SetScript("OnClick", function(self, d)
+    EquipButton:SetScript("OnClick", function(self)
         MenuUtil.CreateContextMenu(self, Init_Menu)
     end)
 
     EquipButton:SetScript("OnEnter", function (self)
         e.tips:SetOwner(self, "ANCHOR_TOPLEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, addName)
+        e.tips:AddDoubleLine(WoWTools_PaperDollMixin.addName, addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '装备管理' or EQUIPMENT_MANAGER, e.Icon.left..e.GetShowHide(Save().equipment))
         local col= not (self.btn and Save().Equipment) and '|cff9e9e9e' or ''
@@ -511,8 +590,8 @@ end
 
 
 function WoWTools_PaperDollMixin:TrackButton_Settings()
-    EquipButton:settgins()
-    TrackButton:settgins()
+    EquipButton:settings()
+    TrackButton:settings()
 end
 
 function WoWTools_PaperDollMixin:Init_TrackButton()

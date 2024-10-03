@@ -19,7 +19,7 @@ local function Blizzard_ClassTalentUI(self)
             frame.specIconBorder:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
             frame.specIconBorder:SetSize(32,32)
 
-            frame.specIDLabel= WoWTools_LabelMixin:CreateLabel(frame, {mouse=true, size=18, copyFont=frame.RoleName})
+            frame.specIDLabel= WoWTools_LabelMixin:Create(frame, {mouse=true, size=18, copyFont=frame.RoleName})
             frame.specIDLabel:SetPoint('LEFT', frame.specIcon, 'RIGHT', 12, 0)
             frame.specIDLabel:SetScript('OnLeave', function(s) s:SetAlpha(1) GameTooltip_Hide() end)
             frame.specIDLabel:SetScript('OnEnter', function(s)

@@ -81,7 +81,7 @@ local function Create_Check(frame)
     frame.check.Text:SetPoint('RIGHT', frame.check, 'LEFT')
 
     frame.check.memoFrame= CreateFrame("Frame", nil, frame.check)
-    frame.check.memoFrame.Text= WoWTools_LabelMixin:CreateLabel(frame, {justifyH='RIGHT'})
+    frame.check.memoFrame.Text= WoWTools_LabelMixin:Create(frame, {justifyH='RIGHT'})
     frame.check.memoFrame.Text:SetPoint('RIGHT', frame.Status, 'LEFT')
     frame.check.memoFrame.Text:SetAlpha(0.5)
     frame.check.memoFrame:Hide()

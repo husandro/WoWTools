@@ -12,7 +12,7 @@ local function Blizzard_AchievementUI()
     hooksecurefunc(AchievementTemplateMixin, 'Init', function(frame)
         if frame.Shield and frame.id then
             if not frame.AchievementIDLabel  then
-                frame.AchievementIDLabel= WoWTools_LabelMixin:CreateLabel(frame.Shield)
+                frame.AchievementIDLabel= WoWTools_LabelMixin:Create(frame.Shield)
                 frame.AchievementIDLabel:SetPoint('TOP', frame.Shield.Icon)
                 frame.Shield:SetScript('OnEnter', function(self)
                     local achievementID= self:GetParent().id
@@ -66,7 +66,7 @@ local function Blizzard_AchievementUI()
                     end
                 end)
                 if button.Player and button.Player.Icon and not button.Player.idText then
-                    button.Player.idText= WoWTools_LabelMixin:CreateLabel(button.Player)
+                    button.Player.idText= WoWTools_LabelMixin:Create(button.Player)
                     button.Player.idText:SetPoint('LEFT', button.Player.Icon, 'RIGHT', 0, 10)
                 end
             end

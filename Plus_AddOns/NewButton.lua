@@ -63,7 +63,7 @@ local function Init()
 
 
 
-    NewButton.Text= WoWTools_LabelMixin:CreateLabel(NewButton)--已选中，数量
+    NewButton.Text= WoWTools_LabelMixin:Create(NewButton)--已选中，数量
     NewButton.Text:SetPoint('BOTTOMRIGHT', NewButton, 'LEFT',0, 1)
     NewButton.Text:SetScript('OnLeave', GameTooltip_Hide)
     NewButton.Text:SetScript('OnEnter', function (self)
@@ -81,7 +81,7 @@ local function Init()
 
 
 
-    NewButton.Text2=WoWTools_LabelMixin:CreateLabel(NewButton, {justifyH='RIGHT'})--总内存
+    NewButton.Text2=WoWTools_LabelMixin:Create(NewButton, {justifyH='RIGHT'})--总内存
     NewButton.Text2:SetPoint('TOPRIGHT', NewButton, 'LEFT', 0, -1)
     NewButton.Text2:SetScript('OnLeave', GameTooltip_Hide)
     NewButton.Text2:SetScript('OnEnter', function(self)
@@ -154,7 +154,7 @@ local function Init()
 
 
 
-    NewButton.Text3=WoWTools_LabelMixin:CreateLabel(NewButton, {justifyH='RIGHT'})--总已加载，数量
+    NewButton.Text3=WoWTools_LabelMixin:Create(NewButton, {justifyH='RIGHT'})--总已加载，数量
     NewButton.Text3:SetPoint('RIGHT', NewButton.Text2, 'LEFT', -8, 0)
     NewButton.Text3:SetScript('OnLeave', GameTooltip_Hide)
     NewButton.Text3:SetScript('OnEnter', function (self)
@@ -329,7 +329,7 @@ function WoWTools_AddOnsMixin:Init_NewButton_Button()
     Init_Refresh_Button()
     Init_NotDisabled_Button()
 
-    local label= WoWTools_LabelMixin:CreateLabel(NewButton)--插件，总数
+    local label= WoWTools_LabelMixin:Create(NewButton)--插件，总数
     label:SetPoint('LEFT',AddonListEnableAllButton, 3,0)
     label:SetText(C_AddOns.GetNumAddOns())
 

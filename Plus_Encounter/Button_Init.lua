@@ -195,7 +195,7 @@ local function Init()
     end)
     Button.btn.money:SetScript("OnLeave", GameTooltip_Hide)
         
-    Button.btn.money.label= WoWTools_LabelMixin:CreateLabel(Button.btn.money, {size=14})
+    Button.btn.money.label= WoWTools_LabelMixin:Create(Button.btn.money, {size=14})
     Button.btn.money.label:SetPoint('RIGHT', Button.btn.money, 'LEFT')
     function Button.btn.money.label:settings()
         local numPlayer, allMoney= Set_Money(self, false)

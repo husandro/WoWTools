@@ -355,7 +355,7 @@ local function Init()
 		self:ClearFocus()
 	end)
 
-	Frame.rgb.lable=WoWTools_LabelMixin:CreateLabel(Frame.rgb, {size=10})--10)--提示，修改，颜色
+	Frame.rgb.lable=WoWTools_LabelMixin:Create(Frame.rgb, {size=10})--10)--提示，修改，颜色
 	Frame.rgb.lable:SetPoint('RIGHT', Frame.rgb,-2,0)
 	Frame.rgb:SetScript('OnTextChanged', function(self, userInput)
 		if userInput then
@@ -420,7 +420,7 @@ local function Init()
 				self:ClearFocus()
 		end
 	end)
-	Frame.rgb2.lable=WoWTools_LabelMixin:CreateLabel(Frame.rgb2, {size=10})--10)--提示，修改，颜色
+	Frame.rgb2.lable=WoWTools_LabelMixin:Create(Frame.rgb2, {size=10})--10)--提示，修改，颜色
 	Frame.rgb2.lable:SetPoint('RIGHT', Frame.rgb2,-2,0)
 	Frame.rgb2:SetScript('OnHide', function(self)
 		self:SetText('')
@@ -472,11 +472,11 @@ local function Init()
 		self:ClearFocus()
 	end)
 
-	local hexText=WoWTools_LabelMixin:CreateLabel(Frame)--提示
+	local hexText=WoWTools_LabelMixin:Create(Frame)--提示
 	hexText:SetPoint('RIGHT', Frame.hex, 'LEFT',-2,0)
 	hexText:SetText('|c')
 
-	Frame.hex.lable=WoWTools_LabelMixin:CreateLabel(Frame.hex, {size=10})--10)--提示，修改，颜色
+	Frame.hex.lable=WoWTools_LabelMixin:Create(Frame.hex, {size=10})--10)--提示，修改，颜色
 	Frame.hex.lable:SetPoint('RIGHT', Frame.hex,-2,0)
 	Frame.hex:SetScript('OnTextChanged', function(self, userInput)
 		if userInput then
@@ -526,7 +526,7 @@ local function Init()
 		self:ClearFocus()
 	end)
 
-	local cnText2=WoWTools_LabelMixin:CreateLabel(Frame)--提示
+	local cnText2=WoWTools_LabelMixin:Create(Frame)--提示
 	cnText2:SetPoint('LEFT', Frame.cn2, 'RIGHT', 2,0)
 	cnText2:SetText(':')
 
@@ -582,7 +582,7 @@ local function Init()
 
 
 	if OpacitySliderFrame then
-		Frame.alphaText=WoWTools_LabelMixin:CreateLabel(OpacitySliderFrame, {mouse=true, size=14})--14)--透明值，提示
+		Frame.alphaText=WoWTools_LabelMixin:Create(OpacitySliderFrame, {mouse=true, size=14})--14)--透明值，提示
 		Frame.alphaText:SetPoint('LEFT', OpacitySliderFrame, 'RIGHT', 5,0)
 
 		OpacitySliderFrame:EnableMouseWheel(true)
@@ -598,7 +598,7 @@ local function Init()
 			self:SetValue(value)
 		end)
 	else
-		Frame.alphaText=WoWTools_LabelMixin:CreateLabel(ColorPickerFrame, {mouse=true, size=14})--透明值，提示
+		Frame.alphaText=WoWTools_LabelMixin:Create(ColorPickerFrame, {mouse=true, size=14})--透明值，提示
 		Frame.alphaText:SetPoint('TOP', ColorPickerFrame.Content.ColorSwatchOriginal, 'BOTTOM')
 	end
 	Frame.alphaText:SetScript('OnLeave', function(self) self:SetAlpha(1) e.tips:Hide() end)

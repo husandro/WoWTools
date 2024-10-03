@@ -91,7 +91,7 @@ local function get_InviteButton_Frame(index)
             e.tips:Show()
         end)
 
-        frame.text= WoWTools_LabelMixin:CreateLabel(frame, {size=Save().tipsFrameTextSize, color=true})
+        frame.text= WoWTools_LabelMixin:Create(frame, {size=Save().tipsFrameTextSize, color=true})
         frame.text:SetPoint('BOTTOMLEFT', frame.DeclineButton, 'BOTTOMRIGHT')
 
         Button.lfgTextTab[index]= frame
@@ -600,7 +600,7 @@ local function Init()
 
 
 
-    Button.text= WoWTools_LabelMixin:CreateLabel(Button, {size=Save().tipsFrameTextSize, color=true})--Save().tipsFrameTextSize, nil, nil, true)
+    Button.text= WoWTools_LabelMixin:Create(Button, {size=Save().tipsFrameTextSize, color=true})--Save().tipsFrameTextSize, nil, nil, true)
     Button.text:SetPoint('BOTTOMLEFT', Button, 'BOTTOMRIGHT')
 
     Button.lfgTextTab= {}

@@ -43,7 +43,7 @@ local function set_PetBattleUnitFrame_UpdateDisplay(self)--Blizzard_PetBattleUI.
         end
     end
     if not self.text and t then
-        self.text=WoWTools_LabelMixin:CreateLabel(self, {justifyH='RIGHT'})--12 ,nil, nil, nil, nil, 'RIGHT')
+        self.text=WoWTools_LabelMixin:Create(self, {justifyH='RIGHT'})--12 ,nil, nil, nil, nil, 'RIGHT')
         self.text:SetPoint('TOPRIGHT', self.Icon, 'TOPRIGHT', 6, 2)
     end
     if self.text then
@@ -129,7 +129,7 @@ local function set_PetBattleFrame_UpdateSpeedIndicators(self)--Blizzard_PetBattl
         ally.power:SetSize(16,16)
         ally.power:SetPoint('BOTTOM', ally.speed , 'TOP' )
         ally.power:SetTexCoord(0.0, 0.5, 0.0, 0.5)
-        ally.power.text=WoWTools_LabelMixin:CreateLabel(self)
+        ally.power.text=WoWTools_LabelMixin:Create(self)
         ally.power.text:SetPoint('LEFT', ally.power, 'RIGHT')
 
         enemy.speed=enemy:CreateTexture()
@@ -144,7 +144,7 @@ local function set_PetBattleFrame_UpdateSpeedIndicators(self)--Blizzard_PetBattl
         enemy.power:SetSize(16,16)
         enemy.power:SetPoint('BOTTOM', enemy.speed , 'TOP' )
         enemy.power:SetTexCoord(0.0, 0.5, 0.0, 0.5)
-        enemy.power.text=WoWTools_LabelMixin:CreateLabel(self)
+        enemy.power.text=WoWTools_LabelMixin:Create(self)
         enemy.power.text:SetPoint('RIGHT', enemy.power, 'LEFT')
     end
 
@@ -217,7 +217,7 @@ local function set_PetBattleAbilityButton_UpdateBetterIcon(self)
                     self.weakHints:SetPoint('BOTTOMLEFT',-4,-2)
                     self.weakHints:SetSize(15,15)
 
-                    self.text=WoWTools_LabelMixin:CreateLabel(self, {color={r=1,g=0,b=0}, justifyH='RIGHT'})--nil, nil, nil,{1,0,0}, 'OVERLAY', 'RIGHT')
+                    self.text=WoWTools_LabelMixin:Create(self, {color={r=1,g=0,b=0}, justifyH='RIGHT'})--nil, nil, nil,{1,0,0}, 'OVERLAY', 'RIGHT')
                     self.text:SetPoint('RIGHT',-6,-6)
                 end
             end
@@ -467,7 +467,7 @@ local function set_PetBattleActionButton_UpdateState()
 
             end
             if text and not frame[i].cooldownText then
-                frame[i].cooldownText=WoWTools_LabelMixin:CreateLabel(frame[i], {size=22, color={r=1,g=0,b=0}})
+                frame[i].cooldownText=WoWTools_LabelMixin:Create(frame[i], {size=22, color={r=1,g=0,b=0}})
                 frame[i].cooldownText:SetPoint('CENTER')
                 text=currentCooldown
             end

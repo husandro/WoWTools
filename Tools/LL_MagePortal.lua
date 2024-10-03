@@ -81,7 +81,7 @@ end
 local function Set_Button_Label(btn) 
     if Save.showText then
         if not btn.text then
-            btn.text=WoWTools_LabelMixin:CreateLabel(btn, {color= not btn.luce})
+            btn.text=WoWTools_LabelMixin:Create(btn, {color= not btn.luce})
         end
         btn.text:ClearAllPoints(0)
         if Save.isLeft then
@@ -217,7 +217,7 @@ local function Init()
             end
 
             --[[if Save.showText then
-                btn.text=WoWTools_LabelMixin:CreateLabel(btn, {color= not tab.luce})
+                btn.text=WoWTools_LabelMixin:Create(btn, {color= not tab.luce})
                 if Save.isLeft then
                     btn.text:SetPoint('RIGHT', btn, 'LEFT')
                 else

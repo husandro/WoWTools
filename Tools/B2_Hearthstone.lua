@@ -113,7 +113,7 @@ end
 --设置，物品，提示
 local function Set_Menu_Tooltip(tooltip, desc)
     if desc.data then
-        WoWTools_SetTooltipMixin:SetTooltip(tooltip, {itemID=desc.data.itemID})--设置，物品，提示
+        WoWTools_SetTooltipMixin:Setup(tooltip, {itemID=desc.data.itemID})--设置，物品，提示
     end
     ToyButton:set_tooltip_location(tooltip)
 end
@@ -495,7 +495,7 @@ local function Init()
 
 
 
-    ToyButton.text=WoWTools_LabelMixin:CreateLabel(ToyButton, {size=10, color=true, justifyH='CENTER'})
+    ToyButton.text=WoWTools_LabelMixin:Create(ToyButton, {size=10, color=true, justifyH='CENTER'})
     ToyButton.text:SetPoint('TOP', ToyButton, 'BOTTOM',0,5)
 
 

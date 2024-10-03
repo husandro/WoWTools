@@ -217,7 +217,7 @@ local function Init()
     BuybackButton:SetScript('OnMouseUp', BuybackButton.set_texture)
 
 
-    BuybackButton.Text= WoWTools_LabelMixin:CreateLabel(BuybackButton, {justifyH='RIGHT', color={r=1,g=1,b=1}})
+    BuybackButton.Text= WoWTools_LabelMixin:Create(BuybackButton, {justifyH='RIGHT', color={r=1,g=1,b=1}})
     BuybackButton.Text:SetPoint('BOTTOMRIGHT')
 
     function BuybackButton:set_text()--回购，数量，提示

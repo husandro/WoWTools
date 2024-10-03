@@ -43,7 +43,7 @@ local function setFlyout(button, itemLink, slot)
     local text, level, dateInfo
     if not Save().hide then
         if not button.level then
-            button.level= WoWTools_LabelMixin:CreateLabel(button)
+            button.level= WoWTools_LabelMixin:Create(button)
             button.level:SetPoint('BOTTOM')
         end
         dateInfo= WoWTools_ItemMixin:GetTooltip({hyperLink=itemLink, itemID=itemLink and C_Item.GetItemInfoInstant(itemLink) , text={upgradeStr, pvpItemStr, itemLevelStr}, onlyText=true})--物品提示，信息
@@ -77,9 +77,9 @@ local function setFlyout(button, itemLink, slot)
             upText=upText and strlower(WoWTools_TextMixin:sub(upText, 1,3, true))
         end
         if upgrade and not button.upgrade then
-            button.upgrade= WoWTools_LabelMixin:CreateLabel(button, {color={r=0,g=1,b=0}})
+            button.upgrade= WoWTools_LabelMixin:Create(button, {color={r=0,g=1,b=0}})
             button.upgrade:SetPoint('LEFT')
-            button.itemType=WoWTools_LabelMixin:CreateLabel(button)
+            button.itemType=WoWTools_LabelMixin:Create(button)
             button.itemType:SetPoint('TOPRIGHT')
         end
         if button.upgrade then
@@ -114,7 +114,7 @@ local function setFlyout(button, itemLink, slot)
         end
     end
     if updown and not button.updown then
-        button.updown=WoWTools_LabelMixin:CreateLabel(button)
+        button.updown=WoWTools_LabelMixin:Create(button)
         button.updown:SetPoint('TOPLEFT')
     end
     if button.updown then

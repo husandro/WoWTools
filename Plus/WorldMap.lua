@@ -12,7 +12,7 @@ local PostionButton--实时玩家， 当前坐标
 local PlayerButton--世界地图， 当前坐标
 
 local function create_Wolor_Font(self, size)--AreaLabelDataProvider.xml
-    local font= WoWTools_LabelMixin:CreateLabel(self, {size=size, justifyH='CENTER', color=false, fontName='WorldMapTextFont'})--WorldMapTextFont SubZoneTextFont
+    local font= WoWTools_LabelMixin:Create(self, {size=size, justifyH='CENTER', color=false, fontName='WorldMapTextFont'})--WorldMapTextFont SubZoneTextFont
     return font
 end
 
@@ -304,11 +304,11 @@ local function CursorPositionInt()
             size= size<8 and 8 or size
         end
         Save.PlayerXYSize=size
-        WoWTools_LabelMixin:CreateLabel(nil, {size=size, changeFont=self.Text, color=true})
+        WoWTools_LabelMixin:Create(nil, {size=size, changeFont=self.Text, color=true})
         print(e.addName,e.cn(addName), e.Player.L.size, size)
     end)
 
-    PostionButton.Text=WoWTools_LabelMixin:CreateLabel(PostionButton, {size=Save.PlayerXYSize, color=true})
+    PostionButton.Text=WoWTools_LabelMixin:Create(PostionButton, {size=Save.PlayerXYSize, color=true})
     PostionButton.Text:SetPoint('RIGHT', PostionButton, "LEFT")
 
     PostionButton:HookScript("OnUpdate", function (self, elapsed)
@@ -390,7 +390,7 @@ local function Init_set_Map_ID()--显示地图ID
                         end
                     end
                     if not Button.mapID then--字符
-                        Button.mapID=WoWTools_LabelMixin:CreateLabel(WorldMapFrame.BorderFrame.TitleContainer, {copyFont=WorldMapFrameTitleText})
+                        Button.mapID=WoWTools_LabelMixin:Create(WorldMapFrame.BorderFrame.TitleContainer, {copyFont=WorldMapFrameTitleText})
                         Button.mapID:SetPoint('RIGHT', Button, 'LEFT')
                     end
                 end
@@ -401,7 +401,7 @@ local function Init_set_Map_ID()--显示地图ID
                 achievementID = C_QuestLog.GetZoneStoryInfo(uiMapID)--当前地图，故事任务
                 if achievementID then
                     if not Button.storyText then--字符
-                        Button.storyText=WoWTools_LabelMixin:CreateLabel(Button, {copyFont=WorldMapFrameTitleText})
+                        Button.storyText=WoWTools_LabelMixin:Create(Button, {copyFont=WorldMapFrameTitleText})
                         Button.storyText:SetPoint('BOTTOMRIGHT', Button, 'TOPRIGHT')
                         Button.storyText:EnableMouse(true)
                         Button.storyText:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
@@ -597,7 +597,7 @@ local function Init_set_Map_ID()--显示地图ID
         PlayerButton.edit.Middle:SetAlpha(0.5)
         PlayerButton.edit.Right:SetAlpha(0.5)
 
-        PlayerButton.Text=WoWTools_LabelMixin:CreateLabel(PlayerButton, {copyFont=WorldMapFrameTitleText})--玩家当前坐标
+        PlayerButton.Text=WoWTools_LabelMixin:Create(PlayerButton, {copyFont=WorldMapFrameTitleText})--玩家当前坐标
         PlayerButton.Text:SetPoint('LEFT',PlayerButton.edit, 'RIGHT', 2, 0)
         PlayerButton:HookScript("OnUpdate", function (self, elapsed)
             self.elapsed = (self.elapsed or 1) + elapsed

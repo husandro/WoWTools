@@ -82,7 +82,7 @@ local function Init_ItemInteractionFrame()
         tip:SetItemInteractionItem()
     end)
 
-    --ItemInteractionFrame.ItemConversionFrame.ItemConversionOutputSlot.Text= WoWTools_LabelMixin:CreateLabel(ItemInteractionFrame.ItemConversionFrame.ItemConversionOutputSlot)
+    --ItemInteractionFrame.ItemConversionFrame.ItemConversionOutputSlot.Text= WoWTools_LabelMixin:Create(ItemInteractionFrame.ItemConversionFrame.ItemConversionOutputSlot)
     --ItemInteractionFrame.ItemConversionFrame.ItemConversionOutputSlot.Text:SetPoint('LEFT', ItemInteractionFrame.ItemConversionFrame.ItemConversionOutputSlot, 'RIGHT',12,0)
     ItemInteractionFrame.Tip= CreateFrame('GameTooltip', nil, ItemInteractionFrame, 'GameTooltipTemplate')
     hooksecurefunc(ItemInteractionFrame.ItemConversionFrame.ItemConversionOutputSlot, 'RefreshIcon', function(self)

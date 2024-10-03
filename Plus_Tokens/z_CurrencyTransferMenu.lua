@@ -62,12 +62,12 @@ local function Init()
 	CurrencyTransferMenu.PlayerBalancePreview.BalanceInfo.Amount:SetTextColor(0, 1, 0)
 
 --总数
-	CurrencyTransferMenu.wowNumLabel= WoWTools_LabelMixin:CreateLabel(CurrencyTransferMenu, {color={r=0,g=0.8,b=1}, size=16, mouse=true})
+	CurrencyTransferMenu.wowNumLabel= WoWTools_LabelMixin:Create(CurrencyTransferMenu, {color={r=0,g=0.8,b=1}, size=16, mouse=true})
 	CurrencyTransferMenu.wowNumLabel:SetPoint('BOTTOM', CurrencyTransferMenu.SourceSelector.Dropdown, 'TOP', 0, 2)
 	CurrencyTransferMenu.wowNumLabel:SetScript('OnLeave', GameTooltip_Hide)
 	CurrencyTransferMenu.wowNumLabel:SetScript('OnEnter', function(self)
 		if not Save().notPlus then
-			WoWTools_SetTooltipMixin:Set_Frame(self, nil, {currencyID=self.currencyID})
+			WoWTools_SetTooltipMixin:Frame(self, nil, {currencyID=self.currencyID})
 		end
 	end)
 

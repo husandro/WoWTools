@@ -152,7 +152,7 @@ local function Init()
 	TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {icon='hide', size={22,22}, isType2=true})
 	WoWTools_ReputationMixin.TrackButton= TrackButton
 
-	--TrackButton.text= WoWTools_LabelMixin:CreateLabel(TrackButton, {color=true})
+	--TrackButton.text= WoWTools_LabelMixin:Create(TrackButton, {color=true})
 
 	TrackButton.texture= TrackButton:CreateTexture()
 	TrackButton.texture:SetAllPoints()

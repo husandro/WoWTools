@@ -203,7 +203,7 @@ local function set_Item_Count(self)--数量
     local num = C_Item.GetItemCount(self.itemID, false, true, true)
     if not PlayerHasToy(self.itemID) then
         if num~=1 and not self.count then
-            self.count=WoWTools_LabelMixin:CreateLabel(self, {size=10, color=true})--10,nil,nil,true)
+            self.count=WoWTools_LabelMixin:Create(self, {size=10, color=true})--10,nil,nil,true)
             self.count:SetPoint('BOTTOMRIGHT',-2, 9)
         end
         if self.count then
@@ -216,7 +216,7 @@ end
 local function set_Bling_Quest(self)--布林顿任务
     local complete=C_QuestLog.IsQuestFlaggedCompleted(56042)
     if not self.quest then
-        self.quest=WoWTools_LabelMixin:CreateLabel(self, {size=8})
+        self.quest=WoWTools_LabelMixin:Create(self, {size=8})
         self.quest:SetPoint('BOTTOM',0,8)
     end
     self.quest:SetText(complete and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '完成' or COMPLETE)..'|r' or '|A:questlegendary:0:0|a')
@@ -285,7 +285,7 @@ local function set_Spell_Count(self)--次数
     local data= self.spellID and C_Spell.GetSpellCharges(self.spellID) or {}
     local num, max= data.currentCharges, data.maxCharges
     if max and max>1 and not self.count then
-        self.count=WoWTools_LabelMixin:CreateLabel(self, {color=true})--nil,nil,nil,true)
+        self.count=WoWTools_LabelMixin:Create(self, {color=true})--nil,nil,nil,true)
         self.count:SetPoint('BOTTOMRIGHT',-2, 9)
     end
     if self.count then

@@ -126,7 +126,7 @@ function WoWTools_EditBoxMixn:SetInstructions(editBox, instructions, frame)
     if not editBox then
         return
     end
-    editBox.Instructions=WoWTools_LabelMixin:CreateLabel(editBox, {layer='BORDER', color={r=0.35, g=0.35, b=0.35}})
+    editBox.Instructions=WoWTools_LabelMixin:Create(editBox, {layer='BORDER', color={r=0.35, g=0.35, b=0.35}})
     editBox.Instructions:SetPoint('TOPLEFT')
     editBox.Instructions:SetText(instructions)
     if frame then

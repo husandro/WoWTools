@@ -427,7 +427,7 @@ end
 --初始
 --####
 local function Init()
-    SayButton.typeText=WoWTools_LabelMixin:CreateLabel(SayButton, {color=true})--10, nil, nil, true)
+    SayButton.typeText=WoWTools_LabelMixin:Create(SayButton, {color=true})--10, nil, nil, true)
     SayButton.typeText:SetPoint('BOTTOM',0,2)
 
     SayButton.tipBubbles= SayButton:CreateTexture(nil, 'OVERLAY')
@@ -435,7 +435,7 @@ local function Init()
     SayButton.tipBubbles:SetPoint('TOPLEFT', 3, -0)
     SayButton.tipBubbles:SetAtlas(e.Icon.disabled)
 
-    SayButton.numWhisper=WoWTools_LabelMixin:CreateLabel(SayButton, {color={r=0,g=1,b=0}})--最后密语,数量, 提示
+    SayButton.numWhisper=WoWTools_LabelMixin:Create(SayButton, {color={r=0,g=1,b=0}})--最后密语,数量, 提示
     SayButton.numWhisper:SetPoint('TOPRIGHT',-3, 0)
 
     SayButton.texture:SetAtlas('transmog-icon-chat')

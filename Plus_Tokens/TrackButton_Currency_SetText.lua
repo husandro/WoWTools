@@ -201,7 +201,7 @@ local function Create_Button(last, index, endTokenIndex, itemButtonUse, tables)
         btn.border:SetAllPoints()
     end
 
-    btn.text= WoWTools_LabelMixin:CreateLabel(btn, {color={r=1,g=1,b=1}})
+    btn.text= WoWTools_LabelMixin:Create(btn, {color={r=1,g=1,b=1}})
 
 
     if Save().toTopTrack then

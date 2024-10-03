@@ -106,7 +106,7 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 	end
 
 	if percent and not frame.percentText then
-		frame.percentText= WoWTools_LabelMixin:CreateLabel(frame, {color={r=1,g=1,b=1}})
+		frame.percentText= WoWTools_LabelMixin:Create(frame, {color={r=1,g=1,b=1}})
 		frame.percentText:SetPoint('RIGHT', frame.Content.Count, 'LEFT')
 	end
 

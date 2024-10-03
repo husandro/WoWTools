@@ -110,7 +110,7 @@ local function Setup(btn)--factionRow, elementData)--ReputationFrame.lua
 		end
 	end
 	if completedParagon and not frame.completed then
-		frame.completed= WoWTools_LabelMixin:CreateLabel(bar)
+		frame.completed= WoWTools_LabelMixin:Create(bar)
 		frame.completed:SetPoint('RIGHT', frame.ParagonIcon, 'LEFT', 4,0)
 	end
 	if frame.completed then
@@ -122,7 +122,7 @@ local function Setup(btn)--factionRow, elementData)--ReputationFrame.lua
 	end
 
 	if levelText and not frame.levelText then--等级
-		frame.levelText= WoWTools_LabelMixin:CreateLabel(bar, {size=10})--10, nil, nil, nil, nil, 'RIGHT')
+		frame.levelText= WoWTools_LabelMixin:Create(bar, {size=10})--10, nil, nil, nil, nil, 'RIGHT')
 		frame.levelText:SetPoint('RIGHT')
 	end
 	if frame.levelText then

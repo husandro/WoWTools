@@ -16,7 +16,7 @@ local LeftFrame
 
 local function Create_Fast_Button(indexAdd)
     local btn= WoWTools_ButtonMixin:Cbtn(LeftFrame, {size=23})
-    btn.Text= WoWTools_LabelMixin:CreateLabel(btn, {size=14})
+    btn.Text= WoWTools_LabelMixin:Create(btn, {size=14})
     btn.Text:SetPoint('RIGHT', btn, 'LEFT')
     btn.checkTexture= btn:CreateTexture()
     btn.checkTexture:SetAtlas('AlliedRace-UnlockingFrame-Checkmark')

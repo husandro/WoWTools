@@ -24,7 +24,7 @@ local function Create_ItemButton()
     for i= 1, max(BUYBACK_ITEMS_PER_PAGE, MERCHANT_ITEMS_PER_PAGE) do--建立，索引，文本
         local btn= _G['MerchantItem'..i] or CreateFrame('Frame', 'MerchantItem'..i, MerchantFrame, 'MerchantItemTemplate', i)
         if not btn.IndexLable then
-            btn.IndexLable= WoWTools_LabelMixin:CreateLabel(btn)
+            btn.IndexLable= WoWTools_LabelMixin:Create(btn)
             btn.IndexLable:SetPoint('TOPRIGHT', btn, -1, 4)
             btn.IndexLable:SetAlpha(0.3)
             --btn.IndexLable:SetText(i)
@@ -100,7 +100,7 @@ local function Init_WidthX2()
     Create_ItemButton()
 
     --物品数量
-    MerchantFrameTab1.numLable= WoWTools_LabelMixin:CreateLabel(MerchantFrameTab1)
+    MerchantFrameTab1.numLable= WoWTools_LabelMixin:Create(MerchantFrameTab1)
     MerchantFrameTab1.numLable:SetPoint('TOPRIGHT')
     MerchantFrame:HookScript('OnShow', function()
         local num= GetMerchantNumItems()
@@ -108,7 +108,7 @@ local function Init_WidthX2()
     end)
 
     --回购，数量，提示
-    MerchantFrameTab2.numLable= WoWTools_LabelMixin:CreateLabel(MerchantFrameTab2)
+    MerchantFrameTab2.numLable= WoWTools_LabelMixin:Create(MerchantFrameTab2)
     MerchantFrameTab2.numLable:SetPoint('TOPRIGHT')
     function MerchantFrameTab2:set_buyback_num()
         local num

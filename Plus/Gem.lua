@@ -104,9 +104,9 @@ end
 local function creatd_button(index, parent)
     local btn= WoWTools_ButtonMixin:Cbtn(parent or Frame, {button='ItemButton', icon='hide'})--34, 34
 
-    btn.level=WoWTools_LabelMixin:CreateLabel(btn)
+    btn.level=WoWTools_LabelMixin:Create(btn)
     btn.level:SetPoint('TOPRIGHT')
-    btn.type= WoWTools_LabelMixin:CreateLabel(btn)
+    btn.type= WoWTools_LabelMixin:Create(btn)
     btn.type:SetPoint('LEFT', btn, 'RIGHT')
     btn.favorite= btn:CreateTexture(nil, 'OVERLAY', nil, 2)
     btn.favorite:SetSize(17,17)
@@ -483,7 +483,7 @@ local function Init_Spell_Button()
     SpellButton:SetPoint('BOTTOMLEFT', ItemSocketingFrame, 4, 4)
     SpellButton.texture= SpellButton:CreateTexture(nil, 'OVERLAY')
     SpellButton.texture:SetAllPoints(SpellButton)
-    SpellButton.count=WoWTools_LabelMixin:CreateLabel(SpellButton, {color={r=1,g=1,b=1}})--nil,nil,nil,true)
+    SpellButton.count=WoWTools_LabelMixin:Create(SpellButton, {color={r=1,g=1,b=1}})--nil,nil,nil,true)
     SpellButton.count:SetPoint('BOTTOMRIGHT',-2, 9)
 
     function SpellButton:set_count()
@@ -655,7 +655,7 @@ local function Init_ItemSocketingFrame_Update()
                 CurTypeGemTab[name]=true
             end
             if not btn.type then
-                btn.type=WoWTools_LabelMixin:CreateLabel(btn)
+                btn.type=WoWTools_LabelMixin:Create(btn)
                 btn.type:SetPoint('BOTTOM', btn, 'TOP', 0, 2)
                 btn.qualityTexture= btn:CreateTexture(nil, 'OVERLAY')
                 if e.Is_Timerunning then
@@ -665,11 +665,11 @@ local function Init_ItemSocketingFrame_Update()
                     btn.qualityTexture:SetPoint('RIGHT', btn, 'LEFT',15,-8)
                     btn.qualityTexture:SetSize(30,30)
                 end
-                btn.levelText=WoWTools_LabelMixin:CreateLabel(btn)
+                btn.levelText=WoWTools_LabelMixin:Create(btn)
                 btn.levelText:SetPoint('CENTER')
-                btn.leftText=WoWTools_LabelMixin:CreateLabel(btn)
+                btn.leftText=WoWTools_LabelMixin:Create(btn)
                 btn.leftText:SetPoint('TOPLEFT', btn, 'BOTTOMLEFT')
-                btn.rightText=WoWTools_LabelMixin:CreateLabel(btn)
+                btn.rightText=WoWTools_LabelMixin:Create(btn)
                 btn.rightText:SetPoint('TOPRIGHT', btn, 'BOTTOMRIGHT')
 
                 btn.gemButton=WoWTools_ButtonMixin:Cbtn(btn, {button='ItemButton', icon='hide'})--使用过宝石，提示

@@ -51,7 +51,7 @@ local function set_UpdateSpendText(btn)
             text= '/'..info.maxRanks
         end
         if text and not btn.maxText then
-            btn.maxText= WoWTools_LabelMixin:CreateLabel(btn, {fontType=btn.SpendText})--nil, btn.SpendText)
+            btn.maxText= WoWTools_LabelMixin:Create(btn, {fontType=btn.SpendText})--nil, btn.SpendText)
             btn.maxText:SetPoint('LEFT', btn.SpendText, 'RIGHT')
             btn.maxText:SetTextColor(1, 0, 1)
             btn.maxText:EnableMouse(true)
@@ -200,7 +200,7 @@ local function set_SpellFlyoutButton_UpdateGlyphState(self)
     end
     if text then
         if not self.Text then
-            self.Text=WoWTools_LabelMixin:CreateLabel(self, {color={r=1,g=1,b=1}, justifyH='CENTER'})
+            self.Text=WoWTools_LabelMixin:Create(self, {color={r=1,g=1,b=1}, justifyH='CENTER'})
             self.TextBg= self:CreateTexture(nil, 'BACKGROUND')
             self.TextBg:SetPoint('TOPLEFT', self.Text,-1, 1)
             self.TextBg:SetPoint('BOTTOMRIGHT', self.Text, 1,-1 )
@@ -295,7 +295,7 @@ function Init_All_Flyout()
             self:SetAlpha(1)
         end)
 
-        btn.Text= WoWTools_LabelMixin:CreateLabel(btn, {color={r=1,g=1,b=1}})
+        btn.Text= WoWTools_LabelMixin:Create(btn, {color={r=1,g=1,b=1}})
         btn.Text:SetPoint('CENTER')
         btn.Text:SetText(numSlots or '')
 

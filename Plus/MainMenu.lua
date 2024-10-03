@@ -35,10 +35,10 @@ local function Init_Character()
     local frame= CreateFrame("Frame")
     table.insert(Frames, frame)
 
-    frame.Text= WoWTools_LabelMixin:CreateLabel(CharacterMicroButton,  {size=Save.size, color=true})
+    frame.Text= WoWTools_LabelMixin:Create(CharacterMicroButton,  {size=Save.size, color=true})
     frame.Text:SetPoint('TOP', CharacterMicroButton, 0,  -3)
     --frame.Text:SetPoint('BOTTOM', CharacterMicroButton, 'CENTER', 0, 1)
-    frame.Text2= WoWTools_LabelMixin:CreateLabel(CharacterMicroButton,  {size=Save.size, color=true})
+    frame.Text2= WoWTools_LabelMixin:Create(CharacterMicroButton,  {size=Save.size, color=true})
     frame.Text2:SetPoint('BOTTOM', CharacterMicroButton, 0, 3)
     --frame.Text2:SetPoint('TOP', CharacterMicroButton, 'CENTER', 0, -1)
 
@@ -225,7 +225,7 @@ local function Init_Achievement()
     local frame= CreateFrame('Frame')
     table.insert(Frames, frame)
 
-    frame.Text= WoWTools_LabelMixin:CreateLabel(AchievementMicroButton,  {size=Save.size, color=true})
+    frame.Text= WoWTools_LabelMixin:Create(AchievementMicroButton,  {size=Save.size, color=true})
     frame.Text:SetPoint('TOP', AchievementMicroButton, 0,  -3)
 
     function frame:settings()
@@ -277,7 +277,7 @@ local function Init_Quest()
     local frame= CreateFrame('Frame')
     table.insert(Frames, frame)
 
-    frame.Text= WoWTools_LabelMixin:CreateLabel(QuestLogMicroButton,  {size=Save.size, color=true})
+    frame.Text= WoWTools_LabelMixin:Create(QuestLogMicroButton,  {size=Save.size, color=true})
     frame.Text:SetPoint('TOP', QuestLogMicroButton, 0,  -3)
 
     function frame:settings()
@@ -323,9 +323,9 @@ local function Init_Guild()
     local frame= CreateFrame("Frame")
     table.insert(Frames, frame)
 
-    frame.Text= WoWTools_LabelMixin:CreateLabel(GuildMicroButton,  {size=Save.size, color=true})
+    frame.Text= WoWTools_LabelMixin:Create(GuildMicroButton,  {size=Save.size, color=true})
     frame.Text:SetPoint('TOP', GuildMicroButton, 0,  -3)
-    frame.Text2= WoWTools_LabelMixin:CreateLabel(GuildMicroButton,  {size=Save.size, color=true})
+    frame.Text2= WoWTools_LabelMixin:Create(GuildMicroButton,  {size=Save.size, color=true})
     frame.Text2:SetPoint('BOTTOM', GuildMicroButton, 0, 3)
 
     GuildMicroButton.Text2= frame.Text2
@@ -401,7 +401,7 @@ local function Init_LFD()
     local frame= CreateFrame('Frame')
     table.insert(Frames, frame)
 
-    frame.Text= WoWTools_LabelMixin:CreateLabel(LFDMicroButton,  {size=Save.size, color=true})
+    frame.Text= WoWTools_LabelMixin:Create(LFDMicroButton,  {size=Save.size, color=true})
     frame.Text:SetPoint('TOP', LFDMicroButton, 0,  -3)
 
     function frame:settings()
@@ -461,7 +461,7 @@ end
     local frame= CreateFrame('Frame')
     table.insert(Frames, frame)
 
-    frame.Text= WoWTools_LabelMixin:CreateLabel(EJMicroButton,  {size=Save.size, color=true})
+    frame.Text= WoWTools_LabelMixin:Create(EJMicroButton,  {size=Save.size, color=true})
     frame.Text:SetPoint('TOP', EJMicroButton, 0,  -3)
 
     local function Get_Perks_Info()
@@ -555,9 +555,9 @@ local function Init_Store()
     local frame= CreateFrame('Frame')
     table.insert(Frames, frame)
 
-    frame.Text= WoWTools_LabelMixin:CreateLabel(StoreMicroButton,  {size=Save.size, color=true})
+    frame.Text= WoWTools_LabelMixin:Create(StoreMicroButton,  {size=Save.size, color=true})
     frame.Text:SetPoint('TOP', StoreMicroButton, 0,  -3)
-    frame.Text2= WoWTools_LabelMixin:CreateLabel(StoreMicroButton,  {size=Save.size, color=true})
+    frame.Text2= WoWTools_LabelMixin:Create(StoreMicroButton,  {size=Save.size, color=true})
     frame.Text2:SetPoint('BOTTOM', StoreMicroButton, 0, 3)
 
     StoreMicroButton.Text2= frame.Text2
@@ -642,9 +642,9 @@ local function Init_Help()
     frame:SetPoint('TOP')
     frame:SetSize(1,1)
 
-    frame.Text= WoWTools_LabelMixin:CreateLabel(MainMenuMicroButton,  {size=Save.size, color=true})
+    frame.Text= WoWTools_LabelMixin:Create(MainMenuMicroButton,  {size=Save.size, color=true})
     frame.Text:SetPoint('TOP', MainMenuMicroButton, 0,  -3)
-    frame.Text2= WoWTools_LabelMixin:CreateLabel(MainMenuMicroButton,  {size=Save.size, color=true})
+    frame.Text2= WoWTools_LabelMixin:Create(MainMenuMicroButton,  {size=Save.size, color=true})
     frame.Text2:SetPoint('BOTTOM', MainMenuMicroButton, 0, 3)
 
 
@@ -726,7 +726,7 @@ local function Init_Bag()
     local frame= CreateFrame("Frame")
     table.insert(Frames, frame)
 
-    frame.Text= WoWTools_LabelMixin:CreateLabel(MainMenuBarBackpackButton,  {size=Save.size, color=true})
+    frame.Text= WoWTools_LabelMixin:Create(MainMenuBarBackpackButton,  {size=Save.size, color=true})
     frame.Text:SetPoint('TOP', MainMenuBarBackpackButton, 0, -6)
 
     function frame:settings()
@@ -1070,10 +1070,10 @@ local function Init_Plus()
     else
         for _, frame in pairs(Frames) do
             if frame.Text then
-                WoWTools_LabelMixin:CreateLabel(nil, {size=Save.size, changeFont=frame.Text, color=true})
+                WoWTools_LabelMixin:Create(nil, {size=Save.size, changeFont=frame.Text, color=true})
             end
             if frame.Text2 then
-                WoWTools_LabelMixin:CreateLabel(nil, {size=Save.size, changeFont=frame.Text2, color=true})
+                WoWTools_LabelMixin:Create(nil, {size=Save.size, changeFont=frame.Text2, color=true})
             end
         end
     end
@@ -1165,7 +1165,7 @@ local function Init_Framerate_Plus()
     end)
 
     function FramerateButton:set_size()--修改大小
-        WoWTools_LabelMixin:CreateLabel(nil, {size=Save.framerateSize or 12, changeFont=FramerateFrame.FramerateText, color=true})--Save.size, nil , Labels.fpsms, true)    
+        WoWTools_LabelMixin:Create(nil, {size=Save.framerateSize or 12, changeFont=FramerateFrame.FramerateText, color=true})--Save.size, nil , Labels.fpsms, true)    
     end
     FramerateButton:set_size()
 

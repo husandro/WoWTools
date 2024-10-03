@@ -37,7 +37,7 @@ local function Init(self)
         text= text.. info.quantity
         text= info.maxQuantity and text..'/'..info.maxQuantity or text
         if not self.ItemInteractionFrameCurrencyText then
-            self.ItemInteractionFrameCurrencyText= WoWTools_LabelMixin:CreateLabel(self)
+            self.ItemInteractionFrameCurrencyText= WoWTools_LabelMixin:Create(self)
             self.ItemInteractionFrameCurrencyText:SetPoint('TOPLEFT', 55, -38)
 			self.ItemInteractionFrameCurrencyText:EnableMouse(true)
 			self.ItemInteractionFrameCurrencyText:SetScript('OnEnter', function(self2)

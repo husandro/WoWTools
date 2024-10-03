@@ -1030,7 +1030,7 @@ end
 local function Init()
     WorldButton.texture:SetAtlas('128-Store-Main')
 
-    WorldButton.leftClickTips=WoWTools_LabelMixin:CreateLabel(WorldButton, {size=12, color=true, justifyH='CENTER'})--10, nil, nil, true, nil, 'CENTER')
+    WorldButton.leftClickTips=WoWTools_LabelMixin:Create(WorldButton, {size=12, color=true, justifyH='CENTER'})--10, nil, nil, true, nil, 'CENTER')
     WorldButton.leftClickTips:SetPoint('BOTTOM',0,2)
 
     function WorldButton:set_tooltip()

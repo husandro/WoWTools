@@ -490,7 +490,7 @@ end
 
 
 local function Init_ScenarioObjective()
-    ScenarioObjectiveTracker.Header.numStagesLabel= WoWTools_LabelMixin:CreateLabel(ScenarioObjectiveTracker.Header, {copyFont=ScenarioObjectiveTracker.StageBlock.Name, justifyH='RIGHT'})
+    ScenarioObjectiveTracker.Header.numStagesLabel= WoWTools_LabelMixin:Create(ScenarioObjectiveTracker.Header, {copyFont=ScenarioObjectiveTracker.StageBlock.Name, justifyH='RIGHT'})
     ScenarioObjectiveTracker.Header.numStagesLabel:SetPoint('LEFT', ScenarioObjectiveTracker.Header.Text, 'RIGHT')
     --[[ScenarioObjectiveTracker.Header.numStagesLabel:SetScript('OnLeave', GameTooltip_Hide)
     ScenarioObjectiveTracker.Header.numStagesLabel:SetScript('OnEnter', function(self)

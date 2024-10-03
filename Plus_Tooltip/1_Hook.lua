@@ -54,7 +54,7 @@ local function Init()
     hooksecurefunc(ReputationEntryMixin, 'ShowFriendshipReputationTooltip', function(self)
         WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.elementData.factionID)
     end)
-    
+
     hooksecurefunc(ReputationEntryMixin, 'ShowParagonRewardsTooltip', function(self)
         WoWTools_TooltipMixin:Set_Faction(EmbeddedItemTooltip, self.elementData.factionID)
     end)
@@ -65,7 +65,7 @@ local function Init()
     hooksecurefunc(ReputationEntryMixin, 'OnClick', function(frame)
         local self= ReputationFrame.ReputationDetailFrame
         if not self.factionIDText then
-            self.factionIDText=WoWTools_LabelMixin:CreateLabel(self)
+            self.factionIDText=WoWTools_LabelMixin:Create(self)
             self.factionIDText:SetPoint('BOTTOM', self, 'TOP', 0,-4)
         end
         self.factionIDText:SetText(frame.elementData.factionID or '')
@@ -75,13 +75,13 @@ local function Init()
         local factionData = C_Reputation.GetFactionDataByIndex(selectedFactionIndex);
         if factionData and factionData.factionID> 0 then
             if not self.factionIDText then
-                self.factionIDText=WoWTools_LabelMixin:CreateLabel(self)
+                self.factionIDText=WoWTools_LabelMixin:Create(self)
                 self.factionIDText:SetPoint('BOTTOM', self, 'TOP', 0,-4)
             end
             self.factionIDText:SetText(factionData.factionID)
         end
     end)
- 
+
 
     hooksecurefunc(AreaPOIPinMixin,'TryShowTooltip', function(self)--POI提示 AreaPOIDataProvider.lua
         e.tips:AddLine(' ')
@@ -158,7 +158,7 @@ local function Init()
 
     --添加任务ID
     local function create_Quest_Label(frame)
-        frame.questIDLabel= WoWTools_LabelMixin:CreateLabel(frame, {mouse=true, justifyH='RIGHT'})
+        frame.questIDLabel= WoWTools_LabelMixin:Create(frame, {mouse=true, justifyH='RIGHT'})
         frame.questIDLabel:SetAlpha(0.3)
         frame.questIDLabel:SetScript('OnLeave', function(self) GameTooltip_Hide() self:SetAlpha(0.3) end)
         frame.questIDLabel:SetScript('OnEnter', function(self)
@@ -269,8 +269,21 @@ local function Init()
             end)
         end
     end
-end
 
+    --[[hooksecurefunc('TaskPOI_OnEnter', function(self)--世界任务，提示 WorldMapFrame.lua
+        if not self.questID then
+            return
+        end
+        
+    end)]]
+
+    hooksecurefunc('GameTooltip_AddQuest', function(self, questIDArg)
+        local questID = self.questID or questIDArg
+        if questID and HaveQuestData(questID) then
+            WoWTools_TooltipMixin:Set_Quest(GameTooltip, questID)
+        end
+    end)
+end
 
 
 

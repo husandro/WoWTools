@@ -88,7 +88,7 @@ local function Init(btn)
     end
 
     if itemText and not btn.itemText then
-        btn.itemText= WoWTools_LabelMixin:CreateLabel(btn, {mouse=true, fontName='GameFontBlack', notFlag=true, color={r=0.25, g=0.1484375, b=0.02}, notShadow=true, layer='OVERLAY'})
+        btn.itemText= WoWTools_LabelMixin:Create(btn, {mouse=true, fontName='GameFontBlack', notFlag=true, color={r=0.25, g=0.1484375, b=0.02}, notShadow=true, layer='OVERLAY'})
         btn.itemText:SetPoint('TOPRIGHT', -10,-4)
         btn.itemText:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
         btn.itemText:SetScript('OnEnter', function(self)
@@ -110,7 +110,7 @@ local function Init(btn)
 
     --拾取, 职业
     if classText and not btn.classLable then
-        btn.classLable= WoWTools_LabelMixin:CreateLabel(btn, {fontName='GameFontBlack', notFlag=true, color={r=0.25, g=0.1484375, b=0.02}, notShadow=true, layer='OVERLAY'})
+        btn.classLable= WoWTools_LabelMixin:Create(btn, {fontName='GameFontBlack', notFlag=true, color={r=0.25, g=0.1484375, b=0.02}, notShadow=true, layer='OVERLAY'})
         btn.classLable:SetPoint('BOTTOM', btn.IconBorder, 'BOTTOMRIGHT', 140, 4)--<Size x="321" y="45"/>
     end
     if btn.classLable then
@@ -118,7 +118,7 @@ local function Init(btn)
     end
 
     if upText and not btn.upText then
-        btn.upText= WoWTools_LabelMixin:CreateLabel(btn, {fontName='GameFontBlack', notFlag=true, color={r=0.25, g=0.1484375, b=0.02}, notShadow=true, layer='OVERLAY'})
+        btn.upText= WoWTools_LabelMixin:Create(btn, {fontName='GameFontBlack', notFlag=true, color={r=0.25, g=0.1484375, b=0.02}, notShadow=true, layer='OVERLAY'})
         btn.upText:SetPoint('TOPRIGHT', -10,-16)
     end
     if btn.upText then

@@ -59,11 +59,11 @@ end
 
 --生命条提示
 local function Init()--hooksecurefunc(GameTooltipStatusBar, 'UpdateUnitHealth', function(tooltip)
-    GameTooltipStatusBar.text= WoWTools_LabelMixin:CreateLabel(GameTooltipStatusBar, {justifyH='CENTER'})
+    GameTooltipStatusBar.text= WoWTools_LabelMixin:Create(GameTooltipStatusBar, {justifyH='CENTER'})
     GameTooltipStatusBar.text:SetPoint('TOP', GameTooltipStatusBar, 'BOTTOM')--生命条
-    GameTooltipStatusBar.textLeft = WoWTools_LabelMixin:CreateLabel(GameTooltipStatusBar, {justifyH='LEFT'})
+    GameTooltipStatusBar.textLeft = WoWTools_LabelMixin:Create(GameTooltipStatusBar, {justifyH='LEFT'})
     GameTooltipStatusBar.textLeft:SetPoint('TOPLEFT', GameTooltipStatusBar, 'BOTTOMLEFT')--生命条
-    GameTooltipStatusBar.textRight = WoWTools_LabelMixin:CreateLabel(GameTooltipStatusBar, {size=18, justifyH='RIGHT'})
+    GameTooltipStatusBar.textRight = WoWTools_LabelMixin:Create(GameTooltipStatusBar, {size=18, justifyH='RIGHT'})
     GameTooltipStatusBar.textRight:SetPoint('TOPRIGHT',0, -2)--生命条
     GameTooltipStatusBar:HookScript("OnValueChanged", function(self)
         WoWTools_TooltipMixin:Set_HealthBar_Unit(self)

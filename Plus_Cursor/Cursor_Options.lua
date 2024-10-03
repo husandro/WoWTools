@@ -132,7 +132,7 @@ local function Init(Frame)
     local delColorButton= WoWTools_ButtonMixin:Cbtn(Frame, {icon='hide', size={20,20}})--删除, 按钮
     local addColorEdit= CreateFrame("EditBox", nil, Frame, 'InputBoxTemplate')--EditBox
     local addColorButton= WoWTools_ButtonMixin:Cbtn(Frame, {icon='hide', size={20,20}})--添加, 按钮
-    local numColorText= WoWTools_LabelMixin:CreateLabel(Frame, {justifyH='RIGHT'})--nil, nil, nil, nil, nil, 'RIGHT')--颜色，数量
+    local numColorText= WoWTools_LabelMixin:Create(Frame, {justifyH='RIGHT'})--nil, nil, nil, nil, nil, 'RIGHT')--颜色，数量
     numColorText:SetPoint('RIGHT', dropDown, 'LEFT')
 
     local function set_panel_Texture()--大图片

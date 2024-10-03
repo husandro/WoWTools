@@ -543,11 +543,11 @@ end
 --####
 local function Init()
     --使用,提示
-    GroupButton.typeText=WoWTools_LabelMixin:CreateLabel(GroupButton,{color=true})
+    GroupButton.typeText=WoWTools_LabelMixin:Create(GroupButton,{color=true})
     GroupButton.typeText:SetPoint('BOTTOM',0,2)
 
     --队员，数量，提示
-    GroupButton.membersText=WoWTools_LabelMixin:CreateLabel(GroupButton, {color=true})--10, nil, nil, true)
+    GroupButton.membersText=WoWTools_LabelMixin:Create(GroupButton, {color=true})--10, nil, nil, true)
     GroupButton.membersText:SetPoint('TOPRIGHT', -3, 0)
 
     GroupButton.tipBubbles= GroupButton:CreateTexture(nil, 'OVERLAY')

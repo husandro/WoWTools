@@ -16,7 +16,7 @@ local Buttons={}
 
 local function Set_Button_Function(btn)
     btn:SetAttribute("type1", "item")
-    btn.count= WoWTools_LabelMixin:CreateLabel(btn, {size=12, color={r=1,g=1,b=1}})--10, nil,nil, true)
+    btn.count= WoWTools_LabelMixin:Create(btn, {size=12, color={r=1,g=1,b=1}})--10, nil,nil, true)
     btn.count:SetPoint('BOTTOMRIGHT', -4,4)
     btn.numCount=0
     btn.enableCooldown=true
@@ -132,7 +132,7 @@ local function Create_Button(index)
     end)
     btn:SetScript('OnEnter', function(self)
         local can= self:CanChangeAttribute()
-        WoWTools_SetTooltipMixin:Set_Frame(self, e.tips, {
+        WoWTools_SetTooltipMixin:Frame(self, e.tips, {
             itemID=self.itemID,
             tooltip='|n|A:dressingroom-button-appearancelist-up:0:0|a'
                 ..(can and '' or '|cff9e9e9e')

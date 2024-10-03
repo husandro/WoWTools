@@ -1,7 +1,7 @@
 local e = select(2, ...)
 
 --[[
-WoWTools_LabelMixin:CreateLabel(self, tab)
+WoWTools_LabelMixin:Create(self, tab)
 WoWTools_ButtonMixin:Cbtn(self, tab)--type, icon(atlas, texture), name, size, pushe, button='ItemButton', notWheel, setID, text
 
 e.Ccool(self, start, duration, modRate, HideCountdownNumbers, Reverse, SwipeTexture, hideDrawBling)--冷却条

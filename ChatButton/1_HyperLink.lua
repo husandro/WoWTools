@@ -690,7 +690,7 @@ local function Init_Panel()
         return frame
     end
 
-    local str=WoWTools_LabelMixin:CreateLabel(panel)--内容加颜色
+    local str=WoWTools_LabelMixin:Create(panel)--内容加颜色
     str:SetPoint('TOPLEFT')
     str:SetText(e.onlyChinese and '颜色: 关键词 (|cnGREEN_FONT_COLOR:空格|r) 分开' or (COLOR..': '..KBASE_DEFAULT_SEARCH_TEXT..'|cnGREEN_FONT_COLOR:( '..KEY_SPACE..' )|r'))
     local editBox=Cedit(panel)
@@ -728,7 +728,7 @@ local function Init_Panel()
         print(e.addName, addName, e.onlyChinese and '颜色' or COLOR, '|cnGREEN_FONT_COLOR:#'..n..(e.onlyChinese and '完成' or COMPLETE)..'|r', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
-    local str2=WoWTools_LabelMixin:CreateLabel(panel)--频道名称替换
+    local str2=WoWTools_LabelMixin:Create(panel)--频道名称替换
     str2:SetPoint('TOPLEFT', editBox, 'BOTTOMLEFT', 0,-20)
     str2:SetText(e.onlyChinese and '频道名称替换: 关键词|cnGREEN_FONT_COLOR:=|r替换' or (CHANNEL_CHANNEL_NAME..': '..COMMUNITIES_SETTINGS_SHORT_NAME_LABEL..'  |cnGREEN_FONT_COLOR:= |r'))
     local editBox2=Cedit(panel)
@@ -892,7 +892,7 @@ local function Init_Add_Reload_Button()
 
 
     SettingsPanel.AddOnsTab.reload:SetPoint('RIGHT', SettingsPanel.ApplyButton, 'LEFT', -15,0)
-    WoWTools_LabelMixin:CreateLabel(nil, {changeFont= SettingsPanel.OutputText, size=14})
+    WoWTools_LabelMixin:Create(nil, {changeFont= SettingsPanel.OutputText, size=14})
     SettingsPanel.OutputText:ClearAllPoints()
     SettingsPanel.OutputText:SetPoint('BOTTOMLEFT', 20, 18)
 

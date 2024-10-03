@@ -21,7 +21,7 @@ local function Init(Frame)
     Frame.Texture:SetSize(80,80)
 
     local useClassColorCheck= CreateFrame("CheckButton", nil, Frame, "InterfaceOptionsCheckButtonTemplate")--职业颜色
-    local colorText= WoWTools_LabelMixin:CreateLabel(Frame, {color={r=Save().color.r, g=Save().color.g, b=Save().color.b, a=Save().color.a}})--nil, nil, nil, {Save().color.r, Save().color.g, Save().color.b, Save().color.a})--自定义,颜色
+    local colorText= WoWTools_LabelMixin:Create(Frame, {color={r=Save().color.r, g=Save().color.g, b=Save().color.b, a=Save().color.a}})--nil, nil, nil, {Save().color.r, Save().color.g, Save().color.b, Save().color.a})--自定义,颜色
     local notUseColorCheck= CreateFrame("CheckButton", nil, Frame, "InterfaceOptionsCheckButtonTemplate")--不使用，颜色
 
     --职业颜色

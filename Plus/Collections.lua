@@ -227,7 +227,7 @@ local function set_Sets_Tooltips(self)--UpdateSets
             if not Save.hideItems then
                 idex= i + idexOffset
                 if not model.Text then
-                    model.Text= WoWTools_LabelMixin:CreateLabel(model)
+                    model.Text= WoWTools_LabelMixin:Create(model)
                     model.Text:SetPoint('TOPRIGHT',1,0)
                     model.Text:SetAlpha(0.5)
                 end
@@ -315,7 +315,7 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
                 end
             end
             if collected>0 and not btn.Text then
-                btn.Text= WoWTools_LabelMixin:CreateLabel(btn, {justifyH='CENTER', mouse=true})
+                btn.Text= WoWTools_LabelMixin:Create(btn, {justifyH='CENTER', mouse=true})
                 btn.Text:SetPoint('BOTTOMRIGHT')
                 btn.Text.category= category
             end
@@ -529,7 +529,7 @@ local function set_Items_Tooltips(self)--UpdateItems
             if not Save.hideItems then
                 idex= i + idexOffset
                 if not model.Text then
-                    model.Text= WoWTools_LabelMixin:CreateLabel(model)
+                    model.Text= WoWTools_LabelMixin:Create(model)
                     model.Text:SetPoint('TOPRIGHT', 3, 2)
                     model.Text:SetAlpha(0.5)
                 end
@@ -592,7 +592,7 @@ local function Init_Wardrober_ListContainer()
                 e.tips:Hide()
             end)
 
-            btn.version=WoWTools_LabelMixin:CreateLabel(btn)--版本
+            btn.version=WoWTools_LabelMixin:Create(btn)--版本
             btn.version:SetPoint('BOTTOMRIGHT',-5, 5)
 
             btn.limited=btn:CreateTexture(nil, 'OVERLAY')--限时
@@ -608,7 +608,7 @@ local function Init_Wardrober_ListContainer()
                 self:SetAlpha(0.3)
             end)
 
-            btn.numSetsLabel=WoWTools_LabelMixin:CreateLabel(btn, {size=16, mouse=true})
+            btn.numSetsLabel=WoWTools_LabelMixin:Create(btn, {size=16, mouse=true})
             btn.numSetsLabel:SetPoint('BOTTOMLEFT', btn.Icon)
             btn.numSetsLabel:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
             btn.numSetsLabel:SetScript('OnEnter', function(self)
@@ -690,7 +690,7 @@ local function Init_Wardrober_ListContainer()
         btn.numSetsLabel:SetTextColor(r, g, b)
     end)
 
-    WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.tipsLabel= WoWTools_LabelMixin:CreateLabel(WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame, {size=14})--点击，按钮信息
+    WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.tipsLabel= WoWTools_LabelMixin:Create(WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame, {size=14})--点击，按钮信息
     WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.tipsLabel:SetPoint('BOTTOMLEFT', WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame, 'BOTTOMRIGHT', 8, 8)
     hooksecurefunc(WardrobeSetsScrollFrameButtonMixin, 'OnClick', function(btn, buttonName)--点击，显示套装情况Blizzard_Wardrobe.lua
         if buttonName == "LeftButton" or not Save.hideSets then
@@ -1133,7 +1133,7 @@ local function Init_Mount()
         if not MountJournal.MountDisplay.tipButton then
             MountJournal.MountDisplay.tipButton= WoWTools_ButtonMixin:Cbtn(MountJournal.MountDisplay, {size={22,22}, atlas='QuestNormal'})
             MountJournal.MountDisplay.tipButton:SetPoint('BOTTOMRIGHT', MountJournal.MountDisplay.ModelScene.TogglePlayer, 'TOPRIGHT',0, 2)
-            MountJournal.MountDisplay.tipButton.text= WoWTools_LabelMixin:CreateLabel(MountJournal.MountDisplay, {copyFont= MountJournal.MountCount.Label, color=false, justifyH='LEFT'})
+            MountJournal.MountDisplay.tipButton.text= WoWTools_LabelMixin:Create(MountJournal.MountDisplay, {copyFont= MountJournal.MountCount.Label, color=false, justifyH='LEFT'})
             MountJournal.MountDisplay.tipButton.text:SetPoint('BOTTOMLEFT', 2, 2)
 
             function MountJournal.MountDisplay.tipButton:set_Alpha()

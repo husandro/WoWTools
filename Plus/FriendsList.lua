@@ -28,7 +28,7 @@ local RegionNames
 local function set_SOCIAL_QUEUE_UPDATE()--更新, 快速加入
     if QuickJoinToastButton then
         if not QuickJoinToastButton.quickJoinText then
-            QuickJoinToastButton.quickJoinText= WoWTools_LabelMixin:CreateLabel(QuickJoinToastButton, {color=true})--:CreateFontString()
+            QuickJoinToastButton.quickJoinText= WoWTools_LabelMixin:Create(QuickJoinToastButton, {color=true})--:CreateFontString()
             --QuickJoinToastButton.quickJoinText:SetFontObject('NumberFontNormal')
             QuickJoinToastButton.quickJoinText:SetPoint('TOPRIGHT', -6, -3)
             --if e.Player.useColor then
@@ -129,7 +129,7 @@ local function set_QuinkJoin_Init()--快速加入, 初始化 QuickJoin.lua
             end
         end
         if text and not frame.roleTips then
-            frame.roleTips= WoWTools_LabelMixin:CreateLabel(frame)
+            frame.roleTips= WoWTools_LabelMixin:Create(frame)
             frame.roleTips:SetPoint('BOTTOMRIGHT')
         end
         if frame.roleTips then
@@ -157,7 +157,7 @@ local function set_QuinkJoin_Init()--快速加入, 初始化 QuickJoin.lua
         local leaderGUID = select(8, C_SocialQueue.GetGroupInfo(guid))--玩家名称
         local link= leaderGUID and WoWTools_UnitMixin:GetPlayerInfo({guid=leaderGUID, reName=true, reRealm=true, reLink=true,})
         if link and not self.nameInfo then
-            self.nameInfo= WoWTools_LabelMixin:CreateLabel(self)
+            self.nameInfo= WoWTools_LabelMixin:Create(self)
             self.nameInfo:SetPoint('BOTTOM', self.CancelButton, 'TOPLEFT', 2, 0)
             self:HookScript('OnHide', function(self2)
                 if self2.nameInfo then
@@ -744,7 +744,7 @@ local function Init_RaidGroupFrame_Update()--团队, 模块
         end
     end
     if not RaidFrame.groupInfoLable then
-        RaidFrame.groupInfoLable= WoWTools_LabelMixin:CreateLabel(RaidFrame, {copyFont=FriendsFrameTitleText, justifyH='CENTER'})
+        RaidFrame.groupInfoLable= WoWTools_LabelMixin:Create(RaidFrame, {copyFont=FriendsFrameTitleText, justifyH='CENTER'})
         RaidFrame.groupInfoLable:SetPoint('BOTTOM',FriendsFrame.TitleContainer, 'TOP')
     end
     local text= '|A:charactercreate-gendericon-male-selected:0:0|a'..(itemNum==0 and 0 or format('%i',itemLevel/itemNum))
@@ -937,7 +937,7 @@ local function Init()--FriendsFrame.lua
             end
         end
         if text and not btn.tipsLabel then
-            btn.tipsLabel= WoWTools_LabelMixin:CreateLabel(btn, {justifyH='RIGHT'})
+            btn.tipsLabel= WoWTools_LabelMixin:Create(btn, {justifyH='RIGHT'})
             btn.tipsLabel:SetPoint('BOTTOMRIGHT', -52,1)
         end
         if btn.tipsLabel then

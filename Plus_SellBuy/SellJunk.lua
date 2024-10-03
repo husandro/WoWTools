@@ -106,7 +106,7 @@ local function Init()
         e.tips:AddDoubleLine(e.onlyChinese and '垃圾' or BAG_FILTER_JUNK , '|cnGREEN_FONT_COLOR:'..(C_MerchantFrame.GetNumJunkItems() or 0))
         e.tips:Show()
     end)
-    MerchantSellAllJunkButton.Text= WoWTools_LabelMixin:CreateLabel(MerchantSellAllJunkButton, {justifyH='RIGHT'})
+    MerchantSellAllJunkButton.Text= WoWTools_LabelMixin:Create(MerchantSellAllJunkButton, {justifyH='RIGHT'})
     MerchantSellAllJunkButton.Text:SetPoint('TOPRIGHT',-2, -2)
     hooksecurefunc('MerchantFrame_Update', function()
         if not MerchantSellAllJunkButton:IsVisible() then

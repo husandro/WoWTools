@@ -167,7 +167,7 @@ local function Init_LFGDungeon()
             end
         end
         if not self.bossTips and text then
-            self.bossTips= WoWTools_LabelMixin:CreateLabel(self)
+            self.bossTips= WoWTools_LabelMixin:Create(self)
             self.bossTips:SetPoint('BOTTOMLEFT', self, 'BOTTOMRIGHT', 4, 4)
         end
 

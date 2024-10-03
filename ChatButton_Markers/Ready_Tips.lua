@@ -27,7 +27,7 @@ local function Init()
     ReadyTipsButton= WoWTools_ButtonMixin:Cbtn(nil, {size={22,22}, atlas=e.Icon.select})
     WoWTools_MarkerMixin.ReadyTipsButton= ReadyTipsButton
 
-    ReadyTipsButton.text=WoWTools_LabelMixin:CreateLabel(ReadyTipsButton)
+    ReadyTipsButton.text=WoWTools_LabelMixin:Create(ReadyTipsButton)
     ReadyTipsButton.text:SetPoint('BOTTOMLEFT', ReadyTipsButton, 'TOPLEFT')
 
     ReadyTipsButton:RegisterForDrag("RightButton")--移动

@@ -159,7 +159,7 @@ function WoWTools_WeekMixin:Activities(settings)--周奖励，提示
     for head, tab in pairs(R) do
         local label= frame.WeekRewards['rewardChestHead'..head]
         if not label then
-            label= WoWTools_LabelMixin:CreateLabel(frame)
+            label= WoWTools_LabelMixin:Create(frame)
             if last then
                 label:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0,-4)
             elseif point then
@@ -173,7 +173,7 @@ function WoWTools_WeekMixin:Activities(settings)--周奖励，提示
         for index, info in pairs(tab) do
             label= frame.WeekRewards['rewardChestSub'..head..index]
             if not label then
-                label= WoWTools_LabelMixin:CreateLabel(frame, {mouse= true})
+                label= WoWTools_LabelMixin:Create(frame, {mouse= true})
                 label:SetPoint('TOPLEFT', last, 'BOTTOMLEFT')
                 label:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
                 label:SetScript('OnEnter', function(self2)

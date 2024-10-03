@@ -201,7 +201,7 @@ local function set_Button()
         end)
         button:SetScript('OnLeave', function() e.tips:Hide() ResetCursor() end)
 
-        button.count= WoWTools_LabelMixin:CreateLabel(button, {size=32, color={r=1,g=1,b=1}, justifyH='CENTER'})--32, nil, nil, {1,1,1}, nil, 'CENTER')
+        button.count= WoWTools_LabelMixin:Create(button, {size=32, color={r=1,g=1,b=1}, justifyH='CENTER'})--32, nil, nil, {1,1,1}, nil, 'CENTER')
         button.count:SetPoint('CENTER')
 
 

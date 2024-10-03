@@ -15,12 +15,12 @@ local function Init()
     button= WoWTools_ButtonMixin:Cbtn(UIParent, {size={48, 48}, texture=132248})
     button:SetShown(false)
 
-    button.topText= WoWTools_LabelMixin:CreateLabel(button, {size=22})--debuff
-    button.centerText= WoWTools_LabelMixin:CreateLabel(button, {size=22})--持续，时间
-    button.speedText= WoWTools_LabelMixin:CreateLabel(button, {size=16})--移动，速度
-    button.itemText= WoWTools_LabelMixin:CreateLabel(button, {size=16})--物品，数量
-    button.timeText= WoWTools_LabelMixin:CreateLabel(button, {size=16})--坐骑，剩余，时间
-    button.rightText= WoWTools_LabelMixin:CreateLabel(button, {size=16})--本次，物品，收入
+    button.topText= WoWTools_LabelMixin:Create(button, {size=22})--debuff
+    button.centerText= WoWTools_LabelMixin:Create(button, {size=22})--持续，时间
+    button.speedText= WoWTools_LabelMixin:Create(button, {size=16})--移动，速度
+    button.itemText= WoWTools_LabelMixin:Create(button, {size=16})--物品，数量
+    button.timeText= WoWTools_LabelMixin:Create(button, {size=16})--坐骑，剩余，时间
+    button.rightText= WoWTools_LabelMixin:Create(button, {size=16})--本次，物品，收入
 
     button.topText:SetPoint('BOTTOM', button, 'TOP')
     button.centerText:SetPoint('CENTER')

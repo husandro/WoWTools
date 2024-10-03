@@ -39,7 +39,7 @@ local function Init()
                 num=(num and num..'|n' or '')..bag..'|A:Banker:0:0|a'
             end
             if num and not btn.buyItemNum then
-                btn.buyItemNum=WoWTools_LabelMixin:CreateLabel(btn)
+                btn.buyItemNum=WoWTools_LabelMixin:Create(btn)
                 btn.buyItemNum:SetPoint('RIGHT')
                 btn.buyItemNum:EnableMouse(true)
                 btn.buyItemNum:SetScript('OnLeave', GameTooltip_Hide)
@@ -69,7 +69,7 @@ local function Init()
                     text= (text or '').. '|A:soulbinds_tree_conduit_icon_utility:10:10|a'
                 end
                 if text and not btn.stats then
-                    btn.stats=WoWTools_LabelMixin:CreateLabel(btn, {size=10, mouse=true})
+                    btn.stats=WoWTools_LabelMixin:Create(btn, {size=10, mouse=true})
                     btn.stats:SetPoint('TOPLEFT', btn, 'BOTTOMLEFT',0,6)
                     btn.stats:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
                     btn.stats:SetScript('OnEnter', function(self)
