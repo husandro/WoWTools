@@ -74,7 +74,7 @@ local function setFlyout(button, itemLink, slot)
         if upgrade then
             upLevel= upgrade and upgrade:match('(%d+/%d+)')
             upText= dateInfo.text[upgradeStr]:match('(.-)%d+/%d+')
-            upText=upText and strlower(WoWTools_Mixin:sub(upText, 1,3, true))
+            upText=upText and strlower(WoWTools_TextMixin:sub(upText, 1,3, true))
         end
         if upgrade and not button.upgrade then
             button.upgrade= WoWTools_LabelMixin:CreateLabel(button, {color={r=0,g=1,b=0}})

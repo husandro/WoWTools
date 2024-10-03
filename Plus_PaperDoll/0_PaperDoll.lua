@@ -386,7 +386,7 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
     local upgradeItemText
     local upText= upgradeItem and upgradeItem:match('(.-)%d+/%d+')--"升级：%s %s/%s"
     if upText then
-        upgradeItemText= strlower(WoWTools_Mixin:sub(upText,1,3, true))
+        upgradeItemText= strlower(WoWTools_TextMixin:sub(upText,1,3, true))
         if not self.upgradeItemText then
             local h= self:GetHeight()/3
             if isLeftSlot then
@@ -735,7 +735,7 @@ local function set_PaperDollSidebarTab3_Text()--标签, 内容,提示
             local name2, icon2, _, isEquipped, numItems= C_EquipmentSet.GetEquipmentSetInfo(v)
             if isEquipped then
                 name=name2
-                name=WoWTools_Mixin:sub(name, 2, 5)
+                name=WoWTools_TextMixin:sub(name, 2, 5)
                 if icon2 and icon2~=134400 then
                     icon=icon2
                 end
@@ -1051,11 +1051,11 @@ function panel:Init_Target_InspectUI()
             frame.ViewButton:ClearAllPoints()
             frame.ViewButton:SetPoint('LEFT', InspectLevelText, 'RIGHT',20,0)
             frame.ViewButton:SetSize(25,25)
-            frame.ViewButton:SetText(e.onlyChinese and '试' or WoWTools_Mixin:sub(VIEW,1))
+            frame.ViewButton:SetText(e.onlyChinese and '试' or WoWTools_TextMixin:sub(VIEW,1))
         end
         if InspectPaperDollItemsFrame.InspectTalents then
             InspectPaperDollItemsFrame.InspectTalents:SetSize(25,25)
-            InspectPaperDollItemsFrame.InspectTalents:SetText(e.onlyChinese and '赋' or WoWTools_Mixin:sub(TALENT,1))
+            InspectPaperDollItemsFrame.InspectTalents:SetText(e.onlyChinese and '赋' or WoWTools_TextMixin:sub(TALENT,1))
         end
         frame.initButton=true
     end

@@ -304,7 +304,7 @@ end
 local function Create_Button(name)
     local btn= WoWTools_ButtonMixin:Cbtn(MacroSaveButton, {size={60,22}, type=false})
     function btn:find_text(right)
-        return (MacroFrameText:GetText() or ''):find(e.Magic(right and self.text2 or self.text))
+        return (MacroFrameText:GetText() or ''):find(WoWTools_TextMixin:Magic(right and self.text2 or self.text))
     end
    function btn:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -1648,7 +1648,7 @@ local function Init()
 
     local function MacroFrameInitMacroButton(macroButton, _, name)--Blizzard_MacroUI.lua
         if name ~= nil then
-            macroButton.Name:SetText(WoWTools_Mixin:sub(name, 2, 4))
+            macroButton.Name:SetText(WoWTools_TextMixin:sub(name, 2, 4))
         end
     end
     hooksecurefunc(MacroFrame.MacroSelector,'setupCallback', MacroFrameInitMacroButton)--MacroFrame.MacroSelector:SetSetupCallback(MacroFrameInitMacroButton)

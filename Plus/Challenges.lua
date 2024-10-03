@@ -1404,7 +1404,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                     nameText=nameText:match('%- (.+)') or nameText
                     nameText=nameText:match(HEADER_COLON..'(.+)') or nameText
                     nameText=nameText:match('·(.+)') or nameText
-                    nameText=WoWTools_Mixin:sub(nameText, 5, 12)
+                    nameText=WoWTools_TextMixin:sub(nameText, 5, 12)
                 end
                 frame.nameLable:SetScale(Save.insScale or 1)
             end

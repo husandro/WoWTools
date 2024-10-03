@@ -189,3 +189,19 @@ end
         e.tips:AddDoubleLine('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL), '|cnGREEN_FONT_COLOR:'..key)
     end
 ]]
+
+
+
+
+
+
+
+
+
+function e.SetButtonKey(self, set, key, click)--设置清除快捷键
+    if set then
+        SetOverrideBindingClick(self, true, key, self:GetName(), click or 'LeftButton')
+    else
+        ClearOverrideBindings(self)
+    end
+end

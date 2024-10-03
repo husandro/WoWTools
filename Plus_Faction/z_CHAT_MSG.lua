@@ -119,8 +119,8 @@ end
 
 
 function WoWTools_ReputationMixin:Init_Chat_MSG()
-	FACTION_STANDING_INCREASED= LOCALE_zhCN and '你在(.+)中的声望值提高了.+点。' or e.Magic(FACTION_STANDING_INCREASED)
-	FACTION_STANDING_INCREASED_ACCOUNT_WIDE= LOCALE_zhCN and '你的战团在(.+)中的声望值提高了.+点。' or e.Magic(FACTION_STANDING_INCREASED_ACCOUNT_WIDE)
+	FACTION_STANDING_INCREASED= LOCALE_zhCN and '你在(.+)中的声望值提高了.+点。' or WoWTools_TextMixin:Magic(FACTION_STANDING_INCREASED)
+	FACTION_STANDING_INCREASED_ACCOUNT_WIDE= LOCALE_zhCN and '你的战团在(.+)中的声望值提高了.+点。' or WoWTools_TextMixin:Magic(FACTION_STANDING_INCREASED_ACCOUNT_WIDE)
 
     ChatFrame_AddMessageEventFilter('CHAT_MSG_COMBAT_FACTION_CHANGE', EventFilter)
 

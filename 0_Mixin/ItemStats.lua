@@ -36,7 +36,7 @@ function WoWTools_ItemStatsMixin:Gem(frame, itemLink)--显示, 宝石, 属性
                 end
             end
             if text:find(('%+(.+)')) then--+护甲
-                leftText= leftText or WoWTools_Mixin:sub(text:gsub('%+', ''), 1, 3, true)
+                leftText= leftText or WoWTools_TextMixin:sub(text:gsub('%+', ''), 1, 3, true)
                 --bottomLeftText= bottomLeftText or text:match('(.-%+)')
             end
         end

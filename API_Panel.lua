@@ -759,14 +759,14 @@ end
 
 local function Init()
     e.StausText={
-        [ITEM_MOD_HASTE_RATING_SHORT]= e.onlyChinese and '急' or WoWTools_Mixin:sub(STAT_HASTE, 1, 2, true),
-        [ITEM_MOD_CRIT_RATING_SHORT]= e.onlyChinese and '爆' or WoWTools_Mixin:sub(STAT_CRITICAL_STRIKE, 1, 2, true),
-        [ITEM_MOD_MASTERY_RATING_SHORT]= e.onlyChinese and '精' or WoWTools_Mixin:sub(STAT_MASTERY, 1, 2, true),
-        [ITEM_MOD_VERSATILITY]= e.onlyChinese and '全' or WoWTools_Mixin:sub(STAT_VERSATILITY, 1, 2, true),
-        [ITEM_MOD_CR_AVOIDANCE_SHORT]= e.onlyChinese and '闪' or WoWTools_Mixin:sub(STAT_AVOIDANCE, 1, 2, true),
-        [ITEM_MOD_CR_LIFESTEAL_SHORT]= e.onlyChinese and '吸' or WoWTools_Mixin:sub(STAT_LIFESTEAL, 1, 2, true),
-        [ITEM_MOD_CR_SPEED_SHORT]=e.onlyChinese and '速' or WoWTools_Mixin:sub(SPEED, 1,2,true),
-        --[ITEM_MOD_EXTRA_ARMOR_SHORT]= e.onlyChinese and '护' or WoWTools_Mixin:sub(ARMOR, 1,2,true)
+        [ITEM_MOD_HASTE_RATING_SHORT]= e.onlyChinese and '急' or WoWTools_TextMixin:sub(STAT_HASTE, 1, 2, true),
+        [ITEM_MOD_CRIT_RATING_SHORT]= e.onlyChinese and '爆' or WoWTools_TextMixin:sub(STAT_CRITICAL_STRIKE, 1, 2, true),
+        [ITEM_MOD_MASTERY_RATING_SHORT]= e.onlyChinese and '精' or WoWTools_TextMixin:sub(STAT_MASTERY, 1, 2, true),
+        [ITEM_MOD_VERSATILITY]= e.onlyChinese and '全' or WoWTools_TextMixin:sub(STAT_VERSATILITY, 1, 2, true),
+        [ITEM_MOD_CR_AVOIDANCE_SHORT]= e.onlyChinese and '闪' or WoWTools_TextMixin:sub(STAT_AVOIDANCE, 1, 2, true),
+        [ITEM_MOD_CR_LIFESTEAL_SHORT]= e.onlyChinese and '吸' or WoWTools_TextMixin:sub(STAT_LIFESTEAL, 1, 2, true),
+        [ITEM_MOD_CR_SPEED_SHORT]=e.onlyChinese and '速' or WoWTools_TextMixin:sub(SPEED, 1,2,true),
+        --[ITEM_MOD_EXTRA_ARMOR_SHORT]= e.onlyChinese and '护' or WoWTools_TextMixin:sub(ARMOR, 1,2,true)
     }
 end
 

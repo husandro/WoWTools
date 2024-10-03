@@ -194,7 +194,7 @@ local function Init()
             end
             name= name or customName or name2
         end
-        self.Text:SetText(WoWTools_Mixin:sub(name, 2, 5) or "")
+        self.Text:SetText(WoWTools_TextMixin:sub(name, 2, 5) or "")
     end
 
     function button:set_event()

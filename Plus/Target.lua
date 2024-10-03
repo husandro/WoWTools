@@ -533,7 +533,7 @@ local function Init_Quest()
     end
     if not QuestFrame then
         QuestFrame= CreateFrame('Frame')
-        QuestFrame.THREAT_TOOLTIP= e.Magic(THREAT_TOOLTIP)--:gsub('%%d', '%%d+')--"%d%% 威胁"
+        QuestFrame.THREAT_TOOLTIP= WoWTools_TextMixin:Magic(THREAT_TOOLTIP)--:gsub('%%d', '%%d+')--"%d%% 威胁"
         function QuestFrame:find_text(text)
             if text and not text:find(self.THREAT_TOOLTIP) then
                 if text:find('(%d+/%d+)') then

@@ -55,7 +55,7 @@ local function Set_Type(type, text)--使用,提示
         text=type:gsub('/','')
     else
         text= text==RAID_WARNING and COMMUNITIES_NOTIFICATION_SETTINGS_DIALOG_SETTINGS_LABEL or text--团队通知->通知
-        text= WoWTools_Mixin:sub(text, 1, 3)
+        text= WoWTools_TextMixin:sub(text, 1, 3)
     end
 
     GroupButton.typeText:SetText(text or '')

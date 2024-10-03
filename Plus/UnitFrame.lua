@@ -1242,7 +1242,7 @@ local function Init_UnitFrame_Update(frame, isParty)--UnitFrame.lua--职业, 图
             frame.name:SetTextColor(r,g,b)
             if isParty then
                 name= UnitName(unit)
-                name= WoWTools_Mixin:sub(name, 4, 8)
+                name= WoWTools_TextMixin:sub(name, 4, 8)
                 frame.name:SetText(name)
             elseif unit=='target' and guid then
                 local wow= WoWTools_UnitMixin:GetIsFriendIcon(nil, guid)
@@ -1751,7 +1751,7 @@ local function Init_RaidFrame()--设置,团队
             local name= frame.name:GetText()
             if name then
                 name= name:match('(.-)%-') or name
-                name= WoWTools_Mixin:sub(name, 4, 8)
+                name= WoWTools_TextMixin:sub(name, 4, 8)
                 frame.name:SetText(name)
             end
         end

@@ -535,7 +535,7 @@ local function Init()
         if Save.showBindName then
             text= self:get_location()
             if text and Save.showBindNameShort then
-                text= WoWTools_Mixin:sub(text, 2, 5)
+                text= WoWTools_TextMixin:sub(text, 2, 5)
             end
         end
         self.text:SetText(text or '')

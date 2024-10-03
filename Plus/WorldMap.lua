@@ -673,7 +673,7 @@ end
 
 
 
-local INSTANCE_DIFFICULTY_FORMAT='('..e.Magic(INSTANCE_DIFFICULTY_FORMAT)..')'-- "（%s）";
+local INSTANCE_DIFFICULTY_FORMAT='('..WoWTools_TextMixin:Magic(INSTANCE_DIFFICULTY_FORMAT)..')'-- "（%s）";
 local function set_AreaPOIPinMixin_OnAcquired(frame)
     if UnitAffectingCombat('player') then
         return

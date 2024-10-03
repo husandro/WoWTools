@@ -840,7 +840,7 @@ local function set_Frame(frame, rest)--设置, frame
             text= strlower(text)
         end
         if Save().gsubText then--文本，截取
-            text= WoWTools_Mixin:sub(text, Save().gsubText)
+            text= WoWTools_TextMixin:sub(text, Save().gsubText)
         end
         frame.label:SetText(text or '')
 

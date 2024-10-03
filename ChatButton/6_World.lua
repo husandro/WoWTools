@@ -110,7 +110,7 @@ local function Set_LeftClick_Tooltip(name, channelNumber, texture)--设置点击
 
     local text
     if name then
-        text= name=='大脚世界频道' and '世' or WoWTools_Mixin:sub(name, 1, 3)
+        text= name=='大脚世界频道' and '世' or WoWTools_TextMixin:sub(name, 1, 3)
     else
         text= e.onlyChinese and '无' or NONE
     end

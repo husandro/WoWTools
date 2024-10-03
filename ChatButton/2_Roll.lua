@@ -22,7 +22,7 @@ local function findRolled(name)--查找是否ROLL过
     end
 end
 
-local rollText= e.Magic(RANDOM_ROLL_RESULT)--"%s掷出%d（%d-%d）";
+local rollText= WoWTools_TextMixin:Magic(RANDOM_ROLL_RESULT)--"%s掷出%d（%d-%d）";
 local function setCHAT_MSG_SYSTEM(text)
     if not text then
         return

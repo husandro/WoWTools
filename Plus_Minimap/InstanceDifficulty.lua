@@ -44,7 +44,7 @@ local function InstanceDifficulty_Update(self)
         self.labelType:SetPoint('TOP', self, 'BOTTOM', 0, 4)
     end
 
-    self.labelType:SetText(name and WoWTools_Mixin:sub(name, 3, 7) or '')
+    self.labelType:SetText(name and WoWTools_TextMixin:sub(name, 3, 7) or '')
     self.tooltip= tooltip
 end
 

@@ -33,7 +33,7 @@ local panel= CreateFrame("Frame")
 DEFAULT_CHAT_FRAME.ADD= DEFAULT_CHAT_FRAME.AddMessage
 --local not_Colleced_Icon='|A:questlegendary:0:0|a'
 
-local LOOT_ITEM= LOOT_ITEM--= e.Magic(LOOT_ITEM)--:gsub('%%s', '(.+)')--%s获得了战利品：%s。
+local LOOT_ITEM= LOOT_ITEM--= WoWTools_TextMixin:Magic(LOOT_ITEM)--:gsub('%%s', '(.+)')--%s获得了战利品：%s。
 local CHAT_SAY_SEND= CHAT_SAY_SEND
 
 local Category
@@ -56,7 +56,7 @@ local function cn_Link_Text(link, tabInfo)
         if new and name~=new then
             
             name= name:match('|c........(.-)|r') or name
-            name= e.Magic(name)
+            name= WoWTools_TextMixin:Magic(name)
             link= link:gsub(name, new)
         end
     end
@@ -68,7 +68,7 @@ local function SetChannels(link)
     local name=link:match('%[(.-)]')
     if name then
         if name:find(WORLD) then
-            return link:gsub('%[.-]', '['..WoWTools_Mixin:sub(e.cn(WORLD), 2, 6)..']')
+            return link:gsub('%[.-]', '['..WoWTools_TextMixin:sub(e.cn(WORLD), 2, 6)..']')
         end
 
         if not Save.disabledKeyColor then
@@ -80,12 +80,12 @@ local function SetChannels(link)
         end
 
         if name:find(GENERAL_LABEL) then--综合
-            return link:gsub('%[.-]', '['..WoWTools_Mixin:sub(e.cn(GENERAL_LABEL), 2, 6)..']')
+            return link:gsub('%[.-]', '['..WoWTools_TextMixin:sub(e.cn(GENERAL_LABEL), 2, 6)..']')
         end
 
         name= name:match('%d+%. (.+)') or name:match('%d+．(.+)') or name--去数字
         name= name:match('%- (.+)') or name:match('：(.+)') or name:match(':(.+)') or name
-        name=WoWTools_Mixin:sub(e.cn(name), 2, 6)
+        name=WoWTools_TextMixin:sub(e.cn(name), 2, 6)
         return link:gsub('%[.-]', '['..name..']')
     end
 end
@@ -565,7 +565,7 @@ local function setAddMessageFunc(self, s, ...)
                 if unitName==e.Player.name or unitName==YOU then
                     s=s:gsub(unitName, '[|A:auctionhouse-icon-favorite:0:0|a'..e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r]')
                 else
-                    s=s:gsub(e.Magic(unitName), WoWTools_UnitMixin:GetLink(unitName))
+                    s=s:gsub(WoWTools_TextMixin:Magic(unitName), WoWTools_UnitMixin:GetLink(unitName))
                 end
             end
         end
@@ -718,7 +718,7 @@ local function Init_Panel()
             s=s:gsub('.- ', function(t)
                 t=t:gsub(' ','')
                 if t and t~='' then
-                    t=e.Magic(t)
+                    t=WoWTools_TextMixin:Magic(t)
                     Save.text[t]=true
                     n=n+1
                     print(n..')'..(e.onlyChinese and '颜色' or COLOR), t)
@@ -755,7 +755,7 @@ local function Init_Panel()
             s=s:gsub('.-=.- ', function(t)
                 local name,name2=t:match('(.-)=(.-) ')
                 if name and name2 and name~='' and name2~='' then
-                    name=e.Magic(name)
+                    name=WoWTools_TextMixin:Magic(name)
                     Save.channels[name]=name2
                     n=n+1
                     print(n..')'..(e.onlyChinese and '频道' or CHANNELS)..': ',name, e.onlyChinese and '替换' or REPLACE, name2)
@@ -1441,7 +1441,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
             if LinkButton then
                 e.setPlayerSound= Save.setPlayerSound--播放, 声音
 
-                LOOT_ITEM= LOCALE_zhCN and '(.-)获得了战利品' or e.Magic(LOOT_ITEM)
+                LOOT_ITEM= LOCALE_zhCN and '(.-)获得了战利品' or WoWTools_TextMixin:Magic(LOOT_ITEM)
 
                 Init()
 

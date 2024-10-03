@@ -6,7 +6,7 @@ local panel= CreateFrame("Frame")
 
 local chargesStr= ITEM_SPELL_CHARGES:gsub('%%d', '%(%%d%+%)')--(%d+)次
 local keyStr= format(CHALLENGE_MODE_KEYSTONE_NAME,'(.+) ')--钥石
-local equipStr= e.Magic(EQUIPMENT_SETS)--:gsub('|cFFFFFFFF', ''):gsub('|r', ''))
+local equipStr= WoWTools_TextMixin:Magic(EQUIPMENT_SETS)--:gsub('|cFFFFFFFF', ''):gsub('|r', ''))
 local pvpItemStr= PVP_ITEM_LEVEL_TOOLTIP:gsub('%%d', '%(%%d%+%)')--"装备：在竞技场和战场中将物品等级提高至%d。"
 local upgradeStr= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT:gsub('%%s/%%s','(.-%%d%+/%%d%+)')-- "升级：%s/%s"
 local classStr= format(ITEM_CLASSES_ALLOWED, '(.+)') --"职业：%s"
@@ -61,9 +61,9 @@ end
 --已收集, 未收集
 local function get_has_text(has)
     if has then
-        return format('|cnRED_FONT_COLOR:%s|r',  e.onlyChinese and '已收集' or WoWTools_Mixin:sub(COLLECTED, 3, 5, true))
+        return format('|cnRED_FONT_COLOR:%s|r',  e.onlyChinese and '已收集' or WoWTools_TextMixin:sub(COLLECTED, 3, 5, true))
     elseif has~=nil then
-        return format('|cnGREEN_FONT_COLOR:%s|r',  e.onlyChinese and '未收集' or WoWTools_Mixin:sub(NOT_COLLECTED, 3, 5, true))
+        return format('|cnGREEN_FONT_COLOR:%s|r',  e.onlyChinese and '未收集' or WoWTools_TextMixin:sub(NOT_COLLECTED, 3, 5, true))
     end
 end
 
@@ -225,7 +225,7 @@ function e.Set_Item_Info(self, tab)
             end
 
         elseif itemID==6948 then--炉石
-            bottomLeftText=WoWTools_Mixin:sub(e.cn(GetBindLocation()), 3, 6, true)
+            bottomLeftText=WoWTools_TextMixin:sub(e.cn(GetBindLocation()), 3, 6, true)
 
         elseif containerInfo and containerInfo.hasLoot then--宝箱
             local dateInfo= WoWTools_ItemMixin:GetTooltip({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, red=true, onlyRed=true})--物品提示，信息
@@ -238,7 +238,7 @@ function e.Set_Item_Info(self, tab)
                 name=name:gsub('%((%d+)%)','')
                 name=name:match('（(.-)）') or name:match('%((.-)%)') or name:match('%- (.+)') or name:match(keyStr)--名称
                 if name then
-                    bottomLeftText= WoWTools_Mixin:sub(name, 3,6, true)
+                    bottomLeftText= WoWTools_TextMixin:sub(name, 3,6, true)
                 end
                 local text= WoWTools_WeekMixin:GetRewardText(1)--得到，周奖励，信息
                 if text then
@@ -253,7 +253,7 @@ function e.Set_Item_Info(self, tab)
             topRightText='|A:Coin-Silver:0:0|a'
 
         elseif classID==1 then--背包
-            bottomLeftText= WoWTools_Mixin:sub(itemSubType, 2, 3, true)
+            bottomLeftText= WoWTools_TextMixin:sub(itemSubType, 2, 3, true)
             if containerInfo and not containerInfo.isBound then--没有锁定
                 topRightText='|A:greatVault-lock:0:0|a'
             end
@@ -268,7 +268,7 @@ function e.Set_Item_Info(self, tab)
             if itemLevel and itemLevel>10 then
                 rightText= itemLevel
             end
-            topRightText= WoWTools_Mixin:sub(subclassID==9 and itemType or itemSubType, 2,3)
+            topRightText= WoWTools_TextMixin:sub(subclassID==9 and itemType or itemSubType, 2,3)
             if lowerVer then--低版本
                 topRightText= '|cff9e9e9e'..topRightText..'|r'
             else
@@ -279,9 +279,9 @@ function e.Set_Item_Info(self, tab)
             local dateInfo= WoWTools_ItemMixin:GetTooltip({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={ITEM_SPELL_KNOWN, useStr,}, wow=true, red=true})--物品提示，信息 ITEM_SPELL_KNOWN = "已经学会"
             if not (classID==15 and (subclassID== 0 or subclassID==4)) then
                 if classID==0 and subclassID==5 then
-                    topRightText= WoWTools_Mixin:sub(POWER_TYPE_FOOD, 2,3, true)--食物
+                    topRightText= WoWTools_TextMixin:sub(POWER_TYPE_FOOD, 2,3, true)--食物
                 else
-                    topRightText= WoWTools_Mixin:sub(itemSubType==OTHER and itemType or itemSubType, 2,3, true)
+                    topRightText= WoWTools_TextMixin:sub(itemSubType==OTHER and itemType or itemSubType, 2,3, true)
                 end
                 if lowerVer then--低版本
                     topRightText= '|cff9e9e9e'..topRightText..'|r'
@@ -346,7 +346,7 @@ function e.Set_Item_Info(self, tab)
                     end
                     if dateInfo.text[equipStr] then--套装名称，                
                         local text= dateInfo.text[equipStr]:match('(.+),') or dateInfo.text[equipStr]:match('(.+)，') or dateInfo.text[equipStr]
-                        bottomLeftText= '|cff00ccff'..(WoWTools_Mixin:sub(text,3,4, true) or '')..'|r'
+                        bottomLeftText= '|cff00ccff'..(WoWTools_TextMixin:sub(text,3,4, true) or '')..'|r'
 
                     elseif dateInfo.wow then--战网
                         bottomLeftText= e.Icon.wow2
@@ -388,10 +388,10 @@ function e.Set_Item_Info(self, tab)
                             if dateInfo.red then
                                 if dateInfo.red~= USED then
                                     local redText= dateInfo.red:match('%d+') or dateInfo.red
-                                    topRightText= '|cnRED_FONT_COLOR:'..strlower(WoWTools_Mixin:sub(redText, 2,3, true)) ..'|r'
+                                    topRightText= '|cnRED_FONT_COLOR:'..strlower(WoWTools_TextMixin:sub(redText, 2,3, true)) ..'|r'
                                 end
                             end
-                            topRightText= topRightText or WoWTools_Mixin:sub(itemSubType, 2, 3, true)
+                            topRightText= topRightText or WoWTools_TextMixin:sub(itemSubType, 2, 3, true)
                         end
                     end
 
@@ -405,7 +405,7 @@ function e.Set_Item_Info(self, tab)
                         local min, max= dateInfo.text[upgradeStr]:match('(%d+)/(%d+)')
                         local upText= dateInfo.text[upgradeStr]:match('(.-)%d+/%d+')
 
-                        upText= upText and strlower(WoWTools_Mixin:sub(upText, 1,3, true)) or ''
+                        upText= upText and strlower(WoWTools_TextMixin:sub(upText, 1,3, true)) or ''
                         if min and max then
                             if min==max then
                                 leftText= "|A:VignetteKill:0:0|a"..upText
@@ -433,7 +433,7 @@ function e.Set_Item_Info(self, tab)
                 local collectedIcon, isCollected= WoWTools_CollectedMixin:Item(itemLink, nil, true)--幻化
                 bottomRightText= not isCollected and collectedIcon or bottomRightText
                 if isCollected==false then
-                    topRightText= topRightText or WoWTools_Mixin:sub(itemSubType, 2, 3, true)
+                    topRightText= topRightText or WoWTools_TextMixin:sub(itemSubType, 2, 3, true)
                     if itemQuality and itemQuality<=1 then
                         if itemMinLevel<=e.Player.level then
                             isRedItem=true
@@ -477,7 +477,7 @@ function e.Set_Item_Info(self, tab)
 
 
         elseif classID==12 and itemQuality and itemQuality>0 then--任务
-            topRightText= e.onlyChinese and '任务' or WoWTools_Mixin:sub(itemSubType, 2,3, true)
+            topRightText= e.onlyChinese and '任务' or WoWTools_TextMixin:sub(itemSubType, 2,3, true)
 
         elseif itemID and C_ToyBox.GetToyInfo(itemID) then--玩具
             bottomRightText= get_has_text(PlayerHasToy(itemID))--已收集, 未收集
@@ -1189,17 +1189,17 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 FMTab={--附魔
                         ['主属性']= '主',
                         ['坐骑速度']= '骑',
-                        [PRIMARY_STAT1_TOOLTIP_NAME]=  e.onlyChinese and "力" or WoWTools_Mixin:sub(PRIMARY_STAT1_TOOLTIP_NAME, 1, 3, true),
-                        [PRIMARY_STAT2_TOOLTIP_NAME]=  e.onlyChinese and "敏" or WoWTools_Mixin:sub(PRIMARY_STAT2_TOOLTIP_NAME, 1, 3, true),
-                        [PRIMARY_STAT3_TOOLTIP_NAME]=  e.onlyChinese and "耐" or WoWTools_Mixin:sub(PRIMARY_STAT3_TOOLTIP_NAME, 1, 3, true),
-                        [PRIMARY_STAT4_TOOLTIP_NAME]=  e.onlyChinese and "智" or WoWTools_Mixin:sub(PRIMARY_STAT4_TOOLTIP_NAME, 1, 3, true),
-                        [ITEM_MOD_CRIT_RATING_SHORT]= e.onlyChinese and '爆' or WoWTools_Mixin:sub(STAT_CRITICAL_STRIKE, 1, 3, true),
-                        [ITEM_MOD_HASTE_RATING_SHORT]= e.onlyChinese and '急' or WoWTools_Mixin:sub(STAT_HASTE, 1, 3, true),
-                        [ITEM_MOD_MASTERY_RATING_SHORT]= e.onlyChinese and '精' or WoWTools_Mixin:sub(STAT_MASTERY, 1, 3, true),
-                        [ITEM_MOD_VERSATILITY]= e.onlyChinese and '全' or WoWTools_Mixin:sub(STAT_VERSATILITY, 1, 3, true),
-                        [ITEM_MOD_CR_AVOIDANCE_SHORT]= e.onlyChinese and '闪' or WoWTools_Mixin:sub(ITEM_MOD_CR_AVOIDANCE_SHORT, 1, 3, true),
-                        [ITEM_MOD_CR_LIFESTEAL_SHORT]= e.onlyChinese and '吸' or WoWTools_Mixin:sub(ITEM_MOD_CR_LIFESTEAL_SHORT, 1, 3, true),
-                        [ITEM_MOD_CR_SPEED_SHORT]= e.onlyChinese and '速' or WoWTools_Mixin:sub(ITEM_MOD_CR_SPEED_SHORT, 1, 3, true),
+                        [PRIMARY_STAT1_TOOLTIP_NAME]=  e.onlyChinese and "力" or WoWTools_TextMixin:sub(PRIMARY_STAT1_TOOLTIP_NAME, 1, 3, true),
+                        [PRIMARY_STAT2_TOOLTIP_NAME]=  e.onlyChinese and "敏" or WoWTools_TextMixin:sub(PRIMARY_STAT2_TOOLTIP_NAME, 1, 3, true),
+                        [PRIMARY_STAT3_TOOLTIP_NAME]=  e.onlyChinese and "耐" or WoWTools_TextMixin:sub(PRIMARY_STAT3_TOOLTIP_NAME, 1, 3, true),
+                        [PRIMARY_STAT4_TOOLTIP_NAME]=  e.onlyChinese and "智" or WoWTools_TextMixin:sub(PRIMARY_STAT4_TOOLTIP_NAME, 1, 3, true),
+                        [ITEM_MOD_CRIT_RATING_SHORT]= e.onlyChinese and '爆' or WoWTools_TextMixin:sub(STAT_CRITICAL_STRIKE, 1, 3, true),
+                        [ITEM_MOD_HASTE_RATING_SHORT]= e.onlyChinese and '急' or WoWTools_TextMixin:sub(STAT_HASTE, 1, 3, true),
+                        [ITEM_MOD_MASTERY_RATING_SHORT]= e.onlyChinese and '精' or WoWTools_TextMixin:sub(STAT_MASTERY, 1, 3, true),
+                        [ITEM_MOD_VERSATILITY]= e.onlyChinese and '全' or WoWTools_TextMixin:sub(STAT_VERSATILITY, 1, 3, true),
+                        [ITEM_MOD_CR_AVOIDANCE_SHORT]= e.onlyChinese and '闪' or WoWTools_TextMixin:sub(ITEM_MOD_CR_AVOIDANCE_SHORT, 1, 3, true),
+                        [ITEM_MOD_CR_LIFESTEAL_SHORT]= e.onlyChinese and '吸' or WoWTools_TextMixin:sub(ITEM_MOD_CR_LIFESTEAL_SHORT, 1, 3, true),
+                        [ITEM_MOD_CR_SPEED_SHORT]= e.onlyChinese and '速' or WoWTools_TextMixin:sub(ITEM_MOD_CR_SPEED_SHORT, 1, 3, true),
                     }
             end
             self:RegisterEvent("PLAYER_LOGOUT")

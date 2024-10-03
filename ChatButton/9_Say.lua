@@ -495,7 +495,7 @@ local function Init()
         elseif type and text:find('%w') then--处理英文
             text=type:gsub('/','')
         else
-            text=WoWTools_Mixin:sub(text, 1, 3)
+            text=WoWTools_TextMixin:sub(text, 1, 3)
         end
 
         self.typeText:SetText(text)

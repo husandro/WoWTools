@@ -701,7 +701,7 @@ local function Init_RaidGroupFrame_Update()--团队, 模块
 
                     if not text and not setSize then--处理名字
                         text= name:gsub('(%-.+)','')--名称
-                        text= WoWTools_Mixin:sub(text, 3, 7)
+                        text= WoWTools_TextMixin:sub(text, 3, 7)
                     end
                     if text then
                         subframes.name:SetText(text)

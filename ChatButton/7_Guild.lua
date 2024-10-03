@@ -358,7 +358,7 @@ local function Init()
             if CanReplaceGuildMaster() then--弹劾
                 local label= WoWTools_LabelMixin:CreateLabel(GuildButton, {size=10, color=true, justifyH='CENTER'})
                 label:SetPoint('TOP')
-                label:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '弹劾' or  WoWTools_Mixin:sub(GUILD_IMPEACH_POPUP_CONFIRM, 2, 5,true))..'|r')
+                label:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '弹劾' or  WoWTools_TextMixin:sub(GUILD_IMPEACH_POPUP_CONFIRM, 2, 5,true))..'|r')
             end
         else
             GuildButton:settings()
