@@ -51,7 +51,7 @@ function WoWTools_MacroMixin:SetMacroTexture(iconTexture)--修改，当前图标
     if actualIndex then
         local name= GetMacroInfo(actualIndex)
         local index = EditMacro(actualIndex, name, iconTexture) - MacroFrame.macroBase;--战斗中，出现错误
-        e.call(MacroFrame.SaveMacro, MacroFrame)
+        --e.call(MacroFrame.SaveMacro, MacroFrame)
         MacroFrame:SelectMacro(index or 1);
         e.call(MacroFrame.Update, MacroFrame)
     end

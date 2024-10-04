@@ -250,8 +250,9 @@ local function Create_Button(name)
    function btn:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
+
         e.tips:AddDoubleLine(e.addName, WoWTools_MacroMixin.addName)
-        local col= self:find_text() and '|cff9e9e9e' or ''
+        local col= UnitAffectingCombat('player') and '|cnRED_FONT_COLOR:' and (self:find_text() and '|cff9e9e9e') or ''
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(col..self.text..(self.tip or ''), e.Icon.left)
         if self.text2 then
@@ -262,6 +263,9 @@ local function Create_Button(name)
         e.tips:Show()
     end
     btn:SetScript('OnClick', function(self, d)
+        if UnitAffectingCombat('player') then
+            return
+        end
         if d=='LeftButton' then
             if self.textCursor then
                 MacroFrameText:SetCursorPosition(self.textCursor)
@@ -523,7 +527,7 @@ end
 
 --命令，按钮，列表
 --##############
-local function Init_List_Button()
+local function Init_List()
     local last, btn
     --local size= 24
     for i=1, 12 do
@@ -901,6 +905,6 @@ end
 function WoWTools_MacroMixin:Init_List_Button()
 
     
-    Init_List_Button()
+    Init_List()
     Init_Other_Button()
 end

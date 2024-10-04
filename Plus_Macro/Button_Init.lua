@@ -31,7 +31,9 @@ local function Init()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.addName, WoWTools_MacroMixin.addName)
+
         e.tips:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '请不要在战斗中使用' or 'Please do not use in combat'))
+        
         e.tips:AddLine(' ')
         e.tips:AddLine((e.onlyChinese and '图标' or EMBLEM_SYMBOL)..':', e.Icon.left)
         local text= e.onlyChinese and '备注' or LABEL_NOTE
@@ -46,6 +48,9 @@ local function Init()
         self:SetAlpha(1)
     end
     toRightButton:SetScript('OnClick', function(self, d)
+        if UnitAffectingCombat('player') then
+            return
+        end
         if d=='LeftButton' then
             if not Save().toRightLeft then
                 Save().toRightLeft=1--左边
@@ -68,53 +73,6 @@ local function Init()
 
 
 
-    --设置，宏，图标，位置，长度
-    hooksecurefunc(MacroFrame, 'ChangeTab', function(self, tabID)
-        self.MacroSelector:ClearAllPoints()
-        if tabID==1 and (Save().toRightLeft==1 or Save().toRightLeft==2) then
-            if Save().toRightLeft==1 then--左边
-                self.MacroSelector:SetPoint('TOPRIGHT', self, 'TOPLEFT',10,-12)
-                self.MacroSelector:SetPoint('BOTTOMLEFT', -319, 0)
-            else--右边
-                self.MacroSelector:SetPoint('TOPLEFT', self, 'TOPRIGHT',0,-12)
-                self.MacroSelector:SetPoint('BOTTOMRIGHT', 319, 0)
-            end
-           -- self.MacroSelector:SetCustomStride(6);
-        else
-            --self.MacroSelector:SetCustomStride(12);
-
-            self.MacroSelector:SetPoint('TOPLEFT', 12,-66)
-            self.MacroSelector:SetPoint('BOTTOMRIGHT', MacroFrame, 'RIGHT', -6, 0)
-        end
-        --self:Update()
-        --备注
-        if not MacroFrame.NoteEditBox and Save().toRightLeft and MacroFrame.macroBase==0 then
-            MacroFrame.NoteEditBox=WoWTools_EditBoxMixn:CreateMultiLineFrame(MacroFrame, {
-                font='GameFontHighlightSmall',
-                instructions= e.onlyChinese and '备注' or LABEL_NOTE
-            })
-            MacroFrame.NoteEditBox:SetPoint('TOPLEFT', 8, -65)
-            MacroFrame.NoteEditBox:SetPoint('BOTTOMRIGHT', MacroFrame, 'RIGHT', -6, 0)
-
-            function MacroFrame.NoteEditBox:set_text()
-                self:SetText(Save().noteText or '')
-            end
-
-
-            MacroFrame.NoteEditBox.editBox:SetScript('OnHide', function(s)--保存备注
-                Save().noteText= s:GetText()
-                s:ClearFocus()
-            end)
-            MacroFrame.NoteEditBox.editBox:SetScript('OnShow', MacroFrame.NoteEditBox.set_text)
-            if MacroFrame.NoteEditBox:IsShown() then
-                MacroFrame.NoteEditBox:set_text()
-            end
-        end
-
-        if self.NoteEditBox then
-            self.NoteEditBox:SetShown((Save().toRightLeft and MacroFrame.macroBase==0) and true or false)
-        end
-    end)
 end
 
 
