@@ -13,13 +13,6 @@ local addName
 
 
 
---EquipmentManager.lua
-local function IsCan_EquipSet(setID)
-	if not setID or C_EquipmentSet.EquipmentSetContainsLockedItems(setID) or UnitCastingInfo("player") then
-		return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '你还不能那样做。' or ERR_CLIENT_LOCKED_OUT)..'|r'
-	end
-end
-
 
 
 
@@ -159,7 +152,7 @@ local function Create_Button(index)
     Set_Point(btn, index)--设置位置
 
     btn:SetScript("OnClick",function(self)
-        local notCan= IsCan_EquipSet(self.setID)
+        local notCan= WoWTools_ItemMixin:IsCan_EquipmentSet(self.setID)--装备管理，能否装备
 
         if not notCan then
             C_EquipmentSet.UseEquipmentSet(self.setID)
@@ -182,7 +175,7 @@ local function Create_Button(index)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:SetEquipmentSet(self.setID)
 
-        local notCan= IsCan_EquipSet(self.setID)
+        local notCan= WoWTools_ItemMixin:IsCan_EquipmentSet(self.setID)--装备管理，能否装备
         if notCan then
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(' ', notCan)

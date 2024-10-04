@@ -133,13 +133,17 @@ Plus_Tooltip\z_Professions.lua
 Plus_PaperDoll\0_PaperDoll.lua
 Plus_PaperDoll\Duration.lua
 Plus_PaperDoll\Flyout_Equipment.lua
+Plus_PaperDoll\InspectUI_Init.lua
+Plus_PaperDoll\Item_PoaperDll.lua
 Plus_PaperDoll\Server_Info.lua
 Plus_PaperDoll\Set_Level.lua
+Plus_PaperDoll\Show_Hide_Button.lua
 Plus_PaperDoll\Status_Func.lua
 Plus_PaperDoll\Status_Init.lua
 Plus_PaperDoll\Status_Menu.lua
 Plus_PaperDoll\Tab1.lua
 Plus_PaperDoll\Tab2.lua
+Plus_PaperDoll\Tab3_Set_Plus.lua
 Plus_PaperDoll\Tab3.lua
 Plus_PaperDoll\TrackButton_PaperDool.lua
 

@@ -333,3 +333,20 @@ function WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)
     end
 end
 
+
+
+
+
+
+
+
+
+
+
+--装备管理，能否装备
+--EquipmentManager.lua
+function WoWTools_ItemMixin:IsCan_EquipmentSet(setID)--装备管理，能否装备
+	if not setID or C_EquipmentSet.EquipmentSetContainsLockedItems(setID) or UnitCastingInfo("player") then
+		return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '你还不能那样做。' or ERR_CLIENT_LOCKED_OUT)..'|r'
+	end
+end
