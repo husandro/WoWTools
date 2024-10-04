@@ -77,21 +77,6 @@ local function Init()
         WoWTools_PaperDollMixin:Settings_Tab3()
         WoWTools_PaperDollMixin:Settings_Tab1()--总装等
     end)
-   
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
 
     C_Timer.After(2, function()
         WoWTools_PaperDollMixin:Init_TrackButton()--装备管理框

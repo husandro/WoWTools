@@ -7,7 +7,9 @@ end
 
 
 
-
+function WoWTools_PaperDollMixin:Is_Left_Slot(slot)
+    return slot==1 or slot==2 or slot==3 or slot==15 or slot==5 or slot==4 or slot==19 or slot==9 or slot==17 or slot==18
+end
 
 
 
@@ -19,9 +21,7 @@ local upgradeStr= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT:gsub('%%s/%%s','(.-%
 
 local ITEM_CREATED_BY_Str= ITEM_CREATED_BY:gsub('%%s','(.+)')--"|cff00ff00<由%s制造>|r"
 
-local function is_Left_Slot(slot)--左边插曹
-    return slot==1 or slot==2 or slot==3 or slot==15 or slot==5 or slot==4 or slot==19 or slot==9 or slot==17 or slot==18
-end
+
 
 local InventSlot_To_ContainerSlot={}--背包数
 for i=1, NUM_TOTAL_EQUIPPED_BAG_SLOTS  do
@@ -72,7 +72,7 @@ local function set_Engineering(self, slot, link, use, isPaperDollItemSlot)
         local h=self:GetHeight()/3
         self.engineering=WoWTools_ButtonMixin:Cbtn(self, {icon='hide',size={h,h}})
         self.engineering:SetNormalTexture(136243)
-        if is_Left_Slot(slot) then
+        if WoWTools_PaperDollMixin:Is_Left_Slot(slot) then
             self.engineering:SetPoint('TOPLEFT', self, 'TOPRIGHT', 8, 0)
         else
             self.engineering:SetPoint('TOPRIGHT', self, 'TOPLEFT', -8, 0)
@@ -159,7 +159,7 @@ local function set_no_Enchant(self, slot, find, isPaperDollItemSlot)--附魔，�
             self.noEnchant= WoWTools_ButtonMixin:Cbtn(self, {size={h, h}, type=true, icon='hide'})
             self.noEnchant:SetAttribute("type", "item")
             self.noEnchant.slot= slot
-            if is_Left_Slot(slot) then
+            if WoWTools_PaperDollMixin:Is_Left_Slot(slot) then
                 self.noEnchant:SetPoint('LEFT', self, 'RIGHT', 8, 0)
             else
                 self.noEnchant:SetPoint('RIGHT', self, 'LEFT', -8, 0)
@@ -219,13 +219,26 @@ local function set_no_Enchant(self, slot, find, isPaperDollItemSlot)--附魔，�
     end
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使用, 属性
     if Save().hide then
         link= nil
     end
     local enchant, use, pvpItem, upgradeItem, createItem
     local unit = (not isPaperDollItemSlot and InspectFrame) and InspectFrame.unit or 'player'
-    local isLeftSlot= is_Left_Slot(slot)
+    local isLeftSlot= WoWTools_PaperDollMixin:Is_Left_Slot(slot)
 
     if link and not C_Item.IsCorruptedItem(link) then
         local dateInfo= WoWTools_ItemMixin:GetTooltip({hyperLink=link, text={enchantStr, pvpItemStr, upgradeStr,ITEM_CREATED_BY_Str}, onlyText=true})--物品提示，信息
@@ -696,3 +709,9 @@ end
 
 
 
+function WoWTools_PaperDollMixin:Set_Item_Tips(...)
+    set_Item_Tips(...)
+end
+function WoWTools_PaperDollMixin:Set_Slot_Num_Label(...)
+    set_Slot_Num_Label(...)
+end

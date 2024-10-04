@@ -20,8 +20,8 @@ local function set_InspectPaperDollItemSlotButton_Update(self)
 	local link= not Save().hide and GetInventoryItemLink(InspectFrame.unit, slot) or nil
 	e.LoadData({id=link, type='item'})--加载 item quest spell
     --set_Gem(self, slot, link)
-    set_Item_Tips(self, slot, link, false)
-    set_Slot_Num_Label(self, slot, link and true or false)--栏位, 帐号最到物品等级
+    WoWTools_PaperDollMixin:Set_Item_Tips(self, slot, link, false)
+    WoWTools_PaperDollMixin:Set_Slot_Num_Label(self, slot, link and true or false)--栏位, 帐号最到物品等级
     WoWTools_ItemStatsMixin:SetItem(self, link, {point=self.icon})
     if not self.OnEnter and not Save().hide then
         self:SetScript('OnEnter', function(self2)
@@ -50,7 +50,7 @@ local function set_InspectPaperDollItemSlotButton_Update(self)
             self.itemLinkText:SetPoint('BOTTOMRIGHT', InspectPaperDollFrame, 'BOTTOMLEFT', 6,15)
         elseif slot==17 then
             self.itemLinkText:SetPoint('BOTTOMLEFT', InspectPaperDollFrame, 'BOTTOMRIGHT', -5,15)
-        elseif is_Left_Slot(slot) then
+        elseif WoWTools_PaperDollMixin:Is_Left_Slot(slot) then
             self.itemLinkText:SetPoint('RIGHT', self, 'LEFT', -2,0)
         else
             self.itemLinkText:SetPoint('LEFT', self, 'RIGHT', 5,0)

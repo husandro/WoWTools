@@ -23,6 +23,8 @@ local function Setttings(btn)
         end
         return
     end
+
+    
     if not btn.setID and not btn.createButton  then
         btn.createButton= WoWTools_ButtonMixin:Cbtn(btn, {size={30,30}, atlas='groupfinder-eye-highlight'})
         btn.createButton.str= e.onlyChinese and '空' or EMPTY
@@ -64,7 +66,7 @@ local function Setttings(btn)
     if not btn.setScripOK then
         btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
         btn:HookScript('OnClick', function(self, d)
-            if not Save().hide and d=='RightButton' and self.setID then
+            if self.setID and not Save().hide and d=='RightButton' then
                 local notCan= WoWTools_ItemMixin:IsCan_EquipmentSet(self.setID)
                 if notCan then
                     print(e.addName, WoWTools_PaperDollMixin.addName, notCan)
@@ -77,7 +79,7 @@ local function Setttings(btn)
         end)
 
         btn:HookScript('OnEnter', function(self)
-            if self.setID then
+            if self.setID and not Save().hide then
                 local notCan= WoWTools_ItemMixin:IsCan_EquipmentSet(self.setID) and '|cff9e9e9e' or ''
                 GameTooltip:AddDoubleLine(notCan or ' ', (notCan and '|cff9e9e9e' or '')..(e.onlyChinese and '装备' or EQUIPSET_EQUIP)..e.Icon.right)
                 GameTooltip:Show()
