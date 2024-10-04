@@ -183,7 +183,7 @@ local function Init_Sub_Menu(self, root, stat, index, name)
 --自动隐藏 -1 0
         for va=-1, 0, 1 do
             sub=root:CreateCheckbox(
-                format('%s |cnGREEN_FONT_COLOR:'..i..'|r', e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE)),
+                format('%s |cnGREEN_FONT_COLOR:'..va..'|r', e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE)),
             function(data)
                 return Find_Stats(data.stat, data.index, false).hideAt== data.value
             end, function(data)
