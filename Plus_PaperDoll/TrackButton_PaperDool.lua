@@ -102,7 +102,7 @@ local function Init_Menu(self, root)
     end)
 
 --打开选项界面
-    WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_PaperDollMixin.addName,})
+    WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_PaperDollMixin.addName, name2=addName})
 end
 
 

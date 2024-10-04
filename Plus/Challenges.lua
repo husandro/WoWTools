@@ -194,7 +194,7 @@ local function Level_Text(text)
         ['Veteran']= format('%s%s|r', '|cff00ff00', e.onlyChinese and '老兵' or 'Veteran'),
         ['Champion']= format('%s%s|r', '|cff2aa2ff', e.onlyChinese and '勇士' or FOLLOWERLIST_LABEL_CHAMPIONS),
         ['Hero']= format('%s%s|r', '|cffff00ff', e.onlyChinese and '英雄' or ITEM_HEROIC),
-        ['Myth']= format('%s%s|r', '|cffb78f6a', e.onlyChinese and '史诗' or ITEM_QUALITY4_DESC),
+        ['Myth']= format('%s%s|r', '|cffb78f6a', e.onlyChinese and '神话' or ITEM_QUALITY4_DESC),
     }
     return tab[text] or text
 end
