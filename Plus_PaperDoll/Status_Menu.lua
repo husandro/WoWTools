@@ -348,7 +348,7 @@ local function Init_Status_Menu(self, root)
             local index= tab.index
             local stat= tab.stat
             local name= tab.name or e.cn(_G[stat] or _G['STAT_'..stat]) or stat
-            tab.name= tab.name or name
+            --tab.name= tab.name or name
             local stats= Find_Stats(stat, index, false)
             local role, autoHide ='', ''
             if stats then
@@ -356,10 +356,12 @@ local function Init_Status_Menu(self, root)
                 role= format('%s%s%s', tank and e.Icon.TANK or '', n and e.Icon.HEALER or '', dps and e.Icon.DAMAGER or '')
                 autoHide= format('|cnGREEN_FONT_COLOR:%s|r', stats.hideAt or '')--隐藏 0， -1
             end
-            local primary= Get_Primary_Text(stats and stats.primary) or ''--主属性
-
+            local primary
+            if stats and stats.primary and tab.primary and stats.primary~=tab.primary then
+                primary=Get_Primary_Text(stats and stats.primary)--主属性
+            end
             sub=root:CreateCheckbox(
-                name..autoHide..role..primary,
+                name..autoHide..role..(primary or ''),
             function(data)
                 return Find_Stats(data.stat, data.index, false)
             end, function(data)
