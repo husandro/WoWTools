@@ -14,14 +14,7 @@ local LabelPvE, LabelPvP
 
 
 local function Init()
-    if LabelPvE then
-        LabelPvE:SetShown(not Save().hide)
-        LabelPvE:SetShown(not Save().hide)
-        WoWTools_PaperDollMixin:Set_Tab1_ItemLevel()
-        return
-    end
-        
-    
+
 --物品等级
     LabelPvE=WoWTools_LabelMixin:Create(PaperDollSidebarTab1, {justifyH='CENTER', mouse=true})
     LabelPvE:SetPoint('BOTTOM')
@@ -76,18 +69,31 @@ end
 
 
 
-function WoWTools_PaperDollMixin:Set_Tab1_ItemLevel()
-    local pve, pvp=0, 0
-    if not Save().hide then
-        local _
-        pve,_, pvp= GetAverageItemLevel()
-    end
-    LabelPvE.avgItemLevel= pve
-    LabelPvE.avgItemLevelPvp= pvp
-    LabelPvE:SetText(pve>0 and format('%i', pve) or '')
-    LabelPvP:SetText(pvp>0 and format('%i', pvp) or '')
+function WoWTools_PaperDollMixin:Init_Tab1()
+    Init()
 end
 
-function WoWTools_PaperDollMixin:Init_Tab1_ItemLevel()
-    Init()
+function WoWTools_PaperDollMixin:Settings_Tab1()
+    local show= not Save().hide
+    local pve, pvp, cur
+
+    if show then
+        local _
+        pve, cur, pvp= GetAverageItemLevel()
+        if pvp==0 or pvp==pve then
+            pvp=nil
+        else
+            pvp= format('%i', pvp)
+        end
+        pve= format('%i', pve)
+        if pve==0 or cur-pve<=-5 then
+             pve= '|cnRED_FONT_COLOR:'..pve..'|r'
+        end
+    end
+
+    LabelPvE.avgItemLevel= pve
+    LabelPvE.avgItemLevelPvp= pvp
+
+    LabelPvE:SetText(pve or '')
+    LabelPvP:SetText(pvp or '')
 end

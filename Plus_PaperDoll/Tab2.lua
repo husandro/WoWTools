@@ -19,7 +19,7 @@ local function Init_Menu(_, root)
 
     local sub
     local num=0
-    for i=1, all do
+    for i=1, all, 1 do
         if not IsTitleKnown(i) then
             num= num+1
             local name, playerTitle = GetTitleName(i)
@@ -132,28 +132,17 @@ end
 
 
 
-local function Settings()
-    if not PAPERDOLL_SIDEBARS[2].IsActive() or Save().hide then
-        if Button then
-            Title:SetShown(false)
-            Button:SetShown(false)
-        end
-        return
-    end
 
-    if not Button then
-        Init_Button()
-    end
-    Title:SetShown(true)
-    Button:SetShown(true)
+
+
+function WoWTools_PaperDollMixin:Init_Tab2()--头衔数量
+    Init_Button()
 end
 
-
-
-
-
-function WoWTools_PaperDollMixin:Init_Title()--头衔数量
-    Settings()
+function WoWTools_PaperDollMixin:Settings_Tab2()--头衔数量
+    local show= PAPERDOLL_SIDEBARS[2].IsActive() and not Save().hide
+    Title:SetShown(show)
+    Button:SetShown(show)
 end
 
 

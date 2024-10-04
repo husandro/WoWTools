@@ -6,7 +6,7 @@ local Label
 
 
 
-local function Create_Label()
+local function Init_Label()
     Label= WoWTools_LabelMixin:Create(PaperDollItemsFrame.ShowHideButton, {color= GameLimitedMode_IsActive() and {r=0,g=1,b=0} or true, mouse=true, justifyH='RIGHT'})--显示服务器名称
     Label:SetPoint('LEFT', PaperDollItemsFrame.ShowHideButton, 'RIGHT',2,0)
     Label:SetScript("OnLeave",function(self) e.tips:Hide() self:GetParent():set_alpha(false) end)
@@ -54,18 +54,7 @@ end
 
 
 
-local function Init()
-    if WoWTools_PaperDollMixin.Save.hide then
-        if  Label then
-            Label:SetText('')
-        end
-        return
-    end
-
-    if not Label then
-        Create_Label()
-    end
-
+local function Settings()
     local ser=GetAutoCompleteRealms() or {}
     local server= e.Get_Region(e.Player.realm, nil, nil)
     local text= (#ser>1 and '|cnGREEN_FONT_COLOR:'..#ser..' ' or '')..e.Player.col..e.Player.realm..'|r'..(server and ' '..server.col or '')
@@ -82,6 +71,15 @@ end
 
 
 --显示服务器名称
-function WoWTools_PaperDollMixin:Set_Server_Info()
-    Init()
+function WoWTools_PaperDollMixin:Init_ServerInfo()
+    Init_Label()
+end
+
+
+function WoWTools_PaperDollMixin:Settings_ServerInfo()
+    if WoWTools_PaperDollMixin.Save.hide then
+        Label:SetText('')
+    else
+        Settings()
+    end
 end

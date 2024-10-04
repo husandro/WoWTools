@@ -171,7 +171,7 @@ function WoWTools_SetTooltipMixin:Frame(frame, tooltip, data)
     tooltip= tooltip or GameTooltip
     tooltip:SetOwner(frame, "ANCHOR_LEFT");
     tooltip:ClearLines()
-    self:SetTooltip(tooltip, data)
+    self:Setup(tooltip, data)
     tooltip:Show();
 end
 

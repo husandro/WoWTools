@@ -42,7 +42,7 @@ local function Init_Menu(self, root)
         end)
     else
         root:CreateCheckbox(
-            MicroButtonTooltipText('角色信息', "TOGGLECHARACTER0"),
+            e.Icon.left..MicroButtonTooltipText('角色信息', "TOGGLECHARACTER0"),
         function()
             local frame = GetPaperDollSideBarFrame(3)
             return frame and frame:IsShown()
@@ -53,7 +53,7 @@ local function Init_Menu(self, root)
     root:CreateDivider()
 
 
-    
+
 
     sub=root:CreateCheckbox(
         e.onlyChinese and '装等' or ITEM_UPGRADE_STAT_AVERAGE_ITEM_LEVEL,
@@ -89,7 +89,7 @@ local function Init_Menu(self, root)
         return Save().equipmentFrameScale
     end, function(value)
         Save().equipmentFrameScale= value
-        TrackButton:settgins()
+        TrackButton:settings()
     end)
 
 --FrameStrata
@@ -97,7 +97,7 @@ local function Init_Menu(self, root)
         return TrackButton:GetFrameStrata()==data
     end, function(data)
         Save().trackButtonStrata= data
-        TrackButton:settgins()
+        TrackButton:settings()
     end)
 
 --重置位置
@@ -107,6 +107,9 @@ local function Init_Menu(self, root)
         TrackButton:set_point()
         print(e.addName, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
     end)
+
+--打开选项界面
+    WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_PaperDollMixin.addName,})
 end
 
 
@@ -157,7 +160,7 @@ local function Create_Button(index)
 
     btn:SetScript("OnClick",function(self)
         local notCan= IsCan_EquipSet(self.setID)
-        
+
         if not notCan then
             C_EquipmentSet.UseEquipmentSet(self.setID)
 
@@ -403,7 +406,7 @@ local function Init_TrackButton()--添加装备管理框
         self.text:SetScale(Save().trackButtonTextScale or 1)
     end
 
-    function TrackButton:settgins()
+    function TrackButton:settings()
         self:set_shown()
         self:set_point()
         self:set_scale()
@@ -414,7 +417,7 @@ local function Init_TrackButton()--添加装备管理框
     end
 
 
-    
+
 
 
 
@@ -456,10 +459,15 @@ local function Init_TrackButton()--添加装备管理框
         e.tips:ClearLines()
         e.tips:AddDoubleLine(WoWTools_PaperDollMixin.addName, addName)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(MicroButtonTooltipText('角色信息', "TOGGLECHARACTER0"), e.Icon.left)
-        e.tips:AddDoubleLine('|A:dressingroom-button-appearancelist-up:0:0|a'..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), e.Icon.right)
+
+        WoWTools_DurabiliyMixin:OnEnter()--耐久度, 提示
+
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+        e.tips:AddDoubleLine(
+            MicroButtonTooltipText('角色信息', "TOGGLECHARACTER0")..e.Icon.left,
+            e.Icon.right..'|A:dressingroom-button-appearancelist-up:0:0|a'..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
+        )
+        e.tips:AddDoubleLine(' ', 'Alt+'..e.Icon.right..(e.onlyChinese and '移动' or NPE_MOVE))
         e.tips:Show()
         EquipButton:SetButtonState('PUSHED')
     end)
@@ -496,7 +504,7 @@ local function Init_TrackButton()--添加装备管理框
 
 --更新
     hooksecurefunc('PaperDollEquipmentManagerPane_Update',  Init_buttons)
-    TrackButton:settgins()
+    TrackButton:settings()
 end
 
 
@@ -522,7 +530,8 @@ end
 
 --装备管理, 总开关, 显示/隐藏装备管理框选项
 function Init_EquipButton()
-    EquipButton = WoWTools_ButtonMixin:Cbtn(PaperDollFrame.EquipmentManagerPane, {size={20,20},icon='hide'})
+    --PaperDollFrame.EquipmentManagerPane
+    EquipButton = WoWTools_ButtonMixin:Cbtn(PaperDollFrame, {size={20,20},icon='hide'})
     EquipButton:SetPoint('RIGHT', CharacterFrameCloseButton, 'LEFT')
     EquipButton:SetFrameStrata(CharacterFrameCloseButton:GetFrameStrata())
     EquipButton:SetFrameLevel(CharacterFrameCloseButton:GetFrameLevel()+1)
@@ -530,7 +539,7 @@ function Init_EquipButton()
 
 
     function EquipButton:set_texture()
-        self:SetNormalAtlas(Save().equipment and 'auctionhouse-icon-favorite' or e.Icon.disabled)
+        self:SetNormalAtlas(Save().equipment and 'bags-icon-equipment' or e.Icon.disabled)
     end
 
     function EquipButton:set_shown()
@@ -557,20 +566,14 @@ function Init_EquipButton()
         e.tips:ClearLines()
         e.tips:AddDoubleLine(WoWTools_PaperDollMixin.addName, addName)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '装备管理' or EQUIPMENT_MANAGER, e.Icon.left..e.GetShowHide(Save().equipment))
-        local col= not (self.btn and Save().Equipment) and '|cff9e9e9e' or ''
-        e.tips:AddDoubleLine(col..(e.onlyChinese and '重置位置' or RESET_POSITION), col..'Ctrl+'..e.Icon.right)
+        e.tips:AddDoubleLine('|A:dressingroom-button-appearancelist-up:0:0|a'..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), e.Icon.left)
         e.tips:Show()
         self:SetAlpha(1)
-        if TrackButton then
-            TrackButton:SetButtonState('PUSHED')
-        end
+        TrackButton:SetButtonState('PUSHED')
     end)
     EquipButton:SetScript("OnLeave",function(self)
         GameTooltip_Hide()
-        if TrackButton then
-            TrackButton:SetButtonState("NORMAL")
-        end
+        TrackButton:SetButtonState("NORMAL")
         self:SetAlpha(0.3)
     end)
 
@@ -596,7 +599,6 @@ end
 
 function WoWTools_PaperDollMixin:Init_TrackButton()
     addName= '|A:bags-icon-equipment:0:0|a'..(e.onlyChinese and '装备管理' or EQUIPMENT_MANAGER)
-
     Init_EquipButton()
     Init_TrackButton()
 end
