@@ -1,9 +1,231 @@
 --命令，按钮，列表
 local e= select(2, ...)
+local Frame
 
 
 
 
+
+--'/cast [@cursor]'..name
+local CursorTab={
+    [145205]= true,--[百花齐放]xd
+
+    [192077]= true,--[狂风图腾]
+    [192058]= true,--[电能图腾]sm
+    [51485]= true,--[陷地图腾]sm
+    [192222]= true,--[岩浆图腾]sm
+    [198838]= true,--[大地之墙图腾]sm
+    [2484]= true,--[地缚图腾]
+    [73920]= true,--[治疗之雨]sm
+    [61882]= true,--[地震术]sm
+    [6196]= true,--[视界术]sm
+
+    [358385]= true,--[山崩]dm
+    [357210]= true,--[深呼吸]dm
+
+    [113724]= true,--[冰霜之环]fs
+    [2120]= true,--[烈焰风暴]fs
+    [190356]= true,--[暴风雪]fs
+    [198149]= true,--[寒冰宝珠]fs PVP天赋
+
+    [187650]= true,--[冰冻陷阱]lr
+    [187698]= true,--[焦油陷阱]lr
+    [109248]= true,--[束缚射击]lr
+    [162488]= true,--[精钢陷阱]lr
+    [236776]= true,--[高爆陷阱]lr
+    [1543]= true,--[照明弹]lr
+    [6197]= true,--[鹰眼术]lr
+    [260243]= true,--[乱射]lr
+    [257284]= true,--[猎人印记]lr
+    [190925]= true,--[鱼叉猛刺]lr
+
+    [30283]= true,--[暗影之怒]ss
+    [1122]= true,--[召唤地狱火]ss
+    [152108]= true,--[大灾变]ss
+    [5740]= true,--[火焰之雨]ss
+
+    [453]= true,--[安抚心灵]ms
+    [34861]= true,--[圣言术：灵]ms
+    [62618]= true,--[真言术：障]ms
+    [32375]= true,--[群体驱散]ms
+
+    [195457]= true,--[抓钩]dz
+
+    [189110]= true,--[地狱火撞击]dh
+    [191427]= true,--[恶魔变形]dh
+    [204596]= true,--[烈焰咒符]dh
+    [202137]= true,--[沉默咒符]dh
+    [390163]= true,--[极乐敕令]dh
+    [207684]= true,--[悲苦咒符]dh
+    [389807]= true,--[锁链咒符]dh
+    [389810]= true,--[烈焰咒符]dh T
+    [389815]= true,--[极乐敕令]dh T
+    [389809]= true,--[沉默咒符]dh T
+
+    [6544]= true,--[英勇飞跃]zs
+    [818]= true,--/烹饪用火
+}
+
+--停止施法 '/stopcasting\n/cast '..name
+local StopCastingTab={
+    [78675]= true,--[日光术]xd
+    [33786]= true,--[旋风]xd
+
+    [57994]= true,--[风剪]sm
+    [51490]= true,--[雷霆风暴]sm
+    [108271]= true,--[星界转移]
+
+    [45438]= true,--[寒冰屏障]fs
+    [2139]= true,--[法术反制]fs
+
+    [147362]= true,--[反制射击]lr
+
+    [104773]= true,--[不灭决心]ss
+    [111400]= true,--[爆燃冲刺]ss
+    [6789]= true,--[死亡缠绕]ss
+    [710]= true,--[放逐术]ss
+    [8122]= true,--[心灵尖啸]ms
+    [15487]= true,--[沉默]ms
+    [47585]= true,--[消散]ms
+}
+
+--设置，光标，焦点， 目标，再设置焦点，
+local SetFocusTab={
+    [118]= true,--[变形术]fs
+    [34477]= true,--[误导]lr
+    [5782]= true,--[恐惧]ss
+    [57934]= true,--[嫁祸诀窍]dz
+    [111673]= true,--[控制亡灵]
+}
+
+--'/cast '..name..'\n/y '..(C_Spell.GetSpellLink(spellID) or name)
+local SayTab={
+    [698]= true,--[召唤仪式]ss
+    [29893]= true,--[制造灵魂之井]ss
+    [111771]= true,--[恶魔传送门]ss
+    [342601]= true,--[末日仪式]ss
+    [20707]= true,--[灵魂石]ss
+    [114018]= true,--[潜伏帷幕]DZ
+    [2825]= true,--[嗜血]sm
+    [414664]= true,--[群体隐形]fs
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+--常用，宏
+local MacroList={
+    {text='ping', icon='Ping_Map_Whole_Assist', macro=SLASH_PING1,
+        tab={
+            {text=SLASH_PING1},-- icon='Ping_Map_Whole_NonThreat'},
+            {text=SLASH_PING1..' [target=mouseover,exists][target=target,exists]'..BINDING_NAME_PINGATTACK..'\n', icon='Ping_Map_Whole_Attack'},
+            {text=SLASH_PING1..' [target=mouseover,exists][target=target,exists]'..BINDING_NAME_PINGASSIST..'\n', icon='Ping_Map_Whole_Assist'},
+            {text=SLASH_PING1..' [target=mouseover,exists][target=target,exists]'..BINDING_NAME_PINGONMYWAY..'\n', icon='Ping_Map_Whole_OnMyWay'},
+            {text=SLASH_PING1..' [target=mouseover,exists][target=target,exists]'..BINDING_NAME_PINGWARNING..'\n', icon='Ping_Map_Whole_Warning'}
+        }
+    },
+    {text='worldmarker',  macro='/wm [@cursor]1',
+        tab={
+            {text='/wm [@cursor]1\n', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_6'},
+            {text='/wm [@cursor]2\n', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_4'},
+            {text='/wm [@cursor]3\n', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_3'},
+            {text='/wm [@cursor]4\n', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_7'},
+            {text='/wm [@cursor]5\n', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_1'},
+            {text='/wm [@cursor]6\n', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_2'},
+            {text='/wm [@cursor]7\n', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_5'},
+            {text='/wm [@cursor]8\n', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_8'},
+            {text='/cwm 0\n', icon='talents-button-reset'},
+        }
+    },
+    {text= 'SetRaidTarget', macro='/target [@mouseover]\n/script SetRaidTarget("target",1)',
+        tab={
+            {text='/target [@mouseover]\n/script SetRaidTarget("target",1)', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_1'},
+            {text='/target [@mouseover]\n/script SetRaidTarget("target",2)', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_2'},
+            {text='/target [@mouseover]\n/script SetRaidTarget("target",3)', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_3'},
+            {text='/target [@mouseover]\n/script SetRaidTarget("target",4)', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_4'},
+            {text='/target [@mouseover]\n/script SetRaidTarget("target",5)', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_5'},
+            {text='/target [@mouseover]\n/script SetRaidTarget("target",6)', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_6'},
+            {text='/target [@mouseover]\n/script SetRaidTarget("target",7)', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_7'},
+            {text='/target [@mouseover]\n/script SetRaidTarget("target",8)', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_8'},
+        }
+    },
+    {text='rt', macro='{rt1}',
+        tab={
+            {text='{rt1}', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_1'},
+            {text='{rt2}', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_2'},
+            {text='{rt3}', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_3'},
+            {text='{rt4}', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_4'},
+            {text='{rt5}', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_5'},
+            {text='{rt6}', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_6'},
+            {text='{rt7}', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_7'},
+            {text='{rt8}', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_8'},
+        }
+    },
+    {text='button',  macro='btn:1',
+        tab={
+            {text='btn:n', tips='OnClick()'},
+            {text='bar:n', tips='GetActionBarPage()'},
+            {text='bonusbar, bonusbar:n', tips='HasBonusActionBar()'},
+            {text='cursor', tips='GetCursorInfo()'},
+            {text='extrabar', tips='HasExtraActionBar()'},
+            {text='mod, mod:key, mod:action', tips='IsModifierKeyDown() or IsModifiedClick(action)'},
+            {text='overridebar', tips='HasOverrideActionBar()'},
+            {text='possessbar', tips='possessbar'},
+            {text='shapeshift', tips='HasTempShapeshiftActionBar()'},
+            {text='vehicleui', tips='HasVehicleActionBar()'},
+        }
+    },
+    {text='@target',  macro='[@target]',
+        tab={
+            {text='exists', tips='UnitExists()'},
+            {text='help', tips='UnitCanAssist()'},
+            {text='harm', tips='UnitCanAttack()'},
+            {text='dead', tips='UnitIsDeadOrGhost()'},
+            {text='party', tips='	UnitInParty() '},
+
+            {text='raid', tips='UnitInRaid()'},
+            {text='unithasvehicleui', tips='UnitInVehicle()'},
+        }
+    },
+    {text='@player',  macro='[@player]',
+        tab={
+
+            {text='canexitvehicle', tips='CanExitVehicle()'},
+            {text='channeling, channeling:spellName', tips='UnitChannelInfo("player")'},
+            {text='combat', tips='UnitAffectingCombat("player")'},
+            {text='equipped:type, worn:type', tips='IsEquippedItemType(type)'},
+            {text='flyable', tips='IsFlyableArea()'},
+
+            {text='form:n, stance:n', tips='form:n, stance:n'},
+            {text='group, group:party, group:raid', tips='IsInGroup(), IsInRaid()'},
+            {text='indoors', tips='IsIndoors()'},
+            {text='outdoors', tips='IsOutdoors()'},
+            {text='known:name', tips='GetSpellInfo(name)'},
+            {text='known:spellID', tips='IsPlayerSpell(spellID)'},
+            {text='mounted', tips='IsMounted()'},
+            {text='pet:name, pet:family', tips='UnitCreatureFamily("pet")'},
+            {text='petbattle', tips='C_PetBattles.IsInBattle()'},
+            {text='pvpcombat', tips='PvP talents are usable'},
+            {text='resting', tips='IsResting()'},
+            {text='spec:n', tips='GetSpecialization()'},
+            {text='stealth', tips='IsStealthed()'},
+            {text='advflyable', tips='IsAdvancedFlyableArea()'},
+            {text='swimming', tips='IsSubmerged()'},
+            {text='flying', tips='IsFlying()'},
+        }
+    },
+    {text='@mouseover', macro='[@mouseover]'},
+    {text='@cursor', macro='[@cursor]'},
+}
 
 
 
@@ -118,111 +340,23 @@ local function Get_Spell_Macro(name, spellID)
             ..'\n/cancelaura [mod:alt]'..name
 
     --喊话
-    elseif spellID==698--[召唤仪式]ss
-        or spellID==29893--[制造灵魂之井]ss
-        or spellID==111771--[恶魔传送门]ss
-        or spellID==342601--[末日仪式]ss
-        or spellID==20707--[灵魂石]ss
-        or spellID==114018--[潜伏帷幕]DZ
-        or spellID==2825--[嗜血]sm
-        or spellID==414664--[群体隐形]fs
-    then
+    elseif SayTab[spellID] then
         return '/cast '..name..'\n/y '..(C_Spell.GetSpellLink(spellID) or name)
 
 
 
-    --设置，光标，焦点， 目标，再设置焦点，
-    elseif spellID==118--[变形术]fs
-        or spellID==34477--[误导]lr
-        or spellID==5782--[恐惧]ss
-        or spellID==57934--[嫁祸诀窍]dz
-        or spellID==111673--[控制亡灵]
-    then
+--设置，光标，焦点， 目标，再设置焦点，
+    elseif SetFocusTab[spellID] then
         return '/stopcasting\n/cast [target=mouseover,harm,exists][target=target,harm,exists][target=focus,harm,exists]'
             ..name..';'..name
             ..'\n/focus [target=focus,noexists][target=focus,dead]target'
 
-    --停止施法
-    elseif spellID==78675--[日光术]xd
-        or spellID==33786--[旋风]xd
-
-        or spellID==57994--[风剪]sm
-        or spellID==51490--[雷霆风暴]sm
-        or spellID==108271--[星界转移]
-
-        or spellID==45438--[寒冰屏障]fs
-        or spellID==2139--[法术反制]fs
-
-        or spellID==147362--[反制射击]lr
-
-        or spellID==104773--[不灭决心]ss
-        or spellID==111400--[爆燃冲刺]ss
-        or spellID==6789--[死亡缠绕]ss
-        or spellID==710--[放逐术]ss
-        or spellID==8122--[心灵尖啸]ms
-        or spellID==15487--[沉默]ms
-        or spellID==47585--[消散]ms
-
-
-    then
+--停止施法
+    elseif StopCastingTab[spellID] then
         return '/stopcasting\n/cast '..name
 
-    elseif spellID==145205--[百花齐放]xd
-
-        or spellID==192077--[狂风图腾]
-        or spellID==192058--[电能图腾]sm
-        or spellID==51485--[陷地图腾]sm
-        or spellID==192222--[岩浆图腾]sm
-        or spellID==198838--[大地之墙图腾]sm
-        or spellID==2484--[地缚图腾]
-        or spellID==73920--[治疗之雨]sm
-        or spellID==61882--[地震术]sm
-        or spellID==6196--[视界术]sm
-
-        or spellID==358385--[山崩]dm
-        or spellID==357210--[深呼吸]dm
-
-        or spellID==113724--[冰霜之环]fs
-        or spellID==2120--[烈焰风暴]fs
-        or spellID==190356--[暴风雪]fs
-        or spellID==198149--[寒冰宝珠]fs PVP天赋
-
-        or spellID==187650--[冰冻陷阱]lr
-        or spellID==187698--[焦油陷阱]lr
-        or spellID==109248--[束缚射击]lr
-        or spellID==162488--[精钢陷阱]lr
-        or spellID==236776--[高爆陷阱]lr
-        or spellID==1543--[照明弹]lr
-        or spellID==6197--[鹰眼术]lr
-        or spellID==260243--[乱射]lr
-        or spellID==257284--[猎人印记]lr
-        or spellID==190925--[鱼叉猛刺]lr
-
-        or spellID==30283--[暗影之怒]ss
-        or spellID==1122--[召唤地狱火]ss
-        or spellID==152108--[大灾变]ss
-        or spellID==5740--[火焰之雨]ss
-
-        or spellID==453--[安抚心灵]ms
-        or spellID==34861--[圣言术：灵]ms
-        or spellID==62618--[真言术：障]ms
-        or spellID==32375--[群体驱散]ms
-
-        or spellID==195457--[抓钩]dz
-
-        or spellID==189110--[地狱火撞击]dh
-        or spellID==191427--[恶魔变形]dh
-        or spellID==204596--[烈焰咒符]dh
-        or spellID==202137--[沉默咒符]dh
-        or spellID==390163--[极乐敕令]dh
-        or spellID==207684--[悲苦咒符]dh
-        or spellID==389807--[锁链咒符]dh
-        or spellID==389810--[烈焰咒符]dh T
-        or spellID==389815--[极乐敕令]dh T
-        or spellID==389809--[沉默咒符]dh T
-
-        or spellID==6544--[英勇飞跃]zs
-    then
+--@cursor
+    elseif CursorTab[spellID] then
         return '/cast [@cursor]'..name
     end
 end
@@ -267,9 +401,7 @@ local function Create_Button(name)
         e.tips:Show()
     end
     btn:SetScript('OnClick', function(self, d)
-        if UnitAffectingCombat('player') then
-            return
-        end
+        if UnitAffectingCombat('player') then return end
         if d=='LeftButton' then
             if self.textCursor then
                 MacroFrameText:SetCursorPosition(self.textCursor)
@@ -295,8 +427,46 @@ end
 
 
 
+--二级，菜单
+local function Sub_Menu(root, tab)
+    local sub
 
+--技能，提示
+    WoWTools_SetTooltipMixin:Set_Menu(root)
 
+--修改，当前图标
+    if tab.icon then
+        root:CreateButton(
+            '|T'..(tab.icon or 0)..':0|t'
+            ..(e.onlyChinese and '设置图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, EMBLEM_SYMBOL)),
+        function(data)
+            if UnitAffectingCombat('player') then return end
+            WoWTools_MacroMixin:SetMacroTexture(data.icon)
+            return MenuResponse.Open
+        end, tab)
+    end
+--查询
+    if tab.spellID then
+        sub=root:CreateButton(
+            '|A:common-search-magnifyingglass:0:0|a'..(e.onlyChinese and '查询' or WHO),
+        function(data)
+            PlayerSpellsUtil.OpenToSpellBookTabAtSpell(data.spellID, false, true, false)--knownSpellsOnly, toggleFlyout, flyoutReason
+            return MenuResponse.Open
+        end, tab)
+        WoWTools_SetTooltipMixin:Set_Menu(sub)--技能，提示
+    end
+--链接至聊天栏
+    if tab.spellID or tab.itemLink then
+        sub=root:CreateButton(
+            (e.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT),
+        function(data)
+            local link= data.itemLink or WoWTools_SpellMixin:GetLink(data.spellID, false)
+            WoWTools_ChatMixin:Chat(link, nil, true)
+            return MenuResponse.Open
+        end, tab)
+        WoWTools_SetTooltipMixin:Set_Menu(sub)--技能，提示
+    end
+end
 
 
 
@@ -317,6 +487,7 @@ local function Create_Spell_Menu(root, spellID, icon, name, index)--创建，法
         ..WoWTools_SpellMixin:GetName(spellID)--取得法术，名称
         ..(macroText and '|cnGREEN_FONT_COLOR:*|r' or ''),
     function(data)
+        if UnitAffectingCombat('player') then return end
         local text=''
         local macroText2, showName= Get_Spell_Macro(data.name, data.spellID)
         local macro= MacroFrameText:GetText() or ''
@@ -334,36 +505,9 @@ local function Create_Spell_Menu(root, spellID, icon, name, index)--创建，法
         return MenuResponse.Open
     end, {name=name, spellID=spellID, icon=icon, tooltip=macroText})
 
---技能，提示
-    WoWTools_SetTooltipMixin:Set_Menu(sub)
 
-
---修改，当前图标
-    sub:CreateButton(
-        '|T'..(icon or 0)..':0|t'
-        ..(e.onlyChinese and '设置图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, EMBLEM_SYMBOL)),
-    function(data)
-        WoWTools_MacroMixin:SetMacroTexture(data.icon)
-        return MenuResponse.Open
-    end, {icon=icon})
-
---查询
-    sub:CreateButton(
-        '|A:common-search-magnifyingglass:0:0|a'..(e.onlyChinese and '查询' or WHO),
-    function(data)
-        -- PlayerSpellsUtil.OpenToSpellBookTabAtSpell(spellID, knownSpellsOnly, toggleFlyout, flyoutReason)
-        PlayerSpellsUtil.OpenToSpellBookTabAtSpell(data.spellID, false, true, false)
-        return MenuResponse.Open
-    end, {spellID=spellID})
-
---链接至聊天栏
-    sub:CreateButton(
-        (e.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT),
-    function(data)
-        local link= WoWTools_SpellMixin:GetLink(data.spellID, false)
-        WoWTools_ChatMixin:Chat(link, nil, true)
-        return MenuResponse.Open
-    end, {spellID=spellID})
+--二级，菜单
+    Sub_Menu(sub, {spellID=spellID, icon=icon})
 end
 
 
@@ -393,33 +537,7 @@ end
 
 
 
-local function Init_Normal_Menu(_, root, num)
-    local sub
---区域，技能
-    for _, zone in pairs( C_ZoneAbility.GetActiveAbilities() or {}) do
-        if zone.spellID and not C_Spell.IsSpellPassive(zone.spellID) then
-            local zoneName= C_Spell.GetSpellName(zone.spellID)
-            local zoneIcon= C_Spell.GetSpellTexture(zone.spellID)
-            if zoneName and zoneIcon then
-                num= num+1
-                Create_Spell_Menu(root, zone.spellID, zoneIcon, zoneName, num)
-            end
-        end
-    end
---FS
-    if e.Player.class=='MAGE' then
-        sub=root:CreateButton(
-            e.onlyChinese and '解散水元素' or 'PetDismiss',
-        function()
-            MacroFrameText:Insert('/script PetDismiss()\n')
-            MacroFrameText:SetFocus()
-            return MenuResponse.Open
-        end)
-        sub:SetTooltip(function(tooltip)
-            tooltip:AddLine('/script PetDismiss()')
-        end)
-    end
-end
+
 --[[
 if HasExtraActionBar() then
 local slot = i + ((GetExtraBarIndex() or 19) - 1) * (NUM_ACTIONBAR_BUTTONS or 12)
@@ -449,10 +567,36 @@ local function Init_SpellBook_Menu(self, root)
         end
     end
 
-    if self.index==1 then
-        Init_Normal_Menu(self, root, num)
+--添加，自定义
+    if self.index~=1 then
+        return
     end
 
+--区域，技能
+    for _, zone in pairs( C_ZoneAbility.GetActiveAbilities() or {}) do
+        if zone.spellID and not C_Spell.IsSpellPassive(zone.spellID) then
+            local zoneName= C_Spell.GetSpellName(zone.spellID)
+            local zoneIcon= C_Spell.GetSpellTexture(zone.spellID)
+            if zoneName and zoneIcon then
+                num= num+1
+                Create_Spell_Menu(root, zone.spellID, zoneIcon, zoneName, num)
+            end
+        end
+    end
+--FS
+    if e.Player.class=='MAGE' then
+        local sub=root:CreateButton(
+            e.onlyChinese and '解散水元素' or 'PetDismiss',
+        function()
+            if UnitAffectingCombat('player') then return end
+            MacroFrameText:Insert('/script PetDismiss()\n')
+            MacroFrameText:SetFocus()
+            return MenuResponse.Open
+        end)
+        sub:SetTooltip(function(tooltip)
+            tooltip:AddLine('/script PetDismiss()')
+        end)
+    end
 end
 
 
@@ -472,8 +616,188 @@ end
 
 
 
+--PVP，天赋，法术
+local function Init_PvP_Menu(_, root)
+    local slotInfo = C_SpecializationInfo.GetPvpTalentSlotInfo(1)
+    if not slotInfo or not slotInfo.availableTalentIDs or WoWTools_MenuMixin:CheckInCombat(root) then
+        return
+    end
+
+    table.sort(slotInfo.availableTalentIDs, function(a, b)
+        local talentInfoA = C_SpecializationInfo.GetPvpTalentInfo(a) or {};
+        local talentInfoB = C_SpecializationInfo.GetPvpTalentInfo(b) or {};
+
+        local unlockedA = talentInfoA.unlocked;
+        local unlockedB = talentInfoB.unlocked;
+
+        if (unlockedA ~= unlockedB) then
+            return unlockedA;
+        end
+
+        if (not unlockedA) then
+            local reqLevelA = C_SpecializationInfo.GetPvpTalentUnlockLevel(a);
+            local reqLevelB = C_SpecializationInfo.GetPvpTalentUnlockLevel(b);
+
+            if (reqLevelA ~= reqLevelB) then
+                return reqLevelA < reqLevelB;
+            end
+        end
+        return a < b
+    end)
+
+    local num=0
+    for _, talentID in pairs(slotInfo.availableTalentIDs) do
+        local talentInfo = C_SpecializationInfo.GetPvpTalentInfo(talentID) or {}
+        if talentInfo.spellID and talentInfo.name and not C_Spell.IsSpellPassive(talentInfo.spellID) then
+            num= num+1
+            Create_Spell_Menu(root,
+                talentInfo.spellID,
+                talentInfo.icon,
+                talentInfo.name,
+                talentInfo.selected and '|A:AlliedRace-UnlockingFrame-Checkmark:0:0|a' or num
+            )
+        end
+    end
+end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Init_Equip(_, root)
+    if WoWTools_MenuMixin:CheckInCombat(root) then--战斗中
+        return
+    end
+    local sub, icon, name, spellID, itemLink
+    for slot=1,22 do
+        local textureName = GetInventoryItemTexture("player", slot)
+        if textureName then
+            itemLink = GetInventoryItemLink('player', slot) or 0
+            name= C_Item.GetItemNameByID(itemLink)
+            icon= C_Item.GetItemIconByID(itemLink)
+            spellID= select(2, C_Item.GetItemSpell(itemLink))
+
+            e.LoadData({id=spellID, type='spell'})
+            e.LoadData({id=itemLink, type='item'})
+
+            sub= root:CreateButton(
+                slot..' '
+                ..'|T'..(icon or 0)..':0|t'
+                ..itemLink
+                ..(spellID and '|A:auctionhouse-icon-favorite:0:0|a' or ''),
+            function(data)
+                if UnitAffectingCombat('player') then return end
+                MacroFrameText:Insert(
+                    (data.spellID and '/use '..data.name or ('/equip '..data.name)..'\n')
+                )
+                MacroFrameText:SetFocus()
+                return MenuResponse.Open
+            end, {spellID=spellID, name=name, itemLink=itemLink})
+--二级，菜单
+            Sub_Menu(sub, {icon=icon, itemLink=itemLink, spellID=spellID})
+        end
+    end
+end
+
+
+
+
+
+
+
+
+--谈话，表情
+local function Init_Chat_Menu(root, listTab)
+    if WoWTools_MenuMixin:CheckInCombat(root) then--战斗中
+        return
+    end
+    local i, sub
+    for _, value in pairs(listTab or {}) do
+        i = 1
+        local token = _G["EMOTE"..i.."_TOKEN"]
+        while ( i < 627 ) do--local MAXEMOTEINDEX = 627;
+            if ( token == value ) then
+                break;
+            end
+            i = i + 1;
+            token = _G["EMOTE"..i.."_TOKEN"];
+        end
+        local label = _G["EMOTE"..i.."_CMD1"];
+        if ( not label ) then
+            label = value;
+        end
+        if label then
+            sub=root:CreateButton(
+                e.cn(label),
+            function(data)
+                if UnitAffectingCombat('player') then return end
+                MacroFrameText:Insert(data.label..'\n')
+                MacroFrameText:SetFocus()
+                return MenuResponse.Open
+            end, {label=label})
+            sub:SetTooltip(function(tooltip, description)
+                tooltip:AddLine(description.data.label..' ')
+            end)
+        end
+
+    end
+end
+
+
+
+
+
+
+
+
+--常用，宏
+local function Init_MacroList_Menu(_, root)
+    local sub
+    for _, info in pairs(MacroList) do
+        sub=root:CreateButton(
+            info.text,
+        function(data)
+            if not UnitAffectingCombat('player') and data.macro then
+                MacroFrameText:Insert(data.macro)
+                MacroFrameText:SetFocus()
+            end
+            return MenuResponse.Open
+        end, {macro=info.macro})
+        sub:SetTooltip(function(tooltip, description)
+            if description.data.macro then
+                tooltip:AddLine(description.data.macro, nil, nil, nil, true)
+            end
+        end)
+
+        local num= 0
+        for index, macro in pairs(info.tab or {}) do
+            sub:CreateButton(
+                macro.text:gsub('\n', ' '),
+            function(data)
+                if not UnitAffectingCombat('player') then
+                    MacroFrameText:Insert(data.text)
+                    MacroFrameText:SetFocus()
+                end
+                return MenuResponse.Open
+            end, {text=macro.text, icon=macro.icon, tips=macro.tips})
+            sub:SetTooltip(function(tooltip, description)
+                tooltip:AddLine(description.data.tips,  nil, nil, nil, true)
+            end)
+            num= index
+        end
+        WoWTools_MenuMixin:SetGridMode(sub, num)
+    end
+end
 
 
 
@@ -485,19 +809,22 @@ end
 
 
 --命令，按钮，列表
---##############
 local function Init_List()
-    local last, btn
-    --local size= 24
+    Frame= CreateFrame("Frame", nil, MacroFrame)
+    Frame:SetSize(1,1)
+    Frame:SetPoint('TOPLEFT', MacroFrame, 'BOTTOMLEFT', 0, -12)
+
+    local last= Frame
+    local btn
+
+--法术书
     for i=1, 12 do
         local data= C_SpellBook.GetSpellBookSkillLineInfo(i)--shouIdHide name numSpellBookItems iconID isGuild itemIndexOffset
         if data and data.name and not data.shouIdHide then
-            btn= WoWTools_ButtonMixin:CreateMenu(MacroFrame, {hideIcon=true})
-            btn:SetNormalTexture(data.iconID or 0)
-
+            btn= WoWTools_ButtonMixin:CreateMenu(Frame, {hideIcon=true, texture=data.iconID})
+            btn:SetPoint('LEFT', last, 'RIGHT')
             btn.name= data.name
             btn.index= i
-
             btn:SetScript('OnLeave', GameTooltip_Hide)
             btn:SetScript('OnEnter', function(self)
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -505,326 +832,54 @@ local function Init_List()
                 e.tips:AddDoubleLine(e.cn(self.name), self.index)
                 e.tips:Show()
             end)
-            if not last then
-                btn:SetPoint('TOPLEFT', MacroFrame, 'BOTTOMLEFT', 0, -4)
-            else
-                btn:SetPoint('LEFT', last, 'RIGHT')
-            end
             btn:SetupMenu(Init_SpellBook_Menu)
             last= btn
         end
     end
 
-
-
-
-
-
-    --PVP， 天赋，法术
-    local pvpButton= WoWTools_ButtonMixin:Cbtn(last, {atlas='pvptalents-warmode-swords'})--pvptalents-warmode-swords-disabled
+--PVP，天赋，法术
+    local pvpButton= WoWTools_ButtonMixin:CreateMenu(Frame, {hideIcon=true, atlas='pvptalents-warmode-swords'})
+    pvpButton:SetNormalAtlas('')
     pvpButton:SetPoint('LEFT', last, 'RIGHT')
-    pvpButton:SetScript('OnMouseDown', function(self)
+    pvpButton:SetupMenu(Init_PvP_Menu)
+    pvpButton.name= e.onlyChinese and 'PvP天赋' or PVP_LABEL_PVP_TALENTS
+    last=pvpButton
 
-        e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function()
-            local slotInfo = C_SpecializationInfo.GetPvpTalentSlotInfo(1)
-            if slotInfo and  slotInfo.availableTalentIDs then
-                table.sort(slotInfo.availableTalentIDs, function(a, b)
-                        local talentInfoA = C_SpecializationInfo.GetPvpTalentInfo(a) or {};
-                        local talentInfoB = C_SpecializationInfo.GetPvpTalentInfo(b) or {};
-
-                        local unlockedA = talentInfoA.unlocked;
-                        local unlockedB = talentInfoB.unlocked;
-
-                        if (unlockedA ~= unlockedB) then
-                            return unlockedA;
-                        end
-
-                        if (not unlockedA) then
-                            local reqLevelA = C_SpecializationInfo.GetPvpTalentUnlockLevel(a);
-                            local reqLevelB = C_SpecializationInfo.GetPvpTalentUnlockLevel(b);
-
-                            if (reqLevelA ~= reqLevelB) then
-                                return reqLevelA < reqLevelB;
-                            end
-                        end
-                        return a < b;
-                end)
-                for _, talentID in pairs(slotInfo.availableTalentIDs) do
-                    local talentInfo = C_SpecializationInfo.GetPvpTalentInfo(talentID) or {}
-                    if talentInfo.spellID and talentInfo.name and not C_Spell.IsSpellPassive(talentInfo.spellID) then
-                        Create_Spell_Menu(talentInfo.spellID, talentInfo.icon, talentInfo.name, talentInfo.selected and e.Icon.select)
-                    end
-                end
-            end
-        end, 'MENU')
-        e.LibDD:ToggleDropDownMenu(1, nil, MacroFrame.Menu, self, 15,0)--主菜单
-    end)
-
-
-
-
-
-
-
-
-
-    --角色，装备
-    local equipButton= WoWTools_ButtonMixin:Cbtn(last, {size=size, atlas=WoWTools_UnitMixin:GetRaceIcon({unit='player', reAtlas=true})})--atlas=e.Player.sex==2 and 'charactercreate-gendericon-male-selected' or 'charactercreate-gendericon-female-selected'})--pvptalents-warmode-swords-disabled
+--角色，装备
+    local equipButton= WoWTools_ButtonMixin:CreateMenu(Frame, {hideIcon=true, atlas=WoWTools_UnitMixin:GetRaceIcon({unit='player', reAtlas=true})})
     equipButton:SetPoint('LEFT', last, 'RIGHT')
-    equipButton:SetScript('OnMouseDown', function(self)
-        e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function()
-            for slot=1,22 do
-                local textureName = GetInventoryItemTexture("player", slot)
-                if textureName then
-                    local itemLink = GetInventoryItemLink('player', slot)
-                    local name = itemLink and C_Item.GetItemNameByID(itemLink)
-                    if name and itemLink then
-                        local spellName, spellID= C_Item.GetItemSpell(itemLink)
-                        local spellTexture
-
-                        if spellID then
-                            e.LoadData({id=spellID, type='spell'})
-                            spellTexture= C_Spell.GetSpellTexture(spellID)
-
-                        end
-                        e.LibDD:UIDropDownMenu_AddButton({
-                            text='|T'..textureName..':0|t'..itemLink..(((slot==13 or slot==14) and spellID) and format('|A:%s:0:0|a', e.Icon.toLeft) or ''),
-                            notCheckable=true,
-                            icon= spellID and e.Icon.select or nil,
-                            tooltipOnButton=true,
-                            tooltipTitle='Alt '..(textureName and '|T'..textureName..':0|t' or '')
-                                    ..(e.onlyChinese and '设置图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, EMBLEM_SYMBOL))
-                                    ..'|n|cnGREEN_FONT_COLOR:'..(spellID and '/use|r ' or '/equip ')..name..'|r',
-                            tooltipText= '|n'..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS, slot)
-                                    ..(spellID and '|n|n' or '')
-                                    ..(spellTexture and '|T'..spellTexture..':0|t' or '')
-                                    ..(spellID and C_Spell.GetSpellLink(spellID) or spellName or spellID or '')..(spellID and ' '..spellID or ''),
-                            arg1={name=name, spellID=spellID, icon=textureName},
-                            func= function(_, tab)
-                                if IsAltKeyDown() then
-                                    WoWTools_MacroMixin:SetMacroTexture(tab.icon)--修改，当前图标
-                                else
-                                    MacroFrameText:Insert(
-                                        (tab.spellID and '/use '..tab.name or ('/equip '..tab.name)..'\n')
-                                    )
-                                    MacroFrameText:SetFocus()
-                                end
-                            end
-                        }, 1)
-                    end
-                end
-            end
-        end, 'MENU')
-        e.LibDD:ToggleDropDownMenu(1, nil, MacroFrame.Menu, self, 15,0)--主菜单
-    end)
-
-
-
-
-
-
-
-
-    --谈话
-    local spellchButton= WoWTools_ButtonMixin:Cbtn(last, {size=size, atlas='communities-icon-chat'})
-    function spellchButton:Chat_Init_menu(list, level)--表情，列表 
-        for _, value in pairs(list or {}) do
-            local i = 1;
-            local token = _G["EMOTE"..i.."_TOKEN"];
-            while ( i < 627 ) do--local MAXEMOTEINDEX = 627;
-                if ( token == value ) then
-                    break;
-                end
-                i = i + 1;
-                token = _G["EMOTE"..i.."_TOKEN"];
-            end
-            local label = _G["EMOTE"..i.."_CMD1"];
-            if ( not label ) then
-                label = value;
-            end
-            if label then
-                e.LibDD:UIDropDownMenu_AddButton({
-                    text=label,
-                    notCheckable=true,
-                    arg1=label,
-                    func= function(_, arg1)
-                        MacroFrameText:Insert(arg1..'\n')
-                        MacroFrameText:SetFocus()
-                    end,
-                }, level)
-            end
-        end
-    end
+    equipButton:SetupMenu(Init_Equip)
+    equipButton.name= e.onlyChinese and '装备' or EQUIPSET_EQUIP
+    last=equipButton
+   
+--谈话
+    local spellchButton= WoWTools_ButtonMixin:CreateMenu(Frame, {hideIcon=true, atlas='voicechat-icon-textchat-silenced'})
     spellchButton:SetPoint('LEFT', last, 'RIGHT')
-    spellchButton:SetScript('OnMouseDown', function(self)
-        e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function(_, level)
-            self:Chat_Init_menu(TextEmoteSpeechList, level)
-        end, 'MENU')
-        e.LibDD:ToggleDropDownMenu(1, nil, MacroFrame.Menu, self, 15,0)
+    spellchButton:SetupMenu(function(_, root)
+        Init_Chat_Menu(root, TextEmoteSpeechList)
     end)
-    last= spellchButton
+    last=spellchButton
 
-    --表情
-    local emoteButton= WoWTools_ButtonMixin:Cbtn(last, {size=size, texture='Interface\\Addons\\WoWTools\\Sesource\\Emojis\\greet'})
+--表情
+    local emoteButton= WoWTools_ButtonMixin:CreateMenu(Frame, {hideIcon=true, texture='Interface\\ChatFrame\\UI-ChatIcon-Chat-Up'})
     emoteButton:SetPoint('LEFT', last, 'RIGHT')
-    emoteButton:SetScript('OnMouseDown', function(self)
-        e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function(_, level)
-            self:GetParent():Chat_Init_menu(EmoteList, level)
-        end, 'MENU')
-        e.LibDD:ToggleDropDownMenu(1, nil, MacroFrame.Menu, self, 15,0)
+    emoteButton:SetupMenu(function(_, root)
+        Init_Chat_Menu(root, EmoteList)
     end)
     last= emoteButton
 
 
 
-    --常用，宏
-    local starButton= WoWTools_ButtonMixin:Cbtn(last, {size=size, atlas='PetJournal-FavoritesIcon'})
-    starButton:SetPoint('LEFT', last, 'RIGHT')
-    starButton:SetScript('OnMouseDown', function(self)
-        e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function(_, level, menuList)
-            local macroList={
-                {text='ping', icon='Ping_Map_Whole_Assist', macro=SLASH_PING1,
-                    tab={
-                        {text=SLASH_PING1},-- icon='Ping_Map_Whole_NonThreat'},
-                        {text=SLASH_PING1..' [target=mouseover,exists][target=target,exists]'..BINDING_NAME_PINGATTACK..'\n', icon='Ping_Map_Whole_Attack'},
-                        {text=SLASH_PING1..' [target=mouseover,exists][target=target,exists]'..BINDING_NAME_PINGASSIST..'\n', icon='Ping_Map_Whole_Assist'},
-                        {text=SLASH_PING1..' [target=mouseover,exists][target=target,exists]'..BINDING_NAME_PINGONMYWAY..'\n', icon='Ping_Map_Whole_OnMyWay'},
-                        {text=SLASH_PING1..' [target=mouseover,exists][target=target,exists]'..BINDING_NAME_PINGWARNING..'\n', icon='Ping_Map_Whole_Warning'}
-                    }
-                },
-                {text='worldmarker',  macro='/wm [@cursor]1',
-                    tab={
-                        {text='/wm [@cursor]1\n', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_6'},
-                        {text='/wm [@cursor]2\n', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_4'},
-                        {text='/wm [@cursor]3\n', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_3'},
-                        {text='/wm [@cursor]4\n', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_7'},
-                        {text='/wm [@cursor]5\n', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_1'},
-                        {text='/wm [@cursor]6\n', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_2'},
-                        {text='/wm [@cursor]7\n', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_5'},
-                        {text='/wm [@cursor]8\n', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_8'},
-                        {text='/cwm 0\n', icon='talents-button-reset'},
-                    }
-                },
-                {text= 'SetRaidTarget', macro='/target [@mouseover]\n/script SetRaidTarget("target",1)',
-                    tab={
-                        {text='/target [@mouseover]\n/script SetRaidTarget("target",1)', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_1'},
-                        {text='/target [@mouseover]\n/script SetRaidTarget("target",2)', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_2'},
-                        {text='/target [@mouseover]\n/script SetRaidTarget("target",3)', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_3'},
-                        {text='/target [@mouseover]\n/script SetRaidTarget("target",4)', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_4'},
-                        {text='/target [@mouseover]\n/script SetRaidTarget("target",5)', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_5'},
-                        {text='/target [@mouseover]\n/script SetRaidTarget("target",6)', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_6'},
-                        {text='/target [@mouseover]\n/script SetRaidTarget("target",7)', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_7'},
-                        {text='/target [@mouseover]\n/script SetRaidTarget("target",8)', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_8'},
-                    }
-                },
-                {text='rt', macro='{rt1}',
-                    tab={
-                        {text='{rt1}', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_1'},
-                        {text='{rt2}', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_2'},
-                        {text='{rt3}', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_3'},
-                        {text='{rt4}', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_4'},
-                        {text='{rt5}', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_5'},
-                        {text='{rt6}', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_6'},
-                        {text='{rt7}', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_7'},
-                        {text='{rt8}', icon='Interface\\TargetingFrame\\UI-RaidTargetingIcon_8'},
-                    }
-                },
-                {text='button',  macro='btn:1',
-                    tab={
-                        {text='btn:n', tips='OnClick()'},
-                        {text='bar:n', tips='GetActionBarPage()'},
-                        {text='bonusbar, bonusbar:n', tips='HasBonusActionBar()'},
-                        {text='cursor', tips='GetCursorInfo()'},
-                        {text='extrabar', tips='HasExtraActionBar()'},
-                        {text='mod, mod:key, mod:action', tips='IsModifierKeyDown() or IsModifiedClick(action)'},
-                        {text='overridebar', tips='HasOverrideActionBar()'},
-                        {text='possessbar', tips='possessbar'},
-                        {text='shapeshift', tips='HasTempShapeshiftActionBar()'},
-                        {text='vehicleui', tips='HasVehicleActionBar()'},
-                    }
-                },
-                {text='@target',  macro='[@target]',
-                    tab={
-                        {text='exists', tips='UnitExists()'},
-                        {text='help', tips='UnitCanAssist()'},
-                        {text='harm', tips='UnitCanAttack()'},
-                        {text='dead', tips='UnitIsDeadOrGhost()'},
-                        {text='party', tips='	UnitInParty() '},
-
-                        {text='raid', tips='UnitInRaid()'},
-                        {text='unithasvehicleui', tips='UnitInVehicle()'},
-                    }
-                },
-                {text='@player',  macro='[@player]',
-                    tab={
-
-                        {text='canexitvehicle', tips='CanExitVehicle()'},
-                        {text='channeling, channeling:spellName', tips='UnitChannelInfo("player")'},
-                        {text='combat', tips='UnitAffectingCombat("player")'},
-                        {text='equipped:type, worn:type', tips='IsEquippedItemType(type)'},
-                        {text='flyable', tips='IsFlyableArea()'},
-
-                        {text='form:n, stance:n', tips='form:n, stance:n'},
-                        {text='group, group:party, group:raid', tips='IsInGroup(), IsInRaid()'},
-                        {text='indoors', tips='IsIndoors()'},
-                        {text='outdoors', tips='IsOutdoors()'},
-                        {text='known:name', tips='GetSpellInfo(name)'},
-                        {text='known:spellID', tips='IsPlayerSpell(spellID)'},
-                        {text='mounted', tips='IsMounted()'},
-                        {text='pet:name, pet:family', tips='UnitCreatureFamily("pet")'},
-                        {text='petbattle', tips='C_PetBattles.IsInBattle()'},
-                        {text='pvpcombat', tips='PvP talents are usable'},
-                        {text='resting', tips='IsResting()'},
-                        {text='spec:n', tips='GetSpecialization()'},
-                        {text='stealth', tips='IsStealthed()'},
-                        {text='advflyable', tips='IsAdvancedFlyableArea()'},
-                        {text='swimming', tips='IsSubmerged()'},
-                        {text='flying', tips='IsFlying()'},
-                    }
-                },
-                {text='@mouseover', macro='[@mouseover]'},
-                {text='@cursor', macro='[@cursor]'},
-            }
-            for _, info in pairs(macroList) do
-                if menuList then
-                    if menuList==info.text then
-                        for _, macro in pairs(info.tab) do
-                            e.LibDD:UIDropDownMenu_AddButton({
-                                text=macro.text:gsub('\n', ' '),
-                                notCheckable=true,
-                                arg1=macro.text,
-                                icon=macro.icon,
-                                tooltipOnButton=true,
-                                tooltipTitle= macro.tips and '|cff2aa2ff'..macro.tips or nil,
-                                func= function(_, arg1)
-                                    MacroFrameText:Insert(arg1)
-                                    MacroFrameText:SetFocus()
-                                end
-                            }, level)
-                        end
-                    end
-                else
-                    e.LibDD:UIDropDownMenu_AddButton({
-                        text=info.text,
-                        notCheckable=true,
-                        arg1=info.macro,
-                        menuList=info.tab and info.text,
-                        hasArrow=info.tab and true or nil,
-                        func= function(_, arg1)
-                            if arg1 then
-                                MacroFrameText:Insert(arg1)
-                                MacroFrameText:SetFocus()
-                            end
-                        end,
-                    }, level)
-                end
-
-            end
-        end, 'MENU')
-        e.LibDD:ToggleDropDownMenu(1, nil, MacroFrame.Menu, self, 15,0)--主菜单
-    end)
-    last=nil
+--常用，宏
+    local macroListButton= WoWTools_ButtonMixin:CreateMenu(Frame, {hideIcon=true, atlas='PetJournal-FavoritesIcon'})
+    macroListButton:SetPoint('LEFT', last, 'RIGHT')
+    macroListButton:SetupMenu(Init_MacroList_Menu)
 end
+
+
+
+
+
 
 
 
@@ -872,9 +927,10 @@ end
 
 
 
-function WoWTools_MacroMixin:Init_List_Button()
 
-    
+
+
+function WoWTools_MacroMixin:Init_List_Button()
     Init_List()
     Init_Other_Button()
 end

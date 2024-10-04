@@ -182,6 +182,8 @@ function WoWTools_ButtonMixin:CreateMenu(frame, tab)
     local template= tab.template--UIPanelButtonTemplate
     local hideIcon= tab.hideIcon
     local isType2= tab.isType2--圆形按钮
+    local atlas= tab.atlas
+    local texture= tab.texture
 
     local btn= CreateFrame('DropdownButton', name or ('WoWToolsMenuButton'..get_index()), frame or UIParent, template, setID)
     btn:SetFrameStrata(frame:GetFrameStrata())
@@ -193,6 +195,12 @@ function WoWTools_ButtonMixin:CreateMenu(frame, tab)
         btn:SetNormalAtlas('ui-questtrackerbutton-filter')
         btn:SetPushedAtlas('ui-questtrackerbutton-filter-pressed')
         btn:SetHighlightAtlas('ui-questtrackerbutton-red-highlight')
+    else
+        if atlas then
+            btn:SetNormalAtlas(atlas)
+        elseif texture then
+            btn:SetNormalTexture(texture)
+        end
     end
     return btn
 end

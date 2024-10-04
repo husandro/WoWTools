@@ -5026,7 +5026,8 @@
         "DRESSUP_FRAME",
         "INSPECT_TALENTS_BUTTON",
         "GearSetButton_OpenPopup",
-        "GearSetButton_UpdateSpecInfo"
+        "GearSetButton_UpdateSpecInfo",
+        "PVP_LABEL_PVP_TALENTS"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

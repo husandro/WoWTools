@@ -127,7 +127,7 @@ local function Init_Other()
 
 
 
-    --[[保存，提示
+    --保存，提示
     MacroSaveButton.saveTip= MacroSaveButton:CreateTexture(nil, 'OVERLAY')
     MacroSaveButton.saveTip:SetPoint('LEFT')
     MacroSaveButton.saveTip:SetSize(18, 18)
@@ -142,7 +142,7 @@ local function Init_Other()
         MacroSaveButton.saveTip:SetShown(show)
     end
     MacroFrameText:HookScript('OnTextChanged', set_saveTip)
-    MacroSaveButton:HookScript('OnClick', set_saveTip)]]
+    MacroSaveButton:HookScript('OnClick', set_saveTip)
 
 
 
