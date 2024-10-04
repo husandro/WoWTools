@@ -7,12 +7,27 @@ local Label
 
 
 local function Init_Label()
-    Label= WoWTools_LabelMixin:Create(PaperDollItemsFrame.ShowHideButton, {color= GameLimitedMode_IsActive() and {r=0,g=1,b=0} or true, mouse=true, justifyH='RIGHT'})--显示服务器名称
-    Label:SetPoint('LEFT', PaperDollItemsFrame.ShowHideButton, 'RIGHT',2,0)
-    Label:SetScript("OnLeave",function(self) e.tips:Hide() self:GetParent():set_alpha(false) end)
+    local frame= CreateFrame("Frame", nil, PaperDollItemsFrame)
+    frame:SetSize(1,1)
+    frame:SetPoint('LEFT', CharacterFrame.TitleContainer, 22,0)
+    frame:SetFrameStrata(CharacterFrame.TitleContainer:GetFrameStrata())
+    frame:SetFrameLevel(CharacterFrame.TitleContainer:GetFrameLevel()+1)
+    
+
+    Label= WoWTools_LabelMixin:Create(frame, {
+        color= GameLimitedMode_IsActive() and {r=0,g=1,b=1} or {r=1,g=1,b=1},
+        mouse=true,
+    })
+
+    Label:SetPoint('LEFT')
+    Label:SetAlpha(0.5)
+
+    Label:SetScript("OnLeave",function(self) e.tips:Hide() self:SetAlpha(0.5) end)
     Label:SetScript("OnEnter",function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
+        e.tips:AddDoubleLine(e.addName, WoWTools_PaperDollMixin.addName)
+        e.tips:AddLine(' ')
         local server= e.Get_Region(e.Player.realm, nil, nil)--服务器，EU， US {col=, text=, realm=}
         e.tips:AddDoubleLine(e.onlyChinese and '服务器:' or FRIENDS_LIST_REALM, server and server.col..' '..server.realm)
         local ok2
@@ -39,11 +54,11 @@ local function Init_Label()
             e.tips:AddDoubleLine(e.onlyChinese and '等级' or LEVEL, rLevel, 1,0,0, 1,0,0)
             e.tips:AddDoubleLine(e.onlyChinese and '钱' or MONEY, GetMoneyString(rMoney), 1,0,0, 1,0,0)
             e.tips:AddDoubleLine(e.onlyChinese and '专业技能' or PROFESSIONS_TRACKER_HEADER_PROFESSION, profCap, 1,0,0, 1,0,0)
-            e.tips:AddLine(' ')
+        
         end
-        e.tips:AddDoubleLine(e.addName, WoWTools_PaperDollMixin.addName)
+        
         e.tips:Show()
-        self:GetParent():set_alpha(true)
+        self:SetAlpha(1)
     end)
 end
 
@@ -57,7 +72,9 @@ end
 local function Settings()
     local ser=GetAutoCompleteRealms() or {}
     local server= e.Get_Region(e.Player.realm, nil, nil)
-    local text= (#ser>1 and '|cnGREEN_FONT_COLOR:'..#ser..' ' or '')..e.Player.col..e.Player.realm..'|r'..(server and ' '..server.col or '')
+    local num= #ser
+    local text= (num>1 and '|cnGREEN_FONT_COLOR:'..num..'|r ' or '')
+            ..e.Player.realm..(server and ' '..server.col or '')
     Label:SetText(text or '')
 end
 
@@ -73,6 +90,7 @@ end
 --显示服务器名称
 function WoWTools_PaperDollMixin:Init_ServerInfo()
     Init_Label()
+    Settings()
 end
 
 

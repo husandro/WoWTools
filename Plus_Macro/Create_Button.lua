@@ -32,7 +32,7 @@ local function Create_Macro_Button(name, icon, boy)
     if MacroNewButton:IsEnabled() and not UnitAffectingCombat('player') then
         local index = CreateMacro(name or ' ', icon or 134400, boy or '', MacroFrame.macroBase>0)- MacroFrame.macroBase
         MacroFrame:SelectMacro(index or 1)
-        MacroFrame:Update(true)
+        e.call(MacroFrame.Update, MacroFrame)
     end
 end
 
@@ -249,7 +249,7 @@ local function Init()
                                     end
                                 end
                                 MacroFrame:SelectMacro(1)
-                                MacroFrame:Update(true)
+                                e.call(MacroFrame.Update, MacroFrame)
                             end
                         end,
                         EditBoxOnEscapePressed= function(s)

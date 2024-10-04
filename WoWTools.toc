@@ -39,8 +39,8 @@ API_WoWTools.lua
 0_Mixin\Faction.lua
 0_Mixin\Frame.lua
 0_Mixin\Group.lua
+0_Mixin\Item_Stats.lua
 0_Mixin\Item.lua
-0_Mixin\ItemStats.lua
 0_Mixin\ItemLocation.lua
 0_Mixin\Key.lua
 0_Mixin\Label.lua

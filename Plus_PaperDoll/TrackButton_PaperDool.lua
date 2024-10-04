@@ -160,7 +160,7 @@ local function Create_Button(index)
                 TrackButton.HelpTips:SetShown(false)
             end
             C_Timer.After(2, function()
-                WoWTools_PaperDollMixin:Set_Tab1()--修改总装等
+                WoWTools_PaperDollMixin:Settings_Tab1()--修改总装等
             end)
         else
             print(e.addName, addName, notCan)

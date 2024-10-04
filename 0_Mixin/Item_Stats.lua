@@ -159,11 +159,11 @@ function WoWTools_ItemStatsMixin:SetItem(frame, link, setting) --设置，物品
                 frame.itemSet= frame:CreateTexture()
                 frame.itemSet:SetAtlas('UI-HUD-MicroMenu-Highlightalert')--'UI-HUD-MicroMenu-Highlightalert')--services-icon-goldborder
                 frame.itemSet:SetAllPoints(point)
+                frame.itemSet:SetAlpha(0.7)
             end
         end
 
         if not hideLevel then--物品, 装等
-            --itemID= itemID or C_Item.GetItemInfoInstant(link)
             if itemID==210333 and frame==CharacterBackSlot then--InspectBackSlot
                 local currencies={--https://wago.io/thread_count
                     [2853] = 1, -- "power" aka str/agi/int

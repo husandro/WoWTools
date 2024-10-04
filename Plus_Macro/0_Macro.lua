@@ -46,15 +46,14 @@ function WoWTools_MacroMixin:SetMacroTexture(iconTexture)--修改，当前图标
     if UnitAffectingCombat('player') or not iconTexture or iconTexture==0 then
         return
     end
-    local macroFrame =MacroFrame
+    local MacroFrame =MacroFrame
     local actualIndex = WoWTools_MacroMixin:GetSelectIndex()
     if actualIndex then
         local name= GetMacroInfo(actualIndex)
-        local index = EditMacro(actualIndex, name, iconTexture) - macroFrame.macroBase;--战斗中，出现错误
-        e.call(MacroFrame.SaveMacro, macroFrame)
-        macroFrame:SelectMacro(index or 1);
-        local retainScrollPosition = true;
-        macroFrame:Update(retainScrollPosition);
+        local index = EditMacro(actualIndex, name, iconTexture) - MacroFrame.macroBase;--战斗中，出现错误
+        e.call(MacroFrame.SaveMacro, MacroFrame)
+        MacroFrame:SelectMacro(index or 1);
+        e.call(MacroFrame.Update, MacroFrame)
     end
 end
 

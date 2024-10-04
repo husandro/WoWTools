@@ -47,7 +47,6 @@ local function Settings()
     WoWTools_PaperDollMixin:Settings_Tab2()--头衔数量
     WoWTools_PaperDollMixin:Settings_Tab1()--总装等
     WoWTools_PaperDollMixin:Settings_Tab3()--标签, 内容,提示
-    --Init_ChromieTime()--时空漫游战役, 提示
 
     WoWTools_PaperDollMixin:TrackButton_Settings()--添加装备管理框
 
@@ -97,8 +96,8 @@ local function Init(frame)
     local title= frame==PaperDollItemsFrame and CharacterFrame.TitleContainer or frame.TitleContainer
 
     local btn= WoWTools_ButtonMixin:Cbtn(frame, {size={20,20}, atlas= not Save().hide and e.Icon.icon or e.Icon.disabled})
-    btn:SetFrameStrata(title:GetFrameStrata())
     btn:SetPoint('LEFT', title)
+    btn:SetFrameStrata(title:GetFrameStrata())
     btn:SetFrameLevel(title:GetFrameLevel()+1)
 
     btn:SetScript('OnClick', function(_, d)
