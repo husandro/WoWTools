@@ -376,6 +376,8 @@ Plus\Target.lua
 
 ##主菜单，增强
 Plus\MainMenu.lua
+
+
 ##鼠标 Mouse https://wago.io/CVmKEpl6E
 Plus_Cursor\0_Cursor.lua
 Plus_Cursor\1_Options.lua
@@ -389,8 +391,12 @@ Plus_Cursor\GCD_Options.lua
 
 
 ##宏增强
-Plus\Macro.lua
-
+Plus_Macro\0_Macro.lua
+Plus_Macro\Create_Button.lua
+Plus_Macro\List_Button.lua
+Plus_Macro\Macro_List.lua
+Plus_Macro\Select_Button.lua
+Plus_Macro\Set_UI.lua
 
 
 
