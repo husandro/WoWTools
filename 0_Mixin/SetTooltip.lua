@@ -175,9 +175,9 @@ function WoWTools_SetTooltipMixin:Frame(frame, tooltip, data)
     tooltip:Show();
 end
 
-function WoWTools_SetTooltipMixin:Set_Menu(sub)
+function WoWTools_SetTooltipMixin:Set_Menu(sub)--战斗中
     sub:SetTooltip(function(tooltip, description)
-        self:SetTooltip(tooltip, description.data)
+        self:Setup(tooltip, description.data)
     end)
 end
 

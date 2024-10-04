@@ -14,7 +14,7 @@ function WoWTools_ChatMixin:Chat(text, name, printText)
         if name then
             SendChatMessage(text, 'WHISPER', nil, name)
         elseif printText then
-            if not e.call(ChatEdit_InsertLink, text) then
+            if not ChatEdit_InsertLink(text) then
                 e.call(ChatFrame_OpenChat, text)
             end
             --securecallfunction(ChatFrame_OpenChat, 'a')

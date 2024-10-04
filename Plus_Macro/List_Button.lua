@@ -246,32 +246,82 @@ end
 
 --创建，法术，列表
 --##############
-local function Create_Spell_Menu(spellID, icon, name, texture)--创建，法术，列表
+local function Create_Spell_Menu(root, spellID, icon, name, texture)--创建，法术，列表
     e.LoadData({id=spellID, type='spell'})
+    
+    
     local isKnown= IsSpellKnownOrOverridesKnown(spellID)
-    --local isPassive= C_Spell.IsSpellPassive(spellID)
+    
     local spellIcon= icon
-
-    local color
-    if not isKnown then
-        color= '|cnRED_FONT_COLOR:'
-    end
 
     local  macroText= Get_Spell_Macro(name, spellID)
     macroText= macroText and '|cnGREEN_FONT_COLOR:'..macroText..'|n |r' or nil
 
     local tipText= C_Spell.GetSpellDescription(spellID)
-    if not isKnown then
-        tipText= (tipText and tipText..'|n|n' or '')
-                ..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '未学习' or TRADE_SKILLS_UNLEARNED_TAB)..'|r'
-    end
+
     tipText= ((macroText or tipText) and '|n' or '')..(macroText and macroText..'|n' or '')..(tipText or '')
 
     local headText= (UnitAffectingCombat('player') and '|cnRED_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:')
             ..'Alt |T'..(icon or 0)..':0|t'..(e.onlyChinese and '设置图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, EMBLEM_SYMBOL))
             --..'|r|n|cff9e9e9eCtrl '..(e.onlyChinese and '查询' or WHO)..' (BUG)|r'
             ..'|nShift '..(e.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT)
-    e.LibDD:UIDropDownMenu_AddButton({
+
+
+    local sub=root:CreateButton(
+        '|A:'..(texture or '')..':0:0|a'
+        ..WoWTools_SpellMixin:GetName(spellID)--取得法术，名称
+        ..(Get_Spell_Macro(name, spellID) and '|cnGREEN_FONT_COLOR:*|r' or ''),
+    function(data)
+        local text=''
+        local macroText2, showName= Get_Spell_Macro(data.name, data.spellID)
+        local macro= MacroFrameText:GetText() or ''
+        if not macro:find('#showtooltip') then
+            text= '#showtooltip'..(showName and ' '..showName or '')..'\n'
+        end
+        if not macro:find('/targetenemy') then
+            text= text..'/targetenemy [noharm][dead]\n'
+        end
+        text= text..(macroText2 or ('/cast '..data.name))..'\n'
+        --MacroFrameText:SetCursorPosition(0)
+        MacroFrameText:Insert(text)
+        MacroFrameText:SetFocus()
+
+        return MenuResponse.Open
+    end, {name=name, spellID=spellID, icon=spellIcon})
+
+--技能，提示
+    WoWTools_SetTooltipMixin:Set_Menu(sub)
+
+
+--修改，当前图标
+    sub:CreateButton(
+        '|T'..(spellIcon or 0)..':0|t'
+        ..(e.onlyChinese and '设置图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, EMBLEM_SYMBOL)),
+    function(data)
+        WoWTools_MacroMixin:SetMacroTexture(data.spellIcon)
+        return MenuResponse.Open
+    end, {spellIcon=spellIcon})
+
+--查询
+    sub:CreateButton(
+        '|A:common-search-magnifyingglass:0:0|a'..(e.onlyChinese and '查询' or WHO),
+    function(data)
+        -- PlayerSpellsUtil.OpenToSpellBookTabAtSpell(spellID, knownSpellsOnly, toggleFlyout, flyoutReason)
+        PlayerSpellsUtil.OpenToSpellBookTabAtSpell(data.spellID, false, true, false)
+        return MenuResponse.Open
+    end, {spellID=spellID})
+
+--链接至聊天栏
+    sub:CreateButton(
+        (e.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT),
+    function(data)
+        local link= WoWTools_SpellMixin:GetLink(data.spellID, false)
+        WoWTools_ChatMixin:Chat(link, nil, true)
+        return MenuResponse.Open
+    end, {spellID=spellID})
+
+end
+    --[[e.LibDD:UIDropDownMenu_AddButton({
         text= format('|A:%s:0:0|a', texture or '')..name..(macroText and '|cnGREEN_FONT_COLOR:*|r' or ''),
         tooltipOnButton=true,
         tooltipTitle=headText,
@@ -317,8 +367,7 @@ local function Create_Spell_Menu(spellID, icon, name, texture)--创建，法术�
                 MacroFrameText:SetFocus()
             end
         end
-    }, 1)
-end
+    }, 1)]]
 
 
 
@@ -395,38 +444,48 @@ end
 
 
 
+
+
+
+
+local function Init_SpellBook_Menu(self, root)
+    if WoWTools_MenuMixin:CheckInCombat(root) then--战斗中
+        return
+    end
+
+    local info= C_SpellBook.GetSpellBookSkillLineInfo(self.index)
+    local num=1
+    if info and info.name and info.itemIndexOffset and info.numSpellBookItems and info.numSpellBookItems>0 then
+        for index= info.itemIndexOffset+1, info.itemIndexOffset+ info.numSpellBookItems do
+            local spellData= C_SpellBook.GetSpellBookItemInfo(index, Enum.SpellBookSpellBank.Player) or {}--skillLineIndex itemType isOffSpec subName actionID name iconID isPassive spellID
+            if not spellData.isPassive and spellData.spellID and spellData.name then
+                Create_Spell_Menu(root, spellData.spellID, spellData.iconID, spellData.name, 'services-number-'..num)
+                num= num+1
+            end
+        end
+    end
+
+end
+
+
+
+
+
 --命令，按钮，列表
 --##############
-local function Init()
-    --目标
-    local attck= Create_Button(e.onlyChinese and '目标' or TARGET)
-    attck:SetPoint('LEFT', MacroEditButton, 'RIGHT',8,0)
-    attck.text='#showtooltip\n/targetenemy [noharm][dead]\n'
-    attck.text2='/cancelaura '
-    attck.textCursor=0
-    attck.text2Cursor=nil
-    attck.tip=nil
-    attck.tip2=e.onlyChinese and '光环名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, AURAS, NAME)
-
-
-
-
-    --攻击
-    local cancel= Create_Button(e.onlyChinese and '攻击' or ATTACK)
-    cancel:SetPoint('LEFT', attck, 'RIGHT')
-    cancel.text= '/petattack\n/startattack\n'
-    cancel.text2= '/petfollow\n/stopattack\n/stopcasting\n'
-
-
-
-local last
-local size= 24
+local function Init_List_Button()
+    local last, btn
+    --local size= 24
     for i=1, 12 do
         local data= C_SpellBook.GetSpellBookSkillLineInfo(i)--shouIdHide name numSpellBookItems iconID isGuild itemIndexOffset
         if data and data.name and not data.shouIdHide then
-            local btn= WoWTools_ButtonMixin:Cbtn(MacroSaveButton, {size=size, texture=data.iconID})
+            --btn= WoWTools_ButtonMixin:Cbtn(MacroSaveButton, {size=size, texture=data.iconID})
+            btn= WoWTools_ButtonMixin:CreateMenu(MacroFrame, {hideIcon=true})
+            btn:SetNormalTexture(data.iconID or 0)
+
             btn.name= data.name
             btn.index= i
+
             btn:SetScript('OnLeave', GameTooltip_Hide)
             btn:SetScript('OnEnter', function(self)
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -439,6 +498,12 @@ local size= 24
             else
                 btn:SetPoint('LEFT', last, 'RIGHT')
             end
+            btn:SetupMenu(Init_SpellBook_Menu)
+            last= btn
+        end
+    end
+
+
 
             --[[if i==3 then
                 local texture= btn:CreateTexture(nil, 'OVERLAY')
@@ -448,9 +513,7 @@ local size= 24
                 texture:SetSize(28,28)
                 texture:SetAlpha(0.7)
             end]]
-            btn:SetScript('OnMouseDown', function(self)
-                --if not self.Menu then
-                    --self.Menu= CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
+            --[[btn:SetScript('OnMouseDown', function(self)
                     e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function(_, level)
                         local info= C_SpellBook.GetSpellBookSkillLineInfo(self.index)
                         local num=1
@@ -500,27 +563,22 @@ local size= 24
                                     end
                                 }, level)
                             end
-                            --[[if HasExtraActionBar() then
+                            if HasExtraActionBar() then
                                 local slot = i + ((GetExtraBarIndex() or 19) - 1) * (NUM_ACTIONBAR_BUTTONS or 12)
                                 local actionType, spell = GetActionInfo(slot)
                                 if actionType== "spell" and spell then--and ActionTab[spell] then
                                 end
-                            end]]
+                            end
                         end
                     end, 'MENU')
                 --end
                 e.LibDD:ToggleDropDownMenu(1, nil, MacroFrame.Menu, self, 15,0)--主菜单
-            end)
+            end)]]
 
             --[[btn:RegisterUnitEvent('PLAYER_SPECIALIZATION_CHANGED', 'player')
             btn:SetScript('OnEvent', function(self)
                 --self:SetNormalTexture( select(2, C_Spell.GetSpellTabInfo(self.index)) or 0)
             end)]]
-            last= btn
-        end
-    end
-
-
 
 
 
@@ -841,6 +899,36 @@ end
 
 
 
+
+
+
+
+
+local function Init_Other_Button()
+    --目标
+    local attck= Create_Button(e.onlyChinese and '目标' or TARGET)
+    attck:SetPoint('LEFT', MacroEditButton, 'RIGHT',8,0)
+    attck.text='#showtooltip\n/targetenemy [noharm][dead]\n'
+    attck.text2='/cancelaura '
+    attck.textCursor=0
+    attck.text2Cursor=nil
+    attck.tip=nil
+    attck.tip2=e.onlyChinese and '光环名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, AURAS, NAME)
+
+
+
+    --攻击
+    local cancel= Create_Button(e.onlyChinese and '攻击' or ATTACK)
+    cancel:SetPoint('LEFT', attck, 'RIGHT')
+    cancel.text= '/petattack\n/startattack\n'
+    cancel.text2= '/petfollow\n/stopattack\n/stopcasting\n'
+end
+
+
+
 function WoWTools_MacroMixin:Init_List_Button()
-    Init()
+
+    
+    Init_List_Button()
+    Init_Other_Button()
 end
