@@ -5022,7 +5022,9 @@
         "GetPaperDollSideBarFrame",
         "ERR_CLIENT_LOCKED_OUT",
         "EquipmentManager",
-        "SPELL_HASTE"
+        "SPELL_HASTE",
+        "DRESSUP_FRAME",
+        "INSPECT_TALENTS_BUTTON"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

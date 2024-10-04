@@ -6,7 +6,8 @@ local function Save()
 end
 
 
-
+local KeystoneLabel--挑战, 分数
+local StatusLabel--装备，属性
 
 
 
@@ -44,8 +45,8 @@ local function set_InspectPaperDollItemSlotButton_Update(self)
     self.link= link
 
     if link and not self.itemLinkText then
-        self.itemLinkText= WoWTools_LabelMixin:Create(self)
-        local h=self:GetHeight()/3
+        self.itemLinkText= WoWTools_LabelMixin:Create(self, {size=14})
+        --local h=self:GetHeight()/3
         if slot==16 then
             self.itemLinkText:SetPoint('BOTTOMRIGHT', InspectPaperDollFrame, 'BOTTOMLEFT', 6,15)
         elseif slot==17 then
@@ -72,52 +73,88 @@ local function set_InspectPaperDollItemSlotButton_Update(self)
     end
 end
 
-local function set_InspectPaperDollFrame_SetLevel()--目标,天赋 装等
-    if Save().hide then
-        return
-    end
-    local unit= InspectFrame.unit
-    local guid= unit and UnitGUID(unit)
-    local info= guid and e.UnitItemLevel[guid]
-    if info and info.itemLevel and info.specID  then
-        local level= UnitLevel(unit)
-        local effectiveLevel= UnitEffectiveLevel(unit)
-        local sex = UnitSex(unit)
 
-        local text= WoWTools_UnitMixin:GetPlayerInfo({unit=unit, guid=guid})
-        local icon, role = select(4, GetSpecializationInfoByID(info.specID, sex))
-        if icon and role then
-            text=text..' |T'..icon..':0|t '..e.Icon[role]
-        end
-        if level and level>0 then
-            text= text..' '..level
-            if effectiveLevel~=level then
-                text= text..'(|cnGREEN_FONT_COLOR:'..effectiveLevel..'|r)'
+
+
+
+
+
+
+
+
+local function set_InspectPaperDollFrame_SetLevel()--目标,天赋 装等
+    local key
+    local unit= InspectFrame.unit
+    if not Save().hide and unit and UnitExists(unit) then
+        local guid= unit and UnitGUID(unit)
+        local info= guid and e.UnitItemLevel[guid]
+        if info then
+            local level= UnitLevel(unit)
+            local effectiveLevel= UnitEffectiveLevel(unit)
+            local sex = UnitSex(unit)
+
+            local text= WoWTools_UnitMixin:GetPlayerInfo({unit=unit, guid=guid})
+
+            local icon, role = select(4, GetSpecializationInfoByID(info.specID, sex))
+            if icon and role then
+                text=text..'|T'..icon..':0|t'..e.Icon[role]
             end
+            if level and level>0 then
+                text= text..level
+                if effectiveLevel~=level then
+                    text= text..'(|cnGREEN_FONT_COLOR:'..effectiveLevel..'|r)'
+                end
+            end
+            text= text..(sex== 2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or sex==3 and '|A:charactercreate-gendericon-female-selected:0:0|a' or '|A:charactercreate-icon-customize-body-selected:0:0|a')
+            text= text.. info.itemLevel
+            if info.col then
+                text= info.col..text..'|r'
+            end
+            InspectLevelText:SetText(text)
         end
-        text= text..(sex== 2 and ' |A:charactercreate-gendericon-male-selected:0:0|a' or sex==3 and ' |A:charactercreate-gendericon-female-selected:0:0|a' or ' |A:charactercreate-icon-customize-body-selected:0:0|a')
-        text= text.. info.itemLevel
-        if info.col then
-            text= info.col..text..'|r'
+
+        info= C_PlayerInfo.GetPlayerMythicPlusRatingSummary(unit)--挑战, 分数
+        if info and info.currentSeasonScore and info.currentSeasonScore>0 then
+            key= WoWTools_WeekMixin:KeystoneScorsoColor(info.currentSeasonScore,true)
         end
-        InspectLevelText:SetText(text)
     end
+
+    KeystoneLabel:SetText(key or '')
 end
 
 
 
 
 
---目标，属性
-local function Set_Target_Status(frame)--InspectFrame
-    if frame.statusLabel then
-        frame.statusLabel:settings()
-        return
+
+
+
+
+
+
+
+
+
+
+
+
+local function Init_UI()
+--显示/隐藏，按钮
+    WoWTools_PaperDollMixin:Init_ShowHideButton(InspectFrame)
+
+--更改, 名称大小
+    function InspectLevelText:set_font_size()
+        WoWTools_LabelMixin:Create(nil, {changeFont=self, size= Save().hide and 12 or 22})
     end
-    frame.statusLabel= WoWTools_LabelMixin:Create(InspectPaperDollFrame)
-    frame.statusLabel:SetPoint('TOPLEFT', InspectFrameTab1, 'BOTTOMLEFT',0,-2)
-    function frame.statusLabel:settings()
-        local unit=InspectFrame.unit
+    if not Save().hide then
+        InspectLevelText:set_font_size()
+    end
+
+--装备，属性
+    StatusLabel= WoWTools_LabelMixin:Create(InspectPaperDollFrame, {size=14})
+    StatusLabel:SetPoint('TOPLEFT', InspectFrameTab1, 'BOTTOMLEFT',0,-2)
+    function InspectFrame:set_status_label()
+        local unit=self.unit
         local text
         if not Save().hide and UnitExists(unit) then
             local tab={ 1,2,3,15,5,9, 10,6,7,8,11,12,13,14, 16,17}
@@ -138,36 +175,49 @@ local function Set_Target_Status(frame)--InspectFrame
                 text= text..col..info.text..': '..WoWTools_Mixin:MK(info.value, 3)..'|r'
             end
         end
-        self:SetText(text or '')
+        StatusLabel:SetText(text or '')
     end
-    frame.statusLabel:settings()
-end
+    InspectFrame:HookScript('OnShow', InspectFrame.set_status_label)
 
+--挑战, 分数
+    KeystoneLabel=  WoWTools_LabelMixin:Create(InspectPaperDollFrame, {size=18})
+    KeystoneLabel:SetPoint('BOTTOMLEFT', 10, 5)
 
-
-
-
-
-local function Init_UI()
-
-    WoWTools_PaperDollMixin:Init_ShowHideButton(InspectFrame)
-
-
-    WoWTools_LabelMixin:Create(nil, {changeFont= InspectLevelText, size=18})
-
+--试衣间, 按钮
     InspectPaperDollFrame.ViewButton:ClearAllPoints()
-    InspectPaperDollFrame.ViewButton:SetPoint('LEFT', InspectLevelText, 'RIGHT',20,0)
+    InspectPaperDollFrame.ViewButton:SetPoint('TOPRIGHT', -5, -30)
+
     InspectPaperDollFrame.ViewButton:SetSize(25,25)
     InspectPaperDollFrame.ViewButton:SetText(e.onlyChinese and '试' or WoWTools_TextMixin:sub(VIEW,1))
+    InspectPaperDollFrame.ViewButton:HookScript('OnLeave', GameTooltip_Hide)
+    InspectPaperDollFrame.ViewButton:HookScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddLine(e.onlyChinese and '试衣间' or DRESSUP_FRAME)
+        e.tips:Show()
+    end)
 
+--天赋，按钮
     InspectPaperDollItemsFrame.InspectTalents:SetSize(25,25)
     InspectPaperDollItemsFrame.InspectTalents:SetText(e.onlyChinese and '赋' or WoWTools_TextMixin:sub(TALENT,1))
+    InspectPaperDollItemsFrame.InspectTalents:HookScript('OnLeave', GameTooltip_Hide)
+    InspectPaperDollItemsFrame.InspectTalents:HookScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddLine(e.onlyChinese and '天赋' or INSPECT_TALENTS_BUTTON)
+        e.tips:Show()
+    end)
 
-    InspectFrame:HookScript('OnShow', Set_Target_Status)
-    --hooksecurefunc('InspectFrame_UnitChanged', Set_Target_Status)
     hooksecurefunc('InspectPaperDollItemSlotButton_Update', set_InspectPaperDollItemSlotButton_Update)--目标, 装备
     hooksecurefunc('InspectPaperDollFrame_SetLevel', set_InspectPaperDollFrame_SetLevel)--目标,天赋 装等
 end
+
+    
+    --InspectFrame:HookScript('OnShow', Set_Target_Status)
+    --hooksecurefunc('InspectFrame_UnitChanged', Set_Target_Status)
+
+
+
 
 
 
@@ -179,15 +229,19 @@ local function Init()
     else
         local frame=CreateFrame('Frame')
         frame:RegisterEvent('ADDON_LOADED')
-        frame:SetScript('OnEvent', function(self, event)
-            if event=='Blizzard_InspectUI' then
+        frame:SetScript('OnEvent', function(self, _, arg1)
+            if arg1=='Blizzard_InspectUI' then
                 Init_UI()
-                self:UnregisterEvents()
+                self:UnregisterAllEvents()
             end
         end)
 
     end
 end
+
+
+
+
 
 function WoWTools_PaperDollMixin:Init_InspectUI()
     Init()
