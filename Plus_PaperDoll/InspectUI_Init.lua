@@ -16,61 +16,61 @@ local StatusLabel--装备，属性
 
 
 
-local function set_InspectPaperDollItemSlotButton_Update(self)
+local function set_InspectPaperDollItemSlotButton_Update(frame)
     local unit= InspectFrame.unit
-    
-    local slot= self:GetID()
+
+    local slot= frame:GetID()
 	local link= (UnitExists(unit) and not Save().hide) and GetInventoryItemLink(unit, slot) or nil
 	e.LoadData({id=link, type='item'})--加载 item quest spell
-    
-    --set_Gem(self, slot, link)
 
-    WoWTools_PaperDollMixin:Set_Item_Tips(self, slot, link, false)
-    WoWTools_PaperDollMixin:Set_Slot_Num_Label(self, slot, link and true or false)--栏位, 帐号最到物品等级
-    WoWTools_ItemStatsMixin:SetItem(self, link, {point=self.icon})
-    if not self.OnEnter and not Save().hide then
-        self:SetScript('OnEnter', function(self2)
-            if self2.link then
+    --set_Gem(frame, slot, link)
+
+    WoWTools_PaperDollMixin:Set_Item_Tips(frame, slot, link, false)
+    WoWTools_PaperDollMixin:Set_Slot_Num_Label(frame, slot, link and true or false)--栏位, 帐号最到物品等级
+    WoWTools_ItemStatsMixin:SetItem(frame, link, {point=frame.icon})
+    if not frame.OnEnter and not Save().hide then
+        frame:SetScript('OnEnter', function(self)
+            if self.link then
                 e.tips:ClearLines()
                 e.tips:SetOwner(InspectFrame, "ANCHOR_RIGHT")
-                e.tips:SetHyperlink(self2.link)
+                e.tips:SetHyperlink(self.link)
                 e.tips:AddDoubleLine(e.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, e.Icon.left)
                 e.tips:Show()
             end
         end)
-        self:SetScript('OnLeave', GameTooltip_Hide)
-        self:SetScript('OnMouseDown', function(self2)
-            WoWTools_ChatMixin:Chat(self2.link, nil, true)
+        frame:SetScript('OnLeave', GameTooltip_Hide)
+        frame:SetScript('OnMouseDown', function(self)
+            WoWTools_ChatMixin:Chat(self.link, nil, true)
             --local chat=SELECTED_DOCK_FRAME
-            --ChatFrame_OpenChat((chat.editBox:GetText() or '')..self2.link, chat)
+            --ChatFrame_OpenChat((chat.editBox:GetText() or '')..self.link, chat)
 
         end)
     end
-    self.link= link
+    frame.link= link
 
-    if link and not self.itemLinkText then
-        self.itemLinkText= WoWTools_LabelMixin:Create(self, {size=16})
+    if link and not frame.itemLinkText then
+        frame.itemLinkText= WoWTools_LabelMixin:Create(frame, {size=16})
         if slot==16 then
-            self.itemLinkText:SetPoint('BOTTOMRIGHT', InspectPaperDollFrame, 'BOTTOMLEFT', 6, 12)
-            self.itemLinkText.isLeft=true
+            frame.itemLinkText:SetPoint('BOTTOMRIGHT', InspectPaperDollFrame, 'BOTTOMLEFT', 6, 12)
+            frame.itemLinkText.isLeft=true
         elseif slot==17 then
-            self.itemLinkText:SetPoint('BOTTOMLEFT', InspectPaperDollFrame, 'BOTTOMRIGHT', -5, 12)
+            frame.itemLinkText:SetPoint('BOTTOMLEFT', InspectPaperDollFrame, 'BOTTOMRIGHT', -5, 12)
         elseif WoWTools_PaperDollMixin:Is_Left_Slot(slot) then
-            self.itemLinkText:SetPoint('RIGHT', self, 'LEFT', -2,0)
-            self.itemLinkText.isLeft=true
+            frame.itemLinkText:SetPoint('RIGHT', frame, 'LEFT', -2,0)
+            frame.itemLinkText.isLeft=true
         else
-            self.itemLinkText:SetPoint('LEFT', self, 'RIGHT', 5,0)
+            frame.itemLinkText:SetPoint('LEFT', frame, 'RIGHT', 5,0)
         end
 
 
-        self.itemBG= self:CreateTexture(nil, 'BACKGROUND')
-        self.itemBG:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
-        self.itemBG:SetAlpha(0.7)
-        --self.itemBG:SetVertexColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b)
-        self.itemBG:SetPoint('TOPLEFT', self.itemLinkText)
-        self.itemBG:SetPoint('BOTTOMRIGHT', self.itemLinkText)
+        frame.itemBG= frame:CreateTexture(nil, 'BACKGROUND')
+        frame.itemBG:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
+        frame.itemBG:SetAlpha(0.7)
+        --frame.itemBG:SetVertexColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b)
+        frame.itemBG:SetPoint('TOPLEFT', frame.itemLinkText)
+        frame.itemBG:SetPoint('BOTTOMRIGHT', frame.itemLinkText)
     end
-    if self.itemLinkText then
+    if frame.itemLinkText then
         if link then
             local itemID= GetInventoryItemID(unit, slot)
             local cnName= e.cn(nil, {itemID=itemID, isName=true})
@@ -83,14 +83,14 @@ local function set_InspectPaperDollItemSlotButton_Update(self)
             end
             local slotTexture= GetInventoryItemTexture(unit, slot)
             if slotTexture then
-                if self.itemLinkText.isLeft then
+                if frame.itemLinkText.isLeft then
                     link= '|T'..slotTexture..':22|t'..link
                 else
                     link= link..'|T'..slotTexture..':22|t'
                 end
             end
         end
-        self.itemLinkText:SetText(link or '')
+        frame.itemLinkText:SetText(link or '')
     end
 end
 
@@ -165,15 +165,16 @@ local function Init_UI()
 
 --更改, 名称大小
     function InspectLevelText:set_font_size()
-        WoWTools_LabelMixin:Create(nil, {changeFont=self, size= Save().hide and 12 or 22})
+        WoWTools_LabelMixin:Create(nil, {changeFont=self, size= Save().hide and 12 or 22, justifyH='CENTER'})
     end
+
     if not Save().hide then
         InspectLevelText:set_font_size()
     end
 
 --装备，属性
     StatusLabel= WoWTools_LabelMixin:Create(InspectPaperDollFrame, {size=14})
-    StatusLabel:SetPoint('TOPLEFT', InspectFrameTab1, 'BOTTOMLEFT',0,-2)
+    StatusLabel:SetPoint('TOPLEFT', InspectFrameTab1, 'BOTTOMLEFT',0,-4)
 
     function InspectFrame:set_status_label()
         local unit=self.unit
@@ -233,7 +234,7 @@ local function Init_UI()
     hooksecurefunc('InspectPaperDollFrame_SetLevel', set_InspectPaperDollFrame_SetLevel)--目标,天赋 装等
 end
 
-    
+
     --InspectFrame:HookScript('OnShow', Set_Target_Status)
     --hooksecurefunc('InspectFrame_UnitChanged', Set_Target_Status)
 
