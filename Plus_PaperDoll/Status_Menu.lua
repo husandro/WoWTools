@@ -290,12 +290,12 @@ local function Init_Sub_Menu(self, root, stat, index, name)
             root:CreateTitle('|cnGREEN_FONT_COLOR:showFunc|r')
         end
         root:CreateTitle(name..' '..stat..' '..index)
-    else
+    --[[else
 
         root:CreateTitle(format(
             '|cnRED_FONT_COLOR:%s|r %s %s %s',
             e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE, name, stat, index)
-        )
+        )]]
     end
 end
 
