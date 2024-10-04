@@ -441,7 +441,7 @@ local function Init_Menu(self, root)
         Save().notStatusPlusFunc= not Save().notStatusPlusFunc and true or nil
     end)
     sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine((e.onlyChinese and '急速' or SPELL_HASTE)..': |cffffffff9037|r|cnGREEN_FONT_COLOR:[+13%]|r  13.69%'  )
+        tooltip:AddLine((e.onlyChinese and '急速' or SPELL_HASTE)..': |cffffffff9037|r|cnGREEN_FONT_COLOR:[+13%]|r  13|cffff00ff.69|r%')
         tooltip:AddLine(' ')
         tooltip:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
