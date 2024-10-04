@@ -28,7 +28,7 @@ end
 end
 local function create_status_label(frame, rating)
     local save=Save()
-    if not save.hide and save.itemLevelBit>0 and frame:IsShown() then
+    if not save.hide and save.itemLevelBit>=0 and frame:IsShown() then
         if not frame.numLabel then
             frame.numLabel=WoWTools_LabelMixin:Create(frame, {color={r=1,g=1,b=1}})
             frame.numLabel:SetPoint('LEFT', frame.Label, 'RIGHT',2,0)
@@ -340,7 +340,7 @@ local function Init_Defense()
 
     hooksecurefunc('PaperDollFrame_SetLabelAndText', function(statFrame, _, text, isPercentage, numericValue)
         local save= Save()
-        if not save.hide and save.itemLevelBit>0 and (isPercentage or (type(text)=='string' and text:find('%%'))) then--and select(2, math.modf(numericValue))>0 then
+        if not save.hide and save.itemLevelBit>=0 and (isPercentage or (type(text)=='string' and text:find('%%'))) then--and select(2, math.modf(numericValue))>0 then
             statFrame.Value:SetFormattedText('%.0'..save.itemLevelBit..'f%%', numericValue)
         end
     end)
@@ -388,17 +388,10 @@ local function Init()
     if Save().notStatusPlusFunc then
         return
     end
-    print('a')
-
-
-    
-
-
-
 
     hooksecurefunc('PaperDollFrame_SetItemLevel', function(statFrame)--物品等级，小数点
         local save= Save()
-        if statFrame:IsShown() and not save.hide and save.itemLevelBit>0 then
+        if statFrame:IsShown() and not save.hide and save.itemLevelBit>=0 then
             local avgItemLevel, avgItemLevelEquipped, avgItemLevelPvP = GetAverageItemLevel()
 	        local minItemLevel = C_PaperDollInfo.GetMinItemLevel()
 	        local displayItemLevel = math.max(minItemLevel or 0, avgItemLevelEquipped)
@@ -420,8 +413,9 @@ local function Init()
         e.tips:ClearLines()
         e.tips:AddDoubleLine(WoWTools_PaperDollMixin.addName, WoWTools_PaperDollMixin.StatusPlusButton)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine((e.onlyChinese and '小数点 ' or 'bit ')..(Save().itemLevelBit==0 and '|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE)..'|r' or ('|cnGREEN_FONT_COLOR:'..Save().itemLevelBit)), '-1'..e.Icon.left)
-        e.tips:AddDoubleLine('0 '..(e.onlyChinese and '禁用' or DISABLE), '+1'..e.Icon.right)
+        e.tips:AddDoubleLine((e.onlyChinese and '小数点 ' or 'bit ')..(Save().itemLevelBit==-1 and '|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE)..'|r' or ('|cnGREEN_FONT_COLOR:'..Save().itemLevelBit)), '-1'..e.Icon.left)
+        e.tips:AddDoubleLine(' ', '+1'..e.Icon.right)
+        e.tips:AddLine('-1 '..(e.onlyChinese and '禁用' or DISABLE))
         e.tips:Show()
     end
     CharacterStatsPane.ItemLevelFrame.Value:SetScript('OnLeave', function(self)
@@ -440,7 +434,7 @@ local function Init()
         n= d=='LeftButton' and n-1 or n
         n= d=='RightButton' and n+1 or n
         n= n>4 and 4 or n
-        n= n<0 and 0 or n
+        n= n<-1 and -1 or n
         Save().itemLevelBit=n
         e.call(PaperDollFrame_UpdateStats)
         self:set_tooltips()
