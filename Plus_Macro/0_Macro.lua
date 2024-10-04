@@ -79,11 +79,13 @@ function WoWTools_MacroMixin:SetTooltips(frame, index)
             e.tips:AddDoubleLine('|cffffffff'..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,  e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS, index), '|cffff00ff|T'..icon..':0|t'..name)
             e.tips:AddLine(body, nil,nil,nil, true)
             e.tips:AddLine(' ')
-            local col= UnitAffectingCombat('player') and '|cff9e9e9e' or '|cffffffff'
-            e.tips:AddDoubleLine(
-                col..(e.onlyChinese and '删除' or DELETE),
-                col..'Alt+'..(e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left
-            )
+            if frame~=MacroFrameSelectedMacroButton then
+                local col= UnitAffectingCombat('player') and '|cff9e9e9e' or '|cffffffff'
+                e.tips:AddDoubleLine(
+                    col..(e.onlyChinese and '删除' or DELETE),
+                    col..'Alt+'..(e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left
+                )
+            end
             local spellID= GetMacroSpell(index)
             if spellID then
                 e.LoadData({id=spellID, type='spell'})
@@ -94,7 +96,9 @@ function WoWTools_MacroMixin:SetTooltips(frame, index)
                 end
                 --Set_Action_Focus(spellID)
             end
+
             e.tips:Show()
+            
             return icon
         end
     end
