@@ -35,7 +35,7 @@ local function Init()
         e.tips:AddLine('|cnGREEN_FONT_COLOR:'..format(e.onlyChinese and '物品等级：%d' or CHARACTER_LINK_ITEM_LEVEL_TOOLTIP, self.avgItemLevel or ''))
         --e.tips:AddDoubleLine(e.addName, WoWTools_PaperDollMixin.addName)
         e.tips:Show()
-        self:SetAlpha(0.3)
+        self:SetAlpha(0)
     end)
 
 
@@ -58,7 +58,7 @@ local function Init()
         e.tips:AddLine('|cnGREEN_FONT_COLOR:'..format(e.onlyChinese and 'PvP物品等级 %d' or ITEM_UPGRADE_PVP_ITEM_LEVEL_STAT_FORMAT, self.avgItemLevel or '0'))
         --e.tips:AddDoubleLine(e.addName, WoWTools_PaperDollMixin.addName)
         e.tips:Show()
-        self:SetAlpha(0.3)
+        self:SetAlpha(0)
     end)
 end
 

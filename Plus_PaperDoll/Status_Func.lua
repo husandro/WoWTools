@@ -406,9 +406,6 @@ local function Init()
     end)
     CharacterStatsPane.ItemLevelFrame.Value:EnableMouse(true)
     function CharacterStatsPane.ItemLevelFrame.Value:set_tooltips()
-        if Save().hide then
-            return
-        end
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(WoWTools_PaperDollMixin.addName, WoWTools_PaperDollMixin.StatusPlusButton)
@@ -423,13 +420,18 @@ local function Init()
         GameTooltip_Hide()
     end)
     CharacterStatsPane.ItemLevelFrame.Value:SetScript('OnEnter', function(self)
-        self:set_tooltips()
-        self:SetAlpha(0.7)
+        if not Save().hide then
+            self:set_tooltips()
+            self:SetAlpha(0.7)
+        end
     end)
     CharacterStatsPane.ItemLevelFrame.Value:SetScript('OnMouseUp', function(self)
         self:SetAlpha(0.7)
     end)
     CharacterStatsPane.ItemLevelFrame.Value:SetScript('OnMouseDown', function(self, d)
+        if Save().hide then
+            return
+        end
         local n= Save().itemLevelBit or 3
         n= d=='LeftButton' and n-1 or n
         n= d=='RightButton' and n+1 or n

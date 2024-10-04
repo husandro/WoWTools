@@ -113,7 +113,7 @@ local function Init_Button()
             '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)
         )
         e.tips:Show()
-        self:SetAlpha(0.3)
+        self:SetAlpha(0)
     end)
 
     Title:SetScript('OnMouseDown', function()

@@ -35,7 +35,7 @@ local function Init_Button()
         self:SetNormalAtlas(
             Save().notStatusPlus
             and e.Icon.disabled
-            or format('charactercreate-gendericon-%s-selected', e.Player.sex==3 and 'Female' or 'male'))
+            or 'loottoast-arrow-orange')
     end
 
     function Button:show_menu()
@@ -44,7 +44,7 @@ local function Init_Button()
     function Button:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_TOPLEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, WoWTools_PaperDollMixin.addName)
+        e.tips:AddDoubleLine(WoWTools_PaperDollMixin.addName, self.addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)
         e.tips:Show()

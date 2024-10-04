@@ -18,7 +18,7 @@ local function Init()
     Frame:SetSize(1, 1)
     Frame:SetPoint('RIGHT', CharacterLevelText, 'LEFT')
 
-    Frame.Text= WoWTools_LabelMixin:Create(Frame, {copyFont=CharacterLevelText, mouse=true, size=16})
+    Frame.Text= WoWTools_LabelMixin:Create(Frame, {copyFont=CharacterLevelText, mouse=true, size=18})
     Frame.Text:SetPoint('RIGHT')
     Frame.Text:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
     Frame.Text:SetScript('OnEnter', function(self)
