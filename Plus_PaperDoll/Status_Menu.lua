@@ -8,48 +8,48 @@ local P_PAPERDOLL_STATCATEGORIES= PAPERDOLL_STATCATEGORIES
 
 
 
+local AttributesCategory={}
 
+local function Init_AttributesCategory()
+    AttributesCategory={
+        {stat='STRENGTH', index=1, name=e.onlyChinese and '力量' or SPEC_FRAME_PRIMARY_STAT_STRENGTH, primary=LE_UNIT_STAT_STRENGTH},--AttributesCategory
+        {stat='AGILITY', index=1, name=e.onlyChinese and '敏捷' or SPEC_FRAME_PRIMARY_STAT_AGILITY, rimary=LE_UNIT_STAT_AGILITY},
+        {stat='INTELLECT', index=1, name=e.onlyChinese and '智力' or SPEC_FRAME_PRIMARY_STAT_INTELLECT, primary=LE_UNIT_STAT_INTELLECT},
+        {stat='-'},
+        {stat='STAMINA', index=1, name= e.onlyChinese and '耐力' or STA_LCD},
+        {stat='ARMOR', index=1},
+        {stat='STAGGER', index=1},
+        {stat='MANAREGEN', index=1, name=e.onlyChinese and '法力回复' or MANA_REGEN},
+        {stat='SPELLPOWER', index=1, name=e.onlyChinese and '法术强度' or STAT_SPELLPOWER},
 
-local AttributesCategory={
-    {stat='STRENGTH', index=1, name=e.onlyChinese and '力量' or SPEC_FRAME_PRIMARY_STAT_STRENGTH, primary=LE_UNIT_STAT_STRENGTH},--AttributesCategory
-    {stat='AGILITY', index=1, name=e.onlyChinese and '敏捷' or SPEC_FRAME_PRIMARY_STAT_AGILITY, rimary=LE_UNIT_STAT_AGILITY},
-    {stat='INTELLECT', index=1, name=e.onlyChinese and '智力' or SPEC_FRAME_PRIMARY_STAT_INTELLECT, primary=LE_UNIT_STAT_INTELLECT},
-    {stat='-'},
-    {stat='STAMINA', index=1, name= e.onlyChinese and '耐力' or STA_LCD},
-    {stat='ARMOR', index=1},
-    {stat='STAGGER', index=1},
-    {stat='MANAREGEN', index=1, name=e.onlyChinese and '法力回复' or MANA_REGEN},
-    {stat='SPELLPOWER', index=1, name=e.onlyChinese and '法术强度' or STAT_SPELLPOWER},
+        {stat='HEALTH', index=1},
+        {stat='POWER', index=1, name=e.onlyChinese and '能量' or POWER_TYPE_POWER},
+        {stat='ALTERNATEMANA', index=1, name=e.onlyChinese and '法力值' or  MANA},
 
-    {stat='HEALTH', index=1},
-    {stat='POWER', index=1, name=e.onlyChinese and '能量' or POWER_TYPE_POWER},
-    {stat='ALTERNATEMANA', index=1, name=e.onlyChinese and '法力值' or  MANA},
+        {stat='-'},
+    --}
+    --local EnhancementsCategory={
+        {stat='CRITCHANCE', index=2, name=e.onlyChinese and '爆击' or STAT_CRITICAL_STRIKE},
+        {stat='HASTE', index=2},
+        {stat='MASTERY', index=2},
+        {stat='VERSATILITY', index=2},
+        {stat='LIFESTEAL', index=2},
+        {stat='AVOIDANCE', index=2},
+        {stat='SPEED', index=2},
+        {stat='DODGE', index=2},
+        {stat='PARRY', index=2},
+        {stat='BLOCK', index=2},
 
-    {stat='-'},
---}
---local EnhancementsCategory={
-    {stat='CRITCHANCE', index=2, name=e.onlyChinese and '爆击' or STAT_CRITICAL_STRIKE},
-    {stat='HASTE', index=2},
-    {stat='MASTERY', index=2},
-    {stat='VERSATILITY', index=2},
-    {stat='LIFESTEAL', index=2},
-    {stat='AVOIDANCE', index=2},
-    {stat='SPEED', index=2},
-    {stat='DODGE', index=2},
-    {stat='PARRY', index=2},
-    {stat='BLOCK', index=2},
+        {stat='ENERGY_REGEN', index=2},
+        {stat='RUNE_REGEN', index=2},
+        {stat='FOCUS_REGEN', index=2},
 
-    {stat='ENERGY_REGEN', index=2},
-    {stat='RUNE_REGEN', index=2},
-    {stat='FOCUS_REGEN', index=2},
-
-    {stat='MOVESPEED', index=2, name=e.onlyChinese and '移动' or NPE_MOVE},
-    {stat='ATTACK_DAMAGE', index=2, name=e.onlyChinese and '伤害' or DAMAGE, },
-    {stat='ATTACK_AP', index=2,  name=e.onlyChinese and '攻击强度' or STAT_ATTACK_POWER, },
-    {stat='ATTACK_ATTACKSPEED', index=2, name=e.onlyChinese and '攻击速度' or ATTACK_SPEED},
-
-}
-
+        {stat='MOVESPEED', index=2, name=e.onlyChinese and '移动' or NPE_MOVE},
+        {stat='ATTACK_DAMAGE', index=2, name=e.onlyChinese and '伤害' or DAMAGE, },
+        {stat='ATTACK_AP', index=2,  name=e.onlyChinese and '攻击强度' or STAT_ATTACK_POWER, },
+        {stat='ATTACK_ATTACKSPEED', index=2, name=e.onlyChinese and '攻击速度' or ATTACK_SPEED},
+    }
+end
 
 
 
@@ -132,23 +132,23 @@ local function Add_Stat(tab)--添加
             --showFunc= tab.showFunc,
         })
     end
-    print(e.addName, WoWTools_PaperDollMixin.addName, format('|cnGREEN_FONT_COLOR:%s|r', stat), e.onlyChinese and '添加' or ADD)
+    --print(e.addName, WoWTools_PaperDollMixin.addName, format('|cnGREEN_FONT_COLOR:%s|r', stat), e.onlyChinese and '添加' or ADD)
 end
 
 local function Remove_Stat(tab)--移除        
     local index= tab.index
     local stat= tab.stat
-    local name= tab.name
+    --local name= tab.name
     if PAPERDOLL_STATCATEGORIES[index] then
         for i, info in pairs(PAPERDOLL_STATCATEGORIES[index].stats or {}) do
             if info.stat==stat then
                 table.remove(PAPERDOLL_STATCATEGORIES[index].stats, i)
-                print(e.addName, WoWTools_PaperDollMixin.addName, format('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '移除' or REMOVE), stat, name)
+                --print(e.addName, WoWTools_PaperDollMixin.addName, format('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '移除' or REMOVE), stat, name)
                 return
             end
         end
     end
-    print(e.addName, WoWTools_PaperDollMixin.addName, format('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE), stat, name)
+    --print(e.addName, WoWTools_PaperDollMixin.addName, format('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE), stat, name)
 end
 
 local function Get_Primary_Text(primary)--主属性, 文本
@@ -164,6 +164,14 @@ local function Get_Primary_Text(primary)--主属性, 文本
 end
 
 
+local function Get_Role_Text(roleIndex)--职责
+    return
+        roleIndex== Enum.LFGRole.Tank and format('%s%s', e.Icon.TANK, e.onlyChinese and '坦克' or TANK)
+        or (roleIndex==Enum.LFGRole.Healer and format('%s%s', e.Icon.HEALER, e.onlyChinese and '治疗' or HEALER))
+        or (roleIndex==Enum.LFGRole.Damage and format('%s%s', e.Icon.DAMAGER, e.onlyChinese and '伤害' or DAMAGER))
+        or (e.onlyChinese and '无' or NONE)
+    
+end
 
 
 
@@ -174,128 +182,143 @@ end
 
 
 
-
-
-local function Init_Sub_Menu(self, root, stat, index, name)
-    local sub
+local function Init_Sub_Menu(_, root, stat, index, name)
     local stats= Find_Stats(stat, index, false)
-    if stats then
---自动隐藏 -1 0
-        for va=-1, 0, 1 do
-            sub=root:CreateCheckbox(
-                format('%s |cnGREEN_FONT_COLOR:'..va..'|r', e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE)),
-            function(data)
-                return Find_Stats(data.stat, data.index, false).hideAt== data.value
-            end, function(data)
-                for i, tab in pairs(PAPERDOLL_STATCATEGORIES[data.index] and PAPERDOLL_STATCATEGORIES[data.index].stats or {}) do
-                    if tab.stat== data.stat then
-                        local value
-                        value= PAPERDOLL_STATCATEGORIES[data.index].stats[i].hideAt
-                        if not value or value~=data.value then
-                            value=data.value
-                        else
-                            value=nil
-                        end
-                        PAPERDOLL_STATCATEGORIES[data.index].stats[i].hideAt= value
-                        Data_Save()
-                        print(e.addName, WoWTools_PaperDollMixin.addName, format('|cnGREEN_FONT_COLOR:%s|r', data.stat), value)
-                        return
-                    end
-                end
-                print(e.addName, WoWTools_PaperDollMixin.addName, format('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE), data.stat)
-            end, {stat=stat, index=index, value=va, hideAt=stats.hideAt})
+    if not stats then
+        return
+    end
 
-            sub:SetTooltip(function(tooltip, description)
-                tooltip:AddLine(format('<='..description.data.value..' %s', e.onlyChinese and '隐藏' or HIDE))
-            end)
-        end
+    local sub
+    root:CreateTitle(name..' '..stat..' '..index)
+
+--自动隐藏 -1 0
+    root:CreateDivider()
+    for va=-1, 0, 1 do
+        sub=root:CreateCheckbox(
+            format('%s |cnGREEN_FONT_COLOR:'..va..'|r',
+                e.onlyChinese and '自动隐藏'
+                or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE)),
+        function(data)
+            local tab= Find_Stats(data.stat, data.index, false)
+            return tab and tab.hideAt== data.value
+        end, function(data)
+            local tab=Find_Stats(data.stat, data.index, false)
+            if tab then
+                if not tab.hideAt or tab.hideAt~=data.value then
+                    tab.hideAt= data.value
+                else
+                    tab.hideAt= nil
+                end
+                Data_Save()
+            end
+        end, {stat=stat, index=index, value=va, hideAt=stats.hideAt})
+
+        sub:SetTooltip(function(tooltip, description)
+            local tab= Find_Stats(description.data.stat, description.data.index, true)
+            tooltip:AddLine(
+                (e.onlyChinese and '默认' or DEFAULT)
+                ..': '..
+                (Get_Primary_Text(tab and tab.hideAt) or (e.onlyChinese and '无' or NONE))
+            )
+            tooltip:AddLine(' ')
+            tooltip:AddLine(format('<='..description.data.value..' %s', e.onlyChinese and '隐藏' or HIDE))
+        end)
+    end
 
 --职责，设置
-        root:CreateDivider()
-       
-        for i= Enum.LFGRole.Tank, Enum.LFGRole.Damage, 1 do
-            root:CreateCheckbox(
-                i== Enum.LFGRole.Tank and format('%s%s', e.Icon.TANK, e.onlyChinese and '坦克' or TANK)
-                or i==Enum.LFGRole.Healer and format('%s%s', e.Icon.HEALER, e.onlyChinese and '治疗' or HEALER)
-                or i==Enum.LFGRole.Damage and format('%s%s', e.Icon.DAMAGER, e.onlyChinese and '伤害' or DAMAGER),
-            function(data)
-                local tank, n, dps= Find_Roles(stats.roles)
-                if data.value==Enum.LFGRole.Tank then
-                    return tank
-                elseif data.value==Enum.LFGRole.Healer then
-                    return n
-                elseif data.value== Enum.LFGRole.Damage then
-                    return dps
-                end
-            end, function(data)
-                for _, tab in pairs (PAPERDOLL_STATCATEGORIES[data.index] and PAPERDOLL_STATCATEGORIES[data.index].stats or {}) do
-                    if tab.stat==data.stat then
-                        local findTank, findN, findDps
-                        if not tab.roles then
-                            tab.roles={data.value}
-                        else
-                            findTank, findN, findDps= Find_Roles(stats.roles)--职责，设置                                    
-                            if data.value==Enum.LFGRole.Tank then
-                                findTank = not findTank and true or false
-                            elseif data.value==Enum.LFGRole.Healer then
-                                findN = not findN and true or false
-                            elseif data.value==Enum.LFGRole.Damage then
-                                findDps = not findDps and true or false
-                            end
-                            if findTank or findN or findDps then
-                                local roles={}
-                                if findTank then table.insert(roles, Enum.LFGRole.Tank) end
-                                if findN then table.insert(roles, Enum.LFGRole.Healer) end
-                                if findDps then table.insert(roles, Enum.LFGRole.Damage) end
-                                tab.roles= roles
-                            else
-                                tab.roles=nil
-                            end
+    root:CreateDivider()
+
+    for i= Enum.LFGRole.Tank, Enum.LFGRole.Damage, 1 do
+        sub=root:CreateCheckbox(
+            Get_Role_Text(i),--职责
+        function(data)
+            local tank, n, dps= Find_Roles(stats.roles)
+            if data.value==Enum.LFGRole.Tank then
+                return tank
+            elseif data.value==Enum.LFGRole.Healer then
+                return n
+            elseif data.value== Enum.LFGRole.Damage then
+                return dps
+            end
+        end, function(data)
+            local tab= Find_Stats(data.stat, data.index, false)
+            if tab then
+                if tab.stat==data.stat then
+                    local findTank, findN, findDps
+                    if not tab.roles then
+                        tab.roles={data.value}
+                    else
+                        findTank, findN, findDps= Find_Roles(stats.roles)--职责，设置                                    
+                        if data.value==Enum.LFGRole.Tank then
+                            findTank = not findTank and true or false
+                        elseif data.value==Enum.LFGRole.Healer then
+                            findN = not findN and true or false
+                        elseif data.value==Enum.LFGRole.Damage then
+                            findDps = not findDps and true or false
                         end
-                        Data_Save()
-                        print(e.addName, WoWTools_PaperDollMixin.addName, format('|cnGREEN_FONT_COLOR:%s|r', stats.stat) , findTank and e.Icon.TANK or '', findN and e.Icon.HEALER or '', findDps and e.Icon.DAMAGER or '')
-                        return
+                        if findTank or findN or findDps then
+                            local roles={}
+                            if findTank then table.insert(roles, Enum.LFGRole.Tank) end
+                            if findN then table.insert(roles, Enum.LFGRole.Healer) end
+                            if findDps then table.insert(roles, Enum.LFGRole.Damage) end
+                            tab.roles= roles
+                        else
+                            tab.roles=nil
+                        end
                     end
+                    Data_Save()
                 end
-                print(e.addName, WoWTools_PaperDollMixin.addName, format('|cnRED_FONT_COLOR:%s|r %s', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE, data.stat))
-            end, {stat=stat, index=index, value=i, roles=stats.roles})
-        end
+            end
+        end, {stat=stat, index=index, value=i, roles=stats.roles})
+
+        sub:SetTooltip(function(tooltip, description)
+            local tab= Find_Stats(description.data.stat, description.data.index, true)
+            local find
+            if tab and tab.roles then
+                for _, roleInde in pairs(tab.roles) do
+                    tooltip:AddLine((e.onlyChinese and '默认' or DEFAULT)..': '..Get_Role_Text(roleInde))
+                    find= true
+                end
+            end
+            if not find then
+                tooltip:AddLine(e.onlyChinese and '无' or NONE)
+            end
+        end)
+    end
 
 --主属性，条件
-        root:CreateDivider()
-        for _, primary in pairs({LE_UNIT_STAT_STRENGTH, LE_UNIT_STAT_AGILITY , LE_UNIT_STAT_INTELLECT}) do
-            root:CreateCheckbox(
-                format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, Get_Primary_Text(primary)),
-            function(data)
-                local stats2= Find_Stats(data.stat, data.index, false) or {}
-                return stats2.primary==data.primary
-            end, function(data)
-                for _, tab in pairs (PAPERDOLL_STATCATEGORIES[data.index] and PAPERDOLL_STATCATEGORIES[data.index].stats or {}) do
-                    if tab.stat==data.stat then
-                        if not tab.primary or tab.primary~=data.value then
-                            tab.primary=data.value
-                        else
-                            tab.primary=nil
-                        end
-                        Data_Save()
-                        print(e.addName, WoWTools_PaperDollMixin.addName, format('|cnGREEN_FONT_COLOR:%s|r', stats.stat) , format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, Get_Primary_Text(tab.primary) or format('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '无' or NONE)))
-                        return
-                    end
+    root:CreateDivider()
+    for _, primary in pairs({LE_UNIT_STAT_STRENGTH, LE_UNIT_STAT_AGILITY , LE_UNIT_STAT_INTELLECT}) do
+        sub=root:CreateCheckbox(
+            format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, Get_Primary_Text(primary)),
+        function(data)
+            local tab= Find_Stats(data.stat, data.index, false) or {}
+            return tab and tab.primary==data.value
+        end, function(data)
+            local tab= Find_Stats(data.stat, data.index, false)
+            if tab then
+                if not tab.primary or tab.primary~=data.value then
+                    tab.primary=data.value
+                else
+                    tab.primary=nil
                 end
-                print(e.addName, WoWTools_PaperDollMixin.addName, format('|cnRED_FONT_COLOR:%s|r %s', e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE, data.stat))
-            end, {stat=stat, index=index, value=primary})
-        end
+                Data_Save()
+            end
+        end, {stat=stat, index=index, value=primary})
+        sub:SetTooltip(function(tooltip, description)
+            local tab= Find_Stats(description.data.stat, description.data.index, true)
+            tooltip:AddLine(
+                (e.onlyChinese and '默认' or DEFAULT)
+                ..': '..
+                (Get_Primary_Text(tab and tab.primary) or (e.onlyChinese and '无' or NONE))
+            )
+        end)
+    end
 
-        if stats.showFunc then
-            root:CreateTitle('|cnGREEN_FONT_COLOR:showFunc|r')
-        end
-        root:CreateTitle(name..' '..stat..' '..index)
-    --[[else
 
-        root:CreateTitle(format(
-            '|cnRED_FONT_COLOR:%s|r %s %s %s',
-            e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE, name, stat, index)
-        )]]
+    if stats.showFunc then
+        root:CreateDivider()
+        root:CreateTitle('|cnGREEN_FONT_COLOR:showFunc|r')
     end
 end
 
@@ -336,7 +359,6 @@ local function Init_Status_Menu(self, root)
                     Remove_Stat(data.tab)
                 end
                 Data_Save()
-                --return MenuResponse.Close
             end, {stat=stat, index=index, tab=tab})
 
             Init_Sub_Menu(self, sub, stat, index, name)
@@ -368,7 +390,7 @@ local function Init_Menu(self, root)
     sub= root:CreateCheckbox(
         e.onlyChinese and '启用' or ENABLE,
     function()
-        return Save().notStatusPlus
+        return not Save().notStatusPlus
     end, function ()
         self:set_enabel_disable()
     end)
@@ -381,14 +403,8 @@ local function Init_Menu(self, root)
         '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL),
     function()
         PAPERDOLL_STATCATEGORIES= {}
-        e.LibDD:CloseDropDownMenus(1)
         Data_Save()
-        print(
-            WoWTools_PaperDollMixin.addName,
-            self.addName,
-            format('|cnGREEN_FONT_COLOR:%s|r', e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT),
-            e.onlyChinese and '完成' or DONE
-        )        
+        return MenuResponse.Refresh
     end)
 
 --还原
@@ -400,17 +416,17 @@ local function Init_Menu(self, root)
         PAPERDOLL_STATCATEGORIES= P_PAPERDOLL_STATCATEGORIES
         Save().PAPERDOLL_STATCATEGORIES=nil
         e.call(PaperDollFrame_UpdateStats)
+        return MenuResponse.Refresh
     end)
 
 --属性
     sub2=sub:CreateCheckbox(
-        format('%s Plus|A:communities-icon-addchannelplus:0:0|a', e.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES),
+        'Plus|A:communities-icon-addchannelplus:0:0|a',
     function()
         return not Save().notStatusPlusFunc
     end, function()
         Save().notStatusPlusFunc= not Save().notStatusPlusFunc and true or nil
-        print(e.addName, WoWTools_PaperDollMixin.addName, e.GetEnabeleDisable(not Save().notStatusPlusFunc), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-        return MenuResponse.Open
+        --print(e.addName, WoWTools_PaperDollMixin.addName, e.GetEnabeleDisable(not Save().notStatusPlusFunc), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
     sub2:SetTooltip(function(tooltip)
         tooltip:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
@@ -418,13 +434,14 @@ local function Init_Menu(self, root)
 
 --小数点
     for i=0, 4 do
-        sub:CreateRadio(
-            format('%s %d', e.onlyChinese and '小数点' or 'bit', i),
+        sub2:CreateRadio(
+            (e.onlyChinese and '小数点 ' or 'bit ')..i,
         function(data)
             return Save().itemLevelBit==data.bit
         end, function(data)
             Save().itemLevelBit= data.bit
             e.call(PaperDollFrame_UpdateStats)
+            return MenuResponse.Refresh
         end, {bit=i})
     end
 
@@ -432,7 +449,7 @@ local function Init_Menu(self, root)
 --reload
     sub:CreateDivider()
     WoWTools_MenuMixin:Reload(sub)
-    
+
     root:CreateDivider()
     Init_Status_Menu(self, root)
 end
@@ -446,7 +463,9 @@ function WoWTools_PaperDollMixin:Init_Status_Menu(btn)
     btn:SetupMenu(Init_Menu)
 end
 
-
+function WoWTools_PaperDollMixin:Init_AttributesCategory_Menu()
+    Init_AttributesCategory()
+end
 
 
 

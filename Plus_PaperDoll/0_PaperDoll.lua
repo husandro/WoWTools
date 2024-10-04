@@ -9,7 +9,7 @@ Save={
     --Equipment=nil--装备管理, 位置保存
     equipmentFrameScale=1.1,--装备管理, 缩放
     trackButtonShowItemLeve= e.Player.husandro,--装等
-    trackButtonStrata='HIGH',
+    --trackButtonStrata='',
 
     --notStatusPlus=true,--禁用，属性 PLUS
     StatusPlus_OnEnter_show_menu=true,--移过图标时，显示菜单

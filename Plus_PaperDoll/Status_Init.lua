@@ -31,7 +31,10 @@ local function Init_Button()
         self:SetAlpha(min and 0.3 or 1)
     end
     function StatusPlusButton:set_texture()
-        self:SetNormalAtlas(Save().notStatusPlus and e.Icon.disabled or format('charactercreate-gendericon-%s-selected', e.Player.sex==3 and 'Female' or 'male'))
+        self:SetNormalAtlas(
+            Save().notStatusPlus
+            and e.Icon.disabled
+            or format('charactercreate-gendericon-%s-selected', e.Player.sex==3 and 'Female' or 'male'))
     end
 
     function StatusPlusButton:show_menu()
@@ -69,7 +72,7 @@ local function Init_Button()
 
     StatusPlusButton.addName= '|A:loottoast-arrow-orange:0:0|a'..(e.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES)
 
-    if not Save().notStatusPlus then
+    if Save().notStatusPlus then
         StatusPlusButton:SetupMenu(function(self, root)
             local sub= root:CreateCheckbox(
                 e.onlyChinese and '启用' or ENABLE,
@@ -92,7 +95,7 @@ local function Init_Button()
             PAPERDOLL_STATCATEGORIES= Save().PAPERDOLL_STATCATEGORIES
         end
         WoWTools_PaperDollMixin:Init_Status_Func()
-
+        WoWTools_PaperDollMixin:Init_AttributesCategory_Menu()
         WoWTools_PaperDollMixin:Init_Status_Menu(StatusPlusButton)
     end
 
@@ -108,4 +111,5 @@ end
 --属性，增强 PaperDollFrame.lua
 function WoWTools_PaperDollMixin:Init_Status_Plus()
     Init_Button()
+
 end
