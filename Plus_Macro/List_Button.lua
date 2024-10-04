@@ -240,37 +240,74 @@ end
 
 
 
+--创建，目标，功击，按钮
+--####################
+local function Create_Button(name)
+    local btn= WoWTools_ButtonMixin:Cbtn(MacroSaveButton, {size={60,22}, type=false})
+    function btn:find_text(right)
+        return (MacroFrameText:GetText() or ''):find(WoWTools_TextMixin:Magic(right and self.text2 or self.text))
+    end
+   function btn:set_tooltips()
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(e.addName, WoWTools_MacroMixin.addName)
+        local col= self:find_text() and '|cff9e9e9e' or ''
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(col..self.text..(self.tip or ''), e.Icon.left)
+        if self.text2 then
+            e.tips:AddLine(' ')
+            col= self:find_text(true) and '|cff9e9e9e' or ''
+        end
+        e.tips:AddDoubleLine(col..self.text2..(self.tip2 or ''), e.Icon.right)
+        e.tips:Show()
+    end
+    btn:SetScript('OnClick', function(self, d)
+        if d=='LeftButton' then
+            if self.textCursor then
+                MacroFrameText:SetCursorPosition(self.textCursor)
+            end
+            MacroFrameText:Insert(self.text)
+            MacroFrameText:SetFocus()
+
+        elseif d=='RightButton' and self.text2 then
+            if self.text2Cursor then
+                MacroFrameText:SetCursorPosition(self.text2Cursor)
+            end
+            MacroFrameText:Insert(self.text2)
+            MacroFrameText:SetFocus()
+        end
+        self:set_tooltips()
+    end)
+    btn:SetText(name)
+    btn:SetScript('OnLeave', GameTooltip_Hide)
+    btn:SetScript("OnEnter", btn.set_tooltips)
+    return btn
+end
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 
 --创建，法术，列表
 --##############
-local function Create_Spell_Menu(root, spellID, icon, name, texture)--创建，法术，列表
+local function Create_Spell_Menu(root, spellID, icon, name, index)--创建，法术，列表
     e.LoadData({id=spellID, type='spell'})
-    
-    
-    local isKnown= IsSpellKnownOrOverridesKnown(spellID)
-    
-    local spellIcon= icon
 
     local  macroText= Get_Spell_Macro(name, spellID)
-    macroText= macroText and '|cnGREEN_FONT_COLOR:'..macroText..'|n |r' or nil
-
-    local tipText= C_Spell.GetSpellDescription(spellID)
-
-    tipText= ((macroText or tipText) and '|n' or '')..(macroText and macroText..'|n' or '')..(tipText or '')
-
-    local headText= (UnitAffectingCombat('player') and '|cnRED_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:')
-            ..'Alt |T'..(icon or 0)..':0|t'..(e.onlyChinese and '设置图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, EMBLEM_SYMBOL))
-            --..'|r|n|cff9e9e9eCtrl '..(e.onlyChinese and '查询' or WHO)..' (BUG)|r'
-            ..'|nShift '..(e.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT)
-
-
     local sub=root:CreateButton(
-        '|A:'..(texture or '')..':0:0|a'
+        index..' '
         ..WoWTools_SpellMixin:GetName(spellID)--取得法术，名称
-        ..(Get_Spell_Macro(name, spellID) and '|cnGREEN_FONT_COLOR:*|r' or ''),
+        ..(macroText and '|cnGREEN_FONT_COLOR:*|r' or ''),
     function(data)
         local text=''
         local macroText2, showName= Get_Spell_Macro(data.name, data.spellID)
@@ -287,7 +324,7 @@ local function Create_Spell_Menu(root, spellID, icon, name, texture)--创建，�
         MacroFrameText:SetFocus()
 
         return MenuResponse.Open
-    end, {name=name, spellID=spellID, icon=spellIcon})
+    end, {name=name, spellID=spellID, icon=icon, tooltip=macroText})
 
 --技能，提示
     WoWTools_SetTooltipMixin:Set_Menu(sub)
@@ -295,12 +332,12 @@ local function Create_Spell_Menu(root, spellID, icon, name, texture)--创建，�
 
 --修改，当前图标
     sub:CreateButton(
-        '|T'..(spellIcon or 0)..':0|t'
+        '|T'..(icon or 0)..':0|t'
         ..(e.onlyChinese and '设置图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, EMBLEM_SYMBOL)),
     function(data)
-        WoWTools_MacroMixin:SetMacroTexture(data.spellIcon)
+        WoWTools_MacroMixin:SetMacroTexture(data.icon)
         return MenuResponse.Open
-    end, {spellIcon=spellIcon})
+    end, {icon=icon})
 
 --查询
     sub:CreateButton(
@@ -387,62 +424,51 @@ end
 
 
 
---创建，目标，功击，按钮
---####################
-local function Create_Button(name)
-    local btn= WoWTools_ButtonMixin:Cbtn(MacroSaveButton, {size={60,22}, type=false})
-    function btn:find_text(right)
-        return (MacroFrameText:GetText() or ''):find(WoWTools_TextMixin:Magic(right and self.text2 or self.text))
-    end
-   function btn:set_tooltips()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, WoWTools_MacroMixin.addName)
-        local col= self:find_text() and '|cff9e9e9e' or ''
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(col..self.text..(self.tip or ''), e.Icon.left)
-        if self.text2 then
-            e.tips:AddLine(' ')
-            col= self:find_text(true) and '|cff9e9e9e' or ''
-        end
-        e.tips:AddDoubleLine(col..self.text2..(self.tip2 or ''), e.Icon.right)
-        e.tips:Show()
-    end
-    btn:SetScript('OnClick', function(self, d)
-        if d=='LeftButton' then
-            if self.textCursor then
-                MacroFrameText:SetCursorPosition(self.textCursor)
-            end
-            MacroFrameText:Insert(self.text)
-            MacroFrameText:SetFocus()
 
-        elseif d=='RightButton' and self.text2 then
-            if self.text2Cursor then
-                MacroFrameText:SetCursorPosition(self.text2Cursor)
+
+
+
+
+
+
+
+
+
+local function Init_Normal_Menu(_, root, num)
+    local sub
+--区域，技能
+    for _, zone in pairs( C_ZoneAbility.GetActiveAbilities() or {}) do
+        if zone.spellID and not C_Spell.IsSpellPassive(zone.spellID) then
+            local zoneName= C_Spell.GetSpellName(zone.spellID)
+            local zoneIcon= C_Spell.GetSpellTexture(zone.spellID)
+            if zoneName and zoneIcon then
+                num= num+1
+                Create_Spell_Menu(root, zone.spellID, zoneIcon, zoneName, num)
             end
-            MacroFrameText:Insert(self.text2)
-            MacroFrameText:SetFocus()
         end
-        self:set_tooltips()
-    end)
-    btn:SetText(name)
-    btn:SetScript('OnLeave', GameTooltip_Hide)
-    btn:SetScript("OnEnter", btn.set_tooltips)
-    return btn
+    end
+--FS
+    if e.Player.class=='MAGE' then
+        sub=root:CreateButton(
+            e.onlyChinese and '解散水元素' or 'PetDismiss',
+        function()
+            MacroFrameText:Insert('/script PetDismiss()\n')
+            MacroFrameText:SetFocus()
+            return MenuResponse.Open
+        end)
+        sub:SetTooltip(function(tooltip)
+            tooltip:AddLine('/script PetDismiss()')
+        end)
+    end
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
+--[[
+if HasExtraActionBar() then
+local slot = i + ((GetExtraBarIndex() or 19) - 1) * (NUM_ACTIONBAR_BUTTONS or 12)
+local actionType, spell = GetActionInfo(slot)
+if actionType== "spell" and spell then--and ActionTab[spell] then
+end
+end
+]]
 
 
 
@@ -454,18 +480,42 @@ local function Init_SpellBook_Menu(self, root)
     end
 
     local info= C_SpellBook.GetSpellBookSkillLineInfo(self.index)
-    local num=1
+    local num=0
     if info and info.name and info.itemIndexOffset and info.numSpellBookItems and info.numSpellBookItems>0 then
         for index= info.itemIndexOffset+1, info.itemIndexOffset+ info.numSpellBookItems do
             local spellData= C_SpellBook.GetSpellBookItemInfo(index, Enum.SpellBookSpellBank.Player) or {}--skillLineIndex itemType isOffSpec subName actionID name iconID isPassive spellID
             if not spellData.isPassive and spellData.spellID and spellData.name then
-                Create_Spell_Menu(root, spellData.spellID, spellData.iconID, spellData.name, 'services-number-'..num)
                 num= num+1
+                Create_Spell_Menu(root, spellData.spellID, spellData.iconID, spellData.name, num)
             end
         end
     end
 
+    if self.index==1 then
+        Init_Normal_Menu(self, root, num)
+    end
+
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -479,7 +529,6 @@ local function Init_List_Button()
     for i=1, 12 do
         local data= C_SpellBook.GetSpellBookSkillLineInfo(i)--shouIdHide name numSpellBookItems iconID isGuild itemIndexOffset
         if data and data.name and not data.shouIdHide then
-            --btn= WoWTools_ButtonMixin:Cbtn(MacroSaveButton, {size=size, texture=data.iconID})
             btn= WoWTools_ButtonMixin:CreateMenu(MacroFrame, {hideIcon=true})
             btn:SetNormalTexture(data.iconID or 0)
 
@@ -505,88 +554,11 @@ local function Init_List_Button()
 
 
 
-            --[[if i==3 then
-                local texture= btn:CreateTexture(nil, 'OVERLAY')
-                texture:SetAtlas('Forge-ColorSwatchSelection')
-                texture:SetPoint('CENTER')
-                texture:SetVertexColor(0,1,0)
-                texture:SetSize(28,28)
-                texture:SetAlpha(0.7)
-            end]]
-            --[[btn:SetScript('OnMouseDown', function(self)
-                    e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function(_, level)
-                        local info= C_SpellBook.GetSpellBookSkillLineInfo(self.index)
-                        local num=1
-                        if info and info.name and info.itemIndexOffset and info.numSpellBookItems and info.numSpellBookItems>0 then
-                            for index= info.itemIndexOffset+1, info.itemIndexOffset+ info.numSpellBookItems do
-                                local spellData= C_SpellBook.GetSpellBookItemInfo(index, Enum.SpellBookSpellBank.Player) or {}--skillLineIndex itemType isOffSpec subName actionID name iconID isPassive spellID
-                                if not spellData.isPassive and spellData.spellID and spellData.name then
-                                    Create_Spell_Menu(spellData.spellID, spellData.iconID, spellData.name, 'services-number-'..num)
-                                    num= num+1
-                                end
-                            end
-                        end
-                        if self.index==1 then
-                            e.LibDD:UIDropDownMenu_AddSeparator(level)
-                            for _, zone in pairs( C_ZoneAbility.GetActiveAbilities() or {}) do
-                                if zone.spellID and not C_Spell.IsSpellPassive(zone.spellID) then
-                                    local zoneName= C_Spell.GetSpellName(zone.spellID)
-                                    local zoneIcon= C_Spell.GetSpellTexture(zone.spellID)
-                                    if zoneName and zoneIcon then
-                                        num= num+1
-                                        Create_Spell_Menu(zone.spellID, zoneIcon, zoneName, 'services-number-'..num)
-                                    end
-                                end
-                            end
-
-                            e.LibDD:UIDropDownMenu_AddSeparator(level)
-                            e.LibDD:UIDropDownMenu_AddButton({
-                                text='ExtraActionButton1',
-                                tooltipOnButton=true,
-                                tooltipTitle='/click ExtraActionButton1',
-                                notCheckable=true,
-                                func= function()
-                                    MacroFrameText:Insert('/click ExtraActionButton1\n')
-                                    MacroFrameText:SetFocus()
-                                end
-                            }, level)
-                            if e.Player.class=='MAGE' then--FS
-
-                                e.LibDD:UIDropDownMenu_AddButton({
-                                    text=e.onlyChinese and '解散水元素' or 'PetDismiss',
-                                    tooltipOnButton=true,
-                                    tooltipTitle='/script PetDismiss()',
-                                    notCheckable=true,
-                                    func= function()
-                                        MacroFrameText:Insert('/script PetDismiss()\n')
-                                        MacroFrameText:SetFocus()
-                                    end
-                                }, level)
-                            end
-                            if HasExtraActionBar() then
-                                local slot = i + ((GetExtraBarIndex() or 19) - 1) * (NUM_ACTIONBAR_BUTTONS or 12)
-                                local actionType, spell = GetActionInfo(slot)
-                                if actionType== "spell" and spell then--and ActionTab[spell] then
-                                end
-                            end
-                        end
-                    end, 'MENU')
-                --end
-                e.LibDD:ToggleDropDownMenu(1, nil, MacroFrame.Menu, self, 15,0)--主菜单
-            end)]]
-
-            --[[btn:RegisterUnitEvent('PLAYER_SPECIALIZATION_CHANGED', 'player')
-            btn:SetScript('OnEvent', function(self)
-                --self:SetNormalTexture( select(2, C_Spell.GetSpellTabInfo(self.index)) or 0)
-            end)]]
-
-
-
 
 
 
     --PVP， 天赋，法术
-    local pvpButton= WoWTools_ButtonMixin:Cbtn(last, {size=size, atlas='pvptalents-warmode-swords'})--pvptalents-warmode-swords-disabled
+    local pvpButton= WoWTools_ButtonMixin:Cbtn(last, {atlas='pvptalents-warmode-swords'})--pvptalents-warmode-swords-disabled
     pvpButton:SetPoint('LEFT', last, 'RIGHT')
     pvpButton:SetScript('OnMouseDown', function(self)
         e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function()
