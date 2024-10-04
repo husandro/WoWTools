@@ -67,7 +67,7 @@ local function Init_Button()
     function StatusPlusButton:set_enabel_disable()
         Save().notStatusPlus= not Save().notStatusPlus and true or nil
         self:set_texture()
-        print(e.addName, WoWTools_PaperDollMixin.addName, e.GetEnabeleDisable(not Save().notStatusPlus), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        --print(e.addName, WoWTools_PaperDollMixin.addName, e.GetEnabeleDisable(not Save().notStatusPlus), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end
 
     StatusPlusButton.addName= '|A:loottoast-arrow-orange:0:0|a'..(e.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES)
@@ -77,7 +77,7 @@ local function Init_Button()
             local sub= root:CreateCheckbox(
                 e.onlyChinese and '启用' or ENABLE,
             function()
-                return Save().notStatusPlus
+                return not Save().notStatusPlus
             end, function ()
                 self:set_enabel_disable()
             end)
@@ -87,6 +87,9 @@ local function Init_Button()
 
             root:CreateDivider()
             root:CreateTitle(self.addName)
+--打开选项界面
+            WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_PaperDollMixin.addName,})
+            root:CreateDivider()
             WoWTools_MenuMixin:Reload(root)
         end)
     else

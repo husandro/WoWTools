@@ -517,6 +517,7 @@ function WoWTools_MenuMixin:OpenOptions(root, tab)
 end
 --[[
 --打开选项界面
+WoWTools_MenuMixin:OpenOptions(root, {name=,})
 WoWTools_MenuMixin:OpenOptions(root, {
 name=,
 name2=,

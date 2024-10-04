@@ -182,11 +182,21 @@ end
 
 
 
+
+
+
+
+
+
+
 local function Init_Sub_Menu(_, root, stat, index, name)
     local stats= Find_Stats(stat, index, false)
+
     if not stats then
         return
     end
+
+    local p_stats= Find_Stats(stat, index, true) or {}
 
     local sub
     root:CreateTitle(name..' '..stat..' '..index)
@@ -197,7 +207,8 @@ local function Init_Sub_Menu(_, root, stat, index, name)
         sub=root:CreateCheckbox(
             format('%s |cnGREEN_FONT_COLOR:'..va..'|r',
                 e.onlyChinese and '自动隐藏'
-                or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE)),
+                or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE))
+            ..(p_stats.hideAt==va and '|A:auctionhouse-icon-favorite:0:0|a' or ''),
         function(data)
             local tab= Find_Stats(data.stat, data.index, false)
             return tab and tab.hideAt== data.value
@@ -211,14 +222,13 @@ local function Init_Sub_Menu(_, root, stat, index, name)
                 end
                 Data_Save()
             end
-        end, {stat=stat, index=index, value=va, hideAt=stats.hideAt})
+        end, {stat=stat, index=index, value=va, hideAt=stats.hideAt, p_hideAt=p_stats.hideAt})
 
         sub:SetTooltip(function(tooltip, description)
-            local tab= Find_Stats(description.data.stat, description.data.index, true)
             tooltip:AddLine(
                 (e.onlyChinese and '默认' or DEFAULT)
-                ..': '..
-                (Get_Primary_Text(tab and tab.hideAt) or (e.onlyChinese and '无' or NONE))
+                ..': '
+                ..(description.data.p_hideAt or (e.onlyChinese and '无' or NONE))
             )
             tooltip:AddLine(' ')
             tooltip:AddLine(format('<='..description.data.value..' %s', e.onlyChinese and '隐藏' or HIDE))
@@ -227,10 +237,10 @@ local function Init_Sub_Menu(_, root, stat, index, name)
 
 --职责，设置
     root:CreateDivider()
-
     for i= Enum.LFGRole.Tank, Enum.LFGRole.Damage, 1 do
         sub=root:CreateCheckbox(
-            Get_Role_Text(i),--职责
+            Get_Role_Text(i)--职责
+            ..(p_stats.roles and (p_stats.roles[1]==i or p_stats.roles[2]==i or p_stats.roles[3]==i) and '|A:auctionhouse-icon-favorite:0:0|a' or ''),
         function(data)
             local tank, n, dps= Find_Roles(stats.roles)
             if data.value==Enum.LFGRole.Tank then
@@ -269,14 +279,13 @@ local function Init_Sub_Menu(_, root, stat, index, name)
                     Data_Save()
                 end
             end
-        end, {stat=stat, index=index, value=i, roles=stats.roles})
+        end, {stat=stat, index=index, value=i, roles=stats.roles, p_roles=p_stats.roles})
 
         sub:SetTooltip(function(tooltip, description)
-            local tab= Find_Stats(description.data.stat, description.data.index, true)
             local find
-            if tab and tab.roles then
-                for _, roleInde in pairs(tab.roles) do
-                    tooltip:AddLine((e.onlyChinese and '默认' or DEFAULT)..': '..Get_Role_Text(roleInde))
+            if description.data.p_roles then
+                for _, roleIndex in pairs(description.data.p_roles) do
+                    tooltip:AddLine((e.onlyChinese and '默认' or DEFAULT)..': '..Get_Role_Text(roleIndex))
                     find= true
                 end
             end
@@ -290,7 +299,8 @@ local function Init_Sub_Menu(_, root, stat, index, name)
     root:CreateDivider()
     for _, primary in pairs({LE_UNIT_STAT_STRENGTH, LE_UNIT_STAT_AGILITY , LE_UNIT_STAT_INTELLECT}) do
         sub=root:CreateCheckbox(
-            format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, Get_Primary_Text(primary)),
+            format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, Get_Primary_Text(primary))
+            ..(p_stats.primary==primary and '|A:auctionhouse-icon-favorite:0:0|a' or ''),
         function(data)
             local tab= Find_Stats(data.stat, data.index, false) or {}
             return tab and tab.primary==data.value
@@ -404,7 +414,7 @@ local function Init_Menu(self, root)
     function()
         PAPERDOLL_STATCATEGORIES= {}
         Data_Save()
-        return MenuResponse.Refresh
+        return MenuResponse.CloseAll
     end)
 
 --还原
@@ -416,19 +426,21 @@ local function Init_Menu(self, root)
         PAPERDOLL_STATCATEGORIES= P_PAPERDOLL_STATCATEGORIES
         Save().PAPERDOLL_STATCATEGORIES=nil
         e.call(PaperDollFrame_UpdateStats)
-        return MenuResponse.Refresh
+        return MenuResponse.CloseAll
     end)
 
---属性
+--Plus
+    sub:CreateDivider()
     sub2=sub:CreateCheckbox(
         'Plus|A:communities-icon-addchannelplus:0:0|a',
     function()
         return not Save().notStatusPlusFunc
     end, function()
         Save().notStatusPlusFunc= not Save().notStatusPlusFunc and true or nil
-        --print(e.addName, WoWTools_PaperDollMixin.addName, e.GetEnabeleDisable(not Save().notStatusPlusFunc), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
     sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine((e.onlyChinese and '急速' or SPELL_HASTE)..': |cffffffff9037|r|cnGREEN_FONT_COLOR:+13%')
+        tooltip:AddLine(' ')
         tooltip:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
@@ -445,11 +457,16 @@ local function Init_Menu(self, root)
         end, {bit=i})
     end
 
+    sub:CreateDivider()
+    sub:CreateTitle(self.addName)
+--打开选项界面
+    WoWTools_MenuMixin:OpenOptions(sub, {name=WoWTools_PaperDollMixin.addName,})
 
 --reload
     sub:CreateDivider()
     WoWTools_MenuMixin:Reload(sub)
 
+--属性，选项
     root:CreateDivider()
     Init_Status_Menu(self, root)
 end
