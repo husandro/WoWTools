@@ -27,7 +27,8 @@ end
     end
 end
 local function create_status_label(frame, rating)
-    if not Save().hide and Save().itemLevelBit>0 and frame:IsShown() then
+    local save=Save()
+    if not save.hide and save.itemLevelBit>0 and frame:IsShown() then
         if not frame.numLabel then
             frame.numLabel=WoWTools_LabelMixin:Create(frame, {color={r=1,g=1,b=1}})
             frame.numLabel:SetPoint('LEFT', frame.Label, 'RIGHT',2,0)
@@ -338,8 +339,9 @@ local function Init_Defense()
     end)
 
     hooksecurefunc('PaperDollFrame_SetLabelAndText', function(statFrame, _, text, isPercentage, numericValue)
-        if not Save().hide and Save().itemLevelBit>0 and (isPercentage or (type(text)=='string' and text:find('%%'))) then--and select(2, math.modf(numericValue))>0 then
-            statFrame.Value:SetFormattedText('%.0'..Save().itemLevelBit..'f%%', numericValue)
+        local save= Save()
+        if not save.hide and save.itemLevelBit>0 and (isPercentage or (type(text)=='string' and text:find('%%'))) then--and select(2, math.modf(numericValue))>0 then
+            statFrame.Value:SetFormattedText('%.0'..save.itemLevelBit..'f%%', numericValue)
         end
     end)
 end
@@ -361,11 +363,7 @@ end
 
 
 
-
-
-
-local function Init()
-    --功击速度，放在前前，原生出错
+    --[[功击速度，放在前前，原生出错
     function PaperDollFrame_SetAttackSpeed(statFrame, unit)
         local meleeHaste = GetMeleeHaste()
         local speed, offhandSpeed = UnitAttackSpeed(unit)
@@ -383,17 +381,24 @@ local function Init()
         if statFrame.numLabel then
             statFrame.numLabel:SetText('')
         end
-    end
+    end]]
 
+
+local function Init()
     if Save().notStatusPlusFunc then
         return
     end
+    print('a')
+
+
+    
 
 
 
 
     hooksecurefunc('PaperDollFrame_SetItemLevel', function(statFrame)--物品等级，小数点
-        if statFrame:IsShown() and not Save().hide and Save().itemLevelBit>0 then
+        local save= Save()
+        if statFrame:IsShown() and not save.hide and save.itemLevelBit>0 then
             local avgItemLevel, avgItemLevelEquipped, avgItemLevelPvP = GetAverageItemLevel()
 	        local minItemLevel = C_PaperDollInfo.GetMinItemLevel()
 	        local displayItemLevel = math.max(minItemLevel or 0, avgItemLevelEquipped)
@@ -402,7 +407,7 @@ local function Init()
                 pvp= format('/|cffff7f00%i|r', avgItemLevelPvP)
             end
             if statFrame.numericValue ~= displayItemLevel then
-                statFrame.Value:SetFormattedText('%.0'..Save().itemLevelBit..'f%s', displayItemLevel, pvp)
+                statFrame.Value:SetFormattedText('%.0'..save.itemLevelBit..'f%s', displayItemLevel, pvp)
             end
         end
     end)
@@ -413,8 +418,7 @@ local function Init()
         end
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, WoWTools_PaperDollMixin.addName)
-        e.tips:AddLine(format('|A:communities-icon-addchannelplus:0:0|a%s Plus', e.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES))
+        e.tips:AddDoubleLine(WoWTools_PaperDollMixin.addName, WoWTools_PaperDollMixin.StatusPlusButton)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine((e.onlyChinese and '小数点 ' or 'bit ')..(Save().itemLevelBit==0 and '|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE)..'|r' or ('|cnGREEN_FONT_COLOR:'..Save().itemLevelBit)), '-1'..e.Icon.left)
         e.tips:AddDoubleLine('0 '..(e.onlyChinese and '禁用' or DISABLE), '+1'..e.Icon.right)

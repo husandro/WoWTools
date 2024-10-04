@@ -449,6 +449,7 @@ local function Init_Menu(self, root)
 --小数点
     for i=0, 4 do
         sub2:CreateRadio(
+        
             (e.onlyChinese and '小数点 ' or 'bit ')..i,
         function(data)
             return Save().itemLevelBit==data.bit
@@ -460,9 +461,9 @@ local function Init_Menu(self, root)
     end
 
     sub:CreateDivider()
-    sub:CreateTitle(self.addName)
+    --sub:CreateTitle(self.addName)
 --打开选项界面
-    WoWTools_MenuMixin:OpenOptions(sub, {name=WoWTools_PaperDollMixin.addName,})
+    WoWTools_MenuMixin:OpenOptions(sub, {name=WoWTools_PaperDollMixin.addName, name2=self.addName})
 
 --reload
     sub:CreateDivider()
