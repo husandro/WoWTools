@@ -65,8 +65,8 @@ local function Settings()
 
     if InspectFrame then
         InspectLevelText:set_font_size()
+        InspectFrame:set_status_label()--目标，属性
         InspectFrame.ShowHideButton:SetNormalAtlas(Save().hide and e.Icon.disabled or e.Icon.icon)
-        InspectFrame.set_status_label()--目标，属性
         if InspectFrame:IsShown() then
             e.call(InspectPaperDollFrame_UpdateButtons)--InspectPaperDollFrame.lua
             e.call(InspectPaperDollFrame_SetLevel)--目标,天赋 装等

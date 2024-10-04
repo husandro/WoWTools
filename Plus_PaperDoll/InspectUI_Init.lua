@@ -17,10 +17,14 @@ local StatusLabel--装备，属性
 
 
 local function set_InspectPaperDollItemSlotButton_Update(self)
+    local unit= InspectFrame.unit
+    
     local slot= self:GetID()
-	local link= not Save().hide and GetInventoryItemLink(InspectFrame.unit, slot) or nil
+	local link= (UnitExists(unit) and not Save().hide) and GetInventoryItemLink(unit, slot) or nil
 	e.LoadData({id=link, type='item'})--加载 item quest spell
+    
     --set_Gem(self, slot, link)
+
     WoWTools_PaperDollMixin:Set_Item_Tips(self, slot, link, false)
     WoWTools_PaperDollMixin:Set_Slot_Num_Label(self, slot, link and true or false)--栏位, 帐号最到物品等级
     WoWTools_ItemStatsMixin:SetItem(self, link, {point=self.icon})
@@ -45,27 +49,44 @@ local function set_InspectPaperDollItemSlotButton_Update(self)
     self.link= link
 
     if link and not self.itemLinkText then
-        self.itemLinkText= WoWTools_LabelMixin:Create(self, {size=14})
-        --local h=self:GetHeight()/3
+        self.itemLinkText= WoWTools_LabelMixin:Create(self, {size=16})
         if slot==16 then
-            self.itemLinkText:SetPoint('BOTTOMRIGHT', InspectPaperDollFrame, 'BOTTOMLEFT', 6,15)
+            self.itemLinkText:SetPoint('BOTTOMRIGHT', InspectPaperDollFrame, 'BOTTOMLEFT', 6, 12)
+            self.itemLinkText.isLeft=true
         elseif slot==17 then
-            self.itemLinkText:SetPoint('BOTTOMLEFT', InspectPaperDollFrame, 'BOTTOMRIGHT', -5,15)
+            self.itemLinkText:SetPoint('BOTTOMLEFT', InspectPaperDollFrame, 'BOTTOMRIGHT', -5, 12)
         elseif WoWTools_PaperDollMixin:Is_Left_Slot(slot) then
             self.itemLinkText:SetPoint('RIGHT', self, 'LEFT', -2,0)
+            self.itemLinkText.isLeft=true
         else
             self.itemLinkText:SetPoint('LEFT', self, 'RIGHT', 5,0)
         end
+
+
+        self.itemBG= self:CreateTexture(nil, 'BACKGROUND')
+        self.itemBG:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
+        self.itemBG:SetAlpha(0.7)
+        --self.itemBG:SetVertexColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b)
+        self.itemBG:SetPoint('TOPLEFT', self.itemLinkText)
+        self.itemBG:SetPoint('BOTTOMRIGHT', self.itemLinkText)
     end
     if self.itemLinkText then
         if link then
-            local itemID= GetInventoryItemID(InspectFrame.unit, slot)
+            local itemID= GetInventoryItemID(unit, slot)
             local cnName= e.cn(nil, {itemID=itemID, isName=true})
             if cnName then
                 cnName= cnName:match('|cff......(.+)|r') or cnName
                 local atlas= link:match('%[(.-) |A') or link:match('%[(.-)]')
                 if atlas then
                     link= link:gsub(atlas, cnName)
+                end
+            end
+            local slotTexture= GetInventoryItemTexture(unit, slot)
+            if slotTexture then
+                if self.itemLinkText.isLeft then
+                    link= '|T'..slotTexture..':22|t'..link
+                else
+                    link= link..'|T'..slotTexture..':22|t'
                 end
             end
         end
@@ -153,6 +174,7 @@ local function Init_UI()
 --装备，属性
     StatusLabel= WoWTools_LabelMixin:Create(InspectPaperDollFrame, {size=14})
     StatusLabel:SetPoint('TOPLEFT', InspectFrameTab1, 'BOTTOMLEFT',0,-2)
+
     function InspectFrame:set_status_label()
         local unit=self.unit
         local text
@@ -185,9 +207,8 @@ local function Init_UI()
 
 --试衣间, 按钮
     InspectPaperDollFrame.ViewButton:ClearAllPoints()
-    InspectPaperDollFrame.ViewButton:SetPoint('TOPRIGHT', -5, -30)
-
-    InspectPaperDollFrame.ViewButton:SetSize(25,25)
+    InspectPaperDollFrame.ViewButton:SetPoint('TOPRIGHT', -5, -28)
+    InspectPaperDollFrame.ViewButton:SetSize(28,28)
     InspectPaperDollFrame.ViewButton:SetText(e.onlyChinese and '试' or WoWTools_TextMixin:sub(VIEW,1))
     InspectPaperDollFrame.ViewButton:HookScript('OnLeave', GameTooltip_Hide)
     InspectPaperDollFrame.ViewButton:HookScript('OnEnter', function(self)
@@ -198,7 +219,7 @@ local function Init_UI()
     end)
 
 --天赋，按钮
-    InspectPaperDollItemsFrame.InspectTalents:SetSize(25,25)
+    InspectPaperDollItemsFrame.InspectTalents:SetSize(28,28)
     InspectPaperDollItemsFrame.InspectTalents:SetText(e.onlyChinese and '赋' or WoWTools_TextMixin:sub(TALENT,1))
     InspectPaperDollItemsFrame.InspectTalents:HookScript('OnLeave', GameTooltip_Hide)
     InspectPaperDollItemsFrame.InspectTalents:HookScript('OnEnter', function(self)
