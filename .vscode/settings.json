@@ -5024,7 +5024,9 @@
         "EquipmentManager",
         "SPELL_HASTE",
         "DRESSUP_FRAME",
-        "INSPECT_TALENTS_BUTTON"
+        "INSPECT_TALENTS_BUTTON",
+        "GearSetButton_OpenPopup",
+        "GearSetButton_UpdateSpecInfo"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

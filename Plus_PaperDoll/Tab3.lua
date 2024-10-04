@@ -25,7 +25,7 @@ local function Set_Tooltip(frame)
             e.tips:AddLine(' ')
         end
         e.tips:AddDoubleLine(self.tooltip, self.tooltip2, 0,1,0,0,1,0)
-        e.tips:AddDoubleLine(e.addName, WoWTools_PaperDollMixin.addName)
+        --e.tips:AddDoubleLine(e.addName, WoWTools_PaperDollMixin.addName)
         e.tips:Show()
         self:SetAlpha(0.3)
     end)

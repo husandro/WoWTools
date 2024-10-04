@@ -151,9 +151,8 @@ local function Create_Button(index)
 
     Set_Point(btn, index)--设置位置
 
-    btn:SetScript("OnClick",function(self)
+    btn:SetScript("OnClick",function(self, d)
         local notCan= WoWTools_ItemMixin:IsCan_EquipmentSet(self.setID)--装备管理，能否装备
-
         if not notCan then
             C_EquipmentSet.UseEquipmentSet(self.setID)
 

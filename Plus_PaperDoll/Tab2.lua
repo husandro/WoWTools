@@ -101,7 +101,7 @@ local function Init_Button()
         self:settings()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinese and '头衔' or PAPERDOLL_SIDEBAR_TITLES, WoWTools_PaperDollMixin.addName)
+        e.tips:AddLine(e.onlyChinese and '头衔' or PAPERDOLL_SIDEBAR_TITLES)--, WoWTools_PaperDollMixin.addName)
         local known= #GetKnownTitles()-1
         e.tips:AddDoubleLine(
             '|cnGREEN_FONT_COLOR:'..known,

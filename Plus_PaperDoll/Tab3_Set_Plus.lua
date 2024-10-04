@@ -80,7 +80,7 @@ local function Setttings(btn)
 
         btn:HookScript('OnEnter', function(self)
             if self.setID and not Save().hide then
-                local notCan= WoWTools_ItemMixin:IsCan_EquipmentSet(self.setID) and '|cff9e9e9e' or ''
+                local notCan= WoWTools_ItemMixin:IsCan_EquipmentSet(self.setID)
                 GameTooltip:AddDoubleLine(notCan or ' ', (notCan and '|cff9e9e9e' or '')..(e.onlyChinese and '装备' or EQUIPSET_EQUIP)..e.Icon.right)
                 GameTooltip:Show()
             end
