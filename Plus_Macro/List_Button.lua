@@ -251,15 +251,19 @@ local function Create_Button(name)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
 
-        e.tips:AddDoubleLine(e.addName, WoWTools_MacroMixin.addName)
-        local col= UnitAffectingCombat('player') and '|cnRED_FONT_COLOR:' and (self:find_text() and '|cff9e9e9e') or ''
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(col..self.text..(self.tip or ''), e.Icon.left)
-        if self.text2 then
+        if UnitAffectingCombat('player') then
+            e.tips:AddLine(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
+        else
+            e.tips:AddDoubleLine(e.addName, WoWTools_MacroMixin.addName)
+            local col= self:find_text() and '|cff9e9e9e' or ''
             e.tips:AddLine(' ')
-            col= self:find_text(true) and '|cff9e9e9e' or ''
+            e.tips:AddDoubleLine(col..self.text..(self.tip or ''), e.Icon.left)
+            if self.text2 then
+                e.tips:AddLine(' ')
+                col= self:find_text(true) and '|cff9e9e9e' or ''
+            end
+            e.tips:AddDoubleLine(col..self.text2..(self.tip2 or ''), e.Icon.right)
         end
-        e.tips:AddDoubleLine(col..self.text2..(self.tip2 or ''), e.Icon.right)
         e.tips:Show()
     end
     btn:SetScript('OnClick', function(self, d)
@@ -360,56 +364,7 @@ local function Create_Spell_Menu(root, spellID, icon, name, index)--创建，法
         WoWTools_ChatMixin:Chat(link, nil, true)
         return MenuResponse.Open
     end, {spellID=spellID})
-
 end
-    --[[e.LibDD:UIDropDownMenu_AddButton({
-        text= format('|A:%s:0:0|a', texture or '')..name..(macroText and '|cnGREEN_FONT_COLOR:*|r' or ''),
-        tooltipOnButton=true,
-        tooltipTitle=headText,
-        tooltipText=tipText,
-        colorCode=color,
-        icon=icon,
-        tSizeX=32,
-        tSizeY=32,
-        --keepShownOnClick=true,
-        arg1={spellName=name, spellID=spellID, icon=spellIcon},
-
-        notCheckable=true,
-        func= function(_, tab)
-            if IsShiftKeyDown() then
-                local link=C_Spell.GetSpellLink(tab.spellID) or C_Spell.GetSpellName(tab.spellID) or tab.spellID
-                link= 'spellID=='..tab.spellID..'--'..link
-                WoWTools_ChatMixin:Chat(link, nil, true)
-                --if not ChatEdit_InsertLink(link) then
-                    --ChatFrame_OpenChat(link)
-                --end
-
-           -- elseif IsControlKeyDown() then
-                --e.call(SpellBookFrame_OpenToSpell, tab.spellID)
-                --print(e.addName, WoWTools_MacroMixin.addName, '|cnRED_FONT_COLOR:BUG|r', 'Ctrl+'..e.Icon.left..(e.onlyChinese and '查询' or WHO))
-
-            elseif IsAltKeyDown() then
-                WoWTools_MacroMixin:SetMacroTexture(tab.icon)--修改，当前图标
-            else
-                local text=''
-                local macroText2, showName= Get_Spell_Macro(tab.spellName, tab.spellID)
-                local macro= MacroFrameText:GetText() or ''
-                if not macro:find('#showtooltip') then
-                    text= '#showtooltip'..(showName and ' '..showName or '')..'\n'
-                end
-                if not macro:find('/targetenemy') then
-                    text= text..'/targetenemy [noharm][dead]\n'
-                end
-
-                text= text..(macroText2 or ('/cast '..tab.spellName))..'\n'
-
-                --MacroFrameText:SetCursorPosition(0)
-                MacroFrameText:Insert(text)
-                MacroFrameText:SetFocus()
-            end
-        end
-    }, 1)]]
-
 
 
 
@@ -477,7 +432,6 @@ end
 
 
 
-
 local function Init_SpellBook_Menu(self, root)
     if WoWTools_MenuMixin:CheckInCombat(root) then--战斗中
         return
@@ -500,6 +454,11 @@ local function Init_SpellBook_Menu(self, root)
     end
 
 end
+
+
+
+
+
 
 
 
@@ -565,6 +524,7 @@ local function Init_List()
     local pvpButton= WoWTools_ButtonMixin:Cbtn(last, {atlas='pvptalents-warmode-swords'})--pvptalents-warmode-swords-disabled
     pvpButton:SetPoint('LEFT', last, 'RIGHT')
     pvpButton:SetScript('OnMouseDown', function(self)
+
         e.LibDD:UIDropDownMenu_Initialize(MacroFrame.Menu, function()
             local slotInfo = C_SpecializationInfo.GetPvpTalentSlotInfo(1)
             if slotInfo and  slotInfo.availableTalentIDs then
@@ -880,6 +840,7 @@ end
 
 
 
+
 local function Init_Other_Button()
     --目标
     local attck= Create_Button(e.onlyChinese and '目标' or TARGET)
@@ -899,6 +860,15 @@ local function Init_Other_Button()
     cancel.text= '/petattack\n/startattack\n'
     cancel.text2= '/petfollow\n/stopattack\n/stopcasting\n'
 end
+
+
+
+
+
+
+
+
+
 
 
 

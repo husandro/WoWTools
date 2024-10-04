@@ -126,10 +126,10 @@ local function Init()
     MacroFrame.Menu= CreateFrame("Frame", nil, MacroFrame, "UIDropDownMenuTemplate")
 
 
-    WoWTools_MacroMixin:Init_Macro_List()--宏列表，位置
+    WoWTools_MacroMixin:Init_Button()--宏列表，位置
     WoWTools_MacroMixin:Init_Select_Macro_Button()--选定宏，点击，弹出菜单，自定图标
     WoWTools_MacroMixin:Init_List_Button()--命令，按钮，列表
-    WoWTools_MacroMixin:Init_Create_Button()--创建，空，按钮
+    WoWTools_MacroMixin:Init_AddNew_Button()--创建，空，按钮
 end
 
 

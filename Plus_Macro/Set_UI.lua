@@ -110,7 +110,7 @@ local function Init_Other()
         btn.SelectedTexture:SetVertexColor(0,1,1)
         btn:SetScript('OnDoubleClick', function()--删除，宏 Alt+双击
             if IsAltKeyDown() and not UnitAffectingCombat('player') then
-                MacroFrame:DeleteMacro()
+                e.call(MacroFrame.DeleteMacro, MacroFrame)
             end
         end)
     end)
@@ -127,10 +127,10 @@ local function Init_Other()
 
 
 
-    --保存，提示
+    --[[保存，提示
     MacroSaveButton.saveTip= MacroSaveButton:CreateTexture(nil, 'OVERLAY')
     MacroSaveButton.saveTip:SetPoint('LEFT')
-    MacroSaveButton.saveTip:SetSize(22,22)
+    MacroSaveButton.saveTip:SetSize(18, 18)
     MacroSaveButton.saveTip:SetAtlas('auctionhouse-icon-favorite')
     MacroSaveButton.saveTip:Hide()
     local function set_saveTip()
@@ -142,7 +142,7 @@ local function Init_Other()
         MacroSaveButton.saveTip:SetShown(show)
     end
     MacroFrameText:HookScript('OnTextChanged', set_saveTip)
-    MacroSaveButton:HookScript('OnClick', set_saveTip)
+    MacroSaveButton:HookScript('OnClick', set_saveTip)]]
 
 
 
@@ -157,6 +157,8 @@ local function Init_Other()
     MacroFrameTab2.label:SetPoint('BOTTOM', MacroFrameTab2, 'TOP', 0, -8)
     MacroFrameTab2.label:SetAlpha(0.7)
     MacroFrameTab2.label:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
+
+
     hooksecurefunc(MacroFrame, 'Update', function()
     	local numAccountMacros, numCharacterMacros
         numAccountMacros, numCharacterMacros = GetNumMacros()

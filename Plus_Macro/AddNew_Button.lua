@@ -280,6 +280,6 @@ end
 
 
 
-function WoWTools_MacroMixin:Init_Create_Button()--创建，空，按钮
+function WoWTools_MacroMixin:Init_AddNew_Button()--创建，空，按钮
     Init()
 end

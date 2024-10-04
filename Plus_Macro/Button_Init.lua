@@ -13,11 +13,8 @@ end
 local function Init()
     local toRightButton= WoWTools_ButtonMixin:Cbtn(MacroFrame.TitleContainer, {size={20,20}, icon='hide'})
     toRightButton:SetAlpha(0.5)
-    if _G['MoveZoomInButtonPerMacroFrame'] then
-        toRightButton:SetPoint('RIGHT', _G['MoveZoomInButtonPerMacroFrame'], 'LEFT')
-    else
-        toRightButton:SetPoint('LEFT',0, -2)
-    end
+    toRightButton:SetPoint('LEFT',0, -2)
+
     function toRightButton:set_texture()
         if Save().toRightLeft==1 then--左边
             self:SetNormalAtlas(e.Icon.toLeft)
@@ -27,6 +24,7 @@ local function Init()
             self:SetNormalAtlas(e.Icon.icon)
         end
     end
+
     function toRightButton:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
@@ -60,7 +58,7 @@ local function Init()
                 Save().toRightLeft=nil--默认
             end
             Save().toRight= not Save().toRight and true or nil
-            MacroFrame:ChangeTab(1)
+            e.call(MacroFrame.ChangeTab, MacroFrame, 1)
             self:set_texture()
             self:set_tooltips()
         else
@@ -73,6 +71,47 @@ local function Init()
 
 
 
+    --设置，宏，图标，位置，长度
+    hooksecurefunc(MacroFrame, 'ChangeTab', function(self, tabID)
+        self.MacroSelector:ClearAllPoints()
+        if tabID==1 and (Save().toRightLeft==1 or Save().toRightLeft==2) then
+            if Save().toRightLeft==1 then--左边
+                self.MacroSelector:SetPoint('TOPRIGHT', self, 'TOPLEFT',10,-12)
+                self.MacroSelector:SetPoint('BOTTOMLEFT', -319, 0)
+            else--右边
+                self.MacroSelector:SetPoint('TOPLEFT', self, 'TOPRIGHT',0,-12)
+                self.MacroSelector:SetPoint('BOTTOMRIGHT', 319, 0)
+            end
+        else
+            self.MacroSelector:SetPoint('TOPLEFT', 12,-66)
+            self.MacroSelector:SetPoint('BOTTOMRIGHT', MacroFrame, 'RIGHT', -6, 0)
+        end
+        --self:Update()
+        --备注
+        if not MacroFrame.NoteEditBox and Save().toRightLeft and MacroFrame.macroBase==0 then
+            MacroFrame.NoteEditBox=WoWTools_EditBoxMixn:CreateMultiLineFrame(MacroFrame, {
+                font='GameFontHighlightSmall',
+                instructions= e.onlyChinese and '备注' or LABEL_NOTE
+            })
+            MacroFrame.NoteEditBox:SetPoint('TOPLEFT', 8, -65)
+            MacroFrame.NoteEditBox:SetPoint('BOTTOMRIGHT', MacroFrame, 'RIGHT', -6, 0)
+
+            function MacroFrame.NoteEditBox:set_text()
+                self:SetText(Save().noteText or '')
+            end
+            MacroFrame.NoteEditBox.editBox:SetScript('OnHide', function(s)--保存备注
+                Save().noteText= s:GetText()
+                s:ClearFocus()
+            end)
+            MacroFrame.NoteEditBox.editBox:SetScript('OnShow', MacroFrame.NoteEditBox.set_text)
+            if MacroFrame.NoteEditBox:IsShown() then
+                MacroFrame.NoteEditBox:set_text()
+            end
+        end
+        if self.NoteEditBox then
+            self.NoteEditBox:SetShown((Save().toRightLeft and MacroFrame.macroBase==0) and true or false)
+        end
+    end)
 end
 
 
@@ -80,6 +119,23 @@ end
 
 
 
-function WoWTools_MacroMixin:Init_Macro_List()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function WoWTools_MacroMixin:Init_Button()
     Init()
 end
