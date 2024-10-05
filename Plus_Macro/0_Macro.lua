@@ -2,7 +2,7 @@ local id, e= ...
 WoWTools_MacroMixin={
 Save={
     --disabled= not e.Player.husandro,
-    --toRightLeft= 1,2, nil --左边 右边 默认
+    toRightLeft=3, -- 1,2, 3 左边 右边 默认
     spellButton=e.Player.husandro,
     mcaro={},-- {name=tab.name, icon=tab.icon, body=tab.body}
 },
@@ -159,6 +159,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1==id then
             if WoWToolsSave[MACRO] then
                 WoWTools_MacroMixin.Save= WoWToolsSave[MACRO]
+                if WoWTools_MacroMixin.Save.toRightLeft==nil then
+                    WoWTools_MacroMixin.Save=3
+                end
                 WoWToolsSave[MACRO]= nil
             else
                 WoWTools_MacroMixin.Save= WoWToolsSave['Plus_Macro'] or Save()
