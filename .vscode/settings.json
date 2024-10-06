@@ -5027,7 +5027,8 @@
         "INSPECT_TALENTS_BUTTON",
         "GearSetButton_OpenPopup",
         "GearSetButton_UpdateSpecInfo",
-        "PVP_LABEL_PVP_TALENTS"
+        "PVP_LABEL_PVP_TALENTS",
+        "LFG_LIST_APP_FULL"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

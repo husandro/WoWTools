@@ -534,7 +534,18 @@ end
 
 
 function WoWTools_MenuMixin:ClearAll(root, SetValue)
-    root:CreateButton('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL), SetValue)
+    local text= '|A:128-RedButton-Delete:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL)
+    return
+    
+    root:CreateButton(
+        text,
+    function(data)
+        StaticPopup_Show('WoWTools_RestData',data.name, nil, data.SetValue)
+        return MenuResponse.Open
+    end, {name=text, SetValue=SetValue})
+
+
+    --root:CreateButton('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL), SetValue)
 end
 --[[
 --全部清除

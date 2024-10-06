@@ -251,12 +251,18 @@ StaticPopupDialogs['WoWTools_GetMapID'] = {--区域,设置对话框
         text =e.addName..'|n|n%s',
         button1 = e.onlyChinese and '确定' or OKAY,
         button2 = e.onlyChinese and '取消' or CANCEL,
+        OnShow=function(self, data)
+            if data.OnShow then
+                data.OnShow(self, data)
+            end
+        end,
         OnAccept=function(self, data)
             data.SetValue(self, data)
         end,
         whileDead=true,
         hideOnEscape=true,
-        exclusive=true
+        exclusive=true,
+        showAlert=true,
     }
 --[[
 StaticPopup_Show('WoWTools_OK',

@@ -3,10 +3,14 @@ local e= select(2, ...)
 local function Save()
     return WoWTools_MacroMixin.Save
 end
+--[[
+local global, perChar = GetNumMacros()
+local isGolbal= MacroFrame.macroBase==0
+local isZero= (isGolbal and global==0) or (not isGolbal and perChar==0)
+local isMax= (isGolbal and MacroFrame.macroMax==global) or (not isGolbal and MacroFrame.macroMax==perChar)
+]]
 
-
-
-
+local Button
 
 
 
@@ -15,9 +19,9 @@ end
 --新建，宏，列表
 --#############
 local MacroButtonList={
-    {macro='/reload'},--134400
-    {macro='/fstack'},
-    {macro='/etrace'},
+    {macro='/reload', name='reload'},--134400
+    {macro='/fstack', name='fstack'},
+    {macro='/etrace', name='etrace'},
     {macro='#showtooltip\n/cast [mod:alt]\n/cast [mod:ctrl]\n/cast [mod:shift][noflyable]\n/cast [advflyable]\n/cast [swimming]\n/cast [flyable]', name='Mount'},
     {macro='/click ExtraActionButton1', name='Extra'},
     --{macro=, name=, icon=, },
@@ -25,21 +29,156 @@ local MacroButtonList={
 
 
 
-
---创建，宏
---#######
-local function Create_Macro_Button(name, icon, boy)
-    if MacroNewButton:IsEnabled() and not UnitAffectingCombat('player') then
-        local index = CreateMacro(name or ' ', icon or 134400, boy or '', MacroFrame.macroBase>0)- MacroFrame.macroBase
-        MacroFrame:SelectMacro(index or 1)
-        e.call(MacroFrame.Update, MacroFrame)
+local function Init_Menu(_, root)
+--战斗中/已满
+    if not MacroNewButton:IsEnabled() then
+        root:CreateTitle(e.onlyChinese and '已满' or LFG_LIST_APP_FULL)
+        return
+    elseif WoWTools_MenuMixin:CheckInCombat() then
+        return
     end
+
+
+
+--列表
+    local sub, sub2, sub3, num, num2, text
+    for _, tab in pairs(MacroButtonList) do
+        sub=root:CreateButton(
+            '|T'..(tab.icon or 0)..':0|t'..tab.name,
+        function(data)
+--新建，宏
+            WoWTools_MacroMixin:CreateMacroNew(data.name, data.icon, data.macro)
+            return MenuResponse.Open
+        end, {name=tab.name, icon=tab.icon, macro=tab.macro})
+--提示
+        sub:SetTooltip(function(tooltip, description)
+            tooltip:AddLine( '|T'..(description.data.icon or 0)..':0|t'
+                ..(WoWTools_MacroMixin:GetSpaceName(description.data.name) or '')
+            )
+            tooltip:AddLine(' ')
+            tooltip:AddLine(description.data.macro, nil, nil, nil, true)
+        end)
+--禁用/启用
+    end
+
+    
+
+
+--保存
+    root:CreateDivider()
+    local selectIndex= WoWTools_MacroMixin:GetSelectIndex()
+    local name, icon, body, saveName
+    if selectIndex then
+        name, icon, body = GetMacroInfo(selectIndex)
+        local itemName, itemLink= GetMacroItem(selectIndex)
+        local spellID= GetMacroSpell(selectIndex)
+        e.LoadData({id=itemLink, type='item'})
+        e.LoadData({id=spellID, type='spell'})
+        local spellName= spellID and C_Spell.GetSpellName(spellID)
+
+        saveName= (icon and ' |T'..(icon or 134400)..':0|t')..(name==' ' and itemName or spellName or name or ' ')
+    end
+    sub=root:CreateCheckbox(
+        ((not saveName or body=='') and '|cff9e9e9e' or '')
+        ..(e.onlyChinese and '保存' or SAVE)..(saveName or ''),
+    function(data)
+        return data.saveName and Save().macro[data.saveName]
+    end, function(data)
+        if data.saveName and data.body and data.body~='' then
+            Save().macro[data.saveName]= not Save().macro[data.saveName] and {name=name, icon=icon, body=body} or nil
+        end
+    end, {name=name, icon=icon, body=body, saveName=saveName})
+
+    sub:SetTooltip(function(tooltip, description)
+        tooltip:AddLine(description.data.saveName)
+        tooltip:AddLine(description.data.body)
+    end)
+
+--保存，列表
+    num=0
+    for saveName2, tab in pairs(Save().macro) do
+--新建, 列表内容
+        sub2=sub:CreateButton(
+            saveName2,
+        function(data)
+            WoWTools_MacroMixin:CreateMacroNew(data.tab.name, data.tab.icon, data.tab.body)--新建，宏
+        end, {saveName=saveName, tab=tab})
+        sub2:SetTooltip(function(tooltip, description)
+            tooltip:AddLine(description.data.saveName)
+            if description.data.tab.body then
+                tooltip:AddLine(description.data.tab.body)
+                tooltip:AddLine(' ')
+                tooltip:AddLine('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '新建' or NEW)..e.Icon.left)
+            else
+                tooltip:AddLine((e.onlyChinese '无' or NONE))
+            end
+        end)
+--删除
+        sub3=sub2:CreateCheckbox(
+            '|A:128-RedButton-Delete:0:0|a'
+            ..(e.onlyChinese and '删除' or DELETE),
+        function(data)
+            return Save().macro[data.saveName2]
+        end, function(data)
+            Save().macro[data.saveName2]= not Save().macro[data.saveName2] and data.tab or nil
+
+            if Save().macro[data.saveName2] then
+                print(WoWTools_MacroMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '保存' or SAVE))
+            else
+                print(WoWTools_MacroMixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '删除' or DELETE))
+                print(data.tab.body)
+            end
+        end, {saveName2=saveName2, tab=tab})
+        sub3:SetTooltip(function(tooltip, description)
+            tooltip:AddLine(description.data.saveName2)
+            tooltip:AddLine(description.data.tab.body)
+        end)
+        num=num+1
+    end
+
+    if num>1 then
+--全部清除
+        sub:CreateDivider()
+        WoWTools_MenuMixin:ClearAll(sub, function() Save().macro={} end)
+--SetGridMode
+        WoWTools_MenuMixin:SetGridMode(sub, num)
+    end
+
+
+
+
+
+
+
+
+    
+    root:CreateDivider()
+    sub=WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_MacroMixin.addName,})
+
+    
+    num, num2= GetNumMacros()
+    text= (e.onlyChinese and '全部删除，通用宏' or (format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DELETE, ALL)..', '..GENERAL_MACROS))
+    ..(num==0 and '|cff9e9e9e' or '')..num
+    sub:CreateButton(
+        '|A:128-RedButton-Delete:0:0|a'..text,
+    function()
+        StaticPopup_Show('WoWTools_OK',
+        '|A:128-RedButton-Delete:32:32|a'..text,
+        nil,
+        {SetValue=function()
+            if UnitAffectingCombat('player') then return end
+            print(WoWTools_MacroMixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '删除' or DELETE))
+            for i = GetNumMacros(), 1, -1 do
+                if IsModifierKeyDown() or UnitAffectingCombat('player') then
+                    return
+                end
+                name, icon, body = GetMacroInfo(i)
+                DeleteMacro(i)
+                print(i..') |T'..(icon or 134400)..':0|t'..(WoWTools_MacroMixin:GetSpaceName(name) or ''), '|cff9e9e9eAlt'..(e.onlyChinese and '取消' or CANCEL))
+            end
+        end})
+    end)
 end
-
-
-
-
-
 
 
 
@@ -47,29 +186,41 @@ end
 --创建，空，按钮
 --#############
 local function Init()
-    MacroFrame.newButton= WoWTools_ButtonMixin:Cbtn(MacroFrame, {size={22,22}, name='MacroNewEmptyButton', atlas='communities-chat-icon-plus'})
-    function MacroFrame.newButton:set_atlas()
-        self:SetNormalAtlas(MacroNewButton:IsEnabled() and 'communities-chat-icon-plus' or 'communities-chat-icon-minus')
-    end
-    MacroFrame.newButton:SetPoint('BOTTOMLEFT', MacroFrameTab2, 'BOTTOMRIGHT',2 ,0)
-    MacroFrame.newButton:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
-    function MacroFrame.newButton:set_Tooltips()
+    Button= WoWTools_ButtonMixin:Cbtn(MacroFrame, {size={22,22}, name='WoWTools_MacroNewEmptyButton', icon='hide'})
+    Button.texture= Button:CreateTexture(nil, 'ARTWORK')
+    Button.texture:SetAtlas('communities-chat-icon-plus')
+    Button.texture:SetAllPoints()
+
+    Button:SetPoint('BOTTOMLEFT', MacroFrameTab2, 'BOTTOMRIGHT',2 ,0)
+    Button:SetScript('OnLeave', GameTooltip_Hide)
+    function Button:set_Tooltips()
+        local col= WoWTools_MacroMixin:IsCanCreateNewMacro() and '' or '|cff9e9e9e'
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, WoWTools_MacroMixin.addName)
-        e.tips:AddLine(' ')
-        local bat= UnitAffectingCombat('player')
-        e.tips:AddDoubleLine(
-            ((not MacroNewButton:IsEnabled() or bat) and '|cff9e9e9e' or '')
-            ..(e.onlyChinese and '新建' or NEW), e.Icon.left
-        )
-        e.tips:AddDoubleLine((bat and '|cff9e9e9e' or '')..(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU), e.Icon.right)
+        e.tips:AddDoubleLine(col..(e.onlyChinese and '新建' or NEW)..e.Icon.left, e.Icon.right..col..(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU))
         e.tips:Show()
-        self:SetAlpha(0.5)
     end
-    MacroFrame.newButton:SetScript('OnEnter', MacroFrame.newButton.set_Tooltips)
 
-    MacroFrame.newButton:SetScript('OnMouseDown', function(self, d)--MacroPopupFrameMixin:OkayButton_OnClick()
+    Button:SetScript('OnEnter', Button.set_Tooltips)
+    Button:SetScript('OnMouseDown', function(self, d)
+        if d=='LeftButton' then
+            WoWTools_MacroMixin:CreateMacroNew()--新建，宏
+        elseif d=='RightButton' then
+            MenuUtil.CreateContextMenu(self, Init_Menu)
+        end
+    end)
+    Button:SetScript('OnMouseUp', Button.set_Tooltips)
+
+
+    hooksecurefunc(MacroFrame, 'UpdateButtons', function()
+        if WoWTools_MacroMixin:IsCanCreateNewMacro() then
+            Button.texture:SetVertexColor(0,1,0)
+        else
+            Button.texture:SetVertexColor(1,1,1)
+        end
+    end)
+end
+    --[[MacroFrame.newButton:SetScript('OnMouseDown', function(self, d)--MacroPopupFrameMixin:OkayButton_OnClick()
         if UnitAffectingCombat('player') then
             return
         end
@@ -77,7 +228,7 @@ local function Init()
 
         --添加，空，按钮
         if d=='LeftButton' then
-            Create_Macro_Button(nil, nil, '')
+            WoWTools_MacroMixin:CreateMacroNew(nil, nil, '')
             self:set_Tooltips()
             return
         end
@@ -90,7 +241,7 @@ local function Init()
             local bat= UnitAffectingCombat('player')
 
             if menuList=='SAVE' then--二级菜单，保存宏，列表 {name=tab.name, icon=tab.icon, body=tab.body}
-                for index, tab in pairs(Save().mcaro) do
+                for index, tab in pairs(Save().macro) do
                     e.LibDD:UIDropDownMenu_AddButton({
                         text='|T'..tab.icon..':0|t'..tab.name,
                         tooltipOnButton=true,
@@ -104,10 +255,10 @@ local function Init()
                         keepShownOnClick=true,
                         func= function(s, arg1, arg2)
                             if IsControlKeyDown() then
-                                table.remove(Save().mcaro, arg2)
+                                table.remove(Save().macro, arg2)
                                 s:GetParent():Hide()
                             elseif not IsModifierKeyDown() then
-                                Create_Macro_Button(arg1.name, arg1.icon, arg1.body)
+                                WoWTools_MacroMixin:CreateMacroNew(arg1.name, arg1.icon, arg1.body)
                             end
                         end
                     }, level)
@@ -115,7 +266,7 @@ local function Init()
 
                 --清除，全部，保存宏
                 e.LibDD:UIDropDownMenu_AddSeparator(level)
-                local num= #Save().mcaro
+                local num= #Save().macro
                 e.LibDD:UIDropDownMenu_AddButton({
                     text= (e.onlyChinese and '全部清除' or CLEAR_ALL)..' |cnGREEN_FONT_COLOR:#'..num,
                     disabled= num==0,
@@ -134,7 +285,7 @@ local function Init()
                             button1= e.onlyChinese and '确认' or RPE_CONFIRM,
                             button2= e.onlyChinese and '取消' or CANCEL,
                             OnAccept = function()
-                                Save().mcaro={}
+                                Save().macro={}
                                 print(e.addName,WoWTools_MacroMixin.addName, e.onlyChinese and '全部清除' or CLEAR_ALL)
                             end,
                             EditBoxOnEscapePressed= function(s)
@@ -166,7 +317,7 @@ local function Init()
                     keepShownOnClick=true,
                     arg1={name=name, icon=icon, body=tab.macro},
                     func= function(_, arg1)
-                        Create_Macro_Button(arg1.name, arg1.icon, arg1.body)
+                        WoWTools_MacroMixin:CreateMacroNew(arg1.name, arg1.icon, arg1.body)
                     end
                 }, level)
             end
@@ -188,7 +339,7 @@ local function Init()
                         menuList='SAVE',
                         hasArrow=true,
                         func= function(_, tab)
-                            table.insert(Save().mcaro, {name=tab.name, icon=tab.icon, body=tab.body})
+                            table.insert(Save().macro, {name=tab.name, icon=tab.icon, body=tab.body})
                             print(tab.body,'|n','|T'..icon..':0|t'..tab.name,'|n', WoWTools_MacroMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '保存' or SAVE))
                         end
                     },1)
@@ -262,11 +413,8 @@ local function Init()
             }, level)
         end, 'MENU')
         e.LibDD:ToggleDropDownMenu(1, nil, MacroFrame.Menu, self, 15,0)--主菜单
-    end)
-    hooksecurefunc(MacroFrame, 'UpdateButtons', function(self)
-        self.newButton:set_atlas()
-    end)
-end
+    end)]]
+
 
 
 

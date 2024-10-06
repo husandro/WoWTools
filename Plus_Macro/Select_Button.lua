@@ -29,6 +29,7 @@ local function Init()
     end)
     hooksecurefunc(MacroFrame, 'SelectMacro', function(self, index)
         self.numSelectionLable:SetText(index and index+MacroFrame.macroBase or '')
+        
     end)
 
     --选定，宏，提示

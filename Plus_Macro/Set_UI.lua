@@ -30,15 +30,22 @@ local function Init()
     MacroFrameTextBackground:ClearAllPoints()
     MacroFrameTextBackground:SetPoint('TOPLEFT', MacroFrame, 'LEFT', 8, -78)
     MacroFrameTextBackground:SetPoint('BOTTOMRIGHT', -8, 42)
-    MacroFrameScrollFrame:HookScript('OnSizeChanged', function(f)
-        MacroFrameText:SetWidth(f:GetWidth())
+    
+    
+    MacroFrameScrollFrame:HookScript('OnSizeChanged', function(self)
+        local w= self:GetWidth()
+        MacroFrameText:SetWidth(w)
     end)
+
+
+
     MacroFrameScrollFrame:ClearAllPoints()
     MacroFrameScrollFrame:SetPoint('TOPLEFT', MacroFrame, 'LEFT', 12, -83)
     MacroFrameScrollFrame:SetPoint('BOTTOMRIGHT', -32, 45)
 
 
-    e.Set_Move_Frame(MacroFrame, {needSize=true, setSize=true, minW=338, minH=424, initFunc=function() end, sizeRestFunc=function(btn)
+    e.Set_Move_Frame(MacroFrame, {needSize=true, setSize=true, minW=338, minH=424,
+        sizeRestFunc=function(btn)
         btn.target:SetSize(338, 424)
     end})
 
@@ -92,7 +99,7 @@ end
 
 local function Init_Other()
 
-    --宏，提示
+--宏，提示
     hooksecurefunc(MacroButtonMixin, 'OnLoad', function(btn)
         btn:HookScript('OnEnter', function(self)--设置，宏，提示
             WoWTools_MacroMixin:SetTooltips(self)
@@ -110,19 +117,38 @@ local function Init_Other()
         btn.SelectedTexture:SetVertexColor(0,1,1)
         btn:SetScript('OnDoubleClick', function()--删除，宏 Alt+双击
             if IsAltKeyDown() and not UnitAffectingCombat('player') then
+                local selectIndex= WoWTools_MacroMixin:GetSelectIndex()
+                local name, icon, body
+                if selectIndex then
+                    name, icon, body = GetMacroInfo(selectIndex)
+                end
                 e.call(MacroFrame.DeleteMacro, MacroFrame)
+                if name then
+                    print(WoWTools_MacroMixin.addName,
+                        '|cnRED_FONT_COLOR:'..(e.onlyChinese and '删除' or DELETE),
+                        '|r'..(selectIndex-(MacroFrame.macroBase or 0)), '|T'..(icon or 134400)..':|t'..WoWTools_MacroMixin:GetSpaceName(name))
+                    if body and body~='' then
+                        print(body)
+                    end
+                end
             end
         end)
     end)
 
-    local function MacroFrameInitMacroButton(macroButton, _, name)--Blizzard_MacroUI.lua
+    hooksecurefunc(MacroFrame.MacroSelector, 'setupCallback', function(self, _, name)--Blizzard_MacroUI.lua
         if name ~= nil then
-            macroButton.Name:SetText(WoWTools_TextMixin:sub(name, 2, 4))
+            self.Name:SetText(WoWTools_TextMixin:sub(name, 2, 4))
         end
-    end
-    hooksecurefunc(MacroFrame.MacroSelector,'setupCallback', MacroFrameInitMacroButton)--MacroFrame.MacroSelector:SetSetupCallback(MacroFrameInitMacroButton)
+    end)
 
-
+    --Blizzard_ScrollBoxSelector.lua
+    MacroFrame.MacroSelector:HookScript('OnSizeChanged', function(self)
+        local value= math.max(6, math.modf(self:GetWidth()/49))
+        if self:GetStride()~= value then
+            self:SetCustomStride(value)
+            self:Init()
+        end
+    end)
 
 
 
