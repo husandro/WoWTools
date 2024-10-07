@@ -5028,7 +5028,9 @@
         "GearSetButton_OpenPopup",
         "GearSetButton_UpdateSpecInfo",
         "PVP_LABEL_PVP_TALENTS",
-        "LFG_LIST_APP_FULL"
+        "LFG_LIST_APP_FULL",
+        "MacroEditButton_OnClick",
+        "TRACKER_SORT_MANUAL_BOTTOM"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

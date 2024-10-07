@@ -4,6 +4,98 @@ local e= select(2, ...)
 
 
 
+local function Delete_Macro(self)
+    local index= MacroFrame:GetSelectedIndex()
+    if not IsAltKeyDown()
+        or UnitAffectingCombat('player')
+        or not MacroDeleteButton:IsEnabled()
+        or (not index or index~=self.selectionIndex)
+    then
+        return
+    end
+
+    local selectIndex= self.selectionIndex-- or WoWTools_MacroMixin:GetSelectIndex()
+    local name, icon, body
+    if selectIndex then
+        name, icon, body = GetMacroInfo(selectIndex)
+    end
+    e.call(MacroFrame.DeleteMacro, MacroFrame)
+
+    if name then
+        print(WoWTools_MacroMixin.addName,
+            '|cnRED_FONT_COLOR:'..(e.onlyChinese and '删除' or DELETE),
+            '|r'..(selectIndex-(MacroFrame.macroBase or 0)), WoWTools_MacroMixin:GetName(name, icon))
+        if body and body~='' then
+            print(body)
+        end
+    end
+end
+
+
+
+
+--选定, 操作
+local function Init_Menu(self, root)
+--战斗中
+    if WoWTools_MenuMixin:CheckInCombat(root) then
+        return
+    end
+
+    do
+        if self.selectionIndex then
+            MacroFrame:SelectMacro(self.selectionIndex)
+        end
+    end
+
+    local sub
+    local index= WoWTools_MacroMixin:GetSelectIndex()
+    local isSelect= index and self.selectionIndex==index
+
+--修改   
+    sub=root:CreateButton(
+        e.onlyChinese and '修改' or EDIT,
+    function()
+        if not UnitAffectingCombat('player') then
+            e.call(MacroEditButton_OnClick, MacroFrame, self)
+        end
+    end, {index=index})
+    WoWTools_MacroMixin:SetTooltips(self)
+    sub:SetEnabled(isSelect)
+
+--删除
+    sub=root:CreateButton(
+        e.onlyChinese and '删除' or DELETE,
+    function()
+        Delete_Macro(self)
+    end, {index=index})
+    WoWTools_MacroMixin:SetTooltips(self)
+
+--新建
+    root:CreateDivider()
+    sub=root:CreateButton(
+        '|A:communities-chat-icon-plus:0:0|a'..(e.onlyChinese and '新建' or NEW),
+    function()
+        WoWTools_MacroMixin:CreateMacroNew()--新建，宏
+    end)
+    sub:SetEnabled(WoWTools_MacroMixin:IsCanCreateNewMacro())
+--保存
+    root:CreateDivider()
+    WoWTools_MacroMixin:Save_Macro_Menu(self, root)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -97,17 +189,27 @@ end
 
 
 
+
+
+
+
+
+
 local function Init_Other()
 
 --宏，提示
     hooksecurefunc(MacroButtonMixin, 'OnLoad', function(btn)
+        if btn.OnDoubleClick then
+            return
+        end
+
         btn:HookScript('OnEnter', function(self)--设置，宏，提示
             WoWTools_MacroMixin:SetTooltips(self)
         end)
         btn:HookScript('OnLeave', function()
             e.tips:Hide()
-            --Set_Action_Focus()
         end)
+
         local texture2= btn:GetRegions()
         texture2:SetAlpha(0.3)--按钮，背景
         btn.Name:SetWidth(48)--名称，长度
@@ -115,22 +217,24 @@ local function Init_Other()
         btn.SelectedTexture:SetPoint('CENTER')
         btn.SelectedTexture:SetSize(44,44)
         btn.SelectedTexture:SetVertexColor(0,1,1)
-        btn:SetScript('OnDoubleClick', function()--删除，宏 Alt+双击
-            if IsAltKeyDown() and not UnitAffectingCombat('player') then
-                local selectIndex= WoWTools_MacroMixin:GetSelectIndex()
-                local name, icon, body
-                if selectIndex then
-                    name, icon, body = GetMacroInfo(selectIndex)
-                end
-                e.call(MacroFrame.DeleteMacro, MacroFrame)
-                if name then
-                    print(WoWTools_MacroMixin.addName,
-                        '|cnRED_FONT_COLOR:'..(e.onlyChinese and '删除' or DELETE),
-                        '|r'..(selectIndex-(MacroFrame.macroBase or 0)), '|T'..(icon or 134400)..':|t'..WoWTools_MacroMixin:GetSpaceName(name))
-                    if body and body~='' then
-                        print(body)
-                    end
-                end
+        
+--删除，宏 Alt+双击
+        btn:SetScript('OnDoubleClick', function(self)
+            local index= MacroFrame:GetSelectedIndex()
+            if not IsAltKeyDown()
+                or UnitAffectingCombat('player')
+                or not MacroDeleteButton:IsEnabled()
+                or (not index or index~=self.selectionIndex)
+            then
+                return
+            end
+            Delete_Macro(self)
+        end)
+
+--右击，菜单
+        btn:HookScript('OnMouseDown', function(frame, d)
+            if d=='RightButton' then
+                MenuUtil.CreateContextMenu(frame, Init_Menu)
             end
         end)
     end)
@@ -141,7 +245,7 @@ local function Init_Other()
         end
     end)
 
-    --Blizzard_ScrollBoxSelector.lua
+--Blizzard_ScrollBoxSelector.lua
     MacroFrame.MacroSelector:HookScript('OnSizeChanged', function(self)
         local value= math.max(6, math.modf(self:GetWidth()/49))
         if self:GetStride()~= value then

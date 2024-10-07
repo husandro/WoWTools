@@ -30,7 +30,7 @@ function WoWTools_SpellMixin:GetName(spellID)--取得法术，名称
     if not spellID then
         return
     end
-
+-- -2147483648 to 2147483647
     local col, name, desc, cool
 
     e.LoadData({id=spellID, type='spell'})

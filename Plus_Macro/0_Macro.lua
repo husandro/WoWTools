@@ -5,7 +5,10 @@ Save={
     toRightLeft=3, -- 1,2, 3 左边 右边 默认
     spellButton=e.Player.husandro,
     --mcaro={},-- {name=tab.name, icon=tab.icon, body=tab.body}
-    macro={}
+    macro={},--{[|T..icon..:0|t..name..spllID..itemName]={name=tab.name, icon=tab.icon, body=tab.body}}
+
+    --hideBottomList=true,隐藏底部，列表
+    bottomListScale=1,
 },
 addName= nil,
 }
@@ -18,12 +21,13 @@ end
 
 
 
-function WoWTools_MacroMixin:GetSpaceName(name)
+function WoWTools_MacroMixin:GetName(name, icon)
     if name then
         return
-            name:gsub('  ', '')==' '
+            '|T'..(icon or 134400)..':0|t'
+            ..(name:gsub('  ', '')==' '
             and (e.onlyChinese and '(空格)' or ('('..KEY_SPACE..')'))
-            or name
+            or name)
     end
 end
 
@@ -43,8 +47,6 @@ function WoWTools_MacroMixin:GetSelectIndex()
     local index= MacroFrame:GetSelectedIndex()
     if index then
         return MacroFrame:GetMacroDataIndex(index)
-    else
-        return MacroFrame.macroBase +1
     end
 end
 
@@ -84,23 +86,30 @@ function WoWTools_MacroMixin:CreateMacroNew(name, icon, body)--新建，宏
         icon= GetFileIDFromPath(icon) or icon
     end
     local index = CreateMacro(name or ' ', icon or 134400, body or '', MacroFrame.macroBase>0)
-    index= index- MacroFrame.macroBase-1
+    index= index- MacroFrame.macroBase
 
     MacroFrame:SelectMacro(index)
-    --MacroFrame.MacroSelector:ScrollToSelectedIndex()
+
+    MacroFrame.MacroSelector:ScrollToSelectedIndex(index)
 
     --e.call(MacroFrame.Update, MacroFrame, true)
-    MacroFrame:Update(true)
+    e.call(MacroFrame.Update, MacroFrame)
 
-
+ --[[
     print(WoWTools_MacroMixin.addName,
-        '|T'..(icon or 134400)..':0|t|cnGREEN_FONT_COLOR:'
-        ..(WoWTools_MacroMixin:GetSpaceName(name) or (e.onlyChinese and '新建' or NEW))
+        '|cnGREEN_FONT_COLOR:'
+        ..(WoWTools_MacroMixin:GetName(name, icon)
+            or ('|A:communities-chat-icon-plus:0:0|a'..(e.onlyChinese and '新建' or NEW))
+        )
     )
-    if body and body~='' then
+   if body and body~='' then
         print(body)
-    end
+    end]]
 end
+
+
+
+
 
 
 
@@ -109,14 +118,24 @@ end
 --宏，提示
 --#######
 function WoWTools_MacroMixin:SetTooltips(frame, index)
-    index= frame.selectionIndex or index
+    index= index or (frame.selectionIndex and frame.selectionIndex+ MacroFrame.macroBase)
+
     if index then
-        index= (frame.selectionIndex and frame.selectionIndex+ MacroFrame.macroBase) or index
         local name, icon, body = GetMacroInfo(index)
         if name and body then
             e.tips:SetOwner(frame, "ANCHOR_LEFT")
+            local itemLink= select(2, GetMacroItem(index))
+            local spellID= GetMacroSpell(index)
+
             e.tips:ClearLines()
-            e.tips:AddDoubleLine('|T'..(icon or 134400)..':0|t'..WoWTools_MacroMixin:GetSpaceName(name), (e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS)..' '..index)
+            if itemLink then
+                e.tips:AddLine(WoWTools_ItemMixin:GetName(nil, itemLink))--取得法术，名称
+                e.tips:AddLine(' ')
+            elseif spellID then
+                e.tips:AddLine(WoWTools_SpellMixin:GetName(spellID))--取得法术，名称
+                e.tips:AddLine(' ')
+            end
+            e.tips:AddDoubleLine(WoWTools_MacroMixin:GetName(name, icon), (e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS)..' '..index)
             e.tips:AddLine(body, nil,nil,nil, true)
             e.tips:AddLine(' ')
             if frame~=MacroFrameSelectedMacroButton then
@@ -125,16 +144,6 @@ function WoWTools_MacroMixin:SetTooltips(frame, index)
                     col..(e.onlyChinese and '删除' or DELETE),
                     col..'Alt+'..(e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left
                 )
-            end
-            local spellID= GetMacroSpell(index)
-            if spellID then
-                e.LoadData({id=spellID, type='spell'})
-                local spellName= C_Spell.GetSpellName(spellID)
-                local spellIcon= C_Spell.GetSpellTexture(spellID)
-                if spellName and spellIcon then
-                    e.tips:AddDoubleLine('|T'..spellIcon..':0|t'..spellName, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '法术' or SPELLS, spellID))
-                end
-                --Set_Action_Focus(spellID)
             end
 
             e.tips:Show()
@@ -152,6 +161,33 @@ end
 
 
 
+--宏，提示
+function WoWTools_MacroMixin:SetMenuTooltip(root)
+    root:SetTooltip(function(tooltip, description)
+        local name= description.data.name
+        local icon= description.data.icon
+        local body= description.data.body
+        local spellID= description.data.spellID
+        local itemLink= description.data.itemLink
+        local index= description.index
+        if index then
+            spellID= GetMacroSpell(index)
+            itemLink= select(2, GetMacroItem(index))
+            name, icon, body= GetMacroInfo(index)
+        end
+        if itemLink then
+            tooltip:AddLine(WoWTools_ItemMixin:GetName(nil, itemLink))--取得法术，名称
+            tooltip:AddLine(' ')
+        elseif spellID then
+            tooltip:AddLine(WoWTools_SpellMixin:GetName(spellID))--取得法术，名称
+            tooltip:AddLine(' ')
+        end
+        tooltip:AddLine(WoWTools_MacroMixin:GetName(name, icon))
+        tooltip:AddLine(body)
+    end)
+end
+
+
 
 
 
@@ -162,7 +198,6 @@ end
 --初始
 --####
 local function Init()
-   
 
     WoWTools_MacroMixin:Init_Set_UI()
 
@@ -216,7 +251,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if Save().mcaro then
                 ----mcaro={},-- {name=tab.name, icon=tab.icon, body=tab.body}
                 do for _, info in pairs(Save().mcaro) do
-                    Save().macro['|T'..(info.icon or 134400)..':0|t'..info.name]= info
+                    if info.name and info.body and info.body~='' then
+                        Save().macro['|T'..(info.icon or 134400)..':0|t'..info.name]= info
+                    end
                 end end
                 Save().mcaro=nil
             end
@@ -256,6 +293,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
+            if WoWTools_MacroMixin.NoteEditBox:IsVisible() then
+                WoWTools_MacroMixin.NoteEditBox:Hide()
+            end
             WoWToolsSave['Plus_Macro']= Save()
         end
     end

@@ -1,5 +1,8 @@
 --命令，按钮，列表
 local e= select(2, ...)
+local function Save()
+    return WoWTools_MacroMixin.Save
+end
 local Frame
 
 
@@ -374,58 +377,6 @@ end
 
 
 
---创建，目标，功击，按钮
---####################
-local function Create_Button(name)
-    local btn= WoWTools_ButtonMixin:Cbtn(MacroSaveButton, {size={60,22}, type=false})
-    function btn:find_text(right)
-        return (MacroFrameText:GetText() or ''):find(WoWTools_TextMixin:Magic(right and self.text2 or self.text))
-    end
-   function btn:set_tooltips()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-
-        if UnitAffectingCombat('player') then
-            e.tips:AddLine(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
-        else
-            e.tips:AddDoubleLine(e.addName, WoWTools_MacroMixin.addName)
-            local col= self:find_text() and '|cff9e9e9e' or ''
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(col..self.text..(self.tip or ''), e.Icon.left)
-            if self.text2 then
-                e.tips:AddLine(' ')
-                col= self:find_text(true) and '|cff9e9e9e' or ''
-            end
-            e.tips:AddDoubleLine(col..self.text2..(self.tip2 or ''), e.Icon.right)
-        end
-        e.tips:Show()
-    end
-    btn:SetScript('OnClick', function(self, d)
-        if UnitAffectingCombat('player') then return end
-        if d=='LeftButton' then
-            if self.textCursor then
-                MacroFrameText:SetCursorPosition(self.textCursor)
-            end
-            MacroFrameText:Insert(self.text)
-            MacroFrameText:SetFocus()
-
-        elseif d=='RightButton' and self.text2 then
-            if self.text2Cursor then
-                MacroFrameText:SetCursorPosition(self.text2Cursor)
-            end
-            MacroFrameText:Insert(self.text2)
-            MacroFrameText:SetFocus()
-        end
-        self:set_tooltips()
-    end)
-    btn:SetText(name)
-    btn:SetScript('OnLeave', GameTooltip_Hide)
-    btn:SetScript("OnEnter", btn.set_tooltips)
-    return btn
-end
-
-
-
 
 --二级，菜单
 local function Sub_Menu(root, tab)
@@ -436,7 +387,7 @@ local function Sub_Menu(root, tab)
 
 --修改，当前图标
     if tab.icon then
-        root:CreateButton(
+        sub=root:CreateButton(
             '|T'..(tab.icon or 0)..':0|t'
             ..(e.onlyChinese and '设置图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, EMBLEM_SYMBOL)),
         function(data)
@@ -444,6 +395,7 @@ local function Sub_Menu(root, tab)
             WoWTools_MacroMixin:SetMacroTexture(data.icon)
             return MenuResponse.Open
         end, tab)
+        sub:SetEnabled(MacroFrameSelectedMacroButton:IsShown())
     end
 --查询
     if tab.spellID then
@@ -466,8 +418,6 @@ local function Sub_Menu(root, tab)
         end, tab)
         WoWTools_SetTooltipMixin:Set_Menu(sub)--技能，提示
     end
-
-    
 end
 
 
@@ -483,13 +433,16 @@ end
 local function Create_Spell_Menu(root, spellID, icon, name, index)--创建，法术，列表
     e.LoadData({id=spellID, type='spell'})
 
-    local  macroText= Get_Spell_Macro(name, spellID)
+    local macroText= Get_Spell_Macro(name, spellID)
+    local info=  {name=name, spellID=spellID, icon=icon, tooltip=macroText}
+
     local sub=root:CreateButton(
         index..' '
         ..WoWTools_SpellMixin:GetName(spellID)--取得法术，名称
         ..(macroText and '|cnGREEN_FONT_COLOR:*|r' or ''),
     function(data)
         if UnitAffectingCombat('player') then return end
+
         local text=''
         local macroText2, showName= Get_Spell_Macro(data.name, data.spellID)
         local macro= MacroFrameText:GetText() or ''
@@ -500,16 +453,22 @@ local function Create_Spell_Menu(root, spellID, icon, name, index)--创建，法
             text= text..'/targetenemy [noharm][dead]\n'
         end
         text= text..(macroText2 or ('/cast '..data.name))..'\n'
-        --MacroFrameText:SetCursorPosition(0)
-        MacroFrameText:Insert(text)
-        MacroFrameText:SetFocus()
+
+        --新建，宏
+        if not WoWTools_MacroMixin:GetSelectIndex() and WoWTools_MacroMixin:IsCanCreateNewMacro() then
+            WoWTools_MacroMixin:CreateMacroNew(nil, nil, text)
+        else
+            --MacroFrameText:SetCursorPosition(0)
+            MacroFrameText:Insert(text)
+            MacroFrameText:SetFocus()
+        end
 
         return MenuResponse.Open
-    end, {name=name, spellID=spellID, icon=icon, tooltip=macroText})
+    end, info)
 
 
 --二级，菜单
-    Sub_Menu(sub, {spellID=spellID, icon=icon})
+    Sub_Menu(sub, info)
 end
 
 
@@ -810,9 +769,18 @@ end
 
 
 
+
+
+
+
+
+
+
 --命令，按钮，列表
-local function Init_List()
+local function Init()
     Frame= CreateFrame("Frame", nil, MacroFrame)
+    WoWTools_MacroMixin.BottomListFrame= Frame
+
     Frame:SetSize(1,1)
     Frame:SetPoint('TOPLEFT', MacroFrame, 'BOTTOMLEFT', 0, -12)
 
@@ -876,6 +844,12 @@ local function Init_List()
     local macroListButton= WoWTools_ButtonMixin:CreateMenu(Frame, {hideIcon=true, atlas='PetJournal-FavoritesIcon'})
     macroListButton:SetPoint('LEFT', last, 'RIGHT')
     macroListButton:SetupMenu(Init_MacroList_Menu)
+
+    function Frame:settings()
+        self:SetScale(Save().bottomListScale or 1)
+        self:SetShown(not Save().hideBottomList)
+    end
+    Frame:settings()
 end
 
 
@@ -891,32 +865,6 @@ end
 
 
 
-
-
-
-
-
-
-
-local function Init_Other_Button()
-    --目标
-    local attck= Create_Button(e.onlyChinese and '目标' or TARGET)
-    attck:SetPoint('LEFT', MacroEditButton, 'RIGHT',8,0)
-    attck.text='#showtooltip\n/targetenemy [noharm][dead]\n'
-    attck.text2='/cancelaura '
-    attck.textCursor=0
-    attck.text2Cursor=nil
-    attck.tip=nil
-    attck.tip2=e.onlyChinese and '光环名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, AURAS, NAME)
-
-
-
-    --攻击
-    local cancel= Create_Button(e.onlyChinese and '攻击' or ATTACK)
-    cancel:SetPoint('LEFT', attck, 'RIGHT')
-    cancel.text= '/petattack\n/startattack\n'
-    cancel.text2= '/petfollow\n/stopattack\n/stopcasting\n'
-end
 
 
 
@@ -933,6 +881,5 @@ end
 
 
 function WoWTools_MacroMixin:Init_List_Button()
-    Init_List()
-    Init_Other_Button()
+    Init()
 end

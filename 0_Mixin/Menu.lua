@@ -359,15 +359,19 @@ WoWTools_MenuMixin:ToTop(root, {
 
 function WoWTools_MenuMixin:CheckInCombat(root)
     if UnitAffectingCombat('player') then
-        return root:CreateTitle(
-            '|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'
-            ..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
-        )
+        if not root then
+            return true
+        else
+            return root:CreateTitle(
+                '|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'
+                ..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
+            )
+        end
     end
 end
 --[[
 --战斗中
-    if WoWTools_MenuMixin:CheckInCombat() then
+    if WoWTools_MenuMixin:CheckInCombat(root) then
         return
     end
 ]]
@@ -534,15 +538,17 @@ end
 
 
 function WoWTools_MenuMixin:ClearAll(root, SetValue)
-    local text= '|A:128-RedButton-Delete:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL)
-    return
-    
     root:CreateButton(
-        text,
+        '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL),
+        nil,
     function(data)
-        StaticPopup_Show('WoWTools_RestData',data.name, nil, data.SetValue)
+        StaticPopup_Show('WoWTools_OK',
+            '|A:bags-button-autosort-up:32:32|a|n'..(e.onlyChinese and '全部清除' or CLEAR_ALL)..'|n|n',
+            nil,
+            {SetValue=data.SetValue}
+        )
         return MenuResponse.Open
-    end, {name=text, SetValue=SetValue})
+    end, {SetValue=SetValue})
 
 
     --root:CreateButton('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL), SetValue)

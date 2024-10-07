@@ -186,7 +186,8 @@ end
 
 
 
-function WoWTools_ItemMixin:GetName(itemID)--取得物品，名称
+function WoWTools_ItemMixin:GetName(itemID, itemLink)--取得物品，名称
+    itemID= itemID or self:GetItemID(itemLink)
     if not itemID then
         return
     end
