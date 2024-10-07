@@ -178,9 +178,7 @@ local function Init()
     end)
 
     --角色，专用宏，颜色
-    if MacroFrameTab2 and MacroFrameTab2.Text then
-        MacroFrameTab2.Text:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
-    end
+    MacroFrameTab2.Text:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
 end
 
 
@@ -262,6 +260,7 @@ local function Init_Other()
     MacroSaveButton.saveTip:SetSize(18, 18)
     MacroSaveButton.saveTip:SetAtlas('auctionhouse-icon-favorite')
     MacroSaveButton.saveTip:Hide()
+
     local function set_saveTip()
         local show= false
         local index= WoWTools_MacroMixin:GetSelectIndex()
@@ -353,7 +352,7 @@ local function Init_Scroll()
     end)
 
 
-    
+
     ScrollFrame:SetScript('OnHide', function(self)
         self:UnregisterEvent("UPDATE_MACROS")
         self.selectionIndex= WoWTools_MacroMixin:GetSelectIndex()

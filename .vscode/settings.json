@@ -5035,7 +5035,8 @@
         "VOICEMACRO_1_Ni_0_FEMALE",
         "MacroFrameSaveButton_OnClick",
         "MacroPopupFrame",
-        "MacroFrameMixin"
+        "MacroFrameMixin",
+        "MacroFrameCharLimitText"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
