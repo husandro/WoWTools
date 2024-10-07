@@ -59,7 +59,7 @@ local function Init_Menu(self, root)
             e.call(MacroEditButton_OnClick, MacroFrame, self)
         end
     end, {index=index})
-    WoWTools_MacroMixin:SetTooltips(self)
+    WoWTools_MacroMixin:SetMenuTooltip(sub)
     sub:SetEnabled(isSelect)
 
 --删除
@@ -68,7 +68,7 @@ local function Init_Menu(self, root)
     function()
         Delete_Macro(self)
     end, {index=index})
-    WoWTools_MacroMixin:SetTooltips(self)
+    WoWTools_MacroMixin:SetMenuTooltip(sub)
 
 --新建
     root:CreateDivider()
