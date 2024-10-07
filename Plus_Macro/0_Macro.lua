@@ -182,7 +182,7 @@ function WoWTools_MacroMixin:SetMenuTooltip(root)
             tooltip:AddLine(' ')
         end
         tooltip:AddLine(WoWTools_MacroMixin:GetName(name, icon))
-        tooltip:AddLine(body)
+        tooltip:AddLine(body, nil, nil, nil, true)
     end)
 end
 
