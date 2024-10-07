@@ -5030,7 +5030,12 @@
         "PVP_LABEL_PVP_TALENTS",
         "LFG_LIST_APP_FULL",
         "MacroEditButton_OnClick",
-        "TRACKER_SORT_MANUAL_BOTTOM"
+        "TRACKER_SORT_MANUAL_BOTTOM",
+        "VOICEMACRO_LABEL",
+        "VOICEMACRO_1_Ni_0_FEMALE",
+        "MacroFrameSaveButton_OnClick",
+        "MacroPopupFrame",
+        "MacroFrameMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
@@ -5054,5 +5059,6 @@
         "inject-field",
         "missing-parameter",
         "redundant-parameter",
+        "trailing-space"
     ],
 }

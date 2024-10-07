@@ -385,6 +385,18 @@ local function Sub_Menu(root, tab)
 --技能，提示
     WoWTools_SetTooltipMixin:Set_Menu(root)
 
+    local body= tab.body
+    
+    sub=root:CreateButton(
+         '|T'..(tab.icon or 134400)..':0|t'..(e.onlyChinese and '新建' or NEW),
+    function(data)
+        WoWTools_MacroMixin:CreateMacroNew(' ', nil, data.body)--新建，宏
+        return MenuResponse.Open
+    end, {name=tab.name, icon=tab.icon, body=body, itemLink=tab.itemLink, spellID=tab.spellID})
+    WoWTools_SetTooltipMixin:Set_Menu(sub)
+
+    root:CreateDivider()
+
 --修改，当前图标
     if tab.icon then
         sub=root:CreateButton(
@@ -441,6 +453,7 @@ local function Create_Spell_Menu(root, spellID, icon, name, index)--创建，法
         ..WoWTools_SpellMixin:GetName(spellID)--取得法术，名称
         ..(macroText and '|cnGREEN_FONT_COLOR:*|r' or ''),
     function(data)
+        
         if UnitAffectingCombat('player') then return end
 
         local text=''
@@ -467,8 +480,19 @@ local function Create_Spell_Menu(root, spellID, icon, name, index)--创建，法
     end, info)
 
 
---二级，菜单
-    Sub_Menu(sub, info)
+        
+        local macroText2, showName= Get_Spell_Macro(name, spellID)
+        local body= '#showtooltip'..(showName and ' '..showName or '')..'\n'
+        body= body..'/targetenemy [noharm][dead]\n'
+        body= body..(macroText2 or ('/cast '..name))
+
+    --二级，菜单
+    Sub_Menu(sub, {
+        icon=icon,
+        spellID=spellID,
+        name=' ',
+        body=body,
+    })
 end
 
 
@@ -635,7 +659,7 @@ end
 
 
 
-local function Init_Equip(_, root)
+local function Init_Equip_Menu(_, root)
     if WoWTools_MenuMixin:CheckInCombat(root) then--战斗中
         return
     end
@@ -644,28 +668,37 @@ local function Init_Equip(_, root)
         local textureName = GetInventoryItemTexture("player", slot)
         if textureName then
             itemLink = GetInventoryItemLink('player', slot) or 0
-            name= C_Item.GetItemNameByID(itemLink)
-            icon= C_Item.GetItemIconByID(itemLink)
-            spellID= select(2, C_Item.GetItemSpell(itemLink))
+            name= itemLink and C_Item.GetItemNameByID(itemLink)
+            if itemLink and name then
+                
+                icon= C_Item.GetItemIconByID(itemLink)
+                spellID= select(2, C_Item.GetItemSpell(itemLink))
 
-            e.LoadData({id=spellID, type='spell'})
-            e.LoadData({id=itemLink, type='item'})
+                e.LoadData({id=spellID, type='spell'})
+                e.LoadData({id=itemLink, type='item'})
+                
+                sub= root:CreateButton(
+                    slot..' '
+                    ..'|T'..(icon or 0)..':0|t'
+                    ..itemLink
+                    ..(spellID and '|A:auctionhouse-icon-favorite:0:0|a' or ''),
 
-            sub= root:CreateButton(
-                slot..' '
-                ..'|T'..(icon or 0)..':0|t'
-                ..itemLink
-                ..(spellID and '|A:auctionhouse-icon-favorite:0:0|a' or ''),
-            function(data)
-                if UnitAffectingCombat('player') then return end
-                MacroFrameText:Insert(
-                    (data.spellID and '/use '..data.name or ('/equip '..data.name)..'\n')
-                )
-                MacroFrameText:SetFocus()
-                return MenuResponse.Open
-            end, {spellID=spellID, name=name, itemLink=itemLink})
+                function(data)
+                    if UnitAffectingCombat('player') then return end
+                    MacroFrameText:Insert((data.spellID and '/use ' or '/equip ')..data.name..'\n')
+                    MacroFrameText:SetFocus()
+                    return MenuResponse.Open
+
+                end, {spellID=spellID, name=name, itemLink=itemLink})
+            end
 --二级，菜单
-            Sub_Menu(sub, {icon=icon, itemLink=itemLink, spellID=spellID})
+            Sub_Menu(sub, {
+                icon=icon,
+                itemLink=itemLink,
+                spellID=spellID,
+                name=' ',
+                body='#showtooltip\n/targetenemy [noharm][dead]\n'..(spellID and '/use ' or '/equip ')..name
+            })
         end
     end
 end
@@ -766,7 +799,18 @@ end
 
 
 
-
+local function Set_Button_OnEnter(btn)
+    if not btn.name then
+        return
+    end
+    btn:SetScript('OnLeave', GameTooltip_Hide)
+    btn:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddLine(e.cn(self.name)..e.Icon.left, self.index)
+        e.tips:Show()
+    end)
+end
 
 
 
@@ -795,14 +839,8 @@ local function Init()
             btn:SetPoint('LEFT', last, 'RIGHT')
             btn.name= data.name
             btn.index= i
-            btn:SetScript('OnLeave', GameTooltip_Hide)
-            btn:SetScript('OnEnter', function(self)
-                e.tips:SetOwner(self, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:AddDoubleLine(e.cn(self.name), self.index)
-                e.tips:Show()
-            end)
             btn:SetupMenu(Init_SpellBook_Menu)
+            Set_Button_OnEnter(btn)
             last= btn
         end
     end
@@ -813,13 +851,15 @@ local function Init()
     pvpButton:SetPoint('LEFT', last, 'RIGHT')
     pvpButton:SetupMenu(Init_PvP_Menu)
     pvpButton.name= e.onlyChinese and 'PvP天赋' or PVP_LABEL_PVP_TALENTS
+    Set_Button_OnEnter(pvpButton)
     last=pvpButton
 
 --角色，装备
     local equipButton= WoWTools_ButtonMixin:CreateMenu(Frame, {hideIcon=true, atlas=WoWTools_UnitMixin:GetRaceIcon({unit='player', reAtlas=true})})
     equipButton:SetPoint('LEFT', last, 'RIGHT')
-    equipButton:SetupMenu(Init_Equip)
+    equipButton:SetupMenu(Init_Equip_Menu)
     equipButton.name= e.onlyChinese and '装备' or EQUIPSET_EQUIP
+    Set_Button_OnEnter(equipButton)
     last=equipButton
    
 --谈话
@@ -828,6 +868,8 @@ local function Init()
     spellchButton:SetupMenu(function(_, root)
         Init_Chat_Menu(root, TextEmoteSpeechList)
     end)
+    spellchButton.name= e.onlyChinese and '谈话' or VOICEMACRO_LABEL
+    Set_Button_OnEnter(spellchButton)
     last=spellchButton
 
 --表情
@@ -836,6 +878,8 @@ local function Init()
     emoteButton:SetupMenu(function(_, root)
         Init_Chat_Menu(root, EmoteList)
     end)
+    emoteButton.name= e.onlyChinese and '表情' or EMOTE
+    Set_Button_OnEnter(emoteButton)
     last= emoteButton
 
 

@@ -145,10 +145,20 @@ local function Init_Menu(_, root)
 
     new[134400]= {name='|T134400:0|t'..(e.onlyChinese and '无' or NONE)}
 
+
     for icon, tab in pairs(new or {}) do
         sub=root:CreateButton(
             tab.name,
         function(data)
+            if UnitAffectingCombat('player') then
+                return
+            end
+            local index= WoWTools_MacroMixin:GetSelectIndex()
+            if index then
+                if select(3, GetMacroInfo(index))~= MacroFrameText:GetText() then
+                    e.call(MacroFrameSaveButton_OnClick)
+                end
+            end
             do
                 WoWTools_MacroMixin:SetMacroTexture(data.icon)--修改，当前图标
             end
@@ -156,8 +166,6 @@ local function Init_Menu(_, root)
         end, {icon=icon, spellID=tab.spellID, itemID=tab.itemID})
 
         sub:SetTooltip(function(tooltip, description)
-
-
             tooltip:AddLine((e.onlyChinese and '设置图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, EMBLEM_SYMBOL)))
             if description.data.itemID then
                 tooltip:AddLine(' ')
@@ -175,6 +183,7 @@ local function Init_Menu(_, root)
             end
         end)
     end
+    WoWTools_MenuMixin:SetScrollMode(root)
 end
 
 

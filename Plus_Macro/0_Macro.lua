@@ -72,7 +72,7 @@ function WoWTools_MacroMixin:SetMacroTexture(iconTexture)--修改，当前图标
         local index = EditMacro(actualIndex, name, iconTexture) - (MacroFrame.macroBase or 0);--战斗中，出现错误
         --e.call(MacroFrame.SaveMacro, MacroFrame)
         MacroFrame:SelectMacro(index or 1);
-        e.call(MacroFrame.Update, MacroFrame)
+        e.call(MacroFrame.Update, MacroFrame, true)
     end
 end
 
@@ -90,10 +90,9 @@ function WoWTools_MacroMixin:CreateMacroNew(name, icon, body)--新建，宏
 
     MacroFrame:SelectMacro(index)
 
-    MacroFrame.MacroSelector:ScrollToSelectedIndex(index)
-
-    --e.call(MacroFrame.Update, MacroFrame, true)
-    e.call(MacroFrame.Update, MacroFrame)
+    --MacroFrame.MacroSelector:ScrollToSelectedIndex(index)
+    --MacroFrame.MacroSelector.ScrollBox:ScrollToSelectedIndex(index)
+    e.call(MacroFrame.Update, MacroFrame, true)
 
  --[[
     print(WoWTools_MacroMixin.addName,

@@ -45,21 +45,22 @@ local MacroButtonList={
 
 
 --保存，宏
-function WoWTools_MacroMixin:Save_Macro_Menu(frame, root)
+local function Save_Macro_Menu(frame, root)
 --战斗中
     if WoWTools_MenuMixin:CheckInCombat(root) then
         return
     end
 
-    local selectIndex= frame.selectionIndex or WoWTools_MacroMixin:GetSelectIndex()
+    local selectIndex= frame.selectionIndex or MacroFrame:GetSelectedIndex()
 
+    local index= selectIndex and MacroFrame:GetMacroDataIndex(selectIndex)
 
 --保存
     local sub, sub2, sub3, name, icon, body, num, header, spellID, itemName, itemLink
-    if selectIndex then
-        name, icon, body = GetMacroInfo(selectIndex)
-        itemName, itemLink= GetMacroItem(selectIndex)
-        spellID= GetMacroSpell(selectIndex)
+    if index then
+        name, icon, body = GetMacroInfo(index)
+        itemName, itemLink= GetMacroItem(index)
+        spellID= GetMacroSpell(index)
         local spellName= spellID and C_Spell.GetSpellName(spellID)
 
         e.LoadData({id=itemLink, type='item'})
@@ -100,6 +101,7 @@ function WoWTools_MacroMixin:Save_Macro_Menu(frame, root)
             head2,
         function(data)
             WoWTools_MacroMixin:CreateMacroNew(data.tab.name, data.tab.icon, data.tab.body)--新建，宏
+            return MenuResponse.Open
         end, {saveName=head2, tab=tab})
         sub2:SetTooltip(function(tooltip, description)
             tooltip:AddLine(description.data.saveName)
@@ -189,7 +191,7 @@ local function Init_Menu(_, root)
 
 --保存
     root:CreateDivider()
-    WoWTools_MacroMixin:Save_Macro_Menu(_, root)
+    Save_Macro_Menu(_, root)
 
 --打开，选项界面
     root:CreateDivider()
@@ -203,9 +205,9 @@ local function Init_Menu(_, root)
     text= (e.onlyChinese and '通用宏' or GENERAL_MACROS)..(num==0 and ' |cff9e9e9e#' or ' #')..num
     sub:CreateButton(
         '|A:XMarksTheSpot:0:0|a'..text,
-    function()
+    function(data)
         StaticPopup_Show('WoWTools_OK',
-        '|A:XMarksTheSpot:32:32|a|n'..text..'|n|n',
+        '|A:XMarksTheSpot:32:32|a|n'..data.text..'|n|n',
         nil,
         {SetValue=function()
             if UnitAffectingCombat('player') then return end
@@ -216,10 +218,10 @@ local function Init_Menu(_, root)
                 end
                 local name, icon = GetMacroInfo(i)
                 DeleteMacro(i)
-                print(i..') ', WoWTools_MacroMixin:GetName(name, icon), '|cff9e9e9eAlt'..(e.onlyChinese and '取消' or CANCEL))
+                print(i..') ', WoWTools_MacroMixin:GetName(name, icon))
             end
         end})
-    end)
+    end, {text=text})
 
 --删除,专用宏
     sub:CreateDivider()
@@ -227,9 +229,9 @@ local function Init_Menu(_, root)
         ..(num2==0 and ' |cff9e9e9e#' or ' #')..num2
     sub:CreateButton(
         '|A:XMarksTheSpot:0:0|a'..text,
-    function()
+    function(data)
         StaticPopup_Show('WoWTools_OK',
-        '|A:XMarksTheSpot:32:32|a|n'..text..'|n|n',
+        '|A:XMarksTheSpot:32:32|a|n'..data.text..'|n|n',
         nil,
         {SetValue=function()
             if UnitAffectingCombat('player') then return end
@@ -243,7 +245,7 @@ local function Init_Menu(_, root)
                 print(i..') ', WoWTools_MacroMixin:GetName(name, icon))
             end
         end})
-    end)
+    end, {text=text})
 
 end
 
@@ -311,4 +313,9 @@ end
 
 function WoWTools_MacroMixin:Init_AddNew_Button()--创建，空，按钮
     Init()
+end
+
+
+function WoWTools_MacroMixin:Save_Macro_Menu(frame, root)
+    Save_Macro_Menu(frame, root)
 end
