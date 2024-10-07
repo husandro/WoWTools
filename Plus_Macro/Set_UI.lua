@@ -348,10 +348,16 @@ local function Init_Scroll()
     ScrollFrame:SetScript('OnShow', function(self)
         self:RegisterEvent("UPDATE_MACROS")
         C_Timer.After(0.1, function()
-            if self.selectionIndex  and not UnitAffectingCombat('player') then
-                MacroFrame:SelectMacro(self.selectionIndex)
+            local index= self.selectionIndex
+            if index and not UnitAffectingCombat('player') then
+                if index>MAX_ACCOUNT_MACROS then
+                    index= index-MAX_ACCOUNT_MACROS
+                    e.call(MacroFrame.ChangeTab, MacroFrame, 2)
+                end
+
+                MacroFrame:SelectMacro(index)
                 MacroFrame.MacroSelector.ScrollBox:SetScrollPercentage(self.tempScrollPer2)
-               --e.call(MacroFrame.Update, MacroFrame)
+               
             end
             self.selectionIndex=nil
             self.tempScrollPer2=nil
@@ -363,6 +369,7 @@ local function Init_Scroll()
     ScrollFrame:SetScript('OnHide', function(self)
         self:UnregisterEvent("UPDATE_MACROS")
         self.selectionIndex= WoWTools_MacroMixin:GetSelectIndex()
+        
         self.tempScrollPer2=  MacroFrame.MacroSelector.ScrollBox.scrollPercentage
     end)
 end

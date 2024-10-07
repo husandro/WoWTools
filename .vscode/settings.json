@@ -5036,7 +5036,8 @@
         "MacroFrameSaveButton_OnClick",
         "MacroPopupFrame",
         "MacroFrameMixin",
-        "MacroFrameCharLimitText"
+        "MacroFrameCharLimitText",
+        "PanelTemplates_SetTab"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
