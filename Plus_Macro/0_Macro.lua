@@ -169,7 +169,7 @@ function WoWTools_MacroMixin:SetMenuTooltip(root)
         local body= description.data.body
         local spellID= description.data.spellID
         local itemLink= description.data.itemLink
-        local index= description.index
+        local index= description.data.index
         if index then
             spellID= GetMacroSpell(index)
             itemLink= select(2, GetMacroItem(index))
