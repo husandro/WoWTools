@@ -92,12 +92,7 @@ local function Init_Menu(self, root)
         return MenuResponse.Open
     end)
     sub:SetEnabled(WoWTools_MacroMixin:IsCanCreateNewMacro())
-
 end
-
-
-
-
 
 
 

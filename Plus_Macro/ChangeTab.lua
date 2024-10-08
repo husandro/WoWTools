@@ -17,13 +17,6 @@ local ScrollBoxBackground
 
 
 
-
-
-
-
-
-
-
 --设置，列表
 local function Init_ChangeTab(self, tabID)
     self.MacroSelector:ClearAllPoints()
@@ -72,14 +65,7 @@ local function Init_ChangeTab(self, tabID)
     else
         MacroFramePortrait:SetTexture('Interface\\MacroFrame\\MacroFrame-Icon')
     end
-
-
-
 end
-
-
-
-
 
 
 

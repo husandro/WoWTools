@@ -198,11 +198,7 @@ end
 
 
 
-
-
-
 --选定宏，点击，弹出菜单，自定图标
---#############################
 local function Init()
     --选定宏，index提示
     MacroFrame.numSelectionLable= WoWTools_LabelMixin:Create(MacroFrameSelectedMacroButton)

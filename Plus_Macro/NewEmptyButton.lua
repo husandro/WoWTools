@@ -35,15 +35,6 @@ local MacroButtonList={
 
 
 
-
-
-
-
-
-
-
-
-
 --保存，宏
 local function Save_Macro_Menu(frame, root)
 --战斗中
@@ -156,13 +147,7 @@ end
 
 
 
-
-
-
-
-
 local function Init_Menu(_, root)
-
 --战斗中/已满
     local notMax= MacroNewButton:IsEnabled()
     if WoWTools_MenuMixin:CheckInCombat(root) then
@@ -248,11 +233,6 @@ local function Init_Menu(_, root)
     end, {text=text})
 
 end
-
-
-
-
-
 
 
 

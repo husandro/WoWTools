@@ -90,7 +90,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end]]
 
             --添加控制面板
-            Initializer= e.AddPanel_Check({
+            e.AddPanel_Check({
                 name= WoWTools_ProfessionMixin.addName,
                 tooltip= WoWTools_ProfessionMixin.addName,
                 GetValue= function() return not Save().disabled end,

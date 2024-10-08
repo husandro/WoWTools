@@ -67,7 +67,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 			
 
 			--添加控制面板
-            Initializer= e.AddPanel_Check({
+            e.AddPanel_Check({
                 name= WoWTools_ReputationMixin.addName,
                 tooltip= WoWTools_ReputationMixin.addName,
                 GetValue= function() return not Save().disabled end,

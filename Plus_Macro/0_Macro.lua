@@ -46,7 +46,6 @@ end
 
 
 --取得选定宏，index
---################
 function WoWTools_MacroMixin:GetSelectIndex()
     local index= MacroFrame:GetSelectedIndex()
     if index then
@@ -74,7 +73,6 @@ function WoWTools_MacroMixin:SetMacroTexture(iconTexture)--修改，当前图标
     if actualIndex then
         local name= GetMacroInfo(actualIndex)
         local index = EditMacro(actualIndex, name, iconTexture) - (MacroFrame.macroBase or 0);--战斗中，出现错误
-        --e.call(MacroFrame.SaveMacro, MacroFrame)
         MacroFrame:SelectMacro(index or 1);
         e.call(MacroFrame.Update, MacroFrame, true)
     end
@@ -94,20 +92,7 @@ function WoWTools_MacroMixin:CreateMacroNew(name, icon, body)--新建，宏
 
     MacroFrame:SelectMacro(index)
 
-    --MacroFrame.MacroSelector:ScrollToSelectedIndex(index)
-    --MacroFrame.MacroSelector.ScrollBox:ScrollToSelectedIndex(index)
     e.call(MacroFrame.Update, MacroFrame, true)
-
- --[[
-    print(WoWTools_MacroMixin.addName,
-        '|cnGREEN_FONT_COLOR:'
-        ..(WoWTools_MacroMixin:GetName(name, icon)
-            or ('|A:communities-chat-icon-plus:0:0|a'..(e.onlyChinese and '新建' or NEW))
-        )
-    )
-   if body and body~='' then
-        print(body)
-    end]]
 end
 
 
@@ -201,12 +186,7 @@ end
 --初始
 --####
 local function Init()
-
     WoWTools_MacroMixin:Init_Set_UI()
-
-    MacroFrame.Menu= CreateFrame("Frame", nil, MacroFrame, "UIDropDownMenuTemplate")
-
-
     WoWTools_MacroMixin:Init_Button()--宏列表，位置
     WoWTools_MacroMixin:Init_Select_Macro_Button()--选定宏，点击，弹出菜单，自定图标
     WoWTools_MacroMixin:Init_List_Button()--命令，按钮，列表
@@ -214,13 +194,6 @@ local function Init()
     WoWTools_MacroMixin:Init_ChangeTab()
     WoWTools_MacroMixin:Init_MacroButton_Plus()
 end
-
-
-
-
-
-
-
 
 
 

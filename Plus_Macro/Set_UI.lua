@@ -14,20 +14,7 @@ local ScrollFrame
 
 
 
-
-
-
-
-
-
-
-
-
-
 local function Init()
-
-
-
 --输入宏命令，字符
     MacroFrameEnterMacroText:SetText('')
     MacroFrameEnterMacroText:Hide()

@@ -322,8 +322,23 @@ Plus_Encounter\UI_ListInstances.lua
 
 ##史诗钥石地下城, 挑战增强
 Plus\Challenges.lua
+
+
+
+
+
+
+
 ##邮件，增加
-Plus\mail.lua
+Plus_Mail\0_mail.lua
+Plus_Mail\Clear_Send_Items.lua
+Plus_Mail\Fast_Button.lua
+Plus_Mail\History_SendName_List.lua
+Plus_Mail\InBox.lua
+Plus_Mail\Letter_Num.lua
+Plus_Mail\SendName_List.lua
+Plus_Mail\Set_UI.lua
+
 
 
 

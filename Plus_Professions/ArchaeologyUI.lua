@@ -36,7 +36,7 @@ local function Init_ArcheologyDigsiteProgressBar_OnShow(frame)
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
             e.tips:AddDoubleLine(e.onlyChinese and '声音提示' or  SOUND, e.GetEnabeleDisable(Save().ArcheologySound))
-            e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+            e.tips:AddDoubleLine(e.addName, WoWTools_ProfessionMixin.addName)
             e.tips:Show()
         end
         frame.tipsButton:SetAlpha(0.3)
@@ -177,7 +177,7 @@ local function Init()
                     if frame.itemID then
                         e.tips:SetItemByID(frame.itemID)
                     end
-                    e.tips:AddLine(e.addName, Initializer:GetName())
+                    e.tips:AddLine(e.addName, WoWTools_ProfessionMixin.addName)
                     e.tips:Show()
                 end)
 
@@ -188,7 +188,7 @@ local function Init()
                     e.tips:SetOwner(frame, "ANCHOR_LEFT")
                     e.tips:ClearLines()
                     e.tips:SetItemByID(87399)
-                    e.tips:AddLine(e.addName, Initializer:GetName())
+                    e.tips:AddLine(e.addName, WoWTools_ProfessionMixin.addName)
                     e.tips:Show()
                 end)
 

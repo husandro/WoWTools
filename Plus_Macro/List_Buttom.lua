@@ -514,27 +514,6 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
---[[
-if HasExtraActionBar() then
-local slot = i + ((GetExtraBarIndex() or 19) - 1) * (NUM_ACTIONBAR_BUTTONS or 12)
-local actionType, spell = GetActionInfo(slot)
-if actionType== "spell" and spell then--and ActionTab[spell] then
-end
-end
-]]
-
-
-
-
 local function Init_SpellBook_Menu(self, root)
     if WoWTools_MenuMixin:CheckInCombat(root) then--战斗中
         return
@@ -933,17 +912,6 @@ local function Init()
 
     Frame:settings()
 end
-
-
-
-
-
-
-
-
-
-
-
 
 
 
