@@ -786,7 +786,7 @@ local function Set_Button_OnEnter(btn)
     btn:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddLine(e.cn(self.name)..e.Icon.left, self.index)
+        e.tips:AddLine(e.cn(self.name), self.index)
         e.tips:Show()
     end)
 end

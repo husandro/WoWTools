@@ -154,7 +154,7 @@ local function Init_Menu(_, root)
         return
     end
 
-    local sub, num, num2, text
+    local sub
 
 --列表    
     for _, tab in pairs(MacroButtonList) do
@@ -177,61 +177,6 @@ local function Init_Menu(_, root)
 --保存
     root:CreateDivider()
     Save_Macro_Menu(_, root)
-
---打开，选项界面
-    root:CreateDivider()
-    sub=WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_MacroMixin.addName,})
-
-    sub:CreateTitle(e.onlyChinese and '全部删除' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DELETE, ALL))
-    sub:CreateDivider()
-
---删除，通用宏
-    num, num2= GetNumMacros()
-    text= (e.onlyChinese and '通用宏' or GENERAL_MACROS)..(num==0 and ' |cff9e9e9e#' or ' #')..num
-    sub:CreateButton(
-        '|A:XMarksTheSpot:0:0|a'..text,
-    function(data)
-        StaticPopup_Show('WoWTools_OK',
-        '|A:XMarksTheSpot:32:32|a|n'..data.text..'|n|n',
-        nil,
-        {SetValue=function()
-            if UnitAffectingCombat('player') then return end
-            print(WoWTools_MacroMixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '删除' or DELETE))
-            for i = GetNumMacros(), 1, -1 do
-                if IsModifierKeyDown() or UnitAffectingCombat('player') then
-                    return
-                end
-                local name, icon = GetMacroInfo(i)
-                DeleteMacro(i)
-                print(i..') ', WoWTools_MacroMixin:GetName(name, icon))
-            end
-        end})
-    end, {text=text})
-
---删除,专用宏
-    sub:CreateDivider()
-    text=format(e.onlyChinese and '%s专用宏' or CHARACTER_SPECIFIC_MACROS, WoWTools_UnitMixin:GetPlayerInfo(nil, e.Player.guid, nil, {reName=true}))
-        ..(num2==0 and ' |cff9e9e9e#' or ' #')..num2
-    sub:CreateButton(
-        '|A:XMarksTheSpot:0:0|a'..text,
-    function(data)
-        StaticPopup_Show('WoWTools_OK',
-        '|A:XMarksTheSpot:32:32|a|n'..data.text..'|n|n',
-        nil,
-        {SetValue=function()
-            if UnitAffectingCombat('player') then return end
-            print(WoWTools_MacroMixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '删除' or DELETE))
-            for  i = MAX_ACCOUNT_MACROS + select(2,GetNumMacros()), 121, -1 do
-                if IsModifierKeyDown() or UnitAffectingCombat('player') then
-                    return
-                end
-                local name, icon = GetMacroInfo(i)
-                DeleteMacro(i)
-                print(i..') ', WoWTools_MacroMixin:GetName(name, icon))
-            end
-        end})
-    end, {text=text})
-
 end
 
 
