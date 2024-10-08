@@ -1,5 +1,5 @@
 local id, e = ...
-local addName
+--local addName
 WoWTools_LFDMixin={
     Save={
         leaveInstance=e.Player.husandro,--自动离开,指示图标
@@ -241,9 +241,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if LFDButton then--禁用Chat Button                
                 Init()
-        
-                
-                
                 
                 self:RegisterEvent('UPDATE_BATTLEFIELD_STATUS')
                 self:RegisterEvent('GROUP_LEFT')

@@ -258,23 +258,56 @@ end
 
 
 
+--[[
+btn.background= btn:CreateTexture(nil, 'BACKGROUND')
+btn.background:SetAllPoints(btn)
+btn.background:SetAtlas('bag-reagent-border-empty')
+btn.background:SetAlpha(0.5)
+btn.background:AddMaskTexture(btn.mask)
 
+btn.texture=btn:CreateTexture(nil, 'BORDER')
+btn.texture:SetPoint("TOPLEFT", btn, "TOPLEFT", 4, -4)
+btn.texture:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -6, 6)
+btn.texture:AddMaskTexture(btn.mask)
 
+btn.border=btn:CreateTexture(nil, 'ARTWORK')
+btn.border:SetAllPoints(btn)
+btn.border:SetAtlas('bag-reagent-border')
+]]
 
 
 --####
 --初始
 --####
+--local data=  C_GuildInfo.GetGuildTabardInfo('player')
+
+    --[[GuildButton.background2= GuildButton:CreateTexture(nil, 'BACKGROUND', nil, 2)
+    GuildButton.background2:SetAllPoints()
+    GuildButton.background2:SetAtlas('UI-Achievement-Guild-Flag-Short')
+    GuildButton.background2:AddMaskTexture(GuildButton.mask)]]
+    
+    --[[GuildButton.border2= GuildButton:CreateTexture(nil, 'BORDER', nil, 2)
+    GuildButton.border2:SetAllPoints()
+    GuildButton.border2:SetAtlas('UI-Achievement-Guild-Flag-Short')
+    GuildButton.border2:AddMaskTexture(GuildButton.mask)]]
+    
 local function Init()
-    GuildButton.membersText=WoWTools_LabelMixin:Create(GuildButton)-- 10, nil, nil, true, nil, 'CENTER')
+    GuildButton.membersText=WoWTools_LabelMixin:Create(GuildButton, {color={r=1,g=1,b=1}})-- 10, nil, nil, true, nil, 'CENTER')
     GuildButton.membersText:SetPoint('TOPRIGHT', -3, 0)
 
     function GuildButton:settings()
         if IsInGuild() then--GuildUtil.lua
-            GuildButton.texture:ClearAllPoints()
-            GuildButton.texture:SetPoint('CENTER',-1.5, 1)
-            GuildButton.texture:SetSize(14,14)
-            SetSmallGuildTabardTextures('player', GuildButton.texture)            
+            self.texture:ClearAllPoints()
+            self.texture:SetPoint('CENTER', -1.5, 1)
+            self.texture:SetSize(18,18)
+
+            SetSmallGuildTabardTextures(
+                'player',
+                self.texture,
+                nil,--self.background2,
+                nil,--self.border,
+                C_GuildInfo.GetGuildTabardInfo('player')
+            )
         else
             GuildButton.texture:SetAtlas('UI-HUD-MicroMenu-GuildCommunities-Up')
         end
@@ -341,7 +374,7 @@ local function Init()
                 end
             end
             if not btn.onlineText then
-                btn.onlineText=WoWTools_LabelMixin:Create(btn)
+                btn.onlineText=WoWTools_LabelMixin:Create(btn, {color={r=1,g=1,b=1}})
                 btn.onlineText:SetPoint('TOP', btn.Icon, 'BOTTOM')
             end
             if all>0 then

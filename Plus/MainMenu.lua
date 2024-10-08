@@ -792,7 +792,7 @@ local function Init_Bag()
         end
 
         local account= C_Bank.FetchDepositedMoney(Enum.BankType.Account)
-        if account and account>0 then
+        if account and account>0 and e.tips.textLeft then
             e.tips.textLeft:SetText(
                 '|A:questlog-questtypeicon-account:0:0|a|cff00ccff'
                 ..(
