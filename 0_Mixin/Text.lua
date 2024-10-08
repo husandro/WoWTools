@@ -31,6 +31,7 @@ function WoWTools_TextMixin:ShowText(data, headerText, tab)
             end
             f.ScrollBox:SetText('')
         end)
+        frame:SetFrameStrata('HIGH')
     end
 
     frame.ScrollBox:SetText(text or '')
