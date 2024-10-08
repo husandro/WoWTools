@@ -4,13 +4,17 @@ Save={
     --disabled= not e.Player.husandro,
     toRightLeft=3, -- 1,2, 3 左边 右边 默认
     spellButton=e.Player.husandro,
-    --mcaro={},-- {name=tab.name, icon=tab.icon, body=tab.body}
+    --旧版本 mcaro={},-- {name=tab.name, icon=tab.icon, body=tab.body}
     macro={},--{[|T..icon..:0|t..name..spllID..itemName]={name=tab.name, icon=tab.icon, body=tab.body}}
 
     --hideBottomList=true,隐藏底部，列表
     bottomListScale=1,
 },
 addName= nil,
+BottomListFrame=nil,
+NewEmptyButton=nil,
+TargetButton=nil,
+NoteEditBox=nil,
 }
 
 local function Save()
@@ -207,6 +211,8 @@ local function Init()
     WoWTools_MacroMixin:Init_Select_Macro_Button()--选定宏，点击，弹出菜单，自定图标
     WoWTools_MacroMixin:Init_List_Button()--命令，按钮，列表
     WoWTools_MacroMixin:Init_AddNew_Button()--创建，空，按钮
+    WoWTools_MacroMixin:Init_ChangeTab()
+    WoWTools_MacroMixin:Init_MacroButton_Plus()
 end
 
 

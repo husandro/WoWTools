@@ -4,91 +4,6 @@ local ScrollFrame
 
 
 
-local function Delete_Macro(self)
-    local index= MacroFrame:GetSelectedIndex()
-
-    if UnitAffectingCombat('player')
-        or not MacroDeleteButton:IsEnabled()
-        or not index or index~=self.selectionIndex
-    then
-        return
-    end
-
-
-    index= MacroFrame:GetMacroDataIndex(index)
-
-    local name, icon, body = GetMacroInfo(index)
-
-    e.call(MacroFrame.DeleteMacro, MacroFrame)
-
-    if name then
-        print(WoWTools_MacroMixin.addName,
-            '|cnRED_FONT_COLOR:'..(e.onlyChinese and '删除' or DELETE),
-            '|r', WoWTools_MacroMixin:GetName(name, icon)
-        )
-        if body and body~='' then
-            print(body)
-        end
-    end
-end
-
---选定, 操作
-local function Init_Menu(self, root)
---战斗中
-    if WoWTools_MenuMixin:CheckInCombat(root) then
-        return
-    end
-
-    do
-        if self.selectionIndex and self.selectionIndex~=MacroFrame:GetSelectedIndex() then
-            MacroFrame:SelectMacro(self.selectionIndex)
-            MacroPopupFrame:Hide()
-        end
-    end
-
-    local sub
-    local index= WoWTools_MacroMixin:GetSelectIndex()
-    local isSelect= self:GetSelectorFrame():IsSelected(self.selectionIndex)--self.selectionIndex and self.selectionIndex==MacroFrame:GetSelectedIndex()
-
---保存
-    WoWTools_MacroMixin:Save_Macro_Menu(self, root)
-
---修改
-    sub=root:CreateButton(
-        '|A:QuestLegendary:0:0|a'..(e.onlyChinese and '修改' or EDIT),
-    function()
-        if not UnitAffectingCombat('player') then
-            e.call(MacroEditButton_OnClick, MacroFrame, self)
-        end
-        return MenuResponse.Open
-    end, {index=index})
-    sub:SetEnabled(isSelect)
-    WoWTools_MacroMixin:SetMenuTooltip(sub)
-
---删除
-    root:CreateDivider()
-    sub=root:CreateButton(
-        '|A:XMarksTheSpot:0:0|a'
-        ..(isSelect and '|cnRED_FONT_COLOR:' or '')..(e.onlyChinese and '删除' or DELETE),
-    function()
-        Delete_Macro(self)
-    end, {index=index})
-    sub:SetEnabled(isSelect)
-    WoWTools_MacroMixin:SetMenuTooltip(sub)
-
---新建
-root:CreateDivider()
-    sub=root:CreateButton(
-        '|A:communities-chat-icon-plus:0:0|a'..(e.onlyChinese and '新建' or NEW),
-    function()
-        WoWTools_MacroMixin:CreateMacroNew()--新建，宏
-        return MenuResponse.Open
-    end)
-    sub:SetEnabled(WoWTools_MacroMixin:IsCanCreateNewMacro())
-
-end
-
-
 
 
 
@@ -110,157 +25,44 @@ end
 
 
 local function Init()
-    local regions= {MacroFrame:GetRegions()}
-    for index, region in pairs(regions) do
-        if region==MacroHorizontalBarLeft then
-            region:Hide()
-            local f= regions[index+1]
-            if f and f:GetObjectType()=='Texture' then
-                f:Hide()
-            end
-            break
-        end
-    end
 
 
 
-    MacroFrameTextBackground:ClearAllPoints()
-    MacroFrameTextBackground:SetPoint('TOPLEFT', MacroFrame, 'LEFT', 8, -78)
-    MacroFrameTextBackground:SetPoint('BOTTOMRIGHT', -8, 42)
-
-
-    MacroFrameScrollFrame:HookScript('OnSizeChanged', function(self)
-        local w= self:GetWidth()
-        MacroFrameText:SetWidth(w)
-    end)
-
-
-
-    MacroFrameScrollFrame:ClearAllPoints()
-    MacroFrameScrollFrame:SetPoint('TOPLEFT', MacroFrame, 'LEFT', 12, -83)
-    MacroFrameScrollFrame:SetPoint('BOTTOMRIGHT', -32, 45)
-
-
-    e.Set_Move_Frame(MacroFrame, {needSize=true, setSize=true, minW=338, minH=424,
-        sizeRestFunc=function(btn)
-        btn.target:SetSize(338, 424)
-    end})
-
-    --选定宏
-    local region= MacroFrameSelectedMacroButton:GetRegions()--外框
-    if region and region:GetObjectType()=='Texture' then
-        region:Hide()
-    end
-    MacroFrameSelectedMacroBackground:ClearAllPoints()
-    MacroFrameSelectedMacroBackground:SetPoint('BOTTOMLEFT', MacroFrameTextBackground, 'TOPLEFT', 0, 8)
-
-    MacroEditButton:ClearAllPoints()
-    MacroEditButton:SetPoint('TOPLEFT', MacroFrameSelectedMacroButton, 'TOPRIGHT',2,2)
-    MacroEditButton:SetSize(60,22)--170 22
-    MacroEditButton:SetText(e.onlyChinese and '修改' or EDIT)
-
-    --选定宏，名称
-    MacroFrameSelectedMacroName:ClearAllPoints()
-    MacroFrameSelectedMacroName:SetPoint('BOTTOMLEFT', MacroFrameSelectedMacroButton, 'TOPLEFT')
-    MacroFrameSelectedMacroName:SetFontObject('GameFontNormal')
-
-
-
-    --输入宏命令
+--输入宏命令，字符
     MacroFrameEnterMacroText:SetText('')
     MacroFrameEnterMacroText:Hide()
+    WoWTools_EditBoxMixn:SetInstructions(MacroFrameText, e.onlyChinese and '输入宏命令' or ENTER_MACRO_LABEL)
+    WoWTools_EditBoxMixn:HookInstructions(MacroFrameText)
 
-    --设置，焦点
+-- "已使用%d个字符，最多255个";
+    MacroFrameCharLimitText:SetParent(MacroFrameScrollFrame.ScrollBar)
+    MacroFrameCharLimitText:ClearAllPoints()
+    MacroFrameCharLimitText:SetPoint('BOTTOMRIGHT', MacroFrameScrollFrame)
+    MacroFrameCharLimitText:SetTextColor(0.93, 0.82, 0)
+    MacroFrameCharLimitText:SetAlpha(0.75)
+    MacroFrameText:HookScript('OnTextChanged', function(self)
+        local num=self:GetNumLetters() or 0
+        MacroFrameCharLimitText:SetFormattedText((num==255 and '|cff9e9e9e' or '')..num..'/255')
+    end)
+    
+--设置，焦点
     MacroFrameTextBackground.NineSlice:HookScript('OnMouseDown', function(_, d)
         if d=='LeftButton' then
             MacroFrameText:SetFocus()
         end
     end)
+    
 
-    --角色，专用宏，颜色
+--角色，专用宏，颜色
     MacroFrameTab2.Text:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
-end
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-local function Init_Other()
-
---宏，提示
-    hooksecurefunc(MacroButtonMixin, 'OnLoad', function(btn)
-        if btn.OnDoubleClick then
-            return
-        end
-
-        function btn:set_on_enter()--设置，宏，提示
-            WoWTools_MacroMixin:SetTooltips(self)
-        end
-        btn:HookScript('OnEnter', btn.set_on_enter)
-        btn:HookScript('OnLeave', GameTooltip_Hide)
-
-        local texture2= btn:GetRegions()
-        texture2:SetAlpha(0.3)--按钮，背景
-        btn.Name:SetWidth(48)--名称，长度
-        btn.SelectedTexture:ClearAllPoints()--设置，选项，特效
-        btn.SelectedTexture:SetPoint('CENTER')
-        btn.SelectedTexture:SetSize(44,44)
-        btn.SelectedTexture:SetVertexColor(0,1,1)
-
---删除，宏 Alt+双击
-        btn:SetScript('OnDoubleClick', function(self)
-           if IsAltKeyDown() then
-                Delete_Macro(self)
-           end
-        end)
-
---右击，菜单
-        btn:HookScript('OnMouseDown', function(frame, d)
-            if d=='RightButton' then
-                MenuUtil.CreateContextMenu(frame, Init_Menu)
-                frame:set_on_enter()
-            end
-        end)
-    end)
-
-    hooksecurefunc(MacroFrame.MacroSelector, 'setupCallback', function(self, _, name)--Blizzard_MacroUI.lua
-        if name ~= nil then
-            self.Name:SetText(WoWTools_TextMixin:sub(name, 2, 4))
-        end
-    end)
-
---Blizzard_ScrollBoxSelector.lua
-    MacroFrame.MacroSelector:HookScript('OnSizeChanged', function(self)
-        local value= math.max(6, math.modf(self:GetWidth()/49))
-        if self:GetStride()~= value then
-            self:SetCustomStride(value)
-            self:Init()
-        end
-    end)
-
-
-
-
-    --保存，提示
+--保存，提示
     MacroSaveButton.saveTip= MacroSaveButton:CreateTexture(nil, 'OVERLAY')
     MacroSaveButton.saveTip:SetPoint('LEFT')
     MacroSaveButton.saveTip:SetSize(18, 18)
     MacroSaveButton.saveTip:SetAtlas('auctionhouse-icon-favorite')
     MacroSaveButton.saveTip:Hide()
-
     local function set_saveTip()
         local show= false
         local index= WoWTools_MacroMixin:GetSelectIndex()
@@ -276,7 +78,7 @@ local function Init_Other()
 
 
 
-    --宏数量
+--宏数量
     --Blizzard_MacroUI.lua
     MacroFrameTab1.label= WoWTools_LabelMixin:Create(MacroFrameTab1)
     MacroFrameTab1.label:SetPoint('BOTTOM', MacroFrameTab1, 'TOP', 0, -8)
@@ -284,9 +86,6 @@ local function Init_Other()
     MacroFrameTab2.label= WoWTools_LabelMixin:Create(MacroFrameTab2)
     MacroFrameTab2.label:SetPoint('BOTTOM', MacroFrameTab2, 'TOP', 0, -8)
     MacroFrameTab2.label:SetAlpha(0.7)
-    --MacroFrameTab2.label:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
-
-
     hooksecurefunc(MacroFrame, 'Update', function()
     	local numAccountMacros, numCharacterMacros
         numAccountMacros, numCharacterMacros = GetNumMacros()
@@ -301,15 +100,64 @@ local function Init_Other()
     end)
 
 
-    for _, region in pairs({MacroFrame:GetRegions()}) do
-        if region:GetObjectType()=='FontString' and region:GetText()==CREATE_MACROS then
+    local regions= {MacroFrame:GetRegions()}
+    for index, frame in pairs(regions) do
+--标题，上升，原生看FrameStrate太低了
+        if frame:GetObjectType()=='FontString' and frame:GetText()==CREATE_MACROS then
             if e.onlyChinese then
-                region:SetText('创建宏')
+                frame:SetText('创建宏')
             end
-            region:SetParent(MacroFrame.TitleContainer)
-            break
+            frame:SetParent(MacroFrame.TitleContainer)
+
+--列表 和 MacroFrameText 中间的分割线
+        elseif frame==MacroHorizontalBarLeft then
+            frame:SetTexture(0)
+            frame:Hide()
+            local f= regions[index+1]
+            if f and f:GetObjectType()=='Texture' then
+                f:SetTexture(0)
+                f:Hide()
+            end
         end
     end
+
+
+--选定宏，按钮
+    MacroFrameSelectedMacroButton:ClearAllPoints()
+    MacroFrameSelectedMacroButton:SetPoint('BOTTOMLEFT', MacroFrameScrollFrame, 'TOPLEFT', 6, 12)
+    local region= MacroFrameSelectedMacroButton:GetRegions()--外框
+    if region and region:GetObjectType()=='Texture' then
+        region:Hide()
+    end
+
+--选定宏，名称
+    MacroFrameSelectedMacroName:ClearAllPoints()
+    MacroFrameSelectedMacroName:SetPoint('TOPLEFT', MacroFrameSelectedMacroButton, 'TOPRIGHT', 4, 4)
+    MacroFrameSelectedMacroName:SetFontObject('GameFontNormal')
+
+--修改，按钮
+    MacroEditButton:ClearAllPoints()
+    MacroEditButton:SetPoint('BOTTOMLEFT', MacroFrameSelectedMacroButton, 'BOTTOMRIGHT', 2, -2)
+    MacroEditButton:SetSize(60,22)--170 22
+    MacroEditButton:SetText(e.onlyChinese and '修改' or EDIT)
+    
+--取消，按钮
+    --MacroCancelButton:ClearAllPoints()
+    --MacroCancelButton:SetPoint('')
+--保存，按钮
+    MacroSaveButton:ClearAllPoints()
+    MacroSaveButton:SetPoint('BOTTOM', MacroCancelButton, 'TOP', 0, 2)
+    
+--EditBox
+    MacroFrameText:ClearAllPoints()
+    MacroFrameText:SetAllPoints(MacroFrameScrollFrame)
+
+--MacroFrameText 背景
+    MacroFrameTextBackground:ClearAllPoints()
+    MacroFrameTextBackground:SetPoint('TOPLEFT',MacroFrameScrollFrame, -4, 4)
+    MacroFrameTextBackground:SetPoint('BOTTOMRIGHT', MacroFrameScrollFrame, 4,-4)
+
+
 end
 
 
@@ -324,8 +172,7 @@ end
 
 
 
-
-
+-- 恢复宏选择框的滚动条位置
 local function Init_Scroll()
     ScrollFrame= CreateFrame("Frame", nil, MacroFrame)
     
@@ -385,6 +232,5 @@ end
 
 function WoWTools_MacroMixin:Init_Set_UI()
     Init()
-    Init_Other()
-    Init_Scroll()
+    Init_Scroll()--恢复宏选择框的滚动条位置
 end

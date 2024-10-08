@@ -143,7 +143,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
 
 
-            if not WoWTools_PaperDollMixin.disabled then
+            if not Save().disabled then
                 Init()
                 self:RegisterEvent('SOCKET_INFO_UPDATE')--宝石，更新    
             end

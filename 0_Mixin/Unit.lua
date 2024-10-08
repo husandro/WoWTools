@@ -308,7 +308,7 @@ function WoWTools_UnitMixin:GetClassIcon(unit, classFilename, reAltlas)
     classFilename= classFilename or (unit and UnitClassBase(unit))
     if classFilename then
         if classFilename=='EVOKER' then
-            classFilename='classicon-evoker'
+            classFilename='UI-HUD-UnitFrame-Player-Portrait-ClassIcon-Evoker'--'classicon-evoker'--UI-HUD-UnitFrame-Player-Portrait-ClassIcon-Evoker
         else
             classFilename= 'groupfinder-icon-class-'..classFilename
         end

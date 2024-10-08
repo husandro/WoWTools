@@ -6,6 +6,32 @@ WoWTools_EditBoxMixn={
     index=1
 }
 
+
+
+
+
+local function Settings(frame)
+    function frame:SetText(...)
+        self.editBox:SetText(...)
+    end
+    function frame:GetText()
+        return self.editBox:GetText()
+    end
+    function frame:ClearFocus()
+        self.editBox:ClearFocus()
+    end
+    function frame:SetFocus()
+        self.editBox:SetFocus()
+    end
+end
+
+
+
+
+
+
+
+
 function WoWTools_EditBoxMixn:Create(frame, tab)
     self.index= self.index+1
     local name= tab.name or format('%s%d', 'WoWTools_Edit', self.index)
@@ -17,12 +43,19 @@ function WoWTools_EditBoxMixn:Create(frame, tab)
     editBox:SetAutoFocus(false)
     editBox:ClearFocus()
     editBox:SetFontObject(font)
+    editBox:SetTextColor(1,1,1)
 
     editBox:SetScript('OnEscapePressed', EditBox_ClearFocus)
-    editBox:SetScript('OnHide', function(s) s:SetText('') s:ClearFocus() end)
+    editBox:SetScript('OnHide', function(s) s:ClearFocus() end)
 
     return editBox
 end
+
+
+
+
+
+
 
 
 
@@ -94,18 +127,7 @@ function WoWTools_EditBoxMixn:CreateMultiLineFrame(frame, tab)
 --使用说明
     self:SetInstructions(scrollFrame.editBox, instructions, scrollFrame)
 
-    function scrollFrame:SetText(...)
-        self.editBox:SetText(...)
-    end
-    function scrollFrame:GetText()
-        return self.editBox:GetText()
-    end
-    function scrollFrame:ClearFocus()
-        self.editBox:ClearFocus()
-    end
-    function scrollFrame:SetFocus()
-        self.editBox:SetFocus()
-    end
+    Settings(scrollFrame)
 
     return scrollFrame
 end
@@ -126,6 +148,7 @@ function WoWTools_EditBoxMixn:SetInstructions(editBox, instructions, frame)
     if not editBox then
         return
     end
+    
     editBox.Instructions=WoWTools_LabelMixin:Create(editBox, {layer='BORDER', color={r=0.35, g=0.35, b=0.35}})
     editBox.Instructions:SetPoint('TOPLEFT')
     editBox.Instructions:SetText(instructions)

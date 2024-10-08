@@ -1,6 +1,5 @@
 --[[
 ScaleFrame(frame, delta, value, func)
-ShowText(data, headerText)
 CreateFrame(parent, tab)
 CreateBackground(frame, setPoint)
 ]]
@@ -55,31 +54,9 @@ end
 
 
 
-function WoWTools_FrameMixin:ShowText(data, headerText)
-    local text
-    if type(data)=='table' then
-        for _, str in pairs(data) do
-            text= text and text..'\n' or ''
-            text= text.. str
-        end
-    else
-        text= data
-    end
-    local frame= _G['WoWTools_EditBoxFrame']
-    if not frame then
-        frame= self:CreateFrame(nil, {name='WoWTools_EditBoxFrame'})
-        frame.ScrollBox=WoWTools_EditBoxMixn:CreateMultiLineFrame(frame, {font='GameFontNormal', isShowLinkTooltip=true})
-        frame.ScrollBox:SetPoint('TOPLEFT', 11, -32)
-        frame.ScrollBox:SetPoint('BOTTOMRIGHT', -6, 12)
-    end
-    frame.ScrollBox:SetText(text or '')
-    frame.Header:Setup(headerText or '' )
-    frame:SetShown(true)
-end
 
 
-
-function WoWTools_FrameMixin:CreateFrame(parent, tab)
+function WoWTools_FrameMixin:Create(parent, tab)
     tab= tab or {}
 
     local name= tab.name
@@ -138,7 +115,7 @@ function WoWTools_FrameMixin:CreateFrame(parent, tab)
     return frame
 end
 --[[
-WoWTools_FrameMixin:CreateFrame(name, {
+WoWTools_FrameMixin:Create(name, {
     size={w, h} or numeri,
     parentFrame= frame or UIParent,
     setID=numeri, --SetID(1)

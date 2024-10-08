@@ -151,10 +151,19 @@ function WoWTools_ButtonMixin:Ctype2(frame, tab)
     local setID= tab.setID
     local size= tab.size
     local template= tab.template--UIPanelButtonTemplate
+    local atlas= tab.atlas
+    local texture= tab.texture
 
     local btn= CreateFrame('Button', name or ('WoWToolsToolsButton'..get_index()), frame or UIParent, template, setID)
     btn:SetSize(get_size(size))
     self:Settings(btn, true)
+
+    if atlas then
+        btn.texture:SetAtlas(atlas)
+    elseif texture then
+        btn.texture:SetTexture(texture)
+    end
+
     return btn
 end
 

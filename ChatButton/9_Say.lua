@@ -281,7 +281,7 @@ local function Init_Menu(self, root)
                 for player in pairs(playerList) do
                     text=text..'|n|cff9e9e9e'..player..'|r <-> '..(WoWTools_UnitMixin:GetRaceIcon({guid=data.guid}) or '')..col..data.name..'|r|n'
                 end
-                WoWTools_FrameMixin:ShowText(text, WoWTools_UnitMixin:GetPlayerInfo({name=data.name, guid=data.guid, reName=true, reRealm=true}))
+                WoWTools_TextMixin:ShowText(text, WoWTools_UnitMixin:GetPlayerInfo({name=data.name, guid=data.guid, reName=true, reRealm=true}))
                 return MenuResponse.Open
             end, tab)
 

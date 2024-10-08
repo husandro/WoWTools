@@ -76,7 +76,7 @@ function WoWTools_LabelMixin:Create(frame, tab)
         if color==true then--颜色
             WoWTools_ColorMixin:SetLabelTexture(font, {type='FontString'})
         elseif type(color)=='table' then
-            font:SetTextColor(color.r, color.g, color.b, color.a or 1)
+            font:SetTextColor(color.r or 1, color.g or 1, color.b or 1, color.a or 1)
         else
             font:SetTextColor(1, 0.82, 0, 1)
         end

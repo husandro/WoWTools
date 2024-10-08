@@ -4,7 +4,18 @@ local function Save()
     return WoWTools_MacroMixin.Save
 end
 
-local Button, NoteEditBox, ScrollBoxBackground
+local Button, TargetButton, AttackButton, NoteEditBox
+
+
+
+
+local PointTab={
+    {value=1, text=e.onlyChinese and '左' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT},
+    {value=2, text=e.onlyChinese and '右' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT},
+    {value=3, text=e.onlyChinese and '默认' or DEFAULT},
+    '-',
+    {value=4, text=e.onlyChinese and '左|右' or (HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT..'|'..HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT)}
+}
 
 
 
@@ -12,37 +23,57 @@ local Button, NoteEditBox, ScrollBoxBackground
 
 
 
-
-
-local function Init_Menu(self, root)
+local function Init_Menu(_, root)
     if WoWTools_MenuMixin:CheckInCombat(root) then--战斗中
         return
     end
-
     local sub
 
+--备注
+    root:CreateButton(
+        '|A:dressingroom-button-appearancelist-up:0:0|a'..(e.onlyChinese and '备注' or LABEL_NOTE),
+    function()
+        WoWTools_TextMixin:ShowText(
+            Save().noteText,
+            e.onlyChinese and '宏' or MACRO,
+            {onHide=function(text)
+                Save().noteText= text
+                if NoteEditBox:IsVisible() then
+                    NoteEditBox:SetText(text)
+                end
+            end}
+        )
+        return MenuResponse.Open
+    end)
 
+--布局
+    root:CreateDivider()
     sub=root:CreateButton(
-        e.onlyChinese and '通用宏' or GENERAL_MACROS,
+        e.onlyChinese and '布局' or HUD_EDIT_MODE_LAYOUT:gsub(HEADER_COLON, ''),
     function()
         return MenuResponse.Open
     end)
 
-    for value, info in pairs ({
-        {text=e.onlyChinese and '左' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT},
-        {text=e.onlyChinese and '右' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT },
-        {text=e.onlyChinese and '默认' or DEFAULT },
-    }) do
-        sub:CreateCheckbox(
-            info.text,
-        function(data)
-            return Save().toRightLeft==data.value
-        end, function(data)
-            Save().toRightLeft=data.value
-            self:set_texture()
-            e.call(MacroFrame.ChangeTab, MacroFrame, 1)
-        end, {value=value})
+    for _, info in pairs (PointTab) do
+        if info=='-' then
+            sub:CreateDivider()
+        else
+            sub:CreateRadio(
+                info.text,
+            function(data)
+                return Save().toRightLeft==data.value
+            end, function(data)
+                if not UnitAffectingCombat('player') then
+                    Save().toRightLeft=data.value
+                    --self:set_texture()
+                    e.call(MacroFrame.ChangeTab, MacroFrame, 1)
+                    TargetButton:settings()
+                end
+                return MenuResponse.Refresh
+            end, {value=info.value})
+        end
     end
+
 --按钮增强
     sub=root:CreateCheckbox(
         e.onlyChinese and '按钮增强' or 'Button Plus',
@@ -51,7 +82,10 @@ local function Init_Menu(self, root)
     end, function()
         Save().hideBottomList= not Save().hideBottomList and true or nil
         WoWTools_MacroMixin.BottomListFrame:settings()
+        WoWTools_MacroMixin.NewEmptyButton:settings()
+        TargetButton:settings()
     end)
+
 --缩放
     WoWTools_MenuMixin:ScaleRoot(sub,
     function()
@@ -61,82 +95,10 @@ local function Init_Menu(self, root)
         WoWTools_MacroMixin.BottomListFrame:settings()
     end)
 
+
 --打开选项界面
     root:CreateDivider()
     WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_MacroMixin.addName,})
-end
-
-
-
-
-
-
-
-
-
-
-
---设置，列表
-local function Init_ChangeTab(self, tabID)
-    self.MacroSelector:ClearAllPoints()
-
-    local point= Save().toRightLeft
-
-    if tabID==1 and (point==1 or point==2) then
-        if point==1 then--左边
-            self.MacroSelector:SetPoint('TOPRIGHT', self, 'TOPLEFT',10,-12)
-            self.MacroSelector:SetPoint('BOTTOMLEFT', -319, 0)
-        else--右边
-            self.MacroSelector:SetPoint('TOPLEFT', self, 'TOPRIGHT',0,-12)
-            self.MacroSelector:SetPoint('BOTTOMRIGHT', 319, 0)
-        end
-    else
-        self.MacroSelector:SetPoint('TOPLEFT', 12,-66)
-        self.MacroSelector:SetPoint('BOTTOMRIGHT', MacroFrame, 'RIGHT', -6, 0)
-    end
-
-    local show=(point and point<3 and MacroFrame.macroBase==0) and true or false
-    NoteEditBox:SetShown(show)
-    ScrollBoxBackground:SetShown(show)
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-local function Init_EditBox()
-    NoteEditBox=WoWTools_EditBoxMixn:CreateMultiLineFrame(MacroFrame, {
-        font='GameFontHighlightSmall',
-        instructions= e.onlyChinese and '备注' or LABEL_NOTE
-    })
-
-    WoWTools_MacroMixin.NoteEditBox= NoteEditBox
-
-
-    NoteEditBox:SetPoint('TOPLEFT', 8, -65)
-    NoteEditBox:SetPoint('BOTTOMRIGHT', MacroFrame, 'RIGHT', -6, 0)
-    NoteEditBox:Hide()
-
-
-    NoteEditBox.editBox:SetScript('OnHide', function(self)--保存备注
-        Save().noteText= self:GetText()
-        self:SetText("")
-        self:ClearFocus()
-    end)
-    NoteEditBox.editBox:SetScript('OnShow', function(self)
-        self:SetText(Save().noteText or '')
-    end)
 end
 
 
@@ -155,7 +117,7 @@ end
 --创建，目标，功击，按钮
 --####################
 local function Create_Button(name)
-    local btn= WoWTools_ButtonMixin:Cbtn(MacroFrameSelectedMacroButton, {size={60,22}, type=false})
+    local btn= WoWTools_ButtonMixin:Cbtn(TargetButton or MacroFrameSelectedMacroButton, {size={60,22}, type=false})
     function btn:find_text(right)
         return (MacroFrameText:GetText() or ''):find(WoWTools_TextMixin:Magic(right and self.text2 or self.text))
     end
@@ -208,27 +170,57 @@ end
 
 
 
-local function Init_Other_Button()
-    --目标
-    local attck= Create_Button(e.onlyChinese and '目标' or TARGET)
-    attck:SetPoint('LEFT', MacroEditButton, 'RIGHT',8,0)
-    attck.text='#showtooltip\n/targetenemy [noharm][dead]\n'
-    attck.text2='/cancelaura '
-    attck.textCursor=0
-    attck.text2Cursor=nil
-    attck.tip=nil
-    attck.tip2=e.onlyChinese and '光环名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, AURAS, NAME)
+local function Init_Created()
+--备注 EditBox
+    NoteEditBox=WoWTools_EditBoxMixn:CreateMultiLineFrame(MacroFrame, {
+        font='GameFontHighlightSmall',
+        instructions= e.onlyChinese and '备注' or LABEL_NOTE
+    })
+    WoWTools_MacroMixin.NoteEditBox= NoteEditBox
+
+    NoteEditBox:SetPoint('TOPLEFT', 8, -65)
+    NoteEditBox:SetPoint('BOTTOMRIGHT', MacroFrame, 'RIGHT', -6, 0)
+    NoteEditBox:Hide()
+    NoteEditBox.editBox:SetScript('OnHide', function(self)--保存备注
+        Save().noteText= self:GetText()
+        self:SetText("")
+        self:ClearFocus()
+    end)
+    NoteEditBox.editBox:SetScript('OnShow', function(self)
+        self:SetText(Save().noteText or '')
+    end)
 
 
+--目标
+    TargetButton= Create_Button(e.onlyChinese and '目标' or TARGET)
+    WoWTools_MacroMixin.TargetButton= WoWTools_MacroMixin
+    --TargetButton:SetPoint('LEFT', MacroEditButton, 'RIGHT',8,0)
 
-    --攻击
-    local cancel= Create_Button(e.onlyChinese and '攻击' or ATTACK)
-    cancel:SetPoint('LEFT', attck, 'RIGHT')
-    cancel.text= '/petattack\n/startattack\n'
-    cancel.text2= '/petfollow\n/stopattack\n/stopcasting\n'
+    TargetButton.text='#showtooltip\n/targetenemy [noharm][dead]\n'
+    TargetButton.text2='/cancelaura '
+    TargetButton.textCursor=0
+    TargetButton.text2Cursor=nil
+    TargetButton.tip=nil
+    TargetButton.tip2=e.onlyChinese and '光环名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, AURAS, NAME)
+    function TargetButton:settings()
+        self:ClearAllPoints()
+        local point= Save().toRightLeft
+        if point==4 then--左|右
+            self:SetPoint('BOTTOMRIGHT', MacroFrame, 'BOTTOM', 0, 4)
+        else
+            self:SetPoint('LEFT', MacroEditButton, 'RIGHT',8,0)
+        end
+        self:SetShown(not Save().hideBottomList)
+    end
+    TargetButton:settings()
+
+--攻击
+    AttackButton= Create_Button(e.onlyChinese and '攻击' or ATTACK)
+    AttackButton:SetPoint('LEFT', TargetButton, 'RIGHT')
+    AttackButton.text= '/petattack\n/startattack\n'
+    AttackButton.text2= '/petfollow\n/stopattack\n/stopcasting\n'
+
 end
-
-
 
 
 
@@ -248,22 +240,27 @@ end
 
 
 local function Init()
-    Button= WoWTools_ButtonMixin:CreateMenu(MacroFrame.TitleContainer, {hideIcon=true})
-    Button:SetFrameLevel(MacroFrame.TitleContainer:GetFrameLevel()+1)
-    Button:SetPoint('LEFT',0, -2)
-    Button:SetAlpha(0.5)
-    Button:SetupMenu(Init_Menu)
+    --Button= WoWTools_ButtonMixin:CreateMenu(MacroFrame.TitleContainer)--, {hideIcon=true})
+    Button= WoWTools_ButtonMixin:Cbtn(MacroFrameCloseButton, {size={23,23}, atlas='ui-questtrackerbutton-filter'})--icon='hide'})
+    Button:SetPushedAtlas('ui-questtrackerbutton-filter-pressed')
+    Button:SetHighlightAtlas('ui-questtrackerbutton-red-highlight')
+    --Button:SetFrameLevel(MacroFrameCloseButton:GetFrameLevel()+1)
+    --Button:SetPoint('LEFT',0, -2)
+    Button:SetPoint('RIGHT', MacroFrameCloseButton, 'LEFT', -2, 0)
+    --Button:SetAlpha(0.5)
+    
+    --Button:SetupMenu(Init_Menu)
 
-    function Button:set_texture()
+    --[[function Button:set_texture()
         local point= Save().toRightLeft
         self:SetNormalAtlas(
             point==1 and e.Icon.toLeft--左边
             or point==2 and e.Icon.toRight--右边
-            or e.Icon.icon
+            or 'ui-questtrackerbutton-filter'--e.Icon.icon
         )
-    end
+    end]]
 
-    Button:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.5) end)
+    Button:SetScript('OnLeave', GameTooltip_Hide)--function(self) e.tips:Hide() self:SetAlpha(0.5) end)
     Button:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
@@ -273,19 +270,32 @@ local function Init()
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(' ', (e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..e.Icon.left)
         e.tips:Show()
-        self:SetAlpha(1)
+        --self:SetAlpha(1)
+    end)
+    Button:SetScript('OnMouseDown', function(self)
+        MenuUtil.CreateContextMenu(self, Init_Menu)
     end)
 
-    Button:set_texture()
+    
+    Button.Text= WoWTools_LabelMixin:Create(MacroFrame.TitleContainer, {color={r=1,g=0,b=0}, size=16})
+    Button.Text:SetPoint('BOTTOMRIGHT', Button, 'TOPRIGHT', 0, 2)
+    Button.Text:SetText(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
+    
 
-
-
-    ScrollBoxBackground=WoWTools_TextureMixin:CreateBackground(MacroFrame.MacroSelector.ScrollBox)--, {isAllPoint=true})
-    ScrollBoxBackground:SetAllPoints(MacroFrame.MacroSelector.ScrollBox.Shadows)
-
-    Init_EditBox()
-    Init_Other_Button()
-    hooksecurefunc(MacroFrame, 'ChangeTab', Init_ChangeTab)--设置，列表
+    Button:SetScript('OnShow', function(self)
+        self:RegisterEvent('PLAYER_REGEN_DISABLED')
+        self:RegisterEvent('PLAYER_REGEN_ENABLED')
+        self.Text:SetShown(UnitAffectingCombat('player'))
+    end)
+    Button:SetScript('OnHide', function(self)
+        self:UnregisterAllEvents()
+    end)
+    Button:SetScript('OnEvent', function(self, event)
+        self.Text:SetShown(event=='PLAYER_REGEN_DISABLED')
+    end)
+    
+    
+    --Button:set_texture()
 end
 
 
@@ -301,4 +311,5 @@ end
 
 function WoWTools_MacroMixin:Init_Button()
     Init()
+    Init_Created()
 end

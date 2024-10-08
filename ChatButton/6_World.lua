@@ -604,7 +604,7 @@ end
             end
             str=str..'|n'..data.text
 
-            WoWTools_FrameMixin:ShowText(str, player2 or data.playerName)
+            WoWTools_TextMixin:ShowText(str, player2 or data.playerName)
             return MenuResponse.Open
         end, {text=text, guid=tab.guid, playerName=playerName})
 

@@ -2,6 +2,45 @@ local e= select(2, ...)
 WoWTools_TextMixin={}
 
 
+function WoWTools_TextMixin:ShowText(data, headerText, tab)
+    tab= tab or {}
+    local onHide= tab.onHide
+
+    local text
+    if type(data)=='table' then
+        for _, str in pairs(data) do
+            text= text and text..'\n' or ''
+            text= text.. str
+        end
+    else
+        text= data
+    end
+    local frame= _G['WoWTools_ShowTextEditBoxFrame']
+    if not frame then
+        frame= WoWTools_FrameMixin:Create(nil, {name='WoWTools_ShowTextEditBoxFrame'})
+        frame.ScrollBox=WoWTools_EditBoxMixn:CreateMultiLineFrame(frame, {font='GameFontNormal', isShowLinkTooltip=true})
+        frame.ScrollBox:SetPoint('TOPLEFT', 11, -32)
+        frame.ScrollBox:SetPoint('BOTTOMRIGHT', -6, 12)
+        
+        frame:SetScript('OnHide', function(f)
+            if f.onHide then
+                do
+                    f.onHide(f.ScrollBox:GetText())
+                end
+                f.onHide=nil
+            end
+            f.ScrollBox:SetText('')
+        end)
+    end
+
+    frame.ScrollBox:SetText(text or '')
+    frame.Header:Setup(headerText or '' )
+    frame:SetShown(true)
+    frame.onHide= onHide
+end
+
+
+
 function WoWTools_TextMixin:Magic(text)
     local tab= {'%.', '%(','%)','%+', '%-', '%*', '%?', '%[', '%^'}
     for _,v in pairs(tab) do

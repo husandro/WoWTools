@@ -5037,7 +5037,12 @@
         "MacroPopupFrame",
         "MacroFrameMixin",
         "MacroFrameCharLimitText",
-        "PanelTemplates_SetTab"
+        "PanelTemplates_SetTab",
+        "PanelTemplates_SetNumTabs",
+        "ENTER_MACRO_LABEL",
+        "MACROFRAME_CHAR_LIMIT",
+        "MacroFramePortrait",
+        "MacroFrameCloseButton"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

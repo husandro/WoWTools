@@ -270,6 +270,7 @@ end
 --#############
 local function Init()
     Button= WoWTools_ButtonMixin:Cbtn(MacroFrame, {size={22,22}, name='WoWTools_MacroNewEmptyButton', icon='hide'})
+    WoWTools_MacroMixin.NewEmptyButton= Button
     Button.texture= Button:CreateTexture(nil, 'ARTWORK')
     Button.texture:SetAtlas('communities-chat-icon-plus')
     Button.texture:SetAllPoints()
@@ -294,7 +295,6 @@ local function Init()
     end)
     Button:SetScript('OnMouseUp', Button.set_Tooltips)
 
-
     hooksecurefunc(MacroFrame, 'UpdateButtons', function()
         if WoWTools_MacroMixin:IsCanCreateNewMacro() then
             Button.texture:SetVertexColor(0,1,0)
@@ -302,6 +302,12 @@ local function Init()
             Button.texture:SetVertexColor(1,1,1)
         end
     end)
+
+    function Button:settings()
+        self:SetShown(not Save().hideBottomList)
+    end
+    
+    Button:settings()
 end
   
 

@@ -1133,11 +1133,12 @@ local function Init_All_Frame()
     set_SearchBox(ChatFrame1EditBox)
 
      --插件，管理
-     e.Set_NineSlice_Color_Alpha(AddonList,true)
-     e.Set_ScrollBar_Color_Alpha(AddonList)
-     set_Alpha_Color(AddonListBg)
-     e.Set_NineSlice_Color_Alpha(AddonListInset, true)
-     set_Alpha_Color(AddonListInset.Bg, nil, nil, min05)
+    e.Set_NineSlice_Color_Alpha(AddonList,true)
+    e.Set_ScrollBar_Color_Alpha(AddonList)
+    set_Alpha_Color(AddonListBg)
+    e.Set_NineSlice_Color_Alpha(AddonListInset, true)
+    set_Alpha_Color(AddonListInset.Bg, nil, nil, min05)
+    set_Menu(AddonList.Dropdown)
 
 
 

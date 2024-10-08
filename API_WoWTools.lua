@@ -104,7 +104,7 @@ end
 
 
 e.Icon={
-    --player= WoWTools_UnitMixin:GetRaceIcon({unit='player', guid=nil , race=nil , sex=nil , reAtlas=false}),
+    --player= WoWTools_UnitMixin:GetRaceIcon({unit='player', guid=e.Player.guid , race=nil , sex=e.Player.sex , reAtlas=false}),
     icon= 'orderhalltalents-done-glow',
     icon2='|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t',
     disabled='talents-button-reset',
