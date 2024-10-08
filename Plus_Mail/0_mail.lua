@@ -1,6 +1,10 @@
---if GameLimitedMode_IsActive() then--受限模式
+--受限模式
+if GameLimitedMode_IsActive() then
+    return
+end
 
 local id, e= ...
+
 WoWTools_MailMixin={
 Save={
     --hide=true,--隐藏
@@ -223,7 +227,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             if not Save().disabled then
-                self:RegisterEvent('MAIL_SHOW')
+                Init()
+                --self:RegisterEvent('MAIL_SHOW')
             end
             self:UnregisterEvent('ADDON_LOADED')
         end

@@ -185,37 +185,6 @@ local function Init_Menu(_, level, menuList)
             end
         }, level)
 
-    --[[elseif menuList=='GROUP' then
-        local find
-        local u=  IsInRaid() and 'raid' or 'party'
-        for i=1, GetNumGroupMembers() do
-            local unit= u..i
-            if UnitExists(unit) and not UnitIsUnit('player', unit) then
-                local name= GetUnitName(unit, true)
-                local text=  i..')'.. (i<10 and '  ' or ' ')..WoWTools_UnitMixin:GetPlayerInfo({unit= unit, reName=true, reRealm=true})
-
-                local lv= UnitLevel(unit)
-                text= (lv and lv~=GetMaxLevelForPlayerExpansion() and lv>0) and text .. ' |cff00ff00'..lv..'|r' or text--等级
-                if not UnitIsConnected(unit) then
-                    text= text..' '..(e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE)
-                end
-
-                info={
-                    text= text,
-                    keepShownOnClick= true,
-                    notCheckable=true,
-                    tooltipOnButton=true,
-                    tooltipTitle= name,
-                    arg1= name,
-                    func=   WoWTools_MailMixin.SetSendName,
-                }
-                e.LibDD:UIDropDownMenu_AddButton(info, level)
-                find= true
-            end
-        end
-        if not find then
-            e.LibDD:UIDropDownMenu_AddButton({text=e.onlyChinese and '无' or NONE, notCheckable=true, isTitle=true}, level)
-        end]]
 
     elseif menuList and type(menuList)=='number' then--社区
         local num=0
@@ -274,18 +243,6 @@ local function Init_Menu(_, level, menuList)
         }
         e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-    --[[elseif menuList=='SETTINGS' then
-        info={
-            text= 'Ctrl + '..e.Icon.right..' '..(e.onlyChinese and '多物品' or MAIL_MULTIPLE_ITEMS),
-            checked= not Save().disableCtrlFast,
-            tooltipOnButton=true,
-            tooltipTitle= e.onlyChinese and '备注：如果出现错误' or ('note: '..ERRORS..' ('..SHOW..')'),
-            tooltipText= e.onlyChinese and '请禁用此功能' or DISABLE,
-            func= function()
-                Save().disableCtrlFast= not Save().disableCtrlFast and true or nil
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)]]
     end
 
     if menuList then
@@ -331,15 +288,7 @@ local function Init_Menu(_, level, menuList)
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
-    --[[e.LibDD:UIDropDownMenu_AddSeparator(level)
-    info={
-        text= '|A:UI-HUD-UnitFrame-Player-Group-GuideIcon-2x:0:0|a'..(e.onlyChinese and '队员' or PLAYERS_IN_GROUP),
-        disabled= GetNumGroupMembers()<2,
-        hasArrow= true,
-        notCheckable=true,
-        menuList= 'GROUP',
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)]]
+
 
 
     local clubs= C_Club.GetSubscribedClubs() or {}--社区
@@ -359,14 +308,7 @@ local function Init_Menu(_, level, menuList)
         end
     end
 
-    --[[e.LibDD:UIDropDownMenu_AddSeparator(level)
-    info={
-        text= e.onlyChinese and '设置' or SETTINGS,
-        hasArrow=true,
-        menuList='SETTINGS',
-        notCheckable=true,
-    }
-    e.LibDD:UIDropDownMenu_AddButton(info, level)]]
+
     e.LibDD:UIDropDownMenu_AddSeparator(level)
     e.LibDD:UIDropDownMenu_AddButton({
         text= e.onlyChinese and '保存内容' or format(GUILDBANK_LOG_TITLE_FORMAT, INFO),--"%s 记录",
@@ -385,7 +327,7 @@ local function Init_Menu(_, level, menuList)
 
     e.LibDD:UIDropDownMenu_AddSeparator(level)
     info={
-        text= id..' '..WoWTools_MailMixin.addName,
+        text= WoWTools_MailMixin.addName,
         notCheckable= true,
         isTitle=true,
     }

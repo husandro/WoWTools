@@ -1,8 +1,5 @@
 --清除所有，要发送物品
 local e= select(2, ...)
-local function Save()
-    return WoWTools_MailMixin.Save
-end
 
 
 
