@@ -227,8 +227,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             if not Save().disabled then
-                Init()
-                --self:RegisterEvent('MAIL_SHOW')
+               -- Init()
+                self:RegisterEvent('MAIL_SHOW')
             end
             self:UnregisterEvent('ADDON_LOADED')
         end
