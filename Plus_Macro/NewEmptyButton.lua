@@ -231,10 +231,10 @@ local function Init()
     function Button:settings()
         self:SetShown(not Save().hideBottomList)
     end
-    
+
     Button:settings()
 end
-  
+
 
 
 
