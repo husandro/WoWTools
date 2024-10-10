@@ -32,7 +32,7 @@ local function Init()
 		e.tips:AddDoubleLine(e.onlyChinese and '全部' or ALL, e.onlyChinese and '学习' or LEARN)
 		e.tips:AddDoubleLine(text, (e.onlyChinese and '可用' or AVAILABLE)..': '..'|cnGREEN_FONT_COLOR:'..self.all..'|r')
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+        e.tips:AddDoubleLine(e.addName, WoWTools_ProfessionMixin.addName)
 		e.tips:Show()
 	end)
 	ClassTrainerFrame.BuyAll:SetScript("OnLeave",GameTooltip_Hide)
@@ -53,7 +53,7 @@ local function Init()
                         table.insert(tab, link)
                     end
                 else
-                    print(e.addName, Initializer:GetName(), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '金币不足' or NOT_ENOUGH_GOLD), C_CurrencyInfo.GetCoinTextureString(money))
+                    print(e.addName, WoWTools_ProfessionMixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '金币不足' or NOT_ENOUGH_GOLD), C_CurrencyInfo.GetCoinTextureString(money))
                     break
                 end
             end
@@ -62,7 +62,7 @@ local function Init()
             for i, link in pairs(tab) do
                 print('|cffff00ff'..i..'|r)', link)
             end
-            print(e.addName, 'Tools', Initializer:GetName(), '|cffff00ff'..num..'|r '..(e.onlyChinese and '学习' or LEARN), (cost>0 and '|cnGREEN_FONT_COLOR:' or '')..C_CurrencyInfo.GetCoinTextureString(cost))
+            print(e.addName, 'Tools', WoWTools_ProfessionMixin.addName, '|cffff00ff'..num..'|r '..(e.onlyChinese and '学习' or LEARN), (cost>0 and '|cnGREEN_FONT_COLOR:' or '')..C_CurrencyInfo.GetCoinTextureString(cost))
         end)
 	end)
 
@@ -108,7 +108,7 @@ local function Init()
 		e.tips:ClearLines()
 		e.tips:AddDoubleLine(e.onlyChinese and '全部学习' or (ALL..' '.. LEARN), e.GetShowHide(not Save().disabledClassTrainer))
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+        e.tips:AddDoubleLine(e.addName, WoWTools_ProfessionMixin.addName)
 		e.tips:Show()
         self2:SetAlpha(1)
         ClassTrainerFrame.BuyAll:SetButtonState('PUSHED')
