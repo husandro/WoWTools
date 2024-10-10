@@ -389,9 +389,9 @@ local function Init_set_Map_ID()--显示地图ID
                             end
                         end
                     end
-                    if not Button.mapID then--字符
-                        Button.mapID=WoWTools_LabelMixin:Create(WorldMapFrame.BorderFrame.TitleContainer, {copyFont=WorldMapFrameTitleText})
-                        Button.mapID:SetPoint('RIGHT', Button, 'LEFT')
+                    if not self.mapID then--字符
+                        self.mapID=WoWTools_LabelMixin:Create(WorldMapFrame.BorderFrame.TitleContainer, {copyFont=WorldMapFrameTitleText})
+                        self.mapID:SetPoint('RIGHT', self, 'LEFT')
                     end
                 end
                 if e.Player.Layer then
@@ -400,12 +400,12 @@ local function Init_set_Map_ID()--显示地图ID
 
                 achievementID = C_QuestLog.GetZoneStoryInfo(uiMapID)--当前地图，故事任务
                 if achievementID then
-                    if not Button.storyText then--字符
-                        Button.storyText=WoWTools_LabelMixin:Create(Button, {copyFont=WorldMapFrameTitleText})
-                        Button.storyText:SetPoint('BOTTOMRIGHT', Button, 'TOPRIGHT')
-                        Button.storyText:EnableMouse(true)
-                        Button.storyText:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
-                        Button.storyText:SetScript('OnEnter', function(self2)
+                    if not self.storyText then--字符
+                        self.storyText=WoWTools_LabelMixin:Create(self, {copyFont=WorldMapFrameTitleText})
+                        self.storyText:SetPoint('BOTTOMRIGHT', self, 'TOPRIGHT')
+                        self.storyText:EnableMouse(true)
+                        self.storyText:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
+                        self.storyText:SetScript('OnEnter', function(self2)
                             if self2.achievementID then
                                 e.tips:SetOwner(self2, "ANCHOR_RIGHT")
                                 e.tips:ClearLines()
@@ -416,8 +416,8 @@ local function Init_set_Map_ID()--显示地图ID
                                 self2:SetAlpha(0.7)
                             end
                         end)
-                        Button.storyText:SetScript("OnMouseUp", function(self2) self2:SetAlpha(0.7) end)
-                        Button.storyText:SetScript('OnMouseDown', function(self2)
+                        self.storyText:SetScript("OnMouseUp", function(self2) self2:SetAlpha(0.7) end)
+                        self.storyText:SetScript('OnMouseDown', function(self2)
                             if self2.achievementID then
                                 print(GetAchievementLink(self2.achievementID) or self2.achievementID)
                             end
@@ -433,12 +433,12 @@ local function Init_set_Map_ID()--显示地图ID
                 end
 
             end
-            if Button.mapID then
-                Button.mapID:SetText(m)
+            if self.mapID then
+                self.mapID:SetText(m)
             end
-            if Button.storyText then
-                Button.storyText:SetText(story or '')
-                Button.storyText.achievementID= achievementID
+            if self.storyText then
+                self.storyText:SetText(story or '')
+                self.storyText.achievementID= achievementID
             end
             PlayerButton:SetShown(not Save.hide)
         end
@@ -874,9 +874,12 @@ local function Init()
 
 
     Init_set_Map_ID()--显示地图ID
+
     if Button then
         --hooksecurefunc(WorldMapFrame.ScrollContainer, 'SetMapID', function(self, mapID)--MapCanvasScrollControllerMixin
-        hooksecurefunc(WorldMapFrame, 'OnMapChanged', Button.set_Map_ID_Text)--Blizzard_WorldMap.lua
+        hooksecurefunc(WorldMapFrame, 'OnMapChanged', function()
+            Button:set_Map_ID_Text()--Blizzard_WorldMap.lua
+        end)
     end
     --hooksecurefunc('QuestMapLogTitleButton_OnClick',function(self, button)--任务日志 展开所有, 收起所有--QuestMapFrame.lua
 

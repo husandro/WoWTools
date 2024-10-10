@@ -5042,7 +5042,9 @@
         "ENTER_MACRO_LABEL",
         "MACROFRAME_CHAR_LIMIT",
         "MacroFramePortrait",
-        "MacroFrameCloseButton"
+        "MacroFrameCloseButton",
+        "GarrisonLandingPageFollowerList",
+        "WidgetCenterDisplayFrameMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

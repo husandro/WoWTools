@@ -147,7 +147,7 @@ local function Init_MajorFactionRenownFrame()
     Frame.frame=CreateFrame('Frame', nil, Frame)
     Frame.btn={}
 
-    
+
     function Frame:set_faction()
         if Save().hide_MajorFactionRenownFrame_Button then
             self.frame:SetShown(false)
@@ -162,22 +162,7 @@ local function Init_MajorFactionRenownFrame()
         for _, factionID in pairs(tab) do
             local info=C_MajorFactions.GetMajorFactionData(factionID or 0)
             if info then
-                local btn= self.btn[n]
-                if not btn then
-                    btn= WoWTools_ButtonMixin:Cbtn(self.frame, {size={235/2.5, 110/2.5}, icon='hide'})
-                    btn:SetPoint('TOPLEFT', self.btn[n-1] or self, 'BOTTOMLEFT')
-                    btn:SetHighlightAtlas('ChromieTime-Button-Highlight')
-                    btn:SetScript('OnLeave', GameTooltip_Hide)
-                    btn:SetScript('OnEnter', ReputationBarMixin.ShowMajorFactionRenownTooltip)
-                    btn:SetScript('OnClick', function(frame)
-                        if MajorFactionRenownFrame:GetCurrentFactionID()~=frame.factionID then
-                            ToggleMajorFactionRenown(frame.factionID)
-                        end
-                    end)
-                    btn.Text= WoWTools_LabelMixin:Create(btn)
-                    btn.Text:SetPoint('BOTTOMLEFT', btn, 'BOTTOM')
-                    self.btn[n]= btn
-                end
+                local btn= self.btn[n] or Create_Button(self.frame)
                 n= n+1
                 btn.factionID= factionID
                 btn:SetNormalAtlas('majorfaction-celebration-'..(info.textureKit or 'toastbg'))
@@ -190,15 +175,6 @@ local function Init_MajorFactionRenownFrame()
                 btn.Text:SetText(Get_Major_Faction_Level(factionID, info.renownLevel))--等级
             end
         end
-
-        --盟约
-        --[[local activityID = C_Covenants.GetActiveCovenantID() or 0
-        if activityID>0 then
-            for i=1, 4 do
-                Set_Covenant_Button(self, i, activityID)
-            end
-        end]]
-
     end
 
 
@@ -218,7 +194,7 @@ local function Init_MajorFactionRenownFrame()
         end
         self:SetText(text)
     end
-    
+
     hooksecurefunc(MajorFactionRenownFrame, 'Refresh', function(self)
         Frame:set_faction()
         Frame.HeaderText:set_text()

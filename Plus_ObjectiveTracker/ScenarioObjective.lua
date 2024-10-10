@@ -16,7 +16,14 @@ local function Init()
         end
         self.Header.numStagesLabel:SetText(text or '')
     end)
+
+
+
+
+
+
 end
+
 
 
 

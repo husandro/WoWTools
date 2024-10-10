@@ -13,7 +13,7 @@ local Save={
 
     --disabledMainMenu= not e.Player.husandro, --主菜单，颜色，透明度
     --disabledHelpTip=true,--隐藏所有教程
-    
+
 }
 
 
@@ -245,7 +245,7 @@ local function set_Menu(self, tab)
     end
 
     if self.Background then
-      
+
         set_Alpha_Color(self.Background, nil, true, min03)
         set_Alpha_Color(self.Arrow, nil, true, min05)
     else
@@ -259,7 +259,7 @@ local function set_Menu(self, tab)
         end
         --e.Set_Alpha_Frame_Texture(self.Button, {notAlpha=true})
         e.Set_Alpha_Frame_Texture(self.DecrementButton, {notAlpha=true})
-        e.Set_Alpha_Frame_Texture(self.IncrementButton, {notAlpha=true})        
+        e.Set_Alpha_Frame_Texture(self.IncrementButton, {notAlpha=true})
         WoWTools_ColorMixin:SetLabelTexture(self.Text, {type='FontString'})
     end
 end
@@ -313,7 +313,7 @@ local function Init_Mixin()
     hooksecurefunc(DropdownButtonMixin, 'SetupMenu', function(self)
         set_Menu(self)
     end)
-  
+
 
     --插件，UIDropDownMenu
     if e.LibDD then
@@ -402,7 +402,7 @@ local function Init_Blizzard_Communities()
     e.Set_NineSlice_Color_Alpha(ClubFinderCommunityAndGuildFinderFrame.InsetFrame, nil, true)
     hide_Texture(CommunitiesFrame.GuildBenefitsFrame.Rewards.Bg)
 
-    hooksecurefunc(CommunitiesFrameCommunitiesList,'UpdateCommunitiesList',function()       
+    hooksecurefunc(CommunitiesFrameCommunitiesList,'UpdateCommunitiesList',function()
         C_Timer.After(0.3, function()
              local frame= CommunitiesFrameCommunitiesList.ScrollBox
             if not frame:GetView() then
@@ -435,11 +435,11 @@ local function Init_Blizzard_Communities()
 
     e.Set_Alpha_Frame_Texture(GuildControlUI)
     e.Set_Alpha_Frame_Texture(GuildControlUIHbar)
-   
+
     e.Set_Alpha_Frame_Texture(CommunitiesGuildLogFrame)
     e.Set_NineSlice_Color_Alpha(CommunitiesGuildLogFrame.Container, true)
     e.Set_ScrollBar_Color_Alpha(CommunitiesGuildLogFrame.Container.ScrollFrame)
-   
+
 
 
 end
@@ -553,7 +553,7 @@ local function Init_All_Frame()
         set_Alpha_Color(_G['CompactRaidFrameManagerBG-party-leads'], nil, nil, 0)
         set_Alpha_Color(_G['CompactRaidFrameManagerBG-leads'], nil, nil, 0)
         set_Alpha_Color(_G['CompactRaidFrameManagerBG-party-regulars'], nil,nil,0)
-        
+
         CompactRaidFrameManager.toggleButton:SetNormalAtlas(e.Icon.toRight,true)--展开, 图标
         CompactRaidFrameManager.toggleButton:SetAlpha(0.2)
         CompactRaidFrameManager.toggleButton:SetHeight(30)
@@ -588,7 +588,7 @@ local function Init_All_Frame()
 
     set_Alpha_Color(CharacterFrameBg)
     hide_Texture(CharacterFrameInset.Bg)
-    
+
     set_Alpha_Color(CharacterFrame.Background)
 
     set_Alpha_Color(PaperDollInnerBorderBottom, nil, nil, min03)
@@ -631,7 +631,7 @@ local function Init_All_Frame()
             hide_Texture(button.BgMiddle)
         end
     end)
-    e.Set_ScrollBar_Color_Alpha(PaperDollFrame.EquipmentManagerPane)    
+    e.Set_ScrollBar_Color_Alpha(PaperDollFrame.EquipmentManagerPane)
 
 
 
@@ -645,7 +645,7 @@ local function Init_All_Frame()
     set_Alpha_Color(GearManagerPopupFrame.BG, nil, nil, min03)
     e.Set_ScrollBar_Color_Alpha(GearManagerPopupFrame.IconSelector)
     set_SearchBox(GearManagerPopupFrame.BorderBox.IconSelectorEditBox)
-   
+
 
     --声望
     e.Set_ScrollBar_Color_Alpha(ReputationFrame)
@@ -653,7 +653,7 @@ local function Init_All_Frame()
 
 
     --货币
-    e.Set_ScrollBar_Color_Alpha(TokenFrame)    
+    e.Set_ScrollBar_Color_Alpha(TokenFrame)
     e.Set_NineSlice_Color_Alpha(CurrencyTransferLog, true)
     set_Alpha_Color(CurrencyTransferLogBg, nil, nil, min03)
     e.Set_NineSlice_Color_Alpha(CurrencyTransferLogInset, true)
@@ -1040,9 +1040,9 @@ local function Init_All_Frame()
      end
 
      hooksecurefunc('ChatConfig_CreateCheckboxes', function(frame)--ChatConfigFrame.lua
-        
+
         e.Set_NineSlice_Color_Alpha(frame, nil, true)
-        
+
 
         local checkBoxNameString = frame:GetName().."Checkbox";
         local checkBoxName, checkBox;
@@ -1063,7 +1063,7 @@ local function Init_All_Frame()
     end)
     hooksecurefunc('ChatConfig_UpdateCheckboxes', function(frame)--频道颜色设置 ChatConfigFrame.lua
         if not FCF_GetCurrentChatFrame() then return end
-        
+
         local checkBoxNameString = frame:GetName().."Checkbox";
         local baseName, colorSwatch;
         for index, value in pairs(frame.checkBoxTable or {}) do
@@ -1085,7 +1085,7 @@ local function Init_All_Frame()
         end
     end)
 
-    
+
     hooksecurefunc('ChatConfig_CreateColorSwatches', function(frame)
         local checkBoxNameString = frame:GetName().."Swatch";
         local checkBoxName, checkBox;
@@ -1110,7 +1110,7 @@ local function Init_All_Frame()
         local nameString = frame:GetName().."Swatch";
         local baseName, colorSwatch
         for index, value in ipairs(frame.swatchTable or {}) do
-            baseName = nameString..index;            
+            baseName = nameString..index;
             local r,g,b
             colorSwatch = _G[baseName.."ColorSwatch"]
             if ( colorSwatch ) then
@@ -1121,7 +1121,7 @@ local function Init_All_Frame()
             _G[baseName].NineSlice.BottomEdge:SetVertexColor(r, g, b)
         end
     end)
-    
+
     e.Set_NineSlice_Color_Alpha(CombatConfigColorsUnitColors, nil, true)
     e.Set_NineSlice_Color_Alpha(CombatConfigColorsHighlighting, nil, true)
     e.Set_NineSlice_Color_Alpha(CombatConfigColorsColorizeUnitName, nil, true)
@@ -1129,7 +1129,7 @@ local function Init_All_Frame()
     e.Set_NineSlice_Color_Alpha(CombatConfigColorsColorizeDamageNumber, nil, true)
     e.Set_NineSlice_Color_Alpha(CombatConfigColorsColorizeDamageSchool, nil, true)
     e.Set_NineSlice_Color_Alpha(CombatConfigColorsColorizeEntireLine, nil, true)
-    
+
     set_SearchBox(ChatFrame1EditBox)
 
      --插件，管理
@@ -1368,7 +1368,7 @@ local function Init_All_Frame()
     --set_Alpha_Color(GenericTraitFrame.Background)
     --e.Set_NineSlice_Color_Alpha(GenericTraitFrame, true)
 
-    
+
     if ExpansionLandingPage then
         hooksecurefunc(ExpansionLandingPage, 'RefreshExpansionOverlay', function(self)
             if self.overlayFrame then
@@ -1455,7 +1455,7 @@ local function Init_Event(arg1)
         set_SearchBox(PlayerSpellsFrame.SpellBookFrame.SearchBox)
         e.set_TabSystem_Button(PlayerSpellsFrame.SpellBookFrame)
 
-    
+
     elseif arg1=='Blizzard_AchievementUI' then--成就
         hide_Frame_Texture(AchievementFrame)
         hide_Frame_Texture(AchievementFrame.Header)
@@ -1475,7 +1475,7 @@ local function Init_Event(arg1)
         hide_Texture(AchievementFrameSummaryCategoriesStatusBarFillBar)
 
         hide_Texture(AchievementFrameComparisonHeaderBG)
-        
+
         --[[set_Alpha_Color(AchievementFrameSummaryCategoriesStatusBarFillRight)
         set_Alpha_Color(AchievementFrameSummaryCategoriesStatusBarFillMiddle)
         set_Alpha_Color(AchievementFrameSummaryCategoriesStatusBarFillLeft)]]
@@ -1489,7 +1489,7 @@ local function Init_Event(arg1)
         AchievementFrameComparisonHeader:ClearAllPoints()
         AchievementFrameComparisonHeader:SetPoint('BOTTOMLEFT', AchievementFrameComparison, 'TOPRIGHT', -125, 0)
 
-    
+
 
 
     elseif arg1=='Blizzard_PVPUI' then--地下城和团队副本, PVP
@@ -1756,9 +1756,9 @@ local function Init_Event(arg1)
         e.Set_NineSlice_Color_Alpha(MountJournal.BottomLeftInset, nil, true)
         e.Set_NineSlice_Color_Alpha(MountJournal.RightInset, nil, true)
         e.Set_NineSlice_Color_Alpha(MountJournal.LeftInset, nil, true)
-        
+
         --set_Alpha_Color(MountJournal.FilterDropdown.Background, nil, nil, min03)
-        
+
 
         set_Alpha_Color(PetJournalPetCardBG, nil, nil, min03)
         set_Alpha_Color(PetJournalPetCardInset.Bg)
@@ -2091,9 +2091,12 @@ local function Init_Event(arg1)
             hide_Texture(GarrisonCapacitiveDisplayFrame.TopTileStreaks)
             hide_Texture(GarrisonCapacitiveDisplayFrameInset.Bg)
         end
-        
+
         e.Set_Alpha_Frame_Texture(GarrisonLandingPage, {alpha= min05})
         e.Set_Alpha_Frame_Texture(GarrisonLandingPage.Report, {alpha= min05})
+        if GarrisonLandingPageFollowerList then
+            hide_Texture(GarrisonLandingPageFollowerList.FollowerScrollFrame)
+        end
         --hooksecurefunc(GarrisonLandingPage, 'UpdateUIToGarrisonType', function(self)
 
     elseif arg1=='Blizzard_GenericTraitUI' then--欲龙术
@@ -2416,7 +2419,7 @@ local function Init_Class_Power(init)--职业
             end
         end)
 
-        
+
     end
 end
 
@@ -2912,9 +2915,9 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             if Save.disabled then
                 panel:UnregisterEvent('ADDON_LOADED')
             else
-               
+
                 Init_Blizzard_Communities()
-                
+
                 for _, ent in pairs(eventTab or {}) do
                     Init_Event(ent)
                 end
@@ -2946,8 +2949,8 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             e.Set_Alpha_Frame_Texture(SettingsPanel.AddOnsTab, {notAlpha=true})
             set_SearchBox(SettingsPanel.SearchBox)
             e.Set_Alpha_Frame_Texture(SettingsPanel, {index=1})
-        
-      
+
+
 
         else
             if eventTab then

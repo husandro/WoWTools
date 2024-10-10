@@ -203,7 +203,7 @@ local function Init_Menu(self, root)
 --列表，禁用NPC, 闲话,任务, 选项
     for npcID, name in pairs(Save().NPC) do--npcID 是字符
         sub2=sub:CreateCheckbox(
-            name~=true and name or npcID,
+            e.cn(nil, {npcID=npcID, isName=true}) or name~=true and name or npcID,
         function(data)
             return Save().NPC[data.npc]
         end, function(data)
