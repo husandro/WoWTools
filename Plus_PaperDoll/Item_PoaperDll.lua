@@ -669,21 +669,29 @@ local function Init()
                 WoWTools_PaperDollMixin:Settings_Tab1()
             end
             set_Slot_Num_Label(self, slot, link and true or nil)--栏位
+
         elseif InventSlot_To_ContainerSlot[slot] then
-            local numFreeSlots
+            local numFreeSlots, numAllSlots, slot2
             local isbagEquipped= self:HasBagEquipped()
             if isbagEquipped then--背包数
-                numFreeSlots= C_Container.GetContainerNumFreeSlots(InventSlot_To_ContainerSlot[slot])
+                slot2= InventSlot_To_ContainerSlot[slot]
+                numFreeSlots= C_Container.GetContainerNumFreeSlots(slot2)
+                numAllSlots= C_Container.GetContainerNumSlots(slot2)
                 if numFreeSlots==0 then
                     numFreeSlots= '|cnRED_FONT_COLOR:'..numFreeSlots..'|r'
                 end
                 if not self.numFreeSlots then
-                    self.numFreeSlots=WoWTools_LabelMixin:Create(self, {color=true, justifyH='CENTER'})
-                    self.numFreeSlots:SetPoint('BOTTOM',0 ,6)
+                    self.numFreeSlots=WoWTools_LabelMixin:Create(self, {color=true, justifyH='CENTER', size=10})
+                    self.numFreeSlots:SetPoint('TOP')
+
+                    self.numAllSlots= WoWTools_LabelMixin:Create(self, {color={r=0.65,g=0.65,b=0.65}, justifyH='CENTER', size=10})
+                    self.numAllSlots:SetPoint('BOTTOM',0 ,4)
+                    self.numAllSlots:SetAlpha(0.5)
                 end
             end
             if self.numFreeSlots then
                 self.numFreeSlots:SetText(numFreeSlots or '')
+                self.numAllSlots:SetText((numAllSlots and numAllSlots>0) and numAllSlots or '')
             end
             set_Slot_Num_Label(self, InventSlot_To_ContainerSlot[slot], isbagEquipped)--栏位
         end

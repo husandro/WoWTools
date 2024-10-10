@@ -56,17 +56,29 @@ end
 
 
 function panel:set_event()
-    if not Save.disabled and (IsInRaid() and not Save.disabledInRaid or not Save.disabledInRaid) then
-        self:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
-    else
+    if Save.disabled then
+--禁用
         self:UnregisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
-    end
-    if Save.disabledInRaid then
-        self:RegisterEvent('GROUP_ROSTER_UPDATE') 
-        self:RegisterEvent('GROUP_LEFT')
-    else
-        self:UnregisterEvent('GROUP_ROSTER_UPDATE') 
+        self:UnregisterEvent('GROUP_ROSTER_UPDATE')
         self:UnregisterEvent('GROUP_LEFT')
+    else
+--团，队，个人，启用
+        if Save.enabledInRaid then
+            self:UnregisterEvent('GROUP_ROSTER_UPDATE')
+            self:UnregisterEvent('GROUP_LEFT')
+            self:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
+        else
+--设置，事件
+            self:RegisterEvent('GROUP_ROSTER_UPDATE')
+            self:RegisterEvent('GROUP_LEFT')
+--禁用，团
+            if IsInRaid() and not Save.enabledInRaid then
+                self:UnregisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
+            else
+--启用
+                self:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
+            end
+        end
     end
 end
 
@@ -91,10 +103,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             e.AddPanel_Check({
-                name= e.onlyChinese and '团队' or RAID,
-                GetValue= function() return not Save.disabledInRaid end,
+                name= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '团队' or RAID),
+                GetValue= function() return Save.enabledInRaid end,
                 SetValue= function()
-                    Save.disabledInRaid = not Save.disabledInRaid and true or nil
+                    Save.enabledInRaid = not Save.enabledInRaid and true or nil
                     self:set_event()
                 end,
                 tooltip=e.onlyChinese and '掉帧' or 'Dropped Frames'
@@ -112,7 +124,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif event=='GROUP_ROSTER_UPDATE' or event=='GROUP_LEFT' then
-        self:settings()
+        self:set_event()
 
     elseif event=='COMBAT_LOG_EVENT_UNFILTERED' then
         self:settings()
