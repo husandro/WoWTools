@@ -199,10 +199,11 @@ local function Init_Menu(self, root)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(e.onlyChinese and '闲话/任务' or (GOSSIP_OPTIONS..'/'..QUESTS_LABEL))
     end)
+
 --列表，禁用NPC, 闲话,任务, 选项
-    for npcID, name in pairs(Save().NPC) do
+    for npcID, name in pairs(Save().NPC) do--npcID 是字符
         sub2=sub:CreateCheckbox(
-            name,
+            name~=true and name or npcID,
         function(data)
             return Save().NPC[data.npc]
         end, function(data)
@@ -346,7 +347,7 @@ local function Init_Menu(self, root)
 
 
 
-    
+
     --缩放
     WoWTools_MenuMixin:Scale(sub, function()
         return Save().scale or 1

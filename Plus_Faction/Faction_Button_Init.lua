@@ -89,14 +89,15 @@ local function Init_Menu(self, root)
 			Save().factions[data.factionID]= not Save().factions[data.factionID] and true or nil
 			e.call(ReputationFrame.Update, ReputationFrame)
 		end, {factionID=factionID})
-		sub2:SetOnEnter(function(btn, description)
+		WoWTools_SetTooltipMixin:FactionMenu(sub2)
+		--[[sub2:SetOnEnter(function(btn, description)
 			btn.factionID= description.data.factionID
 			WoWTools_SetTooltipMixin:Faction(btn)
 		end)
 		sub2:SetOnLeave(function(btn)
 			btn.factionID=nil
 			WoWTools_SetTooltipMixin:Hide()
-		end)
+		end)]]
 		num= num+1
 	end
 

@@ -291,23 +291,15 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 if C_AddOns.IsAddOnLoaded('Blizzard_TimeManager') then--秒表
                     WoWTools_MinimapMixin:Init_TimeManager()
                 end
-                if C_AddOns.IsAddOnLoaded('Blizzard_MajorFactions') then
-                    WoWTools_MinimapMixin:Init_MajorFactionRenownFrame()
-                end
-                if C_AddOns.IsAddOnLoaded('Blizzard_CovenantRenown') then
-                    WoWTools_MinimapMixin:Init_CovenantRenown()
-                end
+                
             end
 
 
         elseif arg1=='Blizzard_TimeManager' then
             WoWTools_MinimapMixin:Init_TimeManager()--秒表
 
-        elseif arg1=='Blizzard_MajorFactions' then
-            WoWTools_MinimapMixin:Init_MajorFactionRenownFrame()
+        
 
-        elseif arg1=='Blizzard_CovenantRenown' then
-            WoWTools_MinimapMixin:Init_CovenantRenown()
 
         end
 

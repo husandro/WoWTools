@@ -14,14 +14,14 @@ local SpellTab={}--e.ChallengesSpellTabs
 
 
 
-local function Vstr(t)--垂直文字
+--[[local function Vstr(t)--垂直文字
     local len = select(2, t:gsub("[^\128-\193]", ""))
     if(len == #t) then
         return t:gsub(".", "%1|n")
     else
         return t:gsub("([%z\1-\127\194-\244][\128-\191]*)", "%1|n")
     end
-end
+end]]
 
 
 

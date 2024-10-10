@@ -1369,7 +1369,15 @@ local function Init_All_Frame()
     --e.Set_NineSlice_Color_Alpha(GenericTraitFrame, true)
 
     
-
+    if ExpansionLandingPage then
+        hooksecurefunc(ExpansionLandingPage, 'RefreshExpansionOverlay', function(self)
+            if self.overlayFrame then
+                set_Alpha_Color(self.overlayFrame.Background, nil, nil, min05)
+                hide_Texture(self.overlayFrame.ScrollFadeOverlay)
+                --set_Alpha_Color(self.overlayFrame.ScrollFadeOverlay, nil, nil, min03)
+            end
+        end)
+    end
 end
 
 
@@ -2083,6 +2091,10 @@ local function Init_Event(arg1)
             hide_Texture(GarrisonCapacitiveDisplayFrame.TopTileStreaks)
             hide_Texture(GarrisonCapacitiveDisplayFrameInset.Bg)
         end
+        
+        e.Set_Alpha_Frame_Texture(GarrisonLandingPage, {alpha= min05})
+        e.Set_Alpha_Frame_Texture(GarrisonLandingPage.Report, {alpha= min05})
+        --hooksecurefunc(GarrisonLandingPage, 'UpdateUIToGarrisonType', function(self)
 
     elseif arg1=='Blizzard_GenericTraitUI' then--欲龙术
         set_Alpha_Color(GenericTraitFrame.Background)
@@ -2194,6 +2206,9 @@ local function Init_Event(arg1)
         e.Set_NineSlice_Color_Alpha(DelvesCompanionAbilityListFrame, true)
         set_Alpha_Color(DelvesCompanionAbilityListFrameBg)
         hide_Texture(DelvesCompanionAbilityListFrame.CompanionAbilityListBackground)
+
+    elseif arg1=='Blizzard_CovenantRenown' then
+        hide_Texture(CovenantRenownFrame.Background)
 
     end
 end

@@ -2,7 +2,9 @@ local id, e = ...
 
 WoWTools_GossipMixin= {
     Save={
-    NPC={},
+    NPC={--禁用NPC
+        ['223594']=true,
+    },
     gossip= true,
 
     unique= true,--唯一对话

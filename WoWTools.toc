@@ -164,8 +164,12 @@ Plus_Faction\0_Faction.lua
 Plus_Faction\Faction_Button_Init.lua
 Plus_Faction\Faction_TrackButton_Init.lua
 Plus_Faction\Faction_TrackButton_SetText.lua
-Plus_Faction\z_ScrollBox_Plus.lua
+Plus_Faction\ScrollBox_Plus.lua
 Plus_Faction\z_CHAT_MSG.lua
+Plus_Faction\z_CovenantRenown.lua
+Plus_Faction\z_MajorFactionRenownFrame.lua
+
+
 
 
 
@@ -242,7 +246,7 @@ Plus_Minimap\Menu_Garrison.lua
 Plus_Minimap\Menu_Faction.lua
 Plus_Minimap\ExpansionLanding.lua
 Plus_Minimap\Zoom.lua
-Plus_Minimap\Major_Plus.lua
+
 
 
 

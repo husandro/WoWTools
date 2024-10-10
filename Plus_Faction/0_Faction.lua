@@ -64,7 +64,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
 			Save().factions= Save().factions or {}
 
-			
+
 
 			--添加控制面板
             e.AddPanel_Check({
@@ -80,10 +80,25 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
 
             if not Save().disabled then
-
                 Init()
+				
+				if C_AddOns.IsAddOnLoaded('Blizzard_CovenantRenown') then
+                    WoWTools_ReputationMixin:Init_CovenantRenown(CovenantRenownFrame)--盟约 9.0
+                end
+
+				if C_AddOns.IsAddOnLoaded('Blizzard_MajorFactions') then
+                    WoWTools_ReputationMixin:Init_MajorFactionRenownFrame()--名望
+                end
             end
-            self:UnregisterEvent('ADDON_LOADED')
+            --self:UnregisterEvent('ADDON_LOADED')
+		
+
+		elseif arg1=='Blizzard_MajorFactions' then
+			WoWTools_ReputationMixin:Init_MajorFactionRenownFrame()--名望
+			
+
+		elseif arg1=='Blizzard_CovenantRenown' then
+			WoWTools_ReputationMixin:Init_CovenantRenown(CovenantRenownFrame)--盟约 9.0
 		end
 
     elseif event == "PLAYER_LOGOUT" then

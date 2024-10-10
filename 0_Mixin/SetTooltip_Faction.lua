@@ -153,6 +153,16 @@ function WoWTools_SetTooltipMixin:Faction(frame)
 	end
 end
 
+function WoWTools_SetTooltipMixin:FactionMenu(root)
+	root:SetOnEnter(function(btn, description)
+		btn.factionID= description.data.factionID
+		self:Faction(btn)
+	end)
+	root:SetOnLeave(function(btn)
+		btn.factionID=nil
+		self:Hide()
+	end)
+end
 
 
 function WoWTools_SetTooltipMixin:Hide()
