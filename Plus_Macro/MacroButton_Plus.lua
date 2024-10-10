@@ -142,13 +142,15 @@ local function Set_OnLoad(btn)
     end)
 
     btn.indexLable= WoWTools_LabelMixin:Create(btn, {color={r=0.7,g=0.7,b=0.7}})
-    --btn.indexLable:SetPoint('TOPLEFT')
     btn.indexLable:SetPoint('LEFT', -6, 0)
     btn.indexLable:SetAlpha(0.5)
     function btn:set_index_label()
         self.indexLable:SetText(self.selectionIndex or '')
     end
 end
+
+
+
 
 
 
