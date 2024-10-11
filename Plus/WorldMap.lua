@@ -98,7 +98,7 @@ end
 local function set_WorldQuestPinMixin_RefreshVisuals(self)--WorldQuestDataProvider.lua self.tagInfo
     if UnitAffectingCombat('player') then
         return
-    elseif Save.hide or not self.questID or self.questID<=0 or self.questID>=2147483647 then
+    elseif Save.hide or not self.questID then-- or self.questID<=0 or self.questID>=2147483647 then
         if self.Text then self.Text:SetText('') end
         if self.worldQuestTypeTips then self.worldQuestTypeTips:SetShown(false) end
         return

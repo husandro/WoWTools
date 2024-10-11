@@ -508,6 +508,11 @@ end
             end
         end
 
+        --全部清除
+        sub2:CreateDivider()
+        sub2:CreateButton('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL)..' #'..filterPlayer, function()
+            Save.myChatFilterPlayers={}
+        end)
         WoWTools_MenuMixin:SetGridMode(sub2, filterPlayer)
     end
 

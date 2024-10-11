@@ -130,37 +130,12 @@ local Initializer
 ttps://www.wowhead.com/guide/mythic-plus-dungeons/dragonflight-season-4/overview#mythic-affixes
 AngryKeystones Schedule
 
-1 Overflowing,
-2 Skittish
-3 Volcanic
-4 Necrotic
-5 Teeming
-6 Raging
-7 Bolstering
-8 Sanguine
-9 Tyrannical
-10 Fortified
-11 Bursting
-12 Grievous
-13 Explosive
-14 Quaking
-16 Infested
-117 Reaping
-119 Beguiling
-120 Awakened
-121 Prideful
-122 Inspiring
-123 Spiteful
-124 Storming
-134 Entangling
-135：Afflicted
-136 Incorporeal
-137 Shielding
+
 
 148/萨拉塔斯的交易：扬升
-159
+159/萨拉塔斯的交易：湮灭
 158/萨拉塔斯的交易：虚缚
-
+160/萨拉塔斯的交易：吞噬
 
 https://www.wowhead.com/cn/affix=9/残暴
 https://www.wowhead.com/cn/affix=152/挑战者的危境

@@ -1370,7 +1370,7 @@ local function Init_WorldFrame_Event()
             if f.questID and d=='LeftButton' and IsAltKeyDown() then
                 Save().questIDs[f.questID]= not Save().questIDs[f.questID] and true or nil
                 print(e.addName,addName, addName2,
-                    GetQuestLink(f.questID) or f.questID,
+                    WoWTools_QuestMixin:GetLink(f.questID),
                     Save().questIDs[f.questID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', e.Icon.select) or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
                 )
             end
