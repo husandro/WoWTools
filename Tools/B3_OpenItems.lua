@@ -922,7 +922,7 @@ local function Init()
 
     function OpenButton:settings()
         self.isDisabled= (IsInInstance() and not WoWTools_MapMixin:IsInDelve())
-                        or not self:IsVisible()
+                        --or not self:IsVisible()
                         or C_PetBattles.IsInBattle()
                         or UnitHasVehicleUI('player')
 
