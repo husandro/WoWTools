@@ -832,11 +832,13 @@ local function Init_Bag()
                 e.tips:AddDoubleLine(a.index..') '..a.all..a.icon..a.num, b and (b.num..b.icon..b.all..' ('..b.index))
             end
             --(e.onlyChinese and '总计' or TOTAL)
-            e.tips.textRight:SetText(
-                '|A:bags-button-autosort-up:18:18|a'
-                ..(use>0 and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')
-                ..use..'|r/'..num
-            )
+            if e.tips.textRight then
+                e.tips.textRight:SetText(
+                    '|A:bags-button-autosort-up:18:18|a'
+                    ..(use>0 and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')
+                    ..use..'|r/'..num
+                )
+            end
             --e.tips:AddDoubleLine(' ', '|A:bags-button-autosort-up:18:18|a'..(use>0 and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..use..'|r/'..num)
     
 

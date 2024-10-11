@@ -8,7 +8,7 @@ local Save={
     myChatFilterAutoAdd= e.Player.husandro,
     myChatFilterPlayers={},--{[guid]=num,}
 
-    userChatFilter=false,
+    userChatFilter=true,
     userChatFilterTab={},--{[name-realm]={num=0, guid=guid},}
 }
 
@@ -306,6 +306,13 @@ local function Init_User_Chat_Filter()
                 e.onlyChinese and '添加/移除' or ADD..'/'..REMOVE
             )
 
+        end)
+
+        sub:CreateCheckbox(e.onlyChinese and '自定义屏蔽' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CUSTOM, IGNORE), function()
+            return Save.userChatFilter
+        end, function()
+            Save.userChatFilter= not Save.userChatFilter and true or false
+            Set_Filter()
         end)
 
     end)
@@ -955,7 +962,10 @@ local function Add_Menu(root, name, channelNumber)
         elseif value==2 then--屏蔽
             tooltip:AddLine(Get_Channel_Color(name, 2)..(e.onlyChinese and '已屏蔽' or IGNORED))
         end
-        tooltip:AddLine('clubId '..description.data.clubId)
+        if description.data.clubId then
+            tooltip:AddLine(' ')
+            tooltip:AddLine('clubId '..description.data.clubId)
+        end
     end)
 
     sub:AddInitializer(Add_Initializer)
