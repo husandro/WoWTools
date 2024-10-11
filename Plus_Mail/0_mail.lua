@@ -47,7 +47,8 @@ end
 
 
 --设置，发送名称
-function WoWTools_MailMixin:SetSendName(name)
+function WoWTools_MailMixin:SetSendName(name, guid)
+    name= name or WoWTools_UnitMixin:GetFullName(nil, nil, guid)
     if not name then
         return
     end

@@ -17,7 +17,7 @@ end
 
 --#######
 --设置菜单
---#######
+--[[#######
 local function Init_Menu(_, level, menuList)
     local info
     if menuList=='SELF' then
@@ -332,6 +332,47 @@ local function Init_Menu(_, level, menuList)
         isTitle=true,
     }
     e.LibDD:UIDropDownMenu_AddButton(info, level)
+end]]
+
+
+
+
+--我
+local function Init_IsSelf(root)
+    local new={}
+    for guid, _ in pairs(e.WoWDate) do
+        if guid and guid~= e.Player.guid then
+            new[guid]=true
+        end
+    end
+
+    local num=0
+    for guid in pairs(new) do
+        root:CreateButton(
+            WoWTools_UnitMixin:GetPlayerInfo({guid=guid, reName=true, reRealm=true}),
+        function(data)
+            WoWTools_MailMixin:SetSendName(nil, data.guid)
+            return MenuResponse.Open
+        end, {guid=guid})
+        num=num+1
+    end
+
+    WoWTools_MenuMixin:SetGridMode(root, num)
+end
+
+
+
+
+local function Init_Menu(_, root)
+    local sub
+--我
+    sub=root:CreateButton(
+        '|A:auctionhouse-icon-favorite:0:0|a'..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME),
+    function()
+        return MenuResponse
+    end)
+    Init_IsSelf(sub)
+
 end
 
 
@@ -354,13 +395,15 @@ end
 function Init()
     --下拉，菜单
     local listButton= WoWTools_ButtonMixin:Cbtn(SendMailNameEditBox, {size=22, atlas='common-icon-rotateleft'})
+    
     listButton:SetPoint('LEFT', SendMailNameEditBox, 'RIGHT')
     listButton:SetScript('OnMouseDown', function(self)
-        if not self.Menu then
+        MenuUtil.CreateContextMenu(self, Init_Menu)
+        --[[if not self.Menu then
             self.Menu= CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
             e.LibDD:UIDropDownMenu_Initialize(self.Menu, Init_Menu, 'MENU')
         end
-        e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
+        e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)]]
     end)
 
 
