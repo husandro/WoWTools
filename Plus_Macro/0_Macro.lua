@@ -213,17 +213,11 @@ panel:RegisterEvent('PLAYER_LOGOUT')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            if WoWToolsSave[MACRO] then
-                WoWTools_MacroMixin.Save= WoWToolsSave[MACRO]
-                if WoWTools_MacroMixin.Save.toRightLeft==nil then
-                    WoWTools_MacroMixin.Save=3
-                end
-                WoWToolsSave[MACRO]= nil
+            if type(WoWToolsSave['Plus_Macro'])=='table' then
+                WoWTools_MacroMixin.Save= WoWToolsSave['Plus_Macro']
             else
-                WoWTools_MacroMixin.Save= WoWToolsSave['Plus_Macro'] or Save()
+                WoWTools_MacroMixin.Save= WoWToolsSave['Plus_Macro2'] or Save()
             end
-
-            WoWTools_MacroMixin.Save.macro= WoWTools_MacroMixin.Save.macro or {}
 --旧版本
 
             if Save().mcaro then
@@ -274,7 +268,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if WoWTools_MacroMixin.NoteEditBox and WoWTools_MacroMixin.NoteEditBox:IsVisible() then
                 WoWTools_MacroMixin.NoteEditBox:Hide()
             end
-            WoWToolsSave['Plus_Macro']= Save()
+            WoWToolsSave['Plus_Macro2']= Save()
         end
     end
 end)
