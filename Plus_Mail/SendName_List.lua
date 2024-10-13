@@ -356,6 +356,7 @@ local function Init_IsSelf(root)
         end, {guid=guid})
         num=num+1
     end
+    
 
     WoWTools_MenuMixin:SetGridMode(root, num)
 end

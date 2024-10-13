@@ -84,12 +84,12 @@ function WoWTools_CurrencyMixin:GetAccountIcon(currencyID, index, link)
     end
     if currencyID then
         if C_CurrencyInfo.IsAccountTransferableCurrency(currencyID) then--可转移
-            local isWide, isTrans, col= false, true, '|cff00ccff'
-            return '|A:warbands-transferable-icon:18:0|a', false, isTrans, col, 'warbands-transferable-icon'
+            local isTrans= true
+            return '|A:warbands-transferable-icon:18:0|a', false, isTrans, '|cff00ccff', 'warbands-transferable-icon'
 
         elseif C_CurrencyInfo.IsAccountWideCurrency(currencyID) then--战网
-            local isWide, isTrans, col= true, false, '|cff00ccff'
-            return '|A:questlog-questtypeicon-account:0:0|a', isWide, false, col, 'questlog-questtypeicon-account'
+            local isWide= true
+            return '|A:questlog-questtypeicon-account:0:0|a', isWide, false, '|cff00ccff', 'questlog-questtypeicon-account'
         end
     end
 end

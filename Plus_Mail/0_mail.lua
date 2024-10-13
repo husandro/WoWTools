@@ -122,6 +122,28 @@ end
 
 
 
+local function set_to_send()
+    if Save().lastSendPlayer then--收件人
+        WoWTools_MailMixin:SetSendName(Save().lastSendPlayer)--设置，发送名称，文
+    end
+    if Save().lastSendSub then--主题
+        SendMailSubjectEditBox:SetText(Save().lastSendSub)
+    end
+    if Save().lastSendBody then--内容
+        SendMailBodyEditBox:SetText(Save().lastSendBody)
+    end
+    SendMailNameEditBox:ClearFocus()
+
+    C_Timer.After(1, function()
+        if GetInboxNumItems()==0 then--如果没有信，转到，发信
+            MailFrameTab_OnClick(nil, 2)
+        end
+    end)
+end
+
+
+
+
 
 
 
@@ -136,26 +158,8 @@ local function Init()--SendMailNameEditBox
     WoWTools_MailMixin:Init_Fast_Button()
 
 
-    function MailFrame:set_to_send()
-        if Save().lastSendPlayer then--收件人
-              WoWTools_MailMixin:SetSendName(Save().lastSendPlayer)--设置，发送名称，文
-        end
-        if Save().lastSendSub then--主题
-            SendMailSubjectEditBox:SetText(Save().lastSendSub)
-        end
-        if Save().lastSendBody then--内容
-            SendMailBodyEditBox:SetText(Save().lastSendBody)
-        end
-        SendMailNameEditBox:ClearFocus()
-
-        C_Timer.After(1, function()
-            if GetInboxNumItems()==0 then--如果没有信，转到，发信
-                MailFrameTab_OnClick(nil, 2)
-            end
-        end)
-    end
-    MailFrame:HookScript('OnShow', MailFrame.set_to_send)
-    MailFrame:set_to_send()
+    MailFrame:HookScript('OnShow', set_to_send)
+    set_to_send()
 end
 
 
