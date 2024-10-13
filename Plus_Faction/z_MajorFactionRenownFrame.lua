@@ -99,7 +99,7 @@ local function Settings()
             index= index+1
             local btn= Buttons[index]
             if not btn then
-                btn= WoWTools_ButtonMixin:Cbtn(Button.frame, {size={80, 28}, icon='hide'})
+                btn= WoWTools_ButtonMixin:Cbtn(Button.frame, {size={80, 32}, icon='hide'})
                 btn:SetPoint('TOPLEFT', Buttons[index-1] or Button.frame, 'BOTTOMLEFT')
                 btn:SetHighlightAtlas('ChromieTime-Button-Highlight')
                 btn:SetScript('OnLeave', function()
@@ -120,7 +120,7 @@ local function Settings()
                     end
                 end)
 
-                btn.Text= WoWTools_LabelMixin:Create(btn)
+                btn.Text= WoWTools_LabelMixin:Create(btn, {color={r=1,g=1,b=1}})
                 btn.Text:SetPoint('BOTTOMLEFT', btn, 'BOTTOM')
 
                 Buttons[index]= btn
@@ -130,9 +130,11 @@ local function Settings()
             btn:SetNormalAtlas('majorfaction-celebration-'..(info.textureKit or 'toastbg'))
             btn:SetPushedAtlas('MajorFactions_Icons_'..(info.textureKit or '')..'512')
             if selectFactionID==factionID then--选中
-                btn:LockHighlight()
+                btn.Text:SetTextColor(0,1,0)
+                --btn:LockHighlight()
             else
-                btn:UnlockHighlight()
+                --btn:UnlockHighlight()
+                btn.Text:SetTextColor(1,1,1)
             end
             btn.Text:SetText(Get_Major_Faction_Level(factionID, info.renownLevel))--等级
         end
