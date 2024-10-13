@@ -317,7 +317,7 @@ StaticPopup_Show('WoWTools_OK',
             self2:GetParent():Hide()
         end,
         hasEditBox = true,
-        editBoxWidth = 320,
+        --editBoxWidth = 320,
         timeout = 0,
         whileDead=true, hideOnEscape=true, exclusive=true,
     }

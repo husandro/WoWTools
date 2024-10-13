@@ -29,6 +29,8 @@ e.WoWDate[e.Player.guid]={
     },
     Money= GetMoney() or 0
     Level=
+    faction=
+    region=
 }
 
 e.UnitItemLevel=[guid] = {--玩家装等
@@ -67,6 +69,8 @@ e.GetGroupGuidDate()--队伍数据收集
 --战网，好友GUID
 --##############
 e.WoWGUID={}--e.WoWGUID[名称-服务器]=guid
+
+
 local function setwowguidTab(info)
     if info and info.characterName then
         local name= WoWTools_UnitMixin:GetFullName(info.characterName)
@@ -277,7 +281,7 @@ local function Update_Challenge_Mode()--{score=总分数,itemLink={超连接}, w
         weekWorld=WoWTools_WeekMixin:GetRewardText(Enum.WeeklyRewardChestThresholdType.World),--world
         link= e.WoWDate[e.Player.guid].Keystone.link,
     }
-   
+
     --weekMythicPlus
 end
 --[[
@@ -359,7 +363,7 @@ end
 function e.GetItemWoWNum(itemID)--e.GetItemWoWNum()--取得WOW物品数量
     local all,numPlayer=0,0
     for guid, info in pairs(e.WoWDate) do
-        if guid and info then --and guid~=e.Player.guid then
+        if guid and info and info.region==e.Player.region then --and guid~=e.Player.guid then
             local tab=info.Item[itemID]
             if tab and tab.bag and tab.bank then
                 all=all +tab.bag
@@ -455,13 +459,13 @@ local function Update_Instance()--encounterID, encounterName)
 
     e.WoWDate[e.Player.guid].Worldboss={
         week=e.Player.week,
-        day=date('%x'),
+        day= date('%x'),
         boss=tab
     }
 
     tab={}
     for i=1, GetNumSavedInstances() do--副本
-        local name, _, reset, difficulty, _, _, _, _, _, difficultyName, numEncounters, encounterProgress, extendDisabled = GetSavedInstanceInfo(i)
+        local name, _, reset, difficulty, _, _, _, _, _, difficultyName, numEncounters, encounterProgress = GetSavedInstanceInfo(i)
         if reset and reset>0 and numEncounters and encounterProgress and numEncounters>0 and encounterProgress>0 and difficultyName then
             local killed = encounterProgress ..'/'..numEncounters;
             killed = encounterProgress ==numEncounters and '|cnGREEN_FONT_COLOR:'..killed..'|r' or killed
@@ -648,15 +652,15 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
                     --Money=钱
                     --GuildInfo=公会信息,
                     Bank={},--{[itemID]={num=数量,quality=品质}}银行，数据
+                    region= e.Player.region
                 }
             else
                 e.WoWDate[e.Player.guid].Bank= e.WoWDate[e.Player.guid].Bank or {}--派系
             end
 
+            e.WoWDate[e.Player.guid].region= e.Player.region
             e.WoWDate[e.Player.guid].faction= e.Player.faction--派系
             e.WoWDate[e.Player.guid].isLevelMax= e.Player.levelMax
-
-
 
             for guid, tab in pairs(e.WoWDate) do--清除不是本周数据
                 if tab.Keystone.week ~=e.Player.week then
@@ -677,7 +681,7 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
             if e.Player.levelMax then
                 Get_Info_Challenge()--挑战
             end
-            
+
             C_CurrencyInfo.RequestCurrencyDataForAccountCharacters()
             RequestRaidInfo()
             --C_MajorFactions.RequestCatchUpState()

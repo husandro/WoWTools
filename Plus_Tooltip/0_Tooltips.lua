@@ -116,6 +116,8 @@ local function Init()
     WoWTools_TooltipMixin:Init_Settings()
     WoWTools_TooltipMixin:Init_SetPoint()
     WoWTools_TooltipMixin:Init_CVar()
+
+    WoWTools_TooltipMixin:Set_Init_Item(GameTooltip)
 end
 
 

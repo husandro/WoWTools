@@ -12,7 +12,7 @@ local function Init_Label()
     frame:SetPoint('LEFT', CharacterFrame.TitleContainer, 22,0)
     frame:SetFrameStrata(CharacterFrame.TitleContainer:GetFrameStrata())
     frame:SetFrameLevel(CharacterFrame.TitleContainer:GetFrameLevel()+1)
-    
+
 
     Label= WoWTools_LabelMixin:Create(frame, {
         color= GameLimitedMode_IsActive() and {r=0,g=1,b=1} or {r=1,g=1,b=1},
@@ -20,9 +20,9 @@ local function Init_Label()
     })
 
     Label:SetPoint('LEFT')
-    Label:SetAlpha(0.5)
+    Label:SetAlpha(1)
 
-    Label:SetScript("OnLeave",function(self) e.tips:Hide() self:SetAlpha(0.5) end)
+    Label:SetScript("OnLeave",function(self) e.tips:Hide() self:SetAlpha(1) end)
     Label:SetScript("OnEnter",function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
@@ -54,11 +54,11 @@ local function Init_Label()
             e.tips:AddDoubleLine(e.onlyChinese and '等级' or LEVEL, rLevel, 1,0,0, 1,0,0)
             e.tips:AddDoubleLine(e.onlyChinese and '钱' or MONEY, GetMoneyString(rMoney), 1,0,0, 1,0,0)
             e.tips:AddDoubleLine(e.onlyChinese and '专业技能' or PROFESSIONS_TRACKER_HEADER_PROFESSION, profCap, 1,0,0, 1,0,0)
-        
+
         end
-        
+
         e.tips:Show()
-        self:SetAlpha(1)
+        self:SetAlpha(0.5)
     end)
 end
 

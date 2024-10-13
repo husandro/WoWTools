@@ -1,8 +1,8 @@
 --收件人，列表
 local e= select(2, ...)
-local function Save()
+--[[local function Save()
     return WoWTools_MailMixin.Save
-end
+end]]
 
 
 
@@ -340,23 +340,43 @@ end]]
 --我
 local function Init_IsSelf(root)
     local new={}
-    for guid, _ in pairs(e.WoWDate) do
-        if guid and guid~= e.Player.guid then
-            new[guid]=true
+    for guid, data in pairs(e.WoWDate) do
+        if guid and guid~= e.Player.guid and data.region==e.Player.region then
+            new[guid]=data
         end
     end
 
     local num=0
-    for guid in pairs(new) do
+    for guid, info in pairs(new) do
         root:CreateButton(
-            WoWTools_UnitMixin:GetPlayerInfo({guid=guid, reName=true, reRealm=true}),
+            WoWTools_UnitMixin:GetPlayerInfo({guid=guid, reName=true, reRealm=true, faction=info.faction}),
         function(data)
             WoWTools_MailMixin:SetSendName(nil, data.guid)
             return MenuResponse.Open
         end, {guid=guid})
         num=num+1
     end
-    
+
+    local num2, new2= WoWTools_CurrencyMixin:GetAccountInfo(615)
+    if num2==0 then
+        num2, new2= WoWTools_CurrencyMixin:GetAccountInfo(515)
+    end
+
+    if num2>0 then
+        root:CreateDivider()
+        for _, info in pairs(new2) do
+            local guid=info.characterGUID
+            if guid and not new[guid] then
+                root:CreateButton(
+                    WoWTools_UnitMixin:GetPlayerInfo({guid=guid, reName=true, reRealm=true, faction=info.faction}),
+                function(data)
+                    WoWTools_MailMixin:SetSendName(nil, data.guid)
+                    return MenuResponse.Open
+                end, {guid=guid})
+                num=num+1
+            end
+        end
+    end
 
     WoWTools_MenuMixin:SetGridMode(root, num)
 end
@@ -373,6 +393,7 @@ local function Init_Menu(_, root)
         return MenuResponse
     end)
     Init_IsSelf(sub)
+
 
 end
 
@@ -396,7 +417,7 @@ end
 function Init()
     --下拉，菜单
     local listButton= WoWTools_ButtonMixin:Cbtn(SendMailNameEditBox, {size=22, atlas='common-icon-rotateleft'})
-    
+
     listButton:SetPoint('LEFT', SendMailNameEditBox, 'RIGHT')
     listButton:SetScript('OnMouseDown', function(self)
         MenuUtil.CreateContextMenu(self, Init_Menu)
@@ -472,7 +493,7 @@ function Init()
         e.tips:Show()
     end)
 
-    --清除，收件人
+--清除，收件人
     local clearButton= WoWTools_ButtonMixin:Cbtn(SendMailNameEditBox, {size=22, atlas='bags-button-autosort-up'})
     clearButton:SetPoint('RIGHT', SendMailNameEditBox, 'LEFT', -4, 0)
     clearButton:SetScript('OnLeave', GameTooltip_Hide)
@@ -488,13 +509,6 @@ function Init()
         self:GetParent():SetText('')
         WoWTools_MailMixin:RefreshAll()
     end)
-
-    --移动 收件人：字符
-    local labelSend=select(3, SendMailNameEditBox:GetRegions())
-    if labelSend and labelSend:GetObjectType()=='FontString' then
-        labelSend:ClearAllPoints()
-        labelSend:SetPoint('RIGHT', clearButton, 'LEFT')
-    end
 end
 
 

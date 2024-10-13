@@ -21,7 +21,8 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 			frame.check:SetShown(false)
 			if frame.Content then
 				frame.Content.Count:SetTextColor(1,1,1)
-				frame.Content.Name:SetTextColor(1,1,1)
+				local lable= frame.Content.Name2 or frame.Content.Name--汉化，新建
+				lable:SetTextColor(1,1,1)
 			end
 			if frame.percentText then
 				frame.percentText:SetText('')
@@ -115,11 +116,12 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 	end
 
 	if frame.Content.Name then
+		local lable= frame.Content.Name2 or frame.Content.Name--汉化，新建
 		if info.isAccountTransferable then
-			frame.Content.Name:SetTextColor(0, 0.8, 1)
+			lable:SetTextColor(0, 0.8, 1)
 		else
 			local r, g, b= C_Item.GetItemQualityColor(info and info.quality or 1)
-			frame.Content.Name:SetTextColor(r or 1, g or 1, b or 1)
+			lable:SetTextColor(r or 1, g or 1, b or 1)
 		end
 	end
 

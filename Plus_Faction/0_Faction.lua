@@ -36,8 +36,7 @@ local function Init()
 	WoWTools_ReputationMixin:Init_ScrollBox_Plus()
 	WoWTools_ReputationMixin:Init_Chat_MSG()
 	WoWTools_ReputationMixin:Init_TrackButton()
-
-	WoWTools_TooltipMixin:Set_Init_Item(GameTooltip)
+	WoWTools_ReputationMixin:Init_Other_Button()
 end
 
 

@@ -165,6 +165,8 @@ end
 
 local function Init()
     local btn= WoWTools_ButtonMixin:CreateMenu(ReputationFrame, {name='WoWTools_PlusReputationButton'})
+	WoWTools_ReputationMixin.Button= btn
+
     btn:SetupMenu(Init_Menu)
 
 	btn:SetPoint("RIGHT", CharacterFrameCloseButton, 'LEFT', -2, 0)
@@ -186,64 +188,16 @@ local function Init()
 		WoWTools_ReputationMixin:Set_TrackButton_Pushed(false)--TrackButton，提示
 	end)
 
-	function btn:set_expand_collapse(show)
-		if self.isGo then
-			return
-		end
-		self.isGo=true
-		for index=1, C_Reputation.GetNumFactions() do
-			local data= C_Reputation.GetFactionDataByIndex(index) or {}
-			if data.isHeader then
-				if show then
-					if data.isCollapsed then
-						C_Reputation.ExpandFactionHeader(index);
-					end
-				else
-					if not data.isCollapsed then
-						C_Reputation.CollapseFactionHeader(index);
-					end
-				end
-			end
-		end
-		self.isGo=nil
-	end
-
-	btn.down= WoWTools_ButtonMixin:Cbtn(btn, {size={22,22}, atlas='NPE_ArrowDown'})--texture='Interface\\Buttons\\UI-MinusButton-Up'})--展开所有
-	btn.down:SetPoint("RIGHT", ReputationFrame.filterDropdown, 'LEFT',-2,0)
-	btn.down:SetScript("OnClick", function(self)
-		self:GetParent():set_expand_collapse(true)
-	end)
-	btn.down:SetScript("OnLeave", GameTooltip_Hide)
-	btn.down:SetScript('OnEnter', function(self)
-		e.tips:SetOwner(self, "ANCHOR_LEFT")
-		e.tips:ClearLines()
-		e.tips:AddDoubleLine(' ', e.onlyChinese and '展开选项|A:editmode-down-arrow:16:11:0:-7|a' or HUD_EDIT_MODE_EXPAND_OPTIONS)
-		e.tips:AddDoubleLine(e.addName, WoWTools_ReputationMixin.addName)
-		e.tips:Show()
-	end)
-
-	btn.up= WoWTools_ButtonMixin:Cbtn(btn, {size={22,22}, atlas='NPE_ArrowUp'})--texture='Interface\\Buttons\\UI-PlusButton-Up'})--收起所有
-	btn.up:SetPoint("RIGHT", btn.down, 'LEFT', -2, 0)
-	btn.up:SetScript("OnClick", function(self)
-		self:GetParent():set_expand_collapse(false)
-	end)
-	btn.up:SetScript("OnLeave", GameTooltip_Hide)
-	btn.up:SetScript('OnEnter', function(self)
-		e.tips:SetOwner(self, "ANCHOR_LEFT")
-		e.tips:ClearLines()
-		e.tips:AddDoubleLine(' ', e.onlyChinese and '收起选项|A:editmode-up-arrow:16:11:0:3|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS)
-		e.tips:AddDoubleLine(e.addName, WoWTools_ReputationMixin.addName)
-		e.tips:Show()
-	end)
-
 	
 
 	function btn:settings()
-		local show= not WoWTools_ReputationMixin.Save.notPlus
-		self.up:SetShown(show)
-		self.down:SetShown(show)
+		if self.down then
+			local show= not WoWTools_ReputationMixin.Save.notPlus
+			self.down:SetShown(show)
+		end
 	end
-    btn:settings()
+
+    --btn:settings()
 end
 
 

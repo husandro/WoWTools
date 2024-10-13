@@ -207,9 +207,9 @@ local function Init_Fast_Button_Menu(frame, level, menuList)
         local find
         local name= Save().fast[self.name]
         local tab= {}
-        for guid, _ in pairs(e.WoWDate) do
+        for guid, data in pairs(e.WoWDate) do
             local playerName= WoWTools_UnitMixin:GetFullName(nil, nil, guid)
-            if playerName then
+            if playerName and data.region==e.Player.region then
                 local realm= WoWTools_MailMixin:GetRealmInfo(playerName)
                 local info= {
                     text= WoWTools_UnitMixin:GetPlayerInfo({guid=guid, reName=true, reRealm=true}),

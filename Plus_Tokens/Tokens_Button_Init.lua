@@ -51,7 +51,7 @@ local function enter(self)
 	WoWTools_TokensMixin:Set_TrackButton_Pushed(true)--提示
 end
 
-local function leave(self)
+local function leave()
 	e.tips:Hide()
 	Button:set_texture()
 	WoWTools_TokensMixin:Set_TrackButton_Pushed(false)--提示

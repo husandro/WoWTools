@@ -87,12 +87,15 @@ end
 
 
 
-local function Init(Button)
-	--展开,合起	
+local function Init()
+--展开,合起	
 	local down= WoWTools_ButtonMixin:Cbtn(WoWTools_TokensMixin.Button, {size={22,22}, atlas='NPE_ArrowDown'})--texture='Interface\\Buttons\\UI-MinusButton-Up'})--展开所有
 	WoWTools_TokensMixin.Button.down= down
-
-	down:SetPoint('RIGHT', TokenFrame.CurrencyTransferLogToggleButton, 'LEFT', -2, 0)
+	if TokenFrame.filterDropdown then--11.05
+		down:SetPoint('RIGHT', TokenFrame.filterDropdown, 'LEFT', -2, 0)
+	else
+		down:SetPoint('RIGHT', TokenFrame.CurrencyTransferLogToggleButton, 'LEFT', -2, 0)
+	end
 	down:SetScript("OnClick", function()
 		for i=1, C_CurrencyInfo.GetCurrencyListSize() do--展开所有
 			local info = C_CurrencyInfo.GetCurrencyListInfo(i)
@@ -101,7 +104,6 @@ local function Init(Button)
 				WoWTools_TokensMixin:UpdateTokenFrame()
 			end
 		end
-		
 	end)
 	down:SetScript("OnLeave", GameTooltip_Hide)
 	down:SetScript('OnEnter', function(self)

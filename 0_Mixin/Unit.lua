@@ -75,12 +75,12 @@ function WoWTools_UnitMixin:GetPlayerInfo(unit, guid, name, tab)
     else
         tab= tab or {}
     end
-    
+
     unit= unit or tab.unit
     name= name or tab.name
     guid= guid or tab.guid or (UnitExists(unit) and UnitGUID(unit)) or WoWTools_UnitMixin:GetGUID(unit, name)
-    
- 
+
+
     local faction= tab.faction
     local reLink= tab.reLink
     local reName= tab.reName
@@ -130,6 +130,13 @@ function WoWTools_UnitMixin:GetPlayerInfo(unit, guid, name, tab)
                 end
             else
                 text= text..self:NameRemoveRealm(name, realm)
+            end
+--等级 
+            if unit then
+                local level= UnitLevel(unit)
+                if level and level~=GetMaxLevelForPlayerExpansion() then
+                    text= text..'|cnGREEN_FONT_COLOR:'..level..'|r'
+                end
             end
             text= '|c'..select(4,GetClassColor(englishClass))..text..'|r'
         end

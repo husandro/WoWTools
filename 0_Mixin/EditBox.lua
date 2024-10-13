@@ -144,14 +144,24 @@ function WoWTools_EditBoxMixn:SetInstructions(editBox, instructions, frame)
     if not instructions then
         return
     end
+
     editBox= frame and frame.editBox or editBox
-    if not editBox then
+
+    if not editBox  then
         return
     end
-    
-    editBox.Instructions=WoWTools_LabelMixin:Create(editBox, {layer='BORDER', color={r=0.35, g=0.35, b=0.35}})
-    editBox.Instructions:SetPoint('TOPLEFT')
+
+    if not editBox.Instructions then
+        editBox.Instructions=WoWTools_LabelMixin:Create(editBox, {layer='BORDER', color={r=0.35, g=0.35, b=0.35}})
+        if editBox:IsMultiLine() then
+            editBox.Instructions:SetPoint('TOPLEFT')
+        else
+            editBox.Instructions:SetPoint('LEFT')
+        end
+    end
+
     editBox.Instructions:SetText(instructions)
+
     if frame then
         function frame:SetInstructions(text)
             if text then

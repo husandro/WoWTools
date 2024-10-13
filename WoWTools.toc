@@ -162,6 +162,7 @@ Plus_Attributes\Menu_Attributes.lua
 ##声望面板
 Plus_Faction\0_Faction.lua
 Plus_Faction\Faction_Button_Init.lua
+Plus_Faction\Faction_Button_Other.lua
 Plus_Faction\Faction_TrackButton_Init.lua
 Plus_Faction\Faction_TrackButton_SetText.lua
 Plus_Faction\ScrollBox_Plus.lua

@@ -61,7 +61,7 @@ end
 
 
 local function Init()
-    --收件箱
+--收件箱
     InboxFrame:SetPoint('RIGHT')
     for i= 1, INBOXITEMS_TO_DISPLAY do--7
         Set_Inbox_btn_Point(_G['MailItem'..i], i)--设置，模板，内容，位置
@@ -79,7 +79,7 @@ local function Init()
     InboxFrameBg:SetTexture(0)
     --InboxFrameBg:SetPoint('BOTTOMRIGHT', -4,4)
 
-    --发件箱
+--发件箱
     SendMailFrame:SetPoint('BOTTOMRIGHT', 384-338, 424-512)
     SendMailHorizontalBarLeft:ClearAllPoints()
     SendMailHorizontalBarLeft:SetPoint('BOTTOMLEFT', SendMailMoneyButton, 'TOPLEFT', -14, -4)
@@ -145,6 +145,31 @@ local function Init()
         WoWTools_MailMixin:RefreshAll()
     end})
     e.Set_Move_Frame(SendMailFrame, {frame=MailFrame})
+
+
+--收件人：
+    for _, region in pairs({SendMailNameEditBox:GetRegions()}) do
+        if region:GetObjectType()=='FontString' and region:GetText()==MAIL_TO_LABEL then
+            region:SetText('')
+            break
+        end
+    end
+    WoWTools_EditBoxMixn:SetInstructions(SendMailNameEditBox, e.onlyChinese and '收件人' or MAIL_TO_LABEL:gsub(HEADER_COLON,''))
+    WoWTools_EditBoxMixn:HookInstructions(SendMailNameEditBox)
+
+--主题
+    for _, region in pairs({SendMailSubjectEditBox:GetRegions()}) do
+        if region:GetObjectType()=='FontString'  then
+            local text= region:GetText()
+            if text==MAIL_SUBJECT_LABEL or text=='主题：' then
+                region:SetText('')
+                break
+            end
+        end
+    end
+    WoWTools_EditBoxMixn:SetInstructions(SendMailSubjectEditBox, e.onlyChinese and '主题' or MAIL_SUBJECT_LABEL:gsub(HEADER_COLON,''))
+    WoWTools_EditBoxMixn:HookInstructions(SendMailSubjectEditBox)
+    
 end
 
 

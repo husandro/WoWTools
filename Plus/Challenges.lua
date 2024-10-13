@@ -836,7 +836,7 @@ local function All_Player_Info()--所以角色信息
         local weekPvP= info.Keystone.weekPvP
         local weekWorld= info.Keystone.weekWorld
 
-        if (guid~=e.Player.guid or e.Player.husandro) and (link or weekPvE or weekMythicPlus or weekPvP or weekWorld) then--guid~=e.Player.guid and and info.isLevelMax 
+        if info.region==e.Player.region and (guid~=e.Player.guid or e.Player.husandro) and (link or weekPvE or weekMythicPlus or weekPvP or weekWorld) then--guid~=e.Player.guid and and info.isLevelMax 
             local _, englishClass, _, _, _, namePlayer, realm = GetPlayerInfoByGUID(guid)
             if namePlayer and namePlayer~='' then
                 local classColor = englishClass and C_ClassColor.GetClassColor(englishClass)
