@@ -215,6 +215,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1==id then
             if type(WoWToolsSave['Plus_Macro'])=='table' then
                 WoWTools_MacroMixin.Save= WoWToolsSave['Plus_Macro']
+                WoWToolsSave['Plus_Macro']=nil
             else
                 WoWTools_MacroMixin.Save= WoWToolsSave['Plus_Macro2'] or Save()
             end
@@ -231,6 +232,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
 
             WoWTools_MacroMixin.addName= '|TInterface\\MacroFrame\\MacroFrame-Icon:0|t'..(e.onlyChinese and '宏' or MACRO)
+
             --添加控制面板
             e.AddPanel_Check({
                 name= WoWTools_MacroMixin.addName,
