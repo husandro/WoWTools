@@ -3,8 +3,9 @@ local e= select(2, ...)
 local Save= function()
     return  WoWTools_MinimapMixin.Save
 end
-local Frame
 
+local Button
+local Buttons={}
 
 
 
@@ -77,40 +78,128 @@ end
 
 
 
-local function Create_Button(frame)
-    local btn= WoWTools_ButtonMixin:Cbtn(frame.frame, {size={235/2.5, 110/2.5}, icon='hide'})
-    btn:SetPoint('TOPLEFT', frame.btn[n-1] or frame, 'BOTTOMLEFT')
-    btn:SetHighlightAtlas('ChromieTime-Button-Highlight')
-    btn:SetScript('OnLeave', GameTooltip_Hide)
-    btn:SetScript('OnEnter', ReputationBarMixin.ShowMajorFactionRenownTooltip)
-    btn:SetScript('OnClick', function(self)
-        if
-            not MajorFactionRenownFrame
-            or not MajorFactionRenownFrame:IsVisible()
-            or MajorFactionRenownFrame:GetCurrentFactionID()~=self.factionID
-        then
-            ToggleMajorFactionRenown(self.factionID)
+
+
+
+local function Settings()
+    if Save().hide_MajorFactionRenownFrame_Button then
+        Button.frame:SetShown(false)
+        return
+    end
+    Button.frame:SetShown(true)
+
+    --所有，派系声望
+    local selectFactionID= MajorFactionRenownFrame:GetCurrentFactionID()
+    local tab= Get_Major_Faction_List()--取得，所有，派系声望
+
+    local index=0
+    for _, factionID in pairs(tab) do
+        local info= C_MajorFactions.GetMajorFactionData(factionID or 0)
+        if info then
+            index= index+1
+            local btn= Buttons[index]
+            if not btn then
+                btn= WoWTools_ButtonMixin:Cbtn(Button.frame, {size={80, 28}, icon='hide'})
+                btn:SetPoint('TOPLEFT', Buttons[index-1] or Button.frame, 'BOTTOMLEFT')
+                btn:SetHighlightAtlas('ChromieTime-Button-Highlight')
+                btn:SetScript('OnLeave', function()
+                    Button:SetButtonState('NORMAL')
+                    WoWTools_SetTooltipMixin:Hide()
+                end)
+                btn:SetScript('OnEnter', function(self)
+                    Button:SetButtonState('PUSHED')
+                    WoWTools_SetTooltipMixin:Frame(self)
+                end)
+                btn:SetScript('OnClick', function(self)
+                    if
+                        not MajorFactionRenownFrame
+                        or not MajorFactionRenownFrame:IsVisible()
+                        or MajorFactionRenownFrame:GetCurrentFactionID()~=self.factionID
+                    then
+                        ToggleMajorFactionRenown(self.factionID)
+                    end
+                end)
+
+                btn.Text= WoWTools_LabelMixin:Create(btn)
+                btn.Text:SetPoint('BOTTOMLEFT', btn, 'BOTTOM')
+
+                Buttons[index]= btn
+            end
+
+            btn.factionID= factionID
+            btn:SetNormalAtlas('majorfaction-celebration-'..(info.textureKit or 'toastbg'))
+            btn:SetPushedAtlas('MajorFactions_Icons_'..(info.textureKit or '')..'512')
+            if selectFactionID==factionID then--选中
+                btn:LockHighlight()
+            else
+                btn:UnlockHighlight()
+            end
+            btn.Text:SetText(Get_Major_Faction_Level(factionID, info.renownLevel))--等级
         end
-    end)
-    btn.Text= WoWTools_LabelMixin:Create(btn)
-    btn.Text:SetPoint('BOTTOMLEFT', btn, 'BOTTOM')
-    return btn
+    end
 end
 
 
 
---派系，列表 MajorFactionRenownFrame
-local function Init_MajorFactionRenownFrame()
-    Frame= WoWTools_ButtonMixin:Cbtn(MajorFactionRenownFrame, {size={22,22}, icon='hide'})
 
-    function Frame:set_scale()
+
+
+
+
+
+
+
+
+
+
+
+
+local function Set_HeaderText()
+    local text=''
+    if not Save().hide_MajorFactionRenownFrame_Button then
+        local factionID= MajorFactionRenownFrame:GetCurrentFactionID()
+        local info=factionID and C_MajorFactions.GetMajorFactionData(factionID)
+        if info then
+            text= Get_Major_Faction_Level(factionID, info.renownLevel)
+        end
+    end
+    Button.HeaderText:SetText(text)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--派系，列表 MajorFactionRenownFrame
+local function Init()
+    Button= WoWTools_ButtonMixin:Cbtn(MajorFactionRenownFrame, {size={22,22}, icon='hide'})
+
+    function Button:set_scale()
         self.frame:SetScale(Save().MajorFactionRenownFrame_Button_Scale or 1)
     end
-    function Frame:set_texture()
-        self:SetNormalAtlas(Save().hide_MajorFactionRenownFrame_Button and 'talents-button-reset' or e.Icon.icon)
+    function Button:set_texture()
+        local hide= Save().hide_MajorFactionRenownFrame_Button
+        if hide then
+            self:SetNormalAtlas(e.Icon.icon)
+            self:SetAlpha(0.3)
+        else
+            self:SetNormalTexture(0)
+            self:SetAlpha(1)
+        end
     end
 
-    function Frame:set_tooltips()
+    function Button:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.addName, WoWTools_MinimapMixin.addName)
@@ -120,19 +209,19 @@ local function Init_MajorFactionRenownFrame()
         e.tips:Show()
     end
 
-    Frame:SetFrameStrata('HIGH')
-    Frame:SetPoint('LEFT', MajorFactionRenownFrame.CloseButton, 'RIGHT', 4, 0)
-    Frame:SetFrameStrata(MajorFactionRenownFrame.CloseButton:GetFrameStrata())
-    Frame:SetScript('OnLeave', GameTooltip_Hide)
-    Frame:SetScript('OnEnter', Frame.set_tooltips)
-    Frame:SetScript('OnClick', function(self)
+    Button:SetPoint('LEFT', MajorFactionRenownFrame.CloseButton, 'RIGHT', 8, 0)
+    Button:SetFrameStrata(MajorFactionRenownFrame.CloseButton:GetFrameStrata())
+
+    Button:SetScript('OnLeave', GameTooltip_Hide)
+    Button:SetScript('OnEnter', Button.set_tooltips)
+    Button:SetScript('OnClick', function(self)
         Save().hide_MajorFactionRenownFrame_Button= not Save().hide_MajorFactionRenownFrame_Button and true or nil
-        self:set_faction()
+        Settings()
         self:set_texture()
         self:set_tooltips()
     end)
 
-    Frame:SetScript('OnMouseWheel', function(self, d)
+    Button:SetScript('OnMouseWheel', function(self, d)
         local n= Save().MajorFactionRenownFrame_Button_Scale or 1
         n= d==1 and n-0.1 or n
         n= d==-1 and n+0.1 or n
@@ -143,62 +232,21 @@ local function Init_MajorFactionRenownFrame()
         self:set_tooltips()
     end)
 
+    Button.HeaderText= WoWTools_LabelMixin:Create(Button.frame, {color={r=1, g=1, b=1}, copyFont=MajorFactionRenownFrame.HeaderFrame.Level, justifyH='LEFT', size=14})
+    Button.HeaderText:SetPoint('BOTTOMLEFT', MajorFactionRenownFrame.HeaderFrame.Level, 'BOTTOMRIGHT', 16, -4)
 
-    Frame.frame=CreateFrame('Frame', nil, Frame)
-    Frame.btn={}
+    Button.frame=CreateFrame('Frame', nil, Button)
+    Button.frame:SetSize(1,1)
+    Button.frame:SetAllPoints()
 
-
-    function Frame:set_faction()
-        if Save().hide_MajorFactionRenownFrame_Button then
-            self.frame:SetShown(false)
-            return
-        end
-        self.frame:SetShown(true)
-
-        --所有，派系声望
-        local selectFactionID= MajorFactionRenownFrame:GetCurrentFactionID()
-        local tab= Get_Major_Faction_List()--取得，所有，派系声望
-        local n=1
-        for _, factionID in pairs(tab) do
-            local info=C_MajorFactions.GetMajorFactionData(factionID or 0)
-            if info then
-                local btn= self.btn[n] or Create_Button(self.frame)
-                n= n+1
-                btn.factionID= factionID
-                btn:SetNormalAtlas('majorfaction-celebration-'..(info.textureKit or 'toastbg'))
-                btn:SetPushedAtlas('MajorFactions_Icons_'..(info.textureKit or '')..'512')
-                if selectFactionID==factionID then--选中
-                    btn:LockHighlight()
-                else
-                    btn:UnlockHighlight()
-                end
-                btn.Text:SetText(Get_Major_Faction_Level(factionID, info.renownLevel))--等级
-            end
-        end
-    end
-
-
-    Frame:set_scale()
-    Frame:set_texture()
-    Frame.HeaderText= WoWTools_LabelMixin:Create(Frame.frame, {color={r=1, g=1, b=1}, copyFont=MajorFactionRenownFrame.HeaderFrame.Level, justifyH='LEFT', size=14})
-    Frame.HeaderText:SetPoint('BOTTOMLEFT', MajorFactionRenownFrame.HeaderFrame.Level, 'BOTTOMRIGHT', 16, -4)
-
-    function Frame.HeaderText:set_text()
-        local text=''
-        if not Save().hide_MajorFactionRenownFrame_Button then
-            local factionID= MajorFactionRenownFrame:GetCurrentFactionID()
-            local info=C_MajorFactions.GetMajorFactionData(factionID or 0)
-            if info then
-                text= Get_Major_Faction_Level(factionID, info.renownLevel)
-            end
-        end
-        self:SetText(text)
-    end
-
-    hooksecurefunc(MajorFactionRenownFrame, 'Refresh', function(self)
-        Frame:set_faction()
-        Frame.HeaderText:set_text()
+    hooksecurefunc(MajorFactionRenownFrame, 'Refresh', function()
+        Settings()
+        Set_HeaderText()
     end)
+
+    Button:set_scale()
+    Button:set_texture()
+
 end
 
 
@@ -225,7 +273,7 @@ end
 
 function WoWTools_ReputationMixin:Init_MajorFactionRenownFrame()
     self:Init_CovenantRenown(MajorFactionRenownFrame)--盟约 9.0
-    Init_MajorFactionRenownFrame()
+    Init()
 end
 
 

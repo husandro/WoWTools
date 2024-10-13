@@ -1837,7 +1837,7 @@ local function Init()
 
     local check= WoWTools_ButtonMixin:Cbtn(ChallengesFrame, {size={18,18}, icon='hide'})-- not Save.hideIns})
     check.texture= check:CreateTexture()
-    check.texture:SetAllPoints(check)
+    check.texture:SetAllPoints()
     check.texture:SetAlpha(0.3)
     function check:set_Texture()
         self.texture:SetAtlas(not Save.hideIns and e.Icon.icon or e.Icon.disabled)
