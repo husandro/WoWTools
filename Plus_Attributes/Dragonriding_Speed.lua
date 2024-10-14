@@ -99,9 +99,9 @@ end
 --驭空术UI，速度
 local function Init()
 
-    if UIWidgetPowerBarContainerFrame.moveButton then
-        UIWidgetPowerBarContainerFrame.moveButton:ClearAllPoints()
-        UIWidgetPowerBarContainerFrame.moveButton:SetPoint('BOTTOM', UIWidgetPowerBarContainerFrame, 'TOP', -25, 10)
+    if UIWidgetPowerBarContainerFrame.WoWToolsMoveButton then
+        UIWidgetPowerBarContainerFrame.WoWToolsMoveButton:ClearAllPoints()
+        UIWidgetPowerBarContainerFrame.WoWToolsMoveButton:SetPoint('BOTTOM', UIWidgetPowerBarContainerFrame, 'TOP', -25, 10)
     end
 
     Set_Dragonriding_Speed(UIWidgetPowerBarContainerFrame.widgetFrames[4460])

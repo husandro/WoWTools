@@ -1219,12 +1219,11 @@ local function Init_All_Frame()
      hide_Texture(MerchantFrameBottomLeftBorder)
 
      C_Timer.After(2, function()
-         --[[if SpellFlyout and SpellFlyout.Background then--Spell Flyout
-             hide_Texture(SpellFlyout.Background.HorizontalMiddle)
-             hide_Texture(SpellFlyout.Background.End)
-             hide_Texture(SpellFlyout.Background.VerticalMiddle)
-         end]]
-
+         if SpellFlyout and SpellFlyout.Background then--Spell Flyout
+            hide_Texture(SpellFlyout.Background.HorizontalMiddle)
+            hide_Texture(SpellFlyout.Background.End)
+            hide_Texture(SpellFlyout.Background.VerticalMiddle)
+         end
 
          for i=1, C_AddOns.GetNumAddOns() do
              if C_AddOns.GetAddOnEnableState(i)==2 then

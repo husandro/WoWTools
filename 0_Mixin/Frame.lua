@@ -37,7 +37,7 @@ function WoWTools_FrameMixin:ScaleFrame(frame, delta, value, func)
         n= n>4 and 4 or n
         n= n<0.4 and 0.4 or n
         if func then
-            func()
+            func(n)
         end
         if frame.set_scale then
             frame:set_scale()

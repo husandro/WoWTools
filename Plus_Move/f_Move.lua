@@ -139,7 +139,7 @@ end
 
 function WoWTools_MoveMixin:SetPoint(frame, name)--设置, 移动,
     if frame then
-        name= name or frame.FrameName or frame:GetName()
+        name= name or frame:GetName()
         if name then
             Set_Frame_Point(frame, name)
         end

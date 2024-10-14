@@ -238,7 +238,7 @@ end
 
 
 
-function Init_All_Flyout()
+local function Init_All_Flyout()
     --if not e.Player.levelMax or e.Is_Timerunning then return end
     --https://wago.tools/db2/SpellFlyout?build=11.0.0.55288&locale=zhCN
     local tab={

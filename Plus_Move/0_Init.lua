@@ -1221,7 +1221,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 WoWTools_MoveMixin.Save= WoWToolsSave['Plus_Move'] or WoWTools_MoveMixin.Save
             end
 
-            WoWTools_MoveMixin.addName= '|TInterface\\Cursor\\UI-Cursor-Move:0|t'..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '移动' or NPE_MOVE, 'Frame')
+            WoWTools_MoveMixin.addName= '|TInterface\\Cursor\\UI-Cursor-Move:0|t'..(e.onlyChinese and '移动' or NPE_MOVE)
 
             WoWTools_MoveMixin:Init_Options()
            

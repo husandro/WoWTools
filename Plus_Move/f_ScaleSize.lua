@@ -187,6 +187,28 @@ end
 
 
 
+local function Set_Enter(btn, alpha)
+    if alpha then
+        btn:SetAlpha(alpha)
+        btn.alpha= alpha
+    end
+    btn:SetScript('OnLeave', function(self)
+        GameTooltip_Hide()
+        ResetCursor()
+        btn:SetAlpha(self.alpha or 1)
+    end)
+    btn:SetScript('OnEnter', function(self)
+        Set_Tooltip(self)
+        SetCursor("UI_RESIZE_CURSOR")
+        self:SetAlpha(self.alpha and 1 or 0.5)
+    end)
+end
+
+
+
+
+
+
 
 
 local function Set_OnMouseUp(self, d)
@@ -286,7 +308,7 @@ local function Set_OnMouseDown(self, d)
                 local y = SOS.y*s
                 target2:ClearAllPoints()
                 target2:SetPoint("TOPLEFT", UIParent, "TOPLEFT", x, y)
-                frame2:set_tooltip()
+                Set_Tooltip(frame2)
                 if frame2.scaleUpdateFunc then
                     frame2.scaleUpdateFunc(frame2)
                 end
@@ -318,7 +340,7 @@ local function Set_OnMouseDown(self, d)
                 self.target:StartSizing("BOTTOMRIGHT", true)
             end
             self:SetScript('OnUpdate', function(frame)
-                frame:set_tooltip()
+                Set_Tooltip(frame)
                 if frame.sizeUpdateFunc then
                     frame.sizeUpdateFunc(frame)
                 end
@@ -326,7 +348,7 @@ local function Set_OnMouseDown(self, d)
         end
     end
 
-    self:set_tooltip()
+    Set_Tooltip(self)
 end
 
 
@@ -364,7 +386,7 @@ local function Set_OnMouseWheel(self, d)
         Save().alpha
     )
     self:set_move_event()
-    self:set_tooltip()
+    Set_Tooltip(self)
 end
 
 
@@ -442,14 +464,14 @@ end
 function WoWTools_MoveMixin:ScaleSize(frame, tab)
     local name= tab.name or frame:GetName()
 
-    if not name or (Save().disabledZoom and not tab.needSize) or tab.notZoom or frame.ResizeButton or tab.frame then
+    if not name
+        or (Save().disabledZoom and not tab.needSize)
+        or tab.notZoom
+        or frame.ResizeButton
+        or tab.frame
+    then
         return
     end
-
-    local btn= CreateFrame('Button', _G['WoWToolsResizeButton'..name], frame, 'PanelResizeButtonTemplate')--SharedUIPanelTemplates.lua
-    btn:SetFrameLevel(9999)
-
-    frame.ResizeButton= btn
 
     local setResizeButtonPoint= tab.setResizeButtonPoint--设置，按钮，位置
     local setSize= tab.setSize
@@ -464,7 +486,21 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
     local rotationDegrees= tab.rotationDegrees--旋转度数
     local initFunc= tab.initFunc--初始
 
-    btn.target= frame
+    local btn=_G['WoWToolsResizeButton'..name]
+    if not btn then
+        btn= CreateFrame('Button', _G['WoWToolsResizeButton'..name], frame, 'PanelResizeButtonTemplate')--SharedUIPanelTemplates.lua
+        btn:SetFrameLevel(9999)
+        btn:SetSize(16, 16)
+        if setResizeButtonPoint then
+            btn:SetPoint(setResizeButtonPoint[1] or 'BOTTOMRIGHT', setResizeButtonPoint[2] or frame, setResizeButtonPoint[3] or 'BOTTOMRIGHT', setResizeButtonPoint[4] or 0, setResizeButtonPoint[5] or 0)
+        else
+            btn:SetPoint('BOTTOMRIGHT', frame, 6,-6)
+        end
+    end
+    
+    frame.ResizeButton= btn
+    
+    btn.target= btn.target or frame
     btn.name= name
 
 --设置缩放
@@ -472,7 +508,7 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
     btn.scaleUpdateFunc= tab.scaleUpdateFunc
     btn.scaleRestFunc= tab.scaleRestFunc--清除，数据
     btn.restPointFunc= tab.restPointFunc--还原，（清除，位置，数据）
-    btn.hideButton= tab.hideButton--设置透明度为0，移到frame设置为1，
+    btn.alpha= tab.alpha--设置透明度为0，移到frame设置为1，
     btn.disabledSize= disabledSize--禁用，大小功能
     btn.setSize= setSize and not disabledSize--是否有，设置大小，功能    
     btn.notInCombat= tab.notInCombat--战斗中，禁止操作
@@ -486,7 +522,6 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
     btn.sizeTooltip= tab.sizeTooltip
 
     if btn.setSize then
-
         frame:SetResizable(true)
         btn:Init(frame, minW, minH, maxW , maxH, rotationDegrees)
         --[[
@@ -505,39 +540,10 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
 
     WoWTools_ColorMixin:SetLabelTexture(btn, {type='Button', alpha=1})--设置颜色
 
-
-    btn:SetSize(16, 16)
-    if setResizeButtonPoint then
-        btn:SetPoint(setResizeButtonPoint[1] or 'BOTTOMRIGHT', setResizeButtonPoint[2] or frame, setResizeButtonPoint[3] or 'BOTTOMRIGHT', setResizeButtonPoint[4] or 0, setResizeButtonPoint[5] or 0)
-    else
-        btn:SetPoint('BOTTOMRIGHT', frame, 6,-6)
-    end
     btn:SetClampedToScreen(true)
+    Set_Enter(btn)
 
-    function btn:set_tooltip()
-        Set_Tooltip(self)
-    end
-
-    if tab.hideButton then
-        btn:SetAlpha(0)
-        frame:HookScript('OnEnter', function(self)
-            self.ResizeButton:SetAlpha(1)
-        end)
-        frame:HookScript('OnLeave', function(self)
-            self.ResizeButton:SetAlpha(0)
-        end)
-        btn:GetNormalTexture():SetVertexColor(0,1,0)
-    end
-    btn:SetScript('OnLeave', function(self)
-        GameTooltip_Hide()
-        ResetCursor()
-        if self.hideButton then self:SetAlpha(0) end
-    end)
-    btn:SetScript('OnEnter', function(self)
-        self:set_tooltip()
-        SetCursor("UI_RESIZE_CURSOR")
-        if self.hideButton then self:SetAlpha(1) end
-    end)
+    
 
 
 
