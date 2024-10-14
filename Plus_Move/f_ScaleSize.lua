@@ -18,7 +18,7 @@ end
 
 
 
---[[菜单
+--菜单
 local function Init_Menu(self, root)
     local sub
     sub=root:CreateCheckbox(
@@ -36,7 +36,7 @@ local function Init_Menu(self, root)
 --打开，选项
     root:CreateDivider()
     WoWTools_MenuMixin:OpenOptions(root, {category=WoWTools_MoveMixin.Category})
-end]]
+end
 
 
 
@@ -289,8 +289,8 @@ local function Set_OnMouseDown(self, d)
     end
     if IsShiftKeyDown() then
         if d=='RightButton' then
-            --MenuUtil.CreateContextMenu(self, Init_Menu)
-            e.OpenPanelOpting(WoWTools_MoveMixin.Category)--打开，选项
+            MenuUtil.CreateContextMenu(self, Init_Menu)
+            --e.OpenPanelOpting(WoWTools_MoveMixin.Category)--打开，选项
 
         elseif d=='LeftButton' then
             Clear_Point(self)--清除，位置，数据
@@ -520,7 +520,7 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
     local btn=_G['WoWToolsResizeButton'..name]
     if not btn then
         btn= CreateFrame('Button', _G['WoWToolsResizeButton'..name], frame, 'PanelResizeButtonTemplate')--SharedUIPanelTemplates.lua
-        btn:SetFrameLevel(9999)
+        btn:SetFrameLevel(frame:GetFrameLevel()+7)---9999)
         btn:SetSize(16, 16)
         if setResizeButtonPoint then
             btn:SetPoint(setResizeButtonPoint[1] or 'BOTTOMRIGHT', setResizeButtonPoint[2] or frame, setResizeButtonPoint[3] or 'BOTTOMRIGHT', setResizeButtonPoint[4] or 0, setResizeButtonPoint[5] or 0)
