@@ -77,6 +77,18 @@ Plus_Move\f_Move.lua
 Plus_Move\f_ScaleSize.lua
 Plus_Move\Options.lua
 
+Plus_Move\x_AchievementUI.lua
+Plus_Move\x_AuctionHouseUI.lua
+Plus_Move\x_ChallengesUI.lua
+Plus_Move\x_Collections.lua
+Plus_Move\x_DebugTools.lua
+Plus_Move\x_EncounterJournal.lua
+Plus_Move\x_Other.lua
+Plus_Move\x_PlayerSpells.lua
+Plus_Move\x_Professions.lua
+Plus_Move\x_ProfessionsCustomerOrders.lua
+Plus_Move\x_PVPUI.lua
+
 Plus_Move\z_CharacterFrame.lua
 Plus_Move\z_Class_Power.lua
 Plus_Move\z_Communities.lua
