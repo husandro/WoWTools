@@ -202,7 +202,8 @@ local function Set_Tooltip(self)
     else
         e.tips:AddLine(' ')
     end
-    e.tips:AddDoubleLine(e.onlyChinese and '选项' or OPTIONS, 'Shift+'..e.Icon.right)
+    e.tips:AddDoubleLine(e.onlyChinese and '菜单' or MAINMENU, 'Shift+'..e.Icon.right)
+    --e.tips:AddDoubleLine(e.onlyChinese and '选项' or OPTIONS, 'Shift+'..e.Icon.right)
 
     if self.notInCombat then
         e.tips:AddLine(' ')
