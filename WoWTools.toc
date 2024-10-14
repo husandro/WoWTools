@@ -71,7 +71,23 @@ Plus\Color.lua
 
 ##WoWPlus
 ##移动框架, 缩放--放在第一个，有些，需要放置点，到移动按钮上
-Plus\Frame.lua
+Plus_Move\0_Init.lua
+Plus_Move\f_Button.lua
+Plus_Move\f_Move.lua
+Plus_Move\f_ScaleSize.lua
+Plus_Move\Options.lua
+
+Plus_Move\z_Add_Button.lua
+Plus_Move\z_CharacterFrame.lua
+Plus_Move\z_Class_Power.lua
+Plus_Move\z_Communities.lua
+Plus_Move\z_FriendsFrame.lua
+Plus_Move\z_Other.lua
+Plus_Move\z_PVEFrame.lua
+Plus_Move\z_QuestFrame.lua
+Plus_Move\z_WorldMapFrame.lua
+
+
 ##隐藏材质，透明度
 Plus\Texture.lua
 ##物品信息，显示包里，和商人，物品信息，现仅支持系统

@@ -101,7 +101,7 @@ local function Init()
 
     e.Set_Alpha_Frame_Texture(border, {alpha=0.5})
     e.Set_Alpha_Frame_Texture(Header, {alpha=0.7})
-    e.Set_Move_Frame(Frame, {needMove=true, minW=370, minH=240, notFuori=true, setSize=true, sizeRestFunc=function(btn)
+    WoWTools_MoveMixin:Setup(Frame, {needMove=true, minW=370, minH=240, notFuori=true, setSize=true, sizeRestFunc=function(btn)
         btn.target:SetSize(580, 370)
     end})
 
@@ -479,7 +479,7 @@ local function Init()
         end
         frame= CreateFrame('Frame', 'Gossip_Text_Icon_Frame_IconSelectorPopupFrame', Frame, 'IconSelectorPopupFrameTemplate')
         frame.IconSelector:SetPoint('BOTTOMRIGHT', -10, 36)
-        e.Set_Move_Frame(frame, {notMove=true, setSize=true, minW=524, minH=276, maxW=524, sizeRestFunc=function(btn)
+        WoWTools_MoveMixin:Setup(frame, {notMove=true, setSize=true, minW=524, minH=276, maxW=524, sizeRestFunc=function(btn)
             btn.target:SetSize(524, 495)
         end})
 

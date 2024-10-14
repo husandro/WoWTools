@@ -122,7 +122,7 @@ local function Init()
     end
 
 
-    e.Set_Move_Frame(MailFrame, {setSize=true, needSize=true, needMove=true, minW=338, minH=424, initFunc=function(btn)
+    WoWTools_MoveMixin:Setup(MailFrame, {setSize=true, needSize=true, needMove=true, minW=338, minH=424, initFunc=function(btn)
         if Save().INBOXITEMS_TO_DISPLAY then
             INBOXITEMS_TO_DISPLAY= Save().INBOXITEMS_TO_DISPLAY
             Set_Inbox_Button()--显示，隐藏，建立，收件，物品    
@@ -144,7 +144,7 @@ local function Init()
         Set_Inbox_Button()--显示，隐藏，建立，收件，物品
         WoWTools_MailMixin:RefreshAll()
     end})
-    e.Set_Move_Frame(SendMailFrame, {frame=MailFrame})
+    WoWTools_MoveMixin:Setup(SendMailFrame, {frame=MailFrame})
 
 
 --收件人：

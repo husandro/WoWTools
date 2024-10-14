@@ -100,7 +100,7 @@ local function Init()
     end)
 
 --移动
-    e.Set_Move_Frame(MacroFrame, {needSize=true, setSize=true, minW=260, minH=250,
+    WoWTools_MoveMixin:Setup(MacroFrame, {needSize=true, setSize=true, minW=260, minH=250,
         sizeRestFunc=function(btn)
         btn.target:SetSize(338, 424)
     end})

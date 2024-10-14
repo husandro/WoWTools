@@ -92,7 +92,7 @@ function WoWTools_FrameMixin:Create(parent, tab)
 
     frame.width= w
     frame.height= h
-    e.Set_Move_Frame(frame, {
+    WoWTools_MoveMixin:Setup(frame, {
         needMove=true,
         minW=minW or 370,
         minH=minH or 240,
@@ -102,8 +102,8 @@ function WoWTools_FrameMixin:Create(parent, tab)
             btn.target:SetSize(btn.target.width, btn.target.height)
         end,
     })
-    e.Set_Move_Frame(frame.Header, {frame=frame})
-    e.Set_Move_Frame(frame.Border, {frame=frame})
+    WoWTools_MoveMixin:Setup(frame.Header, {frame=frame})
+    WoWTools_MoveMixin:Setup(frame.Border, {frame=frame})
 
    frame.Border:SetScript('OnKeyDown', function(f, key)
         if key=='ESCAPE' then

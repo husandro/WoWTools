@@ -1033,7 +1033,7 @@ local function Init()
     ItemSocketingFrame['SocketFrame-Right']:SetPoint('BOTTOMLEFT', ItemSocketingFrame, 'BOTTOM', 0, 26)
 
 
-    e.Set_Move_Frame(ItemSocketingFrame, {needSize=true, needMove=true, setSize=true, minW=338, minH=424, sizeRestFunc=function(btn)
+    WoWTools_MoveMixin:Setup(ItemSocketingFrame, {needSize=true, needMove=true, setSize=true, minW=338, minH=424, sizeRestFunc=function(btn)
         btn.target:SetSize(338, 424)
         set_point()
         panel:set_Gem()
@@ -1041,7 +1041,7 @@ local function Init()
         set_point()
         panel:set_Gem()
     end})
-    e.Set_Move_Frame(ItemSocketingScrollChild, {frame=ItemSocketingFrame})
+    WoWTools_MoveMixin:Setup(ItemSocketingScrollChild, {frame=ItemSocketingFrame})
 
     hooksecurefunc('ItemSocketingFrame_Update', Init_ItemSocketingFrame_Update)--宝石，数据
 

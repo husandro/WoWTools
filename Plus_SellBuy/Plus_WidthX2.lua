@@ -239,7 +239,7 @@ local function Init_WidthX2()
     MerchantFrameBottomLeftBorder:ClearAllPoints()--外框
     MerchantFrameBottomLeftBorder:SetPoint('BOTTOMRIGHT', 0, 26)
 
-    e.Set_Move_Frame(MerchantFrame, {setSize=true, needSize=true, needMove=true, minW=329, minH=402, sizeUpdateFunc= function()
+    WoWTools_MoveMixin:Setup(MerchantFrame, {setSize=true, needSize=true, needMove=true, minW=329, minH=402, sizeUpdateFunc= function()
             local w, h= MerchantFrame:GetSize()
             Save().numLine= max(5, math.floor((h-144)/52))
             MERCHANT_ITEMS_PER_PAGE= max(10, max(2, math.floor(((w-8)/161)))* Save().numLine)

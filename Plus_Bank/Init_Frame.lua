@@ -435,7 +435,7 @@ local function Init_AccountBankPanel()
     end
 
 --移动Frame    
-    e.Set_Move_Frame(AccountBankPanel, {frame=BankFrame})
+    WoWTools_MoveMixin:Setup(AccountBankPanel, {frame=BankFrame})
 
 --钱    
     AccountBankPanel.MoneyFrame.Border:Hide()

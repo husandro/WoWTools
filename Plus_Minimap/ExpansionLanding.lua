@@ -42,7 +42,7 @@ function WoWTools_MinimapMixin:Init_ExpansionLanding()
     elseif self.Save.moveExpansionLandingPageMinimapButton then
         ExpansionLandingPageMinimapButton:SetFrameStrata('TOOLTIP')
         C_Timer.After(2, function()
-            e.Set_Move_Frame(ExpansionLandingPageMinimapButton, {hideButton=true, needMove=true, click='RightButton', setResizeButtonPoint={
+            WoWTools_MoveMixin:Setup(ExpansionLandingPageMinimapButton, {hideButton=true, needMove=true, click='RightButton', setResizeButtonPoint={
                 nil, nil, nil, -2, 2
             }})
             C_Timer.After(8, function()--盟约图标停止闪烁

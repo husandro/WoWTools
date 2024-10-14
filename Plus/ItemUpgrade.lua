@@ -51,7 +51,7 @@ end
 
 
 local function Init_ItemInteractionFrame()
-    e.Set_Move_Frame(ItemInteractionFrame, {setSize=true, needSize=true, needMove=true, restSizeFunc=function(btn)
+    WoWTools_MoveMixin:Setup(ItemInteractionFrame, {setSize=true, needSize=true, needMove=true, restSizeFunc=function(btn)
 
     end})
    
