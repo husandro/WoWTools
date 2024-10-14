@@ -4,6 +4,39 @@ local function Save()
 end
 
 
+--清除，位置，数据
+local function Clear_Point(self)
+    if self.target.setMoveFrame and not self.target.notSave then--清除，位置，数据
+        Save().point[self.name]=nil
+        if self.restPointFunc then
+            self.restPointFunc(self)
+        elseif not self.notUpdatePositon then
+            e.call(UpdateUIPanelPositions, self.target)
+        end
+    end
+end
+
+
+
+--[[菜单
+local function Init_Menu(self, root)
+    local sub
+    sub=root:CreateCheckbox(
+        (Save().point[self.name] and '' or '|cff9e9e9e')
+        ..(e.onlyChinese and '清除位置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, CHOOSE_LOCATION:gsub(CHOOSE , ''))),
+    function()
+        return Save().point[self.name]
+    end, function()
+        Clear_Point(self)
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(self.name)
+    end)
+
+--打开，选项
+    root:CreateDivider()
+    WoWTools_MenuMixin:OpenOptions(root, {category=WoWTools_MoveMixin.Category})
+end]]
 
 
 
@@ -212,9 +245,12 @@ end
 
 
 local function Set_OnMouseUp(self, d)
+    self:SetScript("OnUpdate", nil)
+
     if not self.isActive or (self.notInCombat and UnitAffectingCombat('player')) or not self:CanChangeAttribute() then
         return
     end
+
     self.isActive= nil
     if d=='LeftButton' then--保存，缩放
         if self.scaleStoppedFunc then
@@ -224,6 +260,7 @@ local function Set_OnMouseUp(self, d)
         end
 
     elseif d=='RightButton' and self.setSize then--保存，大小
+
         local target = self.target
         local continueResizeStop = true
         if target.onResizeStopCallback then
@@ -238,7 +275,7 @@ local function Set_OnMouseUp(self, d)
             Save().size[self.name]= {self.target:GetSize()}
         end
     end
-    self:SetScript("OnUpdate", nil)
+    --self:SetScript("OnUpdate", nil)
 end
 
 
@@ -252,17 +289,11 @@ local function Set_OnMouseDown(self, d)
     end
     if IsShiftKeyDown() then
         if d=='RightButton' then
+            --MenuUtil.CreateContextMenu(self, Init_Menu)
             e.OpenPanelOpting(WoWTools_MoveMixin.Category)--打开，选项
 
         elseif d=='LeftButton' then
-            if self.target.setMoveFrame and not self.target.notSave then--清除，位置，数据
-                Save().point[self.name]=nil
-                if self.restPointFunc then
-                    self.restPointFunc(self)
-                elseif not self.notUpdatePositon then
-                    e.call(UpdateUIPanelPositions, self.target)
-                end
-            end
+            Clear_Point(self)--清除，位置，数据
         end
 
     elseif IsControlKeyDown() then
@@ -497,9 +528,9 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
             btn:SetPoint('BOTTOMRIGHT', frame, 6,-6)
         end
     end
-    
+
     frame.ResizeButton= btn
-    
+
     btn.target= btn.target or frame
     btn.name= name
 
@@ -542,10 +573,6 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
 
     btn:SetClampedToScreen(true)
     Set_Enter(btn)
-
-    
-
-
 
     btn.SOS = { --Scaler Original State
         dist = 0,
