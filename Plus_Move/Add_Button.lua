@@ -53,7 +53,7 @@ local function Create_Button(frame, name, click, setZoom)
     btn.click= click
 
     btn:SetPoint('BOTTOM', frame, 'TOP')
-    btn:SetFrameLevel(9999)
+    btn:SetFrameLevel(frame:GetFrameLevel()+7)-- 9999)
 
 
     btn:SetScript("OnEnter",function(self)
