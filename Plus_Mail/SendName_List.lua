@@ -396,23 +396,23 @@ local function Init_WoW(root)
     for i=1 ,BNGetNumFriends() do
         local wow= C_BattleNet.GetFriendAccountInfo(i) or {}
         local wowInfo= wow.gameAccountInfo
-        if wowInfo then
-            print(wowInfo.playerGuid)
-        end
         if wowInfo
             and wowInfo.playerGuid
             and wowInfo.wowProjectID==WOW_PROJECT_MAINLINE
             --and wowInfo.isOnline
         then
-            root:CreateButton(
-                WoWTools_UnitMixin:GetPlayerInfo({guid=wowInfo.playerGuid, reName=true, reRealm=true, level=wowInfo.characterLevel, faction=wowInfo.factionName})
-                ..(wowInfo.isOnline and '' or ('|cff9e9e9e'..((e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE))))
-                ..(wow.isFavorite and '|A:auctionhouse-icon-favorite:0:0|a' or ''),
-            function(data)
-                WoWTools_MailMixin:SetSendName(nil, data.guid)
-                return MenuResponse.Open
-            end, {guid=wowInfo.playerGuid})
-            num=num+1
+            local name= WoWTools_UnitMixin:GetFullName(wowInfo.characterName, nil, wowInfo.playerGuid)
+            if not WoWTools_MailMixin:GetRealmInfo(name) then
+                root:CreateButton(
+                    WoWTools_UnitMixin:GetPlayerInfo({guid=wowInfo.playerGuid, reName=true, reRealm=true, level=wowInfo.characterLevel, faction=wowInfo.factionName})
+                    ..(wowInfo.isOnline and '' or ('|cff9e9e9e'..((e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE))))
+                    ..(wow.isFavorite and '|A:auctionhouse-icon-favorite:0:0|a' or ''),
+                function(data)
+                    WoWTools_MailMixin:SetSendName(nil, data.guid)
+                    return MenuResponse.Open
+                end, {guid=wowInfo.playerGuid})
+                num=num+1
+            end
         end
     end
     WoWTools_MenuMixin:SetGridMode(root, num)
@@ -430,18 +430,68 @@ local function Init_Friend(root)
         local game= C_FriendList.GetFriendInfoByIndex(i) or {}
         local guid= game.guid
         if guid and not e.WoWDate[guid] then
-            root:CreateButton(
-                WoWTools_UnitMixin:GetPlayerInfo({guid=guid, reName=true, reRealm=true, level=game.level, faction=game.faction})
-                ..(game.connected and '' or ('|cff9e9e9e'..((e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE)))),
-            function(data)
-                WoWTools_MailMixin:SetSendName(nil, data.guid)
-                return MenuResponse.Open
-            end, {guid=guid})
-            num=num+1
+            local name= WoWTools_UnitMixin:GetFullName(nil, nil, guid)
+            if not WoWTools_MailMixin:GetRealmInfo(name) then
+                root:CreateButton(
+                    WoWTools_UnitMixin:GetPlayerInfo({guid=guid, reName=true, reRealm=true, level=game.level, faction=game.faction})
+                    ..(game.connected and '' or ('|cff9e9e9e'..((e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE)))),
+                function(data)
+                    WoWTools_MailMixin:SetSendName(nil, data.guid)
+                    return MenuResponse.Open
+                end, {guid=guid})
+                num=num+1
+            end
         end
     end
     WoWTools_MenuMixin:SetGridMode(root, num)
 end
+
+
+
+
+
+
+
+
+
+local function Init_Guild(root)
+    local num=0
+
+        for index=1, GetNumGuildMembers() do
+            local name, rankName, rankIndex, lv, _, zone, publicNote, officerNote, isOnline, status, _, _, _, _, _, _, guid = GetGuildRosterInfo(index)
+            --if name and guid and (isOnline or rankIndex<2 or (Save().show['GUILD'] and num<60)) and not e.WoWDate[guid] then
+            if name and guid and isOnline and not e.WoWDate[guid] and not WoWTools_MailMixin:GetRealmInfo(name) then
+                local text= WoWTools_UnitMixin:GetPlayerInfo({guid=guid, reName=true, reRealm=true, level=lv})--角色信息
+
+                if not isOnline then
+                    text= text..'|cff9e9e9e'..(e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE)..'|r'
+                end
+
+                if rankIndex == 0 then
+                    text= "|TInterface\\GroupFrame\\UI-Group-LeaderIcon:0|t"..text
+                elseif rankIndex == 1 then
+                    text= "|TInterface\\GroupFrame\\UI-Group-AssistantIcon:0|t"..text
+                end
+
+                text= rankName and text..' '..rankName..(rankIndex and ' '..rankIndex or '') or text
+
+                root:CreateButton(
+                    text,
+                function(data)
+                    WoWTools_MailMixin:SetSendName(nil, data.guid)
+                    return MenuResponse.Open
+                end, {guid=guid})
+                num=num+1
+                num= num+1
+            end
+        end
+end
+
+
+
+
+
+
 
 
 local function Init_Menu(_, root)
@@ -469,6 +519,15 @@ local function Init_Menu(_, root)
         return MenuResponse
     end)
     Init_Friend(sub)
+
+--公会
+    sub=root:CreateButton(
+        '|A:communities-guildbanner-background:0:0|a'..(e.onlyChinese and '公会' or GUILD),
+    function()
+        return MenuResponse
+    end)
+    Init_Guild(sub)
+
 end
 
 
