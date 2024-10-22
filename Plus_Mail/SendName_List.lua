@@ -364,7 +364,7 @@ local function Init_IsSelf(root)
 
     if num2>0 then
         root:CreateDivider()
-        for _, info in pairs(new2) do
+        for _, info in pairs(new2 or {}) do
             local guid=info.characterGUID
             if guid and not new[guid] then
                 root:CreateButton(
