@@ -6,6 +6,14 @@ end
 
 
 
+--保存，大小
+local function Save_Frame_Size(self)
+    if self.sizeStopFunc ~= nil then
+        self.sizeStopFunc(self)
+    else
+        Save().size[self.name]= {self.target:GetSize()}
+    end
+end
 
 
 
@@ -33,11 +41,7 @@ local function Set_ScalePercent(self, isSu)
 
     self.target:SetSize(w,h)
 
-    if self.sizeStopFunc ~= nil then
-        self.sizeStopFunc(self)
-    else
-        Save().size[self.name]= {self.target:GetSize()}
-    end
+    Save_Frame_Size(self)--保存，大小
 end
 
 
@@ -94,11 +98,7 @@ local function Init_Menu(self, root)
             end, setValue=function(value)
                 if self.target:CanChangeAttribute() then
                     self.target:SetWidth(value)
-                    if self.sizeStopFunc ~= nil then
-                        self.sizeStopFunc(self)
-                    else
-                        Save().size[self.name]= {self.target:GetSize()}
-                    end
+                    Save_Frame_Size(self)--保存，大小
                 end
             end,
             name='x',
@@ -115,11 +115,7 @@ local function Init_Menu(self, root)
             end, setValue=function(value)
                 if self.target:CanChangeAttribute() then
                     self.target:SetHeight(value)
-                    if self.sizeStopFunc ~= nil then
-                        self.sizeStopFunc(self)
-                    else
-                        Save().size[self.name]= {self.target:GetSize()}
-                    end
+                    Save_Frame_Size(self)--保存，大小
                 end
             end,
             name='y',
@@ -175,13 +171,6 @@ local function Init_Menu(self, root)
 --设置
         WoWTools_MenuMixin:OpenOptions(sub, {category=WoWTools_MoveMixin.Category, name=e.onlyChinese and '设置' or SETTINGS})
     end
-
-
---e.onlyChinese and '缩放' or UI_SCALE
---e.onlyChinese and '默认' or DEFAULT)
-
---(e.onlyChinese and '移动时透明度 ' or MAP_FADE_TEXT:gsub(WORLD_MAP, 'Frame'))..'|cnGREEN_FONT_COLOR:'..Save().alpha
---(e.onlyChinese and '大小' or HUD_EDIT_MODE_SETTING_ARCHAEOLOGY_BAR_SIZE
 
 --清除，位置，数据
     if not Save().disabledMove then
@@ -334,10 +323,6 @@ local function Set_Tooltip(self)
     scale= ((scale<=0.4 or scale>=2.5) and ' |cnRED_FONT_COLOR:' or ' |cnGREEN_FONT_COLOR:')..scale..' '
     e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE), scale..e.Icon.left)
 
-    --local col= Save().scale[self.name] and '' or '|cff9e9e9e'
-    --e.tips:AddDoubleLine(col..(e.onlyChinese and '默认' or DEFAULT), col..'Alt+'..e.Icon.left)
-
-
     if self.setSize then
         e.tips:AddLine(' ')
         local col
@@ -358,7 +343,6 @@ local function Set_Tooltip(self)
                 e.GetEnabeleDisable(not Save().disabledSize[self.name])..e.Icon.right
         )
 
-        --e.tips:AddDoubleLine(e.GetEnabeleDisable(true), 'Ctrl+'..e.Icon.right)
         if self.sizeTooltip then
             if type(self.sizeTooltip)=='function' then
                 self:sizeTooltip()
@@ -367,15 +351,7 @@ local function Set_Tooltip(self)
             end
         end
     end
-    --[[if self.target.setMoveFrame and not self.target.notSave then
-        local col2= Save().point[self.name] and '' or '|cff9e9e9e'
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(col2..(e.onlyChinese and '清除位置' or (SLASH_STOPWATCH_PARAM_STOP2..CHOOSE_LOCATION:gsub(CHOOSE , ''))), col2..'Shift+'..e.Icon.left)
-    else
-        e.tips:AddLine(' ')
-    end]]
 
-    --e.tips:AddDoubleLine(e.onlyChinese and '选项' or OPTIONS, 'Shift+'..e.Icon.right)
     e.tips:AddLine(' ')
     if self.set_move_event then--Frame 移动时，设置透明度
         e.tips:AddDoubleLine(
@@ -387,6 +363,7 @@ local function Set_Tooltip(self)
     e.tips:AddDoubleLine(e.onlyChinese and '菜单' or MAINMENU, e.Icon.mid)
 
     if self.notInCombat then
+        e.tips:AddLine(' ')
         e.tips:AddLine(e.onlyChinese and '请不要在战斗中操作' or 'Please don\'t do it in combat')
     end
     e.tips:Show()
@@ -448,11 +425,7 @@ local function Set_OnMouseUp(self, d)
         if continueResizeStop then
             self.target:StopMovingOrSizing()
         end
-        if self.sizeStopFunc ~= nil then
-            self.sizeStopFunc(self)
-        else
-            Save().size[self.name]= {self.target:GetSize()}
-        end
+        Save_Frame_Size(self)--保存，大小
     end
     --self:SetScript("OnUpdate", nil)
 end
@@ -467,93 +440,55 @@ local function Set_OnMouseDown(self, d)
         return
     end
 
-    --[[if IsAltKeyDown() then
-        --if d=='RightButton' then
-            MenuUtil.CreateContextMenu(self, Init_Menu)
-            --e.OpenPanelOpting(WoWTools_MoveMixin.Category)--打开，选项
-
-        --elseif d=='LeftButton' then
-            --Clear_Point(self)--清除，位置，数据
-        --end
-
-    elseif IsControlKeyDown() then
-        if (self.setSize or self.disabledSize) and d=='RightButton' then--禁用，启用，大小，功能
-            Save().disabledSize[self.name]= not Save().disabledSize[self.name] and true or nil
-            print(e.addName, WoWTools_MoveMixin.addName, e.GetEnabeleDisable(not Save().disabledSize[self.name]), self.name, e.onlyChinese and '大小' or HUD_EDIT_MODE_SETTING_ARCHAEOLOGY_BAR_SIZE, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
-        end]]
-
     if d=='LeftButton' then
-
-        --[[if IsAltKeyDown() then--清除，缩放，数据
-            self.target:SetScale(1)
-            Save().scale[self.name]=nil
-            if self.scaleRestFunc then
-                self.scaleRestFunc(self)
+        self.isActive= true
+        local target= self.target
+        self.SOS.left, self.SOS.top = target:GetLeft(), target:GetTop()
+        self.SOS.scale = target:GetScale()
+        self.SOS.x, self.SOS.y = self.SOS.left, self.SOS.top-(UIParent:GetHeight()/self.SOS.scale)
+        self.SOS.EFscale = target:GetEffectiveScale()
+        self.SOS.dist = GetScaleDistance(self.SOS)
+        self:SetScript("OnUpdate", function(frame2)
+            local SOS= frame2.SOS
+            local distance= GetScaleDistance(SOS)
+            local scale2 = distance/SOS.dist*SOS.scale
+            if scale2 < 0.4 then -- clamp min and max scale
+                scale2 = 0.4
+            elseif scale2 > 2.5 then
+                scale2 = 2.5
             end
-            if not self.notUpdatePositon then
-                e.call(UpdateUIPanelPositions, self.target)
-            end]]
+            scale2= tonumber(format('%.2f', scale2))
+            local target2= frame2.target
+            target2:SetScale(scale2)
 
-        --if not IsModifierKeyDown() then--开始，设置，缩放
-            self.isActive= true
-            local target= self.target
-            self.SOS.left, self.SOS.top = target:GetLeft(), target:GetTop()
-            self.SOS.scale = target:GetScale()
-            self.SOS.x, self.SOS.y = self.SOS.left, self.SOS.top-(UIParent:GetHeight()/self.SOS.scale)
-            self.SOS.EFscale = target:GetEffectiveScale()
-            self.SOS.dist = GetScaleDistance(self.SOS)
-            self:SetScript("OnUpdate", function(frame2)
-                local SOS= frame2.SOS
-                local distance= GetScaleDistance(SOS)
-                local scale2 = distance/SOS.dist*SOS.scale
-                if scale2 < 0.4 then -- clamp min and max scale
-                    scale2 = 0.4
-                elseif scale2 > 2.5 then
-                    scale2 = 2.5
-                end
-                scale2= tonumber(format('%.2f', scale2))
-                local target2= frame2.target
-                target2:SetScale(scale2)
-
-                local s = SOS.scale/target:GetScale()
-                local x = SOS.x*s
-                local y = SOS.y*s
-                target2:ClearAllPoints()
-                target2:SetPoint("TOPLEFT", UIParent, "TOPLEFT", x, y)
-                Set_Tooltip(frame2)
-                if frame2.scaleUpdateFunc then
-                    frame2.scaleUpdateFunc(frame2)
-                end
-            end)
-       -- end
+            local s = SOS.scale/target:GetScale()
+            local x = SOS.x*s
+            local y = SOS.y*s
+            target2:ClearAllPoints()
+            target2:SetPoint("TOPLEFT", UIParent, "TOPLEFT", x, y)
+            Set_Tooltip(frame2)
+            if frame2.scaleUpdateFunc then
+                frame2.scaleUpdateFunc(frame2)
+            end
+        end)
 
     elseif d=='RightButton' and self.setSize and not Save().disabledSize[self.name] and not IsModifierKeyDown() then
 --开始，设置，大小
-        --[[if IsAltKeyDown() then--清除，大小，数据
-            Save().size[self.name]=nil
-            if self.sizeRestFunc then--还原
-                self.sizeRestFunc(self)
+        self.isActive = true
+        local continueResizeStart = true
+        if self.target.onResizeStartCallback then
+            continueResizeStart = self.target.onResizeStartCallback(self)
+        end
+        if continueResizeStart then
+            self.target:SetResizable(true)
+            self.target:StartSizing("BOTTOMRIGHT", true)
+        end
+        self:SetScript('OnUpdate', function(f)
+            Set_Tooltip(f)
+            if f.sizeUpdateFunc then
+                f.sizeUpdateFunc(f)
             end
-            if not self.notUpdatePositon then
-                e.call(UpdateUIPanelPositions, self.target)
-            end
-
-        elseif not IsModifierKeyDown() then]]
-            self.isActive = true
-            local continueResizeStart = true
-            if self.target.onResizeStartCallback then
-                continueResizeStart = self.target.onResizeStartCallback(self)
-            end
-            if continueResizeStart then
-                self.target:SetResizable(true)
-                self.target:StartSizing("BOTTOMRIGHT", true)
-            end
-            self:SetScript('OnUpdate', function(f)
-                Set_Tooltip(f)
-                if f.sizeUpdateFunc then
-                    f.sizeUpdateFunc(f)
-                end
-            end)
+        end)
     end
 
     Set_Tooltip(self)
@@ -568,34 +503,6 @@ end
 
 
 
-
-
-
-
-
-
-
---[[是否设置，移动时，设置透明度
-local function Set_OnMouseWheel(self, d)
-    if self.notInCombat and UnitAffectingCombat('player') or not self:CanChangeAttribute() then
-        return
-    end
-    local col
-    if d==1 then
-        Save().disabledAlpha[self.name]= true
-        col= '|cff9e9e9e'
-    else
-        Save().disabledAlpha[self.name]= nil
-        col= '|cnGREEN_FONT_COLOR:'
-    end
-    print(e.addName, WoWTools_MoveMixin.addName, e.GetEnabeleDisable(not Save().disabledAlpha[self.name]),
-        '|cffff00ff'..self.name..'|r|n',
-        col..(e.onlyChinese and '当你开始移动时，Frame变为透明状态。' or OPTION_TOOLTIP_MAP_FADE:gsub(string.lower(WORLD_MAP), 'Frame')),
-        Save().alpha
-    )
-    self:set_move_event()
-    Set_Tooltip(self)
-end]]
 
 
 
@@ -683,11 +590,10 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
 
     local setResizeButtonPoint= tab.setResizeButtonPoint--设置，按钮，位置
     local setSize= tab.setSize
-    --local disabledSize= Save().disabledSize[name]
     local onShowFunc= tab.onShowFunc-- true, function
 
-    local minW= tab.minW or 115--(e.Player.husandro and 115 or frame:GetWidth()/2)--最小窗口， 宽
-    local minH= tab.minH or 115--(e.Player.husandro and 115 or frame:GetHeight()/2)--最小窗口，高
+    local minW= tab.minW or 115--最小窗口， 宽
+    local minH= tab.minH or 115--最小窗口，高
     local maxW= tab.maxW--最大，可无
     local maxH= tab.maxH--最大，可无
 
@@ -718,8 +624,7 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
     btn.scaleUpdateFunc= tab.scaleUpdateFunc
     btn.scaleRestFunc= tab.scaleRestFunc--清除，数据
     btn.restPointFunc= tab.restPointFunc--还原，（清除，位置，数据）
-    btn.alpha= tab.alpha--设置透明度为0，移到frame设置为1，
-    --btn.disabledSize= disabledSize or not setSize--禁用，大小功能
+    btn.alpha= tab.alpha--设置透明度为0，移到frame设置为1
     btn.setSize= setSize --and not disabledSize--是否有，设置大小，功能    
     btn.notInCombat= tab.notInCombat--战斗中，禁止操作
     btn.notUpdatePositon= tab.notUpdatePositon

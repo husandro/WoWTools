@@ -838,7 +838,8 @@ local function Create_Texture_Tips(btn, data)--atlas, coord)
     if data and not btn.Texture then
         btn.Texture= btn:CreateTexture(nil, 'BORDER')
         btn.Texture:SetSize(26, 26)--200, 36
-        btn.Texture:SetPoint('LEFT', btn, 'RIGHT', -6,0)
+        btn.Texture:SetPoint('RIGHT', btn, 'LEFT', 6,0)
+        --btn.Texture:SetPoint('LEFT', btn, 'RIGHT', -6,0)
     end
     if btn.Texture then
         if data and data[1] then
