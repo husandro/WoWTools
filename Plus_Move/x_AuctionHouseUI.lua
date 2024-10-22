@@ -23,10 +23,11 @@ local function Init()
 
     hooksecurefunc(AuctionHouseFrame, 'SetDisplayMode', function(self, mode)
         local size= Save().size[self:GetName()]
-        if not size then
+        local btn= self.ResizeButton
+        if not size or not btn then
             return
         end
-        local btn= self.ResizeButton
+        
         if mode==AuctionHouseFrameDisplayMode.ItemSell or mode==AuctionHouseFrameDisplayMode.CommoditiesSell then
             self:SetSize(800, 538)
             btn.minWidth = 800

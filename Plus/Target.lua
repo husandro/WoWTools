@@ -1245,7 +1245,7 @@ local function set_Option()
     end)
 
     local numSize = e.CSlider(panel, {min=8, max=72, value=Save.creatureFontSize, setp=1, w=100, color=true,
-    text= e.Player.L.size,
+    text= e.onlyChinese and '字体大小' or FONT_SIZE,
     func=function(self2, value)--字体大小
         value= math.floor(value)
         self2:SetValue(value)
@@ -1475,7 +1475,7 @@ local function set_Option()
     unitIsMeY:SetPoint("LEFT", unitIsMeX, 'RIGHT',15,0)
 
     local unitIsMeSize = e.CSlider(panel, {min=2, max=64, value=Save.unitIsMeSize, setp=1, w= 100, color=false,
-    text= e.onlyChinese and '大小' or 'size',
+    text= e.onlyChinese and '大小' or HUD_EDIT_MODE_SETTING_ARCHAEOLOGY_BAR_SIZE,
     func=function(self2, value)
         value= math.floor(value)
         self2:SetValue(value)

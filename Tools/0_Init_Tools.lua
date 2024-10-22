@@ -225,7 +225,7 @@ local function Init_Menu(self, root)
         self:set_size()
     end)
     sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine(e.onlyChinese and '大小' or 'Size')
+        tooltip:AddLine(e.onlyChinese and '大小' or HUD_EDIT_MODE_SETTING_ARCHAEOLOGY_BAR_SIZE)
     end)
 
     sub2=sub:CreateCheckbox('|A:'..e.Icon.icon..':0:0|a'..(e.onlyChinese and '图标' or EMBLEM_SYMBOL), function()

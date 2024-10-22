@@ -155,11 +155,21 @@ function e.GetShowHide(sh, all)
 	end
 end
 
-function e.GetEnabeleDisable(ed)--启用或禁用字符
-    if ed then
-        return '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '启用' or ENABLE)..'|r'
+function e.GetEnabeleDisable(ed, all)--启用或禁用字符
+    if all then
+        if ed==nil then
+            return e.onlyChinese and '启用/禁用' or (ENABLE..'/'..DISABLE)
+        elseif ed==true then
+            return e.onlyChinese and '|cnGREEN_FONT_COLOR:启用|r/禁用' or ('|cnGREEN_FONT_COLOR:'..ENABLE..'|r/'..DISABLE)
+        else
+            return e.onlyChinese and '启用/|cnRED_FONT_COLOR:禁用|r' or (ENABLE..'/|cnRED_FONT_COLOR:'..DISABLE..'|r')
+        end
     else
-        return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE)..'|r'
+        if ed then
+            return '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '启用' or ENABLE)..'|r'
+        else
+            return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE)..'|r'
+        end
     end
 end
 

@@ -72,7 +72,7 @@ local function Create_WorldBoss_Button(frame)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.GetShowHide(not Save().hideInstanceBossText), e.Icon.left)
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
-        e.tips:AddDoubleLine(e.Player.L.size, (Save().InsFontSize or 12)..e.Icon.mid)
+        e.tips:AddDoubleLine(e.onlyChinese and '字体大小' or FONT_SIZE, (Save().InsFontSize or 12)..e.Icon.mid)
         e.tips:Show()
     end
     btn:SetScript('OnLeave', GameTooltip_Hide)

@@ -32,7 +32,7 @@ local function initFunc()
     end)
     ProfessionsCustomerOrdersFrame.Form:HookScript('OnHide', function(self)
         local frame= self:GetParent()
-        if frame.ResizeButton.disabledSize then
+        if not frame.ResizeButton or frame.ResizeButton.disabledSize then
             return
         end
         frame.ResizeButton.setSize=true

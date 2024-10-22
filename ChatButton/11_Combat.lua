@@ -581,7 +581,9 @@ local function Init_Menu(self, root)
         C_Timer.After(3, function()
             CombatButton:set_Sacle_InCombat(UnitAffectingCombat('player'))
         end)
-    end, function()
+    end,
+    nil,
+    function()
         return Save.combatScale
     end, function()
         Save.combatScale= not Save.combatScale and true or nil

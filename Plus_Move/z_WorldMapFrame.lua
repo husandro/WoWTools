@@ -28,6 +28,9 @@ end
 
 local function Init()
     hooksecurefunc(WorldMapFrame, 'Minimize', function(self)
+        if not self.ResizeButton then
+            return
+        end
         local name= self:GetName()
         local size= Save().size[name]
         if size then
@@ -41,11 +44,16 @@ local function Init()
         self.ResizeButton:SetShown(true)
     end)
     hooksecurefunc(WorldMapFrame, 'Maximize', function(self)
+        if not self.ResizeButton then
+            return
+        end
         set_min_max_value()
         if Save().scale[self:GetName()] then
             self:SetScale(1)
         end
-        self.ResizeButton:SetShown(false)
+        if self.ResizeButton then
+            self.ResizeButton:SetShown(false)
+        end
     end)
 
     WoWTools_MoveMixin:Setup(WorldMapFrame, {

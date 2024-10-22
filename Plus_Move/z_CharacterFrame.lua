@@ -74,6 +74,9 @@ local function Init()
     TokenFrame.ScrollBox:SetPoint('BOTTOMRIGHT', TokenFrame , -22, 2)
 
     hooksecurefunc(CharacterFrame, 'UpdateSize', function(self)
+        if not self.ResizeButton then
+            return
+        end
         local size
         if self.Expanded then
             self.ResizeButton.minWidth=450

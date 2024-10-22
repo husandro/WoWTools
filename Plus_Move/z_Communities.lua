@@ -6,6 +6,9 @@ end
 
 local function set_size(frame)
     local self= frame:GetParent()
+        if not self.ResizeButton then
+        return
+    end
     local size, scale
     local displayMode = self:GetDisplayMode();
     if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then

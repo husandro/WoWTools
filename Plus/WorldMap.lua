@@ -268,12 +268,12 @@ local function CursorPositionInt()
         end
      end)
     PostionButton:SetScript("OnMouseUp", ResetCursor)
-    PostionButton:SetScript('OnClick', function(self, d)
+    PostionButton:SetScript('OnClick', function(_, d)
         if d=='LeftButton' and not IsModifierKeyDown() then
             sendPlayerPoint()--发送玩家位置
         end
     end)
-    PostionButton:SetScript("OnEnter",function(self)
+    function PostionButton:set_tooltip()
         e.tips:ClearLines()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:AddDoubleLine(e.addName, addName2)
@@ -282,10 +282,11 @@ local function CursorPositionInt()
         can= C_Map.GetBestMapForUnit("player")
         can= can and C_Map.CanSetUserWaypointOnMap(can)
         e.tips:AddDoubleLine('|A:Waypoint-MapPin-ChatIcon:0:0|a'..(e.onlyChinese and '发送位置' or RESET_POSITION:gsub(RESET, SEND_LABEL)), (not can and GetMinimapZoneText() or not can and '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE)..'|r' or '') ..e.Icon.left)
-        e.tips:AddDoubleLine(e.Player.L.size..' '..(Save.PlayerXYSize or 12), 'alt+'..e.Icon.mid)
+        e.tips:AddDoubleLine((e.onlyChinese and '字体大小' or FONT_SIZE)..' '..(Save.PlayerXYSize or 12), 'alt+'..e.Icon.mid)
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'alt+'..e.Icon.right)
         e.tips:Show()
-    end)
+    end
+    PostionButton:SetScript("OnEnter", PostionButton.set_tooltip)
     PostionButton:SetScript("OnLeave", function()
         e.tips:Hide()
         ResetCursor()
@@ -305,7 +306,7 @@ local function CursorPositionInt()
         end
         Save.PlayerXYSize=size
         WoWTools_LabelMixin:Create(nil, {size=size, changeFont=self.Text, color=true})
-        print(e.addName,e.cn(addName), e.Player.L.size, size)
+        self:set_tooltip()
     end)
 
     PostionButton.Text=WoWTools_LabelMixin:Create(PostionButton, {size=Save.PlayerXYSize, color=true})

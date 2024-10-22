@@ -130,7 +130,8 @@ local function Init_UIWidgetPowerBarContainerFrame()--移动, 能量条
     end
 
     SetupButton(frame)
-    if frame.WoWToolsMoveButton or frame.ResizeButton then
+
+    if frame.WoWToolsMoveButton then
         local find=false
         for _, f in pairs(frame.widgetFrames or {}) do
             if f then

@@ -177,61 +177,51 @@ end)]]
 if LOCALE_zhCN then
     e.Player.L= {
         layer='位面',
-        size='大小',
         key='关键词',
     }
 elseif LOCALE_zhTW then
     e.Player.L={
         layer='位面',
-        size='大小',
         key='關鍵詞',
     }
 elseif LOCALE_koKR then
     e.Player.L={
         layer='층',
-        size='크기',
         key='키워드',
     }
 elseif LOCALE_frFR then
     e.Player.L={
         layer='Couche',
-        size='Taille',
         key='Mots clés',
     }
 elseif LOCALE_deDE then
     e.Player.L={
         layer='Schicht',
-        size='Größe',
         key='Schlüsselwörter',
     }
 elseif LOCALE_esES or LOCALE_esMX then--西班牙语
     e.Player.L={
         layer='Capa',
-        size='Tamaño',
         key='Palabras clave',
     }
 elseif LOCALE_ruRU then
     e.Player.L={
         layer='слой',
-        size='Размер',
         key='Ключевые слова',
     }
 elseif LOCALE_ptBR then--葡萄牙语
     e.Player.L={
         layer='Camada',
-        size='Tamanho',
         key='Palavras-chave',
     }
 elseif LOCALE_itIT then
     e.Player.L={
         layer='Strato',
-        size='Misurare',
         key='Parole chiave',
     }
 else
     e.Player.L={
         layer= 'Layer',
-        size= 'Size',
         key='Key words',
     }
 end

@@ -64,6 +64,7 @@ local function Init_Panel()
             tooltip= addName,
             category= Initializer,
             SetValue= function(_, _, value2)
+                if not value2 then return end
                 Save().cursorX= e.GetFormatter1to10(value2, -200, 200)
                 set_Cursor_Tips()
             end
@@ -79,6 +80,7 @@ local function Init_Panel()
             tooltip= addName,
             category= Initializer,
             SetValue= function(_, _, value2)
+                if not value2 then return end
                 Save().cursorY= e.GetFormatter1to10(value2, -200, 200)
                 set_Cursor_Tips()
             end
@@ -148,7 +150,7 @@ local function Init_Panel()
     initializer:SetParentInitializer(initializer2, function() if Save().hideModel then return false else return true end end)
 ]]
     initializer= e.AddPanelSider({
-        name= e.Player.L.size,
+        name= e.onlyChinese and '大小' or HUD_EDIT_MODE_SETTING_BAGS_SIZE,
         GetValue= function() return Save().modelSize or 100 end,
         minValue= 40,
         maxValue= 300,
@@ -156,6 +158,7 @@ local function Init_Panel()
         tooltip= addName,
         category= Initializer,
         SetValue= function(_, _, value2)
+            if not value2 then return end
             Save().modelSize= e.GetFormatter1to10(value2, 40, 300)
             set_Cursor_Tips()
         end
@@ -171,6 +174,7 @@ local function Init_Panel()
         tooltip= addName,
         category= Initializer,
         SetValue= function(_, _, value2)
+            if not value2 then return end
             Save().modelX= e.GetFormatter1to10(value2, -200, 200)
             set_Cursor_Tips()
         end
@@ -186,6 +190,7 @@ local function Init_Panel()
         tooltip= addName,
         category= Initializer,
         SetValue= function(_, _, value2)
+            if not value2 then return end
             Save().modelY= e.GetFormatter1to10(value2, -200, 200)
             set_Cursor_Tips()
         end
@@ -201,6 +206,7 @@ local function Init_Panel()
         tooltip= addName,
         category= Initializer,
         SetValue= function(_, _, value2)
+            if not value2 then return end
             Save().modelFacing= e.GetFormatter1to10(value2, -1, 1)
             set_Cursor_Tips()
         end

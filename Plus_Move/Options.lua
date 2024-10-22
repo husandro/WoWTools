@@ -80,7 +80,7 @@ local function Init_Options()
                 ..('|A:UI-HUD-Minimap-Zoom-In:0:0|a'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)),
                 button1 = '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '缩放' or UI_SCALE),
                 button2 = e.onlyChinese and '取消' or CANCEL,
-                button3=  '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '大小' or 'Size'),
+                button3=  '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '大小' or HUD_EDIT_MODE_SETTING_ARCHAEOLOGY_BAR_SIZE),
                 whileDead=true, hideOnEscape=true, exclusive=true,
                 OnAccept=function()
                     Save().scale={}
@@ -89,7 +89,7 @@ local function Init_Options()
                 OnAlt=function()
                     Save().size={}
                     Save().disabledSize={}
-                    print(e.addName, WoWTools_MoveMixin.addName, e.onlyChinese and '大小' or 'Size', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
+                    print(e.addName, WoWTools_MoveMixin.addName, e.onlyChinese and '大小' or HUD_EDIT_MODE_SETTING_ARCHAEOLOGY_BAR_SIZE, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
                 end,
             }
             StaticPopup_Show(WoWTools_MoveMixin.addName..'MoveZoomClearZoom')
@@ -113,8 +113,10 @@ local function Init_Options()
         minValue= 0,
         maxValue= 0.9,
         step= 0.1,
-        sliderSetValue= function(a, b, value2)
-            Save().alpha= e.GetFormatter1to10(value2, 0, 1)
+        sliderSetValue= function(_, _, value2)
+            if value2 then
+                Save().alpha= e.GetFormatter1to10(value2, 0, 1)
+            end
         end,
         layout= Layout,
         category= Category,

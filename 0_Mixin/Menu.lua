@@ -2,7 +2,7 @@
 CreateSlider(root, tab)
 ScaleRoot
 ScaleCheck
-Scale(root, GetValue, SetValue, checkGetValue, checkSetValue)
+Scale
 
 ShowBackground(root, GetValue, SetValue)
 FrameStrata(root, GetValue, SetValue)
@@ -129,7 +129,7 @@ sub:CreateSpacer()
 
 
 --缩放, 单行
-function WoWTools_MenuMixin:ScaleRoot(root, GetValue, SetValue)
+function WoWTools_MenuMixin:ScaleRoot(root, GetValue, SetValue, ResetValue)
     root:CreateSpacer()
     local sub= self:CreateSlider(root, {
         getValue=GetValue,
@@ -156,8 +156,11 @@ function WoWTools_MenuMixin:ScaleRoot(root, GetValue, SetValue)
         if data.setValue then
             data.setValue(1)
         end
-        return MenuResponse.Open
-    end, {setValue=SetValue})
+        if data.resetValue then
+            data.resetValue()
+        end
+        return MenuResponse.Refresh
+    end, {setValue=SetValue, resetValue=ResetValue})
 
     return sub
 end
@@ -166,22 +169,32 @@ end
 
 
 --缩放, 加check
-function WoWTools_MenuMixin:ScaleCheck(root, GetValue, SetValue, checkGetValue, checkSetValue)
-    local sub= root:CreateCheckbox('|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '缩放' or UI_SCALE), checkGetValue, checkSetValue)
+function WoWTools_MenuMixin:ScaleCheck(root, GetValue, SetValue, ResetValue, checkGetValue, checkSetValue)
+    local sub= root:CreateCheckbox(
+        '|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '缩放' or UI_SCALE),
+        checkGetValue,
+        checkSetValue,
+        {checkGetValue=checkGetValue}
+    )
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(e.GetEnabeleDisable(nil, true))
+    end)
 
-    local sub2= self:ScaleRoot(sub, GetValue, SetValue)
-
+    local sub2= self:ScaleRoot(sub, GetValue, SetValue, ResetValue)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine(e.GetEnabeleDisable(nil, true))
+    end)
     return sub2, sub
 end
 
 
 --缩放
-function WoWTools_MenuMixin:Scale(root, GetValue, SetValue)
+function WoWTools_MenuMixin:Scale(root, GetValue, SetValue, ResetValue)
     local sub= root:CreateButton('|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '缩放' or UI_SCALE), function()
-        return MenuResponse.Open
+        return MenuResponse.Refresh
     end)
 
-    local sub2= self:ScaleRoot(sub, GetValue, SetValue)
+    local sub2= self:ScaleRoot(sub, GetValue, SetValue, ResetValue)
     return sub2, sub
 end
 --[[
@@ -201,7 +214,7 @@ end)
 --FrameStrata
 function WoWTools_MenuMixin:FrameStrata(root, GetValue, SetValue)
     local sub=root:CreateButton('|A:Garr_SwapIcon:0:0:|a'..(e.onlyChinese and '框架层' or 'Strata'), function()
-        return MenuResponse.Open
+        return MenuResponse.Refresh
     end)
 
     for _, strata in pairs({'BACKGROUND','LOW','MEDIUM','HIGH','DIALOG','FULLSCREEN','FULLSCREEN_DIALOG'}) do
@@ -281,7 +294,7 @@ function WoWTools_MenuMixin:RestData(root, name, SetValue)
     return root:CreateButton('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT), function(data)
 
         StaticPopup_Show('WoWTools_RestData',data.name, nil, data.SetValue)
-        return MenuResponse.Open
+        return MenuResponse.Refresh
     end, {name=name, SetValue=SetValue})
 end
 
@@ -394,7 +407,7 @@ function WoWTools_MenuMixin:OpenJournal(root, tab)
             end
         end
 
-        return MenuResponse.Open
+        return MenuResponse.Refresh
     end, tab)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(MicroButtonTooltipText(e.onlyChinese and '打开战团藏品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, COLLECTIONS), "TOGGLECOLLECTIONS"))
@@ -436,7 +449,7 @@ function WoWTools_MenuMixin:OpenSpellBook(root, tab)--天赋和法术书
             end
         end
 
-        return MenuResponse.Open
+        return MenuResponse.Refresh
     end, tab)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(MicroButtonTooltipText(e.onlyChinese and '天赋和法术书' or PLAYERSPELLS_BUTTON, "TOGGLETALENTS"))
@@ -476,7 +489,7 @@ function WoWTools_MenuMixin:OpenDragonriding(root)
                 Constants.MountDynamicFlightConsts.TRAIT_SYSTEM_ID,
                 Constants.MountDynamicFlightConsts.TREE_ID
             )
-            return MenuResponse.Open
+            return MenuResponse.Refresh
         end,
         {widgetSetID=uiWidgetSetID, tooltip=e.onlyChinese and '巨龙群岛概要' or DRAGONFLIGHT_LANDING_PAGE_TITLE}
     )
@@ -508,7 +521,7 @@ function WoWTools_MenuMixin:OpenOptions(root, tab)
             end
             e.OpenPanelOpting(category, name)
         end
-        return MenuResponse.Open
+        return MenuResponse.Refresh
     end, {name=name, name2=name2, GetCategory=GetCategory})
 
     sub:SetTooltip(function(tooltip, description)
@@ -547,7 +560,7 @@ function WoWTools_MenuMixin:ClearAll(root, SetValue)
             nil,
             {SetValue=data.SetValue}
         )
-        return MenuResponse.Open
+        return MenuResponse.Refresh
     end, {SetValue=SetValue})
 
 

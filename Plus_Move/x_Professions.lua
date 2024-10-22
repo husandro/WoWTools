@@ -76,6 +76,9 @@ local function initFunc()
     end
     
     local function set_on_show(self)
+        if not self.ResizeButton then
+            return
+        end
         C_Timer.After(0.3, function()
             local size, scale
             local name= self:GetName()

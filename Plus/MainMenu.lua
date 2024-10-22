@@ -1237,8 +1237,10 @@ local function Init_Options()--初始, 选项
         tooltip= e.cn(addName),
         category= Category,
         SetValue= function(_, _, value2)
-            Save.size=value2
-            Init_Plus()
+            if value2 then
+                Save.size=value2
+                Init_Plus()
+            end
         end
     })
     initializer:SetParentInitializer(initializer2, function() if Save.plus then return true else return false end end)
@@ -1256,8 +1258,10 @@ local function Init_Options()--初始, 选项
         maxValue= 0.9,
         step= 0.1,
         sliderSetValue= function(_, _, value2)
-            Save.mainMenuAlphaValue= e.GetFormatter1to10(value2, 0, 1)
-            Init_MainMenu()
+            if value2 then
+                Save.mainMenuAlphaValue= e.GetFormatter1to10(value2, 0, 1)
+                Init_MainMenu()
+            end
         end,
         layout= Layout,
         category= Category,

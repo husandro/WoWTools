@@ -436,7 +436,10 @@ end
 
 --添加，Check 和 划条
 function e.GetFormatter1to10(value, minValue, maxValue)
-    return RoundToSignificantDigits(((value-minValue)/(maxValue-minValue) * (maxValue- minValue)) + minValue, maxValue)
+    if value and minValue and maxValue then
+        return RoundToSignificantDigits(((value-minValue)/(maxValue-minValue) * (maxValue- minValue)) + minValue, maxValue)
+    end
+    return value
 end
 --[[local function GetFormatter1to10(minValue, maxValue)
     return function(value)
@@ -473,7 +476,7 @@ function e.AddPanel_Check_Sider(tab)
 
     local options = Settings.CreateSliderOptions(tab.minValue, tab.maxValue, tab.step);
     options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right, function(value)
-        return e.GetFormatter1to10(value, 0, 1)
+       return e.GetFormatter1to10(value or 1, 0, 1)
     end)
 
     local initializer = CreateSettingsCheckboxSliderInitializer(
@@ -508,7 +511,7 @@ function e.AddPanelSider(tab)
 
     local options = Settings.CreateSliderOptions(tab.minValue, tab.maxValue, tab.setp);
     options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right, function(value)
-        return e.GetFormatter1to10(value, 0, 1)
+        return e.GetFormatter1to10(value or 1, 0, 1)
     end)
 
     local initializer=Settings.CreateSlider(tab.category or Category, setting, options, tab.tooltip);
@@ -800,7 +803,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if e.onlyChinese then
                 e.Player.L= {
                     layer='位面',
-                    size='大小',
                     key='关键词',
                 }
             end

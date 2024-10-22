@@ -2773,9 +2773,10 @@ local function Init_Options()
         tooltip= e.cn(addName),
         category= Category,
         SetValue= function(_, _, value2)
-            Save.alpha= e.GetFormatter1to10(value2, 0, 1)
-            --Init()
-            print(e.addName, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            if value2 then
+                Save.alpha= e.GetFormatter1to10(value2, 0, 1)
+                print(e.addName, e.cn(addName), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            end
         end
     })
     initializer:SetParentInitializer(initializer2, function() if Save.disabled then return false else return true end end)
@@ -2806,8 +2807,10 @@ local function Init_Options()
         tooltip= e.cn(addName),
         category= Category,
         SetValue= function(_, _, value2)
-            Save.chatBubbleAlpha= e.GetFormatter1to10(value2, 0, 1)
-            Init_Chat_Bubbles()
+            if value2 then
+                Save.chatBubbleAlpha= e.GetFormatter1to10(value2, 0, 1)
+                Init_Chat_Bubbles()
+            end
         end
     })
     initializer:SetParentInitializer(initializer2, function() if Save.disabledChatBubble then return false else return true end end)
@@ -2821,6 +2824,7 @@ local function Init_Options()
         tooltip= e.cn(addName),
         category= Category,
         SetValue= function(_, _, value2)
+            if not value2 then return end
             Save.chatBubbleSacal= e.GetFormatter1to10(value2, 0.3, 1)
             Init_Chat_Bubbles()
         end
@@ -2829,7 +2833,7 @@ local function Init_Options()
 
     e.AddPanel_Check_Sider({
         checkName= (e.onlyChinese and '职业能量' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CLASS, ENERGY))..' 1 2 3',
-        checkGetValue= function() return Save.classPowerNum end,
+        checkGetValue= function() return Save.classPowerNum or 12 end,
         checkTooltip= e.cn(addName),
         checkSetValue= function()
             Save.classPowerNum= not Save.classPowerNum and true or false
@@ -2839,11 +2843,13 @@ local function Init_Options()
         minValue= 6,
         maxValue= 64,
         step= 1,
-        sliderSetValue= function(_, _, value2)
-            local value3= e.GetFormatter1to10(value2, 6, 64)
-            Save.classPowerNumSize= value3
-            Init_Class_Power()--职业
-            print(e.addName, e.cn(addName),'|cnGREEN_FONT_COLOR:'.. value3..'|r', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        sliderSetValue= function(a, info, value2)
+            if value2 then
+                local value3= e.GetFormatter1to10(value2, 6, 64)
+                Save.classPowerNumSize= value3
+                Init_Class_Power()--职业
+                print(e.addName, e.cn(addName),'|cnGREEN_FONT_COLOR:'.. value3..'|r', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            end
         end,
         layout= Layout,
         category= Category,
