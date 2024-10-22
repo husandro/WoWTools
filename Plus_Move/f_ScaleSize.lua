@@ -75,7 +75,7 @@ local function Init_Menu(self, root)
             Save().disabledAlpha[self.name]= not Save().disabledAlpha[self.name] and true or nil
             self:set_move_event()
         end)
-        sub:SetEnabled(self.set_move_event and true or false)
+    
 --设置
         WoWTools_MenuMixin:OpenOptions(sub, {category=WoWTools_MoveMixin.Category, name=e.onlyChinese and '设置' or SETTINGS})
     end
@@ -88,29 +88,31 @@ local function Init_Menu(self, root)
 --(e.onlyChinese and '大小' or HUD_EDIT_MODE_SETTING_ARCHAEOLOGY_BAR_SIZE
 
 --清除，位置，数据
-    root:CreateDivider()
-    sub=root:CreateCheckbox(
-        (Save().point[self.name] and '' or '|cff9e9e9e')
-        ..(e.onlyChinese and '清除位置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, CHOOSE_LOCATION:gsub(CHOOSE , ''))),
-    function()
-        return Save().point[self.name]
-    end, function()
-        if self.target.setMoveFrame and not self.target.notSave then
-            Save().point[self.name]=nil
-            if self.restPointFunc then
-                self.restPointFunc(self)
-            elseif not self.notUpdatePositon then
-                e.call(UpdateUIPanelPositions, self.target)
+    if not Save().disabledMove then
+        root:CreateDivider()
+        sub=root:CreateCheckbox(
+            (Save().point[self.name] and '' or '|cff9e9e9e')
+            ..(e.onlyChinese and '清除位置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, CHOOSE_LOCATION:gsub(CHOOSE , ''))),
+        function()
+            return Save().point[self.name]
+        end, function()
+            if self.target.setMoveFrame and not self.target.notSave then
+                Save().point[self.name]=nil
+                if self.restPointFunc then
+                    self.restPointFunc(self)
+                elseif not self.notUpdatePositon then
+                    e.call(UpdateUIPanelPositions, self.target)
+                end
             end
-        end
-    end)
-    sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(self.name)
-    end)
+        end)
+        sub:SetTooltip(function(tooltip)
+            tooltip:AddLine(self.name)
+        end)
+    end
 
 --打开，选项
     root:CreateDivider()
-    WoWTools_MenuMixin:OpenOptions(root, {category=WoWTools_MoveMixin.Category})
+    WoWTools_MenuMixin:OpenOptions(root, {category=WoWTools_MoveMixin.Category, name=WoWTools_MoveMixin.name})
 end
 
 
