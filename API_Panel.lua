@@ -313,6 +313,16 @@ function e.AddPanel_Button(tab, parentInitializer)
     end
     return initializer
 end
+--[[
+e.AddPanel_Button({
+    title= e.onlyChinese and '' or '',
+    buttonText=e.onlyChinese and '' or '',
+    SetValue=function()
+    end,
+    tooltip=nil,
+    addSearchTags=nil,
+}, sub)
+]]
 
 
 --添加，下拉菜单

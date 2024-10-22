@@ -10,7 +10,7 @@ end
 
 --菜单
 local function Init_Menu(self, root)
-    local sub
+    local sub, sub2
     if not self.target:CanChangeAttribute() then
         root:CreateTitle(format('|cnRED_FONT_COLOR:%s', e.onlyChinese and '当前不可更改' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, DISABLE)))
         return
@@ -23,7 +23,7 @@ local function Init_Menu(self, root)
     WoWTools_MenuMixin:Scale(root, function()
         return Save().scale[self.name] or 1
     end, function(value)
-        if not Save().disabledSize[self.name] and self.target:CanChangeAttribute() then
+        if self.target:CanChangeAttribute() then
             Save().scale[self.name]=value
             self.target:SetScale(value)
         end
@@ -38,17 +38,32 @@ local function Init_Menu(self, root)
     end)
 
 --尺寸
-    sub=root:CreateCheckbox(
-        e.onlyChinese and '尺寸' or HUD_EDIT_MODE_SETTING_ARCHAEOLOGY_BAR_SIZE,
-    function()
-        return not Save().disabledSize[self.name]
-    end, function()
-        Save().disabledSize[self.name]= not Save().disabledSize[self.name] and true or nil
-    end)
-    sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(e.GetEnabeleDisable(nil, true))
-    end)
-    sub:SetEnabled(self.setSize)
+    if self.setSize then
+        sub=root:CreateCheckbox(
+            e.onlyChinese and '尺寸' or HUD_EDIT_MODE_SETTING_ARCHAEOLOGY_BAR_SIZE,
+        function()
+            return not Save().disabledSize[self.name]
+        end, function()
+            Save().disabledSize[self.name]= not Save().disabledSize[self.name] and true or nil
+        end)
+
+--重置, 尺寸
+        sub:CreateRadio(
+            (Save().size[self.name] and '' or '|cff9e9e9e')
+            ..(e.onlyChinese and '重置' or RESET),
+        function()
+            return Save().size[self.name]
+        end, function()
+            Save().size[self.name]=nil
+            if self.sizeRestFunc then--还原
+                self.sizeRestFunc(self)
+            end
+            if not self.notUpdatePositon then
+                e.call(UpdateUIPanelPositions, self.target)
+            end
+            return MenuResponse.Refresh
+        end)
+    end
 
 --改变透明度
     sub=root:CreateCheckbox(
@@ -60,7 +75,9 @@ local function Init_Menu(self, root)
         self:set_move_event()
     end)
     sub:SetEnabled(self.set_move_event and true or false)
-
+--设置
+    WoWTools_MenuMixin:OpenOptions(sub, {category=WoWTools_MoveMixin.Category, name=e.onlyChinese and '设置' or SETTINGS})
+    
 
 --e.onlyChinese and '缩放' or UI_SCALE
 --e.onlyChinese and '默认' or DEFAULT)
@@ -204,26 +221,28 @@ local function Set_Tooltip(self)
 
     local scale
     scale= tonumber(format('%.2f', self.target:GetScale() or 1))
-    scale= ((scale<=0.4 or scale>=2.5) and ' |cnRED_FONT_COLOR:' or ' |cnGREEN_FONT_COLOR:')..scale
-    e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..scale, e.Icon.left)
+    scale= ((scale<=0.4 or scale>=2.5) and ' |cnRED_FONT_COLOR:' or ' |cnGREEN_FONT_COLOR:')..scale..' '
+    e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE), scale..e.Icon.left)
 
-    local col= Save().scale[self.name] and '' or '|cff9e9e9e'
-    e.tips:AddDoubleLine(col..(e.onlyChinese and '默认' or DEFAULT), col..'Alt+'..e.Icon.left)
+    --local col= Save().scale[self.name] and '' or '|cff9e9e9e'
+    --e.tips:AddDoubleLine(col..(e.onlyChinese and '默认' or DEFAULT), col..'Alt+'..e.Icon.left)
 
     if self.set_move_event then--Frame 移动时，设置透明度
         e.tips:AddLine(' ')
-        if not Save().disabledAlpha[self.name] then
-            e.tips:AddDoubleLine((e.onlyChinese and '移动时透明度 ' or MAP_FADE_TEXT:gsub(WORLD_MAP, 'Frame'))..'|cnGREEN_FONT_COLOR:'..Save().alpha, e.Icon.mid)
-        else
-            e.tips:AddDoubleLine('|cff9e9e9e'..((e.onlyChinese and '移动时透明度 禁用' or (MAP_FADE_TEXT:gsub(WORLD_MAP, 'Frame')..' '..DISABLE))), e.Icon.mid)
-        end
+        e.tips:AddDoubleLine(
+            (e.onlyChinese and '移动时透明度 ' or MAP_FADE_TEXT:gsub(WORLD_MAP, 'Frame')),
+            Save().disabledAlpha[self.name] and e.GetEnabeleDisable(false) or ('|cnGREEN_FONT_COLOR:'..Save().alpha)
+        )
     end
 
-    if self.disabledSize then
+    if self.setSize then
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine((e.onlyChinese and '尺寸' or HUD_EDIT_MODE_SETTING_ARCHAEOLOGY_BAR_SIZE)..': '..e.GetEnabeleDisable(false), 'Ctrl+'..e.Icon.right)
-    elseif self.setSize then
-        e.tips:AddLine(' ')
+        local col
+        if self.sizeRestTooltipColorFunc then
+            col=self.sizeRestTooltipColorFunc(self)
+        end
+        col=col or (Save().size[self.name] and '' or '|cff9e9e9e')
+
         local w, h
         w= math.modf(self.target:GetWidth())
         w= format('%s%d|r', ((self.minWidth and self.minWidth>=w) or (self.maxWidth and self.maxWidth<=w)) and '|cnRED_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:', w)
@@ -231,18 +250,12 @@ local function Set_Tooltip(self)
         h= math.modf(self.target:GetHeight())
         h= format('%s%d|r', ((self.minHeight and self.minHeight>=h) or (self.maxHeight and self.maxHeight<=h)) and '|cnRED_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:', h)
 
-        e.tips:AddDoubleLine((e.onlyChinese and '尺寸' or HUD_EDIT_MODE_SETTING_ARCHAEOLOGY_BAR_SIZE)..format(' %s |cffffffffx|r %s', w, h), e.Icon.right)
-
-        local col2
-        if self.sizeRestTooltipColorFunc then
-            col2=self.sizeRestTooltipColorFunc(self)
-        end
-        col2=col2 or (Save().size[self.name] and '' or '|cff9e9e9e')
         e.tips:AddDoubleLine(
-            col2..(self.sizeRestFunc and (e.onlyChinese and '默认' or DEFAULT) or (e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)),
-            col2..'Alt+'..e.Icon.right
+            col..(e.onlyChinese and '尺寸' or HUD_EDIT_MODE_SETTING_ARCHAEOLOGY_BAR_SIZE)..format(' %s |cffffffffx|r %s', w, h),
+                e.GetEnabeleDisable(not Save().disabledSize[self.name])..e.Icon.right
         )
-        e.tips:AddDoubleLine(e.GetEnabeleDisable(true), 'Ctrl+'..e.Icon.right)
+
+        --e.tips:AddDoubleLine(e.GetEnabeleDisable(true), 'Ctrl+'..e.Icon.right)
         if self.sizeTooltip then
             if type(self.sizeTooltip)=='function' then
                 self:sizeTooltip()
@@ -251,14 +264,15 @@ local function Set_Tooltip(self)
             end
         end
     end
-    if self.target.setMoveFrame and not self.target.notSave then
+    --[[if self.target.setMoveFrame and not self.target.notSave then
         local col2= Save().point[self.name] and '' or '|cff9e9e9e'
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(col2..(e.onlyChinese and '清除位置' or (SLASH_STOPWATCH_PARAM_STOP2..CHOOSE_LOCATION:gsub(CHOOSE , ''))), col2..'Shift+'..e.Icon.left)
     else
         e.tips:AddLine(' ')
-    end
-    e.tips:AddDoubleLine(e.onlyChinese and '菜单' or MAINMENU, 'Shift+'..e.Icon.right)
+    end]]
+    e.tips:AddLine(' ')
+    e.tips:AddDoubleLine(e.onlyChinese and '菜单' or MAINMENU, 'Alt+'..e.Icon.left)
     --e.tips:AddDoubleLine(e.onlyChinese and '选项' or OPTIONS, 'Shift+'..e.Icon.right)
 
     if self.notInCombat then
@@ -344,6 +358,7 @@ local function Set_OnMouseDown(self, d)
     if self.isActive or (self.notInCombat and UnitAffectingCombat('player')) or not self.target:CanChangeAttribute() then
         return
     end
+    
     if IsAltKeyDown() then
         --if d=='RightButton' then
             MenuUtil.CreateContextMenu(self, Init_Menu)
@@ -360,6 +375,7 @@ local function Set_OnMouseDown(self, d)
         end]]
 
     elseif d=='LeftButton' then
+        
         --[[if IsAltKeyDown() then--清除，缩放，数据
             self.target:SetScale(1)
             Save().scale[self.name]=nil
@@ -403,11 +419,9 @@ local function Set_OnMouseDown(self, d)
             end)
        -- end
 
-    elseif d=='RightButton' then
-        if not self.setSize then
-            return
-        end
-        if IsAltKeyDown() then--清除，大小，数据
+    elseif d=='RightButton' and self.setSize and not Save().disabledSize[self.name] and not IsModifierKeyDown() then
+--开始，设置，大小
+        --[[if IsAltKeyDown() then--清除，大小，数据
             Save().size[self.name]=nil
             if self.sizeRestFunc then--还原
                 self.sizeRestFunc(self)
@@ -416,7 +430,7 @@ local function Set_OnMouseDown(self, d)
                 e.call(UpdateUIPanelPositions, self.target)
             end
 
-        elseif not IsModifierKeyDown() then--开始，设置，大小
+        elseif not IsModifierKeyDown() then]]
             self.isActive = true
             local target = self.target
             local continueResizeStart = true
@@ -433,7 +447,6 @@ local function Set_OnMouseDown(self, d)
                     frame.sizeUpdateFunc(frame)
                 end
             end)
-        end
     end
 
     Set_Tooltip(self)
@@ -563,7 +576,7 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
 
     local setResizeButtonPoint= tab.setResizeButtonPoint--设置，按钮，位置
     local setSize= tab.setSize
-    local disabledSize= Save().disabledSize[name]
+    --local disabledSize= Save().disabledSize[name]
     local onShowFunc= tab.onShowFunc-- true, function
 
     local minW= tab.minW or 115--(e.Player.husandro and 115 or frame:GetWidth()/2)--最小窗口， 宽
@@ -578,6 +591,7 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
     if not btn then
         btn= CreateFrame('Button', _G['WoWToolsResizeButton'..name], frame, 'PanelResizeButtonTemplate')--SharedUIPanelTemplates.lua
         btn:SetFrameLevel(frame:GetFrameLevel()+7)---9999)
+        btn:Raise()
         btn:SetSize(16, 16)
         if setResizeButtonPoint then
             btn:SetPoint(setResizeButtonPoint[1] or 'BOTTOMRIGHT', setResizeButtonPoint[2] or frame, setResizeButtonPoint[3] or 'BOTTOMRIGHT', setResizeButtonPoint[4] or 0, setResizeButtonPoint[5] or 0)
@@ -597,7 +611,7 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
     btn.scaleRestFunc= tab.scaleRestFunc--清除，数据
     btn.restPointFunc= tab.restPointFunc--还原，（清除，位置，数据）
     btn.alpha= tab.alpha--设置透明度为0，移到frame设置为1，
-    btn.disabledSize= disabledSize or not setSize--禁用，大小功能
+    --btn.disabledSize= disabledSize or not setSize--禁用，大小功能
     btn.setSize= setSize --and not disabledSize--是否有，设置大小，功能    
     btn.notInCombat= tab.notInCombat--战斗中，禁止操作
     btn.notUpdatePositon= tab.notUpdatePositon

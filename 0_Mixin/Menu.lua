@@ -116,7 +116,7 @@ WoWTools_MenuMixin:CreateSlider(sub, {
     minValue=1,
     maxValue=10,
     step=1,
-    bit=nil,
+    bit='0.2f',
     tooltip=function(tooltip)
         tooltip:AddLine(e.onlyChinese and '间隔' or 'Interval')
     end
