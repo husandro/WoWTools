@@ -50,7 +50,7 @@ local function Init_Menu(self, root)
 --重置, 尺寸
         sub:CreateRadio(
             (Save().size[self.name] and '' or '|cff9e9e9e')
-            ..(e.onlyChinese and '重置' or RESET),
+            ..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
         function()
             return Save().size[self.name]
         end, function()
@@ -66,17 +66,19 @@ local function Init_Menu(self, root)
     end
 
 --改变透明度
-    sub=root:CreateCheckbox(
-        (e.onlyChinese and '改变透明度' or CHANGE_OPACITY)..' '..(Save().alpha or 1),
-    function()
-        return not Save().disabledAlpha[self.name]
-    end, function()
-        Save().disabledAlpha[self.name]= not Save().disabledAlpha[self.name] and true or nil
-        self:set_move_event()
-    end)
-    sub:SetEnabled(self.set_move_event and true or false)
+    if self.set_move_event then
+        sub=root:CreateCheckbox(
+            (e.onlyChinese and '改变透明度' or CHANGE_OPACITY)..' '..(Save().alpha or 1),
+        function()
+            return not Save().disabledAlpha[self.name]
+        end, function()
+            Save().disabledAlpha[self.name]= not Save().disabledAlpha[self.name] and true or nil
+            self:set_move_event()
+        end)
+        sub:SetEnabled(self.set_move_event and true or false)
 --设置
-    WoWTools_MenuMixin:OpenOptions(sub, {category=WoWTools_MoveMixin.Category, name=e.onlyChinese and '设置' or SETTINGS})
+        WoWTools_MenuMixin:OpenOptions(sub, {category=WoWTools_MoveMixin.Category, name=e.onlyChinese and '设置' or SETTINGS})
+    end
     
 
 --e.onlyChinese and '缩放' or UI_SCALE
@@ -227,13 +229,6 @@ local function Set_Tooltip(self)
     --local col= Save().scale[self.name] and '' or '|cff9e9e9e'
     --e.tips:AddDoubleLine(col..(e.onlyChinese and '默认' or DEFAULT), col..'Alt+'..e.Icon.left)
 
-    if self.set_move_event then--Frame 移动时，设置透明度
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(
-            (e.onlyChinese and '移动时透明度 ' or MAP_FADE_TEXT:gsub(WORLD_MAP, 'Frame')),
-            Save().disabledAlpha[self.name] and e.GetEnabeleDisable(false) or ('|cnGREEN_FONT_COLOR:'..Save().alpha)
-        )
-    end
 
     if self.setSize then
         e.tips:AddLine(' ')
@@ -274,6 +269,14 @@ local function Set_Tooltip(self)
     e.tips:AddLine(' ')
     e.tips:AddDoubleLine(e.onlyChinese and '菜单' or MAINMENU, 'Alt+'..e.Icon.left)
     --e.tips:AddDoubleLine(e.onlyChinese and '选项' or OPTIONS, 'Shift+'..e.Icon.right)
+
+    if self.set_move_event then--Frame 移动时，设置透明度
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(
+            (e.onlyChinese and '移动时透明度 ' or MAP_FADE_TEXT:gsub(WORLD_MAP, 'Frame')),
+            Save().disabledAlpha[self.name] and e.GetEnabeleDisable(false) or ('|cnGREEN_FONT_COLOR:'..Save().alpha)
+        )
+    end
 
     if self.notInCombat then
         e.tips:AddLine(' ')
@@ -432,19 +435,18 @@ local function Set_OnMouseDown(self, d)
 
         elseif not IsModifierKeyDown() then]]
             self.isActive = true
-            local target = self.target
             local continueResizeStart = true
-            if target.onResizeStartCallback then
-                continueResizeStart = target.onResizeStartCallback(self)
+            if self.target.onResizeStartCallback then
+                continueResizeStart = self.target.onResizeStartCallback(self)
             end
             if continueResizeStart then
                 self.target:SetResizable(true)
                 self.target:StartSizing("BOTTOMRIGHT", true)
             end
-            self:SetScript('OnUpdate', function(frame)
-                Set_Tooltip(frame)
-                if frame.sizeUpdateFunc then
-                    frame.sizeUpdateFunc(frame)
+            self:SetScript('OnUpdate', function(f)
+                Set_Tooltip(f)
+                if f.sizeUpdateFunc then
+                    f.sizeUpdateFunc(f)
                 end
             end)
     end
