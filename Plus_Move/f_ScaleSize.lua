@@ -8,6 +8,49 @@ end
 
 
 
+
+--百分比，设置大小
+local function Set_ScalePercent(self, isSu)
+    local w,h= self.target:GetSize()
+    if isSu then
+        w= w+ w* 0.1
+        h= h+ h* 0.1
+    else
+        w= w- w* 0.1
+        h= h- h* 0.1
+    end
+    local maxW= self.maxWidth or math.modf(UIParent:GetWidth())
+    local maxH= self.maxHeight or math.modf(UIParent:GetHeight())
+
+    if
+        w<self.minWidth
+        or h<self.minHeight
+        or w>maxW
+        or h>maxH
+    then
+        return
+    end
+
+    self.target:SetSize(w,h)
+
+    if self.sizeStopFunc ~= nil then
+        self.sizeStopFunc(self)
+    else
+        Save().size[self.name]= {self.target:GetSize()}
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
+
 --菜单
 local function Init_Menu(self, root)
     local sub, sub2
@@ -86,6 +129,18 @@ local function Init_Menu(self, root)
         })
         sub2:SetEnabled(not Save().disabledSize[self.name] and self.target:CanChangeAttribute())
         sub:CreateSpacer()
+        sub:CreateButton(
+            '+0.1%',
+        function()
+            Set_ScalePercent(self, true)
+            return MenuResponse.Refresh
+        end)
+        sub:CreateButton(
+            '-0.1%',
+        function()
+            Set_ScalePercent(self, false)
+            return MenuResponse.Refresh
+        end)
 --重置, 尺寸
         sub:CreateRadio(
             e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
@@ -112,6 +167,9 @@ local function Init_Menu(self, root)
         end, function()
             Save().disabledAlpha[self.name]= not Save().disabledAlpha[self.name] and true or nil
             self:set_move_event()
+        end)
+        sub:SetTooltip(function(tooltip)
+            tooltip:AddLine(e.onlyChinese and '移动时' or CAMERA_SMARTER)
         end)
 
 --设置
@@ -150,6 +208,20 @@ local function Init_Menu(self, root)
     root:CreateDivider()
     WoWTools_MenuMixin:OpenOptions(root, {category=WoWTools_MoveMixin.Category, name=WoWTools_MoveMixin.addName})
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
