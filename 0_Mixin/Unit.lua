@@ -65,9 +65,9 @@ end
 
 
 
-
+--e.GetPlayerInfo(unit, guid, name{faction=nil, reName=true, reLink=false, reRealm=false, reNotRegion=false, level=10})
 function WoWTools_UnitMixin:GetPlayerInfo(unit, guid, name, tab)
-    if type(unit)=='table' then--e.GetPlayerInfo({unit=nil, guid=nil, name=nil, faction=nil, reName=true, reLink=false, reRealm=false, reNotRegion=false})
+    if type(unit)=='table' then
         tab= unit
         unit= tab.unit
         name= tab.name
@@ -76,7 +76,8 @@ function WoWTools_UnitMixin:GetPlayerInfo(unit, guid, name, tab)
         tab= tab or {}
     end
 
-    unit= unit or tab.unit
+
+    unit= unit or tab.unit or (guid and UnitTokenFromGUID(guid))
     name= name or tab.name
     guid= guid or tab.guid or (UnitExists(unit) and UnitGUID(unit)) or WoWTools_UnitMixin:GetGUID(unit, name)
 
@@ -88,6 +89,7 @@ function WoWTools_UnitMixin:GetPlayerInfo(unit, guid, name, tab)
     local reRealm= tab.reRealm
 
 
+
     if guid==e.Player.guid or name==e.Player.name or name==e.Player.name_realm then
         return e.Icon.player..((reName or reLink) and e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r' or '')..'|A:auctionhouse-icon-favorite:0:0|a'
     end
@@ -95,6 +97,8 @@ function WoWTools_UnitMixin:GetPlayerInfo(unit, guid, name, tab)
     if reLink then
         return WoWTools_UnitMixin:GetLink(name, guid, true) --玩家超链接
     end
+
+
 
     local text
     if guid and C_PlayerInfo.GUIDIsPlayer(guid) then
@@ -132,12 +136,13 @@ function WoWTools_UnitMixin:GetPlayerInfo(unit, guid, name, tab)
                 text= text..self:NameRemoveRealm(name, realm)
             end
 --等级 
-            if unit then
-                local level= UnitLevel(unit)
-                if level and level~=GetMaxLevelForPlayerExpansion() then
-                    text= text..'|cnGREEN_FONT_COLOR:'..level..'|r'
-                end
+            local unitLevel= tab.level
+                or (unit and UnitLevel(name))
+                or guid and e.WoWDate[guid] and e.WoWDate[guid].level
+            if unitLevel and GetMaxLevelForLatestExpansion()~=unitLevel then
+                text= text..'|cnGREEN_FONT_COLOR:'..unitLevel..'|r'
             end
+
             text= '|c'..select(4,GetClassColor(englishClass))..text..'|r'
         end
     end

@@ -384,6 +384,50 @@ end
 
 
 
+
+
+
+
+
+
+
+local function Init_WoW(root)
+    local maxLevel= GetMaxLevelForLatestExpansion()
+    local num=0
+    for i=1 ,BNGetNumFriends() do
+        local wow= C_BattleNet.GetFriendAccountInfo(i);
+        local wowInfo= wow and wow.gameAccountInfo
+        if wowInfo then
+            print(i,wowInfo.playerGuid)
+        end
+        if wowInfo
+            and wowInfo.playerGuid
+            --and wowInfo.wowProjectID==WOW_PROJECT_MAINLINE
+           --and wowInfo.isOnline
+        then
+            root:CreateButton(
+                WoWTools_UnitMixin:GetPlayerInfo({guid=wowInfo.playerGuid, reName=true, reRealm=true, level=wowInfo.characterLevel, faction=wowInfo.factionName})
+                ..(wowInfo.isOnline and '' or ('|cff9e9e9e'..((e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE)))),
+            function(data)
+                WoWTools_MailMixin:SetSendName(nil, data.guid)
+                return MenuResponse.Open
+            end, {guid=wowInfo.playerGuid})
+            num=num+1
+        end
+    end
+    WoWTools_MenuMixin:SetGridMode(root, num)
+end
+
+
+
+
+
+
+
+
+
+
+
 local function Init_Menu(_, root)
     local sub
 --我
@@ -394,7 +438,13 @@ local function Init_Menu(_, root)
     end)
     Init_IsSelf(sub)
 
-
+--战网
+    sub=root:CreateButton(
+        e.Icon.net2..(e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET),
+    function()
+        return MenuResponse
+    end)
+    Init_WoW(sub)
 end
 
 
@@ -421,11 +471,6 @@ function Init()
     listButton:SetPoint('LEFT', SendMailNameEditBox, 'RIGHT')
     listButton:SetScript('OnMouseDown', function(self)
         MenuUtil.CreateContextMenu(self, Init_Menu)
-        --[[if not self.Menu then
-            self.Menu= CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
-            e.LibDD:UIDropDownMenu_Initialize(self.Menu, Init_Menu, 'MENU')
-        end
-        e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)]]
     end)
 
 

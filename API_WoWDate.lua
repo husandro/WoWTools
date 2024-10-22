@@ -28,7 +28,7 @@ e.WoWDate[e.Player.guid]={
         },
     },
     Money= GetMoney() or 0
-    Level=
+    level=
     faction=
     region=
 }
@@ -48,6 +48,7 @@ e.GroupGuid[GetUnitName(unit, true) or guid]={--队伍数据
             combatRole= UnitGroupRolesAssigned(unit),
             guid=guid,
             faction= UnitFactionGroup(unit),
+            level=
         }
 e.GetGroupGuidDate()--队伍数据收集
 ]]
@@ -76,7 +77,7 @@ local function setwowguidTab(info)
         local name= WoWTools_UnitMixin:GetFullName(info.characterName)
         if name then
             if info.isOnline and info.wowProjectID==1 then
-                e.WoWGUID[name]={guid=info.playerGuid, faction=info.factionName}
+                e.WoWGUID[name]={guid=info.playerGuid, faction=info.factionName, level= info.characterLevel}
             else
                 e.WoWGUID[name]=nil
             end
@@ -120,6 +121,7 @@ local function Get_Player_Info(guid)--取得玩家信息
     if not unit then
         return
     end
+
     local r, g, b, hex= select(2, WoWTools_UnitMixin:Get_Unit_Color(unit, nil))
     e.UnitItemLevel[guid] = {--玩家装等
         itemLevel= C_PaperDollInfo.GetInspectItemLevel(unit) or (e.UnitItemLevel[guid] and e.UnitItemLevel[guid].itemLevel),
@@ -129,6 +131,7 @@ local function Get_Player_Info(guid)--取得玩家信息
         r=r,
         g=g,
         b=b,
+        level=UnitLevel(unit),
     }
     if UnitInParty(unit) and not IsInRaid() and PartyFrame.MemberFrame1.classFrame then
         for memberFrame in PartyFrame.PartyMemberFramePool:EnumerateActive() do--先使用一次，用以Shift+点击，设置焦点功能, Invite.lua
@@ -660,7 +663,8 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
 
             e.WoWDate[e.Player.guid].region= e.Player.region
             e.WoWDate[e.Player.guid].faction= e.Player.faction--派系
-            e.WoWDate[e.Player.guid].isLevelMax= e.Player.levelMax
+            e.WoWDate[e.Player.guid].level= e.Player.level
+            
 
             for guid, tab in pairs(e.WoWDate) do--清除不是本周数据
                 if tab.Keystone.week ~=e.Player.week then
@@ -779,7 +783,7 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
         local level= arg1 or UnitLevel('player')
         e.Player.levelMax= level==GetMaxLevelForLatestExpansion()--玩家是否最高等级
         e.Player.level= level
-        e.WoWDate[e.Player.guid].isLevelMax= e.Player.levelMax
+        e.WoWDate[e.Player.guid].level= level
 
     elseif event=='NEUTRAL_FACTION_SELECT_RESULT' then--玩家, 派系
         if arg1 then
