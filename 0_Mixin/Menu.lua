@@ -108,15 +108,15 @@ end
 sub:CreateSpacer()
 WoWTools_MenuMixin:CreateSlider(sub, {
     getValue=function()
-        return Save.mountShowTime
+        return Save().mountShowTime
     end, setValue=function(value)
-        Save.mountShowTime=value
+        Save().mountShowTime=value
     end,
     name=e.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS ,
     minValue=1,
     maxValue=10,
     step=1,
-    bit='0.2f',
+    bit='%.2f',
     tooltip=function(tooltip)
         tooltip:AddLine(e.onlyChinese and '间隔' or 'Interval')
     end

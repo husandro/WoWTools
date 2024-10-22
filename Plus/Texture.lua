@@ -1692,6 +1692,7 @@ local function Init_Event(arg1)
 
     elseif arg1=='Blizzard_ProfessionsBook' then--专业书
         e.Set_NineSlice_Color_Alpha(ProfessionsBookFrame, nil, nil, min03)
+        e.Set_NineSlice_Color_Alpha(ProfessionsBookFrameInset, nil, nil, min03)
         hide_Texture(ProfessionsBookFrameBg)
         hide_Texture(ProfessionsBookFrameInset.Bg)
         --set_Alpha_Color(ProfessionsBookPage1, nil, true, min03)

@@ -21,7 +21,7 @@ local function Init_Menu(self, root)
 
 --缩放
     WoWTools_MenuMixin:Scale(root, function()
-        return Save().scale[self.name] or 1
+        return self.target:GetScale()
     end, function(value)
         if self.target:CanChangeAttribute() then
             Save().scale[self.name]=value
@@ -31,9 +31,6 @@ local function Init_Menu(self, root)
         Save().scale[self.name]=nil
         if self.scaleRestFunc then
             self.scaleRestFunc(self)
-        end
-        if not self.notUpdatePositon then
-            e.call(UpdateUIPanelPositions, self.target)
         end
     end)
 
@@ -46,11 +43,52 @@ local function Init_Menu(self, root)
         end, function()
             Save().disabledSize[self.name]= not Save().disabledSize[self.name] and true or nil
         end)
-
+--x
+        sub:CreateSpacer()
+        sub2=WoWTools_MenuMixin:CreateSlider(sub, {
+            getValue=function()
+                return math.modf(self.target:GetWidth())
+            end, setValue=function(value)
+                if self.target:CanChangeAttribute() then
+                    self.target:SetWidth(value)
+                    if self.sizeStopFunc ~= nil then
+                        self.sizeStopFunc(self)
+                    else
+                        Save().size[self.name]= {self.target:GetSize()}
+                    end
+                end
+            end,
+            name='x',
+            minValue=self.minWidth,
+            maxValue=self.maxWidth or math.modf(UIParent:GetWidth()),
+            step=5,
+        })
+        sub2:SetEnabled(not Save().disabledSize[self.name] and self.target:CanChangeAttribute())
+        sub:CreateSpacer()
+        sub:CreateSpacer()
+        sub2=WoWTools_MenuMixin:CreateSlider(sub, {
+            getValue=function()
+                return math.modf(self.target:GetHeight())
+            end, setValue=function(value)
+                if self.target:CanChangeAttribute() then
+                    self.target:SetHeight(value)
+                    if self.sizeStopFunc ~= nil then
+                        self.sizeStopFunc(self)
+                    else
+                        Save().size[self.name]= {self.target:GetSize()}
+                    end
+                end
+            end,
+            name='y',
+            minValue= self.minHeight,
+            maxValue= self.maxHeight or math.modf(UIParent:GetHeight()),
+            step=5,
+        })
+        sub2:SetEnabled(not Save().disabledSize[self.name] and self.target:CanChangeAttribute())
+        sub:CreateSpacer()
 --重置, 尺寸
         sub:CreateRadio(
-            (Save().size[self.name] and '' or '|cff9e9e9e')
-            ..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
+            e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
         function()
             return Save().size[self.name]
         end, function()
@@ -75,11 +113,11 @@ local function Init_Menu(self, root)
             Save().disabledAlpha[self.name]= not Save().disabledAlpha[self.name] and true or nil
             self:set_move_event()
         end)
-    
+
 --设置
         WoWTools_MenuMixin:OpenOptions(sub, {category=WoWTools_MoveMixin.Category, name=e.onlyChinese and '设置' or SETTINGS})
     end
-    
+
 
 --e.onlyChinese and '缩放' or UI_SCALE
 --e.onlyChinese and '默认' or DEFAULT)
@@ -90,7 +128,7 @@ local function Init_Menu(self, root)
 --清除，位置，数据
     if not Save().disabledMove then
         root:CreateDivider()
-        sub=root:CreateCheckbox(
+        root:CreateRadio(
             (Save().point[self.name] and '' or '|cff9e9e9e')
             ..(e.onlyChinese and '清除位置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, CHOOSE_LOCATION:gsub(CHOOSE , ''))),
         function()
@@ -104,15 +142,13 @@ local function Init_Menu(self, root)
                     e.call(UpdateUIPanelPositions, self.target)
                 end
             end
-        end)
-        sub:SetTooltip(function(tooltip)
-            tooltip:AddLine(self.name)
+            return MenuResponse.Refresh
         end)
     end
 
 --打开，选项
     root:CreateDivider()
-    WoWTools_MenuMixin:OpenOptions(root, {category=WoWTools_MoveMixin.Category, name=WoWTools_MoveMixin.name})
+    WoWTools_MenuMixin:OpenOptions(root, {category=WoWTools_MoveMixin.Category, name=WoWTools_MoveMixin.addName})
 end
 
 
@@ -201,7 +237,7 @@ end
 local function Set_Tooltip(self)
     e.tips:SetOwner(self, "ANCHOR_RIGHT")
     e.tips:ClearLines()
-    e.tips:AddDoubleLine(e.addName, WoWTools_MoveMixin.addName)
+
 
     if not self:CanChangeAttribute() then
         e.tips:AddLine(format('|cnRED_FONT_COLOR:%s', e.onlyChinese and '当前不可更改' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, DISABLE)))
@@ -213,15 +249,13 @@ local function Set_Tooltip(self)
         e.tips:AddDoubleLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT), e.GetEnabeleDisable(false))
         e.tips:Show()
         return
-    else
-        e.tips:AddLine(' ')
     end
 
+    e.tips:AddDoubleLine('|cffff00ff'..self.name, format('%s %.2f', e.onlyChinese and '实际' or 'Effective', self.target:GetEffectiveScale()))
     local parent= self.target:GetParent()
     if parent then
         e.tips:AddDoubleLine(parent:GetName() or 'Parent', format('%.2f', parent:GetScale()))
     end
-    e.tips:AddDoubleLine('|cffff00ff'..self.name, format('%s %.2f', e.onlyChinese and '实际' or 'Effective', self.target:GetEffectiveScale()))
 
     local scale
     scale= tonumber(format('%.2f', self.target:GetScale() or 1))
@@ -268,20 +302,19 @@ local function Set_Tooltip(self)
     else
         e.tips:AddLine(' ')
     end]]
-    e.tips:AddLine(' ')
-    e.tips:AddDoubleLine(e.onlyChinese and '菜单' or MAINMENU, 'Alt+'..e.Icon.left)
-    --e.tips:AddDoubleLine(e.onlyChinese and '选项' or OPTIONS, 'Shift+'..e.Icon.right)
 
+    --e.tips:AddDoubleLine(e.onlyChinese and '选项' or OPTIONS, 'Shift+'..e.Icon.right)
+    e.tips:AddLine(' ')
     if self.set_move_event then--Frame 移动时，设置透明度
-        e.tips:AddLine(' ')
         e.tips:AddDoubleLine(
             (e.onlyChinese and '移动时透明度 ' or MAP_FADE_TEXT:gsub(WORLD_MAP, 'Frame')),
             Save().disabledAlpha[self.name] and e.GetEnabeleDisable(false) or ('|cnGREEN_FONT_COLOR:'..Save().alpha)
         )
     end
 
+    e.tips:AddDoubleLine(e.onlyChinese and '菜单' or MAINMENU, e.Icon.mid)
+
     if self.notInCombat then
-        e.tips:AddLine(' ')
         e.tips:AddLine(e.onlyChinese and '请不要在战斗中操作' or 'Please don\'t do it in combat')
     end
     e.tips:Show()
@@ -336,14 +369,12 @@ local function Set_OnMouseUp(self, d)
         end
 
     elseif d=='RightButton' and self.setSize then--保存，大小
-
-        local target = self.target
         local continueResizeStop = true
-        if target.onResizeStopCallback then
-            continueResizeStop = target.onResizeStopCallback(self)
+        if self.target.onResizeStopCallback then
+            continueResizeStop = self.target.onResizeStopCallback(self)
         end
         if continueResizeStop then
-            target:StopMovingOrSizing()
+            self.target:StopMovingOrSizing()
         end
         if self.sizeStopFunc ~= nil then
             self.sizeStopFunc(self)
@@ -363,8 +394,8 @@ local function Set_OnMouseDown(self, d)
     if self.isActive or (self.notInCombat and UnitAffectingCombat('player')) or not self.target:CanChangeAttribute() then
         return
     end
-    
-    if IsAltKeyDown() then
+
+    --[[if IsAltKeyDown() then
         --if d=='RightButton' then
             MenuUtil.CreateContextMenu(self, Init_Menu)
             --e.OpenPanelOpting(WoWTools_MoveMixin.Category)--打开，选项
@@ -373,14 +404,14 @@ local function Set_OnMouseDown(self, d)
             --Clear_Point(self)--清除，位置，数据
         --end
 
-    --[[elseif IsControlKeyDown() then
+    elseif IsControlKeyDown() then
         if (self.setSize or self.disabledSize) and d=='RightButton' then--禁用，启用，大小，功能
             Save().disabledSize[self.name]= not Save().disabledSize[self.name] and true or nil
             print(e.addName, WoWTools_MoveMixin.addName, e.GetEnabeleDisable(not Save().disabledSize[self.name]), self.name, e.onlyChinese and '大小' or HUD_EDIT_MODE_SETTING_ARCHAEOLOGY_BAR_SIZE, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
         end]]
 
-    elseif d=='LeftButton' then
-        
+    if d=='LeftButton' then
+
         --[[if IsAltKeyDown() then--清除，缩放，数据
             self.target:SetScale(1)
             Save().scale[self.name]=nil
@@ -594,13 +625,14 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
     local btn=_G['WoWToolsResizeButton'..name]
     if not btn then
         btn= CreateFrame('Button', _G['WoWToolsResizeButton'..name], frame, 'PanelResizeButtonTemplate')--SharedUIPanelTemplates.lua
+        btn:SetFrameStrata('HIGH')
         btn:SetFrameLevel(frame:GetFrameLevel()+7)---9999)
         btn:Raise()
         btn:SetSize(16, 16)
         if setResizeButtonPoint then
             btn:SetPoint(setResizeButtonPoint[1] or 'BOTTOMRIGHT', setResizeButtonPoint[2] or frame, setResizeButtonPoint[3] or 'BOTTOMRIGHT', setResizeButtonPoint[4] or 0, setResizeButtonPoint[5] or 0)
         else
-            btn:SetPoint('BOTTOMRIGHT', frame, 6,-6)
+            btn:SetPoint('BOTTOMRIGHT', frame)--m, 6,-6)
         end
     end
 
@@ -637,7 +669,7 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
             self.maxWidth = maxWidth
             self.maxHeight = maxHeight
         ]]
-        
+
         local size= Save().size[name]
         if size or initFunc then
             Set_Init_Frame(btn, frame, size, initFunc)
@@ -668,6 +700,10 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
     end)
     btn:SetScript("OnMouseDown",function(s, d)
         Set_OnMouseDown(s, d)
+    end)
+    btn:SetScript('OnMouseWheel', function(f)
+        MenuUtil.CreateContextMenu(f, Init_Menu)
+        Set_Tooltip(f)
     end)
 
     if onShowFunc then
