@@ -1361,7 +1361,6 @@ local function set_Option()
     menuUnitIsMePoint.Text:ClearAllPoints()
     menuUnitIsMePoint.Text:SetPoint('CENTER')
     menuUnitIsMePoint:SetupMenu(function(self, root)
-        local sub
         for _, name in pairs({
             'TOPLEFT',
             'TOP',
