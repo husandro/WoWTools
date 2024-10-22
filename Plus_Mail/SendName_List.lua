@@ -392,22 +392,22 @@ end
 
 
 local function Init_WoW(root)
-    local maxLevel= GetMaxLevelForLatestExpansion()
     local num=0
     for i=1 ,BNGetNumFriends() do
-        local wow= C_BattleNet.GetFriendAccountInfo(i);
-        local wowInfo= wow and wow.gameAccountInfo
+        local wow= C_BattleNet.GetFriendAccountInfo(i) or {}
+        local wowInfo= wow.gameAccountInfo
         if wowInfo then
-            print(i,wowInfo.playerGuid)
+            print(wowInfo.playerGuid)
         end
         if wowInfo
             and wowInfo.playerGuid
-            --and wowInfo.wowProjectID==WOW_PROJECT_MAINLINE
-           --and wowInfo.isOnline
+            and wowInfo.wowProjectID==WOW_PROJECT_MAINLINE
+            --and wowInfo.isOnline
         then
             root:CreateButton(
                 WoWTools_UnitMixin:GetPlayerInfo({guid=wowInfo.playerGuid, reName=true, reRealm=true, level=wowInfo.characterLevel, faction=wowInfo.factionName})
-                ..(wowInfo.isOnline and '' or ('|cff9e9e9e'..((e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE)))),
+                ..(wowInfo.isOnline and '' or ('|cff9e9e9e'..((e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE))))
+                ..(wow.isFavorite and '|A:auctionhouse-icon-favorite:0:0|a' or ''),
             function(data)
                 WoWTools_MailMixin:SetSendName(nil, data.guid)
                 return MenuResponse.Open
@@ -424,8 +424,24 @@ end
 
 
 
-
-
+local function Init_Friend(root)
+    local num=0
+    for i=1 , C_FriendList.GetNumFriends() do
+        local game= C_FriendList.GetFriendInfoByIndex(i) or {}
+        local guid= game.guid
+        if guid and not e.WoWDate[guid] then
+            root:CreateButton(
+                WoWTools_UnitMixin:GetPlayerInfo({guid=guid, reName=true, reRealm=true, level=game.level, faction=game.faction})
+                ..(game.connected and '' or ('|cff9e9e9e'..((e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE)))),
+            function(data)
+                WoWTools_MailMixin:SetSendName(nil, data.guid)
+                return MenuResponse.Open
+            end, {guid=guid})
+            num=num+1
+        end
+    end
+    WoWTools_MenuMixin:SetGridMode(root, num)
+end
 
 
 local function Init_Menu(_, root)
@@ -445,6 +461,14 @@ local function Init_Menu(_, root)
         return MenuResponse
     end)
     Init_WoW(sub)
+
+--好友
+    sub=root:CreateButton(
+        '|A:groupfinder-icon-friend:0:0|a'..(e.onlyChinese and '好友' or FRIEND),
+    function()
+        return MenuResponse
+    end)
+    Init_Friend(sub)
 end
 
 
