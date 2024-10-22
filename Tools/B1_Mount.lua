@@ -108,7 +108,7 @@ local Faction =  e.Player.faction=='Horde' and 0 or e.Player.faction=='Alliance'
 local ShiJI
 --local OkMount--是否已学, 骑术
 local XD
-
+local MountTab={}
 
 local MountType={
     MOUNT_JOURNAL_FILTER_GROUND,
@@ -166,6 +166,8 @@ local function getTableNum(type)--检测,表里的数量
     end
     return num
 end
+
+
 local function removeTable(type, ID)--移除, 表里, 其他同样的项目
     for type2, _ in pairs(Save.Mounts) do
         if type2~=type and type2~=FLOOR then
@@ -173,6 +175,8 @@ local function removeTable(type, ID)--移除, 表里, 其他同样的项目
         end
     end
 end
+
+
 local function checkSpell()--检测法术
     MountButton.spellID=nil
     if XD and XD[MOUNT_JOURNAL_FILTER_GROUND] then
@@ -187,6 +191,8 @@ local function checkSpell()--检测法术
         end
     end
 end
+
+
 local function checkItem()--检测物品
     MountButton.itemID=nil
     for itemID, _ in pairs(Save.Mounts[ITEMS]) do
@@ -198,7 +204,7 @@ local function checkItem()--检测物品
 end
 
 
-MountTab={}--MountTab[MountType]={}
+--MountTab[MountType]={}
 
 local function checkMount()--检测坐骑
     local uiMapID= C_Map.GetBestMapForUnit("player")--当前地图

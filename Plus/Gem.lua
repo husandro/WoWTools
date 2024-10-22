@@ -77,7 +77,50 @@ end
 
 
 
+local function Init_Button_Menu(self, root)
+    root:CreateCheckbox(
+        '|A:auctionhouse-icon-favorite:0:0|a'
+        ..(e.onlyChinese and '标记' or EVENTTRACE_BUTTON_MARKER),
+    function()
+        return Save.favorites[self.itemID]
+    end, function()
+        Save.favorites[self.itemID]= not Save.favorites[self.itemID] and true or nil
+        self:set_favorite()
+        print(e.addName, addName, Save.favorites[self.itemID] and self.itemID or '', e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
+        panel:set_Gem()
+    end)
+    root:CreateDivider()
 
+    root:CreateCheckbox(
+        '|A:common-icon-rotateright:0:0|a'
+        ..(e.onlyChinese and '左边' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_LEFT),
+    function ()
+        return Save.gemLeft[self.itemID]
+    end, function ()
+        Save.gemLeft[self.itemID]= not Save.gemLeft[self.itemID] and true or nil
+        panel:set_Gem()
+    end)
+
+    root:CreateCheckbox(
+        '|A:bags-greenarrow:0:0|a'
+        ..(e.onlyChinese and '上面' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP),
+    function ()
+        return Save.gemTop[self.itemID]
+    end, function ()
+        Save.gemTop[self.itemID]= not Save.gemTop[self.itemID] and true or nil
+        panel:set_Gem()
+    end)
+
+    root:CreateCheckbox(
+        '|A:common-icon-rotateleft:0:0|a'
+        ..(e.onlyChinese and '右边' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_RIGHT),
+    function ()
+        return Save.gemRight[self.itemID]
+    end, function ()
+        Save.gemRight[self.itemID]= not Save.gemRight[self.itemID] and true or nil
+        panel:set_Gem()
+    end)
+end
 
 
 
@@ -182,7 +225,9 @@ local function creatd_button(index, parent)
         elseif d=='LeftButton' then
             C_Container.PickupContainerItem(self.bagID, self.slotID)
         elseif d=='RightButton' then
-            if not self.Menu then
+            MenuUtil.CreateContextMenu(self, Init_Button_Menu)
+
+            --[[if not self.Menu then
                 self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
                 e.LibDD:UIDropDownMenu_Initialize(self.Menu, function(_, level)
                     e.LibDD:UIDropDownMenu_AddButton({
@@ -192,7 +237,7 @@ local function creatd_button(index, parent)
                         func= function()
                             Save.favorites[self.itemID]= not Save.favorites[self.itemID] and true or nil
                             self:set_favorite()
-                            print(e.addName, Initializer:GetName(), Save.favorites[self.itemID] and self.itemID or '', e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
+                            print(e.addName, addName, Save.favorites[self.itemID] and self.itemID or '', e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
                             panel:set_Gem()
                         end
                     }, level)
@@ -229,7 +274,7 @@ local function creatd_button(index, parent)
                     }, level)
                 end, 'MENU')
             end
-            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
+            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)]]
         end
         self:set_tooltips()
     end)
@@ -793,6 +838,114 @@ end
 
 
 
+local function Init_Menu(self, root)
+    local sub, num
+    sub=root:CreateCheckbox(
+        e.onlyChinese and '显示' or SHOW,
+    function()
+        return not Save.hide
+    end, function()
+        Save.hide= not Save.hide and true or nil
+        self:set_shown()
+    end)
+    sub:SetEnabled(Frame:CanChangeAttribute())
+
+    root:CreateCheckbox(
+        format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '法术' or SPELLS, 'Button'),
+    function()
+        return not Save.disableSpell
+    end, function()
+        Save.disableSpell= not Save.disableSpell and true or nil
+        print(e.addName, addName, e.GetEnabeleDisable(not Save.disableSpell), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+    end, {})
+
+    root:CreateDivider()
+    num=0
+    for _ in pairs(Save.favorites) do
+        num= num+1
+    end
+
+    root:CreateButton(
+        '|A:auctionhouse-icon-favorite:0:0|a'
+        ..(e.onlyChinese and '清除标记' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, EVENTTRACE_BUTTON_MARKER))
+        ..' |cnGREEN_FONT_COLOR:#'..num,
+    function()
+        Save.favorites={}
+        for _, frame in pairs(Frame.buttons) do
+            frame:set_favorite()
+        end
+        return MenuResponse.Refresh
+    end)
+
+--清除左边
+    num= 0
+    for _ in pairs(Save.gemLeft) do
+        num= num+1
+
+    end
+    root:CreateButton(
+         '|A:common-icon-rotateright:0:0|a'
+         ..(e.onlyChinese and '清除左边' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_LEFT))
+         ..' |cnGREEN_FONT_COLOR:#'
+         ..num,
+    function()
+        Save.gemLeft={}
+        panel:set_Gem()
+        return MenuResponse.Refresh
+    end)
+
+--清除上面
+    num= 0
+    for _ in pairs(Save.gemTop) do
+        num= num+1
+    end
+    root:CreateButton(
+        '|A:bags-greenarrow:0:0|a'
+        ..(e.onlyChinese and '清除上面' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP))
+        ..' |cnGREEN_FONT_COLOR:#'
+        ..num,
+    function()
+        Save.gemTop={}
+        panel:set_Gem()
+        return MenuResponse.Refresh
+    end)
+
+--清除右边
+    num= 0
+    for _ in pairs(Save.gemRight) do
+        num= num+1
+    end
+    root:CreateButton(
+         '|A:common-icon-rotateleft:0:0|a'
+         ..(e.onlyChinese and '清除右边' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_RIGHT))
+         ..' |cnGREEN_FONT_COLOR:#'
+         ..num,
+    function()
+        Save.gemRight={}
+        panel:set_Gem()
+        return MenuResponse.Refresh
+    end)
+
+    root:CreateButton(
+        '|A:bags-button-autosort-up:0:0|a'
+        ..(e.onlyChinese and '清除记录' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, EVENTTRACE_LOG_HEADER)),
+    function()
+        Save.gemLoc={
+            [e.Player.class]={}
+        }
+        e.call(ItemSocketingFrame_Update)
+        return MenuResponse.Refresh
+    end)
+
+    root:CreateDivider()
+    WoWTools_MenuMixin:OpenOptions(root, {name=addName})
+end
+
+
+
+
+
+
 
 
 
@@ -828,7 +981,7 @@ local function Init_Button_All()
         end
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+        e.tips:AddDoubleLine(e.addName, addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.GetShowHide(not Save.hide), e.Icon.left)
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.scale or 1), e.Icon.mid)
@@ -853,9 +1006,11 @@ local function Init_Button_All()
             self:set_texture()
             self:set_tooltips()
         else
-            if not self.Menu then
+            MenuUtil.CreateContextMenu(self, Init_Menu)
+            --[[if not self.Menu then
                 self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
                 e.LibDD:UIDropDownMenu_Initialize(self.Menu, function(_, level)
+
                     e.LibDD:UIDropDownMenu_AddButton({
                         text=e.onlyChinese and '显示' or SHOW,
                         checked=not Save.hide,
@@ -873,7 +1028,7 @@ local function Init_Button_All()
                         keepShownOnClick=true,
                         func= function()
                             Save.disableSpell= not Save.disableSpell and true or nil
-                            print(e.addName, Initializer:GetName(), e.GetEnabeleDisable(not Save.disableSpell), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                            print(e.addName, addName, e.GetEnabeleDisable(not Save.disableSpell), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                         end
                     }, level)
 
@@ -892,7 +1047,7 @@ local function Init_Button_All()
                             for _, frame in pairs(Frame.buttons) do
                                 frame:set_favorite()
                             end
-                            print(e.addName, Initializer:GetName(), e.onlyChinese and '完成' or COMPLETE)
+                            print(e.addName, addName, e.onlyChinese and '完成' or COMPLETE)
                         end
                     }, level)
 
@@ -952,7 +1107,7 @@ local function Init_Button_All()
                                 [e.Player.class]={}
                             }
                             e.call(ItemSocketingFrame_Update)
-                            print(e.addName, Initializer:GetName(), '|cnGREEN_FONT_COLOR:', e.onlyChinese and '完成' or COMPLETE)
+                            print(e.addName, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '完成' or COMPLETE)
                         end
                     }, level)
 
@@ -971,7 +1126,7 @@ local function Init_Button_All()
                     }, level)
                 end, 'MENU')
             end
-            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)
+            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)]]
         end
     end)
     btn:SetScript('OnMouseWheel', function(self, d)
@@ -1068,7 +1223,8 @@ panel:RegisterEvent('PLAYER_LOGOUT')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            if not WoWToolsSave[addName] and e.Is_Timerunning then
+            
+            --[[if not WoWToolsSave[addName] and e.Is_Timerunning then
                 C_Timer.After(2, function()
                     local slots={
                         ['INVTYPE_HEAD']= 1,
@@ -1101,45 +1257,51 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         end
                     end
                 end)
+            end]]
+            if WoWToolsSave[SOCKET_GEMS] then
+                Save= WoWToolsSave[SOCKET_GEMS]
+                Save.favorites= Save.favorites or {}
+                Save.gemLeft= Save.gemLeft or {}
+                Save.gemTop= Save.gemTop or {}
+                Save.gemRight= Save.gemRight or {}
+
+                Save.gemLoc= Save.gemLoc or {}
+                Save.gemLoc[e.Player.class]= Save.gemLoc[e.Player.class] or {}
+                WoWToolsSave[SOCKET_GEMS]= nil
+
+            elseif WoWToolsSave['Plus_Gem'] then
+                Save= WoWToolsSave['Plus_Gem']
             end
 
-            Save= WoWToolsSave[addName] or Save
-            Save.favorites= Save.favorites or {}
-            Save.gemLeft= Save.gemLeft or {}
-            Save.gemTop= Save.gemTop or {}
-            Save.gemRight= Save.gemRight or {}
-
-            Save.gemLoc= Save.gemLoc or {}
-            Save.gemLoc[e.Player.class]= Save.gemLoc[e.Player.class] or {}
-
-
             --添加控制面板
-            Initializer= e.AddPanel_Check({
-                name= '|T4555592:0|t'..(e.onlyChinese and '镶嵌宝石' or addName),
-                tooltip= e.cn(addName),
+            addName= '|T4555592:0|t'..(e.onlyChinese and '镶嵌宝石' or SOCKET_GEMS)
+
+            e.AddPanel_Check({
+                name= addName,
                 GetValue= function() return not Save.disabled end,
                 SetValue= function()
                     Save.disabled = not Save.disabled and true or nil
-                    print(e.addName, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+                    print(e.addName, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
                 end
             })
 
             if Save.disabled then
                 self:UnregisterEvent('ADDON_LOADED')
+
             elseif ItemSocketingFrame then
                 Init()
                 self:UnregisterEvent('ADDON_LOADED')
             end
+
         elseif arg1=='Blizzard_ItemSocketingUI' then
-            if Initializer then
-                Init()
-                self:UnregisterEvent('ADDON_LOADED')
-            end
+
+            Init()
+            self:UnregisterEvent('ADDON_LOADED')
         end
 
     elseif event=='PLAYER_LOGOUT' then
         if not e.ClearAllSave then
-            WoWToolsSave[addName]=Save
+            WoWToolsSave['Plus_Gem']=Save
         end
     end
 end)
