@@ -985,10 +985,32 @@ local function set_Option()
     end)
 
 
-    local menuPoint = CreateFrame("FRAME", nil, panel, "UIDropDownMenuTemplate")--下拉，菜单
+    --local menuPoint = CreateFrame("FRAME", nil, panel, "UIDropDownMenuTemplate")--下拉，菜单
+    local menuPoint= CreateFrame("DropdownButton", nil, panel, "WowStyle1DropdownTemplate")--下拉，菜单
     menuPoint:SetPoint("LEFT", combatCheck.Text, 'RIGHT', 15, 0)
-    e.LibDD:UIDropDownMenu_SetWidth(menuPoint, 100)
-    e.LibDD:UIDropDownMenu_Initialize(menuPoint, function(self, level)
+    menuPoint:SetWidth(195)
+    menuPoint.Text:ClearAllPoints()
+    menuPoint.Text:SetPoint('CENTER')
+    --e.LibDD:UIDropDownMenu_SetWidth(menuPoint, 100)
+    menuPoint:SetDefaultText(Save.TargetFramePoint)
+    menuPoint:SetupMenu(function(self, root)
+        for _, name in pairs({
+            'TOP',
+            'HEALTHBAR',
+            'LEFT'
+        }) do
+            root:CreateCheckbox(
+                name,
+            function(data)
+                return Save.TargetFramePoint==data.name
+            end, function(data)
+                Save.TargetFramePoint= data.name
+                self:SetDefaultText(data.name)
+                set_All_Init()
+            end, {name=name})
+        end
+    end)
+    --[[e.LibDD:UIDropDownMenu_Initialize(menuPoint, function(self, level)
         local tab={
             'TOP',
             'HEALTHBAR',
@@ -1009,13 +1031,14 @@ local function set_Option()
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
         end
-
+        
     end)
-    e.LibDD:UIDropDownMenu_SetText(menuPoint, Save.TargetFramePoint)
-    menuPoint.Button:SetScript('OnMouseDown', function(self)
+
+    --e.LibDD:UIDropDownMenu_SetText(menuPoint, Save.TargetFramePoint)
+    -menuPoint.Button:SetScript('OnMouseDown', function(self)
         e.LibDD:CloseDropDownMenus(1)
         e.LibDD:ToggleDropDownMenu(1, nil, self:GetParent(), self, 15, 0)
-    end)
+    end)]]
 
     local sliderX = e.CSlider(panel, {min=-250, max=250, value=Save.x, setp=1, w= 100,
     text= 'X',
@@ -1089,9 +1112,39 @@ local function set_Option()
     sliderElapsed:SetPoint("LEFT", sliderScale, 'RIGHT',15, 0)
 
 
-    local menu = CreateFrame("FRAME", nil, panel, "UIDropDownMenuTemplate")--下拉，菜单
+    --local menu = CreateFrame("FRAME", nil, panel, "UIDropDownMenuTemplate")--下拉，菜单
+    local menu= CreateFrame("DropdownButton", nil, panel, "WowStyle1DropdownTemplate")--下拉，菜单
     menu:SetPoint("TOPLEFT", sel, 'BOTTOMRIGHT', -16,-82)
-    e.LibDD:UIDropDownMenu_SetWidth(menu, 410)
+    menu:SetWidth(445)
+    menu:SetDefaultText(Save.targetTextureName)
+    menu.Text:ClearAllPoints()
+    menu.Text:SetPoint('CENTER')
+    menu:SetupMenu(function(self, root)
+        local num, icon, sub= 0, nil, nil
+        for name in pairs(get_texture_tab()) do
+            icon= select(3, WoWTools_TextureMixin:IsAtlas(name))
+            if icon then
+                sub=root:CreateRadio(
+                    icon,
+                function(data)
+                    return Save.targetTextureName== data.name
+                end, function(data)
+                    Save.targetTextureName= data.name
+                    self:SetDefaultText(data.icon)
+                    self.edit:SetText(data.name)
+                    set_All_Init()
+                end, {name=name, icon=icon})
+                sub:SetTooltip(function(tooltip, description)
+                    tooltip:AddLine(description.data.icon:gsub(':0', ':64'))
+                    tooltip:AddLine(description.data.name)
+                end)
+                num= num+1
+            end
+        end
+        --SetScrollMod
+        WoWTools_MenuMixin:SetScrollMode(root, nil)
+    end)
+    --[[e.LibDD:UIDropDownMenu_SetWidth(menu, 410)
     e.LibDD:UIDropDownMenu_Initialize(menu, function(self, level)
         for name, use in pairs(get_texture_tab()) do
             local isAtlas, texture= WoWTools_TextureMixin:IsAtlas(name)
@@ -1121,7 +1174,7 @@ local function set_Option()
     menu.Button:SetScript('OnMouseDown', function(self)
         e.LibDD:CloseDropDownMenus(1)
         e.LibDD:ToggleDropDownMenu(1, nil, self:GetParent(), self, 15, 0)
-    end)
+    end)]]
 
     menu.edit= CreateFrame("EditBox", nil, menu, 'InputBoxTemplate')--EditBox
     menu.edit:SetPoint("TOPLEFT", menu, 'BOTTOMLEFT',22,-2)
@@ -1156,8 +1209,8 @@ local function set_Option()
     end)
 
     --删除，图片
-    menu.edit.del= WoWTools_ButtonMixin:Cbtn(menu.edit, {atlas='xmarksthespot', size={20,20}})
-    menu.edit.del:SetPoint('LEFT', menu, 'RIGHT',-10,0)
+    menu.edit.del= WoWTools_ButtonMixin:Cbtn(menu.edit, {atlas='xmarksthespot', size=23})
+    menu.edit.del:SetPoint('LEFT', menu, 'RIGHT',2,0)
     menu.edit.del:SetScript('OnClick', function(self)
         local parent= self:GetParent()
         local isAtals, name= WoWTools_TextureMixin:IsAtlas(parent:GetText())
@@ -1174,7 +1227,7 @@ local function set_Option()
     end)
 
     --添加按钮
-    menu.edit.add= WoWTools_ButtonMixin:Cbtn(menu.edit, {atlas=e.Icon.select, size={20,20}})--添加, 按钮
+    menu.edit.add= WoWTools_ButtonMixin:Cbtn(menu.edit, {atlas=e.Icon.select, size=23})--添加, 按钮
     menu.edit.add:SetPoint('LEFT', menu.edit, 'RIGHT', 5,0)
     menu.edit.add:SetScript('OnClick', function(self)
         local parent= self:GetParent()
@@ -1300,9 +1353,49 @@ local function set_Option()
         set_All_Init()
     end)
 
-    local menuUnitIsMePoint = CreateFrame("FRAME", nil, panel, "UIDropDownMenuTemplate")--下拉，菜单
+    --local menuUnitIsMePoint = CreateFrame("FRAME", nil, panel, "UIDropDownMenuTemplate")--下拉，菜单
+    local menuUnitIsMePoint= CreateFrame("DropdownButton", nil, panel, "WowStyle1DropdownTemplate")--下拉，菜单
     menuUnitIsMePoint:SetPoint("LEFT", unitIsMeCheck.Text, 'RIGHT', 15, 0)
-    e.LibDD:UIDropDownMenu_SetWidth(menuUnitIsMePoint, 100)
+    menuUnitIsMePoint:SetWidth(130)
+    menuUnitIsMePoint:SetDefaultText(Save.unitIsMePoint)
+    menuUnitIsMePoint.Text:ClearAllPoints()
+    menuUnitIsMePoint.Text:SetPoint('CENTER')
+    menuUnitIsMePoint:SetupMenu(function(self, root)
+        local sub
+        for _, name in pairs({
+            'TOPLEFT',
+            'TOP',
+            'TOPRIGHT',
+            'LEFT',
+            'RIGHT',
+        }) do
+            root:CreateRadio(
+                name,
+            function(data)
+                return Save.unitIsMePoint==data.name
+            end, function(data)
+                Save.unitIsMePoint= data.name
+                self:SetDefaultText(data.name)
+                set_All_Init()
+            end, {name=name})
+        end
+        root:CreateDivider()
+        for _, tab2 in pairs({
+            {'healthBar', e.onlyChinese and '生命条' or 'HealthBar'},
+            {'name', e.onlyChinese and '名称' or NAME},
+        }) do
+            root:CreateCheckbox(
+                tab2[2],
+            function(data)
+                return  Save.unitIsMeParent== data.name
+            end, function(data)
+                Save.unitIsMeParent= data.name
+                set_All_Init()
+            end, {name= tab2[1]})
+        end
+    end)
+    --[[e.LibDD:UIDropDownMenu_SetWidth(menuUnitIsMePoint, 100)
+    
     e.LibDD:UIDropDownMenu_Initialize(menuUnitIsMePoint, function(self, level)
         local info
         local tab={
@@ -1344,7 +1437,7 @@ local function set_Option()
             }
             e.LibDD:UIDropDownMenu_AddButton(info, level)
         end
-        --[[e.LibDD:UIDropDownMenu_AddSeparator(level)
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
         info={
             text=e.onlyChinese and '颜色' or COLOR,
             notCheckable=true,
@@ -1360,13 +1453,13 @@ local function set_Option()
             cancelFunc= function(s)
             end
         }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)]]
+        e.LibDD:UIDropDownMenu_AddButton(info, level)
     end)
     e.LibDD:UIDropDownMenu_SetText(menuUnitIsMePoint, Save.unitIsMePoint)
     menuUnitIsMePoint.Button:SetScript('OnMouseDown', function(self)
         e.LibDD:CloseDropDownMenus(1)
         e.LibDD:ToggleDropDownMenu(1, nil, self:GetParent(), self, 15, 0)
-    end)
+    end)]]
 
     local menuUnitIsMe = CreateFrame("FRAME", nil, panel, "UIDropDownMenuTemplate")--下拉，菜单
     menuUnitIsMe:SetPoint("LEFT", menuUnitIsMePoint, 'RIGHT', 2,0)

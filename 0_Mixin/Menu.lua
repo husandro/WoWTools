@@ -585,4 +585,7 @@ WoWTools_MenuMixin:SetGridMode(sub, num)
 function WoWTools_MenuMixin:SetScrollMode(root, maxCharacters)
    root:SetScrollMode(20 * (maxCharacters or self.maxMenuButton))
 end
-
+--[[
+--SetScrollMod
+WoWTools_MenuMixin:SetScrollMode(root, nil)
+]]
