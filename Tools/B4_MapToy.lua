@@ -1,7 +1,7 @@
 local id, e = ...
 
 local Tab={
-   -- {itemID=228412, achievements={16334, 19309, 17766, 16761, 17739, 16363, 16336, 15394}},--巨龙群岛探路者 侦察地图：巨龙群岛的天空
+    {itemID=228412, achievements={16334, 19309, 17766, 16761, 17739, 16363, 16336, 15394}},--巨龙群岛探路者 侦察地图：巨龙群岛的天空
 
     {itemID=187869, achievements={14663, 14303, 14304, 14305, 14306}},--暗影界
 
@@ -181,13 +181,13 @@ local function Init_Menu(self, root)
                 ..(new.isNotChecked==nil and new.num or '')
 
 
-        sub= root:CreateCheckbox(col..name..num,
-            function(data)
-                return data.itemID==self.itemID
-            end, function(data)
-                self:Set_Random_Value(data.itemID, data.achievements, true)
-            end, {itemID=info.itemID, achievements=info.achievements}
-        )
+        sub= root:CreateCheckbox(
+            col..name..num,
+        function(data)
+            return data.itemID==self.itemID
+        end, function(data)
+            self:Set_Random_Value(data.itemID, data.achievements, true)
+        end, {itemID=info.itemID, achievements=info.achievements})
 
         WoWTools_SetTooltipMixin:Set_Menu(sub)
 
