@@ -229,7 +229,7 @@ end
 
 local function Init()
     WoWTools_ToolsButtonMixin:AddOptions(function(_, layout)
-        e.AddPanel_Header(layout, WoWTools_ToolsButtonMixin.addName)
+        e.AddPanel_Header(layout, WoWTools_UseItemsMixin.addName)
     end)
 
     for _, itemID in pairs(WoWTools_UseItemsMixin.Save.item) do
@@ -317,6 +317,6 @@ end
 
 
 
-function WoWTools_ToolsButtonMixin:Init_All_Buttons()
+function WoWTools_UseItemsMixin:Init_All_Buttons()
     Init()
 end

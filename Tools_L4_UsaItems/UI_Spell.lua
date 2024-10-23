@@ -103,14 +103,14 @@ end
 
 
 
-function WoWTools_ToolsButtonMixin:Init_SpellFlyoutButton()--法术书，界面, Flyout, 菜单
+function WoWTools_UseItemsMixin:Init_SpellFlyoutButton()--法术书，界面, Flyout, 菜单
     hooksecurefunc('SpellFlyoutButton_UpdateGlyphState', Init_SpellFlyoutButton_UpdateGlyphState)--法术书，界面, Flyout, 菜单
 end
 
 
 
 
-function WoWTools_ToolsButtonMixin:Init_PlayerSpells()
+function WoWTools_UseItemsMixin:Init_PlayerSpells()
     hooksecurefunc(SpellBookItemMixin, 'UpdateVisuals', function(frame)
         set_Use_Spell_Button(frame.Button, frame.spellBookItemInfo.spellID)
     end)

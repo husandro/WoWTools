@@ -76,6 +76,7 @@ local function Init_Menu(_, root)
         if num>0 then
             sub:CreateDivider()
         end
+
         if num>1 then
 --全部清除
             WoWTools_MenuMixin:ClearAll(sub, function()
@@ -91,8 +92,8 @@ local function Init_Menu(_, root)
                 nil,
                 {SetValue=function()
                    WoWTools_UseItemsMixin.Save[data.type]= WoWTools_UseItemsMixin.P_Tabs[data.type]
-                   
-                   
+
+
                    print(e.addName, WoWTools_UseItemsMixin.addName, data.text, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end}
             )

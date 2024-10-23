@@ -88,7 +88,7 @@ end
 
 
 
-function WoWTools_ToolsButtonMixin:Init_Button()
+function WoWTools_UseItemsMixin:Init_Button()
     Init_Dia()
     Init()
 end

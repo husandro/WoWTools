@@ -82,9 +82,9 @@ end
 
 
 local function Init()
-    WoWTools_ToolsButtonMixin:Init_All_Buttons()
-    WoWTools_ToolsButtonMixin:Init_Button()
-    WoWTools_ToolsButtonMixin:Init_SpellFlyoutButton()--法术书，界面, Flyout, 菜单
+    WoWTools_UseItemsMixin:Init_All_Buttons()
+    WoWTools_UseItemsMixin:Init_Button()
+    WoWTools_UseItemsMixin:Init_SpellFlyoutButton()--法术书，界面, Flyout, 菜单
 end
 
 
@@ -145,7 +145,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWTools_UseItemsMixin:Init_UI_Toy()
 
         elseif arg1=='Blizzard_PlayerSpells' then--法术书
-            WoWTools_ToolsButtonMixin:Init_PlayerSpells()
+            WoWTools_UseItemsMixin:Init_PlayerSpells()
         end
 
     elseif event == "PLAYER_LOGOUT" then
