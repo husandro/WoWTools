@@ -85,6 +85,11 @@ local function Init()
 		self.wowNumLabel:SetText(text or '')
 		self.wowNumLabel.currencyID= currencyID
 	end)
+
+	CurrencyTransferMenu.AmountSelector.MaxQuantityButton:HookScript('OnShow', function(self)
+		print('a')
+		self:Click()
+	end)
 end
 
 
