@@ -386,7 +386,7 @@ local function Sub_Menu(root, tab)
     WoWTools_SetTooltipMixin:Set_Menu(root)
 
     local body= tab.body
-    
+
     sub=root:CreateButton(
          '|T'..(tab.icon or 134400)..':0|t'..(e.onlyChinese and '新建' or NEW),
     function(data)
@@ -453,7 +453,7 @@ local function Create_Spell_Menu(root, spellID, icon, name, index)--创建，法
         ..WoWTools_SpellMixin:GetName(spellID)--取得法术，名称
         ..(macroText and '|cnGREEN_FONT_COLOR:*|r' or ''),
     function(data)
-        
+
         if UnitAffectingCombat('player') then return end
 
         local text=''
@@ -480,7 +480,7 @@ local function Create_Spell_Menu(root, spellID, icon, name, index)--创建，法
     end, info)
 
 
-        
+
         local macroText2, showName= Get_Spell_Macro(name, spellID)
         local body= '#showtooltip'..(showName and ' '..showName or '')..'\n'
         body= body..'/targetenemy [noharm][dead]\n'
@@ -649,13 +649,13 @@ local function Init_Equip_Menu(_, root)
             itemLink = GetInventoryItemLink('player', slot) or 0
             name= itemLink and C_Item.GetItemNameByID(itemLink)
             if itemLink and name then
-                
+
                 icon= C_Item.GetItemIconByID(itemLink)
                 spellID= select(2, C_Item.GetItemSpell(itemLink))
 
                 e.LoadData({id=spellID, type='spell'})
                 e.LoadData({id=itemLink, type='item'})
-                
+
                 sub= root:CreateButton(
                     slot..' '
                     ..'|T'..(icon or 0)..':0|t'
@@ -828,7 +828,7 @@ local function Init()
             btn.name= data.name
             btn.index= i
             btn:SetScript('OnMouseDown', function(self)
-                MenuUtil.CreateContextMenu(self, Init_SpellBook_Menu) 
+                MenuUtil.CreateContextMenu(self, Init_SpellBook_Menu)
             end)
             --btn:SetupMenu(Init_SpellBook_Menu)
             Set_Button_OnEnter(btn)
@@ -843,7 +843,7 @@ local function Init()
     pvpButton:SetPoint('LEFT', last, 'RIGHT')
     --pvpButton:SetupMenu(Init_PvP_Menu)
     pvpButton:SetScript('OnMouseDown', function(self)
-        MenuUtil.CreateContextMenu(self, Init_PvP_Menu) 
+        MenuUtil.CreateContextMenu(self, Init_PvP_Menu)
     end)
     pvpButton.name= e.onlyChinese and 'PvP天赋' or PVP_LABEL_PVP_TALENTS
     Set_Button_OnEnter(pvpButton)
@@ -855,12 +855,12 @@ local function Init()
     equipButton:SetPoint('LEFT', last, 'RIGHT')
     --equipButton:SetupMenu(Init_Equip_Menu)
     equipButton:SetScript('OnMouseDown', function(self)
-        MenuUtil.CreateContextMenu(self, Init_Equip_Menu) 
+        MenuUtil.CreateContextMenu(self, Init_Equip_Menu)
     end)
     equipButton.name= e.onlyChinese and '装备' or EQUIPSET_EQUIP
     Set_Button_OnEnter(equipButton)
     last=equipButton
-   
+
 --谈话
     --local spellchButton= WoWTools_ButtonMixin:CreateMenu(Frame, {hideIcon=true, atlas='voicechat-icon-textchat-silenced'})
     local spellchButton= WoWTools_ButtonMixin:Ctype2(Frame, {atlas='voicechat-icon-textchat-silenced'})
@@ -871,7 +871,7 @@ local function Init()
     spellchButton:SetScript('OnMouseDown', function(self)
         MenuUtil.CreateContextMenu(self, function(_, root)
             Init_Chat_Menu(root, TextEmoteSpeechList)
-        end) 
+        end)
     end)
     spellchButton.name= e.onlyChinese and '谈话' or VOICEMACRO_LABEL
     Set_Button_OnEnter(spellchButton)
@@ -887,7 +887,7 @@ local function Init()
     emoteButton:SetScript('OnMouseDown', function(self)
         MenuUtil.CreateContextMenu(self, function(_, root)
             Init_Chat_Menu(root, EmoteList)
-        end) 
+        end)
     end)
     emoteButton.name= e.onlyChinese and '表情' or EMOTE
     Set_Button_OnEnter(emoteButton)
@@ -901,7 +901,7 @@ local function Init()
     macroListButton:SetPoint('LEFT', last, 'RIGHT')
     --macroListButton:SetupMenu(Init_MacroList_Menu)
     macroListButton:SetScript('OnMouseDown', function(self)
-        MenuUtil.CreateContextMenu(self, Init_MacroList_Menu) 
+        MenuUtil.CreateContextMenu(self, Init_MacroList_Menu)
     end)
 
 --设置
