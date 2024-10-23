@@ -1,7 +1,7 @@
 local id, e = ...
 
 local Tab={
-    {itemID=228412, achievements={16334, 19309, 17766, 16761, 17739, 16363, 16336, 15394}},--巨龙群岛探路者 侦察地图：巨龙群岛的天空
+    --{itemID=228412, achievements={16334, 19309, 17766, 16761, 17739, 16363, 16336, 15394}},--巨龙群岛探路者 侦察地图：巨龙群岛的天空
 
     {itemID=187869, achievements={14663, 14303, 14304, 14305, 14306}},--暗影界
 
@@ -133,10 +133,10 @@ local function Init_Options(category, layout)
     e.AddPanel_Button({
         category=category,
         layout=layout,
-        tooltip=addName..'|n'..(e.onlyChinese and '重新加载UI' or RELOADUI ),
+        tooltip=addName,
         buttonText= e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
         SetValue= function()
-           Save=nil
+           Save.no={}
            print(e.addName, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     }, initializer)
@@ -270,8 +270,10 @@ local function Init_Menu(self, root)
             Save.no={}
         end)
     end
-
     WoWTools_MenuMixin:SetGridMode(sub, num)
+
+
+    WoWTools_ToolsButtonMixin:OpenMenu(root, addName)
 end
 
 
