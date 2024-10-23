@@ -78,57 +78,6 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 --[[function Init_Menu_List(_, level, type)
     local info
     if type then
@@ -258,126 +207,7 @@ end]]
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
---###
---初始
---###
 local function Init()
-    StaticPopupDialogs['WoWToolsToolsUseItemsRemove']={
-        text=WoWTools_UseItemsMixin.addName..'|n|n%s',
-        whileDead=true, hideOnEscape=true, exclusive=true,
-        button1='|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r',
-        button2=e.onlyChinese and '取消' or CANCEL,
-        OnAccept = function(_, data)
-            if data.clearAll then
-                WoWTools_UseItemsMixin.Save[data.type]={}
-                WoWTools_Mixin:Reload()
-            else
-                if WoWTools_UseItemsMixin.Save[data.type][data.index] and WoWTools_UseItemsMixin.Save[data.type][data.index]==data.ID then
-                    table.remove(WoWTools_UseItemsMixin.Save[data.type], data.index)
-                    print(WoWTools_ToolsButtonMixin:GetName(), WoWTools_UseItemsMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r'..(e.onlyChinese and '完成' or COMPLETE), data.name, '|cnRED_FONT_COLOR:'..REQUIRES_RELOAD..'|r')
-                else
-                    print(WoWTools_ToolsButtonMixin:GetName(), WoWTools_UseItemsMixin.addName,'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '错误' or ERROR_CAPS)..'|r', e.onlyChinese and '未发现物品' or	BROWSE_NO_RESULTS, data.name)
-                end
-            end
-        end,
-    }
-
-    StaticPopupDialogs['WoWToolsUseItemsRESETALL']={--重置所有
-        text=WoWTools_UseItemsMixin.addName..'|n|n'..(e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT)..'|n|n'..(e.onlyChinese and '重新加载UI' or RELOADUI),
-        whileDead=true, hideOnEscape=true, exclusive=true,
-        button1= e.onlyChinese and '重置' or RESET,
-        button2= e.onlyChinese and '取消' or CANCEL,
-        OnAccept = function()
-            WoWTools_UseItemsMixin.Save=nil
-            WoWTools_Mixin:Reload()
-        end,
-    }
-
-    StaticPopupDialogs['WoWToolsUseItemsADD']={--添加, 移除
-        text=WoWTools_UseItemsMixin.addName..'|n|n%s: %s',
-        whileDead=true, hideOnEscape=true, exclusive=true,
-        button1= e.onlyChinese and '添加' or ADD,
-        button2= e.onlyChinese and '取消' or CANCEL,
-        button3= e.onlyChinese and '移除' or REMOVE,
-        OnShow = function(self, data)
-            local find=WoWTools_UseItemsMixin:Find_Type(data.type, data.ID)
-            data.index=find
-            self.button3:SetEnabled(find)
-            self.button1:SetEnabled(not find)
-        end,
-        OnAccept = function(_, data)
-            table.insert(WoWTools_UseItemsMixin.Save[data.type], data.ID)
-            print(WoWTools_ToolsButtonMixin:GetName(), WoWTools_UseItemsMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r', e.onlyChinese and '完成' or COMPLETE, data.name, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-        end,
-        OnAlt = function(_, data)
-            table.remove(Save[data.type], data.index)
-            print(WoWTools_ToolsButtonMixin:GetName(), WoWTools_UseItemsMixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', e.onlyChinese and '完成' or COMPLETE, data.name, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-        end,
-    }
-
     WoWTools_ToolsButtonMixin:Init_All_Buttons()
     WoWTools_ToolsButtonMixin:Init_Button()
     WoWTools_ToolsButtonMixin:Init_SpellFlyoutButton()--法术书，界面, Flyout, 菜单
@@ -387,76 +217,54 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
---###########
 --加载保存数据
---###########
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
-
-
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
-            local btn= WoWTools_ToolsButtonMixin:GetButton()
-            if btn then
 
-                
-
-
-                --if (not WoWToolsSave or not WoWToolsSave[addName..'Tools']) and PlayerHasToy(156833) and Save.item[1]==194885 then
-                    --Save.item[1] = 156833
-                --end
-
-                if WoWToolsSave[USE_ITEM..'Tools'] then
-                    WoWTools_UseItemsMixin.Save= WoWToolsSave[USE_ITEM..'Tools']
-                    WoWTools_UseItemsMixin.Save.flyout= WoWTools_UseItemsMixin.Save.flyout or {}
-                    WoWToolsSave[USE_ITEM..'Tools']=nil
-                else
-                    WoWTools_UseItemsMixin.Save = WoWToolsSave['Tools_UseItems'] or WoWTools_UseItemsMixin.Save
-                end
-                
-
-                WoWTools_UseItemsMixin.addName= '|A:soulbinds_tree_conduit_icon_utility:0:0|a'..(e.onlyChinese and '使用物品' or USE_ITEM)
-
-
-                for _, ID in pairs(WoWTools_UseItemsMixin.Save.item) do
-                    e.LoadData({id=ID, type='item'})
-                end
-                for _, ID in pairs(WoWTools_UseItemsMixin.Save.spell) do
-                    e.LoadData({id=ID, type='spell'})
-                end
-                for _, ID in pairs(WoWTools_UseItemsMixin.Save.equip) do
-                    e.LoadData({id=ID, type='item'})
-                end
-
-                C_Timer.After(2.3, function()
-                    if UnitAffectingCombat('player') then
-                        self:RegisterEvent("PLAYER_REGEN_ENABLED")
-                    else
-                        Init()--初始
-                    end
-                end)
-
-                if C_AddOns.IsAddOnLoaded('Blizzard_Collections') then
-                    WoWTools_UseItemsMixin:Init_UI_Toy()
-                end
-
+            if WoWToolsSave[USE_ITEM..'Tools'] then
+                WoWTools_UseItemsMixin.Save= WoWToolsSave[USE_ITEM..'Tools']
+                WoWTools_UseItemsMixin.Save.flyout= WoWTools_UseItemsMixin.Save.flyout or {}
+                WoWToolsSave[USE_ITEM..'Tools']=nil
             else
+                WoWTools_UseItemsMixin.Save = WoWToolsSave['Tools_UseItems'] or WoWTools_UseItemsMixin.Save
+            end
+
+--禁用，Tools模块，退出
+            if not WoWTools_ToolsButtonMixin:GetButton() then
                 self:UnregisterEvent('ADDON_LOADED')
+                return
+            end
+            
+            --if (not WoWToolsSave or not WoWToolsSave[addName..'Tools']) and PlayerHasToy(156833) and WoWTools_UseItemsMixin.Save.item[1]==194885 then
+            --Save.item[1] = 156833
+            --end
+
+            WoWTools_UseItemsMixin.addName= '|A:soulbinds_tree_conduit_icon_utility:0:0|a'..(e.onlyChinese and '使用物品' or USE_ITEM)
+
+            for _, ID in pairs(WoWTools_UseItemsMixin.Save.item) do
+                e.LoadData({id=ID, type='item'})
+            end
+            for _, ID in pairs(WoWTools_UseItemsMixin.Save.spell) do
+                e.LoadData({id=ID, type='spell'})
+            end
+            for _, ID in pairs(WoWTools_UseItemsMixin.Save.equip) do
+                e.LoadData({id=ID, type='item'})
+            end
+
+            C_Timer.After(2.3, function()
+                if UnitAffectingCombat('player') then
+                    self:RegisterEvent("PLAYER_REGEN_ENABLED")
+                else
+                    Init()--初始
+                end
+            end)
+
+            if C_AddOns.IsAddOnLoaded('Blizzard_Collections') then
+                WoWTools_UseItemsMixin:Init_UI_Toy()
             end
 
         elseif arg1=='Blizzard_Collections' then

@@ -4,12 +4,38 @@ local button
 
 
 
+local function Init_Dia()
+    
+    StaticPopupDialogs['WoWToolsUseItemsADD']={--添加, 移除
+        text=WoWTools_UseItemsMixin.addName..'|n|n%s: %s',
+        whileDead=true, hideOnEscape=true, exclusive=true,
+        button1= e.onlyChinese and '添加' or ADD,
+        button2= e.onlyChinese and '取消' or CANCEL,
+        button3= e.onlyChinese and '移除' or REMOVE,
+        OnShow = function(self, data)
+            local find=WoWTools_UseItemsMixin:Find_Type(data.type, data.ID)
+            data.index=find
+            self.button3:SetEnabled(find)
+            self.button1:SetEnabled(not find)
+        end,
+        OnAccept = function(_, data)
+            table.insert(WoWTools_UseItemsMixin.Save[data.type], data.ID)
+            print(WoWTools_ToolsButtonMixin:GetName(), WoWTools_UseItemsMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r', e.onlyChinese and '完成' or COMPLETE, data.name, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end,
+        OnAlt = function(_, data)
+            table.remove(Save[data.type], data.index)
+            print(WoWTools_ToolsButtonMixin:GetName(), WoWTools_UseItemsMixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', e.onlyChinese and '完成' or COMPLETE, data.name, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end,
+    }
 
+end
 
 
 
 
 local function Init()
+    Init_Dia()
+
     --button.Menu=CreateFrame("Frame", nil, button, "UIDropDownMenuTemplate")
     --e.LibDD:UIDropDownMenu_Initialize(button.Menu, Init_Menu_List, 'MENU')--主菜单
     local btn= WoWTools_ToolsButtonMixin:GetButton()
@@ -62,6 +88,7 @@ end
 
 
 
-function WoWTools_ToolsButtonMixin:Init_Button(button)
-    Init(button)
+function WoWTools_ToolsButtonMixin:Init_Button()
+    Init_Dia()
+    Init()
 end
