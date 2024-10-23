@@ -38,9 +38,9 @@ local function Init_Button()
             or 'loottoast-arrow-orange')
     end
 
-    function Button:show_menu()
-        e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 40, 0)--主菜单
-    end
+    --function Button:show_menu()
+        --e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 40, 0)--主菜单
+    --end
     function Button:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_TOPLEFT")
         e.tips:ClearLines()
@@ -56,9 +56,9 @@ local function Init_Button()
     end)
     Button:SetScript('OnEnter', Button.set_tooltips)
 
-    Button.Menu= CreateFrame("Frame", nil, Button, "UIDropDownMenuTemplate")
+    --Button.Menu= CreateFrame("Frame", nil, Button, "UIDropDownMenuTemplate")
 
-    Button:SetScript("OnClick", Button.show_menu)
+    --Button:SetScript("OnClick", Button.show_menu)
 
     Button:set_texture()
     Button:set_alpha(true)
@@ -83,15 +83,15 @@ local function Init_Button()
                 self:set_enabel_disable()
             end)
             sub:SetTooltip(function(tooltip)
+                tooltip:AddLine(self.addName)
                 tooltip:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end)
+--/reload
+            WoWTools_MenuMixin:Reload(sub)
 
             root:CreateDivider()
-            root:CreateTitle(self.addName)
 --打开选项界面
             WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_PaperDollMixin.addName,})
-            root:CreateDivider()
-            WoWTools_MenuMixin:Reload(root)
         end)
     else
 

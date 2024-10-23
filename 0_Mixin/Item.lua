@@ -211,9 +211,16 @@ function WoWTools_ItemMixin:GetName(itemID, itemLink)--取得物品，名称
         end
         desc= ' x'..num..' '
     end
+
     name= e.cn(C_Item.GetItemNameByID(itemID), {itemID=itemID, isName=true}) or ('itemID '..itemID)
     if name then
-        name= '|T'..(C_Item.GetItemIconByID(itemID) or 0)..':0|t'..(name:match('|c........(.+)|r') or name)
+        if not name:find('|c') then
+            local col2= select(4, self:GetColor(itemID))
+            if col2 then
+                name= col2..name..'|r'
+            end
+        end
+        name= '|T'..(C_Item.GetItemIconByID(itemID) or 0)..':0|t'..name--(name:match('|c........(.+)|r') or name)
     end
 
 

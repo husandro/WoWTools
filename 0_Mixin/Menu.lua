@@ -553,7 +553,7 @@ end
 function WoWTools_MenuMixin:ClearAll(root, SetValue)
     root:CreateButton(
         '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL),
-        nil,
+        --nil,
     function(data)
         StaticPopup_Show('WoWTools_OK',
             '|A:bags-button-autosort-up:32:32|a|n'..(e.onlyChinese and '全部清除' or CLEAR_ALL)..'|n|n',
