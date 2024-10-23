@@ -294,7 +294,7 @@ local function Init_Button()--预创建队伍增强
     end)
 
     WoWTools_LFDMixin.LFGPlusButton= Button
-    
+
 end
 
 
@@ -351,11 +351,8 @@ end
 
 function WoWTools_LFDMixin:Init_LFG_Plus()
     Init_Button()--预创建队伍增强
-    
-        --预创建队伍增强
+
+--预创建队伍增强
     hooksecurefunc('LFGListSearchEntry_Update', Init_LFGListSearchEntry_Update)
     hooksecurefunc('LFGListUtil_SetSearchEntryTooltip', Init_LFGListUtil_SetSearchEntryTooltip)
-    
-    
-
 end

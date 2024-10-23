@@ -7,7 +7,7 @@ local button
 local function Init_Dia()
 
     StaticPopupDialogs['WoWToolsUseItemsADD']={--添加, 移除
-        text=WoWTools_UseItemsMixin.addName..'|n|n%s: %s',
+        text= WoWTools_UseItemsMixin.addName..'|n|n%s: %s',
         whileDead=true, hideOnEscape=true, exclusive=true,
         button1= e.onlyChinese and '添加' or ADD,
         button2= e.onlyChinese and '取消' or CANCEL,
@@ -57,7 +57,7 @@ local function Init()
         elseif infoType =='spell' and spellID then
             local spellLink=C_Spell.GetSpellLink(spellID) or ((e.onlyChinese and '法术' or SPELLS)..' ID: '..spellID)
             local icon=C_Spell.GetSpellTexture(spellID)
-            StaticPopup_Show('WoWToolsUseItemsADD', SPELLS , (icon and '|T'..icon..':0|t' or '')..spellLink, {type='spell', name=spellLink, ID=spellID})
+            StaticPopup_Show('WoWToolsUseItemsADD',  e.onlyChinese and '法术' or SPELLS , (icon and '|T'..icon..':0|t' or '')..spellLink, {type='spell', name=spellLink, ID=spellID})
             ClearCursor()
 
         else
