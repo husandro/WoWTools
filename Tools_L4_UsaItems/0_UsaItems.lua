@@ -112,7 +112,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:UnregisterEvent('ADDON_LOADED')
                 return
             end
-            
+
             --if (not WoWToolsSave or not WoWToolsSave[addName..'Tools']) and PlayerHasToy(156833) and WoWTools_UseItemsMixin.Save.item[1]==194885 then
             --Save.item[1] = 156833
             --end
