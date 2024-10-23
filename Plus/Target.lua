@@ -837,6 +837,7 @@ local function set_All_Init()
     Init_Quest()
     Init_Unit_Is_Me()
 end
+
 local function Init()
     hooksecurefunc(NamePlateBaseMixin, 'OnRemoved', function(plate)--移除所有
         if IsMeFrame then
@@ -846,10 +847,7 @@ local function Init()
             QuestFrame:hide_plate(plate)
         end
     end)
-
-
     set_All_Init()
-
 end
 
 
@@ -1138,6 +1136,10 @@ local function set_Option()
                     tooltip:AddLine(description.data.icon:gsub(':0', ':64'))
                     tooltip:AddLine(description.data.name)
                 end)
+                sub:AddInitializer(function(btn)
+                    btn.fontString:ClearAllPoints()
+                    btn.fontString:SetPoint('CENTER')
+                end)
                 num= num+1
             end
         end
@@ -1356,7 +1358,7 @@ local function set_Option()
     --local menuUnitIsMePoint = CreateFrame("FRAME", nil, panel, "UIDropDownMenuTemplate")--下拉，菜单
     local menuUnitIsMePoint= CreateFrame("DropdownButton", nil, panel, "WowStyle1DropdownTemplate")--下拉，菜单
     menuUnitIsMePoint:SetPoint("LEFT", unitIsMeCheck.Text, 'RIGHT', 15, 0)
-    menuUnitIsMePoint:SetWidth(130)
+    menuUnitIsMePoint:SetWidth(230)
     menuUnitIsMePoint:SetDefaultText(Save.unitIsMePoint)
     menuUnitIsMePoint.Text:ClearAllPoints()
     menuUnitIsMePoint.Text:SetPoint('CENTER')
@@ -1374,7 +1376,7 @@ local function set_Option()
                 return Save.unitIsMePoint==data.name
             end, function(data)
                 Save.unitIsMePoint= data.name
-                self:SetDefaultText(data.name)
+                --self:SetDefaultText(data.name)
                 set_All_Init()
             end, {name=name})
         end
@@ -1460,9 +1462,42 @@ local function set_Option()
         e.LibDD:ToggleDropDownMenu(1, nil, self:GetParent(), self, 15, 0)
     end)]]
 
-    local menuUnitIsMe = CreateFrame("FRAME", nil, panel, "UIDropDownMenuTemplate")--下拉，菜单
+    --local menuUnitIsMe = CreateFrame("FRAME", nil, panel, "UIDropDownMenuTemplate")--下拉，菜单
+    local menuUnitIsMe= CreateFrame("DropdownButton", nil, panel, "WowStyle1DropdownTemplate")--下拉，菜单
     menuUnitIsMe:SetPoint("LEFT", menuUnitIsMePoint, 'RIGHT', 2,0)
-    e.LibDD:UIDropDownMenu_SetWidth(menuUnitIsMe, 100)
+    menuUnitIsMe:SetWidth(150)
+    menuUnitIsMe.Text:ClearAllPoints()
+    menuUnitIsMe.Text:SetPoint('CENTER')
+    menuUnitIsMe:SetupMenu(function(self, root)
+        local num, icon, sub= 0, nil, nil
+        for name in pairs(get_texture_tab()) do
+            icon= select(3, WoWTools_TextureMixin:IsAtlas(name))
+            if icon then
+                sub=root:CreateRadio(
+                    icon,
+                function(data)
+                    return Save.unitIsMeTextrue== data.name
+                end, function(data)
+                    Save.unitIsMeTextrue= data.name
+                    self:set_icon()
+                    set_All_Init()
+                end, {name=name, icon=icon})
+                sub:SetTooltip(function(tooltip, description)
+                    tooltip:AddLine(description.data.icon:gsub(':0', ':64'))
+                    tooltip:AddLine(description.data.name)
+                end)
+                sub:AddInitializer(function(btn)
+                    btn.fontString:ClearAllPoints()
+                    btn.fontString:SetPoint('CENTER')
+                end)
+                num= num+1
+            end
+        end
+
+        --SetScrollMod
+        WoWTools_MenuMixin:SetScrollMode(root, nil)
+    end)
+    --[[e.LibDD:UIDropDownMenu_SetWidth(menuUnitIsMe, 100)
     e.LibDD:UIDropDownMenu_Initialize(menuUnitIsMe, function(self, level)
         for name, use in pairs(get_texture_tab()) do
             local isAtlas, texture= WoWTools_TextureMixin:IsAtlas(name)
@@ -1490,7 +1525,7 @@ local function set_Option()
     menuUnitIsMe.Button:SetScript('OnMouseDown', function(self)
         e.LibDD:CloseDropDownMenus(1)
         e.LibDD:ToggleDropDownMenu(1, nil, self:GetParent(), self, 15, 0)
-    end)
+    end)]]
 
     function menuUnitIsMe:set_icon()
         local isAtlas, texture= WoWTools_TextureMixin:IsAtlas(Save.unitIsMeTextrue)
@@ -1503,10 +1538,11 @@ local function set_Option()
         end
         self.Icon:SetVertexColor(Save.unitIsMeColor.r or 1, Save.unitIsMeColor.g or 1, Save.unitIsMeColor.b or 1, Save.unitIsMeColor.a or 1)
     end
-    menuUnitIsMe:set_icon()
-    menuUnitIsMe.Icon:ClearAllPoints()
-    menuUnitIsMe.Icon:SetPoint('Left', menuUnitIsMe, 'RIGHT', -15, 4)
+    
+    menuUnitIsMe.Icon= menuUnitIsMe:CreateTexture()
     menuUnitIsMe.Icon:SetSize(32,32)
+    --menuUnitIsMe.Icon:ClearAllPoints()
+    menuUnitIsMe.Icon:SetPoint('LEFT', menuUnitIsMe, 'RIGHT', 2)
     menuUnitIsMe.Icon:Show()
     menuUnitIsMe.Icon:EnableMouse(true)
     menuUnitIsMe.Icon:SetScript("OnLeave", function(self) self:SetAlpha(1) GameTooltip_Hide() end)
@@ -1544,6 +1580,7 @@ local function set_Option()
         end
     end)
 
+    menuUnitIsMe:set_icon()
 
     local unitIsMeX = e.CSlider(panel, {min=-250, max=250, value=Save.unitIsMeX, setp=1, w= 100,
     text= 'X',

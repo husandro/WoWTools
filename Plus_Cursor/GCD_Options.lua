@@ -145,9 +145,13 @@ local function Init(Frame)
                 WoWTools_CursorMixin:ShowGCDTips()--显示GCD图片
             end, {index=index, icon=icon, texture=texture})
             sub:SetTooltip(function(tooltip, description)
-                tooltip:AddLine(select(3, WoWTools_TextureMixin:IsAtlas(description.data.texture, 42)))
+                tooltip:AddLine(select(3, WoWTools_TextureMixin:IsAtlas(description.data.texture, 64)))
                 tooltip:AddLine(description.data.texture)
                 tooltip:AddLine(e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
+            end)
+            sub:AddInitializer(function(btn)
+                btn.fontString:ClearAllPoints()
+                btn.fontString:SetPoint('CENTER')
             end)
             num= index
         end
