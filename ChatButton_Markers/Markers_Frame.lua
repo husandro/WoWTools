@@ -85,7 +85,7 @@ local function Init()--设置标记, 框架
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
         --e.tips:AddDoubleLine((UnitAffectingCombat('player') and '|cff9e9e9e' or '')..(e.onlyChinese and '缩放' or  UI_SCALE), '|cnGREEN_FONT_COLOR:'..(Save().markersScale or 1)..'|r Alt+'..e.Icon.mid)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or MAINMENU, e.Icon.right)
+        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
         e.tips:Show()
     end
     btn:SetScript('OnLeave', function(self)

@@ -313,7 +313,7 @@ local function Init_EmojiFrame()
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..Save.scale, 'Alt+'..e.Icon.mid)
-        --e.tips:AddDoubleLine(e.onlyChinese and '菜单' or MAINMENU, e.Icon.right)
+        --e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
         e.tips:Show()
     end
     Frame:SetScript("OnMouseUp", ResetCursor)

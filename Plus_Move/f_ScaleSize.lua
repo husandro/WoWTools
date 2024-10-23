@@ -360,7 +360,7 @@ local function Set_Tooltip(self)
         )
     end
 
-    e.tips:AddDoubleLine(e.onlyChinese and '菜单' or MAINMENU, e.Icon.mid)
+    e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.mid)
 
     if self.notInCombat then
         e.tips:AddLine(' ')

@@ -232,7 +232,7 @@ local function Init()
     OptionButton:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddLine(e.onlyChinese and '菜单' or MAINMENU)
+        e.tips:AddLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
         e.tips:Show()
     end)
 

@@ -75,7 +75,7 @@ local function Init()
     ObjectiveTrackerFrame.Header.MinimizeButton:HookScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddLine((e.onlyChinese and '菜单' or MAINMENU)..e.Icon.right)
+        e.tips:AddLine((e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..e.Icon.right)
         e.tips:Show()
     end)
 
