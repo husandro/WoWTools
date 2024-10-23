@@ -118,12 +118,12 @@ end
 
 
 local function Init_Options(category, layout)
-    e.AddPanel_Header(layout, addName)
+   -- e.AddPanel_Header(layout, addName)
 
     local initializer=e.AddPanel_Check({
         category= category,
-        name= (e.onlyChinese and '启用' or ENABLE),
-        tooltip= addName,
+        name= addName,--(e.onlyChinese and '启用' or ENABLE),
+        tooltip= e.GetEnabeleDisable(nil, true),
         GetValue= function() return not Save.disabled end,
         SetValue= function()
             Save.disabled= not Save.disabled and true or nil

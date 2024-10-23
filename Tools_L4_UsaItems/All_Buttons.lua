@@ -228,6 +228,10 @@ end
 
 
 local function Init()
+    WoWTools_ToolsButtonMixin:AddOptions(function(_, layout)
+        e.AddPanel_Header(layout, WoWTools_ToolsButtonMixin.addName)
+    end)
+
     for _, itemID in pairs(WoWTools_UseItemsMixin.Save.item) do
         local name ,icon
         if get_Find(itemID) then
