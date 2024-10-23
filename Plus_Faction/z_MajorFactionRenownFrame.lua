@@ -185,7 +185,7 @@ end
 
 --派系，列表 MajorFactionRenownFrame
 local function Init()
-    Button= WoWTools_ButtonMixin:Cbtn(MajorFactionRenownFrame, {size={22,22}, icon='hide'})
+    Button= WoWTools_ButtonMixin:Cbtn(MajorFactionRenownFrame.CloseButton, {size={22,22}, icon='hide'})
 
     function Button:set_scale()
         self.frame:SetScale(Save().MajorFactionRenownFrame_Button_Scale or 1)
@@ -234,12 +234,13 @@ local function Init()
         self:set_tooltips()
     end)
 
-    Button.HeaderText= WoWTools_LabelMixin:Create(Button.frame, {color={r=1, g=1, b=1}, copyFont=MajorFactionRenownFrame.HeaderFrame.Level, justifyH='LEFT', size=14})
-    Button.HeaderText:SetPoint('BOTTOMLEFT', MajorFactionRenownFrame.HeaderFrame.Level, 'BOTTOMRIGHT', 16, -4)
 
     Button.frame=CreateFrame('Frame', nil, Button)
     Button.frame:SetSize(1,1)
     Button.frame:SetAllPoints()
+
+    Button.HeaderText= WoWTools_LabelMixin:Create(Button.frame, {color={r=1, g=1, b=1}, copyFont=MajorFactionRenownFrame.HeaderFrame.Level, justifyH='LEFT', size=14})
+    Button.HeaderText:SetPoint('BOTTOMLEFT', MajorFactionRenownFrame.HeaderFrame.Level, 'BOTTOMRIGHT', 16, -4)
 
     hooksecurefunc(MajorFactionRenownFrame, 'Refresh', function()
         Settings()
