@@ -39,11 +39,11 @@ local function Init_Menu(_, root)
     end)
 
 
-    
+
     for _, info in pairs({
         {text= e.Icon.TANK..(e.onlyChinese and '坦克' or TANK), type='tank'},
-        {text= e.Icon.HEALER..(e.onlyChinese and '治疗' or HEALER), type='healer', tip=e.onlyChinese and '仅限小队' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, GROUP)},
-        {text= e.Icon.TANK..(e.onlyChinese and '坦克' or TANK)..'2', type='tank2', tip=e.onlyChinese and '仅限团队' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, RAID)},
+        {text= e.Icon.HEALER..(e.onlyChinese and '治疗' or HEALER), type='healer', tip=e.onlyChinese and '仅限小队' or format(LFG_LIST_CROSS_FACTION, GROUP)},
+        {text= e.Icon.TANK..(e.onlyChinese and '坦克' or TANK)..'2', type='tank2', tip=e.onlyChinese and '仅限团队' or format(LFG_LIST_CROSS_FACTION, RAID)},
     }) do
         sub2=sub:CreateButton(info.text, function()
             Save().tank= 2
