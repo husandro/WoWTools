@@ -679,7 +679,7 @@ local function Init()--设置标记, 框架
         if index~=0 then--背景
             btn:SetPushedAtlas('Forge-ColorSwatchHighlight')
             btn.texture=btn:CreateTexture(nil,'BACKGROUND')
-            btn.texture:SetAllPoints(btn)
+            btn.texture:SetAllPoints()
             btn.texture:SetColorTexture(WoWTools_MarkerMixin.Color[index].r, WoWTools_MarkerMixin.Color[index].g, WoWTools_MarkerMixin.Color[index].b)
             btn.texture:SetAlpha(0.3)
 
