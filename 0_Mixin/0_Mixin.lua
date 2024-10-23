@@ -156,7 +156,11 @@ function e.Get_Guild_Enter_Info()
             e.tips:AddLine('|cffff00ff'..day..'|r', nil,nil, nil, true)
         end
         local col= online>1 and '|cnGREEN_FONT_COLOR:' or '|cff9e9e9e'
-        e.tips:AddDoubleLine(col..(e.onlyChinese and '在线成员：' or GUILD_MEMBERS_ONLINE_COLON), col..'|A:UI-HUD-UnitFrame-Player-Group-FriendOnlineIcon:0:0|a'..(online-1)..'|r/|A:UI-ChatIcon-App:0:0|a'..(app-1))
+        e.tips:AddDoubleLine(
+            col..(e.onlyChinese and '在线成员：' or GUILD_MEMBERS_ONLINE_COLON),
+            col..'|A:UI-HUD-UnitFrame-Player-Group-FriendOnlineIcon:0:0|a'..(online-1)..'|r'
+            ..(app and app>1 and '/|A:UI-ChatIcon-App:0:0|a'..(app-1) or '')
+        )
         if #clubs>0 then
             e.tips:AddLine(' ')
         end
