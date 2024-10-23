@@ -79,8 +79,11 @@ local function Init()
         self:SetAlpha(1.0)
     end)
     button:SetScript('OnLeave', function (self)
-        self:SetAlpha(0.1)
+        self:SetAlpha(0.3)
         e.tips:Hide()
+    end)
+    C_Timer.After(8, function()
+        button:SetAlpha(0.3)
     end)
 end
 
