@@ -5043,7 +5043,8 @@
         "MacroFramePortrait",
         "MacroFrameCloseButton",
         "GarrisonLandingPageFollowerList",
-        "WidgetCenterDisplayFrameMixin"
+        "WidgetCenterDisplayFrameMixin",
+        "CurrencyTransferAmountSelectorMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
