@@ -5,7 +5,7 @@ local button
 
 
 local function Init_Dia()
-    
+
     StaticPopupDialogs['WoWToolsUseItemsADD']={--添加, 移除
         text=WoWTools_UseItemsMixin.addName..'|n|n%s: %s',
         whileDead=true, hideOnEscape=true, exclusive=true,
@@ -39,7 +39,7 @@ local function Init()
     --button.Menu=CreateFrame("Frame", nil, button, "UIDropDownMenuTemplate")
     --e.LibDD:UIDropDownMenu_Initialize(button.Menu, Init_Menu_List, 'MENU')--主菜单
     local btn= WoWTools_ToolsButtonMixin:GetButton()
-    
+
     button=WoWTools_ButtonMixin:Cbtn(btn.Frame, {atlas='Soulbinds_Tree_Conduit_Icon_Utility', size={22,22}})
     button:SetPoint('TOPLEFT', btn, 'TOPRIGHT')
 

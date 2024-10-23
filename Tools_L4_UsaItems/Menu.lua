@@ -120,6 +120,10 @@ local function Init_Menu(_, root)
             end}
         )
     end)
+    sub:CreateDivider()
+
+--重新加载UI
+    WoWTools_MenuMixin:Reload(sub)
 end
 
 
