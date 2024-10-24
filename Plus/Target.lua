@@ -243,7 +243,7 @@ function Init_Target()
                 elseif UnitFrame.ClassificationFrame.classificationIndicator:IsVisible() then
                     n= UnitFrame.ClassificationFrame.classificationIndicator:GetWidth()
                 end
-                
+
                 if UnitFrame.questProgress then
                     p= UnitFrame.questProgress:GetWidth()
                 end
