@@ -160,9 +160,9 @@ end
 
 
 
---#######
---指示目标
---#######
+
+--指示目标 Blizzard_NamePlates.xml
+--HealthBarsContainer castBar WidgetContainer
 function Init_Target()
     if TargetFrame then
         TargetFrame:UnregisterAllEvents()
@@ -246,10 +246,15 @@ function Init_Target()
                 self:SetSize(w+ n+ p, h)
                 self:SetPoint('CENTER', UnitFrame, Save.x+ (-n+p)/2, Save.y)
             else
+
                 if UnitFrame.RaidTargetFrame.RaidTargetIcon:IsVisible() then
                     frame= UnitFrame.RaidTargetFrame
+
                 elseif UnitFrame.ClassificationFrame.classificationIndicator:IsVisible() then
                     frame= UnitFrame.ClassificationFrame.classificationIndicator
+
+                elseif UnitFrame.WidgetContainer:IsVisible() then
+                    frame= UnitFrame.WidgetContainer
                 else
                     frame= UnitFrame.healthBar or UnitFrame.name
                 end
@@ -1538,7 +1543,7 @@ local function set_Option()
         end
         self.Icon:SetVertexColor(Save.unitIsMeColor.r or 1, Save.unitIsMeColor.g or 1, Save.unitIsMeColor.b or 1, Save.unitIsMeColor.a or 1)
     end
-    
+
     menuUnitIsMe.Icon= menuUnitIsMe:CreateTexture()
     menuUnitIsMe.Icon:SetSize(32,32)
     --menuUnitIsMe.Icon:ClearAllPoints()
