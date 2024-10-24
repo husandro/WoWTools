@@ -164,6 +164,7 @@ local function Init()
           --  print(e.addName, WoWTools_MarkerMixin.addName, e.onlyChinese and '设置' or SETTINGS, e.onlyChinese and '坦克' or TANK, e.onlyChinese and '治疗' or HEALER, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE))
         --end
     end
+    Set_TankHealer()--设置队伍标记
 end
 
 
