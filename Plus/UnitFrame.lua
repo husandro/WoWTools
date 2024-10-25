@@ -1390,7 +1390,7 @@ local function Init_BossFrame()
 
         frame.BossButton= WoWTools_ButtonMixin:Cbtn(frame, {size=38, type=true, icon='hide', isType2=true})--CreateFrame('Frame', nil, frame, 'SecureActionButtonTemplate')
 
-        frame.BossButton:SetPoint('LEFT', frame.TargetFrameContent.TargetFrameContentMain.HealthBar, 'RIGHT')
+        frame.BossButton:SetPoint('LEFT', frame.TargetFrameContent.TargetFrameContentMain.HealthBarsContainer, 'RIGHT')
 
         frame.BossButton:SetAttribute('type', 'target')
         frame.BossButton:SetAttribute('unit', frame.unit)

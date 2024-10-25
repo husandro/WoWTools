@@ -237,8 +237,8 @@ function Init_Target()
                 if UnitFrame.RaidTargetFrame.RaidTargetIcon:IsVisible() then
                     n= UnitFrame.RaidTargetFrame.RaidTargetIcon:GetWidth()+ UnitFrame.ClassificationFrame.classificationIndicator:GetWidth()
 
-                elseif UnitFrame.WidgetContainer:IsVisible() then
-                    n= UnitFrame.WidgetContainer:GetWidth()
+                --[[elseif UnitFrame.WidgetContainer:IsVisible() then
+                    n= UnitFrame.WidgetContainer:GetWidth()]]
 
                 elseif UnitFrame.ClassificationFrame.classificationIndicator:IsVisible() then
                     n= UnitFrame.ClassificationFrame.classificationIndicator:GetWidth()
