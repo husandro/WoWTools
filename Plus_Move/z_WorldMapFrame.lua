@@ -74,7 +74,19 @@ local function Init()
         end, sizeTooltip='|cnRED_FONT_COLOR:BUG|r'
     })
 
-    QuestScrollFrame.Background:SetPoint('BOTTOM')
+
+    QuestMapFrame.DetailsFrame:SetPoint('BOTTOM')
+    QuestMapDetailsScrollFrame:SetPoint('BOTTOM', 0, 123)--, QuestMapFrame.DetailsFrame.RewardsFrameContainer, 'TOP')
+
+    --QuestMapFrame.DetailsFrame.Bg:SetPoint('BOTTOM')
+    QuestMapFrame.DetailsFrame.Bg:SetPoint('BOTTOM', 0, 23)
+    QuestMapFrame.DetailsFrame.Bg:SetAllPoints()
+
+    WorldMapFrame.ScrollContainer.Child.TiledBackground:ClearAllPoints()
+    WorldMapFrame.ScrollContainer.Child.TiledBackground:SetAllPoints()
+    QuestScrollFrame.Background:SetPoint('BOTTOM', 0, 123)
+    --QuestScrollFrame.Background:SetAllPoints()
+
     WoWTools_MoveMixin:Setup(QuestScrollFrame, {frame=WorldMapFrame})
     WoWTools_MoveMixin:Setup(MapQuestInfoRewardsFrame, {frame=WorldMapFrame})
     WoWTools_MoveMixin:Setup(QuestMapFrame, {frame=WorldMapFrame})

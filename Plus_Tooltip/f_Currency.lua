@@ -51,7 +51,7 @@ function WoWTools_TooltipMixin:Set_Currency(tooltip, currencyID)--货币
     end
 
 
-    if num>0 then
+    if isTrans then
         tooltip:AddLine(' ')
         for index, info in pairs(data) do
             tooltip:AddDoubleLine(

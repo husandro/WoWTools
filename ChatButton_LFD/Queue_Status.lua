@@ -33,12 +33,12 @@ local function get_InviteButton_Frame(index)
             frame:SetPoint('TOPLEFT', Button.lfgTextTab[index-1], 'BOTTOMLEFT')
         end
 
-        
+
         frame.InviteButton= WoWTools_ButtonMixin:Cbtn(frame, {size={20, 20}, atlas= e.Icon.select})
         frame.InviteButton:SetAllPoints()
         --frame.InviteButton:SetPoint('TOPLEFT')
         frame.InviteButton.Size=20
-        
+
         frame.InviteButton:SetScript('OnClick', function(self2)
             if ( not IsInRaid(LE_PARTY_CATEGORY_HOME)
                 and (GetNumGroupMembers(LE_PARTY_CATEGORY_HOME) + self2:GetParent().numMembers + C_LFGList.GetNumInvitedApplicantMembers()) > (MAX_PARTY_MEMBERS + 1) )
@@ -74,7 +74,7 @@ local function get_InviteButton_Frame(index)
             e.tips:Show()
         end)
 
-        
+
 
         frame.DeclineButton= WoWTools_ButtonMixin:Cbtn(frame, {size={size, size}, atlas= 'communities-icon-redx'})
         frame.DeclineButton:SetPoint('BOTTOMLEFT', frame.ChatButton, 'BOTTOMRIGHT')
@@ -135,8 +135,8 @@ local function set_tipsFrame_Tips(text, LFGListTab)
         Button.lfgTextTab[index]:SetShown(false)
     end
 
-    
-    
+
+
     WoWTools_LFDMixin.LFDButton.leaveInstance:SetShown(Save().leaveInstance)--自动离开,指示图标
 end
 
@@ -418,8 +418,8 @@ local function Set_Queue_Status()--小眼睛, 信息
                                     ..(tank and INLINE_TANK_ICON or '')
                                     ..(healer and INLINE_HEALER_ICON or '')
                                     ..(dps and INLINE_DAMAGER_ICON or '')
-                                    
-                                    
+
+
                                     ..(levelText or '')
                                     ..(realmText or '')
                                     ..'|r '
@@ -574,7 +574,7 @@ local function Init()
         e.tips:Show()
     end
 
-    Button:SetScript("OnLeave", function(self)
+    Button:SetScript("OnLeave", function()
         e.tips:Hide()
         ResetCursor()
         WoWTools_LFDMixin.LFDButton:SetButtonState('NORMAL')
@@ -587,13 +587,11 @@ local function Init()
     end)
 
 
-    Button:SetScript('OnClick', function(self, d)--离开所有队列
+    Button:SetScript('OnClick', function(_, d)--离开所有队列
         if d=='RightButton' and not IsModifierKeyDown() then
             e.call(PVEFrame_ToggleFrame)
-            return
-        end
 
-        if IsShiftKeyDown() and d=='LeftButton' then
+        elseif IsShiftKeyDown() and d=='LeftButton' then
             WoWTools_LFDMixin:Leave_All_LFG()
         end
     end)

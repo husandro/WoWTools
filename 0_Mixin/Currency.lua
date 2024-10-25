@@ -93,7 +93,7 @@ function WoWTools_CurrencyMixin:GetAccountIcon(currencyID, index, link)
         end
     end
 end
--- local isWide, isTrans, col, atlas= WoWTools_CurrencyMixin:GetAccountIcon(currencyID, index, link)
+-- local icon, isWide, isTrans, col, atlas= WoWTools_CurrencyMixin:GetAccountIcon(currencyID, index, link)
 
 
 --GetLink
@@ -150,7 +150,7 @@ function WoWTools_CurrencyMixin:GetInfo(currencyID, index, link)
 
     return info, num, totale, percent, isMax, canWeek, canEarned, canQuantity
 end
-
+--info, num, totale, percent, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:GetInfo(currencyID, index, link)
 
 
 

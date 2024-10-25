@@ -36,7 +36,8 @@ end
 
 --离开所有队列
 function WoWTools_LFDMixin:Leave_All_LFG(isCheck)
-    local isLeavel= not isCheck
+    local isInGroup= IsInGroup()
+    local isLeavel= not isCheck and (isInGroup and UnitIsGroupLeader("player") or not isInGroup)
     local num=0
     if GetLFGQueueStats(LE_LFG_CATEGORY_SCENARIO) then
         if isLeavel then
@@ -75,6 +76,8 @@ function WoWTools_LFDMixin:Leave_All_LFG(isCheck)
             num= num+1
         end
     end
+
+--自己，创建
     if C_LFGList.HasActiveEntryInfo() then
         num= num+1
         if isLeavel then
@@ -82,6 +85,15 @@ function WoWTools_LFDMixin:Leave_All_LFG(isCheck)
             C_LFGList.ClearSearchResults()
         end
     end
+    
+    --申请，列表
+    local apps= C_LFGList.GetApplications() or {}
+    if isLeavel then
+        for _, resultID in pairs(apps) do
+            C_LFGList.CancelApplication(resultID)
+        end
+    end
+    num= num+ #apps
     
     
     return num

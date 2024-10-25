@@ -1449,7 +1449,7 @@ local function Init_BossFrame()
         frame.numSelectFrame.Text= WoWTools_LabelMixin:Create(frame.BossButton, {color={r=1,g=1,b=1}, size=20})
         frame.numSelectFrame.Text:SetPoint('BOTTOM', 0, -16)
         function frame.numSelectFrame:set_event(f)
-            if f:IsShown() then
+            if f:IsVisible() then
                 self:RegisterEvent('UNIT_TARGET')
                 if BossTargetFrameContainer.isInEditMode then
                     self.Text:SetText('40')
