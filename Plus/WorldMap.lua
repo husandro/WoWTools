@@ -104,7 +104,7 @@ local function set_WorldQuestPinMixin_RefreshVisuals(self)--WorldQuestDataProvid
         return
     end
 
-    
+
     local data= WoWTools_QuestMixin:GetRewardInfo(self.questID) or {}
     local text, texture
 
@@ -755,7 +755,7 @@ end
 
 local function Init_Menu()
     Menu.ModifyMenu("MENU_QUEST_MAP_FRAME_SETTINGS", function(_, root)
-        local sub, sub2 
+        local sub, sub2
 --全部放弃
         root:CreateDivider()
         sub=root:CreateButton('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部放弃' or LOOT_HISTORY_ALL_PASSED)..' #'..(select(2, C_QuestLog.GetNumQuestLogEntries()) or 0), function()
@@ -807,7 +807,8 @@ local function Init_Menu()
             table.sort(tab)
             for _, var in pairs(tab) do
                 sub2=sub:CreateCheckbox(
-                    var,
+                    (var=='scrollToLogQuest' and '|cnRED_FONT_COLOR:' or '')
+                    ..var,
                 function(data)
                     return C_CVar.GetCVarBool(data.var)
                 end, function(data)
@@ -816,13 +817,16 @@ local function Init_Menu()
                     end
                 end, {var=var})
                 sub2:SetTooltip(function(tooltip, description)
+                    if description.data.var=='scrollToLogQuest' then
+                        tooltip:AddLine('|cnRED_FONT_COLOR:BUG')
+                    end
                     tooltip:AddDoubleLine(e.onlyChinese and '默认' or DEFAULT, e.GetYesNo(C_CVar.GetCVarDefault(description.data.var)))
                     tooltip:AddDoubleLine(e.addName, addName)
                 end)
             end
         end
     end)
-    C_CVar.GetCVarBool('displayQuestID')
+    --C_CVar.GetCVarBool('displayQuestID')
     QuestScrollFrame.SearchBox:SetWidth(301- 20*2)
 
     local btnCollapse= WoWTools_ButtonMixin:Cbtn(QuestScrollFrame.SearchBox, {size={20,20}, atlas='NPE_ArrowUp'})--campaign_headericon_closed
@@ -897,6 +901,18 @@ local function Init()
             self.Text:SetText(text or '')
         end
     end)
+
+    --[[local ExpandHeaderForQuest= QuestScrollFrame.ExpandHeaderForQuest
+    function QuestScrollFrame:ExpandHeaderForQuest(questID)
+        if type(questID)=='table' then
+            if questID.questID then
+                ExpandHeaderForQuest(questID.questID)
+            end
+        else
+            ExpandHeaderForQuest(questID)
+        end
+    end]]
+    --function QuestScrollFrame:OnMapCanvasPinEnter(questID)
 end
 
 
