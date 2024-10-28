@@ -470,8 +470,18 @@ Plus_Professions\TrainerUI.lua
 ##坐骑， Tools 主要的，
 ##如果要使用Tools中的一个模块，必须开启坐骑模块
 Tools\0_Init_Tools.lua
+
+
+
 ##坐骑
-Tools\B1_Mount.lua
+Tools_B1_Mount\B1_Mount.lua
+Tools_B1_Mount\Button.lua
+Tools_B1_Mount\Menu.lua
+Tools_B1_Mount\Mount_Show.lua
+Tools_B1_Mount\UI_Collections.lua
+Tools_B1_Mount\UI_SpellBook.lua
+
+
 ##随机炉石
 Tools\B2_Hearthstone.lua
 ##打开物品，各种物品
