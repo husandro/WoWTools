@@ -19,7 +19,7 @@ local Save={
     isCombatHide=true,
     isMovingHide=true,
     --showIcon=false,
-    loadCollectionUI=true,
+    --loadCollectionUI=nil,
     --show=false,
     --point
     isShowBackground=e.Player.husandro,

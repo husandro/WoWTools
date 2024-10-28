@@ -8,7 +8,10 @@ WoWTools_GossipMixin= {
     gossip= true,
 
     unique= true,--唯一对话
-    gossipOption={},--gossipID= text
+    gossipOption={--gossipID= text
+        [123201]=2,--跳过，任务
+        [125089]=2,
+    },
     choice={},--PlayerChoiceFrame
     movie={},--电影
     stopMovie=true,--如果已播放，停止播放

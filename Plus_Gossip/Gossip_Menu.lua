@@ -112,7 +112,7 @@ local function Init_Menu(self, root)
 --列表，自定义,闲话
     for gossipOptionID, text in pairs(Save().gossipOption) do
         sub2=sub:CreateCheckbox(
-            text,
+            text==true and gossipOptionID or text,
         function(data)
             return Save().gossipOption[data.gossipOptionID]
         end, function(data)

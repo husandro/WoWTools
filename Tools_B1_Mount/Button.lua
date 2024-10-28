@@ -58,14 +58,13 @@ end
 
 
 local function checkSpell()--检测法术
-    MountButton.spellID=nil
+    MountButton.spellID2=nil
     if XD and XD[MOUNT_JOURNAL_FILTER_GROUND] then
-        MountButton.spellID=XD[MOUNT_JOURNAL_FILTER_GROUND]
+        MountButton.spellID2=XD[MOUNT_JOURNAL_FILTER_GROUND]
     else
         for spellID, _ in pairs(Save().Mounts[SPELLS]) do
-            if IsSpellKnownOrOverridesKnown(spellID) then
-                MountButton.spellID=spellID
-                --MountButton.spellTarget= target~=true and target or nil
+            if IsSpellKnown(spellID) then
+                MountButton.spellID2=spellID
                 break
             end
         end
@@ -219,21 +218,19 @@ local function setClickAtt()--设置 Click属性
         end
         spellID= spellID or (IsIndoors() and 768 or 783)
 
-    else
-        spellID= (IsIndoors() or isMoving or isBat) and MountButton.spellID
-        if not MountButton.itemID and not spellID then
-            spellID=getRandomRoll(FLOOR)--区域
-                or ((isAdvancedFlyableArea or C_Spell.IsSpellUsable(368896)) and-- [368896]=true,--[复苏始祖幼龙] 
-                    C_UnitAuras.GetAuraDataBySpellName('player', C_Spell.GetSpellName(404468), 'HELPFUL')--404468/飞行模式：稳定
-                        and getRandomRoll(MOUNT_JOURNAL_FILTER_FLYING)
-                        or getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING)
-                    )
-                or (IsSubmerged() and getRandomRoll(MOUNT_JOURNAL_FILTER_AQUATIC))--水平中
-                or (isFlyableArea and getRandomRoll(MOUNT_JOURNAL_FILTER_FLYING))--飞行区域
-                or (IsOutdoors() and getRandomRoll(MOUNT_JOURNAL_FILTER_GROUND))--室内
-                or MountButton.spellID
-                or ShiJI
-        end
+    elseif not MountButton.itemID or not C_PlayerInfo.CanUseItem(MountButton.itemID) then
+        spellID= (IsIndoors() or isMoving or isBat) and MountButton.spellID2
+            or getRandomRoll(FLOOR)--区域
+            or ((isAdvancedFlyableArea or C_Spell.IsSpellUsable(368896)) and-- [368896]=true,--[复苏始祖幼龙] 
+                C_UnitAuras.GetAuraDataBySpellName('player', C_Spell.GetSpellName(404468), 'HELPFUL')--404468/飞行模式：稳定
+                    and getRandomRoll(MOUNT_JOURNAL_FILTER_FLYING)
+                    or getRandomRoll(MOUNT_JOURNAL_FILTER_DRAGONRIDING)
+                )
+            or (IsSubmerged() and getRandomRoll(MOUNT_JOURNAL_FILTER_AQUATIC))--水平中
+            or (isFlyableArea and getRandomRoll(MOUNT_JOURNAL_FILTER_FLYING))--飞行区域
+            or (IsOutdoors() and getRandomRoll(MOUNT_JOURNAL_FILTER_GROUND))--室内
+            or MountButton.spellID
+            or ShiJI
     end
 
 
@@ -257,31 +254,30 @@ local function setClickAtt()--设置 Click属性
                 else
                     MountButton:SetAttribute('unit', nil)
                 end
-                MountButton.spellID=spellID
             end
         else
             e.LoadData({id=spellID, type='spell'})
             MountButton.Combat=true
         end
+
     elseif MountButton.itemID then
         name= C_Item.GetItemNameByID(MountButton.itemID)
         icon= C_Item.GetItemIconByID(MountButton.itemID)
         MountButton:SetAttribute("type1", "item")
         MountButton:SetAttribute("item1", name)
         MountButton:SetAttribute('unit', nil)
-        MountButton.spellID=nil
     else
         MountButton:SetAttribute("item1", nil)
         MountButton:SetAttribute("spell1", nil)
         MountButton:SetAttribute('unit', nil)
-        MountButton.spellID=nil
     end
+
 
     MountButton.spellID=spellID
     MountButton.iconAtt=icon
-    setTextrue()--设置图标
-
     MountButton.Combat=nil
+
+    setTextrue()--设置图标
 end
 
 
@@ -485,23 +481,20 @@ local function Init()
                     (e.onlyChinese and '修改' or EDIT)
                     or ('|A:bags-icon-addslots:0:0|a'..(e.onlyChinese and '添加' or ADD))
                 ))
-        else
-            if self.spellID then
-                local key= WoWTools_KeyMixin:IsKeyValid(self)
-                e.tips:AddDoubleLine(
-                    self.typeSpell and WoWTools_SpellMixin:GetName(self.spellID) or WoWTools_ItemMixin:GetName(self.spellID),
-                    (key and '|cnGREEN_FONT_COLOR:'..key or '')..e.Icon.left
-                )
-                e.tips:AddLine(' ')
-            elseif self.itemID then
 
-            end
+        else
+            local key= WoWTools_KeyMixin:IsKeyValid(self)
+            e.tips:AddDoubleLine(
+                WoWTools_ItemMixin:GetName(self.itemID) or WoWTools_SpellMixin:GetName(self.spellID),
+                (key and '|cnGREEN_FONT_COLOR:'..key or '')..e.Icon.left
+            )
+            e.tips:AddLine(' ')
+
             e.tips:AddDoubleLine(e.onlyChinese and '坐骑秀' or 'Mount show', '|A:bags-greenarrow:0:0|a')
             e.tips:AddDoubleLine(e.onlyChinese and '坐骑特效' or EMOTE171_CMD2:gsub('/',''), '|A:UI-HUD-MicroMenu-StreamDLYellow-Up:0:0|a')
 
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
-            e.tips:Show()
         end
         e.tips:Show()
     end

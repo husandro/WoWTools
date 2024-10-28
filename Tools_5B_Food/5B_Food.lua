@@ -17,7 +17,7 @@ local ClassSpells={--{item=5512, alt=nil, shift=nil, ctrl=nil}
     MONK= {},--ws
     DRUID= {shift=1126},--xd 1126/野性印记
     DEMONHUNTER= {},--dh
-    EVOKER= {},--ev
+    EVOKER= {shift=364342},--ev 364342/青铜龙的祝福
 }
 
 
