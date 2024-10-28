@@ -10,7 +10,6 @@ WoWTools_GossipMixin= {
     unique= true,--唯一对话
     gossipOption={--gossipID= text
         [123201]=2,--跳过，任务
-        [125089]=2,
     },
     choice={},--PlayerChoiceFrame
     movie={},--电影
