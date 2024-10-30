@@ -189,7 +189,7 @@ local function Init_Sell()
                 for slot=1, C_Container.GetContainerNumSlots(bag) do
                     local info = C_Container.GetContainerItemInfo(bag, slot)
                     local itemLocation, itemCommodityStatus= self:get_itemLocation(bag, slot)
-                    if info and info.hyperlink and info.itemID and itemLocation and itemCommodityStatus>0 then
+                    if info and info.hyperlink and info.itemID and itemLocation and itemCommodityStatus>0 and info.quality>0 then
                         local btn= self.buttons[index]
                         if not btn then
                             btn= WoWTools_ButtonMixin:Cbtn(self.frame, {button='ItemButton', icon='hide'})
