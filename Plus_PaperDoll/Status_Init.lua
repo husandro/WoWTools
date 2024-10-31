@@ -38,9 +38,7 @@ local function Init_Button()
             or 'loottoast-arrow-orange')
     end
 
-    --function Button:show_menu()
-        --e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 40, 0)--主菜单
-    --end
+
     function Button:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_TOPLEFT")
         e.tips:ClearLines()
@@ -55,10 +53,6 @@ local function Init_Button()
         self:set_alpha(true)
     end)
     Button:SetScript('OnEnter', Button.set_tooltips)
-
-    --Button.Menu= CreateFrame("Frame", nil, Button, "UIDropDownMenuTemplate")
-
-    --Button:SetScript("OnClick", Button.show_menu)
 
     Button:set_texture()
     Button:set_alpha(true)

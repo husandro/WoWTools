@@ -56,8 +56,6 @@ local function Init_Opetions_ToyBox(btn)--标记, 是否已选取
             self:set_alpha()
         else
             WoWTools_UseItemsMixin:Init_Menu(self)
-            --MenuUtil.CreateContextMenu(self, Init_Menu)
-            --e.LibDD:ToggleDropDownMenu(1, nil, button.Menu, self, 15, 0)
         end
     end)
     btn.useItem:SetScript('OnLeave', function(self) e.tips:Hide() self:set_alpha() end)

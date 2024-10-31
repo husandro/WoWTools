@@ -993,13 +993,11 @@ local function set_Option()
     end)
 
 
-    --local menuPoint = CreateFrame("FRAME", nil, panel, "UIDropDownMenuTemplate")--下拉，菜单
     local menuPoint= CreateFrame("DropdownButton", nil, panel, "WowStyle1DropdownTemplate")--下拉，菜单
     menuPoint:SetPoint("LEFT", combatCheck.Text, 'RIGHT', 15, 0)
     menuPoint:SetWidth(195)
     menuPoint.Text:ClearAllPoints()
     menuPoint.Text:SetPoint('CENTER')
-    --e.LibDD:UIDropDownMenu_SetWidth(menuPoint, 100)
     menuPoint:SetDefaultText(Save.TargetFramePoint)
     menuPoint:SetupMenu(function(self, root)
         for _, name in pairs({
@@ -1018,35 +1016,7 @@ local function set_Option()
             end, {name=name})
         end
     end)
-    --[[e.LibDD:UIDropDownMenu_Initialize(menuPoint, function(self, level)
-        local tab={
-            'TOP',
-            'HEALTHBAR',
-            'LEFT'
-        }
-        for _, name in pairs(tab) do
-            local info={
-                text= name,
-                checked= Save.TargetFramePoint==name,
-                tooltipOnButton=true,
-                tooltipTitle= e.onlyChinese and '位置' or CHOOSE_LOCATION,
-                arg1= name,
-                func= function(_, arg1)
-                    Save.TargetFramePoint= arg1
-                    e.LibDD:UIDropDownMenu_SetText(self, arg1)
-                    set_All_Init()
-                end
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
-        end
-        
-    end)
 
-    --e.LibDD:UIDropDownMenu_SetText(menuPoint, Save.TargetFramePoint)
-    -menuPoint.Button:SetScript('OnMouseDown', function(self)
-        e.LibDD:CloseDropDownMenus(1)
-        e.LibDD:ToggleDropDownMenu(1, nil, self:GetParent(), self, 15, 0)
-    end)]]
 
     local sliderX = e.CSlider(panel, {min=-250, max=250, value=Save.x, setp=1, w= 100,
     text= 'X',
@@ -1120,7 +1090,6 @@ local function set_Option()
     sliderElapsed:SetPoint("LEFT", sliderScale, 'RIGHT',15, 0)
 
 
-    --local menu = CreateFrame("FRAME", nil, panel, "UIDropDownMenuTemplate")--下拉，菜单
     local menu= CreateFrame("DropdownButton", nil, panel, "WowStyle1DropdownTemplate")--下拉，菜单
     menu:SetPoint("TOPLEFT", sel, 'BOTTOMRIGHT', -16,-82)
     menu:SetWidth(445)
@@ -1153,41 +1122,10 @@ local function set_Option()
                 num= num+1
             end
         end
-        --SetScrollMod
+--SetScrollMod
         WoWTools_MenuMixin:SetScrollMode(root, nil)
     end)
-    --[[e.LibDD:UIDropDownMenu_SetWidth(menu, 410)
-    e.LibDD:UIDropDownMenu_Initialize(menu, function(self, level)
-        for name, use in pairs(get_texture_tab()) do
-            local isAtlas, texture= WoWTools_TextureMixin:IsAtlas(name)
-            if texture then
-                local info={
-                    text= name:match('.+\\(.+)%.') or name,
-                    icon= name,
-                    colorCode= use=='use' and '|cff00ff00' or (isAtlas and '|cffff00ff') or nil,
-                    tooltipOnButton=true,
-                    tooltipTitle= isAtlas and 'Atls' or 'Texture',
-                    tooltipText= use=='use' and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '自定义' or CUSTOM) or nil,
-                    arg1= name,
-                    arg2= isAtlas,
-                    checked= Save.targetTextureName==name,
-                    func= function(_, arg1)
-                        Save.targetTextureName= arg1
-                        e.LibDD:UIDropDownMenu_SetText(self, arg1)
-                        self.edit:SetText(arg1)
-                        set_All_Init()
-                    end
-                }
-                e.LibDD:UIDropDownMenu_AddButton(info, level)
-            end
-        end
-    end)
-    e.LibDD:UIDropDownMenu_SetText(menu, Save.targetTextureName)
-    menu.Button:SetScript('OnMouseDown', function(self)
-        e.LibDD:CloseDropDownMenus(1)
-        e.LibDD:ToggleDropDownMenu(1, nil, self:GetParent(), self, 15, 0)
-    end)]]
-
+   
     menu.edit= CreateFrame("EditBox", nil, menu, 'InputBoxTemplate')--EditBox
     menu.edit:SetPoint("TOPLEFT", menu, 'BOTTOMLEFT',22,-2)
 	menu.edit:SetSize(420,22)
@@ -1232,7 +1170,6 @@ local function set_Option()
                 '|cnRED_FONT_COLOR:'..(e.onlyChinese and '删除' or DELETE)..'|r',
                 (isAtals and '|A:'..name..':0:0|a' or ('|T'..name..':0|t'))..name
             )
-            e.LibDD:UIDropDownMenu_SetText(menu, '')
             parent:SetText("")
             parent:SetText(name)
         end
@@ -1405,74 +1342,7 @@ local function set_Option()
             end, {name= tab2[1]})
         end
     end)
-    --[[e.LibDD:UIDropDownMenu_SetWidth(menuUnitIsMePoint, 100)
-    
-    e.LibDD:UIDropDownMenu_Initialize(menuUnitIsMePoint, function(self, level)
-        local info
-        local tab={
-            'TOPLEFT',
-            'TOP',
-            'TOPRIGHT',
-            'LEFT',
-            'RIGHT',
-        }
-        for _, name in pairs(tab) do
-            info={
-                text= name,
-                checked= Save.unitIsMePoint==name,
-                tooltipOnButton=true,
-                tooltipTitle= e.onlyChinese and '位置' or CHOOSE_LOCATION,
-                arg1= name,
-                func= function(_, arg1)
-                    Save.unitIsMePoint= arg1
-                    e.LibDD:UIDropDownMenu_SetText(self, arg1)
-                    set_All_Init()
-                end
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
-        end
-        e.LibDD:UIDropDownMenu_AddSeparator(level)
-        tab={
-            {'healthBar', e.onlyChinese and '生命条' or 'HealthBar'},
-            {'name', e.onlyChinese and '名称' or NAME},
-        }
-        for _, tab2 in pairs(tab) do
-            local info={
-                text= tab2[2],
-                checked= Save.unitIsMeParent==tab2[1],
-                arg1= tab2[1],
-                func= function(_, arg1)
-                    Save.unitIsMeParent= arg1
-                    set_All_Init()
-                end
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
-        end
-        e.LibDD:UIDropDownMenu_AddSeparator(level)
-        info={
-            text=e.onlyChinese and '颜色' or COLOR,
-            notCheckable=true,
-            icon= Save.unitIsMeTextrue,
-            r= Save.unitIsMeColor.r or 1,
-            g= Save.unitIsMeColor.g or 1,
-            b= Save.unitIsMeColor.b or 1,
-            a= Save.unitIsMeColor.a or 1,
-            hasColorSwatch=true,
-            swatchFunc= function(...)
-                print(ColorPickerFrame:GetColorRGB())
-            end,
-            cancelFunc= function(s)
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-    end)
-    e.LibDD:UIDropDownMenu_SetText(menuUnitIsMePoint, Save.unitIsMePoint)
-    menuUnitIsMePoint.Button:SetScript('OnMouseDown', function(self)
-        e.LibDD:CloseDropDownMenus(1)
-        e.LibDD:ToggleDropDownMenu(1, nil, self:GetParent(), self, 15, 0)
-    end)]]
 
-    --local menuUnitIsMe = CreateFrame("FRAME", nil, panel, "UIDropDownMenuTemplate")--下拉，菜单
     local menuUnitIsMe= CreateFrame("DropdownButton", nil, panel, "WowStyle1DropdownTemplate")--下拉，菜单
     menuUnitIsMe:SetPoint("LEFT", menuUnitIsMePoint, 'RIGHT', 2,0)
     menuUnitIsMe:SetWidth(150)
@@ -1504,54 +1374,22 @@ local function set_Option()
             end
         end
 
-        --SetScrollMod
+--SetScrollMod
         WoWTools_MenuMixin:SetScrollMode(root, nil)
     end)
-    --[[e.LibDD:UIDropDownMenu_SetWidth(menuUnitIsMe, 100)
-    e.LibDD:UIDropDownMenu_Initialize(menuUnitIsMe, function(self, level)
-        for name, use in pairs(get_texture_tab()) do
-            local isAtlas, texture= WoWTools_TextureMixin:IsAtlas(name)
-            if texture then
-                local info={
-                    text= isAtlas and '|cffff00ffAtlas|r' or '',
-                    icon= name,
-                    colorCode= use=='use' and '|cff00ff00' or (isAtlas and '|cffff00ff') or nil,
-                    tooltipOnButton=true,
-                    tooltipTitle= isAtlas and 'Atls' or 'Texture',
-                    tooltipText= (name:match('.+\\(.+)%.') or name)..(use=='use' and '|n|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '自定义' or CUSTOM)..'|r' or ''),
-                    arg1= name,
-                    checked= Save.unitIsMeTextrue==name,
-                    func= function(_, arg1)
-                        Save.unitIsMeTextrue= arg1
-                        self:set_icon()
-                        set_All_Init()
-                    end
-                }
-                e.LibDD:UIDropDownMenu_AddButton(info, level)
-            end
-        end
-    end)
-
-    menuUnitIsMe.Button:SetScript('OnMouseDown', function(self)
-        e.LibDD:CloseDropDownMenus(1)
-        e.LibDD:ToggleDropDownMenu(1, nil, self:GetParent(), self, 15, 0)
-    end)]]
 
     function menuUnitIsMe:set_icon()
         local isAtlas, texture= WoWTools_TextureMixin:IsAtlas(Save.unitIsMeTextrue)
         if isAtlas or not texture then
-            e.LibDD:UIDropDownMenu_SetText(self, texture or 'auctionhouse-icon-favorite')
             self.Icon:SetAtlas(texture or 'auctionhouse-icon-favorite')
         else
             self.Icon:SetTexture(texture)
-            e.LibDD:UIDropDownMenu_SetText(self, texture:match('.+\\(.+)%.') or texture)
         end
         self.Icon:SetVertexColor(Save.unitIsMeColor.r or 1, Save.unitIsMeColor.g or 1, Save.unitIsMeColor.b or 1, Save.unitIsMeColor.a or 1)
     end
 
     menuUnitIsMe.Icon= menuUnitIsMe:CreateTexture()
     menuUnitIsMe.Icon:SetSize(32,32)
-    --menuUnitIsMe.Icon:ClearAllPoints()
     menuUnitIsMe.Icon:SetPoint('LEFT', menuUnitIsMe, 'RIGHT', 2)
     menuUnitIsMe.Icon:Show()
     menuUnitIsMe.Icon:EnableMouse(true)

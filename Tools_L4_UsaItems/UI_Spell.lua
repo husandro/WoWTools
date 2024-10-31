@@ -52,8 +52,6 @@ local function set_Use_Spell_Button(btn, spellID)
                     print(e.addName, WoWTools_UseItemsMixin.addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD, C_Spell.GetSpellLink(self.spellID))
                 end
             else
-                --e.LibDD:ToggleDropDownMenu(1, nil, button.Menu, self, 15, 0)
-                --MenuUtil.CreateContextMenu(self, Init_Menu)
                 WoWTools_UseItemsMixin:Init_Menu(self)
             end
         end)

@@ -59,7 +59,7 @@ local function Init_Sell()
     AuctionHouseButton= WoWTools_ButtonMixin:Cbtn(AuctionHouseFrame, {size={34, 34}, icon='hide'})
     AuctionHouseButton:SetPoint('TOPLEFT', AuctionHouseFrame, 'TOPRIGHT',4,10)
     AuctionHouseButton.frame= CreateFrame('Frame', nil, AuctionHouseButton)
-    AuctionHouseButton.frame:SetAllPoints(AuctionHouseButton)
+    AuctionHouseButton.frame:SetAllPoints()
     AuctionHouseButton.Text= WoWTools_LabelMixin:Create(AuctionHouseButton)
     AuctionHouseButton.Text:SetPoint('CENTER')
     AuctionHouseButton.buttons={}
@@ -217,6 +217,7 @@ local function Init_Sell()
                                 e.tips:SetOwner(frame:GetParent(), "ANCHOR_LEFT")
                                 e.tips:ClearLines()
                                 if frame.itemLocation and frame.itemLocation:IsValid() and C_Item.DoesItemExist(frame.itemLocation) then
+                                    local itemName
                                     local itemLink= C_Item.GetItemLink(frame.itemLocation)
                                     if itemLink then
                                         if frame.isPet then
@@ -226,9 +227,9 @@ local function Init_Sell()
                                             e.tips:AddLine(' ')
                                             e.tips:AddDoubleLine(e.onlyChinese and '开始拍卖' or CREATE_AUCTION, e.Icon.left)
                                         end
+                                        itemName=C_Item.GetItemNameByID(itemLink)
                                     end
                                     local itemID= C_Item.GetItemID(frame.itemLocation)
-                                    local itemName=C_Item.GetItemNameByID(itemLink)
                                     if itemID then
                                         e.tips:AddDoubleLine(e.GetShowHide(nil, true), e.GetShowHide(Save.hideSellItem[itemID])..e.Icon.right)
                                     end
@@ -643,7 +644,7 @@ local function Init_Sell()
             then
                 price= 99999900--0.9万
 
-            elseif LinkUtil.IsLinkType(itemLink, "item") then
+            elseif itemLink and LinkUtil.IsLinkType(itemLink, "item") then
                 local vendorPrice = select(11, C_Item.GetItemInfo(itemLink));
                 if vendorPrice then
 

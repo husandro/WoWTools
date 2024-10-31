@@ -36,8 +36,6 @@ end
 local function Init()
     Init_Dia()
 
-    --button.Menu=CreateFrame("Frame", nil, button, "UIDropDownMenuTemplate")
-    --e.LibDD:UIDropDownMenu_Initialize(button.Menu, Init_Menu_List, 'MENU')--主菜单
     local btn= WoWTools_ToolsButtonMixin:GetButton()
 
     button=WoWTools_ButtonMixin:Cbtn(btn.Frame, {atlas='Soulbinds_Tree_Conduit_Icon_Utility', size={22,22}})
@@ -62,8 +60,6 @@ local function Init()
 
         else
             WoWTools_UseItemsMixin:Init_Menu(self)
-            --MenuUtil.CreateContextMenu(self, Init_Menu)
-            --e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
         end
     end)
     button:SetScript('OnEnter',function (self)
