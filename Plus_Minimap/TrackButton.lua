@@ -640,14 +640,14 @@ local function set_Button_Text()
         local btn = TrackButton.buttons[index]
         if not btn then
             btn= WoWTools_ButtonMixin:Cbtn(TrackButton.Frame, {size={12,12}, icon='hdie'})
-            btn.nameText= WoWTools_LabelMixin:Create(btn,{color=true})
+            btn.nameText= WoWTools_LabelMixin:Create(btn)
             btn.nameText:SetPoint('LEFT', btn, 'RIGHT')
             btn.onMinimap= btn:CreateTexture(nil, 'ARTWORK')
             btn.onMinimap:SetAtlas('UI-HUD-MicroMenu-Highlightalert')
             btn.onMinimap:SetPoint('CENTER')
             btn.onMinimap:SetSize(16,16)
             btn.onMinimap:SetVertexColor(0,1,0)
-            btn.text= WoWTools_LabelMixin:Create(btn,{color=true})
+            btn.text= WoWTools_LabelMixin:Create(btn)
 
             btn.index= index
 

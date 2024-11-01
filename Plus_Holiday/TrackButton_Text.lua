@@ -439,7 +439,7 @@ local function Set_TrackButton_Text(monthOffset, day)
 			end)
 
 
-            btn.text= WoWTools_LabelMixin:Create(btn, {color=true})
+            btn.text= WoWTools_LabelMixin:Create(btn)
             function btn:set_text_point()
                 if Save().left then
                     self.text:SetPoint('RIGHT', self, 'LEFT',1, 0)

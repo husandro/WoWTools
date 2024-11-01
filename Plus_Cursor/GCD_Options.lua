@@ -93,34 +93,7 @@ local function Init(Frame)
         numColorText:SetText(#Save().GCDTexture)
     end
 
-    --下拉，菜单
-    --[[local function Init_Menu(self, level, menuList)
-        for index, texture in pairs(Save().GCDTexture) do
-            local info={
-                text= texture,
-                icon= texture,
-                arg1= index,
-                checked= Save().gcdTextureIndex==index,
-                func= function(_, arg1)
-                    Save().gcdTextureIndex=arg1
-                    Save().randomTexture=nil
-                    Frame.randomTextureCheck:SetChecked(false)
-                    e.LibDD:UIDropDownMenu_SetText(self, Save().GCDTexture[arg1])
-                    set_panel_Texture()
-                    WoWTools_CursorMixin:ShowGCDTips()--显示GCD图片
-                end
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
-        end
-    end
-    dropDown:SetPoint("TOPLEFT", checkReverse, 'BOTTOMLEFT', -18,-15)
 
-    e.LibDD:UIDropDownMenu_SetWidth(dropDown, 180)
-    e.LibDD:UIDropDownMenu_Initialize(dropDown, Init_Menu)
-    e.LibDD:UIDropDownMenu_SetText(dropDown, Save().GCDTexture[Save().gcdTextureIndex] or WoWTools_CursorMixin.DefaultGCDTexture)
-    dropDown.Button:SetScript('OnMouseDown', function(self) e.LibDD:ToggleDropDownMenu(1,nil,self:GetParent(), self, 15,0) end)]]
-
-    
     --下拉，菜单
     dropDown:SetPoint("TOPLEFT", checkReverse, 'BOTTOMLEFT', 0,-15)
     dropDown:SetWidth(195)

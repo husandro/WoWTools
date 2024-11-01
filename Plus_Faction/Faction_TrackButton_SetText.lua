@@ -135,7 +135,7 @@ local function Crated_Button(index, last)
         WoWTools_ReputationMixin:Set_TrackButton_Pushed(true, self.text)--TrackButton，提示
     end)
 
-    btn.text= WoWTools_LabelMixin:Create(btn, {color=true})
+    btn.text= WoWTools_LabelMixin:Create(btn)
     function btn:set_text_point()
         if Save().toRightTrackText then
             self.text:SetPoint('LEFT', self, 'RIGHT', -3, 0)

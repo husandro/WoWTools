@@ -226,55 +226,6 @@ local function creatd_button(index, parent)
             C_Container.PickupContainerItem(self.bagID, self.slotID)
         elseif d=='RightButton' then
             MenuUtil.CreateContextMenu(self, Init_Button_Menu)
-
-            --[[if not self.Menu then
-                self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
-                e.LibDD:UIDropDownMenu_Initialize(self.Menu, function(_, level)
-                    e.LibDD:UIDropDownMenu_AddButton({
-                        text= e.onlyChinese and '标记' or EVENTTRACE_BUTTON_MARKER,
-                        icon='auctionhouse-icon-favorite',
-                        checked= Save.favorites[self.itemID],
-                        func= function()
-                            Save.favorites[self.itemID]= not Save.favorites[self.itemID] and true or nil
-                            self:set_favorite()
-                            print(e.addName, addName, Save.favorites[self.itemID] and self.itemID or '', e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
-                            panel:set_Gem()
-                        end
-                    }, level)
-
-                    e.LibDD:UIDropDownMenu_AddSeparator(level)
-                    e.LibDD:UIDropDownMenu_AddButton({
-                        text= e.onlyChinese and '左边' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_LEFT,
-                        icon= e.Icon.toRight,
-                        checked=Save.gemLeft[self.itemID],
-                        func= function()
-                            Save.gemLeft[self.itemID]= not Save.gemLeft[self.itemID] and true or nil
-                            panel:set_Gem()
-                        end
-                    }, level)
-
-                    e.LibDD:UIDropDownMenu_AddButton({
-                        text= e.onlyChinese and '上面' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP,
-                        icon= 'bags-greenarrow',
-                        checked=Save.gemTop[self.itemID],
-                        func= function()
-                            Save.gemTop[self.itemID]= not Save.gemTop[self.itemID] and true or nil
-                            panel:set_Gem()
-                        end
-                    }, level)
-
-                    e.LibDD:UIDropDownMenu_AddButton({
-                        text= e.onlyChinese and '右边' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_RIGHT,
-                        icon= e.Icon.toLeft,
-                        checked=Save.gemRight[self.itemID],
-                        func= function()
-                            Save.gemRight[self.itemID]= not Save.gemRight[self.itemID] and true or nil
-                            panel:set_Gem()
-                        end
-                    }, level)
-                end, 'MENU')
-            end
-            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15,0)]]
         end
         self:set_tooltips()
     end)
