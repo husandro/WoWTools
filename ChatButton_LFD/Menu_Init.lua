@@ -83,6 +83,18 @@ end
 
 
 
+local function GetLFGLockList()
+	local lockInfo = C_LFGInfo.GetLFDLockStates();
+	local lockMap = {};
+	for _, lock in ipairs(lockInfo) do
+		lockMap[lock.lfgID] = lock;
+	end
+	return lockMap;
+end
+
+
+
+
 
 
 
@@ -96,7 +108,8 @@ local function Set_LFGFollower_Dungeon_List(root)--追随者，副本
     local followerList= {}
     local dungeoNum= 0
 	for _, dungeonID in ipairs( GetLFDChoiceOrder() or {}) do--LFDFrame.lua
-		if not LFGLockList[dungeonID] or not LFGLockList[dungeonID].hideEntry then
+        local lockMap= LFGLockList or GetLFGLockList()
+		if not lockMap[dungeonID] or not lockMap[dungeonID].hideEntry then
 			if dungeonID >= 0 and C_LFGInfo.IsLFGFollowerDungeon(dungeonID) then
 				table.insert(followerList, dungeonID)
                 dungeoNum= dungeoNum+1

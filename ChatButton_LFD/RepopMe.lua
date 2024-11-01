@@ -36,7 +36,7 @@ local function Init()
         if event=='PLAYER_ENTERING_WORLD' then
             self:set_event()
         else
-        
+        print(event)
             if event=='PLAYER_DEAD' then
                 print(
                     e.addName,

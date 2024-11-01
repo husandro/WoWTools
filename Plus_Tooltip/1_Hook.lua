@@ -175,8 +175,10 @@ local function Init()
         end)
         frame.questIDLabel:SetScript('OnMouseDown', function(self)
             if self.questID then
-                local info = C_QuestLog.GetQuestTagInfo(self.questID) or {}
-                WoWTools_TooltipMixin:Show_URL(true, 'quest', self.questID, info.tagName)
+                --local info = C_QuestLog.GetQuestTagInfo(self.questID) or {}
+                local name=C_TaskQuest.GetQuestInfoByQuestID(self.questID) or C_QuestLog.GetTitleForQuestID(self.questID)
+
+                WoWTools_TooltipMixin:Show_URL(true, 'quest', self.questID, name)
             end
         end)
         function frame.questIDLabel:settings(questID)

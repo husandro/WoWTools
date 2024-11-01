@@ -45,6 +45,7 @@ function panel:settings()
     then
         return
     end
+    
     local text=(UMark[sourceRaidFlags] or '')..WoWTools_SpellMixin:GetLink(spellID)..de..WoWTools_SpellMixin:GetLink(extraSpellID)..(UMark[destRaidFlags] or '')
     if destGUID==e.Player.guid then
         print('|A:nameplates-holypower2-on:0:0|a', e.Icon.player..e.Player.col, text)

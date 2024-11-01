@@ -10,47 +10,48 @@ ChatEdit_TryInsertChatLink(link)
 ChatEdit_LinkItem(itemID, itemLink)
 --]]
 function WoWTools_ChatMixin:Chat(text, name, printText)
-    if text then
-        if name then
-            SendChatMessage(text, 'WHISPER', nil, name)
-        elseif printText then
-            if not ChatEdit_InsertLink(text) then
-                e.call(ChatFrame_OpenChat, text)
-            end
-            --securecallfunction(ChatFrame_OpenChat, 'a')
-            --[[if ChatEdit_GetActiveWindow() then
-                e.call(ChatEdit_InsertLink, text)
-            else
-                e.call(ChatFrame_OpenChat, text)
-            end]]
+    if not text then
+        return
+    end
+    if name then
+        SendChatMessage(text, 'WHISPER', nil, name)
+    elseif printText then
+        if not ChatEdit_InsertLink(text) then
+            e.call(ChatFrame_OpenChat, text)
+        end
+        --securecallfunction(ChatFrame_OpenChat, 'a')
+        --[[if ChatEdit_GetActiveWindow() then
+            e.call(ChatEdit_InsertLink, text)
         else
-            local isNotDead= not UnitIsDeadOrGhost('player')
-            local isInInstance= IsInInstance()
-            if isInInstance and isNotDead then-- and C_CVar.GetCVarBool("chatBubbles") then
-                SendChatMessage(text, 'YELL')
+            e.call(ChatFrame_OpenChat, text)
+        end]]
+    else
+        local isNotDead= not UnitIsDeadOrGhost('player')
+        local isInInstance= IsInInstance()
+        if isInInstance and isNotDead then-- and C_CVar.GetCVarBool("chatBubbles") then
+            SendChatMessage(text, 'YELL')
 
-            elseif isInInstance and IsInGroup(LE_PARTY_CATEGORY_INSTANCE) then
-                SendChatMessage(text, 'INSTANCE_CHAT')
+        elseif isInInstance and IsInGroup(LE_PARTY_CATEGORY_INSTANCE) then
+            SendChatMessage(text, 'INSTANCE_CHAT')
 
-            elseif IsInRaid() then
-                SendChatMessage(text, 'RAID')
+        elseif IsInRaid() then
+            SendChatMessage(text, 'RAID')
 
-            elseif IsInGroup() then--and C_CVar.GetCVarBool("chatBubblesParty") then
-                SendChatMessage(text, 'PARTY')
-                --elseif isNotDead and IsOutdoors() and not UnitAffectingCombat('player') then
-                    --SendChatMessage(text, 'YELL')
-                -- elseif setPrint then
-            else
-                if text:find('{rt%d}') then
-                    text= text:gsub('{rt%d}', function(s)
-                        local icon= s:match('%d')
-                        if icon then
-                            return format('|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%s:0|t', icon)
-                        end
-                    end)
-                end
-                print(text)
+        elseif IsInGroup() then--and C_CVar.GetCVarBool("chatBubblesParty") then
+            SendChatMessage(text, 'PARTY')
+            --elseif isNotDead and IsOutdoors() and not UnitAffectingCombat('player') then
+                --SendChatMessage(text, 'YELL')
+            -- elseif setPrint then
+        else
+            if text:find('{rt%d}') then
+                text= text:gsub('{rt%d}', function(s)
+                    local icon= s:match('%d')
+                    if icon then
+                        return format('|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%s:0|t', icon)
+                    end
+                end)
             end
+            print(text)
         end
     end
 end
