@@ -201,6 +201,9 @@ function WoWTools_SetTooltipMixin:Setup(tooltip, data)
     local uiMapID= data.uiMapID
     local areaPoiID= data.uiMapID
 
+    local speciesID= data.speciesID
+    local petID= data.petID
+
     local tip= data.tooltip--添加，提示
     tooltip= tooltip or GameTooltip
 
@@ -244,6 +247,16 @@ function WoWTools_SetTooltipMixin:Setup(tooltip, data)
     elseif uiMapID and areaPoiID then
         set_areaPoiID(tooltip, uiMapID, areaPoiID)
 
+    elseif speciesID or petID then
+        if not petID then
+            local speciesName= C_PetJournal.GetPetInfoBySpeciesID(speciesID)
+            if speciesName then
+                petID= select(2, C_PetJournal.FindPetIDByName(speciesName))
+            end
+        end
+        if petID then
+            tooltip:SetCompanionPet(petID)
+        end
     end
 
     if tip then

@@ -1,8 +1,11 @@
 local id, e = ...
-local addName='DaisyTools'
+local addName
 local Save={
     speciesID=2780,
-    --Pets={},
+
+    Pets={
+        [2780]=true,--speciesID
+    },
 }
 
 
@@ -14,17 +17,7 @@ local PetsList={
         emote='BECKON',
         emteText=EMOTE102_CMD1},--/招手
  }
---[[ Pets[speciesID]={
-    name=
-    cn=
-    petID=
-    icon=
-    emote=
-    auraID= 
-    auraName=
-    emteText=
-}
-]]
+
 for _, info in pairs(PetsList) do
     e.LoadData({id=info.auraID, type='spell'})
 end
@@ -38,46 +31,39 @@ end
 --Blizzard_Collections
 local function Init_PetJournal_InitPetButton(frame, elementData)
 	local index = elementData.index;
-	local _, speciesID, isOwned, _, _, _, _, name = C_PetJournal.GetPetInfoByIndex(index)
+	local _, speciesID, _, _, _, _, _, name = C_PetJournal.GetPetInfoByIndex(index)
 	--local needsFanfare = petID and C_PetJournal.PetNeedsFanfare(petID);
-    local show= isOwned and speciesID
-    if show then
-        if not frame.sumButton then
-            frame.sumButton=  CreateFrame("CheckButton", nil, frame, "ChatConfigCheckButtonTemplate")--WoWTools_ButtonMixin:Cbtn(frame, {size={20,20}, icon=true})
-            frame.sumButton:SetPoint('BOTTOMRIGHT')
-            function frame.sumButton:set_alpha()
-                self:SetAlpha(Save.speciesID==self.speciesID and 1 or 0)
-            end
-            frame.sumButton:SetScript('OnLeave', function(self) self:set_alpha() GameTooltip_Hide() end)
-            frame.sumButton:SetScript('OnEnter', function(self)
-                e.tips:SetOwner(self, "ANCHOR_RIGHT")
-                e.tips:ClearLines()
-                e.tips:AddDoubleLine(e.addName, 'Tools '..e.cn(addName))
-                e.tips:AddLine(e.onlyChinese and '自动召唤' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SUMMONS))
-                e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(self.speciesID, self.name)
-                e.tips:AddDoubleLine(e.onlyChinese and '添加' or ADD, e.Icon.left)
-                e.tips:Show()
-                self:SetAlpha(1)
-            end)
-            frame.sumButton:SetScript('OnClick', function(self)
-                Save.speciesID=self.speciesID
-                if button then
-                    button:init_pets_data()
-                end
-                e.call(PetJournal_UpdatePetList)
-            end)
-            frame:SetScript('OnLeave', function(self) self.sumButton:set_alpha() end)
-            frame:SetScript('OnEnter', function(self) self.sumButton:SetAlpha(1) end)
-            frame.sumButton:set_alpha()
+
+    if not frame.sumButton then
+        frame.sumButton=  CreateFrame("CheckButton", nil, frame, "ChatConfigCheckButtonTemplate")--WoWTools_ButtonMixin:Cbtn(frame, {size={20,20}, icon=true})
+        frame.sumButton:SetPoint('BOTTOMRIGHT')
+
+        function frame.sumButton:set_alpha()
+            self:SetAlpha(Save.Pets[self.speciesID] and 1 or 0.3)
         end
-        frame.sumButton.speciesID= speciesID
-        frame.sumButton.name= name
-        frame.sumButton:SetChecked(speciesID==Save.speciesID)
+
+        frame.sumButton:SetScript('OnLeave', function(self) self:set_alpha() e.tips:Hide() end)
+        frame.sumButton:SetScript('OnEnter', function(self)
+            e.tips:SetOwner(self, "ANCHOR_RIGHT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine(e.addName, addName)
+            e.tips:Show()
+            self:SetAlpha(1)
+        end)
+
+        frame.sumButton:SetScript('OnClick', function(self)
+            Save.Pets[self.speciesID]=not Save.Pets[self.speciesID] and true or nil
+        end)
+
+        frame:HookScript('OnLeave', function(self) self.sumButton:set_alpha() end)
+        frame:HookScript('OnEnter', function(self) self.sumButton:SetAlpha(1) end)
     end
-    if frame.sumButton then
-        frame.sumButton:SetShown(show)
-    end
+
+    frame.sumButton:set_alpha()
+    frame.sumButton.speciesID= speciesID
+    frame.sumButton.name= name
+    frame.sumButton:SetChecked(Save.Pets[speciesID])
+    frame.sumButton:SetShown(speciesID and speciesID>0)
 end
 
 
@@ -94,11 +80,121 @@ end
 
 
 
+
+
+
+local function Init_Menu(self, root)
+    local sub
+    local num=0
+--自动召唤
+    root:CreateCheckbox(
+        e.onlyChinese and '自动召唤' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SUMMONS),
+    function()
+        return Save.autoSummon
+    end, function()
+        Save.autoSummon= not Save.autoSummon and true or nil
+        self:init_pets_data()
+        self:set_auto_summon_tips()
+    end)
+    root:CreateDivider()
+
+--列表
+    for speciesID in pairs(Save.Pets) do
+        local speciesName, speciesIcon= C_PetJournal.GetPetInfoBySpeciesID(speciesID)
+        sub=root:CreateRadio(
+            (C_PetJournal.GetNumCollectedInfo(speciesID)==0 and '|cff9e9e9e' or '')
+            ..('|T'..(speciesIcon or 0)..':0|t'..(speciesName or speciesID)),
+        function(data)
+            return data.speciesID==Save.speciesID
+        end, function(data)
+            Save.speciesID=data.speciesID
+            self:init_pets_data()
+            return MenuResponse.Refresh
+        end, {speciesID=speciesID})
+        WoWTools_SetTooltipMixin:Set_Menu(sub)
+        num= num+1
+    end
+
+--全部清除
+    if num>1 then
+        root:CreateDivider()
+        root:CreateButton(
+            e.onlyChinese and '全部清除' or CLEAR_ALL,
+        function()
+            Save.Pets={[2780]=true}
+        end)
+    end
+
+--打开选项界面
+    if num>0 then
+        root:CreateDivider()
+    end
+    WoWTools_ToolsButtonMixin:OpenMenu(root, addName)--打开, 选项界面，菜单
+
+--SetScrollMod
+    WoWTools_MenuMixin:SetScrollMode(root, nil)
+end
+
+
+--[[
+
+
+
+    function  button:set_menu(speciesID, tab, level)
+        tab = tab or {}
+        local speciesName, speciesIcon= C_PetJournal.GetPetInfoBySpeciesID(speciesID)
+        if type(speciesName)=='string' then
+            local num= select(3, WoWTools_CollectedMixin:Pet(speciesID, nil, true))
+            e.LibDD:UIDropDownMenu_AddButton({
+                text= format('%s %s', e.onlyChinese and tab.cn or speciesName, (num or '')..''),
+                icon= speciesIcon,
+                disabled= C_PetJournal.GetNumCollectedInfo(speciesID)==0,
+                checked= Save.speciesID==speciesID,
+                arg1= speciesID,
+                --arg2= speciesIcon,
+                func= function(_, arg1)
+                    Save.speciesID= arg1
+                    self:init_pets_data()
+                end
+            }, level)
+        end
+    end
+
+if not self.Menu then
+self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
+e.LibDD:UIDropDownMenu_Initialize(self.Menu, function(_, level)--主菜单
+
+    if not PetsList[Save.speciesID] then
+        self:set_menu(Save.speciesID, nil, level)
+        e.LibDD:UIDropDownMenu_AddSeparator(level)
+    end
+    for speciesID, info in pairs(PetsList) do
+        self:set_menu(speciesID, info, level)
+    end
+
+    e.LibDD:UIDropDownMenu_AddButton({--自动召唤
+    text= e.onlyChinese and '自动召唤' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SUMMONS),
+    checked=Save.autoSummon,
+    keepShownOnClick=true,
+    func=function()
+        Save.autoSummon= not Save.autoSummon and true or nil
+        self:init_pets_data()
+        self:set_auto_summon_tips()
+    end
+}, level)
+end, 'MENU')
+end
+e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
+]]
+
+
+
+
 --####
 --初始
 --####
 local function Init()
- 
+
     button.Text=WoWTools_LabelMixin:Create(button, {size=10, color=true})-- size,nil,nil, true)
     button.Text:SetPoint('BOTTOM',0 , -2)
 
@@ -130,6 +226,7 @@ local function Init()
     function button:init_pets_data()
         self.Pets={}
         self.NumPet=0
+
         if not PetsList[Save.speciesID] then
             self:set_pets_date({[Save.speciesID]={}})
         end
@@ -210,7 +307,7 @@ local function Init()
         end
         if Save.autoSummon then
             if info.auraID then
-                self:RegisterUnitEvent('UNIT_AURA','player')
+                self:RegisterUnitEvent('UNIT_AURA', 'player')
             end
             self:RegisterEvent('PLAYER_REGEN_ENABLED')
             self:RegisterEvent('PLAYER_REGEN_DISABLED')
@@ -223,8 +320,7 @@ local function Init()
     end
 
     button:SetScript('OnClick', function(self, d)
-        local key=IsModifierKeyDown()
-        if d=='LeftButton' and not key then
+        if d=='LeftButton' then
             local petID= self:get_speciesID_data().petID
             if petID then
                 C_PetJournal.SummonPetByGUID(petID)
@@ -232,57 +328,14 @@ local function Init()
                 self:init_pets_data()
             end
 
-        elseif not key then
-            C_PetJournal.SummonRandomPet(true)
+        elseif d=='RightButton' then
+            MenuUtil.CreateContextMenu(self, Init_Menu)
         end
     end)
 
-    function  button:set_menu(speciesID, tab, level)
-        tab = tab or {}
-        local speciesName, speciesIcon= C_PetJournal.GetPetInfoBySpeciesID(speciesID)
-        if type(speciesName)=='string' then
-            local num= select(3, WoWTools_CollectedMixin:Pet(speciesID, nil, true))
-            e.LibDD:UIDropDownMenu_AddButton({
-                text= format('%s %s', e.onlyChinese and tab.cn or speciesName, (num or '')..''),
-                icon= speciesIcon,
-                disabled= C_PetJournal.GetNumCollectedInfo(speciesID)==0,
-                checked= Save.speciesID==speciesID,
-                arg1= speciesID,
-                --arg2= speciesIcon,
-                func= function(_, arg1)
-                    Save.speciesID= arg1
-                    self:init_pets_data()
-                end
-            }, level)
-        end
-    end
 
-    button:SetScript('OnMouseWheel', function(self)
-        if not self.Menu then
-            self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
-            e.LibDD:UIDropDownMenu_Initialize(self.Menu, function(_, level)--主菜单
-
-               if not PetsList[Save.speciesID] then
-                    self:set_menu(Save.speciesID, nil, level)
-                    e.LibDD:UIDropDownMenu_AddSeparator(level)
-               end
-                for speciesID, info in pairs(PetsList) do
-                   self:set_menu(speciesID, info, level)
-                end
-
-                e.LibDD:UIDropDownMenu_AddButton({--自动召唤
-                text= e.onlyChinese and '自动召唤' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SUMMONS),
-                checked=Save.autoSummon,
-                keepShownOnClick=true,
-                func=function()
-                    Save.autoSummon= not Save.autoSummon and true or nil
-                    self:init_pets_data()
-                    self:set_auto_summon_tips()
-                end
-            }, level)
-            end, 'MENU')
-        end
-        e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
+    button:SetScript('OnMouseWheel', function()
+        C_PetJournal.SummonRandomPet(true)
    end)
 
    button:SetScript('OnEnter', function(self)
@@ -297,8 +350,8 @@ local function Init()
         if name then
             e.tips:AddDoubleLine(name, e.Icon.left)
         end
-        e.tips:AddDoubleLine(e.onlyChinese and '随机偏好宠物' or SLASH_RANDOMFAVORITEPET1:gsub('/', ''), e.Icon.right)
-        e.tips:AddDoubleLine((e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU), e.Icon.mid)
+        e.tips:AddDoubleLine(e.onlyChinese and '随机偏好宠物' or SLASH_RANDOMFAVORITEPET1:gsub('/', ''), e.Icon.mid)
+        e.tips:AddDoubleLine((e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU), e.Icon.right)
         e.tips:Show()
     end)
     button:SetScript('OnLeave', GameTooltip_Hide)
@@ -355,30 +408,39 @@ end
 --###########
 local panel= CreateFrame('Frame')
 panel:RegisterEvent("ADDON_LOADED")
-
+panel:RegisterEvent('PLAYER_LOGOUT')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
-            Save= WoWToolsSave[addName..'Tools'] or Save
-            --Save.Pets= Save.Pets or {}
+            if WoWToolsSave['DaisyToolsTools'] then
+                Save= WoWToolsSave['DaisyToolsTools']
+                Save.Pets= Save.Pets or {[2780]=true}
+                Save.speciesID= Save.speciesID or 2780
+                WoWToolsSave['DaisyToolsTools']=nil
+
+            elseif WoWToolsSave['Tools_Daisy'] then
+                Save= WoWToolsSave['Tools_Daisy']
+            end
+
             Save.speciesID= Save.speciesID or 2780
+
+            addName= '|T3150958:0|t'..(e.onlyChinese and '黛西' or 'Daisy')
 
             button= WoWTools_ToolsButtonMixin:CreateButton({
                 name='SummonPet',
-                tooltip='|T3150958:0|t'..(e.onlyChinese and '黛西' or 'Daisy'),
+                tooltip=addName,
             })
+
             if button then
-                --[[for _, info in pairs(Save.Pets) do
-                    e.LoadData({id=info.auraID, type='spell'})
-                end]]
-
-
                 Init()
+                if C_AddOns.IsAddOnLoaded('Blizzard_Collections') then
+                    hooksecurefunc('PetJournal_InitPetButton', Init_PetJournal_InitPetButton)        
+                    self:UnregisterEvent('ADDON_LOADED')
+                end
             else
-                self:UnregisterAllEvents()
+                self:UnregisterEvent('ADDON_LOADED')
             end
-            self:RegisterEvent('PLAYER_LOGOUT')
 
         elseif arg1=='Blizzard_Collections' then
             hooksecurefunc('PetJournal_InitPetButton', Init_PetJournal_InitPetButton)
@@ -386,7 +448,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            WoWToolsSave[addName..'Tools']=Save
+            WoWToolsSave['Tools_Daisy']=Save
         end
 
     end
