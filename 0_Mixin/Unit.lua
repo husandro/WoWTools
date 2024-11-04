@@ -258,24 +258,40 @@ end
 
 
 
-
-
+--e.WoWDate[e.Player.guid].region= e.Player.region
+--e.WoWDate[e.Player.guid].battleTag= e.Player.battleTag or e.WoWDate[e.Player.guid].battleTag
 function WoWTools_UnitMixin:GetIsFriendIcon(name, guid, unit)--检测, 是否好友
     if guid or unit then
         guid= guid or WoWTools_UnitMixin:GetGUID(unit, name)
         if guid and guid~=e.Player.guid then
-            if C_BattleNet.GetGameAccountInfoByGUID(guid) then--C_BattleNet.GetAccountInfoByGUID(guid)
+            local data= e.WoWDate[guid]
+            if data then
+                if data.battleTag~=e.Player.region then--不在一区
+                    return '|A:tokens-guildRealmTransfer-small:0:0|a'
+
+                elseif data.battleTag~=e.Player.battleTag then--不同战网
+                    return '|A:tokens-characterTransfer-small:0:0|a'
+
+                else
+                    return '|A:auctionhouse-icon-favorite:0:0|a'
+                end
+
+            elseif C_BattleNet.GetGameAccountInfoByGUID(guid) then--C_BattleNet.GetAccountInfoByGUID(guid)
                 return e.Icon.net2
+
             elseif C_FriendList.IsFriend(guid) then
                 return '|A:groupfinder-icon-friend:0:0|a'--好友
+
             elseif IsGuildMember(guid) then--IsPlayerInGuildFromGUID
                 return '|A:UI-HUD-MicroMenu-GuildCommunities-Mouseover:0:0|a'--公会
             end
         end
+
     elseif name then
         if C_FriendList.GetFriendInfo(name:gsub('%-'..e.Player.realm, ''))  then
             return '|A:groupfinder-icon-friend:0:0|a'--好友
         end
+
         if e.WoWGUID[WoWTools_UnitMixin:GetFullName(name)] then
             return e.Icon.net2
         end

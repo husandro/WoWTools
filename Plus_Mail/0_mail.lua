@@ -75,7 +75,7 @@ function WoWTools_MailMixin:GetNameInfo(name)
     name = WoWTools_UnitMixin:GetFullName(name)--取得全名
     for guid, tab in pairs(e.WoWDate) do
         if name== WoWTools_UnitMixin:GetFullName(nil, nil, guid) then
-            reName= '|A:auctionhouse-icon-favorite:0:0|a'..WoWTools_UnitMixin:GetPlayerInfo({guid=guid, faction=tab.faction, reName=true, realm=true})
+            reName= WoWTools_UnitMixin:GetPlayerInfo({guid=guid, faction=tab.faction, reName=true, realm=true})
             break
         end
     end

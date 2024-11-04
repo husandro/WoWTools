@@ -664,6 +664,7 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
             e.WoWDate[e.Player.guid].region= e.Player.region
             e.WoWDate[e.Player.guid].faction= e.Player.faction--派系
             e.WoWDate[e.Player.guid].level= e.Player.level
+            e.WoWDate[e.Player.guid].battleTag= e.Player.battleTag or e.WoWDate[e.Player.guid].battleTag
             
 
             for guid, tab in pairs(e.WoWDate) do--清除不是本周数据
@@ -685,9 +686,7 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
             if e.Player.levelMax then
                 Get_Info_Challenge()--挑战
             end
-
-            C_CurrencyInfo.RequestCurrencyDataForAccountCharacters()
-            RequestRaidInfo()
+            
             --C_MajorFactions.RequestCatchUpState()
             C_FriendList.ShowFriends()
             if IsInGuild() then--请求，公会名单
@@ -696,6 +695,9 @@ panel:SetScript('OnEvent', function(self, event, arg1, arg2)
             --C_PerksProgram.RequestPendingChestRewards()
 
             C_Timer.After(4, function()
+                C_CurrencyInfo.RequestCurrencyDataForAccountCharacters()
+                RequestRaidInfo()
+
                 C_Calendar.OpenCalendar()
                 e.GetNotifyInspect(nil, 'player')--取得,自已, 装等
                 e.GetGroupGuidDate()--队伍数据收集

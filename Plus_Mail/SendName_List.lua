@@ -1,8 +1,8 @@
 --收件人，列表
 local e= select(2, ...)
---[[local function Save()
+local function Save()
     return WoWTools_MailMixin.Save
-end]]
+end
 
 
 
@@ -363,7 +363,9 @@ local function Init_IsSelf(root)
     end
 
     if num2>0 then
-        root:CreateDivider()
+        if num>0 then
+            root:CreateDivider()
+        end
         for _, info in pairs(new2 or {}) do
             local guid=info.characterGUID
             if guid and not new[guid] then
@@ -392,6 +394,7 @@ end
 
 
 local function Init_WoW(root)
+    local sub
     local num=0
     for i=1 ,BNGetNumFriends() do
         local wow= C_BattleNet.GetFriendAccountInfo(i) or {}
@@ -399,22 +402,42 @@ local function Init_WoW(root)
         if wowInfo
             and wowInfo.playerGuid
             and wowInfo.wowProjectID==WOW_PROJECT_MAINLINE
-            --and wowInfo.isOnline
+            and (wowInfo.isOnline or Save().show['WoW'])
         then
             local name= WoWTools_UnitMixin:GetFullName(wowInfo.characterName, nil, wowInfo.playerGuid)
             if not WoWTools_MailMixin:GetRealmInfo(name) then
-                root:CreateButton(
+                sub=root:CreateButton(
                     WoWTools_UnitMixin:GetPlayerInfo({guid=wowInfo.playerGuid, reName=true, reRealm=true, level=wowInfo.characterLevel, faction=wowInfo.factionName})
-                    ..(wowInfo.isOnline and '' or ('|cff9e9e9e'..((e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE))))
+                    ..(wowInfo.isOnline and '' or ('|cff9e9e9e'..(e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE)))
                     ..(wow.isFavorite and '|A:auctionhouse-icon-favorite:0:0|a' or ''),
                 function(data)
                     WoWTools_MailMixin:SetSendName(nil, data.guid)
                     return MenuResponse.Open
-                end, {guid=wowInfo.playerGuid})
+                end, {guid=wowInfo.playerGuid, battleTag=wow.battleTag, note=wow.note})
+                sub:SetTooltip(function(tooltip, description)
+                    tooltip:AddLine(description.data.battleTag)
+                    tooltip:AddLine(wow.note, nil,nil,nil, true)
+                end)
                 num=num+1
             end
         end
     end
+
+    if num>0 then
+        root:CreateDivider()
+    end
+    sub=root:CreateCheckbox(
+        e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE,
+    function()
+        return Save().show['WoW']
+    end, function()
+        Save().show['WoW']= not Save().show['WoW'] and true or nil
+        return MenuResponse.CloseAll
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(e.onlyChinese and '显示离线成员' or COMMUNITIES_MEMBER_LIST_SHOW_OFFLINE)
+    end)
+
     WoWTools_MenuMixin:SetGridMode(root, num)
 end
 
@@ -425,16 +448,17 @@ end
 
 
 local function Init_Friend(root)
+    local sub
     local num=0
     for i=1 , C_FriendList.GetNumFriends() do
         local game= C_FriendList.GetFriendInfoByIndex(i) or {}
         local guid= game.guid
-        if guid and not e.WoWDate[guid] then
+        if guid and not e.WoWDate[guid] and (game.connected or Save().show['FRIEND']) then
             local name= WoWTools_UnitMixin:GetFullName(nil, nil, guid)
             if not WoWTools_MailMixin:GetRealmInfo(name) then
                 root:CreateButton(
                     WoWTools_UnitMixin:GetPlayerInfo({guid=guid, reName=true, reRealm=true, level=game.level, faction=game.faction})
-                    ..(game.connected and '' or ('|cff9e9e9e'..((e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE)))),
+                    ..(game.connected and '' or ('|cff9e9e9e'..(e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE))),
                 function(data)
                     WoWTools_MailMixin:SetSendName(nil, data.guid)
                     return MenuResponse.Open
@@ -443,6 +467,22 @@ local function Init_Friend(root)
             end
         end
     end
+
+    if num>0 then
+        root:CreateDivider()
+    end
+    sub=root:CreateCheckbox(
+        e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE,
+    function()
+        return Save().show['FRIEND']
+    end, function()
+        Save().show['FRIEND']= not Save().show['FRIEND'] and true or nil
+        return MenuResponse.CloseAll
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(e.onlyChinese and '显示离线成员' or COMMUNITIES_MEMBER_LIST_SHOW_OFFLINE)
+    end)
+
     WoWTools_MenuMixin:SetGridMode(root, num)
 end
 
@@ -455,12 +495,12 @@ end
 
 
 local function Init_Guild(root)
+    local sub
     local num=0
-
     for index=1, GetNumGuildMembers() do
         local name, rankName, rankIndex, lv, _, zone, publicNote, officerNote, isOnline, status, _, _, _, _, _, _, guid = GetGuildRosterInfo(index)
         --if name and guid and (isOnline or rankIndex<2 or (Save().show['GUILD'] and num<60)) and not e.WoWDate[guid] then
-        if name and guid and isOnline and not e.WoWDate[guid] and not WoWTools_MailMixin:GetRealmInfo(name) then
+        if name and guid and (isOnline or rankIndex<2 or Save().show['GUILD']) and not e.WoWDate[guid] and not WoWTools_MailMixin:GetRealmInfo(name) then
             local text= WoWTools_UnitMixin:GetPlayerInfo({guid=guid, reName=true, reRealm=true, level=lv})--角色信息
 
             if not isOnline then
@@ -482,10 +522,94 @@ local function Init_Guild(root)
                 return MenuResponse.Open
             end, {guid=guid})
             num=num+1
-            num= num+1
         end
     end
+
+    if num>0 then
+        root:CreateDivider()
+    end
+    sub=root:CreateCheckbox(
+        e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE,
+    function()
+        return Save().show['GUILD']
+    end, function()
+        Save().show['GUILD']= not Save().show['GUILD'] and true or nil
+        return MenuResponse.CloseAll
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(e.onlyChinese and '显示离线成员' or COMMUNITIES_MEMBER_LIST_SHOW_OFFLINE)
+    end)
+
+    WoWTools_MenuMixin:SetGridMode(root, num)
 end
+
+
+
+
+
+
+
+
+
+
+
+local function Init_Club(root, clubID)
+    local sub
+    local num=0
+    for _, memberID in pairs(C_Club.GetClubMembers(clubID) or {}) do
+        local tab = C_Club.GetMemberInfo(clubID, memberID)
+        if tab and tab.guid and tab.name and (tab.zone or tab.role<4 or (Save().show['CLUB'])) and not e.WoWDate[tab.guid] then
+            if not WoWTools_MailMixin:GetRealmInfo(tab.name) then
+                local faction= tab.faction==Enum.PvPFaction.Alliance and 'Alliance' or tab.faction==Enum.PvPFaction.Horde and 'Horde'
+                local  text= WoWTools_UnitMixin:GetPlayerInfo({guid=tab.guid, reName=true, reRealm=true, faction=faction, level=tab.level})--角色信息
+                if not tab.zone then
+                    text= text..'|cff9e9e9e'..(e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE)..'|r'
+                end
+                if tab.role == Enum.ClubRoleIdentifier.Owner or tab.role == Enum.ClubRoleIdentifier.Leader then
+                    text= text.."|TInterface\\GroupFrame\\UI-Group-LeaderIcon:0|t"
+                elseif tab.role == Enum.ClubRoleIdentifier.Moderator then
+                    text= text.."|TInterface\\GroupFrame\\UI-Group-AssistantIcon:0|t"
+                end
+                sub=root:CreateButton(
+                    text,
+                function(data)
+                    WoWTools_MailMixin:SetSendName(nil, data.guid)
+                    return MenuResponse.Open
+                end, {guid=tab.guid, officerNote=tab.officerNote, memberNote=tab.memberNote})
+                sub:SetTooltip(function(tooltip, description)
+                    tooltip:AddLine(description.data.memberNote)
+                    tooltip:AddLine(description.data.officerNote)
+
+                end)
+                num= num+1
+            end
+        end
+    end
+
+    if num>0 then
+        root:CreateDivider()
+    end
+    sub=root:CreateCheckbox(
+        e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE,
+    function()
+        return Save().show['CLUB']
+    end, function()
+        Save().show['CLUB']= not Save().show['CLUB'] and true or nil
+        return MenuResponse.CloseAll
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(e.onlyChinese and '显示离线成员' or COMMUNITIES_MEMBER_LIST_SHOW_OFFLINE)
+    end)
+
+    WoWTools_MenuMixin:SetGridMode(root, num)
+end
+
+
+
+
+
+
+
 
 
 
@@ -528,6 +652,39 @@ local function Init_Menu(_, root)
     end)
     Init_Guild(sub)
 
+--社区
+    for _, tab in pairs(C_Club.GetSubscribedClubs() or {}) do
+        if tab.clubId and tab.clubType ~= Enum.ClubType.Guild then
+            sub=root:CreateButton(
+                '|T'..(tab.avatarId or 0)..':0|t'..(tab.shortName or tab.name),
+            function()
+                return MenuResponse.Open
+            end)
+            Init_Club(sub, tab.clubId)
+        end
+    end
+
+--保存内容
+    root:CreateDivider()
+    sub=root:CreateCheckbox(
+        e.onlyChinese and '保存内容' or format(GUILDBANK_LOG_TITLE_FORMAT, INFO),--"%s 记录"
+    function()
+        return Save().logSendInfo
+    end, function()
+        Save().logSendInfo= not Save().logSendInfo and true or nil
+        SendMailNameEditBox:save_log()
+        SendMailSubjectEditBox:save_log()
+        SendMailBodyEditBox:save_log()
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(e.onlyChinese and '收件人：' or MAIL_TO_LABEL)
+        tooltip:AddLine(e.onlyChinese and '主题：' or MAIL_SUBJECT_LABEL)
+    end)
+
+--打开选项
+    WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_MailMixin.addName})
+--SetScrollMode
+    WoWTools_MenuMixin:SetScrollMode(root)
 end
 
 

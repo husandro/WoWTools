@@ -1,3 +1,4 @@
+--快速，加载，物品，按钮
 local e= select(2, ...)
 local function Save()
     return WoWTools_MailMixin.Save
@@ -44,63 +45,34 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
 --快速，加载，物品，菜单
-local function Init_Fast_Menu(frame, level, menuList)
-    local self= frame:GetParent()
-    local info
-    if menuList then
-        local newTab={}
-        for subClass, tab in pairs(menuList.subClass) do
-            table.insert(newTab, {subClass= subClass, num= tab.num, item= tab.item})
-        end
-        table.sort(newTab, function(a,b) return a.subClass< b.subClass end)
-
-        for _, tab in pairs(newTab) do
-            local tooltip
-            for link, num in pairs(tab.item) do
-                local icon= C_Item.GetItemIconByID(link)
-                tooltip= (tooltip and tooltip..'|n' or '|n')..(icon and '|T'..icon..':0|t' or '')..link..'|cnGREEN_FONT_COLOR:#'..num..'|r'
-            end
-            local className= e.cn(C_Item.GetItemSubClassInfo(menuList.class, tab.subClass)) or ''
-            local text =(tab.subClass<10 and ' ' or '')..tab.subClass..') '.. className
-            info={
-                text= text..' |cnGREEN_FONT_COLOR:#'..tab.num,
-                keepShownOnClick= true,
-                notCheckable=true,
-                tooltipOnButton=true,
-                tooltipTitle= text,
-                tooltipText= tooltip,
-                arg1=menuList.class,
-                arg2= tab.subClass,
-                func= function(_, arg1, arg2)
-                    self:set_PickupContainerItem(arg1, arg2, nil)
-                end
-            }
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
-        end
-
-        e.LibDD:UIDropDownMenu_AddSeparator(level)
-        local className= C_Item.GetItemClassInfo(menuList.class)
-        className= e.cn(className)
-        if className then
-            e.LibDD:UIDropDownMenu_AddButton({
-                text= menuList.class..') '..className..' #'..menuList.num,
-                notCheckable= true,
-                isTitle= true,
-            }, level)
-        end
-        if menuList.class==2 or menuList.class==4 then
-            e.LibDD:UIDropDownMenu_AddButton({
-                text= '|T132288:0|t'..format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, e.onlyChinese and '你还没有收藏过此外观' or TRANSMOGRIFY_STYLE_UNCOLLECTED),
-                notCheckable= true,
-                isTitle= true,
-            }, level)
-
-        end
-        return
-    end
-
+local function Init_Menu(self, root)
+    local sub, sub2, class, newSubTab
     local tab={}
+    local newTab={}
+
+--显示
+    root:CreateCheckbox(
+        e.onlyChinese and '显示' or SHOW,
+    function()
+        return Save().fastShow
+    end, function()
+        Save().fastShow= not Save().fastShow and true or nil
+        self:set_shown()
+    end)
+
+--列表
+    root:CreateDivider()
     for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES+ NUM_REAGENTBAG_FRAMES do
         for slot=1, C_Container.GetContainerNumSlots(bag) do
             local info2 = C_Container.GetContainerItemInfo(bag, slot)
@@ -109,7 +81,7 @@ local function Init_Fast_Menu(frame, level, menuList)
                 and not info2.isLocked
                 and not info2.isBound
             then
-                local class, sub = select(6, C_Item.GetItemInfoInstant(info2.hyperlink))
+                class, sub = select(6, C_Item.GetItemInfoInstant(info2.hyperlink))
                 if class and sub then
                     local find=true
                     if class==2 or class==4 then--幻化
@@ -139,50 +111,60 @@ local function Init_Fast_Menu(frame, level, menuList)
         end
     end
 
-    local newTab={}
-    for class, tab2 in pairs(tab) do
-        table.insert(newTab, {class=class, num=tab2.num, subClass= tab2.subClass})
+    for class2, tab2 in pairs(tab) do
+        table.insert(newTab, {class=class2, num=tab2.num, subClass= tab2.subClass})
     end
     table.sort(newTab, function(a,b) return a.class< b.class end)
 
-    local find
+
     for _, tab2 in pairs(newTab) do
-        local className=  C_Item.GetItemClassInfo(tab2.class) or ''
-        className= e.cn(className)
-        info={
-            text= (tab2.class<10 and ' ' or '')..tab2.class..') '..className..((tab2.class==2 or tab2==4) and '|T132288:0|t' or ' ')..'|cnGREEN_FONT_COLOR:#'..tab2.num,
-            keepShownOnClick= true,
-            notCheckable=true,
-            menuList= {class=tab2.class, subClass=tab2.subClass, num=tab2.num},
-            hasArrow=true,
-            tooltipOnButton= true,
-            arg1=tab2.class,
-            func= function(_, arg1)
-                self:set_PickupContainerItem(arg1, nil, nil)
-            end
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-        find=true
-    end
-    if not find then
-        info={
-            text= e.onlyChinese and '无' or NONE,
-            notCheckable= true,
-            isTitle= true,
-        }
-        e.LibDD:UIDropDownMenu_AddButton(info, level)
-    end
-    
-    e.LibDD:UIDropDownMenu_AddSeparator(level)
-    e.LibDD:UIDropDownMenu_AddButton({
-        text= e.onlyChinese and '显示' or SHOW,
-        checked= Save().fastShow,
-        keepShownOnClick=true,
-        func= function()
-            Save().fastShow= not Save().fastShow and true or nil
-            self:set_shown()
+        sub=root:CreateButton(
+            tab2.class..') '
+            ..(e.cn(C_Item.GetItemClassInfo(tab2.class) or tab2.class or ''))
+            ..((tab2.class==2 or tab2==4) and '|T132288:0|t' or ' ')
+            ..'|cnGREEN_FONT_COLOR:#'..tab2.num,
+        function(data)
+            self:set_PickupContainerItem(data.class, nil, nil)
+            return MenuResponse.Open
+        end, {class= tab2.class})
+
+        newSubTab={}
+        for subClass3, tab3 in pairs(tab2.subClass) do
+            table.insert(newSubTab, {subClass=subClass3, num=tab3.num, item=tab3.item})
         end
-    }, level)
+        table.sort(newSubTab, function(a,b) return a.subClass< b.subClass end)
+
+        for _, tab3 in pairs(newSubTab) do
+            sub2=sub:CreateButton(
+                tab3.subClass
+                ..(e.cn(C_Item.GetItemSubClassInfo(tab2.class, tab3.subClass)) or (tab2.class..' '..tab3.subClass))
+                ..'|cnGREEN_FONT_COLOR:#'..tab3.num,
+            function(data)
+                self:set_PickupContainerItem(data.class, data.subClass, nil)
+                return MenuResponse.Open
+            end, {class=tab2.class, subClass=tab3.subClass, item=tab3.item})
+            sub2:SetTooltip(function(tooltip, description)
+                for link in pairs(description.data.item or {}) do
+                    tooltip:AddLine(WoWTools_ItemMixin:GetName(nil, link))
+                end
+            end)
+        end
+    end
+
+--打开选项
+    root:CreateDivider()
+    sub=WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_MailMixin.addName})
+
+--缩放
+    WoWTools_MenuMixin:Scale(sub, function()
+        return Save().scaleFastButton or 1
+    end, function(value)
+        Save().scaleFastButton= value
+        self:set_scale()
+    end, function(value)
+        Save().scaleFastButton= value
+        self:set_scale()
+    end)
 end
 
 
@@ -200,98 +182,97 @@ end
 
 
 
-local function Init_Fast_Button_Menu(frame, level, menuList)
-    local self= frame:GetParent()
-    local icon= '|T'..(self:GetNormalTexture():GetTexture() or 0)..':0|t'
-    if menuList=='SELF' then
-        local find
-        local name= Save().fast[self.name]
-        local tab= {}
-        for guid, data in pairs(e.WoWDate) do
-            local playerName= WoWTools_UnitMixin:GetFullName(nil, nil, guid)
-            if playerName and data.region==e.Player.region then
-                local realm= WoWTools_MailMixin:GetRealmInfo(playerName)
-                local info= {
-                    text= WoWTools_UnitMixin:GetPlayerInfo({guid=guid, reName=true, reRealm=true}),
-                    checked= name and name==playerName,
-                    icon= realm and 'quest-legendary-available',
-                    tooltipOnButton=true,
-                   tooltipTitle=icon..self.name,
-                    tooltipText=playerName..(realm and '|n'..realm or ''),
-                    arg1= self.name,
-                    arg2= playerName,
-                    func= function(_, arg1, arg2)
-                        if arg2 then
-                            Save().fast[arg1]= arg2
-                            print(e.addName, WoWTools_MailMixin.addName, arg1, arg2)
-                            self:set_Player_Lable()
-                        end
-                    end,
-                }
-                if realm then
-                    table.insert(tab, info)
-                else
-                    table.insert(tab, 1, info)
-                end
-            end
+local function Fast_Button_Set_Menu(self, root, showName, setName)
+    local sub=root:CreateCheckbox(
+        showName,
+    function(data)
+        return Save().fast[self.name]==data.name
+    end, function(data)
+        if Save().fast[self.name]==data.name then
+            Save().fast[self.name]=nil
+        else
+            Save().fast[self.name]=data.name
         end
-        for _, info in pairs(tab) do
-            e.LibDD:UIDropDownMenu_AddButton(info, level)
-            find=true
-        end
-        if not find then
-            e.LibDD:UIDropDownMenu_AddButton({text=e.onlyChinese and '无' or NONE, notCheckable=true, isTitle=true}, level)
-        end
-        return
-    end
+        self:set_Player_Lable()
+    end, {name=setName})
 
+    sub:SetTooltip(function(tooltip, description)
+        tooltip:AddLine(description.data.name)
+        local findName= Save().fast[self.name]
+        if findName==description.data.name then
+            tooltip:AddLine(e.onlyChinese and '移除' or REMOVE)
+        elseif findName then
+            tooltip:AddLine(e.onlyChinese and '替换' or REPLACE)
+        else
+            tooltip:AddLine(e.onlyChinese and '添加' or ADD)
+        end
+        tooltip:AddLine(WoWTools_MailMixin:GetRealmInfo(description.data.name))
+    end)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Init_Fast_Button_Menu(self, root)
+    local sub
+    local num=0
     local playerName= Save().fast[self.name]
     local newName= WoWTools_UnitMixin:GetFullName(SendMailNameEditBox:GetText())
-    e.LibDD:UIDropDownMenu_AddButton({
-        text=icon..self.name..': '..(playerName and WoWTools_UnitMixin:GetPlayerInfo({name=playerName, reName=true}) or format('|cff9e9e9e%s|r', e.onlyChinese and '无' or NONE)),
-        notCheckable=true,
-        colorCode= not playerName and '|cff9e9e9e',
-        isTitle=true,
-    }, level)
 
-    e.LibDD:UIDropDownMenu_AddButton({
-        text= e.onlyChinese and '更新' or UPDATE,
-        notCheckable=true,
-        colorCode= (not newName or playerName==newName) and '|cff9e9e9e',
-        tooltipOnButton=true,
-        tooltipTitle= newName or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '需求' or NEED, e.onlyChinese and '收件人：' or MAIL_TO_LABEL),
-        arg1=self.name,
-        arg2=newName,
-        func= function(_, arg1, arg2)
-            if arg2 then
-                Save().fast[arg1]= arg2
-                print(e.addName, WoWTools_MailMixin.addName, arg1, arg2)
-                self:set_Player_Lable()
-            end
-        end
-    }, level)
+    root:CreateTitle(
+        '|T'..(self:GetNormalTexture():GetTexture() or 0)..':0|t'
+        ..(e.onlyChinese and '收件人：' or MAIL_TO_LABEL)
+    )
+    root:CreateDivider()
 
-    e.LibDD:UIDropDownMenu_AddButton({
-        text= e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
-        notCheckable=true,
-        colorCode= not playerName and '|cff9e9e9e',
-        arg1=self.name,
-        func=function(_, arg1)
-            Save().fast[arg1]=nil
-            print(e.addName, WoWTools_MailMixin.addName, arg1, e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
-            self:set_Player_Lable()
-        end
-    }, level)
+--已指定，收件人
+    if playerName then
+        Fast_Button_Set_Menu(
+            self, root,
+            WoWTools_UnitMixin:GetPlayerInfo({name=playerName, reName=true}),
+            playerName
+        )
+    end
 
-    e.LibDD:UIDropDownMenu_AddSeparator(level)
-    e.LibDD:UIDropDownMenu_AddButton({
-        text= '|A:auctionhouse-icon-favorite:0:0|a'..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME),
-        hasArrow= true,
-        notCheckable=true,
-        menuList= 'SELF',
-        keepShownOnClick=true,
-    }, level)
+--输入框，收件人
+    if newName and newName:gsub(' ', '')~='' and newName~=playerName then
+        Fast_Button_Set_Menu(
+            self, root,
+            WoWTools_UnitMixin:GetPlayerInfo({name=newName, reName=true}),
+            newName
+        )
+    end
 
+--我
+    sub= root:CreateButton(
+        '|A:auctionhouse-icon-favorite:0:0|a'..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME),
+    function()
+        return MenuResponse.Open
+    end)
+
+    for guid, info in pairs(e.WoWDate) do
+        Fast_Button_Set_Menu(
+            self, sub,
+            WoWTools_UnitMixin:GetPlayerInfo({guid=guid, reName=true, reRealm=true, level=info.level, faction=info.faction}),
+            WoWTools_UnitMixin:GetFullName(nil, nil, guid)
+        )
+        num=num+1
+    end
+
+--SetGridMode
+    WoWTools_MenuMixin:SetGridMode(sub, num)
 end
 
 
@@ -320,9 +301,7 @@ end
 
 
 
---####################
 --快速，加载，物品，按钮
---####################
 local function Init()
     fastButton= WoWTools_ButtonMixin:Cbtn(SendMailFrame, {size={22, 22}, icon='hide'})
     fastButton:SetPoint('BOTTOMLEFT', MailFrameCloseButton, 'BOTTOMRIGHT',0, -2)
@@ -346,8 +325,6 @@ local function Init()
         e.tips:AddDoubleLine(e.addName, WoWTools_MailMixin.addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.left)
-        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().scaleFastButton or 1), e.Icon.mid)
-        e.tips:AddLine(' ')
         e.tips:Show()
     end
     fastButton:SetScript('OnLeave', function(self)
@@ -363,23 +340,9 @@ local function Init()
         end
     end)
     fastButton:SetScript('OnMouseDown', function(self)
-        if not self.Menu then
-            self.Menu= CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
-            e.LibDD:UIDropDownMenu_Initialize(self.Menu, Init_Fast_Menu, 'MENU')
-        end
-        e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
+        MenuUtil.CreateContextMenu(self, Init_Menu)
     end)
-    fastButton:SetScript('OnMouseWheel', function(self, d)
-        local num= Save().scaleFastButton or 1
-        num= d==1 and num-0.05 or num
-        num= d==-1 and num+0.05 or num
-        num= num<0.4 and 0.4 or num
-        num= num>4 and 4 or num
-        Save().scaleFastButton= num
-        self:set_scale()
-        self:set_tooltips()
-    end)
-     
+
     fastButton:set_scale()
     fastButton:set_shown()
 
@@ -524,11 +487,13 @@ local function Init()
                     end
                     self:GetParent():GetParent():set_PickupContainerItem(self.classID, self.subClassID, self.findString)--自动放物品
                 elseif d=='RightButton' then
-                    if not self.Menu then
+                    MenuUtil.CreateContextMenu(self, Init_Fast_Button_Menu)
+                    --[[if not self.Menu then
                         self.Menu= CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
                         e.LibDD:UIDropDownMenu_Initialize(self.Menu, Init_Fast_Button_Menu, 'MENU')
                     end
                     e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
+                    ]]
                 end
             end)
 

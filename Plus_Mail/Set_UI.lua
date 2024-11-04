@@ -95,16 +95,27 @@ local function Init()
     SendMailBodyEditBox:SetPoint('BOTTOMRIGHT', SendMailScrollFrame)
 
 
+
     SendMailSubjectEditBox:SetPoint('RIGHT', MailFrame, -28, 0)--主题
     SendMailSubjectEditBoxMiddle:SetPoint('RIGHT', -8, 0)
+    SendMailNameEditBox:SetPoint("TOPLEFT", 80, -30)
+    SendMailNameEditBox:SetPoint('RIGHT', -75, -30)
+    SendMailNameEditBoxMiddle:SetPoint('RIGHT',-8,0)
     --SendMailNameEditBox:SetPoint('TOPLEFT', 122, -30 )--x="90" y="-30
-    SendMailNameEditBox:SetPoint('RIGHT', SendMailCostMoneyFrame, 'LEFT', -54, 0)--收件人
-    SendMailNameEditBoxMiddle:SetPoint('RIGHT', -8, 0)
+    --SendMailNameEditBox:SetPoint('RIGHT', SendMailCostMoneyFrame, 'LEFT', -54, 0)--收件人
+    --SendMailNameEditBoxMiddle:SetPoint('RIGHT', -8, 0)
 
 
-
-    SendMailCostMoneyFrameCopperButton:SetScript('OnLeave', GameTooltip_Hide)--隐藏， 邮资：，文本
-    SendMailCostMoneyFrameCopperButton:SetScript('OnEnter', function(self)
+    SendMailCostMoneyFrame:ClearAllPoints()
+    SendMailCostMoneyFrame:SetPoint('TOPLEFT', SendMailScrollFrame)
+    SendMailBodyEditBox:HookScript('OnEditFocusGained', function()
+        SendMailCostMoneyFrame:Hide()
+    end)
+    SendMailBodyEditBox:HookScript('OnEditFocusLost', function()
+        SendMailCostMoneyFrame:Show()
+    end)
+    SendMailCostMoneyFrame:SetScript('OnLeave', GameTooltip_Hide)--隐藏， 邮资：，文本
+    SendMailCostMoneyFrame:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddLine(e.onlyChinese and '邮资：' or SEND_MAIL_COST)
@@ -169,7 +180,7 @@ local function Init()
     end
     WoWTools_EditBoxMixn:SetInstructions(SendMailSubjectEditBox, e.onlyChinese and '主题' or MAIL_SUBJECT_LABEL:gsub(HEADER_COLON,''))
     WoWTools_EditBoxMixn:HookInstructions(SendMailSubjectEditBox)
-    
+
 end
 
 
