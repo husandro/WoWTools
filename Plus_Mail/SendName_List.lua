@@ -457,34 +457,34 @@ end
 local function Init_Guild(root)
     local num=0
 
-        for index=1, GetNumGuildMembers() do
-            local name, rankName, rankIndex, lv, _, zone, publicNote, officerNote, isOnline, status, _, _, _, _, _, _, guid = GetGuildRosterInfo(index)
-            --if name and guid and (isOnline or rankIndex<2 or (Save().show['GUILD'] and num<60)) and not e.WoWDate[guid] then
-            if name and guid and isOnline and not e.WoWDate[guid] and not WoWTools_MailMixin:GetRealmInfo(name) then
-                local text= WoWTools_UnitMixin:GetPlayerInfo({guid=guid, reName=true, reRealm=true, level=lv})--角色信息
+    for index=1, GetNumGuildMembers() do
+        local name, rankName, rankIndex, lv, _, zone, publicNote, officerNote, isOnline, status, _, _, _, _, _, _, guid = GetGuildRosterInfo(index)
+        --if name and guid and (isOnline or rankIndex<2 or (Save().show['GUILD'] and num<60)) and not e.WoWDate[guid] then
+        if name and guid and isOnline and not e.WoWDate[guid] and not WoWTools_MailMixin:GetRealmInfo(name) then
+            local text= WoWTools_UnitMixin:GetPlayerInfo({guid=guid, reName=true, reRealm=true, level=lv})--角色信息
 
-                if not isOnline then
-                    text= text..'|cff9e9e9e'..(e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE)..'|r'
-                end
-
-                if rankIndex == 0 then
-                    text= "|TInterface\\GroupFrame\\UI-Group-LeaderIcon:0|t"..text
-                elseif rankIndex == 1 then
-                    text= "|TInterface\\GroupFrame\\UI-Group-AssistantIcon:0|t"..text
-                end
-
-                text= rankName and text..' '..rankName..(rankIndex and ' '..rankIndex or '') or text
-
-                root:CreateButton(
-                    text,
-                function(data)
-                    WoWTools_MailMixin:SetSendName(nil, data.guid)
-                    return MenuResponse.Open
-                end, {guid=guid})
-                num=num+1
-                num= num+1
+            if not isOnline then
+                text= text..'|cff9e9e9e'..(e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE)..'|r'
             end
+
+            if rankIndex == 0 then
+                text= "|TInterface\\GroupFrame\\UI-Group-LeaderIcon:0|t"..text
+            elseif rankIndex == 1 then
+                text= "|TInterface\\GroupFrame\\UI-Group-AssistantIcon:0|t"..text
+            end
+
+            text= rankName and text..' '..rankName..(rankIndex and ' '..rankIndex or '') or text
+
+            root:CreateButton(
+                text,
+            function(data)
+                WoWTools_MailMixin:SetSendName(nil, data.guid)
+                return MenuResponse.Open
+            end, {guid=guid})
+            num=num+1
+            num= num+1
         end
+    end
 end
 
 

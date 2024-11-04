@@ -139,63 +139,18 @@ local function Init_Menu(self, root)
 end
 
 
---[[
-
-
-
-    function  button:set_menu(speciesID, tab, level)
-        tab = tab or {}
-        local speciesName, speciesIcon= C_PetJournal.GetPetInfoBySpeciesID(speciesID)
-        if type(speciesName)=='string' then
-            local num= select(3, WoWTools_CollectedMixin:Pet(speciesID, nil, true))
-            e.LibDD:UIDropDownMenu_AddButton({
-                text= format('%s %s', e.onlyChinese and tab.cn or speciesName, (num or '')..''),
-                icon= speciesIcon,
-                disabled= C_PetJournal.GetNumCollectedInfo(speciesID)==0,
-                checked= Save.speciesID==speciesID,
-                arg1= speciesID,
-                --arg2= speciesIcon,
-                func= function(_, arg1)
-                    Save.speciesID= arg1
-                    self:init_pets_data()
-                end
-            }, level)
-        end
-    end
-
-if not self.Menu then
-self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
-e.LibDD:UIDropDownMenu_Initialize(self.Menu, function(_, level)--主菜单
-
-    if not PetsList[Save.speciesID] then
-        self:set_menu(Save.speciesID, nil, level)
-        e.LibDD:UIDropDownMenu_AddSeparator(level)
-    end
-    for speciesID, info in pairs(PetsList) do
-        self:set_menu(speciesID, info, level)
-    end
-
-    e.LibDD:UIDropDownMenu_AddButton({--自动召唤
-    text= e.onlyChinese and '自动召唤' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SUMMONS),
-    checked=Save.autoSummon,
-    keepShownOnClick=true,
-    func=function()
-        Save.autoSummon= not Save.autoSummon and true or nil
-        self:init_pets_data()
-        self:set_auto_summon_tips()
-    end
-}, level)
-end, 'MENU')
-end
-e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
-]]
 
 
 
 
---####
+
+
+
+
+
+
+
 --初始
---####
 local function Init()
 
     button.Text=WoWTools_LabelMixin:Create(button, {size=10, color=true})-- size,nil,nil, true)

@@ -95,6 +95,9 @@ StaticPopupDialogs['WoWTools_EditText']={
         end
     end,
     EditBoxOnTextChanged=function(self, data)
+        if not self:IsVisible() then
+            return
+        end
         local text= self:GetText() or ''
         if data.EditBoxOnTextChanged then
             data.EditBoxOnTextChanged(self, data, text)
@@ -216,6 +219,9 @@ StaticPopupDialogs['WoWTools_GetMapID'] = {--区域,设置对话框
             end
         end,
         EditBoxOnTextChanged=function(self, data)
+            if not self:IsVisible() then
+                return
+            end
             local _, text= Get_UIMapIDs_Name(self:GetText())
             local frame= self:GetParent()
             local btn=frame.button1
@@ -305,6 +311,9 @@ StaticPopup_Show('WoWTools_OK',
             self.editBox:ClearFocus()
         end,
         EditBoxOnTextChanged= function (self, web)
+            if not self:IsVisible() then
+                return
+            end
             self:SetText(web)
             self:HighlightText()
         end,
@@ -341,13 +350,16 @@ StaticPopup_Show('WoWTools_OK',
         OnHide= function(s)
             s.editBox:ClearFocus()
         end,
-        OnAccept = function(s, data)
+        OnAccept= function(s, data)
             local currencyID= s.editBox:GetNumber()
             if currencyID and currencyID>0 then
                 data.SetValue(currencyID)
             end
         end,
         EditBoxOnTextChanged=function(s, data)
+            if not s:IsVisible() then
+                return
+            end
             local currencyID= s:GetNumber()
             local name, info, text, icon
             local p= s:GetParent()
@@ -359,7 +371,7 @@ StaticPopup_Show('WoWTools_OK',
                     icon=info.iconFileID
                 end
                 data.CheckValue(p.button1, currencyID)
-            end            
+            end
             p.text:SetText(text)
             p.button1:SetEnabled(name and info)
             p.AlertIcon:SetTexture(icon or 0)
