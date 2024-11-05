@@ -217,6 +217,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         [e.onlyChinese and '武器' or C_Item.GetItemClassInfo(2)]= 'Zans-Nemesis',--武器
 
                     }
+                elseif e.Player.region==4 then
+                    Save().lastSendPlayerList= {
+                        'Wowtools-巫妖之王',
+                    }
+                    Save().fast={}
                 end
             end
 
