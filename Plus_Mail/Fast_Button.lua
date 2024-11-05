@@ -488,12 +488,6 @@ local function Init()
                     self:GetParent():GetParent():set_PickupContainerItem(self.classID, self.subClassID, self.findString)--自动放物品
                 elseif d=='RightButton' then
                     MenuUtil.CreateContextMenu(self, Init_Fast_Button_Menu)
-                    --[[if not self.Menu then
-                        self.Menu= CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
-                        e.LibDD:UIDropDownMenu_Initialize(self.Menu, Init_Fast_Button_Menu, 'MENU')
-                    end
-                    e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
-                    ]]
                 end
             end)
 
