@@ -11,7 +11,7 @@ local ClassSpells={--{item=5512, alt=nil, shift=nil, ctrl=nil}
     ROGUE= {},--dz
     PRIEST= {shift=21562,},--ms 21562/真言术：韧
     DEATHKNIGHT= {},--dk
-    SHAMAN= {},--sm
+    SHAMAN= {shift=462854},--sm 462854/天怒
     MAGE= {item=113509, shift=1459, alt=190336},--fs 113509/魔法汉堡 190336/造餐术 190336/造餐术
     WARLOCK= {alt=29893, shift=698, ctrl=6201},--ss 29893/制造灵魂之井 6201/制造治疗石 698/召唤仪式
     MONK= {},--ws
