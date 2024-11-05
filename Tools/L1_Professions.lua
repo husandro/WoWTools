@@ -1,5 +1,5 @@
 local id, e= ...
-Save={
+local Save={
     fishing='BUTTON1',
     archaeology='F',
     --save_fishing=true,--启动时，设置KEY

@@ -12,6 +12,88 @@ local TrackButton
 
 
 
+local function Init_Menu(self, root)
+    local sub
+
+    root:CreateCheckbox(
+        e.onlyChinese and '显示' or SHOW,
+    function()
+        return not Save().hide
+    end, function()
+        Save().hide= not Save().hide and true or nil
+        WoWTools_HolidayMixin:TrackButtonSetText()
+        TrackButton:set_Events()--设置事件
+        TrackButton:set_Shown()
+    end)
+
+    root:CreateDivider()
+    root:CreateCheckbox(
+        e.onlyChinese and '左' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT,
+    function()
+        return not Save().left
+    end, function()
+        Save().left= not Save().left and true or nil
+        for _, btn in pairs(TrackButton.btn) do
+            btn.text:ClearAllPoints()
+            btn:set_text_point()
+        end
+        WoWTools_HolidayMixin:TrackButtonSetText()
+    end)
+
+    root:CreateCheckbox(
+        e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP,
+    function()
+        return Save().toTopTrack
+    end, function()
+        Save().toTopTrack = not Save().toTopTrack and true or nil
+        local last
+        for index= 1, #TrackButton.btn do
+            local btn=TrackButton.btn[index]
+            btn:ClearAllPoints()
+            if Save().toTopTrack then
+                btn:SetPoint('BOTTOM', last or TrackButton, 'TOP')
+            else
+                btn:SetPoint('TOP', last or TrackButton, 'BOTTOM')
+            end
+            last=btn
+        end
+        WoWTools_HolidayMixin:TrackButtonSetText()
+    end)
+
+    root:CreateCheckbox(
+        e.onlyChinese and '仅限: 正在活动' or LFG_LIST_CROSS_FACTION:format(CALENDAR_TOOLTIP_ONGOING),
+    function()
+        return Save().onGoing
+    end, function()
+        Save().onGoing= not Save().onGoing and true or nil
+        WoWTools_HolidayMixin:TrackButtonSetText()
+    end)
+
+    root:CreateCheckbox(
+        e.onlyChinese and '时间' or TIME_LABEL,
+    function()
+        return Save().showDate
+    end, function()
+        Save().showDate= not Save().showDate and true or nil
+        WoWTools_HolidayMixin:TrackButtonSetText()
+    end)
+
+--打开选项界面
+    sub=WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_HolidayMixin.addName})
+    --缩放
+    WoWTools_MenuMixin:Scale(sub, function()
+        return Save().scale or 1
+    end, function(value)
+        Save().scale=value
+        self:set_Scale()
+        self:set_Tooltips()
+    end)
+end
+
+
+
+
+
 
 
 
@@ -121,7 +203,6 @@ local function Init()
         e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭日历' or GAMETIME_TOOLTIP_TOGGLE_CALENDAR, e.Icon.left)
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save().scale or 1), 'Alt+'..e.Icon.mid)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.addName, WoWTools_HolidayMixin.addName)
         e.tips:Show()
@@ -134,85 +215,9 @@ local function Init()
             Calendar_Toggle()
 
         elseif d=='RightButton' then
-            if not self.Menu then
-                self.Menu=CreateFrame("Frame", nil, self, "UIDropDownMenuTemplate")
-                e.LibDD:UIDropDownMenu_Initialize(self.Menu, function(_, level)
-                    local info
-                    info={
-                        text=e.onlyChinese and '显示' or SHOW,
-                        checked=not Save().hide,
-                        func= function()
-                            Save().hide= not Save().hide and true or nil
-                            WoWTools_HolidayMixin:TrackButtonSetText()
-                            TrackButton:set_Events()--设置事件
-                            TrackButton:set_Shown()
-                        end
-                    }
-                    e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-                    e.LibDD:UIDropDownMenu_AddSeparator(level)
-                    info={
-                        text= e.onlyChinese and '向左平移' or BINDING_NAME_STRAFELEFT,--向左平移
-                        checked=not Save().left,
-                        func= function()
-                            Save().left= not Save().left and true or nil
-                            for _, btn in pairs(TrackButton.btn) do
-                                btn.text:ClearAllPoints()
-                                btn:set_text_point()
-                            end
-                            WoWTools_HolidayMixin:TrackButtonSetText()
-                        end
-                    }
-                    e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-                    info={
-						text=e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP,
-						icon='bags-greenarrow',
-						checked= Save().toTopTrack,
-						func= function()
-							Save().toTopTrack = not Save().toTopTrack and true or nil
-							local last
-							for index= 1, #TrackButton.btn do
-								local btn=TrackButton.btn[index]
-								btn:ClearAllPoints()
-								if Save().toTopTrack then
-									btn:SetPoint('BOTTOM', last or TrackButton, 'TOP')
-								else
-									btn:SetPoint('TOP', last or TrackButton, 'BOTTOM')
-								end
-								last=btn
-							end
-							WoWTools_HolidayMixin:TrackButtonSetText()
-						end
-					}
-					e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-
-                    info={
-                        text= e.onlyChinese and '仅限: 正在活动' or LFG_LIST_CROSS_FACTION:format(CALENDAR_TOOLTIP_ONGOING),
-                        checked= Save().onGoing,
-                        func= function()
-                            Save().onGoing= not Save().onGoing and true or nil
-                            WoWTools_HolidayMixin:TrackButtonSetText()
-                        end
-                    }
-                    e.LibDD:UIDropDownMenu_AddButton(info, level)
-
-                    info={
-                        text= e.onlyChinese and '时间' or TIME_LABEL,
-                        checked= Save().showDate,
-                        func= function()
-                            Save().showDate= not Save().showDate and true or nil
-                            WoWTools_HolidayMixin:TrackButtonSetText()
-                        end
-                    }
-                    e.LibDD:UIDropDownMenu_AddButton(info, level)
-                end, 'MENU')
-            end
-            e.LibDD:ToggleDropDownMenu(1, nil, self.Menu, self, 15, 0)
+            MenuUtil.CreateContextMenu(self, Init_Menu)
         end
     end)
-
 
     TrackButton:SetScript('OnMouseWheel', function(self, d)--缩放
         if IsAltKeyDown() then

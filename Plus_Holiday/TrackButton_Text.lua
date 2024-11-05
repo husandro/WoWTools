@@ -3,6 +3,8 @@ local function Save()
     return WoWTools_HolidayMixin.Save
 end
 
+local Buttons={}
+
 
 
 
@@ -246,7 +248,7 @@ local function Get_Button_Text(event)
     title= not event.isValid and '|cff9e9e9e'..title..'|r' or title
     local msg
     if Save().left then
-        msg= ((Save().showDate and event.eventTime) and event.eventTime..' ' or '')
+        msg= ((Save().showDate and event.eventTime) and '|cffffffff'..event.eventTime..'|r ' or '')
             ..(text and text..' ' or '')
             ..(texture or '')
             ..title
@@ -254,7 +256,7 @@ local function Get_Button_Text(event)
         msg= title
             ..(texture or '')
             ..(text and ' '..text or '')
-            ..((Save().showDate and event.eventTime) and ' '..event.eventTime or '')
+            ..((Save().showDate and event.eventTime) and ' |cffffffff'..event.eventTime..'|r' or '')
     end
 
     icon= icon or CALENDAR_EVENTTYPE_TEXTURES[event.eventType]
@@ -273,6 +275,105 @@ local function _CalendarFrame_IsTodayOrLater(month, day, year)--Blizzard_Calenda
 	    currentCalendarTime.monthDay== day and
         currentCalendarTime.year== year
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Create_Button(index, last)
+    local btn= WoWTools_ButtonMixin:Cbtn(WoWTools_HolidayMixin.TrackButton.Frame, {size={14,14}, icon='hide'})
+    if Save().toTopTrack then
+        btn:SetPoint('BOTTOM', last or WoWTools_HolidayMixin.TrackButton, 'TOP')
+    else
+        btn:SetPoint('TOP', last or WoWTools_HolidayMixin.TrackButton, 'BOTTOM')
+    end
+    btn:SetScript('OnLeave', function(self)
+        e.tips:Hide()
+        WoWTools_HolidayMixin:SetTrackButtonState(false, self.text)--TrackButton，提示
+    end)
+
+    btn:SetScript('OnEnter', function(self)
+        if Save().left then
+            GameTooltip:SetOwner(self.text, "ANCHOR_LEFT")
+        else
+            GameTooltip:SetOwner(self.text, "ANCHOR_RIGHT")
+        end
+        e.tips:ClearLines()
+        local title, description
+        if (self.monthOffset and self.day and self.index) then
+            local holidayInfo= C_Calendar.GetHolidayInfo(self.monthOffset, self.day, self.index);
+            if (holidayInfo) then
+                local data= e.cn(nil, {holydayID=self.eventID}) or {}
+                title= data[1] or holidayInfo.name
+                description = data[2] or holidayInfo.description;
+
+                if (holidayInfo.startTime and holidayInfo.endTime) then
+                    description=format(e.onlyChinese and '%1$s|n|n开始：%2$s %3$s|n结束：%4$s %5$s' or CALENDAR_HOLIDAYFRAME_BEGINSENDS,
+                        e.cn(description),
+                        FormatShortDate(holidayInfo.startTime.monthDay, holidayInfo.startTime.month, holidayInfo.startTime.year),
+                        GameTime_GetFormattedTime(holidayInfo.startTime.hour, holidayInfo.startTime.minute, true),
+                        FormatShortDate(holidayInfo.endTime.monthDay, holidayInfo.endTime.month, holidayInfo.startTime.year),
+                        GameTime_GetFormattedTime(holidayInfo.endTime.hour, holidayInfo.endTime.minute, true)
+                    )
+                end
+            else
+                local raidInfo = C_Calendar.GetRaidInfo(self.monthOffset, self.day, self.index);
+                if raidInfo and raidInfo.calendarType == "RAID_LOCKOUT" then
+                    title = GetDungeonNameWithDifficulty(raidInfo.name, raidInfo.difficultyName);
+                    description= format(e.onlyChinese and '你的%1$s副本将在%2$s解锁。' or CALENDAR_RAID_LOCKOUT_DESCRIPTION, e.cn(title),  GameTime_GetFormattedTime(raidInfo.time.hour, raidInfo.time.minute, true))
+                end
+            end
+            if title or description then
+                if title then
+                    e.tips:AddLine(e.cn(title))
+                end
+                if description and description~='' then
+                    e.tips:AddLine(' ')
+                    e.tips:AddLine(e.cn(description), nil,nil,nil,true)
+                    e.tips:AddLine(' ')
+                end
+            end
+        end
+        e.tips:AddDoubleLine('eventID', self.eventID)
+        e.tips:AddDoubleLine(e.addName, WoWTools_HolidayMixin.addName)
+        e.tips:Show()
+        WoWTools_HolidayMixin:SetTrackButtonState(true, self.text)--TrackButton，提示
+    end)
+
+
+    btn.text= WoWTools_LabelMixin:Create(btn)
+    function btn:set_text_point()
+        if Save().left then
+            self.text:SetPoint('RIGHT', self, 'LEFT',1, 0)
+        else
+            self.text:SetPoint('LEFT', self, 'RIGHT', -1, 0)
+        end
+        self.text:SetJustifyH(Save().left and 'RIGHT' or 'LEFT')
+    end
+    btn:set_text_point()
+
+    Buttons[index]=btn
+    return btn
+end
+
+
 
 
 
@@ -375,87 +476,12 @@ local function Set_TrackButton_Text(monthOffset, day)
 
 
 
-   local last
+    local last, btn
 	for index, event in ipairs(events) do
-        local btn= TrackButton.btn[index]
-        if not btn then
-            btn= WoWTools_ButtonMixin:Cbtn(TrackButton.Frame, {size={14,14}, icon='hide'})
-            if Save().toTopTrack then
-                btn:SetPoint('BOTTOM', last or TrackButton, 'TOP')
-            else
-			    btn:SetPoint('TOP', last or TrackButton, 'BOTTOM')
-            end
-            btn:SetScript('OnLeave', function(self)
-				e.tips:Hide()
-				WoWTools_HolidayMixin:SetTrackButtonState(false, self.text)--TrackButton，提示
-			end)
+        btn= Buttons[index] or Create_Button(index, last)
+        btn:SetShown(true)
 
-            btn:SetScript('OnEnter', function(self)
-                if Save().left then
-                    GameTooltip:SetOwner(self.text, "ANCHOR_LEFT")
-                else
-                    GameTooltip:SetOwner(self.text, "ANCHOR_RIGHT")
-                end
-                e.tips:ClearLines()
-                local title, description
-                if (self.monthOffset and self.day and self.index) then
-                    local holidayInfo= C_Calendar.GetHolidayInfo(self.monthOffset, self.day, self.index);
-                    if (holidayInfo) then
-                        local data= e.cn(nil, {holydayID=self.eventID}) or {}
-                        title= data[1] or holidayInfo.name
-                        description = data[2] or holidayInfo.description;
-
-                        if (holidayInfo.startTime and holidayInfo.endTime) then
-                            description=format(e.onlyChinese and '%1$s|n|n开始：%2$s %3$s|n结束：%4$s %5$s' or CALENDAR_HOLIDAYFRAME_BEGINSENDS,
-                                e.cn(description),
-                                FormatShortDate(holidayInfo.startTime.monthDay, holidayInfo.startTime.month, holidayInfo.startTime.year),
-                                GameTime_GetFormattedTime(holidayInfo.startTime.hour, holidayInfo.startTime.minute, true),
-                                FormatShortDate(holidayInfo.endTime.monthDay, holidayInfo.endTime.month, holidayInfo.startTime.year),
-                                GameTime_GetFormattedTime(holidayInfo.endTime.hour, holidayInfo.endTime.minute, true)
-                            )
-                        end
-                    else
-                        local raidInfo = C_Calendar.GetRaidInfo(self.monthOffset, self.day, self.index);
-                        if raidInfo and raidInfo.calendarType == "RAID_LOCKOUT" then
-                            title = GetDungeonNameWithDifficulty(raidInfo.name, raidInfo.difficultyName);
-                            description= format(e.onlyChinese and '你的%1$s副本将在%2$s解锁。' or CALENDAR_RAID_LOCKOUT_DESCRIPTION, e.cn(title),  GameTime_GetFormattedTime(raidInfo.time.hour, raidInfo.time.minute, true))
-                        end
-                    end
-                    if title or description then
-                        if title then
-                            e.tips:AddLine(e.cn(title))
-                        end
-                        if description then
-                            e.tips:AddLine(' ')
-                            e.tips:AddLine(description, nil,nil,nil,true)
-                            e.tips:AddLine(' ')
-                        end
-                    end
-                end
-                e.tips:AddDoubleLine('eventID', self.eventID)
-                e.tips:AddDoubleLine(e.addName, WoWTools_HolidayMixin.addName)
-                e.tips:Show()
-				WoWTools_HolidayMixin:SetTrackButtonState(true, self.text)--TrackButton，提示
-			end)
-
-
-            btn.text= WoWTools_LabelMixin:Create(btn)
-            function btn:set_text_point()
-                if Save().left then
-                    self.text:SetPoint('RIGHT', self, 'LEFT',1, 0)
-                else
-                    self.text:SetPoint('LEFT', self, 'RIGHT', -1, 0)
-                end
-                self.text:SetJustifyH(Save().left and 'RIGHT' or 'LEFT')
-            end
-            btn:set_text_point()
-
-			TrackButton.btn[index]=btn
-		else
-			btn:SetShown(true)
-		end
 		last=btn
-
 
         btn.index= event.index
         btn.day=day
@@ -482,14 +508,12 @@ local function Set_TrackButton_Text(monthOffset, day)
         TrackButton:SetNormalTexture(0)
     end
 
-    for index= #events+1, #TrackButton.btn do
-		local btn=TrackButton.btn[index]
+    for index= #events+1, #Buttons do
+		btn=Buttons[index]
 		btn.text:SetText('')
 		btn:SetShown(false)
 		btn:SetNormalTexture(0)
 	end
-
-
 
     TrackButton.monthOffset= monthOffset
     TrackButton.day= day
