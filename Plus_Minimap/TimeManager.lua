@@ -143,7 +143,7 @@ end
 
 
 --时间信息
-local function Init_TimeManager_Menu(self, root)
+local function Init_TimeManager_Menu(_, root)
 --plus
     local sub=root:CreateCheckbox('|A:auctionhouse-icon-clock:0:0:|a Plus', function()
         return not Save().disabledClockPlus
@@ -200,7 +200,6 @@ local function Init_TimeManager_Menu(self, root)
     root:CreateDivider()
     sub=root:CreateCheckbox(
         '|TInterface\\Icons\\INV_Misc_PocketWatch_01:0:|t'
-        --..(self==StopwatchFrame and '|cnGREEN_FONT_COLOR:' )
         ..(e.onlyChinese and '秒表' or STOPWATCH_TITLE),
     function()
         return StopwatchFrame:IsShown()
@@ -210,7 +209,7 @@ local function Init_TimeManager_Menu(self, root)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(e.onlyChinese and '显示/隐藏' or (SHOW..'/'..HIDE))
     end)
-    Init_Stopwatch_Menu(self, sub)
+    Init_Stopwatch_Menu(_, sub)
 end
 
 
@@ -652,20 +651,19 @@ end
 
 
 
-
-
-
-
-
-function WoWTools_MinimapMixin:Init_TimeManager()
-    addName= self.addName
-
+local function Init()
     TimeManagerClockButton:SetScript('OnClick', function(frame, d)
         if d=='RightButton' and not IsAltKeyDown() then
             MenuUtil.CreateContextMenu(frame, Init_TimeManager_Menu)
 
         elseif d=='LeftButton' then
             e.call(TimeManager_Toggle)
+        end
+    end)
+
+    TimeManagerStopwatchCheck:HookScript('OnMouseDown', function(self, d)
+        if d=='RightButton' then
+            MenuUtil.CreateContextMenu(self, Init_TimeManager_Menu)
         end
     end)
 
@@ -688,13 +686,24 @@ function WoWTools_MinimapMixin:Init_TimeManager()
     end)
 
 
-    if not self.Save.disabledClockPlus then
+    if not Save().disabledClockPlus then
         Init_TimeManager()
     end
 
-    if not self.Save.disabledClockPlus then
+    if not Save().disabledClockPlus then
         Init_StopwatchFrame()
     end
+
+end
+
+
+
+
+function WoWTools_MinimapMixin:Init_TimeManager()
+    addName= self.addName
+    Init()
+
+    
 end
 
 
