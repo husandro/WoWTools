@@ -314,13 +314,15 @@ local function Init_Mixin()
         set_Menu(self)
     end)
 
+end
 
-    --插件，UIDropDownMenu
-    if e.LibDD then
-        hooksecurefunc(e.LibDD, 'UIDropDownMenu_Initialize', function(_, menu)
+    --[[插件，UIDropDownMenu
+    local LibDD=LibStub:GetLibrary("LibUIDropDownMenu-4.0", true)--菜单
+    if LibDD then
+        hooksecurefunc(LibDD, 'UIDropDownMenu_Initialize', function(_, menu)
             set_Menu(menu)
         end)
-        hooksecurefunc(e.LibDD, 'ToggleDropDownMenu', function(_, level)
+        hooksecurefunc(LibDD, 'ToggleDropDownMenu', function(_, level)
             local nine= _G['L_DropDownList'..(level or '')..'MenuBackdrop']
             if nine and nine.NineSlice then
                 set_Alpha_Color(nine.NineSlice.TopEdge, true)
@@ -343,10 +345,9 @@ local function Init_Mixin()
                 set_Alpha_Color(nine.NineSlice.RightEdge, true)
             end
         end)
-    end
+    end]]
 
 
-end
 
 
 

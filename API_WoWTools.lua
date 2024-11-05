@@ -25,7 +25,7 @@ function e.call(func,...)
     end
 end
 
-e.LibDD=LibStub:GetLibrary("LibUIDropDownMenu-4.0", true)--菜单
+
 
 e.LeftButtonDown = C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'LeftButtonDown' or 'LeftButtonUp'
 e.RightButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'RightButtonDown' or 'RightButtonUp'

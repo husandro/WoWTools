@@ -305,3 +305,6 @@ end
 function WoWTools_HolidayMixin:Init_TrackButton()
     Init()
 end
+function WoWTools_HolidayMixin:Init_Menu(frame)
+    MenuUtil.CreateContextMenu(frame, Init_Menu)
+end

@@ -139,7 +139,7 @@ function WoWTools_UnitMixin:GetPlayerInfo(unit, guid, name, tab)
             local unitLevel= tab.level
                 or (unit and UnitLevel(name))
                 or guid and e.WoWDate[guid] and e.WoWDate[guid].level
-            if unitLevel and GetMaxLevelForLatestExpansion()~=unitLevel then
+            if unitLevel and unitLevel~=0 and GetMaxLevelForLatestExpansion()~=unitLevel then
                 text= text..'|cnGREEN_FONT_COLOR:'..unitLevel..'|r'
             end
 

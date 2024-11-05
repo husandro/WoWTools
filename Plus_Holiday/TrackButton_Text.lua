@@ -304,6 +304,15 @@ local function Create_Button(index, last)
     else
         btn:SetPoint('TOP', last or WoWTools_HolidayMixin.TrackButton, 'BOTTOM')
     end
+
+    btn:SetScript('OnMouseDown', function(self, d)
+        if d=='LeftButton' then
+            Calendar_Toggle()
+        elseif d=='RightButton' then
+            WoWTools_HolidayMixin:Init_Menu(self)
+        end
+    end)
+
     btn:SetScript('OnLeave', function(self)
         e.tips:Hide()
         WoWTools_HolidayMixin:SetTrackButtonState(false, self.text)--TrackButton，提示

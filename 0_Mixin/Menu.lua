@@ -2,7 +2,7 @@
 CreateSlider(root, tab)
 ScaleRoot
 ScaleCheck
-Scale
+Scale(
 
 ShowBackground(root, GetValue, SetValue)
 FrameStrata(root, GetValue, SetValue)

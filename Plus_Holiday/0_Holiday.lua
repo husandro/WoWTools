@@ -1,5 +1,5 @@
 local id, e = ...
-local addName= CALENDAR_FILTER_HOLIDAYS
+
 WoWTools_HolidayMixin={
     Save={
         onGoing=true,--仅限: 正在活动

@@ -5,7 +5,6 @@
     
     <Script file="Libs\LibDBIcon-1.0.lua"/>
     <Script file="Libs\LibRangeCheck-3.0.lua"/>
-    <Script file="Libs\LibUIDropDownMenu.lua"/>
 
 </Ui>
 

@@ -5046,7 +5046,8 @@
         "WidgetCenterDisplayFrameMixin",
         "CurrencyTransferAmountSelectorMixin",
         "PETS",
-        "SendMailCostMoneyFrameCopperButtonText"
+        "SendMailCostMoneyFrameCopperButtonText",
+        "CalendarClassTotalsButton"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
