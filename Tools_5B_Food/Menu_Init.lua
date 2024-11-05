@@ -10,6 +10,48 @@ end
 
 
 
+
+
+local function AltSpell_Menu(self, root)
+    --法术书
+    local sub
+    for i=1, 12 do
+        local spell= C_SpellBook.GetSpellBookSkillLineInfo(i)--shouIdHide name numSpellBookItems iconID isGuild itemIndexOffset
+        if spell and spell.name and not spell.shouIdHide then
+            sub=root:CreateButton(
+                '|T'..(spell.iconID or 0)..':0|t'..e.cn(spell.name),
+            function()
+                return MenuResponse.Open
+            end)
+            local info= C_SpellBook.GetSpellBookSkillLineInfo(i)
+            if info and info.name and info.itemIndexOffset and info.numSpellBookItems and info.numSpellBookItems>0 then
+                for index= info.itemIndexOffset+1, info.itemIndexOffset+ info.numSpellBookItems do
+                    local spellData= C_SpellBook.GetSpellBookItemInfo(index, Enum.SpellBookSpellBank.Player) or {}--skillLineIndex itemType isOffSpec subName actionID name iconID isPassive spellID
+                    if not spellData.isPassive and spellData.spellID and spellData.name then
+                        
+                        
+                    end
+                end
+            end
+        end
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function Check_All_SubClass(setClassID)
     Save().class[setClassID]= Save().class[setClassID] or {}
     for subClassID= 0, 20 do
@@ -34,7 +76,7 @@ end
 
 
 
-local function Check_All_Menu(self, root, setClassID)
+local function Check_All_Menu(_, root, setClassID)
     root:CreateDivider()
     local sub=root:CreateButton(e.onlyChinese and '勾选所有' or CHECK_ALL, function(data)
         if IsControlKeyDown() or data.classID then
@@ -372,6 +414,8 @@ local function Init_Menu(self, root)
     end
 
     Check_All_Menu(self, root, nil)
+
+    AltSpell_Menu(self, root)
 end
 
 
