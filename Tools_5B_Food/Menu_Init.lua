@@ -13,41 +13,70 @@ end
 
 
 local function AltSpell_Menu(self, root)
+    root:CreateDivider()
+
     --法术书
-    local sub,sub2
-    local spells= WoWTools_FoodMixin.Save.spells[e.Player.class]
+    local sub,sub2, sub3, spellSub, num
+    local spells= Save().spells[e.Player.class]
     --local item, alt, ctrl, shift= tab.item, tab.alt, tab.ctrl, tab.shift
     local keyTab={
-        {['Alt']=spells.alt},
-        {['Ctrl']=spells.ctrl},
-        {['Shift']=spells.shift},
+        {type='Alt', spellID=spells.alt},
+        {type='Ctrl', spellID=spells.ctrl},
+        {type='Shift', spellID=spells.shift},
+        --{type='Item', spellID=spells.item},
     }
 
-    for key, spell in pairs(keyTab) do
-        sub:CreateButton(
-            key
-            ..(WoWTools_SpellMixin:GetName(spell) or ''),--取得法术，名称
-        function()
-        end)
+    for _, tab in pairs(keyTab) do
+
+        sub=root:CreateCheckbox(
+            tab.type
+            ..(WoWTools_SpellMixin:GetName(tab.spellID) or ''),--取得法术，名称
+
+        function(data)
+            return Save().spells[e.Player.class][data.type]==data.spellID and data.spellID~=nil
+
+        end, function(data)
+            Save().spells[e.Player.class][data.type]= not Save().spells[e.Player.class][data.type] and data.spellID or nil
+            WoWTools_FoodMixin:Set_AltSpell()
+
+        end, {type=string.lower(tab.type), spellID=tab.spellID})
+
+        WoWTools_SetTooltipMixin:Set_Menu(sub)
 
         for i=1, 12 do
-            local spell= C_SpellBook.GetSpellBookSkillLineInfo(i)--shouIdHide name numSpellBookItems iconID isGuild itemIndexOffset
-            if spell and spell.name and not spell.shouIdHide then
-                sub=root:CreateButton(
-                    '|T'..(spell.iconID or 0)..':0|t'..e.cn(spell.name),
+            spellSub= C_SpellBook.GetSpellBookSkillLineInfo(i)--shouIdHide name numSpellBookItems iconID isGuild itemIndexOffset
+            if spellSub and spellSub.name and not spellSub.shouIdHide then
+                sub2=sub:CreateButton(
+                    '|T'..(spellSub.iconID or 0)..':0|t'..e.cn(spellSub.name),
                 function()
                     return MenuResponse.Open
                 end)
 
                 local info= C_SpellBook.GetSpellBookSkillLineInfo(i)
                 if info and info.name and info.itemIndexOffset and info.numSpellBookItems and info.numSpellBookItems>0 then
+                    num=0
                     for index= info.itemIndexOffset+1, info.itemIndexOffset+ info.numSpellBookItems do
                         local spellData= C_SpellBook.GetSpellBookItemInfo(index, Enum.SpellBookSpellBank.Player) or {}--skillLineIndex itemType isOffSpec subName actionID name iconID isPassive spellID
                         if not spellData.isPassive and spellData.spellID and spellData.name then
-                            
-                            
+
+                            sub3=sub2:CreateCheckbox(
+                                WoWTools_SpellMixin:GetName(spellData.spellID),
+
+                            function(data)
+                                return Save().spells[e.Player.class][data.type]==data.spellID
+
+                            end, function(data)
+                                Save().spells[e.Player.class][data.type]= Save().spells[e.Player.class][data.type]~= data.spellID and data.spellID or nil
+                                WoWTools_FoodMixin:Set_AltSpell()
+
+                            end, {type=string.lower(tab.type), spellID=spellData.spellID})
+
+                            WoWTools_SetTooltipMixin:Set_Menu(sub3)
+                            num= num+1
                         end
                     end
+--SetGridMode
+                    WoWTools_MenuMixin:SetGridMode(sub, num)
                 end
             end
         end
