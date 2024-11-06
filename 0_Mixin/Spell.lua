@@ -42,14 +42,17 @@ function WoWTools_SpellMixin:GetName(spellID)--取得法术，名称
             desc='|A:Islands-QuestBangDisable:0:0|a'..(e.onlyChinese and '未收集' or NOT_COLLECTED )
         end
     else
-        local isPet= not IsPlayerSpell(spellID)
-        desc= isPet and '|A:WildBattlePet:0:0|a' or ''
         if C_Spell.DoesSpellExist(spellID) then
-            if not IsSpellKnownOrOverridesKnown(spellID, isPet) then
+            if not IsSpellKnownOrOverridesKnown(spellID) then
                 col='|cnRED_FONT_COLOR:'
-                desc=(desc or '')..'|A:Islands-QuestBangDisable:0:0|a'..(e.onlyChinese and '未学习' or TRADE_SKILLS_UNLEARNED_TAB)
+                desc=(desc or '')..'|A:Islands-QuestBangDisable:0:0|a'--..(e.onlyChinese and '未学习' or TRADE_SKILLS_UNLEARNED_TAB)
             else
-                if select(9, UnitCastingInfo('player'))==spellID or select(8, UnitChannelInfo('player'))==spellID then
+                --local isPet= not IsPlayerSpell(spellID)
+                --desc= isPet and '|A:WildBattlePet:0:0|a' or ''
+                if
+                    select(9, UnitCastingInfo('player'))==spellID
+                    or select(8, UnitChannelInfo('player'))==spellID
+                then
                     cool= '|cffff00ff'..(e.onlyChinese and '正在施放' or ACTION_SPELL_CAST_START)..'|r'
                 else
                     cool=e.GetSpellItemCooldown(spellID, nil)

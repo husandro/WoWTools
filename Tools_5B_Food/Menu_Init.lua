@@ -54,6 +54,7 @@ local function AltSpell_Menu(self, root)
 
                 local info= C_SpellBook.GetSpellBookSkillLineInfo(i)
                 if info and info.name and info.itemIndexOffset and info.numSpellBookItems and info.numSpellBookItems>0 then
+
                     num=0
                     for index= info.itemIndexOffset+1, info.itemIndexOffset+ info.numSpellBookItems do
                         local spellData= C_SpellBook.GetSpellBookItemInfo(index, Enum.SpellBookSpellBank.Player) or {}--skillLineIndex itemType isOffSpec subName actionID name iconID isPassive spellID
@@ -80,6 +81,8 @@ local function AltSpell_Menu(self, root)
                 end
             end
         end
+        sub:CreateDivider()
+        sub:CreateTitle(tab.type)
     end
 end
 
@@ -329,7 +332,7 @@ local function Init_Menu(self, root)
         self:set_strata()
     end))
 
-    sub2=sub:CreateButton(e.onlyChinese and '行数' or HUD_EDIT_MODE_SETTING_ACTION_BAR_NUM_ROWS, function()return MenuResponse.Open end)
+    sub2=sub:CreateButton(e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL, function()return MenuResponse.Open end)
     sub2:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub2, {
         getValue=function()

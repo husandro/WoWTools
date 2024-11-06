@@ -24,9 +24,9 @@ local ClassSpells={--{item=5512, alt=nil, shift=nil, ctrl=nil}
 WoWTools_FoodMixin={
 Save={
     noUseItems={},--禁用物品
-    --autoLogin= e.Player.husandro,--启动,查询
-    isShowBackground=e.Player.husandro,
-    onlyMaxExpansion=true,--仅本版本物品
+    autoLogin= e.Player.husandro,--启动,查询
+    isShowBackground=e.Player.husandro,--背景
+    --onlyMaxExpansion=true,--仅本版本物品
     olnyUsaItem=true,
     numLine=12,
     autoWho=e.Player.husandro,
@@ -49,6 +49,7 @@ Save={
         [65499]=true,--魔法蛋糕
         [43523]=true,--魔法酪饼
         [43518]=true,--魔法馅饼
+        [5512]=true,--治疗石
     },
     DisableClassID={
         [1]=true,
@@ -87,6 +88,7 @@ local PaneIDs={
     [65499]=true,--魔法蛋糕
     [43523]=true,--魔法酪饼
     [43518]=true,--魔法馅饼
+    [5512]=true,--治疗石
 }
 
 
