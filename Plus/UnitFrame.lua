@@ -103,12 +103,15 @@ local function Init_PlayerFrame()--PlayerFrame.lua
     if IsInRaid() then
         e.call(PlayerFrame_UpdateGroupIndicator)
     end
-    PlayerFrameGroupIndicatorLeft:SetTexture(0)
-    PlayerFrameGroupIndicatorLeft:SetShown(false)
-    PlayerFrameGroupIndicatorMiddle:SetTexture(0)
-    PlayerFrameGroupIndicatorMiddle:SetShown(false)
-    PlayerFrameGroupIndicatorRight:SetTexture(0)
-    PlayerFrameGroupIndicatorRight:SetShown(false)
+
+    if PlayerFrameGroupIndicatorLeft then
+        PlayerFrameGroupIndicatorLeft:SetTexture(0)
+        PlayerFrameGroupIndicatorLeft:SetShown(false)
+        PlayerFrameGroupIndicatorMiddle:SetTexture(0)
+        PlayerFrameGroupIndicatorMiddle:SetShown(false)
+        PlayerFrameGroupIndicatorRight:SetTexture(0)
+        PlayerFrameGroupIndicatorRight:SetShown(false)
+    end
 
     --等级，颜色
     hooksecurefunc('PlayerFrame_UpdateLevel', function()

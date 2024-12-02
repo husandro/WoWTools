@@ -547,7 +547,9 @@ local function Init_All_Frame()
 
 
 
-    if MultiBarBottomLeftButton10 then hide_Texture(MultiBarBottomLeftButton10.SlotBackground) end
+    if MultiBarBottomLeftButton10 then
+        hide_Texture(MultiBarBottomLeftButton10.SlotBackground)
+    end
 
     if CompactRaidFrameManager then--隐藏, 团队, 材质 Blizzard_CompactRaidFrameManager.lua
         set_Alpha_Color(_G['CompactRaidFrameManagerBG-regulars'], nil, nil, 0)
@@ -555,20 +557,25 @@ local function Init_All_Frame()
         set_Alpha_Color(_G['CompactRaidFrameManagerBG-leads'], nil, nil, 0)
         set_Alpha_Color(_G['CompactRaidFrameManagerBG-party-regulars'], nil,nil,0)
 
-        CompactRaidFrameManager.toggleButton:SetNormalAtlas(e.Icon.toRight,true)--展开, 图标
-        CompactRaidFrameManager.toggleButton:SetAlpha(0.2)
-        CompactRaidFrameManager.toggleButton:SetHeight(30)
-        hooksecurefunc('CompactRaidFrameManager_Collapse', function()
-            CompactRaidFrameManager.toggleButton:SetNormalAtlas(e.Icon.toRight)
-            _G['CompactRaidFrameManagerBG-regulars']:SetAlpha(0)
-            _G['CompactRaidFrameManagerBG-party-leads']:SetAlpha(0)
-        end)
-        hooksecurefunc('CompactRaidFrameManager_Expand', function()
-            set_Alpha_Color(_G['CompactRaidFrameManagerBG-party-leads'])
-            CompactRaidFrameManager.toggleButton:SetNormalAtlas(e.Icon.toLeft)
-            _G['CompactRaidFrameManagerBG-regulars']:SetAlpha(0.5)
-            _G['CompactRaidFrameManagerBG-party-leads']:SetAlpha(0.5)
-        end)
+        if CompactRaidFrameManagerToggleButtonForward then--11.0.7
+            CompactRaidFrameManagerToggleButtonForward:SetAlpha(0.3)
+            CompactRaidFrameManagerToggleButtonBack:SetAlpha(0.3)
+        else
+            CompactRaidFrameManager.toggleButton:SetNormalAtlas(e.Icon.toRight,true)--展开, 图标
+            CompactRaidFrameManager.toggleButton:SetAlpha(0.2)
+            CompactRaidFrameManager.toggleButton:SetHeight(30)
+            hooksecurefunc('CompactRaidFrameManager_Collapse', function()
+                CompactRaidFrameManager.toggleButton:SetNormalAtlas(e.Icon.toRight)
+                _G['CompactRaidFrameManagerBG-regulars']:SetAlpha(0)
+                _G['CompactRaidFrameManagerBG-party-leads']:SetAlpha(0)
+            end)
+            hooksecurefunc('CompactRaidFrameManager_Expand', function()
+                set_Alpha_Color(_G['CompactRaidFrameManagerBG-party-leads'])
+                CompactRaidFrameManager.toggleButton:SetNormalAtlas(e.Icon.toLeft)
+                _G['CompactRaidFrameManagerBG-regulars']:SetAlpha(0.5)
+                _G['CompactRaidFrameManagerBG-party-leads']:SetAlpha(0.5)
+            end)
+        end
     end
 
     --施法条

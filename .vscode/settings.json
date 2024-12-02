@@ -5047,7 +5047,9 @@
         "CurrencyTransferAmountSelectorMixin",
         "PETS",
         "SendMailCostMoneyFrameCopperButtonText",
-        "CalendarClassTotalsButton"
+        "CalendarClassTotalsButton",
+        "CompactRaidFrameManagerToggleButtonForward",
+        "CompactRaidFrameManagerToggleButtonBack"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
