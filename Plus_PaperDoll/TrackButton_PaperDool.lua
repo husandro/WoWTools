@@ -49,9 +49,9 @@ local function Init_Menu(self, root)
 
 
     sub=root:CreateCheckbox(
-        e.onlyChinese and '装等' or ITEM_UPGRADE_STAT_AVERAGE_ITEM_LEVEL,
+        e.onlyChinese and '装等2' or ITEM_UPGRADE_STAT_AVERAGE_ITEM_LEVEL,
     function()
-        return Save().trackButtonShowItemLeve or 10
+        return Save().trackButtonShowItemLeve
     end, function()
         Save().trackButtonShowItemLeve= not Save().trackButtonShowItemLeve and true or nil
         TrackButton:set_player_itemLevel()

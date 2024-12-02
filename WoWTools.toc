@@ -249,7 +249,7 @@ Plus_ObjectiveTracker\World_Quest.lua
 Plus\Collections.lua
 ##地图，增强
 Plus\WorldMap.lua
-##单位框，没完成
+##单位框, 最好放在ChatButton_Invite前，Shift+点击=焦点
 Plus\UnitFrame.lua
 ##好友，面板
 Plus\FriendsList.lua

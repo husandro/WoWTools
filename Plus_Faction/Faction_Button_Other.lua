@@ -145,6 +145,7 @@ local function Init()
 
 	local edit= WoWTools_EditBoxMixn:Create(up, {name='WoWTools_PlusTokensSearchBox', instructions= 'text', Template='SearchBoxTemplate'})
 	edit:SetPoint('RIGHT', up, 'LEFT', -6, 0)
+	edit:SetPoint('BOTTOMLEFT', CharacterFramePortrait, 'BOTTOMRIGHT')
 	edit:SetAlpha(0.3)
 	edit:SetScript('OnTextChanged', Init_Search)
 	edit:SetScript('OnEnterPressed', Init_Search)

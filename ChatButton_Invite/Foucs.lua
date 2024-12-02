@@ -8,11 +8,12 @@ end
 
 
 
-
+local ClearFoucsFrame
 --Shift+点击设置焦点
 --跟随，密语
 --鼠标按键 1是左键、2是右键、3是中键
-local ClearFoucsFrame
+
+
 local function Init()
     local key= strlower(Save().focusKey)
 
@@ -98,20 +99,16 @@ local function Init()
         FocusFrameToT,
         FocusFrame,
     }
-    for i=1, MAX_BOSS_FRAMES do--boss
-        local frame= _G['Boss'..i..'TargetFrame']
-        if frame then
-            table.insert(tab, frame)
-            table.insert(tab, frame.BossButton)--UnitFrame.lua
-            table.insert(tab, frame.TotButton)
-        end
-    end
+
 
     for i=1, MAX_PARTY_MEMBERS do--队伍
         local member= 'MemberFrame'..i
         if PartyFrame and PartyFrame[member] then
             table.insert(tab, PartyFrame[member])
-            table.insert(tab, PartyFrame[member].potFrame)--UnitFrame.lua
+--UnitFrame.lua
+            if PartyFrame[member].potFrame then
+                table.insert(tab, PartyFrame[member].potFrame)
+            end
         end
         table.insert(tab, _G['CompactPartyFrameMember'..i])
 
@@ -121,7 +118,19 @@ local function Init()
         end
     end
 
-
+    for i=1, MAX_BOSS_FRAMES do--boss
+        local frame= _G['Boss'..i..'TargetFrame']
+        if frame then
+            table.insert(tab, frame)
+--UnitFrame.lua
+            if frame.BossButton then
+                table.insert(tab, frame.BossButton)
+            end
+            if frame.TotButton then
+                table.insert(tab, frame.TotButton)
+            end
+        end
+    end
 
     for _, frame in pairs(tab) do--设置焦点
         if frame then

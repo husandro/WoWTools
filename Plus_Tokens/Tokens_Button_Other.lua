@@ -14,7 +14,7 @@ local function Init_Search(self)
 	currID= math.min(currID, 2147483647)
 
 	local text= self:GetText()
-	local info = currID>0 and C_CurrencyInfo.GetCurrencyInfo(currID)	
+	local info = currID>0 and C_CurrencyInfo.GetCurrencyInfo(currID)
 	if info then
 		if info.discovered then
 			currencyID= info.currencyID
@@ -29,11 +29,11 @@ local function Init_Search(self)
 			return
 		end
 	end
-	
+
 	local findHeader=true
 	local find, find2
 	local cur1, cur2
-	
+
 
 	for index=1, numList, 1 do
 		local data= C_CurrencyInfo.GetCurrencyListInfo(index) or {}
@@ -57,12 +57,12 @@ local function Init_Search(self)
 
 	find= find or find2
 	cur1= cur1 or cur2
-	
+
 
 	if find and cur1 then
-			
+
 		TokenFrame.ScrollBox:ScrollToElementDataIndex(find)
-		
+
 
 		for _, frame in pairs(TokenFrame.ScrollBox:GetFrames() or {}) do
 			if frame.Content and frame.elementData then
@@ -73,10 +73,10 @@ local function Init_Search(self)
 				end
 			end
 		end
-		
+
 	end
 
-	
+
 end
 
 
@@ -136,9 +136,10 @@ local function Init()
 		e.tips:Show()
 	end)
 
-	
+
 	local edit= WoWTools_EditBoxMixn:Create(up, {name='WoWTools_PlusTokensSearchBox', instructions= 'text', Template='SearchBoxTemplate'})
 	edit:SetPoint('RIGHT', up, 'LEFT', -6, 0)
+	edit:SetPoint('BOTTOMLEFT', CharacterFramePortrait, 'BOTTOMRIGHT')
 	edit:SetAlpha(0.3)
 	edit.Instructions:SetText(e.onlyChinese and '需求：展开选项' or (NEED..': '..HUD_EDIT_MODE_EXPAND_OPTIONS:gsub(' |A:.+|a', '')))
 	edit:SetScript('OnTextChanged', Init_Search)

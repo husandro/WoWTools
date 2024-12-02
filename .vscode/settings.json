@@ -5049,7 +5049,8 @@
         "SendMailCostMoneyFrameCopperButtonText",
         "CalendarClassTotalsButton",
         "CompactRaidFrameManagerToggleButtonForward",
-        "CompactRaidFrameManagerToggleButtonBack"
+        "CompactRaidFrameManagerToggleButtonBack",
+        "CharacterFramePortrait"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
