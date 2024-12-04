@@ -554,7 +554,7 @@ local function Init_Menu(self, root)
     )
 
 --选项
-    sub2=WoWTools_ToolsButtonMixin:OpenMenu(sub, WoWTools_MountMixin.addName)
+    WoWTools_ToolsButtonMixin:OpenMenu(sub, WoWTools_MountMixin.addName)
 end
 
 

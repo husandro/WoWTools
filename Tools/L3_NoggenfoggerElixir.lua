@@ -134,6 +134,8 @@ local function Init_Menu(_, root)
         end,
     })
 
+--选项
+    WoWTools_ToolsButtonMixin:OpenMenu(root, addName)
 end
 
 
@@ -226,10 +228,11 @@ panel:RegisterEvent('PLAYER_LOGOUT')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
+            --[[print(C_Item.GetItemCount(ItemID))
             if (C_Item.GetItemCount(ItemID)==0) then--没有时,不加载
                 self:UnregisterEvent('ADDON_LOADED')
                 return
-            end
+            end]]
 
 
 

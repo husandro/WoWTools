@@ -20,7 +20,7 @@ if e.Player.faction=='Horde' then--部落
         {spell=224869, spell2=224871, name='破碎群岛'},
         {spell=281404, spell2=281402, name='达萨罗'},
         {spell=344587, spell2=344597, name='奥利波斯'},
-        {spell=395277, spell2=395289,  name='瓦德拉肯'},        
+        {spell=395277, spell2=395289,  name='瓦德拉肯'},
         {spell=120145, name='远古传送'},
         {spell=193759, name='守护者圣殿'},
     }
@@ -40,7 +40,7 @@ elseif e.Player.faction=='Alliance' then
         {spell=224869, spell2=224871, name='破碎群岛'},
         {spell=281403, spell2=281400, name='伯拉勒斯'},
         {spell=344587, spell2=344597, name='奥利波斯'},
-        {spell=395277, spell2=395289,  name='瓦德拉肯'},        
+        {spell=395277, spell2=395289,  name='瓦德拉肯'},
         {spell=120145, name='远古传送'},
         {spell=193759, name='守护者圣殿'},
     }
@@ -78,7 +78,7 @@ end
 
 
 
-local function Set_Button_Label(btn) 
+local function Set_Button_Label(btn)
     if Save.showText then
         if not btn.text then
             btn.text=WoWTools_LabelMixin:Create(btn, {color= not btn.luce})
@@ -232,9 +232,9 @@ local function Init()
                 btn.border:SetAtlas('bag-border')--设置高亮
             end
             btn.luce= tab.luce
-           
-          
-            if btn.spellID2 then                
+
+
+            if btn.spellID2 then
                 btn.texture2= btn:CreateTexture(nil,'OVERLAY')
                 btn.texture2:SetPoint('TOPRIGHT',-6,-6)
                 btn.texture2:SetSize(10, 10)
@@ -276,11 +276,11 @@ local function Init()
             end)
 
 
-            
 
-            
 
-            
+
+
+
             btn:SetScript('OnLeave', function(self)
                 e.tips:Hide()
                 self:set_alpha()
@@ -349,7 +349,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             self:UnregisterEvent('ADDON_LOADED')
 
             WoWTools_ToolsButtonMixin:AddOptions(Init_Options)
-            
+
         end
 
     elseif event == "PLAYER_LOGOUT" then
