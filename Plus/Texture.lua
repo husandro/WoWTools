@@ -557,10 +557,10 @@ local function Init_All_Frame()
         set_Alpha_Color(_G['CompactRaidFrameManagerBG-leads'], nil, nil, 0)
         set_Alpha_Color(_G['CompactRaidFrameManagerBG-party-regulars'], nil,nil,0)
 
-        if CompactRaidFrameManagerToggleButtonForward then--11.0.7
+        --if CompactRaidFrameManagerToggleButtonForward then--11.0.7
             CompactRaidFrameManagerToggleButtonForward:SetAlpha(0.3)
             CompactRaidFrameManagerToggleButtonBack:SetAlpha(0.3)
-        else
+        --[[else
             CompactRaidFrameManager.toggleButton:SetNormalAtlas(e.Icon.toRight,true)--展开, 图标
             CompactRaidFrameManager.toggleButton:SetAlpha(0.2)
             CompactRaidFrameManager.toggleButton:SetHeight(30)
@@ -575,7 +575,7 @@ local function Init_All_Frame()
                 _G['CompactRaidFrameManagerBG-regulars']:SetAlpha(0.5)
                 _G['CompactRaidFrameManagerBG-party-leads']:SetAlpha(0.5)
             end)
-        end
+        end]]
     end
 
     --施法条
