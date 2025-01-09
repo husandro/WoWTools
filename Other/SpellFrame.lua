@@ -340,7 +340,9 @@ local function Init()
     hooksecurefunc('ActionButton_UpdateRangeIndicator', set_ActionButton_UpdateRangeIndicator)
 
     --Flyout, 技能，提示
-    hooksecurefunc('SpellFlyoutButton_UpdateGlyphState', set_SpellFlyoutButton_UpdateGlyphState)
+    if SpellFlyoutButton_UpdateGlyphState then--11.1
+        hooksecurefunc('SpellFlyoutButton_UpdateGlyphState', set_SpellFlyoutButton_UpdateGlyphState)
+    end
     hooksecurefunc(SpellFlyout, 'Toggle',  GameTooltip_Hide)--隐藏
 
     --挑战传送门数据 --Flyout, 挑战传送门数据e.ChallengesSpellTabs，仅限 不是中文

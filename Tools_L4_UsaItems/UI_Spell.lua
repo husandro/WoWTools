@@ -102,6 +102,9 @@ end
 
 
 function WoWTools_UseItemsMixin:Init_SpellFlyoutButton()--法术书，界面, Flyout, 菜单
+    if not SpellFlyoutButton_UpdateGlyphState then
+        return
+    end
     hooksecurefunc('SpellFlyoutButton_UpdateGlyphState', Init_SpellFlyoutButton_UpdateGlyphState)--法术书，界面, Flyout, 菜单
 end
 

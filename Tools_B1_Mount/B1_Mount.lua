@@ -117,7 +117,7 @@ local function Init()
 
     WoWTools_MountMixin:Init_Button()
     WoWTools_MountMixin:Init_Mount_Show()--坐骑秀
-    WoWTools_MountMixin:Init_SpellFlyoutButton()
+    --WoWTools_MountMixin:Init_SpellFlyoutButton()
 end
 
 

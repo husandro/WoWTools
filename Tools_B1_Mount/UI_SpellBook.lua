@@ -67,6 +67,9 @@ end
 
 
 local function Init()
+    if not SpellFlyoutButton_UpdateGlyphState then--11.1
+        return
+    end
     hooksecurefunc('SpellFlyoutButton_UpdateGlyphState', function(self)--法术书，界面, Flyout, 菜单
         local frame= self:GetParent():GetParent()
         if not frame or not frame.mountSpell or not self.spellID or C_Spell.IsSpellPassive(self.spellID) then
