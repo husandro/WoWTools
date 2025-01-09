@@ -57,11 +57,17 @@ local function Create_Check(frame)
 
     frame.check:SetSize(20,20)--Fast，选项
 
-    frame.check:SetPoint('RIGHT', frame)
+    if frame.Status then--11.1
+        frame.check:SetPoint('RIGHT', frame.Status, 'LEFT')
+    else
+        frame.check:SetPoint('RIGHT', frame)
+    end
+
     frame.check:SetScript('OnClick', function(self)
         Save().fast[self.name]= not Save().fast[self.name] and self:GetID() or nil
         WoWTools_AddOnsMixin:Set_Left_Buttons()
     end)
+    
 
     frame.check.dep= frame:CreateLine()--依赖，提示
     frame.check.dep:Hide()
@@ -82,7 +88,8 @@ local function Create_Check(frame)
 
     frame.check.memoFrame= CreateFrame("Frame", nil, frame.check)
     frame.check.memoFrame.Text= WoWTools_LabelMixin:Create(frame, {justifyH='RIGHT'})
-    frame.check.memoFrame.Text:SetPoint('RIGHT', frame.Status, 'LEFT')
+    frame.check.memoFrame.Text:SetPoint('RIGHT', frame.check.Text, 'LEFT', -2, 0)
+    --frame.check.memoFrame.Text:SetPoint('RIGHT', frame.Status, 'LEFT')
     frame.check.memoFrame.Text:SetAlpha(0.5)
     frame.check.memoFrame:Hide()
     frame.check.memoFrame:SetScript('OnUpdate', function(self, elapsed)
@@ -174,13 +181,13 @@ local function Init_Set_List(frame, addonIndex)
     local iconAtlas = C_AddOns.GetAddOnMetadata(addonIndex, "IconAtlas")
 
     if not iconTexture and not iconAtlas then--去掉，没有图标，提示
-       frame.Title:SetText('       '..(title or name))
+       frame.Title:SetText(title or name)
     end
 
     frame.check:SetID(addonIndex)
     frame.check:SetCheckedTexture(iconTexture or e.Icon.icon)
     frame.check.name= name
-    frame.check.isDependencies= C_AddOns.GetAddOnDependencies(addonIndex) and true or nil
+    frame.check.isDependencies= C_AddOns.GetAddOnDependencies(addonIndex) and true or false
     frame.check:SetChecked(isChecked)--fast
     frame.check:SetAlpha(isChecked and 1 or 0.1)
 
@@ -222,10 +229,19 @@ end
 
 
 local function Init()
-    hooksecurefunc('AddonList_InitButton', function(frame, addonIndex)
-        frame.Title:SetPoint('RIGHT', -220, 0 )
-        Init_Set_List(frame, addonIndex)--列表，内容
-    end)
+    if AddonList_InitAddon then--11.1
+        hooksecurefunc('AddonList_InitAddon', function(entry, treeNode)
+            local addonIndex = treeNode:GetData().addonIndex
+            Init_Set_List(entry, addonIndex)--列表，内容
+        end)
+    else
+        hooksecurefunc('AddonList_InitButton', function(frame, addonIndex)
+            frame.Title:SetPoint('RIGHT', -220, 0 )
+            Init_Set_List(frame, addonIndex)--列表，内容
+        end)
+    end
+
+
 
     hooksecurefunc('AddonTooltip_Update', function(frame)
         WoWTools_AddOnsMixin:Update_Usage()--更新，使用情况

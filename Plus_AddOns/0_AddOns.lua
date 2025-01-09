@@ -235,26 +235,64 @@ local function Init()
         WoWTools_AddOnsMixin:Init_Left_Buttons()
     end
 
-    --WoWTools_AddOnsMixin:Init_Info_Plus()
+    WoWTools_AddOnsMixin:Init_Info_Plus()
+
+    if AddonList.Performance then--11.1
+
+        WoWTools_MoveMixin:Setup(AddonList, {needSize=true, needMove=true, minW=430, minH=120, setSize=true, initFunc=function()
 
 
-    WoWTools_MoveMixin:Setup(AddonList, {needSize=true, needMove=true, minW=430, minH=120, setSize=true, initFunc=function()
-        AddonList.ScrollBox:ClearAllPoints()
-        AddonList.ScrollBox:SetPoint('TOPLEFT', 7, -64)
-        AddonList.ScrollBox:SetPoint('BOTTOMRIGHT', -22,32)
-    end, sizeRestFunc=function(self)
-        self.target:SetSize("500", "478")
-    end})
-    AddonListForceLoad:ClearAllPoints()
-    AddonListForceLoad:SetPoint('TOP', AddonList, -16, -26)
+            AddonList.ScrollBox:ClearAllPoints()
+            AddonList.ScrollBox:SetPoint('LEFT', 7, 0)
+            AddonList.ScrollBox:SetPoint('TOP', AddonList.Performance, 'BOTTOM')
+            AddonList.ScrollBox:SetPoint('BOTTOMRIGHT', -22,32)
 
+            --AddonList.SearchBox:ClearAllPoints()
+            for _, text in pairs({AddonList.ForceLoad:GetRegions()}) do
+                if text:GetObjectType()=="FontString" then
+                    text:SetText('')
+                    text:ClearAllPoints()
+                    AddonList.ForceLoad:HookScript('OnEnter', function(self)
+                        e.tips:SetOwner(self, "ANCHOR_LEFT")
+                        e.tips:ClearLines()
+                        e.tips:AddLine(e.onlyChinese and '加载过期插件' or ADDON_FORCE_LOAD)
+                        e.tips:Show()
+                    end)
+                    AddonList.ForceLoad:HookScript('OnLeave', GameTooltip_Hide)
 
+                    AddonList.SearchBox:ClearAllPoints()
+                    AddonList.SearchBox:SetPoint('LEFT', AddonList.ForceLoad, 'RIGHT', 6,0)
+                    AddonList.SearchBox:SetPoint('RIGHT', -42, 0)
 
-    hooksecurefunc('AddonList_Update', function()
-        WoWTools_AddOnsMixin:Set_Left_Buttons()--插件，快捷，选中
-        WoWTools_AddOnsMixin:Set_Right_Buttons()
-        AddonListOkayButton:SetWidth(AddonListOkayButton:GetFontString():GetWidth()+24)
-    end)
+                    break
+                end
+            end
+        end, sizeRestFunc=function(self)
+            self.target:SetSize(500, 480)
+        end})
+        AddonList.ForceLoad:ClearAllPoints()
+        AddonList.ForceLoad:SetPoint('LEFT', AddonList.Dropdown, 'RIGHT', 23,0)
+        hooksecurefunc('AddonList_Update', function()
+            WoWTools_AddOnsMixin:Set_Left_Buttons()--插件，快捷，选中
+            WoWTools_AddOnsMixin:Set_Right_Buttons()
+        end)
+
+    else
+        WoWTools_MoveMixin:Setup(AddonList, {needSize=true, needMove=true, minW=430, minH=120, setSize=true, initFunc=function()
+            AddonList.ScrollBox:ClearAllPoints()
+            AddonList.ScrollBox:SetPoint('TOPLEFT', 7, -64)
+            AddonList.ScrollBox:SetPoint('BOTTOMRIGHT', -22,32)
+        end, sizeRestFunc=function(self)
+            self.target:SetSize(500, 480)
+        end})
+        AddonListForceLoad:ClearAllPoints()
+        AddonListForceLoad:SetPoint('TOP', AddonList, -16, -26)
+        hooksecurefunc('AddonList_Update', function()
+            WoWTools_AddOnsMixin:Set_Left_Buttons()--插件，快捷，选中
+            WoWTools_AddOnsMixin:Set_Right_Buttons()
+            AddonListOkayButton:SetWidth(AddonListOkayButton:GetFontString():GetWidth()+24)
+        end)
+    end
 end
 
 

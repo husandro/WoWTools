@@ -5050,7 +5050,10 @@
         "CalendarClassTotalsButton",
         "CompactRaidFrameManagerToggleButtonForward",
         "CompactRaidFrameManagerToggleButtonBack",
-        "CharacterFramePortrait"
+        "CharacterFramePortrait",
+        "ADDON_FORCE_LOAD",
+        "AddonList_InitButton",
+        "AddonList_InitAddon"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

@@ -64,8 +64,12 @@ local function Init()
 
 
     NewButton.Text= WoWTools_LabelMixin:Create(NewButton)--已选中，数量
-    NewButton.Text:SetPoint('BOTTOMRIGHT', NewButton, 'LEFT',0, 1)
-    NewButton.Text:SetScript('OnLeave', GameTooltip_Hide)
+    NewButton.Text:SetPoint('TOPLEFT', 0, 6)
+    --NewButton.Text:SetPoint('BOTTOMRIGHT', NewButton, 'LEFT',0, 1)
+    NewButton.Text:SetScript('OnLeave', function(self)
+        self:SetAlpha(1)
+        e.tips:Hide()
+    end)
     NewButton.Text:SetScript('OnEnter', function (self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
@@ -73,6 +77,7 @@ local function Init()
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(' ', e.onlyChinese and '已选中', 'Selected')
         e.tips:Show()
+        self:SetAlpha(0.3)
     end)
 
 
@@ -82,8 +87,12 @@ local function Init()
 
 
     NewButton.Text2=WoWTools_LabelMixin:Create(NewButton, {justifyH='RIGHT'})--总内存
-    NewButton.Text2:SetPoint('TOPRIGHT', NewButton, 'LEFT', 0, -1)
-    NewButton.Text2:SetScript('OnLeave', GameTooltip_Hide)
+    NewButton.Text2:SetPoint('BOTTOMRIGHT', 0, -12)
+    --NewButton.Text2:SetPoint('TOPRIGHT', NewButton, 'LEFT', 0, -1)
+    NewButton.Text2:SetScript('OnLeave', function(self)
+        e.tips:Hide()
+        self:SetAlpha(1)
+    end)
     NewButton.Text2:SetScript('OnEnter', function(self)
         WoWTools_AddOnsMixin:Update_Usage()--更新，使用情况
         e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -147,6 +156,8 @@ local function Init()
         )
 
         e.tips:Show()
+
+        self:SetAlpha(0.3)
     end)
 
 
@@ -156,7 +167,10 @@ local function Init()
 
     NewButton.Text3=WoWTools_LabelMixin:Create(NewButton, {justifyH='RIGHT'})--总已加载，数量
     NewButton.Text3:SetPoint('RIGHT', NewButton.Text2, 'LEFT', -8, 0)
-    NewButton.Text3:SetScript('OnLeave', GameTooltip_Hide)
+    NewButton.Text3:SetScript('OnLeave', function(self)
+        self:SetAlpha(1)
+        e.tips:Hide()
+    end)
     NewButton.Text3:SetScript('OnEnter', function (self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
@@ -164,6 +178,7 @@ local function Init()
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(format('|cnGREEN_FONT_COLOR:%s', e.onlyChinese and '已加载', LOAD_ADDON), format('|cffff00ff+%s', e.onlyChinese and '只能按需加载' or ADDON_DEMAND_LOADED))
         e.tips:Show()
+        self:SetAlpha(0.3)
     end)
 
 
@@ -216,7 +231,7 @@ end
 --不禁用，本插件
 local function Init_NotDisabled_Button()
     local btn= WoWTools_ButtonMixin:Cbtn(AddonList, {size={18,18}, icon= Save().enableAllButtn})
-    btn:SetPoint('LEFT', AddonListDisableAllButton, 'RIGHT', 2,0)
+    btn:SetPoint('LEFT', AddonListDisableAllButton or AddonList.DisableAllButton, 'RIGHT', 2,0)--11.1
     btn:SetAlpha(0.3)
     function btn:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
@@ -229,7 +244,11 @@ local function Init_NotDisabled_Button()
     btn:SetScript('OnLeave', function(self)
         e.tips:Hide()
         self:SetAlpha(0.3)
-        AddonListDisableAllButton:SetAlpha(1)
+        if AddonList.DisableAllButton then--11.1
+            AddonList.DisableAllButton:SetAlpha(1)
+        else
+            AddonListDisableAllButton:SetAlpha(1)
+        end
         if self.findFrame then
             if self.findFrame.check then
                 self.findFrame.check:set_leave_alpha()
@@ -239,7 +258,11 @@ local function Init_NotDisabled_Button()
     end)
     btn:SetScript('OnEnter', function(self)
         self:set_tooltips()
-        AddonListDisableAllButton:SetAlpha(0.3)
+        if AddonList.DisableAllButton then--11.1
+            AddonList.DisableAllButton:SetAlpha(0.3)
+        else
+            AddonListDisableAllButton:SetAlpha(0.3)
+        end
         if not self.index then
             for i=1, C_AddOns.GetNumAddOns() do
                 if C_AddOns.GetAddOnInfo(i)== id then

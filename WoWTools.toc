@@ -1,5 +1,5 @@
-## Interface: 110010
-## Title: |cffff00ffWoW|r |cff00ff00Tools|r
+## Interface: 110100
+## Title: |cffff00ffWoW|r|cff00ff00Tools|r
 ## Author: husandro
 ## Version: @project-version@
 ## Notes: |A:Icon-WoW:0:0|aWoW |cffff0000Plus|r|n|cffffd100|A:communities-icon-invitemail:0:0|ahusandro@qq.com|r|n|A:WoWShare-TwitterLogo:0:0|a|cff00ccffhttps://www.curseforge.com/wow/addons/wowtools|r
