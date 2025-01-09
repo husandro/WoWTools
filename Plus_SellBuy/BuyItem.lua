@@ -35,58 +35,63 @@ local function set_buy_item()
     local Tab={}
     for index=1, numAllItems do
         local itemID=GetMerchantItemID(index)
-        local num= GetBuyNum(itemID)
+        local num= itemID and GetBuyNum(itemID)
         if num then
             local buyNum=num-C_Item.GetItemCount(itemID, true, false, true)
             if buyNum>0 then
-                local maxStack = GetMerchantItemMaxStack(index)
-                local _, _, price, stackCount, _, _, _, extendedCost = GetMerchantItemInfo(index)
-                local canAfford
-                if (price and price > 0) then
-                    canAfford = floor(GetMoney() / (price / stackCount))
-                end
-                if (extendedCost) then
-                    for i = 1, MAX_ITEM_COST do
-                        local _, itemValue, itemLink, currencyName = GetMerchantItemCostItem(index, i)
-                        if itemLink and itemValue and itemValue>0 then
-                            if not currencyName then
-                                local myCount = C_Item.GetItemCount(itemLink, false, false, true)
-                                local value= floor(myCount / (itemValue / stackCount))
-                                canAfford=not canAfford and value or min(canAfford, value)
-                            elseif currencyName then
-                               local info= C_CurrencyInfo.GetCurrencyInfoFromLink(itemLink)
-                               if info and info.quantity then
-                                    local value=floor(info.quantity / (itemValue / stackCount))
-                                    canAfford= not canAfford and value or min(canAfford, value)
+                local info = C_MerchantFrame.GetItemInfo(index)
+                if info then
+                    local maxStack = GetMerchantItemMaxStack(index)
+                    local price= info.price
+                    local stackCount= info.stackCount
+
+                    local canAfford
+                    if (price and price > 0) then
+                        canAfford = floor(GetMoney() / (price / stackCount))
+                    end
+                    if info.hasExtendedCost then
+                        for i = 1, MAX_ITEM_COST do
+                            local _, itemValue, itemLink, currencyName = GetMerchantItemCostItem(index, i)
+                            if itemLink and itemValue and itemValue>0 then
+                                if not currencyName then
+                                    local myCount = C_Item.GetItemCount(itemLink, false, false, true)
+                                    local value= floor(myCount / (itemValue / stackCount))
+                                    canAfford=not canAfford and value or min(canAfford, value)
+                                elseif currencyName then
+                                local info= C_CurrencyInfo.GetCurrencyInfoFromLink(itemLink)
+                                if info and info.quantity then
+                                        local value=floor(info.quantity / (itemValue / stackCount))
+                                        canAfford= not canAfford and value or min(canAfford, value)
+                                    else
+                                        canAfford=0
+                                end
+                                end
+                            end
+                        end
+                    end
+                    if canAfford and canAfford>=buyNum and floor(buyNum/stackCount)>0 then
+                        while buyNum>0 do
+                            local stack=floor(buyNum/stackCount)
+                            if IsModifierKeyDown() or stack<1 then
+                                break
+                            end
+                            local buy=buyNum
+                            if stackCount>1 then
+                                if buy>=maxStack then
+                                    buy=maxStack
                                 else
-                                    canAfford=0
-                               end
-                            end
-                        end
-                    end
-                end
-                if canAfford and canAfford>=buyNum and floor(buyNum/stackCount)>0 then
-                    while buyNum>0 do
-                        local stack=floor(buyNum/stackCount)
-                        if IsModifierKeyDown() or stack<1 then
-                            break
-                        end
-                        local buy=buyNum
-                        if stackCount>1 then
-                            if buy>=maxStack then
-                                buy=maxStack
+                                    buy=stack*stackCount
+                                end
                             else
-                                buy=stack*stackCount
+                                buy=buy>maxStack and maxStack or buy
                             end
-                        else
-                            buy=buy>maxStack and maxStack or buy
+                            BuyMerchantItem(index, buy)
+                            buyNum=buyNum-buy
                         end
-                        BuyMerchantItem(index, buy)
-                        buyNum=buyNum-buy
-                    end
-                    local itemLink=GetMerchantItemLink(index)
-                    if itemLink then
-                        Tab[itemLink]=num
+                        local itemLink=GetMerchantItemLink(index)
+                        if itemLink then
+                            Tab[itemLink]=num
+                        end
                     end
                 end
             end
@@ -220,7 +225,8 @@ local function Init()
             end
         elseif infoType=='merchant' and itemIDorIndex then--购买物品
             local itemID= GetMerchantItemID(itemIDorIndex)
-            local icon= select(2, GetMerchantItemInfo(itemIDorIndex))
+            local info= C_MerchantFrame.GetItemInfo(itemIDorIndex)
+            local icon= info and info.texture
             itemLink= GetMerchantItemLink(itemIDorIndex)
             
             if itemID and itemLink then

@@ -28,7 +28,10 @@ function WoWTools_BagMixin:Find(find, tab)
         itemName= C_Item.GetItemName(tab.itemLocation)
 
     elseif tab.merchantIndex then--商人
-        itemName=  GetMerchantItemInfo(tab.merchantIndex)
+        local info = C_MerchantFrame.GetItemInfo(tab.merchantIndex);
+        if info then
+            itemName= info.name
+        end
 
     elseif tab.BuybackIndex then--商人，回购
         itemName= GetBuybackItemInfo(tab.BuybackIndex)

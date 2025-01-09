@@ -255,9 +255,9 @@ local function Init_WidthX2()
                         btn:SetPoint('TOPLEFT', _G['MerchantItem'..(i-1)], 'BOTTOMLEFT', 0, -8)
                     end
                     if not btn.ItemButton.hasItem then
-                        local name, texture2= GetMerchantItemInfo(i)
-                        _G["MerchantItem"..i.."Name"]:SetText(name or '')
-                        SetItemButtonTexture(btn.ItemButton, texture2 or 0)
+                        local info = C_MerchantFrame.GetItemInfo(i) or {}
+                        _G["MerchantItem"..i.."Name"]:SetText(info.name or '')
+                        SetItemButtonTexture(btn.ItemButton, info.texture or 0)
                     end
                 else
                     btn:Hide()
