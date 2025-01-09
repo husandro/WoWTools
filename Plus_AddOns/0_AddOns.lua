@@ -235,7 +235,7 @@ local function Init()
         WoWTools_AddOnsMixin:Init_Left_Buttons()
     end
 
-    WoWTools_AddOnsMixin:Init_Info_Plus()
+    --WoWTools_AddOnsMixin:Init_Info_Plus()
 
 
     WoWTools_MoveMixin:Setup(AddonList, {needSize=true, needMove=true, minW=430, minH=120, setSize=true, initFunc=function()

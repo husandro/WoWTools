@@ -266,12 +266,22 @@ local function Init_NotDisabled_Button()
         self:SetNormalAtlas(Save().enableAllButtn and e.Icon.icon or e.Icon.disabled)
         self:set_tooltips()
     end)
-    AddonListDisableAllButton:HookScript('OnClick', function()
-        if Save().enableAllButtn then
-            C_AddOns.EnableAddOn(id)
-            e.call(AddonList_Update)
-        end
-    end)
+
+    if AddonListDisableAllButton then--11.1
+        AddonListDisableAllButton:HookScript('OnClick', function()
+            if Save().enableAllButtn then
+                C_AddOns.EnableAddOn(id)
+                e.call(AddonList_Update)
+            end
+        end)
+    else
+        AddonList.DisableAllButton:HookScript('OnClick', function()
+            if Save().enableAllButtn then
+                C_AddOns.EnableAddOn(id)
+                e.call(AddonList_Update)
+            end
+        end)
+    end
 end
 
 
