@@ -64,7 +64,7 @@ local function Init()
                     text= text and text..' ' or ''
                     text= (text and text..' ' or '')..tab.text
                 end
-                spellID= select(2, C_Item.GetItemSpell(itemLink))
+                spellID= itemLink and select(2, C_Item.GetItemSpell(itemLink))
                 if spellID then
                     text= (text or '').. '|A:soulbinds_tree_conduit_icon_utility:10:10|a'
                 end
