@@ -67,7 +67,7 @@ end
 
 
 local function Init()
-    if not SpellFlyoutButton_UpdateGlyphState then--11.1
+    if not SpellFlyoutButton_UpdateGlyphState then
         return
     end
     hooksecurefunc('SpellFlyoutButton_UpdateGlyphState', function(self)--法术书，界面, Flyout, 菜单

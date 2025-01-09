@@ -340,7 +340,9 @@ local function Init()
     hooksecurefunc('ActionButton_UpdateRangeIndicator', set_ActionButton_UpdateRangeIndicator)
 
     --Flyout, 技能，提示
-    if SpellFlyoutButton_UpdateGlyphState then--11.1
+    if SpellFlyoutPopupButtonMixin then--11.1
+        hooksecurefunc(SpellFlyoutPopupButtonMixin, 'UpdateGlyphState', set_SpellFlyoutButton_UpdateGlyphState)
+    else
         hooksecurefunc('SpellFlyoutButton_UpdateGlyphState', set_SpellFlyoutButton_UpdateGlyphState)
     end
     hooksecurefunc(SpellFlyout, 'Toggle',  GameTooltip_Hide)--隐藏

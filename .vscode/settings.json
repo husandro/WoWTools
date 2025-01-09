@@ -5053,7 +5053,8 @@
         "CharacterFramePortrait",
         "ADDON_FORCE_LOAD",
         "AddonList_InitButton",
-        "AddonList_InitAddon"
+        "AddonList_InitAddon",
+        "SpellFlyoutPopupButtonMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
