@@ -988,7 +988,7 @@ local function Init_Heirloom()
     function check:init_spce(classID, spec)
         classID= classID or 0
         spec= spec or 0
-        local num= classID>0 and GetNumSpecializationsForClassID(classID) or 0
+        local num= classID>0 and C_SpecializationInfo.GetNumSpecializationsForClassID(classID) or 0
         for i = 1, num, 1 do
             local specID, _, _, icon, role = GetSpecializationInfoForClassID(classID, i, e.Player.sex)
             local btn= self.specButton[i]

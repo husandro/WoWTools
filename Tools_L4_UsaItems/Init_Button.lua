@@ -23,7 +23,7 @@ local function Init_Dia()
             print(WoWTools_ToolsButtonMixin:GetName(), WoWTools_UseItemsMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r', e.onlyChinese and '完成' or COMPLETE, data.name, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
         OnAlt = function(_, data)
-            table.remove(Save[data.type], data.index)
+            table.remove(WoWTools_UseItemsMixin.Save[data.type], data.index)
             print(WoWTools_ToolsButtonMixin:GetName(), WoWTools_UseItemsMixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', e.onlyChinese and '完成' or COMPLETE, data.name, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
     }
