@@ -178,6 +178,7 @@ end
 WoWTools_MoveMixin.ADDON_LOADED['Blizzard_DelvesDashboardUI']= function()
     WoWTools_MoveMixin:Setup(DelvesCompanionConfigurationFrame)
     WoWTools_MoveMixin:Setup(DelvesCompanionAbilityListFrame)
+    WoWTools_MoveMixin:Setup(DelvesDashboardFrame, {frame=PVEFrame})
 end
 
 
