@@ -233,6 +233,42 @@ end
 
 
 
+local function Init_Menu(self, root)
+    local sub
+    local name, _, numSlots2= GetFlyoutInfo(self.flyoutID)
+    if not name or not numSlots2 then
+        return
+    end
+
+    sub=root:CreateTitle(e.cn(name))
+    root:CreateDivider()
+
+    for slot= 1, numSlots2 do
+        local flyoutSpellID, overrideSpellID, isKnown, spellName = GetFlyoutSlotInfo(self.flyoutID, slot)
+        local spellID= overrideSpellID or flyoutSpellID
+        if spellID then
+            sub= root:CreateButton(
+                '|T'..(C_Spell.GetSpellTexture(spellID) or 0)..':0|t'
+                ..(isKnown and '' or '|cnRED_FONT_COLOR:')
+                ..(e.cn(spellName, {spellID=spellID, isName=true}) or spellID),
+            function(data)
+                local spellLink= WoWTools_SpellMixin:GetLink(data.spellID, false)
+                WoWTools_ChatMixin:Chat(spellLink or data.spellID, nil, true)
+                return MenuResponse.Open
+            end, {spellID=spellID})
+            WoWTools_SetTooltipMixin:Set_Menu(sub)
+        end
+    end
+end
+
+
+
+
+
+
+
+
+
 
 
 
@@ -264,6 +300,11 @@ local function Init_All_Flyout()
         local btn= WoWTools_ButtonMixin:Cbtn(PlayerSpellsFrame.SpellBookFrame.PagedSpellsFrame, {texture=519384, size=32, alpha=isKnown and 0.1 or 0.5})
 
         btn:SetPoint('TOPLEFT', 22, y)
+
+        btn:SetScript('OnClick', function(self)
+            MenuUtil.CreateContextMenu(self, Init_Menu)
+        end)
+
         btn:SetScript('OnLeave', function(self) self:SetAlpha(isKnown and 0.1 or 0.5) e.tips:Hide() end)
         btn:SetScript('OnEnter', function(self)
             e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -304,7 +345,7 @@ local function Init_All_Flyout()
         y= y-46
 
     end
-    
+
 end
 
 

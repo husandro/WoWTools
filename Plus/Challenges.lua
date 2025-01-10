@@ -7,7 +7,7 @@ local id, e = ...
 https://wago.io/dungeonports
 https://wago.io/meD8JMW3C
 C_MythicPlus.GetCurrentSeason()
-https://wago.tools/db2/MapChallengeMode?build=11.0.2.55399&locale=zhCN
+https://wago.tools/db2/MapChallengeMode?locale=zhCN
 ]]
 e.ChallengesSpellTabs={
     [399]= {spell=393256, ins=1202, name='红玉', spellName='利爪防御者之路', spellDes='传送到|cff00ccff红玉新生法池|r的入口。'},--传送到红玉新生法池的入口。 利爪防御者之路
@@ -87,6 +87,7 @@ e.ChallengesSpellTabs={
     [505]= {spell=445414, ins=1270, name='破晨号', spellName='破晨号之路', spellDes='传送至|cff00ccff破晨号|r入口处。'},
     [506]= {spell=445440, ins=1272, name='燧酿酒庄', spellName='酒庄之路', spellDes='传送至|cff00ccff燧酿酒庄|r入口处。'},
     [507]= {spell=445424, ins=71, name='格瑞姆巴托', spellName='格瑞姆巴托之路', spellDes='传送至|cff00ccff格瑞姆巴托|r入口处。'},
+    --[525]= {spell=, ins=, name='', spellName='', spellDes='传送至|cff00ccff|r入口处。'},
 }
 
 --双法术，
