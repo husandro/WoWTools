@@ -87,7 +87,7 @@ local function Init()
 
 
     NewButton.Text2=WoWTools_LabelMixin:Create(NewButton, {justifyH='RIGHT'})--总内存
-    NewButton.Text2:SetPoint('BOTTOMRIGHT', 0, -12)
+    NewButton.Text2:SetPoint('BOTTOMRIGHT', -5, -22)
     --NewButton.Text2:SetPoint('TOPRIGHT', NewButton, 'LEFT', 0, -1)
     NewButton.Text2:SetScript('OnLeave', function(self)
         e.tips:Hide()

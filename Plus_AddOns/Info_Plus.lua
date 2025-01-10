@@ -42,7 +42,18 @@ end
 
 
 
-
+--AddonList.lua
+local function FormatProfilerPercent(pct)
+	if pct >= 1 then
+		return string.format("%.0f%%", pct);
+	elseif pct >= 0.1 then
+		return string.format("%.1f%%", pct);
+	elseif pct >= 0.01 then
+		return string.format("%.2f%%", pct);
+	else
+		return "0%";
+	end
+end
 
 
 
@@ -90,13 +101,26 @@ local function Create_Check(frame)
     frame.check.memoFrame.Text= WoWTools_LabelMixin:Create(frame, {justifyH='RIGHT'})
     frame.check.memoFrame.Text:SetPoint('RIGHT', frame.check.Text, 'LEFT', -2, 0)
     --frame.check.memoFrame.Text:SetPoint('RIGHT', frame.Status, 'LEFT')
-    frame.check.memoFrame.Text:SetAlpha(0.5)
+    --frame.check.memoFrame.Text:SetAlpha(0.5)
     frame.check.memoFrame:Hide()
     frame.check.memoFrame:SetScript('OnUpdate', function(self, elapsed)
-        self.elapsed = (self.elapsed or 3) + elapsed
-        if self.elapsed > 3 then
+        self.elapsed = (self.elapsed or 1) + elapsed
+        if self.elapsed > 1 then
             self.elapsed = 0
-            self.Text:SetText(WoWTools_AddOnsMixin:Get_MenoryValue(self:GetID(), false) or '')
+
+            local menory= WoWTools_AddOnsMixin:Get_MenoryValue(self:GetID(), false)
+
+            if menory then
+                local appVal = C_AddOnProfiler.GetApplicationMetric(1)
+                local overallVal = C_AddOnProfiler.GetOverallMetric(1)
+                local addonVal = C_AddOnProfiler.GetAddOnMetric(self.name, 1)
+                local relativeTotal = appVal - overallVal + addonVal;
+                if relativeTotal > 0 then
+                    menory= FormatProfilerPercent(addonVal / relativeTotal * 100.0)..' '..menory
+                end
+            end
+
+            self.Text:SetText(menory or '')
         end
     end)
     frame.check.memoFrame:SetScript('OnHide', function(self)
@@ -193,6 +217,7 @@ local function Init_Set_List(frame, addonIndex)
 
     frame.check.Text:SetText(addonIndex or '')--索引
     frame.check.memoFrame:SetID(addonIndex)
+    frame.check.memoFrame.name=name
     frame.check.memoFrame:SetShown(C_AddOns.IsAddOnLoaded(addonIndex))
 
 
