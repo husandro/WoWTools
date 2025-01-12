@@ -87,13 +87,12 @@ e.ChallengesSpellTabs={
     [505]= {spell=445414, ins=1270, name='破晨号', spellName='破晨号之路', spellDes='传送至|cff00ccff破晨号|r入口处。'},
     [506]= {spell=445440, ins=1272, name='燧酿酒庄', spellName='酒庄之路', spellDes='传送至|cff00ccff燧酿酒庄|r入口处。'},
     [507]= {spell=445424, ins=71, name='格瑞姆巴托', spellName='格瑞姆巴托之路', spellDes='传送至|cff00ccff格瑞姆巴托|r入口处。'},
-    --[525]= {spell=, ins=, name='', spellName='', spellDes='传送至|cff00ccff|r入口处。'},
+    [525]= {spell=1216786, ins=1298, name='水闸行动', spellName='水闸行动之路', spellDes='传送至|cff00ccff水闸行动|r入口处。'},
 }
 
 --双法术，
 if e.Player.faction=='Alliance' then
     e.ChallengesSpellTabs[353].spell= 445418 --围攻伯拉勒斯
-
 end
 
 --if C_MythicPlus.GetCurrentSeason()==12 then

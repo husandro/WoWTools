@@ -296,8 +296,10 @@ local function Init_All_Flyout()
     }
     local y= -145
     for _, flyoutID in pairs(tab) do--1024 MAX_SPELLS
-        local numSlots, isKnown= select(3, GetFlyoutInfo(flyoutID))
-        local btn= WoWTools_ButtonMixin:Cbtn(PlayerSpellsFrame.SpellBookFrame.PagedSpellsFrame, {texture=519384, size=32, alpha=isKnown and 0.1 or 0.5})
+        
+        local btn= WoWTools_ButtonMixin:Cbtn(PlayerSpellsFrame.SpellBookFrame.PagedSpellsFrame,
+            {texture=519384, size=32}--, alpha=isKnown and 0.1 or 0.5}
+        )
 
         btn:SetPoint('TOPLEFT', 22, y)
 
@@ -305,7 +307,7 @@ local function Init_All_Flyout()
             MenuUtil.CreateContextMenu(self, Init_Menu)
         end)
 
-        btn:SetScript('OnLeave', function(self) self:SetAlpha(isKnown and 0.1 or 0.5) e.tips:Hide() end)
+        btn:SetScript('OnLeave', GameTooltip_Hide)-- function(self) self:SetAlpha(isKnown and 0.1 or 0.5) e.tips:Hide() end)
         btn:SetScript('OnEnter', function(self)
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
@@ -333,15 +335,32 @@ local function Init_All_Flyout()
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine('flyoutID '..self.flyoutID, Initializer:GetName(), 1,1,1, 1,1,1)
             e.tips:Show()
-            self:SetAlpha(1)
+            --self:SetAlpha(1)
         end)
 
         btn.Text= WoWTools_LabelMixin:Create(btn, {color={r=1,g=1,b=1}})
-        btn.Text:SetPoint('CENTER')
-        btn.Text:SetText(numSlots or '')
-
-        btn.isKnown= isKnown
+        btn.Text:SetPoint('BOTTOM',0,2)
         btn.flyoutID= flyoutID
+
+        function btn:set_text()
+            local numSlots= select(3, GetFlyoutInfo(self.flyoutID)) or 0
+            local num=0
+            for slot= 1, numSlots do
+                local isKnown2 = select(3, GetFlyoutSlotInfo(self.flyoutID, slot))
+                if isKnown2 then
+                    num= num+1
+                end
+            end
+
+            btn.Text:SetText(
+                (num==numSlots and '|cnGREEN_FONT_COLOR:' or '')
+                .. num..'/'..numSlots
+            )
+        end
+    
+        btn:set_text()
+        btn:SetScript('OnShow', btn.set_text)
+
         y= y-46
 
     end
