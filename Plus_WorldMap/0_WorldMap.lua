@@ -10,7 +10,7 @@ Save={
     ShowMapXY= true,--地图坐标
     --MapXYScale=1,
     --MapXY_W
-    --MapXY_X=35,
+    --MapXY_X=72,
     --MapXY_Y=-2,
 
     --ShowPlayerXY=false,--实时玩家当前坐标

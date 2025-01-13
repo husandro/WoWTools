@@ -80,7 +80,31 @@ end
 
 
 
+local function Init_Menu(_, root)
 
+    local mapID= C_Map.GetBestMapForUnit("player")
+    local can= mapID and C_Map.CanSetUserWaypointOnMap(mapID)
+
+    root:CreateButton(
+        (can and '' or '|cff9e9e9e')
+        ..'|A:Waypoint-MapPin-ChatIcon:0:0|a'
+        ..(e.onlyChinese and '分享' or SOCIAL_SHARE_TEXT),
+    function()
+        WoWTools_WorldMapMixin:SendPlayerPoint()--发送玩家位置
+        return MenuResponse.Open
+    end)
+
+    root:CreateDivider()
+    root:CreateButton(
+        (WorldMapFrame.mapID==MapUtil.GetDisplayableMapForPlayer() and '|cff9e9e9e' or '')
+        ..e.Icon.player
+        ..(e.onlyChinese and '返回当前地图' or
+        format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PREVIOUS, REFORGE_CURRENT), WORLD_MAP)
+    ), function()
+        WorldMapFrame:SetMapID(MapUtil.GetDisplayableMapForPlayer())
+        return MenuResponse.Open
+    end)
+end
 
 
 
@@ -99,21 +123,24 @@ local function Init()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.addName, WoWTools_WorldMapMixin.addName)
-        e.tips:AddLine(' ')
-        local can
-        can= C_Map.GetBestMapForUnit("player")
-        can= can and C_Map.CanSetUserWaypointOnMap(can)
-        e.tips:AddDoubleLine('|A:Waypoint-MapPin-ChatIcon:0:0|a'..(e.onlyChinese and '发送位置' or RESET_POSITION:gsub(RESET, SEND_LABEL)), (not can and GetMinimapZoneText() or not can and '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE)..'|r' or '')..e.Icon.left)
-        e.tips:AddDoubleLine(e.onlyChinese and '返回当前地图' or (PREVIOUS..REFORGE_CURRENT..WORLD_MAP), e.Icon.right)
+        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)
+
+        --e.tips:AddLine(' ')
+        --local can
+        --can= C_Map.GetBestMapForUnit("player")
+        --can= can and C_Map.CanSetUserWaypointOnMap(can)
+        --e.tips:AddDoubleLine('|A:Waypoint-MapPin-ChatIcon:0:0|a'..(e.onlyChinese and '发送位置' or RESET_POSITION:gsub(RESET, SEND_LABEL)), (not can and GetMinimapZoneText() or not can and '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE)..'|r' or '')..e.Icon.left)
+        --e.tips:AddDoubleLine(e.onlyChinese and '返回当前地图' or (PREVIOUS..REFORGE_CURRENT..WORLD_MAP), e.Icon.right)
         e.tips:Show()
     end)
-    MapXYButton:SetScript('OnMouseDown', function(_, d)
-        if d=='RightButton' then--返回当前地图                
+    MapXYButton:SetScript('OnMouseDown', function(self)
+        MenuUtil.CreateContextMenu(self, Init_Menu)
+        --[[if d=='RightButton' then--返回当前地图                
             WorldMapFrame:SetMapID(MapUtil.GetDisplayableMapForPlayer())
 
         elseif d=='LeftButton' then
             WoWTools_WorldMapMixin:SendPlayerPoint()--发送玩家位置
-        end
+        end]]
     end)
 
 
@@ -158,7 +185,7 @@ local function Init()
         e.tips:AddLine(
             '|A:Waypoint-MapPin-Untracked:0:0|a'
             ..(e.onlyChinese and '地图标记' or MAP_PIN)
-            ..': |A:NPE_Icon:0:0|aEnter'
+            ..'|A:NPE_Icon:0:0|aEnter'
         )
 
         local mapID = WorldMapFrame.mapID
@@ -205,7 +232,7 @@ local function Init()
         
         self:ClearAllPoints()
         self:SetPoint('BOTTOMLEFT', WorldMapFrame.BorderFrame.TitleContainer,
-            Save().MapXY_X or 35,
+            Save().MapXY_X or 72,
             Save().MapXY_Y or -2
         )
     end
