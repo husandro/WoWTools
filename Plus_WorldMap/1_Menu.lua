@@ -188,6 +188,9 @@ local function Init_PlayerXY_Option_Menu(self, root2)
         WoWTools_WorldMapMixin:Init_XY_Player()
     end)
 
+
+    root:CreateDivider()
+    WoWTools_MenuMixin:OpenOptions(root, {name= WoWTools_WorldMapMixin.addName})
 end
 
 
