@@ -189,8 +189,6 @@ local function Init_PlayerXY_Option_Menu(self, root2)
     end)
 
 
-    root:CreateDivider()
-    WoWTools_MenuMixin:OpenOptions(root, {name= WoWTools_WorldMapMixin.addName})
 end
 
 
@@ -377,6 +375,10 @@ local function Init_Menu(_, root)
         tooltip:AddLine(e.onlyChinese and '显示图标' or SELF_HIGHLIGHT_ICON)
         tooltip:AddLine(e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
     end)
+
+
+    root:CreateDivider()
+    WoWTools_MenuMixin:OpenOptions(root, {name= WoWTools_WorldMapMixin.addName})
 end
 
 
