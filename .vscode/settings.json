@@ -5054,7 +5054,22 @@
         "ADDON_FORCE_LOAD",
         "AddonList_InitButton",
         "AddonList_InitAddon",
-        "SpellFlyoutPopupButtonMixin"
+        "SpellFlyoutPopupButtonMixin",
+        "MAP_AND_QUEST_LOG",
+        "MaximizeUIPanel",
+        "RestoreUIPanelArea",
+        "AchievementFrame_ToggleAchievementFrame",
+        "AchievementFrame_SelectAchievement",
+        "WoWTools_PlusWorldMap_MenuButton",
+        "xx",
+        "MAP_PIN",
+        "MAIN_MENU",
+        "CLUB_FINDER_LINK_POST_IN_CHAT",
+        "PROFESSIONS_FLYOUT_SHOW_NAME",
+        "MAP_LEGEND_FLIGHTPOINT",
+        "COMMUNITIES_SETTINGS_NAME_LABEL",
+        "WORLD_MAP_FILTER_LABEL_WORLD_QUESTS_SUBMENU",
+        "SELF_HIGHLIGHT_ICON"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

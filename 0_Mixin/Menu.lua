@@ -46,7 +46,7 @@ end
 
 function WoWTools_MenuMixin:CreateSlider(root, tab)
     local sub=root:CreateTemplate("OptionsSliderTemplate")
-    sub:SetTooltip(tab.tooltip)
+    
     sub:SetData(tab)
 
     sub:AddInitializer(function(f, desc)--, description, menu)
@@ -63,11 +63,20 @@ function WoWTools_MenuMixin:CreateSlider(root, tab)
         f:SetValue(va)
 
         f.Text:ClearAllPoints()
-        f.Text:SetPoint('TOPRIGHT', 0,6)
+        f.Text:SetPoint('TOPRIGHT', 0,8)
+        --f.Text:SetText('RIGHT')
         f.Text:SetText(va or 1)
 
-        f.High:SetText(desc.data.name or '')
-        f.Low:SetText('')
+        f.Low:ClearAllPoints()
+        f.Low:SetPoint('TOPLEFT', 0, 8)
+        f.Low:SetText(desc.data.name or '')
+
+        f.High:SetText('')
+
+        --[[if desc.data.isColor then
+            f.High:SetTextColor(1,0,1)
+            f.Text:SetTextColor(1,0,1)
+        end]]
 
         f:SetScript('OnValueChanged', function(s, value)
             if s.bit then
@@ -102,6 +111,15 @@ function WoWTools_MenuMixin:CreateSlider(root, tab)
             f:SetScript('OnValueChanged', nil)
         end)
     end)
+
+    if tab.tooltip then
+        sub:SetTooltip(tab.tooltip)
+    --[[elseif tab.name and tab.name~='' then
+        sub:SetTooltip(function(tooltip, desc)
+            tooltip:AddLine(desc.data.name)
+        end)]]
+    end
+
     return sub
 end
 --[[
@@ -120,6 +138,7 @@ WoWTools_MenuMixin:CreateSlider(sub, {
     tooltip=function(tooltip)
         tooltip:AddLine(e.onlyChinese and '间隔' or 'Interval')
     end
+   
 })
 sub:CreateSpacer()
 ]]
@@ -134,7 +153,7 @@ function WoWTools_MenuMixin:ScaleRoot(root, GetValue, SetValue, ResetValue)
     local sub= self:CreateSlider(root, {
         getValue=GetValue,
         setValue=SetValue,
-        name=nil,
+        name= nil,
         minValue=0.4,
         maxValue=4,
         step=0.05,
@@ -150,7 +169,7 @@ function WoWTools_MenuMixin:ScaleRoot(root, GetValue, SetValue, ResetValue)
     })
     root:CreateSpacer()
 
-    root:CreateButton(
+    sub=root:CreateButton(
         '|A:characterundelete-RestoreButton:0:0|a'..(e.onlyChinese and '重置' or RESET),
     function(data)
         if data.setValue then
@@ -161,6 +180,9 @@ function WoWTools_MenuMixin:ScaleRoot(root, GetValue, SetValue, ResetValue)
         end
         return MenuResponse.Refresh
     end, {setValue=SetValue, resetValue=ResetValue})
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine((e.onlyChinese and '缩放' or UI_SCALE)..': 1')
+    end)
 
     return sub
 end

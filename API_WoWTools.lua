@@ -19,7 +19,7 @@ e.ChallengesSpellTabs={}--Challenges.lua
 e.tips=GameTooltip
 
 local securecallfunction= securecallfunction
-function e.call(func,...)
+function e.call(func, ...)
     if func then
         securecallfunction(func, ...)
     end

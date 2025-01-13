@@ -247,8 +247,23 @@ Plus_ObjectiveTracker\World_Quest.lua
 
 ##藏品
 Plus\Collections.lua
-##地图，增强
-Plus\WorldMap.lua
+
+
+
+
+##世界地图，增强
+Plus_WorldMap\0_WorldMap.lua
+Plus_WorldMap\1_Menu.lua
+Plus_WorldMap\2_MapID.lua
+Plus_WorldMap\3_XY_Map.lua
+Plus_WorldMap\4_XY_Player.lua
+Plus_WorldMap\Name_AreaPOIPin.lua
+Plus_WorldMap\Name_Dungeon.lua
+Plus_WorldMap\Name_FlightMap.lua
+Plus_WorldMap\Name_WorldQuest.lua
+Plus_WorldMap\z_Plus_Menu.lua
+Plus_WorldMap\z_Plus_SearchBox.lua
+
 ##单位框, 最好放在ChatButton_Invite前，Shift+点击=焦点
 Plus\UnitFrame.lua
 ##好友，面板
