@@ -2515,7 +2515,7 @@ local function Init_Main_Button()
                         end
                     end)
                 end
-                if btn.cooldown then
+                if btn.cooldown then--缩小，冷却，字体
                     btn.cooldown:SetCountdownFont('NumberFontNormal')
                 end
                 hide_Texture(btn.NormalTexture)--外框，方块
