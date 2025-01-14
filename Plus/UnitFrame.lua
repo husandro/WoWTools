@@ -1931,8 +1931,33 @@ end
 
 
 
+local function Create_CastTimeTexte(frame)
+    if frame.CastTimeText then
+        return
+    end
 
+    frame.CastTimeText= WoWTools_LabelMixin:Create(frame, {size=14, color={r=1, g=1, b=1}, justifyH='RIGHT'})
+    frame.CastTimeText:SetPoint('RIGHT', frame)
 
+    if frame.UpdateCastTimeText then
+        return
+    end
+
+    frame:HookScript('OnUpdate', function(self, elapsed)--玩家, 施法, 时间
+        self.elapsed= (self.elapsed or 0.1) + elapsed
+        if self.elapsed>=0.1 and self.value and self.maxValue then
+            self.elapsed=0
+            local value= self.channeling and self.value or (self.maxValue-self.value)
+            if value<=0 then
+                self.CastTimeText:SetText(0)
+            elseif value>=3 then
+                self.CastTimeText:SetFormattedText('%i', value)
+            else
+                self.CastTimeText:SetFormattedText('%.01f', value)
+            end
+        end
+    end)
+end
 
 
 
@@ -1957,11 +1982,18 @@ local function Init_CastingBar(frame)
         self.Icon:SetShown(true)
     end)
 
-    WoWTools_ColorMixin:SetLabelTexture(frame.CastTimeText, {type='FontString'})--设置颜色
-    frame.CastTimeText:SetShadowOffset(1, -1)
-    frame.CastTimeText:ClearAllPoints()
-    frame.CastTimeText:SetPoint('RIGHT', frame.ChargeFlash, 'RIGHT')
-    WoWTools_ColorMixin:SetLabelTexture(frame.Text, {type='FontString'})--设置颜色
+    --WoWTools_ColorMixin:SetLabelTexture(frame.CastTimeText, {type='FontString'})--设置颜色    
+    if not frame.CastTimeText then
+        Create_CastTimeTexte(frame)
+    else
+        frame.CastTimeText:SetShadowOffset(1, -1)
+        if frame.ChargeFlash then
+            frame.CastTimeText:ClearAllPoints()
+            frame.CastTimeText:SetPoint('RIGHT', frame.ChargeFlash, 'RIGHT')
+        end
+    end
+    --WoWTools_ColorMixin:SetLabelTexture(frame.Text, {type='FontString'})--设置颜色
+    frame.Text:SetTextColor(1, 0.82, 0, 1)
     frame.Text:SetShadowOffset(1, -1)
 
     if frame==PlayerCastingBarFrame then
@@ -1969,43 +2001,18 @@ local function Init_CastingBar(frame)
             self:SetFrameStrata('TOOLTIP')
             self:SetFrameLevel('10000')
         end)
+    end
+    if frame.UpdateCastTimeText then
         hooksecurefunc(frame, 'UpdateCastTimeText', function(self)--去掉 秒
             local text= self.CastTimeText:GetText()
             text= text:match('(%d+.%d)') or text
             text= text=='0.0' and '' or text
             self.CastTimeText:SetText(text)
-        end)
-    else
-        hooksecurefunc(frame, 'UpdateCastTimeText', function(self)
-            --local text= self.CastTimeText:GetText()
-            --text= text:match('(%d+.%d)') or text
-            --text= text=='0.0' and '' or text
-            --self.CastTimeText:SetText(text)
-            self.CastTimeText:SetShown(true)
-        end)
-    end
-
-    --[[if frame.CastTimeText then
-        else--旧版本
-        frame.castingText= WoWTools_LabelMixin:Create(frame, {color=true, justifyH='RIGHT'})
-        frame.castingText:SetDrawLayer('OVERLAY', 2)
-        frame.castingText:SetPoint('RIGHT', frame.ChargeFlash, 'RIGHT')
-        frame:HookScript('OnUpdate', function(self, elapsed)--玩家, 施法, 时间
-            self.elapsed= (self.elapsed or 0.1) + elapsed
-            if self.elapsed>=0.1 and self.value and self.maxValue then
-                self.elapsed=0
-                local value= self.channeling and self.value or (self.maxValue-self.value)
-                if value<=0 then
-                    self.castingText:SetText(0)
-                elseif value>=3 then
-                    self.castingText:SetFormattedText('%i', value)
-                else
-                    self.castingText:SetFormattedText('%.01f', value)
-                end
+            if self~=PlayerCastingBarFrame then
+                self.CastTimeText:SetShown(true)
             end
         end)
-        WoWTools_ColorMixin:SetLabelTexture(frame.Text, {type='FontString'})--设置颜色
-    end]]
+    end
 end
 
 
@@ -2033,6 +2040,9 @@ local function Init()
     Init_RaidFrame()--团队
     Init_CastingBar(PlayerCastingBarFrame)
     Init_CastingBar(PetCastingBarFrame)
+    Init_CastingBar(OverlayPlayerCastingBarFrame)
+
+    Init_CastingBar(TargetFrameSpellBar)
 
     hooksecurefunc('UnitFrame_Update', Init_UnitFrame_Update)--职业, 图标， 颜色
 

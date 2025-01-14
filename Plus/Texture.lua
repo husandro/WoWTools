@@ -579,16 +579,20 @@ local function Init_All_Frame()
         end]]
     end
 
-    --施法条
-    set_Alpha_Color(PlayerCastingBarFrame.Border)
-    set_Alpha_Color(PlayerCastingBarFrame.Background)
-    set_Alpha_Color(PlayerCastingBarFrame.TextBorder)
-    set_Alpha_Color(PlayerCastingBarFrame.Shine)
+    --施法条 CastingBarFrameTemplate
+    for _, frame in pairs({
+        PlayerCastingBarFrame,
+        PetCastingBarFrame,
+        OverlayPlayerCastingBarFrame,
+    }) do
+        if frame then
+            set_Alpha_Color(frame.Border)
+            set_Alpha_Color(frame.Background)
+            set_Alpha_Color(frame.TextBorder)
+            set_Alpha_Color(frame.Shine)
+        end
+    end
 
-    set_Alpha_Color(PetCastingBarFrame.Border)
-    set_Alpha_Color(PetCastingBarFrame.Background)
-    set_Alpha_Color(PetCastingBarFrame.TextBorder)
-    set_Alpha_Color(PetCastingBarFrame.Shine)
 
     --角色，界面
     e.Set_NineSlice_Color_Alpha(CharacterFrameInset, true)
@@ -2283,9 +2287,14 @@ local function Init_Class_Power(init)--职业
         end
     end
 
-    if e.Player.class=='PALADIN' then--QS PaladinPowerBarFrame
+    --if e.Player.class=='PALADIN' then--QS PaladinPowerBarFrame
         if PaladinPowerBarFrame and PaladinPowerBarFrame.Background and PaladinPowerBarFrame.ActiveTexture then
-            hide_Texture(PaladinPowerBarFrame.Background, true)
+            --hide_Texture(PaladinPowerBarFrame.Background, true)
+            set_Alpha_Color(PaladinPowerBarFrame.Background, nil, nil,0.3)
+            set_Alpha_Color(PaladinPowerBarFrame.ActiveTexture, nil, nil, 0.3)
+            PaladinPowerBarFrame.Background:SetShown(false)
+            PaladinPowerBarFrame.ActiveTexture:SetShown(false)
+            --set_Alpha_Color(PaladinPowerBarFrame.ActiveTexture, nil)
             hide_Texture(PaladinPowerBarFrame.ActiveTexture, true)
             if ClassNameplateBarPaladinFrame then
                 hide_Texture(ClassNameplateBarPaladinFrame.Background)
@@ -2297,18 +2306,20 @@ local function Init_Class_Power(init)--职业
                 set_Num_Texture(holyRune, i, false)
             end
             if init then
-                PaladinPowerBarFrame:HookScript('OnEnter', function(self2)
-                    self2.Background:SetShown(true)
-                    self2.ActiveTexture:SetShown(true)
+                PaladinPowerBarFrame:HookScript('OnEnter', function(self)
+                    self.Background:SetShown(true)
+                    self.ActiveTexture:SetShown(true)
                 end)
-                PaladinPowerBarFrame:HookScript('OnLeave', function(self2)
-                    hide_Texture(self2.Background, true)
-                    hide_Texture(self2.ActiveTexture, true)
+                PaladinPowerBarFrame:HookScript('OnLeave', function(self)
+                    self.Background:SetShown(false)
+                    self.ActiveTexture:SetShown(false)
+                    --hide_Texture(self2.Background, true)
+                    --hide_Texture(self2.ActiveTexture, true)
                 end)
             end
         end
 
-    elseif e.Player.class=='MAGE' then--法师
+    --elseif e.Player.class=='MAGE' then--法师
         if MageArcaneChargesFrame and MageArcaneChargesFrame.classResourceButtonTable then
             for _, mage in pairs(MageArcaneChargesFrame.classResourceButtonTable) do
                 hide_Texture(mage.ArcaneBG)
@@ -2320,7 +2331,7 @@ local function Init_Class_Power(init)--职业
             end
         end
 
-    elseif e.Player.class=='DRUID' then--DruidComboPointBarFrame
+    --elseif e.Player.class=='DRUID' then--DruidComboPointBarFrame
         local function set_DruidComboPointBarFrame(self)
             if self then
                 for btn, _ in pairs(self) do
@@ -2344,7 +2355,7 @@ local function Init_Class_Power(init)--职业
             end
         end
 
-    elseif e.Player.class=='ROGUE' then--DZ RogueComboPointBarFrame
+    --elseif e.Player.class=='ROGUE' then--DZ RogueComboPointBarFrame
         if RogueComboPointBarFrame and RogueComboPointBarFrame.UpdateMaxPower and init then
             hooksecurefunc(RogueComboPointBarFrame, 'UpdateMaxPower',function(self)
                 C_Timer.After(0.5, function()
@@ -2366,7 +2377,7 @@ local function Init_Class_Power(init)--职业
             end)
         end
 
-    elseif e.Player.class=='MONK' then--MonkHarmonyBarFrame
+    --elseif e.Player.class=='MONK' then--MonkHarmonyBarFrame
         local function set_MonkHarmonyBarFrame(btn)
             if btn then
                 hide_Texture(btn.Chi_BG_Active)
@@ -2403,7 +2414,7 @@ local function Init_Class_Power(init)--职业
             end)
         end
 
-    elseif e.Player.class=='DEATHKNIGHT' then
+    --elseif e.Player.class=='DEATHKNIGHT' then
         if RuneFrame.Runes then
             for _, btn in pairs(RuneFrame.Runes) do
                 hide_Texture(btn.BG_Active)
@@ -2418,7 +2429,7 @@ local function Init_Class_Power(init)--职业
             end
         end
 
-    elseif e.Player.class=='EVOKER' then
+   --elseif e.Player.class=='EVOKER' then
         C_Timer.After(2, function()
             if EssencePlayerFrame and EssencePlayerFrame.classResourceButtonTable then--EssenceFramePlayer.lua
                 for _, btn in pairs(EssencePlayerFrame.classResourceButtonTable) do
@@ -2429,15 +2440,17 @@ local function Init_Class_Power(init)--职业
             end
         end)
 
-    elseif e.Player.class=='SHAMAN' then--SM
+    --elseif e.Player.class=='SHAMAN' then--SM
         --Blizzard_UnitFrame/TotemFrame.lua
+        
         for btn in TotemFrame.totemPool:EnumerateActive() do
             set_Alpha_Color(btn.Border, nil, nil, min03)
         end
-        hooksecurefunc(TotemButtonMixin, 'OnLoad', function(self)
-            set_Alpha_Color(self.Border, nil, nil, min03)
-        end)
-    end
+        if init then
+            hooksecurefunc(TotemButtonMixin, 'OnLoad', function(self)
+                set_Alpha_Color(self.Border, nil, nil, min03)
+            end)
+        end
 end
 
 
