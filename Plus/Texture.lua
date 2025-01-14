@@ -2442,7 +2442,7 @@ local function Init_Class_Power(init)--职业
 
     --elseif e.Player.class=='SHAMAN' then--SM
         --Blizzard_UnitFrame/TotemFrame.lua
-        
+
         for btn in TotemFrame.totemPool:EnumerateActive() do
             set_Alpha_Color(btn.Border, nil, nil, min03)
         end
@@ -2484,91 +2484,50 @@ end
 
 
 
+local KEY_BUTTON = KEY_BUTTON10:gsub(10, '')--"鼠标按键10"
+local function set_main_button(self)
+    if not self then
+        return
+    end
 
+    hide_Texture(self.NormalTexture)--外框，方块
+    hide_Texture(self.SlotBackground, true)--背景
+
+    if self.HotKey then--快捷键
+        local text=self.HotKey:GetText()
+        if text and text:find(KEY_BUTTON) then
+            self.HotKey:SetText(text:gsub(KEY_BUTTON, 'm'))
+        end
+        self.HotKey:SetTextColor(1,1,1,1)
+    end
+
+    if self.cooldown then
+        self.cooldown:SetCountdownFont('NumberFontNormal')
+    end
+end
 
 --######
 --动作条
 --######
 local function Init_Main_Button()
-
-    local KEY_BUTTON_Tab={
-        [KEY_BUTTON1]= e.Icon.left,-- 'ML',--鼠标左键";
-        [KEY_BUTTON3]= e.Icon.mid, --'MR',--鼠标中键";
-        [KEY_BUTTON2]= e.Icon.right,--'MM',--鼠标右键";
-        --[[[KEY_BUTTON10]= 'M10',--鼠标按键10";
-        [KEY_BUTTON11]= 'M11',--鼠标按键11";
-        [KEY_BUTTON12]= 'M12',--鼠标按键12";
-        [KEY_BUTTON13]= 'M13',--鼠标按键13";
-        [KEY_BUTTON14]= 'M14',--鼠标按键14";
-        [KEY_BUTTON15]= 'M15',--鼠标按键15";
-        [KEY_BUTTON16]= 'M16',--鼠标按键16";
-        [KEY_BUTTON17]= 'M17',--鼠标按键17";
-        [KEY_BUTTON18]= 'M18',--鼠标按键18";
-        [KEY_BUTTON19]= 'M19',--鼠标按键19";
-        [KEY_BUTTON20]= 'M20',--鼠标按键20";
-        [KEY_BUTTON21]= 'M21',--鼠标按键21";
-        [KEY_BUTTON22]= 'M22',--鼠标按键22";
-        [KEY_BUTTON23]= 'M23',--鼠标按键23";
-        [KEY_BUTTON24]= 'M24',--鼠标按键24";
-        [KEY_BUTTON25]= 'M25',--鼠标按键25";
-        [KEY_BUTTON26]= 'M26',--鼠标按键26";
-        [KEY_BUTTON27]= 'M27',--鼠标按键27";
-        [KEY_BUTTON28]= 'M28',--鼠标按键28";
-        [KEY_BUTTON29]= 'M29',--鼠标按键29";
-        [KEY_BUTTON30]= 'M30',--鼠标按键30";
-        [KEY_BUTTON31]= 'M31',--鼠标按键31";]]
-        [KEY_BUTTON4]= 'M4',--鼠标按键4";
-        [KEY_BUTTON5]= 'M5',--鼠标按键5";
-        [KEY_BUTTON6]= 'M6',--鼠标按键6";
-        [KEY_BUTTON7]= 'M7',--鼠标按键7";
-        [KEY_BUTTON8]= 'M8',--鼠标按键8";
-        [KEY_BUTTON9]= 'M9',--鼠标按键9";
-    }
-    local function set_main_button(self)
-        if not self then
-            return
-        end
-        hide_Texture(self.NormalTexture)--外框，方块
-        hide_Texture(self.SlotBackground, true)--背景
-        if self.HotKey then--快捷键
-            self.HotKey:SetShadowOffset(1, -1)
-            local text=self.HotKey:GetText()
-            if text and text~='' and text~= RANGE_INDICATOR and #text>4 then
-                for key, mouse in pairs(KEY_BUTTON_Tab) do
-                    if text:find(key) then
-                        self.HotKey:SetText(text:gsub(key, mouse))
-                    end
-                end
-            end
-        end
-        if self.Count then--数量
-            self.Count:SetShadowOffset(1, -1)
-        end
-        if self.Name then--名称
-            self.Name:SetShadowOffset(1, -1)
-        end
-        if self.cooldown then
-            self.cooldown:SetCountdownFont('NumberFontNormal')
-        end
-    end
-
     hooksecurefunc(MainMenuBar, 'UpdateDividers', function(self)--主动作条
         for i=1, MAIN_MENU_BAR_NUM_BUTTONS do
             set_main_button(_G['ActionButton'..i])--主动作条
         end
-        --local dividersPool = self.isHorizontal and self.HorizontalDividersPool or self.VerticalDividersPool;
-        --for _ in pairs(MainMenuBar.actionButtons) do local divider = dividersPool:Acquire() --BUG
     end)
+
     for i=1, MAIN_MENU_BAR_NUM_BUTTONS do
-        set_main_button(_G['ActionButton'..i])--主动作条
-        set_Alpha_Color(_G['ActionButton'..i].SlotArt, nil, nil, min05)
-        set_main_button(_G['MultiBarBottomLeftButton'..i])--作条2
-        set_main_button(_G['MultiBarBottomRightButton'..i])--作条3
-        set_main_button(_G['MultiBarLeftButton'..i])--作条4
-        set_main_button(_G['MultiBarRightButton'..i])--作条5
-        set_main_button(_G['StanceButton'..i])
-        for index=5, 7 do
-            set_main_button(_G['MultiBar'..index..'Button'..i])--作条6, 7, 8
+        for _, name in pairs({
+            "ActionButton",
+            "MultiBarBottomLeftButton",
+            "MultiBarBottomRightButton",
+            "MultiBarLeftButton",
+            "MultiBarRightButton",
+            "MultiBar5Button",
+            "MultiBar6Button",
+            "MultiBar7Button",
+        }) do
+            set_main_button(_G[name..i])
         end
     end
 
@@ -2577,8 +2536,8 @@ local function Init_Main_Button()
     set_Label(MainMenuBar.ActionBarPageNumber.Text, 1)
 
     if MainMenuBar.EndCaps then
-        set_Alpha_Color(MainMenuBar.EndCaps.LeftEndCap, nil, nil, min05)
-        set_Alpha_Color(MainMenuBar.EndCaps.RightEndCap, nil, nil, min05)
+        set_Alpha_Color(MainMenuBar.EndCaps.LeftEndCap, true, nil, min05)
+        set_Alpha_Color(MainMenuBar.EndCaps.RightEndCap, true, nil, min05)
     end
     set_Alpha_Color(MainMenuBar.BorderArt, nil, nil, min05)
 end
@@ -2962,7 +2921,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 Init_Class_Power(true)--职业
                 Init_Chat_Bubbles()--聊天泡泡
                 Init_HelpTip()--隐藏教程
-                Init_Main_Button()
+                C_Timer.After(2, Init_Main_Button)
                 --[[C_Timer.After(2, function()
                     Init_Main_Menu(true)--主菜单, 颜色
                 end)]]

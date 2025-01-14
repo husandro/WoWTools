@@ -5074,7 +5074,9 @@
         "PlayerFrame_AdjustAttachments",
         "PetFrameMixin",
         "OverlayPlayerCastingBarFrame",
-        "TargetFrameSpellBar"
+        "TargetFrameSpellBar",
+        "ActionBarActionButtonMixin",
+        "MultiBarBottomLeftButton1"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
