@@ -1214,10 +1214,11 @@ local function Init_All_Frame()
      e.Set_Alpha_Frame_Texture(MerchantFrameTab1, {notAlpha=true})--{alpha=min05})
      e.Set_Alpha_Frame_Texture(MerchantFrameTab2, {notAlpha=true})--{alpha=min05})
      e.Set_ScrollBar_Color_Alpha(MerchantFrame)
-     set_Alpha_Color(MerchantFrameBg)
+     --set_Alpha_Color(MerchantFrameBg)--Plus_SellBuy已处理
+     --hide_Texture(MerchantFrameInset.Bg)
      e.Set_NineSlice_Color_Alpha(MerchantFrameInset, true)
      e.Set_NineSlice_Color_Alpha(MerchantFrame, true)
-     hide_Texture(MerchantFrameInset.Bg)
+     
      set_Alpha_Color(MerchantMoneyInset.Bg)
      hide_Texture(MerchantMoneyBgMiddle)
      hide_Texture(MerchantMoneyBgLeft)

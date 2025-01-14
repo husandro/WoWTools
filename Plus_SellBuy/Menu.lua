@@ -13,8 +13,26 @@ end
 
 
 
+--显示背景
+local function Set_ShowBackground()
+    if Save().ShowBackground then
+        MerchantFrameBg:SetAlpha(1)
+        MerchantFrameInset.Bg:SetAlpha(1)
+    else
+        WoWTools_ColorMixin:SetLabelTexture(MerchantFrameBg, {type='Texture', alpha=0.5})
+        MerchantFrameInset.Bg:SetAlpha(0)
+    end
+end
 
-    --出售自定义
+
+
+
+
+
+
+
+
+--出售自定义
 local function Player_Sell_Menu(_, root)
     local num, sub, sub2
     num=0
@@ -81,7 +99,7 @@ local function Buyback_Menu(_, root)
     sub=root:CreateButton(
         '    |A:common-icon-undo:0:0|a'..(e.onlyChinese and '回购' or BUYBACK)..'|cnGREEN_FONT_COLOR: #'..(num or '')..'|r',
     function()
-       return MenuResponse.Open 
+       return MenuResponse.Open
     end)
 
 --列表，回购
@@ -302,7 +320,7 @@ local function Init_Menu(self, root)
     end, function()
         Save().saveBossLootList = not Save().saveBossLootList and true or nil
     end)
-    
+
 --回购
 
     root:CreateDivider()
@@ -337,11 +355,11 @@ local function Init_Menu(self, root)
     sub:CreateSpacer()
     sub:CreateTitle((e.onlyChinese and '修理' or MINIMAP_TRACKING_REPAIR)..': '..Save().repairItems.num..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1))
     sub:CreateTitle((e.onlyChinese and '公会' or GUILD)..': '..C_CurrencyInfo.GetCoinTextureString(Save().repairItems.guild))
-    sub:CreateTitle((e.onlyChinese and '玩家' or PLAYER)..': '..C_CurrencyInfo.GetCoinTextureString(Save().repairItems.player))    
-    
+    sub:CreateTitle((e.onlyChinese and '玩家' or PLAYER)..': '..C_CurrencyInfo.GetCoinTextureString(Save().repairItems.player))
+
     sub:CreateSpacer()
     sub:CreateTitle((e.onlyChinese and '合计' or TOTAL)..': '..C_CurrencyInfo.GetCoinTextureString(Save().repairItems.guild+Save().repairItems.player))
-    
+
     sub:CreateDivider()
     sub:CreateTitle((e.onlyChinese and '使用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP)..': '..C_CurrencyInfo.GetCoinTextureString(CanGuildBankRepair() and GetGuildBankMoney() or 0))
 
@@ -407,8 +425,15 @@ local function Init_Menu(self, root)
 
 
 
+--显示背景
+    WoWTools_MenuMixin:ShowBackground(root,
+    function()
+        return Save().ShowBackground
+    end, function()
+        Save().ShowBackground= not Save().ShowBackground and true or nil
+        Set_ShowBackground()
+    end)
 
-    
 --打开选项界面
     root:CreateDivider()
     WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_SellBuyMixin.addName})
@@ -433,6 +458,9 @@ local function Init()
     local btn= WoWTools_ButtonMixin:CreateMenu(MerchantFrameCloseButton, {name='WoWTools_SellBuyMenuButton'})
     btn:SetPoint('RIGHT', MerchantFrameCloseButton, 'LEFT', -2, 0)
     btn:SetupMenu(Init_Menu)
+
+    --显示背景
+    Set_ShowBackground()
 end
 
 
