@@ -1218,7 +1218,7 @@ local function Init_All_Frame()
      --hide_Texture(MerchantFrameInset.Bg)
      e.Set_NineSlice_Color_Alpha(MerchantFrameInset, true)
      e.Set_NineSlice_Color_Alpha(MerchantFrame, true)
-     
+
      set_Alpha_Color(MerchantMoneyInset.Bg)
      hide_Texture(MerchantMoneyBgMiddle)
      hide_Texture(MerchantMoneyBgLeft)
@@ -1239,7 +1239,7 @@ local function Init_All_Frame()
             for name in pairs(libDBIcon.objects) do
                 e.Set_Alpha_Frame_Texture(_G['LibDBIcon10_'..name], {index=2})
             end
-            
+
          end
          --[[for i=1, C_AddOns.GetNumAddOns() do
              if C_AddOns.GetAddOnEnableState(i)==2 then
