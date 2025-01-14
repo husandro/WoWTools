@@ -2485,37 +2485,12 @@ end
 
 
 local KEY_BUTTON = KEY_BUTTON10:gsub(10, '')--"鼠标按键10"
-local function set_main_button(self)
-    if not self then
-        return
-    end
 
-    hide_Texture(self.NormalTexture)--外框，方块
-    hide_Texture(self.SlotBackground, true)--背景
-
-    if self.HotKey then--快捷键
-        local text=self.HotKey:GetText()
-        if text and text:find(KEY_BUTTON) then
-            self.HotKey:SetText(text:gsub(KEY_BUTTON, 'm'))
-        end
-        self.HotKey:SetTextColor(1,1,1,1)
-    end
-
-    if self.cooldown then
-        self.cooldown:SetCountdownFont('NumberFontNormal')
-    end
-end
 
 --######
 --动作条
 --######
 local function Init_Main_Button()
-    hooksecurefunc(MainMenuBar, 'UpdateDividers', function(self)--主动作条
-        for i=1, MAIN_MENU_BAR_NUM_BUTTONS do
-            set_main_button(_G['ActionButton'..i])--主动作条
-        end
-    end)
-
     for i=1, MAIN_MENU_BAR_NUM_BUTTONS do
         for _, name in pairs({
             "ActionButton",
@@ -2527,9 +2502,37 @@ local function Init_Main_Button()
             "MultiBar6Button",
             "MultiBar7Button",
         }) do
-            set_main_button(_G[name..i])
+            local btn= _G[name..i]
+            if btn then
+                if btn.UpdateHotkeys then
+                    hooksecurefunc(btn, 'UpdateHotkeys', function(self)
+                        if self.HotKey then--快捷键
+                            local text=self.HotKey:GetText()
+                            if text and text:find(KEY_BUTTON) then
+                                self.HotKey:SetText(text:gsub(KEY_BUTTON, 'm'))
+                            end
+                            self.HotKey:SetTextColor(1,1,1,1)
+                        end
+                    end)
+                end
+                if btn.cooldown then
+                    btn.cooldown:SetCountdownFont('NumberFontNormal')
+                end
+                hide_Texture(btn.NormalTexture)--外框，方块
+                hide_Texture(btn.SlotBackground, true)--背景
+            end
         end
     end
+
+    hooksecurefunc(MainMenuBar, 'UpdateDividers', function(self)--主动作条
+        for i=1, MAIN_MENU_BAR_NUM_BUTTONS do
+            local btn=_G['ActionButton'..i]
+            if btn then
+                hide_Texture(btn.NormalTexture)--外框，方块
+                hide_Texture(btn.SlotBackground, true)--背景
+            end
+        end
+    end)
 
     e.Set_Alpha_Frame_Texture(MainMenuBar.ActionBarPageNumber.UpButton, {alpha=min05})
     e.Set_Alpha_Frame_Texture(MainMenuBar.ActionBarPageNumber.DownButton, {alpha=min05})
@@ -2921,7 +2924,8 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 Init_Class_Power(true)--职业
                 Init_Chat_Bubbles()--聊天泡泡
                 Init_HelpTip()--隐藏教程
-                C_Timer.After(2, Init_Main_Button)
+                Init_Main_Button()
+                --C_Timer.After(2, Init_Main_Button)
                 --[[C_Timer.After(2, function()
                     Init_Main_Menu(true)--主菜单, 颜色
                 end)]]
