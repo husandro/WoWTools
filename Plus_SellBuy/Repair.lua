@@ -21,7 +21,7 @@ local function Init()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.addName, WoWTools_SellBuyMixin.addName)
-        e.tips:AddDoubleLine(e.onlyChinese and '自动修理所有物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, REPAIR_ALL_ITEMS), e.GetEnabeleDisable(not Save().notAutoRepairAll))
+        
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine('|cffff00ff'..(e.onlyChinese and '记录' or EVENTTRACE_LOG_HEADER), RepairSave().date)
         e.tips:AddDoubleLine(e.onlyChinese and '修理' or MINIMAP_TRACKING_REPAIR, (RepairSave().num or 0)..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1))
@@ -32,7 +32,9 @@ local function Init()
         if guild>0 and player>0 then
             e.tips:AddDoubleLine(e.onlyChinese and '合计' or TOTAL, C_CurrencyInfo.GetCoinTextureString(guild+player))
         end
+        
         e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.onlyChinese and '自动修理所有物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, REPAIR_ALL_ITEMS), e.GetEnabeleDisable(not Save().notAutoRepairAll))
         if CanGuildBankRepair() then
             local m= GetGuildBankMoney() or 0
             local col= m==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:'
