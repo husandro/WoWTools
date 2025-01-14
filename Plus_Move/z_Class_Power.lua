@@ -87,6 +87,12 @@ local function Init()--职业，能量条
 
     elseif e.Player.class=='WARLOCK' then--SS
         frame= WarlockPowerFrame
+
+    elseif e.Player.class=='SHAMAN' then--SM
+        frame= TotemFrame
+        hooksecurefunc(TotemFrame, 'Update', function(self)
+            WoWTools_MoveMixin:SetPoint(self)
+        end)
     end
     Set_Class_Frame(frame)
 end
