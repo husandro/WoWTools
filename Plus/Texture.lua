@@ -1234,7 +1234,14 @@ local function Init_All_Frame()
             hide_Texture(SpellFlyout.Background.VerticalMiddle)
          end
 
-         for i=1, C_AddOns.GetNumAddOns() do
+         local libDBIcon = LibStub("LibDBIcon-1.0", true)
+         if libDBIcon and libDBIcon.objects then
+            for name in pairs(libDBIcon.objects) do
+                e.Set_Alpha_Frame_Texture(_G['LibDBIcon10_'..name], {index=2})
+            end
+            
+         end
+         --[[for i=1, C_AddOns.GetNumAddOns() do
              if C_AddOns.GetAddOnEnableState(i)==2 then
                  local name=C_AddOns.GetAddOnInfo(i)
                  name= name:match('(.-)%-') or name
@@ -1242,7 +1249,7 @@ local function Init_All_Frame()
                      e.Set_Alpha_Frame_Texture(_G['LibDBIcon10_'..name], {index=2})
                  end
              end
-         end
+         end]]
 
          --商人, SellBuy.lua
          for i=1, math.max(MERCHANT_ITEMS_PER_PAGE, BUYBACK_ITEMS_PER_PAGE) do --MERCHANT_ITEMS_PER_PAGE = 10; BUYBACK_ITEMS_PER_PAGE = 12;

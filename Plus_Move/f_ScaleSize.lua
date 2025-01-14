@@ -378,20 +378,28 @@ end
 
 
 
-local function Set_Enter(btn, alpha)
-    if alpha then
-        btn:SetAlpha(alpha)
-        btn.alpha= alpha
+local function Set_Enter(btn)
+    if btn.alpha then
+        btn:SetAlpha(btn.alpha)
+        if btn.alpha==0 then
+            btn.target:HookScript('OnEnter', function(self)
+                self.ResizeButton:SetAlpha(1)
+            end)
+            btn.target:HookScript('OnLeave', function(self)
+                self.ResizeButton:SetAlpha(0)
+            end)
+        end
     end
+    
     btn:SetScript('OnLeave', function(self)
         GameTooltip_Hide()
         ResetCursor()
-        btn:SetAlpha(self.alpha or 1)
+        btn:SetAlpha(self.alpha or 0.5)
     end)
     btn:SetScript('OnEnter', function(self)
         Set_Tooltip(self)
         SetCursor("UI_RESIZE_CURSOR")
-        self:SetAlpha(self.alpha and 1 or 0.5)
+        self:SetAlpha(1)--and 1 or 0.5)
     end)
 end
 
@@ -635,6 +643,9 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
     btn.sizeRestTooltipColorFunc= tab.sizeRestTooltipColorFunc--重置，提示SIZE，颜色
     btn.sizeStopFunc= tab.sizeStopFunc--保存，大小，内容
     btn.sizeTooltip= tab.sizeTooltip
+    btn.alpha= tab.alpha
+
+    --btn.hideButton= tab.hideButton--隐藏按钮，移过时，才显示
 
     if btn.sizeRestFunc then
         frame:SetResizable(true)

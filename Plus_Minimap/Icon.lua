@@ -75,7 +75,6 @@ function WoWTools_MinimapMixin:Init_Icon()
                     e.OpenPanelOpting(nil, '|A:talents-button-undo:0:0|a'..(e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT))
                 else
                     e.OpenPanelOpting(nil, WoWTools_MinimapMixin.addName)
-
                 end
             end)
         end

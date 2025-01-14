@@ -15,7 +15,11 @@ local function Set_Class_Frame(frame)
         return
     end
     do
-        WoWTools_MoveMixin:Setup(frame, {notFuori=true, save=true, hideButton=true,  notMoveAlpha=true, restPointFunc=function(btn)
+        WoWTools_MoveMixin:Setup(frame, {notFuori=true,
+            save=true,
+            notMoveAlpha=true,
+            alpha=0,
+        restPointFunc=function(btn)
             Save().scale[btn.name]=nil
             if not UnitAffectingCombat('player') then
                 btn.target:SetScale(1)
