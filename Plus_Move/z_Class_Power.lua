@@ -10,7 +10,7 @@ end
 
 
 
-local function Set_Class_Frame(frame)
+local function Set_Class_Frame(frame, click)
     if not frame then
         return
     end
@@ -19,6 +19,7 @@ local function Set_Class_Frame(frame)
             save=true,
             notMoveAlpha=true,
             alpha=0,
+            click=click,
         restPointFunc=function(btn)
             Save().scale[btn.name]=nil
             if not UnitAffectingCombat('player') then
@@ -64,6 +65,7 @@ end
 
 local function Init()--职业，能量条
     local frame--PlayerFrame.classPowerBar
+    local click
     if e.Player.class=='MAGE' then--法师
         frame= MageArcaneChargesFrame
 
@@ -90,29 +92,32 @@ local function Init()--职业，能量条
 
     elseif e.Player.class=='SHAMAN' then--SM
         frame= TotemFrame
+        click= 'LeftButton'
 
-        if frame then
-            --Blizzard_UnitFrame/TotemFrame.lua
-            hooksecurefunc(TotemFrame, 'Update', function(self)
-                WoWTools_MoveMixin:SetPoint(self)
-            end)
-            hooksecurefunc(TotemButtonMixin, 'OnLoad', function(self)
-                WoWTools_MoveMixin:Setup(self, {frame=TotemFrame})
-            end)
-            --[[local texture= WoWTools_TextureMixin:CreateBackground(frame, {isAllPoint=true, alpha=0})
-            if texture then
-                frame:HookScript('OnEnter', function(self)
-                    self.Background:SetAlpha(0.5)
-                end)
-                frame:HookScript('OnLeave', function(self)
-                    self.Background:SetAlpha(0)
-                end)
-            end]]
-
-
+        --Blizzard_UnitFrame/TotemFrame.lua
+        hooksecurefunc(TotemFrame, 'Update', function(self)
+            WoWTools_MoveMixin:SetPoint(self)
+        end)
+        --[[hooksecurefunc('PlayerFrame_AdjustAttachments', function(self)
+            WoWTools_MoveMixin:SetPoint(TotemFrame)
+        end)]]
+        for btn in TotemFrame.totemPool:EnumerateActive() do
+            WoWTools_MoveMixin:Setup(btn, {frame=TotemFrame, click='LeftButton'})
         end
+        hooksecurefunc(TotemButtonMixin, 'OnLoad', function(self)
+            WoWTools_MoveMixin:Setup(self, {frame=TotemFrame, click='LeftButton'})
+        end)
+        --[[local texture= WoWTools_TextureMixin:CreateBackground(frame, {isAllPoint=true, alpha=0})
+        if texture then
+            frame:HookScript('OnEnter', function(self)
+                self.Background:SetAlpha(0.5)
+            end)
+            frame:HookScript('OnLeave', function(self)
+                self.Background:SetAlpha(0)
+            end)
+        end]]
     end
-    Set_Class_Frame(frame)
+    Set_Class_Frame(frame, click)
 end
 
 

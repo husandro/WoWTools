@@ -5070,7 +5070,8 @@
         "COMMUNITIES_SETTINGS_NAME_LABEL",
         "WORLD_MAP_FILTER_LABEL_WORLD_QUESTS_SUBMENU",
         "SELF_HIGHLIGHT_ICON",
-        "TotemButtonMixin"
+        "TotemButtonMixin",
+        "PlayerFrame_AdjustAttachments"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

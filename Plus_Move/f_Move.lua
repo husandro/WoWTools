@@ -58,6 +58,7 @@ local function Set_Move_Frame(frame, target, click, notSave, notFuori)
             target:SetClampedToScreen(true)
         end
     end
+
     frame:SetMovable(true)
     if target then
         target:SetMovable(true)
@@ -71,9 +72,16 @@ local function Set_Move_Frame(frame, target, click, notSave, notFuori)
         frame:RegisterForDrag("LeftButton", "RightButton")
     end
 
-    frame:HookScript("OnDragStart", function(self)
-        (self.targetMoveFrame or self):StartMoving()
+    frame:HookScript("OnDragStart", function(self, d)
+        if
+            (d=='RightButton' or d=='LeftButton')
+            and (d== self.typeClick or not self.typeClick)
+        then
+            local f= self.targetMoveFrame or self
+            f:StartMoving()
+        end
     end)
+
     frame:HookScript("OnDragStop", function(s)
         local s2= s.targetMoveFrame or s
         s2:StopMovingOrSizing()
@@ -85,14 +93,16 @@ local function Set_Move_Frame(frame, target, click, notSave, notFuori)
         Save().point[frameName]= {s2:GetPoint(1)}
         Save().point[frameName][2]= nil
     end)
-    frame:HookScript("OnMouseDown", function(s, d)--设置, 光标
-        if d~='RightButton' and d~='LeftButton' then
-            return
-        end
-        if d== s.typeClick or not s.typeClick then
+
+    frame:HookScript("OnMouseDown", function(self, d)--设置, 光标
+        if
+            (d=='RightButton' or d=='LeftButton')
+            and (d== self.typeClick or not self.typeClick)
+        then
             SetCursor('UI_MOVE_CURSOR')
         end
     end)
+
     frame:HookScript("OnMouseUp", ResetCursor)--停止移动
     frame:HookScript("OnLeave", ResetCursor)
 end
