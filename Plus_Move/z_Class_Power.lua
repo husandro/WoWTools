@@ -90,9 +90,27 @@ local function Init()--职业，能量条
 
     elseif e.Player.class=='SHAMAN' then--SM
         frame= TotemFrame
-        hooksecurefunc(TotemFrame, 'Update', function(self)
-            WoWTools_MoveMixin:SetPoint(self)
-        end)
+
+        if frame then
+            --Blizzard_UnitFrame/TotemFrame.lua
+            hooksecurefunc(TotemFrame, 'Update', function(self)
+                WoWTools_MoveMixin:SetPoint(self)
+            end)
+            hooksecurefunc(TotemButtonMixin, 'OnLoad', function(self)
+                WoWTools_MoveMixin:Setup(self, {frame=TotemFrame})
+            end)
+            --[[local texture= WoWTools_TextureMixin:CreateBackground(frame, {isAllPoint=true, alpha=0})
+            if texture then
+                frame:HookScript('OnEnter', function(self)
+                    self.Background:SetAlpha(0.5)
+                end)
+                frame:HookScript('OnLeave', function(self)
+                    self.Background:SetAlpha(0)
+                end)
+            end]]
+
+
+        end
     end
     Set_Class_Frame(frame)
 end

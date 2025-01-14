@@ -2430,13 +2430,10 @@ local function Init_Class_Power(init)--职业
         end)
 
     elseif e.Player.class=='SHAMAN' then--SM
-        hooksecurefunc(TotemFrame, 'Update', function()
-            for btn, _ in pairs(TotemFrame.totemPool.activeObjects or {}) do
-                set_Alpha_Color(btn.Border, true)
-            end
+        --Blizzard_UnitFrame/TotemFrame.lua
+        hooksecurefunc(TotemButtonMixin, 'OnLoad', function(self)
+            set_Alpha_Color(self.Border, nil, nil, min03)
         end)
-
-
     end
 end
 
