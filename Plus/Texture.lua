@@ -238,16 +238,16 @@ local function set_Button(btn, tab)
     end
 end
 
-
-local function set_Menu(self, tab)
-    if not self then
-        return
+--下拉，菜单
+local function set_Menu(self)--, tab)
+    if self then
+        set_Alpha_Color(self.Background, nil, nil, min03)
     end
-
-    if self.Background then
+end
+    --[[if self.Background then
 
         set_Alpha_Color(self.Background, nil, true, min03)
-        set_Alpha_Color(self.Arrow, nil, true, min05)
+        --set_Alpha_Color(self.Arrow, nil, true, 1)
     else
         tab = tab or {}
         --e.Set_Alpha_Frame_Texture(self, {notAlpha=true})     
@@ -261,8 +261,8 @@ local function set_Menu(self, tab)
         e.Set_Alpha_Frame_Texture(self.DecrementButton, {notAlpha=true})
         e.Set_Alpha_Frame_Texture(self.IncrementButton, {notAlpha=true})
         WoWTools_ColorMixin:SetLabelTexture(self.Text, {type='FontString'})
-    end
-end
+    end]]
+
 
 
 
@@ -442,7 +442,8 @@ local function Init_Blizzard_Communities()
     e.Set_ScrollBar_Color_Alpha(CommunitiesGuildLogFrame.Container.ScrollFrame)
 
 
-
+    set_Menu(ClubFinderGuildFinderFrame.OptionsList.ClubFilterDropdown)
+    set_Menu(ClubFinderGuildFinderFrame.OptionsList.ClubSizeDropdown)
 end
 
 
@@ -1218,6 +1219,7 @@ local function Init_All_Frame()
      --hide_Texture(MerchantFrameInset.Bg)
      e.Set_NineSlice_Color_Alpha(MerchantFrameInset, true)
      e.Set_NineSlice_Color_Alpha(MerchantFrame, true)
+     set_Menu(MerchantFrame.FilterDropdown)
 
      set_Alpha_Color(MerchantMoneyInset.Bg)
      hide_Texture(MerchantMoneyBgMiddle)
@@ -1239,7 +1241,6 @@ local function Init_All_Frame()
             for name in pairs(libDBIcon.objects) do
                 e.Set_Alpha_Frame_Texture(_G['LibDBIcon10_'..name], {index=2})
             end
-
          end
          --[[for i=1, C_AddOns.GetNumAddOns() do
              if C_AddOns.GetAddOnEnableState(i)==2 then
