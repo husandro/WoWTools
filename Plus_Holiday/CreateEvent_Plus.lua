@@ -180,6 +180,7 @@ end
 local function Init_Guild_Menu(_, root)
     if not IsInGuild() then
         Opentions_Menu(root)
+        return
     end
 
     local sub

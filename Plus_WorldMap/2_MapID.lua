@@ -109,20 +109,7 @@ local function Init()
         if b=='RightButton' then
             print(GetAchievementLink(self.achievementID) or self.achievementID)
         else
--- AchievementObjectiveTrackerMixin:OnBlockHeaderClick
-            if not AchievementFrame then
-                AchievementFrame_LoadUI()
-            end
-            if not AchievementFrame:IsShown() then
-                AchievementFrame_ToggleAchievementFrame()
-                AchievementFrame_SelectAchievement(self.achievementID);
-            else
-                if AchievementFrameAchievements.selection ~= self.achievementID then
-                    AchievementFrame_SelectAchievement(self.achievementID)
-                else
-                    AchievementFrame_ToggleAchievementFrame()
-                end
-            end
+            WoWTools_LoadUIMixin:Achievement(self.achievementID)--打开成就
         end
         self:SetAlpha(0.3)
     end)

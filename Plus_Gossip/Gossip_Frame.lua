@@ -727,8 +727,8 @@ local function Init()
     --end
 
     --已打开，对话，列表
-    --Menu.chat= WoWTools_ButtonMixin:Cbtn(Frame, {size={22, 22}, atlas='transmog-icon-chat'})
-    Menu.chat=WoWTools_ButtonMixin:CreateMenu(Frame, {hideIcon=true})
+    Menu.chat= WoWTools_ButtonMixin:Cbtn(Frame, {size={22, 22}, atlas='transmog-icon-chat'})
+    --Menu.chat=WoWTools_ButtonMixin:CreateMenu(Frame, {hideIcon=true})
     Menu.chat:SetNormalAtlas('transmog-icon-chat')
     Menu.chat:SetPoint('LEFT', Menu.Name, 'RIGHT', 2, 0)
     Menu.chat:SetScript('OnLeave', GameTooltip_Hide)
@@ -740,7 +740,10 @@ local function Init()
         e.tips:AddDoubleLine(e.onlyChinese and '当前对话' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, ENABLE_DIALOG), e.onlyChinese and '添加' or ADD)
         e.tips:Show()
     end)
-    Menu.chat:SetupMenu(Chat_Menu)
+    Menu.chat:SetScript('OnMouseDown', function(self)
+        MenuUtil.CreateContextMenu(self, Chat_Menu)
+    end)
+    --Menu.chat:SetupMenu(Chat_Menu)
 
     --GossipFrame 有多少对话
     Menu.chat.Text= WoWTools_LabelMixin:Create(Menu.chat, {justifyH='CENTER'})

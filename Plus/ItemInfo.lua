@@ -456,7 +456,7 @@ function e.Set_Item_Info(self, tab)
             end
 
         elseif battlePetSpeciesID or itemID==82800 or classID==17 or (classID==15 and subclassID==2) or itemLink:find('Hbattlepet:(%d+)') then--宠物
-            local speciesID = battlePetSpeciesID or itemLink:match('Hbattlepet:(%d+)') or select(13, C_PetJournal.GetPetInfoByItemID(itemID))--宠物
+            local speciesID = battlePetSpeciesID or itemLink:match('Hbattlepet:(%d+)') or (itemID and select(13, C_PetJournal.GetPetInfoByItemID(itemID)))--宠物
             if not speciesID and itemID==82800 and tab.guidBank then
                 local data= C_TooltipInfo.GetGuildBankItem(tab.guidBank.tab, tab.guidBank.slot) or {}
                 speciesID= data.battlePetSpeciesID
@@ -470,7 +470,7 @@ function e.Set_Item_Info(self, tab)
             end
 
         elseif classID==15 and subclassID==5 then--坐骑
-            local mountID = C_MountJournal.GetMountFromItem(itemID)
+            local mountID = itemID and C_MountJournal.GetMountFromItem(itemID)
             if mountID then
                 bottomRightText= get_has_text(select(11, C_MountJournal.GetMountInfoByID(mountID)))
             end
@@ -545,7 +545,7 @@ function e.Set_Item_Info(self, tab)
         end
 
 
-        topRightText= topRightText or (C_Item.GetItemSpell(itemID) and '|A:soulbinds_tree_conduit_icon_utility:0:0|a')
+        topRightText= topRightText or ((itemID and C_Item.GetItemSpell(itemID)) and '|A:soulbinds_tree_conduit_icon_utility:0:0|a')
 
         if not leftText and ((tab.bag and tab.bag.bag <= NUM_BAG_SLOTS+1 and tab.bag.bag>=0) or not tab.bag) then
             local num=C_Item.GetItemCount(itemLink, true, false, true)-C_Item.GetItemCount(itemLink)--银行数量

@@ -7,6 +7,7 @@ Professions(recipeID)专业
 WeeklyRewards()宏伟宝库
 MajorFaction(factionID)派系声望
 UpdateGossipFrame()更新GossipFrame
+Achievement(achievementID)打开成就
 ]]
 local e= select(2, ...)
 WoWTools_LoadUIMixin= {}
@@ -288,6 +289,34 @@ function WoWTools_LoadUIMixin:SpellBook(index, spellID)
             PlayerSpellsUtil.OpenToSpellBookTabAtSpell(spellID, false, true, false)--knownSpellsOnly, toggleFlyout, flyoutReason
         else
             PlayerSpellsUtil.OpenToSpellBookTab()
+        end
+    end
+end
+
+
+
+
+
+
+--打开成就
+-- AchievementObjectiveTrackerMixin:OnBlockHeaderClick
+function WoWTools_LoadUIMixin:Achievement(achievementID)
+    do
+        if not AchievementFrame then
+            AchievementFrame_LoadUI()
+        end
+    end
+
+    if achievementID then
+        if not AchievementFrame:IsShown() then
+            AchievementFrame_ToggleAchievementFrame()
+            AchievementFrame_SelectAchievement(achievementID);
+        else
+            if AchievementFrameAchievements.selection ~= achievementID then
+                AchievementFrame_SelectAchievement(achievementID)
+            else
+                AchievementFrame_ToggleAchievementFrame()
+            end
         end
     end
 end
