@@ -225,25 +225,21 @@ local function Init_Talent()
         )
 
         e.tips:AddLine(' ')
-        
+
         e.tips:AddLine(
             (e.onlyChinese and '专精' or TALENT_FRAME_TAB_LABEL_SPEC)
             ..e.Icon.mid
             ..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
         )
-
+        e.tips:AddLine(
+            (e.onlyChinese and '天赋' or TALENT_FRAME_TAB_LABEL_SPELLBOOK)
+            ..e.Icon.right
+        )
         e.tips:AddLine(
             (e.onlyChinese and '法术书' or TALENT_FRAME_TAB_LABEL_SPELLBOOK)
             ..e.Icon.mid
             ..(e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
         )
-
-        e.tips:AddLine(
-            (e.onlyChinese and '天赋' or TALENT_FRAME_TAB_LABEL_SPELLBOOK)
-            ..e.Icon.right
-        )
-
-        e.tips:AddLine('')
 
         e.tips:Show()
     end)
