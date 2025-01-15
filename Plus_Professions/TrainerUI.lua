@@ -16,11 +16,12 @@ end
 local function Init()
     ClassTrainerFrame.BuyAll= WoWTools_ButtonMixin:Cbtn(ClassTrainerFrame, {type=false, size={ClassTrainerTrainButton:GetSize()}})
     ClassTrainerFrame.BuyAll:SetPoint('RIGHT', ClassTrainerTrainButton, 'LEFT',-2,0)
-    ClassTrainerFrame.BuyAll.name=e.onlyChinese and '全部' or ALL
+    ClassTrainerFrame.BuyAll.name= e.onlyChinese and '全部' or ALL
     ClassTrainerFrame.BuyAll.all= 0
     ClassTrainerFrame.BuyAll.cost= 0
 	ClassTrainerFrame.BuyAll:SetText(ClassTrainerFrame.BuyAll.name)
-    ClassTrainerFrame.BuyAll:SetScript("OnEnter",function(self)
+
+    function ClassTrainerFrame.BuyAll:set_tooltip()
         local text= C_CurrencyInfo.GetCoinTextureString(self.cost)
         if self.cost< GetMoney() then
             text= '|cnGREEN_FONT_COLOR:'..text..'|r'
@@ -34,35 +35,49 @@ local function Init()
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.addName, WoWTools_ProfessionMixin.addName)
 		e.tips:Show()
-	end)
-	ClassTrainerFrame.BuyAll:SetScript("OnLeave",GameTooltip_Hide)
+    end
+    ClassTrainerFrame.BuyAll:SetScript("OnLeave", GameTooltip_Hide)
+    ClassTrainerFrame.BuyAll:SetScript("OnEnter", ClassTrainerFrame.BuyAll.set_tooltip)
 
-	ClassTrainerFrame.BuyAll:SetScript("OnClick",function()
+
+	ClassTrainerFrame.BuyAll:SetScript("OnClick",function(self)
         local index= WOW_PROJECT_ID==WOW_PROJECT_MAINLINE and 2 or 3
         local num, cost= 0, 0
         local tab={}
-		for i=1,GetNumTrainerServices() do
-			if select(index, GetTrainerServiceInfo(i))=="available" then
-                local money= GetTrainerServiceCost(i) or 0
-                if money<= GetMoney() then
-                    local link=GetTrainerServiceItemLink(i) or GetTrainerServiceInfo(i)
-                    BuyTrainerService(i)
-                    cost= cost +money
-                    num= num +1
-                    if link then
-                        table.insert(tab, link)
+        do
+            for i=1,GetNumTrainerServices() do
+                if select(index, GetTrainerServiceInfo(i))=="available" then
+                    local money= GetTrainerServiceCost(i) or 0
+                    if money<= GetMoney() then
+                        local link=GetTrainerServiceItemLink(i) or GetTrainerServiceInfo(i)
+                        BuyTrainerService(i)
+                        cost= cost +money
+                        num= num +1
+                        if link then
+                            table.insert(tab, link)
+                        end
+                    else
+                        print(e.addName,
+                            WoWTools_ProfessionMixin.addName,
+                            '|cnRED_FONT_COLOR:'..(e.onlyChinese and '金币不足' or NOT_ENOUGH_GOLD),
+                            C_CurrencyInfo.GetCoinTextureString(money)
+                        )
+                        break
                     end
-                else
-                    print(e.addName, WoWTools_ProfessionMixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '金币不足' or NOT_ENOUGH_GOLD), C_CurrencyInfo.GetCoinTextureString(money))
-                    break
                 end
             end
-		end
+        end
+
         C_Timer.After(0.5, function()
             for i, link in pairs(tab) do
                 print('|cffff00ff'..i..'|r)', link)
             end
+
             print(e.addName, 'Tools', WoWTools_ProfessionMixin.addName, '|cffff00ff'..num..'|r '..(e.onlyChinese and '学习' or LEARN), (cost>0 and '|cnGREEN_FONT_COLOR:' or '')..C_CurrencyInfo.GetCoinTextureString(cost))
+
+            if GameTooltip:IsOwned(self) then
+                self:set_tooltip()
+            end
         end)
 	end)
 
@@ -71,17 +86,18 @@ local function Init()
         local index= WOW_PROJECT_ID==WOW_PROJECT_MAINLINE and 2 or 3
         ClassTrainerFrame.BuyAll.all=0
         ClassTrainerFrame.BuyAll.cost=0
-        local tradeSkillStepIndex = GetTrainerServiceStepIndex();
-        local category= tradeSkillStepIndex and select(index, GetTrainerServiceInfo(tradeSkillStepIndex))
+        --local tradeSkillStepIndex = GetTrainerServiceStepIndex();
+        --local category= tradeSkillStepIndex and select(index, GetTrainerServiceInfo(tradeSkillStepIndex))
 
-        if tradeSkillStepIndex and (category=='used' or category=='available') then
-            for i=1, GetNumTrainerServices() do
+        --print (tradeSkillStepIndex)
+        --if tradeSkillStepIndex and (category=='used' or category=='available' or not category) then
+            for i=1, GetNumTrainerServices() or 0 do
                 if select(index, GetTrainerServiceInfo(i))=="available" then
                     ClassTrainerFrame.BuyAll.all= ClassTrainerFrame.BuyAll.all +1
                     ClassTrainerFrame.BuyAll.cost= ClassTrainerFrame.BuyAll.cost +(GetTrainerServiceCost(i) or 0)
                 end
             end
-        end
+        --end
 
         ClassTrainerFrame.BuyAll:SetEnabled(ClassTrainerFrame.BuyAll.all>0)
         local text= ClassTrainerFrame.BuyAll.all..' '..ClassTrainerFrame.BuyAll.name
@@ -91,32 +107,29 @@ local function Init()
 	end)
 
     local btn2= WoWTools_ButtonMixin:Cbtn(ClassTrainerFrame.TitleContainer, {icon= not Save().disabledClassTrainer})
-    if _G['MoveZoomInButtonPerClassTrainerFrame'] then
-        btn2:SetPoint('RIGHT', _G['MoveZoomInButtonPerClassTrainerFrame'], 'LEFT')
-    else
-        btn2:SetPoint('LEFT', ClassTrainerFrame.TitleContainer, -5, -1)
-    end
+    btn2:SetPoint('LEFT', ClassTrainerFrame.TitleContainer, -5, -1)
     btn2:SetSize(20,20)
     btn2:SetAlpha(0.5)
-    btn2:SetScript('OnClick', function(self2)
+    btn2:SetScript('OnClick', function(self)
         Save().disabledClassTrainer= not Save().disabledClassTrainer and true or nil
         ClassTrainerFrame.BuyAll:SetShown(not Save().disabledClassTrainer)
-        self2:SetNormalAtlas(Save().disabledClassTrainer and e.Icon.disabled or e.Icon.icon)
+        self:SetNormalAtlas(Save().disabledClassTrainer and e.Icon.disabled or e.Icon.icon)
+        self:set_tooltip()
     end)
-    btn2:SetScript("OnEnter",function(self2)
-		e.tips:SetOwner(ClassTrainerFrame.TitleContainer, "ANCHOR_TOPLEFT")
+
+    function btn2:set_tooltip()
+        e.tips:SetOwner(ClassTrainerFrame.TitleContainer, "ANCHOR_TOPLEFT")
 		e.tips:ClearLines()
-		e.tips:AddDoubleLine(e.onlyChinese and '全部学习' or (ALL..' '.. LEARN), e.GetShowHide(not Save().disabledClassTrainer))
+		e.tips:AddDoubleLine(e.onlyChinese and '全部学习' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, LEARN), e.GetShowHide(not Save().disabledClassTrainer))
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.addName, WoWTools_ProfessionMixin.addName)
 		e.tips:Show()
-        self2:SetAlpha(1)
-        ClassTrainerFrame.BuyAll:SetButtonState('PUSHED')
-	end)
-	btn2:SetScript("OnLeave",function(self2)
+        self:SetAlpha(1)
+    end
+    btn2:SetScript("OnEnter", btn2.set_tooltip)
+	btn2:SetScript("OnLeave",function(self)
         e.tips:Hide()
-        self2:SetAlpha(0.5)
-        ClassTrainerFrame.BuyAll:SetButtonState('NORMAL')
+        self:SetAlpha(0.5)
     end)
     --[[hooksecurefunc('ClassTrainerFrame_InitServiceButton', function(skillButton, elementData,...)
         local skillIndex = elementData.skillIndex;

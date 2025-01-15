@@ -1,9 +1,11 @@
---职业，能量条
 local e= select(2, ...)
 local function Save()
     return WoWTools_MoveMixin.Save
 end
+--职业，能量条
 --Blizzard_UnitFrame
+
+
 
 local Frames={
     'MageArcaneChargesFrame',--MAGE FS
@@ -34,18 +36,20 @@ local function Init()--职业，能量条
     for _, name in pairs(Frames) do
         local frame= _G[name]
         if frame then
-            WoWTools_MoveMixin:Setup(frame, {notFuori=true,
+            WoWTools_MoveMixin:Setup(frame, {
+                notFuori=true,
                 save=true,
                 notMoveAlpha=true,
                 alpha=0,
                 click='LeftButton',
-            restPointFunc=function(btn)
-                Save().scale[btn.name]=nil
-                if not UnitAffectingCombat('player') then
-                    btn.target:SetScale(1)
-                    e.call(PlayerFrame_UpdateArt, PlayerFrame)
+                restPointFunc=function(btn)
+                    Save().scale[btn.name]=nil
+                    if not UnitAffectingCombat('player') then
+                        btn.target:SetScale(1)
+                        e.call(PlayerFrame_UpdateArt, PlayerFrame)
+                    end
                 end
-            end})
+            })
 
             if frame.setMoveFrame then
                 if frame.Update then--TotemFrame.lua
@@ -72,13 +76,6 @@ local function Init()--职业，能量条
         end)
     end)
 
-    --[[hooksecurefunc(PetFrame, 'UpdateShownState', function()
-        for _, name in pairs(Frames) do
-            Set_Func_Point(_G[name])
-        end
-    end)]]
-
-
 
     if TotemFrame and TotemFrame.setMoveFrame then--SM
         for btn in TotemFrame.totemPool:EnumerateActive() do
@@ -88,16 +85,6 @@ local function Init()--职业，能量条
             WoWTools_MoveMixin:Setup(self, {frame=TotemFrame, click='LeftButton'})
         end)
     end
-
-
-    --[[local f= CreateFrame('Frame')
-    f:RegisterEvent('PLAYER_SPECIALIZATION_CHANGED')
-    f:RegisterUnitEvent('UNIT_DISPLAYPOWER', "player")
-    f:SetScript('OnEvent', function()
-        for _, name in pairs(Frames) do
-            Set_Func_Point(_G[name])
-        end
-    end)]]
 end
 
 
@@ -111,7 +98,20 @@ end
 
 
 --[[
+hooksecurefunc(PetFrame, 'UpdateShownState', function()
+        for _, name in pairs(Frames) do
+            Set_Func_Point(_G[name])
+        end
+    end)
 
+local f= CreateFrame('Frame')
+    f:RegisterEvent('PLAYER_SPECIALIZATION_CHANGED')
+    f:RegisterUnitEvent('UNIT_DISPLAYPOWER', "player")
+    f:SetScript('OnEvent', function()
+        for _, name in pairs(Frames) do
+            Set_Func_Point(_G[name])
+        end
+    end)
 local function Set_Class_Frame(frame, click)
     if not frame then
         return

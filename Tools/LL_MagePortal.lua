@@ -182,7 +182,7 @@ local function Init()
             end
 
             function btn:set_alpha()
-                self:SetAlpha((e.Player.husandro or GameTooltip:IsOwned(self) or IsSpellKnownOrOverridesKnown(self.spellID)) and 1 or 0.1)
+                self:SetAlpha((GameTooltip:IsOwned(self) or IsSpellKnownOrOverridesKnown(self.spellID)) and 1 or 0.3)
             end
 
             function btn:settings()
