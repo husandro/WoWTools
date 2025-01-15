@@ -154,7 +154,7 @@ end
 
 
 local function Init(mixin)
-    mixin:SetFrameTexture(SettingsPanel.NineSlice, {alpha=0.5})
+    mixin:SetFrame(SettingsPanel.NineSlice, {alpha=0.5})
     mixin:SetAlphaColor(SettingsPanel.Bg, nil, nil, 0.5)
     mixin:SetScrollBar(SettingsPanel.Container.SettingsList)
     mixin:SetScrollBar(SettingsPanel.CategoryList)
@@ -164,10 +164,10 @@ local function Init(mixin)
 
     mixin:HideTexture(PingSystemTutorialBg)
 
-    mixin:SetFrameTexture(SettingsPanel.GameTab, {notAlpha=true})
-    mixin:SetFrameTexture(SettingsPanel.AddOnsTab, {notAlpha=true})
+    mixin:SetFrame(SettingsPanel.GameTab, {notAlpha=true})
+    mixin:SetFrame(SettingsPanel.AddOnsTab, {notAlpha=true})
     mixin:SetSearchBox(SettingsPanel.SearchBox)
-    mixin:SetFrameTexture(SettingsPanel, {index=1})
+    mixin:SetFrame(SettingsPanel, {index=1})
 end
 
 
