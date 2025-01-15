@@ -9,6 +9,8 @@ MajorFaction(factionID)派系声望
 UpdateGossipFrame()更新GossipFrame
 Achievement(achievementID)打开成就
 ]]
+
+
 local e= select(2, ...)
 WoWTools_LoadUIMixin= {}
 

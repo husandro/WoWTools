@@ -110,6 +110,7 @@ function WoWTools_WeekMixin:Activities(settings)--周奖励，提示
     end
 
     if showTooltip then
+        local find
         for head, tab in pairs(R) do
             e.tips:AddLine(format('|A:%s:0:0|a', e.Icon.toRight)..head)
             for index, info in pairs(tab) do
@@ -128,6 +129,7 @@ function WoWTools_WeekMixin:Activities(settings)--周奖励，提示
                         .."/"..info.threshold..'|r')
                 end
             end
+            find=true
         end
 
         local CONQUEST_SIZE_STRINGS = {'', '2v2', '3v3', '10v10'}--PVP
@@ -148,10 +150,11 @@ function WoWTools_WeekMixin:Activities(settings)--周奖励，提示
                 end
                 text= (tierInfo.tierIconID and '|T'..tierInfo.tierIconID..':0|t' or '')..CONQUEST_SIZE_STRINGS[i]..(rating==0 and ' |cff9e9e9e' or ' |cffffffff')..rating..'|r' ..text
                 e.tips:AddLine(text)
+                find=true
             end
         end
 
-        return
+        return find
     end
 
     local last

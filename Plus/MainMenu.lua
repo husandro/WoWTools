@@ -114,13 +114,13 @@ local function Init_Professions()
         if prof1 and prof1>0 then
             local name, icon= GetProfessionInfo(prof1)
             if name then
-                prof1Text='|T'..(icon or 0)..':0|t'..name..e.Icon.mid..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
+                prof1Text='|T'..(icon or 0)..':0|t|cffffffff'..name..'|r'..e.Icon.mid..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
             end
         end
         if prof2 and prof2>0 then
             local name, icon= GetProfessionInfo(prof2)
             if name then
-                prof2Text='|T'..(icon or 0)..':0|t'..name..e.Icon.mid..(e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
+                prof2Text='|T'..(icon or 0)..':0|t|cffffffff'..name..'|r'..e.Icon.mid..(e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
             end
         end
         if prof1Text or prof2Text then
@@ -180,7 +180,6 @@ local function Init_Talent()
     end
     frame:RegisterUnitEvent('PLAYER_SPECIALIZATION_CHANGED', 'Player')
     frame:RegisterEvent('PLAYER_LOOT_SPEC_UPDATED')
-    --frame:RegisterEvent('PLAYER_TALENT_UPDATE')
     frame:SetScript('OnEvent', frame.settings)
     C_Timer.After(2, function() frame:settings() end)
 
@@ -227,16 +226,16 @@ local function Init_Talent()
         e.tips:AddLine(' ')
 
         e.tips:AddLine(
-            (e.onlyChinese and '专精' or TALENT_FRAME_TAB_LABEL_SPEC)
+            '|cffffffff'..(e.onlyChinese and '专精' or TALENT_FRAME_TAB_LABEL_SPEC)..'|r'
             ..e.Icon.mid
             ..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
         )
         e.tips:AddLine(
-            (e.onlyChinese and '天赋' or TALENT_FRAME_TAB_LABEL_SPELLBOOK)
+            '|cffffffff'..(e.onlyChinese and '天赋' or TALENT_FRAME_TAB_LABEL_SPELLBOOK)..'|r'
             ..e.Icon.right
         )
         e.tips:AddLine(
-            (e.onlyChinese and '法术书' or TALENT_FRAME_TAB_LABEL_SPELLBOOK)
+            '|cffffffff'..(e.onlyChinese and '法术书' or TALENT_FRAME_TAB_LABEL_SPELLBOOK)..'|r'
             ..e.Icon.mid
             ..(e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
         )
@@ -465,14 +464,55 @@ local function Init_LFD()
         if KeybindFrames_InQuickKeybindMode() then
             return
         end
+
         self.setTextFrame:settings()
         e.tips:AddLine(' ')
-        WoWTools_WeekMixin:Activities({showTooltip=true})--周奖励，提示
-        local link=  e.WoWDate[e.Player.guid].Keystone.link
+
+        local find= WoWTools_WeekMixin:Activities({showTooltip=true})--周奖励，提示
+        local link= e.WoWDate[e.Player.guid].Keystone.link
         if link then
             e.tips:AddLine('|T4352494:0|t'..link)
         end
+
+        if find or link then
+            e.tips:AddLine(' ')
+        end
+
+        e.tips:AddLine(
+            '|cffffffff'..(e.onlyChinese and '地下城和团队副本' or GROUP_FINDER)..'|r'
+            ..e.Icon.mid
+            ..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
+        )
+        e.tips:AddLine(
+            '|cffffffff'..(e.onlyChinese and 'PvP' or PVP)..'|r'
+            ..e.Icon.right
+        )
+        e.tips:AddLine(
+            '|cffffffff'..(e.onlyChinese and '地下堡' or DELVES_LABEL)..'|r'
+            ..e.Icon.mid
+            ..(e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
+        )
+
         e.tips:Show()
+    end)
+
+
+    LFDMicroButton:HookScript('OnClick', function(_, d)
+        if d=='RightButton' and not KeybindFrames_InQuickKeybindMode() then
+            PVEFrame_ToggleFrame("PVPUIFrame", nil)
+        end
+    end)
+
+    LFDMicroButton:EnableMouseWheel(true)
+    LFDMicroButton:HookScript('OnMouseWheel', function(_, d)
+        if KeybindFrames_InQuickKeybindMode() then
+            return
+        end
+        if d==1 then
+            PVEFrame_ToggleFrame("GroupFinderFrame", nil)--, RaidFinderFrame);
+        elseif d==-1 then
+            PVEFrame_ToggleFrame("DelvesDashboardFrame", nil)
+        end
     end)
 end
 
