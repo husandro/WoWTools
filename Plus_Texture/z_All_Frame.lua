@@ -927,6 +927,10 @@ end
 
 
 function WoWTools_PlusTextureMixin:Init_All_Frame()
-    Init(self)
-    Blizzard_Communities(self)
+    do
+        Init(self)
+        Blizzard_Communities(self)
+    end
+    Init=function()end
+    Blizzard_Communities=function()end
 end
