@@ -238,7 +238,7 @@ end
 
 --TabSystem 
 function WoWTools_PlusTextureMixin:SetTabSystem(frame)--TabSystemOwner.lua
-    if not frame or not frame.frame.GetTabSet then
+    if not frame or not frame.GetTabSet then
         return
     end
     for _, tabID in pairs(frame:GetTabSet() or {}) do
