@@ -5079,7 +5079,9 @@
         "MultiBarBottomLeftButton1",
         "Event",
         "BubblesFrame",
-        "WarbandSceneJournal"
+        "WarbandSceneJournal",
+        "TALENT_FRAME_TAB_LABEL_SPEC",
+        "TALENT_FRAME_TAB_LABEL_SPELLBOOK"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

@@ -95,6 +95,9 @@ end
 local function Init_Professions()
     ProfessionMicroButton:EnableMouseWheel(true)
     ProfessionMicroButton:HookScript('OnMouseWheel', function(_, d)
+        if KeybindFrames_InQuickKeybindMode() then
+            return
+        end
         local prof1, prof2= GetProfessions()
         local index= d==1 and prof1 or prof2
         local skillLine = index and index>0 and select(7, GetProfessionInfo(index))
@@ -103,6 +106,9 @@ local function Init_Professions()
         end
     end)
     ProfessionMicroButton:HookScript('OnEnter', function()
+        if KeybindFrames_InQuickKeybindMode() then
+            return
+        end
         local prof1, prof2= GetProfessions()
         local prof1Text, prof2Text
         if prof1 and prof1>0 then
@@ -178,6 +184,7 @@ local function Init_Talent()
     frame:SetScript('OnEvent', frame.settings)
     C_Timer.After(2, function() frame:settings() end)
 
+
     PlayerSpellsMicroButton:SetNormalTexture(0)
     PlayerSpellsMicroButton:HookScript('OnLeave', function(self)
         self.Portrait:SetShown(true)
@@ -196,7 +203,7 @@ local function Init_Talent()
             local ID, _, _, icon, role = GetSpecializationInfo(index)
             specID= ID
             if icon then
-                a= (e.Icon[role] or '')..'|T'..icon..':0|t'
+                a= '|T'..icon..':0|t'..(e.Icon[role] or '')
             end
         end
         local lootSpecID = GetLootSpecialization()
@@ -210,8 +217,53 @@ local function Init_Talent()
         a= a or ''
         b= b or a or ''
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine((e.onlyChinese and '当前专精' or TRANSMOG_CURRENT_SPECIALIZATION)..a, (lootSpecID==specID and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..b..(e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION))
+        e.tips:AddLine((e.onlyChinese and '当前专精' or TRANSMOG_CURRENT_SPECIALIZATION)..a)
+        e.tips:AddLine(
+            (lootSpecID==specID and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')
+            ..(e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)
+            ..b
+        )
+
+        e.tips:AddLine(' ')
+        
+        e.tips:AddLine(
+            (e.onlyChinese and '专精' or TALENT_FRAME_TAB_LABEL_SPEC)
+            ..e.Icon.mid
+            ..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
+        )
+
+        e.tips:AddLine(
+            (e.onlyChinese and '法术书' or TALENT_FRAME_TAB_LABEL_SPELLBOOK)
+            ..e.Icon.mid
+            ..(e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
+        )
+
+        e.tips:AddLine(
+            (e.onlyChinese and '天赋' or TALENT_FRAME_TAB_LABEL_SPELLBOOK)
+            ..e.Icon.right
+        )
+
+        e.tips:AddLine('')
+
         e.tips:Show()
+    end)
+
+    PlayerSpellsMicroButton:HookScript('OnClick', function(_, d)
+        if d=='RightButton' and not KeybindFrames_InQuickKeybindMode() then
+            WoWTools_LoadUIMixin:SpellBook(2, nil)
+        end
+    end)
+
+    PlayerSpellsMicroButton:EnableMouseWheel(true)
+    PlayerSpellsMicroButton:HookScript('OnMouseWheel', function(_, d)
+        if KeybindFrames_InQuickKeybindMode() then
+            return
+        end
+        if d==1 then
+            WoWTools_LoadUIMixin:SpellBook(1, nil)
+        elseif d==-1 then
+            WoWTools_LoadUIMixin:SpellBook(3, nil)
+        end
     end)
 end
 
@@ -840,9 +892,9 @@ local function Init_Bag()
                 )
             end
             --e.tips:AddDoubleLine(' ', '|A:bags-button-autosort-up:18:18|a'..(use>0 and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..use..'|r/'..num)
-    
 
-        
+
+
         e.tips:Show()
     end)
 
@@ -1068,7 +1120,7 @@ local function Init_Plus()
         Init_Bag()--背包
         Init_MainMenu(true)--菜单，透明度
 
-        
+
     else
         for _, frame in pairs(Frames) do
             if frame.Text then
@@ -1212,7 +1264,7 @@ end
 --添加控制面板
 --###########
 local function Init_Options()--初始, 选项
-    
+
 
     local initializer2= e.AddPanel_Check({
         name= 'Plus',

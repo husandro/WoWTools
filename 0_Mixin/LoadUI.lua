@@ -281,10 +281,12 @@ function WoWTools_LoadUIMixin:SpellBook(index, spellID)
     if index==1 then
         PlayerSpellsUtil.OpenToClassSpecializationsTab()
     elseif index==2 then
-        if not PlayerSpellsFrame or PlayerSpellsFrame.TalentsFrame:IsVisible() then
+        if PlayerSpellsFrame.TalentsFrame:IsVisible() then
             PlayerSpellsUtil.TogglePlayerSpellsFrame(2)
         end
-    else
+        PlayerSpellsUtil.ToggleClassTalentOrSpecFrame()
+        
+    elseif index==3 or spellID then
         if spellID and IsSpellKnownOrOverridesKnown(spellID) then
             PlayerSpellsUtil.OpenToSpellBookTabAtSpell(spellID, false, true, false)--knownSpellsOnly, toggleFlyout, flyoutReason
         else

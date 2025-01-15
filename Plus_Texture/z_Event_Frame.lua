@@ -66,13 +66,7 @@ function Events:Blizzard_PlayerSpells(mixin)
 
     mixin:SetAlphaColor(PlayerSpellsFrame.TalentsFrame.BottomBar, 0.3)--天赋
     mixin:HideTexture(PlayerSpellsFrame.TalentsFrame.BlackBG)
-
     mixin:SetSearchBox(PlayerSpellsFrame.TalentsFrame.SearchBox)
-
-    mixin:SetAlphaColor(PlayerSpellsFrame.SpellBookFrame.TopBar)--法术书
-    mixin:SetSearchBox(PlayerSpellsFrame.SpellBookFrame.SearchBox)
-    mixin:SetTabSystem(PlayerSpellsFrame.SpellBookFrame)
-
     Menu.ModifyMenu("MENU_CLASS_TALENT_PROFILE", function(_, root)--隐藏，天赋，背景
         root:CreateDivider()
         local sub=WoWTools_MenuMixin:ShowBackground(root, function()
@@ -86,6 +80,14 @@ function Events:Blizzard_PlayerSpells(mixin)
         end)
     end)
     Set_TalentsFrameBg()
+
+
+    mixin:SetAlphaColor(PlayerSpellsFrame.SpellBookFrame.TopBar)--法术书
+    mixin:SetSearchBox(PlayerSpellsFrame.SpellBookFrame.SearchBox)
+    mixin:SetTabSystem(PlayerSpellsFrame.SpellBookFrame)
+    hooksecurefunc(SpellBookItemMixin, 'UpdateVisuals', function(frame)
+        frame.Button.ActionBarHighlight:SetVertexColor(0,1,0)
+    end)
 end
 
 
