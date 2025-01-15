@@ -42,7 +42,7 @@ end
 
 --天赋和法术书
 function Events:Blizzard_PlayerSpells(mixin)
-    mixin:SetAlphaColor(PlayerSpellsFrameBg, 0.3)
+    mixin:SetAlphaColor(PlayerSpellsFrameBg)
     mixin:SetNineSlice(PlayerSpellsFrame, 0.3)
     mixin:SetTabSystem(PlayerSpellsFrame)
 
@@ -585,6 +585,11 @@ function Events:Blizzard_Collections(mixin)
         mixin:SetAlphaColor(RematchOptionPanel.List.Background.InsetBack)
         mixin:SetAlphaColor(RematchLoadoutPanel.TopLoadout.InsetBack)
     end
+
+
+
+    mixin:SetAlphaColor(WarbandSceneJournal.IconsFrame.BackgroundTile)
+    mixin:SetAlphaColor(WarbandSceneJournal.IconsFrame.Bg)
 end
 
 

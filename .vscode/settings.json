@@ -5078,7 +5078,8 @@
         "ActionBarActionButtonMixin",
         "MultiBarBottomLeftButton1",
         "Event",
-        "BubblesFrame"
+        "BubblesFrame",
+        "WarbandSceneJournal"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

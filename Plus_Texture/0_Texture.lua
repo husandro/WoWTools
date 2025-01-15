@@ -57,7 +57,7 @@ function WoWTools_PlusTextureMixin:SetAlphaColor(object, notAlpha, notColor, alp
             WoWTools_ColorMixin:SetLabelTexture(object, {type=object:GetObjectType()})
         end
         if not notAlpha then
-            object:SetAlpha(alpha or self.Save.alpha or 0.3)
+            object:SetAlpha(alpha or self.Save.alpha or 0.5)
         end
     end
 end
