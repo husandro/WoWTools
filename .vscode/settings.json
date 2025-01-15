@@ -5081,7 +5081,11 @@
         "BubblesFrame",
         "WarbandSceneJournal",
         "TALENT_FRAME_TAB_LABEL_SPEC",
-        "TALENT_FRAME_TAB_LABEL_SPELLBOOK"
+        "TALENT_FRAME_TAB_LABEL_SPELLBOOK",
+        "ProfessionsBookFrameCloseButton",
+        "ProfessionsBookFrame_OnHide",
+        "MonthlyActivitiesFrame_OpenFrame",
+        "MONTHLY_ACTIVITIES_TAB"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

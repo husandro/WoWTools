@@ -72,9 +72,52 @@ local function Init_Character()
         if KeybindFrames_InQuickKeybindMode() then
             return
         end
+
         e.tips:AddLine(' ')
         WoWTools_DurabiliyMixin:OnEnter()
+
+        e.tips:AddLine(' ')
+
+        e.tips:AddLine(
+            '|cffffffff'..(e.onlyChinese and '角色' or CHARACTER)..'|r'
+            ..e.Icon.mid
+            ..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
+        )
+        e.tips:AddLine(
+            (C_Reputation.GetNumFactions()>0 and '|cffffffff' or '|cff828282')..(e.onlyChinese and '声望' or REPUTATION)..'|r'
+            ..e.Icon.right
+        )
+        e.tips:AddLine(
+            (C_CurrencyInfo.GetCurrencyListSize() > 0 and '|cffffffff' or '|cff828282')
+            ..(e.onlyChinese and '货币' or TOKENS)..'|r'
+            ..e.Icon.mid
+            ..(e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
+        )
+
         e.tips:Show()
+    end)
+
+
+    CharacterMicroButton:HookScript('OnClick', function(_, d)
+        if d=='RightButton' and not KeybindFrames_InQuickKeybindMode() then
+            ToggleCharacter("ReputationFrame")
+        end
+    end)
+
+    CharacterMicroButton:EnableMouseWheel(true)
+    CharacterMicroButton:HookScript('OnMouseWheel', function(_, d)
+        if KeybindFrames_InQuickKeybindMode() then
+            return
+        end
+        if d==1 then
+            if not PaperDollFrame:IsShown() then
+                ToggleCharacter("PaperDollFrame")
+            end
+        elseif d==-1 then
+            if not TokenFrame:IsShown() then
+                ToggleCharacter("TokenFrame")
+            end
+        end
     end)
 end
 
@@ -93,6 +136,67 @@ end
 
 
 local function Init_Professions()
+    ProfessionMicroButton:HookScript('OnEnter', function()
+        if KeybindFrames_InQuickKeybindMode() then
+            return
+        end
+
+        local prof1, prof2, _, fishing= GetProfessions()
+        local prof1Text, prof2Text, fishingText, name, icon
+
+
+        if prof1 and prof1>0 then
+            name, icon= GetProfessionInfo(prof1)
+            if name then
+                prof1Text='|T'..(icon or 0)..':0|t|cffffffff'..name..'|r'..e.Icon.mid..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
+            end
+        end
+
+        if fishing and fishing>0 then
+            name, icon= GetProfessionInfo(fishing)
+            if name then
+                fishingText='|T'..(icon or 0)..':0|t|cffffffff'..name..'|r'..e.Icon.right
+            end
+        end
+
+        if prof2 and prof2>0 then
+            name, icon= GetProfessionInfo(prof2)
+            if name then
+                prof2Text='|T'..(icon or 0)..':0|t|cffffffff'..name..'|r'..e.Icon.mid..(e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
+            end
+        end
+        if prof1Text or prof2Text or fishingText then
+            e.tips:AddLine(' ')
+            if prof1Text then
+                e.tips:AddLine(prof1Text)
+            end
+            if fishingText then
+                e.tips:AddLine(fishingText)
+            end
+            if prof2Text then
+                e.tips:AddLine(prof2Text)
+            end
+            e.tips:Show()
+        end
+    end)
+
+    ProfessionMicroButton:HookScript('OnClick', function(_, d)
+        if d=='RightButton' and not KeybindFrames_InQuickKeybindMode() then
+            local fishing= select(4, GetProfessions())
+            if fishing and fishing>0 then
+                local skillLine = select(7, GetProfessionInfo(fishing))
+                if skillLine and skillLine>0 then
+                    do
+                        if ProfessionsBookFrame and ProfessionsBookFrame:IsShown() then
+                            ToggleProfessionsBook()
+                        end
+                    end
+                    C_TradeSkillUI.OpenTradeSkill(skillLine)
+                end
+            end
+        end
+    end)
+
     ProfessionMicroButton:EnableMouseWheel(true)
     ProfessionMicroButton:HookScript('OnMouseWheel', function(_, d)
         if KeybindFrames_InQuickKeybindMode() then
@@ -102,35 +206,26 @@ local function Init_Professions()
         local index= d==1 and prof1 or prof2
         local skillLine = index and index>0 and select(7, GetProfessionInfo(index))
         if skillLine and skillLine>0 then
+            do
+                if ProfessionsBookFrame and ProfessionsBookFrame:IsShown() then
+                    ToggleProfessionsBook()
+                end
+            end
             C_TradeSkillUI.OpenTradeSkill(skillLine)
         end
     end)
-    ProfessionMicroButton:HookScript('OnEnter', function()
-        if KeybindFrames_InQuickKeybindMode() then
-            return
-        end
-        local prof1, prof2= GetProfessions()
-        local prof1Text, prof2Text
-        if prof1 and prof1>0 then
-            local name, icon= GetProfessionInfo(prof1)
-            if name then
-                prof1Text='|T'..(icon or 0)..':0|t|cffffffff'..name..'|r'..e.Icon.mid..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
-            end
-        end
-        if prof2 and prof2>0 then
-            local name, icon= GetProfessionInfo(prof2)
-            if name then
-                prof2Text='|T'..(icon or 0)..':0|t|cffffffff'..name..'|r'..e.Icon.mid..(e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
-            end
-        end
-        if prof1Text or prof2Text then
-            e.tips:AddLine(' ')
-            e.tips:AddLine(prof1Text)
-            e.tips:AddLine(prof2Text)
-            e.tips:Show()
-        end
-    end)
 end
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -509,9 +604,13 @@ local function Init_LFD()
             return
         end
         if d==1 then
-            PVEFrame_ToggleFrame("GroupFinderFrame", nil)--, RaidFinderFrame);
+            if not GroupFinderFrame:IsShown() then
+                PVEFrame_ToggleFrame("GroupFinderFrame", nil)--, RaidFinderFrame);
+            end
         elseif d==-1 then
-            PVEFrame_ToggleFrame("DelvesDashboardFrame", nil)
+            if not DelvesDashboardFrame or not DelvesDashboardFrame:IsShown() then
+                PVEFrame_ToggleFrame("DelvesDashboardFrame", nil)
+            end
         end
     end)
 end
@@ -533,8 +632,55 @@ end
 
 
 
+--战团藏品
+local function Init_Collections()
+    CollectionsMicroButton:HookScript('OnEnter', function(self)
+        if KeybindFrames_InQuickKeybindMode() then
+            return
+        end
 
+        e.tips:AddLine(' ')
 
+        e.tips:AddLine(
+            '|cffffffff'..(e.onlyChinese and '坐骑' or MOUNTS)..'|r'
+            ..e.Icon.mid
+            ..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
+        )
+        e.tips:AddLine(
+            '|cffffffff'..(e.onlyChinese and '宠物手册' or PET_JOURNAL)..'|r'
+            ..e.Icon.right
+        )
+        e.tips:AddLine(
+            '|cffffffff'..(e.onlyChinese and '玩具箱' or TOY_BOX)..'|r'
+            ..e.Icon.mid
+            ..(e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
+        )
+
+        e.tips:Show()
+    end)
+
+    CollectionsMicroButton:HookScript('OnClick', function(_, d)
+        if d=='RightButton' and not KeybindFrames_InQuickKeybindMode() then
+            ToggleCollectionsJournal(2)
+        end
+    end)
+
+    CollectionsMicroButton:EnableMouseWheel(true)
+    CollectionsMicroButton:HookScript('OnMouseWheel', function(_, d)
+        if KeybindFrames_InQuickKeybindMode() then
+            return
+        end
+        if d==1 then
+            if not MountJournal or not MountJournal:IsShown() then
+                ToggleCollectionsJournal(1)
+            end
+        elseif d==-1 then
+            if not ToyBox or not ToyBox:IsShown() then
+                ToggleCollectionsJournal(3)
+            end
+        end
+    end)
+end
 
 
 
@@ -597,18 +743,68 @@ end
         if KeybindFrames_InQuickKeybindMode() then
             return
         end
+
+        e.tips:AddLine(' ')
+
         local cur, max, info= Get_Perks_Info()
         if cur then
             info= info or {}
-            e.tips:AddLine(' ')
+
             if info.quantity then
                 e.tips:AddDoubleLine((info.iconFileID  and '|T'..info.iconFileID..':0|t' or '|A:activities-complete-diamond:0:0|a')..info.quantity, info.name)
             end
             e.tips:AddDoubleLine((cur==max and '|cnGREEN_FONT_COLOR:' or '|cffff00ff')..cur..'|r/'..max..format(' %i%%', cur/max*100), e.onlyChinese and '旅行者日志进度' or MONTHLY_ACTIVITIES_PROGRESSED)
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.addName, e.cn(addName))
         end
+
+        e.tips:AddLine(
+            '|cffffffff'..(e.onlyChinese and '地下城' or DUNGEONS)..'|r'
+            ..e.Icon.mid
+            ..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
+        )
+        e.tips:AddLine(
+            '|cffffffff'..(e.onlyChinese and '旅行者日志' or MONTHLY_ACTIVITIES_TAB)..'|r'
+            ..e.Icon.right
+        )
+        e.tips:AddLine(
+            '|cffffffff'..(e.onlyChinese and '团队副本' or RAIDS)..'|r'
+            ..e.Icon.mid
+            ..(e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
+        )
+
         e.tips:Show()
+    end)
+
+
+    EJMicroButton:HookScript('OnClick', function(_, d)
+        if d=='RightButton' and not KeybindFrames_InQuickKeybindMode() then
+            do
+                if not EncounterJournal or not EncounterJournal:IsShown() then--suggestTab
+                    ToggleEncounterJournal()
+                end
+            end
+            MonthlyActivitiesFrame_OpenFrame()
+        end
+    end)
+
+    EJMicroButton:EnableMouseWheel(true)
+    EJMicroButton:HookScript('OnMouseWheel', function(_, d)
+        if KeybindFrames_InQuickKeybindMode() then
+            return
+        end
+
+        do
+            if not EncounterJournal or not EncounterJournal:IsShown() then
+                ToggleEncounterJournal()
+            end
+        end
+
+        if d==1 then
+            EJ_ContentTab_Select(EncounterJournal.dungeonsTab:GetID())
+
+        elseif d==-1 then
+            EJ_ContentTab_Select(EncounterJournal.raidsTab:GetID());
+        end
     end)
 end
 
@@ -1150,6 +1346,7 @@ local function Init_Plus()
         Init_Quest()--任务
         Init_Guild()--公会
         Init_LFD()--地下城查找器
+        Init_Collections()--收藏
         Init_EJ() --冒险指南
         Init_Store()--商店
         Init_Help()--帮助
