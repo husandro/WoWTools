@@ -15,6 +15,7 @@ WoWTools_PlusTextureMixin={
         --disabledMainMenu= not e.Player.husandro, --主菜单，颜色，透明度
         --disabledHelpTip=true,--隐藏所有教程
 
+        HideTalentsBG=e.Player.husandro,--隐藏，天赋，背景
     },
     --addName=nil
     min=nil,

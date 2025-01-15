@@ -1,3 +1,6 @@
+local function Save()
+    return WoWTools_PlusTextureMixin.Save
+end
 
 local Events={}
 
@@ -40,6 +43,18 @@ end
 
 
 
+
+
+
+
+
+local function Set_TalentsFrameBg()
+    local show= not Save().HideTalentsBG
+    PlayerSpellsFrame.TalentsFrame.Background:SetShown(show)
+    PlayerSpellsFrame.TalentsFrame.HeroTalentsContainer.PreviewContainer.Background:SetShown(show)
+    PlayerSpellsFrame.TalentsFrame.BottomBar:SetShown(show)
+end
+
 --天赋和法术书
 function Events:Blizzard_PlayerSpells(mixin)
     mixin:SetAlphaColor(PlayerSpellsFrameBg)
@@ -57,6 +72,20 @@ function Events:Blizzard_PlayerSpells(mixin)
     mixin:SetAlphaColor(PlayerSpellsFrame.SpellBookFrame.TopBar)--法术书
     mixin:SetSearchBox(PlayerSpellsFrame.SpellBookFrame.SearchBox)
     mixin:SetTabSystem(PlayerSpellsFrame.SpellBookFrame)
+
+    Menu.ModifyMenu("MENU_CLASS_TALENT_PROFILE", function(_, root)--隐藏，天赋，背景
+        root:CreateDivider()
+        local sub=WoWTools_MenuMixin:ShowBackground(root, function()
+            return not Save().HideTalentsBG
+        end, function()
+            Save().HideTalentsBG= not Save().HideTalentsBG and true or nil
+            Set_TalentsFrameBg()
+        end)
+        sub:SetTooltip(function(tooltip)
+            tooltip:AddLine(WoWTools_PlusTextureMixin.addName)
+        end)
+    end)
+    Set_TalentsFrameBg()
 end
 
 
@@ -588,8 +617,8 @@ function Events:Blizzard_Collections(mixin)
 
 
 
-    mixin:SetAlphaColor(WarbandSceneJournal.IconsFrame.BackgroundTile)
-    mixin:SetAlphaColor(WarbandSceneJournal.IconsFrame.Bg)
+    mixin:HideTexture(WarbandSceneJournal.IconsFrame.BackgroundTile)
+    mixin:HideTexture(WarbandSceneJournal.IconsFrame.Bg)
 end
 
 
