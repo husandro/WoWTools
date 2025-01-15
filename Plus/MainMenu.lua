@@ -37,10 +37,8 @@ local function Init_Character()
 
     frame.Text= WoWTools_LabelMixin:Create(CharacterMicroButton,  {size=Save.size, color=true})
     frame.Text:SetPoint('TOP', CharacterMicroButton, 0,  -3)
-    --frame.Text:SetPoint('BOTTOM', CharacterMicroButton, 'CENTER', 0, 1)
     frame.Text2= WoWTools_LabelMixin:Create(CharacterMicroButton,  {size=Save.size, color=true})
     frame.Text2:SetPoint('BOTTOM', CharacterMicroButton, 0, 3)
-    --frame.Text2:SetPoint('TOP', CharacterMicroButton, 'CENTER', 0, -1)
 
     function frame:settings()
         local to, cu= GetAverageItemLevel()--装等
@@ -500,7 +498,7 @@ local function Init_Guild()
         "GUILD_ROSTER_UPDATE",
         "CLUB_STREAMS_LOADED",
         "PLAYER_GUILD_UPDATE",
-    };
+    }
     FrameUtil.RegisterFrameForEvents(frame, COMMUNITIES_LIST_EVENTS)
     frame:SetScript('OnEvent', frame.settings)
     C_Timer.After(2, function() frame:settings() end)
@@ -605,7 +603,7 @@ local function Init_LFD()
         end
         if d==1 then
             if not GroupFinderFrame:IsShown() then
-                PVEFrame_ToggleFrame("GroupFinderFrame", nil)--, RaidFinderFrame);
+                PVEFrame_ToggleFrame("GroupFinderFrame", nil)--, RaidFinderFrame)
             end
         elseif d==-1 then
             if not DelvesDashboardFrame or not DelvesDashboardFrame:IsShown() then
@@ -703,20 +701,20 @@ end
         if not activitiesInfo then
             return
         end
-        local thresholdMax = 0;
+        local thresholdMax = 0
         for _, thresholdInfo in pairs(activitiesInfo.thresholds) do
             if thresholdInfo.requiredContributionAmount > thresholdMax then
-                thresholdMax = thresholdInfo.requiredContributionAmount;
+                thresholdMax = thresholdInfo.requiredContributionAmount
             end
         end
         thresholdMax= thresholdMax == 0 and 1000 or thresholdMax
-        local earnedThresholdAmount = 0;
+        local earnedThresholdAmount = 0
         for _, activity in pairs(activitiesInfo.activities) do
             if activity.completed then
-                earnedThresholdAmount = earnedThresholdAmount + activity.thresholdContributionAmount;
+                earnedThresholdAmount = earnedThresholdAmount + activity.thresholdContributionAmount
             end
         end
-        earnedThresholdAmount = math.min(earnedThresholdAmount, thresholdMax);
+        earnedThresholdAmount = math.min(earnedThresholdAmount, thresholdMax)
         return earnedThresholdAmount, thresholdMax, C_CurrencyInfo.GetCurrencyInfo(2032), activitiesInfo
     end
 
@@ -803,7 +801,7 @@ end
             EJ_ContentTab_Select(EncounterJournal.dungeonsTab:GetID())
 
         elseif d==-1 then
-            EJ_ContentTab_Select(EncounterJournal.raidsTab:GetID());
+            EJ_ContentTab_Select(EncounterJournal.raidsTab:GetID())
         end
     end)
 end
@@ -1193,7 +1191,20 @@ local function Init_MainMenu(init)
     if not Save.enabledMainMenuAlpha then
         return
     end
-    local tab = {
+
+
+
+    local function set_OnLeave(self)
+        local texture= self.Portrait or self:GetNormalTexture()
+        if texture then
+            texture:SetAlpha(Save.mainMenuAlphaValue)
+        end
+        if self.Background then
+            self.Background:SetAlpha(Save.mainMenuAlphaValue)
+        end
+    end
+
+    for _, text in pairs({
         'CharacterMicroButton',--菜单
         'ProfessionMicroButton',
         'PlayerSpellsMicroButton',
@@ -1207,18 +1218,7 @@ local function Init_MainMenu(init)
         'HelpMicroButton',
         'StoreMicroButton',
         'MainMenuBarBackpackButton',--背包
-    }
-    local function set_OnLeave(self)
-        local texture= self.Portrait or self:GetNormalTexture()
-        if texture then
-            texture:SetAlpha(Save.mainMenuAlphaValue)
-        end
-        if self.Background then
-            self.Background:SetAlpha(Save.mainMenuAlphaValue)
-        end
-    end
-
-    for _, text in pairs(tab) do
+    }) do
         local btn= _G[text]
         if btn then
             if init then
@@ -1238,13 +1238,12 @@ local function Init_MainMenu(init)
         end
     end
 
-    tab={
-        'CharacterBag0Slot',
-        'CharacterBag1Slot',
-        'CharacterBag2Slot',
-        'CharacterBag3Slot',
-        'CharacterReagentBag0Slot',
-    }
+
+
+
+
+
+
     local function set_Bag_OnLeave(self)
         local name= self:GetName()
         if name then
@@ -1258,7 +1257,14 @@ local function Init_MainMenu(init)
             end
         end
     end
-    for _, text in pairs(tab) do
+
+    for _, text in pairs({
+        'CharacterBag0Slot',
+        'CharacterBag1Slot',
+        'CharacterBag2Slot',
+        'CharacterBag3Slot',
+        'CharacterReagentBag0Slot',
+    }) do
         local btn= _G[text]
         if btn then
             if init then
@@ -1280,30 +1286,6 @@ local function Init_MainMenu(init)
             set_Bag_OnLeave(btn)
         end
     end
-
-    --[[CharacterReagentBag0SlotNormalTexture:SetAlpha(Save.mainMenuAlphaValue)--外框 hooksecurefunc(MainMenuBarBagManager, 'ToggleExpandBar', function()
-    if init then
-        CharacterReagentBag0Slot:HookScript('OnLeave', function(self)--GetCVarBool("expandBagBar")
-            CharacterReagentBag0SlotIconTexture:SetAlpha(Save.mainMenuAlphaValue)
-        end)
-        CharacterReagentBag0Slot:HookScript('OnEnter', function(self)
-            CharacterReagentBag0SlotIconTexture:SetAlpha(1)
-        end)
-    end]]
-    --[[
-        set_Reagent_Bag_Alpha(GetCVarBool("expandBagBar"))
-    end)]]
-
-    --[[if init then
-        hooksecurefunc('PaperDollItemSlotButton_Update', function(self)--PaperDollFrame.lua 主菜单，包
-            local bagID= self:GetID()
-            if bagID>30 then
-                --set_Alpha_Color(self:GetNormalTexture())
-                --set_Alpha_Color(self.icon)
-                self:SetAlpha(GetInventoryItemTexture("player", bagID)~=nil and 1 or 0.1)
-            end
-        end)
-    end]]
 end
 
 
@@ -1396,7 +1378,7 @@ local function Init_Framerate_Plus()
     FramerateButton:SetPoint('RIGHT',FramerateFrame.FramerateText)
 
     FramerateButton:SetMovable(true)
-    FramerateButton:RegisterForDrag("RightButton");
+    FramerateButton:RegisterForDrag("RightButton")
     FramerateButton:SetClampedToScreen(true)
     FramerateButton:SetScript("OnDragStart", function(_, d)
         if d=='RightButton' then
