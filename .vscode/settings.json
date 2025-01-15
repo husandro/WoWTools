@@ -5076,7 +5076,9 @@
         "OverlayPlayerCastingBarFrame",
         "TargetFrameSpellBar",
         "ActionBarActionButtonMixin",
-        "MultiBarBottomLeftButton1"
+        "MultiBarBottomLeftButton1",
+        "Event",
+        "BubblesFrame"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

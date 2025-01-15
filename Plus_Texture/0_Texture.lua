@@ -1,0 +1,335 @@
+local id, e = ...
+
+WoWTools_PlusTextureMixin={
+    Save={
+        --disabled=true,
+        alpha= 0.5,
+
+        --disabledChatBubble=true,--禁用，聊天泡泡
+        chatBubbleAlpha= 0.5,--聊天泡泡
+        chatBubbleSacal= 0.85,
+
+        classPowerNum= e.Player.husandro,--职业，显示数字
+        classPowerNumSize= 12,
+
+        --disabledMainMenu= not e.Player.husandro, --主菜单，颜色，透明度
+        --disabledHelpTip=true,--隐藏所有教程
+
+    },
+    --addName=nil
+    min=nil,
+}
+
+local function Save()
+    return WoWTools_PlusTextureMixin.Save
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--隐藏，材质
+function WoWTools_PlusTextureMixin:HideTexture(texture, notClear)
+    if not texture then
+        return
+    end
+    if not notClear and texture:GetObjectType()=='Texture' then
+        texture:SetTexture(0)
+    end
+    texture:SetShown(false)
+end
+
+--设置，颜色，透明度
+function WoWTools_PlusTextureMixin:SetAlphaColor(object, notAlpha, notColor, alpha)
+    if object then
+        if not notColor and e.Player.useColor then
+            WoWTools_ColorMixin:SetLabelTexture(object, {type=object:GetObjectType()})
+        end
+        if not notAlpha then
+            object:SetAlpha(alpha or self.Save.alpha or 0.3)
+        end
+    end
+end
+
+--隐藏, frame, 子材质
+function WoWTools_PlusTextureMixin:HideFrame(frame, tab)
+    if not frame then
+        return
+    end
+    local hideIndex= tab and tab.index
+    for index, icon in pairs({frame:GetRegions()}) do
+        if icon:GetObjectType()=="Texture" then
+            if hideIndex then
+                if hideIndex==index then
+                    icon:ClearAllPoints()
+                    icon:SetShown(false)
+                    break
+                end
+            else
+                icon:SetShown(false)
+            end
+        end
+    end
+end
+
+--透明度, 颜色, frame, 子材质
+function WoWTools_PlusTextureMixin:SetFrame(frame, tab)
+    if not frame or not frame.GetRegions then
+        return
+    end
+    tab=tab or {}
+    local indexTexture= tab.index
+    local notColor= tab.notColor
+    local alpha
+    if not tab.notAlpha then
+        alpha= tab.isMinAlpha and self.min or tab.alpha or Save().alpha
+    end
+    for index, icon in pairs({frame:GetRegions()}) do
+        if icon:GetObjectType()=="Texture" then
+            if indexTexture then
+                if indexTexture== index then
+                    if not notColor then
+                        WoWTools_ColorMixin:SetLabelTexture(icon, {type='Texture'})
+                    end
+                    if alpha then
+                        icon:SetAlpha(alpha)
+                    end
+                    break
+                end
+            else
+                if not notColor then
+                    WoWTools_ColorMixin:SetLabelTexture(icon, {type='Texture'})
+                end
+                if alpha then
+                    icon:SetAlpha(alpha)
+                end
+            end
+        end
+    end
+end
+
+--搜索框 set_SearchBox
+function WoWTools_PlusTextureMixin:SetSearchBox(frame)
+    if not frame then-- or not frame.SearchBox then
+        return
+    end
+    self:SetAlphaColor(frame.Middle, nil, nil)
+    self:SetAlphaColor(frame.Left, nil, nil)
+    self:SetAlphaColor(frame.Right, nil, nil)
+    self:SetAlphaColor(frame.Mid, nil, nil)
+end
+
+--NineSlice
+local NineSliceTabs={
+    'TopEdge',
+    'BottomEdge',
+    'LeftEdge',
+    'RightEdge',
+    'TopLeftCorner',
+    'TopRightCorner',
+    'BottomRightCorner',
+    'BottomLeftCorner',--8
+    'Center',
+    'Background',
+    'Bg',
+}
+function WoWTools_PlusTextureMixin:SetNineSlice(frame, min, hide, notAlpha, notBg)
+    if not frame or not frame.NineSlice then
+        return
+    end
+    local alpha= min and self.min or nil
+    for index, text in pairs(NineSliceTabs) do
+        if not hide then
+            self:SetAlphaColor(frame.NineSlice[text], notAlpha, nil, alpha)
+        else
+            self:HideTexture(frame.NineSlice[text])
+        end
+        if notBg and index==8 then
+            break
+        end
+    end
+end
+
+--设置，滚动条，颜色
+function WoWTools_PlusTextureMixin:SetScrollBar(frame)
+    local bar= frame and frame.ScrollBar or frame
+    if bar then
+        if bar.Track then
+            self:SetAlphaColor(bar.Track.Thumb.Middle, true)
+            self:SetAlphaColor(bar.Track.Thumb.Begin, true)
+            self:SetAlphaColor(bar.Track.Thumb.End, true)
+        end
+        if bar.Back then
+            self:SetAlphaColor(bar.Back.Texture, true)
+        end
+        if bar.Forward then
+            self:SetAlphaColor(bar.Forward.Texture, true)
+        end
+        self:HideTexture(bar.Backplate, nil)
+        self:SetAlphaColor(bar.Background, nil, true)
+    end
+end
+
+--Slider
+function WoWTools_PlusTextureMixin:SetSlider(frame)
+    if not frame or not frame.Slider then
+        return
+    end
+
+    local thumb= frame.Slider.Slider and frame.Slider.Slider.Thumb or frame.Slider.Thumb
+    self:SetAlphaColor(thumb, true)
+
+    local back= frame.Slider.Back or frame.Back
+    if back then
+        for _, icon in pairs({back:GetRegions()}) do
+            if icon:GetObjectType()=="Texture" then
+                WoWTools_ColorMixin:SetLabelTexture(icon, {type='Texture'})
+            end
+        end
+    end
+    local forward= frame.Slider.Forward or frame.Forward
+    if forward then
+        for _, icon in pairs({forward:GetRegions()}) do
+            if icon:GetObjectType()=="Texture" then
+                WoWTools_ColorMixin:SetLabelTexture(icon, {type='Texture'})
+            end
+        end
+    end
+
+    local middle= frame.Slider.Slider and frame.Slider.Slider.Middle or frame.Slider.Middle
+    local right= frame.Slider.Slider and frame.Slider.Slider.Right or frame.Slider.Right
+    local left= frame.Slider.Slider and frame.Slider.Slider.Left or frame.Slider.Left
+    WoWTools_ColorMixin:SetLabelTexture(middle, {type='Texture'})
+    WoWTools_ColorMixin:SetLabelTexture(right, {type='Texture'})
+    WoWTools_ColorMixin:SetLabelTexture(left, {type='Texture'})
+end
+
+
+--设置，按钮
+function WoWTools_PlusTextureMixin:SetButton(btn, tab)
+    if not btn then
+        return
+    end
+    tab= tab or {}
+    if tab.all then
+        WoWTools_ColorMixin:SetLabelTexture(btn, {type='Button', alpha=tab.alpha})
+    else
+        WoWTools_ColorMixin:SetLabelTexture(btn:GetNormalTexture(), {type='Texture', alpha=tab.alpha})
+    end
+end
+
+--下拉，菜单 set_Menu
+function WoWTools_PlusTextureMixin:SetMenu(frame)--, tab)
+    if frame then
+        self:SetAlphaColor(frame.Background)
+    end
+end
+
+--TabSystem 
+function WoWTools_PlusTextureMixin:SetTabSystem(frame)--TabSystemOwner.lua
+    if not frame or not frame.frame.GetTabSet then
+        return
+    end
+    for _, tabID in pairs(frame:GetTabSet() or {}) do
+        local btn= frame:GetTabButton(tabID)
+        self:SetFrame(btn, {notAlpha=true})
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Init()
+    WoWTools_PlusTextureMixin:Init_Class_Power()--职业
+    WoWTools_PlusTextureMixin:Init_Chat_Bubbles()--聊天泡泡
+    WoWTools_PlusTextureMixin:Init_HelpTip()--隐藏教程
+    WoWTools_PlusTextureMixin:Init_Action_Button()
+
+    WoWTools_PlusTextureMixin:Init_All_Frame()
+    WoWTools_PlusTextureMixin:Init_Event()
+
+    hooksecurefunc(DropdownTextMixin, 'OnLoad', function(self)
+        WoWTools_PlusTextureMixin:SetMenu(self)
+    end)
+    hooksecurefunc(DropdownButtonMixin, 'SetupMenu', function(self)
+        WoWTools_PlusTextureMixin:SetMenu(self)
+    end)
+end
+
+
+
+
+
+
+local panel=CreateFrame("Frame")
+panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" then
+        if arg1== id then
+            WoWTools_PlusTextureMixin.Save= WoWToolsSave['Plus_Texture'] or Save()
+
+            WoWTools_PlusTextureMixin.addName= '|A:AnimCreate_Icon_Texture:0:0|a'..(e.onlyChinese and '材质' or TEXTURES_SUBHEADER)
+
+            WoWTools_PlusTextureMixin:Init_Category()
+
+            if Save().disabled then
+                self:UnregisterEvent('ADDON_LOADED')
+            else
+                Init()
+            end
+
+        elseif arg1=='Blizzard_Settings' then
+            WoWTools_PlusTextureMixin:Blizzard_Settings()
+
+        else
+            WoWTools_PlusTextureMixin:Set_Event(arg1)
+        end
+
+    elseif event == "PLAYER_LOGOUT" then
+        if not e.ClearAllSave then
+            WoWToolsSave['Plus_Texture']= Save()
+        end
+    end
+end)

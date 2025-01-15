@@ -81,13 +81,13 @@ function WoWTools_EditBoxMixn:CreateMultiLineFrame(frame, tab)
         scrollFrame.ScrollBar:SetPoint('BOTTOMRIGHT', -10, 10)
     end
 
-    e.Set_ScrollBar_Color_Alpha(scrollFrame)
+    WoWTools_PlusTextureMixin:SetScrollBar(scrollFrame)
 
     scrollFrame.bg= CreateFrame('Frame', name..'BG', scrollFrame, 'TooltipBackdropTemplate')
     scrollFrame.bg:SetPoint('TOPLEFT', -5, 5)
     scrollFrame.bg:SetPoint('BOTTOMRIGHT', 0, -5)
     scrollFrame.bg:SetFrameLevel(level+1)
-    e.Set_NineSlice_Color_Alpha(scrollFrame.bg, true, nil, nil, true)
+    WoWTools_PlusTextureMixin:SetNineSlice(scrollFrame.bg, true, nil, nil, true)
 
     --[[scrollFrame.editBox= CreateFrame('EditBox', name..'Edit', scrollFrame)
     scrollFrame.editBox:SetAutoFocus(false)

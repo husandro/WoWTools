@@ -17,7 +17,7 @@ local function Init_BankSlotsFrame()
     BankItemAutoSortButton:SetParent(BankSlotsFrame)
     BankItemAutoSortButton:SetSize(32, 32)
 
-    
+
 --添加，取出所有
     local btnOutAll= WoWTools_ButtonMixin:Cbtn(BankSlotsFrame, {size=23, icon='hide'})
     btnOutAll:SetNormalAtlas('Cursor_OpenHandGlow_64')
@@ -75,7 +75,7 @@ local function Init_BankSlotsFrame()
     btnOutAll:HookScript('OnLeave', GameTooltip_Hide)
     btnOutAll:HookScript('OnEnter', btnOutAll.set_tooltips)
 
-    
+
 --存放物品
     local btnInAll= WoWTools_ButtonMixin:Cbtn(BankSlotsFrame, {size=23, icon='hide'})
     btnInAll:SetNormalAtlas('Crosshair_buy_64')
@@ -125,16 +125,16 @@ local function Init_BankSlotsFrame()
 
 
 
-    
+
     BankSlotsFrame.EdgeShadows:Hide()
 
     BankFrame:EnableDrawLayer('BACKGROUND')
     BankFrame.Background:ClearAllPoints()
     BankFrame.Background:SetPoint('TOPLEFT', BankFrame)
-    BankFrame.Background:SetPoint('BOTTOMRIGHT', BankFrame)    
+    BankFrame.Background:SetPoint('BOTTOMRIGHT', BankFrame)
     WoWTools_BankFrameMixin:Set_Background_Texture(BankFrame.Background)
 
-    
+
 --隐藏，背景
     BankFrameBg:SetTexture(0)
 
@@ -174,7 +174,7 @@ end
 
 
    --取出，所有，材料
-local function Init_ReagentBankFrame() 
+local function Init_ReagentBankFrame()
 
 
 --整理材料银行
@@ -190,7 +190,7 @@ local function Init_ReagentBankFrame()
     btnSort:SetScript('OnClick', function()
         C_Container.SortReagentBankBags()
     end)
-    
+
 --存放各种材料,系统自带
     ReagentBankFrame.DespositButton:ClearAllPoints()
     ReagentBankFrame.DespositButton:SetSize(26, 26)
@@ -262,7 +262,7 @@ local function Init_ReagentBankFrame()
     label:SetPoint('LEFT', btnAllOut, 'RIGHT')
     label:SetText(e.onlyChinese and '材料' or BAG_FILTER_REAGENTS)
 
-   
+
 
 --隐藏，背景
     ReagentBankFrame:HookScript('OnShow', function(self)
@@ -277,7 +277,7 @@ local function Init_ReagentBankFrame()
         end
     end)
 
-    ReagentBankFrame.NineSlice:Hide()    
+    ReagentBankFrame.NineSlice:Hide()
     ReagentBankFrame.EdgeShadows:Hide()
 end
 
@@ -322,7 +322,7 @@ local function Init_AccountBankPanel()
         self.isDoing=true
 
         do
-            for btn in AccountBankPanel:EnumerateValidItems() do      
+            for btn in AccountBankPanel:EnumerateValidItems() do
                 if not self.isDoing or not self:IsVisible() or IsModifierKeyDown() or free<=0 then
                     self:show_tooltips()
                     return
@@ -363,7 +363,7 @@ local function Init_AccountBankPanel()
 
 --存放所有战团绑定物品    
     AccountBankPanel.ItemDepositFrame.DepositButton:ClearAllPoints()
-    AccountBankPanel.ItemDepositFrame.DepositButton:SetPoint('RIGHT', btnAllOut, 'LEFT', -2, 0)   
+    AccountBankPanel.ItemDepositFrame.DepositButton:SetPoint('RIGHT', btnAllOut, 'LEFT', -2, 0)
     AccountBankPanel.ItemDepositFrame.DepositButton:SetSize(24, 24)
     AccountBankPanel.ItemDepositFrame.DepositButton:SetText('')
     AccountBankPanel.ItemDepositFrame.DepositButton.Middle:Hide()
@@ -394,10 +394,10 @@ local function Init_AccountBankPanel()
 		    --StaticPopup_Show("BANK_CONFIRM_CLEANUP", nil, nil, { bankType = 2 });
         C_Container.SortAccountBankBags()
     end)
-    
-    
 
-    
+
+
+
 
 --包括可交易的材料
     AccountBankPanel.ItemDepositFrame.IncludeReagentsCheckbox:ClearAllPoints()
@@ -447,12 +447,12 @@ local function Init_AccountBankPanel()
 
     AccountBankPanel.NineSlice:ClearAllPoints()
     AccountBankPanel.NineSlice:SetAllPoints()
-    e.Set_NineSlice_Color_Alpha(AccountBankPanel, true, false, false, false)
+    WoWTools_PlusTextureMixin:SetNineSlice(AccountBankPanel, true, false, false, false)
 
 --边框
     AccountBankPanel.NineSlice.LeftEdge:Hide()
     AccountBankPanel.EdgeShadows:Hide()
-    
+
     --[[AccountBankPanel.TitleContainer=CreateFrame('Frame', nil, AccountBankPanel, 'DefaultPanelBaseTemplate')
     AccountBankPanel.TitleContainer:SetAllPoints()]]
 end
@@ -529,25 +529,25 @@ local function Init()
     Init_ReagentBankFrame()
     Init_AccountBankPanel()
 
-    Init_OpenAllBag_Button()    
+    Init_OpenAllBag_Button()
 
     hooksecurefunc('BankFrame_UpdateAnchoringForPanel', function()
         local index= BankFrame.activeTabIndex
 --移动，搜索框
         BankItemSearchBox:ClearAllPoints()
         BankItemSearchBox:SetPoint('TOP', 0,-33)
-        
+
 --与，战团边框
         BankFrame.NineSlice.RightEdge:SetShown(index~=1)
         --BankFrame.NineSlice.TopRightCorner:SetShown(index~=1)
         --BankFrame.NineSlice.BottomRightCorner:SetShown(index~=1)
     end)
-    
 
-    e.Set_Alpha_Frame_Texture(BankFrameTab1, {notAlpha=true})
-    e.Set_Alpha_Frame_Texture(BankFrameTab2, {notAlpha=true})
-    e.Set_Alpha_Frame_Texture(BankFrameTab3, {notAlpha=true})
-    e.Set_NineSlice_Color_Alpha(BankFrame, true, false, false, false)
+
+    WoWTools_PlusTextureMixin:SetFrame(BankFrameTab1, {notAlpha=true})
+    WoWTools_PlusTextureMixin:SetFrame(BankFrameTab2, {notAlpha=true})
+    WoWTools_PlusTextureMixin:SetFrame(BankFrameTab3, {notAlpha=true})
+    WoWTools_PlusTextureMixin:SetNineSlice(BankFrame, true, false, false, false)
 end
 
 

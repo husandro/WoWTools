@@ -4,13 +4,10 @@ local e = select(2, ...)
 
 --建立func, 如果.toc禁用，会出错
 e.Set_Item_Info=function() end--ItemInfo.lua
-e.Set_Alpha_Frame_Texture=function()end--Texture.lua
-e.Set_NineSlice_Color_Alpha=function()end
-e.Set_ScrollBar_Color_Alpha=function()end
 e.Set_Move_Frame=function()end--Frame.lua
 e.Show_WoWHead_URL=function()end--Tooltips.lua
 e.Get_Region=function()end--Realm.lua
-e.set_TabSystem_Button=function()end--TabSystemOwner.lua
+
 
 --securecallfunction
 e.WoWDate={}--战网，数据
