@@ -37,7 +37,9 @@ local function Init(mixin)
 
     for i=1, MAX_BOSS_FRAMES do
         local frame= _G['Boss'..i..'TargetFrame']
-        mixin:HideTexture(frame.TargetFrameContainer.FrameTexture)
+        if frame then
+            mixin:HideTexture(frame.TargetFrameContainer.FrameTexture)
+        end
     end
 
     hooksecurefunc('PlayerFrame_UpdateArt', function()--隐藏材质, 载具
@@ -99,8 +101,8 @@ local function Init(mixin)
 
     hooksecurefunc('PetBattleFrame_UpdatePassButtonAndTimer', function(self)--Blizzard_PetBattleUI.lua
         mixin:HideTexture(self.BottomFrame.TurnTimer.TimerBG)
-        mixin:HideTexture(self.BottomFrame.TurnTimer.ArtFrame);
-        mixin:HideTexture(self.BottomFrame.TurnTimer.ArtFrame2);
+        mixin:HideTexture(self.BottomFrame.TurnTimer.ArtFrame)
+        mixin:HideTexture(self.BottomFrame.TurnTimer.ArtFrame2)
     end)
 
 
@@ -168,7 +170,7 @@ local function Init(mixin)
     mixin:SetAlphaColor(CharacterStatsPane.ItemLevelCategory.Background)
     hooksecurefunc('PaperDollTitlesPane_UpdateScrollBox', function()--PaperDollFrame.lua
         local frame= PaperDollFrame.TitleManagerPane.ScrollBox
-        if not frame:GetView() then
+        if not frame or not frame:GetView() then
             return
         end
         for _, button in pairs(frame:GetFrames() or {}) do
@@ -177,11 +179,8 @@ local function Init(mixin)
     end)
     mixin:SetScrollBar(PaperDollFrame.TitleManagerPane)
     hooksecurefunc('PaperDollEquipmentManagerPane_Update', function()--PaperDollFrame.lua
-    local frame= PaperDollFrame.EquipmentManagerPane.ScrollBox
-    if not frame:GetView() then
-        return
-    end
-    for _, button in pairs(frame:GetFrames() or {}) do
+
+    for _, button in pairs(PaperDollFrame.EquipmentManagerPane.ScrollBox:GetFrames() or {}) do
             mixin:HideTexture(button.BgMiddle)
         end
     end)
@@ -565,11 +564,11 @@ local function Init(mixin)
 
      hooksecurefunc('ChatConfig_CreateCheckboxes', function(frame)--ChatConfigFrame.lua
         mixin:SetNineSlice(frame, nil, true)
-        local checkBoxNameString = frame:GetName().."Checkbox";
-        local checkBoxName, checkBox;
+        local checkBoxNameString = frame:GetName().."Checkbox"
+        local checkBoxName, checkBox
         for index in pairs(frame.checkBoxTable or {}) do
-            checkBoxName = checkBoxNameString..index;
-            checkBox = _G[checkBoxName];
+            checkBoxName = checkBoxNameString..index
+            checkBox = _G[checkBoxName]
             if checkBox and checkBox.NineSlice then
                 mixin:HideTexture(checkBox.NineSlice.TopEdge)
                 mixin:HideTexture(checkBox.NineSlice.RightEdge)
@@ -584,11 +583,11 @@ local function Init(mixin)
     hooksecurefunc('ChatConfig_UpdateCheckboxes', function(frame)--频道颜色设置 ChatConfigFrame.lua
         if not FCF_GetCurrentChatFrame() then return end
 
-        local checkBoxNameString = frame:GetName().."Checkbox";
-        local baseName, colorSwatch;
+        local checkBoxNameString = frame:GetName().."Checkbox"
+        local baseName, colorSwatch
         for index, value in pairs(frame.checkBoxTable or {}) do
             local r,g,b
-            baseName = checkBoxNameString..index;
+            baseName = checkBoxNameString..index
             colorSwatch = _G[baseName.."ColorSwatch"]
             if  colorSwatch and not value.isBlank then
                 r, g, b = GetMessageTypeColor(value.type)
@@ -607,11 +606,11 @@ local function Init(mixin)
 
 
     hooksecurefunc('ChatConfig_CreateColorSwatches', function(frame)
-        local checkBoxNameString = frame:GetName().."Swatch";
-        local checkBoxName, checkBox;
+        local checkBoxNameString = frame:GetName().."Swatch"
+        local checkBoxName, checkBox
         for index in pairs(frame.swatchTable or {}) do
-            checkBoxName = checkBoxNameString..index;
-            checkBox = _G[checkBoxName];
+            checkBoxName = checkBoxNameString..index
+            checkBox = _G[checkBoxName]
             if checkBox and checkBox.NineSlice then
                 mixin:HideTexture(checkBox.NineSlice.TopEdge)
                 mixin:HideTexture(checkBox.NineSlice.RightEdge)
@@ -625,13 +624,12 @@ local function Init(mixin)
     end)
     hooksecurefunc('ChatConfig_UpdateSwatches', function(frame)
         if ( not FCF_GetCurrentChatFrame() ) then
-            return;
+            return
         end
-        local nameString = frame:GetName().."Swatch";
-        local baseName, colorSwatch
+        local nameString = frame:GetName().."Swatch"
+        local baseName, colorSwatch, r,g,b
         for index, value in ipairs(frame.swatchTable or {}) do
-            baseName = nameString..index;
-            local r,g,b
+            baseName = nameString..index
             colorSwatch = _G[baseName.."ColorSwatch"]
             if ( colorSwatch ) then
                 r,g,b= GetChatUnitColor(value.type)
@@ -744,7 +742,7 @@ local function Init(mixin)
          end
 
          --商人, SellBuy.lua
-         for i=1, math.max(MERCHANT_ITEMS_PER_PAGE, BUYBACK_ITEMS_PER_PAGE) do --MERCHANT_ITEMS_PER_PAGE = 10; BUYBACK_ITEMS_PER_PAGE = 12;
+         for i=1, math.max(MERCHANT_ITEMS_PER_PAGE, BUYBACK_ITEMS_PER_PAGE) do --MERCHANT_ITEMS_PER_PAGE = 10 BUYBACK_ITEMS_PER_PAGE = 12
              mixin:SetAlphaColor(_G['MerchantItem'..i..'SlotTexture'])
          end
          mixin:HideTexture(MerchantBuyBackItemSlotTexture)
@@ -878,7 +876,7 @@ local function Blizzard_Communities(mixin)
     hooksecurefunc(CommunitiesFrameCommunitiesList,'UpdateCommunitiesList',function()
         C_Timer.After(0.3, function()
              local frame= CommunitiesFrameCommunitiesList.ScrollBox
-            if not frame:GetView() then
+            if not frame or not frame:GetView() then
                 return
             end
             for _, button in pairs(frame:GetFrames() or {}) do
