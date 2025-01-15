@@ -1,5 +1,33 @@
 
 
+
+
+local function set_BagTexture(frame)
+    if not frame:IsVisible() then
+        return
+    end
+    for _, btn in frame:EnumerateValidItems() do
+        if not btn.hasItem then
+            WoWTools_PlusTextureMixin:HideTexture(btn.icon)
+            WoWTools_PlusTextureMixin:HideTexture(btn.ItemSlotBackground)
+            WoWTools_PlusTextureMixin:SetAlphaColor(btn.NormalTexture, true)
+        end
+        if frame.NormalTexture then
+            frame.NormalTexture:SetAlpha(not btn.hasItem and 0.3 or 1)
+        end
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
 local function Init(mixin)
 
     mixin:HideTexture(GameMenuFrame.Header.RightBG)
@@ -347,19 +375,7 @@ local function Init(mixin)
     end
 
 
-    local function set_BagTexture(frame)
-        if not frame:IsVisible() then
-            return
-        end
-        for _, btn in frame:EnumerateValidItems() do
-            if not btn.hasItem then
-                mixin:HideTexture(btn.icon)
-                mixin:HideTexture(btn.ItemSlotBackground)
-                mixin:SetAlphaColor(btn.NormalTexture, true)
-            end
-            frame.NormalTexture:SetAlpha(not btn.hasItem and 0.3 or 1)
-        end
-    end
+
 
     hooksecurefunc('ContainerFrame_GenerateFrame',function()--ContainerFrame.lua 背包里，颜色
         for _, frame in ipairs(ContainerFrameSettingsManager:GetBagsShown()) do
@@ -373,14 +389,14 @@ local function Init(mixin)
         end
     end)
 
-    local tab={
+
+    for _, text in pairs({
         'CharacterBag0Slot',
         'CharacterBag1Slot',
         'CharacterBag2Slot',
         'CharacterBag3Slot',
         'CharacterReagentBag0Slot',
-    }
-    for _, text in pairs(tab) do
+    }) do
         if _G[text] then
             mixin:SetAlphaColor(_G[text]:GetNormalTexture(), true)
         end
