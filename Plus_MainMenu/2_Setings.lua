@@ -51,7 +51,7 @@ local function Set_MicroButton_OnEnter_Alpha(self)
     local texture= self.Portrait or self:GetNormalTexture()
     if texture then
         texture:SetAlpha(1)
-        texture:SetVertexColor(1,1,1,1)
+        --texture:SetVertexColor(1,1,1,1)
     end
     if self.Background then
         self.Background:SetAlpha(1)
@@ -68,6 +68,9 @@ local function Set_Bag_OnLeave_Alpha(self)
         texture=_G[name..'NormalTexture']
         if texture then
             texture:SetAlpha(Save().mainMenuAlphaValue)
+        end
+        if self.texture2 then
+            self.texture2:SetAlpha(Save().mainMenuAlphaValue)
         end
     end
 end
@@ -92,9 +95,6 @@ end
 
 
 local IsHookAlpha
-
-
-
 local function Set_Alpha()
     if Save().disabled or not Save().enabledMainMenuAlpha then
         return

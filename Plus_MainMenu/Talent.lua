@@ -14,16 +14,20 @@ local function Init()
     PlayerSpellsMicroButton.Portrait= PlayerSpellsMicroButton:CreateTexture(nil, 'BORDER', nil, 1)
     --PlayerSpellsMicroButton.Portrait:SetAllPoints(PlayerSpellsMicroButton)
     PlayerSpellsMicroButton.Portrait:SetPoint('CENTER')
-
     PlayerSpellsMicroButton.Portrait:SetSize(22, 28)
-
-
-
 
     PlayerSpellsMicroButton.Texture2= PlayerSpellsMicroButton:CreateTexture(nil, 'BORDER', nil, 2)
     PlayerSpellsMicroButton.Texture2:SetPoint('BOTTOMRIGHT', -8, 6)
     PlayerSpellsMicroButton.Texture2:SetSize(20, 24)
     PlayerSpellsMicroButton.Texture2:SetScale(0.5)
+
+
+    if WoWTools_PlusMainMenuMixin.Save.enabledMainMenuAlpha then
+        PlayerSpellsMicroButton.Portrait:SetAlpha(WoWTools_PlusMainMenuMixin.Save.mainMenuAlphaValue)
+        PlayerSpellsMicroButton.Texture2:SetAlpha(WoWTools_PlusMainMenuMixin.Save.mainMenuAlphaValue)
+    end
+
+
 
     local mask= PlayerSpellsMicroButton:CreateMaskTexture(nil, 'BORDER', nil, 3)
     mask:SetTexture("Interface/CHARACTERFRAME/TempPortraitAlphaMask", "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
