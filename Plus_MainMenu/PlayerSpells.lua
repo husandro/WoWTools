@@ -98,18 +98,19 @@ local function Init()
         )
 
         e.tips:AddLine(' ')
+        local bat= UnitAffectingCombat('player')
 
         e.tips:AddLine(
-            '|cffffffff'..(e.onlyChinese and '专精' or TALENT_FRAME_TAB_LABEL_SPEC)..'|r'
+            (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(e.onlyChinese and '专精' or TALENT_FRAME_TAB_LABEL_SPEC)..'|r'
             ..e.Icon.mid
             ..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
         )
         e.tips:AddLine(
-            '|cffffffff'..(e.onlyChinese and '天赋' or TALENT_FRAME_TAB_LABEL_SPELLBOOK)..'|r'
+            (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(e.onlyChinese and '天赋' or TALENT_FRAME_TAB_LABEL_SPELLBOOK)..'|r'
             ..e.Icon.right
         )
         e.tips:AddLine(
-            '|cffffffff'..(e.onlyChinese and '法术书' or TALENT_FRAME_TAB_LABEL_SPELLBOOK)..'|r'
+            (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(e.onlyChinese and '法术书' or TALENT_FRAME_TAB_LABEL_SPELLBOOK)..'|r'
             ..e.Icon.mid
             ..(e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
         )

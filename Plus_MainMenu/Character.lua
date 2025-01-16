@@ -1,6 +1,6 @@
 --角色 CharacterMicroButton 
 local e= select(2, ...)
-
+--MainMenuBarMicroButtons.lua
 
 
 
@@ -53,18 +53,19 @@ local function Init()
         WoWTools_DurabiliyMixin:OnEnter()
 
         e.tips:AddLine(' ')
-
+        local bat= UnitAffectingCombat('player')
+        
         e.tips:AddLine(
-            '|cffffffff'..(e.onlyChinese and '角色' or CHARACTER)..'|r'
+            (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(e.onlyChinese and '角色' or CHARACTER)..'|r'
             ..e.Icon.mid
             ..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
         )
         e.tips:AddLine(
-            (C_Reputation.GetNumFactions()>0 and '|cffffffff' or '|cff828282')..(e.onlyChinese and '声望' or REPUTATION)..'|r'
+            (bat and '|cnRED_FONT_COLOR:' or (C_Reputation.GetNumFactions()>0 and '|cffffffff') or '|cff828282')..(e.onlyChinese and '声望' or REPUTATION)..'|r'
             ..e.Icon.right
         )
         e.tips:AddLine(
-            (C_CurrencyInfo.GetCurrencyListSize() > 0 and '|cffffffff' or '|cff828282')
+            (bat and '|cnRED_FONT_COLOR:' or (C_CurrencyInfo.GetCurrencyListSize() > 0 and '|cffffffff') or '|cff828282')
             ..(e.onlyChinese and '货币' or TOKENS)..'|r'
             ..e.Icon.mid
             ..(e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)

@@ -88,17 +88,19 @@ local function Init()
             e.tips:AddLine(' ')
         end
 
+        local bat= UnitAffectingCombat('player')
+
         e.tips:AddLine(
-            '|cffffffff'..(e.onlyChinese and '地下城' or DUNGEONS)..'|r'
+            (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(e.onlyChinese and '地下城' or DUNGEONS)..'|r'
             ..e.Icon.mid
             ..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
         )
         e.tips:AddLine(
-            '|cffffffff'..(e.onlyChinese and '旅行者日志' or MONTHLY_ACTIVITIES_TAB)..'|r'
+            (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(e.onlyChinese and '旅行者日志' or MONTHLY_ACTIVITIES_TAB)..'|r'
             ..e.Icon.right
         )
         e.tips:AddLine(
-            '|cffffffff'..(e.onlyChinese and '团队副本' or RAIDS)..'|r'
+            (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(e.onlyChinese and '团队副本' or RAIDS)..'|r'
             ..e.Icon.mid
             ..(e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
         )
@@ -109,8 +111,9 @@ local function Init()
 
     EJMicroButton:HookScript('OnClick', function(_, d)
         if d=='RightButton' and not KeybindFrames_InQuickKeybindMode() then
+            EncounterJournal_LoadUI()
             do
-                if not EncounterJournal or not EncounterJournal:IsShown() then--suggestTab
+                if not EncounterJournal:IsShown() then--suggestTab
                     ToggleEncounterJournal()
                 end
             end
@@ -124,9 +127,12 @@ local function Init()
             return
         end
 
+        EncounterJournal_LoadUI()
+
         do
-            if not EncounterJournal or not EncounterJournal:IsShown() then
+            if not EncounterJournal:IsShown() then
                 ToggleEncounterJournal()
+                MonthlyActivitiesFrame_OpenFrame()
             end
         end
 

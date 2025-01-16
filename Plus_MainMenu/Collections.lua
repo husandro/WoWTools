@@ -18,19 +18,20 @@ local function Init()
             return
         end
 
+        local bat= UnitAffectingCombat('player')
         e.tips:AddLine(' ')
 
         e.tips:AddLine(
-            '|cffffffff'..(e.onlyChinese and '坐骑' or MOUNTS)..'|r'
+            (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(e.onlyChinese and '坐骑' or MOUNTS)..'|r'
             ..e.Icon.mid
             ..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
         )
         e.tips:AddLine(
-            '|cffffffff'..(e.onlyChinese and '宠物手册' or PET_JOURNAL)..'|r'
+            (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(e.onlyChinese and '宠物手册' or PET_JOURNAL)..'|r'
             ..e.Icon.right
         )
         e.tips:AddLine(
-            '|cffffffff'..(e.onlyChinese and '玩具箱' or TOY_BOX)..'|r'
+            (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(e.onlyChinese and '玩具箱' or TOY_BOX)..'|r'
             ..e.Icon.mid
             ..(e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
         )
@@ -40,7 +41,7 @@ local function Init()
 
     CollectionsMicroButton:HookScript('OnClick', function(_, d)
         if d=='RightButton' and not KeybindFrames_InQuickKeybindMode() then
-            ToggleCollectionsJournal(2)
+            e.call(ToggleCollectionsJournal, 2)
         end
     end)
 
@@ -51,11 +52,11 @@ local function Init()
         end
         if d==1 then
             if not MountJournal or not MountJournal:IsShown() then
-                ToggleCollectionsJournal(1)
+                e.call(ToggleCollectionsJournal, 1)
             end
         elseif d==-1 then
             if not ToyBox or not ToyBox:IsShown() then
-                ToggleCollectionsJournal(3)
+                e.call(ToggleCollectionsJournal, 3)
             end
         end
     end)

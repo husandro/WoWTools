@@ -69,17 +69,19 @@ local function Init()
 
         e.tips:AddLine(' ')
 
+        local bat= UnitAffectingCombat('player')
+
         e.tips:AddLine(
-            '|cffffffff'..(e.onlyChinese and '设置选项' or GAMEMENU_OPTIONS)..'|r'
+            (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(e.onlyChinese and '设置选项' or GAMEMENU_OPTIONS)..'|r'
             ..e.Icon.mid
             ..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
         )
         e.tips:AddLine(
-            '|cffffffff'..(e.onlyChinese and '插件' or ADDONS)..'|r'
+            (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(e.onlyChinese and '插件' or ADDONS)..'|r'
             ..e.Icon.right
         )
         e.tips:AddLine(
-            '|cffffffff'..(e.onlyChinese and '宏命令设置' or MACROS)..'|r'
+            (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(e.onlyChinese and '宏命令设置' or MACROS)..'|r'
             ..e.Icon.mid
             ..(e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
         )

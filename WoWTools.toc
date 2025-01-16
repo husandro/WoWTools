@@ -472,10 +472,11 @@ Plus_MainMenu\EJ.lua
 Plus_MainMenu\Guild.lua
 Plus_MainMenu\Help.lua
 Plus_MainMenu\LFD.lua
+Plus_MainMenu\PlayerSpells.lua
 Plus_MainMenu\Professions.lua
 Plus_MainMenu\Quest.lua
 Plus_MainMenu\Store.lua
-Plus_MainMenu\Talent.lua
+
 
 
 

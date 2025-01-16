@@ -50,6 +50,7 @@ local function Init()
         if not data then
             return
         end
+
         if data.isEnabled and data.startTime and data.startTime > 0 and data.duration and data.duration > 0 then
             self.cooldown:SetCooldown(data.startTime, data.duration, data.modRate)
             self:SetShown(true)

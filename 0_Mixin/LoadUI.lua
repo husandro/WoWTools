@@ -8,7 +8,9 @@ WeeklyRewards()宏伟宝库
 MajorFaction(factionID)派系声望
 UpdateGossipFrame()更新GossipFrame
 Achievement(achievementID)打开成就
+JournalInstance(journalInstanceID)--冒险指南，副本
 ]]
+
 
 
 local e= select(2, ...)
@@ -324,3 +326,23 @@ function WoWTools_LoadUIMixin:Achievement(achievementID)
         end
     end
 end
+
+
+--Blizzard_SharedMapDataProviders/DungeonEntranceDataProvider.lua
+function WoWTools_LoadUIMixin:JournalInstance(journalInstanceID)
+    do
+        EncounterJournal_LoadUI()
+    end
+    if journalInstanceID then
+        do
+            if not EncounterJournal:IsShown() then
+                ToggleEncounterJournal()
+            end
+        end
+        EncounterJournal_OpenJournal(nil, journalInstanceID)
+    end
+end
+--/dump EncounterJournal_OpenJournal(nil, 1269)
+C_Timer.After(4, function()
+    WoWTools_LoadUIMixin:JournalInstance(1269)
+end)

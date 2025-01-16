@@ -13,27 +13,29 @@ local function Init()
         local prof1, prof2, _, fishing= GetProfessions()
         local prof1Text, prof2Text, fishingText, name, icon
 
+        local bat= UnitAffectingCombat('player')
 
         if prof1 and prof1>0 then
             name, icon= GetProfessionInfo(prof1)
             if name then
-                prof1Text='|T'..(icon or 0)..':0|t|cffffffff'..name..'|r'..e.Icon.mid..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
+                prof1Text='|T'..(icon or 0)..':0|t'..(bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..name..'|r'..e.Icon.mid..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
             end
         end
 
         if fishing and fishing>0 then
             name, icon= GetProfessionInfo(fishing)
             if name then
-                fishingText='|T'..(icon or 0)..':0|t|cffffffff'..name..'|r'..e.Icon.right
+                fishingText='|T'..(icon or 0)..':0|t'..(bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..name..'|r'..e.Icon.right
             end
         end
 
         if prof2 and prof2>0 then
             name, icon= GetProfessionInfo(prof2)
             if name then
-                prof2Text='|T'..(icon or 0)..':0|t|cffffffff'..name..'|r'..e.Icon.mid..(e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
+                prof2Text='|T'..(icon or 0)..':0|t'..(bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..name..'|r'..e.Icon.mid..(e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
             end
         end
+        
         if prof1Text or prof2Text or fishingText then
             e.tips:AddLine(' ')
             if prof1Text then

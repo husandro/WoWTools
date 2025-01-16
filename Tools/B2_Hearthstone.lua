@@ -137,11 +137,14 @@ end
 
 
 local function get_not_cooldown_toy()--发现就绪
-    local cd = select(2, C_Item.GetItemCooldown(ToyButton.itemID)) or 0
-    if cd>3 then
+    local duration = select(2, C_Item.GetItemCooldown(ToyButton.itemID))
+    if duration and duration>3 then
         for itemID in pairs(P_Items) do
-            if PlayerHasToy(itemID) and select(2, C_Item.GetItemCooldown(itemID))<3 then
-                return itemID
+            if PlayerHasToy(itemID) then
+                duration= select(2, C_Item.GetItemCooldown(itemID))
+                if duration and duration<3 then
+                    return itemID
+                end
             end
         end
     end
@@ -556,8 +559,8 @@ local function Init()
 
 
 
- 
-    
+
+
 
     ToyButton:SetScript('OnEvent', function(self, event, itemID, success)
         if event=='ITEM_DATA_LOAD_RESULT' then
@@ -623,7 +626,8 @@ local function Init()
 
 
 --发现就绪
-        if select(2, C_Item.GetItemCooldown(self.itemID))>3 then
+        local duration= self.itemID and select(2, C_Item.GetItemCooldown(self.itemID))
+        if duration and duration>3 then
             local itemID= get_not_cooldown_toy()
             if itemID then
                 e.tips:AddDoubleLine(
@@ -633,7 +637,9 @@ local function Init()
                 )
             end
         end
+
         e.tips:Show()
+
         self:set_tooltip_location(e.tips)
     end
 

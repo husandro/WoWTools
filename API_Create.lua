@@ -124,7 +124,7 @@ function e.GetSpellItemCooldown(spellID, itemID)--法术,物品,冷却
         end
     elseif itemID then
         local startTime, duration, enable = C_Item.GetItemCooldown(itemID)
-        if duration>0 then
+        if duration and duration>0 then
             local t= GetTime()
             while t<startTime do
                 t= t+86400

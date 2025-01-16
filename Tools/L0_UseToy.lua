@@ -178,11 +178,14 @@ end
 
 
 local function get_not_cooldown_toy()--发现就绪
-    local cd = select(2, C_Item.GetItemCooldown(ToyButton.itemID)) or 0
-    if cd>3 then
+    local duration = select(2, C_Item.GetItemCooldown(ToyButton.itemID))
+    if duration and duration>3 then
         for itemID in pairs(P_Items) do
-            if PlayerHasToy(itemID) and select(2, C_Item.GetItemCooldown(itemID))<3 then
-                return itemID
+            if PlayerHasToy(itemID) then
+                duration= select(2, C_Item.GetItemCooldown(itemID))
+                if duration and duration<3 then
+                    return itemID
+                end
             end
         end
     end
@@ -643,9 +646,11 @@ local function Init()
 
 
 --发现就绪
-        if select(2, C_Item.GetItemCooldown(self.itemID))>4 then
+        local duration= select(2, C_Item.GetItemCooldown(self.itemID))
+        if duration and duration>4 then
             ToyButton:Get_Random_Value()
         end
+
         e.tips:Show()
     end
 
@@ -708,9 +713,11 @@ local function Init()
     function ToyButton:Get_Random_Data()--取得数据库, {数据1, 数据2, 数据3, ...}
         local tab={}
         for itemID in pairs(Save.items) do
-            if PlayerHasToy(itemID) and select(2, C_Item.GetItemCooldown(itemID))<3 then
-            --if PlayerHasToy(itemID) then
-                table.insert(tab, itemID)
+            if PlayerHasToy(itemID) then
+                local duration= select(2, C_Item.GetItemCooldown(itemID))
+                if duration and duration<3 then
+                    table.insert(tab, itemID)
+                end
             end
         end
         return tab

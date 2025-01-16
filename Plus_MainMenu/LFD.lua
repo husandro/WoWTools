@@ -42,17 +42,19 @@ local function Init()
             e.tips:AddLine(' ')
         end
 
+        local bat= UnitAffectingCombat('player')
+
         e.tips:AddLine(
-            '|cffffffff'..(e.onlyChinese and '地下城和团队副本' or GROUP_FINDER)..'|r'
+            (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(e.onlyChinese and '地下城和团队副本' or GROUP_FINDER)..'|r'
             ..e.Icon.mid
             ..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
         )
         e.tips:AddLine(
-            '|cffffffff'..(e.onlyChinese and 'PvP' or PVP)..'|r'
+            (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(e.onlyChinese and 'PvP' or PVP)..'|r'
             ..e.Icon.right
         )
         e.tips:AddLine(
-            '|cffffffff'..(e.onlyChinese and '地下堡' or DELVES_LABEL)..'|r'
+            (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(e.onlyChinese and '地下堡' or DELVES_LABEL)..'|r'
             ..e.Icon.mid
             ..(e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
         )
