@@ -336,13 +336,9 @@ function WoWTools_LoadUIMixin:JournalInstance(journalInstanceID)
     if journalInstanceID then
         do
             if not EncounterJournal:IsShown() then
-                ToggleEncounterJournal()
+                e.call(ToggleEncounterJournal)
             end
         end
         EncounterJournal_OpenJournal(nil, journalInstanceID)
     end
 end
---/dump EncounterJournal_OpenJournal(nil, 1269)
-C_Timer.After(4, function()
-    WoWTools_LoadUIMixin:JournalInstance(1269)
-end)
