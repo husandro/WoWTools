@@ -66,18 +66,72 @@ local function Init()
             end
             e.tips:AddLine('isInCurrentRegion '..e.GetYesNo(info.isInCurrentRegion)..region, 1,1,1)
         end
-        --e.tips:AddLine(' ')
+        
+        e.tips:AddLine(' ')
+
+        e.tips:AddLine(
+            '|cffffffff'..(e.onlyChinese and '设置选项' or GAMEMENU_OPTIONS)..'|r'
+            ..e.Icon.mid
+            ..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
+        )
+        e.tips:AddLine(
+            '|cffffffff'..(e.onlyChinese and '插件' or ADDONS)..'|r'
+            ..e.Icon.right
+        )
+        e.tips:AddLine(
+            '|cffffffff'..(e.onlyChinese and '宏命令设置' or MACROS)..'|r'
+            ..e.Icon.mid
+            ..(e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
+        )
+
         --e.tips:AddDoubleLine((e.onlyChinese and '选项' or SETTINGS_TITLE), e.Icon.mid)
         --e.tips:AddDoubleLine(e.addName, WoWTools_PlusMainMenuMixin.addName)
+
+
         e.tips:Show()
     end)
-    --[[MainMenuMicroButton:EnableMouseWheel(true)--主菜单, 打开插件选项
-    MainMenuMicroButton:HookScript('OnMouseWheel', function()
-        if not Category then
-            e.OpenPanelOpting()
+
+    --Blizzard_GameMenu/Standard/GameMenuFrame.lua
+    MainMenuMicroButton:HookScript('OnClick', function(_, d)
+        if d=='RightButton' and not KeybindFrames_InQuickKeybindMode() then
+            if C_AddOns.GetNumAddOns() > 0 then
+                local func= GenerateFlatClosure(ShowUIPanel, AddonList, nil, G_GameMenuFrameContextKey)
+                if func then
+                    func()
+                end
+            end
         end
-        e.OpenPanelOpting(Category, '|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..(e.onlyChinese and '小地图' or addName))
-    end)]]
+    end)
+
+
+    MainMenuMicroButton:EnableMouseWheel(true)--主菜单, 打开插件选项
+    MainMenuMicroButton:HookScript('OnMouseWheel', function(_, d)
+        if KeybindFrames_InQuickKeybindMode() then
+            return
+        end
+
+        if d==1 then
+            local func= GenerateFlatClosure(SettingsPanel.Open, SettingsPanel)
+            if func then
+                func()
+            else
+                Settings.OpenToCategory()
+            end
+        else
+            do
+                if SettingsPanel:IsShown() then
+                    HideUIPanel(SettingsPanel)
+                end
+                if AddonList:IsShown() then
+                    HideUIPanel(AddonList)
+                end
+                if GameMenuFrame:IsShown() then
+                    HideUIPanel(GameMenuFrame)
+                end
+            end
+            e.call(ShowMacroFrame)
+        end
+    end)
 end
 
 

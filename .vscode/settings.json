@@ -5085,7 +5085,9 @@
         "ProfessionsBookFrameCloseButton",
         "ProfessionsBookFrame_OnHide",
         "MonthlyActivitiesFrame_OpenFrame",
-        "MONTHLY_ACTIVITIES_TAB"
+        "MONTHLY_ACTIVITIES_TAB",
+        "GenerateFlatClosure",
+        "G_GameMenuFrameContextKey"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

@@ -648,7 +648,7 @@ local function Init(mixin)
     mixin:SetNineSlice(CombatConfigColorsColorizeDamageSchool, nil, true)
     mixin:SetNineSlice(CombatConfigColorsColorizeEntireLine, nil, true)
 
-    mixin:SetSearchBox(ChatFrame1EditBox)
+    
 
      --插件，管理
     mixin:SetNineSlice(AddonList,true)
@@ -688,23 +688,23 @@ local function Init(mixin)
      mixin:SetAlphaColor(ScenarioObjectiveTracker.StageBlock.NormalBG, nil, nil, 0.3)
 
      --社交，按钮
-     mixin:SetAlphaColor(QuickJoinToastButton.FriendsButton, nil, nil, 0.3)
-     mixin:SetFrame(ChatFrameChannelButton, {alpha= 0.3})
-     mixin:SetFrame(ChatFrameMenuButton, {alpha= 0.3})
-     mixin:SetFrame(TextToSpeechButton, {alpha=0.3})
+     mixin:SetAlphaColor(QuickJoinToastButton.FriendsButton, nil, nil, 0.5)
+     mixin:SetFrame(ChatFrameChannelButton, {alpha= 0.5})
+     mixin:SetFrame(ChatFrameMenuButton, {alpha= 0.5})
+     mixin:SetFrame(TextToSpeechButton, {alpha= 0.5})
 
 
-     for i=1, NUM_CHAT_WINDOWS do
-        local frame= _G["ChatFrame"..i]
-        if frame then
-            mixin:SetAlphaColor(_G['ChatFrame'..i..'EditBoxMid'], nil, nil, 0.3)
-            mixin:SetAlphaColor(_G['ChatFrame'..i..'EditBoxLeft'], nil, nil, 0.3)
-            mixin:SetAlphaColor(_G['ChatFrame'..i..'EditBoxRight'], nil, nil, 0.3)
-            mixin:SetScrollBar(frame)
-            mixin:SetFrame(frame.ScrollToBottomButton, {notAlpha=true})
-        end
-     end
-
+    for i=1, NUM_CHAT_WINDOWS do
+    local frame= _G["ChatFrame"..i]
+    if frame then
+        mixin:SetAlphaColor(_G['ChatFrame'..i..'EditBoxMid'], nil, nil, 0.3)
+        mixin:SetAlphaColor(_G['ChatFrame'..i..'EditBoxLeft'], nil, nil, 0.3)
+        mixin:SetAlphaColor(_G['ChatFrame'..i..'EditBoxRight'], nil, nil, 0.3)
+        mixin:SetScrollBar(frame)
+        mixin:SetFrame(frame.ScrollToBottomButton, {notAlpha=true})
+    end
+    end
+    mixin:SetSearchBox(ChatFrame1EditBox)
 
 
 
