@@ -43,7 +43,7 @@ local function Set_MicroButton_OnLeave_Alpha(self)
         texture:SetAlpha(Save().mainMenuAlphaValue)
     end
     if self.Background then
-        self.Background:SetAlpha(Save().mainMenuAlphaValue)
+        self.Background:SetAlpha(0)
     end
 end
 
@@ -60,18 +60,20 @@ end
 
 local function Set_Bag_OnLeave_Alpha(self)
     local name= self:GetName()
-    if name then
-        local texture= _G[name..'IconTexture']
-        if texture then
-            texture:SetAlpha(Save().mainMenuAlphaValue)
-        end
-        texture=_G[name..'NormalTexture']
-        if texture then
-            texture:SetAlpha(Save().mainMenuAlphaValue)
-        end
-        if self.texture2 then
-            self.texture2:SetAlpha(Save().mainMenuAlphaValue)
-        end
+    if not name then
+        return
+    end
+
+    local texture= _G[name..'IconTexture']
+    if texture then
+        texture:SetAlpha(Save().mainMenuAlphaValue)
+    end
+    texture=_G[name..'NormalTexture']
+    if texture then
+        texture:SetAlpha(Save().mainMenuAlphaValue)
+    end
+    if self.texture2 then
+        self.texture2:SetAlpha(Save().mainMenuAlphaValue)
     end
 end
 
