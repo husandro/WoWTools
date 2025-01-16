@@ -453,8 +453,36 @@ Plus\Gem.lua
 ##目标指示
 Plus\Target.lua
 
+
+
+
+
+
+
 ##主菜单，增强
-Plus\MainMenu.lua
+Plus_MainMenu\0_MainMenu.lua
+Plus_MainMenu\1_Options.lua
+Plus_MainMenu\2_Setings.lua
+Plus_MainMenu\3_Framerate.lua
+Plus_MainMenu\Achievement.lua
+Plus_MainMenu\Bag.lua
+Plus_MainMenu\Character.lua
+Plus_MainMenu\Collections.lua
+Plus_MainMenu\EJ.lua
+Plus_MainMenu\Guild.lua
+Plus_MainMenu\Help.lua
+Plus_MainMenu\LFD.lua
+Plus_MainMenu\Professions.lua
+Plus_MainMenu\Quest.lua
+Plus_MainMenu\Store.lua
+Plus_MainMenu\Talent.lua
+
+
+
+
+
+
+
 
 
 ##鼠标 Mouse https://wago.io/CVmKEpl6E

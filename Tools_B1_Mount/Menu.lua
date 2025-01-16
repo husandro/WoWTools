@@ -482,12 +482,12 @@ local function Init_Menu(self, root)
         tooltip:AddLine(e.onlyChinese and '注意: 掉落' or (LABEL_NOTE..': '..STRING_ENVIRONMENTAL_DAMAGE_FALLING))
     end)
 
-    sub2=sub:CreateButton('|A:UI-HUD-MicroMenu-StreamDLYellow-Up:0:0|a'..(e.onlyChinese and '坐骑特效' or EMOTE171_CMD2:gsub('/','')), function()
+    sub2=sub:CreateButton('|A:UI-HUD-MicroMenu-StreamDLYellow-Up:0:0|a'..(e.onlyChinese and '坐骑特效' or EMOTE171_CMD2), function()
         self.ShowFrame:initSpecial()
         return MenuResponse.Open
     end)
     sub2:SetTooltip(function(tooltip)
-        tooltip:AddDoubleLine(e.onlyChinese and '坐骑特效:' or EMOTE171_CMD2:gsub('/','')..': ', Save().mountShowTime..' '..(e.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS))
+        tooltip:AddDoubleLine(e.onlyChinese and '坐骑特效:' or EMOTE171_CMD2..': ', Save().mountShowTime..' '..(e.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS))
         tooltip:AddDoubleLine(e.onlyChinese and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN, e.Icon.mid)
     end)
 

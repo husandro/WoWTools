@@ -110,7 +110,7 @@ local function Create_Check(frame)
 
             local menory= WoWTools_AddOnsMixin:Get_MenoryValue(self:GetID(), false)
 
-            if menory then
+            if menory and C_AddOnProfiler.GetApplicationMetric then
                 local appVal = C_AddOnProfiler.GetApplicationMetric(1)
                 local overallVal = C_AddOnProfiler.GetOverallMetric(1)
                 local addonVal = C_AddOnProfiler.GetAddOnMetric(self.name, 1)
