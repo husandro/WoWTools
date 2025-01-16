@@ -5087,7 +5087,8 @@
         "MonthlyActivitiesFrame_OpenFrame",
         "MONTHLY_ACTIVITIES_TAB",
         "GenerateFlatClosure",
-        "G_GameMenuFrameContextKey"
+        "G_GameMenuFrameContextKey",
+        "CharacterBag0SlotNormalTexture"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

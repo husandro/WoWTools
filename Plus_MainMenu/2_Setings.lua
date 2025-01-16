@@ -45,18 +45,34 @@ local function Set_MicroButton_OnLeave_Alpha(self)
     if self.Background then
         self.Background:SetAlpha(0)
     end
+    if self.texture2 then
+        self.texture2:SetAlpha(Save().mainMenuAlphaValue)
+    end
 end
 
 local function Set_MicroButton_OnEnter_Alpha(self)
     local texture= self.Portrait or self:GetNormalTexture()
     if texture then
         texture:SetAlpha(1)
-        --texture:SetVertexColor(1,1,1,1)
     end
     if self.Background then
         self.Background:SetAlpha(1)
     end
+    if self.texture2 then
+        self.texture2:SetAlpha(1)
+    end
+    local name= self:GetName()
+    if name then
+        texture=_G[name..'NormalTexture']
+        if texture then
+            texture:SetAlpha(1)
+        end
+    end
 end
+
+
+
+
 
 local function Set_Bag_OnLeave_Alpha(self)
     local name= self:GetName()
@@ -72,8 +88,10 @@ local function Set_Bag_OnLeave_Alpha(self)
     if texture then
         texture:SetAlpha(Save().mainMenuAlphaValue)
     end
-    if self.texture2 then
-        self.texture2:SetAlpha(Save().mainMenuAlphaValue)
+
+    texture=_G[name.NormalTexture]
+    if texture then
+        texture:SetAlpha(0.3)
     end
 end
 
@@ -119,6 +137,8 @@ local function Set_Alpha()
             if not IsHookAlpha then
                 btn:HookScript('OnEnter', Set_Bag_OnEnter_Alpha)
                 btn:HookScript('OnLeave', Set_Bag_OnLeave_Alpha)
+                WoWTools_ColorMixin:SetLabelTexture(_G[name..'NormalTexture'], {type='Texture'})
+                _G[name..'NormalTexture']:SetVertexColor(0,1,0)
             end
             Set_Bag_OnLeave_Alpha(btn)
         end

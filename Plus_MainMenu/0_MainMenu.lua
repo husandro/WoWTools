@@ -5,7 +5,7 @@ WoWTools_PlusMainMenuMixin={
     plus=true,
     size=10,
     enabledMainMenuAlpha= true,
-    mainMenuAlphaValue=0.5,
+    mainMenuAlphaValue=0.7,
 
     --frameratePlus=true,--系统 fps plus
     --framerateLogIn=true,--自动，打开

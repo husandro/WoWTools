@@ -55,7 +55,7 @@ local function Init_Options()--初始, 选项
         end,
         sliderGetValue= function() return Save().mainMenuAlphaValue end,
         minValue= 0,
-        maxValue= 0.9,
+        maxValue= 1,
         step= 0.1,
         sliderSetValue= function(_, _, value2)
             if value2 then
