@@ -139,7 +139,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             WoWTools_WorldMapMixin.Save= WoWToolsSave['Plus_WorldMap'] or WoWTools_WorldMapMixin.Save
-
+            WoWToolsSave[WORLD_MAP]= nil
+            
             WoWTools_WorldMapMixin.addName= '|A:poi-islands-table:0:0|a'..(e.onlyChinese and '世界地图' or WORLDMAP_BUTTON)
             --WoWTools_WorldMapMixin.addName2= e.onlyChinese and '时实坐标' or RESET_POSITION:gsub(RESET, PLAYER)
 
