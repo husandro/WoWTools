@@ -92,34 +92,37 @@ end
 
 
 local IsHookAlpha
+
+
+
 local function Set_Alpha()
     if Save().disabled or not Save().enabledMainMenuAlpha then
         return
     end
 
-    for _, text in pairs(MicroButtonNames) do
-        local btn= _G[text]
+    for _, name in pairs(MicroButtonNames) do
+        local btn= _G[name]
         if btn then
             if not IsHookAlpha then
                 btn:HookScript('OnEnter', Set_MicroButton_OnEnter_Alpha)
                 btn:HookScript('OnLeave', Set_MicroButton_OnLeave_Alpha)
-                IsHookAlpha=true
             end
             Set_MicroButton_OnLeave_Alpha(btn)
         end
     end
 
-    for _, text in pairs(BagButtonNames) do
-        local btn= _G[text]
+    for _, name in pairs(BagButtonNames) do
+        local btn= _G[name]
         if btn then
             if not IsHookAlpha then
                 btn:HookScript('OnEnter', Set_Bag_OnEnter_Alpha)
                 btn:HookScript('OnLeave', Set_Bag_OnLeave_Alpha)
-                IsHookAlpha=true
             end
             Set_Bag_OnLeave_Alpha(btn)
         end
     end
+
+    IsHookAlpha=true
 end
 
 
