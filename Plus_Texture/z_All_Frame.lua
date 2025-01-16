@@ -914,6 +914,16 @@ local function Blizzard_Communities(mixin)
 
     mixin:SetMenu(ClubFinderGuildFinderFrame.OptionsList.ClubFilterDropdown)
     mixin:SetMenu(ClubFinderGuildFinderFrame.OptionsList.ClubSizeDropdown)
+
+
+--霸业风暴商店
+    if AccountStoreFrame then
+        mixin:HideTexture(AccountStoreFrame.RightInset.Bg)
+        mixin:SetFrame(AccountStoreFrame.LeftDisplay, {alpha=0.3})
+        mixin:HideTexture(AccountStoreFrameBg)
+
+        mixin:SetNineSlice(AccountStoreFrame)
+    end
 end
 
 

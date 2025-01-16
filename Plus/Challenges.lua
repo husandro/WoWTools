@@ -1330,24 +1330,13 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                     end
                     e.tips:Show()
                 end)
---[[bug
-                if e.Player.husandro then
-                    frame:EnableMouse(true)
-                    frame:SetScript('OnMouseDown', function(self2)
-                        do
-                            if not EncounterJournal then
-                                e.call(EncounterJournal_LoadUI)
-                            end
-                        end
-                        if self2.journalInstanceID and EncounterJournal then
-                            EncounterJournal_OpenJournal(difficultyID, self2.journalInstanceID, nil, nil, nil, nil,  GetEJTierDataTableID(GetExpansionForLevel(UnitLevel("player"))))
-                            --ToggleEncounterJournal()
-                            --EncounterJournal_OpenJournal([difficultyID, self2.journalInstanceID, encounterID, sectionID, creatureID, itemID, tierIndex])
-                            --EncounterJournal_TierDropDown_Select(EncounterJournal, GetEJTierDataTableID(GetExpansionForLevel(UnitLevel("player"))))
-                           -- EncounterJournal_OpenJournal(DifficultyUtil.ID.DungeonChallenge, self2.journalInstanceID);
-                        end
-                    end)
-                ]]
+
+                frame:EnableMouse(true)
+                frame:SetScript('OnMouseDown', function(self2)
+                    if self.journalInstanceID then
+                        WoWTools_LoadUIMixin:JournalInstance(self.journalInstanceID)
+                    end
+                end)
 
                 frame.setTips=true
             end

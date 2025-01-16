@@ -329,6 +329,7 @@ end
 
 
 --Blizzard_SharedMapDataProviders/DungeonEntranceDataProvider.lua
+--战斗中，打不开
 function WoWTools_LoadUIMixin:JournalInstance(journalInstanceID)
     do
         EncounterJournal_LoadUI()

@@ -5088,7 +5088,11 @@
         "MONTHLY_ACTIVITIES_TAB",
         "GenerateFlatClosure",
         "G_GameMenuFrameContextKey",
-        "CharacterBag0SlotNormalTexture"
+        "CharacterBag0SlotNormalTexture",
+        "AccountStoreUtil",
+        "AccountStoreFrame",
+        "WOWLABS_BINDING_HEADER",
+        "AccountStoreFrameBg"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
