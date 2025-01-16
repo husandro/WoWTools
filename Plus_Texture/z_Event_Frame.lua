@@ -618,9 +618,10 @@ function Events:Blizzard_Collections(mixin)
     end
 
 
-
-    mixin:HideTexture(WarbandSceneJournal.IconsFrame.BackgroundTile)
-    mixin:HideTexture(WarbandSceneJournal.IconsFrame.Bg)
+    if WarbandSceneJournal then--11.1
+        mixin:HideTexture(WarbandSceneJournal.IconsFrame.BackgroundTile)
+        mixin:HideTexture(WarbandSceneJournal.IconsFrame.Bg)
+    end
 end
 
 
