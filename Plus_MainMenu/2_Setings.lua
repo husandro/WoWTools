@@ -89,9 +89,9 @@ local function Set_Bag_OnLeave_Alpha(self)
         texture:SetAlpha(Save().mainMenuAlphaValue)
     end
 
-    texture=_G[name.NormalTexture]
+    texture=_G[name..'NormalTexture']
     if texture then
-        texture:SetAlpha(0.3)
+        texture:SetAlpha(0)
     end
 end
 
