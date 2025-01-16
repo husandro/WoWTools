@@ -66,7 +66,7 @@ local function Init()
             end
             e.tips:AddLine('isInCurrentRegion '..e.GetYesNo(info.isInCurrentRegion)..region, 1,1,1)
         end
-        
+
         e.tips:AddLine(' ')
 
         e.tips:AddLine(
@@ -83,10 +83,6 @@ local function Init()
             ..e.Icon.mid
             ..(e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
         )
-
-        --e.tips:AddDoubleLine((e.onlyChinese and '选项' or SETTINGS_TITLE), e.Icon.mid)
-        --e.tips:AddDoubleLine(e.addName, WoWTools_PlusMainMenuMixin.addName)
-
 
         e.tips:Show()
     end)
