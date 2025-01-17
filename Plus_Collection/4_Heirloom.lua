@@ -152,13 +152,6 @@ end
 
 local ListButton
 local function Init_ClassListButton()
-    if e.Is_Timerunning or ListButton or Save().hideHeirloomClassList then--10.2.7
-        if ListButton then
-            ListButton:Settings()
-        end
-        return
-    end
-
 
     ListButton= WoWTools_ButtonMixin:Cbtn(HeirloomsJournal, {size={22,22}, icon=true, name='WoWTools_PlusHeirloomsClassListButton'})
 
@@ -340,35 +333,33 @@ end
 
 
 local function Init()
-    if e.Is_Timerunning then--10.2.7
+    if e.Is_Timerunning or Save().hideHeirloom or ListButton then--10.2.7
+        if ListButton then
+            ListButton:Settings()
+        end
         return
     end
 
     hooksecurefunc(HeirloomsJournal, 'UpdateButton', UpdateButton)
 
     HeirloomsJournalSearchBox:SetPoint('LEFT', HeirloomsJournal.progressBar, 'RIGHT', 12,0)
-end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function WoWTools_PlusCollectionMixin:Set_Heirloom_ClassListButton()
     Init_ClassListButton()
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function WoWTools_PlusCollectionMixin:Init_Heirloom()--传家宝 4
     Init()
-    Init_ClassListButton()
 end

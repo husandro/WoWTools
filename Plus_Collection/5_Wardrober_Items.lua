@@ -430,17 +430,12 @@ local function Init()
     --物品, 幻化, 界面
     Init_Wardrober_Items()
 
-
-
     --幻化，套装，索引
     hooksecurefunc(WardrobeCollectionFrame.SetsTransmogFrame, 'UpdateSets', set_Sets_Tooltips)
-
-
 
     WardrobeCollectionFrameSearchBox:ClearAllPoints()
     WardrobeCollectionFrameSearchBox:SetPoint('LEFT',WardrobeCollectionFrame.progressBar ,'RIGHT', 12, 0)
     WardrobeCollectionFrameSearchBox:SetPoint('LEFT', WardrobeCollectionFrame.progressBar, 'RIGHT')
-
 end
 
 
@@ -448,8 +443,11 @@ end
 
 
 
-
+local IsSet
 function WoWTools_PlusCollectionMixin:Init_Wardrober_Items()--幻化 5
-    Init()
+    if not IsSet and not self.Save.hideItems then
+        IsSet=true
+        Init()
+    end
 end
 

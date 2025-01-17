@@ -35,12 +35,7 @@ local function Init_Menu(self, root)
         return not Save().hideHeirloomClassList
     end, function()
         Save().hideHeirloomClassList= not Save().hideHeirloomClassList and true or nil
-        local btn= _G['WoWTools_PlusHeirloomsClassListButton']
-        if btn then
-            btn:Settings()
-        else
-            WoWTools_PlusCollectionMixin:Set_Heirloom_ClassListButton()
-        end
+        WoWTools_PlusCollectionMixin:Init_Heirloom()--传家宝 4
     end)
 
 
@@ -53,6 +48,7 @@ local function Init_Menu(self, root)
         return not Save().hideItems
     end, function()
         Save().hideItems= not Save().hideItems and true or nil
+        WoWTools_PlusCollectionMixin:Init_Wardrober_Items()--幻化 5
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(e.onlyChinese and '需要刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
