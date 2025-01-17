@@ -1,11 +1,10 @@
-WoWTools_SetTooltipMixin={}
 --[[
 SetTooltip(tooltip, data, root, frame)
 ]]
 
 
 local e= select(2, ...)
-
+WoWTools_SetTooltipMixin={}
 
 
 
