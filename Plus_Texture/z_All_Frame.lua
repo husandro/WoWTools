@@ -918,11 +918,15 @@ local function Blizzard_Communities(mixin)
 
 --霸业风暴商店
     if AccountStoreFrame then
+        mixin:HideTexture(AccountStoreFrame.LeftInset.Bg)
         mixin:HideTexture(AccountStoreFrame.RightInset.Bg)
         mixin:SetFrame(AccountStoreFrame.LeftDisplay, {alpha=0.3})
         mixin:HideTexture(AccountStoreFrameBg)
 
         mixin:SetNineSlice(AccountStoreFrame)
+        mixin:SetScrollBar(AccountStoreFrame.CategoryList)
+        mixin:SetInset(AccountStoreFrame.RightInset)
+        mixin:SetInset(AccountStoreFrame.LeftInset)
     end
 end
 

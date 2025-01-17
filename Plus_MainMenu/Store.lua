@@ -56,16 +56,25 @@ local function Init()
                 numPlayer=numPlayer +1
             end
         end
-        
+
         local all= bagAll+ bankAll
         e.tips:AddDoubleLine('|A:groupfinder-waitdot:0:0|a'..numPlayer, '|T1120721:0|t'..all)
 
         --AccountStoreFrame WOWLABS_BINDING_HEADER 
+        --Constants.MajorFactionsConsts.PLUNDERSTORM_MAJOR_FACTION_ID
         if AccountStoreFrame then
             e.tips:AddLine(' ')
-            e.tips:AddLine(
-                (UnitAffectingCombat('player') and '|cnRED_FONT_COLOR:' or '|cffffffff')..(e.onlyChinese and '霸业风暴商店' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WOWLABS_BINDING_HEADER, BLIZZARD_STORE))..'|r'
-                ..e.Icon.mid
+            e.tips:AddDoubleLine(
+                (C_AccountStore.GetStoreFrontState(Constants.AccountStoreConsts.PlunderstormStoreFrontID) ~= Enum.AccountStoreState.Available and '|cff828282'
+                    or (UnitAffectingCombat('player') and '|cnRED_FONT_COLOR:')
+                    or '|cffffffff'
+                )
+                ..(e.onlyChinese and '霸业商店' or PLUNDERSTORM_PLUNDER_STORE_TITLE)..'|r'
+                ..e.Icon.mid,
+
+                WoWTools_CurrencyMixin:GetName(
+                    C_AccountStore.GetCurrencyIDForStore(Constants.AccountStoreConsts.PlunderstormStoreFrontID) or 3139, nil, nil
+                )
             )
         end
 

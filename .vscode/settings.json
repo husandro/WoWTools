@@ -5092,7 +5092,9 @@
         "AccountStoreUtil",
         "AccountStoreFrame",
         "WOWLABS_BINDING_HEADER",
-        "AccountStoreFrameBg"
+        "AccountStoreFrameBg",
+        "PLUNDERSTORM_PLUNDER_STORE_TITLE",
+        "GetAppropriateTooltip"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

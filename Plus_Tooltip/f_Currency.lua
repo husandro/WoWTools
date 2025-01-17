@@ -2,7 +2,7 @@ local e= select(2, ...)
 
 
 function WoWTools_TooltipMixin:Set_Currency(tooltip, currencyID)--货币
-    local info2 = currencyID and C_CurrencyInfo.GetCurrencyInfo(currencyID)
+    local info2 = (tooltip and currencyID) and C_CurrencyInfo.GetCurrencyInfo(currencyID)
     if not info2 then
         return
     end

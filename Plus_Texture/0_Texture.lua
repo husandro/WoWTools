@@ -52,16 +52,37 @@ function WoWTools_PlusTextureMixin:HideTexture(texture, notClear)
 end
 
 --设置，颜色，透明度
-function WoWTools_PlusTextureMixin:SetAlphaColor(object, notAlpha, notColor, alpha)
+function WoWTools_PlusTextureMixin:SetAlphaColor(object, notAlpha, notColor, alphaORmin)
     if object then
         if not notColor and e.Player.useColor then
             WoWTools_ColorMixin:SetLabelTexture(object, {type=object:GetObjectType()})
         end
         if not notAlpha then
-            object:SetAlpha(alpha or self.Save.alpha or 0.5)
+            if alphaORmin==true then
+                object:SetAlpha(self.min)
+            else
+                object:SetAlpha(alphaORmin or self.Save.alpha or self.min or 0.5)
+            end
         end
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --隐藏, frame, 子材质
 function WoWTools_PlusTextureMixin:HideFrame(frame, tab)
@@ -250,6 +271,20 @@ end
 
 
 
+function WoWTools_PlusTextureMixin:SetInset(frame, alphaORmin)
+    if not frame then
+        return
+    end
+    self:SetAlphaColor(frame.InsetBorderLeft, nil, nil, alphaORmin)
+    self:SetAlphaColor(frame.InsetBorderBottom, nil, nil, alphaORmin)
+    self:SetAlphaColor(frame.InsetBorderRight, nil, nil, alphaORmin)
+    self:SetAlphaColor(frame.InsetBorderTop, nil, nil, alphaORmin)
+
+    self:SetAlphaColor(frame.InsetBorderTopRight, nil, nil, alphaORmin)
+    self:SetAlphaColor(frame.InsetBorderTopLeft, nil, nil, alphaORmin)
+    self:SetAlphaColor(frame.InsetBorderBottomRight, nil, nil, alphaORmin)
+    self:SetAlphaColor(frame.InsetBorderBottomLeft, nil, nil, alphaORmin)
+end
 
 
 

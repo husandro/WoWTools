@@ -118,7 +118,7 @@ function WoWTools_CurrencyMixin:GetInfo(currencyID, index, link)
     local info
     info, currencyID, link = get_info(currencyID, index, link)
 
-    if not currencyID or not info or not info.quantity or not info.discovered then
+    if not currencyID or not info or not info.quantity then-- or not info.discovered then
         return
     end
 
@@ -148,6 +148,8 @@ function WoWTools_CurrencyMixin:GetInfo(currencyID, index, link)
     info.link= link or C_CurrencyInfo.GetCurrencyLink(currencyID)
     info.currencyID= currencyID
 
+    
+
     return info, num, totale, percent, isMax, canWeek, canEarned, canQuantity
 end
 --info, num, totale, percent, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:GetInfo(currencyID, index, link)
@@ -164,6 +166,7 @@ function WoWTools_CurrencyMixin:GetName(currencyID, index, link)
     local info, num, _, _, isMax, canWeek, canEarned, canQuantity= self:GetInfo(currencyID, index, link)
     if info and info.name then
         num= num or 0
+        
         return
             '|T'..(info.iconFileID or 0)..':0|t'--图标
             ..(

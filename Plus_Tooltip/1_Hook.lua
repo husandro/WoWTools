@@ -285,6 +285,17 @@ local function Init()
             WoWTools_TooltipMixin:Set_Quest(GameTooltip, questID)
         end
     end)
+
+
+    --霸业商店
+    if AccountStoreFrame and AccountStoreFrame.StoreDisplay.Footer.CurrencyAvailable then
+        AccountStoreFrame.StoreDisplay.Footer.CurrencyAvailable:HookScript('OnEnter', function(self)
+            local accountStoreCurrencyID = C_AccountStore.GetCurrencyIDForStore(Constants.AccountStoreConsts.PlunderstormStoreFrontID);
+		    if accountStoreCurrencyID then
+                WoWTools_TooltipMixin:Set_Currency(GetAppropriateTooltip(), accountStoreCurrencyID)
+            end
+        end)
+    end
 end
 
 
