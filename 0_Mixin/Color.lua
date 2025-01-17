@@ -1,6 +1,9 @@
 --[[
 RGBtoHEX(setR, setG, setB, setA, frame)--RGB转HEX
 
+local classInfo = selection.data;
+local classColor = GetClassColorObj(classInfo.classFile) or HIGHLIGHT_FONT_COLOR;
+return classColor:WrapTextInColorCode(classInfo.className);
 ]]
 local e= select(2, ...)
 WoWTools_ColorMixin={}

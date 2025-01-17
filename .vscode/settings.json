@@ -5094,7 +5094,11 @@
         "WOWLABS_BINDING_HEADER",
         "AccountStoreFrameBg",
         "PLUNDERSTORM_PLUNDER_STORE_TITLE",
-        "GetAppropriateTooltip"
+        "GetAppropriateTooltip",
+        "WardrobeItemsCollectionMixin",
+        "ToySpellButton_FadeInIcon",
+        "WARDROBE_ITEMS",
+        "WardrobeFrameCloseButton"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

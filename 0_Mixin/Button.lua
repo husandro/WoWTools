@@ -226,7 +226,8 @@ function WoWTools_ButtonMixin:CreateOptionButton(frame, name, setID)
     btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
     btn:EnableMouseWheel(true)
     return btn
-end]]
+end
+]]
 
 
 

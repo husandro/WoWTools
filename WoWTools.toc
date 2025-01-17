@@ -268,9 +268,10 @@ Plus_Collection\1_Mount.lua
 Plus_Collection\2_Pet.lua
 Plus_Collection\3_ToyBox.lua
 Plus_Collection\4_Heirloom.lua
-Plus_Collection\5_Wardrober.lua
+Plus_Collection\5_Wardrober_Items.lua
+Plus_Collection\5_Wardrober_Sets.lua
 Plus_Collection\a_DressUpFrames.lua
-
+Plus_Collection\Options.lua
 
 
 

@@ -3,10 +3,10 @@ local id, e = ...
 
 WoWTools_PlusCollectionMixin={
     Save={
-       --hideSets= true,--套装, 幻化, 界面
         --hideHeirloom= true,--传家宝
+        --hideSets= true,--套装, 幻化, 界面
         --hideItems= true,--物品, 幻化, 界面
-        --hideToyBox= true,--玩具
+        
 
         --Heirlooms_Class_Scale=1,
         --Wardrober_Items_Labels_Scale=1, 
@@ -24,12 +24,13 @@ end
 
 
 local function Init()
-
     WoWTools_PlusCollectionMixin:Init_Mount()--坐骑 1
     WoWTools_PlusCollectionMixin:Init_Pet()--宠物 2
     WoWTools_PlusCollectionMixin:Init_ToyBox()--玩具 3
     WoWTools_PlusCollectionMixin:Init_Heirloom()--传家宝 4
-    WoWTools_PlusCollectionMixin:Init_Wardrober()--幻化 5
+    WoWTools_PlusCollectionMixin:Init_Wardrober_Items()--幻化,物品 5
+    WoWTools_PlusCollectionMixin:Init_Wardrober_Sets()--幻化,套装 5
+    WoWTools_PlusCollectionMixin:Init_Options()
 end
 
 

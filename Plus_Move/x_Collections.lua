@@ -1,4 +1,6 @@
 --收藏
+--local e= select(2, ...)
+
 local function Save()
     return WoWTools_MoveMixin.Save
 end
@@ -257,6 +259,10 @@ local function Init_CollectionsJournal()
         notInCombat=true,
         sizeUpdateFunc=function(btn)
             init_items_colllection(btn, true)
+
+            if WarbandSceneJournal and WarbandSceneJournal:IsShown() then
+                WarbandSceneJournal:SetupJournalEntries()
+            end
         end,
         sizeStopFunc=function(btn)
             Save().size[btn.name]= {btn.target:GetSize()}
@@ -317,7 +323,6 @@ local function Init_WardrobeFrame()
         WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox.Label:SetPoint('RIGHT', WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox, 'LEFT')
     end, sizeUpdateFunc=function(btn)
         init_items_colllection(btn, true)
-
     end, sizeStopFunc=function(btn)
         Save().size[btn.name]= {btn.target:GetSize()}
         update_frame()
@@ -325,6 +330,7 @@ local function Init_WardrobeFrame()
         WardrobeFrame:SetSize(965, 606)
         Save().size[btn.name]=nil
         init_items_colllection(btn)
+
     end, scaleStoppedFunc=function()
         update_frame()
     end, scaleRestFunc=function()
