@@ -262,8 +262,17 @@ Plus_ObjectiveTracker\World_Quest.lua
 
 
 
-##藏品
-Plus\Collections.lua
+##战团藏品
+Plus_Collection\0_Collections.lua
+Plus_Collection\1_Mount.lua
+Plus_Collection\2_Pet.lua
+Plus_Collection\3_ToyBox.lua
+Plus_Collection\4_Heirloom.lua
+Plus_Collection\5_Wardrober.lua
+Plus_Collection\a_DressUpFrames.lua
+
+
+
 
 
 
