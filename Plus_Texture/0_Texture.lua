@@ -59,7 +59,7 @@ function WoWTools_PlusTextureMixin:SetAlphaColor(object, notAlpha, notColor, alp
         end
         if not notAlpha then
             if alphaORmin==true then
-                object:SetAlpha(self.min)
+                object:SetAlpha(self.min or 0.5)
             else
                 object:SetAlpha(alphaORmin or self.Save.alpha or self.min or 0.5)
             end
@@ -254,7 +254,12 @@ end
 --下拉，菜单 set_Menu
 function WoWTools_PlusTextureMixin:SetMenu(frame)--, tab)
     if frame then
-        self:SetAlphaColor(frame.Background)
+        self:SetAlphaColor(frame.Background, nil, nil, 0.5)
+
+        if frame.FilterDropdown then
+            self:SetAlphaColor(frame.FilterDropdown.Background, nil, nil, 0.8)
+        end
+        self:SetAlphaColor(frame.Arrow, nil, nil, 0.8)
     end
 end
 

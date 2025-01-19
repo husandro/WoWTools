@@ -41,19 +41,30 @@ e.LoadData({id=267116, type='spell'})--动物伙伴
 
 
 
-
-local function get_abilities_icons(pet, line)--取得，宠物，技能，图标
+local function GetAbilitieIconForTab(tab, line)
     local text=''
-    if pet and pet.abilities then
-        for _, spellID in pairs(pet.abilities) do
-            e.LoadData({id=spellID, type='spell'})
-            local texture= C_Spell.GetSpellTexture(spellID)
-            if texture and texture>0 then
-                text= format('%s%s|T%d:14|t', text, line and text~='' and '|n' or '', texture)
-            end
+    for _, spellID in pairs(tab or {}) do
+        e.LoadData({id=spellID, type='spell'})
+        local texture= C_Spell.GetSpellTexture(spellID)
+        if texture and texture>0 then
+            text= format('%s%s|T%d:14|t', text, line and text~='' and '|n' or '', texture)
         end
     end
     return text
+end
+
+
+
+local function get_abilities_icons(pet, line)--取得，宠物，技能，图标
+    if not pet then
+        return ''
+    end
+
+    local text= GetAbilitieIconForTab(pet.specAbilities, line)
+    if text~='' then
+        text= text..(not line and '  ' or '   |n')
+    end
+    return text..GetAbilitieIconForTab(pet.petAbilities or pet.abilities, line)
 end
 
 
@@ -71,8 +82,9 @@ local function set_pet_tooltips(frame, pet)
                 or (select(2, math.modf(i/2))==0 and '|cffffffff')
                 or '|cff00ccff'
         if type(name)=='table' then
-            if indexType=='abilities' then
-                e.tips:AddDoubleLine(col..indexType, get_abilities_icons(pet, false))
+            if indexType=='abilities' or indexType=='petAbilities' or indexType=='specAbilities' then--11.1
+                e.tips:AddDoubleLine(col..indexType, GetAbilitieIconForTab(name, false))
+                --e.tips:AddDoubleLine(col..indexType, get_abilities_icons(pet, false))
             end
         else
             name= indexType=='icon' and format('|T%d:14|t%d', name, name)
@@ -176,6 +188,8 @@ local function created_model(btn, setBg)
         btn.indexText:SetPoint('LEFT', btn.Portrait2, 'RIGHT', 4,0)
         btn.indexText:SetText(slotID)
     end
+    btn.specText= WoWTools_LabelMixin:Create(btn, {color=true})--专精
+    btn.specText:SetPoint('TOP', 0, 12)
 
     function btn:set_pet()
         local pet= self:IsVisible() and self.petData or {}--宠物，类型，图标
@@ -207,6 +221,8 @@ local function created_model(btn, setBg)
         else
             self.Icon:SetTexCoord(0, 1, 0, 1)
         end
+
+        self.specText:SetText(e.cn(pet.specialization) or '')
     end
 
     hooksecurefunc(btn, 'SetPet', btn.set_pet)--StableActivePetButtonTemplateMixin
@@ -270,6 +286,7 @@ local function Init_StableFrame_Plus()
         created_model(btn, true)--已激活宠物，Model 提示
     end
     created_model(StableFrame.ActivePetList.BeastMasterSecondaryPetButton, false)--第二个，宠物，提示
+    
     hooksecurefunc(StableFrame.PetModelScene, 'SetPet', function(self)--选定时，隐藏model
         local frame= self:GetParent()
         local selecIndex= frame.selectedPet and frame.selectedPet.slotID
@@ -466,7 +483,28 @@ end
 
 
 
+local function Init_UI_Texture()
+    WoWTools_PlusTextureMixin:SetAlphaColor(StableFrameBg, nil, nil, 0.5)
+    WoWTools_PlusTextureMixin:SetNineSlice(StableFrame, true, nil, nil)
 
+    WoWTools_PlusTextureMixin:SetAlphaColor(StableFrame.Topper, nil, nil, 0)
+
+    for _, object in pairs({StableFrame:GetRegions()}) do
+        if object~=StableFrameBg and object:GetObjectType()=='Texture' then
+            object:SetAlpha(0)
+        end
+    end
+
+    WoWTools_PlusTextureMixin:SetAlphaColor(StableFrame.StabledPetList.Backgroud, nil, nil, 0)
+    WoWTools_PlusTextureMixin:SetAlphaColor(StableFrame.StabledPetList.Inset.Bg, nil, nil, 0)
+
+    WoWTools_PlusTextureMixin:SetSearchBox(StableFrame.StabledPetList.FilterBar.SearchBox)
+    WoWTools_PlusTextureMixin:SetScrollBar(StableFrame.StabledPetList)
+    WoWTools_PlusTextureMixin:SetMenu(StableFrame.PetModelScene.PetInfo.Specialization)
+    WoWTools_PlusTextureMixin:SetMenu(StableFrame.StabledPetList.FilterBar)
+
+    WoWTools_PlusTextureMixin:SetFrame(StableFrame.StabledPetList.ListCounter, {alpha=0.8})
+end
 
 
 
@@ -558,7 +596,7 @@ function Set_StableFrame_List()
     AllListFrame.s= Save.all_List_Size or 28
 
     AllListFrame.Bg= AllListFrame:CreateTexture(nil, "BACKGROUND")
-    AllListFrame.Bg:SetAtlas(StableFrame.Topper:IsShown() and 'pet-list-bg' or 'footer-bg')
+    AllListFrame.Bg:SetAtlas('footer-bg')--StableFrame.Topper:IsShown() and 'pet-list-bg' or 'footer-bg')
     AllListFrame.Bg:SetTexCoord(1,0,1,0)
     AllListFrame.Bg:SetPoint('TOPLEFT')
 
@@ -818,7 +856,7 @@ function Init_StableFrame_List()
     --local btn= WoWTools_ButtonMixin:Cbtn(StableFrame, {size={20,20}, atlas='dressingroom-button-appearancelist-up'})
     local btn= WoWTools_ButtonMixin:CreateMenu(StableFrameCloseButton)
     btn:SetPoint('RIGHT', StableFrameCloseButton, 'LEFT', -2, 0)
-   
+
 
     function btn:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -829,7 +867,7 @@ function Init_StableFrame_List()
         e.tips:Show()
     end
     btn:SetupMenu(Init_Menu)
-    
+
 
 
 
@@ -861,16 +899,7 @@ panel:RegisterEvent('PLAYER_LOGOUT')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-
-            if WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,  'HUNTER', DUNGEON_FLOOR_ORGRIMMARRAID8)] then
-                Save=WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,  'HUNTER', DUNGEON_FLOOR_ORGRIMMARRAID8)]
-                Save.sortIndex=nil
-                Save.sortType='specialization'
-                Save.all_List_Size=28
-                WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,  'HUNTER', DUNGEON_FLOOR_ORGRIMMARRAID8)]=nil
-            else
-                Save= WoWToolsSave['Other_HunterPet'] or Save
-            end
+            Save= WoWToolsSave['Other_HunterPet'] or Save
 
             addName= '|A:groupfinder-icon-class-hunter:0:0|a'..(e.onlyChinese and '猎人兽栏' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UnitClass('player'), STABLE_STABLED_PET_LIST_LABEL))
 
@@ -890,6 +919,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Init_StableFrame_List()
                 Init_StableFrame_Plus()
                 Init_UI()
+                Init_UI_Texture()
             end
             self:UnregisterEvent('ADDON_LOADED')
         end

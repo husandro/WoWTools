@@ -320,7 +320,7 @@ local function Init(mixin)
      mixin:SetFrame(PVEFrameTab3, {notAlpha=true})
      mixin:SetFrame(PVEFrameTab4, {notAlpha=true})
 
-     if PetStableFrame then--猎人，宠物
+     --[[if PetStableFrame then--猎人，宠物
         mixin:SetNineSlice(PetStableFrame, true)
         mixin:SetNineSlice(PetStableLeftInset, nil, true)
         mixin:SetAlphaColor(PetStableActiveBg, nil, nil, 0.3)
@@ -338,7 +338,7 @@ local function Init(mixin)
             end
             mixin:SetAlphaColor(_G['PetStableStabledPet'..i..'Background'])
         end
-    end
+    end]]
 
 
 
