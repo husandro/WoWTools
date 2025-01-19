@@ -129,10 +129,12 @@ local function Crated_Button(index, last)
         e.tips:Hide()
         if EmbeddedItemTooltip then EmbeddedItemTooltip:Hide() end
         WoWTools_ReputationMixin:Set_TrackButton_Pushed(false, self.text)--TrackButton，提示
+		WoWTools_FactionMixin:Find(nil, nil)
     end)
     btn:SetScript('OnEnter', function(self)
         WoWTools_SetTooltipMixin:Faction(self)
         WoWTools_ReputationMixin:Set_TrackButton_Pushed(true, self.text)--TrackButton，提示
+		WoWTools_FactionMixin:Find(self.factionID)
     end)
 
     btn.text= WoWTools_LabelMixin:Create(btn)

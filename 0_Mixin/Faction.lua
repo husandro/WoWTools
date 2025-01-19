@@ -174,10 +174,10 @@ function WoWTools_FactionMixin:GetName(factionID, index)
             return factionID or index
         end
     end
-    
+
     local isAccount= C_Reputation.IsAccountWideReputation(factionID)
-    
-    return 
+
+    return
         (data.atlas and ('|A:'..data.atlas..':0:0|a') or (data.texture and '|T'..data.texture..':0|t') or '')
         ..(isAccount and '|cff00ccff' or (data.isCapped and '|cffff7f00') or '|cff00ff00')
         ..e.cn(data.name)
@@ -189,5 +189,51 @@ function WoWTools_FactionMixin:GetName(factionID, index)
         )
         ..((not data.isCapped or data.hasRep) and data.valueText or '')
         ..(isAccount and '|A:questlog-questtypeicon-account:0:0|a' or '')
-        ..(data.hasRewardPending and (e.Player.faction=='Alliance' and '|A:GarrMission-AllianceChest:0:0|a' or '|A:GarrMission-HordeChest:0:0|a') or '')     
+        ..(data.hasRewardPending and (e.Player.faction=='Alliance' and '|A:GarrMission-AllianceChest:0:0|a' or '|A:GarrMission-HordeChest:0:0|a') or '')
+end
+
+
+
+
+--移过，提示
+function WoWTools_FactionMixin:Find(factionID, name)--选中提示
+
+    if not ReputationFrame:IsShown() then
+        return
+    end
+
+    local all= C_Reputation.GetNumFactions()
+    if all==0 then
+        return
+    end
+
+    if factionID or name then
+        for index=1, all do
+            local data= C_Reputation.GetFactionDataByIndex(index)
+            if data and data.name and data.factionID then
+
+                if data.factionID==factionID or data.name==name then
+
+                    ReputationFrame.ScrollBox:ScrollToElementDataIndex(index)
+
+                    for _, frame in pairs(ReputationFrame.ScrollBox:GetFrames() or {}) do
+                        if frame.Content and frame.elementData then
+                            if frame.elementData.factionID==factionID or frame.elementData.name==name then
+                                frame.Content.BackgroundHighlight:SetAlpha(0.2)
+                            else
+                                frame.Content.BackgroundHighlight:SetAlpha(0)
+                            end
+                        end
+                    end
+                    break
+                end
+            end
+        end
+    else
+        for _, frame in pairs(ReputationFrame.ScrollBox:GetFrames() or {}) do
+            if frame.Content then
+               frame.Content.BackgroundHighlight:SetAlpha(0)
+            end
+        end
+    end
 end

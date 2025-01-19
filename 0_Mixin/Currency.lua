@@ -26,12 +26,18 @@ end
 
 
 --移过，提示
-function WoWTools_CurrencyMixin:Find(find, currencyID, name)--选中提示
-    if not TokenFrame:IsVisible() then
+function WoWTools_CurrencyMixin:Find(currencyID, name)--选中提示
+    if not TokenFrame:IsShown() then
         return
     end
-    if find then
-        for index=1, C_CurrencyInfo.GetCurrencyListSize() do
+
+    local all= C_CurrencyInfo.GetCurrencyListSize()
+    if all==0 then
+        return
+    end
+
+    if currencyID or name then
+        for index=1, all do
             local data= C_CurrencyInfo.GetCurrencyListInfo(index)
             if data and data.name and data.currencyID then
                 if data.currencyID==currencyID or data.name==name then
@@ -148,7 +154,7 @@ function WoWTools_CurrencyMixin:GetInfo(currencyID, index, link)
     info.link= link or C_CurrencyInfo.GetCurrencyLink(currencyID)
     info.currencyID= currencyID
 
-    
+
 
     return info, num, totale, percent, isMax, canWeek, canEarned, canQuantity
 end
@@ -166,7 +172,7 @@ function WoWTools_CurrencyMixin:GetName(currencyID, index, link)
     local info, num, _, _, isMax, canWeek, canEarned, canQuantity= self:GetInfo(currencyID, index, link)
     if info and info.name then
         num= num or 0
-        
+
         return
             '|T'..(info.iconFileID or 0)..':0|t'--图标
             ..(

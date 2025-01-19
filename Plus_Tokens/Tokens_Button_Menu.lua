@@ -269,10 +269,10 @@ local function Init_Menu(self, root)
 		end, {currencyID=currencyID})
 		sub2:SetTooltip(function(tooltip, description)
 			tooltip:SetCurrencyByID(description.data.currencyID)
-			WoWTools_CurrencyMixin:Find(true, description.data.currencyID, nil)--选中提示
+			WoWTools_CurrencyMixin:Find(description.data.currencyID, nil)--选中提示
 		end)
 		sub2:SetOnLeave(function()
-			WoWTools_CurrencyMixin:Find(false, nil, nil)--选中提示
+			WoWTools_CurrencyMixin:Find(nil, nil)--选中提示
 			GameTooltip:Hide()
 		end)
 		--WoWTools_SetTooltipMixin:Set_Menu(sub2)

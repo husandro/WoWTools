@@ -226,7 +226,7 @@ local function Create_Button(last, index, endTokenIndex, itemButtonUse, tables)
         if self.itemID then
             WoWTools_BagMixin:Find(false)--查询，背包里物品
 		elseif self.currencyID then
-			WoWTools_CurrencyMixin:Find(false, nil, nil)--选中提示
+			WoWTools_CurrencyMixin:Find(nil, nil)--选中提示
 		end
     end)
 
@@ -250,7 +250,7 @@ local function Create_Button(last, index, endTokenIndex, itemButtonUse, tables)
             e.tips:SetCurrencyByID(self.currencyID)
             local link= C_CurrencyInfo.GetCurrencyLink(self.currencyID) or (e.onlyChinese and '超链接' or COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK)
             e.tips:AddDoubleLine(link..'|A:transmog-icon-chat:0:0|a', e.Icon.left)
-			WoWTools_CurrencyMixin:Find(true, self.currencyID, nil)--选中提示
+			WoWTools_CurrencyMixin:Find(self.currencyID, nil)--选中提示
 
         elseif self.index then
             e.tips:SetCurrencyToken(self.index)
