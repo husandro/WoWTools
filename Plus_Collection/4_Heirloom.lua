@@ -200,9 +200,7 @@ local function Init_ClassListButton()
     ListButton.frame= CreateFrame('Frame', nil, ListButton)
     ListButton.frame:SetPoint('TOPLEFT', ListButton, 'BOTTOMLEFT',0 -80)
     ListButton.frame:SetSize(26, 1)
-    function ListButton:set_frame_scale()
 
-    end
 
     ListButton.classButton={}
     ListButton.specButton={}
@@ -309,8 +307,10 @@ local function Init_ClassListButton()
     end
 
 
-    hooksecurefunc(HeirloomsJournal, 'SetClassAndSpecFilters', function(_, Class, Spec)
-        ListButton:chek_select(Class, Spec)
+    hooksecurefunc(HeirloomsJournal, 'SetClassAndSpecFilters', function(self, Class, Spec)
+        if self:IsVisible() then
+            ListButton:chek_select(Class, Spec)
+        end
     end)
 
     function ListButton:Settings()
