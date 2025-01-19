@@ -50,8 +50,8 @@ local SlotsIcon = {
 
 
 
-local function  Set_SetDetails(frame)
-    if frame.setEnter then
+local function Set_SetDetails(frame)
+    if frame.setEnter or frame:IsVisible() then
         return
     end
     frame.setEnter=true

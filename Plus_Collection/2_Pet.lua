@@ -13,6 +13,9 @@ local function Init()
     PetJournal.PetCount.Label:SetPoint('RIGHT', PetJournal.PetCount.Count, 'LEFT', -2, 0)
     PetJournal.PetCount.Label:SetJustifyH('RIGHT')
     hooksecurefunc('PetJournal_UpdatePetList', function()
+        if not PetJournal:IsVisible() then
+            return
+        end
         PetJournal.PetCount.Count:SetFormattedText('%d/%d', C_PetJournal.GetNumPets())
     end)
 end

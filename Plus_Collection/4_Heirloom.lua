@@ -26,6 +26,10 @@ end
 
 
 local function UpdateButton(_, button)
+    if not HeirloomsJournal:IsVisible() then
+        return
+    end
+
     if Save().hideHeirloom then
         if button.isPvP then
             button.isPvP:SetShown(false)

@@ -46,7 +46,7 @@ local SlotsIcon = {
 
 
 local function UpdateSlotButtons(self)
-    if not self.SlotsFrame:IsShown() then
+    if not self:IsVisible() then
         return
     end
 
@@ -144,11 +144,12 @@ end
 --物品
 local function Init_Wardrober_Items()--物品, 幻化, 界面
     --部位，已收集， 提示
-    hooksecurefunc(WardrobeCollectionFrame.ClassDropdown, 'SetClassFilter', function()
+    hooksecurefunc(WardrobeCollectionFrame.ClassDropdown, 'SetClassFilter', function(self)
         C_Timer.After(0.3, function()
             UpdateSlotButtons(WardrobeCollectionFrame.ItemsCollectionFrame)
         end)
     end)
+
     hooksecurefunc(WardrobeCollectionFrame.ItemsCollectionFrame, 'UpdateSlotButtons', UpdateSlotButtons)
 
     for _, btn in pairs(WardrobeCollectionFrame.ItemsCollectionFrame.SlotsFrame.Buttons) do
@@ -240,7 +241,11 @@ local function get_Link_Item_Type_Source(sourceID, type)
         end
     end
 end
-local function set_Items_Tooltips(self)--UpdateItems    
+local function set_Items_Tooltips(self)--UpdateItems
+    if not self:IsVisible() then
+        return
+    end
+
     local idexOffset = (self.PagingFrame:GetCurrentPage() - 1) * self.PAGE_SIZE
     for i= 1, self.PAGE_SIZE do
         local model = self.Models[i]
@@ -382,6 +387,9 @@ end
 
  --幻化，套装，索引 WardrobeCollectionFrame.SetsTransmogFrame
  local function set_Sets_Tooltips(self)--UpdateSets
+    if not self:IsVisible() then
+        return
+    end
     local idexOffset = (self.PagingFrame:GetCurrentPage() - 1) * self.PAGE_SIZE
     for i= 1, self.PAGE_SIZE do
         local model = self.Models[i]

@@ -53,6 +53,10 @@ end
 
  --幻化，套装，索引 WardrobeCollectionFrame.SetsTransmogFrame
  local function set_Sets_Tooltips(self)--UpdateSets
+    if not self:IsVisible() then
+        return
+    end
+
     local idexOffset = (self.PagingFrame:GetCurrentPage() - 1) * self.PAGE_SIZE
     for i= 1, self.PAGE_SIZE do
         local model = self.Models[i]
@@ -164,6 +168,9 @@ end
 
 
 local function Set_List_Button(btn, displayData)
+    if not btn:IsVisible() then
+        return
+    end
     local setID= displayData.setID or btn.setID
     if Save().hideSets or not setID then
         if btn.set_Rest then
@@ -260,7 +267,11 @@ end
 
 --套装物品 Link
 local function Init_Wardrobe_DetailsFrame(_, itemFrame)
-    if Save().hideSets then
+    if not itemFrame:IsVisible() then
+        return
+    end
+
+    if Save().hideSets  then
         if itemFrame.indexbtn then
             for i = 1, itemFrame.indexbtn do
                 local btn=itemFrame['btn'..i]
@@ -272,6 +283,7 @@ local function Init_Wardrobe_DetailsFrame(_, itemFrame)
         end
         return
     end
+        
     local sourceInfo = C_TransmogCollection.GetSourceInfo(itemFrame.sourceID)
     local slot = C_Transmog.GetSlotForInventoryType(sourceInfo.invType)
     local sources = C_TransmogSets.GetSourcesForSlot(itemFrame:GetParent():GetParent():GetSelectedSetID(), slot)
@@ -358,6 +370,9 @@ local function Init()
     end
     --点击，显示套装情况Blizzard_Wardrobe.lua
     hooksecurefunc(WardrobeSetsScrollFrameButtonMixin, 'OnClick', function(btn, buttonName)
+        if not btn:IsVisible() then
+            return
+        end
         if buttonName == "LeftButton" or not Save().hideSets then
             TipsLabel:SetText(btn.tooltip or '')--点击，按钮信息
         else

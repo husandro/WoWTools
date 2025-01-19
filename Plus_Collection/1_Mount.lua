@@ -15,6 +15,10 @@ end
 
 
 local function UpdateMountDisplay()
+    if not MountJournal:IsVisible() then
+        return
+    end
+    
     if not MountJournal.MountDisplay.tipButton then
         MountJournal.MountDisplay.tipButton= WoWTools_ButtonMixin:Cbtn(MountJournal.MountDisplay, {size={22,22}, atlas='QuestNormal'})
         MountJournal.MountDisplay.tipButton:SetPoint('BOTTOMRIGHT', MountJournal.MountDisplay.ModelScene.TogglePlayer, 'TOPRIGHT',0, 2)
@@ -87,6 +91,9 @@ local function Init()
     --总数
     MountJournal.MountCount.Count:SetPoint('RIGHT', -4,0)
     hooksecurefunc('MountJournal_UpdateMountList', function()
+        if not MountJournal:IsVisible() then
+            return
+        end
         local numMounts = C_MountJournal.GetNumMounts() or 0
         if numMounts>1 then
             local mountIDs = C_MountJournal.GetMountIDs() or {}

@@ -8,7 +8,7 @@ local e= select(2, ...)
 
 
 local function Update_Button(self)
-    if not self.itemID or self.itemID==-1 then
+    if not self.itemID or self.itemID==-1 or not ToyBox:IsVisible() then
         return
     end
 
