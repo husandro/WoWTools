@@ -671,8 +671,12 @@ Other\HunterPet.lua
 ##法术弹出框，加名称, 和颜色
 Other\SpellFrame.lua
 Other\ScrappingMachine.lua
-##美服，欧服，服器语言，提示
-Other\Realm.lua
 
+Other\AccountStore.lua
 ##10.1 梦境之种
 ##Other\DormantSeeds.lua
+
+
+
+##美服，欧服，服器语言，提示
+Other\Realm.lua

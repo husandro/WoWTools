@@ -257,13 +257,13 @@ local function Init_Menu(self, root)
                 return MenuResponse.Open
             end, {spellID=spellID})
 
-            sub:CreateButton(
+            --[[sub:CreateButton(--bug
                 e.onlyChinese and '查询' or WHO,
             function(data)
                 PlayerSpellsUtil.OpenToSpellBookTabAtSpell(data.spellID, false, true, true)--knownSpellsOnly, toggleFlyout, flyoutReason
                 return MenuResponse.Open
             end, {spellID=spellID})
-            WoWTools_SetTooltipMixin:Set_Menu(sub)
+            WoWTools_SetTooltipMixin:Set_Menu(sub)]]
         end
     end
 end

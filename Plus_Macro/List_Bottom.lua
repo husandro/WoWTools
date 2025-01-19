@@ -410,15 +410,16 @@ local function Sub_Menu(root, tab)
         sub:SetEnabled(MacroFrameSelectedMacroButton:IsShown())
     end
 --查询
-    if tab.spellID then
-        sub=root:CreateButton(
+    --[[if tab.spellID then
+        sub=root:CreateButton(--bug
             '|A:common-search-magnifyingglass:0:0|a'..(e.onlyChinese and '查询' or WHO),
         function(data)
             PlayerSpellsUtil.OpenToSpellBookTabAtSpell(data.spellID, false, true, false)--knownSpellsOnly, toggleFlyout, flyoutReason
             return MenuResponse.Open
         end, tab)
         WoWTools_SetTooltipMixin:Set_Menu(sub)--技能，提示
-    end
+    end]]
+
 --链接至聊天栏
     if tab.spellID or tab.itemLink then
         sub=root:CreateButton(

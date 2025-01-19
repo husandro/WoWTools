@@ -464,7 +464,7 @@ function WoWTools_MenuMixin:OpenSpellBook(root, tab)--天赋和法术书
                 PlayerSpellsUtil:OpenToSpellBookTabAtCategory(data.spellBookCategory)
             end
 
-            if tab.spellID then
+            if tab.spellID then--bug
                 PlayerSpellsUtil.OpenToSpellBookTabAtSpell(data.spellID)-- PlayerSpellsUtil.OpenToSpellBookTabAtSpell(spellID, knownSpellsOnly, toggleFlyout, flyoutReason)
             else
                 PlayerSpellsUtil.OpenToSpellBookTab()

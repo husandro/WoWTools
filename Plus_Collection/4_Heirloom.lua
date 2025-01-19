@@ -333,7 +333,7 @@ end
 
 
 local function Init()
-    if e.Is_Timerunning or Save().hideHeirloom or ListButton then--10.2.7
+    if PlayerGetTimerunningSeasonID() or Save().hideHeirloom or ListButton then--10.2.7
         if ListButton then
             ListButton:Settings()
         end
