@@ -256,14 +256,14 @@ local function Init_Menu(self, root)
                 WoWTools_ChatMixin:Chat(spellLink or data.spellID, nil, true)
                 return MenuResponse.Open
             end, {spellID=spellID})
+            WoWTools_SetTooltipMixin:Set_Menu(sub)
 
             --[[sub:CreateButton(--bug
                 e.onlyChinese and '查询' or WHO,
             function(data)
                 PlayerSpellsUtil.OpenToSpellBookTabAtSpell(data.spellID, false, true, true)--knownSpellsOnly, toggleFlyout, flyoutReason
                 return MenuResponse.Open
-            end, {spellID=spellID})
-            WoWTools_SetTooltipMixin:Set_Menu(sub)]]
+            end, {spellID=spellID})]]
         end
     end
 end

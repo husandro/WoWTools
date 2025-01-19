@@ -116,7 +116,7 @@ local function Set_Mount_Sub_Options(root, data)--icon,col,mountID,spellID,itemI
         WoWTools_MenuMixin:OpenSpellBook(root, {--天赋和法术书
             name='|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '设置' or SETTINGS),
             index=PlayerSpellsUtil.FrameTabs.SpellBook,
-            spellID=data.spellID,
+            --spellID=data.spellID,--bug
         })
     end
 

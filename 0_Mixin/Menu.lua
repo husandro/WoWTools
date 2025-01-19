@@ -460,15 +460,15 @@ function WoWTools_MenuMixin:OpenSpellBook(root, tab)--天赋和法术书
             PlayerSpellsUtil.OpenToClassTalentsTab()
 
         elseif tab.index== PlayerSpellsUtil.FrameTabs.SpellBook then--3
-            if data.spellBookCategory then
+            --[[if data.spellBookCategory then
                 PlayerSpellsUtil:OpenToSpellBookTabAtCategory(data.spellBookCategory)
-            end
+            end]]
 
-            if tab.spellID then--bug
-                PlayerSpellsUtil.OpenToSpellBookTabAtSpell(data.spellID)-- PlayerSpellsUtil.OpenToSpellBookTabAtSpell(spellID, knownSpellsOnly, toggleFlyout, flyoutReason)
-            else
+            --if tab.spellID then--bug
+                --PlayerSpellsUtil.OpenToSpellBookTabAtSpell(data.spellID)-- PlayerSpellsUtil.OpenToSpellBookTabAtSpell(spellID, knownSpellsOnly, toggleFlyout, flyoutReason)
+            --else
                 PlayerSpellsUtil.OpenToSpellBookTab()
-            end
+            --end
         end
 
         return MenuResponse.Refresh
