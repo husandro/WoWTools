@@ -535,6 +535,16 @@ Plus_Professions\TrainerUI.lua
 
 
 
+##仅限猎人加载，专门，宠物管理，增强
+Plus_HunterPet\0_StableFrame.lua
+Plus_HunterPet\All_List.lua
+Plus_HunterPet\Menu.lua
+Plus_HunterPet\Plus.lua
+Plus_HunterPet\Tooltips.lua
+Plus_HunterPet\UI.lua
+
+
+
 
 
 
@@ -666,8 +676,7 @@ ChatButton\11_Combat.lua
 ##其它
 ##美酒节 Brewfest
 Other\Brewfest.lua
-##仅限猎人加载，专门，宠物管理，增强
-Other\HunterPet.lua
+
 ##法术弹出框，加名称, 和颜色
 Other\SpellFrame.lua
 Other\ScrappingMachine.lua

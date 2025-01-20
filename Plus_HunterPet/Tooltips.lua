@@ -1,0 +1,75 @@
+--宠物，信息，提示
+local e= select(2, ...)
+if e.Player.class~='HUNTER' then
+    return
+end
+
+
+
+
+
+
+
+
+
+
+--宠物，信息，提示
+local function SetTooltip(frame, pet)
+    e.tips:SetOwner(frame, "ANCHOR_LEFT", -12, 0)
+    e.tips:ClearLines()
+    --e.tips:AddDoubleLine(e.addName, WoWTools_StableFrameMixin.addName)
+    --e.tips:AddLine(' ')
+    local i=1
+    for indexType, name in pairs(pet) do
+        local col= indexType=='slotID' and '|cffff00ff'
+                or (indexType=='name' and '|cnGREEN_FONT_COLOR:')
+                or (select(2, math.modf(i/2))==0 and '|cffffffff')
+                or '|cff00ccff'
+        if type(name)=='table' then
+            if indexType=='abilities' or indexType=='petAbilities' or indexType=='specAbilities' then--11.1
+                e.tips:AddDoubleLine(
+                    col..indexType,
+                    WoWTools_StableFrameMixin:GetAbilitieIconForTab(name, false)
+                )
+            end
+        else
+            name= indexType=='icon' and format('|T%d:14|t%d', name, name)
+                or (name==false and 'false')
+                or (name==true and 'true')
+                or (name==nil and '')
+                or name
+            e.tips:AddDoubleLine(col..indexType, col..name)
+        end
+        i=i+1
+    end
+    local dietString = table.concat(C_StableInfo.GetStablePetFoodTypes(pet.slotID), LIST_DELIMITER)
+    e.tips:AddDoubleLine(format('|cff00ccff%s', e.onlyChinese and '食物' or PET_DIET_TEMPLATE), dietString)
+    e.tips:AddLine(' ')
+    e.tips:AddDoubleLine(e.onlyChinese and '拖曳' or DRAG_MODEL, e.Icon.left)
+
+    if e.tips.playerModel and pet.displayID and pet.displayID>0 then
+        e.tips.playerModel:SetDisplayInfo(pet.displayID)
+        e.tips.playerModel:SetShown(true)
+    end
+end
+
+
+
+function WoWTools_StableFrameMixin:Set_Tooltips(frame, petInfo)
+    SetTooltip(frame, petInfo)
+end
+
+
+function WoWTools_StableFrameMixin:GetAbilitieIconForTab(tab, line)
+    local text=''
+    for _, spellID in pairs(tab or {}) do
+        e.LoadData({id=spellID, type='spell'})
+        local texture= C_Spell.GetSpellTexture(spellID)
+        if texture and texture>0 then
+            text= format('%s%s|T%d:14|t', text, line and text~='' and '|n' or '', texture)
+        end
+    end
+    return text
+end
+
+
