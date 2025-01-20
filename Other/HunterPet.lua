@@ -581,7 +581,8 @@ end
 function Set_StableFrame_List()
     if AllListFrame or not Save.show_All_List then
         if AllListFrame then
-            AllListFrame:set_shown()
+            AllListFrame:Settings()
+
         end
         return
     end
@@ -590,8 +591,9 @@ function Set_StableFrame_List()
     AllListFrame:SetPoint('TOPLEFT', StableFrame, 'TOPRIGHT', StableFrame.Topper:IsShown() and 0 or 12,0)
     AllListFrame:SetSize(1,1)
     AllListFrame:Hide()
-    function AllListFrame:set_shown()
+    function AllListFrame:Settings()
         self:SetShown(Save.show_All_List)
+        self.Bg:SetAtlas(Save.showTexture and 'pet-list-bg' or 'footer-bg')
     end
 
     AllListFrame.Buttons={}
@@ -599,7 +601,8 @@ function Set_StableFrame_List()
     AllListFrame.s= Save.all_List_Size or 28
 
     AllListFrame.Bg= AllListFrame:CreateTexture(nil, "BACKGROUND")
-    AllListFrame.Bg:SetAtlas('footer-bg')--StableFrame.Topper:IsShown() and 'pet-list-bg' or 'footer-bg')
+    
+    
     AllListFrame.Bg:SetTexCoord(1,0,1,0)
     AllListFrame.Bg:SetPoint('TOPLEFT')
 
@@ -668,7 +671,7 @@ function Set_StableFrame_List()
         self:SetShown(show)
     end
 
-    AllListFrame:set_shown()
+    AllListFrame:Settings()
 
 
     StableFrame:HookScript('OnSizeChanged', function()
@@ -850,6 +853,7 @@ local function Init_Menu(_, root)
     end, function()
         Save.showTexture= not Save.showTexture and true or nil
         Init_UI_Texture()
+        Set_StableFrame_List()
     end)
 
 --选项

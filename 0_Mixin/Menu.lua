@@ -274,8 +274,6 @@ sub2:SetEnabled(not isInCombat)
 
 --材质 WoWTools_MenuMixin:ShowTexture(
 function WoWTools_MenuMixin:ShowTexture(root, GetValue, SetValue)
-    print('|A:AnimCreate_Icon_Texture:0:0|a'
-        ..(e.onlyChinese and '材质' or TEXTURES_SUBHEADER))
     return root:CreateCheckbox(
         '|A:AnimCreate_Icon_Texture:0:0|a'
         ..(e.onlyChinese and '材质' or TEXTURES_SUBHEADER),
