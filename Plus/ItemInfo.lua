@@ -136,16 +136,18 @@ end
 
 
 function e.Set_Item_Info(self, tab)
-    if not self or not self:IsShown() then
+    if not self or (not self:IsShown() and not tab.isShow) then
         return
     end
+
     local itemLevel, itemQuality, battlePetSpeciesID
     local itemLink, containerInfo, itemID, isBound
     local topLeftText, bottomRightText, leftText, rightText, bottomLeftText, topRightText, setIDItem--, isWoWItem--setIDItem套装
     local currencyID
 
-    if tab.itemLink then
-        itemLink= tab.itemLink
+    if tab.itemLink or tab.hyperlink then
+        itemLink= tab.itemLink or tab.hyperlink
+        itemID= tab.itemID
 
     elseif tab.lootIndex then
         currencyID= select(4, GetLootSlotInfo(tab.lootIndex))
@@ -845,14 +847,19 @@ local function Init_Bag()
             end
         end)
 
-        
+
            -- panel:RegisterEvent('BANKFRAME_OPENED')--打开所有银行，背包
             panel:RegisterEvent("GUILDBANKBAGSLOTS_CHANGED")--打开公会银行时, 打开背包
             panel:RegisterEvent("GUILDBANK_ITEM_LOCK_CHANGED")
-        
+
     end
 
     hooksecurefunc('BankFrameItemButton_Update', set_BankFrameItemButton_Update)--银行
+    hooksecurefunc(BankPanelItemButtonMixin, 'Refresh', function(self)--战团银行
+        local info= self.itemInfo or {}
+        info.isShow=true
+        e.Set_Item_Info(self, info)
+    end)
 
     --############
     --排序:从右到左
