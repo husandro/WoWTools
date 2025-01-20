@@ -5099,7 +5099,8 @@
         "ToySpellButton_FadeInIcon",
         "WARDROBE_ITEMS",
         "WardrobeFrameCloseButton",
-        "PLUNDERSTORE_REFUND_BUTTON_TEXT"
+        "PLUNDERSTORE_REFUND_BUTTON_TEXT",
+        "MapLegendScrollFrame"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

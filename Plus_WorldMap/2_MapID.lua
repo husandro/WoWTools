@@ -80,7 +80,7 @@ local function Init()
     Frame.Text=WoWTools_LabelMixin:Create(Frame, {copyFont=WorldMapFrameTitleText})
     Frame.Text:SetPoint('RIGHT', Frame, 'LEFT', -2, 0)
 
-    Frame.storyText=WoWTools_LabelMixin:Create(Frame, {copyFont=WorldMapFrameTitleText})
+    Frame.storyText=WoWTools_LabelMixin:Create(Frame)--, {copyFont=WorldMapFrameTitleText})
     Frame.storyText:SetPoint('RIGHT', Frame.Text, 'LEFT', -2, 0)
     --Frame.storyText:SetPoint('BOTTOM', WoWTools_PlusWorldMap_MenuButton, 'TOP', 0, 2)
     Frame.storyText:EnableMouse(true)

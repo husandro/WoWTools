@@ -237,8 +237,17 @@ local function Init(mixin)
             self.BlackoutFrame:Hide()
         end
     end)
-
     mixin:HideTexture(QuestScrollFrame.Background, true)
+    mixin:SetScrollBar(QuestScrollFrame)
+    mixin:SetScrollBar(MapLegendScrollFrame)
+    mixin:SetAlphaColor(QuestScrollFrame.SettingsDropdown.Icon, true, nil, nil)
+    mixin:SetAlphaColor(QuestScrollFrame.BorderFrame.Border, true, nil, nil)
+    mixin:SetAlphaColor(QuestMapFrame.QuestsFrame.DetailsFrame.BorderFrame, true, nil, nil)
+    
+    if QuestMapFrame.MapLegendTab then--11.1
+       mixin:HideTexture(QuestMapFrame.MapLegendTab.Background)
+       mixin:HideTexture(QuestMapFrame.QuestsTab.Background)
+    end
 
      --地下城和团队副本
      mixin:HideTexture(PVEFrame.TopTileStreaks)--最上面
@@ -648,7 +657,7 @@ local function Init(mixin)
     mixin:SetNineSlice(CombatConfigColorsColorizeDamageSchool, nil, true)
     mixin:SetNineSlice(CombatConfigColorsColorizeEntireLine, nil, true)
 
-    
+
 
      --插件，管理
     mixin:SetNineSlice(AddonList,true)
