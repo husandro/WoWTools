@@ -163,14 +163,6 @@ local function Init()
     AllListFrame:SetSize(1,1)
     AllListFrame:Hide()
 
-    --第6个，提示，如果，没有专精支持，它会禁用，所有，建立一个
-    AllListFrame.btn6= created_button(MAX_SUMMONABLE_HUNTER_PETS)
-    AllListFrame.btn6:SetPoint('BOTTOM', AllListFrame.Buttons[EXTRA_PET_STABLE_SLOT_LUA_INDEX],'TOP')
-    function AllListFrame.btn6:settings()
-        local show= self:GetParent():IsShown() and not StableFrame.ActivePetList.BeastMasterSecondaryPetButton:IsEnabled()
-        self:SetPet(show and C_StableInfo.GetStablePetInfo(self:GetID()) or nil)
-        self:SetShown(show)
-    end
 
     AllListFrame.Buttons={}
     AllListFrame.s= Save().all_List_Size or 28
@@ -239,9 +231,16 @@ local function Init()
     end)
 
 
+    --第6个，提示，如果，没有专精支持，它会禁用，所有，建立一个
+    AllListFrame.btn6= created_button(MAX_SUMMONABLE_HUNTER_PETS)
+    AllListFrame.btn6:SetPoint('BOTTOM', AllListFrame.Buttons[EXTRA_PET_STABLE_SLOT_LUA_INDEX],'TOP')
+    function AllListFrame.btn6:settings()
+        local show= self:GetParent():IsShown() and not StableFrame.ActivePetList.BeastMasterSecondaryPetButton:IsEnabled()
+        self:SetPet(show and C_StableInfo.GetStablePetInfo(self:GetID()) or nil)
+        self:SetShown(show)
+    end
 
 
-     
     function AllListFrame:Settings()
         self:SetShown(Save().show_All_List)
         self.Bg:SetAtlas(Save().showTexture and 'pet-list-bg' or 'footer-bg')
