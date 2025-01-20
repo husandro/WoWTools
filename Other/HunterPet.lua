@@ -15,6 +15,7 @@ local Save={
     --show_All_List=true,显示，所有宠物，图标列表
     --sortDown= true,--排序, 降序
     --all_List_Size==28--图标表表，图标大小
+    --showTexture=true,--显示，材质
     sortType='specialization',
     all_List_Size=28
 }
@@ -484,26 +485,28 @@ end
 
 
 local function Init_UI_Texture()
-    WoWTools_PlusTextureMixin:SetAlphaColor(StableFrameBg, nil, nil, 0.5)
+    local show= Save.showTexture
+    
+    WoWTools_PlusTextureMixin:SetAlphaColor(StableFrameBg, nil, nil, show and 1 or 0.5)
     WoWTools_PlusTextureMixin:SetNineSlice(StableFrame, true, nil, nil)
 
-    WoWTools_PlusTextureMixin:SetAlphaColor(StableFrame.Topper, nil, nil, 0)
+    WoWTools_PlusTextureMixin:SetAlphaColor(StableFrame.Topper, nil, nil, show and 1 or 0)
 
     for _, object in pairs({StableFrame:GetRegions()}) do
         if object~=StableFrameBg and object:GetObjectType()=='Texture' then
-            object:SetAlpha(0)
+            object:SetAlpha(show and 1 or 0)
         end
     end
 
-    WoWTools_PlusTextureMixin:SetAlphaColor(StableFrame.StabledPetList.Backgroud, nil, nil, 0)
-    WoWTools_PlusTextureMixin:SetAlphaColor(StableFrame.StabledPetList.Inset.Bg, nil, nil, 0)
+    WoWTools_PlusTextureMixin:SetAlphaColor(StableFrame.StabledPetList.Backgroud, nil, nil, show and 1 or 0)
+    WoWTools_PlusTextureMixin:SetAlphaColor(StableFrame.StabledPetList.Inset.Bg, nil, nil, show and 1 or 0)
 
     WoWTools_PlusTextureMixin:SetSearchBox(StableFrame.StabledPetList.FilterBar.SearchBox)
     WoWTools_PlusTextureMixin:SetScrollBar(StableFrame.StabledPetList)
     WoWTools_PlusTextureMixin:SetMenu(StableFrame.PetModelScene.PetInfo.Specialization)
     WoWTools_PlusTextureMixin:SetMenu(StableFrame.StabledPetList.FilterBar)
 
-    WoWTools_PlusTextureMixin:SetFrame(StableFrame.StabledPetList.ListCounter, {alpha=0.8})
+    WoWTools_PlusTextureMixin:SetFrame(StableFrame.StabledPetList.ListCounter, {alpha=show and 1 or 0.8})
 end
 
 
@@ -840,6 +843,14 @@ local function Init_Menu(_, root)
         })
         root:CreateSpacer()
     end
+
+--显示，材质
+    WoWTools_MenuMixin:ShowTexture(root, function()
+        return Save.showTexture
+    end, function()
+        Save.showTexture= not Save.showTexture and true or nil
+        Init_UI_Texture()
+    end)
 
 --选项
     root:CreateDivider()
