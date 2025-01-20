@@ -28,6 +28,8 @@ local function Set_Faction_Menu(root, factionID)
 
     end, {factionID=factionID})
 
+    WoWTools_SetTooltipMixin:FactionMenu(sub)
+
     return sub
 end
 
@@ -55,12 +57,17 @@ function WoWTools_MinimapMixin:Faction_Menu(_, root)
     end)
 
     local index=0
+
 --当前版本
     local tab=C_MajorFactions.GetMajorFactionIDs(e.ExpansionLevel) or {}
+    local find={}
 
 --MajorFactionsConstantsDocumentation.lua
     for _, factionID in pairs(Constants.MajorFactionsConsts or {}) do
-        table.insert(tab, factionID)
+        if not find[factionID] then
+            table.insert(tab, factionID)
+            find[factionID]=true
+        end
     end
     table.sort(tab, function(a, b) return a>b end)
 
@@ -78,12 +85,17 @@ function WoWTools_MinimapMixin:Faction_Menu(_, root)
             table.sort(tab, function(a, b) return a>b end)
             sub:CreateDivider()
             for _, factionID in pairs(tab) do
-                if Set_Faction_Menu(sub, factionID) then
-                    index= index+1
+                if not find[factionID] then
+                    if Set_Faction_Menu(sub, factionID) then
+                        index= index+1
+                    end
+                    find[factionID]=true
                 end
             end
         end
     end
+
+    find=nil
     WoWTools_MenuMixin:SetGridMode(sub, index)
 end
 

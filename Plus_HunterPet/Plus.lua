@@ -71,7 +71,7 @@ local function created_model(btn, setBg)
         SetPortraitToTexture(btn.callSpellButton.Texture, 132161)
         btn.callSpellButton:SetPoint('BOTTOMLEFT', -8, -16)
         btn.callSpellButton.spellID=CALL_PET_SPELL_IDS[slotID]
-        btn.callSpellButton:SetScript('OnLeave', function(self) self:SetAlpha(0.3) GameTooltip_Hide() end)
+        btn.callSpellButton:SetScript('OnLeave', function(self) self:SetAlpha(0.5) GameTooltip_Hide() end)
         btn.callSpellButton:SetScript('OnEnter', function(self)
             if self.spellID then
                 GameTooltip:SetOwner(self, "ANCHOR_LEFT")
@@ -133,6 +133,9 @@ local function created_model(btn, setBg)
     hooksecurefunc(btn, 'SetPet', btn.set_pet)--StableActivePetButtonTemplateMixin
     btn:HookScript('OnHide', btn.set_pet)
     btn:HookScript('OnEnter', function(self)--信息，提示
+        if WoWTools_StableFrameMixin.Save.HideTips then
+            return
+        end
         if self.petData and not self.locked and self:IsEnabled() then
             WoWTools_StableFrameMixin:Set_Tooltips(self, self.petData)
             e.tips:AddDoubleLine(e.onlyChinese and '放入兽栏' or STABLE_PET_BUTTON_LABEL, e.Icon.right)

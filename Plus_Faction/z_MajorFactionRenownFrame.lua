@@ -57,20 +57,67 @@ end
 --取得，所有，派系声望
 local function Get_Major_Faction_List()
     local tab={}
+    local find={}
     for i= LE_EXPANSION_DRAGONFLIGHT, e.ExpansionLevel, 1 do
         for _, factionID in pairs(C_MajorFactions.GetMajorFactionIDs(i) or {}) do--if C_PlayerInfo.IsExpansionLandingPageUnlockedForPlayer(i) then
-            table.insert(tab, factionID)
+            if not find[factionID] then
+                table.insert(tab, factionID)
+                find[factionID]=true
+            end
         end
     end
 
     for _, factionID in pairs(Constants.MajorFactionsConsts or {}) do--MajorFactionsConstantsDocumentation.lu
-        table.insert(tab, factionID)
+        if not find[factionID] then
+            table.insert(tab, factionID)
+            find[factionID]=true
+        end
     end
 
     table.sort(tab, function(a,b) return a>b end)
-
+    find=nil
     return tab
 end
+
+
+
+
+
+
+local function Create_Button(index)
+    local btn= WoWTools_ButtonMixin:Cbtn(Button.frame, {size={80, 32}, icon='hide'})
+    btn:SetPoint('TOPLEFT', Buttons[index-1] or Button.frame, 'BOTTOMLEFT')
+    btn:SetHighlightAtlas('ChromieTime-Button-Highlight')
+    btn:SetScript('OnLeave', function()
+        Button:SetButtonState('NORMAL')
+        WoWTools_SetTooltipMixin:Hide()
+    end)
+    btn:SetScript('OnEnter', function(self)
+        Button:SetButtonState('PUSHED')
+        WoWTools_SetTooltipMixin:Faction(self)
+    end)
+    btn:SetScript('OnClick', function(self)
+        if
+            not MajorFactionRenownFrame
+            or not MajorFactionRenownFrame:IsVisible()
+            or MajorFactionRenownFrame:GetCurrentFactionID()~=self.factionID
+        then
+            ToggleMajorFactionRenown(self.factionID)
+        end
+    end)
+
+    btn.Text= WoWTools_LabelMixin:Create(btn, {color={r=1,g=1,b=1}})
+    btn.Text:SetPoint('BOTTOMLEFT', btn, 'BOTTOM')
+
+    btn.SelectTexture= btn:CreateTexture(nil, 'OVERLAY')
+    btn.SelectTexture:SetAllPoints()
+    btn.SelectTexture:SetAtlas('auctionhouse-nav-button-select')
+
+    btn.ANCHOR_RIGHT=true
+    Buttons[index]= btn
+    return btn
+end
+
 
 
 
@@ -86,7 +133,6 @@ local function Settings()
         Button.frame:SetShown(false)
         return
     end
-    Button.frame:SetShown(true)
 
     --所有，派系声望
     local selectFactionID= MajorFactionRenownFrame:GetCurrentFactionID()
@@ -97,48 +143,23 @@ local function Settings()
         local info= C_MajorFactions.GetMajorFactionData(factionID or 0)
         if info then
             index= index+1
-            local btn= Buttons[index]
-            if not btn then
-                btn= WoWTools_ButtonMixin:Cbtn(Button.frame, {size={80, 32}, icon='hide'})
-                btn:SetPoint('TOPLEFT', Buttons[index-1] or Button.frame, 'BOTTOMLEFT')
-                btn:SetHighlightAtlas('ChromieTime-Button-Highlight')
-                btn:SetScript('OnLeave', function()
-                    Button:SetButtonState('NORMAL')
-                    WoWTools_SetTooltipMixin:Hide()
-                end)
-                btn:SetScript('OnEnter', function(self)
-                    Button:SetButtonState('PUSHED')
-                    WoWTools_SetTooltipMixin:Frame(self)
-                end)
-                btn:SetScript('OnClick', function(self)
-                    if
-                        not MajorFactionRenownFrame
-                        or not MajorFactionRenownFrame:IsVisible()
-                        or MajorFactionRenownFrame:GetCurrentFactionID()~=self.factionID
-                    then
-                        ToggleMajorFactionRenown(self.factionID)
-                    end
-                end)
-
-                btn.Text= WoWTools_LabelMixin:Create(btn, {color={r=1,g=1,b=1}})
-                btn.Text:SetPoint('BOTTOMLEFT', btn, 'BOTTOM')
-
-                Buttons[index]= btn
-            end
+            local btn= Buttons[index] or Create_Button(index)
 
             btn.factionID= factionID
             btn:SetNormalAtlas('majorfaction-celebration-'..(info.textureKit or 'toastbg'))
             btn:SetPushedAtlas('MajorFactions_Icons_'..(info.textureKit or '')..'512')
-            if selectFactionID==factionID then--选中
+
+            btn.SelectTexture:SetShown(selectFactionID==factionID)
+            --[[if selectFactionID==factionID then--选中
                 btn.Text:SetTextColor(0,1,0)
-                --btn:LockHighlight()
             else
-                --btn:UnlockHighlight()
                 btn.Text:SetTextColor(1,1,1)
-            end
+            end]]
             btn.Text:SetText(Get_Major_Faction_Level(factionID, info.renownLevel))--等级
         end
     end
+
+    Button.frame:SetShown(true)
 end
 
 
@@ -243,6 +264,7 @@ local function Init()
     Button.HeaderText:SetPoint('BOTTOMLEFT', MajorFactionRenownFrame.HeaderFrame.Level, 'BOTTOMRIGHT', 16, -4)
 
     hooksecurefunc(MajorFactionRenownFrame, 'Refresh', function()
+        --C_Timer.After(0.5, Settings)
         Settings()
         Set_HeaderText()
     end)

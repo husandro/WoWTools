@@ -285,21 +285,16 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 for questID in pairs(Save().questIDs or {}) do
                     e.LoadData({id= questID, type=='quest'})
                 end
-                WoWTools_MinimapMixin:Init()
 
+                WoWTools_MinimapMixin:Init()
 
                 if C_AddOns.IsAddOnLoaded('Blizzard_TimeManager') then--秒表
                     WoWTools_MinimapMixin:Init_TimeManager()
                 end
-                
             end
-
 
         elseif arg1=='Blizzard_TimeManager' then
             WoWTools_MinimapMixin:Init_TimeManager()--秒表
-
-        
-
 
         end
 

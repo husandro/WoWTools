@@ -21,7 +21,7 @@ end
 
 
 local function Init_Menu(_, root)
-
+    local sub
     --所有宠物
         root:CreateCheckbox(
             '|A:dressingroom-button-appearancelist-up:0:0|a'..(e.onlyChinese and '所有宠物' or BATTLE_PETS_TOTAL_PETS),
@@ -33,34 +33,39 @@ local function Init_Menu(_, root)
             return MenuResponse.Close
         end)
 
+        root:CreateDivider()
 
         if Save().show_All_List then
     --排序
-            root:CreateDivider()
-            root:CreateCheckbox(
+            sub=root:CreateCheckbox(
                 e.onlyChinese and '升序' or PERKS_PROGRAM_ASCENDING,
             function()
                 return not Save().sortDown
             end, function()
                 Save().sortDown= not Save().sortDown and true or nil
             end)
+            sub:SetTooltip(function(tooltip)
+                tooltip:AddLine(e.onlyChinese and '排序' or STABLE_FILTER_BUTTON_LABEL)
+            end)
 
-            local tab={
-                ['petNumber']=  'petNumber',
-                [e.onlyChinese and '类型' or TYPE]= 'type',
-                ['creatureID']= 'creatureID',
-                ['uiModelSceneID']= 'uiModelSceneID',
-                ['displayID']= 'displayID',
-                [e.onlyChinese and '名称' or NAME]= 'name',
-                [e.onlyChinese and '天赋' or TALENT]= 'specialization',
-                [e.onlyChinese and '图标' or EMBLEM_SYMBOL]='icon',
-                ['familyName']= 'familyName',
-            }
-            for text, name in pairs(tab) do
-                root:CreateButton(text, function(data)
-                    WoWTools_StableFrameMixin:sort_pets_list(data.name)
+            for _, tab in pairs( {
+                {name='petNumber', type= 'petNumber'},
+                {name='creatureID', type='creatureID'},
+                {name='uiModelSceneID', type='uiModelSceneID'},
+                {name='displayID', type='displayID'},
+                {name=e.onlyChinese and '类型' or TYPE, type='type'},
+                {name=e.onlyChinese and '名称' or NAME, type='name'},
+                {name=e.onlyChinese and '天赋' or TALENT, type='specialization'},
+                {name=e.onlyChinese and '图标' or EMBLEM_SYMBOL, type='icon'},
+                {name=e.onlyChinese and '种族' or RACE, type="familyName"}
+            }) do
+                sub=root:CreateButton(tab.name, function(data)
+                    WoWTools_StableFrameMixin:sort_pets_list(data.type)
                     return MenuResponse.Open
-                end, {name=name})
+                end, {type=tab.type})
+                sub:SetTooltip(function(tooltip)
+                    tooltip:AddLine(e.onlyChinese and '排序' or STABLE_FILTER_BUTTON_LABEL)
+                end)
             end
 
     --图标尺寸
@@ -95,6 +100,15 @@ local function Init_Menu(_, root)
             WoWTools_StableFrameMixin:Set_StableFrame_List()
         end)
 
+        root:CreateCheckbox(
+            'Tooltips',
+        function()
+            return not Save().HideTips
+        end, function()
+            Save().HideTips= not Save().HideTips and true or nil
+        end)
+        
+
     --选项
         root:CreateDivider()
         WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_StableFrameMixin.addName})
@@ -116,6 +130,11 @@ local function Init()
         e.tips:AddDoubleLine(e.addName, WoWTools_StableFrameMixin.addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)
+        e.tips:AddDoubleLine(
+            (_G['WoWTools_StableFrameAllList'] and '' or '|cff828282')
+            ..(e.onlyChinese and '图标尺寸' or HUD_EDIT_MODE_SETTING_ACTION_BAR_ICON_SIZE),
+            (Save().all_List_Size or 22)..e.Icon.mid
+        )
         e.tips:Show()
     end
 
@@ -126,6 +145,30 @@ local function Init()
 
     btn:SetScript('OnMouseDown', function(self)
         MenuUtil.CreateContextMenu(self, Init_Menu)
+    end)
+
+    btn:EnableMouseWheel(true)
+    btn:SetScript('OnMouseWheel', function(self, d)
+        local AllListFrame= _G['WoWTools_StableFrameAllList']
+        if not AllListFrame then
+            return
+        end
+
+        local value= Save().all_List_Size or 22
+        if d==1 then
+           value= value+ 1
+        elseif d==-1 then
+            value= value-1
+        end
+
+        value= min(value, 72)
+        value= max(value, 8)
+
+        Save().all_List_Size=value
+        
+        AllListFrame:Settings()
+
+        self:set_tooltips()
     end)
 end
 

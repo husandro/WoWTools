@@ -184,6 +184,7 @@ function WoWTools_SetTooltipMixin:Setup(tooltip, data)
     if type(data)~='table' then
         return
     end
+
     local itemLink= data.link or data.itemLink or data.spellLink
     local itemID= data.itemID
     local spellID= data.spellID

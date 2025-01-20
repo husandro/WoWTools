@@ -37,7 +37,9 @@ end
 
 --Paragon
 local function ShowParagonRewardsTooltip(self)
-    EmbeddedItemTooltip:SetOwner(self, "ANCHOR_LEFT")
+
+    EmbeddedItemTooltip:SetOwner(self, self.ANCHOR_RIGHT and 'ANCHOR_RIGHT' or "ANCHOR_LEFT")
+
 	C_Reputation.RequestFactionParagonPreloadRewardData(self.factionID)
 	ReputationParagonFrame_SetupParagonTooltip(self)
 	GameTooltip_AddBlankLineToTooltip(EmbeddedItemTooltip)
@@ -48,13 +50,15 @@ end
 --Friendship
 local function ShowFriendshipReputationTooltip(self)
 	local friendshipData = C_GossipInfo.GetFriendshipReputation(self.factionID)
-	
-	
+
+
 
 	if not friendshipData or friendshipData.friendshipFactionID < 0 then
 		return false
-	end	
-    GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+	end
+
+	GameTooltip:SetOwner(self, self.ANCHOR_RIGHT and "ANCHOR_RIGHT" or  "ANCHOR_LEFT")
+
 	local rankInfo = C_GossipInfo.GetFriendshipReputationRanks(friendshipData.friendshipFactionID)
 
 	local name= e.cn(friendshipData.name or self.name)
@@ -62,7 +66,7 @@ local function ShowFriendshipReputationTooltip(self)
 		local data= C_Reputation.GetFactionDataByID(self.factionID)
 		name= data and e.cn(data.name) or self.factionID
 	end
-	
+
 
 	if rankInfo.maxLevel > 0 then
 		GameTooltip_SetTitle(GameTooltip, name.." ("..rankInfo.currentLevel.." / "..rankInfo.maxLevel..")", HIGHLIGHT_FONT_COLOR)
@@ -70,7 +74,7 @@ local function ShowFriendshipReputationTooltip(self)
 		GameTooltip_SetTitle(GameTooltip, name, HIGHLIGHT_FONT_COLOR)
 	end
 	TryAppendAccountReputationLineToTooltip(GameTooltip, self.factionID)
-	
+
 	if friendshipData.text and friendshipData.text~='' or (friendshipData.reaction and friendshipData.reaction~='') then
 		GameTooltip_AddBlankLineToTooltip(GameTooltip)
 	end
@@ -93,7 +97,9 @@ end
 
 --Major
 local function ShowMajorFactionRenownTooltip(self)
-	GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+
+	GameTooltip:SetOwner(self, self.ANCHOR_RIGHT and 'ANCHOR_RIGHT' or "ANCHOR_LEFT")
+
 	local majorFactionData = C_MajorFactions.GetMajorFactionData(self.factionID) or {}
 	GameTooltip_SetTitle(GameTooltip, e.cn(majorFactionData.name), HIGHLIGHT_FONT_COLOR)
 	TryAppendAccountReputationLineToTooltip(GameTooltip, self.factionID)
@@ -111,8 +117,8 @@ end
 
 --Standard
 local function ShowStandardTooltip(self)
-	GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-	local name= self.name 
+	GameTooltip:SetOwner(self, self.ANCHOR_RIGHT and 'ANCHOR_RIGHT' or "ANCHOR_LEFT")
+	local name= self.name
 	if not name then
 		local data= C_Reputation.GetFactionDataByID(self.factionID)
 		name= data and data.name
@@ -135,7 +141,7 @@ end
 
 
 
-function WoWTools_SetTooltipMixin:Faction(frame)
+function WoWTools_SetTooltipMixin:Faction(frame)--ANCHOR_RIGHT=true
     if not frame.factionID then
 		return
 	end

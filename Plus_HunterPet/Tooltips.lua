@@ -15,6 +15,10 @@ end
 
 --宠物，信息，提示
 local function SetTooltip(frame, pet)
+    if WoWTools_StableFrameMixin.Save.HideTips then
+        return
+    end
+    
     e.tips:SetOwner(frame, "ANCHOR_LEFT", -12, 0)
     e.tips:ClearLines()
     --e.tips:AddDoubleLine(e.addName, WoWTools_StableFrameMixin.addName)
@@ -26,9 +30,12 @@ local function SetTooltip(frame, pet)
                 or (select(2, math.modf(i/2))==0 and '|cffffffff')
                 or '|cff00ccff'
         if type(name)=='table' then
-            if indexType=='abilities' or indexType=='petAbilities' or indexType=='specAbilities' then--11.1
+            if indexType=='abilities' or indexType=='petAbilities' or indexType=='specAbilities' then--11.1 abilities
                 e.tips:AddDoubleLine(
-                    col..indexType,
+                    col
+                    ..(indexType=='petAbilities' and '|cffffff00'..(e.onlyChinese and '基础技能' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, BASE_SETTINGS_TAB, ABILITIES))
+                        or (indexType=='specAbilities' and '|cnRED_FONT_COLOR:'..(e.onlyChinese and '专精技能' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPECIALIZATION, ABILITIES)))
+                    or indexType),
                     WoWTools_StableFrameMixin:GetAbilitieIconForTab(name, false)
                 )
             end
