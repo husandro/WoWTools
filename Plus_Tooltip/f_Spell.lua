@@ -8,6 +8,8 @@ local CALL_PET_SPELL_IDS = {
 	[83244]=4,
 	[83245]=5,
 }
+
+
 local function Set_HunterPet(tooltip, spellID)
     local index= CALL_PET_SPELL_IDS[spellID]
     local info= index and C_StableInfo.GetStablePetInfo(index)
