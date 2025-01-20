@@ -1,5 +1,5 @@
 local id, e= ...
-if e.Player.class~='HUNTER' or not StableFrame then --or C_AddOns.IsAddOnLoaded("ImprovedStableFrame") then
+if e.Player.class~='HUNTER' then --or C_AddOns.IsAddOnLoaded("ImprovedStableFrame") then
     return
 end
 
@@ -22,12 +22,12 @@ local Save={
 
 
 local AllListFrame
---5
-local MAX_SUMMONABLE_HUNTER_PETS = Constants.PetConsts_PostCata.MAX_SUMMONABLE_HUNTER_PETS
---6
-local EXTRA_PET_STABLE_SLOT_LUA_INDEX = Constants.PetConsts_PostCata.EXTRA_PET_STABLE_SLOT + 1;
---205
-local NUM_PET_SLOTS_HUNTER = Constants.PetConsts_PostCata.NUM_PET_SLOTS_HUNTER;
+
+local MAX_SUMMONABLE_HUNTER_PETS = Constants.PetConsts_PostCata.MAX_SUMMONABLE_HUNTER_PETS or 5
+
+local EXTRA_PET_STABLE_SLOT_LUA_INDEX = (Constants.PetConsts_PostCata.EXTRA_PET_STABLE_SLOT or 5) + 1;
+
+local NUM_PET_SLOTS_HUNTER = Constants.PetConsts_PostCata.NUM_PET_SLOTS_HUNTER or 205
 
 
 --召唤，法术，提示
@@ -287,7 +287,7 @@ local function Init_StableFrame_Plus()
         created_model(btn, true)--已激活宠物，Model 提示
     end
     created_model(StableFrame.ActivePetList.BeastMasterSecondaryPetButton, false)--第二个，宠物，提示
-    
+
     hooksecurefunc(StableFrame.PetModelScene, 'SetPet', function(self)--选定时，隐藏model
         local frame= self:GetParent()
         local selecIndex= frame.selectedPet and frame.selectedPet.slotID
@@ -486,7 +486,7 @@ end
 
 local function Init_UI_Texture()
     local show= Save.showTexture
-    
+
     WoWTools_PlusTextureMixin:SetAlphaColor(StableFrameBg, nil, nil, show and 1 or 0.5)
     WoWTools_PlusTextureMixin:SetNineSlice(StableFrame, true, nil, nil)
 
@@ -601,8 +601,8 @@ function Set_StableFrame_List()
     AllListFrame.s= Save.all_List_Size or 28
 
     AllListFrame.Bg= AllListFrame:CreateTexture(nil, "BACKGROUND")
-    
-    
+
+
     AllListFrame.Bg:SetTexCoord(1,0,1,0)
     AllListFrame.Bg:SetPoint('TOPLEFT')
 
@@ -822,6 +822,7 @@ local function Init_Menu(_, root)
         end
 
 --图标尺寸
+        root:CreateDivider()
         root:CreateSpacer()
         WoWTools_MenuMixin:CreateSlider(root, {
             getValue=function()
