@@ -307,6 +307,7 @@ local function Init()
     end
 
     Button.texture:SetAlpha(0.5)
+
     function Button:set_icon()
         self.texture:SetShown(Save.showIcon)
     end
@@ -429,6 +430,12 @@ local function Init()
         end
     end)
     Button:set_event()
+
+    GameMenuFrame:HookScript('OnShow', function()
+        if Button.Frame:IsShown() then
+            Button:set_shown()
+        end
+    end)
 end
 
 
