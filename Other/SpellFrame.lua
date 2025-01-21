@@ -169,7 +169,9 @@ local function GetHunterPetSpellText(spellID, isLeftPoint)
     end
 
     local atlas = e.dropdownIconForPetSpec[info.specialization]
-    icon= (icon and icon..(isLeftPoint and '' or '|n' ) or '').. (atlas and '|A:'..atlas..':0:0|a' or '')
+    if atlas then
+        icon= (icon and icon..(isLeftPoint and '' or '|n' ) or '').. (atlas and '|A:'..atlas..':0:0|a' or '')
+    end
 
     for _, abilitie in pairs(info.specAbilities or {}) do
         texture= C_Spell.GetSpellTexture(abilitie)
@@ -177,9 +179,6 @@ local function GetHunterPetSpellText(spellID, isLeftPoint)
             icon= (icon and icon..(isLeftPoint and '' or '|n' ) or '')..'|T'..texture..':18|t'
         end
     end
-
-
-
 
     return icon
 end

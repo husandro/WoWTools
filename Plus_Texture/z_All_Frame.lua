@@ -242,11 +242,12 @@ local function Init(mixin)
     mixin:HideTexture(QuestScrollFrame.Background, true)
     mixin:SetScrollBar(QuestScrollFrame)
     mixin:SetScrollBar(MapLegendScrollFrame)
-    mixin:SetAlphaColor(QuestScrollFrame.SettingsDropdown.Icon, true, nil, nil)
+    if QuestScrollFrame.SettingsDropdown then--11.1
+        mixin:SetAlphaColor(QuestScrollFrame.SettingsDropdown.Icon, true, nil, nil)
+        mixin:SetAlphaColor(QuestMapFrame.QuestsFrame.DetailsFrame.BorderFrame, true, nil, nil)
+    end
     mixin:SetAlphaColor(QuestScrollFrame.BorderFrame.Border, true, nil, nil)
-    mixin:SetAlphaColor(QuestMapFrame.QuestsFrame.DetailsFrame.BorderFrame, true, nil, nil)
     mixin:SetSearchBox(QuestScrollFrame.SearchBox)
-    
 
     if QuestMapFrame.MapLegendTab then--11.1
        mixin:HideTexture(QuestMapFrame.MapLegendTab.Background)
