@@ -101,10 +101,10 @@ local function created_model(btn, setBg)
 
         btn.specTexture= btn:CreateTexture(nil, 'OVERLAY')--宠物，专精，图标
         btn.specTexture:SetSize(18, 18)
-        btn.specTexture:SetPoint('LEFT', btn.Portrait2, 'RIGHT')
+        btn.specTexture:SetPoint('BOTTOMLEFT', btn.Portrait2, 'BOTTOMRIGHT')
 
         btn.indexText=WoWTools_LabelMixin:Create(btn, {alpha=0.5})--索引
-        btn.indexText:SetPoint('LEFT', btn.specTexture, 'RIGHT', 4,0)
+        btn.indexText:SetPoint('BOTTOMLEFT', btn.specTexture, 'BOTTOMRIGHT')
         btn.indexText:SetText(slotID)
 
     else
@@ -112,8 +112,9 @@ local function created_model(btn, setBg)
         btn.specTexture:SetSize(18, 18)
         btn.specTexture:SetPoint('BOTTOMRIGHT', 2, -2)
     end
-    --btn.specText= WoWTools_LabelMixin:Create(btn, {color=true})--专精
-    --btn.specText:SetPoint('TOP', 0, 12)
+
+    btn.specText= WoWTools_LabelMixin:Create(btn, {color=true})--专精
+    btn.specText:SetPoint('TOP', 0, 12)
 
     function btn:set_pet()
         local pet= self:IsVisible() and self.petData or {}--宠物，类型，图标
@@ -148,11 +149,11 @@ local function created_model(btn, setBg)
 
         local atlas= dropdownIconForPetSpec[pet.specialization]
         if atlas then
-            --self.specText:SetText(e.cn(pet.specialization) or '')
             self.specTexture:SetAtlas(atlas)
         else
             self.specTexture:SetTexture(0)
         end
+        self.specText:SetText(e.cn(pet.specialization) or '')
     end
 
     hooksecurefunc(btn, 'SetPet', btn.set_pet)--StableActivePetButtonTemplateMixin
