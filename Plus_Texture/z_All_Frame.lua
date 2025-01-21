@@ -215,6 +215,8 @@ local function Init(mixin)
     mixin:SetAlphaColor(CurrencyTransferMenuBg, nil, nil, 0.3)
     mixin:SetNineSlice(CurrencyTransferMenuInset)
     mixin:SetFrame(TokenFramePopup.Border, {alpha=0.3})
+    mixin:SetMenu(TokenFrame.filterDropdown)
+    
 
 
     mixin:SetSearchBox(CurrencyTransferMenu.AmountSelector.InputBox)
@@ -243,6 +245,8 @@ local function Init(mixin)
     mixin:SetAlphaColor(QuestScrollFrame.SettingsDropdown.Icon, true, nil, nil)
     mixin:SetAlphaColor(QuestScrollFrame.BorderFrame.Border, true, nil, nil)
     mixin:SetAlphaColor(QuestMapFrame.QuestsFrame.DetailsFrame.BorderFrame, true, nil, nil)
+    mixin:SetSearchBox(QuestScrollFrame.SearchBox)
+    
 
     if QuestMapFrame.MapLegendTab then--11.1
        mixin:HideTexture(QuestMapFrame.MapLegendTab.Background)

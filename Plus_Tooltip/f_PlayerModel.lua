@@ -45,7 +45,11 @@ function WoWTools_TooltipMixin:Set_Init_Item(tooltip, hide)--创建，设置，�
         tooltip.text2Left:SetPoint('LEFT', tooltip.textLeft, 'RIGHT', 5, 0)
 
         tooltip.textRight=WoWTools_LabelMixin:Create(tooltip, {size=12, justifyH='RIGHT'})--右上角字符
-        tooltip.textRight:SetPoint('BOTTOMRIGHT', tooltip, 'TOPRIGHT')
+        if tooltip.CloseButton then
+            tooltip.textRight:SetPoint('BOTTOMRIGHT', tooltip, 'TOPRIGHT', 0, 3)
+        else
+            tooltip.textRight:SetPoint('BOTTOMRIGHT', tooltip, 'TOPRIGHT')
+        end
 
         tooltip.text2Right= WoWTools_LabelMixin:Create(tooltip, {size=12, justifyH='RIGHT'})--右上角字符2
         tooltip.text2Right:SetPoint('BOTTOMRIGHT', tooltip.textRight, 'TOPRIGHT', 0, 4)
@@ -57,7 +61,11 @@ function WoWTools_TooltipMixin:Set_Init_Item(tooltip, hide)--创建，设置，�
 
         if not tooltip.Portrait then
             tooltip.Portrait= tooltip:CreateTexture(nil, 'BACKGROUND',nil, 2)--右上角图标
-            tooltip.Portrait:SetPoint('TOPRIGHT',-2, -3)
+            if tooltip.CloseButton then
+                tooltip.Portrait:SetPoint('TOPRIGHT', tooltip.CloseButton, 'BOTTOMRIGHT', -6, 0)
+            else
+                tooltip.Portrait:SetPoint('TOPRIGHT',-2, -3)
+            end
             tooltip.Portrait:SetSize(40,40)
         end
         tooltip:HookScript("OnHide", function(frame)--隐藏
@@ -88,6 +96,7 @@ function WoWTools_TooltipMixin:Set_Init_Item(tooltip, hide)--创建，设置，�
         end
         if tooltip.WoWHeadButton then
             tooltip.WoWHeadButton:rest()
+            tooltip.AchievementButton:rest()
         end
     end
 end

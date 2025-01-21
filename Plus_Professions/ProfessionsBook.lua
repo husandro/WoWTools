@@ -9,9 +9,9 @@ end
 --专业书
 local function Init()
     --自动输入，忘却，文字，专业
-    if IsPublicBuild() then
+    --[[if IsPublicBuild() then
         return
-    end
+    end]]
 
     local btn2= WoWTools_ButtonMixin:Cbtn(ProfessionsBookFrame, {size={22,22}, icon='hide'})
     btn2:SetPoint('TOP', ProfessionsBookFramePortrait, 'BOTTOM')

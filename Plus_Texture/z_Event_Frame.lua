@@ -894,6 +894,7 @@ end
 --派系声望
 function Events:Blizzard_MajorFactions(mixin)
     mixin:SetAlphaColor(MajorFactionRenownFrame.Background)
+    mixin:SetAlphaColor(MajorFactionRenownFrame.NineSlice, nil, nil, true)
 end
 
 

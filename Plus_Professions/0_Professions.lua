@@ -17,6 +17,8 @@ local function Save()
 end
 
 local UNLEARN_SKILL_CONFIRMATION= UNLEARN_SKILL_CONFIRMATION
+
+
 local function Load_AddOn()
     if C_AddOns.IsAddOnLoaded("Blizzard_TrainerUI") then
         WoWTools_ProfessionMixin:Init_Blizzard_TrainerUI()--添一个,全学,专业, 按钮

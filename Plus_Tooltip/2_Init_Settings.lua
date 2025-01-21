@@ -1,5 +1,7 @@
 
 local function Init()
+
+
     --装备，对比，提示
     ShoppingTooltip1.Portrait= ShoppingTooltip1:CreateTexture(nil, 'BACKGROUND',nil, 2)--右上角图标
     ShoppingTooltip1.Portrait:SetPoint('TOPRIGHT',-2, -3)
@@ -13,9 +15,13 @@ local function Init()
     ShoppingTooltip2.Portrait:SetAtlas('Adventures-Target-Indicator')
     ShoppingTooltip2.Portrait:SetAlpha(0.5)
 
+
     TooltipDataProcessor.AddTooltipPostCall(TooltipDataProcessor.AllTypes, function(tooltip)
         if not tooltip.textLeft then
             WoWTools_TooltipMixin:Set_Init_Item(tooltip)--创建，设置，内容
+        end
+        if tooltip==ItemRefTooltip then
+            WoWTools_TooltipMixin:Set_Init_Item(tooltip, true)--创建，设置，内容
         end
     end)
 
@@ -38,6 +44,7 @@ local function Init()
         itemLink= itemLink or itemID or data.id
         WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
     end)
+
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Spell, function(tooltip, data)
         WoWTools_TooltipMixin:Set_Spell(tooltip, data.id)--法术
     end)
@@ -59,6 +66,7 @@ local function Init()
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Achievement, function(tooltip, data)
         WoWTools_TooltipMixin:Set_Achievement(tooltip, data.id)--成就
     end)
+
 
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Macro, function(tooltip)
         local frame= tooltip:GetOwner()--宏 11版本

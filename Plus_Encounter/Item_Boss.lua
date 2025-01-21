@@ -132,9 +132,9 @@ local function Init(btn)
     if (btn.link or btn.itemID) and not Save().hideEncounterJournal then
         spellID= select(2, C_Item.GetItemSpell(btn.link or btn.itemID))
         if spellID and not btn.spellTexture then
-            btn.spellTexture= btn:CreateTexture(nil, 'OVERLAY')
+            btn.spellTexture= btn:CreateTexture(nil, 'OVERLAY', nil, 7)
             btn.spellTexture:SetSize(16,16)
-            btn.spellTexture:SetPoint('LEFT', btn.IconBorder, 'RIGHT',-6,0)
+            btn.spellTexture:SetPoint('LEFT', btn.IconBorder, 'RIGHT', -10, 0)
             btn.spellTexture:SetScript('OnMouseDown', function(self)
                 if self.spellID then
                     WoWTools_ChatMixin:Chat( C_Spell.GetSpellLink(self.spellID) or self.spellID, nil, true)

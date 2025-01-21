@@ -136,6 +136,7 @@ end
 
 --ETRACE
 WoWTools_MoveMixin.ADDON_LOADED['Blizzard_EventTrace']= function()
+    --EventTrace.Log.Bar.Label:SetWidth(#EventTrace.Log.Bar.Label:GetText()+6)
     EventTrace.Log.Bar.SearchBox:SetPoint('LEFT', EventTrace.Log.Bar.Label, 'RIGHT')
     EventTrace.Log.Bar.SearchBox:SetScript('OnEditFocusGained', function(self)
         self:HighlightText()

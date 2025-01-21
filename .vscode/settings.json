@@ -5101,7 +5101,12 @@
         "WardrobeFrameCloseButton",
         "PLUNDERSTORE_REFUND_BUTTON_TEXT",
         "MapLegendScrollFrame",
-        "RACE"
+        "RACE",
+        "ManuscriptsJournal",
+        "EventTraceLogEventButtonMixin",
+        "GameTooltip_AddColoredDoubleLine",
+        "EventTraceTooltip",
+        "EVENTTRACE_ARG_FMT"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
@@ -5125,6 +5130,7 @@
         "inject-field",
         "missing-parameter",
         "redundant-parameter",
-        "unused-local"
+        "unused-local",
+        "empty-block"
     ],
 }

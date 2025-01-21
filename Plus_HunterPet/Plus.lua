@@ -1,4 +1,5 @@
 local e= select(2, ...)
+
 if e.Player.class~='HUNTER' then
     return
 end

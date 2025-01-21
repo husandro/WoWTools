@@ -83,7 +83,76 @@ end
 
 
 
+local function Create_URL_Button(tooltip, tab)
+    if not tooltip.WoWHeadButton then
+        tooltip.WoWHeadButton=WoWTools_ButtonMixin:Cbtn(tooltip, {--取得网页，数据链接
+            size={24,24},
+            type=false,
+            name=tooltip:GetName()..'_WoWToolsURLButton',
+            atlas='questlegendary',
+        })
+        tooltip.WoWHeadButton:SetPoint('RIGHT',tooltip.CloseButton, 'LEFT')
+        tooltip.WoWHeadButton:SetScript('OnClick', function(f)
+            if f.type and f.id then
+                WoWTools_TooltipMixin:Show_URL(true, f.type, f.id, f.name)
+            end
+        end)
+        tooltip.WoWHeadButton:SetScript('OnLeave', GameTooltip_Hide)
+        tooltip.WoWHeadButton:SetScript('OnEnter', function(self)
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine(
+                WoWTools_TooltipMixin.addName,
+                'WoWHead URL'
+            )
+            e.tips:Show()
+        end)
+        function tooltip.WoWHeadButton:rest()
+            self.type=nil
+            self.id=nil
+            self.name=nil
+            self:SetShown(false)
+        end
 
+
+        tooltip.AchievementButton=WoWTools_ButtonMixin:Cbtn(tooltip, {--取得网页，数据链接
+            size={24,24},
+            type=false,
+            name=tooltip:GetName()..'_WoWToolsAchievementButton',
+            atlas='UI-HUD-MicroMenu-Achievements-Mouseover',
+        })
+        tooltip.AchievementButton:SetPoint('RIGHT', tooltip.WoWHeadButton, 'LEFT')
+        tooltip.AchievementButton:SetScript('OnClick', function(f)
+            if f.type and f.achievementID then
+                WoWTools_LoadUIMixin:Achievement(f.achievementID)
+            end
+        end)
+        tooltip.AchievementButton:SetScript('OnLeave', GameTooltip_Hide)
+        tooltip.AchievementButton:SetScript('OnEnter', function(self)
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine(
+                WoWTools_TooltipMixin.addName,
+                e.onlyChinese and '打开成就' or OBJECTIVES_VIEW_ACHIEVEMENT
+            )
+            e.tips:Show()
+        end)
+        function tooltip.AchievementButton:rest()
+            self.type=nil
+            self.id=nil
+            self:SetShown(false)
+        end
+    end
+
+    tooltip.WoWHeadButton.type= tab.type
+    tooltip.WoWHeadButton.id= tab.id
+    tooltip.WoWHeadButton.name= tab.name
+    tooltip.WoWHeadButton:SetShown(tab.type and tab.id)
+
+    tooltip.AchievementButton.type= tab.type
+    tooltip.AchievementButton.achievementID= tab.id
+    tooltip.AchievementButton:SetShown(tab.type=='achievement' and tab.id)
+end
 
 
 
@@ -94,29 +163,11 @@ end
 function WoWTools_TooltipMixin:Set_Web_Link(tooltip, tab)
     if tooltip==ItemRefTooltip or tooltip==FloatingBattlePetTooltip then
         if tab.type and tab.id then
-            if not tooltip.WoWHeadButton then
-                tooltip.WoWHeadButton=WoWTools_ButtonMixin:Cbtn(tooltip, {size={20,20}, type=false})--取得网页，数据链接
-                tooltip.WoWHeadButton:SetPoint('RIGHT',tooltip.CloseButton, 'LEFT',0,2)
-                tooltip.WoWHeadButton:SetNormalAtlas('questlegendary')
-                tooltip.WoWHeadButton:SetScript('OnClick', function(f)
-                    if f.type and f.id then
-                        WoWTools_TooltipMixin:Show_URL(true, f.type, f.id, f.name)
-                    end
-                end)
-                function tooltip.WoWHeadButton:rest()
-                    self.type=nil
-                    self.id=nil
-                    self.name=nil
-                    self:SetShown(false)
-                end
-            end
-            tooltip.WoWHeadButton.type= tab.type
-            tooltip.WoWHeadButton.id= tab.id
-            tooltip.WoWHeadButton.name= tab.name
-            tooltip.WoWHeadButton:SetShown(true)
+            Create_URL_Button(tooltip, tab)
         end
         return
     end
+
     if not Save().ctrl or UnitAffectingCombat('player')  then
         return
     end

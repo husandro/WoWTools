@@ -18,9 +18,12 @@ end
 local function set_Cursor_Tips(self)
     WoWTools_TooltipMixin:Set_Init_Item(GameTooltip, true)
     WoWTools_TooltipMixin:Set_Init_Item(ItemRefTooltip, true)
+
     WoWTools_TooltipMixin:Set_PlayerModel(GameTooltip)
     WoWTools_TooltipMixin:Set_PlayerModel(ItemRefTooltip)
+
     GameTooltip_SetDefaultAnchor(GameTooltip, self or UIParent)
+    
     GameTooltip:ClearLines()
     GameTooltip:SetUnit('player')
     GameTooltip:Show()

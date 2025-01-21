@@ -5,8 +5,56 @@ end
 
 
 
+
+
+
+
+
+
+--添加任务ID
+local function create_Quest_Label(frame)
+    frame.questIDLabel= WoWTools_LabelMixin:Create(frame, {mouse=true, justifyH='RIGHT'})
+    frame.questIDLabel:SetAlpha(0.3)
+    frame.questIDLabel:SetScript('OnLeave', function(self) GameTooltip_Hide() self:SetAlpha(0.3) end)
+    frame.questIDLabel:SetScript('OnEnter', function(self)
+        if self.questID then
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddDoubleLine(e.addName, WoWTools_TooltipMixin.addName..e.Icon.left)
+            e.tips:AddDoubleLine((e.onlyChinese and '任务' or QUESTS_LABEL)..' ID', self.questID)
+            e.tips:Show()
+            self:SetAlpha(1)
+        end
+    end)
+    frame.questIDLabel:SetScript('OnMouseDown', function(self)
+        if self.questID then
+            local name=C_TaskQuest.GetQuestInfoByQuestID(self.questID) or C_QuestLog.GetTitleForQuestID(self.questID)
+            WoWTools_TooltipMixin:Show_URL(true, 'quest', self.questID, name)
+        end
+    end)
+    function frame.questIDLabel:settings(questID)
+        local num= (questID and questID>0) and questID
+        self:SetText(num or '')
+        self.questID= num
+    end
+    return frame.questIDLabel
+end
+
+
+
+
+
+
+
+
+
+
+
+
 local function Init()
-    --战斗宠物，技能 SharedPetBattleTemplates.lua
+
+
+--战斗宠物，技能 SharedPetBattleTemplates.lua
     hooksecurefunc('SharedPetBattleAbilityTooltip_SetAbility', function(self, abilityInfo, additionalText)
         local abilityID = abilityInfo:GetAbilityID()
         if abilityID then
@@ -19,6 +67,7 @@ local function Init()
                                     ..(Save().ctrl and not UnitAffectingCombat('player') and '|nWoWHead Ctrl+Shift' or '')
                                 )
             WoWTools_TooltipMixin:Set_Web_Link(self, {type='pet-ability', id=abilityID, name=name, col=nil, isPetUI=false})--取得网页，数据链接 npc item spell currency
+
             local btn= _G['WoWTools_PetBattle_Type_TrackButton']--PetBattle.lua 联动
             if btn then
                 btn:set_type_tips(petType)
@@ -26,8 +75,8 @@ local function Init()
         end
     end)
 
-
-    hooksecurefunc(GameTooltip, 'SetSpellBookItem', function(self, slot, unit)--宠物，技能书，提示        
+--宠物，技能书，提示
+    hooksecurefunc(GameTooltip, 'SetSpellBookItem', function(self, slot, unit)
         if unit==Enum.SpellBookSpellBank.Pet and slot then
             local data= C_SpellBook.GetSpellBookItemInfo(slot, Enum.SpellBookSpellBank.Pet)
             if data then
@@ -36,15 +85,13 @@ local function Init()
                 if data.actionID or data.itemType then
                     self:AddDoubleLine(data.itemType and 'itemType '..data.itemType or ' ', 'actionID '..data.actionID)
                 end
-                --self:Show()
             end
         end
     end)
 
 
-    --####
-    --声望
-    --####
+
+--声望
     hooksecurefunc(ReputationEntryMixin, 'ShowStandardTooltip', function(self)
         WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.elementData.factionID)
     end)
@@ -54,14 +101,9 @@ local function Init()
     hooksecurefunc(ReputationEntryMixin, 'ShowFriendshipReputationTooltip', function(self)
         WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.elementData.factionID)
     end)
-
     hooksecurefunc(ReputationEntryMixin, 'ShowParagonRewardsTooltip', function(self)
         WoWTools_TooltipMixin:Set_Faction(EmbeddedItemTooltip, self.elementData.factionID)
     end)
-    --[[hooksecurefunc('ReputationParagonFrame_SetupParagonTooltip', function(frame)
-        WoWTools_TooltipMixin:Set_Faction(EmbeddedItemTooltip, frame.factionID)
-    end)]]
-
     hooksecurefunc(ReputationEntryMixin, 'OnClick', function(frame)
         local self= ReputationFrame.ReputationDetailFrame
         if not self.factionIDText then
@@ -83,7 +125,15 @@ local function Init()
     end)
 
 
-    hooksecurefunc(AreaPOIPinMixin,'TryShowTooltip', function(self)--POI提示 AreaPOIDataProvider.lua
+
+
+
+
+
+
+
+--POI提示 AreaPOIDataProvider.lua
+    hooksecurefunc(AreaPOIPinMixin,'TryShowTooltip', function(self)
         e.tips:AddLine(' ')
         local uiMapID = self:GetMap() and self:GetMap():GetMapID()
         if self.areaPoiID then
@@ -119,9 +169,11 @@ local function Init()
 
 
 
-    --#############
-    --挑战, AffixID
-    --Blizzard_ScenarioObjectiveTracker.lua
+
+
+
+--挑战, AffixID
+--Blizzard_ScenarioObjectiveTracker.lua
     hooksecurefunc(ScenarioChallengeModeAffixMixin, 'OnEnter', function(self)
         if self.affixID then
             local name, description, filedataid = C_ChallengeMode.GetAffixInfo(self.affixID)
@@ -145,8 +197,16 @@ local function Init()
         end)
     end
 
-    --试衣间
-    --DressUpFrames.lua
+
+
+
+
+
+
+
+
+--试衣间
+--DressUpFrames.lua
     hooksecurefunc(DressUpOutfitDetailsSlotMixin, 'OnEnter', function(self)
         if self.transmogID then
             e.tips:AddDoubleLine('transmogID', self.transmogID)
@@ -156,39 +216,14 @@ local function Init()
 
 
 
-    --添加任务ID
-    local function create_Quest_Label(frame)
-        frame.questIDLabel= WoWTools_LabelMixin:Create(frame, {mouse=true, justifyH='RIGHT'})
-        frame.questIDLabel:SetAlpha(0.3)
-        frame.questIDLabel:SetScript('OnLeave', function(self) GameTooltip_Hide() self:SetAlpha(0.3) end)
-        frame.questIDLabel:SetScript('OnEnter', function(self)
-            if self.questID then
-                e.tips:SetOwner(self, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                --GameTooltip_AddQuest(self, self.questID)
-                --e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(e.addName, WoWTools_TooltipMixin.addName..e.Icon.left)
-                e.tips:AddDoubleLine((e.onlyChinese and '任务' or QUESTS_LABEL)..' ID', self.questID)
-                e.tips:Show()
-                self:SetAlpha(1)
-            end
-        end)
-        frame.questIDLabel:SetScript('OnMouseDown', function(self)
-            if self.questID then
-                --local info = C_QuestLog.GetQuestTagInfo(self.questID) or {}
-                local name=C_TaskQuest.GetQuestInfoByQuestID(self.questID) or C_QuestLog.GetTitleForQuestID(self.questID)
 
-                WoWTools_TooltipMixin:Show_URL(true, 'quest', self.questID, name)
-            end
-        end)
-        function frame.questIDLabel:settings(questID)
-            local num= (questID and questID>0) and questID
-            self:SetText(num or '')
-            self.questID= num
-        end
-        return frame.questIDLabel
-    end
 
+
+
+
+
+
+--添加任务ID
     local label= create_Quest_Label(QuestMapDetailsScrollFrame)
     label:SetPoint('BOTTOMRIGHT', QuestMapDetailsScrollFrame, 'TOPRIGHT', 0, 4)
     hooksecurefunc('QuestMapFrame_ShowQuestDetails', function(questID)
@@ -207,8 +242,7 @@ local function Init()
     end)
 
 
-
-    --任务日志 显示ID
+--任务日志 显示ID
     hooksecurefunc("QuestMapLogTitleButton_OnEnter", function(self)
         local info= self.questLogIndex and C_QuestLog.GetInfo(self.questLogIndex)
         if not info or not info.questID or not HaveQuestData(info.questID) then
@@ -240,7 +274,16 @@ local function Init()
         e.tips:Show()
     end)
 
-    --添加 WidgetSetID
+
+
+
+
+
+
+
+
+
+--添加 WidgetSetID
     hooksecurefunc('GameTooltip_AddWidgetSet', function(self, uiWidgetSetID)
         if uiWidgetSetID then
             self:AddDoubleLine('WidgetSetID', uiWidgetSetID)
@@ -249,7 +292,12 @@ local function Init()
     end)
 
 
-    for i= 1, NUM_OVERRIDE_BUTTONS do-- ActionButton.lua
+
+
+
+
+--ActionButton.lua
+    for i= 1, NUM_OVERRIDE_BUTTONS do
         if _G['OverrideActionBarButton'..i] then
             hooksecurefunc(_G['OverrideActionBarButton'..i], 'SetTooltip', function(self)
                 if self.action then
@@ -272,19 +320,21 @@ local function Init()
         end
     end
 
-    --[[hooksecurefunc('TaskPOI_OnEnter', function(self)--世界任务，提示 WorldMapFrame.lua
-        if not self.questID then
-            return
-        end
-        
-    end)]]
 
+
+
+--GameTooltip_AddQuest    
     hooksecurefunc('GameTooltip_AddQuest', function(self, questIDArg)
         local questID = self.questID or questIDArg
         if questID and HaveQuestData(questID) then
             WoWTools_TooltipMixin:Set_Quest(GameTooltip, questID)
         end
     end)
+
+
+
+
+
 
 
     --霸业商店
@@ -296,6 +346,19 @@ local function Init()
             end
         end)
     end
+
+
+    hooksecurefunc('CopyToClipboard', function(text)
+        if text then
+            print(
+                WoWTools_TooltipMixin.addName,
+                '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复制' or CALENDAR_COPY_EVENT)..'|r',
+                text
+            )
+        end
+    end)
+
+
 end
 
 

@@ -120,7 +120,14 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
     btn:SetSize(get_size(size))
 
     if template=='UIPanelButtonTemplate' then
-        if text then btn:SetText(text) end
+        if text then
+            btn:SetText(text)
+        end
+        if texture then
+            btn:SetNormalTexture(texture)
+        elseif atlas then
+            btn:SetNormalAtlas(atlas)
+        end
     else
         self:SetPushedTexture(btn, isType2)
         if icon~='hide' then

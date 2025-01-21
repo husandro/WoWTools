@@ -18,7 +18,7 @@ local function SetTooltip(frame, pet)
     if WoWTools_StableFrameMixin.Save.HideTips then
         return
     end
-    
+
     e.tips:SetOwner(frame, "ANCHOR_LEFT", -12, 0)
     e.tips:ClearLines()
     --e.tips:AddDoubleLine(e.addName, WoWTools_StableFrameMixin.addName)
