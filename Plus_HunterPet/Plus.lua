@@ -99,7 +99,7 @@ local function created_model(btn, setBg)
         btn.Portrait2:SetPoint('LEFT', btn.callSpellButton, 'RIGHT')
 
         btn.abilitiesText= WoWTools_LabelMixin:Create(btn, {SetJustifyH='RIGHT'})--宠物，技能，提示
-        btn.abilitiesText:SetPoint('BOTTOMRIGHT', btn.callSpellButton, 'BOTTOMLEFT', 10, -2)
+        btn.abilitiesText:SetPoint('BOTTOMRIGHT', btn.callSpellButton, 'BOTTOMLEFT')
 
         btn.specTexture= btn:CreateTexture(nil, 'OVERLAY')--宠物，专精，图标
         btn.specTexture:SetSize(18, 18)
