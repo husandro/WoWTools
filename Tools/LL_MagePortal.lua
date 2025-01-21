@@ -95,7 +95,7 @@ local function Set_Button_Label(btn)
     end
 end
 
-function Set_Button_All_Label()
+local function Set_Button_All_Label()
     for _, btn in pairs( Buttons) do
         Set_Button_Label(btn)
     end
@@ -242,6 +242,7 @@ local function Init()
                 btn:SetScript('OnShow', function(self)
                     self:RegisterEvent('SPELL_UPDATE_COOLDOWN')
                     self:set_cool()
+                    self:set_alpha()
                 end)
                 btn:SetScript('OnHide', function(self)
                     self:UnregisterEvent('SPELL_UPDATE_COOLDOWN')
@@ -251,6 +252,11 @@ local function Init()
                 if btn:IsVisible() then
                     btn:RegisterEvent('SPELL_UPDATE_COOLDOWN')
                 end
+
+            else
+                btn:SetScript('OnShow', function(self)
+                    self:set_alpha()
+                end)
             end
 
             btn:SetScript("OnEvent", function(self, event, arg1)
@@ -311,7 +317,9 @@ local function Init()
             if not btn:settings() then
                 btn:RegisterEvent('SPELL_DATA_LOAD_RESULT')
             end
-            btn:set_alpha()
+            C_Timer.After(2, function()
+                btn:set_alpha()
+            end)
             table.insert(Buttons, btn)
         end
     end

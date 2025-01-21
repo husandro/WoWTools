@@ -12,8 +12,6 @@ local SpellTab={}--e.ChallengesSpellTabs
 
 
 
-
-
 --[[local function Vstr(t)--垂直文字
     local len = select(2, t:gsub("[^\128-\193]", ""))
     if(len == #t) then
@@ -139,6 +137,55 @@ end
 
 
 
+local CALL_PET_SPELL_IDS = {
+	[0883]=1,
+	[83242]=2,
+	[83243]=3,
+	[83244]=4,
+	[83245]=5,
+}
+
+local dropdownIconForPetSpec = {
+	[STABLE_PET_SPEC_CUNNING] = "|A:cunning-icon-small:18:18|a",
+	[STABLE_PET_SPEC_FEROCITY] = "|A:ferocity-icon-small:18:18|a",
+	[STABLE_PET_SPEC_TENACITY] = "|A:tenacity-icon-small:18:18|a",
+}
+
+
+
+
+local function GetHunterPetSpellText(spellID, isLeftPoint)
+    local index= CALL_PET_SPELL_IDS[spellID]
+    local info= index and C_StableInfo.GetStablePetInfo(index)
+    if not info then
+        return
+    end
+
+    local texture
+
+    local icon
+
+    for _, abilitie in pairs(info.abilities or info.petAbilities or {}) do
+        texture= C_Spell.GetSpellTexture(abilitie)
+        if texture and texture>0 then
+            icon= (icon and icon..(isLeftPoint and '' or '|n' ) or '')..'|T'..texture..':18|t'
+        end
+    end
+
+    icon= (icon and icon..(isLeftPoint and '' or '|n' ) or '').. (dropdownIconForPetSpec[info.specialization] or '')
+
+    for _, abilitie in pairs(info.specAbilities or {}) do
+        texture= C_Spell.GetSpellTexture(abilitie)
+        if texture and texture>0 then
+            icon= (icon and icon..(isLeftPoint and '' or '|n' ) or '')..'|T'..texture..':18|t'
+        end
+    end
+
+
+
+
+    return icon
+end
 
 
 
@@ -147,79 +194,99 @@ end
 
 
 
+local function GetSpellText(spellID)
+    if C_Spell.IsSpellPassive(spellID) then
+        return
+    end
+
+    local text
+    local des= C_Spell.GetSpellDescription(spellID)
+    des= e.cn(des)
+    if des then
+        text= des:match('|cff00ccff(.-)|r')
+            or des:match('传送至(.-)入口处')--传送至永茂林地入口处。
+            or des:match('传送到(.-)的入口')--传送到自由镇的入口
+            or des:match('将施法者传送到(.-)入口')--将施法者传送到青龙寺入口。
+
+            or des:match('Teleportiert zum Eingang des (.-)%.')--Teleportiert zum Eingang des Immergrünen Flors.
+            or des:match('Teleport to the entrance to (.-)%.')--Teleport to the entrance to The Everbloom.
+            or des:match('Teletransporte a la entrada del (.-)%.')--Teletransporte a la entrada del Vergel Eterno.
+            or des:match('Téléporte à l’entrée de la (.-)%.')--Téléporte à l’entrée de la Flore éternelle.
+
+            or des:match('Teletrasporta all\'ingresso di (.-)%.')--Teletrasporta all'ingresso di Verdeterno.
+            or des:match('Teletrasporta all\'ingresso del (.-)%.')
+            or des:match('Teletrasporta all\'ingresso dell\'(.-)%.')
+
+            or des:match('Teleporta para a entrada de (.-)')--Teleporta para a entrada de Floretérnia.
+            or des:match('Телепортирует заклинателя в (.-)%.')--Телепортирует заклинателя в Вечное Цветение.
+            or des:match('(.-) 입구로 순간이동합니다')--상록숲 입구로 순간이동합니다.
+    end
+    if not text then
+        text= e.cn(C_Spell.GetSpellName(spellID), {spellID=spellID, isName=true})
+        if not text then
+            text= select(2, GetCallPetSpellInfo(spellID))
+            text= e.cn(text)
+        end
+        text=text:match('%-(.+)') or text
+        text=text:match('：(.+)') or text
+        text=text:match(':(.+)') or text
+        text=text:gsub(' %d','')
+        text=text:gsub(SUMMONS,'')
+    end
+
+    return text
+end
 
 
-
-
-
-
-
-
-
+local function Set_Text(self, text)
+    if self.spellText then
+        self.spellText:SetText(text or '')
+    end
+end
 
 
 --Flyout, 技能，提示
 local function set_SpellFlyoutButton_UpdateGlyphState(self)
-    local text= SpellTab[self.spellID]
-    if not text and self.spellID and not C_Spell.IsSpellPassive(self.spellID) then
-
-
-        local des= C_Spell.GetSpellDescription(self.spellID)
-        des= e.cn(des)
-        if des then
-            text= des:match('|cff00ccff(.-)|r')
-                or des:match('传送至(.-)入口处')--传送至永茂林地入口处。
-                or des:match('传送到(.-)的入口')--传送到自由镇的入口
-                or des:match('将施法者传送到(.-)入口')--将施法者传送到青龙寺入口。
-
-                or des:match('Teleportiert zum Eingang des (.-)%.')--Teleportiert zum Eingang des Immergrünen Flors.
-                or des:match('Teleport to the entrance to (.-)%.')--Teleport to the entrance to The Everbloom.
-                or des:match('Teletransporte a la entrada del (.-)%.')--Teletransporte a la entrada del Vergel Eterno.
-                or des:match('Téléporte à l’entrée de la (.-)%.')--Téléporte à l’entrée de la Flore éternelle.
-
-                or des:match('Teletrasporta all\'ingresso di (.-)%.')--Teletrasporta all'ingresso di Verdeterno.
-                or des:match('Teletrasporta all\'ingresso del (.-)%.')
-                or des:match('Teletrasporta all\'ingresso dell\'(.-)%.')
-
-                or des:match('Teleporta para a entrada de (.-)')--Teleporta para a entrada de Floretérnia.
-                or des:match('Телепортирует заклинателя в (.-)%.')--Телепортирует заклинателя в Вечное Цветение.
-                or des:match('(.-) 입구로 순간이동합니다')--상록숲 입구로 순간이동합니다.
-        end
-        if not text then
-            text= e.cn(C_Spell.GetSpellName(self.spellID), {spellID=self.spellID, isName=true})
-            if not text then
-                text= select(2, GetCallPetSpellInfo(self.spellID))
-                text= e.cn(text)
-            end
-            text=text:match('%-(.+)') or text
-            text=text:match('：(.+)') or text
-            text=text:match(':(.+)') or text
-            text=text:gsub(' %d','')
-            text=text:gsub(SUMMONS,'')
-        end
+    if not self.spellID then
+        Set_Text(self, nil)
+        return
     end
+
+    local p=self:GetPoint(1)
+    local isLeftPoint= (p=='TOP') or (p=='BOTTOM')
+
+    local hunterPetText= GetHunterPetSpellText(self.spellID, isLeftPoint)
+    local text= hunterPetText or SpellTab[self.spellID]  or  GetSpellText(self.spellID)
+
+
     if text then
-        if not self.Text then
-            self.Text=WoWTools_LabelMixin:Create(self, {color={r=1,g=1,b=1}, justifyH='CENTER'})
+        if not self.spellText then
+            self.spellText= WoWTools_LabelMixin:Create(self, {color={r=1,g=1,b=1}, justifyH='CENTER', size=16})
             self.TextBg= self:CreateTexture(nil, 'BACKGROUND')
-            self.TextBg:SetPoint('TOPLEFT', self.Text,-1, 1)
-            self.TextBg:SetPoint('BOTTOMRIGHT', self.Text, 1,-1 )
+
+            
+            self.TextBg:SetPoint('TOPLEFT', self.spellText,-8, 8)
+            self.TextBg:SetPoint('BOTTOMRIGHT', self.spellText, 8,-8 )
             self.TextBg:SetAtlas('ChallengeMode-guild-background')
-        else
-            self.Text:ClearAllPoints()
         end
 
-        local p=self:GetPoint(1)
-        if p=='TOP' or p=='BOTTOM' then
-            self.Text:SetPoint('RIGHT', self, 'LEFT',-1, 0)--, 0, 0)
-        else
-            self.Text:SetPoint('BOTTOM', self, 'TOP', 0,1)--, 2, 4)
+
+        if isLeftPoint~=self.isLeftPoint then
+            self.spellText:ClearAllPoints()
+            if isLeftPoint then
+                self.spellText:SetPoint('RIGHT', self, 'LEFT',-1, 0)
+            else
+                self.spellText:SetPoint('BOTTOM', self, 'TOP', 0, 1)
+            end
+            self.isLeftPoint= isLeftPoint
+        end
+
+        if not hunterPetText and not isLeftPoint then
             text= WoWTools_TextMixin:Vstr(text)--垂直文字
         end
     end
-    if self.Text then
-        self.Text:SetText(text or "")
-    end
+
+    Set_Text(self, text)
 end
 
 
@@ -303,7 +370,7 @@ local function Init_All_Flyout()
     }
     local y= -145
     for _, flyoutID in pairs(tab) do--1024 MAX_SPELLS
-        
+
         local btn= WoWTools_ButtonMixin:Cbtn(PlayerSpellsFrame.SpellBookFrame.PagedSpellsFrame,
             {texture=519384, size=32}--, alpha=isKnown and 0.1 or 0.5}
         )
@@ -364,7 +431,7 @@ local function Init_All_Flyout()
                 .. num..'/'..numSlots
             )
         end
-    
+
         btn:set_text()
         btn:SetScript('OnShow', btn.set_text)
 
@@ -416,15 +483,13 @@ local function Init()
 
     --挑战传送门数据 --Flyout, 挑战传送门数据e.ChallengesSpellTabs，仅限 不是中文
     if e.onlyChinese then
-        C_Timer.After(4, function()
-            for _, info in pairs(e.ChallengesSpellTabs or {}) do
-                if info.spell and info.name then--local name= EJ_GetInstanceInfo(info.ins)
-                    SpellTab[info.spell]=info.name
-                end
+        --C_Timer.After(4, function()
+        for _, info in pairs(e.ChallengesSpellTabs or {}) do
+            if info.spell and info.name then--local name= EJ_GetInstanceInfo(info.ins)
+                SpellTab[info.spell]=info.name
             end
-        end)
+        end
     end
-
 end
 
 

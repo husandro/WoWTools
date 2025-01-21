@@ -9,6 +9,11 @@ local CALL_PET_SPELL_IDS = {
 	[83245]=5,
 }
 
+local dropdownIconForPetSpec = {
+	[STABLE_PET_SPEC_CUNNING] = "|A:cunning-icon-small:0:0|a",
+	[STABLE_PET_SPEC_FEROCITY] = "|A:ferocity-icon-small:0:0|a",
+	[STABLE_PET_SPEC_TENACITY] = "|A:tenacity-icon-small:0:0|a",
+}
 
 local function Set_HunterPet(tooltip, spellID)
     local index= CALL_PET_SPELL_IDS[spellID]
@@ -17,9 +22,12 @@ local function Set_HunterPet(tooltip, spellID)
         return
     end
 
-    tooltip:AddDoubleLine(e.cn(info.familyName), e.cn(info.specialization))
-    --..(indexType=='petAbilities' and '|cffffff00'..(e.onlyChinese and '基础技能' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, BASE_SETTINGS_TAB, ABILITIES))
-    -- (indexType=='specAbilities' and '|cnRED_FONT_COLOR:'..(e.onlyChinese and '专精技能' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPECIALIZATION, ABILITIES)))
+    tooltip:AddDoubleLine(
+        (e.cn(info.familyName) or '')
+        ..(info.name and info.name~=info.familyName and '<'..info.name..'>' or ''),
+
+        (dropdownIconForPetSpec[info.specialization] or '')..(e.cn(info.specialization) or '')
+    )
 
     local icon, icon2='', ''
     local texture

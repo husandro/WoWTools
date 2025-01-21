@@ -243,7 +243,7 @@ local function Init(mixin)
     mixin:SetAlphaColor(QuestScrollFrame.SettingsDropdown.Icon, true, nil, nil)
     mixin:SetAlphaColor(QuestScrollFrame.BorderFrame.Border, true, nil, nil)
     mixin:SetAlphaColor(QuestMapFrame.QuestsFrame.DetailsFrame.BorderFrame, true, nil, nil)
-    
+
     if QuestMapFrame.MapLegendTab then--11.1
        mixin:HideTexture(QuestMapFrame.MapLegendTab.Background)
        mixin:HideTexture(QuestMapFrame.QuestsTab.Background)
@@ -737,11 +737,12 @@ local function Init(mixin)
      mixin:HideTexture(MerchantFrameBottomLeftBorder)
 
      C_Timer.After(2, function()
-         if SpellFlyout and SpellFlyout.Background then--Spell Flyout
-            mixin:HideTexture(SpellFlyout.Background.HorizontalMiddle)
-            mixin:HideTexture(SpellFlyout.Background.End)
-            mixin:HideTexture(SpellFlyout.Background.VerticalMiddle)
-         end
+
+        WoWTools_PlusTextureMixin:HideTexture(SpellFlyout.Background.Start)
+        WoWTools_PlusTextureMixin:HideTexture(SpellFlyout.Background.End)
+        WoWTools_PlusTextureMixin:HideTexture(SpellFlyout.Background.HorizontalMiddle)
+        WoWTools_PlusTextureMixin:HideTexture(SpellFlyout.Background.VerticalMiddle)
+
 
          local libDBIcon = LibStub("LibDBIcon-1.0", true)
          if libDBIcon and libDBIcon.objects then

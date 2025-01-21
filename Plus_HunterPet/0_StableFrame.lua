@@ -46,6 +46,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWTools_StableFrameMixin.addName= '|A:groupfinder-icon-class-hunter:0:0|a'..(e.onlyChinese and '猎人兽栏' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UnitClass('player'), STABLE_STABLED_PET_LIST_LABEL))
 
+
             --添加控制面板
              e.AddPanel_Check({
                 name= WoWTools_StableFrameMixin.addName,
