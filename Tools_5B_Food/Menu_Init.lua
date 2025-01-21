@@ -214,7 +214,12 @@ local function Init_Menu(self, root)
     end
 
 --查找
-    sub=root:CreateButton((Save().autoWho and '|cnGREEN_FONT_COLOR:' or '')..'|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '查找' or WHO).. e.Icon.mid, function()
+    sub=root:CreateButton(
+        (Save().autoWho and '|cnGREEN_FONT_COLOR:' or '')
+        ..'|A:common-icon-zoomin:0:0|a'
+        ..(e.onlyChinese and '查找' or WHO)
+        ..e.Icon.mid,
+    function()
         WoWTools_FoodMixin:Check_Items(true)
     end)
 

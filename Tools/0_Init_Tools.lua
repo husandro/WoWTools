@@ -18,6 +18,7 @@ local Save={
     isEnterShow=true,
     isCombatHide=true,
     isMovingHide=true,
+    isMainMenuHide=true,
     --showIcon=false,
     --loadCollectionUI=nil,
     --show=false,
@@ -211,7 +212,14 @@ local function Init_Menu(self, root)
         self:set_event()
     end)
 
-
+    sub:CreateCheckbox(
+        '|A:UI-HUD-MicroMenu-GameMenu-Mouseover:0:0|a'
+        ..(e.onlyChinese and '显示主菜单' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, MAINMENU_BUTTON)),
+    function()
+        return Save.isMainMenuHide
+    end, function()
+        Save.isMainMenuHide= not Save.isMainMenuHide and true or nil
+    end)
 
 
 --选项
@@ -432,7 +440,7 @@ local function Init()
     Button:set_event()
 
     GameMenuFrame:HookScript('OnShow', function()
-        if Button.Frame:IsShown() then
+        if Button.Frame:IsShown() and Save.isMainMenuHide then
             Button:set_shown()
         end
     end)
