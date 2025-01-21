@@ -39,11 +39,32 @@ local function SetTooltip(frame, pet)
                     WoWTools_StableFrameMixin:GetAbilitieIconForTab(name, false)
                 )
             end
+
+        elseif indexType=='specialization' then
+            local atlas = e.dropdownIconForPetSpec[name]
+            e.tips:AddDoubleLine(col..(e.onlyChinese and '专精' or SPECIALIZATION), (atlas and '|A:'..atlas..':22:22|a' or '')..col..e.cn(name))
+
+        elseif indexType=='level' then
+            e.tips:AddDoubleLine(col..(e.onlyChinese and '等级' or LEVEL), col..name)
+
+        elseif indexType=='name' then
+            e.tips:AddDoubleLine(col..(e.onlyChinese and '名字' or NAME), col..e.cn(name))
+
+        elseif indexType=='icon' then
+            e.tips:AddDoubleLine(col..(e.onlyChinese and '图标' or EMBLEM_SYMBOL), col..format('|T%d:14|t%d', name, name))
+
+        elseif indexType=='familyName' then
+            e.tips:AddDoubleLine(col..(e.onlyChinese and '族系' or STABLE_SORT_TYPE_LABEL), col..e.cn(name))
+
+        elseif indexType=='type' then
+            e.tips:AddDoubleLine(col..(e.onlyChinese and '类型' or TYPE), col..e.cn(name))
+
+        elseif indexType=='isFavorite' then
+            e.tips:AddDoubleLine(col..(e.onlyChinese and '收藏' or FAVORITES), col..e.GetYesNo(name, true))
         else
-            name= indexType=='icon' and format('|T%d:14|t%d', name, name)
-                or (name==false and 'false')
+
+            name= name==false and 'false'
                 or (name==true and 'true')
-                or (name==nil and '')
                 or name
             e.tips:AddDoubleLine(col..indexType, col..name)
         end

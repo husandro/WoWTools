@@ -1,5 +1,7 @@
 local e= select(2, ...)
 
+
+
 --猎人兽栏，宠物
 local CALL_PET_SPELL_IDS = {
 	[0883]=1,
@@ -9,11 +11,6 @@ local CALL_PET_SPELL_IDS = {
 	[83245]=5,
 }
 
-local dropdownIconForPetSpec = {
-	[STABLE_PET_SPEC_CUNNING] = "|A:cunning-icon-small:0:0|a",
-	[STABLE_PET_SPEC_FEROCITY] = "|A:ferocity-icon-small:0:0|a",
-	[STABLE_PET_SPEC_TENACITY] = "|A:tenacity-icon-small:0:0|a",
-}
 
 local function Set_HunterPet(tooltip, spellID)
     local index= CALL_PET_SPELL_IDS[spellID]
@@ -22,11 +19,12 @@ local function Set_HunterPet(tooltip, spellID)
         return
     end
 
+    local atlas= e.dropdownIconForPetSpec[info.specialization]
     tooltip:AddDoubleLine(
         (e.cn(info.familyName) or '')
         ..(info.name and info.name~=info.familyName and '<'..info.name..'>' or ''),
 
-        (dropdownIconForPetSpec[info.specialization] or '')..(e.cn(info.specialization) or '')
+        (atlas and '|A:'..atlas..':0:0|a' or '')..(e.cn(info.specialization) or '')
     )
 
     local icon, icon2='', ''

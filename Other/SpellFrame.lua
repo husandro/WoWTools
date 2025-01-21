@@ -145,11 +145,7 @@ local CALL_PET_SPELL_IDS = {
 	[83245]=5,
 }
 
-local dropdownIconForPetSpec = {
-	[STABLE_PET_SPEC_CUNNING] = "|A:cunning-icon-small:18:18|a",
-	[STABLE_PET_SPEC_FEROCITY] = "|A:ferocity-icon-small:18:18|a",
-	[STABLE_PET_SPEC_TENACITY] = "|A:tenacity-icon-small:18:18|a",
-}
+
 
 
 
@@ -172,7 +168,8 @@ local function GetHunterPetSpellText(spellID, isLeftPoint)
         end
     end
 
-    icon= (icon and icon..(isLeftPoint and '' or '|n' ) or '').. (dropdownIconForPetSpec[info.specialization] or '')
+    local atlas = e.dropdownIconForPetSpec[info.specialization]
+    icon= (icon and icon..(isLeftPoint and '' or '|n' ) or '').. (atlas and '|A:'..atlas..':0:0|a' or '')
 
     for _, abilitie in pairs(info.specAbilities or {}) do
         texture= C_Spell.GetSpellTexture(abilitie)

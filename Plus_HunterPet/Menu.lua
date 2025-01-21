@@ -55,9 +55,9 @@ local function Init_Menu(_, root)
                 {name='displayID', type='displayID'},
                 {name=e.onlyChinese and '类型' or TYPE, type='type'},
                 {name=e.onlyChinese and '名称' or NAME, type='name'},
-                {name=e.onlyChinese and '天赋' or TALENT, type='specialization'},
+                {name=e.onlyChinese and '专精' or SPECIALIZATION, type='specialization'},
                 {name=e.onlyChinese and '图标' or EMBLEM_SYMBOL, type='icon'},
-                {name=e.onlyChinese and '种族' or RACE, type="familyName"}
+                {name=e.onlyChinese and '族系' or STABLE_SORT_TYPE_LABEL, type="familyName"}
             }) do
                 sub=root:CreateButton(tab.name, function(data)
                     WoWTools_StableFrameMixin:sort_pets_list(data.type)

@@ -1,5 +1,6 @@
 local e= select(2, ...)
 
+
 if e.Player.class~='HUNTER' then
     return
 end
@@ -19,12 +20,13 @@ local CALL_PET_SPELL_IDS = {
 	83244,
 	83245,
 }
+
 e.LoadData({id=267116, type='spell'})--动物伙伴
 
-local dropdownIconForPetSpec = {
-	[STABLE_PET_SPEC_CUNNING] = "cunning-icon-small",
-	[STABLE_PET_SPEC_FEROCITY] = "ferocity-icon-small",
-	[STABLE_PET_SPEC_TENACITY] = "tenacity-icon-small",
+local backgroundForPetSpec = {
+    [STABLE_PET_SPEC_CUNNING] = "hunter-stable-bg-art_cunning",
+    [STABLE_PET_SPEC_FEROCITY] = "hunter-stable-bg-art_ferocity",
+    [STABLE_PET_SPEC_TENACITY] = "hunter-stable-bg-art_tenacity",
 }
 
 
@@ -128,11 +130,7 @@ local function created_model(btn, setBg)
         if self.model.bg then
             local atlas
             if displayID>0 then
-                local backgroundForPetSpec = {
-                    [STABLE_PET_SPEC_CUNNING] = "hunter-stable-bg-art_cunning",
-                    [STABLE_PET_SPEC_FEROCITY] = "hunter-stable-bg-art_ferocity",
-                    [STABLE_PET_SPEC_TENACITY] = "hunter-stable-bg-art_tenacity",
-                }
+
                 atlas = backgroundForPetSpec[pet.specialization]
             end
             if atlas then
@@ -147,7 +145,7 @@ local function created_model(btn, setBg)
             self.Icon:SetTexCoord(0, 1, 0, 1)
         end
 
-        local atlas= dropdownIconForPetSpec[pet.specialization]
+        local atlas= e.dropdownIconForPetSpec[pet.specialization]
         if atlas then
             self.specTexture:SetAtlas(atlas)
         else

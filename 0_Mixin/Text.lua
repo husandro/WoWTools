@@ -173,11 +173,20 @@ function e.GetEnabeleDisable(ed, all)--启用或禁用字符
     end
 end
 
-function e.GetYesNo(yesno)
-    if yesno then
-        return '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '是' or YES)..'|r'
+function e.GetYesNo(yesno, notColor)
+    if notColor then
+        if yesno then
+            return e.onlyChinese and '是' or YES
+        else
+            return e.onlyChinese and '否' or NO
+        end
     else
-        return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '否' or NO)..'|r'
+
+        if yesno then
+            return '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '是' or YES)..'|r'
+        else
+            return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '否' or NO)..'|r'
+        end
     end
 end
 

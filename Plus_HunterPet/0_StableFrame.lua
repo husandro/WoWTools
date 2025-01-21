@@ -1,6 +1,14 @@
 local id, e= ...
+
 if e.Player.class~='HUNTER' then --or C_AddOns.IsAddOnLoaded("ImprovedStableFrame") then
+    e.dropdownIconForPetSpec={}
     return
+else
+    e.dropdownIconForPetSpec = {
+        [STABLE_PET_SPEC_CUNNING] = "cunning-icon-small",
+        [STABLE_PET_SPEC_FEROCITY] = "ferocity-icon-small",
+        [STABLE_PET_SPEC_TENACITY] = "tenacity-icon-small",
+    }
 end
 
 
@@ -21,8 +29,6 @@ WoWTools_StableFrameMixin={
         all_List_Size=28
     }
 }
-
-
 
 
 local function Init()
