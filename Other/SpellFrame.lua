@@ -260,7 +260,7 @@ local function set_SpellFlyoutButton_UpdateGlyphState(self)
             self.spellText= WoWTools_LabelMixin:Create(self, {color={r=1,g=1,b=1}, justifyH='CENTER', size=16})
             self.TextBg= self:CreateTexture(nil, 'BACKGROUND')
 
-            
+
             self.TextBg:SetPoint('TOPLEFT', self.spellText,-8, 8)
             self.TextBg:SetPoint('BOTTOMRIGHT', self.spellText, 8,-8 )
             self.TextBg:SetAtlas('ChallengeMode-guild-background')
@@ -450,9 +450,84 @@ end
 
 
 
+
+local function Init_Spec_Button()
+    local numSpec= GetNumSpecializations(false, false) or 0
+    if not C_SpecializationInfo.IsInitialized() or numSpec==0 then
+        return
+    end
+
+    for index=1, numSpec do
+        local btn= WoWTools_ButtonMixin:Cbtn(PlayerSpellsFrame.TalentsFrame, {
+                texture= select(4, GetSpecializationInfo(index, false, false, nil, UnitSex("player"))),
+                size=164/numSpec,
+                name='WoWTools_Other_SpecButton'..index
+            })
+
+        btn:SetFrameStrata('HIGH')
+        if index==1 then
+            btn:SetPoint('BOTTOMLEFT', PlayerSpellsFrame.TalentsFrame.ApplyButton, 'TOPLEFT')
+        else
+            btn:SetPoint('LEFT', _G['WoWTools_Other_SpecButton'..(index-1)], 'RIGHT')
+        end
+
+        btn.RoleIcon= btn:CreateTexture(nil, 'OVERLAY')
+        btn.RoleIcon:SetSize(18,18)
+        btn.RoleIcon:SetPoint('BOTTOMRIGHT',-1, 1)
+        btn.RoleIcon:SetAtlas(GetMicroIconForRoleEnum(GetSpecializationRoleEnum(index, false, false)), TextureKitConstants.IgnoreAtlasSize)
+
+        btn.SelectIcon= btn:CreateTexture(nil, 'OVERLAY')
+        btn.SelectIcon:SetAllPoints()
+        btn.SelectIcon:SetAtlas('ChromieTime-Button-Selection')
+        btn.SelectIcon:SetVertexColor(0,1,0)
+
+        function btn:IsActive()
+            return GetSpecialization(nil, false, 1)==self.specIndex
+        end
+        function btn:Settings()
+            self.SelectIcon:SetShown(self:IsActive())
+        end
+
+        btn:SetScript('OnClick', function(self)
+            if self:IsActive() or UnitAffectingCombat('player') then
+                return
+            end
+            C_SpecializationInfo.SetSpecialization(self.specIndex)
+        end)
+
+        btn:SetScript('OnLeave', GameTooltip_Hide)
+        btn:SetScript('OnEnter', function(self)
+            local _, name, description, icon = GetSpecializationInfo(self.specIndex, false, false, nil, UnitSex("player"))
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddLine(
+                '|T'..(icon or 0)..':0|t|A:'..(GetMicroIconForRoleEnum(GetSpecializationRoleEnum(self.specIndex, false, false) or '')..':0:0|a')
+                ..e.cn(name)
+            )
+            e.tips:AddLine(' ')
+            e.tips:AddLine(e.cn(description), nil, nil, nil, true)
+            e.tips:AddLine(' ')
+            e.tips:AddLine(addName)
+            e.tips:AddLine(
+                ((UnitAffectingCombat('player') or self:IsActive()) and '|cff828282' or '')
+                ..(e.onlyChinese and '激活' or SPEC_ACTIVE)
+                ..e.Icon.left
+            )
+            e.tips:Show()
+        end)
+
+        btn:RegisterEvent('ACTIVE_PLAYER_SPECIALIZATION_CHANGED')
+        btn:SetScript('OnEvent', btn.Settings)
+
+        btn.specIndex= index
+        btn:Settings()
+    end
+end
+
 local function Init_Blizzard_PlayerSpells()
     hooksecurefunc(ClassTalentButtonSpendMixin, 'UpdateSpendText', set_UpdateSpendText)--天赋, 点数 
     Init_All_Flyout()
+    Init_Spec_Button()
 end
 
 

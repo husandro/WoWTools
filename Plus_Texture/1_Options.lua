@@ -9,9 +9,8 @@ local Category, Layout
 
 
 local function GetMinValueAlpha()--透明度，最小值
-    WoWTools_PlusTextureMixin.min=
-        Save().alpha<0.3 and 0.3
-        or (Save().alpha<0.5 and 0.5) or nil
+    local alpha= Save().alpha or 0.5
+    WoWTools_PlusTextureMixin.min= alpha<0.5 and 0.5 or (alpha<0.3 and 0.3) or 0.5
 end
 
 
@@ -41,7 +40,7 @@ local function Init_Options()
 
     local initializer= e.AddPanelSider({
         name= e.onlyChinese and '透明度' or 'Alpha',
-        GetValue= function() return Save().alpha end,
+        GetValue= function() return Save().alpha or 0.5 end,
         minValue= 0,
         maxValue= 1,
         setp= 0.1,
@@ -75,7 +74,7 @@ local function Init_Options()
     })
     initializer= e.AddPanelSider({
         name= e.onlyChinese and '透明度' or 'Alpha',
-        GetValue= function() return Save().chatBubbleAlpha end,
+        GetValue= function() return Save().chatBubbleAlpha or 0.5 end,
         minValue= 0,
         maxValue= 1,
         setp= 0.1,
@@ -92,7 +91,7 @@ local function Init_Options()
 
     initializer= e.AddPanelSider({
         name= e.onlyChinese and '缩放' or UI_SCALE,
-        GetValue= function() return Save().chatBubbleSacal end,
+        GetValue= function() return Save().chatBubbleSacal or 0.85 end,
         minValue= 0.3,
         maxValue= 1,
         setp= 0.1,
@@ -114,7 +113,7 @@ local function Init_Options()
             Save().classPowerNum= not Save().classPowerNum and true or false
             print(e.addName, WoWTools_PlusTextureMixin.addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
-        sliderGetValue= function() return Save().classPowerNumSize end,
+        sliderGetValue= function() return Save().classPowerNumSize or 12 end,
         minValue= 6,
         maxValue= 64,
         step= 1,

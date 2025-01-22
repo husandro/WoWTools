@@ -674,14 +674,18 @@ ChatButton\11_Combat.lua
 
 
 ##其它
+##Other\0_Init.lua
+##Other\1_Options.lua
+
+
 ##美酒节 Brewfest
 Other\Brewfest.lua
 
 ##法术弹出框，加名称, 和颜色
 Other\SpellFrame.lua
 Other\ScrappingMachine.lua
-
 Other\AccountStore.lua
+
 ##10.1 梦境之种
 ##Other\DormantSeeds.lua
 
