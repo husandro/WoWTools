@@ -22,8 +22,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWTools_OtherMixin.addName= '|A:QuestNormal:0:0|a'..(e.onlyChinese and '其它' or OTHER)
 
-            WoWTools_OtherMixin:Init_Category()
-
+            WoWTools_OtherMixin:Init_Options()
+            
             if WoWTools_OtherMixin.Save.disabled then
                 self:UnregisterEvent('ADDON_LOADED')
             else

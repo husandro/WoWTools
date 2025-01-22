@@ -14,6 +14,22 @@ local Category, Layout
 
 
 local function Init_Options()
+    
+end
+
+
+
+
+
+
+
+
+
+
+
+local function Init()
+    Category, Layout= e.AddPanel_Sub_Category({name=WoWTools_OtherMixin.addName})
+
     e.AddPanel_Check({
         name= e.onlyChinese and '启用' or ENABLE,
         tooltip= WoWTools_OtherMixin.addName,
@@ -33,26 +49,10 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function WoWTools_OtherMixin:Init_Category()
-    Category, Layout= e.AddPanel_Sub_Category({name=WoWTools_OtherMixin.addName})
-
+function WoWTools_OtherMixin:Init_Options()
+    Init()
 end
+
 
 
 function WoWTools_OtherMixin:Blizzard_Settings()

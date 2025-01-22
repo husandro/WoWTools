@@ -223,27 +223,6 @@ end
 
 local function Init_Panel()
 
-    Initializer, Layout= e.AddPanel_Sub_Category({name=addName})
-
-    e.AddPanel_Check_Button({
-        checkName= e.onlyChinese and '启用' or ENABLE,
-        GetValue= function() return not Save.disabled end,
-        SetValue= function()
-            Save.disabled= not Save.disabled and true or nil
-            print(e.addName, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-        end,
-        buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
-        buttonFunc= function()
-            Save.Point=nil
-            if ChatButton then
-                ChatButton:set_point()
-            end
-            print(e.addName, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
-        end,
-        tooltip= addName,
-        layout= Layout,
-        category= Initializer,
-    })
 
     e.AddPanel_Header(Layout, e.onlyChinese and '选项' or OPTIONS)
 
@@ -293,8 +272,32 @@ panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             Save= WoWToolsSave['ChatButton'] or Save
+
             Save.disabledADD= Save.disabledADD or {}
+
             addName='|A:voicechat-icon-textchat-silenced:0:0|a'..(e.onlyChinese and '聊天工具' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHAT, AUCTION_SUBCATEGORY_PROFESSION_TOOLS))
+
+            Initializer, Layout= e.AddPanel_Sub_Category({name=addName})
+
+            e.AddPanel_Check_Button({
+                checkName= e.onlyChinese and '启用' or ENABLE,
+                GetValue= function() return not Save.disabled end,
+                SetValue= function()
+                    Save.disabled= not Save.disabled and true or nil
+                    print(e.addName, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                end,
+                buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
+                buttonFunc= function()
+                    Save.Point=nil
+                    if ChatButton then
+                        ChatButton:set_point()
+                    end
+                    print(e.addName, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+                end,
+                tooltip= addName,
+                layout= Layout,
+                category= Initializer,
+            })
 
             if not Save.disabled then
                 ChatButton= WoWTools_ChatButtonMixin:Init(Save.disabledADD, Save)

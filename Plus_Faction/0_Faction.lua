@@ -90,8 +90,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 				if C_AddOns.IsAddOnLoaded('Blizzard_MajorFactions') then
                     WoWTools_ReputationMixin:Init_MajorFactionRenownFrame()--名望
                 end
+				
+			else
+				self:UnregisterEvent('ADDON_LOADED')
             end
-            --self:UnregisterEvent('ADDON_LOADED')
+            
 
 
 		elseif arg1=='Blizzard_MajorFactions' then

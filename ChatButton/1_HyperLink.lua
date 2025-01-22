@@ -1,5 +1,5 @@
 local id, e = ...
-local addName 
+local addName
 local Save={
     --disabed=true, --使用，禁用
     --notShowPlayerInfo=true,--不处理，玩家信息
@@ -27,16 +27,18 @@ local Save={
 
     --not_Add_Reload_Button=true,--添加 RELOAD 按钮
 }
-local LinkButton
-local panel= CreateFrame("Frame")
+
 
 DEFAULT_CHAT_FRAME.ADD= DEFAULT_CHAT_FRAME.AddMessage
---local not_Colleced_Icon='|A:questlegendary:0:0|a'
+
+local LinkButton, Category
+local panel= CreateFrame("Frame")
 
 local LOOT_ITEM= LOOT_ITEM--= WoWTools_TextMixin:Magic(LOOT_ITEM)--:gsub('%%s', '(.+)')--%s获得了战利品：%s。
 local CHAT_SAY_SEND= CHAT_SAY_SEND
 
-local Category
+
+
 
 
 
@@ -54,7 +56,7 @@ local function cn_Link_Text(link, tabInfo)
     if name then
         local new= e.cn(name, tabInfo)--汉化
         if new and name~=new then
-            
+
             name= name:match('|c........(.-)|r') or name
             name= WoWTools_TextMixin:Magic(name)
             link= link:gsub(name, new)
@@ -420,34 +422,33 @@ end
 
 local function Journal(link)--冒险指南 |Hjournal:0:1031:14|h[Uldir]|h 0=Instance, 1=Encounter, 2=Section
     local journalType, journalID, journalName=link:match('Hjournal:(%d+):(%d+):.-%[(.-)]')
-    local type= (journalID and journalType) and tonumber(journalType)
-    if not type then
-        return
-    end
-    if journalType==2 then
-        local sectionID = select(3, EJ_HandleLinkPath(type, journalID))
-        if sectionID then
-            local info = C_EncounterJournal.GetSectionInfo(sectionID)
-            if info and info.abilityIcon then
-                return '|T'..info.abilityIcon..':0|t'..cn_Link_Text(link)
-            end
-        end
-    elseif type==1 and journalName then
-        local _, encounterID = EJ_HandleLinkPath(type, journalID)
-        for index=1,9 do
-            local _, name, _, _, iconImage = EJ_GetCreatureInfo(index, encounterID)
-            if name and iconImage then
-                if name==journalName then
-                    return '|T'..iconImage..':0|t'..cn_Link_Text(link)
+    local type= journalID and journalType and tonumber(journalType)
+    if  type then
+        if type==2 then
+           local sectionID = select(3, EJ_HandleLinkPath(type, journalID))
+           if sectionID then
+                local info = C_EncounterJournal.GetSectionInfo(sectionID)
+                if info and info.abilityIcon then
+                    return '|T'..info.abilityIcon..':0|t'..cn_Link_Text(link)
                 end
-            else
-                break
+           end
+        elseif type==1 and journalName then
+            local _, encounterID = EJ_HandleLinkPath(type, journalID)
+            for index=1,9 do
+                local _, name, _, _, iconImage = EJ_GetCreatureInfo(index, encounterID)
+                if name and iconImage then
+                    if name==journalName then
+                        return '|T'..iconImage..':0|t'..cn_Link_Text(link)
+                    end
+                else
+                    break
+                end
             end
-        end
-    elseif journalType==0 then--Instance
-        local buttonImage2 = select(6, EJ_GetInstanceInfo(journalID))
-        if buttonImage2 then
-            return '|T'..buttonImage2..':0|t'..cn_Link_Text(link)
+        elseif type==0 then--Instance
+            local buttonImage2 = select(6, EJ_GetInstanceInfo(journalID))
+            if buttonImage2 then
+                return '|T'..buttonImage2..':0|t'..cn_Link_Text(link)
+            end
         end
     end
 end
@@ -677,7 +678,6 @@ end
 --###########
 --local Category, Layout
 local function Init_Panel()
-    --Category, Layout= e.AddPanel_Sub_Category({name= addName, frame= panel})
     Category= e.AddPanel_Sub_Category({name=addName, frame=panel})
 
     local function Cedit(self)
@@ -1204,7 +1204,7 @@ local function Init_Menu(_, root)
     tre:SetTooltip(function (tooltip)
         GameTooltip_AddNormalLine(tooltip, Save.groupWelcomeText)
         GameTooltip_AddBlankLineToTooltip(tooltip)
-        GameTooltip_AddErrorLine(tooltip, e.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON)        
+        GameTooltip_AddErrorLine(tooltip, e.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON)
     end)
 
     tre= sub:CreateButton('|A:socialqueuing-icon-group:0:0|a'..(e.onlyChinese and '修改' or EDIT), function ()
@@ -1347,7 +1347,7 @@ local function Init()
         e.tips:AddDoubleLine(e.onlyChinese and '超链接图标'or addName, e.GetEnabeleDisable(Save.disabed))
         e.tips:Show()]]
         self:state_enter()--Init_Menu)
-        
+
     end)
 
     LinkButton:SetScript('OnClick', function(self, d)
@@ -1451,6 +1451,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
                 self:RegisterEvent('CVAR_UPDATE')
             else
                 DEFAULT_CHAT_FRAME.ADD= nil
+                self:UnregisterEvent('ADDON_LOADED')
             end
 
         elseif arg1=='Blizzard_Settings' then
