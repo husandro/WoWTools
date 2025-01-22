@@ -31,7 +31,7 @@ local function Init_HooKey(btn)
     end
 
 
-    --Set_Texture(btn)
+    Set_Texture(btn)
 end
 
 
