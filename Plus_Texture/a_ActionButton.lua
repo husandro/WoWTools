@@ -4,7 +4,14 @@ local KEY_BUTTON = KEY_BUTTON10:gsub(10, '')--"鼠标按键10"
 
 
 
-local function Set_HooKey(btn)
+local function Set_Texture(btn)
+    WoWTools_PlusTextureMixin:HideTexture(btn.SlotArt)
+    WoWTools_PlusTextureMixin:HideTexture(btn.NormalTexture)--外框，方块
+    WoWTools_PlusTextureMixin:HideTexture(btn.SlotBackground, true)--背景
+end
+
+
+local function Init_HooKey(btn)
     if not btn then
         return
     end
@@ -22,8 +29,9 @@ local function Set_HooKey(btn)
     if btn.cooldown then--缩小，冷却，字体
         btn.cooldown:SetCountdownFont('NumberFontNormal')
     end
-    WoWTools_PlusTextureMixin:HideTexture(btn.NormalTexture)--外框，方块
-    WoWTools_PlusTextureMixin:HideTexture(btn.SlotBackground, true)--背景
+
+
+    Set_Texture(btn)
 end
 
 
@@ -44,27 +52,52 @@ local function Init()
             "MultiBar6Button",
             "MultiBar7Button",
         }) do
-            Set_HooKey(_G[name..i])
+            Init_HooKey(_G[name..i])
         end
     end
 
     hooksecurefunc(MainMenuBar, 'UpdateDividers', function(self)--主动作条
         for i=1, MAIN_MENU_BAR_NUM_BUTTONS do
-            local btn=_G['ActionButton'..i]
-            if btn then
-                WoWTools_PlusTextureMixin:HideTexture(btn.NormalTexture)--外框，方块
-                WoWTools_PlusTextureMixin:HideTexture(btn.SlotBackground, true)--背景
-            end
+            Set_Texture(_G['ActionButton'..i])
         end
+        if self.hideBarArt or self.numRows > 1 or self.buttonPadding > self.minButtonPadding then
+            return
+        end
+
+        --[[local dividersPool = self.isHorizontal and self.HorizontalDividersPool or self.VerticalDividersPool
+        if dividersPool then
+            local wasLastButtonShown = false
+            for i, actionButton in pairs(self.actionButtons) do
+                if actionButton:IsShown() then
+                    if wasLastButtonShown then
+                        for pool in dividersPool:EnumerateActive() do
+                            WoWTools_PlusTextureMixin:SetFrame(pool)
+                        end
+                    end
+                    wasLastButtonShown = true;
+                else
+                    wasLastButtonShown = false;
+                end
+            end
+        end]]
     end)
 
-    WoWTools_PlusTextureMixin:SetFrame(MainMenuBar.ActionBarPageNumber.UpButton, {alpha=0.3})
-    WoWTools_PlusTextureMixin:SetFrame(MainMenuBar.ActionBarPageNumber.DownButton, {alpha=0.3})
+    local dividersPool = MainMenuBar.isHorizontal and MainMenuBar.HorizontalDividersPool or MainMenuBar.VerticalDividersPool
+    if dividersPool then
+        for i, actionButton in pairs(MainMenuBar.actionButtons) do
+            for pool in dividersPool:EnumerateActive() do
+                WoWTools_PlusTextureMixin:SetFrame(pool)
+            end
+        end
+    end
+
+    WoWTools_PlusTextureMixin:SetFrame(MainMenuBar.ActionBarPageNumber.UpButton, {alpha=0.5})
+    WoWTools_PlusTextureMixin:SetFrame(MainMenuBar.ActionBarPageNumber.DownButton, {alpha=0.5})
     WoWTools_ColorMixin:SetLabelTexture(MainMenuBar.ActionBarPageNumber.Text, {type='FontString'})
 
     if MainMenuBar.EndCaps then
-        WoWTools_PlusTextureMixin:SetAlphaColor(MainMenuBar.EndCaps.LeftEndCap, true, nil, 0.3)
-        WoWTools_PlusTextureMixin:SetAlphaColor(MainMenuBar.EndCaps.RightEndCap, true, nil, 0.3)
+        WoWTools_PlusTextureMixin:SetAlphaColor(MainMenuBar.EndCaps.LeftEndCap, true, nil, nil)
+        WoWTools_PlusTextureMixin:SetAlphaColor(MainMenuBar.EndCaps.RightEndCap, true, nil, nil)
     end
     WoWTools_PlusTextureMixin:SetAlphaColor(MainMenuBar.BorderArt, nil, nil, 0.3)
 end

@@ -79,10 +79,7 @@ local function created_model(btn, setBg)
         SetPortraitToTexture(btn.callSpellButton.Texture, 132161)
         btn.callSpellButton:SetPoint('BOTTOMLEFT', -8, -15)
         btn.callSpellButton.spellID= CALL_PET_SPELL_IDS[slotID]
-        btn.callSpellButton:SetScript('OnLeave', function(self)
-            --self:SetAlpha(0.5)
-            GameTooltip_Hide()
-        end)
+        btn.callSpellButton:SetScript('OnLeave', GameTooltip_Hide)
         btn.callSpellButton:SetScript('OnEnter', function(self)
             if self.spellID then
                 GameTooltip:SetOwner(self, "ANCHOR_LEFT")
@@ -90,16 +87,14 @@ local function created_model(btn, setBg)
                 GameTooltip:SetSpellByID(self.spellID, true, true);
                 GameTooltip:Show();
             end
-            --self:SetAlpha(1)
         end)
-        --btn.callSpellButton:SetAlpha(0.5)
 
         btn.Portrait2= btn:CreateTexture(nil, 'OVERLAY')--宠物，类型，图标
         btn.Portrait2:SetSize(18, 18)
         btn.Portrait2:SetPoint('LEFT', btn.callSpellButton, 'RIGHT')
 
         btn.abilitiesText= WoWTools_LabelMixin:Create(btn, {SetJustifyH='RIGHT'})--宠物，技能，提示
-        btn.abilitiesText:SetPoint('BOTTOMRIGHT', btn.callSpellButton, 'BOTTOMLEFT')
+        btn.abilitiesText:SetPoint('BOTTOMRIGHT', btn.callSpellButton, 'BOTTOMLEFT',10,0)
 
         btn.specTexture= btn:CreateTexture(nil, 'OVERLAY')--宠物，专精，图标
         btn.specTexture:SetSize(18, 18)
