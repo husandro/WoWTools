@@ -31,7 +31,7 @@ local function Init_HooKey(btn)
     end
 
 
-    Set_Texture(btn)
+    --Set_Texture(btn)
 end
 
 
@@ -64,32 +64,24 @@ local function Init()
             return
         end
 
-        --[[local dividersPool = self.isHorizontal and self.HorizontalDividersPool or self.VerticalDividersPool
+        local dividersPool = self.isHorizontal and self.HorizontalDividersPool or self.VerticalDividersPool
         if dividersPool then
-            local wasLastButtonShown = false
             for i, actionButton in pairs(self.actionButtons) do
-                if actionButton:IsShown() then
-                    if wasLastButtonShown then
-                        for pool in dividersPool:EnumerateActive() do
-                            WoWTools_PlusTextureMixin:SetFrame(pool)
-                        end
-                    end
-                    wasLastButtonShown = true;
-                else
-                    wasLastButtonShown = false;
+                for pool in dividersPool:EnumerateActive() do
+                    WoWTools_PlusTextureMixin:SetFrame(pool)
                 end
             end
-        end]]
+        end
     end)
 
-    local dividersPool = MainMenuBar.isHorizontal and MainMenuBar.HorizontalDividersPool or MainMenuBar.VerticalDividersPool
+    --[[local dividersPool = MainMenuBar.isHorizontal and MainMenuBar.HorizontalDividersPool or MainMenuBar.VerticalDividersPool
     if dividersPool then
         for i, actionButton in pairs(MainMenuBar.actionButtons) do
             for pool in dividersPool:EnumerateActive() do
                 WoWTools_PlusTextureMixin:SetFrame(pool)
             end
         end
-    end
+    end]]
 
     WoWTools_PlusTextureMixin:SetFrame(MainMenuBar.ActionBarPageNumber.UpButton, {alpha=0.5})
     WoWTools_PlusTextureMixin:SetFrame(MainMenuBar.ActionBarPageNumber.DownButton, {alpha=0.5})
