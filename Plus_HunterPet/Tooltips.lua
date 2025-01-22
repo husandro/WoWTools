@@ -25,16 +25,15 @@ local function SetTooltip(frame, pet)
     --e.tips:AddLine(' ')
     local i=1
     for indexType, name in pairs(pet) do
-        local col= indexType=='slotID' and '|cffff00ff'
-                or (indexType=='name' and '|cnGREEN_FONT_COLOR:')
-                or (select(2, math.modf(i/2))==0 and '|cffffffff')
-                or '|cff00ccff'
+        --local col= --indexType=='slotID' and '|cffff00ff'
+                --or (indexType=='name' and '|cnGREEN_FONT_COLOR:')
+        local col= (select(2, math.modf(i/2))==0 and '|cffffffff') or '|cff00ccff'
         if type(name)=='table' then
             if indexType=='abilities' or indexType=='petAbilities' or indexType=='specAbilities' then--11.1 abilities
                 e.tips:AddDoubleLine(
                     col
-                    ..(indexType=='petAbilities' and '|cffffff00'..(e.onlyChinese and '基础技能' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, BASE_SETTINGS_TAB, ABILITIES))
-                        or (indexType=='specAbilities' and '|cnRED_FONT_COLOR:'..(e.onlyChinese and '专精技能' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPECIALIZATION, ABILITIES)))
+                    ..(indexType=='petAbilities' and (e.onlyChinese and '基础技能' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, BASE_SETTINGS_TAB, ABILITIES))
+                        or (indexType=='specAbilities' and (e.onlyChinese and '专精技能' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPECIALIZATION, ABILITIES)))
                     or indexType),
                     WoWTools_StableFrameMixin:GetAbilitieIconForTab(name, false)
                 )
@@ -61,17 +60,21 @@ local function SetTooltip(frame, pet)
 
         elseif indexType=='isFavorite' then
             e.tips:AddDoubleLine(col..(e.onlyChinese and '收藏' or FAVORITES), col..e.GetYesNo(name, true))
+
+        elseif indexType=='isExotic' then
+            e.tips:AddDoubleLine(col..(e.onlyChinese and '特殊' or STABLE_EXOTIC_TYPE_LABEL), col..e.GetYesNo(name, true))
         else
 
-            name= name==false and 'false'
-                or (name==true and 'true')
+            name= (name==false or name==true) and col..e.GetYesNo(name, true)
                 or name
             e.tips:AddDoubleLine(col..indexType, col..name)
         end
         i=i+1
     end
-    local dietString = table.concat(C_StableInfo.GetStablePetFoodTypes(pet.slotID), LIST_DELIMITER)
-    e.tips:AddDoubleLine(format('|cff00ccff%s', e.onlyChinese and '食物' or PET_DIET_TEMPLATE), dietString)
+    e.tips:AddDoubleLine(
+        e.onlyChinese and '食物' or PET_DIET_TEMPLATE,
+        table.concat(C_StableInfo.GetStablePetFoodTypes(pet.slotID), LIST_DELIMITER)
+    )
     e.tips:AddLine(' ')
     e.tips:AddDoubleLine(e.onlyChinese and '拖曳' or DRAG_MODEL, e.Icon.left)
 

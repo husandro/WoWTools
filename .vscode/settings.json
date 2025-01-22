@@ -5107,7 +5107,8 @@
         "GameTooltip_AddColoredDoubleLine",
         "EventTraceTooltip",
         "EVENTTRACE_ARG_FMT",
-        "STABLE_SORT_TYPE_LABEL"
+        "STABLE_SORT_TYPE_LABEL",
+        "STABLE_EXOTIC_TYPE_LABEL"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
