@@ -466,7 +466,7 @@ local function Init_Spec_Button()
 
         btn:SetFrameStrata('HIGH')
         if index==1 then
-            btn:SetPoint('BOTTOMLEFT', PlayerSpellsFrame.TalentsFrame.ApplyButton, 'TOPLEFT')
+            btn:SetPoint('BOTTOMLEFT', PlayerSpellsFrame.TalentsFrame.ApplyButton, 'TOPLEFT', 0, 4)
         else
             btn:SetPoint('LEFT', _G['WoWTools_Other_SpecButton'..(index-1)], 'RIGHT')
         end
@@ -501,18 +501,26 @@ local function Init_Spec_Button()
 
         btn:SetScript('OnLeave', GameTooltip_Hide)
         btn:SetScript('OnEnter', function(self)
-            local _, name, description, icon = GetSpecializationInfo(self.specIndex, false, false, nil, UnitSex("player"))
+            local _, name, description, icon, role, primaryStat= GetSpecializationInfo(self.specIndex, false, false, nil, UnitSex("player"))
+            local stat={
+                e.onlyChinese and '力量' or SPEC_FRAME_PRIMARY_STAT_STRENGTH,
+                e.onlyChinese and '敏捷' or SPEC_FRAME_PRIMARY_STAT_AGILITY,
+                e.onlyChinese and '智力' or SPEC_FRAME_PRIMARY_STAT_INTELLECT,
+            }
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddLine(
-                '|T'..(icon or 0)..':0|t|A:'..(GetMicroIconForRoleEnum(GetSpecializationRoleEnum(self.specIndex, false, false) or '')..':0:0|a')
-                ..e.cn(name)
+            e.tips:AddDoubleLine(
+                '|T'..(icon or 0)..':0|t'
+                ..(e.cn(name) or ''),
+
+                (stat[primaryStat] or '')
+                ..'|A:'..(GetMicroIconForRoleEnum(GetSpecializationRoleEnum(self.specIndex, false, false) or '')..':0:0|a')..(e.cn(_G[role] or role) or '')
             )
             e.tips:AddLine(' ')
             e.tips:AddLine(e.cn(description), nil, nil, nil, true)
             e.tips:AddLine(' ')
-            e.tips:AddLine(addName)
-            e.tips:AddLine(
+            e.tips:AddDoubleLine(
+                addName,
                 ((UnitAffectingCombat('player') or self:IsActive()) and '|cff828282' or '')
                 ..(e.onlyChinese and '激活' or SPEC_ACTIVE)
                 ..e.Icon.left
