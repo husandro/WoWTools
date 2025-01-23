@@ -203,6 +203,7 @@ local function Init(mixin)
     --声望
     mixin:SetScrollBar(ReputationFrame)
     mixin:SetMenu(ReputationFrame.filterDropdown)
+    mixin:SetFrame(ReputationFrame.ReputationDetailFrame.Border, {isMinAlpha=true})
 
 
     --货币
