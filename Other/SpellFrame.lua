@@ -492,7 +492,11 @@ local function Init_Spec_Button()
             if self:IsActive() or UnitAffectingCombat('player') then
                 return
             end
-            C_SpecializationInfo.SetSpecialization(self.specIndex)
+            if C_SpecializationInfo.SetSpecialization then--11.1
+                C_SpecializationInfo.SetSpecialization(self.specIndex)
+            else
+                SetSpecialization(self.specIndex)
+            end
         end)
 
         btn:SetScript('OnLeave', GameTooltip_Hide)
