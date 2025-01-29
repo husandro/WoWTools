@@ -291,27 +291,13 @@ end
 
 
 local function Init()
-    --Button= WoWTools_ButtonMixin:CreateMenu(MacroFrame.TitleContainer)--, {hideIcon=true})
     Button= WoWTools_ButtonMixin:Cbtn(MacroFrameCloseButton, {size={23,23}, atlas='ui-questtrackerbutton-filter'})--icon='hide'})
     Button:SetPushedAtlas('ui-questtrackerbutton-filter-pressed')
     Button:SetHighlightAtlas('ui-questtrackerbutton-red-highlight')
-    --Button:SetFrameLevel(MacroFrameCloseButton:GetFrameLevel()+1)
-    --Button:SetPoint('LEFT',0, -2)
     Button:SetPoint('RIGHT', MacroFrameCloseButton, 'LEFT', -2, 0)
-    --Button:SetAlpha(0.5)
-    
-    --Button:SetupMenu(Init_Menu)
 
-    --[[function Button:set_texture()
-        local point= Save().toRightLeft
-        self:SetNormalAtlas(
-            point==1 and e.Icon.toLeft--左边
-            or point==2 and e.Icon.toRight--右边
-            or 'ui-questtrackerbutton-filter'--e.Icon.icon
-        )
-    end]]
 
-    Button:SetScript('OnLeave', GameTooltip_Hide)--function(self) e.tips:Hide() self:SetAlpha(0.5) end)
+    Button:SetScript('OnLeave', GameTooltip_Hide)
     Button:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
@@ -321,17 +307,16 @@ local function Init()
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(' ', (e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..e.Icon.left)
         e.tips:Show()
-        --self:SetAlpha(1)
     end)
     Button:SetScript('OnMouseDown', function(self)
         MenuUtil.CreateContextMenu(self, Init_Menu)
     end)
 
-    
+
     Button.Text= WoWTools_LabelMixin:Create(MacroFrame.TitleContainer, {color={r=1,g=0,b=0}, size=16})
     Button.Text:SetPoint('BOTTOMRIGHT', Button, 'TOPRIGHT', 0, 2)
     Button.Text:SetText(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
-    
+
 
     Button:SetScript('OnShow', function(self)
         self:RegisterEvent('PLAYER_REGEN_DISABLED')
@@ -344,9 +329,6 @@ local function Init()
     Button:SetScript('OnEvent', function(self, event)
         self.Text:SetShown(event=='PLAYER_REGEN_DISABLED')
     end)
-    
-    
-    --Button:set_texture()
 end
 
 

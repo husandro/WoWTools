@@ -257,12 +257,12 @@ local function set_SpellFlyoutButton_UpdateGlyphState(self)
 
     if text then
         if not self.spellText then
-            self.spellText= WoWTools_LabelMixin:Create(self, {color={r=1,g=1,b=1}, justifyH='CENTER', size=16})
+            self.spellText= WoWTools_LabelMixin:Create(self, {color={r=1,g=1,b=1}, justifyH='CENTER', size=14})
             self.TextBg= self:CreateTexture(nil, 'BACKGROUND')
 
 
-            self.TextBg:SetPoint('TOPLEFT', self.spellText,-8, 8)
-            self.TextBg:SetPoint('BOTTOMRIGHT', self.spellText, 8,-8 )
+            self.TextBg:SetPoint('TOPLEFT', self.spellText,-6, 6)
+            self.TextBg:SetPoint('BOTTOMRIGHT', self.spellText, 6,-6 )
             self.TextBg:SetAtlas('ChallengeMode-guild-background')
         end
 
@@ -280,6 +280,10 @@ local function set_SpellFlyoutButton_UpdateGlyphState(self)
         if not hunterPetText and not isLeftPoint then
             text= WoWTools_TextMixin:Vstr(text)--垂直文字
         end
+
+    elseif self.spellText then
+        self.spellText:ClearAllPoints()
+        self.isLeftPoint=nil
     end
 
     Set_Text(self, text)
@@ -550,11 +554,41 @@ local function Init_Spec_Button()
     end
 end
 
+
+
+
+
+
+
+
+
+
+
+
 local function Init_Blizzard_PlayerSpells()
     hooksecurefunc(ClassTalentButtonSpendMixin, 'UpdateSpendText', set_UpdateSpendText)--天赋, 点数 
     Init_All_Flyout()
     Init_Spec_Button()
+
+    hooksecurefunc(SpellBookItemMixin, 'UpdateVisuals', function(frame)
+        frame.Button.ActionBarHighlight:SetVertexColor(0,1,0)
+
+        if (frame.spellBookItemInfo.itemType == Enum.SpellBookItemType.Flyout) then
+            frame.Button.Arrow:SetVertexColor(1,0,1)
+            frame.Button.Border:SetVertexColor(1,0,1)
+        else
+            frame.Button.Arrow:SetVertexColor(1,1,1)
+            frame.Button.Border:SetVertexColor(1,1,1)
+        end
+    end)
 end
+
+
+
+
+
+
+
 
 
 
@@ -587,6 +621,8 @@ local function Init()
             end
         end
     end
+
+    
 end
 
 

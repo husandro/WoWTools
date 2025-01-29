@@ -84,7 +84,19 @@ end
 
 
 
+local function Init_Menu(_, root)
+    root:CreateCheckbox(
+        e.onlyChinese and '启用' or ENABLE,
+    function()
+        return not Save().hide
+    end, function()
+        Save().hide= not Save().hide and true or nil
+        Settings()
+    end)
 
+    root:CreateDivider()
+    WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_PaperDollMixin.addName})
+end
 
 
 
@@ -100,13 +112,15 @@ local function Init(frame)
     btn:SetFrameStrata(title:GetFrameStrata())
     btn:SetFrameLevel(title:GetFrameLevel()+1)
 
-    btn:SetScript('OnClick', function(_, d)
-        if d=='RightButton' then
+    btn:SetScript('OnClick', function(self, d)
+        MenuUtil.CreateContextMenu(self, Init_Menu)
+
+        --[[if d=='RightButton' then
             e.OpenPanelOpting(nil, WoWTools_PaperDollMixin.addName)
         else
             Save().hide= not Save().hide and true or nil
             Settings()
-        end
+        end]]
     end)
     function btn:set_alpha(isEnter)
         if isEnter then
@@ -122,14 +136,12 @@ local function Init(frame)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.addName, WoWTools_PaperDollMixin.addName)
-        e.tips:AddLine(' ')
+        
+        --e.tips:AddDoubleLine(e.GetShowHide(not Save().hide), e.Icon.left)
 
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.GetShowHide(not Save().hide), e.Icon.left)
-
-        e.tips:AddDoubleLine(e.onlyChinese and '选项' or SETTINGS_TITLE, e.Icon.right)
-
-
+        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
+        --e.tips:AddDoubleLine(e.onlyChinese and '选项' or SETTINGS_TITLE, e.Icon.right)
         e.tips:Show()
         self:set_alpha(true)
     end)

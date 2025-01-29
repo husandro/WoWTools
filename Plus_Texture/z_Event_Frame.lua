@@ -85,9 +85,7 @@ function Events:Blizzard_PlayerSpells(mixin)
     mixin:SetAlphaColor(PlayerSpellsFrame.SpellBookFrame.TopBar)--法术书
     mixin:SetSearchBox(PlayerSpellsFrame.SpellBookFrame.SearchBox)
     mixin:SetTabSystem(PlayerSpellsFrame.SpellBookFrame)
-    hooksecurefunc(SpellBookItemMixin, 'UpdateVisuals', function(frame)
-        frame.Button.ActionBarHighlight:SetVertexColor(0,1,0)
-    end)
+
 end
 
 

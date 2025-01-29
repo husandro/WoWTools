@@ -31,14 +31,14 @@ local function Init()
         local num=self:GetNumLetters() or 0
         MacroFrameCharLimitText:SetFormattedText((num==255 and '|cff9e9e9e' or '')..num..'/255')
     end)
-    
+
 --设置，焦点
     MacroFrameTextBackground.NineSlice:HookScript('OnMouseDown', function(_, d)
         if d=='LeftButton' then
             MacroFrameText:SetFocus()
         end
     end)
-    
+
 
 --角色，专用宏，颜色
     MacroFrameTab2.Text:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
@@ -127,14 +127,14 @@ local function Init()
     MacroEditButton:SetPoint('BOTTOMLEFT', MacroFrameSelectedMacroButton, 'BOTTOMRIGHT', 2, -2)
     MacroEditButton:SetSize(60,22)--170 22
     MacroEditButton:SetText(e.onlyChinese and '修改' or EDIT)
-    
+
 --取消，按钮
     --MacroCancelButton:ClearAllPoints()
     --MacroCancelButton:SetPoint('')
 --保存，按钮
     MacroSaveButton:ClearAllPoints()
     MacroSaveButton:SetPoint('BOTTOM', MacroCancelButton, 'TOP', 0, 2)
-    
+
 --EditBox
     MacroFrameText:ClearAllPoints()
     MacroFrameText:SetAllPoints(MacroFrameScrollFrame)
@@ -162,13 +162,13 @@ end
 -- 恢复宏选择框的滚动条位置
 local function Init_Scroll()
     ScrollFrame= CreateFrame("Frame", nil, MacroFrame)
-    
+
 
     ScrollFrame:RegisterEvent("UPDATE_MACROS")
     ScrollFrame:SetScript("OnEvent", function(self)
         self.tempScrollPer = MacroFrame.MacroSelector.ScrollBox.scrollPercentage
     end)
-    
+
 
     hooksecurefunc(MacroFrame, "SelectMacro", function(self, index)
         if ScrollFrame.tempScrollPer and not UnitAffectingCombat('player') then-- 恢复宏选择框的滚动条位置
@@ -191,7 +191,7 @@ local function Init_Scroll()
 
                 MacroFrame:SelectMacro(index)
                 MacroFrame.MacroSelector.ScrollBox:SetScrollPercentage(self.tempScrollPer2)
-               
+
             end
             self.selectionIndex=nil
             self.tempScrollPer2=nil
@@ -203,7 +203,7 @@ local function Init_Scroll()
     ScrollFrame:SetScript('OnHide', function(self)
         self:UnregisterEvent("UPDATE_MACROS")
         self.selectionIndex= WoWTools_MacroMixin:GetSelectIndex()
-        
+
         self.tempScrollPer2=  MacroFrame.MacroSelector.ScrollBox.scrollPercentage
     end)
 end
