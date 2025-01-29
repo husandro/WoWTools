@@ -5111,7 +5111,8 @@
         "STABLE_EXOTIC_TYPE_LABEL",
         "ClassSpecFrameMixin",
         "GetMicroIconForRoleEnum",
-        "TUTORIAL_TITLE2"
+        "TUTORIAL_TITLE2",
+        "CanAccessObject"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
