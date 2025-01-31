@@ -5112,7 +5112,11 @@
         "ClassSpecFrameMixin",
         "GetMicroIconForRoleEnum",
         "TUTORIAL_TITLE2",
-        "CanAccessObject"
+        "CanAccessObject",
+        "DYNAMIC_FLIGHT",
+        "TUTORIAL_TITLE28",
+        "FLIGHT_MAP",
+        "BATTLE_PET_NAME_3"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
