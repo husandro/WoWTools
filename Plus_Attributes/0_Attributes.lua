@@ -145,6 +145,12 @@ local function set_Tabs()
     end
 end
 
+
+
+
+
+
+
 --###########
 --设置，当前值
 --###########
@@ -282,91 +288,6 @@ local function set_STATUS_Text(frame)
     end
     set_Text_Value(frame, value)
 end
-local function set_STATUS_Tooltip(self)
-    if not PrimaryStat then
-        get_PrimaryStat()--取得主属
-    end
-    local frame= self:GetParent()
-    e.tips:SetOwner(self, "ANCHOR_LEFT")
-    e.tips:ClearLines()
-    local stat, effectiveStat, posBuff, negBuff = UnitStat('player', PrimaryStat);
-    local effectiveStatDisplay = BreakUpLargeNumbers(effectiveStat or 0);
-    local tooltipText = effectiveStatDisplay
-
-    if ( ( posBuff == 0 ) and ( negBuff == 0 ) ) then
-		e.tips:AddLine(tooltipText..effectiveStatDisplay..FONT_COLOR_CODE_CLOSE, frame.r, frame.g, frame.b,true)
-	else
-		if ( posBuff > 0 or negBuff < 0 ) then
-			tooltipText = tooltipText.." ("..BreakUpLargeNumbers(stat - posBuff - negBuff)..FONT_COLOR_CODE_CLOSE;
-		end
-		if ( posBuff > 0 ) then
-			tooltipText = tooltipText..FONT_COLOR_CODE_CLOSE..GREEN_FONT_COLOR_CODE.."+"..BreakUpLargeNumbers(posBuff or 0)..FONT_COLOR_CODE_CLOSE;
-		end
-		if ( negBuff < 0 ) then
-			tooltipText = tooltipText..RED_FONT_COLOR_CODE.." "..BreakUpLargeNumbers(negBuff or 0)..FONT_COLOR_CODE_CLOSE;
-		end
-		if ( posBuff > 0 or negBuff < 0 ) then
-			tooltipText = tooltipText..HIGHLIGHT_FONT_COLOR_CODE..")"..FONT_COLOR_CODE_CLOSE;
-		end
-
-        e.tips:AddDoubleLine(frame.nameText, tooltipText, frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
-	end
-
-    local role = GetSpecializationRole(GetSpecialization())
-    if PrimaryStat==LE_UNIT_STAT_STRENGTH then-- Strength
-        local text= ''
-        local attackPower = GetAttackPowerForStat(PrimaryStat, effectiveStat or 0);
-        if (HasAPEffectsSpellPower()) then
-            text= (e.onlyChinese and '提高你的攻击和技能强度' or STAT_TOOLTIP_BONUS_AP_SP)..' '..BreakUpLargeNumbers(attackPower)
-        end
-        if role == "TANK" then
-            local increasedParryChance = GetParryChanceFromAttribute();
-            if ( increasedParryChance > 0 ) then
-                text = text~='' and text..'|n' or text
-                text= text..format(e.onlyChinese and '"招架几率提高%.2f%%|n|cff888888（在效果递减之前）|r"' or CR_PARRY_BASE_STAT_TOOLTIP, increasedParryChance);
-            end
-        end
-        e.tips:AddLine(text, frame.r, frame.g, frame.b,true)
-
-    elseif PrimaryStat==LE_UNIT_STAT_AGILITY then-- Agility
-        local text=''
-        if HasAPEffectsSpellPower() then
-            text= e.onlyChinese and '提高你的攻击和技能强度' or  STAT_TOOLTIP_BONUS_AP_SP
-        else
-            text= e.onlyChinese and '提高你的攻击和技能强度' or STAT_TOOLTIP_BONUS_AP
-        end
-
-        if role == "TANK" then
-            local increasedDodgeChance = GetDodgeChanceFromAttribute();
-            if increasedDodgeChance > 0 then
-                text= text .."|n"..format(e.onlyChinese and '躲闪几率提高%.2f%%|n|cff888888（在效果递减之前）|r' or CR_DODGE_BASE_STAT_TOOLTIP, increasedDodgeChance);
-            end
-        end
-        e.tips:AddLine(text, frame.r, frame.g, frame.b,true)
-
-    elseif PrimaryStat==LE_UNIT_STAT_INTELLECT then
-        local text
-        if HasAPEffectsSpellPower() then
-            text= e.onlyChinese and "|cff808080该属性不能使你获益|r" or STAT_NO_BENEFIT_TOOLTIP
-        elseif HasSPEffectsAttackPower() then
-            text= e.onlyChinese and '提高你的攻击和技能强度' or  STAT_TOOLTIP_BONUS_AP_SP
-        else
-            text= (e.onlyChinese and '提高你的法术强度' or DEFAULT_STAT4_TOOLTIP).. effectiveStat
-        end
-        e.tips:AddLine(text, frame.r, frame.g, frame.b,true)
-    end
-    if frame.value and frame.value~=stat then
-        e.tips:AddLine(' ')
-        local text
-        if frame.value< stat then
-            text= Save().greenColor..'+ '..format('%s', WoWTools_Mixin:MK(stat- frame.value,3))
-        else
-            text= Save().redColor..'- '..format('%s', WoWTools_Mixin:MK(3, frame.value- stat))
-        end
-        e.tips:AddDoubleLine(format('%i', frame.value), text, frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
-    end
-    e.tips:Show()
-end
 
 --####
 --爆击
@@ -381,6 +302,7 @@ local function get_minCrit()
     end
     return minCrit or 0
 end
+
 local function set_CRITCHANCE_Text(frame)
     local critChance
     if Save().useNumber then
@@ -415,43 +337,7 @@ local function set_CRITCHANCE_Text(frame)
         set_Text_Value(frame, critChance)--设置，当前值
     end
 end
-local function set_CRITCHANCE_Tooltip(self)
-    local frame= self:GetParent()
-    e.tips:SetOwner(self, "ANCHOR_LEFT")
-    e.tips:ClearLines()
-    local spellCrit = get_minCrit() or 0
-	local rangedCrit = GetRangedCritChance();
-	local meleeCrit = GetCritChance();
-    local critChance, rating
-	if (spellCrit >= rangedCrit and spellCrit >= meleeCrit) then
-		critChance = spellCrit;
-		rating = CR_CRIT_SPELL;
-	elseif (rangedCrit >= meleeCrit) then
-		critChance = rangedCrit;
-		rating = CR_CRIT_RANGED;
-	else
-		critChance = meleeCrit;
-		rating = CR_CRIT_MELEE;
-	end
-    e.tips:AddDoubleLine(frame.nameText, format('%.2f%%', critChance + 0.5), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
 
-	local extraCritChance = GetCombatRatingBonus(rating);
-	local extraCritRating = GetCombatRating(rating);
-	if (GetCritChanceProvidesParryEffect()) then
-        if e.onlyChinese then
-            e.tips:AddLine(format("攻击和法术造成额外效果的几率。|n|n爆击：%s [+%.2f%%]|n招架几率提高%.2f%%。", BreakUpLargeNumbers(extraCritRating), extraCritChance, GetCombatRatingBonusForCombatRatingValue(CR_PARRY, extraCritRating)), frame.r, frame.g, frame.b,true)
-        else
-            e.tips:AddLine(format(CR_CRIT_PARRY_RATING_TOOLTIP, BreakUpLargeNumbers(extraCritRating), extraCritChance, GetCombatRatingBonusForCombatRatingValue(CR_PARRY, extraCritRating)), frame.r, frame.g, frame.b,true)
-        end
-	else
-        if e.onlyChinese then
-		    e.tips:AddLine(format( "攻击和法术造成额外效果的几率。|n|n爆击：%s [+%.2f%%]", BreakUpLargeNumbers(extraCritRating), extraCritChance), frame.r, frame.g, frame.b,true)
-        else
-            e.tips:AddLine(format(CR_CRIT_TOOLTIP, BreakUpLargeNumbers(extraCritRating), extraCritChance), frame.r, frame.g, frame.b,true)
-        end
-	end
-    e.tips:Show()
-end
 
 --####
 --急速
@@ -469,26 +355,7 @@ local function set_HASTE_Text(frame)
         set_Text_Value(frame, haste)--设置，当前值
     end
 end
-local function set_HASTE_Tooltip(self)
-    local frame= self:GetParent()
-    e.tips:SetOwner(self, "ANCHOR_LEFT")
-    e.tips:ClearLines()
 
-    local haste = GetHaste();
-	local rating = CR_HASTE_MELEE;
-
-	local hasteFormatString;
-	if (haste < 0 and not GetPVPGearStatRules()) then
-		hasteFormatString = RED_FONT_COLOR_CODE.."%s"..FONT_COLOR_CODE_CLOSE;
-	else
-		hasteFormatString = "%s";
-	end
-	e.tips:AddDoubleLine(frame.nameText, format(hasteFormatString, format("%0.2f%%", haste + 0.5)), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
-	e.tips:AddLine(_G["STAT_HASTE_"..e.Player.class.."_TOOLTIP"] or (e.onlyChinese and '提高攻击速度和施法速度。' or STAT_HASTE_TOOLTIP), frame.r, frame.g, frame.b,true)
-    e.tips:AddLine(' ')
-	e.tips:AddDoubleLine(format(e.onlyChinese and '急速：%s [+%.2f%%]' or STAT_HASTE_BASE_TOOLTIP, BreakUpLargeNumbers(GetCombatRating(rating)), GetCombatRatingBonus(rating)), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
-    e.tips:Show()
-end
 
 --####
 --精通
@@ -532,18 +399,7 @@ local function set_VERSATILITY_Text(frame)
         set_Text_Value(frame, value, value2)--设置，当前值
     end
 end
-local function set_VERSATILITY_Tooltip(self)
-    local frame= self:GetParent()
-    e.tips:SetOwner(self, "ANCHOR_LEFT")
-    e.tips:ClearLines()
-    local versatility = GetCombatRating(CR_VERSATILITY_DAMAGE_DONE);
-	local versatilityDamageBonus = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_DONE);
-	local versatilityDamageTakenReduction = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_TAKEN) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_TAKEN);
-    e.tips:AddDoubleLine(frame.nameText, format('%.2f%%',  versatilityDamageBonus), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
-    e.tips:AddLine(' ')
-	e.tips:AddLine(format(e.onlyChinese and "造成的"..INLINE_DAMAGER_ICON.."伤害值和"..INLINE_HEALER_ICON.."治疗量提高%.2f%%，|n"..INLINE_TANK_ICON.."受到的伤害降低%.2f%%。|n|n全能：%s [%.2f%%/%.2f%%]" or CR_VERSATILITY_TOOLTIP, versatilityDamageBonus, versatilityDamageTakenReduction, BreakUpLargeNumbers(versatility), versatilityDamageBonus, versatilityDamageTakenReduction), frame.r, frame.g, frame.b)
-    e.tips:Show()
-end
+
 
 --####
 --吸血, 6
@@ -561,16 +417,7 @@ local function set_LIFESTEAL_Text(frame)
         set_Text_Value(frame, lifesteal)--设置，当前值
     end
 end
-local function set_LIFESTEAL_Tooltip(self)
-    local frame= self:GetParent()
-    e.tips:SetOwner(self, "ANCHOR_LEFT")
-    e.tips:ClearLines()
 
-    local lifesteal = GetLifesteal();
-	e.tips:AddDoubleLine(frame.nameText,  format("%0.2f%%", lifesteal), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
-    e.tips:AddLine(format(e.onlyChinese and '你所造成伤害和治疗的一部分将转而治疗你。|n|n吸血：%s [+%.2f%%]' or CR_LIFESTEAL_TOOLTIP, BreakUpLargeNumbers(GetCombatRating(CR_LIFESTEAL)), GetCombatRatingBonus(CR_LIFESTEAL)), frame.r, frame.g, frame.b,true)
-    e.tips:Show()
-end
 
 --####
 --闪避, 7
@@ -587,16 +434,6 @@ local function set_AVOIDANCE_Text(frame)
     else
         set_Text_Value(frame, avoidance)--设置，当前值
     end
-end
-local function set_AVOIDANCE_Tooltip(self)
-    local frame= self:GetParent()
-    e.tips:SetOwner(self, "ANCHOR_LEFT")
-    e.tips:ClearLines()
-
-    local Avoidance = GetAvoidance();
-	e.tips:AddDoubleLine(frame.nameText,  format("%0.2f%%", Avoidance), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
-    e.tips:AddLine(format(e.onlyChinese and '范围效果法术的伤害降低。|n|n闪避：%s [+%.2f%%' or CR_AVOIDANCE_TOOLTIP , BreakUpLargeNumbers(GetCombatRating(CR_AVOIDANCE)), GetCombatRatingBonus(CR_AVOIDANCE)), frame.r, frame.g, frame.b,true)
-    e.tips:Show()
 end
 
 --####
@@ -615,16 +452,7 @@ local function set_DODGE_Text(frame)
         set_Text_Value(frame, chance)--设置，当前值
     end
 end
-local function set_DODGE_Tooltip(self)
-    local frame= self:GetParent()
-    e.tips:SetOwner(self, "ANCHOR_LEFT")
-    e.tips:ClearLines()
 
-    local chance = GetDodgeChance();
-	e.tips:AddDoubleLine(frame.nameText,  format("%0.2f%%", chance), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
-    e.tips:AddLine( format(e.onlyChinese and '%d点躲闪可使躲闪几率提高%.2f%%|n|cff888888（在效果递减之前）|r' or CR_DODGE_TOOLTIP, GetCombatRating(CR_DODGE), GetCombatRatingBonus(CR_DODGE)), frame.r, frame.g, frame.b,true)
-    e.tips:Show()
-end
 
 --####
 --护甲
@@ -647,24 +475,7 @@ local function set_ARMOR_Text(frame)
         set_Text_Value(frame, value, value2)--设置，当前值
     end
 end
-local function set_ARMOR_Tooltip(self)
-    local frame= self:GetParent()
-    e.tips:SetOwner(self, "ANCHOR_LEFT")
-    e.tips:ClearLines()
 
-    local _, effectiveArmor = UnitArmor('player');
-    e.tips:AddDoubleLine(frame.nameText, BreakUpLargeNumbers(effectiveArmor), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
-
-    local armorReduction = PaperDollFrame_GetArmorReduction(effectiveArmor, UnitEffectiveLevel('player'));
-	local armorReductionAgainstTarget = PaperDollFrame_GetArmorReductionAgainstTarget(effectiveArmor);
-
-    e.tips:AddLine(format(e.onlyChinese and '物理伤害减免：%0.2f%%|n|cff888888（对抗与你实力相当的敌人时）|r' or STAT_ARMOR_TOOLTIP, armorReduction), frame.r, frame.g, frame.b,true)
-
-	if (armorReductionAgainstTarget) then
-		e.tips:AddLine(format(e.onlyChinese and '（对当前目标：%0.2f%%）' or STAT_ARMOR_TARGET_TOOLTIP, armorReductionAgainstTarget), frame.r, frame.g, frame.b,true)
-	end
-    e.tips:Show()
-end
 
 --####
 --招架
@@ -682,16 +493,7 @@ local function set_PARRY_Text(frame)
         set_Text_Value(frame, chance)--设置，当前值
     end
 end
-local function set_PARRY_Tooltip(self)
-    local frame= self:GetParent()
-    e.tips:SetOwner(self, "ANCHOR_LEFT")
-    e.tips:ClearLines()
 
-    local chance = GetParryChance();
-	e.tips:AddDoubleLine(frame.nameText,  format("%0.2f%%", chance), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
-    e.tips:AddLine(format(e.onlyChinese and '%d点招架可使招架几率提高%.2f%%|n|cff888888（在效果递减之前）|r' or CR_PARRY_TOOLTIP, GetCombatRating(CR_PARRY), GetCombatRatingBonus(CR_PARRY)), frame.r, frame.g, frame.b,true)
-    e.tips:Show()
-end
 
 --####
 --格挡
@@ -709,24 +511,7 @@ local function set_BLOCK_Text(frame)
         set_Text_Value(frame, chance)--设置，当前值
     end
 end
-local function set_BLOCK_Tooltip(self)
-    local frame= self:GetParent()
-    e.tips:SetOwner(self, "ANCHOR_LEFT")
-    e.tips:ClearLines()
 
-    local chance = GetBlockChance();
-    e.tips:AddDoubleLine(frame.nameText,  format("%0.2f%%", chance), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
-
-	local shieldBlockArmor = GetShieldBlock();
-	local blockArmorReduction = PaperDollFrame_GetArmorReduction(shieldBlockArmor, UnitEffectiveLevel('player'))
-	local blockArmorReductionAgainstTarget = PaperDollFrame_GetArmorReductionAgainstTarget(shieldBlockArmor)
-
-	e.tips:AddLine(format(e.onlyChinese and '格挡可使一次攻击的伤害降低%0.2f%%.|n|cff888888（对抗与你实力相当的敌人时）|r' or CR_BLOCK_TOOLTIP, blockArmorReduction), frame.r, frame.g, frame.b,true)
-	if (blockArmorReductionAgainstTarget) then
-		e.tips:AddLine(format(e.onlyChinese and '（对当前目标：%0.2f%%）' or STAT_BLOCK_TARGET_TOOLTIP, blockArmorReductionAgainstTarget), frame.r, frame.g, frame.b,true)
-	end
-    e.tips:Show()
-end
 
 --####
 --醉拳
@@ -735,21 +520,9 @@ local function set_STAGGER_Text(frame)
     local stagger, staggerAgainstTarget = C_PaperDollInfo.GetStaggerPercentage('player')
     set_Text_Value(frame, stagger, staggerAgainstTarget)--设置，当前值
 end
-local function set_STAGGER_Tooltip(self)
-    local stagger, staggerAgainstTarget = C_PaperDollInfo.GetStaggerPercentage('player');
-    if not stagger then
-        return
-    end
-    local frame= self:GetParent()
-    e.tips:SetOwner(self, "ANCHOR_LEFT")
-    e.tips:ClearLines()
-    e.tips:AddDoubleLine(frame.nameText,  format("%0.2f%%", stagger), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
-	e.tips:AddLine(format(e.onlyChinese and '你的醉拳可化解%0.2f%%的伤害' or STAT_STAGGER_TOOLTIP, stagger), frame.r, frame.g, frame.b,true)
-	if (staggerAgainstTarget) then
-		e.tips:AddLine(format(e.onlyChinese and '（对当前目标比例%0.2f%%）' or STAT_STAGGER_TARGET_TOOLTIP, staggerAgainstTarget), frame.r, frame.g, frame.b,true)
-	end
-    e.tips:Show()
-end
+
+
+
 
 --####
 --移动
@@ -775,24 +548,8 @@ local function set_SPEED_Text(frame, elapsed)
         end
     end
 end
-local function set_SPEED_Tooltip(self)
-    local frame= self:GetParent()
-    e.tips:SetOwner(self, "ANCHOR_LEFT")
-    e.tips:ClearLines()
-    local currentSpeed, runSpeed, flightSpeed, swimSpeed = GetUnitSpeed('player')
-    e.tips:AddDoubleLine(frame.nameText, 'player', frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
-    e.tips:AddLine(format(e.onlyChinese and '提升移动速度。|n|n速度：%s [+%.2f%%]' or CR_SPEED_TOOLTIP, BreakUpLargeNumbers(GetCombatRating(CR_SPEED)), GetCombatRatingBonus(CR_SPEED)), frame.r, frame.g, frame.b, true)
-    e.tips:AddLine(' ')
-    e.tips:AddDoubleLine((e.onlyChinese and '地面' or MOUNT_JOURNAL_FILTER_GROUND)..format(' %.0f%%', runSpeed*100/BASE_MOVEMENT_SPEED), format('%.2f', runSpeed), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
-    e.tips:AddDoubleLine((e.onlyChinese and '水栖' or MOUNT_JOURNAL_FILTER_AQUATIC )..format(' %.0f%%', swimSpeed*100/BASE_MOVEMENT_SPEED), format('%.2f', swimSpeed), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
-    e.tips:AddDoubleLine((e.onlyChinese and '飞行' or MOUNT_JOURNAL_FILTER_FLYING )..format(' %.0f%%', flightSpeed*100/BASE_MOVEMENT_SPEED), format('%.2f', flightSpeed), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
-    e.tips:AddDoubleLine((e.onlyChinese and '驭空术' or LANDING_DRAGONRIDING_PANEL_TITLE)..format(' %.0f%%', 100*100/BASE_MOVEMENT_SPEED), '100', frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
-    if UnitExists('vehicle') then
-        currentSpeed = GetUnitSpeed('vehicle')
-        e.tips:AddDoubleLine((e.onlyChinese and '载具' or 'Vehicle')..format(' %.0f%%', currentSpeed*100/BASE_MOVEMENT_SPEED), format('%.2f', currentSpeed), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
-    end
-    e.tips:Show()
-end
+
+
 
 
 
@@ -991,15 +748,8 @@ end
 
 
 
-
-
-
-
-
-
-
-
-function WoWTools_AttributesMixin:Frame_Init(rest)--初始， 或设置
+--初始， 或设置
+local function Frame_Init(rest)
     if rest or not Tabs then
         set_Tabs()
     end
@@ -1015,7 +765,7 @@ function WoWTools_AttributesMixin:Frame_Init(rest)--初始， 或设置
                 frame.label:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
 
                 frame.text= WoWTools_LabelMixin:Create(frame, {mouse=true, color={r=1,g=1,b=1}, justifyH= Save().toLeft and 'RIGHT'})--nil, nil, nil, {1,1,1}, nil, Save().toLeft and 'RIGHT' or 'LEFT')
-                frame.text:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
+                
 
                 frame.bg= frame:CreateTexture(nil, 'BACKGROUND')
                 frame.bg:SetAlpha(0.5)
@@ -1024,75 +774,89 @@ function WoWTools_AttributesMixin:Frame_Init(rest)--初始， 或设置
                 if info.name=='STATUS' then--主属性1
                     frame:RegisterUnitEvent('UNIT_STATS', 'player')
                     frame:SetScript('OnEvent', set_STATUS_Text)
-                    frame.label:SetScript('OnEnter', set_STATUS_Tooltip)
-                    frame.text:SetScript('OnEnter', set_STATUS_Tooltip)
 
-                elseif info.name=='CRITCHANCE' then--爆击2
-                    frame.label:SetScript('OnEnter', set_CRITCHANCE_Tooltip)
-                    frame.text:SetScript('OnEnter', set_CRITCHANCE_Tooltip)
+                --elseif info.name=='CRITCHANCE' then--爆击2
+                    --frame.label:SetScript('OnEnter', set_CRITCHANCE_Tooltip)
+                    --frame.text:SetScript('OnEnter', set_CRITCHANCE_Tooltip)
 
                 elseif info.name=='HASTE' then--急速3
                     frame:RegisterUnitEvent('UNIT_SPELL_HASTE', 'player')
                     frame:SetScript('OnEvent', set_HASTE_Text)
-                    frame.label:SetScript('OnEnter', set_HASTE_Tooltip)
-                    frame.text:SetScript('OnEnter', set_HASTE_Tooltip)
+                    --frame.label:SetScript('OnEnter', set_HASTE_Tooltip)
+                    --frame.text:SetScript('OnEnter', set_HASTE_Tooltip)
 
                 elseif info.name=='MASTERY' then--精通4
                     frame:RegisterEvent('MASTERY_UPDATE')
                     frame.onEnterFunc = Mastery_OnEnter;
-                    frame.label:SetScript('OnEnter', frame.onEnterFunc)--PaperDollFrame.lua
-                    frame.text:SetScript('OnEnter', frame.onEnterFunc)
+                    --frame.label:SetScript('OnEnter', frame.onEnterFunc)--PaperDollFrame.lua
+                    --frame.text:SetScript('OnEnter', frame.onEnterFunc)
 
-                elseif info.name=='VERSATILITY' then--全能5
+                --[[elseif info.name=='VERSATILITY' then--全能5
                     frame.label:SetScript('OnEnter', set_VERSATILITY_Tooltip)
-                    frame.text:SetScript('OnEnter', set_VERSATILITY_Tooltip)
+                    frame.text:SetScript('OnEnter', set_VERSATILITY_Tooltip)]]
 
                 elseif info.name=='LIFESTEAL' then--吸血6
                     button.frame:RegisterEvent('LIFESTEAL_UPDATE')
-                    frame.label:SetScript('OnEnter', set_LIFESTEAL_Tooltip)
-                    frame.text:SetScript('OnEnter', set_LIFESTEAL_Tooltip)
+                    --frame.label:SetScript('OnEnter', set_LIFESTEAL_Tooltip)
+                    --frame.text:SetScript('OnEnter', set_LIFESTEAL_Tooltip)
 
                 elseif info.name=='ARMOR' then--护甲
                     frame:RegisterEvent('PLAYER_TARGET_CHANGED')
                     frame:SetScript('OnEvent', set_ARMOR_Text)
-                    frame.label:SetScript('OnEnter', set_ARMOR_Tooltip)
-                    frame.text:SetScript('OnEnter', set_ARMOR_Tooltip)
+                    --frame.label:SetScript('OnEnter', set_ARMOR_Tooltip)
+                    --frame.text:SetScript('OnEnter', set_ARMOR_Tooltip)
 
                 elseif info.name=='AVOIDANCE' then--闪避7
                     button.frame:RegisterEvent('AVOIDANCE_UPDATE')
-                    frame.label:SetScript('OnEnter', set_AVOIDANCE_Tooltip)
-                    frame.text:SetScript('OnEnter', set_AVOIDANCE_Tooltip)
+                    --frame.label:SetScript('OnEnter', set_AVOIDANCE_Tooltip)
+                    --frame.text:SetScript('OnEnter', set_AVOIDANCE_Tooltip)
 
-                elseif info.name=='DODGE' then--躲闪8
-                    frame.label:SetScript('OnEnter', set_DODGE_Tooltip)
-                    frame.text:SetScript('OnEnter', set_DODGE_Tooltip)
+                --elseif info.name=='DODGE' then--躲闪8
+                    --frame.label:SetScript('OnEnter', set_DODGE_Tooltip)
+                    --frame.text:SetScript('OnEnter', set_DODGE_Tooltip)
 
-                elseif info.name=='PARRY' then--招架9
+                --[[elseif info.name=='PARRY' then--招架9
                     frame.label:SetScript('OnEnter', set_PARRY_Tooltip)
-                    frame.text:SetScript('OnEnter', set_PARRY_Tooltip)
+                    frame.text:SetScript('OnEnter', set_PARRY_Tooltip)]]
 
-                elseif info.name=='BLOCK' then--格挡10
+                --[[elseif info.name=='BLOCK' then--格挡10
                     frame.label:SetScript('OnEnter', set_BLOCK_Tooltip)
-                    frame.text:SetScript('OnEnter', set_BLOCK_Tooltip)
+                    frame.text:SetScript('OnEnter', set_BLOCK_Tooltip)]]
 
                 elseif info.name=='STAGGER' then--醉拳11
                     frame:RegisterEvent('PLAYER_TARGET_CHANGED')
                     frame:SetScript('OnEvent', set_STAGGER_Text)
-                    frame.label:SetScript('OnEnter', set_STAGGER_Tooltip)
-                    frame.text:SetScript('OnEnter', set_STAGGER_Tooltip)
+                    --frame.label:SetScript('OnEnter', set_STAGGER_Tooltip)
+                    --frame.text:SetScript('OnEnter', set_STAGGER_Tooltip)
 
                 elseif info.name=='SPEED' then--移动12
                     frame:HookScript('OnUpdate', set_SPEED_Text)
-                    frame.label:SetScript('OnEnter', set_SPEED_Tooltip)
-                    frame.text:SetScript('OnEnter', set_SPEED_Tooltip)
+                    --frame.label:SetScript('OnEnter', set_SPEED_Tooltip)
+                    --frame.text:SetScript('OnEnter', set_SPEED_Tooltip)
                 end
-                frame.label:HookScript('OnEnter', function(self2) self2:SetAlpha(0.3) end)
-                frame.text:HookScript('OnEnter', function(self2) self2:SetAlpha(0.3) end)
+                --frame.label:HookScript('OnEnter', function(self2) self2:SetAlpha(0.3) end)
+                --frame.text:HookScript('OnEnter', function(self2) self2:SetAlpha(0.3) end)
+
+                if frame.onEnterFunc then
+                    frame.label:SetScript('OnEnter', frame.onEnterFunc)--PaperDollFrame.lua
+                    frame.text:SetScript('OnEnter', frame.onEnterFunc)
+                else
+                    frame.label:SetScript('OnEnter', function(self)
+                        WoWTools_AttributesMixin:Set_Tooltips(self:GetParent(), self)
+                        self:SetAlpha(0.3)
+                    end)
+                    frame.text:SetScript('OnEnter', function(self)
+                        print(self:GetParent().nameText, 'a')
+                        WoWTools_AttributesMixin:Set_Tooltips(self:GetParent(), self)
+                        self:SetAlpha(0.3)
+                    end)
+                end
+                frame.text:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
                 button[info.name]= frame
             end
 
             --重置, 数值
-            if rest then
+            if rest then                
                 if info.bar and not frame.bar then--bar
                     frame.bar= CreateFrame('StatusBar', nil, frame)
                     frame.bar:SetFrameLevel(frame:GetFrameLevel()-1)
@@ -1129,8 +893,9 @@ function WoWTools_AttributesMixin:Frame_Init(rest)--初始， 或设置
                 frame.name= info.name
                 frame.nameText= info.text
                 frame.zeroShow= info.zeroShow
-
+               
                 frame.value=nil
+
             end
 
             set_Frame(frame, rest)
@@ -1171,641 +936,6 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
---##########
---设置 panel
---##########
-local function Init_Options()--设置 panel
-    if Save().disabled or panel.barGreenColor then
-        return
-    end
-
-
-    local last, check, findTank, findDps
-    if not Tabs then
-        set_Tabs()
-    end
-    for index, info in pairs(Tabs) do
-        if info.dps and not findDps then
-            check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--四属性, 仅限DPS
-            check:SetChecked(Save().onlyDPS)
-            check:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -16)
-            if e.onlyChinese then
-                check.text:SetText("仅限"..INLINE_DAMAGER_ICON..INLINE_HEALER_ICON)
-            else
-                check.text:SetFormattedText(LFG_LIST_CROSS_FACTION , INLINE_DAMAGER_ICON..INLINE_HEALER_ICON)
-            end
-            check:SetScript('OnMouseUp',function(self)
-                Save().onlyDPS = not Save().onlyDPS and true or false
-                WoWTools_AttributesMixin:Frame_Init(true)--初始，设置
-            end)
-            findDps=true
-            last=check
-
-        elseif info.tank and not findTank then
-            local text= WoWTools_LabelMixin:Create(panel)
-            text:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -16)
-            if e.onlyChinese then
-                text:SetText("仅限"..INLINE_TANK_ICON)
-            else
-                text:SetFormattedText(LFG_LIST_CROSS_FACTION , INLINE_TANK_ICON)
-            end
-            findTank=true
-            last= text
-        end
-
-        check= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--禁用, 启用
-        check:SetChecked(not Save().tab[info.name].hide)
-        if info.name=='STATUS' or info.name=='SPEED' or info.name=='LIFESTEAL' then
-            if last then
-                check:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -16)
-            else
-                check:SetPoint('TOPLEFT', 0, -32)
-            end
-        else
-            check:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, 6)
-        end
-        check.name= info.name
-        check.text2= info.text
-        check.zeroShow= info.zeroShow
-
-        check:SetScript('OnMouseUp',function(self)
-            Save().tab[self.name].hide= not Save().tab[self.name].hide and true or nil
-            WoWTools_AttributesMixin:Frame_Init(true)--初始，设置
-        end)
-        check:SetScript('OnEnter', function(self)
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            local value= button[self.name] and button[self.name].value
-            e.tips:AddDoubleLine(self.text2, format('%.2f%%', value or 0))
-            if not info.zeroShow then
-                e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(e.GetShowHide(not Save().tab[self.name].hide), (e.onlyChinese and '值' or 'value: ')..' < 1 ='..(e.onlyChinese and '隐藏' or HIDE))
-            end
-            e.tips:Show()
-        end)
-        check:SetScript('OnLeave', GameTooltip_Hide)
-
-        local text= WoWTools_LabelMixin:Create(check, {color={r=info.r or 1, g=info.g or 0.82, b=info.b or 0, a=info.a or 1}})--nil, nil, nil, {r,g,b,a})--Text
-        text:SetPoint('LEFT', check, 'RIGHT')
-        text:SetText(info.text)
-        if index>1 then
-            text:EnableMouse(true)
-            text.name= info.name
-            text.text= info.text
-            text:SetScript('OnMouseDown', function(self)
-                local R,G,B,A= Save().tab[self.name].r, Save().tab[self.name].g, Save().tab[self.name].r, Save().tab[self.name].a or 1-- self.r, self.g, self.b, self.a
-                local setA, setR, setG, setB
-                local function func()
-                    Save().tab[self.name].r= setR
-                    Save().tab[self.name].g= setG
-                    Save().tab[self.name].b= setB
-                    Save().tab[self.name].a= setA
-                    self:SetTextColor(setR, setG, setB, setA)
-                    if button[self.name] then
-                        if button[self.name].label then
-                            button[self.name].label:SetTextColor(setR, setG, setB, setA)
-                        end
-                        if button[self.name].bar then
-                            button[self.name].bar:SetStatusBarColor(setR,setG,setB,setA)
-                        end
-                    end
-                end
-                WoWTools_ColorMixin:ShowColorFrame(R,G,B,A, function()
-                        setR, setG, setB, setA = WoWTools_ColorMixin:Get_ColorFrameRGBA()
-                        func()
-                    end,function()
-                         setR, setG, setB, setA= R,G,B,A
-                        func()
-                    end
-                )
-            end)
-            text:SetScript('OnEnter', function(self)
-                local r2= Save().tab[self.name].r or 1
-                local g2= Save().tab[self.name].g or 0.82
-                local b2= Save().tab[self.name].b or 0
-                local a2= Save().tab[self.name].a or 1
-                e.tips:SetOwner(self, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:AddDoubleLine(self.text, self.name, r2, g2, b2)
-                e.tips:AddDoubleLine(e.onlyChinese and '设置' or SETTINGS, (e.onlyChinese and '颜色' or COLOR)..e.Icon.left)
-                e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(format('r%.2f', r2)..format('  g%.2f', g2)..format('  b%.2f', b2), format('a%.2f', a2))
-                e.tips:Show()
-                self:SetAlpha(0.3)
-            end)
-            text:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
-        end
-
-        if info.name=='STATUS' then--主属性, 使用bar
-            local current= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-            current:SetChecked(Save().tab[info.name].bar)
-            current:SetPoint('LEFT', text, 'RIGHT',2,0)
-            current.text:SetText(e.Player.col..'Bar')
-            current:SetScript('OnMouseUp',function(self)
-                Save().tab['STATUS'].bar= not Save().tab['STATUS'].bar and true or false
-                WoWTools_AttributesMixin:Frame_Init(true)--初始， 或设置
-            end)
-            current:SetScript('OnEnter', function(self2) set_SPEED_Tooltip(self2) self2:SetAlpha(0.3) end)
-            current:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
-
-            --位数，bit
-            local sliderBit=e.CSlider(panel, {w=100,h=20, min=0, max=3, value=Save().tab['STATUS'].bit or 3, setp=1, color=nil,
-                text= e.Player.col..(e.onlyChinese and '位数' or 'bit'),
-                func=function(self, value)
-                    value= math.floor(value)
-                    self:SetValue(value)
-                    self.Text:SetText(value)
-                    Save().tab['STATUS'].bit= value==0 and 0 or value
-                    WoWTools_AttributesMixin:Frame_Init(true)--初始，设置
-                end,
-                tips=nil
-            })
-            sliderBit:SetPoint("LEFT", current.text, 'RIGHT', 6,0)
-            sliderBit:SetSize(100,20)
-
-
-        elseif info.name=='SPEED' then--速度, 当前速度, 选项
-            --驭空术UI，速度
-            local dragonriding= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-            dragonriding:SetChecked(not Save().disabledDragonridingSpeed)
-            dragonriding:SetPoint('LEFT', text, 'RIGHT',2,0)
-            dragonriding.text:SetFormattedText('|A:dragonriding_vigor_decor:0:0|a%s', e.onlyChinese and '驭空术' or GENERIC_TRAIT_FRAME_DRAGONRIDING_TITLE)
-            dragonriding:SetScript('OnClick',function()
-                Save().disabledDragonridingSpeed= not Save().disabledDragonridingSpeed and true or nil
-                print(e.addName, addName, e.GetEnabeleDisable(not Save().disabledDragonridingSpeed), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
-            end)
-
-            --载具，速度
-            local vehicleSpeedCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-            vehicleSpeedCheck:SetChecked(not Save().disabledVehicleSpeed)
-            vehicleSpeedCheck:SetPoint('LEFT', dragonriding.text, 'RIGHT',2,0)
-            vehicleSpeedCheck.text:SetFormattedText(e.onlyChinese and '%s载具' or UNITNAME_SUMMON_TITLE9, '|TInterface\\Vehicles\\UI-Vehicles-Button-Exit-Up:0|t')
-            vehicleSpeedCheck:SetScript('OnClick',function()
-                Save().disabledVehicleSpeed= not Save().disabledVehicleSpeed and true or nil
-                print(e.addName, addName, e.GetEnabeleDisable(not Save().disabledVehicleSpeed), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
-            end)
-
-
-        elseif info.name=='VERSATILITY' then--全能5
-            local check2=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--仅防卫
-            check2:SetChecked(Save().tab['VERSATILITY'].onlyDefense)
-            check2:SetPoint('LEFT', text, 'RIGHT',2,0)
-            check2.text:SetText((e.onlyChinese and '仅防御' or format(LFG_LIST_CROSS_FACTION, DEFENSE)))
-            check2:SetScript('OnMouseDown', function(self)
-                Save().tab['VERSATILITY'].onlyDefense= not Save().tab['VERSATILITY'].onlyDefense and true or nil
-                if Save().tab['VERSATILITY'].onlyDefense then
-                    check2.A.text:SetTextColor(0.62, 0.62, 0.62)
-                else
-                    check2.A.text:SetTextColor(1, 0.82, 0)
-                end
-                WoWTools_AttributesMixin:Frame_Init(true)--初始，设置
-            end)
-            check2:SetScript('OnEnter', set_VERSATILITY_Tooltip)
-            check2:SetScript('OnLeave', GameTooltip_Hide)
-
-            check2.A=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--双属性 22/18%
-            check2.A:SetChecked(Save().tab['VERSATILITY'].damageAndDefense)
-            check2.A:SetPoint('LEFT', check2.text, 'RIGHT',2,0)
-            check2.A.text:SetText('22/18%')
-            check2.A:SetScript('OnMouseDown', function(self)
-                Save().tab['VERSATILITY'].damageAndDefense= not Save().tab['VERSATILITY'].damageAndDefense and true or nil
-                WoWTools_AttributesMixin:Frame_Init(true)--初始，设置
-            end)
-            check2.A:SetScript('OnEnter', set_VERSATILITY_Tooltip)
-            check2.A:SetScript('OnLeave', GameTooltip_Hide)
-
-            if Save().tab['VERSATILITY'].onlyDefense then
-                check2.A.text:SetTextColor(0.62, 0.62, 0.62)
-            end
-        end
-        last= check
-    end
-
-
-
-    local text= WoWTools_LabelMixin:Create(panel, {size=26})--26)--Text
-    text:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -16)
-    text:SetText(e.onlyChinese and '阴影' or SHADOW_QUALITY:gsub(QUALITY , ''))
-    text:EnableMouse(true)
-    text.r, text.g, text.b, text.a= Save().font.r, Save().font.g, Save().font.b, Save().font.a
-    set_Shadow(text)--设置，字体阴影
-    text:SetScript('OnMouseDown', function(self)
-        local R,G,B,A= self.r, self.g, self.b, self.a
-        local setA, setR, setG, setB
-        local function func()
-            Save().font.r= setR
-            Save().font.g= setG
-            Save().font.b= setB
-            Save().font.a= setA
-            set_Shadow(self)--设置，字体阴影
-            WoWTools_AttributesMixin:Frame_Init(true)--初始，设置
-        end
-        WoWTools_ColorMixin:ShowColorFrame(self.r, self.g, self.b, self.a, function()
-                setR, setG, setB, setA = WoWTools_ColorMixin:Get_ColorFrameRGBA()
-                func()
-            end, function()
-                setR, setG, setB, setA= R,G,B,A
-                func()
-            end
-        )
-    end)
-    text:SetScript('OnLeave', function(self2) self2:SetAlpha(1) e.tips:Hide() end)
-    text:SetScript('OnEnter', function(self2)
-        e.tips:SetOwner(self2, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinese and '设置' or SETTINGS, (e.onlyChinese and '阴影' or SHADOW_QUALITY:gsub(QUALITY , ''))..e.Icon.left..(e.onlyChinese and '颜色' or COLOR))
-        e.tips:AddDoubleLine('r'..(self2.r or 1)..' g'..(self2.g or 1)..' b'..(self2.b or 1), 'a'..(self2.a or 1))
-        e.tips:Show()
-        self2:SetAlpha(0.3)
-    end)
-
-    --bar, 宽度
-    local sliderX=e.CSlider(panel, {w=120 ,h=20, min=-5, max=5, value=Save().font.x, setp=1, color=nil,
-        text='X',
-        func=function(self, value)
-            value= math.floor(value)
-            self:SetValue(value)
-            self.Text:SetText(value)
-            Save().font.x= value==0 and 0 or value
-            set_Shadow(self.text)--设置，字体阴影
-            WoWTools_AttributesMixin:Frame_Init(true)--初始，设置
-        end, tips=nil
-    })
-    sliderX:SetPoint("TOPLEFT", text, 'BOTTOMLEFT',0,-12)
-    sliderX.text= text
-
-    --bar, 宽度
-    local sliderY= e.CSlider(panel, {w=120 ,h=20, min=-5, max=5, value=Save().font.y, setp=1, color=true,
-        text='Y', func=function(self, value, userInput)
-            value= math.floor(value)
-            self:SetValue(value)
-            self.Text:SetText(value)
-            Save().font.y= value==0 and 0 or value
-            set_Shadow(self.text)--设置，字体阴影
-            WoWTools_AttributesMixin:Frame_Init(true)--初始，设置
-        end, tips=nil
-    })
-    sliderY:SetPoint("LEFT", sliderX, 'RIGHT', 2, 0)
-    sliderY.text= text
-
-    local notTextCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    notTextCheck:SetPoint("TOPLEFT", panel, 'TOP', 0, -32)
-    notTextCheck.text:SetText(e.onlyChinese and '隐藏数值' or HIDE..STATUS_TEXT_VALUE)
-    notTextCheck:SetChecked(Save().notText)
-    notTextCheck:SetScript('OnMouseDown', function()
-        Save().notText= not Save().notText and true or nil
-        WoWTools_AttributesMixin:Frame_Init(true)--初始， 或设置
-    end)
-
-    local textColor= WoWTools_LabelMixin:Create(panel, {size=20})--20)--数值text, 颜色
-    textColor:SetPoint('LEFT', notTextCheck.text,'RIGHT', 5, 0)
-    textColor:EnableMouse(true)
-    textColor:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
-    textColor:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinese and '设置' or SETTINGS, e.Icon.left..self.hex..(e.onlyChinese and '颜色' or COLOR))
-        e.tips:Show()
-        self:SetAlpha(0.3)
-    end)
-    textColor:SetText('23%')
-    WoWTools_ColorMixin:RGBtoHEX(Save().textColor.r, Save().textColor.g, Save().textColor.b, Save().textColor.a, textColor)
-    textColor:SetScript('OnMouseDown', function(self)
-        local setR, setG, setB, setA
-        local R,G,B,A= self.r, self.g, self.b, self.a
-        local function func()
-            Save().textColor= {r=setR, g=setG, b=setB, a=setA}
-            self:SetTextColor(setR, setG, setB, setA)
-            WoWTools_AttributesMixin:Frame_Init(true)--初始，设置
-        end
-        WoWTools_ColorMixin:ShowColorFrame(self.r, self.g, self.b,self.a, function()
-                setR, setG, setB, setA= WoWTools_ColorMixin:Get_ColorFrameRGBA()
-                func()
-            end,function()
-                setR, setG, setB, setA= R,G,B,A
-                func()
-            end
-        )
-    end)
-
-
-    check= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    check:SetPoint("TOPLEFT", notTextCheck, 'BOTTOMLEFT')
-    check.text:SetText((e.onlyChinese and '向左' or BINDING_NAME_STRAFELEFT)..' 23%'..Tabs[2].text)
-    check:SetChecked(Save().toLeft)
-    check:SetScript('OnMouseDown', function()
-        Save().toLeft= not Save().toLeft and true or nil
-        WoWTools_AttributesMixin:Frame_Init(true)--初始， 或设置
-    end)
-
-
-    local check5= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--使用，数值
-    check5:SetPoint("TOPLEFT", check, 'BOTTOMLEFT')
-    check5.text:SetText((e.onlyChinese and '数值' or STATUS_TEXT_VALUE)..' 2K')
-    check5:SetChecked(Save().useNumber)
-    check5:SetScript('OnMouseDown', function()
-        Save().useNumber= not Save().useNumber and true or nil
-        WoWTools_AttributesMixin:Frame_Init(true)--初始， 或设置
-    end)
-
-    --位数，bit
-    local sliderBit= e.CSlider(panel, {w=100 ,h=20, min=0, max=3, value=Save().bit or 0, setp=1, color=nil,
-        text=(e.onlyChinese and '位数' or 'bit'),
-        func=function(self, value)
-            value= math.ceil(value)
-            self:SetValue(value)
-            self.Text:SetText(value)
-            Save().bit= value==0 and 0 or value
-            WoWTools_AttributesMixin:Frame_Init(true)--初始，设置
-        end,
-    tips=nil})
-    sliderBit:SetPoint("LEFT", check5.text, 'RIGHT', 6,0)
-
-
-    local barValueText= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--增加,减少,值
-    barValueText:SetPoint("TOPLEFT", check5, 'BOTTOMLEFT')
-    barValueText.text:SetText(e.onlyChinese and '增益' or BENEFICIAL)
-    barValueText:SetChecked(Save().setMaxMinValue)
-    barValueText:SetScript('OnMouseDown', function()
-        Save().setMaxMinValue= not Save().setMaxMinValue and true or nil
-        WoWTools_AttributesMixin:Frame_Init(true)--初始， 或设置
-        if Save().setMaxMinValue then
-            C_Timer.After(0.3, function()
-                for _, info in pairs(Tabs) do
-                    local frame= button[info.name]
-                    if frame and frame.textValue then
-                        frame.textValue:SetText('+12')
-                    end
-                end
-            end)
-        end
-    end)
-    panel.barGreenColor= WoWTools_LabelMixin:Create(panel, {size=20})--20)
-    panel.barGreenColor:SetPoint('LEFT', barValueText.text,'RIGHT', 2, 0)
-    panel.barGreenColor:EnableMouse(true)
-    panel.barGreenColor:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
-    panel.barGreenColor:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinese and '设置' or SETTINGS, e.Icon.left..self.hex..(e.onlyChinese and '颜色' or COLOR))
-        e.tips:Show()
-        self:SetAlpha(0.3)
-    end)
-    panel.barGreenColor:SetText('+12')
-    WoWTools_ColorMixin:HEXtoRGB(Save().greenColor, panel.barGreenColor)--设置, panel.barGreenColor. r g b hex
-    panel.barGreenColor:SetScript('OnMouseDown', function(self)
-        local setR, setG, setB, setA
-        local R,G,B,A= self.r, self.g, self.b, self.a
-        local function func()
-            local hex= WoWTools_ColorMixin:RGBtoHEX(setR, setG, setB,setA, self)--RGB转HEX
-            hex= hex and '|c'..hex or '|cffff8200'
-            Save().greenColor= hex
-            GreenColor= {r=setR or 1, g=setG or 0, b=setB or 0, a=setA or 1}
-        end
-        WoWTools_ColorMixin:ShowColorFrame(self.r, self.g, self.b,self.a, function()
-                setR, setG, setB, setA= WoWTools_ColorMixin:Get_ColorFrameRGBA()
-                func()
-            end, function()
-                setR, setG, setB, setA= R,G,B,A
-                func()
-            end
-        )
-    end)
-
-    panel.barRedColor= WoWTools_LabelMixin:Create(panel, {size=20})--20)
-    panel.barRedColor:SetPoint('LEFT', panel.barGreenColor,'RIGHT', 2, 0)
-    panel.barRedColor:EnableMouse(true)
-    panel.barRedColor:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
-    panel.barRedColor:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinese and '设置' or SETTINGS, e.Icon.left..self.hex..(e.onlyChinese and '颜色' or COLOR))
-        e.tips:Show()
-        self:SetAlpha(0.3)
-    end)
-    panel.barRedColor:SetText('-12')
-    WoWTools_ColorMixin:HEXtoRGB(Save().redColor, panel.barRedColor)--设置, panel.barRedColor. r g b hex
-    panel.barRedColor:SetScript('OnMouseDown', function(self)
-        local setR, setG, setB, setA
-        local R,G,B,A= self.r, self.g, self.b, self.a
-        local function func()
-            local hex= WoWTools_ColorMixin:RGBtoHEX(setR, setG, setB,setA, self)--RGB转HEX
-            hex= hex and '|c'..hex or '|cffff0000'
-            Save().redColor= hex
-            RedColor= {r=setR or 1, g=setG or 0, b=setB or 0, a=setA or 1}
-        end
-        WoWTools_ColorMixin:ShowColorFrame(self.r, self.g, self.b,self.a, function()
-                setR, setG, setB, setA= WoWTools_ColorMixin:Get_ColorFrameRGBA()
-                func()
-            end, function()
-                setR, setG, setB, setA= R,G,B,A
-                func()
-            end
-        )
-    end)
-
-    local check2= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--bar
-    check2:SetPoint("TOPLEFT", barValueText, 'BOTTOMLEFT',0,-62)
-    check2.text:SetText('Bar')
-    check2:SetChecked(Save().bar)
-    check2:SetScript('OnMouseDown', function()
-        Save().bar= not Save().bar and true or nil
-        WoWTools_AttributesMixin:Frame_Init(true)--初始，设置
-    end)
-
-    local check3= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--bar，图片，样式2
-    check3:SetPoint("LEFT", check2.text, 'RIGHT', 6, 0)
-    check3.text:SetText((e.onlyChinese and '格式' or FORMATTING).. ' 2')
-    check3:SetChecked(Save().barTexture2)
-    check3:SetScript('OnMouseDown', function()
-        Save().barTexture2= not Save().barTexture2 and true or nil
-        WoWTools_AttributesMixin:Frame_Init(true)--初始，设置
-    end)
-
-    --bar, 宽度
-    local barWidth= e.CSlider(panel, {w=120, h=20, min=-119, max=250, value=Save().barWidth, setp=1, color=nil,
-        text=e.onlyChinese and '宽' or WIDE,
-        func=function(self, value)
-            value= math.floor(value)
-            self:SetValue(value)
-            self.Text:SetText(value)
-            Save().barWidth= value==0 and 0 or value
-            WoWTools_AttributesMixin:Frame_Init(true)--初始，设置
-        end, tips=nil
-    })
-    barWidth:SetPoint("LEFT", check3.text, 'RIGHT', 10, 0)
-
-    --bar, x
-    local barX= e.CSlider(panel, {w=120, h=20, min=-250, max=250, value=Save().barX, setp=1, color=true,
-        text='X',
-        func=function(self, value)
-            value= math.floor(value)
-            self:SetValue(value)
-            self.Text:SetText(value)
-            Save().barX= value==0 and 0 or value
-            WoWTools_AttributesMixin:Frame_Init(true)--初始，设置
-        end, tips=nil
-    })
-    barX:SetPoint("TOPLEFT", barWidth.Low, 'BOTTOMLEFT', 0, -10)
-
-
-    local barToLeft= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--bar 向左
-    barToLeft:SetPoint("TOPLEFT", check2, 'BOTTOMLEFT')
-    barToLeft.text:SetText(e.onlyChinese and '向左' or BINDING_NAME_STRAFELEFT)
-    barToLeft:SetChecked(Save().barToLeft)
-    barToLeft:SetScript('OnMouseDown', function()
-        Save().barToLeft= not Save().barToLeft and true or nil
-        WoWTools_AttributesMixin:Frame_Init(true)--初始， 或设置
-    end)
-
-    --间隔，上下
-    local slider= e.CSlider(panel, {w=120, h=20, min=-5, max=10, value=Save().vertical, setp=0.1, color=nil,
-        text='|T450907:0|t|T450905:0|t',
-        func=function(self, value)
-            value= tonumber(format('%.1f', value))
-            self:SetValue(value)
-            self.Text:SetText(value)
-            Save().vertical= value==0 and 0 or value
-            WoWTools_AttributesMixin:Frame_Init(true)--初始，设置
-        end,
-        tips=nil
-    })
-    slider:SetPoint("TOPLEFT", barToLeft, 'BOTTOMLEFT', 0,-80)
-
-    --间隔，左右
-    local slider2= e.CSlider(panel, {w=120, h=20, min=-0.1, max=40, value=Save().horizontal, setp=0.1, color=true,
-        text='|T450908:0|t|T450906:0|t',
-        func=function(self, value)
-            value= tonumber(format('%.1f', value))
-            self:SetValue(value)
-            self.Text:SetText(value)
-            Save().horizontal=value
-            WoWTools_AttributesMixin:Frame_Init(true)--初始，设置
-        end,
-        tips=nil
-    })
-    slider2:SetPoint("LEFT", slider, 'RIGHT', 10,0)
-
-    --文本，截取
-    local slider3= e.CSlider(panel, {w=120, h=20, min=0, max=20, value=Save().gsubText or 0, setp=1, color=nil,
-        text=e.onlyChinese and '截取' or BINDING_NAME_SCREENSHOT,
-        func=function(self, value, userInput)
-            value= math.floor(value)
-            self:SetValue(value)
-            self.Text:SetText(value)
-            Save().gsubText= value>0 and value or nil
-            WoWTools_AttributesMixin:Frame_Init(true)--初始，设置
-            print(e.addName,addName, '|cnGREEN_FONT_COLOR:'..value..'|r', e.onlyChinese and '文本 0=否' or (LOCALE_TEXT_LABEL..' 0='..NO))
-        end,
-        tips=nil
-    })
-    slider3:SetPoint("TOPLEFT", slider, 'BOTTOMLEFT', 0,-24)
-
-
-    local checkStrupper= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--bar，图片，样式2
-    local checkStrlower= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--bar，图片，样式2
-    checkStrupper:SetPoint("LEFT", slider3, 'RIGHT')
-    checkStrupper.text:SetText('ABC')--大写
-    checkStrupper:SetChecked(Save().strupper)
-    checkStrupper:SetScript('OnMouseDown', function()
-        Save().strupper= not Save().strupper and true or nil
-        if Save().strupper then
-            Save().strlower=nil
-            checkStrlower:SetChecked(false)
-        end
-        WoWTools_AttributesMixin:Frame_Init(true)--初始，设置
-    end)
-    checkStrlower:SetPoint("LEFT", checkStrupper.text, 'RIGHT')
-    checkStrlower.text:SetText('abc')--小写
-    checkStrlower:SetChecked(Save().strlower)
-    checkStrlower:SetScript('OnMouseDown', function()
-        Save().strlower= not Save().strlower and true or nil
-        if Save().strlower then
-            Save().strupper=nil
-            checkStrupper:SetChecked(false)
-        end
-        WoWTools_AttributesMixin:Frame_Init(true)--初始，设置
-    end)
-
-    --缩放
-    local slider4= e.CSlider(panel, {w=nil, h=20, min=0.3, max=4, value=Save().scale or 1, setp=0.1, color=nil,
-        text=e.onlyChinese and '缩放' or UI_SCALE,
-        func=function(self, value)
-            value= tonumber(format('%.1f', value)) or 1
-            self:SetValue(value)
-            self.Text:SetText(value)
-            Save().scale=value
-            button.frame:SetScale(value)
-        end,
-        tips=nil
-    })
-    slider4:SetPoint("TOPLEFT", slider3, 'BOTTOMLEFT', 0,-24)
-
-
-    local sliderButtonAlpha = e.CSlider(panel, {min=0, max=1, value=Save().buttonAlpha or 0.3, setp=0.1, color=true,
-    text=e.onlyChinese and '专精透明度' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPECIALIZATION, 'Alpha'),
-    func=function(self, value)
-        value= tonumber(format('%.1f', value))
-        value= value==0 and 0 or value
-        value= value==1 and 1 or value
-        self:SetValue(value)
-        self.Text:SetText(value)
-        Save().buttonAlpha= value
-        button:set_Show_Hide()--显示， 隐藏
-    end})
-    sliderButtonAlpha:SetPoint("TOPLEFT", slider4, 'BOTTOMLEFT', 0,-24)
-
-    local sliderButtonScale = e.CSlider(panel, {min=0.4, max=4, value=Save().buttonScale or 1, setp=0.1, color=true,
-    text=e.onlyChinese and '专精缩放' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPECIALIZATION, UI_SCALE),
-    func=function(self, value)
-        value= tonumber(format('%.01f', value))
-        value= value<0.4 and 0.4 or value
-        value= value>4 and 4 or value
-        self:SetValue(value)
-        self.Text:SetText(value)
-        Save().buttonScale= value
-        button:set_Show_Hide()--显示， 隐藏
-    end})
-    sliderButtonScale:SetPoint("TOPLEFT", sliderButtonAlpha, 'BOTTOMLEFT', 0,-24)
-
-
-    local restPosti= WoWTools_ButtonMixin:Cbtn(panel, {size={20,20}, atlas='characterundelete-RestoreButton'})--重置
-    restPosti:SetPoint('BOTTOMRIGHT')
-    restPosti:SetScript('OnClick', function()
-        Save().point=nil
-        button:set_Point()--设置, 位置
-    end)
-    restPosti:SetScript('OnLeave', GameTooltip_Hide)
-    restPosti:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddLine((not Save().point and '|cff9e9e9e' or '')..(e.onlyChinese and '重置位置' or RESET_POSITION))
-        e.tips:Show()
-    end)
-
-
-    local checkHidePet= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-    checkHidePet:SetPoint('BOTTOMLEFT')
-    checkHidePet.text:SetText(e.onlyChinese and '自动隐藏' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE))
-    checkHidePet:SetChecked(Save().hideInPetBattle)
-    checkHidePet:SetScript('OnMouseDown', function()
-        Save().hideInPetBattle= not Save().hideInPetBattle and true or nil
-        button:set_event()
-        button:settings()
-    end)
-end
 
 
 
@@ -1859,7 +989,7 @@ local function Init()
     WoWTools_AttributesMixin:Init_Dragonriding_Speed()--驭空术UI，速度
     WoWTools_AttributesMixin:Init_Vehicle_Speed()--载具，移动，速度
 
-    button= WoWTools_ButtonMixin:Cbtn(nil, {icon='hide', size={22,22}, isType2=true})
+    button= WoWTools_ButtonMixin:Cbtn(nil, {icon='hide', size={22,22}, isType2=true, name='WoWTools_AttributesButton'})
     button.frame= CreateFrame("Frame",nil,button)
 
 
@@ -1973,7 +1103,7 @@ local function Init()
 
         elseif d=='LeftButton' and not IsModifierKeyDown() then
             WoWTools_AttributesMixin:Frame_Init(true)--初始， 或设置
-            print(e.addName, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重置' or RESET)..'|r', e.onlyChinese and '数值' or STATUS_TEXT_VALUE)
+            print(e.addName, WoWTools_AttributesMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重置' or RESET)..'|r', e.onlyChinese and '数值' or STATUS_TEXT_VALUE)
 
         elseif d=='RightButton' and IsShiftKeyDown() then
             self:send_Att_Chat()--发送信息
@@ -2007,7 +1137,7 @@ local function Init()
         e.tips:AddDoubleLine(self:get_sendTextTips(), 'Shift+'..e.Icon.right)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-        e.tips:AddDoubleLine(e.addName, addName)
+        e.tips:AddDoubleLine(e.addName, WoWTools_AttributesMixin.addName)
         e.tips:Show()
         self.texture:SetAlpha(1)
         self.classPortrait:SetAlpha(1)
@@ -2120,43 +1250,52 @@ end
 
 
 
+function WoWTools_AttributesMixin:Frame_Init(rest)
+    Frame_Init(rest)
+end
+
+function WoWTools_AttributesMixin:Get_Tabs()
+    do
+        if not Tabs then
+            set_Tabs()
+        end
+    end
+    return Tabs
+end
+
+function WoWTools_AttributesMixin:Get_MinCrit()
+    return get_minCrit()
+end
+
+
+
+
+
+
 
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            if WoWToolsSave[STAT_CATEGORY_ATTRIBUTES] then
-                WoWTools_AttributesMixin.Save= WoWToolsSave[STAT_CATEGORY_ATTRIBUTES]
-                WoWToolsSave[STAT_CATEGORY_ATTRIBUTES]=nil
-                Save().vertical= Save().vertical or 3
-                Save().horizontal= Save().horizontal or 8
-                Save().barWidth= Save().barWidth or 0
 
-                Save().barX= Save().barX or 0
-                Save().bit= Save().bit== 0 and 0 or Save().bit or 0
-
-                Save().textColor= Save().textColor or {r=1,g=1,b=1,a=1}
-                Save().font= Save().font or {r=0, g=0, b=0, a=1, x=1, y=-1}--阴影
-                Save().tab['STAUTS']= Save().tab['STAUTS'] or {}
-                Save().tab['STAUTS'].bit= Save().tab['STAUTS'].bit or 3
-            else
-                WoWTools_AttributesMixin.Save= WoWToolsSave['Plus_Attributes'] or WoWTools_AttributesMixin.Save
-            end
+            WoWTools_AttributesMixin.Save= WoWToolsSave['Plus_Attributes'] or WoWTools_AttributesMixin.Save
 
             WoWTools_AttributesMixin.addName= '|A:charactercreate-icon-customize-body-selected:0:0|a'..(e.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES)
-            addName= WoWTools_AttributesMixin.addName
 
-            WoWTools_AttributesMixin.Category= e.AddPanel_Sub_Category({name=addName, frame=self})--添加控制面板
+            WoWTools_AttributesMixin.PanelFrame= CreateFrame('Frame')
+            WoWTools_AttributesMixin.Category= e.AddPanel_Sub_Category({name=WoWTools_AttributesMixin.addName, frame=WoWTools_AttributesMixin.PanelFrame})--添加控制面板
 
-            e.ReloadPanel({panel=self, addName=addName, restTips=nil, checked=not Save().disabled, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
+            e.ReloadPanel({panel=WoWTools_AttributesMixin.PanelFrame, addName=WoWTools_AttributesMixin.addName, restTips=nil, checked=not Save().disabled, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
                 disabledfunc=function()
                     Save().disabled = not Save().disabled and true or nil
                     if not Save().disabled and not button then
-                        Init()
-                        Init_Options()
+                        do
+                            Init()
+                        end
+                        WoWTools_AttributesMixin:Init_Options()
                     else
-                        print(e.addName, addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                        print(e.addName, WoWTools_AttributesMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
                         WoWTools_AttributesMixin:Frame_Init(true)--初始， 或设置
                     end
                 end,
@@ -2174,8 +1313,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Init()
             end
 
+            if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
+                WoWTools_AttributesMixin:Init_Options()
+                self:UnregisterEvent('Blizzard_Settings')
+            end
+
         elseif arg1=='Blizzard_Settings' then
-            Init_Options()
+            WoWTools_AttributesMixin:Init_Options()
 
         end
 
