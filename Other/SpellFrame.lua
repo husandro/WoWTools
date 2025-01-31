@@ -496,7 +496,7 @@ local function Init_Spec_Button()
             if self:IsActive() or UnitAffectingCombat('player') or PlayerSpellsFrame.TalentsFrame:IsCommitInProgress() then
                 return
             end
-            if C_SpecializationInfo.SetSpecialization then--11.1
+            if C_SpecializationInfo and C_SpecializationInfo.SetSpecialization then--11.1
                 C_SpecializationInfo.SetSpecialization(self.specIndex)
             else
                 SetSpecialization(self.specIndex)
@@ -505,45 +505,18 @@ local function Init_Spec_Button()
 
         btn:SetScript('OnLeave', GameTooltip_Hide)
         btn:SetScript('OnEnter', function(self)
-            local specID, name, description, icon, role, primaryStat= GetSpecializationInfo(self.specIndex, false, false, nil, UnitSex("player"))
-            if not specID then
-                return
-            end
-
-            local stat={
-                e.onlyChinese and '力量' or SPEC_FRAME_PRIMARY_STAT_STRENGTH,
-                e.onlyChinese and '敏捷' or SPEC_FRAME_PRIMARY_STAT_AGILITY,
-                e.onlyChinese and '智力' or SPEC_FRAME_PRIMARY_STAT_INTELLECT,
-                e.onlyChinese and '智力' or SPEC_FRAME_PRIMARY_STAT_INTELLECT,
-            }
-
-            local specIDs= C_SpecializationInfo.GetSpellsDisplay(specID) or {}
-
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:AddDoubleLine(
-                (specID or '')..'|T'..(icon or 0)..':0|t'
-                ..(e.cn(name) or ''),
-
-                (stat[primaryStat] or '')
-                ..'|A:'..(GetMicroIconForRoleEnum(GetSpecializationRoleEnum(self.specIndex, false, false) or '')..':0:0|a')..(e.cn(_G[role] or role) or '')
-            )
-
-            e.tips:AddDoubleLine(
-                WoWTools_SpellMixin:GetName(specIDs[1]),
-                WoWTools_SpellMixin:GetName(specIDs[6])
-            )
-
-            e.tips:AddLine(' ')
-            e.tips:AddLine(e.cn(description), nil, nil, nil, true)
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(
-                addName,
-                ((UnitAffectingCombat('player') or self:IsActive()) and '|cff828282' or '')
-                ..(e.onlyChinese and '激活' or SPEC_ACTIVE)
-                ..e.Icon.left
-            )
-            e.tips:Show()
+            WoWTools_SetTooltipMixin:Frame(self, GameTooltip, {
+                specIndex= self.specIndex,
+                tooltip= function(tooltip, data)
+                    tooltip:AddLine(' ')
+                    tooltip:AddDoubleLine(
+                        addName,
+                        ((UnitAffectingCombat('player') or self:IsActive()) and '|cff828282' or '')
+                        ..(e.onlyChinese and '激活' or SPEC_ACTIVE)
+                        ..e.Icon.left
+                    )
+                end
+            })
         end)
 
         btn:RegisterEvent('ACTIVE_PLAYER_SPECIALIZATION_CHANGED')

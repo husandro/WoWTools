@@ -50,6 +50,9 @@ local function Init_Menu(self, root)
         tooltip:AddLine(self:get_Att_Text_Chat())
     end)
 
+--专精
+    WoWTools_MenuMixin:Set_Specialization(root)
+
 --选项
     root:CreateDivider()
     sub=WoWTools_MenuMixin:OpenOptions(root, {

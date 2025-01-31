@@ -139,46 +139,56 @@ end
 
 
 
+--专精，天赋
+local function Set_Specialization(tooltip, specIndex, specID)
+    local name, description, icon, role, primaryStat, roleIcon
+    if specIndex then
+        specID, name, description, icon, role, primaryStat= GetSpecializationInfo(specIndex, false, false, nil, UnitSex("player"))
+        roleIcon= GetMicroIconForRoleEnum(GetSpecializationRoleEnum(specIndex, false, false))
 
+    elseif specID then
+        specID, name, description, icon, role, primaryStat = GetSpecializationInfoByID(specID)
+        roleIcon= GetMicroIconForRoleEnum(GetSpecializationRoleEnumByID(specID))
+    end
 
+    if not specID or not name or not tooltip then
+        return
+    end
 
+    local stat={
+        e.onlyChinese and '力量' or SPEC_FRAME_PRIMARY_STAT_STRENGTH,
+        e.onlyChinese and '敏捷' or SPEC_FRAME_PRIMARY_STAT_AGILITY,
+        e.onlyChinese and '智力' or SPEC_FRAME_PRIMARY_STAT_INTELLECT,
+        --e.onlyChinese and '智力' or SPEC_FRAME_PRIMARY_STAT_INTELLECT,
+    }
 
+    local specIDs= C_SpecializationInfo.GetSpellsDisplay(specID) or {}
 
+    tooltip:AddDoubleLine(
+        (specID or '')..'|T'..(icon or 0)..':0|t'
+        ..(e.cn(name) or ''),
 
+        (stat[primaryStat] or stat[3])
+        ..'|A:'..(roleIcon or '')..':0:0|a'..(e.cn(_G[role] or role) or '')
+    )
 
+    tooltip:AddDoubleLine(
+        WoWTools_SpellMixin:GetName(specIDs[1]),
+        WoWTools_SpellMixin:GetName(specIDs[6])
+    )
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function WoWTools_SetTooltipMixin:Frame(frame, tooltip, data)
-    tooltip= tooltip or GameTooltip
-    tooltip:SetOwner(frame, "ANCHOR_LEFT");
-    tooltip:ClearLines()
-    self:Setup(tooltip, data)
-    tooltip:Show();
+    tooltip:AddLine(' ')
+    tooltip:AddLine(e.cn(description), nil, nil, nil, true)
 end
 
-function WoWTools_SetTooltipMixin:Set_Menu(sub)
-    sub:SetTooltip(function(tooltip, description)
-        self:Setup(tooltip, description.data)
-    end)
-end
+
+
+
+
+
+
+
+
 
 function WoWTools_SetTooltipMixin:Setup(tooltip, data)
     if type(data)~='table' then
@@ -203,6 +213,9 @@ function WoWTools_SetTooltipMixin:Setup(tooltip, data)
 
     local speciesID= data.speciesID
     local petID= data.petID
+
+    local specIndex= data.specIndex--天赋，专精
+    local specID= data.specID
 
     local tip= data.tooltip--添加，提示
     tooltip= tooltip or GameTooltip
@@ -257,11 +270,39 @@ function WoWTools_SetTooltipMixin:Setup(tooltip, data)
         if petID then
             tooltip:SetCompanionPet(petID)
         end
+
+    elseif specIndex or specID then
+        Set_Specialization(tooltip, specIndex, specID)
     end
 
     if tip then
-        GameTooltip_AddNormalLine(tooltip, type(tip)=='function' and tip() or tip, true)
+        local text= type(tip)=='function' and tip(tooltip, data) or tip
+        if text then
+            GameTooltip_AddNormalLine(tooltip, text, true)
+        end
     end
 end
 
 
+
+
+
+
+
+
+
+
+
+function WoWTools_SetTooltipMixin:Frame(frame, tooltip, data)
+    tooltip= tooltip or GameTooltip
+    tooltip:SetOwner(frame, "ANCHOR_LEFT");
+    tooltip:ClearLines()
+    self:Setup(tooltip, data)
+    tooltip:Show();
+end
+
+function WoWTools_SetTooltipMixin:Set_Menu(root)
+    root:SetTooltip(function(tooltip, description)
+        self:Setup(tooltip, description.data)
+    end)
+end

@@ -47,7 +47,7 @@ end
 
 function WoWTools_MenuMixin:CreateSlider(root, tab)
     local sub=root:CreateTemplate("OptionsSliderTemplate")
-    
+
     sub:SetData(tab)
 
     sub:AddInitializer(function(f, desc)--, description, menu)
@@ -603,6 +603,77 @@ end
 --全部清除
     WoWTools_MenuMixin:ClearAll(sub, function() end)
 ]]
+
+
+
+
+
+function WoWTools_MenuMixin:Set_Specialization(root)
+    local numSpec= GetNumSpecializations(false, false) or 0
+    if not C_SpecializationInfo.IsInitialized() or numSpec==0 then
+        return
+    end
+
+    local sex= UnitSex("player")
+
+    local curSpecIndex= GetSpecialization() or 0--当前，专精
+    local specID, name, description, icon, role, primaryStat= GetSpecializationInfo(curSpecIndex, false, false, nil, sex)
+    if not specID or not name then
+        return
+    end
+
+    local curSpecID= specID
+
+    local roleIcon= GetMicroIconForRoleEnum(GetSpecializationRoleEnum(curSpecIndex, false, false))
+    local sub= root:CreateButton(
+        '|T'..(icon or 0)..':0|t'..'|A:'..(roleIcon or '')..':0:0|a'..e.cn(name),
+    function(data)
+        WoWTools_LoadUIMixin:SpellBook(2, nil)
+        return MenuResponse.Open
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(MicroButtonTooltipText('天赋和法术书', "TOGGLETALENTS"))
+    end)
+
+    for specIndex=1, numSpec do
+        specID, name, description, icon, role, primaryStat= GetSpecializationInfo(specIndex, false, false, nil, sex)
+        if specID and name and specID~=curSpecID then
+            roleIcon= GetMicroIconForRoleEnum(GetSpecializationRoleEnum(specIndex, false, false))
+
+            local sub2= sub:CreateButton(
+                '|T'..(icon or 0)..':0|t'..'|A:'..(roleIcon or '')..':0:0|a'..e.cn(name),
+            function(data)
+                if GetSpecialization(nil, false, 1)==data.specIndex
+                    or UnitAffectingCombat('player')
+                    or (PlayerSpellsFrame and PlayerSpellsFrame.TalentsFrame:IsCommitInProgress())
+                then
+                    return MenuResponse.Open
+                end
+                if C_SpecializationInfo and C_SpecializationInfo.SetSpecialization then--11.1
+                    C_SpecializationInfo.SetSpecialization(data.specIndex)
+                else
+                    SetSpecialization(data.specIndex)
+                end
+                return MenuResponse.Open
+            end, {
+                specIndex=specIndex,
+                tooltip= function(tooltip, data2)
+                    tooltip:AddLine(' ')
+                    tooltip:AddLine(
+                        ((UnitAffectingCombat('player') or GetSpecialization(nil, false, 1)==data2.specIndex) and '|cff828282' or '')
+                        ..(e.onlyChinese and '激活' or SPEC_ACTIVE)
+                        ..e.Icon.left)
+                end}
+            )
+
+            WoWTools_SetTooltipMixin:Set_Menu(sub2)
+        end
+    end
+end
+
+
+
+
 
 function WoWTools_MenuMixin:SetGridMode(sub, num)
     if num and num>self.maxMenuButton then
