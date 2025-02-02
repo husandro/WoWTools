@@ -571,35 +571,53 @@ local function Init_TargetFrame()
 
     TargetFrame.rangeText= WoWTools_LabelMixin:Create(TargetFrame, {justifyH='RIGHT'})
     TargetFrame.rangeText:SetPoint('RIGHT', TargetFrame, 'LEFT', 22,0)
+    TargetFrame.speedText= WoWTools_LabelMixin:Create(TargetFrame, {justifyH='RIGHT'})
+    TargetFrame.speedText:SetPoint('TOPRIGHT', TargetFrame.rangeText, 'BOTTOMRIGHT', 0, -2)
+
+    TargetFrame:HookScript('OnHide', function(self)
+        self.elapsed= nil
+    end)
     hooksecurefunc(TargetFrame, 'OnUpdate', function(self, elapsed)--距离
         self.elapsed= (self.elapsed or 0.3) + elapsed
-        if self.elapsed>0.3 then
-            self.elapsed=0
-            local text
-            if not UnitIsUnit('player', 'target') then
-                local mi, ma= e.GetRange('target')
-                if mi and ma then
-                    text=mi..'|n'..ma
-                    if mi>40 then
-                        text='|cFFFF0000'..text--红色
+        if self.elapsed<0.3 then
+            return
+        end
 
-                    elseif mi>35 then
-                        text='|cFFFFD000'..text
-                    elseif mi>30 then
-                        text='|cFFFF00FF'..text
-                    elseif mi >8 then
-                        text ='|cFFFFFF00'..text
-                    elseif mi>5 then
-                        text='|cFFAF00FF'..text
-                    elseif mi>2 then
-                        text='|cFF00FF00'..text
-                    else
-                        text='|cFFFFFFFF'..text----白色
-                    end
+        self.elapsed=0
+        local text, speed
+
+        if not UnitIsUnit('player', 'target') then
+            local mi, ma= e.GetRange('target')
+            if mi and ma then
+                text=mi..'|n'..ma
+                if mi>40 then
+                    text='|cFFFF0000'..text--红色
+
+                elseif mi>35 then
+                    text='|cFFFFD000'..text
+                elseif mi>30 then
+                    text='|cFFFF00FF'..text
+                elseif mi >8 then
+                    text ='|cFFFFFF00'..text
+                elseif mi>5 then
+                    text='|cFFAF00FF'..text
+                elseif mi>2 then
+                    text='|cFF00FF00'..text
+                else
+                    text='|cFFFFFFFF'..text----白色
                 end
             end
-            self.rangeText:SetText(text or '')
+
+            local value= GetUnitSpeed('target') or 0
+            if value==0 then
+                speed= '|cff8282820%'
+            else
+                speed= format( '%.0f%%', (value)*100/BASE_MOVEMENT_SPEED)
+            end
+
         end
+        self.rangeText:SetText(text or '')
+        self.speedText:SetText(speed or '')
     end)
 end
 
