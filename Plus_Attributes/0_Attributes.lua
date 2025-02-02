@@ -57,6 +57,7 @@ local function Save()
     return WoWTools_AttributesMixin.Save
 end
 
+local BASE_MOVEMENT_SPEED= BASE_MOVEMENT_SPEED or 7
 
 
 local addName-- STAT_CATEGORY_ATTRIBUTES--PaperDollFrame.lua
@@ -272,9 +273,20 @@ local function set_Text_Value(frame, value, value2)
     end
 end
 
---#####
+
+
+
+
+
+
+
+
+
+
+
+
+
 --主属性
---#####
 local function set_STATUS_Text(frame)
     if not PrimaryStat then
         get_PrimaryStat()--取得主属
@@ -289,16 +301,23 @@ local function set_STATUS_Text(frame)
     set_Text_Value(frame, value)
 end
 
---####
+
+
+
+
+
+
+
+
+
 --爆击
---####
 local function get_minCrit()
-    local holySchool = 2;
-    local minCrit = GetSpellCritChance(holySchool) or 0;
-    local spellCrit;
+    local holySchool = 2
+    local minCrit = GetSpellCritChance(holySchool) or 0
+    local spellCrit
     for i=(holySchool+1), MAX_SPELL_SCHOOLS do
-        spellCrit = GetSpellCritChance(i);
-        minCrit = min(minCrit, spellCrit);
+        spellCrit = GetSpellCritChance(i)
+        minCrit = min(minCrit, spellCrit)
     end
     return minCrit or 0
 end
@@ -308,21 +327,21 @@ local function set_CRITCHANCE_Text(frame)
     if Save().useNumber then
         local rating
         local spellCrit = get_minCrit()
-        local rangedCrit = GetRangedCritChance();
-        local meleeCrit = GetCritChance();
+        local rangedCrit = GetRangedCritChance()
+        local meleeCrit = GetCritChance()
 
         if (spellCrit >= rangedCrit and spellCrit >= meleeCrit) then
-            rating = CR_CRIT_SPELL;
+            rating = CR_CRIT_SPELL
         elseif (rangedCrit >= meleeCrit) then
-            rating = CR_CRIT_RANGED;
+            rating = CR_CRIT_RANGED
         else
-            rating = CR_CRIT_MELEE;
+            rating = CR_CRIT_MELEE
         end
         critChance = GetCombatRating(rating)
     else
         local spellCrit = get_minCrit()
-        local rangedCrit = GetRangedCritChance();
-        local meleeCrit = GetCritChance();
+        local rangedCrit = GetRangedCritChance()
+        local meleeCrit = GetCritChance()
         if (spellCrit >= rangedCrit and spellCrit >= meleeCrit) then
             critChance = spellCrit
         elseif (rangedCrit >= meleeCrit) then
@@ -339,9 +358,14 @@ local function set_CRITCHANCE_Text(frame)
 end
 
 
---####
+
+
+
+
+
+
+
 --急速
---####
 local function set_HASTE_Text(frame)
     local haste
     if Save().useNumber then
@@ -357,7 +381,12 @@ local function set_HASTE_Text(frame)
 end
 
 
---####
+
+
+
+
+
+
 --精通
 --PaperDollFrame.lua
 local function set_MASTERY_Text(frame)
@@ -374,20 +403,25 @@ local function set_MASTERY_Text(frame)
     end
 end
 
---####
+
+
+
+
+
+
+
 --全能, 5
---####
 local function set_VERSATILITY_Text(frame)
     local value, value2
     if Save().useNumber then
-        value = GetCombatRating(CR_VERSATILITY_DAMAGE_DONE);
+        value = GetCombatRating(CR_VERSATILITY_DAMAGE_DONE)
     else
         if frame.onlyDefense then
             value= GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_TAKEN) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_TAKEN)
         else
             if frame.damageAndDefense then
                 value= GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_DONE)
-                value2= GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_TAKEN) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_TAKEN);
+                value2= GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_TAKEN) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_TAKEN)
             else
                 value= GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_DONE)
             end
@@ -401,15 +435,20 @@ local function set_VERSATILITY_Text(frame)
 end
 
 
---####
+
+
+
+
+
+
+
 --吸血, 6
---####
 local function set_LIFESTEAL_Text(frame)
     local lifesteal
     if Save().useNumber then
         lifesteal= GetCombatRating(CR_LIFESTEAL)
     else
-        lifesteal= GetLifesteal();
+        lifesteal= GetLifesteal()
     end
     if not frame then
         return lifesteal or 0
@@ -419,15 +458,20 @@ local function set_LIFESTEAL_Text(frame)
 end
 
 
---####
+
+
+
+
+
+
+
 --闪避, 7
---####
 local function set_AVOIDANCE_Text(frame)
     local avoidance
     if Save().useNumber then
         avoidance= GetCombatRating(CR_AVOIDANCE)
     else
-        avoidance= GetAvoidance();
+        avoidance= GetAvoidance()
     end
     if not frame then
         return avoidance or 0
@@ -436,15 +480,19 @@ local function set_AVOIDANCE_Text(frame)
     end
 end
 
---####
+
+
+
+
+
+
 --躲闪, 8
---####
 local function set_DODGE_Text(frame)
     local chance
     if Save().useNumber then
         chance= GetCombatRating(CR_DODGE)
     else
-        chance= GetDodgeChance();
+        chance= GetDodgeChance()
     end
     if not frame then
         return chance or 0
@@ -454,17 +502,25 @@ local function set_DODGE_Text(frame)
 end
 
 
---####
+
+
+
+
+
+
+
+
+
+
 --护甲
---####
 local function set_ARMOR_Text(frame)
     local value, value2
     local baselineArmor, effectiveArmor, armor, bonusArmor = UnitArmor('player')
     if Save().useNumber then
         value= effectiveArmor
     else
-        value = PaperDollFrame_GetArmorReduction(effectiveArmor, UnitEffectiveLevel('player'));
-        value2 = PaperDollFrame_GetArmorReductionAgainstTarget(effectiveArmor);
+        value = PaperDollFrame_GetArmorReduction(effectiveArmor, UnitEffectiveLevel('player'))
+        value2 = PaperDollFrame_GetArmorReductionAgainstTarget(effectiveArmor)
         if value== value2 then
             value2= nil
         end
@@ -477,15 +533,23 @@ local function set_ARMOR_Text(frame)
 end
 
 
---####
+
+
+
+
+
+
+
+
+
+
 --招架
---####
 local function set_PARRY_Text(frame)
     local chance
     if Save().useNumber then
         chance= GetCombatRating(CR_PARRY)
     else
-        chance= GetParryChance();
+        chance= GetParryChance()
     end
     if not frame then
         return chance or 0
@@ -495,15 +559,26 @@ local function set_PARRY_Text(frame)
 end
 
 
---####
---格挡
---####
+
+
+
+
+
+
+
+
+
+
+
+
+
+--格挡10
 local function set_BLOCK_Text(frame)
     local chance
     if Save().useNumber then
         chance= GetCombatRating(CR_BLOCK)
     else
-        chance= GetBlockChance();
+        chance= GetBlockChance()
     end
     if not frame then
         return chance or 0
@@ -513,9 +588,17 @@ local function set_BLOCK_Text(frame)
 end
 
 
---####
---醉拳
---####
+
+
+
+
+
+
+
+
+
+
+--醉拳11
 local function set_STAGGER_Text(frame)
     local stagger, staggerAgainstTarget = C_PaperDollInfo.GetStaggerPercentage('player')
     set_Text_Value(frame, stagger, staggerAgainstTarget)--设置，当前值
@@ -524,9 +607,17 @@ end
 
 
 
---####
---移动
---####
+
+
+
+
+
+
+
+
+
+
+--移动12
 local function set_SPEED_Text(frame, elapsed)
     frame.elapsed= (frame.elapsed or 0.3) + elapsed
     if frame.elapsed > 0.3 then
@@ -535,7 +626,6 @@ local function set_SPEED_Text(frame, elapsed)
         local isGliding, _, forwardSpeed = C_PlayerInfo.GetGlidingInfo()
         if isGliding and forwardSpeed then
             value= forwardSpeed
-            -- local unit= PlayerFrame.displayedUnit or PlayerFrame.unit or 'player'
         elseif UnitInVehicle('player') then
             value= GetUnitSpeed('vehicle')
         else
@@ -757,9 +847,9 @@ local function Frame_Init(rest)
                 frame= CreateFrame('Frame', nil, button.frame)
 
                 frame.label= WoWTools_LabelMixin:Create(frame, {mouse=true, color={r=info.r, g=info.g,b=info.b, a=info.a}})--nil, nil, nil, {info.r,info.g,info.b,info.a}, nil)
-                frame.label:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
+                
 
-                frame.text= WoWTools_LabelMixin:Create(frame, {mouse=true, color={r=1,g=1,b=1}, justifyH= Save().toLeft and 'RIGHT'})--nil, nil, nil, {1,1,1}, nil, Save().toLeft and 'RIGHT' or 'LEFT')
+                frame.text= WoWTools_LabelMixin:Create(frame, {color={r=1,g=1,b=1}, justifyH= Save().toLeft and 'RIGHT'})--nil, nil, nil, {1,1,1}, nil, Save().toLeft and 'RIGHT' or 'LEFT')
 
 
                 frame.bg= frame:CreateTexture(nil, 'BACKGROUND')
@@ -796,24 +886,35 @@ local function Frame_Init(rest)
                 elseif info.name=='STAGGER' then--醉拳11
                     frame:RegisterEvent('PLAYER_TARGET_CHANGED')
                     frame:SetScript('OnEvent', set_STAGGER_Text)
+
                 elseif info.name=='SPEED' then--移动12
                     frame:HookScript('OnUpdate', set_SPEED_Text)
                 end
 
+                frame.label:SetScript('OnLeave', function(self)
+                    local prent= self:GetParent()
+                    e.tips:Hide()
+                    prent:SetAlpha(1)
+                    --self.text:SetAlpha(1)
+                end)
                 if frame.onEnterFunc then
                     frame.label:SetScript('OnEnter', frame.onEnterFunc)--PaperDollFrame.lua
-                    frame.text:SetScript('OnEnter', frame.onEnterFunc)
+                    --frame.text:SetScript('OnEnter', frame.onEnterFunc)
                 else
                     frame.label:SetScript('OnEnter', function(self)
+                        local prent= self:GetParent()
+                        WoWTools_AttributesMixin:Set_Tooltips(prent, self)
+                        prent:SetAlpha(0.3)
+                        --prent.text:SetAlpha(0.3)
+                    end)
+                    --[[frame.text:SetScript('OnEnter', function(self)
                         WoWTools_AttributesMixin:Set_Tooltips(self:GetParent(), self)
                         self:SetAlpha(0.3)
-                    end)
-                    frame.text:SetScript('OnEnter', function(self)
-                        WoWTools_AttributesMixin:Set_Tooltips(self:GetParent(), self)
-                        self:SetAlpha(0.3)
-                    end)
+                    end)]]
+                    --frame.text:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)  
                 end
-                frame.text:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
+                
+
                 button[info.name]= frame
             end
 
@@ -1210,30 +1311,6 @@ end
 
 
 
-function WoWTools_AttributesMixin:Set_Shadow(label)--设置，字体阴影
-    if label then
-        label:SetShadowColor(Save().font.r, Save().font.g, Save().font.b, Save().font.a)
-        label:SetShadowOffset(Save().font.x, Save().font.y)
-    end
-end
-
-function WoWTools_AttributesMixin:Frame_Init(rest)
-    Frame_Init(rest)
-end
-
-function WoWTools_AttributesMixin:Get_Tabs()
-    do
-        if not Tabs then
-            set_Tabs()
-        end
-    end
-    return Tabs
-end
-
-function WoWTools_AttributesMixin:Get_MinCrit()
-    return get_minCrit()
-end
-
 
 
 
@@ -1296,3 +1373,40 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
     end
 end)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function WoWTools_AttributesMixin:Set_Shadow(label)--设置，字体阴影
+    if label then
+        label:SetShadowColor(Save().font.r, Save().font.g, Save().font.b, Save().font.a)
+        label:SetShadowOffset(Save().font.x, Save().font.y)
+    end
+end
+
+function WoWTools_AttributesMixin:Frame_Init(rest)
+    Frame_Init(rest)
+end
+
+function WoWTools_AttributesMixin:Get_Tabs()
+    do
+        if not Tabs then
+            set_Tabs()
+        end
+    end
+    return Tabs
+end
+
+function WoWTools_AttributesMixin:Get_MinCrit()
+    return get_minCrit()
+end
