@@ -143,7 +143,7 @@ local function set_Text_Value(frame, value, value2)
     end
 
 
-    if frame.bar and frame.bar:GetAlpha()>0 then
+    if frame.isBar and frame.bar:IsShown() then
         if frame.value== value or (value<1 and not frame.zeroShow) then
             frame.bar:SetStatusBarColor(frame.r, frame.g, frame.b, frame.a)
             frame.bar:SetValue(value)
@@ -785,6 +785,82 @@ end
 
 
 
+
+
+
+local EventsTable={}
+--主属性1
+EventsTable.STATUS= function(frame)
+    frame:RegisterUnitEvent('UNIT_STATS', 'player')
+    frame:SetScript('OnEvent', set_STATUS_Text)
+end
+
+--EventsTable.HASTE= function(frame)--爆击2
+
+--急速3
+EventsTable.HASTE= function(frame)
+    frame:RegisterUnitEvent('UNIT_SPELL_HASTE', 'player')
+    frame:SetScript('OnEvent', set_HASTE_Text)
+end
+
+--精通4
+EventsTable.MASTERY= function(frame)
+    frame:RegisterEvent('MASTERY_UPDATE')
+    frame.onEnterFunc = Mastery_OnEnter
+end
+
+--吸血6
+EventsTable.LIFESTEAL= function(frame)
+    WoWTools_AttributesMixin.Button.frame:RegisterEvent('LIFESTEAL_UPDATE')
+end
+
+--护甲
+EventsTable.ARMOR= function(frame)
+    frame:RegisterEvent('PLAYER_TARGET_CHANGED')
+    frame:SetScript('OnEvent', set_ARMOR_Text)
+end
+
+--闪避7
+EventsTable.AVOIDANCE= function(frame)
+    WoWTools_AttributesMixin.Button.frame:RegisterEvent('AVOIDANCE_UPDATE')
+end
+
+--[[
+EventsTable.DODGE= function(frame)--躲闪8
+EventsTable.PARRY= function(frame)--招架9
+EventsTable.BLOCK= function(frame)-格挡10
+]]
+--醉拳11
+EventsTable.STAGGER= function(frame)
+    frame:RegisterEvent('PLAYER_TARGET_CHANGED')
+    frame:SetScript('OnEvent', set_STAGGER_Text)
+end
+
+--移动12
+EventsTable.SPEED= function(frame)
+    frame:SetScript('OnUpdate', set_SPEED_Text)
+    frame:RegisterEvent("PLAYER_STARTED_MOVING")
+    frame:RegisterEvent("PLAYER_STOPPED_MOVING")
+    frame:SetScript('OnEvent', function(self)
+        self.elapsed= 3
+    end)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --初始， 或设置
 local function Frame_Init(rest)
     if rest or not Tabs then
@@ -808,84 +884,41 @@ local function Frame_Init(rest)
                 frame.bg:SetAlpha(0.5)
                 frame.bg:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
 
-                if info.name=='STATUS' then--主属性1
-                    frame:RegisterUnitEvent('UNIT_STATS', 'player')
-                    frame:SetScript('OnEvent', set_STATUS_Text)
+                frame.bar= CreateFrame('StatusBar', nil, frame)
+                frame.bar:SetFrameLevel(frame:GetFrameLevel()-1)
+                frame.barTexture= frame.bar:CreateTexture(nil, 'BORDER')
+                frame.barTexture:SetAtlas('UI-HUD-UnitFrame-Player-GroupIndicator')
+                frame.barTextureSpark= frame.bar:CreateTexture(nil, 'OVERLAY')
+                frame.barTextureSpark:SetAtlas('objectivewidget-bar-spark-neutral')
+                frame.barTextureSpark:SetSize(6,12)
 
-                --elseif info.name=='CRITCHANCE' then--爆击2
-                elseif info.name=='HASTE' then--急速3
-                    frame:RegisterUnitEvent('UNIT_SPELL_HASTE', 'player')
-                    frame:SetScript('OnEvent', set_HASTE_Text)
-
-                elseif info.name=='MASTERY' then--精通4
-                    frame:RegisterEvent('MASTERY_UPDATE')
-                    frame.onEnterFunc = Mastery_OnEnter
-
-                --elseif info.name=='VERSATILITY' then--全能5
-                elseif info.name=='LIFESTEAL' then--吸血6
-                    WoWTools_AttributesMixin.Button.frame:RegisterEvent('LIFESTEAL_UPDATE')
-
-                elseif info.name=='ARMOR' then--护甲
-                    frame:RegisterEvent('PLAYER_TARGET_CHANGED')
-                    frame:SetScript('OnEvent', set_ARMOR_Text)
-
-                elseif info.name=='AVOIDANCE' then--闪避7
-                    WoWTools_AttributesMixin.Button.frame:RegisterEvent('AVOIDANCE_UPDATE')
-
-                --elseif info.name=='DODGE' then--躲闪8
-                --elseif info.name=='PARRY' then--招架9
-                --elseif info.name=='BLOCK' then--格挡10
-                elseif info.name=='STAGGER' then--醉拳11
-                    frame:RegisterEvent('PLAYER_TARGET_CHANGED')
-                    frame:SetScript('OnEvent', set_STAGGER_Text)
-
-                elseif info.name=='SPEED' then--移动12
-                    frame:HookScript('OnUpdate', set_SPEED_Text)
+                if EventsTable[info.name] then
+                    EventsTable[info.name](frame)
                 end
 
                 frame.label:SetScript('OnLeave', function(self)
                     local prent= self:GetParent()
                     e.tips:Hide()
                     prent:SetAlpha(1)
-                    --self.text:SetAlpha(1)
                 end)
                 if frame.onEnterFunc then
                     frame.label:SetScript('OnEnter', frame.onEnterFunc)--PaperDollFrame.lua
-                    --frame.text:SetScript('OnEnter', frame.onEnterFunc)
                 else
                     frame.label:SetScript('OnEnter', function(self)
                         local prent= self:GetParent()
                         WoWTools_AttributesMixin:Set_Tooltips(prent, self)
                         prent:SetAlpha(0.3)
-                        --prent.text:SetAlpha(0.3)
                     end)
-                    --[[frame.text:SetScript('OnEnter', function(self)
-                        WoWTools_AttributesMixin:Set_Tooltips(self:GetParent(), self)
-                        self:SetAlpha(0.3)
-                    end)]]
-                    --frame.text:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)  
                 end
-
 
                 WoWTools_AttributesMixin.Button[info.name]= frame
             end
 
             --重置, 数值
             if rest then
-                if info.bar and not frame.bar then--bar
-                    frame.bar= CreateFrame('StatusBar', nil, frame)
-                    frame.bar:SetFrameLevel(frame:GetFrameLevel()-1)
-                    frame.barTexture= frame.bar:CreateTexture(nil, 'BORDER')
-                    frame.barTexture:SetAtlas('UI-HUD-UnitFrame-Player-GroupIndicator')
-                    frame.barTextureSpark= frame.bar:CreateTexture(nil, 'OVERLAY')
-                    frame.barTextureSpark:SetAtlas('objectivewidget-bar-spark-neutral')
-                    frame.barTextureSpark:SetSize(6,12)
-                end
                 frame.isBar= info.bar
-                if frame.bar then
-                    frame.bar:SetAlpha(info.bar and 1 or 0)
-                    frame.barTextureSpark:SetShown(false)
-                end
+                frame.bar:SetShown(info.bar)
+                frame.barTextureSpark:SetShown(false)
 
                 if info.textValue and not frame.textValue then--数值 + -
                     frame.textValue=WoWTools_LabelMixin:Create(frame)
@@ -894,6 +927,7 @@ local function Frame_Init(rest)
                     frame.textValue:SetText('')
                     frame.textValue:SetShown(info.textValue)
                 end
+
                 if Save().notText then
                     frame.text:SetText('')
                 else
@@ -910,7 +944,6 @@ local function Frame_Init(rest)
                 frame.zeroShow= info.zeroShow
 
                 frame.value=nil
-
             end
 
             set_Frame(frame, rest)
@@ -924,6 +957,7 @@ local function Frame_Init(rest)
                 frame:SetShown(true)
             end
         end
+
         if not find and frame then
             frame:SetShown(false)
         end
