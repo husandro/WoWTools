@@ -304,7 +304,6 @@ end)
 
 --重置位置
 function WoWTools_MenuMixin:RestPoint(root, point, SetValue)
-    --root:CreateDivider()
     return root:CreateButton(
         '|A:characterundelete-RestoreButton:0:0|a'
         ..(point and '' or '|cff9e9e9e')
@@ -318,6 +317,7 @@ WoWTools_MenuMixin:RestPoint(sub, Save().point, function()
     Save().point=nil
     self:ClearAllPoints()
     self:set_point()
+    return MenuResponse.Open
 end)
 ]]
 

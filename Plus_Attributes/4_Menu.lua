@@ -53,8 +53,20 @@ local function Init_Menu(self, root)
 --专精
     WoWTools_MenuMixin:Set_Specialization(root)
 
---选项
+
     root:CreateDivider()
+--目标移动速度
+    local targetMove= WoWTools_AttributesMixin.TargetMoveButton
+    if targetMove then
+        sub= root:CreateButton(
+            '|A:common-icon-rotateright:0:0|a'..(e.onlyChinese and '目标移动' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, TARGET, NPE_MOVE)),
+        function()
+            return MenuResponse.Open
+        end)
+        WoWTools_AttributesMixin:Target_Speed_Menu(self, sub)
+    end
+
+--选项
     sub=WoWTools_MenuMixin:OpenOptions(root, {
         name= WoWTools_AttributesMixin.addName,
         category=WoWTools_AttributesMixin.Category,
@@ -78,9 +90,18 @@ local function Init_Menu(self, root)
         self:set_strata()
     end)
 
+
+
 --重置位置
     sub:CreateDivider()
-    sub:CreateButton(
+--重置位置
+    WoWTools_MenuMixin:RestPoint(sub, Save().point, function()
+        Save().point=nil
+        self:set_Point()--设置, 位置
+        return MenuResponse.Open
+    end)
+
+    --[[sub:CreateButton(
         (Save().point and '' or '|cff9e9e9e')
         ..'|A:characterundelete-RestoreButton:0:0|a'
         ..(e.onlyChinese and '重置位置' or RESET_POSITION),
@@ -88,7 +109,7 @@ local function Init_Menu(self, root)
         Save().point=nil
         self:set_Point()--设置, 位置
         return MenuResponse.Open
-    end)
+    end)]]
 end
 
 

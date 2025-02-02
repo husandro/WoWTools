@@ -88,10 +88,17 @@ local function Init_Menu(self, root)
     end)]]
 
     root:CreateDivider()
-    root:CreateButton((Save.Point and '' or '|cff9e9e9e')..(e.onlyChinese and '重置位置' or RESET_POSITION), function()
+
+    --重置位置
+    WoWTools_MenuMixin:RestPoint(sub, Save.point, function()
         Save.Point=nil
         self:set_point()
+        return MenuResponse.Open
     end)
+    --[[root:CreateButton((Save.Point and '' or '|cff9e9e9e')..(e.onlyChinese and '重置位置' or RESET_POSITION), function()
+        Save.Point=nil
+        self:set_point()
+    end)]]
 
     root:CreateDivider()
     sub=root:CreateButton(addName, WoWTools_MinimapMixin.OpenPanel)

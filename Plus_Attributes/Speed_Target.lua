@@ -8,10 +8,10 @@ end
 
 
 
+local btn
 
 
-
-local function Init_Menu(self, root)
+local function Init_Menu(_, root)
 --右
     root:CreateCheckbox(
         e.onlyChinese and '右' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT,
@@ -19,7 +19,7 @@ local function Init_Menu(self, root)
         return not Save().targetMoveTextToLeft
     end, function()
         Save().targetMoveTextToLeft= not Save().targetMoveTextToLeft and true or nil
-        self:Settings()
+        btn:Settings()
     end)
 
     root:CreateCheckbox(
@@ -35,19 +35,29 @@ local function Init_Menu(self, root)
         return Save().scaleTargetMove or 1
     end, function(value)
         Save().scaleTargetMove= value
-        self:Settings()
+        btn:Settings()
     end)
 
 --FrameStrata
     WoWTools_MenuMixin:FrameStrata(root, function(data)
-        return self:GetFrameStrata()==data
+        return btn:GetFrameStrata()==data
     end, function(data)
         Save().strataTargetMove= data
-        self:Settings()
+        btn:Settings()
+    end)
+
+    
+--重置位置
+    WoWTools_MenuMixin:RestPoint(root, Save().targetMovePoint, function()
+        Save().targetMovePoint=nil
+        btn:Settings()
+        return MenuResponse.Open
     end)
 
 --选项
     root:CreateDivider()
+
+
     WoWTools_MenuMixin:OpenOptions(root, {
         name= WoWTools_AttributesMixin.addName,
         category=WoWTools_AttributesMixin.Category,
@@ -64,7 +74,7 @@ end
 
 
 local function Init()
-    local btn= WoWTools_ButtonMixin:Ctype2(nil, {icon='hide', isType2=true, size=28, name='WoWTools_AttributesTargetMoveButton'})
+    btn= WoWTools_ButtonMixin:Ctype2(nil, {icon='hide', isType2=true, size=28, name='WoWTools_AttributesTargetMoveButton'})
     WoWTools_AttributesMixin.TargetMoveButton= btn
     btn:Hide()
 
@@ -84,7 +94,7 @@ local function Init()
         if p then
             self:SetPoint(p[1], UIParent, p[3], p[4], p[5])
         else
-            self:SetPoint('CENTER', 100, -100)
+            self:SetPoint('BOTTOM', WoWTools_AttributesMixin.Button, 'TOP', 0, 2)
         end
 
         self.Text:ClearAllPoints()
@@ -201,13 +211,17 @@ end
 
 
 function WoWTools_AttributesMixin:Init_Target_Speed()
+    if btn then
+        btn:Settings()
+        return
+    end
     if self.Save.disabledTargetSpeed then
         return
     end
 
-    if self.TargetMoveButton then
-        self.TargetMoveButton:Settings()
-    else
-        Init()
-    end
+    Init()
+end
+
+function WoWTools_AttributesMixin:Target_Speed_Menu(...)
+    Init_Menu(...)
 end
