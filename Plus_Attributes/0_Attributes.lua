@@ -553,12 +553,7 @@ end
 
 
 
-local function set_Shadow(self)--设置，字体阴影
-    if self then
-        self:SetShadowColor(Save().font.r, Save().font.g, Save().font.b, Save().font.a)
-        self:SetShadowOffset(Save().font.x, Save().font.y)
-    end
-end
+
 
 
 
@@ -616,8 +611,8 @@ local function set_Frame(frame, rest)--设置, frame
             frame.label:SetJustifyH('RIGHT')
             frame.text:SetJustifyH('LEFT')
         end
-        set_Shadow(frame.label)--设置，字体阴影
-        set_Shadow(frame.text)--设置，字体阴影
+        WoWTools_AttributesMixin:Set_Shadow(frame.label)--设置，字体阴影
+        WoWTools_AttributesMixin:Set_Shadow(frame.text)--设置，字体阴影
 
 --背景
         if Save().showBG then
@@ -765,7 +760,7 @@ local function Frame_Init(rest)
                 frame.label:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
 
                 frame.text= WoWTools_LabelMixin:Create(frame, {mouse=true, color={r=1,g=1,b=1}, justifyH= Save().toLeft and 'RIGHT'})--nil, nil, nil, {1,1,1}, nil, Save().toLeft and 'RIGHT' or 'LEFT')
-                
+
 
                 frame.bg= frame:CreateTexture(nil, 'BACKGROUND')
                 frame.bg:SetAlpha(0.5)
@@ -776,66 +771,34 @@ local function Frame_Init(rest)
                     frame:SetScript('OnEvent', set_STATUS_Text)
 
                 --elseif info.name=='CRITCHANCE' then--爆击2
-                    --frame.label:SetScript('OnEnter', set_CRITCHANCE_Tooltip)
-                    --frame.text:SetScript('OnEnter', set_CRITCHANCE_Tooltip)
-
                 elseif info.name=='HASTE' then--急速3
                     frame:RegisterUnitEvent('UNIT_SPELL_HASTE', 'player')
                     frame:SetScript('OnEvent', set_HASTE_Text)
-                    --frame.label:SetScript('OnEnter', set_HASTE_Tooltip)
-                    --frame.text:SetScript('OnEnter', set_HASTE_Tooltip)
 
                 elseif info.name=='MASTERY' then--精通4
                     frame:RegisterEvent('MASTERY_UPDATE')
-                    frame.onEnterFunc = Mastery_OnEnter;
-                    --frame.label:SetScript('OnEnter', frame.onEnterFunc)--PaperDollFrame.lua
-                    --frame.text:SetScript('OnEnter', frame.onEnterFunc)
+                    frame.onEnterFunc = Mastery_OnEnter
 
-                --[[elseif info.name=='VERSATILITY' then--全能5
-                    frame.label:SetScript('OnEnter', set_VERSATILITY_Tooltip)
-                    frame.text:SetScript('OnEnter', set_VERSATILITY_Tooltip)]]
-
+                --elseif info.name=='VERSATILITY' then--全能5
                 elseif info.name=='LIFESTEAL' then--吸血6
                     button.frame:RegisterEvent('LIFESTEAL_UPDATE')
-                    --frame.label:SetScript('OnEnter', set_LIFESTEAL_Tooltip)
-                    --frame.text:SetScript('OnEnter', set_LIFESTEAL_Tooltip)
 
                 elseif info.name=='ARMOR' then--护甲
                     frame:RegisterEvent('PLAYER_TARGET_CHANGED')
                     frame:SetScript('OnEvent', set_ARMOR_Text)
-                    --frame.label:SetScript('OnEnter', set_ARMOR_Tooltip)
-                    --frame.text:SetScript('OnEnter', set_ARMOR_Tooltip)
 
                 elseif info.name=='AVOIDANCE' then--闪避7
                     button.frame:RegisterEvent('AVOIDANCE_UPDATE')
-                    --frame.label:SetScript('OnEnter', set_AVOIDANCE_Tooltip)
-                    --frame.text:SetScript('OnEnter', set_AVOIDANCE_Tooltip)
 
                 --elseif info.name=='DODGE' then--躲闪8
-                    --frame.label:SetScript('OnEnter', set_DODGE_Tooltip)
-                    --frame.text:SetScript('OnEnter', set_DODGE_Tooltip)
-
-                --[[elseif info.name=='PARRY' then--招架9
-                    frame.label:SetScript('OnEnter', set_PARRY_Tooltip)
-                    frame.text:SetScript('OnEnter', set_PARRY_Tooltip)]]
-
-                --[[elseif info.name=='BLOCK' then--格挡10
-                    frame.label:SetScript('OnEnter', set_BLOCK_Tooltip)
-                    frame.text:SetScript('OnEnter', set_BLOCK_Tooltip)]]
-
+                --elseif info.name=='PARRY' then--招架9
+                --elseif info.name=='BLOCK' then--格挡10
                 elseif info.name=='STAGGER' then--醉拳11
                     frame:RegisterEvent('PLAYER_TARGET_CHANGED')
                     frame:SetScript('OnEvent', set_STAGGER_Text)
-                    --frame.label:SetScript('OnEnter', set_STAGGER_Tooltip)
-                    --frame.text:SetScript('OnEnter', set_STAGGER_Tooltip)
-
                 elseif info.name=='SPEED' then--移动12
                     frame:HookScript('OnUpdate', set_SPEED_Text)
-                    --frame.label:SetScript('OnEnter', set_SPEED_Tooltip)
-                    --frame.text:SetScript('OnEnter', set_SPEED_Tooltip)
                 end
-                --frame.label:HookScript('OnEnter', function(self2) self2:SetAlpha(0.3) end)
-                --frame.text:HookScript('OnEnter', function(self2) self2:SetAlpha(0.3) end)
 
                 if frame.onEnterFunc then
                     frame.label:SetScript('OnEnter', frame.onEnterFunc)--PaperDollFrame.lua
@@ -855,7 +818,7 @@ local function Frame_Init(rest)
             end
 
             --重置, 数值
-            if rest then                
+            if rest then
                 if info.bar and not frame.bar then--bar
                     frame.bar= CreateFrame('StatusBar', nil, frame)
                     frame.bar:SetFrameLevel(frame:GetFrameLevel()-1)
@@ -892,7 +855,7 @@ local function Frame_Init(rest)
                 frame.name= info.name
                 frame.nameText= info.text
                 frame.zeroShow= info.zeroShow
-               
+
                 frame.value=nil
 
             end
@@ -1247,7 +1210,12 @@ end
 
 
 
-
+function WoWTools_AttributesMixin:Set_Shadow(label)--设置，字体阴影
+    if label then
+        label:SetShadowColor(Save().font.r, Save().font.g, Save().font.b, Save().font.a)
+        label:SetShadowOffset(Save().font.x, Save().font.y)
+    end
+end
 
 function WoWTools_AttributesMixin:Frame_Init(rest)
     Frame_Init(rest)

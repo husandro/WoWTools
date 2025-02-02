@@ -18,8 +18,9 @@ local function Init()--设置 panel
     local last, check, findTank, findDps
     local panel= WoWTools_AttributesMixin.PanelFrame
     local button= _G['WoWTools_AttributesButton']
+    local Tabs= WoWTools_AttributesMixin:Get_Tabs()
 
-    for index, info in pairs( WoWTools_AttributesMixin:Get_Tabs()) do
+    for index, info in pairs(Tabs) do
         if info.dps and not findDps then
             check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--四属性, 仅限DPS
             check:SetChecked(Save().onlyDPS)
@@ -140,8 +141,12 @@ local function Init()--设置 panel
                 Save().tab['STATUS'].bar= not Save().tab['STATUS'].bar and true or false
                 WoWTools_AttributesMixin:Frame_Init(true)--初始， 或设置
             end)
-            current:SetScript('OnEnter', function(self2) set_SPEED_Tooltip(self2) self2:SetAlpha(0.3) end)
+            current:SetScript('OnEnter', function(self)
+                WoWTools_AttributesMixin:Set_Tooltips(self, nil)
+                self:SetAlpha(0.3)
+            end)
             current:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
+            current.name= info.name
 
             --位数，bit
             local sliderBit=e.CSlider(panel, {w=100,h=20, min=0, max=3, value=Save().tab['STATUS'].bit or 3, setp=1, color=nil,
@@ -195,8 +200,12 @@ local function Init()--设置 panel
                 end
                 WoWTools_AttributesMixin:Frame_Init(true)--初始，设置
             end)
-            check2:SetScript('OnEnter', set_VERSATILITY_Tooltip)
+            check2:SetScript('OnEnter', function(self)
+                WoWTools_AttributesMixin:Set_Tooltips(self, nil)
+                self:SetAlpha(0.3)
+            end)
             check2:SetScript('OnLeave', GameTooltip_Hide)
+            check2.name= info.name
 
             check2.A=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--双属性 22/18%
             check2.A:SetChecked(Save().tab['VERSATILITY'].damageAndDefense)
@@ -206,8 +215,12 @@ local function Init()--设置 panel
                 Save().tab['VERSATILITY'].damageAndDefense= not Save().tab['VERSATILITY'].damageAndDefense and true or nil
                 WoWTools_AttributesMixin:Frame_Init(true)--初始，设置
             end)
-            check2.A:SetScript('OnEnter', set_VERSATILITY_Tooltip)
+            check2.A:SetScript('OnEnter', function(self)
+                WoWTools_AttributesMixin:Set_Tooltips(self, nil)
+                self:SetAlpha(0.3)
+            end)
             check2.A:SetScript('OnLeave', GameTooltip_Hide)
+            check2.A.name= info.name
 
             if Save().tab['VERSATILITY'].onlyDefense then
                 check2.A.text:SetTextColor(0.62, 0.62, 0.62)
@@ -223,7 +236,7 @@ local function Init()--设置 panel
     text:SetText(e.onlyChinese and '阴影' or SHADOW_QUALITY:gsub(QUALITY , ''))
     text:EnableMouse(true)
     text.r, text.g, text.b, text.a= Save().font.r, Save().font.g, Save().font.b, Save().font.a
-    set_Shadow(text)--设置，字体阴影
+    WoWTools_AttributesMixin:Set_Shadow(text)--设置，字体阴影
     text:SetScript('OnMouseDown', function(self)
         local R,G,B,A= self.r, self.g, self.b, self.a
         local setA, setR, setG, setB
@@ -232,7 +245,7 @@ local function Init()--设置 panel
             Save().font.g= setG
             Save().font.b= setB
             Save().font.a= setA
-            set_Shadow(self)--设置，字体阴影
+            WoWTools_AttributesMixin:Set_Shadow(self)--设置，字体阴影
             WoWTools_AttributesMixin:Frame_Init(true)--初始，设置
         end
         WoWTools_ColorMixin:ShowColorFrame(self.r, self.g, self.b, self.a, function()
@@ -262,7 +275,7 @@ local function Init()--设置 panel
             self:SetValue(value)
             self.Text:SetText(value)
             Save().font.x= value==0 and 0 or value
-            set_Shadow(self.text)--设置，字体阴影
+            WoWTools_AttributesMixin:Set_Shadow(self.text)--设置，字体阴影
             WoWTools_AttributesMixin:Frame_Init(true)--初始，设置
         end, tips=nil
     })
@@ -276,7 +289,7 @@ local function Init()--设置 panel
             self:SetValue(value)
             self.Text:SetText(value)
             Save().font.y= value==0 and 0 or value
-            set_Shadow(self.text)--设置，字体阴影
+            WoWTools_AttributesMixin:Set_Shadow(self.text)--设置，字体阴影
             WoWTools_AttributesMixin:Frame_Init(true)--初始，设置
         end, tips=nil
     })
@@ -366,7 +379,7 @@ local function Init()--设置 panel
         WoWTools_AttributesMixin:Frame_Init(true)--初始， 或设置
         if Save().setMaxMinValue then
             C_Timer.After(0.3, function()
-                for _, info in pairs(Tabs) do
+                for _, info in pairs(WoWTools_AttributesMixin:Get_Tabs()) do
                     local frame= button[info.name]
                     if frame and frame.textValue then
                         frame.textValue:SetText('+12')

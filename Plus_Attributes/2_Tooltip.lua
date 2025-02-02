@@ -14,24 +14,24 @@ Show_Tooltip.STATUS= function(frame, owner)
     local currentSpec= GetSpecialization() or 0
     local PrimaryStat= select(6, GetSpecializationInfo(currentSpec, nil, nil, nil, e.Player.sex))
 
-    local stat, effectiveStat, posBuff, negBuff = UnitStat('player', PrimaryStat);
-    local effectiveStatDisplay = BreakUpLargeNumbers(effectiveStat or 0);
+    local stat, effectiveStat, posBuff, negBuff = UnitStat('player', PrimaryStat)
+    local effectiveStatDisplay = BreakUpLargeNumbers(effectiveStat or 0)
     local tooltipText = effectiveStatDisplay
 
     if ( ( posBuff == 0 ) and ( negBuff == 0 ) ) then
 		e.tips:AddLine(tooltipText..effectiveStatDisplay..FONT_COLOR_CODE_CLOSE, frame.r, frame.g, frame.b,true)
 	else
 		if ( posBuff > 0 or negBuff < 0 ) then
-			tooltipText = tooltipText.." ("..BreakUpLargeNumbers(stat - posBuff - negBuff)..FONT_COLOR_CODE_CLOSE;
+			tooltipText = tooltipText.." ("..BreakUpLargeNumbers(stat - posBuff - negBuff)..FONT_COLOR_CODE_CLOSE
 		end
 		if ( posBuff > 0 ) then
-			tooltipText = tooltipText..FONT_COLOR_CODE_CLOSE..GREEN_FONT_COLOR_CODE.."+"..BreakUpLargeNumbers(posBuff or 0)..FONT_COLOR_CODE_CLOSE;
+			tooltipText = tooltipText..FONT_COLOR_CODE_CLOSE..GREEN_FONT_COLOR_CODE.."+"..BreakUpLargeNumbers(posBuff or 0)..FONT_COLOR_CODE_CLOSE
 		end
 		if ( negBuff < 0 ) then
-			tooltipText = tooltipText..RED_FONT_COLOR_CODE.." "..BreakUpLargeNumbers(negBuff or 0)..FONT_COLOR_CODE_CLOSE;
+			tooltipText = tooltipText..RED_FONT_COLOR_CODE.." "..BreakUpLargeNumbers(negBuff or 0)..FONT_COLOR_CODE_CLOSE
 		end
 		if ( posBuff > 0 or negBuff < 0 ) then
-			tooltipText = tooltipText..HIGHLIGHT_FONT_COLOR_CODE..")"..FONT_COLOR_CODE_CLOSE;
+			tooltipText = tooltipText..HIGHLIGHT_FONT_COLOR_CODE..")"..FONT_COLOR_CODE_CLOSE
 		end
 
         e.tips:AddDoubleLine(frame.nameText, tooltipText, frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
@@ -40,15 +40,15 @@ Show_Tooltip.STATUS= function(frame, owner)
     local role = GetSpecializationRole(currentSpec)
     if PrimaryStat==LE_UNIT_STAT_STRENGTH then-- Strength
         local text= ''
-        local attackPower = GetAttackPowerForStat(PrimaryStat, effectiveStat or 0);
+        local attackPower = GetAttackPowerForStat(PrimaryStat, effectiveStat or 0)
         if (HasAPEffectsSpellPower()) then
             text= (e.onlyChinese and '提高你的攻击和技能强度' or STAT_TOOLTIP_BONUS_AP_SP)..' '..BreakUpLargeNumbers(attackPower)
         end
         if role == "TANK" then
-            local increasedParryChance = GetParryChanceFromAttribute();
+            local increasedParryChance = GetParryChanceFromAttribute()
             if ( increasedParryChance > 0 ) then
                 text = text~='' and text..'|n' or text
-                text= text..format(e.onlyChinese and '"招架几率提高%.2f%%|n|cff888888（在效果递减之前）|r"' or CR_PARRY_BASE_STAT_TOOLTIP, increasedParryChance);
+                text= text..format(e.onlyChinese and '"招架几率提高%.2f%%|n|cff888888（在效果递减之前）|r"' or CR_PARRY_BASE_STAT_TOOLTIP, increasedParryChance)
             end
         end
         e.tips:AddLine(text, frame.r, frame.g, frame.b,true)
@@ -62,9 +62,9 @@ Show_Tooltip.STATUS= function(frame, owner)
         end
 
         if role == "TANK" then
-            local increasedDodgeChance = GetDodgeChanceFromAttribute();
+            local increasedDodgeChance = GetDodgeChanceFromAttribute()
             if increasedDodgeChance > 0 then
-                text= text .."|n"..format(e.onlyChinese and '躲闪几率提高%.2f%%|n|cff888888（在效果递减之前）|r' or CR_DODGE_BASE_STAT_TOOLTIP, increasedDodgeChance);
+                text= text .."|n"..format(e.onlyChinese and '躲闪几率提高%.2f%%|n|cff888888（在效果递减之前）|r' or CR_DODGE_BASE_STAT_TOOLTIP, increasedDodgeChance)
             end
         end
         e.tips:AddLine(text, nil, nil, nil,true)
@@ -100,23 +100,23 @@ end
 --set_CRITCHANCE_Tooltip
 Show_Tooltip.CRITCHANCE= function(frame)
     local spellCrit = WoWTools_AttributesMixin:Get_MinCrit()
-	local rangedCrit = GetRangedCritChance();
-	local meleeCrit = GetCritChance();
+	local rangedCrit = GetRangedCritChance()
+	local meleeCrit = GetCritChance()
     local critChance, rating
 	if (spellCrit >= rangedCrit and spellCrit >= meleeCrit) then
-		critChance = spellCrit;
-		rating = CR_CRIT_SPELL;
+		critChance = spellCrit
+		rating = CR_CRIT_SPELL
 	elseif (rangedCrit >= meleeCrit) then
-		critChance = rangedCrit;
-		rating = CR_CRIT_RANGED;
+		critChance = rangedCrit
+		rating = CR_CRIT_RANGED
 	else
-		critChance = meleeCrit;
-		rating = CR_CRIT_MELEE;
+		critChance = meleeCrit
+		rating = CR_CRIT_MELEE
 	end
-    e.tips:AddDoubleLine(frame.nameText, format('%.2f%%', critChance + 0.5), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
+    e.tips:AddDoubleLine(frame.nameText or frame.name or ' ', format('%.2f%%', critChance + 0.5), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
 
-	local extraCritChance = GetCombatRatingBonus(rating);
-	local extraCritRating = GetCombatRating(rating);
+	local extraCritChance = GetCombatRatingBonus(rating)
+	local extraCritRating = GetCombatRating(rating)
 	if GetCritChanceProvidesParryEffect() then
         e.tips:AddLine(
             format(
@@ -142,16 +142,16 @@ end
 
 --set_HASTE_Tooltip
 Show_Tooltip.HASTE= function(frame)
-    local haste = GetHaste();
-	local rating = CR_HASTE_MELEE;
+    local haste = GetHaste()
+	local rating = CR_HASTE_MELEE
 
-	local hasteFormatString;
+	local hasteFormatString
 	if (haste < 0 and not GetPVPGearStatRules()) then
-		hasteFormatString = RED_FONT_COLOR_CODE.."%s"..FONT_COLOR_CODE_CLOSE;
+		hasteFormatString = RED_FONT_COLOR_CODE.."%s"..FONT_COLOR_CODE_CLOSE
 	else
-		hasteFormatString = "%s";
+		hasteFormatString = "%s"
 	end
-	e.tips:AddDoubleLine(frame.nameText, format(hasteFormatString, format("%0.2f%%", haste + 0.5)), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
+	e.tips:AddDoubleLine(frame.nameText or frame.name or ' ', format(hasteFormatString, format("%0.2f%%", haste + 0.5)), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
 	e.tips:AddLine(
         e.cn(_G["STAT_HASTE_"..e.Player.class.."_TOOLTIP"])
         or (e.onlyChinese and '提高攻击速度和施法速度。' or STAT_HASTE_TOOLTIP),
@@ -169,10 +169,10 @@ end
 
 --set_VERSATILITY_Tooltip
 Show_Tooltip.VERSATILITY= function(frame)
-    local versatility = GetCombatRating(CR_VERSATILITY_DAMAGE_DONE);
-	local versatilityDamageBonus = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_DONE);
-	local versatilityDamageTakenReduction = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_TAKEN) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_TAKEN);
-    e.tips:AddDoubleLine(frame.nameText, format('%.2f%%',  versatilityDamageBonus), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
+    local versatility = GetCombatRating(CR_VERSATILITY_DAMAGE_DONE)
+	local versatilityDamageBonus = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_DONE)
+	local versatilityDamageTakenReduction = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_TAKEN) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_TAKEN)
+    e.tips:AddDoubleLine(frame.nameText or frame.name or ' ', format('%.2f%%',  versatilityDamageBonus), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
     e.tips:AddLine(' ')
 	e.tips:AddLine(
         format(
@@ -191,8 +191,8 @@ end
 
 --set_LIFESTEAL_Tooltip
 Show_Tooltip.LIFESTEAL= function(frame)
-    local lifesteal = GetLifesteal();
-	e.tips:AddDoubleLine(frame.nameText,  format("%0.2f%%", lifesteal), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
+    local lifesteal = GetLifesteal()
+	e.tips:AddDoubleLine(frame.nameText or frame.name or ' ', format("%0.2f%%", lifesteal), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
     e.tips:AddLine(
         format(
             e.onlyChinese and '你所造成伤害和治疗的一部分将转而治疗你。|n|n吸血：%s [+%.2f%%]'
@@ -205,11 +205,11 @@ end
 
 --set_ARMOR_Tooltip
 Show_Tooltip.ARMOR= function(frame)
-    local _, effectiveArmor = UnitArmor('player');
-    e.tips:AddDoubleLine(frame.nameText, BreakUpLargeNumbers(effectiveArmor), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
+    local _, effectiveArmor = UnitArmor('player')
+    e.tips:AddDoubleLine(frame.nameText or frame.name or ' ', BreakUpLargeNumbers(effectiveArmor), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
 
-    local armorReduction = PaperDollFrame_GetArmorReduction(effectiveArmor, UnitEffectiveLevel('player'));
-	local armorReductionAgainstTarget = PaperDollFrame_GetArmorReductionAgainstTarget(effectiveArmor);
+    local armorReduction = PaperDollFrame_GetArmorReduction(effectiveArmor, UnitEffectiveLevel('player'))
+	local armorReductionAgainstTarget = PaperDollFrame_GetArmorReductionAgainstTarget(effectiveArmor)
 
     e.tips:AddLine(
         format(
@@ -236,7 +236,7 @@ end
 --闪避7
 Show_Tooltip.AVOIDANCE= function(frame)
     local Avoidance = GetAvoidance()
-	e.tips:AddDoubleLine(frame.nameText,  format("%0.2f%%", Avoidance), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
+	e.tips:AddDoubleLine(frame.nameText or frame.name or ' ',  format("%0.2f%%", Avoidance), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
     e.tips:AddLine(
         format(
             e.onlyChinese and '范围效果法术的伤害降低。|n|n闪避：%s [+%.2f%%'
@@ -252,7 +252,7 @@ end
 --躲闪8
 Show_Tooltip.DODGE= function(frame)
     local chance = GetDodgeChance()
-	e.tips:AddDoubleLine(frame.nameText,  format("%0.2f%%", chance), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
+	e.tips:AddDoubleLine(frame.nameText or frame.name or ' ',  format("%0.2f%%", chance), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
     e.tips:AddLine(
         format(
             e.onlyChinese and '%d点躲闪可使躲闪几率提高%.2f%%|n|cff888888（在效果递减之前）|r' or CR_DODGE_TOOLTIP, GetCombatRating(CR_DODGE), GetCombatRatingBonus(CR_DODGE)
@@ -266,8 +266,8 @@ end
 --set_PARRY_Tooltip
 --招架9
 Show_Tooltip.PARRY= function(frame)
-    local chance = GetParryChance();
-	e.tips:AddDoubleLine(frame.nameText,  format("%0.2f%%", chance), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
+    local chance = GetParryChance()
+	e.tips:AddDoubleLine(frame.nameText or frame.name or ' ',  format("%0.2f%%", chance), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
     e.tips:AddLine(
         format(
             e.onlyChinese and '%d点招架可使招架几率提高%.2f%%|n|cff888888（在效果递减之前）|r'
@@ -284,10 +284,10 @@ end
 --set_BLOCK_Tooltip
 --格挡10
 Show_Tooltip.BLOCK= function(frame)
-    local chance = GetBlockChance();
-    e.tips:AddDoubleLine(frame.nameText,  format("%0.2f%%", chance), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
+    local chance = GetBlockChance()
+    e.tips:AddDoubleLine(frame.nameText or frame.name or ' ', format("%0.2f%%", chance), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
 
-	local shieldBlockArmor = GetShieldBlock();
+	local shieldBlockArmor = GetShieldBlock()
 	local blockArmorReduction = PaperDollFrame_GetArmorReduction(shieldBlockArmor, UnitEffectiveLevel('player'))
 	local blockArmorReductionAgainstTarget = PaperDollFrame_GetArmorReductionAgainstTarget(shieldBlockArmor)
 
@@ -307,12 +307,12 @@ end
 --set_STAGGER_Tooltip
 --醉拳11
 Show_Tooltip.STAGGER= function(frame)
-    local stagger, staggerAgainstTarget = C_PaperDollInfo.GetStaggerPercentage('player');
+    local stagger, staggerAgainstTarget = C_PaperDollInfo.GetStaggerPercentage('player')
     if not stagger then
         return
     end
     e.tips:ClearLines()
-    e.tips:AddDoubleLine(frame.nameText,  format("%0.2f%%", stagger), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
+    e.tips:AddDoubleLine(frame.nameText or frame.name or ' ', format("%0.2f%%", stagger), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
 	e.tips:AddLine(format(e.onlyChinese and '你的醉拳可化解%0.2f%%的伤害' or STAT_STAGGER_TOOLTIP, stagger), frame.r, frame.g, frame.b,true)
 	if (staggerAgainstTarget) then
 		e.tips:AddLine(
@@ -330,7 +330,7 @@ end
 --移动12
 Show_Tooltip.SPEED= function(frame)
     local currentSpeed, runSpeed, flightSpeed, swimSpeed = GetUnitSpeed('player')
-    e.tips:AddDoubleLine(frame.nameText, 'player', frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
+    e.tips:AddDoubleLine(frame.nameText or frame.name or ' ', 'player', frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
     e.tips:AddLine(
         format(
             e.onlyChinese and '提升移动速度。|n|n速度：%s [+%.2f%%]'
@@ -350,6 +350,12 @@ Show_Tooltip.SPEED= function(frame)
         e.tips:AddDoubleLine((e.onlyChinese and '载具' or 'Vehicle')..format(' %.0f%%', currentSpeed*100/BASE_MOVEMENT_SPEED), format('%.2f', currentSpeed))
     end
 end
+
+
+
+
+
+
 
 function WoWTools_AttributesMixin:Set_Tooltips(frame, owner)
     if Show_Tooltip[frame.name] then
