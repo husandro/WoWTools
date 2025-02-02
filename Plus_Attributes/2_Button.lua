@@ -118,6 +118,27 @@ local function Init()
         Save().point={self:GetPoint(1)}
         Save().point[2]=nil
     end)
+
+
+
+    function button:set_tooltip()
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(e.addName, WoWTools_AttributesMixin.addName)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.onlyChinese and '重置' or RESET, e.Icon.left)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+        e.tips:AddDoubleLine(e.GetShowHide(not Save().hide), e.Icon.mid)
+        e.tips:AddDoubleLine(self:get_sendTextTips(), 'Shift+'..e.Icon.right)
+        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+        e.tips:Show()
+    end
+
+
+
+
+
     button:SetScript("OnMouseUp", ResetCursor)
     button:SetScript("OnMouseDown", function(self, d)
         if d=='RightButton' and IsAltKeyDown() then
@@ -134,6 +155,7 @@ local function Init()
             WoWTools_AttributesMixin:Init_Menu(self)
 
         end
+        self:set_tooltip()
     end)
 
 
@@ -145,22 +167,13 @@ local function Init()
             Save().hide= nil
         end
         self:set_Show_Hide()--显示， 隐藏
+        self:set_tooltip()
     end)
 
     button:SetScript("OnLeave",function(self) ResetCursor() e.tips:Hide() self:set_Show_Hide() end)
 
     button:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinese and '重置' or RESET, e.Icon.left)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
-        e.tips:AddDoubleLine(e.onlyChinese and '显示/隐藏' or (HIDE..'/'..SHOW), e.Icon.mid)
-        e.tips:AddDoubleLine(self:get_sendTextTips(), 'Shift+'..e.Icon.right)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-        e.tips:AddDoubleLine(e.addName, WoWTools_AttributesMixin.addName)
-        e.tips:Show()
+        self:set_tooltip()
         self.texture:SetAlpha(1)
         self.classPortrait:SetAlpha(1)
     end)
