@@ -195,8 +195,10 @@ Plus_PaperDoll\TrackButton_PaperDool.lua
 
 ##角色，属性
 Plus_Attributes\0_Attributes.lua
-Plus_Attributes\1_Options.lua
-Plus_Attributes\2_Tooltip.lua
+Plus_Attributes\1_Init.lua
+Plus_Attributes\2_Button.lua
+Plus_Attributes\3_Tooltip.lua
+Plus_Attributes\4_Options.lua
 Plus_Attributes\Dragonriding_Speed.lua
 Plus_Attributes\Vehicle_Speed.lua
 Plus_Attributes\Menu_Attributes.lua
