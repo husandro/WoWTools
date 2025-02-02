@@ -10,16 +10,7 @@ end
 
 
 
-local function Get_RaidTargetTexture(index, unit)--取得图片
-    if unit then
-        index= GetRaidTargetIndex(unit)
-    end
-    if not index or index<1 or index>NUM_WORLD_RAID_MARKERS then
-        return ''
-    else
-        return '|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_'..index..':0|t'
-    end
-end
+
 
 
 
@@ -553,7 +544,7 @@ local function Init()--设置标记, 框架
                 self:GetParent():GetParent():set_Tooltips_Point()
                 e.tips:ClearLines()
                 local can= CanBeRaidTarget('target')
-                e.tips:AddLine(MicroButtonTooltipText(Get_RaidTargetTexture(self.index), 'RAIDTARGET'..self.index))
+                e.tips:AddLine(MicroButtonTooltipText(e.Get_RaidTargetTexture(self.index), 'RAIDTARGET'..self.index))
                 e.tips:AddLine(' ')
                 e.tips:AddDoubleLine(
                     e.Icon.left..(e.onlyChinese and '目标' or TARGET),
@@ -663,7 +654,7 @@ local function Init()--设置标记, 框架
                     WoWTools_MarkerMixin.Color[self.index2].col
                     ..e.Icon.left
                     ..(e.onlyChinese and '设置' or SETTINGS)
-                    ..Get_RaidTargetTexture(self.index2))
+                    ..e.Get_RaidTargetTexture(self.index2))
 
                     e.tips:AddLine(e.Icon.right..WoWTools_MarkerMixin.Color[self.index2].col
                     ..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)

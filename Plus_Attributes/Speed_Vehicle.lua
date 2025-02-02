@@ -51,7 +51,12 @@ end
 
 
 function WoWTools_AttributesMixin:Init_Vehicle_Speed()
-    if not self.Save.disabledVehicleSpeed then
+    if self.Save.disabledVehicleSpeed then
+        return
+    end
+
+    do
         Init()
     end
+    Init=function()end
 end

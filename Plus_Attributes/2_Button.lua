@@ -104,7 +104,10 @@ local function Init()
         end
     end
 
-
+    function button:set_strata()
+        self:SetFrameStrata(Save().strata or 'MEDIUM')
+    end
+    
     button:RegisterForDrag("RightButton")
     button:SetMovable(true)
     button:SetClampedToScreen(true)
@@ -212,7 +215,7 @@ local function Init()
     button:settings()
     button:set_Point()--设置, 位置
     button:set_Show_Hide()--显示， 隐藏
-
+    button:set_strata()
 
 
 

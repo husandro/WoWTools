@@ -165,13 +165,25 @@ local function Init()--设置 panel
 
 
         elseif info.name=='SPEED' then--速度, 当前速度, 选项
+--目标移动速度
+            local targetCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+            targetCheck:SetChecked(not Save().disabledTargetSpeed)
+            targetCheck:SetPoint('LEFT', text, 'RIGHT',2, 0)
+            targetCheck.text:SetText('|A:common-icon-rotateright:0:0|a'..(e.onlyChinese and '目标' or TARGET))
+            targetCheck:SetScript('OnClick',function()
+                Save().disabledTargetSpeed= not Save().disabledTargetSpeed and true or nil
+                WoWTools_AttributesMixin:Init_Target_Speed()
+            end)
+
             --驭空术UI，速度
             local dragonriding= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
             dragonriding:SetChecked(not Save().disabledDragonridingSpeed)
-            dragonriding:SetPoint('LEFT', text, 'RIGHT',2,0)
+            --dragonriding:SetPoint('LEFT', text, 'RIGHT',2,0)
+            dragonriding:SetPoint('TOPLEFT', text, 'BOTTOMLEFT', 0, -2)
             dragonriding.text:SetFormattedText('|A:dragonriding_vigor_decor:0:0|a%s', e.onlyChinese and '驭空术' or GENERIC_TRAIT_FRAME_DRAGONRIDING_TITLE)
             dragonriding:SetScript('OnClick',function()
                 Save().disabledDragonridingSpeed= not Save().disabledDragonridingSpeed and true or nil
+                WoWTools_AttributesMixin:Init_Dragonriding_Speed()
                 print(e.addName, WoWTools_AttributesMixin.addName, e.GetEnabeleDisable(not Save().disabledDragonridingSpeed), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
             end)
 
@@ -183,6 +195,7 @@ local function Init()--设置 panel
             vehicleSpeedCheck:SetScript('OnClick',function()
                 Save().disabledVehicleSpeed= not Save().disabledVehicleSpeed and true or nil
                 print(e.addName, WoWTools_AttributesMixin.addName, e.GetEnabeleDisable(not Save().disabledVehicleSpeed), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                WoWTools_AttributesMixin:Init_Vehicle_Speed()
             end)
 
 
@@ -238,7 +251,8 @@ local function Init()--设置 panel
 
 
     local text= WoWTools_LabelMixin:Create(panel, {size=26})--26)--Text
-    text:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -16)
+    text:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -30)
+    --text:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -16)
     text:SetText(e.onlyChinese and '阴影' or SHADOW_QUALITY:gsub(QUALITY , ''))
     text:EnableMouse(true)
     text.r, text.g, text.b, text.a= Save().font.r, Save().font.g, Save().font.b, Save().font.a

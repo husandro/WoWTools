@@ -22,7 +22,7 @@ end
 
 
 local function get_PrimaryStat()--取得主属
-    local spec= GetSpecialization()
+    local spec= GetSpecialization() or 0
     Role= GetSpecializationRole(spec)--DAMAGER, TANK, HEALER
     local icon, _
     icon, _, PrimaryStat= select(4, GetSpecializationInfo(spec, nil, nil, nil, e.Player.sex))

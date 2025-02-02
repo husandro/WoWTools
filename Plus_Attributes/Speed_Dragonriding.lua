@@ -116,7 +116,12 @@ end
 
 
 function WoWTools_AttributesMixin:Init_Dragonriding_Speed()
-    if not self.Save.disabledDragonridingSpeed then
+    if self.Save.disabledDragonridingSpeed then
+        return
+    end
+
+    do
         Init()
     end
+    Init=function()end
 end

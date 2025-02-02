@@ -70,6 +70,14 @@ local function Init_Menu(self, root)
         WoWTools_AttributesMixin:Frame_Init(true)--初始， 或设置
     end)
 
+--FrameStrata
+    WoWTools_MenuMixin:FrameStrata(sub, function(data)
+        return self:GetFrameStrata()==data
+    end, function(data)
+        Save().strata= data
+        self:set_strata()
+    end)
+
 --重置位置
     sub:CreateDivider()
     sub:CreateButton(

@@ -190,6 +190,15 @@ end
 
 
 
-
+function e.Get_RaidTargetTexture(index, unit)--取得图片
+    if unit then
+        index= GetRaidTargetIndex(unit)
+    end
+    if not index or index<1 or index>NUM_WORLD_RAID_MARKERS then
+        return ''
+    else
+        return '|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_'..index..':0|t'
+    end
+end
 
 
