@@ -204,7 +204,10 @@ local function Init()--设置 panel
                 WoWTools_AttributesMixin:Set_Tooltips(self, nil)
                 self:SetAlpha(0.3)
             end)
-            check2:SetScript('OnLeave', GameTooltip_Hide)
+            check2:SetScript('OnLeave', function(self)
+                e.tips:Hide()
+                self:SetAlpha(1)
+            end)
             check2.name= info.name
 
             check2.A=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--双属性 22/18%
@@ -219,7 +222,10 @@ local function Init()--设置 panel
                 WoWTools_AttributesMixin:Set_Tooltips(self, nil)
                 self:SetAlpha(0.3)
             end)
-            check2.A:SetScript('OnLeave', GameTooltip_Hide)
+            check2.A:SetScript('OnLeave', function(self)
+                e.tips:Hide()
+                self:SetAlpha(1)
+            end)
             check2.A.name= info.name
 
             if Save().tab['VERSATILITY'].onlyDefense then

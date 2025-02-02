@@ -8,6 +8,14 @@ end
 
 local Show_Tooltip={}
 
+
+
+
+
+
+
+
+
 --set_STATUS_Tooltip
 --主属性
 Show_Tooltip.STATUS= function(frame, owner)
@@ -34,7 +42,7 @@ Show_Tooltip.STATUS= function(frame, owner)
 			tooltipText = tooltipText..HIGHLIGHT_FONT_COLOR_CODE..")"..FONT_COLOR_CODE_CLOSE
 		end
 
-        e.tips:AddDoubleLine(frame.nameText, tooltipText, frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
+        e.tips:AddDoubleLine(frame.nameText or frame.name or ' ', tooltipText, frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
 	end
 
     local role = GetSpecializationRole(currentSpec)
@@ -98,6 +106,7 @@ end
 
 
 --set_CRITCHANCE_Tooltip
+--爆击2
 Show_Tooltip.CRITCHANCE= function(frame)
     local spellCrit = WoWTools_AttributesMixin:Get_MinCrit()
 	local rangedCrit = GetRangedCritChance()
@@ -140,7 +149,16 @@ end
 
 
 
+
+
+
+
+
+
+
+
 --set_HASTE_Tooltip
+--急速3
 Show_Tooltip.HASTE= function(frame)
     local haste = GetHaste()
 	local rating = CR_HASTE_MELEE
@@ -167,7 +185,11 @@ Show_Tooltip.HASTE= function(frame)
 end
 
 
+
+
+
 --set_VERSATILITY_Tooltip
+--全能5
 Show_Tooltip.VERSATILITY= function(frame)
     local versatility = GetCombatRating(CR_VERSATILITY_DAMAGE_DONE)
 	local versatilityDamageBonus = GetCombatRatingBonus(CR_VERSATILITY_DAMAGE_DONE) + GetVersatilityBonus(CR_VERSATILITY_DAMAGE_DONE)
@@ -189,7 +211,13 @@ Show_Tooltip.VERSATILITY= function(frame)
 end
 
 
+
+
+
+
+
 --set_LIFESTEAL_Tooltip
+--吸血6
 Show_Tooltip.LIFESTEAL= function(frame)
     local lifesteal = GetLifesteal()
 	e.tips:AddDoubleLine(frame.nameText or frame.name or ' ', format("%0.2f%%", lifesteal), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
@@ -203,6 +231,12 @@ Show_Tooltip.LIFESTEAL= function(frame)
         )
 end
 
+
+
+
+
+
+--护甲
 --set_ARMOR_Tooltip
 Show_Tooltip.ARMOR= function(frame)
     local _, effectiveArmor = UnitArmor('player')
@@ -232,6 +266,9 @@ end
 
 
 
+
+
+
 --set_AVOIDANCE_Tooltip
 --闪避7
 Show_Tooltip.AVOIDANCE= function(frame)
@@ -248,6 +285,13 @@ Show_Tooltip.AVOIDANCE= function(frame)
     )
 end
 
+
+
+
+
+
+
+
 --set_DODGE_Tooltip
 --躲闪8
 Show_Tooltip.DODGE= function(frame)
@@ -260,6 +304,13 @@ Show_Tooltip.DODGE= function(frame)
         nil, nil, nil, true
     )
 end
+
+
+
+
+
+
+
 
 
 
@@ -278,6 +329,13 @@ Show_Tooltip.PARRY= function(frame)
         nil, nil, nil, true
     )
 end
+
+
+
+
+
+
+
 
 
 
@@ -304,6 +362,16 @@ Show_Tooltip.BLOCK= function(frame)
 	end
 end
 
+
+
+
+
+
+
+
+
+
+
 --set_STAGGER_Tooltip
 --醉拳11
 Show_Tooltip.STAGGER= function(frame)
@@ -324,6 +392,12 @@ Show_Tooltip.STAGGER= function(frame)
         )
 	end
 end
+
+
+
+
+
+
 
 
 --set_SPEED_Tooltip
@@ -350,6 +424,13 @@ Show_Tooltip.SPEED= function(frame)
         e.tips:AddDoubleLine((e.onlyChinese and '载具' or 'Vehicle')..format(' %.0f%%', currentSpeed*100/BASE_MOVEMENT_SPEED), format('%.2f', currentSpeed))
     end
 end
+
+
+
+
+
+
+
 
 
 
