@@ -108,7 +108,7 @@ local function Init()
         end
 
 
-        if not Save().disabledTargetSpeed then
+        if Save().showTargetSpeed then
             self:RegisterEvent('PLAYER_TARGET_CHANGED')
             self:SetShown(self:Is_Exists())
         else
@@ -215,7 +215,7 @@ function WoWTools_AttributesMixin:Init_Target_Speed()
         btn:Settings()
         return
     end
-    if self.Save.disabledTargetSpeed then
+    if self.Save.showTargetSpeed then
         return
     end
 

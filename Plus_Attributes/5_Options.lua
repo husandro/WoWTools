@@ -167,11 +167,11 @@ local function Init()--设置 panel
         elseif info.name=='SPEED' then--速度, 当前速度, 选项
 --目标移动速度
             local targetCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
-            targetCheck:SetChecked(not Save().disabledTargetSpeed)
+            targetCheck:SetChecked(Save().showTargetSpeed)
             targetCheck:SetPoint('LEFT', text, 'RIGHT',2, 0)
             targetCheck.text:SetText('|A:common-icon-rotateright:0:0|a'..(e.onlyChinese and '目标' or TARGET))
             targetCheck:SetScript('OnClick',function()
-                Save().disabledTargetSpeed= not Save().disabledTargetSpeed and true or nil
+                Save().showTargetSpeed= not Save().showTargetSpeed and true or nil
                 WoWTools_AttributesMixin:Init_Target_Speed()
             end)
 

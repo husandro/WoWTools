@@ -42,7 +42,7 @@ Save={
     --disabledVehicleSpeed=true, --禁用，载具，速度
 
     --[[--目标，移动，速度
-    disabledTargetSpeed
+    showTargetSpeed
     targetMovePoint
     targetMoveTextToLeft
     strataTargetMove
