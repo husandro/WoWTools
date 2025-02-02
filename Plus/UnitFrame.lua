@@ -570,8 +570,8 @@ local function Init_TargetFrame()
     end)
 
     TargetFrame.rangeText= WoWTools_LabelMixin:Create(TargetFrame, {justifyH='RIGHT'})
-    TargetFrame.rangeText:SetPoint('RIGHT', TargetFrame, 'LEFT', 22,0)
-    TargetFrame.speedText= WoWTools_LabelMixin:Create(TargetFrame, {justifyH='RIGHT'})
+    TargetFrame.rangeText:SetPoint('RIGHT', TargetFrame, 'LEFT', 22, 6)
+    TargetFrame.speedText= WoWTools_LabelMixin:Create(TargetFrame, {justifyH='RIGHT', color={r=1,g=1,b=1}})
     TargetFrame.speedText:SetPoint('TOPRIGHT', TargetFrame.rangeText, 'BOTTOMRIGHT', 0, -2)
 
     TargetFrame:HookScript('OnHide', function(self)
