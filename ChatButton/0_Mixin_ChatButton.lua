@@ -58,12 +58,17 @@ function WoWTools_ChatButtonMixin:CreateButton(name, tooltip)
         return event == "GLOBAL_MOUSE_DOWN" and buttonName == "RightButton";
     end
 
-    --[[function btn:state_enter()
-        self:GetParent():SetButtonState('PUSHED')
+    function btn:set_state()
+        self:SetButtonState(self:IsMenuOpen() and 'PUSHED' or 'NORMAL')
     end
-    function btn:state_leave()
-        self:GetParent():SetButtonState('NORMAL')
-    end]]
+
+    hooksecurefunc(btn, 'OnMenuOpened', function(frame)
+        frame:SetButtonState('PUSHED')
+    end)
+
+    hooksecurefunc(btn, 'OnMenuClosed', function(frame)
+        frame:SetButtonState('NORMAL')
+    end)
 
     btn:SetScript('OnLeave', function(frame)
         e.tips:Hide()
@@ -71,7 +76,9 @@ function WoWTools_ChatButtonMixin:CreateButton(name, tooltip)
         if frame.set_OnLeave then
             frame:set_OnLeave()
         end
+        frame:set_state()
     end)
+
     btn:SetScript('OnEnter', function(frame)
         frame:GetParent():SetButtonState('PUSHED')
         if frame.set_tooltip then
@@ -80,7 +87,12 @@ function WoWTools_ChatButtonMixin:CreateButton(name, tooltip)
         if frame.set_OnEnter then
             frame:set_OnEnter()
         end
+        if self.Save.isEnterShowMenu then
+            frame:OpenMenu()
+        end
+        --frame:set_state()
     end)
+
     btn:SetScript('OnMouseDown', function(frame, d)
         if d=='LeftButton' and frame.set_OnMouseDown then
             if not frame:set_OnMouseDown() then
@@ -91,6 +103,8 @@ function WoWTools_ChatButtonMixin:CreateButton(name, tooltip)
             end
         end
     end)
+
+
 
     btn:SetPushedAtlas('bag-border-highlight')
     btn:SetHighlightAtlas('bag-border')
@@ -115,7 +129,7 @@ function WoWTools_ChatButtonMixin:CreateButton(name, tooltip)
     btn.border:SetAllPoints(btn)
     btn.border:SetAtlas('bag-reagent-border')
 
-    
+
 
 
 

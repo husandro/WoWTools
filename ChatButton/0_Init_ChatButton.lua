@@ -77,7 +77,7 @@ local function Init_Menu(self, root)
         WoWTools_ChatButtonMixin:ShowBackgroud()
     end)
 
-    --[[sub=root:CreateCheckbox('|A:newplayertutorial-drag-cursor:0:0|a'..(e.onlyChinese and '移过图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ENTER_LFG,EMBLEM_SYMBOL)), function()
+    sub=root:CreateCheckbox('|A:newplayertutorial-drag-cursor:0:0|a'..(e.onlyChinese and '移过图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ENTER_LFG,EMBLEM_SYMBOL)), function()
         return Save.isEnterShowMenu
     end, function()
         Save.isEnterShowMenu = not Save.isEnterShowMenu and true or nil
@@ -85,7 +85,7 @@ local function Init_Menu(self, root)
     end)
     sub:SetTooltip(function (tooltip)
         tooltip:AddLine(e.onlyChinese and '显示菜单' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, HUD_EDIT_MODE_MICRO_MENU_LABEL))
-    end)]]
+    end)
 
 
 
