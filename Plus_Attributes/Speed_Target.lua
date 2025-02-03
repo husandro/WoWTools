@@ -215,7 +215,7 @@ function WoWTools_AttributesMixin:Init_Target_Speed()
         btn:Settings()
         return
     end
-    if self.Save.showTargetSpeed then
+    if not self.Save.showTargetSpeed then
         return
     end
 
