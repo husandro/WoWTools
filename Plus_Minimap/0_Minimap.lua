@@ -209,7 +209,7 @@ end
 
 --打开选项界面
 function WoWTools_MinimapMixin:OpenPanel(root)
-    return WoWTools_MenuMixin:OpenOptions(root, {name=self.addName})
+    return WoWTools_MenuMixin:OpenOptions(root, {name=addName})
 end
 
 
