@@ -179,7 +179,26 @@ local function Init()
     LFDButton:SetupMenu(function(...)
         WoWTools_LFDMixin:Init_Menu(...)
     end)
-    LFDButton:SetScript('OnMouseDown',function(self, d)
+
+    function LFDButton:set_OnMouseDown()
+        if self.dungeonID then
+            if self.type==LE_LFG_CATEGORY_LFD then
+                e.call(LFDQueueFrame_SetType, self.dungeonID)
+                e.call(LFDQueueFrame_Join)
+            elseif self.type==LE_LFG_CATEGORY_RF then
+                e.call(RaidFinderQueueFrame_SetRaid, self.dungeonID)
+                e.call(RaidFinderQueueFrame_Join)
+            elseif self.type==LE_LFG_CATEGORY_SCENARIO then
+
+            end
+            self:CloseMenu()
+            self:set_tooltip()
+        else
+            return true
+        end
+    end
+
+    --[[LFDButton:SetScript('OnMouseDown',function(self, d)
         if d=='LeftButton' and self.dungeonID then
             if self.type==LE_LFG_CATEGORY_LFD then
                 e.call(LFDQueueFrame_SetType, self.dungeonID)
@@ -193,7 +212,8 @@ local function Init()
             self:CloseMenu()
             self:set_tooltip()
         end
-    end)
+    end)]]
+
 
     function LFDButton:set_OnLeave()
         if WoWTools_LFDMixin.TipsButton and WoWTools_LFDMixin.TipsButton:IsShown() then

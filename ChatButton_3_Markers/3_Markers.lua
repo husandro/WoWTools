@@ -118,6 +118,15 @@ local function Init()
     MarkerButton:SetupMenu(function(...)
         WoWTools_MarkerMixin:Set_Menu(...)
     end)
+
+    function MarkerButton:set_OnMouseDown()
+        WoWTools_MarkerMixin.TankHealerFrame:on_click()
+    end
+    --[[function MarkerButton:set_OnMouseDown()
+        WoWTools_MarkerMixin.TankHealerFrame:on_click()
+        self:CloseMenu()
+        self:set_tooltip()
+    end
     MarkerButton:SetScript('OnMouseDown',function(self, d)
         if d=='LeftButton' then
             WoWTools_MarkerMixin.TankHealerFrame:on_click()
@@ -126,7 +135,7 @@ local function Init()
         end
     end)
 
-    --[[MarkerButton:SetScript("OnClick", function(self, d)
+    MarkerButton:SetScript("OnClick", function(self, d)
         if d=='LeftButton' then
             WoWTools_MarkerMixin.TankHealerFrame:on_click()
         else

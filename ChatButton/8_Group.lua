@@ -586,7 +586,15 @@ local function Init()
     end
 
     GroupButton:SetupMenu(Init_Menu)
-    GroupButton:SetScript('OnMouseDown',function(self, d)
+
+    function GroupButton:set_OnMouseDown()
+        if self.type then
+            WoWTools_ChatMixin:Say(self.type)
+        else
+            return true
+        end
+    end
+    --[[GroupButton:SetScript('OnMouseDown',function(self, d)
         if d=='LeftButton' and self.type then
             WoWTools_ChatMixin:Say(self.type)
             self:CloseMenu()
@@ -594,7 +602,7 @@ local function Init()
         end
     end)
 
-    --[[GroupButton:SetScript('OnClick', function(self, d)
+    GroupButton:SetScript('OnClick', function(self, d)
         if d=='LeftButton' and self.type then
             WoWTools_ChatMixin:Say(self.type)
         else

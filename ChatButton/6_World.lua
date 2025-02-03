@@ -1085,13 +1085,22 @@ local function Init()
     end)]]
 
     WorldButton:SetupMenu(Init_Menu)
-    WorldButton:SetScript('OnMouseDown',function(self, d)
+
+    function WorldButton:set_OnMouseDown()
+        if self.channelNumber and self.channelNumber>0 then
+            Send_Say(self.channelName, self.channelNumber)
+        else
+            return true
+        end
+    end
+
+    --[[WorldButton:SetScript('OnMouseDown',function(self, d)
         if d=='LeftButton' and self.channelNumber and self.channelNumber>0 then
             Send_Say(self.channelName, self.channelNumber)
             self:CloseMenu()
             self:set_tooltip()
         end
-    end)
+    end)]]
 
     --[[WorldButton:SetScript('OnLeave', function(self)
         self:state_leave()

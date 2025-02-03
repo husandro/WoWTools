@@ -281,7 +281,15 @@ local function Init()
         e.tips:Show()
     end
 
+    function RollButton:set_OnMouseDown()
+        RandomRoll(1, 100)
+    end
+
     RollButton:SetupMenu(Init_Menu)
+
+    setAutoClearRegisterEvent()--注册自动清除事件
+end
+--[[
     RollButton:SetScript('OnMouseDown',function(self, d)
         if d=='LeftButton' then
             RandomRoll(1, 100)
@@ -290,7 +298,7 @@ local function Init()
         end
     end)
 
-    --[[RollButton:SetScript('OnClick',function(self, d)
+    RollButton:SetScript('OnClick',function(self, d)
         if d=='LeftButton' then
             RandomRoll(1, 100)
         else
@@ -299,8 +307,6 @@ local function Init()
         end
     end)]]
 
-    setAutoClearRegisterEvent()--注册自动清除事件
-end
 
 
 

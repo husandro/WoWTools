@@ -81,6 +81,16 @@ function WoWTools_ChatButtonMixin:CreateButton(name, tooltip)
             frame:set_OnEnter()
         end
     end)
+    btn:SetScript('OnMouseDown', function(frame, d)
+        if d=='LeftButton' and frame.set_OnMouseDown then
+            if not frame:set_OnMouseDown() then
+                frame:CloseMenu()
+            end
+            if frame.set_tooltip then
+                frame:set_tooltip()
+            end
+        end
+    end)
 
     btn:SetPushedAtlas('bag-border-highlight')
     btn:SetHighlightAtlas('bag-border')

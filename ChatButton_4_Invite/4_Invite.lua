@@ -109,7 +109,11 @@ local function Init()
     InviteButton:SetupMenu(function(...)
         WoWTools_InviteMixin:Init_Menu(...)
     end)
-    InviteButton:SetScript('OnMouseDown',function(self, d)
+
+    function InviteButton:set_OnMouseDown()
+        WoWTools_InviteMixin:Inv_All_Unit()--邀请，周围玩家
+    end
+    --[[InviteButton:SetScript('OnMouseDown',function(self, d)
         if d=='LeftButton' then
             WoWTools_InviteMixin:Inv_All_Unit()--邀请，周围玩家
             self:CloseMenu()
@@ -118,7 +122,7 @@ local function Init()
     end)
 
     
-    --[[InviteButton:SetScript('OnClick', function(self, d)
+    InviteButton:SetScript('OnClick', function(self, d)
         if d=='LeftButton' then
             WoWTools_InviteMixin:Inv_All_Unit()--邀请，周围玩家
         else

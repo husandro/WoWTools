@@ -467,7 +467,21 @@ local function Init()
     end)]]
 
     SayButton:SetupMenu(Init_Menu)
-    SayButton:SetScript('OnMouseDown',function(self, d)
+
+    function SayButton:set_OnMouseDown()
+        if Save.type or Save.name then
+            local name, wow= Save.name, Save.isWoW
+            if Save.type==SLASH_WHISPER1 and UnitIsPlayer('target') then
+                name=GetUnitName('target', true)
+                wow= false
+            end
+            WoWTools_ChatMixin:Say(Save.type, name, wow)
+        else
+            return true
+        end
+    end
+
+    --[[SayButton:SetScript('OnMouseDown',function(self, d)
         if d=='LeftButton' and (Save.type or Save.name) then
             local name, wow= Save.name, Save.isWoW
             if Save.type==SLASH_WHISPER1 and UnitIsPlayer('target') then
@@ -479,7 +493,7 @@ local function Init()
             self:set_tooltip()
         end
     end)
-    --[[SayButton:SetScript('OnClick', function(self, d)
+    SayButton:SetScript('OnClick', function(self, d)
 
         if d=='LeftButton' and (Save.type or Save.name) then
 

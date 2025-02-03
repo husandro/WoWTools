@@ -337,6 +337,7 @@ local function Init()
     end)]]
 
     GuildButton:SetupMenu(Init_Menu)
+
     GuildButton:SetScript('OnMouseDown',function(self, d)
         if not IsInGuild() then
             ToggleGuildFrame()

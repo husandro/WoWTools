@@ -666,7 +666,16 @@ local function Init()
     EmojiButton:set_filter_event()
 
     EmojiButton:SetupMenu(Init_Menu)
-    EmojiButton:SetScript('OnMouseDown',function(self, d)
+
+    function EmojiButton:set_OnMouseDown()
+        if Save.On_Click_Show then
+            self:set_frame_shown(not Frame:IsShown())
+        else
+            send(self:get_emoji_text(),  self.chatFrameEditBox and 'LeftButton' or 'RightButton')
+        end
+    end
+
+    --[[EmojiButton:SetScript('OnMouseDown',function(self, d)
         if d=='LeftButton' then
             if Save.On_Click_Show then
                 self:set_frame_shown(not Frame:IsShown())
@@ -677,7 +686,7 @@ local function Init()
             self:CloseMenu()
         end
     end)
-    --[[EmojiButton:SetScript('OnClick', function(self, d)
+    EmojiButton:SetScript('OnClick', function(self, d)
         if d=='LeftButton' then
             if Save.On_Click_Show then
                 self:set_frame_shown(not Frame:IsShown())

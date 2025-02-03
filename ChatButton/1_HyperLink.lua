@@ -1338,7 +1338,6 @@ local function Init()
     LinkButton:set_texture()
 
     LinkButton:SetupMenu(Init_Menu)
-
     function LinkButton:HandlesGlobalMouseEvent(_, event)
         return event == "GLOBAL_MOUSE_DOWN"-- and buttonName == "RightButton";
     end
