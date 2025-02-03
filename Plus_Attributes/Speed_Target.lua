@@ -102,7 +102,7 @@ local function Init()
         self.Text:ClearAllPoints()
         self.nameText:ClearAllPoints()
         if Save().targetMoveTextToLeft then
-            self.Text:SetPoint('RIGHT', self, 'LEFT', 2, 0)
+            self.Text:SetPoint('RIGHT', self, 'LEFT')
             self.nameText:SetPoint('LEFT', self, 'RIGHT', -2, 0)
         else
             self.Text:SetPoint('LEFT', self, 'RIGHT', -2, 0)
@@ -185,10 +185,10 @@ local function Init()
 
         local value= GetUnitSpeed('target') or 0
         if value==0 then
-            self.Text:SetText('|cff8282820%')
+            self.Text:SetText('|cff8282820')
         else
             self.Text:SetFormattedText(
-                '%.0f%%',
+                '%.0f',
                 (value)*100/BASE_MOVEMENT_SPEED
             )
         end

@@ -207,6 +207,11 @@ function WoWTools_ButtonMixin:CreateMenu(frame, tab)
     btn:SetSize(get_size(size))
     self:Settings(btn, isType2)
 
+    btn:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
+    function btn:HandlesGlobalMouseEvent(buttonName, event)
+        return event == "GLOBAL_MOUSE_DOWN"-- and buttonName == "RightButton";
+    end
+
     if not hideIcon then
         btn:SetNormalAtlas('ui-questtrackerbutton-filter')
         btn:SetPushedAtlas('ui-questtrackerbutton-filter-pressed')

@@ -572,22 +572,24 @@ end
 --移动12
 local function set_SPEED_Text(frame, elapsed)
     frame.elapsed= (frame.elapsed or 0.3) + elapsed
-    if frame.elapsed > 0.3 then
-        frame.elapsed= 0
-        local value
-        local isGliding, _, forwardSpeed = C_PlayerInfo.GetGlidingInfo()
-        if isGliding and forwardSpeed then
-            value= forwardSpeed
-        elseif UnitInVehicle('player') then
-            value= GetUnitSpeed('vehicle')
-        else
-            value= GetUnitSpeed('player')
-        end
-        if value==0 then
-            frame.text:SetText('')
-        else
-            frame.text:SetFormattedText('%.0f%%', value*100/BASE_MOVEMENT_SPEED)
-        end
+    if frame.elapsed < 0.3 then
+        return
+    end
+
+    frame.elapsed= 0
+    local value
+    local isGliding, _, forwardSpeed = C_PlayerInfo.GetGlidingInfo()
+    if isGliding and forwardSpeed then
+        value= forwardSpeed
+    elseif UnitInVehicle('player') then
+        value= GetUnitSpeed('vehicle')
+    else
+        value= GetUnitSpeed('player')
+    end
+    if value==0 then
+        frame.text:SetText('')
+    else
+        frame.text:SetFormattedText('%.0f%%', value*100/BASE_MOVEMENT_SPEED)
     end
 end
 
