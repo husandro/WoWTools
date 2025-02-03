@@ -2,8 +2,6 @@
 local id, e = ...
 
 WoWTools_MinimapMixin={
-    addName= '|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..HUD_EDIT_MODE_MINIMAP_LABEL,
-    addName2= '|A:VignetteKillElite:0:0|a'..TRACKING,
 Save={
     scale=e.Player.husandro and 1 or 0.85,
     ZoomOut=true,--更新地区时,缩小化地图
@@ -40,34 +38,13 @@ Save={
     --hide_MajorFactionRenownFrame_Button=true,--隐藏，派系声望，列表，图标
     --MajorFactionRenownFrame_Button_Scale=1,--缩放
 },
-
-Init_TrackButton=function()end,
-Rest_TrackButton_Point=function()end,
-Init_TrackButton_Menu=function()end,
-
-ExpansionLanding_Menu=function()end,
-Init_ExpansionLanding=function()end,
-
-Faction_Menu=function()end,
-Garrison_Menu=function()end,
-
-
-Rest_TimeManager_Point=function()end,
-Init_TimeManager=function()end,
-
-Init_Minimap_Zoom=function()end,
-Zoom_Menu=function()end,
-
-Init_InstanceDifficulty=function()end,
-InstanceDifficulty_Tooltip=function()end,
-
-Init_MajorFactionRenownFrame=function()end,
-Init_CovenantRenown=function()end,
+--addName= '|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..HUD_EDIT_MODE_MINIMAP_LABEL,
+--addName2= '|A:VignetteKillElite:0:0|a'..TRACKING,
 }
 
 
 local addName
-local Save= function()
+local function Save()
     return  WoWTools_MinimapMixin.Save
 end
 

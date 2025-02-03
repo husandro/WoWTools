@@ -1054,6 +1054,6 @@ end
 
 
 
-function WoWTools_LFDMixin:Init_Menu(frame)
-    MenuUtil.CreateContextMenu(frame, Init_Menu)
+function WoWTools_LFDMixin:Init_Menu(...)
+    Init_Menu(...)
 end

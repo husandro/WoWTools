@@ -698,9 +698,27 @@ local function Init()
         self:set_texture()
         Init_TrackButton()
     end
-    CombatButton:SetScript('OnMouseDown', function(self, d)
+
+
+    CombatButton:SetupMenu(Init_Menu)
+    function CombatButton:HandlesGlobalMouseEvent(_, event)
+        return event == "GLOBAL_MOUSE_DOWN"-- and buttonName == "RightButton";
+    end
+    --[[CombatButton:SetScript('OnMouseDown',function(self, d)
+        if d=='LeftButton' then
+            if Save.On_Click_Show then
+                self:set_frame_shown(not Frame:IsShown())
+                e.tips:Hide()
+            else
+                send(self:get_emoji_text(),  self.chatFrameEditBox and 'LeftButton' or 'RightButton')
+                self:set_tooltip()
+            end
+            self:CloseMenu()
+        end
+    end)]]
+    --[[CombatButton:SetScript('OnMouseDown', function(self, d)
         MenuUtil.CreateContextMenu(self, Init_Menu)
-    end)
+    end)]]
 
     CombatButton:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")

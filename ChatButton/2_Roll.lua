@@ -151,6 +151,9 @@ local function Init_Menu(_, root)
         setRest()--重置
         return MenuResponse.Close
     end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
+    end)
 
     sub2= sub:CreateCheckbox('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '自动清除' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SLASH_STOPWATCH_PARAM_STOP2)), function ()
         return Save.autoClear
@@ -287,14 +290,23 @@ local function Init()
         self:set_tooltip()
     end)
 
-    RollButton:SetScript('OnClick',function(self, d)
+    RollButton:SetupMenu(Init_Menu)
+    RollButton:SetScript('OnMouseDown',function(self, d)
+        if d=='LeftButton' then
+            RandomRoll(1, 100)
+            self:CloseMenu()
+            self:set_tooltip()
+        end
+    end)
+
+    --[[RollButton:SetScript('OnClick',function(self, d)
         if d=='LeftButton' then
             RandomRoll(1, 100)
         else
             MenuUtil.CreateContextMenu(self, Init_Menu)
             e.tips:Hide()
         end
-    end)
+    end)]]
 
     setAutoClearRegisterEvent()--注册自动清除事件
 end

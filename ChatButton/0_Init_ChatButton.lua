@@ -87,27 +87,19 @@ local function Init_Menu(self, root)
         tooltip:AddLine(e.onlyChinese and '显示菜单' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, HUD_EDIT_MODE_MICRO_MENU_LABEL))
     end)]]
 
-    root:CreateDivider()
+
 
     --重置位置
-    WoWTools_MenuMixin:RestPoint(sub, Save.point, function()
+    WoWTools_MenuMixin:RestPoint(root, Save.point, function()
         Save.Point=nil
         self:set_point()
         return MenuResponse.Open
     end)
-    --[[root:CreateButton((Save.Point and '' or '|cff9e9e9e')..(e.onlyChinese and '重置位置' or RESET_POSITION), function()
-        Save.Point=nil
-        self:set_point()
-    end)]]
 
+--打开选项界面
     root:CreateDivider()
-    sub=root:CreateButton(addName, WoWTools_MinimapMixin.OpenPanel)
-    sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(e.onlyChinese and '打开选项界面' or OPTIONS)
-    end)
+    WoWTools_MenuMixin:OpenOptions(root, {category=Initializer, name=addName})
 end
-
-
 
 
 

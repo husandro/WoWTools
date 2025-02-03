@@ -322,6 +322,6 @@ end
 
 
 
-function WoWTools_InviteMixin:Init_Menu(frame)
-    MenuUtil.CreateContextMenu(frame, Init_Menu)
+function WoWTools_InviteMixin:Init_Menu(...)
+    Init_Menu(...)
 end

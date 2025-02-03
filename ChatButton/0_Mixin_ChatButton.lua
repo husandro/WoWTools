@@ -46,12 +46,18 @@ function WoWTools_ChatButtonMixin:CreateButton(name, tooltip)
         return
     end
 
-    local btn= CreateFrame("Button", 'WoWToolsChatButton_'..name, self.ChatButton, nil, self.numButton+1)
+    local btn= CreateFrame("DropdownButton", 'WoWToolsChatButton_'..name, self.ChatButton, nil, self.numButton+1)
 
-    self:SetPoint(btn)
+    self:Set_Point(btn)
 
     btn:SetSize(30, 30)
-    btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
+
+    btn:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
+    --btn:RegisterForClicks(e.LeftButtonDown)--"LeftButtonUp", 'RightButtonDown', 'RightButtonUp')
+    function btn:HandlesGlobalMouseEvent(buttonName, event)
+        return event == "GLOBAL_MOUSE_DOWN" and buttonName == "RightButton";
+    end
+
     btn:SetPushedAtlas('bag-border-highlight')
     btn:SetHighlightAtlas('bag-border')
 
@@ -80,6 +86,7 @@ function WoWTools_ChatButtonMixin:CreateButton(name, tooltip)
     end
     function btn:state_leave()
         self:GetParent():SetButtonState('NORMAL')
+        --self:SetButtonState('NORMAL')
     end
 
     WoWTools_ColorMixin:SetLabelTexture(btn.border, {type='Texture', alpha= 0.3})
@@ -100,7 +107,7 @@ end
 
 
 
-function WoWTools_ChatButtonMixin:SetPoint(btn)
+function WoWTools_ChatButtonMixin:Set_Point(btn)
     local id= btn:GetID()
     if self.Save.isVertical then--方向, 竖
         btn:SetPoint('BOTTOM', id==1 and self.ChatButton or self.Buttons[id-1], 'TOP')
@@ -125,7 +132,7 @@ function WoWTools_ChatButtonMixin:RestHV()--Horizontal and vertical
     self:SetChatButtonSize()
     for _, btn in pairs(self.Buttons) do
         btn:ClearAllPoints()
-        self:SetPoint(btn)
+        self:Set_Point(btn)
     end
 end
 

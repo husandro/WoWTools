@@ -466,23 +466,36 @@ local function Init()
         self:set_tooltip()
     end)
 
-    SayButton:SetScript('OnClick', function(self, d)
-
+    SayButton:SetupMenu(Init_Menu)
+    SayButton:SetScript('OnMouseDown',function(self, d)
         if d=='LeftButton' and (Save.type or Save.name) then
-            
             local name, wow= Save.name, Save.isWoW
             if Save.type==SLASH_WHISPER1 and UnitIsPlayer('target') then
                 name=GetUnitName('target', true)
                 wow= false
             end
-         
+            WoWTools_ChatMixin:Say(Save.type, name, wow)
+            self:CloseMenu()
+            self:set_tooltip()
+        end
+    end)
+    --[[SayButton:SetScript('OnClick', function(self, d)
+
+        if d=='LeftButton' and (Save.type or Save.name) then
+
+            local name, wow= Save.name, Save.isWoW
+            if Save.type==SLASH_WHISPER1 and UnitIsPlayer('target') then
+                name=GetUnitName('target', true)
+                wow= false
+            end
+
             WoWTools_ChatMixin:Say(Save.type, name, wow)
 
         else
             MenuUtil.CreateContextMenu(self, Init_Menu)
             e.tips:Hide()
         end
-    end)
+    end)]]
 
     function SayButton:settings(type, text, name, isWoW)
         Save.type= type
@@ -524,7 +537,7 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
     if event == "ADDON_LOADED" then
-        if arg1==id then          
+        if arg1==id then
             Save= WoWToolsSave['ChatButton_Say'] or Save
             Save.text= Save.text or (e.onlyChinese and '说' or SAY)
             addName= '|A:transmog-icon-chat:0:0|a'..(e.onlyChinese and '说' or SAY)

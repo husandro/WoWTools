@@ -9,7 +9,7 @@ Save={
     InvNoFriendNum=0,--拒绝, 次数
     restingTips=true,--休息区提示
     ChannelText=e.Player.cn and '1' or 'inv',--频道, 邀请, 事件,内容
-    
+
     Summon= true,--接受, 召唤
     notSummonChat=nil,--不说
     SummonThxText=nil,--自定义THX内容
@@ -20,7 +20,7 @@ Save={
     setFucus= e.Player.husandro,--焦点
     overSetFocus= e.Player.husandro,--移过是，
     focusKey= 'Shift',
-    
+
 },
 InviteButton=nil,
 RestingFrame=nil,
@@ -93,19 +93,7 @@ local function Init()
         self.invTips:SetShown(Save().Channel and Save().ChannelText or Save().InvTar)
     end
 
-    InviteButton:SetScript('OnClick', function(self, d)
-        if d=='LeftButton' then
-            WoWTools_InviteMixin:Inv_All_Unit()--邀请，周围玩家
-        else
-            WoWTools_InviteMixin:Init_Menu(self)
-        end
-    end)
-
-    InviteButton:SetScript('OnLeave', function(self)
-        e.tips:Hide()
-        self:state_leave()
-    end)
-    InviteButton:SetScript('OnEnter', function(self)
+    function InviteButton:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(WoWTools_InviteMixin.addName, e.Icon.left)
@@ -116,6 +104,32 @@ local function Init()
             e.tips:AddLine((e.onlyChinese and '频道' or CHANNEL)..'|cnGREEN_FONT_COLOR: '..Save().ChannelText)
         end
         e.tips:Show()
+    end
+
+    InviteButton:SetupMenu(function(...)
+        WoWTools_InviteMixin:Init_Menu(...)
+    end)
+    InviteButton:SetScript('OnMouseDown',function(self, d)
+        if d=='LeftButton' then
+            WoWTools_InviteMixin:Inv_All_Unit()--邀请，周围玩家
+            self:CloseMenu()
+            self:set_tooltip()
+        end
+    end)
+    --[[InviteButton:SetScript('OnClick', function(self, d)
+        if d=='LeftButton' then
+            WoWTools_InviteMixin:Inv_All_Unit()--邀请，周围玩家
+        else
+            WoWTools_InviteMixin:Init_Menu(self)
+        end
+    end)]]
+
+    InviteButton:SetScript('OnLeave', function(self)
+        e.tips:Hide()
+        self:state_leave()
+    end)
+    InviteButton:SetScript('OnEnter', function(self)
+        self:set_tooltip()
         self:state_enter()
     end)
 
@@ -133,7 +147,7 @@ local function Init()
 
 
 
-    
+
     if (e.Player.region==1 or e.Player.region==3) then
         WoWTools_InviteMixin.SummonThxText = '{rt1}thx{rt1}, sum me'
     elseif e.Player.region==5 then

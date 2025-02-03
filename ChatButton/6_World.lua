@@ -1073,7 +1073,7 @@ local function Init()
         e.tips:Show()
     end
 
-    WorldButton:SetScript("OnClick",function(self, d)
+    --[[WorldButton:SetScript("OnClick",function(self, d)
         if d=='LeftButton' and self.channelNumber and self.channelNumber>0 then
             Send_Say(self.channelName, self.channelNumber)
             --WoWTools_ChatMixin:Say('/'..self.channelNumber)
@@ -1081,6 +1081,15 @@ local function Init()
         else
             MenuUtil.CreateContextMenu(self, Init_Menu)
             e.tips:Hide()
+        end
+    end)]]
+
+    WorldButton:SetupMenu(Init_Menu)
+    WorldButton:SetScript('OnMouseDown',function(self, d)
+        if d=='LeftButton' and self.channelNumber and self.channelNumber>0 then
+            Send_Say(self.channelName, self.channelNumber)
+            self:CloseMenu()
+            self:set_tooltip()
         end
     end)
 

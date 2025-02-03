@@ -1347,14 +1347,13 @@ local function Init()
         e.tips:AddDoubleLine(e.onlyChinese and '超链接图标'or addName, e.GetEnabeleDisable(Save.disabed))
         e.tips:Show()]]
         self:state_enter()--Init_Menu)
-
     end)
 
-    LinkButton:SetScript('OnClick', function(self, d)
-        if d=='RightButton' then
-            MenuUtil.CreateContextMenu(self, Init_Menu)
-        end
-    end)
+    LinkButton:SetupMenu(Init_Menu)
+
+    function LinkButton:HandlesGlobalMouseEvent(_, event)
+        return event == "GLOBAL_MOUSE_DOWN"-- and buttonName == "RightButton";
+    end
 
     if not Save.disabed then--使用，禁用
         setUseDisabled()

@@ -66,7 +66,7 @@ function WoWTools_LFDMixin:Leave_All_LFG(isCheck)
     end
 
     RejectProposal()--拒绝 LFG 邀请并离开队列
-    
+
     for i=1, MAX_WORLD_PVP_QUEUES or 2 do --World PvP
         local queueID = select(3, GetWorldPVPQueueStatus(i))
         if queueID and queueID>0 then
@@ -85,7 +85,7 @@ function WoWTools_LFDMixin:Leave_All_LFG(isCheck)
             C_LFGList.ClearSearchResults()
         end
     end
-    
+
     --申请，列表
     local apps= C_LFGList.GetApplications() or {}
     if isLeavel then
@@ -94,8 +94,8 @@ function WoWTools_LFDMixin:Leave_All_LFG(isCheck)
         end
     end
     num= num+ #apps
-    
-    
+
+
     return num
 end
 
@@ -153,31 +153,15 @@ end
 
 local function Init()
     WoWTools_LFDMixin.LFDButton= LFDButton
-    
+
     --自动离开,指示图标
     LFDButton.leaveInstance=LFDButton:CreateTexture(nil, 'ARTWORK')
     LFDButton.leaveInstance:SetPoint('BOTTOMLEFT',4, 0)
     LFDButton.leaveInstance:SetSize(12,12)
     LFDButton.leaveInstance:SetAtlas(e.Icon.toLeft)
     LFDButton.leaveInstance:Hide()
-    
-    LFDButton:SetScript('OnClick', function(self, d)
-        if d=='LeftButton' and self.dungeonID then
-            if self.type==LE_LFG_CATEGORY_LFD then
-                e.call(LFDQueueFrame_SetType, self.dungeonID)
-                e.call(LFDQueueFrame_Join)
-            elseif self.type==LE_LFG_CATEGORY_RF then
-                e.call(RaidFinderQueueFrame_SetRaid, self.dungeonID)
-                e.call(RaidFinderQueueFrame_Join)
-            elseif self.type==LE_LFG_CATEGORY_SCENARIO then
 
-            end
-        else
-            WoWTools_LFDMixin:Init_Menu(self)            
-        end
-    end)
-
-    LFDButton:SetScript('OnEnter',function(self)
+    function LFDButton:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         WoWTools_WeekMixin:Activities({showTooltip=true})--周奖励，提示
@@ -190,6 +174,45 @@ local function Init()
             WoWTools_LFDMixin.TipsButton:SetButtonState('PUSHED')
         end
         e.tips:Show()
+    end
+
+    LFDButton:SetupMenu(function(...)
+        WoWTools_LFDMixin:Init_Menu(...)
+    end)
+    LFDButton:SetScript('OnMouseDown',function(self, d)
+        if d=='LeftButton' and self.dungeonID then
+            if self.type==LE_LFG_CATEGORY_LFD then
+                e.call(LFDQueueFrame_SetType, self.dungeonID)
+                e.call(LFDQueueFrame_Join)
+            elseif self.type==LE_LFG_CATEGORY_RF then
+                e.call(RaidFinderQueueFrame_SetRaid, self.dungeonID)
+                e.call(RaidFinderQueueFrame_Join)
+            elseif self.type==LE_LFG_CATEGORY_SCENARIO then
+
+            end
+            self:CloseMenu()
+            self:set_tooltip()
+        end
+    end)
+    
+    --[[LFDButton:SetScript('OnClick', function(self, d)
+        if d=='LeftButton' and self.dungeonID then
+            if self.type==LE_LFG_CATEGORY_LFD then
+                e.call(LFDQueueFrame_SetType, self.dungeonID)
+                e.call(LFDQueueFrame_Join)
+            elseif self.type==LE_LFG_CATEGORY_RF then
+                e.call(RaidFinderQueueFrame_SetRaid, self.dungeonID)
+                e.call(RaidFinderQueueFrame_Join)
+            elseif self.type==LE_LFG_CATEGORY_SCENARIO then
+
+            end
+        else
+            WoWTools_LFDMixin:Init_Menu(self)
+        end
+    end)]]
+
+    LFDButton:SetScript('OnEnter',function(self)
+        self:set_tooltip()
         self:state_enter()--Init_Menu)
     end)
 
@@ -204,7 +227,7 @@ local function Init()
     WoWTools_LFDMixin:Init_Queue_Status()--建立，小眼睛, 更新信息
     WoWTools_LFDMixin:Init_Loot_Plus()--历史, 拾取框
     WoWTools_LFDMixin:Init_Roll_Plus()--自动 ROLL
-    WoWTools_LFDMixin:Init_RolePollPopup()    
+    WoWTools_LFDMixin:Init_RolePollPopup()
     WoWTools_LFDMixin:Init_Exit_Instance()--离开副本
     WoWTools_LFDMixin:Init_LFG_Plus()--
     WoWTools_LFDMixin:Init_Role_CheckInfo()--职责确认，信息    
@@ -253,7 +276,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if LFDButton then--禁用Chat Button                
                 Init()
-                
+
                 self:RegisterEvent('UPDATE_BATTLEFIELD_STATUS')
                 self:RegisterEvent('GROUP_LEFT')
                 self:RegisterEvent('PLAYER_ROLES_ASSIGNED')--职责确认

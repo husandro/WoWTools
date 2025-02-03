@@ -560,14 +560,48 @@ local function Init()
     GroupButton.textureNotInstance:SetAllPoints(GroupButton)
     GroupButton.textureNotInstance:SetAtlas('socket-punchcard-red-background')
 
-    GroupButton:SetScript('OnClick', function(self, d)
+    function GroupButton:set_tooltip()
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+
+        local find= show_Group_Info_Toolstip()--玩家,信息, 提示
+
+        if find then
+            e.tips:AddLine(' ')
+        end
+
+        e.tips:AddDoubleLine(self.text, self.type and self.type..e.Icon.left)
+
+        if (Save.mouseDown or Save.mouseUP) then-- and IsInGroup()
+            e.tips:AddLine(' ')
+            if Save.mouseUP then
+                e.tips:AddDoubleLine(Save.mouseUP, (e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP)..e.Icon.mid)
+            end
+            if Save.mouseDown then
+                e.tips:AddDoubleLine(Save.mouseDown, (e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_DOWN)..e.Icon.mid)
+            end
+
+        end
+        e.tips:Show()
+    end
+
+    GroupButton:SetupMenu(Init_Menu)
+    GroupButton:SetScript('OnMouseDown',function(self, d)
+        if d=='LeftButton' and self.type then
+            WoWTools_ChatMixin:Say(self.type)
+            self:CloseMenu()
+            self:set_tooltip()
+        end
+    end)
+
+    --[[GroupButton:SetScript('OnClick', function(self, d)
         if d=='LeftButton' and self.type then
             WoWTools_ChatMixin:Say(self.type)
         else
             MenuUtil.CreateContextMenu(self, Init_Menu)
             e.tips:Hide()
         end
-    end)
+    end)]]
 
     GroupButton:SetScript('OnMouseWheel', function(_, d)--发送自定义信息
         local text
@@ -594,28 +628,7 @@ local function Init()
         self:state_leave()
     end)
     GroupButton:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-
-        local find= show_Group_Info_Toolstip()--玩家,信息, 提示
-
-        if find then
-            e.tips:AddLine(' ')
-        end
-
-        e.tips:AddDoubleLine(self.text, self.type and self.type..e.Icon.left)
-
-        if (Save.mouseDown or Save.mouseUP) then-- and IsInGroup()
-            e.tips:AddLine(' ')
-            if Save.mouseUP then
-                e.tips:AddDoubleLine(Save.mouseUP, (e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP)..e.Icon.mid)
-            end
-            if Save.mouseDown then
-                e.tips:AddDoubleLine(Save.mouseDown, (e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_DOWN)..e.Icon.mid)
-            end
-
-        end
-        e.tips:Show()
+        self:set_tooltip()
         self:state_enter()--Init_Menu)
     end)
 

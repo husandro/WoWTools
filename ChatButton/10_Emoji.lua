@@ -394,6 +394,7 @@ local function Init_Menu(self, root)
         return Save.On_Click_Show
     end, function()
         Save.On_Click_Show= not Save.On_Click_Show and true or false
+        self:set_texture()
     end)
 
 --隐藏
@@ -424,7 +425,7 @@ local function Init_Menu(self, root)
     WoWTools_MenuMixin:Scale(sub, function()
         return Save.scale
     end, function(value)
-        Save.scale= value        
+        Save.scale= value
         Frame:SetShown(true)
         Frame:set_scale()
     end)
@@ -434,10 +435,13 @@ local function Init_Menu(self, root)
     sub2=sub:CreateButton(e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL, function() return MenuResponse.Open end)
     for index= 1, self.numAllFile, 1 do
         if select(2, math.modf(self.numAllFile/index))==0 then
-            sub2:CreateCheckbox(index, function(data)
+            sub2:CreateCheckbox(
+                (index==10 and '|cnGREEN_FONT_COLOR:' or '')
+                ..index,
+            function(data)
                 return Save.numButtonLine==data
             end, function(data)
-                Save.numButtonLine= data                
+                Save.numButtonLine= data
                 Frame:SetShown(true)
                 Frame:set_buttons_point()
                 return MenuResponse.Refresh
@@ -552,7 +556,11 @@ local function Init()
     end
 
     function EmojiButton:set_texture()
-        self.texture:SetTexture(self:get_texture())
+        if Save.On_Click_Show then
+            self.texture:SetTexture(self:get_texture(18))
+        else
+            self.texture:SetTexture(self:get_texture())
+        end
     end
 
 
@@ -590,19 +598,8 @@ local function Init()
         self.chatFrameEditBox=nil
     end)
 
-    EmojiButton:SetScript('OnClick', function(self, d)
-        if d=='LeftButton' then
-            if Save.On_Click_Show then
-                self:set_frame_shown(not Frame:IsShown())
-                self:set_tooltip()
-            else
-                send(self:get_emoji_text(),  self.chatFrameEditBox and 'LeftButton' or 'RightButton')
-            end
 
-        elseif d=='RightButton' then
-            MenuUtil.CreateContextMenu(self, Init_Menu)
-        end
-    end)
+
 
 
     function EmojiButton:set_filter_event()
@@ -656,6 +653,32 @@ local function Init()
     EmojiButton:set_texture()
     EmojiButton:set_event()
     EmojiButton:set_filter_event()
+
+    EmojiButton:SetupMenu(Init_Menu)
+    EmojiButton:SetScript('OnMouseDown',function(self, d)
+        if d=='LeftButton' then
+            if Save.On_Click_Show then
+                self:set_frame_shown(not Frame:IsShown())
+                self:set_tooltip()
+            else
+                send(self:get_emoji_text(),  self.chatFrameEditBox and 'LeftButton' or 'RightButton')
+            end
+            self:CloseMenu()
+        end
+    end)
+    --[[EmojiButton:SetScript('OnClick', function(self, d)
+        if d=='LeftButton' then
+            if Save.On_Click_Show then
+                self:set_frame_shown(not Frame:IsShown())
+                self:set_tooltip()
+            else
+                send(self:get_emoji_text(),  self.chatFrameEditBox and 'LeftButton' or 'RightButton')
+            end
+
+        elseif d=='RightButton' then
+            MenuUtil.CreateContextMenu(self, Init_Menu)
+        end
+    end)]]
 end
 
 

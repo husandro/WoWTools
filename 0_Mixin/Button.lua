@@ -188,7 +188,7 @@ function WoWTools_ButtonMixin:CreateSecureButton(frame, tab)
     return btn
 end
 
---菜单按钮
+--菜单按钮 DropdownButtonMixin
 function WoWTools_ButtonMixin:CreateMenu(frame, tab)
     tab= tab or {}
 

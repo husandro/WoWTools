@@ -15,7 +15,7 @@ e.StausText={}--属性，截取表 API_Panel.lua
 e.ChallengesSpellTabs={}--Challenges.lua
 e.tips=GameTooltip
 
-local securecallfunction= securecallfunction
+--local securecallfunction= securecallfunction
 function e.call(func, ...)
     if func then
         securecallfunction(func, ...)

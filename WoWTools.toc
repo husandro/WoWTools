@@ -30,7 +30,6 @@ API_WoWTools.lua
 0_Mixin\Button.lua
 0_Mixin\ToolsButton.lua
 0_Mixin\Chat.lua
-0_Mixin\ChatButton.lua
 0_Mixin\Collected.lua
 0_Mixin\Color.lua
 0_Mixin\Currency.lua
@@ -294,7 +293,7 @@ Plus_WorldMap\Name_WorldQuest.lua
 Plus_WorldMap\z_Plus_Menu.lua
 Plus_WorldMap\z_Plus_SearchBox.lua
 
-##单位框, 最好放在ChatButton_Invite前，Shift+点击=焦点
+##单位框, 最好放在ChatButton_4_Invite前，Shift+点击=焦点
 Plus\UnitFrame.lua
 ##好友，面板
 Plus\FriendsList.lua
@@ -611,6 +610,7 @@ Tools\LL_MagePortal.lua
 
 ##Chat Button
 ##这是Chat主要，如果需要其中一个功能，这个不能关
+ChatButton\0_Mixin_ChatButton.lua
 ChatButton\0_Init_ChatButton.lua
 ##超链接， 欢迎, 一些其他功能
 ChatButton\1_HyperLink.lua
@@ -618,42 +618,42 @@ ChatButton\1_HyperLink.lua
 ChatButton\2_Roll.lua
 
 ##标记
-ChatButton_Markers\3_Markers.lua
-ChatButton_Markers\AutoReady.lua
-ChatButton_Markers\Tank_Healer.lua
-ChatButton_Markers\Ready_Tips.lua
-ChatButton_Markers\Init_Menu.lua
-ChatButton_Markers\Markers_Frame.lua
-ChatButton_Markers\Markers_Frame_Menu.lua
+ChatButton_3_Markers\3_Markers.lua
+ChatButton_3_Markers\AutoReady.lua
+ChatButton_3_Markers\Tank_Healer.lua
+ChatButton_3_Markers\Ready_Tips.lua
+ChatButton_3_Markers\Init_Menu.lua
+ChatButton_3_Markers\Markers_Frame.lua
+ChatButton_3_Markers\Markers_Frame_Menu.lua
 
 
 ##邀请， 自动接受， 拒绝，屏蔽
-ChatButton_Invite\4_Invite.lua
-ChatButton_Invite\Init_Menu.lua
-ChatButton_Invite\Inv_Chanell.lua
-ChatButton_Invite\Inv_Target.lua
-ChatButton_Invite\Inv_StaticPopup.lua
-ChatButton_Invite\Inv_All_Unit.lua
+ChatButton_4_Invite\4_Invite.lua
+ChatButton_4_Invite\Init_Menu.lua
+ChatButton_4_Invite\Inv_Chanell.lua
+ChatButton_4_Invite\Inv_Target.lua
+ChatButton_4_Invite\Inv_StaticPopup.lua
+ChatButton_4_Invite\Inv_All_Unit.lua
 
-ChatButton_Invite\Summon.lua
-ChatButton_Invite\Resting.lua
-ChatButton_Invite\Foucs.lua
+ChatButton_4_Invite\Summon.lua
+ChatButton_4_Invite\Resting.lua
+ChatButton_4_Invite\Foucs.lua
 
 
 ##查找器， 地下城和团队， 自动退出，进入，Roll装
-ChatButton_LFD\5_LFD.lua
-ChatButton_LFD\Exit_Instance.lua
-ChatButton_LFD\GetQueuedList.lua
-ChatButton_LFD\GetRewardInfo.lua
-ChatButton_LFD\Hooliday.lua
-ChatButton_LFD\LFG_Plus.lua
-ChatButton_LFD\Loot_Plus.lua
-ChatButton_LFD\Menu_Init.lua
-ChatButton_LFD\Queue_Status.lua
-ChatButton_LFD\RepopMe.lua
-ChatButton_LFD\Role_Check.lua
-ChatButton_LFD\Role_Info.lua
-ChatButton_LFD\Roll.lua
+ChatButton_5_LFD\5_LFD.lua
+ChatButton_5_LFD\Exit_Instance.lua
+ChatButton_5_LFD\GetQueuedList.lua
+ChatButton_5_LFD\GetRewardInfo.lua
+ChatButton_5_LFD\Hooliday.lua
+ChatButton_5_LFD\LFG_Plus.lua
+ChatButton_5_LFD\Loot_Plus.lua
+ChatButton_5_LFD\Menu_Init.lua
+ChatButton_5_LFD\Queue_Status.lua
+ChatButton_5_LFD\RepopMe.lua
+ChatButton_5_LFD\Role_Check.lua
+ChatButton_5_LFD\Role_Info.lua
+ChatButton_5_LFD\Roll.lua
 
 
 

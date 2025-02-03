@@ -202,7 +202,7 @@ local function Init_Menu(_, root)
                 end, {publicNote=publicNote, officerNote=officerNote, name=name, zone=zone})
                 sub:SetTooltip(function(tooltip, description)
                     tooltip:AddLine((e.onlyChinese and '密语' or SLASH_TEXTTOSPEECH_WHISPER)..' '..SLASH_WHISPER1..' '..description.data.name)
-                    tooltip:AddLine(' ')                    
+                    tooltip:AddLine(' ')
                     tooltip:AddLine(description.data.zone)
                     tooltip:AddLine(description.data.publicNote)
                     tooltip:AddLine(description.data.officerNote)
@@ -285,12 +285,12 @@ btn.border:SetAtlas('bag-reagent-border')
     GuildButton.background2:SetAllPoints()
     GuildButton.background2:SetAtlas('UI-Achievement-Guild-Flag-Short')
     GuildButton.background2:AddMaskTexture(GuildButton.mask)]]
-    
+
     --[[GuildButton.border2= GuildButton:CreateTexture(nil, 'BORDER', nil, 2)
     GuildButton.border2:SetAllPoints()
     GuildButton.border2:SetAtlas('UI-Achievement-Guild-Flag-Short')
     GuildButton.border2:AddMaskTexture(GuildButton.mask)]]
-    
+
 local function Init()
     GuildButton.membersText=WoWTools_LabelMixin:Create(GuildButton, {color={r=1,g=1,b=1}})-- 10, nil, nil, true, nil, 'CENTER')
     GuildButton.membersText:SetPoint('TOPRIGHT', -3, 0)
@@ -314,11 +314,7 @@ local function Init()
         set_Guild_Members()--在线人数
     end
 
-    GuildButton:SetScript('OnLeave', function(self)
-        e.tips:Hide()
-        self:state_leave()
-    end)
-    GuildButton:SetScript('OnEnter', function(self)
+    function GuildButton:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         if not IsInGuild() then
@@ -326,13 +322,32 @@ local function Init()
         end
         e.Get_Guild_Enter_Info()--公会， 社区，信息
         e.tips:Show()
+    end
+
+    GuildButton:SetScript('OnLeave', function(self)
+        e.tips:Hide()
+        self:state_leave()
+    end)
+    GuildButton:SetScript('OnEnter', function(self)
+        self:set_tooltip()
         self:state_enter()--Init_Menu)
         if IsInGuild() then
             C_GuildInfo.GuildRoster()
         end
     end)
 
-    GuildButton:SetScript('OnClick', function(self, d)
+    GuildButton:SetupMenu(Init_Menu)
+    GuildButton:SetScript('OnMouseDown',function(self, d)
+        if not IsInGuild() then
+            ToggleGuildFrame()
+            self:CloseMenu()
+            self:set_tooltip()
+        elseif d=='LeftButton' then
+            WoWTools_ChatMixin:Say('/g')
+            self:set_tooltip()
+        end
+    end)
+    --[[GuildButton:SetScript('OnClick', function(self, d)
         if not IsInGuild() then
             ToggleGuildFrame()
         else
@@ -347,7 +362,7 @@ local function Init()
                 end
             end
         end
-    end)  
+    end)]]
 
     if not IsVeteranTrialAccount() then--试用帐号
         set_check(ClubFinderGuildFinderFrame.OptionsList.SearchBox)
