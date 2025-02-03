@@ -457,14 +457,14 @@ local function Init()
         e.tips:Show()
     end
 
-    SayButton:SetScript('OnLeave', function(self)
+    --[[SayButton:SetScript('OnLeave', function(self)
         self:state_leave()
         e.tips:Hide()
     end)
     SayButton:SetScript('OnEnter', function(self)
         self:state_enter()--Init_Menu)
         self:set_tooltip()
-    end)
+    end)]]
 
     SayButton:SetupMenu(Init_Menu)
     SayButton:SetScript('OnMouseDown',function(self, d)

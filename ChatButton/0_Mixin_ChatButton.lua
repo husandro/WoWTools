@@ -58,6 +58,30 @@ function WoWTools_ChatButtonMixin:CreateButton(name, tooltip)
         return event == "GLOBAL_MOUSE_DOWN" and buttonName == "RightButton";
     end
 
+    --[[function btn:state_enter()
+        self:GetParent():SetButtonState('PUSHED')
+    end
+    function btn:state_leave()
+        self:GetParent():SetButtonState('NORMAL')
+    end]]
+
+    btn:SetScript('OnLeave', function(frame)
+        e.tips:Hide()
+        frame:GetParent():SetButtonState('NORMAL')
+        if frame.set_OnLeave then
+            frame:set_OnLeave()
+        end
+    end)
+    btn:SetScript('OnEnter', function(frame)
+        frame:GetParent():SetButtonState('PUSHED')
+        if frame.set_tooltip then
+            frame:set_tooltip()
+        end
+        if frame.set_OnEnter then
+            frame:set_OnEnter()
+        end
+    end)
+
     btn:SetPushedAtlas('bag-border-highlight')
     btn:SetHighlightAtlas('bag-border')
 
@@ -81,13 +105,9 @@ function WoWTools_ChatButtonMixin:CreateButton(name, tooltip)
     btn.border:SetAllPoints(btn)
     btn.border:SetAtlas('bag-reagent-border')
 
-    function btn:state_enter()
-        self:GetParent():SetButtonState('PUSHED')
-    end
-    function btn:state_leave()
-        self:GetParent():SetButtonState('NORMAL')
-        --self:SetButtonState('NORMAL')
-    end
+    
+
+
 
     WoWTools_ColorMixin:SetLabelTexture(btn.border, {type='Texture', alpha= 0.3})
 

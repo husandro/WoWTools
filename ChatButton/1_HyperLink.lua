@@ -1337,18 +1337,6 @@ local function Init()
     end
     LinkButton:set_texture()
 
-    LinkButton:SetScript('OnLeave', function(self)
-        e.tips:Hide()
-        self:state_leave()
-    end)
-    LinkButton:SetScript('OnEnter', function(self)
-        --[[e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinese and '超链接图标'or addName, e.GetEnabeleDisable(Save.disabed))
-        e.tips:Show()]]
-        self:state_enter()--Init_Menu)
-    end)
-
     LinkButton:SetupMenu(Init_Menu)
 
     function LinkButton:HandlesGlobalMouseEvent(_, event)

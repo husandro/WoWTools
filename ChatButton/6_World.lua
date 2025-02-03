@@ -1093,14 +1093,14 @@ local function Init()
         end
     end)
 
-    WorldButton:SetScript('OnLeave', function(self)
+    --[[WorldButton:SetScript('OnLeave', function(self)
         self:state_leave()
         e.tips:Hide()
     end)
     WorldButton:SetScript('OnEnter', function(self)
         self:state_enter()--Init_Menu)
         self:set_tooltip()
-    end)
+    end)]]
 
     if Save.lastName then
         local channelNumber = GetChannelName(Save.lastName)

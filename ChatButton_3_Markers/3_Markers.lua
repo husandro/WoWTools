@@ -152,31 +152,25 @@ local function Init()
     end
 
 
-
-    MarkerButton:SetScript('OnLeave', function(self)
+    function MarkerButton:set_OnLeave()
         if self.groupReadyTips then
             self.groupReadyTips:SetButtonState('NORMAL')
         end
-        e.tips:Hide()
         local btn= _G['WoWTools_MarkerFrame_Move_Button']
         if btn then
             btn:set_Alpha(false)
         end
-        self:state_leave()
-    end)
-    MarkerButton:SetScript('OnEnter', function(self)
+    end
+
+    function MarkerButton:set_OnEnter()
         if self.groupReadyTips and self.groupReadyTips:IsShown() then
             self.groupReadyTips:SetButtonState('PUSHED')
         end
-        self:set_tooltip()
-        self:state_enter()--WoWTools_MarkerMixin.Init_Menu(self))
         local btn= _G['WoWTools_MarkerFrame_Move_Button']
         if btn then
             btn:set_Alpha(true)
         end
-    end)
-
-
+    end
 
 
     WoWTools_MarkerMixin:Init_Markers_Frame()--设置标记, 框架

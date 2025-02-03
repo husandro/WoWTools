@@ -194,7 +194,12 @@ local function Init()
             self:set_tooltip()
         end
     end)
-    
+
+    function LFDButton:set_OnLeave()
+        if WoWTools_LFDMixin.TipsButton and WoWTools_LFDMixin.TipsButton:IsShown() then
+            WoWTools_LFDMixin.TipsButton:SetButtonState('NORMAL')
+        end
+    end
     --[[LFDButton:SetScript('OnClick', function(self, d)
         if d=='LeftButton' and self.dungeonID then
             if self.type==LE_LFG_CATEGORY_LFD then
@@ -209,7 +214,7 @@ local function Init()
         else
             WoWTools_LFDMixin:Init_Menu(self)
         end
-    end)]]
+    end)
 
     LFDButton:SetScript('OnEnter',function(self)
         self:set_tooltip()
@@ -222,7 +227,7 @@ local function Init()
             WoWTools_LFDMixin.TipsButton:SetButtonState('NORMAL')
         end
         self:state_leave()
-    end)
+    end)]]
 
     WoWTools_LFDMixin:Init_Queue_Status()--建立，小眼睛, 更新信息
     WoWTools_LFDMixin:Init_Loot_Plus()--历史, 拾取框

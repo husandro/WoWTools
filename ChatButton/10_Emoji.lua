@@ -582,7 +582,7 @@ local function Init()
         e.tips:Show()
     end
 
-    EmojiButton:SetScript('OnEnter', function(self)
+    --[[EmojiButton:SetScript('OnEnter', function(self)
         if Save.showEnter then
             self:set_frame_shown(true)
         end
@@ -596,9 +596,20 @@ local function Init()
         self:state_leave()
         e.tips:Hide()
         self.chatFrameEditBox=nil
-    end)
+    end)]]
 
+    function EmojiButton:set_OnLeave()
+        self:set_frame_state(false)
+        self.chatFrameEditBox=nil
+    end
 
+    function EmojiButton:set_OnEnter()
+        if Save.showEnter then
+            self:set_frame_shown(true)
+        end
+        self:set_frame_state(true)
+        self.chatFrameEditBox= ChatEdit_GetActiveWindow() and true or false
+    end
 
 
 

@@ -280,15 +280,6 @@ local function Init()
         end
         e.tips:Show()
     end
-    RollButton:SetScript('OnLeave', function(self)
-        e.tips:Hide()
-        self:state_leave()
-    end)
-
-    RollButton:SetScript('OnEnter', function(self)
-        self:state_enter()--Init_Menu)
-        self:set_tooltip()
-    end)
 
     RollButton:SetupMenu(Init_Menu)
     RollButton:SetScript('OnMouseDown',function(self, d)

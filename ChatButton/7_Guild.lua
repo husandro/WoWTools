@@ -324,7 +324,7 @@ local function Init()
         e.tips:Show()
     end
 
-    GuildButton:SetScript('OnLeave', function(self)
+    --[[GuildButton:SetScript('OnLeave', function(self)
         e.tips:Hide()
         self:state_leave()
     end)
@@ -334,7 +334,7 @@ local function Init()
         if IsInGuild() then
             C_GuildInfo.GuildRoster()
         end
-    end)
+    end)]]
 
     GuildButton:SetupMenu(Init_Menu)
     GuildButton:SetScript('OnMouseDown',function(self, d)
@@ -347,6 +347,12 @@ local function Init()
             self:set_tooltip()
         end
     end)
+
+    function GuildButton:set_OnEnter()
+        if IsInGuild() then
+            C_GuildInfo.GuildRoster()
+        end
+    end
     --[[GuildButton:SetScript('OnClick', function(self, d)
         if not IsInGuild() then
             ToggleGuildFrame()

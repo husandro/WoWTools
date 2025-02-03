@@ -116,13 +116,15 @@ local function Init()
             self:set_tooltip()
         end
     end)
+
+    
     --[[InviteButton:SetScript('OnClick', function(self, d)
         if d=='LeftButton' then
             WoWTools_InviteMixin:Inv_All_Unit()--邀请，周围玩家
         else
             WoWTools_InviteMixin:Init_Menu(self)
         end
-    end)]]
+    end)
 
     InviteButton:SetScript('OnLeave', function(self)
         e.tips:Hide()
@@ -131,7 +133,7 @@ local function Init()
     InviteButton:SetScript('OnEnter', function(self)
         self:set_tooltip()
         self:state_enter()
-    end)
+    end)]]
 
     InviteButton:settings()
 

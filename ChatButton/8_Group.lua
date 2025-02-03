@@ -623,14 +623,14 @@ local function Init()
     end)
 
 
-    GroupButton:SetScript('OnLeave', function(self)
+    --[[GroupButton:SetScript('OnLeave', function(self)
         e.tips:Hide()
         self:state_leave()
     end)
     GroupButton:SetScript('OnEnter', function(self)
         self:set_tooltip()
         self:state_enter()--Init_Menu)
-    end)
+    end)]]
 
     C_Timer.After(0.3, Settings)--队伍信息提示
 end

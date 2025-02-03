@@ -493,7 +493,7 @@ local function Init_Menu(self, root)
     sub2:SetTooltip(function(tooltip)
         tooltip:AddLine(e.onlyChinese and '说' or SAY)
     end)
-    
+
     sub2:CreateButton(e.onlyChinese and '设置' or SETTINGS, function()
         StaticPopup_Show('WoWTools_EditText',
         addName
@@ -699,6 +699,12 @@ local function Init()
         Init_TrackButton()
     end
 
+    function CombatButton:set_tooltip()
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        set_Tooltips_Info()
+        e.tips:Show()
+    end
 
     CombatButton:SetupMenu(Init_Menu)
     function CombatButton:HandlesGlobalMouseEvent(_, event)
@@ -715,10 +721,10 @@ local function Init()
             end
             self:CloseMenu()
         end
-    end)]]
-    --[[CombatButton:SetScript('OnMouseDown', function(self, d)
+    end)
+    CombatButton:SetScript('OnMouseDown', function(self, d)
         MenuUtil.CreateContextMenu(self, Init_Menu)
-    end)]]
+    end)
 
     CombatButton:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -732,8 +738,15 @@ local function Init()
         Set_TrackButton_Pushed(false)--TrackButton，提示
         self:state_leave()
         e.tips:Hide()
-    end)
+    end)]]
 
+    function CombatButton:set_OnLeave()
+        Set_TrackButton_Pushed(false)--TrackButton，提示
+    end
+
+    function CombatButton:set_OnEnter()
+        Set_TrackButton_Pushed(true)--TrackButton，提示
+    end
 
 
 
