@@ -417,6 +417,7 @@ local function Init()--设置标记, 框架
     MakerFrame.target= CreateFrame("Frame", nil, MakerFrame)
     MakerFrame.target:SetSize(size, size)
 
+
     table.insert(MakerFrame.Buttons, MakerFrame.target)
     function MakerFrame.target:set_point()
         if Save().H then
@@ -598,6 +599,8 @@ local function Init()--设置标记, 框架
     MakerFrame.marker= CreateFrame("Frame", nil, MakerFrame)
     MakerFrame.marker:SetSize(size, size)
 
+
+
     table.insert(MakerFrame.Buttons, MakerFrame.marker)
     function MakerFrame.marker:set_point()
         if Save().H then
@@ -621,6 +624,7 @@ local function Init()--设置标记, 框架
 
         table.insert(MakerFrame.marker.Button, btn)
         if index==0 then
+
             btn:SetAllPoints(MakerFrame.marker)
         else
             table.insert(MakerFrame.Buttons, btn)
@@ -634,6 +638,9 @@ local function Init()--设置标记, 框架
                 btn:Show()
             end
             btn:set_point()
+            if index== NUM_WORLD_RAID_MARKERS then
+
+            end
         end
 
         btn:SetAttribute('type1', 'worldmarker')
@@ -804,6 +811,23 @@ local function Init()--设置标记, 框架
             frame:set_point()
         end
     end
+
+
+
+--[[
+    WoWTools_TextureMixin:CreateBackground(MakerFrame)
+    MakerFrame.Background:SetPoint('BOTTOMRIGHT', MakerFrame.Buttons[1], 4, -4)
+    MakerFrame.Background:SetPoint('TOPLEFT', MakerFrame.Buttons[#MakerFrame.Buttons], -4, 4)
+
+    WoWTools_TextureMixin:CreateBackground(MakerFrame.target)
+    MakerFrame.target.Background:SetPoint('BOTTOMRIGHT', MakerFrame.target.Button[1], 4, -4)
+    MakerFrame.target.Background:SetPoint('TOPLEFT', MakerFrame.target.Button[#MakerFrame.marker.Button], -4, 4)
+
+    WoWTools_TextureMixin:CreateBackground(MakerFrame.marker)
+    MakerFrame.marker.Background:SetPoint('BOTTOMRIGHT', MakerFrame.marker.Button[1], 4, -4)
+    MakerFrame.marker.Background:SetPoint('TOPLEFT', MakerFrame.marker.Button[#MakerFrame.marker.Button], -4, 4)
+
+]]
 end
 
 
