@@ -18,7 +18,9 @@ local Initializer, Layout
 
 
 
-
+function WoWTools_ChatButtonMixin:Open_SettingsPanel(root, name)
+    WoWTools_MenuMixin:OpenOptions(root, {category=Initializer, name=name or addName})
+end
 
 
 
@@ -98,7 +100,7 @@ local function Init_Menu(self, root)
 
 --打开选项界面
     root:CreateDivider()
-    WoWTools_MenuMixin:OpenOptions(root, {category=Initializer, name=addName})
+    WoWTools_ChatButtonMixin:Open_SettingsPanel(root, nil)
 end
 
 

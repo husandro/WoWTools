@@ -53,7 +53,6 @@ function WoWTools_ChatButtonMixin:CreateButton(name, tooltip)
     btn:SetSize(30, 30)
 
     btn:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
-    --btn:RegisterForClicks(e.LeftButtonDown)--"LeftButtonUp", 'RightButtonDown', 'RightButtonUp')
     function btn:HandlesGlobalMouseEvent(buttonName, event)
         return event == "GLOBAL_MOUSE_DOWN" and buttonName == "RightButton";
     end

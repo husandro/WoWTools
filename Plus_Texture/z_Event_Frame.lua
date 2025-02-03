@@ -849,6 +849,7 @@ function Events:Blizzard_GarrisonUI(mixin)
     mixin:SetFrame(GarrisonLandingPage.Report, {alpha= 0.3})
     if GarrisonLandingPageFollowerList then
         mixin:HideTexture(GarrisonLandingPageFollowerList.FollowerScrollFrame)
+        mixin:SetScrollBar(GarrisonLandingPageReportList)
     end
 end
 

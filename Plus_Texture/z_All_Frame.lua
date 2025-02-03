@@ -245,6 +245,7 @@ local function Init(mixin)
     if QuestScrollFrame.SettingsDropdown then--11.1
         mixin:SetScrollBar(MapLegendScrollFrame)
         mixin:HideTexture(MapLegendScrollFrame.Background, true)
+        mixin:SetAlphaColor(QuestMapFrame.MapLegend.BorderFrame.Border, nil, nil, true)
         mixin:SetAlphaColor(QuestScrollFrame.SettingsDropdown.Icon, true, nil, nil)
         mixin:SetAlphaColor(QuestMapFrame.QuestsFrame.DetailsFrame.BorderFrame, true, nil, nil)
     end

@@ -50,14 +50,16 @@ function WoWTools_MarkerMixin:Init_MarkerTools_Menu(root)
         end
     end)
 
-    --重置位置
-    root:CreateDivider()
+--重置位置
     WoWTools_MenuMixin:RestPoint(root, Save().markersFramePoint and self.MakerFrame:CanChangeAttribute(), function()
         Save().markersFramePoint=nil
         self.MakerFrame:ClearAllPoints()
         self.MakerFrame:Init_Set_Frame()
         print(e.addName, self.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
     end)
+
+    root:CreateDivider()
+    WoWTools_ChatButtonMixin:Open_SettingsPanel(root, nil)
 end
 
 
