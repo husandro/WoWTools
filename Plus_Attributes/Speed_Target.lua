@@ -74,7 +74,7 @@ end
 
 
 local function Init()
-    btn= WoWTools_ButtonMixin:Ctype2(nil, {icon='hide', isType2=true, size=23, name='WoWTools_AttributesTargetMoveButton'})
+    btn= WoWTools_ButtonMixin:Ctype2(UIParent, {icon='hide', isType2=true, size=23, name='WoWTools_AttributesTargetMoveButton'})
     WoWTools_AttributesMixin.TargetMoveButton= btn
     btn:Hide()
 

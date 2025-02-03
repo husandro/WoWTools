@@ -91,8 +91,6 @@ local function Init_Menu(self, root)
     end)
 
 
-
---重置位置
     sub:CreateDivider()
 --重置位置
     WoWTools_MenuMixin:RestPoint(sub, Save().point, function()
@@ -100,16 +98,6 @@ local function Init_Menu(self, root)
         self:set_Point()--设置, 位置
         return MenuResponse.Open
     end)
-
-    --[[sub:CreateButton(
-        (Save().point and '' or '|cff9e9e9e')
-        ..'|A:characterundelete-RestoreButton:0:0|a'
-        ..(e.onlyChinese and '重置位置' or RESET_POSITION),
-    function()
-        Save().point=nil
-        self:set_Point()--设置, 位置
-        return MenuResponse.Open
-    end)]]
 end
 
 

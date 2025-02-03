@@ -77,14 +77,14 @@ end
 --初始
 --####
 local function Init()
-    WoWTools_AttributesMixin:Init_Dragonriding_Speed()--驭空术UI，速度
-    WoWTools_AttributesMixin:Init_Vehicle_Speed()--载具，移动，速度
-    WoWTools_AttributesMixin:Init_Target_Speed()--目标，移动，速度
-
     do
         WoWTools_AttributesMixin:Create_Button()
     end
     WoWTools_AttributesMixin:Frame_Init(true)--初始， 或设置
+
+    WoWTools_AttributesMixin:Init_Dragonriding_Speed()--驭空术UI，速度
+    WoWTools_AttributesMixin:Init_Vehicle_Speed()--载具，移动，速度
+    WoWTools_AttributesMixin:Init_Target_Speed()--目标，移动，速度
 end
 
 
