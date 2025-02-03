@@ -83,7 +83,7 @@ local function Init()
 
 
     function btn:Is_Exists()
-        return UnitExists('target') and not UnitIsUnit('player', 'target')
+        return UnitExists('target') --and not UnitIsUnit('player', 'target')
     end
 
     function btn:Settings()
@@ -93,8 +93,10 @@ local function Init()
         local p= Save().targetMovePoint
         if p then
             self:SetPoint(p[1], UIParent, p[3], p[4], p[5])
-        else
+        elseif WoWTools_AttributesMixin.Button then
             self:SetPoint('BOTTOM', WoWTools_AttributesMixin.Button, 'TOP', 0, 2)
+        else
+            self:SetPoint('CENTER',100, -100)
         end
 
         self.Text:ClearAllPoints()
