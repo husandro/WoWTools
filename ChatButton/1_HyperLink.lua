@@ -1247,6 +1247,7 @@ local function Init_Menu(_, root)
             C_AddOns.LoadAddOn("Blizzard_EventTrace")
         end
         EventTrace:OnShow()
+        return MenuResponse.Open
     end)
 
     --fstack
@@ -1255,6 +1256,7 @@ local function Init_Menu(_, root)
             C_AddOns.LoadAddOn("Blizzard_DebugTools")
         end
         FrameStackTooltip_ToggleDefaults()
+        return MenuResponse.Open
     end)
     sub:SetTooltip(function (tooltip)
         GameTooltip_AddNormalLine(tooltip, '|cnGREEN_FONT_COLOR:Alt|r '..(e.onlyChinese and '切换' or HUD_EDIT_MODE_SWITCH))

@@ -543,15 +543,17 @@ local function Init_Blizzard_PlayerSpells()
     Init_All_Flyout()
     Init_Spec_Button()
 
+
     hooksecurefunc(SpellBookItemMixin, 'UpdateVisuals', function(frame)
         frame.Button.ActionBarHighlight:SetVertexColor(0,1,0)
-
-        if (frame.spellBookItemInfo.itemType == Enum.SpellBookItemType.Flyout) then
-            frame.Button.Arrow:SetVertexColor(1,0,1)
-            frame.Button.Border:SetVertexColor(1,0,1)
-        else
-            frame.Button.Arrow:SetVertexColor(1,1,1)
-            frame.Button.Border:SetVertexColor(1,1,1)
+        if frame.Button.Arrow then--11.1
+            if (frame.spellBookItemInfo.itemType == Enum.SpellBookItemType.Flyout) then
+                frame.Button.Arrow:SetVertexColor(1,0,1)
+                frame.Button.Border:SetVertexColor(1,0,1)
+            else
+                frame.Button.Arrow:SetVertexColor(1,1,1)
+                frame.Button.Border:SetVertexColor(1,1,1)
+            end
         end
     end)
 end
