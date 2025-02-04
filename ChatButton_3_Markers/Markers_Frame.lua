@@ -278,9 +278,9 @@ local function Init()--设置标记, 框架
     function MakerFrame.countdown:set_point()
         local frame= MakerFrame.ping.Button[#MakerFrame.ping.Button]
         if Save().H then
-            self:SetPoint('BOTTOM',frame, 'TOP', 0, size)
+            self:SetPoint('BOTTOM',frame, 'TOP')
         else
-            self:SetPoint('RIGHT', frame, 'LEFT', -size, 0)
+            self:SetPoint('RIGHT', frame, 'LEFT')
         end
     end
     MakerFrame.countdown:set_point()
@@ -397,7 +397,7 @@ local function Init()--设置标记, 框架
     MakerFrame.check:SetScript('OnEnter', function(self)
         self:GetParent():set_Tooltips_Point()
         e.tips:ClearLines()
-        e.tips:AddLine(EMOTE127_CMD3)
+        e.tips:AddLine(EMOTE127_CMD3, e.onlyChinese and '就绪' or READY)
         e.tips:Show()
     end)
     MakerFrame.check:SetScript('OnLeave', GameTooltip_Hide)
@@ -419,6 +419,28 @@ local function Init()--设置标记, 框架
 
 
 
+    MakerFrame.RolePoll=WoWTools_ButtonMixin:Cbtn(MakerFrame, {size={size,size}, atlas='GM-icon-roles'})
+
+    table.insert(MakerFrame.Buttons, MakerFrame.RolePoll)
+    function MakerFrame.RolePoll:set_point()
+        if Save().H then
+            self:SetPoint('BOTTOM', MakerFrame.check, 'TOP')
+        else
+            self:SetPoint('RIGHT', MakerFrame.check, 'LEFT')
+        end
+    end
+    MakerFrame.RolePoll:set_point()
+
+    MakerFrame.RolePoll:SetScript('OnClick', function()
+        InitiateRolePoll();
+    end)
+    MakerFrame.RolePoll:SetScript('OnEnter', function(self)
+        self:GetParent():set_Tooltips_Point()
+        e.tips:ClearLines()
+        e.tips:AddLine(e.onlyChinese and '职责选定' or CRF_ROLE_POLL)
+        e.tips:Show()
+    end)
+    MakerFrame.RolePoll:SetScript('OnLeave', GameTooltip_Hide)--RolePollPopup
 
 
 
@@ -675,9 +697,6 @@ local function Init()--设置标记, 框架
                 btn:Show()
             end
             btn:set_point()
-            if index== NUM_WORLD_RAID_MARKERS then
-
-            end
         end
 
         btn:SetAttribute('type1', 'worldmarker')
@@ -804,13 +823,16 @@ local function Init()--设置标记, 框架
         local marker= (isGroup and isNotPvP) and (isParty or isLeaderORAssistant)
         self.marker:SetShown(marker)--世界标记
 
-        local check= isGroup and isLeaderORAssistant
+        local check= isGroup and isLeader
         self.check:SetShown(check)--就绪
 
         local countdown= isParty or (isGroup and isLeaderORAssistant)
         self.countdown:SetShown(countdown)--倒计时
 
-        self:SetShown(ping or target or marker or check or countdown)
+        local rolepoll= isGroup and isLeaderORAssistant
+        self.RolePoll:SetShown(rolepoll)
+
+        self:SetShown(ping or target or marker or check or countdown or rolepoll)
     end
 
     function MakerFrame:set_Event()
@@ -853,15 +875,7 @@ local function Init()--设置标记, 框架
     MakerFrame:set_Event()
     MakerFrame:set_Shown()
 
-    function MakerFrame:set_button_point()
-        if UnitAffectingCombat('player') then
-            return
-        end
-        for _, frame in pairs(self.Buttons) do
-            frame:ClearAllPoints()
-            frame:set_point()
-        end
-    end
+
 
 
 
@@ -884,19 +898,27 @@ local function Init()--设置标记, 框架
 
     WoWTools_TextureMixin:CreateBackground(MakerFrame.countdown, {alpha=0.5, isAllPoint=true})
     WoWTools_TextureMixin:CreateBackground(MakerFrame.check, {alpha=0.5, isAllPoint=true})
+    WoWTools_TextureMixin:CreateBackground(MakerFrame.RolePoll, {alpha=0.5, isAllPoint=true})
 
     function MakerFrame:set_background()
         local show= Save().showMakerFrameBackground
-        self.ping.Background:SetShown(show)
-        self.target.Background:SetShown(show)
-        self.marker.Background:SetShown(show)
-        self.countdown.Background:SetShown(show)
-        self.check.Background:SetShown(show)
+        for _, frame in pairs(self.Buttons) do
+            if frame.Background then
+                frame.Background:SetShown(show)
+            end
+        end
     end
     MakerFrame:set_background()
 
+
+
+
+
+
+--菜单用
+
 --设置全部，快捷键
-    function MakerFrame:set_all_hotkey()--菜单用
+    function MakerFrame:set_all_hotkey()
         for _, frame in pairs(self.ping.Button) do
             if frame.set_hotkey then
                 frame:set_hotkey()
@@ -909,6 +931,17 @@ local function Init()--设置标记, 框架
             if frame.set_hotkey then
                 frame:set_hotkey()
             end
+        end
+    end
+
+--位于上方
+    function MakerFrame:set_button_point()
+        if UnitAffectingCombat('player') then
+            return
+        end
+        for _, frame in pairs(self.Buttons) do
+            frame:ClearAllPoints()
+            frame:set_point()
         end
     end
 end

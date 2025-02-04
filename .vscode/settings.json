@@ -5123,7 +5123,8 @@
         "CompactRaidFrameManagerDisplayFrameModeControlDropdown",
         "CompactRaidFrameManagerDisplayFrameOptionsButton",
         "GetBindingKeyForAction",
-        "CHARACTER_CUSTOMIZATION_TUTORIAL_TITLE"
+        "CHARACTER_CUSTOMIZATION_TUTORIAL_TITLE",
+        "CRF_ROLE_POLL"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
