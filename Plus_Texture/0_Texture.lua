@@ -252,14 +252,15 @@ function WoWTools_PlusTextureMixin:SetButton(btn, tab)
 end
 
 --下拉，菜单 set_Menu
-function WoWTools_PlusTextureMixin:SetMenu(frame)--, tab)
+function WoWTools_PlusTextureMixin:SetMenu(frame, tab)
+    tab= tab or {}
     if frame then
-        self:SetAlphaColor(frame.Background, nil, nil, 0.5)
+        self:SetAlphaColor(frame.Background, nil, nil, tab.alpha or 0.5)
 
         if frame.FilterDropdown then
-            self:SetAlphaColor(frame.FilterDropdown.Background, nil, nil, 0.8)
+            self:SetAlphaColor(frame.FilterDropdown.Background, nil, nil, tab.alpha or 0.8)
         end
-        self:SetAlphaColor(frame.Arrow, nil, nil, 0.8)
+        self:SetAlphaColor(frame.Arrow, nil, nil, tab.alpha or 0.8)
     end
 end
 

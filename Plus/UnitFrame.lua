@@ -1868,13 +1868,40 @@ local function Init_RaidFrame()--设置,团队
 
 
     --团体, 管理, 缩放
-    CompactRaidFrameManager.sacleFrame= WoWTools_ButtonMixin:Cbtn(CompactRaidFrameManager, {icon=true, size={15,15}})
-    CompactRaidFrameManager.sacleFrame:SetPoint('RIGHT', CompactRaidFrameManagerDisplayFrameRaidMemberCountLabel, 'LEFT')
-    CompactRaidFrameManager.sacleFrame:SetAlpha(0.5)
-    CompactRaidFrameManager.sacleFrame:SetScript("OnMouseDown", function(self, d)
+    --CompactRaidFrameManager.ScaleButton= WoWTools_ButtonMixin:Cbtn(CompactRaidFrameManager, {icon=true, size={22,22}})
+    CompactRaidFrameManager.ScaleButton= WoWTools_ButtonMixin:CreateMenu(CompactRaidFrameManagerDisplayFrameOptionsButton, {size=18})
+    CompactRaidFrameManager.ScaleButton:SetPoint('RIGHT', CompactRaidFrameManagerDisplayFrameRaidMemberCountLabel, 'LEFT')
+    CompactRaidFrameManager.ScaleButton:SetAlpha(0.3)
+    function CompactRaidFrameManager.ScaleButton:settings()
+        CompactRaidFrameManager:SetScale(Save.managerScale or 1)
+    end
+    CompactRaidFrameManager.ScaleButton:SetScript('OnLeave', function(self)
+        self:SetAlpha(0.3)
+    end)
+    CompactRaidFrameManager.ScaleButton:SetScript('OnEnter', function(self)
+        self:SetAlpha(1)
+    end)
+    CompactRaidFrameManager.ScaleButton:SetupMenu(function(self, root)
+--缩放
+        WoWTools_MenuMixin:Scale(root, function()
+            return Save.managerScale or 1
+        end, function(value)
+            if not UnitAffectingCombat('player') then
+                Save.managerScale= value
+                self:settings()
+            end
+        end)
+
+        root:CreateDivider()
+--打开选项界面
+        WoWTools_MenuMixin:OpenOptions(root, {name=addName})
+    end)
+    CompactRaidFrameManager.ScaleButton:settings()
+
+    --[[CompactRaidFrameManager.ScaleButton:SetScript("OnMouseDown", function(self, d)
         print(e.addName, e.cn(addName), 'Alt+'..e.Icon.mid..(e.onlyChinese and '缩放' or UI_SCALE), Save.managerScale or 1)
     end)
-    CompactRaidFrameManager.sacleFrame:SetScript('OnMouseWheel', function(self, d)--缩放
+    CompactRaidFrameManager.ScaleButton:SetScript('OnMouseWheel', function(self, d)--缩放
         if IsAltKeyDown() then
             if UnitAffectingCombat('player') then
                 print(e.addName, e.cn(addName), e.onlyChinese and '缩放' or UI_SCALE, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or COMBAT))
@@ -1898,7 +1925,12 @@ local function Init_RaidFrame()--设置,团队
     end)
     if Save.managerScale and Save.managerScale~=1 then
         CompactRaidFrameManager:SetScale(Save.managerScale)
-    end
+    end]]
+
+
+
+
+
 
     hooksecurefunc('CompactUnitFrame_UpdateStatusText', function(frame)
         if frame.unit:find('nameplate') then

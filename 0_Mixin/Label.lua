@@ -8,7 +8,7 @@ local ItemCurrencyTips= {---物品升级界面，挑战界面，物品，货币�
     {type='currency', id=2915},--蚀刻先驱纹章
     {type='currency', id=2914},--风化先驱纹章
     {type='currency', id=3008},--神勇石
-    
+
     --{type='currency', id=e.SetItemCurrencyID, show=true},--套装，转换，货币
     {type='currency', id=1602, line=true},--征服点数
     {type='currency', id=1191},--勇气点数

@@ -5118,7 +5118,12 @@
         "FLIGHT_MAP",
         "BATTLE_PET_NAME_3",
         "STATUS",
-        "GarrisonLandingPageReportList"
+        "GarrisonLandingPageReportList",
+        "CompactRaidFrameManagerDisplayFrameRestrictPingsDropdown",
+        "CompactRaidFrameManagerDisplayFrameModeControlDropdown",
+        "CompactRaidFrameManagerDisplayFrameOptionsButton",
+        "GetBindingKeyForAction",
+        "CHARACTER_CUSTOMIZATION_TUTORIAL_TITLE"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

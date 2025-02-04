@@ -594,8 +594,6 @@ local function Init()
             end
         end
     end
-
-    
 end
 
 

@@ -23,7 +23,7 @@ local function Init()--设置标记, 框架
     WoWTools_MarkerMixin.MakerFrame= MakerFrame
     MakerFrame.Buttons={}
 
-    local size =22
+    local size= 23
 
     --移动按钮
     local btn= WoWTools_ButtonMixin:Cbtn(MakerFrame, {name= 'WoWTools_MarkerFrame_Move_Button', size={size,size}, texture='Interface\\Cursor\\UI-Cursor-Move'})
@@ -48,7 +48,7 @@ local function Init()--设置标记, 框架
     btn:SetScript('OnMouseDown', function(self, d)
         if d=='RightButton' and IsAltKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
-        elseif not IsModifierKeyDown() and d=='RightButton' then
+        elseif not IsModifierKeyDown() then
             MenuUtil.CreateContextMenu(self, function(_, root)
                 WoWTools_MarkerMixin:Init_MarkerTools_Menu(root)--队伍标记工具, 选项，菜单    
             end)
@@ -74,9 +74,7 @@ local function Init()--设置标记, 框架
         e.tips:AddDoubleLine(e.addName, e.onlyChinese and '队伍标记工具' or format(PROFESSION_TOOL_TOOLTIP_LINE, EVENTTRACE_MARKER))
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-        --e.tips:AddDoubleLine((UnitAffectingCombat('player') and '|cff9e9e9e' or '')..(e.onlyChinese and '缩放' or  UI_SCALE), '|cnGREEN_FONT_COLOR:'..(Save().markersScale or 1)..'|r Alt+'..e.Icon.mid)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
+        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)
         e.tips:Show()
     end
     btn:SetScript('OnLeave', function(self)
@@ -119,7 +117,7 @@ local function Init()--设置标记, 框架
     MakerFrame.ping:set_point()
 
     MakerFrame.ping.tab={--Enum.PingSubjectType.Warning
-        [8]={name= e.onlyChinese and '自动' or SELF_CAST_AUTO, atlas='Ping_Marker_Icon_NonThreat'},
+        [8]={name= e.onlyChinese and '自动' or SELF_CAST_AUTO, atlas='Ping_Marker_Icon_NonThreat', action='TOGGLEPINGLISTENER'},
         [7]={name=e.onlyChinese and '信号' or PING, atlas='Cursor_OpenHand_128', action='TOGGLEPINGLISTENER'},
         [0]={name=e.onlyChinese and '攻击' or PING_TYPE_ATTACK, atlas='Ping_Marker_Icon_Attack', action='PINGATTACK', text=BINDING_NAME_PINGATTACK},--text='attack'},
         [1]={name=e.onlyChinese and '警告' or PING_TYPE_WARNING, atlas='Ping_Marker_Icon_Warning', action= 'PINGWARNING', text=BINDING_NAME_PINGWARNING},--text='warning'},
@@ -139,6 +137,7 @@ local function Init()--设置标记, 框架
             type=true,
             setID=setIndex,
         })
+
         table.insert(MakerFrame.ping.Button, btn)
         if setIndex==1 then
             btn:SetAllPoints(MakerFrame.ping)
@@ -164,32 +163,38 @@ local function Init()--设置标记, 框架
         btn:SetAttribute("macrotext2", SLASH_PING1..' [@player]'..(MakerFrame.ping.tab[index].text or ''))
 
         function btn:set_Event()
-            if self:IsVisible() then
+            self:UnregisterAllEvents()
+            if self:IsShown() then
                 self:RegisterEvent('PLAYER_TARGET_CHANGED')
-            else
-                self:UnregisterEvent('PLAYER_TARGET_CHANGED')
+                if Save().showMakerFrameHotKey then
+                    self:RegisterEvent('UPDATE_BINDINGS')
+                end
             end
+            self:set_hotkey()
         end
 
         btn:SetScript('OnShow', btn.set_Event)
         btn:SetScript('OnHide', btn.set_Event)
-        btn:set_Event()
 
-        btn:SetScript('OnEvent', function(self)
-            local exists= UnitExists('target')
-            if not self.action then
-                local atlas
-                local guid= exists and UnitGUID('target') or e.Player.guid
-                local type=guid and C_Ping.GetContextualPingTypeForUnit(guid)
-                if type then
-                    local pingTab=self:GetParent().tab
-                    if pingTab[type] then
-                        atlas= pingTab[type].atlas
+        btn:SetScript('OnEvent', function(self, event)
+            if event=='UPDATE_BINDINGS' then
+                self:set_hotkey()
+            else
+                local exists= UnitExists('target')
+                if not self.action then
+                    local atlas
+                    local guid= exists and UnitGUID('target') or e.Player.guid
+                    local type=guid and C_Ping.GetContextualPingTypeForUnit(guid)
+                    if type then
+                        local pingTab=self:GetParent().tab
+                        if pingTab[type] then
+                            atlas= pingTab[type].atlas
+                        end
                     end
+                    self:SetNormalTexture(atlas or self.atlas)
                 end
-                self:SetNormalTexture(atlas or self.atlas)
+                self:SetAlpha(exists and 1 or 0.5)
             end
-            self:SetAlpha(exists and 1 or 0.5)
         end)
         btn:SetAlpha(0.5)
 
@@ -229,7 +234,19 @@ local function Init()--设置标记, 框架
             end
             e.tips:Show()
         end)
+
+--快捷键
+        btn.HotKey= WoWTools_LabelMixin:Create(btn, {color={r=1,g=1,b=1}})
+        btn.HotKey:SetPoint('TOPRIGHT', 1, 2)
+        function btn:set_hotkey()
+            if self.action then
+                self.HotKey:SetText(Save().showMakerFrameHotKey and e.GetHotKeyText(nil, self.action) or '')
+            end
+        end
+
+        btn:set_Event()
     end
+
     hooksecurefunc(PingListenerFrame, 'SetupCooldownTimer', function(self)--冷却，时间
         if MakerFrame.ping:IsShown() then
             local cooldownDuration = (self.cooldownInfo.endTimeMs / 1000) - GetTime()
@@ -254,7 +271,7 @@ local function Init()--设置标记, 框架
 
 
 
---倒计时10秒
+--倒计时
     MakerFrame.countdown= WoWTools_ButtonMixin:Cbtn(MakerFrame, {size={size,size}, atlas='countdown-swords'})
 
     table.insert(MakerFrame.Buttons, MakerFrame.countdown)
@@ -279,34 +296,6 @@ local function Init()--设置标记, 框架
                 C_PartyInfo.DoCountdown(0)
             end
             WoWTools_ChatMixin:Chat(e.Player.cn and '{rt7}取消 取消 取消{rt7}' or '{rt7}STOP STOP STOP{rt7}', nil, nil)
-
-        elseif d=='RightButton' and IsControlKeyDown() then--设置时间
-            StaticPopupDialogs['WoWTools_ChatButton_Maker_COUNTDOWN']={
-                text=WoWTools_MarkerMixin.addName..'|n'..(e.onlyChinese and '就绪' or READY)..'|n|n1 - 3600',
-                whileDead=true, hideOnEscape=true, exclusive=true,
-                hasEditBox=true,
-                button1= e.onlyChinese and '设置' or SETTINGS,
-                button2= e.onlyChinese and '取消' or CANCEL,
-                OnShow = function(self2)
-                    self2.editBox:SetNumeric(true)
-                    self2.editBox:SetNumber(Save().countdown or 7)
-                end,
-                OnHide=EditBox_ClearFocus,
-                OnAccept = function(self2)
-                    local num= self2.editBox:GetNumber()
-                    Save().countdown=num
-                end,
-                EditBoxOnTextChanged=function(self2)
-                    local num= self2:GetNumber()
-                    local parent= self2:GetParent()
-                    parent.button1:SetEnabled(num>0 and num<=3600)
-                    parent.button1:SetText(WoWTools_TimeMixin:SecondsToClock(num))
-                end,
-                EditBoxOnEscapePressed = function(self2)
-                    self2:GetParent():Hide()
-                end,
-            }
-            StaticPopup_Show('WoWTools_ChatButton_Maker_COUNTDOWN')
         end
     end)
     MakerFrame.countdown:SetScript('OnEnter', function(self)
@@ -316,12 +305,12 @@ local function Init()--设置标记, 框架
         e.tips:AddLine(e.Icon.right..(e.Player.cn and '取消 取消 取消' or 'STOP STOP STOP'))
         e.tips:AddLine(' ')
         e.tips:AddLine(e.onlyChinese and '备注：不要太快了' or (LABEL_NOTE..': '..ERR_GENERIC_THROTTLE), 1,0,0)
-        e.tips:AddLine('Ctrl+'..e.Icon.right..(e.onlyChinese and '设置' or SETTINGS))
+        e.tips:AddLine(e.Icon.mid..(e.onlyChinese and '设置' or SETTINGS))
         e.tips:Show()
     end)
     MakerFrame.countdown:SetScript('OnLeave', GameTooltip_Hide)
     function MakerFrame.countdown:set_Event()
-        if self:IsVisible() then
+        if self:IsShown() then
             self:RegisterEvent('START_TIMER')
         else
             self:UnregisterAllEvents()
@@ -345,6 +334,35 @@ local function Init()--设置标记, 框架
     MakerFrame.countdown:set_Event()
 
 
+    MakerFrame.countdown:SetScript('OnMouseWheel', function(self)
+        MenuUtil.CreateContextMenu(self, function(frame, root)
+            root:CreateSpacer()
+            WoWTools_MenuMixin:CreateSlider(root, {
+                getValue=function()
+                    return Save().countdown or 7
+                end, setValue=function(value)
+                    Save().countdown=value
+                    frame:set_hotkey()
+                end,
+                name=e.onlyChinese and '/倒计时' or SLASH_COUNTDOWN2,
+                minValue=1,
+                maxValue=3600,
+                step=1,
+                tooltip=function(tooltip)
+                    tooltip:AddLine(e.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS)
+                end
+            })
+            root:CreateSpacer()
+        end)
+    end)
+
+    MakerFrame.countdown.HotKey= WoWTools_LabelMixin:Create(MakerFrame.countdown, {color={r=1,g=1,b=1}})
+    MakerFrame.countdown.HotKey:SetPoint('TOPRIGHT', 1, 2)
+    function MakerFrame.countdown:set_hotkey()
+        local value= Save().showMakerFrameHotKey and Save().countdown
+        self.HotKey:SetText(value and value~=7 and WoWTools_Mixin:MK(value, 0) or '')
+    end
+    MakerFrame.countdown:set_hotkey()
 
 
 
@@ -359,8 +377,7 @@ local function Init()--设置标记, 框架
 
 
 
-
---检查，按钮
+--就绪
     MakerFrame.check=WoWTools_ButtonMixin:Cbtn(MakerFrame, {size={size,size}, atlas=e.Icon.select})
 
     table.insert(MakerFrame.Buttons, MakerFrame.check)
@@ -385,7 +402,7 @@ local function Init()--设置标记, 框架
     end)
     MakerFrame.check:SetScript('OnLeave', GameTooltip_Hide)
     function MakerFrame.check:set_Event()
-        if self:IsVisible() then
+        if self:IsShown() then
             self:RegisterEvent('READY_CHECK')
             self:RegisterEvent('READY_CHECK_FINISHED')
         else
@@ -566,16 +583,36 @@ local function Init()--设置标记, 框架
                 self:SetAlpha((not UnitExists('target') or not CanBeRaidTarget('target')) and 0.5 or 1)
             end
             function btn:set_Events()
-                if self:IsVisible() then
+                self:UnregisterAllEvents()
+                if self:IsShown() then
                     self:RegisterEvent('PLAYER_TARGET_CHANGED')
                     self:RegisterEvent('RAID_TARGET_UPDATE')
+                    if Save().showMakerFrameHotKey then
+                        self:RegisterEvent('UPDATE_BINDINGS')
+                    end
                     self:set_Active()
-                else
-                    self:UnregisterAllEvents()
                 end
+                self:set_hotkey()
             end
 
-            btn:SetScript('OnEvent', btn.set_Active)
+--快捷键
+            btn.HotKey= WoWTools_LabelMixin:Create(btn, {color={r=1,g=1,b=1}})
+            btn.HotKey:SetPoint('TOPRIGHT', 1, 2)
+            function btn:set_hotkey()
+                self.HotKey:SetText(
+                    Save().showMakerFrameHotKey and
+                    e.GetHotKeyText(nil, 'RAIDTARGET'..self.index)
+                    or ''
+                )
+            end
+
+            btn:SetScript('OnEvent', function(self, event)
+                if event=='UPDATE_BINDINGS' then
+                    self:set_hotkey()
+                else
+                    self:set_Active()
+                end
+            end)
             btn:SetScript('OnShow', btn.set_Events)
             btn:SetScript('OnHide', btn.set_Events)
             btn:set_Events()
@@ -734,33 +771,46 @@ local function Init()--设置标记, 框架
         if UnitAffectingCombat('player') then
             self:RegisterEvent('PLAYER_REGEN_ENABLED')
             return
+        elseif C_PetBattles.IsInBattle() or not Save().markersFrame then
+            self:SetShown(false)
+            return
         end
 
-        local raid= IsInRaid()
-        local isLeader= WoWTools_GroupMixin:isLeader()--队长(团长)或助理
-        local isRaid= (raid and isLeader) or not raid
-        local isInGroup= IsInGroup()
+        local isAssistant= UnitIsGroupAssistant('player')
+        local isLeader= UnitIsGroupLeader('player')
+        local isLeaderORAssistant= isAssistant or isLeader--队长(团长)或助理
 
-        local enabled= not WoWTools_MapMixin:IsInPvPArea()
-                    and Save().markersFrame
-                    --and not InCinematic()
-                    --and not IsInCinematicScene()
-                    --and not MovieFrame:IsShown()
+        local isGroup= IsInGroup()
+        local isParty= isGroup and not IsInRaid()
+        local isNotPvP= not WoWTools_MapMixin:IsInPvPArea()--and not InCinematic() and not IsInCinematicScene() and not MovieFrame:IsShown()
 
-        local ping= C_CVar.GetCVarBool("enablePings") and Save().markersFrame
-        self.ping:SetShown(ping )
+        local roleValue= C_PartyInfo.GetRestrictPings() or 0
+        local ping= C_CVar.GetCVarBool("enablePings")
+        if ping and isGroup and roleValue> Enum.RestrictPingsTo.None and not isLeader then
+            if roleValue== Enum.RestrictPingsTo.Lead then
+                ping= isLeader
+            elseif roleValue== Enum.RestrictPingsTo.Assist then
+                ping= isLeaderORAssistant
+            elseif roleValue== Enum.RestrictPingsTo.TankHealer and not isAssistant then
+                local role = UnitGroupRolesAssignedEnum('player')
+                ping= role== Enum.LFGRole.Tank or role== Enum.LFGRole.Healer
+            end
+        end
+        self.ping:SetShown(ping)
 
-        local target= isRaid and enabled
-        self.target:SetShown(target)
+        local target= (not isGroup or isLeaderORAssistant or isParty) and isNotPvP
+        self.target:SetShown(target)--目标标记
 
-        local marker= isInGroup and isRaid and enabled
-        self.marker:SetShown(marker)
+        local marker= (isGroup and isNotPvP) and (isParty or isLeaderORAssistant)
+        self.marker:SetShown(marker)--世界标记
 
-        local check= isLeader and isInGroup and enabled
-        self.countdown:SetShown(check)
-        self.check:SetShown(check)
+        local check= isGroup and isLeaderORAssistant
+        self.check:SetShown(check)--就绪
 
-        self:SetShown((ping or target or marker or check) and not C_PetBattles.IsInBattle())
+        local countdown= isParty or (isGroup and isLeaderORAssistant)
+        self.countdown:SetShown(countdown)--倒计时
+
+        self:SetShown(ping or target or marker or check or countdown)
     end
 
     function MakerFrame:set_Event()
@@ -772,6 +822,7 @@ local function Init()--设置标记, 框架
             self:RegisterEvent('GROUP_JOINED')
             self:RegisterEvent('PET_BATTLE_OPENING_DONE')
             self:RegisterEvent('PET_BATTLE_CLOSE')
+            self:RegisterEvent('PARTY_LEADER_CHANGED')
         else
             self:UnregisterAllEvents()
         end
@@ -814,21 +865,69 @@ local function Init()--设置标记, 框架
 
 
 
---[[
-    WoWTools_TextureMixin:CreateBackground(MakerFrame)
-    MakerFrame.Background:SetPoint('BOTTOMRIGHT', MakerFrame.Buttons[1], 4, -4)
-    MakerFrame.Background:SetPoint('TOPLEFT', MakerFrame.Buttons[#MakerFrame.Buttons], -4, 4)
 
-    WoWTools_TextureMixin:CreateBackground(MakerFrame.target)
-    MakerFrame.target.Background:SetPoint('BOTTOMRIGHT', MakerFrame.target.Button[1], 4, -4)
-    MakerFrame.target.Background:SetPoint('TOPLEFT', MakerFrame.target.Button[#MakerFrame.marker.Button], -4, 4)
 
-    WoWTools_TextureMixin:CreateBackground(MakerFrame.marker)
-    MakerFrame.marker.Background:SetPoint('BOTTOMRIGHT', MakerFrame.marker.Button[1], 4, -4)
-    MakerFrame.marker.Background:SetPoint('TOPLEFT', MakerFrame.marker.Button[#MakerFrame.marker.Button], -4, 4)
 
-]]
+
+--背景
+    WoWTools_TextureMixin:CreateBackground(MakerFrame.ping, {alpha=0.5})
+    MakerFrame.ping.Background:SetPoint('BOTTOMRIGHT', MakerFrame.ping.Button[1])
+    MakerFrame.ping.Background:SetPoint('TOPLEFT', MakerFrame.ping.Button[#MakerFrame.ping.Button])
+
+    WoWTools_TextureMixin:CreateBackground(MakerFrame.target, {alpha=0.5})
+    MakerFrame.target.Background:SetPoint('BOTTOMRIGHT', MakerFrame.target.Button[2])
+    MakerFrame.target.Background:SetPoint('TOPLEFT', MakerFrame.target.Button[#MakerFrame.target.Button])
+
+    WoWTools_TextureMixin:CreateBackground(MakerFrame.marker, {alpha=0.5})
+    MakerFrame.marker.Background:SetPoint('BOTTOMRIGHT', MakerFrame.marker.Button[2])
+    MakerFrame.marker.Background:SetPoint('TOPLEFT', MakerFrame.marker.Button[#MakerFrame.marker.Button])
+
+    WoWTools_TextureMixin:CreateBackground(MakerFrame.countdown, {alpha=0.5, isAllPoint=true})
+    WoWTools_TextureMixin:CreateBackground(MakerFrame.check, {alpha=0.5, isAllPoint=true})
+
+    function MakerFrame:set_background()
+        local show= Save().showMakerFrameBackground
+        self.ping.Background:SetShown(show)
+        self.target.Background:SetShown(show)
+        self.marker.Background:SetShown(show)
+        self.countdown.Background:SetShown(show)
+        self.check.Background:SetShown(show)
+    end
+    MakerFrame:set_background()
+
+--设置全部，快捷键
+    function MakerFrame:set_all_hotkey()--菜单用
+        for _, frame in pairs(self.ping.Button) do
+            if frame.set_hotkey then
+                frame:set_hotkey()
+            end
+        end
+--倒计时
+        MakerFrame.countdown:set_hotkey()
+--队伍标记
+        for _, frame in pairs(self.target.Button) do
+            if frame.set_hotkey then
+                frame:set_hotkey()
+            end
+        end
+    end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -844,6 +943,9 @@ function WoWTools_MarkerMixin:Init_Markers_Frame()--设置标记, 框架
         MakerFrame:set_Event()
 
     elseif Save().markersFrame then
-        Init()
+        do
+            Init()
+        end
+        Init=function()end
     end
 end

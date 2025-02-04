@@ -213,7 +213,10 @@ end
 
 --缩放
 function WoWTools_MenuMixin:Scale(root, GetValue, SetValue, ResetValue)
-    local sub= root:CreateButton('|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '缩放' or UI_SCALE), function()
+    local sub= root:CreateButton(
+        '|A:common-icon-zoomin:0:0|a'
+        ..(e.onlyChinese and '缩放' or UI_SCALE),
+    function()
         return MenuResponse.Refresh
     end)
 
@@ -362,7 +365,7 @@ end
 function WoWTools_MenuMixin:ToTop(root, tab)
     local sub=root:CreateCheckbox(
         (tab.name or (
-            '|A:editmode-up-arrow:16:11:0:3|a'..(e.onlyChinese and '位于上方' or QUESTLINE_LOCATED_ABOVE))),
+            '|A:editmode-up-arrow:16:11:0:3|a'..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP))),
         tab.GetValue,
         tab.SetValue,
         {isReload=tab.isReload, tooltip=tab.tooltip}

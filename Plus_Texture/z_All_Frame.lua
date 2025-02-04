@@ -120,6 +120,9 @@ local function Init(mixin)
 
         CompactRaidFrameManagerToggleButtonForward:SetAlpha(0.3)
         CompactRaidFrameManagerToggleButtonBack:SetAlpha(0.3)
+        mixin:SetMenu(CompactRaidFrameManagerDisplayFrameRestrictPingsDropdown)
+        mixin:SetMenu(CompactRaidFrameManagerDisplayFrameModeControlDropdown, {alpha=1})
+        mixin:HideTexture(_G['CompactRaidFrameManagerBG-assists'])
     end
 
     --施法条 CastingBarFrameTemplate

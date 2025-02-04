@@ -12,10 +12,23 @@ end
 
 
 --队伍标记工具, 选项，菜单
-function WoWTools_MarkerMixin:Init_MarkerTools_Menu(root)
+local function Init(self, root)
     if not self.MakerFrame or WoWTools_MenuMixin:CheckInCombat(root) then
         return
     end
+    local sub
+
+    sub= root:CreateCheckbox(
+        e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL,
+    function()
+        return Save().showMakerFrameHotKey
+    end, function()
+        Save().showMakerFrameHotKey= not Save().showMakerFrameHotKey and true or nil
+        self.MakerFrame:set_all_hotkey()--设置全部，快捷键
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(e.onlyChinese and '提示' or CHARACTER_CUSTOMIZATION_TUTORIAL_TITLE)
+    end)
 
     --位于上方
     WoWTools_MenuMixin:ToTop(root, {
@@ -31,6 +44,8 @@ function WoWTools_MarkerMixin:Init_MarkerTools_Menu(root)
         end,
         tooltip=false,
     })
+
+
 
 --FrameStrata
     WoWTools_MenuMixin:FrameStrata(root, function(data)
@@ -50,6 +65,17 @@ function WoWTools_MarkerMixin:Init_MarkerTools_Menu(root)
         end
     end)
 
+--显示背景
+    WoWTools_MenuMixin:ShowBackground(root,
+    function()
+        return Save().showMakerFrameBackground
+    end, function()
+        Save().showMakerFrameBackground= not Save().showMakerFrameBackground and true or nil
+        self.MakerFrame:set_background()
+    end)
+
+
+
 --重置位置
     WoWTools_MenuMixin:RestPoint(root, Save().markersFramePoint and self.MakerFrame:CanChangeAttribute(), function()
         Save().markersFramePoint=nil
@@ -65,4 +91,17 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+function WoWTools_MarkerMixin:Init_MarkerTools_Menu(root)
+    Init(self, root)
+end
 

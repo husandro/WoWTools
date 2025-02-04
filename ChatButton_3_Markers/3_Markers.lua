@@ -27,9 +27,10 @@ Color={
     [7]={r=1, g=0, b=0, col='|cffff2020'},--十字, 红色
     [8]={r=1, g=1, b=1, col='|cffffffff'},--骷髅,白色
 },
-AutoReadyFrame=nil,--自动就绪
-TankHealerFrame=nil,
-MakerFrame=nil,
+--AutoReadyFrame=nil,--自动就绪
+--TankHealerFrame=nil,
+--MakerFrame=nil,
+showMakerFrameBackground=true,
 }
 
 

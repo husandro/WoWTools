@@ -1,6 +1,22 @@
-
+local e= select(2, ...)
 --动作条
 local KEY_BUTTON = KEY_BUTTON10:gsub(10, '')--"鼠标按键10"
+
+function e.GetHotKeyText(text, action)
+    if text and text:find(KEY_BUTTON) then
+       return text:gsub(KEY_BUTTON, 'm')
+    elseif action then
+        text= GetBindingKeyForAction(action, false, false)
+        if text and text:find(KEY_BUTTON) then
+            text= text:gsub(KEY_BUTTON, 'm')
+        end
+        return text
+    end
+end
+
+
+
+
 
 
 
@@ -20,7 +36,7 @@ local function Init_HooKey(btn)
             if self.HotKey then--快捷键
                 local text=self.HotKey:GetText()
                 if text and text:find(KEY_BUTTON) then
-                    self.HotKey:SetText(text:gsub(KEY_BUTTON, 'm'))
+                    self.HotKey:SetText(e.GetHotKeyText(text, nil))
                 end
                 self.HotKey:SetTextColor(1,1,1,1)
             end
