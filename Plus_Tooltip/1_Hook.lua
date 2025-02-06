@@ -67,13 +67,9 @@ local function Init()
                                     ..(Save().ctrl and not UnitAffectingCombat('player') and '|nWoWHead Ctrl+Shift' or '')
                                 )
             WoWTools_TooltipMixin:Set_Web_Link(self, {type='pet-ability', id=abilityID, name=name, col=nil, isPetUI=false})--取得网页，数据链接 npc item spell currency
-
-            local btn= _G['WoWTools_PetBattle_Type_TrackButton']--PetBattle.lua 联动
-            if btn then
-                btn:set_type_tips(petType)
-            end
         end
     end)
+
 
 --宠物，技能书，提示
     hooksecurefunc(GameTooltip, 'SetSpellBookItem', function(self, slot, unit)

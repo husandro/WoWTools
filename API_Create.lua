@@ -8,7 +8,6 @@ e.Ccool(self, start, duration, modRate, HideCountdownNumbers, Reverse, SwipeText
 e.SetItemSpellCool(frame, {item=, spell=, type=, isUnit=true} type=true圆形，false方形
 e.GetSpellItemCooldown(spellID, itemID)--法术,物品,冷却
 
-e.Cbtn2(tab)
 
 
 ]]
@@ -155,9 +154,9 @@ end
 
 
 
-
+ --[[
 function e.Cbtn2(tab)
-    --[[
+   
         e.Cbtn2({
             name=nil, 
             parent=,
@@ -169,7 +168,7 @@ function e.Cbtn2(tab)
             alpha=1,
             color={},
         })
-    ]]
+    
     local btn= CreateFrame("Button", tab.name, tab.parent or UIParent, not tab.notSecureActionButton and "SecureActionButtonTemplate" or nil)
 
     btn:SetSize(tab.size or 30, tab.size or 30)
@@ -219,3 +218,4 @@ function e.Cbtn2(tab)
     return btn
 end
 
+]]

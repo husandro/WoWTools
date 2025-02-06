@@ -101,7 +101,7 @@ end
 
 
 local function Init()
-    TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {icon='hide', size={18,18}, isType2=true})
+    TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {icon='hide', size={18,18}, isType2=true, name='WoWToolsHolidayTrackButton'})
     WoWTools_HolidayMixin.TrackButton= TrackButton
 
     TrackButton.texture=TrackButton:CreateTexture()
@@ -251,7 +251,7 @@ local function Init()
         if Save().point then
             self:SetPoint(Save().point[1], UIParent, Save().point[3], Save().point[4], Save().point[5])
         elseif e.Player.husandro then
-            self:SetPoint('TOPLEFT', 150,0)
+            self:SetPoint('TOPLEFT', 250, 0)
         else
             self:SetPoint('BOTTOMRIGHT', _G['!KalielsTrackerFrame'] or ObjectiveTrackerBlocksFrame, 'TOPLEFT', -35, -10)
         end

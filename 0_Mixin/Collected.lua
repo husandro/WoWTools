@@ -144,20 +144,6 @@ end]]
 
 
 
-function WoWTools_CollectedMixin:GetPetStrongWeakHints(petType)--取得对战宠物, 强弱 SharedPetBattleTemplates.lua
-    local strongTexture,weakHintsTexture, stringIndex, weakHintsIndex
-    for i=1, C_PetJournal.GetNumPetTypes() do
-        local modifier = C_PetBattles.GetAttackModifier(petType, i)
-        if ( modifier > 1 ) then
-            strongTexture='Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[i]--"Interface\\PetBattles\\PetIcon-"..PET_TYPE_SUFFIX[i]
-            weakHintsIndex=i
-        elseif ( modifier < 1 ) then
-            weakHintsTexture='Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[i]
-            weakHintsIndex=i
-        end
-    end
-    return strongTexture,weakHintsTexture, stringIndex, weakHintsIndex ----_G["BATTLE_PET_NAME_"..petType]
-end
 
 
 

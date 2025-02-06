@@ -64,8 +64,6 @@ function WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID, setSearchText)--宠�
     end
 
     WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='npc', id=companionID, name=speciesName, col= nil, isPetUI=false})--取得网页，数据链接
-    local btn= _G['WoWTools_PetBattle_Type_TrackButton']--PetBattle.lua 联动
-    if btn then
-        btn:set_type_tips(petType)
-    end
+
+    WoWTools_PetBattleMixin.Set_TrackButton_Tips(petType)--PetBattle.lua 联动
 end

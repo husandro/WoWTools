@@ -234,9 +234,9 @@ local function Init()
 		if Save().point then
 			self:SetPoint(Save().point[1], UIParent, Save().point[3], Save().point[4], Save().point[5])
 		elseif e.Player.husandro then
-			self:SetPoint('TOPLEFT',70,0)
+			self:SetPoint('TOPLEFT', 110,0)
 		else
-			self:SetPoint('TOPLEFT', ReputationFrame, 'TOPRIGHT',0, -40)
+			self:SetPoint('TOPLEFT', ReputationFrame, 'TOPRIGHT', 0, -40)
 		end
 	end
 

@@ -420,12 +420,14 @@ Plus_Mail\Set_UI.lua
 
 ##拍卖行
 Plus\AuctionHouse.lua
+
 ##宠物对战
-Plus\PetBattle.lua
-
-
-
-
+Plus_PetBattle\0_PetBattle.lua
+Plus_PetBattle\1_Options.lua
+Plus_PetBattle\Click_To_Move.lua
+Plus_PetBattle\TrackButton.lua
+Plus_PetBattle\Plus_0_Init.lua
+##Plus_PetBattle\Plus_EnemyAbilityButton.lua
 
 ##插件，方案
 Plus_AddOns\0_AddOns.lua

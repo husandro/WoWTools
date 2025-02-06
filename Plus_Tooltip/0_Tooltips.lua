@@ -141,19 +141,14 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            if WoWToolsSave['Tootips'] then
-                WoWTools_TooltipMixin.Save= WoWToolsSave['Tootips']
-                WoWToolsSave['Tootips']=nil
-            else
-                WoWTools_TooltipMixin.Save= WoWToolsSave['Plus_Tootips'] or WoWTools_TooltipMixin.Save
-            end
+            WoWTools_TooltipMixin.Save= WoWToolsSave['Plus_Tootips'] or WoWTools_TooltipMixin.Save
 
             --Save().WidgetSetID = Save().WidgetSetID or 0
 
             WoWTools_TooltipMixin.addName= addName
 
             e.AddPanel_Check({
-                name= addName,
+                name= e.onlyChinese and '启用' or ENABLE,
                 tooltip= addName,
                 GetValue= function() return not Save().disabled end,
                 category= Initializer,

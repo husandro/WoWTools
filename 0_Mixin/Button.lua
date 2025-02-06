@@ -65,6 +65,8 @@ function WoWTools_ButtonMixin:SetPushedTexture(btn, isType2)
         btn:SetHighlightAtlas('auctionhouse-nav-button-select')--Forge-ColorSwatchSelection')
         btn:SetPushedAtlas('auctionhouse-nav-button-select')--UI-HUD-MicroMenu-Highlightalert')
     end
+    WoWTools_ColorMixin:SetLabelTexture(btn:GetHighlightTexture() , {type='Texture', alpha=1})
+    WoWTools_ColorMixin:SetLabelTexture(btn:GetPushedTexture(), {type='Texture', alpha=1})
 end
 
 
@@ -200,15 +202,18 @@ function WoWTools_ButtonMixin:CreateMenu(frame, tab)
     local isType2= tab.isType2--圆形按钮
     local atlas= tab.atlas
     local texture= tab.texture
+    local mouseEvent= tab.mouseEvent
 
     local btn= CreateFrame('DropdownButton', name or ('WoWToolsMenuButton'..get_index()), frame or UIParent, template, setID)
+    btn.mouseEvent= tab.mouseEvent
+
     btn:SetFrameStrata(frame:GetFrameStrata())
     btn:SetFrameLevel(frame:GetFrameLevel())
     btn:SetSize(get_size(size))
     self:Settings(btn, isType2)
 
     btn:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
-    function btn:HandlesGlobalMouseEvent(buttonName, event)
+    function btn:HandlesGlobalMouseEvent(_, event)
         return event == "GLOBAL_MOUSE_DOWN"-- and buttonName == "RightButton";
     end
 
@@ -222,7 +227,7 @@ function WoWTools_ButtonMixin:CreateMenu(frame, tab)
         elseif texture then
             btn:SetNormalTexture(texture)
         end
-    end
+   end
     return btn
 end
 --local btn=WoWTools_ButtonMixin:CreateMenu(OptionButton, {name=''})

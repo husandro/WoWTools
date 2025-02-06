@@ -210,7 +210,12 @@ local function Init_ClassListButton()
     ListButton.specButton={}
 
     function ListButton:cereate_button(classID, specID, texture, atlas)
-        local btn= e.Cbtn2({parent=self.frame, notSecureActionButton=true, size=26, showTexture=true, click=true})
+        local btn= WoWTools_ButtonMixin:Ctype2(self.frame, {
+            size=26,
+            text=texture,
+            atlas=atlas,
+            isType2=true,
+        })
         function btn:set_select(class, spec)
             if class==self.classID and spec==self.specID then
                 self:LockHighlight()
@@ -232,11 +237,7 @@ local function Init_ClassListButton()
                 e.tips:Show()
             end
         end)
-        if texture then
-            btn.texture:SetTexture(texture)
-        else
-            btn.texture:SetAtlas(atlas)
-        end
+
         btn.classID= classID
         btn.specID= specID
         return btn
@@ -250,7 +251,7 @@ local function Init_ClassListButton()
             local specID, _, _, icon, role = GetSpecializationInfoForClassID(classID, i, e.Player.sex)
             local btn= self.specButton[i]
             if not btn then
-                btn= self:cereate_button(classID, specID, icon, nil)
+                btn= self:cereate_button(classID, specID, nil, nil)
                 btn.roleTexture= btn:CreateTexture(nil, 'OVERLAY', nil, 7)
                 btn.roleTexture:SetSize(15,15)
                 btn.roleTexture:SetPoint('LEFT', btn, 'RIGHT', -4, 0)
@@ -261,11 +262,12 @@ local function Init_ClassListButton()
                     texture:SetAtlas('common-icon-rotateleft')
                 end
                 self.specButton[i]= btn
-            else
-                btn.classID= classID
-                btn.specID= specID
-                btn.texture:SetTexture(icon)
             end
+
+            btn.classID= classID
+            btn.specID= specID
+            btn.texture:SetTexture(icon)
+
             role= role=='DAMAGER' and 'DPS' or role
             btn.roleTexture:SetAtlas('UI-LFG-RoleIcon-'..role..'-Micro')
 

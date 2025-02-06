@@ -5124,7 +5124,14 @@
         "CompactRaidFrameManagerDisplayFrameOptionsButton",
         "GetBindingKeyForAction",
         "CHARACTER_CUSTOMIZATION_TUTORIAL_TITLE",
-        "CRF_ROLE_POLL"
+        "CRF_ROLE_POLL",
+        "LFDQueueFrameTypeDropdown",
+        "WhoFrameDropdown",
+        "PLAYER_LEVEL_UP",
+        "GUILD_RECRUITMENT_MAXLEVEL",
+        "PetBattleFrame_UpdateAllActionButtons",
+        "SharedPetBattleAbilityTooltip_SetAbility",
+        "PetBattlePrimaryUnitTooltip"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
