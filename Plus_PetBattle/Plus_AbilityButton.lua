@@ -28,6 +28,126 @@ end
 
 
 
+local function PetBattleAbilityButton_UpdateBetterIcon(self)
+
+	self.BetterIcon:SetShown(false)
+
+    local allyOwner= self.petOwner
+	local allyIndex = C_PetBattles.GetActivePet(allyOwner)
+
+    local enemyOwner= allyOwner==Enum.BattlePetOwner.Enemy and Enum.BattlePetOwner.Ally or Enum.BattlePetOwner.Enemy
+    local enemyIndex= C_PetBattles.GetActivePet(enemyOwner)
+
+	if not allyIndex or not enemyIndex then
+		return;
+	end
+
+	local allyType, noStrongWeakHints = select(7, C_PetBattles.GetAbilityInfo(allyOwner, allyIndex, self.abilityIndex))
+
+
+	if not allyType or not noStrongWeakHints then
+		return;
+	end
+
+
+	local enemyType = C_PetBattles.GetPetType(enemyOwner, enemyIndex)
+	local modifier = C_PetBattles.GetAttackModifier(allyType, enemyType)-- or 1
+
+    print(allyType, enemyType, modifier)
+
+	if (modifier > 1) then
+		self.BetterIcon:SetTexture("Interface\\PetBattles\\BattleBar-AbilityBadge-Strong");
+		self.BetterIcon:Show()
+	elseif (modifier < 1) then
+		self.BetterIcon:SetTexture("Interface\\PetBattles\\BattleBar-AbilityBadge-Weak");
+		self.BetterIcon:Show()
+	end
+end
+
+
+
+
+
+--冷却
+local function AbilityButton_UpdateCooldown(self)
+    local petIndex= self:getPetIndex()
+    local cooldown, r,g,b
+    local isUsable, currentCooldown, currentLockdown = C_PetBattles.GetAbilityState(self.petOwner, petIndex, self.abilityIndex)
+    if currentCooldown and currentCooldown>0 then
+        cooldown=currentCooldown
+        r,g,b= 1,0,1
+
+    elseif currentLockdown and currentCooldown>0 then
+        cooldown= currentLockdown
+        r,g,b= 0.82, 0.82, 0.82
+    end
+    r,g,b= r or 1, b or 1, b or 1
+    self.CooldownText:SetText(cooldown or '')
+    self.CooldownText:SetTextColor(r,g,b)
+
+    local icon=self:GetNormalTexture()
+    icon:SetDesaturated(not isUsable)
+    icon:SetVertexColor(r,g,b)
+    local health = C_PetBattles.GetHealth(self.petOwner, petIndex) or 0
+    icon:SetAlpha(health==0 and 0.3 or 1)
+end
+
+
+
+
+
+
+
+
+
+
+
+local function Set_Ability_Button(button, index)
+    local btn= WoWTools_ButtonMixin:Cbtn(button.frame, {icon='hide', size=size, setID=index})
+
+    btn.petOwner= button.petOwner
+    btn.abilityIndex= index
+    btn.getPetIndex= button.getPetIndex
+
+--冷却
+    btn.CooldownText=WoWTools_LabelMixin:Create(btn, {justifyH='CENTER', size=32})
+    btn.CooldownText:SetPoint('CENTER')
+
+--强弱
+    btn.BetterIcon= btn:CreateTexture(nil, 'OVERLAY')
+    btn.BetterIcon:SetPoint('BOTTOMRIGHT', 9, -9)
+    btn.BetterIcon:SetSize(32, 32)
+
+
+    function btn:set_other()
+        AbilityButton_UpdateCooldown(btn)
+        --PetBattleAbilityButton_UpdateBetterIcon(btn)
+    end
+
+    btn:SetPoint('LEFT', button.frame, (index-1)*size, 0)
+
+    btn:SetScript('OnLeave', function(self)
+        PetBattlePrimaryAbilityTooltip:Hide()
+    end)
+
+    btn:SetScript('OnEnter', function(self)
+        if self.abilityID then
+            PetBattleAbilityTooltip_SetAbilityByID(self.petOwner, self:getPetIndex(), self.abilityID)
+            PetBattleAbilityTooltip_Show("BOTTOMRIGHT", self, 'TOPLEFT')
+            
+        end
+        --PetBattleAbilityButton_UpdateBetterIcon(self)
+    end)
+
+    btn:SetScript('OnShow', btn.Settings)
+
+    WoWTools_PetBattleMixin:Create_AbilityButton_Tips(btn)
+
+    table.insert(Buttons, btn)
+end
+
+
+
 
 
 
@@ -125,7 +245,7 @@ local function Set_Button_Settings(btn)
 
     function btn:set_alpha()
         self.texture:SetAlpha(
-            (GameTooltip:IsOwned(self) or not self.frame:IsShown())
+            (GameTooltip:IsOwned(self) or self.frame:IsShown())
             and 1 or 0.3
         )
     end
@@ -139,7 +259,11 @@ local function Set_Button_Settings(btn)
     end
 
     function btn:set_tooltip()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        if self.isEnemy then
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+        else
+            e.tips:SetOwner(self, "ANCHOR_RIGHT")
+        end
         e.tips:ClearLines()
         e.tips:AddDoubleLine(WoWTools_PetBattleMixin.addName, WoWTools_PetBattleMixin.addName5)
         e.tips:AddLine(' ')
@@ -150,11 +274,6 @@ local function Set_Button_Settings(btn)
         e.tips:Show()
     end
 
-    if btn.petOwner== Enum.BattlePetOwner.Enemy then
-        btn.texture:SetVertexColor(1,0,0)
-    else
-        btn.texture:SetVertexColor(0,1,0)
-    end
 
     btn:SetScript('OnLeave', function(self)
         e.tips:Hide()
@@ -202,6 +321,18 @@ local function Set_Button_Settings(btn)
     btn:set_point()
     btn:settings()
 end
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -287,38 +418,38 @@ local function Init_Button()
         })
 
 --索引
-        btn.indexText= WoWTools_LabelMixin:Create(btn.frame, {
+        btn.indexText= WoWTools_LabelMixin:Create(btn, {
             color= btn.isEnemy and {r=1,g=0,b=0} or {r=0,g=1,b=0}
         })
         btn.indexText:SetText(tab.petIndex)
-        if btn.isEnemy then
+        btn.indexText:SetPoint('BOTTOM', btn, 'TOP')
+        --[[if btn.isEnemy then
             btn.indexText:SetPoint('LEFT', btn, 'RIGHT', size*NUM_BATTLE_PET_ABILITIES, 0)
         else
             btn.indexText:SetPoint('RIGHT', btn, 'LEFT', -(size*NUM_BATTLE_PET_ABILITIES), 0)
-        end
+        end]]
 
 --移动按钮
         Set_Button_Settings(btn)
 
 --技能按钮
         for index= 1, NUM_BATTLE_PET_ABILITIES do
-            local button= WoWTools_ButtonMixin:Cbtn(btn.frame, {icon='hide', size=size, setID=index})
-
-            button.petOwner= tab.petOwner
-            --button.petIndex= tab.petIndex
-            button.abilityIndex= index
-            button.getPetIndex= tab.getPetIndex
-
-            button:SetPoint('LEFT', btn.frame, (index-1)*size, 0)
-
-            WoWTools_PetBattleMixin:Create_AbilityButton_Tips(button)
-
-            table.insert(Buttons, button)
+            Set_Ability_Button(btn, index)
         end
-
     end
 
-    hooksecurefunc('PetBattleFrame_UpdateAllActionButtons', Set_Buttons_State)
+
+
+
+
+
+
+
+
+
+    --对方, 我方， 技能提示， 框
+    --hooksecurefunc('PetBattleFrame_UpdateAllActionButtons', Set_Buttons_State)
+
     --对方，技能， 冷却
     hooksecurefunc('PetBattleActionButton_UpdateState', Set_Buttons_State)
 
@@ -336,13 +467,15 @@ end
 
 
 
+
+
+
 function WoWTools_PetBattleMixin:Init_AbilityButton()
     if Init_Button() then
         Init_Button=function()end
-        Set_Button_Settings=function()end
         return true
     end
-    
+
 end
 
 

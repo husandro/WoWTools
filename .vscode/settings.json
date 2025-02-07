@@ -5131,7 +5131,10 @@
         "GUILD_RECRUITMENT_MAXLEVEL",
         "PetBattleFrame_UpdateAllActionButtons",
         "SharedPetBattleAbilityTooltip_SetAbility",
-        "PetBattlePrimaryUnitTooltip"
+        "PetBattlePrimaryUnitTooltip",
+        "PetBattleAbilityTooltip_SetAbility",
+        "PET_ABILITY_REQUIRES_LEVEL",
+        "PetBattleAbilityButton_UpdateBetterIcon"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

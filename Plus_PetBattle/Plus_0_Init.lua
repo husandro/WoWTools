@@ -38,12 +38,15 @@ local function Create_AbilityButton_Tips(btn)
     btn.MaxCooldownText=WoWTools_LabelMixin:Create(btn, {color={r=1,g=0,b=0}, justifyH='RIGHT'})--nil, nil, nil,{1,0,0}, 'OVERLAY', 'RIGHT')
     btn.MaxCooldownText:SetPoint('RIGHT',-6,-6)
 
-    if not btn.Cooldown then
-        btn.CooldownText=WoWTools_LabelMixin:Create(btn, {justifyH='CENTER', sie=22})
+    if btn.getPetIndex then
+        btn.CooldownText=WoWTools_LabelMixin:Create(btn, {justifyH='CENTER', size=32})
         btn.CooldownText:SetPoint('CENTER')
     end
 
     function btn:Settings()
+        if not self:IsVisible() then
+            return
+        end
         local typeTexture, strongTexture, weakHintsTexture, maxCooldown, petType, noStrongWeakHints, abilityID, texture, _
         local petIndex= self.getPetIndex and self:getPetIndex() or self.petIndex
 
@@ -58,27 +61,6 @@ local function Create_AbilityButton_Tips(btn)
                 strongTexture, weakHintsTexture= WoWTools_PetBattleMixin:GetPetStrongWeakHints(petType)--取得对战宠物, 强弱
             end
         end
-        if self.CooldownText then
-            local cooldown, r,g,b
-            local isUsable, currentCooldown, currentLockdown = C_PetBattles.GetAbilityState(self.petOwner, self.petIndex, self.abilityIndex)
-            if currentCooldown and currentCooldown>0 then
-                cooldown=currentCooldown
-                r,g,b= 1,0,1
-
-            elseif currentLockdown and currentCooldown>0 then
-                cooldown= currentLockdown
-                r,g,b= 0.82, 0.82, 0.82
-            end
-            r,g,b= r or 1, b or 1, b or 1
-            self.CooldownText:SetText(cooldown or '')
-            self.CooldownText:SetTextColor(r,g,b)
-
-            local icon=self:GetNormalTexture()
-            if icon then
-                icon:SetDesaturated(not isUsable)
-                icon:SetVertexColor(r,g,b)
-            end
-        end
 
         self.StrongTexture:SetTexture(strongTexture or 0)
         self.UpTexture:SetShown(strongTexture)
@@ -87,9 +69,15 @@ local function Create_AbilityButton_Tips(btn)
         self.DownTexture:SetShown(weakHintsTexture)
 
         self.MaxCooldownText:SetText(maxCooldown and maxCooldown>0 and maxCooldown or '')
-        if self.CooldownText then
-            self:SetNormalTexture(texture or 'INTERFACE\\ICONS\\INV_Misc_Key_05')
+        if self.getPetIndex then
+            self:SetNormalTexture(texture or 0)
+        end
+        
+        if btn.BetterIcon2 then
             
+        end
+        if self.set_other then
+            self:set_other()
         end
     end
     btn:Settings()
@@ -205,6 +193,9 @@ end
 --主面板,主技能, 提示
 --#################
 local function set_PetBattleAbilityButton_UpdateBetterIcon(btn)
+    if not btn.BetterIcon then
+        return
+    end
     btn.petOwner= Enum.BattlePetOwner.Ally
     btn.petIndex= C_PetBattles.GetActivePet(Enum.BattlePetOwner.Ally)
     btn.abilityIndex= btn:GetID()
