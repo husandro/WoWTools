@@ -49,7 +49,6 @@ local function Create_AbilityButton_Tips(btn)
 
         if petIndex then
             abilityID, _, texture, maxCooldown, _, _, petType, noStrongWeakHints = C_PetBattles.GetAbilityInfo(self.petOwner, petIndex, self.abilityIndex)
-            print(C_PetBattles.GetAbilityInfo(self.petOwner, petIndex, self.abilityIndex))
         end
         self.abilityID= abilityID
 
