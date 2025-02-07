@@ -23,7 +23,7 @@ WoWTools_PetBattleMixin={
         Plus={
             --disabled=true,
         },
-        EnemyButton={
+        AbilityButton={
             --point={},
         }
     },
@@ -88,7 +88,10 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             if WoWToolsSave[PET_BATTLE_COMBAT_LOG] then
                 WoWToolsSave[PET_BATTLE_COMBAT_LOG]=nil
             end
-            WoWTools_PetBattleMixin.Save= WoWToolsSave['Plus_PetBattle'] or WoWTools_PetBattleMixin.Save
+            if WoWToolsSave['Plus_PetBattles'] then
+                WoWToolsSave['Plus_PetBattles']= nil
+            end
+            WoWTools_PetBattleMixin.Save= WoWToolsSave['Plus_PetBattles'] or WoWTools_PetBattleMixin.Save
 
             WoWTools_PetBattleMixin.addName= '|A:WildBattlePetCapturable:0:0|a'..(e.onlyChinese and '宠物对战' or PET_BATTLE_PVP_QUEUE)
             WoWTools_PetBattleMixin.addName2= e.Icon.right..(e.onlyChinese and '点击移动' or CLICK_TO_MOVE)
@@ -173,7 +176,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            WoWToolsSave['Plus_PetBattle']= WoWTools_PetBattleMixin.Save
+            WoWToolsSave['Plus_PetBattles']= WoWTools_PetBattleMixin.Save
         end
     end
 end)
