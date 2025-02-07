@@ -49,8 +49,8 @@ local function PetBattleAbilityButton_UpdateBetterIcon(self)
 		return;
 	end
 
-
 	local enemyType = C_PetBattles.GetPetType(enemyOwner, enemyIndex)
+
 	local modifier = C_PetBattles.GetAttackModifier(allyType, enemyType)-- or 1
 
     print(allyType, enemyType, modifier)
@@ -134,7 +134,7 @@ local function Set_Ability_Button(button, index)
         if self.abilityID then
             PetBattleAbilityTooltip_SetAbilityByID(self.petOwner, self:getPetIndex(), self.abilityID)
             PetBattleAbilityTooltip_Show("BOTTOMRIGHT", self, 'TOPLEFT')
-            
+
         end
         --PetBattleAbilityButton_UpdateBetterIcon(self)
     end)
