@@ -88,8 +88,8 @@ local function Create_AbilityButton_Tips(btn)
 
         self.MaxCooldownText:SetText(maxCooldown and maxCooldown>0 and maxCooldown or '')
         if self.CooldownText then
-            self:SetNormalTexture(texture or 0)
-            self:SetShown(abilityID)
+            self:SetNormalTexture(texture or 'INTERFACE\\ICONS\\INV_Misc_Key_05')
+            
         end
     end
     btn:Settings()
