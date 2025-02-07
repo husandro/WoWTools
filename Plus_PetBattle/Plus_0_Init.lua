@@ -73,9 +73,6 @@ local function Create_AbilityButton_Tips(btn)
             self:SetNormalTexture(texture or 0)
         end
         
-        if btn.BetterIcon2 then
-            
-        end
         if self.set_other then
             self:set_other()
         end
