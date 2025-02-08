@@ -40,7 +40,7 @@ end
 
 local function Set_Button_Script(btn, petTypeID)
     btn.petTypeID= petTypeID
-    btn.petAbilityID= PET_BATTLE_PET_TYPE_PASSIVES[petTypeID]
+    btn.abilityID= PET_BATTLE_PET_TYPE_PASSIVES[petTypeID]
 
     btn:SetScript('OnMouseDown', function(self)
         if self.petTypeID then
@@ -53,10 +53,10 @@ local function Set_Button_Script(btn, petTypeID)
         end
     end)
     btn:SetScript('OnEnter', function(self)
-        if self.petAbilityID then
+        if self.abilityID then
             FloatingPetBattleAbilityTooltip:ClearAllPoints()
             FloatingPetBattleAbilityTooltip:SetPoint("BOTTOMRIGHT", TrackButton, "TOPRIGHT");
-            FloatingPetBattleAbility_Show(self.petAbilityID)
+            FloatingPetBattleAbility_Show(self.abilityID)
         end
     end)
     btn:SetScript('OnLeave', function(self)
@@ -326,7 +326,7 @@ local function Init(isShow)
     function TrackButton:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, WoWTools_PetBattleMixin.addName)
+        e.tips:AddDoubleLine(WoWTools_PetBattleMixin.addName, WoWTools_PetBattleMixin.addName4)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, e.Icon.left)
         e.tips:AddLine(' ')

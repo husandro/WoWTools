@@ -19,8 +19,10 @@ local function Init()
     end
     e.AddPanel_Header(Layout, e.onlyChinese and '选项' or OPTIONS)
 
+    local category
+
 --宠物对战 Plus
-    e.AddPanel_Check({
+category= e.AddPanel_Check({
         name= WoWTools_PetBattleMixin.addName5,
         GetValue= function() return not Save().Plus.disabled end,
         SetValue= function()
@@ -32,6 +34,27 @@ local function Init()
         layout= Layout,
         category= Category,
     })
+
+--技能按钮
+    e.AddPanel_Check_Button({
+        checkName= WoWTools_PetBattleMixin.addName4,
+        GetValue= function() return not Save().TrackButton.disabled end,
+        SetValue= function()
+            Save().TrackButton.disabled= not Save().TrackButton.disabled and true or nil
+            WoWTools_PetBattleMixin:Set_TrackButton(true)
+        end,
+        buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
+        buttonFunc= function()
+            Save().TrackButton.point= nil
+            if WoWTools_PetBattleMixin.TrackButton then
+                WoWTools_PetBattleMixin.TrackButton:set_point()
+            end
+            print(e.addName, WoWTools_PetBattleMixin.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+        end,
+        tooltip= WoWTools_PetBattleMixin.addName,
+        layout= Layout,
+        category= Category,
+    }, category)
 
 --宠物类型, TrackButton
     e.AddPanel_Check_Button({
@@ -74,7 +97,7 @@ local function Init()
     })
 
 --点击移动按钮
-    local initializer= e.AddPanel_Check_Button({
+    category= e.AddPanel_Check_Button({
         checkName= WoWTools_PetBattleMixin.addName3,
         GetValue= function() return not Save().MoveButton.disabled end,
         SetValue= function()
@@ -102,7 +125,7 @@ local function Init()
         end,
         layout= Layout,
         category= Category,
-    }, initializer)
+    }, category)
 
 
     return true

@@ -29,31 +29,33 @@ end
 
 
 local function PetBattleAbilityButton_UpdateBetterIcon(self)
-
+    if not self:IsVisible() then
+        return
+    end
 	self.BetterIcon:SetShown(false)
 
     local allyOwner= self.petOwner
-	local allyIndex = C_PetBattles.GetActivePet(allyOwner)
+	local allyIndex = self:getPetIndex()
 
     local enemyOwner= allyOwner==Enum.BattlePetOwner.Enemy and Enum.BattlePetOwner.Ally or Enum.BattlePetOwner.Enemy
     local enemyIndex= C_PetBattles.GetActivePet(enemyOwner)
 
 	if not allyIndex or not enemyIndex then
-		return;
+		return
 	end
 
 	local allyType, noStrongWeakHints = select(7, C_PetBattles.GetAbilityInfo(allyOwner, allyIndex, self.abilityIndex))
 
+    local name= select(2, C_PetBattles.GetAbilityInfo(allyOwner, allyIndex, self.abilityIndex))
+
 
 	if not allyType or not noStrongWeakHints then
-		return;
+		return
 	end
 
 	local enemyType = C_PetBattles.GetPetType(enemyOwner, enemyIndex)
 
-	local modifier = C_PetBattles.GetAttackModifier(allyType, enemyType)-- or 1
-
-    print(allyType, enemyType, modifier)
+	local modifier = C_PetBattles.GetAttackModifier(allyType, enemyType) or 1
 
 	if (modifier > 1) then
 		self.BetterIcon:SetTexture("Interface\\PetBattles\\BattleBar-AbilityBadge-Strong");
@@ -63,6 +65,13 @@ local function PetBattleAbilityButton_UpdateBetterIcon(self)
 		self.BetterIcon:Show()
 	end
 end
+
+
+
+
+
+
+
 
 
 
@@ -121,7 +130,8 @@ local function Set_Ability_Button(button, index)
 
     function btn:set_other()
         AbilityButton_UpdateCooldown(btn)
-        --PetBattleAbilityButton_UpdateBetterIcon(btn)
+        PetBattleAbilityButton_UpdateBetterIcon(btn)
+
     end
 
     btn:SetPoint('LEFT', button.frame, (index-1)*size, 0)
@@ -136,7 +146,7 @@ local function Set_Ability_Button(button, index)
             PetBattleAbilityTooltip_Show("BOTTOMRIGHT", self, 'TOPLEFT')
 
         end
-        --PetBattleAbilityButton_UpdateBetterIcon(self)
+        PetBattleAbilityButton_UpdateBetterIcon(self)
     end)
 
     btn:SetScript('OnShow', btn.Settings)
@@ -232,7 +242,7 @@ end
 
 
 --移动按钮
-local function Set_Button_Settings(btn)
+local function Set_Move_Button(btn)
     function btn:set_point()
         self:ClearAllPoints()
         local p= Save().AbilityButton['point'..self.name]
@@ -429,8 +439,11 @@ local function Init_Button()
             btn.indexText:SetPoint('RIGHT', btn, 'LEFT', -(size*NUM_BATTLE_PET_ABILITIES), 0)
         end]]
 
+--血条
+        
+
 --移动按钮
-        Set_Button_Settings(btn)
+        Set_Move_Button(btn)
 
 --技能按钮
         for index= 1, NUM_BATTLE_PET_ABILITIES do
