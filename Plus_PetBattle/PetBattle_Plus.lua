@@ -5,80 +5,7 @@ local function Save()
     return WoWTools_PetBattleMixin.Save
 end
 
-local function Create_AbilityButton_Tips(btn)
-    if btn.Settings then
-        btn:Settings()
-        return
-    end
 
-    btn.StrongTexture= btn:CreateTexture(nil, 'OVERLAY')
-    btn.StrongTexture:SetPoint('TOPLEFT', btn, -4, 2)
-    btn.StrongTexture:SetSize(15,15)
-
-
-    btn.UpTexture=btn:CreateTexture(nil, 'OVERLAY')
-    btn.UpTexture:SetPoint('TOP', btn.StrongTexture,'BOTTOM',0, 4)
-    btn.UpTexture:SetSize(10,10)
-    btn.UpTexture:SetTexture('Interface\\PetBattles\\BattleBar-AbilityBadge-Strong')
-
-    btn.TypeTexture= btn:CreateTexture(nil, 'OVERLAY')
-    btn.TypeTexture:SetPoint('LEFT', btn, -4, 0)
-    btn.TypeTexture:SetSize(15,15)
-
-    btn.DownTexture=btn:CreateTexture(nil, 'OVERLAY')
-    btn.DownTexture:SetPoint('TOP', btn.TypeTexture, 'BOTTOM', 0, 3)
-    btn.DownTexture:SetSize(10,10)
-    btn.DownTexture:SetTexture('Interface\\PetBattles\\BattleBar-AbilityBadge-Weak')
-
-
-    btn.WeakHintsTexture= btn:CreateTexture(nil, 'OVERLAY')
-    btn.WeakHintsTexture:SetPoint('BOTTOMLEFT',-4,-2)
-    btn.WeakHintsTexture:SetSize(15,15)
-
-    btn.MaxCooldownText=WoWTools_LabelMixin:Create(btn, {color={r=1,g=0,b=0}, justifyH='RIGHT'})--nil, nil, nil,{1,0,0}, 'OVERLAY', 'RIGHT')
-    btn.MaxCooldownText:SetPoint('RIGHT',-6,-6)
-
-    if btn.getPetIndex then
-        btn.CooldownText=WoWTools_LabelMixin:Create(btn, {justifyH='CENTER', size=32})
-        btn.CooldownText:SetPoint('CENTER')
-    end
-
-    function btn:Settings()
-        if not self:IsVisible() then
-            return
-        end
-        local typeTexture, strongTexture, weakHintsTexture, maxCooldown, petType, noStrongWeakHints, abilityID, texture, _
-        local petIndex= self.getPetIndex and self:getPetIndex() or self.petIndex
-
-        if petIndex then
-            abilityID, _, texture, maxCooldown, _, _, petType, noStrongWeakHints = C_PetBattles.GetAbilityInfo(self.petOwner, petIndex, self.abilityIndex)
-        end
-        self.abilityID= abilityID
-
-        if petType then
-            typeTexture='Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[petType]
-            if not noStrongWeakHints then
-                strongTexture, weakHintsTexture= WoWTools_PetBattleMixin:GetPetStrongWeakHints(petType)--取得对战宠物, 强弱
-            end
-        end
-
-        self.StrongTexture:SetTexture(strongTexture or 0)
-        self.UpTexture:SetShown(strongTexture)
-        self.TypeTexture:SetTexture(typeTexture or 0)
-        self.WeakHintsTexture:SetTexture(weakHintsTexture or 0)
-        self.DownTexture:SetShown(weakHintsTexture)
-
-        self.MaxCooldownText:SetText(maxCooldown and maxCooldown>0 and maxCooldown or '')
-        if self.getPetIndex then
-            self:SetNormalTexture(texture or 0)
-        end
-        
-        if self.set_other then
-            self:set_other()
-        end
-    end
-    btn:Settings()
-end
 
 
 
@@ -196,63 +123,8 @@ local function set_PetBattleAbilityButton_UpdateBetterIcon(btn)
     btn.petOwner= Enum.BattlePetOwner.Ally
     btn.petIndex= C_PetBattles.GetActivePet(Enum.BattlePetOwner.Ally)
     btn.abilityIndex= btn:GetID()
-    Create_AbilityButton_Tips(btn)
+    WoWTools_PetBattleMixin:Create_AbilityButton_Tips(btn)
 end
-    --[[local typeTexture, Cooldown, strongTexture, weakHintsTexture
-    if self.BetterIcon then
-        local activePet = C_PetBattles.GetActivePet(Enum.BattlePetOwner.Ally);
-        if activePet then
-            local _, _, _, maxCooldown, _, _, petType, noStrongWeakHints = C_PetBattles.GetAbilityInfo(Enum.BattlePetOwner.Ally, activePet, self:GetID());
-            Cooldown=maxCooldown
-            if petType and PET_TYPE_SUFFIX[petType] then
-                typeTexture='Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[petType]--"Interface\\PetBattles\\PetIcon-"..PET_TYPE_SUFFIX[petType]
-                if not noStrongWeakHints then
-                    strongTexture, weakHintsTexture= WoWTools_PetBattleMixin:GetPetStrongWeakHints(petType)--取得对战宠物, 强弱
-                end
-                if not self.petType then
-                    self.strong= self:CreateTexture(nil, 'OVERLAY')
-                    self.strong:SetPoint('TOPLEFT', self,-4, 2)
-                    self.strong:SetSize(15,15)
-
-
-                    self.up=self:CreateTexture(nil, 'OVERLAY')
-                    self.up:SetPoint('TOP', self.strong,'BOTTOM',0, 4)
-                    self.up:SetSize(10,10)
-                    self.up:SetTexture('Interface\\PetBattles\\BattleBar-AbilityBadge-Strong')
-
-                    self.petType= self:CreateTexture(nil, 'OVERLAY')
-                    self.petType:SetPoint('LEFT', self, -4, 0)
-                    self.petType:SetSize(15,15)
-
-                    self.down=self:CreateTexture(nil, 'OVERLAY')
-                    self.down:SetPoint('TOP', self.petType, 'BOTTOM', 0, 3)
-                    self.down:SetSize(10,10)
-                    self.down:SetTexture('Interface\\PetBattles\\BattleBar-AbilityBadge-Weak')
-
-
-                    self.weakHints= self:CreateTexture(nil, 'OVERLAY')
-                    self.weakHints:SetPoint('BOTTOMLEFT',-4,-2)
-                    self.weakHints:SetSize(15,15)
-
-                    self.text=WoWTools_LabelMixin:Create(self, {color={r=1,g=0,b=0}, justifyH='RIGHT'})--nil, nil, nil,{1,0,0}, 'OVERLAY', 'RIGHT')
-                    self.text:SetPoint('RIGHT',-6,-6)
-                end
-            end
-        end
-    end
-    if self.petType then
-        self.WeakHintsTexture:SetTexture(weakHintsTexture or 0)
-        self.TypeTexture:SetTexture(typeTexture or 0)
-        self.StrongTexture:SetTexture(strongTexture or 0)
-        self.UpTexture:SetShown(weakHintsTexture and typeTexture and strongTexture)
-        self.DownTexture:SetShown(weakHintsTexture and typeTexture and strongTexture)
-        self.MaxCooldownText:SetText(Cooldown and Cooldown>0 and Cooldown or '')
-    end
-end]]
-
-
-
-
 
 
 
@@ -347,13 +219,9 @@ function WoWTools_PetBattleMixin:Set_Plus()
     if not self.Save.Plus.disabled then
         local isHook= Init()
         if isHook then
-            self:Init_AbilityButton()
             Init=function() end
         end
         return isHook
     end
 end
 
-function WoWTools_PetBattleMixin:Create_AbilityButton_Tips(btn)
-    Create_AbilityButton_Tips(btn)
-end

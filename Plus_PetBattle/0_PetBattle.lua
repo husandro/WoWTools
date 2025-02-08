@@ -4,14 +4,14 @@ WoWTools_PetBattleMixin={
 
     Save={
         --clickToMove= e.Player.husandro,--禁用, 点击移动
-        MoveButton={
-            disabled= not e.Player.husandro,
+        ClickMoveButton={
+            --disabled= not e.Player.husandro,
             --Point,
             PlayerFrame=true,
             --Scale=1,
             --Strata='MEDIUM'
         },
-        TrackButton={
+        TypeButton={
             --disabled=true,
             --point={},
             --hideFrame=true,
@@ -24,10 +24,29 @@ WoWTools_PetBattleMixin={
             --disabled=true,
         },
         AbilityButton={
-            --point={},
+            --disabled=true,
+            --point..name={},
+            --[[scaleEnemy2=0.85,
+            scaleEnemy3=0.85,
+            scaleAlly2=0.85,
+            scaleAlly3=0.85,]]
+            --sacle..name=1
+            --strata..name='MEDIUM'
+            --hide..name=true
+            --hideBackground..name=true,
         }
     },
 }
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -64,13 +83,133 @@ end
 
 
 
+local function Create_AbilityButton_Tips(btn)
+    if btn.Settings then
+        btn:Settings()
+        return
+    end
+
+    btn.StrongTexture= btn:CreateTexture(nil, 'OVERLAY')
+    btn.StrongTexture:SetPoint('TOPLEFT', btn, -4, 2)
+    btn.StrongTexture:SetSize(15,15)
+
+
+    btn.UpTexture=btn:CreateTexture(nil, 'OVERLAY')
+    btn.UpTexture:SetPoint('TOP', btn.StrongTexture,'BOTTOM',0, 4)
+    btn.UpTexture:SetSize(10,10)
+    btn.UpTexture:SetTexture('Interface\\PetBattles\\BattleBar-AbilityBadge-Strong')
+
+    btn.TypeTexture= btn:CreateTexture(nil, 'OVERLAY')
+    btn.TypeTexture:SetPoint('LEFT', btn, -4, 0)
+    btn.TypeTexture:SetSize(15,15)
+
+    btn.DownTexture=btn:CreateTexture(nil, 'OVERLAY')
+    btn.DownTexture:SetPoint('TOP', btn.TypeTexture, 'BOTTOM', 0, 3)
+    btn.DownTexture:SetSize(10,10)
+    btn.DownTexture:SetTexture('Interface\\PetBattles\\BattleBar-AbilityBadge-Weak')
+
+
+    btn.WeakHintsTexture= btn:CreateTexture(nil, 'OVERLAY')
+    btn.WeakHintsTexture:SetPoint('BOTTOMLEFT',-4,-2)
+    btn.WeakHintsTexture:SetSize(15,15)
+
+    btn.MaxCooldownText=WoWTools_LabelMixin:Create(btn, {color={r=1,g=0,b=0}, justifyH='RIGHT'})--nil, nil, nil,{1,0,0}, 'OVERLAY', 'RIGHT')
+    btn.MaxCooldownText:SetPoint('RIGHT',-6,-6)
+
+    if btn.getPetIndex then
+        btn.CooldownText=WoWTools_LabelMixin:Create(btn, {justifyH='CENTER', size=32})
+        btn.CooldownText:SetPoint('CENTER')
+    end
+
+    function btn:Settings()
+        if not self:IsVisible() then
+            return
+        end
+        local typeTexture, strongTexture, weakHintsTexture, maxCooldown, petType, noStrongWeakHints, abilityID, texture, _
+        local petIndex= self.getPetIndex and self:getPetIndex() or self.petIndex
+
+        if petIndex then
+            abilityID, _, texture, maxCooldown, _, _, petType, noStrongWeakHints = C_PetBattles.GetAbilityInfo(self.petOwner, petIndex, self.abilityIndex)
+        end
+        self.abilityID= abilityID
+
+        if petType then
+            typeTexture='Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[petType]
+            if not noStrongWeakHints then
+                strongTexture, weakHintsTexture= WoWTools_PetBattleMixin:GetPetStrongWeakHints(petType)--取得对战宠物, 强弱
+            end
+        end
+
+        self.StrongTexture:SetTexture(strongTexture or 0)
+        self.UpTexture:SetShown(strongTexture)
+        self.TypeTexture:SetTexture(typeTexture or 0)
+        self.WeakHintsTexture:SetTexture(weakHintsTexture or 0)
+        self.DownTexture:SetShown(weakHintsTexture)
+
+        self.MaxCooldownText:SetText(maxCooldown and maxCooldown>0 and maxCooldown or '')
+        if self.getPetIndex then
+            self:SetNormalTexture(texture or 0)
+        end
+
+        if self.set_other then
+            self:set_other()
+        end
+    end
+    btn:Settings()
+end
+
+
+function WoWTools_PetBattleMixin:Create_AbilityButton_Tips(btn)
+    Create_AbilityButton_Tips(btn)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 local function Init()
-    WoWTools_PetBattleMixin:Set_TrackButton()
+    WoWTools_PetBattleMixin:Set_TypeButton()--宠物，类型
+
     WoWTools_PetBattleMixin:ClickToMove_Button()--点击移动，按钮
     WoWTools_PetBattleMixin:ClickToMove_CVar()--点击移动
+
     WoWTools_PetBattleMixin:Set_Plus()--宠物对战 Plus
+    WoWTools_PetBattleMixin:Init_AbilityButton()--宠物对战，技能按钮
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -85,74 +224,20 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            if WoWToolsSave[PET_BATTLE_COMBAT_LOG] then
-                WoWToolsSave[PET_BATTLE_COMBAT_LOG]=nil
-            end
-            if WoWToolsSave['Plus_PetBattles'] then
-                WoWToolsSave['Plus_PetBattles']= nil
-            end
-            WoWTools_PetBattleMixin.Save= WoWToolsSave['Plus_PetBattles'] or WoWTools_PetBattleMixin.Save
+
+            WoWToolsSave[PET_BATTLE_COMBAT_LOG]=nil
+            WoWToolsSave['Plus_PetBattles']= nil
+            WoWToolsSave['Plus_PetBattle']=nil
+            WoWTools_PetBattleMixin.Save= WoWToolsSave['Plus_PetBattle2'] or WoWTools_PetBattleMixin.Save
 
             WoWTools_PetBattleMixin.addName= '|A:WildBattlePetCapturable:0:0|a'..(e.onlyChinese and '宠物对战' or PET_BATTLE_PVP_QUEUE)
             WoWTools_PetBattleMixin.addName2= e.Icon.right..(e.onlyChinese and '点击移动' or CLICK_TO_MOVE)
             WoWTools_PetBattleMixin.addName3= '|A:transmog-nav-slot-feet:0:0|a'..(e.onlyChinese and '点击移动按钮'or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CLICK_TO_MOVE, 'Button'))
             WoWTools_PetBattleMixin.addName4= '|A:WildBattlePetCapturable:0:0|a'..(e.onlyChinese and '宠物类型' or PET_FAMILIES)
             WoWTools_PetBattleMixin.addName5= '|A:summon-random-pet-icon_32:0:0|a'..(e.onlyChinese and '宠物对战' or PET_BATTLE_PVP_QUEUE)..' Plus'
-            WoWTools_PetBattleMixin.addName6= '|A:summon-random-pet-icon_32:0:0|a'..(e.onlyChinese and '技能按钮' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PET_BATTLE_ABILITIES_LABEL, 'Button'))
-            
+            WoWTools_PetBattleMixin.addName6= '|A:plunderstorm-icon-offensive:0:0|a'..(e.onlyChinese and '技能按钮' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PET_BATTLE_ABILITIES_LABEL, 'Button'))
+
             WoWTools_PetBattleMixin:Init_Options()
-
-            --[[添加控制面板
-            local initializer2= e.AddPanel_Check_Button({
-                checkName= '|A:WildBattlePetCapturable:0:0|a'..(e.onlyChinese and '宠物对战' or addName),
-                GetValue= function() return not Save().disabled end,
-                SetValue= function()
-                    Save().disabled= not Save().disabled and true or nil
-                    print(e.addName, WoWTools_PetBattleMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
-                end,
-                buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
-                buttonFunc= function()
-                    Save().point=nil
-                    if TrackButton then
-                        TrackButton:ClearAllPoints()
-                        TrackButton:set_point()
-                    end
-                    Save().EnemyFramePoint=nil--对方, 技能提示， 框
-                    if EnemyFrame then
-                        EnemyFrame:set_point()
-                    end
-                    print(e.addName, WoWTools_PetBattleMixin.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
-                end,
-                tooltip= WoWTools_PetBattleMixin.addName,
-                layout= nil,
-                category= nil,
-            })
-
-            local initializer= e.AddPanel_Check({
-                name= e.Icon.right..(e.onlyChinese and '点击移动' or CLICK_TO_MOVE),
-                tooltip= (not e.onlyChinese and CLICK_TO_MOVE..', '..REFORGE_CURRENT or '点击移动, 当前: ')..e.GetEnabeleDisable(C_CVar.GetCVarBool("autoInteract"))
-                    ..'|n'..(e.onlyChinese and '等级' or LEVEL)..' < '..GetMaxLevelForLatestExpansion()..'  '..e.GetEnabeleDisable(false)
-                    ..'|n'..(e.onlyChinese and '等级' or LEVEL)..' = '..GetMaxLevelForLatestExpansion()..'  '..e.GetEnabeleDisable(true),
-                GetValue= function() return Save().clickToMove end,
-                SetValue= function()
-                    Save().clickToMove = not Save().clickToMove and true or nil
-                    WoWTools_PetBattleMixin:ClickToMove_CVar()--点击移动
-                end
-            })
-
-            initializer:SetParentInitializer(initializer2, function() if not Save().disabled and TrackButton then return true else return false end end)
-
-            initializer= e.AddPanel_Check({
-                name= '|A:transmog-nav-slot-feet:0:0|a'..(e.onlyChinese and '添加按钮' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, 'Button')),
-                tooltip= e.onlyChinese and '位置：玩家框体' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHOOSE_LOCATION:gsub(CHOOSE, '')..': ', HUD_EDIT_MODE_PLAYER_FRAME_LABEL),
-                GetValue= function() return Save().clickToMoveButton end,
-                SetValue= function()
-                    Save().clickToMoveButton = not Save().clickToMoveButton and true or nil
-                    WoWTools_PetBattleMixin:ClickToMove_Button()
-                end
-            })
-            initializer:SetParentInitializer(initializer2, function() if Save().disabled then return false else return true end end)
-]]
 
             if not WoWTools_PetBattleMixin.Save.disabled then
                 Init()
@@ -161,14 +246,10 @@ panel:SetScript("OnEvent", function(_, event, arg1)
         elseif arg1=='Blizzard_Collections' then
             if not WoWTools_PetBattleMixin.Save.disabled then
                 PetJournal:HookScript('OnShow', function()
-                    if WoWTools_PetBattleMixin.TrackButton then
-                        WoWTools_PetBattleMixin.TrackButton:set_shown()
-                    end
+                    WoWTools_PetBattleMixin:TypeButton_SetShown()
                 end)
                 PetJournal:HookScript('OnHide', function()
-                    if WoWTools_PetBattleMixin.TrackButton then
-                        WoWTools_PetBattleMixin.TrackButton:set_shown()
-                    end
+                    WoWTools_PetBattleMixin:TypeButton_SetShown()
                 end)
             end
         elseif arg1=='Blizzard_Settings' then
@@ -177,7 +258,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            WoWToolsSave['Plus_PetBattles']= WoWTools_PetBattleMixin.Save
+            WoWToolsSave['Plus_PetBattle2']= WoWTools_PetBattleMixin.Save
         end
     end
 end)

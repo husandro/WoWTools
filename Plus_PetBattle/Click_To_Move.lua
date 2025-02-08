@@ -7,7 +7,9 @@ end
 
 
 
-local btn, Frame
+local ClickToMoveButton, Frame
+
+
 local function Set_ClickToMove_Cvar(value, printText)
     if UnitAffectingCombat('player') then
         return
@@ -109,28 +111,30 @@ local function Init_Menu(self, root)
     root:CreateDivider()
 --缩放
     WoWTools_MenuMixin:Scale(root, function()
-        return Save().MoveButton.Scale or 1
+        return Save().ClickMoveButton.Scale or 1
     end, function(value)
-        Save().MoveButton.Scale= value
+        Save().ClickMoveButton.Scale= value
         self:Settings()
     end)
 
 
-    if not Save().MoveButton.PlayerFrame then
+    if not Save().ClickMoveButton.PlayerFrame then
 --FrameStrata      
         WoWTools_MenuMixin:FrameStrata(root, function(data)
             return self:GetFrameStrata()==data
         end, function(data)
             self:SetFrameStrata(data or 'MEDIUM')
-            Save().MoveButton.Strata= data
+            Save().ClickMoveButton.Strata= data
         end)
 
---重置位置
-        WoWTools_MenuMixin:RestPoint(root, Save().MoveButton.Point, function()
-            Save().MoveButton.Point= nil
-            Save().MoveButton.Scale= nil
-            Save().MoveButton.Strata= nil
-            self:Settings()
+        
+    sub:CreateDivider()
+    --重置
+        sub:CreateButton(
+            e.onlyChinese and '重置' or RESET,
+        function()
+            Save().ClickMoveButton= {disabled= Save().ClickMoveButton.disabled}
+            self:settings()
             return MenuResponse.Open
         end)
     end
@@ -164,15 +168,15 @@ end
 
 local function Init_Button()
 
-    if Save().MoveButton.disabled or btn then
-        if btn then
-            btn:Settings()
+    if Save().ClickMoveButton.disabled or ClickToMoveButton then
+        if ClickToMoveButton then
+            ClickToMoveButton:Settings()
         end
         return
     end
 
 
-    btn= WoWTools_ButtonMixin:CreateMenu(PlayerFrame,
+    ClickToMoveButton= WoWTools_ButtonMixin:CreateMenu(PlayerFrame,
         {
             atlas= 'transmog-nav-slot-feet',
             size= 19,
@@ -183,16 +187,16 @@ local function Init_Button()
     )
 
 
-    function btn:Settings()
+    function ClickToMoveButton:Settings()
         self:UnregisterEvent('CVAR_UPDATE')
-        if Save().MoveButton.disabled then
+        if Save().ClickMoveButton.disabled then
             self:SetShown(false)
             return
         end
 
         self:ClearAllPoints()
 
-        if Save().MoveButton.PlayerFrame then
+        if Save().ClickMoveButton.PlayerFrame then
             local frameLevel= PlayerFrame:GetFrameLevel() +1
             local playerFrameTargetContextual = PlayerFrame_GetPlayerFrameContentContextual()
             self:SetParent(PlayerFrame)
@@ -201,8 +205,8 @@ local function Init_Button()
             self:SetPoint('RIGHT', PlayerFrame.portrait, 'LEFT', 2, -8)
         else
             self:SetParent(UIParent)
-            self:SetFrameStrata(Save().MoveButton.Strata or 'MEDIUM')
-            local p= Save().MoveButton.Point
+            self:SetFrameStrata(Save().ClickMoveButton.Strata or 'MEDIUM')
+            local p= Save().ClickMoveButton.Point
             if p then
                 self:SetPoint(p[1], UIParent, p[3], p[4], p[5])
             else
@@ -212,14 +216,14 @@ local function Init_Button()
 
         self:RegisterEvent('CVAR_UPDATE')
         self:set_State()
-        self:SetScale(Save().MoveButton.Scale or 1)
+        self:SetScale(Save().ClickMoveButton.Scale or 1)
         self:SetShown(true)
     end
 
 
 
 
-    function btn:set_State()
+    function ClickToMoveButton:set_State()
         if C_CVar.GetCVarBool("autoInteract") then
             self:UnlockHighlight()
             self:SetAlpha(0.3)
@@ -229,13 +233,13 @@ local function Init_Button()
         end
     end
 
-    btn:SetScript('OnEvent', function(self, _, arg1)
+    ClickToMoveButton:SetScript('OnEvent', function(self, _, arg1)
         if arg1=='autoInteract' then
             self:set_State()
         end
     end)
 
-    function btn:set_tooltip()
+    function ClickToMoveButton:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(WoWTools_PetBattleMixin.addName, WoWTools_PetBattleMixin.addName3)
@@ -255,7 +259,7 @@ local function Init_Button()
             e.Icon.right
         )
 
-        if not Save().MoveButton.PlayerFrame then
+        if not Save().ClickMoveButton.PlayerFrame then
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(
                 e.onlyChinese and '移动' or NPE_MOVE,
@@ -268,38 +272,38 @@ local function Init_Button()
         e.tips:Show()
         self:SetAlpha(1)
     end
-    btn:SetScript('OnLeave', function(self) ResetCursor() e.tips:Hide() self:set_State() end)
-    btn:SetScript('OnEnter', btn.set_tooltip)
+    ClickToMoveButton:SetScript('OnLeave', function(self) ResetCursor() e.tips:Hide() self:set_State() end)
+    ClickToMoveButton:SetScript('OnEnter', ClickToMoveButton.set_tooltip)
 
-    btn:RegisterForDrag("RightButton")
-    btn:SetMovable(true)
-    btn:SetClampedToScreen(true)
-    btn:SetScript("OnDragStart", function(self, d)
-        if d=='RightButton' and IsAltKeyDown() and not Save().MoveButton.PlayerFrame then
+    ClickToMoveButton:RegisterForDrag("RightButton")
+    ClickToMoveButton:SetMovable(true)
+    ClickToMoveButton:SetClampedToScreen(true)
+    ClickToMoveButton:SetScript("OnDragStart", function(self, d)
+        if d=='RightButton' and IsAltKeyDown() and not Save().ClickMoveButton.PlayerFrame then
             self:StartMoving()
         end
     end)
-    btn:SetScript("OnDragStop", function(self)
+    ClickToMoveButton:SetScript("OnDragStop", function(self)
         ResetCursor()
         self:StopMovingOrSizing()
-        Save().MoveButton.Point={self:GetPoint(1)}
-        Save().MoveButton.Point[2]=nil
+        Save().ClickMoveButton.Point={self:GetPoint(1)}
+        Save().ClickMoveButton.Point[2]=nil
     end)
 
-    btn:SetScript("OnMouseUp", ResetCursor)
-    btn:SetScript("OnMouseDown", function(self, d)
+    ClickToMoveButton:SetScript("OnMouseUp", ResetCursor)
+    ClickToMoveButton:SetScript("OnMouseDown", function(self, d)
         if d=='LeftButton' then
             Set_ClickToMove_Cvar(nil, nil)
             self:CloseMenu()
-        elseif d=='RightButton' and IsAltKeyDown() and not Save().MoveButton.PlayerFrame then
+        elseif d=='RightButton' and IsAltKeyDown() and not Save().ClickMoveButton.PlayerFrame then
             SetCursor('UI_MOVE_CURSOR')
         end
         self:set_tooltip()
     end)
 
-    btn:SetupMenu(Init_Menu)
+    ClickToMoveButton:SetupMenu(Init_Menu)
 
-    btn:Settings()
+    ClickToMoveButton:Settings()
 end
 
 

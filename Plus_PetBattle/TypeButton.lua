@@ -4,13 +4,13 @@ local function Save()
 end
 
 
-local TrackButton
+local TypeButton
 local Buttons={}
 
 
 
 local function Set_Button_Highlight(petType)
-    if not TrackButton or not TrackButton:IsShown() or not TrackButton.setFrame:IsShown() then
+    if not TypeButton or not TypeButton.frame:IsVisible() then
         return
     end
     for _, btn in pairs(Buttons) do
@@ -55,7 +55,7 @@ local function Set_Button_Script(btn, petTypeID)
     btn:SetScript('OnEnter', function(self)
         if self.abilityID then
             FloatingPetBattleAbilityTooltip:ClearAllPoints()
-            FloatingPetBattleAbilityTooltip:SetPoint("BOTTOMRIGHT", TrackButton, "TOPRIGHT");
+            FloatingPetBattleAbilityTooltip:SetPoint("BOTTOMRIGHT", TypeButton, "TOPRIGHT");
             FloatingPetBattleAbility_Show(self.abilityID)
         end
     end)
@@ -91,43 +91,43 @@ end
 
 
 local function Init_Buttons()
-    TrackButton.setFrame:SetSize(1,1)
-    TrackButton.setFrame:SetPoint('RIGHT')
+    TypeButton.frame:SetSize(1,1)
+    TypeButton.frame:SetPoint('RIGHT')
 
     for petType=1, C_PetJournal.GetNumPetTypes() do
-        local btn= WoWTools_ButtonMixin:Ctype2(TrackButton.setFrame, {
+        local btn= WoWTools_ButtonMixin:Ctype2(TypeButton.frame, {
             size={38,38},
             texture='Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[petType],
             isType2=true,
         })
-        btn:SetPoint('LEFT', TrackButton, 'RIGHT', (petType-1)*34+2, 0)
+        btn:SetPoint('LEFT', TypeButton, 'RIGHT', (petType-1)*34+2, 0)
         Set_Button_Script(btn, petType)
 
         local strongTexture, weakHintsTexture, stringIndex, weakHintsIndex= WoWTools_PetBattleMixin:GetPetStrongWeakHints(petType)
         if strongTexture then
-            btn.indicatoUp=TrackButton.setFrame:CreateTexture()
+            btn.indicatoUp=TypeButton.frame:CreateTexture()
             btn.indicatoUp:SetAtlas('bags-greenarrow')
             btn.indicatoUp:SetSize(10,10)
             btn.indicatoUp:SetPoint('BOTTOM', btn,'TOP', 0, -2)
 
-            btn.strong= WoWTools_ButtonMixin:Ctype2(TrackButton.setFrame, {texture=strongTexture,size={25,25}, isType2=true})
+            btn.strong= WoWTools_ButtonMixin:Ctype2(TypeButton.frame, {texture=strongTexture,size={25,25}, isType2=true})
             btn.strong:SetPoint('BOTTOM', btn.indicatoUp, 'TOP', 0, -2)
             Set_Button_Script(btn.strong, stringIndex)
         end
         if weakHintsTexture then
-            btn.indicatoDown=TrackButton.setFrame:CreateTexture()
+            btn.indicatoDown=TypeButton.frame:CreateTexture()
             btn.indicatoDown:SetAtlas('UI-HUD-MicroMenu-StreamDLRed-Up')
             btn.indicatoDown:SetSize(10,10)
             btn.indicatoDown:SetPoint('TOP', btn, 'BOTTOM', 0, 6)
 
-            btn.weakHints= WoWTools_ButtonMixin:Ctype2(TrackButton.setFrame, {texture=weakHintsTexture, size={25,25}, isType2=true})
+            btn.weakHints= WoWTools_ButtonMixin:Ctype2(TypeButton.frame, {texture=weakHintsTexture, size={25,25}, isType2=true})
             btn.weakHints:SetPoint('TOP', btn.indicatoDown, 'BOTTOM', 0, 2)
             Set_Button_Script(btn.weakHints, weakHintsIndex)
         end
     end
 
 --显示背景 Background
-    WoWTools_TextureMixin:CreateBackground(TrackButton.setFrame,
+    WoWTools_TextureMixin:CreateBackground(TypeButton.frame,
     {point=function(texture)
         local num= #Buttons
         texture:SetPoint('LEFT', Buttons[1], -2, 0)
@@ -172,9 +172,9 @@ local function Init_Menu(self, root)
     root:CreateCheckbox(
         e.Icon.left..(e.onlyChinese and '显示' or SHOW),
     function()
-        return self.setFrame:IsShown()
+        return self.frame:IsShown()
     end, function()
-        Save().TrackButton.hideFrame= not Save().TrackButton.hideFrame and true or nil
+        Save().TypeButton.hideFrame= not Save().TypeButton.hideFrame and true or nil
         self:set_Frame_shown()
     end)
 
@@ -189,9 +189,9 @@ local function Init_Menu(self, root)
     sub2=sub:CreateCheckbox(
         e.onlyChinese and '总是显示' or BATTLEFIELD_MINIMAP_SHOW_ALWAYS,
     function()
-        return Save().TrackButton.allShow
+        return Save().TypeButton.allShow
     end, function()
-        Save().TrackButton.allShow= not Save().TrackButton.allShow and true or nil
+        Save().TypeButton.allShow= not Save().TypeButton.allShow and true or nil
         self:set_event()
         self:set_shown()
     end)
@@ -207,17 +207,17 @@ local function Init_Menu(self, root)
 
 --显示背景
     WoWTools_MenuMixin:ShowBackground(sub, function()
-        return Save().MoveButton.showBackground
+        return Save().TypeButton.showBackground
     end, function()
-        Save().MoveButton.showBackground= not Save().MoveButton.showBackground and true or nil
+        Save().TypeButton.showBackground= not Save().TypeButton.showBackground and true or nil
         self:set_Background()
     end)
 
 --缩放
     WoWTools_MenuMixin:Scale(sub, function()
-        return Save().TrackButton.scale or 1
+        return Save().TypeButton.scale or 1
     end, function(value)
-        Save().TrackButton.scale= value
+        Save().TypeButton.scale= value
         self:set_scale()
     end)
 
@@ -226,13 +226,13 @@ local function Init_Menu(self, root)
     WoWTools_MenuMixin:FrameStrata(sub, function(data)
         return self:GetFrameStrata()==data
     end, function(data)
-        Save().TrackButton.strata= data
+        Save().TypeButton.strata= data
         self:set_scale()
     end)
 
 --重置位置
-    WoWTools_MenuMixin:RestPoint(sub, Save().MoveButton.Point, function()
-        Save().TrackButton.point= nil
+    WoWTools_MenuMixin:RestPoint(sub, Save().TypeButton.Point, function()
+        Save().TypeButton.point= nil
         self:set_point()
         return MenuResponse.Open
     end)
@@ -265,31 +265,30 @@ end
 
 --提示,类型
 local function Init(isShow)
-    TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {
-        name='WoWToolsPetBattleTypeTrackButton',
+    TypeButton= WoWTools_ButtonMixin:Cbtn(nil, {
+        name='WoWToolsPetBattleTypeButton',
         icon='hide',
         --atlas='WildBattlePetCapturable',
         size=23,
         isType2=true
     })
-    TrackButton.setFrame= CreateFrame("Frame", nil, TrackButton)
-    WoWTools_PetBattleMixin.TrackButton= TrackButton
+    TypeButton.frame= CreateFrame("Frame", nil, TypeButton)
 
     Init_Buttons()
 
-    function TrackButton:set_shown(show)
+    function TypeButton:set_shown(show)
         self:SetShown(
-            not Save().TrackButton.disabled
+            not Save().TypeButton.disabled
             and (show
-                or (Save().TrackButton.allShow and not UnitAffectingCombat('player'))
+                or (Save().TypeButton.allShow and not UnitAffectingCombat('player'))
                 or PetJournal and PetJournal:IsVisible() or C_PetBattles.IsInBattle()
             )
         )
     end
 
-    function TrackButton:set_event()
+    function TypeButton:set_event()
         self:UnregisterAllEvents()
-        if Save().TrackButton.allShow and not Save().TrackButton.disabled then
+        if Save().TypeButton.allShow and not Save().TypeButton.disabled then
             self:RegisterEvent('PET_BATTLE_OPENING_DONE')--显示，隐藏
             self:RegisterEvent('PET_BATTLE_CLOSE')
             self:RegisterEvent('PLAYER_REGEN_DISABLED')
@@ -297,21 +296,21 @@ local function Init(isShow)
         end
     end
 
-    function TrackButton:set_Frame_shown()
-        local show= not Save().TrackButton.hideFrame
-        self.setFrame:SetShown(show)
+    function TypeButton:set_Frame_shown()
+        local show= not Save().TypeButton.hideFrame
+        self.frame:SetShown(show)
         self:SetNormalAtlas(show and e.Icon.icon or 'WildBattlePetCapturable')
         self:SetAlpha(show and 1 or 0.3)
     end
 
-    function TrackButton:set_scale()
-        self.setFrame:SetScale(Save().TrackButton.scale or 1)
-        self:SetFrameStrata(Save().TrackButton.strata or 'MEDIUM')
+    function TypeButton:set_scale()
+        self.frame:SetScale(Save().TypeButton.scale or 1)
+        self:SetFrameStrata(Save().TypeButton.strata or 'MEDIUM')
     end
 
-    function TrackButton:set_point()
+    function TypeButton:set_point()
         self:ClearAllPoints()
-        local p= Save().TrackButton.point
+        local p= Save().TypeButton.point
         if p then
             self:SetPoint(p[1], UIParent, p[3], p[4], p[5])
         else
@@ -319,11 +318,11 @@ local function Init(isShow)
         end
     end
 
-    function TrackButton:set_Background()
-        self.setFrame.Background:SetShown(Save().MoveButton.showBackground)
+    function TypeButton:set_Background()
+        self.frame.Background:SetShown(Save().TypeButton.showBackground)
     end
 
-    function TrackButton:set_tooltip()
+    function TypeButton:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(WoWTools_PetBattleMixin.addName, WoWTools_PetBattleMixin.addName4)
@@ -341,21 +340,21 @@ local function Init(isShow)
 
 
 
-    TrackButton:RegisterForDrag("RightButton")
-    TrackButton:SetMovable(true)
-    TrackButton:SetClampedToScreen(true)
+    TypeButton:RegisterForDrag("RightButton")
+    TypeButton:SetMovable(true)
+    TypeButton:SetClampedToScreen(true)
 
-    TrackButton:SetScript("OnDragStart", function(self)
+    TypeButton:SetScript("OnDragStart", function(self)
         self:StartMoving()
     end)
-    TrackButton:SetScript("OnDragStop", function(self)
+    TypeButton:SetScript("OnDragStop", function(self)
         ResetCursor()
         self:StopMovingOrSizing()
-        Save().TrackButton.point={self:GetPoint(1)}
-        Save().TrackButton.point[2]=nil
+        Save().TypeButton.point={self:GetPoint(1)}
+        Save().TypeButton.point[2]=nil
     end)
-    TrackButton:SetScript("OnMouseUp", ResetCursor)
-    TrackButton:SetScript("OnMouseDown", function(self, d)
+    TypeButton:SetScript("OnMouseUp", ResetCursor)
+    TypeButton:SetScript("OnMouseDown", function(self, d)
         if d=='RightButton' then
             if IsAltKeyDown() then
                 SetCursor('UI_MOVE_CURSOR')
@@ -363,7 +362,7 @@ local function Init(isShow)
                 MenuUtil.CreateContextMenu(self, Init_Menu)
             end
         elseif d=='LeftButton' then--显示，隐藏
-            Save().TrackButton.hideFrame= not Save().TrackButton.hideFrame and true or nil
+            Save().TypeButton.hideFrame= not Save().TypeButton.hideFrame and true or nil
             self:set_Frame_shown()
         end
         self:set_tooltip()
@@ -371,22 +370,22 @@ local function Init(isShow)
 
 
 
-    TrackButton:SetScript('OnLeave', function(self)
+    TypeButton:SetScript('OnLeave', function(self)
         self:set_Frame_shown()
         e.tips:Hide()
     end)
-    TrackButton:SetScript('OnEnter', function(self)
+    TypeButton:SetScript('OnEnter', function(self)
         self:SetAlpha(1)
         self:set_tooltip()
         Set_Button_Highlight()
     end)
-    TrackButton:SetScript('OnHide', function()
+    TypeButton:SetScript('OnHide', function()
         for _, btn in pairs(Buttons) do
            btn:UnlockHighlight()
         end
     end)
 
-    TrackButton:SetScript('OnEvent', function(self, event)
+    TypeButton:SetScript('OnEvent', function(self, event)
         if event=='PET_BATTLE_CLOSE' then
             if PetHasActionBar() and not UnitAffectingCombat('player') then--宠物动作条， 显示，隐藏
                 PetActionBar:SetShown(true)
@@ -419,7 +418,7 @@ local function Init(isShow)
         end
     end)
 
-    function TrackButton:Settings(show)
+    function TypeButton:Settings(show)
         self:set_scale()
         self:set_point()
         self:set_Frame_shown()
@@ -427,7 +426,7 @@ local function Init(isShow)
         self:set_event()
         self:set_Background()
     end
-    TrackButton:Settings(isShow)
+    TypeButton:Settings(isShow)
 
     return true
 end
@@ -451,10 +450,10 @@ end
 
 
 
-function WoWTools_PetBattleMixin:Set_TrackButton(show)
-    if self.Save.TrackButton.disabled or TrackButton then
-        if TrackButton then
-            TrackButton:set_shown(show)
+function WoWTools_PetBattleMixin:Set_TypeButton(show)
+    if self.Save.TypeButton.disabled or TypeButton then
+        if TypeButton then
+            TypeButton:Settings(show)
         end
     end
     if Init(show) then
@@ -462,7 +461,12 @@ function WoWTools_PetBattleMixin:Set_TrackButton(show)
     end
 end
 
+function WoWTools_PetBattleMixin:TypeButton_SetShown()
+    if TypeButton then
+        TypeButton:set_shown()
+    end
+end
 
-function WoWTools_PetBattleMixin.Set_TrackButton_Tips(petType)
+function WoWTools_PetBattleMixin.Set_TypeButton_Tips(petType)
     Set_Button_Highlight(petType)
 end

@@ -22,7 +22,7 @@ local function Init()
     local category
 
 --宠物对战 Plus
-category= e.AddPanel_Check({
+e.AddPanel_Check({
         name= WoWTools_PetBattleMixin.addName5,
         GetValue= function() return not Save().Plus.disabled end,
         SetValue= function()
@@ -37,39 +37,35 @@ category= e.AddPanel_Check({
 
 --技能按钮
     e.AddPanel_Check_Button({
-        checkName= WoWTools_PetBattleMixin.addName4,
-        GetValue= function() return not Save().TrackButton.disabled end,
+        checkName= WoWTools_PetBattleMixin.addName6,
+        GetValue= function() return not Save().AbilityButton.disabled end,
         SetValue= function()
-            Save().TrackButton.disabled= not Save().TrackButton.disabled and true or nil
-            WoWTools_PetBattleMixin:Set_TrackButton(true)
+            Save().AbilityButton.disabled= not Save().AbilityButton.disabled and true or nil
+            WoWTools_PetBattleMixin:Init_AbilityButton()
         end,
-        buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
+        buttonText= e.onlyChinese and '重置' or RESET,
         buttonFunc= function()
-            Save().TrackButton.point= nil
-            if WoWTools_PetBattleMixin.TrackButton then
-                WoWTools_PetBattleMixin.TrackButton:set_point()
-            end
-            print(e.addName, WoWTools_PetBattleMixin.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+            Save().AbilityButton= {disabled= Save().AbilityButton.disabled}
+            WoWTools_PetBattleMixin:Init_AbilityButton()
+            print(e.addName, WoWTools_PetBattleMixin.addName6, e.onlyChinese and '重置' or RESET)
         end,
         tooltip= WoWTools_PetBattleMixin.addName,
         layout= Layout,
         category= Category,
-    }, category)
+    })
 
---宠物类型, TrackButton
+--宠物类型, TypeButton
     e.AddPanel_Check_Button({
         checkName= WoWTools_PetBattleMixin.addName4,
-        GetValue= function() return not Save().TrackButton.disabled end,
+        GetValue= function() return not Save().TypeButton.disabled end,
         SetValue= function()
-            Save().TrackButton.disabled= not Save().TrackButton.disabled and true or nil
-            WoWTools_PetBattleMixin:Set_TrackButton(true)
+            Save().TypeButton.disabled= not Save().TypeButton.disabled and true or nil
+            WoWTools_PetBattleMixin:Set_TypeButton(true)
         end,
-        buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
+        buttonText= e.onlyChinese and '重置' or RESET,
         buttonFunc= function()
-            Save().TrackButton.point= nil
-            if WoWTools_PetBattleMixin.TrackButton then
-                WoWTools_PetBattleMixin.TrackButton:set_point()
-            end
+            Save().TypeButton= {disabled=Save().TypeButton.disabled}
+            WoWTools_PetBattleMixin:Set_TypeButton()
             print(e.addName, WoWTools_PetBattleMixin.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
         end,
         tooltip= WoWTools_PetBattleMixin.addName,
@@ -77,6 +73,7 @@ category= e.AddPanel_Check({
         category= Category,
     })
 
+    e.AddPanel_Header(Layout, e.onlyChinese and '其它' or OTHER)
 --点击移动
     e.AddPanel_Check({
         name= WoWTools_PetBattleMixin.addName2,
@@ -99,16 +96,16 @@ category= e.AddPanel_Check({
 --点击移动按钮
     category= e.AddPanel_Check_Button({
         checkName= WoWTools_PetBattleMixin.addName3,
-        GetValue= function() return not Save().MoveButton.disabled end,
+        GetValue= function() return not Save().ClickMoveButton.disabled end,
         SetValue= function()
-            Save().MoveButton.disabled= not Save().MoveButton.disabled and true or nil
+            Save().ClickMoveButton.disabled= not Save().ClickMoveButton.disabled and true or nil
             WoWTools_PetBattleMixin:ClickToMove_Button()
         end,
-        buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
+        buttonText= e.onlyChinese and '重置' or RESET,
         buttonFunc= function()
-            Save().MoveButton.Point=nil
+            Save().ClickMoveButton= {disabled= Save().ClickMoveButton.disabled}
             WoWTools_PetBattleMixin:ClickToMove_Button()
-            print(e.addName, WoWTools_PetBattleMixin.addName3, e.onlyChinese and '重置位置' or RESET_POSITION)
+            print(e.addName, WoWTools_PetBattleMixin.addName3, e.onlyChinese and '重置' or RESET)
         end,
         layout= Layout,
         category= Category,
@@ -118,9 +115,9 @@ category= e.AddPanel_Check({
     e.AddPanel_Check({
         name= 'PlayerFrame',
         tooltip='|nSetParent(\'PlayerFrame\')|n|n'..WoWTools_PetBattleMixin.addName3,
-        GetValue= function() return Save().MoveButton.PlayerFrame end,
+        GetValue= function() return Save().ClickMoveButton.PlayerFrame end,
         SetValue= function()
-            Save().MoveButton.PlayerFrame = not Save().MoveButton.PlayerFrame and true or nil
+            Save().ClickMoveButton.PlayerFrame = not Save().ClickMoveButton.PlayerFrame and true or nil
             WoWTools_PetBattleMixin:ClickToMove_Button()
         end,
         layout= Layout,
@@ -152,6 +149,17 @@ local function Init_Panel()
         end
     })
 end
+
+
+
+
+
+
+
+
+
+
+
 
 
 
