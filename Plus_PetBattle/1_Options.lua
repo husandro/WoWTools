@@ -105,11 +105,9 @@ e.AddPanel_Check({
         buttonFunc= function()
             Save().ClickMoveButton= {
                 disabled= Save().ClickMoveButton.disabled,
-                PlayerFrame= Save().ClickMoveButton.PlayerFrame,
-                ClickMoveButton={
-                    PlayerFrame=true,
-                    lock_cameraSmoothStyle= e.Player.husandro and '0' or nil
-                }
+                lock_autoInteract=e.Player.husandro and '1' or nil,
+                lock_cameraSmoothStyle= e.Player.husandro and '0' or nil,
+                lock_cameraSmoothTrackingStyle= e.Player.husandro and '0' or nil,
             }
             WoWTools_PetBattleMixin:ClickToMove_Button()
             print(e.addName, WoWTools_PetBattleMixin.addName3, e.onlyChinese and '重置' or RESET)

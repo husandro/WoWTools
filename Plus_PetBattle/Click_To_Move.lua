@@ -293,7 +293,9 @@ local function Init_Menu(self, root)
     function()
         Save().ClickMoveButton={
             PlayerFrame=true,
-            lock_cameraSmoothStyle= e.Player.husandro and '0' or nil
+            lock_autoInteract=e.Player.husandro and '1' or nil,
+            lock_cameraSmoothStyle= e.Player.husandro and '0' or nil,
+            lock_cameraSmoothTrackingStyle= e.Player.husandro and '0' or nil,
         }
         self:Settings()
         return MenuResponse.Open

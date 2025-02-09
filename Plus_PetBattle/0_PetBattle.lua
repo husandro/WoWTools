@@ -7,10 +7,12 @@ WoWTools_PetBattleMixin={
         ClickMoveButton={
             --disabled= not e.Player.husandro,
             --Point,
-            PlayerFrame=true,
             --Scale=1,
             --Strata='MEDIUM'
+            PlayerFrame=true,
+            lock_autoInteract=e.Player.husandro and '1' or nil,
             lock_cameraSmoothStyle= e.Player.husandro and '0' or nil,
+            lock_cameraSmoothTrackingStyle= e.Player.husandro and '0' or nil,
         },
         TypeButton={
             --disabled=true,
