@@ -348,9 +348,6 @@ local function Init_Button()
         end
 
         self:ClearAllPoints()
-
-        self:SetFrameStrata(Save().ClickMoveButton.Strata or 'MEDIUM')
-
         if Save().ClickMoveButton.PlayerFrame then
             --[[local frameLevel= PlayerFrame:GetFrameLevel() +1
             local playerFrameTargetContextual = PlayerFrame_GetPlayerFrameContentContextual()
@@ -359,7 +356,6 @@ local function Init_Button()
             self:SetPoint('RIGHT', PlayerFrame.portrait, 'LEFT', 2, -8)
         else
             self:SetParent(UIParent)
-
             local p= Save().ClickMoveButton.Point
             if p then
                 self:SetPoint(p[1], UIParent, p[3], p[4], p[5])
@@ -367,7 +363,8 @@ local function Init_Button()
                 self:SetPoint('CENTER', UIParent, 100, 100)
             end
         end
-
+    
+        self:SetFrameStrata(Save().ClickMoveButton.Strata or 'MEDIUM')
         self:RegisterEvent('CVAR_UPDATE')
         self:set_State()
         self:set_scale()
