@@ -132,7 +132,7 @@ local function Set_Ability_Button(button, index)
 
     end
 
-    btn:SetPoint('LEFT', button.frame, (index-1)*size, 0)
+    btn:SetPoint('LEFT', button.frame, (index-1)*size+(index*6), 0)
 
     btn:SetScript('OnLeave', function(self)
         PetBattlePrimaryAbilityTooltip:Hide()
@@ -212,7 +212,7 @@ local function Init_Button_Menu(self, root)
 
 --缩放
     WoWTools_MenuMixin:Scale(sub, function()
-        return self.frame:GetScale() --Save().AbilityButton['scale'..self.name] or (self.name=='Enemy' and 1 or 0.85)
+        return self:GetScale() --Save().AbilityButton['scale'..self.name] or (self.name=='Enemy' and 1 or 0.85)
     end, function(value)
         Save().AbilityButton['scale'..self.name]= value
         self:settings()
@@ -279,7 +279,7 @@ local function Set_Move_Button(btn)
     function btn:set_unit()
         local petOwner= self.petOwner
         local petIndex= self:getPetIndex()
-        --local petTexture= petIndex and C_PetBattles.GetIcon(petOwner, petIndex) or 0
+        local petTexture= petIndex and C_PetBattles.GetIcon(petOwner, petIndex) or 0
         local petType= petIndex and C_PetBattles.GetPetType(petOwner, petIndex)
 
         if petType then
@@ -289,13 +289,17 @@ local function Set_Move_Button(btn)
         end
         self:SetShown(not Save().AbilityButton.disabled)
         self.petType= petType
+
+        self.portrait:SetTexture(petTexture)
+        --local displayID= C_PetBattles.GetDisplayID(petOwner, petIndex) or 0
+        --SetPortraitTextureFromCreatureDisplayID(self.CreatureDisplayTexture, displayID)
     end
 
     function btn:settings()
         self:set_point()
         self:SetFrameStrata(Save().AbilityButton['strata'..self.name] or 'MEDIUM')
         self:set_alpha()
-        self.frame:SetScale(Save().AbilityButton['scale'..self.name] or (self.name=='Enemy' and 1 or 0.75))
+        self:SetScale(Save().AbilityButton['scale'..self.name] or (self.name=='Enemy' and 1 or 0.75))
         self.frame:SetShown(not Save().AbilityButton['hide'..self.name])
         self.frame.Background:SetShown(not Save().AbilityButton['hideBackground'..self.name])
         self:set_unit()
@@ -447,12 +451,32 @@ local function Init_Button()
         btn.texture:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT")
 
         btn.frame= CreateFrame('Frame', nil, btn)
-        btn.frame:SetSize(size*NUM_BATTLE_PET_ABILITIES, size)
+        btn.frame:SetSize((size+6)*NUM_BATTLE_PET_ABILITIES+12, size)
+
+        btn.portrait= btn.frame:CreateTexture(nil, 'BORDER')
+        btn.portrait:SetSize(26,26)
+--生命条
+        btn.bar= CreateFrame('StatusBar', nil, btn.frame)
+        btn.bar:SetFrameLevel(btn.frame:GetFrameLevel()+1)
+        btn.bar:SetStatusBarTexture('Interface\\TargetingFrame\\UI-StatusBar')
+        --btn.barTexture= btn.bar:CreateTexture(nil, 'BORDER')
+        --btn.barTexture:SetAtlas('UI-HUD-UnitFrame-Player-GroupIndicator')
+        btn.bar:SetSize(12, size)
+        btn.bar:SetMinMaxValues(0,100)
+        btn.bar:SetValue(100)
         if btn.isEnemy then
             btn.frame:SetPoint('LEFT', btn, 'RIGHT')
+            btn.portrait:SetPoint('BOTTOMRIGHT', btn, 'TOPRIGHT')
+            --btn.bar:SetPoint('BOTTOMRIGHT')
         else
             btn.frame:SetPoint('RIGHT', btn, 'LEFT')
+            btn.portrait:SetPoint('BOTTOMLEFT', btn, 'TOPLEFT')
+            --btn.bar:SetPoint('BOTTOMLEFT')
         end
+
+
+
+    
 
 --显示背景 Background
         WoWTools_TextureMixin:CreateBackground(btn.frame,{
@@ -470,7 +494,7 @@ local function Init_Button()
 
 --索引
         btn.indexText= WoWTools_LabelMixin:Create(btn, {
-            color= btn.isEnemy and {r=1,g=0,b=0, a=0.5} or {r=0,g=1,b=0, a=0.5}
+            color= btn.isEnemy and {r=1,g=0,b=0} or {r=0,g=1,b=0}
         })
         btn.indexText:SetText(tab.petIndex)
         --btn.indexText:SetPoint('RIGHT')--'BOTTOM', btn, 'TOP')

@@ -200,6 +200,16 @@ local function Init()
     hooksecurefunc('PetBattleAbilityButton_UpdateBetterIcon', set_PetBattleAbilityButton_UpdateBetterIcon)
 
 
+    for i=1,NUM_BATTLE_PETS_IN_BATTLE do
+        if PetBattleFrame.BottomFrame.PetSelectionFrame['Pet'..i] then
+            local frame= PetBattleFrame.BottomFrame.PetSelectionFrame['Pet'..i]
+            frame.indexLabel= WoWTools_LabelMixin:Create(frame)
+            frame.indexLabel:SetPoint('BOTTOM', frame.SelectedTexture, 'TOP', 0, 2)
+            frame.indexLabel:SetText(i)
+        end
+    end
+
+    
 
     return true
 end

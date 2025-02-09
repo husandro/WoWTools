@@ -95,6 +95,11 @@ local function Init(mixin)
             PetBattleFrame.BottomFrame.FlowFrame:SetShown(false)
             PetBattleFrame.BottomFrame.Delimiter:SetShown(false)
         end
+        for i=1,NUM_BATTLE_PETS_IN_BATTLE do
+            if PetBattleFrame.BottomFrame.PetSelectionFrame['Pet'..i] then
+                WoWTools_ColorMixin:SetLabelTexture(PetBattleFrame.BottomFrame.PetSelectionFrame['Pet'..i].SelectedTexture, {type='Texture', color={r=0,g=1,b=1}})
+            end
+        end
     end
 
     mixin:HideFrame(PetBattleFrame.BottomFrame.MicroButtonFrame)
