@@ -74,9 +74,9 @@ e.AddPanel_Check({
     })
 
     e.AddPanel_Header(Layout, e.onlyChinese and '其它' or OTHER)
---点击移动
+--[[点击移动
     e.AddPanel_Check({
-        name= WoWTools_PetBattleMixin.addName2,
+        name= e.Icon.right..(e.onlyChinese and '点击移动' or CLICK_TO_MOVE),
         tooltip=function()
             return
             '|n'..(not e.onlyChinese and CLICK_TO_MOVE..', '..REFORGE_CURRENT or '点击移动, 当前: ')..e.GetEnabeleDisable(C_CVar.GetCVarBool("autoInteract"))
@@ -91,7 +91,7 @@ e.AddPanel_Check({
         end,
         layout= Layout,
         category= Category,
-    })
+    })]]
 
 --点击移动按钮
     category= e.AddPanel_Check_Button({
@@ -103,7 +103,14 @@ e.AddPanel_Check({
         end,
         buttonText= e.onlyChinese and '重置' or RESET,
         buttonFunc= function()
-            Save().ClickMoveButton= {disabled= Save().ClickMoveButton.disabled}
+            Save().ClickMoveButton= {
+                disabled= Save().ClickMoveButton.disabled,
+                PlayerFrame= Save().ClickMoveButton.PlayerFrame,
+                ClickMoveButton={
+                    PlayerFrame=true,
+                    lock_cameraSmoothStyle= e.Player.husandro and '0' or nil
+                }
+            }
             WoWTools_PetBattleMixin:ClickToMove_Button()
             print(e.addName, WoWTools_PetBattleMixin.addName3, e.onlyChinese and '重置' or RESET)
         end,
@@ -148,6 +155,11 @@ local function Init_Panel()
             print(e.addName, WoWTools_PetBattleMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     })
+
+    --[[local action = "WoWTools_SUMMON";
+    local bindingIndex = C_KeyBindings.GetBindingIndex(action);
+    local initializer = CreateKeybindingEntryInitializer(bindingIndex, true);
+    initializer:AddSearchTags(GetBindingName(action));]]
 end
 
 

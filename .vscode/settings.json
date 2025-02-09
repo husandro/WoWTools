@@ -5135,7 +5135,8 @@
         "PetBattleAbilityTooltip_SetAbility",
         "PET_ABILITY_REQUIRES_LEVEL",
         "PetBattleAbilityButton_UpdateBetterIcon",
-        "PET_BATTLE_ABILITIES_LABEL"
+        "PET_BATTLE_ABILITIES_LABEL",
+        "CAMERA_FOLLOWING_STYLE"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
