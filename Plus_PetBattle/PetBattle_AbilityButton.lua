@@ -287,7 +287,7 @@ local function Set_PetUnit(self)
 
     self.border:SetVertexColor(r,g,b)
 
-    btn.bar:SetStatusBarColor(r,g,b)
+    self.bar:SetStatusBarColor(r,g,b)
 end
 
 
