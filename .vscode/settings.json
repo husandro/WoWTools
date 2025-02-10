@@ -5136,7 +5136,14 @@
         "PET_ABILITY_REQUIRES_LEVEL",
         "PetBattleAbilityButton_UpdateBetterIcon",
         "PET_BATTLE_ABILITIES_LABEL",
-        "CAMERA_FOLLOWING_STYLE"
+        "CAMERA_FOLLOWING_STYLE",
+        "PetBattleActionButton_UpdateState",
+        "FlowContainer_Initialize",
+        "FlowContainer_SetOrientation",
+        "FlowContainer_SetHorizontalSpacing",
+        "PetBattleUnitFrame_SetUnit",
+        "PetBattleUnitTooltip_Attach",
+        "PetBattleUnitTooltip_UpdateForUnit"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

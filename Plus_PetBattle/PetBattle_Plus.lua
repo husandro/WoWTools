@@ -113,21 +113,6 @@ end
 
 
 
---#################
---主面板,主技能, 提示
---#################
-local function set_PetBattleAbilityButton_UpdateBetterIcon(btn)
-    if not btn.BetterIcon then
-        return
-    end
-    btn.petOwner= Enum.BattlePetOwner.Ally
-    btn.petIndex= C_PetBattles.GetActivePet(Enum.BattlePetOwner.Ally)
-    btn.abilityIndex= btn:GetID()
-    WoWTools_PetBattleMixin:Create_AbilityButton_Tips(btn)
-end
-
-
-
 
 
 
@@ -196,9 +181,7 @@ local function Init()
     --显示当前宠物, 速度指示, 力量数据
     hooksecurefunc('PetBattleFrame_UpdateSpeedIndicators', set_PetBattleFrame_UpdateSpeedIndicators)
 
-    --主面板,主技能, 提示
-    hooksecurefunc('PetBattleAbilityButton_UpdateBetterIcon', set_PetBattleAbilityButton_UpdateBetterIcon)
-
+   
 
     for i=1,NUM_BATTLE_PETS_IN_BATTLE do
         if PetBattleFrame.BottomFrame.PetSelectionFrame['Pet'..i] then

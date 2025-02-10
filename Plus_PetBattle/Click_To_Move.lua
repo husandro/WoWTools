@@ -342,6 +342,7 @@ local function Init_Button()
 
     function ClickToMoveButton:Settings()
         self:UnregisterAllEvents()
+
         if Save().ClickMoveButton.disabled then
             self:SetShown(false)
             return
@@ -351,8 +352,8 @@ local function Init_Button()
         if Save().ClickMoveButton.PlayerFrame then
             --[[local frameLevel= PlayerFrame:GetFrameLevel() +1
             local playerFrameTargetContextual = PlayerFrame_GetPlayerFrameContentContextual()
-            self:SetParent(PlayerFrame)
             self:SetFrameLevel( PlayerFrame:GetFrameLevel() +1)]]
+            self:SetParent(PlayerFrame)
             self:SetPoint('RIGHT', PlayerFrame.portrait, 'LEFT', 2, -8)
         else
             self:SetParent(UIParent)
@@ -363,7 +364,7 @@ local function Init_Button()
                 self:SetPoint('CENTER', UIParent, 100, 100)
             end
         end
-    
+
         self:SetFrameStrata(Save().ClickMoveButton.Strata or 'MEDIUM')
         self:RegisterEvent('CVAR_UPDATE')
         self:set_State()

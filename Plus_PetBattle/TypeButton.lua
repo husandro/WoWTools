@@ -8,18 +8,27 @@ local TypeButton
 local Buttons={}
 
 
-
+local IsInCheck
 local function Set_Button_Highlight(petType)
-    if not TypeButton or not TypeButton.frame:IsVisible() then
+    if IsInCheck
+        or not TypeButton
+        or not TypeButton.frame:IsVisible()
+    then
         return
     end
-    for _, btn in pairs(Buttons) do
-        if btn.petTypeID==petType then
-            btn:LockHighlight()
-        else
-            btn:UnlockHighlight()
+    IsInCheck= true
+
+    do
+        for _, btn in pairs(Buttons) do
+            if btn.petTypeID==petType then
+                btn:LockHighlight()
+            else
+                btn:UnlockHighlight()
+            end
         end
     end
+    
+    IsInCheck= nil
 end
 
 
@@ -281,18 +290,19 @@ local function Init(isShow)
             not Save().TypeButton.disabled
             and (show
                 or (Save().TypeButton.allShow and not UnitAffectingCombat('player'))
-                or PetJournal and PetJournal:IsVisible() or C_PetBattles.IsInBattle()
+                or (PetJournal and PetJournal:IsVisible())
+                or C_PetBattles.IsInBattle()
             )
         )
     end
 
     function TypeButton:set_event()
         self:UnregisterAllEvents()
-        if Save().TypeButton.allShow and not Save().TypeButton.disabled then
+        if not Save().TypeButton.disabled then
             self:RegisterEvent('PET_BATTLE_OPENING_DONE')--显示，隐藏
             self:RegisterEvent('PET_BATTLE_CLOSE')
             self:RegisterEvent('PLAYER_REGEN_DISABLED')
-            self:RegisterAllEvents('PLAYER_REGEN_ENABLED')
+            self:RegisterEvent('PLAYER_REGEN_ENABLED')
         end
     end
 
@@ -387,9 +397,9 @@ local function Init(isShow)
 
     TypeButton:SetScript('OnEvent', function(self, event)
         if event=='PET_BATTLE_CLOSE' then
-            if PetHasActionBar() and not UnitAffectingCombat('player') then--宠物动作条， 显示，隐藏
+            --[[if PetHasActionBar() and not UnitAffectingCombat('player') then--宠物动作条， 显示，隐藏
                 PetActionBar:SetShown(true)
-            end
+            end]]
             if not UnitAffectingCombat('player') then--UIParent.lua
                 local data= C_Spell.GetSpellCooldown(125439) or {}
                 if data.duration and data.duration<=2  or not data.duration then
@@ -403,16 +413,28 @@ local function Init(isShow)
     end)
 
 --HookScript
-    PetBattlePrimaryUnitTooltip:HookScript('OnShow', function(self)
+    --[[PetBattlePrimaryUnitTooltip:HookScript('OnShow', function(self)
         if self.petOwner and self.petIndex then
             local petType= C_PetBattles.GetPetType(self.petOwner, self.petIndex)
             if petType then
                 Set_Button_Highlight(petType)
             end
         end
+    end)]]
+
+    hooksecurefunc('PetBattleUnitTooltip_UpdateForUnit', function(self, petOwner, petIndex)
+        if self~=_G['PetBattlePrimaryUnitTooltip'] then
+            return
+        end
+        local petType= C_PetBattles.GetPetType(petOwner, petIndex)
+        if petType then
+            Set_Button_Highlight(petType)
+        end
     end)
+
     hooksecurefunc('SharedPetBattleAbilityTooltip_SetAbility', function(self, abilityInfo)
-        local petType = abilityInfo and abilityInfo.abilityID and select(7, C_PetBattles.GetAbilityInfoByID(abilityInfo.abilityID))
+        local abilityID = abilityInfo:GetAbilityID()
+        local petType = abilityID and select(7, C_PetBattles.GetAbilityInfoByID(abilityID))
         if petType then
             Set_Button_Highlight(petType)
         end
@@ -422,9 +444,9 @@ local function Init(isShow)
         self:set_scale()
         self:set_point()
         self:set_Frame_shown()
-        self:set_shown(show)
         self:set_event()
         self:set_Background()
+        self:set_shown(show)
     end
     TypeButton:Settings(isShow)
 

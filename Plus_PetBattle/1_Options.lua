@@ -64,7 +64,10 @@ e.AddPanel_Check({
         end,
         buttonText= e.onlyChinese and '重置' or RESET,
         buttonFunc= function()
-            Save().TypeButton= {disabled=Save().TypeButton.disabled}
+            Save().TypeButton= {
+                disabled=Save().TypeButton.disabled,
+                showBackground=true,
+            }
             WoWTools_PetBattleMixin:Set_TypeButton()
             print(e.addName, WoWTools_PetBattleMixin.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
         end,
@@ -105,6 +108,7 @@ e.AddPanel_Check({
         buttonFunc= function()
             Save().ClickMoveButton= {
                 disabled= Save().ClickMoveButton.disabled,
+                PlayerFrame=true,
                 lock_autoInteract=e.Player.husandro and '1' or nil,
                 lock_cameraSmoothStyle= e.Player.husandro and '0' or nil,
                 lock_cameraSmoothTrackingStyle= e.Player.husandro and '0' or nil,
