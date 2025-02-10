@@ -6,7 +6,6 @@ local function Save()
 end
 
 local Buttons--5*3 技能按钮
---local PetButtons--5个，按钮
 local size= 52
 
 
@@ -114,9 +113,10 @@ local function AbilityButton_Update(self)
     end
     self.BetterIcon:SetShown(show)
 
-
 --技能，图标
     self:SetNormalTexture(texture or 0)
+
+    --local auraID = PET_BATTLE_PET_TYPE_PASSIVES[petType];
 end
 
 
@@ -128,6 +128,9 @@ end
 
 
 local function AbilityButton_CreateTypeTips(btn)
+    if btn.StrongTexture then
+        return
+    end
     btn.StrongTexture= btn:CreateTexture(nil, 'OVERLAY')
     btn.StrongTexture:SetPoint('TOPLEFT', btn, -4, 2)
     btn.StrongTexture:SetSize(15,15)
@@ -224,7 +227,7 @@ local function Set_Ability_Button(button, index, isEnemy)
 
     AbilityButton_UpdateTypeTips(btn)
     AbilityButton_Update(btn)
-    
+
     --table.insert(Buttons, btn)
 end
 
@@ -259,15 +262,32 @@ local function Set_PetUnit(self)
     end
     self.petType= petType
 
-    local icon= petIndex and C_PetBattles.GetIcon(petOwner, petIndex) or 0
+--图标
     --self.portrait:SetTexture(petTexture)
-    SetPortraitToTexture(self.portrait, icon)
+    SetPortraitToTexture(self.portrait, petIndex and C_PetBattles.GetIcon(petOwner, petIndex) or 0)
 
+--生命
     local health= C_PetBattles.GetHealth(petOwner, petIndex) or 0
     self.frame:SetAlpha(health==0 and 0.3 or 1)
 
     local maxHealth= C_PetBattles.GetMaxHealth(petOwner, petIndex) or 100
     self.bar:SetValue(health/maxHealth*100)
+
+--等级
+    self.LevelText:SetText(C_PetBattles.GetLevel(petOwner, petIndex) or '')
+
+--品质
+    local rarity= C_PetBattles.GetBreedQuality(petOwner, petIndex)
+    local r,g,b
+    if ITEM_QUALITY_COLORS[rarity] then
+        r,g,b= ITEM_QUALITY_COLORS[rarity].r, ITEM_QUALITY_COLORS[rarity].g, ITEM_QUALITY_COLORS[rarity].b
+    end
+    r,g,b= r or 1, g or 1, b or 1
+    self.LevelText:SetVertexColor(r,g,b)
+
+    self.border:SetVertexColor(r,g,b)
+
+    btn.bar:SetStatusBarColor(r,g,b)
 end
 
 
@@ -384,7 +404,7 @@ end
 
 
 --设置，移动按钮
-local function Set_Move_Button(btn)
+local function Set_Move_Button(btn, parent)
 
     function btn:set_alpha()
         self.texture:SetAlpha(
@@ -488,6 +508,15 @@ local function Set_Move_Button(btn)
 
     btn:Settings()
 
+--移动按钮，提示
+    parent.petUnitButton= btn
+    parent:HookScript('OnLeave', function(self)
+        self.petUnitButton.selectTexture:SetShown(false)
+    end)
+    parent:HookScript('OnEnter', function(self)
+        self.petUnitButton.selectTexture:SetShown(true)
+    end)
+
     Set_PetUnit(btn)
 end
 
@@ -517,7 +546,7 @@ end
 
 local function Init_Button()
     Buttons={}
-    
+
     local Tab={
         {
             name='Enemy',
@@ -578,9 +607,20 @@ local function Init_Button()
         btn.texture:SetPoint("TOPLEFT", btn, "TOPLEFT", -3, 0)
         btn.texture:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT")
 
+        btn.border:SetAlpha(1)
+
         btn.frame= CreateFrame('Frame', nil, btn)
-        btn.frame:SetSize(1,1)
-        btn.frame:SetPoint('CENTER')
+        btn.frame:SetFrameLevel(btn:GetFrameLevel()-1)
+        local s= 23+ (size+6)*NUM_BATTLE_PET_ABILITIES+22
+        if isEnemy then
+            btn.frame:SetPoint('LEFT', btn, -8, 0)
+            btn.frame:SetHeight(size+16)
+            btn.frame:SetWidth(s)
+        else
+            btn.frame:SetPoint('RIGHT', btn, 8, 0)
+            btn.frame:SetHeight(size+16)
+            btn.frame:SetWidth(s)
+        end
 
 
 
@@ -598,7 +638,6 @@ local function Init_Button()
             PetBattlePrimaryUnitTooltip:Hide()
         end)
         btn.portrait:SetScript('OnEnter',function(self)
-            self:SetAlpha(0.5)
             local parent= self:GetParent():GetParent()
             local petOwner= parent.petOwner
             local petIndex= parent:getPetIndex()
@@ -611,37 +650,39 @@ local function Init_Button()
             PetBattlePrimaryUnitTooltip:SetPoint("TOP", parent:GetParent(), "BOTTOM", 0, 0)
             PetBattleUnitTooltip_UpdateForUnit(PetBattlePrimaryUnitTooltip, petOwner, petIndex)
             PetBattlePrimaryUnitTooltip:Show()
+            self:SetAlpha(0.3)
         end)
 
 
+--等级
+        btn.LevelUnderlay= btn.frame:CreateTexture(nil, 'BORDER')
+        btn.LevelUnderlay:SetAtlas('MainPet-LevelBubble')
+        btn.LevelUnderlay:SetSize(20,20)
+        btn.LevelUnderlay:SetPoint('TOP', btn, 'BOTTOM')
+        
 
-
+        btn.LevelText= WoWTools_LabelMixin:Create(btn.frame, {justifyH='CENTER'})
+        btn.LevelText:SetPoint('CENTER', btn.LevelUnderlay)
 
 --显示背景 Background
-        local s= 23+ (size+6)*NUM_BATTLE_PET_ABILITIES+2 +8 +8
-        WoWTools_TextureMixin:CreateBackground(btn.frame,{
-            point=function(texture)
-                if isEnemy then
-                    texture:SetPoint('LEFT', btn, -4, 0)
-                    texture:SetHeight(size+16)
-                    texture:SetWidth(s)
-                else
-                    texture:SetPoint('RIGHT', btn, 4, 0)
-                    texture:SetHeight(size+16)
-                    texture:SetWidth(s)
-                end
-            end
-        })
+        WoWTools_TextureMixin:CreateBackground(btn.frame, {isAllPoint=true})
 
+--select,提示
+        btn.selectTexture= btn.frame:CreateTexture(nil, 'BACKGROUND', nil, 2)
+        btn.selectTexture:SetAtlas('glues-characterSelect-card-selected-hover')
+        btn.selectTexture:SetAllPoints()
+        btn.selectTexture:Hide()
 --索引
         btn.indexText= WoWTools_LabelMixin:Create(btn, {
-            color= isEnemy and {r=1,g=0,b=0} or {r=0,g=1,b=0}
+            color= isEnemy and {r=1,g=0,b=0} or {r=0,g=1,b=0},
+            size=16,
         })
         btn.indexText:SetText(tab.petIndex)
+        btn.indexText:SetAlpha(0.5)
         if isEnemy then
-            btn.indexText:SetPoint('LEFT', -4, 2)
+            btn.indexText:SetPoint('LEFT', -8, 2)
         else
-            btn.indexText:SetPoint('RIGHT', 4, 2)
+            btn.indexText:SetPoint('RIGHT', 8, 2)
         end
 
 --生命条
@@ -652,7 +693,7 @@ local function Init_Button()
         btn.bar:SetSize(4, size)
         btn.bar:SetMinMaxValues(0,100)
         btn.bar:SetValue(0)
-        btn.bar:SetStatusBarColor(1,0,0)
+        --btn.bar:SetStatusBarColor(1,0,0)
         s= (size+6)*NUM_BATTLE_PET_ABILITIES+26
         if isEnemy then
             btn.bar:SetPoint('RIGHT', btn, 'LEFT', s+4, 0)
@@ -688,7 +729,7 @@ local function Init_Button()
 
 
 --移动按钮
-        Set_Move_Button(btn)
+        Set_Move_Button(btn, tab.parent)
 
 --技能按钮
         for index= 1, NUM_BATTLE_PET_ABILITIES do
@@ -697,6 +738,16 @@ local function Init_Button()
 
         table.insert(Buttons, btn)
     end
+
+
+
+
+
+
+
+
+
+
 
 
 --主面板,主技能, 提示
@@ -708,17 +759,19 @@ local function Init_Button()
             AbilityButton_CreateTypeTips(btn)
             AbilityButton_UpdateTypeTips(btn)
         end
-
---快捷键
-        btn.HotKey:SetTextColor(1,1,1)
     end
-    PetBattleFrame.BottomFrame.SwitchPetButton.HotKey:SetTextColor(1,1,1)
-    PetBattleFrame.BottomFrame.CatchButton.HotKey:SetTextColor(1,1,1)
 
     hooksecurefunc('PetBattleAbilityButton_UpdateBetterIcon', function(self)
-        if self.StrongTexture and not Save().AbilityButton.disabled then
-           AbilityButton_UpdateTypeTips(self)
+        if not self.BetterIcon then
+            return
         end
+        if not self.getPetIndex then
+            self.petOwner= Enum.BattlePetOwner.Ally
+            self.getPetIndex= function() return C_PetBattles.GetActivePet(Enum.BattlePetOwner.Ally) end
+            self.abilityIndex= self:GetID()
+            AbilityButton_CreateTypeTips(self)
+        end
+        AbilityButton_UpdateTypeTips(self)
     end)
 end
 
@@ -759,7 +812,6 @@ function WoWTools_PetBattleMixin:Init_AbilityButton()
             for _, btn in pairs(Buttons) do
                 btn:Settings()
             end
-            e.call(PetBattleFrame_UpdateAllActionButtons, _G['PetBattleFrame'])
         end
     else
         if C_PetBattles.IsInBattle() then

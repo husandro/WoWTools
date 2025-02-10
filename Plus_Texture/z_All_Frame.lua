@@ -1,4 +1,4 @@
-
+local e= select(2, ...)
 
 
 
@@ -100,6 +100,19 @@ local function Init(mixin)
                 WoWTools_ColorMixin:SetLabelTexture(PetBattleFrame.BottomFrame.PetSelectionFrame['Pet'..i].SelectedTexture, {type='Texture', color={r=0,g=1,b=1}})
             end
         end
+
+        --宠物， 主面板,主技能, 提示
+        --for _, btn in pairs(PetBattleFrame.BottomFrame.abilityButtons) do
+        hooksecurefunc('PetBattleAbilityButton_UpdateHotKey', function(self)
+            if not self.HotKey:IsShown() then
+                return
+            end
+            local key= e.GetHotKeyText(GetBindingKey("ACTIONBUTTON"..self:GetID()), nil)
+            if key then
+                self.HotKey:SetText(key);
+            end
+            self.HotKey:SetTextColor(1,1,1)
+        end)
     end
 
     mixin:HideFrame(PetBattleFrame.BottomFrame.MicroButtonFrame)

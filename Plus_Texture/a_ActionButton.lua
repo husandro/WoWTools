@@ -118,6 +118,9 @@ local function Init()
         WoWTools_PlusTextureMixin:SetAlphaColor(MainMenuBar.EndCaps.RightEndCap, true, nil, nil)
     end
     WoWTools_PlusTextureMixin:SetAlphaColor(MainMenuBar.BorderArt, nil, nil, 0.3)
+
+
+
 end
 
 

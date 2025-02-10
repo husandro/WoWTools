@@ -1,7 +1,6 @@
 --[[
 ScaleFrame(frame, delta, value, func)
 CreateFrame(parent, tab)
-CreateBackground(frame, setPoint)
 ]]
 
 local e= select(2, ...)

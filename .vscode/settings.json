@@ -5143,7 +5143,8 @@
         "FlowContainer_SetHorizontalSpacing",
         "PetBattleUnitFrame_SetUnit",
         "PetBattleUnitTooltip_Attach",
-        "PetBattleUnitTooltip_UpdateForUnit"
+        "PetBattleUnitTooltip_UpdateForUnit",
+        "PetBattleAbilityButton_UpdateHotKey"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
