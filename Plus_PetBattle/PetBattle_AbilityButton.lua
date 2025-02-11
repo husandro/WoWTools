@@ -611,7 +611,7 @@ local function Init_Button_Menu(self, root)
     function()
         for name2 in pairs(Save().AbilityButton) do
             if name2:find(self.name) then
-                Save().AbilityButton[name]=nil
+                Save().AbilityButton[name2]=nil
             end
         end
         self:Settings()
