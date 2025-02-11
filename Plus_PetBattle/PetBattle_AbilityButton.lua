@@ -714,7 +714,7 @@ local function Init_Button(tab)
     btn.frame= CreateFrame('Frame', nil, btn)
     btn.frame:SetFrameLevel(btn:GetFrameLevel()-1)
 
-    s= (size+6)*NUM_BATTLE_PET_ABILITIES +110
+    s= (size+6)*NUM_BATTLE_PET_ABILITIES +95
     if isEnemy then
         btn.frame:SetPoint('LEFT', btn, -8, 0)
         btn.frame:SetHeight(size+20)
@@ -732,7 +732,7 @@ local function Init_Button(tab)
 --头像
     btn.portrait= btn.frame:CreateTexture(nil, 'BORDER', nil, 1)
     btn.portrait:SetSize(28,28)
-    btn.portrait:SetPoint('BOTTOM', btn, 'TOP', 0, -2)
+    btn.portrait:SetPoint('BOTTOM', btn, 'TOP', 0, -3)
     Set_PetUnit_Tooltip(btn.portrait)--宠物，提示
 
 --头像, 外框
@@ -751,7 +751,7 @@ local function Init_Button(tab)
     Set_PetUnit_Tooltip(btn.LevelUnderlay)--宠物，提示
 
 --显示背景 Background
-    WoWTools_TextureMixin:CreateBackground(btn.frame, {isAllPoint=true, alpha=0.75})
+    WoWTools_TextureMixin:CreateBackground(btn.frame, {isAllPoint=true})
 
     --btn.Background= btn.frame:CreateTexture(nil, 'BACKGROUND', nil, 1)
     --btn.Background:SetAllPoints()
@@ -881,35 +881,35 @@ local function Init()
         petOwner=Enum.BattlePetOwner.Enemy,
         petIndex=1,
         getPetIndex=function() return C_PetBattles.GetActivePet(Enum.BattlePetOwner.Enemy) end,
-        point={'BOTTOMLEFT', PetBattleFrame.BottomFrame, 'TOPLEFT', 15, 100},
+        point={'BOTTOMLEFT', PetBattleFrame.BottomFrame, 'TOPLEFT', 15, 250},
         parent=PetBattleFrame.ActiveEnemy,
     }, {
         name='Enemy2',
         petOwner=Enum.BattlePetOwner.Enemy,
         petIndex=2,
         getPetIndex= function() return PetBattleFrame.Enemy2.petIndex end,
-        point={'LEFT', PetBattleFrame.Enemy2, 'RIGHT', 14, -6},
+        point={'LEFT', PetBattleFrame.Enemy2, 'RIGHT', 12, -12},
         parent= PetBattleFrame.Enemy2,
     }, {
         name='Enemy3',
         petOwner=Enum.BattlePetOwner.Enemy,
         petIndex=3,
         getPetIndex= function() return PetBattleFrame.Enemy3.petIndex end,
-        point={'LEFT', PetBattleFrame.Enemy3, 'RIGHT', 14, -6},
+        point={'LEFT', PetBattleFrame.Enemy3, 'RIGHT', 12, -34},
         parent= PetBattleFrame.Enemy3,
     }, {
         name='Ally2',
         petOwner=Enum.BattlePetOwner.Ally,
         petIndex=2,
         getPetIndex= function() return PetBattleFrame.Ally2.petIndex end,
-        point={'RIGHT', PetBattleFrame.Ally2, 'LEFT', -14, -16},
+        point={'RIGHT', PetBattleFrame.Ally2, 'LEFT', -12, -12},
         parent= PetBattleFrame.Ally2,
     }, {
         name='Ally3',
         petIndex=3,
         petOwner=Enum.BattlePetOwner.Ally,
         getPetIndex= function() return PetBattleFrame.Ally3.petIndex end,
-        point={'RIGHT', PetBattleFrame.Ally3, 'LEFT', -14, -16},
+        point={'RIGHT', PetBattleFrame.Ally3, 'LEFT', -12, -34},
         parent= PetBattleFrame.Ally3,
     }
     }) do
@@ -959,10 +959,10 @@ local function Init()
             return
         end
         --if ( petOwner ~= Enum.BattlePetOwner.Ally and not C_PetBattles.IsPlayerNPC(petOwner) ) or Save().AbilityButton.disabled then--Blizzard_PetBattleUI.lua
-
-       for i=1, NUM_BATTLE_PET_ABILITIES do
-           local abilityID, name, icon, maxCooldown, _, numTurns, petType= C_PetBattles.GetAbilityInfo(petOwner, petIndex, i)
-           if abilityID and name and self["AbilityName"..i]  then
+        local find
+        for i=1, NUM_BATTLE_PET_ABILITIES do
+            local abilityID, name, icon, maxCooldown, _, numTurns, petType= C_PetBattles.GetAbilityInfo(petOwner, petIndex, i)
+            if abilityID and name and self["AbilityName"..i]  then
                 self["AbilityName"..i]:SetText(
                     (PET_TYPE_SUFFIX[petType] and '|TInterface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[petType]..':0|t' or '')
                     ..'|T'..(icon or 0)..':0|t'
@@ -970,8 +970,12 @@ local function Init()
                     ..(numTurns and numTurns>0 and ' |cnGREEN_FONT_COLOR:'..numTurns..'|r' or '')
                     ..(maxCooldown and maxCooldown>1 and '/|cnRED_FONT_COLOR:'..maxCooldown..'|r' or '')
                )
-           end
-       end
+               find=true
+            end
+        end
+        if find then
+            self:Show()
+        end
     end)
 end
 

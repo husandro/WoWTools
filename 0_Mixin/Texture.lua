@@ -25,7 +25,7 @@ function WoWTools_TextureMixin:CreateBackground(frame, tab)
     end
 
     frame.Background:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
-    frame.Background:SetAlpha(alpha or 0.5)
+    frame.Background:SetAlpha(alpha or 1)
     frame.Background:SetVertexColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b)
 
     return frame.Background
