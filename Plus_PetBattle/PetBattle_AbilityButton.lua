@@ -919,7 +919,7 @@ local function Init()
 
 
 
-    --主面板,主技能, 提示
+--主面板,主技能, 提示
     for _, btn in pairs(PetBattleFrame.BottomFrame.abilityButtons) do
         if btn.BetterIcon then
             btn.petOwner= Enum.BattlePetOwner.Ally
@@ -943,7 +943,7 @@ local function Init()
         AbilityButton_UpdateTypeTips(self)
     end)
 
-
+--更换宠物，索引
     for i=1,NUM_BATTLE_PETS_IN_BATTLE do
         if PetBattleFrame.BottomFrame.PetSelectionFrame['Pet'..i] then
             local frame= PetBattleFrame.BottomFrame.PetSelectionFrame['Pet'..i]
@@ -953,7 +953,7 @@ local function Init()
         end
     end
 
-    --PetBattlePrimaryUnitTooltip 技能, 提示
+--PetBattlePrimaryUnitTooltip 技能, 提示
     hooksecurefunc('PetBattleUnitTooltip_UpdateForUnit', function(self, petOwner, petIndex)
         if Save().AbilityButton.disabled then
             return
@@ -961,19 +961,15 @@ local function Init()
         --if ( petOwner ~= Enum.BattlePetOwner.Ally and not C_PetBattles.IsPlayerNPC(petOwner) ) or Save().AbilityButton.disabled then--Blizzard_PetBattleUI.lua
 
        for i=1, NUM_BATTLE_PET_ABILITIES do
-           local abilityID,name, icon, maxCooldown, _, numTurns, petType= C_PetBattles.GetAbilityInfo(petOwner, petIndex, i)
-           local abilityName = self["AbilityName"..i]
-           if ( abilityID and name and abilityName ) then
-               local t=''
-               if PET_TYPE_SUFFIX[petType] then
-                   t=t..'|TInterface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[petType]..':0|t'
-               end
-               if icon then
-                   t=t..'|T'..icon..':0|t'
-               end
-               t=t..e.cn(name)..(numTurns and numTurns>0 and '|cnGREEN_FONT_COLOR:'..numTurns..'|r' or '')..(maxCooldown and maxCooldown>1 and '/|cnRED_FONT_COLOR:'..maxCooldown..'|r' or '')--' '..abilityID
-
-               abilityName:SetText(t)
+           local abilityID, name, icon, maxCooldown, _, numTurns, petType= C_PetBattles.GetAbilityInfo(petOwner, petIndex, i)
+           if abilityID and name and self["AbilityName"..i]  then
+                self["AbilityName"..i]:SetText(
+                    (PET_TYPE_SUFFIX[petType] and '|TInterface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[petType]..':0|t' or '')
+                    ..'|T'..(icon or 0)..':0|t'
+                    ..e.cn(name, {spellID=abilityID})
+                    ..(numTurns and numTurns>0 and ' |cnGREEN_FONT_COLOR:'..numTurns..'|r' or '')
+                    ..(maxCooldown and maxCooldown>1 and '/|cnRED_FONT_COLOR:'..maxCooldown..'|r' or '')
+               )
            end
        end
     end)
@@ -1011,21 +1007,3 @@ function WoWTools_PetBattleMixin:Init_AbilityButton()
     end
 end
 
-
-
-
-   --对方, 我方， 技能提示， 框
-    --hooksecurefunc('PetBattleFrame_UpdateAllActionButtons', Set_Buttons_State)
---[[
-    --对方，技能， 冷却
-    hooksecurefunc('PetBattleActionButton_UpdateState', function()
-        for _, btn in pairs(Buttons) do
-            btn:Settings()
-        end
-    end)]]
-
-    --[[hooksecurefunc('PetBattleUnitFrame_UpdateDisplay', function()
-        for _, btn in pairs(PetButtons) do
-            Set_PetUnit(btn)
-        end
-    end)]]
