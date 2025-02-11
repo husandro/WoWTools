@@ -53,7 +53,7 @@ local function Init_Menu(_, root)
             sub2=sub:CreateButton(name, function(data)
 --玩具箱
                 if data.isToy then
-                    WoWTools_LoadUIMixin:Journal(3, data.itemID)
+                    WoWTools_LoadUIMixin:Journal(3, {toyItemID=data.itemID})
 --已学，法术
                 elseif data.spellID and IsSpellKnownOrOverridesKnown(data.spellID) then
                     WoWTools_LoadUIMixin:SpellBook(3, data.spellID)

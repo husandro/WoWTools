@@ -61,55 +61,6 @@ function WoWTools_CollectedMixin:Item(itemIDOrLink, sourceID, icon, onlyBool)--�
     end
 end
 
-function WoWTools_CollectedMixin:Pet(speciesID, itemID, onlyNum)--总收集数量， 25 25 25， 3/3
-    if (not speciesID or speciesID==0) and itemID then--宠物物品
-        speciesID= select(13, C_PetJournal.GetPetInfoByItemID(itemID))
-    end
-    if not speciesID or speciesID==0 then
-        return
-    end
-    local numCollected, limit = C_PetJournal.GetNumCollectedInfo(speciesID)
-    if numCollected and limit then
-        local AllCollected, CollectedNum, CollectedText
-        if not onlyNum then--返回所有，数据
-            local numPets, numOwned = C_PetJournal.GetNumPets()
-            if numPets and numOwned and numPets>0 then
-                if numPets<numOwned or numPets<3 then
-                    AllCollected= WoWTools_Mixin:MK(numOwned, 3)
-                else
-                    AllCollected= WoWTools_Mixin:MK(numOwned,3)..'/'..WoWTools_Mixin:MK(numPets,3).. (' %i%%'):format(numOwned/numPets*100)
-                end
-            end
-            if numCollected and limit and limit>0 then
-                if numCollected>0 then
-                    local text2
-                    for index= 1 ,numOwned do
-                        local petID, speciesID2, _, _, level = C_PetJournal.GetPetInfoByIndex(index)
-                        if speciesID2==speciesID and petID and level then
-                            local rarity = select(5, C_PetJournal.GetPetStats(petID))
-                            local col= rarity and select(4, C_Item.GetItemQualityColor(rarity-1))
-                            if col then
-                                text2= text2 and text2..' ' or ''
-                                text2= text2..'|c'..col..level..'|r'
-                            end
-                        end
-                    end
-                    CollectedNum= text2
-                end
-            end
-        end
-        local isCollectedAll--是否已全部收集
-        if numCollected==0 then
-            CollectedText='|cnRED_FONT_COLOR:'..numCollected..'|r/'..limit
-        elseif limit and numCollected==limit and limit>0 then
-            CollectedText= '|cnGREEN_FONT_COLOR:'..numCollected..'/'..limit..'|r'
-            isCollectedAll= true
-        else
-            CollectedText= numCollected..'/'..limit
-        end
-        return AllCollected, CollectedNum, CollectedText, isCollectedAll
-    end
-end
 
 
 --[[function e.GetSetsCollectedNum(setID)--套装 , 收集数量, 返回: 图标, 数量, 最大数, 文本

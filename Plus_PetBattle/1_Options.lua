@@ -22,7 +22,7 @@ local function Init()
     local category
 
 --宠物对战 Plus
-e.AddPanel_Check({
+--[[e.AddPanel_Check({
         name= WoWTools_PetBattleMixin.addName5,
         GetValue= function() return not Save().Plus.disabled end,
         SetValue= function()
@@ -33,7 +33,7 @@ e.AddPanel_Check({
         end,
         layout= Layout,
         category= Category,
-    })
+    })]]
 
 --技能按钮
     e.AddPanel_Check_Button({

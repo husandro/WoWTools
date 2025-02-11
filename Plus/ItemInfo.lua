@@ -464,7 +464,7 @@ function e.Set_Item_Info(self, tab)
                 speciesID= data.battlePetSpeciesID
             end
             if speciesID then
-                topLeftText= select(3, WoWTools_CollectedMixin:Pet(speciesID)) or topLeftText--宠物, 收集数量
+                topLeftText= select(3, WoWTools_PetBattleMixin:Collected(speciesID)) or topLeftText--宠物, 收集数量
                 local petType= select(3, C_PetJournal.GetPetInfoBySpeciesID(speciesID))
                 if petType then
                     topRightText='|TInterface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[petType]..':24|t'

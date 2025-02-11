@@ -5144,7 +5144,11 @@
         "PetBattleUnitFrame_SetUnit",
         "PetBattleUnitTooltip_Attach",
         "PetBattleUnitTooltip_UpdateForUnit",
-        "PetBattleAbilityButton_UpdateHotKey"
+        "PetBattleAbilityButton_UpdateHotKey",
+        "PetBattleUtil_GetOtherPlayer",
+        "PET_SHOW_IN_JOURNAL",
+        "CollectionsJournal_SetTab",
+        "PetJournal_SelectSpecies"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

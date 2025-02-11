@@ -1131,7 +1131,7 @@ local function Set_BrowseResultsFrame(frame)
            
             --if itemKeyInfo.isPet then
                 local isCollectedAll--宠物
-                text, isCollectedAll= select(3, WoWTools_CollectedMixin:Pet(itemKeyInfo.battlePetSpeciesID, itemKeyInfo.itemID, true))
+                text, isCollectedAll= select(3, WoWTools_PetBattleMixin:Collected(itemKeyInfo.battlePetSpeciesID, itemKeyInfo.itemID, true))
                 if isCollectedAll then
                     text= '|A:common-icon-checkmark-yellow:0:0|a'
                 end

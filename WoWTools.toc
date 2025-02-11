@@ -426,7 +426,6 @@ Plus_PetBattle\0_PetBattle.lua
 Plus_PetBattle\1_Options.lua
 Plus_PetBattle\Click_To_Move.lua
 Plus_PetBattle\TypeButton.lua
-Plus_PetBattle\PetBattle_Plus.lua
 Plus_PetBattle\PetBattle_AbilityButton.lua
 
 ##插件，方案

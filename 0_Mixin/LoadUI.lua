@@ -15,31 +15,41 @@ JournalInstance(journalInstanceID)--冒险指南，副本
 
 local e= select(2, ...)
 WoWTools_LoadUIMixin= {}
-
-
-function WoWTools_LoadUIMixin:Journal(index, itemID)--加载，收藏，UI
-    if not CollectionsJournal then
-        do
+--[[
+       if not CollectionsJournal then
             CollectionsJournal_LoadUI();
         end
+
+        if not CollectionsJournal:IsShown() then
+            ShowUIPanel(CollectionsJournal);
+        end
+
+        CollectionsJournal_SetTab(CollectionsJournal, 2);
+
+        local speciesID = C_PetBattles.GetPetSpeciesID(self.petOwner, self.petIndex);
+        PetJournal_SelectSpecies(PetJournal, speciesID);
+]]
+
+function WoWTools_LoadUIMixin:Journal(index, tab)--加载，收藏，UI
+    if not CollectionsJournal then
+        CollectionsJournal_LoadUI()
     end
     if not index then
         return
     end
-    do
-        if
-            (index==1 and not MountJournal:IsVisible())
-            or (index==2 and not PetJournal:IsVisible())
-            or (index==3 and not ToyBox:IsVisible())
-            or (index==4 and not HeirloomsJournal:IsVisible())
-            or (index==5 and not WardrobeCollectionFrame:IsVisible())
-        then
-            ToggleCollectionsJournal(index)
-        end
+
+    if not CollectionsJournal:IsShown() then
+        ShowUIPanel(CollectionsJournal)
     end
-    if itemID then
+    CollectionsJournal_SetTab(CollectionsJournal, index)
+    if not tab then
+        return
+    end
+
+--玩具
+    if tab.toyItemID then
         if index==3 then
-            local name2= select(2, C_ToyBox.GetToyInfo(itemID))
+            local name2= select(2, C_ToyBox.GetToyInfo(tab.toyItemID))
             if name2 then
                 C_ToyBoxInfo.SetDefaultFilters()
                 if ToyBox.searchBox then
@@ -47,8 +57,27 @@ function WoWTools_LoadUIMixin:Journal(index, itemID)--加载，收藏，UI
                 end
             end
         end
+--宠物
+    elseif (tab.petOwner and tab.petIndex) or tab.petSeciesID then
+        local speciesID = tab.petSeciesID or C_PetBattles.GetPetSpeciesID(tab.petOwner, tab.petIndex)
+        if speciesID then
+            PetJournalSearchBox:SetText('')
+            PetJournal_SelectSpecies(PetJournal, speciesID)
+        end
     end
 end
+    --[[if
+        (index==1 and not MountJournal:IsVisible())
+        or (index==2 and not PetJournal:IsVisible())
+        or (index==3 and not ToyBox:IsVisible())
+        or (index==4 and not HeirloomsJournal:IsVisible())
+        or (index==5 and not WardrobeCollectionFrame:IsVisible())
+        or (index==6 and not WarbandSceneJournal:IsVisible())
+    then
+        ToggleCollectionsJournal(index)
+    end]]
+
+
 
 
 --打开/关闭角色界面
@@ -289,7 +318,7 @@ function WoWTools_LoadUIMixin:SpellBook(index, spellID)
             PlayerSpellsUtil.TogglePlayerSpellsFrame(2)
         end
         PlayerSpellsUtil.ToggleClassTalentOrSpecFrame()
-        
+
     elseif index==3 or spellID then
         if spellID and IsSpellKnownOrOverridesKnown(spellID) then
             PlayerSpellsUtil.OpenToSpellBookTabAtSpell(spellID, false, true, false)--knownSpellsOnly, toggleFlyout, flyoutReason

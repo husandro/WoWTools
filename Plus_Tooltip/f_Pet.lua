@@ -10,7 +10,7 @@ function WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID, setSearchText)--宠�
     if obtainable then--可得到的
         tooltip:AddLine(' ')
 
-        local AllCollected, CollectedNum, CollectedText= WoWTools_CollectedMixin:Pet(speciesID)--收集数量
+        local AllCollected, CollectedNum, CollectedText= WoWTools_PetBattleMixin:Collected(speciesID)--收集数量
         tooltip.textLeft:SetText(CollectedNum or '')
         tooltip.text2Left:SetText(CollectedText or '')
         tooltip.textRight:SetText(AllCollected or '')

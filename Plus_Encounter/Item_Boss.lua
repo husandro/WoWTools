@@ -59,7 +59,7 @@ local function Init(btn)
             local itemID= btn.itemID or C_Item.GetItemInfoInstant(btn.link)
             if itemID then
                 itemText= WoWTools_CollectedMixin:Mount(nil, itemID)--坐骑物品
-                itemText= itemText or select(3, WoWTools_CollectedMixin:Pet(nil, itemID, true))--宠物物品
+                itemText= itemText or select(3, WoWTools_PetBattleMixin:Collected(nil, itemID, true))--宠物物品
                 itemText= itemText or WoWTools_CollectedMixin:Toy(itemID)--玩具,是否收集
             end
         end

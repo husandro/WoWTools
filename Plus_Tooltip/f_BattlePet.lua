@@ -63,7 +63,7 @@ function WoWTools_TooltipMixin:Set_Battle_Pet(frame, speciesID, level, breedQual
     end
     frame.backgroundColor:SetShown(breedQuality~=-1)
 
-    local AllCollected, CollectedNum, CollectedText= WoWTools_CollectedMixin:Pet(speciesID)--收集数量
+    local AllCollected, CollectedNum, CollectedText= WoWTools_PetBattleMixin:Collected(speciesID)--收集数量
     frame.textLeft:SetText(CollectedNum or '')
     frame.text2Left:SetText(CollectedText or '')
     frame.textRight:SetText(not CollectedNum and AllCollected or '')
