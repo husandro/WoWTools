@@ -840,6 +840,7 @@ local function Init_Button(tab)
 --名称
     btn.nameText= WoWTools_LabelMixin:Create(btn.frame, {size=16})
     btn.nameText:SetPoint('TOP', 0, 10)
+    Set_PetUnit_Tooltip(btn.nameText)--宠物，提示
 
 --头像
     btn.portrait= btn.frame:CreateTexture(nil, 'BORDER', nil, 1)
@@ -965,6 +966,11 @@ local function Init_Button(tab)
         btn.AttackIcon:SetTexCoord(0.5, 0, 0, 0.5)
         btn.SpeedIcon:SetTexCoord(0.5, 0, 0.5, 1)
     end
+
+    Set_PetUnit_Tooltip(btn.AttackIcon)--宠物，提示
+    Set_PetUnit_Tooltip(btn.SpeedIcon)--宠物，提示
+    Set_PetUnit_Tooltip(btn.CollectedIcon)--宠物，提示
+
 
 --移动按钮
     Set_Move_Button(btn)
