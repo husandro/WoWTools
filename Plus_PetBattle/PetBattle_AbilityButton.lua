@@ -329,16 +329,21 @@ local function Create_Aura(btn, index)
     icon:SetScript('OnLeave', function(self)
         PetBattlePrimaryAbilityTooltip:Hide()
         self:GetParent():GetParent().parent:SetAlpha(1)
+        self:SetAlpha(1)
     end)
 
     icon:SetScript('OnEnter', function(self)
         local frame= self:GetParent()
-        local parent= frame:GetParent()
+        local button= frame:GetParent()
         if self.abilityID then
-            PetBattleAbilityTooltip_SetAbilityByID(parent.petOwner, parent:getPetIndex(), self.abilityID)
-            PetBattleAbilityTooltip_Show("BOTTOMRIGHT", self, 'TOPLEFT')
+            PetBattleAbilityTooltip_SetAbilityByID(button.petOwner, button:getPetIndex(), self.abilityID)
+            if button.isEnemy then
+                PetBattleAbilityTooltip_Show("BOTTOMRIGHT", frame, 'TOPRIGHT')
+            else
+                PetBattleAbilityTooltip_Show("BOTTOMLEFT", frame, 'TOPLEFT')
+            end
         end
-        parent.parent:SetAlpha(0.5)
+        self:SetAlpha(0.5)
     end)
 
     table.insert(btn.Auras, icon)
@@ -604,8 +609,8 @@ local function Init_Button_Menu(self, root)
     sub:CreateButton(
         e.onlyChinese and '重置' or RESET,
     function()
-        for name in pairs(Save().AbilityButton) do
-            if name:find(self.name) then
+        for name2 in pairs(Save().AbilityButton) do
+            if name2:find(self.name) then
                 Save().AbilityButton[name]=nil
             end
         end
@@ -754,6 +759,8 @@ local function Set_Move_Button(btn)
         self.petUnitButton.selectTexture:SetShown(true)
     end)
 
+   
+
     Set_PetUnit(btn)
 
 
@@ -800,6 +807,7 @@ local function Init_Button(tab)
     btn.getPetIndex= tab.getPetIndex
     btn.point=tab.point
     btn.parent=tab.parent
+    btn.parent2=tab.parent2
     btn.Auras={}
 
     btn.mask:SetPoint("TOPLEFT", btn, "TOPLEFT")
@@ -1016,6 +1024,7 @@ local function Init()
         getPetIndex= function() return PetBattleFrame.Ally2.petIndex end,
         point={'RIGHT', PetBattleFrame.Ally2, 'LEFT', -12, -12},
         parent= PetBattleFrame.Ally2,
+        --parent2= PetBattleFrame.BottomFrame.PetSelectionFrame.Pet2,
     }, {
         name='Ally3',
         petIndex=3,
@@ -1023,6 +1032,7 @@ local function Init()
         getPetIndex= function() return PetBattleFrame.Ally3.petIndex end,
         point={'RIGHT', PetBattleFrame.Ally3, 'LEFT', -12, -34},
         parent= PetBattleFrame.Ally3,
+        --parent2= PetBattleFrame.BottomFrame.PetSelectionFrame.Pet3,
     }
     }) do
        Init_Button(tab)
