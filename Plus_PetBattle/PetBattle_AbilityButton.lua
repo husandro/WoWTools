@@ -289,6 +289,106 @@ end
 
 
 
+local function Create_Aura(btn, index)
+    local icon= btn.Auras[index]
+    if icon then
+        return icon
+    end
+
+    local n=3
+    local s= math.floor(btn.frame:GetHeight()/ n)
+
+    icon= btn.frame:CreateTexture(nil, 'BORDER', nil, 1)
+    icon:SetSize(s,s)
+    icon:EnableMouse(true)
+    local a,b= math.modf((index-1)/n)
+    if b==0 then
+        if btn.isEnemy then
+            icon:SetPoint('TOPLEFT', btn.frame, 'TOPRIGHT', a*s, 0)
+        else
+            icon:SetPoint('TOPRIGHT', btn.frame, 'TOPLEFT', -a*s, 0)
+        end
+    else
+        icon:SetPoint('TOP', btn.Auras[index-1], 'BOTTOM')
+    end
+
+    icon.buff= btn.frame:CreateTexture(nil, 'BORDER', nil, 2)
+    icon.buff:SetPoint('TOPLEFT', icon)
+    icon.buff:SetPoint('BOTTOMRIGHT', icon)
+    icon.buff:SetAtlas('delves-curios-icon-border')
+
+    icon.turnsText= WoWTools_LabelMixin:Create(btn.frame, {justifyH='RIGHT', size=12, color={r=1,g=1,b=1}})
+    icon.turnsText:SetPoint('BOTTOMRIGHT', icon,1,0)
+
+    function icon:set_show(show)
+        self:SetShown(show)
+        self.buff:SetShown(show)
+        self.turnsText:SetShown(show)
+    end
+
+    icon:SetScript('OnLeave', function(self)
+        PetBattlePrimaryAbilityTooltip:Hide()
+        self:GetParent():GetParent().parent:SetAlpha(1)
+    end)
+
+    icon:SetScript('OnEnter', function(self)
+        local frame= self:GetParent()
+        local parent= frame:GetParent()
+        if self.abilityID then
+            PetBattleAbilityTooltip_SetAbilityByID(parent.petOwner, parent:getPetIndex(), self.abilityID)
+            PetBattleAbilityTooltip_Show("BOTTOMRIGHT", self, 'TOPLEFT')
+        end
+        parent.parent:SetAlpha(0.5)
+    end)
+
+    table.insert(btn.Auras, icon)
+    return icon
+end
+
+
+
+
+
+
+
+
+local function Set_PetUnit_Aura(self, petOwner, petIndex)
+    local num= C_PetBattles.GetNumAuras(petOwner, petIndex) or 0
+    for index=1, num do
+		local auraID, instanceID, turnsRemaining, isBuff = C_PetBattles.GetAuraInfo(petOwner, petIndex, index)
+
+        local abilityID, name, icon= C_PetBattles.GetAbilityInfoByID(auraID)
+        local aura= Create_Aura(self, index)
+
+
+        aura:SetTexture(icon or 0)
+        aura.turnsText:SetText(turnsRemaining and turnsRemaining>0 and turnsRemaining or '')
+
+        aura.abilityID= abilityID
+
+        if isBuff then
+            aura.buff:SetVertexColor(0,1,0)
+        else
+            aura.buff:SetVertexColor(1,0,0)
+        end
+
+        aura:set_show(icon)
+    end
+    for index=num+1, #self.Auras do
+        self.Auras[index]:set_show(false)
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -364,11 +464,14 @@ local function Set_PetUnit(self)
 --收集
     if isWildBattle then
         local num, collected= select(2, WoWTools_PetBattleMixin:Collected(nil, nil, nil, petOwner, petIndex))--总收集数量， 25 25 25， 已收集3/3
-        if isEnemy then
+        self.CollectedIcon.Text:SetText(collected or '')
+        self.CollectedIcon.Text2:SetText(num or '')
+
+        --[[if isEnemy then
             self.CollectedIcon.Text:SetText((collected or '')..(num and ' '..num or ''))
         else
             self.CollectedIcon.Text:SetText((num or '')..(collected and ' '..collected or ''))
-        end
+        end]]
     end
     self.CollectedIcon:SetShown(isWildBattle)
 
@@ -393,7 +496,7 @@ local function Set_PetUnit(self)
     end
 
 
-
+    Set_PetUnit_Aura(self, petOwner, petIndex)
 end
 
 
@@ -697,6 +800,7 @@ local function Init_Button(tab)
     btn.getPetIndex= tab.getPetIndex
     btn.point=tab.point
     btn.parent=tab.parent
+    btn.Auras={}
 
     btn.mask:SetPoint("TOPLEFT", btn, "TOPLEFT")
     btn.mask:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT")
@@ -714,7 +818,7 @@ local function Init_Button(tab)
     btn.frame= CreateFrame('Frame', nil, btn)
     btn.frame:SetFrameLevel(btn:GetFrameLevel()-1)
 
-    s= (size+6)*NUM_BATTLE_PET_ABILITIES +95
+    s= (size+6)*NUM_BATTLE_PET_ABILITIES +100
     if isEnemy then
         btn.frame:SetPoint('LEFT', btn, -8, 0)
         btn.frame:SetHeight(size+20)
@@ -731,13 +835,13 @@ local function Init_Button(tab)
 
 --头像
     btn.portrait= btn.frame:CreateTexture(nil, 'BORDER', nil, 1)
-    btn.portrait:SetSize(28,28)
-    btn.portrait:SetPoint('BOTTOM', btn, 'TOP', 0, -3)
+    btn.portrait:SetSize(26,26)
+    btn.portrait:SetPoint('BOTTOM', btn, 'TOP', isEnemy and -2 or 0, -4)
     Set_PetUnit_Tooltip(btn.portrait)--宠物，提示
 
 --头像, 外框
     btn.portrait.border= btn.frame:CreateTexture(nil, 'BORDER', nil, 2)
-    btn.portrait.border:SetSize(32,32)
+    btn.portrait.border:SetSize(28,28)
     btn.portrait.border:SetPoint('CENTER', btn.portrait)
     btn.portrait.border:SetAtlas('Adventurers-Frame-Soulbind-Kyrian')
 
@@ -747,7 +851,7 @@ local function Init_Button(tab)
     btn.LevelUnderlay:SetSize(24,24)
     btn.LevelUnderlay:SetPoint('TOP', btn, 'BOTTOM', -1, 6)
     btn.LevelText= WoWTools_LabelMixin:Create(btn.frame, {justifyH='CENTER', size=14})
-    btn.LevelText:SetPoint('CENTER', btn.LevelUnderlay)
+    btn.LevelText:SetPoint('CENTER', btn.LevelUnderlay,1,1)
     Set_PetUnit_Tooltip(btn.LevelUnderlay)--宠物，提示
 
 --显示背景 Background
@@ -770,9 +874,9 @@ local function Init_Button(tab)
     btn.indexText:SetText(tab.petIndex)
     --btn.indexText:SetAlpha(0.5)
     if isEnemy then
-        btn.indexText:SetPoint('LEFT', btn.frame)--, -10, 2)
+        btn.indexText:SetPoint('LEFT', btn.frame, 0.5, 2)--, -10, 2)
     else
-        btn.indexText:SetPoint('RIGHT', btn.frame)--10, 2)
+        btn.indexText:SetPoint('RIGHT', btn.frame, -1, 2)--10, 2)
     end
 
 --生命条
@@ -810,19 +914,11 @@ local function Init_Button(tab)
     btn.bar.valueText:SetPoint('BOTTOM', btn.bar, 'TOP')
 
     s=18
---收集
     local justifyH= isEnemy and 'LEFT' or 'RIGHT'
-    btn.CollectedIcon= btn.frame:CreateTexture(nil, 'BORDER')
-    btn.CollectedIcon:SetAtlas('WildBattlePet')
-    btn.CollectedIcon:SetSize(s,s)
-    btn.CollectedIcon.Text= WoWTools_LabelMixin:Create(btn.frame, {justifyH=justifyH, size=16})
-
 --力量
     btn.AttackIcon= btn.frame:CreateTexture(nil, 'BORDER')
     btn.AttackIcon:SetTexture('Interface\\PetBattles\\PetBattle-StatIcons')
     btn.AttackIcon:SetSize(s,s)
-    btn.AttackIcon:SetPoint('TOP', btn.CollectedIcon, 'BOTTOM')
-    btn.AttackIcon:SetTexCoord(0, 0.5, 0, 0.5)
     btn.AttackIcon.Text= WoWTools_LabelMixin:Create(btn.frame, {justifyH=justifyH, size=16})
 
 --速度
@@ -830,20 +926,36 @@ local function Init_Button(tab)
     btn.SpeedIcon:SetTexture('Interface\\PetBattles\\PetBattle-StatIcons')
     btn.SpeedIcon:SetSize(s,s)
     btn.SpeedIcon:SetPoint('TOP', btn.AttackIcon, 'BOTTOM')
-    btn.SpeedIcon:SetTexCoord(0, 0.5, 0.5, 1)
     btn.SpeedIcon.Text= WoWTools_LabelMixin:Create(btn.frame, {justifyH=justifyH, size=16})
+
+--收集
+    btn.CollectedIcon= btn.frame:CreateTexture(nil, 'BORDER')
+    btn.CollectedIcon:SetAtlas('WildBattlePet')
+    btn.CollectedIcon:SetSize(s,s)
+    btn.CollectedIcon:SetPoint('TOP', btn.SpeedIcon, 'BOTTOM')
+    btn.CollectedIcon.Text= WoWTools_LabelMixin:Create(btn.frame, {justifyH=justifyH, size=16})
+    btn.CollectedIcon.Text2= WoWTools_LabelMixin:Create(btn.frame, {justifyH=isEnemy and 'RIGHT' or 'LEFT', size=14})
 
 
     if isEnemy then
-        btn.CollectedIcon:SetPoint('TOPLEFT', btn.bar, 'TOPRIGHT', 4, 0)
-        btn.CollectedIcon.Text:SetPoint('LEFT', btn.CollectedIcon, 'RIGHT')
+        btn.AttackIcon:SetPoint('TOPLEFT', btn.bar, 'TOPRIGHT', 4, 4)
+
         btn.AttackIcon.Text:SetPoint('LEFT', btn.AttackIcon, 'RIGHT')
         btn.SpeedIcon.Text:SetPoint('LEFT', btn.SpeedIcon, 'RIGHT')
+        btn.CollectedIcon.Text:SetPoint('LEFT', btn.CollectedIcon, 'RIGHT')
+        btn.CollectedIcon.Text2:SetPoint('TOPLEFT', btn.CollectedIcon, 'TOPLEFT', -2, 0)
+
+        btn.AttackIcon:SetTexCoord(0, 0.5, 0, 0.5)
+        btn.SpeedIcon:SetTexCoord(0, 0.5, 0.5, 1)
     else
-        btn.CollectedIcon:SetPoint('TOPRIGHT', btn.bar, 'TOPLEFT', -4, 0)
-        btn.CollectedIcon.Text:SetPoint('RIGHT', btn.CollectedIcon, 'LEFT')
+        btn.AttackIcon:SetPoint('TOPRIGHT', btn.bar, 'TOPLEFT', -4, 4)
         btn.AttackIcon.Text:SetPoint('RIGHT', btn.AttackIcon, 'LEFT')
         btn.SpeedIcon.Text:SetPoint('RIGHT', btn.SpeedIcon, 'LEFT')
+        btn.CollectedIcon.Text:SetPoint('RIGHT', btn.CollectedIcon, 'LEFT')
+        btn.CollectedIcon.Text2:SetPoint('BOTTOMLEFT', btn.frame, 2, 0)
+
+        btn.AttackIcon:SetTexCoord(0.5, 0, 0, 0.5)
+        btn.SpeedIcon:SetTexCoord(0.5, 0, 0.5, 1)
     end
 
 --移动按钮
