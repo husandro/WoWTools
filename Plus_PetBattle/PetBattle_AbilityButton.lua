@@ -9,16 +9,13 @@ local Buttons--5*3 技能按钮
 local size= 52
 
 
-
-
-
-
 --[[
-ITEM_QUALITY_COLORS[rarity]={
-r,g,b,hex,
-color={WrapTextInColorCode
-}
+Enum.BattlePetOwner.Weather
+Enum.BattlePetOwner.Enemy
+Enum.BattlePetOwner.Ally
 ]]
+
+
 
 
 
@@ -147,32 +144,32 @@ local function AbilityButton_CreateTypeTips(btn)
     if btn.StrongTexture then
         return
     end
-    btn.StrongTexture= btn:CreateTexture(nil, 'OVERLAY')
-    btn.StrongTexture:SetPoint('TOPLEFT', btn, -4, 2)
-    btn.StrongTexture:SetSize(15,15)
 
+    btn.StrongTexture= btn:CreateTexture(nil, 'OVERLAY', nil, 1)
+    btn.StrongTexture:SetPoint('TOPLEFT', btn, -10, 2)
+    btn.StrongTexture:SetSize(20,20)
 
-    btn.UpTexture=btn:CreateTexture(nil, 'OVERLAY')
-    btn.UpTexture:SetPoint('TOP', btn.StrongTexture,'BOTTOM',0, 4)
-    btn.UpTexture:SetSize(10,10)
+    btn.UpTexture=btn:CreateTexture(nil, 'OVERLAY', nil, 2)
+    btn.UpTexture:SetPoint('TOP', btn.StrongTexture,'BOTTOM',0, 6)
+    btn.UpTexture:SetSize(8,8)
     btn.UpTexture:SetTexture('Interface\\PetBattles\\BattleBar-AbilityBadge-Strong')
 
-    btn.TypeTexture= btn:CreateTexture(nil, 'OVERLAY')
-    btn.TypeTexture:SetPoint('LEFT', btn, -4, 0)
-    btn.TypeTexture:SetSize(15,15)
+    btn.TypeTexture= btn:CreateTexture(nil, 'OVERLAY', nil, 1)
+    btn.TypeTexture:SetPoint('LEFT', btn, -10, 0)
+    btn.TypeTexture:SetSize(20,20)
 
-    btn.DownTexture=btn:CreateTexture(nil, 'OVERLAY')
-    btn.DownTexture:SetPoint('TOP', btn.TypeTexture, 'BOTTOM', 0, 3)
-    btn.DownTexture:SetSize(10,10)
+    btn.DownTexture=btn:CreateTexture(nil, 'OVERLAY', nil, 2)
+    btn.DownTexture:SetPoint('TOP', btn.TypeTexture, 'BOTTOM', 0, 6)
+    btn.DownTexture:SetSize(8,8)
     btn.DownTexture:SetTexture('Interface\\PetBattles\\BattleBar-AbilityBadge-Weak')
 
 
-    btn.WeakHintsTexture= btn:CreateTexture(nil, 'OVERLAY')
-    btn.WeakHintsTexture:SetPoint('BOTTOMLEFT',-4,-2)
-    btn.WeakHintsTexture:SetSize(15,15)
+    btn.WeakHintsTexture= btn:CreateTexture(nil, 'OVERLAY', nil, 1)
+    btn.WeakHintsTexture:SetPoint('BOTTOMLEFT',-10,-2)
+    btn.WeakHintsTexture:SetSize(20,20)
 
     btn.MaxCooldownText=WoWTools_LabelMixin:Create(btn, {color={r=1,g=0,b=0}, justifyH='RIGHT'})--nil, nil, nil,{1,0,0}, 'OVERLAY', 'RIGHT')
-    btn.MaxCooldownText:SetPoint('RIGHT',-6,-6)
+    btn.MaxCooldownText:SetPoint('RIGHT', 0, -4)
 end
 
 
@@ -213,9 +210,9 @@ local function Set_Ability_Button(button, index, isEnemy)
 --位置
     local x=(index-NUM_BATTLE_PET_ABILITIES)*(size+6)+2
     if isEnemy then
-        btn:SetPoint('LEFT', button, 'RIGHT', (index-1)*(size+6)+2, 0)
+        btn:SetPoint('LEFT', button, 'RIGHT', (index-1)*(size+10)+6, 0)
     else
-        btn:SetPoint('RIGHT', button, 'LEFT', (index-NUM_BATTLE_PET_ABILITIES)*(size+6)-2, 0)
+        btn:SetPoint('RIGHT', button, 'LEFT', (index-NUM_BATTLE_PET_ABILITIES)*(size+10)-6, 0)
     end
 
 
@@ -257,6 +254,13 @@ end
 
 
 
+
+
+
+
+
+
+
 --宠物，提示
 local function Set_PetUnit_Tooltip(objec)
     objec:EnableMouse(true)
@@ -275,7 +279,11 @@ local function Set_PetUnit_Tooltip(objec)
         PetBattlePrimaryUnitTooltip:ClearAllPoints()
         PetBattlePrimaryUnitTooltip:SetParent(UIParent)
         PetBattlePrimaryUnitTooltip:SetFrameStrata("TOOLTIP")
-        PetBattlePrimaryUnitTooltip:SetPoint("TOP", parent.parent, "BOTTOM", 0, 0)
+        if parent.parent then
+            PetBattlePrimaryUnitTooltip:SetPoint("TOP", parent.parent or self, "BOTTOM")
+        else
+            PetBattlePrimaryUnitTooltip:SetPoint("BOTTOM", self, "TOP")
+        end
         PetBattleUnitTooltip_UpdateForUnit(PetBattlePrimaryUnitTooltip, petOwner, petIndex)
         PetBattlePrimaryUnitTooltip:Show()
     end)
@@ -289,7 +297,14 @@ end
 
 
 
-local function Create_Aura(btn, index)
+
+
+
+
+
+
+--光环
+local function Create_PetUnit_Aura(btn, index)
     local icon= btn.Auras[index]
     if icon then
         return icon
@@ -354,16 +369,14 @@ end
 
 
 
-
-
-
+--光环
 local function Set_PetUnit_Aura(self, petOwner, petIndex)
     local num= C_PetBattles.GetNumAuras(petOwner, petIndex) or 0
     for index=1, num do
 		local auraID, instanceID, turnsRemaining, isBuff = C_PetBattles.GetAuraInfo(petOwner, petIndex, index)
 
         local abilityID, name, icon= C_PetBattles.GetAbilityInfoByID(auraID)
-        local aura= Create_Aura(self, index)
+        local aura= Create_PetUnit_Aura(self, index)
 
 
         aura:SetTexture(icon or 0)
@@ -400,83 +413,73 @@ end
 
 
 
---设置，宠物，信息
-local function Set_PetUnit(self)
-    local petIndex= self:getPetIndex()
-    local petOwner= self.petOwner
+--宠物，属性
+local function Crea_PetUnit_Attributes(btn, isEnemy)
+    local s=18
+    local justifyH= isEnemy and 'LEFT' or 'RIGHT'
 
-    local name= C_PetBattles.IsInBattle()
-                and petIndex
-                and C_PetBattles.GetName(petOwner, petIndex)
-    if not name then
-        self.petType=nil
-        self:SetShown(false)
-        return
+--力量
+    btn.AttackIcon= btn.frame:CreateTexture(nil, 'BORDER')
+    btn.AttackIcon:SetTexture('Interface\\PetBattles\\PetBattle-StatIcons')
+    btn.AttackIcon:SetSize(s,s)
+    btn.AttackIcon.Text= WoWTools_LabelMixin:Create(btn.frame, {justifyH=justifyH, size=16})
+
+--速度
+    btn.SpeedIcon= btn.frame:CreateTexture(nil, 'BORDER')
+    btn.SpeedIcon:SetTexture('Interface\\PetBattles\\PetBattle-StatIcons')
+    btn.SpeedIcon:SetSize(s,s)
+    btn.SpeedIcon:SetPoint('TOP', btn.AttackIcon, 'BOTTOM')
+    btn.SpeedIcon.Text= WoWTools_LabelMixin:Create(btn.frame, {justifyH=justifyH, size=16})
+
+--收集
+    btn.CollectedIcon= btn.frame:CreateTexture(nil, 'BORDER')
+    btn.CollectedIcon:SetAtlas('WildBattlePet')
+    btn.CollectedIcon:SetSize(s,s)
+    btn.CollectedIcon:SetPoint('TOP', btn.SpeedIcon, 'BOTTOM')
+    btn.CollectedIcon.Text= WoWTools_LabelMixin:Create(btn.frame, {justifyH=justifyH, size=16})
+    btn.CollectedIcon.Text2= WoWTools_LabelMixin:Create(btn.frame, {justifyH=isEnemy and 'RIGHT' or 'LEFT', size=14})
+
+    if isEnemy then
+        btn.AttackIcon:SetPoint('TOPLEFT', btn.bar , 'TOPRIGHT', 4, 4)
+
+        btn.AttackIcon.Text:SetPoint('LEFT', btn.AttackIcon, 'RIGHT')
+        btn.SpeedIcon.Text:SetPoint('LEFT', btn.SpeedIcon, 'RIGHT')
+        btn.CollectedIcon.Text:SetPoint('LEFT', btn.CollectedIcon, 'RIGHT')
+        btn.CollectedIcon.Text2:SetPoint('BOTTOMRIGHT', btn.frame)
+
+        btn.AttackIcon:SetTexCoord(0, 0.5, 0, 0.5)
+        btn.SpeedIcon:SetTexCoord(0, 0.5, 0.5, 1)
+    else
+        btn.AttackIcon:SetPoint('TOPRIGHT', btn.bar, 'TOPLEFT', -4, 4)
+        btn.AttackIcon.Text:SetPoint('RIGHT', btn.AttackIcon, 'LEFT')
+        btn.SpeedIcon.Text:SetPoint('RIGHT', btn.SpeedIcon, 'LEFT')
+        btn.CollectedIcon.Text:SetPoint('RIGHT', btn.CollectedIcon, 'LEFT')
+        btn.CollectedIcon.Text2:SetPoint('BOTTOMLEFT', btn.frame)
+
+        btn.AttackIcon:SetTexCoord(0.5, 0, 0, 0.5)
+        btn.SpeedIcon:SetTexCoord(0.5, 0, 0.5, 1)
     end
-    self:SetShown(true)
+
+    Set_PetUnit_Tooltip(btn.AttackIcon)--宠物，提示
+    Set_PetUnit_Tooltip(btn.SpeedIcon)--宠物，提示
+    Set_PetUnit_Tooltip(btn.CollectedIcon)--宠物，提示
+end
 
 
-    local isEnemy= self.isEnemy
-    local isWildBattle=  C_PetBattles.IsWildBattle()
+
+
+
+--属性
+local function Set_PetUnit_Attributes(self, petOwner, petIndex)
     local enemyOwner= PetBattleUtil_GetOtherPlayer(petOwner)-- petOwner==Enum.BattlePetOwner.Enemy and Enum.BattlePetOwner.Ally or Enum.BattlePetOwner.Enemy
     local enemyIndex= C_PetBattles.GetActivePet(enemyOwner)
-
-    local petType= petIndex and C_PetBattles.GetPetType(petOwner, petIndex)
-    if petType then
-        self.texture:SetTexture('Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[petType])
-    else
-        self.texture:SetAtlas('summon-random-pet-icon_64')
-    end
-    self.petType= petType
-
-
---生命
-    local health= C_PetBattles.GetHealth(petOwner, petIndex) or 0
-    local maxHealth= C_PetBattles.GetMaxHealth(petOwner, petIndex) or 100
-
-    local value= health/maxHealth*100
-    self.frame:SetAlpha(health==0 and 0.5 or 1)
-    self.bar:SetValue(value)
-    self.bar.valueText:SetFormattedText('%i', value)
-
---品质
-    local r,g,b= select(3, Get_Pet_Quality(petOwner, petIndex))
-    --[[local rarity= C_PetBattles.GetBreedQuality(petOwner, petIndex)
-    if ITEM_QUALITY_COLORS[rarity] then
-        r,g,b= ITEM_QUALITY_COLORS[rarity].r, ITEM_QUALITY_COLORS[rarity].g, ITEM_QUALITY_COLORS[rarity].b
-    end
-    r,g,b= r or 1, g or 1, b or 1
-    ]]
-
---图标
-    --self.portrait:SetTexture(petIndex and C_PetBattles.GetIcon(petOwner, petIndex) or 0)
-    SetPortraitToTexture(self.portrait, petIndex and C_PetBattles.GetIcon(petOwner, petIndex) or 0)
-    self.portrait.border:SetVertexColor(r,g,b)
-
---等级
-    self.LevelText:SetText(C_PetBattles.GetLevel(petOwner, petIndex) or '')
-    self.LevelText:SetVertexColor(r,g,b)
-    self.LevelUnderlay:SetVertexColor(r,g,b)
-
---按钮，框
-    self.border:SetVertexColor(r,g,b)
-
---名称
-    self.nameText:SetText(e.cn(name) or '')
-    self.nameText:SetTextColor(r,g,b)
-
+    local isWildBattle=  C_PetBattles.IsWildBattle()
 
 --收集
     if isWildBattle then
         local num, collected= select(2, WoWTools_PetBattleMixin:Collected(nil, nil, nil, petOwner, petIndex))--总收集数量， 25 25 25， 已收集3/3
         self.CollectedIcon.Text:SetText(collected or '')
-        self.CollectedIcon.Text2:SetText(num or '')
-
-        --[[if isEnemy then
-            self.CollectedIcon.Text:SetText((collected or '')..(num and ' '..num or ''))
-        else
-            self.CollectedIcon.Text:SetText((num or '')..(collected and ' '..collected or ''))
-        end]]
+        self.CollectedIcon.Text2:SetText(num or '25 25 25')
     end
     self.CollectedIcon:SetShown(isWildBattle)
 
@@ -499,9 +502,82 @@ local function Set_PetUnit(self)
     else
         self.SpeedIcon.Text:SetTextColor(1,0.82,0)
     end
+end
 
 
-    Set_PetUnit_Aura(self, petOwner, petIndex)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--设置，宠物，信息
+local function Set_PetUnit(self)
+    local petIndex= self:getPetIndex()
+    local petOwner= self.petOwner
+
+    local name= C_PetBattles.IsInBattle()
+                and petIndex
+                and C_PetBattles.GetName(petOwner, petIndex)
+    if not name then
+        self.petType=nil
+        self:SetShown(false)
+        return
+    end
+    self:SetShown(true)
+
+
+    local isEnemy= self.isEnemy
+
+    local petType= petIndex and C_PetBattles.GetPetType(petOwner, petIndex)
+    if petType then
+        self.texture:SetTexture('Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[petType])
+    else
+        self.texture:SetAtlas('summon-random-pet-icon_64')
+    end
+    self.petType= petType
+
+
+--生命
+    local health= C_PetBattles.GetHealth(petOwner, petIndex) or 0
+    local maxHealth= C_PetBattles.GetMaxHealth(petOwner, petIndex) or 100
+
+    local value= health/maxHealth*100
+    self.frame:SetAlpha(health==0 and 0.5 or 1)
+    self.bar:SetValue(value)
+    self.bar.valueText:SetFormattedText('%i', value)
+
+--品质
+    local r,g,b= select(3, Get_Pet_Quality(petOwner, petIndex))
+
+--图标
+    SetPortraitToTexture(self.portrait, petIndex and C_PetBattles.GetIcon(petOwner, petIndex) or 0)
+    self.portrait.border:SetVertexColor(r,g,b)
+
+--等级
+    self.LevelText:SetText(C_PetBattles.GetLevel(petOwner, petIndex) or '')
+    self.LevelText:SetVertexColor(r,g,b)
+    self.LevelUnderlay:SetVertexColor(r,g,b)
+
+--按钮，框
+    self.border:SetVertexColor(r,g,b)
+
+--名称
+    self.nameText:SetText(e.cn(name) or '')
+    self.nameText:SetTextColor(r,g,b)
+
+
+    Set_PetUnit_Aura(self, petOwner, petIndex)--光环
+    Set_PetUnit_Attributes(self, petOwner, petIndex)--属性
 end
 
 
@@ -759,7 +835,7 @@ local function Set_Move_Button(btn)
         self.petUnitButton.selectTexture:SetShown(true)
     end)
 
-   
+
 
     Set_PetUnit(btn)
 
@@ -826,7 +902,7 @@ local function Init_Button(tab)
     btn.frame= CreateFrame('Frame', nil, btn)
     btn.frame:SetFrameLevel(btn:GetFrameLevel()-1)
 
-    s= (size+6)*NUM_BATTLE_PET_ABILITIES +100
+    s= (size+6)*NUM_BATTLE_PET_ABILITIES +120
     if isEnemy then
         btn.frame:SetPoint('LEFT', btn, -8, 0)
         btn.frame:SetHeight(size+20)
@@ -897,11 +973,11 @@ local function Init_Button(tab)
     btn.bar:SetSize(6, size)
     btn.bar:SetMinMaxValues(0,100)
     btn.bar:SetValue(0)
-    s= (size+6)*NUM_BATTLE_PET_ABILITIES+32
+    s= (size+6)*NUM_BATTLE_PET_ABILITIES +34
     if isEnemy then
-        btn.bar:SetPoint('RIGHT', btn, 'LEFT', s+6, 0)
+        btn.bar:SetPoint('RIGHT', btn, 'LEFT', s+20, 0)
     else
-        btn.bar:SetPoint('LEFT', btn, 'RIGHT', -s-6, 0)
+        btn.bar:SetPoint('LEFT', btn, 'RIGHT', -s-20, 0)
     end
     Set_PetUnit_Tooltip(btn.bar)--宠物，提示
 
@@ -922,55 +998,7 @@ local function Init_Button(tab)
     btn.bar.valueText= WoWTools_LabelMixin:Create(btn.bar, {color={r=1,g=0.82,b=0}})
     btn.bar.valueText:SetPoint('BOTTOM', btn.bar, 'TOP')
 
-    s=18
-    local justifyH= isEnemy and 'LEFT' or 'RIGHT'
---力量
-    btn.AttackIcon= btn.frame:CreateTexture(nil, 'BORDER')
-    btn.AttackIcon:SetTexture('Interface\\PetBattles\\PetBattle-StatIcons')
-    btn.AttackIcon:SetSize(s,s)
-    btn.AttackIcon.Text= WoWTools_LabelMixin:Create(btn.frame, {justifyH=justifyH, size=16})
-
---速度
-    btn.SpeedIcon= btn.frame:CreateTexture(nil, 'BORDER')
-    btn.SpeedIcon:SetTexture('Interface\\PetBattles\\PetBattle-StatIcons')
-    btn.SpeedIcon:SetSize(s,s)
-    btn.SpeedIcon:SetPoint('TOP', btn.AttackIcon, 'BOTTOM')
-    btn.SpeedIcon.Text= WoWTools_LabelMixin:Create(btn.frame, {justifyH=justifyH, size=16})
-
---收集
-    btn.CollectedIcon= btn.frame:CreateTexture(nil, 'BORDER')
-    btn.CollectedIcon:SetAtlas('WildBattlePet')
-    btn.CollectedIcon:SetSize(s,s)
-    btn.CollectedIcon:SetPoint('TOP', btn.SpeedIcon, 'BOTTOM')
-    btn.CollectedIcon.Text= WoWTools_LabelMixin:Create(btn.frame, {justifyH=justifyH, size=16})
-    btn.CollectedIcon.Text2= WoWTools_LabelMixin:Create(btn.frame, {justifyH=isEnemy and 'RIGHT' or 'LEFT', size=14})
-
-
-    if isEnemy then
-        btn.AttackIcon:SetPoint('TOPLEFT', btn.bar, 'TOPRIGHT', 4, 4)
-
-        btn.AttackIcon.Text:SetPoint('LEFT', btn.AttackIcon, 'RIGHT')
-        btn.SpeedIcon.Text:SetPoint('LEFT', btn.SpeedIcon, 'RIGHT')
-        btn.CollectedIcon.Text:SetPoint('LEFT', btn.CollectedIcon, 'RIGHT')
-        btn.CollectedIcon.Text2:SetPoint('TOPLEFT', btn.CollectedIcon, 'TOPLEFT', -2, 0)
-
-        btn.AttackIcon:SetTexCoord(0, 0.5, 0, 0.5)
-        btn.SpeedIcon:SetTexCoord(0, 0.5, 0.5, 1)
-    else
-        btn.AttackIcon:SetPoint('TOPRIGHT', btn.bar, 'TOPLEFT', -4, 4)
-        btn.AttackIcon.Text:SetPoint('RIGHT', btn.AttackIcon, 'LEFT')
-        btn.SpeedIcon.Text:SetPoint('RIGHT', btn.SpeedIcon, 'LEFT')
-        btn.CollectedIcon.Text:SetPoint('RIGHT', btn.CollectedIcon, 'LEFT')
-        btn.CollectedIcon.Text2:SetPoint('BOTTOMLEFT', btn.frame, 2, 0)
-
-        btn.AttackIcon:SetTexCoord(0.5, 0, 0, 0.5)
-        btn.SpeedIcon:SetTexCoord(0.5, 0, 0.5, 1)
-    end
-
-    Set_PetUnit_Tooltip(btn.AttackIcon)--宠物，提示
-    Set_PetUnit_Tooltip(btn.SpeedIcon)--宠物，提示
-    Set_PetUnit_Tooltip(btn.CollectedIcon)--宠物，提示
-
+    Crea_PetUnit_Attributes(btn, isEnemy)--宠物，属性
 
 --移动按钮
     Set_Move_Button(btn)
@@ -1071,7 +1099,64 @@ local function Init()
         AbilityButton_UpdateTypeTips(self)
     end)
 
---更换宠物，索引
+
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Init_BottomFrame()
+
+
+    ---PetBattleFrame.BottomFrame.FlowFrame.LeftEndCap
+    -----[[
+    ---
+
+    ---]]
+    --宠物，属性
+    hooksecurefunc('PetBattleFrame_UpdateAllActionButtons', function(self)
+        local btn= self.BottomFrame.abilityButtons[1]
+        local petOwner= Enum.BattlePetOwner.Ally
+        local petIndex= C_PetBattles.GetActivePet(petOwner)
+
+        if not btn or Save().AbilityButton.disabled or not petIndex then
+            if btn and btn.set_shown then
+                btn:set_shown(false)
+            end
+            return
+        end
+
+        if not btn.frame then
+            btn.frame= CreateFrame("Frame", nil, btn)
+            btn.frame:SetPoint('RIGHT', btn, 'LEFT', -7, 0)
+            btn.frame:SetSize(2, 52)
+            btn.bar=btn.frame
+            function btn:set_shown(show)
+                self.frame:SetShown(show)
+            end
+            Crea_PetUnit_Attributes(btn, false)
+            btn.CollectedIcon.Text2:ClearAllPoints()
+            btn.CollectedIcon.Text2:SetPoint('TOPRIGHT', btn.CollectedIcon, 'BOTTOMLEFT')
+        end
+        Set_PetUnit_Attributes(btn, petOwner, petIndex)--属性
+        btn:set_shown(true)
+    end)
+
+    --更换宠物，索引
     for i=1,NUM_BATTLE_PETS_IN_BATTLE do
         if PetBattleFrame.BottomFrame.PetSelectionFrame['Pet'..i] then
             local frame= PetBattleFrame.BottomFrame.PetSelectionFrame['Pet'..i]
@@ -1081,7 +1166,7 @@ local function Init()
         end
     end
 
---PetBattlePrimaryUnitTooltip 技能, 提示
+    --PetBattlePrimaryUnitTooltip 技能, 提示
     hooksecurefunc('PetBattleUnitTooltip_UpdateForUnit', function(self, petOwner, petIndex)
         if Save().AbilityButton.disabled then
             return
@@ -1097,18 +1182,18 @@ local function Init()
                     ..e.cn(name, {spellID=abilityID})
                     ..(numTurns and numTurns>0 and ' |cnGREEN_FONT_COLOR:'..numTurns..'|r' or '')
                     ..(maxCooldown and maxCooldown>1 and '/|cnRED_FONT_COLOR:'..maxCooldown..'|r' or '')
-               )
-               find=true
+            )
+            find=true
             end
         end
         if find then
             self:Show()
         end
     end)
+
+    --PetBattleUnitFrame_UpdateDisplay(self)
+
 end
-
-
-
 
 
 
@@ -1129,6 +1214,7 @@ function WoWTools_PetBattleMixin:Init_AbilityButton()
             for _, btn in pairs(Buttons) do
                 btn:Settings()
             end
+            e.call(PetBattleFrame_UpdateAllActionButtons, PetBattleFrame)
         end
     else
         if C_PetBattles.IsInBattle() then
@@ -1136,6 +1222,7 @@ function WoWTools_PetBattleMixin:Init_AbilityButton()
         else
             Init()
         end
+        Init_BottomFrame()
     end
 end
 
