@@ -21,7 +21,6 @@ local function Set_Frame_Point(frame, name)--设置, 移动, 位置
         or not name
         or not Save().SavePoint
         or frame.notSave
-        or not frame:CanChangeAttribute()
     then
         return
     end
@@ -35,6 +34,49 @@ local function Set_Frame_Point(frame, name)--设置, 移动, 位置
     end
 end
 
+
+
+
+
+
+
+
+local function Set_Move_Frame_Script(frame)
+    frame:HookScript("OnDragStart", function(self, d)
+        if
+            (d=='RightButton' or d=='LeftButton')
+            and (d== self.click or not self.click)
+            and (self.isAltKeyDown and IsAltKeyDown() or not self.isAltKeyDown)
+        then
+            (self.targetFrame or self):StartMoving()
+        end
+    end)
+
+    frame:HookScript("OnDragStop", function(self)
+        local targetFrame= self.targetFrame or self
+        targetFrame:StopMovingOrSizing()
+        ResetCursor()
+        local name= self.name or targetFrame:GetName()
+        if targetFrame.notSave or not name then
+            return
+        end
+        Save().point[name]= {targetFrame:GetPoint(1)}
+        Save().point[name][2]= nil
+    end)
+
+    frame:HookScript("OnMouseDown", function(self, d)--设置, 光标
+        if
+            (d=='RightButton' or d=='LeftButton')
+            and (d== self.click or not self.click)
+            and (self.isAltKeyDown and IsAltKeyDown() or not self.isAltKeyDown)
+        then
+            SetCursor('UI_MOVE_CURSOR')
+        end
+    end)
+
+    frame:HookScript("OnMouseUp", ResetCursor)--停止移动
+    frame:HookScript("OnLeave", ResetCursor)
+end
 
 
 
@@ -72,43 +114,26 @@ local function Set_Move_Frame(frame, target, click, notSave, notFuori, isAltKeyD
         frame:RegisterForDrag("LeftButton", "RightButton")
     end
 
-    frame:HookScript("OnDragStart", function(self, d)
-        IsModifierKeyDown()
-        if
-            (d=='RightButton' or d=='LeftButton')
-            and (d== self.click or not self.click)
-            and (self.isAltKeyDown and IsAltKeyDown() or not self.isAltKeyDown)
-        then
-            local f= self.targetFrame or self
-            f:StartMoving()
-        end
-    end)
-
-    frame:HookScript("OnDragStop", function(s)
-        local s2= s.targetFrame or s
-        s2:StopMovingOrSizing()
-        ResetCursor()
-        local frameName= s2:GetName()
-        if s.notSave or not frameName then
-            return
-        end
-        Save().point[frameName]= {s2:GetPoint(1)}
-        Save().point[frameName][2]= nil
-    end)
-
-    frame:HookScript("OnMouseDown", function(self, d)--设置, 光标
-        if
-            (d=='RightButton' or d=='LeftButton')
-            and (d== self.click or not self.click)
-            and (self.isAltKeyDown and IsAltKeyDown() or not self.isAltKeyDown)
-        then
-            SetCursor('UI_MOVE_CURSOR')
-        end
-    end)
-
-    frame:HookScript("OnMouseUp", ResetCursor)--停止移动
-    frame:HookScript("OnLeave", ResetCursor)
+    Set_Move_Frame_Script(frame)
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -123,12 +148,13 @@ function WoWTools_MoveMixin:Setup(frame, tab)
 
     local target= tab.frame
     local name= tab.name or (target and target:GetName()) or (frame and frame:GetName())
+
     local click= tab.click
     local notSave= ((tab.notSave or not save.SavePoint) and not tab.save) and true or nil
     local notFuori=  not save.moveToScreenFuori and save.SavePoint or tab.notFuori
     local isAltKeyDown= tab.isAltKeyDown
 
-    if not frame or not name or frame.setMoveFrame then
+    if not frame or not name then --or not frame.setMoveFrame then
         return
     end
 
@@ -141,6 +167,7 @@ function WoWTools_MoveMixin:Setup(frame, tab)
     end
 
     Set_Move_Frame(frame, target, click, notSave, notFuori, isAltKeyDown)
+
 
     Set_Frame_Point(frame, name)--设置, 移动, 位置
 end

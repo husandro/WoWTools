@@ -1,13 +1,12 @@
 local e = select(2, ...)
 
 
-
---建立func, 如果.toc禁用，会出错
-e.Set_Item_Info=function() end--ItemInfo.lua
-e.Set_Move_Frame=function()end--Frame.lua
-e.Show_WoWHead_URL=function()end--Tooltips.lua
-e.Get_Region=function()end--Realm.lua
-
+--[[
+e.Is_PTR= IsPublicBuild() or IsTestBuild()
+local isRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
+local isEra = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+local isCata = WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC
+]]
 
 --securecallfunction
 e.WoWDate={}--战网，数据
@@ -32,13 +31,7 @@ e.onlyChinese= LOCALE_zhCN and true or false
 e.Is_Timerunning= PlayerGetTimerunningSeasonID()-- 1=幻境新生：潘达利亚
 e.addName= '|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r'
 
---e.Is_PTR= IsPublicBuild() or IsTestBuild()
 
---[[
-local isRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
-local isEra = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
-local isCata = WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC
-]]
 
 local battleTag= select(2, BNGetInfo())
 local baseClass= UnitClassBase('player')

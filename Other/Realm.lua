@@ -1,5 +1,6 @@
 local e = select(2, ...)
 if e.Player.region~=1 and e.Player.region~=3 then
+    e.Get_Region=function()end
     return
 end
 --[[

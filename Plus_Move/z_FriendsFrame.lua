@@ -95,7 +95,7 @@ local function Init()
 
 
     WoWTools_MoveMixin:Setup(FriendsFrame, {
-        notInCombat=true,
+        --notInCombat=true,
         setSize=true,
         minW=338,
         minH=424,

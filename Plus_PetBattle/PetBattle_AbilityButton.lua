@@ -182,10 +182,6 @@ end
 
 
 
-
-
-
-
 local function Set_Ability_Button(button, index, isEnemy)
     local btn= WoWTools_ButtonMixin:Cbtn(button.frame, {icon='hide', size=size})
 
@@ -232,9 +228,7 @@ local function Set_Ability_Button(button, index, isEnemy)
     btn:RegisterEvent("PET_BATTLE_ACTION_SELECTED")
     btn:RegisterEvent('PET_BATTLE_PET_ROUND_PLAYBACK_COMPLETE')
     btn:RegisterEvent('PET_BATTLE_OVERRIDE_ABILITY')
-    --btn:RegisterEvent('PET_BATTLE_PET_CHANGED')
-    --btn:RegisterEvent("PET_BATTLE_OPENING_DONE")
-    btn:SetScript('OnEvent', function(self)
+    btn:SetScript('OnEvent', function(self, event)
         AbilityButton_UpdateTypeTips(self)
         AbilityButton_Update(self)
     end)
@@ -479,7 +473,7 @@ local function Set_PetUnit_Attributes(self, petOwner, petIndex)
     if isWildBattle then
         local num, collected= select(2, WoWTools_PetBattleMixin:Collected(nil, nil, nil, petOwner, petIndex))--总收集数量， 25 25 25， 已收集3/3
         self.CollectedIcon.Text:SetText(collected or '')
-        self.CollectedIcon.Text2:SetText(num or '25 25 25')
+        self.CollectedIcon.Text2:SetText(num or '')
     end
     self.CollectedIcon:SetShown(isWildBattle)
 
@@ -511,7 +505,31 @@ end
 
 
 
+--清除，宠物，信息
+local function Clear_PetUnit_All(self)
+    self.texture:SetTexture(0)
+    self.petType=nil
+    self.bar:SetValue(0)
+    self.bar.valueText:SetText('')
+    self.portrait:SetTexture(0)
+    self.LevelText:SetText('')
+    self.nameText:SetText("")
+    self.displayID=nil
+    self.PetModel:ClearModel()--3D
 
+--光环
+    for index=1, #self.Auras do
+        local icon= self.Auras[index]
+        icon.buff:SetTexture(0)
+        icon.turnsText:SetText("")
+    end
+
+--属性
+    self.CollectedIcon.Text:SetText('')
+    self.CollectedIcon.Text2:SetText('')
+    self.AttackIcon.Text:SetText('')
+    self.SpeedIcon.Text:SetText('')
+end
 
 
 
@@ -530,7 +548,7 @@ local function Set_PetUnit(self)
         name, speciesName= C_PetBattles.GetName(petOwner, petIndex)
     end
     if not name then
-        self.petType=nil
+        Clear_PetUnit_All(self)
         self:SetShown(false)
         return
     end
@@ -579,6 +597,12 @@ local function Set_PetUnit(self)
     )
     self.nameText:SetTextColor(r,g,b)
 
+--3D
+    local displayID= C_PetBattles.GetDisplayID(petOwner, petIndex)
+    if displayID and displayID~= self.displayID then
+        self.PetModel:SetDisplayInfo(displayID)
+    end
+    self.displayID= displayID
 
     Set_PetUnit_Aura(self, petOwner, petIndex)--光环
     Set_PetUnit_Attributes(self, petOwner, petIndex)--属性
@@ -658,6 +682,16 @@ local function Init_Button_Menu(self, root)
         self:set_name_shown()
     end)
 
+--3D
+    sub:CreateCheckbox(
+        '|A:WildBattlePetCapturable:0:0|a'..(e.onlyChinese and '显示3D' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, '3D')),
+    function(data)
+        return Save().AbilityButton['petmodelShow_'..self.name]
+    end, function(data)
+        Save().AbilityButton['petmodelShow_'..self.name]= not Save().AbilityButton['petmodelShow_'..self.name] and true or nil
+        self.PetModel:Settings()
+    end)
+
 --显示背景
     WoWTools_MenuMixin:ShowBackground(sub, function()
         return not Save().AbilityButton['hideBackground'..self.name]
@@ -695,7 +729,7 @@ local function Init_Button_Menu(self, root)
             end
         end
         self:Settings()
-        return MenuResponse.Open
+        return MenuResponse.CloseAll
     end)
 end
 
@@ -747,6 +781,7 @@ local function Set_Move_Button(btn)
         self:set_alpha()
         self:set_name_shown()
         Set_PetUnit(self)
+        self.PetModel:Settings()--3D
     end
 
     function btn:set_tooltip()
@@ -818,12 +853,32 @@ local function Set_Move_Button(btn)
 	btn:RegisterEvent("PET_BATTLE_HEALTH_CHANGED")
 	btn:RegisterEvent("PET_BATTLE_PET_TYPE_CHANGED")
     btn:RegisterEvent("PET_BATTLE_OPENING_DONE")
-
+    btn:RegisterEvent("PET_BATTLE_CLOSE")
     btn:SetScript('OnEvent', function(self)
         Set_PetUnit(self)
     end)
 
-    btn:Settings()
+
+
+
+
+
+--3D
+    function btn.PetModel:Settings()
+        local name=self:GetParent():GetParent().name
+        local value= Save().AbilityButton['petmodelCDS_'..name] or 0.9
+        self:SetCamDistanceScale(value)
+        self:SetShown(Save().AbilityButton['petmodelShow_'..name])
+    end
+    btn.PetModel:EnableMouseWheel(true)
+    btn.PetModel:SetScript('OnMouseWheel', function(self, d)
+        local value= (Save().AbilityButton['petmodelCDS_'..self.name] or 0.9) +(d==-1 and 0.1 or -0.1)
+        value= math.min(value, 2)
+        value= math.max(value, 0.1)
+        Save().AbilityButton['petmodelCDS_'..self.name]=value
+        self:Settings()
+    end)
+
 
 --移动按钮，提示
     btn.parent.petUnitButton= btn
@@ -833,6 +888,8 @@ local function Set_Move_Button(btn)
     btn.parent:HookScript('OnEnter', function(self)
         self.petUnitButton.selectTexture:SetShown(true)
     end)
+
+    btn:Settings()
 end
 
 
@@ -860,7 +917,7 @@ end
 
 
 local function Init_Button(tab)
-    local isEnemy, s
+    local isEnemy, s, height
     local btn= WoWTools_ButtonMixin:Ctype2(PetBattleFrame, {
         name='WoWTools'..tab.name..'AbilityButton',
         atlas='summon-random-pet-icon_64',
@@ -896,15 +953,44 @@ local function Init_Button(tab)
     btn.frame:SetFrameLevel(btn:GetFrameLevel()-1)
 
     s= (size+6)*NUM_BATTLE_PET_ABILITIES +120
+    height= size+20
     if isEnemy then
         btn.frame:SetPoint('LEFT', btn, -8, 0)
-        btn.frame:SetHeight(size+20)
+        btn.frame:SetHeight(height)
         btn.frame:SetWidth(s)
     else
         btn.frame:SetPoint('RIGHT', btn, 8, 0)
-        btn.frame:SetHeight(size+20)
+        btn.frame:SetHeight(height)
         btn.frame:SetWidth(s)
     end
+
+
+--3D
+    btn.PetModel= CreateFrame("PlayerModel", nil, btn.frame)
+    btn.PetModel:SetFacing(isEnemy and 0.3 or -0.3)
+    btn.PetModel:SetSize(height, height)
+    if isEnemy then
+        btn.PetModel:SetPoint('RIGHT', btn.frame, 'LEFT')
+    else
+        btn.PetModel:SetPoint('LEFT', btn.frame, 'RIGHT')
+    end
+
+
+
+    btn.PetModel.bg= btn.PetModel:CreateTexture(nil, 'BACKGROUND')
+    btn.PetModel.bg:SetAllPoints()
+    btn.PetModel.bg:SetAtlas(isEnemy and 'hunter-stable-bg-art_ferocity' or 'hunter-stable-bg-art_cunning')
+    if isEnemy then
+        btn.PetModel.bg:SetTexCoord(1,0,0,1)
+    end
+
+    btn.PetModel.shadow= btn.PetModel:CreateTexture(nil, 'ARTWORK')
+    btn.PetModel.shadow:SetAtlas('perks-char-shadow')
+    btn.PetModel.shadow:SetSize(height-18, 18)
+    btn.PetModel.shadow:SetAlpha(0.7)
+    btn.PetModel.shadow:SetPoint(isEnemy and 'BOTTOMRIGHT' or 'BOTTOMLEFT',btn.PetModel, 0,-3)
+
+
 
 --名称
     btn.nameText= WoWTools_LabelMixin:Create(btn.frame, {size=16})
@@ -1028,7 +1114,8 @@ local function Init()
         petOwner=Enum.BattlePetOwner.Enemy,
         petIndex=1,
         getPetIndex=function() return C_PetBattles.GetActivePet(Enum.BattlePetOwner.Enemy) end,
-        point={'BOTTOMLEFT', PetBattleFrame.BottomFrame, 'TOPLEFT', 15, 250},
+        --point={'BOTTOMLEFT', PetBattleFrame.BottomFrame, 'TOPLEFT', 15, 250},
+        point={'BOTTOM', -320, 350},
         parent=PetBattleFrame.ActiveEnemy,
     }, {
         name='Enemy2',
@@ -1168,8 +1255,8 @@ local function Init_BottomFrame()
                     ..e.cn(name, {spellID=abilityID})
                     ..(numTurns and numTurns>0 and ' |cnGREEN_FONT_COLOR:'..numTurns..'|r' or '')
                     ..(maxCooldown and maxCooldown>1 and '/|cnRED_FONT_COLOR:'..maxCooldown..'|r' or '')
-            )
-            find=true
+                )
+                find=true
             end
         end
         if find then

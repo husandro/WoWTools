@@ -32,7 +32,7 @@ local function Init()
 
     WoWTools_MoveMixin:Setup(PVEFrame, {
         setSize=true,
-        notInCombat=true,
+        --notInCombat=true,
         minW=563,
         minH=428,
         sizeUpdateFunc=function()

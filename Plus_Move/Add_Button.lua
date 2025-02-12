@@ -19,16 +19,22 @@ local function Set_Tooltip(self)
     e.tips:AddDoubleLine(e.addName, WoWTools_MoveMixin.addName)
     e.tips:AddLine(format('|cffff00ff%s|r', self.name))
     e.tips:AddLine(' ')
+
+
+    e.tips:AddDoubleLine(
+        e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL,
+        e.Icon.right
+    )
+    e.tips:AddDoubleLine(
+        e.onlyChinese and '移动' or NPE_MOVE,
+        'Alt+'..e.Icon.right
+    )
     if self.setZoom then
         e.tips:AddDoubleLine(
             (e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().scale[self.name] or 1),
             'Alt+'..e.Icon.mid
         )
     end
-    e.tips:AddDoubleLine(
-        e.onlyChinese and '移动' or NPE_MOVE,
-        'Alt+'..(self.click=='RightButton' and e.Icon.right or e.Icon.left)
-    )
     e.tips:Show()
 end
 
@@ -37,15 +43,56 @@ end
 
 
 
+
+
+
+
+
+
+
+
 local function Init_Menu(self, root)
+    if self.setZoom then
 --缩放
-    WoWTools_MenuMixin:Scale(root, function()
-        return Save.scale
-    end, function(value)
-        Save.scale= value
-        self:set_scale()
+        WoWTools_MenuMixin:Scale(root, function()
+            return Save().scale[self.name] or 1
+        end, function(value)
+            Save().scale[self.name]= value
+            local targetFrame= self.targetFrame
+            if self.targetFrame and not UnitAffectingCombat('player') then
+                self.targetFrame:SetScale(value)
+            end
+        end)
+    end
+
+    root:CreateButton(
+        '|A:characterundelete-RestoreButton:0:0|a'
+        ..(Save().point[self.name] and '' or '|cff828282')
+        ..(e.onlyChinese and '重置位置' or RESET_POSITION),
+    function()
+        Save().point[self.name]= nil
+        local p=self.pointSave
+        self.targetFrame:ClearAllPoints()
+        self.targetFrame:SetPoint(p[1], p[2], p[3], p[4], p[5])
+        return MenuResponse.Open
     end)
+
+    root:CreateDivider()
+--打开选项界面
+    WoWTools_MenuMixin:OpenOptions(root, {
+        name=WoWTools_MoveMixin.addName,
+        category=WoWTools_MoveMixin.Category
+    })
 end
+
+
+
+
+
+
+
+
+
 
 
 local function SetupButton(frame, tab)
@@ -75,6 +122,7 @@ local function SetupButton(frame, tab)
     btn.setZoom= setZoom
     --btn.click= click
     btn.alpha= alpha
+    btn.pointSave= {frame:GetPoint(1)}
 
 --透明度
     function btn:set_alpha()
@@ -112,11 +160,9 @@ local function SetupButton(frame, tab)
 
 --缩放
     if setZoom then
-        if frame:CanChangeAttribute() then
-            local scale= Save().scale[name]
-            if scale and scale~=1 then
-                frame:SetScale(scale)
-            end
+        local scale= Save().scale[name]
+        if scale and scale~=1 then
+            frame:SetScale(scale)
         end
 
         btn:SetScript('OnMouseWheel', function(self, delta)
@@ -129,12 +175,15 @@ local function SetupButton(frame, tab)
         end)
     end
 
-    tab.targetFrame= frame
-    tab.name= name
+    tab.frame= frame
+    
+
+    --tab.name= name
     tab.click= 'RightButton'--点击，移动
+    tab.notFuori= true
     tab.isAltKeyDown= true
 
-    WoWTools_MoveMixin:Setup(frame.WoWToolsMoveButton, tab)
+    WoWTools_MoveMixin:Setup(btn, tab)
 
     frame.WoWToolsMoveButton= btn
     return btn
@@ -165,6 +214,7 @@ local function Init_UIWidgetPowerBarContainerFrame()--移动, 能量条
     end
 
     SetupButton(frame)
+
 
     if frame.WoWToolsMoveButton then
         local find=false
@@ -230,6 +280,13 @@ local function Init()
         end)
     end)
 end
+
+
+
+
+
+
+
 
 
 

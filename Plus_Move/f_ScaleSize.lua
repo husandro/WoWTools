@@ -58,10 +58,7 @@ end
 --菜单
 local function Init_Menu(self, root)
     local sub, sub2
-    if not self.targetFrame:CanChangeAttribute() then
-        root:CreateTitle(format('|cnRED_FONT_COLOR:%s', e.onlyChinese and '当前不可更改' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, DISABLE)))
-        return
-    elseif self.notInCombat and UnitAffectingCombat('player') then
+    if UnitAffectingCombat('player') then
         root:CreateTitle(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
         return
     end
@@ -300,13 +297,13 @@ local function Set_Tooltip(self)
     e.tips:ClearLines()
 
 
-    if not self:CanChangeAttribute() then
+    if UnitAffectingCombat('player') then
         e.tips:AddLine(format('|cnRED_FONT_COLOR:%s', e.onlyChinese and '当前不可更改' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, DISABLE)))
         e.tips:Show()
         return
     end
 
-    if self.notInCombat and UnitAffectingCombat('player') then
+    if UnitAffectingCombat('player') then
         e.tips:AddDoubleLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT), e.GetEnabeleDisable(false))
         e.tips:Show()
         return
@@ -361,11 +358,6 @@ local function Set_Tooltip(self)
     end
 
     e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.mid)
-
-    if self.notInCombat then
-        e.tips:AddLine(' ')
-        e.tips:AddLine(e.onlyChinese and '请不要在战斗中操作' or 'Please don\'t do it in combat')
-    end
     e.tips:Show()
 end
 
@@ -413,7 +405,7 @@ end
 local function Set_OnMouseUp(self, d)
     self:SetScript("OnUpdate", nil)
 
-    if not self.isActive or (self.notInCombat and UnitAffectingCombat('player')) or not self:CanChangeAttribute() then
+    if UnitAffectingCombat('player') then
         return
     end
 
@@ -444,7 +436,7 @@ end
 
 
 local function Set_OnMouseDown(self, d)
-    if self.isActive or (self.notInCombat and UnitAffectingCombat('player')) or not self.targetFrame:CanChangeAttribute() then
+    if self.isActive or UnitAffectingCombat('player') then
         return
     end
 
@@ -521,7 +513,7 @@ end
 
 
 local function Set_OnShow(self)
-    if (self.notInCombat and UnitAffectingCombat('player')) or not self:CanChangeAttribute() then
+    if UnitAffectingCombat('player') then
         return
     end
     local name2= self:GetName()
@@ -541,7 +533,7 @@ end
 
 
 local function Set_Init_Frame(btn, target, size, initFunc)
-    if btn.notInCombat and UnitAffectingCombat('player') then
+    if UnitAffectingCombat('player') then
         btn.notInCombatFrame= CreateFrame("Frame", nil, btn)
         btn.notInCombatFrame.size=size
         btn.notInCombatFrame.targetFrame=target
@@ -634,7 +626,7 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
     btn.restPointFunc= tab.restPointFunc--还原，（清除，位置，数据）
     btn.alpha= tab.alpha--设置透明度为0，移到frame设置为1
     btn.setSize= setSize --and not disabledSize--是否有，设置大小，功能    
-    btn.notInCombat= tab.notInCombat--战斗中，禁止操作
+    --btn.notInCombat= tab.notInCombat--战斗中，禁止操作
     btn.notUpdatePositon= tab.notUpdatePositon
     btn.notMoveAlpha= tab.notMoveAlpha--是否设置，移动时，设置透明度
 

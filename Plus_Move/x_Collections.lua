@@ -256,7 +256,7 @@ local function Init_CollectionsJournal()
         setSize=true,
         minW=703,
         minH=606,
-        notInCombat=true,
+        --notInCombat=true,
         sizeUpdateFunc=function(btn)
             init_items_colllection(btn, true)
 

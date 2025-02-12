@@ -29,7 +29,7 @@ end
 --缩放，Frame
 function WoWTools_FrameMixin:ScaleFrame(frame, delta, value, func)
     local n= value
-    if frame:CanChangeAttribute() and not UnitAffectingCombat('player') and IsAltKeyDown() then
+    if not UnitAffectingCombat('player') and IsAltKeyDown() then
         n= n or 1
         n= delta==1 and n-0.05 or n
         n= delta==-1 and n+0.05 or n

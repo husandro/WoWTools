@@ -5174,6 +5174,7 @@
         "missing-parameter",
         "redundant-parameter",
         "unused-local",
-        "empty-block"
+        "empty-block",
+        "redefined-local"
     ],
 }
