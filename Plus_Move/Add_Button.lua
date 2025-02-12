@@ -26,8 +26,8 @@ local function Set_Tooltip(self)
         )
     end
     e.tips:AddDoubleLine(
-        'Alt+'..(e.onlyChinese and '移动' or NPE_MOVE),
-        self.click=='RightButton' and e.Icon.right or e.Icon.left
+        e.onlyChinese and '移动' or NPE_MOVE,
+        'Alt+'..(self.click=='RightButton' and e.Icon.right or e.Icon.left)
     )
     e.tips:Show()
 end
