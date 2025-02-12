@@ -8,7 +8,7 @@ WoWTools_MoveMixin.ADDON_LOADED['Blizzard_TrainerUI']= function()
         end)
         btn.target.ScrollBox:ClearAllPoints()
     end, sizeRestFunc=function(self)
-        self.target:SetSize(338, 424)
+        self.targetFrame:SetSize(338, 424)
     end})
 end
 

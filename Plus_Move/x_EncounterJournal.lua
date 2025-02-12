@@ -42,7 +42,7 @@ local function Init()
         maxW=800,
         setSize=true,
         sizeRestFunc=function(self)
-            self.target:SetSize(800, 496)
+            self.targetFrame:SetSize(800, 496)
         end
     })
 end

@@ -102,7 +102,7 @@ local function Init()
 --移动
     WoWTools_MoveMixin:Setup(MacroFrame, {needSize=true, setSize=true, minW=260, minH=250,
         sizeRestFunc=function(btn)
-        btn.target:SetSize(338, 424)
+        btn.targetFrame:SetSize(338, 424)
     end})
 
 --设置，列表

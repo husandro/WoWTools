@@ -29,7 +29,7 @@ local function Init()
         minH=128,
         setSize=true,
         sizeRestFunc=function(self)
-            self.target:SetSize(338, 496)
+            self.targetFrame:SetSize(338, 496)
         end
     })
 end

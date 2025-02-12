@@ -22,35 +22,35 @@ local function Init()
         end)
         --hooksecurefunc(GossipOptionButtonMixin, 'Setup', function(self, optionInfo)
     end, sizeRestFunc=function(self)
-        self.target:SetSize(384, 512)
+        self.targetFrame:SetSize(384, 512)
     end})
 
 --聊天设置
     WoWTools_MoveMixin:Setup(ChannelFrame, {minW=402, minH=200, maxW=402, setSize=true,  sizeRestFunc=function(self)
-        self.target:SetSize(402, 423)
+        self.targetFrame:SetSize(402, 423)
     end})
 
 --选项
     WoWTools_MoveMixin:Setup(SettingsPanel, {notSave=true, setSize=true, minW=800, minH=200, initFunc=function(btn)
-        for _, region in pairs({btn.target:GetRegions()}) do
+        for _, region in pairs({btn.targetFrame:GetRegions()}) do
             if region:GetObjectType()=='Texture' then
                 region:SetPoint('BOTTOMRIGHT', -12, 38)
             end
         end
     end, sizeRestFunc=function(self)
-        self.target:SetSize(920, 724)
+        self.targetFrame:SetSize(920, 724)
     end})
 
 --试衣间
     WoWTools_MoveMixin:Setup(DressUpFrame, {setSize=true, minH=330, minW=330, initFunc=function(btn)
-        btn.target:HookScript('OnShow', function(self)--DressUpFrame_Show
+        btn.targetFrame:HookScript('OnShow', function(self)--DressUpFrame_Show
             local size= Save().size[self:GetName()]
             if size then
                 self:SetSize(size[1], size[2])
             end
         end)
     end, sizeRestFunc=function(btn)
-        btn.target:SetSize(450, 545)
+        btn.targetFrame:SetSize(450, 545)
     end})
 
 --小，背包
@@ -109,7 +109,7 @@ local function Init()
     WoWTools_MoveMixin:Setup(AccountStoreFrame, {setSize=true, minH=537, minW=800, initFunc=function(btn)
  
     end, sizeRestFunc=function(btn)
-        btn.target:SetSize(800, 537)
+        btn.targetFrame:SetSize(800, 537)
     end})
 
     C_Timer.After(4, function()

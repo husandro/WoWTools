@@ -87,7 +87,10 @@ end
 
 --取得中文
 function e.cn(text, tab)--{gossipOptionID=, questID=}
-    return WoWTools_Chinese_Mixin and WoWTools_Chinese_Mixin:Setup(text, tab) or text
+    if WoWTools_Chinese_Mixin then
+        return WoWTools_Chinese_Mixin:Setup(text, tab) or text
+    end
+    return text
 end
 
 

@@ -83,7 +83,7 @@ local function scaleRestFunc(btn)
 end
 
 local function sizeRestFunc(btn)
-    btn.target:SetSize(825, 568)
+    btn.targetFrame:SetSize(825, 568)
 end
 
 

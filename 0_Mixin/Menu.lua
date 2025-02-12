@@ -217,7 +217,7 @@ function WoWTools_MenuMixin:Scale(root, GetValue, SetValue, ResetValue)
         '|A:common-icon-zoomin:0:0|a'
         ..(e.onlyChinese and '缩放' or UI_SCALE),
     function()
-        return MenuResponse.Refresh
+        return MenuResponse.Open
     end)
 
     local sub2= self:ScaleRoot(sub, GetValue, SetValue, ResetValue)

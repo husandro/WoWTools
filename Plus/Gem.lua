@@ -1020,7 +1020,7 @@ local function Init()
 
 
     WoWTools_MoveMixin:Setup(ItemSocketingFrame, {needSize=true, needMove=true, setSize=true, minW=338, minH=424, sizeRestFunc=function(btn)
-        btn.target:SetSize(338, 424)
+        btn.targetFrame:SetSize(338, 424)
         set_point()
         panel:set_Gem()
     end, sizeUpdateFunc=function()

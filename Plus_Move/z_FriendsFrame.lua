@@ -27,7 +27,7 @@ local function Init_RaidInfoFrame()
         minH=128,
         notMoveAlpha=true,
         sizeRestFunc=function(btn)
-            btn.target:SetSize(345, 250)
+            btn.targetFrame:SetSize(345, 250)
             RaidInfoFrame_Set_point()
         end, restPointFunc=function(btn)
             RaidInfoFrame_Set_point()
@@ -108,7 +108,7 @@ local function Init()
             end
         end,
         sizeRestFunc=function(btn)
-            btn.target:SetSize(338, 424)
+            btn.targetFrame:SetSize(338, 424)
             if RaidFrame:IsShown() and not UnitAffectingCombat('player') then
                 Set_RaidFrame_Button_size()
                 if RaidGroupFrame_Update then

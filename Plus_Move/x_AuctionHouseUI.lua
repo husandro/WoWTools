@@ -46,7 +46,7 @@ local function Init()
     WoWTools_MoveMixin:Setup(AuctionHouseFrame, {
         setSize=true,
         sizeRestFunc=function(btn)
-            btn.target:SetSize(800, 538)
+            btn.targetFrame:SetSize(800, 538)
         end
     })
 

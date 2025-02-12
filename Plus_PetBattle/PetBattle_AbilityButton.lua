@@ -525,10 +525,10 @@ local function Set_PetUnit(self)
     local petIndex= self:getPetIndex()
     local petOwner= self.petOwner
 
-    local name= C_PetBattles.IsInBattle()
-                and petIndex
-                and C_PetBattles.GetName(petOwner, petIndex)
-                and not Save().AbilityButton.disabled
+    local name, speciesName
+    if C_PetBattles.IsInBattle() and petIndex and not Save().AbilityButton.disabled then
+        name, speciesName= C_PetBattles.GetName(petOwner, petIndex)
+    end
     if not name then
         self.petType=nil
         self:SetShown(false)
@@ -573,7 +573,10 @@ local function Set_PetUnit(self)
     self.border:SetVertexColor(r,g,b)
 
 --名称
-    self.nameText:SetText(e.cn(name) or '')
+    self.nameText:SetText(
+        (e.cn(name) or '')
+        ..(speciesName and name~=speciesName and ' ['..speciesName..']' or '')
+    )
     self.nameText:SetTextColor(r,g,b)
 
 
@@ -730,10 +733,6 @@ local function Set_Move_Button(btn)
     end
 
     function btn:Settings()
-        Set_PetUnit(self)
-        if not self:IsShown() then
-            return
-        end
         self:ClearAllPoints()
         local p= Save().AbilityButton['point'..self.name]
         if p then
@@ -747,6 +746,7 @@ local function Set_Move_Button(btn)
         self.frame.Background:SetShown(not Save().AbilityButton['hideBackground'..self.name])
         self:set_alpha()
         self:set_name_shown()
+        Set_PetUnit(self)
     end
 
     function btn:set_tooltip()
@@ -1111,16 +1111,10 @@ end
 
 
 
-
+--激活，宠物
 local function Init_BottomFrame()
 
-
-    ---PetBattleFrame.BottomFrame.FlowFrame.LeftEndCap
-    -----[[
-    ---
-
-    ---]]
-    --宠物，属性
+--宠物，属性
     hooksecurefunc('PetBattleFrame_UpdateAllActionButtons', function(self)
         local btn= self.BottomFrame.abilityButtons[1]
         local petOwner= Enum.BattlePetOwner.Ally
@@ -1149,7 +1143,7 @@ local function Init_BottomFrame()
         btn:set_shown(true)
     end)
 
-    --更换宠物，索引
+--更换宠物，索引
     for i=1,NUM_BATTLE_PETS_IN_BATTLE do
         if PetBattleFrame.BottomFrame.PetSelectionFrame['Pet'..i] then
             local frame= PetBattleFrame.BottomFrame.PetSelectionFrame['Pet'..i]
@@ -1159,12 +1153,11 @@ local function Init_BottomFrame()
         end
     end
 
-    --PetBattlePrimaryUnitTooltip 技能, 提示
+--PetBattlePrimaryUnitTooltip 技能, 提示
     hooksecurefunc('PetBattleUnitTooltip_UpdateForUnit', function(self, petOwner, petIndex)
         if Save().AbilityButton.disabled then
             return
         end
-        --if ( petOwner ~= Enum.BattlePetOwner.Ally and not C_PetBattles.IsPlayerNPC(petOwner) ) or Save().AbilityButton.disabled then--Blizzard_PetBattleUI.lua
         local find
         for i=1, NUM_BATTLE_PET_ABILITIES do
             local abilityID, name, icon, maxCooldown, _, numTurns, petType= C_PetBattles.GetAbilityInfo(petOwner, petIndex, i)
@@ -1184,7 +1177,7 @@ local function Init_BottomFrame()
         end
     end)
 
-    --PetBattleUnitFrame_UpdateDisplay(self)
+
 
 end
 

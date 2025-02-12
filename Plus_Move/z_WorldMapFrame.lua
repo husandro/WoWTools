@@ -63,7 +63,7 @@ local function Init()
         onShowFunc=true,
         notMoveAlpha=true,
         sizeUpdateFunc= function(btn)--WorldMapMixin:UpdateMaximizedSize()
-            set_min_max_value({btn.target:GetSize()})
+            set_min_max_value({btn.targetFrame:GetSize()})
         end,
         sizeRestFunc= function(self)
             local target=self.target

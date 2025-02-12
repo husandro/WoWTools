@@ -140,12 +140,12 @@ local function Init()
     WoWTools_MoveMixin:Setup(CurrencyTransferLog, {
         setSize=true,
         sizeRestFunc=function(btn)
-            btn.target:ClearAllPoints()
-            btn.target:SetPoint('TOPLEFT', CharacterFrame, 'TOPRIGHT', 5,0)
-            btn.target:SetSize(340, 370)
+            btn.targetFrame:ClearAllPoints()
+            btn.targetFrame:SetPoint('TOPLEFT', CharacterFrame, 'TOPRIGHT', 5,0)
+            btn.targetFrame:SetSize(340, 370)
         end, scaleRestFunc= function(btn)
-            btn.target:ClearAllPoints()
-            btn.target:SetPoint('TOPLEFT', CharacterFrame, 'TOPRIGHT', 5,0)
+            btn.targetFrame:ClearAllPoints()
+            btn.targetFrame:SetPoint('TOPLEFT', CharacterFrame, 'TOPRIGHT', 5,0)
         end,
     })
 end

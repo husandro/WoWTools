@@ -33,7 +33,7 @@ local function sizeUpdateFunc()
 end
 
 local function sizeRestFunc(btn)
-    btn.target:SetSize(500, 400)
+    btn.targetFrame:SetSize(500, 400)
 end
 
 

@@ -45,7 +45,7 @@ local function Init()--职业，能量条
                 restPointFunc=function(btn)
                     Save().scale[btn.name]=nil
                     if not UnitAffectingCombat('player') then
-                        btn.target:SetScale(1)
+                        btn.targetFrame:SetScale(1)
                         e.call(PlayerFrame_UpdateArt, PlayerFrame)
                     end
                 end
@@ -126,7 +126,7 @@ local function Set_Class_Frame(frame, click)
         restPointFunc=function(btn)
             Save().scale[btn.name]=nil
             if not UnitAffectingCombat('player') then
-                btn.target:SetScale(1)
+                btn.targetFrame:SetScale(1)
                 e.call(PlayerFrame_UpdateArt, PlayerFrame)
             end
         end})

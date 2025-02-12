@@ -96,7 +96,7 @@ local function Init()
             end
         end,
         scaleRestFunc=function(btn)
-            local displayMode = btn.target:GetDisplayMode()
+            local displayMode = btn.targetFrame:GetDisplayMode()
             if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
                 Save().scale['CommunitiesFrameMINIMIZED']= nil
             else
@@ -124,7 +124,7 @@ local function Init()
             end
         end,
         sizeRestTooltipColorFunc=function(btn)
-            local displayMode = btn.target:GetDisplayMode()
+            local displayMode = btn.targetFrame:GetDisplayMode()
             if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
                 if Save().size['CommunitiesFrameMINIMIZED'] then
                     return ''

@@ -265,11 +265,11 @@ local function Init_CollectionsJournal()
             end
         end,
         sizeStopFunc=function(btn)
-            Save().size[btn.name]= {btn.target:GetSize()}
+            Save().size[btn.name]= {btn.targetFrame:GetSize()}
             update_frame()
         end,
         sizeRestFunc=function(btn)
-            btn.target:SetSize(703, 606)
+            btn.targetFrame:SetSize(703, 606)
             Save().size[btn.name]=nil
             init_items_colllection(btn)
             update_frame()
@@ -324,7 +324,7 @@ local function Init_WardrobeFrame()
     end, sizeUpdateFunc=function(btn)
         init_items_colllection(btn, true)
     end, sizeStopFunc=function(btn)
-        Save().size[btn.name]= {btn.target:GetSize()}
+        Save().size[btn.name]= {btn.targetFrame:GetSize()}
         update_frame()
     end, sizeRestFunc=function(btn)
         WardrobeFrame:SetSize(965, 606)

@@ -11,7 +11,7 @@ local function Save_Frame_Size(self)
     if self.sizeStopFunc ~= nil then
         self.sizeStopFunc(self)
     else
-        Save().size[self.name]= {self.target:GetSize()}
+        Save().size[self.name]= {self.targetFrame:GetSize()}
     end
 end
 
@@ -19,7 +19,7 @@ end
 
 --百分比，设置大小
 local function Set_ScalePercent(self, isSu)
-    local w,h= self.target:GetSize()
+    local w,h= self.targetFrame:GetSize()
     if isSu then
         w= w+ w* 0.1
         h= h+ h* 0.1
@@ -39,7 +39,7 @@ local function Set_ScalePercent(self, isSu)
         return
     end
 
-    self.target:SetSize(w,h)
+    self.targetFrame:SetSize(w,h)
 
     Save_Frame_Size(self)--保存，大小
 end
@@ -58,7 +58,7 @@ end
 --菜单
 local function Init_Menu(self, root)
     local sub, sub2
-    if not self.target:CanChangeAttribute() then
+    if not self.targetFrame:CanChangeAttribute() then
         root:CreateTitle(format('|cnRED_FONT_COLOR:%s', e.onlyChinese and '当前不可更改' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, DISABLE)))
         return
     elseif self.notInCombat and UnitAffectingCombat('player') then
@@ -68,11 +68,11 @@ local function Init_Menu(self, root)
 
 --缩放
     WoWTools_MenuMixin:Scale(root, function()
-        return self.target:GetScale()
+        return self.targetFrame:GetScale()
     end, function(value)
-        if self.target:CanChangeAttribute() then
+        if self.targetFrame:CanChangeAttribute() then
             Save().scale[self.name]=value
-            self.target:SetScale(value)
+            self.targetFrame:SetScale(value)
         end
     end, function()
         Save().scale[self.name]=nil
@@ -94,10 +94,10 @@ local function Init_Menu(self, root)
         sub:CreateSpacer()
         sub2=WoWTools_MenuMixin:CreateSlider(sub, {
             getValue=function()
-                return math.modf(self.target:GetWidth())
+                return math.modf(self.targetFrame:GetWidth())
             end, setValue=function(value)
-                if self.target:CanChangeAttribute() then
-                    self.target:SetWidth(value)
+                if self.targetFrame:CanChangeAttribute() then
+                    self.targetFrame:SetWidth(value)
                     Save_Frame_Size(self)--保存，大小
                 end
             end,
@@ -106,15 +106,15 @@ local function Init_Menu(self, root)
             maxValue=self.maxWidth or math.modf(UIParent:GetWidth()),
             step=5,
         })
-        sub2:SetEnabled(not Save().disabledSize[self.name] and self.target:CanChangeAttribute())
+        sub2:SetEnabled(not Save().disabledSize[self.name] and self.targetFrame:CanChangeAttribute())
         sub:CreateSpacer()
         sub:CreateSpacer()
         sub2=WoWTools_MenuMixin:CreateSlider(sub, {
             getValue=function()
-                return math.modf(self.target:GetHeight())
+                return math.modf(self.targetFrame:GetHeight())
             end, setValue=function(value)
-                if self.target:CanChangeAttribute() then
-                    self.target:SetHeight(value)
+                if self.targetFrame:CanChangeAttribute() then
+                    self.targetFrame:SetHeight(value)
                     Save_Frame_Size(self)--保存，大小
                 end
             end,
@@ -123,7 +123,7 @@ local function Init_Menu(self, root)
             maxValue= self.maxHeight or math.modf(UIParent:GetHeight()),
             step=5,
         })
-        sub2:SetEnabled(not Save().disabledSize[self.name] and self.target:CanChangeAttribute())
+        sub2:SetEnabled(not Save().disabledSize[self.name] and self.targetFrame:CanChangeAttribute())
         sub:CreateSpacer()
         sub:CreateButton(
             '+0.1%',
@@ -148,7 +148,7 @@ local function Init_Menu(self, root)
                 self.sizeRestFunc(self)
             end
             if not self.notUpdatePositon then
-                e.call(UpdateUIPanelPositions, self.target)
+                e.call(UpdateUIPanelPositions, self.targetFrame)
             end
             return MenuResponse.Refresh
         end)
@@ -181,12 +181,12 @@ local function Init_Menu(self, root)
         function()
             return Save().point[self.name]
         end, function()
-            if self.target.setMoveFrame and not self.target.notSave then
+            if self.targetFrame.setMoveFrame and not self.targetFrame.notSave then
                 Save().point[self.name]=nil
                 if self.restPointFunc then
                     self.restPointFunc(self)
                 elseif not self.notUpdatePositon then
-                    e.call(UpdateUIPanelPositions, self.target)
+                    e.call(UpdateUIPanelPositions, self.targetFrame)
                 end
             end
             return MenuResponse.Refresh
@@ -229,7 +229,7 @@ local function Set_Move_Alpha(frame)
         frame.ResizeButton= btn
     end
     btn:SetScript('OnEvent', function(self, event)
-        local target= self:GetParent()
+        local target= self.targetFrame or self:GetParent()
         if event=='PLAYER_STARTED_MOVING' then
             target:SetAlpha(Save().alpha)
         else
@@ -312,14 +312,14 @@ local function Set_Tooltip(self)
         return
     end
 
-    e.tips:AddDoubleLine('|cffff00ff'..self.name, format('%s %.2f', e.onlyChinese and '实际' or 'Effective', self.target:GetEffectiveScale()))
-    local parent= self.target:GetParent()
+    e.tips:AddDoubleLine('|cffff00ff'..self.name, format('%s %.2f', e.onlyChinese and '实际' or 'Effective', self.targetFrame:GetEffectiveScale()))
+    local parent= self.targetFrame:GetParent()
     if parent then
         e.tips:AddDoubleLine(parent:GetName() or 'Parent', format('%.2f', parent:GetScale()))
     end
 
     local scale
-    scale= tonumber(format('%.2f', self.target:GetScale() or 1))
+    scale= tonumber(format('%.2f', self.targetFrame:GetScale() or 1))
     scale= ((scale<=0.4 or scale>=2.5) and ' |cnRED_FONT_COLOR:' or ' |cnGREEN_FONT_COLOR:')..scale..' '
     e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE), scale..e.Icon.left)
 
@@ -332,10 +332,10 @@ local function Set_Tooltip(self)
         col=col or (Save().size[self.name] and '' or '|cff9e9e9e')
 
         local w, h
-        w= math.modf(self.target:GetWidth())
+        w= math.modf(self.targetFrame:GetWidth())
         w= format('%s%d|r', ((self.minWidth and self.minWidth>=w) or (self.maxWidth and self.maxWidth<=w)) and '|cnRED_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:', w)
 
-        h= math.modf(self.target:GetHeight())
+        h= math.modf(self.targetFrame:GetHeight())
         h= format('%s%d|r', ((self.minHeight and self.minHeight>=h) or (self.maxHeight and self.maxHeight<=h)) and '|cnRED_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:', h)
 
         e.tips:AddDoubleLine(
@@ -382,10 +382,10 @@ local function Set_Enter(btn)
     if btn.alpha then
         btn:SetAlpha(btn.alpha)
         if btn.alpha==0 then
-            btn.target:HookScript('OnEnter', function(self)
+            btn.targetFrame:HookScript('OnEnter', function(self)
                 self.ResizeButton:SetAlpha(1)
             end)
-            btn.target:HookScript('OnLeave', function(self)
+            btn.targetFrame:HookScript('OnLeave', function(self)
                 self.ResizeButton:SetAlpha(0)
             end)
         end
@@ -422,16 +422,16 @@ local function Set_OnMouseUp(self, d)
         if self.scaleStoppedFunc then
             self.scaleStoppedFunc(self)
         else
-            Save().scale[self.name]= self.target:GetScale()
+            Save().scale[self.name]= self.targetFrame:GetScale()
         end
 
     elseif d=='RightButton' and self.setSize then--保存，大小
         local continueResizeStop = true
-        if self.target.onResizeStopCallback then
-            continueResizeStop = self.target.onResizeStopCallback(self)
+        if self.targetFrame.onResizeStopCallback then
+            continueResizeStop = self.targetFrame.onResizeStopCallback(self)
         end
         if continueResizeStop then
-            self.target:StopMovingOrSizing()
+            self.targetFrame:StopMovingOrSizing()
         end
         Save_Frame_Size(self)--保存，大小
     end
@@ -444,13 +444,13 @@ end
 
 
 local function Set_OnMouseDown(self, d)
-    if self.isActive or (self.notInCombat and UnitAffectingCombat('player')) or not self.target:CanChangeAttribute() then
+    if self.isActive or (self.notInCombat and UnitAffectingCombat('player')) or not self.targetFrame:CanChangeAttribute() then
         return
     end
 
     if d=='LeftButton' then
         self.isActive= true
-        local target= self.target
+        local target= self.targetFrame
         self.SOS.left, self.SOS.top = target:GetLeft(), target:GetTop()
         self.SOS.scale = target:GetScale()
         self.SOS.x, self.SOS.y = self.SOS.left, self.SOS.top-(UIParent:GetHeight()/self.SOS.scale)
@@ -466,10 +466,10 @@ local function Set_OnMouseDown(self, d)
                 scale2 = 2.5
             end
             scale2= tonumber(format('%.2f', scale2))
-            local target2= frame2.target
+            local target2= frame2.targetFrame
             target2:SetScale(scale2)
 
-            local s = SOS.scale/target:GetScale()
+            local s = SOS.scale/target2:GetScale()
             local x = SOS.x*s
             local y = SOS.y*s
             target2:ClearAllPoints()
@@ -484,12 +484,12 @@ local function Set_OnMouseDown(self, d)
 --开始，设置，大小
         self.isActive = true
         local continueResizeStart = true
-        if self.target.onResizeStartCallback then
-            continueResizeStart = self.target.onResizeStartCallback(self)
+        if self.targetFrame.onResizeStartCallback then
+            continueResizeStart = self.targetFrame.onResizeStartCallback(self)
         end
         if continueResizeStart then
-            self.target:SetResizable(true)
-            self.target:StartSizing("BOTTOMRIGHT", true)
+            self.targetFrame:SetResizable(true)
+            self.targetFrame:StartSizing("BOTTOMRIGHT", true)
         end
         self:SetScript('OnUpdate', function(f)
             Set_Tooltip(f)
@@ -544,12 +544,12 @@ local function Set_Init_Frame(btn, target, size, initFunc)
     if btn.notInCombat and UnitAffectingCombat('player') then
         btn.notInCombatFrame= CreateFrame("Frame", nil, btn)
         btn.notInCombatFrame.size=size
-        btn.notInCombatFrame.target=target
+        btn.notInCombatFrame.targetFrame=target
         btn.notInCombatFrame.initFunc=initFunc
         btn:SetScript("OnEvent", function(self)
             if self.size then
                 do
-                    self.target:SetSize(self.size[1], self.size[2])
+                    self.targetFrame:SetSize(self.size[1], self.size[2])
                 end
                 self.size=nil
                 self.frame=nil
@@ -624,7 +624,7 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
 
     frame.ResizeButton= btn
 
-    btn.target= btn.target or frame
+    btn.targetFrame= btn.targetFrame or frame
     btn.name= name
 
 --设置缩放
@@ -651,7 +651,7 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
         frame:SetResizable(true)
         btn:Init(frame, minW, minH, maxW , maxH, rotationDegrees)
         --[[
-            self.target = target
+            self.targetFrame = targetFrame
             self.minWidth = minWidth
             self.minHeight = minHeight
             self.maxWidth = maxWidth

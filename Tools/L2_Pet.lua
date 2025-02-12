@@ -39,7 +39,7 @@ local function Init_PetJournal_InitPetButton(frame, elementData)
         frame.sumButton:SetPoint('BOTTOMRIGHT')
 
         function frame.sumButton:set_alpha()
-            self:SetAlpha(Save.Pets[self.speciesID] and 1 or 0.3)
+            self:SetAlpha(Save.Pets[self.speciesID] and 1 or 0)
         end
 
         frame.sumButton:SetScript('OnLeave', function(self) self:set_alpha() e.tips:Hide() end)

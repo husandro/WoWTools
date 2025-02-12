@@ -139,7 +139,7 @@ local function Init()
             Set_Inbox_Button()--显示，隐藏，建立，收件，物品    
         end
     end, sizeUpdateFunc=function(btn)
-        local h= btn.target:GetHeight()-424
+        local h= btn.targetFrame:GetHeight()-424
         local num= P_INBOXITEMS_TO_DISPLAY
         if h>45 then
             num= num+ math.modf(h/45)
@@ -149,7 +149,7 @@ local function Init()
         Save().INBOXITEMS_TO_DISPLAY= num>P_INBOXITEMS_TO_DISPLAY and num or nil
         WoWTools_MailMixin:RefreshAll()
     end, sizeRestFunc=function(btn)
-        btn.target:SetSize(338, 424)
+        btn.targetFrame:SetSize(338, 424)
         Save().INBOXITEMS_TO_DISPLAY=nil
         INBOXITEMS_TO_DISPLAY= P_INBOXITEMS_TO_DISPLAY
         Set_Inbox_Button()--显示，隐藏，建立，收件，物品
