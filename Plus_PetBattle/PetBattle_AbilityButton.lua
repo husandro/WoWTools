@@ -528,6 +528,7 @@ local function Set_PetUnit(self)
     local name= C_PetBattles.IsInBattle()
                 and petIndex
                 and C_PetBattles.GetName(petOwner, petIndex)
+                and not Save().AbilityButton.disabled
     if not name then
         self.petType=nil
         self:SetShown(false)
@@ -729,25 +730,23 @@ local function Set_Move_Button(btn)
     end
 
     function btn:Settings()
-        local show= not Save().AbilityButton.disabled
-        if show then
-
-            self:ClearAllPoints()
-            local p= Save().AbilityButton['point'..self.name]
-            if p then
-                self:SetPoint(p[1], UIParent, p[3], p[4], p[5])
-            else
-                self:SetPoint(self.point[1], self.point[2], self.point[3], self.point[4], self.point[5])
-            end
-
-            self:SetFrameStrata(Save().AbilityButton['strata'..self.name] or 'MEDIUM')
-            self:SetScale(Save().AbilityButton['scale'..self.name] or (self.name=='Enemy' and 1 or 0.75))
-            self.frame:SetShown(not Save().AbilityButton['hide'..self.name])
-            self.frame.Background:SetShown(not Save().AbilityButton['hideBackground'..self.name])
-            self:set_alpha()
-            self:set_name_shown()
+        Set_PetUnit(self)
+        if not self:IsShown() then
+            return
         end
-        self:SetShown(show)
+        self:ClearAllPoints()
+        local p= Save().AbilityButton['point'..self.name]
+        if p then
+            self:SetPoint(p[1], UIParent, p[3], p[4], p[5])
+        else
+            self:SetPoint(self.point[1], self.point[2], self.point[3], self.point[4], self.point[5])
+        end
+        self:SetFrameStrata(Save().AbilityButton['strata'..self.name] or 'MEDIUM')
+        self:SetScale(Save().AbilityButton['scale'..self.name] or (self.name=='Enemy' and 1 or 0.75))
+        self.frame:SetShown(not Save().AbilityButton['hide'..self.name])
+        self.frame.Background:SetShown(not Save().AbilityButton['hideBackground'..self.name])
+        self:set_alpha()
+        self:set_name_shown()
     end
 
     function btn:set_tooltip()
@@ -834,12 +833,6 @@ local function Set_Move_Button(btn)
     btn.parent:HookScript('OnEnter', function(self)
         self.petUnitButton.selectTexture:SetShown(true)
     end)
-
-
-
-    Set_PetUnit(btn)
-
-
 end
 
 
