@@ -88,6 +88,7 @@ function WoWTools_PetBattleMixin:Collected(speciesID, itemID, onlyNum, petOwner,
         local AllCollected, CollectedNum, CollectedText
         if not onlyNum then--返回所有，数据
             local numPets, numOwned = C_PetJournal.GetNumPets()
+
             if numPets and numOwned and numPets>0 then
                 if numPets<numOwned or numPets<3 then
                     AllCollected= WoWTools_Mixin:MK(numOwned, 3)
@@ -95,22 +96,21 @@ function WoWTools_PetBattleMixin:Collected(speciesID, itemID, onlyNum, petOwner,
                     AllCollected= WoWTools_Mixin:MK(numOwned,3)..'/'..WoWTools_Mixin:MK(numPets,3).. (' %i%%'):format(numOwned/numPets*100)
                 end
             end
-            if numCollected and limit and limit>0 then
-                if numCollected>0 then
-                    local text2
-                    for index= 1 ,numOwned do
-                        local petID, speciesID2, _, _, level = C_PetJournal.GetPetInfoByIndex(index)
-                        if speciesID2==speciesID and petID and level then
-                            local rarity = select(5, C_PetJournal.GetPetStats(petID))
-                            local col= rarity and select(4, C_Item.GetItemQualityColor(rarity-1))
-                            if col then
-                                text2= text2 and text2..' ' or ''
-                                text2= text2..'|c'..col..level..'|r'
-                            end
+            if numCollected and numCollected>0 and limit and limit>0 then
+                local text2
+                for index= 1 ,numOwned do
+                    local petID, speciesID2, _, _, level = C_PetJournal.GetPetInfoByIndex(index)
+                    if speciesID2==speciesID and petID and level then
+                        local rarity = select(5, C_PetJournal.GetPetStats(petID))
+                        local col= rarity and select(4, C_Item.GetItemQualityColor(rarity-1))
+                        if col then
+                            text2= text2 and text2..' ' or ''
+                            text2= text2..'|c'..col..level..'|r'
                         end
                     end
-                    CollectedNum= text2
                 end
+                CollectedNum= text2
+                
             end
         end
         local isCollectedAll--是否已全部收集

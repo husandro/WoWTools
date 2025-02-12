@@ -185,10 +185,10 @@ function WoWTools_TooltipMixin:Set_Web_Link(tooltip, tab)
         else
             if tab.isPetUI then
                 if tooltip then
-                    BattlePetTooltipTemplate_AddTextLine(tooltip, 'wowhead  Ctrl+Shift')
+                    BattlePetTooltipTemplate_AddTextLine(tooltip, 'wowhead |A:NPE_Icon:0:0|aCtrl+Shift')
                 end
             elseif tooltip== e.tips then
-                tooltip:AddDoubleLine((tab.col or '')..'WoWHead', (tab.col or '')..'Ctrl+Shift')
+                tooltip:AddDoubleLine((tab.col or '')..'WoWHead', (tab.col or '')..'|A:NPE_Icon:0:0|aCtrl+Shift')
             end
         end
 
@@ -197,10 +197,10 @@ function WoWTools_TooltipMixin:Set_Web_Link(tooltip, tab)
             WoWTools_TooltipMixin:Show_URL(false, nil, tab.realm or e.Player.realm, tab.unitName)
         else
             if tooltip then
-                tooltip:SetText('|A:questlegendary:0:0|a'..(tab.col or '')..'Raider.IO Ctrl+Shift')
+                tooltip:SetText('|A:questlegendary:0:0|a'..(tab.col or '')..'Raider.IO |A:NPE_Icon:0:0|aCtrl+Shift')
                 tooltip:Show(true)
             else
-                e.tips:AddDoubleLine('|A:questlegendary:0:0|a'..(tab.col or '')..'Raider.IO', (tab.col or '')..'Ctrl+Shift')
+                e.tips:AddDoubleLine('|A:questlegendary:0:0|a'..(tab.col or '')..'Raider.IO', (tab.col or '')..'|A:NPE_Icon:0:0|aCtrl+Shift')
                 e.tips:Show(true)
             end
         end
@@ -209,7 +209,7 @@ function WoWTools_TooltipMixin:Set_Web_Link(tooltip, tab)
         if IsControlKeyDown() and IsShiftKeyDown() then
             WoWTools_TooltipMixin:Show_URL(nil, nil, nil, tab.name)
         else
-            tooltip:AddDoubleLine((tab.col or '')..'WoWHead', (tab.col or '')..'Ctrl+Shift')
+            tooltip:AddDoubleLine((tab.col or '')..'WoWHead', (tab.col or '')..'|A:NPE_Icon:0:0|aCtrl+Shift')
             tooltip:Show()
         end
     end

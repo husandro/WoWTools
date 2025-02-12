@@ -281,7 +281,7 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
         if mountID then
             WoWTools_TooltipMixin:Set_Mount(tooltip, mountID, 'item')--坐骑
         elseif speciesID then
-            WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID, true)--宠物
+            WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID)--宠物
         else
         end
     end

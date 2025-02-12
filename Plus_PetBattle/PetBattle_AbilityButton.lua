@@ -454,9 +454,9 @@ local function Crea_PetUnit_Attributes(btn, isEnemy)
         btn.SpeedIcon:SetTexCoord(0.5, 0, 0.5, 1)
     end
 
-    Set_PetUnit_Tooltip(btn.AttackIcon)--宠物，提示
-    Set_PetUnit_Tooltip(btn.SpeedIcon)--宠物，提示
-    Set_PetUnit_Tooltip(btn.CollectedIcon)--宠物，提示
+    --Set_PetUnit_Tooltip(btn.AttackIcon)--宠物，提示
+    --Set_PetUnit_Tooltip(btn.SpeedIcon)--宠物，提示
+    --Set_PetUnit_Tooltip(btn.CollectedIcon)--宠物，提示
 end
 
 
@@ -470,12 +470,9 @@ local function Set_PetUnit_Attributes(self, petOwner, petIndex)
     local isWildBattle=  C_PetBattles.IsWildBattle()
 
 --收集
-    if isWildBattle then
-        local num, collected= select(2, WoWTools_PetBattleMixin:Collected(nil, nil, nil, petOwner, petIndex))--总收集数量， 25 25 25， 已收集3/3
-        self.CollectedIcon.Text:SetText(collected or '')
-        self.CollectedIcon.Text2:SetText(num or '')
-    end
-    self.CollectedIcon:SetShown(isWildBattle)
+    local num, collected= select(2, WoWTools_PetBattleMixin:Collected(nil, nil, nil, petOwner, petIndex))--总收集数量， 25 25 25， 已收集3/3
+    self.CollectedIcon.Text:SetText(collected or '')
+    self.CollectedIcon.Text2:SetText(C_PetBattles.IsWildBattle() and num or '')
 
 --力量
     local petPower = C_PetBattles.GetPower(petOwner, petIndex) or 0
@@ -1002,7 +999,7 @@ local function Init_Button(tab)
 --名称
     btn.nameText= WoWTools_LabelMixin:Create(btn.frame, {size=16})
     btn.nameText:SetPoint('TOP', 0, 10)
-    Set_PetUnit_Tooltip(btn.nameText)--宠物，提示
+    --Set_PetUnit_Tooltip(btn.nameText)--宠物，提示
 
 --头像
     btn.portrait= btn.frame:CreateTexture(nil, 'BORDER', nil, 1)
@@ -1023,7 +1020,7 @@ local function Init_Button(tab)
     btn.LevelUnderlay:SetPoint('TOP', btn, 'BOTTOM', -1, 6)
     btn.LevelText= WoWTools_LabelMixin:Create(btn.frame, {justifyH='CENTER', size=14})
     btn.LevelText:SetPoint('CENTER', btn.LevelUnderlay,1,1)
-    Set_PetUnit_Tooltip(btn.LevelUnderlay)--宠物，提示
+    --Set_PetUnit_Tooltip(btn.LevelUnderlay)--宠物，提示
 
 --显示背景 Background
     WoWTools_TextureMixin:CreateBackground(btn.frame, {isAllPoint=true})
@@ -1065,7 +1062,7 @@ local function Init_Button(tab)
     else
         btn.bar:SetPoint('LEFT', btn, 'RIGHT', -s-20, 0)
     end
-    Set_PetUnit_Tooltip(btn.bar)--宠物，提示
+    --Set_PetUnit_Tooltip(btn.bar)--宠物，提示
 
     btn.bar.spark= btn.bar:CreateTexture(nil, 'BACKGROUND')
     btn.bar.spark:SetAtlas('objectivewidget-bar-spark-neutral')

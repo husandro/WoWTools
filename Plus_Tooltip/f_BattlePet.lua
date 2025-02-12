@@ -50,9 +50,20 @@ function WoWTools_TooltipMixin:Set_Battle_Pet(frame, speciesID, level, breedQual
         BattlePetTooltipTemplate_AddTextLine(frame, tooltipSource, nil, nil, nil, true)--来源提示--来源
     end
 
-    if PetJournalSearchBox and PetJournalSearchBox:IsVisible() then--设置搜索
+    --[[if PetJournalSearchBox and PetJournalSearchBox:IsVisible() and IsAltKeyDown() then--设置搜索
         PetJournalSearchBox:SetText(speciesName)
+    end]]
+    if obtainable then
+        if IsAltKeyDown() then--宠物手册，设置名称
+            WoWTools_LoadUIMixin:Journal(2, {petSpeciesID=speciesID})
+        end
+        BattlePetTooltipTemplate_AddTextLine(frame, ' ')
+        BattlePetTooltipTemplate_AddTextLine(frame,
+            '|TInterface\\Icons\\PetJournalPortrait:0|t'
+            ..(e.onlyChinese and '搜索' or SEARCH)..' |A:NPE_Icon:0:0|aAlt'
+        )
     end
+
     if not frame.backgroundColor then--背景颜色
         frame.backgroundColor=frame:CreateTexture(nil,'BACKGROUND')
         frame.backgroundColor:SetAllPoints(frame)

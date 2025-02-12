@@ -58,10 +58,11 @@ function WoWTools_LoadUIMixin:Journal(index, tab)--加载，收藏，UI
             end
         end
 --宠物
-    elseif (tab.petOwner and tab.petIndex) or tab.petSeciesID then
-        local speciesID = tab.petSeciesID or C_PetBattles.GetPetSpeciesID(tab.petOwner, tab.petIndex)
+    elseif (tab.petOwner and tab.petIndex) or tab.petSpeciesID then
+        local speciesID = tab.petSpeciesID or C_PetBattles.GetPetSpeciesID(tab.petOwner, tab.petIndex)
         if speciesID then
             PetJournalSearchBox:SetText('')
+            C_PetJournal.SetDefaultFilters()
             PetJournal_SelectSpecies(PetJournal, speciesID)
         end
     end
