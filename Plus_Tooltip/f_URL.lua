@@ -10,7 +10,7 @@ end
 local wowheadText= 'https://www.wowhead.com/%s=%d'
 local raiderioText= 'https://raider.io/characters/%s/%s/%s'
 
-
+local wowheadIcon= '|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\Wowhead.tga:0|t'
 
 
 --################
@@ -185,10 +185,10 @@ function WoWTools_TooltipMixin:Set_Web_Link(tooltip, tab)
         else
             if tab.isPetUI then
                 if tooltip then
-                    BattlePetTooltipTemplate_AddTextLine(tooltip, 'wowhead |A:NPE_Icon:0:0|aCtrl+Shift')
+                    BattlePetTooltipTemplate_AddTextLine(tooltip, (tab.col or '')..'|A:NPE_Icon:0:0|aCtrl+Shift'..wowheadIcon)
                 end
             elseif tooltip== e.tips then
-                tooltip:AddDoubleLine((tab.col or '')..'WoWHead', (tab.col or '')..'|A:NPE_Icon:0:0|aCtrl+Shift')
+                tooltip:AddLine((tab.col or '')..'|A:NPE_Icon:0:0|aCtrl+Shift'..wowheadIcon)
             end
         end
 
@@ -200,7 +200,7 @@ function WoWTools_TooltipMixin:Set_Web_Link(tooltip, tab)
                 tooltip:SetText('|A:questlegendary:0:0|a'..(tab.col or '')..'Raider.IO |A:NPE_Icon:0:0|aCtrl+Shift')
                 tooltip:Show(true)
             else
-                e.tips:AddDoubleLine('|A:questlegendary:0:0|a'..(tab.col or '')..'Raider.IO', (tab.col or '')..'|A:NPE_Icon:0:0|aCtrl+Shift')
+                e.tips:AddLine('|A:questlegendary:0:0|a'..(tab.col or '')..'Raider.IO |A:NPE_Icon:0:0|aCtrl+Shift')
                 e.tips:Show(true)
             end
         end
@@ -209,7 +209,7 @@ function WoWTools_TooltipMixin:Set_Web_Link(tooltip, tab)
         if IsControlKeyDown() and IsShiftKeyDown() then
             WoWTools_TooltipMixin:Show_URL(nil, nil, nil, tab.name)
         else
-            tooltip:AddDoubleLine((tab.col or '')..'WoWHead', (tab.col or '')..'|A:NPE_Icon:0:0|aCtrl+Shift')
+            tooltip:AddLine((tab.col or '')..'|A:NPE_Icon:0:0|aCtrl+Shift'..wowheadIcon)
             tooltip:Show()
         end
     end
@@ -250,7 +250,7 @@ function WoWTools_TooltipMixin:Show_URL(isWoWHead, typeOrRegion, typeIDOrRealm, 
             typeIDOrRealm= tonumber(typeIDOrRealm)
         end
         StaticPopup_Show("WoWTools_Tooltips_LinkURL",
-            'WoWHead',
+        wowheadIcon..' WoWHead',
             nil,
             format(wowheadText, typeOrRegion or '', typeIDOrRealm or 0, name or '')
         )

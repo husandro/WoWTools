@@ -59,14 +59,15 @@ function WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID)--宠物
     end
     WoWTools_TooltipMixin:Set_Item_Model(tooltip, {creatureDisplayID=creatureDisplayID})--设置, 3D模型
 
-    if obtainable then
+    if obtainable and not UnitAffectingCombat('player') then
         if IsAltKeyDown() then--宠物手册，设置名称
             WoWTools_LoadUIMixin:Journal(2, {petSpeciesID=speciesID})
             --PetJournalSearchBox:SetText(speciesName)
         end
         tooltip:AddLine(' ')
-        tooltip:AddDoubleLine('|TInterface\\Icons\\PetJournalPortrait:0|t'..(e.onlyChinese and '搜索' or SEARCH), '|A:NPE_Icon:0:0|aAlt')
+        tooltip:AddLine('|A:NPE_Icon:0:0|aAlt |TInterface\\Icons\\PetJournalPortrait:0|t'..(e.onlyChinese and '搜索' or SEARCH))
     end
+    
 
     WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='npc', id=companionID, name=speciesName, col= nil, isPetUI=false})--取得网页，数据链接
 
