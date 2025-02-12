@@ -698,6 +698,7 @@ local function Init_Button_Menu(self, root)
     end, function()
         Save().AbilityButton['hideBackground'..self.name]= not Save().AbilityButton['hideBackground'..self.name] and true or nil
         self:Settings()
+        self.PetModel:Settings()
     end)
 
 --缩放
@@ -847,16 +848,8 @@ local function Set_Move_Button(btn)
         self:set_tooltip()
     end)
 
-	btn:RegisterEvent("PET_BATTLE_PET_ROUND_PLAYBACK_COMPLETE")
-	btn:RegisterEvent("PET_BATTLE_PET_CHANGED")
-    btn:RegisterEvent("PET_BATTLE_MAX_HEALTH_CHANGED")
-	btn:RegisterEvent("PET_BATTLE_HEALTH_CHANGED")
-	btn:RegisterEvent("PET_BATTLE_PET_TYPE_CHANGED")
-    btn:RegisterEvent("PET_BATTLE_OPENING_DONE")
-    btn:RegisterEvent("PET_BATTLE_CLOSE")
-    btn:SetScript('OnEvent', function(self)
-        Set_PetUnit(self)
-    end)
+
+
 
 
 
@@ -869,13 +862,18 @@ local function Set_Move_Button(btn)
         local value= Save().AbilityButton['petmodelCDS_'..name] or 0.9
         self:SetCamDistanceScale(value)
         self:SetShown(Save().AbilityButton['petmodelShow_'..name])
+
+        local showBg= not Save().AbilityButton['hideBackground'..name]
+        self.bg:SetShown(showBg)
+        self.shadow:SetShown(showBg)
     end
     btn.PetModel:EnableMouseWheel(true)
     btn.PetModel:SetScript('OnMouseWheel', function(self, d)
-        local value= (Save().AbilityButton['petmodelCDS_'..self.name] or 0.9) +(d==-1 and 0.1 or -0.1)
+        local name= self:GetParent():GetParent().name
+        local value= (Save().AbilityButton['petmodelCDS_'..name] or 0.9) +(d==-1 and 0.1 or -0.1)
         value= math.min(value, 2)
         value= math.max(value, 0.1)
-        Save().AbilityButton['petmodelCDS_'..self.name]=value
+        Save().AbilityButton['petmodelCDS_'..name]=value
         self:Settings()
     end)
 
@@ -889,6 +887,17 @@ local function Set_Move_Button(btn)
         self.petUnitButton.selectTexture:SetShown(true)
     end)
 
+--事件
+    btn:RegisterEvent("PET_BATTLE_PET_ROUND_PLAYBACK_COMPLETE")
+	btn:RegisterEvent("PET_BATTLE_PET_CHANGED")
+    btn:RegisterEvent("PET_BATTLE_MAX_HEALTH_CHANGED")
+	btn:RegisterEvent("PET_BATTLE_HEALTH_CHANGED")
+	btn:RegisterEvent("PET_BATTLE_PET_TYPE_CHANGED")
+    btn:RegisterEvent("PET_BATTLE_OPENING_DONE")
+    btn:RegisterEvent("PET_BATTLE_CLOSE")
+    btn:SetScript('OnEvent', function(self)
+        Set_PetUnit(self)
+    end)
     btn:Settings()
 end
 
@@ -974,12 +983,10 @@ local function Init_Button(tab)
     else
         btn.PetModel:SetPoint('LEFT', btn.frame, 'RIGHT')
     end
-
-
-
     btn.PetModel.bg= btn.PetModel:CreateTexture(nil, 'BACKGROUND')
     btn.PetModel.bg:SetAllPoints()
     btn.PetModel.bg:SetAtlas(isEnemy and 'hunter-stable-bg-art_ferocity' or 'hunter-stable-bg-art_cunning')
+    btn.PetModel.bg:SetAlpha(0.75)
     if isEnemy then
         btn.PetModel.bg:SetTexCoord(1,0,0,1)
     end

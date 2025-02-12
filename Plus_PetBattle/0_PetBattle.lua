@@ -181,7 +181,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             --WoWTools_PetBattleMixin.addName2= e.Icon.right..(e.onlyChinese and '点击移动' or CLICK_TO_MOVE)
             WoWTools_PetBattleMixin.addName3= '|A:transmog-nav-slot-feet:0:0|a'..(e.onlyChinese and '点击移动按钮'or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CLICK_TO_MOVE, 'Button'))
             WoWTools_PetBattleMixin.addName4= '|A:WildBattlePetCapturable:0:0|a'..(e.onlyChinese and '宠物类型' or PET_FAMILIES)
-            WoWTools_PetBattleMixin.addName5= '|A:summon-random-pet-icon_32:0:0|a'..(e.onlyChinese and '宠物对战' or PET_BATTLE_PVP_QUEUE)..' Plus'
+            --WoWTools_PetBattleMixin.addName5= '|A:summon-random-pet-icon_32:0:0|a'..(e.onlyChinese and '宠物对战' or PET_BATTLE_PVP_QUEUE)..' Plus'
             WoWTools_PetBattleMixin.addName6= '|A:plunderstorm-icon-offensive:0:0|a'..(e.onlyChinese and '技能按钮' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PET_BATTLE_ABILITIES_LABEL, 'Button'))
 
             WoWTools_PetBattleMixin:Init_Options()
