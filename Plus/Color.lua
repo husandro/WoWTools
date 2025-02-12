@@ -70,6 +70,10 @@ end
 --初始
 --####
 local function Init()
+	if Save.hide then
+		return
+	end
+
 	Frame= CreateFrame("Frame", nil, ColorPickerFrame)
 
 	local size, x, y, n
@@ -648,6 +652,8 @@ local function Init()
 	end
 
 	Frame:SetShown(not Save.hide)
+
+	return true
 end
 
 
@@ -669,7 +675,57 @@ end
 
 
 
+local function Init_Chcked()
+	local check2= CreateFrame("CheckButton", nil, ColorPickerFrame, "InterfaceOptionsCheckButtonTemplate")--显示/隐藏
+	check2:SetCheckedTexture('MonsterFriend')
+	check2.type2= CreateFrame("CheckButton", nil, ColorPickerFrame, "InterfaceOptionsCheckButtonTemplate")--显示/隐藏
+	check2.type2:SetCheckedTexture('MonsterFriend')
+	check2:SetPoint("TOPLEFT", ColorPickerFrame, 7, -7)
+	check2:SetChecked(not Save.hide)
+	check2:SetScript('OnMouseDown', function()
+		Save.hide= not Save.hide and true or nil
+		if not Save.hide and not Frame then
+			Init()
+		end
+		if Frame then
+			Frame:SetShown(not Save.hide)
+			print(e.addName, e.cn(addName), e.GetShowHide(not Save.hide))
+		end
+	end)
+	check2:SetScript('OnEnter', function()
+		e.tips:SetOwner(ColorPickerFrame, "ANCHOR_RIGHT");
+		e.tips:ClearLines();
+		e.tips:AddDoubleLine(e.GetShowHide(not Save.color)..e.Icon.left)
+		e.tips:AddDoubleLine(e.addName, e.cn(addName))
+		e.tips:Show();
+	end)
+	check2:SetScript('OnLeave', GameTooltip_Hide)
 
+
+	check2.type2:SetPoint("LEFT", check2, 'RIGHT',-4,0)
+	check2.type2:SetChecked(Save.colorType)
+	check2.type2:SetScript('OnMouseDown', function()
+		Save.colorType= not Save.colorType and true or nil
+		print(e.addName, e.cn(addName), e.GetEnabeleDisable(Save.colorType), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+	end)
+	check2.type2:SetScript('OnEnter', function()
+		e.tips:SetOwner(ColorPickerFrame, "ANCHOR_RIGHT");
+		e.tips:ClearLines();
+		e.tips:AddDoubleLine(e.onlyChinese and '颜色' or COLOR, 2)
+		e.tips:AddDoubleLine(e.addName, e.cn(addName))
+		e.tips:Show();
+	end)
+	check2.type2:SetScript('OnLeave', GameTooltip_Hide)
+
+	return true
+end
+
+
+
+
+
+
+panel:RegisterEvent('PLAYER_LOGOUT')
 panel:RegisterEvent('ADDON_LOADED')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -697,55 +753,17 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
 
             if not Save.disabled then
-				local check2= CreateFrame("CheckButton", nil, ColorPickerFrame, "InterfaceOptionsCheckButtonTemplate")--显示/隐藏
-				check2:SetCheckedTexture('MonsterFriend')
-				check2.type2= CreateFrame("CheckButton", nil, ColorPickerFrame, "InterfaceOptionsCheckButtonTemplate")--显示/隐藏
-				check2.type2:SetCheckedTexture('MonsterFriend')
-				check2:SetPoint("TOPLEFT", ColorPickerFrame, 7, -7)
-				check2:SetChecked(not Save.hide)
-				check2:SetScript('OnMouseDown', function()
-					Save.hide= not Save.hide and true or nil
-					if not Save.hide and not Frame then
-						Init()
+				ColorPickerFrame:HookScript('OnShow', function()
+					if Init_Chcked() then
+						Init_Chcked=function()end
 					end
-					if Frame then
-						Frame:SetShown(not Save.hide)
-						print(e.addName, e.cn(addName), e.GetShowHide(not Save.hide))
+					if Init() then
+						Init= function()end
 					end
 				end)
-				check2:SetScript('OnEnter', function()
-					e.tips:SetOwner(ColorPickerFrame, "ANCHOR_RIGHT");
-					e.tips:ClearLines();
-					e.tips:AddDoubleLine(e.GetShowHide(not Save.color)..e.Icon.left)
-					e.tips:AddDoubleLine(e.addName, e.cn(addName))
-					e.tips:Show();
-				end)
-				check2:SetScript('OnLeave', GameTooltip_Hide)
-
-
-				check2.type2:SetPoint("LEFT", check2, 'RIGHT',-4,0)
-				check2.type2:SetChecked(Save.colorType)
-				check2.type2:SetScript('OnMouseDown', function()
-					Save.colorType= not Save.colorType and true or nil
-					print(e.addName, e.cn(addName), e.GetEnabeleDisable(Save.colorType), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
-				end)
-				check2.type2:SetScript('OnEnter', function()
-					e.tips:SetOwner(ColorPickerFrame, "ANCHOR_RIGHT");
-					e.tips:ClearLines();
-					e.tips:AddDoubleLine(e.onlyChinese and '颜色' or COLOR, 2)
-					e.tips:AddDoubleLine(e.addName, e.cn(addName))
-					e.tips:Show();
-				end)
-				check2.type2:SetScript('OnLeave', GameTooltip_Hide)
-
-				if not Save.hide then
-					Init()
-				end
-
-
             end
-            panel:UnregisterEvent('ADDON_LOADED')
-            panel:RegisterEvent('PLAYER_LOGOUT')
+            self:UnregisterEvent('ADDON_LOADED')
+   
         end
 
     elseif event == "PLAYER_LOGOUT" then

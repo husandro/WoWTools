@@ -136,7 +136,7 @@ end
 
 local function Init()
     WoWTools_PetBattleMixin:Set_TypeButton()--宠物，类型
-    WoWTools_PetBattleMixin:ClickToMove_Button()--点击移动，按钮
+   
     WoWTools_PetBattleMixin:Init_AbilityButton()--宠物对战，技能按钮
     return true
 end
@@ -182,6 +182,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             WoWTools_PetBattleMixin:Init_Options()
 
             if not WoWTools_PetBattleMixin.Save.disabled then
+                WoWTools_PetBattleMixin:ClickToMove_Button()--点击移动，按钮
                 if C_PetBattles.IsInBattle() then
                     do
                         Init()
