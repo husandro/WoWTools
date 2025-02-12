@@ -27,7 +27,7 @@ local function Set_Button_Highlight(petType)
             end
         end
     end
-    
+
     IsInCheck= nil
 end
 
@@ -486,6 +486,8 @@ end
 function WoWTools_PetBattleMixin:TypeButton_SetShown()
     if TypeButton then
         TypeButton:set_shown()
+    else
+        WoWTools_PetBattleMixin:Set_TypeButton()
     end
 end
 

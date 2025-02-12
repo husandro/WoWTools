@@ -110,7 +110,7 @@ function WoWTools_PetBattleMixin:Collected(speciesID, itemID, onlyNum, petOwner,
                     end
                 end
                 CollectedNum= text2
-                
+
             end
         end
         local isCollectedAll--是否已全部收集
@@ -136,12 +136,9 @@ end
 
 local function Init()
     WoWTools_PetBattleMixin:Set_TypeButton()--宠物，类型
-
     WoWTools_PetBattleMixin:ClickToMove_Button()--点击移动，按钮
-    --WoWTools_PetBattleMixin:ClickToMove_CVar()--点击移动
-
-    --WoWTools_PetBattleMixin:Set_Plus()--宠物对战 Plus
     WoWTools_PetBattleMixin:Init_AbilityButton()--宠物对战，技能按钮
+    return true
 end
 
 
@@ -178,16 +175,25 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             WoWTools_PetBattleMixin.Save= WoWToolsSave['Plus_PetBattle2'] or WoWTools_PetBattleMixin.Save
 
             WoWTools_PetBattleMixin.addName= '|A:WildBattlePetCapturable:0:0|a'..(e.onlyChinese and '宠物对战' or PET_BATTLE_PVP_QUEUE)
-            --WoWTools_PetBattleMixin.addName2= e.Icon.right..(e.onlyChinese and '点击移动' or CLICK_TO_MOVE)
             WoWTools_PetBattleMixin.addName3= '|A:transmog-nav-slot-feet:0:0|a'..(e.onlyChinese and '点击移动按钮'or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CLICK_TO_MOVE, 'Button'))
             WoWTools_PetBattleMixin.addName4= '|A:WildBattlePetCapturable:0:0|a'..(e.onlyChinese and '宠物类型' or PET_FAMILIES)
-            --WoWTools_PetBattleMixin.addName5= '|A:summon-random-pet-icon_32:0:0|a'..(e.onlyChinese and '宠物对战' or PET_BATTLE_PVP_QUEUE)..' Plus'
             WoWTools_PetBattleMixin.addName6= '|A:plunderstorm-icon-offensive:0:0|a'..(e.onlyChinese and '技能按钮' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PET_BATTLE_ABILITIES_LABEL, 'Button'))
 
             WoWTools_PetBattleMixin:Init_Options()
 
             if not WoWTools_PetBattleMixin.Save.disabled then
-                Init()
+                if C_PetBattles.IsInBattle() then
+                    do
+                        Init()
+                    end
+                    Init= function()end
+                else
+                    PetBattleFrame:HookScript("OnShow", function()
+                        if Init() then
+                            Init=function()end
+                        end
+                    end)
+                end
             end
 
         elseif arg1=='Blizzard_Collections' then
