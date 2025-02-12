@@ -57,17 +57,21 @@ local function Init()
 --战斗宠物，技能 SharedPetBattleTemplates.lua
     hooksecurefunc('SharedPetBattleAbilityTooltip_SetAbility', function(self, abilityInfo, additionalText)
         local abilityID = abilityInfo:GetAbilityID()
-        if abilityID then
-            local _, name, icon, _, unparsedDescription, _, petType = C_PetBattles.GetAbilityInfoByID(abilityID)
-            local description = SharedPetAbilityTooltip_ParseText(abilityInfo, unparsedDescription)
-            self.Description:SetText(description
-                                    ..'|n|n|cffffffff'..(e.onlyChinese and '技能' or ABILITIES)
-                                    ..' '..abilityID
-                                    ..(icon and '  |T'..icon..':0|t'..icon or '')..'|r'
-                                    ..(Save().ctrl and not UnitAffectingCombat('player') and '|nWoWHead Ctrl+Shift' or '')
-                                )
-            WoWTools_TooltipMixin:Set_Web_Link(self, {type='pet-ability', id=abilityID, name=name, col=nil, isPetUI=false})--取得网页，数据链接 npc item spell currency
+        if not abilityID then
+            return
         end
+
+        local _, name, icon, _, unparsedDescription, _, petType = C_PetBattles.GetAbilityInfoByID(abilityID)
+        local description = SharedPetAbilityTooltip_ParseText(abilityInfo, unparsedDescription)    
+        self.Description:SetText(
+            e.cn(description)
+            ..'|n|n'..(e.onlyChinese and '技能' or ABILITIES)
+            ..abilityID
+            ..(icon and '  |T'..icon..':0|t'..icon or '')
+            ..(Save().ctrl and not UnitAffectingCombat('player') and ' |A:NPE_Icon:0:0|aCtrl+Shift|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\Wowhead.tga:0|t' or '')
+        )
+        
+        WoWTools_TooltipMixin:Set_Web_Link(self, {type='pet-ability', id=abilityID, name=name, col=nil, isPetUI=false})--取得网页，数据链接 npc item spell currency
     end)
 
 
