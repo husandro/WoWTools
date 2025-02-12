@@ -20,7 +20,7 @@ WoWTools_PetBattleMixin={
             --hideFrame=true,
             --scale=1,
             --strata='MEDIUM',
-            allShow=e.Player.husandro,
+            --allShow=e.Player.husandro,
             showBackground=true,
         },
         Plus={
