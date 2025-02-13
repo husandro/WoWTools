@@ -3,7 +3,11 @@ MK
 ]]
 
 local e= select(2, ...)
-WoWTools_Mixin={}
+
+WoWTools_Mixin={
+    addName= '|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r',
+    isChinese= e.onlyChinese,
+}
 
 
 
@@ -87,7 +91,7 @@ function WoWTools_Mixin:Reload(isControlKeyDown)
             C_UI.Reload()
         end
     else
-        print(e.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+        print(WoWTools_Mixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
     end
 end
 

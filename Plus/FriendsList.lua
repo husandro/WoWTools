@@ -75,7 +75,7 @@ local function set_QuinkJoin_Init()--快速加入, 初始化 QuickJoin.lua
                         e.tips:ClearLines()
                         e.tips:AddDoubleLine(e.onlyChinese and '/密语' or SLASH_SMART_WHISPER2, self2.col..self2.name)
                         e.tips:AddLine(' ')
-                        e.tips:AddDoubleLine(e.addName, addName)
+                        e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
                         e.tips:Show()
                     end)
                     nameObj:SetScript('OnMouseDown',function(self2)
@@ -172,7 +172,7 @@ local function set_QuinkJoin_Init()--快速加入, 初始化 QuickJoin.lua
         if self.AcceptButton:IsEnabled() and not IsModifierKeyDown() then
             local tank2, healer2, dps2= self:GetSelectedRoles()
             self.AcceptButton:Click()
-            print(e.addName, addName,
+            print(WoWTools_Mixin.addName, addName,
                     tank2 and INLINE_TANK_ICON, healer2 and INLINE_HEALER_ICON, dps2 and INLINE_DAMAGER_ICON,
                     e.GetEnabeleDisable(false)..'Alt',
                     link
@@ -262,7 +262,7 @@ local function Init_Friends_Menu(self, root)
     local sub= root:CreateButton(e.onlyChinese and '其他玩家' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTINGS_CATEGORY_TITLE_MISC, PLAYER))
     sub:CreateButton('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL), function()
         Save.Friends= {}
-        print(e.addName, addName, e.onlyChinese and '全部清除' or CLEAR_ALL)
+        print(WoWTools_Mixin.addName, addName, e.onlyChinese and '全部清除' or CLEAR_ALL)
     end)
     sub:CreateDivider()
 
@@ -526,7 +526,7 @@ local function Init_FriendsList()--好友列表, 初始化
         end
         if text then
             if showPrint then
-                print(e.addName, addName, text)
+                print(WoWTools_Mixin.addName, addName, text)
             else
                 e.call(FriendsFrame_CheckBattlenetStatus)
             end
@@ -819,7 +819,7 @@ local function set_WhoList_Update()--查询, 名单列表
                 e.tips:AddDoubleLine(self.col..(e.onlyChinese and '组队邀请' or GROUP_INVITE), (e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left)
                 e.tips:AddDoubleLine(self.col..(e.onlyChinese and '添加好友' or ADD_FRIEND), 'Alt+'..e.Icon.left)
                 e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(e.addName, addName)
+                e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
                 e.tips:Show()
             end)
             btn.setOnDoubleClick= true
@@ -996,7 +996,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue= function() return not Save.disabled end,
                 SetValue= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(e.addName , addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(WoWTools_Mixin.addName , addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 

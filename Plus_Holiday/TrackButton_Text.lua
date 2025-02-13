@@ -361,7 +361,7 @@ local function Create_Button(index, last)
             end
         end
         e.tips:AddDoubleLine('eventID', self.eventID)
-        e.tips:AddDoubleLine(e.addName, WoWTools_HolidayMixin.addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_HolidayMixin.addName)
         e.tips:Show()
         WoWTools_HolidayMixin:SetTrackButtonState(true, self.text)--TrackButton，提示
     end)

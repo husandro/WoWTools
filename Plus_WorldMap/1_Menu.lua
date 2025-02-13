@@ -32,7 +32,7 @@ end
 local function Init_OnEnter(self)
     e.tips:SetOwner(self, "ANCHOR_LEFT")
     e.tips:ClearLines()
-    e.tips:AddDoubleLine(e.addName, WoWTools_WorldMapMixin.addName)
+    e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_WorldMapMixin.addName)
     e.tips:AddLine(' ')
     e.tips:AddDoubleLine(e.Player.L.layer, e.Player.Layer or (e.onlyChinese and '无' or NONE))--位面
 

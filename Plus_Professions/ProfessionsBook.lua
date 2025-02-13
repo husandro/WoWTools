@@ -26,7 +26,7 @@ local function Init()
         e.tips:AddLine(' ')
         e.tips:AddLine(e.onlyChinese and '你确定要忘却%s并遗忘所有已经学会的配方？如果你选择回到此专业，你的专精知识将依然存在。|n|n在框内输入 \"忘却\" 以确认。' or UNLEARN_SKILL, nil,nil,nil, true)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.addName, WoWTools_ProfessionMixin.addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_ProfessionMixin.addName)
         e.tips:Show()
         self:SetAlpha(1)
     end

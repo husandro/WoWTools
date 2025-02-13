@@ -122,7 +122,7 @@ local function Init()
     MapXYButton:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, WoWTools_WorldMapMixin.addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_WorldMapMixin.addName)
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)
 
         --e.tips:AddLine(' ')
@@ -170,7 +170,7 @@ local function Init()
         end
         self:ClearFocus()
         print(
-            e.addName,
+            WoWTools_Mixin.addName,
             WoWTools_WorldMapMixin.addName,
             '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r',
             self:GetText()

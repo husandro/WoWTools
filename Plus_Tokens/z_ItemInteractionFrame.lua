@@ -46,7 +46,7 @@ local function Init(self)
 					e.tips:ClearLines()
 					e.tips:SetCurrencyByID(self2.chargeCurrencyTypeId)
 					e.tips:AddLine(' ')
-					e.tips:AddDoubleLine(e.addName, WoWTools_TokensMixin.addName)
+					e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_TokensMixin.addName)
 					e.tips:Show()
 				end
 			end)

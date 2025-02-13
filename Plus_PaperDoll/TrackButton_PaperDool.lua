@@ -98,7 +98,7 @@ local function Init_Menu(self, root)
     WoWTools_MenuMixin:RestPoint(root, Save().Equipment, function()
         Save().Equipment=nil
         TrackButton:set_point()
-        print(e.addName, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+        print(WoWTools_Mixin.addName, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
     end)
 
 --打开选项界面
@@ -163,7 +163,7 @@ local function Create_Button(index)
                 WoWTools_PaperDollMixin:Settings_Tab1()--修改总装等
             end)
         else
-            print(e.addName, addName, notCan)
+            print(WoWTools_Mixin.addName, addName, notCan)
         end
     end)
     btn:SetScript("OnEnter", function(self)
@@ -189,7 +189,7 @@ local function Create_Button(index)
             end
         end
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.addName, addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
         e.tips:Show()
         EquipButton:SetButtonState('PUSHED')
         EquipButton:SetAlpha(1)

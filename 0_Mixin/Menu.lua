@@ -561,7 +561,7 @@ function WoWTools_MenuMixin:OpenOptions(root, tab)
     end, {name=name, name2=name2, GetCategory=GetCategory})
 
     sub:SetTooltip(function(tooltip, description)
-        tooltip:AddDoubleLine(description.data.name or e.addName, description.data.name2)
+        tooltip:AddDoubleLine(description.data.name or WoWTools_Mixin.addName, description.data.name2)
         tooltip:AddDoubleLine(
             e.onlyChinese and '打开选项界面' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, OPTIONS), 'UI')
         )

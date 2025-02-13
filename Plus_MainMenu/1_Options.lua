@@ -23,7 +23,7 @@ local function Init_Options()--初始, 选项
             if not Save().disabled then
                 WoWTools_PlusMainMenuMixin:Settings()
             else
-                print(e.addName, WoWTools_PlusMainMenuMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+                print(WoWTools_Mixin.addName, WoWTools_PlusMainMenuMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
             end
         end
     })
@@ -51,7 +51,7 @@ local function Init_Options()--初始, 选项
         checkTooltip= WoWTools_PlusMainMenuMixin.addName,
         checkSetValue= function()
             Save().enabledMainMenuAlpha= not Save().enabledMainMenuAlpha and true or nil
-            print(e.addName, WoWTools_PlusMainMenuMixin.addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(WoWTools_Mixin.addName, WoWTools_PlusMainMenuMixin.addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
         sliderGetValue= function() return Save().mainMenuAlphaValue end,
         minValue= 0,
@@ -77,7 +77,7 @@ local function Init_Options()--初始, 选项
         SetValue= function()
             Save().frameratePlus= not Save().frameratePlus and true or nil
             if _G['WoWToolsPlusFramerateButton'] then
-                print(e.addName, WoWTools_PlusMainMenuMixin.addName, e.GetEnabeleDisable(Save().frameratePlus), e.onlyChinese and '重新加载UI' or RELOADUI)
+                print(WoWTools_Mixin.addName, WoWTools_PlusMainMenuMixin.addName, e.GetEnabeleDisable(Save().frameratePlus), e.onlyChinese and '重新加载UI' or RELOADUI)
             else
                 WoWTools_PlusMainMenuMixin:Init_Framerate_Plus()
             end

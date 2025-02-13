@@ -45,7 +45,7 @@ local function Init_Panel()
         GetValue= function() return not Save.disabled end,
         SetValue= function()
             Save.disabled= not Save.disabled and true or nil
-            print(e.addName, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
         buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
         buttonFunc= function()
@@ -53,7 +53,7 @@ local function Init_Panel()
             if Button then
                 Button:set_point()
             end
-            print(e.addName, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+            print(WoWTools_Mixin.addName, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
         end,
         tooltip= addName,
         layout= Layout,

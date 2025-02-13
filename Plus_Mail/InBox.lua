@@ -95,7 +95,7 @@ local function set_Tooltips_DeleteAll(self, del)--所有，删除，退信，提
 
     e.tips:SetOwner(self, "ANCHOR_RIGHT")
     e.tips:ClearLines()
-    e.tips:AddDoubleLine(e.addName, WoWTools_MailMixin.addName)
+    e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_MailMixin.addName)
     local num=0
     local findReTips--显示第一个，退回信里，的物品
     for i=1, select(2, GetInboxNumItems()) do
@@ -153,7 +153,7 @@ end
 local function eventEnter(self, get)--enter 提示，删除，或退信，按钮
     e.tips:SetOwner(self, "ANCHOR_RIGHT")
     e.tips:ClearLines()
-    e.tips:AddDoubleLine(e.addName, WoWTools_MailMixin.addName)
+    e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_MailMixin.addName)
     e.tips:AddLine(' ')
     local packageIcon, stationeryIcon, _, _, _, _, _, itemCount = GetInboxHeaderInfo(self.openMailID)
     local allCount=0
@@ -220,7 +220,7 @@ local function Init()
         self:SetAlpha(1)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, WoWTools_MailMixin.addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_MailMixin.addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.GetShowHide(nil, true), e.Icon.left)--not e.onlyChinese and SHOW..'/'..HIDE or '显示/隐藏')
         e.tips:AddDoubleLine(e.onlyChinese and '选项' or OPTIONS, e.Icon.right)
@@ -261,7 +261,7 @@ local function Init()
                                 if not Save().hide and not self.isGM and (self.playerName or self.sender) and self.canReply  then
                                     e.tips:SetOwner(self:GetParent(), "ANCHOR_LEFT")
                                     e.tips:ClearLines()
-                                    e.tips:AddDoubleLine(e.addName, WoWTools_MailMixin.addName)
+                                    e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_MailMixin.addName)
                                     e.tips:AddDoubleLine(e.onlyChinese and '回复' or REPLY_MESSAGE, self.playerName or self.sender)
                                     e.tips:Show()
                                 end

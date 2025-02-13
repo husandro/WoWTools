@@ -102,7 +102,7 @@ local function InstanceDifficulty_OnEnter(self)
     InstanceDifficulty_Tooltip(e.tips, difficultyID)
 
     e.tips:AddLine(' ')
-    e.tips:AddDoubleLine(e.addName, WoWTools_MinimapMixin.addName)
+    e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_MinimapMixin.addName)
     e.tips:Show()
     if self.labelType then
         self.labelType:SetAlpha(1)

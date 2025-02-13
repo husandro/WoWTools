@@ -71,7 +71,7 @@ local function Init_OnShow(self)
                         ..'x'..(reward.quantity or 1)..' '
                 end
             end
-            print(e.addName, WoWTools_GossipMixin.addName, '|T'..(option.icon or 0)..':0|t', name)
+            print(WoWTools_Mixin.addName, WoWTools_GossipMixin.addName, '|T'..(option.icon or 0)..':0|t', name)
             if itemLink then
                 print(itemLink)
             end
@@ -104,7 +104,7 @@ local function Init_Menu(_, root)
         Save().delvesDifficultyMaxLevel= not Save().delvesDifficultyMaxLevel and true or nil
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(e.addName)
+        tooltip:AddLine(WoWTools_Mixin.addName)
         tooltip:AddDoubleLine(WoWTools_GossipMixin.addName, e.GetEnabeleDisable(Save().delvesDifficultyMaxLevel))
     end)
     sub:SetEnabled(Save().gossip and true or false)

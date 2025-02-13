@@ -210,7 +210,7 @@ local function Init()
             e.tips:SetOwner(self, "ANCHOR_LEFT")
         end
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, WoWTools_AddOnsMixin.addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_AddOnsMixin.addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(' ', (e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU)..e.Icon.left)
         e.tips:Show()

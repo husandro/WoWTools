@@ -16,7 +16,7 @@ end
 local function Set_Tooltip(self)
     e.tips:SetOwner(self, "ANCHOR_LEFT")
     e.tips:ClearLines()
-    e.tips:AddDoubleLine(e.addName, WoWTools_MoveMixin.addName)
+    e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_MoveMixin.addName)
     e.tips:AddLine(format('|cffff00ff%s|r', self.name))
     e.tips:AddLine(' ')
 

@@ -18,7 +18,7 @@ local function Init()
         e.tips:AddDoubleLine(bgImage and '|T'..bgImage..':26|t'..bgImage, loreImage and '|T'..loreImage..':26|t'..loreImage)
         e.tips:AddDoubleLine(buttonImage1 and '|T'..buttonImage1..':26|t'..buttonImage1, buttonImage2 and '|T'..buttonImage2..':26|t'..buttonImage2)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.addName, WoWTools_EncounterMixin.addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_EncounterMixin.addName)
         e.tips:Show()
     end)
 end

@@ -39,7 +39,7 @@ local function Init()
 
 --重置, 数据
 StaticPopupDialogs['WoWTools_RestData']= {
-    text=e.addName
+    text=WoWTools_Mixin.addName
         ..'|n|n%s|n|n|cnRED_FONT_COLOR:'
         ..(e.onlyChinese and "你想要将所有选项重置为默认状态吗？|n将会立即对所有设置生效。" or CONFIRM_RESET_SETTINGS)
         ..'|r|n|n',
@@ -66,7 +66,7 @@ StaticPopupDialogs['WoWTools_RestData']= {
 
 
 StaticPopupDialogs['WoWTools_EditText']={
-    text=e.addName..'|n|n%s|n',
+    text=WoWTools_Mixin.addName..'|n|n%s|n',
     button1= e.onlyChinese and '修改' or EDIT,
     button2= e.onlyChinese and '取消' or CANCEL,
     button3= e.onlyChinese and '移除' or REMOVE,
@@ -148,7 +148,7 @@ StaticPopup_Show('WoWTools_EditText',
 
 
 StaticPopupDialogs['WoWTools_Item'] = {
-	text = e.addName..'|n|n%s',
+	text = WoWTools_Mixin.addName..'|n|n%s',
 	button1 = e.onlyChinese and '添加' or ADD,
 	button2 = e.onlyChinese and '取消' or CANCEL,
     button3 = e.onlyChinese and '移除' or REMOVE,
@@ -192,7 +192,7 @@ StaticPopup_Show('WoWTools_Item',addName, nil, {
 
 
 StaticPopupDialogs['WoWTools_GetMapID'] = {--区域,设置对话框
-        text=e.addName..' '..(e.onlyChinese and '区域' or FLOOR)..'|n|n%s',
+        text=WoWTools_Mixin.addName..' '..(e.onlyChinese and '区域' or FLOOR)..'|n|n%s',
         button1=e.onlyChinese and '区域' or FLOOR,
         button2=e.onlyChinese and '取消' or CANCEL,
         button3=e.onlyChinese and '移除' or REMOVE,
@@ -256,7 +256,7 @@ StaticPopupDialogs['WoWTools_GetMapID'] = {--区域,设置对话框
 
 
     StaticPopupDialogs['WoWTools_OK']={
-        text =e.addName..'|n|n%s',
+        text =WoWTools_Mixin.addName..'|n|n%s',
         button1 = e.onlyChinese and '确定' or OKAY,
         button2 = e.onlyChinese and '取消' or CANCEL,
         OnShow=function(self, data)
@@ -289,7 +289,7 @@ StaticPopup_Show('WoWTools_OK',
         OnShow = function(self, web)
             self.editBox:SetScript("OnKeyUp", function(s, key)
                 if IsControlKeyDown() and key == "C" then
-                    print(e.addName, WoWTools_TooltipMixin.addName,
+                    print(WoWTools_Mixin.addName, WoWTools_TooltipMixin.addName,
                             '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r',
                             s:GetText()
                         )

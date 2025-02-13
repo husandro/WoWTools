@@ -13,11 +13,11 @@ function WoWTools_InviteMixin:Inv_All_Unit()--邀请，周围玩家
     local all= C_CVar.GetCVarBool('nameplateShowAll')
 
     if not self:Get_Leader() then--取得权限
-        print(e.addName, self.addName, '|cnRED_FONT_COLOR:', e.onlyChinese and '你没有权利这样做' or ERR_GUILD_PERMISSIONS)
+        print(WoWTools_Mixin.addName, self.addName, '|cnRED_FONT_COLOR:', e.onlyChinese and '你没有权利这样做' or ERR_GUILD_PERMISSIONS)
         return
 
     elseif UnitAffectingCombat('player') and (not p or not all) then
-        print(e.addName, self.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or COMBAT))
+        print(WoWTools_Mixin.addName, self.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or COMBAT))
         return
     end
 
@@ -55,9 +55,9 @@ function WoWTools_InviteMixin:Inv_All_Unit()--邀请，周围玩家
                         if not WoWTools_InviteMixin.InvPlateGuid[guid] then
                             C_PartyInfo.InviteUnit(name)
                             WoWTools_InviteMixin.InvPlateGuid[guid]=name
-                            print(e.addName, '|cnGREEN_FONT_COLOR:'..n..'|r)', e.onlyChinese and '邀请' or INVITE ,WoWTools_UnitMixin:GetLink(name, guid))
+                            print(WoWTools_Mixin.addName, '|cnGREEN_FONT_COLOR:'..n..'|r)', e.onlyChinese and '邀请' or INVITE ,WoWTools_UnitMixin:GetLink(name, guid))
                             if not raid and n +co>=5  then
-                                print(e.addName, self.addName, format(PETITION_TITLE, '|cff00ff00'..(e.onlyChinese and '转团' or CONVERT_TO_RAID)..'|r'))
+                                print(WoWTools_Mixin.addName, self.addName, format(PETITION_TITLE, '|cff00ff00'..(e.onlyChinese and '转团' or CONVERT_TO_RAID)..'|r'))
                                 break
                             end
                             n=n+1
@@ -71,7 +71,7 @@ function WoWTools_InviteMixin:Inv_All_Unit()--邀请，周围玩家
             C_CVar.SetCVar('nameplateShowFriends', '0')
         end
         if n==1 then
-            print(e.addName, self.addName, e.onlyChinese and '邀请成员' or GUILDCONTROL_OPTION7, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE))
+            print(WoWTools_Mixin.addName, self.addName, e.onlyChinese and '邀请成员' or GUILDCONTROL_OPTION7, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE))
         end
     end)
 end

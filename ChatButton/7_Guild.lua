@@ -122,7 +122,7 @@ local function set_RequestToJoinFrame(frame)
         and not IsModifierKeyDown()
         and not Save.notAutoRequestToJoinClub
     then
-        print(e.addName, addName, frame.ClubName:GetText(), e.cn(frame.Apply:GetText()), '|n', text, '|n|cffff00ff',text2)
+        print(WoWTools_Mixin.addName, addName, frame.ClubName:GetText(), e.cn(frame.Apply:GetText()), '|n', text, '|n|cffff00ff',text2)
         frame.Apply:Click()
     end
 end
@@ -141,7 +141,7 @@ local function set_check(frame)
     check:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine('|A:communities-icon-addgroupplus:0:0|a'..(e.onlyChinese and '自动申请' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SIGN_UP))..e.Icon.left, e.GetEnabeleDisable(not Save.notAutoRequestToJoinClub))
         e.tips:Show()

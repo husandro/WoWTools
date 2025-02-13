@@ -1023,7 +1023,7 @@ local function Init()
                                 if self.itemLink and e.tips:IsShown() then
                                     e.tips:AddLine(' ')
                                     e.tips:AddDoubleLine(e.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, e.Icon.left)
-                                    e.tips:AddDoubleLine(e.addName, addName)
+                                    e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
                                     e.tips:Show()
                                 end
                             end)
@@ -1115,7 +1115,7 @@ local function add_Button_OpenOption(frame)
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭角色界面' or BINDING_NAME_TOGGLECHARACTER0, e.Icon.left)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.addName, addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
         e.tips:Show()
     end)
     btn:SetScript('OnLeave', GameTooltip_Hide)
@@ -1184,7 +1184,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         Save.disabled=true
                         panel:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
                     end
-                    print(e.addName, addName, e.GetEnabeleDisable(Save.disabled))
+                    print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(Save.disabled))
                 end
             })
 

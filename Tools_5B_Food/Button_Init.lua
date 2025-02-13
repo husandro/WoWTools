@@ -152,7 +152,7 @@ local function Init()
         if itemID and itemLink then
             e.tips:AddDoubleLine(WoWTools_ItemMixin:GetName(itemID), e.onlyChinese and '添加自定义' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, CUSTOM))
         else
-            e.tips:AddDoubleLine(e.addName, WoWTools_FoodMixin.addName)
+            e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_FoodMixin.addName)
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
             e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)

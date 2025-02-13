@@ -194,7 +194,7 @@ local function Button_OnEnter(self)
             end
         end
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.addName, WoWTools_EncounterMixin.addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_EncounterMixin.addName)
         e.tips:Show()
     end
 end
@@ -293,7 +293,7 @@ local function Init()
                     self.SpceLog= loot--BOSS战时, 指定拾取, 专精, 还原, 专精拾取
                     SetLootSpecialization(indicatoSpec)
                     local _, name, _, icon, role = GetSpecializationInfoByID(indicatoSpec)
-                    print(e.addName, WoWTools_EncounterMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)..'|r', e.Icon[role], icon and '|T'..icon..':0|t', name and '|cffff00ff'..name)
+                    print(WoWTools_Mixin.addName, WoWTools_EncounterMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)..'|r', e.Icon[role], icon and '|T'..icon..':0|t', name and '|cffff00ff'..name)
                 end
             end
 
@@ -305,7 +305,7 @@ local function Init()
                     self.SpceLog= spec and GetSpecializationInfo(spec) or self.SpceLog
                 end
                 local _, name, _, icon, role = GetSpecializationInfoByID(self.SpceLog)
-                print(e.addName, WoWTools_EncounterMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)..'|r', e.Icon[role], icon and '|T'..icon..':0|t', name and '|cffff00ff'..name)
+                print(WoWTools_Mixin.addName, WoWTools_EncounterMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)..'|r', e.Icon[role], icon and '|T'..icon..':0|t', name and '|cffff00ff'..name)
                 self.SpceLog=nil
             end
         end

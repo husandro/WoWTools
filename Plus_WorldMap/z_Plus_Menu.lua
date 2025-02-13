@@ -15,7 +15,7 @@ local function Init()
                 button2 = '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '取消' or CANCEL),
                 OnAccept = function()
                     local n=0
-                    print(e.addName, WoWTools_WorldMapMixin.addName,  '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '放弃' or ABANDON_QUEST_ABBREV))
+                    print(WoWTools_Mixin.addName, WoWTools_WorldMapMixin.addName,  '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '放弃' or ABANDON_QUEST_ABBREV))
                     for index=1 , C_QuestLog.GetNumQuestLogEntries() do
                         do
                             local questInfo=C_QuestLog.GetInfo(index)
@@ -40,7 +40,7 @@ local function Init()
             StaticPopup_Show("WoWTools_WorldMpa_ABANDON_QUEST", '|n|cnRED_FONT_COLOR:|n|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '所有任务' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, QUESTS_LABEL))..' |r#|cnGREEN_FONT_COLOR:'..select(2, C_QuestLog.GetNumQuestLogEntries())..'|r')
         end)
         sub:SetTooltip(function(tooltip)
-            tooltip:AddDoubleLine(e.addName, WoWTools_WorldMapMixin.addName)
+            tooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_WorldMapMixin.addName)
         end)
         root:CreateDivider()
 
@@ -76,7 +76,7 @@ local function Init()
                         tooltip:AddLine('|cnRED_FONT_COLOR:BUG')
                     end
                     tooltip:AddDoubleLine(e.onlyChinese and '默认' or DEFAULT, e.GetYesNo(C_CVar.GetCVarDefault(description.data.var)))
-                    tooltip:AddDoubleLine(e.addName, WoWTools_WorldMapMixin.addName)
+                    tooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_WorldMapMixin.addName)
                 end)
             end
         end

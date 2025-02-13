@@ -137,7 +137,7 @@ function WoWTools_KeyMixin:SetMenu(root, tab)
                     text=text:gsub(']','')
                     text=text:upper()
                     tab2.GetKey(text)
-                    print(e.addName, data.name, text)
+                    print(WoWTools_Mixin.addName, data.name, text)
                 end,
                 OnAlt=data.OnAlt,
                 GetKey=tab.GetKey,

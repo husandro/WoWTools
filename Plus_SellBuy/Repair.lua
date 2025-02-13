@@ -20,7 +20,7 @@ local function Init()
     function AutoRepairCheck:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, WoWTools_SellBuyMixin.addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_SellBuyMixin.addName)
         
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine('|cffff00ff'..(e.onlyChinese and '记录' or EVENTTRACE_LOG_HEADER), RepairSave().date)
@@ -72,7 +72,7 @@ local function Init()
                 end
                 RepairSave().guild=RepairSave().guild+Co
                 RepairSave().num=RepairSave().num+1
-                print(e.addName, WoWTools_SellBuyMixin.addName, '|cffff00ff'..(e.onlyChinese and '使用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP)..'|r', C_CurrencyInfo.GetCoinTextureString(Co))
+                print(WoWTools_Mixin.addName, WoWTools_SellBuyMixin.addName, '|cffff00ff'..(e.onlyChinese and '使用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP)..'|r', C_CurrencyInfo.GetCoinTextureString(Co))
                 e.call(MerchantFrame_Update)
             else
                 if GetMoney()>=Co then
@@ -81,10 +81,10 @@ local function Init()
                     end
                     RepairSave().player=RepairSave().player+Co
                     RepairSave().num=RepairSave().num+1
-                    print(e.addName, WoWTools_SellBuyMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '修理花费：' or REPAIR_COST)..'|r', C_CurrencyInfo.GetCoinTextureString(Co))
+                    print(WoWTools_Mixin.addName, WoWTools_SellBuyMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '修理花费：' or REPAIR_COST)..'|r', C_CurrencyInfo.GetCoinTextureString(Co))
                     e.call(MerchantFrame_Update)
                 else
-                    print(e.addName, WoWTools_SellBuyMixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '失败' or FAILED)..'|r', e.onlyChinese and '修理花费：' or REPAIR_COST, C_CurrencyInfo.GetCoinTextureString(Co))
+                    print(WoWTools_Mixin.addName, WoWTools_SellBuyMixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '失败' or FAILED)..'|r', e.onlyChinese and '修理花费：' or REPAIR_COST, C_CurrencyInfo.GetCoinTextureString(Co))
                 end
             end
         end

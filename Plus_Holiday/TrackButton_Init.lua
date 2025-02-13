@@ -204,7 +204,7 @@ local function Init()
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.addName, WoWTools_HolidayMixin.addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_HolidayMixin.addName)
         e.tips:Show()
     end
     TrackButton:SetScript('OnMouseUp', ResetCursor)

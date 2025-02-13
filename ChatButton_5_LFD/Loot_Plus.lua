@@ -84,7 +84,7 @@ local function Init()
                 if GroupLootHistoryFrame.selectedEncounterID then
                     e.tips:AddDoubleLine('EncounterID', GroupLootHistoryFrame.selectedEncounterID)
                 end
-                e.tips:AddDoubleLine(e.addName, WoWTools_LFDMixin.addName)
+                e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_LFDMixin.addName)
                 e.tips:Show()
             end)
             btn.chatTexure:SetScript('OnClick', function(self)
@@ -192,7 +192,7 @@ local function Init()
             e.tips:AddDoubleLine('encounterID', e.onlyChinese and '无' or NONE)
         end
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.addName, WoWTools_LFDMixin.addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_LFDMixin.addName)
         e.tips:Show()
         self2:SetAlpha(1)
     end)

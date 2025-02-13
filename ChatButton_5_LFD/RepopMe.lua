@@ -39,7 +39,7 @@ local function Init()
         print(event)
             if event=='PLAYER_DEAD' then
                 print(
-                    e.addName,
+                    WoWTools_Mixin.addName,
                     WoWTools_LFDMixin.addName,
                     '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '释放, 复活' or (BATTLE_PET_RELEASE..', '..RESURRECT))
                 )

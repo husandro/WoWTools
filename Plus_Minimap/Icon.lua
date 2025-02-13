@@ -62,7 +62,7 @@ function WoWTools_MinimapMixin:Init_Icon()
             suffix=nil,--string,
             text='WoWTools',-- string,
             tocname=nil,--string,
-            tooltip=e.addName,--Frame,
+            tooltip=WoWTools_Mixin.addName,--Frame,
             type='data source',-- "data source"|"launcher",
             value=nil,--string,
         }), Save().miniMapPoint)
@@ -100,7 +100,7 @@ end
 
 function WowTools_OnAddonCompartmentFuncOnEnter(_, root)
     MenuUtil.ShowTooltip(root, function(tooltip)
-        tooltip:SetText(e.addName)
+        tooltip:SetText(WoWTools_Mixin.addName)
     end)
 end]]
    --[[print(self, ...)
@@ -126,6 +126,6 @@ end]]
     e.tips:AddDoubleLine(e.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT , 'Shift'..e.Icon.left)
 
     e.tips:AddLine(' ')
-    e.tips:AddDoubleLine(e.addName, WoWTools_MinimapMixin.addName)
+    e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_MinimapMixin.addName)
     e.tips:Show()
 end]]

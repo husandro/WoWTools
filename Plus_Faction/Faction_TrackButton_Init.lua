@@ -124,7 +124,7 @@ local function Init_Menu(self, root)
 		Save().point=nil
 		self:ClearAllPoints()
 		self:set_Point()
-		print(e.addName, WoWTools_ReputationMixin.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+		print(WoWTools_Mixin.addName, WoWTools_ReputationMixin.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
 	end)
 end
 
@@ -208,7 +208,7 @@ local function Init()
 	function TrackButton:set_Tooltips()
 		e.tips:SetOwner(self, "ANCHOR_LEFT")
 		e.tips:ClearLines()
-		e.tips:AddDoubleLine(e.addName, WoWTools_ReputationMixin.addName)
+		e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_ReputationMixin.addName)
 		e.tips:AddLine(' ')
 		e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭声望界面' or BINDING_NAME_TOGGLECHARACTER2, e.Icon.left)
 		e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)

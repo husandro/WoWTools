@@ -27,7 +27,7 @@ local function Init_Menu(self, root)
 		else
 			WoWTools_ReputationMixin:Init_TrackButton()--监视, 文本
 		end
-		print(e.addName, WoWTools_ReputationMixin.addName, e.onlyChinese and '追踪' or TRACKING, e.GetShowHide(Save().btn))
+		print(WoWTools_Mixin.addName, WoWTools_ReputationMixin.addName, e.onlyChinese and '追踪' or TRACKING, e.GetShowHide(Save().btn))
 	end)
 
 --自动隐藏
@@ -57,7 +57,7 @@ local function Init_Menu(self, root)
 			WoWTools_ReputationMixin.TrackButton:ClearAllPoints()
 			WoWTools_ReputationMixin.TrackButton:set_Point()
 		end
-		print(e.addName, WoWTools_ReputationMixin.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+		print(WoWTools_Mixin.addName, WoWTools_ReputationMixin.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
 	end)
 
 --指定
@@ -176,7 +176,7 @@ local function Init()
 	btn:SetScript('OnEnter', function(self)
 		e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, WoWTools_ReputationMixin.addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_ReputationMixin.addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.left)
         e.tips:Show()

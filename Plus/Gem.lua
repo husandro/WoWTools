@@ -86,7 +86,7 @@ local function Init_Button_Menu(self, root)
     end, function()
         Save.favorites[self.itemID]= not Save.favorites[self.itemID] and true or nil
         self:set_favorite()
-        print(e.addName, addName, Save.favorites[self.itemID] and self.itemID or '', e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
+        print(WoWTools_Mixin.addName, addName, Save.favorites[self.itemID] and self.itemID or '', e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
         panel:set_Gem()
     end)
     root:CreateDivider()
@@ -807,7 +807,7 @@ local function Init_Menu(self, root)
         return not Save.disableSpell
     end, function()
         Save.disableSpell= not Save.disableSpell and true or nil
-        print(e.addName, addName, e.GetEnabeleDisable(not Save.disableSpell), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save.disableSpell), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end, {})
 
     root:CreateDivider()
@@ -932,7 +932,7 @@ local function Init_Button_All()
         end
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.GetShowHide(not Save.hide), e.Icon.left)
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.scale or 1), e.Icon.mid)
@@ -1078,7 +1078,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue= function() return not Save.disabled end,
                 SetValue= function()
                     Save.disabled = not Save.disabled and true or nil
-                    print(e.addName, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+                    print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
                 end
             })
 

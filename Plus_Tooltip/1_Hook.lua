@@ -20,7 +20,7 @@ local function create_Quest_Label(frame)
         if self.questID then
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(e.addName, WoWTools_TooltipMixin.addName..e.Icon.left)
+            e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_TooltipMixin.addName..e.Icon.left)
             e.tips:AddDoubleLine((e.onlyChinese and '任务' or QUESTS_LABEL)..' ID', self.questID)
             e.tips:Show()
             self:SetAlpha(1)

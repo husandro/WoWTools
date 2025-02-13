@@ -33,7 +33,7 @@ local function UpdateMountDisplay()
             e.tips:ClearLines()
             e.tips:AddDoubleLine(e.onlyChinese and '显示信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, INFO), e.GetShowHide(not Save().ShowMountDisplayInfo))
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.addName, WoWTools_PlusCollectionMixin.addName)
+            e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_PlusCollectionMixin.addName)
             e.tips:Show()
         end
         function MountJournal.MountDisplay.tipButton:set_Text()

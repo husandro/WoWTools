@@ -22,7 +22,7 @@ local function Blizzard_AchievementUI()
                         e.tips:SetAchievementByID(achievementID)
                         e.tips:AddLine(' ')
                         e.tips:AddDoubleLine('|A:communities-icon-chat:0:0|a'..(e.onlyChinese and '说' or SAY), e.Icon.left)
-                        e.tips:AddDoubleLine(e.addName, WoWTools_TooltipMixin.addName)
+                        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_TooltipMixin.addName)
                         e.tips:Show()
                     end
                     self:SetAlpha(0.5)

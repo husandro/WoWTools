@@ -52,7 +52,7 @@ local function Init_Stopwatch_Menu(_, root)
         return not Save().disabledClockPlus
     end, function()
         Save().disabledClockPlus= not Save().disabledClockPlus and true or nil
-        print(e.addName, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(WoWTools_Mixin.addName, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
 
@@ -149,7 +149,7 @@ local function Init_TimeManager_Menu(_, root)
         return not Save().disabledClockPlus
     end, function()
         Save().disabledClockPlus= not Save().disabledClockPlus and true or nil
-        print(e.addName, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(WoWTools_Mixin.addName, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
 --重新加载
@@ -450,7 +450,7 @@ local function Init_StopwatchFrame()
     function StopwatchFrame:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE or SLASH_TEXTTOSPEECH_MENU, 'Alt+'..e.Icon.right)
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().StopwatchFrameScale or 1), 'Alt+'..e.Icon.mid)
@@ -680,7 +680,7 @@ local function Init()
 
             e.tips:AddDoubleLine('|cffffffff'..(e.onlyChinese and '移动' or NPE_MOVE), 'Alt+'..e.Icon.right)
             e.tips:AddDoubleLine('|cffffffff'..((e.onlyChinese and '缩放' or UI_SCALE))..' |cnGREEN_FONT_COLOR:'..(Save().TimeManagerClockButtonScale or 1), 'Alt+'..e.Icon.mid)
-            --e.tips:AddDoubleLine(e.addName, addName)
+            --e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
         end
         e.tips:Show()
     end)

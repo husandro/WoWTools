@@ -135,7 +135,7 @@ local function Init(frame)
     btn:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, WoWTools_PaperDollMixin.addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_PaperDollMixin.addName)
         
         --e.tips:AddDoubleLine(e.GetShowHide(not Save().hide), e.Icon.left)
 

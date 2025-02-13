@@ -618,7 +618,7 @@ local function set_Slot_Num_Label(frame, slot, isEquipped)--栏位
         frame.slotText:SetScript('OnEnter', function(self)
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(e.addName, WoWTools_PaperDollMixin.addName)
+            e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_PaperDollMixin.addName)
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS, self.slot)
             local name= self:GetParent():GetName()

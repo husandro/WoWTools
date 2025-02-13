@@ -233,7 +233,7 @@ local function Init_Panel()
         category= Initializer,
         SetValue= function()
             Save().hideHealth= not Save().hideHealth and true or nil
-            print(e.addName, WoWTools_TooltipMixin.addName,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(WoWTools_Mixin.addName, WoWTools_TooltipMixin.addName,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     })
     e.AddPanel_Check({
@@ -312,7 +312,7 @@ local function Init_Panel()
         category= Initializer,
         SetValue= function()
             Save().ShowOptionsCVarTips= not Save().ShowOptionsCVarTips and true or nil
-            print(e.addName, WoWTools_TooltipMixin.addName, e.GetEnabeleDisable(not Save().ShowOptionsCVarTips), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(WoWTools_Mixin.addName, WoWTools_TooltipMixin.addName, e.GetEnabeleDisable(not Save().ShowOptionsCVarTips), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     })
 

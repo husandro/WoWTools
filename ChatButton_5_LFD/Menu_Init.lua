@@ -767,7 +767,7 @@ local function Init_Menu(_, root)
         if WoWTools_LFDMixin.TipsButton then
             WoWTools_LFDMixin.TipsButton:ClearAllPoints()
             WoWTools_LFDMixin.TipsButton:set_Point()
-            print(e.addName, WoWTools_LFDMixin.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+            print(WoWTools_Mixin.addName, WoWTools_LFDMixin.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
         end
         return MenuResponse.Open
     end)

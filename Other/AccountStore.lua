@@ -43,7 +43,7 @@ hooksecurefunc(AccountStoreFrame.CategoryList.ScrollBox, 'Update', function(fram
             btn.IsRefundable:SetScript('OnEnter', function(self)
                 GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
                 GameTooltip:ClearLines()
-                GameTooltip:AddDoubleLine(e.onlyChinese and '可以退款' or PLUNDERSTORE_REFUND_BUTTON_TEXT, e.addName)
+                GameTooltip:AddDoubleLine(e.onlyChinese and '可以退款' or PLUNDERSTORE_REFUND_BUTTON_TEXT, WoWTools_Mixin.addName)
                 GameTooltip:Show()
             end)
         end

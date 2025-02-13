@@ -312,7 +312,7 @@ local function set_Items_Tooltips(self)--UpdateItems
                                 e.tips:AddLine(' ')
                                 e.tips:AddDoubleLine(e.onlyChinese and '发送' or SEND_LABEL, e.Icon.left)
                                 e.tips:Show()
-                               e.tips:AddDoubleLine(e.addName, WoWTools_PlusCollectionMixin.addName)
+                               e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_PlusCollectionMixin.addName)
                              end
                              self2:SetAlpha(1)
                         end)

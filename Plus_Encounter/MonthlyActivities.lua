@@ -14,7 +14,7 @@ local function Settings(btn)
             e.tips:AddDoubleLine('perksActivityID', self3.id)
             e.tips:AddDoubleLine((self3.completed and '|cff9e9e9e' or '|cff00ff00')..(e.onlyChinese and '追踪' or TRACKING), e.Icon.left)
             e.tips:AddDoubleLine((not C_PerksActivities.GetPerksActivityChatLink(self3.id) and '|cff9e9e9e' or '|cff00ff00')..(e.onlyChinese and '超链接' or COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK), e.Icon.right)
-            e.tips:AddDoubleLine(e.addName, WoWTools_EncounterMixin.addName)
+            e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_EncounterMixin.addName)
             e.tips:Show()
         end
     end)

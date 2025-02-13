@@ -81,7 +81,7 @@ local function Init(self, root)
         Save().markersFramePoint=nil
         self.MakerFrame:ClearAllPoints()
         self.MakerFrame:Init_Set_Frame()
-        print(e.addName, self.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+        print(WoWTools_Mixin.addName, self.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
     end)
 
     root:CreateDivider()

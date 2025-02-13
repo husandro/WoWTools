@@ -388,7 +388,7 @@ local function Init_Num()
                 if d=='RightButton' and IsControlKeyDown() then--还原
                     Save.creaturePoint=nil
                     self:set_point()
-                    print(e.addName , e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
+                    print(WoWTools_Mixin.addName , e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
                 elseif d=='RightButton' and IsAltKeyDown() then
                     SetCursor('UI_MOVE_CURSOR')
                 end
@@ -408,13 +408,13 @@ local function Init_Num()
                 Save.creatureFontSize=n
                 WoWTools_LabelMixin:Create(nil, {changeFont=self.Text, size=n})
                 self:set_tooltip()
-                print(e.addName, e.cn(addName), (e.onlyChinese and '字体大小' or FONT_SIZE), '|cnGREEN_FONT_COLOR:'..Save.creatureFontSize)
+                print(WoWTools_Mixin.addName, e.cn(addName), (e.onlyChinese and '字体大小' or FONT_SIZE), '|cnGREEN_FONT_COLOR:'..Save.creatureFontSize)
             end)
 
             function NumFrame:set_tooltip()
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                e.tips:AddDoubleLine(e.addName, e.cn(addName))
+                e.tips:AddDoubleLine(WoWTools_Mixin.addName, e.cn(addName))
                 e.tips:AddLine(' ')
                 if e.onlyChinese then
                     e.tips:AddLine(e.onlyChinese and e.Player.col..'怪物目标(你)|r |cnGREEN_FONT_COLOR:队友目标(你)|r |cffffffff怪物数量|r')
@@ -1071,9 +1071,9 @@ local function set_Option()
         self2.Text:SetText(value)
         Save.scale= value
         if value==1 then
-            print(e.addName,e.cn(addName),'|cnRED_FONT_COLOR:', e.onlyChinese and '禁用' or DISABLE)
+            print(WoWTools_Mixin.addName,e.cn(addName),'|cnRED_FONT_COLOR:', e.onlyChinese and '禁用' or DISABLE)
         else
-            print(e.addName,e.cn(addName), '|cnGREEN_FONT_COLOR:', value)
+            print(WoWTools_Mixin.addName,e.cn(addName), '|cnGREEN_FONT_COLOR:', value)
         end
         set_All_Init()
     end})
@@ -1166,7 +1166,7 @@ local function set_Option()
         local isAtals, name= WoWTools_TextureMixin:IsAtlas(parent:GetText())
         if name and Save.targetTextureNewTab[name] then
             Save.targetTextureNewTab[name]= nil
-            print(e.addName, e.cn(addName),
+            print(WoWTools_Mixin.addName, e.cn(addName),
                 '|cnRED_FONT_COLOR:'..(e.onlyChinese and '删除' or DELETE)..'|r',
                 (isAtals and '|A:'..name..':0:0|a' or ('|T'..name..':0|t'))..name
             )
@@ -1184,7 +1184,7 @@ local function set_Option()
         if icon and not Save.targetTextureNewTab[icon] then
             Save.targetTextureNewTab[icon]= isAtlas and 'a' or 't'
             parent:SetText('')
-            print(e.addName,
+            print(WoWTools_Mixin.addName,
                 e.cn(addName),
                 '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r',
                 (isAtlas and '|A:'..icon..':0:0|a' or ('|T'..icon..':0|t'))..icon
@@ -1267,7 +1267,7 @@ local function set_Option()
         if not Save.creatureUIParent and not Save.target then
             print('|cnRED_FONT_COLOR:'..(e.onlyChinese and '需要启用‘1) '..format('|A:%s:0:0|a', e.Icon.toRight)..'目标’' or 'Need to enable the \"1) '..format('|A:%s:0:0|a', e.Icon.toRight)..addName..'\"'))
         end
-        print(e.addName, e.cn(addName), e.GetEnabeleDisable(Save.creatureUIParent), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(WoWTools_Mixin.addName, e.cn(addName), e.GetEnabeleDisable(Save.creatureUIParent), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
 
@@ -1298,7 +1298,7 @@ local function set_Option()
     unitIsMeCheck:SetChecked(Save.unitIsMe)
     unitIsMeCheck:SetScript('OnClick', function()
         Save.unitIsMe= not Save.unitIsMe and true or false
-        print(e.addName, e.cn(addName), e.GetEnabeleDisable(Save.unitIsMe), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(WoWTools_Mixin.addName, e.cn(addName), e.GetEnabeleDisable(Save.unitIsMe), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         set_All_Init()
     end)
 
@@ -1397,7 +1397,7 @@ local function set_Option()
     menuUnitIsMe.Icon:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.Icon.left..(e.onlyChinese and '设置颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS ,COLOR)),
                             'r'..Save.unitIsMeColor.r..' g'..Save.unitIsMeColor.g..' b'..Save.unitIsMeColor.b..' a'..Save.unitIsMeColor.a)
@@ -1410,7 +1410,7 @@ local function set_Option()
             Save.unitIsMeColor.r, Save.unitIsMeColor.g, Save.unitIsMeColor.b, Save.unitIsMeColor.a= 1,1,1,1
             self:GetParent():set_icon()
             set_All_Init()
-            print(e.addName, e.cn(addName), e.onlyChinese and '默认' or DEFAULT)
+            print(WoWTools_Mixin.addName, e.cn(addName), e.onlyChinese and '默认' or DEFAULT)
         else
             local r,g,b,a= Save.unitIsMeColor.r, Save.unitIsMeColor.g, Save.unitIsMeColor.b, Save.unitIsMeColor.a
             WoWTools_ColorMixin:ShowColorFrame(r,g,b,a,
@@ -1593,7 +1593,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                         set_Option()
                         Init()
                     end
-                    print(e.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), Save.disabled and (e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD) or '')
+                    print(WoWTools_Mixin.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), Save.disabled and (e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD) or '')
                 end,
                 clearfunc= function() Save=nil WoWTools_Mixin:Reload() end}
             )

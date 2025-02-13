@@ -57,7 +57,7 @@ local function Init()
         e.tips:AddLine(MicroButtonTooltipText(FRAMERATE_LABEL, "TOGGLEFPS"))
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
         e.tips:AddDoubleLine(e.onlyChinese and '字体大小' or FONT_SIZE, (Save().framerateSize or 12)..e.Icon.mid)
-        e.tips:AddDoubleLine(e.addName, WoWTools_PlusMainMenuMixin.addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_PlusMainMenuMixin.addName)
         e.tips:Show()
     end
     FramerateButton:SetScript('OnLeave', GameTooltip_Hide)

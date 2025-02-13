@@ -55,7 +55,7 @@ local function Init_Menu(self, root)
         end, function(data)
             Save.strata= data
             self:set_strata()
-            print(e.addName, addName ,'SetFrameStrata(\"|cnGREEN_FONT_COLOR:'..self:GetFrameStrata()..'|r\")')
+            print(WoWTools_Mixin.addName, addName ,'SetFrameStrata(\"|cnGREEN_FONT_COLOR:'..self:GetFrameStrata()..'|r\")')
             return MenuResponse.Refresh
         end, strata)
     end
@@ -146,7 +146,7 @@ local function Init()
     function ChatButton:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.scale or 1), 'Alt+'..e.Icon.mid)
@@ -285,7 +285,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 GetValue= function() return not Save.disabled end,
                 SetValue= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(e.addName, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end,
                 buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
                 buttonFunc= function()
@@ -293,7 +293,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                     if ChatButton then
                         ChatButton:set_point()
                     end
-                    print(e.addName, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+                    print(WoWTools_Mixin.addName, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
                 end,
                 tooltip= addName,
                 layout= Layout,

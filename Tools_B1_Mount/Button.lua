@@ -323,7 +323,7 @@ local function Set_Item_Spell_Edit(info)
                 Save().Mounts[FLOOR][data.spellID]= tab
                 WoWTools_MountMixin.MountButton:settings()
                 if MountJournal_UpdateMountList then e.call(MountJournal_UpdateMountList) end
-                print(e.addName, WoWTools_MountMixin.addName, C_Spell.GetSpellLink(data.spellID), '|n', text)
+                print(WoWTools_Mixin.addName, WoWTools_MountMixin.addName, C_Spell.GetSpellLink(data.spellID), '|n', text)
 
             end,
             OnAlt = function(_, data)
@@ -331,7 +331,7 @@ local function Set_Item_Spell_Edit(info)
                 checkMount()--检测坐骑
                 setClickAtt()--设置 Click属性
                 if MountJournal_UpdateMountList then e.call(MountJournal_UpdateMountList) end
-                print(e.addName, WoWTools_MountMixin.addName, e.onlyChinese and '移除' or REMOVE, data.link)
+                print(WoWTools_Mixin.addName, WoWTools_MountMixin.addName, e.onlyChinese and '移除' or REMOVE, data.link)
             end
         })
     end
@@ -365,12 +365,12 @@ local function Set_Item_Spell_Edit(info)
         SetValue = function(_, data)
             Save().Mounts[data.type][data.ID]=true
             WoWTools_MountMixin.MountButton:settings()
-            print(e.addName, WoWTools_MountMixin.addName, e.onlyChinese and '添加' or ADD, data.link)
+            print(WoWTools_Mixin.addName, WoWTools_MountMixin.addName, e.onlyChinese and '添加' or ADD, data.link)
         end,
         OnAlt = function(_, data)
             Save().Mounts[data.type][data.ID]=nil
             WoWTools_MountMixin.MountButton:settings()
-            print(e.addName, WoWTools_MountMixin.addName, e.onlyChinese and '移除' or REMOVE, data.link)
+            print(WoWTools_Mixin.addName, WoWTools_MountMixin.addName, e.onlyChinese and '移除' or REMOVE, data.link)
         end,
     })
 end

@@ -140,7 +140,7 @@ local function Init_Buttons()
                 e.tips:SetOwner(self, "ANCHOR_RIGHT")
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine(self.name, 'skillLine '..self.skillLine)
-                e.tips:AddDoubleLine(e.addName, WoWTools_ProfessionMixin.addName)
+                e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_ProfessionMixin.addName)
                 e.tips:Show();
             end)
             button:SetScript('OnLeave',function(self)
@@ -213,7 +213,7 @@ local function Init_Menu(_, root)
     end, function()
         Save().setButton= not Save().setButton and true or nil
         if Save().showFuocoButton  then
-            print(e.addName,  WoWTools_ProfessionMixin.addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(WoWTools_Mixin.addName,  WoWTools_ProfessionMixin.addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
         Init()
     end)

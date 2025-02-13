@@ -230,7 +230,7 @@ local function Init_Disabled_Button()
             end
         end
 
-        e.tips:AddDoubleLine(e.addName, addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(
             (e.onlyChinese and '禁用物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISABLE, ITEMS))..' |cnGREEN_FONT_COLOR:#'..self.Text:GetText(),
@@ -248,7 +248,7 @@ local function Init_Disabled_Button()
         local infoType, itemID, itemLink = GetCursorInfo()
         if infoType == "item" and itemID then
             Save.items[itemID]= not Save.items[itemID] and true or nil
-            print(e.addName, addName,
+            print(WoWTools_Mixin.addName, addName,
                 Save.items[itemID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r'
                     or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r'),
                 itemLink or itemID
@@ -323,7 +323,7 @@ local function Init()
     ScrappingMachineFrame.celarAllItem:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(' ', '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL))
         e.tips:Show()
@@ -338,7 +338,7 @@ local function Init()
     ScrappingMachineFrame.addAllItem:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
         e.tips:AddLine(' ')
         e.tips:AddLine((e.onlyChinese and '添加' or ADD)..'|A:communities-chat-icon-plus:0:0|a'..(e.onlyChinese and '所有' or ALL))
         e.tips:Show()
@@ -368,7 +368,7 @@ local function Init()
     ScrappingMachineFrame.addAllGem:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
         e.tips:AddLine(' ')
         e.tips:AddLine((e.onlyChinese and '添加' or ADD)..'|T135998:0|t'..(e.onlyChinese and '宝石' or AUCTION_CATEGORY_GEMS))
         e.tips:Show()
@@ -399,7 +399,7 @@ local function Init()
     ScrappingMachineFrame.addAllEquip:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
         e.tips:AddLine(' ')
         e.tips:AddLine((e.onlyChinese and '添加' or ADD)..'|T135995:0|t'..(e.onlyChinese and '装备' or BAG_FILTER_EQUIPMENT))
         e.tips:Show()
@@ -480,7 +480,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue=function() return not Save.disabled end,
                 SetValue= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(e.addName, addName, e.GetEnabeleDisable(Save.disabled), ScrappingMachineFrame and (e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD) or '')
+                    print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(Save.disabled), ScrappingMachineFrame and (e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD) or '')
                 end
             })
 

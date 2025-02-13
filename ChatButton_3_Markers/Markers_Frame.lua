@@ -71,7 +71,7 @@ local function Init()--设置标记, 框架
     function btn:set_tooltip()
         self:GetParent():set_Tooltips_Point()
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, e.onlyChinese and '队伍标记工具' or format(PROFESSION_TOOL_TOOLTIP_LINE, EVENTTRACE_MARKER))
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, e.onlyChinese and '队伍标记工具' or format(PROFESSION_TOOL_TOOLTIP_LINE, EVENTTRACE_MARKER))
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)

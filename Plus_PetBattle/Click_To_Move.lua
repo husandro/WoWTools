@@ -42,7 +42,7 @@ local function Lock_CVar(name)
 
     elseif value and C_CVar.GetCVar(name)~=value then
         if C_CVar.SetCVar(name, value) then
-            print(e.addName, CVarNameTabs[name],
+            print(WoWTools_Mixin.addName, CVarNameTabs[name],
                 '|cnRED_FONT_COLOR:'..(e.onlyChinese and '锁定' or LOCK)..'|r',
                 name=='autoInteract' and '' or CameraTabs[value][1]
             )
@@ -72,7 +72,7 @@ local function Lock_ClickToMove_CVar()
 
     if value and C_CVar.GetCVar('autoInteract')~=value then
         if C_CVar.SetCVar('autoInteract', value) then
-            print(e.addName,
+            print(WoWTools_Mixin.addName,
             CVarNameTabs['autoInteract'],
                 '|A:AdventureMapIcon-Lock:0:0|a|cnRED_FONT_COLOR:'..(e.onlyChinese and '锁定' or LOCK)
             )

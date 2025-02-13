@@ -92,7 +92,7 @@ local function UpdateButtonState(frame)--技能提示
             e.tips:SetSpellByID(spellID)
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine((IsInGroup() and '|A:communities-icon-chat:0:0|a' or '')..(e.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT), e.Icon.right)
-            e.tips:AddDoubleLine(e.addName, WoWTools_EncounterMixin.addName)
+            e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_EncounterMixin.addName)
             e.tips:Show()
         end
     end)

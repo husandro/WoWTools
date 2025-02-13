@@ -71,7 +71,7 @@ local function Init_Sell()
     function AuctionHouseButton:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, e.cn(addName))
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, e.cn(addName))
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.GetShowHide(nil, true), e.GetShowHide(not Save.hideSellItemList)..e.Icon.left)
         e.tips:AddLine(' ')
@@ -94,7 +94,7 @@ local function Init_Sell()
         if IsControlKeyDown() and d=='RightButton' then
             Save.hideSellItem={}
             self:init_items()
-            print(e.addName, e.cn(addName), e.onlyChinese and '清除隐藏物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, ITEMS)))
+            print(WoWTools_Mixin.addName, e.cn(addName), e.onlyChinese and '清除隐藏物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, ITEMS)))
 
         elseif not IsModifierKeyDown() then
             Save.hideSellItemList= not Save.hideSellItemList and true or nil
@@ -343,7 +343,7 @@ local function Init_Sell()
     AuctionHouseFrame.maxSellItemCheck:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, e.cn(addName))
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, e.cn(addName))
         e.tips:AddDoubleLine(' ', e.onlyChinese and '最大数量' or AUCTION_HOUSE_MAX_QUANTITY_BUTTON)
         e.tips:Show()
     end)
@@ -361,7 +361,7 @@ local function Init_Sell()
     AuctionHouseFrame.maxSellItemCheck2:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, e.cn(addName))
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, e.cn(addName))
         e.tips:AddDoubleLine(' ', e.onlyChinese and '最大数量' or AUCTION_HOUSE_MAX_QUANTITY_BUTTON)
         e.tips:Show()
     end)
@@ -533,7 +533,7 @@ local function Init_Sell()
     showSellItemCheck:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, e.cn(addName))
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, e.cn(addName))
         e.tips:AddDoubleLine(e.onlyChinese and '显示拍卖行时' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, BUTTON_LAG_AUCTIONHOUSE),
             e.onlyChinese and '转到出售' or ('=> '..AUCTION_HOUSE_SELL_TAB))
         e.tips:Show()
@@ -837,7 +837,7 @@ local function Init_Sell()
     showCommoditiesButton:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT");
         e.tips:ClearLines();
-        e.tips:AddDoubleLine(e.addName, e.cn(addName))
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, e.cn(addName))
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '显示模式' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, MODE), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '转到' or CONVERT)..'|r '..(e.onlyChinese and '材料' or PROFESSIONS_COLUMN_HEADER_REAGENTS))
         e.tips:Show();
@@ -860,7 +860,7 @@ local function Init_Sell()
     showSellButton:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT");
         e.tips:ClearLines();
-        e.tips:AddDoubleLine(e.addName, e.cn(addName))
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, e.cn(addName))
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '显示' or SHOW, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '转到' or CONVERT)..'|r '..(e.onlyChinese and '物品' or ITEMS))
         e.tips:Show();
@@ -881,7 +881,7 @@ local function Init_Sell()
     cancelButton2:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT");
         e.tips:ClearLines();
-        e.tips:AddDoubleLine(e.addName, e.cn(addName))
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, e.cn(addName))
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(' ', e.onlyChinese and '取消拍卖' or AUCTION_HOUSE_CANCEL_AUCTION_BUTTON)
         e.tips:Show();
@@ -1066,7 +1066,7 @@ local function Init_AllAuctions()
         end
         e.tips:AddDoubleLine(' ', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '取消拍卖将使你失去保证金。' or CANCEL_AUCTION_CONFIRMATION))
         e.tips:AddDoubleLine(e.onlyChinese and '备注' or LABEL_NOTE, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '请不要太快' or ERR_GENERIC_THROTTLE))
-        e.tips:AddDoubleLine(e.addName, e.cn(addName))
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, e.cn(addName))
         e.tips:Show()
     end
     cancelButton:SetScript('OnLeave', GameTooltip_Hide)
@@ -1077,9 +1077,9 @@ local function Init_AllAuctions()
             if C_AuctionHouse.CanCancelAuction(auctionID) then
                 local cost= C_AuctionHouse.GetCancelCost(auctionID)
                 C_AuctionHouse.CancelAuction(auctionID)
-                print(e.addName,e.cn(addName), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '取消拍卖' or AUCTION_HOUSE_CANCEL_AUCTION_BUTTON)..'|r', itemLink or '', cost and cost>0 and '|cnRED_FONT_COLOR:'..GetMoneyString(cost) or '')
+                print(WoWTools_Mixin.addName,e.cn(addName), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '取消拍卖' or AUCTION_HOUSE_CANCEL_AUCTION_BUTTON)..'|r', itemLink or '', cost and cost>0 and '|cnRED_FONT_COLOR:'..GetMoneyString(cost) or '')
             else
-                print(e.addName,e.cn(addName), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '出错' or ERRORS)..'|r', itemLink or '')
+                print(WoWTools_Mixin.addName,e.cn(addName), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '出错' or ERRORS)..'|r', itemLink or '')
             end
             AuctionHouseFrameAuctionsFrame.AllAuctionsList.RefreshFrame.RefreshButton:OnClick()
             self:set_tooltips()
@@ -1099,7 +1099,7 @@ local function Init_AllAuctions()
                         local cost= C_AuctionHouse.GetCancelCost(self.rowData.auctionID)
                         local itemLink= Get_ItemLink_For_rowData(self.rowData)
                         C_AuctionHouse.CancelAuction(self.rowData.auctionID)
-                        print(e.addName, e.cn(addName), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '取消拍卖' or AUCTION_HOUSE_CANCEL_AUCTION_BUTTON)..'|r', itemLink, cost and cost>0 and '|cnRED_FONT_COLOR:'..GetMoneyString(cost) or '')
+                        print(WoWTools_Mixin.addName, e.cn(addName), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '取消拍卖' or AUCTION_HOUSE_CANCEL_AUCTION_BUTTON)..'|r', itemLink, cost and cost>0 and '|cnRED_FONT_COLOR:'..GetMoneyString(cost) or '')
                     end
                 end)
                 btn.setOnDoubleClick=true
@@ -1312,7 +1312,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue= function() return not Save.disabled end,
                 SetValue= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(e.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+                    print(WoWTools_Mixin.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
                 end
             })
 

@@ -55,7 +55,7 @@ local function Init()
                                 Send_Player_Choice_Response(optionInfo)
                             end
                         else
-                            print(e.addName, addName,'|cnRED_FONT_COLOR:', not e.onlyChinese and ERRORS..' ('..UNKNOWN..')' or '未知错误')
+                            print(WoWTools_Mixin.addName, addName,'|cnRED_FONT_COLOR:', not e.onlyChinese and ERRORS..' ('..UNKNOWN..')' or '未知错误')
                         end
                     end)
                     optionFrame.check:SetScript('OnLeave', GameTooltip_Hide)
@@ -67,7 +67,7 @@ local function Init()
                             e.tips:SetSpellByID(optionInfo.spellID)
                         end
                         e.tips:AddLine(' ')
-                        e.tips:AddDoubleLine(e.addName, addName)
+                        e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
                         e.tips:Show()
                     end)
                     --[[optionFrame.check.Text2=WoWTools_LabelMixin:Create(optionFrame.check)
@@ -134,7 +134,7 @@ local function Init()
                 PlayerChoiceFrame.allButton:SetScript('OnEnter', function(s)
                     e.tips:SetOwner(s, "ANCHOR_LEFT")
                     e.tips:ClearLines()
-                    e.tips:AddDoubleLine(e.addName , addName)
+                    e.tips:AddDoubleLine(WoWTools_Mixin.addName , addName)
                     e.tips:AddLine(' ')
                     e.tips:AddLine(s.tips or (e.onlyChinese and '使用' or USE))
                     e.tips:AddDoubleLine(' ', format(e.onlyChinese and '%d次' or ITEM_SPELL_CHARGES, 44)..e.Icon.left)
@@ -157,7 +157,7 @@ local function Init()
                     if s.time and not s.time:IsCancelled() then
                         s.time:Cancel()
                         s:set_text()
-                        print(e.addName,addName,'|cnRED_FONT_COLOR:', e.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1)
+                        print(WoWTools_Mixin.addName,addName,'|cnRED_FONT_COLOR:', e.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1)
                         return
                     else
                         s:set_text()
@@ -184,11 +184,11 @@ local function Init()
                         then
                             C_PlayerChoice.SendPlayerChoiceResponse(info.buttons[2].id)--Blizzard_PlayerChoiceOptionBase.lua
                             n=n+1
-                            print(e.addName, addName, '|cnGREEN_FONT_COLOR:'..n..'|r', '('..all-n..')', '|cnRED_FONT_COLOR:Alt' )
+                            print(WoWTools_Mixin.addName, addName, '|cnGREEN_FONT_COLOR:'..n..'|r', '('..all-n..')', '|cnRED_FONT_COLOR:Alt' )
                             --self.parentOption:OnSelected()
                         elseif s.time then
                         s.time:Cancel()
-                        print(e.addName,addName,'|cnRED_FONT_COLOR:', e.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1, '|r'..n)
+                        print(WoWTools_Mixin.addName,addName,'|cnRED_FONT_COLOR:', e.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1, '|r'..n)
                         end
                         s:set_text()
                     end, all)

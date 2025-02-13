@@ -127,7 +127,7 @@ local function Init()
     function button:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, WoWTools_AttributesMixin.addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_AttributesMixin.addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '重置' or RESET, e.Icon.left)
         e.tips:AddLine(' ')
@@ -149,7 +149,7 @@ local function Init()
 
         elseif d=='LeftButton' and not IsModifierKeyDown() then
             WoWTools_AttributesMixin:Frame_Init(true)--初始， 或设置
-            print(e.addName, WoWTools_AttributesMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重置' or RESET)..'|r', e.onlyChinese and '数值' or STATUS_TEXT_VALUE)
+            print(WoWTools_Mixin.addName, WoWTools_AttributesMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重置' or RESET)..'|r', e.onlyChinese and '数值' or STATUS_TEXT_VALUE)
 
         elseif d=='RightButton' and IsShiftKeyDown() then
             self:send_Att_Chat()--发送信息

@@ -151,7 +151,7 @@ local function Create_Button(index)
                 root:CreateButton('|T'..(C_Item.GetItemIconByID(f.itemID) or 0)..':0|t'..(e.onlyChinese and '禁用' or DISABLE), function()
                     Save().noUseItems[self.itemID]=true
                     Save().addItems[self.itemID]=nil
-                    print(e.addName, WoWTools_FoodMixin.addName, e.onlyChinese and '禁用' or DISABLE, WoWTools_ItemMixin:GetLink(self.itemID))
+                    print(WoWTools_Mixin.addName, WoWTools_FoodMixin.addName, e.onlyChinese and '禁用' or DISABLE, WoWTools_ItemMixin:GetLink(self.itemID))
                     WoWTools_FoodMixin:Check_Items()
                 end)
             end)
@@ -264,7 +264,7 @@ function WoWTools_FoodMixin:Check_Items(isPrint)
     end
 
     if isPrint then
-        print(e.addName, WoWTools_FoodMixin.addName, e.onlyChinese and '查询完成' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WHO, COMPLETE) )
+        print(WoWTools_Mixin.addName, WoWTools_FoodMixin.addName, e.onlyChinese and '查询完成' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WHO, COMPLETE) )
     end
     CheckFrame.isChecking=nil
 end

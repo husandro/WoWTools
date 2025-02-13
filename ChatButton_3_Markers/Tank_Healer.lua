@@ -159,9 +159,9 @@ local function Init()
 
     function frame:on_click()
         Set_TankHealer(true)
-            --print(e.addName, WoWTools_MarkerMixin.addName, e.onlyChinese and '设置' or SETTINGS, e.onlyChinese and '坦克' or TANK, e.onlyChinese and '治疗' or HEALER)
+            --print(WoWTools_Mixin.addName, WoWTools_MarkerMixin.addName, e.onlyChinese and '设置' or SETTINGS, e.onlyChinese and '坦克' or TANK, e.onlyChinese and '治疗' or HEALER)
         --else
-          --  print(e.addName, WoWTools_MarkerMixin.addName, e.onlyChinese and '设置' or SETTINGS, e.onlyChinese and '坦克' or TANK, e.onlyChinese and '治疗' or HEALER, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE))
+          --  print(WoWTools_Mixin.addName, WoWTools_MarkerMixin.addName, e.onlyChinese and '设置' or SETTINGS, e.onlyChinese and '坦克' or TANK, e.onlyChinese and '治疗' or HEALER, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE))
         --end
     end
 

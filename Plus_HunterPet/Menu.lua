@@ -127,7 +127,7 @@ local function Init()
     function btn:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, WoWTools_StableFrameMixin.addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_StableFrameMixin.addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)
         e.tips:AddDoubleLine(

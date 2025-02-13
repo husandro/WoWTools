@@ -28,7 +28,7 @@ local function calendar_Uptate()
             if not self.eventID then return end
             e.tips:SetOwner(self:GetParent(), "ANCHOR_BOTTOMRIGHT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(e.addName, WoWTools_HolidayMixin.addName)
+            e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_HolidayMixin.addName)
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine('https://www.wowhead.com/event='..self.eventID, e.Icon.left)
             e.tips:Show()

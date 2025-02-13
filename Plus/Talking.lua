@@ -32,7 +32,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 SetValue= function()
                     Save.disabled= not Save.disabled and true or nil
                     setRegister()--设置事件
-                    print(e.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled))
+                    print(WoWTools_Mixin.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled))
                 end
             })
 

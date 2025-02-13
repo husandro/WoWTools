@@ -65,7 +65,7 @@ function e.ReloadPanel(tab)
         e.tips:ClearLines()
         e.tips:AddLine(self.clearTips or (e.onlyChinese and '当前保存' or (ITEM_UPGRADE_CURRENT..SAVE)))
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.addName, self.addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, self.addName)
         e.tips:Show()
     end)
 
@@ -83,7 +83,7 @@ function e.ReloadPanel(tab)
             e.tips:ClearLines()
             e.tips:AddLine(e.onlyChinese and '重新加载UI' or RELOADUI)
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.addName, self.addName)
+            e.tips:AddDoubleLine(WoWTools_Mixin.addName, self.addName)
             e.tips:Show()
         end)
     end
@@ -104,7 +104,7 @@ function e.ReloadPanel(tab)
             e.tips:ClearLines()
             e.tips:AddLine(e.onlyChinese and '启用/禁用' or (ENABLE..'/'..DISABLE))
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.addName, self.addName)
+            e.tips:AddDoubleLine(WoWTools_Mixin.addName, self.addName)
             e.tips:Show()
         end)
     end
@@ -675,7 +675,7 @@ local function Init_Options()
                     ColorPickerFrame.Footer.OkayButton:Click()
                 end
                 Set_Color()--自定义，颜色
-                print(e.addName, e.Player.useColor and e.Player.useColor.hex or '', (e.onlyChinese and '颜色' or COLOR)..'|r',   e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                print(WoWTools_Mixin.addName, e.Player.useColor and e.Player.useColor.hex or '', (e.onlyChinese and '颜色' or COLOR)..'|r',   e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
             Save.useColor= value
 
@@ -704,8 +704,9 @@ local function Init_Options()
             GetValue= function() return Save.onlyChinese end,
             SetValue= function()
                 e.onlyChinese= not e.onlyChinese and true or nil
+                WoWTools_Mixin.isChinese= e.onlyChinese
                 Save.onlyChinese = e.onlyChinese
-                print(e.addName,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                print(WoWTools_Mixin.addName,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
         })
     end
@@ -747,7 +748,7 @@ local function Init_Options()
             GetValue= function() return not Save.disabledRealm end,
             SetValue= function()
                 Save.disabledRealm= not Save.disabledRealm and true or nil
-                print(e.addName,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                print(WoWTools_Mixin.addName,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
         })
 

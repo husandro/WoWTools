@@ -9,7 +9,7 @@ end
 
 local function InvPlateGuidFunc()--从已邀请过列表里, 再次邀请 
     if not WoWTools_InviteMixin:Get_Leader() then--取得权限
-        print(e.addName, WoWTools_InviteMixin.addName, e.onlyChinese and '你没有权利这样做' or ERR_GUILD_PERMISSIONS)
+        print(WoWTools_Mixin.addName, WoWTools_InviteMixin.addName, e.onlyChinese and '你没有权利这样做' or ERR_GUILD_PERMISSIONS)
         return
     end
     local n=0
@@ -19,7 +19,7 @@ local function InvPlateGuidFunc()--从已邀请过列表里, 再次邀请
         if num==40 then
             return
         elseif not IsInRaid() and num==5 and not Save().PartyToRaid then
-            print(e.addName, WoWTools_InviteMixin.addName, e.onlyChinese and '请求：转化为团队' or  PETITION_TITLE:format('|cff00ff00'..CONVERT_TO_RAID..'|r'))
+            print(WoWTools_Mixin.addName, WoWTools_InviteMixin.addName, e.onlyChinese and '请求：转化为团队' or  PETITION_TITLE:format('|cff00ff00'..CONVERT_TO_RAID..'|r'))
             return
         end
 
@@ -112,7 +112,7 @@ local function Init_Menu(self, root)
             text=Save().ChannelText,
             SetValue= function(s)
                 Save().ChannelText = string.upper(s.editBox:GetText())
-                print(e.addName, WoWTools_InviteMixin.addName, e.onlyChinese and '频道' or CHANNEL,'|cnGREEN_FONT_COLOR:'..Save().ChannelText..'|r')
+                print(WoWTools_Mixin.addName, WoWTools_InviteMixin.addName, e.onlyChinese and '频道' or CHANNEL,'|cnGREEN_FONT_COLOR:'..Save().ChannelText..'|r')
             end,
         })
     end)
@@ -179,7 +179,7 @@ local function Init_Menu(self, root)
                 text= Save().SummonThxText or WoWTools_InviteMixin.SummonThxText,
                 SetValue= function(s)
                     Save().SummonThxText=s.editBox:GetText()
-                    print(e.addName, WoWTools_InviteMixin.addName, Save().SummonThxText)
+                    print(WoWTools_Mixin.addName, WoWTools_InviteMixin.addName, Save().SummonThxText)
                 end,
                 OnAlt=function()
                     Save().SummonThxText=nil
@@ -309,7 +309,7 @@ local function Init_Menu(self, root)
         sub2=sub:CreateButton(nu..' '..WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {reName=true, reRealm=true}),
         function(data)
             Save().InvNoFriend[data]=nil
-            print(e.addName, WoWTools_InviteMixin.addName, WoWTools_UnitMixin:GetPlayerInfo(nil, data, nil,{reLink=true}))
+            print(WoWTools_Mixin.addName, WoWTools_InviteMixin.addName, WoWTools_UnitMixin:GetPlayerInfo(nil, data, nil,{reLink=true}))
         end, guid)
         sub2:SetTooltip(function(tooltip)
             tooltip:AddLine(e.onlyChinese and '移除' or REMOVE)

@@ -15,7 +15,7 @@ local function click(self)
 	local infoType, itemID, itemLink = GetCursorInfo()
 	if infoType == "item" and itemID then
 		Save().item[itemID]= not Save().item[itemID] and true or nil
-		print(e.addName, WoWTools_TokensMixin.addName, e.onlyChinese and '追踪' or TRACKING,
+		print(WoWTools_Mixin.addName, WoWTools_TokensMixin.addName, e.onlyChinese and '追踪' or TRACKING,
 				Save().item[itemID] and
 				('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', e.Icon.select))
 				or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a'),
@@ -46,7 +46,7 @@ local function enter(self)
 	end
 	e.tips:AddLine(' ')
 
-	e.tips:AddDoubleLine(e.addName, WoWTools_TokensMixin.addName)
+	e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_TokensMixin.addName)
 	e.tips:Show()
 	WoWTools_TokensMixin:Set_TrackButton_Pushed(true)--提示
 end

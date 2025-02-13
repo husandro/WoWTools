@@ -97,7 +97,7 @@ local function Init(btn)
                 e.tips:ClearLines()
                 e.tips:AddLine(self.tips)
                 e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(e.addName, WoWTools_EncounterMixin.addName)
+                e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_EncounterMixin.addName)
                 e.tips:Show()
             end
             self:SetAlpha(0.3)

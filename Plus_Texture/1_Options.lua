@@ -27,7 +27,7 @@ local function Init_Options()
         GetValue= function() return not Save().disabled end,
         SetValue= function()
             Save().disabled= not Save().disabled and true or nil
-            print(e.addName, WoWTools_PlusTextureMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(WoWTools_Mixin.addName, WoWTools_PlusTextureMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
         buttonText= e.onlyChinese and '设置颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS ,COLOR),
         buttonFunc= function()
@@ -49,7 +49,7 @@ local function Init_Options()
         SetValue= function(_, _, value2)
             if value2 then
                 Save().alpha= e.GetFormatter1to10(value2, 0, 1)
-                print(e.addName, WoWTools_PlusTextureMixin.addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                print(WoWTools_Mixin.addName, WoWTools_PlusTextureMixin.addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
         end
     })
@@ -68,7 +68,7 @@ local function Init_Options()
             Save().disabledChatBubble= not Save().disabledChatBubble and true or nil
             WoWTools_PlusTextureMixin:Init_Chat_Bubbles()
             if Save().disabledChatBubble and BubblesFrame then
-                print(e.addName, WoWTools_PlusTextureMixin.addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                print(WoWTools_Mixin.addName, WoWTools_PlusTextureMixin.addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
         end
     })
@@ -111,7 +111,7 @@ local function Init_Options()
         checkTooltip= WoWTools_PlusTextureMixin.addName,
         checkSetValue= function()
             Save().classPowerNum= not Save().classPowerNum and true or false
-            print(e.addName, WoWTools_PlusTextureMixin.addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(WoWTools_Mixin.addName, WoWTools_PlusTextureMixin.addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
         sliderGetValue= function() return Save().classPowerNumSize or 12 end,
         minValue= 6,
@@ -122,7 +122,7 @@ local function Init_Options()
                 local value3= e.GetFormatter1to10(value2, 6, 64)
                 Save().classPowerNumSize= value3
                 WoWTools_MoveMixin:Init_Class_Power()--职业
-                print(e.addName, WoWTools_PlusTextureMixin.addName,'|cnGREEN_FONT_COLOR:'.. value3..'|r', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                print(WoWTools_Mixin.addName, WoWTools_PlusTextureMixin.addName,'|cnGREEN_FONT_COLOR:'.. value3..'|r', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
         end,
         layout= Layout,
@@ -136,7 +136,7 @@ local function Init_Options()
         GetValue= function() return not Save().disabledHelpTip end,
         SetValue= function()
             Save().disabledHelpTip= not Save().disabledHelpTip and true or nil
-            print(e.addName, WoWTools_PlusTextureMixin.addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(WoWTools_Mixin.addName, WoWTools_PlusTextureMixin.addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     })
 end
@@ -189,7 +189,7 @@ local function Init_Category()
         GetValue= function() return not Save().disabled end,
         SetValue= function()
             Save().disabled= not Save().disabled and true or nil
-            print(e.addName, WoWTools_PlusTextureMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(WoWTools_Mixin.addName, WoWTools_PlusTextureMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     })
 end

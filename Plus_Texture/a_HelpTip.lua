@@ -39,7 +39,7 @@ local function Init()
         if ID then
             C_Timer.After(2, function()
                 TutorialPointerFrame:Hide(ID-1)
-                print(e.addName, WoWTools_PlusTextureMixin.addName, '|cffff00ff'..content)
+                print(WoWTools_Mixin.addName, WoWTools_PlusTextureMixin.addName, '|cffff00ff'..content)
             end)
         end
     end)
@@ -49,7 +49,7 @@ local function Init()
             C_Timer.After(1, function()
                 if self:IsShown() then
                     self:Hide()
-                    print(e.addName, WoWTools_PlusTextureMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '感谢您的举报！' or ERR_REPORT_SUBMITTED_SUCCESSFULLY)..'|r', e.onlyChinese and '关闭' or CLOSE)
+                    print(WoWTools_Mixin.addName, WoWTools_PlusTextureMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '感谢您的举报！' or ERR_REPORT_SUBMITTED_SUCCESSFULLY)..'|r', e.onlyChinese and '关闭' or CLOSE)
                 end
             end)
         end
@@ -58,13 +58,13 @@ local function Init()
     C_Timer.After(2, function()
         if SplashFrame and SplashFrame:IsShown() then
             SplashFrame:Close();
-            print(e.addName, WoWTools_PlusTextureMixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '隐藏' or HIDE)..'|r|n|cff00ff00', SplashFrame.Label and SplashFrame.Label:GetText() or '')
+            print(WoWTools_Mixin.addName, WoWTools_PlusTextureMixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '隐藏' or HIDE)..'|r|n|cff00ff00', SplashFrame.Label and SplashFrame.Label:GetText() or '')
         end
 
         if not Save().disabledHelpTip then--错误，提示
             if ScriptErrorsFrame then
                 if ScriptErrorsFrame:IsShown() then
-                    print(e.addName, WoWTools_PlusTextureMixin.addName)
+                    print(WoWTools_Mixin.addName, WoWTools_PlusTextureMixin.addName)
                     print(ScriptErrorsFrame.ScrollFrame.Text:GetText())
                     ScriptErrorsFrame.Close:Click()
                 end

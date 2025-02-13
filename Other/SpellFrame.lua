@@ -60,7 +60,7 @@ local function set_UpdateSpendText(btn)
                     e.tips:ClearLines()
                     e.tips:AddDoubleLine(e.onlyChinese and '最高等级' or TRADESKILL_RECIPE_LEVEL_TOOLTIP_HIGHEST_RANK, self.maxRanks)
                     e.tips:AddLine(' ')
-                    e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+                    e.tips:AddDoubleLine(WoWTools_Mixin.addName, Initializer:GetName())
                     e.tips:Show()
                 end
             end)
@@ -635,7 +635,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue=function() return not Save.disabled end,
                 SetValue= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(e.addName, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(WoWTools_Mixin.addName, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 

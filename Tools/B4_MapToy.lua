@@ -137,7 +137,7 @@ local function Init_Options(category, layout)
         buttonText= e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
         SetValue= function()
            Save.no={}
-           print(e.addName, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+           print(WoWTools_Mixin.addName, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     }, initializer)
 end
@@ -225,7 +225,7 @@ local function Init_Menu(self, root)
         return Save.no[e.Player.guid]
     end, function()
         Save.no[e.Player.guid]= not Save.no[e.Player.guid] and true or nil
-        print(e.addName, addName, e.GetEnabeleDisable(not Save.no[e.Player.guid]), WoWTools_UnitMixin:GetPlayerInfo(nil, e.Player.guid, nil, {reLink=true, reName=true, reRealm=true}))
+        print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save.no[e.Player.guid]), WoWTools_UnitMixin:GetPlayerInfo(nil, e.Player.guid, nil, {reLink=true, reName=true, reRealm=true}))
     end)
     sub2:SetTooltip(function(tooltip)
         tooltip:AddLine(e.onlyChinese and '如果已完成|n可以 “禁用” 禁用本模块' or ('If you are complete|nyou can \"'..DISABLE..'\" this module disabled'))
@@ -251,7 +251,7 @@ local function Init_Menu(self, root)
                 return Save.no[data.guid]
             end, function(data)
                 Save.no[data.guid]= not Save.no[data.guid] and true or nil
-                    print(e.addName, addName,
+                    print(WoWTools_Mixin.addName, addName,
                         e.GetEnabeleDisable(not Save.no[data.guid]),
                         WoWTools_UnitMixin:GetPlayerInfo(nil, data.guid, nil, {reLink=true, reName=true, reRealm=true})
                     )

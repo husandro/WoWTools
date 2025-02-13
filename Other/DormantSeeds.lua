@@ -33,7 +33,7 @@ local function Init()
     function Button:set_Tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, e.cn(addName))
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, e.cn(addName))
         e.tips:AddLine(' ')
         for _, itemID in pairs(ItemTab) do
             local link= WoWTools_ItemMixin:GetLink(itemID)
@@ -87,7 +87,7 @@ local function Init()
            self:ClearAllPoints()
            Save.point=nil
            self:set_Point()
-           print(e.addName, e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
+           print(WoWTools_Mixin.addName, e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
         end
     end)
     Button:SetScript('OnMouseWheel',function(self, d)
@@ -278,7 +278,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue= function() return not Save.disabled end,
                 SetValue= function()
                     Save.disabled = not Save.disabled and true or nil
-                    print(e.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                    print(WoWTools_Mixin.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
                 end
             })
 

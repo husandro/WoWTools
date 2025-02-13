@@ -24,7 +24,7 @@ local function Init()
         end
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, WoWTools_PaperDollMixin.addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_PaperDollMixin.addName)
         e.tips:AddLine(' ')
         e.tips:AddLine('name |cnGREEN_FONT_COLOR:'..info.name)
         e.tips:AddLine('fileName |cnGREEN_FONT_COLOR:'..info.fileName)

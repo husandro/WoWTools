@@ -94,7 +94,7 @@ local function Init(Frame)
         Save().notUseColor= not Save().notUseColor and true or nil
         Save().useClassColorCheck=nil
         useClassColorCheck:SetChecked(false)
-        print(e.addName, WoWTools_CursorMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(WoWTools_Mixin.addName, WoWTools_CursorMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
     --随机, 图片

@@ -57,10 +57,10 @@ local function set_buyback_item()
 
     C_Timer.After(0.3, function()
         for index, itemLink in pairs(tab) do
-            print(e.addName, WoWTools_SellBuyMixin.addName, index..')|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '购回' or BUYBACK), itemLink)
+            print(WoWTools_Mixin.addName, WoWTools_SellBuyMixin.addName, index..')|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '购回' or BUYBACK), itemLink)
         end
         for index, info in pairs(no) do
-            print(e.addName, WoWTools_SellBuyMixin.addName, index..')|cnRED_FONT_COLOR:'..(e.onlyChinese and '购回失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, BUYBACK, INCOMPLETE)), info[1], C_CurrencyInfo.GetCoinTextureString(info[2]))
+            print(WoWTools_Mixin.addName, WoWTools_SellBuyMixin.addName, index..')|cnRED_FONT_COLOR:'..(e.onlyChinese and '购回失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, BUYBACK, INCOMPLETE)), info[1], C_CurrencyInfo.GetCoinTextureString(info[2]))
         end
     end)
 end
@@ -89,7 +89,7 @@ local function Add_Remove_ToSave(itemID)
         set_buyback_item()
     end
     print(
-        e.addName,
+        WoWTools_Mixin.addName,
         WoWTools_SellBuyMixin.addName,
         e.onlyChinese and '回购' or BUYBACK,
         text

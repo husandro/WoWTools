@@ -56,7 +56,7 @@ local function PARTY_INVITE_REQUEST(name, isTank, isHealer, isDamage, isNativeRe
 
     local function setPrint(sec, text)
         e.PlaySound(SOUNDKIT.IG_PLAYER_INVITE)--播放, 声音
-        print(e.addName, 'ChatButton', WoWTools_InviteMixin.addName, text,
+        print(WoWTools_Mixin.addName, 'ChatButton', WoWTools_InviteMixin.addName, text,
             '|cnGREEN_FONT_COLOR:'..sec.. ' |r'..(e.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS),
             (isTank and e.Icon.TANK or '')..(isHealer and e.Icon.HEALER or '')..(isDamage and e.Icon.DAMAGER or ''),
             questSessionActive and (e.onlyChinese and '场景战役' or SCENARIOS) or '',--场景战役
@@ -128,7 +128,7 @@ local function Init()
         if notInviterGUID then
             if Save().InvNoFriend[notInviterGUID] then
                 Save().InvNoFriend[notInviterGUID] =nil
-                print(e.addName, 'ChatButton', WoWTools_InviteMixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', WoWTools_UnitMixin:GetLink(nil, notInviterGUID) or '', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '拒绝' or DECLINE)..'|r'..(e.onlyChinese and '邀请' or INVITE))
+                print(WoWTools_Mixin.addName, 'ChatButton', WoWTools_InviteMixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', WoWTools_UnitMixin:GetLink(nil, notInviterGUID) or '', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '拒绝' or DECLINE)..'|r'..(e.onlyChinese and '邀请' or INVITE))
                 AcceptGroup()
                 StaticPopup_Hide("PARTY_INVITE")
             else
@@ -136,7 +136,7 @@ local function Init()
                 Save().InvNoFriendNum=Save().InvNoFriendNum+1
                 DeclineGroup()
                 StaticPopup_Hide("PARTY_INVITE")
-                print(e.addName, 'ChatButton', WoWTools_InviteMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r', WoWTools_UnitMixin:GetLink(nil, notInviterGUID) or '', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '拒绝' or DECLINE)..'|r'..(e.onlyChinese and '邀请' or INVITE))
+                print(WoWTools_Mixin.addName, 'ChatButton', WoWTools_InviteMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r', WoWTools_UnitMixin:GetLink(nil, notInviterGUID) or '', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '拒绝' or DECLINE)..'|r'..(e.onlyChinese and '邀请' or INVITE))
             end
         end
         notInviterGUID=nil

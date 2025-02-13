@@ -43,7 +43,7 @@ local function exit_Instance()
     end
 
 
-    print(e.addName, WoWTools_LFDMixin.addName,
+    print(WoWTools_Mixin.addName, WoWTools_LFDMixin.addName,
         e.onlyChinese and '离开' or LEAVE,
         e.cn(name) or e.onlyChinese and '副本' or INSTANCE,
         num
@@ -106,7 +106,7 @@ local function Init_Frame()
             e.PlaySound()--播放, 声音
             C_PartyInfo.LeaveParty(LE_PARTY_CATEGORY_INSTANCE)
             LFGTeleport(true)
-            print(e.addName, WoWTools_LFDMixin.addName,
+            print(WoWTools_Mixin.addName, WoWTools_LFDMixin.addName,
                 e.onlyChinese and '海岛探险' or ISLANDS_HEADER,
                 WoWTools_LFDMixin:Get_Instance_Num('island')
             )
@@ -117,7 +117,7 @@ local function Init_Frame()
                 if PVPMatchResults and PVPMatchResults.buttonContainer and PVPMatchResults.buttonContainer.leaveButton then
                     e.Ccool(PVPMatchResults.buttonContainer.leaveButton, nil, WoWTools_LFDMixin.Save.sec, nil, true, true)
                 end
-                print(e.addName, WoWTools_LFDMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '离开战场' or LEAVE_BATTLEGROUND), SecondsToTime(WoWTools_LFDMixin.Save.sec))
+                print(WoWTools_Mixin.addName, WoWTools_LFDMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '离开战场' or LEAVE_BATTLEGROUND), SecondsToTime(WoWTools_LFDMixin.Save.sec))
                 C_Timer.After(WoWTools_LFDMixin.Save.sec, function()
                     if not IsModifierKeyDown() then
                         if IsInLFDBattlefield() then
@@ -140,7 +140,7 @@ end
 
 local function Init()
     StaticPopupDialogs['WoWTools_LFD_ExitIns']={
-        text =e.addName..' '..WoWTools_LFDMixin.addName..'|n|n|cff00ff00'..(e.onlyChinese and '离开' or LEAVE)..'|r: ' ..(e.onlyChinese and '副本' or INSTANCE).. '|cff00ff00 '..WoWTools_LFDMixin.Save.sec..' |r'..(e.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS),
+        text =WoWTools_Mixin.addName..' '..WoWTools_LFDMixin.addName..'|n|n|cff00ff00'..(e.onlyChinese and '离开' or LEAVE)..'|r: ' ..(e.onlyChinese and '副本' or INSTANCE).. '|cff00ff00 '..WoWTools_LFDMixin.Save.sec..' |r'..(e.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS),
         button1 = e.onlyChinese and '离开' or  LEAVE,
         button2 = e.onlyChinese and '取消' or CANCEL,
         OnAccept=function()
@@ -150,7 +150,7 @@ local function Init()
         OnCancel=function(_, _, d)
             if d=='clicked' then
                 ExitIns=nil
-                print(e.addName, WoWTools_LFDMixin.addName,'|cff00ff00'..(e.onlyChinese and '取消' or CANCEL)..'|r', e.onlyChinese and '离开' or LEAVE)
+                print(WoWTools_Mixin.addName, WoWTools_LFDMixin.addName,'|cff00ff00'..(e.onlyChinese and '取消' or CANCEL)..'|r', e.onlyChinese and '离开' or LEAVE)
             end
         end,
         OnUpdate= function(self)
@@ -163,7 +163,7 @@ local function Init()
             s:SetAutoFocus(false)
             s:ClearFocus()
             ExitIns=nil
-            print(e.addName, WoWTools_LFDMixin.addName,'|cff00ff00'..(e.onlyChinese and '取消' or CANCEL)..'|r', e.onlyChinese and '离开' or LEAVE)
+            print(WoWTools_Mixin.addName, WoWTools_LFDMixin.addName,'|cff00ff00'..(e.onlyChinese and '取消' or CANCEL)..'|r', e.onlyChinese and '离开' or LEAVE)
             s:GetParent():Hide()
         end,
         whileDead=true, hideOnEscape=true, exclusive=true,

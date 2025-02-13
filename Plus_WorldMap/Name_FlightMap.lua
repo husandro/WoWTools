@@ -62,7 +62,7 @@ local function Init()
             )
             ..e.Icon.left
         )
-        e.tips:AddDoubleLine(e.addName, WoWTools_WorldMapMixin.addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_WorldMapMixin.addName)
         e.tips:Show()
         self:SetAlpha(1)
     end)

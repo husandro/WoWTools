@@ -22,7 +22,7 @@ local function add_Button_OpenOption(frame)
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭角色界面' or BINDING_NAME_TOGGLECHARACTER0, e.Icon.left)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.addName, Initializer:GetName())
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, Initializer:GetName())
         e.tips:Show()
     end)
     btn:SetScript('OnLeave', GameTooltip_Hide)
@@ -126,7 +126,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue= function() return not Save.disabled end,
                 SetValue= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(e.addName, Initializer:GetName(), e.GetEnabeleDisable(Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(WoWTools_Mixin.addName, Initializer:GetName(), e.GetEnabeleDisable(Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 

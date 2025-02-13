@@ -152,7 +152,7 @@ local function Create_Check(frame)
     frame.check:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, WoWTools_AddOnsMixin.addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_AddOnsMixin.addName)
         local addonIndex= self:GetID()
         local icon= select(3, WoWTools_TextureMixin:IsAtlas( C_AddOns.GetAddOnMetadata(addonIndex, "IconTexture") or C_AddOns.GetAddOnMetadata(addonIndex, "IconAtlas"))) or ''--Atlas or Texture
         e.tips:AddDoubleLine(

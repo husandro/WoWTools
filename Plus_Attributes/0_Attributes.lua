@@ -117,7 +117,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         end
                         WoWTools_AttributesMixin:Init_Options()
                     else
-                        print(e.addName, WoWTools_AttributesMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                        print(WoWTools_Mixin.addName, WoWTools_AttributesMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
                         WoWTools_AttributesMixin:Frame_Init(true)--初始， 或设置
                     end
                 end,

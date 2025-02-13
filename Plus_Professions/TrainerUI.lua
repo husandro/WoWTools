@@ -33,7 +33,7 @@ local function Init()
 		e.tips:AddDoubleLine(e.onlyChinese and '全部' or ALL, e.onlyChinese and '学习' or LEARN)
 		e.tips:AddDoubleLine(text, (e.onlyChinese and '可用' or AVAILABLE)..': '..'|cnGREEN_FONT_COLOR:'..self.all..'|r')
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.addName, WoWTools_ProfessionMixin.addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_ProfessionMixin.addName)
 		e.tips:Show()
     end
     ClassTrainerFrame.BuyAll:SetScript("OnLeave", GameTooltip_Hide)
@@ -57,7 +57,7 @@ local function Init()
                             table.insert(tab, link)
                         end
                     else
-                        print(e.addName,
+                        print(WoWTools_Mixin.addName,
                             WoWTools_ProfessionMixin.addName,
                             '|cnRED_FONT_COLOR:'..(e.onlyChinese and '金币不足' or NOT_ENOUGH_GOLD),
                             C_CurrencyInfo.GetCoinTextureString(money)
@@ -73,7 +73,7 @@ local function Init()
                 print('|cffff00ff'..i..'|r)', link)
             end
 
-            print(e.addName, 'Tools', WoWTools_ProfessionMixin.addName, '|cffff00ff'..num..'|r '..(e.onlyChinese and '学习' or LEARN), (cost>0 and '|cnGREEN_FONT_COLOR:' or '')..C_CurrencyInfo.GetCoinTextureString(cost))
+            print(WoWTools_Mixin.addName, 'Tools', WoWTools_ProfessionMixin.addName, '|cffff00ff'..num..'|r '..(e.onlyChinese and '学习' or LEARN), (cost>0 and '|cnGREEN_FONT_COLOR:' or '')..C_CurrencyInfo.GetCoinTextureString(cost))
 
             if GameTooltip:IsOwned(self) then
                 self:set_tooltip()
@@ -122,7 +122,7 @@ local function Init()
 		e.tips:ClearLines()
 		e.tips:AddDoubleLine(e.onlyChinese and '全部学习' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, LEARN), e.GetShowHide(not Save().disabledClassTrainer))
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.addName, WoWTools_ProfessionMixin.addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_ProfessionMixin.addName)
 		e.tips:Show()
         self:SetAlpha(1)
     end

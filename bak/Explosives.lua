@@ -195,7 +195,7 @@ local function set_Button()
                 e.tips:AddLine(' ')
                 e.tips:AddDoubleLine((e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..e.Icon.left, (e.onlyChinese and '移动' or NPE_MOVE)..e.Icon.right)
                 e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(e.addName, e.cn(addName))
+                e.tips:AddDoubleLine(WoWTools_Mixin.addName, e.cn(addName))
                 e.tips:Show()
             end
         end)
@@ -224,7 +224,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
                 value= not Save.disabled,
                 func= function()
                     Save.disabled = not Save.disabled and true or nil
-                    print(e.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                    print(WoWTools_Mixin.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
                 end
             })
 
@@ -232,7 +232,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
             local check= e.AddPanel_Check((e.onlyChinese and '爆炸物' or addName)..'|T2175503:0|t', not Save.disabled, nil, true)
             check:SetScript('OnMouseDown', function()
                 Save.disabled = not Save.disabled and true or nil
-                print(e.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                print(WoWTools_Mixin.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
             end)
             check:SetScript('OnEnter', function(self2)
                 local name, description, filedataid= C_ChallengeMode.GetAffixInfo(13)

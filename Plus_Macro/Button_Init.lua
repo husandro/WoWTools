@@ -179,7 +179,7 @@ local function Create_Button(name)
         if UnitAffectingCombat('player') then
             e.tips:AddLine(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
         else
-            e.tips:AddDoubleLine(e.addName, WoWTools_MacroMixin.addName)
+            e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_MacroMixin.addName)
             local col= self:find_text() and '|cff9e9e9e' or ''
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(col..self.text..(self.tip or ''), e.Icon.left)
@@ -301,7 +301,7 @@ local function Init()
     Button:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, WoWTools_MacroMixin.addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_MacroMixin.addName)
         e.tips:AddLine(' ')
         e.tips:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '请不要在战斗中使用' or 'Please do not use in combat'))
         e.tips:AddLine(' ')

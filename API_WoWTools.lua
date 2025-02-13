@@ -25,11 +25,10 @@ end
 
 e.LeftButtonDown = C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'LeftButtonDown' or 'LeftButtonUp'
 e.RightButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'RightButtonDown' or 'RightButtonUp'
-
-e.ExpansionLevel= GetExpansionLevel()--版本数据
 e.onlyChinese= LOCALE_zhCN and true or false
+e.ExpansionLevel= GetExpansionLevel()--版本数据
 e.Is_Timerunning= PlayerGetTimerunningSeasonID()-- 1=幻境新生：潘达利亚
-e.addName= '|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r'
+
 
 
 

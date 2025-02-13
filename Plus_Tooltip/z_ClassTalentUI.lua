@@ -25,7 +25,7 @@ local function Blizzard_ClassTalentUI(self)
             frame.specIDLabel:SetScript('OnEnter', function(s)
                 e.tips:SetOwner(s, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                e.tips:AddDoubleLine(e.addName, WoWTools_TooltipMixin.addName)
+                e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_TooltipMixin.addName)
                 local specIndex= s:GetParent().specIndex
                 if specIndex then
                     local specID, name, _, icon= GetSpecializationInfo(specIndex)

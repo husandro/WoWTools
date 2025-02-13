@@ -54,7 +54,7 @@ local function Init()
     function PlayerButton:set_tooltip()
         e.tips:ClearLines()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:AddDoubleLine(e.addName, e.Icon.player..' XY')
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, e.Icon.player..' XY')
         e.tips:AddLine(' ')
 
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)

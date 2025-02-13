@@ -28,7 +28,7 @@ function WoWTools_ObjectiveTrackerMixin:Add_ClearAll_Button(frame, tooltip, func
     btn:SetScript('OnEnter', function(f)
         e.tips:SetOwner(f, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, WoWTools_ObjectiveTrackerMixin.addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_ObjectiveTrackerMixin.addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine((e.onlyChinese and '双击' or 'Double-Click')..e.Icon.left, (e.onlyChinese and '全部清除' or CLEAR_ALL)..'|A:bags-button-autosort-up:0:0|a|cffff00ff'..(f.tooltip or ''))
         e.tips:Show()
@@ -36,7 +36,7 @@ function WoWTools_ObjectiveTrackerMixin:Add_ClearAll_Button(frame, tooltip, func
     end)
     btn:SetScript('OnDoubleClick', func)
     function btn:print_text(num)
-        print(e.addName, WoWTools_ObjectiveTrackerMixin.addName, e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, '|A:bags-button-autosort-up:0:0|a', '|cffff00ff'..(num or 0)..'|r', btn.tooltip)
+        print(WoWTools_Mixin.addName, WoWTools_ObjectiveTrackerMixin.addName, e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, '|A:bags-button-autosort-up:0:0|a', '|cffff00ff'..(num or 0)..'|r', btn.tooltip)
     end
     btn.tooltip= tooltip
 end
@@ -135,7 +135,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue= function() return not Save().disabled end,
                 SetValue= function()
                     Save().disabled= not Save().disabled and true or nil
-                    print(e.addName, WoWTools_ObjectiveTrackerMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(WoWTools_Mixin.addName, WoWTools_ObjectiveTrackerMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 

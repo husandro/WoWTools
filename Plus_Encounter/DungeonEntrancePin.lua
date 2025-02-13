@@ -28,7 +28,7 @@ local function Init(frame)
         if WoWTools_EncounterMixin:GetInstanceData(self, true) then
             GameTooltip:AddLine(' ')
         end
-        GameTooltip:AddDoubleLine(e.addName, WoWTools_EncounterMixin.addName)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_EncounterMixin.addName)
         GameTooltip:Show()
     end)
     frame:SetScript('OnLeave', GameTooltip_Hide)

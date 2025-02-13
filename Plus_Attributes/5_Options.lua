@@ -184,7 +184,7 @@ local function Init()--设置 panel
             dragonriding:SetScript('OnClick',function()
                 Save().disabledDragonridingSpeed= not Save().disabledDragonridingSpeed and true or nil
                 WoWTools_AttributesMixin:Init_Dragonriding_Speed()
-                print(e.addName, WoWTools_AttributesMixin.addName, e.GetEnabeleDisable(not Save().disabledDragonridingSpeed), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                print(WoWTools_Mixin.addName, WoWTools_AttributesMixin.addName, e.GetEnabeleDisable(not Save().disabledDragonridingSpeed), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
             end)
 
             --载具，速度
@@ -194,7 +194,7 @@ local function Init()--设置 panel
             vehicleSpeedCheck.text:SetFormattedText(e.onlyChinese and '%s载具' or UNITNAME_SUMMON_TITLE9, '|TInterface\\Vehicles\\UI-Vehicles-Button-Exit-Up:0|t')
             vehicleSpeedCheck:SetScript('OnClick',function()
                 Save().disabledVehicleSpeed= not Save().disabledVehicleSpeed and true or nil
-                print(e.addName, WoWTools_AttributesMixin.addName, e.GetEnabeleDisable(not Save().disabledVehicleSpeed), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                print(WoWTools_Mixin.addName, WoWTools_AttributesMixin.addName, e.GetEnabeleDisable(not Save().disabledVehicleSpeed), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
                 WoWTools_AttributesMixin:Init_Vehicle_Speed()
             end)
 
@@ -563,7 +563,7 @@ local function Init()--设置 panel
             self.Text:SetText(value)
             Save().gsubText= value>0 and value or nil
             WoWTools_AttributesMixin:Frame_Init(true)--初始，设置
-            print(e.addName, WoWTools_AttributesMixin.addName, '|cnGREEN_FONT_COLOR:'..value..'|r', e.onlyChinese and '文本 0=否' or (LOCALE_TEXT_LABEL..' 0='..NO))
+            print(WoWTools_Mixin.addName, WoWTools_AttributesMixin.addName, '|cnGREEN_FONT_COLOR:'..value..'|r', e.onlyChinese and '文本 0=否' or (LOCALE_TEXT_LABEL..' 0='..NO))
         end,
         tips=nil
     })

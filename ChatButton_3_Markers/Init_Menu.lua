@@ -197,7 +197,7 @@ local function Init_Menu(_, root)
         if WoWTools_MarkerMixin.ReadyTipsButton then
             WoWTools_MarkerMixin.ReadyTipsButton:ClearAllPoints()
             WoWTools_MarkerMixin.ReadyTipsButton:set_Point()--位置
-            print(e.addName, WoWTools_MarkerMixin.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+            print(WoWTools_Mixin.addName, WoWTools_MarkerMixin.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
         end
     end)
 

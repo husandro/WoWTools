@@ -642,7 +642,7 @@ end
 
 local function setFunc()--使用，禁用
     Save.disabed= not Save.disabed and true or nil
-    print(e.addName, addName, e.GetEnabeleDisable(not Save.disabed))
+    print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save.disabed))
     setUseDisabled()
 end
 
@@ -727,7 +727,7 @@ local function Init_Panel()
                 end
             end)
         end
-        print(e.addName, addName, e.onlyChinese and '颜色' or COLOR, '|cnGREEN_FONT_COLOR:#'..n..(e.onlyChinese and '完成' or COMPLETE)..'|r', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(WoWTools_Mixin.addName, addName, e.onlyChinese and '颜色' or COLOR, '|cnGREEN_FONT_COLOR:#'..n..(e.onlyChinese and '完成' or COMPLETE)..'|r', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
     local str2=WoWTools_LabelMixin:Create(panel)--频道名称替换
@@ -764,7 +764,7 @@ local function Init_Panel()
                 end
             end)
         end
-        print(e.addName, addName, e.onlyChinese and '频道名称替换' or (CHANNEL_CHANNEL_NAME..COMMUNITIES_SETTINGS_SHORT_NAME_LABEL), '|cnGREEN_FONT_COLOR:#'..n..(e.onlyChinese and '完成' or COMPLETE)..'|r',  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(WoWTools_Mixin.addName, addName, e.onlyChinese and '频道名称替换' or (CHANNEL_CHANNEL_NAME..COMMUNITIES_SETTINGS_SHORT_NAME_LABEL), '|cnGREEN_FONT_COLOR:#'..n..(e.onlyChinese and '完成' or COMPLETE)..'|r',  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 end
 
@@ -884,7 +884,7 @@ local function Init_Add_Reload_Button()
             frame.reload:SetScript('OnEnter', function(self)
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                e.tips:AddDoubleLine(e.addName, 'Tools '..addName)
+                e.tips:AddDoubleLine(WoWTools_Mixin.addName, 'Tools '..addName)
                 e.tips:AddDoubleLine(e.onlyChinese and '重新加载UI' or RELOADUI, '|cnGREEN_FONT_COLOR:'..SLASH_RELOAD1)
                 e.tips:Show()
             end)
@@ -996,20 +996,20 @@ local function set_START_TIMER_Event()--事件, 声音
         if not UnitAffectingCombat('player') then
             if not C_CVar.GetCVarBool('Sound_EnableAllSound') then
                 C_CVar.SetCVar('Sound_EnableAllSound', '1')
-                print(e.addName, addName, '|cnGREEN_FONT_COLOR:CVar Sound_EnableAllSound|r', e.onlyChinese and '开启声效' or ENABLE_SOUND)
+                print(WoWTools_Mixin.addName, addName, '|cnGREEN_FONT_COLOR:CVar Sound_EnableAllSound|r', e.onlyChinese and '开启声效' or ENABLE_SOUND)
             end
             if C_CVar.GetCVar('Sound_MasterVolume')=='0' then
                 C_CVar.SetCVar('Sound_MasterVolume', '1.0')
-                print(e.addName, addName, '|cnGREEN_FONT_COLOR:CVar Sound_MasterVolume|r', e.onlyChinese and '主音量' or MASTER_VOLUME, '1')
+                print(WoWTools_Mixin.addName, addName, '|cnGREEN_FONT_COLOR:CVar Sound_MasterVolume|r', e.onlyChinese and '主音量' or MASTER_VOLUME, '1')
             end
 
             if C_CVar.GetCVar('Sound_DialogVolume')=='0' then
                 C_CVar.SetCVar('Sound_DialogVolume', '1.0')
-                print(e.addName, addName, '|cnGREEN_FONT_COLOR:CVar Sound_DialogVolume|r',e.onlyChinese and '对话' or DIALOG_VOLUME, '1')
+                print(WoWTools_Mixin.addName, addName, '|cnGREEN_FONT_COLOR:CVar Sound_DialogVolume|r',e.onlyChinese and '对话' or DIALOG_VOLUME, '1')
             end
             if not C_CVar.GetCVarBool('Sound_EnableDialog') then
                 C_CVar.SetCVar('Sound_EnableDialog', '1')
-                print(e.addName, addName, '|cnGREEN_FONT_COLOR:CVar Sound_EnableDialog|r', e.onlyChinese and '启用对话' or ENABLE_DIALOG)
+                print(WoWTools_Mixin.addName, addName, '|cnGREEN_FONT_COLOR:CVar Sound_EnableDialog|r', e.onlyChinese and '启用对话' or ENABLE_DIALOG)
             end
         end
 
@@ -1111,7 +1111,7 @@ local function Init_Menu(_, root)
         end
         set_START_TIMER_Event()--事件, 声音
         set_Talking()--隐藏NPC发言
-        print(e.addName, addName, e.onlyChinese and "播放" or SLASH_STOPWATCH_PARAM_PLAY1, e.onlyChinese and '事件声音' or EVENTS_LABEL..SOUND)
+        print(WoWTools_Mixin.addName, addName, e.onlyChinese and "播放" or SLASH_STOPWATCH_PARAM_PLAY1, e.onlyChinese and '事件声音' or EVENTS_LABEL..SOUND)
     end)
     sub:SetTooltip(function(tooltip)
         GameTooltip_AddNormalLine(tooltip, e.Get_CVar_Tooltips({name='Sound_EnableAllSound', msg=e.onlyChinese and '开启声效' or ENABLE_SOUND}))
@@ -1173,7 +1173,7 @@ local function Init_Menu(_, root)
                 SetValue= function(self)
                     local text= self.editBox:GetText()
                     Save.guildWelcomeText= text
-                    print(e.addName, addName, text)
+                    print(WoWTools_Mixin.addName, addName, text)
                 end
             }
         )
@@ -1216,7 +1216,7 @@ local function Init_Menu(_, root)
                 SetValue= function(self)
                     local text= self.editBox:GetText()
                     Save.groupWelcomeText=text
-                    print(e.addName, addName, text)
+                    print(WoWTools_Mixin.addName, addName, text)
                 end
             }
         )
@@ -1373,7 +1373,7 @@ local function Init()
                 end
             end]]
             if self.AcceptButton and self.AcceptButton:IsEnabled() and info then
-                print(e.addName, addName,
+                print(WoWTools_Mixin.addName, addName,
                     info.leaderOverallDungeonScore and info.leaderOverallDungeonScore>0 and '|T4352494:0|t'..WoWTools_WeekMixin:KeystoneScorsoColor(info.leaderOverallDungeonScore) or '',--地下城史诗,分数
                     info.leaderPvpRatingInfo and  info.leaderPvpRatingInfo.rating and info.leaderPvpRatingInfo.rating>0 and '|A:pvptalents-warmode-swords:0:0|a|cnRED_FONT_COLOR:'..info.leaderPvpRatingInfo.rating..'|r' or '',--PVP 分数
                     info.leaderName and (e.onlyChinese and '%s邀请你加入' or COMMUNITY_INVITATION_FRAME_INVITATION_TEXT):format(WoWTools_UnitMixin:GetLink(info.leaderName)..' ') or '',--	%s邀请你加入
@@ -1458,7 +1458,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
                 e.tips:SetOwner(self2, "ANCHOR_LEFT")
                 e.tips:ClearLines()
                 e.tips:AddDoubleLine('|cff00ff00FST|rACK', e.GetEnabeleDisable(true)..'/'..e.GetEnabeleDisable(false))
-                e.tips:AddDoubleLine(e.addName, addName)
+                e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
                 e.tips:Show()
             end)
 
@@ -1481,7 +1481,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
             end)
             edit:SetScript("OnKeyUp", function(s, key)
                 if IsControlKeyDown() and key == "C" then
-                    print(e.addName, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r', s:GetText())
+                    print(WoWTools_Mixin.addName, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r', s:GetText())
                 end
             end)
         end

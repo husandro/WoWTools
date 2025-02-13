@@ -51,7 +51,7 @@ local function Init_PlayerFrame()--PlayerFrame.lua
     function playerFrameTargetContextual.assisterButton:set_tooltips()
         e.tips:SetOwner(PlayerFrame, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, e.cn(addName))
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, e.cn(addName))
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '所有团队成员都获得团队助理权限' or ALL_ASSIST_DESCRIPTION, e.Icon.left)
         e.tips:AddLine(' ')
@@ -63,7 +63,7 @@ local function Init_PlayerFrame()--PlayerFrame.lua
         SetEveryoneIsAssistant(not IsEveryoneAssistant())
         C_Timer.After(0.7, function()
             self:set_tooltips()
-            print(e.addName, e.cn(addName), e.onlyChinese and '所有团队成员都获得团队助理权限' or ALL_ASSIST_DESCRIPTION, e.GetEnabeleDisable(IsEveryoneAssistant()))
+            print(WoWTools_Mixin.addName, e.cn(addName), e.onlyChinese and '所有团队成员都获得团队助理权限' or ALL_ASSIST_DESCRIPTION, e.GetEnabeleDisable(IsEveryoneAssistant()))
         end)
     end)
     playerFrameTargetContextual.assisterIcon= playerFrameTargetContextual:CreateTexture(nil, 'OVERLAY', nil, 1)--助手，提示 PlayerFrame.xml
@@ -182,7 +182,7 @@ end)
     PlayerFrame.lootButton:SetScript('OnEnter', function()
         e.tips:SetOwner(PlayerFrame, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, e.cn(addName))
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, e.cn(addName))
         e.tips:AddLine(' ')
         local text
         local lootSpecID = GetLootSpecialization()
@@ -228,7 +228,7 @@ end)
         local currentSpec = GetSpecialization()
         local specID= currentSpec and GetSpecializationInfo(currentSpec)
         local name, _, texture= select(2, GetSpecializationInfoByID(specID or 0))
-        print(e.addName, e.cn(addName),  e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION, texture and '|T'..texture..':0|t' or '', name)
+        print(WoWTools_Mixin.addName, e.cn(addName),  e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION, texture and '|T'..texture..':0|t' or '', name)
     end)
 
 
@@ -253,7 +253,7 @@ end)
         if self.tips then
             e.tips:SetOwner(PlayerFrame, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(e.addName, e.cn(addName))
+            e.tips:AddDoubleLine(WoWTools_Mixin.addName, e.cn(addName))
             e.tips:AddLine(' ')
             local dungeonID= GetRaidDifficultyID()
             local text=WoWTools_MapMixin:GetDifficultyColor(nil, dungeonID)
@@ -291,7 +291,7 @@ end)
     function PlayerFrame.instanceFrame.dungeon:set_tooltips()
         e.tips:SetOwner(PlayerFrame, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, e.cn(addName))
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, e.cn(addName))
         e.tips:AddLine(' ')
         local dungeonID= GetDungeonDifficultyID()
         local text=WoWTools_MapMixin:GetDifficultyColor(nil, dungeonID)
@@ -422,7 +422,7 @@ end)
     PlayerFrame.keystoneFrame:SetScript('OnEnter', function(self)
         e.tips:SetOwner(PlayerFrame, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, e.cn(addName))
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, e.cn(addName))
         e.tips:AddLine(' ')
         if e.WoWDate[e.Player.guid].Keystone.link then
             e.tips:AddLine('|T4352494:0|t'..e.WoWDate[e.Player.guid].Keystone.link)
@@ -484,7 +484,7 @@ end)
     function PlayerFrame.warModeButton:set_tooltips()
         e.tips:SetOwner(PlayerFrame, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, e.cn(addName))
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, e.cn(addName))
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '战争模式' or PVP_LABEL_WAR_MODE, e.GetEnabeleDisable(C_PvP.IsWarModeDesired())..e.Icon.left)
         if not C_PvP.CanToggleWarMode(false)  then
@@ -679,7 +679,7 @@ local function set_memberFrame(memberFrame)
             else
                 e.tips:AddDoubleLine(self.unit, e.Icon.left..(e.onlyChinese and '选中目标' or BINDING_HEADER_TARGETING))
                 e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(e.addName, e.cn(addName))
+                e.tips:AddDoubleLine(WoWTools_Mixin.addName, e.cn(addName))
             end
             e.tips:Show()
         end)
@@ -802,7 +802,7 @@ local function set_memberFrame(memberFrame)
                 e.tips:AddDoubleLine((e.onlyChinese and '队员' or PLAYERS_IN_GROUP)..' '..(self.unit or ''), e.onlyChinese and '施法条' or HUD_EDIT_MODE_CAST_BAR_LABEL)
             end
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.addName, e.cn(addName))
+            e.tips:AddDoubleLine(WoWTools_Mixin.addName, e.cn(addName))
             e.tips:Show()
             self:SetAlpha(0.5)
         end)
@@ -911,7 +911,7 @@ local function set_memberFrame(memberFrame)
         combatFrame:SetScript('OnEnter', function(self)
             e.tips:SetOwner(self, "ANCHOR_RIGHT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(e.addName, e.cn(addName))
+            e.tips:AddDoubleLine(WoWTools_Mixin.addName, e.cn(addName))
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(self.unit, e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
             e.tips:Show()
@@ -1072,7 +1072,7 @@ local function set_memberFrame(memberFrame)
         deadFrame.Text:SetScript('OnEnter', function(self)
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(e.addName, e.cn(addName))
+            e.tips:AddDoubleLine(WoWTools_Mixin.addName, e.cn(addName))
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine((e.onlyChinese and '死亡' or DEAD)..' '..(self.unit or ''),
                     format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, self:GetParent().dead or 0 , e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
@@ -1340,14 +1340,14 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
         if d=='RightButton' and not IsModifierKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
         elseif d=="LeftButton" then
-            print(e.addName, e.cn(addName), (e.onlyChinese and '移动' or NPE_MOVE)..e.Icon.right, 'Alt+'..e.Icon.mid..(e.onlyChinese and '缩放' or UI_SCALE), Save.compactPartyFrameScale or 1)
+            print(WoWTools_Mixin.addName, e.cn(addName), (e.onlyChinese and '移动' or NPE_MOVE)..e.Icon.right, 'Alt+'..e.Icon.mid..(e.onlyChinese and '缩放' or UI_SCALE), Save.compactPartyFrameScale or 1)
         end
     end)
     CompactPartyFrame.moveFrame:SetScript("OnLeave", ResetCursor)
     CompactPartyFrame.moveFrame:SetScript('OnMouseWheel', function(self, d)--缩放
         if IsAltKeyDown() then
             if UnitAffectingCombat('player') then
-                print(e.addName, e.cn(addName), e.onlyChinese and '缩放' or UI_SCALE, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or COMBAT))
+                print(WoWTools_Mixin.addName, e.cn(addName), e.onlyChinese and '缩放' or UI_SCALE, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or COMBAT))
             else
                 local sacle= Save.compactPartyFrameScale or 1
                 if d==1 then
@@ -1360,7 +1360,7 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
                 elseif sacle<0.5 then
                     sacle=0.5
                 end
-                print(e.addName, e.cn(addName), (e.onlyChinese and '缩放' or UI_SCALE), sacle)
+                print(WoWTools_Mixin.addName, e.cn(addName), (e.onlyChinese and '缩放' or UI_SCALE), sacle)
                 CompactPartyFrame:SetScale(sacle)
                 Save.compactPartyFrameScale=sacle
             end
@@ -1543,7 +1543,7 @@ local function Init_BossFrame()
             if UnitExists(self.targetUnit) then
                 e.tips:SetUnit(self.targetUnit)
             else
-                e.tips:AddDoubleLine(e.addName, e.cn(addName))
+                e.tips:AddDoubleLine(WoWTools_Mixin.addName, e.cn(addName))
                 e.tips:AddDoubleLine(e.onlyChinese and '目标的目标' or SHOW_TARGET_OF_TARGET_TEXT, self.targetUnit)
             end
             e.tips:Show()
@@ -1829,7 +1829,7 @@ local function Init_RaidFrame()--设置,团队
     function CompactRaidFrameContainer.moveFrame:set_Tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, e.cn(addName))
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, e.cn(addName))
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
         local col= UnitAffectingCombat('player') and '|cff9e9e9e' or ''
@@ -1853,7 +1853,7 @@ local function Init_RaidFrame()--设置,团队
             Save.raidFrameScale= num
             self:set_Scale()
             self:set_Tooltips()
-            print(e.addName, e.cn(addName), e.onlyChinese and '缩放' or UI_SCALE, num)
+            print(WoWTools_Mixin.addName, e.cn(addName), e.onlyChinese and '缩放' or UI_SCALE, num)
         end
     end)
     CompactRaidFrameContainer.moveFrame:SetScript("OnLeave", function(self)
@@ -1899,12 +1899,12 @@ local function Init_RaidFrame()--设置,团队
     CompactRaidFrameManager.ScaleButton:settings()
 
     --[[CompactRaidFrameManager.ScaleButton:SetScript("OnMouseDown", function(self, d)
-        print(e.addName, e.cn(addName), 'Alt+'..e.Icon.mid..(e.onlyChinese and '缩放' or UI_SCALE), Save.managerScale or 1)
+        print(WoWTools_Mixin.addName, e.cn(addName), 'Alt+'..e.Icon.mid..(e.onlyChinese and '缩放' or UI_SCALE), Save.managerScale or 1)
     end)
     CompactRaidFrameManager.ScaleButton:SetScript('OnMouseWheel', function(self, d)--缩放
         if IsAltKeyDown() then
             if UnitAffectingCombat('player') then
-                print(e.addName, e.cn(addName), e.onlyChinese and '缩放' or UI_SCALE, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or COMBAT))
+                print(WoWTools_Mixin.addName, e.cn(addName), e.onlyChinese and '缩放' or UI_SCALE, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or COMBAT))
             else
                 local sacle= Save.managerScale or 1
                 if d==1 then
@@ -1917,7 +1917,7 @@ local function Init_RaidFrame()--设置,团队
                 elseif sacle<0.5 then
                     sacle=0.5
                 end
-                print(e.addName, e.cn(addName), (e.onlyChinese and '缩放' or UI_SCALE), sacle)
+                print(WoWTools_Mixin.addName, e.cn(addName), (e.onlyChinese and '缩放' or UI_SCALE), sacle)
                 CompactRaidFrameManager:SetScale(sacle)
                 Save.managerScale=sacle
             end
@@ -2238,7 +2238,7 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 GetValue= function() return not Save.disabled end,
                 func= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(e.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(WoWTools_Mixin.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 

@@ -152,7 +152,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 func= function()
                     WoWTools_WorldMapMixin.Save.disabled= not WoWTools_WorldMapMixin.Save.disabled and true or nil
                     print(
-                        e.addName,
+                        WoWTools_Mixin.addName,
                         WoWTools_WorldMapMixin.addName,
                         e.GetEnabeleDisable(not WoWTools_WorldMapMixin.Save.disabled),
                         e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD

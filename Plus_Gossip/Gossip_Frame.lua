@@ -369,14 +369,14 @@ local function Init()
                 icon= '|T'..texture2..':0|t'
             end
         end
-        print(e.addName, addName, '|cnGREEN_FONT_COLOR:'..num..'|r', icon or '', '|c'..(hex or 'ff000000'), name)]]
+        print(WoWTools_Mixin.addName, addName, '|cnGREEN_FONT_COLOR:'..num..'|r', icon or '', '|c'..(hex or 'ff000000'), name)]]
     end
 
     function Menu:delete_gossip(gossipID)
         if gossipID and Save().Gossip_Text_Icon_Player[gossipID] then
             local info=Save().Gossip_Text_Icon_Player[gossipID]
             Save().Gossip_Text_Icon_Player[gossipID]=nil
-            print(e.addName, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '删除' or DELETE)..'|r|n', gossipID, info.icon, info.hex, info.name)
+            print(WoWTools_Mixin.addName, addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '删除' or DELETE)..'|r|n', gossipID, info.icon, info.hex, info.name)
             self:set_list()
             WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
         end
@@ -463,7 +463,7 @@ local function Init()
     Menu.FindIcon:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
         e.tips:AddLine(e.onlyChinese and '选择图标' or COMMUNITIES_CREATE_DIALOG_AVATAR_PICKER_INSTRUCTIONS)
         if not _G['TAV_CoreFrame'] then
             e.tips:AddLine(' ')
@@ -556,7 +556,7 @@ local function Init()
         Menu.tav:SetScript('OnEnter', function(self)
             e.tips:SetOwner(self, "ANCHOR_RIGHT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(e.addName, addName)
+            e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
             e.tips:AddLine(' ')
             e.tips:AddLine('Texture Atlas Viewer')
             e.tips:Show()
@@ -571,7 +571,7 @@ local function Init()
     function Menu.Color:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName , addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName , addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine((self.hex and format('|c%s|r', self.hex) or '')..(e.onlyChinese and '设置颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, COLOR)), e.Icon.left)
         local col= (not self.hex or self.hex=='ff000000') and '|cff9e9e9e' or ''
@@ -610,7 +610,7 @@ local function Init()
         local name= frame:get_name()
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName , addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName , addName)
         e.tips:AddLine(' ')
         e.tips:AddLine(self.tooltip)
         e.tips:AddLine(' ')
@@ -632,7 +632,7 @@ local function Init()
     Menu.Delete:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '删除' or DELETE, Frame.Menu.gossipID)
         e.tips:Show()
@@ -648,7 +648,7 @@ local function Init()
     Menu.DeleteAllPlayerData:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
         e.tips:AddLine(' ')
         e.tips:AddLine(e.onlyChinese and '全部清除' or CLEAR_ALL)
         e.tips:Show()
@@ -656,13 +656,13 @@ local function Init()
     Menu.DeleteAllPlayerData:SetScript('OnClick', function()
         if not StaticPopupDialogs['WoWTools_Gossip_Delete_All_Player_Data'] then
             StaticPopupDialogs['WoWTools_Gossip_Delete_All_Player_Data']={
-                text=e.addName..' '..addName..'|n|n|cnRED_FONT_COLOR:'..(e.onlyChinese and '全部清除' or CLEAR_ALL),
+                text=WoWTools_Mixin.addName..' '..addName..'|n|n|cnRED_FONT_COLOR:'..(e.onlyChinese and '全部清除' or CLEAR_ALL),
                 whileDead=true, hideOnEscape=true, exclusive=true,
                 button1= e.onlyChinese and '全部清除' or CLEAR_ALL,
                 button2= e.onlyChinese and '取消' or CANCEL,
                 OnAccept = function()
                     Save().Gossip_Text_Icon_Player={}
-                    print(e.addName, addName, e.onlyChinese and '全部清除' or CLEAR_ALL, format('|cnGREEN_FONT_COLOR:%s|r', e.onlyChinese and '完成' or DONE))
+                    print(WoWTools_Mixin.addName, addName, e.onlyChinese and '全部清除' or CLEAR_ALL, format('|cnGREEN_FONT_COLOR:%s|r', e.onlyChinese and '完成' or DONE))
                     Frame.Menu:set_list()
                 end,
             }
@@ -711,7 +711,7 @@ local function Init()
         Menu.font:SetScript('OnEnter', function(self)
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(e.addName , addName)
+            e.tips:AddDoubleLine(WoWTools_Mixin.addName , addName)
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine('ARHei.ttf', '黑体字')
             e.tips:Show()
@@ -721,7 +721,7 @@ local function Init()
             WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
             Frame.Menu:set_list()
             if not Save().Gossip_Text_Icon_cnFont then
-                print(e.addName, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '需要重新加载UI' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, RELOADUI))
+                print(WoWTools_Mixin.addName, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '需要重新加载UI' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, RELOADUI))
             end
         end)
     --end
@@ -735,7 +735,7 @@ local function Init()
     Menu.chat:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName , addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName , addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '当前对话' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, ENABLE_DIALOG), e.onlyChinese and '添加' or ADD)
         e.tips:Show()
@@ -852,7 +852,7 @@ local function Init()
                     info.tab.hex and format('|c%s%s', info.tab.hex, info.tab.hex) or '')
             end
             Frame.Menu:set_list()
-            print(e.addName, addName, '|n', format('%s|n%s|n%s', addText, delText, existText))
+            print(WoWTools_Mixin.addName, addName, '|n', format('%s|n%s|n%s', addText, delText, existText))
             frame:SetText(text)
             self:GetParent():SetInstructions(e.onlyChinese and '导入' or HUD_CLASS_TALENTS_IMPORT_LOADOUT_ACCEPT_BUTTON)
         else
@@ -865,7 +865,7 @@ local function Init()
     Menu.DataFrame.enter:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
         e.tips:AddDoubleLine(e.onlyChinese and '格式' or FORMATTING, '|cffff00ff[gossipOptionID]={icon=, name=, hex=}')
         e.tips:AddLine(' ')
         self:set_date(true)
@@ -882,7 +882,7 @@ local function Init()
     Menu.DataUscita:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
         e.tips:AddLine(' ')
         e.tips:AddLine(e.onlyChinese and '导出' or SOCIAL_SHARE_TEXT or  HUD_EDIT_MODE_SHARE_LAYOUT)
         e.tips:Show()
@@ -923,7 +923,7 @@ local function Init()
     Menu.DataEnter:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.addName, addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
         e.tips:AddLine(' ')
         e.tips:AddLine(e.onlyChinese and '导入' or HUD_CLASS_TALENTS_IMPORT_LOADOUT_ACCEPT_BUTTON)
         e.tips:Show()

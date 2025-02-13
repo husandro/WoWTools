@@ -154,7 +154,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 category= Initializer,
                 func= function()
                     Save().disabled= not Save().disabled and true or nil
-                    print(e.addName, addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 

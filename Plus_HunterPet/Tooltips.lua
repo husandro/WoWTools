@@ -21,7 +21,7 @@ local function SetTooltip(frame, pet)
 
     e.tips:SetOwner(frame, "ANCHOR_LEFT", -12, 0)
     e.tips:ClearLines()
-    --e.tips:AddDoubleLine(e.addName, WoWTools_StableFrameMixin.addName)
+    --e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_StableFrameMixin.addName)
     --e.tips:AddLine(' ')
     local i=1
     for indexType, name in pairs(pet) do
