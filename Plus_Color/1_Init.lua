@@ -2,6 +2,38 @@ local id, e= ...
 
 
 
+
+
+
+
+local function OnColorSelect(self, r, g, b)
+	local alphaText, a
+	a=(not WoWTools_ColorMixin.Save.hide and self.Alpha:IsShown()) and self:GetColorAlpha()
+
+	if a then
+		alphaText= format('%.2f', a)
+	else
+		r,g,b,a=1,1,1,1
+	end
+
+	self.alphaText:SetText(alphaText or '')
+	self.alphaWheelTexture:SetShown(alphaText)
+
+	for _, icon in pairs({ColorPickerFrame.Border:GetRegions()}) do
+		if icon:GetObjectType()=="Texture" then
+			icon:SetVertexColor(r,g,b,a)
+		end
+	end
+	for _, icon in pairs({ColorPickerFrame.Header:GetRegions()}) do
+		if icon:GetObjectType()=="Texture" then
+			icon:SetVertexColor(r,g,b,a)
+		end
+	end
+end
+
+
+
+
 local function Init()
 --透明值，提示
 	ColorPickerFrame.Content.ColorPicker.alphaText=WoWTools_LabelMixin:Create(ColorPickerFrame.Content.ColorPicker)
@@ -32,40 +64,25 @@ local function Init()
 	end)
 
 --显示，透明度值
-	ColorPickerFrame.Content.ColorPicker:HookScript("OnColorSelect", function(self, r, g, b)
-		local text, a
-		a=(not WoWTools_ColorMixin.Save.hide and self.Alpha:IsShown()) and self:GetColorAlpha()
-		if a then
-			text= format('%.2f', a)
-		else
-			r,g,b,a=1,1,1,1
-		end
-
-		self.alphaText:SetText(text or '')
-		self.alphaWheelTexture:SetShown(text)
-
-		for _, icon in pairs({ColorPickerFrame.Border:GetRegions()}) do
-			if icon:GetObjectType()=="Texture" then
-				icon:SetVertexColor(r,g,b,a)
-			end
-		end
-		for _, icon in pairs({ColorPickerFrame.Header:GetRegions()}) do
-			if icon:GetObjectType()=="Texture" then
-				icon:SetVertexColor(r,g,b,a)
-			end
-		end
-	end)
+	ColorPickerFrame.Content.ColorPicker:HookScript("OnColorSelect", OnColorSelect)
 
 
-	--WoWTools_ColorMixin:Init_Log()
+
 	do
 		WoWTools_ColorMixin:Init_Options()
 	end
 	WoWTools_ColorMixin:Init_EditBox()
 	WoWTools_ColorMixin:Init_SelectColor()
-
+	WoWTools_ColorMixin:Init_Log()
 	return true
 end
+
+
+
+
+
+
+
 
 
 
@@ -75,6 +92,7 @@ panel:RegisterEvent('ADDON_LOADED')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
+			
 			WoWToolsSave[COLOR_PICKER]= nil
             WoWTools_ColorMixin.Save= WoWToolsSave['Plus_Color'] or WoWTools_ColorMixin.Save
 			WoWTools_ColorMixin.addName= '|A:colorblind-colorwheel:0:0|a'..(e.onlyChinese and '颜色选择器' or COLOR_PICKER)

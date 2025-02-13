@@ -146,10 +146,14 @@ function WoWTools_PlusTextureMixin:SetSearchBox(frame)
     if not frame then-- or not frame.SearchBox then
         return
     end
-    self:SetAlphaColor(frame.Middle, nil, nil)
-    self:SetAlphaColor(frame.Left, nil, nil)
-    self:SetAlphaColor(frame.Right, nil, nil)
-    self:SetAlphaColor(frame.Mid, nil, nil)
+    self:SetAlphaColor(frame.Middle, nil, nil, true)
+    self:SetAlphaColor(frame.Left, nil, nil, true)
+    self:SetAlphaColor(frame.Right, nil, nil, true)
+    self:SetAlphaColor(frame.Mid, nil, nil, true)
+    if frame.clearButton then
+        self:SetAlphaColor(frame.clearButton.texture, true, nil, nil)
+    end
+    self:SetAlphaColor(frame.searchIcon, true, nil, nil)
 end
 
 --NineSlice

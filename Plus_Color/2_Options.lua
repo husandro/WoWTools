@@ -91,6 +91,8 @@ local function Init_Menu(self, root)
 		Save().hide= not Save().hide and true or nil
 		self:Settings()
 	end)
+
+	
 end
 
 --[[

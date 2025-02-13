@@ -5151,7 +5151,8 @@
         "PetJournal_SelectSpecies",
         "PetBattleUnitFrame_UpdateDisplay",
         "ColorPickerFrameMixin",
-        "OpacityFrameSlider"
+        "OpacityFrameSlider",
+        "ExtractColorValueFromHex"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

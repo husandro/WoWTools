@@ -13,15 +13,16 @@ WoWTools_ColorMixin={
 
 
 
-local function set_Frame_Color(frame, setR, setG, setB, setA, setHex)
+local function set_Frame_Color(frame, r, g, b, setA, hex)
     if frame then
         local type= frame:GetObjectType()
         if type=='FontString' then
-            frame:SetTextColor(setR, setG, setB,setA)
+            frame:SetTextColor(r, g, b,setA)
         elseif type=='Texture' then
-            frame:SetColorTexture(setR, setG, setB,setA)
+            --frame:SetVertexColor(r, g, b, setA)
+            frame:SetColorTexture(r, g, b,setA)
         end
-        frame.r, frame.g, frame.b, frame.a, frame.hex= setR, setG, setB, setA, '|c'..setHex
+        frame.r, frame.g, frame.b, frame.a, frame.hex= r, g, b, setA, '|c'..hex
     end
 end
 
@@ -29,15 +30,16 @@ end
 
 
 --RGB转HEX
-function WoWTools_ColorMixin:RGBtoHEX(setR, setG, setB, setA, frame)
-    setA= setA or 1
-	setR = setR <= 1 and setR >= 0 and setR or 0
-	setG = setG <= 1 and setG >= 0 and setG or 0
-	setB = setA <= 1 and setB >= 0 and setB or 0
-	setA = setA <= 1 and setA >= 0 and setA or 0
-    local hex=format("%02x%02x%02x%02x", setA*255, setR*255, setG*255, setB*255)
-    set_Frame_Color(frame, setR, setG, setB, setA, hex)
-	return hex
+function WoWTools_ColorMixin:RGBtoHEX(r, g, b, a, frame)
+    if r and g and b then
+        r= math.max(math.min(r, 1), 0)
+        g= math.max(math.min(g, 1), 0)
+        b= math.max(math.min(b, 1), 0)
+        a= math.max(math.min(a or 1, 1), 0)
+        local hex=format("%02x%02x%02x%02x", a*255, r*255, g*255, b*255)
+        set_Frame_Color(frame, r, g, b, a, hex)
+        return hex
+    end
 end
 
 
@@ -46,34 +48,24 @@ end
 
 
 --HEX转RGB -- ColorUtil.lua
-function WoWTools_ColorMixin:HEXtoRGB(hexColor, frame)
-	if hexColor then
-		hexColor= hexColor:match('|c(.+)') or hexColor
-        hexColor= hexColor:gsub('#', '')
-		hexColor= hexColor:gsub(' ','')
-        local len= #hexColor
-		if len == 8 then
-            local colorA= tonumber(hexColor:sub(1, 2), 16)
-            local colorR= tonumber(hexColor:sub(3, 4), 16)
-            local colorG= tonumber(hexColor:sub(5, 6), 16)
-            local colorB= tonumber(hexColor:sub(7, 8), 16)
-            if colorA and colorR and colorG and colorB then
-                colorA, colorR, colorG, colorB= colorA/255, colorR/255, colorG/255, colorB/255
-                set_Frame_Color(frame, colorR, colorG, colorB, colorA, hexColor)
-                return colorR, colorG, colorB, colorA
-            end
-        elseif len==6 then
-            local colorR= tonumber(hexColor:sub(1, 2), 16)
-            local colorG= tonumber(hexColor:sub(3, 4), 16)
-            local colorB= tonumber(hexColor:sub(5, 6), 16)
-            if colorR and colorG and colorB then
-                colorR, colorG, colorB= colorR/255, colorG/255, colorB/255
-                hexColor= 'ff'..hexColor
-                set_Frame_Color(frame, colorR, colorG, colorB, 1, hexColor)
-                return colorR, colorG, colorB, 1
-            end
-		end
-	end
+function WoWTools_ColorMixin:HEXtoRGB(text, frame)
+	if not text then
+        return
+    end
+    text= text:gsub(' ','')
+    text= text:match('|c(.+)') or text
+    text= text:gsub('#', '')
+    local len= #text
+    local r,g,b,a
+    if len == 8 then
+        r,g,b, a= ExtractColorValueFromHex(text, 3), ExtractColorValueFromHex(text, 5), ExtractColorValueFromHex(text, 7), ExtractColorValueFromHex(text, 1)
+    elseif len==6 then
+        r,g,b,a= ExtractColorValueFromHex(text, 1), ExtractColorValueFromHex(text, 3), ExtractColorValueFromHex(text, 5), 1
+    end
+    if r and g and b then
+        set_Frame_Color(frame, r, g, b, a or 1, 'ff'..text)
+        return a,r,g, a or 1
+    end
 end
 
 

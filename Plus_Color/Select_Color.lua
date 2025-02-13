@@ -1,11 +1,15 @@
 local e= select(2, ...)
+local size= 23
 
 
-local function Set_Color(r, g, b, a, textCode)
+
+
+
+
+local function Set_Color(r, g, b, a)--, textCode)
     if r and g and b then
         ColorPickerFrame.Content.ColorPicker:SetColorRGB(r, g, b)
         ColorPickerFrame.Content.ColorPicker:SetColorAlpha(a or 1)
-        
     end
 end
 
@@ -16,17 +20,20 @@ end
 
 
 
-local size= 23
+
 local function Create_Texture(r,g,b,a, atlas)
 	local texture= _G['WoWToolsColorPickerFrameButton'].frame:CreateTexture()
 	texture:SetSize(size, size)
 	texture:EnableMouse(true)
-	a=a or 1
+	
+    a=a or 1
 	texture.r, texture.g, texture.b, texture.a= r, g, b, a
+
 	texture:SetScript('OnMouseDown', function(self)
-		Set_Color(self.r, self.g, self.b, self.a, self.textCode)
+		Set_Color(self.r, self.g, self.b, 1)--, self.textCode)
 		self:SetAlpha(0.1)
 	end)
+
 	texture:SetScript('OnMouseUp', function(self) self:SetAlpha(0.7) end)
 	texture:SetScript('OnEnter', function(self)
 		local col= '|c'..WoWTools_ColorMixin:RGBtoHEX(self.r, self.g, self.b, self.a)
@@ -37,15 +44,23 @@ local function Create_Texture(r,g,b,a, atlas)
 			e.tips:AddLine(' ')
 			e.tips:AddLine(self.tooltip)
 		end
-		e.tips:AddDoubleLine(col..'r'..format('%.2f',self.r)..' g'..format('%.2f',self.g)..' b'..format('%.2f',self.b), col..'a'..(self.a and format('%.2f',self.a) or 1))
+        
+		e.tips:AddDoubleLine('r'..format('%.2f',self.r)..'  g'..format('%.2f',self.g)..'  b'..format('%.2f',self.b),
+
+            'a'..(self.a and format('%.2f',self.a) or 1)..(self.a and self.a<1 and '|cnGREEN_FONT_COLOR: / 1|r' or '')
+        )
+        if self.textCode then
+            e.tips:AddLine(self.textCode)
+        end
 		e.tips:Show()
 		self:SetAlpha(0.7)
 	end)
 	texture:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) end)
+
 	if atlas then
 		texture:SetAtlas(atlas)
 	else
-		texture:SetColorTexture(r, g, b)
+        texture:SetColorTexture(r, g, b)
 	end
 	return texture
 end
@@ -89,8 +104,8 @@ local function Init()
             colorTab[text]= true
             local texture= Create_Texture(col.r, col.g, col.b, col.a, WoWTools_UnitMixin:GetClassIcon(nil, className, true))
             texture:SetPoint('TOPLEFT', ColorPickerFrame, 'TOPRIGHT', x, y)
-            local hex= col:GenerateHexColor()
-            texture.tooltip= '|c'..hex..'RAID_CLASS_COLORS["'..className..'"]'
+            --local hex= col:GenerateHexColor()
+            texture.tooltip= 'RAID_CLASS_COLORS["'..className..'"]'
           
             if n==7 then
                 n=0
@@ -111,7 +126,7 @@ local function Init()
             colorTab[text]= true
             local texture= Create_Texture(col.r, col.g, col.b, col.a)
             texture:SetPoint('TOPLEFT', ColorPickerFrame, 'TOPRIGHT', x, y)
-            texture.tooltip= col.hex..e.cn(_G["ITEM_QUALITY" .. index.. "_DESC"])..'|nITEM_QUALITY' ..index.. '_DESC'
+            texture.tooltip= e.cn(_G["ITEM_QUALITY" .. index.. "_DESC"])..'|nITEM_QUALITY' ..index.. '_DESC'
             if n==10 then
                 n=0
                 x= x+ size
@@ -282,7 +297,7 @@ end
 
 
 function WoWTools_ColorMixin:Create_Texture(...)
-    Create_Texture(...)
+    return Create_Texture(...)
 end
 
 

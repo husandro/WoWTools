@@ -277,10 +277,28 @@ end]]
 
 
 
+local EditBoxs={}
+local function OnColorSelect(_, r, g, b)
+    if WoWTools_ColorMixin.Save.hide or not (r and g and b) then
+        return
+    end
 
-local EditBoxs={
+    local a= ColorPickerFrame.hasOpacity and ColorPickerFrame.Content.ColorPicker:GetColorAlpha() or 1
+    for _, frame in pairs(EditBoxs) do
 
-}
+        if not frame:HasFocus() then
+            local text= frame.set_text(r, g, b, a)
+            if text then
+                frame:SetText(text)
+            end
+        end
+        frame.Instructions:SetTextColor(r,g,b)
+    end
+end
+
+
+
+
 
 
 
@@ -302,11 +320,7 @@ local function Set_Color(r,g,b,a)
 end
 
 
-
-
-
-
-local function Get_RGBtoText(text)
+local function Get_RGBAtoText(text)
     text= text:gsub(',',' ')
     text= text:gsub('，',' ')
     text= text:gsub('  ',' ')
@@ -355,15 +369,22 @@ end
 
 
 
-
-
-
-
-
-
-local function Set_ValueRGBText(self, r, g, b)
-
+local function Get_RGB255toText(text)
+    local r,g,b= text:match('(%d+).-(%d+).-(%d+)')
+    if r and g and b then
+        local r2,g2,b2= tonumber(r), tonumber(g), tonumber(b)
+        r2,g2,b2= math.min(r, 255), math.min(g, 255), math.min(b, 255)
+        Set_Color(r2/255, g2/255, b2/255)
+    end
 end
+
+
+
+
+
+
+
+
 
 
 
@@ -373,6 +394,7 @@ end
 
 local function Create_EditBox(index, tab)
     local frame= CreateFrame("EditBox", nil, _G['WoWToolsColorPickerFrameButton'].frame, 'SearchBoxTemplate', index)--格式 RED_FONT_COLOR
+
     frame:SetPoint('TOPLEFT', ColorPickerFrame.Content, 'BOTTOMLEFT', 12, -(index-1)*22)
     frame:SetPoint('RIGHT', ColorPickerFrame.Content, -26, 0)
     frame:SetHeight(20)
@@ -385,9 +407,12 @@ local function Create_EditBox(index, tab)
     frame.name=tab.name
 
     frame.Instructions:SetText(tab.name or '')
+    frame.Instructions:ClearAllPoints()
+    frame.Instructions:SetPoint('RIGHT', frame.clearButton, 'LEFT')
+    WoWTools_PlusTextureMixin:SetSearchBox(frame)
     --frame.searchIcon:SetAtlas('NPE_Icon')
 
-    frame:SetScript('OnEnterPressed', function(self)
+    frame:HookScript('OnEnterPressed', function(self)
         self:ClearFocus()
         ColorPickerFrame.Content.ColorPicker:SetColorRGB(ColorPickerFrame:GetColorRGB())
     end)
@@ -396,20 +421,35 @@ local function Create_EditBox(index, tab)
         if userInput and self:HasFocus() then
             self.set_value(self:GetText())
         end
-        self.Instructions:SetShown(self:GetText()=='')
+        --[[
+        self.Instructions:SetShown(hasText)
+        self.Instructions2:SetShown(not hasText)]]
+        local hasText= self:HasText()
+        self.clearButton:SetShown(hasText)
+        --self.Instructions:SetShown(hasText)
     end)
 
-    frame:SetScript('OnEscapePressed', frame.ClearFocus)
+    frame:HookScript('OnEscapePressed', frame.ClearFocus)
+    frame:HookScript('OnTabPressed', function(self)
+        local value= self:GetID()+1
+        if value>#EditBoxs then
+            value=1
+        end
+        EditBoxs[value]:SetFocus()
+    end)
 
-    frame:SetScript('OnHide', function(self)
+    frame:HookScript('OnEditFocusGained', function(self)
+    end)
+
+    frame:HookScript('OnHide', function(self)
         self:SetText('')
         self:ClearFocus()
     end)
 
-    frame:SetScript('OnLeave', function()
+    frame:HookScript('OnLeave', function()
         e.tips:Hide()
     end)
-    frame:SetScript('OnEnter', function(self)
+    frame:HookScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddLine(self.name)
@@ -434,54 +474,61 @@ end
 
 
 
-local function Init()
-local Tab={
-{
-    name='R G B A',
-    set_value= function(text)
-        Set_Color(Get_RGBtoText(text))
-    end,
-    set_text= function(r,g,b,a)
-        return format(
-            '%.2f %.2f %.2f%s',
-            r,
-            g,
-            b,
-            (a~=1 and format(' %.2f', a) or '')
-        )
-    end,
-    set_tooltip=function(tooltip)
-        tooltip:AddLine('R G B A')
-    end
-},{
-    name='HEX',
-    set_value= function(text)
-        Set_Color(WoWTools_ColorMixin:HEXtoRGB(text))
-    end,
-    set_text= function(r,g,b,a)
-        return WoWTools_ColorMixin:RGBtoHEX(r,g,b,a)
-    end,
-},
 
-}
+
+
+
+
+
+
+
+
+
+
+local function Init()
+    local Tab={
+        {
+            name='R G B A',
+            set_value= function(text)
+                Set_Color(Get_RGBAtoText(text))
+            end,
+            set_text= function(r,g,b,a)
+                r= tonumber(format('%.2f', r))
+                g= tonumber(format('%.2f', g))
+                b= tonumber(format('%.2f', b))
+                a= a and tonumber(format('%.2f', a)) or 1
+                return r..' '..g..' '..b.. (a~=1 and ' '..a or '')
+            end,
+        },
+        {
+            name='HEX',
+            set_value= function(text)
+                Set_Color(WoWTools_ColorMixin:HEXtoRGB(text))
+            end,
+            set_text= function(r,g,b,a)
+                return WoWTools_ColorMixin:RGBtoHEX(r,g,b,a)
+            end,
+        },
+        {
+            name='R G B',
+            set_value= Get_RGB255toText,
+            set_text= function(r,g,b)
+                return format(
+                    '%i %i %i',
+                    r*255,
+                    g*255,
+                    b*255
+                )
+            end,
+        },
+    }
 
     for index, tab in pairs(Tab) do
         Create_EditBox(index, tab)
     end
 
-    ColorPickerFrame.Content.ColorPicker:HookScript("OnColorSelect", function(self, r, g, b)
-        if WoWTools_ColorMixin.Save.hide or not (r and g and b) then
-            return
-        end
-
-        local a= ColorPickerFrame.hasOpacity and self:GetColorAlpha() or 1
-        for _, frame in pairs(EditBoxs) do
-            local text= not frame:HasFocus() and frame.set_text(r, g, b, a)
-            if text then
-                frame:SetText(text)
-            end
-        end
-    end)
+    ColorPickerFrame.Content.ColorPicker:HookScript("OnColorSelect", OnColorSelect)
+    OnColorSelect(nil, ColorPickerFrame:GetColorRGB())
 end
 
 
