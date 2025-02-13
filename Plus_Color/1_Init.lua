@@ -7,6 +7,12 @@ local function Init()
 		return
 	end
 
+	local frame= CreateFrame("Frame", 'WoWToolsColorPickerFramePlus', ColorPickerFrame)
+	frame:SetPoint('BOTTOMRIGHT')
+	frame:SetSize(1,1)
+	WoWTools_ColorMixin.Frame= frame
+	frame:SetShown(not WoWTools_ColorMixin.hide)
+
 	WoWTools_ColorMixin:Init_Options()
 	WoWTools_ColorMixin:Init_SelectColor()
 	WoWTools_ColorMixin:Init_EditBox()
@@ -46,11 +52,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if not WoWTools_ColorMixin.Save.disabled then
 
-				local frame= CreateFrame("Frame", 'WoWToolsColorPickerFramePlus', ColorPickerFrame)
-				frame:SetPoint('BOTTOMRIGHT')
-				frame:SetSize(1,1)
-				WoWTools_ColorMixin.Frame= frame
-				frame:SetShown(not WoWTools_ColorMixin.hide)
 
 				if ColorPickerFrame:IsShown() then
 					Init()
